@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Math - Utility library of mathematical services
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -62,6 +62,19 @@ void mathCompositeFunction2d::AddFunction(Float64 xMin,Float64 xMax,mathFunction
    std::sort(m_Segments.begin(), m_Segments.end());
 }
 
+IndexType mathCompositeFunction2d::GetFunctionCount() const
+{
+   return m_Segments.size();
+}
+
+void mathCompositeFunction2d::GetFunction(IndexType idx,const mathFunction2d** ppFunc,Float64* pXMin,Float64* pXMax) const
+{
+   const Segment& segment = m_Segments[idx];
+   *ppFunc = segment.pFunc;
+   *pXMax = segment.xMax;
+   *pXMin = segment.xMin;
+}
+
 Float64 mathCompositeFunction2d::Evaluate(Float64 x) const
 {
    std::vector<Segment>::const_iterator iter;
@@ -75,11 +88,18 @@ Float64 mathCompositeFunction2d::Evaluate(Float64 x) const
    }
 
    // function is undefined at x
-   ASSERT(false); // hmmm?
+   //ASSERT(false); // hmmm?
+   return m_Segments.back().pFunc->Evaluate(m_Segments.back().xMax);
+
    throw new mathXEvalError(mathXEvalError::Undefined,_T(__FILE__),__LINE__);
 }
 
 mathFunction2d* mathCompositeFunction2d::Clone() const
 {
    return new mathCompositeFunction2d(*this);
+}
+
+void mathCompositeFunction2d::Clear()
+{
+   m_Segments.clear();
 }

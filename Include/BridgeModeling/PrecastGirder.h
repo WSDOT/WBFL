@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // BMF - Bridge Modeling Framework - Product modeling of bridge structures
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -335,7 +335,7 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the number of harping points in the girder.
-   Uint32 GetHarpingPointCount() const;
+   IndexType GetHarpingPointCount() const;
 
    //------------------------------------------------------------------------
    // Returns the location of the harping points, measured from left
@@ -370,7 +370,7 @@ protected:
    void MakeCopy( const bmfPrecastGirder& rOther );
 
    //------------------------------------------------------------------------
-   void MakeAssignment( const bmfPrecastGirder& rOther );
+   virtual void MakeAssignment( const bmfPrecastGirder& rOther );
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

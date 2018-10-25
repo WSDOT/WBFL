@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis Utility - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -425,23 +425,39 @@ void CEnvelopedVehicularLoadResponseAgg::EnvelopeLiveLoadSectionResults(ILiveLoa
    bool (*lftcmp)(Float64, Float64);
    bool (*rgtcmp)(Float64, Float64);
 
-   if (optimization==optMaximize)
+   if ( doFlip )
    {
-      lftcmp = &MaxCmp;
-
-      if (doFlip)
-         rgtcmp = &MinCmp;
-      else
+      if (optimization==optMaximize)
+      {
+         lftcmp = &MinCmp;
          rgtcmp = &MaxCmp;
+      }
+      else
+      {
+         lftcmp = &MaxCmp;
+         rgtcmp = &MinCmp;
+      }
    }
    else
    {
-      lftcmp = &MinCmp;
+      if (optimization==optMaximize)
+      {
+         lftcmp = &MaxCmp;
 
-      if (doFlip)
-         rgtcmp = &MaxCmp;
+         if (doFlip)
+            rgtcmp = &MinCmp;
+         else
+            rgtcmp = &MaxCmp;
+      }
       else
-         rgtcmp = &MinCmp;
+      {
+         lftcmp = &MinCmp;
+
+         if (doFlip)
+            rgtcmp = &MaxCmp;
+         else
+            rgtcmp = &MinCmp;
+      }
    }
 
    // loop over all pois and replace res1 with optmized results from res2 if needed.

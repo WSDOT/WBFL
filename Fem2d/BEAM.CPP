@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -1120,8 +1120,9 @@ void ConcLdBeam::ComputeFFDeflectionMz(Float64 x,Float64 &dx,Float64 &dy,Float64
 //
 // MemberStrainBeam
 //
-MemberStrainBeam::MemberStrainBeam(Float64 qAxial, Float64 qCurvature,Float64 l,Float64 ea,Float64 ei,MbrType type) :
+MemberStrainBeam::MemberStrainBeam(Float64 qAxial, Float64 qCurvature,Float64 a,Float64 l,Float64 ea,Float64 ei,MbrType type) :
 Beam(l,ea,ei,type),
+m_A(a),
 m_Qx(qAxial),
 m_Qz(qCurvature)
 {
@@ -1129,14 +1130,15 @@ m_Qz(qCurvature)
    ComputeDisplacements();
 }
 
-void MemberStrainBeam::GetLoad(Float64& qAxial, Float64& qCurvature)
+void MemberStrainBeam::GetLoad(Float64& qAxial, Float64& qCurvature,Float64& a)
 {
    qAxial = m_Qx;
    qCurvature = m_Qz;
+   a = m_A;
 }
 
 void MemberStrainBeam::GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,
-                               Float64 &fxr,Float64 &fyr,Float64 &mzr)
+                                    Float64 &fxr,Float64 &fyr,Float64 &mzr)
 {
    fxl = m_Fxl;
    fyl = m_Fyl;
@@ -1147,7 +1149,7 @@ void MemberStrainBeam::GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,
 }
 
 void MemberStrainBeam::GetDisplacements(Float64 &dxl,Float64 &dyl,Float64 &rzl,
-                                   Float64 &dxr,Float64 &dyr,Float64 &rzr)
+                                        Float64 &dxr,Float64 &dyr,Float64 &rzr)
 {
    dxl = m_Dxl;
    dyl = m_Dyl;
@@ -1159,59 +1161,33 @@ void MemberStrainBeam::GetDisplacements(Float64 &dxl,Float64 &dyl,Float64 &rzl,
 
 void MemberStrainBeam::GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
-   // axial is same for all
+   ATLASSERT(x>=0.0 && x<=m_L);
    fx = m_Fxl;
-
-   switch(m_Type)
-      {
-      case mtPinPin:
-           ComputePPForces(x,fy,mz);
-           break;
-
-      case mtPinFix:
-           ComputePFForces(x,fy,mz);
-           break;
-
-      case mtFixPin:
-           ComputeFPForces(x,fy,mz);
-           break;
-
-      case mtFixFix:
-           ComputeFFForces(x,fy,mz);
-           break;
-      }
+   fy = m_Fyl;
+   mz = m_Mzl + m_Fyl*x;
 }
 
 void MemberStrainBeam::GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
-   // axial is same for all
+   ATLASSERT(x>=0.0 && x<=m_L);
+   Float64 x2 = x*x;
+   Float64 x3 = x2*x;
+
    dx = 0.0;
+   dy = m_Dyl + m_Rzl*x - m_Mzl*x2/(2*m_EI) + m_Fyl*x3/(6*m_EI);
+   if ( m_A < x )
+      dy += m_Qz*(x-m_A)*(x-m_A)/2;
 
-   switch(m_Type)
-      {
-      case mtPinPin:
-           ComputePPDeflection(x,dy,rz);
-           break;
-
-      case mtPinFix:
-           ComputePFDeflection(x,dy,rz);
-           break;
-
-      case mtFixPin:
-           ComputeFPDeflection(x,dy,rz);
-           break;
-
-      case mtFixFix:
-           ComputeFFDeflection(x,dy,rz);
-           break;
-      }
+   rz = m_Rzl - m_Mzl*x/m_EI + m_Fyl*x2/(2*m_EI);
+   if ( m_A < x )
+      rz += m_Qz*(x - m_A);
 }
 
 void MemberStrainBeam::ComputeReactions()
 {
 // axial is independent of beam type
 
-   Float64 faxial = m_Qx * m_EA;
+   Float64 faxial = m_Qx*m_EA*(m_L-m_A)/m_L;
    m_Fxl = faxial;
    m_Fxr = -faxial;
 
@@ -1261,7 +1237,7 @@ void MemberStrainBeam::ComputeDisplacements()
 }
 
 // Equations taken from Roark's Formulas for Stress and Strain, 6th Edition
-// Table 3, Equations 6-6d
+// Table 3, Equations 6c-6e
 
 void MemberStrainBeam::ComputePPReactions()
 {
@@ -1274,7 +1250,8 @@ void MemberStrainBeam::ComputePPReactions()
 
 void MemberStrainBeam::ComputePFReactions()
 {
-  m_Fyl = (-3.0*m_EI*m_Qz)/(2.0*m_L);
+  // Table 3, Equation 6c
+  m_Fyl = (-3.0*m_EI*m_Qz)*(m_L*m_L - m_A*m_A)/(2.0*m_L*m_L*m_L);
   m_Mzl = 0;
 
   m_Fyr = -m_Fyl;
@@ -1283,35 +1260,42 @@ void MemberStrainBeam::ComputePFReactions()
 
 void MemberStrainBeam::ComputeFPReactions()
 {
-  m_Fyr = (-3.0*m_EI*m_Qz)/(2.0*m_L);
-  m_Mzr = 0;
+   // These formulas are derived from Table 3, Equation 6c.
+   // The curvature is applied at the pinned end (in Eqn 6c the curvature is at the fixed end)
+   // This case is is the mirror image of Equation 6c with a = 0 minus the mirror image of
+   // Equation 6c with a measured from the right hand side.
+   m_Fyr = -3*m_EI*m_Qz*(m_L-m_A)*(m_L-m_A)/(2.0*m_L*m_L*m_L);
+   m_Mzr = 0;
 
-  m_Fyl = -m_Fyr;
-  m_Mzl = -m_Fyr*m_L;
+   m_Fyl = -m_Fyr;
+   m_Mzl = -m_Fyr*m_L;
 }
 
 void MemberStrainBeam::ComputeFFReactions()
 {
-  m_Fyl = 0;
-  m_Mzl = m_Qz*m_EI;
+   // Table 3, Equation 6d
+  m_Fyl = -6*m_EI*m_A*m_Qz*(m_L - m_A)/(m_L*m_L*m_L);
+  m_Mzl = -m_EI*m_Qz*(m_L - m_A)*(3*m_A - m_L)/(m_L*m_L);
 
-  m_Fyr = 0;
-  m_Mzr = -m_Mzl;
+  m_Fyr = -m_Fyl;
+  m_Mzr = -m_EI*m_Qz*(m_L - m_A)*(3*m_A + m_L)/(m_L*m_L);
 }
 
 void MemberStrainBeam::ComputePPDisplacements()
 {
+   // Table 3, Equation 6e
    m_Dyl = 0;
-   m_Rzl = -m_Qz*m_L/2.0;
+   m_Rzl = -m_Qz*(m_L-m_A)*(m_L-m_A)/(2*m_L);
 
    m_Dyr = 0;
-   m_Rzr = -m_Rzl;
+   m_Rzr = m_Qz*(m_L*m_L-m_A*m_A)/(2*m_L);
 }
 
 void MemberStrainBeam::ComputePFDisplacements()
 {
+   // Table 3, Equation 6c
    m_Dyl = 0;
-   m_Rzl = -m_Qz*m_L/4.0;
+   m_Rzl = m_Qz*(m_L-m_A)*(3*m_A - m_L)/(4*m_L);
 
    m_Dyr = 0;
    m_Rzr = 0;
@@ -1323,11 +1307,14 @@ void MemberStrainBeam::ComputeFPDisplacements()
    m_Rzl = 0;
 
    m_Dyr = 0;
-   m_Rzr = m_Qz*m_L/4.0;
+   Float64 b = m_L - m_A;
+   m_Rzr = m_Qz*m_L/4 + m_Qz*(m_L - b)*(3*b - m_L)/(4*m_L);
+   //m_Rzr = m_Qz*(m_L*m_L - 2*m_A*m_L + 3*m_A*m_A)/(4*m_L); //???
 }
 
 void MemberStrainBeam::ComputeFFDisplacements()
 {
+   // Table 3, Equation 6d
    m_Dyl = 0;
    m_Rzl = 0;
 
@@ -1335,66 +1322,83 @@ void MemberStrainBeam::ComputeFFDisplacements()
    m_Rzr = 0;
 }
 
-void MemberStrainBeam::ComputePPForces(Float64 x,Float64 &fy,Float64 &mz)
+
+//
+// UniformMemberDistortionBeam
+//
+UniformMemberDistortionBeam::UniformMemberDistortionBeam(Float64 qAxial, Float64 qCurvature,Float64 a,Float64 b,Float64 l,Float64 ea,Float64 ei,MbrType type) :
+Beam(l,ea,ei,type),
+m_Case1Beam(qAxial,qCurvature,a,l,ea,ei,type),
+m_Case2Beam(qAxial,qCurvature,b,l,ea,ei,type)
 {
-   ATLASSERT(x>=0.0 && x<=m_L);
-   fy = 0.0;
-   mz = 0.0;
 }
 
-void MemberStrainBeam::ComputePFForces(Float64 x,Float64 &fy,Float64 &mz)
+void UniformMemberDistortionBeam::GetLoad(Float64& qAxial, Float64& qCurvature,Float64& a,Float64& b)
 {
-   ATLASSERT(x>=0.0 && x<=m_L);
-   fy = m_Fyl;
-   mz = m_Mzr*(1-(m_L-x)/m_L);
+   m_Case1Beam.GetLoad(qAxial,qCurvature,a);
+   m_Case2Beam.GetLoad(qAxial,qCurvature,b);
 }
 
-void MemberStrainBeam::ComputeFPForces(Float64 x,Float64 &fy,Float64 &mz)
+void UniformMemberDistortionBeam::GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,
+                                               Float64 &fxr,Float64 &fyr,Float64 &mzr)
 {
-   ATLASSERT(x>=0.0 && x<=m_L);
-   fy = m_Fyl;
-   mz = m_Mzl*(m_L-x)/m_L;
+   Float64 Fxl1,Fxl2;
+   Float64 Fyl1,Fyl2;
+   Float64 Mzl1,Mzl2;
+   Float64 Fxr1,Fxr2;
+   Float64 Fyr1,Fyr2;
+   Float64 Mzr1,Mzr2;
+   m_Case1Beam.GetReactions(Fxl1,Fyl1,Mzl1,Fxr1,Fyr1,Mzr1);
+   m_Case2Beam.GetReactions(Fxl2,Fyl2,Mzl2,Fxr2,Fyr2,Mzr2);
+
+   fxl = Fxl1 - Fxl2;
+   fyl = Fyl1 - Fyl2;
+   mzl = Mzl1 - Mzl2;
+   fxr = Fxr1 - Fxr2;
+   fyr = Fyr1 - Fyr2;
+   mzr = Mzr1 - Mzr2;
 }
 
-void MemberStrainBeam::ComputeFFForces(Float64 x,Float64 &fy,Float64 &mz)
+void UniformMemberDistortionBeam::GetDisplacements(Float64 &dxl,Float64 &dyl,Float64 &rzl,
+                                                   Float64 &dxr,Float64 &dyr,Float64 &rzr)
 {
-   ATLASSERT(x>=0.0 && x<=m_L);
-   fy = 0.0;
-   mz = m_Mzl;
+   Float64 Dxl1,Dxl2;
+   Float64 Dyl1,Dyl2;
+   Float64 Rzl1,Rzl2;
+   Float64 Dxr1,Dxr2;
+   Float64 Dyr1,Dyr2;
+   Float64 Rzr1,Rzr2;
+   m_Case1Beam.GetDisplacements(Dxl1,Dyl1,Rzl1,Dxr1,Dyr1,Rzr1);
+   m_Case2Beam.GetDisplacements(Dxl2,Dyl2,Rzl2,Dxr2,Dyr2,Rzr2);
+
+   dxl = Dxl1 - Dxl2;
+   dyl = Dyl1 - Dyl2;
+   rzl = Rzl1 - Rzl2;
+   dxr = Dxr1 - Dxr2;
+   dyr = Dyr1 - Dyr2;
+   rzr = Rzr1 - Rzr2;
 }
 
-void MemberStrainBeam::ComputePPDeflection(Float64 x,Float64 &dy,Float64 &rz)
+void UniformMemberDistortionBeam::GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
-   ATLASSERT(x>=0.0 && x<=m_L);
-   dy = m_Qz*x*x/2.0 - m_Qz*m_L*x/2.0;
-   rz = m_Qz*x - m_Qz*m_L/2.0;
+   Float64 Fx1,Fy1,Mz1;
+   Float64 Fx2,Fy2,Mz2;
+   m_Case1Beam.GetForces(x,Fx1,Fy1,Mz1);
+   m_Case2Beam.GetForces(x,Fx2,Fy2,Mz2);
+   fx = Fx1 - Fx2;
+   fy = Fy1 - Fy2;
+   mz = Mz1 - Mz2;
 }
 
-void MemberStrainBeam::ComputePFDeflection(Float64 x,Float64 &dy,Float64 &rz)
+void UniformMemberDistortionBeam::GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
-   Float64 x2 = x*x;
-   Float64 x3 = x2*x;
-
-   ATLASSERT(x>=0.0 && x<=m_L);
-   dy = m_Rzl*x  + m_Fyl*x3/(6.0*m_EI) + m_Qz*x2/2.0;
-   rz = m_Rzl    + m_Fyl*x2/(2.0*m_EI)   + m_Qz*x;
-}
-
-void MemberStrainBeam::ComputeFPDeflection(Float64 x,Float64 &dy,Float64 &rz)
-{
-   Float64 x2 = x*x;
-   Float64 x3 = x2*x;
-
-   ATLASSERT(x>=0.0 && x<=m_L);
-   dy =  -m_Mzl*x2/(2*m_EI) + m_Fyl*x3/(6.0*m_EI) + m_Qz*x2/2.0;
-   rz =  -m_Mzl*x/m_EI       + m_Fyl*x2/(2.0*m_EI)   + m_Qz*x;
-}
-
-void MemberStrainBeam::ComputeFFDeflection(Float64 x,Float64 &dy,Float64 &rz)
-{
-   ATLASSERT(x>=0.0 && x<=m_L);
-   dy = 0.0;
-   rz = 0.0;
+   Float64 Dx1,Dy1,Rz1;
+   Float64 Dx2,Dy2,Rz2;
+   m_Case1Beam.GetDeflection(x,Dx1,Dy1,Rz1);
+   m_Case2Beam.GetDeflection(x,Dx2,Dy2,Rz2);
+   dx = Dx1 - Dx2;
+   dy = Dy1 - Dy2;
+   rz = Rz1 - Rz2;
 }
 
 // 
@@ -1884,19 +1888,22 @@ void TrapezoidalLdBeam::ComputePPReactionsFx()
 void TrapezoidalLdBeam::ComputePPReactionsFy()
 {
    m_Fxl = 0;
-   m_Mzl = 0;
+   m_Fxr = 0;
+
    m_Mzl_u = 0;
    m_Mzl_t = 0;
-   m_Fxr = 0;
-   m_Mzr = 0;
+   m_Mzl   = 0;
+
    m_Mzr_u = 0;
+   m_Mzr_t = 0;
+   m_Mzr   = 0;
 
    // reactions due to uniform portion
 	// Fomulas 14 and 16
    Float64 d = m_L-0.5*m_Lb-0.5*m_La;  // distance from the right end to the center of the load
    Float64 c = m_Lb-m_La;	             // length of load
    Float64 W = m_wa*c;
-   m_Fyl_u = -W * d / m_L;        // reaction at the left end
+   m_Fyl_u = -W*d/m_L;            // reaction at the left end
    m_Fyr_u = -W/m_L*(m_La+0.5*c); // reaction at the right end
 
 	// Compute partial triangular load from a to b, load varying from zero to w
@@ -1905,10 +1912,10 @@ void TrapezoidalLdBeam::ComputePPReactionsFy()
    d = m_L-m_La/3.-2./3.*m_Lb; // distance from the right end to the center of the load
    W = 0.5*(m_wb-m_wa)*c;		// total load
 
-   Float64 rr1a = -W*d/m_L;
-   m_Fyl_t = rr1a;
+   m_Fyl_t = -W*d/m_L;
+	m_Fyr_t = -W*(m_L-d)/m_L;
    m_Fyl = m_Fyl_u + m_Fyl_t;
-	m_Fyr = m_Fyr_u - W*(m_L-d)/m_L;
+	m_Fyr = m_Fyr_u + m_Fyr_t;
 }
 
 void TrapezoidalLdBeam::ComputePPReactionsMz()
@@ -1931,11 +1938,10 @@ void TrapezoidalLdBeam::ComputePFReactionsFx()
 
 void TrapezoidalLdBeam::ComputePFReactionsFy()
 {
+   m_Fxr = 0;
    m_Fxl = 0;
-   m_Mzl = 0;
    m_Mzl_u = 0;
    m_Mzl_t = 0;
-   m_Fxr = 0;
 
    // shorten some variable names for readability
    Float64 L = m_L;
@@ -1958,6 +1964,7 @@ void TrapezoidalLdBeam::ComputePFReactionsFy()
    m_Fyl_u  = -W/(8.*L3)*(4.*L*(a2+a*b+b2)-a3-a*b2-a2*b-b3);
    m_Fyr_u  = -m_Fyl_u-W;
    m_Mzr_u  = m_Fyl_u*L + 0.5*W*(a+b);	    // reaction at the right end
+   m_Mzl_u  = 0;
 
 	// Compute partial triangular load from b to a, load varying from zero to w
 	// a and b measured from the right and. 
@@ -1970,9 +1977,14 @@ void TrapezoidalLdBeam::ComputePFReactionsFy()
    Float64 m2 = rl*L + W/3.*(2.*a+b);
 
    m_Fyl_t = rl;
+   m_Fyr_t = r2;
+   m_Mzr_t = m2;
+   m_Mzl_t = 0;
+
    m_Fyl = m_Fyl_u + m_Fyl_t;
-   m_Fyr = m_Fyr_u + r2;
-   m_Mzr = m_Mzr_u + m2;
+   m_Fyr = m_Fyr_u + m_Fyr_t;
+   m_Mzr = m_Mzr_u + m_Mzr_t;
+   m_Mzl = m_Mzl_u + m_Mzl_t;
 }
 
 void TrapezoidalLdBeam::ComputePFReactionsMz()

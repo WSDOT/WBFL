@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,7 +34,7 @@
 #include "Collections.h"
 
 class CVertCurveCollection;
-typedef PersistentKeyedCollection<CVertCurveCollection,IVertCurveCollection,&IID_IVertCurveCollection,CogoElementKey,IVertCurve> VertCurveCollectionImpl;
+typedef PersistentKeyedCollection<CVertCurveCollection,IVertCurveCollection,&IID_IVertCurveCollection,CogoObjectID,IVertCurve> VertCurveCollectionImpl;
 
 /////////////////////////////////////////////////////////////////////////////
 // CVertCurveCollection
@@ -82,17 +82,17 @@ public:
 	STDMETHOD(putref_Factory)(/*[in]*/IVertCurveFactory* factory);
 	STDMETHOD(get_Factory)(/*[out,retval]*/IVertCurveFactory* *factory);
 	STDMETHOD(Clear)();
-	STDMETHOD(Add)(/*[in]*/ CogoElementKey key,/*[in]*/ IProfilePoint* pbg,/*[in]*/ IProfilePoint* pvi,/*[in]*/ IProfilePoint* pfg,/*[in]*/Float64 l1,/*[in]*/ Float64 l2,/*[out,retval]*/IVertCurve* *vc);
-	STDMETHOD(AddEx)(/*[in]*/ CogoElementKey key,/*[in]*/ IVertCurve* newVal);
-	STDMETHOD(Remove)(/*[in]*/ CogoElementKey key);
+	STDMETHOD(Add)(/*[in]*/ CogoObjectID key,/*[in]*/ IProfilePoint* pbg,/*[in]*/ IProfilePoint* pvi,/*[in]*/ IProfilePoint* pfg,/*[in]*/Float64 l1,/*[in]*/ Float64 l2,/*[out,retval]*/IVertCurve* *vc);
+	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID key,/*[in]*/ IVertCurve* newVal);
+	STDMETHOD(Remove)(/*[in]*/ CogoObjectID key);
 	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ CogoElementKey key, /*[out, retval]*/ IVertCurve* *pVal);
-	STDMETHOD(putref_Item)(/*[in]*/ CogoElementKey key, /*[in]*/ IVertCurve* newVal);
+	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID key, /*[out, retval]*/ IVertCurve* *pVal);
+	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID key, /*[in]*/ IVertCurve* newVal);
 // STDMETHOD(get__NewEnum)(IUnknown** retval);
    STDMETHOD(get__EnumKeys)(IEnumKeys** ppenum);
  	STDMETHOD(get__EnumVertCurves)(/*[out,retval]*/ IEnumVertCurves** ppenum);
-	STDMETHOD(FindKey)(/*[in]*/ IVertCurve* vc,/*[out,retval]*/CogoElementKey* key);
-	STDMETHOD(Key)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoElementKey* key);
+	STDMETHOD(FindKey)(/*[in]*/ IVertCurve* vc,/*[out,retval]*/CogoObjectID* key);
+	STDMETHOD(Key)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* key);
 
 // IVertCurveEvents
 public:
@@ -101,14 +101,14 @@ public:
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
-   HRESULT VertCurveNotFound(CogoElementKey key);
-   HRESULT VertCurveAlreadyDefined(CogoElementKey key);
-   HRESULT VertCurveKeyError(CogoElementKey key,UINT nHelpString,HRESULT hRes);
+   HRESULT VertCurveNotFound(CogoObjectID key);
+   HRESULT VertCurveAlreadyDefined(CogoObjectID key);
+   HRESULT VertCurveKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes);
 
-   void Advise(CogoElementKey key,IVertCurve* vc);
-   void Unadvise(CogoElementKey key,IVertCurve* vc);
+   void Advise(CogoObjectID key,IVertCurve* vc);
+   void Unadvise(CogoObjectID key,IVertCurve* vc);
    void UnadviseAll();
-   std::map<CogoElementKey,DWORD> m_Cookies;
+   std::map<CogoObjectID,DWORD> m_Cookies;
 
    CComPtr<IVertCurveFactory> m_Factory;
 };

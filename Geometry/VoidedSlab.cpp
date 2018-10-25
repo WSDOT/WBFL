@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -498,6 +498,16 @@ STDMETHODIMP CVoidedSlab::Remove(CollectionIndexType idx)
 STDMETHODIMP CVoidedSlab::Clear()
 {
    return m_pShape->Clear();
+}
+
+STDMETHODIMP CVoidedSlab::ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
+{
+   return m_pShape->ReplaceEx(idx,pShapeItem);
+}
+
+STDMETHODIMP CVoidedSlab::Replace(CollectionIndexType idx,IShape* pShape)
+{
+   return m_pShape->Replace(idx,pShape);
 }
 
 STDMETHODIMP CVoidedSlab::AddShapeEx(ICompositeShapeItem* ShapeItem)

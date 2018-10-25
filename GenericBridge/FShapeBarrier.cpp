@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -102,8 +102,6 @@ STDMETHODIMP CFShapeBarrier::put_Shape(ITrafficBarrier* barrier)
    shape->Clone(&clone_shape);
    clone_shape.QueryInterface(&(m_BarrierShape));
 
-#pragma Reminder("UPDATE: Fire Event")
-
    return S_OK;
 }
 
@@ -117,13 +115,8 @@ STDMETHODIMP CFShapeBarrier::get_Material(IMaterial** material)
 
 STDMETHODIMP CFShapeBarrier::putref_Material(IMaterial* material)
 {
-   if ( m_Material.IsEqualObject(material) )
-      return S_OK;
-
+   CHECK_IN(material);
    m_Material = material;
-
-#pragma Reminder("UPDATE: Fire Event")
-
    return S_OK;
 }
 

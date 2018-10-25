@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphicsLib - Utility library graphics
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -108,6 +108,8 @@ public:
    // Axis orientation either horizontal (X) or vertical (Y)
    enum AxisOrientation {X_AXIS, Y_AXIS};
 
+   enum AxisScale { LINEAR, LOGARITHMIC };
+
    // GROUP: LIFECYCLE
 
    //------------------------------------------------------------------------
@@ -154,7 +156,7 @@ public:
    // Set the desired axis range in 'world' coordinates along the length of 
    // the axis. This range will be transformed into 'nice' numbers which
    // can be retrieved via the GetAxisRange function
-   void SetNiceAxisRange(Float64 leftVal, Float64 rightVal);
+   void SetNiceAxisRange(Float64 leftVal, Float64 rightVal,bool bOffsetZero);
 
    //------------------------------------------------------------------------
    // This function allows you to 'force' the axis range and major tic
@@ -273,6 +275,9 @@ public:
    // Get whether to show text or not
    bool GetShowText();
 
+   void SetScale(grAxisXY::AxisScale scale);
+   grAxisXY::AxisScale GetScale() const;
+
    // GROUP: INQUIRY
 
    //------------------------------------------------------------------------
@@ -287,7 +292,7 @@ protected:
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
    void MakeCopy(const grAxisXY& rOther);
-   void MakeAssignment(const grAxisXY& rOther);
+   virtual void MakeAssignment(const grAxisXY& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -310,6 +315,8 @@ private:
    bool   m_DoShowTics;
    bool   m_DoShowText;
    grAxisXY::TextLocation m_TextLocation;
+
+   grAxisXY::AxisScale m_Scale;
 
    std::_tstring m_AxisTitle;
    std::_tstring m_AxisSubtitle;

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -51,15 +51,10 @@
 #include "BridgeGeometryTool.h"
 #include "SectionCutTool.h"
 #include "PrecastGirder.h"
-
-#include "Rebar.h"
-#include "RebarFactory.h"
-#include "RebarSectionItem.h"
-#include "RebarSection.h"
-#include "RebarRowPattern.h"
-#include "FlexRebarLayoutItem.h"
-#include "FixedLengthRebarLayoutItem.h"
 #include "StrandGrid.h"
+
+#include "FlexRebarLayoutItem.h"
+#include "BridgeDeckRebarLayout.h"
 #include "StrandFillTool.h"
 
 #ifdef _DEBUG
@@ -77,15 +72,10 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_BridgeGeometryTool,       CBridgeGeometryTool)
    OBJECT_ENTRY(CLSID_SectionCutTool,           CSectionCutTool)
    OBJECT_ENTRY(CLSID_PrecastGirder,            CPrecastGirder)
-   OBJECT_ENTRY(CLSID_Rebar,CRebar)
-   OBJECT_ENTRY(CLSID_RebarFactory,CRebarFactory)
-   OBJECT_ENTRY(CLSID_RebarRowPattern,CRebarRowPattern)
-   OBJECT_ENTRY(CLSID_FlexRebarLayoutItem,CFlexRebarLayoutItem)
-   OBJECT_ENTRY(CLSID_FixedLengthRebarLayoutItem,CFixedLengthRebarLayoutItem)
-   OBJECT_ENTRY_NON_CREATEABLE(CRebarSectionItem)
-   OBJECT_ENTRY_NON_CREATEABLE(CRebarSection)
    OBJECT_ENTRY(CLSID_StrandGrid, CStrandGrid)
    OBJECT_ENTRY(CLSID_StrandFillTool, CStrandFillTool)
+   OBJECT_ENTRY(CLSID_FlexRebarLayoutItem,CFlexRebarLayoutItem)
+   OBJECT_ENTRY(CLSID_BridgeDeckRebarLayout,CBridgeDeckRebarLayout)
 END_OBJECT_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

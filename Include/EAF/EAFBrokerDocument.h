@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,7 +31,6 @@
 //
 #include <EAF\EAFExp.h>
 #include <EAF\EAFDocument.h>
-#include <EAF\EAFCustomReport.h>
 #include <comcat.h>
 
 
@@ -67,8 +66,6 @@ public:
    virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
    virtual void DeleteContents();
    virtual BOOL OnCmdMsg(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO* pHandlerInfo);
-   // called after the document data is created/loaded
-   virtual void OnCreateFinalize();
 
 	//}}AFX_VIRTUAL
 
@@ -82,35 +79,14 @@ public:
 #endif
 
    void BuildReportMenu(CEAFMenu* pMenu,bool bQuickReport);
-
-   // Determine whether to display favorite reports or all reports in menu dropdowns
-   bool GetDoDisplayFavoriteReports() const;
-   void SetDoDisplayFavoriteReports(bool doDisplay);
-
-   // Current list of favorite reports
-   std::vector<std::_tstring> GetFavoriteReports() const;
-   void SetFavoriteReports( std::vector<std::_tstring> reports);
-   bool IsFavoriteReport(const std::_tstring& rptName);
-
-   // Custom, user-defined reports
-   CEAFCustomReports GetCustomReports() const;
-   void SetCustomReports(const CEAFCustomReports& reports);
-
-   // Returns TRUE if the command id (nID) is for a report.
-   BOOL IsReportCommand(UINT nID,BOOL bQuickReport);
+   void BuildGraphMenu(CEAFMenu* pMenu);
 
    // Generated message map functions
 protected:
    IBroker* m_pBroker;
 
-   BOOL m_DisplayFavoriteReports;
-   std::vector<std::_tstring> m_FavoriteReports;
-
-   CEAFCustomReports m_CustomReports;
-   std::vector<std::_tstring> m_BuiltInReportNames;
-
-   // Bitmap shown on the menus for custom reports
-   CBitmap m_bmpCustomReports;
+   bool m_bIsReportMenuPopulated; 
+   bool m_bIsGraphMenuPopulated;
 
    // returns the CATID for the agents to be used with this document
    // All agents registred with this category ID will be loaded when
@@ -174,35 +150,15 @@ protected:
    void OnReport(UINT nID);
    void OnQuickReport(UINT nID);
 
-   // Fire when changed from favorite reports to all reports. Let know if from a menu or other source
-   virtual void OnChangedFavoriteReports(bool isFavorites, bool fromMenu);
+   void PopulateGraphMenu(CEAFMenu* pGraphMenu);
+   UINT GetGraphCommand(CollectionIndexType graphIdx);
+   CollectionIndexType GetGraphIndex(UINT nID);
+   void OnGraph(UINT nID);
+   virtual void CreateGraphView(CollectionIndexType graphIdx); // does nothing by default
 
-   // Virtual error handling when custom or favorite report data has gone wrong in some way
-   enum custReportErrorType {
-      creParentMissingAtLoad,   // Parent for custom missing at program load time
-      creParentMissingAtImport, // Parent for custom missing when importing
-      creChapterMissingAtLoad,
-      creChapterMissingAtImport
-   };
-   virtual void OnCustomReportError(custReportErrorType error, const std::_tstring& reportName, const std::_tstring& otherName);
-   void IntegrateCustomReports(bool bFirst);
-
-public:
-   // Allow applications to publish help for custom reports and favorites
-   enum custRepportHelpType {
-      crhCustomReport,
-      crhFavoriteReport
-   };
-   virtual void OnCustomReportHelp(custRepportHelpType helpType);
-
-protected:  
-	//{{AFX_MSG(CEAFBrokerDocument)
+   //{{AFX_MSG(CEAFBrokerDocument)
 		// NOTE - the ClassWizard will add and remove member functions here.
 	//}}AFX_MSG
-	afx_msg void OnReportMenuDisplayMode();
-   afx_msg void OnUpdateReportMenuDisplayMode(CCmdUI* pCmdUI);
-	afx_msg void OnConfigureReports();
-
 	DECLARE_MESSAGE_MAP()
 
 private:

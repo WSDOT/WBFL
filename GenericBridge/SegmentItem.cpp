@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -55,42 +55,12 @@ STDMETHODIMP CSegmentItem::InterfaceSupportsErrorInfo(REFIID riid)
 
 void CSegmentItem::FinalRelease()
 {
-   HRESULT hr;
-   if ( m_Segment )
-   {
-      hr = UnadviseSegment();
-      ATLASSERT(SUCCEEDED(hr));
-   }
 }
 
 STDMETHODIMP CSegmentItem::PutRefSegment(ISegment *newVal)
 {
 	CHECK_IN(newVal);
-
-   // don't bother if someone is assigning same collection
-   if ( m_Segment.IsEqualObject(newVal) )
-      return S_OK;
-
-   // first we must break our cp with old collection if we had one
-   HRESULT hr;
-   if (m_Segment)
-   {
-      hr = UnadviseSegment();
-      if (FAILED(hr))
-         return hr;
-   }
-
-   // assign new collection
    m_Segment = newVal;
-
-   // establish cp with new collection
-   hr = AdviseSegment();
-   if (FAILED(hr))
-      return hr;
-
-   // tell the world we've changed
-   Fire_OnSegmentItemChanged(this);
-
 	return S_OK;
 }
 
@@ -108,31 +78,4 @@ STDMETHODIMP CSegmentItem::get_Segment(ISegment **pVal)
    (*pVal)->AddRef();
 
 	return S_OK;
-}
-
-HRESULT CSegmentItem::AdviseSegment()
-{
-   HRESULT hr = m_Segment.Advise(GetUnknown(),IID_ISegmentEvents,&m_dwCookie);
-   if ( FAILED(hr) )
-   {
-      ATLTRACE("Failed to establish connection point on Segment\n");
-      return hr;
-   }
-
-   InternalRelease(); // Break circular reference
-
-   return hr;
-}
-
-HRESULT CSegmentItem::UnadviseSegment()
-{
-   InternalAddRef(); // conteract InternalRelease() in advise
-   CComQIPtr<IConnectionPointContainer> pCPC(m_Segment);
-   CComPtr<IConnectionPoint> pCP;
-   pCPC->FindConnectionPoint(IID_ISegmentEvents,&pCP);
-
-   HRESULT hr = pCP->Unadvise(m_dwCookie);
-   ATLASSERT( SUCCEEDED(hr) );
-
-   return hr;
 }

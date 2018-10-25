@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -28,53 +28,41 @@
 
 #include <MathEx.h>
 #include "ItemDataManager.h"
-#include "GenericBridgeCP.h"
 
 template <class T>
 class IBridgeDeckImpl : public IBridgeDeck, 
-                        public IItemData,
-                        public CProxyDBridgeDeckEvents<T>
+                        public IItemData//,
+//                        public CProxyDBridgeDeckEvents<T>
 {
 public:
    IBridgeDeckImpl()
    {
-      m_pBridge = NULL;
-
       m_bComposite = VARIANT_TRUE;
+      m_WearingSurfaceDepth = 0;
+      m_WearingSurfaceDensity = 0;
 
       m_Material.CoCreateInstance(CLSID_Material);
    }
 
-protected:
-   IGenericBridge* m_pBridge; // weak reference
+   HRESULT Init()
+   {
+      return S_OK;
+   }
+
 
 private:
    VARIANT_BOOL m_bComposite;
-   CComBSTR m_bstrConstructionStage;
-   CComBSTR m_bstrCompositeStage;
+   //StageIndexType m_ConstructionStage;
+   //StageIndexType m_CompositeStage;
+   Float64 m_WearingSurfaceDepth;
+   Float64 m_WearingSurfaceDensity;
    CComPtr<IMaterial> m_Material;
 
    CItemDataManager m_ItemDataMgr;
+   CComPtr<IBridgeDeckRebarLayout> m_RebarLayout;
 
 // IBridgeDeck
 public:
-   STDMETHOD(putref_Bridge)(/*[in]*/IGenericBridge* pBridge)
-   {
-      CHECK_IN(pBridge);
-      m_pBridge = pBridge; // weak reference
-      return S_OK;
-   }
-
-   STDMETHOD(get_Bridge)(/*[out,retval]*/IGenericBridge** ppBridge)
-   {
-      CHECK_RETOBJ(ppBridge);
-      (*ppBridge) = m_pBridge;
-      if ( *ppBridge )
-         (*ppBridge)->AddRef();
-
-      return S_OK;
-   }
-
    STDMETHOD(get_Composite)(/*[out,retval]*/VARIANT_BOOL* bComposite)
    {
       CHECK_RETVAL(bComposite);
@@ -88,46 +76,46 @@ public:
          return S_OK;
 
       m_bComposite = bComposite;
-      Fire_OnBridgeDeckChanged(this);
 
       return S_OK;
    }
 
-	STDMETHOD(get_ConstructionStage)(/*[out,retval]*/BSTR* bstrStage)
+	STDMETHOD(get_WearingSurfaceDepth)(/*[out,retval]*/Float64* d)
    {
-      CHECK_RETSTRING(bstrStage);
-      *bstrStage = m_bstrConstructionStage.Copy();
+      CHECK_RETVAL(d);
+      *d = m_WearingSurfaceDepth;
       return S_OK;
    }
 
-	STDMETHOD(put_ConstructionStage)(/*[in]*/BSTR bstrStage)
+	STDMETHOD(put_WearingSurfaceDepth)(/*[in]*/Float64 depth)
    {
-      if ( m_bstrConstructionStage == bstrStage )
+      if ( depth < 0 )
+         return E_INVALIDARG;
+
+      if ( IsEqual(m_WearingSurfaceDepth,depth) )
          return S_OK;
 
-      m_bstrConstructionStage.Empty();
-      m_bstrConstructionStage = bstrStage;
-      Fire_OnBridgeDeckChanged(this);
+      m_WearingSurfaceDepth = depth;
 
       return S_OK;
    }
 
-	STDMETHOD(get_CompositeStage)(/*[out,retval]*/BSTR* bstrStage)
+	STDMETHOD(get_WearingSurfaceDensity)(/*[out,retval]*/Float64* d)
    {
-      CHECK_RETSTRING(bstrStage);
-      *bstrStage = m_bstrCompositeStage.Copy();
+      CHECK_RETVAL(d);
+      *d = m_WearingSurfaceDensity;
       return S_OK;
    }
 
-   STDMETHOD(put_CompositeStage)(/*[in]*/BSTR bstrStage)
+	STDMETHOD(put_WearingSurfaceDensity)(/*[in]*/Float64 density)
    {
-      CHECK_IN(bstrStage);
-      if ( m_bstrCompositeStage == bstrStage )
+      if ( density < 0 )
+         return E_INVALIDARG;
+
+      if ( IsEqual(m_WearingSurfaceDensity,density) )
          return S_OK;
 
-      m_bstrCompositeStage.Empty();
-      m_bstrCompositeStage = bstrStage;
-      Fire_OnBridgeDeckChanged(this);
+      m_WearingSurfaceDensity = density;
 
       return S_OK;
    }
@@ -135,48 +123,27 @@ public:
 	STDMETHOD(get_Material)(/*[out,retval]*/IMaterial** material)
    {
       CHECK_RETOBJ(material);
-
-      // by-value semantics
-      CComPtr<IMaterial> clone;
-      m_Material->Clone(&clone);
-      (*material) = clone;
-      (*material)->AddRef();
-      return S_OK;
+      return m_Material.CopyTo(material);
    }
 
-	STDMETHOD(put_Material)(/*[in]*/IMaterial* material)
+	STDMETHOD(putref_Material)(/*[in]*/IMaterial* material)
    {
       CHECK_IN(material);
-
-      // by-value semantics
-      CComPtr<IMaterial> clone;
-      HRESULT hr = material->Clone(&clone);
-      if ( FAILED(hr) )
-         return hr;
-
-      if ( m_Material.IsEqualObject(material) )
-         return S_OK;
-
       m_Material = material;
-      Fire_OnBridgeDeckChanged(this);
-
       return S_OK;
    }
 
-   STDMETHOD(Clone)(/*[out,retval]*/IBridgeDeck** clone)
+   STDMETHOD(putref_RebarLayout)(IBridgeDeckRebarLayout* rebarLayout)
    {
-      // Derived class must pass in a bridge deck object
-      CHECK_IN(*clone);
-
-      (*clone)->put_Composite(m_bComposite);
-      (*clone)->put_CompositeStage(m_bstrCompositeStage);
-      (*clone)->put_ConstructionStage(m_bstrConstructionStage);
-
-      CComPtr<IMaterial> material_clone;
-      m_Material->Clone(&material_clone);
-      (*clone)->put_Material(material_clone);
-
+      CHECK_IN(rebarLayout);
+      m_RebarLayout = rebarLayout;
       return S_OK;
+   }
+
+   STDMETHOD(get_RebarLayout)(IBridgeDeckRebarLayout** rebarLayout)
+   {
+      CHECK_RETOBJ(rebarLayout);
+      return m_RebarLayout.CopyTo(rebarLayout);
    }
 
    ///////////////////////////////////////////////////////////////////////
@@ -209,11 +176,11 @@ protected:
       load->get_Property(CComBSTR("Composite"),&var);
       m_bComposite = var.boolVal;
 
-      load->get_Property(CComBSTR("ConstructionStage"),&var);
-      m_bstrConstructionStage = var.bstrVal;
+      load->get_Property(CComBSTR("WearingSurfaceDensity"),&var);
+      m_WearingSurfaceDensity = var.dblVal;
 
-      load->get_Property(CComBSTR("CompositeStage"),&var);
-      m_bstrCompositeStage = var.bstrVal;
+      load->get_Property(CComBSTR("WearingSurfaceDepth"),&var);
+      m_WearingSurfaceDepth = var.dblVal;
 
       load->get_Property(CComBSTR("Material"),&var);
       m_Material.Release();
@@ -225,8 +192,8 @@ protected:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save)
    {
       save->put_Property(CComBSTR("Composite"),CComVariant(m_bComposite));
-      save->put_Property(CComBSTR("ConstructionStage"),CComVariant(m_bstrConstructionStage));
-      save->put_Property(CComBSTR("CompositeStage"),CComVariant(m_bstrCompositeStage));
+      save->put_Property(CComBSTR("WearingSurfaceDensity"),CComVariant(m_WearingSurfaceDensity));
+      save->put_Property(CComBSTR("WearingSurfaceDepth"),CComVariant(m_WearingSurfaceDepth));
       save->put_Property(CComBSTR("Material"),CComVariant(m_Material));
 
       return S_OK;

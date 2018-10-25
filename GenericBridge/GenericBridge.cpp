@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -39,16 +39,13 @@
 #include "WBFLTools_i.c"
 #include "WBFLCogo_i.c"
 #include "WBFLGeometry_i.c"
+#include "WBFLBridgeGeometry_i.c"
+#include "WBFLSections_i.c"
 
 #include "GenericBridgeImpl.h"
-#include "Stage.h"
-#include "StageCollection.h"
-#include "Span.h"
-#include "SpanCollection.h"
 #include "Pier.h"
 #include "PierCollection.h"
 #include "SuperstructureMember.h"
-#include "SuperstructureMemberCollection.h"
 #include "Segment.h"
 #include "FlangedGirderEndBlockSegment.h"
 #include "VoidedSlabEndBlockSegment.h"
@@ -63,9 +60,6 @@
 
 #include "LongitudinalPierDescription.h"
 //#include "GirderSpacing.h"
-#include "TemporaryPierItem.h"
-#include "TemporaryPierItemCollection.h"
-#include "CogoInfo.h"
 #include "Column.h"
 #include "ColumnSpacing.h"
 #include "CrossBeam.h"
@@ -92,13 +86,27 @@
 #include "SidewalkBarrier.h"
 #include "GenericBarrier.h"
 
-#include "Connection.h"
+#include "FlangedSplicedGirderSegment.h"
+#include "USplicedGirderSegment.h"
 
+#include "ParabolicTendonSegment.h"
 #include "LinearTendonSegment.h"
 #include "Tendon.h"
+#include "OffsetTendon.h"
 #include "TendonCollection.h"
 
 #include "PrestressingStrand.h"
+
+#include "Rebar.h"
+#include "RebarLayout.h"
+#include "RebarFactory.h"
+#include "RebarSectionItem.h"
+#include "RebarSection.h"
+#include "RebarRowPattern.h"
+#include "FixedLengthRebarLayoutItem.h"
+#include "BridgeDeckRebarLayoutItem.h"
+#include "BridgeDeckRebarPattern.h"
+#include "NegativeMomentBridgeDeckRebarLayoutItem.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -118,6 +126,8 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_BoxBeamEndBlockSegment, CBoxBeamEndBlockSegment)
    OBJECT_ENTRY(CLSID_TaperedGirderSegment, CTaperedGirderSegment)
    OBJECT_ENTRY(CLSID_ThickenedFlangeBulbTeeSegment, CThickenedFlangeBulbTeeSegment)
+   OBJECT_ENTRY(CLSID_FlangedSplicedGirderSegment, CFlangedSplicedGirderSegment)
+   OBJECT_ENTRY(CLSID_USplicedGirderSegment, CUSplicedGirderSegment)
    OBJECT_ENTRY(CLSID_Material, CMaterial)
    OBJECT_ENTRY(CLSID_CastSlab, CCastSlab)
    OBJECT_ENTRY(CLSID_PrecastSlab, CPrecastSlab)
@@ -137,31 +147,33 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_FShapeBarrier,CFShapeBarrier)
    OBJECT_ENTRY(CLSID_SidewalkBarrier,CSidewalkBarrier)
    OBJECT_ENTRY(CLSID_GenericBarrier,CGenericBarrier)
-   OBJECT_ENTRY(CLSID_Connection,CConnection)
+   OBJECT_ENTRY(CLSID_ParabolicTendonSegment,CParabolicTendonSegment)
    OBJECT_ENTRY(CLSID_LinearTendonSegment,CLinearTendonSegment)
    OBJECT_ENTRY(CLSID_Tendon,CTendon)
+   OBJECT_ENTRY(CLSID_OffsetTendon,COffsetTendon)
    OBJECT_ENTRY(CLSID_TendonCollection,CTendonCollection)
    OBJECT_ENTRY(CLSID_PrestressingStrand,CPrestressingStrand)
    OBJECT_ENTRY(CLSID_EdgePathStrategy,CEdgePathStrategy)
-   OBJECT_ENTRY_NON_CREATEABLE(CStage)
-   OBJECT_ENTRY_NON_CREATEABLE(CStageCollection)
-   OBJECT_ENTRY_NON_CREATEABLE(CSpan)
-   OBJECT_ENTRY_NON_CREATEABLE(CSpanCollection)
    OBJECT_ENTRY_NON_CREATEABLE(CPier)
    OBJECT_ENTRY_NON_CREATEABLE(CPierCollection)
    OBJECT_ENTRY_NON_CREATEABLE(CLongitudinalPierDescription)
-//   OBJECT_ENTRY_NON_CREATEABLE(CGirderSpacing)
    OBJECT_ENTRY_NON_CREATEABLE(CSuperstructureMember)
-   OBJECT_ENTRY_NON_CREATEABLE(CSuperstructureMemberCollection)
    OBJECT_ENTRY_NON_CREATEABLE(CSegmentItem)
    OBJECT_ENTRY_NON_CREATEABLE(CFilteredSegmentCollection)
-   OBJECT_ENTRY_NON_CREATEABLE(CTemporaryPierItem)
-   OBJECT_ENTRY_NON_CREATEABLE(CTemporaryPierItemCollection)
-   OBJECT_ENTRY_NON_CREATEABLE(CCogoInfo)
    OBJECT_ENTRY_NON_CREATEABLE(CColumn)
    OBJECT_ENTRY_NON_CREATEABLE(CColumnSpacing)
    OBJECT_ENTRY_NON_CREATEABLE(CCrossBeam)
    OBJECT_ENTRY_NON_CREATEABLE(CTransversePierDescription)
+   OBJECT_ENTRY(CLSID_Rebar,CRebar)
+   OBJECT_ENTRY(CLSID_RebarLayout,CRebarLayout)
+   OBJECT_ENTRY(CLSID_RebarFactory,CRebarFactory)
+   OBJECT_ENTRY(CLSID_RebarRowPattern,CRebarRowPattern)
+   OBJECT_ENTRY(CLSID_FixedLengthRebarLayoutItem,CFixedLengthRebarLayoutItem)
+   OBJECT_ENTRY(CLSID_BridgeDeckRebarLayoutItem,CBridgeDeckRebarLayoutItem)
+   OBJECT_ENTRY(CLSID_BridgeDeckRebarPattern,CBridgeDeckRebarPattern)
+   OBJECT_ENTRY(CLSID_NegativeMomentBridgeDeckRebarLayoutItem,CNegativeMomentBridgeDeckRebarLayoutItem)
+   OBJECT_ENTRY(CLSID_RebarSection,CRebarSection)
+   OBJECT_ENTRY(CLSID_RebarSectionItem,CRebarSectionItem)
 END_OBJECT_MAP()
 
 

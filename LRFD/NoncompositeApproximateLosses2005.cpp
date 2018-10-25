@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -320,6 +320,7 @@ void lrfdNoncompositeApproximateLosses2005::UpdateInitialLosses() const
                             0,
                             m_Aps,
                             0,
+                            true, // gross section properties
                             m_Ag,
                             m_Ig,
                             m_eperm,
@@ -327,8 +328,7 @@ void lrfdNoncompositeApproximateLosses2005::UpdateInitialLosses() const
                             m_Mdlg,
                             1.0,
                             m_Eci,
-                            m_Ep,
-                            lrfdElasticShortening::fcgpIterative);
+                            m_Ep);
 
    m_Fcgp = es.PermanentStrand_Fcgp();
    m_dfES = es.PermanentStrand_ElasticShorteningLosses();

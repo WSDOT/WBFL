@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -97,6 +97,7 @@ public:
                          Float64 ppr,
                          Float64 x, // location along girder where losses are computed
                          Float64 Lg,    // girder length
+                         lrfdLosses::SectionPropertiesType sectionProperties,
                          matPsStrand::Grade gr,
                          matPsStrand::Type type,
                          Float64 fpjPerm, // fpj permanent strands
@@ -104,7 +105,8 @@ public:
                          Float64 ApsPerm,  // area of permanent strand
                          Float64 ApsTemp,  // area of TTS 
                          Float64 aps,      // area of one strand
-                         Float64 eperm, // eccentricty of permanent ps strands with respect to CG of girder
+                         Float64 epermRelease, // eccentricty of permanent ps strands with respect to CG of girder at release
+                         Float64 epermFinal, // eccentricty of permanent ps strands with respect to CG of girder at final
                          Float64 etemp, // eccentricty of temporary strands with respect to CG of girder
                          TempStrandUsage usage,
                          Float64 anchorSet,
@@ -131,6 +133,13 @@ public:
                          Float64 Ac,    // Area of the composite girder and deck
                          Float64 Ic,    // Moment of inertia of composite
                          Float64 Ybc,   // Centroid of composite measured from bottom
+
+                         Float64 An,    // Area of girder
+                         Float64 In,    // Moment of inertia of girder
+                         Float64 Ybn,   // Centroid of girder measured from bottom
+                         Float64 Acn,    // Area of the composite girder and deck
+                         Float64 Icn,    // Moment of inertia of composite
+                         Float64 Ybcn,   // Centroid of composite measured from bottom
 
                          Float64 rh,      // relative humidity
                          Float64 ti,   // Time until prestress transfer
@@ -183,7 +192,7 @@ protected:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   void MakeAssignment( const lrfdApproximateLosses& rOther );
+   virtual void MakeAssignment( const lrfdApproximateLosses& rOther );
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

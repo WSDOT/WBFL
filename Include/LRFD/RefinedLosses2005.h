@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -101,6 +101,7 @@ public:
    // 0.90fpu for LowRelaxation strands.
    lrfdRefinedLosses2005(Float64 x, // location along girder where losses are computed
                          Float64 Lg,    // girder length
+                         lrfdLosses::SectionPropertiesType sectionProperties,
                          matPsStrand::Grade gr,
                          matPsStrand::Type type,
                          Float64 fpjPerm, // fpj permanent strands
@@ -108,7 +109,8 @@ public:
                          Float64 ApsPerm,  // area of permanent strand
                          Float64 ApsTemp,  // area of TTS 
                          Float64 aps,      // area of one strand
-                         Float64 eperm, // eccentricty of permanent ps strands with respect to CG of girder
+                         Float64 epermRelease, // eccentricty of permanent ps strands with respect to CG of girder at release
+                         Float64 epermFinal, // eccentricty of permanent ps strands with respect to CG of girder at final
                          Float64 etemp, // eccentricty of temporary strands with respect to CG of girder
                          TempStrandUsage usage,
                          Float64 anchorSet,
@@ -137,12 +139,21 @@ public:
                          Float64 S,    // Surface area of girder
                          Float64 VSlab,    // Volumne of slab
                          Float64 SSlab,    // Surface area of slab
+
                          Float64 Ag,   // area of girder
                          Float64 Ig,   // moment of inertia of girder
                          Float64 Ybg,  // Centroid of girder measured from bottom
                          Float64 Ac,   // area of composite girder
                          Float64 Ic,   // moment of inertia of composite
                          Float64 Ybc,  // Centroid of composite measured from bottom
+
+                         Float64 An,   // area of girder
+                         Float64 In,   // moment of inertia of girder
+                         Float64 Ybn,  // Centroid of girder measured from bottom
+                         Float64 Acn,   // area of composite girder
+                         Float64 Icn,   // moment of inertia of composite
+                         Float64 Ybcn,  // Centroid of composite measured from bottom
+
                          Float64 Ad,   // area of deck
                          Float64 ed,   // eccentricity of deck CG with respect to CG of composite
                          Float64 Ksh,  // deck shrinkage strain effectiveness
@@ -325,7 +336,7 @@ protected:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   void MakeAssignment( const lrfdRefinedLosses2005& rOther );
+   virtual void MakeAssignment( const lrfdRefinedLosses2005& rOther );
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

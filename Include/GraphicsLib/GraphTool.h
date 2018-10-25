@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphicsLib - Utility library graphics
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -98,11 +98,11 @@ public:
    // A 'nice' range calculation function. You input an original Min and Max
    // and a desired number of segments for the range, and it returns a 
    // nice range, the number of segments it used and a nice increment.
-   // Note if numberOfSegments<1 then this routine will try to select an appropriate
+   // Note if numberOfSegments is INVALID_INDEX then this routine will try to select an appropriate
    // nice value
    // It will also try to shrink the bounds of the interval if the original max or
    // min only slightly intrude into the outer bands.
-   static void CalculateNiceRange(const Float64 originalMin, const Float64 originalMax, 
+   static void CalculateNiceRange(const Float64 originalMin, const Float64 originalMax, bool bOffsetZero,
                                   CollectionIndexType& numberOfSegments, 
                                   Float64& niceMin, Float64& niceMax, 
                                   Float64& niceIncrement);

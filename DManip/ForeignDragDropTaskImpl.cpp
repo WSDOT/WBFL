@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -249,8 +249,20 @@ STDMETHODIMP_(DROPEFFECT) CForeignDragDropTaskImpl::DetermineDropEffect()
             if ( de > 0 )
             {
                // Payload can be dropped!
+               CComPtr<iDropSite> currentDropSite;
+               m_pDispMgr->GetDropSite(&currentDropSite);
+               if ( currentDropSite && !pDropSite.IsEqualObject(currentDropSite) )
+               {
+                  // if there is a current drop site, draw it in its normal stage
+                  m_pDispMgr->HighliteDropSite(FALSE);
+               }
+
+               // Set the new drop site
                m_pDispMgr->SetDropSite(pDropSite);
+
+               // draw in highlited stage
                m_pDispMgr->HighliteDropSite(TRUE);
+
                found = true;
                break; // we found a drop site... get the heck outta here
             }

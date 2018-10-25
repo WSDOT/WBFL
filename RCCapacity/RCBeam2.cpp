@@ -568,7 +568,7 @@ STDMETHODIMP CRCBeam2::Load(IStructuredLoad2* pLoad)
    CollectionIndexType nRebarLayers;
    if ( FAILED(pLoad->get_Property(CComBSTR("Count"),&var) ) )
       return STRLOAD_E_INVALIDFORMAT;
-   nRebarLayers = var.lVal;
+   nRebarLayers = var.iVal;
 
    for ( CollectionIndexType rebar = 0; rebar < nRebarLayers; rebar++ )
    {
@@ -599,7 +599,7 @@ STDMETHODIMP CRCBeam2::Load(IStructuredLoad2* pLoad)
    CollectionIndexType nStrandLayers;
    if ( FAILED(pLoad->get_Property(CComBSTR("Count"),&var) ) )
       return STRLOAD_E_INVALIDFORMAT;
-   nStrandLayers = var.lVal;
+   nStrandLayers = var.iVal;
 
    for ( CollectionIndexType strand = 0; strand < nStrandLayers; strand++ )
    {

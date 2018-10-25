@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Live Loader - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -746,28 +746,31 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(IIDArray* poiIDs, BS
 
       Configure(stage, type, vehicleIndex, vehConfiguration, doApplyImpact);
 
-      CollectionIndexType num_pois;
-      hr = poiIDs->get_Count(&num_pois);
+      CollectionIndexType nPoi;
+      hr = poiIDs->get_Count(&nPoi);
 
       // create results collection
       CComObject<CLiveLoadModelSectionResults>* cresults;
       CComObject<CLiveLoadModelSectionResults>::CreateInstance(&cresults);
       CComPtr<ILiveLoadModelSectionResults> results(cresults);
-      hr = results->Reserve(num_pois);
+      hr = results->Reserve(nPoi);
 
 
       // see if this effect has a sign change at left/right faces
       Float64 flip_factor = m_pInflStrategy->SignFlip();
 
-      for (CollectionIndexType ipoi = 0; ipoi < num_pois; ipoi++)
+      for (CollectionIndexType poiIdx = 0; poiIdx < nPoi; poiIdx++)
       {
          HANDLE_CANCEL_PROGRESS();
 
          PoiIDType poi_id;
-         hr = poiIDs->get_Item(ipoi, &poi_id);
+         hr = poiIDs->get_Item(poiIdx, &poi_id);
+
+         bool bIsAtSupport = IsPoiAtSupport(stage,poi_id);
 
          if ( m_bComputingReaction )
          {
+            bIsAtSupport = true;
             // if we are computing a reaction, the poi_id is the support id
             // determine if we are computing a maximum reaction at an interior support
             VARIANT_BOOL bIsInteriorSupport;
@@ -817,7 +820,6 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(IIDArray* poiIDs, BS
             CComPtr<IInfluenceLine> lft_infl_line, rgt_infl_line;
             hr = m_pInflStrategy->ComputeInfluenceLine(poi_id, stage, effect, &lft_infl_line, &rgt_infl_line);
 
-
             // Left face results come from left influence line
             if ( lft_infl_line )
             {
@@ -831,8 +833,15 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(IIDArray* poiIDs, BS
                   bogus_config = pConfig;
                   bogus_config->put_IsApplicable(VARIANT_FALSE);
                }
+
                ComputeInflResponse(poi_id,type, vehicleIndex, effect, m_RealOptimization, vehConfiguration, doApplyImpact, vbComputePlacements, 
                                    lft_infl_line, ssLeft, &left_result, &bogus_result, left_config, bogus_config);
+
+               if ( m_bComputingReaction && rgt_infl_line == NULL )
+               {
+                  right_result = bogus_result;
+                  right_config = bogus_config;
+               }
             }
 
 
@@ -892,32 +901,39 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(IIDArray* poiIDs, BS
          }
 
          // add our result to the collection
-         if ( m_RealOptimization == optMaximize )
+         if ( bIsAtSupport )
          {
-            if ( left_result > right_result )
-            {
-               // left face results are going on the right face side. The right and left DF
-               // could be different... if they are, scale the result
-               Float64 df_right = IsZero(left_dfactor) ? 1 : right_dfactor/left_dfactor;
-               hr = results->Add(left_result, left_config, flip_factor*left_result*df_right, left_config);
-            }
-            else
-            {
-               Float64 df_left = IsZero(right_dfactor) ? 1 : left_dfactor/right_dfactor;
-               hr = results->Add(right_result*df_left, right_config, flip_factor*right_result, right_config);
-            }
+            hr = results->Add(left_result, left_config, right_result, right_config);
          }
          else
          {
-            if ( left_result < right_result )
+            if ( m_RealOptimization == optMaximize )
             {
-               Float64 df_right = IsZero(left_dfactor) ? 1 : right_dfactor/left_dfactor;
-               hr = results->Add(left_result, left_config, flip_factor*left_result*df_right, left_config);
+               if ( left_result > right_result )
+               {
+                  // left face results are going on the right face side. The right and left DF
+                  // could be different... if they are, scale the result
+                  Float64 df_right = IsZero(left_dfactor) ? 1 : right_dfactor/left_dfactor;
+                  hr = results->Add(left_result, left_config, flip_factor*left_result*df_right, left_config);
+               }
+               else
+               {
+                  Float64 df_left = IsZero(right_dfactor) ? 1 : left_dfactor/right_dfactor;
+                  hr = results->Add(right_result*df_left, right_config, flip_factor*right_result, right_config);
+               }
             }
             else
             {
-               Float64 df_left = IsZero(right_dfactor) ? 1 : left_dfactor/right_dfactor;
-               hr = results->Add(right_result*df_left, right_config, flip_factor*right_result, right_config);
+               if ( left_result < right_result )
+               {
+                  Float64 df_right = IsZero(left_dfactor) ? 1 : right_dfactor/left_dfactor;
+                  hr = results->Add(left_result, left_config, flip_factor*left_result*df_right, left_config);
+               }
+               else
+               {
+                  Float64 df_left = IsZero(right_dfactor) ? 1 : left_dfactor/right_dfactor;
+                  hr = results->Add(right_result*df_left, right_config, flip_factor*right_result, right_config);
+               }
             }
          }
       }
@@ -1018,8 +1034,8 @@ void CBruteForceVehicularResponse2::ComputeInflResponse(PoiIDType poiID,LiveLoad
    else if (m_CachedVehConfiguration == vlcTruckPlusLane)
    {
       // sum truck plus lane (LRFD)
-      *leftResult  =  left_truck_result  + (side == ssRight ? -1 : 1)*lane_result;
-      *rightResult =  right_truck_result + (side == ssRight ? -1 : 1)*lane_result;
+      *leftResult  =  left_truck_result  + ::BinarySign(left_truck_result)*fabs(lane_result);
+      *rightResult =  right_truck_result + ::BinarySign(right_truck_result)*fabs(lane_result);
    }
    else if (m_CachedVehConfiguration == vlcTruckLaneEnvelope)
    {
@@ -2001,4 +2017,91 @@ void CBruteForceVehicularResponse2::SaveInflResponse(PoiIDType poiID,LiveLoadMod
 
    std::pair<InflResponseIterator,bool> result( m_pResultsCache->insert(record) );
    ATLASSERT( result.second == true );
+}
+
+bool CBruteForceVehicularResponse2::IsPoiAtSupport(BSTR stage,PoiIDType poiID)
+{
+   CComPtr<IInfluenceLineResponse> response;
+   m_pInflStrategy->GetInfluenceLineResponse(&response);
+   CComQIPtr<IVehicularAnalysisContext> context(response);
+   CComQIPtr<IAnalysisPOIs> analysisPOIs(context);
+
+   MemberType lbamMbrType;
+   MemberIDType mbrID;
+   Float64 mbrLocation;
+   analysisPOIs->GetPoiInfo(stage, poiID, &lbamMbrType, &mbrID, &mbrLocation);
+   IndexType targetSSMbrIdx = (IndexType)mbrID; // memberID is the member index
+
+   CComPtr<ILBAMModel> model;
+   context->get_Model(&model);
+
+   CComPtr<IStages> stages;
+   model->get_Stages(&stages);
+
+   StageIndexType stageIdx;
+   stages->FindIndex(stage,&stageIdx);
+   ATLASSERT(stageIdx != INVALID_INDEX);
+
+   // Find the global position of the POI (measured from the left support)
+   Float64 Xg, Yg;
+   model->ComputeLocation(mbrID, lbamMbrType, mbrLocation, &Xg, &Yg);
+
+   ATLASSERT(IsZero(Yg));
+
+   Float64 Xs = 0; // support locations
+   if ( IsEqual(Xs,Xg) )
+      return true; // poi is at first support
+
+   CComPtr<ISpans> spans;
+   model->get_Spans(&spans);
+   SpanIndexType nSpans;
+   spans->get_Count(&nSpans);
+   for ( SpanIndexType spanIdx = 0; spanIdx < nSpans && Xs < Xg; spanIdx++ )
+   {
+      CComPtr<ISpan> span;
+      spans->get_Item(spanIdx,&span);
+
+      // Check it POI is at a temporary support
+      CComPtr<ITemporarySupports> tempSupports;
+      span->get_TemporarySupports(&tempSupports);
+      IndexType nTS;
+      tempSupports->get_Count(&nTS);
+      for ( IndexType tsIdx = 0; tsIdx < nTS; tsIdx++ )
+      {
+         CComPtr<ITemporarySupport> tempSupport;
+         tempSupports->get_Item(tsIdx,&tempSupport);
+
+         // check to see if the temporary support has been removed
+         CComBSTR bstrRemovalStage;
+         tempSupport->get_StageRemoved(&bstrRemovalStage);
+
+         StageIndexType removalStageIdx;
+         stages->FindIndex(bstrRemovalStage,&removalStageIdx);
+
+         if ( removalStageIdx <= stageIdx )
+            continue; // it has been removed... continue with next temporary support
+
+         // temporary support is active in this stage so see if it is at the location of this POI
+         Float64 location;
+         tempSupport->get_Location(&location);
+
+         if ( IsEqual(Xg,Xs+location) )
+            return true; // yep... poi is at the temporary support
+      }
+
+      // Now check for support at end of span
+      Float64 length;
+      span->get_Length(&length);
+
+      Xs += length;
+//      if ( spanIdx == nSpans-1 )
+      {
+         if ( IsEqual(Xs,Xg) )
+         {
+            return true; // poi is at the end of the span
+         }
+      }
+   }
+
+   return false;
 }

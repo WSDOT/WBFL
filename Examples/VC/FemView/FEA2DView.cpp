@@ -135,6 +135,11 @@ void CFEA2DView::OnInitialUpdate()
    SetMappingMode(DManip::Isotropic);
 
    ScaleToFit();
+
+   USES_CONVERSION;
+   CComBSTR name;
+   model->get_Name(&name);
+   SetWindowText(OLE2T(name));
 }
 
 void CFEA2DView::BuildJointDisplayObjects()
@@ -320,7 +325,7 @@ void CFEA2DView::BuildLoadDisplayObjects()
                          RGB(255,127,127),
                          RGB(0,255,255),
                          RGB(255,0,255) };
-   long colorCount = sizeof(colors)/sizeof(COLORREF);
+   CollectionIndexType colorCount = sizeof(colors)/sizeof(COLORREF);
 
    CFEA2DDoc* pDoc = GetDocument();
    CComPtr<IFem2dModel> model = pDoc->m_Model;
@@ -348,7 +353,7 @@ void CFEA2DView::BuildLoadDisplayObjects()
    for ( CollectionIndexType i = 0; i < cLoadings; i++ )
    {
       // Determine the color
-      long clrIdx = i;
+      CollectionIndexType clrIdx = i;
       while ( colorCount <= clrIdx )
       {
          clrIdx -= colorCount;
@@ -641,11 +646,13 @@ void CFEA2DView::OnLoadsCreateLoading()
    model->get_Loadings(&loadings);
 
    CCreateLoadingDlg dlg;
-   loadings->get_Count((IndexType*)&dlg.m_ID);
+   CollectionIndexType count;
+   loadings->get_Count(&count);
+   dlg.m_ID = count;
 
    if ( dlg.DoModal() == IDOK )
    {
-      IDType id = dlg.m_ID;
+      LoadCaseIDType id = dlg.m_ID;
 
       try
       {

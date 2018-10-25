@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -52,6 +52,7 @@
 #include "TestGeomUtil.h"
 
 #include "TestShapeProperties.h"
+#include "TestGenericShape.h"
 #include "TestPolyShape.h"
 #include "TestFasterPolyShape.h"
 #include "TestCircle.h"
@@ -129,6 +130,8 @@ int main(int argc, LPTSTR  argv[])
 
    CTestBoxBeam::Test();
    CTestDeckedSlabBeam::Test();
+
+   CTestGenericShape::Test();
 
    ::CoUninitialize();
 

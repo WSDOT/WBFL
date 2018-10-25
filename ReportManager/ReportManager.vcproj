@@ -2174,10 +2174,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\TimeChapterBuilder.cpp"
-				>
-			</File>
-			<File
 				RelativePath="TitlePageBuilder.cpp"
 				>
 				<FileConfiguration
@@ -2404,10 +2400,6 @@
 			</File>
 			<File
 				RelativePath="StdAfx.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Include\ReportManager\TimeChapterBuilder.h"
 				>
 			</File>
 			<File

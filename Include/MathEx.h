@@ -66,7 +66,7 @@ inline bool IsLT(const T& value, const T& threshold, T tolerance = TOLERANCE)
 
 // Returns true if value is greater than the threshold value
 template <class T>
-inline bool IsGT(const T& threshold,const T& value, T tolerance = TOLERANCE)
+inline bool IsGT(const T& value, const T& threshold, T tolerance = TOLERANCE)
 {   return (threshold < value && !IsEqual(value,threshold,tolerance)); }
 
 // Returns true if value is greater than or equal to the threshold value
@@ -85,29 +85,14 @@ inline bool IsNearby(Float64 val1, Float64 val2, Float64 tolerance = TOLERANCE)
 template <class T>
 inline T Round(const T& a)
 {
-   Float64 i;
-   if (0.5 <= modf(a,&i))
-      return 0 <= a ? ceil(a) : floor(a);
-   else
-      return a < 0 ? ceil(a) : floor(a);
+   return (T)( a > 0 ? (int)(a+0.5) : -(int)(0.5-a) );
 }
 
 // Round a to the specified accurarcy.
 inline Float64 RoundOff(const Float64& a,Float64 accuracy)
 {
    assert(0.0 < accuracy);
-   Float64 i;
-   if ( 0 <= a )
-   {
-      modf(a/accuracy+0.5,&i);
-      return i*accuracy;
-   }
-   else
-   {
-      modf(0.5-a/accuracy,&i);
-      i *= -accuracy;
-      return IsZero(i) ? 0 : i;
-   }
+   return (Float64)( a > 0 ? ((long)(a/accuracy+0.5))*accuracy : -((long)(0.5-a/accuracy))*accuracy );
 }
 
 // Floor a to the specified accurarcy.
@@ -256,48 +241,6 @@ inline long Min4Index(const T& a,const T& b, const T& c, const T& d)
       return 2;
 
    return 3;
-}
-
-template <class T>
-inline T MaxMagnitude(const T& a,const T& b)
-{
-   // want the value with the greatest magnitude, but we want to retain the sign
-   return (fabs(b) < fabs(a) ? a : b);
-}
-
-template <class T>
-inline T MaxMagnitude(const T& a,const T& b,const T& c)
-{
-   // want the value with the greatest magnitude, but we want to retain the sign
-   return MaxMagnitude(MaxMagnitude(a,b),c);
-}
-
-template <class T>
-inline T MaxMagnitude(const T& a,const T& b,const T& c,const T& d)
-{
-   // want the value with the greatest magnitude, but we want to retain the sign
-   return MaxMagnitude(MaxMagnitude(a,b),MaxMagnitude(c,d));
-}
-
-template <class T>
-inline T MinMagnitude(const T& a,const T& b)
-{
-   // want the value with the smallest magnitude, but we want to retain the sign
-   return (fabs(b) < fabs(a) ? b : a);
-}
-
-template <class T>
-inline T MinMagnitude(const T& a,const T& b,const T& c)
-{
-   // want the value with the smallest magnitude, but we want to retain the sign
-   return MinMagnitude(MinMagnitude(a,b),c);
-}
-
-template <class T>
-inline T MinMagnitude(const T& a,const T& b,const T& c,const T& d)
-{
-   // want the value with the smallest magnitude, but we want to retain the sign
-   return MinMagnitude(MinMagnitude(a,b),MinMagnitude(c,d));
 }
 
 template <class T>

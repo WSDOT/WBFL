@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -429,7 +429,7 @@ STDMETHODIMP CCogoModel::get_StructuredStorage(IStructuredStorage2* *pStg)
 
 ///////////////////////////////////////////////////////
 // IMeasure
-STDMETHODIMP CCogoModel::Angle(CogoElementKey fromID, CogoElementKey vertexID, CogoElementKey toID, IAngle** angle)
+STDMETHODIMP CCogoModel::Angle(CogoObjectID fromID, CogoObjectID vertexID, CogoObjectID toID, IAngle** angle)
 {
    CHECK_RETOBJ(angle);
 
@@ -516,17 +516,14 @@ STDMETHODIMP CCogoModel::Area(VARIANT keys,Float64* area)
 
    for ( long i = lb; i <= ub; i++ )
    {
-      long key;
+      LONG key;
       VARIANT varKey;
       if ( pKeys->fFeatures & FADF_VARIANT )
       {
          // VBScript
          hr = SafeArrayGetElement(pKeys,&i,&varKey);
          ATLASSERT(SUCCEEDED(hr));
-         if ( varKey.vt == VT_I2 )
-            key = varKey.iVal;
-         else
-            key = varKey.lVal;
+         key = varKey.iVal;
       }
       else
       {
@@ -552,7 +549,7 @@ STDMETHODIMP CCogoModel::Area(VARIANT keys,Float64* area)
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::Distance(CogoElementKey fromID, CogoElementKey toID, Float64* dist)
+STDMETHODIMP CCogoModel::Distance(CogoObjectID fromID, CogoObjectID toID, Float64* dist)
 {
    CHECK_RETVAL(dist);
 
@@ -572,7 +569,7 @@ STDMETHODIMP CCogoModel::Distance(CogoElementKey fromID, CogoElementKey toID, Fl
    return measure->Distance(from,to,dist);
 }
 
-STDMETHODIMP CCogoModel::Direction(CogoElementKey fromID, CogoElementKey toID, IDirection** dir)
+STDMETHODIMP CCogoModel::Direction(CogoObjectID fromID, CogoObjectID toID, IDirection** dir)
 {
    CHECK_RETOBJ(dir);
 
@@ -592,7 +589,7 @@ STDMETHODIMP CCogoModel::Direction(CogoElementKey fromID, CogoElementKey toID, I
    return measure->Direction(from,to,dir);
 }
 
-STDMETHODIMP CCogoModel::Inverse(CogoElementKey fromID,CogoElementKey toID, Float64* dist, IDirection** dir)
+STDMETHODIMP CCogoModel::Inverse(CogoObjectID fromID,CogoObjectID toID, Float64* dist, IDirection** dir)
 {
    CComPtr<IPoint2d> from;
    CComPtr<IPoint2d> to;
@@ -613,7 +610,7 @@ STDMETHODIMP CCogoModel::Inverse(CogoElementKey fromID,CogoElementKey toID, Floa
 
 ///////////////////////////////////////////////////////
 // ILocate
-STDMETHODIMP CCogoModel::ByDistAngle(CogoElementKey newID,CogoElementKey fromID,CogoElementKey toID,Float64 dist,VARIANT varAngle,Float64 offset)
+STDMETHODIMP CCogoModel::ByDistAngle(CogoObjectID newID,CogoObjectID fromID,CogoObjectID toID,Float64 dist,VARIANT varAngle,Float64 offset)
 {
    CComPtr<IPoint2d> from;
    CComPtr<IPoint2d> to;
@@ -642,7 +639,7 @@ STDMETHODIMP CCogoModel::ByDistAngle(CogoElementKey newID,CogoElementKey fromID,
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::ByDistDefAngle(CogoElementKey newID,CogoElementKey fromID,CogoElementKey toID,Float64 dist,VARIANT varDefAngle,Float64 offset)
+STDMETHODIMP CCogoModel::ByDistDefAngle(CogoObjectID newID,CogoObjectID fromID,CogoObjectID toID,Float64 dist,VARIANT varDefAngle,Float64 offset)
 {
    CComPtr<IPoint2d> from;
    CComPtr<IPoint2d> to;
@@ -671,7 +668,7 @@ STDMETHODIMP CCogoModel::ByDistDefAngle(CogoElementKey newID,CogoElementKey from
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::ByDistDir(CogoElementKey newID,CogoElementKey fromID,Float64 dist,VARIANT varDir,Float64 offset)
+STDMETHODIMP CCogoModel::ByDistDir(CogoObjectID newID,CogoObjectID fromID,Float64 dist,VARIANT varDir,Float64 offset)
 {
    CComPtr<IPoint2d> from;
    HRESULT hr;
@@ -695,7 +692,7 @@ STDMETHODIMP CCogoModel::ByDistDir(CogoElementKey newID,CogoElementKey fromID,Fl
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::PointOnLine(CogoElementKey newID, CogoElementKey fromID, CogoElementKey toID, Float64 dist, Float64 offset)
+STDMETHODIMP CCogoModel::PointOnLine(CogoObjectID newID, CogoObjectID fromID, CogoObjectID toID, Float64 dist, Float64 offset)
 {
    CComPtr<IPoint2d> from;
    CComPtr<IPoint2d> to;
@@ -724,7 +721,7 @@ STDMETHODIMP CCogoModel::PointOnLine(CogoElementKey newID, CogoElementKey fromID
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::ParallelLineByPoints(CogoElementKey newFromID, CogoElementKey newToID, CogoElementKey fromID, CogoElementKey toID, Float64 offset)
+STDMETHODIMP CCogoModel::ParallelLineByPoints(CogoObjectID newFromID, CogoObjectID newToID, CogoObjectID fromID, CogoObjectID toID, Float64 offset)
 {
    HRESULT hr;
 
@@ -765,7 +762,7 @@ STDMETHODIMP CCogoModel::ParallelLineByPoints(CogoElementKey newFromID, CogoElem
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::ParallelLineSegment(CogoElementKey newLineID, CogoElementKey newFromID, CogoElementKey newToID, CogoElementKey lineID, Float64 offset)
+STDMETHODIMP CCogoModel::ParallelLineSegment(CogoObjectID newLineID, CogoObjectID newFromID, CogoObjectID newToID, CogoObjectID lineID, Float64 offset)
 {
    HRESULT hr;
    CComPtr<ILineSegment2d> line;
@@ -818,7 +815,7 @@ STDMETHODIMP CCogoModel::ParallelLineSegment(CogoElementKey newLineID, CogoEleme
 
 ////////////////////////////////////////////////////////
 // IIntersect
-STDMETHODIMP CCogoModel::Bearings(CogoElementKey newID, CogoElementKey id1, VARIANT varDir1, Float64 offset1, CogoElementKey id2, VARIANT varDir2, Float64 offset2, VARIANT_BOOL* bFound)
+STDMETHODIMP CCogoModel::Bearings(CogoObjectID newID, CogoObjectID id1, VARIANT varDir1, Float64 offset1, CogoObjectID id2, VARIANT varDir2, Float64 offset2, VARIANT_BOOL* bFound)
 {
    CHECK_RETVAL(bFound);
 
@@ -859,7 +856,7 @@ STDMETHODIMP CCogoModel::Bearings(CogoElementKey newID, CogoElementKey id1, VARI
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::BearingCircle(CogoElementKey newID, CogoElementKey id1, VARIANT varDir, Float64 offset, CogoElementKey idc, Float64 radius, CogoElementKey idNearest, VARIANT_BOOL* bFound)
+STDMETHODIMP CCogoModel::BearingCircle(CogoObjectID newID, CogoObjectID id1, VARIANT varDir, Float64 offset, CogoObjectID idc, Float64 radius, CogoObjectID idNearest, VARIANT_BOOL* bFound)
 {
    CHECK_RETVAL(bFound);
 
@@ -904,7 +901,7 @@ STDMETHODIMP CCogoModel::BearingCircle(CogoElementKey newID, CogoElementKey id1,
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::Circles(CogoElementKey newID, CogoElementKey id1, Float64 r1, CogoElementKey id2, Float64 r2, CogoElementKey idNearest, VARIANT_BOOL* bFound)
+STDMETHODIMP CCogoModel::Circles(CogoObjectID newID, CogoObjectID id1, Float64 r1, CogoObjectID id2, Float64 r2, CogoObjectID idNearest, VARIANT_BOOL* bFound)
 {
    CHECK_RETVAL(bFound);
 
@@ -952,7 +949,7 @@ STDMETHODIMP CCogoModel::Circles(CogoElementKey newID, CogoElementKey id1, Float
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::LineByPointsCircle(CogoElementKey newID, CogoElementKey id1, CogoElementKey id2, Float64 offset, CogoElementKey idc, Float64 radius, CogoElementKey idNearest, VARIANT_BOOL* bFound)
+STDMETHODIMP CCogoModel::LineByPointsCircle(CogoObjectID newID, CogoObjectID id1, CogoObjectID id2, Float64 offset, CogoObjectID idc, Float64 radius, CogoObjectID idNearest, VARIANT_BOOL* bFound)
 {
    CHECK_RETVAL(bFound);
 
@@ -1000,7 +997,7 @@ STDMETHODIMP CCogoModel::LineByPointsCircle(CogoElementKey newID, CogoElementKey
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::LinesByPoints(CogoElementKey newID, CogoElementKey id11, CogoElementKey id12, Float64 offset1, CogoElementKey id21, CogoElementKey id22, Float64 offset2, VARIANT_BOOL* bFound)
+STDMETHODIMP CCogoModel::LinesByPoints(CogoObjectID newID, CogoObjectID id11, CogoObjectID id12, Float64 offset1, CogoObjectID id21, CogoObjectID id22, Float64 offset2, VARIANT_BOOL* bFound)
 {
    CHECK_RETVAL(bFound);
 
@@ -1048,7 +1045,7 @@ STDMETHODIMP CCogoModel::LinesByPoints(CogoElementKey newID, CogoElementKey id11
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::Lines(CogoElementKey newID,CogoElementKey id1,Float64 offset1,CogoElementKey id2,Float64 offset2,VARIANT_BOOL* bFound)
+STDMETHODIMP CCogoModel::Lines(CogoObjectID newID,CogoObjectID id1,Float64 offset1,CogoObjectID id2,Float64 offset2,VARIANT_BOOL* bFound)
 {
    CHECK_RETVAL(bFound);
    HRESULT hr;
@@ -1090,7 +1087,7 @@ STDMETHODIMP CCogoModel::Lines(CogoElementKey newID,CogoElementKey id1,Float64 o
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::LineSegmentCircle(CogoElementKey newID,CogoElementKey lineID,Float64 offset,CogoElementKey idc,Float64 radius,CogoElementKey idNearest,VARIANT_BOOL* bFound)
+STDMETHODIMP CCogoModel::LineSegmentCircle(CogoObjectID newID,CogoObjectID lineID,Float64 offset,CogoObjectID idc,Float64 radius,CogoObjectID idNearest,VARIANT_BOOL* bFound)
 {
    CHECK_RETVAL(bFound);
    HRESULT hr;
@@ -1142,7 +1139,7 @@ STDMETHODIMP CCogoModel::LineSegmentCircle(CogoElementKey newID,CogoElementKey l
 
 ////////////////////////////////////////////////////////
 // IProject
-STDMETHODIMP CCogoModel::PointOnLineByPoints(CogoElementKey newID, CogoElementKey fromID, CogoElementKey startID, CogoElementKey endID, Float64 offset)
+STDMETHODIMP CCogoModel::PointOnLineByPoints(CogoObjectID newID, CogoObjectID fromID, CogoObjectID startID, CogoObjectID endID, Float64 offset)
 {
    HRESULT hr;
    CComPtr<IPoint2d> pntFrom;
@@ -1173,7 +1170,7 @@ STDMETHODIMP CCogoModel::PointOnLineByPoints(CogoElementKey newID, CogoElementKe
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::PointOnLineSegment(CogoElementKey newID, CogoElementKey fromID, CogoElementKey lineID, Float64 offset)
+STDMETHODIMP CCogoModel::PointOnLineSegment(CogoObjectID newID, CogoObjectID fromID, CogoObjectID lineID, Float64 offset)
 {
    HRESULT hr;
 
@@ -1200,7 +1197,7 @@ STDMETHODIMP CCogoModel::PointOnLineSegment(CogoElementKey newID, CogoElementKey
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::PointOnCurve(CogoElementKey newID, CogoElementKey fromID, CogoElementKey curveID)
+STDMETHODIMP CCogoModel::PointOnCurve(CogoObjectID newID, CogoObjectID fromID, CogoObjectID curveID)
 {
    HRESULT hr;
 
@@ -1234,9 +1231,9 @@ STDMETHODIMP CCogoModel::PointOnCurve(CogoElementKey newID, CogoElementKey fromI
 
 ////////////////////////////////////////////////////////
 // IDivide
-STDMETHODIMP CCogoModel::Arc(CogoElementKey firstID, CogoElementKey idInc, CogoElementKey fromID, CogoElementKey vertexID, CogoElementKey toID, long nParts)
+STDMETHODIMP CCogoModel::Arc(CogoObjectID firstID, CogoObjectID idInc, CogoObjectID fromID, CogoObjectID vertexID, CogoObjectID toID, CollectionIndexType nParts)
 {
-   if ( nParts <= 1 )
+   if ( nParts <= 1 || nParts == INVALID_INDEX )
       return E_INVALIDARG;
 
    if ( idInc == 0 )
@@ -1250,9 +1247,9 @@ STDMETHODIMP CCogoModel::Arc(CogoElementKey firstID, CogoElementKey idInc, CogoE
    // Check to see if the ID's of the new points are already in use
    HRESULT hr;
    CComPtr<IPoint2d> pnt;
-   for ( long i = 0; i < nParts-1; i++ )
+   for ( CollectionIndexType i = 0; i < nParts-1; i++ )
    {
-      CogoElementKey key = firstID + i*idInc;
+      CogoObjectID key = CogoObjectID(firstID + i*idInc);
       pnt.Release();
       hr = m_Points->get_Item(key,&pnt);
       if ( SUCCEEDED(hr) )
@@ -1283,9 +1280,9 @@ STDMETHODIMP CCogoModel::Arc(CogoElementKey firstID, CogoElementKey idInc, CogoE
       return hr;
 
    // Store the points in the points collection
-   for (long i = 0; i < nParts-1; i++)
+   for (CollectionIndexType i = 0; i < nParts-1; i++)
    {
-      CogoElementKey key = firstID + i*idInc;
+      CogoObjectID key = firstID + i*idInc;
       CComPtr<IPoint2d> p;
       points->get_Item(i+1,&p); // get the point from the collection
 
@@ -1302,9 +1299,9 @@ STDMETHODIMP CCogoModel::Arc(CogoElementKey firstID, CogoElementKey idInc, CogoE
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::BetweenPoints(CogoElementKey firstID, CogoElementKey idInc, CogoElementKey fromID, CogoElementKey toID, long nParts)
+STDMETHODIMP CCogoModel::BetweenPoints(CogoObjectID firstID, CogoObjectID idInc, CogoObjectID fromID, CogoObjectID toID, CollectionIndexType nParts)
 {
-   if ( nParts <= 1 )
+   if ( nParts <= 1 || nParts == INVALID_INDEX )
       return E_INVALIDARG;
 
    if ( idInc == 0 )
@@ -1313,9 +1310,9 @@ STDMETHODIMP CCogoModel::BetweenPoints(CogoElementKey firstID, CogoElementKey id
    // Check to see if the ID's of the new points are already in use
    HRESULT hr;
    CComPtr<IPoint2d> pnt;
-   for ( long i = 0; i < nParts-1; i++ )
+   for ( CollectionIndexType i = 0; i < nParts-1; i++ )
    {
-      CogoElementKey key = firstID + i*idInc;
+      CogoObjectID key = CogoObjectID(firstID + i*idInc);
       pnt.Release();
       hr = m_Points->get_Item(key,&pnt);
       if ( SUCCEEDED(hr) )
@@ -1341,9 +1338,9 @@ STDMETHODIMP CCogoModel::BetweenPoints(CogoElementKey firstID, CogoElementKey id
       return hr;
 
    // Store the points in the points collection
-   for (long i = 0; i < nParts-1; i++)
+   for (CollectionIndexType i = 0; i < nParts-1; i++)
    {
-      CogoElementKey key = firstID + i*idInc;
+      CogoObjectID key = firstID + i*idInc;
       CComPtr<IPoint2d> p;
       points->get_Item(i+1,&p); // get the point from the collection
 
@@ -1360,9 +1357,9 @@ STDMETHODIMP CCogoModel::BetweenPoints(CogoElementKey firstID, CogoElementKey id
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::LineSegment(CogoElementKey firstID, CogoElementKey idInc, CogoElementKey lineID, long nParts)
+STDMETHODIMP CCogoModel::LineSegment(CogoObjectID firstID, CogoObjectID idInc, CogoObjectID lineID, CollectionIndexType nParts)
 {
-   if ( nParts <= 1 )
+   if ( nParts <= 1 || nParts == INVALID_INDEX )
       return E_INVALIDARG;
 
    if ( idInc == 0 )
@@ -1371,9 +1368,9 @@ STDMETHODIMP CCogoModel::LineSegment(CogoElementKey firstID, CogoElementKey idIn
    // Check to see if the ID's of the new points are already in use
    HRESULT hr;
    CComPtr<IPoint2d> pnt;
-   for ( long i = 0; i < nParts-1; i++ )
+   for ( CollectionIndexType i = 0; i < nParts-1; i++ )
    {
-      CogoElementKey key = firstID + i*idInc;
+      CogoObjectID key = CogoObjectID(firstID + i*idInc);
       pnt.Release();
       hr = m_Points->get_Item(key,&pnt);
       if ( SUCCEEDED(hr) )
@@ -1394,9 +1391,9 @@ STDMETHODIMP CCogoModel::LineSegment(CogoElementKey firstID, CogoElementKey idIn
       return hr;
 
    // Store the points in the points collection
-   for (long i = 0; i < nParts-1; i++)
+   for (CollectionIndexType i = 0; i < nParts-1; i++)
    {
-      CogoElementKey key = firstID + i*idInc;
+      CogoObjectID key = firstID + i*idInc;
       CComPtr<IPoint2d> p;
       points->get_Item(i+1,&p); // get the point from the collection
 
@@ -1413,9 +1410,9 @@ STDMETHODIMP CCogoModel::LineSegment(CogoElementKey firstID, CogoElementKey idIn
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::HorzCurve(CogoElementKey firstID, CogoElementKey idInc, CogoElementKey curveID, long nParts)
+STDMETHODIMP CCogoModel::HorzCurve(CogoObjectID firstID, CogoObjectID idInc, CogoObjectID curveID, CollectionIndexType nParts)
 {
-   if ( nParts <= 1 )
+   if ( nParts <= 1 || nParts == INVALID_INDEX)
       return E_INVALIDARG;
 
    if ( idInc == 0 )
@@ -1424,9 +1421,9 @@ STDMETHODIMP CCogoModel::HorzCurve(CogoElementKey firstID, CogoElementKey idInc,
    // Check to see if the ID's of the new points are already in use
    HRESULT hr;
    CComPtr<IPoint2d> pnt;
-   for ( long i = 0; i < nParts-1; i++ )
+   for ( CollectionIndexType i = 0; i < nParts-1; i++ )
    {
-      CogoElementKey key = firstID + i*idInc;
+      CogoObjectID key = firstID + i*idInc;
       pnt.Release();
       hr = m_Points->get_Item(key,&pnt);
       if ( SUCCEEDED(hr) )
@@ -1450,10 +1447,10 @@ STDMETHODIMP CCogoModel::HorzCurve(CogoElementKey firstID, CogoElementKey idInc,
    CComPtr<IEnumPoint2d> enum_points;
    points->get__Enum(&enum_points);
    CComPtr<IPoint2d> p;
-   long i = 0;
+   CogoObjectID i = 0;
    while ( enum_points->Next(1,&p,NULL) != S_FALSE )
    {
-      CogoElementKey key = firstID + i*idInc;
+      CogoObjectID key = firstID + i*idInc;
 
       CComQIPtr<IPoint2d> pEx(p);
 
@@ -1472,9 +1469,9 @@ STDMETHODIMP CCogoModel::HorzCurve(CogoElementKey firstID, CogoElementKey idInc,
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::Path(CogoElementKey firstID,CogoElementKey idInc,CogoElementKey pathID,long nParts,Float64 start,Float64 end)
+STDMETHODIMP CCogoModel::Path(CogoObjectID firstID,CogoObjectID idInc,CogoObjectID pathID,CollectionIndexType nParts,Float64 start,Float64 end)
 {
-   if ( nParts <= 1 )
+   if ( nParts <= 1 || nParts == INVALID_INDEX)
       return E_INVALIDARG;
 
    if ( idInc == 0 )
@@ -1483,9 +1480,9 @@ STDMETHODIMP CCogoModel::Path(CogoElementKey firstID,CogoElementKey idInc,CogoEl
    // Check to see if the ID's of the new points are already in use
    HRESULT hr;
    CComPtr<IPoint2d> pnt;
-   for ( long i = 0; i < nParts-1; i++ )
+   for ( CollectionIndexType i = 0; i < nParts-1; i++ )
    {
-      CogoElementKey key = firstID + i*idInc;
+      CogoObjectID key = firstID + i*idInc;
       pnt.Release();
       hr = m_Points->get_Item(key,&pnt);
       if ( SUCCEEDED(hr) )
@@ -1509,10 +1506,10 @@ STDMETHODIMP CCogoModel::Path(CogoElementKey firstID,CogoElementKey idInc,CogoEl
    CComPtr<IEnumPoint2d> enum_points;
    points->get__Enum(&enum_points);
    CComPtr<IPoint2d> p;
-   long i = 0;
+   CogoObjectID i = 0;
    while ( enum_points->Next(1,&p,NULL) != S_FALSE )
    {
-      CogoElementKey key = firstID + i*idInc;
+      CogoObjectID key = firstID + i*idInc;
 
       CComQIPtr<IPoint2d> pEx(p);
 
@@ -1533,7 +1530,7 @@ STDMETHODIMP CCogoModel::Path(CogoElementKey firstID,CogoElementKey idInc,CogoEl
 
 ////////////////////////////////////////////////////////
 // ITangent
-STDMETHODIMP CCogoModel::Cross(CogoElementKey newID1, CogoElementKey idCenter1, Float64 radius1, CogoElementKey newID2, CogoElementKey idCenter2, Float64 radius2, TangentSignType sign)
+STDMETHODIMP CCogoModel::Cross(CogoObjectID newID1, CogoObjectID idCenter1, Float64 radius1, CogoObjectID newID2, CogoObjectID idCenter2, Float64 radius2, TangentSignType sign)
 {
    // Check the radii
    if ( radius1 <= 0.0 )
@@ -1576,7 +1573,7 @@ STDMETHODIMP CCogoModel::Cross(CogoElementKey newID1, CogoElementKey idCenter1, 
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::External(CogoElementKey newID1, CogoElementKey idCenter1, Float64 radius1, CogoElementKey newID2, CogoElementKey idCenter2, Float64 radius2, TangentSignType sign)
+STDMETHODIMP CCogoModel::External(CogoObjectID newID1, CogoObjectID idCenter1, Float64 radius1, CogoObjectID newID2, CogoObjectID idCenter2, Float64 radius2, TangentSignType sign)
 {
    // Check the radii
    if ( radius1 <= 0.0 )
@@ -1597,9 +1594,9 @@ STDMETHODIMP CCogoModel::External(CogoElementKey newID1, CogoElementKey idCenter
    if ( SUCCEEDED(hr) )
       return Error(IDS_E_POINTALREADYDEFINED,IID_ITangent,COGO_E_POINTALREADYDEFINED);
 
-   CogoElementKey idA, idB; // ID's of center points of circle A and B. Circle A is the one with the larger radius
+   CogoObjectID idA, idB; // ID's of center points of circle A and B. Circle A is the one with the larger radius
    Float64 Ar, Br; // Radius of circle A and B
-   CogoElementKey idTanA, idTanB; // ID's of tangent points to cirle A and B
+   CogoObjectID idTanA, idTanB; // ID's of tangent points to cirle A and B
    if ( radius2 <= radius1 )
    {
       idA = idCenter1;
@@ -1643,7 +1640,7 @@ STDMETHODIMP CCogoModel::External(CogoElementKey newID1, CogoElementKey idCenter
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::Point(CogoElementKey newID, CogoElementKey idCenter, Float64 radius,CogoElementKey pointID,TangentSignType sign)
+STDMETHODIMP CCogoModel::Point(CogoObjectID newID, CogoObjectID idCenter, Float64 radius,CogoObjectID pointID,TangentSignType sign)
 {
    // Check the radius
    if ( radius <= 0.0 )
@@ -1760,19 +1757,19 @@ STDMETHODIMP CCogoModel::Load(IStructuredLoad2* pLoad)
 
 ////////////////////////////////////////////////////////
 // IPointCollectionEvents
-STDMETHODIMP CCogoModel::OnPointChanged(CogoElementKey key,IPoint2d* point)
+STDMETHODIMP CCogoModel::OnPointChanged(CogoObjectID key,IPoint2d* point)
 {
    Fire_OnPointChanged(this,key,point);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnPointAdded(CogoElementKey key,IPoint2d* point)
+STDMETHODIMP CCogoModel::OnPointAdded(CogoObjectID key,IPoint2d* point)
 {
    Fire_OnPointAdded(this,key,point);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnPointRemoved(CogoElementKey key)
+STDMETHODIMP CCogoModel::OnPointRemoved(CogoObjectID key)
 {
    Fire_OnPointRemoved(this,key);
    return S_OK;
@@ -1786,19 +1783,19 @@ STDMETHODIMP CCogoModel::OnPointsCleared()
 
 ////////////////////////////////////////////////////////
 // ILineSegmentCollectionEvents
-STDMETHODIMP CCogoModel::OnLineSegmentChanged(CogoElementKey key, ILineSegment2d* lineSeg)
+STDMETHODIMP CCogoModel::OnLineSegmentChanged(CogoObjectID key, ILineSegment2d* lineSeg)
 {
    Fire_OnLineSegmentChanged(this,key,lineSeg);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnLineSegmentAdded(CogoElementKey key, ILineSegment2d* lineSeg)
+STDMETHODIMP CCogoModel::OnLineSegmentAdded(CogoObjectID key, ILineSegment2d* lineSeg)
 {
    Fire_OnLineSegmentAdded(this,key,lineSeg);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnLineSegmentRemoved(CogoElementKey key)
+STDMETHODIMP CCogoModel::OnLineSegmentRemoved(CogoObjectID key)
 {
    Fire_OnLineSegmentRemoved(this,key);
    return S_OK;
@@ -1812,19 +1809,19 @@ STDMETHODIMP CCogoModel::OnLineSegmentsCleared()
 
 ////////////////////////////////////////////////////////
 // IProfilePointCollectionEvents
-STDMETHODIMP CCogoModel::OnProfilePointChanged(CogoElementKey key,IProfilePoint* pp)
+STDMETHODIMP CCogoModel::OnProfilePointChanged(CogoObjectID key,IProfilePoint* pp)
 {
    Fire_OnProfilePointChanged(this,key,pp);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnProfilePointAdded(CogoElementKey key,IProfilePoint* pp)
+STDMETHODIMP CCogoModel::OnProfilePointAdded(CogoObjectID key,IProfilePoint* pp)
 {
    Fire_OnProfilePointAdded(this,key,pp);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnProfilePointRemoved(CogoElementKey key)
+STDMETHODIMP CCogoModel::OnProfilePointRemoved(CogoObjectID key)
 {
    Fire_OnProfilePointRemoved(this,key);
    return S_OK;
@@ -1838,19 +1835,19 @@ STDMETHODIMP CCogoModel::OnProfilePointsCleared()
 
 ////////////////////////////////////////////////////////
 // IVertCurveCollectionEvents
-STDMETHODIMP CCogoModel::OnVertCurveChanged(CogoElementKey key,IVertCurve* vc)
+STDMETHODIMP CCogoModel::OnVertCurveChanged(CogoObjectID key,IVertCurve* vc)
 {
    Fire_OnVertCurveChanged(this,key,vc);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnVertCurveAdded(CogoElementKey key,IVertCurve* vc)
+STDMETHODIMP CCogoModel::OnVertCurveAdded(CogoObjectID key,IVertCurve* vc)
 {
    Fire_OnVertCurveAdded(this,key,vc);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnVertCurveRemoved(CogoElementKey key)
+STDMETHODIMP CCogoModel::OnVertCurveRemoved(CogoObjectID key)
 {
    Fire_OnVertCurveRemoved(this,key);
    return S_OK;
@@ -1864,19 +1861,19 @@ STDMETHODIMP CCogoModel::OnVertCurvesCleared()
 
 ////////////////////////////////////////////////////////
 // IHorzCurveCollectionEvents
-STDMETHODIMP CCogoModel::OnHorzCurveChanged(CogoElementKey key,IHorzCurve* hc)
+STDMETHODIMP CCogoModel::OnHorzCurveChanged(CogoObjectID key,IHorzCurve* hc)
 {
    Fire_OnHorzCurveChanged(this,key,hc);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnHorzCurveAdded(CogoElementKey key,IHorzCurve* hc)
+STDMETHODIMP CCogoModel::OnHorzCurveAdded(CogoObjectID key,IHorzCurve* hc)
 {
    Fire_OnHorzCurveAdded(this,key,hc);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnHorzCurveRemoved(CogoElementKey key)
+STDMETHODIMP CCogoModel::OnHorzCurveRemoved(CogoObjectID key)
 {
    Fire_OnHorzCurveRemoved(this,key);
    return S_OK;
@@ -1897,7 +1894,7 @@ STDMETHODIMP CCogoModel::OnProfileChanged(IPathCollection* coll,IProfile* profil
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnPathChanged(IPathCollection* coll,CogoElementKey key,IPath* path)
+STDMETHODIMP CCogoModel::OnPathChanged(IPathCollection* coll,CogoObjectID key,IPath* path)
 {
    CComQIPtr<IAlignment> alignment(path);
    if ( m_Alignments.IsEqualObject(coll) )
@@ -1908,7 +1905,7 @@ STDMETHODIMP CCogoModel::OnPathChanged(IPathCollection* coll,CogoElementKey key,
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnPathAdded(IPathCollection* coll,CogoElementKey key,IPath* path)
+STDMETHODIMP CCogoModel::OnPathAdded(IPathCollection* coll,CogoObjectID key,IPath* path)
 {
    CComQIPtr<IAlignment> alignment(path);
    if ( m_Alignments.IsEqualObject(coll) )
@@ -1919,7 +1916,7 @@ STDMETHODIMP CCogoModel::OnPathAdded(IPathCollection* coll,CogoElementKey key,IP
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnPathRemoved(IPathCollection* coll,CogoElementKey key)
+STDMETHODIMP CCogoModel::OnPathRemoved(IPathCollection* coll,CogoObjectID key)
 {
    if ( m_Alignments.IsEqualObject(coll) )
       Fire_OnAlignmentRemoved(this,key);

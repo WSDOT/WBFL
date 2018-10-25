@@ -1,0 +1,52 @@
+///////////////////////////////////////////////////////////////////////
+// GraphManagerAgent - Provides Graph manager as an Agent
+// Copyright © 1999-2013  Washington State Department of Transportation
+//                        Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// GraphManagerAgent.idl : IDL source for GraphManagerAgent.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (GraphManagerAgent.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "WBFLCore.idl";
+
+[
+	uuid(C425F8F7-C246-43bb-AF54-52AD12059815),
+	version(1.0),
+	helpstring("WBFLGraphManagerAgent Library")
+]
+library WBFLGraphManagerAgent
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(1611AC48-FDC6-4f3d-AE54-DB9F7615821D),
+		helpstring("GraphManagerAgent Class")
+	]
+	coclass GraphManagerAgent
+	{
+		[default] interface IAgentEx;
+	};
+};

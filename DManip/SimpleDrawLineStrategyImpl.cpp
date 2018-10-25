@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -54,7 +54,9 @@ HRESULT CSimpleDrawLineStrategyImpl::FinalConstruct()
    m_crColor = RGB(0,0,0);
 
    m_BeginType = leNone;
+   m_BeginSize = 0;
    m_EndType   = leNone;
+   m_EndSize   = 0;
    m_Style     = lsSolid;
 
    return S_OK;
@@ -120,7 +122,7 @@ STDMETHODIMP_(void) CSimpleDrawLineStrategyImpl::Draw(iLineDisplayObject* pDO,CD
    if ( m_BeginType == leCircle || m_BeginType == leDot )
    {
       CRect rect(start,start);
-      rect.InflateRect(3,3);
+      rect.InflateRect(m_BeginSize,m_BeginSize);
       pDC->Ellipse(rect);
    }
 
@@ -128,7 +130,7 @@ STDMETHODIMP_(void) CSimpleDrawLineStrategyImpl::Draw(iLineDisplayObject* pDO,CD
    if ( m_EndType == leCircle || m_EndType == leDot )
    {
       CRect rect(end,end);
-      rect.InflateRect(3,3);
+      rect.InflateRect(m_EndSize,m_EndSize);
       pDC->Ellipse(rect);
    }
 
@@ -195,6 +197,16 @@ STDMETHODIMP_(LineEndType) CSimpleDrawLineStrategyImpl::GetBeginType()
    return m_BeginType;
 }
 
+STDMETHODIMP_(int) CSimpleDrawLineStrategyImpl::GetBeginSize()
+{
+   return m_BeginSize;
+}
+
+STDMETHODIMP_(void) CSimpleDrawLineStrategyImpl::SetBeginSize(int size)
+{
+   m_BeginSize = size;
+}
+
 STDMETHODIMP_(void) CSimpleDrawLineStrategyImpl::SetEndType(LineEndType type)
 {
    m_EndType = type;
@@ -203,6 +215,16 @@ STDMETHODIMP_(void) CSimpleDrawLineStrategyImpl::SetEndType(LineEndType type)
 STDMETHODIMP_(LineEndType) CSimpleDrawLineStrategyImpl::GetEndType()
 {
    return m_EndType;
+}
+
+STDMETHODIMP_(int) CSimpleDrawLineStrategyImpl::GetEndSize()
+{
+   return m_EndSize;
+}
+
+STDMETHODIMP_(void) CSimpleDrawLineStrategyImpl::SetEndSize(int size)
+{
+   m_EndSize = size;
 }
 
 STDMETHODIMP_(void) CSimpleDrawLineStrategyImpl::SetLineStyle(LineStyleType style)

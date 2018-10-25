@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -62,9 +62,11 @@ END_COM_MAP()
 
 private:
    CComPtr<ICogoEngine> m_CogoEngine;
-
-   HRESULT GetDeckEdgePath(IGenericBridge* bridge,DirectionType side,IPath** ppPath);
-   HRESULT GetPierLine(IGenericBridge* bridge,PierIndexType pierIdx,ILine2d** ppLine);
+   CComPtr<ILine2d> m_Line1;
+   CComPtr<ILine2d> m_Line2;
+   CComPtr<ILineSegment2d> m_LineSegment1;
+   CComPtr<ILineSegment2d> m_LineSegment2;
+   CComPtr<IGeomUtil2d> m_GeomUtil;
 
 // ISupportsErrorInfo
 public:
@@ -72,17 +74,22 @@ public:
 
 // IBridgeGeometryTool
 public:
-	STDMETHOD(Point)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx, /*[in]*/ Float64 distFromStartOfGirder,/*[out]*/ IPoint2d** point);
-	STDMETHOD(StationAndOffset)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx, /*[in]*/ Float64 distFromStartOfGirder,/*[out]*/ IStation** station, /*[out]*/ Float64* offset);
-	STDMETHOD(GirderPathOffset)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx, /*[in]*/ VARIANT varStation, /*[out,retval]*/ Float64* offset);
-   STDMETHOD(GirderLineBearing)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx, /*[out,retval]*/ IDirection** direction);
-	STDMETHOD(GirderLinePoint)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 distFromStartOfBridge,/*[in]*/ GirderIndexType gdrIdx, /*[out]*/ SpanIndexType* spanIdx, /*[out]*/ Float64* distFromStartOfSpan);
+	STDMETHOD(PointBySSMbr)(IGenericBridge* bridge,GirderIDType ssMbrID, Float64 distFromStartOfSSMbr,IPoint2d** point);
+   STDMETHOD(PointBySegment)(IGenericBridge* bridge,GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 distFromStartOfSegment,IPoint2d** point);
+	STDMETHOD(StationAndOffsetBySSMbr)(IGenericBridge* bridge,GirderIDType ssMbrID, Float64 distFromStartOfSSMbr, IStation** station, Float64* offset);
+   STDMETHOD(StationAndOffsetBySegment)(IGenericBridge* bridge,GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 distFromStartOfSegment, IStation** station, Float64* offset);
+	STDMETHOD(GirderPathOffset)(IGenericBridge* bridge,GirderIDType ssMbrID, SegmentIndexType segIdx, VARIANT varStation, Float64* offset);
+ //  STDMETHOD(GirderLineBearing)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx, /*[out,retval]*/ IDirection** direction);
+	//STDMETHOD(GirderLinePoint)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 distFromStartOfBridge,/*[in]*/ GirderIndexType gdrIdx, /*[out]*/ SpanIndexType* spanIdx, /*[out]*/ Float64* distFromStartOfSpan);
    STDMETHOD(DeckEdgePoint)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ IDirection* direction,/*[in]*/ DirectionType side,/*[out,retval]*/ IPoint2d** point);
-	STDMETHOD(DeckEdgePoints)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ DirectionType side,/*[in]*/ CollectionIndexType nPoints,/*[out,retval]*/ IPoint2dCollection** points);
+   STDMETHOD(DeckEdgePoints)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ DirectionType side,/*[in]*/ CollectionIndexType nPoints,/*[out,retval]*/ IPoint2dCollection** points);
    STDMETHOD(DeckOffset)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ IDirection* direction,/*[in]*/ DirectionType side,/*[out,retval]*/ Float64* pOffset);
    STDMETHOD(CurbOffset)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ IDirection* direction,/*[in]*/ DirectionType side,/*[out,retval]*/ Float64* pOffset);
-	STDMETHOD(DeckOverhang)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ IDirection* direction,/*[in]*/ DirectionType side,/*[out,retval]*/ Float64* pOverhang);
-	STDMETHOD(DeckOverhangFromGirder)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx, /*[in]*/ Float64 distFromStartOfGirder,/*[in]*/ DirectionType side,/*[out]*/ Float64* pOverhang);
+   STDMETHOD(DeckOverhang)(IGenericBridge* bridge,Float64 station,GirderIDType ssMbrID,IDirection* direction,DirectionType side,Float64* pOverhang);
+   STDMETHOD(DeckOverhangBySSMbr)(IGenericBridge* bridge,GirderIDType ssMbrID, Float64 distFromStartOfSSMbr,IDirection* direction,DirectionType side,Float64* pOverhang);
+   STDMETHOD(DeckOverhangBySegment)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,IDirection* direction,DirectionType side,Float64* pOverhang);
+   STDMETHOD(GirderSpacingBySSMbr)(IGenericBridge* bridge,GirderIDType ssMbrID, Float64 distFromStartOfSSMbr,GirderIDType otherSSMbrID,Float64* pSpacing);
+   STDMETHOD(GirderSpacingBySegment)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,GirderIDType otherSSMbrID,Float64* pSpacing);
    STDMETHOD(InteriorCurbOffset)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ IDirection* direction,/*[in]*/ DirectionType side,/*[out,retval]*/ Float64* pOffset);
 };
 

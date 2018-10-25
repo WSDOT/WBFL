@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Sections Test - Test driver for Sections library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -186,7 +186,6 @@ void CTestCompositeBeam::TestICompositeBeam()
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_CompositeBeam ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ICompositeBeam ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ICompositeBeamEx ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISection ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IXYPosition ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
@@ -199,8 +198,6 @@ void CTestCompositeBeam::TestICompositeBeam()
    DWORD dwDesiredOptions = INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA;
    DWORD dwSupportedOptions, dwEnabledOptions;
    pObjSafety->GetInterfaceSafetyOptions(IID_ICompositeBeam,&dwSupportedOptions,&dwEnabledOptions);
-   TRY_TEST( dwSupportedOptions, dwDesiredOptions );
-   pObjSafety->GetInterfaceSafetyOptions(IID_ICompositeBeamEx,&dwSupportedOptions,&dwEnabledOptions);
    TRY_TEST( dwSupportedOptions, dwDesiredOptions );
    pObjSafety->GetInterfaceSafetyOptions(IID_ISection,&dwSupportedOptions,&dwEnabledOptions);
    TRY_TEST( dwSupportedOptions, dwDesiredOptions );

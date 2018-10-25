@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -93,7 +93,7 @@ void CTestNUBeam::TestIShape()
    props->get_Ixy(&ixy);
    cg.Release();
    props->get_Centroid(&cg);
-   TRY_TEST( IsEqual(area,643591.88418736507), true );
+   TRY_TEST( IsEqual(area,643591.88418), true );
    TRY_TEST( IsEqual(ixx,514253978920.25317), true );
    TRY_TEST( IsEqual(iyy,25969895815.002972), true );
    TRY_TEST( IsEqual(ixy,0.0,0.0005), true );

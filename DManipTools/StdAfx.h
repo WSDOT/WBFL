@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManipTools - Direct Manipulation Tools
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -33,6 +33,14 @@
 #endif // _MSC_VER > 1000
 
 #include <Private\WbflPackage.h>
+
+#include <afxdisp.h>
+#include <afxdtctl.h>		// MFC support for Internet Explorer 4 Common Controls
+#include <afxctl.h>
+ 
+#ifndef _AFX_NO_AFXCMN_SUPPORT
+#include <afxcmn.h>			// MFC support for Windows Common Controls
+#endif // _AFX_NO_AFXCMN_SUPPORT
 
 #include <atlbase.h>
 //You may derive a class from CComModule and use it if you want to override

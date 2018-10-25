@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Units - Unit conversion and system unit management service
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -141,7 +141,7 @@ protected:
    void MakeCopy(const unitStationFormat& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const unitStationFormat& rOther);
+   virtual void MakeAssignment(const unitStationFormat& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

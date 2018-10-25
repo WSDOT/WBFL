@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -45,7 +45,7 @@ class _CustomCopy
    public:
       static HRESULT copy(destType** pDest, const typename ContainerType::value_type* pSource)
       {
-         CComPtr<IUnknown> punk(pSource->second);
+         CComPtr<IUnknown> punk(pSource->second.punkVal);
          CComQIPtr<destType> dest(punk);
          if ( dest == 0 )
             return E_FAIL;
@@ -67,7 +67,7 @@ template <class T, class ItemType, class StoredType, class EnumType, const IID* 
 class  CComKeyedCollection : public T
 {
 protected:
-   typedef typename std::map<IDType, CComPtr<ItemType>> ContainerType;
+   typedef typename std::map<IDType, CComVariant> ContainerType;
    typedef typename ContainerType::iterator     ContainerIteratorType;
    typedef typename ContainerType::value_type   ContainerValueType;
    ContainerType m_coll;
@@ -88,7 +88,8 @@ public:
       ContainerIteratorType itend(m_coll.end());
       for (; it != itend; it++)
       {
-         it->second.Release();
+         CComQIPtr<ItemType> item(it->second.punkVal);
+         item.Release();
       }
 	}
 
@@ -132,7 +133,8 @@ public:
          if (it!=m_coll.end())
          {
             // must release element before erasing it
-            it->second.Release();
+            CComQIPtr<ItemType> item(it->second.punkVal);
+            item.Release();
             m_coll.erase(it);
             *pid=IDorIndex;
             return S_OK;
@@ -159,7 +161,8 @@ public:
                it++;
             }
             *pid = it->first;
-            it->second.Release();
+            CComQIPtr<ItemType> item(it->second.punkVal);
+            item.Release();
             m_coll.erase(it);
          }
       }
@@ -173,7 +176,8 @@ public:
       ContainerType::iterator it(m_coll.find(id));
       if (it!=m_coll.end())
       {
-         *pVal = it->second;
+         CComQIPtr<ItemType> item(it->second.punkVal);
+         *pVal = item;
          (*pVal)->AddRef();
          return S_OK;
       }
@@ -224,7 +228,8 @@ public:
 		}
 		if (iter != iterend)
       {
-         *pVal = iter->second;
+         CComQIPtr<ItemType> item(iter->second.punkVal);
+         *pVal = item;
          (*pVal)->AddRef();
          hr = S_OK;
       }
@@ -239,7 +244,8 @@ public:
 		ContainerType::iterator itend(m_coll.end());
       for (; it != itend; it++)
       {
-         it->second.Release();
+         CComQIPtr<ItemType> item(it->second.punkVal);
+         item.Release();
       }
 
       m_coll.clear();
@@ -253,9 +259,13 @@ public:
       if (it!=m_coll.end())
       {
          // Get the COM pointer
+         CComQIPtr<ItemType> item(it->second.punkVal);
+
          // Cast it to the C++ type
-         StoredType* pItem = dynamic_cast<StoredType*>(it->second.p);
+         StoredType* pItem = dynamic_cast<StoredType*>(item.p);
          return pItem;
+
+         //return it->second;
       }
       else
          return 0;
@@ -288,16 +298,26 @@ public:
 
 		StoredType* operator*() const
       {
-         // Cast to the C++ type
-         StoredType* pItem = dynamic_cast<StoredType*>(m_it->second.p);
+         // Get the COM pointer
+         CComQIPtr<ItemType> item(m_it->second.punkVal);
+
+         // Cast it to the C++ type
+         StoredType* pItem = dynamic_cast<StoredType*>(item.p);
          return pItem;
+
+         //return m_it->second; 
       }
 
 		StoredType* operator->() const
       {
-         // Cast to the C++ type
-         StoredType* pItem = dynamic_cast<StoredType*>(m_it->second.p);
+         // Get the COM pointer
+         CComQIPtr<ItemType> item(m_it->second.punkVal);
+
+         // Cast it to the C++ type
+         StoredType* pItem = dynamic_cast<StoredType*>(item.p);
          return pItem;
+
+         //return m_it->second; 
       }
 
 		bool operator==(const iterator& rit) const

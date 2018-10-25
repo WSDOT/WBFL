@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManager - Manages report definitions
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -93,11 +93,6 @@ void CReportSpecification::SetChapterInfo(const std::vector<CChapterInfo>& chInf
 std::vector<CChapterInfo> CReportSpecification::GetChapterInfo() const
 {
    return m_Chapters;
-}
-
-IndexType CReportSpecification::GetChapterCount() const
-{
-   return m_Chapters.size();
 }
 
 HRESULT CReportSpecification::Validate() const

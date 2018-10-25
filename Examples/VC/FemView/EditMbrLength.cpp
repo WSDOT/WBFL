@@ -59,7 +59,7 @@ STDMETHODIMP_(void) CEditMbrLength::XDisplayObjectEvents::OnChanged(iDisplayObje
    double length = _tstof(strText);
 
    // Compute the new coordinates of the member end joint.
-   long mbrID = pDO->GetID();
+   MemberIDType mbrID = pDO->GetID();
    CComPtr<IFem2dModel> model = pThis->m_pDoc->m_Model;
    CComPtr<IFem2dMemberCollection> members;
    model->get_Members(&members);

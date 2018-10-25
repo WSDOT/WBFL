@@ -28,13 +28,13 @@ void CDumperUtil::Compute()
    CComPtr<IStages> stages;
    hr = model->get_Stages(&stages);
 
-   StageIndexType stg_cnt;
+   CollectionIndexType stg_cnt;
    hr = stages->get_Count(&stg_cnt);
 
    m_SsPoiIds.reserve(stg_cnt);
    m_SsPoiLocs.reserve(stg_cnt);
 
-   for (StageIndexType is=0; is<stg_cnt; is++)
+   for (CollectionIndexType is=0; is<stg_cnt; is++)
    {
       CComPtr<IStage> stage;
       hr = stages->get_Item(is,&stage);
@@ -45,23 +45,23 @@ void CDumperUtil::Compute()
       m_StageNames.push_back(stgnm);
 
       CComPtr<IDblArray> poi_locs;
-      CComPtr<IIDArray> poi_ids;
+      CComPtr<ILongArray> poi_ids;
       hr = apois->GetSuperstructurePois(stgnm, &poi_ids,&poi_locs);
 
       m_SsPoiIds.push_back(poi_ids);
       m_SsPoiLocs.push_back(poi_locs);
 
       // get pois for cummulative summation type - (no internal pois)
-      CComPtr<IIDArray> cum_poi_ids;
+      CComPtr<ILongArray> cum_poi_ids;
       CComPtr<IDblArray> cum_poi_locs;
-      hr = cum_poi_ids.CoCreateInstance(CLSID_IDArray);
+      hr = cum_poi_ids.CoCreateInstance(CLSID_LongArray);
       hr = cum_poi_locs.CoCreateInstance(CLSID_DblArray);
 
       CollectionIndexType npois;
       hr = poi_ids->get_Count(&npois);
       for (CollectionIndexType ip=0; ip<npois; ip++)
       {
-         IDType poi_id;
+         PoiIDType poi_id;
          hr = poi_ids->get_Item(ip, &poi_id);
 
          if (poi_id>=0)
@@ -84,12 +84,12 @@ void CDumperUtil::Compute()
    CComPtr<IPOIs> pois;
    hr = model->get_POIs(&pois);
 
-   for (StageIndexType is=0; is<stg_cnt; is++)
+   for (CollectionIndexType is=0; is<stg_cnt; is++)
    {
-      CComPtr<IIDArray> sptpoiids;
-      hr = sptpoiids.CoCreateInstance(CLSID_IDArray);
+      CComPtr<ILongArray> sptpoiids;
+      hr = sptpoiids.CoCreateInstance(CLSID_LongArray);
 
-      CComPtr<IIDArray> sptids;
+      CComPtr<ILongArray> sptids;
       this->GetSupportIDs(is, &sptids);
 
       CollectionIndexType poi_cnt;
@@ -126,7 +126,7 @@ void CDumperUtil::Compute()
    }
 }
 
-void CDumperUtil::GetSuperstructurePOIs(StageIndexType iStage, ResultsSummationType summ, IIDArray** poiIDs, IDblArray** poiLocs)
+void CDumperUtil::GetSuperstructurePOIs(long iStage, ResultsSummationType summ, ILongArray** poiIDs, IDblArray** poiLocs)
 {
    CHRException hr;
 
@@ -155,7 +155,7 @@ void CDumperUtil::GetSuperstructurePOIs(StageIndexType iStage, ResultsSummationT
 
 
 
-StageIndexType CDumperUtil::StageCount()
+long CDumperUtil::StageCount()
 {
    if (m_Dirty)
       Compute();
@@ -163,7 +163,7 @@ StageIndexType CDumperUtil::StageCount()
    return m_StageNames.size();
 }
 
-void CDumperUtil::StageName(StageIndexType i, BSTR* name)
+void CDumperUtil::StageName(long i, BSTR* name)
 {
    if (m_Dirty)
       Compute();
@@ -171,7 +171,7 @@ void CDumperUtil::StageName(StageIndexType i, BSTR* name)
    m_StageNames[i].m_T.CopyTo(name);
 }
 
-void CDumperUtil::GetSupportPOIs(StageIndexType iStage, IIDArray** poiIDs)
+void CDumperUtil::GetSupportPOIs(long iStage, ILongArray** poiIDs)
 {
    CHRException hr;
 
@@ -181,7 +181,7 @@ void CDumperUtil::GetSupportPOIs(StageIndexType iStage, IIDArray** poiIDs)
    hr = m_SptPoiIds[iStage].m_T.CopyTo(poiIDs);
 }
 
-void CDumperUtil::GetSupportIDs(StageIndexType iStage,  IIDArray** sptIDs)
+void CDumperUtil::GetSupportIDs(long iStage,  ILongArray** sptIDs)
 {
    CHRException hr;
 
@@ -203,7 +203,7 @@ void CDumperUtil::GetSupportIDs(StageIndexType iStage,  IIDArray** sptIDs)
    }
 }
 
-void CDumperUtil::GetAllPOIs(StageIndexType iStage, ResultsSummationType summ, IIDArray** poiIDs)
+void CDumperUtil::GetAllPOIs(long iStage, ResultsSummationType summ, ILongArray** poiIDs)
 {
    CHRException hr;
 
@@ -212,16 +212,16 @@ void CDumperUtil::GetAllPOIs(StageIndexType iStage, ResultsSummationType summ, I
 
    try
    {
-      CComPtr<IIDArray> ssids;
+      CComPtr<ILongArray> ssids;
       CComPtr<IDblArray> sslocs;
 
       // get superstructure ids first
       this->GetSuperstructurePOIs(iStage, summ, &ssids, &sslocs);
 
-      CComPtr<IIDArray> allids;
+      CComPtr<ILongArray> allids;
       hr = ssids->Clone(&allids);
 
-      CComPtr<IIDArray> spids;
+      CComPtr<ILongArray> spids;
 
       // get substructure pois and append them to the list
       this->GetSupportPOIs(iStage, &spids);
@@ -231,7 +231,7 @@ void CDumperUtil::GetAllPOIs(StageIndexType iStage, ResultsSummationType summ, I
 
       for (CollectionIndexType ip=0; ip<sp_cnt; ip++)
       {
-         IDType id;
+         long id;
          hr = spids->get_Item(ip, &id);
 
          hr = allids->Add(id);

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Math - Utility library of mathematical services
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -52,10 +52,14 @@ public:
    virtual ~mathCompositeFunction2d();
 
    void AddFunction(Float64 xMin,Float64 xMax,mathFunction2d& func);
+   IndexType GetFunctionCount() const;
+   void GetFunction(IndexType idx,const mathFunction2d** ppFunc,Float64* pXMin,Float64* pXMax) const;
 
    virtual Float64 Evaluate(Float64 x) const;
 
    virtual mathFunction2d* Clone() const;
+
+   virtual void Clear();
 
 private:
    struct Segment

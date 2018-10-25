@@ -1,66 +1,71 @@
-// BridgeGeometry.cpp : Defines the initialization routines for the DLL.
-//
+// BridgeGeometry.cpp : Implementation of DLL Exports.
+
 
 #include "stdafx.h"
-#include "BridgeGeometry.h"
+#include "resource.h"
+#include "dllmain.h"
 
-#include <initguid.h>
-#include <WBFLCogo_i.c>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
-
-//
-//TODO: If this DLL is dynamically linked against the MFC DLLs,
-//		any functions exported from this DLL which call into
-//		MFC must have the AFX_MANAGE_STATE macro added at the
-//		very beginning of the function.
-//
-//		For example:
-//
-//		extern "C" BOOL PASCAL EXPORT ExportedFunction()
-//		{
-//			AFX_MANAGE_STATE(AfxGetStaticModuleState());
-//			// normal function body here
-//		}
-//
-//		It is very important that this macro appear in each
-//		function, prior to any calls into MFC.  This means that
-//		it must appear as the first statement within the 
-//		function, even before any object variable declarations
-//		as their constructors may generate calls into the MFC
-//		DLL.
-//
-//		Please see MFC Technical Notes 33 and 58 for additional
-//		details.
-//
-
-// CBridgeGeometryApp
-
-BEGIN_MESSAGE_MAP(CBridgeGeometryApp, CWinApp)
-END_MESSAGE_MAP()
-
-
-// CBridgeGeometryApp construction
-
-CBridgeGeometryApp::CBridgeGeometryApp()
+// Used to determine whether the DLL can be unloaded by OLE
+STDAPI DllCanUnloadNow(void)
 {
-	// TODO: add construction code here,
-	// Place all significant initialization in InitInstance
+    return _AtlModule.DllCanUnloadNow();
 }
 
 
-// The one and only CBridgeGeometryApp object
-
-CBridgeGeometryApp theApp;
-
-
-// CBridgeGeometryApp initialization
-
-BOOL CBridgeGeometryApp::InitInstance()
+// Returns a class factory to create an object of the requested type
+STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID* ppv)
 {
-	CWinApp::InitInstance();
-
-	return TRUE;
+    return _AtlModule.DllGetClassObject(rclsid, riid, ppv);
 }
+
+
+// DllRegisterServer - Adds entries to the system registry
+STDAPI DllRegisterServer(void)
+{
+ //   // registers object, typelib and all interfaces in typelib
+ //   HRESULT hr = _AtlModule.DllRegisterServer();
+	//return hr;
+   return S_OK;
+}
+
+
+// DllUnregisterServer - Removes entries from the system registry
+STDAPI DllUnregisterServer(void)
+{
+	//HRESULT hr = _AtlModule.DllUnregisterServer();
+	//return hr;
+   return S_OK;
+}
+
+// DllInstall - Adds/Removes entries to the system registry per user
+//              per machine.	
+//STDAPI DllInstall(BOOL bInstall, LPCWSTR pszCmdLine)
+//{
+//    HRESULT hr = E_FAIL;
+//    static const TCHAR szUserSwitch[] = _T("user");
+//
+//    if (pszCmdLine != NULL)
+//    {
+//    	if (_tcsnicmp(pszCmdLine, szUserSwitch, _countof(szUserSwitch)) == 0)
+//    	{
+//    		AtlSetPerUserRegistration(true);
+//    	}
+//    }
+//
+//    if (bInstall)
+//    {	
+//    	hr = DllRegisterServer();
+//    	if (FAILED(hr))
+//    	{	
+//    		DllUnregisterServer();
+//    	}
+//    }
+//    else
+//    {
+//    	hr = DllUnregisterServer();
+//    }
+//
+//    return hr;
+//}
+//
+//

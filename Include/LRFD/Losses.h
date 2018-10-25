@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -32,55 +32,70 @@
 #include <Lrfd\ElasticShortening.h>
 
 
+#define TEMPORARY_STRAND 0
+#define PERMANENT_STRAND 1
+
 class LRFDCLASS lrfdLosses : public lrfdVersionMgrListener
 {
 public:
    enum TempStrandUsage { tsPretensioned, tsPTBeforeLifting, tsPTAfterLifting, tsPTBeforeShipping };
+   enum SectionPropertiesType { sptGross, sptTransformed };
 
    lrfdLosses();
 
    lrfdLosses(Float64 x, // location along girder where losses are computed
-                         Float64 Lg,    // girder length
-                         matPsStrand::Grade gr,
-                         matPsStrand::Type type,
-                         Float64 fpjPerm, // fpj permanent strands
-                         Float64 fpjTemp, // fpj of temporary strands
-                         Float64 ApsPerm,  // area of permanent strand
-                         Float64 ApsTemp,  // area of TTS 
-                         Float64 aps,      // area of one strand
-                         Float64 eperm, // eccentricty of permanent ps strands with respect to CG of girder
-                         Float64 etemp, // eccentricty of temporary strands with respect to CG of girder
-                         TempStrandUsage usage,
-                         Float64 anchorSet,
-                         Float64 wobble,
-                         Float64 friction,
-                         Float64 angleChange,
+              Float64 Lg,    // girder length
+              SectionPropertiesType sectionProperties, // type of section properties used
+              matPsStrand::Grade gr,
+              matPsStrand::Type type,
+              Float64 fpjPerm, // fpj permanent strands
+              Float64 fpjTemp, // fpj of temporary strands
+              Float64 ApsPerm,  // area of permanent strand
+              Float64 ApsTemp,  // area of TTS 
+              Float64 aps,      // area of one strand
+              Float64 epermRelease, // eccentricty of permanent ps strands with respect to CG of girder at release
+              Float64 epermFinal, // eccentricty of permanent ps strands with respect to CG of girder at final
+              Float64 etemp, // eccentricty of temporary strands with respect to CG of girder
+              TempStrandUsage usage,
+              Float64 anchorSet,
+              Float64 wobble,
+              Float64 friction,
+              Float64 angleChange,
 
-                         Float64 Fc,   // 28 day strength of girder concrete
-                         Float64 Fci,  // Release strength
-                         Float64 FcSlab,   
-                         Float64 Ec,   // Modulus of elasticity of girder
-                         Float64 Eci,  // Modulus of elasticity of girder at transfer
-                         Float64 Ecd,  // Modulus of elasticity of deck
+              Float64 Fc,   // 28 day strength of girder concrete
+              Float64 Fci,  // Release strength
+              Float64 FcSlab,   
+              Float64 Ec,   // Modulus of elasticity of girder
+              Float64 Eci,  // Modulus of elasticity of girder at transfer
+              Float64 Ecd,  // Modulus of elasticity of deck
 
-                         Float64 Mdlg,  // Dead load moment of girder only
-                         Float64 Madlg,  // Additional dead load on girder section
-                         Float64 Msidl, // Superimposed dead loads
-                         Float64 Mllim,   // live load moment (factored)
+              Float64 Mdlg,  // Dead load moment of girder only
+              Float64 Madlg,  // Additional dead load on girder section
+              Float64 Msidl, // Superimposed dead loads
+              Float64 Mllim,   // live load moment (factored)
 
-                         Float64 Ag,    // Area of girder
-                         Float64 Ig,    // Moment of inertia of girder
-                         Float64 Ybg,   // Centroid of girder measured from bottom
-                         Float64 Ac,    // Area of the composite girder and deck
-                         Float64 Ic,    // Moment of inertia of composite
-                         Float64 Ybc,   // Centroid of composite measured from bottom
+              // Transform/Gross properties
+              Float64 Ag,    // Area of girder
+              Float64 Ig,    // Moment of inertia of girder
+              Float64 Ybg,   // Centroid of girder measured from bottom
+              Float64 Ac,    // Area of the composite girder and deck
+              Float64 Ic,    // Moment of inertia of composite
+              Float64 Ybc,   // Centroid of composite measured from bottom
 
-                         Float64 rh, // relative humidity
+              // Net properties (use same values as gross for gross property analysis)
+              Float64 An,    // Area of girder
+              Float64 In,    // Moment of inertia of girder
+              Float64 Ybn,   // Centroid of girder measured from bottom
+              Float64 Acn,    // Area of the composite girder and deck
+              Float64 Icn,    // Moment of inertia of composite
+              Float64 Ybcn,   // Centroid of composite measured from bottom
 
-                         Float64 ti,   // Time until prestress transfer
-                         bool bIgnoreInitialRelaxation,
-                         bool bValidateLosses
-                         );
+              Float64 rh, // relative humidity
+
+              Float64 ti,   // Time until prestress transfer
+              bool bIgnoreInitialRelaxation,
+              bool bValidateLosses
+              );
 
    lrfdLosses(const lrfdLosses& rOther);
    lrfdLosses& operator=(const lrfdLosses& rOther);
@@ -154,9 +169,13 @@ public:
    //------------------------------------------------------------------------
    // Strand Eccentricity
 
-   // eccentricty of permanent strands on non-composite section
-   void SetEccPermanent(Float64 epc);
-   Float64 GetEccPermanent() const;
+   // eccentricty of permanent strands on non-composite section at release
+   void SetEccPermanentRelease(Float64 epc);
+   Float64 GetEccPermanentRelease() const;
+
+   // eccentricty of permanent strands on non-composite section at final
+   void SetEccPermanentFinal(Float64 epc);
+   Float64 GetEccPermanentFinal() const;
 
    // eccentricty of temporary strands on non-composite section
    void SetEccTemporary(Float64 epc);
@@ -166,10 +185,14 @@ public:
    Float64 GetEccpc() const;
 
    // eccentricty of all strands on non-composite section (computed value)
-   Float64 GetEccpg() const; 
+   Float64 GetEccpgRelease() const; 
+   Float64 GetEccpgFinal() const; 
 
    //------------------------------------------------------------------------
    // Section Properties
+
+   void SetSectionPropertiesType(lrfdLosses::SectionPropertiesType props);
+   SectionPropertiesType GetSectionPropertiesType() const;
 
    // Area of non-composite section
    void SetAg(Float64 Ag);
@@ -194,6 +217,31 @@ public:
    // Centroid, from bottom of composite section
    void SetYbc(Float64 Ybc);
    Float64 GetYbc() const;
+
+
+   // Area of non-composite section
+   void SetAn(Float64 An);
+   Float64 GetAn() const;
+
+   // Moment of inertia of non-composite section
+   void SetIn(Float64 In);
+   Float64 GetIn() const;
+
+   // Centroid, from bottom of non-composite section
+   void SetYbn(Float64 Ybn);
+   Float64 GetYbn() const;
+
+   // Area of composite section girder and deck
+   void SetAcn(Float64 Acn);
+   Float64 GetAcn() const;
+
+   // Moment of inertia of composite section
+   void SetIcn(Float64 Icn);
+   Float64 GetIcn() const;
+
+   // Centroid, from bottom of composite section
+   void SetYbcn(Float64 Ybcn);
+   Float64 GetYbcn() const;
 
    //------------------------------------------------------------------------
    // Moments due to external loads
@@ -283,12 +331,10 @@ public:
    virtual Float64 TemporaryStrand_RelaxationLossesBeforeTransfer() const;
    virtual Float64 TemporaryStrand_ElasticShorteningLosses() const;
 
-   // These are the change in strand stress due to externally applied
-   // loads... used to compute the effective prestress
-   virtual Float64 ElasticGainDueToDeckPlacement() const;
-   virtual Float64 ElasticGainDueToSIDL() const;
-   virtual Float64 ElasticGainDueToDeckShrinkage() const;
-   virtual Float64 ElasticGainDueToLiveLoad() const;
+   Float64 ElasticGainDueToDeckPlacement() const;
+   Float64 ElasticGainDueToSIDL() const;
+   Float64 ElasticGainDueToDeckShrinkage() const;
+   Float64 ElasticGainDueToLiveLoad() const;
 
    virtual void GetDeckShrinkageEffects(Float64* pA,Float64* pM) const;
 
@@ -372,9 +418,9 @@ protected:
 
    void UpdateLosses() const;
    void UpdateInitialLosses() const;
-   virtual void UpdateRelaxationBeforeTransfer() const;
-   virtual void UpdateElasticShortening() const;
-   virtual void UpdatePostTensionLosses() const;
+   void UpdateRelaxationBeforeTransfer() const;
+   void UpdateElasticShortening() const;
+   void UpdatePostTensionLosses() const;
 
    virtual void ValidateParameters() const = 0;
    virtual void UpdateLongTermLosses() const = 0;
@@ -382,10 +428,11 @@ protected:
    
    void UpdateTemporaryStrandRemovalEffect() const;
 
-   void MakeAssignment( const lrfdLosses& rOther );
+   virtual void MakeAssignment( const lrfdLosses& rOther );
    void MakeCopy( const lrfdLosses& rOther );
 
    // Input Parameters
+   SectionPropertiesType m_SectionProperties;
    Float64 m_Eci;
    Float64 m_Ec;
    Float64 m_Ecd;   // Modulus of elasticy of composite deck
@@ -394,7 +441,8 @@ protected:
    Float64 m_FcSlab; // 28 day strength (slab)
    matPsStrand::Type m_Type;
    matPsStrand::Grade m_Grade;
-   Float64 m_eperm; // CG of permanent prestress with respect to centroid of noncomposite section
+   Float64 m_epermRelease; // CG of permanent prestress with respect to centroid of noncomposite section
+   Float64 m_epermFinal; // CG of permanent prestress with respect to centroid of noncomposite section
    Float64 m_etemp; // CG of temporary prestress 
    Float64 m_ApsPerm; // Area of permanent strands
    Float64 m_ApsTemp; // Area of temporary strands
@@ -417,12 +465,21 @@ protected:
    Float64 m_Mllim; // Live load moment
    Float64 m_ti; // initial time
 
+   // Transformed/Gross Properties
    Float64 m_Ag;    // Area of the girder
    Float64 m_Ig;    // Moment of inertia of the girder
    Float64 m_Ybg;   // Centroid of girder measured from bottom
    Float64 m_Ac;    // Area of the composite girder and deck
    Float64 m_Ic;    // Moment of inertia of composite
    Float64 m_Ybc;   // Centroid of composite measured from bottom
+
+   // Net Properties
+   Float64 m_An;    // Area of the girder
+   Float64 m_In;    // Moment of inertia of the girder
+   Float64 m_Ybn;   // Centroid of girder measured from bottom
+   Float64 m_Acn;   // Area of the composite girder and deck
+   Float64 m_Icn;   // Moment of inertia of composite
+   Float64 m_Ybcn;  // Centroid of composite measured from bottom
 
    Float64 m_H;  // relative humidity
 
@@ -497,6 +554,8 @@ inline matPsStrand::Type lrfdLosses::GetStrandType() const { return m_Type; }
 inline void lrfdLosses::SetStrandGrade(matPsStrand::Grade gr) { m_Grade = gr; m_IsDirty = true; }
 inline matPsStrand::Grade lrfdLosses::GetStrandGrade() const { return m_Grade; }
 
+inline void lrfdLosses::SetSectionPropertiesType(lrfdLosses::SectionPropertiesType props) { m_SectionProperties = props; m_IsDirty = true; }
+inline lrfdLosses::SectionPropertiesType lrfdLosses::GetSectionPropertiesType() const { return m_SectionProperties; }
 inline void lrfdLosses::SetAg(Float64 Ag) { m_Ag = Ag; m_IsDirty = true; }
 inline Float64 lrfdLosses::GetAg() const { return m_Ag; }
 inline void lrfdLosses::SetIg(Float64 Ig) { m_Ig = Ig; m_IsDirty = true; }
@@ -509,6 +568,19 @@ inline void lrfdLosses::SetIc(Float64 Ic) { m_Ic = Ic; m_IsDirty = true; }
 inline Float64 lrfdLosses::GetIc() const { return m_Ic; }
 inline void lrfdLosses::SetYbc(Float64 Ybc) { m_Ybc = Ybc; m_IsDirty = true; }
 inline Float64 lrfdLosses::GetYbc() const { return m_Ybc; }
+
+inline void lrfdLosses::SetAn(Float64 An) { m_An = An; m_IsDirty = true; }
+inline Float64 lrfdLosses::GetAn() const { return m_An; }
+inline void lrfdLosses::SetIn(Float64 In) { m_In = In; m_IsDirty = true; }
+inline Float64 lrfdLosses::GetIn() const { return m_In; }
+inline void lrfdLosses::SetYbn(Float64 Ybn) { m_Ybn = Ybn; m_IsDirty = true; }
+inline Float64 lrfdLosses::GetYbn() const { return m_Ybn; }
+inline void lrfdLosses::SetAcn(Float64 Acn) { m_Acn = Acn; m_IsDirty = true; }
+inline Float64 lrfdLosses::GetAcn() const { return m_Acn; }
+inline void lrfdLosses::SetIcn(Float64 Icn) { m_Icn = Icn; m_IsDirty = true; }
+inline Float64 lrfdLosses::GetIcn() const { return m_Icn; }
+inline void lrfdLosses::SetYbcn(Float64 Ybcn) { m_Ybcn = Ybcn; m_IsDirty = true; }
+inline Float64 lrfdLosses::GetYbcn() const { return m_Ybcn; }
 
 inline void lrfdLosses::SetGdrMoment(Float64 Mdlg) { m_Mdlg = Mdlg; m_IsDirty = true; }
 inline Float64 lrfdLosses::GetGdrMoment() const { return m_Mdlg; }

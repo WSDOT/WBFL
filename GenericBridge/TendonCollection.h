@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -83,9 +83,9 @@ public:
 //	STDMETHOD(get_Item)(/*[in]*/long index,/*[out,retval]*/ITendon** tendon);
 //	STDMETHOD(Remove)(/*[in]*/long index);
 //	STDMETHOD(Clear)();
-	STDMETHOD(get_CG)(/*[in]*/ Float64 x,/*[in]*/ TendonMeasure measure,/*[out,retval]*/IPoint3d** cg);
-	STDMETHOD(get_Slope)(/*[in]*/ Float64 x,/*[in]*/ TendonMeasure measure,/*[out,retval]*/IVector3d** slope);
-	STDMETHOD(Cut)(/*[in]*/ Float64 x,/*[in]*/TendonMeasure measure,/*[out,retval]*/ IPoint3dCollection** points);
+	STDMETHOD(get_CG)(/*[in]*/ Float64 z,/*[in]*/ TendonMeasure measure,/*[out,retval]*/IPoint3d** cg);
+	STDMETHOD(get_Slope)(/*[in]*/ Float64 z,/*[in]*/ TendonMeasure measure,/*[out,retval]*/IVector3d** slope);
+	STDMETHOD(Cut)(/*[in]*/ Float64 z,/*[in]*/TendonMeasure measure,/*[out,retval]*/ IPoint3dCollection** points);
    STDMETHOD(get__EnumTendons)(/*[out,retval]*/IEnumTendons* *enumTendons);
 
 //// IStructuredStorage2

@@ -542,6 +542,16 @@ HRESULT CCrackedSectionSolver::AnalyzeSlice(Float64 Yguess,SLICEINFO& slice,Floa
 
       if ( !slice.FgMaterial )
          return S_OK;
+
+      Float64 minStrain,maxStrain;
+      slice.FgMaterial->StrainLimits(&minStrain,&maxStrain);
+
+      Float64 stress;
+      slice.FgMaterial->ComputeStress(maxStrain,&stress);
+      if ( stress == 0 )
+      {
+         return S_OK;
+      }
    }
 
    if ( slice.FgMaterial )

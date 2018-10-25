@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -59,13 +59,6 @@ BEGIN_COM_MAP(CSectionCutTool)
 END_COM_MAP()
 
 private:
-   HRESULT CreateCompositeSection(IGenericBridge* bridge,SpanIndexType span,GirderIndexType gdr,Float64 location,BSTR stage,ISection** section);
-   HRESULT CreateNoncompositeSection(IGenericBridge* bridge,SpanIndexType span,GirderIndexType gdr,Float64 location,BSTR stage,ISection** section);
-   HRESULT CreateBridgeDeckSection(IGenericBridge* bridge,Float64 distFromStartOfBridge,BSTR stage,Float64 elevBottomDeck,ICompositeSectionItem** deckitem);
-   HRESULT CreateCIPBridgeDeckSection(IGenericBridge* bridge,Float64 distFromStartOfBridge,Float64 elevBottomDeck,ICompositeSectionItem** deckitem);
-   HRESULT CreateSIPBridgeDeckSection(IGenericBridge* bridge,Float64 distFromStartOfBridge,Float64 elevBottomDeck,ICompositeSectionItem** deckitem);
-   HRESULT CreateOverlayBridgeDeckSection(IGenericBridge* bridge,Float64 distFromStartOfBridge,Float64 elevBottomDeck,ICompositeSectionItem** deckitem);
-
    CComPtr<IEffectiveFlangeWidthTool> m_EffFlangeTool;
    CComPtr<IBridgeGeometryTool> m_BridgeGeometryTool;
 
@@ -75,15 +68,52 @@ public:
 
 // ISectionCutTool
 public:
-   STDMETHOD(putref_EffectiveFlangeWidthTool)(/*[in]*/ IEffectiveFlangeWidthTool* pTool);
-	STDMETHOD(get_EffectiveFlangeWidthTool)(/*[out,retval]*/ IEffectiveFlangeWidthTool* *pTool);
-   STDMETHOD(CreateGirderSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/SpanIndexType span,/*[in]*/GirderIndexType gdr,/*[in]*/Float64 location, /*[in]*/ BSTR stage,/*[out,retval]*/ISection** section);
-   STDMETHOD(CreateBridgeSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/Float64 distFromStartOfBridge,/*[in]*/ BSTR stage, /*[in]*/ BarrierSectionCut bsc,/*[out,retval]*/ISection** section);
+   // Set/Get the effective flange width tool. This tool is needed for computing the effective
+   // flange width when creating girder sections.
+   STDMETHOD(putref_EffectiveFlangeWidthTool)(IEffectiveFlangeWidthTool* pTool);
+	STDMETHOD(get_EffectiveFlangeWidthTool)(IEffectiveFlangeWidthTool* *pTool);
+
+   //
+   // The CreateXXXSection methods creates a ISection object. Use the resulting objects to get
+   // section stiffness and section properties
+   //
+
+   // creates girder sections, including the deck, ducts, tendons, strands, and rebar
+   STDMETHOD(CreateGirderSectionBySSMbr)(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 distFromStartOfSSMbr, GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx, SectionPropertyMethod sectionPropMethod,ISection** section);
+   STDMETHOD(CreateGirderSectionBySegment)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section);
+
+   // creates a net section of the deck
+   STDMETHOD(CreateNetDeckSection)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,ISection** section);
+
+   // creates a section for the entire bridge
+   STDMETHOD(CreateBridgeSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/Float64 distFromStartOfBridge,/*[in]*/ StageIndexType stageIdx, /*[in]*/ BarrierSectionCut bsc,/*[out,retval]*/ISection** section);
+
+   // creates section objects for the traffic barriers
+   STDMETHOD(CreateLeftBarrierSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ VARIANT_BOOL bStructuralOnly,/*[out,retval]*/ISection** section);
+	STDMETHOD(CreateRightBarrierSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ VARIANT_BOOL bStructuralOnly,/*[out,retval]*/ISection** section);
+
+   //
+   // The CreateXXXShape methods create a shape object that is intended to be used as for a 
+   // graphical representation of the cross section.
+   //
+   
+   // creates a composite shape object containing the girder, holes for ducts, and the deck, if present
+   STDMETHOD(CreateGirderShapeBySSMbr)(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 distFromStartOfSSMbr,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,IShape** ppShape);
+   STDMETHOD(CreateGirderShapeBySegment)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx, IShape** ppShape);
+
+   // creates shapes for the left and right railing systems
 	STDMETHOD(CreateLeftBarrierShape)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[out,retval]*/IShape** shape);
 	STDMETHOD(CreateRightBarrierShape)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[out,retval]*/IShape** shape);
-   STDMETHOD(CreateLeftBarrierSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ VARIANT_BOOL bStructuralOnly,/*[out,retval]*/ICompositeSectionItem** section);
-	STDMETHOD(CreateRightBarrierSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ VARIANT_BOOL bStructuralOnly,/*[out,retval]*/ICompositeSectionItem** section);
+
+   // creates a shape for the bridge deck
    STDMETHOD(CreateSlabShape)(/*[in]*/IGenericBridge* bridge,/*[in]*/Float64 station,/*[out,retval]*/IShape** shape);
+
+private:
+   HRESULT CreateCompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section);
+   HRESULT CreateDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section);
+   HRESULT CreateNoncompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section);
+   HRESULT CreateBridgeDeckSection(IGenericBridge* bridge,Float64 distFromStartOfBridge,StageIndexType stageIdx,Float64 elevBottomDeck,ICompositeSectionItemEx** deckitem);
+   HRESULT CreateGirderShape(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,IShape** ppShape);
 };
 
 #endif //__SECTIONCUTTOOL_H_

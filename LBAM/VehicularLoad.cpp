@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -441,7 +441,7 @@ STDMETHODIMP CVehicularLoad::Load(IStructuredLoad2 * pload)
       if (FAILED(hr))
          return hr;
 
-      m_VariableAxle = VARIANT2INDEX(var);
+      m_VariableAxle = var;
 
       var.Clear();
       hr = pload->get_Property(_bstr_t("VariableMaxSpacing"),&var);

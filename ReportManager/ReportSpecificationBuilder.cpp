@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManager - Manages report definitions
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -52,23 +52,13 @@ CReportSpecificationBuilder::~CReportSpecificationBuilder()
 
 boost::shared_ptr<CReportSpecification> CReportSpecificationBuilder::CreateReportSpec(const CReportDescription& rptDesc,boost::shared_ptr<CReportSpecification>& pRptSpec)
 {
-   if ( 0 < rptDesc.GetChapterCount() )
+   AFX_MANAGE_STATE(AfxGetStaticModuleState());
+   CReportSpecDlg dlg(&rptDesc,pRptSpec);
+   if ( dlg.DoModal() == IDOK )
    {
-      AFX_MANAGE_STATE(AfxGetStaticModuleState());
-      CReportSpecDlg dlg(&rptDesc,pRptSpec);
-      if ( dlg.DoModal() == IDOK )
-      {
-         return DoCreateReportSpec(rptDesc,dlg.m_ChapterInfo);
-      }
-      else
-      {
-         return boost::shared_ptr<CReportSpecification>();
-      }
+      return DoCreateReportSpec(rptDesc,dlg.m_ChapterInfo);
    }
-   else
-   {
-      return DoCreateReportSpec(rptDesc,rptDesc.GetChapterInfo());
-   }
+   return boost::shared_ptr<CReportSpecification>();
 }
 
 boost::shared_ptr<CReportSpecification> CReportSpecificationBuilder::CreateDefaultReportSpec(const CReportDescription& rptDesc)
@@ -80,6 +70,13 @@ boost::shared_ptr<CReportSpecification> CReportSpecificationBuilder::CreateDefau
 boost::shared_ptr<CReportSpecification> CReportSpecificationBuilder::DoCreateReportSpec(const CReportDescription& rptDesc,const std::vector<CChapterInfo>& vChInfo)
 {
    boost::shared_ptr<CReportSpecification> pRptSpec( new CReportSpecification(rptDesc.GetReportName()) );
-   rptDesc.ConfigureReportSpecification(pRptSpec);
+
+   std::vector<CChapterInfo>::const_iterator iter;
+   for ( iter = vChInfo.begin(); iter != vChInfo.end(); iter++ )
+   {
+      CChapterInfo chInfo = *iter;
+      pRptSpec->AddChapter(chInfo.Name.c_str(),chInfo.Key.c_str(),chInfo.MaxLevel);
+   }
+
    return pRptSpec;
 }

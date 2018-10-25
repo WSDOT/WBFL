@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -24,23 +24,12 @@
 #include "stdafx.h"
 #include <EAF\EAFPluginState.h>
 
-CEAFPluginState::CEAFPluginState(LPCTSTR lpszName,const CLSID& clsid,const CString& strCLSID,bool bInitiallyEnabled)
+CEAFPluginState::CEAFPluginState(const CLSID& clsid,const CString& strCLSID,bool bInitiallyEnabled)
 {
-   m_Name = lpszName;
    m_CLSID = clsid;
    m_strCLSID = strCLSID;
    m_bInitiallyEnabled = bInitiallyEnabled;
    m_bNewState = m_bInitiallyEnabled;
-}
-
-bool CEAFPluginState::operator<(const CEAFPluginState& other)
-{
-   return m_Name < other.m_Name;
-}
-
-LPCTSTR CEAFPluginState::GetName() const
-{
-   return m_Name;
 }
 
 void CEAFPluginState::SetState(bool bNewState)
@@ -48,17 +37,17 @@ void CEAFPluginState::SetState(bool bNewState)
    m_bNewState = bNewState;
 }
 
-bool CEAFPluginState::InitiallyEnabled() const
+bool CEAFPluginState::InitiallyEnabled()
 {
    return m_bInitiallyEnabled;
 }
 
-bool CEAFPluginState::StateChanged() const
+bool CEAFPluginState::StateChanged()
 {
    return m_bInitiallyEnabled != m_bNewState ? true : false;
 }
 
-bool CEAFPluginState::IsEnabled() const
+bool CEAFPluginState::IsEnabled()
 {
    if ( (InitiallyEnabled() && !StateChanged()) || (!InitiallyEnabled() && StateChanged()) )
       return true;
@@ -66,12 +55,12 @@ bool CEAFPluginState::IsEnabled() const
    return false;
 }
 
-CLSID CEAFPluginState::GetCLSID() const
+CLSID CEAFPluginState::GetCLSID()
 {
    return m_CLSID;
 }
 
-CString CEAFPluginState::GetCLSIDString() const
+CString CEAFPluginState::GetCLSIDString()
 {
    return m_strCLSID;
 }

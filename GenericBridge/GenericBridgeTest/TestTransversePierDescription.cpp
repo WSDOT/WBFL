@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -52,146 +52,59 @@ CTestTransversePierDescription::~CTestTransversePierDescription()
 
 void CTestTransversePierDescription::Test()
 {
-   // Create a default bridge
-   CComPtr<IGenericBridge> bridge;
-   bridge.CoCreateInstance(CLSID_GenericBridge);
+   //// Create a default bridge
+   //CComPtr<IGenericBridge> bridge;
+   //bridge.CoCreateInstance(CLSID_GenericBridge);
 
-   bridge->InsertSpanAndPier(0, 10.00, qcbAfter, qcbRight);
+   //bridge->InsertSpanAndPier(0, 10.00, qcbAfter, qcbRight);
 
-   CComPtr<IPierCollection> piers;
-   bridge->get_Piers(&piers);
+   //CComPtr<IPierCollection> piers;
+   //bridge->get_Piers(&piers);
 
-   CComPtr<IPier> pier;
-   piers->get_Item(0,&pier);
+   //CComPtr<IPier> pier;
+   //piers->get_Item(0,&pier);
 
-   pier->CreateTransversePierDescription();
+   //pier->CreateTransversePierDescription();
 
-   CComPtr<ITransversePierDescription> tpd;
-   pier->get_TransversePierDescription(&tpd);
+   //CComPtr<ITransversePierDescription> tpd;
+   //pier->get_TransversePierDescription(&tpd);
 
-   TRY_TEST(tpd != NULL, true);
+   //TRY_TEST(tpd != NULL, true);
 
-   // Verify default values
-   CComPtr<IPier> parentPier;
-   TRY_TEST(tpd->get_Pier(NULL),E_POINTER);
-   TRY_TEST(tpd->get_Pier(&parentPier),S_OK);
-   TRY_TEST(pier.IsEqualObject(parentPier),true);
+   //// Verify default values
+   //CComPtr<IPier> parentPier;
+   //TRY_TEST(tpd->get_Pier(NULL),E_POINTER);
+   //TRY_TEST(tpd->get_Pier(&parentPier),S_OK);
+   //TRY_TEST(pier.IsEqualObject(parentPier),true);
 
-   CComPtr<IColumnSpacing> columnSpacing;
-   TRY_TEST(tpd->get_ColumnSpacing(NULL),E_POINTER);
-   TRY_TEST(tpd->get_ColumnSpacing(&columnSpacing),S_OK);
+   //CComPtr<IColumnSpacing> columnSpacing;
+   //TRY_TEST(tpd->get_ColumnSpacing(NULL),E_POINTER);
+   //TRY_TEST(tpd->get_ColumnSpacing(&columnSpacing),S_OK);
 
-   CComPtr<ICrossBeam> crossBeam;
-   TRY_TEST(tpd->get_CrossBeam(NULL),E_POINTER);
-   TRY_TEST(tpd->get_CrossBeam(&crossBeam),S_OK);
+   //CComPtr<ICrossBeam> crossBeam;
+   //TRY_TEST(tpd->get_CrossBeam(NULL),E_POINTER);
+   //TRY_TEST(tpd->get_CrossBeam(&crossBeam),S_OK);
 
-   CComPtr<IColumn> column;
-   TRY_TEST(tpd->get_Column(-1,&column),E_INVALIDARG);
-   TRY_TEST(tpd->get_Column(10,&column),E_INVALIDARG);
-   TRY_TEST(tpd->get_Column(0,NULL),E_POINTER);
-   TRY_TEST(tpd->get_Column(0,&column),S_OK);
-
-   ///////////////////////////////////////
-   // Test with event sink
-   CComObject<CTestTransversePierDescription>* pTest;
-   CComObject<CTestTransversePierDescription>::CreateInstance(&pTest);
-   pTest->AddRef();
-   
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTest);
-   TRY_TEST(AtlAdvise(tpd,punk,IID_ITransversePierDescriptionEvents,&dwCookie),S_OK);
-
-   ///////////////////////////////////////
-   // Test Set with events
-
-   // Bubbled events
-   CComPtr<IPrismaticSegment> newSegment;
-   newSegment.CoCreateInstance(CLSID_PrismaticSegment);
-
-   column->AddSegment(newSegment);
-
-   CComPtr<ISegment> segment;
-   column->get_Segment(0,&segment);
-   
-//   CComPtr<ISegmentCrossSection> section;
-//   segment->get_CrossSection(&section);
-//
-//   CComPtr<IStressPointCollection> stressPoints;
-//   section->get_StressPoints(&stressPoints);
-//
-//   pTest->InitEventTest();
-//   stressPoints->Add();
-//   TRY_TEST(pTest->PassedEventTest(), true );
-//
-//   CComPtr<IStressPoint> stressPoint;
-//   pTest->InitEventTest();
-//   stressPoints->get_Item(0,&stressPoint);
-//   stressPoint->put_Sa(10.0);
-//   TRY_TEST(pTest->PassedEventTest(), true );
-//
-//   pTest->InitEventTest();
-//   section->put_Area(10.0);
-//   TRY_TEST(pTest->PassedEventTest(), true );
-
-   pTest->InitEventTest();
-   segment->put_Length(10.0);
-   TRY_TEST(pTest->PassedEventTest(), true );
-
-//   segment.Release();
-//   section.Release();
-//   stressPoints.Release();
-//   stressPoint.Release();
-//
-//   crossBeam->AddSegment();
-//   crossBeam->get_Segment(0,&segment);
-//   segment->get_CrossSection(&section);
-//   section->get_StressPoints(&stressPoints);
-//
-//   pTest->InitEventTest();
-//   stressPoints->Add();
-//   TRY_TEST(pTest->PassedEventTest(), true );
-//
-//   pTest->InitEventTest();
-//   stressPoints->get_Item(0,&stressPoint);
-//   stressPoint->put_Sa(10.0);
-//   TRY_TEST(pTest->PassedEventTest(), true );
-//
-//   pTest->InitEventTest();
-//   section->put_Area(10.0);
-//   TRY_TEST(pTest->PassedEventTest(), true );
-//
-//   pTest->InitEventTest();
-//   segment->put_Length(10.0);
-//   TRY_TEST(pTest->PassedEventTest(), true );
-
-   pTest->InitEventTest();
-   columnSpacing->Add(3);
-   TRY_TEST(pTest->PassedEventTest(), true );
+   //CComPtr<IColumn> column;
+   //TRY_TEST(tpd->get_Column(-1,&column),E_INVALIDARG);
+   //TRY_TEST(tpd->get_Column(10,&column),E_INVALIDARG);
+   //TRY_TEST(tpd->get_Column(0,NULL),E_POINTER);
+   //TRY_TEST(tpd->get_Column(0,&column),S_OK);
 
 
-   // Done with events
-   TRY_TEST(AtlUnadvise(tpd,IID_ITransversePierDescriptionEvents,dwCookie),S_OK);
-   pTest->Release();
+   /////////////////////////////////////////
+   //// Test Error Info
+   //CComQIPtr<ISupportErrorInfo> eInfo(tpd);
+   //TRY_TEST( eInfo != 0, true );
 
-   ///////////////////////////////////////
-   // Test Error Info
-   CComQIPtr<ISupportErrorInfo> eInfo(tpd);
-   TRY_TEST( eInfo != 0, true );
+   //// Interfaces that should be supported
+   //TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ITransversePierDescription ), S_OK );
+   //TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
 
-   // Interfaces that should be supported
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ITransversePierDescription ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
+   //// Interface that is not supported
+   //TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
-   // Interface that is not supported
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
-
-   // Test IObjectSafety
-   TRY_TEST( TestIObjectSafety(tpd,IID_ITransversePierDescription,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-   TRY_TEST( TestIObjectSafety(tpd,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-STDMETHODIMP CTestTransversePierDescription::OnChanged()
-{
-   Pass();
-   return S_OK;
+   //// Test IObjectSafety
+   //TRY_TEST( TestIObjectSafety(tpd,IID_ITransversePierDescription,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
+   //TRY_TEST( TestIObjectSafety(tpd,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }

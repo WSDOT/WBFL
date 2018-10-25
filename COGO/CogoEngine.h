@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -118,11 +118,11 @@ public:
 
 // IDivide2
 public:
-   STDMETHOD(Arc)(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* vertex, /*[in]*/ IPoint2d* to,/*[in]*/ long nParts,/*[out,retval]*/ IPoint2dCollection** points);
-   STDMETHOD(BetweenPoints)(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* to,/*[in]*/ long nParts,/*[out,retval]*/ IPoint2dCollection** points);
-   STDMETHOD(LineSegment)(/*[in]*/ ILineSegment2d* seg,/*[in]*/ long nParts,/*[out,retval]*/ IPoint2dCollection** points);
-	STDMETHOD(HorzCurve)(/*[in]*/ IHorzCurve* curve, /*[in]*/ long nParts, /*[out,retval]*/ IPoint2dCollection** points);
-   STDMETHOD(Path)(/*[in]*/IPath* pPath,/*[in]*/ long nParts,/*[in]*/ Float64 start,/*[in]*/ Float64 end,/*[out,retval]*/IPoint2dCollection** points);
+   STDMETHOD(Arc)(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* vertex, /*[in]*/ IPoint2d* to,/*[in]*/ CollectionIndexType nParts,/*[out,retval]*/ IPoint2dCollection** points);
+   STDMETHOD(BetweenPoints)(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* to,/*[in]*/ CollectionIndexType nParts,/*[out,retval]*/ IPoint2dCollection** points);
+   STDMETHOD(LineSegment)(/*[in]*/ ILineSegment2d* seg,/*[in]*/ CollectionIndexType nParts,/*[out,retval]*/ IPoint2dCollection** points);
+	STDMETHOD(HorzCurve)(/*[in]*/ IHorzCurve* curve, /*[in]*/ CollectionIndexType nParts, /*[out,retval]*/ IPoint2dCollection** points);
+   STDMETHOD(Path)(/*[in]*/IPath* pPath,/*[in]*/ CollectionIndexType nParts,/*[in]*/ Float64 start,/*[in]*/ Float64 end,/*[out,retval]*/IPoint2dCollection** points);
 
 // ITangent2
 public:

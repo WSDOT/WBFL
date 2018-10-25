@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Sections - Model bridge member cross sections
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,6 +31,8 @@
 #define IDR_COMPOSITESECTIONITEM        103
 #define IDR_COMPOSITESECTION            104
 #define IDR_COMPOSITEBEAM               105
+#define IDR_COMPOSITESECTIONITEMEX      106
+#define IDR_COMPOSITESECTIONEX          107
 
 // Next default values for new objects
 // 

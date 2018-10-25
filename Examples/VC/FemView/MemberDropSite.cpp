@@ -67,7 +67,7 @@ STDMETHODIMP_(bool) CMemberDropSite::XDisplayObjectEvents::OnLButtonDblClk(iDisp
    METHOD_PROLOGUE(CMemberDropSite,DisplayObjectEvents);
 
    // Member got double clicked on... Display its editing dialog
-   long id = pDO->GetID();
+   IDType id = pDO->GetID();
    pThis->EditMember(id);
 
    return true;
@@ -184,7 +184,7 @@ STDMETHODIMP_(void) CMemberDropSite::XDisplayObjectEvents::OnSelect(iDisplayObje
    dimLine->RegisterEventSink(pDOE);
 
    // 6. Assign the member ID to the dimension line display object
-   long mbrID = pDO->GetID();
+   IDType mbrID = pDO->GetID();
    dimLine->SetID(mbrID);
 
    // 7. Add the new display object to the display
@@ -210,7 +210,7 @@ STDMETHODIMP_(bool) CMemberDropSite::XDisplayObjectEvents::OnKeyDown(iDisplayObj
 {
    METHOD_PROLOGUE(CMemberDropSite,DisplayObjectEvents);
 
-   long id = pDO->GetID();
+   IDType id = pDO->GetID();
    switch (nChar)
    {
    case VK_RETURN:
@@ -294,7 +294,7 @@ STDMETHODIMP_(void) CMemberDropSite::XDropSite::OnDropped(COleDataObject* pDataO
          // on the member the tool was dropped on.
          CComPtr<iDisplayObject> pDispObj;
          GetDisplayObject(&pDispObj);
-         long mbrID = pDispObj->GetID();
+         IDType mbrID = pDispObj->GetID();
 
          CComPtr<IFem2dModel> model = pThis->m_pDoc->m_Model;
          CAddPointLoadDlg dlg(model,TRUE);
@@ -407,7 +407,7 @@ STDMETHODIMP_(void) CMemberDropSite::XDropSite::Highlite(CDC* pDC,BOOL bHighlite
 }
 
 
-void CMemberDropSite::DeleteMember(long mbrID)
+void CMemberDropSite::DeleteMember(IDType mbrID)
 {
    CComPtr<IFem2dModel> model = m_pDoc->m_Model;
    CComPtr<IFem2dMemberCollection> members;
@@ -417,7 +417,7 @@ void CMemberDropSite::DeleteMember(long mbrID)
    members->Remove(mbrID,atID,&removedID);
 }
 
-void CMemberDropSite::EditMember(long mbrID)
+void CMemberDropSite::EditMember(IDType mbrID)
 {
    CComPtr<IFem2dModel> model = m_pDoc->m_Model;
    CComPtr<IFem2dMemberCollection> members;

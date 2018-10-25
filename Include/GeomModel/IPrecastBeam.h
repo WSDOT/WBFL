@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GeomModel - Geometric Modeling of shapes and sections
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -104,7 +104,7 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the number of mating surfaces
-   virtual Int32 GetNumberOfMatingSurfaces() const = 0;
+   virtual MatingSurfaceIndexType GetNumberOfMatingSurfaces() const = 0;
 
    //------------------------------------------------------------------------
    // Returns the width of the mating surface between the girder and a

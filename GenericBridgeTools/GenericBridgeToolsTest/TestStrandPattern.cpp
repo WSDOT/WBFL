@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeToolsTest - Test driver for generic bridge tools library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -572,7 +572,7 @@ void CTestStrandPattern::Test()
    TRY_TEST(l1, 3.0);
 
    fill_array.Release();
-   IndexType item;
+   CollectionIndexType item;
    TRY_TEST(strand_filler->GetDebondAtLeftSection(0, &fill_array),S_OK);
    TRY_TEST(fill_array->get_Count(&count),S_OK);
    TRY_TEST(count,1);

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -90,6 +90,7 @@ public:
 	STDMETHOD(get_WebLocation)(/*[in]*/WebIndexType idx,/*[out,retval]*/Float64* location);
 	STDMETHOD(get_WebSpacing)(/*[in]*/WebIndexType idx,/*[out,retval]*/Float64* spacing);
 	STDMETHOD(get_WebThickness)(/*[in]*/WebIndexType idx,/*[out,retval]*/Float64* tWeb);
+   STDMETHOD(get_WebPlane)(/*[in]*/WebIndexType idx,/*[out,retval]*/IPlane3d** ppPlane);
    STDMETHOD(get_MinWebThickness)(/*[out,retval]*/Float64* tWeb);
    STDMETHOD(get_EffectiveWebThickness)(/*[out,retval]*/Float64* tWeb);
    STDMETHOD(get_MatingSurfaceCount)(/*[out,retval]*/MatingSurfaceIndexType* nMatingSurfaces);
@@ -136,6 +137,8 @@ public:
 	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
 	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx);
 	STDMETHOD(Clear)();
+   STDMETHOD(ReplaceEx)(CollectionIndexType idx,ICompositeShapeItem* pShapeItem);
+   STDMETHOD(Replace)(CollectionIndexType idx,IShape* pShape);
 	STDMETHOD(AddShapeEx)(/*[in]*/ ICompositeShapeItem* ShapeItem);
    STDMETHOD(AddShape)(/*[in]*/ IShape* shape,/*[in]*/ VARIANT_BOOL bVoid);
 

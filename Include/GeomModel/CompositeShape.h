@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GeomModel - Geometric Modeling of shapes and sections
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -259,7 +259,7 @@ protected:
    void MakeCopy(const gmCompositeShape& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const gmCompositeShape& rOther);
+   virtual void MakeAssignment(const gmCompositeShape& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -421,7 +421,7 @@ protected:
    void MakeCopy(const gmShapeIter& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const gmShapeIter& rOther);
+   virtual void MakeAssignment(const gmShapeIter& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -577,7 +577,7 @@ protected:
    void MakeCopy(const gmConstShapeIter& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const gmConstShapeIter& rOther);
+   virtual void MakeAssignment(const gmConstShapeIter& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

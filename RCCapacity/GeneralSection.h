@@ -80,13 +80,9 @@ public:
    STDMETHOD(AddShape)(/*[in]*/IShape* pShape,/*[in]*/IStressStrain* pfgMaterial,/*[in]*/IStressStrain* pbgMaterial,/*[in]*/Float64 ei);
    STDMETHOD(get_ShapeCount)(/*[out,retval]*/CollectionIndexType* nShapes);
    STDMETHOD(get_Shape)(/*[in]*/CollectionIndexType shapeIdx,/*[out,retval]*/IShape** pShape);
-   STDMETHOD(putref_Shape)(/*[in]*/CollectionIndexType shapeIdx,/*[in]*/IShape* pShape);
    STDMETHOD(get_ForegroundMaterial)(/*[in]*/CollectionIndexType shapeIdx,/*[out,retval]*/IStressStrain** pMaterial);
-   STDMETHOD(putref_ForegroundMaterial)(/*[in]*/CollectionIndexType shapeIdx,/*[in]*/IStressStrain* pMaterial);
    STDMETHOD(get_BackgroundMaterial)(/*[in]*/CollectionIndexType shapeIdx,/*[out,retval]*/IStressStrain** pMaterial);
-   STDMETHOD(putref_BackgroundMaterial)(/*[in]*/CollectionIndexType shapeIdx,/*[in]*/IStressStrain* pMaterial);
    STDMETHOD(get_InitialStrain)(/*[in]*/CollectionIndexType shapeIdx,/*[out,retval]*/Float64* ei);
-   STDMETHOD(put_InitialStrain)(/*[in]*/CollectionIndexType shapeIdx,/*[in]*/Float64 ei);
 
 // IStructuredStorage2
 public:

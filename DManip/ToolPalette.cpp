@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -25,7 +25,6 @@
 //
 
 #include "stdafx.h"
-#include <EAF\EAF.h>
 #include <WBFLDManip.h>
 #include <DManip\DManip.h>
 #include "DragDataImpl.h"
@@ -41,7 +40,7 @@ static char THIS_FILE[] = __FILE__;
 
 
 CToolPalette::CToolPalette()
-	: CEAFPaneDialog()
+	: CDialogBar()
 {
 	//{{AFX_DATA_INIT(CToolPalette)
 		// NOTE: the ClassWizard will add member initialization here
@@ -51,14 +50,14 @@ CToolPalette::CToolPalette()
 
 void CToolPalette::DoDataExchange(CDataExchange* pDX)
 {
-	CEAFPaneDialog::DoDataExchange(pDX);
+	CDialogBar::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CToolPalette)
 		// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
 
-BEGIN_MESSAGE_MAP(CToolPalette, CEAFPaneDialog)
+BEGIN_MESSAGE_MAP(CToolPalette, CDialogBar)
 	//{{AFX_MSG_MAP(CToolPalette)
 	ON_WM_CREATE()
 	//}}AFX_MSG_MAP
@@ -150,7 +149,7 @@ void CToolPalette::RemoveTool(IDType id)
 
 int CToolPalette::OnCreate(LPCREATESTRUCT lpCreateStruct) 
 {
-	if (CEAFPaneDialog::OnCreate(lpCreateStruct) == -1)
+	if (CDialogBar::OnCreate(lpCreateStruct) == -1)
 		return -1;
 	
    if ( !m_ctrlToolTip.Create(this) )
@@ -167,7 +166,7 @@ BOOL CToolPalette::PreTranslateMessage(MSG* pMsg)
    m_ctrlToolTip.Activate(TRUE);
    m_ctrlToolTip.RelayEvent(pMsg);
 	
-	return CEAFPaneDialog::PreTranslateMessage(pMsg);
+	return CDialogBar::PreTranslateMessage(pMsg);
 }
 
 BOOL CToolPalette::OnCommand(WPARAM wParam, LPARAM lParam) 
@@ -197,7 +196,7 @@ BOOL CToolPalette::OnCommand(WPARAM wParam, LPARAM lParam)
       }
    }
 
-	return CEAFPaneDialog::OnCommand(wParam, lParam);
+	return CDialogBar::OnCommand(wParam, lParam);
 }
 
 void CToolPalette::PreSubclassWindow() 
@@ -208,13 +207,5 @@ void CToolPalette::PreSubclassWindow()
 //      m_ctrlToolTip.Activate(TRUE);
    }
 	
-	CEAFPaneDialog::PreSubclassWindow();
+	CDialogBar::PreSubclassWindow();
 }
-
-#if defined _DEBUG
-void CToolPalette::AssertValid() const 
-{ 
-   AFX_MANAGE_STATE(AfxGetAppModuleState()); 
-   CEAFPaneDialog::AssertValid(); 
-}
-#endif

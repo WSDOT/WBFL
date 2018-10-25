@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -137,6 +137,8 @@ public:
 	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
 	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx);
    STDMETHOD(Clear)();
+   STDMETHOD(ReplaceEx)(CollectionIndexType idx,ICompositeShapeItem* pShapeItem);
+   STDMETHOD(Replace)(CollectionIndexType idx,IShape* pShape);
 	STDMETHOD(AddShapeEx)(/*[in]*/ ICompositeShapeItem* ShapeItem);
    STDMETHOD(AddShape)(/*[in]*/ IShape* shape,/*[in]*/ VARIANT_BOOL bVoid);
 

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,7 +29,6 @@
 #define __SEGMENTITEM_H_
 
 #include "resource.h"       // main symbols
-#include "GenericBridgeCP.h"
 
 class CSegments;
 /////////////////////////////////////////////////////////////////////////////
@@ -39,10 +38,7 @@ class ATL_NO_VTABLE CSegmentItem :
 //   public CComRefCountTracer<CSegmentItem,CComObjectRootEx<CComSingleThreadModel> >,
 	public CComCoClass<CSegmentItem, &CLSID_SegmentItem>,
 	public ISupportErrorInfo,
-	public ISegmentItem,
-	public CProxyDSegmentItemEvents< CSegmentItem >,
-	public IConnectionPointContainerImpl<CSegmentItem>,
-	public ISegmentEvents
+	public ISegmentItem
 {
 public:
    friend CSegments;
@@ -61,17 +57,11 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 BEGIN_COM_MAP(CSegmentItem)
 	COM_INTERFACE_ENTRY(ISegmentItem)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-	
-   COM_INTERFACE_ENTRY(ISegmentEvents)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CSegmentItem)
-CONNECTION_POINT_ENTRY(IID_ISegmentItemEvents)
-END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
+public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
 
 // ISegmentItem
@@ -81,20 +71,9 @@ public:
 	STDMETHOD(get_RelPosition)(/*[out, retval]*/ CollectionIndexType *pVal);
 //   STDMETHOD(Clone)(ISegmentItem** pclone);
 
-// ISegmentEvents
-	STDMETHOD(OnSegmentChanged)(ISegment * Segment)
-	{
-      Fire_OnSegmentItemChanged(this);
-      return S_OK;
-	}
-
 protected:
-   long     m_RelPosition;
+   CollectionIndexType     m_RelPosition;
    CComPtr<ISegment> m_Segment;
-   DWORD m_dwCookie;
-
-   HRESULT AdviseSegment();
-   HRESULT UnadviseSegment();
 };
 
 #endif //__SEGMENTITEM_H_

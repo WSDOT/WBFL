@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -45,6 +45,7 @@
 
 #undef THROW_LOAD
 #define THROW_LOAD(code,pload) {sysXStructuredLoad alzxb_(sysXStructuredLoad::code, _T(__FILE__), __LINE__ ); \
+                                alzxb_.SetExtendedMessage(pload->GetStateDump().c_str()); \
                                 _ASSERT(false); \
                                 alzxb_.Throw();}
 
@@ -143,7 +144,7 @@ protected:
    void MakeCopy(const sysXStructuredLoad& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const sysXStructuredLoad& rOther);
+   virtual void MakeAssignment(const sysXStructuredLoad& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

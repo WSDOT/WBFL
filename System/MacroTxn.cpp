@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -61,12 +61,12 @@ bool txnMacroTxn::Execute()
 {
    // Execute every txn in the list, starting with the first one
    // put into the container
-   TxnIterator iter = m_Transactions.begin();
-   TxnIterator end  = m_Transactions.end();
+   TxnIterator begin = m_Transactions.begin();
+   TxnIterator end   = m_Transactions.end();
 
-   for ( ; iter != end; iter++ )
+   while ( begin != end )
    {
-      TransactionPtr pTxn = *iter;
+      TransactionPtr pTxn = *begin++;
       pTxn->Execute();
    }
 

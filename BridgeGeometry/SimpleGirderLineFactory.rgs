@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLBridgeGeometry.SimpleGirderLineFactory.1 = s 'SimpleGirderLineFactory Class'
+	{
+		CLSID = s '{055CA73B-DD1F-4BC0-A6E5-C13729C16243}'
+	}
+	WBFLBridgeGeometry.SimpleGirderLineFactory = s 'SimpleGirderLineFactory Class'
+	{
+		CLSID = s '{055CA73B-DD1F-4BC0-A6E5-C13729C16243}'
+		CurVer = s 'WBFLBridgeGeometry.SimpleGirderLineFactory.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {055CA73B-DD1F-4BC0-A6E5-C13729C16243} = s 'SimpleGirderLineFactory Class'
+		{
+			ProgID = s 'WBFLBridgeGeometry.SimpleGirderLineFactory.1'
+			VersionIndependentProgID = s 'WBFLBridgeGeometry.SimpleGirderLineFact'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{3887C38E-D11E-4740-896B-D1DBA8F74BD7}'
+		}
+	}
+}

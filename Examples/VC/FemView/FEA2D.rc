@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -27,18 +27,18 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
     "#define _AFX_NO_OLE_RESOURCES\r\n"
@@ -67,22 +67,22 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON    DISCARDABLE     "res\\FEA2D.ico"
-IDR_FEA2DTYPE           ICON    DISCARDABLE     "res\\FEA2DDoc.ico"
+IDR_MAINFRAME           ICON                    "res\\FEA2D.ico"
+IDR_FEA2DTYPE           ICON                    "res\\FEA2DDoc.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Bitmap
 //
 
-IDR_MAINFRAME           BITMAP  MOVEABLE PURE   "res\\Toolbar.bmp"
+IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Toolbar
 //
 
-IDR_MAINFRAME TOOLBAR DISCARDABLE  16, 15
+IDR_MAINFRAME TOOLBAR  16, 15
 BEGIN
     BUTTON      ID_FILE_NEW
     BUTTON      ID_FILE_OPEN
@@ -103,7 +103,7 @@ END
 // Menu
 //
 
-IDR_MAINFRAME MENU PRELOAD DISCARDABLE 
+IDR_MAINFRAME MENU 
 BEGIN
     POPUP "&File"
     BEGIN
@@ -127,7 +127,7 @@ BEGIN
     END
 END
 
-IDR_FEA2DTYPE MENU PRELOAD DISCARDABLE 
+IDR_FEA2DTYPE MENU 
 BEGIN
     POPUP "&File"
     BEGIN
@@ -166,11 +166,13 @@ BEGIN
         MENUITEM "&Joints",                     ID_VIEW_JOINTS
         MENUITEM "&Members",                    ID_VIEW_MEMBERS
         MENUITEM "&Loads",                      ID_VIEW_LOADS
+        MENUITEM "Model Properties",            32780
         MENUITEM SEPARATOR
         MENUITEM "Set Scale Factor",            ID_VIEW_SETSCALE
         MENUITEM "Scale to &Fit",               ID_VIEW_SCALETOFIT
         MENUITEM "Center on &Point",            ID_VIEW_CENTERONPOINT
         MENUITEM "&Zoom",                       ID_VIEW_ZOOM
+        MENUITEM "GTStrudl Model",              32781
     END
     POPUP "&Window"
     BEGIN
@@ -191,7 +193,7 @@ END
 // Accelerator
 //
 
-IDR_MAINFRAME ACCELERATORS PRELOAD MOVEABLE PURE 
+IDR_MAINFRAME ACCELERATORS 
 BEGIN
     "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
@@ -215,8 +217,8 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 235, 55
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_ABOUTBOX DIALOG  0, 0, 235, 55
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About FEA2D"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -226,22 +228,22 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
 END
 
-IDR_MAINFRAME DIALOG DISCARDABLE  0, 0, 330, 16
-STYLE WS_CHILD
+IDR_MAINFRAME DIALOG  0, 0, 330, 16
+STYLE DS_SETFONT | WS_CHILD
 FONT 8, "MS Sans Serif"
 BEGIN
     LTEXT           "TODO: layout dialog bar ",IDC_STATIC,12,4,300,8
 END
 
-IDD_TOOLS DIALOG DISCARDABLE  0, 0, 366, 14
-STYLE WS_CHILD
+IDD_TOOLS DIALOG  0, 0, 366, 14
+STYLE DS_SETFONT | WS_CHILD
 FONT 8, "MS Sans Serif"
 BEGIN
     LTEXT           "ConcLoad",IDC_CONCLOAD_TOOL,7,1,32,11,SS_NOTIFY
 END
 
-IDD_CREATELOADING DIALOG DISCARDABLE  0, 0, 187, 45
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_CREATELOADING DIALOG  0, 0, 187, 45
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Create Loading"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -251,14 +253,13 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,130,24,50,14
 END
 
-IDD_ADDPOINTLOAD DIALOG DISCARDABLE  0, 0, 213, 64
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_ADDPOINTLOAD DIALOG  0, 0, 213, 64
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Add Point Load"
 FONT 8, "MS Sans Serif"
 BEGIN
     LTEXT           "Loading",IDC_STATIC,7,7,26,8
-    COMBOBOX        IDC_LOADINGS,39,7,40,50,CBS_DROPDOWNLIST | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_LOADINGS,39,7,40,50,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Member",IDC_STATIC,7,25,29,8
     EDITTEXT        IDC_MBRID,39,25,40,14,ES_AUTOHSCROLL
     LTEXT           "Location",IDC_STATIC,7,43,27,8
@@ -273,8 +274,8 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,156,24,50,14
 END
 
-IDD_EDITJOINT DIALOG DISCARDABLE  0, 0, 228, 47
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_EDITJOINT DIALOG  0, 0, 228, 47
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Edit Joint"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -282,20 +283,17 @@ BEGIN
     EDITTEXT        IDC_X,73,7,40,14,ES_AUTOHSCROLL
     LTEXT           "Y",IDC_STATIC,63,24,8,8
     EDITTEXT        IDC_Y,73,24,40,14,ES_AUTOHSCROLL
-    CONTROL         "Support Fx",IDC_SUPPORT_FX,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,120,7,48,10
-    CONTROL         "Support Fy",IDC_SUPPORT_FY,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,120,18,49,10
-    CONTROL         "Support Mz",IDC_SUPPORT_MZ,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,120,29,50,10
+    CONTROL         "Support Fx",IDC_SUPPORT_FX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,120,7,48,10
+    CONTROL         "Support Fy",IDC_SUPPORT_FY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,120,18,49,10
+    CONTROL         "Support Mz",IDC_SUPPORT_MZ,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,120,29,50,10
     DEFPUSHBUTTON   "OK",IDOK,171,7,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,171,24,50,14
     LTEXT           "ID",IDC_STATIC,7,7,8,8
     EDITTEXT        IDC_JNTID,17,7,40,14,ES_AUTOHSCROLL | ES_READONLY
 END
 
-IDD_EDITMEMBER DIALOG DISCARDABLE  0, 0, 187, 72
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_EDITMEMBER DIALOG  0, 0, 187, 72
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Edit Member"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -306,21 +304,64 @@ BEGIN
     LTEXT           "EI",IDC_STATIC,7,39,8,8
     EDITTEXT        IDC_EI,23,39,40,14,ES_AUTOHSCROLL
     LTEXT           "Start Joint",IDC_STATIC,68,7,30,8
-    COMBOBOX        IDC_STARTJNT,68,17,48,74,CBS_DROPDOWNLIST | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_STARTJNT,68,17,48,74,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "End Joint",IDC_STATIC,68,31,29,8
-    COMBOBOX        IDC_ENDJNT,68,40,48,59,CBS_DROPDOWNLIST | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Release Mz Start",IDC_RELEASE_MZ_START,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,7,55,67,10
-    CONTROL         "Release Mz End",IDC_RELEASE_MZ_END,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,79,55,66,10
+    COMBOBOX        IDC_ENDJNT,68,40,48,59,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Release Mz Start",IDC_RELEASE_MZ_START,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,55,67,10
+    CONTROL         "Release Mz End",IDC_RELEASE_MZ_END,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,79,55,66,10
     DEFPUSHBUTTON   "OK",IDOK,130,7,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,130,24,50,14
 END
 
+IDD_JOINT_LIST DIALOGEX 0, 0, 316, 296
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Joints"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,7,302,282
+END
 
-#ifndef _MAC
+IDD_MEMBER_LIST DIALOGEX 0, 0, 316, 299
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Members"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,7,302,285
+END
+
+IDD_JOINT_LOAD_LIST DIALOGEX 0, 0, 316, 298
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Joint Loads"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,7,302,284
+END
+
+IDD_POINT_LOAD_LIST DIALOGEX 0, 0, 316, 299
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Point Loads"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,7,302,285
+END
+
+IDD_DISTRIBUTED_LOAD_LIST DIALOGEX 0, 0, 316, 298
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Distributed Loads"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,7,302,284
+END
+
+IDD_POI_LIST DIALOGEX 0, 0, 316, 296
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "POIs"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,7,302,282
+END
+
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
@@ -343,15 +384,13 @@ BEGIN
     BEGIN
         BLOCK "040904B0"
         BEGIN
-            VALUE "CompanyName", "\0"
-            VALUE "FileDescription", "FEA2D MFC Application\0"
-            VALUE "FileVersion", "1, 0, 0, 1\0"
-            VALUE "InternalName", "FEA2D\0"
-            VALUE "LegalCopyright", "Copyright (C) 2001\0"
-            VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "FEA2D.EXE\0"
-            VALUE "ProductName", "FEA2D Application\0"
-            VALUE "ProductVersion", "1, 0, 0, 1\0"
+            VALUE "FileDescription", "FEA2D MFC Application"
+            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "InternalName", "FEA2D"
+            VALUE "LegalCopyright", "Copyright (C) 2001"
+            VALUE "OriginalFilename", "FEA2D.EXE"
+            VALUE "ProductName", "FEA2D Application"
+            VALUE "ProductVersion", "1, 0, 0, 1"
         END
     END
     BLOCK "VarFileInfo"
@@ -360,8 +399,6 @@ BEGIN
     END
 END
 
-#endif    // !_MAC
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -369,7 +406,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
+GUIDELINES DESIGNINFO 
 BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
@@ -418,6 +455,54 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 65
     END
+
+    IDD_JOINT_LIST, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 289
+    END
+
+    IDD_MEMBER_LIST, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 292
+    END
+
+    IDD_JOINT_LOAD_LIST, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 291
+    END
+
+    IDD_POINT_LOAD_LIST, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 292
+    END
+
+    IDD_DISTRIBUTED_LOAD_LIST, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 291
+    END
+
+    IDD_POI_LIST, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 289
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -427,18 +512,18 @@ END
 // String Table
 //
 
-STRINGTABLE PRELOAD DISCARDABLE 
+STRINGTABLE 
 BEGIN
-    IDR_FEA2DTYPE           "\nFEA2D\nFEA2D\n\n\nFEA2D.Document\nFEA2D Document"
+    IDR_FEA2DTYPE           "\nFEA2D\nFEA2D\nxml\n.xml;\nFEA2D.Document\nFEA2D Document"
 END
 
-STRINGTABLE PRELOAD DISCARDABLE 
+STRINGTABLE 
 BEGIN
     AFX_IDS_APP_TITLE       "FEA2D"
     AFX_IDS_IDLEMESSAGE     "Ready"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_INDICATOR_EXT        "EXT"
     ID_INDICATOR_CAPS       "CAP"
@@ -448,7 +533,7 @@ BEGIN
     ID_INDICATOR_REC        "REC"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_FILE_NEW             "Create a new document\nNew"
     ID_FILE_OPEN            "Open an existing document\nOpen"
@@ -461,13 +546,13 @@ BEGIN
     ID_FILE_PRINT_PREVIEW   "Display full pages\nPrint Preview"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
     ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_FILE_MRU_FILE1       "Open this document"
     ID_FILE_MRU_FILE2       "Open this document"
@@ -487,13 +572,13 @@ BEGIN
     ID_FILE_MRU_FILE16      "Open this document"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
     ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_WINDOW_NEW           "Open another window for the active document\nNew Window"
     ID_WINDOW_ARRANGE       "Arrange icons at the bottom of the window\nArrange Icons"
@@ -503,7 +588,7 @@ BEGIN
     ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_EDIT_CLEAR           "Erase the selection\nErase"
     ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
@@ -518,13 +603,13 @@ BEGIN
     ID_EDIT_REDO            "Redo the previously undone action\nRedo"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_VIEW_TOOLBAR         "Show or hide the toolbar\nToggle ToolBar"
     ID_VIEW_STATUS_BAR      "Show or hide the status bar\nToggle StatusBar"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     AFX_IDS_SCSIZE          "Change the window size"
     AFX_IDS_SCMOVE          "Change the window position"
@@ -535,19 +620,19 @@ BEGIN
     AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     AFX_IDS_SCRESTORE       "Restore the window to normal size"
     AFX_IDS_SCTASKLIST      "Activate Task List"
     AFX_IDS_MDICHILD        "Activate this window"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     AFX_IDS_PREVIEW_CLOSE   "Close print preview mode\nCancel Preview"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDS_INDICATOR_WORLDPOINT "WP (%1,%2)"
     IDS_INDICATOR_LOGICALPOINT "LP (%1,%2)"
@@ -555,7 +640,7 @@ BEGIN
     IDS_INDICATOR_POINT     "XX (xxxxxxxx,yyyyyyy)"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_LOADS_CREATELOADING  "Create a new loading\nCreate Loading"
     ID_LOADS_ADDPOINTLOAD   "Adds a point load to the model\\Add Point Load"

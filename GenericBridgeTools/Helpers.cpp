@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,92 +34,58 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-HRESULT GetGirderSection(IGenericBridge* bridge,SpanIndexType spanIdx,GirderIndexType gdrIdx,Float64 location,ISegment** segment,IGirderSection** section)
+HRESULT GetGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,IGirderSection** ppSection)
 {
    HRESULT hr;
 
-   CComPtr<ISpanCollection> spans;
-   bridge->get_Spans(&spans);
-
-   CComPtr<ISpan> span;
-   hr = spans->get_Item(spanIdx,&span);
-   if ( FAILED(hr) )
-      return hr;
-
    CComPtr<ISuperstructureMember> ssmbr;
-   hr = span->get_SuperstructureMember(gdrIdx,&ssmbr);
+   hr = bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
    if ( FAILED(hr) )
       return hr;
 
-   CComPtr<ISegmentItem> segItem;
-   Float64 dist;
-	hr = ssmbr->GetSegmentForMemberLocation(location,&dist,&segItem);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<ISegment> seg;
-   segItem->get_Segment(&seg);
+   CComPtr<ISegment> segment;
+   ssmbr->get_Segment(segIdx,&segment);
+   ATLASSERT(segment);
 
    CComPtr<IShape> shape;
-   hr = seg->get_Shape(dist,&shape);
+   hr = segment->get_PrimaryShape(distFromStartOfSegment,&shape);
    if ( FAILED(hr) )
       return hr;
 
-   CComQIPtr<IGirderSection> sect(shape);
-   if ( sect == NULL )
+   CComQIPtr<IGirderSection> gdrSection(shape);
+   if ( gdrSection == NULL )
       return GBMT_E_GIRDERSECTION;
 
-   (*segment) = seg;
-   (*segment)->AddRef();
+   (*ppSection) = gdrSection;
+   (*ppSection)->AddRef();
+   return S_OK;
+}
 
-   (*section) = sect;
-   (*section)->AddRef();
+HRESULT GetGirderHaunchBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,Float64* pHaunch)
+{
+   CComPtr<ISuperstructureMember> ssmbr;
+   HRESULT hr = bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
+   if ( FAILED(hr) )
+      return hr;
+
+   CComPtr<ISegment> segment;
+   ssmbr->get_Segment(segIdx,&segment);
+
+   Float64 startHaunch, endHaunch;
+   segment->get_HaunchDepth(etStart,&startHaunch);
+   segment->get_HaunchDepth(etEnd,  &endHaunch);
+
+   Float64 length;
+   segment->get_Length(&length);
+
+   Float64 haunch = ::LinInterp(distFromStartOfSegment,startHaunch,endHaunch,length);
+   *pHaunch = haunch;
    return S_OK;
 }
 
 HRESULT GetAlignment(IGenericBridge* bridge,IAlignment** alignment)
 {
-   CComPtr<ICogoInfo> cogoinfo;
-   bridge->get_CogoInfo(&cogoinfo);
-
-   CComPtr<ICogoModel> cogomodel;
-   bridge->get_CogoModel(&cogomodel);
-
-   CComPtr<IPathCollection> alignments;
-   cogomodel->get_Alignments(&alignments);
-
-   CogoElementKey key;
-   cogoinfo->get_AlignmentKey(&key);
-   CComPtr<IPath> alignpath;
-   alignments->get_Item(key,&alignpath);
-
-   alignpath->QueryInterface(alignment);
-
-   return S_OK;
-}
-
-HRESULT GetGirderHaunch(IGenericBridge* bridge,SpanIndexType spanIdx,GirderIndexType gdrIdx,Float64 distFromStartOfGirder,Float64* pHaunch)
-{
-   CComPtr<ISpanCollection> spans;
-   bridge->get_Spans(&spans);
-
-   CComPtr<ISpan> span;
-   spans->get_Item(spanIdx,&span);
-
-   CComPtr<IGirderSpacing> startSpacing, endSpacing;
-   span->get_GirderSpacing(etStart,&startSpacing);
-   span->get_GirderSpacing(etEnd,  &endSpacing);
-
-   Float64 startHaunch, endHaunch;
-   startSpacing->get_GirderHaunch(gdrIdx,&startHaunch);
-   endSpacing->get_GirderHaunch(gdrIdx,&endHaunch);
-
-   Float64 length;
-   span->get_GirderLineLength(gdrIdx,&length);
-
-   Float64 haunch = ::LinInterp(distFromStartOfGirder,startHaunch,endHaunch,length);
-   *pHaunch = haunch;
-   return S_OK;
+   return bridge->get_Alignment(alignment);
 }
 
 Float64 DistanceToStation(IGenericBridge* bridge,Float64 distFromStartOfBridge)

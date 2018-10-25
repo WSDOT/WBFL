@@ -209,7 +209,7 @@ STDMETHODIMP_(BOOL) CPointLoadEventsImpl::XDragData::PrepareForDrag(iDisplayObje
    pSink->CreateFormat(ms_Format);
 
    // Load ID
-   long id = pThis->m_ID;
+   IDType id = pThis->m_ID;
    pSink->Write(ms_Format,&id,sizeof(id));
 
    // loading
@@ -284,7 +284,7 @@ STDMETHODIMP_(void) CPointLoadEventsImpl::XDragData::OnDrop(iDisplayObject* pDO,
    pThis->m_Mz = val;
 }
 
-void CPointLoadEventsImpl::EditLoad(LoadIDType loadingID,LoadIDType loadID)
+void CPointLoadEventsImpl::EditLoad(IDType loadingID,IDType loadID)
 {
    CComPtr<IFem2dModel> model = m_pDoc->m_Model;
    CAddPointLoadDlg dlg(model,TRUE);
@@ -317,7 +317,7 @@ void CPointLoadEventsImpl::EditLoad(LoadIDType loadingID,LoadIDType loadID)
    }
 }
 
-void CPointLoadEventsImpl::DeleteLoad(LoadIDType loadingID,LoadIDType loadID)
+void CPointLoadEventsImpl::DeleteLoad(IDType loadingID,IDType loadID)
 {
    CComPtr<IFem2dModel>model = m_pDoc->m_Model;
 

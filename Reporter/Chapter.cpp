@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -43,21 +43,18 @@ CLASS
 
 
 rptChapter::rptChapter() :
-m_Name( _T("") ),
-m_DoEjectPageBefore(false)
+m_Name( _T("") )
 {}
 
 rptChapter::rptChapter(const std::_tstring& name) :
-m_Name( name ),
-m_DoEjectPageBefore(false)
+m_Name( name )
 {}
 
 
 rptChapter::rptChapter(const std::_tstring& name,const rptStyleName& rStyleName, 
                        const rptPageLayout& rLayout):
 rptReportLayoutItem(rStyleName, rLayout),
-m_Name( name ),
-m_DoEjectPageBefore(false)
+m_Name( name )
 {
 }
 
@@ -103,16 +100,6 @@ void rptChapter::Accept( rptChapterVisitor& MyVisitor )
 }
 
 //======================== ACCESS     =======================================
-
-bool rptChapter::GetEjectPageBreakBefore() const
-{
-   return m_DoEjectPageBefore;
-}
-
-void rptChapter::SetEjectPageBreakBefore(bool doBreak)
-{
-   m_DoEjectPageBefore = doBreak;
-}
 
 rptChapter::ConstChapterParagraphIterator rptChapter::ConstBegin()
 {

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -76,7 +76,7 @@ public:
                    Uint32 Nl, Float64 wLane,
                    Float64 L,Float64 ts,Float64 n,
                    Float64 I, Float64 A, Float64 eg,
-                   bool bXFrames, // if true, the statical (rigid) method is used
+                   bool bXFrames,
                    Float64 skewAngle1, Float64 skewAngle2,
                    bool bSkewMoment,
                    bool bSkewShear);
@@ -107,7 +107,7 @@ protected:
    void MakeCopy(const lrfdLldfTypeAEK& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdLldfTypeAEK& rOther);
+   virtual void MakeAssignment(const lrfdLldfTypeAEK& rOther);
 
    //------------------------------------------------------------------------
    virtual DFResult GetMomentDF_Ext_1_Strength() const;
@@ -167,11 +167,11 @@ DESCRIPTION
 
    The WSDOT modifications are:
    1. For exterior girders with a slab cantilever length less than or equal to
-      the overhang threshold of the adjacent interior girder spacing,  compute the distribution
+      one-half of the adjacent interior girder spacing,  compute the distribution
       factor using the equations for an interior girder.  The slab cantilever
       length is defined as the distance from the centerline of the exterior girder
       to the edge of the slab.
-   2. For exterior girders with a slab cantilever length exceeding the overhang threshold
+   2. For exterior girders with a slab cantilever length exceeding one-half
       of the adjacent interior girder spacing, compute the live load distribution
       factor in accordance with the LRFD specification, except use a multiple
       presence factor of 1.0 for one design lane loaded.
@@ -206,8 +206,7 @@ public:
                         bool bXFrames,
                         Float64 skewAngle1, Float64 skewAngle2,
                         bool bSkewMoment,
-                        bool bSkewShear,
-                        Float64 SlabCantileverThreshold);
+                        bool bSkewShear);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -231,16 +230,10 @@ protected:
    Float64 m_LeftSlabOverhang;
    Float64 m_RightSlabOverhang;
 
-   Float64 m_SlabCantileverThreshold;
-
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
-
-   // If test passes,  use the lever rule with the multiple presence factor of 1.0 for single
-   // lane to determine the live load distribution. The live load used to design the exterior 
-   // girder shall not be less than the live load used for the adjacent interior girder. 
-   bool SlabCantileverTest() const;
+   
 
    //------------------------------------------------------------------------
    virtual DFResult GetMomentDF_Ext_1_Strength() const;
@@ -256,7 +249,7 @@ protected:
    void MakeCopy(const lrfdWsdotLldfTypeAEK& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdWsdotLldfTypeAEK& rOther);
+   virtual void MakeAssignment(const lrfdWsdotLldfTypeAEK& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -265,9 +258,6 @@ private:
    // GROUP: DATA MEMBERS
 
    // GROUP: LIFECYCLE
-   // No default constructor
-   lrfdWsdotLldfTypeAEK();
-
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
    // GROUP: ACCESS

@@ -209,9 +209,12 @@ void CJointDrawStrategyImpl::Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF col
    if ( bIsSupport == VARIANT_FALSE )
    {
       // Not a support... Draw an O and return
-      CRect rect(cx-wid/2,cy-hgt/2,cx+wid/2,cy+hgt/2);
+      //CRect rect(cx-wid/5,cy-hgt/5,cx+wid/5,cy+hgt/5);
 
-      pDC->Ellipse(rect);
+      //pDC->Ellipse(rect);
+
+      pDC->MoveTo(cx,cy-hgt/5);
+      pDC->LineTo(cx,cy+hgt/5);
 
       pDC->SelectObject(pOldPen);
       return;
@@ -230,27 +233,27 @@ void CJointDrawStrategyImpl::Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF col
    if ( bFxReleased == VARIANT_FALSE )
    {
       // Supported in the X direction
-      pDC->MoveTo(cx-wid,cy);
-      pDC->LineTo(cx,cy);
+      pDC->MoveTo(cx-wid,cy+5);
+      pDC->LineTo(cx,cy+5);
       
       pDC->MoveTo(cx-wid/4,cy+hgt/4);
-      pDC->LineTo(cx,cy);
+      pDC->LineTo(cx,cy+5);
       
       pDC->MoveTo(cx-wid/4,cy-hgt/4);
-      pDC->LineTo(cx,cy);
+      pDC->LineTo(cx,cy+5);
    }
 
    if ( bFyReleased == VARIANT_FALSE )
    {
       // Supported in the Y direction
-      pDC->MoveTo(cx,cy+hgt);
-      pDC->LineTo(cx,cy);
+      pDC->MoveTo(cx,cy+hgt+5);
+      pDC->LineTo(cx,cy+5);
       
-      pDC->MoveTo(cx-wid/4,cy+hgt/4);
-      pDC->LineTo(cx,cy);
+      pDC->MoveTo(cx-wid/4,cy+hgt/4+5);
+      pDC->LineTo(cx,cy+5);
       
-      pDC->MoveTo(cx+wid/4,cy+hgt/4);
-      pDC->LineTo(cx,cy);
+      pDC->MoveTo(cx+wid/4,cy+hgt/4+5);
+      pDC->LineTo(cx,cy+5);
    }
 
    if ( bMzReleased == VARIANT_FALSE )

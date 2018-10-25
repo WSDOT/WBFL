@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,7 +29,6 @@
 #define __SIDEWALKBARRIER_H_
 
 #include "resource.h"       // main symbols
-#include "GenericBridgeCP.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -41,8 +40,6 @@ class ATL_NO_VTABLE CSidewalkBarrier :
 	public ISupportErrorInfo,
 	public ISidewalkBarrier,
    public IStructuredStorage2,
-//   public CProxyDSidewalkBarrierEvents< CSidewalkBarrier >,
-//   public IConnectionPointContainerImpl<CSidewalkBarrier>,
    public IObjectSafetyImpl<CSidewalkBarrier,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>
 {
 public:
@@ -58,15 +55,8 @@ BEGIN_COM_MAP(CSidewalkBarrier)
 	COM_INTERFACE_ENTRY(ISidewalkBarrier)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
-
-//   COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
    COM_INTERFACE_ENTRY(IObjectSafety)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CSidewalkBarrier)
-//	CONNECTION_POINT_ENTRY(IID_ISidewalkBarrierEvents)
-END_CONNECTION_POINT_MAP()
 
 private:
    CComPtr<IBarrier> m_ExtBarrier;

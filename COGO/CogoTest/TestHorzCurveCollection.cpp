@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -129,7 +129,7 @@ void CTestHorzCurveCollection::Test()
    //
    // Test FindKey
    //
-   CogoElementKey key;
+   CogoObjectID key;
    TRY_TEST(pColl->FindKey(NULL,&key),E_INVALIDARG);
    TRY_TEST(pColl->FindKey(hc,NULL),E_POINTER);
    TRY_TEST(pColl->FindKey(hc,&key),S_OK);
@@ -169,7 +169,7 @@ void CTestHorzCurveCollection::Test()
    TRY_TEST( pColl->get__EnumKeys(&pEnum), S_OK );
 
    ULONG fetched;
-   CogoElementKey target_key = 1;
+   CogoObjectID target_key = 1;
    while( pEnum->Next(1,&key,&fetched ) == S_OK )
    {
       TRY_TEST(key,target_key++);
@@ -256,7 +256,7 @@ void CTestHorzCurveCollection::Test()
    TRY_TEST( TestIObjectSafety(CLSID_HorzCurveCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
-STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveChanged(CogoElementKey key,IHorzCurve* hc)
+STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveChanged(CogoObjectID key,IHorzCurve* hc)
 {
 //   MessageBox(NULL,"HorzCurveChanged","Event",MB_OK);
    if ( key == m_expectedKey )
@@ -265,7 +265,7 @@ STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveChanged(CogoElementKey key,IHo
    return S_OK;
 }
 
-STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveAdded(CogoElementKey key,IHorzCurve* hc)
+STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveAdded(CogoObjectID key,IHorzCurve* hc)
 {
 //   MessageBox(NULL,"HorzCurveAdded","Event",MB_OK);
    if ( key == m_expectedKey )
@@ -274,7 +274,7 @@ STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveAdded(CogoElementKey key,IHorz
    return S_OK;
 }
 
-STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveRemoved(CogoElementKey key)
+STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveRemoved(CogoObjectID key)
 {
 //   MessageBox(NULL,"HorzCurveRemoved","Event",MB_OK);
    if ( key == m_expectedKey )

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -117,13 +117,9 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEK::GetMomentDF_Ext_1_Str
       g.RigidData = DistributeByStaticalMethod(m_Side, m_Spacings, m_LeftCurbOverhang, m_RightCurbOverhang, m_wLane, 1, 1);
 
       skew = MomentSkewCorrectionFactor();
-      if ( g.mg < g.RigidData.mg*skew )
+      if ( g.RigidData.mg*skew > g.mg )
       {
          g.ControllingMethod = RIGID_METHOD;
-         if ( m_bSkewMoment )
-         {
-            g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-         }
          g.mg = g.RigidData.mg*skew;
          g.SkewCorrectionFactor = skew;
       }
@@ -145,13 +141,9 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEK::GetMomentDF_Ext_2_Str
       // cross-section deflects and rotates as a rigid cross-section. 4.6.2.2.2d
       g.RigidData = DistributeByStaticalMethod(m_Side, m_Spacings, m_LeftCurbOverhang, m_RightCurbOverhang, m_wLane,2,m_Nl);
       skew = MomentSkewCorrectionFactor();
-      if ( g.mg < g.RigidData.mg*skew )
+      if ( g.RigidData.mg*skew > g.mg )
       {
          g.ControllingMethod = RIGID_METHOD;
-         if ( m_bSkewMoment )
-         {
-            g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-         }
          g.mg = g.RigidData.mg*skew;
          g.SkewCorrectionFactor = skew;
       }
@@ -174,13 +166,9 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEK::GetShearDF_Ext_1_Stre
       g.RigidData = DistributeByStaticalMethod(m_Side, m_Spacings, m_LeftCurbOverhang, m_RightCurbOverhang, m_wLane, 1, 1);
 
       skew = ShearSkewCorrectionFactor();
-      if ( g.mg < g.RigidData.mg*skew )
+      if ( g.RigidData.mg*skew > g.mg )
       {
          g.ControllingMethod = RIGID_METHOD;
-         if ( m_bSkewShear )
-         {
-            g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
-         }
          g.mg = g.RigidData.mg*skew;
          g.SkewCorrectionFactor = skew;
       }
@@ -202,13 +190,9 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEK::GetShearDF_Ext_2_Stre
          // cross-section deflects and rotates as a rigid cross-section. 4.6.2.2.2d
          g.RigidData = DistributeByStaticalMethod(m_Side, m_Spacings, m_LeftCurbOverhang, m_RightCurbOverhang, m_wLane,2,m_Nl);
          skew = ShearSkewCorrectionFactor();
-         if ( g.mg < g.RigidData.mg*skew )
+         if ( g.RigidData.mg*skew > g.mg )
          {
             g.ControllingMethod = RIGID_METHOD;
-            if ( m_bSkewShear )
-            {
-               g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
-            }
             g.mg = g.RigidData.mg*skew;
             g.SkewCorrectionFactor = skew;
          }
@@ -311,8 +295,7 @@ lrfdWsdotLldfTypeAEK::lrfdWsdotLldfTypeAEK(GirderIndexType gdr,Float64 Savg,cons
                                            bool bXFrames,
                                            Float64 skewAngle1, Float64 skewAngle2,
                                            bool bSkewMoment,
-                                           bool bSkewShear,
-                                           Float64 slabCantileverThreshold) :
+                                           bool bSkewShear) :
 lrfdLldfTypeAEKIJ(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,
                   Nl,wLane,leftOverhang,rightOverhang,L,ts,n,
                   I,A,eg, skewAngle1, skewAngle2,bSkewMoment,bSkewShear)
@@ -321,9 +304,6 @@ lrfdLldfTypeAEKIJ(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,
    m_LeftSlabOverhang  = leftSlabOverhang;
    m_RightSlabOverhang = rightSlabOverhang;
    m_bIgnoreDe = true; // we ignore range of applicability for de and use lever rule.
-
-   // Set the overhang threshold value
-   m_SlabCantileverThreshold = slabCantileverThreshold;
 
    // WSDOT and TxDOT apply a MPF of 1.0 for exterior girders using the lever rule where one lane controls
    this->IgnoreMpfLeverRule(true);
@@ -360,18 +340,14 @@ lrfdWsdotLldfTypeAEK& lrfdWsdotLldfTypeAEK::operator= (const lrfdWsdotLldfTypeAE
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
 
-bool lrfdWsdotLldfTypeAEK::SlabCantileverTest() const
-{
-   Float64 slab_cantilever = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
-   return IsGT(0.4*m_Savg,slab_cantilever,0.001);
-}
 
 lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetMomentDF_Ext_1_Strength() const
 {
    lrfdILiveLoadDistributionFactor::DFResult gi;
    gi = lrfdLldfTypeAEKIJ::GetMomentDF_Int_1_Strength();
 
-   if (SlabCantileverTest())
+   Float64 slab_overhang = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
+   if ( IsGT(slab_overhang, m_Savg/2) )
    {
       // compare with lever rule with mpf=1.0
       lrfdILiveLoadDistributionFactor::DFResult gext;
@@ -380,13 +356,8 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetMomentDF_Ext_
 
       Float64 skew = MomentSkewCorrectionFactor();
 
-      if (gi.mg <= gext.LeverRuleData.mg*skew)
+      if (gext.LeverRuleData.mg*skew >= gi.mg)
       {
-         if ( m_bSkewMoment )
-         {
-            gext.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-         }
-
          gext.mg = gext.LeverRuleData.mg*skew;
          gext.SkewCorrectionFactor = skew;
 
@@ -409,7 +380,8 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetMomentDF_Ext_
 {
    lrfdILiveLoadDistributionFactor::DFResult gext;
 
-   if (SlabCantileverTest())
+   Float64 slab_overhang = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
+   if ( IsGT(slab_overhang, m_Savg/2) )
    {
       // subclass will compute using interior with e factor, or lever rule
       gext = lrfdLldfTypeAEKIJ::GetMomentDF_Ext_2_Strength();
@@ -430,7 +402,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetMomentDF_Ext_
       {
          // We are into the lever rule, only additional rule here is that we must exceed the interior value
          lrfdILiveLoadDistributionFactor::DFResult gint = lrfdLldfTypeAEKIJ::GetMomentDF_Int_2_Strength();
-         if (gext.mg < gint.mg)
+         if (gint.mg > gext.mg)
          {
             gint.ControllingMethod |= INTERIOR_OVERRIDE;
             gext = gint;
@@ -452,7 +424,8 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetShearDF_Ext_1
    lrfdILiveLoadDistributionFactor::DFResult gi;
    gi = lrfdLldfTypeAEKIJ::GetShearDF_Int_1_Strength();
 
-   if (SlabCantileverTest())
+   Float64 slab_overhang = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
+   if ( IsGT(slab_overhang, m_Savg/2) )
    {
       // compare with lever rule with mpf=1.0
       lrfdILiveLoadDistributionFactor::DFResult gext;
@@ -461,12 +434,8 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetShearDF_Ext_1
 
       Float64 skew = ShearSkewCorrectionFactor();
 
-      if (gi.mg <= gext.LeverRuleData.mg*skew)
+      if (gext.LeverRuleData.mg*skew >= gi.mg)
       {
-         if ( m_bSkewShear )
-         {
-            gext.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
-         }
          gext.mg = gext.LeverRuleData.mg*skew;
          gext.SkewCorrectionFactor = skew;
 
@@ -489,7 +458,8 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetShearDF_Ext_2
 {
    lrfdILiveLoadDistributionFactor::DFResult gext;
 
-   if (SlabCantileverTest())
+   Float64 slab_overhang = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
+   if ( IsGT(slab_overhang, m_Savg/2) )
    {
       // subclass will compute using interior with e factor, or lever rule
       gext = lrfdLldfTypeAEKIJ::GetShearDF_Ext_2_Strength();
@@ -509,7 +479,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetShearDF_Ext_2
       else if (gext.ControllingMethod & LEVER_RULE)
       {
          lrfdILiveLoadDistributionFactor::DFResult gint = lrfdLldfTypeAEKIJ::GetShearDF_Int_2_Strength();
-         if (gext.mg < gint.mg)
+         if (gint.mg > gext.mg)
          {
             gint.ControllingMethod |= INTERIOR_OVERRIDE;
             gext = gint;
@@ -530,8 +500,6 @@ void lrfdWsdotLldfTypeAEK::MakeCopy(const lrfdWsdotLldfTypeAEK& rOther)
 {
    m_LeftSlabOverhang  = rOther.m_LeftSlabOverhang;
    m_RightSlabOverhang = rOther.m_RightSlabOverhang;
-
-   m_SlabCantileverThreshold = rOther.m_SlabCantileverThreshold;
 }
 
 void lrfdWsdotLldfTypeAEK::MakeAssignment(const lrfdWsdotLldfTypeAEK& rOther)
@@ -587,7 +555,7 @@ bool lrfdWsdotLldfTypeAEK::TestMe(dbgLog& rlog)
    lrfdWsdotLldfTypeAEK df(1,S,spacings,de,de,
                            Nl,wLane,L,ts,n,I,A,eg,
                            overhang,overhang,
-                           false,0.0,0.0,false,false,0.5);
+                           false,0.0,0.0,false,false);
 
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.480, 0.001) );
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.649, 0.001) );
@@ -613,7 +581,7 @@ bool lrfdWsdotLldfTypeAEK::TestMe(dbgLog& rlog)
    lrfdWsdotLldfTypeAEK df2(1,S,spacings,de,de,
                             Nl,wLane,L,ts,n,I,A,eg,
                             overhang,overhang,
-                            false,0.0,0.0,false,false,0.5);
+                            false,0.0,0.0,false,false);
 
    TRY_TESTME( IsEqual( df2.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.480, 0.001) );
    TRY_TESTME( IsEqual( df2.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.649, 0.001) );

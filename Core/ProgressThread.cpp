@@ -1,27 +1,3 @@
-///////////////////////////////////////////////////////////////////////
-// WBFLTools - Utility Tools for the WBFL
-// Copyright © 1999-2016  Washington State Department of Transportation
-//                        Bridge and Structures Office
-//
-// This library is a part of the Washington Bridge Foundation Libraries
-// and was developed as part of the Alternate Route Project
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the Alternate Route Library Open Source License as 
-// published by the Washington State Department of Transportation,
-// Bridge and Structures Office.
-//
-// This program is distributed in the hope that it will be useful,
-// but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
-// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-// PURPOSE.  See the Alternate Route Library Open Source License for more details.
-//
-// You should have received a copy of the Alternate Route Library Open Source License
-// along with this program; if not, write to the Washington State
-// Department of Transportation, Bridge and Structures Office,
-// P.O. Box 47340, Olympia, WA 98503, USA or e-mail
-// Bridge_Support@wsdot.wa.gov
-///////////////////////////////////////////////////////////////////////
 // ProgressThread.cpp : implementation file
 //
 
@@ -29,15 +5,9 @@
 #include "ProgressThread.h"
 #include <WBFLCore.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 
 const UINT g_TimerID = 1;
-CProgressDlg* g_pTimerWnd = 0;
+CWnd* g_pTimerWnd = 0;
 void CALLBACK EXPORT TimerProc(HWND hWnd,UINT nMsg,UINT_PTR nIDEvent,DWORD dwTime)
 {
    CHECK( g_pTimerWnd != 0 );
@@ -46,7 +16,6 @@ void CALLBACK EXPORT TimerProc(HWND hWnd,UINT nMsg,UINT_PTR nIDEvent,DWORD dwTim
 
    g_pTimerWnd->KillTimer( g_TimerID );
    g_pTimerWnd->ShowWindow( SW_SHOW );
-   g_pTimerWnd->GrabInput();
    g_pTimerWnd = 0;
 }
 
@@ -65,6 +34,7 @@ CProgressThread::~CProgressThread()
 BOOL CProgressThread::InitInstance()
 {
 	// TODO:  perform and per-thread initialization here
+   m_bTerminate = FALSE;
 	return TRUE;
 }
 
@@ -74,14 +44,21 @@ int CProgressThread::ExitInstance()
 	return CWinThread::ExitInstance();
 }
 
-BEGIN_MESSAGE_MAP(CProgressThread, CWinThread)
-   ON_THREAD_MESSAGE(WM_KILLTHREAD,OnKillThread)
-END_MESSAGE_MAP()
-
-void CProgressThread::OnKillThread(WPARAM wParam,LPARAM lParam)
+BOOL CProgressThread::OnIdle(LONG lCount)
 {
-   AfxPostQuitMessage(0);
+   if ( m_bTerminate )
+      AfxPostQuitMessage(0);
+
+   return FALSE;
 }
+
+void CProgressThread::EndThread()
+{
+   m_bTerminate = TRUE;
+}
+
+BEGIN_MESSAGE_MAP(CProgressThread, CWinThread)
+END_MESSAGE_MAP()
 
 HRESULT CProgressThread::CreateProgressWindow(CWnd* pParentWnd,DWORD dwMask,UINT nDelay)
 {
@@ -99,7 +76,7 @@ HRESULT CProgressThread::CreateProgressWindow(CWnd* pParentWnd,DWORD dwMask,UINT
    if ( dwMask & PW_NOMESSAGE )
       m_ProgressDlg.m_MessageCtrl.ShowWindow( SW_HIDE );
 
-   if ( dwMask & PW_NOGAUGE ) // Always hide
+//   if ( dwMask & PW_NOGAUGE ) // Always hide
       m_ProgressDlg.m_ProgressBar.ShowWindow( SW_HIDE );
    
    m_bCancelEnabled = TRUE;
@@ -113,7 +90,7 @@ HRESULT CProgressThread::CreateProgressWindow(CWnd* pParentWnd,DWORD dwMask,UINT
    g_pTimerWnd = &(m_ProgressDlg);
    m_ProgressDlg.SetTimer( g_TimerID, nDelay, &TimerProc );
    m_ProgressDlg.PumpMessage();
-   
+
    return S_OK;
 }
 
@@ -122,7 +99,6 @@ HRESULT CProgressThread::CreateProgressWindow(CWnd* pParentWnd,DWORD dwMask,UINT
 void CProgressThread::Init(short begin, short end, short inc)
 {
    m_ProgressDlg.PumpMessage();
-   m_ProgressDlg.m_ProgressBar.ShowWindow( SW_SHOW );
    m_ProgressDlg.m_ProgressBar.SetRange( begin, end );
    m_ProgressDlg.m_ProgressBar.SetStep( inc );
    m_ProgressDlg.m_ProgressBar.SetPos( begin );
@@ -162,6 +138,6 @@ void CProgressThread::DestroyProgressWindow()
 {
    m_ProgressDlg.KillTimer( g_TimerID );
    g_pTimerWnd = 0;
-   m_ProgressDlg.ReleaseInput();
+
    m_ProgressDlg.DestroyWindow();
 }

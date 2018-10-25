@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,41 +30,21 @@
 #ifndef INCLUDED_TESTGENERICBRIDGE_H_
 #define INCLUDED_TESTGENERICBRIDGE_H_
 
-class ATL_NO_VTABLE CTestGenericBridge :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public IGenericBridgeEvents
+class CTestGenericBridge
 {
 public:
 	static void Test();
 	CTestGenericBridge();
 	virtual ~CTestGenericBridge();
-
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestGenericBridge)
-   COM_INTERFACE_ENTRY(IGenericBridgeEvents)
-END_COM_MAP()
-
-// IGenericBridgeEvents
-public:
-   STDMETHOD(OnBridgeChanged)(IGenericBridge* sp);
-
 private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
+   static void TestPiers(IGenericBridge* bridge);
+   static void TestSegments(IGenericBridge* bridge);
 
-   static void TestAlignment();
-   static void TestCogoInfo();
-   static void TestCogoModel();
-   static void TestWearingSurface();
-   static void TestPiers();
-   static void TestSpans();
-   static void TestStageCollection();
-   static void TestSuperstructureMemberCollection();
-   static void TestAddRemove();
-   static void TestClone();
-   static void TestSegmentLayout();
+
+   static void CreateBridgeModel(IGenericBridge** bridge);
+   static void CreateAlignment(IGenericBridge* bridge);
+   static void CreatePiers(IGenericBridge* bridge);
+   static void CreateGirders(IGenericBridge* bridge);
 
    static void DumpBridge(IGenericBridge* bridge);
    static void ValidateBridge(IGenericBridge* bridge,Float64 stations[],Float64 spanLengths[],CComBSTR orientations[],Float64 spacings[]);

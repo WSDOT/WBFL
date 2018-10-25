@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
-CString AfxQuestion(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszDefault)
+BOOL AfxQuestion(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszDefault,CString& strAnswer)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
@@ -41,9 +41,13 @@ CString AfxQuestion(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszDefault)
    dlg.m_Title = lpszTitle;
    dlg.m_Question = lpszQuestion;
    dlg.m_Answer = lpszDefault;
-   dlg.DoModal();
+   if ( dlg.DoModal() == IDOK )
+   {
+      strAnswer = dlg.m_Answer;
+      return TRUE;
+   }
 
-   return dlg.m_Answer;
+   return FALSE;
 }
 
 int AfxChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,BOOL bCancelButton,int defChoice,LPCTSTR lpszHelpFile,UINT helpID)

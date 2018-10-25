@@ -522,7 +522,6 @@ library WBFLRCCapacity
 		[propput,helpcontext(IDH_IRoundColumn_Es),helpstring("property Es")] HRESULT Es([in]Float64 es);
 		[propget,helpcontext(IDH_IRoundColumn_Es),helpstring("property Es")] HRESULT Es([out,retval]Float64* es);
 		[helpcontext(IDH_IRoundColumn_ComputerInteractionSurface),helpstring("method ComputeInteractionSurface")] HRESULT ComputeInteraction([in]long nSteps,[out,retval]IPoint2dCollection* *points);
-		[helpcontext(IDH_IRoundColumn_ComputerInteractionSurface),helpstring("method ComputeInteractionSurfaceEx")] HRESULT ComputeInteractionEx([in]long nSteps,[in]Float64 ecl,[in]Float64 etl,[out]IPoint2dCollection** ppUnfactored,[out]IPoint2dCollection** ppFactored);
 	};
 
 	[
@@ -538,13 +537,9 @@ library WBFLRCCapacity
 		[helpcontext(IDH_IGeneralSection_AddShape),helpstring("method AddShape")] HRESULT AddShape([in]IShape* pShape,[in]IStressStrain* pfgMaterial,[in]IStressStrain* pbgMaterial,[in]Float64 ei);
 		[propget,helpcontext(IDH_IGeneralSection_ShapeCount),helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]CollectionIndexType* nShapes);
 		[propget,helpcontext(IDH_IGeneralSection_Shape),helpstring("property Shape")] HRESULT Shape([in]CollectionIndexType shapeIdx,[out,retval]IShape** pShape);
-		[propputref,helpcontext(IDH_IGeneralSection_Shape),helpstring("property Shape")] HRESULT Shape([in]CollectionIndexType shapeIdx,[in]IShape* pShape);
 		[propget,helpcontext(IDH_IGeneralSection_ForegroundMaterial),helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]CollectionIndexType shapeIdx,[out,retval]IStressStrain** pMaterial);
-		[propputref,helpcontext(IDH_IGeneralSection_ForegroundMaterial),helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]CollectionIndexType shapeIdx,[in]IStressStrain* pMaterial);
 		[propget,helpcontext(IDH_IGeneralSection_BackgroundMaterial),helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]CollectionIndexType shapeIdx,[out,retval]IStressStrain** pMaterial);
-		[propputref,helpcontext(IDH_IGeneralSection_BackgroundMaterial),helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]CollectionIndexType shapeIdx,[in]IStressStrain* pMaterial);
 		[propget,helpcontext(IDH_IGeneralSection_InitialStrain),helpstring("property InitialStrain")] HRESULT InitialStrain([in]CollectionIndexType shapeIdx,[out,retval]Float64* ei);
-		[propput,helpcontext(IDH_IGeneralSection_InitialStrain),helpstring("property InitialStrain")] HRESULT InitialStrain([in]CollectionIndexType shapeIdx,[in]Float64 ei);
 	};
 
 	[

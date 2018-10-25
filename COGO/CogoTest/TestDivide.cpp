@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -119,7 +119,7 @@ void CTestDivide::Test()
    TRY_TEST(divide->BetweenPoints(1,1,1,2,10),  COGO_E_POINTALREADYDEFINED);
 
    TRY_TEST(divide->BetweenPoints(3,1,1,2,10),S_OK);
-   for ( long i = 3; i <= 11; i++ )
+   for ( CogoObjectID i = 3; i <= 11; i++ )
    {
       pnt.Release();
       TRY_TEST(points->get_Item(i,&pnt),S_OK);

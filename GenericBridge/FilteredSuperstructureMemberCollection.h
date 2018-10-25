@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,7 +31,7 @@
 #include "WBFLComCollections.h"
 #include "resource.h"       // main symbols
 
-typedef CComVectorCollection<IFilteredSuperstructureMemberCollection, ISuperstructureMember, IEnumSuperstructureMember, &IID_IEnumSuperstructureMember, CollectionIndexType> SSMBRVectorImpl;
+typedef CComVectorCollection<IFilteredSuperstructureMemberCollection, ISuperstructureMember, IEnumSuperstructureMembers, &IID_IEnumSuperstructureMembers, CollectionIndexType> SSMBRVectorImpl;
 
 /////////////////////////////////////////////////////////////////////////////
 // CFilteredSuperstructureMemberCollection
@@ -40,7 +40,7 @@ class ATL_NO_VTABLE CFilteredSuperstructureMemberCollection :
 //   public CComRefCountTracer<CFilteredSuperstructureMemberCollection,CComObjectRootEx<CComSingleThreadModel> >,
 	public CComCoClass<CFilteredSuperstructureMemberCollection, &CLSID_FilteredSuperstructureMemberCollection>,
 	public ISupportErrorInfo,
-	public IConnectionPointContainerImpl<CFilteredSuperstructureMemberCollection>,
+	//public IConnectionPointContainerImpl<CFilteredSuperstructureMemberCollection>,
 	public SSMBRVectorImpl
 {
 public:
@@ -55,11 +55,11 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 BEGIN_COM_MAP(CFilteredSuperstructureMemberCollection)
 	COM_INTERFACE_ENTRY(IFilteredSuperstructureMemberCollection)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
+	//COM_INTERFACE_ENTRY(IConnectionPointContainer)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CFilteredSuperstructureMemberCollection)
-END_CONNECTION_POINT_MAP()
+//
+//BEGIN_CONNECTION_POINT_MAP(CFilteredSuperstructureMemberCollection)
+//END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo

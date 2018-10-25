@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -527,7 +527,7 @@ void rptRcTable::SetColumnSpan(RowIndexType RowNo, ColumnIndexType ColNo, Column
       // check if row entry has been allocated. if not, push default paragraphs
       // on as a placeholder
       RowIndexType nRows = m_TableData[ColNo].size();
-      if (nRows-m_NumberOfHeaderRows <= RowNo)
+      if (nRows-m_NumberOfHeaderRows < RowNo)
       {
          for (RowIndexType i=nRows; i<=RowNo; i++)
          {
@@ -554,7 +554,7 @@ void rptRcTable::SetRowSpan(RowIndexType RowNo, ColumnIndexType ColNo, RowIndexT
       // check if row entry has been allocated. if not, push default paragraphs
       // on as a placeholder
       RowIndexType nRows = m_TableData[ColNo].size();
-      if (nRows-m_NumberOfHeaderRows <= RowNo)
+      if (nRows-m_NumberOfHeaderRows < RowNo)
       {
          for (RowIndexType i=nRows; i<=RowNo; i++)
          {
@@ -578,7 +578,7 @@ void rptRcTable::GetCellSpans(RowIndexType RowNo, ColumnIndexType ColNo, RowInde
    // check if row entry has been allocated. if not, push default paragraphs
    // on as a placeholder
    RowIndexType nRows = m_TableData[ColNo].size();
-   if (nRows-m_NumberOfHeaderRows < RowNo + (m_NumberOfHeaderRows == 0 ? 1 : 0))
+   if (nRows-m_NumberOfHeaderRows < RowNo)
    {
       for (RowIndexType i=nRows; i<=RowNo; i++)
       {

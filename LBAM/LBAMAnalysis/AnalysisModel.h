@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -72,10 +72,10 @@ class CAnalysisModel
 
 public:
 	CAnalysisModel(ILBAMModel* pModel, BSTR stage, IStageOrder* pStageOrder, ILoadGroupOrder* pLoadGroupOrder,
-                  PoiIDType minSpanPoiIncr, PoiIDType minCantileverPoiIncr, bool forForce=true);
+                  PoiIDType minSpanPoiIncr, PoiIDType minCantileverPoiIncr, bool forForce);
 	virtual ~CAnalysisModel();
 
-   void BuildModel();
+   void BuildModel(BSTR bstrName);
    void GetForce(LoadGroupIDType loadGroupID, PoiIDType poiId, ResultsOrientation orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight,  Float64* fyRight, Float64* mzRight);
    void GetDeflection(LoadGroupIDType loadGroupID, PoiIDType poiId, Float64* dxLeft, Float64* dyLeft, Float64* rzLeft, Float64* dxRight,  Float64* dyRight, Float64* rzRight);
    void GetReaction(LoadGroupIDType loadGroupID, SupportIDType suptId, Float64* Fx, Float64* Fy, Float64* Mz);
@@ -160,6 +160,7 @@ private:
    CComPtr<IFem2dModel> m_pFem2d;
    Float64 m_LayoutTolerance;
    Float64 m_PoiTolerance;
+
 
    // superstructure layout information. start of spans is at 0.0 which is where first support is
    Float64              m_TotalLength;
@@ -287,6 +288,7 @@ private:
    void GetFemMemberLocationAlongSupport(const ElementLayoutVec* pMemberList, Float64 lbamLoc, MemberLocationType* locType, MemberIDType* pfemId, Float64* pfemLoc);
    void GetFemMemberLocationAlongSSM(  CollectionIndexType ssmIdx,  Float64 lbamLoc, MemberLocationType* locType, MemberIDType* pfemId, Float64* pfemLoc);
    void GetFemMemberLocationAlongSpan( SpanIndexType spanIdx, Float64 lbamLoc, MemberLocationType* locType, MemberIDType* pfemId, Float64* pfemLoc);
+   void GetSuperstructureMemberLocationAlongSpan(SpanIndexType spanIdx,Float64 spanLoc,MemberIDType* mbrID,Float64* pMbrLoc);
 
    // This function gets the fem member at globalLoc along a list of members.
    void GetFemMemberLocationAlongMemberList( Float64 globalLoc, Float64 leftEnd, Float64 rightEnd, ElementLayoutVec& memberList, 
@@ -297,6 +299,11 @@ private:
                                         Float64 startLocation, Float64 endLocation, 
                                         Float64 mbrLength, Float64 wStart, Float64 wEnd, 
                                         const ElementLayoutVec* pfemMbrList, LoadIDType* lastLoadID);
+
+   void GenStrainLoadAlongElements(IFem2dMemberStrainCollection* pFemStrainLoads,
+                                   Float64 startLocation, Float64 endLocation, 
+                                   Float64 mbrLength, Float64 axial_strain, Float64 curvature, 
+                                   const ElementLayoutVec* pfemMbrList, LoadIDType* lastLoadID);
 
    void DealWithFem2dExceptions();
 

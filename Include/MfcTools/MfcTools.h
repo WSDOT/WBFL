@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -52,7 +52,6 @@
 #include <MfcTools\WSDOTCalculationSheet.h>
 #include <MfcTools\LoadModifiersDlg.h>
 #include <MfcTools\Exceptions.h>
-#include <MfcTools\Format.h>
 
 // Making DoDataExchange work for CPropertySheet
 // 1) In your subclassed CPropertySheet, implement OnInitDialog and

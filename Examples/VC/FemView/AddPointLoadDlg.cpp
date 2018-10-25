@@ -38,7 +38,7 @@ void CAddPointLoadDlg::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CAddPointLoadDlg)
 	DDX_Text(pDX, IDC_FX, m_Fx);
 	DDX_Text(pDX, IDC_FY, m_Fy);
-	DDX_CBIndex(pDX, IDC_LOADINGS, m_LoadingID);
+	DDX_CBIndex(pDX, IDC_LOADINGS, (int&)m_LoadingID);
 	DDX_Text(pDX, IDC_LOCATION, m_Location);
 	DDX_Text(pDX, IDC_MBRID, m_MbrID);
 	DDX_Text(pDX, IDC_MZ, m_Mz);
@@ -76,7 +76,7 @@ BOOL CAddPointLoadDlg::OnInitDialog()
       pLoadings->AddString(strID);
    }
 
-   if ( pLoadings->SetCurSel(m_LoadingID) == CB_ERR )
+   if ( pLoadings->SetCurSel((int)m_LoadingID) == CB_ERR )
       pLoadings->SetCurSel(0);
 
    // Make the member id edit control read only

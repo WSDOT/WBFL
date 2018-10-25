@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -67,8 +67,12 @@ public:
    STDMETHOD_(COLORREF,GetColor)();
    STDMETHOD_(void,SetBeginType)(LineEndType type);
    STDMETHOD_(LineEndType,GetBeginType)();
+   STDMETHOD_(int,GetBeginSize)();
+   STDMETHOD_(void,SetBeginSize)(int size);
    STDMETHOD_(void,SetEndType)(LineEndType type);
    STDMETHOD_(LineEndType,GetEndType)();
+   STDMETHOD_(int,GetEndSize)();
+   STDMETHOD_(void,SetEndSize)(int size);
    STDMETHOD_(void,SetLineStyle)(LineStyleType style);
    STDMETHOD_(LineStyleType,GetLineStyle)();
 
@@ -77,7 +81,9 @@ private:
    COLORREF m_crColor;
 
    LineEndType m_BeginType;
+   int m_BeginSize;
    LineEndType m_EndType;
+   int m_EndSize;
    LineStyleType m_Style;
 
    void GetStartPoint(iLineDisplayObject* pDO,IPoint2d* *point);

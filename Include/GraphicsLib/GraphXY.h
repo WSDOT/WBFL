@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphicsLib - Utility library graphics
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -216,6 +216,11 @@ public:
    // Get numeric formatting for x axis
    const sysINumericFormatToolBase* GetXAxisValueFormat() const;
 
+   void SetXAxisScale(grAxisXY::AxisScale scale);
+   grAxisXY::AxisScale GetXAxisScale() const;
+   void SetYAxisScale(grAxisXY::AxisScale scale);
+   grAxisXY::AxisScale GetYAxisScale() const;
+
    //------------------------------------------------------------------------
    // Set numeric formatting for y axis
    void SetYAxisValueFormat(const sysINumericFormatToolBase& format);
@@ -311,11 +316,6 @@ public:
    void SetPinYAxisAtZero(bool pin=true);
 
    //------------------------------------------------------------------------
-   // If set to true, the X and Y axis will have the same scale
-   void SetIsotropicAxes(bool bIsotropic=true);
-   bool GetIsotropicAxes() const;
-
-   //------------------------------------------------------------------------
    // Set whether to show the grid or not
    void SetDoDrawGrid(bool doDraw=true) {m_DoDrawGrid=doDraw;}
 
@@ -377,7 +377,7 @@ protected:
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
    void MakeCopy(const grGraphXY& rOther);
-   void MakeAssignment(const grGraphXY& rOther);
+   virtual void MakeAssignment(const grGraphXY& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -418,7 +418,6 @@ private:
    bool m_XAxisNiceRange;
    bool m_YAxisNiceRange;
    bool m_PinYAxisAtZero;
-   bool m_bIsotropicAxes;
 
    grlibPointMapper m_PointMapper;
    bool m_IsBroken;

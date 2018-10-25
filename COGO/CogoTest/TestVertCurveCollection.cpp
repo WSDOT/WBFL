@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -132,7 +132,7 @@ void CTestVertCurveCollection::Test()
    //
    // Test FindKey
    //
-   CogoElementKey key;
+   CogoObjectID key;
    TRY_TEST(pColl->FindKey(NULL,&key),E_INVALIDARG);
    TRY_TEST(pColl->FindKey(vc,NULL),E_POINTER);
    TRY_TEST(pColl->FindKey(vc,&key),S_OK);
@@ -167,7 +167,7 @@ void CTestVertCurveCollection::Test()
    TRY_TEST( pColl->get__EnumKeys(&pEnum), S_OK );
 
    ULONG fetched;
-   CogoElementKey target_key = 1;
+   CogoObjectID target_key = 1;
    while( pEnum->Next(1,&key,&fetched ) == S_OK )
    {
       TRY_TEST(key,target_key++);
@@ -253,7 +253,7 @@ void CTestVertCurveCollection::Test()
    TRY_TEST( TestIObjectSafety(CLSID_VertCurveCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
-STDMETHODIMP CTestVertCurveCollection::OnVertCurveChanged(CogoElementKey key,IVertCurve* vc)
+STDMETHODIMP CTestVertCurveCollection::OnVertCurveChanged(CogoObjectID key,IVertCurve* vc)
 {
 //   MessageBox(NULL,"VertCurveChanged","Event",MB_OK);
    if ( key == m_expectedKey )
@@ -262,7 +262,7 @@ STDMETHODIMP CTestVertCurveCollection::OnVertCurveChanged(CogoElementKey key,IVe
    return S_OK;
 }
 
-STDMETHODIMP CTestVertCurveCollection::OnVertCurveAdded(CogoElementKey key,IVertCurve* vc)
+STDMETHODIMP CTestVertCurveCollection::OnVertCurveAdded(CogoObjectID key,IVertCurve* vc)
 {
 //   MessageBox(NULL,"VertCurveAdded","Event",MB_OK);
    if ( key == m_expectedKey )
@@ -271,7 +271,7 @@ STDMETHODIMP CTestVertCurveCollection::OnVertCurveAdded(CogoElementKey key,IVert
    return S_OK;
 }
 
-STDMETHODIMP CTestVertCurveCollection::OnVertCurveRemoved(CogoElementKey key)
+STDMETHODIMP CTestVertCurveCollection::OnVertCurveRemoved(CogoObjectID key)
 {
 //   MessageBox(NULL,"VertCurveRemoved","Event",MB_OK);
    if ( key == m_expectedKey )

@@ -146,6 +146,7 @@ BEGIN
     BEGIN
         MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
         MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "Save FEM2D Model",            32778
         MENUITEM SEPARATOR
         MENUITEM "P&rint Setup...",             ID_FILE_PRINT_SETUP
         MENUITEM SEPARATOR

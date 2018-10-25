@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -26,7 +26,7 @@
 #include <MfcTools\MfcToolsExp.h>
 
 // Use this function to ask the user a question. The return value is the user's answer
-CString MFCTOOLSFUNC AfxQuestion(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszDefault=_T(""));
+BOOL MFCTOOLSFUNC AfxQuestion(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszDefault,CString& strAnswer);
 
 // This function prompts the user with a question. The user has to select from a list of
 // responses. lpszResponses is a \n separated list of responses. defChoice is the index of the

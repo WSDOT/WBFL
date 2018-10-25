@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -33,6 +33,9 @@
 
 #include <Material\Concrete.h>
 #include <Material\ConcreteEx.h>
+#include <Material\ConcreteBase.h>
+#include <Material\ACI209Concrete.h>
+#include <Material\LRFDConcrete.h>
 #include <Material\ConcreteListener.h>
 #include <Material\LinearStressStrainCurve.h>
 #include <Material\Metal.h>

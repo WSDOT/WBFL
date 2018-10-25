@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -38,22 +38,11 @@ static char THIS_FILE[] = __FILE__;
 // CPrecastSlab
 HRESULT CPrecastSlab::FinalConstruct()
 {
-   return S_OK;
+   return IBridgeDeckImpl::Init();
 }
 
 void CPrecastSlab::FinalRelease()
 {
-   if ( m_LeftPathStrategy )
-   {
-      InternalAddRef();
-      AtlUnadvise(m_LeftPathStrategy,IID_IOverhangPathStrategyEvents,m_dwLeftPathStrategyCookie);
-   }
-
-   if ( m_RightPathStrategy )
-   {
-      InternalAddRef();
-      AtlUnadvise(m_RightPathStrategy,IID_IOverhangPathStrategyEvents,m_dwRightPathStrategyCookie);
-   }
 }
 
 STDMETHODIMP CPrecastSlab::InterfaceSupportsErrorInfo(REFIID riid)
@@ -77,13 +66,7 @@ STDMETHODIMP CPrecastSlab::InterfaceSupportsErrorInfo(REFIID riid)
 STDMETHODIMP CPrecastSlab::get_StructuralDepth(Float64* depth)
 {
    CHECK_RETVAL(depth);
-
-   Float64 sacDepth = 0;
-   if ( m_pBridge )
-      m_pBridge->get_SacrificialDepth(&sacDepth);
-
-   *depth = m_PanelDepth + m_CastDepth - sacDepth;
-
+   *depth = m_PanelDepth + m_CastDepth - m_SacrificialDepth;
    return S_OK;
 }
 
@@ -94,23 +77,45 @@ STDMETHODIMP CPrecastSlab::get_GrossDepth(Float64* depth)
    return S_OK;
 }
 
-////////////////////////////////////////////////////////////////////////
-// IPrecastSlab implementation
-STDMETHODIMP CPrecastSlab::get_CastingStage(BSTR* bstrStage)
+STDMETHODIMP CPrecastSlab::putref_DeckBoundary(IDeckBoundary* deckBoundary)
 {
-   CHECK_RETSTRING(bstrStage);
-   (*bstrStage) = m_bstrCastingStage.Copy();
+   CHECK_IN(deckBoundary);
+   m_pDeckBoundary = deckBoundary;
    return S_OK;
 }
 
-STDMETHODIMP CPrecastSlab::put_CastingStage(BSTR bstrStage)
+STDMETHODIMP CPrecastSlab::get_DeckBoundary(IDeckBoundary** deckBoundary)
 {
-   CHECK_IN(bstrStage);
-   if ( m_bstrCastingStage == bstrStage )
+   CHECK_RETOBJ(deckBoundary);
+   if ( m_pDeckBoundary )
+   {
+      (*deckBoundary) = m_pDeckBoundary;
+      (*deckBoundary)->AddRef();
+   }
+   else
+   {
+      (*deckBoundary) = NULL;
+   }
+
+   return S_OK;
+}
+
+
+////////////////////////////////////////////////////////////////////////
+// IPrecastSlab implementation
+STDMETHODIMP CPrecastSlab::get_CastingStage(StageIndexType* pStageIdx)
+{
+   CHECK_RETVAL(pStageIdx);
+   (*pStageIdx) = m_CastingStageIdx;
+   return S_OK;
+}
+
+STDMETHODIMP CPrecastSlab::put_CastingStage(StageIndexType stageIdx)
+{
+   if ( m_CastingStageIdx == stageIdx )
       return S_OK;
 
-   m_bstrCastingStage = bstrStage;
-   Fire_OnBridgeDeckChanged(this);
+   m_CastingStageIdx = stageIdx;
 
    return S_OK;
 }
@@ -131,7 +136,6 @@ STDMETHODIMP CPrecastSlab::put_PanelDepth(Float64 depth)
       return S_OK;
 
    m_PanelDepth = depth;
-   Fire_OnBridgeDeckChanged(this);
    return S_OK;
 }
 
@@ -151,7 +155,6 @@ STDMETHODIMP CPrecastSlab::put_CastDepth(Float64 depth)
       return S_OK;
 
    m_CastDepth = depth;
-   Fire_OnBridgeDeckChanged(this);
 
    return S_OK;
 }
@@ -172,7 +175,25 @@ STDMETHODIMP CPrecastSlab::put_OverhangDepth(Float64 depth)
       return S_OK;
 
    m_OverhangDepth = depth;
-   Fire_OnBridgeDeckChanged(this);
+   return S_OK;
+}
+
+STDMETHODIMP CPrecastSlab::get_SacrificialDepth(Float64* depth)
+{
+   CHECK_RETVAL(depth);
+   *depth = m_SacrificialDepth;
+   return S_OK;
+}
+
+STDMETHODIMP CPrecastSlab::put_SacrificialDepth(Float64 depth)
+{
+   if ( depth < 0 )
+      return E_INVALIDARG;
+
+   if ( IsEqual(m_SacrificialDepth,depth) )
+      return S_OK;
+
+   m_SacrificialDepth = depth;
    return S_OK;
 }
 
@@ -192,7 +213,6 @@ STDMETHODIMP CPrecastSlab::put_Fillet(Float64 fillet)
       return S_OK;
 
    m_Fillet = fillet;
-   Fire_OnBridgeDeckChanged(this);
    return S_OK;
 }
 
@@ -212,156 +232,6 @@ STDMETHODIMP CPrecastSlab::put_OverhangTaper(DeckOverhangTaper taper)
       return S_OK;
 
    m_Taper = taper;
-   Fire_OnBridgeDeckChanged(this);
-   return S_OK;
-}
-
-
-STDMETHODIMP CPrecastSlab::get_LeftOverhangPathStrategy(IOverhangPathStrategy** strategy)
-{
-   CHECK_RETOBJ(strategy);
-   (*strategy) = m_LeftPathStrategy;
-
-   if ( *strategy )
-      (*strategy)->AddRef();
-
-   return S_OK;
-}
-
-STDMETHODIMP CPrecastSlab::putref_LeftOverhangPathStrategy(IOverhangPathStrategy* strategy)
-{
-   if ( m_LeftPathStrategy.IsEqualObject(strategy) )
-      return S_OK;
-
-   CComPtr<IUnknown> punk;
-   QueryInterface(IID_IUnknown,(void**)&punk);
-
-   HRESULT hr;
-   DWORD dwCookie;
-   if ( strategy )
-   {
-      hr = AtlAdvise(strategy,punk,IID_IOverhangPathStrategyEvents,&dwCookie);
-      if ( FAILED(hr) )
-         return hr; // can't sink on new path... get outta here before anything gets changed
-
-      InternalRelease(); // break circular reference
-   }
-
-   // unsink on the old strategy (if there was on)
-   if ( m_LeftPathStrategy )
-   {
-      InternalAddRef();
-
-      hr = AtlUnadvise(m_LeftPathStrategy,IID_IOverhangPathStrategyEvents,m_dwLeftPathStrategyCookie);
-      ATLASSERT( SUCCEEDED(hr) );
-   }
-
-   m_LeftPathStrategy = strategy;
-
-   if ( m_LeftPathStrategy )
-   {
-      m_dwLeftPathStrategyCookie = dwCookie;
-   }
-   
-   Fire_OnBridgeDeckChanged(this);
-   return S_OK;
-}
-
-STDMETHODIMP CPrecastSlab::get_RightOverhangPathStrategy(IOverhangPathStrategy** strategy)
-{
-   CHECK_RETOBJ(strategy);
-   (*strategy) = m_RightPathStrategy;
-
-   if ( *strategy )
-      (*strategy)->AddRef();
-
-   return S_OK;
-}
-
-STDMETHODIMP CPrecastSlab::putref_RightOverhangPathStrategy(IOverhangPathStrategy* strategy)
-{
-   if ( m_RightPathStrategy.IsEqualObject(strategy) )
-      return S_OK;
-
-   CComPtr<IUnknown> punk;
-   QueryInterface(IID_IUnknown,(void**)&punk);
-
-   HRESULT hr;
-   DWORD dwCookie;
-   if ( strategy )
-   {
-      hr = AtlAdvise(strategy,punk,IID_IOverhangPathStrategyEvents,&dwCookie);
-      if ( FAILED(hr) )
-         return hr; // can't sink on new path... get outta here before anything gets changed
-
-      InternalRelease(); // break circular reference
-   }
-
-   // unsink on the old strategy (if there was on)
-   if ( m_RightPathStrategy )
-   {
-      InternalAddRef();
-
-      hr = AtlUnadvise(m_RightPathStrategy,IID_IOverhangPathStrategyEvents,m_dwRightPathStrategyCookie);
-      ATLASSERT( SUCCEEDED(hr) );
-   }
-
-   m_RightPathStrategy = strategy;
-
-   if ( m_RightPathStrategy )
-   {
-      m_dwRightPathStrategyCookie = dwCookie;
-   }
-   
-   Fire_OnBridgeDeckChanged(this);
-   return S_OK;
-}
-
-STDMETHODIMP CPrecastSlab::get_LeftOverhangPath(IPath** path)
-{
-   CHECK_RETOBJ(path);
-
-   if ( m_LeftPathStrategy )
-      return m_LeftPathStrategy->get_Path(path);
-
-   return E_FAIL;
-}
-
-STDMETHODIMP CPrecastSlab::get_RightOverhangPath(IPath** path)
-{
-   CHECK_RETOBJ(path);
-
-   if ( m_RightPathStrategy )
-      return m_RightPathStrategy->get_Path(path);
-
-   return E_FAIL;
-}
-
-STDMETHODIMP CPrecastSlab::Clone(IBridgeDeck** clone)
-{
-   CHECK_RETOBJ(clone);
-
-   CComObject<CPrecastSlab>* pClone;
-   CComObject<CPrecastSlab>::CreateInstance(&pClone);
-
-   CComPtr<IPrecastSlab> slab;
-   slab = pClone;
-
-   CComQIPtr<IBridgeDeck> deck(slab);
-
-   IBridgeDeckImpl<CPrecastSlab>::Clone(&deck);
-
-   slab->put_Fillet(m_Fillet);
-   slab->put_CastDepth(m_CastDepth);
-   slab->put_PanelDepth(m_PanelDepth);
-   slab->put_OverhangTaper(m_Taper);
-   slab->put_OverhangDepth(m_OverhangDepth);
-   slab->putref_LeftOverhangPathStrategy(m_LeftPathStrategy);
-   slab->putref_RightOverhangPathStrategy(m_RightPathStrategy);
-
-   (*clone) = deck;
-   (*clone)->AddRef();
-
    return S_OK;
 }
 
@@ -372,16 +242,6 @@ STDMETHODIMP CPrecastSlab::Load(IStructuredLoad2* load)
    load->BeginUnit(CComBSTR("PrecastSlab"));
 
    CComVariant var;
-
-   load->get_Property(CComBSTR("LeftOverhangPathStrategy"),&var);
-   CComPtr<IOverhangPathStrategy> left_path_strategy;
-   var.punkVal->QueryInterface(&left_path_strategy);
-   putref_LeftOverhangPathStrategy(left_path_strategy);
-
-   load->get_Property(CComBSTR("RightOverhangPathStrategy"),&var);
-   CComPtr<IOverhangPathStrategy> right_path_strategy;
-   var.punkVal->QueryInterface(&right_path_strategy);
-   putref_RightOverhangPathStrategy(right_path_strategy);
 
    load->get_Property(CComBSTR("Fillet"),&var);
    m_Fillet = var.dblVal;
@@ -395,11 +255,15 @@ STDMETHODIMP CPrecastSlab::Load(IStructuredLoad2* load)
    load->get_Property(CComBSTR("OverhangDepth"),&var);
    m_OverhangDepth = var.dblVal;
 
+   load->get_Property(CComBSTR("SacrificialDepth"),&var);
+   m_SacrificialDepth = var.dblVal;
+
    load->get_Property(CComBSTR("Taper"),&var);
    m_Taper = (DeckOverhangTaper)var.lVal;
 
+   var.vt = VT_INDEX;
    load->get_Property(CComBSTR("CastingStage"),&var);
-   m_bstrCastingStage = var.bstrVal;
+   m_CastingStageIdx = VARIANT2INDEX(var);
 
    IBridgeDeckImpl<CPrecastSlab>::Load(load);
 
@@ -412,14 +276,13 @@ STDMETHODIMP CPrecastSlab::Save(IStructuredSave2* save)
 {
    save->BeginUnit(CComBSTR("PrecastSlab"),1.0);
 
-   save->put_Property(CComBSTR("LeftOverhangPathStrategy"),CComVariant(m_LeftPathStrategy));
-   save->put_Property(CComBSTR("RightOverhangPathStrategy"),CComVariant(m_RightPathStrategy));
    save->put_Property(CComBSTR("Fillet"),CComVariant(m_Fillet));
    save->put_Property(CComBSTR("PanelDepth"),CComVariant(m_PanelDepth));
    save->put_Property(CComBSTR("CastDepth"),CComVariant(m_CastDepth));
    save->put_Property(CComBSTR("OverhangDepth"),CComVariant(m_OverhangDepth));
+   save->put_Property(CComBSTR("SacrificalDepth"),CComVariant(m_SacrificialDepth));
    save->put_Property(CComBSTR("Taper"),CComVariant(m_Taper));
-   save->put_Property(CComBSTR("CastingStage"),CComVariant(m_bstrCastingStage));
+   save->put_Property(CComBSTR("CastingStage"),CComVariant(m_CastingStageIdx));
    
    IBridgeDeckImpl<CPrecastSlab>::Save(save);
 

@@ -1377,95 +1377,15 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="CastSlab.cpp"
+				RelativePath=".\BridgeDeckRebarLayoutItem.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="CogoInfo.cpp"
+				RelativePath=".\BridgeDeckRebarPattern.cpp"
+				>
+			</File>
+			<File
+				RelativePath="CastSlab.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -1642,94 +1562,6 @@
 			</File>
 			<File
 				RelativePath="ColumnSpacing.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="Connection.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -2177,7 +2009,15 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\FixedLengthRebarLayoutItem.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FlangedGirderEndBlockSegment.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FlangedSplicedGirderSegment.cpp"
 				>
 			</File>
 			<File
@@ -2558,94 +2398,6 @@
 			</File>
 			<File
 				RelativePath="GenericBridgeImpl.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="GirderSpacing.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -3261,6 +3013,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\NegativeMomentBridgeDeckRebarLayoutItem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\OffsetTendon.cpp"
+				>
+			</File>
+			<File
 				RelativePath="OverlaySlab.cpp"
 				>
 				<FileConfiguration
@@ -3347,6 +3107,10 @@
 						AdditionalIncludeDirectories=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ParabolicTendonSegment.cpp"
+				>
 			</File>
 			<File
 				RelativePath="Pier.cpp"
@@ -3701,6 +3465,30 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Rebar.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RebarFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RebarLayout.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RebarRowPattern.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RebarSection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RebarSectionItem.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Segment.cpp"
 				>
 				<FileConfiguration
@@ -4053,358 +3841,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="Span.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="SpanCollection.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="Stage.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="StageCollection.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="StdAfx.cpp"
 				>
 				<FileConfiguration
@@ -4597,272 +4033,8 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="SuperstructureMemberCollection.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\TaperedGirderSegment.cpp"
 				>
-			</File>
-			<File
-				RelativePath="TemporaryPierItem.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="TemporaryPierItemCollection.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="Tendon.cpp"
@@ -5313,6 +4485,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\USplicedGirderSegment.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\VoidedSlabEndBlockSegment.cpp"
 				>
 			</File>
@@ -5434,11 +4610,15 @@
 				>
 			</File>
 			<File
-				RelativePath="CastSlab.h"
+				RelativePath=".\BridgeDeckRebarLayoutItem.h"
 				>
 			</File>
 			<File
-				RelativePath="CogoInfo.h"
+				RelativePath=".\BridgeDeckRebarPattern.h"
+				>
+			</File>
+			<File
+				RelativePath="CastSlab.h"
 				>
 			</File>
 			<File
@@ -5447,10 +4627,6 @@
 			</File>
 			<File
 				RelativePath="ColumnSpacing.h"
-				>
-			</File>
-			<File
-				RelativePath="Connection.h"
 				>
 			</File>
 			<File
@@ -5470,6 +4646,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EndBlockSegmentImpl.h"
+				>
+			</File>
+			<File
 				RelativePath="FilteredSegmentCollection.h"
 				>
 			</File>
@@ -5478,7 +4658,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FixedLengthRebarLayoutItem.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FlangedGirderEndBlockSegment.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FlangedSplicedGirderSegment.h"
 				>
 			</File>
 			<File
@@ -5510,10 +4698,6 @@
 				>
 			</File>
 			<File
-				RelativePath="GirderSpacing.h"
-				>
-			</File>
-			<File
 				RelativePath="ItemDataManager.h"
 				>
 			</File>
@@ -5538,7 +4722,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\NegativeMomentBridgeDeckRebarLayoutItem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\OffsetTendon.h"
+				>
+			</File>
+			<File
 				RelativePath="OverlaySlab.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ParabolicTendonSegment.h"
 				>
 			</File>
 			<File
@@ -5555,6 +4751,30 @@
 			</File>
 			<File
 				RelativePath="PrestressingStrand.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Rebar.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RebarFactory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RebarLayout.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RebarRowPattern.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RebarSection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RebarSectionItem.h"
 				>
 			</File>
 			<File
@@ -5582,15 +4802,7 @@
 				>
 			</File>
 			<File
-				RelativePath="SpanCollection.h"
-				>
-			</File>
-			<File
-				RelativePath="Stage.h"
-				>
-			</File>
-			<File
-				RelativePath="StageCollection.h"
+				RelativePath=".\SplicedGirderSegmentImpl.h"
 				>
 			</File>
 			<File
@@ -5602,19 +4814,7 @@
 				>
 			</File>
 			<File
-				RelativePath="SuperstructureMemberCollection.h"
-				>
-			</File>
-			<File
 				RelativePath=".\TaperedGirderSegment.h"
-				>
-			</File>
-			<File
-				RelativePath="TemporaryPierItem.h"
-				>
-			</File>
-			<File
-				RelativePath="TemporaryPierItemCollection.h"
 				>
 			</File>
 			<File
@@ -5643,6 +4843,10 @@
 			</File>
 			<File
 				RelativePath=".\UGirderSection2EndBlockSegment.h"
+				>
+			</File>
+			<File
+				RelativePath=".\USplicedGirderSegment.h"
 				>
 			</File>
 			<File
@@ -5676,6 +4880,14 @@
 			</File>
 			<File
 				RelativePath="BoxBeamSection.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\BridgeDeckRebarLayoutItem.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\BridgeDeckRebarPattern.rgs"
 				>
 			</File>
 			<File
@@ -5727,11 +4939,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FixedLengthRebarLayoutItem.rgs"
+				>
+			</File>
+			<File
 				RelativePath="FlangedBeam.rgs"
 				>
 			</File>
 			<File
 				RelativePath=".\FlangedGirderEndBlockSegment.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\FlangedSplicedGirderSegment.rgs"
 				>
 			</File>
 			<File
@@ -5775,6 +4995,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\NegativeMomentBridgeDeckRebarLayoutItem.rgs"
+				>
+			</File>
+			<File
 				RelativePath="NUGirderSection.rgs"
 				>
 			</File>
@@ -5800,6 +5024,10 @@
 			</File>
 			<File
 				RelativePath="Rebar.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\RebarFactory.rgs"
 				>
 			</File>
 			<File
@@ -5840,14 +5068,6 @@
 			</File>
 			<File
 				RelativePath="SpanCollection.rgs"
-				>
-			</File>
-			<File
-				RelativePath="Stage.rgs"
-				>
-			</File>
-			<File
-				RelativePath="StageCollection.rgs"
 				>
 			</File>
 			<File
@@ -5904,6 +5124,10 @@
 			</File>
 			<File
 				RelativePath=".\UGirderSection2EndBlockSegment.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\USplicedGirderSegment.rgs"
 				>
 			</File>
 			<File

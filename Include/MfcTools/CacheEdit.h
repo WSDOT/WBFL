@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -40,12 +40,21 @@ public:
 
 // Operations
 public:
+   void ShowDefaultWhenDisabled(BOOL bShowDefault);
+   BOOL ShowDefaultWhenDisabled() const;
 
    // When the edit control is disabled, the window text is cached and the window is clear
    // When enabled, the cached window text is restored.
    void EnableWindow(BOOL bEnable);
 
-   CString GetCache();
+   // Set/Get the default value... When using DDX_UnitValueAndTag, data put into 
+   // the control becomes the default value. When the data is extracted from the control
+   // and the control is disabled, this default value is returned.
+   // the default value. 
+   void SetDefaultValue(Float64 value);
+   Float64 GetDefaultValue() const;
+
+   CString GetCache() const;
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -55,6 +64,8 @@ public:
 	// Generated message map functions
 protected:
    CString m_strCache;
+   Float64 m_DefaultValue;
+   BOOL m_bShowDefault;
 
 	//{{AFX_MSG(CCacheEdit)
 	//}}AFX_MSG

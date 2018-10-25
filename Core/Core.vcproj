@@ -1365,10 +1365,6 @@
 				RelativePath=".\SysAgent.h"
 				>
 			</File>
-			<File
-				RelativePath=".\targetver.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

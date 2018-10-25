@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -630,6 +630,7 @@ void CTestGeomUtil::Test2d()
 
    points.Release();
    TRY_TEST( util2d->DivideLineSegment(NULL,4,&points), E_INVALIDARG );
+   TRY_TEST( util2d->DivideLineSegment(seg1,-1,&points), E_INVALIDARG );
    TRY_TEST( util2d->DivideLineSegment(seg1,4,NULL), E_POINTER );
    TRY_TEST( util2d->DivideLineSegment(seg1,0,&points), E_INVALIDARG );
 
@@ -728,6 +729,7 @@ void CTestGeomUtil::Test2d()
    //
    p1->Move(0,0);
    points.Release();
+   TRY_TEST( util2d->GenerateCircle(-1,p1,10.0,M_PI/4,&points), E_INVALIDARG );
    TRY_TEST( util2d->GenerateCircle(4,NULL,10.0,M_PI/4,&points), E_INVALIDARG );
    TRY_TEST( util2d->GenerateCircle(4,NULL,-10.0,M_PI/4,&points), E_INVALIDARG );
    TRY_TEST( util2d->GenerateCircle(4,p1,10.0,M_PI/4,NULL), E_POINTER );
@@ -1077,9 +1079,9 @@ void CTestGeomUtil::Test2d()
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(NULL,seg2,&intersect1), E_INVALIDARG );
    TRY_TEST( util2d->SegSegIntersect(seg1,NULL,&intersect1), E_INVALIDARG );
-   TRY_TEST( util2d->SegSegIntersect(seg1,seg2,NULL),            E_POINTER );
+   TRY_TEST( util2d->SegSegIntersect(seg1,seg2,NULL),        E_POINTER );
 
-   TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_OK );
+   TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_FALSE );
    TRY_TEST( intersect1 == 0, true );
 
    p1->Move(0,0);
@@ -1099,7 +1101,7 @@ void CTestGeomUtil::Test2d()
    p3->Move(10,0);
    p4->Move(0,10);
    intersect1.Release();
-   TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_OK );
+   TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_FALSE );
    TRY_TEST( intersect1 == 0, true );
 
    p1->Move(5,5);
@@ -1119,7 +1121,7 @@ void CTestGeomUtil::Test2d()
    p3->Move(0,10);
    p4->Move(0,10);
    intersect1.Release();
-   TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_OK );
+   TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_FALSE );
    TRY_TEST( intersect1 == 0, true );
 
    p1->Move(0,0);
@@ -1139,7 +1141,7 @@ void CTestGeomUtil::Test2d()
    p3->Move(10,10);
    p4->Move(10,10);
    intersect1.Release();
-   TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_OK );
+   TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_FALSE );
    TRY_TEST( intersect1 == 0, true );
 
    p1->Move(10,10);
@@ -1159,7 +1161,7 @@ void CTestGeomUtil::Test2d()
    p3->Move(0,10);
    p4->Move(10,0);
    intersect1.Release();
-   TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_OK );
+   TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_FALSE );
    TRY_TEST( intersect1 == 0, true );
 
    p1->Move(0,0);
@@ -1167,7 +1169,7 @@ void CTestGeomUtil::Test2d()
    p3->Move(0,10);
    p4->Move(5,4);
    intersect1.Release();
-   TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_OK );
+   TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_FALSE );
    TRY_TEST( intersect1 == 0, true );
 
    //

@@ -23,18 +23,18 @@ static char THIS_FILE[] = __FILE__;
 //////////////////////////////////////////////////////////////////////
 using namespace std;
 
-static std::_tstring LoToString(LoadOrientation or)
+static std::string LoToString(LoadOrientation or)
 {
-   std::_tstring sor;
+   std::string sor;
    switch (or)
    {
    case loGlobal:
-         sor = _T("Global");
+         sor = "Global";
          break;   case loMember:
-         sor = _T("Member");
+         sor = "Member";
          break;
    case loGlobalProjected:
-         sor = _T("GloPrj");
+         sor = "GloPrj";
          break;
    default:
       ATLASSERT(0);
@@ -43,28 +43,28 @@ static std::_tstring LoToString(LoadOrientation or)
    return sor;
 }
 
-static std::_tstring LctToString(LoadCombinationType lct)
+static std::string LctToString(LoadCombinationType lct)
 {
-   std::_tstring str;
+   std::string str;
    switch(lct)
    {
    case lctService:
-      str = _T("Service");
+      str = "Service";
       break;
    case lctStrength:
-      str = _T("Strength");
+      str = "Strength";
       break;
    case lctExtremeEvent:
-      str = _T("ExtremeEvent");
+      str = "ExtremeEvent";
       break;
    case lctFatigue:
-      str = _T("Fatigue");
+      str = "Fatigue";
       break;
    case lctPermit:
-      str = _T("Permit");
+      str = "Permit";
       break;
    case lctUserDefined:
-      str = _T("UserDefined");
+      str = "UserDefined";
       break;
    default:
       ATLASSERT(0);
@@ -73,16 +73,16 @@ static std::_tstring LctToString(LoadCombinationType lct)
    return str;
 }
 
-static std::_tstring LdToString(LoadDirection dir)
+static std::string LdToString(LoadDirection dir)
 {
-   std::_tstring sor;
+   std::string sor;
    switch (dir)
    {
    case ldFx:
-      sor = _T("Fx");
+      sor = "Fx";
       break;
    case ldFy:
-      sor = _T("Fy");
+      sor = "Fy";
       break;
    default:
       ATLASSERT(0);
@@ -92,43 +92,31 @@ static std::_tstring LdToString(LoadDirection dir)
 }
 
 
-static std::_tstring LltToString (LiveLoadModelType type)
+static std::string LltToString (LiveLoadModelType type)
 {
-   std::_tstring str;
+   std::string str;
    switch(type)
    {
    case lltNone:
-      str=_T("None");
+      str="None";
       break;
    case lltDeflection:
-      str=_T("Deflection");
+      str="Deflection";
       break;
    case lltDesign:
-      str=_T("Design");
+      str="Design";
       break;
    case lltPedestrian:
-      str=_T("Pedestrian");
+      str="Pedestrian";
       break;
    case lltFatigue:
-      str=_T("Fatigue");
+      str="Fatigue";
       break;
    case lltPermit:
-      str=_T("Permit");
+      str="Permit";
       break;
    case lltSpecial:
-      str=_T("Special");
-      break;
-   case lltLegalRoutineRating:
-      str=_T("LegalRoutineRating");
-      break;
-   case lltLegalSpecialRating:
-      str=_T("LegalSpecialRating");
-      break;
-   case lltPermitRoutineRating:
-      str=_T("PermitRoutineRating");
-      break;
-   case lltPermitSpecialRating:
-      str=_T("PermitSpecialRating");
+      str="Special";
       break;
    default:
       ATLASSERT(0);
@@ -138,19 +126,19 @@ static std::_tstring LltToString (LiveLoadModelType type)
 }
 
 
-static void DumpDistributionFactors(std::_tostream& os, ILBAMModel* model)
+static void DumpDistributionFactors(std::ostream& os, ILBAMModel* model)
 {
    CHRException hr;
    USES_CONVERSION;
 
-   os<<_T(" Distribution Factors Along Superstructure")<<endl
-     <<_T(" -----------------------------------------")<<endl<<endl;
+   os<<" Distribution Factors Along Superstructure"<<endl
+     <<" -----------------------------------------"<<endl<<endl;
 
    CComPtr<ISuperstructureMembers> ssms;
    hr = model->get_SuperstructureMembers(&ssms);
    double ssm_length;
    hr = ssms->get_Length(&ssm_length);
-   os<<_T("  Total length of superstructure is ")<<ssm_length<<endl<<endl;
+   os<<"  Total length of superstructure is "<<ssm_length<<endl<<endl;
    double oh;
    hr = ssms->get_Offset(&oh);
 
@@ -159,9 +147,9 @@ static void DumpDistributionFactors(std::_tostream& os, ILBAMModel* model)
    CComPtr<IFilteredDfSegmentCollection> fdfc;
    hr = dfs->GetMemberSegments(ssm_length, &fdfc);
 
-   os<<_T("      Start     End")<<endl;
-   os<<_T(" Seg Location Location  gPMSgl   gPMMul   gNMSgl   gNMMul   gVSgl    gVMul    gDSgl    gDMul    gRSgl    gRMul    gTSgl    gTMul     gFatM    gFatV    gPed ")<<endl;
-   os<<_T(" --- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- --------")<<endl;
+   os<<"      Start     End"<<endl;
+   os<<" Seg Location Location  gPMSgl   gPMMul   gNMSgl   gNMMul   gVSgl    gVMul    gDSgl    gDMul    gRSgl    gRMul    gTSgl    gTMul     gFat"<<endl;
+   os<<" --- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- --------"<<endl;
 
    double start_loc=oh;
    CollectionIndexType df_cnt;
@@ -178,23 +166,22 @@ static void DumpDistributionFactors(std::_tostream& os, ILBAMModel* model)
       CComPtr<IDistributionFactor> df;
       hr = dfseg->get_DistributionFactor(&df);
 
-      double gPMSgl, gPMMul, gNMSgl, gNMMul, gVSgl, gVMul, gDSgl, gDMul, gRSgl, gRMul, gTSgl, gTMul, gFatM, gFatV, gPed;
-      hr = df->GetG(&gPMSgl, &gPMMul, &gNMSgl, &gNMMul, &gVSgl, &gVMul, &gDSgl, &gDMul, &gRSgl, &gRMul, &gTSgl, &gTMul, &gFatM, &gFatV, &gPed);
+      double gPMSgl, gPMMul, gNMSgl, gNMMul, gVSgl, gVMul, gDSgl, gDMul, gRSgl, gRMul, gTSgl, gTMul, gFat;
+      hr = df->GetG(&gPMSgl, &gPMMul, &gNMSgl, &gNMMul, &gVSgl, &gVMul, &gDSgl, &gDMul, &gRSgl, &gRMul, &gTSgl, &gTMul, &gFat);
 
       os<<setw(4)<<idf<<setw(9)<<start_loc<<setw(9)<<end_loc
         <<setw(9)<<gPMSgl<<setw(9)<<gPMMul<<setw(9)<<gNMSgl<<setw(9)<<gNMMul<<setw(9)<<gVSgl<<setw(9)<<gVMul
-        <<setw(9)<<gDSgl<<setw(9)<<gDMul<<setw(9)<<gRSgl<<setw(9)<<gRMul<<setw(9)<<gTSgl<<setw(9)<<gTMul<<setw(9)<<gFatM
-        <<setw(9)<<gFatV<<setw(9)<<gPed<<endl;
+        <<setw(9)<<gDSgl<<setw(9)<<gDMul<<setw(9)<<gRSgl<<setw(9)<<gRMul<<setw(9)<<gTSgl<<setw(9)<<gTMul<<setw(9)<<gFat<<endl;
    }
 }
 
-static void DumpStages(std::_tostream& os, ILBAMModel* model)
+static void DumpStages(std::ostream& os, ILBAMModel* model)
 {
    CHRException hr;
    USES_CONVERSION;
 
-   os<<_T(" Stages in Model")<<endl
-     <<_T(" ---------------")<<endl<<endl;
+   os<<" Stages in Model"<<endl
+     <<" ---------------"<<endl<<endl;
 
    CComPtr<IStages> stages;
    hr = model->get_Stages(&stages);
@@ -203,8 +190,8 @@ static void DumpStages(std::_tostream& os, ILBAMModel* model)
    hr = stages->get_Count(&cnt);
    if (cnt>0)
    {
-      os<<_T(" No.            Name                                            Description")<<endl
-        <<_T(" --- -------------------------------- --------------------------------------------------------------------------------")<<endl;
+      os<<" No.            Name                                            Description"<<endl
+        <<" --- -------------------------------- --------------------------------------------------------------------------------"<<endl;
 
       for (StageIndexType i=0; i<cnt; i++)
       {
@@ -213,22 +200,22 @@ static void DumpStages(std::_tostream& os, ILBAMModel* model)
          CComBSTR name, descr;
          hr = stage->get_Name(&name);
          hr = stage->get_Description(&descr);
-         os<<setw(4)<<i<<_T(" ")<<setw(33)<<left<<W2A(name)<<setw(80)<<W2A(descr)<<right<<endl;
+         os<<setw(4)<<i<<" "<<setw(33)<<left<<W2A(name)<<setw(80)<<W2A(descr)<<right<<endl;
       }
    }
    else
    {
-      os<<_T(" ERROR No Stages exist in this model")<<endl<<endl;
+      os<<" ERROR No Stages exist in this model"<<endl<<endl;
    }
 }
 
-static void DumpLoadGroups(std::_tostream& os, ILBAMModel* model)
+static void DumpLoadGroups(std::ostream& os, ILBAMModel* model)
 {
    CHRException hr;
    USES_CONVERSION;
 
-   os<<_T(" LoadGroups in Model")<<endl
-     <<_T(" -------------------")<<endl<<endl;
+   os<<" LoadGroups in Model"<<endl
+     <<" -------------------"<<endl<<endl;
 
    CComPtr<ILoadGroups> LoadGroups;
    hr = model->get_LoadGroups(&LoadGroups);
@@ -237,8 +224,8 @@ static void DumpLoadGroups(std::_tostream& os, ILBAMModel* model)
    hr = LoadGroups->get_Count(&cnt);
    if (cnt>0)
    {
-      os<<_T(" No.            Name                  Transient                             Description")<<endl
-        <<_T(" --- -------------------------------- --------- --------------------------------------------------------------------------------")<<endl;
+      os<<" No.            Name                  Transient                             Description"<<endl
+        <<" --- -------------------------------- --------- --------------------------------------------------------------------------------"<<endl;
 
       for (CollectionIndexType i=0; i<cnt; i++)
       {
@@ -249,22 +236,22 @@ static void DumpLoadGroups(std::_tostream& os, ILBAMModel* model)
          hr = LoadGroup->get_Description(&descr);
          VARIANT_BOOL istr;
          hr = LoadGroup->get_Transient(&istr);
-         os<<setw(4)<<i<<_T(" ")<<setw(33)<<left<<W2A(name)<<setw(10)<<(istr!=VARIANT_FALSE?_T("True"):_T("False"))<<setw(80)<<W2A(descr)<<right<<endl;
+         os<<setw(4)<<i<<" "<<setw(33)<<left<<W2A(name)<<setw(10)<<(istr!=VARIANT_FALSE?"True":"False")<<setw(80)<<W2A(descr)<<right<<endl;
       }
    }
    else
    {
-      os<<_T("   No LoadGroups exist in this model")<<endl<<endl;
+      os<<"   No LoadGroups exist in this model"<<endl<<endl;
    }
 }
 
-static void DumpLoadCases(std::_tostream& os, ILBAMModel* model)
+static void DumpLoadCases(std::ostream& os, ILBAMModel* model)
 {
    CHRException hr;
    USES_CONVERSION;
 
-   os<<_T(" LoadCases in Model")<<endl
-     <<_T(" -------------------")<<endl<<endl;
+   os<<" LoadCases in Model"<<endl
+     <<" -------------------"<<endl<<endl;
 
    CComPtr<ILoadCases> LoadCases;
    hr = model->get_LoadCases(&LoadCases);
@@ -273,8 +260,8 @@ static void DumpLoadCases(std::_tostream& os, ILBAMModel* model)
    hr = LoadCases->get_Count(&cnt);
    if (cnt>0)
    {
-      os<<_T(" No.            Name                         LoadGroups                                        Description")<<endl
-        <<_T(" --- -------------------------------- -------------------------------- --------------------------------------------------------------------------------")<<endl;
+      os<<" No.            Name                         LoadGroups                                        Description"<<endl
+        <<" --- -------------------------------- -------------------------------- --------------------------------------------------------------------------------"<<endl;
 
       for (CollectionIndexType i=0; i<cnt; i++)
       {
@@ -287,37 +274,37 @@ static void DumpLoadCases(std::_tostream& os, ILBAMModel* model)
          CollectionIndexType lg_cnt;
          hr = LoadCase->get_LoadGroupCount(&lg_cnt);
          // the first load group
-         CComBSTR lg0(_T(" "));
+         CComBSTR lg0(" ");
          if (lg_cnt>0)
          {
             hr = LoadCase->GetLoadGroup(0,&lg0);
          }
 
-         os<<right<<setw(4)<<i<<_T(" ")<<setw(33)<<left<<W2A(name)<<setw(33)<<W2A(lg0)<<setw(80)<<W2A(descr)<<right<<endl;
+         os<<right<<setw(4)<<i<<" "<<setw(33)<<left<<W2A(name)<<setw(33)<<W2A(lg0)<<setw(80)<<W2A(descr)<<right<<endl;
 
          // the rest of the loadgroups
          for (CollectionIndexType ilg=1; ilg<lg_cnt; ilg++)
          {
             CComBSTR lg;
             hr = LoadCase->GetLoadGroup(ilg, &lg);
-            os<<left<<setw(38)<<_T(" ")<<setw(40)<<W2A(lg)<<endl;
+            os<<left<<setw(38)<<" "<<setw(40)<<W2A(lg)<<endl;
          }
       }
    }
    else
    {
-      os<<_T("   No LoadCases exist in this model")<<endl<<endl;
+      os<<"   No LoadCases exist in this model"<<endl<<endl;
    }
 }
 
 
-static void DumpLoadCombos(std::_tostream& os, ILBAMModel* model)
+static void DumpLoadCombos(std::ostream& os, ILBAMModel* model)
 {
    CHRException hr;
    USES_CONVERSION;
 
-   os<<_T(" LoadCombinations in Model")<<endl
-     <<_T(" -------------------")<<endl<<endl;
+   os<<" LoadCombinations in Model"<<endl
+     <<" -------------------"<<endl<<endl;
 
    CComPtr<ILoadCombinations> LoadCombinations;
    hr = model->get_LoadCombinations(&LoadCombinations);
@@ -326,9 +313,9 @@ static void DumpLoadCombos(std::_tostream& os, ILBAMModel* model)
    hr = LoadCombinations->get_Count(&cnt);
    if (cnt>0)
    {
-      os<<_T("                                      Combination                                      Min        Max     Live Load   Live Load")<<endl;
-      os<<_T(" No.            Name                     Type             LoadCases                   Factor     Factor     Type       Factor                  Description")<<endl
-        <<_T(" --- -------------------------------- ------------ -------------------------------- ---------- ---------- ---------- ---------- --------------------------------------------------------------------------------")<<endl;
+      os<<"                                      Combination                                      Min        Max     Live Load   Live Load"<<endl;
+      os<<" No.            Name                     Type             LoadCases                   Factor     Factor     Type       Factor                  Description"<<endl
+        <<" --- -------------------------------- ------------ -------------------------------- ---------- ---------- ---------- ---------- --------------------------------------------------------------------------------"<<endl;
 
       for (CollectionIndexType i=0; i<cnt; i++)
       {
@@ -347,7 +334,7 @@ static void DumpLoadCombos(std::_tostream& os, ILBAMModel* model)
          CollectionIndexType lc_cnt;
          hr = LoadCombination->get_LoadCaseFactorCount(&lc_cnt);
          // the first load case
-         CComBSTR lc0(_T(" "));
+         CComBSTR lc0(" ");
          double lc0_min, lc0_max;
          if (lc_cnt>0)
          {
@@ -362,9 +349,9 @@ static void DumpLoadCombos(std::_tostream& os, ILBAMModel* model)
             LiveLoadModelType llt;
             hr = LoadCombination->GetLiveLoadModel(i,&llt);
 
-            os<<right<<setw(4)<<i<<_T(" ")<<setw(33)<<left<<W2A(name)<<setw(13)<<LctToString(lct)<<setw(32)<<W2A(lc0)
-              <<right<<setw(11)<<lc0_min<<setw(11)<<lc0_max<<_T(" ")<<left<<setw(10)<<LltToString(llt)
-              <<right<<setw(11)<<llf<<_T(" ")<<left<<setw(80)<<W2A(descr)<<right<<endl;
+            os<<right<<setw(4)<<i<<" "<<setw(33)<<left<<W2A(name)<<setw(13)<<LctToString(lct)<<setw(32)<<W2A(lc0)
+              <<right<<setw(11)<<lc0_min<<setw(11)<<lc0_max<<" "<<left<<setw(10)<<LltToString(llt)
+              <<right<<setw(11)<<llf<<" "<<left<<setw(80)<<W2A(descr)<<right<<endl;
 
             // the rest of the loadcases
             for (CollectionIndexType ilc=1; ilc<lc_cnt; ilc++)
@@ -372,7 +359,7 @@ static void DumpLoadCombos(std::_tostream& os, ILBAMModel* model)
                CComBSTR lc;
                double minf, maxf;
                hr = LoadCombination->GetLoadCaseFactor(ilc, &lc, &minf, &maxf);
-               os<<left<<setw(51)<<_T(" ")<<setw(32)<<W2A(lc)<<right<<setw(11)<<minf<<setw(11)<<maxf<<endl;
+               os<<left<<setw(51)<<" "<<setw(32)<<W2A(lc)<<right<<setw(11)<<minf<<setw(11)<<maxf<<endl;
             }
 
             os<<endl;
@@ -381,14 +368,14 @@ static void DumpLoadCombos(std::_tostream& os, ILBAMModel* model)
    }
    else
    {
-      os<<_T("   No LoadCombinations exist in this model")<<endl<<endl;
+      os<<"   No LoadCombinations exist in this model"<<endl<<endl;
    }
 }
 
 
 
 
-void CModelDumper::DumpSegmentData(std::_tostream& os, IFilteredSegmentCollection* segments)
+void CModelDumper::DumpSegmentData(std::ostream& os, IFilteredSegmentCollection* segments)
 {
    CHRException hr;
 
@@ -411,9 +398,9 @@ void CModelDumper::DumpSegmentData(std::_tostream& os, IFilteredSegmentCollectio
          hr = cs->GetStiffness(&eaf, &eif, &ead, &eid);
          double tc;
          hr = cs->get_ThermalCoeff(&tc);
-         os<<_T("                                EA         EI         EA         EI        Thermal ")<<endl;
-         os<<_T(" Seg   Length       Depth      Force      Force    Deflection Deflection  Coefficient")<<endl;
-         os<<_T(" --- ----------- ----------- ---------- ---------- ---------- ----------  ----------")<<endl;
+         os<<"                                EA         EI         EA         EI        Thermal "<<endl;
+         os<<" Seg   Length       Depth      Force      Force    Deflection Deflection  Coefficient"<<endl;
+         os<<" --- ----------- ----------- ---------- ---------- ---------- ----------  ----------"<<endl;
          os<<setw(4)<<i<<Fl(length)<<Fl(depth)<<Ff(eaf)<<Ff(eif)
            <<Ff(ead)<<Ff(eid)<<Ff(tc)<<endl;
       }
@@ -423,7 +410,7 @@ void CModelDumper::DumpSegmentData(std::_tostream& os, IFilteredSegmentCollectio
       // stress points
       for (SegmentIndexType i=0; i<seg_cnt; i++)
       {
-         os<<_T(" Stress Points for Segment ")<<i<<endl;
+         os<<" Stress Points for Segment "<<i<<endl;
          CComPtr<ISegment> segment;
          hr = segments->get_Item(i, &segment);
          double length;
@@ -436,8 +423,8 @@ void CModelDumper::DumpSegmentData(std::_tostream& os, IFilteredSegmentCollectio
          hr = sps->get_Count(&sps_cnt);
          if (sps_cnt>0)
          {
-            os<<_T(" Point     Sa         Sm")<<endl;
-            os<<_T(" ----- ---------- ----------")<<endl;
+            os<<" Point     Sa         Sm"<<endl;
+            os<<" ----- ---------- ----------"<<endl;
             for (CollectionIndexType isp=0; isp<sps_cnt; isp++)
             {
                CComPtr<IStressPoint> sp;
@@ -450,7 +437,7 @@ void CModelDumper::DumpSegmentData(std::_tostream& os, IFilteredSegmentCollectio
          }
          else
          {
-            os<<_T(" There are no stress points for segment ")<<i<<endl;
+            os<<" There are no stress points for segment "<<i<<endl;
          }
 
          os<<endl;
@@ -458,33 +445,33 @@ void CModelDumper::DumpSegmentData(std::_tostream& os, IFilteredSegmentCollectio
    }
    else
    {
-      os<<_T("     No Segments along this member")<<endl;
+      os<<"     No Segments along this member"<<endl;
    }
 
 }
 
-static std::_tstring GetMRTString(MemberReleaseType mrt)
+static std::string GetMRTString(MemberReleaseType mrt)
 {
    switch(mrt)
    {
    case mrtNone:
-      return std::_tstring(_T("Cont."));
+      return std::string("Cont.");
    case mrtPinned:
-      return std::_tstring(_T("Pinned"));
+      return std::string("Pinned");
    default:
       ATLASSERT(0);
-      return std::_tstring(_T("Error"));
+      return std::string("Error");
    }
 }
 
-void CModelDumper::DumpSSMData(std::_tostream& os, ILBAMModel* model)
+void CModelDumper::DumpSSMData(std::ostream& os, ILBAMModel* model)
 {
    USES_CONVERSION;
    CHRException hr;
 
    os<<endl;
-   os<<_T(" SupstructureMember Data")<<endl
-     <<_T(" -----------------------")<<endl<<endl;
+   os<<" SupstructureMember Data"<<endl
+     <<" -----------------------"<<endl<<endl;
 
    CComPtr<ISuperstructureMembers> ssms;
    hr = model->get_SuperstructureMembers(&ssms);
@@ -494,9 +481,9 @@ void CModelDumper::DumpSSMData(std::_tostream& os, ILBAMModel* model)
 
    if (ssm_cnt>0)
    {
-      os<<_T("               <-------------------- End Releases -------------------->")<<endl;
-      os<<_T(" SSM  Length    Left     Removal Stage      Right     Removal Stage     Symmetrical")<<endl;
-      os<<_T(" --- --------- ------ --------------------  ------ -------------------- ----------- ")<<endl;
+      os<<"               <-------------------- End Releases -------------------->"<<endl;
+      os<<" SSM  Length    Left     Removal Stage      Right     Removal Stage     Symmetrical"<<endl;
+      os<<" --- --------- ------ --------------------  ------ -------------------- ----------- "<<endl;
 
       for (CollectionIndexType i=0; i<ssm_cnt; i++)
       {
@@ -511,9 +498,9 @@ void CModelDumper::DumpSSMData(std::_tostream& os, ILBAMModel* model)
          VARIANT_BOOL symm;
          hr = ssm->get_IsSymmetrical(&symm);
 
-         os <<right<<setw(3)<<i<<Fl(length)<<_T(" ")<<left<<setw(8)<<GetMRTString(lft_mrt)<<setw(21)<<W2A(lft_stg)
+         os <<right<<setw(3)<<i<<Fl(length)<<" "<<left<<setw(8)<<GetMRTString(lft_mrt)<<setw(21)<<W2A(lft_stg)
             <<setw(7)<<GetMRTString(rgt_mrt)<<setw(21)<<W2A(rgt_stg)
-            <<setw(12)<<(symm!=VARIANT_FALSE?_T("True"):_T("False"))<<endl;
+            <<setw(12)<<(symm!=VARIANT_FALSE?"True":"False")<<endl;
       }
 
       os<<right<<endl;
@@ -526,8 +513,8 @@ void CModelDumper::DumpSSMData(std::_tostream& os, ILBAMModel* model)
       // segments
       for (CollectionIndexType i=0; i<ssm_cnt; i++)
       {
-         os<<_T(" Segment Information for SuperstructureMember ")<<i<<endl;
-         os<<_T(" ------------------------------------------------")<<endl;
+         os<<" Segment Information for SuperstructureMember "<<i<<endl;
+         os<<" ------------------------------------------------"<<endl;
          CComPtr<ISuperstructureMember> ssm;
          hr = ssms->get_Item(i, &ssm);
 
@@ -540,7 +527,7 @@ void CModelDumper::DumpSSMData(std::_tostream& os, ILBAMModel* model)
             hr = stage->get_Name(&sn);
             CComPtr<IFilteredSegmentCollection> segments;
             hr = ssm->GetSegmentsForStage(sn, &segments);
-            os <<_T("   Segments in Stage ")<<W2A(sn)<<endl;
+            os <<"   Segments in Stage "<<W2A(sn)<<endl;
 
             DumpSegmentData(os, segments);
          }
@@ -550,28 +537,28 @@ void CModelDumper::DumpSSMData(std::_tostream& os, ILBAMModel* model)
    }
    else
    {
-      os<<_T(" ERROR No Spans exist in this model")<<endl<<endl;
+      os<<" ERROR No Spans exist in this model"<<endl<<endl;
    }
 }
 
 
-void CModelDumper::DumpPOIData(std::_tostream& os, ILBAMModel* model)
+void CModelDumper::DumpPOIData(std::ostream& os, ILBAMModel* model)
 {
    USES_CONVERSION;
    CHRException hr;
 
    os<<endl;
-   os<<_T(" POI Data")<<endl
-     <<_T(" --------")<<endl<<endl;
+   os<<" POI Data"<<endl
+     <<" --------"<<endl<<endl;
 
    CComPtr<IPOIs> pois;
    hr = model->get_POIs(&pois);
    CollectionIndexType poi_cnt;
    hr = pois->get_Count(&poi_cnt);
 
-   os<<_T("                                                   # of POI          X           Y")<<endl;
-   os<<_T("  POI      Member Type       Member ID   Location  Stress Points  Location    Location")<<endl;
-   os<<_T(" ----- --------------------- --------- ----------- ------------- ----------- -----------")<<endl;
+   os<<"                                                   # of POI          X           Y"<<endl;
+   os<<"  POI      Member Type       Member ID   Location  Stress Points  Location    Location"<<endl;
+   os<<" ----- --------------------- --------- ----------- ------------- ----------- -----------"<<endl;
 
    for (CollectionIndexType ipoi=0; ipoi<poi_cnt; ipoi++)
    {
@@ -594,21 +581,21 @@ void CModelDumper::DumpPOIData(std::_tostream& os, ILBAMModel* model)
       double xloc, yloc;
       model->ComputeLocation(mid,mtype,loc,&xloc,&yloc);
 
-      os<<setw(6)<<id<<_T(" ")<<left<<setw(21)<<MTToString(mtype)<<right<<setw(10)<<mid<<setw(12)
+      os<<setw(6)<<id<<" "<<left<<setw(21)<<MTToString(mtype)<<right<<setw(10)<<mid<<setw(12)
         <<loc<<setw(14)<<nsps<<Fl(xloc)<<Fl(yloc)<<endl;
    }
 
    os<<endl;
 }
 
-void CModelDumper::DumpPointLoadData(std::_tostream& os, ILBAMModel* model)
+void CModelDumper::DumpPointLoadData(std::ostream& os, ILBAMModel* model)
 {
    USES_CONVERSION;
    CHRException hr;
 
    os<<endl;
-   os<<_T(" Point Load Data")<<endl
-     <<_T(" ---------------")<<endl<<endl;
+   os<<" Point Load Data"<<endl
+     <<" ---------------"<<endl<<endl;
 
    CComPtr<IPointLoads> pls;
    hr = model->get_PointLoads(&pls);
@@ -617,8 +604,8 @@ void CModelDumper::DumpPointLoadData(std::_tostream& os, ILBAMModel* model)
 
    if (pl_cnt>0)
    {
-      os<<_T("          Stage                  Load Group          Member Type        Member ID  Location       Fx          Fy           Mz")<<endl;
-      os<<_T(" ------------------------ ------------------------ -------------------- --------- ----------- ----------- ----------- -----------")<<endl;
+      os<<"          Stage                  Load Group          Member Type        Member ID  Location       Fx          Fy           Mz"<<endl;
+      os<<" ------------------------ ------------------------ -------------------- --------- ----------- ----------- ----------- -----------"<<endl;
 
       for (CollectionIndexType ip=0; ip<pl_cnt; ip++)
       {
@@ -641,25 +628,25 @@ void CModelDumper::DumpPointLoadData(std::_tostream& os, ILBAMModel* model)
          double fx, fy, mz;
          hr = pl->GetForce(&fx, &fy, &mz);
 
-         os<<left<<_T(" ")<<setw(25)<<W2A(stage)<<setw(25)<<W2A(loadgroup)<<setw(20)<<MTToString(mtype)<<right<<setw(10)<<mid<<Fl(loc)<<Ff(fx)<<Ff(fy)<<Ff(mz)<<endl;
+         os<<left<<" "<<setw(25)<<W2A(stage)<<setw(25)<<W2A(loadgroup)<<setw(20)<<MTToString(mtype)<<right<<setw(10)<<mid<<Fl(loc)<<Ff(fx)<<Ff(fy)<<Ff(mz)<<endl;
       }
    }
    else
    {
-      os<<_T("   No Point Loads in Model")<<endl;
+      os<<"   No Point Loads in Model"<<endl;
    }
 
    os<<endl;
 }
 
-static void DumpTemperatureLoadData(std::_tostream& os, ILBAMModel* model)
+static void DumpTemperatureLoadData(std::ostream& os, ILBAMModel* model)
 {
    USES_CONVERSION;
    CHRException hr;
 
    os<<endl;
-   os<<_T(" Temperature Load Data")<<endl
-     <<_T(" ---------------------")<<endl<<endl;
+   os<<" Temperature Load Data"<<endl
+     <<" ---------------------"<<endl<<endl;
 
    CComPtr<ITemperatureLoads> pls;
    hr = model->get_TemperatureLoads(&pls);
@@ -668,8 +655,8 @@ static void DumpTemperatureLoadData(std::_tostream& os, ILBAMModel* model)
 
    if (pl_cnt>0)
    {
-      os<<_T("          Stage                  Load Group          Member Type        Member ID    TTop        TBot")<<endl;
-      os<<_T(" ------------------------ ------------------------ -------------------- --------- ----------- -----------")<<endl;
+      os<<"          Stage                  Load Group          Member Type        Member ID    TTop        TBot"<<endl;
+      os<<" ------------------------ ------------------------ -------------------- --------- ----------- -----------"<<endl;
 
       for (CollectionIndexType ip=0; ip<pl_cnt; ip++)
       {
@@ -691,26 +678,26 @@ static void DumpTemperatureLoadData(std::_tostream& os, ILBAMModel* model)
          hr = pl->get_TTop(&ttop);
          hr = pl->get_TBottom(&tbot);
 
-         os<<left<<_T(" ")<<setw(25)<<W2A(stage)<<setw(25)<<W2A(loadgroup)<<setw(20)<<MTToString(mtype)<<right<<setw(10)<<mid
+         os<<left<<" "<<setw(25)<<W2A(stage)<<setw(25)<<W2A(loadgroup)<<setw(20)<<MTToString(mtype)<<right<<setw(10)<<mid
                       <<setw(12)<<ttop<<setw(12)<<tbot<<endl;
       }
    }
    else
    {
-      os<<_T("   No Temperature Loads in Model")<<endl;
+      os<<"   No Temperature Loads in Model"<<endl;
    }
 
    os<<endl;
 }
 
-static void DumpStrainLoadData(std::_tostream& os, ILBAMModel* model)
+static void DumpStrainLoadData(std::ostream& os, ILBAMModel* model)
 {
    USES_CONVERSION;
    CHRException hr;
 
    os<<endl;
-   os<<_T(" Strain Load Data")<<endl
-     <<_T(" ---------------------")<<endl<<endl;
+   os<<" Strain Load Data"<<endl
+     <<" ---------------------"<<endl<<endl;
 
    CComPtr<IStrainLoads> pls;
    hr = model->get_StrainLoads(&pls);
@@ -719,8 +706,8 @@ static void DumpStrainLoadData(std::_tostream& os, ILBAMModel* model)
 
    if (pl_cnt>0)
    {
-      os<<_T("          Stage                  Load Group          Member Type        Member ID Axial Strain Curve Strain")<<endl;
-      os<<_T(" ------------------------ ------------------------ -------------------- --------- ------------ ------------")<<endl;
+      os<<"          Stage                  Load Group          Member Type        Member ID Axial Strain Curve Strain"<<endl;
+      os<<" ------------------------ ------------------------ -------------------- --------- ------------ ------------"<<endl;
 
       for (CollectionIndexType ip=0; ip<pl_cnt; ip++)
       {
@@ -742,13 +729,13 @@ static void DumpStrainLoadData(std::_tostream& os, ILBAMModel* model)
          hr = pl->get_AxialStrain(&as);
          hr = pl->get_CurvatureStrain(&cs);
 
-         os<<left<<_T(" ")<<setw(25)<<W2A(stage)<<setw(25)<<W2A(loadgroup)<<setw(20)<<MTToString(mtype)<<right<<setw(10)<<mid
+         os<<left<<" "<<setw(25)<<W2A(stage)<<setw(25)<<W2A(loadgroup)<<setw(20)<<MTToString(mtype)<<right<<setw(10)<<mid
                       <<setw(13)<<as<<setw(13)<<cs<<endl;
       }
    }
    else
    {
-      os<<_T("   No Strain Loads in Model")<<endl;
+      os<<"   No Strain Loads in Model"<<endl;
    }
 
    os<<endl;
@@ -756,14 +743,14 @@ static void DumpStrainLoadData(std::_tostream& os, ILBAMModel* model)
 
 
 
-static void DumpSettlementLoadData(std::_tostream& os, ILBAMModel* model)
+static void DumpSettlementLoadData(std::ostream& os, ILBAMModel* model)
 {
    USES_CONVERSION;
    CHRException hr;
 
    os<<endl;
-   os<<_T(" Settlement Load Data")<<endl
-     <<_T(" --------------------")<<endl<<endl;
+   os<<" Settlement Load Data"<<endl
+     <<" --------------------"<<endl<<endl;
 
    CComPtr<ISettlementLoads> pls;
    hr = model->get_SettlementLoads(&pls);
@@ -772,8 +759,8 @@ static void DumpSettlementLoadData(std::_tostream& os, ILBAMModel* model)
 
    if (pl_cnt>0)
    {
-      os<<_T("          Stage                  Load Group        Supprt ID     Dx          Dy           Rz")<<endl;
-      os<<_T(" ------------------------ ------------------------ --------- ----------- ----------- -----------")<<endl;
+      os<<"          Stage                  Load Group        Supprt ID     Dx          Dy           Rz"<<endl;
+      os<<" ------------------------ ------------------------ --------- ----------- ----------- -----------"<<endl;
 
       for (CollectionIndexType ip=0; ip<pl_cnt; ip++)
       {
@@ -794,26 +781,26 @@ static void DumpSettlementLoadData(std::_tostream& os, ILBAMModel* model)
          hr = pl->get_Dy(&dy);
          hr = pl->get_Rz(&rz);
 
-         os<<left<<_T(" ")<<setw(25)<<W2A(stage)<<setw(24)<<W2A(loadgroup)<<right<<setw(10)<<mid<<setw(12)<<dx<<setw(12)<<dy<<setw(12)<<rz<<endl;
+         os<<left<<" "<<setw(25)<<W2A(stage)<<setw(24)<<W2A(loadgroup)<<right<<setw(10)<<mid<<setw(12)<<dx<<setw(12)<<dy<<setw(12)<<rz<<endl;
       }
    }
    else
    {
-      os<<_T("   No Settlement Loads in Model")<<endl;
+      os<<"   No Settlement Loads in Model"<<endl;
    }
 
    os<<endl;
 }
 
 
-static void DumpDistrLoadData(std::_tostream& os, ILBAMModel* model)
+static void DumpDistrLoadData(std::ostream& os, ILBAMModel* model)
 {
    USES_CONVERSION;
    CHRException hr;
 
    os<<endl;
-   os<<_T(" Distributed Load Data")<<endl
-     <<_T(" ---------------------")<<endl;
+   os<<" Distributed Load Data"<<endl
+     <<" ---------------------"<<endl;
 
    CComPtr<IDistributedLoads> dls;
    hr = model->get_DistributedLoads(&dls);
@@ -822,9 +809,9 @@ static void DumpDistrLoadData(std::_tostream& os, ILBAMModel* model)
 
    if (dl_cnt>0)
    {
-      os<<_T("                                                                                               Start       End          W            W")<<endl;
-      os<<_T("          Stage                  Load Group          Member Type        Member ID Orient Dir  Location    Location     Start        End ")<<endl;
-      os<<_T(" ------------------------ ------------------------ -------------------- --------- ------ --- ----------- ----------- ----------- -----------")<<endl;
+      os<<"                                                                                               Start       End          W            W"<<endl;
+      os<<"          Stage                  Load Group          Member Type        Member ID Orient Dir  Location    Location     Start        End "<<endl;
+      os<<" ------------------------ ------------------------ -------------------- --------- ------ --- ----------- ----------- ----------- -----------"<<endl;
 
       for (CollectionIndexType id=0; id<dl_cnt; id++)
       {
@@ -853,28 +840,28 @@ static void DumpDistrLoadData(std::_tostream& os, ILBAMModel* model)
          hr = dl->get_WStart(&wstart);
          hr = dl->get_WEnd(&wend);
 
-         os<<left<<_T(" ")<<setw(25)<<W2A(stage)<<setw(25)<<W2A(loadgroup)<<setw(20)<<MTToString(mtype)<<setw(8)
-           <<right<<setw(10)<<mid<<_T(" ")<<left<<setw(7)<<LoToString(or)<<setw(3)<<LdToString(dir)
+         os<<left<<" "<<setw(25)<<W2A(stage)<<setw(25)<<W2A(loadgroup)<<setw(20)<<MTToString(mtype)<<setw(8)
+           <<right<<setw(10)<<mid<<" "<<left<<setw(7)<<LoToString(or)<<setw(3)<<LdToString(dir)
            <<right<<setw(12)<<sloc<<setw(12)<<eloc<<setw(12)<<wstart<<setw(12)<<wend<<endl;
       }
    }
    else
    {
-      os<<_T("   No Distributed Loads in Model")<<endl;
+      os<<"   No Distributed Loads in Model"<<endl;
    }
 
    os<<endl;
 }
 
 
-void CModelDumper::DumpSupportData(std::_tostream& os, ILBAMModel* model)
+void CModelDumper::DumpSupportData(std::ostream& os, ILBAMModel* model)
 {
    USES_CONVERSION;
    CHRException hr;
 
    os<<endl;
-   os<<_T(" Support Data")<<endl
-     <<_T(" ------------")<<endl<<endl;
+   os<<" Support Data"<<endl
+     <<" ------------"<<endl<<endl;
 
    CComPtr<ISupports> sups;
    hr = model->get_Supports(&sups);
@@ -884,10 +871,10 @@ void CModelDumper::DumpSupportData(std::_tostream& os, ILBAMModel* model)
 
    if (sup_cnt>0)
    {
-      os<<_T("                                                      <---------------------- Load Modifiers ------------------------------>")<<endl;
-      os<<_T("                  Bottom   Bottom  Top                 Service    Strength  ExtremeEvent   Fatigue     Permit   UserDefined")<<endl;
-      os<<_T(" SUP  Length      Offset     BC   Hinge  Symmetrical  Min   Max   Min   Max   Min   Max   Min   Max   Min   Max   Min   Max")<<endl;
-      os<<_T(" --- ---------- ---------- ------ ------ ----------- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----")<<endl;
+      os<<"                                                      <---------------------- Load Modifiers ------------------------------>"<<endl;
+      os<<"                  Bottom   Bottom  Top                 Service    Strength  ExtremeEvent   Fatigue     Permit   UserDefined"<<endl;
+      os<<" SUP  Length      Offset     BC   Hinge  Symmetrical  Min   Max   Min   Max   Min   Max   Min   Max   Min   Max   Min   Max"<<endl;
+      os<<" --- ---------- ---------- ------ ------ ----------- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----"<<endl;
 
       for (CollectionIndexType i=0; i<sup_cnt; i++)
       {
@@ -900,17 +887,17 @@ void CModelDumper::DumpSupportData(std::_tostream& os, ILBAMModel* model)
          BoundaryConditionType bc;
          hr = sup->get_BoundaryCondition(&bc);
 
-         std::_tstring sbc;
+         std::string sbc;
          switch (bc)
          {
          case bcFixed:
-            sbc = _T("Fixed");
+            sbc = "Fixed";
             break;
          case bcPinned:
-            sbc = _T("Pinned");
+            sbc = "Pinned";
             break;
          case bcRoller:
-            sbc = _T("Roller");
+            sbc = "Roller";
             break;
          default:
             ATLASSERT(0);
@@ -934,8 +921,8 @@ void CModelDumper::DumpSupportData(std::_tostream& os, ILBAMModel* model)
          double usd_min, usd_max;
          hr = sup->GetLoadModifier(lctUserDefined , &usd_min, &usd_max);
 
-         os <<right<<setw(4)<<i<<setw(11)<<length<<setw(11)<<offset<<_T(" ")<<left<<setw(6)<<sbc<<_T(" ")
-            <<setw(6)<<(toprel!=VARIANT_FALSE?_T("True"):_T("False"))<<_T(" ")<<setw(11)<<(symm!=VARIANT_FALSE?_T("True"):_T("False"))
+         os <<right<<setw(4)<<i<<setw(11)<<length<<setw(11)<<offset<<" "<<left<<setw(6)<<sbc<<" "
+            <<setw(6)<<(toprel!=VARIANT_FALSE?"True":"False")<<" "<<setw(11)<<(symm!=VARIANT_FALSE?"True":"False")
             <<right<<setw(6)<<svc_min<<setw(6)<<svc_max<<setw(6)
             <<str_min<<setw(6)<<str_max<<setw(6)<<exe_min<<setw(6)<<exe_max<<setw(6)<<fat_min<<setw(6)<<fat_max
             <<setw(6)<<pmt_min<<setw(6)<<pmt_max<<setw(6)<<usd_min<<setw(6)<<usd_max<<setw(6)<<endl;
@@ -951,8 +938,8 @@ void CModelDumper::DumpSupportData(std::_tostream& os, ILBAMModel* model)
       // segments
       for (CollectionIndexType i=0; i<sup_cnt; i++)
       {
-         os<<_T(" Segment Information for Support ")<<i<<endl;
-         os<<_T(" ------------------------------------")<<endl;
+         os<<" Segment Information for Support "<<i<<endl;
+         os<<" ------------------------------------"<<endl;
          CComPtr<ISupport> sup;
          hr = sups->get_Item(i, &sup);
 
@@ -964,7 +951,7 @@ void CModelDumper::DumpSupportData(std::_tostream& os, ILBAMModel* model)
             hr = stage->get_Name(&sn);
             CComPtr<IFilteredSegmentCollection> segments;
             hr = sup->GetSegmentsForStage(sn, &segments);
-            os <<_T("   Segments in Stage ")<<W2A(sn)<<endl;
+            os <<"   Segments in Stage "<<W2A(sn)<<endl;
 
             DumpSegmentData(os, segments);
          }
@@ -974,19 +961,19 @@ void CModelDumper::DumpSupportData(std::_tostream& os, ILBAMModel* model)
    }
    else
    {
-      os<<_T(" ERROR No Supports exist in this model")<<endl<<endl;
+      os<<" ERROR No Supports exist in this model"<<endl<<endl;
    }
 
 }
 
-void CModelDumper::DumpTempSupportData(std::_tostream& os, ILBAMModel* model)
+void CModelDumper::DumpTempSupportData(std::ostream& os, ILBAMModel* model)
 {
    USES_CONVERSION;
    CHRException hr;
 
    os<<endl;
-   os<<_T(" Temporary Support Data")<<endl
-     <<_T(" ----------------------")<<endl<<endl;
+   os<<" Temporary Support Data"<<endl
+     <<" ----------------------"<<endl<<endl;
 
    CComPtr<ISpans> spans;
    hr = model->get_Spans(&spans);
@@ -996,10 +983,10 @@ void CModelDumper::DumpTempSupportData(std::_tostream& os, ILBAMModel* model)
 
    if (span_cnt>0)
    {
-      os<<_T("                                                                                          <---------------------- Load Modifiers ------------------------------>")<<endl;
-      os<<_T("                          Stage                        Bottom   Bottom  Top                 Service    Strength  ExtremeEvent   Fatigue     Permit   UserDefined")<<endl;
-      os<<_T("  ID Span  Location      Removed            Length     Offset     BC   Hinge  Symmetrical  Min   Max   Min   Max   Min   Max   Min   Max   Min   Max   Min   Max")<<endl;
-      os<<_T(" --- ---- ---------- -------------------- ---------- ---------- ------ ------ ----------- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----")<<endl;
+      os<<"                                                                                          <---------------------- Load Modifiers ------------------------------>"<<endl;
+      os<<"                          Stage                        Bottom   Bottom  Top                 Service    Strength  ExtremeEvent   Fatigue     Permit   UserDefined"<<endl;
+      os<<"  ID Span  Location      Removed            Length     Offset     BC   Hinge  Symmetrical  Min   Max   Min   Max   Min   Max   Min   Max   Min   Max   Min   Max"<<endl;
+      os<<" --- ---- ---------- -------------------- ---------- ---------- ------ ------ ----------- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----"<<endl;
 
       for (SpanIndexType ispn=0; ispn<span_cnt; ispn++)
       {
@@ -1027,17 +1014,17 @@ void CModelDumper::DumpTempSupportData(std::_tostream& os, ILBAMModel* model)
             BoundaryConditionType bc;
             hr = sup->get_BoundaryCondition(&bc);
 
-            std::_tstring sbc;
+            std::string sbc;
             switch (bc)
             {
             case bcFixed:
-               sbc = _T("Fixed");
+               sbc = "Fixed";
                break;
             case bcPinned:
-               sbc = _T("Pinned");
+               sbc = "Pinned";
                break;
             case bcRoller:
-               sbc = _T("Roller");
+               sbc = "Roller";
                break;
             default:
                ATLASSERT(0);
@@ -1061,9 +1048,9 @@ void CModelDumper::DumpTempSupportData(std::_tostream& os, ILBAMModel* model)
             double usd_min, usd_max;
             hr = sup->GetLoadModifier(lctUserDefined , &usd_min, &usd_max);
 
-            os <<right<<setw(4)<<id<<setw(5)<<ispn<<setw(11)<<location<<left<<_T(" ")<<setw(20)<<W2A(remstg)<<right<<setw(11)
-               <<length<<setw(11)<<offset<<_T(" ")<<left<<setw(6)<<sbc<<_T(" ")
-               <<setw(6)<<(toprel!=VARIANT_FALSE?_T("True"):_T("False"))<<_T(" ")<<setw(11)<<(symm!=VARIANT_FALSE?_T("True"):_T("False"))
+            os <<right<<setw(4)<<id<<setw(5)<<ispn<<setw(11)<<location<<left<<" "<<setw(20)<<W2A(remstg)<<right<<setw(11)
+               <<length<<setw(11)<<offset<<" "<<left<<setw(6)<<sbc<<" "
+               <<setw(6)<<(toprel!=VARIANT_FALSE?"True":"False")<<" "<<setw(11)<<(symm!=VARIANT_FALSE?"True":"False")
                <<right<<setw(6)<<svc_min<<setw(6)<<svc_max<<setw(6)
                <<str_min<<setw(6)<<str_max<<setw(6)<<exe_min<<setw(6)<<exe_max<<setw(6)<<fat_min<<setw(6)<<fat_max
                <<setw(6)<<pmt_min<<setw(6)<<pmt_max<<setw(6)<<usd_min<<setw(6)<<usd_max<<setw(6)<<endl;
@@ -1094,7 +1081,7 @@ void CModelDumper::DumpTempSupportData(std::_tostream& os, ILBAMModel* model)
             SupportIDType id;
             hr = sup->get_ID(&id);
 
-            os<<_T("  Segment Data for TemporarySupport ")<<id<<endl;
+            os<<"  Segment Data for TemporarySupport "<<id<<endl;
 
             for (StageIndexType is=0; is<stg_cnt; is++)
             {
@@ -1104,7 +1091,7 @@ void CModelDumper::DumpTempSupportData(std::_tostream& os, ILBAMModel* model)
                hr = stage->get_Name(&sn);
                CComPtr<IFilteredSegmentCollection> segments;
                hr = sup->GetSegmentsForStage(sn, &segments);
-               os <<_T("   Segments in Stage ")<<W2A(sn)<<endl;
+               os <<"   Segments in Stage "<<W2A(sn)<<endl;
 
                DumpSegmentData(os, segments);
             }
@@ -1116,13 +1103,13 @@ void CModelDumper::DumpTempSupportData(std::_tostream& os, ILBAMModel* model)
 }
 
 
-static void DumpSpanData(std::_tostream& os, ILBAMModel* model)
+static void DumpSpanData(std::ostream& os, ILBAMModel* model)
 {
    CHRException hr;
 
    os<<endl;
-   os<<_T(" Span Data")<<endl
-     <<_T(" ---------")<<endl<<endl;
+   os<<" Span Data"<<endl
+     <<" ---------"<<endl<<endl;
 
    CComPtr<ISpans> spans;
    hr = model->get_Spans(&spans);
@@ -1137,18 +1124,18 @@ static void DumpSpanData(std::_tostream& os, ILBAMModel* model)
    hr = ssms->get_Offset(&lft_oh);
    hr = ssms->get_Length(&ssms_len);
 
-   os<<_T(" Left  Overhang: ")<<lft_oh<<endl;
-   os<<_T(" Right Overhang: ")<<ssms_len-(spans_len+lft_oh)<<endl;
-   os<<_T(" Total Length of superstructure: ")<<ssms_len<<endl<<endl;
+   os<<" Left  Overhang: "<<lft_oh<<endl;
+   os<<" Right Overhang: "<<ssms_len-(spans_len+lft_oh)<<endl;
+   os<<" Total Length of superstructure: "<<ssms_len<<endl<<endl;
 
    SpanIndexType cnt;
    hr = spans->get_Count(&cnt);
    if (cnt>0)
    {
-      os<<_T("                         <---------------------- Load Modifiers ------------------------------>")<<endl
-        <<_T("                   # of   Service    Strength  ExtremeEvent   Fatigue     Permit   UserDefined")<<endl
-        <<_T(" Span    Length    TS's  Min   Max   Min   Max   Min   Max   Min   Max   Min   Max   Min   Max")<<endl
-        <<_T(" ---- ------------ ---- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----")<<endl;
+      os<<"                         <---------------------- Load Modifiers ------------------------------>"<<endl
+        <<"                   # of   Service    Strength  ExtremeEvent   Fatigue     Permit   UserDefined"<<endl
+        <<" Span    Length    TS's  Min   Max   Min   Max   Min   Max   Min   Max   Min   Max   Min   Max"<<endl
+        <<" ---- ------------ ---- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----"<<endl;
 
       for (SpanIndexType i=0; i<cnt; i++)
       {
@@ -1182,11 +1169,11 @@ static void DumpSpanData(std::_tostream& os, ILBAMModel* model)
    }
    else
    {
-      os<<_T(" ERROR No Spans exist in this model")<<endl<<endl;
+      os<<" ERROR No Spans exist in this model"<<endl<<endl;
    }
 }
 
-static void DumpLiveLoadModel(std::_tostream& os, const std::_tstring& name, ILiveLoadModel* model)
+static void DumpLiveLoadModel(std::ostream& os, const std::string& name, ILiveLoadModel* model)
 {
    USES_CONVERSION;
    CHRException hr;
@@ -1202,23 +1189,23 @@ static void DumpLiveLoadModel(std::_tostream& os, const std::_tstring& name, ILi
    VehicleIndexType vl_cnt;
    hr = vehlds->get_Count(&vl_cnt);
    
-   _tostringstream oss;
-   oss<<_T(" Data for LiveLoad Model: ")<<name;
-   std::_tstring::size_type len = oss.str().size();
-   std::_tstring dashes;
-   dashes.assign(len, _T('-'));
+   ostringstream oss;
+   oss<<" Data for LiveLoad Model: "<<name;
+   long len = oss.str().size();
+   std::string dashes;
+   dashes.assign("-", len);
    os<<oss.str()<<endl;
    os<<dashes<<endl;
 
-   os<<_T("                                                 # of")<<endl;
-   os<<_T(" Internal Name                     DF Type     Veh Loads")<<endl;
-   os<<_T(" -------------------------------- ------------ ---------")<<endl;
-   os<<_T(" ")<<left<<setw(33)<<W2A(bname)<<setw(13)<<DftToString(dftype)<<right<<setw(10)<<vl_cnt<<endl<<endl;
+   os<<"                                                 # of"<<endl;
+   os<<" Internal Name                     DF Type     Veh Loads"<<endl;
+   os<<" -------------------------------- ------------ ---------"<<endl;
+   os<<" "<<left<<setw(33)<<W2A(bname)<<setw(13)<<DftToString(dftype)<<right<<setw(10)<<vl_cnt<<endl<<endl;
 
    for (VehicleIndexType iv=0; iv<vl_cnt; iv++)
    {
-      os<<_T("   Vehicular Load ")<<iv<<endl;
-      os<<_T("   ------------------")<<endl<<endl;
+      os<<"   Vehicular Load "<<iv<<endl;
+      os<<"   ------------------"<<endl<<endl;
       CComPtr<IVehicularLoad> vehld;
       hr = vehlds->get_Item(iv,&vehld);
 
@@ -1227,14 +1214,14 @@ static void DumpLiveLoadModel(std::_tostream& os, const std::_tstring& name, ILi
 
       LiveLoadApplicabilityType llappl;
       hr = vehld->get_Applicability(&llappl);
-      std::_tstring strappl;
+      std::string strappl;
       if (llappl==llaEntireStructure)
       {
-         strappl = _T("Entire Super");
+         strappl = "Entire Super";
       }
       else if (llappl==llaContraflexure)
       {
-         strappl = _T("Contraflexure");
+         strappl = "Contraflexure";
       }
       else
       {
@@ -1265,22 +1252,22 @@ static void DumpLiveLoadModel(std::_tostream& os, const std::_tstring& name, ILi
       double maxvar;
       hr = vehld->get_VariableMaxSpacing(&maxvar);
 
-      os<<_T(" Vehicular Live Load                          Vehicular Load      Truck       Lane      Truck       Lane      Lane     Sidewalk      Is       Variable   Max Var.")<<endl;
-      os<<_T("       Name              Applicability         Configuration      Factor     Factor     Impact     Impact     Load       Load      Notional     Axle     Spacing")<<endl;
-      os<<_T(" -------------------- --------------------- -------------------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------")<<endl;
-      os<<_T(" ")<<left<<setw(21)<<W2A(vnam)<<setw(22)<<strappl<<setw(20)<<VlcToString(conft)<<right
+      os<<" Vehicular Live Load                          Vehicular Load      Truck       Lane      Truck       Lane      Lane     Sidewalk      Is       Variable   Max Var."<<endl;
+      os<<"       Name              Applicability         Configuration      Factor     Factor     Impact     Impact     Load       Load      Notional     Axle     Spacing"<<endl;
+      os<<" -------------------- --------------------- -------------------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------"<<endl;
+      os<<" "<<left<<setw(21)<<W2A(vnam)<<setw(22)<<strappl<<setw(20)<<VlcToString(conft)<<right
         <<setw(11)<<truckfct<<setw(11)<<lanefct<<setw(11)<<imtruck<<setw(11)<<imlane
-        <<setw(11)<<laneld<<setw(11)<<sidewld<<setw(11)<<(usenot!=VARIANT_FALSE?_T("True"):_T("False"))<<setw(11)<<varaxl<<setw(11)<<maxvar<<endl<<endl;
+        <<setw(11)<<laneld<<setw(11)<<sidewld<<setw(11)<<(usenot!=VARIANT_FALSE?"True":"False")<<setw(11)<<varaxl<<setw(11)<<maxvar<<endl<<endl;
 
       CComPtr<IAxles> axles;
       hr = vehld->get_Axles(&axles);
       AxleIndexType axl_cnt;
       hr = axles->get_Count(&axl_cnt);
-      os<<_T("    The number of Axles for this VehicularLoad is ")<<axl_cnt<<endl<<endl;
+      os<<"    The number of Axles for this VehicularLoad is "<<axl_cnt<<endl<<endl;
       if (axl_cnt>0)
       {
-         os<<_T("     Axle   Weight    Spacing")<<endl;
-         os<<_T("     ---- ---------- ----------")<<endl;
+         os<<"     Axle   Weight    Spacing"<<endl;
+         os<<"     ---- ---------- ----------"<<endl;
          for (AxleIndexType ia=0; ia<axl_cnt; ia++)
          {
             CComPtr<IAxle> axl;
@@ -1296,7 +1283,7 @@ static void DumpLiveLoadModel(std::_tostream& os, const std::_tstring& name, ILi
    os<<endl;
 }
 
-static void DumpLiveLoad(std::_tostream& os, ILBAMModel* model)
+static void DumpLiveLoad(std::ostream& os, ILBAMModel* model)
 {
    CHRException hr;
 
@@ -1306,22 +1293,22 @@ static void DumpLiveLoad(std::_tostream& os, ILBAMModel* model)
    CComPtr<ILiveLoadModel> ped, spec, perm, fat, defl, desgn;
 
 	hr = liveload->get_Deflection(&defl);
-   DumpLiveLoadModel(os, _T("Deflection"), defl);
+   DumpLiveLoadModel(os, "Deflection", defl);
 
 	hr = liveload->get_Design(&desgn);
-   DumpLiveLoadModel(os, _T("Design"), desgn);
+   DumpLiveLoadModel(os, "Design", desgn);
 
 	hr = liveload->get_Fatigue(&fat);
-   DumpLiveLoadModel(os, _T("Fatigue"), fat);
+   DumpLiveLoadModel(os, "Fatigue", fat);
 
 	hr =liveload->get_Pedestrian(&ped);
-   DumpLiveLoadModel(os, _T("Pedestrian"), ped);
+   DumpLiveLoadModel(os, "Pedestrian", ped);
 
 	hr = liveload->get_Permit(&perm);
-   DumpLiveLoadModel(os, _T("Permit"), perm);
+   DumpLiveLoadModel(os, "Permit", perm);
 
 	hr = liveload->get_Special(&spec);
-   DumpLiveLoadModel(os, _T("Special"), spec);
+   DumpLiveLoadModel(os, "Special", spec);
 }
 
 
@@ -1336,11 +1323,11 @@ CModelDumper::~CModelDumper()
 
 }
 
-void CModelDumper::DumpModel(std::_tostream& os, ILBAMModel* model)
+void CModelDumper::DumpModel(std::ostream& os, ILBAMModel* model)
 {
 
-   os<<_T(" MODEL GEOMETRY AND PROPERTIES")<<endl
-     <<_T(" =============================")<<endl<<endl;
+   os<<" MODEL GEOMETRY AND PROPERTIES"<<endl
+     <<" ============================="<<endl<<endl;
 
    DumpStages(os, model);
    DumpSpanData( os, model);
@@ -1351,8 +1338,8 @@ void CModelDumper::DumpModel(std::_tostream& os, ILBAMModel* model)
    DumpDistributionFactors( os, model);
 
    os<<endl;
-   os<<_T(" LOAD GROUPS AND APPLIED LOADS")<<endl
-     <<_T(" =============================")<<endl<<endl;
+   os<<" LOAD GROUPS AND APPLIED LOADS"<<endl
+     <<" ============================="<<endl<<endl;
 
    DumpLoadGroups(os, model);
    DumpPointLoadData(os, model);
@@ -1362,14 +1349,14 @@ void CModelDumper::DumpModel(std::_tostream& os, ILBAMModel* model)
    DumpSettlementLoadData(os, model);
 
    os<<endl;
-   os<<_T(" LIVE LOADS")<<endl
-     <<_T(" ==========")<<endl<<endl;
+   os<<" LIVE LOADS"<<endl
+     <<" =========="<<endl<<endl;
 
    DumpLiveLoad(os, model);
 
    os<<endl;
-   os<<_T(" LOAD COMBINATIONS")<<endl
-     <<_T(" =================")<<endl<<endl;
+   os<<" LOAD COMBINATIONS"<<endl
+     <<" ================="<<endl<<endl;
 
    DumpLoadCases(os, model);
    DumpLoadCombos(os, model);

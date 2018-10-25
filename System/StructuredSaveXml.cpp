@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -225,10 +225,7 @@ void sysStructuredSaveXml::Property(LPCTSTR name, Uint32 value)
    try
    {
       indent_stream(*m_pOStream, m_Level*INDENT+INDENT);
-      if ( value == Uint32_Max )
-         *m_pOStream << "<"<<name<<">"<<-1<<"</"<<name<<">"<<std::endl;
-      else
-         *m_pOStream << "<"<<name<<">"<<value<<"</"<<name<<">"<<std::endl;
+      *m_pOStream << "<"<<name<<">"<<value<<"</"<<name<<">"<<std::endl;
    }
    catch(...)
    {
@@ -258,10 +255,37 @@ void sysStructuredSaveXml::Property(LPCTSTR name, Uint64 value)
    try
    {
       indent_stream(*m_pOStream, m_Level*INDENT+INDENT);
-      if ( value == Uint64_Max )
-         *m_pOStream << "<"<<name<<">"<<-1<<"</"<<name<<">"<<std::endl;
-      else
-         *m_pOStream << "<"<<name<<">"<<value<<"</"<<name<<">"<<std::endl;
+      *m_pOStream << "<"<<name<<">"<<value<<"</"<<name<<">"<<std::endl;
+   }
+   catch(...)
+   {
+      THROW(sysXStructuredSave,BadWrite);
+   }
+}
+
+void sysStructuredSaveXml::Property(LPCTSTR name, LONG value)
+{
+   ASSERTVALID;
+
+   try
+   {
+      indent_stream(*m_pOStream, m_Level*INDENT+INDENT);
+      *m_pOStream << "<"<<name<<">"<<value<<"</"<<name<<">"<<std::endl;
+   }
+   catch(...)
+   {
+      THROW(sysXStructuredSave,BadWrite);
+   }
+}
+
+void sysStructuredSaveXml::Property(LPCTSTR name, ULONG value)
+{
+   ASSERTVALID;
+
+   try
+   {
+      indent_stream(*m_pOStream, m_Level*INDENT+INDENT);
+      *m_pOStream << "<"<<name<<">"<<value<<"</"<<name<<">"<<std::endl;
    }
    catch(...)
    {

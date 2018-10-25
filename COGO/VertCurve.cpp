@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -58,8 +58,8 @@ HRESULT CVertCurve::FinalConstruct()
    MyAdvise(m_PVI,&m_dwPVI);
    MyAdvise(m_PFG,&m_dwPFG);
 
-   m_L1 = 0.0;
-   m_L2 = 0.0;
+   m_L1 = 0.5;
+   m_L2 = 0.5;
 
    m_PBG->put_Station(CComVariant(0.00));
    m_PBG->put_Elevation(0.00);
@@ -173,7 +173,7 @@ STDMETHODIMP CVertCurve::get_L1(Float64* pVal)
 
 STDMETHODIMP CVertCurve::put_L1(Float64 newVal)
 {
-   if ( newVal < 0.0 )
+   if ( newVal <= 0.0 )
       return E_INVALIDARG;
 
    m_L1 = newVal;
@@ -191,7 +191,7 @@ STDMETHODIMP CVertCurve::get_L2(Float64* pVal)
 
 STDMETHODIMP CVertCurve::put_L2(Float64 newVal)
 {
-   if ( newVal < 0.0 )
+   if ( newVal <= 0.0 )
       return E_INVALIDARG;
 
    m_L2 = newVal;
@@ -560,11 +560,7 @@ STDMETHODIMP CVertCurve::Elevation(VARIANT varStation, Float64 *elev)
          // station is left of PVI
          Float64 x = sta - staBVC;
          Float64 L = staTrans - staBVC;
-         Float64 y;
-         if ( IsZero(L) )
-            y = elevBVC;
-         else
-            y = (gradeTrans-g1)*pow(x,2)/(2*L) + g1*x + elevBVC;
+         Float64 y = (gradeTrans-g1)*pow(x,2)/(2*L) + g1*x + elevBVC;
          *elev = y;
       }
       else
@@ -572,12 +568,7 @@ STDMETHODIMP CVertCurve::Elevation(VARIANT varStation, Float64 *elev)
          // station is right of PVI
          Float64 x = sta - staTrans;
          Float64 L = staEVC - staTrans;
-         Float64 y;
-         if ( IsZero(L) )
-            y = elevTrans;
-         else
-            y = (g2-gradeTrans)*pow(x,2)/(2*L) + gradeTrans*x + elevTrans;
-
+         Float64 y = (g2-gradeTrans)*pow(x,2)/(2*L) + gradeTrans*x + elevTrans;
          *elev = y;
       }
    }
@@ -906,17 +897,11 @@ void CVertCurve::TransitionPoint(IStation** sta,Float64* elev,Float64* grade)
    elevPVI1 = elevBVC + g1*m_L1/2;
 
    Float64 h; // distance from PVI to curve
-   if ( IsZero(m_L1+m_L2) )
-      h = 0;
-   else
-      h = m_L1*m_L2*(g2 - g1)/(2*(m_L1+m_L2)); // positive if sag curve
+   h = m_L1*m_L2*(g2 - g1)/(2*(m_L1+m_L2)); // positive if sag curve
 
    *elev = elevPVI + h;
    *sta  = staPVI;
    (*sta)->AddRef();
 
-   if ( IsZero(m_L1) )
-      *grade = g1;
-   else
-      *grade = (*elev - elevPVI1)*2/m_L1;
+   *grade = (*elev - elevPVI1)*2/m_L1;
 }

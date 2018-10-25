@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -150,8 +150,10 @@ struct InfluenceLoadLocation
    Float64                m_FemMemberLoc;
    LoadCaseIDType         m_FemLoadCaseID;  // Fem load case assigned to this unit load
 
+   Float64 m_P;
+
    // constructor for member-based locations
-   InfluenceLoadLocation(Float64 globalX, MemberIDType mbrId, Float64 mbrLoc);
+   InfluenceLoadLocation(Float64 globalX, MemberIDType mbrId, Float64 mbrLoc,Float64 P);
 
    // for container life
    bool operator< (const InfluenceLoadLocation& other) const;

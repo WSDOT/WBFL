@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -60,63 +60,18 @@ void CTestMaterial::Test()
    ///////////////////////////////////////
    // Test simple set/get
    Float64 value;
-   TRY_TEST(material->put_E(-12.2),E_INVALIDARG);
-   TRY_TEST(material->put_E(0),E_INVALIDARG);
-   TRY_TEST(material->put_E(100),S_OK);
-   TRY_TEST(material->get_E(NULL),E_POINTER);;
-   TRY_TEST(material->get_E(&value),S_OK);;
+   TRY_TEST(material->put_E(0,-12.2),E_INVALIDARG);
+   TRY_TEST(material->put_E(0,100),S_OK);
+   TRY_TEST(material->get_E(0,NULL),E_POINTER);;
+   TRY_TEST(material->get_E(0,&value),S_OK);;
    TRY_TEST(IsEqual(value,100.0),true);
 
-   TRY_TEST(material->put_Density(-12.2),S_OK);
-   TRY_TEST(material->put_Density(0),S_OK);
-   TRY_TEST(material->put_Density(100),S_OK);
-   TRY_TEST(material->get_Density(NULL),E_POINTER);;
-   TRY_TEST(material->get_Density(&value),S_OK);;
+   TRY_TEST(material->put_Density(0,-12.2),S_OK);
+   TRY_TEST(material->put_Density(1,0),S_OK);
+   TRY_TEST(material->put_Density(2,100),S_OK);
+   TRY_TEST(material->get_Density(0,NULL),E_POINTER);;
+   TRY_TEST(material->get_Density(2,&value),S_OK);;
    TRY_TEST(IsEqual(value,100.0),true);
-
-   ///////////////////////////////////////
-   // Test Set with event sink
-   CComObject<CTestMaterial>* pTestMaterial;
-   CComObject<CTestMaterial>::CreateInstance(&pTestMaterial);
-   pTestMaterial->AddRef();
-   
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTestMaterial);
-   TRY_TEST(AtlAdvise(material,punk,IID_IMaterialEvents,&dwCookie),S_OK);
-
-   pTestMaterial->InitEventTest();
-   material->put_E(5);
-   TRY_TEST(pTestMaterial->PassedEventTest(), true );
-
-   pTestMaterial->InitEventTest();
-   material->put_E(5); // setting same value should not cause an event
-   TRY_TEST(pTestMaterial->PassedEventTest(), false );
-
-   pTestMaterial->InitEventTest();
-   material->put_Density(7);
-   TRY_TEST(pTestMaterial->PassedEventTest(), true );
-
-   pTestMaterial->InitEventTest();
-   material->put_Density(7); // setting same value should not cause an event
-   TRY_TEST(pTestMaterial->PassedEventTest(), false );
-
-   ///////////////////////////////////////
-   // Test Set with events
-   pTestMaterial->InitEventTest();
-   TRY_TEST(material->put_E(50.0),S_OK);
-   material->get_E(&value);
-   TRY_TEST(IsEqual(value,50.0),true);
-   TRY_TEST(pTestMaterial->PassedEventTest(), true );
-
-   pTestMaterial->InitEventTest();
-   TRY_TEST(material->put_Density(150.0),S_OK);
-   material->get_Density(&value);
-   TRY_TEST(IsEqual(value,150.0),true);
-   TRY_TEST(pTestMaterial->PassedEventTest(), true );
-
-   // Done with events
-   TRY_TEST(AtlUnadvise(material,IID_IMaterialEvents,dwCookie),S_OK);
-   pTestMaterial->Release();
 
    ///////////////////////////////////////
    // Test Error Info
@@ -133,11 +88,4 @@ void CTestMaterial::Test()
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(material,IID_IMaterial,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
    TRY_TEST( TestIObjectSafety(material,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-
-STDMETHODIMP CTestMaterial::OnMaterialChanged(IMaterial* sp)
-{
-   Pass();
-   return S_OK;
 }

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -70,6 +70,7 @@
 #define IDS_E_MEMBER_STRAIN_WITH_ID_ALREADY_EXISTS 139
 #define IDS_E_MODEL_HAS_NO_MEMBERS      140
 #define IDS_E_MODEL_HAS_NO_JOINTS       141
+#define IDS_E_STRAIN_LOAD_OFF_GIRDER_END  142
 
 // Next default values for new objects
 // 

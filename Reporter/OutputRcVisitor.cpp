@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -77,13 +77,19 @@ Uint8 rptOutputRcVisitor::GetRomanForGreek(rptRcSymbol::SymbolType sym)
       symlet='a';
       break;
    case rptRcSymbol::ALPHA:
-      symlet='a';
+      symlet='A';
       break;
    case rptRcSymbol::beta:
       symlet='b';
       break;
    case rptRcSymbol::BETA:
-      symlet='b';
+      symlet='B';
+      break;
+   case rptRcSymbol::chi:
+      symlet='c';
+      break;
+   case rptRcSymbol::CHI:
+      symlet='C';
       break;
    case rptRcSymbol::delta:
       symlet='d';
@@ -95,13 +101,13 @@ Uint8 rptOutputRcVisitor::GetRomanForGreek(rptRcSymbol::SymbolType sym)
       symlet='e';
       break;
    case rptRcSymbol::EPSILON:
-      symlet='D';
+      symlet='E';
       break;
    case rptRcSymbol::eta:
       symlet='h';
       break;
    case rptRcSymbol::ETA:
-      symlet='h';
+      symlet='H';
       break;
    case rptRcSymbol::gamma:
       symlet='g';

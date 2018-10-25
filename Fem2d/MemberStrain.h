@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -48,6 +48,8 @@ public:
    m_ID(0),
    m_AxialStrain(0),
    m_CurvatureStrain(0),
+   m_StartLocation(0),
+   m_EndLocation(-1.0),
    m_MemberID(0),
    m_pModel(0),
    m_pLoading(0)
@@ -57,7 +59,7 @@ public:
    virtual ~CMemberStrain()
    {}
 
-   void Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, LoadIDType ID, MemberIDType memberID=-1, Float64 axialStrain=0.0, Float64 CurvatureStrain=0.0);
+   void Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, LoadIDType ID, MemberIDType memberID=-1, Float64 xStart=0.0,Float64 xEnd=0.0,Float64 axialStrain=0.0, Float64 CurvatureStrain=0.0);
 
    // IStructuredStorage - sort of
    STDMETHOD(Load)(/*[in]*/ IStructuredLoad2 *load);
@@ -77,6 +79,10 @@ END_COM_MAP()
 // IFem2dMemberStrain
 public:
 	STDMETHOD(get_Loading)(/*[out, retval]*/ LoadCaseIDType *pVal);
+   STDMETHOD(get_StartLocation)(/*[out, retval]*/ Float64  *pVal);
+	STDMETHOD(put_StartLocation)(/*[in]*/ Float64  newVal);
+	STDMETHOD(get_EndLocation)(/*[out, retval]*/ Float64 *pVal);
+	STDMETHOD(put_EndLocation)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_CurvatureStrain)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_CurvatureStrain)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_AxialStrain)(/*[out, retval]*/ Float64 *pVal);
@@ -99,11 +105,14 @@ private:
    LoadIDType m_ID;
    Float64 m_AxialStrain;
    Float64 m_CurvatureStrain;
+   Float64 m_StartLocation;
+   Float64 m_EndLocation;
    MemberIDType m_MemberID;
 
    ModelEvents* m_pModel; // for sending events back to model
    IFem2dLoading* m_pLoading;
 
+   void GetLocalData(Float64 Angle,Float64 length, Float64* pStartLoc, Float64* pEndLoc);
 };
 
 #endif //__MEMBERSTRAIN_H_

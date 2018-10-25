@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -135,6 +135,52 @@ STDMETHODIMP CStrainLoad::put_CurvatureStrain(Float64 newVal)
 	return S_OK;
 }
 
+STDMETHODIMP CStrainLoad::get_StartLocation(Float64 *pVal)
+{
+	CHECK_RETVAL(pVal);
+
+   *pVal = m_StartLocation;
+
+	return S_OK;
+}
+
+STDMETHODIMP CStrainLoad::put_StartLocation(Float64 newVal)
+{
+	if (newVal<-1.0)
+      return E_INVALIDARG;
+
+   if (newVal!=m_StartLocation)
+   {
+      m_StartLocation = newVal;
+      Fire_OnStrainLoadChanged(this);
+   }
+
+	return S_OK;
+}
+
+STDMETHODIMP CStrainLoad::get_EndLocation(Float64 *pVal)
+{
+	CHECK_RETVAL(pVal);
+
+   *pVal = m_EndLocation;
+
+	return S_OK;
+}
+
+STDMETHODIMP CStrainLoad::put_EndLocation(Float64 newVal)
+{
+	if (newVal<-1.0)
+      return E_INVALIDARG;
+
+   if (newVal!=m_EndLocation)
+   {
+      m_EndLocation = newVal;
+      Fire_OnStrainLoadChanged(this);
+   }
+
+	return S_OK;
+}
+
 STDMETHODIMP CStrainLoad::Clone(IStrainLoad **clone)
 {
    CHECK_RETOBJ(clone);
@@ -152,6 +198,9 @@ STDMETHODIMP CStrainLoad::Clone(IStrainLoad **clone)
 
    pnew->m_AxialStrain     = m_AxialStrain;
    pnew->m_CurvatureStrain = m_CurvatureStrain;
+
+   pnew->m_StartLocation    = m_StartLocation;
+   pnew->m_EndLocation      = m_EndLocation;
 
    return pscs.CopyTo(clone);
 }
@@ -209,7 +258,20 @@ STDMETHODIMP CStrainLoad::Load(IStructuredLoad2 * pload)
          return hr;
 
       m_CurvatureStrain = var;
+
       var.Clear();
+      hr = pload->get_Property(_bstr_t("StartLocation"),&var);
+      if (FAILED(hr))
+         return hr;
+
+      m_StartLocation = var;
+
+      var.Clear();
+      hr = pload->get_Property(_bstr_t("EndLocation"),&var);
+      if (FAILED(hr))
+         return hr;
+
+      m_EndLocation = var;
    }
 
    VARIANT_BOOL eb;
@@ -238,6 +300,8 @@ STDMETHODIMP CStrainLoad::Save(IStructuredSave2 * psave)
          hr = psave->put_Property(CComBSTR("MemberID"),_variant_t(m_MemberID));
          hr = psave->put_Property(CComBSTR("AxialStrain"),_variant_t(m_AxialStrain));
          hr = psave->put_Property(CComBSTR("CurvatureStrain"),_variant_t(m_CurvatureStrain));
+         hr = psave->put_Property(CComBSTR("StartLocation"),_variant_t(m_StartLocation));
+         hr = psave->put_Property(CComBSTR("EndLocation"),_variant_t(m_EndLocation));
       }
 
       hr = psave->EndUnit();

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -91,10 +91,9 @@
 #define IDR_LOADCOMBINATIONS            160
 #define IDR_DISTRIBUTIONFACTORS         161
 #define IDR_DISTRIBUTIONFACTORSEGMENT   162
-#define IDR_LINEARDISTRIBUTIONFACTORSEGMENT 163
-#define IDR_FILTEREDDFSEGMENTCOLLECTION 164
-#define IDR_POISTRESSPOINTSITEM         165
-#define IDR_POISTRESSPOINTS             166
+#define IDR_FILTEREDDFSEGMENTCOLLECTION 163
+#define IDR_POISTRESSPOINTSITEM         164
+#define IDR_POISTRESSPOINTS             165
 
 // Next default values for new objects
 // 
@@ -103,6 +102,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        201
 #define _APS_NEXT_COMMAND_VALUE         32768
 #define _APS_NEXT_CONTROL_VALUE         201
-#define _APS_NEXT_SYMED_VALUE           167
+#define _APS_NEXT_SYMED_VALUE           166
 #endif
 #endif

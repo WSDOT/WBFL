@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -792,6 +792,10 @@ library WBFLFem2d
 	   [propget, helpcontext(IDH_IFem2dMemberStrain_CurvatureStrain), helpstring("property CurvatureStrain - Strain in curvature. positive==beam smile")] HRESULT CurvatureStrain([out, retval] Float64 *pVal);
 	   [propput, helpcontext(IDH_IFem2dMemberStrain_CurvatureStrain), helpstring("property CurvatureStrain - Strain in curvature. positive==beam smile")] HRESULT CurvatureStrain([in] Float64 newVal);
 	   [propget, helpcontext(IDH_IFem2dMemberStrain_Loading), helpstring("property Loading - ID of Loading this strain belongs to")] HRESULT Loading([out, retval] LoadCaseIDType *pVal);
+	   [propget, helpcontext(IDH_IFem2dMemberStrain_StartLocation), helpstring("property StartLocation - Location of start of load")] HRESULT StartLocation([out, retval] Float64  *pVal);
+	   [propput, helpcontext(IDH_IFem2dMemberStrain_StartLocation), helpstring("property StartLocation - Location of start of load")] HRESULT StartLocation([in] Float64  newVal);
+	   [propget, helpcontext(IDH_IFem2dMemberStrain_EndLocation), helpstring("property EndLocation - Location of end of load")] HRESULT EndLocation([out, retval] Float64 *pVal);
+	   [propput, helpcontext(IDH_IFem2dMemberStrain_EndLocation), helpstring("property EndLocation")] HRESULT EndLocation([in] Float64 newVal);
    };
 
    [
@@ -843,7 +847,7 @@ library WBFLFem2d
 	   HRESULT Find([in]LoadIDType ID, [out,retval] IFem2dMemberStrain* *pVal);
 
 	   [helpcontext(IDH_IFem2dMemberStrainCollection_Create), helpstring("Create a new Member Strain Load and add it to the model")] 
-	   HRESULT Create([in]LoadIDType ID, [in]MemberIDType member, [in]Float64 axialStrain, [in]Float64 curvatureStrain, [out, retval] IFem2dMemberStrain** pVal);
+	   HRESULT Create([in]LoadIDType ID, [in]MemberIDType member, [in]Float64 start,[in] Float64 end,[in]Float64 axialStrain, [in]Float64 curvatureStrain, [out, retval] IFem2dMemberStrain** pVal);
 
 	   [helpcontext(IDH_IFem2dMemberStrainCollection_Remove), helpstring("method Remove - Remove a particular load by ID or index")] 
 	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadIDType* pid);
@@ -928,10 +932,6 @@ library WBFLFem2d
 
 	   [helpcontext(IDH_IFem2dLoadingCollection_Remove), helpstring("method Remove")] 
 	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadCaseIDType* pid);
-
-      // Remove if ID is less than given
-	   [helpcontext(IDH_IFem2dLoadingCollection_Remove), helpstring("method Remove")] 
-	   HRESULT RemoveIDLessThan([in]LoadCaseIDType id);
 
 	   [helpcontext(IDH_IFem2dLoadingCollection_Clear), helpstring("method Clear")] HRESULT Clear();
    };
@@ -1090,6 +1090,8 @@ library WBFLFem2d
    ]
    interface IFem2dModel : IUnknown
    {
+      [propput] HRESULT Name([in]BSTR name);
+      [propget] HRESULT Name([out,retval]BSTR* name);
 	   [propget, helpcontext(IDH_IFem2dModel_Joints), helpstring("property Joints - Get the Joint Collection")] 
        HRESULT Joints([out, retval] IFem2dJointCollection* *pVal);
 	   [propget, helpcontext(IDH_IFem2dModel_Members), helpstring("property Members - Get the Member Collection")] 

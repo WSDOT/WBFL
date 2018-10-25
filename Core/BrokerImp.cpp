@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // CORE - Core elements of the Agent-Broker Architecture
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -106,13 +106,13 @@ STDMETHODIMP CBrokerImp::ShutDown()
 
 //////////////////////////////////////////////////////
 // IBrokerInit2
-STDMETHODIMP CBrokerImp::LoadAgents( CLSID * clsid, long nClsid,long* lErrIndex )
+STDMETHODIMP CBrokerImp::LoadAgents( CLSID * clsid, IndexType nClsid,IndexType* lErrIndex )
 {
    HRESULT hr;
 
    // Load all the agents, wire them up with the broker, and tell them
    // to register their interfaces
-   for ( long i = 0; i < nClsid; i++ )
+   for ( IndexType i = 0; i < nClsid; i++ )
    {
       IAgent* pAgent;
       hr = ::CoCreateInstance( clsid[i], NULL, CLSCTX_INPROC_SERVER, IID_IAgent, (void**)&pAgent );
@@ -142,7 +142,7 @@ STDMETHODIMP CBrokerImp::LoadAgents( CLSID * clsid, long nClsid,long* lErrIndex 
    // (Hence the need to wait until all agents are available).
    if ( !m_DelayInit )
    {
-      long count = 0;
+      IndexType count = 0;
       std::vector< IAgent* >::iterator iter;
       for ( iter = m_Agents.begin(); iter != m_Agents.end(); iter++ )
       {

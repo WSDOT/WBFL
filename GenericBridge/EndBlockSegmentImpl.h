@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2015, Washington State Department of Transportation, All Rights Reserved
-//                        Bridge and Structures Office
+// Copyright © 2009  Washington State Department of Transportation
+//                   Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -29,10 +29,9 @@
 
 #include "stdafx.h"
 #include "resource.h"       // main symbols
-#include "GenericBridgeCP.h"
-#include "Segments.h"
 #include <MathEx.h>
 #include "WBFLGenericBridge.h"
+#include "ItemDataManager.h"
 
 template<class T_IBeam>
 class VoidedEndBlock
@@ -63,36 +62,43 @@ class TEndBlockSegmentImpl :
 //   public CComRefCountTracer<CSegment,CComObjectRootEx<CComSingleThreadModel> >,
 	public CComCoClass< TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR, T_ENDBLOCK>, T_CLSID>,
 	public ISupportErrorInfo,
-   public CProxyDSegmentEvents< TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR, T_ENDBLOCK> >,
-   public IConnectionPointContainerImpl<TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR, T_ENDBLOCK> >,
    public IObjectSafetyImpl<TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR, T_ENDBLOCK>, INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
    public T_IEndBlockSegment,
-   public IMaterialEvents,
+   public IItemData,
    public IStructuredStorage2
 {
    friend TEndBlockSegmentImpl; // for easy cloning
 
 private:
-   Float64 m_Length;
-   CComPtr<T_IBeamSection> m_Beam;
-   ISegmentMeasure* m_pSegmentMeasure; // weak reference because it is SuperstructureMember
-                                       // that implements this interface. Strong reference
-                                       // creates a circular reference situation
+   IGirderLine* m_pGirderLine; // weak reference to the girder line in the geometry model that provies the geometry for this segment
+
+   ISuperstructureMember* m_pSSMbr; // weak reference to parent superstructure member
+   ISegment* m_pPrevSegment; // weak reference to previous segment
+   ISegment* m_pNextSegment; // weak reference to next segment
 
    Float64 m_Orientation; // orientation of girder... plumb = 0... rotated CW is +... radians
 
-   CComPtr<IMaterial> m_Material;
-   DWORD m_dwMaterialCookie;
+   struct ShapeData
+   {
+      CComPtr<IShape> Shape;
+      CComPtr<IMaterial> FGMaterial;
+      CComPtr<IMaterial> BGMaterial;
+   };
+   std::vector<ShapeData> m_Shapes;
+
+   Float64 m_HaunchDepth[2];
 
    // index is EndType
    Float64 m_EndBlockLength[2]; // length of end block from end of girder to transitation
 
+   CItemDataManager m_ItemDataMgr;
 
 public:
    TEndBlockSegmentImpl()
 	{
-      m_pSegmentMeasure = 0;
-      m_Orientation = 0;
+      m_pSSMbr       = NULL;
+      m_pPrevSegment = NULL;
+      m_pNextSegment = NULL;
 	}
 
 DECLARE_REGISTRY_RESOURCEID(T_IDR)
@@ -102,21 +108,21 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 BEGIN_COM_MAP(TEndBlockSegmentImpl)
 	COM_INTERFACE_ENTRY(T_IEndBlockSegment)
 	COM_INTERFACE_ENTRY(ISegment)
-   COM_INTERFACE_ENTRY(IMaterialEvents)
+	COM_INTERFACE_ENTRY(IItemData)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-   COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
    COM_INTERFACE_ENTRY(IObjectSafety)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(TEndBlockSegmentImpl)
-	CONNECTION_POINT_ENTRY(IID_ISegmentEvents)
-END_CONNECTION_POINT_MAP()
 
 public:
    HRESULT FinalConstruct()
    {
-      m_Length = 1.0;
+      m_pGirderLine = NULL;
+
+      m_Orientation = 0;
+
+      m_HaunchDepth[etStart]           = 0;
+      m_HaunchDepth[etEnd]             = 0;
 
       m_EndBlockLength[etStart]           = 0;
       m_EndBlockLength[etEnd]             = 0;
@@ -126,15 +132,8 @@ public:
 
    void FinalRelease()
    {
-      m_Beam.Release();
-
-      if ( m_Material )
-      {
-         InternalAddRef();
-
-         AtlUnadvise(m_Material,IID_IMaterialEvents,m_dwMaterialCookie);
-      }
-      m_Material.Release();
+      m_pGirderLine = NULL;
+      m_Shapes.clear();
    }
 
 // ISupportsErrorInfo
@@ -156,164 +155,285 @@ public:
 
 // ISegment
 public:
-   STDMETHOD(putref_SegmentMeasure)(ISegmentMeasure* sm)
+   STDMETHOD(putref_SuperstructureMember)(ISuperstructureMember* ssMbr)
    {
-      m_pSegmentMeasure = sm;
+      m_pSSMbr = ssMbr;
+      return S_OK;
+   }
 
-   #if defined _DEBUG
-      // m_pSegmentMeasure is a weak references. This is so because
-      // I expect the object implementing sm to also be a superstructure member
-      // Assert this is true.
-      if ( sm != NULL )
+   STDMETHOD(get_SuperstructureMember)(ISuperstructureMember** ssMbr)
+   {
+      CHECK_RETVAL(ssMbr);
+      if ( m_pSSMbr )
       {
-         CComQIPtr<ISuperstructureMember> ssmbr(sm);
-         CComQIPtr<ILongitudinalPierDescription> lpd(sm);
-         CComQIPtr<ICrossBeam> cb(sm);
-         CComQIPtr<IColumn> col(sm);
-         ATLASSERT(ssmbr != NULL || lpd != NULL || cb != NULL || col != NULL);
+         (*ssMbr) = m_pSSMbr;
+         (*ssMbr)->AddRef();
       }
-   #endif // _DEBUG
+      else
+      {
+         (*ssMbr) = NULL;
+      }
+      return S_OK;
+   }
+
+   STDMETHOD(putref_GirderLine)(IGirderLine* girderLine)
+   {
+      m_pGirderLine = girderLine;
+      return S_OK;
+   }
+
+   STDMETHOD(get_GirderLine)(IGirderLine** girderLine)
+   {
+      CHECK_RETVAL(girderLine);
+      if ( m_pGirderLine )
+      {
+         (*girderLine) = m_pGirderLine;
+         (*girderLine)->AddRef();
+      }
+      else
+      {
+         (*girderLine) = NULL;
+      }
+      return S_OK;
+   }
+
+   STDMETHOD(putref_PrevSegment)(ISegment* segment)
+   {
+      CHECK_IN(segment);
+      m_pPrevSegment = segment;
+      return S_OK;
+   }
+
+   STDMETHOD(get_PrevSegment)(ISegment** segment)
+   {
+      CHECK_RETVAL(segment);
+      *segment = m_pPrevSegment;
+      if ( *segment )
+         (*segment)->AddRef();
+
+      return S_OK;
+   }
+
+   STDMETHOD(putref_NextSegment)(ISegment* segment)
+   {
+      CHECK_IN(segment);
+      m_pNextSegment = segment;
+      return S_OK;
+   }
+
+   STDMETHOD(get_NextSegment)(ISegment** segment)
+   {
+      CHECK_RETVAL(segment);
+      *segment = m_pNextSegment;
+      if ( *segment )
+         (*segment)->AddRef();
 
       return S_OK;
    }
 
    STDMETHOD(get_Length)(Float64 *pVal)
    {
-      CHECK_RETVAL(pVal);
-      (*pVal) = m_Length;
-	   return S_OK;
+      ATLASSERT(m_pGirderLine != NULL);
+      return m_pGirderLine->get_GirderLength(pVal);
    }
 
-   STDMETHOD(put_Length)(Float64 length)
+   STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
    {
-      if ( IsEqual(m_Length,length) )
+      CHECK_RETOBJ(ppSection);
+
+      if (m_Shapes.size() == 0 )
+      {
+         *ppSection = 0;
          return S_OK;
-
-      // Validate length
-      if ( m_pSegmentMeasure )
-      {
-         bool bFractional = m_pSegmentMeasure->IsFractional() == S_OK ? true : false;
-         if ( bFractional )
-         {
-            if ( length > 0 )
-               return Error(IDS_E_FRACTIONAL_EXPECTED,IID_ISegment,GB_E_FRACTIONAL_EXPECTED);
-         }
-         else
-         {
-            if ( length < 0 )
-               return Error(IDS_E_ABSOLUTE_EXPECTED,IID_ISegment,GB_E_ABSOLUTE_EXPECTED);
-         }
       }
 
-      m_Length = length;
-      Fire_OnSegmentChanged(this);
-      return S_OK;
-   }
-
-   STDMETHOD(get_SegmentLength)(/*[out, retval]*/ Float64 *pVal)
-   {
-      CHECK_RETVAL(pVal);
-      if ( m_Length < 0 )
-      {
-         // segment length is a fraction of the superstructure member length
-         Float64 ssmbrLength = GetSuperstructureMemberLength();
-         *pVal = -1*m_Length*ssmbrLength;
-      }
-      else
-      {
-         // segment lenght is an absolute value
-         *pVal = m_Length;
-      }
-      return S_OK;
-   }
-
-   STDMETHOD(get_Shape)(Float64 distAlongSegment,IShape** ppShape)
-   {
-      CHECK_RETOBJ(ppShape);
+      CComQIPtr<T_IBeamSection> beam(m_Shapes.front().Shape);
+      ATLASSERT(beam); // if this is NULL... how did it get in the system????
 
       // This object reprsents a prismatic shape... all sections are the same
       HRESULT hr = S_OK;
-      if ( m_Beam )
+
+      // create a new shape that is a clone of the original
+      CComQIPtr<IShape> shape(beam);
+      CComPtr<IShape> newShape;
+      hr = shape->Clone(&newShape);
+
+      // set the dimensions
+      CComQIPtr<T_IBeamSection> newSection(newShape);
+      CComPtr<T_IBeam> newBeam;
+      newSection->get_Beam(&newBeam);
+
+      Float64 length;
+      get_Length(&length);
+
+      // Section is in the end block so use the outline of the shape only
+      if ( (m_EndBlockLength[etStart]>0.0 && IsLE(distAlongSegment,m_EndBlockLength[etStart])) || 
+           (m_EndBlockLength[etEnd]  >0.0 && IsLE(length - distAlongSegment,m_EndBlockLength[etEnd])) )
       {
-         // create a new shape that is a clone of the original
-         CComQIPtr<IShape> shape(m_Beam);
-         CComPtr<IShape> newShape;
-         hr = shape->Clone(&newShape);
-
-         // set the dimensions
-         CComQIPtr<T_IBeamSection> newSection(newShape);
-         CComPtr<T_IBeam> newBeam;
-         newSection->get_Beam(&newBeam);
-
-         Float64 length;
-         get_SegmentLength(&length);
-
-         // Section is in the end block so use the outline of the shape only
-         if ( (m_EndBlockLength[etStart]>0.0 && IsLE(distAlongSegment,m_EndBlockLength[etStart])) || 
-              (m_EndBlockLength[etEnd]  >0.0 && IsLE(length - distAlongSegment,m_EndBlockLength[etEnd])) )
-         {
-            T_ENDBLOCK::InEndBlock(newBeam);;
-         }
-
-         newSection.QueryInterface(ppShape);
-      }
-      else
-      {
-         (*ppShape) = 0;
+         T_ENDBLOCK::InEndBlock(newBeam);;
       }
 
-      return hr;
-   }
+      // position the shape
+      CComPtr<IPoint2d> pntTopCenter;
+      GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
 
-   STDMETHOD(putref_Material)(IMaterial* material)
-   {
-      CHECK_IN(material);
+      CComQIPtr<IXYPosition> position(newSection);
+      position->put_LocatorPoint(lpTopCenter,pntTopCenter);
 
-      if ( m_Material.IsEqualObject(material) )
-         return S_OK;
+      CComPtr<ICompositeSectionEx> section;
+      section.CoCreateInstance(CLSID_CompositeSectionEx);
 
-      CComPtr<IUnknown> punk;
-      QueryInterface(IID_IUnknown,(void**)&punk);
+      section->QueryInterface(IID_ISection,(void**)ppSection);
+      ATLASSERT(*ppSection != NULL);
 
-      HRESULT hr;
-      DWORD dwCookie;
-      if ( material )
+      // add the primary shape
+      Float64 Efg = 0;
+      m_Shapes.front().FGMaterial->get_E(stageIdx,&Efg);
+      
+      Float64 Ebg = 0;
+      if ( m_Shapes.front().BGMaterial )
+         m_Shapes.front().BGMaterial->get_E(stageIdx,&Ebg);
+
+      Float64 Dfg = 0;
+      m_Shapes.front().FGMaterial->get_Density(stageIdx,&Dfg);
+      
+      Float64 Dbg = 0;
+      if ( m_Shapes.front().BGMaterial )
+         m_Shapes.front().BGMaterial->get_Density(stageIdx,&Dbg);
+
+      section->AddSection(newShape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
+
+      // add all the secondary shapes
+      std::vector<ShapeData>::iterator iter(m_Shapes.begin());
+      std::vector<ShapeData>::iterator end(m_Shapes.end());
+      iter++; // skip the first shape, we already processed it
+
+      for ( ; iter != end; iter++ )
       {
-         hr = AtlAdvise(material,punk,IID_IMaterialEvents,&dwCookie);
-         if ( FAILED(hr) )
-            return hr; // can't sink on material... get outta here before anything gets changed
+         ShapeData& shapeData = *iter;
 
-         InternalRelease(); // break circular reference
+         Float64 Efg = 0;
+         if ( shapeData.FGMaterial )
+            shapeData.FGMaterial->get_E(stageIdx,&Efg);
+
+         Float64 Ebg;
+         if ( shapeData.BGMaterial )
+            shapeData.BGMaterial->get_E(stageIdx,&Ebg);
+
+         Float64 Dfg = 0;
+         if ( shapeData.FGMaterial )
+            shapeData.FGMaterial->get_Density(stageIdx,&Dfg);
+
+         Float64 Dbg = 0;
+         if ( shapeData.BGMaterial )
+            shapeData.BGMaterial->get_Density(stageIdx,&Dbg);
+
+         CComPtr<IShape> shape;
+         shapeData.Shape->Clone(&shape);
+
+         section->AddSection(shape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
       }
 
-      // unsink on the older material (if there was one)
-      if ( m_Material )
-      {
-         InternalAddRef();
-
-         hr = AtlUnadvise(m_Material,IID_IMaterialEvents,m_dwMaterialCookie);
-         ATLASSERT(SUCCEEDED(hr));
-      }
-
-      m_Material = material;
-
-      if ( m_Material )
-      {
-         m_dwMaterialCookie = dwCookie;
-      }
-
-      Fire_OnSegmentChanged(this);
       return S_OK;
    }
 
-   STDMETHOD(get_Material)(IMaterial* *material)
+   STDMETHOD(get_PrimaryShape)(Float64 distAlongSegment,IShape** ppShape)
    {
-      CHECK_RETVAL(material);
+      CHECK_RETOBJ(ppShape);
 
-      (*material) = m_Material;
+      if (m_Shapes.size() == 0 )
+      {
+         *ppShape = 0;
+         return S_OK;
+      }
 
-      if ( *material )
-         (*material)->AddRef();
+      CComQIPtr<T_IBeamSection> beam(m_Shapes.front().Shape);
+      ATLASSERT(beam); // if this is NULL... how did it get in the system????
+
+      // This object reprsents a prismatic shape... all sections are the same
+      HRESULT hr = S_OK;
+
+      // create a new shape that is a clone of the original
+      CComQIPtr<IShape> shape(beam);
+      CComPtr<IShape> newShape;
+      hr = shape->Clone(&newShape);
+
+      // set the dimensions
+      CComQIPtr<T_IBeamSection> newSection(newShape);
+      CComPtr<T_IBeam> newBeam;
+      newSection->get_Beam(&newBeam);
+
+      Float64 length;
+      get_Length(&length);
+
+      // Section is in the end block so use the outline of the shape only
+      if ( (m_EndBlockLength[etStart]>0.0 && IsLE(distAlongSegment,m_EndBlockLength[etStart])) || 
+           (m_EndBlockLength[etEnd]  >0.0 && IsLE(length - distAlongSegment,m_EndBlockLength[etEnd])) )
+      {
+         T_ENDBLOCK::InEndBlock(newBeam);;
+      }
+
+      // position the shape
+      CComPtr<IPoint2d> pntTopCenter;
+      GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
+
+      CComQIPtr<IXYPosition> position(newSection);
+      position->put_LocatorPoint(lpTopCenter,pntTopCenter);
+
+      *ppShape = newShape;
+      (*ppShape)->AddRef();
+
+      return S_OK;
+   }
+
+   STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure,IShape** ppShape)
+   {
+      CHECK_RETOBJ(ppShape);
+      CComPtr<IRect2d> rect;
+
+      // it is assumed that the first shape is the main shape in the section and all
+      // other shapes are inside of it
+      m_Shapes[0].Shape->get_BoundingBox(&rect);
+
+      Float64 h;
+      rect->get_Height(&h);
+
+      Float64 l;
+      Float64 brgOffset,endDist;
+      if ( bIncludeClosure == VARIANT_TRUE )
+      {
+         m_pGirderLine->get_LayoutLength(&l);
+         brgOffset = 0;
+         endDist = 0;
+      }
+      else
+      {
+         m_pGirderLine->get_GirderLength(&l);
+         m_pGirderLine->get_BearingOffset(etStart,&brgOffset);
+         m_pGirderLine->get_EndDistance(etStart,&endDist);
+      }
+
+      CComPtr<IRectangle> shape;
+      shape.CoCreateInstance(CLSID_Rect);
+      shape->put_Height(h);
+      shape->put_Width(l);
+
+      // CL Pier/Top Shape is at (0,0)
+      //
+      // CL Pier   End of segment
+      // |         |       CL Bearing
+      // | (0,0)   |       |
+      // *         +-------+---------------\  
+      // |         |       .               /
+      // |         +-------+---------------\  
+
+      CComQIPtr<IXYPosition> position(shape);
+      CComPtr<IPoint2d> topLeft;
+      position->get_LocatorPoint(lpTopLeft,&topLeft);
+      topLeft->Move(brgOffset-endDist,0);
+      position->put_LocatorPoint(lpTopLeft,topLeft);
+
+      shape->QueryInterface(ppShape);
 
       return S_OK;
    }
@@ -324,7 +444,6 @@ public:
          return S_OK;
 
       m_Orientation = orientation;
-      Fire_OnSegmentChanged(this);
       return S_OK;
    }
 
@@ -335,61 +454,89 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(Clone)(ISegment* *clone)
+   STDMETHOD(get_HaunchDepth)(EndType endType,Float64* pVal)
    {
-      CHECK_RETOBJ(clone);
+      CHECK_RETVAL(pVal);
+      *pVal = m_HaunchDepth[endType];
+      return S_OK;
+   }
 
-      CComObject<TEndBlockSegmentImpl>* pClone;
-      CComObject<TEndBlockSegmentImpl>::CreateInstance(&pClone);
-      (*clone) = pClone;
-      (*clone)->AddRef();
+   STDMETHOD(put_HaunchDepth)(EndType endType,Float64 val)
+   {
+      m_HaunchDepth[endType] = val;
+      return S_OK;
+   }
 
-      pClone->m_Length = m_Length;
-      pClone->m_pSegmentMeasure = m_pSegmentMeasure;
-      pClone->m_Orientation = m_Orientation;
-
-      pClone->m_EndBlockLength[etStart]           = m_EndBlockLength[etStart];
-
-      pClone->m_EndBlockLength[etEnd]           = m_EndBlockLength[etEnd];
-
-      if ( m_Beam )
-      {
-         CComQIPtr<IShape> shape(m_Beam);
-         pClone->m_Beam.Release();
-
-         CComPtr<IShape> cloneShape;
-         shape->Clone(&cloneShape);
-
-         cloneShape.QueryInterface(&pClone->m_Beam);
-      }
-
-      CComPtr<IMaterial> material;
-      if ( m_Material )
-         m_Material->Clone(&material);
-
-      pClone->putref_Material(material);
-
+   STDMETHOD(GetHaunchDepth)(Float64 distAlongSegment,Float64* pVal)
+   {
+      CHECK_RETVAL(pVal);
+      *pVal = ::GB_GetHaunchDepth(this,distAlongSegment);
       return S_OK;
    }
 
 // Functions to fulfill local class declaration
 public:
-   STDMETHOD(putref_BeamSection)(/*[in]*/ T_IBeamSection* pBeamSection)
+	STDMETHOD(AddShape)(IShape* pShape,IMaterial* pFGMaterial,IMaterial* pBGMaterial)
    {
-      CHECK_IN(pBeamSection);
+      CHECK_IN(pShape);
+      if ( m_Shapes.size() == 0 )
+      {
+         CComQIPtr<T_IBeamSection> beam(pShape);
+         if ( beam == NULL )
+         {
+            ATLASSERT(false); // first shape must implement the T_IBeamSection interfvace
+            return E_INVALIDARG;
+         }
+      }
 
-      if ( m_Beam.IsEqualObject(pBeamSection) )
-         return S_OK;
+      ShapeData shapeData;
+      shapeData.Shape = pShape;
+      shapeData.FGMaterial = pFGMaterial;
+      shapeData.BGMaterial = pBGMaterial;
 
-      m_Beam = pBeamSection;
-      Fire_OnSegmentChanged(this);
+      m_Shapes.push_back(shapeData);
+
+      return S_OK;
+   }
+
+   STDMETHOD(get_ShapeCount)(IndexType* nShapes)
+   {
+      CHECK_RETVAL(nShapes);
+      *nShapes = m_Shapes.size();
+      return S_OK;
+   }
+
+   STDMETHOD(get_ForegroundMaterial)(IndexType index,IMaterial* *material)
+   {
+      if ( m_Shapes.size() <= index || index == INVALID_INDEX )
+         return E_INVALIDARG;
+
+      CHECK_RETVAL(material);
+      (*material) = m_Shapes[index].FGMaterial;
+
+      if ( *material )
+         (*material)->AddRef();
+
+      return S_OK;
+   }
+
+   STDMETHOD(get_BackgroundMaterial)(IndexType index,IMaterial* *material)
+   {
+      if ( m_Shapes.size() <= index || index == INVALID_INDEX )
+         return E_INVALIDARG;
+
+      CHECK_RETVAL(material);
+      (*material) = m_Shapes[index].BGMaterial;
+
+      if ( *material )
+         (*material)->AddRef();
+
       return S_OK;
    }
 
    STDMETHOD(put_EndBlockLength)(/*[in]*/EndType endType,/*[in]*/ Float64 length)
    {
       m_EndBlockLength[endType] = length;
-      Fire_OnSegmentChanged(this);
       return S_OK;
    }
 
@@ -399,13 +546,26 @@ public:
       return S_OK;
    }
 
-
-// IMaterialEvents
+// IItemData
 public:
-	STDMETHOD(OnMaterialChanged)(IMaterial* material)
+   STDMETHOD(AddItemData)(BSTR name,IUnknown* data)
    {
-      Fire_OnSegmentChanged(this);
-      return S_OK;
+      return m_ItemDataMgr.AddItemData(name,data);
+   }
+
+   STDMETHOD(GetItemData)(BSTR name,IUnknown** data)
+   {
+      return m_ItemDataMgr.GetItemData(name,data);
+   }
+
+   STDMETHOD(RemoveItemData)(BSTR name)
+   {
+      return m_ItemDataMgr.RemoveItemData(name);
+   }
+
+   STDMETHOD(GetItemDataCount)(CollectionIndexType* count)
+   {
+      return m_ItemDataMgr.GetItemDataCount(count);
    }
 
 // IStructuredStorage2
@@ -418,18 +578,6 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save)
    {
       return E_NOTIMPL;
-   }
-
-private:
-   Float64 GetSuperstructureMemberLength()
-   {
-      Float64 length;
-      CComQIPtr<ISuperstructureMember> ssmbr(m_pSegmentMeasure);
-      ATLASSERT(ssmbr);
-
-      ssmbr->get_Length(&length);
-      ATLASSERT( 0 <= length );
-      return length;
    }
 };
 

@@ -476,6 +476,7 @@
       </ul>
     <li><object type="text/sitemap">
       <param name="Name" value="DeckedSlabBeam">
+      <param name="Local" value="Objects\DeckedSlabBeam\DeckedSlabBeam.htm">
     </object>
     <ul>
       <li><object type="text/sitemap">

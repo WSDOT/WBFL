@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -79,7 +79,7 @@ STDMETHODIMP CTendonCollection::InterfaceSupportsErrorInfo(REFIID riid)
 //{
 //}
 
-STDMETHODIMP CTendonCollection::get_CG(Float64 loc,TendonMeasure measure,IPoint3d** cg)
+STDMETHODIMP CTendonCollection::get_CG(Float64 zLoc,TendonMeasure measure,IPoint3d** cg)
 {
    CHECK_RETOBJ(cg);
 
@@ -92,7 +92,7 @@ STDMETHODIMP CTendonCollection::get_CG(Float64 loc,TendonMeasure measure,IPoint3
    {
       CComPtr<ITendon> tendon = iter->second;
       CComPtr<IPoint3d> tcg;
-      tendon->get_CG(loc,measure,&tcg);
+      tendon->get_CG(zLoc,measure,&tcg);
 
       StrandIndexType ns;
       tendon->get_StrandCount(&ns);
@@ -126,7 +126,7 @@ STDMETHODIMP CTendonCollection::get_CG(Float64 loc,TendonMeasure measure,IPoint3
    return S_OK;
 }
 
-STDMETHODIMP CTendonCollection::get_Slope(Float64 x,TendonMeasure measure,IVector3d** slope)
+STDMETHODIMP CTendonCollection::get_Slope(Float64 zLoc,TendonMeasure measure,IVector3d** slope)
 {
    CHECK_RETOBJ(slope);
 
@@ -139,7 +139,7 @@ STDMETHODIMP CTendonCollection::get_Slope(Float64 x,TendonMeasure measure,IVecto
    {
       CComPtr<ITendon> tendon = iter->second;
       CComPtr<IVector3d> tslope;
-      tendon->get_Slope(x,measure,&tslope);
+      tendon->get_Slope(zLoc,measure,&tslope);
 
       StrandIndexType ns;
       tendon->get_StrandCount(&ns);
@@ -173,7 +173,7 @@ STDMETHODIMP CTendonCollection::get_Slope(Float64 x,TendonMeasure measure,IVecto
    return S_OK;
 }
 
-STDMETHODIMP CTendonCollection::Cut(Float64 x,TendonMeasure measure,IPoint3dCollection** points)
+STDMETHODIMP CTendonCollection::Cut(Float64 zLoc,TendonMeasure measure,IPoint3dCollection** points)
 {
    CHECK_RETOBJ(points);
 
@@ -185,7 +185,7 @@ STDMETHODIMP CTendonCollection::Cut(Float64 x,TendonMeasure measure,IPoint3dColl
    {
       CComPtr<ITendon> tendon = iter->second;
       CComPtr<IPoint3d> cg;
-      tendon->get_CG(x,measure,&cg);
+      tendon->get_CG(zLoc,measure,&cg);
       p->Add(cg);
    }
 

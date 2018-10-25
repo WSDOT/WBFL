@@ -56,17 +56,17 @@ public:
    // Because we just can't create a joint load by itself (it must
    // be part of a model) we have to capture the basic data for
    // drag and drop
-   LoadIDType m_ID;
+   IDType m_ID;
    MemberIDType m_MemberID;
-   Float64 m_Location;
+   double m_Location;
    Fem2dLoadOrientation m_Orientation;
    LoadCaseIDType m_Loading;
-   Float64 m_Fx;
-   Float64 m_Fy;
-   Float64 m_Mz;
+   double m_Fx;
+   double m_Fy;
+   double m_Mz;
 
-   void EditLoad(LoadIDType loadingID,LoadIDType loadID);
-   void DeleteLoad(LoadIDType loadingID,LoadIDType loadID);
+   void EditLoad(IDType loadingID,IDType loadID);
+   void DeleteLoad(IDType loadingID,IDType loadID);
 
    static UINT ms_Format;
 };

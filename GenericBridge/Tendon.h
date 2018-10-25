@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -64,7 +64,6 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 BEGIN_COM_MAP(CTendon)
 	COM_INTERFACE_ENTRY(ITendon)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
-//   COM_INTERFACE_ENTRY_IMPL(ITendonPointContainer)
    COM_INTERFACE_ENTRY(IObjectSafety)
    COM_INTERFACE_ENTRY_CHAIN(PersistentTendonSegmentCollection)
 END_COM_MAP()
@@ -74,13 +73,15 @@ BEGIN_CONNECTION_POINT_MAP(CTendon)
 END_CONNECTION_POINT_MAP()
 
 private:
-   Float64 m_TendonSize;
-   Float64 m_StrandSize;
+   Float64 m_DuctDiameter;
    StrandIndexType m_StrandCount;
-   StrandIndexType m_MaxStrandCount;
    CComPtr<IPrestressingStrand> m_Material;
 
-   bool GetTendonSegment(Float64 x,ITendonSegment** segment);
+   bool GetTendonSegment(Float64 z,ITendonSegment** segment);
+
+#if defined _DEBUG
+   virtual HRESULT OnBeforeAdd( StoredType* pVal);
+#endif
 
    // ISupportsErrorInfo
 public:
@@ -93,19 +94,18 @@ public:
 	STDMETHOD(get_Count)(/*[out,retval]*/CollectionIndexType* count);
 	STDMETHOD(RemoveSegment)(/*[in]*/ CollectionIndexType index);
 	STDMETHOD(ClearSegments)();
-	STDMETHOD(get_TendonSize)(/*[out,retval]*/Float64* size);
-	STDMETHOD(put_TendonSize)(/*[in]*/Float64 size);
-	STDMETHOD(get_StrandSize)(/*[out,retval]*/Float64* size);
-	STDMETHOD(put_StrandSize)(/*[in]*/Float64 size);
+	STDMETHOD(get_DuctDiameter)(/*[out,retval]*/Float64* size);
+	STDMETHOD(put_DuctDiameter)(/*[in]*/Float64 size);
+	STDMETHOD(get_TendonArea)(/*[out,retval]*/Float64* Apt);
 	STDMETHOD(get_StrandCount)(/*[out,retval]*/StrandIndexType* count);
 	STDMETHOD(put_StrandCount)(/*[in]*/StrandIndexType count);
 	STDMETHOD(get_Material)(/*[out,retval]*/IPrestressingStrand** material);
 	STDMETHOD(putref_Material)(/*[in]*/IPrestressingStrand* material);
-   STDMETHOD(get_MaxStrandCount)(/*[out,retval]*/StrandIndexType* count);
-	STDMETHOD(put_MaxStrandCount)(/*[in]*/StrandIndexType count);
-   STDMETHOD(get_CG)(/*[in]*/ Float64 x,/*[in]*/ TendonMeasure measure,/*[out,retval]*/IPoint3d** cg);
-	STDMETHOD(get_Slope)(/*[in]*/ Float64 x,/*[in]*/ TendonMeasure measure,/*[out,retval]*/IVector3d** slope);
+   STDMETHOD(get_CG)(/*[in]*/ Float64 z,/*[in]*/ TendonMeasure measure,/*[out,retval]*/IPoint3d** cg);
+	STDMETHOD(get_Slope)(/*[in]*/ Float64 z,/*[in]*/ TendonMeasure measure,/*[out,retval]*/IVector3d** slope);
 	STDMETHOD(get_Length)(/*[out,retval]*/Float64* length);
+   STDMETHOD(get_Start)(IPoint3d** start);
+	STDMETHOD(get_End)(IPoint3d** end);
 
 // IStructuredStorage2
 public:

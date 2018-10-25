@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -41,6 +41,7 @@ class ATL_NO_VTABLE CMultiWebSection2 :
    public IMultiWebSection2,
    public IPrestressedGirderSection,
    public IShape,
+   public ICompositeShape,
    public IXYPosition
 {
 public:
@@ -61,6 +62,7 @@ BEGIN_COM_MAP(CMultiWebSection2)
 	COM_INTERFACE_ENTRY(IGirderSection)
 	COM_INTERFACE_ENTRY(IPrestressedGirderSection)
 	COM_INTERFACE_ENTRY(IShape)
+	COM_INTERFACE_ENTRY(ICompositeShape)
 	COM_INTERFACE_ENTRY(IXYPosition)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 END_COM_MAP()
@@ -69,6 +71,7 @@ private:
    CComPtr<IMultiWeb2> m_Beam;
    CComPtr<IShape> m_Shape;
    CComPtr<IXYPosition> m_Position;
+   CComPtr<ICompositeShape> m_CompositeShape;
 
    bool ValidateWebIndex(WebIndexType idx);
    bool ValidateSpacingIndex(SpacingIndexType idx);
@@ -89,6 +92,7 @@ public:
 	STDMETHOD(get_WebSpacing)(/*[in]*/WebIndexType idx,/*[out,retval]*/Float64* spacing);
 	STDMETHOD(get_WebThickness)(/*[in]*/WebIndexType idx,/*[out,retval]*/Float64* tWeb);
    STDMETHOD(get_MinWebThickness)(/*[out,retval]*/Float64* tWeb);
+   STDMETHOD(get_WebPlane)(/*[in]*/WebIndexType idx,/*[out,retval]*/IPlane3d** ppPlane);
    STDMETHOD(get_EffectiveWebThickness)(/*[out,retval]*/Float64* tWeb);
    STDMETHOD(get_MatingSurfaceCount)(/*[out,retval]*/MatingSurfaceIndexType* nMatingSurfaces);
 	STDMETHOD(get_MatingSurfaceLocation)(/*[in]*/MatingSurfaceIndexType idx,/*[out,retval]*/Float64* location);
@@ -134,6 +138,20 @@ public:
 	STDMETHOD(MoveEx)(/*[in]*/ IPoint2d* pFrom,/*[in]*/ IPoint2d* pTo);
 	STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pPoint,/*[in]*/ Float64 angle);
 	STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 angle);
+
+// ICompositeShape
+public:
+   STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pStg);
+	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal);
+	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ICompositeShapeItem* *pVal);
+	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown* *pVal);
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
+	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx);
+	STDMETHOD(Clear)();
+   STDMETHOD(ReplaceEx)(CollectionIndexType idx,ICompositeShapeItem* pShapeItem);
+   STDMETHOD(Replace)(CollectionIndexType idx,IShape* pShape);
+	STDMETHOD(AddShapeEx)(/*[in]*/ ICompositeShapeItem* ShapeItem);
+   STDMETHOD(AddShape)(/*[in]*/ IShape* shape,/*[in]*/ VARIANT_BOOL bVoid);
 };
 
 #endif //__MultiWebSection2_H_

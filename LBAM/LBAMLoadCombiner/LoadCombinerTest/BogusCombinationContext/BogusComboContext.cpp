@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // BogusCombinationContext - Test driver for LBAM load combinations
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -145,7 +145,7 @@ HRESULT CBogusComboContext::FinalConstruct()
       ////////
       ComboBenchMark p1bm_t(1);
       // insert empty into collection so we don't have to do a lot of nested copying
-      std::pair<BenchMarkIterator, bool> itp1bm = m_BenchMarks.insert(std::make_pair((long)1, p1bm_t));
+      std::pair<BenchMarkIterator, bool> itp1bm = m_BenchMarks.insert(std::make_pair((PoiIDType)1, p1bm_t));
       ComboBenchMark& p1bm = itp1bm.first->second;
 
       p1bm.SetCombinationFactors(CComBSTR("Stage 1"), lctService, 1.0, 1.0);

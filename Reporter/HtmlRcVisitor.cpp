@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -100,11 +100,6 @@ void rptHtmlRcVisitor::VisitRcString(rptRcString* pString)
    while( (pos = str.find(_T(">"))) != std::_tstring::npos )
    {
       str.replace(pos,1,_T("&gt;"));
-   }
-
-   while( (pos = str.find(_T("—"))) != std::_tstring::npos )
-   {
-      str.replace(pos,1,_T("&mdash;"));
    }
 
    if ( 0 < str.size() )
@@ -322,11 +317,11 @@ void rptHtmlRcVisitor::VisitRcFlowModifier(rptRcFlowModifier* pMyFlow)
    for (Uint16 i=0; i<nt; i++)
    {
       if(pMyFlow->GetModifierType()==rptRcFlowModifier::NEW_LINE)
-         *m_pOstream << _T("<BR/>")<<std::endl;
+         *m_pOstream << _T("<BR>")<<std::endl;
       else if(pMyFlow->GetModifierType()==rptRcFlowModifier::NEW_PAGE)
          *m_pOstream << _T("<DIV STYLE=\"page-break-after: always\"><BR></DIV>")<<std::endl;
       else if(pMyFlow->GetModifierType()==rptRcFlowModifier::TAB)
-         ;
+         *m_pOstream << _T("&emsp;&emsp;&emsp;") << std::endl;
          // TODO: figure out how to implement tabs
          //       It appears that tabs of this sort will not work. Could possibly
          //       add levels of indenting to tables.
@@ -361,6 +356,18 @@ void rptHtmlRcVisitor::VisitRcFontModifier(rptRcFontModifier* my_m)
    case rptRiStyle::UNDERLINE:
       if (mst==rptRcFontModifier::ON)
          *m_pOstream << _T("<SPAN STYLE=\"text-decoration: underline;\">");
+      else
+         *m_pOstream << _T("</SPAN>");
+      break;
+   case rptRiStyle::OVERLINE:
+      if (mst==rptRcFontModifier::ON)
+         *m_pOstream << _T("<SPAN STYLE=\"text-decoration: overline;\">");
+      else
+         *m_pOstream << _T("</SPAN>");
+      break;
+   case rptRiStyle::LINETHROUGH:
+      if (mst==rptRcFontModifier::ON)
+         *m_pOstream << _T("<SPAN STYLE=\"text-decoration: line-through;\">");
       else
          *m_pOstream << _T("</SPAN>");
       break;

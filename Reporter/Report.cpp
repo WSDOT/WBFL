@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -75,30 +75,19 @@ rptReport& rptReport::operator << (rptChapter* pChapter )
 
 bool rptReport::InsertChapterAt(ChapterListSizeType location, rptChapter* pChapter )
 {
-   if ( m_ChapterVec.size() == 0 )
+   if (0 <= location && location < m_ChapterVec.size())
    {
-      ATLASSERT(location == 0);
       boost::shared_ptr<rptChapter> pc ( pChapter );
       pc->SetParent( this );
-      m_ChapterVec.push_back(pc );
+
+      ChapterListIterator it( m_ChapterVec.begin() );
+      m_ChapterVec.insert(it+location, pc );
+
       return true;
    }
    else
    {
-      if (0 <= location && location < m_ChapterVec.size())
-      {
-         boost::shared_ptr<rptChapter> pc ( pChapter );
-         pc->SetParent( this );
-
-         ChapterListIterator it( m_ChapterVec.begin() );
-         m_ChapterVec.insert(it+location, pc );
-
-         return true;
-      }
-      else
-      {
-         return false;
-      }
+      return false;
    }
 }
 

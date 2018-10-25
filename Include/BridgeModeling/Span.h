@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // BMF - Bridge Modeling Framework - Product modeling of bridge structures
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -79,18 +79,10 @@ public:
    bmfSpan();
 
    //------------------------------------------------------------------------
-   // Copy constructor
-   bmfSpan(const bmfSpan& rOther);
-
-   //------------------------------------------------------------------------
    // Destructor
    virtual ~bmfSpan(); 
 
    // GROUP: OPERATORS
-
-   //------------------------------------------------------------------------
-   // Assignment operator
-   bmfSpan& operator=(const bmfSpan& rOther);
 
    // GROUP: OPERATIONS
 
@@ -248,12 +240,6 @@ protected:
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   void MakeCopy(const bmfSpan& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const bmfSpan& rOther);
 
    //------------------------------------------------------------------------
    void UpdateGirderPaths();

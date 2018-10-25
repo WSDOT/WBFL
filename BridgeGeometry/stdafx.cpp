@@ -4,4 +4,7 @@
 
 #include "stdafx.h"
 
-
+#define _MIDL_USE_GUIDDEF_
+#include <WBFLGeometry_i.c>
+#include <WBFLCogo_i.c>
+#include <WBFLTools_i.c>

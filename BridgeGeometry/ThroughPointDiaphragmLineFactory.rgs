@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLBridgeGeometry.ThroughPointDiaphragmLineFactory.1 = s 'ThroughPointDiaphragmLineFactory Class'
+	{
+		CLSID = s '{F95676E6-9741-49C0-A3A4-15D9627BDCD8}'
+	}
+	WBFLBridgeGeometry.ThroughPointDiaphragmLineFactory = s 'ThroughPointDiaphragmLineFactory Class'
+	{
+		CLSID = s '{F95676E6-9741-49C0-A3A4-15D9627BDCD8}'
+		CurVer = s 'WBFLBridgeGeometry.ThroughPointDiaphragmLineFactory.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {F95676E6-9741-49C0-A3A4-15D9627BDCD8} = s 'ThroughPointDiaphragmLineFactory Class'
+		{
+			ProgID = s 'WBFLBridgeGeometry.ThroughPointDiaphragmLineFactory.1'
+			VersionIndependentProgID = s 'WBFLBridgeGeometry.ThroughPointDiaphragmLineFactory'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{3887C38E-D11E-4740-896B-D1DBA8F74BD7}'
+		}
+	}
+}

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -250,6 +250,17 @@ void CModel::FinalRelease()
    ATLASSERT(SUCCEEDED(hr));
 }
 
+STDMETHODIMP CModel::get_Name(BSTR* name)
+{
+   *name = m_Name.Copy();
+   return S_OK;
+}
+
+STDMETHODIMP CModel::put_Name(BSTR name)
+{
+   m_Name = name;
+   return S_OK;
+}
 
 STDMETHODIMP CModel::get_SuperstructureMembers(ISuperstructureMembers **pVal)
 {
@@ -848,7 +859,7 @@ STDMETHODIMP CModel::get_StructuredStorage(IStructuredStorage2 **pVal)
 
 
 // IStructuredStorage2
-static const Float64 MY_VER=1.0;
+static const Float64 MY_VER=2.0;
 
 STDMETHODIMP CModel::Load(IStructuredLoad2 * pload)
 {
@@ -864,11 +875,20 @@ STDMETHODIMP CModel::Load(IStructuredLoad2 * pload)
    if (FAILED(hr))
       return hr;
 
-   if (ver!=MY_VER)
+   if (MY_VER < ver)
       return STRLOAD_E_BADVERSION;
 
    {        
       _variant_t var;
+      if ( 1 < ver )
+      {
+         hr = pload->get_Property(_bstr_t("Name"),&var);
+         if (FAILED(hr) )
+            return hr;
+
+         m_Name = var.bstrVal;
+      }
+
       // Spans
       hr = pload->get_Property(_bstr_t("Spans"),&var);
       if (FAILED(hr))
@@ -1132,6 +1152,7 @@ STDMETHODIMP CModel::Save(IStructuredSave2 * psave)
    try
    {
       hr = psave->BeginUnit(CComBSTR("LBAM_Model"), MY_VER);
+      hr = psave->put_Property(CComBSTR("Name"),_variant_t(m_Name));
       hr = psave->put_Property(CComBSTR("Spans"),_variant_t(m_Spans));
       hr = psave->put_Property(CComBSTR("SuperstructureMembers"),_variant_t(m_SuperstructureMembers));
       hr = psave->put_Property(CComBSTR("Supports"),_variant_t(m_Supports));
@@ -1508,6 +1529,8 @@ STDMETHODIMP CModel::Clone(ILBAMModel **clone)
       return hr;
 
    CComPtr<ILBAMModel> pclone(pnew); // to keep refcnt alive;
+
+   pclone->put_Name(m_Name);
 
    // Spans
    CComPtr<ISpans> pSpans;

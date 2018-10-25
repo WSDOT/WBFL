@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,9 +29,9 @@
 
 #include "WBFLGenericBridge.h"
 
-HRESULT GetGirderSection(IGenericBridge* bridge,SpanIndexType spanIdx,GirderIndexType gdrIdx,Float64 location,ISegment** segment,IGirderSection** section);
+HRESULT GetGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,IGirderSection** section);
+HRESULT GetGirderHaunchBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,Float64* pHaunch);
 HRESULT GetAlignment(IGenericBridge* bridge,IAlignment** alignment);
-HRESULT GetGirderHaunch(IGenericBridge* bridge,SpanIndexType spanIdx,GirderIndexType gdrIdx,Float64 distFromStartOfGirder,Float64* pHaunch);
 Float64 DistanceToStation(IGenericBridge* bridge,Float64 distFromStartOfBridge);
 Float64 StationToDistance(IGenericBridge* bridge,Float64 station);
 void GetPiers(IGenericBridge* bridge,Float64 station,PierIndexType* pPrevPier,PierIndexType* pNextPier);

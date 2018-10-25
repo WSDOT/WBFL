@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Sections - Model bridge member cross sections
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -43,6 +43,8 @@
 #include "CompositeSectionItem.h"
 #include "CompositeSection.h"
 #include "CompositeBeam.h"
+#include "CompositeSectionItemEx.h"
+#include "CompositeSectionEx.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -58,6 +60,8 @@ OBJECT_ENTRY(CLSID_MassProperties, CMassProperties)
 OBJECT_ENTRY(CLSID_CompositeSectionItem, CCompositeSectionItem)
 OBJECT_ENTRY(CLSID_CompositeSection, CCompositeSection)
 OBJECT_ENTRY(CLSID_CompositeBeam, CCompositeBeam)
+OBJECT_ENTRY(CLSID_CompositeSectionItemEx, CCompositeSectionItemEx)
+OBJECT_ENTRY(CLSID_CompositeSectionEx, CCompositeSectionEx)
 END_OBJECT_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

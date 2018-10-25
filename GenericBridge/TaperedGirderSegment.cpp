@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -39,23 +39,18 @@ static char THIS_FILE[] = __FILE__;
 // CTaperedGirderSegment
 HRESULT CTaperedGirderSegment::FinalConstruct()
 {
-   m_Length = 1.0;
-
+   m_pGirderLine = NULL;
+   m_Orientation = 0;
+   m_HaunchDepth[etStart] = 0;
+   m_HaunchDepth[etEnd]   = 0;
    return S_OK;
 }
 
 void CTaperedGirderSegment::FinalRelease()
 {
-   m_Beam[etStart].Release();
-   m_Beam[etEnd].Release();
-
-   if ( m_Material )
-   {
-      InternalAddRef();
-
-      AtlUnadvise(m_Material,IID_IMaterialEvents,m_dwMaterialCookie);
-   }
-   m_Material.Release();
+   m_pGirderLine = NULL;
+   m_Shapes[etStart].clear();
+   m_Shapes[etEnd].clear();
 }
 
 STDMETHODIMP CTaperedGirderSegment::InterfaceSupportsErrorInfo(REFIID riid)
@@ -75,91 +70,219 @@ STDMETHODIMP CTaperedGirderSegment::InterfaceSupportsErrorInfo(REFIID riid)
 
 ////////////////////////////////////////////////////////////////////////
 // ISegment implementation
-STDMETHODIMP CTaperedGirderSegment::putref_SegmentMeasure(ISegmentMeasure* sm)
+STDMETHODIMP CTaperedGirderSegment::putref_SuperstructureMember(ISuperstructureMember* ssMbr)
 {
-   m_pSegmentMeasure = sm;
+   CHECK_IN(ssMbr);
+   m_pSSMbr = ssMbr;
+   return S_OK;
+}
 
-#if defined _DEBUG
-   // m_pSegmentMeasure is a weak references. This is so because
-   // I expect the object implementing sm to also be a superstructure member
-   // Assert this is true.
-   if ( sm != NULL )
+STDMETHODIMP CTaperedGirderSegment::get_SuperstructureMember(ISuperstructureMember** ssMbr)
+{
+   CHECK_RETOBJ(ssMbr);
+   if ( m_pSSMbr )
    {
-      CComQIPtr<ISuperstructureMember> ssmbr(sm);
-      CComQIPtr<ILongitudinalPierDescription> lpd(sm);
-      CComQIPtr<ICrossBeam> cb(sm);
-      CComQIPtr<IColumn> col(sm);
-      ATLASSERT(ssmbr != NULL || lpd != NULL || cb != NULL || col != NULL);
+      (*ssMbr) = m_pSSMbr;
+      (*ssMbr)->AddRef();
    }
-#endif // _DEBUG
+   else
+   {
+      (*ssMbr) = NULL;
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP CTaperedGirderSegment::putref_GirderLine(IGirderLine* girderLine)
+{
+   m_pGirderLine = girderLine;
+   return S_OK;
+}
+
+STDMETHODIMP CTaperedGirderSegment::get_GirderLine(IGirderLine** girderLine)
+{
+   CHECK_RETOBJ(girderLine);
+   if ( m_pGirderLine )
+   {
+      (*girderLine) = m_pGirderLine;
+      (*girderLine)->AddRef();
+   }
+   else
+   {
+      (*girderLine) = NULL;
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP CTaperedGirderSegment::putref_PrevSegment(ISegment* segment)
+{
+   CHECK_IN(segment);
+   m_pPrevSegment = segment;
+   return S_OK;
+}
+
+STDMETHODIMP CTaperedGirderSegment::get_PrevSegment(ISegment** segment)
+{
+   CHECK_RETVAL(segment);
+   *segment = m_pPrevSegment;
+   if ( *segment )
+      (*segment)->AddRef();
+
+   return S_OK;
+}
+
+STDMETHODIMP CTaperedGirderSegment::putref_NextSegment(ISegment* segment)
+{
+   CHECK_IN(segment);
+   m_pNextSegment = segment;
+   return S_OK;
+}
+
+STDMETHODIMP CTaperedGirderSegment::get_NextSegment(ISegment** segment)
+{
+   CHECK_RETVAL(segment);
+   *segment = m_pNextSegment;
+   if ( *segment )
+      (*segment)->AddRef();
 
    return S_OK;
 }
 
 STDMETHODIMP CTaperedGirderSegment::get_Length(Float64 *pVal)
 {
-   CHECK_RETVAL(pVal);
-   (*pVal) = m_Length;
-	return S_OK;
+   return m_pGirderLine->get_LayoutLength(pVal);
 }
 
-STDMETHODIMP CTaperedGirderSegment::put_Length(Float64 length)
+STDMETHODIMP CTaperedGirderSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
 {
-   if ( IsEqual(m_Length,length) )
+   CHECK_RETOBJ(ppSection);
+
+   ATLASSERT(m_Shapes[etStart].size() == m_Shapes[etEnd].size());
+
+   if (m_Shapes[etStart].size() == 0 )
+   {
+      *ppSection = 0;
       return S_OK;
-
-   // Validate length
-   if ( m_pSegmentMeasure )
-   {
-      bool bFractional = m_pSegmentMeasure->IsFractional() == S_OK ? true : false;
-      if ( bFractional )
-      {
-         if ( length > 0 )
-            return Error(IDS_E_FRACTIONAL_EXPECTED,IID_ISegment,GB_E_FRACTIONAL_EXPECTED);
-      }
-      else
-      {
-         if ( length < 0 )
-            return Error(IDS_E_ABSOLUTE_EXPECTED,IID_ISegment,GB_E_ABSOLUTE_EXPECTED);
-      }
    }
 
-   m_Length = length;
-   Fire_OnSegmentChanged(this);
+   CComPtr<IShape> primaryShape;
+   HRESULT hr = get_PrimaryShape(distAlongSegment,&primaryShape);
+   ATLASSERT(SUCCEEDED(hr));
+   if ( FAILED(hr) )
+      return hr;
+
+
+   CComPtr<ICompositeSectionEx> section;
+   section.CoCreateInstance(CLSID_CompositeSectionEx);
+   section.QueryInterface(ppSection);
+   ATLASSERT(ppSection != NULL);
+
+   // add the primary shape
+   Float64 Efg = 0;
+   m_Shapes[etStart].front().FGMaterial->get_E(stageIdx,&Efg);
+   
+   Float64 Ebg = 0;
+   if ( m_Shapes[etStart].front().BGMaterial )
+      m_Shapes[etStart].front().BGMaterial->get_E(stageIdx,&Ebg);
+
+   Float64 Dfg = 0;
+   m_Shapes[etStart].front().FGMaterial->get_Density(stageIdx,&Dfg);
+   
+   Float64 Dbg = 0;
+   if ( m_Shapes[etStart].front().BGMaterial )
+      m_Shapes[etStart].front().BGMaterial->get_Density(stageIdx,&Dbg);
+
+   section->AddSection(primaryShape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
+
+   // add all the secondary shapes
+   std::vector<ShapeData>::iterator startIter(m_Shapes[etStart].begin());
+   std::vector<ShapeData>::iterator startIterEnd(m_Shapes[etStart].end());
+   startIter++; // skip the first shape, we already processed it
+
+   std::vector<ShapeData>::iterator endIter(m_Shapes[etEnd].begin());
+   std::vector<ShapeData>::iterator endIterEnd(m_Shapes[etEnd].end());
+   endIter++; // skip the first shape, we already processed it
+
+   for ( ; startIter != startIterEnd; startIter++, endIter++ )
+   {
+      ShapeData& startShapeData = *startIter;
+      ShapeData& endShapeData   = *endIter;
+
+      Float64 Efg = 0;
+      if ( startShapeData.FGMaterial )
+         startShapeData.FGMaterial->get_E(stageIdx,&Efg);
+
+      Float64 Ebg;
+      if ( startShapeData.BGMaterial )
+         startShapeData.BGMaterial->get_E(stageIdx,&Ebg);
+
+      Float64 Dfg = 0;
+      if ( startShapeData.FGMaterial )
+         startShapeData.FGMaterial->get_Density(stageIdx,&Dfg);
+
+      Float64 Dbg = 0;
+      if ( startShapeData.BGMaterial )
+         startShapeData.BGMaterial->get_Density(stageIdx,&Dbg);
+
+      // Assuming that all the secondary shapes are prismatic, but could be at different locations at
+      // either end of the segment. Locate the cg of the shape at each end and then use the average location
+
+      CComPtr<IShape> shape;
+      startShapeData.Shape->Clone(&shape);
+
+      CComPtr<IShapeProperties> startProps;
+      shape->get_ShapeProperties(&startProps);
+
+      CComPtr<IPoint2d> startCG;
+      startProps->get_Centroid(&startCG);
+      Float64 x1,y1;
+      startCG->Location(&x1,&y1);
+
+      CComPtr<IShapeProperties> endProps;
+      endShapeData.Shape->get_ShapeProperties(&endProps);
+      CComPtr<IPoint2d> endCG;
+      endProps->get_Centroid(&endCG);
+      Float64 x2,y2;
+      endCG->Location(&x2,&y2);
+
+      Float64 x = (x1+x2)/2;
+      Float64 y = (y1+y2)/2;
+
+      CComQIPtr<IXYPosition> position(shape);
+      position->Offset(x-x1,y-y1);
+
+
+      section->AddSection(shape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
+   }
+
    return S_OK;
 }
 
-STDMETHODIMP CTaperedGirderSegment::get_SegmentLength(/*[out, retval]*/ Float64 *pVal)
-{
-   CHECK_RETVAL(pVal);
-   if ( m_Length < 0 )
-   {
-      // segment length is a fraction of the superstructure member length
-      Float64 ssmbrLength = GetSuperstructureMemberLength();
-      *pVal = -1*m_Length*ssmbrLength;
-   }
-   else
-   {
-      // segment lenght is an absolute value
-      *pVal = m_Length;
-   }
-   return S_OK;
-}
-
-STDMETHODIMP CTaperedGirderSegment::get_Shape(Float64 distAlongSegment,IShape** ppShape)
+STDMETHODIMP CTaperedGirderSegment::get_PrimaryShape(Float64 distAlongSegment,IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
-   // This object reprsents a prismatic shape... all sections are the same
-   HRESULT hr = S_OK;
-   if ( m_Beam[etStart] == 0 || m_Beam[etEnd] == 0 )
+   ATLASSERT(m_Shapes[etStart].size() == m_Shapes[etEnd].size());
+
+   if (m_Shapes[etStart].size() == 0 )
    {
-      (*ppShape) = 0;
-      return hr;
+      *ppShape = 0;
+      return S_OK;
    }
 
+   CComQIPtr<IFlangedGirderSection> beam[2];
+   m_Shapes[etStart].front().Shape.QueryInterface(&beam[etStart]);
+   m_Shapes[etEnd].front().Shape.QueryInterface(&beam[etEnd]);
+
+   ATLASSERT(beam[etStart]); // if this is NULL... how did it get in the system????
+   ATLASSERT(beam[etEnd]);   // if this is NULL... how did it get in the system????
+
+   // This object reprsents a prismatic shape... all sections are the same
+   HRESULT hr = S_OK;
+
    Float64 segLength;
-   get_SegmentLength(&segLength);
+   get_Length(&segLength);
 
    // get dimensions of beam shape at start and end of segment
    CComPtr<IPrecastBeam> pcBeam[2];
@@ -171,7 +294,7 @@ STDMETHODIMP CTaperedGirderSegment::get_Shape(Float64 distAlongSegment,IShape** 
 
    for ( int i = 0; i < 2; i++ )
    {
-      m_Beam[i]->get_Beam(&pcBeam[i]);
+      beam[i]->get_Beam(&pcBeam[i]);
 
       pcBeam[i]->get_W1(&W1[i]);
       pcBeam[i]->get_W2(&W2[i]);
@@ -212,7 +335,7 @@ STDMETHODIMP CTaperedGirderSegment::get_Shape(Float64 distAlongSegment,IShape** 
    Float64 c1 = ::LinInterp(distAlongSegment,C1[etStart],C1[etEnd],segLength);
 
    // create a new shape that is a clone of the original
-   CComQIPtr<IShape> shape(m_Beam[etStart]);
+   CComQIPtr<IShape> shape(beam[etStart]);
    CComPtr<IShape> newShape;
    hr = shape->Clone(&newShape);
 
@@ -235,71 +358,28 @@ STDMETHODIMP CTaperedGirderSegment::get_Shape(Float64 distAlongSegment,IShape** 
    newBeam->put_T1(t1);
    newBeam->put_T2(t2);
 
-   newFlangedBeam.QueryInterface(ppShape);
+   // position the shape
+   CComPtr<IPoint2d> pntTopCenter;
+   GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
 
-   return hr;
-}
+   CComQIPtr<IXYPosition> position(newFlangedBeam);
+   position->put_LocatorPoint(lpTopCenter,pntTopCenter);
 
-STDMETHODIMP CTaperedGirderSegment::putref_Material(IMaterial* material)
-{
-   CHECK_IN(material);
+   *ppShape = newShape;
+   (*ppShape)->AddRef();
 
-   if ( m_Material.IsEqualObject(material) )
-      return S_OK;
-
-   CComPtr<IUnknown> punk;
-   QueryInterface(IID_IUnknown,(void**)&punk);
-
-   HRESULT hr;
-   DWORD dwCookie;
-   if ( material )
-   {
-      hr = AtlAdvise(material,punk,IID_IMaterialEvents,&dwCookie);
-      if ( FAILED(hr) )
-         return hr; // can't sink on material... get outta here before anything gets changed
-
-      InternalRelease(); // break circular reference
-   }
-
-   // unsink on the older material (if there was one)
-   if ( m_Material )
-   {
-      InternalAddRef();
-
-      hr = AtlUnadvise(m_Material,IID_IMaterialEvents,m_dwMaterialCookie);
-      ATLASSERT(SUCCEEDED(hr));
-   }
-
-   m_Material = material;
-
-   if ( m_Material )
-   {
-      m_dwMaterialCookie = dwCookie;
-   }
-
-   Fire_OnSegmentChanged(this);
    return S_OK;
 }
 
-STDMETHODIMP CTaperedGirderSegment::get_Material(IMaterial* *material)
+STDMETHODIMP CTaperedGirderSegment::get_Profile(VARIANT_BOOL bIncludeClosure,IShape** ppShape)
 {
-   CHECK_RETVAL(material);
-
-   (*material) = m_Material;
-
-   if ( *material )
-      (*material)->AddRef();
-
+   ATLASSERT(false); // not implemented yet
    return S_OK;
 }
 
 STDMETHODIMP CTaperedGirderSegment::put_Orientation(Float64 orientation)
 {
-   if ( IsEqual(m_Orientation,orientation) )
-      return S_OK;
-
    m_Orientation = orientation;
-   Fire_OnSegmentChanged(this);
    return S_OK;
 }
 
@@ -310,54 +390,129 @@ STDMETHODIMP CTaperedGirderSegment::get_Orientation(Float64* orientation)
    return S_OK;
 }
 
-STDMETHODIMP CTaperedGirderSegment::Clone(ISegment* *clone)
+STDMETHODIMP CTaperedGirderSegment::get_HaunchDepth(EndType endType,Float64* pVal)
 {
-   CHECK_RETOBJ(clone);
+   CHECK_RETVAL(pVal);
+   *pVal = m_HaunchDepth[endType];
+   return S_OK;
+}
 
-   CComObject<CTaperedGirderSegment>* pClone;
-   CComObject<CTaperedGirderSegment>::CreateInstance(&pClone);
-   (*clone) = pClone;
-   (*clone)->AddRef();
+STDMETHODIMP CTaperedGirderSegment::put_HaunchDepth(EndType endType,Float64 val)
+{
+   m_HaunchDepth[endType] = val;
+   return S_OK;
+}
 
-   pClone->m_Length = m_Length;
-   pClone->m_pSegmentMeasure = m_pSegmentMeasure;
-   pClone->m_Orientation = m_Orientation;
-
-   for ( int i = 0; i < 2; i++ )
-   {
-      if ( m_Beam[i] )
-      {
-         CComQIPtr<IShape> shape(m_Beam[i]);
-         pClone->m_Beam[i].Release();
-
-         CComPtr<IShape> cloneShape;
-         shape->Clone(&cloneShape);
-
-         cloneShape.QueryInterface(&pClone->m_Beam[i]);
-      }
-   }
-
-   CComPtr<IMaterial> material;
-   if ( m_Material )
-      m_Material->Clone(&material);
-
-   pClone->putref_Material(material);
-
+STDMETHODIMP CTaperedGirderSegment::GetHaunchDepth(Float64 distAlongSegment,Float64* pVal)
+{
+   CHECK_RETVAL(pVal);
+   *pVal = ::GB_GetHaunchDepth(this,distAlongSegment);
    return S_OK;
 }
 
 ////////////////////////////////////////////////////////////////////
 // ITaperedGirderSegment implementation
-STDMETHODIMP CTaperedGirderSegment::putref_FlangedGirderSection(EndType end,IFlangedGirderSection* pPrecastBeam)
+STDMETHODIMP CTaperedGirderSegment::AddShape(IShape* pStartShape,IShape* pEndShape,IMaterial* pFGMaterial,IMaterial* pBGMaterial)
 {
-   CHECK_IN(pPrecastBeam);
+   CHECK_IN(pStartShape);
+   CHECK_IN(pEndShape);
 
-   if ( m_Beam[end].IsEqualObject(pPrecastBeam) )
-      return S_OK;
+   ATLASSERT(m_Shapes[etStart].size() == m_Shapes[etEnd].size());
+   if ( m_Shapes[etStart].size() == 0 )
+   {
+      CComQIPtr<IFlangedGirderSection> beam(pStartShape);
+      if ( beam == NULL )
+      {
+         ATLASSERT(false); // first shape must be a flanged girder section
+         return E_INVALIDARG;
+      }
+   }
 
-   m_Beam[end] = pPrecastBeam;
-   Fire_OnSegmentChanged(this);
+   if ( m_Shapes[etEnd].size() == 0 )
+   {
+      CComQIPtr<IFlangedGirderSection> beam(pEndShape);
+      if ( beam == NULL )
+      {
+         ATLASSERT(false); // first shape must be a flanged girder section
+         return E_INVALIDARG;
+      }
+   }
+
+   ShapeData startShapeData;
+   startShapeData.Shape      = pStartShape;
+   startShapeData.FGMaterial = pFGMaterial;
+   startShapeData.BGMaterial = pBGMaterial;
+   m_Shapes[etStart].push_back(startShapeData);
+
+   ShapeData endShapeData;
+   endShapeData.Shape      = pEndShape;
+   endShapeData.FGMaterial = pFGMaterial;
+   endShapeData.BGMaterial = pBGMaterial;
+   m_Shapes[etEnd].push_back(endShapeData);
+
+   ATLASSERT(m_Shapes[etStart].size() == m_Shapes[etEnd].size());
+
    return S_OK;
+}
+
+STDMETHODIMP CTaperedGirderSegment::get_ShapeCount(IndexType* nShapes)
+{
+   CHECK_RETVAL(nShapes);
+   ATLASSERT(m_Shapes[etStart].size() == m_Shapes[etEnd].size());
+   *nShapes = m_Shapes[etStart].size();
+   return S_OK;
+}
+
+STDMETHODIMP CTaperedGirderSegment::get_ForegroundMaterial(IndexType index,IMaterial* *material)
+{
+   ATLASSERT(m_Shapes[etStart].size() == m_Shapes[etEnd].size());
+   if ( m_Shapes[etStart].size() <= index || index == INVALID_INDEX )
+      return E_INVALIDARG;
+
+   CHECK_RETVAL(material);
+   (*material) = m_Shapes[etStart][index].FGMaterial;
+
+   if ( *material )
+      (*material)->AddRef();
+
+   return S_OK;
+}
+
+STDMETHODIMP CTaperedGirderSegment::get_BackgroundMaterial(IndexType index,IMaterial* *material)
+{
+   ATLASSERT(m_Shapes[etStart].size() == m_Shapes[etEnd].size());
+   if ( m_Shapes[etStart].size() <= index || index == INVALID_INDEX )
+      return E_INVALIDARG;
+
+   CHECK_RETVAL(material);
+   (*material) = m_Shapes[etStart][index].BGMaterial;
+
+   if ( *material )
+      (*material)->AddRef();
+
+   return S_OK;
+}
+
+////////////////////////////////////////////////////////////////////
+// IItemData implementation
+STDMETHODIMP CTaperedGirderSegment::AddItemData(BSTR name,IUnknown* data)
+{
+   return m_ItemDataMgr.AddItemData(name,data);
+}
+
+STDMETHODIMP CTaperedGirderSegment::GetItemData(BSTR name,IUnknown** data)
+{
+   return m_ItemDataMgr.GetItemData(name,data);
+}
+
+STDMETHODIMP CTaperedGirderSegment::RemoveItemData(BSTR name)
+{
+   return m_ItemDataMgr.RemoveItemData(name);
+}
+
+STDMETHODIMP CTaperedGirderSegment::GetItemDataCount(CollectionIndexType* count)
+{
+   return m_ItemDataMgr.GetItemDataCount(count);
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -394,15 +549,4 @@ STDMETHODIMP CTaperedGirderSegment::Save(IStructuredSave2* save)
 
    //save->EndUnit();
    //return S_OK;
-}
-
-Float64 CTaperedGirderSegment::GetSuperstructureMemberLength()
-{
-   Float64 length;
-   CComQIPtr<ISuperstructureMember> ssmbr(m_pSegmentMeasure);
-   ATLASSERT(ssmbr);
-
-   ssmbr->get_Length(&length);
-   ATLASSERT( 0 <= length );
-   return length;
 }

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -86,7 +86,7 @@ STDMETHODIMP CJointLoadCollection::Create(/*[in]*/LoadIDType id,  /*[in]*/JointI
 
       // insert new joint
       std::pair<ContainerIteratorType,bool> st;
-      st = m_coll.insert(ContainerValueType(id, *ppJointLoad ));
+      st = m_coll.insert(ContainerValueType(id, CComVariant(*ppJointLoad) ));
       if (!st.second)
       {
          ATLASSERT(0); // insert failed - better check why

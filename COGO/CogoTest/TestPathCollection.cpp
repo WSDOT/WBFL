@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -111,7 +111,7 @@ void CTestPathCollection::Test()
    //
    // Test FindKey
    //
-   CogoElementKey key;
+   CogoObjectID key;
    TRY_TEST(pColl->FindKey(NULL,&key),E_INVALIDARG);
    TRY_TEST(pColl->FindKey(a,NULL),E_POINTER);
    TRY_TEST(pColl->FindKey(a,&key),S_OK);
@@ -145,7 +145,7 @@ void CTestPathCollection::Test()
    TRY_TEST( pColl->get__EnumKeys(&pEnum), S_OK );
 
    ULONG fetched;
-   CogoElementKey target_key = 1;
+   CogoObjectID target_key = 1;
    while( pEnum->Next(1,&key,&fetched ) == S_OK )
    {
       TRY_TEST(key,target_key++);
@@ -235,7 +235,7 @@ void CTestPathCollection::Test()
    TRY_TEST( TestIObjectSafety(CLSID_PathCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
-STDMETHODIMP CTestPathCollection::OnPathChanged(IPathCollection* coll,CogoElementKey key,IPath* vc)
+STDMETHODIMP CTestPathCollection::OnPathChanged(IPathCollection* coll,CogoObjectID key,IPath* vc)
 {
 //   MessageBox(NULL,"PathChanged","Event",MB_OK);
    if ( key == m_expectedKey )
@@ -252,7 +252,7 @@ STDMETHODIMP CTestPathCollection::OnProfileChanged(IPathCollection* coll,IProfil
    return S_OK;
 }
 
-STDMETHODIMP CTestPathCollection::OnPathAdded(IPathCollection* coll,CogoElementKey key,IPath* Path)
+STDMETHODIMP CTestPathCollection::OnPathAdded(IPathCollection* coll,CogoObjectID key,IPath* Path)
 {
 //   MessageBox(NULL,"PathAdded","Event",MB_OK);
    if ( key == m_expectedKey )
@@ -261,7 +261,7 @@ STDMETHODIMP CTestPathCollection::OnPathAdded(IPathCollection* coll,CogoElementK
    return S_OK;
 }
 
-STDMETHODIMP CTestPathCollection::OnPathRemoved(IPathCollection* coll,CogoElementKey key)
+STDMETHODIMP CTestPathCollection::OnPathRemoved(IPathCollection* coll,CogoObjectID key)
 {
 //   MessageBox(NULL,"PathRemoved","Event",MB_OK);
    if ( key == m_expectedKey )

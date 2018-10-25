@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -52,27 +52,27 @@ void CProfilePointCollection::FinalRelease()
    UnadviseAll();
 }
 
-STDMETHODIMP CProfilePointCollection::get_Item(CogoElementKey key, IProfilePoint **pVal)
+STDMETHODIMP CProfilePointCollection::get_Item(CogoObjectID key, IProfilePoint **pVal)
 {
    CHECK_RETVAL(pVal);
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found == m_coll.end() )
    {
       return ProfilePointNotFound(key);
    }
 
-   std::pair<CogoElementKey,CComVariant> p = *found;
+   std::pair<CogoObjectID,CComVariant> p = *found;
    p.second.pdispVal->QueryInterface(pVal);
 
 	return S_OK;
 }
 
-STDMETHODIMP CProfilePointCollection::putref_Item(CogoElementKey key, IProfilePoint *newVal)
+STDMETHODIMP CProfilePointCollection::putref_Item(CogoObjectID key, IProfilePoint *newVal)
 {
    CHECK_IN(newVal);
 
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found == m_coll.end() )
    {
@@ -99,9 +99,9 @@ STDMETHODIMP CProfilePointCollection::get_Count(CollectionIndexType *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CProfilePointCollection::Remove(CogoElementKey key)
+STDMETHODIMP CProfilePointCollection::Remove(CogoObjectID key)
 {
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found == m_coll.end() )
    {
@@ -119,7 +119,7 @@ STDMETHODIMP CProfilePointCollection::Remove(CogoElementKey key)
 	return S_OK;
 }
 
-STDMETHODIMP CProfilePointCollection::Add(CogoElementKey key, VARIANT varStation, Float64 elevation,IProfilePoint* *pp)
+STDMETHODIMP CProfilePointCollection::Add(CogoObjectID key, VARIANT varStation, Float64 elevation,IProfilePoint* *pp)
 {
    if ( pp != NULL )
    {
@@ -144,11 +144,11 @@ STDMETHODIMP CProfilePointCollection::Add(CogoElementKey key, VARIANT varStation
    return AddEx(key,point);
 }
 
-STDMETHODIMP CProfilePointCollection::AddEx(CogoElementKey key, IProfilePoint* newVal)
+STDMETHODIMP CProfilePointCollection::AddEx(CogoObjectID key, IProfilePoint* newVal)
 {
    CHECK_IN(newVal);
    
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found != m_coll.end() )
    {
@@ -175,15 +175,15 @@ STDMETHODIMP CProfilePointCollection::Clear()
 	return S_OK;
 }
 
-STDMETHODIMP CProfilePointCollection::FindKey(IProfilePoint* pp,CogoElementKey* key)
+STDMETHODIMP CProfilePointCollection::FindKey(IProfilePoint* pp,CogoObjectID* key)
 {
    CHECK_IN(pp);
    CHECK_RETVAL(key);
 
-   std::map<CogoElementKey,CComVariant>::iterator iter;
+   std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
    {
-      std::pair<CogoElementKey,CComVariant> item = *iter;
+      std::pair<CogoObjectID,CComVariant> item = *iter;
       CComQIPtr<IProfilePoint> value( item.second.pdispVal );
       ATLASSERT( value != NULL );
       if ( value.IsEqualObject(pp) )
@@ -200,7 +200,7 @@ STDMETHODIMP CProfilePointCollection::get__EnumKeys(IEnumKeys** ppenum)
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumKeys,&IID_IEnumKeys, CogoElementKey, MapCopyKey<std::map<CogoElementKey,CComVariant>>, std::map<CogoElementKey,CComVariant> > Enum;
+   typedef CComEnumOnSTL<IEnumKeys,&IID_IEnumKeys, CogoObjectID, MapCopyKey<std::map<CogoObjectID,CComVariant>>, std::map<CogoObjectID,CComVariant> > Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -215,18 +215,18 @@ STDMETHODIMP CProfilePointCollection::get__EnumKeys(IEnumKeys** ppenum)
    return S_OK;
 }
 
-STDMETHODIMP CProfilePointCollection::Key(CollectionIndexType index,CogoElementKey* key)
+STDMETHODIMP CProfilePointCollection::Key(CollectionIndexType index,CogoObjectID* key)
 {
    CHECK_RETVAL(key);
 
    if ( !IsValidIndex(index,m_coll) )
       return E_INVALIDARG;
 
-   std::map<CogoElementKey,CComVariant>::iterator iter = m_coll.begin();
+   std::map<CogoObjectID,CComVariant>::iterator iter = m_coll.begin();
    for ( CollectionIndexType i = 0; i < index; i++ )
       iter++;
 
-   std::pair<CogoElementKey,CComVariant> p = *iter;
+   std::pair<CogoObjectID,CComVariant> p = *iter;
    *key = p.first;
 
    return S_OK;
@@ -251,7 +251,7 @@ STDMETHODIMP CProfilePointCollection::get__EnumProfilePoints(IEnumProfilePoints*
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumProfilePoints,&IID_IEnumProfilePoints, IProfilePoint*, MapCopyValueToInterface<std::map<CogoElementKey,CComVariant>,IProfilePoint*>, std::map<CogoElementKey,CComVariant> > Enum;
+   typedef CComEnumOnSTL<IEnumProfilePoints,&IID_IEnumProfilePoints, IProfilePoint*, MapCopyValueToInterface<std::map<CogoObjectID,CComVariant>,IProfilePoint*>, std::map<CogoObjectID,CComVariant> > Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -286,7 +286,7 @@ STDMETHODIMP CProfilePointCollection::Clone(IProfilePointCollection* *clone)
       CComPtr<IProfilePoint> clonePP;
       pp->Clone(&clonePP);
 
-      CogoElementKey key;
+      CogoObjectID key;
       Key(count++,&key);
 
       (*clone)->AddEx(key,clonePP);
@@ -301,7 +301,7 @@ STDMETHODIMP CProfilePointCollection::Clone(IProfilePointCollection* *clone)
 
 STDMETHODIMP CProfilePointCollection::OnProfilePointChanged(IProfilePoint* pp)
 {
-   CogoElementKey key;
+   CogoObjectID key;
    HRESULT hr = FindKey(pp,&key);
 
    // This container only listens to events from ProfilePoint objects in this 
@@ -313,7 +313,7 @@ STDMETHODIMP CProfilePointCollection::OnProfilePointChanged(IProfilePoint* pp)
    return S_OK;
 }
 
-void CProfilePointCollection::Advise(CogoElementKey key,IProfilePoint* pp)
+void CProfilePointCollection::Advise(CogoObjectID key,IProfilePoint* pp)
 {
    DWORD dwCookie;
    CComPtr<IProfilePoint> pCP(pp);
@@ -329,7 +329,7 @@ void CProfilePointCollection::Advise(CogoElementKey key,IProfilePoint* pp)
    InternalRelease(); // Break circular reference
 }
 
-void CProfilePointCollection::Unadvise(CogoElementKey key,IProfilePoint* pp)
+void CProfilePointCollection::Unadvise(CogoObjectID key,IProfilePoint* pp)
 {
    ATLASSERT(pp != 0);
 
@@ -338,7 +338,7 @@ void CProfilePointCollection::Unadvise(CogoElementKey key,IProfilePoint* pp)
    //
 
    // Lookup the cookie
-   std::map<CogoElementKey,DWORD>::iterator found;
+   std::map<CogoObjectID,DWORD>::iterator found;
    found = m_Cookies.find( key );
    if ( found == m_Cookies.end() )
    {
@@ -362,26 +362,26 @@ void CProfilePointCollection::Unadvise(CogoElementKey key,IProfilePoint* pp)
 
 void CProfilePointCollection::UnadviseAll()
 {
-   std::map<CogoElementKey,CComVariant>::iterator iter;
+   std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
    {
-      CogoElementKey key = (*iter).first;
+      CogoObjectID key = (*iter).first;
       CComQIPtr<IProfilePoint> pp( (*iter).second.pdispVal );
       Unadvise(key,pp);
    }
 }
 
-HRESULT CProfilePointCollection::ProfilePointNotFound(CogoElementKey key)
+HRESULT CProfilePointCollection::ProfilePointNotFound(CogoObjectID key)
 {
    return ProfilePointKeyError(key,IDS_E_PROFILEPOINTNOTFOUND,COGO_E_PROFILEPOINTNOTFOUND);
 }
 
-HRESULT CProfilePointCollection::ProfilePointAlreadyDefined(CogoElementKey key)
+HRESULT CProfilePointCollection::ProfilePointAlreadyDefined(CogoObjectID key)
 {
    return ProfilePointKeyError(key,IDS_E_PROFILEPOINTALREADYDEFINED,COGO_E_PROFILEPOINTALREADYDEFINED);
 }
 
-HRESULT CProfilePointCollection::ProfilePointKeyError(CogoElementKey key,UINT nHelpString,HRESULT hRes)
+HRESULT CProfilePointCollection::ProfilePointKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes)
 {
    USES_CONVERSION;
 

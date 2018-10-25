@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -42,7 +42,7 @@ Matrix::Matrix(LONG nr,LONG nc)
 {
    m_NRows = 0;
    m_NCols = 0;
-   m_pMatrix = NULL;
+   m_ppMatrix = NULL;
    Resize(nr,nc);
 }
 
@@ -50,7 +50,7 @@ Matrix::Matrix()
 {
    m_NRows = 0;
    m_NCols = 0;
-   m_pMatrix = NULL;
+   m_ppMatrix = NULL;
 }
 
 Matrix::~Matrix()
@@ -60,24 +60,34 @@ Matrix::~Matrix()
 
 void Matrix::Resize(LONG nr,LONG nc)
 {
+   LONG i;
+
    Clear();
    m_NRows = nr;
    m_NCols = nc;
-   m_pMatrix = new Float64[m_NRows*m_NCols];
+   m_ppMatrix = new Float64*[m_NRows];
+   for (i = 0; i < m_NRows; i++)
+      m_ppMatrix[i] = new Float64[m_NCols];
 }
 
 void Matrix::Clear()
 {
-   if (m_pMatrix)
+   LONG i;
+
+   if (m_ppMatrix)
       {
-         delete[] m_pMatrix;
+      for (i = 0; i < m_NRows; i++)
+         delete[] m_ppMatrix[i];
+
+      delete[] m_ppMatrix;
       }
 }
 
 void Matrix::Zero()
 {
-   for (LONG i = 0; i < m_NRows*m_NCols; i++)
-      m_pMatrix[i]=0.0;
+   for (LONG i = 0; i < m_NRows; i++)
+      for (LONG j = 0; j < m_NCols; j++)
+         m_ppMatrix[i][j]=0.0;
 }
 
 void Matrix::GetSize(LONG &nr,LONG &nc) const
@@ -106,7 +116,7 @@ LONG Matrix::NumColumns() const
    return m_NCols;
 }
 
-void Matrix::Multiply(const iActLikeMatrix *m,iActLikeMatrix *r,LONG mode)
+void Matrix::Multiply(const Matrix *m,Matrix *r,LONG mode)
 {
    LONG i,j,k;
    Float64 v;
@@ -172,7 +182,7 @@ void Matrix::Multiply(const iActLikeMatrix *m,iActLikeMatrix *r,LONG mode)
                c2 = k;
                }
 
-            v += (*this)(r1,c1) * (*m)(r2,c2);
+            v += m_ppMatrix[r1][c1] * (*m)(r2,c2);
             }
          // Assign v to r
          (*r)(i,j) = v;
@@ -182,50 +192,55 @@ void Matrix::Multiply(const iActLikeMatrix *m,iActLikeMatrix *r,LONG mode)
 
 void Matrix::operator += (const Matrix &m)
 {
-   LONG i;
-   ATLASSERT(m_NRows==m.m_NRows);
-   ATLASSERT(m_NCols==m.m_NCols);
+   LONG i,j;
 
-   for (i = 0; i < m_NRows*m_NCols; i++)
-   {
-         m_pMatrix[i] += m.m_pMatrix[i];
-   }
-
+   for (i = 0; i < m_NRows; i++)
+      {
+      for (j = 0; j < m_NCols; j++)
+         {
+         m_ppMatrix[i][j] += m(i,j);
+         }
+      }
 }
 
 
 void Matrix::operator = (const Matrix &m)
 {
-   LONG i;
+   LONG i,j;
    ATLASSERT(m_NRows==m.m_NRows);
    ATLASSERT(m_NCols==m.m_NCols);
 
-   for (i = 0; i < m_NRows*m_NCols; i++)
+   for (i = 0; i < m_NRows; i++)
    {
-         m_pMatrix[i] = m.m_pMatrix[i];
+      for (j = 0; j < m_NCols; j++)
+      {
+         m_ppMatrix[i][j] = m.m_ppMatrix[i][j];
+      }
    }
 }
 
+
 void Matrix::operator -= (const Matrix &m)
 {
-   LONG i;
-   ATLASSERT(m_NRows==m.m_NRows);
-   ATLASSERT(m_NCols==m.m_NCols);
+   LONG i,j;
 
-   for (i = 0; i < m_NRows*m_NCols; i++)
-   {
-         m_pMatrix[i] -= m.m_pMatrix[i];
-   }
+   for (i = 0; i < m_NRows; i++)
+      {
+      for (j = 0; j < m_NCols; j++)
+         {
+         m_ppMatrix[i][j] -= m(i,j);
+         }
+      }
 }
 
 Float64 Matrix::operator()(LONG i,LONG j) const
 {
-   return m_pMatrix[ Index(i,j) ];
+   return m_ppMatrix[i][j];
 }
 
 Float64 &Matrix::operator() (LONG i,LONG j)
 {
-   return m_pMatrix[ Index(i,j) ];
+   return m_ppMatrix[i][j];
 }
 
 
@@ -237,12 +252,23 @@ std::_tostream& operator << (std::_tostream &os,const Matrix &m)
    {
       for (j = 0; j < m.m_NCols; j++)
       {
-         os << std::showpoint <<std::scientific << std::setw(10) << std::setprecision(3) << m.GetElement(i,j) << " ";
+         os << std::showpoint <<std::scientific << std::setw(10) << std::setprecision(3) << m.m_ppMatrix[i][j] << " ";
       }
       os << std::endl;
    }
    os << std::endl;
 
    return os;
+}
+
+
+Float64 Vector::operator()(LONG i) const
+{
+   return m_ppMatrix[i][0];
+}
+
+Float64 &Vector::operator() (LONG i)
+{
+   return m_ppMatrix[i][0];
 }
 

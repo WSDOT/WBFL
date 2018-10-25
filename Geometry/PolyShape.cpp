@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -487,9 +487,6 @@ STDMETHODIMP CPolyShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult)
 
    const Float64 angular_tolerance = TWO_PI*1e-2; // 2*pi*10^-2
 
-   CComPtr<IGeomUtil2d> pGeomUtil;
-   CreateGeomUtil( &pGeomUtil );
-
    CComPtr<IRect2d> pBox;
    get_BoundingBox( &pBox );
 
@@ -512,7 +509,7 @@ STDMETHODIMP CPolyShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult)
    pBox->get_BottomRight(&pBottomRight);
 
    Float64 dist;
-   pGeomUtil->Distance(pTopLeft,pBottomRight,&dist);
+   m_GeomUtil->Distance(pTopLeft,pBottomRight,&dist);
    dist *= 2;
 
    ATLASSERT( !IsZero(dist) ); // Distance cannot be zero if height or width is non-zero
@@ -579,9 +576,7 @@ STDMETHODIMP CPolyShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult)
             p1->Move(x1,y1);
 
             VARIANT_BOOL bContains;
-            CComPtr<IGeomUtil2d> util;
-            CreateGeomUtil(&util);
-            util->DoesLineSegmentContainPoint(seg,pPoint,1e-6,&bContains);
+            m_GeomUtil->DoesLineSegmentContainPoint(seg,pPoint,1e-6,&bContains);
 
             if ( bContains == VARIANT_TRUE )
             {
@@ -1039,15 +1034,12 @@ STDMETHODIMP CPolyShape::get_Perimeter(Float64 *pVal)
    m_pPoints->get_Item(0,&pStart);
    m_pPoints->get_Item(cPoints-1,&pEnd);
 
-   CComPtr<IGeomUtil2d> pGeomUtil;
-   CreateGeomUtil(&pGeomUtil);
-
    Float64 sum = 0.00;
 
    // Get the distance between the first and last point.
    // If the polygon is closed, it will be zero.
    Float64 last_dist;
-   pGeomUtil->Distance(pStart,pEnd,&last_dist);
+   m_GeomUtil->Distance(pStart,pEnd,&last_dist);
 
    for ( CollectionIndexType idx = 1; idx < cPoints; idx++ )
    {
@@ -1058,7 +1050,7 @@ STDMETHODIMP CPolyShape::get_Perimeter(Float64 *pVal)
       m_pPoints->get_Item(idx  ,&p2);
 
       Float64 dist;
-      HRESULT hr = pGeomUtil->Distance(p1,p2,&dist);
+      HRESULT hr = m_GeomUtil->Distance(p1,p2,&dist);
       ATLASSERT( SUCCEEDED(hr) );
 
       sum += dist;
@@ -1080,8 +1072,6 @@ STDMETHODIMP CPolyShape::FurthestDistance(ILine2d* line, Float64 *pVal)
    m_pPoints->get_Count(&cPoints);
 
    Float64 maxDist = -DBL_MAX;
-   CComPtr<IGeomUtil2d> util;
-   CreateGeomUtil(&util);
 
    for ( CollectionIndexType i = 0; i < cPoints; i++ )
    {
@@ -1089,7 +1079,7 @@ STDMETHODIMP CPolyShape::FurthestDistance(ILine2d* line, Float64 *pVal)
       m_pPoints->get_Item(i,&pPoint);
 
       Float64 dist;
-      util->ShortestDistanceToPoint(line,pPoint,&dist);
+      m_GeomUtil->ShortestDistanceToPoint(line,pPoint,&dist);
       maxDist = _cpp_max( maxDist, dist );
    }
 

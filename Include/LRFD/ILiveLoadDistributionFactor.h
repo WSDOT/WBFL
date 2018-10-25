@@ -53,8 +53,6 @@
 #define E_OVERRIDE           0x0080 // happens if e factor is used as multiplier with interior g for exterior
 #define S_OVER_D_METHOD      0x0100 // factor was computed using S/D. Always combines with SPEC_EQN.
 #define LANES_BEAMS_OVERRIDE 0x0200 // Lanes beams method was used because factor was smaller than lanes beams
-#define MOMENT_SKEW_CORRECTION_APPLIED 0x1000
-#define SHEAR_SKEW_CORRECTION_APPLIED  0x2000
 
 // what to do with range of applicability:
 enum LldfRangeOfApplicabilityAction 

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -28,19 +28,15 @@
 class EAFCLASS CEAFPluginState
 {
 public:
-   CEAFPluginState(LPCTSTR strPluginName,const CLSID& clsid,const CString& strCLSID,bool bInitiallyEnabled);
+   CEAFPluginState(const CLSID& clsid,const CString& strCLSID,bool bInitiallyEnabled);
    void SetState(bool bNewState);
-   bool InitiallyEnabled() const;
-   bool StateChanged() const;
-   bool IsEnabled() const;
-   LPCTSTR GetName() const;
-   CLSID GetCLSID() const;
-   CString GetCLSIDString() const;
-
-   bool operator<(const CEAFPluginState& other);
+   bool InitiallyEnabled();
+   bool StateChanged();
+   bool IsEnabled();
+   CLSID GetCLSID();
+   CString GetCLSIDString();
 
 private:
-   CString m_Name;
    CLSID m_CLSID;
    CString m_strCLSID;
    bool m_bInitiallyEnabled;

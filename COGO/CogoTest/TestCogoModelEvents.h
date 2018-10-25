@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -53,40 +53,40 @@ END_COM_MAP()
 
 // ICogoModelEvents
 public:
-	STDMETHOD(OnPointChanged)(ICogoModel* cm,CogoElementKey key,IPoint2d* point);
-	STDMETHOD(OnPointAdded)(ICogoModel* cm,CogoElementKey key,IPoint2d* point);
-	STDMETHOD(OnPointRemoved)(ICogoModel* cm,CogoElementKey key);
+	STDMETHOD(OnPointChanged)(ICogoModel* cm,CogoObjectID key,IPoint2d* point);
+	STDMETHOD(OnPointAdded)(ICogoModel* cm,CogoObjectID key,IPoint2d* point);
+	STDMETHOD(OnPointRemoved)(ICogoModel* cm,CogoObjectID key);
 	STDMETHOD(OnPointsCleared)(ICogoModel* cm);
 
-	STDMETHOD(OnLineSegmentChanged)(ICogoModel* cm,CogoElementKey key,ILineSegment2d* lineSeg);
-	STDMETHOD(OnLineSegmentAdded)(ICogoModel* cm,CogoElementKey key,ILineSegment2d* lineSeg);
-	STDMETHOD(OnLineSegmentRemoved)(ICogoModel* cm,CogoElementKey key);
+	STDMETHOD(OnLineSegmentChanged)(ICogoModel* cm,CogoObjectID key,ILineSegment2d* lineSeg);
+	STDMETHOD(OnLineSegmentAdded)(ICogoModel* cm,CogoObjectID key,ILineSegment2d* lineSeg);
+	STDMETHOD(OnLineSegmentRemoved)(ICogoModel* cm,CogoObjectID key);
 	STDMETHOD(OnLineSegmentsCleared)(ICogoModel* cm);
 
-	STDMETHOD(OnProfilePointChanged)(ICogoModel* cm,CogoElementKey key,IProfilePoint* pp);
-	STDMETHOD(OnProfilePointAdded)(ICogoModel* cm,CogoElementKey key,IProfilePoint* pp);
-	STDMETHOD(OnProfilePointRemoved)(ICogoModel* cm,CogoElementKey key);
+	STDMETHOD(OnProfilePointChanged)(ICogoModel* cm,CogoObjectID key,IProfilePoint* pp);
+	STDMETHOD(OnProfilePointAdded)(ICogoModel* cm,CogoObjectID key,IProfilePoint* pp);
+	STDMETHOD(OnProfilePointRemoved)(ICogoModel* cm,CogoObjectID key);
 	STDMETHOD(OnProfilePointsCleared)(ICogoModel* cm);
 
-	STDMETHOD(OnVertCurveChanged)(ICogoModel* cm,CogoElementKey key,IVertCurve* vc);
-	STDMETHOD(OnVertCurveAdded)(ICogoModel* cm,CogoElementKey key,IVertCurve* vc);
-	STDMETHOD(OnVertCurveRemoved)(ICogoModel* cm,CogoElementKey key);
+	STDMETHOD(OnVertCurveChanged)(ICogoModel* cm,CogoObjectID key,IVertCurve* vc);
+	STDMETHOD(OnVertCurveAdded)(ICogoModel* cm,CogoObjectID key,IVertCurve* vc);
+	STDMETHOD(OnVertCurveRemoved)(ICogoModel* cm,CogoObjectID key);
 	STDMETHOD(OnVertCurvesCleared)(ICogoModel* cm);
 
-	STDMETHOD(OnHorzCurveChanged)(ICogoModel* cm,CogoElementKey key,IHorzCurve* hc);
-	STDMETHOD(OnHorzCurveAdded)(ICogoModel* cm,CogoElementKey key,IHorzCurve* hc);
-	STDMETHOD(OnHorzCurveRemoved)(ICogoModel* cm,CogoElementKey key);
+	STDMETHOD(OnHorzCurveChanged)(ICogoModel* cm,CogoObjectID key,IHorzCurve* hc);
+	STDMETHOD(OnHorzCurveAdded)(ICogoModel* cm,CogoObjectID key,IHorzCurve* hc);
+	STDMETHOD(OnHorzCurveRemoved)(ICogoModel* cm,CogoObjectID key);
 	STDMETHOD(OnHorzCurvesCleared)(ICogoModel* cm);
 
-	STDMETHOD(OnAlignmentChanged)(ICogoModel* cm,CogoElementKey key, IAlignment* alignment);
+	STDMETHOD(OnAlignmentChanged)(ICogoModel* cm,CogoObjectID key, IAlignment* alignment);
 	STDMETHOD(OnProfileChanged)(ICogoModel* cm,IProfile* profile);
-   STDMETHOD(OnAlignmentAdded)(ICogoModel* cm,CogoElementKey key,IAlignment* alignment);
-   STDMETHOD(OnAlignmentRemoved)(ICogoModel* cm,CogoElementKey key);
+   STDMETHOD(OnAlignmentAdded)(ICogoModel* cm,CogoObjectID key,IAlignment* alignment);
+   STDMETHOD(OnAlignmentRemoved)(ICogoModel* cm,CogoObjectID key);
    STDMETHOD(OnAlignmentsCleared)(ICogoModel* cm);
 
-	STDMETHOD(OnPathChanged)(ICogoModel* cm,CogoElementKey key, IPath* path);
-   STDMETHOD(OnPathAdded)(ICogoModel* cm,CogoElementKey key,IPath* path);
-   STDMETHOD(OnPathRemoved)(ICogoModel* cm,CogoElementKey key);
+	STDMETHOD(OnPathChanged)(ICogoModel* cm,CogoObjectID key, IPath* path);
+   STDMETHOD(OnPathAdded)(ICogoModel* cm,CogoObjectID key,IPath* path);
+   STDMETHOD(OnPathRemoved)(ICogoModel* cm,CogoObjectID key);
    STDMETHOD(OnPathsCleared)(ICogoModel* cm);
 
 private:

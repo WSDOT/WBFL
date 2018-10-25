@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -35,7 +35,6 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
 
 /****************************************************************************
 CLASS
@@ -78,6 +77,7 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005()
 lrfdRefinedLosses2005::lrfdRefinedLosses2005(
                          Float64 x,
                          Float64 Lg,
+                         lrfdLosses::SectionPropertiesType sectionProperties,
                          matPsStrand::Grade gr,
                          matPsStrand::Type type,
                          Float64 fpjPerm, // fpj permanent strands
@@ -85,7 +85,8 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005(
                          Float64 ApsPerm,  // area of permanent strand
                          Float64 ApsTemp,   // area of TTS 
                          Float64 aps,      // area of one temp strand
-                         Float64 eperm, // eccentricty of permanent ps strands with respect to CG of girder
+                         Float64 epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
+                         Float64 epermFinal,
                          Float64 etemp, // eccentricty of temporary strands with respect to CG of girder
                          lrfdLosses::TempStrandUsage usage,
                          Float64 anchorSet,
@@ -114,12 +115,21 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005(
                          Float64 S,    // Surface area of girder
                          Float64 VSlab,    // Volumne of slab
                          Float64 SSlab,    // Surface area of slab
+
                          Float64 Ag,   // area of girder
                          Float64 Ig,   // moment of inertia of girder
                          Float64 Ybg,  // Centroid of girder measured from bottom
                          Float64 Ac,   // area of composite girder
                          Float64 Ic,   // moment of inertia of composite
                          Float64 Ybc,  // Centroid of composite measured from bottom
+
+                         Float64 An,   // area of girder
+                         Float64 In,   // moment of inertia of girder
+                         Float64 Ybn,  // Centroid of girder measured from bottom
+                         Float64 Acn,   // area of composite girder
+                         Float64 Icn,   // moment of inertia of composite
+                         Float64 Ybcn,  // Centroid of composite measured from bottom
+                         
                          Float64 Ad,   // area of deck
                          Float64 ed,   // eccentricity of deck CG with respect to CG of composite
                          Float64 Ksh,  // deck shrinkage strain effectiveness
@@ -140,7 +150,7 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005(
                          bool bValidateParameters,
                          RelaxationLossMethod relaxationMethod
                          ) :
-lrfdLosses(x,Lg,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,eperm,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Mllim,Ag,Ig,Ybg,Ac,Ic,Ybc,rh,ti,bIgnoreInitialRelaxation,bValidateParameters)
+lrfdLosses(x,Lg,sectionProperties,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Mllim,Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,bIgnoreInitialRelaxation,bValidateParameters)
 {
    m_V                     = V;
    m_S                     = S;
@@ -193,37 +203,37 @@ lrfdRefinedLosses2005& lrfdRefinedLosses2005::operator=(const lrfdRefinedLosses2
 Float64 lrfdRefinedLosses2005::TemporaryStrand_ShrinkageLossAtShipping() const
 {
    if ( m_IsDirty ) UpdateLosses();
-   return m_dfpSRH[0];
+   return m_dfpSRH[TEMPORARY_STRAND];
 }
 
 Float64 lrfdRefinedLosses2005::TemporaryStrand_CreepLossAtShipping() const
 {
    if ( m_IsDirty ) UpdateLosses();
-   return m_dfpCRH[0];
+   return m_dfpCRH[TEMPORARY_STRAND];
 }
 
 Float64 lrfdRefinedLosses2005::TemporaryStrand_RelaxationLossAtShipping() const
 {
    if ( m_IsDirty ) UpdateLosses();
-   return m_dfpR1H[0];
+   return m_dfpR1H[TEMPORARY_STRAND];
 }
 
 Float64 lrfdRefinedLosses2005::PermanentStrand_ShrinkageLossAtShipping() const
 {
    if ( m_IsDirty ) UpdateLosses();
-   return m_dfpSRH[1];
+   return m_dfpSRH[PERMANENT_STRAND];
 }
 
 Float64 lrfdRefinedLosses2005::PermanentStrand_CreepLossAtShipping() const
 {
    if ( m_IsDirty ) UpdateLosses();
-   return m_dfpCRH[1];
+   return m_dfpCRH[PERMANENT_STRAND];
 }
 
 Float64 lrfdRefinedLosses2005::PermanentStrand_RelaxationLossAtShipping() const
 {
    if ( m_IsDirty ) UpdateLosses();
-   return m_dfpR1H[1];
+   return m_dfpR1H[PERMANENT_STRAND];
 }
 
 Float64 lrfdRefinedLosses2005::ShrinkageLossBeforeDeckPlacement() const
@@ -267,7 +277,7 @@ Float64 lrfdRefinedLosses2005::TemporaryStrand_TimeDependentLossesAtShipping() c
    if ( m_IsDirty )
       UpdateLosses();
 
-   return m_dfpSRH[0] + m_dfpCRH[0] + m_dfpR1H[0];
+   return m_dfpSRH[TEMPORARY_STRAND] + m_dfpCRH[TEMPORARY_STRAND] + m_dfpR1H[TEMPORARY_STRAND];
 }
 
 Float64 lrfdRefinedLosses2005::PermanentStrand_TimeDependentLossesAtShipping() const
@@ -275,7 +285,7 @@ Float64 lrfdRefinedLosses2005::PermanentStrand_TimeDependentLossesAtShipping() c
    if ( m_IsDirty )
       UpdateLosses();
 
-   return m_dfpSRH[1] + m_dfpCRH[1] + m_dfpR1H[1];
+   return m_dfpSRH[PERMANENT_STRAND] + m_dfpCRH[PERMANENT_STRAND] + m_dfpR1H[PERMANENT_STRAND];
 }
 
 Float64 lrfdRefinedLosses2005::TimeDependentLossesBeforeDeck() const
@@ -363,7 +373,7 @@ Float64 lrfdRefinedLosses2005::GetTemporaryStrandFpt() const
    if ( m_IsDirty )
       UpdateLosses();
 
-   return m_FpjTemp - m_dfpR0[0] - m_dfpES[0];
+   return m_FpjTemp - m_dfpR0[TEMPORARY_STRAND] - m_dfpES[TEMPORARY_STRAND];
 }
 
 Float64 lrfdRefinedLosses2005::GetPermanentStrandFpt() const
@@ -371,7 +381,7 @@ Float64 lrfdRefinedLosses2005::GetPermanentStrandFpt() const
    if ( m_IsDirty )
       UpdateLosses();
 
-   return m_FpjPerm - m_dfpR0[1] - m_dfpES[1];
+   return m_FpjPerm - m_dfpR0[PERMANENT_STRAND] - m_dfpES[PERMANENT_STRAND];
 }
 
 Float64 lrfdRefinedLosses2005::GetDeltaFcd() const
@@ -427,7 +437,7 @@ Float64 lrfdRefinedLosses2005::GetTemporaryStrandKih() const
     if ( m_IsDirty )
         UpdateLosses();
 
-    return m_Kih[0];
+    return m_Kih[TEMPORARY_STRAND];
 }
 
 Float64 lrfdRefinedLosses2005::GetPermanentStrandKih() const
@@ -435,7 +445,7 @@ Float64 lrfdRefinedLosses2005::GetPermanentStrandKih() const
     if ( m_IsDirty )
         UpdateLosses();
 
-    return m_Kih[1];
+    return m_Kih[PERMANENT_STRAND];
 }
 
 Float64 lrfdRefinedLosses2005::GetKL() const
@@ -565,17 +575,8 @@ Float64 lrfdRefinedLosses2005::GetAdjustedInitialAge() const
 {
    Float64 tiAdjusted = m_ti;
 
-   if ( m_CuringMethod == lrfdCreepCoefficient2005::Normal )
-   {
-      // NCHRP 496...
-      // ti = age of concrete, in days, when load is initially applied
-      // for accelerated curing, or the age minus 6 days for moist (normal) curing
-      tiAdjusted -= (m_CuringMethodTimeAdjustmentFactor-1);
-      if ( tiAdjusted < 0 )
-      {
-         tiAdjusted = 1;
-      }
-   }
+   if ( m_CuringMethod == lrfdCreepCoefficient2005::Accelerated )
+      tiAdjusted *= m_CuringMethodTimeAdjustmentFactor;
 
    return tiAdjusted;
 }
@@ -638,7 +639,7 @@ void lrfdRefinedLosses2005::GetDeckShrinkageEffects(Float64* pA,Float64* pM) con
    if ( m_IsDirty )
       UpdateLosses();
 
-   *pA = m_eddf*m_Ad*m_Ecd/(1 + 0.7*m_CreepDeck.GetCreepCoefficient());
+   *pA = m_Ksh*m_eddf*m_Ad*m_Ecd/(1 + 0.7*m_CreepDeck.GetCreepCoefficient());
    *pM = (*pA)*(m_ed);
 }
 
@@ -691,8 +692,8 @@ void lrfdRefinedLosses2005::MakeCopy( const lrfdRefinedLosses2005& rOther )
    m_ebid                  = rOther.m_ebid;
    m_ebih                  = rOther.m_ebih;
    m_Kid                   = rOther.m_Kid;
-   m_Kih[0]                = rOther.m_Kih[0];
-   m_Kih[1]                = rOther.m_Kih[1];
+   m_Kih[TEMPORARY_STRAND] = rOther.m_Kih[TEMPORARY_STRAND];
+   m_Kih[PERMANENT_STRAND] = rOther.m_Kih[PERMANENT_STRAND];
    m_KL                    = rOther.m_KL;
    m_ebdf                  = rOther.m_ebdf;
    m_ebif                  = rOther.m_ebif;
@@ -706,15 +707,15 @@ void lrfdRefinedLosses2005::MakeCopy( const lrfdRefinedLosses2005& rOther )
    m_dfpR2                 = rOther.m_dfpR2;
    m_dfpLT                 = rOther.m_dfpLT;
 
-   m_dfpSRH[0]             = rOther.m_dfpSRH[0];
-   m_dfpCRH[0]             = rOther.m_dfpCRH[0];
-   m_dfpR1H[0]             = rOther.m_dfpR1H[0];
-   m_dfpTH[0]              = rOther.m_dfpTH[0];
+   m_dfpSRH[TEMPORARY_STRAND] = rOther.m_dfpSRH[TEMPORARY_STRAND];
+   m_dfpCRH[TEMPORARY_STRAND] = rOther.m_dfpCRH[TEMPORARY_STRAND];
+   m_dfpR1H[TEMPORARY_STRAND] = rOther.m_dfpR1H[TEMPORARY_STRAND];
+   m_dfpTH[TEMPORARY_STRAND]  = rOther.m_dfpTH[TEMPORARY_STRAND];
 
-   m_dfpSRH[1]             = rOther.m_dfpSRH[1];
-   m_dfpCRH[1]             = rOther.m_dfpCRH[1];
-   m_dfpR1H[1]             = rOther.m_dfpR1H[1];
-   m_dfpTH[1]              = rOther.m_dfpTH[1];
+   m_dfpSRH[PERMANENT_STRAND] = rOther.m_dfpSRH[PERMANENT_STRAND];
+   m_dfpCRH[PERMANENT_STRAND] = rOther.m_dfpCRH[PERMANENT_STRAND];
+   m_dfpR1H[PERMANENT_STRAND] = rOther.m_dfpR1H[PERMANENT_STRAND];
+   m_dfpTH[PERMANENT_STRAND]  = rOther.m_dfpTH[PERMANENT_STRAND];
 
    m_CuringMethodTimeAdjustmentFactor = rOther.m_CuringMethodTimeAdjustmentFactor;
 
@@ -735,9 +736,7 @@ void lrfdRefinedLosses2005::ValidateParameters() const
 {
    // need to make sure spec version is ok
    if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
-   {
       throw lrfdXPsLosses(lrfdXPsLosses::Specification,_T(__FILE__),__LINE__);
-   }
 
    bool is_si = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI);
    // Use a values that are just out of spec to avoid throwing for boundry values
@@ -747,16 +746,13 @@ void lrfdRefinedLosses2005::ValidateParameters() const
    Float64 fcMin = (is_si ? g_27p95_MPA : g_3p95_KSI );
    Float64 fcMax = (is_si ? g_105p05_MPA : g_15p05_KSI );
    if ( m_Fc < fcMin || fcMax < m_Fc )
-   {
       THROW(lrfdXPsLosses,fcOutOfRange);
-   }
 
    // strand type must be low relaxation if lump sum relaxation loss is used
    if ( m_RelaxationMethod == LumpSum && m_Type != matPsStrand::LowRelaxation )
    {
       THROW(lrfdXPsLosses,StrandType);
    }
-
 }
 
 void lrfdRefinedLosses2005::UpdateLongTermLosses() const
@@ -772,14 +768,14 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
 
    // 2. Compute Kid
    Float64 Aps = m_ApsPerm;
-   Float64 e   = m_eperm;
+   Float64 e   = m_epermRelease;
    if ( m_TempStrandUsage == lrfdRefinedLosses2005::tsPretensioned )
    {
       Aps += m_ApsTemp;
-      e = GetEccpg();
+      e = GetEccpgRelease();
    }
 
-   m_Kid = 1 + (m_Ep/m_Eci)*(Aps/m_Ag)*(1 + m_Ag*e*m_eperm/m_Ig)*(1 + 0.7*m_CreepInitialToFinal.GetCreepCoefficient());
+   m_Kid = 1 + (m_Ep/m_Eci)*(Aps/m_An)*(1 + m_An*e*m_epermRelease/m_In)*(1 + 0.7*m_CreepInitialToFinal.GetCreepCoefficient());
    m_Kid = 1/m_Kid;
 
    // 3. Compute creep parameters for ktd for deck placement
@@ -787,7 +783,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepInitialToDeck.SetCuringMethodTimeAdjustmentFactor(m_CuringMethodTimeAdjustmentFactor);
    m_CreepInitialToDeck.SetFc(m_Fci);
    m_CreepInitialToDeck.SetInitialAge(m_ti);
-   m_CreepInitialToDeck.SetMaturity(m_td-m_CreepInitialToDeck.GetAdjustedInitialAge());
+   m_CreepInitialToDeck.SetMaturity(m_td-m_ti);
    m_CreepInitialToDeck.SetRelHumidity(m_H);
    m_CreepInitialToDeck.SetSurfaceArea(m_S);
    m_CreepInitialToDeck.SetVolume(m_V);
@@ -817,7 +813,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
 
    // Relaxation of Prestressing Strands [5.9.5.4.2c]
 #pragma Reminder("NOTE") // do we have to consider effect of PT if used???
-   Float64 fpt = m_FpjPerm - m_dfpR0[1] - m_dfpES[1];
+   Float64 fpt = m_FpjPerm - m_dfpR0[PERMANENT_STRAND] - m_dfpES[PERMANENT_STRAND];
    Float64 td  = ::ConvertFromSysUnits(m_td,unitMeasure::Day);
    Float64 ti  = ::ConvertFromSysUnits(m_ti,unitMeasure::Day);
 
@@ -855,7 +851,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
 
    // 1. Compute Kdf
    Float64 epc = GetEccpc();
-   m_Kdf = 1 + (m_Ep/m_Eci)*(m_ApsPerm/m_Ac)*(1 + m_Ac*epc*epc/m_Ic)*(1 + 0.7*m_CreepInitialToFinal.GetCreepCoefficient());
+   m_Kdf = 1 + (m_Ep/m_Eci)*(m_ApsPerm/m_Acn)*(1 + m_Acn*epc*epc/m_Icn)*(1 + 0.7*m_CreepInitialToFinal.GetCreepCoefficient());
    m_Kdf = 1/m_Kdf;
 
    // 2. Compute shrinkage strain
@@ -880,7 +876,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepInitialToDeck.SetCuringMethodTimeAdjustmentFactor(m_CuringMethodTimeAdjustmentFactor);
    m_CreepInitialToDeck.SetFc(m_Fci);
    m_CreepInitialToDeck.SetInitialAge(m_ti);
-   m_CreepInitialToDeck.SetMaturity(m_td-m_CreepInitialToDeck.GetAdjustedInitialAge());
+   m_CreepInitialToDeck.SetMaturity(m_td-m_ti);
    m_CreepInitialToDeck.SetRelHumidity(m_H);
    m_CreepInitialToDeck.SetSurfaceArea(m_S);
    m_CreepInitialToDeck.SetVolume(m_V);
@@ -892,7 +888,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepDeckToFinal.SetCuringMethodTimeAdjustmentFactor(m_CuringMethodTimeAdjustmentFactor);
    m_CreepDeckToFinal.SetFc(m_Fci);
    m_CreepDeckToFinal.SetInitialAge(m_td);
-   m_CreepDeckToFinal.SetMaturity(m_tf-m_CreepInitialToDeck.GetAdjustedInitialAge());
+   m_CreepDeckToFinal.SetMaturity(m_tf-m_td);
    m_CreepDeckToFinal.SetRelHumidity(m_H);
    m_CreepDeckToFinal.SetSurfaceArea(m_S);
    m_CreepDeckToFinal.SetVolume(m_V);
@@ -900,9 +896,9 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepDeckToFinal.SetK2(m_CreepK2);
 
    // 3. Compute Delta Fcd
-   m_DeltaFcd1 = IsZero(m_ApsPerm) ? 0 : (m_Madlg*m_eperm/m_Ig);
-   m_DeltaFcd2 = IsZero(m_ApsPerm) ? 0 : (m_Msidl*( m_Ybc - m_Ybg + m_eperm )/m_Ic);
-   m_DeltaFcd3 = (m_dfpCR + m_dfpSR + m_dfpR1)*m_ApsPerm/m_Ag + (m_dfpCR + m_dfpSR + m_dfpR1)*m_ApsPerm*m_eperm*m_eperm/m_Ig;
+   m_DeltaFcd1 = IsZero(m_ApsPerm) ? 0 : (m_Madlg*m_epermFinal/m_Ig);
+   m_DeltaFcd2 = IsZero(m_ApsPerm) ? 0 : (m_Msidl*( m_Ybc - m_Ybg + m_epermFinal )/m_Ic);
+   m_DeltaFcd3 = (m_dfpCR + m_dfpSR + m_dfpR1)*(m_ApsPerm/m_Ag)*(1+m_Ag*m_epermFinal*m_epermFinal/m_Ig);
    // change sign because these moments cause tension at the level of
    // the strands which reduces creep
 
@@ -932,7 +928,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_dfpSIDL = IsZero(m_ApsPerm) ? 0 : (m_Ep/m_Ec)*m_DeltaFcd2;
 
    // Elastic gain due to live load
-   m_DeltaFcdLL = (m_Mllim*( m_Ybc - m_Ybg + m_eperm )/m_Ic);
+   m_DeltaFcdLL = (m_Mllim*( m_Ybc - m_Ybg + m_epermFinal )/m_Ic);
    m_dfpLL = IsZero(m_ApsPerm) ? 0 : (m_Ep/m_Ec)*m_DeltaFcdLL;
 
    // Relaxation of Prestressing Strands [5.9.5.4.3c]
@@ -943,7 +939,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepDeck.SetCuringMethodTimeAdjustmentFactor(m_CuringMethodTimeAdjustmentFactor);
    m_CreepDeck.SetFc(0.8*m_FcSlab); // deck is non-prestressed. Use 80% of strength. See NCHRP 496 (page 27 and 30)
    m_CreepDeck.SetInitialAge(::ConvertToSysUnits(1.0,unitMeasure::Day));
-   m_CreepDeck.SetMaturity(m_tf-m_CreepInitialToDeck.GetAdjustedInitialAge());
+   m_CreepDeck.SetMaturity(m_tf-m_td);
    m_CreepDeck.SetRelHumidity(m_H);
    m_CreepDeck.SetSurfaceArea(m_SSlab);
    m_CreepDeck.SetVolume(m_VSlab);
@@ -964,7 +960,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
 
    // LRFD 2007 has a "-" in 1/Ac - epc*ed/I
    // we use a "+" because ed is < 0 for typical construction per our sign convension
-   m_DeltaFcdf = m_eddf*m_Ad*m_Ecd*(1/m_Ac + (epc*m_ed)/m_Ic)/(1 + 0.7*m_CreepDeck.GetCreepCoefficient());
+   m_DeltaFcdf = m_eddf*m_Ad*m_Ecd*(1/m_Acn + (epc*m_ed)/m_Icn)/(1 + 0.7*m_CreepDeck.GetCreepCoefficient());
 
    // if there aren't any strands, then there can't be gain due to deck shrinkage
    m_dfpSS = IsZero(m_ApsPerm) ? 0.0 : (m_Ep/m_Ec)*m_DeltaFcdf*m_Kdf*(1 + 0.7*m_CreepDeckToFinal.GetCreepCoefficient());
@@ -978,23 +974,19 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
 {
    // Losses: Time of Transfer to Time of Lifting [5.9.5.4.2]
    if ( m_RelaxationMethod == Simplified )
-   {
       m_KL = (m_Type == matPsStrand::LowRelaxation ? 30 : 7);
-   }
    else
-   {
       m_KL = (m_Type == matPsStrand::LowRelaxation ? 45 : 10);
-   }
 
    m_khs = 2.0 - 0.014*m_H;
 
    // Shrinkage of Girder Concrete [5.9.5.4.2a]
    Float64 Aps = m_ApsPerm;
-   Float64 e   = m_eperm;
+   Float64 e   = m_epermFinal;
    if ( m_TempStrandUsage == lrfdRefinedLosses2005::tsPretensioned )
    {
       Aps += m_ApsTemp;
-      e = GetEccpg();
+      e = GetEccpgFinal();
    }
 
    // Compute creep coefficient for use in computing Kid
@@ -1009,11 +1001,11 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
    m_CreepInitialToFinal.SetK1(m_CreepK1);
    m_CreepInitialToFinal.SetK2(m_CreepK2);
 
-   m_Kih[0] = 1 + (m_Ep/m_Eci)*(Aps/m_Ag)*(1 + m_Ag*e*m_etemp/m_Ig)*(1 + 0.7*m_CreepInitialToFinal.GetCreepCoefficient());
-   m_Kih[0] = 1/m_Kih[0];
+   m_Kih[TEMPORARY_STRAND] = 1 + (m_Ep/m_Eci)*(Aps/m_An)*(1 + m_An*e*m_etemp/m_In)*(1 + 0.7*m_CreepInitialToFinal.GetCreepCoefficient());
+   m_Kih[TEMPORARY_STRAND] = 1/m_Kih[TEMPORARY_STRAND];
 
-   m_Kih[1] = 1 + (m_Ep/m_Eci)*(Aps/m_Ag)*(1 + m_Ag*e*m_eperm/m_Ig)*(1 + 0.7*m_CreepInitialToFinal.GetCreepCoefficient());
-   m_Kih[1] = 1/m_Kih[1];
+   m_Kih[PERMANENT_STRAND] = 1 + (m_Ep/m_Eci)*(Aps/m_An)*(1 + m_An*e*m_epermFinal/m_In)*(1 + 0.7*m_CreepInitialToFinal.GetCreepCoefficient());
+   m_Kih[PERMANENT_STRAND] = 1/m_Kih[PERMANENT_STRAND];
 
    // Compute creep parameters for ktd for shipping
    m_CreepInitialToHauling.SetCuringMethod(m_CuringMethod);
@@ -1040,15 +1032,15 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
       // the shrinkage as determined in Eq 5.4.2.3.3-1 should be increased by 20%
       m_ebih *= 1.2;
    }
-   m_dfpSRH[0] = IsZero(m_ApsTemp*m_FpjTemp) ? 0 : m_ebih * m_Ep * m_Kih[0];
-   m_dfpSRH[1] = IsZero(m_ApsPerm*m_FpjPerm) ? 0 : m_ebih * m_Ep * m_Kih[1];
+   m_dfpSRH[TEMPORARY_STRAND] = IsZero(m_ApsTemp*m_FpjTemp) ? 0 : m_ebih * m_Ep * m_Kih[TEMPORARY_STRAND];
+   m_dfpSRH[PERMANENT_STRAND] = IsZero(m_ApsPerm*m_FpjPerm) ? 0 : m_ebih * m_Ep * m_Kih[PERMANENT_STRAND];
 
    // Creep of Girder Concrete [5.9.5.4.2b]
    Float64 fcgp = m_ElasticShortening.TemporaryStrand_Fcgp();
-   m_dfpCRH[0] = (m_Ep/m_Eci)*(fcgp+m_dfpp)*m_CreepInitialToHauling.GetCreepCoefficient()*m_Kih[0];
+   m_dfpCRH[TEMPORARY_STRAND] = (m_Ep/m_Eci)*(fcgp+m_dfpp)*m_CreepInitialToHauling.GetCreepCoefficient()*m_Kih[TEMPORARY_STRAND];
    
    fcgp = m_ElasticShortening.PermanentStrand_Fcgp();
-   m_dfpCRH[1] = (m_Ep/m_Eci)*(fcgp+m_dfpp)*m_CreepInitialToHauling.GetCreepCoefficient()*m_Kih[1];
+   m_dfpCRH[PERMANENT_STRAND] = (m_Ep/m_Eci)*(fcgp+m_dfpp)*m_CreepInitialToHauling.GetCreepCoefficient()*m_Kih[PERMANENT_STRAND];
 
    // Relaxation of Prestressing Strands [5.9.5.4.2c]
 #pragma Reminder("NOTE") // consider m_dfpp???
@@ -1056,58 +1048,62 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
    Float64 ti  = ::ConvertFromSysUnits(m_ti,unitMeasure::Day);
 
    Float64 fpj = IsZero(m_ApsTemp) ? 0 : m_FpjTemp;
-   Float64 fpt = fpj - m_dfpR0[0] - m_dfpES[0];
+   Float64 fpt = fpj - m_dfpR0[TEMPORARY_STRAND];
+   if ( m_SectionProperties == sptGross )
+      fpt -= m_dfpES[TEMPORARY_STRAND];
 
    switch(m_RelaxationMethod)
    {
    case Simplified:
-      m_dfpR1H[0] = IsZero(fpt) ? 0 : (fpt/m_KL)*(fpt/m_Fpy - 0.55);
-      m_dfpR1H[0] = (m_dfpR1H[0] < 0 ? 0 : m_dfpR1H[0]); // Fpt can't be less than 0.55Fpy
+      m_dfpR1H[TEMPORARY_STRAND] = IsZero(fpt) ? 0 : (fpt/m_KL)*(fpt/m_Fpy - 0.55);
+      m_dfpR1H[TEMPORARY_STRAND] = (m_dfpR1H[TEMPORARY_STRAND] < 0 ? 0 : m_dfpR1H[TEMPORARY_STRAND]); // Fpt can't be less than 0.55Fpy
       break;
    
    case Refined:
-      m_dfpR1H[0] = IsZero(fpt) ? 0 : (fpt/m_KL)*(log10(24*th)/log10(24*ti))*(fpt/m_Fpy - 0.55)*(1 - 3*(m_dfpSRH[0] + m_dfpCRH[0])/fpt)*m_Kih[0];
-      m_dfpR1H[0] = (m_dfpR1H[0] < 0 ? 0 : m_dfpR1H[0]); // Fpt can't be less than 0.55Fpy
+      m_dfpR1H[TEMPORARY_STRAND] = IsZero(fpt) ? 0 : (fpt/m_KL)*(log10(24*th)/log10(24*ti))*(fpt/m_Fpy - 0.55)*(1 - 3*(m_dfpSRH[TEMPORARY_STRAND] + m_dfpCRH[TEMPORARY_STRAND])/fpt)*m_Kih[TEMPORARY_STRAND];
+      m_dfpR1H[TEMPORARY_STRAND] = (m_dfpR1H[TEMPORARY_STRAND] < 0 ? 0 : m_dfpR1H[TEMPORARY_STRAND]); // Fpt can't be less than 0.55Fpy
       break;
    
    case LumpSum:
-      m_dfpR1H[0] = ::ConvertToSysUnits(1.2,unitMeasure::KSI);
+      m_dfpR1H[TEMPORARY_STRAND] = ::ConvertToSysUnits(1.2,unitMeasure::KSI);
       break;
 
    default:
       ATLASSERT(false);
-      m_dfpR1H[0] = 0;
+      m_dfpR1H[TEMPORARY_STRAND] = 0;
       break;
    }
 
    fpj = IsZero(m_ApsPerm) ? 0 : m_FpjPerm;
-   fpt = fpj - m_dfpR0[1] - m_dfpES[1];
+   fpt = fpj - m_dfpR0[PERMANENT_STRAND];
+   if ( m_SectionProperties == sptGross )
+      fpt -= m_dfpES[PERMANENT_STRAND];
 
    switch(m_RelaxationMethod)
    {
    case Simplified:
-      m_dfpR1H[1] = IsZero(fpt) ? 0 : (fpt/m_KL)*(fpt/m_Fpy - 0.55);
-      m_dfpR1H[1] = (m_dfpR1H[1] < 0 ? 0 : m_dfpR1H[1]); // Fpt can't be less than 0.55Fpy
+      m_dfpR1H[PERMANENT_STRAND] = IsZero(fpt) ? 0 : (fpt/m_KL)*(fpt/m_Fpy - 0.55);
+      m_dfpR1H[PERMANENT_STRAND] = (m_dfpR1H[PERMANENT_STRAND] < 0 ? 0 : m_dfpR1H[PERMANENT_STRAND]); // Fpt can't be less than 0.55Fpy
       break;
    
    case Refined:
-      m_dfpR1H[1] = IsZero(fpt) ? 0 : (fpt/m_KL)*(log10(24*th)/log10(24*ti))*(fpt/m_Fpy - 0.55)*(1 - 3*(m_dfpSRH[1] + m_dfpCRH[1])/fpt)*m_Kih[1];
-      m_dfpR1H[1] = (m_dfpR1H[1] < 0 ? 0 : m_dfpR1H[1]); // Fpt can't be less than 0.55Fpy
+      m_dfpR1H[PERMANENT_STRAND] = IsZero(fpt) ? 0 : (fpt/m_KL)*(log10(24*th)/log10(24*ti))*(fpt/m_Fpy - 0.55)*(1 - 3*(m_dfpSRH[PERMANENT_STRAND] + m_dfpCRH[PERMANENT_STRAND])/fpt)*m_Kih[PERMANENT_STRAND];
+      m_dfpR1H[PERMANENT_STRAND] = (m_dfpR1H[PERMANENT_STRAND] < 0 ? 0 : m_dfpR1H[PERMANENT_STRAND]); // Fpt can't be less than 0.55Fpy
       break;
    
    case LumpSum:
-      m_dfpR1H[1] = ::ConvertToSysUnits(1.2,unitMeasure::KSI);
+      m_dfpR1H[PERMANENT_STRAND] = ::ConvertToSysUnits(1.2,unitMeasure::KSI);
       break;
 
    default:
       ATLASSERT(false);
-      m_dfpR1H[1] = 0;
+      m_dfpR1H[PERMANENT_STRAND] = 0;
       break;
    }
 
    // Total time dependent losses at shipping
-   m_dfpTH[0] = m_dfpSRH[0] + m_dfpCRH[0] + m_dfpR1H[0];
-   m_dfpTH[1] = m_dfpSRH[1] + m_dfpCRH[1] + m_dfpR1H[1];
+   m_dfpTH[TEMPORARY_STRAND] = m_dfpSRH[TEMPORARY_STRAND] + m_dfpCRH[TEMPORARY_STRAND] + m_dfpR1H[TEMPORARY_STRAND];
+   m_dfpTH[PERMANENT_STRAND] = m_dfpSRH[PERMANENT_STRAND] + m_dfpCRH[PERMANENT_STRAND] + m_dfpR1H[PERMANENT_STRAND];
 }
 
 bool lrfdRefinedLosses2005::AdjustShrinkageStrain() const
@@ -1148,6 +1144,7 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
 
    lrfdRefinedLosses2005 loss(19.5072, // location along girder where losses are computed
                          39.0144,    // girder length
+                         sptGross,
                          matPsStrand::Gr1860,
                          matPsStrand::LowRelaxation,
                          1396186227.0505831, // fpj permanent strands
@@ -1155,6 +1152,7 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
                          0.0051799896399999995,  // area of permanent strand
                          0.00055999887999999998,  // area of TTS 
                          0.00013999972000000000,      // area of one strand
+                         0.73344249937779116, // eccentricty of permanent ps strands with respect to CG of girder
                          0.73344249937779116, // eccentricty of permanent ps strands with respect to CG of girder
                          -0.81870344656815441, // eccentricty of temporary strands with respect to CG of girder
                          
@@ -1180,12 +1178,22 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
                          0.32516064001351508,    // Volumne of slab
                          1.8288000000760127,    // Surface area of slab
                          
+                         // Gross
                          0.56485774124999988,   // area of girder
                          0.23197765412628035,   // moment of inertia of girder
                          0.80689655343184530,  // Centroid of girder measured from bottom
                          0.83035029207347855,   // area of composite girder
                          0.39856959307884982,   // moment of inertia of composite
                          1.1133322567444859,  // Centroid of composite measured from bottom
+                         
+                         // Net
+                         0.56485774124999988,   // area of girder
+                         0.23197765412628035,   // moment of inertia of girder
+                         0.80689655343184530,  // Centroid of girder measured from bottom
+                         0.83035029207347855,   // area of composite girder
+                         0.39856959307884982,   // moment of inertia of composite
+                         1.1133322567444859,  // Centroid of composite measured from bottom
+
                          0.34838640001448046,   // area of deck
                          -0.65196774325551399,   // eccentricity of deck CG with respect to CG of composite
                          1.0,

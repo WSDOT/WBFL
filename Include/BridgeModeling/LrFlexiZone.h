@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // BMF - Bridge Modeling Framework - Product modeling of bridge structures
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -142,7 +142,7 @@ protected:
    void MakeCopy(const bmfLrFlexiZone& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const bmfLrFlexiZone& rOther);
+   virtual void MakeAssignment(const bmfLrFlexiZone& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

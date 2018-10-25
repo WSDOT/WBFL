@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManager - Manages report definitions
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -44,7 +44,7 @@ class rptReport;
 class REPORTMANAGERCLASS CReportBuilder  
 {
 public:
-	CReportBuilder(LPCTSTR strName,bool bHidden = false,bool bIncludeTimingChapter=false);
+	CReportBuilder(LPCTSTR strName,bool bHidden = false);
 	virtual ~CReportBuilder();
 
    // report builders may be hidden so that they don't show up in
@@ -52,12 +52,8 @@ public:
    void Hidden(bool bHide);
    bool Hidden() const;
 
-   void IncludeTimingChapter(bool bInclude=true);
-   bool IncludeTimingChapter() const;
-
    LPCTSTR GetName() const;
    void AddTitlePageBuilder(boost::shared_ptr<CTitlePageBuilder>& pTitlePageBuilder);
-   boost::shared_ptr<CTitlePageBuilder> GetTitlePageBuilder();
    void AddChapterBuilder(boost::shared_ptr<CChapterBuilder>& pChapterBuilder);
    CollectionIndexType GetChapterBuilderCount() const;
    boost::shared_ptr<CChapterBuilder> GetChapterBuilder(CollectionIndexType idx);
@@ -75,7 +71,6 @@ public:
 private:
    std::_tstring m_Name;
    bool m_bHidden;
-   bool m_bIncludeTimingChapter;
    const CBitmap* m_pBitmap;
 
    boost::shared_ptr<CTitlePageBuilder> m_pTitlePageBuilder;

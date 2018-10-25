@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Sections - Model bridge member cross sections
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -35,7 +35,7 @@ class ATL_NO_VTABLE CCompositeSectionItem :
 	public CComCoClass<CCompositeSectionItem, &CLSID_CompositeSectionItem>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CCompositeSectionItem,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public ICompositeSectionItemEx,
+	public ICompositeSectionItem,
    public IStructuredStorage2,
    public IPersistImpl<CCompositeSectionItem>
 {
@@ -54,7 +54,6 @@ DECLARE_REGISTRY_RESOURCEID(IDR_COMPOSITESECTIONITEM)
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CCompositeSectionItem)
-	COM_INTERFACE_ENTRY(ICompositeSectionItemEx)
 	COM_INTERFACE_ENTRY(ICompositeSectionItem)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)

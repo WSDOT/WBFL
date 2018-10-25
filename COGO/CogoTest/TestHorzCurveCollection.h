@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -42,7 +42,7 @@ public:
 	static void Test();
 	CTestHorzCurveCollection();
 
-   void InitEventTest(CogoElementKey expectedKey) { m_expectedKey = expectedKey; m_bTestState = false; }
+   void InitEventTest(CogoObjectID expectedKey) { m_expectedKey = expectedKey; m_bTestState = false; }
    bool PassedEventTest() { return m_bTestState; }
 
 BEGIN_COM_MAP(CTestHorzCurveCollection)
@@ -51,14 +51,14 @@ END_COM_MAP()
 
 // IHorzCurveCollectionEvents
 public:
-	STDMETHOD(OnHorzCurveChanged)(CogoElementKey key,IHorzCurve* vc);
-	STDMETHOD(OnHorzCurveAdded)(CogoElementKey key,IHorzCurve* vc);
-	STDMETHOD(OnHorzCurveRemoved)(CogoElementKey key);
+	STDMETHOD(OnHorzCurveChanged)(CogoObjectID key,IHorzCurve* vc);
+	STDMETHOD(OnHorzCurveAdded)(CogoObjectID key,IHorzCurve* vc);
+	STDMETHOD(OnHorzCurveRemoved)(CogoObjectID key);
 	STDMETHOD(OnHorzCurvesCleared)();
 
 private:
    bool m_bTestState;
-   CogoElementKey m_expectedKey;
+   CogoObjectID m_expectedKey;
    void Pass() { m_bTestState = true; }
 };
 

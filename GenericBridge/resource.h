@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,8 +31,6 @@
 #define IDR_GENERICBRIDGE               101
 #define IDR_STAGE                       102
 #define IDR_STAGECOLLECTION             103
-#define IDR_SPAN                        104
-#define IDR_SPANCOLLECTION              105
 #define IDR_PIER                        106
 #define IDR_PIERCOLLECTION              107
 #define IDR_LONGITUDINALPIERDESCRIPTION 108
@@ -45,13 +43,11 @@
 #define IDR_SEGMENTCROSSSECTION         115
 #define IDR_SEGMENTITEM                 116
 #define IDR_FILTEREDSEGMENTCOLLECTION   117
-#define IDR_SUPERSTRUCTUREMEMBERCOLLECTION 118
 #define IDR_STRESSPOINT                 119
 #define IDR_STRESSPOINTCOLLECTION       120
 #define IDR_DISTRIBUTIONFACTOR          121
 #define IDR_POINTOFINTEREST             122
 #define IDR_POINTOFINTERESTCOLLECTION   123
-#define IDR_COGOINFO                    124
 #define IDR_COLUMN                      125
 #define IDR_COLUMNCOLLECTION            126
 #define IDR_COLUMNSPACING               127
@@ -59,7 +55,6 @@
 #define IDR_TRANSVERSEPIERDESCRIPTION   129
 #define IDR_POINTLOAD                   130
 #define IDR_FSHAPEBARRIER               131
-#define IDR_CONNECTION                  132
 #define IDR_LINEARTENDONSEGMENT         133
 #define IDR_TENDON                      134
 #define IDR_TENDONCOLLECTION            135
@@ -80,7 +75,22 @@
 #define IDR_DECKEDSLABBEAMENDBLOCKSEGMENT 150
 #define IDR_BOXBEAMENDBLOCKSEGMENT        151
 #define IDR_UGIRDERSECTION2ENDBLOCKSEGMENT 152
+#define IDR_FLANGEDSPLICEDGIRDERSEGMENT 153
+#define IDR_USPLICEDGIRDERSEGMENT 154
+#define IDR_PARABOLICTENDONSEGMENT 155
+#define IDR_OFFSETTENDON 156
 #define IDR_GENERICBARRIER               163
+#define IDR_REBAR                       164
+#define IDR_REBARSECTIONITEM            165
+#define IDR_REBARSECTION                166
+#define IDR_REBARROWPATTERN             167
+#define IDR_FLEXREBARLAYOUTITEM         168
+#define IDR_REBARLAYOUT                 169
+#define IDR_REBARFACTORY                170
+#define IDR_BRIDGEDECKREBARLAYOUTITEM   171
+#define IDR_NMBRIDGEDECKREBARLAYOUTITEM 172
+#define IDR_BRIDGEDECKREBARPATTERN      173
+#define IDR_FIXEDLENGTHREBARLAYOUTITEM  174
 
 #define IDS_STAGENAME                   201
 #define IDS_STAGEDESCRIPTION            203
@@ -227,6 +237,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        285
 #define _APS_NEXT_COMMAND_VALUE         32780
 #define _APS_NEXT_CONTROL_VALUE         319
-#define _APS_NEXT_SYMED_VALUE           144
+#define _APS_NEXT_SYMED_VALUE           155
 #endif
 #endif

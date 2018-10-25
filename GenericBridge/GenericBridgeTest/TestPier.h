@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,29 +30,12 @@
 #ifndef INCLUDED_TESTPIER_H_
 #define INCLUDED_TESTPIER_H_
 
-class ATL_NO_VTABLE CTestPier :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public IPierEvents
+class CTestPier
 {
 public:
 	static void Test();
 	CTestPier();
 	virtual ~CTestPier();
-
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestPier)
-   COM_INTERFACE_ENTRY(IPierEvents)
-END_COM_MAP()
-
-// IPierEvents
-public:
-   STDMETHOD(OnPierChanged)(IPier* pier);
-
-private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
 };
 
 #endif // INCLUDED_TESTPIER_H_

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -86,7 +86,7 @@ STDMETHODIMP CDistributedLoadCollection::Create(/*[in]*/LoadIDType id, /*[in]*/M
       pdl->Init(m_pModel, m_pEvents, m_pLoading, id, memberID, direction, startLocation, endLocation, Wstart, Wend, orientation);
 
       // insert new 
-      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, *ppDistributedLoad)) );
+      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, CComVariant(*ppDistributedLoad))) );
       if (!st.second)
       {
          ATLASSERT(0); // insert failed - better check why

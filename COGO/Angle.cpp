@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -148,7 +148,7 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
    tokizer.push_back(str);
 
    sysTokenizer::size_type nParts = tokizer.size();
-   if (nParts < 1 || 4 < nParts)
+   if (nParts>4 || nParts<1)
       return BadAngleString();  // string is empty or has too many parts
 
    if ( nParts == 1 )
@@ -229,19 +229,11 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
 
       // ddd
 	   long deg;
-      LPCTSTR lpszDeg = stmp.c_str();
-      Float64 sign = 1;
-      if ( lpszDeg[0] == _T('-') )
-      {
-         // the angle is signed...
-         sign = -1;
-         lpszDeg++;
-      }
-
-      if (!sysTokenizer::ParseLong(lpszDeg,&deg))
+      if (!sysTokenizer::ParseLong(stmp.c_str(),&deg))
          return BadAngleString();
 
-      deg = abs(deg); // make sure deg is unsigned because we will be multiplying it by "sign" below
+      if (rlfactor != 0)
+         deg *= rlfactor;
 
       // mm
 	   long min;
@@ -264,13 +256,6 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
       if (FAILED(hr))
       {
          return BadAngleString();
-      }
-
-      m_Angle *= sign;
-
-      if ( rlfactor != 0 )
-      {
-         m_Angle *= rlfactor;
       }
    }
 

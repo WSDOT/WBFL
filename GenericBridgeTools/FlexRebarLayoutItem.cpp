@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -91,7 +91,7 @@ HRESULT CFlexRebarLayoutItem::DoLoadItem(IStructuredLoad2* load,IRebarPattern* *
    return E_FAIL;
 }
 
-STDMETHODIMP CFlexRebarLayoutItem::ContainsLocation(Float64 distFromGdrStart,VARIANT_BOOL* bResult)
+STDMETHODIMP CFlexRebarLayoutItem::ContainsLocation(Float64 distFromStart,VARIANT_BOOL* bResult)
 {
    CHECK_RETVAL(bResult);
 
@@ -99,7 +99,7 @@ STDMETHODIMP CFlexRebarLayoutItem::ContainsLocation(Float64 distFromGdrStart,VAR
    get_Start(&start);
    get_Length(&length);
 
-   *bResult = (distFromGdrStart < start || (start+length) < distFromGdrStart ) ? VARIANT_FALSE : VARIANT_TRUE;
+   *bResult = (distFromStart < start || (start+length) < distFromStart ) ? VARIANT_FALSE : VARIANT_TRUE;
 
    return S_OK;
 }

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -105,10 +105,6 @@ private:
    // error message functions
    CComBSTR JointDoesntExistError(Fem2dMbrEndType end);
 
-#if defined DUMP_KMATRIX
-   std::_tofstream m_logfile;
-#endif
-
 private:
    // a little class to keep our joint information up to date and to optimize
    // length and angle calculations
@@ -166,7 +162,7 @@ protected:
 
    void ComputeDisplacements();
    void ComputeForces();
-   void ComputeJointDisplacementForce(iActLikeMatrix* pdf);
+   void ComputeJointDisplacementForce(Vector* pdf);
 
    void GetResults(MbrResult* pres);
    void SetResults(const MbrResult& res);
@@ -204,7 +200,7 @@ private:
 
    Matrix m_Kglobal;
    Matrix m_Klocal;
-   Vector6 m_Fglobal;
+   Vector m_Fglobal;
    Matrix m_TransMatrix;
 
    typedef std::list<MbrLoad*> MbrLoadPointerContainer;
@@ -212,8 +208,8 @@ private:
 
    MbrLoadPointerContainer m_Loads;
 
-   Vector6 m_Dlocal; // local Deflections
-   Vector6 m_Rlocal; // local resultant forces
+   Vector m_Dlocal; // local displacements
+   Vector m_Rlocal; // local resultant forces
 
 friend CJoint;
 friend CLoading;

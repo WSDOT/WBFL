@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -108,10 +108,6 @@ END_COM_MAP()
    STDMETHOD_(CSize,GetTextWindowExtent)();
 
    STDMETHOD_(CSize,GetTextExtent)(const LOGFONT& font, LPCTSTR lpszText);
-
-protected:
-   void MakeAssignment(const CMappingImpl& other);
-   void MakeCopy(const CMappingImpl& other);
 
 private:
    Float64 m_WorldExtentX;

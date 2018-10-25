@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -131,7 +131,7 @@ protected:
    // GROUP: ACCESS
    // GROUP: INQUIRY
 
-protected:
+private:
    // GROUP: DATA MEMBERS
    #pragma warning(disable:4251)
    std::_tstring m_Name;
@@ -143,7 +143,6 @@ protected:
 
    TxnContainer m_Transactions;
 
-private:
    // GROUP: LIFECYCLE
    txnMacroTxn(const txnMacroTxn& /*rOther*/);               // Remove to enable copy
 

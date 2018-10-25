@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManager - Manages report definitions
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -39,30 +39,14 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CTitlePageBuilder::CTitlePageBuilder(LPCTSTR title) :
-m_Title(title)
+CTitlePageBuilder::CTitlePageBuilder()
 {
 
-}
-
-CTitlePageBuilder::CTitlePageBuilder(const CTitlePageBuilder& other) :
-m_Title(other.m_Title)
-{
 }
 
 CTitlePageBuilder::~CTitlePageBuilder()
 {
 
-}
-
-const std::_tstring& CTitlePageBuilder::GetReportTitle() const
-{
-   return m_Title;
-}
-
-void CTitlePageBuilder::SetReportTitle(LPCTSTR title)
-{
-   m_Title = title;
 }
 
 bool CTitlePageBuilder::NeedsUpdate(CReportHint* pHint,boost::shared_ptr<CReportSpecification>& pRptSpec)

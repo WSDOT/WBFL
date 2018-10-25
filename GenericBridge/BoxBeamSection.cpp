@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -200,6 +200,34 @@ STDMETHODIMP CBoxBeamSection::get_MinWebThickness(Float64* tWeb)
 {
    CHECK_RETVAL(tWeb);
    return get_WebThickness(0,tWeb);
+}
+
+STDMETHODIMP CBoxBeamSection::get_WebPlane(WebIndexType idx,IPlane3d** ppPlane)
+{
+   CHECK_RETOBJ(ppPlane);
+
+   Float64 x;
+   HRESULT hr = get_WebLocation(idx,&x);
+   if ( FAILED(hr) )
+      return hr;
+
+   CComPtr<IPoint3d> p1;
+   p1.CoCreateInstance(CLSID_Point3d);
+   p1->Move(x,0,0);
+
+   CComPtr<IPoint3d> p2;
+   p2.CoCreateInstance(CLSID_Point3d);
+   p2->Move(x,100,0);
+
+   CComPtr<IPoint3d> p3;
+   p3.CoCreateInstance(CLSID_Point3d);
+   p3->Move(x,0,100);
+
+   CComPtr<IPlane3d> plane;
+   plane.CoCreateInstance(CLSID_Plane3d);
+   plane->ThroughPoints(p1,p2,p3);
+
+   return plane.CopyTo(ppPlane);
 }
 
 STDMETHODIMP CBoxBeamSection::get_EffectiveWebThickness(Float64* tWeb)
@@ -483,6 +511,16 @@ STDMETHODIMP CBoxBeamSection::Remove(CollectionIndexType idx)
 STDMETHODIMP CBoxBeamSection::Clear()
 {
    return m_Composite->Clear();
+}
+
+STDMETHODIMP CBoxBeamSection::ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
+{
+   return m_Composite->ReplaceEx(idx,pShapeItem);
+}
+
+STDMETHODIMP CBoxBeamSection::Replace(CollectionIndexType idx,IShape* pShape)
+{
+   return m_Composite->Replace(idx,pShape);
 }
 
 STDMETHODIMP CBoxBeamSection::AddShapeEx(ICompositeShapeItem* ShapeItem)

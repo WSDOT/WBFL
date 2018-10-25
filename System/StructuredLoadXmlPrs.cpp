@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,14 +34,6 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
-// Utility function to parse a BSTR to double
-inline Float64 ConvertBSTRtoFloat(const BSTR bstr)
-{
-   USES_CONVERSION;
-   return _tstof(OLE2T(bstr));
-}
-
 
 class sysStructuredLoadXmlPrs_Impl : public sysIStructuredLoad
 {
@@ -345,7 +337,7 @@ void sysStructuredLoadXmlPrs_Impl::BeginLoad(IStream* pis)
       m_pIStream->AddRef();
 
       // create our document
-      MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument60));
+      MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument));
       if (!(bool)pDoc)
       {
          THROW_LOAD(CantInitializeTheParser,this);
@@ -454,7 +446,8 @@ bool sysStructuredLoadXmlPrs_Impl::BeginUnit(LPCTSTR name)
          {
             // this will throw if no version attribute - not a big deal.
             bsvers = ptest->attributes->getNamedItem("version")->text;
-            vers = ConvertBSTRtoFloat(bsvers);
+            _variant_t vvers(bsvers);
+            vers = atof(bsvers);
 
 // RAB: 11/29/07
 // ChangeType is an easy function to use, but it doesn't work for us if foreign locals are used
@@ -497,7 +490,7 @@ bool sysStructuredLoadXmlPrs_Impl::BeginUnit(LPCTSTR name)
       THROW_LOAD(InvalidFileFormat,this);
    }
 
-   //WATCH("BeginUnit: " << m_UnitList.back().Name);
+   WATCH("BeginUnit: " << m_UnitList.back().Name);
 
    return retval;
 }
@@ -512,7 +505,7 @@ bool sysStructuredLoadXmlPrs_Impl::EndUnit()
       if (m_Level<=0)
          THROW_LOAD(InvalidFileFormat,this);
 
-      //WATCH("EndUnit: " << m_UnitList.back().Name);
+      WATCH("EndUnit: " << m_UnitList.back().Name);
 
       // climb back up the tree
       m_UnitList.pop_back();
@@ -605,7 +598,7 @@ bool sysStructuredLoadXmlPrs_Impl::Property(LPCTSTR name, Float64* pvalue)
    _variant_t val;
    if (GetProperty(name, &val))
    {
-      *pvalue = ConvertBSTRtoFloat(val.bstrVal);
+      *pvalue = atof((_bstr_t)val);
       retval = true;
    }
 

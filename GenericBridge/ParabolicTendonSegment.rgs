@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.ParabolicTendonSegment.1 = s 'ParabolicTendonSegment Class'
+	{
+		CLSID = s '{99F3888C-7581-4fe6-BBB5-9D527CD8BEB6}'
+	}
+	WBFLGenericBridge.ParabolicTendonSegment = s 'ParabolicTendonSegment Class'
+	{
+		CLSID = s '{99F3888C-7581-4fe6-BBB5-9D527CD8BEB6}'
+		CurVer = s 'WBFLGenericBridge.ParabolicTendonSegment.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {99F3888C-7581-4fe6-BBB5-9D527CD8BEB6} = s 'ParabolicTendonSegment Class'
+		{
+			ProgID = s 'WBFLGenericBridge.ParabolicTendonSegment.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.ParabolicTendonSegment'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

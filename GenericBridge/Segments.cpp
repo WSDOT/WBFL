@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -82,48 +82,17 @@ bool CSegments::IsFractional()
 
 HRESULT CSegments::RemoveSegments()
 {
-   // erase all 
-   for (VectorIteratorType itv=m_Segments.begin(); itv!= m_Segments.end(); itv++)
-   {
-      // break connection points first
-      m_pOwner->BreakConnection(itv->second.m_T.p, itv->first);
-   }
+   //// erase all 
+   //for (VectorIteratorType itv=m_Segments.begin(); itv!= m_Segments.end(); itv++)
+   //{
+   //   // break connection points first
+   //   m_pOwner->BreakConnection(itv->second.m_T.p, itv->first);
+   //}
 
    // Erase all the segments
    m_Segments.clear();
 
-   m_pOwner->OnSegmentsChanged(this);
-
-   return S_OK;
-}
-
-HRESULT CSegments::Copy(CSegments* pcopy)
-{
-   // clear out copy
-   pcopy->Clear();
-
-   HRESULT hr;
-   // iterate over all items and clone them
-   for (VectorIteratorType it = m_Segments.begin(); it!=m_Segments.end(); it++)
-   {
-      StoredType& stored = *it;
-
-      // get our segment and clone it
-      CComPtr<ISegmentItem> segment_item(stored.second);
-      CComPtr<ISegment> segment;
-      hr = segment_item->get_Segment(&segment);
-      if (FAILED(hr))
-         return hr;
-
-      CComPtr<ISegment> segment_clone;
-      hr = segment->Clone(&segment_clone);
-      if (FAILED(hr))
-         return hr;
-
-      hr = pcopy->Add(segment_clone);
-      if (FAILED(hr))
-         return hr;
-   }
+   //m_pOwner->OnSegmentsChanged(this);
 
    return S_OK;
 }
@@ -137,7 +106,7 @@ HRESULT CSegments::get_Length(Float64 *pVal)
    for (VectorIteratorType it = m_Segments.begin(); it != m_Segments.end(); it++)
    {
       StoredType& stored = *it;
-      CComPtr<ISegmentItem> segment_item(stored.second);
+      CComPtr<ISegmentItem> segment_item(stored);
       CComPtr<ISegment> segment;
       HRESULT hr = segment_item->get_Segment(&segment);
       if (FAILED(hr))
@@ -178,7 +147,7 @@ HRESULT CSegments::get_Segment(CollectionIndexType relPosition, ISegment **pSeg)
       return E_INVALIDARG;
    }
 
-   return m_Segments.at(relPosition).second.m_T->get_Segment(pSeg);
+   return m_Segments.at(relPosition).m_T->get_Segment(pSeg);
 }
 
 
@@ -205,11 +174,7 @@ HRESULT CSegments::Insert(CollectionIndexType relPosition, ISegment *pSeg)
 
    CComPtr<ISegmentItem> pholder(psegitem); // memory leak avoidance
 
-   // Store a copy of the segment
-   CComPtr<ISegment> clone;
-   pSeg->Clone(&clone);
-
-   hr = psegitem->PutRefSegment(clone);
+   hr = psegitem->PutRefSegment(pSeg);
    if (FAILED(hr))
       return hr;
 
@@ -220,19 +185,19 @@ HRESULT CSegments::Insert(CollectionIndexType relPosition, ISegment *pSeg)
 //   pSegment->SetBridge(m_pBridge);
 
    // have owner set up event handling
-   unsigned long cookie;
-   hr = m_pOwner->SetUpConnection(psegitem, &cookie);
-   if (FAILED(hr))
-      return hr;
+   //unsigned long cookie;
+   //hr = m_pOwner->SetUpConnection(psegitem, &cookie);
+   //if (FAILED(hr))
+   //   return hr;
 
    VectorIteratorType itv = m_Segments.begin();
    itv += relPosition;
-   m_Segments.insert(itv, VectorType::value_type(cookie, CAdapt<CComPtr<ISegmentItem>>(psegitem)));
+   m_Segments.insert(itv, VectorType::value_type(CAdapt<CComPtr<ISegmentItem>>(psegitem)));
 
    // update relative positions
    UpdateRelPositions(&m_Segments);
 
-   m_pOwner->OnSegmentsChanged(this);
+   //m_pOwner->OnSegmentsChanged(this);
 
 	return S_OK;
 }
@@ -268,7 +233,7 @@ HRESULT CSegments::MoveTo(CollectionIndexType fromIndex, CollectionIndexType toI
 
    UpdateRelPositions(&m_Segments);
 
-   m_pOwner->OnSegmentsChanged(this);
+   //m_pOwner->OnSegmentsChanged(this);
 
    return S_OK;
 
@@ -286,7 +251,7 @@ HRESULT CSegments::CopyTo(CollectionIndexType fromIndex, CollectionIndexType toI
 
    // get the segment
    CComPtr<ISegment> segment;
-   HRESULT hr = m_Segments.at(fromIndex).second.m_T->get_Segment(&segment);
+   HRESULT hr = m_Segments.at(fromIndex).m_T->get_Segment(&segment);
    if (FAILED(hr))
       return hr;
 
@@ -303,14 +268,14 @@ HRESULT CSegments::Remove(CollectionIndexType index)
    itv += index;
 
    // break connection points first
-   m_pOwner->BreakConnection(itv->second.m_T, itv->first);
+   //m_pOwner->BreakConnection(itv->second.m_T, itv->first);
 
    m_Segments.erase(itv);
 
    // reindex SegmentItems
    UpdateRelPositions(&m_Segments);
 
-   m_pOwner->OnSegmentsChanged(this);
+   //m_pOwner->OnSegmentsChanged(this);
 
 	return S_OK;
 }
@@ -324,12 +289,12 @@ HRESULT CSegments::Reverse()
 
    UpdateRelPositions(&m_Segments);
 
-   m_pOwner->OnSegmentsChanged(this);
+   //m_pOwner->OnSegmentsChanged(this);
 
    return S_OK;
 }
 
-HRESULT CSegments::GetSegmentForMemberLocation(Float64 Length, VARIANT_BOOL isSymmetrical, Float64 location, Float64* dist,ISegmentItem** ppSegi)
+HRESULT CSegments::GetDistanceFromStartOfSegment(Float64 Length, VARIANT_BOOL isSymmetrical, Float64 location, Float64* dist,ISegmentItem** ppSegi)
 {
    CHECK_RETVAL(dist);
    CHECK_RETOBJ(ppSegi);
@@ -365,7 +330,7 @@ HRESULT CSegments::GetSegmentForMemberLocation(Float64 Length, VARIANT_BOOL isSy
    for (VectorIteratorType it = m_Segments.begin(); it != m_Segments.end(); it++)
    {
       StoredType& stored = *it;
-      CComPtr<ISegmentItem> segment_item = stored.second;
+      CComPtr<ISegmentItem> segment_item = stored;
       CComPtr<ISegment> segment;
       HRESULT hr = segment_item->get_Segment(&segment);
       if (FAILED(hr))
@@ -395,7 +360,7 @@ HRESULT CSegments::GetSegmentForMemberLocation(Float64 Length, VARIANT_BOOL isSy
    {
       // List of segments was shorter than Length.
       // Extend the last segment to the end
-      CComPtr<ISegmentItem> psegi = m_Segments.back().second;
+      CComPtr<ISegmentItem> psegi( m_Segments.back() );
 
       *ppSegi = psegi;
       (*ppSegi)->AddRef();
@@ -425,7 +390,7 @@ HRESULT CSegments::GetSegments(IFilteredSegmentCollection ** pcoll )
    for (VectorIteratorType it = m_Segments.begin(); it != m_Segments.end(); it++)
    {
       StoredType& stored = *it;
-      CComPtr<ISegmentItem> segment_item(stored.second);
+      CComPtr<ISegmentItem> segment_item(stored);
       CComPtr<ISegment> segment;
       hr = segment_item->get_Segment(&segment);
       if (FAILED(hr))
@@ -474,7 +439,7 @@ HRESULT CSegments::GetMemberSegments(Float64 length, VARIANT_BOOL isSymmetrical,
       for (VectorIteratorType it = m_Segments.begin(); it != m_Segments.end(); it++)
       {
          StoredType& stored = *it;
-         CComPtr<ISegmentItem> segment_item = stored.second;
+         CComPtr<ISegmentItem> segment_item( stored );
          CComPtr<ISegment> segment;
          hr = segment_item->get_Segment(&segment);
          if (FAILED(hr))
@@ -508,20 +473,20 @@ HRESULT CSegments::GetMemberSegments(Float64 length, VARIANT_BOOL isSymmetrical,
             // we hit the end of the road and the length of the segments is greater
             // than the member length - we'll need to make a custom segment just
             // for the final segment.
-            CComPtr<ISegment> last_segment;
-            hr = segment->Clone(&last_segment);
-            if (FAILED(hr))
+            //CComPtr<ISegment> last_segment;
+            //hr = segment->Clone(&last_segment);
+            //if (FAILED(hr))
                return hr;
 
 //            // Set the length without validation, events, or transactions
 //            CSegment* pClone = dynamic_cast<CSegment*>(last_segment.p);
 //            pClone->SetLength(prevlen);
-            last_segment->put_Length(prevlen);
+//            last_segment->put_Length(prevlen);
 
 //            pClone->SetContainer(this);
 //            pClone->SetBridge(m_pBridge);
 
-            hr = pnew_coll->Add(last_segment);
+//            hr = pnew_coll->Add(last_segment);
             if (FAILED(hr))
                return hr;
 
@@ -544,15 +509,15 @@ HRESULT CSegments::GetMemberSegments(Float64 length, VARIANT_BOOL isSymmetrical,
 
          // we don't know if this is a unique segment or a reference - hence
          // we must make a clone and replace it with the clone
-         CComPtr<ISegment> last_segment_clone;
-         hr = last_segment->Clone(&last_segment_clone);
-         if (FAILED(hr))
-            return hr;
+         //CComPtr<ISegment> last_segment_clone;
+         //hr = last_segment->Clone(&last_segment_clone);
+         //if (FAILED(hr))
+         //   return hr;
 
          // Set the length without validation, events, or transactions
 //         CSegment* pClone = dynamic_cast<CSegment*>(last_segment_clone.p);
 //         pClone->SetLength(prevlen);
-         last_segment_clone->put_Length(prevlen);
+//         last_segment_clone->put_Length(prevlen);
 
 //         pClone->SetContainer(this);
 //         pClone->SetBridge(m_pBridge);
@@ -562,7 +527,7 @@ HRESULT CSegments::GetMemberSegments(Float64 length, VARIANT_BOOL isSymmetrical,
          if (FAILED(hr))
             return hr;
 
-         hr = pnew_coll->Insert(cnt-1,last_segment_clone);
+//         hr = pnew_coll->Insert(cnt-1,last_segment_clone);
          if (FAILED(hr))
             return hr;
       }
@@ -616,15 +581,15 @@ HRESULT CSegments::GetMemberSegments(Float64 length, VARIANT_BOOL isSymmetrical,
       l1 *= 2.0;
 
       // We must clone it to make sure it is unique (could have used a state flag from recursive call)
-      CComPtr<ISegment> ptmp;
-      hr = pfirst->Clone(&ptmp);
-      if (FAILED(hr))
-         return hr;
+      //CComPtr<ISegment> ptmp;
+      //hr = pfirst->Clone(&ptmp);
+      //if (FAILED(hr))
+      //   return hr;
 
       // Set the length without validation, events, or transactions
 //      CSegment* pClone = dynamic_cast<CSegment*>(ptmp.p);
 //      pClone->SetLength(l1);
-      ptmp->put_Length(l1);
+//      ptmp->put_Length(l1);
 //      pClone->SetContainer(this);
 //      pClone->SetBridge(m_pBridge);
 
@@ -632,9 +597,9 @@ HRESULT CSegments::GetMemberSegments(Float64 length, VARIANT_BOOL isSymmetrical,
       if (FAILED(hr))
          return hr;
 
-      hr = pifcol->Insert(count-1,ptmp);
-      if (FAILED(hr))
-         return hr;
+      //hr = pifcol->Insert(count-1,ptmp);
+      //if (FAILED(hr))
+      //   return hr;
 
       // now let's fill in the rest by copying from the left side to the right
       for (CollectionIndexType lfcnt = count-2; lfcnt>=0; lfcnt--)
@@ -681,9 +646,9 @@ STDMETHODIMP CSegments::Load(IStructuredLoad2 * pload)
    if (FAILED(hr))
       return hr;
 
-   long segment_count = var.lVal;
+   CollectionIndexType segment_count = var.iVal;
    var.Clear();
-   for (long iseg=0; iseg < segment_count; iseg++)
+   for (CollectionIndexType iseg=0; iseg < segment_count; iseg++)
    {
       // Create a new segment object
       CComObject<CSegment>* pSegment;
@@ -728,7 +693,7 @@ STDMETHODIMP CSegments::Save(IStructuredSave2 * psave)
       {
          // write segments
          StoredType& stored = *itv;
-         CComPtr<ISegmentItem> segment_item = stored.second;
+         CComPtr<ISegmentItem> segment_item(stored);
 
          CComPtr<ISegment> segment;
          hr = segment_item->get_Segment(&segment);
@@ -754,23 +719,23 @@ STDMETHODIMP CSegments::Save(IStructuredSave2 * psave)
 
 void CSegments::Clear()
 {
-   // iterate through all segments and break connections
-   for (VectorIteratorType it = m_Segments.begin(); it!=m_Segments.end(); it++)
-   {
-      StoredType& stored = *it;
-      m_pOwner->BreakConnection(stored.second.m_T, stored.first);
-   }
+   //// iterate through all segments and break connections
+   //for (VectorIteratorType it = m_Segments.begin(); it!=m_Segments.end(); it++)
+   //{
+   //   StoredType& stored = *it;
+   //   m_pOwner->BreakConnection(stored.second.m_T, stored.first);
+   //}
 
    m_Segments.clear();
 }
 
 void CSegments::UpdateRelPositions(CSegments::VectorType* pvec)
 {
-   long i=0;
+   CollectionIndexType i=0;
    for(VectorIteratorType itv=pvec->begin(); itv!=pvec->end(); itv++)
    {
       // have to cast stored item to get access to put method
-      CSegmentItem* psegi = static_cast<CSegmentItem*>(itv->second.m_T.p);
+      CSegmentItem* psegi = static_cast<CSegmentItem*>(itv->m_T.p);
       if (psegi==NULL)
       {
          ATLASSERT(0); // should never happen since we are eating our own dog food here
@@ -792,7 +757,7 @@ void CSegments::MakeFractional(bool bFractional)
    for ( VectorIteratorType it = m_Segments.begin(); it != m_Segments.end(); it++ )
    {
       StoredType& stored = *it;
-      CComPtr<ISegmentItem> segment_item(stored.second);
+      CComPtr<ISegmentItem> segment_item(stored);
       CComPtr<ISegment> segment;
       segment_item->get_Segment(&segment);
 
@@ -817,7 +782,7 @@ void CSegments::MakeFractional(bool bFractional)
 //      // (After all, this is a transaction handler, and it fires an event)
 //      CSegment* pSegment = dynamic_cast<CSegment*>(segment.p);
 //      pSegment->SetLength(segLength);
-      segment->put_Length(segLength);
+//      segment->put_Length(segLength);
    }
 
    m_bFractional = bFractional;

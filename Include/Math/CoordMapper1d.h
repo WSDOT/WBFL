@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Math - Utility library of mathematical services
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -180,7 +180,7 @@ protected:
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
    void MakeCopy(const mathCoordMapper1d& rOther);
-   void MakeAssignment(const mathCoordMapper1d& rOther);
+   virtual void MakeAssignment(const mathCoordMapper1d& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -40,6 +40,7 @@ class ATL_NO_VTABLE CGirderSectionImpl :
    public _ISECTION_,
    public IPrestressedGirderSection,
    public IShape,
+   public ICompositeShape,
    public IXYPosition
 {
 public:
@@ -49,9 +50,16 @@ public:
 
    HRESULT FinalConstruct()
    {
+      m_CompositeShape.CoCreateInstance(CLSID_CompositeShape);
       m_Beam.CoCreateInstance(*pbeamclsid);
-      m_Beam.QueryInterface(&m_Shape);
-      m_Beam.QueryInterface(&m_Position);
+
+      CComQIPtr<IShape> beamShape(m_Beam);
+      ATLASSERT(beamShape != NULL); // must implement IShape interface
+
+      m_CompositeShape->AddShape(beamShape,VARIANT_FALSE); // solid
+
+      m_CompositeShape.QueryInterface(&m_Shape);
+      m_CompositeShape.QueryInterface(&m_Position);
 
       return S_OK;
    }
@@ -66,12 +74,14 @@ BEGIN_COM_MAP(C)
 	COM_INTERFACE_ENTRY(IGirderSection)
 	COM_INTERFACE_ENTRY(IPrestressedGirderSection)
 	COM_INTERFACE_ENTRY(IShape)
+	COM_INTERFACE_ENTRY(ICompositeShape)
 	COM_INTERFACE_ENTRY(IXYPosition)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 END_COM_MAP()
 
 protected:
    CComPtr<_IBEAM_> m_Beam;
+   CComPtr<ICompositeShape> m_CompositeShape;
    CComPtr<IShape> m_Shape;
    CComPtr<IXYPosition> m_Position;
 
@@ -83,6 +93,7 @@ public:
 		   piid,
          &IID_IGirderSection,
          &IID_IShape,
+         &IID_ICompositeShape,
          &IID_IXYPosition,
 	   };
 	   for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
@@ -109,10 +120,7 @@ public:
       m_Beam.Release();
       clone.QueryInterface(&m_Beam);
 
-      m_Shape = clone;
-
-      m_Position.Release();
-      m_Shape.QueryInterface(&m_Position);
+      m_CompositeShape->Replace(0,clone);
 
       return S_OK;
    }
@@ -167,6 +175,34 @@ public:
       m_Beam->get_AvgWebWidth(&web);
       (*tWeb) = web;
       return S_OK;
+   }
+
+   STDMETHODIMP get_WebPlane(WebIndexType idx,IPlane3d** ppPlane)
+   {
+      CHECK_RETOBJ(ppPlane);
+
+      Float64 x;
+      HRESULT hr = get_WebLocation(idx,&x);
+      if ( FAILED(hr) )
+         return hr;
+
+      CComPtr<IPoint3d> p1;
+      p1.CoCreateInstance(CLSID_Point3d);
+      p1->Move(x,0,0);
+
+      CComPtr<IPoint3d> p2;
+      p2.CoCreateInstance(CLSID_Point3d);
+      p2->Move(x,100,0);
+
+      CComPtr<IPoint3d> p3;
+      p3.CoCreateInstance(CLSID_Point3d);
+      p3->Move(x,0,100);
+
+      CComPtr<IPlane3d> plane;
+      plane.CoCreateInstance(CLSID_Plane3d);
+      plane->ThroughPoints(p1,p2,p3);
+
+      return plane.CopyTo(ppPlane);
    }
 
    STDMETHODIMP get_MatingSurfaceCount(MatingSurfaceIndexType* nMatingSurfaces)
@@ -327,13 +363,27 @@ public:
 
       CComObject<C>* clone;
       CComObject<C>::CreateInstance(&clone);
+      clone->m_CompositeShape.Release();
+      clone->m_Shape.Release();
+      clone->m_Position.Release();
+      clone->m_Beam.Release();
 
-      CComPtr<_ISECTION_> flanged_beam = clone;
+      m_Shape->Clone(&clone->m_Shape);
+      clone->m_Shape->QueryInterface(&clone->m_CompositeShape);
+      clone->m_Shape->QueryInterface(&clone->m_Position);
 
-      flanged_beam->put_Beam(m_Beam);
+      // first item is the beam
+      CComPtr<ICompositeShapeItem> item;
+      clone->m_CompositeShape->get_Item(0,&item);
 
-      CComQIPtr<IShape> shape(flanged_beam);
-      (*pClone) = shape;
+      CComPtr<IShape> s;
+      item->get_Shape(&s);
+
+      CComQIPtr<_IBEAM_> beam(s);
+      clone->m_Beam = beam;
+
+
+      (*pClone) = clone;
       (*pClone)->AddRef();
 
       return S_OK;
@@ -382,6 +432,62 @@ public:
    STDMETHODIMP Rotate(Float64 cx,Float64 cy,Float64 angle)
    {
       return m_Position->Rotate(cx,cy,angle);
+   }
+
+   // ICompositeSection
+   STDMETHODIMP get__NewEnum(IUnknown* *pVal)
+   {
+      return m_CompositeShape->get__NewEnum(pVal);
+   }
+
+   STDMETHODIMP get_Item(CollectionIndexType idx, ICompositeShapeItem* *pVal)
+   {
+      return m_CompositeShape->get_Item(idx,pVal);
+   }
+
+   STDMETHODIMP ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
+   {
+      return m_CompositeShape->ReplaceEx(idx,pShapeItem);
+   }
+
+   STDMETHODIMP Replace(CollectionIndexType idx,IShape* pShape)
+   {
+      return m_CompositeShape->Replace(idx,pShape);
+   }
+
+   STDMETHODIMP AddShape(IShape* shape,VARIANT_BOOL bVoid)
+   {
+      return m_CompositeShape->AddShape(shape,bVoid);
+   }
+
+	STDMETHODIMP AddShapeEx(ICompositeShapeItem* shapeItem)
+   {
+      return m_CompositeShape->AddShapeEx(shapeItem);
+   }
+
+	STDMETHODIMP Remove(CollectionIndexType idx)
+   {
+      return m_CompositeShape->Remove(idx);
+   }
+
+	STDMETHODIMP Clear()
+   {
+      return m_CompositeShape->Clear();
+   }
+
+   STDMETHODIMP get_Count(CollectionIndexType *pVal)
+   {
+      return m_CompositeShape->get_Count(pVal);
+   }
+
+	STDMETHODIMP get_Shape(IShape* *pVal)
+   {
+      return m_CompositeShape->get_Shape(pVal);
+   }
+
+   STDMETHODIMP get_StructuredStorage(IStructuredStorage2* *pStrStg)
+   {
+      return m_CompositeShape->get_StructuredStorage(pStrStg);
    }
 };
 

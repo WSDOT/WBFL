@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -26,20 +26,14 @@
 #pragma once
 
 // Some convinent macros for common engineering symbols
-#define Super(a) superscript(ON) << (a) << superscript(OFF)
-#define Sub(a) subscript(ON) << (a) << subscript(OFF)
-#define Sub2(a,b) (a) << subscript(ON) << (b) << subscript(OFF)
-#define Bold(a) bold(ON) << (a) << bold(OFF)
-#define Italic(a) italic(ON) << (a) << italic(OFF)
-
-#define DECLARE_UV_PROTOTYPE( type, proto ) type proto
-#define DEFINE_UV_PROTOTYPE( proto, im, _bShowTag ) \
-   proto.SetUnitOfMeasure(&im.UnitOfMeasure ); \
-   proto.ShowUnitTag(_bShowTag); \
-   proto.SetZeroTolerance( im.Tol ); \
-   proto.SetFormat( im.Format );\
-   proto.SetWidth( im.Width ); \
-   proto.SetPrecision( im.Precision )
+#define Super(a) superscript(ON) << a << superscript(OFF)
+#define Sub(a) subscript(ON) << a << subscript(OFF)
+#define Sub2(a,b) a << subscript(ON) << b << subscript(OFF)
+#define Bold(a) bold(ON) << a << bold(OFF)
+#define Italic(a) italic(ON) << a << italic(OFF)
+#define Underline(a) underline(ON) << a << underline(OFF)
+#define Overline(a) overline(ON) << a << overline(OFF)
+#define LineThrough(a) linethrough(ON) << a << linethrough(OFF)
 
 #define INIT_UV_PROTOTYPE( type, proto, im, _bShowTag ) \
    type proto( &im.UnitOfMeasure, im.Tol, _bShowTag ); \
@@ -51,18 +45,6 @@
    rptFormattedLengthUnitValue proto(&im.UnitOfMeasure, im.Tol ,_bShowTag,english,denom,_bFractionOnly); \
    proto.SetFormat( im.Format );\
    proto.SetWidth( im.Width ); \
-   proto.SetPrecision( im.Precision )
-
-#define DECLARE_SCALAR_PROTOTYPE( type, proto ) type proto
-#define DEFINE_SCALAR_PROTOTYPE( proto, im )\
-   proto.SetFormat( im.Format );\
-   proto.SetWidth( im.Width );\
-   proto.SetPrecision( im.Precision )
-
-#define INIT_SCALAR_PROTOTYPE( type, proto, im ) \
-   type proto; \
-   proto.SetFormat( im.Format );\
-   proto.SetWidth( im.Width );\
    proto.SetPrecision( im.Precision )
 
 #define COLHDR(hdr,ut,u) hdr << rptNewLine << _T("(") << ut(&u.UnitOfMeasure) << _T(")")
@@ -103,8 +85,5 @@
 #define RPT_PASS color(Green) << _T("Pass") << color(Black)
 #define RPT_FAIL color(Red) << bold(ON) << _T("Fail") << bold(OFF) << color(Black)
 #define RPT_NA color(Blue) << _T("N/A") << color(Black)
-
-#define RPT_OFFSET(_value_,_um_) \
-_um_.SetValue(fabs(_value_)) << (::Sign(_value_) < 0 ? _T(" L") : (::Sign(_value_) > 0 ? _T(" R") : _T("")))
 
 #endif // INCLUDED_REPORTER_REPORTINGUTILS_H_

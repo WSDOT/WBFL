@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,7 +34,7 @@
 #include "COGOCP.h"
 
 class CHorzCurveCollection;
-typedef PersistentKeyedCollection<CHorzCurveCollection,IHorzCurveCollection,&IID_IHorzCurveCollection,CogoElementKey,IHorzCurve> HorzCurveCollectionImpl;
+typedef PersistentKeyedCollection<CHorzCurveCollection,IHorzCurveCollection,&IID_IHorzCurveCollection,CogoObjectID,IHorzCurve> HorzCurveCollectionImpl;
 
 /////////////////////////////////////////////////////////////////////////////
 // CHorzCurveCollection
@@ -79,18 +79,18 @@ END_CONNECTION_POINT_MAP()
 // IHorzCurveCollection
 public:
 	STDMETHOD(Clear)();
-   STDMETHOD(Add)(/*[in]*/ CogoElementKey key,/*[in]*/ IPoint2d* pbt,/*[in]*/ IPoint2d* pi,/*[in]*/ IPoint2d* pft,/*[in]*/ Float64 radius,/*[in]*/ Float64 Ls1,/*[in]*/ Float64 Ls2,/*[out,retval]*/IHorzCurve** hc);
-	STDMETHOD(AddEx)(/*[in]*/ CogoElementKey key,/*[in]*/ IHorzCurve* newVal);
-	STDMETHOD(Remove)(/*[in]*/ CogoElementKey key);
+   STDMETHOD(Add)(/*[in]*/ CogoObjectID key,/*[in]*/ IPoint2d* pbt,/*[in]*/ IPoint2d* pi,/*[in]*/ IPoint2d* pft,/*[in]*/ Float64 radius,/*[in]*/ Float64 Ls1,/*[in]*/ Float64 Ls2,/*[out,retval]*/IHorzCurve** hc);
+	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID key,/*[in]*/ IHorzCurve* newVal);
+	STDMETHOD(Remove)(/*[in]*/ CogoObjectID key);
 	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ CogoElementKey key, /*[out, retval]*/ IHorzCurve* *pVal);
-	STDMETHOD(putref_Item)(/*[in]*/ CogoElementKey key, /*[in]*/ IHorzCurve* newVal);
+	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID key, /*[out, retval]*/ IHorzCurve* *pVal);
+	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID key, /*[in]*/ IHorzCurve* newVal);
 // STDMETHOD(get__NewEnum)(IUnknown** retval);
    STDMETHOD(get__EnumKeys)(IEnumKeys** ppenum);
-	STDMETHOD(FindKey)(/*[in]*/ IHorzCurve* hc,/*[out,retval]*/CogoElementKey* key);
+	STDMETHOD(FindKey)(/*[in]*/ IHorzCurve* hc,/*[out,retval]*/CogoObjectID* key);
 	STDMETHOD(get_Factory)(/*[out,retval]*/IHorzCurveFactory** factory);
 	STDMETHOD(putref_Factory)(/*[in]*/IHorzCurveFactory* factory);
-	STDMETHOD(Key)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoElementKey* key);
+	STDMETHOD(Key)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* key);
    STDMETHOD(get__EnumHorzCurves)(/*[out,retval]*/ IEnumHorzCurves** ppenum);
    STDMETHOD(Clone)(/*[out,retval]*/ IHorzCurveCollection* *clone);
 
@@ -102,14 +102,14 @@ private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
 
-   HRESULT HorzCurveNotFound(CogoElementKey key);
-   HRESULT HorzCurveAlreadyDefined(CogoElementKey key);
-   HRESULT HorzCurveKeyError(CogoElementKey key,UINT nHelpString,HRESULT hRes);
+   HRESULT HorzCurveNotFound(CogoObjectID key);
+   HRESULT HorzCurveAlreadyDefined(CogoObjectID key);
+   HRESULT HorzCurveKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes);
 
-   void Advise(CogoElementKey key,IHorzCurve* hc);
-   void Unadvise(CogoElementKey key,IHorzCurve* hc);
+   void Advise(CogoObjectID key,IHorzCurve* hc);
+   void Unadvise(CogoObjectID key,IHorzCurve* hc);
    void UnadviseAll();
-   std::map<CogoElementKey,DWORD> m_Cookies;
+   std::map<CogoObjectID,DWORD> m_Cookies;
 
    CComPtr<IHorzCurveFactory> m_Factory;
 };

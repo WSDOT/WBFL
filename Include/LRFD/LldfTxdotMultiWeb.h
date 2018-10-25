@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -117,7 +117,7 @@ protected:
    void MakeCopy(const lrfdTxdotLldfMultiWeb& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdTxdotLldfMultiWeb& rOther);
+   virtual void MakeAssignment(const lrfdTxdotLldfMultiWeb& rOther);
 
    //------------------------------------------------------------------------
    virtual bool TestRangeOfApplicability(Location loc) const;

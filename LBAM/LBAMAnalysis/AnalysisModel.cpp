@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -118,7 +118,7 @@ CAnalysisModel::~CAnalysisModel()
    std::for_each(m_PoiMap.begin(),m_PoiMap.end(),delete_pointer);
 }
 
-void CAnalysisModel::BuildModel()
+void CAnalysisModel::BuildModel(BSTR bstrName)
 {
    CHRException hr;
 
@@ -194,11 +194,29 @@ void CAnalysisModel::BuildModel()
    SetNodeNumbering(&super_node_locs);
    GenerateFemModel(&super_node_locs);
 
+   // set the name in the fem model (helps with debugging)
+   m_pFem2d->put_Name(bstrName);
+
    // generate loads for all load groups
    GenerateLoads();
 
    // generate POI's
    GeneratePOIs();
+
+#if defined _DEBUG
+   // Dump the fem model for testing
+   CComPtr<IStructuredSave2> pSave;
+   pSave.CoCreateInstance(CLSID_StructuredSave2);
+   CComBSTR bstrLBAMName;
+   m_pLBAMModel->get_Name(&bstrLBAMName);
+   CString str;
+   str.Format(_T("%s_%s_Fem2d.xml"),OLE2T(bstrLBAMName),OLE2T(bstrName));
+   pSave->Open(CComBSTR(str));
+   CComPtr<IStructuredStorage2> storage;
+   m_pFem2d->QueryInterface(&storage);
+   storage->Save(pSave);
+   pSave->Close();
+#endif
 }
 
 void CAnalysisModel::GetDeflection(LoadGroupIDType lgId, PoiIDType poiId, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz)
@@ -670,7 +688,7 @@ void CAnalysisModel::GetFemMemberLocationAlongSSM( CollectionIndexType ssmIdx, F
 
          ssm_loc += left_end;
 
-         ATLASSERT(ssm_loc>=left_end && ssm_loc<=right_end);
+         ATLASSERT( InRange(left_end,ssm_loc,right_end) );
 
          // next can find element that this location lies along
          ElementLayoutVec& member_list = m_SuperstructureMemberElements[ssmIdx];
@@ -696,9 +714,9 @@ void CAnalysisModel::GetFemMemberLocationAlongMemberList( Float64 globalLoc, Flo
                                                          ElementLayoutVec& memberList,
                                                          MemberLocationType* plocType, MemberIDType* pfemMbrId, Float64* pfemLoc)
 {
-   *plocType=mltNotFound;
-   *pfemMbrId=-1;
-   *pfemLoc=0;
+   *plocType  = mltNotFound;
+   *pfemMbrId = INVALID_ID;
+   *pfemLoc   = 0;
 
    // We need to check if this location is at the junction of two members.
    // In order to check this, we need a tolerance
@@ -709,6 +727,9 @@ void CAnalysisModel::GetFemMemberLocationAlongMemberList( Float64 globalLoc, Flo
    CComPtr<IFem2dMemberCollection> members;
    m_pFem2d->get_Members(&members);
 
+   CollectionIndexType nMembers;
+   members->get_Count(&nMembers);
+
    CComPtr<IFem2dJointCollection> joints;
    m_pFem2d->get_Joints(&joints);
 
@@ -717,16 +738,16 @@ void CAnalysisModel::GetFemMemberLocationAlongMemberList( Float64 globalLoc, Flo
    {
       // location is at start of elements
       MemberIDType mbr_id = memberList.front().m_FemMemberID;
-      *plocType = mltLeftEnd;
       *pfemMbrId = mbr_id;
+      *plocType = mltStraddle;
       *pfemLoc = 0.0;
    }
    else if ( IsEqual(globalLoc,rightEnd, LOC_TOL) )
    {
       // location is at right end
       MemberIDType mbr_id = memberList.back().m_FemMemberID;
-      *plocType    = mltRightEnd;
-      *pfemMbrId  = mbr_id;
+      *pfemMbrId = mbr_id;
+      *plocType = mltStraddle;
       *pfemLoc = -1.0;
    }
    else
@@ -734,44 +755,48 @@ void CAnalysisModel::GetFemMemberLocationAlongMemberList( Float64 globalLoc, Flo
       // location is out in the member list somewhere - need to loop to find it
       Float64 start_loc, end_loc, yloc;
       JointIDType start_joint_id, end_joint_id;
-      bool first = true;
-      bool found = false;
       MemberIDType last_mbr_id = memberList.back().m_FemMemberID;
+
+#if defined _DEBUG
+      bool found = false;
+#endif
+      
       ElementLayoutVecIterator idi(memberList.begin());
       ElementLayoutVecIterator idend(memberList.end());
-      for(; idi!=idend; idi++)
+
+      GetMemberEnd(idi->m_FemMemberID, members, joints, metStart, &start_joint_id, &start_loc, &yloc);
+
+      for( ; idi != idend; idi++)
       {
          MemberIDType mbr_id = idi->m_FemMemberID;
 
-         if (first)
-         {
-            GetMemberEnd(mbr_id, members, joints, metStart, &start_joint_id, &start_loc, &yloc);
-            first = false;
-         }
-
          GetMemberEnd(mbr_id, members, joints, metEnd, &end_joint_id, &end_loc, &yloc);
 
-         if (end_loc >=globalLoc-LOC_TOL)
+         if (globalLoc-LOC_TOL <= end_loc)
          {
             if (end_loc <= globalLoc+LOC_TOL)
             {
                // location is within tolerance of junction of two members
               // report location as straddling two members
-               *plocType = mltStraddle;
-               *pfemMbrId   = mbr_id;
-               *pfemLoc  = end_loc-start_loc;
+               *plocType  = mltStraddle;
+               *pfemMbrId = mbr_id;
+               *pfemLoc   = end_loc-start_loc;
 
+#if defined _DEBUG
                found = true;
+#endif
                break;
             }
-            else if (end_loc>=globalLoc)
+            else if (globalLoc <= end_loc)
             {
                // location is simply within this member - fill in left member only
-               *plocType = mltInternal;
-               *pfemMbrId   = mbr_id;
-               *pfemLoc  = globalLoc - start_loc;
+               *plocType   = mltInternal;
+               *pfemMbrId  = mbr_id;
+               *pfemLoc    = globalLoc - start_loc;
 
+#if defined _DEBUG
                found = true;
+#endif
                break;
             }
             else
@@ -780,7 +805,7 @@ void CAnalysisModel::GetFemMemberLocationAlongMemberList( Float64 globalLoc, Flo
             }
          }
 
-         start_loc = end_loc;
+         start_loc      = end_loc;
          start_joint_id = end_joint_id;
       }
 
@@ -918,6 +943,40 @@ void CAnalysisModel::GetFemMemberLocationAlongSpan( SpanIndexType spanIdx, Float
       ATLASSERT(0);
       throw;
    }
+}
+
+void CAnalysisModel::GetSuperstructureMemberLocationAlongSpan(SpanIndexType spanIdx,Float64 spanLoc,MemberIDType* mbrID,Float64* pMbrLoc)
+{
+   Float64 spanStart = (spanIdx == 0 ? 0 : m_SpanEnds[spanIdx-1]);
+   Float64 spanEnd   = m_SpanEnds[spanIdx];
+
+   std::vector<Float64>::iterator iter(m_SuperstructureMemberEnds.begin());
+   std::vector<Float64>::iterator end(m_SuperstructureMemberEnds.end());
+   Float64 ssmbrStart = -m_LeftOverhang;
+   for ( ; iter != end; iter++ )
+   {
+      Float64 ssmbrEnd = *iter;
+      if ( (spanStart <= ssmbrStart && ssmbrStart <  spanEnd) ||
+           (spanStart <  ssmbrEnd   && ssmbrEnd   <= spanEnd) )
+      {
+         // SSMBR starts or ends in this span
+
+         *mbrID = (iter - m_SuperstructureMemberEnds.begin());
+         *pMbrLoc = spanStart + spanLoc -  ssmbrStart;
+         if ( *pMbrLoc <= (ssmbrEnd - ssmbrStart) )
+            return;
+      }
+      else if ( (ssmbrStart <= spanStart && spanStart <= ssmbrEnd) && (ssmbrStart <= spanEnd && spanEnd <= ssmbrEnd) )
+      {
+         // Span starts and ends in the superstructure member
+         *mbrID = (iter - m_SuperstructureMemberEnds.begin());
+         *pMbrLoc = spanStart-ssmbrStart + spanLoc;
+         return;
+      }
+
+      ssmbrStart = ssmbrEnd; // start of next member is end of this member
+   }
+   ATLASSERT(false); // should have found a solution above!
 }
 
 void CAnalysisModel::GetFemMemberLocationAlongSupport(const ElementLayoutVec* pMemberList, Float64 lbamLoc, MemberLocationType* locType, MemberIDType* pfemMbrId, Float64* pfemLoc)
@@ -1246,7 +1305,10 @@ void CAnalysisModel::GeneratePointLoadsForLoadGroup(BSTR loadGroup, IFem2dLoadin
                   members->Find(fem_id,&member);
 
                   JointIDType joint_id;
-                  member->get_EndJoint(&joint_id);
+                  if ( IsZero(location) )
+                     member->get_StartJoint(&joint_id);
+                  else
+                     member->get_EndJoint(&joint_id);
 
                   CComPtr<IFem2dJointLoad> jointLoad;
                   fem_joint_loads->Create(il, joint_id, fx, fy, mz, &jointLoad);
@@ -1542,27 +1604,47 @@ void CAnalysisModel::GenerateStrainLoadsForLoadGroup(BSTR loadGroup, IFem2dLoadi
             hr = lbam_strain_load->get_AxialStrain(&axial_strain);
             hr = lbam_strain_load->get_CurvatureStrain(&curvature_strain);
 
-            // get fem elements associated with this member
-            const ElementLayoutVec* pfem_mbr_list = 0;
-            GetFemMembersForLBAMMember(mtype, member_id, &pfem_mbr_list );
-            ATLASSERT(pfem_mbr_list !=0 );
+            Float64 start_location,end_location;
+            hr = lbam_strain_load->get_StartLocation(&start_location);
+            hr = lbam_strain_load->get_EndLocation(&end_location);
+            Float64 mbr_length = GetLBAMMemberLength(mtype, member_id);
 
-            CollectionIndexType num_elements = pfem_mbr_list->size();
-
-            if (num_elements==0)
+            // get real start and end locations
+            try
             {
-               CComBSTR msg1=CreateLBAMContextMsg(mtype, member_id);
-               CComBSTR msg =CreateErrorMsg1S(IDS_E_INVALID_STRAIN_LOC, msg1);
-               THROW_LBAMA_MSG(INVALID_STRAIN_LOC,msg);
+               start_location = GetFracDistance(start_location, mbr_length, true);
+               end_location   = GetFracDistance(end_location, mbr_length, true);
+            }
+            catch(FracRes&)
+            {
+               THROW_LBAMA(INVALID_DISTR_LOAD_LOCATION);
             }
 
-            // iterate over fem elements and apply curvature load for this load case
-            for (CollectionIndexType ie=0; ie<num_elements; ie++)
+            // swap locations if end is before start
+            if (end_location < start_location)
             {
-               MemberIDType mbr_id = pfem_mbr_list->at(ie).m_FemMemberID;
-               CComPtr<IFem2dMemberStrain> strainLoad;
-               fem_strain_loads->Create(last_load_id, mbr_id, axial_strain, curvature_strain,&strainLoad);
-               last_load_id++;
+               std::swap(end_location, start_location);
+            }
+
+            // generate loads only for non-zero cases
+            if ( (start_location != end_location) && !(axial_strain==0.0 && curvature_strain==0.0) )
+            {
+               // get fem elements associated with this member
+               const ElementLayoutVec* pfem_mbr_list = 0;
+               GetFemMembersForLBAMMember(mtype, member_id, &pfem_mbr_list );
+               ATLASSERT(pfem_mbr_list !=0 );
+
+               if (pfem_mbr_list->empty())
+               {
+                  CComBSTR msg1=CreateLBAMContextMsg(mtype, member_id);
+                  CComBSTR msg =CreateErrorMsg1S(IDS_E_INVALID_DIST_LOC, msg1);
+                  THROW_LBAMA_MSG(INVALID_DIST_LOC,msg);
+               }
+
+               // generate distributed load along line of elements
+               GenStrainLoadAlongElements(fem_strain_loads, 
+                                          start_location, end_location, mbr_length, 
+                                          axial_strain, curvature_strain, pfem_mbr_list, &last_load_id );
             }
          }
       }
@@ -1573,6 +1655,88 @@ void CAnalysisModel::GenerateStrainLoadsForLoadGroup(BSTR loadGroup, IFem2dLoadi
       _bstr_t msg =CreateErrorMsg1S(IDS_E_GENERATING_STRAIN_LOAD, loadGroup);
       re.AppendToMessage((TCHAR*)msg);
       throw;
+   }
+}
+
+void CAnalysisModel::GenStrainLoadAlongElements(IFem2dMemberStrainCollection* pFemStrainLoads,
+                                                 Float64 startLocation, Float64 endLocation, 
+                                                 Float64 mbrLength, Float64 axial_strain, Float64 curvature, 
+                                                 const ElementLayoutVec* pfemMbrList, LoadIDType* lastLoadID)
+{
+   // generic routine to generate a strain load that is described along a vector of Fem2d members
+   // next need to find element that this location lies along
+   CComPtr<IFem2dMemberCollection> members;
+   m_pFem2d->get_Members(&members);
+
+   CComPtr<IFem2dJointCollection> joints;
+   m_pFem2d->get_Joints(&joints);
+
+   // create list of element locations along member
+   CollectionIndexType num_elements = pfemMbrList->size();
+   std::vector<Float64> locations;
+   locations.reserve(num_elements+1);
+   locations.push_back(0.0);
+
+   MemberIDType start_id = (*pfemMbrList)[0].m_FemMemberID;
+   XyLoc start_loc;
+   JointIDType joint_id;
+   GetMemberEnd(start_id, members, joints, metStart, &joint_id, &(start_loc.m_X), &(start_loc.m_Y));
+
+   XyLoc cur_loc;
+   ElementLayoutVec::const_iterator i(pfemMbrList->begin());
+   ElementLayoutVec::const_iterator iend(pfemMbrList->end());
+   for (; i!=iend; i++)
+   {
+      MemberIDType id = i->m_FemMemberID;
+      GetMemberEnd(id, members, joints, metEnd, &joint_id, &(cur_loc.m_X), &(cur_loc.m_Y));
+      Float64 location = start_loc.Distance(cur_loc);
+      locations.push_back(location);
+   }
+
+   Float64 tmp_len = locations.back();
+   ATLASSERT( IsEqual(mbrLength,locations.back()) );
+
+   // loop through elements and apply loads
+   bool did_end=false;
+   for (CollectionIndexType ie=0; ie<num_elements; ie++)
+   {
+      MemberIDType mbr_id = pfemMbrList->at(ie).m_FemMemberID;
+      Float64 mbr_start = locations[ie];
+      Float64 mbr_end   = locations[ie+1];
+
+      if (mbr_end>startLocation)
+      {
+         // load is on this member - get load start/end location/values
+         Float64 lloc_start, lloc_end;
+
+         if (mbr_start<=startLocation)
+         {
+            lloc_start = startLocation-mbr_start;
+         }
+         else
+         {
+            lloc_start = 0.0;
+         }
+
+         if (mbr_end>=endLocation)
+         {
+            lloc_end = endLocation-mbr_start;
+            did_end = true; // we are finished
+         }
+         else
+         {
+            lloc_end = mbr_end-mbr_start;
+         }
+
+         // finally have the information - create the load
+         CComPtr<IFem2dMemberStrain> strainLoad;
+         pFemStrainLoads->Create(*lastLoadID,mbr_id,lloc_start,lloc_end,axial_strain,curvature,&strainLoad);
+
+         (*lastLoadID)++;
+
+         if (did_end)
+            break;
+      }
    }
 }
 
@@ -1666,7 +1830,7 @@ void CAnalysisModel::GenerateTemperatureLoadsForLoadGroup(BSTR loadGroup, IFem2d
                }
 
                CComPtr<IFem2dMemberStrain> strainLoad;
-               fem_strain_loads->Create(last_load_id, mbr_id, axial_strain, curvature_strain, &strainLoad);
+               fem_strain_loads->Create(last_load_id, mbr_id, 0.0, -1.0, axial_strain, curvature_strain, &strainLoad);
                last_load_id++;
             }
          }
@@ -2690,10 +2854,8 @@ void CAnalysisModel::GetPOIDistributionFactor(PoiIDType POI, IDistributionFactor
 {
    CHRException hr;
 
-   (*leftFactor)  = NULL;
-   (*rightFactor) = NULL;
-
-   CComPtr<IDistributionFactor> leftLLDF, rightLLDF;
+   *leftFactor = NULL;
+   *rightFactor= NULL;
 
    // Perform model look up for each call.
    // Could cache distribution factors here for more performance if lookups become too expensive
@@ -2714,45 +2876,19 @@ void CAnalysisModel::GetPOIDistributionFactor(PoiIDType POI, IDistributionFactor
 
       x += m_LeftOverhang; // put into coord's starting at begining of superstructure
 
-      hr = factors->GetFactorForLocation(x, m_TotalLength, &leftLLDF, &rightLLDF);
+      CComPtr<IDistributionFactorSegment> left_seg, right_seg;
+      hr = factors->GetSegmentForLocation(x, m_TotalLength, &left_seg, &right_seg);
 
-      // We typically don't want lldf's to change right at the ends of a member.
-      // But this is what can happen if things get slightly out of tolerance.
-      // The code in the block below prevents changes at the very ends of a member.
-      if ( leftLLDF != NULL && rightLLDF != NULL && leftLLDF != rightLLDF )
+      if (left_seg!=NULL)
       {
-         if (member_location < m_LayoutTolerance)
-         {
-            // We are at left end of member. Use right factor at both locations
-            leftLLDF = rightLLDF;
-         }
-         else
-         {
-            // Need member length to see if we are at right end
-            Float64 member_length(0.0);
-            if (member_type == mtSpan)
-            {
-               CComPtr<ISpans> pspans;
-               hr = m_pLBAMModel->get_Spans(&pspans);
-               CComPtr<ISpan> pspan;
-               hr = pspans->get_Item(member_id, &pspan);
-               pspan->get_Length(&member_length);
-            }
-            else if (member_type == mtSuperstructureMember)
-            {
-               CComPtr<ISuperstructureMembers> psups;
-               hr = m_pLBAMModel->get_SuperstructureMembers(&psups);
-               CComPtr<ISuperstructureMember> psup;
-               hr = psups->get_Item(member_id, &psup);
-               psup->get_Length(&member_length);
-            }
+         hr = left_seg->get_DistributionFactor(leftFactor);
+      }
+      else
+         ATLASSERT(0);
 
-            if (member_length < member_location+m_LayoutTolerance)
-            {
-               // We are at right end of member. Use left factor for both
-               rightLLDF = leftLLDF;
-            }
-         }
+      if (right_seg!=NULL)
+      {
+         hr = right_seg->get_DistributionFactor(rightFactor);
       }
    }
    else if (member_type==mtSupport)
@@ -2764,7 +2900,7 @@ void CAnalysisModel::GetPOIDistributionFactor(PoiIDType POI, IDistributionFactor
       CComPtr<ISupport> support;
       hr = supports->get_Item(member_id, &support);
 
-      hr = support->get_DistributionFactor(&leftLLDF);
+      hr = support->get_DistributionFactor(leftFactor);
    }
    else if (member_type==mtTemporarySupport)
    {
@@ -2774,7 +2910,7 @@ void CAnalysisModel::GetPOIDistributionFactor(PoiIDType POI, IDistributionFactor
 
       if (temp_support!=NULL)
       {
-         hr = temp_support->get_DistributionFactor(&leftLLDF);
+         hr = temp_support->get_DistributionFactor(leftFactor);
       }
       else
       {
@@ -2783,12 +2919,7 @@ void CAnalysisModel::GetPOIDistributionFactor(PoiIDType POI, IDistributionFactor
       }
    }
    else
-   {
       ATLASSERT(0);
-   }
-
-   leftLLDF.CopyTo(leftFactor);
-   rightLLDF.CopyTo(rightFactor);
 }
 
 void CAnalysisModel::GetSupportDistributionFactor(SupportIndexType supportIdx, IDistributionFactor **Factor)
@@ -2863,7 +2994,7 @@ void CAnalysisModel::CreateFemPOI(PoiIDType poiID, MemberType mbrType, MemberIDT
 }
 
 void CAnalysisModel::CreateFemMbrPOI(PoiIDType poiID, MemberType mbrType, MemberIDType lbamMbrID, Float64 lbamMbrLoc, 
-                                     MemberIDType leftMbrID, IPOI* poi)
+                                     MemberIDType femMbrID, IPOI* poi)
 {
    // Create a poi that maps to the ends of two members (straddles them).
    CHRException hr;
@@ -2879,7 +3010,19 @@ void CAnalysisModel::CreateFemMbrPOI(PoiIDType poiID, MemberType mbrType, Member
    // it is assumed that the id of the right member is 1+ that id. This is true on the superstructure, but probably not
    // for supports. However, assumptions in other code in this module say that straddle pois do not occur in supports.
    // beware if you want to change this.
-   poi_map->SetFemMbrs(leftMbrID, leftMbrID+1);
+   MemberIDType leftMbrID, rightMbrID;
+   if ( IsZero(lbamMbrLoc) )
+   {
+      leftMbrID  = femMbrID-1;
+      rightMbrID = femMbrID;
+   }
+   else
+   {
+      leftMbrID  = femMbrID;
+      rightMbrID = femMbrID+1;
+   }
+
+   poi_map->SetFemMbrs(leftMbrID,rightMbrID);
 
    // set stress points and other data
    ConfigurePoiMap(mbrType, lbamMbrID, lbamMbrLoc, poi, poi_map.get());
@@ -3206,18 +3349,6 @@ void CAnalysisModel::GenerateFemModel(SuperNodeLocs* pNodeLocs)
 
    // check for unstable nodes at ssm ends and supports
    CheckFemModelStability(pNodeLocs, pJoints, pMembers);
-
-
-   // uncomment this code to dump a fem2d model
-   // note that the file name is not parametric so every time
-   // this code is called, the file is replaced
-   //CComPtr<IStructuredSave2> pSave;
-   //pSave.CoCreateInstance(CLSID_StructuredSave2);
-   //pSave->Open(CComBSTR("Fem2d.xml"));
-   //CComPtr<IStructuredStorage2> storage;
-   //m_pFem2d->QueryInterface(&storage);
-   //storage->Save(pSave);
-   //pSave->Close();
 }
 
 void CAnalysisModel::GenerateSuperstructureFemModel(SuperNodeLocs* pNodeLocs,  IFem2dJointCollection* pJoints, IFem2dMemberCollection* pMembers, MemberIDType* pNextFemMemberID)
@@ -4596,7 +4727,33 @@ void CAnalysisModel::ClearInfluenceLoads()
    CComPtr<IFem2dLoadingCollection> fem_loadings;
    m_pFem2d->get_Loadings(&fem_loadings);
 
-   fem_loadings->RemoveIDLessThan(INFLUENCE_LC+1);
+   CollectionIndexType nLoadings;
+   fem_loadings->get_Count(&nLoadings);
+
+   for (CollectionIndexType loadingIdx = 0; loadingIdx < nLoadings; loadingIdx++)
+   {
+      CComPtr<IFem2dLoading> fem_loading;
+      fem_loadings->get_Item(loadingIdx,&fem_loading);
+
+      LoadCaseIDType femLoadCaseID;
+      fem_loading->get_ID(&femLoadCaseID);
+
+      if (femLoadCaseID <= INFLUENCE_LC)
+      {
+         remove_list.push_back(femLoadCaseID);
+      }
+   }
+
+   // then do removal
+   std::vector<LoadCaseIDType>::iterator iter( remove_list.begin() );
+   std::vector<LoadCaseIDType>::iterator iterend( remove_list.end() );
+   for (; iter != iterend; iter++)
+   {
+      LoadCaseIDType femLoadCaseID = *iter;
+      LoadCaseIDType id;
+      fem_loadings->Remove(femLoadCaseID, atID,&id);
+      ATLASSERT(id == femLoadCaseID);
+   }
 }
 
 void CAnalysisModel::GenerateInfluenceLoads()
@@ -4628,6 +4785,7 @@ void CAnalysisModel::GenerateInfluenceLoads()
    {
       InfluenceLoadLocation& infl_locn = *it;
       infl_locn.m_FemLoadCaseID = fem_lc;
+      Float64 P = infl_locn.m_P;
 
       // create a new loading in the fem model
       CComPtr<IFem2dLoading> fem_loading;
@@ -4640,7 +4798,7 @@ void CAnalysisModel::GenerateInfluenceLoads()
          fem_loading->get_PointLoads(&fem_point_loads);
 
          CComPtr<IFem2dPointLoad> pointLoad;
-         fem_point_loads->Create(fem_lc, infl_locn.m_FemMemberID, infl_locn.m_FemMemberLoc, 0.0, -1.0, 0.0, lotGlobal, &pointLoad);
+         fem_point_loads->Create(fem_lc, infl_locn.m_FemMemberID, infl_locn.m_FemMemberLoc, 0.0, P, 0.0, lotGlobal, &pointLoad);
       }
       catch(_com_error ce)
       {
@@ -4734,7 +4892,7 @@ void CAnalysisModel::GenerateInfluenceLoadLocations()
    {
       InfluenceLoadLocation& ifl = *it;
       LPCTSTR side[] = {"Single","Left  ","Right "};
-      ATLTRACE(_T("Member Location Global %f, %s, ID = %dMbrLoc = %f, Lc = %d\n"), ifl.m_GlobalX, side[ifl.m_LocationType], ifl.m_FemMemberId, ifl.m_FemMemberLoc, ifl.m_FemLcId);
+      ATLTRACE(_T("Member Location Global %f, %s, ID = %d MbrLoc = %f, Lc = %d\n"), ifl.m_GlobalX, side[ifl.m_LocationType], ifl.m_FemMemberId, ifl.m_FemMemberLoc, ifl.m_FemLcId);
    }
 #endif
 
@@ -4755,14 +4913,22 @@ void CAnalysisModel::ComputeInfluenceLoadLocation(MemberType lbmbrType, MemberID
    MemberLocationType mbl_type;
    MemberIDType       fem_id;
    Float64            fem_loc;
+   Float64            P = -1.0;
 
-   if (lbmbrType==mtSpan)
+   MemberIDType ssmbrID;
+   Float64 ssmbrLoc;
+
+   if (lbmbrType == mtSpan)
    {
+      GetSuperstructureMemberLocationAlongSpan(lbamMemberID,lbmbrLoc,&ssmbrID,&ssmbrLoc);
       GetFemMemberLocationAlongSpan(lbamMemberID, lbmbrLoc, &mbl_type, &fem_id, &fem_loc);
    }
-   else if (lbmbrType==mtSuperstructureMember)
+   else if (lbmbrType == mtSuperstructureMember)
    {
-      GetFemMemberLocationAlongSSM(lbamMemberID, lbmbrLoc, &mbl_type, &fem_id, &fem_loc);
+      ssmbrID  = lbamMemberID;
+      ssmbrLoc = lbmbrLoc;
+
+      GetFemMemberLocationAlongSSM(ssmbrID, ssmbrLoc, &mbl_type, &fem_id, &fem_loc);
    }
    else
    {
@@ -4770,20 +4936,64 @@ void CAnalysisModel::ComputeInfluenceLoadLocation(MemberType lbmbrType, MemberID
       THROW_HR(E_FAIL);
    }
 
-   ATLASSERT(mbl_type!=mltNotFound);
 
-   influenceLoadSet.insert( InfluenceLoadLocation( xloc, fem_id, fem_loc) );
+   ATLASSERT(mbl_type != mltNotFound);
 
-   if (mbl_type==mltStraddle)
+   CComPtr<ISuperstructureMembers> ssmbrs;
+   m_pLBAMModel->get_SuperstructureMembers(&ssmbrs);
+   CComPtr<ISuperstructureMember> ssmbr;
+   ssmbrs->get_Item(ssmbrID,&ssmbr);
+   VARIANT_BOOL vbIsLinkMember;
+   ssmbr->get_LinkMember(&vbIsLinkMember);
+   if ( vbIsLinkMember == VARIANT_TRUE )
+      P = 0;
+
+   influenceLoadSet.insert( InfluenceLoadLocation( xloc, fem_id, fem_loc, P) );
+
+   if ( mbl_type == mltStraddle )
    {
-      // add load at both sides of straddle points
-      influenceLoadSet.insert( InfluenceLoadLocation( xloc, fem_id+1, 0.0) );
+      if ( IsZero(fem_loc) )
+      {
+         // if at start of fem member, straddle with previous member
+         // don't straddle if this is the start of member 0
+         if ( fem_id != 0 )
+         {
+            ssmbr.Release();
+            ssmbrs->get_Item(ssmbrID-1,&ssmbr);
+            VARIANT_BOOL vbIsLinkMember;
+            ssmbr->get_LinkMember(&vbIsLinkMember);
+            P = (vbIsLinkMember == VARIANT_TRUE ? 0.0 : -1.0);
+
+            influenceLoadSet.insert( InfluenceLoadLocation( xloc, fem_id-1, -1.0, P) );
+         }
+      }
+      else
+      {
+         // straddle with the next member unless this is the last member
+         CComPtr<IFem2dMemberCollection> femMbrs;
+         m_pFem2d->get_Members(&femMbrs);
+         IndexType nFemMbrs;
+         femMbrs->get_Count(&nFemMbrs);
+         if ( fem_id != nFemMbrs-1 )
+         {
+            ssmbr.Release();
+            ssmbrs->get_Item(ssmbrID+1,&ssmbr);
+            VARIANT_BOOL vbIsLinkMember;
+            ssmbr->get_LinkMember(&vbIsLinkMember);
+            P = (vbIsLinkMember == VARIANT_TRUE ? 0.0 : -1.0);
+
+            influenceLoadSet.insert( InfluenceLoadLocation( xloc, fem_id+1, 0.0, P) );
+         }
+      }
    }
 }
 
 void CAnalysisModel::GenerateContraflexureLoads()
 {
    // contraflexure load is a unit uniform vertical load applied along entire superstructure
+   CComPtr<ISuperstructureMembers> ssmbrs;
+   m_pLBAMModel->get_SuperstructureMembers(&ssmbrs);
+
    // create a new loading in the fem model
    CComPtr<IFem2dLoadingCollection> fem_loadings;
    m_pFem2d->get_Loadings(&fem_loadings);
@@ -4796,10 +5006,22 @@ void CAnalysisModel::GenerateContraflexureLoads()
 
    // loop over all superstructure member elements and apply unit uniform load
    LoadIDType loadID = 0;
+   MemberIDType ssmbrID = 0;
+   bool bLeftOverhang = false;
+   bool bRightOverhang = false;
    ElementLayoutGroupIterator its(m_SuperstructureMemberElements.begin());
    ElementLayoutGroupIterator itsend(m_SuperstructureMemberElements.end());
-   for (; its!=itsend; its++)
+   for (; its!=itsend; its++, ssmbrID++)
    {
+      CComPtr<ISuperstructureMember> ssmbr;
+      ssmbrs->get_Item(ssmbrID,&ssmbr);
+
+      VARIANT_BOOL bIsLinkMember;
+      ssmbr->get_LinkMember(&bIsLinkMember);
+
+      if ( bIsLinkMember == VARIANT_TRUE )
+         continue;
+
       ElementLayoutVec& vec = *its;
 
       ElementLayoutVecIterator itv(vec.begin());
@@ -4811,7 +5033,13 @@ void CAnalysisModel::GenerateContraflexureLoads()
 
          // finally have the information - create a unit uniform load
          CComPtr<IFem2dDistributedLoad> distLoad;
-         fem_distr_loads->Create(loadID,mbr_id, loadDirFy, 0.0, -1.0, -1.0, -1.0,lotGlobal,&distLoad);
+
+         // load the fem member
+         Float64 xStart = 0.0;
+         Float64 xEnd   = -1.0; // fractional load = 100% of member length
+         Float64 w = -1.0; // unit uniform load
+         fem_distr_loads->Create(loadID,mbr_id, loadDirFy, xStart, xEnd, w, w,lotGlobal,&distLoad);
+
          loadID++;
       }
    }
@@ -5026,9 +5254,12 @@ void CAnalysisModel::GetContraflexureForce( ForceEffectType effect, CInfluenceLi
          ATLASSERT(0);
       };
 
+      val_left  = IsZero(val_left)  ? 0 : val_left;
+      val_right = IsZero(val_right) ? 0 : val_right;
+
       results->Add( iflSingle, info.GetLocation(), val_left);
 
-      if (!IsEqual(mz_left, -mz_right ) ) // remember, the whole purpose of contraflexure is to get moment response
+      if (effect == fetMz && !IsEqual(mz_left, -mz_right ) ) // remember, the whole purpose of contraflexure is to get moment response
       {
          results->Add( iflSingle, info.GetLocation(), val_right);
       }

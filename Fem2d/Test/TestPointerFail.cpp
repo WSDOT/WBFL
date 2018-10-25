@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -286,9 +286,9 @@ void CTestPointerFail::Test()
    TRY_TEST_HR(pLoading->get_MemberStrains(&pMemberStrains));
 
    CComPtr<IFem2dMemberStrain> pMemberStrain;
-   TRY_TEST_HR(pMemberStrains->Create(1, 1, 0.0, 0.0, &pMemberStrain));
+   TRY_TEST_HR(pMemberStrains->Create(1, 1, 0.0, -1.0, 0.0, 0.0, &pMemberStrain));
 
-   TRY_TEST(pMemberStrains->Create(1, 1, 0.0, 0.0, NULL),E_POINTER);
+   TRY_TEST(pMemberStrains->Create(1, 1, 0.0, -1.0, 0.0, 0.0, NULL),E_POINTER);
    TRY_TEST(pMemberStrains->get_Item(0, NULL),E_POINTER);
    TRY_TEST(pMemberStrains->Find(0, NULL),E_POINTER);
    TRY_TEST(pMemberStrains->get__EnumElements(NULL),E_POINTER);
@@ -298,6 +298,8 @@ void CTestPointerFail::Test()
    TRY_TEST(pMemberStrain->get_MemberID(NULL),E_POINTER);
    TRY_TEST(pMemberStrain->get_AxialStrain(NULL),E_POINTER);
    TRY_TEST(pMemberStrain->get_CurvatureStrain(NULL),E_POINTER);
+   TRY_TEST(pMemberStrain->get_StartLocation(NULL),E_POINTER);
+   TRY_TEST(pMemberStrain->get_EndLocation(NULL),E_POINTER);
    TRY_TEST(pMemberStrain->get_Loading(NULL),E_POINTER);
 
    // get results interface

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -81,7 +81,6 @@ END_CONNECTION_POINT_MAP()
 
 // IDistributionFactors
    STDMETHOD(get_Length)(/*[in]*/Float64 superstructureLength, /*[out,retval]*/ Float64 *pVal);
-   STDMETHOD(GetFactorForLocation)(/*[in]*/Float64 location, /*[in]*/Float64 superstructureLength, /*[out]*/IDistributionFactor** leftLLDF, /*[out]*/IDistributionFactor** rightLLDF);
    STDMETHOD(GetSegmentForLocation)(/*[in]*/Float64 location, /*[in]*/Float64 superstructureLength, /*[out]*/IDistributionFactorSegment** leftSegment, /*[out]*/IDistributionFactorSegment** rightSegment);
    STDMETHOD(GetMemberSegments)(/*[in]*/Float64 superstructureLength, /*[out,retval]*/IFilteredDfSegmentCollection** segments);
    STDMETHOD(Clone)(/*[out,retval]*/IDistributionFactors** clone);

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -91,7 +91,6 @@ struct LRFDCLASS lrfdShearData
    Float64 Vi; // shear corrosponding to Mu (Mu = Mmax)
    Float64 Mcre; // cracking moment per LRFD 5.8.3.4.3-2
    Float64 fpc;
-   Float64 lambda; //concrete density modification factor per LRFD2016 5.4.2.8
 
    Float64 fy;  // Yield strength of stirrup material. Only applicable for 2nd Edition 2000 Interims or later
    Float64 AvS; // Av/s per 5.8.2.5 (equation 5.8.2.5-1)

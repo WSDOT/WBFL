@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -308,7 +308,7 @@ void CTestLocate::Test()
    line.Release();
    TRY_TEST(lines->get_Item(2,&line),S_OK);
 
-   CogoElementKey startID, endID;
+   CogoObjectID startID, endID;
    CComPtr<IPoint2d> start, end;
    line->get_StartPoint(&start);
    line->get_EndPoint(&end);

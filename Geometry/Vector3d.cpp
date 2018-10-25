@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -254,7 +254,9 @@ STDMETHODIMP CVector3d::AngleBetween(IVector3d* v,Float64* angle)
       return Error(IDS_E_ZEROMAGNITUDE,IID_IVector3d,GEOMETRY_E_ZEROMAGNITUDE);
 
    Float64 x = dot/(mag1*mag2);
-   if ( ::IsZero(x-1.0) )
+
+   // if z is just barely greater than 1, make it equal to one
+   if ( ::IsZero(x-1.0) && 1.0 < x )
       x = 1.0;
 
    *angle = acos(x);

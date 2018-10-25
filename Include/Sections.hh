@@ -69,4 +69,21 @@
 #define IDH_ICompositeBeam_QSlab                         614 
 #define IDH_ICompositeBeam_Q                             615
 
+#define IDH_ICompositeSectionItemEx                      700
+#define IDH_ICompositeSectionItemEx_Shape                701
+#define IDH_ICompositeSectionItemEx_Efg                  702
+#define IDH_ICompositeSectionItemEx_Ebg                  703
+#define IDH_ICompositeSectionItemEx_Dfg                  704
+#define IDH_ICompositeSectionItemEx_Dbg                  705
+#define IDH_ICompositeSectionItemEx_Structural           706
+
+#define IDH_ICompositeSectionEx                          710
+#define IDH_ICompositeSectionEx_Item                     711
+#define IDH_ICompositeSectionEx_AddSection               712
+#define IDH_ICompositeSectionEx_AddSectionEx             713
+#define IDH_ICompositeSectionEx_Remove                   714
+#define IDH_ICompositeSectionEx_Count                    715
+#define IDH_ICompositeSectionEx_Section                  716
+#define IDH_ICompositeSectionEx_XYPosition               717
+
 #endif // INCLUDED_SECTIONS_HH_

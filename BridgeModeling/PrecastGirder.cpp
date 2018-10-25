@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // BMF - Bridge Modeling Framework - Product modeling of bridge structures
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -639,7 +639,7 @@ void bmfPrecastGirder::ResetHarpedStrandShift()
    m_HpShift  = gpSize2d(0,0);
 }
 
-Uint32 bmfPrecastGirder::GetHarpingPointCount() const
+StrandIndexType bmfPrecastGirder::GetHarpingPointCount() const
 {
    return GetTemplate()->GetHarpingPointCount();
 }
@@ -751,17 +751,17 @@ void bmfPrecastGirder::SetLrLayout(const bmfLrLayout& rLayout)
    m_LrLayout = rLayout;
 }
 //
-//Uint32 bmfPrecastGirder::GetNumberOfBundles() const
+//StrandIndexType bmfPrecastGirder::GetNumberOfBundles() const
 //{
 //   return m_Bundle.GetBundleCount();
 //}
 //
-//Float64 bmfPrecastGirder::GetBundlePosition(Uint32 bundleIdx) const
+//Float64 bmfPrecastGirder::GetBundlePosition(StrandIndexType bundleIdx) const
 //{
 //   return m_Bundle.GetBundleHeight(bundleIdx);
 //}
 //
-//Int16 bmfPrecastGirder::GetMaxStrandsInBundle(Uint32 bundleIdx) const
+//StrandIndexType bmfPrecastGirder::GetMaxStrandsInBundle(StrandIndexType bundleIdx) const
 //{
 //   return m_Bundle.GetMaxStrandCount(bundleIdx);
 //}
@@ -891,14 +891,14 @@ void bmfPrecastGirder::MakeAssignment( const bmfPrecastGirder& rOther )
 //======================== LIFECYCLE  =======================================
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
-//Uint32 bmfPrecastGirder::GetStrandBundle(Uint32 strIdx) const
+//StrandIndexType bmfPrecastGirder::GetStrandBundle(StrandIndexType strIdx) const
 //{
 //   // 1. Determine how many strands are below this strand
 //   gpPoint2d pnt = m_HsPtrn.GetStrandPoint(strIdx);
 //   Float64 y = pnt.Y();
 //
-//   Uint32 nBelow = 0;
-//   for ( Uint32 i = 0; i < GetNumHarpedStrands(); i++ )
+//   StrandIndexType nBelow = 0;
+//   for ( StrandIndexType i = 0; i < GetNumHarpedStrands(); i++ )
 //   {
 //      pnt = m_HsPtrn.GetStrandPoint(i);
 //      if ( pnt.Y() < y )
@@ -906,7 +906,7 @@ void bmfPrecastGirder::MakeAssignment( const bmfPrecastGirder& rOther )
 //   }
 //
 //   // 2. Determine how many strands can fit in the lower bundle
-//   Uint32 cLowerBundle = m_Bundle.GetMaxStrandCount(0);
+//   StrandIndexType cLowerBundle = m_Bundle.GetMaxStrandCount(0);
 //
 //   // 3. Determine if this strand belongs in the lower bundle
 //   if ( nBelow < cLowerBundle )
@@ -916,16 +916,16 @@ void bmfPrecastGirder::MakeAssignment( const bmfPrecastGirder& rOther )
 //                // This strand is in the upper bundle.
 //
 ////   // Determine which bundle the strand belongs in.
-////   Uint32 iBundle = m_Bundle.GetBundleIdx( strIdx );
+////   StrandIndexType iBundle = m_Bundle.GetBundleIdx( strIdx );
 ////
 ////   // If the number of harped strands exceed the number of in the lower bundle
 ////   // then some of the first few strands get bumped to the upper bundle
-////   Uint32 cLowerBundle   = m_Bundle.GetMaxStrandCount(0);
-////   Uint32 nHarpedStrands = m_HsPtrn.GetStrandCount();
+////   StrandIndexType cLowerBundle   = m_Bundle.GetMaxStrandCount(0);
+////   StrandIndexType nHarpedStrands = m_HsPtrn.GetStrandCount();
 ////   if ( nHarpedStrands > cLowerBundle )
 ////   {
 ////      bool bOdd = (nHarpedStrands % 2 != 0);
-////      Uint32 nUpperBundle = nHarpedStrands - cLowerBundle;
+////      StrandIndexType nUpperBundle = nHarpedStrands - cLowerBundle;
 ////      nUpperBundle += (bOdd ? 1 : 0); // if odd, then and even number must go in upper bundle
 ////                                      // so odd strand is in lower bundle
 ////      if ( strIdx < nUpperBundle )

@@ -1,0 +1,25 @@
+HKCR
+{
+	GraphManagerAgent.GraphManager.1 = s 'WBFLGraphManagerAgent'
+	{
+		CLSID = s '{1611AC48-FDC6-4f3d-AE54-DB9F7615821D}'
+	}
+	GraphManagerAgent.GraphManager = s 'WBFLGraphManagerAgent'
+	{
+		CLSID = s '{1611AC48-FDC6-4f3d-AE54-DB9F7615821D}'
+		CurVer = s 'GraphManagerAgent.GraphManager.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {1611AC48-FDC6-4f3d-AE54-DB9F7615821D} = s 'WBFLGraphManagerAgent'
+		{
+			ProgID = s 'GraphManagerAgent.GraphManager.1'
+			VersionIndependentProgID = s 'GraphManagerAgent.GraphManager'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{8ACD75E4-653A-439A-8B4C-1083E1FB86E5}'
+		}
+	}
+}

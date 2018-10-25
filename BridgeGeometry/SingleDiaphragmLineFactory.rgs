@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLBridgeGeometry.SingleDiaphragmLineFactory.1 = s 'SingleDiaphragmLineFactory Class'
+	{
+		CLSID = s '{17FE1E15-7E72-4F4E-AC48-37E1497D0806}'
+	}
+	WBFLBridgeGeometry.SingleDiaphragmLineFactory = s 'SingleDiaphragmLineFactory Class'
+	{
+		CLSID = s '{17FE1E15-7E72-4F4E-AC48-37E1497D0806}'
+		CurVer = s 'WBFLBridgeGeometry.SingleDiaphragmLineFactory.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {17FE1E15-7E72-4F4E-AC48-37E1497D0806} = s 'SingleDiaphragmLineFactory Class'
+		{
+			ProgID = s 'WBFLBridgeGeometry.SingleDiaphragmLineFactory.1'
+			VersionIndependentProgID = s 'WBFLBridgeGeometry.SingleDiaphragmLineFactory'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{3887C38E-D11E-4740-896B-D1DBA8F74BD7}'
+		}
+	}
+}

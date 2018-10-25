@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManagerAgent - Provides report manager as an Agent
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -32,14 +32,14 @@
 
 /////////////////////////////////////////////////////////////////////////////
 // CReportManager
-class ATL_NO_VTABLE CReportManager : 
+class ATL_NO_VTABLE CReportManagerAgent : 
 	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CReportManager, &CLSID_ReportManager>,
+	public CComCoClass<CReportManagerAgent, &CLSID_ReportManagerAgent>,
    public IAgentEx,
 	public IReportManager
 {
 public:
-	CReportManager()
+	CReportManagerAgent()
 	{
 	}
 
@@ -47,7 +47,7 @@ DECLARE_REGISTRY_RESOURCEID(IDR_REPORTMANAGER)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
-BEGIN_COM_MAP(CReportManager)
+BEGIN_COM_MAP(CReportManagerAgent)
 	COM_INTERFACE_ENTRY(IAgent)
 	COM_INTERFACE_ENTRY(IAgentEx)
 	COM_INTERFACE_ENTRY(IReportManager)

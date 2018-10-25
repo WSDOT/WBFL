@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.RebarSection.1 = s 'RebarSection Class'
+	{
+		CLSID = s '{3D0BCC3C-1A32-44c5-A97E-55BD12DC62F1}'
+	}
+	WBFLGenericBridge.RebarSection = s 'RebarSection Class'
+	{
+		CLSID = s '{3D0BCC3C-1A32-44c5-A97E-55BD12DC62F1}'
+		CurVer = s 'WBFLGenericBridge.RebarSection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {3D0BCC3C-1A32-44c5-A97E-55BD12DC62F1} = s 'RebarSection Class'
+		{
+			ProgID = s 'WBFLGenericBridge.RebarSection.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.RebarSection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

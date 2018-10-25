@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -62,11 +62,6 @@ rptHtmlChapterVisitor::~rptHtmlChapterVisitor()
 
 void rptHtmlChapterVisitor::VisitChapter(rptChapter* pChapter)
 {
-   // Eject page if requested
-   if (pChapter->GetEjectPageBreakBefore())
-   {
-      *m_pOstream << _T("<DIV STYLE=\"page-break-after: always\"><BR></DIV>")<<std::endl;
-   }
 
    // treat chapters like an Html DIV
    // do page sizing and layout

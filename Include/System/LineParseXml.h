@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -117,6 +117,8 @@ public:
    bool GetValue(Uint32* value);
    bool GetValue(Int64* value);
    bool GetValue(Uint64* value);
+   bool GetValue(LONG* value);
+   bool GetValue(ULONG* value);
    bool GetValue(bool* value);
    // GROUP: INQUIRY
 

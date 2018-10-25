@@ -99,6 +99,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
 				AdditionalIncludeDirectories="..\Include;&quot;$(SolutionDir)RegFreeCOM\$(PlatformName)\$(ConfigurationName)\&quot;"
 				GenerateTypeLibrary="false"
 				TypeLibraryName=""
@@ -128,7 +129,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="_IA64_"
+				PreprocessorDefinitions="_IA64_;_DEBUG"
 				AdditionalIncludeDirectories="..\Include;&quot;$(SolutionDir)RegFreeCOM\$(PlatformName)\$(ConfigurationName)\&quot;"
 				TargetEnvironment="3"
 				GenerateTypeLibrary="false"

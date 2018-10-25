@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -43,7 +43,7 @@ static char THIS_FILE[] = __FILE__;
 class SortProfileElements
 {
 public:
-   bool operator()(std::pair<CogoElementKey,CComVariant>& pX,std::pair<CogoElementKey,CComVariant>& pY)
+   bool operator()(ProfileType& pX,ProfileType& pY)
    {
       CComVariant& varX = pX.second;
       CComVariant& varY = pY.second;
@@ -136,12 +136,6 @@ STDMETHODIMP CProfile::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CProfile::get_Count(CollectionIndexType* pVal)
-{
-   CHECK_RETVAL(pVal);
-   *pVal = m_coll.size();
-   return S_OK;
-}
 
 STDMETHODIMP CProfile::get_Item(CollectionIndexType idx,IProfileElement **pVal)
 {
@@ -184,12 +178,12 @@ STDMETHODIMP CProfile::putref_Item( CollectionIndexType idx, IProfileElement* pV
    return S_OK;
 }
 
-//STDMETHODIMP CProfile::get_Count(long *pVal)
-//{
-//	// TODO: Add your implementation code here
-//
-//	return S_OK;
-//}
+STDMETHODIMP CProfile::get_Count(CollectionIndexType *pVal)
+{
+   CHECK_RETVAL(pVal);
+   *pVal = m_coll.size();
+   return S_OK;
+}
 
 STDMETHODIMP CProfile::get_CrossSections(ICrossSectionCollection **pVal)
 {
@@ -366,9 +360,8 @@ STDMETHODIMP CProfile::get__EnumProfileElements(IEnumProfileElements** retval)
    typedef CComEnumOnSTL<IEnumProfileElements,
                          &IID_IEnumProfileElements, 
                          IProfileElement*,
-                         CopyFromPair2Interface<std::pair<CogoElementKey,CComVariant>,
-                                                IProfileElement*>, 
-                         std::vector<std::pair<CogoElementKey,CComVariant> > > Enum;
+                         CopyFromPair2Interface<ProfileType,IProfileElement*>, 
+                         std::vector<ProfileType> > Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -972,7 +965,7 @@ void CProfile::UnadviseElement(CollectionIndexType idx)
    //
    // Disconnection from connection CrossSection
    //
-   std::pair<CogoElementKey,CComVariant>& p = m_coll[idx];
+   ProfileType& p = m_coll[idx];
    if ( p.first == 0 )
       return;
 

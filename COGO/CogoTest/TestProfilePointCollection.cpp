@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -184,7 +184,7 @@ void CTestProfilePointCollection::Test()
    //
    // Test FindKey
    //
-   CogoElementKey key;
+   CogoObjectID key;
    TRY_TEST(pColl->FindKey(NULL,&key),E_INVALIDARG);
    TRY_TEST(pColl->FindKey(p4,NULL),E_POINTER);
    TRY_TEST(pColl->FindKey(p4,&key),S_OK);
@@ -227,7 +227,7 @@ void CTestProfilePointCollection::Test()
    TRY_TEST( pColl->get__EnumKeys(&pEnum), S_OK );
 
    ULONG fetched;
-   CogoElementKey target_key = 1;
+   CogoObjectID target_key = 1;
    while( pEnum->Next(1,&key,&fetched ) == S_OK )
    {
       TRY_TEST(key,target_key++);
@@ -335,7 +335,7 @@ void CTestProfilePointCollection::Test()
    TRY_TEST( TestIObjectSafety(CLSID_ProfilePointCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
-STDMETHODIMP CTestProfilePointCollection::OnProfilePointChanged(CogoElementKey key,IProfilePoint* pp)
+STDMETHODIMP CTestProfilePointCollection::OnProfilePointChanged(CogoObjectID key,IProfilePoint* pp)
 {
 //   MessageBox(NULL,"ProfilePointChanged","Event",MB_OK);
    if ( key == m_expectedKey )
@@ -344,7 +344,7 @@ STDMETHODIMP CTestProfilePointCollection::OnProfilePointChanged(CogoElementKey k
    return S_OK;
 }
 
-STDMETHODIMP CTestProfilePointCollection::OnProfilePointAdded(CogoElementKey key,IProfilePoint* pp)
+STDMETHODIMP CTestProfilePointCollection::OnProfilePointAdded(CogoObjectID key,IProfilePoint* pp)
 {
 //   MessageBox(NULL,"ProfilePointAdded","Event",MB_OK);
    if ( key == m_expectedKey )
@@ -353,7 +353,7 @@ STDMETHODIMP CTestProfilePointCollection::OnProfilePointAdded(CogoElementKey key
    return S_OK;
 }
 
-STDMETHODIMP CTestProfilePointCollection::OnProfilePointRemoved(CogoElementKey key)
+STDMETHODIMP CTestProfilePointCollection::OnProfilePointRemoved(CogoObjectID key)
 {
 //   MessageBox(NULL,"ProfilePointRemoved","Event",MB_OK);
    if ( key == m_expectedKey )

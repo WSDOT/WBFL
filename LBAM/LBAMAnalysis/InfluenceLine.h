@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -49,7 +49,7 @@ public:
    enum ProcessingType {iptRaw, iptProcessed};
 
    CInfluenceLine():
-   m_ZeroTolerance(0.),   // no tolerance
+   m_ZeroTolerance(1.0e-06),   // no tolerance
    m_ProcessingType(iptProcessed) // optimize values by default
 	{
       m_GlobalX = -1;

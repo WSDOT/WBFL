@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,29 +30,12 @@
 #ifndef INCLUDED_TESTTransversePIERDESCRIPTION_H_
 #define INCLUDED_TESTTransversePIERDESCRIPTION_H_
 
-class ATL_NO_VTABLE CTestTransversePierDescription :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public ITransversePierDescriptionEvents
+class CTestTransversePierDescription
 {
 public:
 	static void Test();
 	CTestTransversePierDescription();
 	virtual ~CTestTransversePierDescription();
-
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestTransversePierDescription)
-   COM_INTERFACE_ENTRY(ITransversePierDescriptionEvents)
-END_COM_MAP()
-
-// ITransversePierDescriptionEvents
-public:
-   STDMETHOD(OnChanged)();
-
-private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
 };
 
 #endif // INCLUDED_TESTTransversePIERDESCRIPTION_H_

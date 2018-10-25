@@ -19,7 +19,7 @@ public:
 // Dialog Data
 	//{{AFX_DATA(CCreateLoadingDlg)
 	enum { IDD = IDD_CREATELOADING };
-	IDType	m_ID;
+	LoadCaseIDType	m_ID;
 	//}}AFX_DATA
 
 

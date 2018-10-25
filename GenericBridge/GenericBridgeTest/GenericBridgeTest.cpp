@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -33,6 +33,7 @@
 #include <WBFLGeometry_i.c>
 #include <WBFLCogo_i.c>
 #include <WBFLGenericBridge_i.c>
+#include <WBFLBridgeGeometry_i.c>
 
 #include "TestSegment.h"
 #include "TestSuperstructureMember.h"
@@ -40,13 +41,6 @@
 #include "TestLongitudinalPierDescription.h"
 #include "TestPier.h"
 #include "TestPierCollection.h"
-#include "TestTemporaryPierItem.h"
-#include "TestTemporaryPierItemCollection.h"
-#include "TestSpan.h"
-#include "TestSpanCollection.h"
-#include "TestStage.h"
-#include "TestStageCollection.h"
-#include "TestCogoInfo.h"
 #include "TestGenericBridge.h"
 #include "TestColumn.h"
 #include "TestCrossBeam.h"
@@ -71,6 +65,7 @@ int main(int argc, TCHAR* argv[])
 {
    ::CoInitialize(NULL);
 
+   CTestGenericBridge::Test();
    CTestAlignmentOffsetStrategy::Test();
    CTestCastSlab::Test();
    CTestPrecastSlab::Test();
@@ -82,18 +77,10 @@ int main(int argc, TCHAR* argv[])
    CTestLongitudinalPierDescription::Test();
    CTestPier::Test();
    CTestPierCollection::Test();
-   CTestTemporaryPierItem::Test();
-   CTestTemporaryPierItemCollection::Test();
-   CTestSpan::Test();
-   CTestSpanCollection::Test();
-   CTestStage::Test();
-   CTestStageCollection::Test();
-   CTestCogoInfo::Test();
    CTestColumn::Test();
    CTestCrossBeam::Test();
    CTestColumnSpacing::Test();
    CTestTransversePierDescription::Test();
-   CTestGenericBridge::Test();
    CTestPersistance::Test();
 
    ::CoUninitialize();

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -41,7 +41,7 @@ import "WBFLUnitServer.idl";
 
 cpp_quote("#include <WBFLUnitServer.h>")
 
-typedef IDType CogoElementKey;
+typedef IDType CogoObjectID;
 
 cpp_quote("#define COGO_E_POINTNOTFOUND                MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,512)")
 cpp_quote("#define COGO_E_POINTALREADYDEFINED          MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,513)")
@@ -74,6 +74,7 @@ cpp_quote("#define COGO_E_SPIRALSOVERLAP               MAKE_HRESULT(SEVERITY_ERR
 cpp_quote("#define COGO_E_POINTEVENTS                  MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,540)")
 cpp_quote("#define COGO_E_CUBICSPLINEPOINTS            MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,541)")
 cpp_quote("#define COGO_E_POINTINCIRCLE                MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,542)")
+cpp_quote("#define COGO_E_NOINTERSECTION               MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,543)")
 
 interface IProfile;
 interface IPath;
@@ -276,7 +277,7 @@ library WBFLCogo
        HRESULT Clone([out] IEnumKeys** ppenum);
 
        [helpstring("Next")]
-       HRESULT Next([in] ULONG celt, [out] CogoElementKey* rgelt, [in,out] ULONG* pceltFetched);
+       HRESULT Next([in] ULONG celt, [out] CogoObjectID* rgelt, [in,out] ULONG* pceltFetched);
 
        [helpstring("Reset")]
        HRESULT Reset();
@@ -296,18 +297,18 @@ library WBFLCogo
     interface IPointCollection : IUnknown
     {
         [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
-        [propget, helpstring("property Item"),helpcontext(IDH_PointCollection_Item)] HRESULT Item([in] CogoElementKey key, [out, retval] IPoint2d* *pVal);
-        [propputref, helpstring("property Item"),helpcontext(IDH_PointCollection_Item)] HRESULT Item([in] CogoElementKey key, [in] IPoint2d* newVal);
+        [propget, helpstring("property Item"),helpcontext(IDH_PointCollection_Item)] HRESULT Item([in] CogoObjectID key, [out, retval] IPoint2d* *pVal);
+        [propputref, helpstring("property Item"),helpcontext(IDH_PointCollection_Item)] HRESULT Item([in] CogoObjectID key, [in] IPoint2d* newVal);
         [propget, helpstring("property Count"),helpcontext(IDH_PointCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
-        [helpstring("method Add"),helpcontext(IDH_PointCollection_Add)] HRESULT Add([in] CogoElementKey key,[in] Float64 x,[in] Float64 y,[out,retval] IPoint2d* *point);
-        [helpstring("method AddEx"),helpcontext(IDH_PointCollection_AddEx)] HRESULT AddEx([in] CogoElementKey key,[in] IPoint2d* newVal);
-        [helpstring("method Remove"),helpcontext(IDH_PointCollection_Remove)] HRESULT Remove([in] CogoElementKey key);
+        [helpstring("method Add"),helpcontext(IDH_PointCollection_Add)] HRESULT Add([in] CogoObjectID key,[in] Float64 x,[in] Float64 y,[out,retval] IPoint2d* *point);
+        [helpstring("method AddEx"),helpcontext(IDH_PointCollection_AddEx)] HRESULT AddEx([in] CogoObjectID key,[in] IPoint2d* newVal);
+        [helpstring("method Remove"),helpcontext(IDH_PointCollection_Remove)] HRESULT Remove([in] CogoObjectID key);
         [helpstring("method Clear"),helpcontext(IDH_PointCollection_Clear)] HRESULT Clear();
-        [helpstring("method FindKey"),helpcontext(IDH_PointCollection_FindKey)] HRESULT FindKey([in] IPoint2d* point,[out,retval]CogoElementKey* key);
+        [helpstring("method FindKey"),helpcontext(IDH_PointCollection_FindKey)] HRESULT FindKey([in] IPoint2d* point,[out,retval]CogoObjectID* key);
         [propget,restricted,helpstring("property _EnumKeys"),helpcontext(IDH_PointCollection__EnumKeys)] HRESULT _EnumKeys([out,retval] IEnumKeys** ppenum);
 		[propget, helpstring("method Factory"),helpcontext(IDH_PointCollection_Factory)] HRESULT Factory([out,retval]IPoint2dFactory** factory);
 		[propputref, helpstring("method Factory"),helpcontext(IDH_PointCollection_Factory)] HRESULT Factory([in]IPoint2dFactory* factory);
-		[helpstring("method Key"),helpcontext(IDH_PointCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoElementKey* key);
+		[helpstring("method Key"),helpcontext(IDH_PointCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoObjectID* key);
         [propget,restricted,helpstring("property _EnumPoints"),helpcontext(IDH_PointCollection__EnumPoints)] HRESULT _EnumPoints([out,retval] IEnumPoint2d** ppenum);
         [helpstring("method Clone"), helpcontext(IDH_PointCollection_Clone)] HRESULT Clone([out,retval]IPointCollection* *clone);
 
@@ -325,9 +326,9 @@ library WBFLCogo
     ]
     interface IPointCollectionEvents : IUnknown
     {
-        [helpstring("event OnPointChanged"),helpcontext(IDH_PointCollection_OnPointChanged)] HRESULT OnPointChanged([in] CogoElementKey key,[in] IPoint2d* point);
-        [helpstring("event OnPointAdded"),helpcontext(IDH_PointCollection_OnPointAdded)] HRESULT OnPointAdded([in] CogoElementKey key,[in] IPoint2d* point);
-        [helpstring("event OnPointRemoved"),helpcontext(IDH_PointCollection_OnPointRemoved)] HRESULT OnPointRemoved([in] CogoElementKey key);
+        [helpstring("event OnPointChanged"),helpcontext(IDH_PointCollection_OnPointChanged)] HRESULT OnPointChanged([in] CogoObjectID key,[in] IPoint2d* point);
+        [helpstring("event OnPointAdded"),helpcontext(IDH_PointCollection_OnPointAdded)] HRESULT OnPointAdded([in] CogoObjectID key,[in] IPoint2d* point);
+        [helpstring("event OnPointRemoved"),helpcontext(IDH_PointCollection_OnPointRemoved)] HRESULT OnPointRemoved([in] CogoObjectID key);
         [helpstring("event OnPointsCleared"),helpcontext(IDH_PointCollection_OnPointsCleared)] HRESULT OnPointsCleared();
     };
 
@@ -449,18 +450,18 @@ library WBFLCogo
    interface ILineSegmentCollection : IUnknown
    {
      [propget, restricted, helpstring("returns an enumerator for the collection.")]  HRESULT _NewEnum([out, retval] IUnknown** retval);  
-       [propget, helpstring("property Item"),helpcontext(IDH_LineSegmentCollection_Item)] HRESULT Item([in] CogoElementKey key, [out, retval] ILineSegment2d* *pVal);
-       [propputref, helpstring("property Item"),helpcontext(IDH_LineSegmentCollection_Item)] HRESULT Item([in] CogoElementKey key, [in] ILineSegment2d* newVal);
+       [propget, helpstring("property Item"),helpcontext(IDH_LineSegmentCollection_Item)] HRESULT Item([in] CogoObjectID key, [out, retval] ILineSegment2d* *pVal);
+       [propputref, helpstring("property Item"),helpcontext(IDH_LineSegmentCollection_Item)] HRESULT Item([in] CogoObjectID key, [in] ILineSegment2d* newVal);
        [propget, helpstring("property Count"),helpcontext(IDH_LineSegmentCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
-       [helpstring("method Add"),helpcontext(IDH_LineSegmentCollection_Add)] HRESULT Add([in] CogoElementKey key,[in] IPoint2d* start,[in] IPoint2d* end,[out,retval]ILineSegment2d* *ls);
-       [helpstring("method AddEx"),helpcontext(IDH_LineSegmentCollection_AddEx)] HRESULT AddEx([in] CogoElementKey key,[in] ILineSegment2d* newVal);
-       [helpstring("method Remove"),helpcontext(IDH_LineSegmentCollection_Remove)] HRESULT Remove([in] CogoElementKey key);
+       [helpstring("method Add"),helpcontext(IDH_LineSegmentCollection_Add)] HRESULT Add([in] CogoObjectID key,[in] IPoint2d* start,[in] IPoint2d* end,[out,retval]ILineSegment2d* *ls);
+       [helpstring("method AddEx"),helpcontext(IDH_LineSegmentCollection_AddEx)] HRESULT AddEx([in] CogoObjectID key,[in] ILineSegment2d* newVal);
+       [helpstring("method Remove"),helpcontext(IDH_LineSegmentCollection_Remove)] HRESULT Remove([in] CogoObjectID key);
        [helpstring("method Clear"),helpcontext(IDH_LineSegmentCollection_Clear)] HRESULT Clear();
-       [helpstring("method FindKey"),helpcontext(IDH_LineSegmentCollection_FindKey)] HRESULT FindKey([in] ILineSegment2d* ls,[out,retval]CogoElementKey* key);
+       [helpstring("method FindKey"),helpcontext(IDH_LineSegmentCollection_FindKey)] HRESULT FindKey([in] ILineSegment2d* ls,[out,retval]CogoObjectID* key);
      [propget,restricted,helpstring("property _EnumKeys"),helpcontext(IDH_LineSegmentCollection__EnumKeys)] HRESULT _EnumKeys([out,retval] IEnumKeys** ppenum);
 	   [propget, helpstring("property Factory"),helpcontext(IDH_LineSegmentCollection_Factory)] HRESULT Factory([out,retval] ILineSegment2dFactory** factory);
 	   [propputref, helpstring("property Factory"),helpcontext(IDH_LineSegmentCollection_Factory)] HRESULT Factory([in] ILineSegment2dFactory* factory);
-		[helpstring("method Key"),helpcontext(IDH_LineSegmentCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoElementKey* key);
+		[helpstring("method Key"),helpcontext(IDH_LineSegmentCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoObjectID* key);
         [propget,restricted,helpstring("property _EnumLineSegments"),helpcontext(IDH_LineSegmentCollection__EnumLineSegments)] HRESULT _EnumLineSegments([out,retval] IEnumLineSegments** ppenum);
         [helpstring("method Clone"), helpcontext(IDH_LineSegmentCollection_Clone)] HRESULT Clone([out,retval] ILineSegmentCollection* *clone);
 
@@ -478,9 +479,9 @@ library WBFLCogo
    ]
    interface ILineSegmentCollectionEvents : IUnknown
    {
-       [helpstring("event OnLineSegmentChanged"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentChanged)] HRESULT OnLineSegmentChanged([in] CogoElementKey key,[in] ILineSegment2d* lineSeg);
-       [helpstring("event OnLineSegmentAdded"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentAdded)] HRESULT OnLineSegmentAdded([in] CogoElementKey key,[in] ILineSegment2d* lineSeg);
-       [helpstring("event OnLineSegmentRemoved"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentRemoved)] HRESULT OnLineSegmentRemoved([in] CogoElementKey key);
+       [helpstring("event OnLineSegmentChanged"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentChanged)] HRESULT OnLineSegmentChanged([in] CogoObjectID key,[in] ILineSegment2d* lineSeg);
+       [helpstring("event OnLineSegmentAdded"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentAdded)] HRESULT OnLineSegmentAdded([in] CogoObjectID key,[in] ILineSegment2d* lineSeg);
+       [helpstring("event OnLineSegmentRemoved"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentRemoved)] HRESULT OnLineSegmentRemoved([in] CogoObjectID key);
        [helpstring("event OnLineSegmentsCleared"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentsCleared)] HRESULT OnLineSegmentsCleared();
    };
 	[
@@ -493,6 +494,7 @@ library WBFLCogo
 	]
 	interface IStation : IUnknown
 	{
+      [helpstring("method Distance")] HRESULT Distance([in]IStation* station,[out,retval]Float64* pDist);
       [helpstring("method FromVariant")] HRESULT FromVariant([in] VARIANT varStation);
       [helpstring("method Increment")] HRESULT Increment([in] Float64 value);
 		[propget, helpstring("property Value"), helpcontext(IDH_Station_Value)] HRESULT Value([out, retval] Float64 *pVal);
@@ -598,16 +600,16 @@ library WBFLCogo
    interface IProfilePointCollection : IUnknown
    {
      [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
-       [propget, helpstring("property Item"),helpcontext(IDH_ProfilePointCollection_Item)] HRESULT Item([in] CogoElementKey key, [out, retval] IProfilePoint* *pVal);
-       [propputref, helpstring("property Item"),helpcontext(IDH_ProfilePointCollection_Item)] HRESULT Item([in] CogoElementKey key, [in] IProfilePoint* newVal);
+       [propget, helpstring("property Item"),helpcontext(IDH_ProfilePointCollection_Item)] HRESULT Item([in] CogoObjectID key, [out, retval] IProfilePoint* *pVal);
+       [propputref, helpstring("property Item"),helpcontext(IDH_ProfilePointCollection_Item)] HRESULT Item([in] CogoObjectID key, [in] IProfilePoint* newVal);
        [propget, helpstring("property Count"),helpcontext(IDH_ProfilePointCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
-       [helpstring("method Add"),helpcontext(IDH_ProfilePointCollection_Add)] HRESULT Add([in] CogoElementKey key,[in] VARIANT varStation,[in] Float64 elevation,[out,retval]IProfilePoint* *pp);
-       [helpstring("method AddEx"),helpcontext(IDH_ProfilePointCollection_AddEx)] HRESULT AddEx([in] CogoElementKey key,[in] IProfilePoint* newVal);
-       [helpstring("method Remove"),helpcontext(IDH_ProfilePointCollection_Remove)] HRESULT Remove([in] CogoElementKey key);
+       [helpstring("method Add"),helpcontext(IDH_ProfilePointCollection_Add)] HRESULT Add([in] CogoObjectID key,[in] VARIANT varStation,[in] Float64 elevation,[out,retval]IProfilePoint* *pp);
+       [helpstring("method AddEx"),helpcontext(IDH_ProfilePointCollection_AddEx)] HRESULT AddEx([in] CogoObjectID key,[in] IProfilePoint* newVal);
+       [helpstring("method Remove"),helpcontext(IDH_ProfilePointCollection_Remove)] HRESULT Remove([in] CogoObjectID key);
        [helpstring("method Clear"),helpcontext(IDH_ProfilePointCollection_Clear)] HRESULT Clear();
-       [helpstring("method FindKey"),helpcontext(IDH_ProfilePointCollection_FindKey)] HRESULT FindKey([in] IProfilePoint* pp,[out,retval]CogoElementKey* key);
+       [helpstring("method FindKey"),helpcontext(IDH_ProfilePointCollection_FindKey)] HRESULT FindKey([in] IProfilePoint* pp,[out,retval]CogoObjectID* key);
      [propget,restricted,helpstring("property _EnumKeys"),helpcontext(IDH_ProfilePointCollection__EnumKeys)] HRESULT _EnumKeys([out,retval] IEnumKeys** ppenum);
-		[helpstring("method Key"),helpcontext(IDH_ProfilePointCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoElementKey* key);
+		[helpstring("method Key"),helpcontext(IDH_ProfilePointCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoObjectID* key);
 		[propget,helpstring("property Factory"),helpcontext(IDH_ProfilePointCollection_Factory)] HRESULT Factory([out,retval]IProfilePointFactory* *factory);
 		[propputref,helpstring("property Factory"),helpcontext(IDH_ProfilePointCollection_Factory)] HRESULT Factory([in]IProfilePointFactory* factory);
      [propget,restricted,helpstring("property _EnumProfilePoints"),helpcontext(IDH_ProfilePointCollection__EnumProfilePoints)] HRESULT _EnumProfilePoints([out,retval] IEnumProfilePoints** ppenum);
@@ -627,9 +629,9 @@ library WBFLCogo
    ]
    interface IProfilePointCollectionEvents : IUnknown
    {
-       [helpstring("event OnPointChanged"),helpcontext(IDH_ProfilePointCollection_OnPointChanged)] HRESULT OnProfilePointChanged([in] CogoElementKey key,[in] IProfilePoint* pp);
-       [helpstring("event OnPointAdded"),helpcontext(IDH_ProfilePointCollection_OnPointAdded)] HRESULT OnProfilePointAdded([in] CogoElementKey key,[in] IProfilePoint* pp);
-       [helpstring("event OnPointRemoved"),helpcontext(IDH_ProfilePointCollection_OnPointRemoved)] HRESULT OnProfilePointRemoved([in] CogoElementKey key);
+       [helpstring("event OnPointChanged"),helpcontext(IDH_ProfilePointCollection_OnPointChanged)] HRESULT OnProfilePointChanged([in] CogoObjectID key,[in] IProfilePoint* pp);
+       [helpstring("event OnPointAdded"),helpcontext(IDH_ProfilePointCollection_OnPointAdded)] HRESULT OnProfilePointAdded([in] CogoObjectID key,[in] IProfilePoint* pp);
+       [helpstring("event OnPointRemoved"),helpcontext(IDH_ProfilePointCollection_OnPointRemoved)] HRESULT OnProfilePointRemoved([in] CogoObjectID key);
        [helpstring("event OnPointsCleared"),helpcontext(IDH_ProfilePointCollection_OnPointsCleared)] HRESULT OnProfilePointsCleared();
   };
    [
@@ -724,17 +726,17 @@ library WBFLCogo
    interface IVertCurveCollection : IUnknown
    {
      [propget, restricted,helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
-       [propget, helpstring("property Item"), helpcontext(IDH_VertCurveCollection_Item)] HRESULT Item([in] CogoElementKey key, [out, retval] IVertCurve* *pVal);
-       [propputref, helpstring("property Item"), helpcontext(IDH_VertCurveCollection_Item)] HRESULT Item([in] CogoElementKey key, [in] IVertCurve* newVal);
+       [propget, helpstring("property Item"), helpcontext(IDH_VertCurveCollection_Item)] HRESULT Item([in] CogoObjectID key, [out, retval] IVertCurve* *pVal);
+       [propputref, helpstring("property Item"), helpcontext(IDH_VertCurveCollection_Item)] HRESULT Item([in] CogoObjectID key, [in] IVertCurve* newVal);
        [propget, helpstring("property Count"), helpcontext(IDH_VertCurveCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
-       [helpstring("method Add"), helpcontext(IDH_VertCurveCollection_Add)] HRESULT Add([in] CogoElementKey key,[in] IProfilePoint* pbg,[in] IProfilePoint* pvi, [in] IProfilePoint* pfg,[in]Float64 l1,[in] Float64 l2,[out,retval]IVertCurve* *vc);
-       [helpstring("method AddEx"), helpcontext(IDH_VertCurveCollection_AddEx)] HRESULT AddEx([in] CogoElementKey key,[in] IVertCurve* newVal);
-       [helpstring("method Remove"), helpcontext(IDH_VertCurveCollection_Remove)] HRESULT Remove([in] CogoElementKey key);
+       [helpstring("method Add"), helpcontext(IDH_VertCurveCollection_Add)] HRESULT Add([in] CogoObjectID key,[in] IProfilePoint* pbg,[in] IProfilePoint* pvi, [in] IProfilePoint* pfg,[in]Float64 l1,[in] Float64 l2,[out,retval]IVertCurve* *vc);
+       [helpstring("method AddEx"), helpcontext(IDH_VertCurveCollection_AddEx)] HRESULT AddEx([in] CogoObjectID key,[in] IVertCurve* newVal);
+       [helpstring("method Remove"), helpcontext(IDH_VertCurveCollection_Remove)] HRESULT Remove([in] CogoObjectID key);
        [helpstring("method Clear"), helpcontext(IDH_VertCurveCollection_Clear)] HRESULT Clear();
-       [helpstring("method FindKey"), helpcontext(IDH_VertCurveCollection_FindKey)] HRESULT FindKey([in] IVertCurve* vc,[out,retval]CogoElementKey* key);
+       [helpstring("method FindKey"), helpcontext(IDH_VertCurveCollection_FindKey)] HRESULT FindKey([in] IVertCurve* vc,[out,retval]CogoObjectID* key);
        [propget,restricted,helpstring("property _EnumKeys"), helpcontext(IDH_VertCurveCollection__EnumKeys)] HRESULT _EnumKeys([out,retval] IEnumKeys** ppenum);
  	   [propget,restricted,helpstring("property _EnumVertCurves"), helpcontext(IDH_VertCurveCollection__EnumVertCurves)] HRESULT _EnumVertCurves([out,retval] IEnumVertCurves** ppenum);
-	   [helpstring("method Key"), helpcontext(IDH_VertCurveCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoElementKey* key);
+	   [helpstring("method Key"), helpcontext(IDH_VertCurveCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoObjectID* key);
 	   [propputref,helpstring("property Factory"), helpcontext(IDH_VertCurveCollection_Factory)] HRESULT Factory([in]IVertCurveFactory* factory);
 	   [propget,helpstring("property Factory"), helpcontext(IDH_VertCurveCollection_Factory)] HRESULT Factory([out,retval]IVertCurveFactory* *factory);
       [helpstring("method Clone"), helpcontext(IDH_VertCurveCollection_Clone)] HRESULT Clone([out,retval] IVertCurveCollection* *clone);
@@ -752,9 +754,9 @@ library WBFLCogo
    ]
    interface IVertCurveCollectionEvents : IUnknown
    {
-       [helpstring("event OnVertCurveChanged"), helpcontext(IDH_VertCurveCollection_OnVertCurveChanged)] HRESULT OnVertCurveChanged([in] CogoElementKey key,[in] IVertCurve* vc);
-       [helpstring("event OnVertCurveAdded"), helpcontext(IDH_VertCurveCollection_OnVertCurveAdded)] HRESULT OnVertCurveAdded([in] CogoElementKey key,[in] IVertCurve* vc);
-       [helpstring("event OnVertCurveRemoved"), helpcontext(IDH_VertCurveCollection_OnVertCurveRemoved)] HRESULT OnVertCurveRemoved([in] CogoElementKey key);
+       [helpstring("event OnVertCurveChanged"), helpcontext(IDH_VertCurveCollection_OnVertCurveChanged)] HRESULT OnVertCurveChanged([in] CogoObjectID key,[in] IVertCurve* vc);
+       [helpstring("event OnVertCurveAdded"), helpcontext(IDH_VertCurveCollection_OnVertCurveAdded)] HRESULT OnVertCurveAdded([in] CogoObjectID key,[in] IVertCurve* vc);
+       [helpstring("event OnVertCurveRemoved"), helpcontext(IDH_VertCurveCollection_OnVertCurveRemoved)] HRESULT OnVertCurveRemoved([in] CogoObjectID key);
        [helpstring("event OnVertCurvesCleared"), helpcontext(IDH_VertCurveCollection_OnVertCurvesCleared)] HRESULT OnVertCurvesCleared();
    };
 	
@@ -806,18 +808,18 @@ library WBFLCogo
 	interface IHorzCurveCollection : IUnknown
 	{
         [propget, restricted,helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
-        [propget, helpstring("property Item"), helpcontext(IDH_HorzCurveCollection_Item)] HRESULT Item([in] CogoElementKey key, [out, retval] IHorzCurve* *pVal);
-        [propputref, helpstring("property Item"), helpcontext(IDH_HorzCurveCollection_Item)] HRESULT Item([in] CogoElementKey key, [in] IHorzCurve* newVal);
+        [propget, helpstring("property Item"), helpcontext(IDH_HorzCurveCollection_Item)] HRESULT Item([in] CogoObjectID key, [out, retval] IHorzCurve* *pVal);
+        [propputref, helpstring("property Item"), helpcontext(IDH_HorzCurveCollection_Item)] HRESULT Item([in] CogoObjectID key, [in] IHorzCurve* newVal);
         [propget, helpstring("property Count"), helpcontext(IDH_HorzCurveCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
-        [helpstring("method Add"), helpcontext(IDH_HorzCurveCollection_Add)] HRESULT Add([in] CogoElementKey key,[in] IPoint2d* pbt,[in] IPoint2d* pi,[in] IPoint2d* pft,[in] Float64 radius,[in] Float64 Ls1,[in] Float64 Ls2,[out,retval]IHorzCurve** hc);
-        [helpstring("method AddEx"), helpcontext(IDH_HorzCurveCollection_AddEx)] HRESULT AddEx([in] CogoElementKey key,[in] IHorzCurve* newVal);
-        [helpstring("method Remove"), helpcontext(IDH_HorzCurveCollection_Remove)] HRESULT Remove([in] CogoElementKey key);
+        [helpstring("method Add"), helpcontext(IDH_HorzCurveCollection_Add)] HRESULT Add([in] CogoObjectID key,[in] IPoint2d* pbt,[in] IPoint2d* pi,[in] IPoint2d* pft,[in] Float64 radius,[in] Float64 Ls1,[in] Float64 Ls2,[out,retval]IHorzCurve** hc);
+        [helpstring("method AddEx"), helpcontext(IDH_HorzCurveCollection_AddEx)] HRESULT AddEx([in] CogoObjectID key,[in] IHorzCurve* newVal);
+        [helpstring("method Remove"), helpcontext(IDH_HorzCurveCollection_Remove)] HRESULT Remove([in] CogoObjectID key);
         [helpstring("method Clear"), helpcontext(IDH_HorzCurveCollection_Clear)] HRESULT Clear();
-        [helpstring("method FindKey"), helpcontext(IDH_HorzCurveCollection_FindKey)] HRESULT FindKey([in] IHorzCurve* hc,[out,retval]CogoElementKey* key);
+        [helpstring("method FindKey"), helpcontext(IDH_HorzCurveCollection_FindKey)] HRESULT FindKey([in] IHorzCurve* hc,[out,retval]CogoObjectID* key);
         [propget,restricted,helpstring("property _EnumKeys"), helpcontext(IDH_HorzCurveCollection__EnumKeys)] HRESULT _EnumKeys([out,retval] IEnumKeys** ppenum);
 		[propget, helpstring("method Factory"), helpcontext(IDH_HorzCurveCollection_Factory)] HRESULT Factory([out,retval]IHorzCurveFactory** factory);
 		[propputref, helpstring("method Factory"), helpcontext(IDH_HorzCurveCollection_Factory)] HRESULT Factory([in]IHorzCurveFactory* factory);
-		[helpstring("method Key"), helpcontext(IDH_HorzCurveCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoElementKey* key);
+		[helpstring("method Key"), helpcontext(IDH_HorzCurveCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoObjectID* key);
         [propget,restricted,helpstring("property _EnumHorzCurves"), helpcontext(IDH_HorzCurveCollection__EnumHorzCurves)] HRESULT _EnumHorzCurves([out,retval] IEnumHorzCurves** ppenum);
         [helpstring("method Clone"), helpcontext(IDH_HorzCurveCollection_Clone)] HRESULT Clone([out,retval] IHorzCurveCollection* *clone);
 
@@ -834,9 +836,9 @@ library WBFLCogo
 	]
 	interface IHorzCurveCollectionEvents : IUnknown
    {
-       [helpstring("event OnHorzCurveChanged"), helpcontext(IDH_HorzCurveCollection_OnHorzCurveChanged)] HRESULT OnHorzCurveChanged([in] CogoElementKey key,[in] IHorzCurve* vc);
-       [helpstring("event OnHorzCurveAdded"), helpcontext(IDH_HorzCurveCollection_OnHorzCurveAdded)] HRESULT OnHorzCurveAdded([in] CogoElementKey key,[in] IHorzCurve* vc);
-       [helpstring("event OnHorzCurveRemoved"), helpcontext(IDH_HorzCurveCollection_OnHorzCurveRemoved)] HRESULT OnHorzCurveRemoved([in] CogoElementKey key);
+       [helpstring("event OnHorzCurveChanged"), helpcontext(IDH_HorzCurveCollection_OnHorzCurveChanged)] HRESULT OnHorzCurveChanged([in] CogoObjectID key,[in] IHorzCurve* vc);
+       [helpstring("event OnHorzCurveAdded"), helpcontext(IDH_HorzCurveCollection_OnHorzCurveAdded)] HRESULT OnHorzCurveAdded([in] CogoObjectID key,[in] IHorzCurve* vc);
+       [helpstring("event OnHorzCurveRemoved"), helpcontext(IDH_HorzCurveCollection_OnHorzCurveRemoved)] HRESULT OnHorzCurveRemoved([in] CogoObjectID key);
        [helpstring("event OnHorzCurvesCleared"), helpcontext(IDH_HorzCurveCollection_OnHorzCurvesCleared)] HRESULT OnHorzCurvesCleared();
    };
 
@@ -1202,6 +1204,7 @@ library WBFLCogo
 		[helpstring("method ProjectPoint"), helpcontext(IDH_Alignment_ProjectPoint)] HRESULT ProjectPoint([in] IPoint2d* point,[out,retval] IPoint2d* *newPoint); 
 		[helpstring("method Offset"), helpcontext(IDH_Alignment_Offset)] HRESULT Offset([in] IPoint2d* point,[out] Float64* distance,[out] Float64* offset); 
 		[helpstring("method Intersect")] HRESULT Intersect([in] ILine2d* line,[in]IPoint2d* pNearest,[out,retval]IPoint2d** point);
+      [helpstring("method IntersectEx")] HRESULT IntersectEx([in]ILine2d* line,[in]IPoint2d* pNearest,[in]VARIANT_BOOL vbProjectBack,[in]VARIANT_BOOL vbProjectAhead,[out,retval]IPoint2d** point);
       [propget,helpstring("property Length")] HRESULT Length([out,retval]Float64* pLength);
 		[propget, helpstring("property PointFactory"), helpcontext(IDH_Alignment_PointFactory)] HRESULT PointFactory([out,retval]IPoint2dFactory* *factory); 
 		[propputref, helpstring("property PointFactory"), helpcontext(IDH_Alignment_PointFactory)] HRESULT PointFactory([in]IPoint2dFactory* factory); 
@@ -1277,18 +1280,18 @@ library WBFLCogo
 	interface IPathCollection : IUnknown
 	{
         [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
-        [propget, helpstring("property Item"), helpcontext(IDH_PathCollection_Item)] HRESULT Item([in] CogoElementKey key, [out, retval] IPath* *pVal);
-        [propputref, helpstring("property Item"), helpcontext(IDH_PathCollection_Item)] HRESULT Item([in] CogoElementKey key, [in] IPath* pVal);
+        [propget, helpstring("property Item"), helpcontext(IDH_PathCollection_Item)] HRESULT Item([in] CogoObjectID key, [out, retval] IPath* *pVal);
+        [propputref, helpstring("property Item"), helpcontext(IDH_PathCollection_Item)] HRESULT Item([in] CogoObjectID key, [in] IPath* pVal);
         [propget, helpstring("property Count"), helpcontext(IDH_PathCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
-        [helpstring("method Add"), helpcontext(IDH_PathCollection_Add)] HRESULT Add([in] CogoElementKey key,[out,retval] IPath* *path);
-        [helpstring("method AddEx"), helpcontext(IDH_PathCollection_AddEx)] HRESULT AddEx([in] CogoElementKey key,[in] IPath* newVal);
-        [helpstring("method Remove"), helpcontext(IDH_PathCollection_Remove)] HRESULT Remove([in] CogoElementKey key);
+        [helpstring("method Add"), helpcontext(IDH_PathCollection_Add)] HRESULT Add([in] CogoObjectID key,[out,retval] IPath* *path);
+        [helpstring("method AddEx"), helpcontext(IDH_PathCollection_AddEx)] HRESULT AddEx([in] CogoObjectID key,[in] IPath* newVal);
+        [helpstring("method Remove"), helpcontext(IDH_PathCollection_Remove)] HRESULT Remove([in] CogoObjectID key);
         [helpstring("method Clear"), helpcontext(IDH_PathCollection_Clear)] HRESULT Clear();
-        [helpstring("method FindKey"), helpcontext(IDH_PathCollection_FindKey)] HRESULT FindKey([in] IPath* path,[out,retval]CogoElementKey* key);
+        [helpstring("method FindKey"), helpcontext(IDH_PathCollection_FindKey)] HRESULT FindKey([in] IPath* path,[out,retval]CogoObjectID* key);
         [propget,restricted,helpstring("property _EnumKeys"), helpcontext(IDH_PathCollection__EnumKeys)] HRESULT _EnumKeys([out,retval] IEnumKeys** ppenum);
 		[propget, helpstring("method Factory"), helpcontext(IDH_PathCollection_Factory)] HRESULT Factory([out,retval]IPathFactory** factory);
 		[propputref, helpstring("method Factory"), helpcontext(IDH_PathCollection_Factory)] HRESULT Factory([in]IPathFactory* factory);
-		[helpstring("method Key"), helpcontext(IDH_PathCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoElementKey* key);
+		[helpstring("method Key"), helpcontext(IDH_PathCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoObjectID* key);
         [propget,restricted,helpstring("property _EnumPaths"), helpcontext(IDH_PathCollection__EnumPaths)] HRESULT _EnumPaths([out,retval] IEnumPaths** ppenum);
         [helpstring("method Clone"), helpcontext(IDH_PathCollection_Clone)] HRESULT Clone([out,retval] IPathCollection* *clone);
 
@@ -1306,9 +1309,9 @@ library WBFLCogo
 	interface IPathCollectionEvents : IUnknown
 	{
 	   [helpstring("event OnProfileChanged"), helpcontext(IDH_PathCollection_OnProfileChanged)] HRESULT OnProfileChanged([in]IPathCollection* coll,[in] IProfile* profile);
-	   [helpstring("event OnPathChanged"), helpcontext(IDH_PathCollection_OnAlignmentChanged)] HRESULT OnPathChanged([in]IPathCollection* coll,[in] CogoElementKey key,[in] IPath* path);
-       [helpstring("event OnPathAdded"), helpcontext(IDH_PathCollection_OnAlignmentAdded)] HRESULT OnPathAdded([in]IPathCollection* coll,[in] CogoElementKey key,[in] IPath* path);
-       [helpstring("event OnPathRemoved"), helpcontext(IDH_PathCollection_OnAlignmentRemoved)] HRESULT OnPathRemoved([in]IPathCollection* coll,[in] CogoElementKey key);
+	   [helpstring("event OnPathChanged"), helpcontext(IDH_PathCollection_OnAlignmentChanged)] HRESULT OnPathChanged([in]IPathCollection* coll,[in] CogoObjectID key,[in] IPath* path);
+       [helpstring("event OnPathAdded"), helpcontext(IDH_PathCollection_OnAlignmentAdded)] HRESULT OnPathAdded([in]IPathCollection* coll,[in] CogoObjectID key,[in] IPath* path);
+       [helpstring("event OnPathRemoved"), helpcontext(IDH_PathCollection_OnAlignmentRemoved)] HRESULT OnPathRemoved([in]IPathCollection* coll,[in] CogoObjectID key);
        [helpstring("event OnPathsCleared"), helpcontext(IDH_PathCollection_OnAlignmentCleared)] HRESULT OnPathsCleared([in]IPathCollection* coll);
 	};
 ////
@@ -1344,11 +1347,11 @@ library WBFLCogo
     ]
     interface IMeasure : IUnknown
     {
-        [helpstring("method Angle"),helpcontext(IDH_IMeasure_Angle)] HRESULT Angle([in] CogoElementKey fromID,[in] CogoElementKey vertexID,[in] CogoElementKey toID,[out,retval] IAngle** angle);
+        [helpstring("method Angle"),helpcontext(IDH_IMeasure_Angle)] HRESULT Angle([in] CogoObjectID fromID,[in] CogoObjectID vertexID,[in] CogoObjectID toID,[out,retval] IAngle** angle);
         [helpstring("method Area"),helpcontext(IDH_IMeasure_Area)] HRESULT Area([in] VARIANT keys,[out,retval] Float64* area);
-        [helpstring("method Distance"),helpcontext(IDH_IMeasure_Distance)] HRESULT Distance([in] CogoElementKey fromID,[in] CogoElementKey toID,[out,retval] Float64* dist);
-        [helpstring("method Direction"),helpcontext(IDH_IMeasure_Direction)] HRESULT Direction([in] CogoElementKey fromID,[in] CogoElementKey toID,[out,retval] IDirection** dir);
-        [helpstring("method Inverse"),helpcontext(IDH_IMeasure_Inverse)] HRESULT Inverse([in] CogoElementKey fromID,[in] CogoElementKey toID,[out] Float64* dist,[out] IDirection** dir);
+        [helpstring("method Distance"),helpcontext(IDH_IMeasure_Distance)] HRESULT Distance([in] CogoObjectID fromID,[in] CogoObjectID toID,[out,retval] Float64* dist);
+        [helpstring("method Direction"),helpcontext(IDH_IMeasure_Direction)] HRESULT Direction([in] CogoObjectID fromID,[in] CogoObjectID toID,[out,retval] IDirection** dir);
+        [helpstring("method Inverse"),helpcontext(IDH_IMeasure_Inverse)] HRESULT Inverse([in] CogoObjectID fromID,[in] CogoObjectID toID,[out] Float64* dist,[out] IDirection** dir);
     };
 
     [
@@ -1378,12 +1381,12 @@ library WBFLCogo
     ]
     interface ILocate : IUnknown
     {
-        [helpstring("method ByDistAngle"),helpcontext(IDH_ILocate_ByDistAngle)] HRESULT ByDistAngle([in] CogoElementKey newID,[in] CogoElementKey fromID,[in] CogoElementKey toID, [in] Float64 dist, [in] VARIANT varAngle, [in] Float64 offset);
-        [helpstring("method ByDistDefAngle"),helpcontext(IDH_ILocate_ByDistDefAngle)] HRESULT ByDistDefAngle([in] CogoElementKey newID,[in] CogoElementKey fromID,[in] CogoElementKey toID, [in] Float64 dist, [in] VARIANT varDefAngle, [in] Float64 offset);
-        [helpstring("method ByDistDir"),helpcontext(IDH_ILocate_ByDistDir)] HRESULT ByDistDir([in] CogoElementKey newID,[in] CogoElementKey fromID, [in] Float64 dist, [in] VARIANT varDir, [in] Float64 offset);
-        [helpstring("method PointOnLine"),helpcontext(IDH_ILocate_PointOnLine)] HRESULT PointOnLine([in] CogoElementKey newID,[in] CogoElementKey fromID, [in] CogoElementKey toID, [in] Float64 dist, [in] Float64 offset);
-        [helpstring("method ParallelLineByPoints"),helpcontext(IDH_ILocate_ParallelLineByPoints)] HRESULT ParallelLineByPoints([in] CogoElementKey newFromID,[in] CogoElementKey newToID,[in] CogoElementKey fromID,[in] CogoElementKey toID, [in] Float64 offset);
-        [helpstring("method ParallelLineSegment"),helpcontext(IDH_ILocate_ParallelLineSegment)] HRESULT ParallelLineSegment([in] CogoElementKey newLineID,[in] CogoElementKey newFromID,[in] CogoElementKey newToID,[in] CogoElementKey lineID,[in] Float64 offset);
+        [helpstring("method ByDistAngle"),helpcontext(IDH_ILocate_ByDistAngle)] HRESULT ByDistAngle([in] CogoObjectID newID,[in] CogoObjectID fromID,[in] CogoObjectID toID, [in] Float64 dist, [in] VARIANT varAngle, [in] Float64 offset);
+        [helpstring("method ByDistDefAngle"),helpcontext(IDH_ILocate_ByDistDefAngle)] HRESULT ByDistDefAngle([in] CogoObjectID newID,[in] CogoObjectID fromID,[in] CogoObjectID toID, [in] Float64 dist, [in] VARIANT varDefAngle, [in] Float64 offset);
+        [helpstring("method ByDistDir"),helpcontext(IDH_ILocate_ByDistDir)] HRESULT ByDistDir([in] CogoObjectID newID,[in] CogoObjectID fromID, [in] Float64 dist, [in] VARIANT varDir, [in] Float64 offset);
+        [helpstring("method PointOnLine"),helpcontext(IDH_ILocate_PointOnLine)] HRESULT PointOnLine([in] CogoObjectID newID,[in] CogoObjectID fromID, [in] CogoObjectID toID, [in] Float64 dist, [in] Float64 offset);
+        [helpstring("method ParallelLineByPoints"),helpcontext(IDH_ILocate_ParallelLineByPoints)] HRESULT ParallelLineByPoints([in] CogoObjectID newFromID,[in] CogoObjectID newToID,[in] CogoObjectID fromID,[in] CogoObjectID toID, [in] Float64 offset);
+        [helpstring("method ParallelLineSegment"),helpcontext(IDH_ILocate_ParallelLineSegment)] HRESULT ParallelLineSegment([in] CogoObjectID newLineID,[in] CogoObjectID newFromID,[in] CogoObjectID newToID,[in] CogoObjectID lineID,[in] Float64 offset);
     };
 
     [
@@ -1414,13 +1417,13 @@ library WBFLCogo
     ]
     interface IIntersect : IUnknown
     {
-      [helpstring("method Bearings"),helpcontext(IDH_IIntersect_Bearings)] HRESULT Bearings([in]CogoElementKey newID,[in] CogoElementKey id1, [in] VARIANT varDir1, [in] Float64 offset1,[in] CogoElementKey id2, [in] VARIANT varDir2, [in] Float64 offset2, [out,retval] VARIANT_BOOL* bFound);
-      [helpstring("method BearingCircle"),helpcontext(IDH_IIntersect_BearingCircle)] HRESULT BearingCircle([in]CogoElementKey newID,[in] CogoElementKey id1, [in] VARIANT varDir, [in] Float64 offset,[in] CogoElementKey idc, [in] Float64 radius, [in] CogoElementKey idNearest, [out,retval] VARIANT_BOOL* bFound);
-      [helpstring("method Circles"),helpcontext(IDH_IIntersect_Circles)] HRESULT Circles([in]CogoElementKey newID,[in] CogoElementKey id1, [in] Float64 r1, [in] CogoElementKey id2, [in] Float64 r2, [in] CogoElementKey idNearest, [out,retval] VARIANT_BOOL* bFound);
-      [helpstring("method LineByPointsCircle"),helpcontext(IDH_IIntersect_LineByPointsCircle)] HRESULT LineByPointsCircle([in]CogoElementKey newID,[in] CogoElementKey id1, [in] CogoElementKey id2, [in] Float64 offset,[in] CogoElementKey idc, [in] Float64 radius, [in] CogoElementKey idNearest, [out,retval] VARIANT_BOOL* bFound);
-      [helpstring("method LinesByPoints"),helpcontext(IDH_IIntersect_LinesByPoints)] HRESULT LinesByPoints([in]CogoElementKey newID,[in] CogoElementKey id11, [in] CogoElementKey id12, [in] Float64 offset1,[in] CogoElementKey id21, [in] CogoElementKey id22, [in] Float64 offset2, [out,retval] VARIANT_BOOL* bFound);
-      [helpstring("method Lines"),helpcontext(IDH_IIntersect_Lines)] HRESULT Lines([in]CogoElementKey newID,[in]CogoElementKey id1,[in]Float64 offset1,[in]CogoElementKey id2,[in]Float64 offset2,[out,retval]VARIANT_BOOL* bFound);
-      [helpstring("method LineSegmentCircle"),helpcontext(IDH_IIntersect_LineSegmentCircle)] HRESULT LineSegmentCircle([in]CogoElementKey newID,[in] CogoElementKey lineID, [in] Float64 offset,[in] CogoElementKey idc, [in] Float64 radius, [in] CogoElementKey idNearest, [out,retval] VARIANT_BOOL* bFound);
+      [helpstring("method Bearings"),helpcontext(IDH_IIntersect_Bearings)] HRESULT Bearings([in]CogoObjectID newID,[in] CogoObjectID id1, [in] VARIANT varDir1, [in] Float64 offset1,[in] CogoObjectID id2, [in] VARIANT varDir2, [in] Float64 offset2, [out,retval] VARIANT_BOOL* bFound);
+      [helpstring("method BearingCircle"),helpcontext(IDH_IIntersect_BearingCircle)] HRESULT BearingCircle([in]CogoObjectID newID,[in] CogoObjectID id1, [in] VARIANT varDir, [in] Float64 offset,[in] CogoObjectID idc, [in] Float64 radius, [in] CogoObjectID idNearest, [out,retval] VARIANT_BOOL* bFound);
+      [helpstring("method Circles"),helpcontext(IDH_IIntersect_Circles)] HRESULT Circles([in]CogoObjectID newID,[in] CogoObjectID id1, [in] Float64 r1, [in] CogoObjectID id2, [in] Float64 r2, [in] CogoObjectID idNearest, [out,retval] VARIANT_BOOL* bFound);
+      [helpstring("method LineByPointsCircle"),helpcontext(IDH_IIntersect_LineByPointsCircle)] HRESULT LineByPointsCircle([in]CogoObjectID newID,[in] CogoObjectID id1, [in] CogoObjectID id2, [in] Float64 offset,[in] CogoObjectID idc, [in] Float64 radius, [in] CogoObjectID idNearest, [out,retval] VARIANT_BOOL* bFound);
+      [helpstring("method LinesByPoints"),helpcontext(IDH_IIntersect_LinesByPoints)] HRESULT LinesByPoints([in]CogoObjectID newID,[in] CogoObjectID id11, [in] CogoObjectID id12, [in] Float64 offset1,[in] CogoObjectID id21, [in] CogoObjectID id22, [in] Float64 offset2, [out,retval] VARIANT_BOOL* bFound);
+      [helpstring("method Lines"),helpcontext(IDH_IIntersect_Lines)] HRESULT Lines([in]CogoObjectID newID,[in]CogoObjectID id1,[in]Float64 offset1,[in]CogoObjectID id2,[in]Float64 offset2,[out,retval]VARIANT_BOOL* bFound);
+      [helpstring("method LineSegmentCircle"),helpcontext(IDH_IIntersect_LineSegmentCircle)] HRESULT LineSegmentCircle([in]CogoObjectID newID,[in] CogoObjectID lineID, [in] Float64 offset,[in] CogoObjectID idc, [in] Float64 radius, [in] CogoObjectID idNearest, [out,retval] VARIANT_BOOL* bFound);
     };
 
     [
@@ -1452,9 +1455,9 @@ library WBFLCogo
     ]
     interface IProject : IUnknown
     {
-      [helpstring("method PointOnLineByPoints"),helpcontext(IDH_IProject_PointOnLineByPoints)] HRESULT PointOnLineByPoints([in]CogoElementKey newID,[in] CogoElementKey fromID, [in] CogoElementKey startID, [in] CogoElementKey endID, [in] Float64 offset);
-      [helpstring("method PointOnLineSegment"),helpcontext(IDH_IProject_PointOnLineSegment)] HRESULT PointOnLineSegment([in]CogoElementKey newID,[in]CogoElementKey fromID,[in] CogoElementKey lineID, [in] Float64 offset);
-      [helpstring("method PointOnCurve"),helpcontext(IDH_IProject_PointOnCurve)] HRESULT PointOnCurve([in]CogoElementKey newID,[in] CogoElementKey fromID, [in]CogoElementKey curveID);
+      [helpstring("method PointOnLineByPoints"),helpcontext(IDH_IProject_PointOnLineByPoints)] HRESULT PointOnLineByPoints([in]CogoObjectID newID,[in] CogoObjectID fromID, [in] CogoObjectID startID, [in] CogoObjectID endID, [in] Float64 offset);
+      [helpstring("method PointOnLineSegment"),helpcontext(IDH_IProject_PointOnLineSegment)] HRESULT PointOnLineSegment([in]CogoObjectID newID,[in]CogoObjectID fromID,[in] CogoObjectID lineID, [in] Float64 offset);
+      [helpstring("method PointOnCurve"),helpcontext(IDH_IProject_PointOnCurve)] HRESULT PointOnCurve([in]CogoObjectID newID,[in] CogoObjectID fromID, [in]CogoObjectID curveID);
     };
 
     [
@@ -1481,11 +1484,11 @@ library WBFLCogo
    ]
    interface IDivide : IUnknown
    {
-      [helpstring("method Arc"),helpcontext(IDH_IDivide_Arc)] HRESULT Arc([in]CogoElementKey firstID,[in] CogoElementKey idInc, [in] CogoElementKey fromID, [in] CogoElementKey vertexID, [in] CogoElementKey toID,[in] long nParts);
-      [helpstring("method BetweenPoints"),helpcontext(IDH_IDivide_BetweenPoints)] HRESULT BetweenPoints([in]CogoElementKey firstID,[in] CogoElementKey idInc, [in] CogoElementKey fromID, [in] CogoElementKey toID,[in] long nParts);
-      [helpstring("method LineSegment"),helpcontext(IDH_IDivide_LineSegment)] HRESULT LineSegment([in]CogoElementKey firstID,[in] CogoElementKey idInc, [in] CogoElementKey lineID,[in] long nParts);
-	   [helpstring("method HorzCurve"),helpcontext(IDH_IDivide_HorzCurve)] HRESULT HorzCurve([in]CogoElementKey firstID, [in] CogoElementKey idInc, [in] CogoElementKey curveID, [in] long nParts);
-      [helpstring("method Path"),helpcontext(IDH_IDivide_Path)] HRESULT Path([in]CogoElementKey firstID,[in]CogoElementKey idInc,[in] CogoElementKey pathID,[in] long nParts,[in] Float64 start,[in] Float64 end);
+      [helpstring("method Arc"),helpcontext(IDH_IDivide_Arc)] HRESULT Arc([in]CogoObjectID firstID,[in] CogoObjectID idInc, [in] CogoObjectID fromID, [in] CogoObjectID vertexID, [in] CogoObjectID toID,[in] CollectionIndexType nParts);
+      [helpstring("method BetweenPoints"),helpcontext(IDH_IDivide_BetweenPoints)] HRESULT BetweenPoints([in]CogoObjectID firstID,[in] CogoObjectID idInc, [in] CogoObjectID fromID, [in] CogoObjectID toID,[in] CollectionIndexType nParts);
+      [helpstring("method LineSegment"),helpcontext(IDH_IDivide_LineSegment)] HRESULT LineSegment([in]CogoObjectID firstID,[in] CogoObjectID idInc, [in] CogoObjectID lineID,[in] CollectionIndexType nParts);
+	   [helpstring("method HorzCurve"),helpcontext(IDH_IDivide_HorzCurve)] HRESULT HorzCurve([in]CogoObjectID firstID, [in] CogoObjectID idInc, [in] CogoObjectID curveID, [in] CollectionIndexType nParts);
+      [helpstring("method Path"),helpcontext(IDH_IDivide_Path)] HRESULT Path([in]CogoObjectID firstID,[in]CogoObjectID idInc,[in] CogoObjectID pathID,[in] CollectionIndexType nParts,[in] Float64 start,[in] Float64 end);
    };
    [
       object,
@@ -1497,11 +1500,11 @@ library WBFLCogo
    ]
    interface IDivide2 : IUnknown
    {
-      [helpstring("method Arc"),helpcontext(IDH_IDivide_Arc)] HRESULT Arc([in] IPoint2d* from, [in] IPoint2d* vertex, [in] IPoint2d* to,[in] long nParts,[out,retval] IPoint2dCollection** points);
-      [helpstring("method BetweenPoints"),helpcontext(IDH_IDivide_BetweenPoints)] HRESULT BetweenPoints([in] IPoint2d* from, [in] IPoint2d* to,[in] long nParts,[out,retval] IPoint2dCollection** points);
-      [helpstring("method LineSegment"),helpcontext(IDH_IDivide_LineSegment)] HRESULT LineSegment([in] ILineSegment2d* seg,[in] long nParts,[out,retval]IPoint2dCollection** points);
-	   [helpstring("method HorzCurve"),helpcontext(IDH_IDivide_HorzCurve)] HRESULT HorzCurve([in] IHorzCurve* curve, [in] long nParts, [out,retval] IPoint2dCollection** points);
-      [helpstring("method Path"),helpcontext(IDH_IDivide_Path)] HRESULT Path([in]IPath* pPath,[in] long nParts,[in] Float64 start,[in] Float64 end,[out,retval]IPoint2dCollection** points);
+      [helpstring("method Arc"),helpcontext(IDH_IDivide_Arc)] HRESULT Arc([in] IPoint2d* from, [in] IPoint2d* vertex, [in] IPoint2d* to,[in] CollectionIndexType nParts,[out,retval] IPoint2dCollection** points);
+      [helpstring("method BetweenPoints"),helpcontext(IDH_IDivide_BetweenPoints)] HRESULT BetweenPoints([in] IPoint2d* from, [in] IPoint2d* to,[in] CollectionIndexType nParts,[out,retval] IPoint2dCollection** points);
+      [helpstring("method LineSegment"),helpcontext(IDH_IDivide_LineSegment)] HRESULT LineSegment([in] ILineSegment2d* seg,[in] CollectionIndexType nParts,[out,retval]IPoint2dCollection** points);
+	   [helpstring("method HorzCurve"),helpcontext(IDH_IDivide_HorzCurve)] HRESULT HorzCurve([in] IHorzCurve* curve, [in] CollectionIndexType nParts, [out,retval] IPoint2dCollection** points);
+      [helpstring("method Path"),helpcontext(IDH_IDivide_Path)] HRESULT Path([in]IPath* pPath,[in] CollectionIndexType nParts,[in] Float64 start,[in] Float64 end,[out,retval]IPoint2dCollection** points);
    };
 
    [
@@ -1514,9 +1517,9 @@ library WBFLCogo
    ]
    interface ITangent : IUnknown
    {
-      [helpstring("method External"),helpcontext(IDH_ITangent_External)] HRESULT External([in] CogoElementKey newID1, [in] CogoElementKey idCenter1, [in] Float64 radius1,[in] CogoElementKey newID2,[in] CogoElementKey idCenter2, [in] Float64 radius2, [in] TangentSignType sign);
-      [helpstring("method Cross"),helpcontext(IDH_ITangent_Cross)] HRESULT Cross([in] CogoElementKey newID1, [in] CogoElementKey idCenter1, [in] Float64 radius1,[in] CogoElementKey newID2,[in] CogoElementKey idCenter2, [in] Float64 radius2, [in] TangentSignType sign);
-      [helpstring("method Point"),helpcontext(IDH_ITangent_Point)] HRESULT Point([in] CogoElementKey newID, [in] CogoElementKey idCenter, [in] Float64 radius,[in] CogoElementKey pointID,[in] TangentSignType sign);
+      [helpstring("method External"),helpcontext(IDH_ITangent_External)] HRESULT External([in] CogoObjectID newID1, [in] CogoObjectID idCenter1, [in] Float64 radius1,[in] CogoObjectID newID2,[in] CogoObjectID idCenter2, [in] Float64 radius2, [in] TangentSignType sign);
+      [helpstring("method Cross"),helpcontext(IDH_ITangent_Cross)] HRESULT Cross([in] CogoObjectID newID1, [in] CogoObjectID idCenter1, [in] Float64 radius1,[in] CogoObjectID newID2,[in] CogoObjectID idCenter2, [in] Float64 radius2, [in] TangentSignType sign);
+      [helpstring("method Point"),helpcontext(IDH_ITangent_Point)] HRESULT Point([in] CogoObjectID newID, [in] CogoObjectID idCenter, [in] Float64 radius,[in] CogoObjectID pointID,[in] TangentSignType sign);
    };
 
    [
@@ -1607,34 +1610,34 @@ library WBFLCogo
    ]
    interface ICogoModelEvents : IUnknown
    {
-       [helpstring("event OnPointChanged"),helpcontext(IDH_CogoModel_OnPointChanged)] HRESULT OnPointChanged([in] ICogoModel* cm,[in] CogoElementKey key,[in] IPoint2d* point);
-       [helpstring("event OnPointAdded"),helpcontext(IDH_CogoModel_OnPointAdded)] HRESULT OnPointAdded([in] ICogoModel* cm,[in] CogoElementKey key,[in] IPoint2d* point);
-       [helpstring("event OnPointRemoved"),helpcontext(IDH_CogoModel_OnPointRemoved)] HRESULT OnPointRemoved([in] ICogoModel* cm,[in] CogoElementKey key);
+       [helpstring("event OnPointChanged"),helpcontext(IDH_CogoModel_OnPointChanged)] HRESULT OnPointChanged([in] ICogoModel* cm,[in] CogoObjectID key,[in] IPoint2d* point);
+       [helpstring("event OnPointAdded"),helpcontext(IDH_CogoModel_OnPointAdded)] HRESULT OnPointAdded([in] ICogoModel* cm,[in] CogoObjectID key,[in] IPoint2d* point);
+       [helpstring("event OnPointRemoved"),helpcontext(IDH_CogoModel_OnPointRemoved)] HRESULT OnPointRemoved([in] ICogoModel* cm,[in] CogoObjectID key);
        [helpstring("event OnPointsCleared"),helpcontext(IDH_CogoModel_OnPointsCleared)] HRESULT OnPointsCleared([in] ICogoModel* cm);
-       [helpstring("event OnLineSegmentChanged"),helpcontext(IDH_CogoModel_OnLineSegmentChanged)] HRESULT OnLineSegmentChanged([in] ICogoModel* cm,[in] CogoElementKey key,[in] ILineSegment2d* lineSeg);
-       [helpstring("event OnLineSegmentAdded"),helpcontext(IDH_CogoModel_OnLineSegmentAdded)] HRESULT OnLineSegmentAdded([in] ICogoModel* cm,[in] CogoElementKey key,[in] ILineSegment2d* lineSeg);
-       [helpstring("event OnLineSegmentRemoved"),helpcontext(IDH_CogoModel_OnLineSegmentRemoved)] HRESULT OnLineSegmentRemoved([in] ICogoModel* cm,[in] CogoElementKey key);
+       [helpstring("event OnLineSegmentChanged"),helpcontext(IDH_CogoModel_OnLineSegmentChanged)] HRESULT OnLineSegmentChanged([in] ICogoModel* cm,[in] CogoObjectID key,[in] ILineSegment2d* lineSeg);
+       [helpstring("event OnLineSegmentAdded"),helpcontext(IDH_CogoModel_OnLineSegmentAdded)] HRESULT OnLineSegmentAdded([in] ICogoModel* cm,[in] CogoObjectID key,[in] ILineSegment2d* lineSeg);
+       [helpstring("event OnLineSegmentRemoved"),helpcontext(IDH_CogoModel_OnLineSegmentRemoved)] HRESULT OnLineSegmentRemoved([in] ICogoModel* cm,[in] CogoObjectID key);
        [helpstring("event OnLineSegmentsCleared"),helpcontext(IDH_CogoModel_OnLineSegmentsCleared)] HRESULT OnLineSegmentsCleared([in] ICogoModel* cm);
-       [helpstring("event OnProfilePointChanged"),helpcontext(IDH_CogoModel_OnProfilePointChanged)] HRESULT OnProfilePointChanged([in] ICogoModel* cm,[in] CogoElementKey key,[in] IProfilePoint* pp);
-       [helpstring("event OnProfilePointAdded"),helpcontext(IDH_CogoModel_OnProfilePointAdded)] HRESULT OnProfilePointAdded([in] ICogoModel* cm,[in] CogoElementKey key,[in] IProfilePoint* pp);
-       [helpstring("event OnProfilePointRemoved"),helpcontext(IDH_CogoModel_OnProfilePointRemoved)] HRESULT OnProfilePointRemoved([in] ICogoModel* cm,[in] CogoElementKey key);
+       [helpstring("event OnProfilePointChanged"),helpcontext(IDH_CogoModel_OnProfilePointChanged)] HRESULT OnProfilePointChanged([in] ICogoModel* cm,[in] CogoObjectID key,[in] IProfilePoint* pp);
+       [helpstring("event OnProfilePointAdded"),helpcontext(IDH_CogoModel_OnProfilePointAdded)] HRESULT OnProfilePointAdded([in] ICogoModel* cm,[in] CogoObjectID key,[in] IProfilePoint* pp);
+       [helpstring("event OnProfilePointRemoved"),helpcontext(IDH_CogoModel_OnProfilePointRemoved)] HRESULT OnProfilePointRemoved([in] ICogoModel* cm,[in] CogoObjectID key);
        [helpstring("event OnProfilePointsCleared"),helpcontext(IDH_CogoModel_OnProfilePointsCleared)] HRESULT OnProfilePointsCleared([in] ICogoModel* cm);
-       [helpstring("event OnVertCurveChanged"),helpcontext(IDH_CogoModel_OnVertCurveChanged)] HRESULT OnVertCurveChanged([in] ICogoModel* cm,[in] CogoElementKey key,[in] IVertCurve* vc);
-       [helpstring("event OnVertCurveAdded"),helpcontext(IDH_CogoModel_OnVertCurveAdded)] HRESULT OnVertCurveAdded([in] ICogoModel* cm,[in] CogoElementKey key,[in] IVertCurve* vc);
-       [helpstring("event OnVertCurveRemoved"),helpcontext(IDH_CogoModel_OnVertCurveRemoved)] HRESULT OnVertCurveRemoved([in] ICogoModel* cm,[in] CogoElementKey key);
+       [helpstring("event OnVertCurveChanged"),helpcontext(IDH_CogoModel_OnVertCurveChanged)] HRESULT OnVertCurveChanged([in] ICogoModel* cm,[in] CogoObjectID key,[in] IVertCurve* vc);
+       [helpstring("event OnVertCurveAdded"),helpcontext(IDH_CogoModel_OnVertCurveAdded)] HRESULT OnVertCurveAdded([in] ICogoModel* cm,[in] CogoObjectID key,[in] IVertCurve* vc);
+       [helpstring("event OnVertCurveRemoved"),helpcontext(IDH_CogoModel_OnVertCurveRemoved)] HRESULT OnVertCurveRemoved([in] ICogoModel* cm,[in] CogoObjectID key);
        [helpstring("event OnVertCurvesCleared"),helpcontext(IDH_CogoModel_OnVertCurvesCleared)] HRESULT OnVertCurvesCleared([in] ICogoModel* cm);
-       [helpstring("event OnHorzCurveChanged"),helpcontext(IDH_CogoModel_OnHorzCurveChanged)] HRESULT OnHorzCurveChanged([in] ICogoModel* cm,[in] CogoElementKey key,[in] IHorzCurve* vc);
-       [helpstring("event OnHorzCurveAdded"),helpcontext(IDH_CogoModel_OnHorzCurveAdded)] HRESULT OnHorzCurveAdded([in] ICogoModel* cm,[in] CogoElementKey key,[in] IHorzCurve* vc);
-       [helpstring("event OnHorzCurveRemoved"),helpcontext(IDH_CogoModel_OnHorzCurveRemoved)] HRESULT OnHorzCurveRemoved([in] ICogoModel* cm,[in] CogoElementKey key);
+       [helpstring("event OnHorzCurveChanged"),helpcontext(IDH_CogoModel_OnHorzCurveChanged)] HRESULT OnHorzCurveChanged([in] ICogoModel* cm,[in] CogoObjectID key,[in] IHorzCurve* vc);
+       [helpstring("event OnHorzCurveAdded"),helpcontext(IDH_CogoModel_OnHorzCurveAdded)] HRESULT OnHorzCurveAdded([in] ICogoModel* cm,[in] CogoObjectID key,[in] IHorzCurve* vc);
+       [helpstring("event OnHorzCurveRemoved"),helpcontext(IDH_CogoModel_OnHorzCurveRemoved)] HRESULT OnHorzCurveRemoved([in] ICogoModel* cm,[in] CogoObjectID key);
        [helpstring("event OnHorzCurvesCleared"),helpcontext(IDH_CogoModel_OnHorzCurvesCleared)] HRESULT OnHorzCurvesCleared([in] ICogoModel* cm);
 	    [helpstring("event OnProfileChanged"),helpcontext(IDH_CogoModel_OnProfileChanged)] HRESULT OnProfileChanged([in] ICogoModel* cm,[in] IProfile* profile);
-	    [helpstring("event OnAlignmentChanged"),helpcontext(IDH_CogoModel_OnAlignmentChanged)] HRESULT OnAlignmentChanged([in] ICogoModel* cm,[in] CogoElementKey key,[in] IAlignment* alignment);
-       [helpstring("event OnAlignmentAdded"),helpcontext(IDH_CogoModel_OnAlignmentAdded)] HRESULT OnAlignmentAdded([in] ICogoModel* cm,[in] CogoElementKey key,[in] IAlignment* alignment);
-       [helpstring("event OnAlignmentRemoved"),helpcontext(IDH_CogoModel_OnAlignmentRemoved)] HRESULT OnAlignmentRemoved([in] ICogoModel* cm,[in] CogoElementKey key);
+	    [helpstring("event OnAlignmentChanged"),helpcontext(IDH_CogoModel_OnAlignmentChanged)] HRESULT OnAlignmentChanged([in] ICogoModel* cm,[in] CogoObjectID key,[in] IAlignment* alignment);
+       [helpstring("event OnAlignmentAdded"),helpcontext(IDH_CogoModel_OnAlignmentAdded)] HRESULT OnAlignmentAdded([in] ICogoModel* cm,[in] CogoObjectID key,[in] IAlignment* alignment);
+       [helpstring("event OnAlignmentRemoved"),helpcontext(IDH_CogoModel_OnAlignmentRemoved)] HRESULT OnAlignmentRemoved([in] ICogoModel* cm,[in] CogoObjectID key);
        [helpstring("event OnAlignmentCleared"),helpcontext(IDH_CogoModel_OnAlignmentCleared)] HRESULT OnAlignmentsCleared([in] ICogoModel* cm);
-	    [helpstring("event OnPathChanged"),helpcontext(IDH_CogoModel_OnPathChanged)] HRESULT OnPathChanged([in] ICogoModel* cm,[in] CogoElementKey key,[in] IPath* path);
-       [helpstring("event OnPathAdded"),helpcontext(IDH_CogoModel_OnPathAdded)] HRESULT OnPathAdded([in] ICogoModel* cm,[in] CogoElementKey key,[in] IPath* path);
-       [helpstring("event OnPathRemoved"),helpcontext(IDH_CogoModel_OnPathRemoved)] HRESULT OnPathRemoved([in] ICogoModel* cm,[in] CogoElementKey key);
+	    [helpstring("event OnPathChanged"),helpcontext(IDH_CogoModel_OnPathChanged)] HRESULT OnPathChanged([in] ICogoModel* cm,[in] CogoObjectID key,[in] IPath* path);
+       [helpstring("event OnPathAdded"),helpcontext(IDH_CogoModel_OnPathAdded)] HRESULT OnPathAdded([in] ICogoModel* cm,[in] CogoObjectID key,[in] IPath* path);
+       [helpstring("event OnPathRemoved"),helpcontext(IDH_CogoModel_OnPathRemoved)] HRESULT OnPathRemoved([in] ICogoModel* cm,[in] CogoObjectID key);
        [helpstring("event OnPathCleared"),helpcontext(IDH_CogoModel_OnPathCleared)] HRESULT OnPathsCleared([in] ICogoModel* cm);
    };
 

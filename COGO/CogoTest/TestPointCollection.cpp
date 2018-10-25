@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -168,7 +168,7 @@ void CTestPointCollection::Test()
    //
    // Test FindKey
    //
-   CogoElementKey key;
+   CogoObjectID key;
    TRY_TEST(pColl->FindKey(NULL,&key),E_INVALIDARG);
    TRY_TEST(pColl->FindKey(p2,NULL),E_POINTER);
    TRY_TEST(pColl->FindKey(p2,&key),S_OK);
@@ -211,7 +211,7 @@ void CTestPointCollection::Test()
    TRY_TEST( pColl->get__EnumKeys(&pEnum), S_OK );
 
    ULONG fetched;
-   CogoElementKey target_key = 1;
+   CogoObjectID target_key = 1;
    while( pEnum->Next(1,&key,&fetched ) == S_OK )
    {
       TRY_TEST(key,target_key++);
@@ -326,7 +326,7 @@ void CTestPointCollection::Test()
    TRY_TEST( TestIObjectSafety(CLSID_PointCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
-STDMETHODIMP CTestPointCollection::OnPointChanged(CogoElementKey key,IPoint2d* point)
+STDMETHODIMP CTestPointCollection::OnPointChanged(CogoObjectID key,IPoint2d* point)
 {
 //   MessageBox(NULL,"PointChanged","Event",MB_OK);
    if ( key == m_expectedKey )
@@ -335,7 +335,7 @@ STDMETHODIMP CTestPointCollection::OnPointChanged(CogoElementKey key,IPoint2d* p
    return S_OK;
 }
 
-STDMETHODIMP CTestPointCollection::OnPointAdded(CogoElementKey key,IPoint2d* point)
+STDMETHODIMP CTestPointCollection::OnPointAdded(CogoObjectID key,IPoint2d* point)
 {
 //   MessageBox(NULL,"PointAdded","Event",MB_OK);
    if ( key == m_expectedKey )
@@ -344,7 +344,7 @@ STDMETHODIMP CTestPointCollection::OnPointAdded(CogoElementKey key,IPoint2d* poi
    return S_OK;
 }
 
-STDMETHODIMP CTestPointCollection::OnPointRemoved(CogoElementKey key)
+STDMETHODIMP CTestPointCollection::OnPointRemoved(CogoObjectID key)
 {
 //   MessageBox(NULL,"PointRemoved","Event",MB_OK);
    if ( key == m_expectedKey )

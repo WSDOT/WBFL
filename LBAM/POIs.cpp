@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -124,11 +124,6 @@ void CPOIs::FinalRelease()
       this->OnBeforeRemove(*it);
    }
 }
-
-//STDMETHODIMP CPOIs::get_Item(CollectionIndexType idx,IPOI** ppPOI)
-//{
-//   return PersistentPOICollImpl::get_Item(idx,ppPOI);
-//}
 
 STDMETHODIMP CPOIs::Clone(IPOIs* *pColl)
 {

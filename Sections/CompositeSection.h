@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Sections - Model bridge member cross sections
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,7 +31,7 @@
 #include "WBFLComCollections.h"
 
 class CCompositeSection;
-typedef CComVectorCollectionNoEnum<ICompositeSectionEx,ICompositeSectionItem,CollectionIndexType> CompositeSectionVectorImpl;
+typedef CComVectorCollectionNoEnum<ICompositeSection,ICompositeSectionItem,CollectionIndexType> CompositeSectionVectorImpl;
 typedef CPersistentCollection<CCompositeSection,CompositeSectionVectorImpl,CollectionIndexType> PersistentCompositeSection;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,6 @@ DECLARE_REGISTRY_RESOURCEID(IDR_COMPOSITESECTION)
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CCompositeSection)
-	COM_INTERFACE_ENTRY(ICompositeSectionEx)
 	COM_INTERFACE_ENTRY(ICompositeSection)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(ISection)

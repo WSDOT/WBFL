@@ -21,7 +21,7 @@ public:
 	enum { IDD = IDD_EDITMEMBER };
 	Float64	m_EA;
 	Float64	m_EI;
-	JointIDType		m_EndJoint;
+	JointIDType m_EndJoint;
 	MemberIDType	m_MbrID;
 	BOOL	m_bReleaseMzAtEnd;
 	BOOL	m_bReleaseMzAtStart;

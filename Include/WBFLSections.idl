@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Sections - Model bridge member cross sections
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -148,18 +148,8 @@ library WBFLSections
 
 	   [helpstring("method TransformProperties"),helpcontext(IDH_IElasticProperties_TransformProperties)]
 	   HRESULT TransformProperties([in] Float64 E,[out,retval] IShapeProperties** props);
-	};
-	[
-		object,
-		uuid(131A3B86-6EC9-4897-BA29-F1DA316BFA53),
-		oleautomation,
-		helpstring("IElasticPropertiesEx Interface"),
-		helpcontext(IDH_IElasticProperties),
-		pointer_default(unique)
-	]
-	interface IElasticPropertiesEx : IElasticProperties
-	{
-		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 	[
@@ -180,18 +170,8 @@ library WBFLSections
 
 		[helpstring("method AddProperties"),helpcontext(IDH_IMassProperties_AddProperties)]
       HRESULT AddProperties([in] IMassProperties* props);
-	};
-	[
-		object,
-		uuid(48A8BF49-37A3-4edf-8C59-55282D3F1133),
-		oleautomation,
-		helpstring("IMassPropertiesEx Interface"),
-		helpcontext(IDH_IMassProperties),
-		pointer_default(unique)
-	]
-	interface IMassPropertiesEx : IMassProperties
-	{
-		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
@@ -223,7 +203,8 @@ library WBFLSections
 		[helpstring("method Clone"),helpcontext(IDH_ISection_Clone)]
       HRESULT Clone(ISection** clone);
    };
-	[
+
+   [
 		object,
 		uuid(ED88B503-F79D-4FAB-BE54-1DDCA670347B),
 		oleautomation,
@@ -262,20 +243,11 @@ library WBFLSections
 
 		[propput, helpstring("property Structural"),helpcontext(IDH_ICompositeSectionItem_Structural)]
       HRESULT Structural([in] VARIANT_BOOL newVal);
-	};
-	[
-		object,
-		uuid(0686F3CA-9CA5-452e-839A-426F022A4420),
-		oleautomation,
-		helpstring("ICompositeSectionItemEx Interface"),
-		helpcontext(IDH_ICompositeSectionItem),
-		pointer_default(unique)
-	]
-	interface ICompositeSectionItemEx : ICompositeSectionItem
-	{
-		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
+
 	[
 		object,
 		uuid(9B65E675-01C8-11D5-8BAC-006097C68A9C),
@@ -309,21 +281,12 @@ library WBFLSections
 
 		[propget, helpstring("property XYPosition"),helpcontext(IDH_ICompositeSection_XYPosition)]
       HRESULT XYPosition([out, retval] IXYPosition* *pVal);
-	};
-	[
-		object,
-		uuid(DE781AE1-0886-44d5-BDE6-35E6187AE241),
-		oleautomation,
-		helpstring("ICompositeSectionEx Interface"),
-		helpcontext(IDH_ICompositeSection),
-		pointer_default(unique)
-	]
-	interface ICompositeSectionEx : ICompositeSection
-	{
-		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
-	[
+
+   [
 		object,
 		uuid(D7610038-0289-11D5-8BAE-006097C68A9C),
 		oleautomation,
@@ -410,32 +373,110 @@ library WBFLSections
 
 		[propget, helpstring("property Q"),helpcontext(IDH_ICompositeBeam_Q)]
       HRESULT Q([in] Float64 location, [out, retval] Float64 *pVal);
-	};
-	[
-		object,
-		uuid(224214B2-02D3-4c49-8295-A38E082F2AA0),
-		oleautomation,
-		helpstring("ICompositeBeamEx Interface"),
-		helpcontext(IDH_ICompositeBeam),
-		pointer_default(unique)
-	]
-	interface ICompositeBeamEx : ICompositeBeam
-	{
-		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
+
+   [
+		object,
+		uuid(C6B42790-3DC8-487f-B33E-9B65167EFA3B),
+		oleautomation,
+		helpstring("ICompositeSectionItemEx Interface"),
+      helpcontext(IDH_ICompositeSectionItemEx),
+		pointer_default(unique)
+	]
+	interface ICompositeSectionItemEx : IUnknown
+	{
+		[propget, helpstring("property Shape"),helpcontext(IDH_ICompositeSectionItemEx_Shape)]
+      HRESULT Shape([out, retval] IShape* *pVal);
+
+		[propputref, helpstring("property Shape"),helpcontext(IDH_ICompositeSectionItemEx_Shape)]
+      HRESULT Shape([in] IShape* newVal);
+
+		[propget, helpstring("property Efg"),helpcontext(IDH_ICompositeSectionItemEx_Efg)]
+      HRESULT Efg([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Efg"),helpcontext(IDH_ICompositeSectionItemEx_Efg)]
+      HRESULT Efg([in] Float64 newVal);
+
+		[propget, helpstring("property Ebg"),helpcontext(IDH_ICompositeSectionItemEx_Ebg)]
+      HRESULT Ebg([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Ebg"),helpcontext(IDH_ICompositeSectionItemEx_Ebg)]
+      HRESULT Ebg([in] Float64 newVal);
+
+		[propget, helpstring("property Dfg"),helpcontext(IDH_ICompositeSectionItemEx_Dfg)]
+      HRESULT Dfg([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Dfg"),helpcontext(IDH_ICompositeSectionItemEx_Dfg)]
+      HRESULT Dfg([in] Float64 newVal);
+
+		[propget, helpstring("property Dbg"),helpcontext(IDH_ICompositeSectionItemEx_Dbg)]
+      HRESULT Dbg([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Dbg"),helpcontext(IDH_ICompositeSectionItemEx_Dbg)]
+      HRESULT Dbg([in] Float64 newVal);
+
+		[propget, helpstring("property Structural"),helpcontext(IDH_ICompositeSectionItemEx_Structural)]
+      HRESULT Structural([out, retval] VARIANT_BOOL *pVal);
+
+		[propput, helpstring("property Structural"),helpcontext(IDH_ICompositeSectionItemEx_Structural)]
+      HRESULT Structural([in] VARIANT_BOOL newVal);
+
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+
+
 	[
+		object,
+		uuid(EDEA2BF6-8E57-4bfa-8CD6-A007C6E1E032),
+		oleautomation,
+		helpstring("ICompositeSectionEx Interface"),
+      helpcontext(IDH_ICompositeSectionEx),
+		pointer_default(unique)
+	]
+	interface ICompositeSectionEx : IUnknown
+	{
+		[propget, helpstring("property _NewEnum")]
+      HRESULT _NewEnum([out, retval] IUnknown* *pVal);
+
+		[propget, helpstring("property Item"),helpcontext(IDH_ICompositeSectionEx_Item)]
+      HRESULT Item([in] CollectionIndexType idx, [out, retval] ICompositeSectionItemEx* *pVal);
+
+		[helpstring("method AddSection"),helpcontext(IDH_ICompositeSectionEx_AddSection)]
+      HRESULT AddSection([in] IShape* shape,[in] Float64 Efg,[in] Float64 Ebg,[in] Float64 Dfg,[in]Float64 Dbg,[in] VARIANT_BOOL bStructural);
+
+		[helpstring("method AddSectionEx"),helpcontext(IDH_ICompositeSectionEx_AddSectionEx)]
+      HRESULT AddSectionEx([in] ICompositeSectionItemEx* sectionItem);
+
+		[helpstring("method Remove"),helpcontext(IDH_ICompositeSectionEx_Remove)]
+      HRESULT Remove([in] CollectionIndexType idx);
+
+		[propget, helpstring("property Count"),helpcontext(IDH_ICompositeSectionEx_Count)]
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+		[propget, helpstring("property Section"),helpcontext(IDH_ICompositeSectionEx_Section)]
+      HRESULT Section([out, retval] ISection* *pVal);
+
+		[propget, helpstring("property XYPosition"),helpcontext(IDH_ICompositeSectionEx_XYPosition)]
+      HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+   
+   [
 		uuid(FD7B2E32-6DB3-4BF2-8A0A-484B19FD1CE6),
 		helpstring("ElasticProperties Class"),
       helpcontext(IDH_IElasticProperties)
 	]
 	coclass ElasticProperties
 	{
-		[default] interface IElasticPropertiesEx;
-      interface IElasticProperties;
+		[default] interface IElasticProperties;
       interface IStructuredStorage2;
-        // interface IPersist;
 	};
 	[
 		uuid(3925A3FA-34CD-4E06-AEDF-BCD1773E0810),
@@ -444,10 +485,8 @@ library WBFLSections
 	]
 	coclass MassProperties
 	{
-		[default] interface IMassPropertiesEx;
-      interface IMassProperties;
+		[default] interface IMassProperties;
       interface IStructuredStorage2;
-        // interface IPersist;
 	};
 	[
 		uuid(9A0C379F-0945-41E5-8053-FD77B4FDBF59),
@@ -456,10 +495,8 @@ library WBFLSections
 	]
 	coclass CompositeSectionItem
 	{
-		[default] interface ICompositeSectionItemEx;
-      interface ICompositeSectionItem;
+		[default] interface ICompositeSectionItem;
       interface IStructuredStorage2;
-        // interface IPersist;
 	};
 	[
 		uuid(9B65E676-01C8-11D5-8BAC-006097C68A9C),
@@ -468,12 +505,10 @@ library WBFLSections
 	]
 	coclass CompositeSection
 	{
-		[default] interface ICompositeSectionEx;
-		interface ICompositeSection;
+		[default] interface ICompositeSection;
 		interface ISection;
 		interface IXYPosition;
       interface IStructuredStorage2;
-        // interface IPersist;
 	};
 	[
 		uuid(D7610039-0289-11D5-8BAE-006097C68A9C),
@@ -482,9 +517,31 @@ library WBFLSections
 	]
 	coclass CompositeBeam
 	{
-		[default] interface ICompositeBeamEx;
-		interface ICompositeBeam;
+		[default] interface ICompositeBeam;
       interface IStructuredStorage2;
-        // interface IPersist;
+	};
+
+
+	[
+		uuid(94267249-3C7D-40a3-BB21-DD8916BA4DE0),
+		helpstring("CompositeSectionItemEx Class"),
+      helpcontext(IDH_ICompositeSectionItemEx)
+	]
+	coclass CompositeSectionItemEx
+	{
+		[default] interface ICompositeSectionItemEx;
+      interface IStructuredStorage2;
+	};
+	[
+		uuid(85AB469B-A6A3-4057-848A-1572DAD74DE0),
+		helpstring("CompositeSectionEx Class"),
+      helpcontext(IDH_ICompositeSectionEx)
+	]
+	coclass CompositeSectionEx
+	{
+		[default] interface ICompositeSectionEx;
+		interface ISection;
+		interface IXYPosition;
+      interface IStructuredStorage2;
 	};
 };

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -141,7 +141,7 @@ protected:
    void MakeCopy(const WsdotCalculationSheet& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const WsdotCalculationSheet& rOther);
+   virtual void MakeAssignment(const WsdotCalculationSheet& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

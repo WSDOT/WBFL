@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -77,57 +77,60 @@ STDMETHODIMP CLinearTendonSegment::InterfaceSupportsErrorInfo(REFIID riid)
 
 /////////////////////////////////////////////////////
 // ILinearTendonSegment
-STDMETHODIMP CLinearTendonSegment::putref_Start(IPoint3d* start)
+STDMETHODIMP CLinearTendonSegment::put_Start(IPoint3d* start)
 {
    CHECK_IN(start);
-   m_Start = start;
+   Float64 x,y,z;
+   start->Location(&x,&y,&z);
+   m_Start->Move(x,y,z);
    return S_OK;
 }
 
 STDMETHODIMP CLinearTendonSegment::get_Start(IPoint3d** start)
 {
    CHECK_RETOBJ(start);
-   (*start) = m_Start;
-   (*start)->AddRef();
-   return S_OK;
+   return m_Start->Clone(start);
 }
 
-STDMETHODIMP CLinearTendonSegment::putref_End(IPoint3d* end)
+STDMETHODIMP CLinearTendonSegment::put_End(IPoint3d* end)
 {
    CHECK_IN(end);
-   m_End = end;
+   Float64 x,y,z;
+   end->Location(&x,&y,&z);
+   m_End->Move(x,y,z);
    return S_OK;
 }
 
 STDMETHODIMP CLinearTendonSegment::get_End(IPoint3d** end)
 {
    CHECK_RETOBJ(end);
-   (*end) = m_End;
-   (*end)->AddRef();
-   return S_OK;
+   return m_End->Clone(end);
 }
 
 /////////////////////////////////////////////////////
 // ITendonSegment
-STDMETHODIMP CLinearTendonSegment::get_Position(Float64 x,IPoint3d** cg)
+STDMETHODIMP CLinearTendonSegment::get_Position(Float64 z,IPoint3d** cg)
 {
    CHECK_RETOBJ(cg);
 
    Float64 x1,y1,z1;
-   Float64 x2,y2,z2;
    m_Start->get_X(&x1);
    m_Start->get_Y(&y1);
    m_Start->get_Z(&z1);
+
+   Float64 x2,y2,z2;
    m_End->get_X(&x2);
    m_End->get_Y(&y2);
    m_End->get_Z(&z2);
+
+   ATLASSERT(z1 <= z && z <= z2);
 
    Float64 dx = x2-x1;
    Float64 dy = y2-y1;
    Float64 dz = z2-z1;
 
-   Float64 y = dy*(x-x1)/dx + y1;
-   Float64 z = dz*(x-x1)/dx + z1;
+   Float64 x = dx*(z-z1)/dz + x1;
+   Float64 y = dy*(z-z1)/dz + y1;
 
    CComPtr<IPoint3d> p;
    p.CoCreateInstance(CLSID_Point3d);
@@ -138,7 +141,7 @@ STDMETHODIMP CLinearTendonSegment::get_Position(Float64 x,IPoint3d** cg)
    return S_OK;
 }
 
-STDMETHODIMP CLinearTendonSegment::get_Slope(Float64 x,IVector3d** slope)
+STDMETHODIMP CLinearTendonSegment::get_Slope(Float64 z,IVector3d** slope)
 {
    CHECK_RETOBJ(slope);
 
@@ -146,10 +149,11 @@ STDMETHODIMP CLinearTendonSegment::get_Slope(Float64 x,IVector3d** slope)
    vector.CoCreateInstance(CLSID_Vector3d);
 
    Float64 x1,y1,z1;
-   Float64 x2,y2,z2;
    m_Start->get_X(&x1);
    m_Start->get_Y(&y1);
    m_Start->get_Z(&z1);
+
+   Float64 x2,y2,z2;
    m_End->get_X(&x2);
    m_End->get_Y(&y2);
    m_End->get_Z(&z2);
@@ -158,11 +162,13 @@ STDMETHODIMP CLinearTendonSegment::get_Slope(Float64 x,IVector3d** slope)
    vector->put_Y(y2-y1);
    vector->put_Z(z2-z1);
    vector->Normalize();
+
 #if defined _DEBUG
    Float64 mag;
    vector->get_Magnitude(&mag);
    ATLASSERT(IsEqual(mag,1.0));
 #endif
+
    (*slope) = vector;
    (*slope)->AddRef();
 
@@ -181,10 +187,11 @@ STDMETHODIMP CLinearTendonSegment::ProjectedLength(Float64* dx,Float64* dy,Float
    CHECK_RETVAL(dz);
 
    Float64 x1,y1,z1;
-   Float64 x2,y2,z2;
    m_Start->get_X(&x1);
    m_Start->get_Y(&y1);
    m_Start->get_Z(&z1);
+
+   Float64 x2,y2,z2;
    m_End->get_X(&x2);
    m_End->get_Y(&y2);
    m_End->get_Z(&z2);

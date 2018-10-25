@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeToolsTest - Test driver for generic bridge tools library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -52,6 +52,12 @@ CTestEffectiveFlangeWidthTool::~CTestEffectiveFlangeWidthTool()
 
 void CTestEffectiveFlangeWidthTool::Test()
 {
+   TestPrecastGirderBridge();
+   TestSpliceGirderBridge();
+}
+
+void CTestEffectiveFlangeWidthTool::TestPrecastGirderBridge()
+{
    CComPtr<IEffectiveFlangeWidthTool> tool;
    tool.CoCreateInstance(CLSID_EffectiveFlangeWidthTool);
    TRY_TEST(tool != NULL,true);
@@ -68,54 +74,81 @@ void CTestEffectiveFlangeWidthTool::Test()
 
    Float64 value;
 
+   // This test fires a lot of asserts (as it should), but it is getting annoying
+   // Uncomment it later
+#pragma Reminder("Enable these tests")
    // Use bad shape
-   bridge.Release();
-   shape.Release();
-   shape.CoCreateInstance(CLSID_Circle);
-   CreateBridge(spanLengths,10.0,nGirderLines,shape,4.0,CIP_DECK,true,&bridge);
-   TRY_TEST(tool->EffectiveFlangeWidth(bridge,0,1,25.0,&value),GBMT_E_GIRDERSECTION);
+   //bridge.Release();
+   //shape.Release();
+   //shape.CoCreateInstance(CLSID_Circle);
+   //CreatePrecastGirderBridge(0.0,spanLengths,10.0,nGirderLines,shape,4.0,CIP_DECK,true,&bridge);
+   //TRY_TEST(tool->EffectiveFlangeWidth(bridge,0,1,25.0,&value),GBMT_E_GIRDERSECTION);
 
    // Need a valid shape... use an I-beam
    shape.Release();
    shape.CoCreateInstance(CLSID_FlangedGirderSection);
 
-   // Bad deck type - there are no bad deck types at present
-//   bridge.Release();
-//   CreateBridge(spanLengths,10.0,nGirderLines,shape,4.0,OVL_DECK,true,&bridge);
-//   TRY_TEST(tool->EffectiveFlangeWidth(bridge,0,1,25.0,&value),GBMT_E_UNKNOWNDECKTYPE);
-
    // No deck
    bridge.Release();
-   CreateBridge(spanLengths,10.0,nGirderLines,shape,4.0,NO_DECK,true,&bridge);
-   TRY_TEST(tool->EffectiveFlangeWidth(bridge,0,1,25.0,&value),GBMT_E_NODECK);
+   CreatePrecastGirderBridge(0.0,spanLengths,10.0,nGirderLines,shape,4.0,NO_DECK,true,&bridge);
+   TRY_TEST(tool->EffectiveFlangeWidthBySSMbr(bridge,1,25.0,0,2,&value),GBMT_E_NODECK);
 
    // Noncomposite deck
    bridge.Release();
-   CreateBridge(spanLengths,10.0,nGirderLines,shape,4.0,SIP_DECK,false,&bridge);
-   TRY_TEST(tool->EffectiveFlangeWidth(bridge,0,1,25.0,&value),GBMT_E_COMPOSITEDECK);
+   CreatePrecastGirderBridge(0.0,spanLengths,10.0,nGirderLines,shape,4.0,SIP_DECK,false,&bridge);
+   TRY_TEST(tool->EffectiveFlangeWidthBySSMbr(bridge,1,25.0,0,2,&value),GBMT_E_COMPOSITEDECK);
 
    // use a I-Beam for the shape
    bridge.Release();
-   CreateBridge(spanLengths,10.0,nGirderLines,shape,4.0,CIP_DECK,true,&bridge);
+   CreatePrecastGirderBridge(0.0,spanLengths,10.0,nGirderLines,shape,4.0,CIP_DECK,true,&bridge);
    
-   for ( GirderIndexType gdrIdx = 0; gdrIdx < nGirderLines; gdrIdx++ )
+   SpanIndexType nSpans = spanLengths.size();
+   for ( SpanIndexType spanIdx = 0; spanIdx < nSpans; spanIdx++ )
    {
-      for ( SpanIndexType spanIdx = 0; spanIdx < (SpanIndexType)spanLengths.size(); spanIdx++ )
+      for ( GirderIndexType gdrIdx = 0; gdrIdx < nGirderLines; gdrIdx++ )
       {
-	      TRY_TEST(tool->EffectiveFlangeWidth(bridge,spanIdx,gdrIdx,25.0,&value),S_OK);
+         GirderIDType leftSSMbrID   = gdrIdx == 0 ? INVALID_ID : ::GetGirderLineID(spanIdx,gdrIdx-1);
+         GirderIDType ssMbrID       = ::GetGirderLineID(spanIdx,gdrIdx);
+         GirderIDType rightSSMbrID  = gdrIdx == nGirderLines-1 ? INVALID_ID : ::GetGirderLineID(spanIdx,gdrIdx+1);
+
+	      TRY_TEST(tool->EffectiveFlangeWidthBySSMbr(bridge,ssMbrID,25.0,leftSSMbrID,rightSSMbrID,&value),S_OK);
          TRY_TEST(IsEqual(value,8.0),true);
+
+         TRY_TEST(tool->TributaryFlangeWidthBySSMbr(bridge,ssMbrID,25.0,leftSSMbrID,rightSSMbrID,&value),S_OK);
+         if ( gdrIdx == 0 || gdrIdx == nGirderLines-1 )
+         {
+            TRY_TEST(IsEqual(value,9.0),true); // exterior
+         }
+         else
+         {
+            TRY_TEST(IsEqual(value,10.0),true); // interior
+         }
       }
    }
 
    bridge.Release();
-   CreateBridge(spanLengths,10.0,nGirderLines,shape,4.0,SIP_DECK,true,&bridge);
+   CreatePrecastGirderBridge(0.0,spanLengths,10.0,nGirderLines,shape,4.0,SIP_DECK,true,&bridge);
    
-   for ( GirderIndexType gdrIdx = 0; gdrIdx < nGirderLines; gdrIdx++ )
+   for ( SpanIndexType spanIdx = 0; spanIdx < nSpans; spanIdx++ )
    {
-      for ( SpanIndexType spanIdx = 0; spanIdx < (SpanIndexType)spanLengths.size(); spanIdx++ )
+      for ( GirderIndexType gdrIdx = 0; gdrIdx < nGirderLines; gdrIdx++ )
       {
-	      TRY_TEST(tool->EffectiveFlangeWidth(bridge,spanIdx,gdrIdx,0.25,&value),S_OK);
+         GirderIDType leftSSMbrID   = gdrIdx == 0 ? INVALID_ID : ::GetGirderLineID(spanIdx,gdrIdx-1);//GirderIDType(::HashSpanGirder(spanIdx,gdrIdx-1) );
+         GirderIDType ssMbrID       = ::GetGirderLineID(spanIdx,gdrIdx);  //GirderIDType(::HashSpanGirder(spanIdx,gdrIdx)   );
+         GirderIDType rightSSMbrID  = gdrIdx == nGirderLines-1 ? INVALID_ID : ::GetGirderLineID(spanIdx,gdrIdx+1);//GirderIDType(::HashSpanGirder(spanIdx,gdrIdx+1) );
+
+	      TRY_TEST(tool->EffectiveFlangeWidthBySSMbr(bridge,ssMbrID,0.25,leftSSMbrID,rightSSMbrID,&value),S_OK);
          TRY_TEST(IsEqual(value,8.0),true);
+
+         TRY_TEST(tool->TributaryFlangeWidthBySSMbr(bridge,ssMbrID,0.25,leftSSMbrID,rightSSMbrID,&value),S_OK);
+         if ( gdrIdx == 0 || gdrIdx == nGirderLines-1 )
+         {
+            TRY_TEST(IsEqual(value,9.0),true); // exterior
+         }
+         else
+         {
+            TRY_TEST(IsEqual(value,10.0),true); // interior
+         }
       }
    }
    
@@ -142,12 +175,16 @@ void CTestEffectiveFlangeWidthTool::Test()
    beam->put_D7(1.5/12);
    beam->put_T(7./12);
 
-   CreateBridge(spanLengths,10.0,nGirderLines,shape,4.0,CIP_DECK,true,&bridge);
-   for ( GirderIndexType gdrIdx = 0; gdrIdx < nGirderLines; gdrIdx++ )
+   CreatePrecastGirderBridge(0.0,spanLengths,10.0,nGirderLines,shape,4.0,CIP_DECK,true,&bridge);
+   for ( SpanIndexType spanIdx = 0; spanIdx < nSpans; spanIdx++ )
    {
-      for ( SpanIndexType spanIdx = 0; spanIdx < (SpanIndexType)spanLengths.size(); spanIdx++ )
+      for ( GirderIndexType gdrIdx = 0; gdrIdx < nGirderLines; gdrIdx++ )
       {
-	      TRY_TEST(tool->EffectiveFlangeWidth(bridge,spanIdx,gdrIdx,0.25,&value),S_OK);
+         GirderIDType leftSSMbrID   = gdrIdx == 0 ? INVALID_ID : ::GetGirderLineID(spanIdx,gdrIdx-1);//GirderIDType(::HashSpanGirder(spanIdx,gdrIdx-1) );
+         GirderIDType ssMbrID       = ::GetGirderLineID(spanIdx,gdrIdx);  //GirderIDType(::HashSpanGirder(spanIdx,gdrIdx)   );
+         GirderIDType rightSSMbrID  = gdrIdx == nGirderLines-1 ? INVALID_ID : ::GetGirderLineID(spanIdx,gdrIdx+1);//GirderIDType(::HashSpanGirder(spanIdx,gdrIdx+1) );
+
+	      TRY_TEST(tool->EffectiveFlangeWidthBySSMbr(bridge,ssMbrID,0.25,leftSSMbrID,rightSSMbrID,&value),S_OK);
 
          if ( gdrIdx == 0 || gdrIdx == nGirderLines-1 )
          {
@@ -156,17 +193,31 @@ void CTestEffectiveFlangeWidthTool::Test()
          else
          {
             TRY_TEST(IsEqual(value,9.9761904761904781),true); // interior
+         }
+
+         TRY_TEST(tool->TributaryFlangeWidthBySSMbr(bridge,ssMbrID,0.25,leftSSMbrID,rightSSMbrID,&value),S_OK);
+         if ( gdrIdx == 0 || gdrIdx == nGirderLines-1 )
+         {
+            TRY_TEST(IsEqual(value,9.0),true); // exterior
+         }
+         else
+         {
+            TRY_TEST(IsEqual(value,10.0),true); // interior
          }
       }
    }
 
    bridge.Release();
-   CreateBridge(spanLengths,10.0,nGirderLines,shape,4.0,SIP_DECK,true,&bridge);
-   for ( GirderIndexType gdrIdx = 0; gdrIdx < nGirderLines; gdrIdx++ )
+   CreatePrecastGirderBridge(0.0,spanLengths,10.0,nGirderLines,shape,4.0,SIP_DECK,true,&bridge);
+   for ( SpanIndexType spanIdx = 0; spanIdx < nSpans; spanIdx++ )
    {
-      for ( SpanIndexType spanIdx = 0; spanIdx < (SpanIndexType)spanLengths.size(); spanIdx++ )
+      for ( GirderIndexType gdrIdx = 0; gdrIdx < nGirderLines; gdrIdx++ )
       {
-	      TRY_TEST(tool->EffectiveFlangeWidth(bridge,spanIdx,gdrIdx,0.25,&value),S_OK);
+         GirderIDType leftSSMbrID   = gdrIdx == 0 ? INVALID_ID : ::GetGirderLineID(spanIdx,gdrIdx-1);//GirderIDType(::HashSpanGirder(spanIdx,gdrIdx-1) );
+         GirderIDType ssMbrID       = ::GetGirderLineID(spanIdx,gdrIdx);  //GirderIDType(::HashSpanGirder(spanIdx,gdrIdx)   );
+         GirderIDType rightSSMbrID  = gdrIdx == nGirderLines-1 ? INVALID_ID : ::GetGirderLineID(spanIdx,gdrIdx+1);//GirderIDType(::HashSpanGirder(spanIdx,gdrIdx+1) );
+
+	      TRY_TEST(tool->EffectiveFlangeWidthBySSMbr(bridge,ssMbrID,0.25,leftSSMbrID,rightSSMbrID,&value),S_OK);
 
          if ( gdrIdx == 0 || gdrIdx == nGirderLines-1 )
          {
@@ -175,6 +226,16 @@ void CTestEffectiveFlangeWidthTool::Test()
          else
          {
             TRY_TEST(IsEqual(value,9.9761904761904781),true); // interior
+         }
+
+         TRY_TEST(tool->TributaryFlangeWidthBySSMbr(bridge,ssMbrID,0.25,leftSSMbrID,rightSSMbrID,&value),S_OK);
+         if ( gdrIdx == 0 || gdrIdx == nGirderLines-1 )
+         {
+            TRY_TEST(IsEqual(value,9.0),true); // exterior
+         }
+         else
+         {
+            TRY_TEST(IsEqual(value,10.0),true); // interior
          }
       }
    }
@@ -194,3 +255,35 @@ void CTestEffectiveFlangeWidthTool::Test()
    TRY_TEST( TestIObjectSafety(tool,IID_IEffectiveFlangeWidthTool,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
+void CTestEffectiveFlangeWidthTool::TestSpliceGirderBridge()
+{
+   CComPtr<IGenericBridge> bridge;
+   CreateSplicedGirderBridge(&bridge);
+
+   CComPtr<IEffectiveFlangeWidthTool> tool;
+   tool.CoCreateInstance(CLSID_EffectiveFlangeWidthTool);
+   TRY_TEST(tool != NULL,true);
+
+   Float64 value;
+
+   // Center girder
+   GirderIDType leftSSMbrID   = GirderIDType(0);
+   GirderIDType ssMbrID       = GirderIDType(1);
+   GirderIDType rightSSMbrID  = GirderIDType(2);
+   TRY_TEST(tool->TributaryFlangeWidthBySSMbr(bridge,ssMbrID,25.0,leftSSMbrID,rightSSMbrID,&value),S_OK);
+   TRY_TEST(IsEqual(value,10.0),true);
+
+   // Left exterior girder
+   leftSSMbrID  = INVALID_ID;
+   ssMbrID      = GirderIDType(0);
+   rightSSMbrID = GirderIDType(1);
+   TRY_TEST(tool->TributaryFlangeWidthBySSMbr(bridge,ssMbrID,25.0,leftSSMbrID,rightSSMbrID,&value),S_OK);
+   TRY_TEST(IsEqual(value,11.0),true);
+
+   // Right exterior girder
+   leftSSMbrID  = GirderIDType(1);
+   ssMbrID      = GirderIDType(2);
+   rightSSMbrID = INVALID_ID;
+   TRY_TEST(tool->TributaryFlangeWidthBySSMbr(bridge,ssMbrID,25.0,leftSSMbrID,rightSSMbrID,&value),S_OK);
+   TRY_TEST(IsEqual(value,11.0),true);
+}

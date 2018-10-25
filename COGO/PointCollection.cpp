@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -51,27 +51,27 @@ void CPointCollection::FinalRelease()
 }
 
 
-STDMETHODIMP CPointCollection::get_Item(CogoElementKey key, IPoint2d **pVal)
+STDMETHODIMP CPointCollection::get_Item(CogoObjectID key, IPoint2d **pVal)
 {
    CHECK_RETVAL(pVal);
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found == m_coll.end() )
    {
       return PointNotFound(key);
    }
 
-   std::pair<CogoElementKey,CComVariant> p = *found;
+   std::pair<CogoObjectID,CComVariant> p = *found;
    p.second.pdispVal->QueryInterface(pVal);
 
 	return S_OK;
 }
 
-STDMETHODIMP CPointCollection::putref_Item(CogoElementKey key, IPoint2d *newVal)
+STDMETHODIMP CPointCollection::putref_Item(CogoObjectID key, IPoint2d *newVal)
 {
    CHECK_IN(newVal);
 
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found == m_coll.end() )
    {
@@ -98,9 +98,9 @@ STDMETHODIMP CPointCollection::get_Count(CollectionIndexType *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CPointCollection::Remove(CogoElementKey key)
+STDMETHODIMP CPointCollection::Remove(CogoObjectID key)
 {
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found == m_coll.end() )
    {
@@ -118,7 +118,7 @@ STDMETHODIMP CPointCollection::Remove(CogoElementKey key)
 	return S_OK;
 }
 
-STDMETHODIMP CPointCollection::Add(CogoElementKey key, Float64 x, Float64 y,IPoint2d* *point)
+STDMETHODIMP CPointCollection::Add(CogoObjectID key, Float64 x, Float64 y,IPoint2d* *point)
 {
    if ( point != NULL )
    {
@@ -139,11 +139,11 @@ STDMETHODIMP CPointCollection::Add(CogoElementKey key, Float64 x, Float64 y,IPoi
    return AddEx(key,newPoint);
 }
 
-STDMETHODIMP CPointCollection::AddEx(CogoElementKey key, IPoint2d* newVal)
+STDMETHODIMP CPointCollection::AddEx(CogoObjectID key, IPoint2d* newVal)
 {
    CHECK_IN(newVal);
    
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found != m_coll.end() )
    {
@@ -152,7 +152,7 @@ STDMETHODIMP CPointCollection::AddEx(CogoElementKey key, IPoint2d* newVal)
 
    CComQIPtr<IUnknown,&IID_IUnknown> pDisp(newVal);
    CComVariant var(pDisp);
-   std::pair<std::map<CogoElementKey,CComVariant>::iterator,bool> result;
+   std::pair<std::map<CogoObjectID,CComVariant>::iterator,bool> result;
    result = m_coll.insert(std::make_pair(key,var));
    if ( result.second == false )
    {
@@ -175,15 +175,15 @@ STDMETHODIMP CPointCollection::Clear()
 	return S_OK;
 }
 
-STDMETHODIMP CPointCollection::FindKey(IPoint2d* point,CogoElementKey* key)
+STDMETHODIMP CPointCollection::FindKey(IPoint2d* point,CogoObjectID* key)
 {
    CHECK_IN(point);
    CHECK_RETVAL(key);
 
-   std::map<CogoElementKey,CComVariant>::iterator iter;
+   std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
    {
-      std::pair<CogoElementKey,CComVariant> item = *iter;
+      std::pair<CogoObjectID,CComVariant> item = *iter;
       CComQIPtr<IPoint2d> value( item.second.pdispVal );
       ATLASSERT( value != NULL );
       if ( value.IsEqualObject(point) )
@@ -200,7 +200,7 @@ STDMETHODIMP CPointCollection::get__EnumKeys(IEnumKeys** ppenum)
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumKeys,&IID_IEnumKeys, CogoElementKey, MapCopyKey<std::map<CogoElementKey,CComVariant>>, std::map<CogoElementKey,CComVariant> > Enum;
+   typedef CComEnumOnSTL<IEnumKeys,&IID_IEnumKeys, CogoObjectID, MapCopyKey<std::map<CogoObjectID,CComVariant>>, std::map<CogoObjectID,CComVariant> > Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -230,18 +230,18 @@ STDMETHODIMP CPointCollection::putref_Factory(IPoint2dFactory* factory)
    return S_OK;
 }
 
-STDMETHODIMP CPointCollection::Key(CollectionIndexType index,CogoElementKey* key)
+STDMETHODIMP CPointCollection::Key(CollectionIndexType index,CogoObjectID* key)
 {
    CHECK_RETVAL(key);
 
    if ( !IsValidIndex(index,m_coll) )
       return E_INVALIDARG;
 
-   std::map<CogoElementKey,CComVariant>::iterator iter = m_coll.begin();
+   std::map<CogoObjectID,CComVariant>::iterator iter = m_coll.begin();
    for ( CollectionIndexType i = 0; i < index; i++ )
       iter++;
 
-   std::pair<CogoElementKey,CComVariant> p = *iter;
+   std::pair<CogoObjectID,CComVariant> p = *iter;
    *key = p.first;
 
    return S_OK;
@@ -251,7 +251,7 @@ STDMETHODIMP CPointCollection::get__EnumPoints(IEnumPoint2d** ppenum)
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumPoint2d,&IID_IEnumPoint2d, IPoint2d*, MapCopyValueToInterface<std::map<CogoElementKey,CComVariant>,IPoint2d*>, std::map<CogoElementKey,CComVariant> > Enum;
+   typedef CComEnumOnSTL<IEnumPoint2d,&IID_IEnumPoint2d, IPoint2d*, MapCopyValueToInterface<std::map<CogoObjectID,CComVariant>,IPoint2d*>, std::map<CogoObjectID,CComVariant> > Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -289,7 +289,7 @@ STDMETHODIMP CPointCollection::Clone(IPointCollection* *clone)
 
       clonePoint->MoveEx(point);
 
-      CogoElementKey key;
+      CogoObjectID key;
       Key(count++,&key);
 
       (*clone)->AddEx(key,clonePoint);
@@ -351,7 +351,7 @@ STDMETHODIMP CPointCollection::Clone(IPointCollection* *clone)
 //
 //   long count;
 //   pLoad->get_Property(CComBSTR("Count"),&var);
-//   count = var.lVal;
+//   count = var;
 //
 //   for ( long i = 0; i < count; i++ )
 //   {
@@ -359,7 +359,7 @@ STDMETHODIMP CPointCollection::Clone(IPointCollection* *clone)
 //      pLoad->BeginUnit(CComBSTR("Point"));
 //
 //      pLoad->get_Property(CComBSTR("key"),&var);
-//      key = var.lVal;
+//      key = var;
 //
 //      pLoad->get_Property(CComBSTR("Value"),&var);
 //      CComPtr<IPoint2d> point;
@@ -398,7 +398,7 @@ STDMETHODIMP CPointCollection::OnPointChanged(IPoint2d* point)
    // Better be listening only to IPoint2d objects
    ATLASSERT( pointEx != NULL );
 
-   CogoElementKey key;
+   CogoObjectID key;
    HRESULT hr = FindKey(pointEx,&key);
 
    // This container only listens to events from point objects in this 
@@ -408,7 +408,7 @@ STDMETHODIMP CPointCollection::OnPointChanged(IPoint2d* point)
    return S_OK;
 }
 
-void CPointCollection::Advise(CogoElementKey key,IPoint2d* point)
+void CPointCollection::Advise(CogoObjectID key,IPoint2d* point)
 {
    ATLASSERT(point != 0);
 
@@ -426,7 +426,7 @@ void CPointCollection::Advise(CogoElementKey key,IPoint2d* point)
    InternalRelease(); // Break circular reference
 }
 
-void CPointCollection::Unadvise(CogoElementKey key,IPoint2d* point)
+void CPointCollection::Unadvise(CogoObjectID key,IPoint2d* point)
 {
    ATLASSERT(point != 0);
 
@@ -435,7 +435,7 @@ void CPointCollection::Unadvise(CogoElementKey key,IPoint2d* point)
    //
 
    // Lookup the cookie
-   std::map<CogoElementKey,DWORD>::iterator found;
+   std::map<CogoObjectID,DWORD>::iterator found;
    found = m_Cookies.find( key );
    if ( found == m_Cookies.end() )
    {
@@ -459,26 +459,26 @@ void CPointCollection::Unadvise(CogoElementKey key,IPoint2d* point)
 
 void CPointCollection::UnadviseAll()
 {
-   std::map<CogoElementKey,CComVariant>::iterator iter;
+   std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
    {
-      CogoElementKey key = (*iter).first;
+      CogoObjectID key = (*iter).first;
       CComQIPtr<IPoint2d> point( (*iter).second.pdispVal );
       Unadvise(key,point);
    }
 }
 
-HRESULT CPointCollection::PointNotFound(CogoElementKey key)
+HRESULT CPointCollection::PointNotFound(CogoObjectID key)
 {
    return PointKeyError(key,IDS_E_POINTNOTFOUND,COGO_E_POINTNOTFOUND);
 }
 
-HRESULT CPointCollection::PointAlreadyDefined(CogoElementKey key)
+HRESULT CPointCollection::PointAlreadyDefined(CogoObjectID key)
 {
    return PointKeyError(key,IDS_E_POINTALREADYDEFINED,COGO_E_POINTALREADYDEFINED);
 }
 
-HRESULT CPointCollection::PointKeyError(CogoElementKey key,UINT nHelpString,HRESULT hRes)
+HRESULT CPointCollection::PointKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes)
 {
    USES_CONVERSION;
 

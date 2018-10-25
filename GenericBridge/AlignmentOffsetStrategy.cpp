@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -44,8 +44,6 @@ HRESULT CAlignmentOffsetStrategy::FinalConstruct()
 
 void CAlignmentOffsetStrategy::FinalRelease()
 {
-   Unadvise(m_Path,m_dwPathCookie);
-   Unadvise(m_Alignment,m_dwAlignmentCookie);
 }
 
 STDMETHODIMP CAlignmentOffsetStrategy::InterfaceSupportsErrorInfo(REFIID riid)
@@ -77,11 +75,10 @@ STDMETHODIMP CAlignmentOffsetStrategy::get_Path(IPath** path)
       return S_OK;
    }
 
-
+   // create alignment offset path and cache it
    if ( m_Alignment )
    {
       m_Alignment->CreateParallelPath(m_Offset,&m_Path);
-      Advise(m_Path,&m_dwPathCookie);
       return get_Path(path);
    }
 
@@ -93,67 +90,15 @@ STDMETHODIMP CAlignmentOffsetStrategy::get_Path(IPath** path)
 STDMETHODIMP CAlignmentOffsetStrategy::putref_Alignment(IAlignment* alignment)
 {
    CHECK_IN(alignment);
-   Unadvise(m_Alignment,m_dwAlignmentCookie);
    m_Alignment = alignment;
-   Advise(m_Alignment,&m_dwAlignmentCookie);
-   Fire_OnStrategyChanged();
    return S_OK;
 }
 
 STDMETHODIMP CAlignmentOffsetStrategy::put_Offset(Float64 offset)
 {
    m_Offset = offset;
-   Fire_OnStrategyChanged();
    return S_OK;
 }
-
-//STDMETHODIMP CAlignmentOffsetStrategy::get_Overhang(Float64* overhang)
-//{
-//   CHECK_RETVAL(overhang);
-//   (*overhang) = m_Overhang;
-//   return S_OK;
-//}
-//
-//STDMETHODIMP CAlignmentOffsetStrategy::put_Overhang(Float64 overhang)
-//{
-//   if ( m_TxnMgr )
-//   {
-//      typedef CEditValueTransaction<CAlignmentOffsetStrategy,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CEditTxn;
-//      CComObject<CEditTxn>* pTxn;
-//      CComObject<CEditTxn>::CreateInstance(&pTxn);
-//      pTxn->Init(this,"Overhang",&PutOverhang,m_Overhang,overhang);
-//
-//      return m_TxnMgr->Execute(pTxn);
-//   }
-//   else
-//   {
-//      return PutOverhang(this,overhang);
-//   }
-//}
-//
-//STDMETHODIMP CAlignmentOffsetStrategy::get_MeasuredFrom(DeckOverhangMeasure* measure)
-//{
-//   CHECK_RETVAL(measure);
-//   (*measure) = m_Measure;
-//   return S_OK;
-//}
-//
-//STDMETHODIMP CAlignmentOffsetStrategy::put_MeasuredFrom(DeckOverhangMeasure measure)
-//{
-//   if ( m_TxnMgr )
-//   {
-//      typedef CEditValueTransaction<CAlignmentOffsetStrategy,DeckOverhangMeasure,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CEditTxn;
-//      CComObject<CEditTxn>* pTxn;
-//      CComObject<CEditTxn>::CreateInstance(&pTxn);
-//      pTxn->Init(this,"MeasuredFrom",&PutMeasuredFrom,m_Measure,measure);
-//
-//      return m_TxnMgr->Execute(pTxn);
-//   }
-//   else
-//   {
-//      return PutMeasuredFrom(this,measure);
-//   }
-//}
 
 // IStructuredStorage2
 STDMETHODIMP CAlignmentOffsetStrategy::Load(IStructuredLoad2* load)
@@ -185,24 +130,4 @@ STDMETHODIMP CAlignmentOffsetStrategy::Save(IStructuredSave2* save)
    save->put_Property(CComBSTR("Offset"),CComVariant(m_Offset));
    save->EndUnit();
    return S_OK;
-}
-
-void CAlignmentOffsetStrategy::Advise(IPath* path,DWORD* pdwCookie)
-{
-   if ( path == NULL )
-      return;
-
-   HRESULT hr = AtlAdvise(path,GetUnknown(),IID_IPathEvents,pdwCookie);
-   ATLASSERT(SUCCEEDED(hr));
-   InternalRelease();
-}
-
-void CAlignmentOffsetStrategy::Unadvise(IPath* path,DWORD dwCookie)
-{
-   if ( path == NULL )
-      return;
-
-   InternalAddRef();
-   HRESULT hr = AtlUnadvise(path,IID_IPathEvents,dwCookie);
-   ATLASSERT( SUCCEEDED(hr) );
 }

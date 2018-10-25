@@ -6,11 +6,17 @@
 
 #include "FEA2DDoc.h"
 
+#include "ModelPropertiesDlg.h"
+
+#include <MathEx.h>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
+#define ID(_id_) (_id_+1)
 
 /////////////////////////////////////////////////////////////////////////////
 // CFEA2DDoc
@@ -22,6 +28,8 @@ BEGIN_MESSAGE_MAP(CFEA2DDoc, CDocument)
 		// NOTE - the ClassWizard will add and remove mapping macros here.
 		//    DO NOT EDIT what you see in these blocks of generated code!
 	//}}AFX_MSG_MAP
+   ON_COMMAND(ID_VIEW_MODEL, &CFEA2DDoc::OnViewModelProperties)
+   ON_COMMAND(ID_GTSTRUDL,&CFEA2DDoc::OnGTStrudl)
 END_MESSAGE_MAP()
 
 BEGIN_DISPATCH_MAP(CFEA2DDoc,CDocument)
@@ -175,4 +183,227 @@ BOOL CFEA2DDoc::OnLoadingChanged(long id)
    SetModifiedFlag(TRUE);
    UpdateAllViews(0,2,0);
    return S_OK;
+}
+
+void CFEA2DDoc::OnViewModelProperties()
+{
+   // TODO: Add your command handler code here
+   CModelPropertiesDlg dlg(_T("Model Properties"));
+   dlg.m_pFem2d = m_Model;
+   dlg.DoModal();
+}
+
+void CFEA2DDoc::OnGTStrudl()
+{
+   USES_CONVERSION;
+   CComBSTR bstrName;
+   m_Model->get_Name(&bstrName);
+
+   CString strName;
+   strName.Format(_T("%s.gti"),OLE2W(bstrName));
+
+   std::_tofstream ofile(strName);
+
+   ofile << _T("STRUDL") << std::endl;
+   ofile << _T("UNITS MET KIPS DEG FAH") << std::endl;
+
+   // Joint Coordinates
+   ofile << _T("JOINT COORDINATES GLOBAL") << std::endl;
+   CComPtr<IFem2dJointCollection> joints;
+   m_Model->get_Joints(&joints);
+   CollectionIndexType nJoints;
+   joints->get_Count(&nJoints);
+   for ( CollectionIndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
+   {
+      CComPtr<IFem2dJoint> joint;
+      joints->get_Item(jntIdx,&joint);
+      Float64 x,y;
+      joint->get_X(&x);
+      joint->get_Y(&y);
+
+      JointIDType id;
+      joint->get_ID(&id);
+
+      ofile << ID(id) << _T(" ") << x << _T(" ") << y << std::endl;
+   }
+
+   // Status Support
+   ofile << _T("STATUS SUPPORT");
+   for ( CollectionIndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
+   {
+      CComPtr<IFem2dJoint> joint;
+      joints->get_Item(jntIdx,&joint);
+
+      VARIANT_BOOL bSupport;
+      joint->IsSupport(&bSupport);
+
+      if ( bSupport == VARIANT_TRUE )
+      {
+         JointIDType id;
+         joint->get_ID(&id);
+
+         ofile << _T(" ") << ID(id);
+      }
+   }
+   ofile << std::endl;
+
+   // Joint Releases
+   ofile << _T("JOINT RELEASES") << std::endl;
+   for ( CollectionIndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
+   {
+      CComPtr<IFem2dJoint> joint;
+      joints->get_Item(jntIdx,&joint);
+
+      VARIANT_BOOL bSupport;
+      joint->IsSupport(&bSupport);
+
+      if ( bSupport == VARIANT_TRUE )
+      {
+         JointIDType id;
+         joint->get_ID(&id);
+
+         VARIANT_BOOL bFx, bFy, bMz;
+         joint->IsDofReleased(jrtFx,&bFx);
+         joint->IsDofReleased(jrtFy,&bFy);
+         joint->IsDofReleased(jrtMz,&bMz);
+
+         ofile << ID(id);
+         if ( bFx == VARIANT_TRUE )
+         {
+            ofile << _T(" FORCE X");
+         }
+
+         if ( bFy == VARIANT_TRUE )
+         {
+            ofile << _T(" FORCE Y");
+         }
+
+         if ( bMz == VARIANT_TRUE )
+         {
+            ofile << _T(" MOMENT Z");
+         }
+
+         ofile << std::endl;
+      }
+   }
+
+   // Member Incidences
+   ofile << _T("TYPE PLANE FRAME XY") << std::endl;
+   ofile << _T("MEMBER INCIDENCES") << std::endl;
+   CComPtr<IFem2dMemberCollection> members;
+   m_Model->get_Members(&members);
+   CollectionIndexType nMembers;
+   members->get_Count(&nMembers);
+   for ( CollectionIndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
+   {
+      CComPtr<IFem2dMember> member;
+      members->get_Item(mbrIdx,&member);
+
+      MemberIDType mbrID;
+      member->get_ID(&mbrID);
+
+      JointIDType startJnt, endJnt;
+      member->get_StartJoint(&startJnt);
+      member->get_EndJoint(&endJnt);
+
+      ofile << ID(mbrID) << _T(" ") << ID(startJnt) << _T(" ") << ID(endJnt) << std::endl;
+   }
+
+   // Member Properties
+   ofile << _T("MEMBER PROPERTIES PRISMATIC") << std::endl;
+   for ( CollectionIndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
+   {
+      CComPtr<IFem2dMember> member;
+      members->get_Item(mbrIdx,&member);
+
+      MemberIDType mbrID;
+      member->get_ID(&mbrID);
+
+      Float64 EA, EI;
+      member->get_EA(&EA);
+      member->get_EI(&EI);
+
+      ofile << ID(mbrID) << _T(" AX ") << EA << _T(" IZ ") << EI << std::endl;
+   }
+
+   // Member Releases
+   ofile << _T("MEMBER RELEASES") << std::endl;
+   for ( CollectionIndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
+   {
+      CComPtr<IFem2dMember> member;
+      members->get_Item(mbrIdx,&member);
+
+      MemberIDType mbrID;
+      member->get_ID(&mbrID);
+
+      VARIANT_BOOL bReleaseStart, bReleaseEnd;
+      member->IsReleased(metStart,&bReleaseStart);
+      member->IsReleased(metEnd,  &bReleaseEnd);
+
+      if ( bReleaseStart == VARIANT_TRUE || bReleaseEnd == VARIANT_TRUE )
+      {
+         ofile << ID(mbrID);
+         if ( bReleaseStart == VARIANT_TRUE )
+         {
+            ofile << _T(" START MOMENT Z");
+         }
+
+         if ( bReleaseEnd == VARIANT_TRUE )
+         {
+            ofile << _T(" END MOMENT Z");
+         }
+         ofile << std::endl;
+      }
+   }
+
+   // Constants
+   ofile << _T("CONSTANTS") << std::endl;
+   ofile << _T("E 1.0 ALL") << std::endl;
+   ofile << _T("G 1.0 ALL") << std::endl;
+   ofile << _T("POI 0.3 ALL") << std::endl;
+   ofile << _T("DEN 1.0 ALL") << std::endl;
+
+   // Loads
+   CComPtr<IFem2dLoadingCollection> loadings;
+   m_Model->get_Loadings(&loadings);
+
+   CollectionIndexType nLoadings;
+   loadings->get_Count(&nLoadings);
+   for ( CollectionIndexType ldIdx = 0; ldIdx < nLoadings; ldIdx++ )
+   {
+      CComPtr<IFem2dLoading> loading;
+      loadings->get_Item(ldIdx,&loading);
+
+      LoadCaseIDType lcID;
+      loading->get_ID(&lcID);
+
+      ofile << _T("LOADING ") << ID(abs((int)lcID)) << std::endl;
+
+      CComPtr<IFem2dDistributedLoadCollection> distLoads;
+      loading->get_DistributedLoads(&distLoads);
+
+      CollectionIndexType nLoads;
+      distLoads->get_Count(&nLoads);
+
+      ofile << _T("MEMBER LOADS") << std::endl;
+      for ( CollectionIndexType idx = 0; idx < nLoads; idx++ )
+      {
+         CComPtr<IFem2dDistributedLoad> load;
+         distLoads->get_Item(idx,&load);
+
+         MemberIDType mbrID;
+         load->get_MemberID(&mbrID);
+
+         Float64 xStart, xEnd, wStart, wEnd;
+         load->get_StartLocation(&xStart);
+         load->get_EndLocation(&xEnd);
+         load->get_WStart(&wStart);
+         load->get_WEnd(&wEnd);
+
+         ofile << ID(mbrID) << _T(" FORCE Y LINEAR FRA WA ") << wStart << _T(" WB ") << wEnd << _T(" LA ") << fabs(xStart) << _T(" LB ") << fabs(xEnd) << std::endl;
+      }
+
+   }
+
+   ofile.close();
 }

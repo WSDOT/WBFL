@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,6 +29,17 @@
 // This file will be processed by the MIDL tool to
 // produce the type library (GenericBridge.tlb) and marshalling code.
 
+//////////////////////////////////////////////////////////////////////////////////////
+// The Generic Bridge Model defines a geometric model of a bridge. Geometric properties
+// include framing plan geometry (taken from the underlying Bridge Geometry Model),
+// and cross sectional geometry. The Generic Bridge Tools objects are used to extract
+// much of the geometry from this model.
+//
+// The stages in this model are simply relative points in time. That is, stage 5 compares after
+// stage 4 and before stage 6. There is no other stage related information modeled.
+//
+// The material properties are stage dependent. That is, they can vary from stage to stage.
+
 import "oaidl.idl";
 import "ocidl.idl";
 
@@ -37,6 +48,8 @@ import "WBFLTools.idl";
 import "WBFLGeometry.idl";
 import "WBFLLoading.idl";
 import "WBFLCogo.idl";
+import "WBFLBridgeGeometry.idl";
+import "WBFLSections.idl";
 
 #include "GenericBridge.hh"
 
@@ -80,16 +93,64 @@ library WBFLGenericBridge
 	importlib("stdole32.tlb");
 	importlib("stdole2.tlb");
 
+   interface IRebarLayoutItem;
+   interface IBridgeDeckRebarLayoutItem;
    interface IGenericBridge;
+   interface ISuperstructureMember;
    interface ILongitudinalPierDescription;
    interface ITransversePierDescription;
    interface ISpan;
    interface IVoidedSlabSection2;
    interface IDeckedSlabBeamSection;
    interface IBoxBeamSection;
+   interface IUGirderSection;
    interface IUGirderSection2;
-
+   
 // Enumerators
+
+   typedef [public,helpstring("enum RebarRowOrientation"),uuid(28251F79-72F8-4d9d-85EB-55426AC53CC6)]
+   enum 
+   {
+		rroRight,   // horizontal row towards the right, anchor at left edge
+		rroHCenter, // horizontal row, anchor at center
+		rroLeft,    // horizontal row towards the left, anchor at right edge
+		rroDown,    // vertical row downwards, anchor at top
+		rroVCenter, // vertical row, anchor at center
+		rroUp       // vertical row upwards, anchor at bottom
+   } RebarRowOrientation;
+
+   typedef [public,helpstring("enum MaterialSpec"),uuid(6033AA61-EB06-469e-8743-CFA09545FE96)]
+   enum 
+   {
+      msA615,
+      msA706
+   } MaterialSpec;
+
+   typedef [public,helpstring("enum RebarGrade"),uuid(3DB21D7F-CA67-453a-9E62-FE9989BBBEA7)]
+   enum 
+   {
+		Grade40,
+		Grade60,
+		Grade75,
+      Grade80
+   } RebarGrade;
+
+   typedef [public,helpstring("enum BarSize"),uuid(FCC0993E-988B-4bf2-A708-094AC20B51BA)]
+   enum 
+   {
+		bs3 = 3, 
+		bs4 = 4,
+		bs5 = 5,
+		bs6 = 6,
+		bs7 = 7,
+		bs8 = 8,
+		bs9 = 9,
+		bs10 = 10,
+		bs11 = 11,
+		bs14 = 14,
+		bs18 = 18
+   } BarSize;
+
    typedef [public,helpstring("enum SidewalkPositionType"),uuid(F7126E78-8EDF-4af7-9CFA-59C2D1F6C6B1)] 
    enum 
    {
@@ -111,6 +172,14 @@ library WBFLGenericBridge
        qcbRight = 1
    } DirectionType;
 
+   typedef [public,helpstring("enum LocationType"),uuid(F0FF5886-CD4D-41B7-A21D-EBB9E14D502A)]
+   enum
+   {
+      ltLeftExteriorGirder  = 0,
+      ltInteriorGirder      = 1,
+      ltRightExteriorGirder = 2
+   } LocationType;
+
    typedef [public,helpstring("enum ConnectivityType"),uuid(E6935478-50D4-4399-B21F-45779FD71638)] 
    enum 
    {
@@ -128,33 +197,12 @@ library WBFLGenericBridge
        otBridge = 1
    } OffsetType;
 
-   typedef [public,helpstring("enum MeasurementType"),uuid(A8F6552D-A5A9-40db-9562-B33623CC9C31)] 
-   enum 
-   {
-       mtNormal = 0,
-       mtAlongItem = 1
-   } MeasurementType;
-
-   typedef [public,helpstring("enum MeasurementLocation"),uuid(A884BF5A-0C8F-4d89-BDA7-114E6944A9D0)] 
-   enum 
-   {
-       mlPierLine = 0,
-       mlCenterlineBearing = 1
-   } MeasurementLocation;
-
    typedef [public,helpstring("enum ReleaseType"),uuid(692EA3D4-3C08-4890-BBAC-702E7734E5B0)] 
    enum 
    {
       rtNone   = 0,
       rtHinged = 1
    } ReleaseType;
-
-   typedef [public,helpstring("enum EndType"),uuid(834FAD6D-79ED-4253-A49C-8B3CB270C899)] 
-   enum 
-   {
-      etStart = 0,
-      etEnd   = 1
-   } EndType;
 
    typedef [public,helpstring("enum DeckOverhangTaper"),uuid(502711DE-D90C-4fb3-A117-15333D8C7EE5)] 
    enum 
@@ -170,40 +218,42 @@ library WBFLGenericBridge
       pptLeft      = 1,  // left edge of pier
       pptAlignment = 2,  // intersection centerline pier and centerline alignment
       pptRight     = 3,  // right edge of pier
-	  pptBridge    = 4   // intersection centerline pier and centerline bridge
+ 	   pptBridge    = 4   // intersection centerline pier and centerline bridge
    } PierPointType;
 
    typedef [public,helpstring("enum TendonMeasure"),uuid(0AF9E9B3-BD55-4656-930E-9F1A528574F7)]
    enum 
    {
       tmTendon = 1, // measurement along the tendon in a duct/path
-	  tmPath   = 2  // measurement along the centerline of the duct/path
+	   tmPath   = 2  // measurement along the centerline of the duct/path
    } TendonMeasure;
 
 
    typedef [public,helpstring("enum StrandGrade"),uuid(703D2C89-8DC1-44c5-A8EE-2797F823232A)]
    enum 
    {
-      Grade250 = 0,
-	  Grade270 = 1 
+      Grade250 = 0x0001,
+	   Grade270 = 0x0002 
    } StrandGrade;
 
    typedef [public,helpstring("enum StrandType"),uuid(11E75BB6-8E13-4ac2-A608-F13FAC0577D9)]
    enum 
    {
-      LowRelaxation = 0,
-	  StressRelieved = 1 
+      LowRelaxation = 0x0004,
+	  StressRelieved = 0x0008 
    } StrandType;
 
    typedef [public,helpstring("enum StrandSize"),uuid(B853E36E-FD4B-4e20-A8B0-2EC1E605EB97)]
-   enum 
-   {
-      D0250 = 0,
-      D0313 = 1,
-      D0375 = 2,
-      D0437 = 3,
-      D0500 = 4,
-      D0600 = 5,
+   enum { 
+      D2500 = 0x0010,// 1/4"
+      D3125 = 0x0020,// 5/16"
+      D3750 = 0x0040,// 3/8"
+      D4375 = 0x0080,// 7/16"
+      D5000 = 0x0100,// 1/2"
+      D6000 = 0x0200,// 0.6"
+      D7000 = 0x0400,// 0.7"
+      D5200 = 0x0800,// 1/2 HBS (Special)
+      D6200 = 0x1000,// 0.62"
    } StrandSize;
 
    typedef [public,helpstring("enum SplittingDirection"),uuid(E32B1A87-2444-42e3-878E-CD5742837900)]
@@ -213,21 +263,411 @@ library WBFLGenericBridge
       sdHorizontal
    } SplittingDirection;
 
+   typedef [public,helpstring("enum SegmentZoneType"),uuid(35DFB6BF-F01C-45E9-8E05-A88A78AE934B)]
+   enum
+   {
+      sztLeftPrismatic,
+      sztLeftTapered,
+      sztRightTapered,
+      sztRightPrismatic
+   } SegmentZoneType;
+
+   typedef [public,helpstring("enum SegmentVariationType"),uuid(C347973D-CC50-4AE0-81FC-7FD0F1438531)]
+   enum
+   {
+      svtLinear,        // linear variation from one end to the other
+      svtParabolic,     // similar to linear, except with a parabolic transition
+      svtDoubleLinear,    // linear segments on each side of pier
+      svtDoubleParabolic, // parabolic segments on each side of pier
+      svtNone
+   } SegmentVariationType;
+
 // Interface definitions
-    [
+
+   [
+      object,
+	  oleautomation,
+	  uuid(262B5A19-8911-45de-A53D-DC7CDB73809E),
+	  helpstring("IEffectiveFlangeWidthDetails"),
+	  pointer_default(unique)
+   ]
+   interface IEffectiveFlangeWidthDetails : IUnknown
+   {
+	  [propput] HRESULT EffectiveSpanLength([in] Float64 length);
+	  [propget] HRESULT EffectiveSpanLength([out,retval] Float64* length);
+	  [propput] HRESULT SlabThickness([in] Float64 tSlab);
+	  [propget] HRESULT SlabThickness([out,retval] Float64* tSlab);
+	  [] HRESULT AddFlangeParameters([in]Float64 tWeb,[in]Float64 wFlange,[in]Float64 lSpacing,[in]Float64 rSpacing);
+	  [propget] HRESULT FlangeCount([out,retval]FlangeIndexType* nFlange);
+	  [] HRESULT GetFlangeParameters([in] FlangeIndexType flangeIdx,[out]Float64* tWeb,[out]Float64* wFlange,[out]Float64* lSpacing,[out]Float64* rSpacing);
+
+	  [] HRESULT EffectiveFlangeWidth([out,retval] Float64* effFlangeWidth);
+   };
+
+	[
+		object,
+		oleautomation,
+		uuid(ACD48CEC-704A-417D-B070-30DA37BAFFB4),
+		helpstring("IEffectiveFlangeWidthTool Interface"),
+		pointer_default(unique)
+	]
+	interface IEffectiveFlangeWidthTool : IUnknown
+	{
+      [helpstring("method TributaryFlangeWidthBySSMbr")] HRESULT TributaryFlangeWidthBySSMbr([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 distFromStartOfSSMbr, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]Float64 *tribFlangeWidth);
+      [helpstring("method TributaryFlangeWidthBySSMbrEx")] HRESULT TributaryFlangeWidthBySSMbrEx([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 distFromStartOfSSMbr, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out] Float64* twLeft,[out]Float64* twRight,[out]Float64 *tribFlangeWidth);
+      [helpstring("method TributaryFlangeWidthBySegment")] HRESULT TributaryFlangeWidthBySegment([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]SegmentIndexType segIdx,[in]Float64 distFromStartOfSegment, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]Float64 *tribFlangeWidth);
+      [helpstring("method TributaryFlangeWidthBySegmentEx")] HRESULT TributaryFlangeWidthBySegmentEx([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]SegmentIndexType segIdx,[in]Float64 distFromStartOfSegment, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out] Float64* twLeft,[out]Float64* twRight,[out]Float64 *tribFlangeWidth);
+
+	   [helpstring("method EffectiveFlangeWidthBySSMbr")] HRESULT EffectiveFlangeWidthBySSMbr([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 distFromStartOfSSMbr, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]Float64 *effFlangeWidth);
+	   [helpstring("method EffectiveFlangeWidthBySSMbrEx")] HRESULT EffectiveFlangeWidthBySSMbrEx([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 distFromStartOfSSMbr, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]IEffectiveFlangeWidthDetails** details);
+	   [helpstring("method EffectiveFlangeWidthBySegment")] HRESULT EffectiveFlangeWidthBySegment([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in] SegmentIndexType segIdx,[in]Float64 distFromStartOfSegment, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]Float64 *effFlangeWidth);
+	   [helpstring("method EffectiveFlangeWidthBySegmentEx")] HRESULT EffectiveFlangeWidthBySegmentEx([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in] SegmentIndexType segIdx,[in]Float64 distFromStartOfSegment, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]IEffectiveFlangeWidthDetails** details);
+   };
+
+   // IRebar defines a basic piece of reinforcing steel
+	[
+		object,
+		uuid(6D610B2E-6D62-45d9-AE5D-2F8159D4B2CC),
+		oleautomation,
+		helpstring("IRebar Interface"),
+		pointer_default(unique)
+	]
+	interface IRebar : IUnknown
+	{
+		[helpstring("method Init")] HRESULT Init([in] BSTR name,[in] Float64 Es,[in] Float64 density,[in] Float64 fpu,[in] Float64 fpy,[in] Float64 db,[in] Float64 Ab,[in] StageIndexType stageIdx);
+		[propget, helpstring("property Name")] HRESULT Name([out,retval] BSTR* name);
+		[propput, helpstring("property Name")] HRESULT Name([in] BSTR name);
+		[propget, helpstring("property UltimateStrength")] HRESULT UltimateStrength([out,retval] Float64* fpu);
+		[propput, helpstring("property UltimateStrength")] HRESULT UltimateStrength([in] Float64 fpu);
+		[propget, helpstring("property YieldStrength")] HRESULT YieldStrength([out,retval] Float64* fpy);
+		[propput, helpstring("property YieldStrength")] HRESULT YieldStrength([in] Float64 fpy);
+		[propget, helpstring("property NominalDiameter")] HRESULT NominalDiameter([out,retval] Float64* db);
+		[propput, helpstring("property NominalDiameter")] HRESULT NominalDiameter([in] Float64 db);
+		[propget, helpstring("property NominalArea")] HRESULT NominalArea([out,retval] Float64* Ab);
+		[propput, helpstring("property NominalArea")] HRESULT NominalArea([in] Float64 Ab);
+		[propget, helpstring("property InstallationStage")] HRESULT InstallationStage([out,retval] StageIndexType* pStageIdx);
+		[propput, helpstring("property InstallationStage")] HRESULT InstallationStage([in] StageIndexType stageIdx);
+      [helpstring("method Clone")] HRESULT Clone([out,retval]IRebar** ppClone);
+	};
+
+	[
+		object,
+		uuid(E873B37D-4E71-4e72-9ED0-1B05E5AC6089),
+		oleautomation,
+		helpstring("IRebarFactory Interface"),
+		pointer_default(unique)
+	]
+	interface IRebarFactory : IUnknown
+	{
+	   [helpstring("method CreateRebar")] HRESULT CreateRebar([in] MaterialSpec spec, [in] RebarGrade grade, [in] BarSize size, [in] IUnitConvert* convert, [in] StageIndexType stageIdx,[out,retval] IRebar** rebar);
+	};
+
+   // Defines the cross section of a rebar in a section cut. The rebar is defined by
+   /// its location, distance from start and end of the bar, and a rebar object.
+	[
+		object,
+		uuid(450B480F-A093-4e5e-BA48-A405055A3844),
+		oleautomation,
+		helpstring("IRebarSectionItem Interface"),
+		pointer_default(unique)
+	]
+	interface IRebarSectionItem : IUnknown
+	{
+      [helpstring("method Init")] HRESULT Init([in]IPoint2d* location,[in]Float64 distFromStart,[in]Float64 distFromEnd,[in]IRebar* rebar);
+		[propget,helpstring("property Location")] HRESULT Location([out,retval]IPoint2d** location);
+		[propget,helpstring("property LeftExtension - Distance from cut to left end of bar")] HRESULT LeftExtension([out,retval] Float64* dist);
+		[propget,helpstring("property RightExtension - Distance from cut to right end of bar")] HRESULT RightExtension([out,retval] Float64* dist);
+		[propget,helpstring("property Rebar")] HRESULT Rebar([out,retval] IRebar** rebar);
+	};
+
+	[
 	   object,
-	   uuid(9344D48A-BE1C-4dce-8558-4D1CAE81D2F0),
-	   oleautomation,
-	   helpstring("IMaterial Interface"),
+	   uuid(9FD3BB0E-1AE0-4421-B44C-76AF46077068),
+	   helpstring("IEnumRebarSectionItem Interface"),
+       oleautomation,nonextensible,
+	   hidden,restricted,
 	   pointer_default(unique)
+	]
+	interface IEnumRebarSectionItem : IUnknown
+	{
+       [helpstring("Clone")] HRESULT Clone([out] IEnumRebarSectionItem** ppenum);
+ 	   [helpstring("Next")]  HRESULT Next([in] ULONG celt, [out] IRebarSectionItem** rgelt, [in,out] ULONG* pceltFetched);
+	   [helpstring("Reset")] HRESULT Reset();
+	   [helpstring("Skip")]  HRESULT Skip([in] ULONG celt);
+	};
+
+   // Defines all of the rebar that exist at a cross section.
+   // Rebar sections are created by RebarLayout objects
+	[
+		object,
+		uuid(BC1C7976-D479-4c25-9869-A449B0EDAFBC),
+		oleautomation,
+		helpstring("IRebarSection Interface"),
+		pointer_default(unique)
+	]
+	interface IRebarSection : IUnknown
+	{
+		[helpstring("method Add")] HRESULT Add([in]IRebarSectionItem* item);
+		[propget,helpstring("property Count")] HRESULT Count([out,retval] CollectionIndexType* count);
+		[propget,helpstring("property Item")] HRESULT Item([in]CollectionIndexType idx,[out,retval]IRebarSectionItem** item);
+        [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+        [propget, restricted, helpstring("property _EnumRebarSectionItem")] HRESULT _EnumRebarSectionItem([out,retval]IEnumRebarSectionItem** enumRSI);
+	};
+
+   // Defines are pattern of rebar objects. A rebar pattern defines the location of rebars in
+   // a cross section. The length of the bars are defined by the associated layout item.
+	[
+		object,
+		uuid(70D6E658-49B9-491d-B4DF-156457A835B8),
+		oleautomation,
+		helpstring("IRebarPattern Interface"),
+		pointer_default(unique)
+	]
+	interface IRebarPattern : IUnknown
+	{
+		[propputref,helpstring("property Rebar")] HRESULT Rebar([in]IRebar* rebar);
+		[propget,helpstring("property Rebar")] HRESULT Rebar([out,retval]IRebar** rebar);
+		[propputref,helpstring("property RebarLayoutItem")] HRESULT RebarLayoutItem([in]IRebarLayoutItem* rebarLayoutItem);
+		[propget,helpstring("property Count")] HRESULT Count([out,retval]CollectionIndexType* count);
+		[propget,helpstring("property Location")] HRESULT Location([in] Float64 distFromStartOfPattern,[in]CollectionIndexType barIdx,[out,retval]IPoint2d** location);
+	};
+
+   // A pattern of rebar defined by a horizontal or vertical row
+	[
+		object,
+		uuid(200FB0A9-E906-4b1e-A2D0-01BBE933CB6C),
+		oleautomation,
+		helpstring("IRebarRowPattern Interface"),
+		pointer_default(unique)
+	]
+	interface IRebarRowPattern : IRebarPattern
+	{
+		[propput,helpstring("property AnchorPoint")] HRESULT AnchorPoint([in] EndType endType,[in]IPoint2d* anchorPt);
+		[propget,helpstring("property AnchorPoint")] HRESULT AnchorPoint([in] EndType endType,[out,retval]IPoint2d** anchorPt);
+		[propput,helpstring("property Count")] HRESULT Count([in]RowIndexType count);
+		[propput,helpstring("property Spacing")] HRESULT Spacing([in]Float64 spacing);
+		[propget,helpstring("property Spacing")] HRESULT Spacing([out,retval]Float64* spacing);
+		[propput,helpstring("property Oreintation")] HRESULT Orientation([in]RebarRowOrientation oreintation);
+		[propget,helpstring("property Oreintation")] HRESULT Orientation([out,retval]RebarRowOrientation* oreintation);
+	};
+
+	[
+	   object,
+	   uuid(61D6DF2E-6BA5-4ba4-B045-F57DFC16F973),
+	   helpstring("IEnumRebarPatterns Interface"),
+       oleautomation,nonextensible,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumRebarPatterns : IUnknown
+	{
+       [helpstring("Clone")] HRESULT Clone([out] IEnumRebarPatterns** ppenum);
+ 	   [helpstring("Next")]  HRESULT Next([in] ULONG celt, [out] IRebarPattern** rgelt, [in,out] ULONG* pceltFetched);
+	   [helpstring("Reset")] HRESULT Reset();
+	   [helpstring("Skip")]  HRESULT Skip([in] ULONG celt);
+	};
+
+   // Defines are pattern of rebar objects. 
+	[
+		object,
+		uuid(C9AE211E-037B-4c52-BDAE-22520DFCE2B9),
+		oleautomation,
+		helpstring("IBridgeDeckRebarPattern Interface"),
+		pointer_default(unique)
+	]
+	interface IBridgeDeckRebarPattern : IUnknown
+	{
+		[propputref,helpstring("property Rebar")] HRESULT Rebar([in]IRebar* rebar);
+		[propget,helpstring("property Rebar")] HRESULT Rebar([out,retval]IRebar** rebar);
+		[propputref,helpstring("property RebarLayoutItem")] HRESULT RebarLayoutItem([in]IBridgeDeckRebarLayoutItem* rebarLayoutItem);
+		[propput,helpstring("property Spacing")] HRESULT Spacing([in]Float64 spacing);
+		[propget,helpstring("property Spacing")] HRESULT Spacing([out,retval]Float64* spacing);
+		[propput,helpstring("property Location")] HRESULT Location([in]Float64 y);
+		[propget,helpstring("property Location")] HRESULT Location([out,retval]Float64* pY);
+      [propput,helpstring("property IsLumped")] HRESULT IsLumped([in]VARIANT_BOOL bIsLumped);
+      [propget,helpstring("property IsLumped")] HRESULT IsLumped([out,retval]VARIANT_BOOL* pbIsLumped);
+	};
+
+	[
+	   object,
+	   uuid(1B13A045-FE2F-41fb-8A64-0F0DCE0CB281),
+	   helpstring("IEnumBridgeDeckRebarPatterns Interface"),
+       oleautomation,nonextensible,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumBridgeDeckRebarPatterns : IUnknown
+	{
+       [helpstring("Clone")] HRESULT Clone([out] IEnumBridgeDeckRebarPatterns** ppenum);
+ 	   [helpstring("Next")]  HRESULT Next([in] ULONG celt, [out] IBridgeDeckRebarPattern** rgelt, [in,out] ULONG* pceltFetched);
+	   [helpstring("Reset")] HRESULT Reset();
+	   [helpstring("Skip")]  HRESULT Skip([in] ULONG celt);
+	};
+
+   // Defines a rebar layout item. A rebar layout item defines the longitudinal extents (start and stop points)
+   // of a group of rebar patterns.
+	[
+	   object,
+	   uuid(63465C7F-7036-43c3-95C1-D49A13271A68),
+	   oleautomation,
+	   helpstring("IRebarLayoutItem Interface"),
+	   pointer_default(unique)
+	]
+	interface IRebarLayoutItem : IUnknown
+	{
+	   [helpstring("method ContainsLocation")] HRESULT ContainsLocation([in] Float64 distFromStart,[out,retval] VARIANT_BOOL* bResult);
+	   [propget,helpstring("property Start")] HRESULT Start([out,retval]Float64* start);
+	   [propget,helpstring("property Length")] HRESULT Length([out,retval]Float64* length);
+	   [propget,helpstring("property Count")] HRESULT Count([out,retval]CollectionIndexType* count);
+	   [propget,helpstring("property Item")] HRESULT Item([in] CollectionIndexType idx,[out,retval]IRebarPattern** pattern);
+	   [helpstring("mehtod AddRebarPattern")] HRESULT AddRebarPattern([in]IRebarPattern* pattern);
+       [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+       [propget, restricted, helpstring("property _EnumRebarPatterns")] HRESULT _EnumRebarPatterns([out,retval]IEnumRebarPatterns** enumRebarPatterns);
+	};
+
+   // Interface for rebar layouts that have a fixed length
+   [
+	   object,
+	   uuid(5471ADD4-FB20-4694-A4F2-0267447AAE3E),
+	   dual,
+	   nonextensible,
+	   helpstring("IFixedLengthRebarLayoutItem Interface"),
+	   pointer_default(unique)
+   ]
+   interface IFixedLengthRebarLayoutItem : IRebarLayoutItem
+   {
+	   [propput,helpstring("property Start")] HRESULT Start([in]Float64 start);
+	   [propput,helpstring("property End")] HRESULT End([in]Float64 end);
+	   [propget,helpstring("property End")] HRESULT End([out,retval] Float64* end);
+   };
+
+
+   // Defines rebar that runs the full length of the bridge deck
+   [
+		object,
+		uuid(D9CDC505-C445-4547-8C36-D781C1692EF6),
+		oleautomation,
+		helpstring("IBridgeDeckRebarLayoutItem Interface"),
+		pointer_default(unique)
+	]
+	interface IBridgeDeckRebarLayoutItem : IUnknown
+	{
+	   [helpstring("method ContainsLocation")] HRESULT ContainsLocation([in] Float64 distFromStart,[out,retval] VARIANT_BOOL* bResult);
+	   [propget,helpstring("property Start")] HRESULT Start([out,retval]Float64* start);
+	   [propget,helpstring("property Length")] HRESULT Length([out,retval]Float64* length);
+	   [propget,helpstring("property Item")] HRESULT Item([in] CollectionIndexType idx,[out,retval]IBridgeDeckRebarPattern** pattern);
+	   [helpstring("mehtod AddRebarPattern")] HRESULT AddRebarPattern([in]IBridgeDeckRebarPattern* pattern);
+       [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+       [propget, restricted, helpstring("property _EnumRebarPatterns")] HRESULT _EnumRebarPatterns([out,retval]IEnumBridgeDeckRebarPatterns** enumRebarPatterns);
+
+      [propputref,helpstring("property Bridge")] HRESULT Bridge([in]IGenericBridge* pBridge);
+	};
+
+   // Defines negative moment rebar over a pier in the bridge deck
+   [
+		object,
+		uuid(EA709870-6420-48ee-AB07-03BABE4F979C),
+		oleautomation,
+		helpstring("INegativeMomentBridgeDeckRebarLayoutItem Interface"),
+		pointer_default(unique)
+	]
+	interface INegativeMomentBridgeDeckRebarLayoutItem : IBridgeDeckRebarLayoutItem
+	{
+      [propput,helpstring("property Pier")] HRESULT Pier([in]PierIndexType pierIdx);
+      [propget,helpstring("property Pier")] HRESULT Pier([out,retval]PierIndexType* pPierIdx);
+      [propput,helpstring("property LeftCutoff")] HRESULT LeftCutoff([in]Float64 coLeft);
+      [propget,helpstring("property LeftCutoff")] HRESULT LeftCutoff([out,retval]Float64* pcoLeft);
+      [propput,helpstring("property RightCutoff")] HRESULT RightCutoff([in]Float64 coRight);
+      [propget,helpstring("property RightCutoff")] HRESULT RightCutoff([out,retval]Float64* pcoRight);
+	};
+
+	[
+	   object,
+	   uuid(216C0A97-4C1C-4584-BCD9-5F5C9CFB6511),
+	   helpstring("IEnumRebarLayoutItems Interface"),
+       oleautomation,nonextensible,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumRebarLayoutItems : IUnknown
+	{
+      [helpstring("Clone")] HRESULT Clone([out] IEnumRebarLayoutItems** ppenum);
+ 	   [helpstring("Next")]  HRESULT Next([in] ULONG celt, [out] IRebarLayoutItem** rgelt, [in,out] ULONG* pceltFetched);
+	   [helpstring("Reset")] HRESULT Reset();
+	   [helpstring("Skip")]  HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+	   object,
+	   uuid(306F8277-C7FD-46dd-B2F5-1AF20716DF9A),
+	   helpstring("IEnumBridgeDeckRebarLayoutItems Interface"),
+       oleautomation,nonextensible,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumBridgeDeckRebarLayoutItems : IUnknown
+	{
+      [helpstring("Clone")] HRESULT Clone([out] IEnumBridgeDeckRebarLayoutItems** ppenum);
+ 	   [helpstring("Next")]  HRESULT Next([in] ULONG celt, [out] IBridgeDeckRebarLayoutItem** rgelt, [in,out] ULONG* pceltFetched);
+	   [helpstring("Reset")] HRESULT Reset();
+	   [helpstring("Skip")]  HRESULT Skip([in] ULONG celt);
+	};
+
+   // General Rebar Layout. Rebar layouts represent the longitudinal layout of a pattern of rebar.
+   // A layout defines where bars start and stop. A layout consists of one or more layout items.
+   // A rebar layout can create a rebar section
+	[
+		object,
+		uuid(455C735E-09FD-443a-BE17-7237AA1BA045),
+		oleautomation,
+		helpstring("IRebarLayout Interface"),
+		pointer_default(unique)
+	]
+	interface IRebarLayout : IUnknown
+	{
+		[helpstring("method CreateRebarSection")] HRESULT CreateRebarSection([in] Float64 cutLocation,[out,retval]IRebarSection** section);
+		[propget,helpstring("property Item")] HRESULT Item([in]CollectionIndexType idx,[out,retval]IRebarLayoutItem** rli);
+		[propget,helpstring("property Count")] HRESULT Count([out,retval] CollectionIndexType* count);
+		[helpstring("method Add")] HRESULT Add([in]IRebarLayoutItem* rli);
+      [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+      [propget, restricted, helpstring("property _EnumRebarLayoutItems")] HRESULT _EnumRebarLayoutItems([out,retval]IEnumRebarLayoutItems** enumRebarLayoutItems);
+	};
+
+   // Rebar Layout specifically for bridge decks.
+	[
+		object,
+		uuid(4CF20D1A-02DC-451e-88FA-832A84F99C32),
+		oleautomation,
+		helpstring("IBridgeDeckRebarLayout Interface"),
+		pointer_default(unique)
+	]
+	interface IBridgeDeckRebarLayout : IUnknown
+	{
+	   [propputref,helpstring("property Bridge")] HRESULT Bridge([in] IGenericBridge* pBridge);
+	   [propget,helpstring("property Bridge")] HRESULT Bridge([out,retval] IGenericBridge** ppBridge);
+	   [propputref,helpstring("property EffectiveFlangeWidthTool")] HRESULT EffectiveFlangeWidthTool([in] IEffectiveFlangeWidthTool* pTool);
+	   [propget,helpstring("property EffectiveFlangeWidthTool")] HRESULT EffectiveFlangeWidthTool([out,retval] IEffectiveFlangeWidthTool* *pTool);
+		[helpstring("method CreateRebarSection")] HRESULT CreateRebarSection([in] IDType ssMbrID,[in] SegmentIndexType segIdx,[in]Float64 distFromStartOfSegment,[in]IDType leftSSMbrID,[in]IDType rightSSMbrID,[out,retval]IRebarSection** section);
+		[propget,helpstring("property Item")] HRESULT Item([in]CollectionIndexType idx,[out,retval]IBridgeDeckRebarLayoutItem** rli);
+		[propget,helpstring("property Count")] HRESULT Count([out,retval] CollectionIndexType* count);
+		[helpstring("method Add")] HRESULT Add([in]IBridgeDeckRebarLayoutItem* rli);
+      [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+      [propget, restricted, helpstring("property _EnumRebarLayoutItems")] HRESULT _EnumRebarLayoutItems([out,retval]IEnumBridgeDeckRebarLayoutItems** enumRebarLayoutItems);
+	};
+
+   [
+      object,
+      uuid(9344D48A-BE1C-4dce-8558-4D1CAE81D2F0),
+      oleautomation,
+      helpstring("IMaterial Interface"),
+      pointer_default(unique)
 	]
 	interface IMaterial : IUnknown
 	{
-	   [propget, helpstring("property E")] HRESULT E([out,retval]Float64* E);
-	   [propput, helpstring("property E")] HRESULT E([in]Float64 E);
-	   [propget, helpstring("property Density")] HRESULT Density([out,retval]Float64* w);
-	   [propput, helpstring("property Density")] HRESULT Density([in]Float64 w);
-	   [helpstring("method Clone")] HRESULT Clone([out,retval]IMaterial** clone);
+	   [propget, helpstring("property E")] HRESULT E([in]StageIndexType stageIdx,[out,retval]Float64* E);
+	   [propput, helpstring("property E")] HRESULT E([in]StageIndexType stageIdx,[in]Float64 E);
+	   [propget, helpstring("property Density")] HRESULT Density([in]StageIndexType stageIdx,[out,retval]Float64* w);
+	   [propput, helpstring("property Density")] HRESULT Density([in]StageIndexType stageIdx,[in]Float64 w);
 	};
 
    [
@@ -244,18 +684,6 @@ library WBFLGenericBridge
       [helpstring("method RemoveItemData")] HRESULT RemoveItemData([in]BSTR name);
       [helpstring("method GetItemDataCount")] HRESULT GetItemDataCount([out,retval]CollectionIndexType* count);
    };
-
-   [
-	   object,
-	   uuid(6332A257-7C75-4b44-807E-62DF2B18683B),
-	   oleautomation,
-	   helpstring("IMaterialEvents Interface"),
-	   pointer_default(unique)
-	]
-	interface IMaterialEvents : IUnknown
-	{
-	   [helpstring("event OnMaterialChanged")] HRESULT OnMaterialChanged(IMaterial* material);
-	};
 
 	[
 	   object,
@@ -274,6 +702,8 @@ library WBFLGenericBridge
 	   [propput,helpstring("property Type")] HRESULT Type([in] StrandType type);
 	   [propget,helpstring("property Size")] HRESULT Size([out,retval] StrandSize* size);
 	   [propput,helpstring("property Size")] HRESULT Size([in] StrandSize size);
+      [propget,helpstring("property InstallationStage")] HRESULT InstallationStage([out,retval]StageIndexType* pStageIdx);
+      [propput,helpstring("property InstallationStage")] HRESULT InstallationStage([in]StageIndexType stageIdx);
 
 	   [propget,helpstring("property NominalDiameter")] HRESULT NominalDiameter([out,retval]Float64* dps);
 	   [propget,helpstring("property NominalArea")] HRESULT NominalArea([out,retval]Float64* aps);
@@ -293,18 +723,6 @@ library WBFLGenericBridge
 	interface IOverhangPathStrategy : IUnknown
 	{
 	   [propget,helpstring("property Overhang")] HRESULT Path([out,retval]IPath** path);
-	};
-
-	[
-	   object,
-	   uuid(526F10DE-27F9-4c9f-8264-F36FBD5CB889),
-	   oleautomation,
-	   helpstring("IOverhangPathStrategyEvents Interface"),
-	   pointer_default(unique)
-	]
-	interface IOverhangPathStrategyEvents : IUnknown
-	{
-	   [helpstring("event OnStrategyChanged")] HRESULT OnStrategyChanged();
 	};
 
 	[
@@ -341,33 +759,23 @@ library WBFLGenericBridge
 	]
 	interface IBridgeDeck : IUnknown
 	{
+      [propputref,helpstring("property DeckBoundary")] HRESULT DeckBoundary([in]IDeckBoundary* deckBoundary);
+      [propget,helpstring("property DeckBoundary")] HRESULT DeckBoundary([out,retval]IDeckBoundary** deckBoundary);
 	   [propget,helpstring("property Composite")] HRESULT Composite([out,retval]VARIANT_BOOL* bComposite);
 	   [propput,helpstring("property Composite")] HRESULT Composite([in]VARIANT_BOOL bComposite);
-	   [propget,helpstring("property ConstructionStage")] HRESULT ConstructionStage([out,retval]BSTR* bstrStage);
-	   [propput,helpstring("property ConstructionStage")] HRESULT ConstructionStage([in]BSTR bstrStage);
-	   [propget,helpstring("property CompositeStage")] HRESULT CompositeStage([out,retval]BSTR* bstrStage);
-	   [propput,helpstring("property CompositeStage")] HRESULT CompositeStage([in]BSTR bstrStage);
+	   [propget,helpstring("property WearingSurfaceDepth")] HRESULT WearingSurfaceDepth([out,retval]Float64* d);
+	   [propput,helpstring("property WearingSurfaceDepth")] HRESULT WearingSurfaceDepth([in]Float64 d);
+	   [propget,helpstring("property WearingSurfaceDensity")] HRESULT WearingSurfaceDensity([out,retval]Float64* d);
+	   [propput,helpstring("property WearingSurfaceDensity")] HRESULT WearingSurfaceDensity([in]Float64 d);
 	   [propget,helpstring("property Material")] HRESULT Material([out,retval]IMaterial** material);
-	   [propput,helpstring("property Material")] HRESULT Material([in]IMaterial* material);
+	   [propputref,helpstring("property Material")] HRESULT Material([in]IMaterial* material);
 	   [propget,helpstring("property StructuralDepth")] HRESULT StructuralDepth([out,retval]Float64* depth);
 	   [propget,helpstring("property GrossDepth")] HRESULT GrossDepth([out,retval]Float64* depth);
-      [propputref,helpstring("property Bridge")] HRESULT Bridge([in]IGenericBridge* pBridge);
-      [propget,helpstring("property Bridge")] HRESULT Bridge([out,retval]IGenericBridge** ppBridge);
-	   [helpstring("method Clone")] HRESULT Clone([out,retval]IBridgeDeck** clone);
-	};
-    [
-	   object,
-	   uuid(98A2F788-BB84-451a-9F60-BC57097F7F2F),
-	   oleautomation,
-	   helpstring("IBridgeDeckEvents Interface"),
-	   pointer_default(unique)
-	]
-	interface IBridgeDeckEvents : IUnknown
-	{
-	   [helpstring("event OnBridgeDeckChanged")] HRESULT OnBridgeDeckChanged(IBridgeDeck* deck);
+      [propget,helpstring("property RebarLayout")] HRESULT RebarLayout([out,retval]IBridgeDeckRebarLayout** rebarLayout);
+      [propputref,helpstring("property RebarLayout")] HRESULT RebarLayout([in]IBridgeDeckRebarLayout* rebarLayout);
 	};
 
-	[
+   [
 	   object,
 	   uuid(C50BB152-ED63-4842-B17D-437FB98BF2CB),
 	   oleautomation,
@@ -380,18 +788,12 @@ library WBFLGenericBridge
 	   [propput, helpstring("property GrossDepth")] HRESULT GrossDepth([in]Float64 depth);
 	   [propget, helpstring("property OverhangDepth")] HRESULT OverhangDepth([out,retval]Float64* depth);
 	   [propput, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]Float64 depth);
+	   [propget, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([out,retval]Float64* depth);
+	   [propput, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([in]Float64 depth);
 	   [propget, helpstring("property Fillet")] HRESULT Fillet([out,retval]Float64* depth);
 	   [propput, helpstring("property Fillet")] HRESULT Fillet([in]Float64 depth);
 	   [propget, helpstring("property OverhangTaper")] HRESULT OverhangTaper([out,retval]DeckOverhangTaper* taper);
 	   [propput, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DeckOverhangTaper taper);
-
-	   [propget, helpstring("property LeftOverhangPathStrategy")] HRESULT LeftOverhangPathStrategy([out,retval]IOverhangPathStrategy** strategy);
-	   [propputref, helpstring("property LeftOverhangPathStrategy")] HRESULT LeftOverhangPathStrategy([in]IOverhangPathStrategy* strategy);
-	   [propget, helpstring("property RightOverhangPathStrategy")] HRESULT RightOverhangPathStrategy([out,retval]IOverhangPathStrategy** strategy);
-	   [propputref, helpstring("property RightOverhangPathStrategy")] HRESULT RightOverhangPathStrategy([in]IOverhangPathStrategy* strategy);
-
-	   [propget, helpstring("property LeftOverhangPath")] HRESULT LeftOverhangPath([out,retval]IPath** Path);
-	   [propget, helpstring("property RightOverhangPath")] HRESULT RightOverhangPath([out,retval]IPath** Path);
 	};
 
 	[
@@ -403,26 +805,18 @@ library WBFLGenericBridge
 	]
 	interface IPrecastSlab : IUnknown
 	{
-	   [propget, helpstring("property CastingStage")] HRESULT CastingStage([out,retval]BSTR* bstrStage);
-	   [propput, helpstring("property CastingStage")] HRESULT CastingStage([in]BSTR bstrStage);
 	   [propget, helpstring("property CastDepth")] HRESULT CastDepth([out,retval]Float64* depth);
 	   [propput, helpstring("property CastDepth")] HRESULT CastDepth([in]Float64 depth);
 	   [propget, helpstring("property PanelDepth")] HRESULT PanelDepth([out,retval]Float64* depth);
 	   [propput, helpstring("property PanelDepth")] HRESULT PanelDepth([in]Float64 depth);
 	   [propget, helpstring("property OverhangDepth")] HRESULT OverhangDepth([out,retval]Float64* depth);
 	   [propput, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]Float64 depth);
+	   [propget, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([out,retval]Float64* depth);
+	   [propput, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([in]Float64 depth);
 	   [propget, helpstring("property Fillet")] HRESULT Fillet([out,retval]Float64* depth);
 	   [propput, helpstring("property Fillet")] HRESULT Fillet([in]Float64 depth);
 	   [propget, helpstring("property OverhangTaper")] HRESULT OverhangTaper([out,retval]DeckOverhangTaper* taper);
 	   [propput, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DeckOverhangTaper taper);
-
-	   [propget, helpstring("property LeftOverhangPathStrategy")] HRESULT LeftOverhangPathStrategy([out,retval]IOverhangPathStrategy** strategy);
-	   [propputref, helpstring("property LeftOverhangPathStrategy")] HRESULT LeftOverhangPathStrategy([in]IOverhangPathStrategy* strategy);
-	   [propget, helpstring("property RightOverhangPathStrategy")] HRESULT RightOverhangPathStrategy([out,retval]IOverhangPathStrategy** strategy);
-	   [propputref, helpstring("property RightOverhangPathStrategy")] HRESULT RightOverhangPathStrategy([in]IOverhangPathStrategy* strategy);
-
-	   [propget, helpstring("property LeftOverhangPath")] HRESULT LeftOverhangPath([out,retval]IPath** Path);
-	   [propget, helpstring("property RightOverhangPath")] HRESULT RightOverhangPath([out,retval]IPath** Path);
 	};
 
 	[
@@ -436,14 +830,8 @@ library WBFLGenericBridge
 	{
 	   [propget, helpstring("property GrossDepth")] HRESULT GrossDepth([out,retval]Float64* depth);
 	   [propput, helpstring("property GrossDepth")] HRESULT GrossDepth([in]Float64 depth);
-
-	   [propget, helpstring("property LeftOverhangPathStrategy")] HRESULT LeftOverhangPathStrategy([out,retval]IOverhangPathStrategy** strategy);
-	   [propputref, helpstring("property LeftOverhangPathStrategy")] HRESULT LeftOverhangPathStrategy([in]IOverhangPathStrategy* strategy);
-	   [propget, helpstring("property RightOverhangPathStrategy")] HRESULT RightOverhangPathStrategy([out,retval]IOverhangPathStrategy** strategy);
-	   [propputref, helpstring("property RightOverhangPathStrategy")] HRESULT RightOverhangPathStrategy([in]IOverhangPathStrategy* strategy);
-
-	   [propget, helpstring("property LeftOverhangPath")] HRESULT LeftOverhangPath([out,retval]IPath** Path);
-	   [propget, helpstring("property RightOverhangPath")] HRESULT RightOverhangPath([out,retval]IPath** Path);
+	   [propget, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([out,retval]Float64* depth);
+	   [propput, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([in]Float64 depth);
 	};
 
 	[
@@ -528,168 +916,6 @@ library WBFLGenericBridge
 
 	[
 	   object,
-	   uuid(FA8DB88F-AAB5-4c0c-BDE6-87724D0AE044),
-	   oleautomation,
-	   helpstring("IConnection"),
-	   pointer_default(unique)
-	]
-	interface IConnection : IUnknown
-	{
-	   [propget,helpstring("property BearingOffset")] HRESULT BearingOffset([out,retval] Float64* brgOffset);
-	   [propput,helpstring("property BearingOffset")] HRESULT BearingOffset([in] Float64 brgOffset);
-       [propget,helpstring("property BearingOffsetMeasurementType")] HRESULT BearingOffsetMeasurementType([out,retval] MeasurementType* measure);
-       [propput,helpstring("property BearingOffsetMeasurementType")] HRESULT BearingOffsetMeasurementType([in] MeasurementType measure);
-	   [propget,helpstring("property EndDistance")] HRESULT EndDistance([out,retval] Float64* endDist);
-	   [propput,helpstring("property EndDistance")] HRESULT EndDistance([in] Float64 endDist);
-       [propget,helpstring("property EndDistanceMeasurementType")] HRESULT EndDistanceMeasurementType([out,retval] MeasurementType* measure);
-       [propput,helpstring("property EndDistanceMeasurementType")] HRESULT EndDistanceMeasurementType([in] MeasurementType measure);
-       [propget,helpstring("property EndDistanceMeasurementLocation")] HRESULT EndDistanceMeasurementLocation([out,retval] MeasurementLocation* measure);
-       [propput,helpstring("property EndDistanceMeasurementLocation")] HRESULT EndDistanceMeasurementLocation([in] MeasurementLocation measure);
-	   [propget,helpstring("property SupportWidth")] HRESULT SupportWidth([out,retval] Float64* supportWidth);
-	   [propput,helpstring("property SupportWidth")] HRESULT SupportWidth([in] Float64 supportWidth);
-	   [helpstring("method Clone")] HRESULT Clone([out,retval]IConnection** clone);
-	};
-
-	[
-		object,
-		uuid(04223DEB-51E5-4168-87A0-F37C767914AD),
-		oleautomation,
-		helpstring("IGirderSpacing Interface"),
-		pointer_default(unique)
-	]
-	interface IGirderSpacing : IUnknown
-	{
-	  [helpstring("method SetRefGirder")] HRESULT SetRefGirder([in]GirderIndexType refGirderIdx,[in]Float64 refGirderOffset,[in]OffsetType refGirderOffsetType);
-	  [propput,helpstring("property RefGirder")] HRESULT RefGirder([in]GirderIndexType refGirderIdx);
-	  [propget,helpstring("property RefGirder")] HRESULT RefGirder([out,retval]GirderIndexType* refGirderIdx);
-	  [propput,helpstring("property RefGirderOffset")] HRESULT RefGirderOffset([in]Float64 refGirderOffset);
-	  [propget,helpstring("property RefGirderOffset")] HRESULT RefGirderOffset([out,retval]Float64* refGirderOffset);
-	  [propput,helpstring("property RefGirderOffsetType")] HRESULT RefGirderOffsetType([in]OffsetType refGirderOffsetType);
-	  [propget,helpstring("property RefGirderOffsetType")] HRESULT RefGirderOffsetType([out,retval]OffsetType* refGirderOffsetType);
-
-      [helpstring("method SetMeasurement")] HRESULT SetMeasurement([in]MeasurementLocation ml,[in]MeasurementType mt);
-	  [propget,helpstring("property MeasurementLocation")] HRESULT MeasurementLocation([out,retval]MeasurementLocation* ml);
-	  [propput,helpstring("property MeasurementLocation")] HRESULT MeasurementLocation([in]MeasurementLocation ml);
-	  [propget,helpstring("property MeasurementType")] HRESULT MeasurementType([out,retval]MeasurementType* mt);
-	  [propput,helpstring("property MeasurementType")] HRESULT MeasurementType([in]MeasurementType mt);
-	  [propget,helpstring("property Spacing")] HRESULT Spacing([in]SpacingIndexType spaceIdx,[out,retval]Float64* spacing);
-	  [propput,helpstring("property Spacing")] HRESULT Spacing([in]SpacingIndexType spaceIdx,[in]Float64 spacing);
-	  [propput,helpstring("property Spacings")] HRESULT Spacings([in]IDblArray* spaces);
-
-	  [propget,helpstring("property GirderSpacing")] HRESULT GirderSpacing([in]SpacingIndexType spaceIdx,[in]MeasurementLocation ml,[in]MeasurementType mt,[out,retval]Float64* spacing);
-	  [propget,helpstring("property Width")] HRESULT Width([in] Float64 distFromStartOfSpan,[in]MeasurementType measureType,[out,retval]Float64* width);
-	  [propget,helpstring("property WidthAtPier")] HRESULT WidthAtPier([in]MeasurementType measureType,[out,retval]Float64* width);
-	  [propget,helpstring("property WidthAtBearing")] HRESULT WidthAtBearing([in]MeasurementType measureType,[out,retval]Float64* width);
-	  
-	  [propget,helpstring("property SpacingAlongGirder")] HRESULT SpacingAlongGirder([in] GirderIndexType gdrIdx, [in] Float64 dist, [in] DirectionType side,[out,retval] Float64* space);
-	  [propget,helpstring("property GirderOffset")] HRESULT GirderOffset([in] GirderIndexType gdrIdx,[in] MeasurementLocation measureLocation,[in] MeasurementType measureType,[out,retval]Float64* offset);
-	  [propget,helpstring("property SpaceWidth")] HRESULT SpaceWidth([in] SpacingIndexType spaceIdx,[in] Float64 distFromStartOfSpan,[out,retval]Float64* space);
-
-     [propget,helpstring("property GirderHaunch")] HRESULT GirderHaunch([in] GirderIndexType gdrIdx,[out,retval]Float64* pHaunch);
-     [propput,helpstring("property GirderHaunch")] HRESULT GirderHaunch([in] GirderIndexType gdrIdx,[in]Float64 haunch);
-	};
-
-   [
-		object,
-		uuid(306765BA-5E09-43b7-9478-C6694AAF9315),
-		helpstring("IGirderSpacingEvents Interface"),
-		pointer_default(unique)
-   ]
-   interface IGirderSpacingEvents : IUnknown
-   {
-      [helpstring("event OnGirderSpacingChanged")] HRESULT OnGirderSpacingChanged();
-   };
-
-	[
-		object,
-		uuid(581B7442-F996-453D-80A3-2655A2F39C64),
-		oleautomation,
-		helpstring("IStage Interface"),
-		pointer_default(unique)
-	]
-	interface IStage : IUnknown
-	{
-		[propget, helpstring("property Name")] HRESULT Name([out, retval] BSTR *pVal);
-		[propput, helpstring("property Name")] HRESULT Name([in] BSTR newVal);
-		[propget, helpstring("property Description")] HRESULT Description([out, retval] BSTR *pVal);
-		[propput, helpstring("property Description")] HRESULT Description([in] BSTR newVal);
-	};
-	[
-	   object,
-	   uuid(575FC17D-AE53-4ee6-99DD-27764D01CB9F),
-	   helpstring("IEnumStages Interface"),
-	   oleautomation,nonextensible,
-	   hidden,restricted,
-	   pointer_default(unique)
-	]
-	interface IEnumStages : IUnknown
-	{
-       [helpstring("Clone")]
-	   HRESULT Clone([out] IEnumStages** ppenum);
-
-	   [helpstring("Next")]
-	   HRESULT Next([in] ULONG celt, [out] IStage** rgelt, [in,out] ULONG* pceltFetched);
-
-	   [helpstring("Reset")]
-	   HRESULT Reset();
-	   
-	   [helpstring("Skip")]
-	   HRESULT Skip([in] ULONG celt);
-	};
-
-   [
-      object,
-      uuid(30784185-F817-4c8e-9631-D7D18F0DBFC2),
-      helpstring("IStageEvents Interface"),
-      oleautomation,
-      pointer_default(unique)
-   ]
-   interface IStageEvents : IUnknown
-   {
-      [helpstring("event OnNameChanged")] HRESULT OnNameChanged([in] BSTR bstrOldName,[in] IStage* stage);
-      [helpstring("event OnDescriptionChanged")] HRESULT OnDescriptionChanged([in]IStage* stage);
-   };
-
-	[
-		object,
-		uuid(FA774DA6-3E7F-4F28-970C-21256E6E797D),
-		oleautomation,
-		helpstring("IStageCollection Interface"),
-		pointer_default(unique)
-	]
-	interface IStageCollection : IUnknown
-	{
-		[propget, restricted, helpstring("property _NewEnum")] HRESULT _NewEnum([out, retval] IUnknown* *pVal);
-		[propget, helpstring("property Item")] HRESULT Item([in] CollectionIndexType index,[out, retval] IStage* *pVal);
-		[propget, helpstring("property Count")] HRESULT Count([out, retval] CollectionIndexType *pVal);
-		[helpstring("method CreateStage")] HRESULT CreateStage([in] BSTR name,[in] BSTR description);
-		[helpstring("method CreateStageAt")] HRESULT CreateStageAt([in] BSTR name,[in] BSTR description,[in] CollectionIndexType pos);
-		[helpstring("method MoveStage")] HRESULT MoveStage([in] CollectionIndexType fromPos,[in] CollectionIndexType toPos);
-		[helpstring("method RemoveByIndex")] HRESULT RemoveByIndex([in] CollectionIndexType index);
-		[helpstring("method RemoveByName")] HRESULT RemoveByName([in] BSTR name);
-		[helpstring("method Find")] HRESULT Find([in] BSTR name,[out,retval] IStage* *stage);
-		[propget, restricted, helpstring("property _EnumStages")] HRESULT _EnumStages([out, retval] IEnumStages* *enumStages);
-
-		[helpstring("method Compare")] HRESULT Compare([in] BSTR name1, [in] BSTR name2,[out,retval] long* cmp);
-	};
-   [
-      object,
-      uuid(10BC70B1-996A-41a9-AB3E-31638D56BDA7),
-      helpstring("IStageCollectionEvents Interface"),
-      oleautomation,
-      pointer_default(unique)
-   ]
-   interface IStageCollectionEvents : IUnknown
-   {
-      [helpstring("event OnStageRenamed")] HRESULT OnStageRenamed([in]BSTR bstrOldName,[in]IStage* stage);
-      [helpstring("event OnStageDescriptionChanged")] HRESULT OnStageDescriptionChanged([in]IStage* stage);
-      [helpstring("event OnStageAdded")] HRESULT OnStageAdded([in]CollectionIndexType idx);
-      [helpstring("event OnStageRemoved")] HRESULT OnStageRemoved([in]CollectionIndexType idx,[in] BSTR name);
-      [helpstring("event OnStageMoved")] HRESULT OnStageMoved([in] BSTR name,[in]CollectionIndexType from,[in] CollectionIndexType to);
-   };
-
-	[
-	   object,
 	   uuid(8763E80A-AA45-4EC8-BA44-25890E5B0269),
 	   oleautomation,
 	   helpstring("IFlangedGirderSection Interface"),
@@ -702,18 +928,6 @@ library WBFLGenericBridge
 	};
 
    [
-      object,
-	  uuid(5B2D3E0A-8EDA-489b-B792-CC03FB75AEAA),
-	  oleautomation,
-	  helpstring("ISegmentMeasure Interface"),
-	  pointer_default(unique)
-   ]
-   interface ISegmentMeasure : IUnknown
-   {
-      [helpstring("property IsFractional")] HRESULT IsFractional();
-   };
-
-   [
 		object,
 		uuid(ACA24CD2-8201-459d-BF2B-D19D7DF87ACF),
 		oleautomation,
@@ -722,18 +936,30 @@ library WBFLGenericBridge
    ]
    interface ISegment : IUnknown
    {
-      [propputref, helpstring("property SegmentMeasure")] HRESULT SegmentMeasure([in]ISegmentMeasure* sm);
-		[propget, helpstring("property Length")] HRESULT Length([out, retval] Float64 *pVal);
-		[propput, helpstring("property Length")] HRESULT Length([in] Float64 newVal);
-		[propget, helpstring("property SegmentLength")] HRESULT SegmentLength([out, retval] Float64 *pVal);
-		[propget, helpstring("property Shape")] HRESULT Shape([in] Float64 distAlongSegment,[out,retval]IShape** ppShape);
-		[helpstring("method Clone")] HRESULT Clone([out,retval]ISegment** ppClone);
+      [propget, helpstring("property SuperstructureMember")] HRESULT SuperstructureMember([out,retval]ISuperstructureMember** ssmbr);
+      [propget, helpstring("property GirderLine")] HRESULT GirderLine([out,retval]IGirderLine** girderLine);
+      [propget, helpstring("property PrevSegment")] HRESULT PrevSegment([out,retval]ISegment** segment);
+      [propget, helpstring("property NextSegment")] HRESULT NextSegment([out,retval]ISegment** segment);
 
-		[propputref, helpstring("property Material")] HRESULT Material([in]IMaterial* material);
-		[propget, helpstring("property Material")] HRESULT Material([out,retval]IMaterial* *material);
+      [propget, helpstring("property Length")] HRESULT Length([out, retval] Float64 *pVal);
+		[propget, helpstring("property Profile")] HRESULT Profile([in] VARIANT_BOOL bIncludeClosure,[out,retval]IShape** ppShape);
+
+		[propget, helpstring("property Section")] HRESULT Section([in]StageIndexType stageIdx,[in] Float64 distAlongSegment,[out,retval]ISection** ppSection);
+      [propget, helpstring("property PrimaryShape")] HRESULT PrimaryShape([in]Float64 distAlongSegment,[out,retval]IShape** ppShape);
 
 		[propput,helpstring("property Orientation")] HRESULT Orientation([in]Float64 orientation);
 		[propget,helpstring("property Orientation")] HRESULT Orientation([out,retval]Float64* orientation);
+
+      [propget,helpstring("property HaunchDepth")] HRESULT HaunchDepth([in] EndType endType,[out,retval]Float64* pVal);
+      [propput,helpstring("property HaunchDepth")] HRESULT HaunchDepth([in] EndType endType,[in]Float64 val);
+      [helpstring("method GetHaunchDepth")] HRESULT GetHaunchDepth([in]Float64 distAlongSegment,[out,retval]Float64* pVal);
+
+      // These functions are called by the internal framework. Do not call them directly unless you
+      // want to mess up your bridge model
+      [propputref, helpstring("property SuperstructureMember")] HRESULT SuperstructureMember([in]ISuperstructureMember* ssMbr);
+      [propputref, helpstring("property GirderLine")] HRESULT GirderLine([in]IGirderLine* girderLine);
+      [propputref, helpstring("property PrevSegment")] HRESULT PrevSegment([in]ISegment* segment);
+      [propputref, helpstring("property NextSegment")] HRESULT NextSegment([in]ISegment* segment);
    };
 
 	[
@@ -789,48 +1015,30 @@ library WBFLGenericBridge
    ]
    interface ISuperstructureMember : IUnknown
    {
-      // returns the length measure. if < 0, this superstructure member is a fraction
-      // of the collection length
-		[propget, helpstring("property Length")] HRESULT Length([out, retval] Float64 *pVal);
-		[propput, helpstring("property Length")] HRESULT Length([in] Float64 newVal);
-		[helpstring("method SetEndRelease")] HRESULT SetEndRelease([in] EndType end,[in] BSTR strRemoveStage,[in] ReleaseType release);
-		[helpstring("method GetEndRelease")] HRESULT GetEndRelease([in] EndType end,[out] BSTR* strRemovalStage,[out] ReleaseType* release);
-
-      // returns length of superstructure member by summing length of segments
-		[propget, helpstring("property SegmentLength")] HRESULT SegmentLength([out, retval] Float64 *pVal);
-
-		[propget, helpstring("property SegmentCount")] HRESULT SegmentCount([out, retval] CollectionIndexType *pVal);
-		[propget, helpstring("property Segment")] HRESULT Segment([in] CollectionIndexType idx, [out, retval] ISegment* *pVal);
-		[propget, helpstring("property AreSegmentsSymmetrical")] HRESULT AreSegmentsSymmetrical([out, retval] VARIANT_BOOL *pVal);
-		[propput, helpstring("property AreSegmentsSymmetrical")] HRESULT AreSegmentsSymmetrical([in] VARIANT_BOOL newVal);
-		[propget, helpstring("property AreSegmentLengthsFractional")] HRESULT AreSegmentLengthsFractional([out, retval] VARIANT_BOOL *pVal);
-		[propput, helpstring("property AreSegmentLengthsFractional")] HRESULT AreSegmentLengthsFractional([in] VARIANT_BOOL newVal);
-
+      [propget, helpstring("property ID")] HRESULT ID([out,retval] GirderIDType* pID);
 		[helpstring("method AddSegment")] HRESULT AddSegment([in]ISegment* segment);
-		[helpstring("method InsertSegment")] HRESULT InsertSegment(CollectionIndexType idx,[in]ISegment* segment);
-		[helpstring("method MoveSegmentTo")] HRESULT MoveSegmentTo([in] CollectionIndexType fromIdx,[in] CollectionIndexType toIdx);
-		[helpstring("method CopySegmentTo")] HRESULT CopySegmentTo([in] CollectionIndexType fromIdx, [in] CollectionIndexType toIdx);
-		[helpstring("method RemoveSegment")] HRESULT RemoveSegment([in] CollectionIndexType idx);
-		[helpstring("method RemoveSegments")] HRESULT RemoveSegments();
+		[propget, helpstring("property Segment")] HRESULT Segment([in] SegmentIndexType idx, [out, retval] ISegment* *pVal);
+		[propget, helpstring("property SegmentCount")] HRESULT SegmentCount([out, retval] SegmentIndexType *pVal);
+		[helpstring("method GetDistanceFromStartOfSegment")] HRESULT GetDistanceFromStartOfSegment([in] Float64 distFromStartOfSSMbr,[out] Float64* distFromStartOfSegment,[out] SegmentIndexType* pSegIdx,[out] ISegment** ppSeg);
+      [helpstring("method GetDistanceFromStart")] HRESULT GetDistanceFromStart([in]SegmentIndexType segIdx,[in]Float64 distFromStartOfSegment,[out,retval]Float64* pDistFromStartOfSSMbr);
+		[helpstring("method SetEndRelease")] HRESULT SetEndRelease([in] EndType end,[in] StageIndexType stageIdx,[in] ReleaseType release);
+		[helpstring("method GetEndRelease")] HRESULT GetEndRelease([in] EndType end,[out] StageIndexType* pStageIdx,[out] ReleaseType* release);
 
-		[helpstring("method GetMemberSegments")] HRESULT GetMemberSegments([out,retval] IFilteredSegmentCollection **ppSeg);
-		[helpstring("method GetSegmentForMemberLocation")] HRESULT GetSegmentForMemberLocation([in] Float64 Location,[out] Float64* dist,[out] ISegmentItem **ppSeg);
-		[helpstring("method ReverseSegments")] HRESULT ReverseSegments();
-
-		[helpstring("method Clone")] HRESULT Clone([out,retval]ISuperstructureMember** ppSSM);
+      [propget,helpstring("property LocationType")] HRESULT LocationType([out,retval]LocationType* pVal);
+      [propget,helpstring("property Bridge")] HRESULT Bridge([out,retval]IGenericBridge** ppBridge);
    };
 
 	[
 	   object,
 	   uuid(3B0C73B3-9A2E-4ea0-A327-F54E11DC896B),
-	   helpstring("IEnumSuperstructureMember Interface"),
+	   helpstring("IEnumSuperstructureMembers Interface"),
 	   oleautomation,nonextensible,
 	   hidden,restricted,
 	   pointer_default(unique)
 	]
-	interface IEnumSuperstructureMember : IUnknown
+	interface IEnumSuperstructureMembers : IUnknown
 	{
-      [helpstring("Clone")] HRESULT Clone([out] IEnumSuperstructureMember** ppenum);
+      [helpstring("Clone")] HRESULT Clone([out] IEnumSuperstructureMembers** ppenum);
 	   [helpstring("Next")]  HRESULT Next([in] ULONG celt, [out] ISuperstructureMember** rgelt, [in,out] ULONG* pceltFetched);
 	   [helpstring("Reset")] HRESULT Reset();
 	   [helpstring("Skip")]  HRESULT Skip([in] ULONG celt);
@@ -847,72 +1055,9 @@ library WBFLGenericBridge
 	{
 		[propget, helpstring("property Count")] HRESULT Count([out, retval] CollectionIndexType *pVal);
 		[propget, helpstring("property Item")] HRESULT Item([in]CollectionIndexType index, [out, retval] ISuperstructureMember* *pVal);
-		[propget, helpstring("property _EnumElements")] HRESULT _EnumElements([out, retval] IEnumSuperstructureMember* *pVal);
+		[propget, helpstring("property _EnumElements")] HRESULT _EnumElements([out, retval] IEnumSuperstructureMembers* *pVal);
 		[propget] HRESULT _NewEnum([out, retval] IUnknown** retval);  
 	};
-
-   [
-		object,
-		uuid(52595F31-2772-4eda-83A4-4BD985229F0B),
-		oleautomation,
-		helpstring("ISuperstructureMemberCollection Interface"),
-		pointer_default(unique)
-   ]
-   interface ISuperstructureMemberCollection : IUnknown
-   {
-		[propget, helpstring("property Item")] HRESULT Item([in] CollectionIndexType position, [out, retval] ISuperstructureMember* *pVal);
-		[propget, helpstring("returns an standard COM enumerator for the collection.")]
-		HRESULT _NewEnum([out, retval] IUnknown** retval);  
-
-		[propget, helpstring("property ID")] HRESULT ID([out,retval]long* id);
-
-		[propget, helpstring("property MemberLength")] HRESULT MemberLength([out, retval] Float64 *pVal);
-		
-		[propget, helpstring("property Count")]  HRESULT Count([out, retval] CollectionIndexType *pVal);
-		[helpstring("method Add")] HRESULT Add();
-		[helpstring("method Insert")] HRESULT Insert([in]CollectionIndexType relPosition);
-		[helpstring("method MoveTo")] HRESULT MoveTo([in] CollectionIndexType fromPosition, [in] CollectionIndexType toPosition);
-		[helpstring("method CopyTo")] HRESULT CopyTo([in]CollectionIndexType fromPosition, [in]CollectionIndexType toPosition);
-		[helpstring("method Remove")] HRESULT Remove([in]CollectionIndexType position);
-		[helpstring("method Reverse")] HRESULT Reverse();
-		[restricted, propget, helpstring("property _EnumElements")] HRESULT _EnumElements([out, retval] IEnumSuperstructureMember* *pVal);
-		[helpstring("method Clear - Remove all")] HRESULT Clear();
-
-      [propget, helpstring("property Symmetrical")] HRESULT Symmetrical([out,retval] VARIANT_BOOL* bSym);
-      [propput, helpstring("property Symmetrical")] HRESULT Symmetrical([in] VARIANT_BOOL bSym);
-		[helpstring("method GetSuperstructureMembers")] HRESULT GetSuperstructureMembers([out,retval] IFilteredSuperstructureMemberCollection* *mbrs);
-		[] HRESULT GetReferencePoint([in] EndType endType,[out,retval]IPoint2d** ppPoint);
-		[] HRESULT GetEndPoint([in] EndType endType,[out,retval]IPoint2d** ppPoint);
-   };
-
-   [
-      object,
-      uuid(B987F0BD-9278-4533-89D4-B9BC17A6923D),
-      oleautomation,
-      helpstring("ISuperstructureMemberCollectionEvents Interface"),
-      pointer_default(unique)
-   ]
-   interface ISuperstructureMemberCollectionEvents : IUnknown
-   {
-      [helpstring("event OnSuperstructureMemberChanged")] HRESULT OnSuperstructureMemberChanged([in] ISuperstructureMember* mbr);
-      [helpstring("event OnSuperstructureMemberAdded")] HRESULT OnSuperstructureMemberAdded([in] CollectionIndexType idx);
-      [helpstring("event OnSuperstructureMemberRemoved")] HRESULT OnSuperstructureMemberRemoved([in] CollectionIndexType idx);
-      [helpstring("event OnSuperstructureMemberMoved")] HRESULT OnSuperstructureMemberMoved([in] CollectionIndexType from,[in] CollectionIndexType to);
-      [helpstring("event OnSuperstructureMemberCollectionChanged")] HRESULT OnSuperstructureMemberCollectionChanged([in] ISuperstructureMemberCollection* members);
-   };
-
-   [
-		object,
-		uuid(9D7865AD-82AE-482c-AD56-A7AA9CC2C1EB),
-		oleautomation,
-		helpstring("ISuperstructureMemberEvents Interface"),
-		pointer_default(unique)
-   ]
-   interface ISuperstructureMemberEvents : IUnknown
-   {
-		[helpstring("event OnSuperstructureMemberChanged")] HRESULT OnSuperstructureMemberChanged([in] ISuperstructureMember* ssm);
-   };
-
    [
 		object,
 		uuid(67BE2D86-DCB1-40ae-AF16-59A766AE95C1),
@@ -922,7 +1067,10 @@ library WBFLGenericBridge
    ]
    interface IPrismaticSegment : ISegment
    {
-		[propputref, helpstring("property Shape")] HRESULT Shape([in] IShape* pShape);
+		[helpstring("method Shape")] HRESULT AddShape([in] IShape* pShape,[in]IMaterial* pFGMaterial,[in]IMaterial* pBGMaterial);
+      [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
+      [propget, helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
+		[propget, helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
    };
 
    [
@@ -934,7 +1082,11 @@ library WBFLGenericBridge
    ]
    interface IFlangedGirderEndBlockSegment : ISegment
    {
-		[propputref, helpstring("property FlangedGirderSection")] HRESULT FlangedGirderSection([in] IFlangedGirderSection* pPrecastBeam);
+      [helpstring("method Shape")] HRESULT AddShape([in] IShape* pShape,[in]IMaterial* pFGMaterial,[in]IMaterial* pBGMaterial);
+      [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
+      [propget, helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
+		[propget, helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
+
       [propput, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[in] Float64 length);
       [propget, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[out,retval] Float64* pLength);
       [propput, helpstring("property EndBlockTransitionLength")] HRESULT EndBlockTransitionLength([in]EndType endType,[in] Float64 length);
@@ -952,7 +1104,11 @@ library WBFLGenericBridge
    ]
    interface IVoidedSlabEndBlockSegment : ISegment
    {
-		[propputref, helpstring("property BeamSection")] HRESULT BeamSection([in] IVoidedSlabSection2* pBeamSection);
+      [helpstring("method Shape")] HRESULT AddShape([in] IShape* pShape,[in]IMaterial* pFGMaterial,[in]IMaterial* pBGMaterial);
+      [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
+      [propget, helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
+		[propget, helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
+
       [propput, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[in] Float64 length);
       [propget, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[out,retval] Float64* pLength);
    };
@@ -966,7 +1122,11 @@ library WBFLGenericBridge
    ]
    interface IDeckedSlabBeamEndBlockSegment : ISegment
    {
-		[propputref, helpstring("property BeamSection")] HRESULT BeamSection([in] IDeckedSlabBeamSection* pBeamSection);
+      [helpstring("method Shape")] HRESULT AddShape([in] IShape* pShape,[in]IMaterial* pFGMaterial,[in]IMaterial* pBGMaterial);
+      [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
+      [propget, helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
+		[propget, helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
+
       [propput, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[in] Float64 length);
       [propget, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[out,retval] Float64* pLength);
    };
@@ -980,7 +1140,11 @@ library WBFLGenericBridge
    ]
    interface IBoxBeamEndBlockSegment : ISegment
    {
-		[propputref, helpstring("property BeamSection")] HRESULT BeamSection([in] IBoxBeamSection* pBeamSection);
+      [helpstring("method Shape")] HRESULT AddShape([in] IShape* pShape,[in]IMaterial* pFGMaterial,[in]IMaterial* pBGMaterial);
+      [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
+      [propget, helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
+		[propget, helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
+
       [propput, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[in] Float64 length);
       [propget, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[out,retval] Float64* pLength);
    };
@@ -994,7 +1158,11 @@ library WBFLGenericBridge
    ]
    interface IUGirderSection2EndBlockSegment : ISegment
    {
-		[propputref, helpstring("property BeamSection")] HRESULT BeamSection([in] IUGirderSection2* pBeamSection);
+      [helpstring("method Shape")] HRESULT AddShape([in] IShape* pShape,[in]IMaterial* pFGMaterial,[in]IMaterial* pBGMaterial);
+      [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
+      [propget, helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
+		[propget, helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
+
       [propput, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[in] Float64 length);
       [propget, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[out,retval] Float64* pLength);
    };
@@ -1009,7 +1177,71 @@ library WBFLGenericBridge
    ]
    interface ITaperedGirderSegment : ISegment
    {
-		[propputref, helpstring("property FlangedGirderSection")] HRESULT FlangedGirderSection([in] EndType end,[in] IFlangedGirderSection* pPrecastBeam);
+      [helpstring("method Shape")] HRESULT AddShape([in] IShape* pStartShape,[in]IShape* pEndShape,[in]IMaterial* pFGMaterial,[in]IMaterial* pBGMaterial);
+      [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
+      [propget, helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
+		[propget, helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
+   };
+
+
+   [
+		object,
+		uuid(C27D9CB1-3FC1-4565-8755-14013DEB9CEB),
+		oleautomation,
+		helpstring("ISplicedGirderSegment Interface"),
+		pointer_default(unique)
+   ]
+   interface ISplicedGirderSegment : ISegment
+   {
+      [helpstring("method Shape")] HRESULT AddShape([in] IShape* pShape,[in]IMaterial* pFGMaterial,[in]IMaterial* pBGMaterial);
+      [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
+      [propget, helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
+		[propget, helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
+
+      [propput, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[in] Float64 length);
+      [propget, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[out,retval] Float64* pLength);
+      [propput, helpstring("property EndBlockTransitionLength")] HRESULT EndBlockTransitionLength([in]EndType endType,[in] Float64 length);
+      [propget, helpstring("property EndBlockTransitionLength")] HRESULT EndBlockTransitionLength([in]EndType endType,[out,retval] Float64* pLength);
+      [propput, helpstring("property EndBlockWidth")] HRESULT EndBlockWidth([in]EndType endType,[in] Float64 width);
+      [propget, helpstring("property EndBlockWidth")] HRESULT EndBlockWidth([in]EndType endType,[out,retval] Float64* pWidth);
+
+      [propput, helpstring("property VariationType")] HRESULT VariationType([in] SegmentVariationType variationType);
+      [propget, helpstring("property VariationType")] HRESULT VariationType([out,retval] SegmentVariationType* variationType);
+      [helpstring("method SetVariationParameters")] HRESULT SetVariationParameters([in] SegmentZoneType zone,[in]Float64 length,[in]Float64 height,[in]Float64 bottomFlangeDepth);
+      [helpstring("method GetVariationParameters")] HRESULT GetVariationParameters([in] SegmentZoneType zone,[out]Float64* length,[out]Float64* height,[out]Float64* bottomFlangeDepth);
+
+      [helpstring("method GetSegmentHeight")] HRESULT GetSegmentHeight([in]Float64 distFromStartOfSegment,[out,retval]Float64* pHeight);
+      [propget, helpstring("property BottomFlangeProfile")] HRESULT BottomFlangeProfile([out,retval]IPoint2dCollection** ppPoints);
+
+      [propget, helpstring("property ClosurePourLength")] HRESULT ClosurePourLength([in]EndType endType,[out,retval]Float64* pLength);
+      [propput, helpstring("property ClosurePourMaterial")] HRESULT ClosurePourMaterial([in]EndType endType,[in]IMaterial* pFGMaterial);
+      [propget, helpstring("property ClosurePourMaterial")] HRESULT ClosurePourMaterial([in]EndType endType,[out,retval]IMaterial** ppFGMaterial);
+   };
+
+   [
+		object,
+		uuid(8F3B43FE-5138-4a73-B567-D9C3B4EC0166),
+		oleautomation,
+		helpstring("IFlangedSplicedGirderSegment Interface"),
+		pointer_default(unique)
+   ]
+   interface IFlangedSplicedGirderSegment : IUnknown
+   {
+		[propputref, helpstring("property FlangedGirderSection")] HRESULT FlangedGirderSection([in] IFlangedGirderSection* pPrecastBeam);
+		[propget, helpstring("property FlangedGirderSection")] HRESULT FlangedGirderSection([out,retval] IFlangedGirderSection** ppPrecastBeam);
+   };
+
+   [
+		object,
+		uuid(4ED17E29-71D1-493d-BCA0-11AF8DF6B814),
+		oleautomation,
+		helpstring("IUSplicedGirderSegment Interface"),
+		pointer_default(unique)
+   ]
+   interface IUSplicedGirderSegment : IUnknown
+   {
+		[propputref, helpstring("property UGirderSection")] HRESULT UGirderSection([in] IUGirderSection* pPrecastBeam);
+		[propget, helpstring("property UGirderSection")] HRESULT UGirderSection([out,retval] IUGirderSection** ppPrecastBeam);
    };
 
 	[
@@ -1034,32 +1266,12 @@ library WBFLGenericBridge
    ]
    interface IThickenedFlangeBulbTeeSegment : ISegment
    {
-		[propputref, helpstring("property FlangedGirderSection")] HRESULT BulbTeeSection([in] IBulbTeeSection* pPrecastBeam,[in]Float64 flangeThickening);
+		[propput, helpstring("property FlangeThickening")] HRESULT FlangeThickening([in]Float64 flangeThickening);
+      [helpstring("method Shape")] HRESULT AddShape([in] IShape* pShape,[in]IMaterial* pFGMaterial,[in]IMaterial* pBGMaterial);
+      [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
+      [propget, helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
+		[propget, helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
    };
-
-   [
-		object,
-		uuid(4178014F-D76D-4c8c-9BE6-87BFABE31EEB),
-		oleautomation,
-		helpstring("ISegmentEvents Interface"),
-		pointer_default(unique)
-   ]
-   interface ISegmentEvents : IUnknown
-   {
-		[helpstring("event OnSegmentChanged")] HRESULT OnSegmentChanged([in] ISegment* segment);
-   };
-
-    [
-       object,
-       oleautomation,
-       uuid(AA97B374-84FD-462d-BFF4-BFDA19298A2F),
-       pointer_default(unique),
-       helpstring("ISegmentItemEvents Interface")
-   ]
-	interface ISegmentItemEvents : IUnknown
-	{
-		[helpstring("event OnSegmentItemChanged")] HRESULT OnSegmentItemChanged([in]ISegmentItem* segmentItem);
-	};
 
 	[
 	   object,
@@ -1075,24 +1287,6 @@ library WBFLGenericBridge
 	   [helpstring("Next")]	   HRESULT Next([in] ULONG celt, [out] ISegmentItem** rgelt, [in,out] ULONG* pceltFetched);
 	   [helpstring("Reset")]   HRESULT Reset();
 	   [helpstring("Skip")]	   HRESULT Skip([in] ULONG celt);
-	};
-
-   [
-		object,
-		uuid(DB02623E-C168-4A0E-83E5-1F29B67EE761),
-		oleautomation,
-		helpstring("ICogoInfo Interface"),
-		pointer_default(unique)
-	]
-	interface ICogoInfo : IUnknown
-	{
-      [propget, helpstring("property GirderEndPointID")] HRESULT GirderEndPointID([in]SpanIndexType spanIdx,[in] GirderIndexType gdrIdx,[in]EndType endType,[out,retval]CogoElementKey* pVal);
-		[propget, helpstring("property PierGirderIntersectionPointID")] HRESULT PierGirderIntersectionPointID([in] PierIndexType pierIdx,[in] GirderIndexType gdrIdx,[in] PositionType posType, [out, retval] CogoElementKey *pVal);
-		[propget, helpstring("property BearingGirderIntersectionPointID")] HRESULT BearingGirderIntersectionPointID([in] PierIndexType pierIdx,[in] GirderIndexType gdrIdx,[in] PositionType posType, [out, retval] CogoElementKey *pVal);
-		[propget, helpstring("property GirderLineID")] HRESULT GirderLineID([in] SpanIndexType spanIdx,[in] GirderIndexType gdrIdx,[out, retval] CogoElementKey *pVal);
-		[propget, helpstring("property PierPointID")] HRESULT PierPointID([in] PierIndexType pierIdx,[in] PierPointType pointType, [out, retval] CogoElementKey *pVal);
-		[propget, helpstring("property AlignmentID")] HRESULT AlignmentKey([out,retval] CogoElementKey* alignmentKey);
-		[propget, helpstring("property CLBridgeID")] HRESULT CLBridgeKey([out,retval] CogoElementKey* clBridgeKey);
 	};
 	[
 		object,
@@ -1123,20 +1317,10 @@ library WBFLGenericBridge
       [propget, helpstring("property Symmetrical")] HRESULT Symmetrical([out,retval] VARIANT_BOOL* bSymmetrical);
       [propput, helpstring("property Symmetrical")] HRESULT Symmetrical([in] VARIANT_BOOL bSymmetrical);
 	  [helpstring("method GetMemberSegments")] HRESULT GetMemberSegments([out,retval] IFilteredSegmentCollection **ppSeg);
-  	  [helpstring("method GetSegmentForMemberLocation")] HRESULT GetSegmentForMemberLocation([in] Float64 location,[out] Float64* dist,[out] ISegmentItem **ppSeg);
+  	  [helpstring("method GetDistanceFromStartOfSegment")] HRESULT GetDistanceFromStartOfSegment([in] Float64 location,[out] Float64* dist,[out] ISegmentItem **ppSeg);
 	};
-	[
-		object,
-		uuid(D42BE514-2943-44f3-9AC4-F92A11EE2B8A),
-		oleautomation,
-		helpstring("IColumnEvents Interface"),
-		pointer_default(unique)
-	]
-	interface IColumnEvents : IUnknown
-	{
-      [helpstring("event OnColumnChanged")] HRESULT OnColumnChanged([in] IColumn* column);
-	};
-	[
+
+   [
 		object,
 		uuid(9AC642C8-524A-4FF7-8038-D5A696C3974A),
 		oleautomation,
@@ -1156,18 +1340,6 @@ library WBFLGenericBridge
       [helpstring("method Insert")] HRESULT Insert([in] SpacingIndexType spaceIdx,[in] SpacingIndexType nInsert);
       [helpstring("method Remove")] HRESULT Remove([in] ColumnIndexType colIdx,[in] ColumnIndexType nRemove);
       [propget,helpstring("property Column")] HRESULT Column([in] ColumnIndexType colIdx,[out,retval] IColumn* *column);
-	};
-	[
-		object,
-		uuid(2B9D5BEB-77C1-4c18-B22E-6423603E41E9),
-		oleautomation,
-		helpstring("IColumnSpacingEvents Interface"),
-		pointer_default(unique)
-	]
-	interface IColumnSpacingEvents : IUnknown
-	{
-      [helpstring("event OnColumnCountChanged")] HRESULT OnColumnCountChanged([in]ColumnIndexType newVal);
-      [helpstring("event OnColumnSpacingChanged")] HRESULT OnColumnSpacingChanged();
 	};
 
 	[
@@ -1195,20 +1367,8 @@ library WBFLGenericBridge
       [propget, helpstring("property Symmetrical")] HRESULT Symmetrical([out,retval] VARIANT_BOOL* bSymmetrical);
       [propput, helpstring("property Symmetrical")] HRESULT Symmetrical([in] VARIANT_BOOL bSymmetrical);
 		[helpstring("method GetMemberSegments")] HRESULT GetMemberSegments([out,retval] IFilteredSegmentCollection **ppSeg);
-		[helpstring("method GetSegmentForMemberLocation")] HRESULT GetSegmentForMemberLocation([in] Float64 location,[out]Float64* dist,[out] ISegmentItem **ppSeg);
+		[helpstring("method GetDistanceFromStartOfSegment")] HRESULT GetDistanceFromStartOfSegment([in] Float64 location,[out]Float64* dist,[out] ISegmentItem **ppSeg);
 	};
-	[
-		object,
-		uuid(5F28373A-629B-47f9-AFE7-D51A22CC8A0E),
-		oleautomation,
-		helpstring("ICrossBeamEvents Interface"),
-		pointer_default(unique)
-	]
-	interface ICrossBeamEvents : IUnknown
-	{
-      [helpstring("event OnCrossBeamChanged")] HRESULT OnCrossBeamChanged([in] ICrossBeam* crossBeam);
-	};
-
 
    [
 		object,
@@ -1220,19 +1380,11 @@ library WBFLGenericBridge
    interface IPier : IUnknown
    {
 		[propget,helpstring("property Station")] HRESULT Station([out,retval] IStation* *station);
-		[propputref,helpstring("property Station")] HRESULT Station([in] IStation* station);
-		[propget,helpstring("property Orientation")] HRESULT Orientation([out,retval] BSTR* orientation);
-		[propput,helpstring("property Orientation")] HRESULT Orientation([in] BSTR orientation);
 		[propget,helpstring("property Direction")] HRESULT Direction([out,retval] IDirection* *direction);
 		[propget,helpstring("property SkewAngle")] HRESULT SkewAngle([out,retval] IAngle* *skewAngle);
-		[propget,helpstring("property GirdreSpacing")] HRESULT GirderSpacing([in]PositionType posType,[out,retval]IGirderSpacing** ppGirderSpacing);
-		[propget,helpstring("property Connection")] HRESULT Connection([in]PositionType posType,[out,retval]IConnection** ppConnection);
 		[propget,helpstring("property LongitudinalPierDescription")] HRESULT LongitudinalPierDescription([out, retval] ILongitudinalPierDescription* *pVal);
 		[helpstring("property CreateTransversePierDescription")] HRESULT CreateTransversePierDescription();
 		[propget,helpstring("property TransversePierDescription")] HRESULT TransversePierDescription([out, retval] ITransversePierDescription* *pVal);
-		[helpstring("property RemoveTransversePierDescription")] HRESULT RemoveTransversePierDescription();
-		[propget,helpstring("property PrevSpan")] HRESULT PrevSpan([out,retval]ISpan** ppSpan);
-		[propget,helpstring("property NextSpan")] HRESULT NextSpan([out,retval]ISpan** ppSpan);
 		[propget,helpstring("property Index")] HRESULT Index([out,retval]PierIndexType* pIndex);
    };
 
@@ -1251,18 +1403,6 @@ library WBFLGenericBridge
 
       [propget,helpstring("property Pier")] HRESULT Pier([out,retval]IPier* *pier);
 	};
-	[
-		object,
-		uuid(36C28FD1-8894-4a36-A263-807A01D3DECB),
-		oleautomation,
-		helpstring("ITransversePierDescriptionEvents Interface"),
-		pointer_default(unique)
-	]
-	interface ITransversePierDescriptionEvents : IUnknown
-	{
-      [helpstring("events OnChanged")] HRESULT OnChanged();
-	};
-
 
 	[
 	   object,
@@ -1278,6 +1418,8 @@ library WBFLGenericBridge
 	   [propget,helpstring("property WebSpacing")] HRESULT WebSpacing([in]WebIndexType idx,[out,retval]Float64* spacing);
 	   [propget,helpstring("property WebThickness")] HRESULT WebThickness([in]WebIndexType idx,[out,retval]Float64* tWeb);
 	   [propget,helpstring("property MinWebThickness")] HRESULT MinWebThickness([out,retval]Float64* tWeb);
+      [propget,helpstring("property WebPlane")] HRESULT WebPlane([in]WebIndexType idx,[out,retval]IPlane3d** ppPlane);
+
 	   // Web thickness for effective flange width computations - for box beams in pre-2008 lrfd::4.6.2.2.1
 	   [propget,helpstring("property EffectiveWebThickness")] HRESULT EffectiveWebThickness([out,retval]Float64* tWeb);
 
@@ -1449,8 +1591,10 @@ library WBFLGenericBridge
 	]
 	interface ITendonSegment : IUnknown
 	{
-	   [propget,helpstring("property Position")] HRESULT Position([in] Float64 x,[out,retval] IPoint3d** cg);
-	   [propget,helpstring("property Slope")] HRESULT Slope([in] Float64 x,[out,retval] IVector3d** slope);
+	   [propget,helpstring("property Start")] HRESULT Start([out,retval] IPoint3d** start);
+	   [propget,helpstring("property End")] HRESULT End([out,retval] IPoint3d** end);
+	   [propget,helpstring("property Position")] HRESULT Position([in] Float64 z,[out,retval] IPoint3d** cg);
+	   [propget,helpstring("property Slope")] HRESULT Slope([in] Float64 z,[out,retval] IVector3d** slope);
 	   [propget,helpstring("property Length")] HRESULT Length([out,retval] Float64* length);
 	   [helpstring("method ProjectedLength")] HRESULT ProjectedLength([out] Float64* dx,[out] Float64* dy,[out] Float64* dz);
 	};
@@ -1461,15 +1605,30 @@ library WBFLGenericBridge
 	   helpstring("ILinearTendonSegment"),
 	   pointer_default(unique)
 	]
-	interface ILinearTendonSegment : IUnknown
+	interface ILinearTendonSegment : ITendonSegment
 	{
-	   [propputref,helpstring("property Start")] HRESULT Start([in] IPoint3d* start);
-	   [propget,helpstring("property Start")] HRESULT Start([out,retval] IPoint3d** start);
-	   [propputref,helpstring("property End")] HRESULT End([in] IPoint3d* end);
-	   [propget,helpstring("property End")] HRESULT End([out,retval] IPoint3d** end);
+	   [propput,helpstring("property Start")] HRESULT Start([in] IPoint3d* start);
+	   [propput,helpstring("property End")] HRESULT End([in] IPoint3d* end);
 	};
 
 	[
+	   object,
+	   uuid(83E0B7FE-6DE0-4b7f-ABF9-C4949771701A),
+	   oleautomation,
+	   helpstring("IParabolicTendonSegment"),
+	   pointer_default(unique)
+	]
+	interface IParabolicTendonSegment : ITendonSegment
+	{
+	   [propput,helpstring("property Start")] HRESULT Start([in] IPoint3d* start);
+	   [propput,helpstring("property End")] HRESULT End([in] IPoint3d* end);
+      [propput,helpstring("property Slope")] HRESULT Slope([in] Float64 slope);
+      [propget,helpstring("property Slope")] HRESULT Slope([out,retval] Float64* slope);
+      [propput,helpstring("SlopeEnd")] HRESULT SlopeEnd([in]DirectionType end);
+      [propget,helpstring("SlopeEnd")] HRESULT SlopeEnd([out,retval]DirectionType* end);
+	};
+
+   [
 	   object,
 	   uuid(33FDE356-2981-4ff7-AA76-B392FC22262F),
 	   oleautomation,
@@ -1484,27 +1643,36 @@ library WBFLGenericBridge
 	   [helpstring("method RemoveSegment")] HRESULT RemoveSegment([in] CollectionIndexType index);
 	   [helpstring("method ClearSegments")] HRESULT ClearSegments();
 
-	   [propget,helpstring("property TendonSize")] HRESULT TendonSize([out,retval]Float64* size);
-	   [propput,helpstring("property TendonSize")] HRESULT TendonSize([in]Float64 size);
-
-	   [propget,helpstring("property StrandSize")] HRESULT StrandSize([out,retval]Float64* size);
-	   [propput,helpstring("property StrandSize")] HRESULT StrandSize([in]Float64 size);
+	   [propget,helpstring("property DuctDiameter")] HRESULT DuctDiameter([out,retval]Float64* size);
+	   [propput,helpstring("property DuctDiameter")] HRESULT DuctDiameter([in]Float64 size);
 
 	   [propget,helpstring("property StrandCount")] HRESULT StrandCount([out,retval]StrandIndexType* count);
 	   [propput,helpstring("property StrandCount")] HRESULT StrandCount([in]StrandIndexType count);
 
-	   [propget,helpstring("property MaxStrandCount")] HRESULT MaxStrandCount([out,retval]StrandIndexType* count);
-	   [propput,helpstring("property MaxStrandCount")] HRESULT MaxStrandCount([in]StrandIndexType count);
-
 	   [propget,helpstring("property Material")] HRESULT Material([out,retval]IPrestressingStrand** material);
 	   [propputref,helpstring("property Material")] HRESULT Material([in]IPrestressingStrand* material);
 
-	   [propget,helpstring("property GC")] HRESULT CG([in] Float64 x,[in] TendonMeasure measure,[out,retval]IPoint3d** cg);
-	   [propget,helpstring("property Slope")] HRESULT Slope([in] Float64 x,[in] TendonMeasure measure,[out,retval]IVector3d** slope);
+	   [propget,helpstring("property TendonArea")] HRESULT TendonArea([out,retval]Float64* Apt);
+
+	   [propget,helpstring("property GC")] HRESULT CG([in] Float64 z,[in] TendonMeasure measure,[out,retval]IPoint3d** cg);
+	   [propget,helpstring("property Slope")] HRESULT Slope([in] Float64 z,[in] TendonMeasure measure,[out,retval]IVector3d** slope);
 	   [propget,helpstring("property Length")] HRESULT Length([out,retval]Float64* length);
-	   
-	   // debonding
+	   [propget,helpstring("property Start")] HRESULT Start([out,retval] IPoint3d** start);
+	   [propget,helpstring("property End")] HRESULT End([out,retval] IPoint3d** end);
 	};
+
+   [
+	   object,
+	   uuid(B8C5E222-2F3E-4dd3-8B3F-B264341F75E2),
+	   oleautomation,
+	   helpstring("interface IOffsetTendon"),
+	   pointer_default(unique)
+   ]
+   interface IOffsetTendon : ITendon
+   {
+      [propputref,helpstring("RefTendon")] HRESULT RefTendon([in]ITendon* tendon);
+      [helpstring("AddOffset")] HRESULT AddOffset([in]Float64 z,[in]Float64 offsetX,[in]Float64 offsetY);
+   };
 	 
 	[
 	   object,
@@ -1548,12 +1716,13 @@ library WBFLGenericBridge
 	interface ITendonCollection : IUnknown
 	{
 	   [helpstring("method Add")] HRESULT Add([in]ITendon* tendon);
-	   [propget,helpstring("property Item")] HRESULT Item([in]StrandIndexType index,[out,retval]ITendon** tendon);
-	   [helpstring("method Remove")] HRESULT Remove([in]StrandIndexType index);
+	   [propget,helpstring("property Item")] HRESULT Item([in]DuctIndexType index,[out,retval]ITendon** tendon);
+	   [helpstring("method Remove")] HRESULT Remove([in]DuctIndexType index);
 	   [helpstring("method Clear")] HRESULT Clear();
-	   [propget,helpstring("property GC")] HRESULT CG([in] Float64 x,[in] TendonMeasure measure,[out,retval]IPoint3d** cg);
-	   [propget,helpstring("property Slope")] HRESULT Slope([in] Float64 x,[in] TendonMeasure measure,[out,retval]IVector3d** slope);
-	   [helpstring("method Cut")] HRESULT Cut([in] Float64 x,[in]TendonMeasure measure,[out,retval] IPoint3dCollection** points);
+      [propget,helpstring("property Count")] HRESULT Count([out,retval]DuctIndexType* nTendons);
+	   [propget,helpstring("property GC")] HRESULT CG([in] Float64 z,[in] TendonMeasure measure,[out,retval]IPoint3d** cg);
+	   [propget,helpstring("property Slope")] HRESULT Slope([in] Float64 z,[in] TendonMeasure measure,[out,retval]IVector3d** slope);
+	   [helpstring("method Cut")] HRESULT Cut([in] Float64 z,[in]TendonMeasure measure,[out,retval] IPoint3dCollection** points);
        [propget, restricted, helpstring("property _EnumTendons")] HRESULT _EnumTendons([out,retval]IEnumTendons* *enumTendons);
 	};
 
@@ -1573,145 +1742,25 @@ library WBFLGenericBridge
 		[propget, helpstring("property BaseOffset")] HRESULT BaseOffset([out, retval] Float64 *pVal);
 		[propput, helpstring("property BaseOffset")] HRESULT BaseOffset([in] Float64 newVal);
       [propget, helpstring("property Length")] HRESULT Length([out,retval] Float64* value);
-      [propget, helpstring("property ContinuityStage")] HRESULT ContinuityStage([out,retval] BSTR* stage);
-      [propput, helpstring("property ContinuityStage")] HRESULT ContinuityStage([in] BSTR stage);
       [propget, helpstring("property Fractional")] HRESULT Fractional([out,retval] VARIANT_BOOL* bFractional);
       [propput, helpstring("property Fractional")] HRESULT Fractional([in] VARIANT_BOOL bFractional);
 		[propget, helpstring("property Symmetrical")] HRESULT Symmetrical([out, retval] VARIANT_BOOL *pVal);
 		[propput, helpstring("property Symmetrical")] HRESULT Symmetrical([in] VARIANT_BOOL newVal);
 
       [helpstring("method AddSegment")] HRESULT AddSegment([in]ISegment* segment);
-		[helpstring("method InsertSegment")] HRESULT InsertSegment([in] SegmentIndexType idx,[in]ISegment* segment);
-		[helpstring("method MoveSegmentTo")] HRESULT MoveSegmentTo([in] SegmentIndexType fromIdx,[in] SegmentIndexType toIdx);
-		[helpstring("method CopySegmentTo")] HRESULT CopySegmentTo([in] SegmentIndexType fromIdx, [in] SegmentIndexType toIdx);
-		[helpstring("method RemoveSegment")] HRESULT RemoveSegment([in] SegmentIndexType idx);
+		[helpstring("method InsertSegment")] HRESULT InsertSegment([in] CollectionIndexType idx,[in]ISegment* segment);
+		[helpstring("method MoveSegmentTo")] HRESULT MoveSegmentTo([in] CollectionIndexType fromIdx,[in] CollectionIndexType toIdx);
+		[helpstring("method CopySegmentTo")] HRESULT CopySegmentTo([in] CollectionIndexType fromIdx, [in] CollectionIndexType toIdx);
+		[helpstring("method RemoveSegment")] HRESULT RemoveSegment([in] CollectionIndexType idx);
 		[helpstring("method RemoveSegments")] HRESULT RemoveSegments();
 		[helpstring("method GetMemberSegments")] HRESULT GetMemberSegments([out,retval] IFilteredSegmentCollection **ppSeg);
-		[helpstring("method GetSegmentForMemberLocation")] HRESULT GetSegmentForMemberLocation([in] Float64 Location,[out] Float64* dist,[out] ISegmentItem **ppSeg);
+		[helpstring("method GetDistanceFromStartOfSegment")] HRESULT GetDistanceFromStartOfSegment([in] Float64 Location,[out] Float64* dist,[out] ISegmentItem **ppSeg);
 		[helpstring("method ReverseSegments")] HRESULT ReverseSegments();
-      [propget, helpstring("property SegmentCount")] HRESULT SegmentCount([out,retval] SegmentIndexType* count);
+      [propget, helpstring("property SegmentCount")] HRESULT SegmentCount([out,retval] CollectionIndexType* count);
       [propget, helpstring("property SegmentLength")] HRESULT SegmentLength([out,retval] Float64* value);
-      [propget, helpstring("property Segment")] HRESULT Segment([in] SegmentIndexType idx,[out,retval] ISegment* *segment);
+      [propget, helpstring("property Segment")] HRESULT Segment([in] CollectionIndexType idx,[out,retval] ISegment* *segment);
       [propget,helpstring("property Pier")] HRESULT Pier([out,retval]IPier* *pier);
 	};
-   [
-		object,
-		uuid(DD58885C-D8E1-4af2-8CBE-6C86CC03F149),
-		oleautomation,
-		helpstring("ILongitudinalPierDescriptionEvents Interface"),
-		pointer_default(unique)
-   ]
-   interface ILongitudinalPierDescriptionEvents : IUnknown
-   {
-      [helpstring("event OnChanged")] HRESULT OnChanged();
-   };
-
-	[
-		object,
-		uuid(53BE57D4-810C-46db-BD52-1847F3120850),
-		oleautomation,
-		helpstring("ITemporaryPierItem Interface"),
-		pointer_default(unique)
-	]
-	interface ITemporaryPierItem : IUnknown
-	{
-		[propget, helpstring("property ID")] HRESULT ID([out, retval] IDType* id);
-		[propget, helpstring("property Location")] HRESULT Location([out, retval] Float64* location);
-		[propput, helpstring("property Location")] HRESULT Location([in] Float64 location);
-		[propget, helpstring("property RemovalStage")] HRESULT RemovalStage([out, retval] BSTR* bstrRemovalStage);
-		[propput, helpstring("property RemovalStage")] HRESULT RemovalStage([in] BSTR bstrRemovalStage);
-		[propget, helpstring("property Pier")] HRESULT Pier([out, retval] IPier* *pVal);
-	};
-	[
-		object,
-		uuid(39447785-CC75-4857-8CD5-254B15BAC858),
-		oleautomation,
-		helpstring("ITemporaryPierItemEvents Interface"),
-		pointer_default(unique)
-	]
-	interface ITemporaryPierItemEvents : IUnknown
-	{
-		[helpstring("event OnTemporaryPierChanged")] HRESULT OnTemporaryPierChanged([in] IDType id);
-	};
-	[
-	   object,
-	   uuid(298BE8A4-CF5E-41eb-BB7F-238539900684),
-	   helpstring("IEnumTemporaryPierItems Interface"),
-	   oleautomation,nonextensible,
-	   hidden,restricted,
-	   pointer_default(unique)
-	]
-	interface IEnumTemporaryPierItems : IUnknown
-	{
-      [helpstring("Clone")] HRESULT Clone([out] IEnumTemporaryPierItems** ppenum);
-	   [helpstring("Next")] HRESULT Next([in] ULONG celt, [out] ITemporaryPierItem** rgelt, [in,out] ULONG* pceltFetched);
-	   [helpstring("Reset")] HRESULT Reset();
-	   [helpstring("Skip")] HRESULT Skip([in] ULONG celt);
-	};
-
-	[
-		object,
-		uuid(F66F4140-67A8-45a9-9336-4F3F318B1C08),
-		oleautomation,
-		helpstring("ITemporaryPierItemCollection Interface"),
-		pointer_default(unique)
-	]
-	interface ITemporaryPierItemCollection : IUnknown
-	{
-		[propget, helpstring("property Item")] 
-      HRESULT Item([in]IDType id, [out, retval] ITemporaryPierItem** pVal);
-
-		[propget, helpstring("returns an enumerator for the collection.")]
-		HRESULT _NewEnum([out, retval] IUnknown** retval); 
-       
-		[propget, helpstring("property Count - Number of StressPoints in collection")] 
-		HRESULT Count([out, retval] CollectionIndexType *pVal);
-
-		[propget, helpstring("property _EnumElements")] 
-		HRESULT _EnumTemporaryPierItems([out, retval] IEnumTemporaryPierItems* *pVal);
-
-		[helpstring("Add a new PointOfInterest to the model")] 
-		HRESULT Add([in] IDType id,[in] Float64 location,[in] BSTR bstrRemovalStage);
-
-		[helpstring("method RemoveByIndex")] 
-		HRESULT RemoveByIndex([in]CollectionIndexType index);
-
-		[helpstring("method RemoveByID")] 
-		HRESULT RemoveByID([in]IDType id);
-
-		[helpstring("method Clear")] 
-      HRESULT Clear();
-
-		[helpstring("method Find")] 
-      HRESULT Find([in] IDType id,[out,retval] ITemporaryPierItem** pVal);
-	};
-
-   [
-      object,
-      uuid(5B334094-0A37-45c6-8116-2340A213542F),
-      oleautomation,
-      helpstring("ITemporaryPierItemCollectionEvents Interface"),
-      pointer_default(unique)
-   ]
-   interface ITemporaryPierItemCollectionEvents : IUnknown
-   {
-      [helpstring("event OnTemporaryPierItemChanged")] HRESULT OnTemporaryPierItemChanged([in] ITemporaryPierItem* tpi);
-      [helpstring("event OnTemporaryPierItemAdded")] HRESULT OnTemporaryPierItemAdded([in] IDType id);
-      [helpstring("event OnTemporaryPierItemRemoved")] HRESULT OnTemporaryPierItemRemoved([in] IDType id);
-   };
-
-   [
-		object,
-		uuid(357EA186-08D2-48c5-B101-E17E5DAC582F),
-		oleautomation,
-		helpstring("IPierEvents Interface"),
-		pointer_default(unique)
-   ]
-   interface IPierEvents : IUnknown
-   {
-      [helpstring("event OnPierChanged")] HRESULT OnPierChanged([in]IPier* pier);
-   };
-
 
 	[
 	   object,
@@ -1741,99 +1790,7 @@ library WBFLGenericBridge
       [propget, helpstring("property Item")] HRESULT Item([in] PierIndexType index, [out, retval] IPier* *pVal);
       [propget, helpstring("property Count")] HRESULT Count([out,retval] PierIndexType* count);
       [propget, helpstring("property PierIndex")] HRESULT PierIndex([in]IPier* pier,[out,retval]PierIndexType* index);
-	  [helpstring("method CopyTo")] HRESULT CopyTo([in]PierIndexType fromIdx, [in]PierIndexType toIdx);
       [propget, restricted, helpstring("property _EnumPiers")] HRESULT _EnumPiers([out,retval]IEnumPiers* *enumPiers);
-   };
-
-   [
-		object,
-		uuid(C9A3B004-11C5-493d-9330-112A638F436B),
-		oleautomation,
-		helpstring("IPierCollectionEvents Interface"),
-		pointer_default(unique)
-   ]
-   interface IPierCollectionEvents : IUnknown
-   {
-      [helpstring("event OnPierChanged")] HRESULT OnPierChanged([in]IPier* pier);
-      [helpstring("event OnPierAdded")] HRESULT OnPierAdded([in]IPier* pier);
-      [helpstring("event OnPierRemoved")] HRESULT OnPierRemoved([in]PierIndexType idx);
-   };
-
-   [
-		object,
-		uuid(EF715E42-AC0B-4716-95F6-C83F343C1A28),
-		oleautomation,
-		helpstring("ISpan Interface"),
-		pointer_default(unique)
-   ]
-   interface ISpan : IUnknown
-   {
-      [propget,helpstring("property Length")] HRESULT Length([out,retval]Float64* length);
-      [propput,helpstring("property Length")] HRESULT Length([in]Float64 length);
-	  [propget,helpstring("property GirderLineLength")] HRESULT GirderLineLength([in] GirderIndexType gdrIdx,[out,retval]Float64* length);
-      [propget,helpstring("property TemporaryPiers")] HRESULT TemporaryPiers([out,retval] ITemporaryPierItemCollection* *tempPiers);
-
-	  [propput,helpstring("property GirderCount")] HRESULT GirderCount([in]GirderIndexType nGirders);
-	  [propget,helpstring("property GirderCount")] HRESULT GirderCount([out,retval]GirderIndexType* nGirders);
-	  [helpstring("method AddGirders")] HRESULT AddGirders([in] GirderIndexType nGirders);
-	  [helpstring("method RemoveGirders")] HRESULT RemoveGirders([in] GirderIndexType nGirders);
-	  [propget,helpstring("property SuperstructureMember")] HRESULT SuperstructureMember([in]GirderIndexType gdrIdx,[out,retval]ISuperstructureMember** ppSSM);
-	  [propget,helpstring("property GirderSpacing")] HRESULT GirderSpacing([in] EndType endType,[out,retval]IGirderSpacing** ppGirderSpacing);
-	  [propget,helpstring("property PrevPier")] HRESULT PrevPier([out,retval]IPier** ppPrevPier);
-	  [propget,helpstring("property NextPier")] HRESULT NextPier([out,retval]IPier** ppNextPier);
-      [propget,helpstring("property ID")] HRESULT Index([out,retval]SpanIndexType* pIndex);
-   };
-   [
-		object,
-		uuid(429FDFA6-ED3F-4db0-9C1C-FCFD2838F2FE),
-		oleautomation,
-		helpstring("ISpanEvents Interface"),
-		pointer_default(unique)
-   ]
-   interface ISpanEvents : IUnknown
-   {
-      [helpstring("event OnSpanChanged")] HRESULT OnSpanChanged([in]ISpan* span);
-   };
-	[
-	   object,
-	   uuid(9AABB810-9C39-4631-8E57-92397BBF7F63),
-	   helpstring("IEnumSpans Interface"),
-       oleautomation,nonextensible,
-	   hidden,restricted,
-	   pointer_default(unique)
-	]
-	interface IEnumSpans : IUnknown
-	{
-       [helpstring("Clone")] HRESULT Clone([out] IEnumSpans** ppenum);
- 	   [helpstring("Next")]  HRESULT Next([in] ULONG celt, [out] ISpan** rgelt, [in,out] ULONG* pceltFetched);
-	   [helpstring("Reset")] HRESULT Reset();
-	   [helpstring("Skip")]  HRESULT Skip([in] ULONG celt);
-	};
-   [
-		object,
-		uuid(8BF41F31-520F-45c8-9BAC-0E8AF77445ED),
-		oleautomation,
-		helpstring("ISpanCollection Interface"),
-		pointer_default(unique)
-   ]
-   interface ISpanCollection : IUnknown
-   {
-      [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
-      [propget, helpstring("property Item")] HRESULT Item([in] SpanIndexType index, [out, retval] ISpan* *pVal);
-      [propget, helpstring("property Count")] HRESULT Count([out,retval] SpanIndexType* count);
-      [propget, helpstring("property SpanIndex")] HRESULT SpanIndex([in]ISpan* span,[out,retval]SpanIndexType* index);
-      [propget, restricted, helpstring("property _EnumSpans")] HRESULT _EnumSpans([out,retval]IEnumSpans* *enumSpans);
-   };
-   [
-		object,
-		uuid(0990997A-AC7E-4a5f-AF30-CA2007AD287C),
-		oleautomation,
-		helpstring("ISpanCollectionEvents Interface"),
-		pointer_default(unique)
-   ]
-   interface ISpanCollectionEvents : IUnknown
-   {
-      [helpstring("event OnSpanChanged")] HRESULT OnSpanChanged([in]ISpan* span);
    };
 
 	[
@@ -1845,25 +1802,11 @@ library WBFLGenericBridge
 	]
 	interface IGenericBridge : IUnknown
 	{
-      [propget, helpstring("property CogoModel")] HRESULT CogoModel([out,retval] ICogoModel* *cogoModel);
-      [propget, helpstring("property Alignment")] HRESULT Alignment([out,retval] IAlignment* *alignment);
-      [propputref, helpstring("property Alignment")] HRESULT Alignment([in] IAlignment *alignment);
-	  [propput, helpstring("property AlignmentOffset")] HRESULT AlignmentOffset([in]Float64 alignmentOffset);
-	  [propget, helpstring("property AlignmentOffset")] HRESULT AlignmentOffset([out,retval]Float64* alignmentOffset);
-      [propget, helpstring("property Piers")] HRESULT Piers([out,retval] IPierCollection* *piers);
-      [propget, helpstring("property Spans")] HRESULT Spans([out,retval] ISpanCollection* *spans);
-	  [helpstring("method SpanFromStation")] HRESULT SpanFromStation([in]Float64 station,[out,retval]ISpan** ppSpan);
-	  [helpstring("method SpanFromOffset")] HRESULT SpanFromOffset([in]Float64 offsetFromStartOfBridge,[out,retval]ISpan** ppSpan);
-
-      [propget, helpstring("property Stages")] HRESULT Stages([out, retval] IStageCollection* *pVal);
+     [propget, helpstring("property BridgeGeometry")] HRESULT BridgeGeometry([out,retval] IBridgeGeometry* *bridgeGeometry);
+     [propget, helpstring("property Alignment")] HRESULT Alignment([out,retval] IAlignment** ppAlignment);
+     [propget, helpstring("property Piers")] HRESULT Piers([out,retval] IPierCollection* *piers);
 	  [propget, helpstring("property Length")] HRESULT Length([out,retval]Float64* length);
-      [helpstring("method Move")] HRESULT Move([in] Float64 offset);
-      [helpstring("method MoveToStation")] HRESULT MoveToStation([in]PierIndexType pierIdx,[in] Float64 station);
-      [helpstring("method InsertSpanAndPier")] HRESULT InsertSpanAndPier([in] SpanIndexType spanIdx, [in] Float64 spanLength,[in] PositionType pos, [in] DirectionType side);
-      [helpstring("method RemoveSpanAndPier")] HRESULT RemoveSpanAndPier([in] SpanIndexType spanIdx,[in] DirectionType side);
-      [helpstring("method ResizeSpans")] HRESULT ResizeSpans([in] VARIANT varArray);
-      [helpstring("method Clone")] HRESULT Clone([out,retval] IGenericBridge* *clone);
-      [propget,helpstring("property CogoInfo")] HRESULT CogoInfo([out,retval] ICogoInfo* *cogoInfo);
+	  [propget, helpstring("property SpanLength")] HRESULT SpanLength([in]SpanIndexType spanIdx,[out,retval]Float64* length);
 	  [propputref,helpstring("property Deck")] HRESULT Deck([in] IBridgeDeck* deck);
 	  [propget,helpstring("property Deck")] HRESULT Deck([out,retval] IBridgeDeck** deck);
 	  [propget, helpstring("property LeftBarrier")] HRESULT LeftBarrier([out,retval] ISidewalkBarrier** barrier);
@@ -1871,81 +1814,115 @@ library WBFLGenericBridge
 	  [propget, helpstring("property RightBarrier")] HRESULT RightBarrier([out,retval] ISidewalkBarrier** barrier);
 	  [propputref, helpstring("property RightBarrier")] HRESULT RightBarrier([in] ISidewalkBarrier* barrier);
 
-	   [propget,helpstring("property WearingSurfaceDepth")] HRESULT WearingSurfaceDepth([out,retval]Float64* d);
-	   [propput,helpstring("property WearingSurfaceDepth")] HRESULT WearingSurfaceDepth([in]Float64 d);
-	   [propget,helpstring("property WearingSurfaceDensity")] HRESULT WearingSurfaceDensity([out,retval]Float64* d);
-	   [propput,helpstring("property WearingSurfaceDensity")] HRESULT WearingSurfaceDensity([in]Float64 d);
-	   [propget, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([out,retval]Float64* depth);
-	   [propput, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([in]Float64 depth);
+     [helpstring("method CreateSuperstructureMember")] HRESULT CreateSuperstructureMember([in]GirderIDType id,[in] LocationType locationType,[out,retval]ISuperstructureMember** ppMbr);
+     [propget, helpstring("property SuperstrucuterMember")] HRESULT SuperstructureMember([in]GirderIDType id,[out,retval]ISuperstructureMember** ppMbr);
+     [propget, restricted, helpstring("property _EnumSuperstructureMembers")] HRESULT _EnumSuperstructureMembers([out,retval]IEnumSuperstructureMembers* *enumSSMbrs);
+     [propget, helpstring("property SuperstructureMembersAtStation")] HRESULT SuperstructureMembersAtStation([in]Float64 station,[out,retval]IFilteredSuperstructureMemberCollection** ppMbrs);
 
-     [] HRESULT UpdateBridgeModel();
+     [helpstring("method UpdateBridgeModel")] HRESULT UpdateBridgeModel();
 	};
-   [
-		object,
-		uuid(9FAE7EE3-47EA-42ab-8622-C7ED79E6CF98),
-		oleautomation,
-		helpstring("IGenericBridgeEvents Interface"),
-		pointer_default(unique)
-   ]
-   interface IGenericBridgeEvents : IUnknown
-   {
-      [helpstring("event OnBridgeChanged")] HRESULT OnBridgeChanged([in] IGenericBridge* bridge);
-   };
 	 
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 	[
+		uuid(E01789C1-EC18-4c75-B42A-8DDB495C7326),
+		helpstring("Rebar")
+	]
+	coclass Rebar
+	{
+		[default] interface IRebar;
+	};
+
+	[
+		uuid(ED89484D-303E-452a-8165-8A6666200BAC),
+		helpstring("RebarSectionItem")
+	]
+	coclass RebarSectionItem
+	{
+		[default] interface IRebarSectionItem;
+	};
+
+	[
+		uuid(3D0BCC3C-1A32-44c5-A97E-55BD12DC62F1),
+		helpstring("RebarSection")
+	]
+	coclass RebarSection
+	{
+		[default] interface IRebarSection;
+	};
+
+	[
+		uuid(5F9006C8-B6A7-488e-88BB-24304ED93E4D),
+		helpstring("RebarRowPattern")
+	]
+	coclass RebarRowPattern
+	{
+		[default] interface IRebarRowPattern;
+	};
+
+	[
+		uuid(33813283-3F28-4291-AE33-AAD126881A38),
+		helpstring("RebarLayout")
+	]
+	coclass RebarLayout
+	{
+		[default] interface IRebarLayout;
+	};
+
+	[
+		uuid(BBAE8AB6-5822-47CA-8ECD-0C2AFF18FC0B),
+		helpstring("FixedLengthRebarLayoutItem Class")
+	]
+	coclass FixedLengthRebarLayoutItem
+	{
+		[default] interface IFixedLengthRebarLayoutItem;
+	};
+
+   [
+      uuid(1EAAA1BF-51A0-4a07-8C7A-90A9E42863E6),
+      helpstring("BridgeDeckRebarPattern")
+   ]
+   coclass BridgeDeckRebarPattern
+   {
+      [default] interface IBridgeDeckRebarPattern;
+   };
+
+	[
+		uuid(148BBC9B-3E74-462b-B90A-4CF617F92264),
+		helpstring("BridgeDeckRebarLayoutItem")
+	]
+	coclass BridgeDeckRebarLayoutItem
+	{
+		[default] interface IBridgeDeckRebarLayoutItem;
+	};
+
+	[
+		uuid(BBCE715B-3F02-4859-AA8B-81B9ED11826D),
+		helpstring("NegativeMomentBridgeDeckRebarLayoutItem")
+	]
+	coclass NegativeMomentBridgeDeckRebarLayoutItem
+	{
+		[default] interface INegativeMomentBridgeDeckRebarLayoutItem;
+	};
+
+	[
+		uuid(867B7B93-BFF7-4879-980C-B1A2DC8C5DCC),
+		helpstring("RebarFactory")
+	]
+	coclass RebarFactory
+	{
+		[default] interface IRebarFactory;
+	};
+
+   [
 		uuid(C228C58A-EE9A-45DE-BF6C-EC2ABD8C9219),
 		helpstring("GenericBridge Class")
 	]
 	coclass GenericBridge
 	{
 		[default] interface IGenericBridge;
-		[default, source] interface IGenericBridgeEvents;
-	};
-	[
-		uuid(F07A10E1-145A-4863-B273-6EDBDEBC69C2),
-		helpstring("Stage Class"),
-      noncreatable
-	]
-	coclass Stage
-	{
-		[default] interface IStage;
-		[default, source] interface IStageEvents;
-	};
-	[
-		uuid(E88705F5-072E-4320-A5FE-92A92A7B02B9),
-		helpstring("StageCollection Class"),
-      noncreatable
-	]
-	coclass StageCollection
-	{
-		[default] interface IStageCollection;
-		[default, source] interface IStageCollectionEvents;
-	};
-	[
-		uuid(3092CF8C-ACF9-433f-8361-19377C004370),
-		helpstring("Span Class"),
-      noncreatable
-	]
-	coclass Span
-	{
-		[default] interface ISpan;
-      [default,source] interface ISpanEvents;
-      interface IStructuredStorage2;
-	};
-	[
-		uuid(845F88F7-E44F-4995-A93D-5CE0EE5C415B),
-		helpstring("SpanCollection Class"),
-      noncreatable
-	]
-	coclass SpanCollection
-	{
-		[default] interface ISpanCollection;
-      [default,source] interface ISpanCollectionEvents;
-      interface IStructuredStorage2;
 	};
 	[
 		uuid(72098BAA-D991-4ac1-94AD-B3B932E7EB54),
@@ -1955,7 +1932,6 @@ library WBFLGenericBridge
 	coclass Pier
 	{
 		[default] interface IPier;
-		[default, source] interface IPierEvents;
       interface IStructuredStorage2;
 	};
 	[
@@ -1966,7 +1942,6 @@ library WBFLGenericBridge
 	coclass PierCollection
 	{
 		[default] interface IPierCollection;
-		[default, source] interface IPierCollectionEvents;
       interface IStructuredStorage2;
 	};
 	[
@@ -1977,26 +1952,7 @@ library WBFLGenericBridge
 	coclass LongitudinalPierDescription
 	{
 		[default] interface ILongitudinalPierDescription;
-		[default, source] interface ILongitudinalPierDescriptionEvents;
 	};
-	[
-		uuid(7158A4C3-005C-4A48-8A71-C2123309D5FC),
-		helpstring("GirderSpacing Class"),
-      noncreatable
-	]
-	coclass GirderSpacing
-	{
-		[default] interface IGirderSpacing;
-		[default, source] interface IGirderSpacingEvents;
-	};
-//   [
-//      uuid(1B78CBD4-EEEC-49f3-8D6D-EEDC0109C122),
-//      noncreatable
-//   ]
-//   coclass AdaptStation
-//   {
-//      [default] interface IAdaptStation;
-//   };
    [
       uuid(B1875476-2706-4d53-A5CC-27AA77B11E2A),
       noncreatable
@@ -2004,19 +1960,9 @@ library WBFLGenericBridge
    coclass SuperstructureMember
    {
       [default] interface ISuperstructureMember;
-		[default, source] interface ISuperstructureMemberEvents;
 	   interface IItemData;
    };
-   [
-      uuid(E36E50DC-AE11-4a9f-BF01-082DDE661701),
-      noncreatable
-   ]
-   coclass SuperstructureMemberCollection
-   {
-      [default] interface ISuperstructureMemberCollection;
-		[default, source] interface ISuperstructureMemberCollectionEvents;
-   };
-
+   
    [
       uuid(2E00BE46-658E-4431-A47A-A380DE4C1A93),
 		helpstring("FlangedGirderEndBlockSegment Class")
@@ -2024,7 +1970,6 @@ library WBFLGenericBridge
    coclass FlangedGirderEndBlockSegment
    {
       [default] interface IFlangedGirderEndBlockSegment;
-	  [default, source] interface ISegmentEvents;
    };
 
    [
@@ -2034,7 +1979,6 @@ library WBFLGenericBridge
    coclass VoidedSlabEndBlockSegment
    {
       [default] interface IVoidedSlabEndBlockSegment;
-	  [default, source] interface ISegmentEvents;
    };
 
    [
@@ -2044,7 +1988,6 @@ library WBFLGenericBridge
    coclass DeckedSlabBeamEndBlockSegment
    {
       [default] interface IDeckedSlabBeamEndBlockSegment;
-	  [default, source] interface ISegmentEvents;
    };
 
    [
@@ -2054,7 +1997,6 @@ library WBFLGenericBridge
    coclass BoxBeamEndBlockSegment
    {
       [default] interface IBoxBeamEndBlockSegment;
-	  [default, source] interface ISegmentEvents;
    };
 
    [
@@ -2064,7 +2006,6 @@ library WBFLGenericBridge
    coclass UGirderSection2EndBlockSegment
    {
       [default] interface IUGirderSection2EndBlockSegment;
-	  [default, source] interface ISegmentEvents;
    };
 
    [
@@ -2074,7 +2015,6 @@ library WBFLGenericBridge
    coclass TaperedGirderSegment
    {
       [default] interface ITaperedGirderSegment;
-	  [default, source] interface ISegmentEvents;
    };
 
    [
@@ -2084,7 +2024,6 @@ library WBFLGenericBridge
    coclass ThickenedFlangeBulbTeeSegment
    {
       [default] interface IThickenedFlangeBulbTeeSegment;
-	  [default, source] interface ISegmentEvents;
    };
 
    [
@@ -2094,7 +2033,28 @@ library WBFLGenericBridge
    coclass PrismaticSegment
    {
       [default] interface IPrismaticSegment;
-	  [default, source] interface ISegmentEvents;
+   };
+
+   
+   [
+      uuid(D3DF465C-E03B-4192-A17E-2DF7BE63CAFB),
+		helpstring("FlangedSplicedGirderSegment Class")
+   ]
+   coclass FlangedSplicedGirderSegment
+   {
+      [default] interface IFlangedSplicedGirderSegment;
+      interface ISplicedGirderSegment;
+   };
+
+   
+   [
+      uuid(9DDC341B-E17F-4d54-9A33-F2C4F052650A),
+		helpstring("USplicedGirderSegment Class")
+   ]
+   coclass USplicedGirderSegment
+   {
+      [default] interface IUSplicedGirderSegment;
+      interface ISplicedGirderSegment;
    };
 
    [
@@ -2105,7 +2065,6 @@ library WBFLGenericBridge
    coclass SegmentItem
    {
       [default] interface ISegmentItem;
-		[default, source] interface ISegmentItemEvents;
    };
 
 	[
@@ -2126,35 +2085,6 @@ library WBFLGenericBridge
 	{
 		[default] interface IFilteredSuperstructureMemberCollection;
 	};
-   [
-      uuid(655DBEEE-92E2-4d98-8AA7-C3D14641B0AC),
-      helpstring("TemporaryPierItem Class"),
-      noncreatable
-   ]
-   coclass TemporaryPierItem
-   {
-      [default] interface ITemporaryPierItem;
-		[default, source] interface ITemporaryPierItemEvents;
-   };
-	[
-		uuid(685C9598-3F79-4f45-9EE8-7F44C147E26E),
-      noncreatable,
-		helpstring("TemporaryPierItemCollection Class")
-	]
-	coclass TemporaryPierItemCollection
-	{
-		[default] interface ITemporaryPierItemCollection;
-		[default, source] interface ITemporaryPierItemCollectionEvents;
-	};
-	[
-		uuid(57886ACD-7A1D-4E34-896C-9DF7F4AB8975),
-      noncreatable,
-		helpstring("CogoInfo Class")
-	]
-	coclass CogoInfo
-	{
-		[default] interface ICogoInfo;
-	};
 	[
 		uuid(CB50DBAC-CF8D-4204-B581-9C8A7705EEB2),
       noncreatable,
@@ -2163,7 +2093,6 @@ library WBFLGenericBridge
 	coclass Column
 	{
 		[default] interface IColumn;
-		[default, source] interface IColumnEvents;
 	};
 	[
 		uuid(7AE3C6CE-8DB2-467E-8F5A-395B39582325),
@@ -2173,7 +2102,6 @@ library WBFLGenericBridge
 	coclass ColumnSpacing
 	{
 		[default] interface IColumnSpacing;
-		[default, source] interface IColumnSpacingEvents;
 	};
 	[
 		uuid(0ABE6940-BC27-4E91-8FF0-5A1CD2243153),
@@ -2183,7 +2111,6 @@ library WBFLGenericBridge
 	coclass CrossBeam
 	{
 		[default] interface ICrossBeam;
-		[default, source] interface ICrossBeamEvents;
 	};
 	[
 		uuid(6AF46A10-C19E-438F-B69D-8AB743748CED),
@@ -2193,7 +2120,6 @@ library WBFLGenericBridge
 	coclass TransversePierDescription
 	{
 		[default] interface ITransversePierDescription;
-		[default, source] interface ITransversePierDescriptionEvents;
 	};
 	[
 		uuid(D3894F80-C95C-4a8b-A839-EAB39D92F196),
@@ -2202,7 +2128,6 @@ library WBFLGenericBridge
 	coclass Material
 	{
 		[default] interface IMaterial;
-		[default, source] interface IMaterialEvents;
 	};
 
 	[
@@ -2213,7 +2138,6 @@ library WBFLGenericBridge
 	{
 	   [default] interface ICastSlab;
 	   interface IBridgeDeck;
-	   [default,source] interface IBridgeDeckEvents;
 	};
 
 	[
@@ -2224,7 +2148,6 @@ library WBFLGenericBridge
 	{
 	   [default] interface IAlignmentOffsetStrategy;
 	   interface IOverhangPathStrategy;
-	   [default,source] interface IOverhangPathStrategyEvents;
 	};
 
 	[
@@ -2235,7 +2158,6 @@ library WBFLGenericBridge
 	{
 	   [default] interface IEdgePathStrategy;
 	   interface IOverhangPathStrategy;
-	   [default,source] interface IOverhangPathStrategyEvents;
 	};
 
 	[
@@ -2246,7 +2168,6 @@ library WBFLGenericBridge
 	{
 	   [default] interface IPrecastSlab;
 	   interface IBridgeDeck;
-	   [default,source] interface IBridgeDeckEvents;
 	};
 
 	[
@@ -2257,7 +2178,6 @@ library WBFLGenericBridge
 	{
 	   [default] interface IOverlaySlab;
 	   interface IBridgeDeck;
-	   [default,source] interface IBridgeDeckEvents;
 	};
 
 	[
@@ -2270,6 +2190,7 @@ library WBFLGenericBridge
 	   interface IGirderSection;
 	   interface IPrestressedGirderSection;
 	   interface IShape;
+      interface ICompositeShape;
 	};
 
 	[
@@ -2420,21 +2341,22 @@ library WBFLGenericBridge
 	};
 
 	[
-	   uuid(3041F4D5-169F-48be-AB65-766A1086FAB3),
-	   helpstring("Connection Class")
-	]
-	coclass Connection
-	{
-	   [default] interface IConnection;
-	};
-
-	[
 	   uuid(C1F73F53-6D63-44be-953F-3254EBB4F91A),
 	   helpstring("LinearTendonSegment")
 	]
 	coclass LinearTendonSegment
 	{
 	   [default] interface ILinearTendonSegment;
+	   interface ITendonSegment;
+	};
+
+	[
+	   uuid(99F3888C-7581-4fe6-BBB5-9D527CD8BEB6),
+	   helpstring("ParabolicTendonSegment")
+	]
+	coclass ParabolicTendonSegment
+	{
+	   [default] interface IParabolicTendonSegment;
 	   interface ITendonSegment;
 	};
 
@@ -2447,6 +2369,15 @@ library WBFLGenericBridge
 	   [default] interface ITendon;
 	};
 
+
+	[
+	   uuid(C4064D20-D146-48dd-8B89-685CAC219EAB),
+	   helpstring("OffsetTendon")
+	]
+	coclass OffsetTendon
+	{
+	   [default] interface IOffsetTendon;
+	};
 
 	[
 	   uuid(505D6372-B76F-4d91-9013-E71E3D17C4F6),

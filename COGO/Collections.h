@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -223,7 +223,7 @@
 		}
    };
 
-//typedef std::map<CogoElementKey,CComVariant> MyMap;
+//typedef std::map<CogoObjectID,CComVariant> MyMap;
 //typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, MapCopy<std::map<KeyType,Iitem>,VARIANT>, std::map<KeyType,Iitem> > MapEnum;
 
 template <class T,class Icoll,const IID* piid,typename KeyType,class Iitem>

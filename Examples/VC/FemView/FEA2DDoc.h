@@ -56,6 +56,9 @@ protected:
    DECLARE_DISPATCH_MAP()
    BOOL OnModelChanged();
    BOOL OnLoadingChanged(long loadingID);
+public:
+   afx_msg void OnViewModelProperties();
+   afx_msg void OnGTStrudl();
 };
 
 /////////////////////////////////////////////////////////////////////////////

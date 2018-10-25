@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLBridgeGeometry.DiaphragmLine.1 = s 'DiaphragmLine Class'
+	{
+		CLSID = s '{3F5A914A-73B6-43F6-A12B-D545B6B829CE}'
+	}
+	WBFLBridgeGeometry.DiaphragmLine = s 'DiaphragmLine Class'
+	{
+		CLSID = s '{3F5A914A-73B6-43F6-A12B-D545B6B829CE}'
+		CurVer = s 'WBFLBridgeGeometry.DiaphragmLine.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {3F5A914A-73B6-43F6-A12B-D545B6B829CE} = s 'DiaphragmLine Class'
+		{
+			ProgID = s 'WBFLBridgeGeometry.DiaphragmLine.1'
+			VersionIndependentProgID = s 'WBFLBridgeGeometry.DiaphragmLine'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{3887C38E-D11E-4740-896B-D1DBA8F74BD7}'
+		}
+	}
+}

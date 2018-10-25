@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Sections - Model bridge member cross sections
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -40,7 +40,6 @@ STDMETHODIMP CCompositeSectionItem::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_ICompositeSectionItemEx,
 		&IID_ICompositeSectionItem,
 		&IID_IStructuredStorage2
 	};

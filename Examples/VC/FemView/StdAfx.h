@@ -36,6 +36,10 @@
 #include "PointLoadDrawStrategy.h"
 #include "PointLoadEvents.h"
 #include "Fea2dGuid.c"
+#include <afxdlgs.h>
+
+#include <WBFLDManip.h>
+#include <DManip\DisplayObjectEvents.h>
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

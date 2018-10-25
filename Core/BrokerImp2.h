@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // CORE - Core elements of the Agent-Broker Architecture
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -93,8 +93,8 @@ public:
 
 // IBrokerInitEx3
 public:
-   STDMETHOD(LoadAgents)(/*[in]*/ CLSID* pClsid, /*[in]*/ long nClsid,/*[out]*/ IIndexArray** lErrIndex);
-   STDMETHOD(LoadExtensionAgents)(/*[in]*/ CLSID * clsid,/*[in]*/  long nClsid,/*[out]*/ IIndexArray** plErrIndex );
+   STDMETHOD(LoadAgents)(/*[in]*/ CLSID* pClsid, /*[in]*/ IndexType nClsid,/*[out]*/ IIndexArray** lErrIndex);
+   STDMETHOD(LoadExtensionAgents)(/*[in]*/ CLSID * clsid,/*[in]*/  IndexType nClsid,/*[out]*/ IIndexArray** plErrIndex );
    STDMETHOD(AddAgent)(/*[in]*/ IAgentEx* pAgent);
    STDMETHOD(AddExtensionAgent)(/*[in]*/ IAgentEx* pAgent);
 	STDMETHOD(FindConnectionPoint)(/*[in]*/ REFIID riid,/*[out]*/ IConnectionPoint** ppCP);
@@ -139,7 +139,7 @@ private:
    HRESULT LoadOldFormat(IStructuredLoad* strLoad);
    void ClearAgents();
 
-   HRESULT LoadAgents( CLSID * clsid, long nClsid,IIndexArray** plErrIndex, Agents& agents );
+   HRESULT LoadAgents( CLSID * clsid, IndexType nClsid,IIndexArray** plErrIndex, Agents& agents );
    HRESULT AddAgent(IAgentEx* pAgent,Agents& agents);
    HRESULT FindConnectionPoint( REFIID riid, Agents::iterator begin,Agents::iterator end,IConnectionPoint** ppCP);
    HRESULT InitAgents(Agents::iterator begin,Agents::iterator end);

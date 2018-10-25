@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -253,6 +253,17 @@ void DDX_CBStringExactCase(CDataExchange* pDX, int nIDC, CString& str)
 	}
 }
 
+void DDX_CBIndex(CDataExchange* pDX, int nIDC, IndexType& index)
+{
+	pDX->PrepareCtrl(nIDC);
+	HWND hWndCtrl;
+	pDX->m_pDlgWnd->GetDlgItem(nIDC, &hWndCtrl);
+	if (pDX->m_bSaveAndValidate)
+		index = (IndexType)::SendMessage(hWndCtrl, CB_GETCURSEL, 0, 0L);
+	else
+		::SendMessage(hWndCtrl, CB_SETCURSEL, (WPARAM)index, 0L);
+}
+
 void DDV_NonNegativeDouble(CDataExchange* pDX, int nIDC,Float64 value)
 {
 	if (!pDX->m_bSaveAndValidate)
@@ -292,12 +303,11 @@ void DDX_Check_Bool(CDataExchange* pDX, int nIDC, bool& value)
 	{
 		int val = (int)::SendMessage(hWndCtrl, BM_GETCHECK, 0, 0L);
 		ASSERT(val >= 0 && val <= 2);
-      value = val != 0;
+      value = (val == BST_CHECKED ? true : false);
 	}
 	else
 	{
-      int val=0;
-      if (value) val=1;
+      int val = (value ? BST_CHECKED : BST_UNCHECKED);
 		::SendMessage(hWndCtrl, BM_SETCHECK, (WPARAM)val, 0L);
 	}
 }
@@ -408,5 +418,32 @@ void DDV_Range(CDataExchange* pDX, mfcDDV::LowerBound lower,mfcDDV::UpperBound u
       msg.Format(_T("Please enter a number that is %s %f and %s %f"),min,strLower.c_str(),strUpper.c_str(),max);
       AfxMessageBox( msg, MB_ICONEXCLAMATION );
 	   pDX->Fail();
+   }
+}
+
+void DDX_CBItemData( CDataExchange* pDX, int nIDC, bool& itemdata )
+{
+   HWND hWnd = pDX->PrepareCtrl( nIDC );
+   CComboBox* pCB = (CComboBox*)pDX->m_pDlgWnd->GetDlgItem(nIDC);
+
+   if ( pDX->m_bSaveAndValidate )
+   {
+      int selidx = pCB->GetCurSel();
+      if ( selidx != CB_ERR )
+         itemdata = pCB->GetItemData(selidx) != 0 ? true : false;
+   }
+   else
+   {
+      int count = pCB->GetCount();
+      for ( int i = 0; i < count; i++ )
+      {
+         bool bItemData = pCB->GetItemData(i) != 0 ? true : false;
+         if ( bItemData == itemdata )
+         {
+            pCB->SetCurSel(i);
+            return;
+         }
+      }
+      ASSERT(0 == count || !::IsWindowEnabled(hWnd) ); // nothing was selected (doesn't assert if count == 0 or window is disabled)
    }
 }

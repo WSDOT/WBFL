@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -120,13 +120,17 @@ STDMETHODIMP CDeckedSlabBeamSection::get_WebLocation(WebIndexType idx,Float64* l
    m_Beam->get_B(&B);
    m_Beam->get_W(&W);
 
+   Float64 tWeb;
+   get_WebThickness(idx,&tWeb);
+   Float64 x = (A - 2*B - 2*W)/2 + tWeb/2;
+
    if (idx==0)
    {
-      *location = B + W/2.0;
+      *location = -x;
    }
    else if (idx==1)
    {
-      *location = A - (B + W/2.0);
+      *location = x;
    }
    else
    {
@@ -167,6 +171,34 @@ STDMETHODIMP CDeckedSlabBeamSection::get_WebThickness(WebIndexType idx,Float64* 
    {
       return E_INVALIDARG;
    }
+}
+
+STDMETHODIMP CDeckedSlabBeamSection::get_WebPlane(WebIndexType idx,IPlane3d** ppPlane)
+{
+   CHECK_RETOBJ(ppPlane);
+
+   Float64 x;
+   HRESULT hr = get_WebLocation(idx,&x);
+   if ( FAILED(hr) )
+      return hr;
+
+   CComPtr<IPoint3d> p1;
+   p1.CoCreateInstance(CLSID_Point3d);
+   p1->Move(x,0,0);
+
+   CComPtr<IPoint3d> p2;
+   p2.CoCreateInstance(CLSID_Point3d);
+   p2->Move(x,100,0);
+
+   CComPtr<IPoint3d> p3;
+   p3.CoCreateInstance(CLSID_Point3d);
+   p3->Move(x,0,100);
+
+   CComPtr<IPlane3d> plane;
+   plane.CoCreateInstance(CLSID_Plane3d);
+   plane->ThroughPoints(p1,p2,p3);
+
+   return plane.CopyTo(ppPlane);
 }
 
 STDMETHODIMP CDeckedSlabBeamSection::get_MinWebThickness(Float64* tWeb)
@@ -480,6 +512,18 @@ STDMETHODIMP CDeckedSlabBeamSection::Clear()
 {
    CComQIPtr<ICompositeShape> compshape(m_Shape);
    return compshape->Clear();
+}
+
+STDMETHODIMP CDeckedSlabBeamSection::ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
+{
+   CComQIPtr<ICompositeShape> compshape(m_Shape);
+   return compshape->ReplaceEx(idx,pShapeItem);
+}
+
+STDMETHODIMP CDeckedSlabBeamSection::Replace(CollectionIndexType idx,IShape* pShape)
+{
+   CComQIPtr<ICompositeShape> compshape(m_Shape);
+   return compshape->Replace(idx,pShape);
 }
 
 STDMETHODIMP CDeckedSlabBeamSection::AddShapeEx(ICompositeShapeItem* ShapeItem)

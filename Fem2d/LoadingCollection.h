@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -72,7 +72,6 @@ END_COM_MAP()
 public:
 	STDMETHOD(Create)(/*[in]*/LoadCaseIDType ID,/*[out,retval]*/IFem2dLoading* *ppLoading);
 	STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/LoadCaseIDType* pid);
-	STDMETHOD(RemoveIDLessThan)(/*[in]*/LoadCaseIDType id);
 	STDMETHOD(Clear)();
 };
 

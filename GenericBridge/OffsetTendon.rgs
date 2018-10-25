@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.OffsetTendon.1 = s 'OffsetTendon Class'
+	{
+		CLSID = s '{C4064D20-D146-48dd-8B89-685CAC219EAB}'
+	}
+	WBFLGenericBridge.OffsetTendon = s 'OffsetTendon Class'
+	{
+		CLSID = s '{C4064D20-D146-48dd-8B89-685CAC219EAB}'
+		CurVer = s 'WBFLGenericBridge.OffsetTendon.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {C4064D20-D146-48dd-8B89-685CAC219EAB} = s 'OffsetTendon Class'
+		{
+			ProgID = s 'WBFLGenericBridge.OffsetTendon.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.OffsetTendon'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

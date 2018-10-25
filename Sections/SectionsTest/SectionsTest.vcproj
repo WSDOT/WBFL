@@ -1446,6 +1446,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\TestCompositeSectionEx.cpp"
+				>
+			</File>
+			<File
 				RelativePath="TestCompositeSectionItem.cpp"
 				>
 				<FileConfiguration
@@ -1742,6 +1746,10 @@
 			</File>
 			<File
 				RelativePath="TestCompositeSection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TestCompositeSectionEx.h"
 				>
 			</File>
 			<File

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -924,11 +924,4 @@ void CTestSuperstructureMember::Test()
 //   // Test IObjectSafety
 //   TRY_TEST( TestIObjectSafety(mbr,IID_ISuperstructureMember,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 //   TRY_TEST( TestIObjectSafety(mbr,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-
-STDMETHODIMP CTestSuperstructureMember::OnSuperstructureMemberChanged(ISuperstructureMember* mbr)
-{
-   Pass();
-   return S_OK;
 }

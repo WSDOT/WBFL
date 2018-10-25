@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -507,7 +507,6 @@ CDocument* CEAFApp::OpenDocumentFile(LPCTSTR lpszFileName)
    }
 
    bool bExtensionMatched = false;
-   int templateIdx = 0; // keep track of which template is assocated with the file that got opened. we'll need to record this in the registry so that the File > Open dialog uses this type next time
    POSITION pos = m_pDocManager->GetFirstDocTemplatePosition();
    while ( pos != NULL )
    {
@@ -518,11 +517,6 @@ CDocument* CEAFApp::OpenDocumentFile(LPCTSTR lpszFileName)
       {
          int token_pos = 0;
          CString strExt = str.Tokenize(_T(";"),token_pos);
-         if ( strExt != _T("") )
-         {
-            templateIdx++;
-         }
-
          while ( strExt != _T("") )
          {
             if ( file_ext.CompareNoCase(strExt) == 0 )
@@ -534,7 +528,6 @@ CDocument* CEAFApp::OpenDocumentFile(LPCTSTR lpszFileName)
 
             strExt = str.Tokenize(_T(";"),token_pos);
          }
-
       }
    }
 
@@ -545,9 +538,6 @@ CDocument* CEAFApp::OpenDocumentFile(LPCTSTR lpszFileName)
       {
          m_pDocManager->CloseAllDocuments(FALSE);
          pDoc = CWinApp::OpenDocumentFile(lpszFileName);
-
-         CEAFApp* pApp = EAFGetApp();
-         pApp->WriteProfileInt(_T("Settings"),_T("LastFileType"),templateIdx);
       }
    }
    else
@@ -1294,7 +1284,7 @@ unitmgtIndirectMeasure init_si_units()
    im.ForcePerLength.Update(  unitMeasure::KilonewtonPerMeter,        0.001, 8, 2, sysNumericFormatTool::Fixed );
    im.MomentPerAngle.Update(  unitMeasure::KiloNewtonMeterPerRadian,  0.001, 8, 2, sysNumericFormatTool::Fixed );
    im.Time.Update(            unitMeasure::Hour,                      0.001, 5, 0, sysNumericFormatTool::Fixed );
-   im.Time2.Update(           unitMeasure::Day,                       0.001, 9, 0, sysNumericFormatTool::Fixed );
+   im.Time2.Update(           unitMeasure::Day,                       0.001, 7, 2, sysNumericFormatTool::Fixed );
    im.ForceLength2.Update(    unitMeasure::KilonewtonMeter2,          0.001, 9, 2, sysNumericFormatTool::Fixed );
    im.SqrtPressure.Update(    unitMeasure::SqrtMPa,                   0.001, 9, 4, sysNumericFormatTool::Fixed );
    im.PerLength.Update( unitMeasure::PerMillimeter, 1.0e-7, 9, 3, sysNumericFormatTool::Scientific);
@@ -1319,7 +1309,7 @@ unitmgtIndirectMeasure init_english_units()
    im.ComponentDim.Update(    unitMeasure::Inch,            0.001, 9, 3, sysNumericFormatTool::Fixed );
    im.XSectionDim.Update(     unitMeasure::Feet,            0.001, 9, 3, sysNumericFormatTool::Fixed );
    im.SpanLength.Update(      unitMeasure::Feet,            0.001, 9, 3, sysNumericFormatTool::Fixed );
-   im.AlignmentLength.Update( unitMeasure::Feet,            0.001,16, 3, sysNumericFormatTool::Fixed );
+   im.AlignmentLength.Update( unitMeasure::Feet,            0.001,16, 4, sysNumericFormatTool::Fixed );
    im.Displacement.Update(    unitMeasure::Inch,            0.001, 8, 3, sysNumericFormatTool::Fixed );
    im.Area.Update(            unitMeasure::Inch2,           0.001,10, 3, sysNumericFormatTool::Fixed );
    im.MomentOfInertia.Update( unitMeasure::Inch4,           0.001,12, 1, sysNumericFormatTool::Fixed );
@@ -1339,7 +1329,7 @@ unitmgtIndirectMeasure init_english_units()
    im.ForcePerLength.Update(  unitMeasure::KipPerFoot,     1.0e-5, 9, 3, sysNumericFormatTool::Fixed );
    im.MomentPerAngle.Update(  unitMeasure::KipInchPerRadian,0.001,10, 2, sysNumericFormatTool::Fixed );
    im.Time.Update(            unitMeasure::Hour,            0.001, 5, 0, sysNumericFormatTool::Fixed );
-   im.Time2.Update(           unitMeasure::Day,             0.001, 9, 0, sysNumericFormatTool::Fixed );
+   im.Time2.Update(           unitMeasure::Day,             0.001, 7, 2, sysNumericFormatTool::Fixed );
    im.ForceLength2.Update(    unitMeasure::KipInch2,        0.001, 9, 2, sysNumericFormatTool::Fixed );
    im.SqrtPressure.Update(    unitMeasure::SqrtKSI,         0.001, 9, 4, sysNumericFormatTool::Fixed );
    im.PerLength.Update( unitMeasure::PerFeet, 1.0e-5, 9, 4, sysNumericFormatTool::Fixed);

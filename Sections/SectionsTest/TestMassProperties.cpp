@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Sections Test - Test driver for Sections library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -97,7 +97,6 @@ void CTestMassProperties::Test()
    CComQIPtr<ISupportErrorInfo>  pSEI(props);
    TRY_TEST( pSEI != 0, true );
    TRY_TEST( pSEI->InterfaceSupportsErrorInfo( IID_IMassProperties ), S_OK );
-   TRY_TEST( pSEI->InterfaceSupportsErrorInfo( IID_IMassPropertiesEx ), S_OK );
    TRY_TEST( pSEI->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( pSEI->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
@@ -108,8 +107,6 @@ void CTestMassProperties::Test()
    DWORD dwDesiredOptions = INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA;
    DWORD dwSupportedOptions, dwEnabledOptions;
    pObjSafety->GetInterfaceSafetyOptions(IID_IMassProperties,&dwSupportedOptions,&dwEnabledOptions);
-   TRY_TEST( dwSupportedOptions, dwDesiredOptions );
-   pObjSafety->GetInterfaceSafetyOptions(IID_IMassPropertiesEx,&dwSupportedOptions,&dwEnabledOptions);
    TRY_TEST( dwSupportedOptions, dwDesiredOptions );
    pObjSafety->GetInterfaceSafetyOptions(IID_IStructuredStorage2,&dwSupportedOptions,&dwEnabledOptions);
    TRY_TEST( dwSupportedOptions, dwDesiredOptions );

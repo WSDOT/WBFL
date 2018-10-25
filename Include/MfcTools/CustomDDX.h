@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -26,6 +26,7 @@
 #pragma once
 
 #include <MfcTools\MfcToolsExp.h>
+#include <MfcTools\CacheEdit.h>
 #include <Units\SysUnits.h>
 #include <limits>
 
@@ -36,6 +37,8 @@ void MFCTOOLSFUNC DDX_CBString(CDataExchange* pDX,int nIDC, std::_tstring& str);
 void MFCTOOLSFUNC DDX_CBStringExact(CDataExchange* pDX, int nIDC, std::_tstring& str);
 void MFCTOOLSFUNC DDX_CBStringExactCase(CDataExchange* pDX, int nIDC, std::_tstring& str);
 void MFCTOOLSFUNC DDX_CBStringExactCase(CDataExchange* pDX, int nIDC, CString& str);
+void MFCTOOLSFUNC DDX_CBIndex(CDataExchange* pDX, int nIDC, IndexType& index);
+void MFCTOOLSFUNC DDX_CBItemData( CDataExchange* pDX, int nIDC, bool& itemdata );
 
 void MFCTOOLSFUNC DDV_NonNegativeDouble(CDataExchange* pDX, int nIDC,Float64 value);
 void MFCTOOLSFUNC DDV_GreaterThanZero(CDataExchange* pDX, int nIDC, Float64 value);
@@ -313,7 +316,7 @@ void DDX_CBItemData( CDataExchange* pDX, int nIDC, T& itemdata )
    {
       int selidx = pCB->GetCurSel();
       if ( selidx != CB_ERR )
-         itemdata = (T)pCB->GetItemData(selidx);
+         itemdata = (T)(pCB->GetItemData(selidx));
    }
    else
    {
@@ -321,6 +324,33 @@ void DDX_CBItemData( CDataExchange* pDX, int nIDC, T& itemdata )
       for ( int i = 0; i < count; i++ )
       {
          if ( ((T)pCB->GetItemData(i)) == itemdata )
+         {
+            pCB->SetCurSel(i);
+            return;
+         }
+      }
+      ASSERT(0 == count || !::IsWindowEnabled(hWnd) ); // nothing was selected (doesn't assert if count == 0 or window is disabled)
+   }
+}
+
+template <class T>
+void DDX_CBItemData(CDataExchange* pDX,int nIDC, const T* vData,T& itemData)
+{
+   HWND hWnd = pDX->PrepareCtrl( nIDC );
+   CComboBox* pCB = (CComboBox*)pDX->m_pDlgWnd->GetDlgItem(nIDC);
+
+   if ( pDX->m_bSaveAndValidate )
+   {
+      int selidx = pCB->GetCurSel();
+      if ( selidx != CB_ERR )
+         itemdata = vData[pCB->GetItemData(selidx)];
+   }
+   else
+   {
+      int count = pCB->GetCount();
+      for ( int i = 0; i < count; i++ )
+      {
+         if ( vData[pCB->GetItemData(i)] == itemdata )
          {
             pCB->SetCurSel(i);
             return;
@@ -345,6 +375,23 @@ void DDX_CBEnum(CDataExchange* pDX, int nIDC, T& value)
       DDX_CBIndex(pDX, nIDC, item );
    }
 }
+
+template <class T>
+void MFCTOOLSFUNC DDX_RadioEnum(CDataExchange* pDX,int nIDC,T& value)
+{
+   if ( pDX->m_bSaveAndValidate )
+   {
+      int item;
+      DDX_Radio(pDX, nIDC, item );
+      value = (T)item;
+   }
+   else
+   {
+      int item = (int)value;
+      DDX_Radio(pDX, nIDC, item );
+   }
+}
+
 
 ///////////////////////////////////////////////
 
@@ -388,6 +435,14 @@ void DDX_UnitValueAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, Float64& da
 {
 	if ( pDX->m_bSaveAndValidate )
 	{
+      CWnd* pWnd = pDX->m_pDlgWnd->GetDlgItem(nIDC);
+      if ( pWnd->IsKindOf( RUNTIME_CLASS(CCacheEdit) ) && pWnd->IsWindowEnabled() == FALSE )
+      {
+         data = ((CCacheEdit*)(pWnd))->GetDefaultValue();
+         data = ::ConvertToSysUnits( data, umIndirectMeasure.UnitOfMeasure );
+         return;
+      }
+
       Float64 f;
       DDX_Text( pDX, nIDC, f);
       data = ::ConvertToSysUnits( f, umIndirectMeasure.UnitOfMeasure );
@@ -395,15 +450,23 @@ void DDX_UnitValueAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, Float64& da
 	else
 	{
       CString strValue;
-      if (data!=Float64_Inf) // Infinite values create a blank line
+      Float64 value = data; // make a copy because we are going to change it...
+      if (value!=Float64_Inf) // Infinite values create a blank line
       {
-         strValue.Format(_T("%*.*f"),umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( data, umIndirectMeasure.UnitOfMeasure ) );
+         value = ::ConvertFromSysUnits( value, umIndirectMeasure.UnitOfMeasure );
+         strValue.Format(_T("%*.*f"),umIndirectMeasure.Width,umIndirectMeasure.Precision,value );
          strValue.TrimLeft();
       }
       DDX_Text( pDX, nIDC, strValue );
 
       CString strTag = umIndirectMeasure.UnitOfMeasure.UnitTag().c_str();
       DDX_Text( pDX, nIDCTag, strTag );
+
+      CWnd* pWnd = pDX->m_pDlgWnd->GetDlgItem(nIDC);
+      if ( pWnd->IsKindOf( RUNTIME_CLASS(CCacheEdit) )  )
+      {
+         ((CCacheEdit*)(pWnd))->SetDefaultValue(value);
+      }
 	}
 }
 
@@ -446,7 +509,7 @@ void DDX_OffsetAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, Float64& data,
 }
 
 template <class T,class U>
-void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, int nIDC, T& value, T limit, const U& umIndirectMeasure, LPCTSTR message=_T("Please enter a number that is greater than %f %s") )
+void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, int nIDC, T& value, T limit, const U& umIndirectMeasure, LPCTSTR message=_T("Please enter a number that is greater than %*.*f %s") )
 {
 	if (!pDX->m_bSaveAndValidate)
 	{
@@ -458,6 +521,7 @@ void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, int nIDC, T& value, T lim
       pDX->PrepareEditCtrl(nIDC);
       CString msg;
       msg.Format(message, 
+                 umIndirectMeasure.Width,umIndirectMeasure.Precision,
                  ::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure ), 
                  umIndirectMeasure.UnitOfMeasure.UnitTag().c_str() );
 

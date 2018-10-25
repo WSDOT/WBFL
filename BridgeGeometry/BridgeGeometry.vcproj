@@ -12,14 +12,17 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="2"
 			CharacterSet="0"
@@ -39,12 +42,16 @@
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
+				AdditionalIncludeDirectories="..\Include;&quot;$(SolutionDir)RegFreeCOM\$(ConfigurationName)\&quot;"
 				MkTypLibCompatible="false"
+				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\Include;\ARP\WBFL\Include;&quot;\ARP\WBFL\Include\$(ConfigurationName)&quot;;\ARP\boost_1_37_0"
+				AdditionalIncludeDirectories="..\Include;..\Include\$(PlatformName);&quot;..\Include\$(ConfigurationName)&quot;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;BUILDBRIDGEGEOMETRYLIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -60,7 +67,7 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
 				Culture="1033"
-				AdditionalIncludeDirectories="$(IntDir)"
+				AdditionalIncludeDirectories="..\Include;$(SolutionDir)RegFreeCOM\$(PlatformName)\$(ConfigurationName)\"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -79,7 +86,91 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)\WBFL.manifest"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfMFC="2"
+			CharacterSet="0"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				AdditionalIncludeDirectories="..\Include;&quot;$(SolutionDir)RegFreeCOM\$(ConfigurationName)\&quot;"
+				MkTypLibCompatible="false"
+				TargetEnvironment="3"
+				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\Include;..\Include\$(PlatformName);&quot;..\Include\$(ConfigurationName)&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;BUILDBRIDGEGEOMETRYLIB"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\Include;$(SolutionDir)RegFreeCOM\$(PlatformName)\$(ConfigurationName)\"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(OutDir)"
+				ModuleDefinitionFile=".\BridgeGeometry.def"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -99,8 +190,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="2"
 			CharacterSet="0"
@@ -121,13 +212,17 @@
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"
+				AdditionalIncludeDirectories="..\Include;&quot;$(SolutionDir)RegFreeCOM\$(ConfigurationName)\&quot;"
 				MkTypLibCompatible="false"
+				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\Include;\ARP\WBFL\Include;&quot;\ARP\WBFL\Include\$(ConfigurationName)&quot;;\ARP\boost_1_37_0"
+				AdditionalIncludeDirectories="..\Include;..\Include\$(PlatformName);&quot;..\Include\$(ConfigurationName)&quot;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL;BUILDBRIDGEGEOMETRYLIB"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -142,7 +237,7 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
 				Culture="1033"
-				AdditionalIncludeDirectories="$(IntDir)"
+				AdditionalIncludeDirectories="..\Include;$(SolutionDir)RegFreeCOM\$(PlatformName)\$(ConfigurationName)\"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -163,7 +258,438 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)\WBFL.manifest"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfMFC="2"
+			CharacterSet="0"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				AdditionalIncludeDirectories="..\Include;&quot;$(SolutionDir)RegFreeCOM\$(ConfigurationName)\&quot;"
+				MkTypLibCompatible="false"
+				TargetEnvironment="3"
+				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="..\Include;..\Include\$(PlatformName);&quot;..\Include\$(ConfigurationName)&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL;BUILDBRIDGEGEOMETRYLIB"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\Include;$(SolutionDir)RegFreeCOM\$(PlatformName)\$(ConfigurationName)\"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="$(OutDir)"
+				ModuleDefinitionFile=".\BridgeGeometry.def"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="VBA_Release|Win32"
+			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfMFC="2"
+			CharacterSet="0"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				AdditionalIncludeDirectories="..\Include;&quot;$(SolutionDir)RegFreeCOM\$(ConfigurationName)\&quot;"
+				MkTypLibCompatible="false"
+				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="..\Include;..\Include\$(PlatformName);&quot;..\Include\$(ConfigurationName)&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL;BUILDBRIDGEGEOMETRYLIB;VBA_BUILD"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\Include;$(SolutionDir)RegFreeCOM\$(PlatformName)\$(ConfigurationName)\"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="$(OutDir)"
+				ModuleDefinitionFile=".\BridgeGeometry.def"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="VBA_Release|x64"
+			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfMFC="2"
+			CharacterSet="0"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				AdditionalIncludeDirectories="..\Include;&quot;$(SolutionDir)RegFreeCOM\$(ConfigurationName)\&quot;"
+				MkTypLibCompatible="false"
+				TargetEnvironment="3"
+				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="..\Include;..\Include\$(PlatformName);&quot;..\Include\$(ConfigurationName)&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL;BUILDBRIDGEGEOMETRYLIB;VBA_BUILD"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\Include;$(SolutionDir)RegFreeCOM\$(PlatformName)\$(ConfigurationName)\"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="$(OutDir)"
+				ModuleDefinitionFile=".\BridgeGeometry.def"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="VBA_Debug|Win32"
+			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfMFC="2"
+			CharacterSet="0"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				AdditionalIncludeDirectories="..\Include;&quot;$(SolutionDir)RegFreeCOM\$(ConfigurationName)\&quot;"
+				MkTypLibCompatible="false"
+				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\Include;..\Include\$(PlatformName);&quot;..\Include\$(ConfigurationName)&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;BUILDBRIDGEGEOMETRYLIB;VBA_BUILD"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				DebugInformationFormat="4"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\Include;$(SolutionDir)RegFreeCOM\$(PlatformName)\$(ConfigurationName)\"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(OutDir)"
+				ModuleDefinitionFile=".\BridgeGeometry.def"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="VBA_Debug|x64"
+			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfMFC="2"
+			CharacterSet="0"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				AdditionalIncludeDirectories="..\Include;&quot;$(SolutionDir)RegFreeCOM\$(ConfigurationName)\&quot;"
+				MkTypLibCompatible="false"
+				TargetEnvironment="3"
+				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\Include;..\Include\$(PlatformName);&quot;..\Include\$(ConfigurationName)&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;BUILDBRIDGEGEOMETRYLIB;VBA_BUILD"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\Include;$(SolutionDir)RegFreeCOM\$(PlatformName)\$(ConfigurationName)\"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(OutDir)"
+				ModuleDefinitionFile=".\BridgeGeometry.def"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -191,15 +717,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\AlignmentDescription.cpp"
+				RelativePath=".\AlignmentOffsetLayoutLineFactory.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\AlignmentDescriptionDlg.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AlignmentManager.cpp"
+				RelativePath=".\Bridge.cpp"
 				>
 			</File>
 			<File
@@ -216,17 +738,78 @@
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="VBA_Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="VBA_Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\BridgeGeometryFrame.cpp"
+				RelativePath=".\BridgeGeometryHelper.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\BridgeGeometryView.cpp"
+				RelativePath=".\DeckBoundary.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\HorizontalAlignmentPage.cpp"
+				RelativePath=".\DiaphragmLine.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\dllmain.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EqualSpaceDiaphragmLineFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\GirderLine.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PierLine.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PierLineCollection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimpleDeckBoundaryFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimpleGirderLineFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimpleLayoutLineFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SingleDiaphragmLineFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SingleGirderLineFactory.cpp"
 				>
 			</File>
 			<File
@@ -241,6 +824,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -248,6 +839,58 @@
 						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="VBA_Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="VBA_Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="VBA_Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="VBA_Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ThroughPointDiaphragmLineFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UniformSpacingLayoutLineFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\WBFLBridgeGeometry.idl"
+				>
 			</File>
 		</Filter>
 		<Filter
@@ -256,19 +899,15 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\Include\BridgeGeometry\AlignmentDescription.h"
-				>
-			</File>
-			<File
-				RelativePath=".\AlignmentDescriptionDlg.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Include\BridgeGeometry\AlignmentManager.h"
+				RelativePath=".\AlignmentOffsetLayoutLineFactory.h"
 				>
 			</File>
 			<File
 				RelativePath="..\Include\BridgeGeometry\AutoLib.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Bridge.h"
 				>
 			</File>
 			<File
@@ -280,7 +919,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Include\BridgeGeometry\BridgeGeometryFrame.h"
+				RelativePath=".\BridgeGeometryHelper.h"
 				>
 			</File>
 			<File
@@ -288,15 +927,55 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Include\BridgeGeometry\BridgeGeometryView.h"
+				RelativePath=".\DeckBoundary.h"
 				>
 			</File>
 			<File
-				RelativePath=".\HorizontalAlignmentPage.h"
+				RelativePath=".\DiaphragmLine.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dllmain.h"
+				>
+			</File>
+			<File
+				RelativePath=".\EqualSpaceDiaphragmLineFactory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\GirderLine.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PierLine.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PierLineCollection.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Resource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimpleDeckBoundaryFactory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimpleGirderLineFactory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimpleLayoutLineFactory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SingleDiaphragmLineFactory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SingleGirderLineFactory.h"
 				>
 			</File>
 			<File
@@ -305,6 +984,14 @@
 			</File>
 			<File
 				RelativePath=".\targetver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ThroughPointDiaphragmLineFactory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UniformSpacingLayoutLineFactory.h"
 				>
 			</File>
 		</Filter>

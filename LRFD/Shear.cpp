@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -72,84 +72,46 @@ static const Float64 gs_ex[] = {-0.2e-3,-0.15e-3,-0.1e-3,0.0e-3,0.125e-3,0.25e-3
 static const Int16 gs_vfc_count = sizeof(gs_vfc)/sizeof(Float64);
 static const Int16 gs_ex_count = sizeof(gs_ex)/sizeof(Float64);
 
-// constants from 2000 interims to 2002 interims
+// constants from 2000 interims and later
 static const Float64 gs_vfc_2000[] = {0.075,0.1,0.125,0.150,0.175,0.2,0.225,0.25};
 static const Float64 gs_ex_2000[] = {-0.2e-3,-0.1e-3,-0.5e-4,0.0e-3,0.125e-3,0.25e-3,0.50e-3,0.75e-3,1.00e-3,1.50e-3,2.00e-3};
 static const Int16 gs_vfc_count_2000 = sizeof(gs_vfc_2000)/sizeof(Float64);
 static const Int16 gs_ex_count_2000 = sizeof(gs_ex_2000)/sizeof(Float64);
 
-// constants from 2003 interims and later
-static const Float64 gs_vfc_2003[] = {0.075,0.1,0.125,0.150,0.175,0.2,0.225,0.25};
-static const Float64 gs_ex_2003[] = {-0.2e-3,-0.1e-3,-0.5e-4,0.0e-3,0.125e-3,0.25e-3,0.50e-3,0.75e-3,1.00e-3};
-static const Int16 gs_vfc_count_2003 = sizeof(gs_vfc_2003)/sizeof(Float64);
-static const Int16 gs_ex_count_2003 = sizeof(gs_ex_2003)/sizeof(Float64);
-
 Float64 get_vfc(Int16 row)
 {
    lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
    if ( version < lrfdVersionMgr::SecondEditionWith2000Interims )
-   {
       return gs_vfc[row];  // 1994 to 1999
-   }
-   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
-   {
-      return gs_vfc_2000[row]; // 2000-2002
-   }
-   else // 2003 - Present
-   {
-      return gs_vfc_2003[row];
-   }
+   else // 2000 - Present
+      return gs_vfc_2000[row];
 }
 
 Int16 get_vfc_count()
 {
    lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
    if ( version < lrfdVersionMgr::SecondEditionWith2000Interims )
-   {
       return gs_vfc_count;  // 1994 to 1999
-   }
-   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
-   {
-      return gs_vfc_count_2000; // 2000-2002
-   }
-   else // 2003 - Present
-   {
-      return gs_vfc_count_2003;
-   }
+   else // 2000 - Present
+      return gs_vfc_count_2000;
 }
 
 Float64 get_ex(Int16 col)
 {
    lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
    if ( version < lrfdVersionMgr::SecondEditionWith2000Interims )
-   {
       return gs_ex[col];  // 1994 to 1999
-   }
-   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
-   {
-      return gs_ex_2000[col]; // 2000-2002
-   }
-   else // 2003 - Present
-   {
-      return gs_ex_2003[col];
-   }
+   else // 2000 - Present
+      return gs_ex_2000[col];
 }
 
 Int16 get_ex_count()
 {
    lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
    if ( version < lrfdVersionMgr::SecondEditionWith2000Interims )
-   {
       return gs_ex_count;  // 1994 to 1999
-   }
-   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
-   {
-      return gs_ex_count_2000; // 2000-2002
-   }
-   else // 2003 - Present
-   {
-      return gs_ex_count_2003;
-   }
+   else // 2000 - Present
+      return gs_ex_count_2000;
 }
 
 struct BT
@@ -185,7 +147,7 @@ static const BT gs_Data_97_interims[gs_vfc_count][gs_ex_count] =
 };
 
 static const BT gs_Data_2000_interims[gs_vfc_count_2000][gs_ex_count_2000] = 
-{            // -0.20       -0.10         -0.05        0.0         0.125         0.25        0.50        0.75          1.00          1.50          2.00
+{            // -0,20       -0.10         -0.05        0.0         0.125         0.25        0.50        0.75          1.00          1.50          2.00
 /* 0.075 */ {{22.3,6.32}, {20.4,4.75}, {21.0,4.10}, {21.8,3.75}, {24.3,3.24}, {26.6,2.94}, {30.5,2.59}, {33.7,2.38}, {36.4,2.23}, {40.8,1.95}, {43.9,1.67}},
 /* 0.100 */ {{18.1,3.79}, {20.4,3.38}, {21.4,3.24}, {22.5,3.14}, {24.9,2.91}, {27.1,2.75}, {30.8,2.50}, {34.0,2.32}, {36.7,2.18}, {40.8,1.93}, {43.1,1.69}},
 /* 0.125 */ {{19.9,3.18}, {21.9,2.99}, {22.8,2.94}, {23.7,2.87}, {25.9,2.74}, {27.9,2.62}, {31.4,2.42}, {34.4,2.26}, {37.0,2.13}, {41.0,1.90}, {43.2,1.67}},
@@ -196,38 +158,16 @@ static const BT gs_Data_2000_interims[gs_vfc_count_2000][gs_ex_count_2000] =
 /* 0.250 */ {{27.5,2.39}, {28.6,2.39}, {29.1,2.33}, {29.7,2.33}, {30.6,2.12}, {31.3,1.93}, {32.8,1.70}, {34.3,1.58}, {35.8,1.50}, {38.6,1.38}, {41.2,1.29}}
 };
 
-static const BT gs_Data_2003_interims[gs_vfc_count_2003][gs_ex_count_2003] = 
-{            // -0.20       -0.10         -0.05        0.0         0.125         0.25        0.50        0.75          1.00
-/* 0.075 */ {{22.3,6.32}, {20.4,4.75}, {21.0,4.10}, {21.8,3.75}, {24.3,3.24}, {26.6,2.94}, {30.5,2.59}, {33.7,2.38}, {36.4,2.23}},
-/* 0.100 */ {{18.1,3.79}, {20.4,3.38}, {21.4,3.24}, {22.5,3.14}, {24.9,2.91}, {27.1,2.75}, {30.8,2.50}, {34.0,2.32}, {36.7,2.18}},
-/* 0.125 */ {{19.9,3.18}, {21.9,2.99}, {22.8,2.94}, {23.7,2.87}, {25.9,2.74}, {27.9,2.62}, {31.4,2.42}, {34.4,2.26}, {37.0,2.13}},
-/* 0.150 */ {{21.6,2.88}, {23.3,2.79}, {24.2,2.78}, {25.0,2.72}, {26.9,2.60}, {28.8,2.52}, {32.1,2.36}, {34.9,2.21}, {37.3,2.08}},
-/* 0.175 */ {{23.2,2.73}, {24.7,2.66}, {25.5,2.65}, {26.2,2.60}, {28.0,2.52}, {29.7,2.44}, {32.7,2.28}, {35.2,2.14}, {36.8,1.96}},
-/* 0.200 */ {{24.7,2.63}, {26.1,2.59}, {26.7,2.52}, {27.4,2.51}, {29.0,2.43}, {30.6,2.37}, {32.8,2.14}, {34.5,1.94}, {36.1,1.79}},
-/* 0.225 */ {{26.1,2.53}, {27.3,2.45}, {27.9,2.42}, {28.5,2.40}, {30.0,2.34}, {30.8,2.14}, {32.2,1.86}, {34.0,1.73}, {35.7,1.64}},
-/* 0.250 */ {{27.5,2.39}, {28.6,2.39}, {29.1,2.33}, {29.7,2.33}, {30.6,2.12}, {31.3,1.93}, {32.8,1.70}, {34.3,1.58}, {35.8,1.50}}
-};
-
 BT get_beta_theta(Int16 row,Int16 col)
 {
    lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
    if ( version < lrfdVersionMgr::FirstEditionWith1997Interims )
-   {
       return gs_Data_pre_97_interims[row][col];  // 1994 to 1996
-   }
    else if ( lrfdVersionMgr::FirstEditionWith1997Interims <= version && // 1997 - 1999
              version < lrfdVersionMgr::SecondEditionWith2000Interims )
-   {
       return gs_Data_97_interims[row][col];
-   }
-   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
-   {
-      return gs_Data_2000_interims[row][col]; // 2000-2002
-   }
-   else // 2003 - Present
-   {
-      return gs_Data_2003_interims[row][col];
-   }
+   else // 2000 - Present
+      return gs_Data_2000_interims[row][col];
 }
 
 // Functions, constants and data for Sections with Less than Minimum Transverse Reinforcement.
@@ -341,7 +281,6 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
    Float64 Vi   = pData->Vi;
    Float64 Mmax = pData->Mu;
    Float64 Mcre = pData->Mcre;
-   Float64 lambda = pData->lambda;
 
    Float64 VciMin  = 0;
    Float64 VciCalc = 0;
@@ -394,21 +333,14 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
    }
 
    Float64 sqrt_fc;
-   if ( lrfdVersionMgr::SeventhEditionWith2016Interims <= lrfdVersionMgr::GetVersion() )
-   {
-      sqrt_fc = lambda*sqrt(fc);
-   }
-   else
-   {
-      if ( pData->ConcreteType == matConcrete::Normal )
-         sqrt_fc = sqrt(fc);
-      else if ( (pData->ConcreteType == matConcrete::AllLightweight || pData->ConcreteType == matConcrete::SandLightweight) && pData->bHasfct )
-         sqrt_fc = min(Kfct*fct,sqrt(fc));
-      else if ( pData->ConcreteType == matConcrete::AllLightweight && !pData->bHasfct )
-         sqrt_fc = 0.75*sqrt(fc);
-      else if ( pData->ConcreteType == matConcrete::SandLightweight && !pData->bHasfct )
-         sqrt_fc = 0.85*sqrt(fc);
-   }
+   if ( pData->ConcreteType == matConcrete::Normal )
+      sqrt_fc = sqrt(fc);
+   else if ( (pData->ConcreteType == matConcrete::AllLightweight || pData->ConcreteType == matConcrete::SandLightweight) && pData->bHasfct )
+      sqrt_fc = min(Kfct*fct,sqrt(fc));
+   else if ( pData->ConcreteType == matConcrete::AllLightweight && !pData->bHasfct )
+      sqrt_fc = 0.75*sqrt(fc);
+   else if ( pData->ConcreteType == matConcrete::SandLightweight && !pData->bHasfct )
+      sqrt_fc = 0.85*sqrt(fc);
 
 
 
@@ -819,7 +751,7 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
    Float64 ex_calc;
    Float64 ex_last;
    Int16 eq_last;
-   while ( 0 <= col && !bFoundSolution )
+   while ( col >= 0 && !bFoundSolution )
    {
       BT bt = get_beta_theta(row,col);
 
@@ -1241,13 +1173,11 @@ void compute_theta_and_beta5(lrfdShearData* pData)
    Float64 sx  = pData->sx;
 
    // Setup problem
-   Float64 ex_max = 6e-3;
-   Float64 ex_min = -0.4e-3;
 
    // Compute strain 
    Float64 ex_calc;
    if ( IsZero(Es*As + Ep*Aps) )
-      ex_calc = ex_max; // no tension tie so use maximum strain
+      ex_calc = 0.0;
    else
       ex_calc = (fabs(Mu)/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpo)/(Es*As + Ep*Aps);
 
@@ -1256,7 +1186,7 @@ void compute_theta_and_beta5(lrfdShearData* pData)
       ex_calc = (fabs(Mu)/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpo)/(Es*As + Ep*Aps + Ec*Ac);
    }
 
-   ex_calc = ForceIntoRange(ex_min,ex_calc,ex_max);
+   ex_calc = ForceIntoRange(-0.4e-3,ex_calc,6e-3);
 
 
    // Get Beta/Theta;
@@ -1333,15 +1263,8 @@ Float64 compute_strain(lrfdShearData* pData,Float64 theta)
    if ( ex < 0.0 )
    {
       Float64 Fe;
-      if ( IsZero(Ec*Ac + Es*As + Ep*Aps) )
-      {
-         Fe = 0;
-      }
-      else
-      {
-         Fe = Es*As + Ep*Aps;
-         Fe /= Ec*Ac + Es*As + Ep*Aps;
-      }
+      Fe = Es*As + Ep*Aps;
+      Fe /= Ec*Ac + Es*As + Ep*Aps;
 
       ex *= Fe; // See "Design of Highway Bridges", Barker and Puckett, pg 641
    }

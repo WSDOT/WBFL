@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -184,7 +184,7 @@ STDMETHODIMP CGeomUtil::get_Geom3d(IGeomUtil3d** util)
 //
 STDMETHODIMP CGeomUtil::GenerateCircle(IndexType numPoints, IPoint2d *center, Float64 radius, Float64 initAngle, IPoint2dCollection **points)
 {
-   if ( numPoints < 0 || center == 0 || radius < 0 )
+   if ( numPoints < 0 || numPoints == INVALID_INDEX || center == 0 || radius < 0 )
       return E_INVALIDARG;
 
    CHECK_RETOBJ(points);
@@ -338,7 +338,7 @@ STDMETHODIMP CGeomUtil::DivideLineSegment(ILineSegment2d* pSeg,IndexType nSpaces
    CHECK_IN(pSeg);
    CHECK_RETOBJ(ppPoints);
 
-   if ( nSpaces < 1 )
+   if ( nSpaces < 1 || nSpaces == INVALID_INDEX )
       return E_INVALIDARG;
 
    CreatePointCollection( ppPoints );
@@ -384,7 +384,7 @@ STDMETHODIMP CGeomUtil::DivideArc(IPoint2d* pStart,IPoint2d* pCenter,IPoint2d* p
    CHECK_IN(pEnd);
    CHECK_RETOBJ(ppPoints);
 
-   if ( nSpaces < 1 )
+   if ( nSpaces < 1 || nSpaces == INVALID_INDEX )
       return E_INVALIDARG;
 
    CreatePointCollection(ppPoints);
@@ -469,7 +469,7 @@ STDMETHODIMP CGeomUtil::SegSegIntersect(ILineSegment2d* pSeg1,ILineSegment2d* pS
       {
          // No intersect found
          // Indicate with Nothing point (see above)
-         return S_OK;
+         return S_FALSE;
       }
    }
 
@@ -490,7 +490,7 @@ STDMETHODIMP CGeomUtil::SegSegIntersect(ILineSegment2d* pSeg1,ILineSegment2d* pS
       {
          // No intersect found
          // Indicate with Nothing point (see above)
-         return S_OK;
+         return S_FALSE;
       }
    }
 
@@ -511,7 +511,7 @@ STDMETHODIMP CGeomUtil::SegSegIntersect(ILineSegment2d* pSeg1,ILineSegment2d* pS
       {
          // No intersect found
          // Indicate with Nothing point (see above)
-         return S_OK;
+         return S_FALSE;
       }
    }
 
@@ -549,12 +549,12 @@ STDMETHODIMP CGeomUtil::SegSegIntersect(ILineSegment2d* pSeg1,ILineSegment2d* pS
 
       // No intersect found
       // Indicate with Nothing point (see above)
-      return S_OK;
+      return S_FALSE;
    }
 
    // No intersect found
    // Indicate with Nothing point (see above)
-   return S_OK;
+   return S_FALSE;
 }
 
 STDMETHODIMP CGeomUtil::LineLineIntersect(ILine2d* l, ILine2d *m, IPoint2d **ppPoint)

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -38,10 +38,10 @@ class  CSegments;
 class CSegmentsOwner
 {
 public:
-   virtual HRESULT SetUpConnection(ISegmentItem* pCp, unsigned long* pcookie) = 0;
-   virtual void BreakConnection(ISegmentItem* pCp, unsigned long cookie) = 0;
-   // don't need a real connection point here. let parent fire
-   virtual void OnSegmentsChanged(CSegments* psegments) = 0;
+   //virtual HRESULT SetUpConnection(ISegmentItem* pCp, unsigned long* pcookie) = 0;
+   //virtual void BreakConnection(ISegmentItem* pCp, unsigned long cookie) = 0;
+   //// don't need a real connection point here. let parent fire
+   //virtual void OnSegmentsChanged(CSegments* psegments) = 0;
    // get total length of owner
    virtual Float64 Length() = 0;
 };
@@ -95,7 +95,7 @@ public:
 public:
 	HRESULT GetMemberSegments(/*[in]*/Float64 Length, /*[in]*/VARIANT_BOOL isSymmetrical, /*[out,retval]*/IFilteredSegmentCollection* * collection);
 	HRESULT GetSegments(/*[out,retval]*/IFilteredSegmentCollection* *);
-	HRESULT GetSegmentForMemberLocation(/*[in]*/Float64 Length, /*[in]*/VARIANT_BOOL isSymmetrical, /*[in]*/Float64 location, /*[out]*/ Float64* dist,/*[out]*/ISegmentItem** ppSeg);
+	HRESULT GetDistanceFromStartOfSegment(/*[in]*/Float64 Length, /*[in]*/VARIANT_BOOL isSymmetrical, /*[in]*/Float64 location, /*[out]*/ Float64* dist,/*[out]*/ISegmentItem** ppSeg);
 	HRESULT Reverse();
    HRESULT RemoveSegments();
 	HRESULT Remove(/*[in]*/CollectionIndexType index);
@@ -113,15 +113,14 @@ public:
 	STDMETHOD(Load)(IStructuredLoad2 * Load);
 	STDMETHOD(Save)(IStructuredSave2 * Save);
 
-   STDMETHOD(Copy)(CSegments* copy);
-
 
    typedef  ISegmentItem* ItemType;
 private:
    CSegments();
 
 // data members               cookie
-   typedef std::pair< DWORD, CAdapt<CComPtr<ISegmentItem> > > StoredType; 
+   //typedef std::pair< DWORD, CAdapt<CComPtr<ISegmentItem> > > StoredType; 
+   typedef CAdapt<CComPtr<ISegmentItem>> StoredType; 
    typedef std::vector<StoredType> VectorType;
    typedef VectorType::iterator  VectorIteratorType;
 
@@ -168,12 +167,12 @@ public:
 
 		ItemType& operator*() const
       {
-         return m_vit->second.m_T.p;   // dangerous here, but what we must do to compile
+         return m_vit->m_T.p;   // dangerous here, but what we must do to compile
       }
 
 		ItemType& operator->() const
       {
-         return m_vit->second.m_T.p;
+         return m_vit->m_T.p;
       }
 
 		bool operator==(const iterator& rit) const

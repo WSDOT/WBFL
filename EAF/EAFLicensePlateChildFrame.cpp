@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -355,7 +355,7 @@ void CEAFLicensePlateChildFrame::UpdateOuterRect()
       CWnd* p_child = GetWindow(GW_CHILD);
       for ( ; p_child != 0; p_child = p_child->GetWindow( GW_HWNDNEXT ) )
       {
-         if ( p_child != m_pWnd && IsWindow(p_child->GetSafeHwnd()) )
+         if ( p_child != m_pWnd && p_child->IsWindowVisible() )
          {
             // this is a little buggy.... only works for child windows on top and left edges
             CRect child_window_rect;
