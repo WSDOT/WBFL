@@ -121,7 +121,7 @@ END_COM_MAP()
    MeasurementLocation m_EndDistanceMeasureLocation[2];
 
    Float64 m_Width; // transverse width of the pier, measure along the CL pier
-   Float64 m_Offset; // offset from alignment to left edge of the pier, measured along the CL pier
+   Float64 m_Offset; // offset of the left edge of the pier from alignment, measured along the CL pier
 
    HRESULT UpdateGeometry();
 

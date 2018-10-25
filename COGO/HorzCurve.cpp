@@ -29,7 +29,7 @@
 #include "HorzCurve.h"
 #include "Angle.h"
 #include "Direction.h"
-#include "CogoHelpers.h"
+#include <WBFLCogo\CogoHelpers.h>
 #include "PointFactory.h"
 
 #ifdef _DEBUG
@@ -52,6 +52,9 @@ HRESULT CHorzCurve::FinalConstruct()
    m_PointFactory->CreatePoint(&m_PBT);
    m_PointFactory->CreatePoint(&m_PI);
    m_PointFactory->CreatePoint(&m_PFT);
+
+   m_PointFactory->CreatePoint(&m_ST);
+   m_PointFactory->CreatePoint(&m_TS);
 
    m_PBT->Move(-1000,0);
    m_PI->Move(0,0);
@@ -528,7 +531,14 @@ STDMETHODIMP CHorzCurve::get_TS(IPoint2d* *pVal)
    Float64 T;
    get_BkTangentLength(&T);
 
-   cogoUtil::LocateByDistDir(m_PI,T,bkTanBrg,0.0,m_PointFactory,pVal);
+   CComPtr<IPoint2d> pnt;
+   cogoUtil::LocateByDistDir(m_PI,T,bkTanBrg,0.0,m_PointFactory,&pnt);
+
+   Float64 x,y;
+   pnt->Location(&x,&y);
+   m_TS->Move(x,y);
+   m_TS.CopyTo(pVal);
+
    return S_OK;
 }
 
@@ -542,7 +552,14 @@ STDMETHODIMP CHorzCurve::get_ST(IPoint2d* *pVal)
    Float64 T;
    get_FwdTangentLength(&T);
 
-   cogoUtil::LocateByDistDir(m_PI,T,fwdTanBrg,0.0,m_PointFactory,pVal);
+   CComPtr<IPoint2d> pnt;
+   cogoUtil::LocateByDistDir(m_PI,T,fwdTanBrg,0.0,m_PointFactory,&pnt);
+
+   Float64 x,y;
+   pnt->Location(&x,&y);
+   m_ST->Move(x,y);
+   m_ST.CopyTo(pVal);
+
    return S_OK;
 }
 
@@ -1443,7 +1460,7 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
    // First check to see if the line intersects the circular curve
    ///
 
-   // get the ID circular curve points
+   // get the key circular curve points
    CComPtr<IPoint2d> SC, CS, CCC, PI, TS, ST;
    get_CS(&CS);
    get_SC(&SC);
@@ -1874,6 +1891,11 @@ STDMETHODIMP CHorzCurve::Offset(Float64 dx,Float64 dy)
 // IPointEvents
 STDMETHODIMP CHorzCurve::OnPointChanged(IPoint2d* point)
 {
+   if ( m_TS.IsEqualObject(point) || m_ST.IsEqualObject(point) )
+   {
+      return S_OK;
+   }
+
    ATLASSERT( m_PBT.IsEqualObject(point) || 
                m_PI.IsEqualObject(point) ||
               m_PFT.IsEqualObject(point) );

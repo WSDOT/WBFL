@@ -101,6 +101,7 @@ public:
 
    static std::_tstring GetMaterialName(matRebar::Type type,matRebar::Grade grade);
    static std::_tstring GetBarSize(matRebar::Size size);
+   static matRebar::Size GetBarSize(LPCTSTR strSize);
 
    static void GetBarSizeRange(matRebar::Type type,matRebar::Grade grade,matRebar::Size& minSize,matRebar::Size& maxSize);
    static void GetTransverseBarSizeRange(matRebar::Type type,matRebar::Grade grade,matRebar::Size& minSize,matRebar::Size& maxSize);
@@ -191,7 +192,7 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   lrfdRebarIter(matRebar::Grade grade = matRebar::Grade60,matRebar::Type type = matRebar::A615,bool bTransverseBarsOnly=false);
+   lrfdRebarIter(matRebar::Type type = matRebar::A615,matRebar::Grade grade = matRebar::Grade60,bool bTransverseBarsOnly=false);
 
    //------------------------------------------------------------------------
    lrfdRebarIter(const lrfdRebarIter& rOther);

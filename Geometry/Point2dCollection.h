@@ -94,6 +94,8 @@ public:
 //	STDMETHOD(get_Item)(CollectionIndexType Index, IPoint2d** pPoint);
 //	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
 //	STDMETHOD(get__NewEnum)(IUnknown** retval);
+   STDMETHOD(Offset)(Float64 dx,Float64 dy);
+   STDMETHOD(OffsetEx)(ISize2d* size);
 
 // IPoint2dEvents
 public:

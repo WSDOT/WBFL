@@ -159,8 +159,16 @@ HRESULT GB_GetSectionLocation(ISuperstructureMemberSegment* pSegment,Float64 dis
    CComPtr<IPath> gdrPath;
    gdrLine->get_Path(&gdrPath);
 
+   Float64 brgOffset;
+   gdrLine->get_BearingOffset(etStart,&brgOffset);
+   
+   Float64 endDist;
+   gdrLine->get_EndDistance(etStart,&endDist);
+
+   Float64 distAlongPath = distAlongSegment + brgOffset - endDist;
+
    CComPtr<IPoint2d> pnt;
-   gdrPath->LocatePoint(distAlongSegment,omtNormal,0.00,CComVariant(NULL),&pnt);
+   gdrPath->LocatePoint(distAlongPath,omtNormal,0.00,CComVariant(NULL),&pnt);
    Float64 x,y;
    pnt->Location(&x,&y);
 

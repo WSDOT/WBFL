@@ -135,7 +135,7 @@ void CTestStrandPattern::Test()
    box->get_Top(&dval);
    TRY_TEST(dval == 6.0, true);
    box->get_Bottom(&dval);
-   TRY_TEST(dval == 0.0, true);
+   TRY_TEST(dval == 2.0, true);
 
    // this should be the full strand pattern... strand pattern point and strand point will always
    // be the same for this case because point reflection is enabled
@@ -301,7 +301,7 @@ void CTestStrandPattern::Test()
 
    TRY_TEST(strand_filler->StrandIndexToGridIndexEx(new_array,3, NULL),E_POINTER);
    TRY_TEST(strand_filler->StrandIndexToGridIndexEx(new_array,4, &gridCount),S_OK);
-   TRY_TEST(gridCount == 3, true);
+   TRY_TEST(gridCount == 4, true);
    TRY_TEST(strand_filler->StrandIndexToGridIndexEx(new_array,11, &gridCount),E_INVALIDARG);
 
    TRY_TEST(strand_filler->GetStrandDebondCount(&nStrands),S_OK);

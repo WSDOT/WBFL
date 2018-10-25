@@ -156,8 +156,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,0,0,33
- PRODUCTVERSION 4,0,0,33
+ FILEVERSION 4,0,0,34
+ PRODUCTVERSION 4,0,0,34
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -175,12 +175,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "EAF DLL"
-            VALUE "FileVersion", "4.0.0.33"
+            VALUE "FileVersion", "4.0.0.34"
             VALUE "InternalName", "EAF"
             VALUE "LegalCopyright", "Copyright © 1999-2015, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "EAF.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "4.0.0.33"
+            VALUE "ProductVersion", "4.0.0.34"
         END
     END
     BLOCK "VarFileInfo"
@@ -388,6 +388,19 @@ BEGIN
     EDITTEXT        IDC_REPORT_NAME_EDIT,42,70,190,14,ES_AUTOHSCROLL
 END
 
+IDD_STATUS_DIALOG DIALOGEX 0, 0, 324, 165
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Status Message"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "Remove",IDOK,160,144,50,14
+    PUSHBUTTON      "Close",IDCANCEL,214,144,50,14
+    PUSHBUTTON      "Help",IDHELP,267,144,50,14
+    EDITTEXT        IDC_MESSAGE,18,24,265,104,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | NOT WS_BORDER
+    GROUPBOX        "Error Message",IDC_GROUP,7,7,310,132
+    ICON            "",IDC_MY_ICON,294,16,20,20
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -491,6 +504,14 @@ BEGIN
         RIGHTMARGIN, 243
         TOPMARGIN, 7
         BOTTOMMARGIN, 119
+    END
+
+    IDD_STATUS_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 317
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 158
     END
 END
 #endif    // APSTUDIO_INVOKED

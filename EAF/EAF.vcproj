@@ -1464,10 +1464,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\EAFBackgroundWnd.cpp"
-				>
-			</File>
-			<File
 				RelativePath="EAFBrokerDocument.cpp"
 				>
 				<FileConfiguration
@@ -2304,6 +2300,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EAFStartPageWnd.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\EAFStatusBar.cpp"
 				>
 			</File>
@@ -2451,6 +2451,10 @@
 			</File>
 			<File
 				RelativePath=".\StatusCenterDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\StatusMessageDialog.cpp"
 				>
 			</File>
 			<File
@@ -2647,10 +2651,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Include\EAF\EAFBackgroundWnd.h"
-				>
-			</File>
-			<File
 				RelativePath="..\Include\EAF\EAFBrokerDocument.h"
 				>
 			</File>
@@ -2795,6 +2795,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Include\EAF\EAFStartPageWnd.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\EAF\EAFStatusBar.h"
 				>
 			</File>
@@ -2860,6 +2864,10 @@
 			</File>
 			<File
 				RelativePath=".\StatusCenterDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\StatusMessageDialog.h"
 				>
 			</File>
 			<File

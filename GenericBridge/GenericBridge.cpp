@@ -43,7 +43,7 @@
 #include "WBFLSections_i.c"
 
 #include "GenericBridgeImpl.h"
-#include "Pier.h"
+#include "BridgePier.h"
 #include "PierCollection.h"
 #include "SuperstructureMember.h"
 #include "Segment.h"
@@ -59,12 +59,11 @@
 #include "FilteredSegmentCollection.h"
 #include "FilteredSuperstructureMemberCollection.h"
 
-#include "LongitudinalPierDescription.h"
-//#include "GirderSpacing.h"
 #include "Column.h"
-#include "ColumnSpacing.h"
-#include "CrossBeam.h"
-#include "TransversePierDescription.h"
+#include "ColumnLayout.h"
+#include "BearingLayout.h"
+#include "LinearCrossBeam.h"
+#include "Pier.h"
 
 #include "Material.h"
 #include "CastSlab.h"
@@ -105,6 +104,7 @@
 #include "RebarSectionItem.h"
 #include "RebarSection.h"
 #include "RebarRowPattern.h"
+#include "CrossBeamRebarPattern.h"
 #include "FixedLengthRebarLayoutItem.h"
 #include "BridgeDeckRebarLayoutItem.h"
 #include "BridgeDeckRebarPattern.h"
@@ -158,20 +158,21 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_TendonCollection,CTendonCollection)
    OBJECT_ENTRY(CLSID_PrestressingStrand,CPrestressingStrand)
    OBJECT_ENTRY(CLSID_EdgePathStrategy,CEdgePathStrategy)
-   OBJECT_ENTRY_NON_CREATEABLE(CPier)
+   OBJECT_ENTRY(CLSID_LinearCrossBeam,CLinearCrossBeam)
+   OBJECT_ENTRY(CLSID_Column,CColumn)
+   OBJECT_ENTRY(CLSID_ColumnLayout,CColumnLayout)
+   OBJECT_ENTRY(CLSID_BearingLayout,CBearingLayout)
+   OBJECT_ENTRY(CLSID_Pier,CPier)
+   OBJECT_ENTRY_NON_CREATEABLE(CBridgePier)
    OBJECT_ENTRY_NON_CREATEABLE(CPierCollection)
-   OBJECT_ENTRY_NON_CREATEABLE(CLongitudinalPierDescription)
    OBJECT_ENTRY_NON_CREATEABLE(CSuperstructureMember)
    OBJECT_ENTRY_NON_CREATEABLE(CSegmentItem)
    OBJECT_ENTRY_NON_CREATEABLE(CFilteredSegmentCollection)
-   OBJECT_ENTRY_NON_CREATEABLE(CColumn)
-   OBJECT_ENTRY_NON_CREATEABLE(CColumnSpacing)
-   OBJECT_ENTRY_NON_CREATEABLE(CCrossBeam)
-   OBJECT_ENTRY_NON_CREATEABLE(CTransversePierDescription)
    OBJECT_ENTRY(CLSID_Rebar,CRebar)
    OBJECT_ENTRY(CLSID_RebarLayout,CRebarLayout)
    OBJECT_ENTRY(CLSID_RebarFactory,CRebarFactory)
    OBJECT_ENTRY(CLSID_RebarRowPattern,CRebarRowPattern)
+   OBJECT_ENTRY(CLSID_CrossBeamRebarPattern,CCrossBeamRebarPattern)
    OBJECT_ENTRY(CLSID_FixedLengthRebarLayoutItem,CFixedLengthRebarLayoutItem)
    OBJECT_ENTRY(CLSID_BridgeDeckRebarLayoutItem,CBridgeDeckRebarLayoutItem)
    OBJECT_ENTRY(CLSID_BridgeDeckRebarPattern,CBridgeDeckRebarPattern)

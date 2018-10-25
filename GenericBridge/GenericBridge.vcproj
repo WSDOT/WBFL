@@ -1285,6 +1285,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\BearingLayout.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\BoxBeamEndBlockSegment.cpp"
 				>
 			</File>
@@ -1382,6 +1386,10 @@
 			</File>
 			<File
 				RelativePath=".\BridgeDeckRebarPattern.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\BridgePier.cpp"
 				>
 			</File>
 			<File
@@ -1561,180 +1569,12 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ColumnSpacing.cpp"
+				RelativePath=".\ColumnLayout.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="CrossBeam.cpp"
+				RelativePath=".\CrossBeamRebarPattern.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\DeckedSlabBeamEndBlockSegment.cpp"
@@ -2573,95 +2413,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="LinearTendonSegment.cpp"
+				RelativePath=".\LinearCrossBeam.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="LongitudinalPierDescription.cpp"
+				RelativePath="LinearTendonSegment.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -3291,6 +3047,10 @@
 						AdditionalIncludeDirectories=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\PierImpl.cpp"
+				>
 			</File>
 			<File
 				RelativePath="PrecastSlab.cpp"
@@ -4225,94 +3985,6 @@
 				>
 			</File>
 			<File
-				RelativePath="TransversePierDescription.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="UGirderSection.cpp"
 				>
 				<FileConfiguration
@@ -4606,6 +4278,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\BearingLayout.h"
+				>
+			</File>
+			<File
 				RelativePath=".\BoxBeamEndBlockSegment.h"
 				>
 			</File>
@@ -4626,6 +4302,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\BridgePier.h"
+				>
+			</File>
+			<File
 				RelativePath="CastSlab.h"
 				>
 			</File>
@@ -4634,11 +4314,11 @@
 				>
 			</File>
 			<File
-				RelativePath="ColumnSpacing.h"
+				RelativePath=".\ColumnLayout.h"
 				>
 			</File>
 			<File
-				RelativePath="CrossBeam.h"
+				RelativePath=".\CrossBeamRebarPattern.h"
 				>
 			</File>
 			<File
@@ -4710,11 +4390,11 @@
 				>
 			</File>
 			<File
-				RelativePath="LinearTendonSegment.h"
+				RelativePath=".\LinearCrossBeam.h"
 				>
 			</File>
 			<File
-				RelativePath="LongitudinalPierDescription.h"
+				RelativePath="LinearTendonSegment.h"
 				>
 			</File>
 			<File
@@ -4755,6 +4435,10 @@
 			</File>
 			<File
 				RelativePath="PierCollection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PierImpl.h"
 				>
 			</File>
 			<File
@@ -4846,10 +4530,6 @@
 				>
 			</File>
 			<File
-				RelativePath="TransversePierDescription.h"
-				>
-			</File>
-			<File
 				RelativePath="UGirderSection.h"
 				>
 			</File>
@@ -4891,6 +4571,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\BearingLayout.rgs"
+				>
+			</File>
+			<File
 				RelativePath=".\BoxBeamEndBlockSegment.rgs"
 				>
 			</File>
@@ -4904,6 +4588,10 @@
 			</File>
 			<File
 				RelativePath=".\BridgeDeckRebarPattern.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\BridgePier.rgs"
 				>
 			</File>
 			<File
@@ -4923,7 +4611,7 @@
 				>
 			</File>
 			<File
-				RelativePath="ColumnSpacing.rgs"
+				RelativePath=".\ColumnLayout.rgs"
 				>
 			</File>
 			<File
@@ -4931,7 +4619,7 @@
 				>
 			</File>
 			<File
-				RelativePath="CrossBeam.rgs"
+				RelativePath=".\CrossBeamRebarPattern.rgs"
 				>
 			</File>
 			<File
@@ -4991,11 +4679,11 @@
 				>
 			</File>
 			<File
-				RelativePath="LinearTendonSegment.rgs"
+				RelativePath=".\LinearCrossBeam.rgs"
 				>
 			</File>
 			<File
-				RelativePath="LongitudinalPierDescription.rgs"
+				RelativePath="LinearTendonSegment.rgs"
 				>
 			</File>
 			<File
@@ -5132,10 +4820,6 @@
 			</File>
 			<File
 				RelativePath=".\ThickenedFlangeBulbTeeSegment.rgs"
-				>
-			</File>
-			<File
-				RelativePath="TransversePierDescription.rgs"
 				>
 			</File>
 			<File

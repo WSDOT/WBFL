@@ -56,8 +56,8 @@ interface iExtRectangleDrawLineStrategy : public iDrawLineStrategy
    STDMETHOD_(void,PerimeterGravityWell)(BOOL bPerimeterGravityWell) PURE;
    STDMETHOD_(void,SetFillColor)(COLORREF crColor) PURE;
    STDMETHOD_(COLORREF,GetFillColor)() PURE;
-   STDMETHOD_(void,SetDoFill)(BOOL doFill) PURE;
-   STDMETHOD_(BOOL,GetDoFill)() PURE;
+   STDMETHOD_(void,DoFill)(BOOL doFill) PURE;
+   STDMETHOD_(BOOL,DoFill)() PURE;
 };
 
 #endif // INCLUDED_EXTRECTANGLEDRAWDRAWLINESTRATEGY_H_

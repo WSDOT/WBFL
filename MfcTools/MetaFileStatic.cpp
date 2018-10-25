@@ -55,41 +55,44 @@ END_MESSAGE_MAP()
 // CMetaFileStatic message handlers
 
 
-void DDX_MetaFileStatic( CDataExchange* pDX, int nIDC, CMetaFileStatic& rControl,LPCTSTR lpName, LPCTSTR lpType)
+void DDX_MetaFileStatic( CDataExchange* pDX, int nIDC, CMetaFileStatic& rControl,LPCTSTR lpName, LPCTSTR lpType, UINT flag)
 {
-   DDX_MetaFileStatic(pDX,nIDC,rControl,AfxGetResourceHandle(),lpName,lpType);
+   DDX_MetaFileStatic(pDX,nIDC,rControl,AfxGetResourceHandle(),lpName,lpType,flag);
 }
 
-
-void DDX_MetaFileStatic( CDataExchange* pDX, int nIDC, CMetaFileStatic& rControl,HINSTANCE hInstance,LPCTSTR lpName, LPCTSTR lpType)
+void DDX_MetaFileStatic( CDataExchange* pDX, int nIDC, CMetaFileStatic& rControl,HINSTANCE hInstance,LPCTSTR lpName, LPCTSTR lpType, UINT flag)
 {
    DDX_Control(pDX, nIDC, rControl);
 
 	if ( !pDX->m_bSaveAndValidate )
    {
-      rControl.SetImage(hInstance,lpName,lpType);
+      rControl.SetImage(hInstance,lpName,lpType,flag);
    }
 }
 
-void CMetaFileStatic::SetImage( LPCTSTR lpName, LPCTSTR lpType)
+void CMetaFileStatic::SetImage( LPCTSTR lpName, LPCTSTR lpType, UINT flag)
 {
-   SetImage(AfxGetResourceHandle(),lpName,lpType);
+   SetImage(AfxGetResourceHandle(),lpName,lpType,flag);
 }
 
-void CMetaFileStatic::SetImage( HINSTANCE hInstance,LPCTSTR lpName, LPCTSTR lpType)
+void CMetaFileStatic::SetImage( HINSTANCE hInstance,LPCTSTR lpName, LPCTSTR lpType, UINT flag)
 {
    // delete old meta file if one is already attached
    HENHMETAFILE holdmeta;
    holdmeta = GetEnhMetaFile( );
    if (holdmeta!=NULL)
+   {
       ::DeleteEnhMetaFile(holdmeta);
+   }
 
    // load resource and set it to static
 
    HRSRC hResInfo = ::FindResource( hInstance, lpName, lpType );
    DWORD dwError(0);
    if ( hResInfo == 0 )
+   {
       dwError = ::GetLastError();
+   }
 
    DWORD dwSize = ::SizeofResource( hInstance, hResInfo );
    HGLOBAL hResData = ::LoadResource( hInstance, hResInfo );
@@ -99,6 +102,56 @@ void CMetaFileStatic::SetImage( HINSTANCE hInstance,LPCTSTR lpName, LPCTSTR lpTy
    hmeta = ::SetEnhMetaFileBits(dwSize,(BYTE*)pVoid);
    ASSERT(hmeta!=NULL);
    SetEnhMetaFile(hmeta);
+
+   if ( flag != EMF_FIT )
+   {
+      UINT size = ::GetEnhMetaFileHeader(hmeta,0,NULL);
+      ENHMETAHEADER emfHeader;
+      ::GetEnhMetaFileHeader(hmeta,size,&emfHeader);
+
+      RECTL rclBounds = emfHeader.rclBounds;
+      LONG cxi = rclBounds.right - rclBounds.left;
+      LONG cyi = rclBounds.bottom - rclBounds.top;
+
+      RECT rcClient;
+      GetClientRect(&rcClient);
+      LONG cxc = rcClient.right - rcClient.left;
+      LONG cyc = rcClient.bottom - rcClient.top;
+
+      if ( flag == EMF_RATIO )
+      {
+         if ( cyc/cyi < cxc/cxi )
+         {
+            flag = EMF_VRATIO;
+         }
+         else
+         {
+            flag = EMF_HRATIO;
+         }
+      }
+
+      LONG cx,cy;
+      if ( flag == EMF_HRATIO )
+      {
+         // adjust the width of the control so the aspect ratio
+         // of the control matches the image
+         cx = cyc*cxi/cyi;
+         cy = cyc;
+      }
+      else if ( flag == EMF_VRATIO )
+      {
+         // adjust the hieghtof the control so the aspect ratio
+         // of the control matches the image
+         cx = cxi;
+         cy = cyi*cxc/cxi;
+      }
+      else if ( flag == EMF_RESIZE )
+      {
+         cx = cxi;
+         cy = cyi;
+      }
+      SetWindowPos(NULL,0,0,cx,cy,SWP_NOMOVE | SWP_NOZORDER);
+   }
 }
 
 void CMetaFileStatic::OnDestroy() 
@@ -108,5 +161,7 @@ void CMetaFileStatic::OnDestroy()
    HENHMETAFILE hmeta;
    hmeta = GetEnhMetaFile( );
    if (hmeta!=NULL)
+   {
       ::DeleteEnhMetaFile(hmeta);
+   }
 }

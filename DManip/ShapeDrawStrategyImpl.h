@@ -62,6 +62,8 @@ END_COM_MAP()
    STDMETHOD_(COLORREF,GetSolidLineColor)();
    STDMETHOD_(void,SetSolidFillColor)(COLORREF crColor);
    STDMETHOD_(COLORREF,GetSolidFillColor)();
+   STDMETHOD_(void,SetSolidLineWidth)(UINT nPixels);
+   STDMETHOD_(UINT,GetSolidLineWidth)();
 
    STDMETHOD_(void,SetVoidLineStyle)(LineStyleType lineStyle);
    STDMETHOD_(LineStyleType,GetVoidLineStyle)();
@@ -69,6 +71,8 @@ END_COM_MAP()
    STDMETHOD_(COLORREF,GetVoidLineColor)();
    STDMETHOD_(void,SetVoidFillColor)(COLORREF crColor);
    STDMETHOD_(COLORREF,GetVoidFillColor)();
+   STDMETHOD_(void,SetVoidLineWidth)(UINT nPixels);
+   STDMETHOD_(UINT,GetVoidLineWidth)();
 
    STDMETHOD_(void,DoFill)(bool doFill);
    STDMETHOD_(bool,DoFill)();
@@ -89,6 +93,8 @@ private:
    COLORREF m_SolidFillColor;
    COLORREF m_VoidLineColor;
    COLORREF m_VoidFillColor;
+   UINT m_SolidLineWidth;
+   UINT m_VoidLineWidth;
    bool m_bFill;
    bool m_bHasBoundingShape;
 

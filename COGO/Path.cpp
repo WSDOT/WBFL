@@ -28,7 +28,7 @@
 #include "WBFLCogo.h"
 #include "Path.h"
 #include "PathElement.h"
-#include "CogoHelpers.h"
+#include <WBFLCogo\CogoHelpers.h>
 #include "PointFactory.h"
 #include "CubicSpline.h"
 #include "HorzCurve.h"
@@ -167,6 +167,9 @@ STDMETHODIMP CPath::Insert(CollectionIndexType idx, IPathElement* element)
    DWORD dwCookie;
    AdviseElement(element,&dwCookie);
    m_coll.insert(m_coll.begin() + idx,std::make_pair(dwCookie,CComVariant(element)) );
+
+   m_PathElements.clear();
+
    Fire_OnPathChanged(this);
    return S_OK;
 }
@@ -287,6 +290,8 @@ STDMETHODIMP CPath::Remove(VARIANT varID)
       return E_INVALIDARG;
    }
 
+   m_PathElements.clear();
+
    Fire_OnPathChanged(this);
 	return S_OK;
 }
@@ -295,6 +300,8 @@ STDMETHODIMP CPath::Clear()
 {
    UnadviseAll();
    m_coll.clear();
+   m_PathElements.clear();
+
    Fire_OnPathChanged(this);
    return S_OK;
 }
@@ -536,20 +543,17 @@ STDMETHODIMP CPath::ProjectPoint(IPoint2d* point, IPoint2d* *newPoint)
    CHECK_IN(point);
    CHECK_RETOBJ(newPoint);
 
-   ElementContainer elements;
-   elements = FindElements(point);
+   std::vector<Element> vElements = FindElements(point);
 
    Float64 shortestDistance = DBL_MAX;
    CComPtr<IPoint2d> nearestPoint;
 
-   ElementContainer::iterator iter;
-   for ( iter = elements.begin(); iter < elements.end(); iter++ )
+   BOOST_FOREACH(Element& element,vElements)
    {
-      ElementContainer::value_type& item = *iter;
-      CComPtr<IPathElement> element(item.second.m_T);
+      CComPtr<IPathElement> path_element(element.pathElement);
 
       CComPtr<IPoint2d> prjPoint;
-      ProjectPointOnElement(point,element,&prjPoint);
+      ProjectPointOnElement(point,path_element,&prjPoint);
 
       Float64 dist;
       CComPtr<IDirection> dir;
@@ -587,22 +591,20 @@ STDMETHODIMP CPath::IntersectEx(ILine2d* line,IPoint2d* pNearest,VARIANT_BOOL vb
    CHECK_IN(pNearest);
    CHECK_RETOBJ(point);
 
-   ElementContainer elements;
-   elements = GetAllElements();
+   std::vector<Element>& vElements = GetPathElements();
 
    CComPtr<IPoint2dCollection> points;
    points.CoCreateInstance(CLSID_Point2dCollection);
 
-   ElementContainer::iterator iter(elements.begin());
-   ElementContainer::iterator end(elements.end());
+   std::vector<Element>::iterator iter(vElements.begin());
+   std::vector<Element>::iterator end(vElements.end());
    for ( ; iter != end; iter++ )
    {
-      ElementContainer::value_type& item = *iter;
-      CComPtr<IPathElement> element(item.second.m_T);
+      Element& element = (*iter);
 
-      bool bProjectBack  = (vbProjectBack  == VARIANT_FALSE ? false : (iter == elements.begin() ? true : false));
-      bool bProjectAhead = (vbProjectAhead == VARIANT_FALSE ? false : (iter == elements.end() - 1 ? true : false));
-      IntersectElement(line,element,bProjectBack,bProjectAhead,points);
+      bool bProjectBack  = (vbProjectBack  == VARIANT_FALSE ? false : (iter == vElements.begin() ? true : false));
+      bool bProjectAhead = (vbProjectAhead == VARIANT_FALSE ? false : (iter == vElements.end() - 1 ? true : false));
+      IntersectElement(line,element.pathElement,bProjectBack,bProjectAhead,points);
    }
 
    Float64 shortestDistance = DBL_MAX;
@@ -639,61 +641,8 @@ STDMETHODIMP CPath::get_Length(Float64* pLength)
 {
    CHECK_RETVAL(pLength);
 
-   CComPtr<IPath> path;
-   HRESULT hr = CreateConnectedPath(&path);
-   if ( FAILED(hr) )
-   {
-      return hr;
-   }
-
-   Float64 length = 0;
-   CComPtr<IEnumPathElements> enumPath;
-   path->get__EnumPathElements(&enumPath);
-   CComPtr<IPathElement> element;
-   while ( enumPath->Next(1,&element,NULL) != S_FALSE )
-   {
-      PathElementType type;
-      element->get_Type(&type);
-
-      CComPtr<IUnknown> unk;
-      element->get_Value(&unk);
-
-      Float64 l;
-      switch( type )
-      {
-      case petHorzCurve:
-         {
-            CComQIPtr<IHorzCurve> hc(unk);
-            hc->get_TotalLength(&l);
-            break;
-         }
-
-      case petLineSegment:
-         {
-            CComQIPtr<ILineSegment2d> ls(unk);
-            ls->get_Length(&l);
-            break;
-         }
-
-      case petCubicSpline:
-         {
-            CComQIPtr<ICubicSpline> spline(unk);
-            spline->get_Length(&l);
-            break;
-         }
-
-      case petPoint: // drop through (connected paths don't have point elements)
-      default:
-         ATLASSERT(false);
-         l = 0;
-         break;
-      }
-
-      length += l;
-      element.Release();
-   }
-
-   *pLength = length;
+   GetPathElements(); // causes the path length to be computed if it is out of date
+   *pLength = m_PathLength;
    return S_OK;
 }
 
@@ -786,50 +735,91 @@ void CPath::UnadviseAll()
    }
 }
 
+bool CompareElements(const Element& element,const Element& testElement)
+{
+   return (element.end < testElement.start);
+}
+
 void CPath::FindElement(Float64 distance,Float64* pBeginDist,IPathElement* *pElement)
 {
-   if ( m_coll.size() == 0 )
+   Element testElement;
+   testElement.start = distance;
+   testElement.end   = distance;
+
+   std::vector<Element>& vElements = GetPathElements();
+   std::vector<Element>::iterator lowerBound = std::lower_bound(vElements.begin(),vElements.end(),testElement,CompareElements);
+   if ( lowerBound == vElements.end() )
    {
-      // There are no path elements defined
-      // The Path is a straight line, due east with the reference point at (0,0)
-      // Create a path element accordingly
-      CComPtr<IPoint2d> start;
-      CComPtr<IPoint2d> end;
-      start.CoCreateInstance(CLSID_Point2d);
-      end.CoCreateInstance(CLSID_Point2d);
-
-      start->Move(0,0);
-      end->Move(100.0,0);
-
-      CreateDummyPathElement(start,end,pElement);
-
-      *pBeginDist = 0.00;
-
-      return;
-   }
-   else if ( m_coll.size() == 1 || distance < 0.00 )
-   {
-      // There is exactly one element defining the Path or
-      // the specified distance is before the start of the path
-      //
-      // The first Path element is projected
-      // to define the Path
-
-      CComPtr<IPathElement> element;
-      get_Item(0,&element);
-
-      PathElementType type;
-      element->get_Type(&type);
-
-      CComPtr<IUnknown> dispVal;
-      element->get_Value(&dispVal);
-
-      if ( type == petPoint )
+      if ( distance < vElements.front().start )
       {
-         CComQIPtr<IPoint2d> pnt(dispVal);
+         lowerBound = vElements.begin();
+      }
+      else if ( vElements.back().end < distance )
+      {
+         lowerBound = vElements.end()-1;
+      }
+   }
+   Element& element(*lowerBound);
+   *pBeginDist = element.start;
+   element.pathElement.CopyTo(pElement);
+}
 
-         if ( m_coll.size() == 1 )
+std::vector<Element>& CPath::GetPathElements()
+{
+   if ( m_PathElements.size() == 0 )
+   {
+      // as we build up the path elements, we know the length of each element
+      // we can compute the path length as we go instead of having to do it later
+      m_PathLength = 0; 
+
+      // container has been requested before... initalized
+      if ( m_coll.size() == 0 )
+      {
+         // There are no Path elements defined
+         // The Path is a straight line, due east with the reference point at (0,0)
+         // Create an Path element accordingly
+         CComPtr<IPoint2d> start;
+         CComPtr<IPoint2d> end;
+         start.CoCreateInstance(CLSID_Point2d);
+         end.CoCreateInstance(CLSID_Point2d);
+
+         Float64 length = 100;
+
+         start->Move(0,0);
+         end->Move(length,0);
+
+         CComPtr<IPathElement> element;
+         CreateDummyPathElement(start,end,&element);
+
+         Element myElement;
+         myElement.start = 0;
+         myElement.end = myElement.start + length;
+         myElement.pathElement = element;
+         m_PathElements.push_back(myElement);
+
+         m_PathLength += length;
+      }
+      else if ( m_coll.size() == 1 )
+      {
+         // There is exactly one element defining the Path
+         //
+         // The first Path element is projected
+         // to define the Path
+
+         CComPtr<IPathElement> element;
+         get_Item(0,&element);
+
+         PathElementType type;
+         element->get_Type(&type);
+
+         CComPtr<IUnknown> dispVal;
+         element->get_Value(&dispVal);
+
+         if ( type == petPoint )
          {
+            CComQIPtr<IPoint2d> pnt(dispVal);
+
+            ATLASSERT( m_coll.size() == 1 );
             // Path is due east
             // Create a line segment element to represent this
             CComQIPtr<IPoint2d> start(dispVal); // Path point is the start point
@@ -838,896 +828,122 @@ void CPath::FindElement(Float64 distance,Float64* pBeginDist,IPathElement* *pEle
 
             cogoUtil::CopyPoint(end,start); // make the start and end point equal
 
-            end->Offset(100,0); // offset the end point in the X direction only (makes the line due east)
+            Float64 length = 100;
+            end->Offset(length,0); // offset the end point in the X direction only (makes the line due east)
 
             // make a line segment
-            CreateDummyPathElement(start,end,pElement);
+            CComPtr<IPathElement> element;
+            CreateDummyPathElement(start,end,&element);
 
-            *pBeginDist = 0.00;
+            Element myElement;
+            myElement.start = 0;
+            myElement.end = length;
+            myElement.pathElement = element;
+            m_PathElements.push_back(myElement);
 
-            return;
+            m_PathLength += length;
          }
-         else
+         else if ( type == petLineSegment || type == petHorzCurve || type == petCubicSpline )
          {
-            // Use this point and the start point of the next Path element to define
-            // the Path
-            CComPtr<IPathElement> nextElement;
-            get_Item(1,&nextElement);
+            // The one and only element is a line segment or horz curve...
+            // Just return it
+            Float64 length = GetElementLength(element);
+            Element myElement;
+            myElement.start = 0;
+            myElement.end = myElement.start + length;
+            myElement.pathElement = element;
+            m_PathElements.push_back(myElement);
 
-            CreateDummyPathElement(pnt,nextElement,pElement);
-            *pBeginDist = 0.00;
-
-            return;
-         }
-      }
-      else if ( type == petLineSegment || type == petHorzCurve || type == petCubicSpline )
-      {
-         // The one and only element is a line segment, cubic spline, or horz curve...
-         // Just return it
-         (*pElement) = element;
-         (*pElement)->AddRef();
-      
-         *pBeginDist = 0.00;
-
-         return;
-      }
-      else
-      {
-         ATLASSERT(false); // Should never get here
-      }
-   }
-   else
-   {
-      // There are multiple Path elements defining the Path...
-      // Walk the Path until the correct element is found
-      Paths::iterator currIter = m_coll.begin();
-      Paths::iterator nextIter = currIter + 1;
-      Float64 currDistance, nextDistance;
-      currDistance = 0.00;
-      nextDistance = currDistance;
-      Float64 length = 0; // cummulative length of the Path
-      CComPtr<IPathElement> currElement, nextElement;
-      do
-      {
-         PathType& atCurr = *currIter++;
-         PathType& atNext = *nextIter++;
-
-         CComVariant& varCurrElement = atCurr.second;
-         CComVariant& varNextElement = atNext.second;
-
-         currElement.Release();
-         nextElement.Release();
-         varCurrElement.pdispVal->QueryInterface(&currElement);
-         varNextElement.pdispVal->QueryInterface(&nextElement);
-
-         PathElementType currType, nextType;
-         currElement->get_Type(&currType);
-         nextElement->get_Type(&nextType);
-
-         CComPtr<IUnknown> currVal;
-         CComPtr<IUnknown> nextVal;
-         currElement->get_Value(&currVal);
-         nextElement->get_Value(&nextVal);
-
-         if ( currType == petPoint )
-         {
-            // Current element is a point
-            // Since points don't have length, we have to project a line
-            // to the next element to determine if the distance falls between
-            // this point and the next element. If it does, we need to create a
-            // temporary Path element containing a line segment that links
-            // to the next element
-            CComQIPtr<IPoint2d> currPoint(currVal);
-
-            // Get the start point of the next element
-            CComPtr<IPoint2d> nextPoint;
-            GetStartPoint(nextElement,&nextPoint);
-
-            // Compute the distance from the start point of the next element and
-            // the current point
-            Float64 dist;
-            CComPtr<IDirection> dir;
-            cogoUtil::Inverse(currPoint,nextPoint,&dist,&dir);
-
-            if ( IsZero(dist) ) 
-            {
-               continue;
-            }
-
-            nextDistance = currDistance + dist;
-
-            if ( InRange(currDistance,distance,nextDistance) )
-            {
-               // The desired distance falls between the current point
-               // and the beginning of the next Path element.
-               //
-               // Create an Path element with a line segment connecting
-               // the current point and the next element
-               CreateDummyPathElement(currPoint,nextPoint,pElement);
-
-               *pBeginDist = currDistance;
-
-               return;
-            }
-         }
-         else if ( currType == petLineSegment )
-         {
-            // Current segment is a line segment.
-            // Check to see if the desired distance is on the line segment. If so,
-            // then we have our Path element. If not, check to see if the
-            // desired distance falls between the end of the line segment and
-            // the start of the next element. If it does, create a Path
-            // element with a line segment that connects the end of this line
-            // with the start point of the next Path element
-
-            CComQIPtr<ILineSegment2d> currLS(currVal);
-            Float64 length;
-            currLS->get_Length(&length);
-
-            if ( IsZero(length) ) 
-            {
-               continue;
-            }
-
-            nextDistance = currDistance + length;
-
-            if ( InRange( currDistance, distance, nextDistance ) )
-            {
-               // desired distance is on the line segment
-               (*pElement) = currElement;
-               (*pElement)->AddRef();
-
-               *pBeginDist = currDistance;
-
-               return;
-            }
-            else
-            {
-               // check to see if the desired distance falls between the end of the line
-               // and the start of the next element
-
-               CComPtr<IPoint2d> currEndPoint;
-               currLS->get_EndPoint(&currEndPoint);
-               
-               // set the current distance to the end of the current element
-               currDistance = nextDistance;
-
-               // find the start point of the next element, its length, and
-               // the distance (nextDistance) at the start of the next element
-               CComPtr<IPoint2d> nextStartPoint;
-               GetStartPoint(nextElement,&nextStartPoint);
-
-               Float64 dist;
-               CComPtr<IDirection> dir;
-               cogoUtil::Inverse(currEndPoint,nextStartPoint,&dist,&dir);
-
-               if ( IsZero(dist) ) 
-               {
-                  continue;
-               }
-
-               nextDistance = currDistance + dist;
-
-               if ( InRange( currDistance, distance, nextDistance ) )
-               {
-                  // desired distance falls between the end of the current line segment and 
-                  // the next element... Create a dummy line segment and path element
-                  CreateDummyPathElement(currEndPoint,nextStartPoint,pElement);
-
-                  *pBeginDist = currDistance;
-
-                  return;
-               }
-            }
-         }
-         else if ( currType == petHorzCurve )
-         {
-            // Current segment is a horz curve.
-            // Check to see if the desired distance is on the curve. If so,
-            // then we have our Path element. If not, check to see if the
-            // desired distance falls between the end of the curve and
-            // the start of the next element. If it does, create an Path
-            // element with a line segment that connects the end of this curve
-            // with the start point of the next Path element
-
-            CComQIPtr<IHorzCurve> currHC(currVal);
-            Float64 length;
-            currHC->get_TotalLength(&length);
-
-            if ( IsZero(length) ) 
-            {
-               continue;
-            }
-
-            nextDistance = currDistance + length;
-
-            if ( InRange( currDistance, distance, nextDistance ) )
-            {
-               // desired distance is on the line segment
-               (*pElement) = currElement;
-               (*pElement)->AddRef();
-
-               *pBeginDist = currDistance;
-
-               return;
-            }
-            else
-            {
-               // check to see if the desired distance falls between the end of the curve
-               // and the start of the next element
-
-               CComPtr<IPoint2d> currEndPoint;
-               currHC->get_ST(&currEndPoint);
-
-               
-               // set the current distance to the end of the current element
-               currDistance = nextDistance;
-
-               // find the start point of the next element, its length, and
-               // the distance (nextDistance) at the start of the next element
-               CComPtr<IPoint2d> nextStartPoint;
-               GetStartPoint(nextElement,&nextStartPoint);
-
-               Float64 dist;
-               CComPtr<IDirection> dir;
-               cogoUtil::Inverse(currEndPoint,nextStartPoint,&dist,&dir);
-
-               if ( IsZero(dist) ) 
-               {
-                  continue;
-               }
-
-               nextDistance = currDistance + dist;
-
-
-               if ( InRange( currDistance, distance, nextDistance ) )
-               {
-                  // desired distance falls between the end of the current line segment and 
-                  // the next element... Create a dummy line segment and path element
-                  CreateDummyPathElement(currEndPoint,nextStartPoint,pElement);
-
-                  *pBeginDist = currDistance;
-
-                  return;
-               }
-            }
-         }
-         else if ( currType == petCubicSpline )
-         {
-            // Current segment is a cubic spline.
-            // Check to see if the desired distance is on the spline. If so,
-            // then we have our Path element. If not, check to see if the
-            // desired distance falls between the end of the spline and
-            // the start of the next element. If it does, create an Path
-            // element with a line segment that connects the end of this curve
-            // with the start point of the next Path element
-
-            CComQIPtr<ICubicSpline> currSpline(currVal);
-            Float64 length;
-            currSpline->get_Length(&length);
-
-            if ( IsZero(length) ) 
-            {
-               continue;
-            }
-
-            nextDistance = currDistance + length;
-
-            if ( InRange( currDistance, distance, nextDistance ) )
-            {
-               // desired distance is on the line segment
-               (*pElement) = currElement;
-               (*pElement)->AddRef();
-
-               *pBeginDist = currDistance;
-
-               return;
-            }
-            else
-            {
-               // check to see if the desired distance falls between the end of the spline
-               // and the start of the next element
-
-               CComPtr<IPoint2d> currEndPoint;
-               currSpline->get_EndPoint(&currEndPoint);
-
-               
-               // set the current distance to the end of the current element
-               currDistance = nextDistance;
-
-               // find the start point of the next element, its length, and
-               // the distance (nextDistance) at the start of the next element
-               CComPtr<IPoint2d> nextStartPoint;
-               GetStartPoint(nextElement,&nextStartPoint);
-
-               Float64 dist;
-               CComPtr<IDirection> dir;
-               cogoUtil::Inverse(currEndPoint,nextStartPoint,&dist,&dir);
-
-               if ( IsZero(dist) ) 
-               {
-                  continue;
-               }
-
-               nextDistance = currDistance + dist;
-
-
-               if ( InRange( currDistance, distance, nextDistance ) )
-               {
-                  // desired distance falls between the end of the current line segment and 
-                  // the next element... Create a dummy line segment and path element
-                  CreateDummyPathElement(currEndPoint,nextStartPoint,pElement);
-
-                  *pBeginDist = currDistance;
-
-                  return;
-               }
-            }
+            m_PathLength += length;
          }
          else
          {
             ATLASSERT(false); // Should never get here
          }
-
-         currDistance = nextDistance;
-      } while ( nextIter != m_coll.end() );
-
-      // If we get this far, the desired distance is on or beyond the end of the Path
-      // If the last element is a point, we have to create a dummy Path element, for a dummy line segment, that
-      // projects the Path based on the last Path element
-      CComPtr<IPathElement> lastElement;
-      get_Item(m_coll.size()-1,&lastElement);
-
-      PathElementType lastType;
-      lastElement->get_Type(&lastType);
-
-      CComPtr<IUnknown> lastVal;
-      lastElement->get_Value(&lastVal);
-
-      if ( lastType == petPoint )
-      {
-         // The last element is a point. We have to go back to the
-         // previous element and create a line segment Path element
-         CComQIPtr<IPoint2d> lastPoint(lastVal);
-
-         CComPtr<IPathElement> prevElement;
-         get_Item(m_coll.size()-2,&prevElement);
-
-         PathElementType prevType;
-         prevElement->get_Type(&prevType);
-
-         CComPtr<IUnknown> prevVal;
-         prevElement->get_Value(&prevVal);
-
-         CComPtr<IPoint2d> prevPoint;
-         if ( prevType == petPoint )
-         {
-            prevVal->QueryInterface(&prevPoint);
-         }
-         else if (prevType == petLineSegment )
-         {
-            CComQIPtr<ILineSegment2d> prevLS(prevVal);
-            prevLS->get_EndPoint(&prevPoint);
-         }
-         else
-         {
-            ATLASSERT(prevType == petHorzCurve);
-            CComQIPtr<IHorzCurve> prevHC(prevVal);
-            CComPtr<IPoint2d> st;
-            prevHC->get_ST(&st);
-            st.QueryInterface(&prevPoint);
-         }
-
-         CreateDummyPathElement(prevPoint,lastPoint,pElement);
-
-         CComPtr<IDirection> dir;
-         Float64 dist;
-         cogoUtil::Inverse(prevPoint,lastPoint,&dist,&dir);
-         *pBeginDist = currDistance - dist; // distance to the end of the second to last element
-
-         return;
-      }
-      else if ( lastType == petLineSegment || lastType == petHorzCurve || lastType == petCubicSpline )
-      {
-         // The last element is a line segment, cubic spline, or horz curve... Simply return that element
-         (*pElement) = lastElement;
-         (*pElement)->AddRef();
-      
-         *pBeginDist = currDistance; // distance to the beginning of the last element
-
-         return;
-      }
-
-
-      ATLASSERT(false); // Should never get here
-   }
-
-
-   ATLASSERT(false); // Should never get here
-}
-
-CPath::ElementContainer CPath::GetAllElements()
-{
-   ElementContainer elements;
-
-   if ( m_coll.size() == 0 )
-   {
-      // There are no Path elements defined
-      // The Path is a straight line, due east with the reference point at (0,0)
-      // Create an Path element accordingly
-      CComPtr<IPoint2d> start;
-      CComPtr<IPoint2d> end;
-      start.CoCreateInstance(CLSID_Point2d);
-      end.CoCreateInstance(CLSID_Point2d);
-
-      start->Move(0,0);
-      end->Move(100,0);
-
-      CComPtr<IPathElement> element;
-      CreateDummyPathElement(start,end,&element);
-
-      elements.push_back( std::make_pair(0.00,AdaptElement(element)) );
-
-      return elements;
-   }
-   else if ( m_coll.size() == 1 )
-   {
-      // There is exactly one element defining the Path
-      //
-      // The first Path element is projected
-      // to define the Path
-
-      CComPtr<IPathElement> element;
-      get_Item(0,&element);
-
-      PathElementType type;
-      element->get_Type(&type);
-
-      CComPtr<IUnknown> dispVal;
-      element->get_Value(&dispVal);
-
-      if ( type == petPoint )
-      {
-         CComQIPtr<IPoint2d> pnt(dispVal);
-
-         ATLASSERT( m_coll.size() == 1 );
-         // Path is due east
-         // Create a line segment element to represent this
-         CComQIPtr<IPoint2d> start(dispVal); // Path point is the start point
-         CComPtr<IPoint2d> end; // create an end point
-         end.CoCreateInstance(CLSID_Point2d);
-
-         cogoUtil::CopyPoint(end,start); // make the start and end point equal
-
-         end->Offset(100,0); // offset the end point in the X direction only (makes the line due east)
-
-         // make a line segment
-         CComPtr<IPathElement> element;
-         CreateDummyPathElement(start,end,&element);
-         elements.push_back( std::make_pair(0.00,AdaptElement(element)) );
-         return elements;
-      }
-      else if ( type == petLineSegment || type == petHorzCurve || type == petCubicSpline )
-      {
-         // The one and only element is a line segment or horz curve...
-         // Just return it
-         elements.push_back( std::make_pair(0.00,AdaptElement(element)));
-         return elements;
       }
       else
       {
-         ATLASSERT(false); // Should never get here
-      }
-
-      ATLASSERT(false); // Should never get here
-   }
-   else
-   {
-      // There are multiple Path elements
-      Paths::iterator currIter = m_coll.begin();
-      Paths::iterator nextIter = currIter + 1;
-      CComPtr<IPathElement> currElement, nextElement;
-      Float64 currDist = 0.00;
-      Float64 nextDist = currDist;
-      do
-      {
-         // NOTE: The order of these next 4 lines is critical
-         bool bExtendBack = ( currIter == m_coll.begin() ? true : false );
-         PathType& atCurr = *currIter++;
-         PathType& atNext = *nextIter++;
-         bool bExtendAhead = false;
-
-         CComVariant& varCurrElement = atCurr.second;
-         CComVariant& varNextElement = atNext.second;
-
-         currElement.Release();
-         nextElement.Release();
-         varCurrElement.pdispVal->QueryInterface(&currElement);
-         varNextElement.pdispVal->QueryInterface(&nextElement);
-
-         PathElementType currType, nextType;
-         currElement->get_Type(&currType);
-         nextElement->get_Type(&nextType);
-
-         CComPtr<IUnknown> currVal;
-         CComPtr<IUnknown> nextVal;
-         currElement->get_Value(&currVal);
-         nextElement->get_Value(&nextVal);
-
-         if ( currType == petPoint )
+         // There are multiple Path elements
+         Paths::iterator currIter = m_coll.begin();
+         Paths::iterator nextIter = currIter + 1;
+         CComPtr<IPathElement> currElement, nextElement;
+         Float64 currDist = 0.00;
+         Float64 nextDist = currDist;
+         do
          {
-            // Current element is a point
-            // Since points don't have length, we have to project a line
-            // to the next element to determine if the point falls between
-            // this point and the next element. If it does, add it to the list.
-            CComQIPtr<IPoint2d> currPoint(currVal);
+            // NOTE: The order of these next 4 lines is critical
+            bool bExtendBack = ( currIter == m_coll.begin() ? true : false );
+            PathType& atCurr = *currIter++;
+            PathType& atNext = *nextIter++;
+            bool bExtendAhead = false;
 
-            CComPtr<IPathElement> element;
-            CreateDummyPathElement(currPoint,nextElement,&element);
+            CComVariant& varCurrElement = atCurr.second;
+            CComVariant& varNextElement = atNext.second;
 
-            CComPtr<IUnknown> dispDummy;
-            element->get_Value(&dispDummy);
-            CComQIPtr<ILineSegment2d> dummyLS(dispDummy);
-            Float64 length;
-            dummyLS->get_Length(&length);
+            currElement.Release();
+            nextElement.Release();
+            varCurrElement.pdispVal->QueryInterface(&currElement);
+            varNextElement.pdispVal->QueryInterface(&nextElement);
 
-            if ( !IsZero(length) )
+            PathElementType currType, nextType;
+            currElement->get_Type(&currType);
+            nextElement->get_Type(&nextType);
+
+            CComPtr<IUnknown> currVal;
+            CComPtr<IUnknown> nextVal;
+            currElement->get_Value(&currVal);
+            nextElement->get_Value(&nextVal);
+
+            if ( currType == petPoint )
             {
-               nextDist += length;
-               elements.push_back( std::make_pair(currDist,AdaptElement(element)));
-            }
-         }
-         else if ( currType == petLineSegment )
-         {
-            // Current segment is a line segment.
-            CComQIPtr<ILineSegment2d> currLS(currVal);
-            Float64 length;
-            currLS->get_Length(&length);
+               // Current element is a point
+               // Since points don't have length, we have to project a line
+               // to the next element to determine if the point falls between
+               // this point and the next element. If it does, add it to the list.
+               CComQIPtr<IPoint2d> currPoint(currVal);
 
-            if ( !IsZero(length) )
-            {
-               nextDist += length;
-               elements.push_back( std::make_pair(currDist,AdaptElement(currElement)));
-            }
+               CComPtr<IPathElement> element;
+               CreateDummyPathElement(currPoint,nextElement,&element);
 
-            // Now add a line segment that goes from the end of this one to the
-            // start of the next element
-            CComPtr<IPoint2d> currEndPoint;
-            currLS->get_EndPoint(&currEndPoint);
+               CComPtr<IUnknown> dispDummy;
+               element->get_Value(&dispDummy);
+               CComQIPtr<ILineSegment2d> dummyLS(dispDummy);
+               Float64 length;
+               dummyLS->get_Length(&length);
 
-            currDist = nextDist;
-
-            CComPtr<IPathElement> element;
-            CreateDummyPathElement(currEndPoint,nextElement,&element);
-
-            CComPtr<IUnknown> dispDummy;
-            element->get_Value(&dispDummy);
-            CComQIPtr<ILineSegment2d> dummyLS(dispDummy);
-            dummyLS->get_Length(&length);
-
-            if ( !IsZero(length) )
-            {
-               nextDist += length;
-               elements.push_back(std::make_pair(currDist,AdaptElement(element)));
-            }
-         }
-         else if ( currType == petHorzCurve )
-         {
-            // Current segment is a horz curve.
-            CComQIPtr<IHorzCurve> currHC(currVal);
-            Float64 length;
-            currHC->get_TotalLength(&length);
+               if ( !IsZero(length) )
+               {
+                  nextDist += length;
+                  Element myElement;
+                  myElement.start = currDist;
+                  myElement.end = nextDist;
+                  myElement.pathElement = element;
+                  m_PathElements.push_back(myElement);
    
-            if ( !IsZero(length) )
-            {
-               nextDist += length;
-               elements.push_back( std::make_pair(currDist,AdaptElement(currElement)));
+                  m_PathLength += length;
+               }
             }
-
-            // Now add a line segment that goes from the end of this one to the
-            // start of the next element
-            CComPtr<IPoint2d> currEndPoint;
-            currHC->get_ST(&currEndPoint);
-
-            currDist = nextDist;
-
-            CComPtr<IPathElement> element;
-            CreateDummyPathElement(currEndPoint,nextElement,&element);
-
-            CComPtr<IUnknown> dispDummy;
-            element->get_Value(&dispDummy);
-            CComQIPtr<ILineSegment2d> dummyLS(dispDummy);
-            dummyLS->get_Length(&length);
-
-            if ( !IsZero(length) )
+            else if ( currType == petLineSegment )
             {
-               nextDist += length;
-               elements.push_back( std::make_pair(currDist,AdaptElement(element)));
-            }
-         }
-         else if ( currType == petCubicSpline )
-         {
-            // Current segment is a cubic spline
-            CComQIPtr<ICubicSpline> currSpline(currVal);
-            Float64 length;
-            currSpline->get_Length(&length);
+               // Current segment is a line segment.
+               CComQIPtr<ILineSegment2d> currLS(currVal);
+               Float64 length;
+               currLS->get_Length(&length);
 
-            if ( !IsZero(length) )
-            {
-               nextDist += length;
-               elements.push_back( std::make_pair(currDist,AdaptElement(currElement)));
-            }
+               if ( !IsZero(length) )
+               {
+                  nextDist += length;
+                  Element myElement;
+                  myElement.start = currDist;
+                  myElement.end = nextDist;
+                  myElement.pathElement = currElement;
+                  m_PathElements.push_back(myElement);
+   
+                  m_PathLength += length;
+               }
 
-            // Now add a line segment that goes from the end of this one to the
-            // start of the next element
-            CComPtr<IPoint2d> currEndPoint;
-            currSpline->get_EndPoint(&currEndPoint);
-
-            currDist = nextDist;
-
-            CComPtr<IPathElement> element;
-            CreateDummyPathElement(currEndPoint,nextElement,&element);
-
-            CComPtr<IUnknown> dispDummy;
-            element->get_Value(&dispDummy);
-            CComQIPtr<ILineSegment2d> dummyLS(dispDummy);
-            dummyLS->get_Length(&length);
-
-            if ( !IsZero(length) )
-            {
-               nextDist += length;
-               elements.push_back( std::make_pair(currDist,AdaptElement(element)));
-            }
-         }
-         else
-         {
-            ATLASSERT(false); // Should never get here
-         }
-
-         currDist = nextDist;
-
-      } while ( nextIter != m_coll.end() );
-
-      // Check the last element
-      // If the last element is a point, we have to create a dummy Path element, for a dummy line segment, that
-      // projects the Path based on the last Path element
-      CComPtr<IPathElement> lastElement;
-      get_Item(m_coll.size()-1,&lastElement);
-
-      PathElementType lastType;
-      lastElement->get_Type(&lastType);
-
-      CComPtr<IUnknown> lastVal;
-      lastElement->get_Value(&lastVal);
-
-      if ( lastType == petPoint )
-      {
-         // The last element is a point. We have to go back to the
-         // previous element and create a line segment Path element
-         CComQIPtr<IPoint2d> lastPoint(lastVal);
-
-         CComPtr<IPathElement> prevElement;
-         get_Item(m_coll.size()-2,&prevElement);
-
-         PathElementType prevType;
-         prevElement->get_Type(&prevType);
-
-         CComPtr<IUnknown> prevVal;
-         prevElement->get_Value(&prevVal);
-
-         CComPtr<IPoint2d> prevPoint;
-         if ( prevType == petPoint )
-         {
-            // if previous type is a point, then it projected a line
-            // to this point... nothing left to do
-         }
-         else if (prevType == petLineSegment )
-         {
-            CComQIPtr<ILineSegment2d> prevLS(prevVal);
-            prevLS->get_EndPoint(&prevPoint);
-         }
-         else if ( prevType == petHorzCurve )
-         {
-            CComQIPtr<IHorzCurve> prevHC(prevVal);
-            CComPtr<IPoint2d> st;
-            prevHC->get_ST(&st);
-            st.QueryInterface(&prevPoint);
-         }
-         else if ( prevType == petCubicSpline )
-         {
-            CComQIPtr<ICubicSpline> prevSpline(prevVal);
-            prevSpline->get_EndPoint(&prevPoint);
-         }
-         else
-         {
-            ATLASSERT(false); // should never get nere
-         }
-
-
-         if ( prevPoint )
-         {
-            CComPtr<IDirection> dir;
-            Float64 dist;
-            cogoUtil::Inverse(prevPoint,lastPoint,&dist,&dir);
-            currDist -= dist; // distance to the end of the second to last element
-
-            CComPtr<IPathElement> element;
-            CreateDummyPathElement(prevPoint,lastPoint,&element);
-
-            CComPtr<IUnknown> dispDummy;
-            element->get_Value(&dispDummy);
-            CComQIPtr<ILineSegment2d> dummyLS(dispDummy);
-            Float64 length;
-            dummyLS->get_Length(&length);
-
-            if ( !IsZero(length) )
-            {
-               elements.push_back( std::make_pair(currDist,AdaptElement(element)));
-            }
-         }
-      }
-      else if ( lastType == petLineSegment || lastType == petHorzCurve || lastType == petCubicSpline )
-      {
-         // The last element is a line segment or horz curve... Simply return that element
-         elements.push_back( std::make_pair(currDist,AdaptElement(lastElement)));
-      }
-   }
-
-
-   return elements;
-}
-
-CPath::ElementContainer CPath::FindElements(IPoint2d* point)
-{
-   ElementContainer elements;
-
-   if ( m_coll.size() == 0 )
-   {
-      // There are no Path elements defined
-      // The Path is a straight line, due east with the reference point at (0,0)
-      // Create an Path element accordingly
-      CComPtr<IPoint2d> start;
-      CComPtr<IPoint2d> end;
-      start.CoCreateInstance(CLSID_Point2d);
-      end.CoCreateInstance(CLSID_Point2d);
-
-      start->Move(0,0);
-      end->Move(100,0);
-
-      CComPtr<IPathElement> element;
-      CreateDummyPathElement(start,end,&element);
-
-      elements.push_back( std::make_pair(0.00,AdaptElement(element)) );
-
-      return elements;
-   }
-   else if ( m_coll.size() == 1 )
-   {
-      // There is exactly one element defining the Path
-      //
-      // The first Path element is projected
-      // to define the Path
-
-      CComPtr<IPathElement> element;
-      get_Item(0,&element);
-
-      PathElementType type;
-      element->get_Type(&type);
-
-      CComPtr<IUnknown> dispVal;
-      element->get_Value(&dispVal);
-
-      if ( type == petPoint )
-      {
-         CComQIPtr<IPoint2d> pnt(dispVal);
-
-         ATLASSERT( m_coll.size() == 1 );
-         // Path is due east
-         // Create a line segment element to represent this
-         CComQIPtr<IPoint2d> start(dispVal); // Path point is the start point
-         CComPtr<IPoint2d> end; // create an end point
-         end.CoCreateInstance(CLSID_Point2d);
-
-         cogoUtil::CopyPoint(end,start); // make the start and end point equal
-
-         end->Offset(100,0); // offset the end point in the X direction only (makes the line due east)
-
-         // make a line segment
-         CComPtr<IPathElement> element;
-         CreateDummyPathElement(start,end,&element);
-         elements.push_back( std::make_pair(0.00,AdaptElement(element)) );
-         return elements;
-      }
-      else if ( type == petLineSegment || type == petHorzCurve || type == petCubicSpline )
-      {
-         // The one and only element is a line segment or horz curve...
-         // Just return it
-         elements.push_back( std::make_pair(0.00,AdaptElement(element)));
-         return elements;
-      }
-      else
-      {
-         ATLASSERT(false); // Should never get here
-      }
-
-      ATLASSERT(false); // Should never get here
-   }
-   else
-   {
-      // There are multiple Path elements
-      Paths::iterator currIter = m_coll.begin();
-      Paths::iterator nextIter = currIter + 1;
-      CComPtr<IPathElement> currElement, nextElement;
-      Float64 currDist = 0.00;
-      Float64 nextDist = currDist;
-      do
-      {
-         // NOTE: The order of these next 4 lines is critical
-         bool bExtendBack = ( currIter == m_coll.begin() ? true : false );
-         PathType& atCurr = *currIter++;
-         PathType& atNext = *nextIter++;
-         bool bExtendAhead = false;
-
-         CComVariant& varCurrElement = atCurr.second;
-         CComVariant& varNextElement = atNext.second;
-
-         currElement.Release();
-         nextElement.Release();
-         varCurrElement.pdispVal->QueryInterface(&currElement);
-         varNextElement.pdispVal->QueryInterface(&nextElement);
-
-         PathElementType currType, nextType;
-         currElement->get_Type(&currType);
-         nextElement->get_Type(&nextType);
-
-         CComPtr<IUnknown> currVal;
-         CComPtr<IUnknown> nextVal;
-         currElement->get_Value(&currVal);
-         nextElement->get_Value(&nextVal);
-
-         if ( currType == petPoint )
-         {
-            // Current element is a point
-            // Since points don't have length, we have to project a line
-            // to the next element to determine if the point falls between
-            // this point and the next element. If it does, add it to the list.
-            CComQIPtr<IPoint2d> currPoint(currVal);
-
-            CComPtr<IPathElement> element;
-            CreateDummyPathElement(currPoint,nextElement,&element);
-
-            CComPtr<IUnknown> dispDummy;
-            element->get_Value(&dispDummy);
-            CComQIPtr<ILineSegment2d> dummyLS(dispDummy);
-            Float64 length;
-            dummyLS->get_Length(&length);
-            nextDist += length;
-            if ( DoesPointProjectOntoElement(point,element,bExtendBack,bExtendAhead) )
-            {
-               elements.push_back( std::make_pair(currDist,AdaptElement(element)));
-            }
-         }
-         else if ( currType == petLineSegment )
-         {
-            // Current segment is a line segment.
-            // Check to see if the desired point is within the bounds of this line segment.
-            // If so add it to the list. If not, check to see if the
-            // point falls between the end of the line segment and
-            // the start of the next element. If so, create a dummy element and add it to the list.
-
-            CComQIPtr<ILineSegment2d> currLS(currVal);
-            Float64 length;
-            currLS->get_Length(&length);
-            nextDist += length;
-
-            if ( DoesPointProjectOntoElement(point,currElement,bExtendBack,bExtendAhead) )
-            {
-               elements.push_back( std::make_pair(currDist,AdaptElement(currElement)));
-            }
-            else
-            {
-               // check to see if the desired distance falls between the end of the line
-               // and the start of the next element
+               // Now add a line segment that goes from the end of this one to the
+               // start of the next element
                CComPtr<IPoint2d> currEndPoint;
                currLS->get_EndPoint(&currEndPoint);
 
@@ -1739,39 +955,41 @@ CPath::ElementContainer CPath::FindElements(IPoint2d* point)
                CComPtr<IUnknown> dispDummy;
                element->get_Value(&dispDummy);
                CComQIPtr<ILineSegment2d> dummyLS(dispDummy);
-               Float64 length;
                dummyLS->get_Length(&length);
-               nextDist += length;
 
-               if ( DoesPointProjectOntoElement(point,element,false,bExtendAhead) )
+               if ( !IsZero(length) )
                {
-                  elements.push_back(std::make_pair(currDist,AdaptElement(element)));
+                  nextDist += length;
+                  Element myElement;
+                  myElement.start = currDist;
+                  myElement.end = nextDist;
+                  myElement.pathElement = element;
+                  m_PathElements.push_back(myElement);
+   
+                  m_PathLength += length;
                }
             }
-         }
-         else if ( currType == petHorzCurve )
-         {
-            // Current segment is a horz curve.
-            // Check to see if the point projects on the curve. If so,
-            // add it to the list. If not, check to see if it
-            // falls between the end of the curve and
-            // the start of the next element. If it does, create an Path
-            // element with a line segment that connects the end of this curve
-            // with the start point of the next Path element and add it to the list
-
-            CComQIPtr<IHorzCurve> currHC(currVal);
-            Float64 length;
-            currHC->get_TotalLength(&length);
-            nextDist += length;
-
-            if ( DoesPointProjectOntoElement(point,currElement,bExtendBack,bExtendAhead) )
+            else if ( currType == petHorzCurve )
             {
-               elements.push_back( std::make_pair(currDist,AdaptElement(currElement)));
-            }
-            else
-            {
-               // check to see if the point falls between the end of the curve
-               // and the start of the next element
+               // Current segment is a horz curve.
+               CComQIPtr<IHorzCurve> currHC(currVal);
+               Float64 length;
+               currHC->get_TotalLength(&length);
+      
+               if ( !IsZero(length) )
+               {
+                  nextDist += length;
+                  Element myElement;
+                  myElement.start = currDist;
+                  myElement.end   = nextDist;
+                  myElement.pathElement = currElement;
+                  m_PathElements.push_back(myElement);
+   
+                  m_PathLength += length;
+               }
+
+               // Now add a line segment that goes from the end of this one to the
+               // start of the next element
                CComPtr<IPoint2d> currEndPoint;
                currHC->get_ST(&currEndPoint);
 
@@ -1783,39 +1001,41 @@ CPath::ElementContainer CPath::FindElements(IPoint2d* point)
                CComPtr<IUnknown> dispDummy;
                element->get_Value(&dispDummy);
                CComQIPtr<ILineSegment2d> dummyLS(dispDummy);
-               Float64 length;
                dummyLS->get_Length(&length);
-               nextDist += length;
 
-               if ( DoesPointProjectOntoElement(point,element,false,bExtendAhead) )
+               if ( !IsZero(length) )
                {
-                  elements.push_back( std::make_pair(currDist,AdaptElement(element)));
+                  nextDist += length;
+                  Element myElement;
+                  myElement.start = currDist;
+                  myElement.end   = nextDist;
+                  myElement.pathElement = element;
+                  m_PathElements.push_back(myElement);
+   
+                  m_PathLength += length;
                }
             }
-         }
-         else if ( currType == petCubicSpline )
-         {
-            // Current segment is a cubic spline
-            // Check to see if the point projects on the spline. If so,
-            // add it to the list. If not, check to see if it
-            // falls between the end of the curve and
-            // the start of the next element. If it does, create an Path
-            // element with a line segment that connects the end of this curve
-            // with the start point of the next Path element and add it to the list
-
-            CComQIPtr<ICubicSpline> currSpline(currVal);
-            Float64 length;
-            currSpline->get_Length(&length);
-            nextDist += length;
-
-            if ( DoesPointProjectOntoElement(point,currElement,bExtendBack,bExtendAhead) )
+            else if ( currType == petCubicSpline )
             {
-               elements.push_back( std::make_pair(currDist,AdaptElement(currElement)));
-            }
-            else
-            {
-               // check to see if the point falls between the end of the curve
-               // and the start of the next element
+               // Current segment is a cubic spline
+               CComQIPtr<ICubicSpline> currSpline(currVal);
+               Float64 length;
+               currSpline->get_Length(&length);
+
+               if ( !IsZero(length) )
+               {
+                  nextDist += length;
+                  Element myElement;
+                  myElement.start = currDist;
+                  myElement.end   = nextDist;
+                  myElement.pathElement = currElement;
+                  m_PathElements.push_back(myElement);
+   
+                  m_PathLength += length;
+               }
+
+               // Now add a line segment that goes from the end of this one to the
+               // start of the next element
                CComPtr<IPoint2d> currEndPoint;
                currSpline->get_EndPoint(&currEndPoint);
 
@@ -1827,103 +1047,153 @@ CPath::ElementContainer CPath::FindElements(IPoint2d* point)
                CComPtr<IUnknown> dispDummy;
                element->get_Value(&dispDummy);
                CComQIPtr<ILineSegment2d> dummyLS(dispDummy);
+               dummyLS->get_Length(&length);
+
+               if ( !IsZero(length) )
+               {
+                  nextDist += length;
+                  Element myElement;
+                  myElement.start = currDist;
+                  myElement.end   = nextDist;
+                  myElement.pathElement = element;
+                  m_PathElements.push_back(myElement);
+   
+                  m_PathLength += length;
+               }
+            }
+            else
+            {
+               ATLASSERT(false); // Should never get here
+            }
+
+            currDist = nextDist;
+
+         } while ( nextIter != m_coll.end() );
+
+         // Check the last element
+         // If the last element is a point, we have to create a dummy Path element, for a dummy line segment, that
+         // projects the Path based on the last Path element
+         CComPtr<IPathElement> lastElement;
+         get_Item(m_coll.size()-1,&lastElement);
+
+         PathElementType lastType;
+         lastElement->get_Type(&lastType);
+
+         CComPtr<IUnknown> lastVal;
+         lastElement->get_Value(&lastVal);
+
+         if ( lastType == petPoint )
+         {
+            // The last element is a point. We have to go back to the
+            // previous element and create a line segment Path element
+            CComQIPtr<IPoint2d> lastPoint(lastVal);
+
+            CComPtr<IPathElement> prevElement;
+            get_Item(m_coll.size()-2,&prevElement);
+
+            PathElementType prevType;
+            prevElement->get_Type(&prevType);
+
+            CComPtr<IUnknown> prevVal;
+            prevElement->get_Value(&prevVal);
+
+            CComPtr<IPoint2d> prevPoint;
+            if ( prevType == petPoint )
+            {
+               // if previous type is a point, then it projected a line
+               // to this point... nothing left to do
+            }
+            else if (prevType == petLineSegment )
+            {
+               CComQIPtr<ILineSegment2d> prevLS(prevVal);
+               prevLS->get_EndPoint(&prevPoint);
+            }
+            else if ( prevType == petHorzCurve )
+            {
+               CComQIPtr<IHorzCurve> prevHC(prevVal);
+               CComPtr<IPoint2d> st;
+               prevHC->get_ST(&st);
+               st.QueryInterface(&prevPoint);
+            }
+            else if ( prevType == petCubicSpline )
+            {
+               CComQIPtr<ICubicSpline> prevSpline(prevVal);
+               prevSpline->get_EndPoint(&prevPoint);
+            }
+            else
+            {
+               ATLASSERT(false); // should never get nere
+            }
+
+
+            if ( prevPoint )
+            {
+               CComPtr<IDirection> dir;
+               Float64 dist;
+               cogoUtil::Inverse(prevPoint,lastPoint,&dist,&dir);
+               currDist -= dist; // distance to the end of the second to last element
+
+               CComPtr<IPathElement> element;
+               CreateDummyPathElement(prevPoint,lastPoint,&element);
+
+               CComPtr<IUnknown> dispDummy;
+               element->get_Value(&dispDummy);
+               CComQIPtr<ILineSegment2d> dummyLS(dispDummy);
                Float64 length;
                dummyLS->get_Length(&length);
-               nextDist += length;
 
-               if ( DoesPointProjectOntoElement(point,element,false,bExtendAhead) )
+               if ( !IsZero(length) )
                {
-                  elements.push_back( std::make_pair(currDist,AdaptElement(element)));
+                  Element myElement;
+                  myElement.start = currDist;
+                  myElement.end   = myElement.start + length;
+                  myElement.pathElement = element;
+                  m_PathElements.push_back(myElement);
+   
+                  m_PathLength += length;
                }
             }
          }
-         else
+         else if ( lastType == petLineSegment || lastType == petHorzCurve || lastType == petCubicSpline )
          {
-            ATLASSERT(false); // Should never get here
-         }
-
-         currDist = nextDist;
-
-      } while ( nextIter != m_coll.end() );
-
-      // Check the last element
-      // If the last element is a point, we have to create a dummy Path element, for a dummy line segment, that
-      // projects the Path based on the last Path element
-      CComPtr<IPathElement> lastElement;
-      get_Item(m_coll.size()-1,&lastElement);
-
-      PathElementType lastType;
-      lastElement->get_Type(&lastType);
-
-      CComPtr<IUnknown> lastVal;
-      lastElement->get_Value(&lastVal);
-
-      if ( lastType == petPoint )
-      {
-         // The last element is a point. We have to go back to the
-         // previous element and create a line segment Path element
-         CComQIPtr<IPoint2d> lastPoint(lastVal);
-
-         CComPtr<IPathElement> prevElement;
-         get_Item(m_coll.size()-2,&prevElement);
-
-         PathElementType prevType;
-         prevElement->get_Type(&prevType);
-
-         CComPtr<IUnknown> prevVal;
-         prevElement->get_Value(&prevVal);
-
-         CComPtr<IPoint2d> prevPoint;
-         if ( prevType == petPoint )
-         {
-            prevVal->QueryInterface(&prevPoint);
-         }
-         else if (prevType == petLineSegment )
-         {
-            CComQIPtr<ILineSegment2d> prevLS(prevVal);
-            prevLS->get_EndPoint(&prevPoint);
-         }
-         else if ( prevType == petHorzCurve )
-         {
-            CComQIPtr<IHorzCurve> prevHC(prevVal);
-            CComPtr<IPoint2d> st;
-            prevHC->get_ST(&st);
-            st.QueryInterface(&prevPoint);
-         }
-         else if ( prevType == petCubicSpline )
-         {
-            CComQIPtr<ICubicSpline> prevSpline(prevVal);
-            prevSpline->get_EndPoint(&prevPoint);
-         }
-         else
-         {
-            ATLASSERT(false); // should never get here
-         }
-
-         CComPtr<IDirection> dir;
-         Float64 dist;
-         cogoUtil::Inverse(prevPoint,lastPoint,&dist,&dir);
-         currDist -= dist; // distance to the end of the second to last element
-
-         CComPtr<IPathElement> element;
-         CreateDummyPathElement(prevPoint,lastPoint,&element);
-         if ( DoesPointProjectOntoElement(point,element,false,true) )
-         {
-            elements.push_back( std::make_pair(currDist,AdaptElement(element)));
-         }
-      }
-      else if ( lastType == petLineSegment || lastType == petHorzCurve || lastType == petCubicSpline )
-      {
-         // The last element is a line segment or horz curve... Simply return that element
-         if ( DoesPointProjectOntoElement(point,lastElement,false,true) )
-         {
-            elements.push_back( std::make_pair(currDist,AdaptElement(lastElement)));
+            // The last element is a line segment or horz curve... Simply return that element
+            Float64 length = GetElementLength(lastElement);
+            Element myElement;
+            myElement.start = currDist;
+            myElement.end   = myElement.start + length;
+            myElement.pathElement = lastElement;
+            m_PathElements.push_back(myElement);
+   
+            m_PathLength += length;
          }
       }
    }
+   return m_PathElements;
+}
 
+std::vector<Element> CPath::FindElements(IPoint2d* point)
+{
+   std::vector<Element> vFoundElements;
 
-   return elements;
+   std::vector<Element>& vElements = GetPathElements();
+   std::vector<Element>::iterator begin(vElements.begin());
+   std::vector<Element>::iterator iter(begin);
+   std::vector<Element>::iterator end(vElements.end());
+   std::vector<Element>::iterator last(end-1);
+   for ( ; iter != end; iter++ )
+   {
+      Element& element = (*iter);
+
+      bool bExtendBack = (iter == begin ? true : false);
+      bool bExtendAhead = (iter == last ? true : false);
+
+      if ( DoesPointProjectOntoElement(point,element.pathElement,bExtendBack,bExtendAhead) )
+      {
+         vFoundElements.push_back(element);
+      }
+   }
+
+   return vFoundElements;
 }
 
 void CPath::GetStartPoint(IPathElement* pElement,IPoint2d** ppStartPoint)
@@ -2327,8 +1597,8 @@ bool CPath::DoesPointProjectOntoElement(IPoint2d* point,IPathElement* element,bo
 HRESULT CPath::DistanceAndOffset(IPoint2d* point,Float64* pDistance,Float64* pOffset)
 {
    // Find all of the Path elements that this point projects onto and their start distance
-   ElementContainer elements = FindElements(point);
-   ATLASSERT( elements.size() != 0 );
+   std::vector<Element> vElements = FindElements(point);
+   ATLASSERT( vElements.size() != 0 );
 
    // With this, project the given point onto each element. Use the projected point and 
    // the input point to determine the offset and distance.
@@ -2336,23 +1606,22 @@ HRESULT CPath::DistanceAndOffset(IPoint2d* point,Float64* pDistance,Float64* pOf
    // The distance we are looking for is the one that corrosponds to the shortest offset
    Float64 minOffset = DBL_MAX;
    Float64 distAtOffset = -DBL_MAX;
-   ElementContainer::iterator iter;
-   for ( iter = elements.begin(); iter != elements.end(); iter++ )
+   BOOST_FOREACH(Element& element,vElements)
    {
-      Float64 startDistance = (*iter).first;
-      CComPtr<IPathElement> element = (*iter).second.m_T;
+      Float64 startDistance = element.start;
+      CComPtr<IPathElement> path_element = element.pathElement;
 
       CComPtr<IUnknown> dispVal;
-      element->get_Value(&dispVal);
+      path_element->get_Value(&dispVal);
 
       PathElementType type;
-      element->get_Type(&type);
+      path_element->get_Type(&type);
 
       ATLASSERT(type != petPoint); // Must be a line segment or horz curve
 
       // Project point onto element
       CComPtr<IPoint2d> prjPoint;
-      ProjectPointOnElement(point,element,&prjPoint);
+      ProjectPointOnElement(point,path_element,&prjPoint);
 
       Float64 dist_to_point; // Distance of projected point
       Float64 offset;   // Offset from projected point to input point ( < 0 for left )
@@ -2507,12 +1776,10 @@ STDMETHODIMP CPath::CreateParallelPath(Float64 offset,IPath** path)
 
    (*path)->putref_PointFactory(m_PointFactory);
 
-   ElementContainer elements = GetAllElements();
-   ElementContainer::iterator iter;
-   for ( iter = elements.begin(); iter < elements.end(); iter++ )
+   std::vector<Element>& vElements = GetPathElements();
+   BOOST_FOREACH(Element& element,vElements)
    {
-      ElementContainer::value_type& item = *iter;
-      CComPtr<IPathElement> path_element(item.second.m_T);
+      CComPtr<IPathElement> path_element = element.pathElement;
 
       // clone the path element
       CComPtr<IPathElement> clonePE;
@@ -2601,22 +1868,18 @@ STDMETHODIMP CPath::CreateConnectedPath(IPath** path)
 
    (*path)->putref_PointFactory(m_PointFactory);
    
-   ElementContainer elements = GetAllElements();
-
-   typedef CAdapt<CComPtr<IPathElement> > AdaptElement;
-   typedef std::vector< std::pair<Float64,AdaptElement> > ElementContainer;
-   ElementContainer::iterator iter;
-   for ( iter = elements.begin(); iter != elements.end(); iter++ )
+   std::vector<Element>& vElements = GetPathElements();
+   BOOST_FOREACH(Element& element,vElements)
    {
-      CComPtr<IPathElement> element = (*iter).second;
+      CComPtr<IPathElement> path_element = element.pathElement;
 
 #if defined _DEBUG
       PathElementType type;
-      element->get_Type(&type);
+      path_element->get_Type(&type);
       ATLASSERT(type != petPoint);
 #endif
 
-      (*path)->Add(element);
+      (*path)->Add(path_element);
    }
 
    return S_OK;
@@ -2634,12 +1897,10 @@ STDMETHODIMP CPath::CreateSubPath(Float64 start,Float64 end,IPath** path)
 
    (*path)->putref_PointFactory(m_PointFactory);
 
-   ElementContainer elements = GetAllElements();
-   ElementContainer::iterator iter;
-   for ( iter = elements.begin(); iter < elements.end(); iter++ )
+   std::vector<Element>& vElements = GetPathElements();
+   BOOST_FOREACH(Element& element,vElements)
    {
-      ElementContainer::value_type& item = *iter;
-      CComPtr<IPathElement> path_element(item.second.m_T);
+      CComPtr<IPathElement> path_element = element.pathElement;
 
       PathElementType type;
       path_element->get_Type(&type);
@@ -3552,16 +2813,56 @@ HRESULT CPath::SavePathElement(IPath* pPath,IUnknown* pUnk)
    return S_OK;
 }
 
+Float64 CPath::GetElementLength(IPathElement* pElement)
+{
+   PathElementType type;
+   pElement->get_Type(&type);
+   CComPtr<IUnknown> punk;
+   pElement->get_Value(&punk);
+
+   Float64 length = 0;
+   switch(type)
+   {
+      case petPoint:
+         length = 0;
+         break;
+
+      case petLineSegment:
+         {
+            CComQIPtr<ILineSegment2d> ls(punk);
+            ls->get_Length(&length);
+         }
+         break;
+
+      case petHorzCurve:
+         {
+            CComQIPtr<IHorzCurve> hc(punk);
+            hc->get_TotalLength(&length);
+         }
+         break;
+
+      case petCubicSpline:
+         {
+            CComQIPtr<ICubicSpline> spline(punk);
+            spline->get_Length(&length);
+         }
+         break;
+
+      default:
+         ATLASSERT(false); // should never get here
+         break;
+   }
+
+   return length;
+}
 
 #if defined _DEBUG
 void CPath::DumpPathElements()
 {
-   ElementContainer elements = GetAllElements();
-   ElementContainer::iterator iter;
-   for ( iter = elements.begin(); iter < elements.end(); iter++ )
+   std::vector<Element>& vElements = GetPathElements();
+   BOOST_FOREACH(Element& element,vElements)
    {
-      ElementContainer::value_type& item = *iter;
-      CComPtr<IPathElement> path_element(item.second.m_T);
+      CComPtr<IPathElement> path_element = element.pathElement;
 
       PathElementType type;
       path_element->get_Type(&type);

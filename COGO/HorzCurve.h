@@ -161,6 +161,8 @@ private:
    CComPtr<IPoint2d> m_PBT, m_PI, m_PFT;
    DWORD m_dwPBT, m_dwPI, m_dwPFT;
 
+   CComPtr<IPoint2d> m_TS, m_ST;
+
    Float64 m_Radius;
    Float64 m_Ls1, m_Ls2;
 

@@ -121,6 +121,10 @@ STDMETHODIMP_(void) CDisplayMgrImpl::PrepareDragData(iDragDataSink* pSink)
 
 STDMETHODIMP_(void) CDisplayMgrImpl::SetView(CDisplayView* pView)
 {
+   // because of the implementation of Revoke and Register, we need to work
+   // in the app module state
+
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    if ( m_pView )
    {
       m_DropTarget.Revoke();

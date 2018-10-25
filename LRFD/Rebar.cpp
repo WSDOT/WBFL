@@ -89,7 +89,6 @@ Float64 lrfdRebar::GetBurstingZoneLength(Float64 h)
 
 matRebar::Size lrfdRebar::GetMinConfinmentBarSize()
 {
-#pragma Reminder("Need min confinement bar in SI units") // rebar pool not set up for this
    return matRebar::bs3;
 }
 
@@ -155,7 +154,7 @@ void lrfdRebar::GetMaxStirrupSpacing(Float64* sUnderLimit, Float64* sOverLimit)
    }
 }
 
-Float64  lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 fc)
+Float64 lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 fc)
 {
    Float64 dl=0.0;
 
@@ -174,7 +173,7 @@ Float64  lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 f
       Float64 db_u = ::ConvertFromSysUnits(db,unitMeasure::Millimeter);
       Float64 fy_u = ::ConvertFromSysUnits(fy,unitMeasure::MPa);
       Float64 fc_u = ::ConvertFromSysUnits(fc,unitMeasure::MPa);
-      CHECK(fc_u>0);
+      ATLASSERT(0 < fc_u);
 
       Float64 dl_u=0;
 
@@ -193,7 +192,9 @@ Float64  lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 f
          dl_u = 34 * fy_u / sqrt(fc_u);
       }
       else
-         CHECK(0); // an unknown bar snuck in.
+      {
+         ATLASSERT(false); // an unknown bar snuck in.
+      }
 
       dl_u = max(dl_u, 305);
 
@@ -205,7 +206,7 @@ Float64  lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 f
       Float64 db_u = ::ConvertFromSysUnits(db,unitMeasure::Inch);
       Float64 fy_u = ::ConvertFromSysUnits(fy,unitMeasure::KSI);
       Float64 fc_u = ::ConvertFromSysUnits(fc,unitMeasure::KSI);
-      CHECK(fc_u>0);
+      ATLASSERT(0 < fc_u);
 
       Float64 dl_u=0;
 
@@ -224,7 +225,9 @@ Float64  lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 f
          dl_u = 3.5*fy_u / sqrt(fc_u);
       }
       else
-         CHECK(0); // an unknown bar snuck in.
+      {
+         ATLASSERT(false); // an unknown bar snuck in.
+      }
 
       dl_u = max(dl_u, 12.0);
 
@@ -234,7 +237,313 @@ Float64  lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 f
    return dl;
 }
 
+Float64 lrfdRebar::GetHookExtension(matRebar::Size size,Float64 db,Usage usage,Hook hook)
+{
+   if ( usage == Longitudinal )
+   {
+      if ( hook == hook90 )
+      {
+         return 12*db;
+      }
+      else if ( hook == hook180 )
+      {
+         return Max(::ConvertToSysUnits(2.5,unitMeasure::Inch),4*db);
+      }
+   }
+   else if ( usage == Transverse )
+   {
+      if ( hook == hook90 )
+      {
+         if ( size <= matRebar::bs5 )
+         {
+            return 6*db;
+         }
+         else if ( matRebar::bs6 <= size && size <= matRebar::bs8 )
+         {
+            return 12*db;
+         }
+      }
+      else if ( hook == hook135 )
+      {
+         if ( size <= matRebar::bs8 )
+         {
+            return 6*db;
+         }
+      }
+   }
+   else
+   {
+      ATLASSERT(usage == Seismic);
+      if ( hook == hook135 )
+      {
+         return Max(::ConvertToSysUnits(3.0,unitMeasure::Inch),6*db);
+      }
+   }
 
+   ATLASSERT(false);
+   // invalid combination of usage and hook type
+   // See LRFD 5.10.2.1 for longitudinal standard hooks
+   return 0;
+}
+
+Float64 lrfdRebar::GetBendDiameter(matRebar::Size size,Float64 db,Usage usage,bool bFractional)
+{
+   Float64 K = 0;
+   switch(size)
+   {
+   case matRebar::bs3:
+   case matRebar::bs4:
+   case matRebar::bs5:
+      if ( usage == lrfdRebar::Longitudinal )
+      {
+         K = 6; // general
+      }
+      else
+      {
+         K = 4; // stirrups and ties
+      }
+      break;
+
+   case matRebar::bs6:
+   case matRebar::bs7:
+   case matRebar::bs8:
+      K = 6;
+      break;
+
+
+   case matRebar::bs9:
+   case matRebar::bs10:
+   case matRebar::bs11:
+      K = 8;
+      break;
+
+   case matRebar::bs14:
+   case matRebar::bs18:
+      K = 10;
+      break;
+
+   default:
+      ATLASSERT(false); // new bar size?
+   }
+
+   if ( bFractional )
+   {
+      return K;
+   }
+
+   Float64 D = K*db;
+   return D;
+}
+
+Float64 lrfdRebar::GetCompressionControlledStrainLimit(matRebar::Grade grade)
+{
+   Float64 ecl;
+   if ( grade <= matRebar::Grade60 )
+   {
+      ecl = 0.002;
+   }
+   else if ( matRebar::Grade100 <= grade )
+   {
+      ecl = 0.004;
+   }
+   else
+   {
+      ATLASSERT(grade == matRebar::Grade75 || grade == matRebar::Grade80);
+      Float64 fy = (grade == matRebar::Grade75 ? 75 : 80);
+      ecl = ::LinInterp(fy-60.,0.002,0.004,100.-60.);
+   }
+
+   return ecl;
+}
+
+Float64 lrfdRebar::GetTensionControlledStrainLimit(matRebar::Grade grade)
+{
+   Float64 etl;
+   if ( grade <= matRebar::Grade75 )
+   {
+      etl = 0.005;
+   }
+   else if ( matRebar::Grade100 <= grade )
+   {
+      etl = 0.008;
+   }
+   else
+   {
+      ATLASSERT(grade == matRebar::Grade80);
+      Float64 fy = 80;
+      etl = ::LinInterp(fy-75,0.005,0.008,100.-75.);
+   }
+
+   return etl;
+}
+
+REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size size, Float64 Ab, Float64 db, Float64 fy, matConcrete::Type type, Float64 fc, bool isFct, Float64 Fct)
+{
+   REBARDEVLENGTHDETAILS details;
+   details.Ab = Ab;
+   details.db = db;
+   details.fy = fy;
+
+   details.fc = fc;
+
+   details.lambdaRl = 1.0; // intialize lambdas even though only used for 2015+
+   details.lambdaLw = 1.0;
+
+   // LRFD 5.11.2.1
+   if ( lrfdVersionMgr::SeventhEditionWith2015Interims <= lrfdVersionMgr::GetVersion())
+   {
+      Float64 Ab = ::ConvertFromSysUnits(details.Ab,unitMeasure::Inch2);
+      Float64 db = ::ConvertFromSysUnits(details.db,unitMeasure::Inch);
+      Float64 fc = ::ConvertFromSysUnits(details.fc,unitMeasure::KSI);
+      Float64 fy = ::ConvertFromSysUnits(details.fy,unitMeasure::KSI);
+   
+      details.ldb1 = 2.4*db*fy/sqrt(fc);
+      details.ldb1 = ::ConvertToSysUnits(details.ldb1,unitMeasure::Inch);
+      details.ldb2 = 0.0;
+
+      Float64 ldb_min = ::ConvertToSysUnits(12.0,unitMeasure::Inch);
+
+      details.ldb = Max(details.ldb1,details.ldb2,ldb_min);
+   
+      // reinforcment location factor: only increase for concrete strength
+      // we could get more fancy here and actually use location information in the future
+      if (10.0 < fc)
+      {
+         details.lambdaRl = 1.3;
+      }
+      else
+      {
+         details.lambdaRl = 1.0;
+      }
+
+      // lightweight concrete factor
+      if (type==matConcrete::Normal)
+      {
+         details.lambdaLw = 1.0;
+      }
+      else if (type==matConcrete::AllLightweight || type==matConcrete::SandLightweight)
+      {
+         details.lambdaLw = 1.3;
+      }
+      else
+      {
+         ATLASSERT(0); // new type?
+         details.lambdaLw = 1.0;
+      }
+
+      details.factor = details.lambdaRl * details.lambdaLw;
+   }
+   else
+   {
+      if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US )
+      {
+         Float64 Ab = ::ConvertFromSysUnits(details.Ab,unitMeasure::Inch2);
+         Float64 db = ::ConvertFromSysUnits(details.db,unitMeasure::Inch);
+         Float64 fc = ::ConvertFromSysUnits(details.fc,unitMeasure::KSI);
+         Float64 fy = ::ConvertFromSysUnits(details.fy,unitMeasure::KSI);
+
+         if (size == matRebar::bs14)
+         {
+            details.ldb1 = 2.70*fy/sqrt(fc);
+            details.ldb1 = ::ConvertToSysUnits(details.ldb1,unitMeasure::Inch);
+         
+            details.ldb2 = 0.0;
+         }
+         else if (size == matRebar::bs18)
+         {
+            details.ldb1 = 3.5*fy/sqrt(fc);
+            details.ldb1 = ::ConvertToSysUnits(details.ldb1,unitMeasure::Inch);
+         
+            details.ldb2 = 0.0;
+         }
+         else
+         {
+            details.ldb1 = 1.25*Ab*fy/sqrt(fc);
+            details.ldb1 = ::ConvertToSysUnits(details.ldb1,unitMeasure::Inch);
+
+            details.ldb2 = 0.4*db*fy;
+            details.ldb2 = ::ConvertToSysUnits(details.ldb2,unitMeasure::Inch);
+         }
+
+         Float64 ldb_min = ::ConvertToSysUnits(12.0,unitMeasure::Inch);
+
+         details.ldb = Max(details.ldb1,details.ldb2,ldb_min);
+      }
+      else
+      {
+         Float64 Ab = ::ConvertFromSysUnits(details.Ab,unitMeasure::Millimeter2);
+         Float64 db = ::ConvertFromSysUnits(details.db,unitMeasure::Millimeter);
+         Float64 fc = ::ConvertFromSysUnits(details.fc,unitMeasure::MPa);
+         Float64 fy = ::ConvertFromSysUnits(details.fy,unitMeasure::MPa);
+      
+         if (size == matRebar::bs14)
+         {
+            details.ldb1 = 25*fy/sqrt(fc);
+            details.ldb1 = ::ConvertToSysUnits(details.ldb1,unitMeasure::Millimeter);
+         
+            details.ldb2 = 0.0;
+         }
+         else if (size == matRebar::bs18)
+         {
+            details.ldb1 = 34*fy/sqrt(fc);
+            details.ldb1 = ::ConvertToSysUnits(details.ldb1,unitMeasure::Millimeter);
+         
+            details.ldb2 = 0.0;
+         }
+         else
+         {
+            details.ldb1 = 0.02*Ab*fy/sqrt(fc);
+            details.ldb1 = ::ConvertToSysUnits(details.ldb1,unitMeasure::Millimeter);
+         
+            details.ldb2 = 0.06*db*fy;
+            details.ldb2 = ::ConvertToSysUnits(details.ldb2,unitMeasure::Millimeter);
+         }
+
+         Float64 ldb_min = ::ConvertToSysUnits(12.0,unitMeasure::Millimeter);
+
+         details.ldb = Max(details.ldb1,details.ldb2,ldb_min);
+      }
+
+      // Compute and apply factor for LWC
+      if (type==matConcrete::Normal)
+      {
+         details.factor = 1.0;
+      }
+      else
+      {
+         if (isFct)
+         {
+            // compute factor
+            Float64 fck  = ::ConvertFromSysUnits(fc,unitMeasure::KSI);
+            Float64 fctk = ::ConvertFromSysUnits(Fct,unitMeasure::KSI);
+
+            details.factor = 0.22 * sqrt(fck) / fctk;
+            details.factor = Min(details.factor, 1.0);
+         }
+         else
+         {
+            // fct not specified
+            if (type==matConcrete::AllLightweight)
+            {
+               details.factor = 1.3;
+            }
+            else if (type==matConcrete::SandLightweight)
+            {
+               details.factor = 1.2;
+            }
+            else
+            {
+               ATLASSERT(false); // new type?
+               details.factor = 1.0;
+            }
+         }
+      }
+   }
+
+   details.ldb *= details.factor;
+
+   return details;
+}
 
 //======================== ACCESS     =======================================
 //======================== INQUIRY    =======================================

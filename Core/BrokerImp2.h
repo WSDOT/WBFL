@@ -160,6 +160,8 @@ private:
 
 
 #if defined _DEBUG
+   void ListInterfaceUsage();
+   void ListConnectionPointLeaks();
    void ListConnectionPointLeaks(IAgentEx* pAgent);
 #endif
 };

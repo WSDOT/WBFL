@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.BridgePier.1 = s 'BridgePier Class'
+	{
+		CLSID = s '{72098BAA-D991-4ac1-94AD-B3B932E7EB54}'
+	}
+	WBFLGenericBridge.BridgePier = s 'BridgePier Class'
+	{
+		CLSID = s '{72098BAA-D991-4ac1-94AD-B3B932E7EB54}'
+		CurVer = s 'WBFLGenericBridge.BridgePier.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {72098BAA-D991-4ac1-94AD-B3B932E7EB54} = s 'BridgePier Class'
+		{
+			ProgID = s 'WBFLGenericBridge.BridgePier.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.BridgePier'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

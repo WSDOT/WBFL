@@ -145,8 +145,10 @@ CRect CEAFGraphView::GetDrawingRect()
 
 CEAFGraphChildFrame* CEAFGraphView::GetFrame()
 {
-   CEAFGraphChildFrame* pParent = (CEAFGraphChildFrame*)GetParent();
-   return pParent;
+   CWnd* pParent = GetParent();
+   ATLASSERT(pParent->IsKindOf(RUNTIME_CLASS(CEAFGraphChildFrame)));
+   CEAFGraphChildFrame* pFrame = (CEAFGraphChildFrame*)pParent;
+   return pFrame;
 }
 
 boost::shared_ptr<CGraphBuilder> CEAFGraphView::GetGraphBuilder()

@@ -27,12 +27,7 @@
 #include "stdafx.h"
 #include "WBFLGenericBridge.h"
 #include "Pier.h"
-#include "LongitudinalPierDescription.h"
-#include "TransversePierDescription.h"
-#include <MathEx.h>
-#include <xlocale>
-#include <algorithm>
-#include <cctype>
+#include "ColumnLayout.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -44,33 +39,24 @@ static char THIS_FILE[] = __FILE__;
 // CPier
 HRESULT CPier::FinalConstruct()
 {
-   CComObject<CLongitudinalPierDescription>* pLPD;
-   CComObject<CLongitudinalPierDescription>::CreateInstance(&pLPD);
-   pLPD->SetPier(this);
-   m_LongPierDesc = pLPD;
+   HRESULT hr = m_PierImpl.FinalConstruct(this);
+   if ( FAILED(hr) )
+   {
+      return hr;
+   }
+
+   m_DeckElevation = 0;
+   m_CrownPointOffset = 0;
+   m_Slope[qcbLeft] = 0;
+   m_Slope[qcbRight] = 0;
+   m_CurbLineOffset[qcbLeft] = 0;
+   m_CurbLineOffset[qcbRight] = 0;
 
    return S_OK;
 }
 
 void CPier::FinalRelease()
 {
-   m_TransPierDesc.Release();
-   m_LongPierDesc.Release();
-}
-
-void CPier::Init(IGenericBridge* pBridge,IPierLine* pPierLine)
-{
-   m_pBridge = pBridge;
-   m_pPierLine = pPierLine;
-
-   CLongitudinalPierDescription* pLPD = dynamic_cast<CLongitudinalPierDescription*>(m_LongPierDesc.p);
-   pLPD->SetBridge(m_pBridge);
-
-   if ( m_TransPierDesc )
-   {
-      CTransversePierDescription* pTPD = dynamic_cast<CTransversePierDescription*>(m_TransPierDesc.p);
-      pTPD->SetBridge(m_pBridge);
-   }
 }
 
 STDMETHODIMP CPier::InterfaceSupportsErrorInfo(REFIID riid)
@@ -78,7 +64,7 @@ STDMETHODIMP CPier::InterfaceSupportsErrorInfo(REFIID riid)
 	static const IID* arr[] = 
 	{
 		&IID_IPier,
-      &IID_IStructuredStorage2
+      &IID_IStructuredStorage2,
 	};
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -88,140 +74,73 @@ STDMETHODIMP CPier::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-HRESULT CPier::ValidateOrientation(BSTR bstrOrientation)
+/////////////////////////////////////////////////////////////////////////////
+// IPier
+STDMETHODIMP CPier::get_DeckElevation(/*[out,retval]*/Float64* pElev)
 {
-   USES_CONVERSION;
-
-   // convert and make uppercase
-   std::_tstring strOrientation = OLE2T(bstrOrientation);
-   std::transform(strOrientation.begin(),strOrientation.end(),strOrientation.begin(),(int(*)(int))std::toupper);
-
-   // Trim off the leading and trailing whitespace
-   std::_tstring::size_type last_leading_space   = strOrientation.find_first_not_of(_T(" "));
-   if ( last_leading_space == std::_tstring::npos )
-      return E_INVALIDARG;
-
-   std::_tstring::size_type cChar;
-   cChar = last_leading_space;  // number of characters to remove
-   strOrientation.erase( 0, cChar );
-
-   std::_tstring::size_type first_trailing_space = strOrientation.find_last_not_of(_T(" "));
-   cChar = strOrientation.length() - first_trailing_space - 1;
-   strOrientation.erase( first_trailing_space+1, cChar );
-
-   // string is made uppercase above
-   //std::ctype<char> helper;
-   //helper.toupper(strOrientation.begin(),strOrientation.end());
-
-   // Validate
-   if ( (strOrientation.length() == 1 && strOrientation[0] == _T('N')) || 
-         strOrientation.compare(_T("NORMAL")) == 0 )
-   {
-      return S_OK;
-   }
-   else if ( strOrientation[0] == _T('N') || strOrientation[0] == _T('S') )
-   {
-      // It is a bearing
-      CComPtr<IDirection> bearing;
-      bearing.CoCreateInstance(CLSID_Direction);
-      HRESULT hr = bearing->FromString(bstrOrientation);
-      if ( SUCCEEDED(hr) )
-         return S_OK;
-   }
-   else
-   {
-      // It is an angle
-      CComPtr<IAngle> angle;
-      angle.CoCreateInstance(CLSID_Angle);
-      HRESULT hr = angle->FromString(bstrOrientation);
-      if ( SUCCEEDED(hr) )
-         return S_OK;
-   }
-
-   return E_INVALIDARG;
-}
-
-void CPier::SetLongitudinalPierDescription(ILongitudinalPierDescription* cloneLPD)
-{
-   CLongitudinalPierDescription* pClone = dynamic_cast<CLongitudinalPierDescription*>(cloneLPD);
-   pClone->SetPier(this);
-
-   m_LongPierDesc = cloneLPD;
-}
-
-void CPier::SetTransversePierDescription(ITransversePierDescription* cloneTPD)
-{
-   CTransversePierDescription* pClone = dynamic_cast<CTransversePierDescription*>(cloneTPD);
-   pClone->SetPier(this);
-
-   m_TransPierDesc = cloneTPD;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-STDMETHODIMP CPier::get_Station(IStation* *station)
-{
-   return m_pPierLine->get_Station(station);
-}
-
-STDMETHODIMP CPier::get_LongitudinalPierDescription(ILongitudinalPierDescription* *pVal)
-{
-   CHECK_RETOBJ(pVal);
-
-   (*pVal) = m_LongPierDesc;
-   (*pVal)->AddRef();
-
-	return S_OK;
-}
-
-STDMETHODIMP CPier::get_Direction(IDirection* *direction)
-{
-   return m_pPierLine->get_Direction(direction);
-}
-
-STDMETHODIMP CPier::get_SkewAngle(IAngle* *skewAngle)
-{
-   return m_pPierLine->get_Skew(skewAngle);
-}
-
-STDMETHODIMP CPier::CreateTransversePierDescription()
-{
-   if ( !m_TransPierDesc )
-   {
-      CComObject<CTransversePierDescription>* pTPD;
-      CComObject<CTransversePierDescription>::CreateInstance(&pTPD);
-      m_TransPierDesc = pTPD;
-
-      pTPD->SetPier(this);
-      pTPD->SetBridge(m_pBridge);
-   }
+   CHECK_RETVAL(pElev);
+   *pElev = m_DeckElevation;
    return S_OK;
 }
 
-STDMETHODIMP CPier::get_TransversePierDescription(ITransversePierDescription* *pVal)
+STDMETHODIMP CPier::get_DeckThickness(/*[out,retval]*/Float64* pTDeck)
 {
-   CHECK_RETVAL(pVal);
-   if ( m_TransPierDesc )
-   {
-      (*pVal) = m_TransPierDesc;
-      (*pVal)->AddRef();
-   }
-   else
-   {
-      (*pVal) = NULL;
-   }
-
+   CHECK_RETVAL(pTDeck);
+   *pTDeck = m_tDeck;
    return S_OK;
 }
 
-STDMETHODIMP CPier::get_Index(PierIndexType* pIndex)
+STDMETHODIMP CPier::get_CrownPointOffset(/*[out,retval]*/Float64* pCPO)
 {
-   return m_pPierLine->get_Index(pIndex);
+   CHECK_RETVAL(pCPO);
+   *pCPO = m_CrownPointOffset;
+   return S_OK;
 }
 
-STDMETHODIMP CPier::get_ID(PierIDType* pID)
+STDMETHODIMP CPier::get_CrownSlope(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pSlope)
 {
-   return m_pPierLine->get_ID(pID);
+   CHECK_RETVAL(pSlope);
+   *pSlope = m_Slope[side];
+   return S_OK;
+}
+
+STDMETHODIMP CPier::get_CurbLineOffset(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pCLO)
+{
+   CHECK_RETVAL(pCLO);
+   *pCLO = m_CurbLineOffset[side];
+   return S_OK;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// IPierEx
+STDMETHODIMP CPier::put_DeckElevation(/*[in]*/Float64 elev)
+{
+   m_DeckElevation = elev;
+   return S_OK;
+}
+
+STDMETHODIMP CPier::put_DeckThickness(/*[in]*/Float64 tDeck)
+{
+   m_tDeck = tDeck;
+   return S_OK;
+}
+
+STDMETHODIMP CPier::put_CrownPointOffset(/*[in]*/Float64 cpo)
+{
+   m_CrownPointOffset = cpo;
+   return S_OK;
+}
+
+STDMETHODIMP CPier::put_CrownSlope(/*[in]*/DirectionType side,/*[in]*/Float64 slope)
+{
+   m_Slope[side] = slope;
+   return S_OK;
+}
+
+STDMETHODIMP CPier::put_CurbLineOffset(/*[in]*/DirectionType side,/*[in]*/Float64 clo)
+{
+   m_CurbLineOffset[side] = clo;
+   return S_OK;
 }
 
 /////////////////////////////////////////////////////
@@ -229,7 +148,6 @@ STDMETHODIMP CPier::get_ID(PierIDType* pID)
 STDMETHODIMP CPier::Load(IStructuredLoad2* load)
 {
    CHECK_IN(load);
-   CComVariant var;
    load->BeginUnit(CComBSTR("Pier"));
 
 
@@ -250,3 +168,4 @@ STDMETHODIMP CPier::Save(IStructuredSave2* save)
 
    return S_OK;
 }
+

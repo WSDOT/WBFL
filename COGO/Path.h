@@ -40,6 +40,13 @@ typedef std::vector<PathType> Paths;
 typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyFromPair2<PathType,VARIANT>, Paths > PathEnum;
 typedef ICollectionOnSTLImpl<IPath, Paths, VARIANT, CopyFromPair2<PathType,VARIANT>, PathEnum> IPathElementCollection;
 
+struct Element
+{
+   Float64 start;
+   Float64 end;
+   CComPtr<IPathElement> pathElement;
+};
+
 /////////////////////////////////////////////////////////////////////////////
 // CPath
 class ATL_NO_VTABLE CPath : 
@@ -140,19 +147,21 @@ private:
    void UnadviseElement(CollectionIndexType idx);
    void UnadviseAll();
 
-   typedef CAdapt<CComPtr<IPathElement> > AdaptElement;
-   typedef std::vector< std::pair<Float64,AdaptElement> > ElementContainer;
+   std::vector<Element> m_PathElements; // not the same as m_coll. This is a fully connected path of elements
+   // Returns a vector of Element objects that captures the start and end location
+   // along the path of a path element as well as the path element itself.
+   // Don't access m_PathElements directly. Use GetPathElements because it
+   // initializes m_PathElements on demand.
+   std::vector<Element>& GetPathElements();
 
-   // Returns a vector of Distance,PathElement pairs for the entire path
-   ElementContainer GetAllElements();
+   Float64 m_PathLength;
 
    // Finds a PathElement object that contains the specified distance from start of the path.
    // Also determines the distance to teh begining of that Path element
    void FindElement(Float64 distance,Float64* pBeginDist,IPathElement* *pElement);
 
-   // Returns a vector of Distance,PathElement pairs that the given point will
-   // project onto
-   ElementContainer FindElements(IPoint2d* point);
+   // Returns a vector of Element that the given point will project onto
+   std::vector<Element> FindElements(IPoint2d* point);
 
    // Returns the starting point of the given Path element
    void GetStartPoint(IPathElement* pElement,IPoint2d** ppStartPoint);
@@ -189,6 +198,8 @@ private:
    HRESULT SavePathElement(IPath* pPath,IUnknown* pUnk);
 
    HRESULT DistanceAndOffset(IPoint2d* point,Float64* pDistance,Float64* pOffset);
+
+   Float64 GetElementLength(IPathElement* pElement);
 
 #if defined _DEBUG
    void DumpPathElements();

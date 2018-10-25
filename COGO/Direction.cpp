@@ -29,7 +29,7 @@
 #include "Direction.h"
 #include "Angle.h"
 
-#include "CogoHelpers.h"
+#include <WBFLCogo\CogoHelpers.h>
 #include <string>
 #include <algorithm>
 

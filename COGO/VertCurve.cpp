@@ -28,7 +28,7 @@
 #include "WBFLCOGO.h"
 #include "VertCurve.h"
 #include "ProfilePointFactory.h"
-#include "CogoHelpers.h"
+#include <WBFLCogo\CogoHelpers.h>
 #include <xutility> // for _cpp_min and _cpp_max
 #include <limits>
 

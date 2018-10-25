@@ -23,10 +23,10 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ColumnSpacing.h : Declaration of the CColumnSpacing
+// ColumnLayout : Declaration of the CColumnLayout
 
-#ifndef __COLUMNSPACING_H_
-#define __COLUMNSPACING_H_
+#ifndef __ColumnLayout_H_
+#define __ColumnLayout_H_
 
 #include "resource.h"       // main symbols
 #include <MathEx.h>
@@ -46,45 +46,46 @@ typedef struct ColumnSpacingData
 } ColumnSpacingData;
 
 /////////////////////////////////////////////////////////////////////////////
-// CColumnSpacing
-class ATL_NO_VTABLE CColumnSpacing : 
+// CColumnLayout
+class ATL_NO_VTABLE CColumnLayout : 
 	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CColumnSpacing, &CLSID_ColumnSpacing>,
+	public CComCoClass<CColumnLayout, &CLSID_ColumnLayout>,
 	public ISupportErrorInfo,
-	public IColumnSpacing,
+	public IColumnLayout,
    public IStructuredStorage2,
-   public IObjectSafetyImpl<CColumnSpacing,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>
+   public IObjectSafetyImpl<CColumnLayout,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>
 {
 public:
-	CColumnSpacing()
+	CColumnLayout()
 	{
 	}
 
    HRESULT FinalConstruct();
    void FinalRelease();
 
-   void SetBridge(IGenericBridge* pBridge);
-   Float64 GetCrossBeamWidth();
-
    void ClearColumns();
    void AddColumn(IColumn* column);
+   void RenumberColumns();
 
-DECLARE_REGISTRY_RESOURCEID(IDR_COLUMNSPACING)
+DECLARE_REGISTRY_RESOURCEID(IDR_COLUMNLAYOUT)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
-BEGIN_COM_MAP(CColumnSpacing)
-	COM_INTERFACE_ENTRY(IColumnSpacing)
+BEGIN_COM_MAP(CColumnLayout)
+	COM_INTERFACE_ENTRY(IColumnLayout)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(IObjectSafety)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 END_COM_MAP()
 
 private:
-   IGenericBridge* m_pBridge; // weak reference to parent
+   IPier* m_pPier; // weak reference
    ColumnSpacingData m_SpacingData;
    VARIANT_BOOL m_bUniform;
    Float64 m_UniformSpacing;
+
+   ColumnIndexType m_RefColIdx; // index of the reference column
+   Float64 m_RefColOffset; // offset of the reference column from the alignment
 
    std::vector<CComPtr<IColumn> > m_Columns;
 
@@ -96,8 +97,10 @@ private:
 public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
 
-// IColumnSpacing
+// IColumnLayout
 public:
+   STDMETHOD(putref_Pier)(/*[in]*/IPier* pPier);
+   STDMETHOD(get_Pier)(/*[out,retval]*/IPier** ppPier);
    STDMETHOD(get_Uniform)(/*[out,retval]*/ VARIANT_BOOL* bUniform);
    STDMETHOD(put_Uniform)(/*[in]*/ VARIANT_BOOL bUniform);
    STDMETHOD(get_Spacing)(/*[in]*/ SpacingIndexType spaceIdx,/*[out,retval]*/ Float64* space);
@@ -105,10 +108,18 @@ public:
    STDMETHOD(get_Overhang)(/*[in]*/ DirectionType side,/*[out,retval]*/ Float64* overhang);
    STDMETHOD(put_Overhang)(/*[in]*/ DirectionType side ,/*[in]*/ Float64 overhang);
    STDMETHOD(get_ColumnCount)(/*[out,retval]*/ ColumnIndexType* nColumns);
+   STDMETHOD(put_ColumnCount)(/*[in]*/ColumnIndexType nColumns);
    STDMETHOD(Add)(/*[in]*/ ColumnIndexType nColumns);
    STDMETHOD(Insert)(/*[in]*/ SpacingIndexType spaceIdx,/*[in]*/ SpacingIndexType nInsert);
    STDMETHOD(Remove)(/*[in]*/ ColumnIndexType columnIdx,/*[in]*/ ColumnIndexType nRemove);
+   STDMETHOD(SetReferenceColumn)(/*[in]*/ColumnIndexType colIdx,/*[in]*/Float64 alignmentOffset);
+   STDMETHOD(GetReferenceColumn)(/*[out]*/ColumnIndexType* pColIdx,/*[out]*/Float64* pAlignmentOffset);
    STDMETHOD(get_Column)(/*[in]*/ ColumnIndexType colIdx,/*[out,retval]*/ IColumn* *column);
+   STDMETHOD(get_ColumnLayoutWidth)(/*[out,retval]*/Float64* pCLW);
+   STDMETHOD(get_ColumnLocation)(/*[in]*/ColumnIndexType colIdx,/*[out,retval]*/Float64* pXxb);
+   STDMETHOD(get_ColumnOffset)(/*[in]*/ColumnIndexType colIdx,/*[out,retval]*/Float64* pOffset);
+   STDMETHOD(get_TopColumnElevation)(/*[in]*/ColumnIndexType colIdx,/*[out,retval]*/Float64* pElev);
+   STDMETHOD(get_BottomColumnElevation)(/*[in]*/ColumnIndexType colIdx,/*[out,retval]*/Float64* pElev);
 
 // IStructuredStorage2
 public:
@@ -116,4 +127,4 @@ public:
    STDMETHOD(Load)(IStructuredLoad2* pLoad);
 };
 
-#endif //__COLUMNSPACING_H_
+#endif //__ColumnLayout_H_

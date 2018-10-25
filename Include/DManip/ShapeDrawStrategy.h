@@ -40,12 +40,16 @@ interface iShapeDrawStrategy : public iDrawPointStrategy
    STDMETHOD_(COLORREF,GetSolidLineColor)() PURE;
    STDMETHOD_(void,SetSolidFillColor)(COLORREF crColor) PURE;
    STDMETHOD_(COLORREF,GetSolidFillColor)() PURE;
+   STDMETHOD_(void,SetSolidLineWidth)(UINT nPixels) PURE;
+   STDMETHOD_(UINT,GetSolidLineWidth)() PURE;
    STDMETHOD_(void,SetVoidLineStyle)(LineStyleType lineStyle) PURE;
    STDMETHOD_(LineStyleType,GetVoidLineStyle)() PURE;
    STDMETHOD_(void,SetVoidLineColor)(COLORREF crColor) PURE;
    STDMETHOD_(COLORREF,GetVoidLineColor)() PURE;
    STDMETHOD_(void,SetVoidFillColor)(COLORREF crColor) PURE;
    STDMETHOD_(COLORREF,GetVoidFillColor)() PURE;
+   STDMETHOD_(void,SetVoidLineWidth)(UINT nPixels) PURE;
+   STDMETHOD_(UINT,GetVoidLineWidth)() PURE;
    STDMETHOD_(void,DoFill)(bool doFill) PURE;
    STDMETHOD_(bool,DoFill)() PURE;
    STDMETHOD_(void,HasBoundingShape)(bool bHasBoundingShape) PURE;

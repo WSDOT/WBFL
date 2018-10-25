@@ -407,7 +407,7 @@ HRESULT CBridge::UpdateBridgeLine()
    }
 
    m_BridgeLine.Release();
-   return alignment->CreateParallelPath(-m_AlignmentOffset,&m_BridgeLine);
+   return alignment->CreateParallelPath(m_AlignmentOffset,&m_BridgeLine);
 }
 
 HRESULT CBridge::UpdatePierGeometry()

@@ -110,34 +110,55 @@ CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisi
    // We don't want to call the base class version
    //CDocument* pDocument = CMultiDocTemplate::OpenDocumentFile(lpszPathName,bMakeVisible);
 
-	CDocument* pDocument = CreateNewDocument();
-	if (pDocument == NULL)
-	{
-		TRACE(traceAppMsg, 0, _T("CEAFDocTemplate::CreateNewDocument returned NULL.\n"));
-		AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC);
-		return NULL;
-	}
-	ASSERT_VALID(pDocument);
-   ASSERT_KINDOF(CEAFDocument,pDocument);
-   CEAFDocument* pEAFDoc = (CEAFDocument*)pDocument;
+   CDocument* pDocument = NULL;
+   CEAFDocument* pEAFDoc = NULL;
+   CFrameWnd* pFrame = NULL;
 
-	BOOL bAutoDelete = pDocument->m_bAutoDelete;
-	pDocument->m_bAutoDelete = FALSE;   // don't destroy if something goes wrong
-	CFrameWnd* pFrame = CreateNewFrame(pDocument, NULL);
-	pDocument->m_bAutoDelete = bAutoDelete;
-
-	if (pFrame == NULL)
-	{
-		AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC);
-		delete pDocument;       // explicit delete on error
-		return NULL;
-	}
-	ASSERT_VALID(pFrame);
-
-   pEAFDoc->OnCreateInitialize();
-
-   if ( !DoOpenDocumentFile(lpszPathName,bMakeVisible,pEAFDoc,pFrame) )
+   try
    {
+	   pDocument = CreateNewDocument();
+	   if (pDocument == NULL)
+	   {
+		   TRACE(traceAppMsg, 0, _T("CEAFDocTemplate::CreateNewDocument returned NULL.\n"));
+		   AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC);
+		   return NULL;
+	   }
+	   ASSERT_VALID(pDocument);
+      ASSERT_KINDOF(CEAFDocument,pDocument);
+      pEAFDoc = (CEAFDocument*)pDocument;
+
+	   BOOL bAutoDelete = pDocument->m_bAutoDelete; // capture current state
+	   pDocument->m_bAutoDelete = FALSE;   // don't destroy if something goes wrong during CreateNewFrame
+	   pFrame = CreateNewFrame(pDocument, NULL);
+	   pDocument->m_bAutoDelete = bAutoDelete; // reset state
+
+	   if (pFrame == NULL)
+	   {
+		   AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC);
+		   delete pDocument;       // explicit delete on error
+		   return NULL;
+	   }
+	   ASSERT_VALID(pFrame);
+
+      pEAFDoc->OnCreateInitialize();
+
+      if ( !DoOpenDocumentFile(lpszPathName,bMakeVisible,pEAFDoc,pFrame) )
+      {
+         return NULL;
+      }
+   }
+   catch(sysXStructuredLoad& e)
+   {
+      std::_tstring msg;
+      e.GetErrorMessage(&msg);
+
+      CString strMsg;
+      strMsg.Format(_T("An error occured while opening %s\n\n%s"),lpszPathName,msg.c_str());
+      AfxMessageBox(strMsg,MB_OK);
+
+      pDocument->m_bAutoDelete = TRUE; // pDocument will be deleted when the frame window is destroyed
+      pFrame->DestroyWindow();
+
       return NULL;
    }
 
@@ -145,7 +166,7 @@ CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisi
 
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    pMainFrame->HideMainFrameToolBar();
-   pMainFrame->HideMainFrameBackground();
+   pMainFrame->HideStartPage();
 
    pEAFDoc->OnCreateFinalize();
 

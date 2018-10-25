@@ -31,6 +31,8 @@
 #include "resource.h"       // main symbols
 #include "WBFLComCollections.h"
 
+#include "BridgePier.h"
+
 // NOTE: PierCollectionEvents
 // PierCollection and SpanCollection are not like normal COM collections.
 // Piers and Spans are logically linked together. A pier cannot be added or removed
@@ -40,7 +42,7 @@
 // simply forwards events received from its individual Items.
 
 class CPierCollection;
-typedef CComVectorCollection<IPierCollection,IPier,IEnumPiers,&IID_IEnumPiers,PierIndexType> PierColl;
+typedef CComVectorCollection<IPierCollection,IBridgePier,IEnumPiers,&IID_IEnumPiers,PierIndexType> PierColl;
 typedef CPersistentCollection<CPierCollection,PierColl,PierIndexType> PersistentPierCollection;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -56,12 +58,15 @@ class ATL_NO_VTABLE CPierCollection :
 public:
    CPierCollection()
 	{
+      CComObject<CBridgePier>* pTestPier;
+      CComObject<CBridgePier>::CreateInstance(&pTestPier);
+      m_TestPier = pTestPier;
 	}
 
    void FinalRelease();
 
-   PierIndexType GetPierIndex(IPier* pier);
-	HRESULT InsertQuietly(PierIndexType index, IPier* pier);
+   PierIndexType GetPierIndex(IBridgePier* pier);
+	HRESULT InsertQuietly(PierIndexType index, IBridgePier* pier);
 
 
 DECLARE_REGISTRY_RESOURCEID(IDR_PIERCOLLECTION)
@@ -79,7 +84,7 @@ protected:
    CComBSTR GetStoredName()     { return CComBSTR("Pier");  }
 
 private:
-
+   CComPtr<IBridgePier> m_TestPier; // used for searches
    IGenericBridge* m_pBridge; // Weak reference to parent
 
 // ISupportsErrorInfo
@@ -91,8 +96,9 @@ public:
    //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
    //STDMETHOD(get_Item)(/*[in]*/ PierIndexType index, /*[out, retval]*/ ISpan* *pVal);
    //STDMETHOD(get_Count)(/*[out,retval]*/ PierIndexType* count);
-   STDMETHOD(get_PierIndex)(/*[in]*/ IPier* pier,/*[out,retval]*/PierIndexType* index);
+   STDMETHOD(get_PierIndex)(/*[in]*/ IBridgePier* pier,/*[out,retval]*/PierIndexType* index);
    STDMETHOD(get__EnumPiers)(/*[out,retval]*/IEnumPiers* *enumPiers);
+   STDMETHOD(FindPier)(/*[in]*/Float64 station,/*[out,retval]*/IBridgePier** ppPier);
 
 // IStructuredStorage2
 public:

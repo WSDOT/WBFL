@@ -30,6 +30,8 @@
 //
 #include <Lrfd\LrfdExp.h>
 #include <Material\Rebar.h>
+#include <Material\Concrete.h>
+#include <Lrfd\Details.h>
 
 // LOCAL INCLUDES
 //
@@ -64,6 +66,20 @@ class LRFDCLASS lrfdRebar
 {
 public:
    // GROUP: ENUMERATIONS
+   enum Usage {
+      Longitudinal, // 5.10.2.1
+      Transverse,   // 5.10.2.1
+      Seismic       // 5.10.2.2
+   };
+
+   enum Hook
+   {
+      hookNone,
+      hook90,
+      hook135,
+      hook180
+   };
+
    // GROUP: LIFECYCLE
 
    //------------------------------------------------------------------------
@@ -107,6 +123,28 @@ public:
    // Returns max development length of a rebar in tension per 5.11.2.1.1
    // modification factors are not applied
    static Float64 GetTensileDevelopmentLength(const matRebar& rebar, Float64 fc);
+
+   //------------------------------------------------------------------------
+   // Returns the hook extension at the free end of the bar per LRFD 5.10.2.1 and 5.10.2.2
+   static Float64 GetHookExtension(matRebar::Size size,Float64 db,Usage usage,Hook hook);
+
+   //------------------------------------------------------------------------
+   // Returns the minimum inside bend diameter (LRFD 5.10.2.3)
+   // if fractional is true, returns the number of bar diameters
+   // otherwise returns the actual bend diameter
+   static Float64 GetBendDiameter(matRebar::Size size,Float64 db,Usage usage,bool bFractional);
+
+   //------------------------------------------------------------------------
+   // Returns the compression controlled strain limit (LRFD 5.7.2.1)
+   static Float64 GetCompressionControlledStrainLimit(matRebar::Grade grade);
+
+   //------------------------------------------------------------------------
+   // Returns the tension controlled strain limit (LRFD 5.7.2.1)
+   static Float64 GetTensionControlledStrainLimit(matRebar::Grade grade);
+
+   //------------------------------------------------------------------------
+   // Retuns rebar development length
+   static REBARDEVLENGTHDETAILS GetRebarDevelopmentLengthDetails(matRebar::Size size, Float64 Ab, Float64 db, Float64 fy, matConcrete::Type type, Float64 fc, bool isFct, Float64 Fct);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

@@ -61,6 +61,8 @@ STDMETHODIMP CRebarRowPattern::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
+//////////////////////////////////////////////////////////////////
+// IRebarPattern
 STDMETHODIMP CRebarRowPattern::putref_Rebar(IRebar* rebar)
 {
    CHECK_IN(rebar);
@@ -93,6 +95,18 @@ STDMETHODIMP CRebarRowPattern::putref_RebarLayoutItem(IRebarLayoutItem* rebarLay
    return S_OK;
 }
 
+STDMETHODIMP CRebarRowPattern::put_Hook(/*[in]*/DirectionType side,/*[in]*/HookType hook)
+{
+   m_HookType[side] = hook;
+   return S_OK;
+}
+
+STDMETHODIMP CRebarRowPattern::get_Hook(/*[in]*/DirectionType side,/*[out,retval]*/HookType* hook)
+{
+   CHECK_RETVAL(hook);
+   *hook = m_HookType[side];
+   return S_OK;
+}
 
 STDMETHODIMP CRebarRowPattern::get_Count(CollectionIndexType* count)
 {
@@ -177,6 +191,40 @@ STDMETHODIMP CRebarRowPattern::get_Location(Float64 distFromStartOfPattern,Colle
    return S_OK;
 }
 
+STDMETHODIMP CRebarRowPattern::get_Profile(/*[in]*/IndexType barIdx,/*[out,retval]*/IPoint2dCollection** ppProfile)
+{
+   CHECK_RETOBJ(ppProfile);
+   CComPtr<IPoint2dCollection> points;
+   points.CoCreateInstance(CLSID_Point2dCollection);
+
+   Float64 Xstart, Xend;
+   m_pRebarLayoutItem->get_Start(&Xstart);
+   Float64 L;
+   m_pRebarLayoutItem->get_Length(&L);
+   Xend = Xstart + L;
+
+   Float64 Ystart, Yend;
+   m_AnchorPoint[etStart]->get_Y(&Ystart);
+   m_AnchorPoint[etEnd]->get_Y(&Yend);
+
+   CComPtr<IPoint2d> pntStart;
+   CComPtr<IPoint2d> pntEnd;
+
+   pntStart.CoCreateInstance(CLSID_Point2d);
+   pntEnd.CoCreateInstance(CLSID_Point2d);
+
+   pntStart->Move(Xstart,Ystart);
+   pntEnd->Move(Xend,Yend);
+
+   points->Add(pntStart);
+   points->Add(pntEnd);
+
+   points.CopyTo(ppProfile);
+   return S_OK;
+}
+
+//////////////////////////////////////////////////////
+// IRebarRowPattern
 STDMETHODIMP CRebarRowPattern::put_AnchorPoint(EndType endType,IPoint2d* anchorPt)
 {
    CHECK_IN(anchorPt);

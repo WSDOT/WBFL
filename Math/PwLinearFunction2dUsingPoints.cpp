@@ -45,13 +45,13 @@ void seek_right (const std::vector<gpPoint2d>& points, Float64 x, CollectionInde
    PRECONDITION(segment!=0);
    std::vector<gpPoint2d>::size_type siz = points.size();
    CHECK(*segment<siz);
-   CHECK(x>=points[*segment-1].X());
+   CHECK(points[*segment-1].X() <= x);
 
    // assume that x is right of the left end of this segment.
    std::vector<gpPoint2d>::size_type start = *segment;
    for (std::vector<gpPoint2d>::size_type i=start; i<siz; i++)
    {
-      if (points[i].X()>=x)
+      if (::IsLE(x,points[i].X()) )
       {
          *segment=i;
          return;
@@ -74,13 +74,15 @@ void seek_left(const std::vector<gpPoint2d>& points, Float64 x, CollectionIndexT
    bool loop=true;
    do
    {
-      if (points[i].X()<=x)
+      if ( ::IsLE(points[i].X(),x) )
       {
          *segment=i+1;
          return;
       }
       if (i==0)
+      {
          loop=false;
+      }
 
       i--;
    } while (loop);
@@ -92,9 +94,11 @@ void seek_left(const std::vector<gpPoint2d>& points, Float64 x, CollectionIndexT
 Float64 interpolate(const gpPoint2d& p1, const gpPoint2d& p2, Float64 x)
 {
    // vertical segments not allowed
-   PRECONDITION(p1.X()!=p2.X());
+   ATLASSERT( !IsEqual(p1.X(),p2.X()) );
+   
    // make sure x is between p1 and p2
-   CHECK(x>=p1.X()&&x<=p2.X() || x<=p1.X()&&x>=p2.X());
+   ATLASSERT(InRange(p1.X(),x,p2.X()));
+
    Float64 a     = x - p1.X();
    Float64 l     = p1.Y();
    Float64 h     = p2.Y();
@@ -140,15 +144,20 @@ Float64 mathPwLinearFunction2dUsingPoints::Evaluate(Float64 x) const
       // x not in function range - throw
       THROW(mathXEvalError, Undefined);
    }
-   else if (x==m_Points[0].X())
+   else if (IsEqual(x,m_Points.front().X()))
    {
       // Edge case - no need for interpolation
-      return m_Points[0].Y();
+      return m_Points.front().Y();
+   }
+   else if (IsEqual(x,m_Points.back().X()))
+   {
+      // Edge case - no need for interpolation
+      return m_Points.back().Y();
    }
    else if (m_LastSegment==0)
    {
       // no last seek. just start at the left end and work right
-      if (x>m_Points[0].X())
+      if (m_Points[0].X() < x)
       {
          m_LastSegment=1;
          seek_right(m_Points, x, &m_LastSegment);
@@ -158,9 +167,13 @@ Float64 mathPwLinearFunction2dUsingPoints::Evaluate(Float64 x) const
    {
       Float64 segrgt = m_Points[m_LastSegment].X();
       if (x<=segrgt)
+      {
          seek_left(m_Points, x, &m_LastSegment);
+      }
       else
+      {
          seek_right(m_Points, x, &m_LastSegment);
+      }
    }
 
    // linear interpolate across segment to find Y
@@ -177,11 +190,15 @@ mathFunction2d* mathPwLinearFunction2dUsingPoints::Clone() const
 math1dRange mathPwLinearFunction2dUsingPoints::GetRange() const
 {
    ASSERTVALID;
-   if (m_Points.size()>0)
+   if (0 < m_Points.size())
+   {
       return math1dRange(m_Points.begin()->X(),math1dRange::Bound,
                          m_Points.back().X() ,math1dRange::Bound);
+   }
    else
+   {
       return math1dRange();
+   }
 }
 
 CollectionIndexType mathPwLinearFunction2dUsingPoints::GetNumPoints() const
@@ -208,9 +225,11 @@ void mathPwLinearFunction2dUsingPoints::SetPoints(const std::vector<gpPoint2d>& 
    m_Points = points;
    std::sort(m_Points.begin(),m_Points.end(),point_sort);
 
-   CollectionIndexType siz = GetNumPoints();
-   if (m_LastSegment>siz)
-      m_LastSegment=siz;
+   CollectionIndexType size = GetNumPoints();
+   if (size < m_LastSegment)
+   {
+      m_LastSegment = size;
+   }
    ASSERTVALID;
 }
 
@@ -242,7 +261,9 @@ Int16 mathPwLinearFunction2dUsingPoints::Intersect(const mathPwLinearFunction2dU
    math1dRange r = range.Intersection(GetRange());
    r = r.Intersection(rOther.GetRange());
    if (r.IsNull())
+   {
       return 0;
+   }
 
    // next determine the ranges of segments that we may have an intersection on
    CollectionIndexType this_first=1,  this_last;
@@ -271,12 +292,12 @@ Int16 mathPwLinearFunction2dUsingPoints::Intersect(const mathPwLinearFunction2dU
    while(loop)
    {
       // neither of these cases should ever happen, but...
-      if (this_curr>this_last)
+      if (this_last < this_curr)
       {
          CHECK(0);
          return 0;
       }
-      else if (other_curr>other_last)
+      else if (other_last < other_curr)
       {
          CHECK(0);
          return 0;
@@ -284,8 +305,8 @@ Int16 mathPwLinearFunction2dUsingPoints::Intersect(const mathPwLinearFunction2dU
 
       gpLineSegment2d this_seg(m_Points[this_curr-1],m_Points[this_curr]);
       gpLineSegment2d other_seg(rOther.m_Points[other_curr-1],rOther.m_Points[other_curr]);
-      Int16 st =gpGeomOp2d::Intersect(&intersection_point,this_seg, other_seg);
-      if (st!=0)
+      Int16 st = gpGeomOp2d::Intersect(&intersection_point,this_seg, other_seg);
+      if (st != 0)
       {
          // it's possible that intersection could lie outside of intended range
          if (range.IsInRange(intersection_point.X()))
@@ -297,13 +318,19 @@ Int16 mathPwLinearFunction2dUsingPoints::Intersect(const mathPwLinearFunction2dU
 
       // no intersection yet - increment next segment
       if (this_curr==this_last && other_curr==other_last)
+      {
          loop=false; // no intersection found
+      }
       else
       {
          if (m_Points[this_curr].X()>rOther.m_Points[other_curr].X())
+         {
             other_curr++;
+         }
          else
+         {
             this_curr++;
+         }
       }
    }
 
@@ -330,7 +357,7 @@ void mathPwLinearFunction2dUsingPoints::GetMaximumsInRange(const math1dRange& ra
 
    while(true)
    {
-      if (idx>=size)
+      if (size <= idx)
       {
          // We have hit end of bounds without finding a value. Throw
          THROW(mathXEvalError, Undefined);
@@ -405,7 +432,7 @@ void mathPwLinearFunction2dUsingPoints::ResetOuterRange( const math1dRange& rang
    std::vector<gpPoint2d>::size_type siz = m_Points.size();
 
    // New range must fit at outer edges of function
-   if (siz < 2 || xleft>=m_Points[1].X() || xright<=m_Points[siz-2].X())
+   if (siz < 2 || m_Points[1].X()<=xleft || xright<=m_Points[siz-2].X())
    {
       ATLASSERT(false);
       THROW(mathXEvalError, Undefined);
@@ -446,25 +473,31 @@ bool mathPwLinearFunction2dUsingPoints::AssertValid() const
       return false;
 
    // values of x must increase
-   CollectionIndexType siz = GetNumPoints();
-   if (siz>0)
+   CollectionIndexType size = GetNumPoints();
+   if (0 < size)
    {
       Float64 cval = m_Points[0].X();
-      for(CollectionIndexType i=1; i<siz; i++)
+      for(CollectionIndexType i=1; i < size; i++)
       {
-         if (cval >m_Points[i].X())
+         if (m_Points[i].X() < cval)
+         {
             return false;
+         }
 
-         cval=m_Points[i].X();
+         cval = m_Points[i].X();
       }
       // last-used segment must lie within range
-      if (m_LastSegment>=siz)
+      if (size <= m_LastSegment)
+      {
          return false;
+      }
    }
    else
    {
-      if (m_LastSegment!=0)
+      if (m_LastSegment != 0)
+      {
          return false;
+      }
    }
 
 

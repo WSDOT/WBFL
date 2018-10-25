@@ -24,7 +24,7 @@
 ///////////////////////////////////////////////////////////////////////
 #include "StdAfx.h"
 #include "WBFLCOGO.h"
-#include "CogoHelpers.h"
+#include <WBFLCogo\CogoHelpers.h>
 #include "Angle.h"
 #include "Direction.h"
 #include "Station.h"

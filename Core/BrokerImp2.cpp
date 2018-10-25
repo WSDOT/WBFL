@@ -38,6 +38,16 @@ static char THIS_FILE[] = __FILE__;
 
 DIAG_DEFINE_GROUP(IFC,DIAG_GROUP_ENABLE,0);
 
+#if defined _DEBUG
+bool CompareCLSID(InterfaceItem& item1,InterfaceItem& item2)
+{
+   CLSID clsid1, clsid2;
+   item1.pAgent->GetClassID(&clsid1);
+   item2.pAgent->GetClassID(&clsid2);
+   return clsid1 < clsid2;
+}
+#endif
+
 InterfaceItem::InterfaceItem() : 
 pUsageCount(new Uint64) 
 { 
@@ -82,6 +92,65 @@ void CBrokerImp2::FinalRelease()
 }
 
 #if defined _DEBUG
+void CBrokerImp2::ListInterfaceUsage()
+{
+   USES_CONVERSION;
+   WATCHX(IFC,0,_T("Most frequently used interfaces"));
+   boost::circular_buffer<InterfaceItem>::iterator mfuIter(m_MostFrequentlyUsed.begin());
+   boost::circular_buffer<InterfaceItem>::iterator mfuIterEnd(m_MostFrequentlyUsed.end());
+   for ( ; mfuIter != mfuIterEnd; mfuIter++ )
+   {
+      InterfaceItem& item = *mfuIter;
+
+      OLECHAR szGUID[39];
+      ::StringFromGUID2(item.iid,szGUID,39);
+      WATCHX(IFC,0,_T("IID = ") << OLE2T(szGUID) << _T(" Usage Count = ") << (*item.pUsageCount));
+
+   }
+
+   WATCHX(IFC,0,_T(""));
+   WATCHX(IFC,0,_T("Total interface usage count"));
+
+   // fill up a temporary vector so we can sort and report by CLSID
+   std::vector<InterfaceItem> interfaces;
+   Interfaces::iterator ifaceIter(m_Interfaces.begin());
+   Interfaces::iterator ifaceIterEnd(m_Interfaces.end());
+   for ( ; ifaceIter != ifaceIterEnd; ifaceIter++ )
+   {
+      InterfaceItem& item = *ifaceIter;
+      interfaces.push_back(item);
+   }
+
+   std::sort(interfaces.begin(),interfaces.end(),CompareCLSID);
+
+   IndexType count = 0;
+   std::vector<InterfaceItem>::iterator ifaceItemIter(interfaces.begin());
+   std::vector<InterfaceItem>::iterator ifaceItemIterEnd(interfaces.end());
+   for ( ; ifaceItemIter != ifaceItemIterEnd; ifaceItemIter++ )
+   {
+      InterfaceItem& item = *ifaceItemIter;
+
+      UINT cRef = item.pAgent->AddRef();
+      item.pAgent->Release();
+
+      // every agent gets two more Release calls... decrement by 2 so that we can compare with
+      // the agent ref count that gets dump in ClearArents()
+      cRef -= 2;
+
+      OLECHAR szGUID[39];
+      ::StringFromGUID2(item.iid,szGUID,39);
+
+      CLSID clsid;
+      item.pAgent->GetClassID(&clsid);
+      OLECHAR szCLSID[39];
+      ::StringFromGUID2(clsid,szCLSID,39);
+      WATCHX(IFC,0,_T("CLSID = ") << OLE2T(szCLSID) << _T(" IID = ") << OLE2T(szGUID) << _T(" Usage Count = ") << (*item.pUsageCount) << _T(" Agent Ref Count = ") << cRef);
+
+      count += (*item.pUsageCount);
+   }
+   WATCHX(IFC,0,_T("Total count = ") << count);
+}
+
 void CBrokerImp2::ListConnectionPointLeaks(IAgentEx* pAgent)
 {
    Uint32 leakCount = 0;
@@ -111,11 +180,9 @@ void CBrokerImp2::ListConnectionPointLeaks(IAgentEx* pAgent)
 
    ATLASSERT(leakCount == 0); // if this fires, there are connection point leaks
 }
-#endif // _DEBUG
 
-void CBrokerImp2::ClearAgents()
+void CBrokerImp2::ListConnectionPointLeaks()
 {
-#if defined _DEBUG
    WATCHX(IFC,0,_T("Clearing Agents"));
    Agents::iterator i;
    for ( i = m_ExtensionAgents.begin(); i != m_ExtensionAgents.end(); i++ )
@@ -129,6 +196,14 @@ void CBrokerImp2::ClearAgents()
       ::StringFromGUID2(clsid,szGUID,39);
 
       ListConnectionPointLeaks(pAgent);
+
+      pAgent.p->AddRef();
+      ULONG refCount = pAgent.p->Release();
+      // ref count should be 2 (one for the container, and one for the pAgent pointer)
+      if ( refCount != 2 )
+      {
+         WATCHX(IFC,0,_T("Extension Agent ") << szGUID << _T(" Ref Count ") << refCount);
+      }
    }
 
    for ( i = m_Agents.begin(); i != m_Agents.end(); i++ )
@@ -142,7 +217,22 @@ void CBrokerImp2::ClearAgents()
       ::StringFromGUID2(clsid,szGUID,39);
 
       ListConnectionPointLeaks(pAgent);
+
+      pAgent.p->AddRef();
+      ULONG refCount = pAgent.p->Release();
+      // ref count should be 2 (one for the container, and one for the pAgent pointer)
+      if ( refCount != 2 )
+      {
+         WATCHX(IFC,0,_T("Agent ") << szGUID << _T(" Ref Count ") << refCount);
+      }
    }
+}
+#endif // _DEBUG
+
+void CBrokerImp2::ClearAgents()
+{
+#if defined _DEBUG
+   ListConnectionPointLeaks();
 #endif
 
    m_ExtensionAgents.clear();
@@ -273,21 +363,18 @@ STDMETHODIMP CBrokerImp2::Reset()
    return S_OK;
 }
 
-#if defined _DEBUG
-bool CompareCLSID(InterfaceItem& item1,InterfaceItem& item2)
-{
-   CLSID clsid1, clsid2;
-   item1.pAgent->GetClassID(&clsid1);
-   item2.pAgent->GetClassID(&clsid2);
-   return clsid1 < clsid2;
-}
-#endif
-
 STDMETHODIMP CBrokerImp2::ShutDown()
 {
    WATCHX(IFC,0,_T("Broker ShutDown"));
 
    Reset();
+
+#if defined _DEBUG
+   ListInterfaceUsage();
+#endif // _DEBUG
+
+   m_Interfaces.clear();
+   m_MostFrequentlyUsed.clear();
 
    m_bAgentsInitialized = true;
 
@@ -306,64 +393,6 @@ STDMETHODIMP CBrokerImp2::ShutDown()
       IAgentEx* pAgent = (*agentIter).second;
       pAgent->ShutDown();
    }
-
-#if defined _DEBUG
-   USES_CONVERSION;
-   WATCHX(IFC,0,_T("Most frequently used interfaces"));
-   boost::circular_buffer<InterfaceItem>::iterator mfuIter(m_MostFrequentlyUsed.begin());
-   boost::circular_buffer<InterfaceItem>::iterator mfuIterEnd(m_MostFrequentlyUsed.end());
-   for ( ; mfuIter != mfuIterEnd; mfuIter++ )
-   {
-      InterfaceItem& item = *mfuIter;
-
-      OLECHAR szGUID[39];
-      ::StringFromGUID2(item.iid,szGUID,39);
-      WATCHX(IFC,0,_T("IID = ") << OLE2T(szGUID) << _T(" Usage Count = ") << (*item.pUsageCount));
-
-   }
-
-   WATCHX(IFC,0,_T(""));
-   WATCHX(IFC,0,_T("Total interface usage count"));
-
-   // fill up a temporary vector so we can sort and report by CLSID
-   std::vector<InterfaceItem> interfaces;
-   Interfaces::iterator ifaceIter(m_Interfaces.begin());
-   Interfaces::iterator ifaceIterEnd(m_Interfaces.end());
-   for ( ; ifaceIter != ifaceIterEnd; ifaceIter++ )
-   {
-      InterfaceItem& item = *ifaceIter;
-      interfaces.push_back(item);
-   }
-
-   std::sort(interfaces.begin(),interfaces.end(),CompareCLSID);
-
-   IndexType count = 0;
-   std::vector<InterfaceItem>::iterator ifaceItemIter(interfaces.begin());
-   std::vector<InterfaceItem>::iterator ifaceItemIterEnd(interfaces.end());
-   for ( ; ifaceItemIter != ifaceItemIterEnd; ifaceItemIter++ )
-   {
-      InterfaceItem& item = *ifaceItemIter;
-
-      UINT cRef = item.pAgent->AddRef();
-      item.pAgent->Release();
-
-      // every agent gets two more Release calls... decrement by 2 so that we can compare with
-      // the agent ref count that gets dump in ClearArents()
-      cRef -= 2;
-
-      OLECHAR szGUID[39];
-      ::StringFromGUID2(item.iid,szGUID,39);
-
-      CLSID clsid;
-      item.pAgent->GetClassID(&clsid);
-      OLECHAR szCLSID[39];
-      ::StringFromGUID2(clsid,szCLSID,39);
-      WATCHX(IFC,0,_T("CLSID = ") << OLE2T(szCLSID) << _T(" IID = ") << OLE2T(szGUID) << _T(" Usage Count = ") << (*item.pUsageCount) << _T(" Agent Ref Count = ") << cRef);
-
-      count += (*item.pUsageCount);
-   }
-   WATCHX(IFC,0,_T("Total count = ") << count);
-#endif // _DEBUG
 
    ClearAgents();
 

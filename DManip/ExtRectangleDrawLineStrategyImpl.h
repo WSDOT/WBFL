@@ -84,8 +84,8 @@ public:
    STDMETHOD_(void,PerimeterGravityWell)(BOOL bPerimeterGravityWell);
    STDMETHOD_(void,SetFillColor)(COLORREF crColor);
    STDMETHOD_(COLORREF,GetFillColor)();
-   STDMETHOD_(void,SetDoFill)(BOOL doFill);
-   STDMETHOD_(BOOL,GetDoFill)();
+   STDMETHOD_(void,DoFill)(BOOL doFill);
+   STDMETHOD_(BOOL,DoFill)();
 
 // iGravityWellStrategy
 public:

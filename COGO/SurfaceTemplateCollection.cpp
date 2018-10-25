@@ -28,7 +28,7 @@
 #include "WBFLCOGO.h"
 #include "SurfaceTemplateCollection.h"
 #include "SurfaceTemplate.h"
-#include "CogoHelpers.h"
+#include <WBFLCogo\CogoHelpers.h>
 
 #include <algorithm>
 

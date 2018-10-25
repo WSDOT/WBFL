@@ -29,7 +29,7 @@
 #include "SurfaceTemplate.h"
 #include "Station.h"
 #include "TemplateSegment.h"
-#include "CogoHelpers.h"
+#include <WBFLCogo\CogoHelpers.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

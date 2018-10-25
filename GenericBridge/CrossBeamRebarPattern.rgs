@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.CrossBeamRebarPattern.1 = s 'CrossBeamRebarPattern Class'
+	{
+		CLSID = s '{9E669BF9-FE19-4e06-85C9-8307AE1BEE68}'
+	}
+	WBFLGenericBridge.CrossBeamRebarPattern = s 'CrossBeamRebarPattern Class'
+	{
+		CLSID = s '{9E669BF9-FE19-4e06-85C9-8307AE1BEE68}'
+		CurVer = s 'WBFLGenericBridge.CrossBeamRebarPattern.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {9E669BF9-FE19-4e06-85C9-8307AE1BEE68} = s 'CrossBeamRebarPattern Class'
+		{
+			ProgID = s 'WBFLGenericBridge.CrossBeamRebarPattern.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.CrossBeamRebarPattern'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

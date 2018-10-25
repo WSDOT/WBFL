@@ -161,7 +161,9 @@ BOOL CEAFApp::InitInstance()
    // create main MDI Frame window
    m_pMainWnd = CreateMainFrame();
    if ( !m_pMainWnd )
+   {
       return FALSE;
+   }
 
    // Show splash screen (does nothing if splash screen is disabled)
    CEAFSplashScreen::SetSplashScreenInfo(GetSplashScreenInfo());
@@ -173,11 +175,15 @@ BOOL CEAFApp::InitInstance()
    // Register the document templates... this is where the "plug-ins" get integrated
    // into the application framework
    if ( !RegisterDocTemplates() )
+   {
       return FALSE;
+   }
 
    // Give app plugins an opporunity to integrate with the UI
    if ( !AppPluginUIIntegration(true) )
+   {
       return FALSE;	
+   }
 
    // Done with splash screen
    CEAFSplashScreen::Hide();
@@ -194,10 +200,14 @@ BOOL CEAFApp::InitInstance()
 	m_pMainWnd->UpdateWindow();
 
    if ( IsTipOfTheDayEnabled() && !cmdInfo.m_bCommandLineMode )
+   {
       ShowTipOfTheDay();
+   }
    
    if ( cmdInfo.m_nParams != 0 )
+   {
       ProcessCommandLineOptions(cmdInfo);
+   }
 
    m_strHelpFile = m_pszHelpFilePath;
 
@@ -218,7 +228,9 @@ int CEAFApp::ExitInstance()
    // delete the document manager here, which will cause the doc templates to
    // be deleted, before the plug-in DLLs are unloaded.
    if ( m_pDocManager )
+   {
       delete m_pDocManager;
+   }
 
    m_pDocManager = NULL;
    
@@ -227,11 +239,12 @@ int CEAFApp::ExitInstance()
    GetComponentInfoManager()->UnloadPlugins();
 
    if ( m_pDocTemplateRegistrar )
+   {
       delete m_pDocTemplateRegistrar;
+   }
 
    RegistryExit();
 
-   //::CoUninitialize();
    ::OleUninitialize();
 
    return result;
@@ -430,22 +443,30 @@ END_MESSAGE_MAP()
 // CEAFApp message handlers
 BOOL CEAFApp::RegisterDocTemplates()
 {
-   //if ( !GetComponentInfoManager()->LoadPlugins(TRUE) ) // always attempt to load
-   //   return FALSE;
    if ( !GetComponentInfoManager()->LoadPlugins(FALSE) ) // always attempt to load
+   {
       return FALSE;
+   }
 
    if ( !GetComponentInfoManager()->InitPlugins() )
+   {
       return FALSE;
+   }
 
    if ( !CreateApplicationPlugins() )
+   {
       return FALSE;
+   }
 
    if ( !GetAppPluginManager()->InitPlugins() )
+   {
       return FALSE;
+   }
    
    if ( !GetAppPluginManager()->RegisterDocTemplates(this) )
+   {
       return FALSE;
+   }
 
    return TRUE;
 }
@@ -453,7 +474,9 @@ BOOL CEAFApp::RegisterDocTemplates()
 BOOL CEAFApp::AppPluginUIIntegration(BOOL bIntegrate)
 {
    if ( bIntegrate )
+   {
       CEAFSplashScreen::SetText(_T("Integrating components into the user interface"));
+   }
 
    GetAppPluginManager()->IntegrateWithUI(bIntegrate);
    return TRUE;
@@ -676,7 +699,9 @@ BOOL CEAFApp::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pH
    BOOL bResult = CWinApp::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
 
    if ( bResult )
+   {
       return bResult; // message was handled
+   }
 
    CComPtr<IEAFCommandCallback> pCallback;
    UINT nPluginCmdID;
@@ -771,8 +796,6 @@ sysDate CEAFApp::GetInstallDate()
 
    CString strProductCode = GetProductCode();
 
-   // The GUID used here is the Product Code from InstallShield
-   // This code uniquely identifies PGSuper so don't change it
    CString strDate = GetLocalMachineString(hKey,strProductCode,_T("InstallDate"),_T("191001015"));
    int year  = _ttoi(strDate.Left(4));
    int month = _ttoi(strDate.Mid(4,2));
@@ -819,7 +842,9 @@ void CEAFApp::OnAbout()
 BOOL CEAFApp::PreTranslateMessage(MSG* pMsg)
 {
    if ( CEAFSplashScreen::PreTranslateAppMessage(pMsg) )
+   {
       return TRUE;
+   }
 
    return CWinApp::PreTranslateMessage(pMsg);
 }
@@ -927,10 +952,9 @@ void CEAFApp::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
    }
 
    // We are doing command line processing, and it should have already happened...
-   // At this point, the application is done running, but we don't want to return FALSE
-   // because that says application initialization failed which isn't the case.
-   // Close the documents and post a WM_QUIT message and return TRUE. This will cause
-   // the application to close normally and do all of its necessary cleanup
+   // At this point, the application is done running.
+   // Close the documents and post a WM_QUIT message. This will cause
+   // the application to close normally and do all of its necessary cleanup.
    if ( cmdInfo.m_bCommandLineMode )
    {
       CloseAllDocuments(TRUE);
@@ -945,7 +969,9 @@ BOOL CEAFApp::ReadWindowPlacement(const CString& strSection,const CString& strKe
    CString strBuffer = GetProfileString(strSection, strKey);
 
    if (strBuffer.IsEmpty())
+   {
       return FALSE;
+   }
 
    WINDOWPLACEMENT wp;
    int nRead = _stscanf_s(strBuffer, m_strWindowPlacementFormat,
@@ -956,7 +982,9 @@ BOOL CEAFApp::ReadWindowPlacement(const CString& strSection,const CString& strKe
       &wp.rcNormalPosition.right, &wp.rcNormalPosition.bottom);
 
    if (nRead != 10)
+   {
       return FALSE;
+   }
 
    wp.length = sizeof wp;
    *pwp = wp;
@@ -1005,10 +1033,14 @@ HKEY CEAFApp::GetAppLocalMachineRegistryKey()
 	}
 
 	if (hSoftKey != NULL)
+   {
 		RegCloseKey(hSoftKey);
+   }
 	
    if (hCompanyKey != NULL)
+   {
 		RegCloseKey(hCompanyKey);
+   }
 
 	return hAppKey;
 }
@@ -1020,7 +1052,9 @@ HKEY CEAFApp::GetLocalMachineSectionKey(LPCTSTR lpszSection)
 {
 	HKEY hAppKey = GetAppLocalMachineRegistryKey();
 	if (hAppKey == NULL)
+   {
 		return NULL;
+   }
 
    return GetLocalMachineSectionKey(hAppKey,lpszSection);
 }
@@ -1040,7 +1074,9 @@ UINT CEAFApp::GetLocalMachineInt(LPCTSTR lpszSection, LPCTSTR lpszEntry,int nDef
 {
 	HKEY hAppKey = GetAppLocalMachineRegistryKey();
 	if (hAppKey == NULL)
+   {
 		return nDefault;
+   }
 
    return GetLocalMachineInt(hAppKey,lpszSection,lpszEntry,nDefault);
 }
@@ -1053,12 +1089,15 @@ UINT CEAFApp::GetLocalMachineInt(HKEY hAppKey,LPCTSTR lpszSection, LPCTSTR lpszE
 
 	HKEY hSecKey = GetLocalMachineSectionKey(hAppKey,lpszSection);
 	if (hSecKey == NULL)
+   {
 		return nDefault;
+   }
+
 	DWORD dwValue;
 	DWORD dwType;
 	DWORD dwCount = sizeof(DWORD);
-	LONG lResult = RegQueryValueEx(hSecKey, (LPTSTR)lpszEntry, NULL, &dwType,
-		(LPBYTE)&dwValue, &dwCount);
+	LONG lResult = RegQueryValueEx(hSecKey, (LPTSTR)lpszEntry, NULL, &dwType,(LPBYTE)&dwValue, &dwCount);
+
 	RegCloseKey(hSecKey);
 	if (lResult == ERROR_SUCCESS)
 	{
@@ -1073,7 +1112,9 @@ CString CEAFApp::GetLocalMachineString(LPCTSTR lpszSection, LPCTSTR lpszEntry,LP
 {
 	HKEY hAppKey = GetAppLocalMachineRegistryKey();
 	if (hAppKey == NULL)
+   {
 		return lpszDefault;
+   }
 
    return GetLocalMachineString(hAppKey,lpszSection,lpszEntry,lpszDefault);
 }
@@ -1085,11 +1126,12 @@ CString CEAFApp::GetLocalMachineString(HKEY hAppKey,LPCTSTR lpszSection, LPCTSTR
 	ASSERT(m_pszRegistryKey != NULL);
 	HKEY hSecKey = GetLocalMachineSectionKey(hAppKey,lpszSection);
 	if (hSecKey == NULL)
+   {
 		return lpszDefault;
+   }
 	CString strValue;
 	DWORD dwType, dwCount;
-	LONG lResult = RegQueryValueEx(hSecKey, (LPTSTR)lpszEntry, NULL, &dwType,
-		NULL, &dwCount);
+	LONG lResult = RegQueryValueEx(hSecKey, (LPTSTR)lpszEntry, NULL, &dwType, NULL, &dwCount);
 	if (lResult == ERROR_SUCCESS)
 	{
 		ASSERT(dwType == REG_SZ);
@@ -1140,16 +1182,24 @@ HKEY CEAFApp::GetUninstallRegistryKey()
 	}
 
 	if (hSoftKey != NULL)
+   {
 		RegCloseKey(hSoftKey);
+   }
 	
    if (hCompanyKey != NULL)
+   {
 		RegCloseKey(hCompanyKey);
+   }
 	
    if (hWinKey != NULL)
+   {
 		RegCloseKey(hWinKey);
+   }
 	
    if (hCVKey != NULL)
+   {
 		RegCloseKey(hCVKey);
+   }
 
 	return hUninstallKey;
 }
@@ -1188,7 +1238,9 @@ IMPLEMENT_DYNAMIC(CEAFPluginApp, CEAFApp)
 BOOL CEAFPluginApp::InitInstance()
 {
    if ( !CEAFApp::InitInstance() )
+   {
       return FALSE;
+   }
 
    // The installer should do this, but just in case it doesn't we'll do it here
    sysComCatMgr::CreateCategory(GetAppPluginCategoryName(),GetAppPluginCategoryID());
@@ -1279,7 +1331,9 @@ BOOL CEAFPluginApp::CreateApplicationPlugins()
 	//  serve as the connection between documents, frame windows and views.
    GetAppPluginManager()->SetCATID(GetAppPluginCategoryID());
    if ( !GetAppPluginManager()->LoadPlugins() )
+   {
       return FALSE;
+   }
 
    return TRUE;
 }
@@ -1287,7 +1341,9 @@ BOOL CEAFPluginApp::CreateApplicationPlugins()
 void save_doc(CDocument* pDoc,void* pStuff)
 {
    if ( pDoc->IsModified() )
+   {
          pDoc->DoFileSave();
+   }
 }
 
 void notify_error(CDocument* pDoc,void* pStuff)

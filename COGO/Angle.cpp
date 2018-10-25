@@ -28,7 +28,7 @@
 #include "WBFLCOGO.h"
 #include "Angle.h"
 
-#include "CogoHelpers.h"
+#include <WBFLCogo\CogoHelpers.h>
 #include <string>
 #include <algorithm>
 #include <System\Tokenizer.h>
@@ -147,7 +147,7 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
    tokizer.push_back(str);
 
    sysTokenizer::size_type nParts = tokizer.size();
-   if (nParts>4 || nParts<1)
+   if (nParts < 1 || 4 < nParts)
       return BadAngleString();  // string is empty or has too many parts
 
    if ( nParts == 1 )
@@ -228,11 +228,19 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
 
       // ddd
 	   long deg;
-      if (!sysTokenizer::ParseLong(stmp.c_str(),&deg))
+      LPCTSTR lpszDeg = stmp.c_str();
+      Float64 sign = 1;
+      if ( lpszDeg[0] == _T('-') )
+      {
+         // the angle is signed...
+         sign = -1;
+         lpszDeg++;
+      }
+
+      if (!sysTokenizer::ParseLong(lpszDeg,&deg))
          return BadAngleString();
 
-      if (rlfactor != 0)
-         deg *= rlfactor;
+      deg = abs(deg); // make sure deg is unsigned because we will be multiplying it by "sign" below
 
       // mm
 	   long min;
@@ -255,6 +263,13 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
       if (FAILED(hr))
       {
          return BadAngleString();
+      }
+
+      m_Angle *= sign;
+
+      if ( rlfactor != 0 )
+      {
+         m_Angle *= rlfactor;
       }
    }
 

@@ -93,7 +93,7 @@ Float64 DistanceToStation(IGenericBridge* bridge,Float64 distFromStartOfBridge)
    CComPtr<IPierCollection> piers;
    bridge->get_Piers(&piers);
 
-   CComPtr<IPier> pier;
+   CComPtr<IBridgePier> pier;
    piers->get_Item(0,&pier);
 
    CComPtr<IStation> objStation;
@@ -110,7 +110,7 @@ Float64 StationToDistance(IGenericBridge* bridge,Float64 station)
    CComPtr<IPierCollection> piers;
    bridge->get_Piers(&piers);
 
-   CComPtr<IPier> pier;
+   CComPtr<IBridgePier> pier;
    piers->get_Item(0,&pier);
 
    CComPtr<IStation> objStation;
@@ -136,7 +136,7 @@ void GetPiers(IGenericBridge* bridge,Float64 station,PierIndexType* pPrevPier,Pi
 
    for ( PierIndexType pierIdx = 0; pierIdx < nPiers-1; pierIdx++ )
    {
-      CComPtr<IPier> pier1, pier2;
+      CComPtr<IBridgePier> pier1, pier2;
       piers->get_Item(pierIdx,  &pier1);
       piers->get_Item(pierIdx+1,&pier2);
 

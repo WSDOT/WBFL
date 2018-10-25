@@ -93,7 +93,7 @@ HRESULT CRebarLayout::DoLoadItem(IStructuredLoad2* load,IRebarPattern* *ppItem)
    return E_FAIL;
 }
 
-STDMETHODIMP CRebarLayout::CreateRebarSection(Float64 cutLocation,IRebarSection** section)
+STDMETHODIMP CRebarLayout::CreateRebarSection(Float64 cutLocation,StageIndexType stageIdx,IRebarSection** section)
 {
    CComObject<CRebarSection>* pSection;
    CComObject<CRebarSection>::CreateInstance(&pSection);
@@ -123,21 +123,31 @@ STDMETHODIMP CRebarLayout::CreateRebarSection(Float64 cutLocation,IRebarSection*
             CComPtr<IRebar> rebar;
             rebarPattern->get_Rebar(&rebar);
 
-            CollectionIndexType nBars;
-            rebarPattern->get_Count(&nBars);
+            StageIndexType installationStageIdx;
+            rebar->get_InstallationStage(&installationStageIdx);
 
-            for ( CollectionIndexType barIdx = 0; barIdx < nBars; barIdx++ )
+            if ( installationStageIdx <= stageIdx )
             {
-               CComPtr<IPoint2d> point;
-               rebarPattern->get_Location(cutLocation-start,barIdx,&point);
+               CollectionIndexType nBars;
+               rebarPattern->get_Count(&nBars);
 
-               CComObject<CRebarSectionItem>* pSectionItem;
-               CComObject<CRebarSectionItem>::CreateInstance(&pSectionItem);
-               pSectionItem->Init(point,cutLocation-start,start+length-cutLocation,rebar);
+               HookType htLeft, htRight;
+               rebarPattern->get_Hook(qcbLeft,&htLeft);
+               rebarPattern->get_Hook(qcbRight,&htRight);
 
-               CComPtr<IRebarSectionItem> section_item = pSectionItem;
+               for ( CollectionIndexType barIdx = 0; barIdx < nBars; barIdx++ )
+               {
+                  CComPtr<IPoint2d> point;
+                  rebarPattern->get_Location(cutLocation-start,barIdx,&point);
 
-               (*section)->Add(section_item);
+                  CComObject<CRebarSectionItem>* pSectionItem;
+                  CComObject<CRebarSectionItem>::CreateInstance(&pSectionItem);
+                  pSectionItem->Init(point,cutLocation-start,start+length-cutLocation,htLeft,htRight,rebar);
+
+                  CComPtr<IRebarSectionItem> section_item = pSectionItem;
+
+                  (*section)->Add(section_item);
+               }
             }
 
             rebarPattern.Release();

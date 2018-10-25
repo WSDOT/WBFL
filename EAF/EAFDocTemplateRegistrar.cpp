@@ -62,7 +62,6 @@ CEAFDocTemplate* CEAFDocTemplateRegistrar::GetDocTemplate(long key)
    found = m_Templates.find(key);
    if ( found == m_Templates.end() )
    {
-      ATLASSERT(false); // doc template not found
       return NULL;
    }
 
@@ -74,7 +73,9 @@ void CEAFDocTemplateRegistrar::RemoveDocTemplate(long key)
    TemplateContainer::iterator found;
    found = m_Templates.find(key);
    if ( found == m_Templates.end() )
+   {
       return;
+   }
 
    CEAFDocTemplate* pTemplate = (*found).second;
    m_Templates.erase(found);

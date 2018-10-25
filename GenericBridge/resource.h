@@ -31,9 +31,9 @@
 #define IDR_GENERICBRIDGE               101
 #define IDR_STAGE                       102
 #define IDR_STAGECOLLECTION             103
+#define IDR_BRIDGEPIER                  105
 #define IDR_PIER                        106
 #define IDR_PIERCOLLECTION              107
-#define IDR_LONGITUDINALPIERDESCRIPTION 108
 #define IDR_COLUMNSEGMENT               109
 #define IDR_GIRDERSPACING               110
 #define IDR_ADAPTSTATION                111
@@ -50,8 +50,8 @@
 #define IDR_POINTOFINTERESTCOLLECTION   123
 #define IDR_COLUMN                      125
 #define IDR_COLUMNCOLLECTION            126
-#define IDR_COLUMNSPACING               127
-#define IDR_CROSSBEAM                   128
+#define IDR_COLUMNLAYOUT               127
+#define IDR_LINEARCROSSBEAM                   128
 #define IDR_TRANSVERSEPIERDESCRIPTION   129
 #define IDR_POINTLOAD                   130
 #define IDR_FSHAPEBARRIER               131
@@ -86,13 +86,15 @@
 #define IDR_REBARSECTIONITEM            165
 #define IDR_REBARSECTION                166
 #define IDR_REBARROWPATTERN             167
-#define IDR_FLEXREBARLAYOUTITEM         168
-#define IDR_REBARLAYOUT                 169
-#define IDR_REBARFACTORY                170
-#define IDR_BRIDGEDECKREBARLAYOUTITEM   171
-#define IDR_NMBRIDGEDECKREBARLAYOUTITEM 172
-#define IDR_BRIDGEDECKREBARPATTERN      173
-#define IDR_FIXEDLENGTHREBARLAYOUTITEM  174
+#define IDR_CROSSBEAMREBARPATTERN       168
+#define IDR_FLEXREBARLAYOUTITEM         169
+#define IDR_REBARLAYOUT                 170
+#define IDR_REBARFACTORY                171
+#define IDR_BRIDGEDECKREBARLAYOUTITEM   172
+#define IDR_NMBRIDGEDECKREBARLAYOUTITEM 173
+#define IDR_BRIDGEDECKREBARPATTERN      174
+#define IDR_FIXEDLENGTHREBARLAYOUTITEM  175
+#define IDR_BEARINGLAYOUT               176
 
 #define IDS_STAGENAME                   201
 #define IDS_STAGEDESCRIPTION            203
@@ -239,6 +241,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        285
 #define _APS_NEXT_COMMAND_VALUE         32780
 #define _APS_NEXT_CONTROL_VALUE         319
-#define _APS_NEXT_SYMED_VALUE           155
+#define _APS_NEXT_SYMED_VALUE           180
 #endif
 #endif

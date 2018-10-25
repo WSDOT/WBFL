@@ -31,7 +31,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 CEAFStatusItem::CEAFStatusItem(StatusGroupIDType statusGroupID,StatusCallbackIDType callbackID,LPCTSTR strDescription) :
-m_Description(strDescription), m_bRemoveAfterEdit(false)
+m_strDescription(strDescription), m_bRemoveAfterEdit(FALSE)
 {
    m_StatusGroupID = statusGroupID;
    m_CallbackID    = callbackID;
@@ -57,9 +57,9 @@ StatusGroupIDType CEAFStatusItem::GetStatusGroupID() const
    return m_StatusGroupID;
 }
 
-const std::_tstring& CEAFStatusItem::GetDescription() const
+LPCTSTR CEAFStatusItem::GetDescription() const
 {
-   return m_Description;
+   return m_strDescription;
 }
 
 StatusCallbackIDType CEAFStatusItem::GetCallbackID() const
@@ -67,12 +67,12 @@ StatusCallbackIDType CEAFStatusItem::GetCallbackID() const
    return m_CallbackID;
 }
 
-bool CEAFStatusItem::RemoveAfterEdit()
+BOOL CEAFStatusItem::RemoveAfterEdit()
 {
    return m_bRemoveAfterEdit;
 }
 
-void CEAFStatusItem::RemoveAfterEdit(bool bRemoveAfterEdit)
+void CEAFStatusItem::RemoveAfterEdit(BOOL bRemoveAfterEdit)
 {
    m_bRemoveAfterEdit = bRemoveAfterEdit;
 }

@@ -151,7 +151,7 @@ STDMETHODIMP CNegativeMomentBridgeDeckRebarLayoutItem::put_PierID(PierIDType pie
    CComPtr<IPierCollection> piers;
    m_pBridge->get_Piers(&piers);
 
-   CComPtr<IPier> firstPier;
+   CComPtr<IBridgePier> firstPier;
    piers->get_Item(0,&firstPier);
 
    m_PierID = pierID;

@@ -52,57 +52,84 @@ CTestPierCollection::~CTestPierCollection()
 
 void CTestPierCollection::Test()
 {
-   //// Create a default bridge
-   //CComPtr<IGenericBridge> bridge;
-   //bridge.CoCreateInstance(CLSID_GenericBridge);
+   // Create a default bridge
+   CComPtr<IGenericBridge> bridge;
+   bridge.CoCreateInstance(CLSID_GenericBridge);
 
-   //bridge->InsertSpanAndPier(0, 100.00, qcbAfter, qcbRight);
+   CComPtr<IBridgeGeometry> bridgeGeometry;
+   bridge->get_BridgeGeometry(&bridgeGeometry);
 
-   //CComPtr<IPierCollection> piers;
-   //bridge->get_Piers(&piers);
+   CogoObjectID alignmentID;
+   bridgeGeometry->get_BridgeAlignmentID(&alignmentID);
 
-   //TRY_TEST(piers != NULL,true);
+   CComPtr<IPierLine> pierLine;
+   bridgeGeometry->CreatePierLine(0,alignmentID,CComVariant(0.00),CComBSTR("Normal"),10,-5,&pierLine);
+   pierLine.Release();
+   bridgeGeometry->CreatePierLine(1,alignmentID,CComVariant(100.00),CComBSTR("Normal"),10,-5,&pierLine);
 
-   //PierIndexType count;
-   //TRY_TEST(piers->get_Count(NULL),E_POINTER);
-   //TRY_TEST(piers->get_Count(&count),S_OK);
-   //TRY_TEST(count,2);
+   bridge->UpdateBridgeModel();
 
-   //CComPtr<IPier> pier1, pier2;
-   //TRY_TEST(piers->get_Item(0,NULL),E_POINTER);
-   //TRY_TEST(piers->get_Item(-1,&pier1),E_INVALIDARG);
-   //TRY_TEST(piers->get_Item(100,&pier1),E_INVALIDARG);
-   //TRY_TEST(piers->get_Item(0,&pier1),S_OK);
-   //TRY_TEST(piers->get_Item(1,&pier2),S_OK);
+   CComPtr<IPierCollection> piers;
+   bridge->get_Piers(&piers);
 
-   //TRY_TEST(pier1 != NULL,true);
-   //TRY_TEST(pier2 != NULL,true);
+   TRY_TEST(piers != NULL,true);
 
-   //CComPtr<IStation> station;
-   //Float64 value;
-   //pier1->get_Station(&station);
-   //station->get_Value(&value);
-   //TRY_TEST(IsEqual(value,0.0),true);
+   PierIndexType count;
+   TRY_TEST(piers->get_Count(NULL),E_POINTER);
+   TRY_TEST(piers->get_Count(&count),S_OK);
+   TRY_TEST(count,2);
 
-   //station.Release();
-   //pier2->get_Station(&station);
-   //station->get_Value(&value);
-   //TRY_TEST(IsEqual(value,100.0),true);
+   CComPtr<IBridgePier> pier1, pier2;
+   TRY_TEST(piers->get_Item(0,NULL),E_POINTER);
+   TRY_TEST(piers->get_Item(-1,&pier1),E_INVALIDARG);
+   TRY_TEST(piers->get_Item(100,&pier1),E_INVALIDARG);
+   TRY_TEST(piers->get_Item(0,&pier1),S_OK);
+   TRY_TEST(piers->get_Item(1,&pier2),S_OK);
 
+   TRY_TEST(pier1 != NULL,true);
+   TRY_TEST(pier2 != NULL,true);
 
-   /////////////////////////////////////////
-   //// Test Error Info
-   //CComQIPtr<ISupportErrorInfo> eInfo(piers);
-   //TRY_TEST( eInfo != 0, true );
+   CComPtr<IStation> station;
+   Float64 value;
+   pier1->get_Station(&station);
+   station->get_Value(&value);
+   TRY_TEST(IsEqual(value,0.0),true);
 
-   //// Interfaces that should be supported
-   //TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IPierCollection ), S_OK );
-   //TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
+   station.Release();
+   pier2->get_Station(&station);
+   station->get_Value(&value);
+   TRY_TEST(IsEqual(value,100.0),true);
 
-   //// Interface that is not supported
-   //TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
+   CComPtr<IBridgePier> foundPier;
+   TRY_TEST(piers->FindPier(-200,&foundPier),E_FAIL);
 
-   //// Test IObjectSafety
-   //TRY_TEST( TestIObjectSafety(piers,IID_IPierCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-   //TRY_TEST( TestIObjectSafety(piers,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
+   foundPier.Release();
+   TRY_TEST(piers->FindPier(200,&foundPier),S_OK);
+   station.Release();
+   foundPier->get_Station(&station);
+   station->get_Value(&value);
+   TRY_TEST(IsEqual(value,100.0),true);
+
+   foundPier.Release();
+   TRY_TEST(piers->FindPier(50,&foundPier),S_OK);
+   station.Release();
+   foundPier->get_Station(&station);
+   station->get_Value(&value);
+   TRY_TEST(IsEqual(value,0.0),true);
+
+   ///////////////////////////////////////
+   // Test Error Info
+   CComQIPtr<ISupportErrorInfo> eInfo(piers);
+   TRY_TEST( eInfo != 0, true );
+
+   // Interfaces that should be supported
+   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IPierCollection ), S_OK );
+   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
+
+   // Interface that is not supported
+   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
+
+   // Test IObjectSafety
+   TRY_TEST( TestIObjectSafety(piers,IID_IPierCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
+   TRY_TEST( TestIObjectSafety(piers,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }

@@ -143,6 +143,25 @@ STDMETHODIMP CPoint3dCollection::Clone(IPoint3dCollection** clone)
    return S_OK;
 }
 
+STDMETHODIMP CPoint3dCollection::Offset(Float64 dx,Float64 dy,Float64 dz)
+{
+   for (iterator it= begin(); it != end(); it++)
+   {
+      CComPtr<IPoint3d> p = it->second;
+      p->Offset(dx,dy,dz);
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP CPoint3dCollection::OffsetEx(ISize3d* size)
+{
+   CHECK_IN(size);
+   Float64 dx,dy,dz;
+   size->Dimensions(&dx,&dy,&dz);
+   return Offset(dx,dy,dz);
+}
+
 STDMETHODIMP CPoint3dCollection::get_StructuredStorage(IStructuredStorage2* *pStg)
 {
    CHECK_RETOBJ(pStg);

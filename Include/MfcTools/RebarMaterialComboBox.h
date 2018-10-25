@@ -40,6 +40,9 @@ public:
 
    void Initialize(bool bFilterBySpec=true);
 
+   void GetMaterial(matRebar::Type* pType,matRebar::Grade* pGrade);
+   void SetMaterial(matRebar::Type type,matRebar::Grade grade);
+
 // Attributes
 public:
 

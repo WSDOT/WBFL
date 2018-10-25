@@ -273,12 +273,12 @@ STDMETHODIMP_(COLORREF) CRectangleDrawLineStrategyImpl::GetFillColor()
    return m_crFillColor;
 }
 
-STDMETHODIMP_(void) CRectangleDrawLineStrategyImpl::SetDoFill(BOOL fill)
+STDMETHODIMP_(void) CRectangleDrawLineStrategyImpl::DoFill(BOOL fill)
 {
    m_bDoFill = fill;
 }
 
-STDMETHODIMP_(BOOL) CRectangleDrawLineStrategyImpl::GetDoFill()
+STDMETHODIMP_(BOOL) CRectangleDrawLineStrategyImpl::DoFill()
 {
    return m_bDoFill;
 }
