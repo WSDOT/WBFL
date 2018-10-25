@@ -28,6 +28,7 @@
 #include "WBFLGenericBridge.h"
 #include "PierImpl.h"
 #include "ColumnLayout.h"
+#include <Math\Math.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -72,6 +73,12 @@ Float64 CPierImpl::GetSkewAngle()
 
 Float64 CPierImpl::GetDelta()
 {
+   // Delta is the difference in location between the left curb line and 
+   // the left edge of cross beam. If delta is greater than zero the
+   // curb line left of the left edge of the cross beam.
+   //
+   // This detal value is used in coordinate transformations
+
    // Location of the alignment measured from the left edge of the cross beam
    ColumnIndexType refColIdx;
    Float64 refColOffset;
@@ -184,158 +191,101 @@ STDMETHODIMP CPierImpl::ConvertPierToCrossBeamCoordinate(/*[in]*/Float64 Xp,/*[o
 {
    CHECK_RETVAL(pXxb);
 
-   Float64 CPO; // distance from Alignment to Crown Point
-   m_pPier->get_CrownPointOffset(&CPO);
+   Float64 Xcl;
+   HRESULT hr = ConvertPierToCurbLineCoordinate(Xp,&Xcl);
+   if ( FAILED(hr) )
+   {
+      return hr;
+   }
 
-   Float64 XclCrown;
-   m_pPier->get_CrownPointLocation(&XclCrown); // location of the crown point in curb line coordinates
-
-   Float64 XxbCrown;
-   m_pPier->ConvertCurbLineToCrossBeamCoordinate(XclCrown,&XxbCrown); // location of crown point in XBeam coordinates
-
-   Float64 delta = (XxbCrown - CPO); // CPO is in Pier Coordiantes.
-
-   *pXxb = Xp + delta;
-   return S_OK;
+   return ConvertCurbLineToCrossBeamCoordinate(Xcl,pXxb);
 }
 
 STDMETHODIMP CPierImpl::ConvertCrossBeamToPierCoordinate(/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pXp)
 {
    CHECK_RETVAL(pXp);
 
-   Float64 CPO; // distance from Alignment to Crown Point
-   m_pPier->get_CrownPointOffset(&CPO);
+   Float64 Xcl;
+   HRESULT hr = ConvertCrossBeamToCurbLineCoordinate(Xxb,&Xcl);
+   if ( FAILED(hr) )
+   {
+      return hr;
+   }
 
-   Float64 XclCrown;
-   m_pPier->get_CrownPointLocation(&XclCrown); // location of the crown point in curb line coordinates
+   return ConvertCurbLineToPierCoordinate(Xcl,pXp);
+}
 
-   Float64 XxbCrown;
-   m_pPier->ConvertCurbLineToCrossBeamCoordinate(XclCrown,&XxbCrown); // location of crown point in XBeam coordinates
+STDMETHODIMP CPierImpl::ConvertPierToCurbLineCoordinate(/*[in]*/Float64 Xp,/*[out,retval]*/Float64* pXcl)
+{
+   CHECK_RETVAL(pXcl);
+   Float64 leftCLO;
+   HRESULT hr = m_pPier->get_CurbLineOffset(qcbLeft,&leftCLO);
+   if ( FAILED(hr) )
+   {
+      return hr;
+   }
+   *pXcl = Xp - leftCLO;
+   return S_OK;
+}
 
-   Float64 delta = (XxbCrown - CPO); // CPO is in Pier Coordiantes.
-
-   *pXp = Xxb - delta;
+STDMETHODIMP CPierImpl::ConvertCurbLineToPierCoordinate(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pXp)
+{
+   CHECK_RETVAL(pXp);
+   Float64 leftCLO;
+   HRESULT hr = m_pPier->get_CurbLineOffset(qcbLeft,&leftCLO);
+   if ( FAILED(hr) )
+   {
+      return hr;
+   }
+   *pXp = Xcl + leftCLO;
    return S_OK;
 }
 
 STDMETHODIMP CPierImpl::get_CurbLineElevation(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pElev)
 {
-   CHECK_RETVAL(*pElev);
-   Float64 Xcp;
-   m_pPier->get_CrownPointLocation(&Xcp);
-   
-   Float64 Ycp;
-   m_pPier->get_CrownPointElevation(&Ycp);
+   CHECK_RETVAL(pElev);
 
-   Float64 cpo;
-   m_pPier->get_CrownPointOffset(&cpo);
+   mathPwLinearFunction2dUsingPoints fn;
+   CreateDeckProfileFunction(&fn);
 
-   Float64 Ydeck;
-   m_pPier->get_DeckElevation(&Ydeck);
-
-   if ( side == qcbLeft )
+   Float64 clo;
+   HRESULT hr = m_pPier->get_CurbLineOffset(side,&clo); // curb line offsets are in Pier coordinates
+   if ( FAILED(hr) )
    {
-      Float64 sl;
-      m_pPier->get_CrownSlope(qcbLeft,&sl);
-
-      if ( 0 <= cpo )
-      {
-         Float64 leftCLO;
-         m_pPier->get_CurbLineOffset(qcbLeft,&leftCLO);
-         *pElev = Ydeck + leftCLO*sl;
-      }
-      else
-      {
-         *pElev = Ycp - sl*Xcp;
-      }
-   }
-   else
-   {
-      Float64 sr;
-      m_pPier->get_CrownSlope(qcbRight,&sr);
-      Float64 leftCLO;
-      m_pPier->get_CurbLineOffset(qcbLeft,&leftCLO);
-      Float64 rightCLO;
-      m_pPier->get_CurbLineOffset(qcbRight,&rightCLO);
-      if ( 0 < cpo )
-      {
-         *pElev = Ycp + (rightCLO - leftCLO - Xcp)*sr;
-      }
-      else
-      {
-         *pElev = Ydeck + rightCLO*sr;
-      }
+      return hr;
    }
 
+   *pElev = fn.Evaluate(clo);
    return S_OK;
 }
 
 STDMETHODIMP CPierImpl::get_Elevation(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pElev)
 {
-   Float64 Xcp;
-   m_pPier->get_CrownPointLocation(&Xcp);
-   if ( Xcl < Xcp )
-   {
-      Float64 clElev;
-      m_pPier->get_CurbLineElevation(qcbLeft,&clElev);
-
-      Float64 sl;
-      m_pPier->get_CrownSlope(qcbLeft,&sl);
-
-      *pElev = clElev + Xcl*sl;
-   }
-   else
-   {
-      Float64 cpElev;
-      m_pPier->get_CrownPointElevation(&cpElev);
-
-      Float64 sr;
-      m_pPier->get_CrownSlope(qcbRight,&sr);
-
-      *pElev = cpElev + (Xcl - Xcp)*sr;
-   }
-   return S_OK;
-}
-
-STDMETHODIMP CPierImpl::get_CrownPointLocation(/*[out,retval]*/Float64* pXcl)
-{
-   // location of the crown point in Curb Line Coordinates
-   CHECK_RETVAL(pXcl);
-   Float64 skew = GetSkewAngle();
-   Float64 cpo;
-   m_pPier->get_CrownPointOffset(&cpo);
-   Float64 clo;
-   m_pPier->get_CurbLineOffset(qcbLeft,&clo);
-   Float64 Xcp = cpo/cos(skew) - clo;
-   *pXcl = Xcp;
-   return S_OK;
-}
-
-STDMETHODIMP CPierImpl::get_CrownPointElevation(/*[out,retval]*/Float64* pElev)
-{
    CHECK_RETVAL(pElev);
 
-   Float64 Ydeck;
-   m_pPier->get_DeckElevation(&Ydeck);
+   mathPwLinearFunction2dUsingPoints fn;
+   CreateDeckProfileFunction(&fn);
 
-   Float64 cpo;
-   m_pPier->get_CrownPointOffset(&cpo);
-
-   *pElev = Ydeck;
-   if ( 0 < cpo )
-   {
-      // crown point is to the right of the alignment
-      Float64 sl;
-      m_pPier->get_CrownSlope(qcbLeft,&sl);
-      *pElev += cpo*sl;
-   }
-   else if ( cpo < 0 )
-   {
-      // crown point is to the left of the alignment
-      Float64 sr;
-      m_pPier->get_CrownSlope(qcbRight,&sr);
-      *pElev += cpo*sr;
-   }
-
+   Float64 Xp;
+   ConvertCurbLineToPierCoordinate(Xcl,&Xp); // the deck profile function is in pier coordinates
+   *pElev = fn.Evaluate(Xp);
    return S_OK;
+}
+
+void CPierImpl::CreateDeckProfileFunction(mathPwLinearFunction2dUsingPoints* pFN)
+{
+   CComPtr<IPoint2dCollection> deckProfile;
+   m_pPier->get_DeckProfile(&deckProfile);
+
+   CComPtr<IEnumPoint2d> enumPoints;
+   deckProfile->get__Enum(&enumPoints);
+   mathPwLinearFunction2dUsingPoints fn;
+   CComPtr<IPoint2d> pnt;
+   while ( enumPoints->Next(1,&pnt,NULL) != S_FALSE )
+   {
+      Float64 x,y;
+      pnt->Location(&x,&y);
+      pFN->AddPoint(x,y);
+      pnt.Release();
+   }
 }

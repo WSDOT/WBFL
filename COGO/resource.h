@@ -49,6 +49,8 @@
 #define IDR_SURFACETEMPLATECOLLECTION   144
 #define IDR_SURFACE                     145
 #define IDR_SURFACECOLLECTION           146
+#define IDR_SURFACEPOINT                147
+#define IDR_SURFACEPROFILE              148
 #define IDS_E_POINTNOTFOUND             512
 #define IDS_E_POINTALREADYDEFINED       513
 #define IDS_E_BADDIRECTIONSTRING        514

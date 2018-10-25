@@ -53,7 +53,7 @@ public:
 	HRESULT FinalConstruct();
    void FinalRelease();
 
-DECLARE_REGISTRY_RESOURCEID(IDR_TEMPLATESEGMENT)
+DECLARE_REGISTRY_RESOURCEID(IDR_SURFACETEMPLATE)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
@@ -79,8 +79,8 @@ public:
 
 // ISurfaceTemplate
 public:
-   STDMETHOD(get_Profile)(IProfile* *pVal);
-   STDMETHOD(putref_Profile)(IProfile* newVal);
+   STDMETHOD(get_Surface)(ISurface* *pVal);
+   STDMETHOD(putref_Surface)(ISurface* newVal);
    STDMETHOD(put_Station)(VARIANT varStation);
    STDMETHOD(get_Station)(IStation** station);
    STDMETHOD(AddSegment)(Float64 width,Float64 slope,TemplateSlopeType slopeType);
@@ -94,6 +94,7 @@ public:
    STDMETHOD(GetSlope)(CollectionIndexType ridgePointIdx,Float64 offset,Float64* pSlope);
    STDMETHOD(GetSegmentSlope)(CollectionIndexType segmentIdx,Float64* pSlope);
    STDMETHOD(GetRidgePointOffset)(IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset);
+   STDMETHOD(GetRidgePointElevation)(IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset,Float64* pElev);
    STDMETHOD(Clone)(ISurfaceTemplate* *clone);
    STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal);
 
@@ -103,7 +104,7 @@ public:
    STDMETHOD(Load)(IStructuredLoad2* pLoad);
 
 private:
-   IProfile* m_pProfile; // weak reference
+   ISurface* m_pSurface; // weak reference
    CComPtr<IStation> m_Station;
    std::vector<CComPtr<ITemplateSegment>> m_Segments;
 

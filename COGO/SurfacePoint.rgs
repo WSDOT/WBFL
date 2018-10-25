@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.SurfacePoint.1 = s 'SurfacePoint Class'
+	{
+		CLSID = s '{D83C292A-4677-46ef-BEF2-CF9444A5D8E5}'
+	}
+	WBFLCogo.SurfacePoint = s 'SurfacePoint Class'
+	{
+		CLSID = s '{D83C292A-4677-46ef-BEF2-CF9444A5D8E5}'
+		CurVer = s 'WBFLCogo.SurfacePoint.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {D83C292A-4677-46ef-BEF2-CF9444A5D8E5} = s 'SurfacePoint Class'
+		{
+			ProgID = s 'WBFLCogo.SurfacePoint.1'
+			VersionIndependentProgID = s 'WBFLCogo.SurfacePoint'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

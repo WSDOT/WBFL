@@ -527,7 +527,13 @@
       <comClass clsid="{9AD670B4-C5FE-4639-A714-67008906B54D}"
           tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
           description="WideningCollection Class"></comClass>
-      <typelib tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
+     <comClass clsid="{D83C292A-4677-46ef-BEF2-CF9444A5D8E5}"
+               tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
+               description="SurfacePoint Class"></comClass>
+     <comClass clsid="{1B216215-3EEC-407e-BBEC-52BB0C0FBCBD}"
+          tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
+          description="SurfaceProfile Class"></comClass>
+     <typelib tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                version="1.0"
                helpdir=""
                flags="HASDISKIMAGE"></typelib>
@@ -1282,7 +1288,7 @@
                 description="FilteredSegmentCollection Class"></comClass>
       <comClass clsid="{627E1C31-A568-406E-8583-7887AD068D0B}"
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
-                description="FilteredSuperstructureMemberCollection Class"></comClass>
+                description="SuperstructureMemberCollection Class"></comClass>
       <comClass clsid="{655DBEEE-92E2-4D98-8AA7-C3D14641B0AC}"
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                 description="TemporaryPierItem Class"></comClass>

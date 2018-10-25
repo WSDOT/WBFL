@@ -56,8 +56,12 @@ lrfdApproximateLosses::lrfdApproximateLosses(BeamType beamType,
                          Float64 x, // location along girder where losses are computed
                          Float64 Lg,    // girder length
                          lrfdLosses::SectionPropertiesType sectionProperties,
-                         matPsStrand::Grade gr,
-                         matPsStrand::Type type,
+                         matPsStrand::Grade gradePerm, // strand grade
+                         matPsStrand::Type typePerm, // strand type
+                         matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
+                         matPsStrand::Grade gradeTemp, // strand grade
+                         matPsStrand::Type typeTemp, // strand type
+                         matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
                          Float64 fpjPerm, // fpj permanent strands
                          Float64 fpjTemp, // fpj of temporary strands
                          Float64 ApsPerm,  // area of permanent strand
@@ -104,7 +108,7 @@ lrfdApproximateLosses::lrfdApproximateLosses(BeamType beamType,
                          bool bIgnoreInitialRelaxation,
                          bool bValidateLosses
                          ) :
-lrfdLosses(x,Lg,sectionProperties,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Mllim,Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,bIgnoreInitialRelaxation,bValidateLosses)
+lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Mllim,Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,bIgnoreInitialRelaxation,bValidateLosses)
 
 {
    m_ConcreteType = concreteType;
@@ -320,7 +324,7 @@ void lrfdApproximateLosses::UpdateLongTermLosses() const
       }
 
 
-      if ( m_Type == matPsStrand::LowRelaxation )
+      if ( m_TypePerm == matPsStrand::LowRelaxation )
       {
          losses -= lowRelaxReduction;
       }

@@ -53,6 +53,7 @@ public:
 	{
       m_Grade = Grade270;
       m_Type = LowRelaxation;
+      m_Coating = None;
       m_Size = D5000;
 	
       m_InstallationStageIdx = 0;
@@ -84,6 +85,7 @@ private:
    CComBSTR m_bstrName;
    StrandGrade m_Grade;
    StrandType m_Type;
+   StrandCoating m_Coating;
    StrandSize m_Size;
    StageIndexType m_InstallationStageIdx;
 
@@ -99,6 +101,8 @@ public:
 	STDMETHOD(put_Grade)(/*[in]*/ StrandGrade grade);
 	STDMETHOD(get_Type)(/*[out,retval]*/ StrandType* type);
 	STDMETHOD(put_Type)(/*[in]*/ StrandType type);
+	STDMETHOD(get_Coating)(/*[out,retval]*/ StrandCoating* coating);
+	STDMETHOD(put_Coating)(/*[in]*/ StrandCoating coating);
 	STDMETHOD(get_Size)(/*[out,retval]*/ StrandSize* size);
 	STDMETHOD(put_Size)(/*[in]*/ StrandSize size);
    STDMETHOD(put_InstallationStage)(StageIndexType stageIdx);

@@ -1021,7 +1021,7 @@ bool run_integration_tests(dbgLog& rlog)
                       ::ConvertToSysUnits(29000.,unitMeasure::KSI),
                       ::ConvertToSysUnits(60.,unitMeasure::KSI));
 
-   matPsStrand ps_270(_T("Grade 270"),matPsStrand::Gr1860,matPsStrand::LowRelaxation,matPsStrand::D1270,
+   matPsStrand ps_270(_T("Grade 270"),matPsStrand::Gr1860,matPsStrand::LowRelaxation,matPsStrand::None,matPsStrand::D1270,
                       ::ConvertToSysUnits(270.,unitMeasure::KSI),
                       ::ConvertToSysUnits(243.,unitMeasure::KSI),
                       ::ConvertToSysUnits(28000.,unitMeasure::KSI),

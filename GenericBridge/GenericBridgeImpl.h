@@ -128,7 +128,6 @@ public:
    STDMETHOD(CreateSuperstructureMember)(GirderIDType id,LocationType locationType,ISuperstructureMember** ppMbr);
    STDMETHOD(get_SuperstructureMember)(GirderIDType id,ISuperstructureMember** ppMbr);
    STDMETHOD(get__EnumSuperstructureMembers)(IEnumSuperstructureMembers* *enumSSMbrs);
-   STDMETHOD(get_SuperstructureMembersAtStation)(Float64 station,IFilteredSuperstructureMemberCollection** ppMbrs);
 
    STDMETHOD(UpdateBridgeModel)();
 

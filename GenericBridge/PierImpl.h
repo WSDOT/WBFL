@@ -25,6 +25,8 @@
 
 #pragma once
 
+class mathPwLinearFunction2dUsingPoints;
+
 class CPierImpl
 {
 public:
@@ -56,9 +58,9 @@ public:
    STDMETHOD(ConvertCurbLineToCrossBeamCoordinate)(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pXxb);
    STDMETHOD(ConvertPierToCrossBeamCoordinate)(/*[in]*/Float64 Xp,/*[out,retval]*/Float64* pXxb);
    STDMETHOD(ConvertCrossBeamToPierCoordinate)(/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pXp);
+   STDMETHOD(ConvertPierToCurbLineCoordinate)(/*[in]*/Float64 Xp,/*[out,retval]*/Float64* pXcl);
+   STDMETHOD(ConvertCurbLineToPierCoordinate)(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pXp);
    STDMETHOD(get_Elevation)(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pElev);
-   STDMETHOD(get_CrownPointLocation)(/*[out,retval]*/Float64* pXcl);
-   STDMETHOD(get_CrownPointElevation)(/*[out,retval]*/Float64* pElev);
    STDMETHOD(get_CurbLineElevation)(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pElev);
 
 public:
@@ -68,4 +70,6 @@ public:
    CComPtr<ICrossBeam> m_CrossBeam;
    CComPtr<IBearingLayout> m_BearingLayout;
    CComPtr<IColumnLayout> m_ColumnLayout;
+
+   void CreateDeckProfileFunction(mathPwLinearFunction2dUsingPoints* pFN);
 };

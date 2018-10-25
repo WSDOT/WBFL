@@ -87,6 +87,12 @@ public:
                D1575 = 0x1000,// 0.62"
    }; 
 
+   //------------------------------------------------------------------------
+   enum Coating { None        = 0x00010000, 
+                  SmoothEpoxy = 0x00020000,
+                  GritEpoxy   = 0x00040000
+   };
+
    // GROUP: LIFECYCLE
 
    //------------------------------------------------------------------------
@@ -96,7 +102,7 @@ public:
 
    //------------------------------------------------------------------------
    // Initializes the object with the supplied parameters.
-   matPsStrand(const std::_tstring& name,Grade grade,Type type,Size size,
+   matPsStrand(const std::_tstring& name,Grade grade,Type type,Coating coating,Size size,
                Float64 fpu, Float64 fpy, Float64 modE,
                Float64 d, Float64 a);
 
@@ -149,6 +155,12 @@ public:
 
    //------------------------------------------------------------------------
    Size GetSize() const;
+
+   //------------------------------------------------------------------------
+   void SetCoating(Coating coating);
+
+   //------------------------------------------------------------------------
+   Coating GetCoating() const;
 
    //------------------------------------------------------------------------
    void SetNominalDiameter(Float64 d);
@@ -221,6 +233,7 @@ private:
    Grade       m_Grade;
    Type        m_Type;
    Size        m_Size;
+   Coating     m_Coating;
    Float64     m_Diameter;
    Float64     m_Area;
    Float64     m_Fpu;
@@ -244,6 +257,16 @@ inline void matPsStrand::SetSize(Size size)
 inline matPsStrand::Size matPsStrand::GetSize() const
 {
    return m_Size;
+}
+
+inline void matPsStrand::SetCoating(Coating coating)
+{
+   m_Coating = coating;
+}
+
+inline matPsStrand::Coating matPsStrand::GetCoating() const
+{
+   return m_Coating;
 }
 
 inline void matPsStrand::SetNominalDiameter(Float64 d)

@@ -78,8 +78,12 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005(
                          Float64 x,
                          Float64 Lg,
                          lrfdLosses::SectionPropertiesType sectionProperties,
-                         matPsStrand::Grade gr,
-                         matPsStrand::Type type,
+                         matPsStrand::Grade gradePerm, // strand grade
+                         matPsStrand::Type typePerm, // strand type
+                         matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
+                         matPsStrand::Grade gradeTemp, // strand grade
+                         matPsStrand::Type typeTemp, // strand type
+                         matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
                          Float64 fpjPerm, // fpj permanent strands
                          Float64 fpjTemp,  // fpj of temporary strands
                          Float64 ApsPerm,  // area of permanent strand
@@ -150,7 +154,7 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005(
                          bool bValidateParameters,
                          RelaxationLossMethod relaxationMethod
                          ) :
-lrfdLosses(x,Lg,sectionProperties,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Mllim,Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,bIgnoreInitialRelaxation,bValidateParameters)
+lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Mllim,Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,bIgnoreInitialRelaxation,bValidateParameters)
 {
    m_V                     = V;
    m_S                     = S;
@@ -526,14 +530,24 @@ Float64 lrfdRefinedLosses2005::GetPermanentStrandKih() const
     return m_Kih[PERMANENT_STRAND];
 }
 
-Float64 lrfdRefinedLosses2005::GetKL() const
+Float64 lrfdRefinedLosses2005::GetTemporaryStrandKL() const
 {
     if ( m_IsDirty )
     {
         UpdateLosses();
     }
 
-    return m_KL;
+    return m_KL[TEMPORARY_STRAND];
+}
+
+Float64 lrfdRefinedLosses2005::GetPermanentStrandKL() const
+{
+    if ( m_IsDirty )
+    {
+        UpdateLosses();
+    }
+
+    return m_KL[PERMANENT_STRAND];
 }
 
 Float64 lrfdRefinedLosses2005::Get_ebdf() const
@@ -793,7 +807,8 @@ void lrfdRefinedLosses2005::MakeCopy( const lrfdRefinedLosses2005& rOther )
    m_Kid                   = rOther.m_Kid;
    m_Kih[TEMPORARY_STRAND] = rOther.m_Kih[TEMPORARY_STRAND];
    m_Kih[PERMANENT_STRAND] = rOther.m_Kih[PERMANENT_STRAND];
-   m_KL                    = rOther.m_KL;
+   m_KL[TEMPORARY_STRAND]  = rOther.m_KL[TEMPORARY_STRAND];
+   m_KL[PERMANENT_STRAND]  = rOther.m_KL[PERMANENT_STRAND];
    m_ebdf                  = rOther.m_ebdf;
    m_ebif                  = rOther.m_ebif;
    m_Kdf                   = rOther.m_Kdf;
@@ -851,7 +866,7 @@ void lrfdRefinedLosses2005::ValidateParameters() const
    }
 
    // strand type must be low relaxation if lump sum relaxation loss is used
-   if ( m_RelaxationMethod == LumpSum && m_Type != matPsStrand::LowRelaxation )
+   if ( m_RelaxationMethod == LumpSum && m_TypePerm != matPsStrand::LowRelaxation && m_TypeTemp != matPsStrand::LowRelaxation )
    {
       THROW(lrfdXPsLosses,StrandType);
    }
@@ -922,18 +937,18 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    switch( m_RelaxationMethod )
    {
    case Simplified:
-      m_dfpR1 = IsZero(fpt) ? 0 : (fpt/m_KL)*(fpt/m_Fpy - 0.55);
+      m_dfpR1 = IsZero(fpt) ? 0 : (fpt/m_KL[PERMANENT_STRAND])*(fpt/m_FpyPerm - 0.55);
       m_dfpR1 = (m_dfpR1 < 0 ? 0 : m_dfpR1); // Fpt can't be less than 0.55Fpy
       break;
 
    case Refined:
-      m_dfpR1 = IsZero(fpt) ? 0 : (fpt/m_KL)*(log10(24*td)/log10(24*ti))*(fpt/m_Fpy - 0.55)*(1 - 3*(m_dfpSR + m_dfpCR)/fpt)*m_Kid;
+      m_dfpR1 = IsZero(fpt) ? 0 : (fpt/m_KL[PERMANENT_STRAND])*(log10(24*td)/log10(24*ti))*(fpt/m_FpyPerm - 0.55)*(1 - 3*(m_dfpSR + m_dfpCR)/fpt)*m_Kid;
       m_dfpR1 = (m_dfpR1 < 0 ? 0 : m_dfpR1); // Fpt can't be less than 0.55Fpy
       break;
 
    case LumpSum:
       // strand type must be low relaxation if lump sum relaxation loss is used
-      if ( m_Type != matPsStrand::LowRelaxation )
+      if ( m_TypePerm != matPsStrand::LowRelaxation )
       {
          THROW(lrfdXPsLosses,StrandType);
       }
@@ -943,6 +958,13 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    default:
       ATLASSERT(false); // should never get here
       m_dfpR1 = 0;
+   }
+
+   if ( m_CoatingPerm != matPsStrand::None )
+   {
+      // See PCI Guidelines for the use of epoxy-coated strand
+      // PCI Journal July-August 1993. Section 5.3
+      m_dfpR1 *= 2;
    }
 
    //////////////////////////////////////////////////////////////////////////////////////
@@ -1074,11 +1096,13 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
    // Losses: Time of Transfer to Time of Lifting [5.9.5.4.2]
    if ( m_RelaxationMethod == Simplified )
    {
-      m_KL = (m_Type == matPsStrand::LowRelaxation ? 30 : 7);
+      m_KL[TEMPORARY_STRAND] = (m_TypeTemp == matPsStrand::LowRelaxation ? 30 : 7);
+      m_KL[PERMANENT_STRAND] = (m_TypePerm == matPsStrand::LowRelaxation ? 30 : 7);
    }
    else
    {
-      m_KL = (m_Type == matPsStrand::LowRelaxation ? 45 : 10);
+      m_KL[TEMPORARY_STRAND] = (m_TypeTemp == matPsStrand::LowRelaxation ? 45 : 10);
+      m_KL[PERMANENT_STRAND] = (m_TypePerm == matPsStrand::LowRelaxation ? 45 : 10);
    }
 
    m_khs = 2.0 - 0.014*m_H;
@@ -1160,12 +1184,12 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
    switch(m_RelaxationMethod)
    {
    case Simplified:
-      m_dfpR1H[TEMPORARY_STRAND] = IsZero(fpt) ? 0 : (fpt/m_KL)*(fpt/m_Fpy - 0.55);
+      m_dfpR1H[TEMPORARY_STRAND] = IsZero(fpt) ? 0 : (fpt/m_KL[TEMPORARY_STRAND])*(fpt/m_FpyTemp - 0.55);
       m_dfpR1H[TEMPORARY_STRAND] = (m_dfpR1H[TEMPORARY_STRAND] < 0 ? 0 : m_dfpR1H[TEMPORARY_STRAND]); // Fpt can't be less than 0.55Fpy
       break;
    
    case Refined:
-      m_dfpR1H[TEMPORARY_STRAND] = IsZero(fpt) ? 0 : (fpt/m_KL)*(log10(24*th)/log10(24*ti))*(fpt/m_Fpy - 0.55)*(1 - 3*(m_dfpSRH[TEMPORARY_STRAND] + m_dfpCRH[TEMPORARY_STRAND])/fpt)*m_Kih[TEMPORARY_STRAND];
+      m_dfpR1H[TEMPORARY_STRAND] = IsZero(fpt) ? 0 : (fpt/m_KL[TEMPORARY_STRAND])*(log10(24*th)/log10(24*ti))*(fpt/m_FpyTemp - 0.55)*(1 - 3*(m_dfpSRH[TEMPORARY_STRAND] + m_dfpCRH[TEMPORARY_STRAND])/fpt)*m_Kih[TEMPORARY_STRAND];
       m_dfpR1H[TEMPORARY_STRAND] = (m_dfpR1H[TEMPORARY_STRAND] < 0 ? 0 : m_dfpR1H[TEMPORARY_STRAND]); // Fpt can't be less than 0.55Fpy
       break;
    
@@ -1179,6 +1203,13 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
       break;
    }
 
+   if ( m_CoatingTemp != matPsStrand::None )
+   {
+      // See PCI Guidelines for the use of epoxy-coated strand
+      // PCI Journal July-August 1993. Section 5.3
+      m_dfpR1H[TEMPORARY_STRAND] *= 2;
+   }
+
    fpj = IsZero(m_ApsPerm) ? 0 : m_FpjPerm;
    fpt = fpj - m_dfpR0[PERMANENT_STRAND];
    if ( m_SectionProperties == sptGross )
@@ -1189,12 +1220,12 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
    switch(m_RelaxationMethod)
    {
    case Simplified:
-      m_dfpR1H[PERMANENT_STRAND] = IsZero(fpt) ? 0 : (fpt/m_KL)*(fpt/m_Fpy - 0.55);
+      m_dfpR1H[PERMANENT_STRAND] = IsZero(fpt) ? 0 : (fpt/m_KL[PERMANENT_STRAND])*(fpt/m_FpyPerm - 0.55);
       m_dfpR1H[PERMANENT_STRAND] = (m_dfpR1H[PERMANENT_STRAND] < 0 ? 0 : m_dfpR1H[PERMANENT_STRAND]); // Fpt can't be less than 0.55Fpy
       break;
    
    case Refined:
-      m_dfpR1H[PERMANENT_STRAND] = IsZero(fpt) ? 0 : (fpt/m_KL)*(log10(24*th)/log10(24*ti))*(fpt/m_Fpy - 0.55)*(1 - 3*(m_dfpSRH[PERMANENT_STRAND] + m_dfpCRH[PERMANENT_STRAND])/fpt)*m_Kih[PERMANENT_STRAND];
+      m_dfpR1H[PERMANENT_STRAND] = IsZero(fpt) ? 0 : (fpt/m_KL[PERMANENT_STRAND])*(log10(24*th)/log10(24*ti))*(fpt/m_FpyPerm - 0.55)*(1 - 3*(m_dfpSRH[PERMANENT_STRAND] + m_dfpCRH[PERMANENT_STRAND])/fpt)*m_Kih[PERMANENT_STRAND];
       m_dfpR1H[PERMANENT_STRAND] = (m_dfpR1H[PERMANENT_STRAND] < 0 ? 0 : m_dfpR1H[PERMANENT_STRAND]); // Fpt can't be less than 0.55Fpy
       break;
    
@@ -1206,6 +1237,20 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
       ATLASSERT(false);
       m_dfpR1H[PERMANENT_STRAND] = 0;
       break;
+   }
+
+   if ( m_CoatingPerm != matPsStrand::None )
+   {
+      // See PCI Guidelines for the use of epoxy-coated strand
+      // PCI Journal July-August 1993. Section 5.3
+      m_dfpR1H[PERMANENT_STRAND] *= 2;
+   }
+
+   if ( m_CoatingTemp != matPsStrand::None )
+   {
+      // See PCI Guidelines for the use of epoxy-coated strand
+      // PCI Journal July-August 1993. Section 5.3
+      m_dfpR1H[TEMPORARY_STRAND] *= 2;
    }
 
    // Total time dependent losses at shipping
@@ -1254,6 +1299,10 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
                          sptGross,
                          matPsStrand::Gr1860,
                          matPsStrand::LowRelaxation,
+                         matPsStrand::None,
+                         matPsStrand::Gr1860,
+                         matPsStrand::LowRelaxation,
+                         matPsStrand::None,
                          1396186227.0505831, // fpj permanent strands
                          1396188385.8038988, // fpj of temporary strands
                          0.0051799896399999995,  // area of permanent strand

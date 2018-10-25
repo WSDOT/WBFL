@@ -7,6 +7,7 @@
 #include "DistributedLoadListPage.h"
 #include "MemberStrainLoadListPage.h"
 #include "PoiListPage.h"
+#include "ResultsListPage.h"
 
 // CModelPropertiesDlg
 
@@ -32,6 +33,7 @@ protected:
    CDistributedLoadListPage m_DistributedLoadPage;
    CMemberStrainLoadListPage m_StrainLoadPage;
    CPoiListPage m_PoiPage;
+   CResultsListPage m_ResultsPage;
 };
 
 

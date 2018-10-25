@@ -41,7 +41,7 @@ static char THIS_FILE[] = __FILE__;
 
 HRESULT CWidening::FinalConstruct()
 {
-   m_pProfile = NULL;
+   m_pSurface = NULL;
 
    CComObject<CStation>* pBeginTransition;
    CComObject<CStation>::CreateInstance(&pBeginTransition);
@@ -86,9 +86,9 @@ STDMETHODIMP CWidening::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 // IWidening
-STDMETHODIMP CWidening::Init(IProfile* pProfile,VARIANT varBeginStation,VARIANT varBeginFullStation,VARIANT varEndFullStation,VARIANT varEndStation,Float64 widening,IndexType seg1,IndexType seg2)
+STDMETHODIMP CWidening::Init(ISurface* pSurface,VARIANT varBeginStation,VARIANT varBeginFullStation,VARIANT varEndFullStation,VARIANT varEndStation,Float64 widening,IndexType seg1,IndexType seg2)
 {
-   if ( FAILED(putref_Profile(pProfile)) )
+   if ( FAILED(putref_Surface(pSurface)) )
       return E_FAIL;
 
    if ( FAILED(put_BeginTransition(varBeginStation)) )
@@ -115,21 +115,22 @@ STDMETHODIMP CWidening::Init(IProfile* pProfile,VARIANT varBeginStation,VARIANT 
    return S_OK;
 }
 
-STDMETHODIMP CWidening::get_Profile(IProfile* *pVal)
+STDMETHODIMP CWidening::get_Surface(ISurface* *pVal)
 {
    CHECK_RETOBJ(pVal);
-   if ( m_pProfile )
+   if ( m_pSurface )
    {
-      (*pVal) = m_pProfile;
+      (*pVal) = m_pSurface;
       (*pVal)->AddRef();
    }
 
    return S_OK;
 }
 
-STDMETHODIMP CWidening::putref_Profile(IProfile* newVal)
+STDMETHODIMP CWidening::putref_Surface(ISurface* newVal)
 {
-   m_pProfile = newVal;
+   CHECK_IN(newVal);
+   m_pSurface = newVal;
    return S_OK;
 }
 
@@ -144,7 +145,12 @@ STDMETHODIMP CWidening::put_BeginTransition(VARIANT varStation)
    if ( FAILED(hr) )
       return hr;
 
-   if ( !cogoUtil::IsEqual(m_pProfile,objStation,m_BeginTransition) )
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+   if ( !cogoUtil::IsEqual(profile,objStation,m_BeginTransition) )
    {
       m_BeginTransition.Release();
       objStation->Clone(&m_BeginTransition);
@@ -170,7 +176,12 @@ STDMETHODIMP CWidening::put_BeginFullWidening(VARIANT varStation)
    if ( FAILED(hr) )
       return hr;
 
-   if ( !cogoUtil::IsEqual(m_pProfile,objStation,m_BeginFullWidening) )
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+   if ( !cogoUtil::IsEqual(profile,objStation,m_BeginFullWidening) )
    {
       m_BeginFullWidening.Release();
       objStation->Clone(&m_BeginFullWidening);
@@ -196,7 +207,12 @@ STDMETHODIMP CWidening::put_EndFullWidening(VARIANT varStation)
    if ( FAILED(hr) )
       return hr;
 
-   if ( !cogoUtil::IsEqual(m_pProfile,objStation,m_EndFullWidening) )
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+   if ( !cogoUtil::IsEqual(profile,objStation,m_EndFullWidening) )
    {
       m_EndFullWidening.Release();
       objStation->Clone(&m_EndFullWidening);
@@ -222,7 +238,12 @@ STDMETHODIMP CWidening::put_EndTransition(VARIANT varStation)
    if ( FAILED(hr) )
       return hr;
 
-   if ( !cogoUtil::IsEqual(m_pProfile,objStation,m_EndTransition) )
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+   if ( !cogoUtil::IsEqual(profile,objStation,m_EndTransition) )
    {
       m_EndTransition.Release();
       objStation->Clone(&m_EndTransition);
@@ -257,7 +278,9 @@ STDMETHODIMP CWidening::get_Widening(Float64* value)
 STDMETHODIMP CWidening::put_Segment(IndexType pntIdx,IndexType segmentIdx)
 {
    if ( 1 < pntIdx )
+   {
       return E_INVALIDARG;
+   }
 
    if ( m_SegmentIndex[pntIdx] != segmentIdx )
    {
@@ -272,7 +295,9 @@ STDMETHODIMP CWidening::get_Segment(IndexType pntIdx,IndexType* segmentIdx)
    CHECK_RETVAL(segmentIdx);
 
    if ( 1 < pntIdx )
+   {
       return E_INVALIDARG;
+   }
 
    *segmentIdx = m_SegmentIndex[pntIdx];
    return S_OK;
@@ -288,7 +313,9 @@ STDMETHODIMP CWidening::GetWidening(VARIANT varStation,IndexType templateSegment
       return hr;
 
    if ( templateSegmentIdx == INVALID_INDEX )
+   {
       return E_INVALIDARG;
+   }
 
    if ( m_SegmentIndex[0] != templateSegmentIdx && m_SegmentIndex[1] != templateSegmentIdx )
    {
@@ -297,21 +324,26 @@ STDMETHODIMP CWidening::GetWidening(VARIANT varStation,IndexType templateSegment
       return S_OK;
    }
 
-   if ( 0 < cogoUtil::Compare(m_pProfile,objStation,m_BeginTransition) ||
-        0 < cogoUtil::Compare(m_pProfile,m_EndTransition,objStation) )
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+   if ( 0 < cogoUtil::Compare(profile,objStation,m_BeginTransition) ||
+        0 < cogoUtil::Compare(profile,m_EndTransition,objStation) )
    {
       // station is not in the widening area
       *pWidening = 0;
       return S_OK;
    }
 
-   if ( 0 <= cogoUtil::Compare(m_pProfile,m_BeginTransition,objStation) &&
-        0 <= cogoUtil::Compare(m_pProfile,objStation,m_BeginFullWidening) )
+   if ( 0 <= cogoUtil::Compare(profile,m_BeginTransition,objStation) &&
+        0 <= cogoUtil::Compare(profile,objStation,m_BeginFullWidening) )
    {
       // In begin transition
-      Float64 station = cogoUtil::GetNormalizedStationValue(m_pProfile,objStation);
-      Float64 begin   = cogoUtil::GetNormalizedStationValue(m_pProfile,m_BeginTransition);
-      Float64 full    = cogoUtil::GetNormalizedStationValue(m_pProfile,m_BeginFullWidening);
+      Float64 station = cogoUtil::GetNormalizedStationValue(profile,objStation);
+      Float64 begin   = cogoUtil::GetNormalizedStationValue(profile,m_BeginTransition);
+      Float64 full    = cogoUtil::GetNormalizedStationValue(profile,m_BeginFullWidening);
       if ( IsEqual(begin,full) )
       {
          *pWidening = m_Widening;
@@ -321,13 +353,13 @@ STDMETHODIMP CWidening::GetWidening(VARIANT varStation,IndexType templateSegment
          *pWidening = ::LinInterp(station-begin,0.0,m_Widening,full-begin);
       }
    }
-   else if ( 0 <= cogoUtil::Compare(m_pProfile,m_EndFullWidening,objStation) &&
-             0 <= cogoUtil::Compare(m_pProfile,objStation,m_EndTransition) )
+   else if ( 0 <= cogoUtil::Compare(profile,m_EndFullWidening,objStation) &&
+             0 <= cogoUtil::Compare(profile,objStation,m_EndTransition) )
    {
       // In end transition
-      Float64 station = cogoUtil::GetNormalizedStationValue(m_pProfile,objStation);
-      Float64 full    = cogoUtil::GetNormalizedStationValue(m_pProfile,m_EndFullWidening);
-      Float64 end     = cogoUtil::GetNormalizedStationValue(m_pProfile,m_EndTransition);
+      Float64 station = cogoUtil::GetNormalizedStationValue(profile,objStation);
+      Float64 full    = cogoUtil::GetNormalizedStationValue(profile,m_EndFullWidening);
+      Float64 end     = cogoUtil::GetNormalizedStationValue(profile,m_EndTransition);
       if ( IsEqual(full,end) )
       {
          *pWidening = m_Widening;
@@ -353,7 +385,7 @@ STDMETHODIMP CWidening::Clone(IWidening** ppClone)
    CComObject<CWidening>* pClone;
    CComObject<CWidening>::CreateInstance(&pClone);
 
-   pClone->Init(m_pProfile,CComVariant(m_BeginTransition),CComVariant(m_BeginFullWidening),CComVariant(m_EndFullWidening),CComVariant(m_EndTransition),m_Widening,m_SegmentIndex[0],m_SegmentIndex[1]);
+   pClone->Init(m_pSurface,CComVariant(m_BeginTransition),CComVariant(m_BeginFullWidening),CComVariant(m_EndFullWidening),CComVariant(m_EndTransition),m_Widening,m_SegmentIndex[0],m_SegmentIndex[1]);
 
    (*ppClone) = pClone;
    (*ppClone)->AddRef();
@@ -394,13 +426,21 @@ STDMETHODIMP CWidening::Load(IStructuredLoad2* pLoad)
 
 HRESULT CWidening::ValidateStation(IStation* station)
 {
-   if ( m_pProfile == NULL )
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+
+   if ( profile == NULL )
    {
       // if not associated with a profile, station must be normalized
       ZoneIndexType staEqnZoneIdx;
       station->get_StationZoneIndex(&staEqnZoneIdx);
       if ( staEqnZoneIdx != INVALID_INDEX )
+      {
          return E_INVALIDARG; // station must be normalized
+      }
    }
 
    return S_OK;

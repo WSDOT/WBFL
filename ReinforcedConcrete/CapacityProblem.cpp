@@ -568,7 +568,7 @@ void rcaCapacityProblem::GetSectionForces(Float64* pFz,
 void rcaCapacityProblem::GetTensileCapacity(Float64* pPt,Float64* pMxt,Float64* pMyt) const
 {
    // Pure axial tension is defined as all reinforcement has yielded.  If the
-   // section is non-symmetrical there will be corrosponding moments.
+   // section is non-symmetrical there will be corresponding moments.
    // See pg 402 of MacGregor
    // Pt = Sum(fyi*Asi)
    // Mxt = Sum(fyi*Asi*(cg.Y()-pc.Y()))
@@ -582,7 +582,7 @@ void rcaCapacityProblem::GetTensileCapacity(Float64* pPt,Float64* pMxt,Float64* 
                                         // compressive forces. The plastic
                                         // centroid for pure tension will be different
                                         // for unsymetric rebar layouts.  In this case
-                                        // corrosponding moments will occur.
+                                        // corresponding moments will occur.
 
    Float64 Pt  = 0;
    Float64 Mxt = 0;

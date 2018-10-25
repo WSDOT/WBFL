@@ -42,7 +42,7 @@ static char THIS_FILE[] = __FILE__;
 
 HRESULT CSurfaceTemplate::FinalConstruct()
 {
-   m_pProfile = NULL;
+   m_pSurface = NULL;
 
    CComObject<CStation>* pStation;
    CComObject<CStation>::CreateInstance(&pStation);
@@ -65,28 +65,30 @@ STDMETHODIMP CSurfaceTemplate::InterfaceSupportsErrorInfo(REFIID riid)
    for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
    {
       if (InlineIsEqualGUID(*arr[i],riid))
+      {
          return S_OK;
+      }
    }
    return S_FALSE;
 }
 
 // ISurfaceTemplate
 
-STDMETHODIMP CSurfaceTemplate::get_Profile(IProfile* *pVal)
+STDMETHODIMP CSurfaceTemplate::get_Surface(ISurface* *pVal)
 {
    CHECK_RETOBJ(pVal);
-   if ( m_pProfile )
+   if ( m_pSurface )
    {
-      (*pVal) = m_pProfile;
+      (*pVal) = m_pSurface;
       (*pVal)->AddRef();
    }
 
    return S_OK;
 }
 
-STDMETHODIMP CSurfaceTemplate::putref_Profile(IProfile* newVal)
+STDMETHODIMP CSurfaceTemplate::putref_Surface(ISurface* newVal)
 {
-   m_pProfile = newVal;
+   m_pSurface = newVal;
    return S_OK;
 }
 
@@ -95,13 +97,22 @@ STDMETHODIMP CSurfaceTemplate::put_Station(VARIANT varStation)
    CComPtr<IStation> objStation;
    HRESULT hr = cogoUtil::StationFromVariant(varStation,false,&objStation);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = ValidateStation(objStation);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
-   if ( !cogoUtil::IsEqual(m_pProfile,objStation,m_Station) )
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+   if ( !cogoUtil::IsEqual(profile,objStation,m_Station) )
    {
       m_Station.Release();
       objStation->Clone(&m_Station);
@@ -136,7 +147,9 @@ STDMETHODIMP CSurfaceTemplate::AddSegmentEx(ITemplateSegment* segment)
 STDMETHODIMP CSurfaceTemplate::RemoveSegment(CollectionIndexType idx)
 {
    if ( m_Segments.size() <= idx )
+   {
       return E_INVALIDARG;
+   }
 
    m_Segments.erase(m_Segments.begin() + idx);
    Fire_OnTemplateSegmentRemoved(this);
@@ -154,7 +167,9 @@ STDMETHODIMP CSurfaceTemplate::get_Item(CollectionIndexType idx,ITemplateSegment
 {
    CHECK_RETOBJ(segment);
    if ( m_Segments.size() <= idx )
+   {
       return E_INVALIDARG;
+   }
 
    m_Segments[idx].CopyTo(segment);
 
@@ -173,7 +188,9 @@ STDMETHODIMP CSurfaceTemplate::GetRidgePointElevationChange(CollectionIndexType 
    // computes the change in elevation between two ridge points
    CHECK_RETVAL(deltaElevation);
    if ( m_Segments.size() < ridgePoint1Idx || m_Segments.size() < ridgePoint2Idx )
+   {
       return SurfaceTemplateError(IDS_E_INVALIDRIDGEPOINT,COGO_E_INVALIDRIDGEPOINTINDEX);
+   }
 
    Float64 sign = ::BinarySign((int)ridgePoint2Idx - (int)ridgePoint1Idx);
    Float64 delta = 0;
@@ -202,7 +219,9 @@ STDMETHODIMP CSurfaceTemplate::GetElevationChange(CollectionIndexType ridgePoint
    // Computes the change in elevation between a ridge point and an offset measured from the ridge point
    CHECK_RETVAL(deltaElevation);
    if ( m_Segments.size() < ridgePointIdx )
+   {
       return SurfaceTemplateError(IDS_E_INVALIDRIDGEPOINT,COGO_E_INVALIDRIDGEPOINTINDEX);
+   }
 
    Float64 sign = ::BinarySign(offset);
 
@@ -272,7 +291,9 @@ STDMETHODIMP CSurfaceTemplate::GetSlope(CollectionIndexType ridgePointIdx,Float6
    CHECK_RETVAL(pSlope);
 
    if ( m_Segments.size() < ridgePointIdx )
+   {
       return SurfaceTemplateError(IDS_E_INVALIDRIDGEPOINT,COGO_E_INVALIDRIDGEPOINTINDEX);
+   }
 
    if ( 0 <= offset )
    {
@@ -387,7 +408,9 @@ STDMETHODIMP CSurfaceTemplate::GetRidgePointOffset(IndexType ridgePointIdx,Index
       CComPtr<ITemplateSegment> segment;
       HRESULT hr = get_Item(idx,&segment);
       if ( FAILED(hr) )
+      {
          return hr;
+      }
 
       Float64 width;
       segment->get_Width(&width);
@@ -397,7 +420,36 @@ STDMETHODIMP CSurfaceTemplate::GetRidgePointOffset(IndexType ridgePointIdx,Index
    // ridge point is to the left of the reference point
    // so offset is to the left (negative value)
    if ( ridgePointIdx < refPointIdx )
+   {
       *pOffset *= -1;
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP CSurfaceTemplate::GetRidgePointElevation(IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset,Float64* pElev)
+{
+   if ( m_pSurface == NULL )
+   {
+      ATLASSERT(false); // must be associated with a surface
+      return E_FAIL;
+   }
+
+   // Gets the offset and elevation of the specified ridge point at the station provided. Offset is measured from the ridge point identified by refPointIdx
+   HRESULT hr = GetRidgePointOffset(ridgePointIdx,refPointIdx,pOffset);
+   if ( FAILED(hr) )
+   {
+      return hr;
+   }
+
+   CComPtr<IProfile> profile;
+   m_pSurface->get_Profile(&profile);
+
+   hr = profile->Elevation(CComVariant(m_Station),*pOffset,pElev);
+   if ( FAILED(hr) )
+   {
+      return hr;
+   }
 
    return S_OK;
 }
@@ -409,7 +461,7 @@ STDMETHODIMP CSurfaceTemplate::Clone(ISurfaceTemplate** ppClone)
    CComObject<CSurfaceTemplate>* pClone;
    CComObject<CSurfaceTemplate>::CreateInstance(&pClone);
 
-   pClone->putref_Profile(m_pProfile);
+   pClone->putref_Surface(m_pSurface);
    pClone->put_Station(CComVariant(m_Station));
 
    std::vector<CComPtr<ITemplateSegment>>::iterator iter(m_Segments.begin());
@@ -460,13 +512,20 @@ STDMETHODIMP CSurfaceTemplate::Load(IStructuredLoad2* pLoad)
 
 HRESULT CSurfaceTemplate::ValidateStation(IStation* station)
 {
-   if ( m_pProfile == NULL )
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+   if ( profile == NULL )
    {
       // if not associated with a profile, station must be normalized
       ZoneIndexType staEqnZoneIdx;
       station->get_StationZoneIndex(&staEqnZoneIdx);
       if ( staEqnZoneIdx != INVALID_INDEX )
+      {
          return E_INVALIDARG; // station must be normalized
+      }
    }
 
    return S_OK;

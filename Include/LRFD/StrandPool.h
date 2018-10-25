@@ -91,6 +91,7 @@ public:
    //------------------------------------------------------------------------
    const matPsStrand* GetStrand(matPsStrand::Grade grade,
                                 matPsStrand::Type type,
+                                matPsStrand::Coating coating,
                                 matPsStrand::Size size );
 
    //------------------------------------------------------------------------
@@ -185,7 +186,8 @@ public:
    //------------------------------------------------------------------------
    // Default constructor
    lrfdStrandIter(matPsStrand::Grade grade = matPsStrand::Gr1725,
-                  matPsStrand::Type type = matPsStrand::LowRelaxation);
+                  matPsStrand::Type type = matPsStrand::LowRelaxation,
+                  matPsStrand::Coating coating = matPsStrand::None);
 
    //------------------------------------------------------------------------
    lrfdStrandIter(const lrfdStrandIter& rOther);
@@ -245,6 +247,17 @@ public:
    // are being iterated over.
    matPsStrand::Type GetType() const;
 
+   //------------------------------------------------------------------------
+   // Sets the coating type of prestress steel for which the available sizes will
+   // be iterated over. Sets the iterator to the first element in the
+   // iteration sequence.
+   void SetCoating(matPsStrand::Coating coating);
+
+   //------------------------------------------------------------------------
+   // Returns the coating type of prestress steel for which the available sizes
+   // are being iterated over.
+   matPsStrand::Coating GetCoating() const;
+
    // GROUP: INQUIRY
    // GROUP: DEBUG
 #if defined _DEBUG
@@ -282,6 +295,7 @@ private:
    std::vector< const matPsStrand* >::iterator m_Current;
    matPsStrand::Grade m_Grade;
    matPsStrand::Type m_Type;
+   matPsStrand::Coating m_Coating;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS

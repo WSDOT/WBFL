@@ -43,6 +43,9 @@ cpp_quote("#include <WBFLUnitServer.h>")
 
 typedef IDType CogoObjectID;
 
+cpp_quote("#define COGO_ORIGINAL_SURFACE_ID 0")
+cpp_quote("#define COGO_FINISHED_SURFACE_ID 1")
+
 cpp_quote("#define COGO_E_POINTNOTFOUND                MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,512)")
 cpp_quote("#define COGO_E_POINTALREADYDEFINED          MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,513)")
 cpp_quote("#define COGO_E_BADDIRECTIONSTRING           MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,514)")
@@ -89,6 +92,7 @@ cpp_quote("#define COGO_E_INVALIDRIDGEPOINTINDEX       MAKE_HRESULT(SEVERITY_ERR
 interface IProfile;
 interface IPath;
 interface IAlignment;
+interface ISurface;
 
 [
     uuid(1128D28F-55F7-11D5-8C29-006097C68A9C),
@@ -1036,9 +1040,9 @@ library WBFLCogo
    ]
    interface IWidening : IUnknown
    {
-      [helpstring("method Init")] HRESULT Init([in]IProfile* pProfile,[in] VARIANT varBeginStation,[in] VARIANT varBeginFullStation, [in] VARIANT varEndFullStation,[in] VARIANT varEndStation,[in] Float64 widening,[in]IndexType pnt1,[in]IndexType pnt2);
-      [propget, helpstring("property Profile")] HRESULT Profile([out, retval] IProfile* *pVal);
-      [propputref, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
+      [helpstring("method Init")] HRESULT Init([in]ISurface* pSurface,[in] VARIANT varBeginStation,[in] VARIANT varBeginFullStation, [in] VARIANT varEndFullStation,[in] VARIANT varEndStation,[in] Float64 widening,[in]IndexType pnt1,[in]IndexType pnt2);
+      [propget, helpstring("property Surface")] HRESULT Surface([out, retval] ISurface* *pVal);
+      [propputref, helpstring("property Surface")] HRESULT Surface([in] ISurface* newVal);
       [propput,helpstring("property BeginTransition")] HRESULT BeginTransition([in]VARIANT varStation);
       [propget,helpstring("property BeginTransition")] HRESULT BeginTransition([out,retval]IStation** station);
       [propput,helpstring("property BeginFullWidening")] HRESULT BeginFullWidening([in]VARIANT varStation);
@@ -1103,8 +1107,8 @@ library WBFLCogo
 	]
 	interface IWideningCollection : IUnknown
 	{
-      [propget, helpstring("property Profile")] HRESULT Profile([out, retval] IProfile* *pVal);
-      [propputref, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
+      [propget, helpstring("property Surface")] HRESULT Surface([out, retval] ISurface* *pVal);
+      [propputref, helpstring("property Surface")] HRESULT Surface([in] ISurface* newVal);
         [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
 		[propget, helpstring("property Item")/*, helpcontext(IDH_WideningCollection_Item)*/] HRESULT Item([in] CollectionIndexType idx,[out, retval] IWidening* *pVal);
 		[propputref, helpstring("property Item")/*, helpcontext(IDH_WideningCollection_Item)*/] HRESULT Item([in] CollectionIndexType idx,[in] IWidening* pVal);
@@ -1145,9 +1149,9 @@ library WBFLCogo
    ]
    interface ISuperelevation : IUnknown
    {
-      [helpstring("method Init")] HRESULT Init([in]IProfile* pProfile,[in] VARIANT varBeginStation,[in] VARIANT varBeginFullStation, [in] VARIANT varEndFullStation,[in] VARIANT varEndStation,[in] Float64 rate,[in]IndexType pivotPoint,[in]SuperTransitionType beginType,[in]Float64 beginL1,[in]Float64 beginL2,[in]SuperTransitionType endType,[in]Float64 endL1,[in]Float64 endL2);
-      [propget, helpstring("property Profile")] HRESULT Profile([out, retval] IProfile* *pVal);
-      [propputref, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
+      [helpstring("method Init")] HRESULT Init([in]ISurface* pSurface,[in] VARIANT varBeginStation,[in] VARIANT varBeginFullStation, [in] VARIANT varEndFullStation,[in] VARIANT varEndStation,[in] Float64 rate,[in]IndexType pivotPoint,[in]SuperTransitionType beginType,[in]Float64 beginL1,[in]Float64 beginL2,[in]SuperTransitionType endType,[in]Float64 endL1,[in]Float64 endL2);
+      [propget, helpstring("property Surface")] HRESULT Surface([out, retval] ISurface* *pVal);
+      [propputref, helpstring("property Surface")] HRESULT Surface([in] ISurface* newVal);
       [propput, helpstring("property BeginTransition")] HRESULT BeginTransition([in] VARIANT varBeginTransition);
       [propget, helpstring("property BeginTransition")] HRESULT BeginTransition([out,retval] IStation** ppBeginTransition);
       [propput, helpstring("property BeginFullSuper")] HRESULT BeginFullSuper([in] VARIANT varBeginFullSuper);
@@ -1220,8 +1224,8 @@ library WBFLCogo
 	]
 	interface ISuperelevationCollection : IUnknown
 	{
-      [propget, helpstring("property Profile")] HRESULT Profile([out, retval] IProfile* *pVal);
-      [propputref, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
+      [propget, helpstring("property Surface")] HRESULT Surface([out, retval] ISurface* *pVal);
+      [propputref, helpstring("property Surface")] HRESULT Surface([in] ISurface* newVal);
         [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
 		[propget, helpstring("property Item")/*, helpcontext(IDH_SuperelevationCollection_Item)*/] HRESULT Item([in] CollectionIndexType idx,[out, retval] ISuperelevation* *pVal);
 		[propputref, helpstring("property Item")/*, helpcontext(IDH_SuperelevationCollection_Item)*/] HRESULT Item([in] CollectionIndexType idx,[in] ISuperelevation* pVal);
@@ -1296,8 +1300,8 @@ library WBFLCogo
    ]
    interface ISurfaceTemplate : IUnknown
    {
-      [propget, helpstring("property Profile")] HRESULT Profile([out, retval] IProfile* *pVal);
-      [propputref, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
+      [propget, helpstring("property Surface")] HRESULT Surface([out, retval] ISurface* *pVal);
+      [propputref, helpstring("property Surface")] HRESULT Surface([in] ISurface* newVal);
       [propput,helpstring("property Station")] HRESULT Station([in]VARIANT varStation);
       [propget,helpstring("property Station")] HRESULT Station([out,retval]IStation** station);
       [helpstring("method AddSegment")] HRESULT AddSegment([in]Float64 width,[in]Float64 slope,[in]TemplateSlopeType slopeType);
@@ -1310,6 +1314,7 @@ library WBFLCogo
       [helpstring("method GetSlope")] HRESULT GetSlope([in]CollectionIndexType ridgePointIdx,[in]Float64 offset,[out,retval]Float64* pSlope);
       [helpstring("method GetSegmentSlope")] HRESULT GetSegmentSlope([in]CollectionIndexType segmentIdx,[out,retval]Float64* pSlope);
       [helpstring("method GetRidgePointOffset")] HRESULT GetRidgePointOffset([in]IndexType ridgePointIdx,[in]IndexType refPointIdx,[out]Float64* pOffset);
+      [helpstring("method GetidgePointElevation")] HRESULT GetRidgePointElevation([in]IndexType ridgePointIdx,[in]IndexType refPointIdx,[out]Float64* pOffset,[out]Float64* pElev);
       [helpstring("method Clear")] HRESULT Clear();
       [helpstring("method Clone")] HRESULT Clone([out,retval] ISurfaceTemplate* *clone);
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
@@ -1366,8 +1371,8 @@ library WBFLCogo
 	]
 	interface ISurfaceTemplateCollection : IUnknown
 	{
-      [propget, helpstring("property Profile")] HRESULT Profile([out, retval] IProfile* *pVal);
-      [propputref, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
+      [propget, helpstring("property Surface")] HRESULT Surface([out, retval] ISurface* *pVal);
+      [propputref, helpstring("property Surface")] HRESULT Surface([in] ISurface* newVal);
         [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
 		[propget, helpstring("property Item")] HRESULT Item([in] CollectionIndexType idx,[out, retval] ISurfaceTemplate* *pVal);
 		[propputref, helpstring("property Item")] HRESULT Item([in] CollectionIndexType idx,[in] ISurfaceTemplate* pVal);
@@ -1398,6 +1403,66 @@ library WBFLCogo
    };
 
    [
+       object,
+       uuid(D4CD4F83-7F81-4ee9-B9AD-546E23014880),
+       oleautomation,
+	   //helpcontext(IDH_SurfacePoint),
+       helpstring("ISurfacePoint Interface"),
+       pointer_default(unique)
+   ]
+   interface ISurfacePoint : IUnknown
+   {
+      [propget, helpstring("property Surface")] HRESULT Surface([out, retval] ISurface* *pVal);
+      [propputref, helpstring("property Surface")] HRESULT Surface([in] ISurface* newVal);
+       [propget, helpstring("property Station")]HRESULT Station([out, retval] IStation* *station);
+       [propput, helpstring("property Station")] HRESULT Station([in] VARIANT varStation);
+       [propget, helpstring("property NormalOffset")] HRESULT NormalOffset([out, retval] Float64 *pVal);
+       [propput, helpstring("property NormalOffset")] HRESULT NormalOffset([in] Float64 newVal);
+       [propget, helpstring("property CutLineOffset")] HRESULT CutLineOffset([out, retval] Float64 *pVal);
+       [propput, helpstring("property CutLineOffset")] HRESULT CutLineOffset([in] Float64 newVal);
+       [propget, helpstring("property Elevation")] HRESULT Elevation([out, retval] Float64 *pVal);
+       [propput, helpstring("property Elevation")] HRESULT Elevation([in] Float64 newVal);
+       [propget, helpstring("property Location")] HRESULT Location([out,retval]IPoint2d** ppLocation);
+       [propput, helpstring("property Location")] HRESULT Location([in]IPoint2d* ppLocation);
+       [helpstring("method GetPoint")] HRESULT GetPoint([out,retval]IPoint3d** ppPoint);
+       [helpstring("method Clone")] HRESULT Clone([out,retval] ISurfacePoint* *clone);
+
+        [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+   };
+
+   [
+      object,
+      uuid(677A9E7B-7CA1-47ef-95FF-EBB88CC2CA0A),
+      oleautomation,
+      //helpcontext(IDH_SurfaceProfile),
+      helpstring("ISurfaceProfile Interface"),
+      pointer_default(unique)
+   ]
+   interface ISurfaceProfile : IUnknown
+   {
+      [propget, helpstring("property Surface")] HRESULT Surface([out, retval] ISurface* *pVal);
+      [propputref, helpstring("property Surface")] HRESULT Surface([in] ISurface* newVal);
+      [propput,helpstring("property Station")] HRESULT Station([in]VARIANT varStation);
+      [propget,helpstring("property Station")] HRESULT Station([out,retval]IStation** station);
+      [propput,helpstring("property Direction")] HRESULT Direction([in]VARIANT varDirection);
+      [propget,helpstring("property Direction")] HRESULT Direction([out,retval]IDirection** direction);
+      [helpstring("method AddPoint")] HRESULT AddPoint([in]VARIANT varStation,[in]Float64 normalOffset,[in]Float64 cutLineOffset,[in]Float64 elev,[in]IPoint2d* pnt);
+      [helpstring("method AddPointEx")] HRESULT AddPointEx([in]ISurfacePoint* point);
+      [helpstring("method RemovePoint")] HRESULT RemovePoint([in]CollectionIndexType idx);
+      [propget,helpstring("property Count")] HRESULT Count([out,retval]CollectionIndexType* count);
+      [propget,helpstring("property Item")] HRESULT Item([in]CollectionIndexType idx,[out,retval]ISurfacePoint** point);
+      [helpstring("method GetRidgePointElevationChange")] HRESULT GetRidgePointElevationChange([in]CollectionIndexType ridgePointIdx1,[in]CollectionIndexType ridgePointIdx2,[out,retval]Float64* deltaElevation);
+      [helpstring("method GetElevationChange")] HRESULT GetElevationChange([in]CollectionIndexType ridgePointIdx,[in]Float64 offset,[out,retval]Float64* deltaElevation);
+      [helpstring("method GetSlope")] HRESULT GetSlope([in]CollectionIndexType ridgePointIdx,[in]Float64 offset,[out,retval]Float64* pSlope);
+      [helpstring("method GetSegmentSlope")] HRESULT GetSegmentSlope([in]CollectionIndexType segmentIdx,[out,retval]Float64* pSlope);
+      [helpstring("method GetRidgePointOffset")] HRESULT GetRidgePointOffset([in]IndexType ridgePointIdx,[out]Float64* pOffset);
+      [helpstring("method GetidgePointElevation")] HRESULT GetRidgePointElevation([in]IndexType ridgePointIdx,[out]Float64* pOffset,[out]Float64* pElev);
+      [helpstring("method Clear")] HRESULT Clear();
+      [helpstring("method Clone")] HRESULT Clone([out,retval] ISurfaceProfile* *clone);
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+   };
+
+   [
       object,
       uuid(07A3322F-F4C1-4635-9339-7B2954BB589D),
       oleautomation,
@@ -1409,6 +1474,8 @@ library WBFLCogo
    {
       [propget, helpstring("property Profile")] HRESULT Profile([out, retval] IProfile* *pVal);
       [propputref, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
+      [propget, helpstring("property ID")] HRESULT ID([out,retval]CogoObjectID* id);
+      [propput, helpstring("property ID")] HRESULT ID([in]CogoObjectID id);
       [propget,helpstring("property SurfaceTemplates")] HRESULT SurfaceTemplates([out,retval]ISurfaceTemplateCollection** ppTemplates);
       [propput,helpstring("property AlignmentPoint")] HRESULT AlignmentPoint([in]IndexType pntIdx);
       [propget,helpstring("property AlignmentPoint")] HRESULT AlignmentPoint([out,retval]IndexType* pntIdx);
@@ -1416,8 +1483,11 @@ library WBFLCogo
       [propget,helpstring("property ProfileGradePoint")] HRESULT ProfileGradePoint([out,retval]IndexType* pntIdx);
       [propget,helpstring("property Superelevations")] HRESULT Superelevations([out,retval]ISuperelevationCollection** ppSuperelevations);
       [propget,helpstring("property Widenings")] HRESULT Widenings([out,retval]IWideningCollection** ppWidenings);
+      [propget,helpstring("property StartBoundaryLine")] HRESULT StartBoundaryLine([in]ILineSegment2d** ppEndLine);
+      [propget,helpstring("property EndBoundaryLine")] HRESULT EndBoundaryLine([in]ILineSegment2d** ppEndLine);
       [helpstring("method GetStationRange")] HRESULT GetStationRange([out]IStation** ppStart,[out]IStation** ppEnd);
       [helpstring("method CreateSurfaceTemplate")] HRESULT CreateSurfaceTemplate([in]VARIANT varStation,[in]VARIANT_BOOL bApplySuperelevations,[out,retval]ISurfaceTemplate** ppSurfaceTemplate);
+      [helpstring("method CreateSurfaceProfile")] HRESULT CreateSurfaceProfile([in]VARIANT varStation,[in]VARIANT varDirection,[in]VARIANT_BOOL bApplySuperelevations,[out,retval]ISurfaceProfile** ppSurfaceProfile);
       [helpstring("method Clone")] HRESULT Clone([out,retval] ISurface* *clone);
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
    };
@@ -1478,7 +1548,8 @@ library WBFLCogo
 		[helpstring("method Add")] HRESULT Add([in] ISurface* pVal);
 		[helpstring("method Remove")] HRESULT Remove([in] CollectionIndexType idx);
 		[helpstring("method Clear")] HRESULT Clear();
-     [helpstring("method GetSurface")] HRESULT GetSurface([in]VARIANT varStation,[out,retval]ISurface** ppSurface);
+      [helpstring("method FindSurface")] HRESULT FindSurface([in]CogoObjectID id,[out,retval]ISurface** ppSurface);
+     [helpstring("method GetSurface")] HRESULT GetSurface([in]CogoObjectID id,[in]VARIANT varStation,[out,retval]ISurface** ppSurface);
       [propget, restricted, helpstring("property _EnumSurfaces")] HRESULT _EnumSurfaces([out, retval] IEnumSurfaces** retval);  
       [helpstring("method Clone")] HRESULT Clone([out,retval] ISurfaceCollection* *clone);
      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
@@ -1577,10 +1648,10 @@ library WBFLCogo
 		[helpstring("method Elevation"), helpcontext(IDH_Profile_Elevation)] HRESULT Elevation([in] VARIANT varStation,[in] Float64 offset,[out,retval] Float64* elev);
 		[helpstring("method Grade"), helpcontext(IDH_Profile_Grade)] HRESULT Grade([in] VARIANT varStation,[out,retval] Float64* grade);
 		[helpstring("method Slope"), helpcontext(IDH_Profile_Slope)] HRESULT Slope([in] VARIANT varStation,[in] Float64 offset,[out,retval] Float64* slope);
-      [helpstring("method TemplateSegmentSlope")] HRESULT TemplateSegmentSlope([in]VARIANT varStation,[in]CollectionIndexType templateSegmentIdx,[out,retval]Float64* pSlope);
-      [helpstring("method GetSurface")] HRESULT GetSurface([in]VARIANT varStation,[out,retval]ISurface** ppSurface);
-      [helpstring("method RidgePointOffset")] HRESULT RidgePointOffset([in]VARIANT varStation,[in]IndexType ridgePointIdx,[in]IndexType refPointIdx,[out]Float64* pOffset);
-      [helpstring("method RidgePointElevation")] HRESULT RidgePointElevation([in]VARIANT varStation,[in]IndexType ridgePointIdx,[in]IndexType refPointIdx,[out]Float64* pOffset,[out]Float64* pElev);
+      [helpstring("method TemplateSegmentSlope")] HRESULT TemplateSegmentSlope([in]CogoObjectID id,[in]VARIANT varStation,[in]CollectionIndexType templateSegmentIdx,[out,retval]Float64* pSlope);
+      [helpstring("method GetSurface")] HRESULT GetSurface([in]CogoObjectID id,[in]VARIANT varStation,[out,retval]ISurface** ppSurface);
+      [helpstring("method RidgePointOffset")] HRESULT RidgePointOffset([in]CogoObjectID id,[in]VARIANT varStation,[in]IndexType ridgePointIdx,[in]IndexType refPointIdx,[out]Float64* pOffset);
+      [helpstring("method RidgePointElevation")] HRESULT RidgePointElevation([in]CogoObjectID id,[in]VARIANT varStation,[in]IndexType ridgePointIdx,[in]IndexType refPointIdx,[out]Float64* pOffset,[out]Float64* pElev);
       [propget, restricted,helpstring("property _EnumProfileElements"), helpcontext(IDH_Profile__EnumProfileElements)] HRESULT _EnumProfileElements([out, retval] IEnumProfileElements** retval);  
       [helpstring("method Clone"), helpcontext(IDH_Profile_Clone)] HRESULT Clone([out,retval] IProfile* *clone);
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
@@ -2738,4 +2809,22 @@ library WBFLCogo
      interface IDivide2;
      interface ITangent2;
 	};
+
+   [
+      uuid(D83C292A-4677-46ef-BEF2-CF9444A5D8E5),
+      helpstring("SurfacePoint Class")
+   ]
+   coclass SurfacePoint
+   {
+      [default] interface ISurfacePoint;
+   };
+
+   [
+      uuid(1B216215-3EEC-407e-BBEC-52BB0C0FBCBD),
+      helpstring("SurfaceProfile Class")
+   ]
+   coclass SurfaceProfile
+   {
+      [default] interface ISurfaceProfile;
+   };
 };

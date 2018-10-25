@@ -114,6 +114,7 @@ public:
                      OMEGA,
                      pi,
                      PI,
+                     varphi,
                      phi,
                      PHI,
                      psi,

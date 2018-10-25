@@ -89,6 +89,8 @@ public:
 public:
    STDMETHOD(get_Profile)(IProfile* *pVal);
    STDMETHOD(putref_Profile)(IProfile* newVal);
+   STDMETHOD(get_ID)(/*[out,retval]*/CogoObjectID* id);
+   STDMETHOD(put_ID)(/*[in]*/CogoObjectID id);
    STDMETHOD(get_SurfaceTemplates)(ISurfaceTemplateCollection** ppTemplates);
    STDMETHOD(put_AlignmentPoint)(IndexType pntIdx);
    STDMETHOD(get_AlignmentPoint)(IndexType* pntIdx);
@@ -96,8 +98,11 @@ public:
    STDMETHOD(get_ProfileGradePoint)(IndexType* pntIdx);
    STDMETHOD(get_Superelevations)(ISuperelevationCollection** ppSuperelevations);
    STDMETHOD(get_Widenings)(IWideningCollection** ppWidenings);
+   STDMETHOD(get_StartBoundaryLine)(ILineSegment2d** ppEndLine);
+   STDMETHOD(get_EndBoundaryLine)(ILineSegment2d** ppEndLine);
    STDMETHOD(GetStationRange)(IStation** ppStart,IStation** ppEnd);
    STDMETHOD(CreateSurfaceTemplate)(VARIANT varStation,VARIANT_BOOL bApplySuperelevations,ISurfaceTemplate** ppSurfaceTemplate);
+   STDMETHOD(CreateSurfaceProfile)(VARIANT varStation,VARIANT varDirection,VARIANT_BOOL bApplySuperelevations,ISurfaceProfile** ppSurfaceProfile);
    STDMETHOD(Clone)(ISurface** ppClone);
    STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal);
 
@@ -105,21 +110,25 @@ public:
 public:
    STDMETHOD(OnSurfaceTemplateChanged)(ISurfaceTemplate* pSurfaceTemplate)
    {
+      InvalidateRidgeLines();
       Fire_OnSurfaceChanged(this);
       return S_OK;
    }
    STDMETHOD(OnSurfaceTemplateAdded)(ISurfaceTemplate* pSurfaceTemplate)
    {
+      InvalidateRidgeLines();
       Fire_OnSurfaceChanged(this);
       return S_OK;
    }
    STDMETHOD(OnSurfaceTemplateRemoved)()
    {
+      InvalidateRidgeLines();
       Fire_OnSurfaceChanged(this);
       return S_OK;
    }
    STDMETHOD(OnSurfaceTemplatesCleared)()
    {
+      InvalidateRidgeLines();
       Fire_OnSurfaceChanged(this);
       return S_OK;
    }
@@ -176,6 +185,7 @@ public:
    STDMETHOD(Load)(IStructuredLoad2* pLoad);
 
 private:
+   CogoObjectID m_ID;
    IProfile* m_pProfile; // weak reference
    CComPtr<ISurfaceTemplateCollection> m_SurfaceTemplates;
    IndexType m_AlignmentPointIdx;
@@ -189,9 +199,14 @@ private:
 
    HRESULT GetWidening(IStation* station,IndexType templateSegmentIdx,Float64* pWidening);
    HRESULT GetSuperelevation(IStation* station,IndexType templateSegmentIdx,Float64 slope,TemplateSlopeType slopeType,Float64* pSlope,TemplateSlopeType* pSlopeType);
+   HRESULT CreateTemplateLine(ISurfaceTemplate* pSurfaceTemplate,ILineSegment2d** ppLine);
 
    HRESULT SurfaceError(UINT nHelpString,HRESULT hRes);
 
    void Advise();
    void Unadvise();
+
+   void InvalidateRidgeLines();
+   void ValidateRidgeLines();
+   std::map<IndexType,std::vector<CComPtr<ILineSegment2d>>> m_RidgeLines; // key is the sub-surface index
 };

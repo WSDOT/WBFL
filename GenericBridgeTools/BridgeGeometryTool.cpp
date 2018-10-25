@@ -422,8 +422,11 @@ STDMETHODIMP CBridgeGeometryTool::DeckEdgePoints(IGenericBridge* bridge,Directio
    return S_OK;
 }
 
-STDMETHODIMP CBridgeGeometryTool::DeckOffset(IGenericBridge* bridge,Float64 station,IDirection* direction,DirectionType side,Float64* pOffset)
+STDMETHODIMP CBridgeGeometryTool::DeckOffset(IGenericBridge* bridge,Float64 station,IDirection* direction,DirectionType side,IStation** ppOffsetStation,Float64* pOffset)
 {
+   CHECK_RETVAL(pOffset);
+   CHECK_RETOBJ(ppOffsetStation);
+
    CComPtr<IAlignment> alignment;
    bridge->get_Alignment(&alignment);
 
@@ -444,25 +447,16 @@ STDMETHODIMP CBridgeGeometryTool::DeckOffset(IGenericBridge* bridge,Float64 stat
       return hr;
    }
 
-   Float64 offset;
-   CComPtr<IStation> objStation;
-   alignment->Offset(pntEdge,&objStation,&offset);
-
-#if defined _DEBUG
-   Float64 value;
-   objStation->get_Value(&value);
-   ATLASSERT( IsEqual(value,station,0.0005));
-#endif // _DEBUG
-
-   *pOffset = offset;
-
-   return S_OK;
+   return alignment->Offset(pntEdge,ppOffsetStation,pOffset);
 }
 
-STDMETHODIMP CBridgeGeometryTool::CurbOffset(IGenericBridge* bridge,Float64 station,IDirection* direction,DirectionType side,Float64* pOffset)
+STDMETHODIMP CBridgeGeometryTool::CurbOffset(IGenericBridge* bridge,Float64 station,IDirection* direction,DirectionType side,IStation** ppOffsetStation,Float64* pOffset)
 {
+   CHECK_RETVAL(pOffset);
+   CHECK_RETOBJ(ppOffsetStation);
+
    Float64 offset;
-   HRESULT hr = DeckOffset(bridge,station,direction,side,&offset);
+   HRESULT hr = DeckOffset(bridge,station,direction,side,ppOffsetStation,&offset);
    if ( FAILED(hr) )
    {
       return hr;
@@ -490,10 +484,13 @@ STDMETHODIMP CBridgeGeometryTool::CurbOffset(IGenericBridge* bridge,Float64 stat
    return S_OK;
 }
 
-STDMETHODIMP CBridgeGeometryTool::InteriorCurbOffset(IGenericBridge* bridge,Float64 station,IDirection* direction,DirectionType side,Float64* pOffset)
+STDMETHODIMP CBridgeGeometryTool::InteriorCurbOffset(IGenericBridge* bridge,Float64 station,IDirection* direction,DirectionType side,IStation** ppOffsetStation,Float64* pOffset)
 {
+   CHECK_RETVAL(pOffset);
+   CHECK_RETOBJ(ppOffsetStation);
+
    Float64 offset;
-   HRESULT hr = DeckOffset(bridge,station,direction,side,&offset);
+   HRESULT hr = DeckOffset(bridge,station,direction,side,ppOffsetStation,&offset);
    if ( FAILED(hr) )
    {
       return hr;

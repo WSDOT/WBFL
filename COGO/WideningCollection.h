@@ -90,8 +90,8 @@ public:
 
 // IWideningCollection
 public:
-   STDMETHOD(get_Profile)(/*[out, retval]*/ IProfile* *pVal);
-   STDMETHOD(putref_Profile)(/*[in]*/ IProfile* newVal);
+   STDMETHOD(get_Surface)(/*[out, retval]*/ ISurface* *pVal);
+   STDMETHOD(putref_Surface)(/*[in]*/ ISurface* newVal);
 	STDMETHOD(Clear)();
    STDMETHOD(Add)(/*[in]*/ VARIANT varBeginStation,/*[in]*/ VARIANT varBeginFullStation, /*[in]*/ VARIANT varEndFullStation,/*[in]*/ VARIANT varEndStation,/*[in]*/ Float64 widening,/*[in]*/IndexType pnt1,/*[in]*/IndexType pnt2,/*[out,retval]*/IWidening* *pWidening);
 	STDMETHOD(AddEx)(IWidening* newVal);
@@ -125,6 +125,6 @@ private:
    //HRESULT ValidateStation(IWidening* pWidening);
    //HRESULT ValidateStation(VARIANT varStation,bool bClone,IStation** station);
 
-   IProfile* m_pProfile; // weak referece to associated profile
+   ISurface* m_pSurface; // weak referece to associated profile
 };
 

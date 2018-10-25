@@ -63,7 +63,7 @@ private:
 // CSuperelevationCollection
 HRESULT CSuperelevationCollection::FinalConstruct()
 {
-   m_pProfile = NULL;
+   m_pSurface = NULL;
    return S_OK;
 }
 
@@ -87,30 +87,31 @@ STDMETHODIMP CSuperelevationCollection::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CSuperelevationCollection::get_Profile(IProfile* *pVal)
+STDMETHODIMP CSuperelevationCollection::get_Surface(ISurface* *pVal)
 {
    CHECK_RETOBJ(pVal);
-   if ( m_pProfile )
+   if ( m_pSurface )
    {
-      (*pVal) = m_pProfile;
+      (*pVal) = m_pSurface;
       (*pVal)->AddRef();
    }
 
    return S_OK;
 }
 
-STDMETHODIMP CSuperelevationCollection::putref_Profile(IProfile* pProfile)
+STDMETHODIMP CSuperelevationCollection::putref_Surface(ISurface* pSurface)
 {
-   m_pProfile = pProfile;
+   CHECK_IN(pSurface);
+   m_pSurface = pSurface;
 
    CComPtr<IEnumSuperelevations> enumSuperelevations;
    get__EnumSuperelevations(&enumSuperelevations);
 
-   CComPtr<ISuperelevation> widening;
-   while ( enumSuperelevations->Next(1,&widening,NULL) != S_FALSE )
+   CComPtr<ISuperelevation> superelevation;
+   while ( enumSuperelevations->Next(1,&superelevation,NULL) != S_FALSE )
    {
-      widening->putref_Profile(m_pProfile);
-      widening.Release();
+      superelevation->putref_Surface(m_pSurface);
+      superelevation.Release();
    };
 
    return S_OK;
@@ -149,7 +150,7 @@ STDMETHODIMP CSuperelevationCollection::putref_Item(CollectionIndexType idx,ISup
    // Get the item
    SuperelevationType& cst = m_coll[idx];
    CComVariant& var = cst.second; // Variant holding IDispatch to Superelevation
-   pVal->putref_Profile(m_pProfile);
+   pVal->putref_Surface(m_pSurface);
 
    UnadviseElement(idx); // Unadvise from the current element
 
@@ -178,6 +179,12 @@ STDMETHODIMP CSuperelevationCollection::GetSuperelevation(VARIANT varStation,ISu
    if ( FAILED(hr) )
       return hr;
 
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+
    Superelevations::iterator iter(m_coll.begin());
    Superelevations::iterator end(m_coll.end());
    for ( ; iter != end; iter++ )
@@ -188,8 +195,8 @@ STDMETHODIMP CSuperelevationCollection::GetSuperelevation(VARIANT varStation,ISu
       thisSuperelevation->get_BeginTransition(&startStation);
       thisSuperelevation->get_EndTransition(&endStation);
 
-      if ( 0 <= cogoUtil::Compare(m_pProfile,startStation,station) &&
-           0 <= cogoUtil::Compare(m_pProfile,station,endStation) )
+      if ( 0 <= cogoUtil::Compare(profile,startStation,station) &&
+           0 <= cogoUtil::Compare(profile,station,endStation) )
       {
          return thisSuperelevation.CopyTo(superelevation);
       }
@@ -205,24 +212,25 @@ STDMETHODIMP CSuperelevationCollection::get_Count(CollectionIndexType *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CSuperelevationCollection::AddEx(ISuperelevation* widening)
+STDMETHODIMP CSuperelevationCollection::AddEx(ISuperelevation* superelevation)
 {
-   CHECK_IN(widening);
+   CHECK_IN(superelevation);
 
    HRESULT hr = S_OK;
-   //hr = ValidateStation(widening);
-   //if ( FAILED(hr) )
-   //   return hr;
-
-   widening->putref_Profile(m_pProfile);
+   superelevation->putref_Surface(m_pSurface);
 
    DWORD dwCookie;
-   AdviseElement(widening,&dwCookie);
-   m_coll.push_back( std::make_pair(dwCookie,CComVariant(widening)));
+   AdviseElement(superelevation,&dwCookie);
+   m_coll.push_back( std::make_pair(dwCookie,CComVariant(superelevation)));
 
-   std::sort(m_coll.begin(),m_coll.end(),SortSuperelevations(m_pProfile));
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+   std::sort(m_coll.begin(),m_coll.end(),SortSuperelevations(profile));
 
-   Fire_OnSuperelevationAdded(widening);
+   Fire_OnSuperelevationAdded(superelevation);
    return S_OK;
 }
 
@@ -238,7 +246,7 @@ STDMETHODIMP CSuperelevationCollection::Add(VARIANT varBeginStation,VARIANT varB
    CComPtr<ISuperelevation> newSuperelevation;
    newSuperelevation = pNewSuperelevation;
 
-   HRESULT hr = newSuperelevation->Init(m_pProfile,varBeginStation,varBeginFullStation,varEndFullStation,varEndStation,rate,pivotPoint,beginType,beginL1,beginL2,endType,endL1,endL2);
+   HRESULT hr = newSuperelevation->Init(m_pSurface,varBeginStation,varBeginFullStation,varEndFullStation,varEndStation,rate,pivotPoint,beginType,beginL1,beginL2,endType,endL1,endL2);
    if ( FAILED(hr) )
       return hr;
 
@@ -280,20 +288,20 @@ STDMETHODIMP CSuperelevationCollection::Clone(ISuperelevationCollection* *clone)
    (*clone) = pClone;
    (*clone)->AddRef();
 
-   (*clone)->putref_Profile(m_pProfile);
+   (*clone)->putref_Surface(m_pSurface);
 
    CComPtr<IEnumSuperelevations> enumSuperelevations;
    get__EnumSuperelevations(&enumSuperelevations);
 
-   CComPtr<ISuperelevation> widening;
-   while ( enumSuperelevations->Next(1,&widening,NULL) != S_FALSE )
+   CComPtr<ISuperelevation> superelevation;
+   while ( enumSuperelevations->Next(1,&superelevation,NULL) != S_FALSE )
    {
-      CComPtr<ISuperelevation> wideningClone;
-      widening->Clone(&wideningClone);
+      CComPtr<ISuperelevation> superelevationClone;
+      superelevation->Clone(&superelevationClone);
 
-      (*clone)->AddEx(wideningClone);
+      (*clone)->AddEx(superelevationClone);
 
-      widening.Release();
+      superelevation.Release();
    };
 
 

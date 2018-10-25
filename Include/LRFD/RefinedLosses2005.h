@@ -102,8 +102,12 @@ public:
    lrfdRefinedLosses2005(Float64 x, // location along girder where losses are computed
                          Float64 Lg,    // girder length
                          lrfdLosses::SectionPropertiesType sectionProperties,
-                         matPsStrand::Grade gr,
-                         matPsStrand::Type type,
+                         matPsStrand::Grade gradePerm, // strand grade
+                         matPsStrand::Type typePerm, // strand type
+                         matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
+                         matPsStrand::Grade gradeTemp, // strand grade
+                         matPsStrand::Type typeTemp, // strand type
+                         matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
                          Float64 fpjPerm, // fpj permanent strands
                          Float64 fpjTemp, // fpj of temporary strands
                          Float64 ApsPerm,  // area of permanent strand
@@ -244,7 +248,8 @@ public:
    Float64 GetKid() const;
    Float64 GetTemporaryStrandKih() const;
    Float64 GetPermanentStrandKih() const;
-   Float64 GetKL() const;
+   Float64 GetTemporaryStrandKL() const;
+   Float64 GetPermanentStrandKL() const;
    Float64 Get_ebdf() const;
    Float64 Get_ebif() const;
    Float64 GetKdf() const;
@@ -384,7 +389,7 @@ private:
    mutable Float64 m_ebih;
    mutable Float64 m_Kid;
    mutable Float64 m_Kih[2];
-   mutable Float64 m_KL;
+   mutable Float64 m_KL[2];
    mutable Float64 m_ebif;
    mutable Float64 m_ebdf;
    mutable Float64 m_Kdf;

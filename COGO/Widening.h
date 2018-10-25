@@ -79,9 +79,9 @@ public:
 
 // IWidening
 public:
-   STDMETHOD(Init)(IProfile* pProfile,VARIANT varBeginStation,VARIANT varBeginFullStation,VARIANT varEndFullStation,VARIANT varEndStation,Float64 widening,IndexType seg1,IndexType seg2);
-   STDMETHOD(get_Profile)(IProfile* *pVal);
-   STDMETHOD(putref_Profile)(IProfile* newVal);
+   STDMETHOD(Init)(ISurface* pSurface,VARIANT varBeginStation,VARIANT varBeginFullStation,VARIANT varEndFullStation,VARIANT varEndStation,Float64 widening,IndexType seg1,IndexType seg2);
+   STDMETHOD(get_Surface)(ISurface* *pVal);
+   STDMETHOD(putref_Surface)(ISurface* newVal);
    STDMETHOD(put_BeginTransition)(VARIANT varStation);
    STDMETHOD(get_BeginTransition)(IStation** station);
    STDMETHOD(put_BeginFullWidening)(VARIANT varStation);
@@ -104,7 +104,7 @@ public:
    STDMETHOD(Load)(IStructuredLoad2* pLoad);
 
 private:
-   IProfile* m_pProfile; // weak reference
+   ISurface* m_pSurface; // weak reference
    CComPtr<IStation> m_BeginTransition;
    CComPtr<IStation> m_BeginFullWidening;
    CComPtr<IStation> m_EndFullWidening;

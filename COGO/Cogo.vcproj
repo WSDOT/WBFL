@@ -4079,6 +4079,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SurfacePoint.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SurfaceProfile.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SurfaceTemplate.cpp"
 				>
 			</File>
@@ -4644,6 +4652,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SurfacePoint.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SurfaceProfile.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SurfaceTemplate.h"
 				>
 			</File>
@@ -4814,6 +4830,14 @@
 			</File>
 			<File
 				RelativePath=".\SurfaceCollection.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\SurfacePoint.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\SurfaceProfile.rgs"
 				>
 			</File>
 			<File

@@ -23,61 +23,60 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// FilteredSuperstructureMemberCollection.h : Declaration of the CFilteredSuperstructureMemberCollection
+// SuperstructureMemberCollection.h : Declaration of the CSuperstructureMemberCollection
 
-#ifndef __FILTEREDSUPERSTRUCTUREMEMBERCOLLECTION_H_
-#define __FILTEREDSUPERSTRUCTUREMEMBERCOLLECTION_H_
+#ifndef __SUPERSTRUCTUREMEMBERCOLLECTION_H_
+#define __SUPERSTRUCTUREMEMBERCOLLECTION_H_
 
 #include "WBFLComCollections.h"
 #include "resource.h"       // main symbols
 
-typedef CComVectorCollection<IFilteredSuperstructureMemberCollection, ISuperstructureMember, IEnumSuperstructureMembers, &IID_IEnumSuperstructureMembers, CollectionIndexType> SSMBRVectorImpl;
+typedef CComVectorCollection<ISuperstructureMemberCollection, ISuperstructureMember, IEnumSuperstructureMembers, &IID_IEnumSuperstructureMembers, CollectionIndexType> SSMBRVectorImpl;
 
 /////////////////////////////////////////////////////////////////////////////
-// CFilteredSuperstructureMemberCollection
-class ATL_NO_VTABLE CFilteredSuperstructureMemberCollection : 
+// CSuperstructureMemberCollection
+class ATL_NO_VTABLE CSuperstructureMemberCollection : 
 	public CComObjectRootEx<CComSingleThreadModel>,
-//   public CComRefCountTracer<CFilteredSuperstructureMemberCollection,CComObjectRootEx<CComSingleThreadModel> >,
-	public CComCoClass<CFilteredSuperstructureMemberCollection, &CLSID_FilteredSuperstructureMemberCollection>,
+//   public CComRefCountTracer<CSuperstructureMemberCollection,CComObjectRootEx<CComSingleThreadModel> >,
+	public CComCoClass<CSuperstructureMemberCollection, &CLSID_SuperstructureMemberCollection>,
 	public ISupportErrorInfo,
-	//public IConnectionPointContainerImpl<CFilteredSuperstructureMemberCollection>,
+	//public IConnectionPointContainerImpl<CSuperstructureMemberCollection>,
 	public SSMBRVectorImpl
 {
 public:
-	CFilteredSuperstructureMemberCollection()
+	CSuperstructureMemberCollection()
 	{
 	}
 
-DECLARE_REGISTRY_RESOURCEID(IDR_FILTEREDSUPERSTRUCTUREMEMBERCOLLECTION)
+DECLARE_REGISTRY_RESOURCEID(IDR_SUPERSTRUCTUREMEMBERCOLLECTION)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
-BEGIN_COM_MAP(CFilteredSuperstructureMemberCollection)
-	COM_INTERFACE_ENTRY(IFilteredSuperstructureMemberCollection)
+BEGIN_COM_MAP(CSuperstructureMemberCollection)
+	COM_INTERFACE_ENTRY(ISuperstructureMemberCollection)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 	//COM_INTERFACE_ENTRY(IConnectionPointContainer)
 END_COM_MAP()
 //
-//BEGIN_CONNECTION_POINT_MAP(CFilteredSuperstructureMemberCollection)
+//BEGIN_CONNECTION_POINT_MAP(CSuperstructureMemberCollection)
 //END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
 
-// IFilteredSuperstructureMemberCollection
+// ISuperstructureMemberCollection
 public:
-
-private:
-   // have to define virtuals
-   virtual HRESULT OnBeforeAdd( StoredType* pVal)
-   {return S_OK;}
-   virtual HRESULT OnAfterAdd( ItemType* pVal, long id)
-   {return S_OK;}
-   virtual HRESULT OnBeforeRemove( StoredType* pVal, long id)
-   {return S_OK;}
-   virtual HRESULT OnAfterRemove( long id)
-   {return S_OK;}
+   // commented methods are implemented by the base class
+   //STDMETHOD(Add)(/*[in]*/ISuperstructureMember* pSSMbr);
+   //STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
+   //STDMETHOD(get_Item)(/*[in]*/CollectionIndexType index, /*[out, retval]*/ ISuperstructureMember* *pVal);
+   //STDMETHOD(get__EnumElements)(/*[out, retval]*/ IEnumSuperstructureMembers* *pVal);
+   //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
+   //STDMETHOD(Remove)(/*[in]*/ CollectionIndexType Index);
+   //STDMETHOD(Clear)();
+   //STDMETHOD(Reverse)();
+   //STDMETHOD(Insert)(/*[in]*/CollectionIndexType index,/*[in]*/ISuperstructureMember* pVal);
 };
 
-#endif //__FILTEREDSUPERSTRUCTUREMEMBERCOLLECTION_H_
+#endif //__SUPERSTRUCTUREMEMBERCOLLECTION_H_

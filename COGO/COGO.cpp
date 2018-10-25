@@ -80,6 +80,8 @@
 #include "SurfaceTemplate.h"
 #include "SurfaceTemplateCollection.h"
 #include "Surface.h"
+#include "SurfacePoint.h"
+#include "SurfaceProfile.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -129,6 +131,8 @@ OBJECT_ENTRY(CLSID_TemplateSegment, CTemplateSegment)
 OBJECT_ENTRY(CLSID_SurfaceTemplate, CSurfaceTemplate)
 OBJECT_ENTRY(CLSID_SurfaceTemplateCollection, CSurfaceTemplateCollection)
 OBJECT_ENTRY(CLSID_Surface, CSurface)
+OBJECT_ENTRY(CLSID_SurfacePoint, CSurfacePoint)
+OBJECT_ENTRY(CLSID_SurfaceProfile, CSurfaceProfile)
 END_OBJECT_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

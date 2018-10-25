@@ -62,10 +62,8 @@ END_COM_MAP()
 private:
    CPierImpl m_PierImpl;
 
-   Float64 m_DeckElevation;
+   CComPtr<IPoint2dCollection> m_DeckProfile;
    Float64 m_tDeck;
-   Float64 m_CrownPointOffset;
-   Float64 m_Slope[2];
    Float64 m_CurbLineOffset[2];
 
 // ISupportsErrorInfo
@@ -76,10 +74,8 @@ public:
 public:
    STDMETHOD(put_Type)(/*[in]*/PierType type) { return m_PierImpl.put_Type(type); }
    STDMETHOD(get_Type)(/*[out,retval]*/PierType* type) { return m_PierImpl.get_Type(type); }
-   STDMETHOD(get_DeckElevation)(/*[out,retval]*/Float64* pElev);
+   STDMETHOD(get_DeckProfile)(/*[out,retval]*/IPoint2dCollection** ppPoints);
    STDMETHOD(get_DeckThickness)(/*[out,retval]*/Float64* pTDeck);
-   STDMETHOD(get_CrownPointOffset)(/*[out,retval]*/Float64* pCPO);
-   STDMETHOD(get_CrownSlope)(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pSlope);
    STDMETHOD(get_CurbLineOffset)(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pCLO);
    STDMETHOD(putref_SkewAngle)(/*[in]*/IAngle* pSkew) { return m_PierImpl.putref_SkewAngle(pSkew); }
    STDMETHOD(get_SkewAngle)(/*[out,retval]*/IAngle** ppSkew) { return m_PierImpl.get_SkewAngle(ppSkew); }
@@ -94,17 +90,15 @@ public:
    STDMETHOD(ConvertCurbLineToCrossBeamCoordinate)(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pXxb) { return m_PierImpl.ConvertCurbLineToCrossBeamCoordinate(Xcl,pXxb); }
    STDMETHOD(ConvertPierToCrossBeamCoordinate)(/*[in]*/Float64 Xp,/*[out,retval]*/Float64* pXxb) { return m_PierImpl.ConvertPierToCrossBeamCoordinate(Xp,pXxb); }
    STDMETHOD(ConvertCrossBeamToPierCoordinate)(/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pXp) { return m_PierImpl.ConvertCrossBeamToPierCoordinate(Xxb,pXp); }
+   STDMETHOD(ConvertPierToCurbLineCoordinate)(/*[in]*/Float64 Xp,/*[out,retval]*/Float64* pXcl) { return m_PierImpl.ConvertPierToCurbLineCoordinate(Xp,pXcl); }
+   STDMETHOD(ConvertCurbLineToPierCoordinate)(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pXp) { return m_PierImpl.ConvertCurbLineToPierCoordinate(Xcl,pXp); }
    STDMETHOD(get_Elevation)(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pElev) { return m_PierImpl.get_Elevation(Xcl,pElev); }
-   STDMETHOD(get_CrownPointLocation)(/*[out,retval]*/Float64* pXcl) { return m_PierImpl.get_CrownPointLocation(pXcl); }
-   STDMETHOD(get_CrownPointElevation)(/*[out,retval]*/Float64* pElev) { return m_PierImpl.get_CrownPointElevation(pElev); }
    STDMETHOD(get_CurbLineElevation)(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pElev) { return m_PierImpl.get_CurbLineElevation(side,pElev); }
 
 // IPierEx
 public:
-   STDMETHOD(put_DeckElevation)(/*[in]*/Float64 elev);
+   STDMETHOD(putref_DeckProfile)(/*[in]*/IPoint2dCollection* pPoints);
    STDMETHOD(put_DeckThickness)(/*[in]*/Float64 tDeck);
-   STDMETHOD(put_CrownPointOffset)(/*[in]*/Float64 cpo);
-   STDMETHOD(put_CrownSlope)(/*[in]*/DirectionType side,/*[in]*/Float64 slope);
    STDMETHOD(put_CurbLineOffset)(/*[in]*/DirectionType side,/*[in]*/Float64 clo);
 
 // IStructuredStorage2

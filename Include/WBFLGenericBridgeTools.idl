@@ -148,9 +148,9 @@ library WBFLGenericBridgeTools
       // The "shape" methods create a shape object that is typically used for creating a graphical representations of the girder or bridge
       [helpstring("method CreateGirderShapeBySSMbr")] HRESULT CreateGirderShapeBySSMbr([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 Xgp,[in]GirderIDType leftSSMbrID,[in]GirderIDType rightSSMbrID,[in] StageIndexType stageIdx, [out,retval]IShape** ppShape);
 	   [helpstring("method CreateGirderShapeBySegment")] HRESULT CreateGirderShapeBySegment([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]SegmentIndexType segIdx,[in]Float64 Xs,[in]GirderIDType leftSSMbrID,[in]GirderIDType rightSSMbrID,[in] StageIndexType stageIdx, [out,retval]IShape** ppShape);
-	   [helpstring("method CreateLeftBarrierShape")] HRESULT CreateLeftBarrierShape([in]IGenericBridge* bridge,[in] Float64 station,[out,retval]IShape** shape);
-	   [helpstring("method CreateRightBarrierShape")] HRESULT CreateRightBarrierShape([in]IGenericBridge* bridge,[in] Float64 station,[out,retval]IShape** shape);
-      [helpstring("method CreateSlabShape")] HRESULT CreateSlabShape([in]IGenericBridge* bridge,[in]Float64 station,[out,retval]IShape** shape);
+	   [helpstring("method CreateLeftBarrierShape")] HRESULT CreateLeftBarrierShape([in]IGenericBridge* bridge,[in] Float64 station,[in]IDirection* pDirection,[out,retval]IShape** shape);
+	   [helpstring("method CreateRightBarrierShape")] HRESULT CreateRightBarrierShape([in]IGenericBridge* bridge,[in] Float64 station,[in]IDirection* pDirection,[out,retval]IShape** shape);
+      [helpstring("method CreateSlabShape")] HRESULT CreateSlabShape([in]IGenericBridge* bridge,[in]Float64 station,[in]IDirection* pDirection,[out,retval]IShape** shape);
 
       [helpstring("method GetDeckProperties")] HRESULT GetDeckProperties([in]IGenericBridge* bridge,[in]IndexType nSectionsPerSpan,[out]Float64* pSurfaceArea,[out]Float64* pVolume);
 	};
@@ -498,9 +498,9 @@ library WBFLGenericBridgeTools
       [propget,helpstring("property StraightStrandDebondInRow")] HRESULT StraightStrandDebondInRow([in] RowIndexType rowIdx,[out,retval]StrandIndexType* nStrands);
       [helpstring("method IsExteriorStraightStrandDebondedInRow")] HRESULT IsExteriorStraightStrandDebondedInRow([in] RowIndexType rowIndex,[out,retval]VARIANT_BOOL* bResult);
 
-      [propget,helpstring("property HarpedStrandRowsWithStrand")] HRESULT HarpedStrandRowsWithStrand([out,retval]RowIndexType* nRows);
-      [propget,helpstring("property HarpedStrandsInRow")] HRESULT HarpedStrandsInRow([in]RowIndexType rowIdx,[out,retval]IIndexArray** gridIndexes);
-      [propget,helpstring("property NumHarpedStrandsInRow")] HRESULT NumHarpedStrandsInRow([in]RowIndexType rowIdx,[out,retval]StrandIndexType* nStrands);
+      [propget,helpstring("property HarpedStrandRowsWithStrand")] HRESULT HarpedStrandRowsWithStrand([in]Float64 distFromStart,[out,retval]RowIndexType* nRows);
+      [propget,helpstring("property HarpedStrandsInRow")] HRESULT HarpedStrandsInRow([in]Float64 distFromStart,[in]RowIndexType rowIdx,[out,retval]IIndexArray** gridIndexes);
+      [propget,helpstring("property NumHarpedStrandsInRow")] HRESULT NumHarpedStrandsInRow([in]Float64 distFromStart,[in]RowIndexType rowIdx,[out,retval]StrandIndexType* nStrands);
 
       [helpstring("method GetStraightStrandDebondAtSections")] HRESULT GetStraightStrandDebondAtSections([out]IDblArray** arrLeft,[out]IDblArray** arrRight);
       [helpstring("method GetStraightStrandDebondAtLeftSection")] HRESULT GetStraightStrandDebondAtLeftSection([in]SectionIndexType sectionIdx,[out,retval]IIndexArray** pstnIndexes);
@@ -535,15 +535,15 @@ library WBFLGenericBridgeTools
       [helpstring("method GirderPathPoint")] HRESULT GirderPathPoint([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]SegmentIndexType segIdx, [in]VARIANT varStation,[in]VARIANT varDirection,[out,retval]IPoint2d** ppPoint);
 	   [helpstring("method DeckEdgePoint")] HRESULT DeckEdgePoint([in] IGenericBridge* bridge,[in] Float64 station,[in] IDirection* direction,[in] DirectionType side,[out,retval] IPoint2d** point);
 	   [helpstring("method DeckEdgePoints")] HRESULT DeckEdgePoints([in] IGenericBridge* bridge,[in] DirectionType side,[in] CollectionIndexType nPoints,[out,retval] IPoint2dCollection** points);
-	   [helpstring("method CurbOffset")] HRESULT CurbOffset([in] IGenericBridge* bridge,[in] Float64 station,[in] IDirection* direction,[in] DirectionType side,[out,retval] Float64* pOffset);
-	   [helpstring("method DeckOffset")] HRESULT DeckOffset([in] IGenericBridge* bridge,[in] Float64 station,[in] IDirection* direction,[in] DirectionType side,[out,retval] Float64* pOffset);
+	   [helpstring("method CurbOffset")] HRESULT CurbOffset([in] IGenericBridge* bridge,[in] Float64 station,[in] IDirection* direction,[in] DirectionType side,[out]IStation** ppOffsetStation,[out] Float64* pOffset);
+	   [helpstring("method DeckOffset")] HRESULT DeckOffset([in] IGenericBridge* bridge,[in] Float64 station,[in] IDirection* direction,[in] DirectionType side,[out]IStation** ppOffsetStation,[out] Float64* pOffset);
       [helpstring("method DeckOverhang")] HRESULT DeckOverhang([in] IGenericBridge* bridge,[in] Float64 station, [in]GirderIDType ssMbrID,[in] IDirection* direction,[in] DirectionType side,[out,retval] Float64* pOverhang);
       [helpstring("method DeckOverhangBySSMbr")] HRESULT DeckOverhangBySSMbr([in] IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 distFromStartOfSSMbr,[in] IDirection* direction,[in] DirectionType side,[out,retval] Float64* pOverhang);
       [helpstring("method DeckOverhangBySegment")] HRESULT DeckOverhangBySegment([in] IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in] SegmentIndexType segIdx,[in]Float64 Xs,[in] IDirection* direction,[in] DirectionType side,[out,retval] Float64* pOverhang);
       [helpstring("method GirderSpacingBySSMbr")] HRESULT GirderSpacingBySSMbr([in] IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 distFromStartOfSSMbr,[in]GirderIDType otherSSMbrID,[out,retval]Float64* pSpacing);
       [helpstring("method GirderSpacingBySegment")] HRESULT GirderSpacingBySegment([in] IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in] SegmentIndexType segIdx,[in]Float64 Xs,[in]GirderIDType otherSSMbrID,[out,retval]Float64* pSpacing);
       // Get offset to interior curbs. Other method always return offset of exterior barrier curbs
-	   [helpstring("method InteriorCurbOffset")] HRESULT InteriorCurbOffset([in] IGenericBridge* bridge,[in] Float64 station,[in] IDirection* direction,[in] DirectionType side,[out,retval] Float64* pOffset);
+	   [helpstring("method InteriorCurbOffset")] HRESULT InteriorCurbOffset([in] IGenericBridge* bridge,[in] Float64 station,[in] IDirection* direction,[in] DirectionType side,[out]IStation** ppOffsetStation,[out] Float64* pOffset);
 	};
 
 	[

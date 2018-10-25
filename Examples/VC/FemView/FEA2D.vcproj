@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="FEA2D"
 	ProjectGUID="{37423D4B-C9DE-4B90-BAE8-5F1B3A7FA07D}"
+	RootNamespace="FEA2D"
 	Keyword="MFCProj"
 	TargetFrameworkVersion="0"
 	>
@@ -1159,6 +1160,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ResultsListPage.cpp"
+				>
+			</File>
+			<File
 				RelativePath="StdAfx.cpp"
 				>
 				<FileConfiguration
@@ -1328,6 +1333,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ResultsListPage.h"
+				>
+			</File>
+			<File
 				RelativePath="StdAfx.h"
 				>
 			</File>
@@ -1359,5 +1368,9 @@
 		</File>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="FEA2D.rc"
+		/>
 	</Globals>
 </VisualStudioProject>

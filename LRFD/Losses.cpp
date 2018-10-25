@@ -44,8 +44,12 @@ CLASS
 lrfdLosses::lrfdLosses(  Float64 x,
                          Float64 Lg,
                          lrfdLosses::SectionPropertiesType sectionProperties,
-                         matPsStrand::Grade gr,
-                         matPsStrand::Type type,
+                         matPsStrand::Grade gradePerm, // strand grade
+                         matPsStrand::Type typePerm, // strand type
+                         matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
+                         matPsStrand::Grade gradeTemp, // strand grade
+                         matPsStrand::Type typeTemp, // strand type
+                         matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
                          Float64 fpjPerm, // fpj permanent strands
                          Float64 fpjTemp,  // fpj of temporary strands
                          Float64 ApsPerm,  // area of permanent strand
@@ -96,8 +100,12 @@ lrfdLosses::lrfdLosses(  Float64 x,
    Init();
 
    m_bValidateParameters = bValidateParameters;
-   m_Grade                 = gr;
-   m_Type                  = type;
+   m_GradePerm             = gradePerm;
+   m_TypePerm              = typePerm;
+   m_CoatingPerm           = coatingPerm;
+   m_GradeTemp             = gradeTemp;
+   m_TypeTemp              = typeTemp;
+   m_CoatingTemp           = coatingTemp;
    m_FpjPerm               = fpjPerm;
    m_FpjTemp               = fpjTemp;
    m_ApsPerm               = ApsPerm;
@@ -123,8 +131,11 @@ lrfdLosses::lrfdLosses(  Float64 x,
    m_AngleChange = angleChange;
 
    m_Ep                    = lrfdPsStrand::GetModE();
-   m_Fpu                   = lrfdPsStrand::GetUltimateStrength( m_Grade );
-   m_Fpy                   = lrfdPsStrand::GetYieldStrength( m_Grade, m_Type );
+
+   m_FpuPerm               = lrfdPsStrand::GetUltimateStrength( m_GradePerm );
+   m_FpyPerm               = lrfdPsStrand::GetYieldStrength( m_GradePerm, m_TypePerm );
+   m_FpuTemp               = lrfdPsStrand::GetUltimateStrength( m_GradeTemp );
+   m_FpyTemp               = lrfdPsStrand::GetYieldStrength( m_GradeTemp, m_TypeTemp );
 
    m_Mdlg                  = Mdlg;
    m_Madlg                 = Madlg;
@@ -160,8 +171,14 @@ lrfdLosses::lrfdLosses()
 {
    Init();
 
-   m_Type                  = matPsStrand::LowRelaxation;
-   m_Grade                 = matPsStrand::Gr1860;
+   m_TypePerm                  = matPsStrand::LowRelaxation;
+   m_GradePerm                 = matPsStrand::Gr1860;
+   m_CoatingPerm               = matPsStrand::None;
+
+   m_TypeTemp                  = matPsStrand::LowRelaxation;
+   m_GradeTemp                 = matPsStrand::Gr1860;
+   m_CoatingTemp               = matPsStrand::None;
+
    m_TempStrandUsage = tsPretensioned;
 
    m_FpjPerm               = 0;
@@ -188,8 +205,10 @@ lrfdLosses::lrfdLosses()
    m_AngleChange = 0.0;
 
    m_Ep                    = lrfdPsStrand::GetModE();
-   m_Fpu                   = lrfdPsStrand::GetUltimateStrength( m_Grade );
-   m_Fpy                   = lrfdPsStrand::GetYieldStrength( m_Grade, m_Type );
+   m_FpuPerm               = lrfdPsStrand::GetUltimateStrength( m_GradePerm );
+   m_FpyPerm               = lrfdPsStrand::GetYieldStrength( m_GradePerm, m_TypePerm );
+   m_FpuTemp               = lrfdPsStrand::GetUltimateStrength( m_GradeTemp );
+   m_FpyTemp               = lrfdPsStrand::GetYieldStrength( m_GradeTemp, m_TypeTemp );
 
    m_Mdlg                  = 0;
    m_Madlg                 = 0;
@@ -282,14 +301,24 @@ void lrfdLosses::OnUpdate()
    // Nothing actually changes.
 }
 
-Float64 lrfdLosses::GetFpy() const
+Float64 lrfdLosses::GetFpyPermanent() const
 {
    if ( m_IsDirty )
    {
       UpdateLosses();
    }
 
-   return m_Fpy;
+   return m_FpyPerm;
+}
+
+Float64 lrfdLosses::GetFpyTemporary() const
+{
+   if ( m_IsDirty )
+   {
+      UpdateLosses();
+   }
+
+   return m_FpyTemp;
 }
 
 Float64 lrfdLosses::GetEp() const
@@ -1019,12 +1048,12 @@ void lrfdLosses::UpdateInitialLosses() const
 void lrfdLosses::UpdateRelaxationBeforeTransfer() const
 {
    // requirement per 2004 LRFD 5.9.5.4.4b
-   if ( !IsZero( m_FpjPerm ) && !(0.5*m_Fpu < m_FpjPerm) )
+   if ( !IsZero( m_FpjPerm ) && !(0.5*m_FpuPerm < m_FpjPerm) )
    {
       THROW(lrfdXPsLosses,fpjOutOfRange);
    }
 
-   if ( !IsZero( m_FpjTemp ) && !(0.5*m_Fpu < m_FpjTemp) )
+   if ( !IsZero( m_FpjTemp ) && !(0.5*m_FpuPerm < m_FpjTemp) )
    {
       THROW(lrfdXPsLosses,fpjOutOfRange);
    }
@@ -1036,7 +1065,8 @@ void lrfdLosses::UpdateRelaxationBeforeTransfer() const
    {
       // WSDOT
       Float64 t_days = ::ConvertFromSysUnits( m_ti, unitMeasure::Day );
-      Float64 A = (m_Type == matPsStrand::LowRelaxation ? 40. : 10. );
+      Float64 Aperm = (m_TypePerm == matPsStrand::LowRelaxation ? 40. : 10. );
+      Float64 Atemp = (m_TypeTemp == matPsStrand::LowRelaxation ? 40. : 10. );
 
       if ( m_TempStrandUsage == tsPretensioned )
       {
@@ -1046,7 +1076,7 @@ void lrfdLosses::UpdateRelaxationBeforeTransfer() const
          }
          else
          {
-            m_dfpR0[TEMPORARY_STRAND] = (log10(24.*t_days)/A) * (m_FpjTemp/m_Fpy - 0.55) * m_FpjTemp;
+            m_dfpR0[TEMPORARY_STRAND] = (log10(24.*t_days)/Atemp) * (m_FpjTemp/m_FpyTemp - 0.55) * m_FpjTemp;
          }
       }
       else
@@ -1061,7 +1091,7 @@ void lrfdLosses::UpdateRelaxationBeforeTransfer() const
       }
       else
       {
-         m_dfpR0[PERMANENT_STRAND] = (log10(24.*t_days)/A) * (m_FpjPerm/m_Fpy - 0.55) * m_FpjPerm;
+         m_dfpR0[PERMANENT_STRAND] = (log10(24.*t_days)/Aperm) * (m_FpjPerm/m_FpyPerm - 0.55) * m_FpjPerm;
       }
    }
    else
@@ -1069,6 +1099,17 @@ void lrfdLosses::UpdateRelaxationBeforeTransfer() const
       // AASHTO
       m_dfpR0[TEMPORARY_STRAND] = 0;
       m_dfpR0[PERMANENT_STRAND] = 0;
+   }
+
+   // See PCI Guidelines for the use of epoxy-coated strand
+   // PCI Journal July-August 1993. Section 5.3
+   if ( m_CoatingPerm != matPsStrand::None )
+   {
+      m_dfpR0[PERMANENT_STRAND] *= 2;
+   }
+   if ( m_CoatingTemp != matPsStrand::None )
+   {
+      m_dfpR0[TEMPORARY_STRAND] *= 2;
    }
 }
 
@@ -1298,8 +1339,12 @@ void lrfdLosses::MakeCopy( const lrfdLosses& rOther )
 {
    m_bValidateParameters = rOther.m_bValidateParameters;
 
-   m_Type                  = rOther.m_Type;
-   m_Grade                 = rOther.m_Grade;
+   m_TypePerm              = rOther.m_TypePerm;
+   m_GradePerm             = rOther.m_GradePerm;
+   m_CoatingPerm           = rOther.m_CoatingPerm;
+   m_TypeTemp              = rOther.m_TypeTemp;
+   m_GradeTemp             = rOther.m_GradeTemp;
+   m_CoatingTemp           = rOther.m_CoatingTemp;
    m_epermRelease          = rOther.m_epermRelease;
    m_epermFinal            = rOther.m_epermFinal;
    m_etemp                 = rOther.m_etemp;
@@ -1310,10 +1355,12 @@ void lrfdLosses::MakeCopy( const lrfdLosses& rOther )
    m_Ec                    = rOther.m_Ec;
    m_Ecd                   = rOther.m_Ecd;
    m_Ep                    = rOther.m_Ep;
-   m_Fpu                   = rOther.m_Fpu;
+   m_FpuPerm               = rOther.m_FpuPerm;
+   m_FpuTemp               = rOther.m_FpuTemp;
    m_FpjPerm               = rOther.m_FpjPerm;
    m_FpjTemp               = rOther.m_FpjTemp;
-   m_Fpy                   = rOther.m_Fpy;
+   m_FpyPerm               = rOther.m_FpyPerm;
+   m_FpyTemp               = rOther.m_FpyTemp;
    m_TempStrandUsage       = rOther.m_TempStrandUsage;
    m_Fc                    = rOther.m_Fc;
    m_Fci                   = rOther.m_Fci;

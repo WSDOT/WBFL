@@ -34,6 +34,8 @@
 #include <MathEx.h>
 #include <float.h> // for DBL_MAX
 
+#include <algorithm>
+
 #if defined _DEBUG
 #include <map>
 #endif
@@ -92,68 +94,14 @@ STDMETHODIMP CSectionCutTool::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CSectionCutTool::CreateLeftBarrierShape(IGenericBridge* bridge,Float64 station,IShape** shape)
+STDMETHODIMP CSectionCutTool::CreateLeftBarrierShape(IGenericBridge* bridge,Float64 station,IDirection* pDirection,IShape** ppShape)
 {
-   CHECK_IN(bridge);
-   CHECK_RETOBJ(shape);
-
-   CComPtr<IAlignment> alignment;
-   GetAlignment(bridge,&alignment);
-
-   CComPtr<IProfile> profile;
-   alignment->get_Profile(&profile);
-
-   // Get Left top point of deck
-   Float64 Left_deck_offset; // distance from alignment to Left edge of deck
-   m_BridgeGeometryTool->DeckOffset(bridge,station,NULL,qcbLeft,&Left_deck_offset);
-
-   Float64 elev;
-   profile->Elevation(CComVariant(station),Left_deck_offset,&elev);
-
-   CComPtr<ISidewalkBarrier> barrier;
-   bridge->get_LeftBarrier(&barrier);
-
-   CComPtr<IShape> barrier_shape;
-   barrier->get_Shape(&barrier_shape);
-
-   barrier_shape->Clone(shape);
-
-   CComQIPtr<IXYPosition> position(*shape);
-   position->Offset(Left_deck_offset, elev);
-
-   return S_OK;
+   return CreateBarrierShape(qcbLeft,bridge,station,pDirection,ppShape);
 }
 
-STDMETHODIMP CSectionCutTool::CreateRightBarrierShape(IGenericBridge* bridge,Float64 station,IShape** shape)
+STDMETHODIMP CSectionCutTool::CreateRightBarrierShape(IGenericBridge* bridge,Float64 station,IDirection* pDirection,IShape** ppShape)
 {
-   CHECK_IN(bridge);
-   CHECK_RETOBJ(shape);
-
-   CComPtr<IAlignment> alignment;
-   GetAlignment(bridge,&alignment);
-
-   CComPtr<IProfile> profile;
-   alignment->get_Profile(&profile);
-
-   // Get right top point of deck
-   Float64 right_deck_offset; // distance from alignment to right edge of deck
-   m_BridgeGeometryTool->DeckOffset(bridge,station,NULL,qcbRight,&right_deck_offset);
-
-   Float64 elev;
-   profile->Elevation(CComVariant(station),right_deck_offset,&elev);
-
-   CComPtr<ISidewalkBarrier> barrier;
-   bridge->get_RightBarrier(&barrier);
-
-   CComPtr<IShape> barrier_shape;
-   barrier->get_Shape(&barrier_shape);
-
-   barrier_shape->Clone(shape);
-
-   CComQIPtr<IXYPosition> position(*shape);
-   position->Offset(right_deck_offset,elev);
-
-   return S_OK;
+   return CreateBarrierShape(qcbRight,bridge,station,pDirection,ppShape);
 }
 
 STDMETHODIMP CSectionCutTool::CreateLeftBarrierSection(IGenericBridge* bridge,Float64 station,VARIANT_BOOL bStructuralOnly,ISection** section)
@@ -168,11 +116,12 @@ STDMETHODIMP CSectionCutTool::CreateLeftBarrierSection(IGenericBridge* bridge,Fl
    alignment->get_Profile(&profile);
 
    // Get left top point
+   CComPtr<IStation> offsetStation;
    Float64 left_deck_offset; // distance from alignment to left edge of deck
-   m_BridgeGeometryTool->DeckOffset(bridge,station,NULL,qcbLeft,&left_deck_offset);
+   m_BridgeGeometryTool->DeckOffset(bridge,station,NULL,qcbLeft,&offsetStation,&left_deck_offset);
 
    Float64 elev;
-   profile->Elevation(CComVariant(station),left_deck_offset,&elev);
+   profile->Elevation(CComVariant(offsetStation),left_deck_offset,&elev);
 
    CComPtr<ISidewalkBarrier> left_barrier;
    bridge->get_LeftBarrier(&left_barrier);
@@ -249,11 +198,12 @@ STDMETHODIMP CSectionCutTool::CreateRightBarrierSection(IGenericBridge* bridge,F
    alignment->get_Profile(&profile);
 
    // Get right top point
+   CComPtr<IStation> offsetStation;
    Float64 right_deck_offset; // distance from alignment to right edge of deck
-   m_BridgeGeometryTool->DeckOffset(bridge,station,NULL,qcbRight,&right_deck_offset);
+   m_BridgeGeometryTool->DeckOffset(bridge,station,NULL,qcbRight,&offsetStation,&right_deck_offset);
 
    Float64 elev;
-   profile->Elevation(CComVariant(station),right_deck_offset,&elev);
+   profile->Elevation(CComVariant(offsetStation),right_deck_offset,&elev);
 
    CComPtr<ISidewalkBarrier> right_barrier;
    bridge->get_RightBarrier(&right_barrier);
@@ -316,43 +266,50 @@ STDMETHODIMP CSectionCutTool::CreateRightBarrierSection(IGenericBridge* bridge,F
    return S_OK;
 }
 
-STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 station,IShape** shape)
+STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 station,IDirection* pDirection,IShape** shape)
 {
    CHECK_IN(bridge);
    CHECK_RETOBJ(shape);
 
-   CComPtr<IPierCollection> piers;
-   bridge->get_Piers(&piers);
-   CComPtr<IBridgePier> pier;
-   piers->get_Item(0,&pier);
+   CComPtr<IBridgeGeometry> bridgeGeometry;
+   bridge->get_BridgeGeometry(&bridgeGeometry);
 
-   CComPtr<IStation> pier_station;
-   pier->get_Station(&pier_station);
+   CComPtr<ICogoModel> cogoModel;
+   bridgeGeometry->get_CogoModel(&cogoModel);
 
-   Float64 start_station;
-   pier_station->get_Value(&start_station);
-
-   PierIndexType nPiers;
-   piers->get_Count(&nPiers);
-   SpanIndexType nSpans = SpanIndexType(nPiers-1);
-
-   Float64 distFromStart = station - start_station;
-   distFromStart = (IsZero(distFromStart) ? 0.0 : distFromStart);
+   CComPtr<ICogoEngine> cogoEngine;
+   cogoModel->get_Engine(&cogoEngine);
 
    CComPtr<IAlignment> alignment;
    GetAlignment(bridge,&alignment);
 
+   // many of the calls below are most efficient with a station object
+   // create one and use it.
+   CComPtr<IStation> objStation;
+   objStation.CoCreateInstance(CLSID_Station);
+   objStation->SetStation(INVALID_INDEX,station); // normalized station
+
+   CComPtr<IDirection> dirCutLine;
+   bool bIsNormal = false;
+   if ( pDirection == NULL )
+   {
+      alignment->Normal(CComVariant(objStation),&dirCutLine); // normal to the right
+      dirCutLine->IncrementBy(CComVariant(M_PI)); // normal to the left
+      bIsNormal = true;
+   }
+   else
+   {
+      dirCutLine = pDirection;
+   }
+
+   Float64 dirCutLineValue;
+   dirCutLine->get_Value(&dirCutLineValue);
+
+   CComPtr<IPoint2d> pntAlignment; // point on the alignment at station
+   alignment->LocatePoint(CComVariant(objStation),omtAlongDirection,0.0,CComVariant(dirCutLine),&pntAlignment);
+
    CComPtr<IProfile> profile;
    alignment->get_Profile(&profile);
-
-   CComPtr<IBridgePier> prev_pier;
-   piers->FindPier(station,&prev_pier);
-   pier_station.Release();
-   prev_pier->get_Station(&pier_station);
-   Float64 prev_pier_station;
-   pier_station->get_Value(&prev_pier_station);
-   Float64 distFromStartOfSpan = station - prev_pier_station;
-   distFromStartOfSpan = (IsZero(distFromStartOfSpan) ? 0.0 : distFromStartOfSpan);
 
    CComPtr<IBridgeDeck> deck;
    bridge->get_Deck(&deck);
@@ -366,60 +323,41 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    CComPtr<IPolyShape> slab_shape;
    slab_shape.CoCreateInstance(CLSID_PolyShape);
 
-   // get left and right boundary of the deck, measured from the alignment
-   Float64 left_deck_offset; // distance from alignment to left edge of deck
-   m_BridgeGeometryTool->DeckOffset(bridge,station,NULL,qcbLeft,&left_deck_offset);
+   // get left and right deck edge points
+   CComPtr<IPoint2d> pntLeftDeckEdge, pntRightDeckEdge;
+   m_BridgeGeometryTool->DeckEdgePoint(bridge,station,dirCutLine,qcbLeft,&pntLeftDeckEdge);
+   m_BridgeGeometryTool->DeckEdgePoint(bridge,station,dirCutLine,qcbRight,&pntRightDeckEdge);
 
-   Float64 right_deck_offset; // distance from alignment to right edge of deck
-   m_BridgeGeometryTool->DeckOffset(bridge,station,NULL,qcbRight,&right_deck_offset);
+   // get the location (station and offset) of the deck edge points
+   CComPtr<IStation> leftOffsetStation;
+   Float64 left_deck_edge_normal_offset;
+   alignment->Offset(pntLeftDeckEdge,&leftOffsetStation,&left_deck_edge_normal_offset);
 
-   // many of the calls below are most efficient with a station object
-   // create one and use it.
-   CComPtr<IStation> objStation;
-   objStation.CoCreateInstance(CLSID_Station);
-   objStation->SetStation(INVALID_INDEX,station); // normalized station
+   CComPtr<IStation> rightOffsetStation;
+   Float64 right_deck_edge_normal_offset;
+   alignment->Offset(pntRightDeckEdge,&rightOffsetStation,&right_deck_edge_normal_offset);
+
+   // get the offset from the alignment, to the deck edge points, measured along the cut direction
+   Float64 left_deck_offset;
+   pntAlignment->DistanceEx(pntLeftDeckEdge,&left_deck_offset); // distance is always a positive value
+   left_deck_offset *= ::BinarySign(left_deck_edge_normal_offset); // match the sign of the edge offset
+
+   Float64 right_deck_offset;
+   pntAlignment->DistanceEx(pntRightDeckEdge,&right_deck_offset);
+   right_deck_offset *= ::BinarySign(right_deck_edge_normal_offset);
 
    // Get roadway surface at cut station
    CComPtr<ISurface> surface;
-   profile->GetSurface(CComVariant(objStation),&surface);
+   profile->GetSurface(COGO_FINISHED_SURFACE_ID,CComVariant(objStation),&surface);
    ATLASSERT(surface != NULL); // there must be a surface
 
    // get the alignment point
    IndexType alignmentPointIdx;
    surface->get_AlignmentPoint(&alignmentPointIdx);
 
-   // create a surface template at the cut station. this is the top of the slab
-   CComPtr<ISurfaceTemplate> surfaceTemplate;
-   surface->CreateSurfaceTemplate(CComVariant(objStation),VARIANT_TRUE,&surfaceTemplate);
-
-   // Top of Deck
-   // work right to left across the deck and get the elevation and offset of each ridge point
-   // with offset being measured from the alignment point
-   IndexType nRidgePoints;
-   surfaceTemplate->get_Count(&nRidgePoints); // this is number of segments
-   nRidgePoints++; // this is the number of ridge points
-   for ( IndexType ridgePointIdx = nRidgePoints; 0 < ridgePointIdx; ridgePointIdx-- )
-   {
-      // get offset (measured from the alignment) and the elevation of the ridge point
-      Float64 offset, elev;
-      profile->RidgePointElevation(CComVariant(objStation),ridgePointIdx,alignmentPointIdx,&offset,&elev);
-
-      // if the ridge point is between the edges of the deck, add it to the deck shape
-      if ( ::InRange(left_deck_offset,offset,right_deck_offset) )
-      {
-         slab_shape->AddPoint(offset,elev);
-      }
-   }
-   
-   // Left Edge
+   // get deck dimensions
    Float64 gross_depth;
    deck->get_GrossDepth(&gross_depth);
-
-   Float64 elev;
-   profile->Elevation(CComVariant(objStation),left_deck_offset,&elev);
-
-   // Top of deck
-   slab_shape->AddPoint(left_deck_offset,elev);
 
    Float64 fillet;
    Float64 overhang_depth;
@@ -443,254 +381,273 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
       fillet = 0.0;
    }
 
-   // Bottom of deck
+   // Top of Deck
+   // Work right to left across the top of deck.
+
+   // Begin at Right Edge, Bottom of deck
+   // This is the same point as top of deck, except for the overhang_depth
+   Float64 elev;
+   profile->Elevation(CComVariant(rightOffsetStation),right_deck_edge_normal_offset,&elev);
+   slab_shape->AddPoint(right_deck_offset,elev-overhang_depth);
+
+   // Right Edge, Top
+   slab_shape->AddPoint(right_deck_offset,elev);
+
+   // work right to left across the deck and get the elevation and offset of each ridge point
+   // with offset being measured from the alignment point
+
+   // create a surface template at the cut station. this is the top of the slab
+   IndexType nRidgePoints;
+   CComPtr<ISurfaceProfile> surfaceProfile;
+   if ( bIsNormal )
+   {
+      // surface templates are faster than surface profiles but they only work if the section
+      // cut is normal to the alignment
+      CComPtr<ISurfaceTemplate> surfaceTemplate;
+      surface->CreateSurfaceTemplate(CComVariant(objStation),VARIANT_TRUE,&surfaceTemplate);
+      surfaceTemplate->get_Count(&nRidgePoints); // this is number of segments
+      nRidgePoints++; // this is the number of ridge points
+      for ( IndexType ridgePointIdx = nRidgePoints; 0 < ridgePointIdx; ridgePointIdx-- )
+      {
+         // get offset (measured from the alignment) and the elevation of the ridge point
+         Float64 offset, elev;
+         profile->RidgePointElevation(COGO_FINISHED_SURFACE_ID,CComVariant(objStation),ridgePointIdx,alignmentPointIdx,&offset,&elev);
+
+         // if the ridge point is between the edges of the deck, add it to the deck shape
+         if ( ::InRange(left_deck_offset,offset,right_deck_offset) )
+         {
+            slab_shape->AddPoint(offset,elev);
+         }
+      }
+   }
+   else
+   {
+      surface->CreateSurfaceProfile(CComVariant(objStation),CComVariant(dirCutLine),VARIANT_TRUE,&surfaceProfile);
+      surfaceProfile->get_Count(&nRidgePoints);
+      for ( IndexType ridgePointIdx = nRidgePoints-1; 0 < ridgePointIdx; ridgePointIdx-- )
+      {
+         // get offset (measured from the alignment) and the elevation of the ridge point
+         Float64 offset, elev;
+         surfaceProfile->GetRidgePointElevation(ridgePointIdx,&offset,&elev);
+
+         // if the ridge point is between the edges of the deck, add it to the deck shape
+         if ( ::InRange(left_deck_offset,offset,right_deck_offset) )
+         {
+            slab_shape->AddPoint(offset,elev);
+         }
+      }
+   }
+   
+   // Left Edge - top of deck
+   profile->Elevation(CComVariant(leftOffsetStation),left_deck_edge_normal_offset,&elev);
+   slab_shape->AddPoint(left_deck_offset,elev);
+
+   // Left Edge - bottom of deck
    slab_shape->AddPoint(left_deck_offset,elev - overhang_depth);
 
-#pragma Reminder("UPDATE: Need to fix the implementation so the slab haunch is drawn correctly")
-   // there is still problems when the bridge is skewed and the cut location has girders in different spans
+   // work left to right across bottom of deck back to the bottom-right corner
 
-   // Haunches along bottom of slab
-   // haunch is defined by 6 points per mating surface
-   //
-   //    --------1\      /6------
-   //             2      5
-   //             |      |
-   //             3------4
-   //
-   CComPtr<IFilteredSuperstructureMemberCollection> members;
-   bridge->get_SuperstructureMembersAtStation(station,&members);
-
-   GirderIndexType nGirders;
-   members->get_Count(&nGirders);
-   for ( GirderIndexType girderIdx = 0; girderIdx < nGirders; girderIdx++ )
+   std::vector<GirderPointRecord> vGirderPoints = GetGirderPoints(bridge,objStation,dirCutLine);
+   if ( vGirderPoints.size() == 0 )
    {
-      CComPtr<ISuperstructureMember> ssmbr;
-      members->get_Item(girderIdx,&ssmbr);
-
-      GirderIDType ssmbrID;
-      ssmbr->get_ID(&ssmbrID);
-
-      CComPtr<ISuperstructureMemberSegment> firstSegment;
-      ssmbr->get_Segment(0,&firstSegment);
-
-      CComPtr<IGirderLine> firstGirderLine;
-      firstSegment->get_GirderLine(&firstGirderLine);
-
-      CComPtr<IPierLine> firstPierLine;
-      firstGirderLine->get_StartPier(&firstPierLine);
-
-      CComPtr<IStation> firstStation;
-      firstPierLine->get_Station(&firstStation);
-
-      Float64 firstStationValue;
-      firstStation->get_Value(&firstStationValue);
-
-      Float64 distFromStartOfSSMbr = station - firstStationValue;
-
-      SegmentIndexType segIdx;
-      CComPtr<ISuperstructureMemberSegment> segment;
-      Float64 dist_along_segment;
-      ssmbr->GetDistanceFromStartOfSegment(distFromStartOfSSMbr,&dist_along_segment,&segIdx,&segment);
-
-      if ( segIdx == INVALID_INDEX || segment == NULL )
+      // cut does not intersect any girders. make the bottom of the slab parallel the top of the slab
+      for ( IndexType ridgePointIdx = 0; ridgePointIdx < nRidgePoints; ridgePointIdx++ )
       {
-         continue;
-      }
-
-      // orientation of girder in radians... 0 = plumb, rotated CW is +
-      Float64 orientation;
-      segment->get_Orientation(&orientation);
-
-      CComPtr<IShape> girder_shape;
-      segment->get_PrimaryShape(dist_along_segment,&girder_shape);
-
-      CComQIPtr<IGirderSection> girder_section(girder_shape);
-
-      Float64 min_top_flange_thickness = 0;
-      FlangeIndexType nTopFlanges;
-      girder_section->get_TopFlangeCount(&nTopFlanges);
-      if ( nTopFlanges != 0 )
-      {
-         girder_section->get_MinTopFlangeThickness(&min_top_flange_thickness);
-      }
-
-      //SpanIndexType spanIdx;
-      //Float64 spanDist;
-
-      //// get the span index for this girder point
-      //m_BridgeGeometryTool->GirderLinePoint(bridge,distFromStart,girderIdx,&spanIdx,&spanDist);
-
-      //// if this points is off the bridge, use the index of the first/last span
-      //if ( spanIdx == INVALID_INDEX )
-      //{
-      //   spanIdx = 0;
-      //}
-      //else if ( spanIdx == -2 )
-      //{
-      //   ATLASSERT(false); // how can span index == -2?
-      //   spanIdx = nSpans-1;
-      //}
-
-      //// girder is in a different span then where the section cut is taken
-      //// (probably because of skews)
-      //SpanIndexType idx;
-      //span->get_Index(&idx);
-      //if ( idx != spanIdx )
-      //{
-      //   // make sure that span has enough girders... if not, continue
-      //   CComPtr<ISpanCollection> spans;
-      //   CComPtr<ISpan> span_with_girderline_point;
-      //   bridge->get_Spans(&spans);
-      //   spans->get_Item(spanIdx,&span_with_girderline_point);
-      //   GirderIndexType nGirdersThisSpan;
-      //   span_with_girderline_point->get_GirderCount(&nGirdersThisSpan);
-      //   if ( nGirdersThisSpan <= girderIdx )
-      //      continue; // not enough girders
-      //}
-
-      // get offset of CL girder from CL alignment ( < 0 means left of CL alignment )
-      Float64 girder_offset;
-      m_BridgeGeometryTool->GirderPathOffset(bridge,ssmbrID,segIdx,CComVariant(objStation),&girder_offset);
-
-      //Float64 location;
-      //SpanIndexType span_index;
-      //m_BridgeGeometryTool->GirderLinePoint(bridge,distFromStart,girderIdx,&span_index,&location);
-
-      //if (span_index == INVALID_INDEX) // this girder point is before/after the limits of the bridge (typically happens with skews)
-      //   continue; // go to the next girder
-
-      Float64 haunch = 0;
-      segment->GetHaunchDepth(dist_along_segment,&haunch);
-
-      Float64 elclg; // elevation at CL of girder
-      profile->Elevation(CComVariant(objStation),girder_offset,&elclg);
-
-      MatingSurfaceIndexType nMatingSurfaces;
-      girder_section->get_MatingSurfaceCount(&nMatingSurfaces);
-      for ( CollectionIndexType msIdx = 0; msIdx < nMatingSurfaces; msIdx++ )
-      {
-         Float64 ms_width;
-         girder_section->get_MatingSurfaceWidth(msIdx,&ms_width);
-
-         Float64 ms_location; // relative to center of beam
-         girder_section->get_MatingSurfaceLocation(msIdx,&ms_location);
-
-         Float64 x23; // x location of points 2 & 3
-         Float64 x45; // x location of points 4 & 5
-         Float64 xcl; // x location of centerline of flange
-         xcl = girder_offset + ms_location;
-         x23 = xcl - ms_width/2;
-         x45 = xcl + ms_width/2;
-
-         if ( InRange(left_deck_offset,x23,right_deck_offset) && InRange(left_deck_offset,x45,right_deck_offset))
+         // get offset (measured from the alignment) and the elevation of the ridge point
+         Float64 offset, elev;
+         if ( bIsNormal )
          {
-            Float64 el23; // deck elevation above points 2 & 3
-            Float64 el45; // deck elevation above points 4 & 5
-            Float64 elcl; // deck elevation above centerline of flange
-            profile->Elevation(CComVariant(objStation),x23,&el23);
-            profile->Elevation(CComVariant(objStation),x45,&el45);
-            profile->Elevation(CComVariant(objStation),xcl,&elcl);
+            profile->RidgePointElevation(COGO_FINISHED_SURFACE_ID,CComVariant(objStation),ridgePointIdx,alignmentPointIdx,&offset,&elev);
+         }
+         else
+         {
+            surfaceProfile->GetRidgePointElevation(ridgePointIdx,&offset,&elev);
+         }
 
-            Float64 el3; // top of girder elevation on left side of flange (point 3)
-            el3 = elclg - gross_depth - haunch - (ms_location - ms_width/2)*sin(orientation);
+         // if the ridge point is between the edges of the deck, add it to the deck shape
+         if ( ::InRange(left_deck_offset,offset,right_deck_offset) )
+         {
+            slab_shape->AddPoint(offset,elev-gross_depth);
+         }
+      }
+   }
+   else
+   {
+      // Haunches along bottom of slab
+      // haunch is defined by 6 points per mating surface
+      //
+      //    --------1\      /6------
+      //             2      5
+      //             |      |
+      //             3------4
+      //
+      BOOST_FOREACH(GirderPointRecord& girderPoint,vGirderPoints)
+      {
+         CComPtr<ISuperstructureMember> ssmbr;
+         bridge->get_SuperstructureMember(girderPoint.girderID,&ssmbr);
 
-            Float64 el4; // top of girder elevation on right side of flange (point 4)
-            el4 = elclg - gross_depth - haunch - (ms_location + ms_width/2)*sin(orientation);
+         CComPtr<ISuperstructureMemberSegment> segment;
+         ssmbr->get_Segment(girderPoint.segIdx,&segment);
 
-            if ( girderIdx != 0 || msIdx != 0 || overhang_taper == dotNone || overhang_taper == dotBottomTopFlange )
+         // orientation of girder in radians... 0 = plumb, rotated CW is +
+         Float64 orientation;
+         segment->get_Orientation(&orientation); // section view orientation
+
+         CComPtr<IShape> girder_shape;
+         segment->get_PrimaryShape(girderPoint.Xs,&girder_shape);
+
+         CComQIPtr<IGirderSection> girder_section(girder_shape);
+
+         // get skew angle. its not just the pier skew
+         CComPtr<IGirderLine> girderLine;
+         segment->get_GirderLine(&girderLine);
+         CComPtr<IDirection> objGirderLineDirection;
+         girderLine->get_Direction(&objGirderLineDirection);
+         Float64 dirGirderLine;
+         objGirderLineDirection->get_Value(&dirGirderLine);
+         Float64 skew = fabs(dirCutLineValue - (dirGirderLine + PI_OVER_2));
+
+         Float64 min_top_flange_thickness = 0;
+         FlangeIndexType nTopFlanges;
+         girder_section->get_TopFlangeCount(&nTopFlanges);
+         if ( nTopFlanges != 0 )
+         {
+            girder_section->get_MinTopFlangeThickness(&min_top_flange_thickness);
+         }
+
+         // adjust for skew
+         min_top_flange_thickness /= cos(skew);
+
+         Float64 haunch = 0;
+         segment->GetHaunchDepth(girderPoint.Xs,&haunch);
+
+         Float64 elclg; // elevation at CL of girder
+         profile->Elevation(CComVariant(girderPoint.objGirderStation),girderPoint.normalOffset,&elclg);
+
+         MatingSurfaceIndexType nMatingSurfaces;
+         girder_section->get_MatingSurfaceCount(&nMatingSurfaces);
+         for ( CollectionIndexType msIdx = 0; msIdx < nMatingSurfaces; msIdx++ )
+         {
+            Float64 ms_width;
+            girder_section->get_MatingSurfaceWidth(msIdx,&ms_width);
+
+            Float64 ms_location; // relative to center of beam
+            girder_section->get_MatingSurfaceLocation(msIdx,&ms_location);
+
+            // adjust for skew
+            ms_width /= cos(skew);
+            ms_location /= cos(skew);
+
+            Float64 x23; // x location of points 2 & 3
+            Float64 x45; // x location of points 4 & 5
+            Float64 xcl; // x location of centerline of flange
+            xcl = girderPoint.cutLineOffset + ms_location;
+            x23 = xcl - ms_width/2;
+            x45 = xcl + ms_width/2;
+
+            if ( InRange(left_deck_offset,x23,right_deck_offset) && InRange(left_deck_offset,x45,right_deck_offset))
             {
-               // only use this point if this is an interior girder or an interior web
-               // on the first girder, or the deck overhang is not tapered
-               Float64 dy;
-               Float64 dx;
-               if (girderIdx != 0 || msIdx != 0)
+               Float64 el23; // deck elevation above points 2 & 3
+               Float64 el45; // deck elevation above points 4 & 5
+               Float64 elcl; // deck elevation above centerline of flange
+               profile->Elevation(CComVariant(girderPoint.objGirderStation),x23,&el23);
+               profile->Elevation(CComVariant(girderPoint.objGirderStation),x45,&el45);
+               profile->Elevation(CComVariant(girderPoint.objGirderStation),xcl,&elcl);
+
+               Float64 el3; // top of girder elevation on left side of flange (point 3)
+               el3 = elclg - gross_depth - haunch - (ms_location - ms_width/2)*sin(orientation);
+
+               Float64 el4; // top of girder elevation on right side of flange (point 4)
+               el4 = elclg - gross_depth - haunch - (ms_location + ms_width/2)*sin(orientation);
+
+               if ( girderPoint.girderLocation != ltLeftExteriorGirder || msIdx != 0 || overhang_taper == dotNone || overhang_taper == dotBottomTopFlange )
                {
-                  // not exterior girder, or exterior web of exterior girder
-                  dy = gross_depth;
-                  dx = 0;
-               }
-               else
-               {
-                  // this is the left exterior web on the left exterior girder
-                  if ( overhang_taper == dotNone )
+                  // only use this point if this is an interior girder or an interior web
+                  // on the first girder, or the deck overhang is not tapered
+                  Float64 dy;
+                  Float64 dx;
+                  if (girderPoint.girderLocation != ltLeftExteriorGirder || msIdx != 0)
                   {
-                     dy = overhang_depth;
+                     // not exterior girder, or exterior web of exterior girder
+                     dy = gross_depth;
                      dx = 0;
                   }
                   else
                   {
-                     // slab overhang taper goes to the bottom of the top flange
-                     dy = gross_depth + haunch - (elcl-el23) + min_top_flange_thickness;
+                     // this is the left exterior web on the left exterior girder
+                     if ( overhang_taper == dotNone )
+                     {
+                        dy = overhang_depth;
+                        dx = 0;
+                     }
+                     else
+                     {
+                        // slab overhang taper goes to the bottom of the top flange
+                        dy = gross_depth + haunch - (elcl-el23) + min_top_flange_thickness;
 
-                     Float64 slope;
-                     profile->Slope(CComVariant(objStation),x23,&slope);
-                     dx = slope*min_top_flange_thickness;
+                        Float64 slope;
+                        profile->Slope(CComVariant(girderPoint.objGirderStation),x23,&slope);
+                        dx = slope*min_top_flange_thickness;
+                     }
+                  }
+
+                  if ( overhang_taper == dotBottomTopFlange )
+                  {
+                     slab_shape->AddPoint(x23-dx,el23-dy); // 1,2
+                  }
+                  else
+                  {
+                     slab_shape->AddPoint(x23-dx-fillet,el23-dy); // 1
+                     slab_shape->AddPoint(x23-dx,el23-dy-fillet); // 2
                   }
                }
 
-               if ( overhang_taper == dotBottomTopFlange )
-               {
-                  slab_shape->AddPoint(x23-dx,el23-dy); // 1,2
-               }
-               else
-               {
-                  slab_shape->AddPoint(x23-dx-fillet,el23-dy); // 1
-                  slab_shape->AddPoint(x23-dx,el23-dy-fillet); // 2
-               }
-            }
+               slab_shape->AddPoint(x23,el3); // 3
+               slab_shape->AddPoint(x45,el4); // 4
 
-            slab_shape->AddPoint(x23,el3); // 3
-            slab_shape->AddPoint(x45,el4); // 4
-
-            if ( girderIdx != nGirders-1 || msIdx != nMatingSurfaces-1 || overhang_taper == dotNone || overhang_taper == dotBottomTopFlange)
-            {
-               // only use this point if this is an interior girder or an interior web
-               // on the last girder, or the deck overhang is not tapered
-               Float64 dy;
-               Float64 dx;
-               if ( girderIdx != nGirders-1 || msIdx != nMatingSurfaces-1)
+               if ( girderPoint.girderLocation != ltRightExteriorGirder || msIdx != nMatingSurfaces-1 || overhang_taper == dotNone || overhang_taper == dotBottomTopFlange)
                {
-                  // not exterior girder, or exterior web of exterior girder
-                  dy = gross_depth;
-                  dx = 0;
-               }
-               else
-               {
-                  if ( overhang_taper == dotNone )
+                  // only use this point if this is an interior girder or an interior web
+                  // on the last girder, or the deck overhang is not tapered
+                  Float64 dy;
+                  Float64 dx;
+                  if ( girderPoint.girderLocation != ltRightExteriorGirder || msIdx != nMatingSurfaces-1)
                   {
-                     dy = overhang_depth;
+                     // not exterior girder, or exterior web of exterior girder
+                     dy = gross_depth;
                      dx = 0;
                   }
                   else
                   {
-                     dy = gross_depth + haunch - (elcl-el45) + min_top_flange_thickness; // slab overhang to bottom of girder top flange
+                     if ( overhang_taper == dotNone )
+                     {
+                        dy = overhang_depth;
+                        dx = 0;
+                     }
+                     else
+                     {
+                        dy = gross_depth + haunch - (elcl-el45) + min_top_flange_thickness; // slab overhang to bottom of girder top flange
 
-                     Float64 slope;
-                     profile->Slope(CComVariant(objStation),x45,&slope);
-                     dx = slope*min_top_flange_thickness;
+                        Float64 slope;
+                        profile->Slope(CComVariant(girderPoint.objGirderStation),x45,&slope);
+                        dx = slope*min_top_flange_thickness;
+                     }
                   }
-               }
 
-               if ( overhang_taper == dotBottomTopFlange )
-               {
-                  slab_shape->AddPoint(x45+dx,el45-dy); // 5, 6
-               }
-               else
-               {
-                  slab_shape->AddPoint(x45+dx,el45-dy-fillet); // 5
-                  slab_shape->AddPoint(x45+dx+fillet,el45-dy); // 6
+                  if ( overhang_taper == dotBottomTopFlange )
+                  {
+                     slab_shape->AddPoint(x45+dx,el45-dy); // 5, 6
+                  }
+                  else
+                  {
+                     slab_shape->AddPoint(x45+dx,el45-dy-fillet); // 5
+                     slab_shape->AddPoint(x45+dx+fillet,el45-dy); // 6
+                  }
                }
             }
          }
       }
    }
-
-   // Right Edge, Bottom
-   profile->Elevation(CComVariant(objStation),right_deck_offset,&elev);
-   slab_shape->AddPoint(right_deck_offset/* + right_slope*overhang_depth*/,elev-overhang_depth);
-
-   // Right Edge, Top
-   slab_shape->AddPoint(right_deck_offset,elev);
 
    slab_shape.QueryInterface(shape);
 
@@ -741,7 +698,7 @@ STDMETHODIMP CSectionCutTool::GetDeckProperties(IGenericBridge* bridge,IndexType
 
    Float64 station = startStation;
    CComPtr<IShape> prevDeckShape;
-   CreateSlabShape(bridge,startStation,&prevDeckShape);
+   CreateSlabShape(bridge,startStation,NULL,&prevDeckShape);
 
    Float64 prevPerimeter;
    prevDeckShape->get_Perimeter(&prevPerimeter);
@@ -768,7 +725,7 @@ STDMETHODIMP CSectionCutTool::GetDeckProperties(IGenericBridge* bridge,IndexType
          station += increment;
 
          CComPtr<IShape> deckShape;
-         CreateSlabShape(bridge,station,&deckShape);
+         CreateSlabShape(bridge,station,NULL,&deckShape);
 
          Float64 perimeter;
          deckShape->get_Perimeter(&perimeter);
@@ -2069,4 +2026,222 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
    primary_shape.CopyTo(ppShape);
 
    return S_OK;
+}
+
+HRESULT CSectionCutTool::SkewShape(Float64 skewAngle,IShape* pShape,IShape** ppSkewedShape)
+{
+   if ( IsZero(skewAngle) )
+   {
+      // Not skewed... nothing to do
+      (*ppSkewedShape) = pShape;
+      (*ppSkewedShape)->AddRef();
+      return S_OK;
+   }
+
+   CComPtr<IPoint2dCollection> points;
+   pShape->get_PolyPoints(&points);
+   CComPtr<IPoint2d> pnt;
+   CComPtr<IEnumPoint2d> enumPoints;
+   points->get__Enum(&enumPoints);
+   while ( enumPoints->Next(1,&pnt,NULL) != S_FALSE )
+   {
+      Float64 x;
+      pnt->get_X(&x);
+      x /= cos(skewAngle);
+      pnt->put_X(x);
+
+      pnt.Release();
+   }
+
+   CComPtr<IPolyShape> polyShape;
+   polyShape.CoCreateInstance(CLSID_PolyShape);
+   polyShape->AddPoints(points);
+
+   CComQIPtr<IShape> s(polyShape);
+   return s.CopyTo(ppSkewedShape);
+}
+
+HRESULT CSectionCutTool::CreateBarrierShape(DirectionType side,IGenericBridge* bridge,Float64 station,IDirection* pDirection,IShape** ppShape)
+{
+   CHECK_IN(bridge);
+   CHECK_RETOBJ(ppShape);
+
+   CComPtr<IAlignment> alignment;
+   GetAlignment(bridge,&alignment);
+
+   CComPtr<IProfile> profile;
+   alignment->get_Profile(&profile);
+
+   // many of the calls below are most efficient with a station object
+   // create one and use it.
+   CComPtr<IStation> objStation;
+   objStation.CoCreateInstance(CLSID_Station);
+   objStation->SetStation(INVALID_INDEX,station); // normalized station
+
+   CComPtr<IDirection> dirCutLine;
+   if ( pDirection == NULL )
+   {
+      alignment->Normal(CComVariant(objStation),&dirCutLine); // normal to the right
+      dirCutLine->IncrementBy(CComVariant(M_PI)); // normal to the left
+   }
+   else
+   {
+      dirCutLine = pDirection;
+   }
+
+   CComPtr<IPoint2d> pntAlignment; // point on the alignment at station
+   alignment->LocatePoint(CComVariant(objStation),omtAlongDirection,0.0,CComVariant(pDirection),&pntAlignment);
+
+   // Get Left top point of deck
+   CComPtr<IPoint2d> pntDeckEdge;
+   m_BridgeGeometryTool->DeckEdgePoint(bridge,station,dirCutLine,side,&pntDeckEdge);
+
+   CComPtr<IStation> offsetStation;
+   Float64 offset_normal_to_alignment;
+   alignment->Offset(pntDeckEdge,&offsetStation,&offset_normal_to_alignment);
+
+   Float64 deck_edge_elev;
+   profile->Elevation(CComVariant(offsetStation),offset_normal_to_alignment,&deck_edge_elev);
+
+   CComPtr<ISidewalkBarrier> barrier;
+   if ( side == qcbLeft )
+   {
+      bridge->get_LeftBarrier(&barrier);
+   }
+   else
+   {
+      bridge->get_RightBarrier(&barrier);
+   }
+
+   CComPtr<IShape> barrier_shape;
+   barrier->get_Shape(&barrier_shape);
+
+   // clone the basic shape so we aren't changing it
+   CComPtr<IShape> shape;
+   barrier_shape->Clone(&shape);
+
+   CComQIPtr<IXYPosition> position(shape);
+   // rotate shape to match deck slope
+   Float64 dx;
+   pntAlignment->DistanceEx(pntDeckEdge,&dx);
+   Float64 alignment_elev;
+   profile->Elevation(CComVariant(objStation),0.0,&alignment_elev);
+   Float64 dy = (side == qcbLeft ? alignment_elev - deck_edge_elev : deck_edge_elev - alignment_elev);
+   Float64 slope = dy/dx;
+   Float64 angle = atan(slope);
+   CComPtr<IPoint2d> hook_point;
+   position->get_LocatorPoint(lpHookPoint,&hook_point);
+   position->RotateEx(hook_point,angle);
+
+   // move shape into bridge section coordinates
+   position->Offset(offset_normal_to_alignment,deck_edge_elev);
+
+   // Project shape onto cut line
+   CComPtr<IDirection> normal;
+   alignment->Normal(CComVariant(objStation),&normal); // normal to right
+   normal->IncrementBy(CComVariant(M_PI)); // want normal to left
+
+   CComPtr<IAngle> objAngle;
+   normal->AngleBetween(dirCutLine,&objAngle);
+   Float64 skewAngle = 0;
+   objAngle->get_Value(&skewAngle);
+
+   CComPtr<IShape> skewedShape;
+   SkewShape(skewAngle,shape,&skewedShape);
+
+   skewedShape.CopyTo(ppShape);
+
+   return S_OK;
+}
+
+std::vector<CSectionCutTool::GirderPointRecord> CSectionCutTool::GetGirderPoints(IGenericBridge* pBridge,IStation* pStation,IDirection* pDirection)
+{
+   std::vector<GirderPointRecord> vGirderPoints;
+
+   // Create a line that pass throught the alignment at the specified station
+   // in the specified direction. 
+   CComPtr<IAlignment> alignment;
+   GetAlignment(pBridge,&alignment);
+
+   CComPtr<IPoint2d> pntAlignment;
+   alignment->LocatePoint(CComVariant(pStation),omtAlongDirection,0.0,CComVariant(pDirection),&pntAlignment);
+
+   Float64 cutDir;
+   pDirection->get_Value(&cutDir);
+   CComPtr<IVector2d> vDirection;
+   vDirection.CoCreateInstance(CLSID_Vector2d);
+   vDirection->put_Direction(cutDir);
+
+   CComPtr<ILine2d> cutLine;
+   cutLine.CoCreateInstance(CLSID_Line2d);
+   cutLine->SetExplicit(pntAlignment,vDirection);
+
+   CComPtr<ILineSegment2d> lineSegment;
+   lineSegment.CoCreateInstance(CLSID_LineSegment2d);
+
+   CComPtr<IGeomUtil2d> geomUtil;
+   geomUtil.CoCreateInstance(CLSID_GeomUtil);
+
+   // If the cut line intersects the girder lines, add it to the collection
+   CComPtr<IEnumSuperstructureMembers> enumMbrs;
+   pBridge->get__EnumSuperstructureMembers(&enumMbrs);
+
+   CComPtr<ISuperstructureMember> mbr;
+   while ( enumMbrs->Next(1,&mbr,NULL) != S_FALSE )
+   {
+      GirderIDType girderID;
+      mbr->get_ID(&girderID);
+
+      CollectionIndexType nSegments;
+      mbr->get_SegmentCount(&nSegments);
+
+      for ( IndexType segIdx = 0; segIdx < nSegments; segIdx++ )
+      {
+         CComPtr<ISuperstructureMemberSegment> segment;
+         mbr->get_Segment(segIdx,&segment);
+
+         CComPtr<IGirderLine> gdrLine;
+         segment->get_GirderLine(&gdrLine);
+
+         CComPtr<IPoint2d> pntStart, pntEnd;
+         gdrLine->get_EndPoint(etStart,&pntStart);
+         gdrLine->get_EndPoint(etEnd,&pntEnd);
+         //gdrLine->get_PierPoint(etStart,&pntStart);
+         //gdrLine->get_PierPoint(etEnd,&pntEnd);
+         lineSegment->ThroughPoints(pntStart,pntEnd);
+
+         CComPtr<IPoint2d> pntIntersect;
+         geomUtil->IntersectLineWithLineSegment(cutLine,lineSegment,&pntIntersect);
+         if ( pntIntersect != NULL )
+         {
+            CComPtr<IStation> objGirderStation;
+            Float64 normalOffset;
+            alignment->Offset(pntIntersect,&objGirderStation,&normalOffset);
+            Float64 cutLineOffset;
+            pntAlignment->DistanceEx(pntIntersect,&cutLineOffset);
+            cutLineOffset *= ::BinarySign(normalOffset);
+
+            Float64 Xs;
+            pntIntersect->DistanceEx(pntStart,&Xs);
+
+            LocationType locationType;
+            mbr->get_LocationType(&locationType);
+
+            GirderPointRecord girderPoint;
+            girderPoint.objGirderStation = objGirderStation;
+            girderPoint.normalOffset = normalOffset;
+            girderPoint.cutLineOffset = cutLineOffset;
+            girderPoint.girderID = girderID;
+            girderPoint.girderLocation = locationType;
+            girderPoint.segIdx = segIdx;
+            girderPoint.Xs = Xs;
+            vGirderPoints.push_back(girderPoint);
+            break;
+         }
+      }
+      mbr.Release();
+   }
+
+   std::sort(vGirderPoints.begin(),vGirderPoints.end());
+   return vGirderPoints;
 }

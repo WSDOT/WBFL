@@ -100,7 +100,8 @@ public:
 	STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx, /*[in]*/ ISurface* newVal);
 // STDMETHOD(get__NewEnum)(IUnknown** retval);
    STDMETHOD(get__EnumSurfaces)(/*[out,retval]*/ IEnumSurfaces** ppenum);
-   STDMETHOD(GetSurface)(/*[in]*/VARIANT varStation,/*[out,retval]*/ISurface** ppSurface);
+   STDMETHOD(FindSurface)(/*[in]*/CogoObjectID id,/*[out,retval]*/ISurface** ppSurface);
+   STDMETHOD(GetSurface)(/*[in]*/CogoObjectID id,/*[in]*/VARIANT varStation,/*[out,retval]*/ISurface** ppSurface);
    STDMETHOD(Clone)(/*[out,retval]*/ ISurfaceCollection* *clone);
    STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pStg);
 

@@ -144,7 +144,18 @@ Float64 mathPwLinearFunction2dUsingPoints::Evaluate(Float64 x) const
       // x not in function range - throw
       THROW(mathXEvalError, Undefined);
    }
-   else if (IsEqual(x,m_Points.front().X()))
+
+   math1dRange range = GetRange();
+   if ( x < range.GetLeftBoundLocation() )
+   {
+      return m_Points.front().Y();
+   }
+   else if ( range.GetRightBoundLocation() < x )
+   {
+      return m_Points.back().Y();
+   }
+
+   if (IsEqual(x,m_Points.front().X()))
    {
       // Edge case - no need for interpolation
       return m_Points.front().Y();

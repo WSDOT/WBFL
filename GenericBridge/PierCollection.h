@@ -36,7 +36,7 @@
 // NOTE: PierCollectionEvents
 // PierCollection and SpanCollection are not like normal COM collections.
 // Piers and Spans are logically linked together. A pier cannot be added or removed
-// without a corrosponding span being added or removed. This is try, because the
+// without a corresponding span being added or removed. This is try, because the
 // software enforces the constraint that after every edit a valid model must result.
 // The BridgeModel fires when Pier/Span pairs are added or removed. This collection
 // simply forwards events received from its individual Items.

@@ -196,11 +196,11 @@ STDMETHODIMP CProfile::get_Count(CollectionIndexType *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CProfile::GetSurface(VARIANT varStation,ISurface** ppSurface)
+STDMETHODIMP CProfile::GetSurface(CogoObjectID id,VARIANT varStation,ISurface** ppSurface)
 {
    if ( m_Surfaces )
    {
-      return m_Surfaces->GetSurface(varStation,ppSurface);
+      return m_Surfaces->GetSurface(id,varStation,ppSurface);
    }
    else
    {
@@ -373,13 +373,13 @@ STDMETHODIMP CProfile::Slope(VARIANT varStation, Float64 offset, Float64* slope)
    return GradeAndElevation(station,offset,&grade,&elev,slope);
 }
 
-STDMETHODIMP CProfile::TemplateSegmentSlope(VARIANT varStation,CollectionIndexType templateSegmentIdx,Float64* pSlope)
+STDMETHODIMP CProfile::TemplateSegmentSlope(CogoObjectID id,VARIANT varStation,CollectionIndexType templateSegmentIdx,Float64* pSlope)
 {
    CHECK_RETVAL(pSlope);
 
    HRESULT hr = S_OK;
    CComPtr<ISurface> surface;
-   hr = m_Surfaces->GetSurface(varStation,&surface);
+   hr = m_Surfaces->GetSurface(id,varStation,&surface);
    if ( FAILED(hr) )
    {
       return hr;
@@ -429,11 +429,11 @@ STDMETHODIMP CProfile::TemplateSegmentSlope(VARIANT varStation,CollectionIndexTy
    return S_OK;
 }
 
-STDMETHODIMP CProfile::RidgePointOffset(VARIANT varStation,IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset)
+STDMETHODIMP CProfile::RidgePointOffset(CogoObjectID id,VARIANT varStation,IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset)
 {
    // Gets the offset of ridgePointIdx measured from refPointIdx
    CComPtr<ISurface> surface;
-   HRESULT hr = GetSurface(varStation,&surface);
+   HRESULT hr = GetSurface(id,varStation,&surface);
    if ( FAILED(hr) )
    {
       return hr;
@@ -455,10 +455,10 @@ STDMETHODIMP CProfile::RidgePointOffset(VARIANT varStation,IndexType ridgePointI
    return surfaceTemplate->GetRidgePointOffset(ridgePointIdx,refPointIdx,pOffset);
 }
 
-STDMETHODIMP CProfile::RidgePointElevation(VARIANT varStation,IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset,Float64* pElev)
+STDMETHODIMP CProfile::RidgePointElevation(CogoObjectID id,VARIANT varStation,IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset,Float64* pElev)
 {
    // Gets the offset and elevation of the specified ridge point at the station provided. Offset is measured from the ridge point identified by refPointIdx
-   HRESULT hr = RidgePointOffset(varStation,ridgePointIdx,refPointIdx,pOffset);
+   HRESULT hr = RidgePointOffset(id,varStation,ridgePointIdx,refPointIdx,pOffset);
    if ( FAILED(hr) )
    {
       return hr;
@@ -618,7 +618,7 @@ STDMETHODIMP CProfile::Load(IStructuredLoad2* pLoad)
 
 /////////////////////////////////////
 // Helper methods
-HRESULT CProfile::GradeAndElevation(CComPtr<IStation>& station,Float64 offset,Float64* grade,Float64* elev,Float64* pSlope)
+HRESULT CProfile::GradeAndElevation(IStation* pStation,Float64 offset,Float64* grade,Float64* elev,Float64* pSlope)
 {
    CHECK_RETVAL(grade);
    CHECK_RETVAL(elev);
@@ -627,7 +627,7 @@ HRESULT CProfile::GradeAndElevation(CComPtr<IStation>& station,Float64 offset,Fl
    if ( m_coll.size() == 0 )
    {
       *elev = 0.0;
-      HRESULT hr = AdjustForOffset(station,offset,*elev,elev,pSlope);
+      HRESULT hr = AdjustForOffset(pStation,offset,*elev,elev,pSlope);
       if ( FAILED(hr) )
       {
          return hr;
@@ -661,10 +661,10 @@ HRESULT CProfile::GradeAndElevation(CComPtr<IStation>& station,Float64 offset,Fl
    }
 
    // Station is before the first station defined for the alignment
-   if ( 0 < cogoUtil::Compare(m_pAlignment,station,startSta) )
+   if ( 0 < cogoUtil::Compare(m_pAlignment,pStation,startSta) )
    {
-      BeforeProfileGradeAndElevation(station,grade,elev);
-      return AdjustForOffset(station,offset,*elev,elev,pSlope);
+      BeforeProfileGradeAndElevation(pStation,grade,elev);
+      return AdjustForOffset(pStation,offset,*elev,elev,pSlope);
    }
 
    pt = *(m_coll.end()-1);
@@ -690,18 +690,18 @@ HRESULT CProfile::GradeAndElevation(CComPtr<IStation>& station,Float64 offset,Fl
    }
 
    // Station is after the last station defined for the alignment
-   if ( 0 < cogoUtil::Compare(m_pAlignment,endSta,station) )
+   if ( 0 < cogoUtil::Compare(m_pAlignment,endSta,pStation) )
    {
-      AfterProfileGradeAndElevation(station,grade,elev);
-      return AdjustForOffset(station,offset,*elev,elev,pSlope);
+      AfterProfileGradeAndElevation(pStation,grade,elev);
+      return AdjustForOffset(pStation,offset,*elev,elev,pSlope);
    }
 
    // Station is somewhere in the middle of the alignment
-   ProfileGradeAndElevation(station,grade,elev);
-   return AdjustForOffset(station,offset,*elev,elev,pSlope);
+   ProfileGradeAndElevation(pStation,grade,elev);
+   return AdjustForOffset(pStation,offset,*elev,elev,pSlope);
 }
 
-void CProfile::BeforeProfileGradeAndElevation(CComPtr<IStation>& station,Float64* pGrade, Float64* pElev)
+void CProfile::BeforeProfileGradeAndElevation(IStation* pStation,Float64* pGrade, Float64* pElev)
 {
    // Get the first element. If it is a vertical curve
    // the curve can compute the elevation
@@ -717,8 +717,8 @@ void CProfile::BeforeProfileGradeAndElevation(CComPtr<IStation>& station,Float64
    if ( type == peVertCurve )
    {
       CComQIPtr<IVertCurve> vc(disp);
-      vc->Grade(CComVariant(station),pGrade);
-      vc->Elevation(CComVariant(station),pElev);
+      vc->Grade(CComVariant(pStation),pGrade);
+      vc->Elevation(CComVariant(pStation),pElev);
       return;
    }
    else
@@ -768,7 +768,7 @@ void CProfile::BeforeProfileGradeAndElevation(CComPtr<IStation>& station,Float64
 
       Float64 staVal1 = cogoUtil::GetNormalizedStationValue(this,sta1);
       Float64 staVal2 = cogoUtil::GetNormalizedStationValue(this,sta2);
-      Float64 stationVal = cogoUtil::GetNormalizedStationValue(this,station);
+      Float64 stationVal = cogoUtil::GetNormalizedStationValue(this,pStation);
 
       if ( !IsEqual(staVal1,staVal2) ) 
       {
@@ -783,8 +783,8 @@ void CProfile::BeforeProfileGradeAndElevation(CComPtr<IStation>& station,Float64
          if ( type == peVertCurve )
          {
             CComQIPtr<IVertCurve> vc(disp);
-            vc->Grade(CComVariant(station),pGrade);
-            vc->Elevation(CComVariant(station),pElev);
+            vc->Grade(CComVariant(pStation),pGrade);
+            vc->Elevation(CComVariant(pStation),pElev);
             return;
          }
          else
@@ -852,7 +852,7 @@ bool CompareProfileElements(const ProfileType& pt,const ProfileType& testPt)
    return (0 < cogoUtil::Compare(profile,station,testStation));
 }
 
-void CProfile::ProfileGradeAndElevation(CComPtr<IStation>& station,Float64* pGrade, Float64* pElev)
+void CProfile::ProfileGradeAndElevation(IStation* pStation,Float64* pGrade, Float64* pElev)
 {
    if ( m_coll.size() == 1 )
    {
@@ -875,13 +875,13 @@ void CProfile::ProfileGradeAndElevation(CComPtr<IStation>& station,Float64* pGra
       else
       {
          CComQIPtr<IVertCurve> vc(disp);
-         vc->Elevation(CComVariant(station),pElev);
-         vc->Grade(CComVariant(station),pGrade);
+         vc->Elevation(CComVariant(pStation),pElev);
+         vc->Grade(CComVariant(pStation),pGrade);
          return;
       }
    }
 
-   m_TestPoint->put_Station(CComVariant(station));
+   m_TestPoint->put_Station(CComVariant(pStation));
    ProfileType findMe(-1,CComVariant(m_TestElement));
    Profiles::iterator iter = std::upper_bound(m_coll.begin(),m_coll.end(),findMe,CompareProfileElements);
    if ( iter == m_coll.end() )
@@ -917,7 +917,7 @@ void CProfile::ProfileGradeAndElevation(CComPtr<IStation>& station,Float64* pGra
 //         lastStation.Release();
 //         bvc->get_Station(&lastStation);
 //      }
-//   } while ( 0 <= cogoUtil::Compare(m_pAlignment,lastStation,station) && iter != m_coll.end() );
+//   } while ( 0 <= cogoUtil::Compare(m_pAlignment,lastStation,pStation) && iter != m_coll.end() );
 
    // These elements are on either side the the desired station
    //iter--; // went one past... back up one
@@ -956,10 +956,10 @@ void CProfile::ProfileGradeAndElevation(CComPtr<IStation>& station,Float64* pGra
       bvc->get_Station(&bvcSta);
       evc->get_Station(&evcSta);
 
-      if ( 0 <= cogoUtil::Compare(m_pAlignment,bvcSta,station) && 0 <= cogoUtil::Compare(m_pAlignment,station,evcSta) )
+      if ( 0 <= cogoUtil::Compare(m_pAlignment,bvcSta,pStation) && 0 <= cogoUtil::Compare(m_pAlignment,pStation,evcSta) )
       {
-         vc->Elevation(CComVariant(station),pElev);
-         vc->Grade(CComVariant(station),pGrade);
+         vc->Elevation(CComVariant(pStation),pElev);
+         vc->Grade(CComVariant(pStation),pGrade);
          bBetweenElements = false;
       }
       else
@@ -990,10 +990,10 @@ void CProfile::ProfileGradeAndElevation(CComPtr<IStation>& station,Float64* pGra
       evcSta.Release();
       evc->get_Station(&evcSta);
 
-      if ( 0 <= cogoUtil::Compare(m_pAlignment,bvcSta,station) && 0 <= cogoUtil::Compare(m_pAlignment,station,evcSta) )
+      if ( 0 <= cogoUtil::Compare(m_pAlignment,bvcSta,pStation) && 0 <= cogoUtil::Compare(m_pAlignment,pStation,evcSta) )
       {
-         vc->Elevation(CComVariant(station),pElev);
-         vc->Grade(CComVariant(station),pGrade);
+         vc->Elevation(CComVariant(pStation),pElev);
+         vc->Grade(CComVariant(pStation),pGrade);
          bBetweenElements = false;
       }
       else
@@ -1017,12 +1017,12 @@ void CProfile::ProfileGradeAndElevation(CComPtr<IStation>& station,Float64* pGra
       Float64 dy = nextElev - prevElev;
       Float64 grade = dy/dx;
       *pGrade = grade;
-      Float64 distance = cogoUtil::Distance(m_pAlignment,prevSta,station);
+      Float64 distance = cogoUtil::Distance(m_pAlignment,prevSta,pStation);
       *pElev = prevElev + grade*distance;
    }
 }
 
-void CProfile::AfterProfileGradeAndElevation(CComPtr<IStation>& station,Float64* pGrade,Float64* pElev)
+void CProfile::AfterProfileGradeAndElevation(IStation* pStation,Float64* pGrade,Float64* pElev)
 {
    // Get the last element. If it is a vertical curve
    // the curve can compute the elevation
@@ -1038,8 +1038,8 @@ void CProfile::AfterProfileGradeAndElevation(CComPtr<IStation>& station,Float64*
    if ( type == peVertCurve )
    {
       CComQIPtr<IVertCurve> vc(disp);
-      vc->Elevation(CComVariant(station),pElev);
-      vc->Grade(CComVariant(station),pGrade);
+      vc->Elevation(CComVariant(pStation),pElev);
+      vc->Grade(CComVariant(pStation),pGrade);
       return;
    }
    else
@@ -1089,7 +1089,7 @@ void CProfile::AfterProfileGradeAndElevation(CComPtr<IStation>& station,Float64*
 
       Float64 staVal1 = cogoUtil::GetNormalizedStationValue(m_pAlignment,sta1);
       Float64 staVal2 = cogoUtil::GetNormalizedStationValue(m_pAlignment,sta2);
-      Float64 stationVal = cogoUtil::GetNormalizedStationValue(m_pAlignment,station);
+      Float64 stationVal = cogoUtil::GetNormalizedStationValue(m_pAlignment,pStation);
 
       if ( !IsEqual(staVal1,staVal2) )
       {
@@ -1104,8 +1104,8 @@ void CProfile::AfterProfileGradeAndElevation(CComPtr<IStation>& station,Float64*
          if ( type == peVertCurve )
          {
             CComQIPtr<IVertCurve> vc(disp);
-            vc->Grade(CComVariant(station),pGrade);
-            vc->Elevation(CComVariant(station),pElev);
+            vc->Grade(CComVariant(pStation),pGrade);
+            vc->Elevation(CComVariant(pStation),pElev);
             return;
          }
          else
@@ -1121,10 +1121,10 @@ void CProfile::AfterProfileGradeAndElevation(CComPtr<IStation>& station,Float64*
    }
 }
 
-HRESULT CProfile::AdjustForOffset(CComPtr<IStation>& station,Float64 offset,Float64 profileElev,Float64* pAdjElev,Float64* pSlope)
+HRESULT CProfile::AdjustForOffset(IStation* pStation,Float64 offset,Float64 profileElev,Float64* pAdjElev,Float64* pSlope)
 {
    CComPtr<ISurface> surface;
-   m_Surfaces->GetSurface(CComVariant(station),&surface);
+   m_Surfaces->GetSurface(COGO_FINISHED_SURFACE_ID,CComVariant(pStation),&surface);
    if ( surface == NULL )
    {
       *pAdjElev = profileElev;
@@ -1132,7 +1132,7 @@ HRESULT CProfile::AdjustForOffset(CComPtr<IStation>& station,Float64 offset,Floa
    }
 
    CComPtr<ISurfaceTemplate> surfaceTemplate;
-   HRESULT hr = surface->CreateSurfaceTemplate(CComVariant(station),VARIANT_FALSE,&surfaceTemplate); // don't apply super
+   HRESULT hr = surface->CreateSurfaceTemplate(CComVariant(pStation),VARIANT_FALSE,&surfaceTemplate); // don't apply super
    if ( FAILED(hr) )
    {
       return hr;
@@ -1147,7 +1147,7 @@ HRESULT CProfile::AdjustForOffset(CComPtr<IStation>& station,Float64 offset,Floa
    CComPtr<ISuperelevationCollection> superelevations;
    surface->get_Superelevations(&superelevations);
    CComPtr<ISuperelevation> superelevation;
-   superelevations->GetSuperelevation(CComVariant(station),&superelevation);
+   superelevations->GetSuperelevation(CComVariant(pStation),&superelevation);
    if ( superelevation )
    {
       // this station is in a superelevation transition!!!
@@ -1166,7 +1166,7 @@ HRESULT CProfile::AdjustForOffset(CComPtr<IStation>& station,Float64 offset,Floa
 
       // Create the superelevated section
       CComPtr<ISurfaceTemplate> superSurfaceTemplate;
-      hr = surface->CreateSurfaceTemplate(CComVariant(station),VARIANT_TRUE,&superSurfaceTemplate);
+      hr = surface->CreateSurfaceTemplate(CComVariant(pStation),VARIANT_TRUE,&superSurfaceTemplate);
       if ( FAILED(hr) )
       {
          return hr;

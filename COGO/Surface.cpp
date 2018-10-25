@@ -27,6 +27,7 @@
 #include "stdafx.h"
 #include "WBFLCOGO.h"
 #include "Surface.h"
+#include "SurfaceProfile.h"
 #include "SurfaceTemplate.h"
 #include "SurfaceTemplateCollection.h"
 #include "SuperelevationCollection.h"
@@ -46,6 +47,8 @@ HRESULT CSurface::FinalConstruct()
 {
    m_pProfile = NULL;
 
+   m_ID = INVALID_ID;
+
    CComObject<CSurfaceTemplateCollection>* pSurfaceTemplates;
    CComObject<CSurfaceTemplateCollection>::CreateInstance(&pSurfaceTemplates);
    m_SurfaceTemplates = pSurfaceTemplates;
@@ -61,9 +64,9 @@ HRESULT CSurface::FinalConstruct()
    m_AlignmentPointIdx = 0;
    m_ProfilePointIdx   = 0;
 
-   m_SurfaceTemplates->putref_Profile(m_pProfile);
-   m_Superelevations->putref_Profile(m_pProfile);
-   m_Widenings->putref_Profile(m_pProfile);
+   m_SurfaceTemplates->putref_Surface(this);
+   m_Superelevations->putref_Surface(this);
+   m_Widenings->putref_Surface(this);
 
    Advise();
 
@@ -160,9 +163,23 @@ STDMETHODIMP CSurface::putref_Profile(IProfile* newVal)
 {
    m_pProfile = newVal;
 
-   m_SurfaceTemplates->putref_Profile(m_pProfile);
-   m_Superelevations->putref_Profile(m_pProfile);
-   m_Widenings->putref_Profile(m_pProfile);
+   return S_OK;
+}
+
+STDMETHODIMP CSurface::get_ID(CogoObjectID* id)
+{
+   CHECK_RETVAL(id);
+   *id = m_ID;
+   return S_OK;
+}
+
+STDMETHODIMP CSurface::put_ID(CogoObjectID id)
+{
+   if ( m_ID != id )
+   {
+      m_ID = id;
+      Fire_OnSurfaceChanged(this);
+   }
 
    return S_OK;
 }
@@ -233,6 +250,27 @@ STDMETHODIMP CSurface::get_Widenings(IWideningCollection** ppWidenings)
    return S_OK;
 }
 
+STDMETHODIMP CSurface::get_StartBoundaryLine(ILineSegment2d** ppEndLine)
+{
+   // this is the plan view line for the first surface template
+   CComPtr<ISurfaceTemplate> surfaceTemplate;
+   m_SurfaceTemplates->get_Item(0,&surfaceTemplate);
+
+   return CreateTemplateLine(surfaceTemplate,ppEndLine);
+}
+
+STDMETHODIMP CSurface::get_EndBoundaryLine(ILineSegment2d** ppEndLine)
+{
+   // this is the plan view line for the last surface template
+   IndexType nTemplates;
+   m_SurfaceTemplates->get_Count(&nTemplates);
+
+   CComPtr<ISurfaceTemplate> surfaceTemplate;
+   m_SurfaceTemplates->get_Item(nTemplates-1,&surfaceTemplate);
+
+   return CreateTemplateLine(surfaceTemplate,ppEndLine);
+}
+
 STDMETHODIMP CSurface::GetStationRange(IStation** ppStart,IStation** ppEnd)
 {
    IndexType count;
@@ -269,7 +307,9 @@ STDMETHODIMP CSurface::CreateSurfaceTemplate(VARIANT varStation,VARIANT_BOOL bAp
    CComPtr<ISurfaceTemplate> template1, template2;
    HRESULT hr = m_SurfaceTemplates->GetBoundingTemplates(varStation,&template1,&template2);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
    
    // number of templates segments must be the same in both templates
    IndexType nSegments1,nSegments2;
@@ -282,11 +322,13 @@ STDMETHODIMP CSurface::CreateSurfaceTemplate(VARIANT varStation,VARIANT_BOOL bAp
       return SurfaceError(IDS_E_SURFACEDEFINITIONERROR,COGO_E_SURFACEDEFINITIONERROR);
    }
 
-   // interplotation factor
+   // interpolation factor
    CComPtr<IStation> objStation;
    hr = cogoUtil::StationFromVariant(varStation,false,&objStation);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    CComPtr<IStation> objStation1, objStation2;
    template1->get_Station(&objStation1);
@@ -295,7 +337,7 @@ STDMETHODIMP CSurface::CreateSurfaceTemplate(VARIANT varStation,VARIANT_BOOL bAp
    Float64 station  = cogoUtil::GetNormalizedStationValue(m_pProfile,objStation);
    Float64 station1 = cogoUtil::GetNormalizedStationValue(m_pProfile,objStation1);
    Float64 station2 = cogoUtil::GetNormalizedStationValue(m_pProfile,objStation2);
-   Float64 factor = (station-station1)/(station2-station1);
+   Float64 factor = IsZero(station2-station1) ? 0 : (station-station1)/(station2-station1);
    // interpolated value = (factor)(value2-value1) + value1
 
    CComObject<CSurfaceTemplate>* pTemplate;
@@ -372,6 +414,88 @@ STDMETHODIMP CSurface::CreateSurfaceTemplate(VARIANT varStation,VARIANT_BOOL bAp
    }
 
    return S_OK;
+}
+
+STDMETHODIMP CSurface::CreateSurfaceProfile(VARIANT varStation,VARIANT varDirection,VARIANT_BOOL bApplySuperelevations,ISurfaceProfile** ppSurfaceProfile)
+{
+   CHECK_RETOBJ(ppSurfaceProfile);
+   CComObject<CSurfaceProfile>* pProfile;
+   CComObject<CSurfaceProfile>::CreateInstance(&pProfile);
+   CComPtr<ISurfaceProfile> surfaceProfile(pProfile);
+   surfaceProfile->putref_Surface(this);
+
+   // create the cut line
+   CComPtr<IAlignment> alignment;
+   m_pProfile->get_Alignment(&alignment);
+   CComPtr<IPoint2d> pntAlignment;
+   alignment->LocatePoint(varStation,omtAlongDirection,0.0,varDirection,&pntAlignment);
+   
+   CComPtr<IDirection> dirCutLine;
+   cogoUtil::DirectionFromVariant(varDirection,&dirCutLine);
+   Float64 cutDir;
+   dirCutLine->get_Value(&cutDir);
+
+   CComPtr<IVector2d> v;
+   v.CoCreateInstance(CLSID_Vector2d);
+   v->put_Direction(cutDir);
+
+   CComPtr<ILine2d> cutLine;
+   cutLine.CoCreateInstance(CLSID_Line2d);
+   cutLine->SetExplicit(pntAlignment,v);
+
+   CComPtr<IGeomUtil2d> geomUtil;
+   geomUtil.CoCreateInstance(CLSID_GeomUtil);
+
+   ValidateRidgeLines();
+   IndexType nSubSurfaces;
+   m_SurfaceTemplates->get_Count(&nSubSurfaces);
+   nSubSurfaces--;
+   ATLASSERT(m_RidgeLines.size() == nSubSurfaces);
+   for ( IndexType subSurfaceIdx = 0; subSurfaceIdx < nSubSurfaces; subSurfaceIdx++ )
+   {
+      std::vector<CComPtr<ILineSegment2d>>& vRidgeLines = m_RidgeLines[subSurfaceIdx];
+      IndexType nRidgeLines = vRidgeLines.size();
+      for ( IndexType ridgeLineIdx = 0; ridgeLineIdx < nRidgeLines; ridgeLineIdx++ )
+      {
+         CComQIPtr<ILineSegment2d> ridgeLine(vRidgeLines[ridgeLineIdx]);
+
+         CComPtr<IPoint2d> pnt;
+         geomUtil->IntersectLineWithLineSegment(cutLine,ridgeLine,&pnt);
+
+         if ( pnt == NULL && (subSurfaceIdx == 0 || subSurfaceIdx == nSubSurfaces-1) )
+         {
+            // we are in the first or last sub-surface and the cut line didn't intersect a ridge line
+            // see if it intersects the surface boundary line
+            CComPtr<ILineSegment2d> endLine;
+            if ( subSurfaceIdx == 0 )
+            {
+               get_StartBoundaryLine(&endLine);
+            }
+            else
+            {
+               get_EndBoundaryLine(&endLine);
+            }
+            geomUtil->IntersectLineWithLineSegment(cutLine,endLine,&pnt);
+         }
+
+         if ( pnt != NULL )
+         {
+            CComPtr<IStation> station;
+            Float64 normal_offset;
+            alignment->Offset(pnt,&station,&normal_offset);
+            Float64 elev;
+            m_pProfile->Elevation(CComVariant(station),normal_offset,&elev);
+
+            Float64 cut_line_offset;
+            pntAlignment->DistanceEx(pnt,&cut_line_offset);
+            cut_line_offset *= ::BinarySign(normal_offset);
+
+            surfaceProfile->AddPoint(CComVariant(station),normal_offset,cut_line_offset,elev,pnt);
+         }
+      }
+   }
+
+   return surfaceProfile.CopyTo(ppSurfaceProfile);
 }
 
 STDMETHODIMP CSurface::Clone(ISurface** ppClone)
@@ -483,4 +607,108 @@ HRESULT CSurface::SurfaceError(UINT nHelpString,HRESULT hRes)
    ::LoadString( _Module.GetModuleInstance(), nHelpString, str, 256);
    CComBSTR oleMsg(str);
    return Error(oleMsg, IID_ISurface, hRes);
+}
+
+void CSurface::InvalidateRidgeLines()
+{
+   m_RidgeLines.clear();
+}
+
+void CSurface::ValidateRidgeLines()
+{
+   if ( 0 < m_RidgeLines.size() )
+   {
+      return; // ridge lines are valid
+   }
+
+   // create line segments that connect the ridge points in consecutive surface templates
+   // these are lines in plan view.
+   CComPtr<IAlignment> alignment;
+   m_pProfile->get_Alignment(&alignment);
+
+   IndexType nTemplates;
+   m_SurfaceTemplates->get_Count(&nTemplates);
+   for ( IndexType templateIdx = 0; templateIdx < nTemplates-1; templateIdx++ )
+   {
+      IndexType subSurfaceIndex = templateIdx;
+
+      // get adjacent templates
+      CComPtr<ISurfaceTemplate> template1, template2;
+      m_SurfaceTemplates->get_Item(templateIdx,  &template1);
+      m_SurfaceTemplates->get_Item(templateIdx+1,&template2);
+
+      // get the station of the templates
+      CComPtr<IStation> station1, station2;
+      template1->get_Station(&station1);
+      template2->get_Station(&station2);
+
+      // get the normal to the alignment (normal to the right)
+      CComPtr<IDirection> normal1, normal2;
+      alignment->Normal(CComVariant(station1),&normal1);
+      alignment->Normal(CComVariant(station2),&normal2);
+
+      IndexType nSegments;
+      template1->get_Count(&nSegments);
+#if defined _DEBUG
+      IndexType ns;
+      template2->get_Count(&ns);
+      ATLASSERT(ns == nSegments);
+#endif
+
+      std::vector<CComPtr<ILineSegment2d>> vRidgeLines;
+      IndexType nRidgePoints = nSegments+1;
+      for ( IndexType ridgePointIdx = 0; ridgePointIdx < nRidgePoints; ridgePointIdx++ )
+      {
+         // get the offset from the alignment point to the ridge point
+         Float64 offset1,offset2;
+         template1->GetRidgePointOffset(ridgePointIdx,m_AlignmentPointIdx,&offset1);
+         template2->GetRidgePointOffset(ridgePointIdx,m_AlignmentPointIdx,&offset2);
+
+         // locate the ridge points in plan view
+         CComPtr<IPoint2d> pnt1, pnt2;
+         alignment->LocatePoint(CComVariant(station1),omtAlongDirection,offset1,CComVariant(normal1),&pnt1);
+         alignment->LocatePoint(CComVariant(station2),omtAlongDirection,offset2,CComVariant(normal2),&pnt2);
+
+         CComPtr<ILineSegment2d> ridgeLine;
+         ridgeLine.CoCreateInstance(CLSID_LineSegment2d);
+         ridgeLine->ThroughPoints(pnt1,pnt2);
+         vRidgeLines.push_back(ridgeLine);
+      }
+
+      m_RidgeLines.insert(std::make_pair(subSurfaceIndex,vRidgeLines));
+   }
+}
+
+HRESULT CSurface::CreateTemplateLine(ISurfaceTemplate* pSurfaceTemplate,ILineSegment2d** ppLine)
+{
+   // creates a plan view line segment that is normal to the alignment at the location of the
+   // surface template. the line segment goes between the left and right ridge points
+   CHECK_RETOBJ(ppLine);
+
+   CComPtr<IAlignment> alignment;
+   m_pProfile->get_Alignment(&alignment);
+   
+   CComPtr<IStation> station;
+   pSurfaceTemplate->get_Station(&station);
+
+   CComPtr<IDirection> normal;
+   alignment->Normal(CComVariant(station),&normal);
+   
+   Float64 leftOffset;
+   pSurfaceTemplate->GetRidgePointOffset(0,m_AlignmentPointIdx,&leftOffset);
+   
+   IndexType nRidgePoints;
+   pSurfaceTemplate->get_Count(&nRidgePoints); // this is # of template segments
+   nRidgePoints++;
+   Float64 rightOffset;
+   pSurfaceTemplate->GetRidgePointOffset(nRidgePoints-1,m_AlignmentPointIdx,&rightOffset);
+
+   CComPtr<IPoint2d> pnt1, pnt2;
+   alignment->LocatePoint(CComVariant(station),omtAlongDirection,leftOffset,CComVariant(normal),&pnt1);
+   alignment->LocatePoint(CComVariant(station),omtAlongDirection,rightOffset,CComVariant(normal),&pnt2);
+
+   CComPtr<ILineSegment2d> endLine;
+   endLine.CoCreateInstance(CLSID_LineSegment2d);
+   endLine->ThroughPoints(pnt1,pnt2);
+   return endLine.CopyTo(ppLine);
 }

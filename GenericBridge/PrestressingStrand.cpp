@@ -69,6 +69,7 @@ const matPsStrand* CPrestressingStrand::GetStrand()
    lrfdStrandPool* pStrandPool = lrfdStrandPool::GetInstance();
    const matPsStrand* pStrand = pStrandPool->GetStrand((matPsStrand::Grade)m_Grade,
                                                        (matPsStrand::Type)m_Type,
+                                                       (matPsStrand::Coating)m_Coating,
                                                        (matPsStrand::Size)m_Size);
 
    return pStrand;
@@ -113,6 +114,19 @@ STDMETHODIMP CPrestressingStrand::get_Type(StrandType* type)
 STDMETHODIMP CPrestressingStrand::put_Type(StrandType type)
 {
    m_Type = type;
+   return S_OK;
+}
+
+STDMETHODIMP CPrestressingStrand::get_Coating(StrandCoating* coating)
+{
+   CHECK_RETVAL(coating);
+   *coating = m_Coating;
+   return m_Coating;
+}
+
+STDMETHODIMP CPrestressingStrand::put_Coating(StrandCoating coating)
+{
+   m_Coating = coating;
    return S_OK;
 }
 

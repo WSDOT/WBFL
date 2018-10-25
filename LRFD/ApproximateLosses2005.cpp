@@ -66,8 +66,12 @@ lrfdApproximateLosses2005::lrfdApproximateLosses2005()
 lrfdApproximateLosses2005::lrfdApproximateLosses2005(Float64 x, // location along girder where losses are computed
                          Float64 Lg,    // girder length
                          lrfdLosses::SectionPropertiesType sectionProperties,
-                         matPsStrand::Grade gr,
-                         matPsStrand::Type type,
+                         matPsStrand::Grade gradePerm, // strand grade
+                         matPsStrand::Type typePerm, // strand type
+                         matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
+                         matPsStrand::Grade gradeTemp, // strand grade
+                         matPsStrand::Type typeTemp, // strand type
+                         matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
                          Float64 fpjPerm, // fpj permanent strands
                          Float64 fpjTemp, // fpj of temporary strands
                          Float64 ApsPerm,  // area of permanent strand
@@ -113,7 +117,7 @@ lrfdApproximateLosses2005::lrfdApproximateLosses2005(Float64 x, // location alon
                          bool bIgnoreInitialRelaxation,
                          bool bValidateParameters
                          ) :
-lrfdLosses(x,Lg,sectionProperties,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Mllim,Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,bIgnoreInitialRelaxation,bValidateParameters)
+lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Mllim,Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,bIgnoreInitialRelaxation,bValidateParameters)
 {
 }
 
@@ -146,7 +150,7 @@ Float64 lrfdApproximateLosses2005::TemporaryStrand_RelaxationLossesAtXfer() cons
    }
    else
    {
-      return RelaxationLossesAtXfer();
+      return RelaxationLossesAtXfer(false);
    }
 }
 
@@ -158,15 +162,16 @@ Float64 lrfdApproximateLosses2005::PermanentStrand_RelaxationLossesAtXfer() cons
    }
    else
    {
-      return RelaxationLossesAtXfer();
+      return RelaxationLossesAtXfer(true);
    }
 }
 
-Float64 lrfdApproximateLosses2005::RelaxationLossesAtXfer() const
+Float64 lrfdApproximateLosses2005::RelaxationLossesAtXfer(bool bPerm) const
 {
    Float64 loss = 0;
    bool is_si = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI);
-   if ( m_Type == matPsStrand::LowRelaxation )
+   matPsStrand::Type type = (bPerm ? m_TypePerm : m_TypeTemp);
+   if ( type == matPsStrand::LowRelaxation )
    {
       if (is_si)
       {
@@ -194,6 +199,14 @@ Float64 lrfdApproximateLosses2005::RelaxationLossesAtXfer() const
       {
          loss = g_10_KSI;
       }
+   }
+
+   // See PCI Guidelines for the use of epoxy-coated strand
+   // PCI Journal July-August 1993. Section 5.3
+   matPsStrand::Coating coating = (bPerm ? m_CoatingPerm : m_CoatingTemp);
+   if ( coating != matPsStrand::None )
+   {
+      loss *= 2;
    }
 
    return loss;
@@ -431,11 +444,11 @@ void lrfdApproximateLosses2005::UpdateLongTermLosses() const
 
       bool is_si = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI);
       Float64 fpj = (m_ApsPerm*m_FpjPerm+m_ApsTemp*m_FpjTemp)/(m_ApsPerm+m_ApsTemp);
-      Float64 dfpR0 = (m_ApsTemp*m_dfpR0[0] + m_ApsPerm*m_dfpR0[1])/(m_ApsPerm+m_ApsTemp);
+      Float64 dfpR0 = (m_ApsTemp*m_dfpR0[TEMPORARY_STRAND] + m_ApsPerm*m_dfpR0[PERMANENT_STRAND])/(m_ApsPerm+m_ApsTemp);
       if ( is_si )
       {
          fpj = ::ConvertFromSysUnits( fpj,unitMeasure::MPa);
-         Float64 delta_fpR = ::ConvertFromSysUnits(RelaxationLossesAtXfer(),unitMeasure::MPa);
+         Float64 delta_fpR = ::ConvertFromSysUnits(PermanentStrand_RelaxationLossesAtXfer(),unitMeasure::MPa);
          Float64 fpi = fpj - ::ConvertFromSysUnits(dfpR0,unitMeasure::MPa);
          _ASSERTE(0 <= fpi);
 
@@ -448,7 +461,7 @@ void lrfdApproximateLosses2005::UpdateLongTermLosses() const
       else
       {
          fpj = ::ConvertFromSysUnits( fpj ,unitMeasure::KSI);
-         Float64 delta_fpR = ::ConvertFromSysUnits(RelaxationLossesAtXfer(),unitMeasure::KSI);
+         Float64 delta_fpR = ::ConvertFromSysUnits(PermanentStrand_RelaxationLossesAtXfer(),unitMeasure::KSI);
 
          Float64 fpi = fpj - ::ConvertFromSysUnits(dfpR0,unitMeasure::KSI);
          _ASSERTE(0 <= fpi);

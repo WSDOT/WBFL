@@ -103,11 +103,11 @@ public:
    STDMETHOD(CreateGirderShapeBySegment)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx, IShape** ppShape);
 
    // creates shapes for the left and right railing systems
-	STDMETHOD(CreateLeftBarrierShape)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[out,retval]*/IShape** shape);
-	STDMETHOD(CreateRightBarrierShape)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[out,retval]*/IShape** shape);
+	STDMETHOD(CreateLeftBarrierShape)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/IDirection* pDirection,/*[out,retval]*/IShape** shape);
+	STDMETHOD(CreateRightBarrierShape)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/IDirection* pDirection,/*[out,retval]*/IShape** shape);
 
    // creates a shape for the bridge deck
-   STDMETHOD(CreateSlabShape)(/*[in]*/IGenericBridge* bridge,/*[in]*/Float64 station,/*[out,retval]*/IShape** shape);
+   STDMETHOD(CreateSlabShape)(/*[in]*/IGenericBridge* bridge,/*[in]*/Float64 station,/*[in]*/IDirection* pDirection,/*[out,retval]*/IShape** shape);
 
    STDMETHOD(GetDeckProperties)(/*[in]*/IGenericBridge* bridge,/*[in]*/IndexType nSectionsPerSpan,/*[out]*/Float64* pSurfaceArea,/*[out]*/Float64* pVolume);
 
@@ -118,6 +118,26 @@ private:
    HRESULT CreateBridgeDeckSection(IGenericBridge* bridge,Float64 distFromStartOfBridge,StageIndexType stageIdx,Float64 elevBottomDeck,ICompositeSectionItemEx** deckitem);
    HRESULT CreateGirderShape(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,IShape** ppShape);
    HRESULT LayoutRebar(ICompositeSectionEx* compositeSection,Float64 Econc,Float64 Dconc,IRebarSection* rebarSection,Float64 xTop,Float64 yTop,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod);
+   HRESULT SkewShape(Float64 skewAngle,IShape* pShape,IShape** ppSkewedShape);
+   HRESULT CreateBarrierShape(DirectionType side,IGenericBridge* bridge,Float64 station,IDirection* pDirection,IShape** ppShape);
+
+   struct GirderPointRecord
+   {
+      CComPtr<IStation> objGirderStation;
+      Float64 normalOffset;
+      Float64 cutLineOffset;
+      GirderIDType girderID;
+      LocationType girderLocation;
+      SegmentIndexType segIdx;
+      Float64 Xs;
+
+      bool operator<(const GirderPointRecord& other) const
+      {
+         return cutLineOffset < other.cutLineOffset;
+      }
+   };
+
+   std::vector<CSectionCutTool::GirderPointRecord> GetGirderPoints(IGenericBridge* pBridge,IStation* pStation,IDirection* pDirection);
 };
 
 #endif //__SECTIONCUTTOOL_H_

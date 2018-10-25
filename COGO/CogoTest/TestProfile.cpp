@@ -40,7 +40,7 @@ static char THIS_FILE[] = __FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 void TestGrade(IProfile* profile,Float64 results[],long minStation=440,long maxStation=1560,long inc=160);
-void TestCrownSlopes(IProfile* profile,IndexType ridgePointIdx,Float64 results[][2],long minStation=440,long maxStation=1560,long inc=160);
+void TestCrownSlopes(IProfile* profile,CogoObjectID surfaceID,IndexType ridgePointIdx,Float64 results[][2],long minStation=440,long maxStation=1560,long inc=160);
 void TestElevation(IProfile* profile,Float64 offset,Float64 results[],long minStation=440,long maxStation=1560,long inc=160);
 
 CTestProfile::CTestProfile()
@@ -355,6 +355,10 @@ void CTestProfile::Test2()
 
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
+
+   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
+   surface->put_ID(surfaceID);
+
    surfaces->Add(surface);
 
    CComPtr<ISurfaceTemplateCollection> templates;
@@ -412,7 +416,7 @@ void CTestProfile::Test2()
    TestGrade(profile,Grades);
 
    Float64 CrownSlopes1[][2] = { {  0.0200, -0.0200}, {  0.0200, -0.0200}, {  0.0040, -0.0280}, { -0.0387, -0.0493}, { -0.0333,-0.0653}, { 0.0200, -0.0760}, { 0.0400, -0.0800}, { 0.0400, -0.0800} };
-   TestCrownSlopes(profile,2,CrownSlopes1);
+   TestCrownSlopes(profile,surfaceID,2,CrownSlopes1);
 
    Float64 ElevA[] = { 71.900, 79.900, 87.860, 93.407, 95.033, 92.740, 88.000, 83.200 };
    Float64 ElevB[] = { 72.100, 80.100, 87.900, 93.020, 94.700, 92.940, 88.400, 83.600 };
@@ -470,7 +474,7 @@ void CTestProfile::Test2()
    }
 
    Float64 CrownSlopes2[][2] = { { -0.0200,  0.0200}, { -0.0200,  0.0200}, { -0.0040,  0.0280}, { 0.0387,  0.0493}, { 0.0333, 0.0653}, { -0.0200,  0.0760}, { -0.0400,  0.0800}, { -0.0400,  0.0800} };
-   TestCrownSlopes(profile,2,CrownSlopes2);
+   TestCrownSlopes(profile,surfaceID,2,CrownSlopes2);
 
    Float64 ElevK[] = { 72.100, 80.100, 87.660, 92.140, 93.713, 92.380, 88.000, 83.200 };
    Float64 ElevL[] = { 71.900, 79.900, 87.620, 92.527, 94.047, 92.180, 87.600, 82.800 };
@@ -544,6 +548,10 @@ void CTestProfile::Test3()
 
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
+
+   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
+   surface->put_ID(surfaceID);
+
    surfaces->Add(surface);
 
    CComPtr<ISurfaceTemplateCollection> templates;
@@ -601,7 +609,7 @@ void CTestProfile::Test3()
    TestGrade(profile,Grades);
 
    Float64 CrownSlopes1[][2] = { {  0.0200, -0.0200}, {  0.0200, -0.0200}, {  0.0040, -0.0280}, { -0.0387, -0.0493}, { -0.0333,-0.0653}, { 0.0200, -0.0760}, { 0.0400, -0.0800}, { 0.0400, -0.0800} };
-   TestCrownSlopes(profile,2,CrownSlopes1);
+   TestCrownSlopes(profile,surfaceID,2,CrownSlopes1);
 
    Float64 ElevA[] = { 71.900, 79.900, 87.860, 93.407, 95.033, 92.740, 88.000, 83.200 };
    Float64 ElevB[] = { 72.100, 80.100, 87.900, 93.020, 94.700, 92.940, 88.400, 83.600 };
@@ -653,7 +661,7 @@ void CTestProfile::Test3()
    }
 
    Float64 CrownSlopes2[][2] = { { -0.0200,  0.0200}, { -0.0200,  0.0200}, { -0.0040,  0.0280}, { 0.0387,  0.0493}, { 0.0333, 0.0653}, {-0.0200,  0.0760}, {-0.0400,  0.0800}, {-0.0400,  0.0800} };
-   TestCrownSlopes(profile,2,CrownSlopes2);
+   TestCrownSlopes(profile,surfaceID,2,CrownSlopes2);
 
    Float64 ElevK[] = { 72.100, 80.100, 87.660, 92.140, 93.713, 92.380, 88.000, 83.200 };
    Float64 ElevL[] = { 71.900, 79.900, 87.620, 92.527, 94.047, 92.180, 87.600, 82.800 };
@@ -740,6 +748,10 @@ void CTestProfile::Test4()
 
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
+
+   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
+   surface->put_ID(surfaceID);
+
    surfaces->Add(surface);
 
    CComPtr<ISurfaceTemplateCollection> templates;
@@ -797,7 +809,7 @@ void CTestProfile::Test4()
    TestGrade(profile,Grades);
 
    Float64 CrownSlopes1[][2] = { { 0.0200, -0.0200}, { 0.0200, -0.0200}, { 0.0040, -0.0280}, { -0.0387, -0.0493}, { -0.0333,-0.0653}, { 0.0200, -0.0760}, { 0.0400, -0.0800}, { 0.0400, -0.0800} };
-   TestCrownSlopes(profile,2,CrownSlopes1);
+   TestCrownSlopes(profile,surfaceID,2,CrownSlopes1);
 
    Float64 ElevA[] = { 71.900, 79.900, 87.860, 93.407, 95.033, 92.740, 87.3417, 75.250 };
    Float64 ElevB[] = { 72.100, 80.100, 87.900, 93.020, 94.700, 92.940, 87.7417, 75.650 };
@@ -849,7 +861,7 @@ void CTestProfile::Test4()
    }
 
    Float64 CrownSlopes2[][2] = { { -0.0200,  0.0200}, { -0.0200,  0.0200}, { -0.0040,  0.0280}, { 0.0387,  0.0493}, { 0.0333, 0.0653}, { -0.0200,  0.0760}, { -0.0400,  0.0800}, { -0.0400,  0.0800} };
-   TestCrownSlopes(profile,2,CrownSlopes2);
+   TestCrownSlopes(profile,surfaceID,2,CrownSlopes2);
 
    Float64 ElevK[] = { 72.100, 80.100, 87.660, 92.140, 93.713, 92.380, 87.3417, 75.250 };
    Float64 ElevL[] = { 71.900, 79.900, 87.620, 92.527, 94.047, 92.180, 86.9417, 74.850 };
@@ -934,6 +946,10 @@ void CTestProfile::Test5()
 
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
+
+   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
+   surface->put_ID(surfaceID);
+
    surfaces->Add(surface);
 
    CComPtr<ISurfaceTemplateCollection> templates;
@@ -991,7 +1007,7 @@ void CTestProfile::Test5()
    TestGrade(profile,Grades);
 
    Float64 CrownSlopes1[][2] = { {  0.0200, -0.0200}, {  0.0200, -0.0200}, {  0.0040, -0.0280}, { -0.0387, -0.0493}, { -0.0333,-0.0653}, { 0.0200, -0.0760}, { 0.0400, -0.0800}, { 0.0400, -0.0800} };
-   TestCrownSlopes(profile,2,CrownSlopes1);
+   TestCrownSlopes(profile,surfaceID,2,CrownSlopes1);
 
    Float64 ElevA[] = { 71.900, 79.900, 87.860, 93.407, 95.033, 92.740, 88.000, 83.200 };
    Float64 ElevB[] = { 72.100, 80.100, 87.900, 93.020, 94.700, 92.940, 88.400, 83.600 };
@@ -1043,7 +1059,7 @@ void CTestProfile::Test5()
    }
 
    Float64 CrownSlopes2[][2] = { { -0.0200,  0.0200}, { -0.0200,  0.0200}, { -0.0040,  0.0280}, { 0.0387,  0.0493}, { 0.0333, 0.0653}, { -0.0200,  0.0760}, { -0.0400,  0.0800}, { -0.0400,  0.0800} };
-   TestCrownSlopes(profile,2,CrownSlopes2);
+   TestCrownSlopes(profile,surfaceID,2,CrownSlopes2);
 
    Float64 ElevK[] = { 72.100, 80.100, 87.660, 92.140, 93.713, 92.380, 88.000, 83.200 };
    Float64 ElevL[] = { 71.900, 79.900, 87.620, 92.527, 94.047, 92.180, 87.600, 82.800 };
@@ -1135,6 +1151,10 @@ void CTestProfile::Test6()
 
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
+
+   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
+   surface->put_ID(surfaceID);
+
    surfaces->Add(surface);
 
    CComPtr<ISurfaceTemplateCollection> templates;
@@ -1192,7 +1212,7 @@ void CTestProfile::Test6()
    TestGrade(profile,Grades);
 
    Float64 CrownSlopes1[][2] = { { 0.0200, -0.0200}, { 0.0200, -0.0200}, { 0.0040, -0.0280}, { -0.0387, -0.0493}, { -0.0333,-0.0653}, { 0.0200, -0.0760}, { 0.0400, -0.0800}, { 0.0400, -0.0800} };
-   TestCrownSlopes(profile,2,CrownSlopes1);
+   TestCrownSlopes(profile,surfaceID,2,CrownSlopes1);
 
    Float64 ElevA[] = { 71.900, 79.900, 87.860, 93.407, 95.033, 92.740, 88.000, 83.200 };
    Float64 ElevB[] = { 72.100, 80.100, 87.900, 93.020, 94.700, 92.940, 88.400, 83.600 };
@@ -1244,7 +1264,7 @@ void CTestProfile::Test6()
    }
 
    Float64 CrownSlopes2[][2] = { { -0.0200,  0.0200}, { -0.0200,  0.0200}, { -0.0040,  0.0280}, { 0.0387,  0.0493}, { 0.0333, 0.0653}, { -0.0200,  0.0760}, { -0.0400,  0.0800}, { -0.0400,  0.0800} };
-   TestCrownSlopes(profile,2,CrownSlopes2);
+   TestCrownSlopes(profile,surfaceID,2,CrownSlopes2);
 
    Float64 ElevK[] = { 72.100, 80.100, 87.660, 92.140, 93.713, 92.380, 88.000, 83.200 };
    Float64 ElevL[] = { 71.900, 79.900, 87.620, 92.527, 94.047, 92.180, 87.600, 82.800 };
@@ -1299,6 +1319,10 @@ void CTestProfile::Test7()
 
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
+
+   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
+   surface->put_ID(surfaceID);
+
    surfaces->Add(surface);
 
    CComPtr<ISurfaceTemplateCollection> templates;
@@ -1398,6 +1422,10 @@ void CTestProfile::Test8()
 
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
+
+   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
+   surface->put_ID(surfaceID);
+
    surfaces->Add(surface);
 
    CComPtr<ISurfaceTemplateCollection> templates;
@@ -1542,6 +1570,10 @@ void CTestProfile::Test10()
 
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
+
+   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
+   surface->put_ID(surfaceID);
+
    surfaces->Add(surface);
 
    CComPtr<ISurfaceTemplateCollection> templates;
@@ -1742,6 +1774,10 @@ void CTestProfile::Test12()
 
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
+
+   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
+   surface->put_ID(surfaceID);
+
    surfaces->Add(surface);
 
    CComPtr<ISurfaceTemplateCollection> templates;
@@ -1761,7 +1797,7 @@ void CTestProfile::Test12()
 
    CComPtr<ISurfaceTemplate> template700;
    template700.CoCreateInstance(CLSID_SurfaceTemplate);
-   template700->putref_Profile(profile);
+   template700->putref_Surface(surface);
    station->SetStation(1,1100); // 7+00 normalized = 11+00,1
    equations->ConvertToNormalizedStation(CComVariant(station),&value);
    TRY_TEST(IsEqual(value,700.),true);
@@ -1774,7 +1810,7 @@ void CTestProfile::Test12()
 
    CComPtr<ISurfaceTemplate> template1000;
    template1000.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1000->putref_Profile(profile);
+   template1000->putref_Surface(surface);
    station->SetStation(2,1200); // 10+00 normalized = 12+00,2
    equations->ConvertToNormalizedStation(CComVariant(station),&value);
    TRY_TEST(IsEqual(value,1000.),true);
@@ -1787,7 +1823,7 @@ void CTestProfile::Test12()
 
    CComPtr<ISurfaceTemplate> template1300;
    template1300.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1300->putref_Profile(profile);
+   template1300->putref_Surface(surface);
    station->SetStation(2,1500); // 13+00 normalized = 15+00,2
    equations->ConvertToNormalizedStation(CComVariant(station),&value);
    TRY_TEST(IsEqual(value,1300.),true);
@@ -1812,7 +1848,7 @@ void CTestProfile::Test12()
    TestGrade(profile,Grades);
 
    Float64 CrownSlopes1[][2] = { { 0.0200, -0.0200}, { 0.0200, -0.0200}, { 0.0040, -0.0280}, { -0.0387, -0.0493}, { -0.0333,-0.0653}, { 0.0200, -0.0760}, { 0.0400, -0.0800}, { 0.0400, -0.0800} };
-   TestCrownSlopes(profile,2,CrownSlopes1);
+   TestCrownSlopes(profile,surfaceID,2,CrownSlopes1);
 
    Float64 ElevA[] = { 71.900, 79.900, 87.860, 93.407, 95.033, 92.740, 88.000, 83.200 };
    Float64 ElevB[] = { 72.100, 80.100, 87.900, 93.020, 94.700, 92.940, 88.400, 83.600 };
@@ -1864,7 +1900,7 @@ void CTestProfile::Test12()
    }
 
    Float64 CrownSlopes2[][2] = { { -0.0200,  0.0200}, { -0.0200,  0.0200}, { -0.0040,  0.0280}, { 0.0387,  0.0493}, { 0.0333, 0.0653}, { -0.0200,  0.0760}, { -0.0400,  0.0800}, { -0.0400,  0.0800} };
-   TestCrownSlopes(profile,2,CrownSlopes2);
+   TestCrownSlopes(profile,surfaceID,2,CrownSlopes2);
 
    Float64 ElevK[] = { 72.100, 80.100, 87.660, 92.140, 93.713, 92.380, 88.000, 83.200 };
    Float64 ElevL[] = { 71.900, 79.900, 87.620, 92.527, 94.047, 92.180, 87.600, 82.800 };
@@ -1912,6 +1948,10 @@ void CTestProfile::Test13()
 
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
+
+   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
+   surface->put_ID(surfaceID);
+
    surfaces->Add(surface);
 
    CComPtr<ISurfaceTemplateCollection> templates;
@@ -2033,6 +2073,10 @@ void CTestProfile::Test14()
 
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
+
+   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
+   surface->put_ID(surfaceID);
+
    surfaces->Add(surface);
 
    CComPtr<ISurfaceTemplateCollection> templates;
@@ -2133,6 +2177,10 @@ void CTestProfile::Test15()
 
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
+
+   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
+   surface->put_ID(surfaceID);
+
    surfaces->Add(surface);
 
    CComPtr<ISurfaceTemplateCollection> templates;
@@ -2267,7 +2315,7 @@ void TestGrade(IProfile* profile,Float64 results[],long minStation,long maxStati
    }
 }
 
-void TestCrownSlopes(IProfile* profile,IndexType ridgePointIdx,Float64 results[][2],long minStation,long maxStation,long inc)
+void TestCrownSlopes(IProfile* profile,CogoObjectID surfaceID,IndexType ridgePointIdx,Float64 results[][2],long minStation,long maxStation,long inc)
 {
    CComPtr<IStation> objStation;
    objStation.CoCreateInstance(CLSID_Station);
@@ -2296,8 +2344,8 @@ void TestCrownSlopes(IProfile* profile,IndexType ridgePointIdx,Float64 results[]
          objStation->SetStation(INVALID_INDEX,station);
       }
 
-      profile->TemplateSegmentSlope(CComVariant(objStation),leftSegmentIdx, &left);
-      profile->TemplateSegmentSlope(CComVariant(objStation),rightSegmentIdx,&right);
+      profile->TemplateSegmentSlope(surfaceID,CComVariant(objStation),leftSegmentIdx, &left);
+      profile->TemplateSegmentSlope(surfaceID,CComVariant(objStation),rightSegmentIdx,&right);
 
       TRY_TEST( IsEqual(left,  results[j][0], 0.001), true );
       TRY_TEST( IsEqual(right, results[j][1], 0.001), true );

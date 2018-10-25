@@ -721,6 +721,12 @@ library WBFLGeometry
       [helpstring("method Location"),helpcontext(IDH_IPoint3d_Location)]
       HRESULT Location([out]Float64* pX,[out]Float64* pY,[out]Float64* pZ);
 
+      [helpstring("method Distance")/*,helpcontext(IDH_IPoint3d_Distance)*/]
+      HRESULT Distance([in]Float64 x,[in]Float64 y,[in]Float64 z,[out,retval]Float64* pDistance);
+
+      [helpstring("method DistanceEx")/*,helpcontext(IDH_IPoint3d_DistanceEx)*/]
+      HRESULT DistanceEx([in]IPoint3d* pOther,[out,retval]Float64* pDistance);
+
       [helpstring("method Clone")/*,helpcontext(IDH_IPoint3d_Location)*/]
       HRESULT Clone([out,retval]IPoint3d** ppPoint);
    };

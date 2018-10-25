@@ -41,7 +41,7 @@ static char THIS_FILE[] = __FILE__;
 
 HRESULT CSuperelevation::FinalConstruct()
 {
-   m_pProfile = NULL;
+   m_pSurface = NULL;
 
    CComObject<CStation>* pBeginTransition;
    CComObject<CStation>::CreateInstance(&pBeginTransition);
@@ -93,9 +93,9 @@ STDMETHODIMP CSuperelevation::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 // ISuperelevation
-STDMETHODIMP CSuperelevation::Init(IProfile* pProfile,VARIANT varBeginStation,VARIANT varBeginFullStation,VARIANT varEndFullStation,VARIANT varEndStation,Float64 rate,IndexType pivotPoint,SuperTransitionType beginType,Float64 beginL1,Float64 beginL2,SuperTransitionType endType,Float64 endL1,Float64 endL2)
+STDMETHODIMP CSuperelevation::Init(ISurface* pSurface,VARIANT varBeginStation,VARIANT varBeginFullStation,VARIANT varEndFullStation,VARIANT varEndStation,Float64 rate,IndexType pivotPoint,SuperTransitionType beginType,Float64 beginL1,Float64 beginL2,SuperTransitionType endType,Float64 endL1,Float64 endL2)
 {
-   if ( FAILED(putref_Profile(pProfile)) )
+   if ( FAILED(putref_Surface(pSurface)) )
       return E_FAIL;
 
    if ( FAILED(put_BeginTransition(varBeginStation)) )
@@ -131,21 +131,22 @@ STDMETHODIMP CSuperelevation::Init(IProfile* pProfile,VARIANT varBeginStation,VA
    return S_OK;
 }
 
-STDMETHODIMP CSuperelevation::get_Profile(IProfile* *pVal)
+STDMETHODIMP CSuperelevation::get_Surface(ISurface* *pVal)
 {
    CHECK_RETOBJ(pVal);
-   if ( m_pProfile )
+   if ( m_pSurface )
    {
-      (*pVal) = m_pProfile;
+      (*pVal) = m_pSurface;
       (*pVal)->AddRef();
    }
 
    return S_OK;
 }
 
-STDMETHODIMP CSuperelevation::putref_Profile(IProfile* newVal)
+STDMETHODIMP CSuperelevation::putref_Surface(ISurface* newVal)
 {
-   m_pProfile = newVal;
+   CHECK_IN(newVal);
+   m_pSurface = newVal;
    return S_OK;
 }
 
@@ -160,7 +161,12 @@ STDMETHODIMP CSuperelevation::put_BeginTransition(VARIANT varStation)
    if ( FAILED(hr) )
       return hr;
 
-   if ( !cogoUtil::IsEqual(m_pProfile,objStation,m_BeginTransition) )
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+   if ( !cogoUtil::IsEqual(profile,objStation,m_BeginTransition) )
    {
       m_BeginTransition.Release();
       objStation->Clone(&m_BeginTransition);
@@ -186,7 +192,12 @@ STDMETHODIMP CSuperelevation::put_BeginFullSuper(VARIANT varStation)
    if ( FAILED(hr) )
       return hr;
 
-   if ( !cogoUtil::IsEqual(m_pProfile,objStation,m_BeginFullSuper) )
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+   if ( !cogoUtil::IsEqual(profile,objStation,m_BeginFullSuper) )
    {
       m_BeginFullSuper.Release();
       objStation->Clone(&m_BeginFullSuper);
@@ -212,7 +223,12 @@ STDMETHODIMP CSuperelevation::put_EndFullSuper(VARIANT varStation)
    if ( FAILED(hr) )
       return hr;
 
-   if ( !cogoUtil::IsEqual(m_pProfile,objStation,m_EndFullSuper) )
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+   if ( !cogoUtil::IsEqual(profile,objStation,m_EndFullSuper) )
    {
       m_EndFullSuper.Release();
       objStation->Clone(&m_EndFullSuper);
@@ -238,7 +254,12 @@ STDMETHODIMP CSuperelevation::put_EndTransition(VARIANT varStation)
    if ( FAILED(hr) )
       return hr;
 
-   if ( !cogoUtil::IsEqual(m_pProfile,objStation,m_EndTransition) )
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+   if ( !cogoUtil::IsEqual(profile,objStation,m_EndTransition) )
    {
       m_EndTransition.Release();
       objStation->Clone(&m_EndTransition);
@@ -377,24 +398,29 @@ STDMETHODIMP CSuperelevation::GetSlope(VARIANT varStation,Float64 templateSlope,
    if ( FAILED(hr) )
       return hr;
 
-   if ( 0 < cogoUtil::Compare(m_pProfile,objStation,m_BeginTransition) ||
-        0 < cogoUtil::Compare(m_pProfile,m_EndTransition,objStation) )
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+   if ( 0 < cogoUtil::Compare(profile,objStation,m_BeginTransition) ||
+        0 < cogoUtil::Compare(profile,m_EndTransition,objStation) )
    {
       // station is not in the supertransition area
       *pSlope = templateSlope;
       return S_OK;
    }
 
-   if ( 0 <= cogoUtil::Compare(m_pProfile,m_BeginTransition,objStation) &&
-        0 <= cogoUtil::Compare(m_pProfile,objStation,m_BeginFullSuper) )
+   if ( 0 <= cogoUtil::Compare(profile,m_BeginTransition,objStation) &&
+        0 <= cogoUtil::Compare(profile,objStation,m_BeginFullSuper) )
    {
       // In begin transition
       hr = ComputeSlopeInBeginTransition(objStation,templateSlope,pSlope);
       if ( FAILED(hr) )
          return hr;
    }
-   else if ( 0 <= cogoUtil::Compare(m_pProfile,m_EndFullSuper,objStation) &&
-             0 <= cogoUtil::Compare(m_pProfile,objStation,m_EndTransition) )
+   else if ( 0 <= cogoUtil::Compare(profile,m_EndFullSuper,objStation) &&
+             0 <= cogoUtil::Compare(profile,objStation,m_EndTransition) )
    {
       // In end transition
       hr = ComputeSlopeInEndTransition(objStation,templateSlope,pSlope);
@@ -417,7 +443,7 @@ STDMETHODIMP CSuperelevation::Clone(ISuperelevation** ppClone)
    CComObject<CSuperelevation>* pClone;
    CComObject<CSuperelevation>::CreateInstance(&pClone);
 
-   pClone->Init(m_pProfile,CComVariant(m_BeginTransition),CComVariant(m_BeginFullSuper),CComVariant(m_EndFullSuper),CComVariant(m_EndTransition),m_Rate,m_PivotPoint,m_BeginTransitionType,m_BeginTransitionLength[0],m_BeginTransitionLength[1],m_EndTransitionType,m_EndTransitionLength[0],m_EndTransitionLength[1]);
+   pClone->Init(m_pSurface,CComVariant(m_BeginTransition),CComVariant(m_BeginFullSuper),CComVariant(m_EndFullSuper),CComVariant(m_EndTransition),m_Rate,m_PivotPoint,m_BeginTransitionType,m_BeginTransitionLength[0],m_BeginTransitionLength[1],m_EndTransitionType,m_EndTransitionLength[0],m_EndTransitionLength[1]);
 
    (*ppClone) = pClone;
    (*ppClone)->AddRef();
@@ -458,13 +484,20 @@ STDMETHODIMP CSuperelevation::Load(IStructuredLoad2* pLoad)
 
 HRESULT CSuperelevation::ValidateStation(IStation* station)
 {
-   if ( m_pProfile == NULL )
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+   if ( profile == NULL )
    {
       // if not associated with a profile, station must be normalized
       ZoneIndexType staEqnZoneIdx;
       station->get_StationZoneIndex(&staEqnZoneIdx);
       if ( staEqnZoneIdx != INVALID_INDEX )
+      {
          return E_INVALIDARG; // station must be normalized
+      }
    }
 
    return S_OK;
@@ -482,9 +515,14 @@ HRESULT CSuperelevation::ComputeSlopeInEndTransition(IStation* pStation,Float64 
 
 HRESULT CSuperelevation::ComputeSlopeInTransition(IStation* pStation,IStation* pStartTransition,IStation* pEndTransition,SuperTransitionType transitionType,Float64 L1,Float64 L2,Float64 startSlope,Float64 endSlope,Float64* pSlope)
 {
-   Float64 station = cogoUtil::GetNormalizedStationValue(m_pProfile,pStation);
-   Float64 start   = cogoUtil::GetNormalizedStationValue(m_pProfile,pStartTransition);
-   Float64 end     = cogoUtil::GetNormalizedStationValue(m_pProfile,pEndTransition);
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+   Float64 station = cogoUtil::GetNormalizedStationValue(profile,pStation);
+   Float64 start   = cogoUtil::GetNormalizedStationValue(profile,pStartTransition);
+   Float64 end     = cogoUtil::GetNormalizedStationValue(profile,pEndTransition);
    Float64 slope = 0.0;
    if ( IsEqual(start,end) )
    {
