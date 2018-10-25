@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2014, Washington State Department of Transportation, All Rights Reserved
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -65,6 +65,7 @@ protected:
 
    void AddProjectGroup(HTREEITEM hParent,HTREEITEM hAfter,const CEAFTemplateGroup* pGroup,const CString& strLastSelection,HTREEITEM* pDefaultItem);
    
+   void ExpandProjectType(HTREEITEM hItem);
    void ExpandProjectTypes();
 
 	DECLARE_MESSAGE_MAP()
