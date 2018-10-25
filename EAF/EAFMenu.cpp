@@ -150,8 +150,29 @@ CEAFMenu* CEAFMenu::CreatePopupMenu(INT pos,LPCTSTR lpszName)
    }
    else
    {
-      m_Popups.insert( m_Popups.begin() + pos, pNewMenu );
+      //m_Popups.insert( m_Popups.begin() + pos, pNewMenu );
       pMenu->InsertMenu(pos+offset,MF_BYPOSITION | MF_POPUP, (UINT)pNewMenu->m_Menu.m_hMenu, lpszName );
+      if ( 0 < pos )
+      {
+         CString strMenu;
+         pMenu->GetMenuString(pos+offset-1,strMenu,MF_BYPOSITION);
+
+         std::vector<CEAFMenu*>::iterator iter(m_Popups.begin());
+         std::vector<CEAFMenu*>::iterator end(m_Popups.end());
+         for ( ; iter != end; iter++ )
+         {
+            CEAFMenu* pPopupMenu = *iter;
+            if ( pPopupMenu->m_strMenu.Compare(strMenu) == 0 )
+            {
+               m_Popups.insert(iter+1,pNewMenu);
+               break;
+            }
+         }
+      }
+      else
+      {
+         m_Popups.insert( m_Popups.begin() + pos, pNewMenu );
+      }
    }
 
    if ( m_pWnd )
@@ -525,7 +546,8 @@ INT CEAFMenu::GetMenuItemOffset()
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    CFrameWnd* pActiveFrame = pMainFrame->GetActiveFrame();
    INT offset = 0;
-   if ( pActiveFrame && m_pWnd && pActiveFrame->IsZoomed() )
+   DWORD dwStyle = pActiveFrame->GetStyle();
+   if ( pActiveFrame && m_pWnd && (pActiveFrame->IsZoomed() || sysFlags<DWORD>::IsSet(dwStyle,WS_MAXIMIZE)) )
    {
       offset = 1;
    }

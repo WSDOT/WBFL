@@ -497,7 +497,7 @@ bool sysStructuredLoadXmlPrs_Impl::BeginUnit(LPCTSTR name)
       THROW_LOAD(InvalidFileFormat,this);
    }
 
-   WATCH("BeginUnit: " << m_UnitList.back().Name);
+   //WATCH("BeginUnit: " << m_UnitList.back().Name);
 
    return retval;
 }
@@ -512,7 +512,7 @@ bool sysStructuredLoadXmlPrs_Impl::EndUnit()
       if (m_Level<=0)
          THROW_LOAD(InvalidFileFormat,this);
 
-      WATCH("EndUnit: " << m_UnitList.back().Name);
+      //WATCH("EndUnit: " << m_UnitList.back().Name);
 
       // climb back up the tree
       m_UnitList.pop_back();
