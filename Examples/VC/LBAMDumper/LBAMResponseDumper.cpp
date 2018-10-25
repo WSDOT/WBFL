@@ -20,24 +20,24 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
-std::string MakeTempFilename()
+std::_tstring MakeTempFilename()
 {
-   char temp_path[ _MAX_PATH ];
-   char temp_file[ _MAX_PATH ];
+   TCHAR temp_path[ _MAX_PATH ];
+   TCHAR temp_file[ _MAX_PATH ];
 
    if ( ::GetTempPath( _MAX_PATH, temp_path ) == 0 )
-      strcpy_s(temp_path,_MAX_PATH,"C:\\"); // Couldn't establish a temp path, just use the root drive.
+      lstrcpyn(temp_path,_T("C:\\"),_MAX_PATH); // Couldn't establish a temp path, just use the root drive.
 
    // This creates a file called "temp_file".TMP
-   if ( ::GetTempFileName( temp_path, "tmp", 0, temp_file ) == 0 )
+   if ( ::GetTempFileName( temp_path, _T("tmp"), 0, temp_file ) == 0 )
    {
       // We could not get a temp name, so just use this default
       // (Use a tmp extension so it is in the same format as the one
       //  the OS would have created for us)
-      strcpy_s( temp_file, _MAX_PATH, "report.tmp" );
+      lstrcpyn( temp_file, _T("report.tmp"), _MAX_PATH );
    }
 
-   return std::string(temp_file);
+   return std::_tstring(temp_file);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -79,8 +79,8 @@ STDMETHODIMP CLBAMResponseDumper::Dump(ILBAMAnalysisEngine* engine, BSTR fileNam
    CHECK_IN(fileName);
 
    CHRException hr;
-   std::ofstream os;
-   std::ofstream cos;
+   std::_tofstream os;
+   std::_tofstream cos;
    try
    {
       // first open our main output file
@@ -113,13 +113,13 @@ STDMETHODIMP CLBAMResponseDumper::Dump(ILBAMAnalysisEngine* engine, BSTR fileNam
 
             do_details = true;
 
-            cos<<"Concurrent Responses and Detailed Reponse Configurations" <<std::endl;
-            cos<<"Master Dump File Name is "<< W2A(fileName)<<std::endl;
-            cos<<"=================================================================================================="<<std::endl<<std::endl;
+            cos<<_T("Concurrent Responses and Detailed Reponse Configurations") <<std::endl;
+            cos<<_T("Master Dump File Name is ")<< W2A(fileName)<<std::endl;
+            cos<<_T("==================================================================================================")<<std::endl<<std::endl;
          }
       }
 
-      os<<"Dump of LBAM model and results" << std::endl << std::endl;
+      os<<_T("Dump of LBAM model and results") << std::endl << std::endl;
 
       CComPtr<ILBAMModel> model;
       hr = engine->get_Model(&model);
@@ -129,7 +129,7 @@ STDMETHODIMP CLBAMResponseDumper::Dump(ILBAMAnalysisEngine* engine, BSTR fileNam
       // model description
       if (m_DumpModel!=VARIANT_FALSE)
       {
-         std::cout<<"Model Description"<<std::endl;
+         std::_tcout<<_T("Model Description")<<std::endl;
          CModelDumper mdumper(&util);
          mdumper.DumpModel(os, model);
       }
@@ -142,14 +142,14 @@ STDMETHODIMP CLBAMResponseDumper::Dump(ILBAMAnalysisEngine* engine, BSTR fileNam
       // load group response
       if (m_DumpLoadGroups!=VARIANT_FALSE)
       {
-         std::cout<<"LoadGroup Response"<<std::endl;
+         std::_tcout<<_T("LoadGroup Response")<<std::endl;
          lg_dumper.DumpLoadGroupResponse(os);
       }
 
       // influence lines
       if (m_DumpInfluenceLines!=VARIANT_FALSE)
       {
-         std::cout<<"Influence Line Response"<<std::endl;
+         std::_tcout<<_T("Influence Line Response")<<std::endl;
          lg_dumper.DumpInfluenceLines(os);
       }
 
@@ -163,13 +163,13 @@ STDMETHODIMP CLBAMResponseDumper::Dump(ILBAMAnalysisEngine* engine, BSTR fileNam
       CLiveLoadDumper ll_dumper(engine, &util);
       if (m_DumpEnvelopedVehicularResponse!=VARIANT_FALSE)
       {
-         std::cout<<"Enveloped Vehicular Response"<<std::endl;
+         std::_tcout<<_T("Enveloped Vehicular Response")<<std::endl;
          ll_dumper.DumpEnvelopedVehicularResponse(os, cos);
       }
       
       if (m_LiveLoadModelResponse!=VARIANT_FALSE)
       {
-         std::cout<<"Live Load Model Response"<<std::endl;
+         std::_tcout<<_T("Live Load Model Response")<<std::endl;
          ll_dumper.DumpLiveLoadModelResponse(os, cos);
       }
 
@@ -177,19 +177,19 @@ STDMETHODIMP CLBAMResponseDumper::Dump(ILBAMAnalysisEngine* engine, BSTR fileNam
       CLoadCombinationDumper lc_dumper(engine, &util);
       if (m_LoadCaseResponse!=VARIANT_FALSE)
       {
-         std::cout<<"Load Case Response"<<std::endl;
+         std::_tcout<<_T("Load Case Response")<<std::endl;
          lc_dumper.DumpLoadCaseResponse(os);
       }
 
       if (m_LoadCombinationResponse!=VARIANT_FALSE)
       {
-         std::cout<<"Load Combination Response"<<std::endl;
+         std::_tcout<<_T("Load Combination Response")<<std::endl;
          lc_dumper.DumpLoadCombinationResponse(os, cos);
       }
       
-      std::cout<<"Done"<<std::endl;
+      std::_tcout<<_T("Done")<<std::endl;
 
-      os<<std::endl<<"Normal Dump Completion" << std::endl << std::endl;
+      os<<std::endl<<_T("Normal Dump Completion") << std::endl << std::endl;
 
    }
    catch(HRESULT& hr)

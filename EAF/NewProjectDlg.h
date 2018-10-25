@@ -63,7 +63,8 @@ protected:
    int m_DefaultIconIdx;
    int m_DefaultSelectedIconIdx;
 
-   void AddProjectGroup(HTREEITEM hParent,HTREEITEM hAfter,const CEAFTemplateGroup* pGroup,const CString& strLastSelection,HTREEITEM* pDefaultItem);
+   void AddProjectGroup(HTREEITEM hParent,HTREEITEM hAfter,const CEAFTemplateGroup* pGroup,
+                        const CString& strLastSelection, bool isInSelectedProject, HTREEITEM* pDefaultItem);
    
    void ExpandProjectType(HTREEITEM hItem);
    void ExpandProjectTypes();

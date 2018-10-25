@@ -2715,6 +2715,45 @@ void CAnalysisModel::GetPOIDistributionFactor(PoiIDType POI, IDistributionFactor
       CComPtr<IDistributionFactorSegment> left_seg, right_seg;
       hr = factors->GetSegmentForLocation(x, m_TotalLength, &left_seg, &right_seg);
 
+      // We typically don't want lldf's to change right at the ends of a member.
+      // But this is what can happen if things get slightly out of tolerance.
+      // The code in the block below prevents changes at the very ends of a member.
+      if (left_seg!=NULL && right_seg!=NULL && left_seg!=right_seg)
+      {
+         if (member_location<m_LayoutTolerance)
+         {
+            // We are at left end of member. Use right factor at both locations
+            left_seg = right_seg;
+         }
+         else
+         {
+            // Need member length to see if we are at right end
+            Float64 member_length(0.0);
+            if (member_type==mtSpan)
+            {
+               CComPtr<ISpans> pspans;
+               hr = m_pLBAMModel->get_Spans(&pspans);
+               CComPtr<ISpan> pspan;
+               hr = pspans->get_Item(member_id, &pspan);
+               pspan->get_Length(&member_length);
+            }
+            else if (member_type==mtSuperstructureMember)
+            {
+               CComPtr<ISuperstructureMembers> psups;
+               hr = m_pLBAMModel->get_SuperstructureMembers(&psups);
+               CComPtr<ISuperstructureMember> psup;
+               hr = psups->get_Item(member_id, &psup);
+               psup->get_Length(&member_length);
+            }
+
+            if (member_location+m_LayoutTolerance > member_length)
+            {
+               // We are at right end of member. Use left factor for both
+               right_seg = left_seg;
+            }
+         }
+      }
+
       if (left_seg!=NULL)
       {
          hr = left_seg->get_DistributionFactor(leftFactor);
