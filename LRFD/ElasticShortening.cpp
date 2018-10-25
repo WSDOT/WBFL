@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2014, Washington State Department of Transportation, All Rights Reserved
+// Copyright © 1999-2014  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -71,6 +71,8 @@ lrfdElasticShortening::lrfdElasticShortening()
 
    m_P = 0;
 
+   m_FcgpMethod = fcgpIterative;
+
    m_dfESPerm = 0;
    m_dfESTemp = 0;
 
@@ -93,7 +95,8 @@ lrfdElasticShortening::lrfdElasticShortening(Float64 fpjPerm,   // jacking stres
                                              Float64 Mdlg,  // Dead load moment of girder only
                                              Float64 K,
                                              Float64 Eci,   // Modulus of elasticity of concrete at transfer
-                                             Float64 Ep)    // Modulus of elasticity of prestressing steel
+                                             Float64 Ep,    // Modulus of elasticity of prestressing steel
+                                             FcgpComputationMethod method)
 {
    m_FpjPerm   = fpjPerm;
    m_FpjTemp   = fpjTemp;
@@ -116,6 +119,8 @@ lrfdElasticShortening::lrfdElasticShortening(Float64 fpjPerm,   // jacking stres
    m_K     = K;
 
    m_P = 0;
+
+   m_FcgpMethod = method;
 
    m_dfESPerm = 0;
    m_dfESTemp = 0;
@@ -216,7 +221,7 @@ void lrfdElasticShortening::Update() const
       m_dfESTemp = 0;
       m_dfESPerm = 0;
    }
-   else
+   else if (m_FcgpMethod==fcgpIterative)
    {
       Float64 eps = (IsZero(m_ApsPerm + m_ApsTemp) ? 0 : (m_ApsPerm*m_ePerm + m_ApsTemp*m_eTemp)/(m_ApsPerm + m_ApsTemp));
        
@@ -244,6 +249,36 @@ void lrfdElasticShortening::Update() const
          m_dfESPerm = m_K * (m_Ep/m_Eci) * m_FcgpPerm;
 
       } while (!IsZero(dfESTemp-m_dfESTemp,0.01) || !IsZero(dfESPerm-m_dfESPerm,0.01));
+   }
+   else if (m_FcgpMethod==fcgp07Fpu)
+   {
+
+      Float64 eps = (IsZero(m_ApsPerm + m_ApsTemp) ? 0 : (m_ApsPerm*m_ePerm + m_ApsTemp*m_eTemp)/(m_ApsPerm + m_ApsTemp));
+
+      // A bit of slight of hand here: This method assumes that the strand stress after release is 0.7Fpu, 
+      // but we can have negative losses for a jacking stress of less. So, just assume that our client set
+      // Fpj to 0.75*Fpu and it will all work out in the wash.
+      m_P = m_ApsPerm*m_FpjPerm*0.7/0.75 + m_ApsTemp*m_FpjTemp*0.7/0.75;
+      m_P *= -1;
+
+      m_FcgpTemp = m_P/m_Ag + m_P*eps*m_eTemp/m_Ig + m_Mdlg*m_eTemp/m_Ig;
+      m_FcgpPerm = m_P/m_Ag + m_P*eps*m_ePerm/m_Ig + m_Mdlg*m_ePerm/m_Ig;
+
+      m_FcgpTemp *= -1.0; // Need a sign reversal to meet code equations
+      m_FcgpPerm *= -1.0; // Need a sign reversal to meet code equations
+
+      if ( IsZero(m_ApsPerm*m_FpjPerm) )
+         m_FcgpPerm = 0;
+
+      if ( IsZero(m_ApsTemp*m_FpjTemp) )
+         m_FcgpTemp = 0;
+
+      m_dfESTemp = m_K * (m_Ep/m_Eci) * m_FcgpTemp;
+      m_dfESPerm = m_K * (m_Ep/m_Eci) * m_FcgpPerm;
+   }
+   else
+   {
+      ATLASSERT(0); // new method?
    }
 
    m_bUpdate = false;
@@ -278,6 +313,9 @@ void lrfdElasticShortening::MakeCopy( const lrfdElasticShortening& rOther )
    m_K    = rOther.m_K;
 
    m_P        = rOther.m_P;
+
+   m_FcgpMethod = rOther.m_FcgpMethod;
+
    m_dfESPerm = rOther.m_dfESPerm;
    m_dfESTemp = rOther.m_dfESTemp;
    m_FcgpPerm = rOther.m_FcgpPerm;

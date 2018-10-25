@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2014, Washington State Department of Transportation, All Rights Reserved
+// Copyright © 1999-2014  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -39,13 +39,13 @@ class MFCTOOLSCLASS CLoadModifierPage : public CPropertyPage
 
 // Construction
 public:
-	CLoadModifierPage(const CString& t1,const CString& t2,const CString& t3,char ss);
+	CLoadModifierPage(const CString& t1,const CString& t2,const CString& t3,TCHAR ss);
 	~CLoadModifierPage();
 
    CString m_Text1;
    CString m_Text2;
    CString m_Text3;
-   char    m_Subscript;
+   TCHAR   m_Subscript;
 
 // Dialog Data
 	//{{AFX_DATA(CLoadModifierPage)

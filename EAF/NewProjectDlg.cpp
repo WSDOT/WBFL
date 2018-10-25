@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-Copyright © 1999-2014, Washington State Department of Transportation, All Rights Reserved
+// Copyright © 1999-2014  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -92,8 +92,7 @@ END_MESSAGE_MAP()
 
 
 // CNewProjectDlg message handlers
-void CNewProjectDlg::AddProjectGroup(HTREEITEM hParent,HTREEITEM hAfter,const CEAFTemplateGroup* pGroup,const CString& strLastSelection, 
-                                     bool isInSelectedProject,HTREEITEM* pDefaultItem)
+void CNewProjectDlg::AddProjectGroup(HTREEITEM hParent,HTREEITEM hAfter,const CEAFTemplateGroup* pGroup,const CString& strLastSelection,HTREEITEM* pDefaultItem)
 {
    HICON hIcon = pGroup->GetIcon();
    int imageIdx        = (hIcon == NULL ? m_DefaultIconIdx         : m_ProjectTypeImageList.Add(hIcon));
@@ -101,14 +100,14 @@ void CNewProjectDlg::AddProjectGroup(HTREEITEM hParent,HTREEITEM hAfter,const CE
 
    HTREEITEM hGroup = m_ctrlProjectTypes.InsertItem(TVIF_TEXT | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE,pGroup->GetGroupName(),imageIdx,seletedImageIdx,0,0,(LPARAM)(pGroup),hParent,hAfter);
 
-   if ( isInSelectedProject && pGroup->GetGroupName() == strLastSelection )
+   if ( pGroup->GetGroupName() == strLastSelection )
       *pDefaultItem = hGroup;
 
    CollectionIndexType nGroups = pGroup->GetGroupCount();
    for ( CollectionIndexType grpIdx = 0; grpIdx < nGroups; grpIdx++ )
    {
       const CEAFTemplateGroup* p = pGroup->GetGroup(grpIdx);
-      AddProjectGroup(hGroup,hGroup,p,strLastSelection, isInSelectedProject, pDefaultItem);
+      AddProjectGroup(hGroup,hGroup,p,strLastSelection,pDefaultItem);
    }
 }
 
@@ -168,7 +167,6 @@ BOOL CNewProjectDlg::OnInitDialog()
    m_DefaultSelectedIconIdx = m_ProjectTypeImageList.Add(m_hDefaultSelectedIcon);
 
    CString strLastSelection = pApp->GetProfileString(strNewDialogSection,_T("LastSelection"));
-   CString strLastSelectedApp = pApp->GetProfileString(strNewDialogSection,_T("LastSelectedApp"));
    HTREEITEM hSelectedItem = TVI_ROOT;
 
 	// add all the CDocTemplates in the project tree by name
@@ -178,9 +176,6 @@ BOOL CNewProjectDlg::OnInitDialog()
       const CEAFTemplateGroup* pTemplateGroup = m_pRootTemplateGroup->GetGroup(grpIdx);
 
       CString strTypeName(pTemplateGroup->GetGroupName());
-
-      // Set flag if this was the last selected project app
-      bool isSelectedProject(strTypeName == strLastSelectedApp);
 
       HICON hIcon = pTemplateGroup->GetIcon();
       int imageIdx        = (hIcon == NULL ? m_DefaultIconIdx         : m_ProjectTypeImageList.Add(hIcon));
@@ -196,7 +191,7 @@ BOOL CNewProjectDlg::OnInitDialog()
       for ( CollectionIndexType grpIdx = 0; grpIdx < nGroups; grpIdx++ )
       {
          const CEAFTemplateGroup* pGroup = pTemplateGroup->GetGroup(grpIdx);
-         AddProjectGroup(hPrevItem,hPrevItem,pGroup,strLastSelection,isSelectedProject,&hSelectedItem);
+         AddProjectGroup(hPrevItem,hPrevItem,pGroup,strLastSelection,&hSelectedItem);
       }
    }
 
@@ -475,24 +470,6 @@ void CNewProjectDlg::OnDestroy()
    HTREEITEM hItem = m_ctrlProjectTypes.GetSelectedItem();
    CString strSelection = m_ctrlProjectTypes.GetItemText(hItem);
    pApp->WriteProfileString(strNewDialogSection,_T("LastSelection"),strSelection);
-
-   // Walk up tree to find app-level item
-   while(true)
-   {
-      HTREEITEM hparent = m_ctrlProjectTypes.GetParentItem(hItem);
-      if (hparent==NULL)
-      {
-         // name of app is at top level
-         strSelection = m_ctrlProjectTypes.GetItemText(hItem);
-         pApp->WriteProfileString(strNewDialogSection,_T("LastSelectedApp"),strSelection);
-
-         break;
-      }
-      else
-      {
-         hItem = hparent;
-      }
-   }
 
    CDialog::OnDestroy();
 }

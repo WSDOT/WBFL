@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2014, Washington State Department of Transportation, All Rights Reserved
+// Copyright © 1999-2014  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -45,7 +45,6 @@
 
 #undef THROW_LOAD
 #define THROW_LOAD(code,pload) {sysXStructuredLoad alzxb_(sysXStructuredLoad::code, _T(__FILE__), __LINE__ ); \
-                                alzxb_.SetExtendedMessage(pload->GetStateDump().c_str()); \
                                 _ASSERT(false); \
                                 alzxb_.Throw();}
 

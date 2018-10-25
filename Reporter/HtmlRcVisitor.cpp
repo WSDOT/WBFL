@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2014, Washington State Department of Transportation, All Rights Reserved
+// Copyright © 1999-2014  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -100,11 +100,6 @@ void rptHtmlRcVisitor::VisitRcString(rptRcString* pString)
    while( (pos = str.find(_T(">"))) != std::_tstring::npos )
    {
       str.replace(pos,1,_T("&gt;"));
-   }
-
-   while( (pos = str.find(_T("—"))) != std::_tstring::npos )
-   {
-      str.replace(pos,1,_T("&mdash;"));
    }
 
    if ( 0 < str.size() )

@@ -7,16 +7,16 @@
 
 using namespace std;
 
-static std::_tstring TkdToString(TruckDirectionType type)
+static std::string TkdToString(TruckDirectionType type)
 {
-   std::_tstring strtype;
+   std::string strtype;
    if (type==ltdForward)
    {
-      strtype = _T("Forward");
+      strtype = "Forward";
    }
    else if (type==ltdReverse)
    {
-      strtype = _T("Reverse");
+      strtype = "Reverse";
    }
    else
       ATLASSERT(0);
@@ -25,31 +25,31 @@ static std::_tstring TkdToString(TruckDirectionType type)
 }
 
 
-static std::_tstring VbToString(VARIANT_BOOL vb)
+static std::string VbToString(VARIANT_BOOL vb)
 {
-   std::_tstring strtype;
+   std::string strtype;
    if (vb!=VARIANT_FALSE)
    {
-      strtype = _T("True");
+      strtype = "True";
    }
    else
    {
-      strtype = _T("False");
+      strtype = "False";
    }
 
    return strtype;
 }
 
-static std::_tstring OptToString(OptimizationType type)
+static std::string OptToString(OptimizationType type)
 {
-   std::_tstring strtype;
+   std::string strtype;
    if (type==optMinimize)
    {
-      strtype = _T("Minimize");
+      strtype = "Minimize";
    }
    else if (type==optMaximize)
    {
-      strtype = _T("Maximize");
+      strtype = "Maximize";
    }
    else 
    {
@@ -59,20 +59,20 @@ static std::_tstring OptToString(OptimizationType type)
    return strtype;
 }
 
-static std::_tstring FetToString(ForceEffectType type)
+static std::string FetToString(ForceEffectType type)
 {
-   std::_tstring strtype;
+   std::string strtype;
    if (type==fetFx)
    {
-      strtype = _T("Fx");
+      strtype = "Fx";
    }
    else if (type==fetFy)
    {
-      strtype = _T("Fy");
+      strtype = "Fy";
    }
    else if (type==fetMz)
    {
-      strtype = _T("Mz");
+      strtype = "Mz";
    }
    else 
    {
@@ -83,28 +83,28 @@ static std::_tstring FetToString(ForceEffectType type)
 }
 
 
-static std::_tstring VlcToString(VehicularLoadConfigurationType vlc)
+static std::string VlcToString(VehicularLoadConfigurationType vlc)
 {
-   std::_tstring str;
+   std::string str;
    switch(vlc)
    {
    case vlcDefault:
-      str = _T("Default");
+      str = "Default";
       break;
    case vlcTruckOnly:
-      str = _T("Truck Only");
+      str = "Truck Only";
       break;
    case vlcLaneOnly:
-      str = _T("Lane Only");
+      str = "Lane Only";
       break;
    case vlcTruckPlusLane:
-      str = _T("Truck Plus Lane");
+      str = "Truck Plus Lane";
       break;
    case vlcTruckLaneEnvelope:
-      str = _T("Truck Lane Envelope");
+      str = "Truck Lane Envelope";
       break;
    case vlcSidewalkOnly:
-      str = _T("Sidewalk Only");
+      str = "Sidewalk Only";
       break;
    default:
       ATLASSERT(0);
@@ -113,32 +113,28 @@ static std::_tstring VlcToString(VehicularLoadConfigurationType vlc)
    return str;
 }
 
-static std::_tstring DftToString(DistributionFactorType type)
+static std::string DftToString(DistributionFactorType type)
 {
-   std::_tstring strtype;
+   std::string strtype;
    if (type==dftNone)
    {
-      strtype = _T("None");
+      strtype = "None";
    }
    else if (type==dftSingleLane)
    {
-      strtype = _T("SingleLane");
+      strtype = "SingleLane";
    }
    else if (type==dftMultipleLane)
    {
-      strtype = _T("MultipleLane");
+      strtype = "MultipleLane";
    }
    else if (type==dftEnvelope)
    {
-      strtype = _T("Envelope");
+      strtype = "Envelope";
    }
    else if (type==dftFatigue)
    {
-      strtype = _T("Fatigue");
-   }
-   else if (type==dftPedestrian)
-   {
-      strtype = _T("Pedestrian");
+      strtype = "Fatigue";
    }
    else 
    {
@@ -148,36 +144,36 @@ static std::_tstring DftToString(DistributionFactorType type)
    return strtype;
 }
 
-static std::_tstring LlMtToString(LiveLoadModelType type)
+static std::string LlMtToString(LiveLoadModelType type)
 {
-   std::_tstring strtype;
+   std::string strtype;
    if (type==lltNone)
    {
-      strtype = _T("None");
+      strtype = "None";
    }
    else if (type==lltDeflection)
    {
-      strtype = _T("Deflection");
+      strtype = "Deflection";
    }
    else if (type==lltDesign)
    {
-      strtype = _T("Design");
+      strtype = "Design";
    }
    else if (type==lltPedestrian)
    {
-      strtype = _T("Pedestrian");
+      strtype = "Pedestrian";
    }
    else if (type==lltFatigue)
    {
-      strtype = _T("Fatigue");
+      strtype = "Fatigue";
    }
    else if (type==lltPermit)
    {
-      strtype = _T("Permit");
+      strtype = "Permit";
    }
    else if (type==lltSpecial)
    {
-      strtype = _T("Special");
+      strtype = "Special";
    }
    else 
    {
@@ -187,28 +183,28 @@ static std::_tstring LlMtToString(LiveLoadModelType type)
    return strtype;
 }
 
-static std::_tstring MTToString(MemberType type)
+static std::string MTToString(MemberType type)
 {
-   std::_tstring strtype;
+   std::string strtype;
    if (type==mtSpan)
    {
-      strtype = _T("Span");
+      strtype = "Span";
    }
    else if (type==mtSuperstructureMember)
    {
-      strtype = _T("SuperstructureMember");
+      strtype = "SuperstructureMember";
    }
    else if (type == mtSupport)
    {
-      strtype = _T("Support");
+      strtype = "Support";
    }
    else if (type == mtTemporarySupport)
    {
-      strtype = _T("TemporarySupport");
+      strtype = "TemporarySupport";
    }
    else if (type == mtUndefined)
    {
-      strtype = _T("Undefined");
+      strtype = "Undefined";
    }
    else
    {
@@ -242,7 +238,7 @@ public:
 
 
    // numeric formatters
-   std::_tstring Ff(double val)  // force
+   std::string Ff(double val)  // force
    {
       if (fabs(val)<1.0e-07)
          val = 0.0;
@@ -250,7 +246,7 @@ public:
       return m_Ff.AsString(val);
    }
 
-   std::_tstring Fd(double val)  // deflection
+   std::string Fd(double val)  // deflection
    {
       if (fabs(val)<1.0e-09)
          val = 0.0;
@@ -258,7 +254,7 @@ public:
       return m_Fd.AsString(val);
    }
 
-   std::_tstring Fl(double val)  // location
+   std::string Fl(double val)  // location
    {
       if (fabs(val)<1.0e-07)
          val = 0.0;
@@ -266,13 +262,13 @@ public:
       return m_Fl.AsString(val);
    }
 
-   void GetSuperstructurePOIs(StageIndexType iStage, ResultsSummationType summ, IIDArray** poiIDs, IDblArray** poiLocs);
-   void GetSupportPOIs(StageIndexType iStage, IIDArray** poiIDs);
-   void GetSupportIDs(StageIndexType iStage,  IIDArray** poiIDs);
-   void GetAllPOIs(StageIndexType iStage, ResultsSummationType summ, IIDArray** poiIDs);
+   void GetSuperstructurePOIs(long iStage, ResultsSummationType summ, ILongArray** poiIDs, IDblArray** poiLocs);
+   void GetSupportPOIs(long iStage, ILongArray** poiIDs);
+   void GetSupportIDs(long iStage,  ILongArray** poiIDs);
+   void GetAllPOIs(long iStage, ResultsSummationType summ, ILongArray** poiIDs);
 
-   StageIndexType StageCount();
-   void StageName(StageIndexType i, BSTR* name);
+   long StageCount();
+   void StageName(long i, BSTR* name);
 
 private:
    CDumperUtil();
@@ -282,13 +278,13 @@ private:
 
    bool m_Dirty;
    bool m_DoDumpDetails;
-   std::vector< CAdapt< CComPtr<IIDArray> > > m_SsPoiIds;
+   std::vector< CAdapt< CComPtr<ILongArray> > > m_SsPoiIds;
    std::vector< CAdapt< CComPtr<IDblArray> > > m_SsPoiLocs;
 
-   std::vector< CAdapt< CComPtr<IIDArray> > > m_CumSsPoiIds;
+   std::vector< CAdapt< CComPtr<ILongArray> > > m_CumSsPoiIds;
    std::vector< CAdapt< CComPtr<IDblArray> > > m_CumSsPoiLocs;
 
-   std::vector< CAdapt< CComPtr<IIDArray> > > m_SptPoiIds;
+   std::vector< CAdapt< CComPtr<ILongArray> > > m_SptPoiIds;
 
    std::vector< CAdapt< CComBSTR > > m_StageNames;
 
@@ -307,7 +303,7 @@ private:
 #define Fl(val) m_Util->Fl(val)
 
 
-static void DumpLiveLoadConfiguration(std::_tostream& os, ILiveLoadConfiguration* config, AxleIndexType axleCnt, CDumperUtil* m_Util)
+static void DumpLiveLoadConfiguration(std::ostream& os, ILiveLoadConfiguration* config, long axleCnt, CDumperUtil* m_Util)
 {
    CHRException hr;
    USES_CONVERSION;
@@ -327,7 +323,7 @@ static void DumpLiveLoadConfiguration(std::_tostream& os, ILiveLoadConfiguration
    VARIANT_BOOL is_imp;
 	hr = config->get_DoApplyImpact(&is_imp);
 
-   CComPtr<IIndexArray> axle_cfg;
+   CComPtr<ILongArray> axle_cfg;
 	hr = config->get_AxleConfig( &axle_cfg);
 
    double var_spc;
@@ -358,10 +354,10 @@ static void DumpLiveLoadConfiguration(std::_tostream& os, ILiveLoadConfiguration
    os<<"  Model Type  Index     Type     Impact    Configuration     Effect Optimization Applicable  Position  Direction    Axle      Axle Spcg     ( <-Front  )    "<<endl;
    os<<" ------------ ----- ------------ ------ -------------------- ------ ------------ ---------- ---------- ---------- ---------- ---------- --------------------"<<endl;
 //                                                                                           ---------|---------|---------|
-   std::_tstring strtrkpos;
-   std::_tstring strtrkdir;
-   std::_tstring strvarspc;
-   std::_tstring straxlcfg;
+   std::string strtrkpos;
+   std::string strtrkdir;
+   std::string strvarspc;
+   std::string straxlcfg;
    if (is_app != VARIANT_FALSE)
    {
       strtrkpos = Ff(trk_pos);
@@ -374,7 +370,7 @@ static void DumpLiveLoadConfiguration(std::_tostream& os, ILiveLoadConfiguration
       hr = axle_cfg->get_Count(&nax_cnt);
       for (CollectionIndexType ix=0; ix<nax_cnt; ix++)    // loop over inactive axles
       {
-         CollectionIndexType nax;
+         AxleIndexType nax;
          hr = axle_cfg->get_Item(ix, &nax);
 
          straxlcfg.at(nax) = '0';
@@ -417,7 +413,7 @@ inline void GetLiveLoadModel(LiveLoadModelType type, ILiveLoad* pll, ILiveLoadMo
 }
 
 
-static AxleIndexType GetAxleCnt(IVehicularLoads* vloads, ILiveLoadConfiguration* config)
+static long GetAxleCnt(IVehicularLoads* vloads, ILiveLoadConfiguration* config)
 {
    CHRException hr;
    VehicleIndexType index;

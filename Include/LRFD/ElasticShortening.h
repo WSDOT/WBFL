@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2014, Washington State Department of Transportation, All Rights Reserved
+// Copyright © 1999-2014  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -69,6 +69,10 @@ class LRFDCLASS lrfdElasticShortening
 {
 public:
 
+   // Method to compute Fcgp: Use iterative (beam theory) method, or assume that
+   // stress in strands after transfer is 0.7*Fpu (TxDOT 2013 research).
+   enum FcgpComputationMethod {fcgpIterative, fcgp07Fpu };
+
    // GROUP: LIFECYCLE
 
    //------------------------------------------------------------------------
@@ -98,7 +102,8 @@ public:
                          Float64 Mdlg,  // Dead load moment of girder only
                          Float64 K,
                          Float64 Eci,   // Modulus of elasticity of concrete at transfer
-                         Float64 Ep = lrfdPsStrand::GetModE());    // Modulus of elasticity of prestressing steel
+                         Float64 Ep,    // Modulus of elasticity of prestressing steel
+                         FcgpComputationMethod method);
 
    //------------------------------------------------------------------------
    // Copy c'tor
@@ -168,6 +173,9 @@ public:
    void    Coefficient(Float64 K);
    Float64 Coefficient() const;
 
+   void    lrfdElasticShortening::SetFcgpComputationMethod(FcgpComputationMethod m);
+   FcgpComputationMethod lrfdElasticShortening::GetFcgpComputationMethod() const;
+
    // GROUP: INQUIRY
 
 protected:
@@ -204,6 +212,7 @@ private:
    Float64 m_Eci;
    Float64 m_Ep;
    Float64 m_K; // Coefficient used for Post-tensioned members (N-1)/(2N)
+   FcgpComputationMethod m_FcgpMethod;
 
    mutable Float64 m_P;     // prestress force
    mutable Float64 m_dfESPerm; // Elastic shortening losses
@@ -261,6 +270,9 @@ inline Float64 lrfdElasticShortening::Ep() const     { return m_Ep; }
 
 inline void    lrfdElasticShortening::Coefficient(Float64 K) { m_K = K; m_bUpdate = true; }
 inline Float64 lrfdElasticShortening::Coefficient() const    { return m_K; }
+
+inline void    lrfdElasticShortening::SetFcgpComputationMethod(FcgpComputationMethod m) { m_FcgpMethod = m; m_bUpdate = true; }
+inline lrfdElasticShortening::FcgpComputationMethod lrfdElasticShortening::GetFcgpComputationMethod() const    { return m_FcgpMethod; }
 
 // EXTERNAL REFERENCES
 //

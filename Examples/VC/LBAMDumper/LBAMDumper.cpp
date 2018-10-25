@@ -9,7 +9,7 @@
 #include "resource.h"
 #include <initguid.h>
 #include "LBAMDumper.h"
-#include <WBFLLBAMLiveLoader_i.c>
+
 #include "LBAMDumper_i.c"
 #include "LBAMResponseDumper.h"
 

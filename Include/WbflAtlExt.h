@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // WBFL - Washington Bridge Foundation Libraries
-// Copyright © 1999-2014, Washington State Department of Transportation, All Rights Reserved
-//                        Bridge and Structures Office
+// Copyright © 2003  Washington State Department of Transportation
+//                   Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
