@@ -415,18 +415,25 @@ void lrfdConcreteUtil::HorizontalShearResistances(Float64 c, Float64 u, Float64 
    *penqn3 = K2*Acv;
 }
 
-Float64 lrfdConcreteUtil::LowerLimitOfShearStrength(bool isRoughened)
+Float64 lrfdConcreteUtil::LowerLimitOfShearStrength(bool isRoughened, bool doAllStirrupsEngageDeck)
 {
    if ( lrfdVersionMgr::FourthEdition2007 <= lrfdVersionMgr::GetVersion() )
    {
       // 4th edition or later
-      if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+      if (isRoughened && doAllStirrupsEngageDeck)
       {
-         return isRoughened ? g_14p0_MPA : 0.0;
+         if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+         {
+            return g_14p0_MPA;
+         }
+         else
+         {
+            return g_p210_KSI;
+         }
       }
       else
       {
-         return isRoughened ? g_p210_KSI : 0.0;
+         return 0.0;
       }
    }
    else if (lrfdVersionMgr::SecondEdition1998 <= lrfdVersionMgr::GetVersion())

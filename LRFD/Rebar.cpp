@@ -164,10 +164,7 @@ Float64  lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 f
    Float64 fy = rebar.GetYieldStrength();
 
    // get size
-   lrfdRebarPool* rp = lrfdRebarPool::GetInstance();
-   CHECK(rp);
-   Int32 key = rp->GetRebarKey(&rebar);
-   CHECK(key!=-1);
+   matRebar::Size size = rebar.GetSize();
 
    // Equations taken from 5.11.2.1.1
    bool is_si = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
@@ -181,21 +178,24 @@ Float64  lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 f
 
       Float64 dl_u=0;
 
-      if (key<=11)
+      if (size==matRebar::bs3 || size==matRebar::bs4 || size==matRebar::bs5  || size==matRebar::bs6 || size==matRebar::bs7 ||
+          size==matRebar::bs8 || size==matRebar::bs9 || size==matRebar::bs10 || size==matRebar::bs11)
       {
          dl_u = 0.02*ab_u*fy_u / sqrt(fc_u);
-         dl_u = min(dl_u, 0.06 * db_u * fy_u);
+         dl_u = max(dl_u, 0.06 * db_u * fy_u);
       }
-      else if (key==14)
+      else if (size==matRebar::bs14)
       {
          dl_u = 25 * fy_u / sqrt(fc_u);
       }
-      else if (key==18)
+      else if (size==matRebar::bs18)
       {
          dl_u = 34 * fy_u / sqrt(fc_u);
       }
       else
          CHECK(0); // an unknown bar snuck in.
+
+      dl_u = max(dl_u, 305);
 
       dl = ConvertToSysUnits(dl_u,unitMeasure::Millimeter);
    }
@@ -209,21 +209,24 @@ Float64  lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 f
 
       Float64 dl_u=0;
 
-      if (key<=11)
+      if (size==matRebar::bs3 || size==matRebar::bs4 || size==matRebar::bs5  || size==matRebar::bs6 || size==matRebar::bs7 ||
+          size==matRebar::bs8 || size==matRebar::bs9 || size==matRebar::bs10 || size==matRebar::bs11)
       {
          dl_u = 1.25*ab_u*fy_u / sqrt(fc_u);
-         dl_u = min(dl_u, 0.4 * db_u * fy_u);
+         dl_u = max(dl_u, 0.4 * db_u * fy_u);
       }
-      else if (key==14)
+      else if (size==matRebar::bs14)
       {
          dl_u = 2.7*fy_u / sqrt(fc_u);
       }
-      else if (key==18)
+      else if (size==matRebar::bs18)
       {
          dl_u = 3.5*fy_u / sqrt(fc_u);
       }
       else
          CHECK(0); // an unknown bar snuck in.
+
+      dl_u = max(dl_u, 12.0);
 
       dl = ConvertToSysUnits(dl_u,unitMeasure::Inch);
    }
