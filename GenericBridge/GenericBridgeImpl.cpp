@@ -1288,7 +1288,8 @@ STDMETHODIMP CGenericBridge::SpanFromStation(Float64 station,ISpan** ppSpan)
       nextPier->get_Station(&objStation);
       objStation->get_Value(&nextStation);
 
-      if ( (prevStation <= station && station < nextStation) ||
+      if ( ( spanIdx == 0 && IsEqual(station,prevStation) ) ||
+           (prevStation <= station && station < nextStation) ||
            ( spanIdx == nSpans-1 && IsEqual(station,nextStation) )
          )
       {

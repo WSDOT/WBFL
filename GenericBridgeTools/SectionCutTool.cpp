@@ -298,6 +298,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    SpanIndexType nSpans = SpanIndexType(nPiers-1);
 
    Float64 distFromStart = station - start_station;
+   distFromStart = (IsZero(distFromStart) ? 0.0 : distFromStart);
 
    CComPtr<IAlignment> alignment;
    GetAlignment(bridge,&alignment);
@@ -315,6 +316,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    Float64 prev_pier_station;
    pier_station->get_Value(&prev_pier_station);
    Float64 distFromStartOfSpan = station - prev_pier_station;
+   distFromStartOfSpan = (IsZero(distFromStartOfSpan) ? 0.0 : distFromStartOfSpan);
 
    CComPtr<IBridgeDeck> deck;
    bridge->get_Deck(&deck);
