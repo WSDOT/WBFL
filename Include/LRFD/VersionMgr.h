@@ -84,7 +84,8 @@ public:
                   ThirdEditionWith2006Interims  = 12,
                   FourthEdition2007             = 13,
                   FourthEditionWith2008Interims = 14,
-                  FourthEditionWith2009Interims = 15
+                  FourthEditionWith2009Interims = 15,
+                  FifthEdition2010              = 16
    };
 
    enum Units { SI, US };

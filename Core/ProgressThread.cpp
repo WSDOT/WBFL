@@ -60,12 +60,12 @@ void CProgressThread::EndThread()
 BEGIN_MESSAGE_MAP(CProgressThread, CWinThread)
 END_MESSAGE_MAP()
 
-HRESULT CProgressThread::CreateProgressWindow(CWnd* pParentWnd,DWORD dwMask,UINT nDelay)
+HRESULT CProgressThread::CreateProgressWindow(DWORD dwMask,UINT nDelay)
 {
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
    BOOL bCreated;
-   bCreated = m_ProgressDlg.Create( CProgressDlg::IDD, pParentWnd );
+   bCreated = m_ProgressDlg.Create( CProgressDlg::IDD );
    ATLASSERT( bCreated == TRUE );
    if ( !bCreated )
       return PROGRESS_E_CREATE;

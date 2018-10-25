@@ -34,6 +34,7 @@
 #include <Lrfd\LrfdExp.h>
 #include <Lrfd\PsStrand.h>
 #include <Lrfd\Losses.h>
+#include <Lrfd\ConcreteUtil.h>
 
 // LOCAL INCLUDES
 //
@@ -111,6 +112,7 @@ public:
                          Float64 friction,
                          Float64 angleChange,
 
+                         lrfdConcreteUtil::DensityType concreteType,
                          Float64 Fc,   // 28 day strength of girder concrete
                          Float64 Fci,  // Release strength
                          Float64 FcSlab,   
@@ -186,6 +188,7 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
+   lrfdConcreteUtil::DensityType m_ConcreteType;
    BeamType m_BeamType;
    Float64 m_PPR;
    Float64 m_Shipping;

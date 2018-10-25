@@ -225,6 +225,7 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
    }
 
    Float64 fc   = pData->fc;
+   Float64 fct  = pData->fct;
    Float64 fpc  = pData->fpc;
    Float64 dv   = pData->dv;
    Float64 bv   = pData->bv;
@@ -241,10 +242,11 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
 
    const unitForce* p_force_unit;
 
-   Float64 K1, K2;
+   Float64 K1, K2, Kfct;
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
       fc   = ::ConvertFromSysUnits(fc,   unitMeasure::MPa);
+      fct  = ::ConvertFromSysUnits(fct,  unitMeasure::MPa);
       fpc  = ::ConvertFromSysUnits(fpc,  unitMeasure::MPa);
       dv   = ::ConvertFromSysUnits(dv,   unitMeasure::Millimeter);
       bv   = ::ConvertFromSysUnits(bv,   unitMeasure::Millimeter);
@@ -253,6 +255,8 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
       Vi   = ::ConvertFromSysUnits(Vi,   unitMeasure::Kilonewton);
       Mmax = ::ConvertFromSysUnits(Mmax, unitMeasure::NewtonMillimeter);
       Mcre = ::ConvertFromSysUnits(Mcre, unitMeasure::NewtonMillimeter);
+
+      Kfct = 1.8;
 
       K1 = 0.0525;
       K2 = 0.16;
@@ -263,6 +267,7 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
    else
    {
       fc   = ::ConvertFromSysUnits(fc,   unitMeasure::KSI);
+      fct  = ::ConvertFromSysUnits(fct,  unitMeasure::KSI);
       fpc  = ::ConvertFromSysUnits(fpc,  unitMeasure::KSI);
       dv   = ::ConvertFromSysUnits(dv,   unitMeasure::Inch);
       bv   = ::ConvertFromSysUnits(bv,   unitMeasure::Inch);
@@ -272,16 +277,30 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
       Mmax = ::ConvertFromSysUnits(Mmax, unitMeasure::InchLbf); // should be k-in, but we are dividing Mcre/Mmax so this is ok
       Mcre = ::ConvertFromSysUnits(Mcre, unitMeasure::InchLbf); // should be k-in, but we are dividing Mcre/Mmax so this is ok
 
+      Kfct = 4.7;
+
       K1 = 0.02;
       K2 = 0.06;
 
       p_force_unit = &unitMeasure::Kip;
    }
 
-   VciCalc = IsZero(Mmax) ? 1e100 : K1*sqrt(fc)*bv*dv + Vd + Vi*Mcre/Mmax;
-   VciMin = K2*sqrt(fc)*bv*dv;
+   Float64 sqrt_fc;
+   if ( pData->ConcreteType == matConcrete::Normal )
+      sqrt_fc = sqrt(fc);
+   else if ( (pData->ConcreteType == matConcrete::AllLightweight || pData->ConcreteType == matConcrete::SandLightweight) && pData->bHasfct )
+      sqrt_fc = min(Kfct*fct,sqrt(fc));
+   else if ( pData->ConcreteType == matConcrete::AllLightweight && !pData->bHasfct )
+      sqrt_fc = 0.75*sqrt(fc);
+   else if ( pData->ConcreteType == matConcrete::SandLightweight && !pData->bHasfct )
+      sqrt_fc = 0.85*sqrt(fc);
+
+
+
+   VciCalc = IsZero(Mmax) ? 1e100 : K1*sqrt_fc*bv*dv + Vd + Vi*Mcre/Mmax; // 5.8.3.4.3-1
+   VciMin = K2*sqrt_fc*bv*dv;// 5.8.3.4.3-1
    Vci = _cpp_max(VciCalc,VciMin);
-   Vcw = (K2*sqrt(fc) + 0.30*fpc)*bv*dv + Vp;
+   Vcw = (K2*sqrt_fc + 0.30*fpc)*bv*dv + Vp; // 5.8.3.4.3-2
 
    pData->VciMin  = ::ConvertToSysUnits(VciMin,  *p_force_unit);
    pData->VciCalc = ::ConvertToSysUnits(VciCalc, *p_force_unit);
@@ -426,16 +445,16 @@ void compute_theta_and_beta1(lrfdShearData* pData)
    deja_vu_angle = theta_guess/2.;
 
    // Iterate until theta is found
-   WATCH( "*** Begin Iteration to find Theta ***");
-   WATCH( "   vfc      = " << vfc );
+   //WATCH( "*** Begin Iteration to find Theta ***");
+   //WATCH( "   vfc      = " << vfc );
    while ( !done && (cIter < max_iter) )
    {
       cIter++;
       ex = compute_strain(pData,theta_guess);
       theta = get_theta(vfc,ex);
-      WATCH( "theta_guess = " << theta_guess );
-      WATCH( "   ex       = " << ex );
-      WATCH( "theta       = " << theta );
+      //WATCH( "theta_guess = " << theta_guess );
+      //WATCH( "   ex       = " << ex );
+      //WATCH( "theta       = " << theta );
 
       if ( IsEqual( theta, theta_guess, theta_tol) )
          done = true;
@@ -449,7 +468,7 @@ void compute_theta_and_beta1(lrfdShearData* pData)
             {
                // We're cycling (deja vu - we've used this theta guess before)
                theta = (deja_vu_angle + theta_guess)/2.;
-               WATCH( "*** deja vu ***" << " " << deja_vu_angle );
+               //WATCH( "*** deja vu ***" << " " << deja_vu_angle );
             }
 
             deja_vu_angle = temp_theta;
@@ -521,9 +540,9 @@ void compute_theta_and_beta2(lrfdShearData* pData)
    Float64 theta;
    Float64 ex;
 
-   WATCH( "*** Begin Iteration to find Theta ***");
-   WATCH( "vfc      = " << vfc );
-   WATCH( "Spanning rows " << row1 << " and " << row2 );
+   //WATCH( "*** Begin Iteration to find Theta ***");
+   //WATCH( "vfc      = " << vfc );
+   //WATCH( "Spanning rows " << row1 << " and " << row2 );
 
    
    Int16 col;
@@ -557,8 +576,8 @@ void compute_theta_and_beta2(lrfdShearData* pData)
       gpLineSegment2d l1(gpPoint2d(theta_guess[0],ex_calc[0]),  gpPoint2d(theta_guess[1],ex_calc[1]));
       gpLineSegment2d l2(gpPoint2d(theta_guess[0],ex_table[0]), gpPoint2d(theta_guess[1],ex_table[1]));
 
-      WATCH( "L1 = " << l1.GetStartPoint() << " " << l1.GetEndPoint() );
-      WATCH( "L2 = " << l2.GetStartPoint() << " " << l2.GetEndPoint() );
+      //WATCH( "L1 = " << l1.GetStartPoint() << " " << l1.GetEndPoint() );
+      //WATCH( "L2 = " << l2.GetStartPoint() << " " << l2.GetEndPoint() );
 
       gpPoint2d p;
       if ( gpGeomOp2d::Intersect( &p, l1, l2 ) == 1 )
@@ -567,7 +586,7 @@ void compute_theta_and_beta2(lrfdShearData* pData)
          theta = p.X();
          ex    = p.Y();
 
-         WATCH("Intersection found " << p );
+         //WATCH("Intersection found " << p );
 
          break;
       }
@@ -1133,8 +1152,8 @@ void get_row_index(Float64 vfc,Int16* pr1,Int16* pr2)
    // Find the row index
    if ( vfc <= get_vfc(0) )
    {
-         *pr1 = -1;
-         *pr2 =  0;
+         *pr1 = 0;
+         *pr2 = 0;
    }
    else
    {
@@ -1148,9 +1167,6 @@ void get_row_index(Float64 vfc,Int16* pr1,Int16* pr2)
          }
       }
    }
-
-   // Row indexes should not be the same
-   CHECK( *pr1 != *pr2 && *pr1 < *pr2 );
 
    // We should always get valid row indices
    // If v/fc is < 0.05, using row 0 for *pr1

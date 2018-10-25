@@ -69,8 +69,8 @@ class LRFDCLASS lrfdConcreteUtil
 public:
    // GROUP: ENUMERATIONS
    enum DensityType { NormalDensity,
-                      SandLowDensity,
-                      AllLowDensity
+                      AllLowDensity,
+                      SandLowDensity
    };
 
    // GROUP: LIFECYCLE
@@ -111,7 +111,7 @@ public:
    //------------------------------------------------------------------------
    // Return cohesion factor per 5.8.4.2
    // normal density concrete only
-   static Float64 ShearCohesionFactor(bool isRoughened);
+   static Float64 ShearCohesionFactor(bool isRoughened,lrfdConcreteUtil::DensityType girderDensityType,lrfdConcreteUtil::DensityType slabDensityType);
 
    //------------------------------------------------------------------------
    // Return K1 factor per 5.8.4.2
@@ -121,7 +121,7 @@ public:
    //------------------------------------------------------------------------
    // Return K2 factor per 5.8.4.2
    // normal density concrete only
-   static Float64 HorizShearK2(bool isRoughened);
+   static Float64 HorizShearK2(bool isRoughened,lrfdConcreteUtil::DensityType girderDensityType,lrfdConcreteUtil::DensityType slabDensityType);
 
    //------------------------------------------------------------------------
    // Return nominal horizontal shear resistances per 5.8.4.1

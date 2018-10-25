@@ -75,7 +75,10 @@ m_Name("Unknown"),
 m_Fc( 0 ),
 m_Density( 0 ),
 m_ModE( 0 ),
-m_MaxAggregateSize(0)
+m_MaxAggregateSize(0),
+m_Type(matConcrete::Normal),
+m_Fct(0),
+m_bHasFct(false)
 {
    m_bIsDamaged = false;
    // Don't call assert value because this material model is not valid.
@@ -86,7 +89,10 @@ m_Name(name),
 m_Fc(fc),
 m_Density(density),
 m_ModE( modE ),
-m_MaxAggregateSize(0.0)
+m_MaxAggregateSize(0.0),
+m_Type(matConcrete::Normal),
+m_Fct(0),
+m_bHasFct(false)
 {
    m_bIsDamaged = false;
    ASSERTVALID;
@@ -98,6 +104,78 @@ matConcrete::~matConcrete()
 }
 
 //======================== OPERATORS  =======================================
+void matConcrete::SetType(matConcrete::Type type)
+{
+   if ( m_Type != type )
+   {
+      m_Type = type;
+      NotifyAllListeners();
+   }
+}
+
+matConcrete::Type matConcrete::GetType() const
+{
+   return m_Type;
+}
+
+void matConcrete::SetAggSplittingStrength(Float64 fct)
+{
+   if ( !IsEqual(m_Fct,fct) )
+   {
+      m_Fct = fct;
+      NotifyAllListeners();
+   }
+}
+
+Float64 matConcrete::GetAggSplittingStrength() const
+{
+   return m_Fct;
+}
+
+void matConcrete::HasAggSplittingStrength(bool bHasFct)
+{
+   m_bHasFct = bHasFct;
+}
+
+bool matConcrete::HasAggSplittingStrength() const
+{
+   return m_bHasFct;
+}
+
+std::string matConcrete::GetTypeName(matConcrete::Type type,bool bFull)
+{
+   switch(type)
+   {
+   case matConcrete::Normal:
+      return bFull ? "Normal Weight Concrete" : "Normal";
+
+   case matConcrete::AllLightweight:
+      return bFull ? "All Lightweight Concrete" : "AllLightweight";
+
+   case matConcrete::SandLightweight:
+      return bFull ? "Sand Lightweight Concrete" : "SandLightweight";
+
+   default:
+      ATLASSERT(false); // is there a new type?
+      return bFull ? "Normal Weight Concrete" : "Normal";
+   }
+}
+
+matConcrete::Type matConcrete::GetTypeFromName(const char* strName)
+{
+   if ( std::string(strName) == "Normal" )
+      return matConcrete::Normal;
+
+   if ( std::string(strName) == "AllLightweight" )
+      return matConcrete::AllLightweight;
+
+   if ( std::string(strName) == "SandLightweight" )
+      return matConcrete::SandLightweight;
+
+   ATLASSERT(false); // invalid name
+   return matConcrete::Normal;
+}
+
 //======================== OPERATIONS =======================================
 void matConcrete::RegisterListener(matConcreteListener* pListener)
 {
@@ -212,7 +290,11 @@ Float64 matConcrete::GetE() const
 
 void matConcrete::SetMaxAggregateSize(Float64 size)
 {
-   m_MaxAggregateSize = size;
+   if ( !IsEqual(m_MaxAggregateSize,size) )
+   {
+      m_MaxAggregateSize = size;
+      NotifyAllListeners();
+   }
 }
 
 Float64 matConcrete::GetMaxAggregateSize() const
@@ -298,6 +380,9 @@ void matConcrete::MakeCopy(const matConcrete& rOther)
    m_Density   = rOther.m_Density;
    m_ModE      = rOther.m_ModE;
    m_MaxAggregateSize = rOther.m_MaxAggregateSize;
+   m_Type      = rOther.m_Type;
+   m_Fct        = rOther.m_Fct;
+   m_bHasFct    = rOther.m_bHasFct;
 
    ASSERTVALID;
 }

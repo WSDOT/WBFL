@@ -47,6 +47,8 @@ CLASS
 lrfdCreepCoefficient2005::lrfdCreepCoefficient2005()
 {
    m_bUpdate = true;
+   m_K1 = 1;
+   m_K2 = 1;
 }
 
 lrfdCreepCoefficient2005::lrfdCreepCoefficient2005(const lrfdCreepCoefficient2005& rOther)
@@ -175,6 +177,26 @@ Float64 lrfdCreepCoefficient2005::GetCuringMethodTimeAdjustmentFactor() const
    return m_CuringMethodTimeAdjustmentFactor;
 }
 
+void lrfdCreepCoefficient2005::SetK1(Float64 k1)
+{
+   m_K1 = k1;
+}
+
+Float64 lrfdCreepCoefficient2005::GetK1() const
+{
+   return m_K1;
+}
+
+void lrfdCreepCoefficient2005::SetK2(Float64 k2)
+{
+   m_K2 = k2;
+}
+
+Float64 lrfdCreepCoefficient2005::GetK2() const
+{
+   return m_K2;
+}
+
 Float64 lrfdCreepCoefficient2005::GetKvs() const
 {
    if ( m_bUpdate )
@@ -224,6 +246,8 @@ void lrfdCreepCoefficient2005::MakeCopy(const lrfdCreepCoefficient2005& rOther)
    m_ti           = rOther.m_ti;
    m_tiAdjusted   = rOther.m_tiAdjusted;
    m_CuringMethod = rOther.m_CuringMethod;
+   m_K1           = rOther.m_K1;
+   m_K2           = rOther.m_K2;
    m_Ct           = rOther.m_Ct;
    m_kvs          = rOther.m_kvs;
    m_khc          = rOther.m_khc;
@@ -284,7 +308,7 @@ void lrfdCreepCoefficient2005::Update() const
       m_ktd = t / ( 61. - 4.*::ConvertFromSysUnits(m_Fc,unitMeasure::KSI) + t);
    }
 
-   m_Ct = 1.9*m_kvs*m_khc*m_kf*m_ktd*pow(ti,-0.118);
+   m_Ct = 1.9*m_K1*m_K2*m_kvs*m_khc*m_kf*m_ktd*pow(ti,-0.118); // see NCHRP Report 496, Eqn 62
 
    m_bUpdate = false;
 }

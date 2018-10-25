@@ -255,46 +255,63 @@ Float64 lrfdConcreteUtil::Beta1(Float64 fc)
 
 Float64 lrfdConcreteUtil::ShearFrictionFactor(bool isRoughened)
 {
+   // friction factor, MU
    if (isRoughened)
-      return 1.0;
+      return 1.0; // from 5.8.4.3 - first bullet
    else
-      return 0.6;
+      return 0.6; // from 5.8.4.3 - 5th bullet
 }
 
-Float64 lrfdConcreteUtil::ShearCohesionFactor(bool isRoughened)
+Float64 lrfdConcreteUtil::ShearCohesionFactor(bool isRoughened,lrfdConcreteUtil::DensityType girderDensityType,lrfdConcreteUtil::DensityType slabDensityType)
 {
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007 )
+   // LRFD 5.8.4.2
+   if ( lrfdVersionMgr::GetVersion() <= lrfdVersionMgr::ThirdEditionWith2006Interims )
    {
+      Float64 Lamda[3] = { 1.0, 0.85, 0.75 };
+      Float64 lamda = min(Lamda[girderDensityType],Lamda[slabDensityType]);
+
+      Float64 c;
       if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
       {
          if (isRoughened)
-            return ::ConvertToSysUnits(0.70,unitMeasure::MPa);
+            c = ::ConvertToSysUnits(0.70,unitMeasure::MPa);
          else
-            return ::ConvertToSysUnits(0.52,unitMeasure::MPa);
+            c =::ConvertToSysUnits(0.52,unitMeasure::MPa);
       }
       else
       {
          if (isRoughened)
-            return ::ConvertToSysUnits(0.100,unitMeasure::KSI);
+            c = ::ConvertToSysUnits(0.100,unitMeasure::KSI);
          else
-            return ::ConvertToSysUnits(0.075,unitMeasure::KSI);
+            c = ::ConvertToSysUnits(0.075,unitMeasure::KSI);
       }
+
+      return c*lamda;
    }
    else
    {
-      if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+      // LRFD 2007 or later
+      if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US )
       {
          if (isRoughened)
-            return ::ConvertToSysUnits(1.60,unitMeasure::MPa);
+         {
+            return ::ConvertToSysUnits(0.280,unitMeasure::KSI);
+         }
          else
-            return ::ConvertToSysUnits(0.52,unitMeasure::MPa);
+         {
+            return ::ConvertToSysUnits(0.075,unitMeasure::KSI);
+         }
       }
       else
       {
          if (isRoughened)
-            return ::ConvertToSysUnits(0.280,unitMeasure::KSI);
+         {
+            return ::ConvertToSysUnits(1.9,unitMeasure::MPa);
+         }
          else
-            return ::ConvertToSysUnits(0.075,unitMeasure::KSI);
+         {
+            return ::ConvertToSysUnits(0.52,unitMeasure::MPa);
+         }
       }
    }
 }
@@ -308,13 +325,20 @@ Float64 lrfdConcreteUtil::HorizShearK1(bool isRoughened)
    }
    else
    {
-      K1 = (isRoughened ? 0.3 : 0.2);
+      if ( isRoughened )
+      {
+         K1 = 0.3;
+      }
+      else
+      {
+         K1 = 0.2;
+      }
    }
 
    return K1;
 }
 
-Float64 lrfdConcreteUtil::HorizShearK2(bool isRoughened)
+Float64 lrfdConcreteUtil::HorizShearK2(bool isRoughened,lrfdConcreteUtil::DensityType girderDensityType,lrfdConcreteUtil::DensityType slabDensityType)
 {
    Float64 K2;
 
@@ -326,9 +350,29 @@ Float64 lrfdConcreteUtil::HorizShearK2(bool isRoughened)
    }
    else
    {
-      K2 = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI) ?
-           ::ConvertToSysUnits( isRoughened ? 12.4 : 5.5,unitMeasure::MPa) : 
-           ::ConvertToSysUnits( isRoughened ?  1.8 : 0.8,unitMeasure::KSI);
+      bool bIsNWC = ( girderDensityType == lrfdConcreteUtil::NormalDensity && slabDensityType == lrfdConcreteUtil::NormalDensity );
+      if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US )
+      {
+         if ( isRoughened )
+         {
+            K2 = (bIsNWC ? ::ConvertToSysUnits(1.8,unitMeasure::KSI) : ::ConvertToSysUnits(1.3,unitMeasure::KSI) );
+         }
+         else
+         {
+            K2 = ::ConvertToSysUnits( 0.8,unitMeasure::KSI);
+         }
+      }
+      else
+      {
+         if ( isRoughened )
+         {
+            K2 = (bIsNWC ? ::ConvertToSysUnits(12.4,unitMeasure::MPa) : ::ConvertToSysUnits( 9.0,unitMeasure::MPa) );
+         }
+         else
+         {
+            K2 = ::ConvertToSysUnits( 5.5,unitMeasure::MPa);
+         }
+      }
    }
 
    return K2;

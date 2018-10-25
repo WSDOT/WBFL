@@ -26,7 +26,7 @@
 #pragma once
 
 #ifndef _WBFL_VERSION
-#define _WBFL_VERSION 321 // version 3.2.1
+#define _WBFL_VERSION 330 // version 3.3.0
 #endif 
 
 #include <System\AutoLib.h>

@@ -63,6 +63,8 @@ LOG
 class MATCLASS matConcrete
 {
 public:
+   enum Type { Normal, AllLightweight,SandLightweight };
+
    // GROUP: LIFECYCLE
 
    //------------------------------------------------------------------------
@@ -79,6 +81,16 @@ public:
    virtual ~matConcrete();
 
    // GROUP: OPERATORS
+   void SetType(Type type);
+   Type GetType() const;
+
+   void SetAggSplittingStrength(Float64 ft);
+   Float64 GetAggSplittingStrength() const;
+   bool HasAggSplittingStrength() const;
+   void HasAggSplittingStrength(bool bHasFct);
+
+   static std::string GetTypeName(Type type,bool bFull);
+   static Type GetTypeFromName(const char* strName);
 
    // GROUP: OPERATIONS
 
@@ -205,6 +217,9 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
+   Type        m_Type;
+   Float64     m_Fct;
+   bool        m_bHasFct;
    std::string m_Name;
    Float64     m_Fc;
    Float64     m_Density;
