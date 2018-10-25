@@ -31,13 +31,18 @@
 #include <EAF\EAFTypes.h>
 #include <EAF\EAFAppPluginManager.h>
 #include <EAF\EAFDocTemplateRegistrar.h>
+#include <EAF\EAFPluginCommandManager.h>
 #include <EAF\EAFSplashScreen.h>
 #include <EAF\EAFCommandLineInfo.h>
+#include <EAF\EAFPluginCommandManager.h>
+
 #include <comcat.h>
 
 #include <WBFLTools.h>
 
 #include <UnitMgt\UnitMgt.h>
+
+typedef void(*DocCallback)(CDocument* pDoc,void* pStuff); 
 
 class iUnitModeListener
 {
@@ -69,12 +74,14 @@ public:
 	virtual int Run();
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
+	virtual LRESULT ProcessWndProcException(CException* e, const MSG* pMsg);
 	virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
    virtual CDocument* OpenDocumentFile(LPCTSTR lpszFileName);
 	//}}AFX_VIRTUAL
 
    CEAFDocTemplateRegistrar* GetDocTemplateRegistrar();
    CEAFAppPluginManager* GetAppPluginManager();
+   CEAFPluginCommandManager* GetPluginCommandManager();
    CEAFComponentInfoManager* GetComponentInfoManager();
 
    BOOL ReadWindowPlacement(const CString& strKey,LPWINDOWPLACEMENT pwp);
@@ -88,6 +95,10 @@ public:
    CString GetAppLocation();
 
    BOOL IsDocLoaded();
+
+   void ForEachDoc(DocCallback pfn,void* pStuff);
+
+   virtual void OnMainFrameClosing(); // called by the framework when the main frame window is about to close
 
 // Implementation
 protected:
@@ -105,6 +116,9 @@ protected:
    // Calls CreateDocPlugins and then completes the document template
    // registration process
    virtual BOOL RegisterDocTemplates();
+
+   // Called by the framework when an app plugin integrates into the UI
+   virtual BOOL AppPluginUIIntegration(BOOL bIntegrate);
 
    // called by the framework during InitInstance() when registry settings need to be read
    virtual void RegistryInit();
@@ -159,6 +173,8 @@ protected:
 private:
    CEAFDocTemplateRegistrar* m_pDocTemplateRegistrar;
 
+   CString m_LastError;
+
    CString m_TipFilePath;
    bool m_bTipsEnabled;
 
@@ -175,6 +191,7 @@ private:
    std::set<iUnitModeListener*> m_UnitModeListeners;
    void Fire_UnitsChanged();
 
+   CEAFPluginCommandManager m_PluginCommandMgr;
    CEAFAppPluginManager m_PluginManager;
    CEAFComponentInfoManager m_ComponentInfoManager;
 

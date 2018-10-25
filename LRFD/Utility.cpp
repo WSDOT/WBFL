@@ -167,6 +167,8 @@ Uint16 lrfdUtility::GetNumDesignLanes(Float64 wCurbToCurb)
    }
 
    nDesignLanes = (Uint16)floor(wCurbToCurb/wStdLane);
+   if (wCurbToCurb/wStdLane - nDesignLanes > 0.99999 )
+      nDesignLanes++; // we are so close to the next number of design lanes, assume round off error and increment
 
    if ( InRange(wCurbToCurbMin, wCurbToCurb, wCurbToCurbMax) )
       nDesignLanes = 2;

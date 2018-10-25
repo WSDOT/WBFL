@@ -31,6 +31,7 @@
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFSelectReportDlg dialog
+// Standard dialog for selecting a report
 
 class CEAFSelectReportDlg : public CDialog
 {

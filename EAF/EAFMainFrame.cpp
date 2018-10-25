@@ -40,13 +40,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-
-// TODO: Need to rework all command IDs so there isn't going to be conflicts
-// menu stuff
-const int CMENU_BASE = 10; // command id's will be numbered 10, 11, 12, etc for each menu item
-const int MAX_CMENUS = 100; // this is limiting, but it is MFC's fault.
-const int CMENU_MAX  = CMENU_BASE + MAX_CMENUS;
-
 /////////////////////////////////////////////////////////////////////////////
 // CMainFrame
 
@@ -69,7 +62,7 @@ BEGIN_MESSAGE_MAP(CEAFMainFrame, CMDIFrameWnd)
 
    ON_COMMAND(ID_VIEW_TOOLBAR, OnViewToolBar)
    ON_UPDATE_COMMAND_UI(ID_VIEW_TOOLBAR, OnUpdateViewToolBar)
-   ON_COMMAND_RANGE(CMENU_BASE, CMENU_MAX, OnToolBarMenuSelected)
+   ON_COMMAND_RANGE(EAF_TOOLBAR_MENU_BASE, EAF_TOOLBAR_MENU_BASE+EAF_TOOLBAR_MENU_COUNT, OnToolBarMenuSelected)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -85,6 +78,7 @@ CEAFMainFrame::CEAFMainFrame()
 
    m_pStatusBar = NULL;
    m_pMainFrameToolBar = NULL;
+   m_pMainMenu = NULL;
 
    m_bShowToolTips = TRUE;
 
@@ -98,6 +92,9 @@ CEAFMainFrame::~CEAFMainFrame()
 
    if (m_pMainFrameToolBar)
       delete m_pMainFrameToolBar;
+
+   if (m_pMainMenu)
+      delete m_pMainMenu;
 }
 
 CEAFStatusBar* CEAFMainFrame::CreateStatusBar()
@@ -172,6 +169,8 @@ int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
    // Load the state of the application toolbar
    LoadBarState( CString((LPCSTR)IDS_TOOLBAR_STATE) );
 
+   m_pMainMenu = CreateMainMenu();
+
 	return 0;
 }
 
@@ -188,9 +187,12 @@ void CEAFMainFrame::OnClose()
    }
 
    // Save the ToolTips state
-   AfxGetApp()->WriteProfileInt(CString((LPCSTR)IDS_REG_SETTINGS),
-                                CString((LPCSTR)IDS_TOOLTIP_STATE),
-                                (m_bShowToolTips != 0) );
+   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   pApp->WriteProfileInt(CString((LPCSTR)IDS_REG_SETTINGS),
+                         CString((LPCSTR)IDS_TOOLTIP_STATE),
+                        (m_bShowToolTips != 0) );
+
+   pApp->OnMainFrameClosing();
 
    CMDIFrameWnd::OnClose();
 }
@@ -205,6 +207,9 @@ void CEAFMainFrame::OnDestroy()
 
 BOOL CEAFMainFrame::PreTranslateMessage(MSG* pMsg)
 {
+   if ( CMDIFrameWnd::PreTranslateMessage(pMsg) )
+      return TRUE;
+
    // Add a toolbar popup menu if a right click happens in the docking space
    if (pMsg->message == WM_RBUTTONDOWN)
    {
@@ -224,6 +229,8 @@ BOOL CEAFMainFrame::PreTranslateMessage(MSG* pMsg)
 
          for ( ; nameIter != vNames.end(); nameIter++, stateIter++, offset++ )
          {
+            ASSERT( offset <= EAF_TOOLBAR_MENU_COUNT );
+
             CString strName = *nameIter;
             BOOL bVisible = *stateIter;
             UINT iFlags = MF_STRING | MF_ENABLED;
@@ -231,7 +238,7 @@ BOOL CEAFMainFrame::PreTranslateMessage(MSG* pMsg)
                iFlags |= MF_CHECKED;
 
             CString strToolBarName;
-            menu.AppendMenu( iFlags, CMENU_BASE + offset, strName );
+            menu.AppendMenu( iFlags, EAF_TOOLBAR_MENU_BASE + offset, strName );
          }
 
          CPoint pt;
@@ -240,10 +247,22 @@ BOOL CEAFMainFrame::PreTranslateMessage(MSG* pMsg)
          pBar->ClientToScreen(&pt);
 
          menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, pt.x, pt.y, this );
+
+         return TRUE;
       }
    }
    
-   return CMDIFrameWnd::PreTranslateMessage(pMsg);
+	if (pMsg->message >= WM_KEYFIRST && pMsg->message <= WM_KEYLAST)
+   {
+      if ( GetAcceleratorTable()->TranslateMessage(this,pMsg) )
+         return TRUE;
+
+      CEAFDocument* pDoc = GetDocument();
+      if ( pDoc && pDoc->GetDocPluginManager()->GetAcceleratorTable()->TranslateMessage(this,pMsg) )
+         return TRUE;
+   }
+
+   return FALSE; // message needs further processing
 }
 
 void CEAFMainFrame::GetMessageString(UINT nID, CString& rMessage) const
@@ -259,10 +278,23 @@ void CEAFMainFrame::GetMessageString(UINT nID, CString& rMessage) const
    {
       CEAFDocument* pDoc = (CEAFDocument*)pActiveDoc;
       UINT nPluginCmdID;
-      ICommandCallback* pCallback;
+      IEAFCommandCallback* pCallback;
       if ( pDoc->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
       {
          // this command belogs to one of the plug-ins
+         bHandledByPlugin = TRUE;
+         pCallback->GetStatusBarMessageString(nPluginCmdID,rMessage);
+      }
+   }
+
+   if ( !bHandledByPlugin )
+   {
+      CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+      UINT nPluginCmdID;
+      IEAFCommandCallback* pCallback;
+      if ( pApp->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
+      {
+         // this command belogs to one application of the plug-ins
          bHandledByPlugin = TRUE;
          pCallback->GetStatusBarMessageString(nPluginCmdID,rMessage);
       }
@@ -291,7 +323,7 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
    if ( nID != 0 && pDoc )
    {
       UINT nPluginCmdID;
-      ICommandCallback* pCallback;
+      IEAFCommandCallback* pCallback;
       if ( pDoc->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
       {
          // this command belogs to one of the plug-ins
@@ -317,7 +349,34 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
       }
    }
 
-   return FALSE; // not handled here
+   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   UINT nPluginCmdID;
+   IEAFCommandCallback* pCallback;
+   if ( pApp->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
+   {
+      // this command belogs to one of the application plug-ins
+      CString strTipText;
+      pCallback->GetToolTipMessageString(nPluginCmdID,strTipText);
+
+
+#ifndef _UNICODE
+   if (pTTTStruct->code == TTN_NEEDTEXTA)
+	   lstrcpyn(pTTTA->szText, strTipText, strTipText.GetLength()+1);
+   else
+	   _mbstowcsz(pTTTW->szText, strTipText, strTipText.GetLength()+1);
+#else
+   if (pTTTStruct->code == TTN_NEEDTEXTA)
+	   _wcstombsz(pTTTA->szText, strTipText, strTipText.GetLength()+1);
+   else
+	   lstrcpyn(pTTTW->szText, strTipText, strTipText.GetLength()+1);
+#endif
+
+      *pResult = 0;
+
+      return TRUE;
+   }
+
+      return FALSE; // not handled here
 }
 
 void CEAFMainFrame::UpdateFrameTitle(LPCTSTR lpszDocName)
@@ -535,6 +594,17 @@ CView* CEAFMainFrame::CreateOrActivateFrame(CEAFDocTemplate* pTemplate)
    return pNewView;
 }
 
+CEAFMenu* CEAFMainFrame::GetMainMenu()
+{
+   return m_pMainMenu;
+}
+
+CEAFAcceleratorTable* CEAFMainFrame::GetAcceleratorTable()
+{
+   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   return pApp->GetAppPluginManager()->GetAcceleratorTable();
+}
+
 void CEAFMainFrame::HideMainFrameToolBar()
 {
    if ( m_bDisableHideMainToolBar )
@@ -559,6 +629,9 @@ void CEAFMainFrame::ResetStatusBar()
 
 UINT CEAFMainFrame::GetNextToolBarID()
 {
+   // If this assert fires, you probably didn't get the main window from the correct module state
+   ASSERT(m_ToolBarIDs.size() != 0);
+  
    std::vector<UINT>::iterator iter;
    for ( iter = m_ToolBarIDs.begin(); iter != m_ToolBarIDs.end(); iter++ )
    {
@@ -693,7 +766,7 @@ void CEAFMainFrame::DestroyToolBar(CEAFToolBar* pToolBar)
 
 void CEAFMainFrame::EnableModifiedFlag(BOOL bEnable)
 {
-   if ( m_pStatusBar )
+   if ( m_pStatusBar && m_pStatusBar->GetSafeHwnd() )
    {
       m_pStatusBar->EnableModifiedFlag(bEnable);
    }
@@ -701,7 +774,7 @@ void CEAFMainFrame::EnableModifiedFlag(BOOL bEnable)
 
 void CEAFMainFrame::OnStatusChanged()
 {
-   if ( m_pStatusBar )
+   if ( m_pStatusBar && m_pStatusBar->GetSafeHwnd() )
    {
       m_pStatusBar->OnStatusChanged();
    }
@@ -749,7 +822,7 @@ void CEAFMainFrame::OnUpdateViewToolBar(CCmdUI* pCmdUI)
 
 void CEAFMainFrame::OnToolbarMenuSelected(UINT id)
 {
-   Uint16 idx = id - CMENU_BASE;
+   Uint16 idx = id - EAF_TOOLBAR_MENU_BASE;
    ToggleToolBarState( idx );
 }
 
@@ -889,6 +962,12 @@ void CEAFMainFrame::ToggleToolBarState(UINT idx)
 
 void CEAFMainFrame::OnToolBarMenuSelected(UINT id)
 {
-   Uint16 idx = id - CMENU_BASE;
+   Uint16 idx = id - EAF_TOOLBAR_MENU_BASE;
    ToggleToolBarState( idx );
+}
+
+CEAFMenu* CEAFMainFrame::CreateMainMenu()
+{
+   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   return new CEAFMenu(this,pApp->GetPluginCommandManager());
 }

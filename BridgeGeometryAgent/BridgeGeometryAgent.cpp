@@ -27,10 +27,10 @@ void CBridgeGeometryAgent::IntegrateMenuCommands()
 {
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
-   GET_IFACE(IMainMenu,pMainMenu);
+   GET_IFACE(IEAFMainMenu,pMainMenu);
    CEAFMenu* pMenu = pMainMenu->GetMainMenu();
 
-   INT nMenus = pMenu->GetMenuCount();
+   INT nMenus = pMenu->GetMenuItemCount();
 
    m_pAlignmentMenu = pMenu->CreatePopupMenu(nMenus-1,"&Alignment");
    m_pAlignmentMenu->AppendMenu(ID_EDIT_ALIGNMENT,"Edit",this);
@@ -39,7 +39,7 @@ void CBridgeGeometryAgent::IntegrateMenuCommands()
 void CBridgeGeometryAgent::RemoveMenuCommands()
 {
    // menus
-   GET_IFACE(IMainMenu,pMainMenu);
+   GET_IFACE(IEAFMainMenu,pMainMenu);
    CEAFMenu* pMenu = pMainMenu->GetMainMenu();
    pMenu->DestroyMenu(m_pAlignmentMenu);
 
@@ -87,13 +87,13 @@ void CBridgeGeometryAgent::UnadviseConnectionPoints()
 
 void CBridgeGeometryAgent::RegisterViews()
 {
-   //GET_IFACE(IViewRegistrar,pViewReg);
+   //GET_IFACE(IEAFViewRegistrar,pViewReg);
    //m_ViewKey = pViewReg->RegisterView(RUNTIME_CLASS(CBridgeGeometryFrame),RUNTIME_CLASS(CBridgeGeometryView),NULL,1);
 }
 
 void CBridgeGeometryAgent::UnregisterViews()
 {
-   //GET_IFACE(IViewRegistrar,pViewReg);
+   //GET_IFACE(IEAFViewRegistrar,pViewReg);
    //pViewReg->RemoveView(m_ViewKey);
 }
 
@@ -184,8 +184,6 @@ STDMETHODIMP CBridgeGeometryAgent::RegInterfaces()
 STDMETHODIMP CBridgeGeometryAgent::Init()
 {
    AdviseConnectionPoints();
-   IntegrateMenuCommands();
-   RegisterViews();
    return S_OK;
 }
 
@@ -202,7 +200,6 @@ STDMETHODIMP CBridgeGeometryAgent::Reset()
 STDMETHODIMP CBridgeGeometryAgent::ShutDown()
 {
    UnadviseConnectionPoints();
-   UnregisterViews();
 
    return S_OK;
 }
@@ -210,6 +207,25 @@ STDMETHODIMP CBridgeGeometryAgent::ShutDown()
 STDMETHODIMP CBridgeGeometryAgent::GetClassID(CLSID* pCLSID)
 {
    *pCLSID = CLSID_BridgeGeometryAgent;
+   return S_OK;
+}
+
+STDMETHODIMP CBridgeGeometryAgent::IntegrateWithUI(BOOL bIntegrate)
+{
+   if ( bIntegrate )
+   {
+      IntegrateMenuCommands();
+      RegisterViews();
+   }
+   else
+   {
+      GET_IFACE(IEAFMainMenu,pMainMenu);
+      CEAFMenu* pMenu = pMainMenu->GetMainMenu();
+      pMenu->DestroyMenu(m_pAlignmentMenu);
+
+      UnregisterViews();
+   }
+
    return S_OK;
 }
 

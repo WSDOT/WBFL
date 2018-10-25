@@ -72,6 +72,23 @@ CEAFDocTemplate::~CEAFDocTemplate()
    }
 }
 
+void CEAFDocTemplate::CreateDefaultItem(HICON hIcon)
+{
+   CString strExtName;
+   GetDocString(strExtName,CDocTemplate::filterExt);
+
+   CString strFileName;
+   GetDocString(strFileName,CDocTemplate::fileNewName);
+
+   CString strItemName;
+   if ( strExtName != "" )
+      strItemName.Format("%s (%s)",strFileName,strExtName);
+   else
+      strItemName = strFileName;
+ 
+   m_TemplateGroup.AddItem( new CEAFTemplateItem(strItemName,NULL,hIcon) );
+}
+
 CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisible)
 {
    // We don't want to call the base class version
@@ -105,12 +122,12 @@ CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisi
 
    if ( !DoOpenDocumentFile(lpszPathName,bMakeVisible,pEAFDoc,pFrame) )
    {
-      pFrame->DestroyWindow();
       return NULL;
    }
 
 	InitialUpdateFrame(pFrame, pDocument, bMakeVisible);
 
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
    pMainFrame->HideMainFrameToolBar();
 
@@ -121,10 +138,10 @@ CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisi
 
 BOOL CEAFDocTemplate::DoOpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisible,CEAFDocument* pDocument,CFrameWnd* pFrame)
 {
+   SetDefaultTitle(pDocument);
 	if (lpszPathName == NULL)
 	{
 		// create a new document - with default document name
-		SetDefaultTitle(pDocument);
 
 		// avoid creating temporary compound file when starting up invisible
 		if (!bMakeVisible)
@@ -166,7 +183,6 @@ BOOL CEAFDocTemplate::DoOpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisible,
 			pFrame->DestroyWindow();
 			return FALSE;
 		}
-		pDocument->SetPathName(lpszPathName);
 	}
 
    return TRUE;

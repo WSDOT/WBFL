@@ -148,6 +148,27 @@ void CEAFAutoCalcReportView::UpdateNow()
    CEAFReportView::UpdateNow();
 }
 
+void CEAFAutoCalcReportView::EditReport()
+{
+   CDocument* pDoc = GetDocument();
+   CEAFAutoCalcDocMixin* pAutoCalcDoc = dynamic_cast<CEAFAutoCalcDocMixin*>(pDoc);
+   ATLASSERT(pAutoCalcDoc); // your document must use the autocalc mix in
+
+   if ( pAutoCalcDoc->IsAutoCalcEnabled() )
+   {
+      CEAFReportView::EditReport();
+   }
+   else
+   {
+      if ( m_pReportBrowser->Edit(false) ) // false = don't update the report results
+      {
+         m_pReportSpec = m_pReportBrowser->GetReportSpecification();
+         EnableLpFrame(true);
+         m_bInvalidReport = true;
+      }
+   }
+}
+
 HRESULT CEAFAutoCalcReportView::UpdateReportBrowser()
 {
    HRESULT hr = CEAFReportView::UpdateReportBrowser();

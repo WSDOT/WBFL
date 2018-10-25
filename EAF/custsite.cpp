@@ -35,6 +35,8 @@
 // sample for more information 
 // 
 #include "stdafx.h"
+#include "resource.h"
+
 #undef AFX_DATA
 #define AFX_DATA AFX_DATA_IMPORT
 

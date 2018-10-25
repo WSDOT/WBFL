@@ -25,15 +25,16 @@
 #include <EAF\EAFExp.h>
 #include <Colors.h>
 
-// CEAFSplashScreen
+// CEAFSplashScreenInfo
+// Information for a splash screen
 struct EAFCLASS CEAFSplashScreenInfo
 {
 public:
-   BOOL    m_bShow;
-   HBITMAP m_hBitmap;
-   COLORREF m_TextColor;
-   COLORREF m_BgColor;
-   CRect m_Rect;
+   BOOL    m_bShow;       // show the splash screen if TRUE
+   HBITMAP m_hBitmap;     // handle to the splash screen bitman
+   COLORREF m_TextColor;  // color of the text to be written on the splash screen
+   COLORREF m_BgColor;    // text background color
+   CRect m_Rect;          // rectangle into which text is written
 
    CEAFSplashScreenInfo()
    {
@@ -56,6 +57,8 @@ public:
    }
 };
 
+// CEAFSplashScreen
+// Displays a splash screen at application startup
 class EAFCLASS CEAFSplashScreen : public CWnd
 {
 	DECLARE_DYNAMIC(CEAFSplashScreen)
@@ -64,13 +67,25 @@ public:
 	CEAFSplashScreen();
 	virtual ~CEAFSplashScreen();
 
+   // Set the splash screen informatin. Must be done before ShowSplashScreen is called
    static void SetSplashScreenInfo(const CEAFSplashScreenInfo& info);
+
+   // Shows the splash screen
    static void ShowSplashScreen(CWnd* pParent,BOOL bShowUntilClosed);
-   static BOOL PreTranslateAppMessage(MSG* pMsg);
+
+   // Sets the text in the rectangle defined in the splash screen information
    static void SetText(const char* strText);
+
+   // close the splash screen next time the timer times out
    static void CloseOnNextTimeout();
+
+   // close the splash screen now
    static void Close();
+
+   // Set the timeout duration
    static void SetTimeout(UINT duration);
+
+   static BOOL PreTranslateAppMessage(MSG* pMsg);
 
 protected:
 	BOOL Create(CWnd* pParentWnd = NULL);

@@ -21,59 +21,35 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-
 #pragma once
 
-// EAFAutoCalcReportView.h : header file
-//
+#include "afxwin.h"
+#include "resource.h"
 
-#include <EAF\EAFExp.h>
-#include <EAF\EAFReportView.h>
-#include <EAF\EAFAutoCalcView.h>
+// CManagePluginsDlg dialog
 
-/////////////////////////////////////////////////////////////////////////////
-// CEAFAutoCalcReportView view
-class EAFCLASS CEAFAutoCalcReportView : public CEAFReportView,
-                                        public CEAFAutoCalcViewMixin // mix-in class
+class CManagePluginsDlg : public CDialog
 {
-protected:
-	CEAFAutoCalcReportView();           // protected constructor used by dynamic creation
-	DECLARE_DYNCREATE(CEAFAutoCalcReportView)
+	DECLARE_DYNAMIC(CManagePluginsDlg)
 
-// Attributes
 public:
-   
-// Operations
-public:
-   virtual bool DoResultsExist() const;
+	CManagePluginsDlg(const CATID& catid,CWnd* pParent = NULL);   // standard constructor
+	virtual ~CManagePluginsDlg();
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CEAFAutoCalcReportView)
-	public:
-	virtual void OnInitialUpdate();
-	protected:
-	virtual void OnDraw(CDC* pDC);      // overridden to draw this view
-	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
-	//}}AFX_VIRTUAL
-
-// Implementation
-public:
-   virtual void UpdateNow();
-   virtual void EditReport();
+// Dialog Data
+	enum { IDD = IDD_MANAGE_PLUGINS };
 
 protected:
-	virtual ~CEAFAutoCalcReportView();
-#ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
-#endif
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
-   // Generated message map functions
-protected:
-	//{{AFX_MSG(CEAFAutoCalcReportView)
-	//}}AFX_MSG
-   virtual HRESULT UpdateReportBrowser();
+   CCheckListBox m_PluginList;
+   CString m_strSection;
+   std::vector<CString> m_CLSIDs;
+   CATID m_CATID;
+   BOOL InitList();
 
 	DECLARE_MESSAGE_MAP()
+public:
+   virtual BOOL OnInitDialog();
+   virtual void OnOK();
 };

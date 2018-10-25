@@ -1024,7 +1024,7 @@ void lrfdLosses::UpdateTemporaryStrandRemovalEffect() const
               - TemporaryStrand_TimeDependentLossesAtShipping();
    }
 
-   _ASSERTE( f <= fpj );
+   //_ASSERTE( f <= fpj );
 
    m_Ptr   = m_ApsTemp*f; // force in temporary strands immediately before removal
    m_fptr  = -m_Ptr/m_Ag - m_Ptr*m_eperm*m_etemp/m_Ig; // concrete stress change due to removal

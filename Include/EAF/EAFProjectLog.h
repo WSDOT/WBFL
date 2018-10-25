@@ -25,7 +25,7 @@
 
 /*****************************************************************************
 INTERFACE
-   IProjectLog
+   IEAFProjectLog
 
    Interface for project wide message/error logging.
 
@@ -33,9 +33,9 @@ DESCRIPTION
    Interface for project wide message/error logging.
 *****************************************************************************/
 // {95DE8B60-2D53-11d2-8EB4-006097DF3C68}
-DEFINE_GUID(IID_IProjectLog,
+DEFINE_GUID(IID_IEAFProjectLog,
 0x95DE8B60, 0x2D53, 0x11d2, 0x8E, 0xB4, 0x00, 0x60, 0x97, 0xDF, 0x3C, 0x68);
-interface IProjectLog : IUnknown
+interface IEAFProjectLog : IUnknown
 {
    //------------------------------------------------------------------------
    // Returns the name of the log file

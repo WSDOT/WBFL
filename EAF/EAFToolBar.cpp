@@ -60,7 +60,7 @@ CEAFToolBar::~CEAFToolBar()
    }
 }
 
-BOOL CEAFToolBar::LoadToolBar(LPCTSTR lpszResourceName,ICommandCallback* pCallback)
+BOOL CEAFToolBar::LoadToolBar(LPCTSTR lpszResourceName,IEAFCommandCallback* pCallback)
 {
    if ( !m_pToolBar->LoadToolBar(lpszResourceName) )
       return FALSE;
@@ -72,14 +72,17 @@ BOOL CEAFToolBar::LoadToolBar(LPCTSTR lpszResourceName,ICommandCallback* pCallba
       TBBUTTON tbButton;
       tb.GetButton(i,&tbButton);
       UINT nID = tbButton.idCommand; // this is the ID that the plug supplied (not unique in the app)
-      UINT nCmdID = m_pCmdMgr->AddCommandCallback(nID,pCallback); // this command ID is unique in the app
+      UINT nCmdID;// this command ID is unique in the app
+      if ( !m_pCmdMgr->AddCommandCallback(nID,pCallback,&nCmdID) )
+         return FALSE;
+
       tb.SetCmdID(i,nCmdID); // replace the comand ID on the button to be the unique one
    }
 
    return TRUE;
 }
 
-BOOL CEAFToolBar::LoadToolBar(UINT nIDResource,ICommandCallback* pCallback)
+BOOL CEAFToolBar::LoadToolBar(UINT nIDResource,IEAFCommandCallback* pCallback)
 {
    if ( !m_pToolBar->LoadToolBar(nIDResource) )
       return FALSE;
@@ -91,14 +94,17 @@ BOOL CEAFToolBar::LoadToolBar(UINT nIDResource,ICommandCallback* pCallback)
       TBBUTTON tbButton;
       tb.GetButton(i,&tbButton);
       UINT nID = tbButton.idCommand; // this is the ID that the plug supplied (not unique in the app)
-      UINT nCmdID = m_pCmdMgr->AddCommandCallback(nID,pCallback); // this command ID is unique in the app
+      UINT nCmdID;// this command ID is unique in the app
+      if ( !m_pCmdMgr->AddCommandCallback(nID,pCallback,&nCmdID) )
+         return FALSE;
+
       tb.SetCmdID(i,nCmdID); // replace the comand ID on the button to be the unique one
    }
 
    return TRUE;
 }
 
-BOOL CEAFToolBar::AddButtons(int nButtons,UINT* nIDs,UINT nBitmapID,LPCSTR lpszStrings,ICommandCallback* pCallback)
+BOOL CEAFToolBar::AddButtons(int nButtons,UINT* nIDs,UINT nBitmapID,LPCSTR lpszStrings,IEAFCommandCallback* pCallback)
 {
    CToolBarCtrl& tb = m_pToolBar->GetToolBarCtrl();
 
@@ -110,9 +116,14 @@ BOOL CEAFToolBar::AddButtons(int nButtons,UINT* nIDs,UINT nBitmapID,LPCSTR lpszS
    {
       UINT nCmdID;
       if ( pCallback )
-         nCmdID = m_pCmdMgr->AddCommandCallback(nIDs[i],pCallback);
+      {
+         if ( !m_pCmdMgr->AddCommandCallback(nIDs[i],pCallback,&nCmdID) )
+            return FALSE;
+      }
       else
+      {
          nCmdID = nIDs[i];
+      }
 
       TBBUTTON tbButton;
       tbButton.iBitmap = nFirstNewImage  + i;
@@ -138,7 +149,7 @@ BOOL CEAFToolBar::AddButtons(int nButtons,UINT* nIDs,UINT nBitmapID,LPCSTR lpszS
    return TRUE;
 }
 
-void CEAFToolBar::RemoveButtons(ICommandCallback* pCallback)
+void CEAFToolBar::RemoveButtons(IEAFCommandCallback* pCallback)
 {
    CToolBarCtrl& tb = m_pToolBar->GetToolBarCtrl();
 
@@ -209,7 +220,7 @@ int CEAFToolBar::CommandToIndex(UINT nID) const
    return -1;
 }
 
-int CEAFToolBar::CommandToIndex(UINT nPluginCmdID,ICommandCallback* pCallback) const
+int CEAFToolBar::CommandToIndex(UINT nPluginCmdID,IEAFCommandCallback* pCallback) const
 {
    // NOTE: MFC documentation says return type is UINT, but looking at the header file, it is an int
    UINT nMappedCmdID; // unique command id

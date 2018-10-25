@@ -23,19 +23,8 @@ DESCRIPTION
    work properly.
 
 EXAMPLE
-   pgsAutoProgress ap(pProgress);
-   ap.CreateWindow(PW_ALL,1000);
-   // Don't do this  pProgress->CreateWindow(PW_ALL,1000);
-   // Don't do this either pProgress->DestroyWindow
-
-
-COPYRIGHT
-   Copyright © 1997-1998
-   Washington State Department Of Transportation
-   All Rights Reserved
-
-LOG
-   rab : 12.02.1998 : Created file
+   EAFAutoProgress ap(pProgress);
+   // Don't call CreateWindow or DestroyWindow on the IProgress interface
 *****************************************************************************/
 
 class EAFCLASS CEAFAutoProgress

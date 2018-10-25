@@ -130,6 +130,7 @@ BOOL CEAFSplashScreen::Create(CWnd* pParentWnd /*= NULL*/)
 void CEAFSplashScreen::HideSplashScreen()
 {
 	// Destroy the window, and update the mainframe.
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
 	DestroyWindow();
    if ( AfxGetMainWnd() )
 	   AfxGetMainWnd()->UpdateWindow();

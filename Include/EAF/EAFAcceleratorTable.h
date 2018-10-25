@@ -21,59 +21,40 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
+// EAFMenu.h: interface for the CEAFMenu class.
+//
+//////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-// EAFAutoCalcReportView.h : header file
-//
-
 #include <EAF\EAFExp.h>
-#include <EAF\EAFReportView.h>
-#include <EAF\EAFAutoCalcView.h>
+#include <vector>
 
-/////////////////////////////////////////////////////////////////////////////
-// CEAFAutoCalcReportView view
-class EAFCLASS CEAFAutoCalcReportView : public CEAFReportView,
-                                        public CEAFAutoCalcViewMixin // mix-in class
+class CEAFPluginCommandManager;
+interface IEAFCommandCallback;
+
+// Wrapper class for a Windows accelerator table. Plug-ins cannot access the accelerator table directly because of the 
+// need to map plug-in command ID's which are not guarenteed to be unique into application
+// command IDs that must be unique. This class provides an object wrapper on the accelerator table
+// and handles command ID mapping and routing
+class EAFCLASS CEAFAcceleratorTable
 {
-protected:
-	CEAFAutoCalcReportView();           // protected constructor used by dynamic creation
-	DECLARE_DYNCREATE(CEAFAutoCalcReportView)
-
-// Attributes
 public:
-   
-// Operations
-public:
-   virtual bool DoResultsExist() const;
+   CEAFAcceleratorTable();
+	CEAFAcceleratorTable(HACCEL hAccelTable,CEAFPluginCommandManager* pCmdMgr);
+	CEAFAcceleratorTable(const CEAFAcceleratorTable& rOther);
+	virtual ~CEAFAcceleratorTable();
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CEAFAutoCalcReportView)
-	public:
-	virtual void OnInitialUpdate();
-	protected:
-	virtual void OnDraw(CDC* pDC);      // overridden to draw this view
-	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
-	//}}AFX_VIRTUAL
+   void Init(CEAFPluginCommandManager* pCmdMgr);
 
-// Implementation
-public:
-   virtual void UpdateNow();
-   virtual void EditReport();
+   BOOL AddAccelKey(BYTE fVirt,WORD key,WORD cmd,IEAFCommandCallback* pCallback);
+   BOOL RemoveAccelKey(WORD cmd,IEAFCommandCallback* pCallback);
+   BOOL RemoveAccelKey(BYTE fVirt,WORD key);
 
-protected:
-	virtual ~CEAFAutoCalcReportView();
-#ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
-#endif
+   BOOL TranslateMessage(CWnd* pWnd,MSG* pMsg);
 
-   // Generated message map functions
-protected:
-	//{{AFX_MSG(CEAFAutoCalcReportView)
-	//}}AFX_MSG
-   virtual HRESULT UpdateReportBrowser();
+private:
 
-	DECLARE_MESSAGE_MAP()
+   CEAFPluginCommandManager* m_pCmdMgr;
+   HACCEL m_hAccelTable;
 };

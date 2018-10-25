@@ -50,21 +50,25 @@ public:
    void SetBaseCommandID(UINT nBaseID);
 
    // Adds a new commnad and the object to call when it is executed. Returns a unique
-   // command id to be assigned to menu items, toolbar buttons, etc
-   UINT AddCommandCallback(UINT nPluginCmdID,ICommandCallback* pCallback);
+   // command id to be assigned to menu items, toolbar buttons, etc through the pMappedID
+   // parameter. Returns FALSE if the plugin command cannot be mapped
+   BOOL AddCommandCallback(UINT nPluginCmdID,IEAFCommandCallback* pCallback,UINT* pMappedID);
 
    // Transates the unique ID back into the original command ID gets the callback object
    // associated with the command
-   BOOL GetCommandCallback(UINT nMappedID,UINT* pPluginCmdID,ICommandCallback** ppCallback);
+   BOOL GetCommandCallback(UINT nMappedID,UINT* pPluginCmdID,IEAFCommandCallback** ppCallback);
 
    // Removes a callback based on the mapped command id
    void RemoveCommandCallback(UINT nMappedID);
 
    // returns all the mapped command ids of this callback
-   std::vector<UINT> GetMappedCommandIDs(ICommandCallback* pCallback);
+   std::vector<UINT> GetMappedCommandIDs(IEAFCommandCallback* pCallback);
 
    // Given an original command ID and a callback, retreives the mapped (unique) command id
-   BOOL GetMappedCommandID(UINT nPluginCmdID,ICommandCallback* pCallback,UINT* pMappedCmdID);
+   BOOL GetMappedCommandID(UINT nPluginCmdID,IEAFCommandCallback* pCallback,UINT* pMappedCmdID);
+
+   // clears out all command ID mapping
+   void Clear();
 
 private:
    UINT m_nBaseID; // ID of first unique mapped id
@@ -72,7 +76,7 @@ private:
    struct CCallbackItem 
    {
       UINT nPluginCmdID;
-      CComPtr<ICommandCallback> pCallback;
+      CAdapt<CComPtr<IEAFCommandCallback>> pCallback;
    };
 
    typedef std::map<UINT,CCallbackItem> CallbackContainer;

@@ -139,7 +139,7 @@ CEAFMenu* CEAFMenu::CreatePopupMenu(INT pos,LPCTSTR lpszName)
    return pNewMenu;
 }
 
-void CEAFMenu::LoadMenu(CMenu* pMenu,ICommandCallback* pCallback)
+void CEAFMenu::LoadMenu(CMenu* pMenu,IEAFCommandCallback* pCallback)
 {
    UINT nMenuItems = pMenu->GetMenuItemCount();
    for (UINT i = 0; i < nMenuItems; i++ )
@@ -162,7 +162,7 @@ void CEAFMenu::LoadMenu(CMenu* pMenu,ICommandCallback* pCallback)
    }
 }
 
-BOOL CEAFMenu::LoadMenu( UINT nIDResource,ICommandCallback* pCallback )
+BOOL CEAFMenu::LoadMenu( UINT nIDResource,IEAFCommandCallback* pCallback )
 {
    CMenu menu;
    if ( !menu.LoadMenu(nIDResource) )
@@ -176,7 +176,7 @@ BOOL CEAFMenu::LoadMenu( UINT nIDResource,ICommandCallback* pCallback )
    return TRUE;
 }
 
-BOOL CEAFMenu::LoadMenu(LPCTSTR lpszResourceName,ICommandCallback* pCallback )
+BOOL CEAFMenu::LoadMenu(LPCTSTR lpszResourceName,IEAFCommandCallback* pCallback )
 {
    CMenu menu;
    if ( !menu.LoadMenu(lpszResourceName) )
@@ -190,9 +190,11 @@ BOOL CEAFMenu::LoadMenu(LPCTSTR lpszResourceName,ICommandCallback* pCallback )
    return TRUE;
 }
 
-BOOL CEAFMenu::AppendMenu(UINT nID,LPCTSTR lpszNewItem,ICommandCallback* pCallback)
+BOOL CEAFMenu::AppendMenu(UINT nID,LPCTSTR lpszNewItem,IEAFCommandCallback* pCallback)
 {
-   UINT nCmdID = m_pCmdMgr->AddCommandCallback(nID,pCallback);
+   UINT nCmdID;
+   if ( !m_pCmdMgr->AddCommandCallback(nID,pCallback,&nCmdID) )
+      return FALSE;
 
    CMenu* pMenu = GetMenu();
    if ( !pMenu->AppendMenu(MF_STRING,nCmdID,lpszNewItem) )
@@ -203,9 +205,12 @@ BOOL CEAFMenu::AppendMenu(UINT nID,LPCTSTR lpszNewItem,ICommandCallback* pCallba
    return TRUE;
 }
 
-BOOL CEAFMenu::InsertMenu(UINT nPosition, UINT nID, LPCTSTR lpszNewItem, ICommandCallback* pCallback)
+BOOL CEAFMenu::InsertMenu(UINT nPosition, UINT nID, LPCTSTR lpszNewItem, IEAFCommandCallback* pCallback)
 {
-   UINT nCmdID = m_pCmdMgr->AddCommandCallback(nID,pCallback);
+   UINT nCmdID;
+   if ( !m_pCmdMgr->AddCommandCallback(nID,pCallback,&nCmdID) )
+      return FALSE;
+
    CMenu* pMenu = GetMenu();
    if (!pMenu->InsertMenu(nPosition,MF_BYPOSITION | MF_STRING, nCmdID, lpszNewItem) )
    {
@@ -237,7 +242,7 @@ void CEAFMenu::InsertSeparator(UINT nPosition,UINT nFlags)
    InsertSeparator(pMenu,nPosition,nFlags);
 }
 
-void CEAFMenu::RemoveMenu(UINT nPosition,UINT nFlags, ICommandCallback* pCallback)
+void CEAFMenu::RemoveMenu(UINT nPosition,UINT nFlags, IEAFCommandCallback* pCallback)
 {
    CMenu* pMenu = GetMenu();
 
@@ -270,7 +275,7 @@ int CEAFMenu::GetMenuString(UINT nIDItem,CString& rString,UINT nFlags) const
    return pMenu->GetMenuStringA(nIDItem,rString,nFlags);
 }
 
-BOOL CEAFMenu::SetMenuItemBitmaps(UINT nPosition,UINT nFlags,const CBitmap* pBmpUnchecked,const CBitmap* pBmpChecked, ICommandCallback* pCallback)
+BOOL CEAFMenu::SetMenuItemBitmaps(UINT nPosition,UINT nFlags,const CBitmap* pBmpUnchecked,const CBitmap* pBmpChecked, IEAFCommandCallback* pCallback)
 {
    CMenu* pMenu = GetMenu();
    if ( nFlags == MF_BYCOMMAND )

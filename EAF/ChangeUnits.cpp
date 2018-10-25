@@ -72,7 +72,7 @@ void txnChangeUnits::Undo()
 
 bool txnChangeUnits::DoExecute(int i)
 {
-   GET_IFACE(IDisplayUnits,pDisplayUnits);
+   GET_IFACE(IEAFDisplayUnits,pDisplayUnits);
    //GET_IFACE(IEvents,pEvents);
    //pEvents->HoldEvents();
 

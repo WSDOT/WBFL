@@ -27,11 +27,14 @@
 #include "resource.h"
 #include <EAF\EAFReportView.h>
 #include <EAF\EAFUtilities.h>
+#include <EAF\EAFAutoProgress.h>
+#include <EAF\EAFStatusCenter.h>
 #include "AgentTools.h"
 #include "EAFSelectReportDlg.h"
 
 #include <EAF\EAFBrokerDocument.h>
 #include <EAF\EAFMainFrame.h>
+#include <EAF\EAFHints.h>
 
 #include <ReportManager\ReportBuilderManager.h>
 #include <IReportManager.h>
@@ -88,38 +91,35 @@ END_MESSAGE_MAP()
 
 void CEAFReportView::OnDraw(CDC* pDC)
 {
-   if ( !m_pReportBrowser )
-   {
-      CString msg;
-      if ( m_bNoBrowser )
-      {
-         msg.LoadString(IDS_E_NOBROWSER);
-      }
-      else if ( m_bUpdateError )
-      {
-         AfxFormatString1(msg,IDS_E_UPDATE,m_ErrorMsg.c_str());
-      }
-      else if ( m_bUpdateInProgress )
-      {
-         msg.LoadString(IDS_UPDATE_IN_PROGRESS);
-      }
-      else
-      {
-         msg.LoadString(IDS_RESULTS_NOT_AVAILABLE);
-      }
+  CString msg;
+  if ( m_bNoBrowser )
+  {
+     msg.LoadString(IDS_E_NOBROWSER);
+  }
+  else if ( m_bUpdateError )
+  {
+     AfxFormatString1(msg,IDS_E_UPDATE,m_ErrorMsg.c_str());
+  }
+  else if ( m_bUpdateInProgress )
+  {
+     msg.LoadString(IDS_UPDATE_IN_PROGRESS);
+  }
+  else
+  {
+     msg.LoadString(IDS_RESULTS_NOT_AVAILABLE);
+  }
 
-      CFont font;
-      CFont* pOldFont = NULL;
-      if ( font.CreatePointFont(100,"Arial",pDC) )
-         pOldFont = pDC->SelectObject(&font);
+  CFont font;
+  CFont* pOldFont = NULL;
+  if ( font.CreatePointFont(100,"Arial",pDC) )
+     pOldFont = pDC->SelectObject(&font);
 
-      COLORREF oldColor = pDC->SetBkColor( GetSysColor(COLOR_BTNFACE) );
-      MultiLineTextOut(pDC,0,0,msg);
-      pDC->SetBkColor( oldColor );
+  COLORREF oldColor = pDC->SetBkColor( GetSysColor(COLOR_BTNFACE) );
+  MultiLineTextOut(pDC,0,0,msg);
+  pDC->SetBkColor( oldColor );
 
-      if ( pOldFont )
-         pDC->SelectObject(pOldFont);
-   }
+  if ( pOldFont )
+     pDC->SelectObject(pOldFont);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -166,6 +166,7 @@ bool CEAFReportView::CreateReport(CollectionIndexType rptIdx,bool bPromptForSpec
 
 void CEAFReportView::CreateReportSpecification(CollectionIndexType rptIdx,bool bPromptForSpec)
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    std::vector<std::string> rptNames = GetReportNames();
    std::string rptName;
    if ( rptIdx == INVALID_INDEX )
@@ -248,11 +249,12 @@ HRESULT CEAFReportView::UpdateReportBrowser()
    try
    {
       m_bUpdateInProgress = true;
+      m_bUpdateError = false;
+      m_bNoBrowser = false;
+
       Invalidate();
       UpdateWindow();
 
-      m_bUpdateError = false;
-      m_bNoBrowser = false;
 
       // All the chapter builders get called from here... this is where all the
       // work related to generating the content of the report happens
@@ -262,6 +264,9 @@ HRESULT CEAFReportView::UpdateReportBrowser()
       {
          boost::shared_ptr<CReportBuilder> pBuilder = GetReportBuilder( m_pReportSpec->GetReportName() );
          boost::shared_ptr<rptReport> pReport = pBuilder->CreateReport( m_pReportSpec );
+
+         m_btnEdit.ShowWindow(SW_SHOW);
+
          m_pReportBrowser->UpdateReport( pReport, true );
       }
       else
@@ -312,9 +317,25 @@ void CEAFReportView::OnEdit()
 
 void CEAFReportView::EditReport()
 {
-   m_pReportBrowser->Edit();
-   m_pReportSpec = m_pReportBrowser->GetReportSpecification();
-   UpdateViewTitle();
+   if ( m_pReportBrowser->Edit(false) ) // just edit, don't update... we need to wrap a progress window around the updating
+   {
+      // returning false means the user cancelled the edit
+
+      CComPtr<IBroker> pBroker;
+      EAFGetBroker(&pBroker);
+      GET_IFACE2(pBroker,IProgress,pProgress);
+      CEAFAutoProgress progress(pProgress);
+      pProgress->UpdateMessage("Updating report...");
+
+      m_pReportSpec = m_pReportBrowser->GetReportSpecification();
+
+      boost::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(m_pReportSpec->GetReportName());
+
+      boost::shared_ptr<rptReport> pReport = pRptBuilder->CreateReport( m_pReportSpec );
+      m_pReportBrowser->UpdateReport(pReport,true);
+
+      UpdateViewTitle();
+   }
 }
 
 void CEAFReportView::OnSize(UINT nType, int cx, int cy) 
@@ -355,6 +376,42 @@ void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 
    CView::OnUpdate( pSender, lHint, pHint ); // base class
 
+   if ( lHint == EAF_HINT_UPDATEERROR )
+   {
+      CString* pmsg = (CString*)pHint;
+      m_ErrorMsg = *pmsg;
+      m_bUpdateError = true;
+
+      m_btnEdit.ShowWindow(SW_HIDE);
+      // delete the report browser because what ever it is displaying is totally invalid
+      // also need to elimintate it so that we can draw the error message on the view window itself
+      m_pReportBrowser = boost::shared_ptr<CReportBrowser>();
+
+      Invalidate();
+      UpdateWindow();
+      return;
+   }
+
+   CComPtr<IBroker> pBroker;
+   EAFGetBroker(&pBroker);
+   GET_IFACE2(pBroker,IEAFStatusCenter,pStatusCenter);
+
+   if ( pStatusCenter->GetSeverity() == eafTypes::statusError )
+   {
+      m_bUpdateError = true;
+      m_ErrorMsg = "Errors exist that prevent analysis. Review the errors posted in the status center for more information";
+
+      m_btnEdit.ShowWindow(SW_HIDE);
+      // delete the report browser because what ever it is displaying is totally invalid
+      // also need to elimintate it so that we can draw the error message on the view window itself
+      m_pReportBrowser = boost::shared_ptr<CReportBrowser>();
+
+      Invalidate();
+      UpdateWindow();
+
+      return;
+   }
+
    // Something has changed to invalidate the report
    m_bInvalidReport = true;
 
@@ -384,6 +441,8 @@ void CEAFReportView::UpdateNow()
          {
             m_bInvalidReport = false;
          }
+
+
       }
       catch(...)
       {
@@ -397,6 +456,19 @@ void CEAFReportView::UpdateNow()
 
 void CEAFReportView::OnInitialUpdate() 
 {
+   CComPtr<IBroker> pBroker;
+   EAFGetBroker(&pBroker);
+   GET_IFACE2(pBroker,IEAFStatusCenter,pStatusCenter);
+
+   if ( pStatusCenter->GetSeverity() == eafTypes::statusError )
+   {
+      m_bUpdateError = true;
+      m_ErrorMsg = "Errors exist that prevent analysis. Review the errors posted in the status center for more information";
+      Invalidate();
+      UpdateWindow();
+      return;
+   }
+
    m_bIsNewReport = true;
 
    try

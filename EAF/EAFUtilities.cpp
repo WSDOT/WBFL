@@ -26,10 +26,13 @@
 #include <EAF\EAFMainFrame.h>
 #include <EAF\EAFBrokerDocument.h>
 
+#include "ManagePluginsDlg.h"
+
 // Global function for getting the broker from the current document
 HRESULT EAFGetBroker(IBroker** ppBroker)
 {
    // let's try it the easy way first
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CWnd* pWnd = AfxGetMainWnd();
    ASSERT_KINDOF(CEAFMainFrame,pWnd);
    CEAFMainFrame* pFrame = (CEAFMainFrame*)pWnd;
@@ -72,4 +75,10 @@ HRESULT EAFGetBroker(IBroker** ppBroker)
    }
 
    return E_FAIL;
+}
+
+void EAFManagePlugins(const CATID& catid,CWnd* pParent)
+{
+   CManagePluginsDlg dlg(catid,pParent);
+   dlg.DoModal(); // this DoModal is correct... dialog takes care of its own data
 }

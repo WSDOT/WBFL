@@ -28,7 +28,7 @@
 
 /*****************************************************************************
 INTERFACE
-   ITransactions
+   IEAFTransactions
 
    Interface for executing transaction objects
 
@@ -38,9 +38,9 @@ DESCRIPTION
 
 *****************************************************************************/
 // {3FA1C988-FC39-4a3d-A0E9-F4EC48871AC1}
-DEFINE_GUID(IID_ITransactions, 
+DEFINE_GUID(IID_IEAFTransactions, 
 0x3fa1c988, 0xfc39, 0x4a3d, 0xa0, 0xe9, 0xf4, 0xec, 0x48, 0x87, 0x1a, 0xc1);
-interface ITransactions : IUnknown
+interface IEAFTransactions : IUnknown
 {
    virtual void Execute(txnTransaction& rTxn) = 0;
    virtual void Execute(txnTransaction* pTxn) = 0;

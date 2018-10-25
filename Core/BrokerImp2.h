@@ -56,7 +56,7 @@ class ATL_NO_VTABLE CBrokerImp2 :
 	public CComCoClass<CBrokerImp2, &CLSID_Broker2>,
    public IBroker,
    public IBrokerInitEx3,
-   public IBrokerPersist
+   public IBrokerPersist2
 {
 public:
    CBrokerImp2() :
@@ -64,6 +64,7 @@ public:
 	{
       m_DelayInit = false;
       m_bAgentsInitialized = false;
+      m_bSaveMissingAgentData = VARIANT_TRUE;
 	}
 
    HRESULT FinalConstruct();
@@ -79,6 +80,7 @@ BEGIN_COM_MAP(CBrokerImp2)
 	COM_INTERFACE_ENTRY(IBrokerInitEx2)
 	COM_INTERFACE_ENTRY(IBrokerInitEx3)
 	COM_INTERFACE_ENTRY(IBrokerPersist)
+	COM_INTERFACE_ENTRY(IBrokerPersist2)
 END_COM_MAP()
 
 // IBroker
@@ -97,10 +99,12 @@ public:
 	STDMETHOD(InitAgents)();
    STDMETHOD(IntegrateWithUI)(BOOL bIntegrate);
 
-// IBrokerPersist
+// IBrokerPersist2
 public:
 	STDMETHOD(Load)(/*[in]*/ IStructuredLoad* pStrLoad);
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave* pStrSave);
+   STDMETHOD(SetSaveMissingAgentDataFlag)(/*[in]*/VARIANT_BOOL bSetFlag);
+   STDMETHOD(GetSaveMissingAgentDataFlag)(/*[out]*/VARIANT_BOOL* bFlag);
 
 private:
    typedef std::set<InterfaceItem> Interfaces;
@@ -114,9 +118,10 @@ private:
    bool m_DelayInit;
    bool m_bAgentsInitialized; // true if the agents where initialized
 
-   std::vector<std::string> m_RawUnitData; // holds the entire unit data block
-                                           // for agent data that is in the file, but
-                                           // the agent can't be created
+   VARIANT_BOOL m_bSaveMissingAgentData;
+   std::vector<std::string> m_MissingAgentData; // holds the entire unit data block
+                                                // for agent data that is in the file, but
+                                                // the agent can't be created
 
    // loads agents using the file format for Class Broker
    HRESULT LoadOldFormat(IStructuredLoad* strLoad);

@@ -189,7 +189,7 @@ void CReportBrowser::Print(bool bPrompt)
    }
 }
 
-void CReportBrowser::Edit()
+bool CReportBrowser::Edit(bool bUpdate)
 {
    boost::shared_ptr<CReportBuilder> pRptBuilder = m_pRptMgr->GetReportBuilder(m_pRptSpec->GetReportName());
    CReportDescription rptDesc = pRptBuilder->GetReportDescription();
@@ -199,12 +199,17 @@ void CReportBrowser::Edit()
    
    // user cancelled.
    if( pReportSpec == NULL )
-      return;
+      return false;
 
    m_pRptSpec = pReportSpec;
-   boost::shared_ptr<rptReport> pReport = pRptBuilder->CreateReport( m_pRptSpec );
 
-   UpdateReport(pReport,true);
+   if ( bUpdate )
+   {
+      boost::shared_ptr<rptReport> pReport = pRptBuilder->CreateReport( m_pRptSpec );
+      UpdateReport(pReport,true);
+   }
+
+   return true;
 }
 
 void CReportBrowser::Find()
@@ -263,7 +268,6 @@ void CReportBrowser::NavigateAnchor(long id)
    anc.Format("%s#_%d",filename.c_str(),id);
    m_pWebBrowser->Navigate(anc,0,0,0,0);
 }
-
 
 void CReportBrowser::MakeFilename()
 {

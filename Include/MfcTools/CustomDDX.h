@@ -406,7 +406,7 @@ void DDX_OffsetAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, Float64& data,
 }
 
 template <class T,class U>
-void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, T& value, T limit, const U& umIndirectMeasure, const char* message="Please enter a number that is greater than %f %s" )
+void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, int nIDC, T& value, T limit, const U& umIndirectMeasure, const char* message="Please enter a number that is greater than %f %s" )
 {
 	if (!pDX->m_bSaveAndValidate)
 	{
@@ -415,6 +415,7 @@ void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, T& value, T limit, const 
 
    if( !(limit < value) )
    {
+      pDX->PrepareEditCtrl(nIDC);
       CString msg;
       msg.Format(message, 
                  ::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure ), 
@@ -426,7 +427,7 @@ void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, T& value, T limit, const 
 }
 
 template <class T,class U>
-void DDV_UnitValueLimitOrMore(CDataExchange* pDX, T& value, T limit, const U& umIndirectMeasure, const char* message="Please enter a number that is at least %f %s" )
+void DDV_UnitValueLimitOrMore(CDataExchange* pDX, int nIDC, T& value, T limit, const U& umIndirectMeasure, const char* message="Please enter a number that is at least %f %s" )
 {
 	if (!pDX->m_bSaveAndValidate)
 	{
@@ -435,6 +436,7 @@ void DDV_UnitValueLimitOrMore(CDataExchange* pDX, T& value, T limit, const U& um
 
    if( !IsEqual(value,limit) && value < limit )
    {
+      pDX->PrepareEditCtrl(nIDC);
       CString msg;
       msg.Format(message, 
                  ::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure ), 
@@ -446,7 +448,7 @@ void DDV_UnitValueLimitOrMore(CDataExchange* pDX, T& value, T limit, const U& um
 }
 
 template <class T,class U>
-void DDV_UnitValueLessThanLimit(CDataExchange* pDX, T& value, T limit, const U& umIndirectMeasure, const char* message="Please enter a number that is less than %f %s" )
+void DDV_UnitValueLessThanLimit(CDataExchange* pDX, int nIDC, T& value, T limit, const U& umIndirectMeasure, const char* message="Please enter a number that is less than %f %s" )
 {
 	if (!pDX->m_bSaveAndValidate)
 	{
@@ -456,6 +458,7 @@ void DDV_UnitValueLessThanLimit(CDataExchange* pDX, T& value, T limit, const U& 
 
    if( !(value < limit) )
    {
+      pDX->PrepareEditCtrl(nIDC);
       CString msg;
       msg.Format(message, 
                  ::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure  ), 
@@ -468,7 +471,7 @@ void DDV_UnitValueLessThanLimit(CDataExchange* pDX, T& value, T limit, const U& 
 
 
 template <class T,class U>
-void DDV_UnitValueLimitOrLess(CDataExchange* pDX, T& value, T limit, const U& umIndirectMeasure, const char* message="Please enter a number that is not more than %f %s")
+void DDV_UnitValueLimitOrLess(CDataExchange* pDX, int nIDC, T& value, T limit, const U& umIndirectMeasure, const char* message="Please enter a number that is not more than %f %s")
 {
 	if (!pDX->m_bSaveAndValidate)
 	{
@@ -478,6 +481,7 @@ void DDV_UnitValueLimitOrLess(CDataExchange* pDX, T& value, T limit, const U& um
 
    if( !IsEqual(limit,value) && limit < value )
    {
+      pDX->PrepareEditCtrl(nIDC);
       CString msg;
       msg.Format(message, 
                  ::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure ), 
@@ -490,35 +494,35 @@ void DDV_UnitValueLimitOrLess(CDataExchange* pDX, T& value, T limit, const U& um
 
 
 template <class T,class U>
-void DDV_UnitValueGreaterThanZero(CDataExchange* pDX, T& value, const U& umIndirectMeasure )
+void DDV_UnitValueGreaterThanZero(CDataExchange* pDX, int nIDC, T& value, const U& umIndirectMeasure )
 {
    T zero = 0;
-   DDV_UnitValueGreaterThanLimit( pDX, value, zero, umIndirectMeasure );
+   DDV_UnitValueGreaterThanLimit( pDX, nIDC, value, zero, umIndirectMeasure );
 }
 
 template <class T,class U>
-void DDV_UnitValueLessThanZero(CDataExchange* pDX, T& value, const U& umIndirectMeasure )
+void DDV_UnitValueLessThanZero(CDataExchange* pDX, int nIDC, T& value, const U& umIndirectMeasure )
 {
    T zero = 0;
-   DDV_UnitValueLessThanLimit( pDX, value, zero, umIndirectMeasure );
+   DDV_UnitValueLessThanLimit( pDX, nIDC, value, zero, umIndirectMeasure );
 }
 
 template <class T,class U>
-void DDV_UnitValueZeroOrMore(CDataExchange* pDX, T& value, const U& umIndirectMeasure )
+void DDV_UnitValueZeroOrMore(CDataExchange* pDX, int nIDC, T& value, const U& umIndirectMeasure )
 {
    T zero = 0;
-   DDV_UnitValueLimitOrMore( pDX, value, zero, umIndirectMeasure );
+   DDV_UnitValueLimitOrMore( pDX, nIDC, value, zero, umIndirectMeasure );
 }
 
 template <class T,class U>
-void DDV_UnitValueZeroOrLess(CDataExchange* pDX, T& value, const U& umIndirectMeasure )
+void DDV_UnitValueZeroOrLess(CDataExchange* pDX, int nIDC, T& value, const U& umIndirectMeasure )
 {
    T zero = 0;
-   DDV_UnitValueLimitOrLess( pDX, value, zero, umIndirectMeasure );
+   DDV_UnitValueLimitOrLess( pDX, nIDC, value, zero, umIndirectMeasure );
 }
 
 template <class T,class U>
-void DDV_UnitValueRange(CDataExchange* pDX, T& value, T min, T max, const U& umIndirectMeasure )
+void DDV_UnitValueRange(CDataExchange* pDX, int nIDC, T& value, T min, T max, const U& umIndirectMeasure )
 {
 	if (!pDX->m_bSaveAndValidate)
 	{
@@ -527,6 +531,7 @@ void DDV_UnitValueRange(CDataExchange* pDX, T& value, T min, T max, const U& umI
 
    if(  value < min || max < value )
    {
+      pDX->PrepareEditCtrl(nIDC);
       CString msg;
       msg.Format("Please enter a number in the range %f to %f %s", 
                  ::ConvertFromSysUnits( min, umIndirectMeasure.UnitOfMeasure ), 

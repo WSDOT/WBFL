@@ -153,6 +153,7 @@ int CEAFStatusBar::GetStatusPaneIndex()
 
 CEAFDocument* CEAFStatusBar::GetDocument()
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CWnd* pMainWnd = AfxGetMainWnd();
    if ( pMainWnd->IsKindOf(RUNTIME_CLASS(CFrameWnd)) )
    {

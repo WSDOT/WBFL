@@ -27,13 +27,18 @@
 #include "stdafx.h"
 
 #include "resource.h"
-#include <EAF\EAFResources.h>
 #include <EAF\EAFApp.h>
 #include <EAF\EAFMainFrame.h>
 #include <EAF\EAFDocManager.h>
 #include <EAF\EAFPluginManager.h>
 #include <EAF\EAFSplashScreen.h>
+#include <EAF\EAFBrokerDocument.h>
+#include <EAF\EAFProjectLog.h>
+#include <AgentTools.h>
 #include <System\ComCatMgr.h>
+
+
+#include <MFCTools\Exceptions.h>
 
 #include <EAF\EAFAboutDlg.h>
 #include "UnitsDlg.h"
@@ -47,93 +52,14 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+// Error handling helpers
+void save_doc(CDocument* pDoc,void* pStuff);
+void notify_error(CDocument* pDoc,void* pStuff);
+void log_error(CDocument* pDoc,void* pStuff);
 
-unitmgtIndirectMeasure init_si_units()
-{
-   unitmgtIndirectMeasure im;
-   im.Name = "SI";
-   
-   im.StationFormat = unitStationFormats::SI;
-
-   im.Scalar.Width = 8;
-   im.Scalar.Precision = 3;
-   im.Scalar.Format = sysNumericFormatTool::Fixed;
-
-   im.ComponentDim.Update(    unitMeasure::Millimeter,                0.001, 8, 0, sysNumericFormatTool::Fixed );
-   im.XSectionDim.Update(     unitMeasure::Meter,                     0.001, 7, 3, sysNumericFormatTool::Fixed );
-   im.SpanLength.Update(      unitMeasure::Meter,                     0.001, 9, 3, sysNumericFormatTool::Fixed );
-   im.AlignmentLength.Update( unitMeasure::Meter,                     0.001,16, 3, sysNumericFormatTool::Fixed );
-   im.Displacement.Update(    unitMeasure::Millimeter,                0.001, 8, 1, sysNumericFormatTool::Fixed );
-   im.Area.Update(            unitMeasure::Millimeter2,               0.001, 8, 0, sysNumericFormatTool::Fixed );
-   im.MomentOfInertia.Update( unitMeasure::Millimeter4,               0.001, 7, 0, sysNumericFormatTool::Engineering );
-   im.SectModulus.Update(     unitMeasure::Millimeter3,               0.001, 7, 0, sysNumericFormatTool::Engineering );
-   im.AvOverS.Update(         unitMeasure::Millimeter2PerMeter,      1.0e-6, 9, 3, sysNumericFormatTool::Fixed );
-   im.Stress.Update(          unitMeasure::MPa,                       0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.ModE.Update(            unitMeasure::MPa,                       0.001,12, 0, sysNumericFormatTool::Fixed );
-   im.GeneralForce.Update(    unitMeasure::Kilonewton,                0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.Tonnage.Update(         unitMeasure::Kilonewton,                0.001, 9, 0, sysNumericFormatTool::Fixed );
-   im.Shear.Update(           unitMeasure::Kilonewton,                0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.Moment.Update(          unitMeasure::KilonewtonMeter,           0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.SmallMoment.Update(     unitMeasure::NewtonMillimeter,          0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.Angle.Update(           unitMeasure::Degree,                    0.001, 7, 2, sysNumericFormatTool::Fixed );
-   im.RadAngle.Update(        unitMeasure::Radian,                   1.0e-5, 9, 3, sysNumericFormatTool::Fixed );
-   im.Density.Update(         unitMeasure::KgPerMeter3,               0.001, 6, 0, sysNumericFormatTool::Fixed );
-   im.MassPerLength.Update(   unitMeasure::KgPerMeter,                0.001, 5, 0, sysNumericFormatTool::Fixed );
-   im.ForcePerLength.Update(  unitMeasure::KilonewtonPerMeter,        0.001, 8, 2, sysNumericFormatTool::Fixed );
-   im.MomentPerAngle.Update(  unitMeasure::KiloNewtonMeterPerRadian,  0.001, 8, 2, sysNumericFormatTool::Fixed );
-   im.Time.Update(            unitMeasure::Hour,                      0.001, 5, 0, sysNumericFormatTool::Fixed );
-   im.Time2.Update(           unitMeasure::Day,                       0.001, 7, 0, sysNumericFormatTool::Fixed );
-   im.ForceLength2.Update(    unitMeasure::KilonewtonMeter2,          0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.SqrtPressure.Update(    unitMeasure::SqrtMPa,                   0.001, 9, 4, sysNumericFormatTool::Fixed );
-   im.PerLength.Update( unitMeasure::PerMillimeter, 1.0e-7, 9, 3, sysNumericFormatTool::Scientific);
-   im.SmallStress.Update(          unitMeasure::Pa,                       0.001, 9, 2, sysNumericFormatTool::Fixed );
-
-   return im;
-}
-
-unitmgtIndirectMeasure init_english_units()
-{
-   unitmgtIndirectMeasure im;
-
-   im.Name = "English";
-
-   im.StationFormat = unitStationFormats::US;
-
-   im.Scalar.Width = 8;
-   im.Scalar.Precision = 3;
-   im.Scalar.Format = sysNumericFormatTool::Fixed;
-
-   im.ComponentDim.Update(    unitMeasure::Inch,            0.001, 9, 3, sysNumericFormatTool::Fixed );
-   im.XSectionDim.Update(     unitMeasure::Feet,            0.001, 9, 3, sysNumericFormatTool::Fixed );
-   im.SpanLength.Update(      unitMeasure::Feet,            0.001, 9, 3, sysNumericFormatTool::Fixed );
-   im.AlignmentLength.Update( unitMeasure::Feet,            0.001,16, 4, sysNumericFormatTool::Fixed );
-   im.Displacement.Update(    unitMeasure::Inch,            0.001, 8, 3, sysNumericFormatTool::Fixed );
-   im.Area.Update(            unitMeasure::Inch2,           0.001,10, 3, sysNumericFormatTool::Fixed );
-   im.MomentOfInertia.Update( unitMeasure::Inch4,           0.001,12, 1, sysNumericFormatTool::Fixed );
-   im.SectModulus.Update(     unitMeasure::Inch3,           0.001,12, 1, sysNumericFormatTool::Fixed );
-   im.Stress.Update(          unitMeasure::KSI,             0.001, 8, 3, sysNumericFormatTool::Fixed );
-   im.AvOverS.Update(         unitMeasure::Inch2PerFoot,   1.0e-7, 9, 3, sysNumericFormatTool::Fixed );
-   im.ModE.Update(            unitMeasure::KSI,             0.001,14, 0, sysNumericFormatTool::Fixed );
-   im.GeneralForce.Update(    unitMeasure::Kip,             0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.Tonnage.Update(         unitMeasure::Ton,             0.001, 9, 0, sysNumericFormatTool::Fixed );
-   im.Shear.Update(           unitMeasure::Kip,             0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.Moment.Update(          unitMeasure::KipFeet,         0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.SmallMoment.Update(     unitMeasure::KipInch,         0.001, 9, 0, sysNumericFormatTool::Fixed );
-   im.Angle.Update(           unitMeasure::Degree,          0.001, 7, 2, sysNumericFormatTool::Fixed );
-   im.RadAngle.Update(        unitMeasure::Radian,         1.0e-5, 9, 3, sysNumericFormatTool::Fixed );
-   im.Density.Update(         unitMeasure::LbfPerFeet3,     0.001, 6, 0, sysNumericFormatTool::Fixed );
-   im.MassPerLength.Update(   unitMeasure::LbfPerFeet,      0.001, 5, 0, sysNumericFormatTool::Fixed );
-   im.ForcePerLength.Update(  unitMeasure::KipPerFoot,      0.001, 9, 3, sysNumericFormatTool::Fixed );
-   im.MomentPerAngle.Update(  unitMeasure::KipInchPerRadian,0.001,10, 2, sysNumericFormatTool::Fixed );
-   im.Time.Update(            unitMeasure::Hour,            0.001, 5, 0, sysNumericFormatTool::Fixed );
-   im.Time2.Update(           unitMeasure::Day,             0.001, 7, 0, sysNumericFormatTool::Fixed );
-   im.ForceLength2.Update(    unitMeasure::KipInch2,        0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.SqrtPressure.Update(    unitMeasure::SqrtKSI,         0.001, 9, 4, sysNumericFormatTool::Fixed );
-   im.PerLength.Update( unitMeasure::PerFeet, 1.0e-5, 9, 4, sysNumericFormatTool::Fixed);
-   im.SmallStress.Update(          unitMeasure::PSF,             0.001, 8, 3, sysNumericFormatTool::Fixed );
-
-   return im;
-}
+// Unit configuration helps
+unitmgtIndirectMeasure init_si_units();
+unitmgtIndirectMeasure init_english_units();
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFApp
@@ -189,6 +115,7 @@ BOOL CEAFApp::InitInstance()
    // more initialization before we can do any work
    m_PluginManager.SetParent(this);
    m_ComponentInfoManager.SetParent(this);
+   m_ComponentInfoManager.SetCATID(GetComponentInfoCategoryID());
    m_pDocManager = CreateDocumentManager();
    m_pDocTemplateRegistrar = CreateDocTemplateRegistrar();
 
@@ -254,11 +181,15 @@ BOOL CEAFApp::InitInstance()
 		return TRUE;
 	}
 
+   // Give app plugins an opporunity to integrate with the UI
+   if ( !AppPluginUIIntegration(true) )
+      return FALSE;
+
 	// The main window has been initialized, so show and update it.
 	m_pMainWnd->ShowWindow(m_nCmdShow);
 	m_pMainWnd->UpdateWindow();
 
-   if ( IsTipOfTheDayEnabled() && m_CommandLineInfo.m_bShowSplash )
+   if ( IsTipOfTheDayEnabled() && cmdInfo.m_bShowSplash )
       ShowTipOfTheDay();
 
 	return TRUE;
@@ -281,6 +212,7 @@ int CEAFApp::ExitInstance()
    m_pDocManager = NULL;
    
    m_PluginManager.UnloadPlugins();
+   m_PluginCommandMgr.Clear();
    m_ComponentInfoManager.UnloadPlugins();
 
    if ( m_pDocTemplateRegistrar )
@@ -384,12 +316,14 @@ bool CEAFApp::IsTipOfTheDayEnabled()
 
 void CEAFApp::ShowTipOfTheDay(void)
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
 	CTipDlg dlg(m_TipFilePath,AfxGetMainWnd());
 	dlg.DoModal();
 }
 
 BOOL CEAFApp::IsDocLoaded()
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
    CEAFDocument* pDoc = pMainFrame->GetDocument();
    return (pDoc == NULL ? FALSE : TRUE);
@@ -399,7 +333,7 @@ BEGIN_MESSAGE_MAP(CEAFApp, CWinApp)
 	//{{AFX_MSG_MAP(CEAFApp)
 		// NOTE - the ClassWizard will add and remove mapping macros here.
 	//}}AFX_MSG_MAP
-	ON_COMMAND(CG_IDS_TIPOFTHEDAY, ShowTipOfTheDay)
+	ON_COMMAND(ID_TIPOFTHEDAY, ShowTipOfTheDay)
 	ON_COMMAND(ID_APP_LEGAL, OnAppLegal)
 
 	// Standard file based document commands
@@ -422,7 +356,7 @@ END_MESSAGE_MAP()
 // CEAFApp message handlers
 BOOL CEAFApp::RegisterDocTemplates()
 {
-   if ( !m_ComponentInfoManager.LoadPlugins(GetComponentInfoCategoryID()) )
+   if ( !m_ComponentInfoManager.LoadPlugins() )
       return FALSE;
 
    if ( !m_ComponentInfoManager.InitPlugins() )
@@ -437,6 +371,12 @@ BOOL CEAFApp::RegisterDocTemplates()
    if ( !m_PluginManager.RegisterDocTemplates(this) )
       return FALSE;
 
+   return TRUE;
+}
+
+BOOL CEAFApp::AppPluginUIIntegration(BOOL bIntegrate)
+{
+   m_PluginManager.IntegrateWithUI(bIntegrate);
    return TRUE;
 }
 
@@ -557,6 +497,67 @@ CDocument* CEAFApp::OpenDocumentFile(LPCTSTR lpszFileName)
    return pDoc;
 }
 
+LRESULT CEAFApp::ProcessWndProcException(CException* e, const MSG* pMsg) 
+{
+   LRESULT lResult = 0L;
+
+	if ( e->IsKindOf(RUNTIME_CLASS(CXShutDown) ) )
+   {
+      CXShutDown* pXShutDown = (CXShutDown*)e;
+      std::string error_msg;
+      pXShutDown->GetErrorMessage( &error_msg );
+
+      CString msg1;
+      AfxFormatString1( msg1, IDS_E_PROBPERSISTS, "log" ); 
+      CString msg2;
+      AfxFormatString2( msg2, pXShutDown->AttemptSave() ? IDS_FATAL_MSG_SAVE : IDS_FATAL_MSG_NOSAVE, error_msg.c_str(), msg1 );
+      int retval = AfxMessageBox( msg2, (pXShutDown->AttemptSave() ? MB_YESNO : MB_OK) | MB_ICONEXCLAMATION );
+      ForEachDoc(log_error,(void*)pXShutDown);
+      if ( retval == IDYES )
+      {
+         ForEachDoc( save_doc, NULL );
+      }
+
+      lResult = 1L;
+      AfxPostQuitMessage( 0 );
+   }
+   else if ( e->IsKindOf(RUNTIME_CLASS(CXUnwind) ) )
+   {
+      CXUnwind* pXUnwind = (CXUnwind*)e;
+      std::string error_msg;
+      pXUnwind->GetErrorMessage( &error_msg );
+      m_LastError = error_msg.c_str();
+      AfxMessageBox( error_msg.c_str(),  MB_OK | MB_ICONWARNING );
+
+
+      ForEachDoc( notify_error, (void*)&m_LastError );
+      lResult = 1L;
+   }
+   else
+   {
+      lResult = CWinApp::ProcessWndProcException(e, pMsg);
+   }
+
+	return lResult;
+}
+
+void CEAFApp::ForEachDoc(DocCallback pfn,void* pStuff)
+{
+   CWinApp* pApp = AfxGetApp();
+   POSITION tplpos = pApp->GetFirstDocTemplatePosition();
+   while ( tplpos != NULL )
+   {
+      CDocTemplate* pTpl = pApp->GetNextDocTemplate( tplpos );
+
+      POSITION docpos = pTpl->GetFirstDocPosition();
+      while ( docpos != NULL )
+      {
+         CDocument* pDoc = pTpl->GetNextDoc( docpos );
+         (*pfn)(pDoc,pStuff);
+      }
+   }
+}
+
 BOOL CEAFApp::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo) 
 {
    BOOL bResult = CWinApp::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
@@ -564,8 +565,15 @@ BOOL CEAFApp::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pH
    if ( bResult )
       return bResult; // message was handled
 
-   if ( m_PluginManager.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo) )
-      return TRUE; // message was handled
+   CComPtr<IEAFCommandCallback> pCallback;
+   UINT nPluginCmdID;
+   if ( m_PluginCommandMgr.GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
+   {
+      // process the callback command
+      bResult = pCallback->OnCommandMessage(nPluginCmdID,nCode,pExtra,pHandlerInfo);
+      if ( bResult )
+         return bResult;
+   }
 
    return FALSE; // message was NOT handled, continue routing
 }
@@ -578,6 +586,11 @@ CEAFDocTemplateRegistrar* CEAFApp::GetDocTemplateRegistrar()
 CEAFAppPluginManager* CEAFApp::GetAppPluginManager()
 {
    return &m_PluginManager;
+}
+
+CEAFPluginCommandManager* CEAFApp::GetPluginCommandManager()
+{
+   return &m_PluginCommandMgr;
 }
 
 CEAFComponentInfoManager* CEAFApp::GetComponentInfoManager()
@@ -642,6 +655,14 @@ void CEAFApp::Fire_UnitsChanged()
       iUnitModeListener* pListener = *iter;
       pListener->OnUnitsModeChanged(m_Units);
    }
+}
+
+void CEAFApp::OnMainFrameClosing()
+{
+   // tell plug-ins to get out of the UI
+   m_PluginManager.IntegrateWithUI(FALSE);
+   
+   m_PluginCommandMgr.Clear(); // make sure all the plugin commands are cleared
 }
 
 void CEAFApp::OnAppAbout()
@@ -925,8 +946,135 @@ BOOL CEAFPluginApp::CreateApplicationPlugins()
 {
    // Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views.
-   if ( !GetAppPluginManager()->LoadPlugins(GetAppPluginCategoryID()) )
+   GetAppPluginManager()->SetCATID(GetAppPluginCategoryID());
+   if ( !GetAppPluginManager()->LoadPlugins() )
       return FALSE;
 
    return TRUE;
+}
+
+void save_doc(CDocument* pDoc,void* pStuff)
+{
+   if ( pDoc->IsModified() )
+         pDoc->DoFileSave();
+}
+
+void notify_error(CDocument* pDoc,void* pStuff)
+{
+   if ( pDoc->IsKindOf(RUNTIME_CLASS(CEAFDocument)) )
+   {
+      CEAFDocument* pEAFDoc = (CEAFDocument*)pDoc;
+      pEAFDoc->OnUpdateError(*((CString*)pStuff));
+   }
+}
+
+void log_error(CDocument* pDoc,void* pStuff)
+{
+   CXShutDown* pXShutDown = (CXShutDown*)pStuff;
+   if ( pDoc->IsKindOf(RUNTIME_CLASS(CEAFBrokerDocument)) )
+   {
+      CEAFBrokerDocument* pBrokerDoc = (CEAFBrokerDocument*)pDoc;
+
+      CComPtr<IBroker> pBroker;
+      pBrokerDoc->GetBroker(&pBroker);
+
+      GET_IFACE2(pBroker,IEAFProjectLog,pLog);
+
+      std::string error_message;
+      pXShutDown->GetErrorMessage( &error_message );
+
+      CString msg;
+      msg.Format("%s\nFile : %s\nLine : %d\n", error_message.c_str(), pXShutDown->GetFile().c_str(), pXShutDown->GetLine() );
+
+      pLog->LogMessage( msg );
+   }
+}
+
+
+
+unitmgtIndirectMeasure init_si_units()
+{
+   unitmgtIndirectMeasure im;
+   im.Name = "SI";
+   
+   im.StationFormat = unitStationFormats::SI;
+
+   im.Scalar.Width = 8;
+   im.Scalar.Precision = 3;
+   im.Scalar.Format = sysNumericFormatTool::Fixed;
+
+   im.ComponentDim.Update(    unitMeasure::Millimeter,                0.001, 8, 0, sysNumericFormatTool::Fixed );
+   im.XSectionDim.Update(     unitMeasure::Meter,                     0.001, 7, 3, sysNumericFormatTool::Fixed );
+   im.SpanLength.Update(      unitMeasure::Meter,                     0.001, 9, 3, sysNumericFormatTool::Fixed );
+   im.AlignmentLength.Update( unitMeasure::Meter,                     0.001,16, 3, sysNumericFormatTool::Fixed );
+   im.Displacement.Update(    unitMeasure::Millimeter,                0.001, 8, 1, sysNumericFormatTool::Fixed );
+   im.Area.Update(            unitMeasure::Millimeter2,               0.001, 8, 0, sysNumericFormatTool::Fixed );
+   im.MomentOfInertia.Update( unitMeasure::Millimeter4,               0.001, 7, 0, sysNumericFormatTool::Engineering );
+   im.SectModulus.Update(     unitMeasure::Millimeter3,               0.001, 7, 0, sysNumericFormatTool::Engineering );
+   im.AvOverS.Update(         unitMeasure::Millimeter2PerMeter,      1.0e-6, 9, 3, sysNumericFormatTool::Fixed );
+   im.Stress.Update(          unitMeasure::MPa,                       0.001, 9, 2, sysNumericFormatTool::Fixed );
+   im.ModE.Update(            unitMeasure::MPa,                       0.001,12, 0, sysNumericFormatTool::Fixed );
+   im.GeneralForce.Update(    unitMeasure::Kilonewton,                0.001, 9, 2, sysNumericFormatTool::Fixed );
+   im.Tonnage.Update(         unitMeasure::Kilonewton,                0.001, 9, 0, sysNumericFormatTool::Fixed );
+   im.Shear.Update(           unitMeasure::Kilonewton,                0.001, 9, 2, sysNumericFormatTool::Fixed );
+   im.Moment.Update(          unitMeasure::KilonewtonMeter,           0.001, 9, 2, sysNumericFormatTool::Fixed );
+   im.SmallMoment.Update(     unitMeasure::NewtonMillimeter,          0.001, 9, 2, sysNumericFormatTool::Fixed );
+   im.Angle.Update(           unitMeasure::Degree,                    0.001, 7, 2, sysNumericFormatTool::Fixed );
+   im.RadAngle.Update(        unitMeasure::Radian,                   1.0e-5, 9, 3, sysNumericFormatTool::Fixed );
+   im.Density.Update(         unitMeasure::KgPerMeter3,               0.001, 6, 0, sysNumericFormatTool::Fixed );
+   im.MassPerLength.Update(   unitMeasure::KgPerMeter,                0.001, 5, 0, sysNumericFormatTool::Fixed );
+   im.ForcePerLength.Update(  unitMeasure::KilonewtonPerMeter,        0.001, 8, 2, sysNumericFormatTool::Fixed );
+   im.MomentPerAngle.Update(  unitMeasure::KiloNewtonMeterPerRadian,  0.001, 8, 2, sysNumericFormatTool::Fixed );
+   im.Time.Update(            unitMeasure::Hour,                      0.001, 5, 0, sysNumericFormatTool::Fixed );
+   im.Time2.Update(           unitMeasure::Day,                       0.001, 7, 0, sysNumericFormatTool::Fixed );
+   im.ForceLength2.Update(    unitMeasure::KilonewtonMeter2,          0.001, 9, 2, sysNumericFormatTool::Fixed );
+   im.SqrtPressure.Update(    unitMeasure::SqrtMPa,                   0.001, 9, 4, sysNumericFormatTool::Fixed );
+   im.PerLength.Update( unitMeasure::PerMillimeter, 1.0e-7, 9, 3, sysNumericFormatTool::Scientific);
+   im.SmallStress.Update(          unitMeasure::Pa,                       0.001, 9, 2, sysNumericFormatTool::Fixed );
+
+   return im;
+}
+
+unitmgtIndirectMeasure init_english_units()
+{
+   unitmgtIndirectMeasure im;
+
+   im.Name = "English";
+
+   im.StationFormat = unitStationFormats::US;
+
+   im.Scalar.Width = 8;
+   im.Scalar.Precision = 3;
+   im.Scalar.Format = sysNumericFormatTool::Fixed;
+
+   im.ComponentDim.Update(    unitMeasure::Inch,            0.001, 9, 3, sysNumericFormatTool::Fixed );
+   im.XSectionDim.Update(     unitMeasure::Feet,            0.001, 9, 3, sysNumericFormatTool::Fixed );
+   im.SpanLength.Update(      unitMeasure::Feet,            0.001, 9, 3, sysNumericFormatTool::Fixed );
+   im.AlignmentLength.Update( unitMeasure::Feet,            0.001,16, 4, sysNumericFormatTool::Fixed );
+   im.Displacement.Update(    unitMeasure::Inch,            0.001, 8, 3, sysNumericFormatTool::Fixed );
+   im.Area.Update(            unitMeasure::Inch2,           0.001,10, 3, sysNumericFormatTool::Fixed );
+   im.MomentOfInertia.Update( unitMeasure::Inch4,           0.001,12, 1, sysNumericFormatTool::Fixed );
+   im.SectModulus.Update(     unitMeasure::Inch3,           0.001,12, 1, sysNumericFormatTool::Fixed );
+   im.Stress.Update(          unitMeasure::KSI,             0.001, 8, 3, sysNumericFormatTool::Fixed );
+   im.AvOverS.Update(         unitMeasure::Inch2PerFoot,   1.0e-7, 9, 3, sysNumericFormatTool::Fixed );
+   im.ModE.Update(            unitMeasure::KSI,             0.001,14, 0, sysNumericFormatTool::Fixed );
+   im.GeneralForce.Update(    unitMeasure::Kip,             0.001, 9, 2, sysNumericFormatTool::Fixed );
+   im.Tonnage.Update(         unitMeasure::Ton,             0.001, 9, 0, sysNumericFormatTool::Fixed );
+   im.Shear.Update(           unitMeasure::Kip,             0.001, 9, 2, sysNumericFormatTool::Fixed );
+   im.Moment.Update(          unitMeasure::KipFeet,         0.001, 9, 2, sysNumericFormatTool::Fixed );
+   im.SmallMoment.Update(     unitMeasure::KipInch,         0.001, 9, 0, sysNumericFormatTool::Fixed );
+   im.Angle.Update(           unitMeasure::Degree,          0.001, 7, 2, sysNumericFormatTool::Fixed );
+   im.RadAngle.Update(        unitMeasure::Radian,         1.0e-5, 9, 3, sysNumericFormatTool::Fixed );
+   im.Density.Update(         unitMeasure::LbfPerFeet3,     0.001, 6, 0, sysNumericFormatTool::Fixed );
+   im.MassPerLength.Update(   unitMeasure::LbfPerFeet,      0.001, 5, 0, sysNumericFormatTool::Fixed );
+   im.ForcePerLength.Update(  unitMeasure::KipPerFoot,      0.001, 9, 3, sysNumericFormatTool::Fixed );
+   im.MomentPerAngle.Update(  unitMeasure::KipInchPerRadian,0.001,10, 2, sysNumericFormatTool::Fixed );
+   im.Time.Update(            unitMeasure::Hour,            0.001, 5, 0, sysNumericFormatTool::Fixed );
+   im.Time2.Update(           unitMeasure::Day,             0.001, 7, 0, sysNumericFormatTool::Fixed );
+   im.ForceLength2.Update(    unitMeasure::KipInch2,        0.001, 9, 2, sysNumericFormatTool::Fixed );
+   im.SqrtPressure.Update(    unitMeasure::SqrtKSI,         0.001, 9, 4, sysNumericFormatTool::Fixed );
+   im.PerLength.Update( unitMeasure::PerFeet, 1.0e-5, 9, 4, sysNumericFormatTool::Fixed);
+   im.SmallStress.Update(          unitMeasure::PSF,             0.001, 8, 3, sysNumericFormatTool::Fixed );
+
+   return im;
 }

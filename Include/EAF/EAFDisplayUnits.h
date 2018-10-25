@@ -29,7 +29,7 @@
 
 /*****************************************************************************
 INTERFACE
-   IDisplayUnits
+   IEAFDisplayUnits
 
    Interface for getting the display units.
 
@@ -37,9 +37,9 @@ DESCRIPTION
    Interface for getting the display units.
 *****************************************************************************/
 // {8438FE92-68ED-11d2-883C-006097C68A9C}
-DEFINE_GUID(IID_IDisplayUnits, 
+DEFINE_GUID(IID_IEAFDisplayUnits, 
 0x8438fe92, 0x68ed, 0x11d2, 0x88, 0x3c, 0x0, 0x60, 0x97, 0xc6, 0x8a, 0x9c);
-interface IDisplayUnits : IUnknown
+interface IEAFDisplayUnits : IUnknown
 {
    virtual void                             SetUnitMode(eafTypes::UnitMode unitMode) = 0;
 	virtual eafTypes::UnitMode               GetUnitMode() = 0;
@@ -78,7 +78,7 @@ interface IDisplayUnits : IUnknown
 
 /*****************************************************************************
 INTERFACE
-   IDisplayUnitsEventSink
+   IEAFDisplayUnitsEventSink
 
    Callback interface for display units.
 
@@ -86,9 +86,9 @@ DESCRIPTION
    Callback interface for display units.
 *****************************************************************************/
 // {015A4130-272C-11d2-8EB0-006097DF3C68}
-DEFINE_GUID(IID_IDisplayUnitsEventSink,
+DEFINE_GUID(IID_IEAFDisplayUnitsEventSink,
 0x015A4130, 0x272C, 0x11d2, 0x8E, 0xB0, 0x00, 0x60, 0x97, 0xDF, 0x3C, 0x68);
-interface IDisplayUnitsEventSink : IUnknown
+interface IEAFDisplayUnitsEventSink : IUnknown
 {
    virtual HRESULT OnUnitsChanged(eafTypes::UnitMode newUnitsMode) = 0;
 };

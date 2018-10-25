@@ -28,6 +28,7 @@
 #include <EAF\EAFDocTemplate.h>
 #include <map>
 
+// Manages the document templates
 class EAFCLASS CEAFDocTemplateRegistrar  
 {
 public:

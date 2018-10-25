@@ -40,10 +40,20 @@ public:
                    int maxViewCount = -1);
    virtual ~CEAFDocTemplate();
 
+   // Creates a default template group item
+   virtual void CreateDefaultItem(HICON hIcon);
+
+   // Redefines the base-class implementation
    virtual CDocument* OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisible);
 
+   // Returns the document template group associated with this document type
+   // The template group is seen on the left hand side of the New dialog
    virtual const CEAFTemplateGroup* GetTemplateGroup() const;
+
+   // Returns a description for the template group
    virtual CString GetTemplateGroupItemDescription(const CEAFTemplateItem* pItem) const;
+
+   // Sets the template item for which a new document will be created
    void SetTemplateItem(const CEAFTemplateItem* pItem);
 
    // returns the maximum number of views that can be created for this template
@@ -59,6 +69,7 @@ public:
    // Returns the resource ID associated with this tempalte
    UINT GetResourceID() const;
 
+   // Associates the application plugin that created this document template
    void SetPlugin(IEAFAppPlugin* pPlugin);
    void GetPlugin(IEAFAppPlugin** ppPlugin);
 

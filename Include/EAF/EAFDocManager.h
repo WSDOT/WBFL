@@ -26,7 +26,7 @@
 #pragma once
 
 
-// CEAFDocManager command target
+// CEAFDocManager provides a better new file dialog than MFC
 
 class EAFCLASS CEAFDocManager : public CDocManager
 {

@@ -28,7 +28,7 @@
 #include <set>
 #include <map>
 
-class iStatusCenterEventSink
+class IEAFStatusCenterEventSink
 {
 public:
    virtual void OnStatusItemAdded(CEAFStatusItem* pItem) = 0;
@@ -66,8 +66,8 @@ public:
 
    void EditItem(CollectionIndexType index);
 
-   void SinkEvents(iStatusCenterEventSink* pSink);
-   void UnSinkEvents(iStatusCenterEventSink* pSink);
+   void SinkEvents(IEAFStatusCenterEventSink* pSink);
+   void UnSinkEvents(IEAFStatusCenterEventSink* pSink);
 
 private:
    bool m_bIsEnabled;
@@ -79,7 +79,7 @@ private:
    typedef std::set<CEAFStatusItem*,StatusItemCompare> Container;
    Container m_Items;
 
-   typedef std::set<iStatusCenterEventSink*> Sinks;
+   typedef std::set<IEAFStatusCenterEventSink*> Sinks;
    Sinks m_Sinks;
 
    typedef std::map<StatusCallbackIDType,iStatusCallback*> Callbacks;

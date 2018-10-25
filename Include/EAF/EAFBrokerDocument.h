@@ -65,6 +65,7 @@ public:
 	protected:
    virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
    virtual void DeleteContents();
+   virtual BOOL OnCmdMsg(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO* pHandlerInfo);
 
 	//}}AFX_VIRTUAL
 
@@ -77,14 +78,14 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-	// Generated message map functions
+   void BuildReportMenu(CMenu* pMenu,bool bQuickReport);
+   void BuildReportMenu(CEAFMenu* pMenu,bool bQuickReport);
+
+   // Generated message map functions
 protected:
    IBroker* m_pBroker;
 
-   // since the broker has no way of returning a registered agent
-   // we need to keep a pointer to the doc proxy agent so it
-   // can be initialized for menu and toolbar intergration functionality
-   CEAFDocProxyAgent* m_pDocProxyAgent;
+   bool m_bIsReportMenuPopulated; 
 
    // returns the CATID for the agents to be used with this document
    // All agents registred with this category ID will be loaded when
@@ -127,7 +128,7 @@ protected:
    virtual void BrokerShutDown();
 
    // Called by the base-class when thte document is to be loaded
-   // and saved
+   // and saved. Calls Load and Save on the IBrokerPersist interface
    virtual HRESULT LoadTheDocument(IStructuredLoad* pStrLoad);
    virtual HRESULT WriteTheDocument(IStructuredSave* pStrSave);
 
@@ -136,10 +137,25 @@ protected:
    virtual void OnLogFileOpened(); // called when the log file is first opened
    virtual void OnLogFileClosing(); // called when the log file is about to close
 
+   /// populates a menu with the names of the reports
+   void PopulateReportMenu(CEAFMenu* pReportMenu);
+   UINT_PTR GetReportCommand(CollectionIndexType rptIdx,bool bQuickReport);
+   CollectionIndexType GetReportIndex(UINT nID,bool bQuickReport);
+   virtual void CreateReportView(CollectionIndexType rptIdx,bool bPrompt); // does nothing by default
+   void OnReport(UINT nID);
+   void OnQuickReport(UINT nID);
+
 	//{{AFX_MSG(CEAFBrokerDocument)
 		// NOTE - the ClassWizard will add and remove member functions here.
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+
+private:
+   // since the broker has no way of returning a registered agent
+   // we need to keep a pointer to the doc proxy agent so it
+   // can be initialized for menu and toolbar intergration functionality
+   CEAFDocProxyAgent* m_pDocProxyAgent;
+
 
    friend CEAFDocProxyAgent;
    friend CEAFDocTemplate;

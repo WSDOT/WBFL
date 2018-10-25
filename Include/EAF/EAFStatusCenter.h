@@ -29,7 +29,7 @@
 
 /*****************************************************************************
 INTERFACE
-   IStatusCenter
+   IEAFStatusCenter
 
    Interface for the status center.
 
@@ -38,9 +38,9 @@ DESCRIPTION
    status information.
 *****************************************************************************/
 // {77977E9B-B074-401f-8994-73A418FC4FFF}
-DEFINE_GUID(IID_IStatusCenter, 
+DEFINE_GUID(IID_IEAFStatusCenter, 
 0x77977e9b, 0xb074, 0x401f, 0x89, 0x94, 0x73, 0xa4, 0x18, 0xfc, 0x4f, 0xff);
-interface IStatusCenter : IUnknown
+interface IEAFStatusCenter : IUnknown
 {
    virtual StatusGroupIDType CreateStatusGroupID() = 0;
    virtual StatusItemIDType Add(CEAFStatusItem* pItem) = 0;

@@ -411,7 +411,10 @@ STDMETHODIMP CBrokerImp2::RegInterface( REFIID riid, IAgentEx* pAgent)
    item.iid = riid;
    item.pAgent = pAgent;
    (*item.pUsageCount) = 0;
-   m_Interfaces.insert( item );
+   std::pair<std::set<InterfaceItem>::iterator,bool> result = m_Interfaces.insert( item );
+   ASSERT(result.second); // if this fires, the interface was already registered by a different agent
+   if ( result.second == false )
+      return E_FAIL;
 
    return S_OK;
 }
@@ -539,7 +542,7 @@ STDMETHODIMP CBrokerImp2::Load(IStructuredLoad* pStrLoad)
          if ( FAILED(hr) )
             return hr;
 
-         m_RawUnitData.push_back(OLE2A(bstrRawUnit));
+         m_MissingAgentData.push_back(OLE2A(bstrRawUnit));
       }
 
       pStrLoad->EndUnit(); // end of "Agent" unit
@@ -583,14 +586,30 @@ STDMETHODIMP CBrokerImp2::Save(IStructuredSave* pStrSave)
       }
    }
 
-   std::vector<std::string>::iterator iter2;
-   for ( iter2 = m_RawUnitData.begin(); iter2 != m_RawUnitData.end(); iter2++ )
+   if ( m_bSaveMissingAgentData == VARIANT_TRUE )
    {
-      pStrSave->SaveRawUnit(iter2->c_str());
+      std::vector<std::string>::iterator iter2;
+      for ( iter2 = m_MissingAgentData.begin(); iter2 != m_MissingAgentData.end(); iter2++ )
+      {
+         pStrSave->SaveRawUnit(iter2->c_str());
+      }
    }
 
    pStrSave->EndUnit(); // Broker
 
+   return S_OK;
+}
+
+STDMETHODIMP CBrokerImp2::SetSaveMissingAgentDataFlag(VARIANT_BOOL bSetFlag)
+{
+   m_bSaveMissingAgentData = bSetFlag;
+   return S_OK;
+}
+
+STDMETHODIMP CBrokerImp2::GetSaveMissingAgentDataFlag(VARIANT_BOOL* bFlag)
+{
+   CHECK_RETVAL(bFlag);
+   *bFlag = m_bSaveMissingAgentData;
    return S_OK;
 }
 

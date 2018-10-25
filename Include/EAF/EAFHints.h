@@ -24,4 +24,6 @@
 #pragma once
 
 // Doc/View update hints
-#define EAF_HINTS_UNITS_CHANGED 0x0001
+#define EAF_HINT_BASE                     1000        
+#define EAF_HINT_UPDATEERROR              EAF_HINT_BASE + 0
+#define EAF_HINT_UNITS_CHANGED            EAF_HINT_BASE + 1

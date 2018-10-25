@@ -305,6 +305,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EAFAcceleratorTable.cpp"
+				>
+			</File>
+			<File
 				RelativePath="EAFApp.cpp"
 				>
 				<FileConfiguration
@@ -392,6 +396,10 @@
 			</File>
 			<File
 				RelativePath=".\EAFDocManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFDocPluginManager.cpp"
 				>
 			</File>
 			<File
@@ -593,6 +601,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ManagePluginsDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\NewProjectDlg.cpp"
 				>
 			</File>
@@ -675,6 +687,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\EAF\EAFAboutDlg.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFAcceleratorTable.h"
 				>
 			</File>
 			<File
@@ -818,6 +834,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ManagePluginsDlg.h"
+				>
+			</File>
+			<File
 				RelativePath=".\NewProjectDlg.h"
 				>
 			</File>
@@ -896,6 +916,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\EAF\EAFDocumentPlugin.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFPluginPersist.h"
 				>
 			</File>
 			<File

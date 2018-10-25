@@ -25,6 +25,7 @@
 //
 
 #include "stdafx.h"
+#include "resource.h"
 #include <EAF\EAFAboutDlg.h>
 #include <EAF\EAFApp.h>
 #include <MFCTools\VersionInfo.h>
@@ -39,8 +40,8 @@ static char THIS_FILE[] = __FILE__;
 
 IMPLEMENT_DYNAMIC(CEAFAboutDlg, CDialog)
 
-CEAFAboutDlg::CEAFAboutDlg(HICON hIcon,CWnd* pParent /*=NULL*/)
-	: CDialog(CEAFAboutDlg::IDD, pParent)
+CEAFAboutDlg::CEAFAboutDlg(HICON hIcon,UINT nIDTemplate,CWnd* pParent /*=NULL*/)
+: CDialog(nIDTemplate == 0 ? IDD_ABOUTBOX : nIDTemplate, pParent)
 {
    m_hIcon = hIcon;
 }
@@ -68,6 +69,7 @@ END_MESSAGE_MAP()
 
 BOOL CEAFAboutDlg::OnInitDialog()
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CDialog::OnInitDialog();
 
    // put the icon in the dialog

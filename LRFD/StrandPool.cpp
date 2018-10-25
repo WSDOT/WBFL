@@ -440,7 +440,10 @@ bool lrfdStrandPool::TestMe(dbgLog& rlog)
                                  matPsStrand::D1111,
                                  matPsStrand::D1270,
                                  matPsStrand::D1524,
-                                 matPsStrand::D1778};
+                                 matPsStrand::D1778,
+                                 matPsStrand::D1320,
+                                 matPsStrand::D1575};
+
    Int32 hashval;
    Int16 cGrade, cType, cSize;
    Int16 nSize;
@@ -511,7 +514,7 @@ bool lrfdStrandIter::TestMe(dbgLog& rlog)
             nStrand++;
          }
 
-         TRY_TESTME( nStrand == (cGrade == 0 ? 7 : 5) );
+         TRY_TESTME( nStrand == (cGrade == 0 ? 9 : 7) );
       }
    }
 

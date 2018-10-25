@@ -145,8 +145,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,2,0,2
- PRODUCTVERSION 3,2,0,2
+ FILEVERSION 3,2,0,3
+ PRODUCTVERSION 3,2,0,3
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -164,12 +164,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "EAF DLL"
-            VALUE "FileVersion", "3.2.0.2"
+            VALUE "FileVersion", "3.2.0.3"
             VALUE "InternalName", "EAF"
             VALUE "LegalCopyright", "Copyright © 1999-2010"
             VALUE "OriginalFilename", "EAF.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "3.2.0.2"
+            VALUE "ProductVersion", "3.2.0.3"
         END
     END
     BLOCK "VarFileInfo"
@@ -275,6 +275,17 @@ BEGIN
     LTEXT           "Static",IDC_DESCRIPTION,7,213,395,13,SS_CENTERIMAGE | WS_BORDER
 END
 
+IDD_MANAGE_PLUGINS DIALOGEX 0, 0, 316, 180
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Manage Plugins"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,205,159,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,259,159,50,14
+    LTEXT           "Enable Components",IDC_STATIC,7,7,64,8
+    LISTBOX         IDC_PLUGIN_LIST,7,21,302,134,LBS_OWNERDRAWFIXED | LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -323,6 +334,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 247
     END
+
+    IDD_MANAGE_PLUGINS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 173
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -353,12 +372,18 @@ BEGIN
     ID_UNITS_SI             "Change units mode to SI\nSI Units"
     ID_UNITS_US             "Change units mode to US\nUS Units"
     ID_EDIT_UNITS           "Change the system of units\nUnits."
-    CG_IDS_TIPOFTHEDAY      "Displays a Tip of the Day."
+    ID_TIPOFTHEDAY          "Displays a Tip of the Day."
     CG_IDS_TIPOFTHEDAYMENU  "Ti&p of the Day..."
     CG_IDS_DIDYOUKNOW       "Did you know..."
     CG_IDS_FILE_ABSENT      "Tips file does not exist in the prescribed directory"
     CG_IDP_FILE_CORRUPT     "Trouble reading the tips file"
     CG_IDS_TIPOFTHEDAYHELP  "&Help"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_FATAL_MSG_SAVE      """%1\n\nPGSuper is going to shut down!\n\nWould you like to attempt to save your project first?\n\n%2"""
+    IDS_FATAL_MSG_NOSAVE    """%1\n\nPGSuper is going to shut down!\n\n%2"""
 END
 
 STRINGTABLE 

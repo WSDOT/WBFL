@@ -56,6 +56,42 @@ HINSTANCE GetInstanceHandle()
    return EAFDLL.hModule;
 }
 
+bool operator<(REFIID a,REFIID b)
+{
+   /*
+   typedef struct _GUID {
+      unsigned long  Data1;
+      unsigned short Data2;
+      unsigned short Data3;
+      unsigned char  Data4[8];} GUID;
+    */
+
+    if ( a.Data1 > b.Data1 )
+       return false;
+    if ( a.Data1 < b.Data1 )
+       return true;
+
+    if ( a.Data2 > b.Data2 )
+       return false;
+    if ( a.Data2 < b.Data2 )
+       return true;
+
+    if ( a.Data3 > b.Data3 )
+       return false;
+    if ( a.Data3 < b.Data3 )
+       return true;
+
+    for ( int i = 0; i < 8; i++ )
+    {
+       if ( a.Data4[i] > b.Data4[i] )
+          return false;
+       if ( a.Data4[i] < b.Data4[i] )
+          return true;
+    }
+
+    return false;
+}
+
 extern "C" int APIENTRY
 DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 {

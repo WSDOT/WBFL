@@ -339,7 +339,17 @@ library WBFLCore
 	{
 		[helpstring("method Load")] HRESULT Load([in] IStructuredLoad* pStrLoad);
 		[helpstring("method Save")] HRESULT Save([in] IStructuredSave* pStrSave);
-    };
+   };
+	[
+		uuid(2D663F88-1B17-4d1b-9DE8-8CD06050E2C2),
+		helpstring("IBrokerPersist2 Interface"),
+		pointer_default(unique)
+	]
+	interface IBrokerPersist2 : IBrokerPersist
+	{
+      [helpstring("method SetSaveMissingAgentDataFlag")] HRESULT SetSaveMissingAgentDataFlag([in]VARIANT_BOOL bSetFlag);
+      [helpstring("method GetSaveMissingAgentDataFlag")] HRESULT GetSaveMissingAgentDataFlag([out]VARIANT_BOOL* bFlag);
+   };
 
 	[
 		uuid(C0E926D1-2620-11D2-8EB0-006097DF3C68),
