@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -52,7 +52,7 @@ BOOL AfxQuestion(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszDefault,CStr
    return FALSE;
 }
 
-int AfxChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int defChoice,BOOL bCancelButton,LPCTSTR lpszHelpFile,UINT helpID)
+int AfxChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int defChoice,BOOL bCancelButton,CHelpHandler* pHelpHandler)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
@@ -62,8 +62,7 @@ int AfxChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int d
    dlg.m_Question  = lpszQuestion;
    dlg.m_Responses = lpszResponses;
    dlg.m_Choice    = defChoice;
-   dlg.m_HelpFile  = lpszHelpFile;
-   dlg.m_HelpID    = helpID;
+   dlg.m_pHelpHandler = pHelpHandler;
 
    if ( dlg.DoModal() == IDOK )
    {
@@ -75,7 +74,7 @@ int AfxChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int d
    }
 }
 
-int AfxRBChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int defChoice,BOOL bCancelButton,LPCTSTR lpszHelpFile,UINT helpID)
+int AfxRBChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int defChoice,BOOL bCancelButton,CHelpHandler* pHelpHandler)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
@@ -85,8 +84,7 @@ int AfxRBChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int
    dlg.m_Question  = lpszQuestion;
    dlg.m_Responses = lpszResponses;
    dlg.m_Choice    = defChoice;
-   dlg.m_HelpFile  = lpszHelpFile;
-   dlg.m_HelpID    = helpID;
+   dlg.m_pHelpHandler = pHelpHandler;
 
    if ( dlg.DoModal() == IDOK )
    {
@@ -98,7 +96,7 @@ int AfxRBChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int
    }
 }
 
-std::vector<int> AfxMultiChoice(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszOptions,CMultiChoiceValidator* pValidator,const std::vector<int>& defChoices,BOOL bCancelButton,BOOL bCheckList,LPCTSTR lpszHelpFile,UINT helpID)
+std::vector<int> AfxMultiChoice(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszOptions,CMultiChoiceValidator* pValidator,const std::vector<int>& defChoices,BOOL bCancelButton,BOOL bCheckList,CHelpHandler* pHelpHandler)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
@@ -109,9 +107,8 @@ std::vector<int> AfxMultiChoice(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR l
    dlg.m_Question   = lpszQuestion;
    dlg.m_Options    = lpszOptions;
    dlg.m_Choices    = defChoices;
-   dlg.m_HelpFile   = lpszHelpFile;
-   dlg.m_HelpID     = helpID;
    dlg.m_pValidator = pValidator;
+   dlg.m_pHelpHandler = pHelpHandler;
 
    if ( dlg.DoModal() == IDOK )
    {

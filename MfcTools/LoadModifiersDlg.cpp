@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -57,13 +57,11 @@ CLoadModifiersDlg::~CLoadModifiersDlg()
 {
 }
 
-void CLoadModifiersDlg::SetHelpData(LPCTSTR pszHelpFile,DWORD nd,DWORD nr,DWORD ni)
+void CLoadModifiersDlg::SetHelpData(CHelpHandler* pHelpHandlerND,CHelpHandler* pHelpHandlerNR,CHelpHandler* pHelpHandlerNI)
 {
-   m_HelpFile = pszHelpFile;
-   m_HelpID[0] = nd;
-   m_HelpID[1] = nr;
-   m_HelpID[2] = ni;
-   m_bHelpInit = TRUE;
+   m_pHelpHandler[0] = pHelpHandlerND;
+   m_pHelpHandler[1] = pHelpHandlerNR;
+   m_pHelpHandler[2] = pHelpHandlerNI;
 }
 
 void CLoadModifiersDlg::SetLoadModifiers(Float64 nd,Int16 ndl,Float64 nr,Int16 nrl,Float64 ni,Int16 nil)
@@ -110,7 +108,9 @@ END_MESSAGE_MAP()
 
 void CLoadModifiersDlg::Init()
 {
-   m_bHelpInit = FALSE;
+   m_pHelpHandler[0] = NULL;
+   m_pHelpHandler[1] = NULL;
+   m_pHelpHandler[2] = NULL;
 
    m_psh.dwFlags |= PSH_HASHELP | PSH_NOAPPLYNOW;
 
@@ -170,9 +170,9 @@ BOOL CLoadModifiersDlg::OnInitDialog()
 
 void CLoadModifiersDlg::OnHelp()
 {
-   if ( m_bHelpInit )
+   int i = GetActiveIndex();
+   if ( m_pHelpHandler[i] )
    {
-      ::HtmlHelp( *this, m_HelpFile, HH_HELP_CONTEXT, m_HelpID[GetActiveIndex()] );
+      m_pHelpHandler[i]->OnHelp();
    }
-
 }

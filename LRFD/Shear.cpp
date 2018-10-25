@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -1174,6 +1174,8 @@ void compute_theta_and_beta4(lrfdShearData* pData)
    Float64 fc  = pData->fc;
    Float64 fy  = pData->fy;
    Float64 Avs = pData->AvS;
+   Float64 sx  = pData->sx;
+   Float64 ag  = pData->ag;
 
    Float64 minSteel;
    Int16 eqn;
@@ -1271,29 +1273,98 @@ void compute_theta_and_beta4(lrfdShearData* pData)
       ex_calc = (Mu/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpops - Apt*fpopt)/(2*(Ec*Ac + Es*As + Eps*Aps + Ept*Apt));
    }
 
-   // Find the column in the beta/theta table (table 5.8.3.4.2-1) with a strain that is
-   // more than this
-   Int16 col;
-   for ( col = 0; col < get_ex_count(); col++ )
+   if ( pData->Eqn == 1 || pData->Eqn == 31 )
    {
-      Float64 ex_tbl = get_ex(col);
-      if ( ex_calc <= ex_tbl )
+      // Find the column in the beta/theta table (table 5.8.3.4.2-1) with a strain that is
+      // more than this
+      Int16 col;
+      for ( col = 0; col < get_ex_count(); col++ )
       {
-         // this is the first strain greater than the computed strain
-         pData->ex_tbl = ex_tbl;
-         break;
+         Float64 ex_tbl = get_ex(col);
+         if ( ex_calc <= ex_tbl )
+         {
+            // this is the first strain greater than the computed strain
+            pData->ex_tbl = ex_tbl;
+            break;
+         }
       }
+
+      assert(0 <= col && col < get_ex_count());
+
+      // Get Beta/Theta;
+      const BT& bt = get_beta_theta(row,col);
+      pData->ex = ex_calc;
+      pData->vfc_tbl = get_vfc(row);
+      pData->Beta = bt.Beta;
+      pData->Theta = ::ConvertToSysUnits(bt.Theta,unitMeasure::Degree);
+      pData->Fe = -1; // Not appicable
    }
+   else
+   {
+      Float64 sxe = ::ConvertFromSysUnits(sx,unitMeasure::Inch) * 1.38/(::ConvertFromSysUnits(ag,unitMeasure::Inch)+0.63);
 
-   assert(0 <= col && col < get_ex_count());
+      // Bound sxe
+      sxe = ForceIntoRange(5.0, sxe, 80.0); // Note: any spec changes to table range would affect this
 
-   // Get Beta/Theta;
-   const BT& bt = get_beta_theta(row,col);
-   pData->ex = ex_calc;
-   pData->vfc_tbl = get_vfc(row);
-   pData->Beta = bt.Beta;
-   pData->Theta = ::ConvertToSysUnits(bt.Theta,unitMeasure::Degree);
-   pData->Fe = -1; // Not appicable
+      pData->sxe   =  ::ConvertToSysUnits(sxe,unitMeasure::Inch);
+
+      // Find out which rows we are spanning
+      Int16 row1, row2;
+      get_row_index_mtr( sxe, &row1, &row2 ); // row 2 is the one we want to use
+      Int16 row = row2;
+
+      // start at the right most column in table 5.8.3.4.2-2 and work backwards until
+      // we come to a column where ex_calc < ex_table. The column we are looking for is
+      // the one to the right of the current column.
+      bool bFoundSolution = false;
+      Int16 col = get_ex_count_mtr()-1;
+      Float64 ex_last;
+      Int16 eq_last;
+      while ( 0 <= col && !bFoundSolution )
+      {
+         BT bt = get_beta_theta_mtr(row,col);
+
+         Float64 ex_table = get_ex_mtr(col);
+
+         if ( col == get_ex_count_mtr()-1 )
+         {
+            // first time through the loop, initialize with current values
+            ex_last = ex_calc;
+            eq_last = pData->Eqn;
+         }
+
+         if ( ex_table < ex_calc )
+         {
+            col++;
+            bFoundSolution = true;
+            pData->ex = ex_last;
+            pData->Eqn = eq_last;
+         }
+         else
+         {
+            col--;
+            ex_last = ex_calc;
+            eq_last = pData->Eqn;
+         }
+      }
+
+      // The computed strain is less than the strain limit in the left most column. The solution is column 0
+      if ( col < 0 )
+      {
+         col = 0; 
+      }
+
+      assert(0 <= col && col < get_ex_count_mtr());
+
+      BT bt = get_beta_theta_mtr(row,col);
+
+      pData->BetaTheta_tbl = 2; 
+      pData->sxe_tbl = ::ConvertToSysUnits(get_sxe_mtr(row), unitMeasure::Inch);
+      pData->ex_tbl = get_ex_mtr(col);
+      pData->Beta = bt.Beta;
+      pData->Theta = ::ConvertToSysUnits(bt.Theta,unitMeasure::Degree);
+      pData->Fe = -1; // Not appicable
+   }
 }
 
 void compute_theta_and_beta5(lrfdShearData* pData)

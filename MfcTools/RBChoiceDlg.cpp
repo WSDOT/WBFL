@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -36,6 +36,7 @@ CRBChoiceDlg::CRBChoiceDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CRBChoiceDlg::IDD, pParent)
 {
    m_Choice = 0;
+   m_pHelpHandler = NULL;
 }
 
 CRBChoiceDlg::~CRBChoiceDlg()
@@ -105,7 +106,7 @@ BOOL CRBChoiceDlg::OnInitDialog()
       ModifyStyle(WS_SYSMENU,0);
    }
 
-   if ( m_HelpFile.GetLength() == 0 )
+   if ( m_pHelpHandler == NULL )
    {
       GetDlgItem(IDHELP)->ShowWindow(SW_HIDE);
    }
@@ -116,5 +117,8 @@ BOOL CRBChoiceDlg::OnInitDialog()
 
 void CRBChoiceDlg::OnHelp()
 {
-   ::HtmlHelp(*this,m_HelpFile,HH_HELP_CONTEXT,m_HelpID);
+   if ( m_pHelpHandler )
+   {
+      m_pHelpHandler->OnHelp();
+   }
 }

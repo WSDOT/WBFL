@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -1047,23 +1047,22 @@ void lrfdLosses::UpdateInitialLosses() const
 
 void lrfdLosses::UpdateRelaxationBeforeTransfer() const
 {
-   // requirement per 2004 LRFD 5.9.5.4.4b
-   if ( !IsZero( m_FpjPerm ) && !(0.5*m_FpuPerm < m_FpjPerm) )
-   {
-      THROW(lrfdXPsLosses,fpjOutOfRange);
-   }
-
-   if ( !IsZero( m_FpjTemp ) && !(0.5*m_FpuPerm < m_FpjTemp) )
-   {
-      THROW(lrfdXPsLosses,fpjOutOfRange);
-   }
-
    // Losses from jacking to release
    // Using methodology from LRFD 2004... these losses were taken out of the 2005 spec
    // and not guidance was given for their computation...
    if ( !m_bIgnoreInitialRelaxation )
    {
-      // WSDOT
+      // requirement per 2004 LRFD 5.9.5.4.4b
+      if ( !IsZero( m_FpjPerm ) && !(0.5*m_FpuPerm < m_FpjPerm) )
+      {
+         THROW(lrfdXPsLosses,fpjOutOfRange);
+      }
+
+      if ( !IsZero( m_FpjTemp ) && !(0.5*m_FpuPerm < m_FpjTemp) )
+      {
+         THROW(lrfdXPsLosses,fpjOutOfRange);
+      }
+
       Float64 t_days = ::ConvertFromSysUnits( m_ti, unitMeasure::Day );
       Float64 Aperm = (m_TypePerm == matPsStrand::LowRelaxation ? 40. : 10. );
       Float64 Atemp = (m_TypeTemp == matPsStrand::LowRelaxation ? 40. : 10. );

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -25,19 +25,21 @@
 
 #include <MfcTools\MfcToolsExp.h>
 
+class CHelpHandler;
+
 // Use this function to ask the user a question. The return value is the user's answer
 BOOL MFCTOOLSFUNC AfxQuestion(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszDefault,CString& strAnswer);
 
 // This function prompts the user with a question. The user has to select from a list of
 // responses. lpszResponses is a \n separated list of responses. defChoice is the index of the
 // default choice. The return value is the index of the selected choice or -1 if the Cancel button was pressed
-int MFCTOOLSFUNC AfxChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int defChoice=0,BOOL bCancelButton=FALSE,LPCTSTR lpszHelpFile=NULL,UINT helpID=0);
+int MFCTOOLSFUNC AfxChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int defChoice=0,BOOL bCancelButton=FALSE,CHelpHandler* pHelpHandler=NULL);
 
 // This function prompts the user with a question. The user has to select from a list of
 // responses. lpszResponses is a \n separated list of responses. defChoice is the index of the
 // default choice. The return value is the index of the selected choice or -1 if the Cancel button was pressed
 // The choices are listed in a sequence of radio buttons. The maximum number of responses is 4.
-int MFCTOOLSFUNC AfxRBChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int defChoice=0,BOOL bCancelButton=FALSE,LPCTSTR lpszHelpFile=NULL,UINT helpID=0);
+int MFCTOOLSFUNC AfxRBChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int defChoice=0,BOOL bCancelButton=FALSE,CHelpHandler* pHelpHandler=NULL);
 
 // A validator object for the AfxMultiChoice method
 // The select list of options is passed to the IsValid method to validate the
@@ -59,5 +61,4 @@ std::vector<int> MFCTOOLSFUNC AfxMultiChoice(LPCTSTR lpszTitle,
                                              const std::vector<int>& defOptions=std::vector<int>(),
                                              BOOL bCancelButton=FALSE,
                                              BOOL bCheckList=FALSE,
-                                             LPCTSTR lpszHelpFile=NULL,
-                                             UINT helpID=0);
+                                             CHelpHandler* pHelpHandler=NULL);

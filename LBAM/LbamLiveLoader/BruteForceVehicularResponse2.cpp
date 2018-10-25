@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Live Loader - Longitindal Bridge Analysis Model
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -972,11 +972,9 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(IIDArray* poiIDs, BS
          }
 
          // add our result to the collection
-         if ( bIsAtSupport )
+         if ( bIsAtSupport && effect == fetMz )
          {
-            if ( effect == fetMz )
-               right_result *= flip_factor;
-
+            right_result *= flip_factor;
             hr = results->Add(left_result, left_config, right_result, right_config);
          }
          else

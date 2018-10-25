@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // CORE - Core elements of the Agent-Broker Architecture
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -283,6 +283,18 @@ library WBFLCore
       [helpstring("method IntegrateWithGraphing")] HRESULT IntegrateWithGraphing(BOOL bIntegrate);
    }
 
+   [
+      uuid(369EE64B-5135-4b0a-95F3-C3B001A39D6F),
+      helpstring("IAgentDocumentationIntegration"),
+      pointer_default(unique)
+   ]
+   interface IAgentDocumentationIntegration : IUnknown
+   {
+      [helpstring("method GetDocumentationSetName")] HRESULT GetDocumentationSetName(BSTR* pbstrName);
+      [helpstring("method LoadDocumentationMap")] HRESULT LoadDocumentationMap();
+      [helpstring("method GetDocumentLocation")] HRESULT GetDocumentLocation(UINT nHID,BSTR* pbstrURL);
+   }
+
 	[
 		uuid(53CAB1E0-262E-11d2-8EB0-006097DF3C68),
 		helpstring("IBrokerInit Interface"),
@@ -340,7 +352,7 @@ library WBFLCore
 	]
 	interface IBrokerInitEx3 : IBrokerInitEx2
 	{
-		[helpstring("method Integrate")] HRESULT Integrate(BOOL bIntegrateWithUI,BOOL bIntegrateWithReporting,BOOL bIntegrateWithGraphing);
+		[helpstring("method Integrate")] HRESULT Integrate(BOOL bIntegrateWithUI,BOOL bIntegrateWithReporting,BOOL bIntegrateWithGraphing,BOOL bIntegrateWithDocumentation);
 		[helpstring("method RemoveIntegration")] HRESULT RemoveIntegration();
 	};
 

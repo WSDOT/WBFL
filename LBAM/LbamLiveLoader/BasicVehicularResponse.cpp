@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Live Loader - Longitindal Bridge Analysis Model
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -67,21 +67,35 @@ static void  ComputeLaneAreas(ForceEffectType optimizedEffect, OptimizationType 
    switch (optimizedEffect)
    {
    case fetFx:
-       hr = lftFxInf->ComputeNonZeroRegions(lane_side, &regions);
-       break;
+      if ( lftFxInf )
+         hr = lftFxInf->ComputeNonZeroRegions(lane_side, &regions);
+      break;
    case fetFy:
-       hr = lftFyInf->ComputeNonZeroRegions(lane_side, &regions);
+      if ( lftFyInf )
+         hr = lftFyInf->ComputeNonZeroRegions(lane_side, &regions);
       break;
    case fetMz:
-       hr = lftMzInf->ComputeNonZeroRegions(lane_side, &regions);
+      if ( lftMzInf )
+         hr = lftMzInf->ComputeNonZeroRegions(lane_side, &regions);
       break;
    default:
       ATLASSERT(false);
    };
 
-   hr = lftFxInf->ComputeAreaInRegions(regions, lftFxArea);
-   hr = lftFyInf->ComputeAreaInRegions(regions, lftFyArea);
-   hr = lftMzInf->ComputeAreaInRegions(regions, lftMzArea);
+   if ( lftFxInf )
+      hr = lftFxInf->ComputeAreaInRegions(regions, lftFxArea);
+   else
+      *lftFxArea = 0;
+
+   if ( lftFyInf )
+      hr = lftFyInf->ComputeAreaInRegions(regions, lftFyArea);
+   else
+      *lftFyArea = 0;
+
+   if ( lftMzInf )
+      hr = lftMzInf->ComputeAreaInRegions(regions, lftMzArea);
+   else
+      *lftMzArea = 0;
 
    // if right influence lines are null, we use left value with sign flip if necesary
    if (rgtFxInf==NULL || rgtFyInf==NULL || rgtMzInf==NULL)
