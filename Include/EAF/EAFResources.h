@@ -32,7 +32,7 @@
 
 // Commands that EAFApp provides standard process for. This is like the way
 // CWinApp profiles standard processing for ID_FILE_NEW and ID_FILE_OPEN
-// max is EAF_RESERVED_COMMAND_BASE+256
+// max is EAF_RESERVED_COMMAND_BASE+255
 #define EAFID_VIEW_STATUSCENTER            (EAF_RESERVED_COMMAND_BASE+0)
 #define EAFID_VIEW_STATUSCENTER2           (EAF_RESERVED_COMMAND_BASE+1)
 #define EAFID_VIEW_STATUSCENTER3           (EAF_RESERVED_COMMAND_BASE+2)
@@ -45,9 +45,11 @@
 #define EAFID_REPORT_MENU_DISPLAY_MODE     (EAF_RESERVED_COMMAND_BASE+9)
 #define EAFID_OPTIONS_REPORTING            (EAF_RESERVED_COMMAND_BASE+10)
 #define EAFID_OPTIONS_HINTS                (EAF_RESERVED_COMMAND_BASE+11)
+#define EAFID_TOGGLE_AUTOCALC              (EAF_RESERVED_COMMAND_BASE+12)
+#define EAFID_AUTOCALC_UPDATENOW           (EAF_RESERVED_COMMAND_BASE+13)
 
-// reserve commands IDs for the report popup menus
-#define EAF_REPORT_MENU_BASE (EAF_RESERVED_COMMAND_BASE+12)
+// reserve commands IDs for the report popup menus (first ID must be one more than the EAFID_xxx above)
+#define EAF_REPORT_MENU_BASE (EAF_RESERVED_COMMAND_BASE+14)
 #define EAF_REPORT_MENU_COUNT 50 // maximum 50 reports
 #define EAF_REPORT_MENU_LAST (EAF_REPORT_MENU_BASE + 2*EAF_REPORT_MENU_COUNT)
 
@@ -59,8 +61,13 @@
 // reserve command IDs for toolbar menu
 #define EAF_TOOLBAR_MENU_BASE (EAF_GRAPH_MENU_LAST + 1)
 #define EAF_TOOLBAR_MENU_COUNT 40 // maximum of 40 toolbars
+#define EAF_TOOLBAR_MENU_LAST (EAF_TOOLBAR_MENU_BASE + EAF_TOOLBAR_MENU_COUNT)
 
 // reservied IDs for status bar items
+#define EAFID_INDICATOR_MIN                1
 #define EAFID_INDICATOR_MODIFIED           1  // Modifed box
 #define EAFID_INDICATOR_STATUS             2  // Status center indicator
+#define EAFID_INDICATOR_AUTOCALC_ON        3  // AutoCalc mode is on
+#define EAFID_INDICATOR_AUTOCALC_OFF       4  // AutoCalc mode is off
+#define EAFID_INDICATOR_MAX                4
 

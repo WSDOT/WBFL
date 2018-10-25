@@ -40,6 +40,8 @@ static char THIS_FILE[] = __FILE__;
 // CPierImpl
 HRESULT CPierImpl::FinalConstruct(IPier* pPier)
 {
+   m_bIsDirty = true;
+
    m_pPier = pPier;
 
    m_Type = ptIntegral;
@@ -62,6 +64,8 @@ void CPierImpl::SetItems(ICrossBeam* pCrossBeam,IBearingLayout* pBearingLayout,I
    m_CrossBeam     = pCrossBeam;
    m_BearingLayout = pBearingLayout;
    m_ColumnLayout  = pLayout;
+
+   m_bIsDirty = true;
 }
 
 Float64 CPierImpl::GetSkewAngle()
@@ -73,27 +77,32 @@ Float64 CPierImpl::GetSkewAngle()
 
 Float64 CPierImpl::GetDelta()
 {
-   // Delta is the difference in location between the left curb line and 
-   // the left edge of cross beam. If delta is greater than zero the
-   // curb line left of the left edge of the cross beam.
-   //
-   // This detal value is used in coordinate transformations
+   if ( m_bIsDirty )
+   {
+      // Delta is the difference in location between the left curb line and 
+      // the left edge of cross beam. If delta is greater than zero the
+      // curb line left of the left edge of the cross beam.
+      //
+      // This detal value is used in coordinate transformations
 
-   // Location of the alignment measured from the left edge of the cross beam
-   ColumnIndexType refColIdx;
-   Float64 refColOffset;
-   m_ColumnLayout->GetReferenceColumn(&refColIdx,&refColOffset);
-   Float64 Xcol;
-   m_ColumnLayout->get_ColumnLocation(refColIdx,&Xcol);
-   Float64 Xxb = Xcol - refColOffset;
+      // Location of the alignment measured from the left edge of the cross beam
+      ColumnIndexType refColIdx;
+      Float64 refColOffset;
+      m_ColumnLayout->GetReferenceColumn(&refColIdx,&refColOffset);
+      Float64 Xcol;
+      m_ColumnLayout->get_ColumnLocation(refColIdx,&Xcol);
+      Float64 Xxb = Xcol - refColOffset;
 
-   // Location of the alignment measured from the left curb line
-   Float64 CLO;
-   m_pPier->get_CurbLineOffset(qcbLeft,clmPlaneOfPier,&CLO); // in pier coordinates
-   Float64 Xcl = -CLO; // in curb line coordinates
+      // Location of the alignment measured from the left curb line
+      Float64 CLO;
+      m_pPier->get_CurbLineOffset(qcbLeft,clmPlaneOfPier,&CLO); // in pier coordinates
+      Float64 Xcl = -CLO; // in curb line coordinates
 
-   Float64 delta = Xcl - Xxb; // Xxb + delta = Xcl
-   return delta;
+      m_Delta = Xcl - Xxb; // Xxb + delta = Xcl
+      m_bIsDirty = false;
+   }
+
+   return m_Delta;
 }
 
 /////////////////////////////////////////////////////////////////////////////

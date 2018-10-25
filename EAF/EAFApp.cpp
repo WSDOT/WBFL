@@ -27,7 +27,6 @@
 #include "stdafx.h"
 
 #include "resource.h"
-#include <EAF\EAFResources.h>
 #include <EAF\EAFMainFrame.h>
 #include <EAF\EAFDocManager.h>
 #include <EAF\EAFPluginManager.h>
@@ -74,6 +73,10 @@ m_strWindowPlacementFormat("%u,%u,%d,%d,%d,%d,%d,%d,%d,%d")
 {
    m_bShowLegalNotice = VARIANT_TRUE;
    m_bTipsEnabled = false;
+
+   // if this assert fires, we've used more than commands then are
+   // reserved for EAF standard processing
+   ATLASSERT(EAF_TOOLBAR_MENU_LAST < EAF_FIRST_USER_COMMAND);
 }
 
 CEAFApp::~CEAFApp()
@@ -897,7 +900,7 @@ void CEAFApp::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
          CComQIPtr<IEAFAppCommandLine> appCmdLine(appPlugin);
          if ( appCmdLine )
          {
-            // let the plugin deal with the command line
+            // let the plugin to deal with the command line
             appCmdLine->ProcessCommandLineOptions(cmdInfo);
             if ( cmdInfo.m_bError )
             {

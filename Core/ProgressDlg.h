@@ -65,10 +65,16 @@ public:
    void PumpMessage();
    void UpdateMessage(LPCTSTR msg);
 
+   void GrabInput();
+   void ReleaseInput();
+
 
 // Implementation
 protected:
    BOOL m_bContinue;
+
+   CWnd* m_pwndFocus;
+   CWnd* m_pwndCapture;
 
 	// Generated message map functions
 	//{{AFX_MSG(CProgressDlg)

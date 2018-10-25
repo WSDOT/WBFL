@@ -186,6 +186,9 @@ STDMETHODIMP CLinearTendonSegment::get_Position(TendonMeasure measure,Float64 z,
    Float64 x = dx*(z-z1)/dz + x1;
    Float64 y = dy*(z-z1)/dz + y1;
 
+   x = IsZero(x) ? 0 : x;
+   z = IsZero(z) ? 0 : z;
+
    CComPtr<IPoint3d> p;
    p.CoCreateInstance(CLSID_Point3d);
    p->Move(x,y,z);

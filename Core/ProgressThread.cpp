@@ -13,7 +13,7 @@ static char THIS_FILE[] = __FILE__;
 
 
 const UINT g_TimerID = 1;
-CWnd* g_pTimerWnd = 0;
+CProgressDlg* g_pTimerWnd = 0;
 void CALLBACK EXPORT TimerProc(HWND hWnd,UINT nMsg,UINT_PTR nIDEvent,DWORD dwTime)
 {
    CHECK( g_pTimerWnd != 0 );
@@ -22,6 +22,7 @@ void CALLBACK EXPORT TimerProc(HWND hWnd,UINT nMsg,UINT_PTR nIDEvent,DWORD dwTim
 
    g_pTimerWnd->KillTimer( g_TimerID );
    g_pTimerWnd->ShowWindow( SW_SHOW );
+   g_pTimerWnd->GrabInput();
    g_pTimerWnd = 0;
 }
 
@@ -171,6 +172,7 @@ void CProgressThread::DestroyProgressWindow()
    
    m_ProgressDlg.KillTimer( g_TimerID );
    g_pTimerWnd = 0;
+   m_ProgressDlg.ReleaseInput();
    m_ProgressDlg.DestroyWindow();
 
    m_CriticalSection.Unlock();

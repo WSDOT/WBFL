@@ -1450,6 +1450,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EAFAutoCalcStatusBar.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\EAFAutoCalcView.cpp"
 				>
 			</File>
@@ -2638,6 +2642,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\EAF\EAFAutoCalcReportView.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFAutoCalcStatusBar.h"
 				>
 			</File>
 			<File

@@ -46,9 +46,21 @@ CEAFAutoCalcDocMixin::~CEAFAutoCalcDocMixin()
 {
 }
 
-void CEAFAutoCalcDocMixin::SetDocument(CDocument* pDoc)
+void CEAFAutoCalcDocMixin::SetDocument(CEAFDocument* pDoc)
 {
    m_pDocument = pDoc;
+}
+
+void CEAFAutoCalcDocMixin::CreateAcceleratorKeys()
+{
+   m_pDocument->GetAcceleratorTable()->AddAccelKey(FVIRTKEY,           VK_F5, EAFID_AUTOCALC_UPDATENOW,NULL);
+   m_pDocument->GetAcceleratorTable()->AddAccelKey(FCONTROL | FVIRTKEY,VK_U,  EAFID_AUTOCALC_UPDATENOW,NULL);
+}
+
+void CEAFAutoCalcDocMixin::RemoveAcceleratorKeys()
+{
+   m_pDocument->GetAcceleratorTable()->RemoveAccelKey(FVIRTKEY,           VK_F5);
+   m_pDocument->GetAcceleratorTable()->RemoveAccelKey(FCONTROL | FVIRTKEY,VK_U );
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -56,6 +68,24 @@ void CEAFAutoCalcDocMixin::SetDocument(CDocument* pDoc)
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFAutoCalcDocMixin commands
+
+void CEAFAutoCalcDocMixin::OnAutoCalc()
+{
+   EnableAutoCalc( !IsAutoCalcEnabled() );
+}
+
+void CEAFAutoCalcDocMixin::OnUpdateAutoCalc(CCmdUI* pCmdUI)
+{
+	if ( IsAutoCalcEnabled() )
+   {
+      pCmdUI->SetText( _T("Turn AutoCalc Off") );
+   }
+   else
+   {
+      pCmdUI->SetText( _T("Turn AutoCalc On") );
+   }
+}
+
 void CEAFAutoCalcDocMixin::OnUpdateNow()
 {
    POSITION pos = m_pDocument->GetFirstViewPosition();

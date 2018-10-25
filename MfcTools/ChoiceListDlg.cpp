@@ -25,7 +25,9 @@
 //
 
 #include "stdafx.h"
+#include "resource.h"
 #include "ChoiceListDlg.h"
+#include <MFCTools\Prompts.h>
 
 
 // CChoiceListDlg dialog
@@ -35,6 +37,8 @@ IMPLEMENT_DYNAMIC(CChoiceListDlg, CDialog)
 CChoiceListDlg::CChoiceListDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CChoiceListDlg::IDD, pParent)
 {
+   m_bCheckList = FALSE;
+   m_pValidator = NULL;
 }
 
 CChoiceListDlg::~CChoiceListDlg()
@@ -45,20 +49,36 @@ void CChoiceListDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
    DDX_Control(pDX, IDC_QUESTIONMARK, m_Icon);
+
    DDX_Control(pDX, IDC_LIST, m_List);
+   DDX_Control(pDX, IDC_CHECKLIST, m_CheckList);
 
    DDX_Text(pDX,IDC_QUESTION,m_Question);
 
    if ( pDX->m_bSaveAndValidate )
    {
       m_Choices.clear();
-      int nOptions = m_List.GetSelCount();
-      CArray<int,int> options;
-      options.SetSize(nOptions);
-      m_List.GetSelItems(nOptions,options.GetData());
-      for ( int i = 0; i < nOptions; i++ )
+      if ( m_bCheckList )
       {
-         m_Choices.push_back(options[i]);
+         int nOptions = m_CheckList.GetCount();
+         for ( int idx = 0; idx < nOptions; idx++ )
+         {
+            if ( m_CheckList.GetCheck(idx) == BST_CHECKED )
+            {
+               m_Choices.push_back(idx);
+            }
+         }
+      }
+      else
+      {
+         int nOptions = m_List.GetSelCount();
+         CArray<int,int> options;
+         options.SetSize(nOptions);
+         m_List.GetSelItems(nOptions,options.GetData());
+         for ( int idx = 0; idx < nOptions; idx++ )
+         {
+            m_Choices.push_back(options[idx]);
+         }
       }
 
       if ( m_pValidator && !m_pValidator->IsValid(m_Choices) )
@@ -66,16 +86,6 @@ void CChoiceListDlg::DoDataExchange(CDataExchange* pDX)
          m_pValidator->DisplayValidationErrorMessage();
          pDX->PrepareCtrl(IDC_LIST);
          pDX->Fail();
-      }
-   }
-   else
-   {
-      // Put choices into the check box list
-      std::vector<int>::iterator iter(m_Choices.begin());
-      std::vector<int>::iterator end(m_Choices.end());
-      for ( ; iter != end; iter++ )
-      {
-         m_List.SetSel(*iter);
       }
    }
 }
@@ -90,20 +100,47 @@ END_MESSAGE_MAP()
 
 BOOL CChoiceListDlg::OnInitDialog()
 {
-   SetWindowText(m_Title);
+   CDialog::OnInitDialog();
 
-   CListBox* pcbList = (CListBox*)GetDlgItem(IDC_LIST);
+   if ( m_bCheckList )
+   {
+      m_List.ShowWindow(SW_HIDE);
+   }
+   else
+   {
+      m_CheckList.ShowWindow(SW_HIDE);
+   }
+
+   SetWindowText(m_Title);
 
    CString resToken;
    int curPos = 0;
    resToken = m_Options.Tokenize( _T("\n") ,curPos);
    while ( resToken != "" )
    {
-      pcbList->AddString(resToken);
+      if ( m_bCheckList )
+      {
+         m_CheckList.AddString(resToken);
+      }
+      else
+      {
+         m_List.AddString(resToken);
+      }
       resToken = m_Options.Tokenize(_T("\n"),curPos);
    }
 
-   CDialog::OnInitDialog();
+   BOOST_FOREACH(int idx,m_Choices)
+   {
+      if ( m_bCheckList )
+      {
+         m_CheckList.SetCheck(idx,BST_CHECKED);
+      }
+      else
+      {
+         m_List.SetSel(idx);
+      }
+   }
+
 
    m_Icon.SetIcon(::LoadIcon(NULL,IDI_QUESTION));
 

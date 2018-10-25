@@ -69,7 +69,9 @@ STDMETHODIMP CCrossBeamRebarPattern::InterfaceSupportsErrorInfo(REFIID riid)
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
+      {
 			return S_OK;
+      }
 	}
 	return S_FALSE;
 }
@@ -96,7 +98,9 @@ STDMETHODIMP CCrossBeamRebarPattern::get_Rebar(IRebar** rebar)
    (*rebar) = m_Rebar;
 
    if ( m_Rebar )
+   {
       (*rebar)->AddRef();
+   }
 
    return S_OK;
 }
@@ -138,7 +142,9 @@ STDMETHODIMP CCrossBeamRebarPattern::get_Location(Float64 Xxb,CollectionIndexTyp
 {
    CHECK_RETOBJ(location);
    if ( barIdx < 0 || (CollectionIndexType)m_Count < barIdx )
+   {
       return E_INVALIDARG;
+   }
 
    CComPtr<IPoint2dCollection> profile;
    get_Profile(barIdx,&profile);
@@ -375,6 +381,7 @@ STDMETHODIMP CCrossBeamRebarPattern::get_DisplayProfile(/*[in]*/IndexType barIdx
          // the angle a little bit so there is something to display
          angle -= ::ConvertToSysUnits(15,unitMeasure::Degree);
       }
+    
       if ( m_Datum == xbBottom )
       {
          angle *= -1;
@@ -405,6 +412,7 @@ STDMETHODIMP CCrossBeamRebarPattern::get_DisplayProfile(/*[in]*/IndexType barIdx
          // the angle a little bit so there is something to display
          angle -= ::ConvertToSysUnits(15,unitMeasure::Degree);
       }
+
       if ( m_Datum != xbBottom )
       {
          angle *= -1;

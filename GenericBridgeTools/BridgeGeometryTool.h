@@ -93,6 +93,7 @@ public:
    STDMETHOD(GirderSpacingBySSMbr)(IGenericBridge* bridge,GirderIDType ssMbrID, Float64 distFromStartOfSSMbr,GirderIDType otherSSMbrID,Float64* pSpacing);
    STDMETHOD(GirderSpacingBySegment)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType otherSSMbrID,Float64* pSpacing);
    STDMETHOD(InteriorCurbOffset)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ IDirection* direction,/*[in]*/ DirectionType side,/*[out]*/IStation** ppOffsetStation,/*[out]*/ Float64* pOffset);
+   STDMETHOD(CurbLinePoint)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ IDirection* direction,/*[in]*/ DirectionType side,/*[out,retval]*/ IPoint2d** point);
 };
 
 #endif //__BridgeGeometryTool_H_

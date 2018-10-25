@@ -25,7 +25,6 @@
 //
 
 #include "stdafx.h"
-#include <EAF\EAFResources.h>
 #include <EAF\EAFBrokerDocument.h>
 #include <EAF\EAFUtilities.h>
 #include <EAF\EAFHints.h>

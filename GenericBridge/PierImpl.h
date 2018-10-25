@@ -37,6 +37,9 @@ private:
    Float64 GetSkewAngle();
    Float64 GetDelta();
 
+   bool m_bIsDirty;
+   Float64 m_Delta;
+
 // IPier (partial implementation)
 public:
    STDMETHOD(put_Type)(/*[in]*/PierType type);

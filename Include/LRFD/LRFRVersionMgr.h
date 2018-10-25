@@ -86,16 +86,19 @@ public:
 
    //------------------------------------------------------------------------
    // Returns "The Manual for Bridge Evaluation"
-   static std::_tstring GetCodeString();
+   static LPCTSTR GetCodeString();
 
    //------------------------------------------------------------------------
    // Returns the current version of the specification as a string.
-   static std::_tstring GetVersionString();
+   static LPCTSTR GetVersionString(bool bAbbreviated=false);
 
    //------------------------------------------------------------------------
    // Returns the current version of the specification as a string.
-   static std::_tstring GetVersionString(lrfrVersionMgr::Version version);
+   static LPCTSTR GetVersionString(lrfrVersionMgr::Version version,bool bAbbreviated=false);
 
+   //------------------------------------------------------------------------
+   // returns the version enum value from the abbreviated version string
+   static Version GetVersion(LPCTSTR strAbbrev);
 
    // GROUP: INQUIRY
    // GROUP: DEBUG

@@ -94,7 +94,7 @@ public:
    STDMETHOD(Close)(/*[in]*/ DWORD dwCookie);
 
 private:
-   IBroker* m_pBroker;
+   IBroker* m_pBroker; // weak reference
    CProgressThread* m_pThread;
    Int16 m_cProgressRef; // progress thread ref count
    std::vector<CollectionIndexType> m_ProgressMsgMarker; // index into m_Messages where the first message for
@@ -103,8 +103,6 @@ private:
 
    BOOL m_bEndLines;
    std::vector<boost::shared_ptr<std::_tofstream> > m_LogFiles;
-
-   CWnd* m_pActiveWnd;
 };
 
 OBJECT_ENTRY_AUTO(CLSID_SysAgent,CSysAgent)

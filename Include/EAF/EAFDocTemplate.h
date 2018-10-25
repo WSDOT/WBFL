@@ -91,7 +91,7 @@ protected:
    IEAFAppPlugin* m_pPlugin;
    IEAFCommandCallback* m_pCommandCallback;
 
-   CEAFTemplateGroup m_TemplateGroup;
+   mutable CEAFTemplateGroup m_TemplateGroup;
 
    CEAFAcceleratorTable m_AccelTable;
 

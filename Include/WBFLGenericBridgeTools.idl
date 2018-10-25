@@ -544,6 +544,7 @@ library WBFLGenericBridgeTools
       [helpstring("method GirderSpacingBySegment")] HRESULT GirderSpacingBySegment([in] IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in] SegmentIndexType segIdx,[in]Float64 Xs,[in]GirderIDType otherSSMbrID,[out,retval]Float64* pSpacing);
       // Get offset to interior curbs. Other method always return offset of exterior barrier curbs
 	   [helpstring("method InteriorCurbOffset")] HRESULT InteriorCurbOffset([in] IGenericBridge* bridge,[in] Float64 station,[in] IDirection* direction,[in] DirectionType side,[out]IStation** ppOffsetStation,[out] Float64* pOffset);
+	   [helpstring("method CurbLinePoint")] HRESULT CurbLinePoint([in] IGenericBridge* bridge,[in] Float64 station,[in] IDirection* direction,[in] DirectionType side,[out,retval] IPoint2d** point);
 	};
 
 	[

@@ -29,7 +29,6 @@
 #include <EAF\EAFMenu.h>
 #include <EAF\EAFPluginCommandManager.h>
 #include <EAF\EAFUtilities.h>
-#include <EAF\EAFResources.h>
 #include <EAF\EAFChildFrame.h>
 
 #include <algorithm> // for std::find()

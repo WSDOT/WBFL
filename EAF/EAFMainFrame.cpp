@@ -26,7 +26,6 @@
 
 #include "stdafx.h"
 #include "resource.h"
-#include <EAF\EAFResources.h>
 #include <EAF\EAFMainFrame.h>
 #include <EAF\EAFToolBar.h>
 #include <EAF\EAFBrokerDocument.h>
@@ -678,19 +677,27 @@ void CEAFMainFrame::CreateCanceled()
 CEAFDocument* CEAFMainFrame::GetDocument()
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CMDIChildWnd* pActiveChild = MDIGetActive();
    CDocument* pDoc = GetActiveDocument();
-   CView* pView = GetActiveView();
-   if ( pDoc == NULL && pActiveChild != NULL )
+   if ( pDoc == NULL )
    {
-      pDoc = pActiveChild->GetActiveDocument();
-   }
-   else if ( pDoc == NULL && pView != NULL )
-   {
-      pDoc = pView->GetDocument();
+      CWinApp* pApp = AfxGetApp();
+      if ( pApp->GetOpenDocumentCount() == 1 )
+      {
+         POSITION templatePosition = pApp->m_pDocManager->GetFirstDocTemplatePosition();
+         while (templatePosition != NULL)
+         {
+            CDocTemplate* pTemplate = pApp->m_pDocManager->GetNextDocTemplate(templatePosition);
+            POSITION docPosition = pTemplate->GetFirstDocPosition();
+            if ( docPosition != NULL )
+            {
+               pDoc = pTemplate->GetNextDoc(docPosition);
+               break;
+            }
+         }
+      }
    }
 
-   if ( pDoc != NULL && pDoc->IsKindOf(RUNTIME_CLASS(CEAFDocument)) )
+   if ( pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CEAFDocument)) )
    {
       return (CEAFDocument*)pDoc;
    }

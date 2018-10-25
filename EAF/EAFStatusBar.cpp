@@ -26,7 +26,6 @@
 
 #include "stdafx.h"
 #include "resource.h"
-#include <EAF\EAFResources.h>
 #include <EAF\EAFStatusBar.h>
 #include <EAF\EAFDocument.h>
 #include <EAF\StatusCenter.h>
@@ -41,6 +40,30 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
+// AFX_STATUSPANE, SBPF_UPDATE, and StatusBar::_GetPanePtr
+// are copy/paste from barstat.cpp (an MFC file) to support
+// our copy/paste and tweak implementation of SetIndicators.
+// See notes in SetIndicators that explain why we have to 
+// deviate from the MFC implementation.
+struct AFX_STATUSPANE
+{
+	UINT    nID;        // IDC of indicator: 0 => normal text area
+	int     cxText;     // width of string area in pixels
+						//   on both sides there is a 3 pixel gap and
+						//   a one pixel border, making a pane 6 pixels wider
+	UINT    nStyle;     // style flags (SBPS_*)
+	UINT    nFlags;     // state flags (SBPF_*)
+	CString strText;    // text in the pane
+};
+
+#define SBPF_UPDATE 0x0001  // pending update of text
+
+inline AFX_STATUSPANE* CStatusBar::_GetPanePtr(int nIndex) const
+{
+	ASSERT((nIndex >= 0 && nIndex < m_nCount) || m_nCount == 0);
+	return ((AFX_STATUSPANE*)m_pData) + nIndex;
+}
 
 
 // CEAFStatusBar
@@ -87,7 +110,93 @@ void CEAFStatusBar::GetStatusIndicators(const UINT** lppIDArray,int* pnIDCount)
 
 BOOL CEAFStatusBar::SetStatusIndicators(const UINT* lpIDArray, int nIDCount)
 {
-   return SetIndicators(lpIDArray,nIDCount);
+   // DON'T CALL BASE CLASS VERSION, it doesn't work for us.
+   // We have to tweak the module state when loading the string resources
+   // See below.
+   // NOTE: This method is a copy/paste from barstat.cpp, CStatusBar::SetIndicators
+   // the only change is the test for the EAF_INDICATOR_MIN/MAX range along with the
+   // module state tweak.
+
+   //return SetIndicators(lpIDArray,nIDCount);
+
+	ASSERT_VALID(this);
+	ASSERT(nIDCount >= 1);  // must be at least one of them
+	ASSERT(lpIDArray == NULL ||
+		AfxIsValidAddress(lpIDArray, sizeof(UINT) * nIDCount, FALSE));
+	ASSERT(::IsWindow(m_hWnd));
+
+	// first allocate array for panes and copy initial data
+	if (!AllocElements(nIDCount, sizeof(AFX_STATUSPANE)))
+		return FALSE;
+	ASSERT(nIDCount == m_nCount);
+
+	// copy initial data from indicator array
+	BOOL bResult = TRUE;
+	if (lpIDArray != NULL)
+	{
+		HFONT hFont = (HFONT)SendMessage(WM_GETFONT);
+		CClientDC dcScreen(NULL);
+		HGDIOBJ hOldFont = NULL;
+		if (hFont != NULL)
+			hOldFont = dcScreen.SelectObject(hFont);
+
+		AFX_STATUSPANE* pSBP = _GetPanePtr(0);
+		for (int i = 0; i < nIDCount; i++)
+		{
+			pSBP->nID = *lpIDArray++;
+			pSBP->nFlags |= SBPF_UPDATE;
+			if (pSBP->nID != 0)
+			{
+            if ( EAFID_INDICATOR_MIN <= pSBP->nID && pSBP->nID <= EAFID_INDICATOR_MAX )
+            {
+               // if the ID is one of ours (EAF), set the module state to our state
+               // and load the string....
+               AFX_MANAGE_STATE(AfxGetAppModuleState());
+				   if (!pSBP->strText.LoadString(pSBP->nID))
+				   {
+					   TRACE(traceAppMsg, 0, "Warning: failed to load indicator string 0x%04X.\n",
+						   pSBP->nID);
+					   bResult = FALSE;
+					   break;
+				   }
+            }
+            else
+            {
+               // .... otherwise, load the string using the current state
+				   if (!pSBP->strText.LoadString(pSBP->nID))
+				   {
+					   TRACE(traceAppMsg, 0, "Warning: failed to load indicator string 0x%04X.\n",
+						   pSBP->nID);
+					   bResult = FALSE;
+					   break;
+				   }
+            }
+
+				pSBP->cxText = dcScreen.GetTextExtent(pSBP->strText).cx;
+				ASSERT(pSBP->cxText >= 0);
+				if (!SetPaneText(i, pSBP->strText, FALSE))
+				{
+					bResult = FALSE;
+					break;
+				}
+			}
+			else
+			{
+				// no indicator (must access via index)
+				// default to 1/4 the screen width (first pane is stretchy)
+				pSBP->cxText = ::GetSystemMetrics(SM_CXSCREEN)/4;
+				if (i == 0)
+					pSBP->nStyle |= (SBPS_STRETCH | SBPS_NOBORDERS);
+			}
+			++pSBP;
+		}
+		if (hOldFont != NULL)
+			dcScreen.SelectObject(hOldFont);
+	}
+	UpdateAllPanes(TRUE, TRUE);
+
+	return bResult;
+
 }
 
 BOOL CEAFStatusBar::Create(CWnd* pParentWnd, DWORD dwStyle , UINT nID)

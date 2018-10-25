@@ -518,6 +518,23 @@ STDMETHODIMP CBridgeGeometryTool::InteriorCurbOffset(IGenericBridge* bridge,Floa
    return S_OK;
 }
 
+STDMETHODIMP CBridgeGeometryTool::CurbLinePoint(IGenericBridge* bridge,Float64 station,IDirection* direction,DirectionType side,IPoint2d** point)
+{
+   CHECK_RETVAL(point);
+
+   CComPtr<IStation> offsetStation;
+   Float64 offset;
+   HRESULT hr = InteriorCurbOffset(bridge,station,direction,side,&offsetStation,&offset);
+   if ( FAILED(hr) )
+   {
+      return hr;
+   }
+
+   CComPtr<IAlignment> alignment;
+   bridge->get_Alignment(&alignment);
+   return alignment->LocatePoint(CComVariant(offsetStation),omtAlongDirection,offset,CComVariant(direction),point);
+}
+
 STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 station,GirderIDType ssMbrID,IDirection* direction,DirectionType side,Float64* pOverhang)
 {
    // Computes the offset from the superstructure member identified by "ssMbrID" to the edge of deck

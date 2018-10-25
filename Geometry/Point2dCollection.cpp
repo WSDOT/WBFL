@@ -47,7 +47,9 @@ STDMETHODIMP CPoint2dCollection::InterfaceSupportsErrorInfo(REFIID riid)
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
+      {
 			return S_OK;
+      }
 	}
 	return S_FALSE;
 }
@@ -67,7 +69,9 @@ HRESULT CPoint2dCollection::OnBeforeAdd ( Point2dVectorImpl::StoredType* pVal)
       HRESULT hr;
       hr = CrAdvise(pVal->second.m_T, this, IID_IPoint2dEvents, &(pVal->first));
       if (FAILED(hr))
+      {
          return hr;
+      }
    }
    catch(...)
    {
@@ -81,7 +85,9 @@ HRESULT CPoint2dCollection::OnBeforeAdd ( Point2dVectorImpl::StoredType* pVal)
 HRESULT CPoint2dCollection::OnAfterAdd ( Point2dVectorImpl::StoredType* pVal, CollectionIndexType idx)
 {
    if ( m_bEventsEnabled )
+   {
       Fire_OnPointAdded(idx, pVal->second.m_T);
+   }
    return S_OK;
 }
 
@@ -93,7 +99,9 @@ HRESULT CPoint2dCollection::OnBeforeRemove ( Point2dVectorImpl::StoredType* pVal
       HRESULT hr;
       hr = CrUnadvise(pVal->second.m_T, this, IID_IPoint2dEvents, pVal->first);
       if (FAILED(hr))
+      {
          return hr;
+      }
    }
    catch(...)
    {
@@ -107,7 +115,9 @@ HRESULT CPoint2dCollection::OnBeforeRemove ( Point2dVectorImpl::StoredType* pVal
 HRESULT CPoint2dCollection::OnAfterRemove ( CollectionIndexType idx)
 {
    if ( m_bEventsEnabled )
+   {
       Fire_OnPointRemoved(idx);
+   }
    return S_OK;
 }
 
@@ -155,7 +165,9 @@ STDMETHODIMP CPoint2dCollection::Clear()
    UnadviseAll();
    m_coll.clear();
    if ( m_bEventsEnabled )
+   {
       Fire_OnPointsCleared();
+   }
 	return S_OK;
 }
 
@@ -172,6 +184,11 @@ STDMETHODIMP CPoint2dCollection::Offset(Float64 dx,Float64 dy)
 
 STDMETHODIMP CPoint2dCollection::RemoveDuplicatePoints()
 {
+   if ( m_coll.size() < 2 )
+   {
+      return S_OK;
+   }
+
    ContainerIteratorType iter = m_coll.begin();
    CComPtr<IPoint2d> prevPoint(iter->second);
    iter++;
@@ -207,7 +224,9 @@ STDMETHODIMP CPoint2dCollection::OffsetEx(ISize2d* size)
 STDMETHODIMP CPoint2dCollection::OnPointChanged(IPoint2d* point)
 {
    if ( m_bEventsEnabled )
+   {
       Fire_OnPointChanged(point);
+   }
 
    return S_OK;
 }
