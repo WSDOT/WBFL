@@ -200,7 +200,7 @@ void CFEA2DDoc::OnGTStrudl()
    m_Model->get_Name(&bstrName);
 
    CString strName;
-   strName.Format(_T("%s.gti"),OLE2W(bstrName));
+   strName.Format(_T("%s.gti"),OLE2T(bstrName));
 
    std::_tofstream ofile(strName);
 
