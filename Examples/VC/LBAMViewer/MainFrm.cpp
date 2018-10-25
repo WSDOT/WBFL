@@ -313,7 +313,7 @@ void CMainFrame::OnReactionReport()
    CLBAMViewerDoc::ResponseType curr_rt = pDoc->GetResponseType();
 
    // get list of all supports in model
-   CComPtr<ILongArray> support_ids;
+   CComPtr<IIDArray> support_ids;
    CComPtr<ILBAMFactory> gen_util;
    hr = gen_util.CoCreateInstance(CLSID_LRFDFactory);
    ATLASSERT(SUCCEEDED(hr));

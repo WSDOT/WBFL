@@ -31,21 +31,21 @@ LoadGroupDataSetBuilder::~LoadGroupDataSetBuilder()
 
 }
 
-void LoadGroupDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArray* locList, BSTR currStg,
+void LoadGroupDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
                                            COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
 {
    // check to see if cumulative results are requested. If so, we have to filter out internally generated
    // pois
-   CComPtr<ILongArray> cumm_poi_list;
+   CComPtr<IIDArray> cumm_poi_list;
    CComPtr<IDblArray> cumm_loc_list;
    CComPtr<IDblArray> ploc_list;
-   CComPtr<ILongArray> arr;
+   CComPtr<IIDArray> arr;
    if (summType==rsCumulative)
    {
       CollectionIndexType size;
       poiList->get_Count(&size);
-      cumm_poi_list.CoCreateInstance(CLSID_LongArray);
+      cumm_poi_list.CoCreateInstance(CLSID_IDArray);
       cumm_loc_list.CoCreateInstance(CLSID_DblArray);
       long new_size=0;
       for (CollectionIndexType ip=0; ip<size; ip++)
@@ -84,7 +84,7 @@ void LoadGroupDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArray* locL
 }
 
 
-void LoadGroupDataSetBuilder::BuildForceDataSets(ILongArray* arr, IDblArray* locList, BSTR currStg,
+void LoadGroupDataSetBuilder::BuildForceDataSets(IIDArray* arr, IDblArray* locList, BSTR currStg,
                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
                            COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
 {
@@ -131,7 +131,7 @@ void LoadGroupDataSetBuilder::BuildForceDataSets(ILongArray* arr, IDblArray* loc
       ATLASSERT(0); 
 }
 
-void LoadGroupDataSetBuilder::BuildStressDataSets(ILongArray* arr, IDblArray* locList, BSTR currStg,
+void LoadGroupDataSetBuilder::BuildStressDataSets(IIDArray* arr, IDblArray* locList, BSTR currStg,
                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
                            COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
 {
@@ -240,7 +240,7 @@ void LoadGroupDataSetBuilder::BuildStressDataSets(ILongArray* arr, IDblArray* lo
 }
 
 
-void LoadGroupDataSetBuilder::BuildReactionReport(ILongArray* supportlist, BSTR currStg,
+void LoadGroupDataSetBuilder::BuildReactionReport(IIDArray* supportlist, BSTR currStg,
                              CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
                              std::_tostream& os)
 {

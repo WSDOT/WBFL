@@ -36,6 +36,8 @@
 
 #include <Private\WBFLPackage.h>
 
+#include <afxcontrolbars.h>	// MFC support for ribbon and control bars
+
 #ifndef _AFX_NO_OLE_SUPPORT
 #include <afxole.h>         // MFC OLE classes
 #include <afxodlgs.h>       // MFC OLE dialog classes

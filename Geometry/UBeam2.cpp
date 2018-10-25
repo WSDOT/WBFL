@@ -648,17 +648,7 @@ STDMETHODIMP CUBeam2::get_TopFlangeWidth(Float64* width)
 {
    CHECK_RETVAL(width);
 
-   if (m_bUseOutlineOnly == VARIANT_TRUE)
-   {
-      // if the shape is just the outline of the U-beam,
-      // then the top flange is half the width of the beam
-      (*width) = m_W2/2;
-   }
-   else
-   {
-      // otherwise it is the normal input value
-      (*width) = m_W6;
-   }
+   (*width) = m_W6;
 
    return S_OK;
 }

@@ -2269,6 +2269,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\GenericBarrier.cpp"
+				>
+			</File>
+			<File
 				RelativePath="GenericBridge.cpp"
 				>
 				<FileConfiguration
@@ -5482,6 +5486,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\GenericBarrier.h"
+				>
+			</File>
+			<File
 				RelativePath="GenericBridgeCP.h"
 				>
 			</File>
@@ -5732,6 +5740,10 @@
 			</File>
 			<File
 				RelativePath="FShapeBarrier.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\GenericBarrier.rgs"
 				>
 			</File>
 			<File

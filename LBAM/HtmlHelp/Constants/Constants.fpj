@@ -3,16 +3,6 @@
 	<folders/>
 	<topics>
 		<topic>
-			<name>LoadOrientation.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>TruckDirectionType.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
 			<name>MemberType.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
@@ -23,7 +13,22 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
+			<name>LoadOrientation.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
 			<name>LiveLoadModelType.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>LiveLoadApplicabilityType.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>ChangeScopeType.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -68,12 +73,7 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>LiveLoadApplicabilityType.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>ChangeScopeType.htm</name>
+			<name>TruckDirectionType.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -88,12 +88,12 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>InfluenceSideType.htm</name>
+			<name>InfluenceLocationType.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>InfluenceLocationType.htm</name>
+			<name>InfluenceSideType.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -103,17 +103,12 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>AnalysisType.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
 			<name>SpecificationUnitsType.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>ResultsOrientation.htm</name>
+			<name>AnalysisType.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -129,6 +124,16 @@
 		</topic>
 		<topic>
 			<name>ResultsSummationType.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>ResultsOrientation.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>LiveLoadModelApplicationType.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>

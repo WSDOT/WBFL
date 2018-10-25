@@ -61,11 +61,11 @@ END_COM_MAP()
 // ILBAMFactory
 public:
 	STDMETHOD(CreateSimpleModel)(/*[in]*/IDblArray* SpanLengths, /*[in]*/Float64 E, /*[in]*/Float64 A, /*[in]*/Float64 I, /*[in]*/Float64 Depth, /*[out,retval]*/ILBAMModel** newModel);
-	STDMETHOD(GetSupportIDsForStage)(/*[in]*/ILBAMModel* pModel, /*[in]*/BSTR stage, /*[out]*/ILongArray* *supportIDs);
+	STDMETHOD(GetSupportIDsForStage)(/*[in]*/ILBAMModel* pModel, /*[in]*/BSTR stage, /*[out]*/IIDArray* *supportIDs);
    STDMETHOD(MapLoadGroupToLoadCase)(/*[in]*/ILBAMModel* pModel,/*[in]*/ BSTR lgName,/*[in]*/ BSTR lgDesc,/*[in]*/ BSTR lcName);
    STDMETHOD(CreateSelfWeightDeadLoad)(/*[in]*/ILBAMModel* pModel,/*[in]*/BSTR stage,/*[in]*/BSTR lgName,/*[in]*/Float64 unitWgt,/*[in]*/Float64 E);
-	STDMETHOD(GetSuperstructurePOIs)(/*[in]*/ILBAMModel* Model, /*[out,retval]*/ILongArray* *PoiIDs, /*[out]*/IDblArray* *PoiLocations);
-	STDMETHOD(GeneratePOIsOnSuperstructure)(/*[in]*/ILBAMModel* Model, /*[in]*/long startID, /*[in]*/long Increment,/*[out,retval]*/long* lastVal);
+	STDMETHOD(GetSuperstructurePOIs)(/*[in]*/ILBAMModel* Model, /*[out,retval]*/IIDArray* *PoiIDs, /*[out]*/IDblArray* *PoiLocations);
+	STDMETHOD(GeneratePOIsOnSuperstructure)(/*[in]*/ILBAMModel* Model, /*[in]*/PoiIDType startID, /*[in]*/PoiIDType Increment,/*[out,retval]*/PoiIDType* lastVal);
 
 // ILBAMLRFDFactory
 public:

@@ -112,7 +112,7 @@ void CTestJoint::Test()
    TRY_TEST_MC(pMembers->Create(7, 5,  0, 110, 115, &pMember7));
 
    // look at members connected to joint 0
-   CComPtr<ILongArray> pMbrIds;
+   CComPtr<IIDArray> pMbrIds;
    TRY_TEST_HR(pJoint0->get_Members(&pMbrIds));
    TRY_TEST_HR(pMbrIds->get_Count(&cnt));
    TRY_TEST(cnt,3);

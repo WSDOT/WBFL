@@ -85,6 +85,7 @@
 #define IDH_LongArray_ReDim                                                     2050
 #define IDH_LongArray_Remove                                                    2051
 #define IDH_LongArray_Reserve                                                   2052
+#define IDH_LongArray_Assign                                                    2053
 
 
 #define IDH_ULongArray                                                           2062

@@ -32,7 +32,7 @@ StressPointDataSetBuilder::~StressPointDataSetBuilder()
 
 }
 
-void StressPointDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArray* locList, BSTR currStg,
+void StressPointDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
                                            COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
 {

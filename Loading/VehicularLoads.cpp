@@ -116,7 +116,7 @@ HRESULT CVehicularLoads::OnAfterRemove( VehicleIndexType idx)
 void CVehicularLoads::FinalRelease()
 {
    // free up all of our connectionVehicularLoadnts on destruct
-   long i=0;
+   CollectionIndexType i=0;
    for (iterator it= begin(); it != end(); it++)
    {
       this->OnBeforeRemove(*it, i);

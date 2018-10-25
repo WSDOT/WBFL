@@ -327,6 +327,7 @@ STDMETHODIMP CLoadCombination::Clone(ILoadCombination**clone)
    pnew->m_LiveLoadFactor       = m_LiveLoadFactor;
    pnew->m_LoadCaseFactors      = m_LoadCaseFactors;
    pnew->m_LoadCombinationType  = m_LoadCombinationType;
+   pnew->m_LiveLoadModelApplicationType  = m_LiveLoadModelApplicationType;
 
    return pscs.CopyTo(clone);
 }
@@ -374,8 +375,31 @@ STDMETHODIMP CLoadCombination::put_LoadCombinationType(LoadCombinationType newVa
 	return S_OK;
 }
 
+STDMETHODIMP CLoadCombination::get_LiveLoadModelApplicationType(LiveLoadModelApplicationType *pVal)
+{
+	CHECK_RETVAL(pVal);
+   *pVal = m_LiveLoadModelApplicationType;
+
+	return S_OK;
+}
+
+STDMETHODIMP CLoadCombination::put_LiveLoadModelApplicationType(LiveLoadModelApplicationType newVal)
+{
+	if (newVal != m_LiveLoadModelApplicationType)
+   {
+      if (newVal<llmaEnvelope || newVal>llmaSum)
+         return E_INVALIDARG;
+
+      m_LiveLoadModelApplicationType = newVal;
+      Fire_OnLoadCombinationChanged(this, cgtCombination);
+   }
+
+	return S_OK;
+}
+
+
 // IStructuredStorage2
-static const Float64 MY_VER=2.0;
+static const Float64 MY_VER=3.0;
 STDMETHODIMP CLoadCombination::Load(IStructuredLoad2 * pload)
 {
    CHECK_IN(pload);
@@ -505,6 +529,17 @@ STDMETHODIMP CLoadCombination::Load(IStructuredLoad2 * pload)
       long llt = var;
       m_LoadCombinationType = (LoadCombinationType)llt;
 
+      if ( ver >= 3.0 )
+      {
+         var.Clear();
+         hr = pload->get_Property(_bstr_t("LiveLoadModelApplicationType"),&var);
+         if (FAILED(hr))
+            return hr;
+
+         llt = var;
+         m_LiveLoadModelApplicationType = (LiveLoadModelApplicationType)llt;
+      }
+
       var.Clear();
       hr = pload->get_Property(_bstr_t("Count"),&var);
       if (FAILED(hr))
@@ -582,6 +617,7 @@ STDMETHODIMP CLoadCombination::Save(IStructuredSave2 * psave)
 
       hr = psave->put_Property(CComBSTR("LiveLoadFactor"), _variant_t(m_LiveLoadFactor));
       hr = psave->put_Property(CComBSTR("LoadCombinationType"), _variant_t(m_LoadCombinationType));
+      hr = psave->put_Property(CComBSTR("LiveLoadModelApplicationType"), _variant_t(m_LiveLoadModelApplicationType)); // Added in Version 3
 
       CollectionIndexType count = m_LoadCaseFactors.size();
       hr = psave->put_Property(CComBSTR("Count"),_variant_t(count));

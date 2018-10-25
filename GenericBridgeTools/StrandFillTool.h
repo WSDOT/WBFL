@@ -61,5 +61,5 @@ END_COM_MAP()
 
 // IStrandFillTool
 public:
-   STDMETHOD(ComputeHarpedStrandMaxFill)(IStrandGridFiller* pEndGridFiller,IStrandGridFiller* pHPGridFiller,StrandIndexType* pMaxStrandCount,ILongArray** ppStrandFill);
+   STDMETHOD(ComputeHarpedStrandMaxFill)(IStrandGridFiller* pEndGridFiller,IStrandGridFiller* pHPGridFiller,StrandIndexType* pMaxStrandCount,IIndexArray** ppStrandFill);
 };

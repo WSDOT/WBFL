@@ -70,7 +70,7 @@ STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::InterfaceSupportsErrorInfo(REFI
 
 
 // IEnvelopedVehicularResponse
-STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeForces(ILongArray* pois, BSTR stage, LiveLoadModelType type, 
+STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeForces(IIDArray* pois, BSTR stage, LiveLoadModelType type, 
                                                                VehicleIndexType vehicleIndex, ResultsOrientation orientation, 
                                                                ForceEffectType effect, OptimizationType optimization, 
                                                                VehicularLoadConfigurationType vehConfiguration, 
@@ -137,7 +137,7 @@ STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeForces(ILongArray* pois,
    return S_OK;
 }
 
-STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeDeflections(ILongArray* pois, BSTR stage, LiveLoadModelType type, 
+STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeDeflections(IIDArray* pois, BSTR stage, LiveLoadModelType type, 
                                                                     VehicleIndexType vehicleIndex, ForceEffectType effect, OptimizationType optimization, 
                                                                     VehicularLoadConfigurationType vehConfiguration, 
                                                                     VARIANT_BOOL applyImpact, DistributionFactorType distributionType,
@@ -203,7 +203,7 @@ STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeDeflections(ILongArray* 
    return S_OK;
 }
 
-STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeReactions(ILongArray* supports, BSTR stage, LiveLoadModelType type, 
+STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeReactions(IIDArray* supports, BSTR stage, LiveLoadModelType type, 
                                                                   VehicleIndexType vehicleIndex, ForceEffectType effect, OptimizationType optimization, 
                                                                   VehicularLoadConfigurationType vehConfiguration, 
                                                                   VARIANT_BOOL applyImpact, DistributionFactorType distributionType,
@@ -263,7 +263,7 @@ STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeReactions(ILongArray* su
    return S_OK;
 }
 
-STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeSupportDeflections(ILongArray* supports, BSTR stage, LiveLoadModelType type, 
+STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeSupportDeflections(IIDArray* supports, BSTR stage, LiveLoadModelType type, 
                                                                            VehicleIndexType vehicleIndex, ForceEffectType effect, OptimizationType optimization, 
                                                                            VehicularLoadConfigurationType vehConfiguration, 
                                                                            VARIANT_BOOL applyImpact, DistributionFactorType distributionType,
@@ -323,7 +323,7 @@ STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeSupportDeflections(ILong
    return S_OK;
 }
 
-STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeStresses(ILongArray* pois, BSTR stage, LiveLoadModelType type, 
+STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeStresses(IIDArray* pois, BSTR stage, LiveLoadModelType type, 
                                                                  VehicleIndexType vehicleIndex, 
                                                                  ForceEffectType effect, OptimizationType optimization, 
                                                                  VehicularLoadConfigurationType vehConfiguration, 
@@ -353,8 +353,8 @@ STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeStresses(ILongArray* poi
       hr = force_res->get_Count(&num_pois);
       hr = results->Reserve(num_pois);
 
-      CComPtr<ILongArray> single_poi;
-      hr = single_poi.CoCreateInstance(CLSID_LongArray);
+      CComPtr<IIDArray> single_poi;
+      hr = single_poi.CoCreateInstance(CLSID_IDArray);
 
       hr = single_poi->ReDim(1);
 

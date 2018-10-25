@@ -45,7 +45,7 @@ static char THIS_FILE[] = __FILE__;
 
 static HRESULT CreateASimpleLBAM(ILBAMModel** model);
 
-inline HRESULT CreateDistributedLoad(IDistributedLoads* dls, BSTR stage, BSTR loadGroup, long mbrId, MemberType mType, Float64 ldVal)
+inline HRESULT CreateDistributedLoad(IDistributedLoads* dls, BSTR stage, BSTR loadGroup, MemberIDType mbrId, MemberType mType, Float64 ldVal)
 {
    CComPtr<IDistributedLoad> dl;
    TRY_TEST( dl.CoCreateInstance(CLSID_DistributedLoad), S_OK);
@@ -82,12 +82,12 @@ inline void CompareCmbForceResults(BSTR loadCombination, BSTR Stage, Optimizatio
    os << " POI     Left Value     Right Value"<<std::endl;
    os << "-----  -------------   -------------"<<std::endl;
 
-   const long NUMPOIS=10;
-   CComPtr<ILongArray> apois;
-   apois.CoCreateInstance(CLSID_LongArray);
-   for (long i=0; i<NUMPOIS; i++)
+   const CollectionIndexType NUMPOIS=10;
+   CComPtr<IIDArray> apois;
+   apois.CoCreateInstance(CLSID_IDArray);
+   for (CollectionIndexType i=0; i<NUMPOIS; i++)
    {
-      apois->Add( i);
+      apois->Add((PoiIDType)i);
    }
 
    // compute enveloped results for all pois
@@ -96,13 +96,13 @@ inline void CompareCmbForceResults(BSTR loadCombination, BSTR Stage, Optimizatio
                                        includeLiveLoad, VARIANT_TRUE, VARIANT_TRUE, &results), S_OK);
 
    // have to compute basic result for a single poi for each configuration optimized at that poi
-   CComPtr<ILongArray> apoi;
-   apoi.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIDArray> apoi;
+   apoi.CoCreateInstance(CLSID_IDArray);
    apoi->ReDim(1);
 
-   for (long j=0; j<NUMPOIS; j++)
+   for (CollectionIndexType j=0; j<NUMPOIS; j++)
    {
-      apoi->put_Item(0, j);
+      apoi->put_Item(0,(PoiIDType)j);
 
       // get enveloped value - with optimal configuration
       Float64 left_val, right_val;
@@ -170,12 +170,12 @@ inline void CompareCmbDeflectionResults(BSTR loadCombination, BSTR Stage, Optimi
    os << " POI     Left Value     Right Value"<<std::endl;
    os << "-----  -------------   -------------"<<std::endl;
 
-   const long NUMPOIS=10;
-   CComPtr<ILongArray> apois;
-   apois.CoCreateInstance(CLSID_LongArray);
-   for (long i=0; i<NUMPOIS; i++)
+   const CollectionIndexType NUMPOIS=10;
+   CComPtr<IIDArray> apois;
+   apois.CoCreateInstance(CLSID_IDArray);
+   for (CollectionIndexType i=0; i<NUMPOIS; i++)
    {
-      apois->Add( i);
+      apois->Add((PoiIDType)i);
    }
 
    // compute enveloped results for all pois
@@ -184,13 +184,13 @@ inline void CompareCmbDeflectionResults(BSTR loadCombination, BSTR Stage, Optimi
                                        includeLiveLoad, VARIANT_TRUE, VARIANT_TRUE, &results), S_OK);
 
    // have to compute basic result for a single poi for each configuration optimized at that poi
-   CComPtr<ILongArray> apoi;
-   apoi.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIDArray> apoi;
+   apoi.CoCreateInstance(CLSID_IDArray);
    apoi->ReDim(1);
 
-   for (long j=0; j<NUMPOIS; j++)
+   for (CollectionIndexType j=0; j<NUMPOIS; j++)
    {
-      apoi->put_Item(0, j);
+      apoi->put_Item(0,(PoiIDType)j);
 
       // get enveloped value - with optimal configuration
       Float64 left_val, right_val;
@@ -263,7 +263,7 @@ inline void CompareCmbReactionResults(ILBAMModel* Model, BSTR loadCombination, B
    os << "-----  -------------   "<<std::endl;
 
    // get list of supports for this stage
-   CComPtr<ILongArray> support_ids;
+   CComPtr<IIDArray> support_ids;
    CComPtr<ILBAMFactory> gen_util;
    hr = gen_util.CoCreateInstance(CLSID_LRFDFactory);
    ATLASSERT(SUCCEEDED(hr));
@@ -279,13 +279,13 @@ inline void CompareCmbReactionResults(ILBAMModel* Model, BSTR loadCombination, B
                                          VARIANT_TRUE, VARIANT_TRUE, VARIANT_TRUE, &results), S_OK);
 
    // have to compute basic result for a single poi for each configuration optimized at that poi
-   CComPtr<ILongArray> asup;
-   asup.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIDArray> asup;
+   asup.CoCreateInstance(CLSID_IDArray);
    asup->ReDim(1);
 
    for (CollectionIndexType j=0; j<num_supports; j++)
    {
-      asup->put_Item(0, j);
+      asup->put_Item(0,(SupportIDType)j);
 
       // get enveloped value - with optimal configuration
       Float64 llmval;
@@ -336,7 +336,7 @@ inline void CompareCmbSupportDeflectionResults(ILBAMModel* Model, BSTR loadCombi
    os << "-----  -------------   "<<std::endl;
 
    // get list of supports for this stage
-   CComPtr<ILongArray> support_ids;
+   CComPtr<IIDArray> support_ids;
    CComPtr<ILBAMFactory> gen_util;
    hr = gen_util.CoCreateInstance(CLSID_LRFDFactory);
    ATLASSERT(SUCCEEDED(hr));
@@ -352,13 +352,13 @@ inline void CompareCmbSupportDeflectionResults(ILBAMModel* Model, BSTR loadCombi
                                          VARIANT_TRUE, VARIANT_TRUE, VARIANT_TRUE, &results), S_OK);
 
    // have to compute basic result for a single poi for each configuration optimized at that poi
-   CComPtr<ILongArray> asup;
-   asup.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIDArray> asup;
+   asup.CoCreateInstance(CLSID_IDArray);
    asup->ReDim(1);
 
    for (CollectionIndexType j=0; j<num_supports; j++)
    {
-      asup->put_Item(0, j);
+      asup->put_Item(0,(SupportIDType)j);
 
       // get enveloped value - with optimal configuration
       Float64 llmval;
@@ -784,7 +784,7 @@ HRESULT CreateASimpleLBAM(ILBAMModel** model)
    lcdw->AddLoadGroup(lgn_ws);
 
    // add some pois
-   long last_val;
+   PoiIDType last_val;
    TRY_TEST(factory->GeneratePOIsOnSuperstructure(*model, 0, 4, &last_val), S_OK);
 
    // Save off to file for later inspection

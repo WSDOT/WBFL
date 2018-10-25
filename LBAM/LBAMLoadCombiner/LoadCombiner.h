@@ -168,6 +168,7 @@ private:
    struct ComboData
    {
       Float64              m_LiveLoadFactor;
+      LiveLoadModelApplicationType m_LiveLoadModelApplicationType;
       std::vector<LiveLoadModelType> m_LiveLoadModels;
 
       LoadCombinationType m_LoadCombinationType;

@@ -203,34 +203,34 @@ STDMETHODIMP CLoadCombinationAnalysisContext::Initialize(ILBAMModel *model, ILoa
    return S_OK;
 }
 
-STDMETHODIMP CLoadCombinationAnalysisContext::ComputeForces(BSTR LoadGroup, ILongArray* poiIDs, BSTR Stage, ResultsOrientation orientation, ResultsSummationType summ, ISectionResult3Ds** results)
+STDMETHODIMP CLoadCombinationAnalysisContext::ComputeForces(BSTR LoadGroup, IIDArray* poiIDs, BSTR Stage, ResultsOrientation orientation, ResultsSummationType summ, ISectionResult3Ds** results)
 {
    return m_pLoadGroupResponse->ComputeForces(LoadGroup, poiIDs, Stage, orientation, summ, results);
 }
 
-STDMETHODIMP CLoadCombinationAnalysisContext::ComputeDeflections(BSTR LoadGroup, ILongArray* poiIDs, BSTR Stage, ResultsSummationType summ, ISectionResult3Ds** results)
+STDMETHODIMP CLoadCombinationAnalysisContext::ComputeDeflections(BSTR LoadGroup, IIDArray* poiIDs, BSTR Stage, ResultsSummationType summ, ISectionResult3Ds** results)
 {
    return m_pLoadGroupResponse->ComputeDeflections(LoadGroup, poiIDs, Stage, summ, results);
 }
 
-STDMETHODIMP CLoadCombinationAnalysisContext::ComputeReactions(BSTR LoadGroup, ILongArray* supportIDs, BSTR Stage,ResultsSummationType summ,IResult3Ds** results)
+STDMETHODIMP CLoadCombinationAnalysisContext::ComputeReactions(BSTR LoadGroup, IIDArray* supportIDs, BSTR Stage,ResultsSummationType summ,IResult3Ds** results)
 {
    return m_pLoadGroupResponse->ComputeReactions(LoadGroup, supportIDs, Stage, summ, results);
 }
 
-STDMETHODIMP CLoadCombinationAnalysisContext::ComputeSupportDeflections(BSTR LoadGroup, ILongArray* supportIDs, BSTR Stage, ResultsSummationType summ, IResult3Ds** results)
+STDMETHODIMP CLoadCombinationAnalysisContext::ComputeSupportDeflections(BSTR LoadGroup, IIDArray* supportIDs, BSTR Stage, ResultsSummationType summ, IResult3Ds** results)
 {
    return m_pLoadGroupResponse->ComputeSupportDeflections( LoadGroup, supportIDs, Stage, summ, results);
 }
 
-STDMETHODIMP CLoadCombinationAnalysisContext::ComputeStresses(BSTR LoadGroup, ILongArray* poiIDs, BSTR Stage, ResultsSummationType summ, ISectionStressResults **results)
+STDMETHODIMP CLoadCombinationAnalysisContext::ComputeStresses(BSTR LoadGroup, IIDArray* poiIDs, BSTR Stage, ResultsSummationType summ, ISectionStressResults **results)
 {
    return m_pLoadGroupResponse->ComputeStresses(LoadGroup, poiIDs, Stage, summ, results);
 }
 
 
 // ILiveLoadModelResponse
-STDMETHODIMP CLoadCombinationAnalysisContext::ComputeForces(ILongArray* poiIDs, BSTR stage, LiveLoadModelType type,  
+STDMETHODIMP CLoadCombinationAnalysisContext::ComputeForces(IIDArray* poiIDs, BSTR stage, LiveLoadModelType type,  
                                                             ResultsOrientation orientation, ForceEffectType effect, 
                                                             OptimizationType optimization, 
                                                             VehicularLoadConfigurationType vehConfiguration, 
@@ -241,7 +241,7 @@ STDMETHODIMP CLoadCombinationAnalysisContext::ComputeForces(ILongArray* poiIDs, 
                                                   applyImpact, applyDistribution, computePlacement, results);
 }
 
-STDMETHODIMP CLoadCombinationAnalysisContext::ComputeDeflections(ILongArray* poiIDs, BSTR stage, LiveLoadModelType type,  
+STDMETHODIMP CLoadCombinationAnalysisContext::ComputeDeflections(IIDArray* poiIDs, BSTR stage, LiveLoadModelType type,  
                                                                  ForceEffectType effect, 
                                                                  OptimizationType optimization, 
                                                                  VehicularLoadConfigurationType vehConfiguration, 
@@ -252,7 +252,7 @@ STDMETHODIMP CLoadCombinationAnalysisContext::ComputeDeflections(ILongArray* poi
                                                        applyImpact, applyDistribution, computePlacement, results);
 }
 
-STDMETHODIMP CLoadCombinationAnalysisContext::ComputeReactions(ILongArray* supportIDs, BSTR stage, LiveLoadModelType type,  
+STDMETHODIMP CLoadCombinationAnalysisContext::ComputeReactions(IIDArray* supportIDs, BSTR stage, LiveLoadModelType type,  
                                                                ForceEffectType effect, 
                                                                OptimizationType optimization, 
                                                                VehicularLoadConfigurationType vehConfiguration, 
@@ -263,7 +263,7 @@ STDMETHODIMP CLoadCombinationAnalysisContext::ComputeReactions(ILongArray* suppo
                                                      applyImpact, applyDistribution, computePlacement, results);
 }
 
-STDMETHODIMP CLoadCombinationAnalysisContext::ComputeSupportDeflections(ILongArray* supportIDs, BSTR stage, LiveLoadModelType type,  
+STDMETHODIMP CLoadCombinationAnalysisContext::ComputeSupportDeflections(IIDArray* supportIDs, BSTR stage, LiveLoadModelType type,  
                                                                ForceEffectType effect, 
                                                                OptimizationType optimization, 
                                                                VehicularLoadConfigurationType vehConfiguration, 
@@ -274,7 +274,7 @@ STDMETHODIMP CLoadCombinationAnalysisContext::ComputeSupportDeflections(ILongArr
                                                      applyImpact, applyDistribution, computePlacement, results);
 }
 
-STDMETHODIMP CLoadCombinationAnalysisContext::ComputeStresses(ILongArray* poiIDs, BSTR stage, LiveLoadModelType type,  
+STDMETHODIMP CLoadCombinationAnalysisContext::ComputeStresses(IIDArray* poiIDs, BSTR stage, LiveLoadModelType type,  
                                                               ForceEffectType effect, 
                                                               OptimizationType optimization, 
                                                               VehicularLoadConfigurationType vehConfiguration, 
@@ -286,31 +286,31 @@ STDMETHODIMP CLoadCombinationAnalysisContext::ComputeStresses(ILongArray* poiIDs
 }
 
 // IBasicVehicularResponse
-STDMETHODIMP CLoadCombinationAnalysisContext::ComputeForces(ILongArray* poiIDs, BSTR stage, ResultsOrientation orientation,
+STDMETHODIMP CLoadCombinationAnalysisContext::ComputeForces(IIDArray* poiIDs, BSTR stage, ResultsOrientation orientation,
                                                             ILiveLoadConfiguration* config, ISectionResult3Ds* *results)
 {
    return m_pBasicVehicularResponse->ComputeForces(poiIDs, stage, orientation, config, results);
 }
 
-STDMETHODIMP CLoadCombinationAnalysisContext::ComputeDeflections(ILongArray* poiIDs, BSTR stage,
+STDMETHODIMP CLoadCombinationAnalysisContext::ComputeDeflections(IIDArray* poiIDs, BSTR stage,
                                                                  ILiveLoadConfiguration* config, ISectionResult3Ds* *results)
 {
    return m_pBasicVehicularResponse->ComputeDeflections(poiIDs, stage, config, results);
 }
 
-STDMETHODIMP CLoadCombinationAnalysisContext::ComputeReactions(ILongArray* supportIDs, BSTR stage,
+STDMETHODIMP CLoadCombinationAnalysisContext::ComputeReactions(IIDArray* supportIDs, BSTR stage,
                                                                ILiveLoadConfiguration* config, IResult3Ds* *pResults)
 {
    return m_pBasicVehicularResponse->ComputeReactions(supportIDs, stage, config, pResults);
 }
 
-STDMETHODIMP CLoadCombinationAnalysisContext::ComputeSupportDeflections(ILongArray* supportIDs, BSTR stage,
+STDMETHODIMP CLoadCombinationAnalysisContext::ComputeSupportDeflections(IIDArray* supportIDs, BSTR stage,
                                                                ILiveLoadConfiguration* config, IResult3Ds* *pResults)
 {
    return m_pBasicVehicularResponse->ComputeSupportDeflections(supportIDs, stage, config, pResults);
 }
 
-STDMETHODIMP CLoadCombinationAnalysisContext::ComputeStresses(ILongArray* poiIDs, BSTR stage,
+STDMETHODIMP CLoadCombinationAnalysisContext::ComputeStresses(IIDArray* poiIDs, BSTR stage,
                                                                ILiveLoadConfiguration* config, ISectionStressResults* *pResults)
 {
    return m_pBasicVehicularResponse->ComputeStresses(poiIDs, stage, config, pResults);
@@ -427,7 +427,7 @@ HRESULT CLoadCombinationAnalysisContext::put_CantileverPoiIncrement( PoiIDType n
    return m_pAnalysisPOIs->put_CantileverPoiIncrement(newVal);
 }
 
-HRESULT CLoadCombinationAnalysisContext::GetSuperstructurePois(BSTR stage, ILongArray** poiIDs, IDblArray** poiLocations)
+HRESULT CLoadCombinationAnalysisContext::GetSuperstructurePois(BSTR stage, IIDArray** poiIDs, IDblArray** poiLocations)
 {
    return m_pAnalysisPOIs->GetSuperstructurePois(stage, poiIDs, poiLocations);
 }
@@ -620,7 +620,7 @@ void CLoadCombinationAnalysisContext::GetLoadModifier(MemberType mbrType, Member
          Float64 xloc, yloc;
          hr = m_pModel->ComputeLocation(mbrID, mbrType, mbrLocation, &xloc, &yloc);
 
-         long span_no=0;
+         MemberIDType span_no=0;
          bool found = false;
          std::vector<Float64>::iterator its( m_SpanEnds.begin() );
          std::vector<Float64>::iterator itsend( m_SpanEnds.end() );

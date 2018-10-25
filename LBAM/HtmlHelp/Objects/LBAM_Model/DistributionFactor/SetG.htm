@@ -24,9 +24,9 @@
 <meta name=generator-minor-version content=1>
 <meta name=filetype content=kadov>
 <meta name=filetype-version content=1>
-<meta name=page-count content=0>
-<meta name=layout-height content=0>
-<meta name=layout-width content=0>
+<meta name=page-count content=1>
+<meta name=layout-height content=807>
+<meta name=layout-width content=1234>
 
 
 <!--(Links)=========================================================-->
@@ -49,7 +49,8 @@
 		wrapperparagraphselector=P
 		style="width: 100%;
 				border-spacing: 1px;
-				margin-top: 14pt;"
+				margin-top: 14pt;
+				border-spacing: 1px;"
 		cellspacing=1
 		width=100%>
 
@@ -77,7 +78,7 @@
 <td_null></tr>
 
 <tr>
-<td ROWSPAN=15
+<td ROWSPAN=16
 	style="x-cell-content-align: TOP;
 			width: 13%;
 			padding-left: 1px;
@@ -96,9 +97,9 @@
 			padding-bottom: 1px;"
 	valign=top
 	width=26%>
-<p>DistributionFactor<span style="font-weight: normal;">.</span><span style="font-weight: bold;">SetG</span>( 
- dblPMSgl, dblPMMul, dblNMSgl, dblNMMul, dblVSgl, dblVMul, dblDSgl, dblDMul, 
- dblRSgl, dblRMul, dblTSgl, dblFat)</p>
+<p>DistributionFactor.<span style="font-weight: bold;">SetG</span>( dblPMSgl, 
+ dblPMMul, dblNMSgl, dblNMMul, dblVSgl, dblVMul, dblDSgl, dblDMul, dblRSgl, 
+ dblRMul, dblTSgl, dblFat, dblPedestrian)</p>
 <p style="margin-bottom: 0;">&nbsp;</td>
 <td_null></tr>
 
@@ -388,6 +389,31 @@
 
 <tr>
 <td_null>
+<td colspan=1
+	rowspan=1
+	style="x-cell-content-align: TOP;
+			width: 26%;
+			padding-left: 1px;
+			padding-top: 1px;
+			padding-right: 1px;
+			padding-bottom: 1px;"
+	valign=top
+	width=26%>
+<p style="margin-bottom: 0;">dblPedestrian </td>
+<td colspan=1
+	rowspan=1
+	style="x-cell-content-align: TOP;
+			width: 61%;
+			padding-left: 1px;
+			padding-top: 1px;
+			padding-right: 1px;
+			padding-bottom: 1px;"
+	valign=top
+	width=61%>
+<p style="margin-bottom: 0;">Distribution factor for pedestrian loads</td></tr>
+
+<tr>
+<td_null>
 <td style="x-cell-content-align: TOP;
 			width: 26%;
 			padding-left: 1px;
@@ -426,7 +452,7 @@
 			padding-bottom: 1px;"
 	valign=top
 	width=26%>
-<p style="margin-bottom: 0;">All values must be positive</td>
+<p style="margin-bottom: 0;">All values must be zero or greater</td>
 <td_null></tr>
 
 <tr>

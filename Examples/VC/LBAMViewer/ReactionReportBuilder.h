@@ -7,7 +7,7 @@ class iReactionReportBuilder
 {
 public:
    // build report for reactions - uses CEdit returns
-   virtual void BuildReactionReport(ILongArray* supportlist, BSTR currStg,
+   virtual void BuildReactionReport(IIDArray* supportlist, BSTR currStg,
                                     CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
                                     std::_tostream& pos)=0;
 };

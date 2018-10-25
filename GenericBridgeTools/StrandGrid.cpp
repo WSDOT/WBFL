@@ -61,8 +61,8 @@ HRESULT CStrandGrid::FinalConstruct()
    geom_util->get_Point2dFactory(&m_Point2dFactory);
 
    m_GridBoundingBox.CoCreateInstance(CLSID_Rect2d);
-   m_CurrentFill.CoCreateInstance(CLSID_LongArray);
-   m_MaxFill.CoCreateInstance(CLSID_LongArray);
+   m_CurrentFill.CoCreateInstance(CLSID_IndexArray);
+   m_MaxFill.CoCreateInstance(CLSID_IndexArray);
 
    m_VerticalAdjustment = 0.0;
 
@@ -212,7 +212,7 @@ STDMETHODIMP CStrandGrid::get_MaxStrandCount(/*[out,retval]*/StrandIndexType* co
 }
 
 
-STDMETHODIMP CStrandGrid::GetMaxStrandFill(/*[out,retval]*/ILongArray** maxFill)
+STDMETHODIMP CStrandGrid::GetMaxStrandFill(/*[out,retval]*/IIndexArray** maxFill)
 {
    CHECK_RETOBJ(maxFill);
 
@@ -222,7 +222,7 @@ STDMETHODIMP CStrandGrid::GetMaxStrandFill(/*[out,retval]*/ILongArray** maxFill)
 }
 
 
-STDMETHODIMP CStrandGrid::get_StrandFill(/*[out,retval]*/ILongArray** fill)
+STDMETHODIMP CStrandGrid::get_StrandFill(/*[out,retval]*/IIndexArray** fill)
 {
    CHECK_RETOBJ(fill);
 
@@ -233,7 +233,7 @@ STDMETHODIMP CStrandGrid::get_StrandFill(/*[out,retval]*/ILongArray** fill)
    return m_CurrentFill->Clone(fill);
 }
 
-STDMETHODIMP CStrandGrid::put_StrandFill(/*[in]*/ILongArray* fill)
+STDMETHODIMP CStrandGrid::put_StrandFill(/*[in]*/IIndexArray* fill)
 {
    // fill contains the number of strands to be used at each grid position
    // if fill->Item == 2, the a strand is placed at +x and -x
@@ -251,12 +251,12 @@ STDMETHODIMP CStrandGrid::put_StrandFill(/*[in]*/ILongArray* fill)
    {
       if (gridPointIdx < (GridIndexType)nGridPoints)
       {
-         IDType nStrandsAtGridPoint; // should be index type but must be ID Type because of LongArray
+         StrandIndexType nStrandsAtGridPoint;
          fill->get_Item(gridPointIdx, &nStrandsAtGridPoint);
 
          if ( 0 <= nStrandsAtGridPoint && nStrandsAtGridPoint <= 2 )
          {
-            it->nStrandsAtGridPoint = StrandIndexType(nStrandsAtGridPoint);
+            it->nStrandsAtGridPoint = nStrandsAtGridPoint;
          }
          else
          {
@@ -409,7 +409,55 @@ STDMETHODIMP CStrandGrid::StrandIndexToGridIndex(/*[in]*/ StrandIndexType strand
    return hr;
 }
 
-STDMETHODIMP CStrandGrid::StrandIndexToGridIndexEx(/*[in]*/ILongArray* fill, /*[in]*/ StrandIndexType strandIndex, /*[out,retval]*/ GridIndexType* gridIndex)
+STDMETHODIMP CStrandGrid::GridIndexToStrandIndex(/*[in]*/GridIndexType gridIndex, /*[out,retval]*/ StrandIndexType* strandIndex1, /*[out,retval]*/ StrandIndexType* strandIndex2)
+{
+  CComPtr<IIndexArray> maxFill;
+  GetMaxStrandFill(&maxFill);
+  CollectionIndexType grcnt;
+  maxFill->get_Count(&grcnt);
+
+  if (grcnt==0)
+  {
+     ATLASSERT(0);
+     return E_FAIL;
+  }
+
+  if (gridIndex>grcnt-1)
+  {
+     ATLASSERT(0);
+     return E_INVALIDARG;
+  }
+
+  StrandIndexType idx=0;
+  StrandIndexType fll;
+  for (CollectionIndexType gridx=0; gridx<=gridIndex; gridx++)
+  {
+     maxFill->get_Item(gridx, &fll);
+
+     idx += fll;
+  }
+
+  if (fll==1)
+  {
+     *strandIndex1 = idx-1;
+     *strandIndex2 = INVALID_INDEX;
+  }
+  else if (fll==2)
+  {
+     *strandIndex1 = idx-2;
+     *strandIndex2 = idx-1;
+  }
+  else
+  {
+     ATLASSERT(0);
+     return E_FAIL;
+  }
+
+  return S_OK;
+}
+
+
+STDMETHODIMP CStrandGrid::StrandIndexToGridIndexEx(/*[in]*/IIndexArray* fill, /*[in]*/ StrandIndexType strandIndex, /*[out,retval]*/ GridIndexType* gridIndex)
 {
    // given a strand fill sequence (fill), find the grid index for the given strand index
    CHECK_IN(fill);
@@ -433,13 +481,13 @@ STDMETHODIMP CStrandGrid::StrandIndexToGridIndexEx(/*[in]*/ILongArray* fill, /*[
    GridIndexType fillIdx;
    for( fillIdx = 0; fillIdx < nPoints; fillIdx++)
    {
-      IDType nStrandsAtGridPoint;
+      StrandIndexType nStrandsAtGridPoint;
       fill->get_Item(fillIdx, &nStrandsAtGridPoint);
       ATLASSERT(0 <= nStrandsAtGridPoint && nStrandsAtGridPoint <= 2);
 
       nStrands += nStrandsAtGridPoint;
 
-      if (strandIndex <= nStrands)
+      if (strandIndex < nStrands)
       {
          *gridIndex = fillIdx;
          break; // found what we were looking for... break out of the loop
@@ -571,7 +619,7 @@ STDMETHODIMP CStrandGrid::get_FilledGridBounds( /*[out]*/Float64* bottomElev, /*
    return get_FilledGridBoundsEx(m_CurrentFill, bottomElev, topElev);
 }
 
-STDMETHODIMP CStrandGrid::get_FilledGridBoundsEx(/*[in]*/ILongArray* fill, /*[out]*/Float64* bottomElev, /*[out]*/Float64* topElev)
+STDMETHODIMP CStrandGrid::get_FilledGridBoundsEx(/*[in]*/IIndexArray* fill, /*[out]*/Float64* bottomElev, /*[out]*/Float64* topElev)
 {
    CHECK_IN(fill);
    CHECK_RETVAL(bottomElev);
@@ -591,7 +639,7 @@ STDMETHODIMP CStrandGrid::get_FilledGridBoundsEx(/*[in]*/ILongArray* fill, /*[ou
    GridIndexType fillIdx;
    for(fillIdx = 0; fillIdx < nPoints; fillIdx++)
    {
-      IDType nStrandsAtGridPoint;
+      StrandIndexType nStrandsAtGridPoint;
       fill->get_Item(fillIdx, &nStrandsAtGridPoint);
       ATLASSERT(0 <= nStrandsAtGridPoint && nStrandsAtGridPoint <= 2);
      
@@ -623,7 +671,7 @@ STDMETHODIMP CStrandGrid::get_FilledGridBoundsEx(/*[in]*/ILongArray* fill, /*[ou
 }
 
 
-STDMETHODIMP CStrandGrid::GetStrandCountEx(/*[in]*/ILongArray* fill, /*[out,retval]*/ StrandIndexType* count)
+STDMETHODIMP CStrandGrid::GetStrandCountEx(/*[in]*/IIndexArray* fill, /*[out,retval]*/ StrandIndexType* count)
 {
    CHECK_IN(fill);
    CHECK_RETVAL(count);
@@ -640,7 +688,7 @@ STDMETHODIMP CStrandGrid::GetStrandCountEx(/*[in]*/ILongArray* fill, /*[out,retv
    StrandIndexType nStrands = 0;
    for(GridIndexType fillIdx = 0; fillIdx < nPoints; fillIdx++)
    {
-      IDType nStrandsAtGridPoint;
+      StrandIndexType nStrandsAtGridPoint;
       fill->get_Item(fillIdx, &nStrandsAtGridPoint);
       ATLASSERT(0 <= nStrandsAtGridPoint && nStrandsAtGridPoint <= 2);
 
@@ -668,7 +716,7 @@ STDMETHODIMP CStrandGrid::GetStrandCountEx(/*[in]*/ILongArray* fill, /*[out,retv
    return S_OK;
 }
 
-STDMETHODIMP CStrandGrid::GetStrandPositionsEx(/*[in]*/ILongArray* fill, /*[out,retval]*/IPoint2dCollection** points)
+STDMETHODIMP CStrandGrid::GetStrandPositionsEx(/*[in]*/IIndexArray* fill, /*[out,retval]*/IPoint2dCollection** points)
 {
    CHECK_IN(fill);
    CHECK_RETOBJ(points);
@@ -689,7 +737,7 @@ STDMETHODIMP CStrandGrid::GetStrandPositionsEx(/*[in]*/ILongArray* fill, /*[out,
    for(GridIndexType fillIdx = 0; fillIdx < nPoints; fillIdx++)
    {
       const GridPoint2d& gpoint = m_GridPoints[fillIdx];
-      IDType nStrandsAtGridPoint;
+      StrandIndexType nStrandsAtGridPoint;
       fill->get_Item(fillIdx, &nStrandsAtGridPoint);
       ATLASSERT(0 <= nStrandsAtGridPoint && nStrandsAtGridPoint <= 2);
 
@@ -738,7 +786,7 @@ STDMETHODIMP CStrandGrid::GetStrandPositionsEx(/*[in]*/ILongArray* fill, /*[out,
    return local_points.CopyTo(points);
 }
 
-STDMETHODIMP CStrandGrid::get_CGEx(/*[in]*/ILongArray* fill, /*[out]*/Float64* cgx, /*[out]*/Float64* cgy)
+STDMETHODIMP CStrandGrid::get_CGEx(/*[in]*/IIndexArray* fill, /*[out]*/Float64* cgx, /*[out]*/Float64* cgy)
 {
    CHECK_IN(fill);
    CHECK_RETVAL(cgx);
@@ -760,7 +808,7 @@ STDMETHODIMP CStrandGrid::get_CGEx(/*[in]*/ILongArray* fill, /*[out]*/Float64* c
 
    for(GridIndexType fillIdx = 0; fillIdx < nPoints; fillIdx++)
    {
-      IDType nStrandsAtGridPoint;
+      StrandIndexType nStrandsAtGridPoint;
       fill->get_Item(fillIdx, &nStrandsAtGridPoint);
       ATLASSERT(0 <= nStrandsAtGridPoint && nStrandsAtGridPoint <= 2);
 
@@ -796,7 +844,7 @@ STDMETHODIMP CStrandGrid::get_CGEx(/*[in]*/ILongArray* fill, /*[out]*/Float64* c
    return S_OK;
 }
 
-STDMETHODIMP CStrandGrid::get_StrandBoundingBoxEx(/*[in]*/ILongArray* fill, /*[out,retval]*/IRect2d** box)
+STDMETHODIMP CStrandGrid::get_StrandBoundingBoxEx(/*[in]*/IIndexArray* fill, /*[out,retval]*/IRect2d** box)
 {
    CHECK_IN(fill);
    CHECK_RETOBJ(box);
@@ -826,7 +874,7 @@ STDMETHODIMP CStrandGrid::get_StrandBoundingBoxEx(/*[in]*/ILongArray* fill, /*[o
          Float64 old_x = gpoint.dPointX;
          Float64 old_y = gpoint.dPointY;
 
-         IDType nStrandsAtGridPoint;
+         StrandIndexType nStrandsAtGridPoint;
          fill->get_Item(fillIdx, &nStrandsAtGridPoint);
          ATLASSERT(0 <= nStrandsAtGridPoint && nStrandsAtGridPoint <= 2);
 
@@ -907,7 +955,7 @@ STDMETHODIMP CStrandGrid::get_NumStrandsInRow(/*[in]*/RowIndexType rowIdx,/*[out
    return S_OK;
 }
 
-STDMETHODIMP CStrandGrid::get_StrandsInRow(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/ILongArray** gridIndex)
+STDMETHODIMP CStrandGrid::get_StrandsInRow(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/IIndexArray** gridIndex)
 {
    HRESULT hr = ValidateFill();
    if (FAILED(hr))
@@ -918,8 +966,8 @@ STDMETHODIMP CStrandGrid::get_StrandsInRow(/*[in]*/RowIndexType rowIdx,/*[out,re
 
    CHECK_RETOBJ(gridIndex);
 
-   CComPtr<ILongArray> strandIndicies;
-   strandIndicies.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIndexArray> strandIndicies;
+   strandIndicies.CoCreateInstance(CLSID_IndexArray);
 
    RowIndexType currentRowIdx = 0;
    std::set<Row>::const_iterator iter;
@@ -998,14 +1046,14 @@ STDMETHODIMP CStrandGrid::DebondStrandByGridIndex(/*[in]*/GridIndexType grdIndex
    return S_OK;
 }
 
-STDMETHODIMP CStrandGrid::GetDebondedStrandsByGridIndex(/*[out,retval]*/ILongArray** grdIndexes)
+STDMETHODIMP CStrandGrid::GetDebondedStrandsByGridIndex(/*[out,retval]*/IIndexArray** grdIndexes)
 {
    CHECK_RETOBJ(grdIndexes);
 
    ValidateGrid();
 
-   CComPtr<ILongArray> gridPointIndiciesForDebondedStrands;
-   gridPointIndiciesForDebondedStrands.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIndexArray> gridPointIndiciesForDebondedStrands;
+   gridPointIndiciesForDebondedStrands.CoCreateInstance(CLSID_IndexArray);
 
    GridIndexType gridPointIndex = 0;
    for (GridCollectionIterator iter = m_GridPoints.begin(); iter != m_GridPoints.end(); iter++)
@@ -1134,7 +1182,7 @@ STDMETHODIMP CStrandGrid::GetBondedLengthByGridIndex(/*[in]*/GridIndexType grdIn
 
 
 
-STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 distFromStart,/*[in]*/Float64 girderLength, /*[out,retval]*/ILongArray** positionIndexes)
+STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 distFromStart,/*[in]*/Float64 girderLength, /*[out,retval]*/IIndexArray** positionIndexes)
 {
    CHECK_RETOBJ(positionIndexes);
 
@@ -1147,8 +1195,8 @@ STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 dist
       return E_INVALIDARG;
    }
 
-   CComPtr<ILongArray> array;
-   array.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIndexArray> array;
+   array.CoCreateInstance(CLSID_IndexArray);
 
    Float64 gl2 =girderLength/2.0;
 
@@ -1317,7 +1365,7 @@ STDMETHODIMP CStrandGrid::GetDebondSections(/*[out]*/IDblArray** arrLeft,/*[out]
    return S_OK;
 }
 
-STDMETHODIMP CStrandGrid::GetDebondAtLeftSection(/*[in]*/SectionIndexType sectionIdx,/*[out,retval]*/ILongArray** strandIndexes)
+STDMETHODIMP CStrandGrid::GetDebondAtLeftSection(/*[in]*/SectionIndexType sectionIdx,/*[out,retval]*/IIndexArray** strandIndexes)
 {
    // find section from left end
    CHECK_RETOBJ(strandIndexes);
@@ -1338,7 +1386,7 @@ STDMETHODIMP CStrandGrid::GetDebondAtLeftSection(/*[in]*/SectionIndexType sectio
    return GetDebondAtSection(rsection,strandIndexes);
 }
 
-STDMETHODIMP CStrandGrid::GetDebondAtRightSection(/*[in]*/SectionIndexType sectionIdx,/*[out,retval]*/ILongArray** strandIndexes)
+STDMETHODIMP CStrandGrid::GetDebondAtRightSection(/*[in]*/SectionIndexType sectionIdx,/*[out,retval]*/IIndexArray** strandIndexes)
 {
    // find section from right end
    CHECK_RETOBJ(strandIndexes);
@@ -1567,11 +1615,11 @@ StrandIndexType CStrandGrid::GetStrandCount()
    return m_StrandToGridMap.size();
 }
 
-HRESULT CStrandGrid::GetDebondAtSection(DebondSection& rSection,/*[out,retval]*/ILongArray** strandIndexes)
+HRESULT CStrandGrid::GetDebondAtSection(DebondSection& rSection,/*[out,retval]*/IIndexArray** strandIndexes)
 {
    // Gets the strand indicies of the strands that are debonded at a section
-   CComPtr<ILongArray> array;
-   array.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIndexArray> array;
+   array.CoCreateInstance(CLSID_IndexArray);
 
    DebondSection::GridPointsType::iterator gridPointsAtSectionIter;
    for (gridPointsAtSectionIter = rSection.GridPoints.begin(); gridPointsAtSectionIter != rSection.GridPoints.end(); gridPointsAtSectionIter++)

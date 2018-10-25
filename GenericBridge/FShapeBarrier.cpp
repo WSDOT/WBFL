@@ -77,18 +77,6 @@ STDMETHODIMP CFShapeBarrier::Clone(IBarrier** clone)
 
    pClone->put_Shape(m_BarrierShape);
    (*clone)->putref_Material(m_Material);
-   (*clone)->put_Path(m_Path);
-   (*clone)->put_IsStructurallyContinuous(m_bStructurallyContinuous);
-
-   return S_OK;
-}
-
-STDMETHODIMP CFShapeBarrier::get_StructuralShape(IShape** shape)
-{
-   if ( m_bStructurallyContinuous == VARIANT_TRUE )
-      return get_Shape(shape);
-   else
-      (*shape) = NULL;
 
    return S_OK;
 }
@@ -139,39 +127,29 @@ STDMETHODIMP CFShapeBarrier::putref_Material(IMaterial* material)
    return S_OK;
 }
 
-STDMETHODIMP CFShapeBarrier::get_Path(IPath** path)
-{
-   CHECK_RETOBJ(path);
-
-   m_Path->Clone(path);
-
-   return S_OK;
-}
-
-STDMETHODIMP CFShapeBarrier::put_Path(IPath* path)
-{
-   if ( m_Path.IsEqualObject(path) )
-      return S_OK;
-
-   m_Path.Release();
-   path->Clone(&(m_Path));
-
-#pragma Reminder("UPDATE: Fire Event")
-
-   return S_OK;
-}
-
-STDMETHODIMP CFShapeBarrier::get_ConnectionWidth(Float64 location,Float64* width)
+STDMETHODIMP CFShapeBarrier::get_CurbLocation(Float64* width)
 {
    CHECK_RETVAL(width);
 
+   *width = 0;
+   return S_OK;
+}
+
+STDMETHODIMP CFShapeBarrier::get_BarrierToeLocations(Float64* interiorToe,Float64* exteriorToe)
+{
+   CHECK_RETVAL(interiorToe);
+   CHECK_RETVAL(exteriorToe);
+
    if ( m_BarrierShape == NULL )
    {
-      *width = 0;
+      *interiorToe = 0.0;
+      *exteriorToe = 0.0;
       return S_OK;
    }
 
-   return m_BarrierShape->get_X2(width);
+   m_BarrierShape->get_X1(exteriorToe);
+   m_BarrierShape->get_X2(interiorToe);
+   return S_OK;
 }
 
 STDMETHODIMP CFShapeBarrier::get_IsStructurallyContinuous(VARIANT_BOOL* pbContinuous)

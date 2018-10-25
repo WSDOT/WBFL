@@ -34,7 +34,7 @@ EnvelopedVehicularDataSetBuilder::~EnvelopedVehicularDataSetBuilder()
 
 }
 
-void EnvelopedVehicularDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArray* locList, BSTR currStg,
+void EnvelopedVehicularDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
                                            COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
 {
@@ -59,7 +59,7 @@ CString EnvelopedVehicularDataSetBuilder::GetDescription()
 }
 
 
-void EnvelopedVehicularDataSetBuilder::BuildForceDataSets(ILongArray* poiList, IDblArray* locList, BSTR currStg,
+void EnvelopedVehicularDataSetBuilder::BuildForceDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
                                            COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
 {
@@ -211,7 +211,7 @@ void EnvelopedVehicularDataSetBuilder::BuildForceDataSets(ILongArray* poiList, I
    }
 }
 
-void EnvelopedVehicularDataSetBuilder::BuildStressDataSets(ILongArray* poiList, IDblArray* locList, BSTR currStg,
+void EnvelopedVehicularDataSetBuilder::BuildStressDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
                                            COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
 {
@@ -349,7 +349,7 @@ void EnvelopedVehicularDataSetBuilder::BuildStressDataSets(ILongArray* poiList, 
 }
 
 
-void EnvelopedVehicularDataSetBuilder::BuildReactionReport(ILongArray* supportlist, BSTR currStg,
+void EnvelopedVehicularDataSetBuilder::BuildReactionReport(IIDArray* supportlist, BSTR currStg,
                                        CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
                                        std::_tostream& os)
 {

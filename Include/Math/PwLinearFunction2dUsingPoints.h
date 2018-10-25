@@ -62,11 +62,12 @@ LOG
    rdp : 01.25.1999 : Created file
 *****************************************************************************/
 
+// predeclaration
+
 class MATHCLASS mathPwLinearFunction2dUsingPoints : public mathPwLinearFunction2d
 {
 public:
    // GROUP: LIFECYCLE
-
    //------------------------------------------------------------------------
    // Default constructor
    mathPwLinearFunction2dUsingPoints();
@@ -131,9 +132,33 @@ public:
    Int16 Intersect(const mathPwLinearFunction2dUsingPoints& rOther, 
                    const math1dRange& range, gpPoint2d* p);
 
+   //------------------------------------------------------------------------
+   // GetMaximumsInRange
+   // Determine the max and min Y values within the specified range.
+   // The entire range must be contained within the function or a 
+   // mathXEvalError will be thrown
+   void GetMaximumsInRange(const math1dRange& range, Float64* pMin, Float64* pMax);
+
+   //------------------------------------------------------------------------
    // Clear
    // Clears all points.
    void Clear();
+
+   //------------------------------------------------------------------------
+   // Mirror function about Y axis around xLocation. Changes bounds and order of points for func
+   void MirrorAboutY(Float64 xLocation);
+
+   //------------------------------------------------------------------------
+   // Get vector of raw Y values in function
+   void GetYValues(std::vector<Float64>& Yvec);
+
+   //------------------------------------------------------------------------
+   // Reset outer X bounds for function. This allows the end points of the function to be set to the 
+   // input values. Note that it will throw if the left bound is greater than m_Points[1].X(), or the
+   // right bound is less than m_Points[size-2].X()
+   // This function was created because we were getting numerical issues with the bounds after a call
+   // to MirrorPwLinearFunction2dUsingPointsAboutY
+   void ResetOuterRange( const math1dRange& range);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

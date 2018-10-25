@@ -45,7 +45,7 @@ public:
 	virtual ~CTestSpliced();
 
 private:
-   void GetSSPoiLocs(ILongArray* ppoiList, ILBAMModel* pModel, std::vector<Float64>* poiLocs);
+   void GetSSPoiLocs(IIDArray* ppoiList, ILBAMModel* pModel, std::vector<Float64>* poiLocs);
 
 };
 

@@ -90,14 +90,14 @@ public:
 
    // Returns a vector of integers GridPointCount long indicating the max number of strands
    // that can be placed at each Grid point (1, or 2)
-   STDMETHOD(GetMaxStrandFill)(/*[out,retval]*/ILongArray** maxFill);
+   STDMETHOD(GetMaxStrandFill)(/*[out,retval]*/IIndexArray** maxFill);
 
    // Set or get vector of integers indicated number of strands filled at each Grid point
    // Possible values are 0, 1, or 2. Length of vector is GridPointCount
    // If Grid point has positive X value and 1 is input, the strand is placed at X=0.0
    // If Grid point has zero X value and 2 is input, one strand is placed at X=0.0
-   STDMETHOD(get_StrandFill)(/*[out,retval]*/ILongArray** fill);
-   STDMETHOD(put_StrandFill)(/*[in]*/ILongArray* fill);
+   STDMETHOD(get_StrandFill)(/*[out,retval]*/IIndexArray** fill);
+   STDMETHOD(put_StrandFill)(/*[in]*/IIndexArray* fill);
 
    STDMETHOD(put_StrandMover)(/*[in]*/IStrandMover* mover);
 
@@ -114,7 +114,7 @@ public:
 
    // Convert strand index (defined in IPoint2dCollection's above) to Grid index
    STDMETHOD(StrandIndexToGridIndex)(/*[in]*/StrandIndexType pstnIndex, /*[out,retval]*/ GridIndexType* gridIndex);
-
+   STDMETHOD(GridIndexToStrandIndex)(/*[in]*/ GridIndexType gridIndex, /*[out,retval]*/ StrandIndexType* strandIndex1, /*[out,retval]*/ StrandIndexType* strandIndex2);
    // Return CG of currently filled strands - adjusted for vertical offset
 	STDMETHOD(get_CG)(/*[out]*/Float64* cgx, /*[out]*/Float64* cgy);
 
@@ -126,20 +126,20 @@ public:
 
 	STDMETHOD(get_RowsWithStrand)(/*[out,retval]*/RowIndexType* nRows);
 	STDMETHOD(get_NumStrandsInRow)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/StrandIndexType* nStrands);
-	STDMETHOD(get_StrandsInRow)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/ILongArray** gridIndexes);
+	STDMETHOD(get_StrandsInRow)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/IIndexArray** gridIndexes);
 
    // Ex methods are typically for testing a new fill.
    // they allow input of a temporary fill array. Internal fill array is not changed
-	STDMETHOD(GetStrandCountEx)(/*[in]*/ILongArray* fill, /*[out,retval]*/ StrandIndexType* count);
-	STDMETHOD(GetStrandPositionsEx)(/*[in]*/ILongArray* fill, /*[out,retval]*/IPoint2dCollection** points);
-	STDMETHOD(get_CGEx)(/*[in]*/ILongArray* fill,/*[out]*/Float64* cgx, /*[out]*/Float64* cgy);
-	STDMETHOD(get_StrandBoundingBoxEx)(/*[in]*/ILongArray* fill, /*[out,retval]*/IRect2d** box);
-	STDMETHOD(get_FilledGridBoundsEx)(/*[in]*/ILongArray* fill, /*[out]*/Float64* bottomElev, /*[out]*/Float64* topElev);
-   STDMETHOD(StrandIndexToGridIndexEx)(/*[in]*/ILongArray* fill, /*[in]*/ StrandIndexType strandIndex, /*[out,retval]*/ GridIndexType* gridIndex);
+	STDMETHOD(GetStrandCountEx)(/*[in]*/IIndexArray* fill, /*[out,retval]*/ StrandIndexType* count);
+	STDMETHOD(GetStrandPositionsEx)(/*[in]*/IIndexArray* fill, /*[out,retval]*/IPoint2dCollection** points);
+	STDMETHOD(get_CGEx)(/*[in]*/IIndexArray* fill,/*[out]*/Float64* cgx, /*[out]*/Float64* cgy);
+	STDMETHOD(get_StrandBoundingBoxEx)(/*[in]*/IIndexArray* fill, /*[out,retval]*/IRect2d** box);
+	STDMETHOD(get_FilledGridBoundsEx)(/*[in]*/IIndexArray* fill, /*[out]*/Float64* bottomElev, /*[out]*/Float64* topElev);
+   STDMETHOD(StrandIndexToGridIndexEx)(/*[in]*/IIndexArray* fill, /*[in]*/ StrandIndexType strandIndex, /*[out,retval]*/ GridIndexType* gridIndex);
 
    // Debonding
 	STDMETHOD(DebondStrandByGridIndex)(/*[in]*/GridIndexType grdIndex,/*[in]*/Float64 l1,/*[in]*/Float64 l2);
-	STDMETHOD(GetDebondedStrandsByGridIndex)(/*[out,retval]*/ILongArray** grdIndexes);
+	STDMETHOD(GetDebondedStrandsByGridIndex)(/*[out,retval]*/IIndexArray** grdIndexes);
 	STDMETHOD(GetDebondLengthByGridIndex)(/*[in]*/GridIndexType grdIndex,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2);
 
    // rough count of debonded strands for current fill
@@ -147,7 +147,7 @@ public:
 
    // Debonded  strands based on Positions index (i.e., from get_StrandPositions)
 	STDMETHOD(GetDebondLengthByPositionIndex)(/*[in]*/StrandIndexType positionIndex,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2);
-	STDMETHOD(GetStrandsDebondedByPositionIndex)(/*[in]*/Float64 distFromStart,/*[in]*/Float64 girderLength, /*[out,retval]*/ILongArray** positionIndexes);
+	STDMETHOD(GetStrandsDebondedByPositionIndex)(/*[in]*/Float64 distFromStart,/*[in]*/Float64 girderLength, /*[out,retval]*/IIndexArray** positionIndexes);
 
    STDMETHOD(GetBondedLengthByPositionIndex)(/*[in]*/StrandIndexType positionIndex, /*[in]*/Float64 distFromStart, /*[in]*/Float64 girderLength,
                                   /*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond);
@@ -159,8 +159,8 @@ public:
 	STDMETHOD(IsExteriorStrandDebondedInRow)(/*[in]*/ RowIndexType rowIndex,/*[out,retval]*/VARIANT_BOOL* bResult);
 
 	STDMETHOD(GetDebondSections)(/*[out]*/IDblArray** arrLeft,/*[out]*/IDblArray** arrRight);
-	STDMETHOD(GetDebondAtLeftSection)(/*[in]*/SectionIndexType sectionIdx,/*[out,retval]*/ILongArray** strandIndexes);
-	STDMETHOD(GetDebondAtRightSection)(/*[in]*/SectionIndexType sectionIdx,/*[out,retval]*/ILongArray** strandIndexes);
+	STDMETHOD(GetDebondAtLeftSection)(/*[in]*/SectionIndexType sectionIdx,/*[out,retval]*/IIndexArray** strandIndexes);
+	STDMETHOD(GetDebondAtRightSection)(/*[in]*/SectionIndexType sectionIdx,/*[out,retval]*/IIndexArray** strandIndexes);
 
 	STDMETHOD(ClearDebonding)();
 
@@ -198,7 +198,7 @@ private:
 
    bool m_bUpdateGrid;
    CComPtr<IRect2d> m_GridBoundingBox;
-   CComPtr<ILongArray> m_MaxFill;
+   CComPtr<IIndexArray> m_MaxFill;
    StrandIndexType m_MaxCount;
 
    // filled strands
@@ -239,14 +239,14 @@ private:
    std::set<Row> m_Rows;
 
    bool m_bUpdateFill;
-   CComPtr<ILongArray> m_CurrentFill; // array of strand position indicies for the strands that are actually used
+   CComPtr<IIndexArray> m_CurrentFill; // array of strand position indicies for the strands that are actually used
    std::vector<GridIndexType>  m_StrandToGridMap; // index into array is a strand index, value stored in array is corresponding grid point index
    Float64 m_VerticalAdjustment;
 
    StrandIndexType GetStrandCount();
 
    // helper function for GetDebondAtLeftSection and GetDebondAtRightSection
-   HRESULT GetDebondAtSection(DebondSection& rSection,/*[out,retval]*/ILongArray** strandIndexes);
+   HRESULT GetDebondAtSection(DebondSection& rSection,/*[out,retval]*/IIndexArray** strandIndexes);
 
    CComPtr<IStrandMover> m_pStrandMover;
 
