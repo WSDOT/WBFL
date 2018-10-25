@@ -32,7 +32,7 @@
 
 #include "NewProjectDlg.h"
 
-AFX_STATIC void AFXAPI _AfxAppendFilterSuffix(CString& filter, OPENFILENAME& ofn,
+AFX_STATIC void AFXAPI _AfxAppendFilterSuffix(CString& filter, CString& allFilter,OPENFILENAME& ofn,
 	CDocTemplate* pTemplate, CString* pstrDefaultExt)
 {
 	ENSURE_VALID(pTemplate);
@@ -50,7 +50,7 @@ AFX_STATIC void AFXAPI _AfxAppendFilterSuffix(CString& filter, OPENFILENAME& ofn
 		// add to filter
 		filter += strFilterName;
 		ASSERT(!filter.IsEmpty());  // must have a file type name
-		filter += (TCHAR)'\0';  // next string please
+		filter += (TCHAR)'\n';  // next string please
 
 		int iStart = 0;
 		do
@@ -82,11 +82,15 @@ AFX_STATIC void AFXAPI _AfxAppendFilterSuffix(CString& filter, OPENFILENAME& ofn
 				filter += (TCHAR)'*';
 				filter += strExtension;
 				filter += (TCHAR)';';  // Always append a ';'.  The last ';' will get replaced with a '\0' later.
-			}
+
+            allFilter += (TCHAR)'*';
+            allFilter += strExtension;
+            allFilter += (TCHAR)';';  // Always append a ';'.  The last ';' will get replaced with a '\0' later.
+         }
 		} while (iStart != -1);
 
-		filter.SetAt( filter.GetLength()-1, (TCHAR)'\0' );;  // Replace the last ';' with a '\0'
-		ofn.nMaxCustFilter++;
+      filter.SetAt(filter.GetLength() - 1, (TCHAR)'\n');;  // Replace the last ';' with a '\0'
+      ofn.nMaxCustFilter++;
 	}
 }
 
@@ -147,11 +151,12 @@ void CEAFDocManager::OnFileNew()
 BOOL CEAFDocManager::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags, BOOL bOpenFileDialog, CDocTemplate* pTemplate)
 {
    // Don't call base class version. we want to replace its functionality
-   // CDocManager::DoPromptFileName(fileName,nIDSTitle,lFlags,bOpenFileDialog,pTemplate);
-
+   // return CDocManager::DoPromptFileName(fileName,nIDSTitle,lFlags,bOpenFileDialog,pTemplate);
 
    // This code is copied from the base class version... the only difference is that default (*.*) file
-   // type is removed
+   // type is removed... also, we need to use \0 as the separater character in CFileDialog filters, however
+   // the string append doesn't work right with \0 so we will use \n and then replace all the \n with \0
+   // at the last moment
 	CFileDialog dlgFile(bOpenFileDialog, nullptr, nullptr, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, nullptr, nullptr, 0);
 
 	CString title;
@@ -159,12 +164,15 @@ BOOL CEAFDocManager::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD l
 
 	dlgFile.m_ofn.Flags |= lFlags;
 
+   CEAFApp* pApp = EAFGetApp();
+   CString strAllFilters;
+   strAllFilters.Format(_T("%s Files\n"),pApp->m_pszProfileName);
 	CString strFilter;
 	CString strDefault;
 	if (pTemplate != nullptr)
 	{
 		ASSERT_VALID(pTemplate);
-		_AfxAppendFilterSuffix(strFilter, dlgFile.m_ofn, pTemplate, &strDefault);
+		_AfxAppendFilterSuffix(strFilter, strAllFilters,dlgFile.m_ofn, pTemplate, &strDefault);
 	}
 	else
 	{
@@ -174,7 +182,7 @@ BOOL CEAFDocManager::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD l
 		while (pos != nullptr)
 		{
 			pTemplate = (CDocTemplate*)m_templateList.GetNext(pos);
-			_AfxAppendFilterSuffix(strFilter, dlgFile.m_ofn, pTemplate,
+			_AfxAppendFilterSuffix(strFilter, strAllFilters,dlgFile.m_ofn, pTemplate,
 				bFirst ? &strDefault : nullptr);
 
          bFirst = FALSE;
@@ -182,54 +190,22 @@ BOOL CEAFDocManager::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD l
 	}
 
 
-	dlgFile.m_ofn.lpstrFilter = strFilter;
+   if (bOpenFileDialog)
+   {
+      dlgFile.m_ofn.nMaxCustFilter++;
+      strAllFilters.SetAt(strAllFilters.GetLength() - 1, (TCHAR)'\n');  // Replace the last ';' with a '\0'
+      strFilter += strAllFilters;
+      //strFilter = strAllFilters;
+      // Set the default file extension
+      dlgFile.m_ofn.nFilterIndex = dlgFile.m_ofn.nMaxCustFilter+1;
+   }
+
+   strFilter.Replace((TCHAR)'\n', (TCHAR)'\0');
+   dlgFile.m_ofn.lpstrFilter = strFilter;
 	dlgFile.m_ofn.lpstrTitle = title;
 	dlgFile.m_ofn.lpstrFile = fileName.GetBuffer(_MAX_PATH);
 
-   if ( bOpenFileDialog )
-   {
-      // Set the default file extension
-      CEAFApp* pApp = EAFGetApp();
-      dlgFile.m_ofn.nFilterIndex = pApp->GetProfileInt(_T("Settings"),_T("LastFileType"),1);
-   }
-
-   TCHAR strCustomFilter[40] = { _T("\0\0") };
-   dlgFile.m_ofn.lpstrCustomFilter = strCustomFilter;
-   dlgFile.m_ofn.nMaxCustFilter = 40;
-
-   if ( !m_strCurrentFilter.IsEmpty() )
-   {
-      int count = 0;
-      int length = strFilter.GetLength();
-      for ( int i = 0; i < length; i++ )
-      {
-         if ( strFilter.GetAt(i) == 0 )
-         {
-            count++;
-            if ( m_strCurrentFilter.Compare(strFilter.Mid(i+1)) == 0 )
-            {
-               dlgFile.m_ofn.nFilterIndex = (count+1)/2;
-               break;
-            }
-         }
-      }
-   }
-
 	INT_PTR nResult = dlgFile.DoModal();
-
-   LPTSTR pstrCustomFilter = strCustomFilter;
-   pstrCustomFilter++;
-   m_strCurrentFilter.Format(_T("%s"),pstrCustomFilter);
-
-	fileName.ReleaseBuffer();
-
-   // Save type type of the last file
-   if ( nResult == IDOK && bOpenFileDialog )
-   {
-      CEAFApp* pApp = EAFGetApp();
-      pApp->WriteProfileInt(_T("Settings"),_T("LastFileType"),dlgFile.m_ofn.nFilterIndex);
-   }
-
 	return nResult == IDOK;
 }
 

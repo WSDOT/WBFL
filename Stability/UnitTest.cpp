@@ -106,7 +106,7 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
    stabilityProblem.SetYRollAxis(::ConvertToSysUnits(0.0,unitMeasure::Inch));
 
    stabilityProblem.SetImpact( 0.0, 0.0 );
-   stabilityProblem.EvaluateStressesForPlumbGirder(false);
+   stabilityProblem.EvaluateStressesAtEquilibriumAngle(true);
 
    stbStabilityEngineer engineer(nullptr);
 

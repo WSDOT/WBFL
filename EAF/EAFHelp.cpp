@@ -64,7 +64,7 @@ void EAFHelp(LPCTSTR lpszDocSetName,UINT nHID)
       }
       else
       {
-         strMessage.Format(_T("Help topic %d not found in the %s documentation set."),nHID,lpszDocSetName);
+         strMessage.Format(_T("Help topic %d not found in the %s documentation set at %s."),nHID,lpszDocSetName,strURL);
       }
       AfxMessageBox(strMessage,MB_ICONEXCLAMATION | MB_OK);
    }

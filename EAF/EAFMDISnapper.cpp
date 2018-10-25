@@ -96,15 +96,11 @@ LRESULT CEAFMDISnapper::OnMessage(CEAFChildFrame * wnd, UINT msg, WPARAM wp, LPA
 {
 	switch (msg)
 	{
-		case WM_MOVING			:	if (AllowSnap()) OnMoving(wnd, wp, (LPRECT) lp); break;
 		case WM_ENTERSIZEMOVE	:	if (AllowSnap()) OnEnterSizeMove(wnd);  break;
 		case WM_EXITSIZEMOVE	:	OnExitSizeMove();   break;
-
-        case WM_SYSCOMMAND      :   
-            if (wp == SC_MOVE || wp == SC_SIZE)
-                m_bSizeMoveIsSysCommand = true;
-            break;
-
+      case WM_MOVING:	if (AllowSnap()) OnMoving(wnd, wp, (LPRECT)lp); break;
+      case WM_SIZING: m_wndMoving = nullptr; break; // if we are sizing, don't snap... (null out the moving window) this message comes after WM_ENTERSIZEMOVE
+      case WM_SYSCOMMAND      :   if (wp == SC_MOVE || wp == SC_SIZE) m_bSizeMoveIsSysCommand = true;   break;
 	};
 
 	return 0;
@@ -125,7 +121,7 @@ void CEAFMDISnapper::OnMoving(CEAFChildFrame * wnd, WPARAM edge, LPRECT newrect)
 
 void CEAFMDISnapper::OnEnterSizeMove(CEAFChildFrame * wnd)
 {
-	m_wndMoving = wnd;
+	m_wndMoving = wnd; // this happens if we are sizing or moving
 }
 
 

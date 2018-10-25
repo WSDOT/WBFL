@@ -40,5 +40,3 @@ DESCRIPTION
 #include <LRFD\LRFD.h>
 
 #include <Stability\StabilityTypes.h>
-
-//#define MATCH_OLD_ANALYSIS // set to true to match the old stability analysis with the new stability code
