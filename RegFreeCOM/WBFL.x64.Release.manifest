@@ -784,6 +784,8 @@
 			 description="FShapeBarrier Class"/>
 		<comClass clsid="{8B5D872B-21C3-41F4-BFFB-A79E58CB9AC8}" tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
 			 description="SidewalkBarrier Class"/>
+          <comClass clsid="{9B910467-C7CE-4b56-B2C8-0CD47B73FBC2}" tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
+			 description="GenericBarrier Class"/>
 		<comClass clsid="{3041F4D5-169F-48BE-AB65-766A1086FAB3}" tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
 			 description="Connection Class"/>
 		<comClass clsid="{C1F73F53-6D63-44BE-953F-3254EBB4F91A}" tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
@@ -1579,6 +1581,7 @@
 	<comInterfaceExternalProxyStub name="IBarrier" iid="{84BDBE3E-928A-4A78-BF9B-39AE1AB8E6F9}" proxyStubClsid32="{00020424-0000-0000-C000-000000000046}"/>
 	<comInterfaceExternalProxyStub name="IFShapeBarrier" iid="{98E8E982-FFDF-48A5-9B5D-0189F803144B}" proxyStubClsid32="{00020424-0000-0000-C000-000000000046}"/>
 	<comInterfaceExternalProxyStub name="ISidewalkBarrier" iid="{6ED29E23-2D11-4391-932A-6DEC77964D4B}" proxyStubClsid32="{00020424-0000-0000-C000-000000000046}"/>
+     <comInterfaceExternalProxyStub name="IGenericBarrier" iid="{41B59BA7-844E-4f23-9056-B1ECCF6E7706}" proxyStubClsid32="{00020424-0000-0000-C000-000000000046}"/>
 	<comInterfaceExternalProxyStub name="IGirderSpacingEvents" iid="{306765BA-5E09-43B7-9478-C6694AAF9315}" proxyStubClsid32="{306765BA-5E09-43B7-9478-C6694AAF9315}"/>
 	<comInterfaceExternalProxyStub name="IStage" iid="{581B7442-F996-453D-80A3-2655A2F39C64}" proxyStubClsid32="{00020424-0000-0000-C000-000000000046}"/>
 	<comInterfaceExternalProxyStub name="IEnumStages" iid="{575FC17D-AE53-4EE6-99DD-27764D01CB9F}" proxyStubClsid32="{00020424-0000-0000-C000-000000000046}"/>

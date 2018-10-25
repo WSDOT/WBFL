@@ -338,6 +338,10 @@
         <param name="Local" value="Constants\LiveLoadApplicabilityType.htm">
       </object>
       <li><object type="text/sitemap">
+        <param name="Name" value="LiveLoadModelApplicationType">
+        <param name="Local" value="Constants\LiveLoadModelApplicationType.htm">
+      </object>
+      <li><object type="text/sitemap">
         <param name="Name" value="LiveLoadModelType">
         <param name="Local" value="Constants\LiveLoadModelType.htm">
       </object>
@@ -1307,6 +1311,10 @@
             <li><object type="text/sitemap">
               <param name="Name" value="LiveLoadFactor">
               <param name="Local" value="Objects\LBAM_Model\LoadCombination\LiveLoadFactor.htm">
+            </object>
+            <li><object type="text/sitemap">
+              <param name="Name" value="LiveLoadModelApplicationType">
+              <param name="Local" value="Objects\LBAM_Model\LoadCombination\LiveLoadModelApplicationType.htm">
             </object>
             <li><object type="text/sitemap">
               <param name="Name" value="LoadCaseFactorCount">

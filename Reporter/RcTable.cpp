@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2011  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -519,7 +519,7 @@ void rptRcTable::SetTableHeaderStyle( const rptStyleName& MyStyleName)
 void rptRcTable::SetColumnSpan(RowIndexType RowNo, ColumnIndexType ColNo, ColumnIndexType span)
 {
    CHECK(ColNo<m_NumColumns);
-   CHECK(ColNo+(span==SKIP_CELL?0:span)-1<m_NumColumns);
+   CHECK(ColNo+(span==SKIP_CELL?1:span)-1<m_NumColumns);
    //CHECK(span>=-1);
 
    if(ColNo<m_NumColumns) 

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Test - Test driver for LBAM analysis library
-// Copyright © 1999-2011  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -765,9 +765,9 @@ void CTestModel::Test()
 
    CComPtr<IDistributionFactor> pg0, pg1;
    Float64 g1=2, g2=g1+.1,g3=g2+.1,g4=g3+.1,g5=g4+.1,g6=g5+.1,g7=g6+.1;
-   Float64       g8=g7+.1,g9=g8+.1,g10=g9+.1,g11=g10+.1,g12=g11+.1,g13=g12+.1;
+   Float64       g8=g7+.1,g9=g8+.1,g10=g9+.1,g11=g10+.1,g12=g11+.1,g13=g12+.1,g14=g13+.1;
    TRY_TEST( pg0.CoCreateInstance( CLSID_DistributionFactor ) , S_OK );
-   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13), S_OK);
+   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14), S_OK);
 
    TRY_TEST(pgs0->putref_DistributionFactor(pg0), S_OK);
    TEST_DF_FIRED();

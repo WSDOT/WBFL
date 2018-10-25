@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2011  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -106,7 +106,7 @@ STDMETHODIMP CLiveLoadModel::put_DistributionFactorType(DistributionFactorType n
 {
 	if (newVal!=m_DistributionFactorType)
    {
-      if (newVal<dftNone || newVal>dftFatigue)
+      if (newVal<dftNone || newVal>dftPedestrian)
          return E_INVALIDARG;
 
       m_DistributionFactorType = newVal;
@@ -231,6 +231,8 @@ STDMETHODIMP CLiveLoadModel::Load(IStructuredLoad2 * pload)
          m_DistributionFactorType=dftFatigue;
       else if(dt==dftEnvelope)
          m_DistributionFactorType=dftEnvelope;
+	   else if(dt==dftPedestrian)
+         m_DistributionFactorType=dftPedestrian;
       else
       {
          ATLASSERT(0);
