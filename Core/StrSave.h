@@ -65,6 +65,7 @@ public:
    STDMETHOD(get_Version)(/*[out, retval]*/ Float64 *pVal);
    STDMETHOD(EndUnit)();
    STDMETHOD(Close)();
+   STDMETHOD(SaveRawUnit)(/*[in]*/LPCTSTR unitXML);
 
 private:
    sysStructuredSaveXmlPrs m_StrSave;

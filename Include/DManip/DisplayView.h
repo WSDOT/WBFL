@@ -31,6 +31,8 @@
 //
 
 #include <DManip\DManipExp.h>
+#include <DManip\DisplayMgr.h>
+#include <DManip\CoordinateMap.h>
 
 struct iTask;
 struct iTaskFactory;

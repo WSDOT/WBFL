@@ -382,10 +382,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Include\LibraryFw\UnitsMode.h"
-				>
-			</File>
-			<File
 				RelativePath="..\Include\LibraryFw\UnitTest.h"
 				>
 			</File>

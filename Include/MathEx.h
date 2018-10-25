@@ -137,13 +137,13 @@ inline int BinarySign(const T& a)
 
 // Linear interpolation from l to h. delta is the distance between l and h
 // a is the interpolation distance from l.
-template <class T>
-inline T LinInterp( const T& a, const T& l,const T& h, const T& delta)
+template <class H,class V>
+inline V LinInterp( const H& a, const V& l,const V& h, const H& delta)
 {
    if ( delta == 0 )
       return l;
    else
-      return l + (h-l)*a/delta;
+      return l + (h-l)*(V)a/(V)delta;
 }
 
 // Forces v into the range [l,h]

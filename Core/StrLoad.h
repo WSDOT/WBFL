@@ -67,6 +67,7 @@ public:
 	STDMETHOD(get_Property)(/*[in]*/ LPCTSTR name, /*[out, retval]*/ VARIANT *pVal);
    STDMETHOD(EndOfStorage)();
 	STDMETHOD(Close)();
+   STDMETHOD(LoadRawUnit)(/*[out]*/ BSTR* pbstrUnit);
 
 private:
    sysStructuredLoadXmlPrs m_StrLoad;

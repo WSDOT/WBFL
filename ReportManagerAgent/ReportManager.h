@@ -23,8 +23,7 @@
 
 // ReportManager.h : Declaration of the CReportManager
 
-#ifndef __REPORTMANAGER_H_
-#define __REPORTMANAGER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "IReportManager.h"
@@ -81,6 +80,8 @@ public:
    virtual std::vector<std::string> GetReportNames(bool bIncludeHidden) const;
    virtual CReportDescription GetReportDescription(const char* strReportName);
    virtual CReportDescription GetReportDescription(const std::string& strReportName);
+   virtual const CBitmap* GetMenuBitmap(const char* strReportName);
+   virtual const CBitmap* GetMenuBitmap(const std::string& strReportName);
    virtual boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const char* strReportName);
    virtual boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const std::string& strReportName);
    virtual boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const CReportDescription& rptDesc);
@@ -88,4 +89,3 @@ public:
    virtual Int16 DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec);
 };
 
-#endif //__REPORTMANAGER_H_

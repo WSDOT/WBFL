@@ -63,7 +63,6 @@ CProgressMonitorWindow::~CProgressMonitorWindow()
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
    AfxOleUnlockApp();
-
 }
 
 HRESULT CProgressMonitorWindow::FinalConstruct()
@@ -77,6 +76,14 @@ HRESULT CProgressMonitorWindow::FinalConstruct()
       return S_OK;
    else
       return E_POINTER;
+}
+
+void CProgressMonitorWindow::FinalRelease()
+{
+   if ( m_pDlg->GetSafeHwnd() )
+   {
+      Hide();
+   }
 }
 
 STDMETHODIMP CProgressMonitorWindow::put_GaugeValue(/*[in]*/long cookie, /*[in]*/ long newVal)
@@ -127,13 +134,16 @@ STDMETHODIMP CProgressMonitorWindow::get_WasCancelled(/*[out, retval]*/ VARIANT_
    return S_OK;
 }
 
-STDMETHODIMP CProgressMonitorWindow::Show(BSTR msg)
+STDMETHODIMP CProgressMonitorWindow::Show(BSTR msg,HWND hParent)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
+   if ( hParent )
+      m_wndParent.Attach(hParent);
+
    // create and show our modeless dialog
    CString cmsg(msg);
-   m_pDlg->Create( IDD_PROGRESSMONITORDLG);
+   m_pDlg->Create( IDD_PROGRESSMONITORDLG, &m_wndParent );
    m_pDlg->m_MessageCtl.SetWindowText(cmsg);
 
    if (m_IsFileOpen)
@@ -154,6 +164,8 @@ STDMETHODIMP CProgressMonitorWindow::Hide()
    {
       m_FileStream << ">>Hide called"<<std::endl;
    }
+
+   m_wndParent.Detach();
 
 	return S_OK;
 }
@@ -179,6 +191,8 @@ STDMETHODIMP CProgressMonitorWindow::Close()
    {
       m_FileStream << ">>Close called"<<std::endl;
    }
+
+   m_wndParent.Detach();
 
 	return S_OK;
 }

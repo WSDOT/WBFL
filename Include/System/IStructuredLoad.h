@@ -138,6 +138,10 @@ public:
    // error handling.
    virtual std::string GetStateDump() const =0;
 
+   //------------------------------------------------------------------------
+   // Returns the current unit as a text string
+   virtual std::string GetUnit() const = 0;
+
    // GROUP: ACCESS
    // GROUP: INQUIRY
 

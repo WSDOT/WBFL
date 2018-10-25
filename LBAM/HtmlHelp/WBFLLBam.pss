@@ -14,15 +14,16 @@ SupportMas_MPJ=1
 [Target:Microsoft HTML Help]
 ResultFileName=C:\ARP\lib\WBFLLBam.chm
 SSLayoutType=1
-CreateProjectTime=15:18, February 09, 2009
-CreateProjectUser=BriceR
+CreateProjectTime=11:18, January 28, 2010
+CreateProjectUser=bricer
 SupportMas_MPJ=1
-ActionID For Generation=1002
+ActionID For Generation=1001
 Remove Folder with prompt=1
 ViewFileName=C:\ARP\lib\WBFLLBam.chm
 ResultStatus=0
-BuildTimeHi=29985549
-BuildTimeLow=776144496
+BuildTimeHi=30056526
+BuildTimeLow=-1138528492
+Enable Result Dialog=1
 [Target:FlashHelp]
 ResultFileName=!SSL!\FlashHelp\WBFLLBam.htm
 SSLayoutType=2
@@ -48,10 +49,13 @@ Skin List=C:\ARP\WBFL\LBAM\HtmlHelp\WBFLLBam.trk
 OriginalHhk=C:\ARP\WBFL\LBAM\HtmlHelp\WBFLLBam.hhk
 Active Layout Names=C:\ARP\WBFL\LBAM\HtmlHelp\WBFLLBam.trl
 Default Topic=C:\ARP\WBFL\LBAM\HtmlHelp\Concepts\Basic_Concepts.htm
-Build Tags0=16910;              
+Build Tags0=23818;                    
 Build Tags=
 Build Expression=
 Language ID=1033
 Language Name=English
 Language=C:\ARP\WBFL\LBAM\HtmlHelp\RoboHHRE.lng
 Stop List=C:\ARP\WBFL\LBAM\HtmlHelp\WBFLLBam.stp
+[Layout Settings]
+MRULayoutCount=1
+MRULayout0=Microsoft HTML Help]12/15/09]0

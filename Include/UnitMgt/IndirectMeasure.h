@@ -168,8 +168,10 @@ public:
    unitmgtPressureData       SmallStress;
    unitmgtPressureData       ModE;
    unitmgtForceData          GeneralForce;
+   unitmgtForceData          Tonnage;
    unitmgtForceData          Shear;
    unitmgtMomentData         Moment;
+   unitmgtMomentData         SmallMoment;
    unitmgtAngleData          Angle;
    unitmgtAngleData          RadAngle;
    unitmgtDensityData        Density;

@@ -31,7 +31,6 @@
 // PROJECT INCLUDES
 //
 #include <LibraryFw\LibraryFwExp.h>
-#include <LibraryFw\UnitsMode.h>
 
 // FORWARD DECLARATIONS
 //
@@ -91,7 +90,7 @@ public:
    // Return true if edit is to be accepted, false if edit is cancelled.
    // It is up to the implementer of this class to insure that the entry
    // is not changed if the edit is cancelled.
-   virtual bool Edit(libUnitsMode::Mode mode, bool allowEditing)=0;
+   virtual bool Edit(bool allowEditing)=0;
 
    //------------------------------------------------------------------------
    // Change the name of the entry

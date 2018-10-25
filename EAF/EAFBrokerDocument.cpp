@@ -1,10 +1,32 @@
+///////////////////////////////////////////////////////////////////////
+// EAF - Extensible Application Framework
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
 // EAFBrokerDocument.cpp : implementation file
 //
 
 #include "stdafx.h"
-#include <comdef.h>
 #include <EAF\EAFBrokerDocument.h>
-#include <EAF\EAFDocProxyAgent.h>
+#include "EAFDocProxyAgent.h"
 
 #include <sstream> // for ostringstream
 
@@ -13,6 +35,7 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFBrokerDocument
@@ -23,6 +46,14 @@ CEAFBrokerDocument::CEAFBrokerDocument()
 {
    m_pBroker = NULL;
    m_pDocProxyAgent =  NULL;
+
+   // The base class registers as a unit mode listener
+   // However, the DocProxyAgent also registers as a listener
+   // This generates 2 units changed events whenever the units change
+   // Remove this document from the listener list so that only one event is received
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   pApp->RemoveUnitModeListener(this);
 }
 
 CEAFBrokerDocument::~CEAFBrokerDocument()
@@ -36,18 +67,17 @@ BEGIN_MESSAGE_MAP(CEAFBrokerDocument, CEAFDocument)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-void CEAFBrokerDocument::OnCloseDocument()
+BOOL CEAFBrokerDocument::OnOpenDocument(LPCTSTR lpszPathName)
 {
-   if ( m_pBroker )
-   {
-      m_pBroker->ShutDown();
-      ULONG cRef = m_pBroker->Release();
-      ASSERT( cRef == 0 );
-      
-      m_pBroker = 0;
-   }
+   BOOL bResult = CEAFDocument::OnOpenDocument(lpszPathName);
 
-   CEAFDocument::OnCloseDocument();
+   return bResult;
+}
+
+void CEAFBrokerDocument::DeleteContents()
+{
+   CEAFDocument::DeleteContents();
+   BrokerShutDown();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -79,6 +109,11 @@ HRESULT CEAFBrokerDocument::GetBroker(IBroker** ppBroker)
    return E_FAIL;
 }
 
+CATID CEAFBrokerDocument::GetExtensionAgentCategoryID()
+{
+   return CLSID_NULL;
+}
+
 BOOL CEAFBrokerDocument::Init()
 {
    if ( !CEAFDocument::Init() )
@@ -97,13 +132,7 @@ BOOL CEAFBrokerDocument::Init()
       return FALSE;
    }
 
-   // NOTE: DO NOT CALL InitAgents() here
-   // Before agents can initialize the menu command handling
-   // has to be set up. This can't happen until the frame
-   // window is created.
-   //
-   // CEAFDocTemplate extends the InitialUpdateFrame() function
-   // to call CEAFBrokerDocument::InitAgents() after the frame window is created.
+   InitAgents();
    
    return TRUE;
 }
@@ -124,9 +153,7 @@ BOOL CEAFBrokerDocument::CreateBroker()
    // get the IBrokerInitEx2 interface
    // the broker we want to be using implements this interface so
    // generate an error if it doesn't
-   _COM_SMARTPTR_TYPEDEF(IBrokerInitEx2,IID_IBrokerInitEx2);
-   IBrokerInitEx2Ptr pBrokerInit = NULL;
-   m_pBroker->QueryInterface(IID_IBrokerInitEx2,(void**)&pBrokerInit);
+   CComQIPtr<IBrokerInitEx2> pBrokerInit(m_pBroker);
    if ( pBrokerInit == NULL )
    {
       FailSafeLogMessage("Wrong version of Broker installed\nRe-install");
@@ -140,16 +167,27 @@ BOOL CEAFBrokerDocument::CreateBroker()
    return TRUE;
 }
 
+void CEAFBrokerDocument::BrokerShutDown()
+{
+   if ( m_pBroker )
+   {
+      m_pBroker->ShutDown();
+      ULONG cRef = m_pBroker->Release();
+      ASSERT( cRef == 0 );
+      
+      m_pBroker = NULL;
+
+      m_pDocProxyAgent = NULL;
+   }
+}
+
 BOOL CEAFBrokerDocument::LoadAgents()
 {
    // get the correct interface from the broker
-   _COM_SMARTPTR_TYPEDEF(IBrokerInitEx2,IID_IBrokerInitEx2);
-   IBrokerInitEx2Ptr pBrokerInit = NULL;
-   m_pBroker->QueryInterface(IID_IBrokerInitEx2,(void**)&pBrokerInit);
+   CComQIPtr<IBrokerInitEx2> pBrokerInit(m_pBroker);
 
    // create component category manager
-   _COM_SMARTPTR_TYPEDEF(ICatRegister,__uuidof(ICatRegister));
-   ICatRegisterPtr pICatReg;
+   CComPtr<ICatRegister> pICatReg;
    HRESULT hr;
    hr = ::CoCreateInstance( CLSID_StdComponentCategoriesMgr,
                             NULL,
@@ -168,12 +206,9 @@ BOOL CEAFBrokerDocument::LoadAgents()
    }
 
    // get the necessary interfaces from the component category manager
-   _COM_SMARTPTR_TYPEDEF(ICatInformation,__uuidof(ICatInformation));
-   ICatInformationPtr pICatInfo;
-   pICatReg->QueryInterface(&pICatInfo);
+   CComQIPtr<ICatInformation> pICatInfo(pICatReg);
 
-   _COM_SMARTPTR_TYPEDEF(IEnumCLSID,__uuidof(IEnumCLSID));
-   IEnumCLSIDPtr pIEnumCLSID;
+   CComPtr<IEnumCLSID> pIEnumCLSID;
 
    // get the agent category identifier
    const int nID = 1;
@@ -201,34 +236,96 @@ BOOL CEAFBrokerDocument::LoadAgents()
       return FALSE;
    }
 
+   //
+   // Load extension agents
+   //
+
+   ID[0] = GetExtensionAgentCategoryID();
+   if ( ID[0] != CLSID_NULL )
+   {
+      // enum agents
+      pIEnumCLSID.Release();
+      pICatInfo->EnumClassesOfCategories(nID,ID,0,NULL,&pIEnumCLSID);
+
+      nAgentsLoaded = 0;
+      while (SUCCEEDED(pIEnumCLSID->Next(nMaxAgents,clsid,&nAgentsLoaded)) && 0 < nAgentsLoaded )
+      {
+         // load the extension agents - do it one at a time so that disabled ones can be skipped
+         AFX_MANAGE_STATE(AfxGetAppModuleState());
+         CWinApp* pApp = AfxGetApp();
+         for (ULONG i = 0; i < nAgentsLoaded; i++ )
+         {
+            USES_CONVERSION;
+
+            LPOLESTR pszCLSID;
+            ::StringFromCLSID(clsid[i],&pszCLSID);
+
+            CString strState = pApp->GetProfileString(_T("Extensions"),OLE2A(pszCLSID),_T("Enabled"));
+            if ( strState.CompareNoCase(_T("Enabled")) == 0 )
+            {
+               CLSID* pCLSID = &clsid[i];
+               LoadAgents(pBrokerInit,pCLSID,1,false); // false = not required
+
+               // it is ok if extension agents fail to load... need to present user with a UI
+               // to disable these agents so they wont be loaded in the future
+            }
+
+            ::CoTaskMemFree((void*)pszCLSID);
+         }
+      }
+   }
+
    return TRUE;
 }
 
-BOOL CEAFBrokerDocument::LoadAgents(IBrokerInitEx2* pBrokerInit, CLSID* pClsid, long nClsid)
+BOOL CEAFBrokerDocument::LoadAgents(IBrokerInitEx2* pBrokerInit, CLSID* pClsid, long nClsid,bool bRequiredAgent)
 {
    // this function does the actual work of loading an agent
-   long lErrIndex = 0;
-   HRESULT hr = pBrokerInit->LoadAgents( pClsid, nClsid, &lErrIndex );
+   CComPtr<ILongArray> lErrArray;
+   HRESULT hr = pBrokerInit->LoadAgents( pClsid, nClsid, &lErrArray );
    if ( FAILED(hr) )
    {
-      LPOLESTR pszCLSID;
-      StringFromCLSID( pClsid[lErrIndex], &pszCLSID );
-      CString strCLSID(pszCLSID);
-      ::CoTaskMemFree( (LPVOID)pszCLSID );
+      long nErrors;
+      lErrArray->get_Count(&nErrors);
+      for ( long errIdx = 0; errIdx < nErrors; errIdx++ )
+      {
+         long agentIdx;
+         lErrArray->get_Item(errIdx,&agentIdx);
+         LPOLESTR pszCLSID;
+         StringFromCLSID( pClsid[agentIdx], &pszCLSID );
+         CString strCLSID(pszCLSID);
+         ::CoTaskMemFree( (LPVOID)pszCLSID );
 
-      LPOLESTR pszProgID;
-      ProgIDFromCLSID( pClsid[lErrIndex], &pszProgID );
-      CString strProgID(pszProgID);
-      ::CoTaskMemFree( (LPVOID)pszProgID );
+         LPOLESTR pszProgID;
+         ProgIDFromCLSID( pClsid[agentIdx], &pszProgID );
+         CString strProgID(pszProgID);
+         ::CoTaskMemFree( (LPVOID)pszProgID );
 
-      std::ostringstream msg;
-      msg << "Failed to load agent. hr = " << hr << std::endl;
-      msg << "CLSID = " << strCLSID.LockBuffer() << std::endl;
-      msg << "ProgID = " << strProgID.LockBuffer() << std::endl << std::ends;
-      FailSafeLogMessage( msg.str().c_str() );
+         std::ostringstream msg;
+         msg << "Failed to load agent. hr = " << hr << std::endl;
+         msg << "CLSID = " << strCLSID.LockBuffer() << std::endl;
+         msg << "ProgID = " << strProgID.LockBuffer() << std::endl << std::ends;
+         FailSafeLogMessage( msg.str().c_str() );
 
-      strCLSID.UnlockBuffer();
-      strProgID.UnlockBuffer();
+         if ( !bRequiredAgent )
+         {
+            USES_CONVERSION;
+            LPOLESTR pszUserType;
+            OleRegGetUserType(pClsid[agentIdx],USERCLASSTYPE_SHORT,&pszUserType);
+
+            CString strMsg;
+            strMsg.Format("Failed to load %s.\n\nWould you like to disable this component?",OLE2A(pszUserType));
+            if ( AfxMessageBox(strMsg,MB_YESNO | MB_ICONQUESTION) == IDYES )
+            {
+               AFX_MANAGE_STATE(AfxGetAppModuleState());
+               CWinApp* pApp = AfxGetApp();
+               pApp->WriteProfileString(_T("Extensions"),OLE2A(pszCLSID),_T("Disabled"));
+            }
+         }
+
+         strCLSID.UnlockBuffer();
+         strProgID.UnlockBuffer();
+      }
 
       return FALSE;
    }
@@ -242,29 +339,36 @@ BOOL CEAFBrokerDocument::LoadSpecialAgents(IBrokerInitEx2* pBrokerInit)
    // provides the bridge between the MFC Doc/View architecture
    // and the WBFL Agent/Broker architecture.
 
-   m_pDocProxyAgent = CreateDocProxyAgent();
+   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+
+   CComObject<CEAFDocProxyAgent>* pDocProxyAgent;
+   CComObject<CEAFDocProxyAgent>::CreateInstance(&pDocProxyAgent);
+   CComPtr<IAgentEx> pAgent(pDocProxyAgent);
+
+   m_pDocProxyAgent = dynamic_cast<CEAFDocProxyAgent*>(pDocProxyAgent);
+
+   m_pDocProxyAgent->SetDocument( this );
    m_pDocProxyAgent->SetBroker( m_pBroker );
+   m_pDocProxyAgent->SetMainFrame(pMainFrame);
    
-   HRESULT hr = pBrokerInit->AddAgent( m_pDocProxyAgent );
+   HRESULT hr = pBrokerInit->AddAgent( pAgent );
 
    return SUCCEEDED(hr);
 }
 
 void CEAFBrokerDocument::InitAgents()
 {
-   // NOTE: This function called from CEAFDocTemplate::InitialUpdateFrame()
-
-   // and finally, initialize the agents
-   _COM_SMARTPTR_TYPEDEF(IBrokerInitEx2,IID_IBrokerInitEx2);
-   IBrokerInitEx2Ptr pBrokerInit = NULL;
-   m_pBroker->QueryInterface(IID_IBrokerInitEx2,(void**)&pBrokerInit);
-
+   // and finally, initialize all the agents
+   CComQIPtr<IBrokerInitEx2> pBrokerInit(m_pBroker);
    pBrokerInit->InitAgents();
 }
 
-CEAFDocProxyAgent* CEAFBrokerDocument::CreateDocProxyAgent()
+void CEAFBrokerDocument::DoIntegrateWithUI(BOOL bIntegrate)
 {
-   return new CEAFDocProxyAgent();
+   CEAFDocument::DoIntegrateWithUI(bIntegrate);
+
+   CComQIPtr<IBrokerInitEx3> pBrokerInit(m_pBroker);
+   pBrokerInit->IntegrateWithUI(bIntegrate);
 }
 
 void CEAFBrokerDocument::OnLoadAgentsError()
@@ -275,18 +379,29 @@ void CEAFBrokerDocument::OnLoadAgentsError()
 
 HRESULT CEAFBrokerDocument::LoadTheDocument(IStructuredLoad* pStrLoad)
 {
-   _COM_SMARTPTR_TYPEDEF(IBrokerPersist,IID_IBrokerPersist);
-   IBrokerPersistPtr pPersist;
-   m_pBroker->QueryInterface( &pPersist );
-   ASSERT( pPersist.GetInterfacePtr() != NULL );
+   CComQIPtr<IBrokerPersist> pPersist(m_pBroker);
    return pPersist->Load( pStrLoad );
 }
 
-HRESULT CEAFBrokerDocument::SaveTheDocument(IStructuredSave* pStrSave)
+HRESULT CEAFBrokerDocument::WriteTheDocument(IStructuredSave* pStrSave)
 {
-   _COM_SMARTPTR_TYPEDEF(IBrokerPersist,IID_IBrokerPersist);
-   IBrokerPersistPtr pPersist;
-   m_pBroker->QueryInterface( &pPersist );
-   ASSERT( pPersist.GetInterfacePtr() != NULL );
+   CComQIPtr<IBrokerPersist> pPersist(m_pBroker);
    return pPersist->Save( pStrSave );
+}
+
+CString CEAFBrokerDocument::GetLogFileName()
+{
+   CString strFileName;
+   strFileName.Format("%s.log",AfxGetApp()->m_pszExeName);
+   return strFileName;
+}
+
+void CEAFBrokerDocument::OnLogFileOpened()
+{
+   // Does nothing by default
+}
+
+void CEAFBrokerDocument::OnLogFileClosing()
+{
+   // Does nothing by default
 }

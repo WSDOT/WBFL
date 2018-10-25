@@ -31,6 +31,7 @@
 
 #include <initguid.h>
 #include <WBFLCore_i.c>
+#include <WBFLTools_i.c>
 
 // Used to determine whether the DLL can be unloaded by OLE
 STDAPI DllCanUnloadNow(void)

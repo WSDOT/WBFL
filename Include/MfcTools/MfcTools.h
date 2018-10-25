@@ -41,6 +41,7 @@
 #include <MfcTools\ModifyButton.h>
 #include <MfcTools\MetaFileStatic.h>
 #include <MfcTools\Text.h>
+#include <MfcTools\Prompts.h>
 #include <MfcTools\HyperLink.h>
 #include <MfcTools\VersionInfo.h>
 

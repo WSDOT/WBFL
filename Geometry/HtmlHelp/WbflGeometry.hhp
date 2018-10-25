@@ -587,6 +587,7 @@ Objects\DeckedSlabBeam\W_Property_(DeckedSlabBeam_Object).htm
 Objects\VoidedSlab2\Shape_Property_(VoidedSlab2_Object).htm
 Objects\VoidedSlab2\VoidCount_Property_(VoidedSlab2_Object).htm
 Objects\VoidedSlab2\XYPosition_Property_(VoidedSlab2_Object).htm
+Objects\BulbTee\C1_Property_(BulbTee_Object).htm
 Objects\MultiWeb2\LeftBlockout_Property_(MultiWeb2_Object).htm
 Objects\Size2d\Dimensions_Method_(Size2d_Object).htm
 Objects\Point3d\Location_Method_(Point3d_Object).htm

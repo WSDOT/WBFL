@@ -1491,6 +1491,15 @@
     <comClass clsid="{A6C78DC5-0FD1-48B0-B393-D7241232AE11}"
               tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
               description="CapacityReductionFactor Class"></comClass>
+    <comClass clsid="{88B40E54-6EB0-4701-AC9B-71AA90841C73}"
+              tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
+              description="CrackedSectionSolution Class"></comClass>
+    <comClass clsid="{A3B11833-C6C5-4FAD-96C0-5E162B8C4228}"
+              tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
+              description="CrackedSectionSolver Class"></comClass>
+    <comClass clsid="{EFF46265-14C7-41E3-AF39-45B820745A64}"
+              tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
+              description="CrackedSectionSlice Class"></comClass>
     <typelib tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
              version="1.0"
              helpdir=""

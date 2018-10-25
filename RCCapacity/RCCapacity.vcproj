@@ -330,6 +330,18 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\CrackedSectionSlice.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CrackedSectionSolution.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CrackedSectionSolver.cpp"
+				>
+			</File>
+			<File
 				RelativePath="GeneralSection.cpp"
 				>
 				<FileConfiguration
@@ -1127,6 +1139,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CrackedSectionSlice.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CrackedSectionSolution.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CrackedSectionSolver.h"
+				>
+			</File>
+			<File
 				RelativePath="GeneralSection.h"
 				>
 			</File>
@@ -1277,6 +1301,18 @@
 			</File>
 			<File
 				RelativePath="CircularManderSection.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\CrackedSectionSlice.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\CrackedSectionSolution.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\CrackedSectionSolver.rgs"
 				>
 			</File>
 			<File

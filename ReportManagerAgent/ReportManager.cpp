@@ -134,6 +134,16 @@ CReportDescription CReportManager::GetReportDescription(const std::string& strRe
    return m_RptMgr.GetReportDescription(strReportName);
 }
 
+const CBitmap* CReportManager::GetMenuBitmap(const char* strReportName)
+{
+   return m_RptMgr.GetMenuBitmap(strReportName);
+}
+
+const CBitmap* CReportManager::GetMenuBitmap(const std::string& strReportName)
+{
+   return m_RptMgr.GetMenuBitmap(strReportName);
+}
+
 boost::shared_ptr<CReportSpecificationBuilder> CReportManager::GetReportSpecificationBuilder(const char* strReportName)
 {
    return m_RptMgr.GetReportSpecificationBuilder(strReportName);

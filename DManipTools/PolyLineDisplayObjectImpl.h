@@ -113,6 +113,8 @@ END_CONNECTION_POINT_MAP()
    STDMETHOD_(CString,GetToolTipText)() { return m_pDisplayObject->GetToolTipText(); }
    STDMETHOD_(void,SetMaxTipWidth)(long maxWidth) { m_pDisplayObject->SetMaxTipWidth(maxWidth); }
    STDMETHOD_(long,GetMaxTipWidth)() { return m_pDisplayObject->GetMaxTipWidth(); }
+   STDMETHOD_(void,SetTipDisplayTime)(long iTime) { m_pDisplayObject->SetTipDisplayTime(iTime); }
+   STDMETHOD_(long,GetTipDisplayTime)() { return m_pDisplayObject->GetTipDisplayTime(); }
 
    // Event Sink
    STDMETHOD_(void,RegisterEventSink)(iDisplayObjectEvents* pEventSink)

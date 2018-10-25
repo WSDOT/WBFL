@@ -26,6 +26,7 @@
 #pragma once
 
 #include <DManip\DisplayObjectContainer.h>
+#include <DManip\DManipTypes.h>
 
 class CDisplayView;
 interface iCoordinateMap;

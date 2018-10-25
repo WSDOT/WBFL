@@ -1025,11 +1025,10 @@ STDMETHODIMP_(BOOL) CDisplayMgrImpl::OnNeedToolTipText(UINT id,NMHDR* pNMHDR,LRE
    if ( m_ToolTipObject /*&& id == 9999*/ )
    {
       long maxTipWidth = m_ToolTipObject->GetMaxTipWidth();
+      SendMessage(pNMHDR->hwndFrom,TTM_SETMAXTIPWIDTH,0,maxTipWidth);
 
-      if ( maxTipWidth > 0 )
-      {
-         SendMessage(pNMHDR->hwndFrom,TTM_SETMAXTIPWIDTH,0,maxTipWidth);
-      }
+      long iDuration = m_ToolTipObject->GetTipDisplayTime();
+      SendMessage(pNMHDR->hwndFrom,TTM_SETDELAYTIME,TTDT_AUTOPOP,iDuration);
 
       TOOLTIPTEXT* pTTT = (TOOLTIPTEXT*)pNMHDR;
       m_strToolTipText = m_ToolTipObject->GetToolTipText();

@@ -30,6 +30,7 @@
 import "oaidl.idl";
 import "ocidl.idl";
 import "WBFLTypes.idl";
+import "WBFLTools.idl";
 
 cpp_quote("/////////////////////////////////////////////////////////////////////////////")
 cpp_quote("// IBroker, IBrokerInit, IBrokerPersist status codes")
@@ -39,6 +40,7 @@ cpp_quote("")
 cpp_quote("#define BROKER_E_LOADAGENT           (BROKER_E_FIRST+0)")
 cpp_quote("// Error loading or initalizing an agent")
 cpp_quote("#define BROKER_E_ADDAGENT            (BROKER_E_FIRST+1)")
+cpp_quote("#define BROKER_E_INITAGENT           (BROKER_E_FIRST+2)")
 cpp_quote("// Error loading adding an agent")
 
 cpp_quote("/////////////////////////////////////////////////////////////////////////////")
@@ -148,6 +150,7 @@ library WBFLCore
 		[propget, helpstring("property Property")] HRESULT Property([in] LPCTSTR name, [out, retval] VARIANT *pVal);
 		[helpstring("method EndOfStorage")] HRESULT EndOfStorage();
 		[helpstring("method Close")] HRESULT Close();
+      [helpstring("mehtod LoadRawUnit")] HRESULT LoadRawUnit([out] BSTR* pbstrUnit);
 	};
 	[
 	
@@ -166,6 +169,7 @@ library WBFLCore
 		[propget, helpstring("property TopVersion")] HRESULT TopVersion([out, retval] Float64 *pVal);
 		[propput, helpstring("property Property")] HRESULT Property([in] LPCTSTR name, [in] VARIANT newVal);
 		[helpstring("method Close")] HRESULT Close();
+      [helpstring("mehtod SaveRawUnit")] HRESULT SaveRawUnit([in]LPCTSTR unitXML);
 	};
 
    [
@@ -247,6 +251,16 @@ library WBFLCore
 		[helpstring("method Save")] HRESULT Save([in] IStructuredSave* pStrSave);
 	};
 
+   [
+      uuid(79B52B0A-B19B-4dc9-80B7-9EF36157A2B9),
+      helpstring("IAgentUIIntegration"),
+      pointer_default(unique)
+   ]
+   interface IAgentUIIntegration : IUnknown
+   {
+      [helpstring("method IntegrateWithUI")] HRESULT IntegrateWithUI(BOOL bIntegrate);
+   }
+
 	[
 		uuid(53CAB1E0-262E-11d2-8EB0-006097DF3C68),
 		helpstring("IBrokerInit Interface"),
@@ -267,7 +281,7 @@ library WBFLCore
 	]
 	interface IBrokerInitEx : IUnknown
 	{
-		[helpstring("method LoadAgents")] HRESULT LoadAgents([in] CLSID* pClsid, [in] long nClsid,[out] long* lErrIndex);
+		[helpstring("method LoadAgents")] HRESULT LoadAgents([in] CLSID* pClsid, [in] long nClsid,[out] ILongArray** lErrIndex);
 		[helpstring("method AddAgent")] HRESULT AddAgent([in] IAgentEx* pAgent);
 		[helpstring("method FindConnectionPoint")] HRESULT FindConnectionPoint([in] REFIID riid,[out] IConnectionPoint** ppCP);
 		[helpstring("method RegInterface")] HRESULT RegInterface([in] REFIID riid,[in] IAgentEx* pAgent);
@@ -293,6 +307,16 @@ library WBFLCore
 	{
 		[helpstring("method DelayInit")] HRESULT DelayInit();
 		[helpstring("method InitAgents")] HRESULT InitAgents();
+	};
+
+	[
+		uuid(94B63C86-A159-4330-80AA-D16618A7FFCB),
+		helpstring("IBrokerInitEx3 Interface"),
+		pointer_default(unique)
+	]
+	interface IBrokerInitEx3 : IBrokerInitEx2
+	{
+		[helpstring("method IntegrateWithUI")] HRESULT IntegrateWithUI(BOOL bIntegrate);
 	};
 
 	[
@@ -334,6 +358,7 @@ library WBFLCore
 	coclass Broker2
 	{
 		[default] interface IBroker;
+		interface IBrokerInitEx3;
 		interface IBrokerInitEx2;
 		interface IBrokerPersist;
 	};

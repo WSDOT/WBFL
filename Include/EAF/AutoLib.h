@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// EAF - Extension library for MFC
+// EAF - Extensible Application Framework
 // Copyright © 1999-2010  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_EAF_AUTOLIB_H_
-#define INCLUDED_EAF_AUTOLIB_H_
 #pragma once
 
 #if !defined (BUILDEAFLIB)
@@ -34,6 +32,4 @@
 #pragma message("Linking with " EAF_AUTOLIBNAME )
 #endif
 
-#endif // BUILDMFCTOOLSLIB
-
-#endif // INCLUDED_MFCTOOLS_AUTOLIB_H_
+#endif // BUILDEAFLIB

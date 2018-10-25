@@ -54,26 +54,24 @@ public:
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CProgressMonitorDlg)
-	public:
-	protected:
+public:
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
 
 // Implementation
-   public:
-      void SetMessage(BSTR msg);
-      void SetProgressValue(long val);
-      void PumpMessage();
-      void Close();
+public:
+   void SetMessage(BSTR msg);
+   void SetProgressValue(long val);
+   void PumpMessage();
+   void Close();
 
-      VARIANT_BOOL m_WasCancelled;
-      VARIANT_BOOL m_HasCancel;
-      VARIANT_BOOL m_HasGauge;
+   VARIANT_BOOL m_WasCancelled;
+   VARIANT_BOOL m_HasCancel;
+   VARIANT_BOOL m_HasGauge;
+
 protected:
-      HWND m_hMainWnd; 
-
-      HCURSOR m_Cursor;
-
+   HCURSOR m_Cursor;
 
 	// Generated message map functions
 	//{{AFX_MSG(CProgressMonitorDlg)

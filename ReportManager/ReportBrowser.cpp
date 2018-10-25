@@ -191,8 +191,6 @@ void CReportBrowser::Print(bool bPrompt)
 
 void CReportBrowser::Edit()
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    boost::shared_ptr<CReportBuilder> pRptBuilder = m_pRptMgr->GetReportBuilder(m_pRptSpec->GetReportName());
    CReportDescription rptDesc = pRptBuilder->GetReportDescription();
 
@@ -211,8 +209,6 @@ void CReportBrowser::Edit()
 
 void CReportBrowser::Find()
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    LPDISPATCH lpDispatch = m_pWebBrowser->GetDocument();
    IOleCommandTarget* pIOleCmdTarget;
    if ( S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget ) )
@@ -224,8 +220,6 @@ void CReportBrowser::Find()
 
 void CReportBrowser::SelectAll()
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    LPDISPATCH lpDispatch = m_pWebBrowser->GetDocument();
    IOleCommandTarget* pIOleCmdTarget;
    if ( S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget ) )
@@ -237,8 +231,6 @@ void CReportBrowser::SelectAll()
 
 void CReportBrowser::ViewSource()
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    LPDISPATCH lpDispatch = m_pWebBrowser->GetDocument();
    IOleCommandTarget* pIOleCmdTarget;
    if ( S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget ) )
@@ -250,30 +242,22 @@ void CReportBrowser::ViewSource()
 
 void CReportBrowser::Refresh()
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    m_pWebBrowser->Refresh();
 }
 
 
 void CReportBrowser::Back()
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    m_pWebBrowser->GoBack();
 }
 
 void CReportBrowser::Forward()
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    m_pWebBrowser->GoForward();
 }
 
 void CReportBrowser::NavigateAnchor(long id)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    std::string filename = filename_to_URL(m_Filename);
    CString anc;
    anc.Format("%s#_%d",filename.c_str(),id);

@@ -72,6 +72,9 @@
 #include "MomentInteractionCurveSolver.h"
 #include "SectionBuilder.h"
 #include "CapacityReductionFactor.h"
+#include "CrackedSectionSlice.h"
+#include "CrackedSectionSolver.h"
+#include "CrackedSectionSolution.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -114,6 +117,9 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_MomentInteractionCurveSolver,CMomentInteractionCurveSolver)
    OBJECT_ENTRY(CLSID_SectionBuilder,CSectionBuilder)
    OBJECT_ENTRY(CLSID_CapacityReductionFactor,CCapacityReductionFactor)
+   OBJECT_ENTRY(CLSID_CrackedSectionSlice,CCrackedSectionSlice)
+   OBJECT_ENTRY(CLSID_CrackedSectionSolver,CCrackedSectionSolver)
+   OBJECT_ENTRY(CLSID_CrackedSectionSolution,CCrackedSectionSolution)
 END_OBJECT_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

@@ -30,6 +30,8 @@
 // BrokerImp2.h : header file
 //
 
+#include <WBFLAtlExt.h>
+
 #include <set>
 #include <map>
 #include <boost\shared_ptr.hpp>
@@ -50,9 +52,10 @@ struct InterfaceItem
 // CBrokerImp2 command target
 class ATL_NO_VTABLE CBrokerImp2 : 
 	public CComObjectRootEx<CComSingleThreadModel>,
+//   public CComRefCountTracer<CBrokerImp2,CComObjectRootEx<CComSingleThreadModel> >,
 	public CComCoClass<CBrokerImp2, &CLSID_Broker2>,
    public IBroker,
-   public IBrokerInitEx2,
+   public IBrokerInitEx3,
    public IBrokerPersist
 {
 public:
@@ -60,6 +63,7 @@ public:
       m_MostFrequentlyUsed(5) // 5 most recently used interfaces
 	{
       m_DelayInit = false;
+      m_bAgentsInitialized = false;
 	}
 
    HRESULT FinalConstruct();
@@ -73,6 +77,7 @@ BEGIN_COM_MAP(CBrokerImp2)
 	COM_INTERFACE_ENTRY(IBroker)
 	COM_INTERFACE_ENTRY(IBrokerInitEx)
 	COM_INTERFACE_ENTRY(IBrokerInitEx2)
+	COM_INTERFACE_ENTRY(IBrokerInitEx3)
 	COM_INTERFACE_ENTRY(IBrokerPersist)
 END_COM_MAP()
 
@@ -82,14 +87,15 @@ public:
    STDMETHOD(Reset)();
 	STDMETHOD(ShutDown)();
 
-// IBrokerInitEx2
+// IBrokerInitEx3
 public:
-   STDMETHOD(LoadAgents)(/*[in]*/ CLSID* pClsid, /*[in]*/ long nClsid,/*[out]*/ long* lErrIndex);
+   STDMETHOD(LoadAgents)(/*[in]*/ CLSID* pClsid, /*[in]*/ long nClsid,/*[out]*/ ILongArray** lErrIndex);
    STDMETHOD(AddAgent)(/*[in]*/ IAgentEx* pAgent);
 	STDMETHOD(FindConnectionPoint)(/*[in]*/ REFIID riid,/*[out]*/ IConnectionPoint** ppCP);
 	STDMETHOD(RegInterface)(/*[in]*/ REFIID riid,/*[in]*/ IAgentEx* pAgent);
    STDMETHOD(DelayInit)();
 	STDMETHOD(InitAgents)();
+   STDMETHOD(IntegrateWithUI)(BOOL bIntegrate);
 
 // IBrokerPersist
 public:
@@ -102,10 +108,15 @@ private:
    boost::circular_buffer<InterfaceItem> m_MostFrequentlyUsed; // collection of most frequently used interfaces
                                              // this collection will be searched first
 
-   typedef std::map<CLSID,IAgentEx*> Agents; // interface pointers are referenced counted
+   typedef std::map<CLSID,CComPtr<IAgentEx>> Agents; // interface pointers are referenced counted
    Agents m_Agents;
 
    bool m_DelayInit;
+   bool m_bAgentsInitialized; // true if the agents where initialized
+
+   std::vector<std::string> m_RawUnitData; // holds the entire unit data block
+                                           // for agent data that is in the file, but
+                                           // the agent can't be created
 
    // loads agents using the file format for Class Broker
    HRESULT LoadOldFormat(IStructuredLoad* strLoad);

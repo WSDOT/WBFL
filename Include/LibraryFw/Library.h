@@ -39,7 +39,6 @@
 #include <Checks.h>
 #include <LibraryFw\ILibrary.h>
 #include <LibraryFw\LibraryHints.h>
-#include <LibraryFw\UnitsMode.h>
 #include <System\IStructuredSave.h>
 #include <System\IStructuredLoad.h>
 #include <System\XStructuredLoad.h>
@@ -70,7 +69,7 @@ COPYRIGHT
 LOG
    rdp : 07.09.1998 : Created file
 *****************************************************************************/
-template<class T>
+template<class T,int MIN_COUNT>
 class libLibrary : public libILibrary
 {
 public:
@@ -203,7 +202,7 @@ public:
 
    //------------------------------------------------------------------------
    // Open the editing interface for the given entry. 
-   libILibrary::EntryEditOutcome EditEntry( const char* key, libUnitsMode::Mode mode )
+   libILibrary::EntryEditOutcome EditEntry( const char* key )
    {
       T* pentry = LookupEntryPrv(key);
       if (!pentry)
@@ -213,7 +212,7 @@ public:
       }
       else
       {
-         if (pentry->Edit(mode, pentry->IsEditingEnabled()))
+         if (pentry->Edit(pentry->IsEditingEnabled()))
          {
             int hint = LibraryHints::EntryEdited;
             // it's a tough call what to do here if the user changes the name of the 
@@ -497,6 +496,11 @@ public:
    int GetCount( ) const
    {
       return m_EntryList.size();
+   }
+
+   int GetMinCount() const
+   {
+      return MIN_COUNT;
    }
 
    //------------------------------------------------------------------------

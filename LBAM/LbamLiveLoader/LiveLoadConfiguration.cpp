@@ -384,34 +384,7 @@ STDMETHODIMP CLiveLoadConfiguration::Load(IStructuredLoad2 * pload)
       if (FAILED(hr))
          return hr;
 
-      long ir = var;
-      switch ((LiveLoadModelType)ir)
-      {
-      case lltNone:
-         m_LiveLoadModelType = lltNone;
-         break;
-      case lltDeflection:
-         m_LiveLoadModelType = lltDeflection;
-         break;
-      case lltDesign:
-         m_LiveLoadModelType = lltDesign;
-         break;
-      case lltPedestrian:
-         m_LiveLoadModelType = lltPedestrian;
-         break;
-      case lltFatigue:
-         m_LiveLoadModelType = lltFatigue;
-         break;
-      case lltPermit:
-         m_LiveLoadModelType = lltPermit;
-         break;
-      case lltSpecial:
-         m_LiveLoadModelType = lltSpecial;
-         break;
-      default:
-         ATLASSERT(0);
-         return STRLOAD_E_INVALIDFORMAT;
-      }
+      m_LiveLoadModelType = (LiveLoadModelType)(var.lVal);
 
       hr = pload->BeginUnit(CComBSTR("AxleConfig"));
       if (FAILED(hr))
@@ -460,20 +433,7 @@ STDMETHODIMP CLiveLoadConfiguration::Load(IStructuredLoad2 * pload)
       if (FAILED(hr))
          return hr;
 
-      ir = var;
-      switch((TruckDirectionType)ir)
-      {
-      case ltdForward:
-         m_TruckDirection = ltdForward;
-         break;
-      case ltdReverse:
-         m_TruckDirection = ltdReverse;
-         break;
-      default:
-         ATLASSERT(0);
-         return STRLOAD_E_INVALIDFORMAT;
-      }
-
+      m_TruckDirection = (TruckDirectionType)var.lVal;
 
       var.Clear();
       hr = pload->get_Property(_bstr_t("PivotAxleIndex"),&var);
@@ -514,100 +474,28 @@ STDMETHODIMP CLiveLoadConfiguration::Load(IStructuredLoad2 * pload)
       if (FAILED(hr))
          return hr;
 
-      ir = var;
-      switch ((VehicularLoadConfigurationType)ir)
-      {
-      case vlcDefault:
-         m_VehicularLoadConfiguration = vlcDefault;
-         break;
-      case vlcTruckOnly:
-         m_VehicularLoadConfiguration = vlcTruckOnly;
-         break;
-      case vlcLaneOnly:
-         m_VehicularLoadConfiguration = vlcLaneOnly;
-         break;
-      case vlcTruckPlusLane:
-         m_VehicularLoadConfiguration = vlcTruckPlusLane;
-         break;
-      case vlcTruckLaneEnvelope:
-         m_VehicularLoadConfiguration = vlcTruckLaneEnvelope;
-         break;
-      case vlcSidewalkOnly:
-         m_VehicularLoadConfiguration = vlcSidewalkOnly;
-         break;
-      default:
-         ATLASSERT(0);
-         return STRLOAD_E_INVALIDFORMAT;
-      }
+      m_VehicularLoadConfiguration = (VehicularLoadConfigurationType)var.lVal;
       
       var.Clear();
       hr = pload->get_Property(_bstr_t("DistributionFactorType"),&var);
       if (FAILED(hr))
          return hr;
 
-      ir = var;
-      switch ((DistributionFactorType)ir)
-      {
-      case dftNone:
-         m_DistributionFactorType = dftNone;
-         break;
-      case dftSingleLane:
-         m_DistributionFactorType = dftSingleLane;
-         break;
-      case dftMultipleLane:
-         m_DistributionFactorType = dftMultipleLane;
-         break;
-      case dftEnvelope:
-         m_DistributionFactorType = dftEnvelope;
-         break;
-      case dftFatigue:
-         m_DistributionFactorType = dftFatigue;
-         break;
-      default:
-         ATLASSERT(0);
-         return STRLOAD_E_INVALIDFORMAT;
-      }
+      m_DistributionFactorType = (DistributionFactorType)var.lVal;
 
       var.Clear();
       hr = pload->get_Property(_bstr_t("ForceEffectType"),&var);
       if (FAILED(hr))
          return hr;
 
-      ir = var;
-      switch ((ForceEffectType)ir)
-      {
-      case fetFx:
-         m_ForceEffectType = fetFx;
-         break;
-      case fetFy:
-         m_ForceEffectType = fetFy;
-         break;
-      case fetMz:
-         m_ForceEffectType = fetMz;
-         break;
-      default:
-         ATLASSERT(0);
-         return STRLOAD_E_INVALIDFORMAT;
-      }
+      m_ForceEffectType = (ForceEffectType)var.lVal;
 
       var.Clear();
       hr = pload->get_Property(_bstr_t("OptimizationType"),&var);
       if (FAILED(hr))
          return hr;
 
-      ir = var;
-      switch ((OptimizationType)ir)
-      {
-      case optMaximize:
-         m_OptimizationType = optMaximize;
-         break;
-      case optMinimize:
-         m_OptimizationType = optMinimize;
-         break;
-      default:
-         ATLASSERT(0);
-         return STRLOAD_E_INVALIDFORMAT;
-      }
+      m_OptimizationType = (OptimizationType)var.lVal;
    }
 
    VARIANT_BOOL eb;
@@ -615,7 +503,7 @@ STDMETHODIMP CLiveLoadConfiguration::Load(IStructuredLoad2 * pload)
    if (FAILED(hr))
       return hr;
 
-   if (eb!=VARIANT_TRUE)
+   if (eb == VARIANT_FALSE)
       return STRLOAD_E_INVALIDFORMAT;
 
    return S_OK;

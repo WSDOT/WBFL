@@ -599,6 +599,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\LRFRVersionMgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LRFRVersionMgrListener.cpp"
+				>
+			</File>
+			<File
 				RelativePath="LumpSumLosses.cpp"
 				>
 				<FileConfiguration
@@ -1131,6 +1139,14 @@
 			</File>
 			<File
 				RelativePath="..\Include\LRFD\LrfdTypes.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\LRFD\LRFRVersionMgr.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\LRFD\LRFRVersionMgrListener.h"
 				>
 			</File>
 			<File

@@ -21,8 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_IREPORTMANAGER_H_
-#define INCLUDED_IREPORTMANAGER_H_
+#pragma once
 
 #include <ReportManager\ReportManager.h>
 #include <boost\shared_ptr.hpp>
@@ -42,11 +41,11 @@ interface IReportManager : IUnknown
    virtual std::vector<std::string> GetReportNames(bool bIncludeHidden = false) const = 0;
    virtual CReportDescription GetReportDescription(const char* strReportName) = 0;
    virtual CReportDescription GetReportDescription(const std::string& strReportName) = 0;
+   virtual const CBitmap* GetMenuBitmap(const char* strReportName) = 0;
+   virtual const CBitmap* GetMenuBitmap(const std::string& strReportName) = 0;
    virtual boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const char* strReportName) = 0;
    virtual boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const std::string& strReportName) = 0;
    virtual boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const CReportDescription& rptDesc) = 0;
    virtual boost::shared_ptr<CReportBrowser> CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec) = 0;
    virtual Int16 DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec) = 0;
 };
-
-#endif // INCLUDED_IREPORTMANAGER_H_

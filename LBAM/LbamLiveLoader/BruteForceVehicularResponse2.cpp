@@ -1382,7 +1382,7 @@ void CBruteForceVehicularResponse2::EvaluateTruckLoad(LiveLoadModelType type, Ve
 
    if ( !m_IsTruck || m_Truck.GetNumAxles() == 0 )
    {
-      // there is no truck, or not axles... force a compare
+      // there is no truck, or no axles... force a compare
       // to avoid problems with ASSERTs later
       pLeftCompare->CompareResults(0.0);
       pRightCompare->CompareResults(0.0);
@@ -1390,9 +1390,8 @@ void CBruteForceVehicularResponse2::EvaluateTruckLoad(LiveLoadModelType type, Ve
    }
 
 
-   // dual low boy and dual design truck have more than 3 axles (single design truck has 3 and we want to skip it)
-   if ( (m_bComputingMinimumMoment || m_bComputingReaction) &&
-         (m_Truck.IsVariableAxle() && 3 < m_Truck.GetNumAxles()) ) 
+   if ( (m_bComputingMinimumMoment || m_bComputingMaximumInteriorSupportReaction) &&
+         m_Truck.IsVariableAxle() && m_Truck.NegMomentsAndReactions() ) 
    {
       if (m_bComputingMinimumMoment )
       {

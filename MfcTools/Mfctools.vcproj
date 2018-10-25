@@ -232,6 +232,10 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\ChoiceDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath="choosedirdlg.cpp"
 				>
 				<FileConfiguration
@@ -593,6 +597,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Prompts.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\QuestionDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath="StaticSplitter.cpp"
 				>
 				<FileConfiguration
@@ -824,6 +836,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ChoiceDlg.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\MfcTools\choosedirdlg.h"
 				>
 			</File>
@@ -893,6 +909,14 @@
 			</File>
 			<File
 				RelativePath="..\Include\MfcTools\PrintStatus.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\MfcTools\Prompts.h"
+				>
+			</File>
+			<File
+				RelativePath=".\QuestionDlg.h"
 				>
 			</File>
 			<File
@@ -987,5 +1011,9 @@
 		</File>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="MfcTools.rc"
+		/>
 	</Globals>
 </VisualStudioProject>

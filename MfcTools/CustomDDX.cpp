@@ -253,7 +253,7 @@ void DDX_CBStringExactCase(CDataExchange* pDX, int nIDC, CString& str)
 	}
 }
 
-void DDV_NonNegativeDouble(CDataExchange* pDX, Float64 value)
+void DDV_NonNegativeDouble(CDataExchange* pDX, int nIDC,Float64 value)
 {
 	if (!pDX->m_bSaveAndValidate)
 	{
@@ -263,12 +263,13 @@ void DDV_NonNegativeDouble(CDataExchange* pDX, Float64 value)
 
    if(value<0.0)
    {
+      pDX->PrepareEditCtrl(nIDC);
 	   AfxMessageBox("Please enter non-negative number!", MB_ICONEXCLAMATION);
 	   pDX->Fail();
    }
 }
 
-void DDV_GreaterThanZero(CDataExchange* pDX, Float64 value)
+void DDV_GreaterThanZero(CDataExchange* pDX, int nIDC,Float64 value)
 {
 	if (!pDX->m_bSaveAndValidate)
 	{
@@ -278,6 +279,7 @@ void DDV_GreaterThanZero(CDataExchange* pDX, Float64 value)
 
    if( !(value > 0.0) )
    {
+      pDX->PrepareEditCtrl(nIDC);
 	   AfxMessageBox("Please enter a number that is greater than zero!", MB_ICONEXCLAMATION);
 	   pDX->Fail();
    }
@@ -332,7 +334,7 @@ void DDX_Percentage(CDataExchange* pDX,int nIDC,Float64& value)
 }
 
 
-void DDV_LimitOrMore(CDataExchange* pDX,Float64 value,Float64 min)
+void DDV_LimitOrMore(CDataExchange* pDX,int nIDC,Float64 value,Float64 min)
 {
 	if (!pDX->m_bSaveAndValidate)
 	{
@@ -341,6 +343,7 @@ void DDV_LimitOrMore(CDataExchange* pDX,Float64 value,Float64 min)
 
    if( value < min )
    {
+      pDX->PrepareEditCtrl(nIDC);
       CString msg;
       msg.Format("Please enter a number that is equal to or greater than %f",min);
       AfxMessageBox( msg, MB_ICONEXCLAMATION );
@@ -359,13 +362,13 @@ void DDV_Range(CDataExchange* pDX, mfcDDV::LowerBound lower,mfcDDV::UpperBound u
    bool bPassedLower = false;
    if ( lower == mfcDDV::LT )
    {
-      strLower = " < ";
+      strLower = "greater than";
       if ( min < value )
          bPassedLower = true;
    }
    else
    {
-      strLower = " <= ";
+      strLower = "greater than or equal to";
       if ( IsLE(min,value) )
          bPassedLower = true;
    }
@@ -373,13 +376,13 @@ void DDV_Range(CDataExchange* pDX, mfcDDV::LowerBound lower,mfcDDV::UpperBound u
    bool bPassedUpper = false;
    if ( upper == mfcDDV::GT )
    {
-      strUpper = " < ";
+      strUpper = "less than";
       if ( value < max )
          bPassedUpper = true;
    }
    else
    {
-      strUpper = " <= ";
+      strUpper = "less than or equal to";
       if ( IsGE(value,max) )
          bPassedUpper = true;
    }
@@ -387,7 +390,7 @@ void DDV_Range(CDataExchange* pDX, mfcDDV::LowerBound lower,mfcDDV::UpperBound u
    if ( !bPassedLower || !bPassedUpper )
    {
       CString msg;
-      msg.Format("Please enter a number that is %f %s x %s %f",min,strLower.c_str(),strUpper.c_str(),max);
+      msg.Format("Please enter a number that is %s %f and %s %f",min,strLower.c_str(),strUpper.c_str(),max);
       AfxMessageBox( msg, MB_ICONEXCLAMATION );
 	   pDX->Fail();
    }

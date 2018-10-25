@@ -1603,6 +1603,12 @@ library WBFLGeometry
 		[propput, helpstring("property W5"),helpcontext(IDH_IBulbTee_W5)]
 		HRESULT W5([in] Float64 newVal);
 
+		[propget, helpstring("property C1"),helpcontext(IDH_IBulbTee_C1)]
+		HRESULT C1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property C1"),helpcontext(IDH_IBulbTee_C1)]
+		HRESULT C1([in] Float64 newVal);
+
 		[propget, helpstring("property D1"),helpcontext(IDH_IBulbTee_D1)]
 		HRESULT D1([out, retval] Float64 *pVal);
 

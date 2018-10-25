@@ -112,6 +112,8 @@ public:
    // Write a bool property
    virtual void Property(const char* name, bool value);
 
+   virtual void PutUnit(const char* xml);
+
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -256,6 +258,11 @@ void sysStructuredSaveXmlPrs::Property(const char* name, Uint32 value)
 void sysStructuredSaveXmlPrs::Property(const char* name, bool value)
 {
    m_pImp->Property(name,value);
+}
+
+void sysStructuredSaveXmlPrs::PutUnit(const char* xml)
+{
+   m_pImp->PutUnit(xml);
 }
 
 //======================== ACCESS     =======================================
@@ -617,6 +624,15 @@ void sysStructuredSaveXmlPrs_Impl::Property(const char* name, bool value)
    {
       THROW(sysXStructuredSave,BadWrite);
    }
+}
+
+void sysStructuredSaveXmlPrs_Impl::PutUnit(const char* xml)
+{
+   MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument));
+   pDoc->loadXML(_bstr_t(xml));
+
+   MSXML::IXMLDOMNodePtr pNewNode = pDoc->firstChild;
+   m_spCurrentUnit->appendChild(pNewNode);
 }
 
 //======================== ACCESS     =======================================

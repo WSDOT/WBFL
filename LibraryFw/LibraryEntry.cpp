@@ -80,7 +80,7 @@ std::string libLibraryEntry::GetName() const
    return m_Name;
 }
 
-bool libLibraryEntry::Edit(libUnitsMode::Mode mode, bool allowEditing)
+bool libLibraryEntry::Edit(bool allowEditing)
 {
    return false;
 }

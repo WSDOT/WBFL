@@ -46,6 +46,7 @@ m_Name(strName),
 m_bHidden(bHidden),
 m_pRptSpecBuilder( new CReportSpecificationBuilder )
 {
+   m_pBitmap = NULL;
 }
 
 CReportBuilder::~CReportBuilder()
@@ -146,4 +147,14 @@ boost::shared_ptr<rptReport> CReportBuilder::CreateReport(boost::shared_ptr<CRep
    }
 
    return pReport;
+}
+
+void CReportBuilder::SetMenuBitmap(const CBitmap* pBmp)
+{
+   m_pBitmap = pBmp;
+}
+
+const CBitmap* CReportBuilder::GetMenuBitmap()
+{
+   return m_pBitmap;
 }

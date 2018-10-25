@@ -132,6 +132,8 @@ END_COM_MAP()
    STDMETHOD_(CString,GetToolTipText)() {return Do_GetToolTipText(); }
    STDMETHOD_(void,SetMaxTipWidth)(long maxWidth) { Do_SetMaxTipWidth(maxWidth); }
    STDMETHOD_(long,GetMaxTipWidth)() { return Do_GetMaxTipWidth(); }
+   STDMETHOD_(void,SetTipDisplayTime)(long iTime) { Do_SetTipDisplayTime(iTime); }
+   STDMETHOD_(long,GetTipDisplayTime)() { return Do_GetTipDisplayTime(); }
 
    // Event Sink
    STDMETHOD_(void,RegisterEventSink)(iDisplayObjectEvents* pEventSink)

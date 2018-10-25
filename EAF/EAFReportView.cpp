@@ -1,14 +1,45 @@
-// EAFReportView.cpp : implementation file
+///////////////////////////////////////////////////////////////////////
+// EAF - Extensible Application Framework
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+
 
 #include "stdafx.h"
+#include "resource.h"
 #include <EAF\EAFReportView.h>
+#include <EAF\EAFUtilities.h>
+#include "AgentTools.h"
+#include "EAFSelectReportDlg.h"
+
 #include <EAF\EAFBrokerDocument.h>
 #include <EAF\EAFMainFrame.h>
-#include <ReportManager\ReportManager.h>
-#include <AgentTools.h>
+
+#include <ReportManager\ReportBuilderManager.h>
 #include <IReportManager.h>
-#include <Reporter\Report.h>
+
+#include <MfcTools\XUnwind.h>
+#include <MfcTools\Text.h>
+
+#include "CustSiteVars.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -19,67 +50,38 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CEAFReportView
 
-IMPLEMENT_DYNAMIC(CEAFReportView, CView)
+
+IMPLEMENT_DYNCREATE(CEAFReportView, CView)
+bool CEAFReportView::ms_bIsUpdatingReport = false;
 
 CEAFReportView::CEAFReportView()
 {
-   m_bInitialUpdate = false;
+   m_bNoBrowser   = false;
+   m_bUpdateError = false;
+   m_bIsNewReport = true;
+   m_bUpdateInProgress = false;
+
+   m_pReportBuilderMgr = NULL;
+   m_pRptMgr = NULL;
 }
 
 CEAFReportView::~CEAFReportView()
 {
 }
 
-
 BEGIN_MESSAGE_MAP(CEAFReportView, CView)
 	//{{AFX_MSG_MAP(CEAFReportView)
-	ON_WM_SIZE()
 	ON_WM_CREATE()
-   ON_COMMAND(ID_FILE_PRINT,&CEAFReportView::OnFilePrint)
-   ON_UPDATE_COMMAND_UI(ID_FILE_PRINT,&CEAFReportView::OnUpdateFilePrint)
+	ON_WM_SIZE()
+	ON_COMMAND(ID_FILE_PRINT, OnFilePrint)
+	ON_COMMAND(ID_FILE_PRINT_DIRECT, OnToolbarPrint)
+	ON_UPDATE_COMMAND_UI(ID_FILE_PRINT, OnUpdateFilePrint)
+	ON_UPDATE_COMMAND_UI(ID_FILE_PRINT_DIRECT, OnUpdateFilePrint)
 	//}}AFX_MSG_MAP
+    ON_COMMAND_RANGE(CCS_CMENU_BASE, CCS_CMENU_MAX, OnCmenuSelected)
+    ON_BN_CLICKED(IDC_EDIT,OnEdit)
+    ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
-
-void CEAFReportView::OnInitialUpdate()
-{
-   m_bInitialUpdate = true;
-   CView::OnInitialUpdate();
-   m_bInitialUpdate = false;
-}
-
-void CEAFReportView::OnUpdate(CView* pSender,LPARAM lHint,CObject* pHint)
-{
-   CView::OnUpdate(pSender,lHint,pHint);
-
-   // the report browser (IE) throws an exception if this is called during
-   // OnInitialUpdate. If this call comes from OnInitialUpdate(), just leave
-   if ( m_bInitialUpdate )
-      return;
-
-   if ( m_pReportSpec && m_pReportBrowser )
-   {
-      RefreshReport();
-   }
-}
-
-void CEAFReportView::RefreshReport()
-{
-   CEAFBrokerDocument* pDoc = (CEAFBrokerDocument*)GetDocument();
-
-   _COM_SMARTPTR_TYPEDEF(IBroker,IID_IBroker);
-   IBrokerPtr pBroker;
-   pDoc->GetBroker(&pBroker);
-   ASSERT( pBroker != NULL );
-
-   // get the IReportManager interface
-   GET_IFACE2(pBroker,IReportManager,pRptMgr);
-   ASSERT( pRptMgr != NULL ); // The ReportManagerAgent isn't in your project... and it must be!
-
-   // refresh the report
-   boost::shared_ptr<CReportBuilder> pBuilder = pRptMgr->GetReportBuilder( m_pReportSpec->GetReportName() );
-   boost::shared_ptr<rptReport> pReport = pBuilder->CreateReport( m_pReportSpec );
-   m_pReportBrowser->UpdateReport( pReport, true );
-}
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFReportView drawing
@@ -88,13 +90,36 @@ void CEAFReportView::OnDraw(CDC* pDC)
 {
    if ( !m_pReportBrowser )
    {
-      OnDrawNoBrowser(pDC);
-   }
-}
+      CString msg;
+      if ( m_bNoBrowser )
+      {
+         msg.LoadString(IDS_E_NOBROWSER);
+      }
+      else if ( m_bUpdateError )
+      {
+         AfxFormatString1(msg,IDS_E_UPDATE,m_ErrorMsg.c_str());
+      }
+      else if ( m_bUpdateInProgress )
+      {
+         msg.LoadString(IDS_UPDATE_IN_PROGRESS);
+      }
+      else
+      {
+         msg.LoadString(IDS_RESULTS_NOT_AVAILABLE);
+      }
 
-void CEAFReportView::OnDrawNoBrowser(CDC* pDC)
-{
-   pDC->TextOut(0,0,"No report to display");
+      CFont font;
+      CFont* pOldFont = NULL;
+      if ( font.CreatePointFont(100,"Arial",pDC) )
+         pOldFont = pDC->SelectObject(&font);
+
+      COLORREF oldColor = pDC->SetBkColor( GetSysColor(COLOR_BTNFACE) );
+      MultiLineTextOut(pDC,0,0,msg);
+      pDC->SetBkColor( oldColor );
+
+      if ( pOldFont )
+         pDC->SelectObject(pOldFont);
+   }
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -103,10 +128,6 @@ void CEAFReportView::OnDrawNoBrowser(CDC* pDC)
 #ifdef _DEBUG
 void CEAFReportView::AssertValid() const
 {
-   // Make sure the module state is that for the CWinApp class
-   // before diving down into MFC (if the module state isn't
-   // correct, all sorts of asserts will fire)
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
 	CView::AssertValid();
 }
 
@@ -119,78 +140,427 @@ void CEAFReportView::Dump(CDumpContext& dc) const
 /////////////////////////////////////////////////////////////////////////////
 // CEAFReportView message handlers
 
-void CEAFReportView::OnSize(UINT nType, int cx, int cy) 
-{
-	CView::OnSize(nType, cx, cy);
-	
-   if ( m_pReportBrowser )
-   {
-      m_pReportBrowser->Size( GetBrowserSize(nType,cx,cy) );
-   }
-}
-
-CSize CEAFReportView::GetBrowserSize(UINT nType, int cx, int cy)
-{
-   return CSize(cx,cy);
-}
-
-
 int CEAFReportView::OnCreate(LPCREATESTRUCT lpCreateStruct) 
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-
-   int result = CView::OnCreate(lpCreateStruct);
-	if (result != 0)
-		return result;
+	if (CView::OnCreate(lpCreateStruct) == -1)
+		return -1;
 	
-
-   // sub-classes implement CreateReportSpecification
-   m_pReportSpec = CreateReportSpecification();
-
-   if ( !m_pReportSpec )
-   {
-      CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
-      ASSERT( pMainFrame->IsKindOf(RUNTIME_CLASS(CEAFMainFrame)) );
-      pMainFrame->DisableFailCreateMessage();
-      return -1;
-   }
-
-   m_pReportBrowser = CreateReportBrowser();
+   CreateEditButton();
 
    return 0;
 }
 
-boost::shared_ptr<CReportBrowser> CEAFReportView::CreateReportBrowser()
+bool CEAFReportView::CreateReport(CollectionIndexType rptIdx,bool bPromptForSpec)
+{
+   CreateReportSpecification(rptIdx,bPromptForSpec);
+   if ( !m_pReportSpec )
+      return false;
+
+   UpdateViewTitle();
+
+   if ( SUCCEEDED(UpdateReportBrowser()) )
+      return true;
+
+   return false;
+}
+
+void CEAFReportView::CreateReportSpecification(CollectionIndexType rptIdx,bool bPromptForSpec)
+{
+   std::vector<std::string> rptNames = GetReportNames();
+   std::string rptName;
+   if ( rptIdx == INVALID_INDEX )
+   {
+      // creating report with invalid index, this means we have to prompt for the
+      // report
+      if ( rptNames.size() == 1 )
+      {
+         rptName = rptNames[0];
+      }
+      else
+      {
+         CEAFSelectReportDlg dlg(rptNames);
+         if ( dlg.DoModal() == IDOK )
+         {
+            rptName = dlg.m_ReportName;
+         }
+         else
+         {
+            // the user cancelled the report creation because he failed to
+            // select a report (ie. the Cancel buttow was pressed)
+
+            // The view creation must fail and this is intentional
+            // Turn off the error message so the user doesn't see it
+            CWnd* pWnd = AfxGetMainWnd();
+            ASSERT_KINDOF(CEAFMainFrame,pWnd);
+            CEAFMainFrame* pFrame = (CEAFMainFrame*)pWnd;
+            pFrame->DisableFailCreateMessage();
+            m_pReportSpec = boost::shared_ptr<CReportSpecification>();
+            return;
+         }
+      }
+   }
+   else
+   {
+      ATLASSERT( 0 <= rptIdx && rptIdx < (CollectionIndexType)rptNames.size() );
+      rptName = rptNames[rptIdx];
+   }
+
+   boost::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(rptName);
+   CReportDescription rptDesc = pRptBuilder->GetReportDescription();
+
+   boost::shared_ptr<CReportSpecificationBuilder> pRptSpecBuilder = pRptBuilder->GetReportSpecificationBuilder();
+   if ( bPromptForSpec )
+   {
+      m_pReportSpec = pRptSpecBuilder->CreateReportSpec(rptDesc,m_pReportSpec);
+   }
+   else
+   {
+      m_pReportSpec = pRptSpecBuilder->CreateDefaultReportSpec(rptDesc);
+   }
+
+   if ( m_pReportSpec == NULL )
+   {
+      // the user probably cancelled the report creation because he pressed the Cancel button
+      // in the report specification dialog
+
+      // The view creation must fail and this is intentional
+      // Turn off the error message so the user doesn't see it
+      CWnd* pWnd = AfxGetMainWnd();
+      ASSERT_KINDOF(CEAFMainFrame,pWnd);
+      CEAFMainFrame* pFrame = (CEAFMainFrame*)pWnd;
+      pFrame->DisableFailCreateMessage();
+      pFrame->CreateCanceled();
+   }
+}
+
+HRESULT CEAFReportView::UpdateReportBrowser()
 {
    if ( m_pReportSpec == NULL )
-      return boost::shared_ptr<CReportBrowser>();
+      return S_OK;
 
-   CEAFBrokerDocument* pDoc = (CEAFBrokerDocument*)GetDocument();
-   ASSERT(pDoc->IsKindOf(RUNTIME_CLASS(CEAFBrokerDocument)) );
+   HRESULT hr = m_pReportSpec->Validate();
+   if ( FAILED(hr) )
+      return hr;
 
-   _COM_SMARTPTR_TYPEDEF(IBroker,IID_IBroker);
-   IBrokerPtr pBroker;
-   pDoc->GetBroker(&pBroker);
-   ASSERT( pBroker != NULL );
+   CComPtr<IBroker> pBroker;
+   EAFGetBroker(&pBroker);
 
-   // get the IReportManager interface
-   GET_IFACE2(pBroker,IReportManager,pRptMgr);
-   ASSERT( pRptMgr != NULL ); // The ReportManagerAgent isn't in your project... and it must be!
+   try
+   {
+      m_bUpdateInProgress = true;
+      Invalidate();
+      UpdateWindow();
 
-   // create the report and browser
-   return pRptMgr->CreateReportBrowser(GetSafeHwnd(),m_pReportSpec);
+      m_bUpdateError = false;
+      m_bNoBrowser = false;
+
+      // All the chapter builders get called from here... this is where all the
+      // work related to generating the content of the report happens
+
+      // if we already have a report browser, just refresh the report
+      if ( m_pReportBrowser )
+      {
+         boost::shared_ptr<CReportBuilder> pBuilder = GetReportBuilder( m_pReportSpec->GetReportName() );
+         boost::shared_ptr<rptReport> pReport = pBuilder->CreateReport( m_pReportSpec );
+         m_pReportBrowser->UpdateReport( pReport, true );
+      }
+      else
+      {
+         // create the report and browser
+         m_pReportBrowser = CreateReportBrowser(GetSafeHwnd(),m_pReportSpec);
+      }
+   }
+   catch(...)
+   {
+      if ( m_pReportBrowser )
+      {
+         // delete the report browser because what ever it is displaying is totally invalid
+         // also need to elimintate it so that we can draw the error message on the view window itself
+         m_pReportBrowser = boost::shared_ptr<CReportBrowser>();
+      }
+
+      m_bUpdateInProgress = false;
+      throw; // keep the exception moving
+   }
+
+   m_bUpdateInProgress = false;
+
+   if ( m_pReportBrowser )
+   {
+      Invalidate();
+      m_btnEdit.ShowWindow(SW_SHOW);
+
+      // size the browser window to fill the view
+      CRect rect;
+      GetClientRect(&rect);
+      OnSize(0,rect.Width(),rect.Height());
+   }
+   else
+   {
+      m_btnEdit.ShowWindow(SW_HIDE);
+      m_bNoBrowser = true;
+   }
+
+
+   return S_OK;
 }
 
-void CEAFReportView::OnFilePrint()
+void CEAFReportView::OnEdit()
+{
+   EditReport();
+}
+
+void CEAFReportView::EditReport()
+{
+   m_pReportBrowser->Edit();
+   m_pReportSpec = m_pReportBrowser->GetReportSpecification();
+   UpdateViewTitle();
+}
+
+void CEAFReportView::OnSize(UINT nType, int cx, int cy) 
+{
+	CView::OnSize(nType, cx, cy);
+
+   if ( m_pReportBrowser )
+   {
+      CRect btnRect;
+      m_btnEdit.GetClientRect(&btnRect);
+      m_pReportBrowser->Size( CSize(cx,cy) );
+   }
+
+   m_btnEdit.SetWindowPos(&CWnd::wndTop,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
+}
+
+void CEAFReportView::OnFilePrint() 
 {
    ASSERT(m_pReportBrowser);
-	if (LOWORD(GetCurrentMessage()->wParam) == ID_FILE_PRINT_DIRECT)
-      m_pReportBrowser->Print(FALSE);
-   else
-      m_pReportBrowser->Print(TRUE);
+   m_pReportBrowser->Print(TRUE);
 }
 
-void CEAFReportView::OnUpdateFilePrint(CCmdUI* pUpdate)
+void CEAFReportView::OnToolbarPrint() 
 {
-   pUpdate->Enable( m_pReportBrowser == NULL ? FALSE : TRUE );
+   ASSERT(m_pReportBrowser);
+   m_pReportBrowser->Print(FALSE);
+}
+
+void CEAFReportView::OnUpdateFilePrint(CCmdUI* pCmdUI) 
+{
+   pCmdUI->Enable( m_pReportBrowser == NULL ? FALSE : TRUE );
+}
+
+void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint) 
+{
+   if ( m_bIsNewReport )
+      return; // this the OnUpdate that comes from OnInitialUpdate() ... nothing to do here
+
+   CView::OnUpdate( pSender, lHint, pHint ); // base class
+
+   // Something has changed to invalidate the report
+   m_bInvalidReport = true;
+
+   UpdateNow();
+}
+
+void CEAFReportView::UpdateNow()
+{
+   if ( CEAFReportView::ms_bIsUpdatingReport )
+      return;
+
+   CEAFReportView::ms_bIsUpdatingReport = true;
+
+   if ( m_bInvalidReport )
+   {
+      try
+      {
+         HRESULT hr = UpdateReportBrowser();
+         if ( FAILED(hr)  )
+         {
+            if ( m_bNoBrowser )
+            {
+               AfxMessageBox( IDS_E_NOBROWSER );
+            }
+         }
+         else
+         {
+            m_bInvalidReport = false;
+         }
+      }
+      catch(...)
+      {
+         CEAFReportView::ms_bIsUpdatingReport = false;
+         throw;
+      }
+   }
+
+   CEAFReportView::ms_bIsUpdatingReport = false;
+}
+
+void CEAFReportView::OnInitialUpdate() 
+{
+   m_bIsNewReport = true;
+
+   try
+   {
+      CDocument* pDoc = GetDocument();
+      CDocTemplate* pDocTemplate = pDoc->GetDocTemplate();
+      ASSERT( pDocTemplate->IsKindOf(RUNTIME_CLASS(CEAFDocTemplate)) );
+
+      CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)pDocTemplate;
+      CEAFReportViewCreationData* pCreateData = (CEAFReportViewCreationData*)pTemplate->GetViewCreationData();
+      ASSERT(pCreateData != NULL);
+
+      m_pReportBuilderMgr = pCreateData->m_pReportBuilderMgr;
+      m_pRptMgr = pCreateData->m_pRptMgr;
+      ATLASSERT(m_pReportBuilderMgr != NULL || m_pRptMgr != NULL); // one of these should not be NULL
+
+      CollectionIndexType rptIdx = pCreateData->m_RptIdx;
+      bool bPromptForSpec = pCreateData->m_bPromptForSpec;
+      CreateReport(rptIdx,bPromptForSpec);
+
+      CView::OnInitialUpdate();
+   }
+   catch(...)
+   {
+      m_bIsNewReport = false; // no longer creating a new report
+      throw; // keep the exception moving
+   }
+
+   m_bIsNewReport = false;
+}
+
+void CEAFReportView::UpdateViewTitle()
+{
+   if ( m_pReportSpec == NULL )
+   {
+      SetWindowText("Report View");
+      return;
+   }
+
+   CString strTitle( m_pReportSpec->GetReportTitle().c_str() );
+   SetWindowText(strTitle);
+   CDocument* pDoc = GetDocument();
+   pDoc->UpdateFrameCounts();
+}
+
+void CEAFReportView::OnCmenuSelected(UINT id)
+{
+  UINT cmd = id-CCS_CMENU_BASE ;
+
+  switch(cmd)
+  {
+  case CCS_RB_EDIT:
+     OnEdit();
+     break;
+
+  case CCS_RB_FIND:
+     m_pReportBrowser->Find();
+     break;
+
+  case CCS_RB_SELECT_ALL:
+     m_pReportBrowser->SelectAll();
+     break;
+  case CCS_RB_PRINT:
+     m_pReportBrowser->Print(true);
+     break;
+
+  case CCS_RB_REFRESH:
+     m_pReportBrowser->Refresh();
+     break;
+
+  case CCS_RB_VIEW_SOURCE:
+     m_pReportBrowser->ViewSource();
+     break;
+
+  case CCS_RB_VIEW_BACK:
+     m_pReportBrowser->Back();
+     break;
+
+  case CCS_RB_VIEW_FORWARD:
+     m_pReportBrowser->Forward();
+     break;
+
+  default:
+     // must be a toc anchor
+     CHECK(cmd>=CCS_RB_TOC);
+     m_pReportBrowser->NavigateAnchor(cmd-CCS_RB_TOC);
+  }
+}
+
+
+BOOL CEAFReportView::PreTranslateMessage(MSG* pMsg) 
+{
+   if (pMsg->message == WM_KEYDOWN) 
+   {
+      if (pMsg->wParam =='f' || pMsg->wParam =='F')
+      {
+         // ctrl - F = Find
+         if (::GetKeyState(VK_CONTROL))
+         {
+            m_pReportBrowser->Find();
+            return TRUE;
+         }
+      }
+   }
+
+	return CView::PreTranslateMessage(pMsg);
+}
+
+BOOL CEAFReportView::OnEraseBkgnd(CDC* pDC)
+{
+   CRect rect;
+   GetClientRect(&rect);
+
+   CBrush brush;
+   brush.Attach( GetSysColorBrush(COLOR_BTNFACE) ); // dialog background color
+   brush.UnrealizeObject();
+   CBrush* pOldBrush = pDC->SelectObject(&brush);
+
+   CPen pen(PS_SOLID,1, GetSysColor(COLOR_BTNFACE) );
+   CPen* pOldPen = pDC->SelectObject(&pen);
+
+   pDC->Rectangle(rect);
+   
+   pDC->SelectObject(pOldBrush);
+   pDC->SelectObject(pOldPen);
+
+   return TRUE;
+}
+
+BOOL CEAFReportView::PreCreateWindow(CREATESTRUCT& cs)
+{
+   cs.style |= WS_CLIPCHILDREN;
+
+   return CView::PreCreateWindow(cs);
+}
+
+void CEAFReportView::CreateEditButton()
+{
+   CRect rect(0,0,50,21);
+   m_btnEdit.Create("Edit",WS_CHILD | WS_TABSTOP | BS_PUSHBUTTON | BS_TEXT, rect, this, IDC_EDIT);
+   m_btnFont.Attach( GetStockObject(DEFAULT_GUI_FONT) );
+   m_btnEdit.SetFont(&m_btnFont);
+}
+
+std::vector<std::string> CEAFReportView::GetReportNames()
+{
+   if ( m_pReportBuilderMgr )
+      return m_pReportBuilderMgr->GetReportNames();
+   else
+      return m_pRptMgr->GetReportNames();
+}
+
+boost::shared_ptr<CReportBuilder> CEAFReportView::GetReportBuilder(const std::string& strRptName)
+{
+   if ( m_pReportBuilderMgr )
+      return m_pReportBuilderMgr->GetReportBuilder(strRptName);
+   else
+      return m_pRptMgr->GetReportBuilder(strRptName);
+}
+
+boost::shared_ptr<CReportBrowser> CEAFReportView::CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec)
+{
+   if ( m_pReportBuilderMgr )
+      return m_pReportBuilderMgr->CreateReportBrowser(hwndParent,pRptSpec);
+   else
+      return m_pRptMgr->CreateReportBrowser(hwndParent,pRptSpec);
 }

@@ -88,6 +88,7 @@ public:
 	STDMETHOD(Clone)(/*[out,retval]*/ILoadCombination* *lone);
 	STDMETHOD(RemoveLoadCaseFactor)(/*[in]*/CollectionIndexType index);
 	STDMETHOD(Clear)();
+	STDMETHOD(FindLoadCaseFactor)(/*[in]*/BSTR loadCaseName, /*[out]*/Float64* minFactor, /*[out]*/Float64* maxFactor);
 	STDMETHOD(GetLoadCaseFactor)(/*[in]*/CollectionIndexType index,  /*[out]*/BSTR* loadCaseName, /*[out]*/Float64* minFactor, /*[out]*/Float64* maxFactor);
 	STDMETHOD(AddLoadCaseFactor)( /*[in]*/BSTR loadCaseName, /*[in]*/Float64 minFactor, /*[in]*/Float64 maxFactor);
 	STDMETHOD(SetLoadCaseFactor)(/*[in]*/CollectionIndexType index, /*[in]*/BSTR loadCaseName, /*[in]*/Float64 minFactor, /*[in]*/Float64 maxFactor);

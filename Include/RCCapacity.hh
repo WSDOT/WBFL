@@ -368,4 +368,26 @@
 #define IDH_ICapacityReductionFactor_Compute					1921
 #define IDH_ICapacityReductionFactor_ComputeEx					1922
 
+#define IDH_ICrackedSectionSolution                         2000
+#define IDH_ICrackedSectionSolution_InitSolution            2001
+#define IDH_ICrackedSectionSolution_CG                      2002
+#define IDH_ICrackedSectionSolution_SliceCount              2003
+#define IDH_ICrackedSectionSolution_Slice                   2004
+
+#define IDH_ICrackedSectionSolver                           2010
+#define IDH_ICrackedSectionSolver_Section                   2011
+#define IDH_ICrackedSectionSolver_Slices                    2012
+#define IDH_ICrackedSectionSolver_SliceGrowthFactor         2013
+#define IDH_ICrackedSectionSolver_Solve                     2014
+#define IDH_ICrackedSectionSolver_CGTolerance               2015
+#define IDH_ICrackedSectionSolver_MaxIterations             2016
+
+#define IDH_ICrackedSectionSlice                            2020
+#define IDH_ICrackedSectionSlice_InitSlice                  2021
+#define IDH_ICrackedSectionSlice_Area                       2022
+#define IDH_ICrackedSectionSlice_CG                         2023
+#define IDH_ICrackedSectionSlice_Efg                        2024
+#define IDH_ICrackedSectionSlice_Ebg                        2025
+#define IDH_ICrackedSectionSlice_Shape                      2026
+
 #endif //  INCLUDED_RCCAPACITY_HH_

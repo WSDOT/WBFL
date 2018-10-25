@@ -136,6 +136,38 @@ library WBFLLBAMUtility
       HRESULT ConfigureDeflectionLiveLoad([in]ILBAMModel* pModel,[in] Float64 imTruck,[in]Float64 imLane, [in]SpecUnitType units,[in]IUnitServer* pUnitServer);
 	};
 
+	[
+		object,
+		uuid(FEF8CA66-2A31-4663-A001-9DC1700ECBDD),
+		oleautomation, 
+		helpstring("ILBAMLRFDFactory3 Interface"),
+      helpcontext(IDH_LBAMLRFDFactory),
+		pointer_default(unique)
+	]
+	interface ILBAMLRFDFactory3 : ILBAMLRFDFactory2
+	{
+ 	 [helpstring("method ConfigureLegalLiveLoad"), helpcontext(IDH_LBAMLRFDFactory_ConfigureLegalLiveLoad)] 
+      HRESULT ConfigureLegalLiveLoad([in]ILBAMModel* pModel, [in] LiveLoadModelType llmt,
+                                     [in] Float64 imTruck,
+                                     [in]Float64 imLane, 
+                                     [in]VARIANT_BOOL includeType33, // 0.75Type3-3 + Lane
+                                     [in]VARIANT_BOOL includeDualType33, // 2@0.75Type3-3 + Lane
+                                     [in]VARIANT_BOOL removeLaneLoad, // removes lane from Type33 and Dual Type 33 and uses a factor of 1.0
+                                     [in]IUnitServer* pUnitServer);
+
+ 	 [helpstring("method ConfigureNotionalRatingLoad"), helpcontext(IDH_LBAMLRFDFactory_ConfigureNotionalRatingLoad)] 
+      HRESULT ConfigureNotionalRatingLoad([in]ILBAMModel* pModel, [in] LiveLoadModelType llmt,
+                                     [in] Float64 imTruck,
+                                     [in]Float64 imLane, 
+                                     [in]IUnitServer* pUnitServer);
+
+ 	 [helpstring("method ConfigureSpecializedHaulingUnits"), helpcontext(IDH_LBAMLRFDFactory_ConfigureSpecializedHaulingUnits)] 
+      HRESULT ConfigureSpecializedHaulingUnits([in]ILBAMModel* pModel, [in] LiveLoadModelType llmt,
+                                     [in] Float64 imTruck,
+                                     [in]Float64 imLane, 
+                                     [in]IUnitServer* pUnitServer);
+   };
+
 
 	[
 		uuid(12D5CC57-BF21-11D5-B075-00105A9AF985),
@@ -143,7 +175,7 @@ library WBFLLBAMUtility
 	]
 	coclass LRFDFactory
 	{
-		[default] interface ILBAMLRFDFactory2;
+		[default] interface ILBAMLRFDFactory3;
 		interface ILBAMLRFDFactory;
 		interface ILBAMFactory;
 	};

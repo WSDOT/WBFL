@@ -1119,7 +1119,6 @@ Objects\LBAM_Model\LoadCombination\GetLiveLoadModelCount_Method_(LoadCombination
 eHelp.xml
 RoboHHRE.lng
 
-WBFLLBam.glo
 WBFLLBam.brs
 [ALIAS]
 #include WBFLLBam.ali

@@ -1,10 +1,37 @@
+///////////////////////////////////////////////////////////////////////
+// EAF - Extensible Application Framework
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
 // EAFDocument.cpp : implementation file
 //
 
 #include "stdafx.h"
 #include "resource.h"
 #include <EAF\EAFDocument.h>
+#include <EAF\EAFApp.h>
 #include <EAF\EAFMainFrame.h>
+#include <EAF\EAFAppPlugin.h>
+#include <EAF\EAFDocTemplateRegistrar.h>
+#include <EAF\EAFHints.h>
 
 // Logging
 #include <iostream>
@@ -12,7 +39,11 @@
 #include <System\Time.h>
 #include <MFCTools\VersionInfo.h>
 
-#include "PluginCommandManager.h"
+#include <System\TxnManager.h>
+
+#include <EAF\EAFPluginCommandManager.h>
+
+#include "StatusCenterDlg.h"
 
 
 #ifdef _DEBUG
@@ -21,6 +52,28 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+class CMyStatusCenterEventSink : public iStatusCenterEventSink
+{
+public:
+   CMyStatusCenterEventSink(CEAFDocument* pDoc)
+   {
+      m_pDoc = pDoc;
+   }
+
+   virtual void OnStatusItemAdded(CEAFStatusItem* pItem)
+   {
+      m_pDoc->OnStatusChanged();
+   }
+
+   virtual void OnStatusItemRemoved(StatusItemIDType id)
+   {
+      m_pDoc->OnStatusChanged();
+   }
+
+private:
+   CEAFDocument* m_pDoc;
+};
+
 // CEAFDocument
 
 IMPLEMENT_DYNAMIC(CEAFDocument, CDocument)
@@ -28,26 +81,63 @@ IMPLEMENT_DYNAMIC(CEAFDocument, CDocument)
 CEAFDocument::CEAFDocument()
 {
    m_pMainMenu = NULL;
-   m_pPluginCommandMgr = new CPluginCommandManager();
+   m_pPluginCommandMgr = new CEAFPluginCommandManager();
+
+   m_pStatusCenterEventSink = new CMyStatusCenterEventSink(this);
+
+   m_pStatusCenter = new CEAFStatusCenter;
+   m_pStatusCenter->SinkEvents(m_pStatusCenterEventSink);
+
+   m_pStatusCenterDlg = new CStatusCenterDlg(*m_pStatusCenter);
+
+   m_DocPluginMgr.SetParent(this);
+
+   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   pApp->AddUnitModeListener(this);
+
+   m_bUIIntegrated = FALSE;
 }
 
 CEAFDocument::~CEAFDocument()
 {
+   ATLASSERT( m_pMainMenu == NULL ); // this should have been deleted by now!
+
    if ( m_pPluginCommandMgr )
    {
       delete m_pPluginCommandMgr;
       m_pPluginCommandMgr = NULL;
    }
 
-   if ( m_pMainMenu )
+   if ( m_pStatusCenterDlg )
    {
-      delete m_pMainMenu;
-      m_pMainMenu = NULL;
+      delete m_pStatusCenterDlg;
+      m_pStatusCenterDlg = NULL;
    }
+
+   if ( m_pStatusCenter )
+   {
+      delete m_pStatusCenter;
+      m_pStatusCenter = NULL;
+   }
+
+   if ( m_pStatusCenterEventSink )
+   {
+      delete m_pStatusCenterEventSink;
+      m_pStatusCenterEventSink = NULL;
+   }
+
+   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   pApp->RemoveUnitModeListener(this);
 }
 
 
 BEGIN_MESSAGE_MAP(CEAFDocument, CDocument)
+   ON_UPDATE_COMMAND_UI(ID_VIEW_STATUSCENTER, OnUpdateViewStatusCenter)
+   ON_COMMAND(ID_VIEW_STATUSCENTER,OnViewStatusCenter)
+	ON_COMMAND(ID_EDIT_UNDO, OnUndo)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, OnUpdateUndo)
+	ON_COMMAND(ID_EDIT_REDO, OnRedo)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, OnUpdateRedo)
 END_MESSAGE_MAP()
 
 
@@ -58,13 +148,30 @@ BOOL CEAFDocument::OnCmdMsg(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO* 
    if ( bResult )
       return bResult;
 
-   // Next, see if any agents registered callback commands
+   // Next, see if anyone registered callback commands
    CComPtr<ICommandCallback> pCallback;
-   UINT nAgentCmdID;
-   if ( m_pPluginCommandMgr->GetCommandCallback(nID,&nAgentCmdID,&pCallback) )
+   UINT nPluginCmdID;
+   if ( m_pPluginCommandMgr->GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
    {
       // process the callback command
-      return pCallback->OnCommandMessage(nAgentCmdID,nCode,pExtra,pHandlerInfo);
+      bResult = pCallback->OnCommandMessage(nPluginCmdID,nCode,pExtra,pHandlerInfo);
+      if ( bResult )
+         return bResult;
+   }
+
+   // Finally, see if the application plugin object handles it
+   CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)GetDocTemplate();
+   if ( pTemplate )
+   {
+      CComPtr<IEAFAppPlugin> appPlugin;
+      pTemplate->GetPlugin(&appPlugin);
+
+      CCmdTarget* pCmdTarget = appPlugin->GetCommandTarget();
+      if ( pCmdTarget )
+         bResult = pCmdTarget->OnCmdMsg(nID,nCode,pExtra,pHandlerInfo);
+
+      if ( bResult )
+         return bResult;
    }
 
    // the command wasn't handled here!
@@ -101,32 +208,153 @@ CEAFMenu* CEAFDocument::GetMenu()
 
 CEAFMenu* CEAFDocument::CreateMainMenu()
 {
-   return new CEAFMenu;
+   return new CEAFMenu(AfxGetMainWnd(),GetPluginCommandManager());
 }
 
-void CEAFDocument::InitToolBars()
+CEAFPluginCommandManager* CEAFDocument::GetPluginCommandManager()
 {
-   // Set up the tool bar mapping stuff
-   CEAFMainFrame* pFrame = (CEAFMainFrame*)AfxGetMainWnd();
-
-   CEAFToolBar* pToolBar = pFrame->GetMainToolBar();
-   pToolBar->m_pCmdMgr   = m_pPluginCommandMgr;
-   pToolBar->m_pToolBar  = &(pFrame->m_wndToolBar);
+   return m_pPluginCommandMgr;
 }
 
-void CEAFDocument::InitMenus()
+CEAFDocPluginManager* CEAFDocument::GetDocPluginManager()
+{
+   return &m_DocPluginMgr;
+}
+
+BOOL CEAFDocument::InitMainMenu()
 {
    // Set up the menu mapping stuff before initializing agents
+   if (m_pMainMenu)
+      delete m_pMainMenu;
+
    m_pMainMenu = CreateMainMenu();
+   return TRUE;
+}
 
-   CWnd* pWnd = AfxGetMainWnd();
+void CEAFDocument::IntegrateWithUI(BOOL bIntegrate)
+{
+   ATLASSERT(m_bUIIntegrated != bIntegrate);
 
-   m_pMainMenu->SetWindow(pWnd);
-   m_pMainMenu->SetPluginCommandManager(m_pPluginCommandMgr);
+   // This function is called from CEAFDocTemplate::OnCreateFinalize() and OnCloseDocument()
+
+   if ( bIntegrate )
+      InitMainMenu();
+
+   // save toolbar state before they are removed
+   CFrameWnd* pFrame = (CFrameWnd*)AfxGetMainWnd();
+   if ( !bIntegrate )
+      pFrame->SaveBarState(GetToolbarSectionName());
+
+   DoIntegrateWithUI(bIntegrate);
+
+   // load toolbar state after toolbars are created
+   if ( bIntegrate )
+      pFrame->LoadBarState(GetToolbarSectionName());
+
+   m_bUIIntegrated = bIntegrate;
+}
+
+void CEAFDocument::DoIntegrateWithUI(BOOL bIntegrate)
+{
+   CEAFDocPluginManager* pPluginMgr = GetDocPluginManager();
+   UINT nPlugins = pPluginMgr->GetPluginCount();
+   for (UINT idx = 0; idx < nPlugins; idx++ )
+   {
+      CComPtr<IEAFDocumentPlugin> plugin;
+      pPluginMgr->GetPlugin(idx,&plugin);
+      plugin->IntagrateWithUI(bIntegrate);
+   }
+}
+
+UINT CEAFDocument::CreateToolBar(LPCTSTR lpszName)
+{
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   return pMainFrame->CreateToolBar(lpszName,GetPluginCommandManager());
+}
+
+CEAFToolBar* CEAFDocument::GetToolBar(UINT toolbarID)
+{
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   return pMainFrame->GetToolBar(toolbarID);
+}
+
+void CEAFDocument::DestroyToolBar(CEAFToolBar* pToolBar)
+{
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   pMainFrame->DestroyToolBar(pToolBar);
+}
+
+void CEAFDocument::DestroyToolBar(UINT toolbarID)
+{
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   pMainFrame->DestroyToolBar(toolbarID);
+}
+
+long CEAFDocument::RegisterView(CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu,int maxViewCount)
+{
+   CEAFDocTemplate* pMyTemplate = (CEAFDocTemplate*)(GetDocTemplate());
+   CComPtr<IEAFAppPlugin> appPlugin;
+   pMyTemplate->GetPlugin(&appPlugin);
+   UINT nResourceID = appPlugin->GetDocumentResourceID();
+
+   if ( hSharedMenu == NULL )
+   {
+      CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+      hSharedMenu = pMainFrame->GetMenu()->GetSafeHmenu();
+   }
+
+   CEAFDocTemplate* pNewDocTemplate = new CEAFDocTemplate(nResourceID,GetRuntimeClass(),pFrameClass,pViewClass,hSharedMenu,maxViewCount);
+
+   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFDocTemplateRegistrar* pRegistrar = pApp->GetDocTemplateRegistrar();
+
+   long key = pRegistrar->AddDocTemplate(pNewDocTemplate);
+   return key;
+}
+
+void CEAFDocument::RemoveView(long key)
+{
+   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFDocTemplateRegistrar* pRegistrar = pApp->GetDocTemplateRegistrar();
+   pRegistrar->RemoveDocTemplate(key);
+}
+
+CView* CEAFDocument::CreateView(long key,LPVOID pData)
+{
+   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+
+   // if this assert fires, you probably added AFX_MANAGE_STATE(AfxGetStaticModuleState())
+   // in the scope of calling this method
+   // Try removing AFX_MANAGE_STATE or re-scoping it
+   ASSERT(pApp->IsKindOf(RUNTIME_CLASS(CEAFApp)));
+
+   // the view class will call GetDocument()->GetDocTemplate() in its
+   // OnInitialUpdate method. The template that will be returned is pMyTemplate and not
+   // the pTemplate pointer we get below.
+   //
+   // Set the create data into this template
+   CEAFDocTemplate* pMyTemplate = (CEAFDocTemplate*)GetDocTemplate();
+   pMyTemplate->SetViewCreationData(pData);
+
+   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+
+   CEAFDocTemplateRegistrar* pRegistrar = pApp->GetDocTemplateRegistrar();
+   CEAFDocTemplate*          pTemplate  = pRegistrar->GetDocTemplate(key);
+   CView*                    pView      = pMainFrame->CreateOrActivateFrame(pTemplate);
+
+   // done with the create data, so NULL it out
+   pMyTemplate->SetViewCreationData(NULL);
+
+   return pView;
 }
 
 void CEAFDocument::FailSafeLogMessage(const char* msg)
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CString strLogFile = AfxGetApp()->m_pszExeName;
    strLogFile += ".log";
 
@@ -159,6 +387,7 @@ void CEAFDocument::FailSafeLogMessage(const char* msg)
 
 void CEAFDocument::SetModifiedFlag(BOOL bModified)
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CDocument::SetModifiedFlag(bModified);
 
    CEAFMainFrame* pFrame = (CEAFMainFrame*)AfxGetMainWnd();
@@ -169,6 +398,7 @@ void CEAFDocument::SetModifiedFlag(BOOL bModified)
 
 void CEAFDocument::InitFailMessage()
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CString msg, msg1, msg2;
 
    CString strLogFile = AfxGetApp()->m_pszExeName;
@@ -182,10 +412,58 @@ void CEAFDocument::InitFailMessage()
 
 BOOL CEAFDocument::Init()
 {
-   InitMenus();
-   InitToolBars();
+   if ( !LoadDocumentPlugins() )
+      return FALSE;
+
+   LoadDocumentSettings();
 
    return TRUE;
+}
+
+void CEAFDocument::LoadDocumentSettings()
+{
+   // Does nothing by default
+}
+
+void CEAFDocument::SaveDocumentSettings()
+{
+   // Does nothing by default
+}
+
+CATID CEAFDocument::GetDocumentPluginCATID()
+{
+   return CLSID_NULL;
+}
+
+BOOL CEAFDocument::LoadDocumentPlugins()
+{
+   CATID catid = GetDocumentPluginCATID();
+   if ( catid == CLSID_NULL )
+      return TRUE; // no plugins for this document type
+
+   if ( GetDocPluginManager()->LoadPlugins(catid) )
+   {
+      GetDocPluginManager()->InitPlugins();
+   }
+
+   return TRUE;
+}
+
+void CEAFDocument::UnloadDocumentPlugins()
+{
+   GetDocPluginManager()->UnloadPlugins();
+}
+
+void CEAFDocument::OnUpdateViewStatusCenter(CCmdUI* pCmdUI)
+{
+   CString str;
+   str.Format("%s Status Center",m_pStatusCenterDlg->IsWindowVisible() ? "Hide" : "Show");
+   pCmdUI->SetText(str);
+}
+
+void CEAFDocument::OnViewStatusCenter()
+{
+   m_pStatusCenterDlg->ShowWindow(m_pStatusCenterDlg->IsWindowVisible() ? SW_HIDE : SW_SHOW);
 }
 
 BOOL CEAFDocument::OnNewDocument()
@@ -198,12 +476,28 @@ BOOL CEAFDocument::OnNewDocument()
       return FALSE;
 
    SetModifiedFlag(TRUE);
+   OnStatusChanged();
 
-   // update the mainframe title
+   // update the mainframe
    CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
    pMainFrame->UpdateFrameTitle("Untitled");
+   pMainFrame->EnableModifiedFlag( IsModified() );
 
    return TRUE;
+}
+
+BOOL CEAFDocument::OnNewDocumentFromTemplate(LPCTSTR lpszPathName)
+{
+   if ( !OnNewDocument() )
+      return FALSE;
+
+   if ( OpenTheDocument( lpszPathName ) )
+   {
+      SetModifiedFlag(TRUE);
+      return TRUE;
+   }
+
+   return FALSE;
 }
 
 BOOL CEAFDocument::OnOpenDocument(LPCTSTR lpszPathName)
@@ -218,16 +512,16 @@ BOOL CEAFDocument::OnOpenDocument(LPCTSTR lpszPathName)
    if ( !Init() ) // init menus and toolbars... subclasses do more initialization
       return FALSE;
 
-   BOOL st = OpenTheDocument( lpszPathName );
+   BOOL bDocumentOpened = OpenTheDocument( lpszPathName );
 
    // update the mainframe title
-   if (st == TRUE)
+   if (bDocumentOpened == TRUE)
    {
       CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
       pMainFrame->UpdateFrameTitle(lpszPathName);
    }
 
-   return st;
+   return bDocumentOpened;
 }
 
 BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
@@ -287,28 +581,9 @@ BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
       BOOL bDidDelete = ::DeleteFile( lpszPathName );
       if ( !bDidDelete )
       {
-         AfxMessageBox("Bad save");
          // Opps... Couldn't delete it.
          // Alter the user so he's not screwed.
-//         CString msg;
-//         
-//         GET_IFACE( IProjectLog, pLog );
-//
-//         pLog->LogMessage("");
-//         pLog->LogMessage("An error occured while recovering your last successful save.");
-//         msg.Format("It is highly likely that the file %s is corrupt.", lpszPathName);
-//         pLog->LogMessage( msg );
-//         pLog->LogMessage("To recover from this error,");
-//         msg.Format("   1. Delete %s", lpszPathName );
-//         pLog->LogMessage( msg );
-//         msg.Format("   2. Rename %s to %s", strBackup, lpszPathName );
-//         pLog->LogMessage( msg );
-//         pLog->LogMessage("");
-//
-//         std::string strLogFileName = pLog->GetName();
-//
-//         AfxFormatString2( msg, IDS_E_SAVERECOVER1, lpszPathName, CString(strLogFileName.c_str()) );
-//         AfxMessageBox(msg );
+         OnErrorDeletingBadSave(lpszPathName,strBackup);
       }
 
       if ( bDidDelete )
@@ -318,27 +593,10 @@ BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
          BOOL bDidMove = ::MoveFile( strBackup, lpszPathName ); // Rename the file
          if ( !bDidMove )
          {
-            AfxMessageBox("Bad save");
             // Opps... A file with the original name is gone, and we can't
             // rename the backup to the file with the orignal name.
             // Alert the user so he's not screwed.
-//            CString msg;
-//
-//            pLog->LogMessage("");
-//            pLog->LogMessage("An error occured while recovering your last successful save.");
-//            msg.Format("It is highly likely that the file %s no longer exists.", lpszPathName);
-//            pLog->LogMessage( msg );
-//            pLog->LogMessage("To recover from this error,");
-//            msg.Format("   1. If %s exists, delete it.", lpszPathName );
-//            pLog->LogMessage( msg );
-//            msg.Format("   2. Rename %s to %s", strBackup, lpszPathName );
-//            pLog->LogMessage( msg );
-//            pLog->LogMessage("");
-//
-//            std::string strLogFileName = pLog->GetName();
-//
-//            AfxFormatString2( msg, IDS_E_SAVERECOVER2, lpszPathName, CString(strLogFileName.c_str()) );
-//            AfxMessageBox( msg );
+            OnErrorRemaningSaveBackup(lpszPathName,strBackup);
          }
       }
 
@@ -354,6 +612,7 @@ BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
    }
 
    SetModifiedFlag( FALSE );
+   OnStatusChanged();
 
    // update title frame
    CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
@@ -362,21 +621,77 @@ BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
    return TRUE;
 }
 
+void CEAFDocument::OnErrorDeletingBadSave(LPCTSTR lpszPathName,LPCTSTR lpszBackup)
+{
+   CString msg;
+   msg.Format("%s\n%s%s%s\n%s\n%s%s\n%s%s%s%s",
+              "An error occured while recovering your last successful save.",
+              "It is highly likely that the file ", lpszPathName, " is corrupt.",
+              "To recover from this error,",
+              "   1. Delete ", lpszPathName,
+              "   2. Rename ", lpszBackup, " to ", lpszPathName);
+   
+   AfxMessageBox(msg);
+}
+
+void CEAFDocument::OnErrorRemaningSaveBackup(LPCTSTR lpszPathName,LPCTSTR lpszBackup)
+{
+   CString msg;
+   msg.Format("%s\n%s%s%s\n%s\n%s%s%s\n%s%s%s%s",
+              "An error occured while recovering your last successful save.",
+              "It is highly likely that the file ", lpszPathName, " no longer exists.",
+              "To recover from this error,",
+              "   1. If ", lpszPathName, " exists, delete it.",
+              "   2. Rename ", lpszBackup, " to ", lpszPathName);
+   
+   AfxMessageBox(msg);
+}
+
 void CEAFDocument::OnCloseDocument()
 {
+   SetModifiedFlag(FALSE);
+   OnStatusChanged();
+
+   // remove ui elements that plug-ins provided
+   if ( m_bUIIntegrated )
+   {
+      ATLASSERT(m_pMainMenu != NULL);
+      IntegrateWithUI(FALSE);
+   }
+
+   SaveDocumentSettings();
+
+   UnloadDocumentPlugins();
+
+   // put the main frame toolbar back the way it was
+   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   pMainFrame->ShowMainFrameToolBar();
+
+   // this has to come last as the document deletes itself
    CDocument::OnCloseDocument();
+
+   // DON'T DO ANYTHING ELSE HERE.... Document has deleted itself
+   pMainFrame->ResetStatusBar();
 }
 
 BOOL CEAFDocument::OpenTheDocument(LPCTSTR lpszPathName)
 {
+   HRESULT hr = S_OK;
+
+   CString real_file_name; // name of actual file to be read may be different than lpszPathName
+   HRESULT hr_convert = ConvertTheDocument(lpszPathName, &real_file_name);
+   // convert document. if file was converted, then we need to delete the converted file at the end
+   if ( FAILED(hr_convert) )
+   {
+      HandleConvertDocumentError(hr_convert,lpszPathName);
+      return FALSE;
+   }
+
    {
       // NOTE: this scoping block is here for a reason. The IStructuredLoad must be
       //       destroyed before the file can be deleted.
-      _COM_SMARTPTR_TYPEDEF(IStructuredLoad,IID_IStructuredLoad);
-      IStructuredLoadPtr pStrLoad;
-
-      HRESULT hr = ::CoCreateInstance( CLSID_StructuredLoad, NULL, 
-	      CLSCTX_INPROC_SERVER, IID_IStructuredLoad, (void**)&pStrLoad );
+      CComPtr<IStructuredLoad> pStrLoad;
+      hr = ::CoCreateInstance( CLSID_StructuredLoad, NULL, CLSCTX_INPROC_SERVER, IID_IStructuredLoad, (void**)&pStrLoad );
       if ( FAILED(hr) )
       {
          // We are not aggregating so we should CoCreateInstance should
@@ -387,7 +702,7 @@ BOOL CEAFDocument::OpenTheDocument(LPCTSTR lpszPathName)
          return FALSE;
       }
 
-      hr = pStrLoad->Open( lpszPathName );
+      hr = pStrLoad->Open( real_file_name );
       if ( FAILED(hr) )
       {
          HandleOpenDocumentError( hr, lpszPathName );
@@ -401,6 +716,17 @@ BOOL CEAFDocument::OpenTheDocument(LPCTSTR lpszPathName)
          return FALSE;
       }
 
+
+      // end unit wrapping entire file
+      try
+      {
+         if (S_OK != pStrLoad->EndUnit())
+            return E_FAIL;
+      }
+      catch(...)
+      {
+         return E_FAIL;
+      }
       
       hr = pStrLoad->Close();
       if ( FAILED(hr) )
@@ -410,23 +736,32 @@ BOOL CEAFDocument::OpenTheDocument(LPCTSTR lpszPathName)
       }
    }
 
-//   if (convert_status==1)
-//   {
-//      // file was converted and written to a temporary file. delete the temp file
-//      VERIFY(::DeleteFile(real_file_name));
-//   }
-//
-//   // sets the status bar indicator for structural analysis type
-//   UpdateAnalysisTypeStatusIndicator();
-//
-//   m_DocUnitSystem->put_UnitMode(GetUnitMode() == pgsTypes::umUS ? umUS : umSI);
-	return TRUE;
+   if ( hr_convert == S_OK )
+   {
+      // file was converted and written to a temporary file. delete the temp file
+      VERIFY(::DeleteFile(real_file_name));
+   }
+
+   OnStatusChanged();
+
+   return TRUE;
+}
+
+HRESULT CEAFDocument::ConvertTheDocument(LPCTSTR lpszPathName, CString* realFileName)
+{
+   // default - do nothing
+   *realFileName = CString(lpszPathName);
+   return S_FALSE; // did not convert
+}
+
+void CEAFDocument::HandleConvertDocumentError( HRESULT hr, LPCTSTR lpszPathName )
+{
+   AfxMessageBox("Error converting document");
 }
 
 BOOL CEAFDocument::SaveTheDocument(LPCTSTR lpszPathName)
 {
-   _COM_SMARTPTR_TYPEDEF(IStructuredSave,IID_IStructuredSave);
-   IStructuredSavePtr pStrSave;
+   CComPtr<IStructuredSave> pStrSave;
 
    HRESULT hr = ::CoCreateInstance( CLSID_StructuredSave, NULL, 
 	   CLSCTX_INPROC_SERVER, IID_IStructuredSave, (void**)&pStrSave );
@@ -447,7 +782,7 @@ BOOL CEAFDocument::SaveTheDocument(LPCTSTR lpszPathName)
       return FALSE;
    }
 
-   hr = SaveTheDocument( pStrSave );
+   hr = WriteTheDocument( pStrSave );
    if ( FAILED(hr) )
    {
       HandleSaveDocumentError( hr, lpszPathName );
@@ -467,104 +802,155 @@ BOOL CEAFDocument::SaveTheDocument(LPCTSTR lpszPathName)
 void CEAFDocument::HandleOpenDocumentError( HRESULT hr, LPCTSTR lpszPathName )
 {
    AfxMessageBox("Error opening document");
-//   GET_IFACE( IProjectLog, pLog );
-//
-//   CString log_msg_header;
-//   log_msg_header.Format("The following error occured while opening %s",lpszPathName );
-//   pLog->LogMessage( log_msg_header );
-//
-//   CString msg1;
-//   switch( hr )
-//   {
-//   case REGDB_E_CLASSNOTREG:
-//      pLog->LogMessage( TEXT("CLSID_StructuredLoad not registered") );
-//      msg1.LoadString( IDS_E_BADINSTALL );
-//      break;
-//
-//   case STRLOAD_E_CANTOPEN:
-//      pLog->LogMessage( TEXT("Could not open file") );
-//      AfxFormatString1( msg1, IDS_E_READ, lpszPathName );
-//      break;
-//
-//   case STRLOAD_E_FILENOTFOUND:
-//      pLog->LogMessage( TEXT("File Not Found") );
-//      AfxFormatString1( msg1, IDS_E_FILENOTFOUND, lpszPathName );
-//      break;
-//
-//   case STRLOAD_E_INVALIDFORMAT:
-//      pLog->LogMessage( TEXT("File does not have valid PGSuper format") );
-//      AfxFormatString1( msg1, IDS_E_INVALIDFORMAT, lpszPathName );
-//      break;
-//
-//   case STRLOAD_E_BADVERSION:
-//      pLog->LogMessage( TEXT("This file came from a newer version of PGSuper, please upgrade") );
-//      AfxFormatString1( msg1, IDS_E_INVALIDVERSION, lpszPathName );
-//      break;
-//
-//   case STRLOAD_E_USERDEFINED:
-//      AfxFormatString1( msg1, IDS_E_USERDEFINED, lpszPathName );
-//      break;
-//
-//   default:
-//      {
-//         CString log_msg;
-//         log_msg.Format("An unknown error occured while opening the file (hr = %d)",hr);
-//         pLog->LogMessage( log_msg );
-//         AfxFormatString1( msg1, IDS_E_READ, lpszPathName );
-//      }
-//      break;
-//   }
-//
-//   CString msg;
-//   CString msg2;
-//   std::string strLogFileName = pLog->GetName();
-//   AfxFormatString1( msg2, IDS_E_PROBPERSISTS, CString(strLogFileName.c_str()) );
-//   AfxFormatString2(msg, IDS_E_FORMAT, msg1, msg2 );
-//   AfxMessageBox( msg );
 }
 
 void CEAFDocument::HandleSaveDocumentError( HRESULT hr, LPCTSTR lpszPathName )
 {
-      AfxMessageBox("Error saving document");
+   AfxMessageBox("Error saving document");
+}
 
-//   GET_IFACE( IProjectLog, pLog );
-//
-//   CString log_msg_header;
-//   log_msg_header.Format("The following error occured while saving %s",lpszPathName );
-//   pLog->LogMessage( log_msg_header );
-//
-//   CString msg1;
-//   switch( hr )
-//   {
-//   case REGDB_E_CLASSNOTREG:
-//      pLog->LogMessage( TEXT("CLSID_StructuredSave not registered") );
-//      msg1.LoadString( IDS_E_BADINSTALL );
-//      break;
-//
-//   case STRSAVE_E_CANTOPEN:
-//      pLog->LogMessage( TEXT("Could not open file") );
-//      AfxFormatString1( msg1, IDS_E_FILENOTFOUND, lpszPathName );
-//      break;
-//
-//   case STRSAVE_E_BADWRITE:
-//      pLog->LogMessage( TEXT("Error Writing to File") );
-//      AfxFormatString1( msg1, IDS_E_WRITE, lpszPathName );
-//      break;
-//
-//   default:
-//      {
-//         CString log_msg;
-//         log_msg.Format("An unknown error occured while closing the file (hr = %d)",hr);
-//         pLog->LogMessage( log_msg );
-//         AfxFormatString1( msg1, IDS_E_WRITE, lpszPathName );
-//      }
-//      break;
-//   }
-//
-//   CString msg;
-//   CString msg2;
-//   std::string strLogFileName = pLog->GetName();
-//   AfxFormatString1( msg2, IDS_E_PROBPERSISTS, CString(strLogFileName.c_str()) );
-//   AfxFormatString2(msg, IDS_E_FORMAT, msg1, msg2 );
-//   AfxMessageBox( msg );
+CEAFStatusCenter& CEAFDocument::GetStatusCenter()
+{
+   return *m_pStatusCenter;
+}
+
+void CEAFDocument::OnUnitsModeChanged(eafTypes::UnitMode newUnitMode)
+{
+   UpdateAllViews(NULL,EAF_HINTS_UNITS_CHANGED,0);
+}
+
+void CEAFDocument::Execute(txnTransaction& rTxn)
+{
+   txnTxnManager::GetInstance()->Execute(rTxn);
+}
+
+void CEAFDocument::Execute(txnTransaction* pTxn)
+{
+   txnTxnManager::GetInstance()->Execute(pTxn);
+}
+
+void CEAFDocument::Undo()
+{
+   txnTxnManager::GetInstance()->Undo();
+}
+
+void CEAFDocument::Redo()
+{
+   txnTxnManager::GetInstance()->Redo();
+}
+
+void CEAFDocument::Repeat()
+{
+   txnTxnManager::GetInstance()->Repeat();
+}
+
+bool CEAFDocument::CanUndo()
+{
+   return txnTxnManager::GetInstance()->CanUndo();
+}
+
+bool CEAFDocument::CanRedo()
+{
+   return txnTxnManager::GetInstance()->CanRedo();
+}
+
+bool CEAFDocument::CanRepeat()
+{
+   return txnTxnManager::GetInstance()->CanRepeat();
+}
+
+std::string CEAFDocument::UndoName()
+{
+   return txnTxnManager::GetInstance()->UndoName();
+}
+
+std::string CEAFDocument::RedoName()
+{
+   return txnTxnManager::GetInstance()->RedoName();
+}
+
+std::string CEAFDocument::RepeatName()
+{
+   return txnTxnManager::GetInstance()->RepeatName();
+}
+
+CollectionIndexType CEAFDocument::GetTxnCount()
+{
+   return txnTxnManager::GetInstance()->GetTxnCount();
+}
+
+CollectionIndexType CEAFDocument::GetUndoCount()
+{
+   return txnTxnManager::GetInstance()->GetUndoCount();
+}
+
+void CEAFDocument::OnUndo() 
+{
+   Undo();
+}
+
+void CEAFDocument::OnUpdateUndo(CCmdUI* pCmdUI) 
+{
+   if ( CanUndo() )
+   {
+      pCmdUI->Enable(TRUE);
+      CString strCommand;
+      strCommand.Format("Undo %s\tCtrl+Z",UndoName().c_str());
+      pCmdUI->SetText(strCommand);
+   }
+   else
+   {
+      pCmdUI->SetText("Undo\tCtrl+Z");
+      pCmdUI->Enable(FALSE);
+   }
+}
+
+void CEAFDocument::OnRedo() 
+{
+   ASSERT( CanRedo() );
+   Redo();
+}
+
+void CEAFDocument::OnUpdateRedo(CCmdUI* pCmdUI) 
+{
+   if ( CanRedo() )
+   {
+      pCmdUI->Enable(TRUE);
+      CString strCommand;
+      strCommand.Format("Redo %s\tCtrl+Y",RedoName().c_str());
+      pCmdUI->SetText(strCommand);
+   }
+   else
+   {
+      pCmdUI->SetText("Redo\tCtrl+Y");
+      pCmdUI->Enable(FALSE);
+   }
+}
+
+void CEAFDocument::OnStatusChanged()
+{
+   CEAFMainFrame* pFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   pFrame->OnStatusChanged();
+}
+
+void CEAFDocument::DeleteContents()
+{
+   CDocument::DeleteContents();
+
+   if ( m_pMainMenu )
+   {
+      delete m_pMainMenu;
+      m_pMainMenu = NULL;
+   }
+}
+
+void CEAFDocument::OnCreateInitialize()
+{
+   // does nothing by default
+}
+
+void CEAFDocument::OnCreateFinalize()
+{
+   IntegrateWithUI(TRUE);
+   OnStatusChanged();
 }

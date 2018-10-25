@@ -68,6 +68,9 @@ public:
    static const unitMass MetricTon;
    static const unitMass Slug;
    static const unitMass PoundMass;
+   static const unitMass KSlug;
+   static const unitMass _12Slug;
+   static const unitMass _12KSlug;
 
    static const unitMassPerLength KgPerMeter;
    static const unitMassPerLength LbmPerFeet;

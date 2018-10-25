@@ -253,7 +253,7 @@ library WBFLTools
 		[propput, helpcontext(IDH_ProgressMonitorWindow_HasCancel), helpstring("property HasCancel")] 
       HRESULT HasCancel([in] VARIANT_BOOL newVal);
 		[helpcontext(IDH_ProgressMonitorWindow_Show), helpstring("method Show")] 
-      HRESULT Show([in]BSTR initialMessage);
+      HRESULT Show([in]BSTR initialMessage,[in]HWND hParent);
 		[helpcontext(IDH_ProgressMonitorWindow_Hide), helpstring("method Hide")] 
       HRESULT Hide();
 		[helpcontext(IDH_ProgressMonitorWindow_Close), helpstring("method Close")] 

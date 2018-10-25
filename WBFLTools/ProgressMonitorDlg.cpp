@@ -44,8 +44,7 @@ CProgressMonitorDlg::CProgressMonitorDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CProgressMonitorDlg::IDD, pParent),
      m_WasCancelled(VARIANT_FALSE),
      m_HasCancel(VARIANT_TRUE),
-     m_HasGauge(VARIANT_TRUE),
-     m_hMainWnd(0)
+     m_HasGauge(VARIANT_TRUE)
 {
 	//{{AFX_DATA_INIT(CProgressMonitorDlg)
 		// NOTE: the ClassWizard will add member initialization here
@@ -93,21 +92,23 @@ BOOL CProgressMonitorDlg::OnInitDialog()
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
 	CDialog::OnInitDialog();
-	
-   // disable the main window to keep users from using the app while we are working
-   if (m_hMainWnd==0)
+
+   CWnd* pParent = GetParent();
+   if ( pParent && pParent->GetSafeHwnd() )
    {
+      ::EnableWindow(pParent->GetSafeHwnd(),FALSE);
+   }
+   else
+   {
+   // disable the main window to keep users from using the app while we are working
       // for some reason, only the first call to this function succeeds. 
       // later calls fail so...
    	AFX_MANAGE_STATE(AfxGetAppModuleState());
 
       CWnd* pwnd = ::AfxGetMainWnd();
-      ATLASSERT(pwnd!=0);
-      m_hMainWnd = pwnd->GetSafeHwnd();
-      ATLASSERT(m_hMainWnd!=0);
+      ::EnableWindow(pwnd->GetSafeHwnd(), FALSE);
    }
 
-   ::EnableWindow(m_hMainWnd, FALSE);
 
    // set range of progress control
    if (m_HasGauge!=VARIANT_FALSE)
@@ -137,12 +138,21 @@ BOOL CProgressMonitorDlg::OnInitDialog()
 
 void CProgressMonitorDlg::OnDestroy() 
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState());
-
    // re-enable the main application window
-   ATLASSERT(m_hMainWnd);
-   ::EnableWindow(m_hMainWnd, TRUE);
-   ::SetActiveWindow(m_hMainWnd);
+   CWnd* pParent = GetParent();
+   if ( pParent && pParent->GetSafeHwnd() )
+   {
+      ::EnableWindow(pParent->GetSafeHwnd(),TRUE);
+      ::SetActiveWindow(pParent->GetSafeHwnd());
+   }
+   else
+   {
+   	AFX_MANAGE_STATE(AfxGetAppModuleState());
+
+      CWnd* pwnd = ::AfxGetMainWnd();
+      ::EnableWindow(pwnd->GetSafeHwnd(),TRUE);
+      ::SetActiveWindow(pwnd->GetSafeHwnd());
+   }
 
 	CDialog::OnDestroy();
 }

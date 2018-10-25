@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_REPORTBUILDERMANAGER_H__5723C896_5744_4C31_8992_6BFCD03EEECC__INCLUDED_)
-#define AFX_REPORTBUILDERMANAGER_H__5723C896_5744_4C31_8992_6BFCD03EEECC__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include <ReportManager\ReportManagerExp.h>
 #include <ReportManager\ReportBuilder.h>
@@ -57,6 +52,8 @@ public:
    std::vector<std::string> GetReportNames(bool bIncludeHidden = false) const;
    CReportDescription GetReportDescription(const char* strReportName);
    CReportDescription GetReportDescription(const std::string& strReportName);
+   const CBitmap* GetMenuBitmap(const char* strReportName);
+   const CBitmap* GetMenuBitmap(const std::string& strReportName);
    boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const char* strReportName);
    boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const std::string& strReportName);
    boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const CReportDescription& rptDesc);
@@ -70,5 +67,3 @@ private:
 
    boost::shared_ptr<rptReport> CreateReport(boost::shared_ptr<CReportSpecification>& pRptSpec);
 };
-
-#endif // !defined(AFX_REPORTBUILDERMANAGER_H__5723C896_5744_4C31_8992_6BFCD03EEECC__INCLUDED_)

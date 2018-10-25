@@ -374,7 +374,11 @@ std::string sysStructuredLoadXml::GetStateDump() const
    return os.str(); 
 }
 
-
+std::string sysStructuredLoadXml::GetUnit() const
+{
+   const ListItem& listItem = m_UnitList.back();
+   return listItem.first;
+}
 
 //======================== ACCESS     =======================================
 //======================== INQUIRY    =======================================

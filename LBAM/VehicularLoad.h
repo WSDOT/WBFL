@@ -91,6 +91,7 @@ END_CONNECTION_POINT_MAP()
 
 // IVehicularLoad
 public:
+   STDMETHOD(SumAxleWeights)(/*[out,retval]*/Float64* pWeight);
 	STDMETHOD(Clone)(/*[out,retval]*/IVehicularLoad** clone);
 	STDMETHOD(get_IMLane)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_IMLane)(/*[in]*/ Float64 newVal);

@@ -35,7 +35,7 @@
 #include <LibraryFw\Library.h>
 #include <LibraryFw\LibraryEntry.h>
 #include <LibraryFw\LibraryManager.h>
-#include <LibraryFw\UnitsMode.h>
+
 
 
 #endif // INCLUDED_LIBRARYFW_LIBRARYFW_H_

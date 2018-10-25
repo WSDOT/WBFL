@@ -35,7 +35,7 @@ class ATL_NO_VTABLE CLBAMFactory :
 	public CComCoClass<CLBAMFactory, &CLSID_LRFDFactory>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CLBAMFactory,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public ILBAMLRFDFactory2
+	public ILBAMLRFDFactory3
 {
 public:
 	CLBAMFactory()
@@ -47,6 +47,7 @@ DECLARE_REGISTRY_RESOURCEID(IDR_LBAMFACTORY)
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CLBAMFactory)
+	COM_INTERFACE_ENTRY(ILBAMLRFDFactory3)
 	COM_INTERFACE_ENTRY(ILBAMLRFDFactory2)
 	COM_INTERFACE_ENTRY(ILBAMLRFDFactory)
 	COM_INTERFACE_ENTRY(ILBAMFactory)
@@ -76,6 +77,26 @@ public:
    STDMETHOD(ConfigureDesignLiveLoad)(/*[in]*/ILBAMModel* pModel, /*[in]*/ LiveLoadModelType llmt, /*[in]*/ Float64 imTruck,/*[in]*/Float64 imLane, /*[in]*/VARIANT_BOOL includeDualTrucks, /*[in]*/VARIANT_BOOL includeLowBoy, /*[in]*/SpecUnitType units,/*[in]*/IUnitServer* pUnitServer);
    STDMETHOD(ConfigureFatigueLiveLoad)(/*[in]*/ILBAMModel* pModel, /*[in]*/ Float64 imTruck,/*[in]*/Float64 imLane,/*[in]*/SpecUnitType units,/*[in]*/IUnitServer* pUnitServer);
    STDMETHOD(ConfigureDeflectionLiveLoad)(/*[in]*/ILBAMModel* pModel, /*[in]*/ Float64 imTruck,/*[in]*/Float64 imLane,/*[in]*/SpecUnitType units,/*[in]*/IUnitServer* pUnitServer);
+
+// ILBAMLRFDFactory3
+public:
+   STDMETHOD(ConfigureLegalLiveLoad)(/*[in]*/ILBAMModel* pModel, /*[in]*/ LiveLoadModelType llmt,
+                                     /*[in]*/ Float64 imTruck,
+                                     /*[in]*/Float64 imLane, 
+                                     /*[in]*/VARIANT_BOOL includeType33, // 0.75Type3-3 + Lane
+                                     /*[in]*/VARIANT_BOOL includeDualType33, // 2@0.75Type3-3 + Lane
+                                     /*[in]*/VARIANT_BOOL removeLaneLoad, // removes lane from Type33 and Dual Type 33 and uses a factor of 1.0
+                                     /*[in]*/IUnitServer* pUnitServer);
+
+   STDMETHOD(ConfigureNotionalRatingLoad)(/*[in]*/ILBAMModel* pModel, /*[in]*/LiveLoadModelType llmt,
+                                     /*[in]*/Float64 imTruck,
+                                     /*[in]*/Float64 imLane, 
+                                     /*[in]*/IUnitServer* pUnitServer);
+
+   STDMETHOD(ConfigureSpecializedHaulingUnits)(/*[in]*/ILBAMModel* pModel, /*[in]*/LiveLoadModelType llmt,
+                                     /*[in]*/Float64 imTruck,
+                                     /*[in]*/Float64 imLane, 
+                                     /*[in]*/IUnitServer* pUnitServer);
 
 private:
 	STDMETHOD(CreatePOI)(/*[in]*/long ID, /*[in]*/MemberType Type, /*[in]*/long memberID, /*[in]*/Float64 Location,/*[out,retval]*/IPOI** newPOI);

@@ -3,6 +3,81 @@
 	<folders/>
 	<topics>
 		<topic>
+			<name>T1_Property_(BulbTee_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>T2_Property_(BulbTee_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>TopFlangeWidth_Property_(BulbTee_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>W1_Property_(BulbTee_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>W2_Property_(BulbTee_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>W3_Property_(BulbTee_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>XYPosition_Property_(BulbTee_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>W4_Property_(BulbTee_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Height_Property_(BulbTee_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>HookPoint_Property_(BulbTee_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Shape_Property_(BulbTee_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>StructuredStorage_Property_(BulbTee_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>D6_Property_(BulbTee_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>D5_Property_(BulbTee_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>D7_Property_(BulbTee_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
 			<name>AvgWebWidth_Property_(BulbTee_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
@@ -38,82 +113,12 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>D5_Property_(BulbTee_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>D6_Property_(BulbTee_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>D7_Property_(BulbTee_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Height_Property_(BulbTee_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>HookPoint_Property_(BulbTee_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Shape_Property_(BulbTee_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>StructuredStorage_Property_(BulbTee_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>T1_Property_(BulbTee_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>T2_Property_(BulbTee_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>TopFlangeWidth_Property_(BulbTee_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>W1_Property_(BulbTee_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>W2_Property_(BulbTee_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>W3_Property_(BulbTee_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>W4_Property_(BulbTee_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
 			<name>W5_Property_(BulbTee_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>XYPosition_Property_(BulbTee_Object).htm</name>
+			<name>C1_Property_(BulbTee_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>

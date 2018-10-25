@@ -221,6 +221,22 @@ STDMETHODIMP_(long) CDimensionLineImpl::GetMaxTipWidth()
       return width;
 }
 
+STDMETHODIMP_(void) CDimensionLineImpl::SetTipDisplayTime(long iTime)
+{
+   if ( m_pTextBlock )
+      m_pTextBlock->SetTipDisplayTime(iTime);
+   else
+      Do_SetTipDisplayTime(iTime); 
+}
+
+STDMETHODIMP_(long) CDimensionLineImpl::GetTipDisplayTime()
+{
+   if ( m_pTextBlock )
+      return m_pTextBlock->GetTipDisplayTime();
+   else
+      return Do_GetTipDisplayTime();
+}
+
 STDMETHODIMP_(bool) CDimensionLineImpl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
    // If there is a text block, forward the event

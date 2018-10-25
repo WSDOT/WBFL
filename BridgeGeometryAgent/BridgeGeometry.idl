@@ -1,0 +1,28 @@
+// BridgeGeometry.idl : IDL source for BridgeGeometryAgent
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (BridgeGeometryAgent.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	uuid(0BA81D19-542C-4B4C-819F-966B1F9932B4),
+	version(1.0),
+	helpstring("BridgeGeometryAgent 1.0 Type Library")
+]
+library BridgeGeometryAgentLib
+{
+	importlib("stdole2.tlb");
+   importlib("WBFLCore.tlb");
+
+	[
+		uuid(E1A1F128-80F7-41A4-9028-A48208A0AD7E),
+		helpstring("BridgeGeometryAgent Class")
+	]
+	coclass BridgeGeometryAgent
+	{
+		[default] interface IAgent;
+	};
+};

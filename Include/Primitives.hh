@@ -302,6 +302,7 @@
 #define IDH_IBulbTee_TopFlangeWidth              1849
 #define IDH_IBulbTee_XYPosition                  1850
 #define IDH_IBulbTee_Shape                       1851
+#define IDH_IBulbTee_C1                          1852
 
 #define IDH_INUBeam                                  1860
 #define IDH_INUBeam_W1                               1861

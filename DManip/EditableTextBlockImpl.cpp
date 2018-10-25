@@ -366,6 +366,18 @@ STDMETHODIMP_(long) CEditableTextBlockImpl::GetMaxTipWidth()
    return dispObj->GetMaxTipWidth();
 }
 
+STDMETHODIMP_(void) CEditableTextBlockImpl::SetTipDisplayTime(long iTime)
+{
+   CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_TextBlock);
+   return dispObj->SetTipDisplayTime(iTime);
+}
+
+STDMETHODIMP_(long) CEditableTextBlockImpl::GetTipDisplayTime()
+{
+   CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_TextBlock);
+   return dispObj->GetTipDisplayTime();
+}
+
 STDMETHODIMP_(bool) CEditableTextBlockImpl::OnLButtonDown(UINT nFlags,CPoint point)
 {
    // Confirm this point is really over the text block

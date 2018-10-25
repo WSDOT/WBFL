@@ -63,9 +63,13 @@ public:
    boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder();
    boost::shared_ptr<rptReport> CreateReport(boost::shared_ptr<CReportSpecification>& pRptSpec);
 
+   void SetMenuBitmap(const CBitmap* pBmp);
+   const CBitmap* GetMenuBitmap();
+
 private:
    std::string m_Name;
    bool m_bHidden;
+   const CBitmap* m_pBitmap;
 
    boost::shared_ptr<CTitlePageBuilder> m_pTitlePageBuilder;
    boost::shared_ptr<CReportSpecificationBuilder> m_pRptSpecBuilder;

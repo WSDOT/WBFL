@@ -134,6 +134,7 @@ public:
    // Write a bool property
    virtual void Property(const char* name, bool value);
 
+   virtual void PutUnit(const char* xml);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

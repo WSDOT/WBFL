@@ -112,6 +112,8 @@ END_COM_MAP()
    STDMETHOD_(CString,GetToolTipText)();
    STDMETHOD_(void,SetMaxTipWidth)(long maxWidth);
    STDMETHOD_(long,GetMaxTipWidth)();
+   STDMETHOD_(void,SetTipDisplayTime)(long iTime);
+   STDMETHOD_(long,GetTipDisplayTime)();
 
    // Interface Events
    STDMETHOD_(bool,OnLButtonDown)(UINT nFlags,CPoint point);

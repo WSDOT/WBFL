@@ -792,6 +792,65 @@ library WBFLRCCapacity
 		[helpcontext(IDH_IMomentInteractionCurveSolver_Solve),helpstring("method Solve")] HRESULT Solve([in]Float64 Fz,[in]Float64 startNA,[in]Float64 endNA,[in]long nSteps,[out,retval]IInteractionCapacityCurveSolution** solution);
 	};
 
+
+	[
+		object,
+		uuid(3BFCCFE4-CFAA-496b-840D-1C9F8EC38015),
+		oleautomation,
+		helpstring("ICrackedSectionSlice Interface"),
+		helpcontext(IDH_ICrackedSectionSlice),
+		pointer_default(unique)
+	]
+	interface ICrackedSectionSlice : IUnknown
+	{
+		[helpcontext(IDH_ICrackedSectionSlice_InitSlice),helpstring("method InitSlice")] HRESULT InitSlice([in]IShape* pShape,[in]Float64 A,[in]Float64 cgX,[in]Float64 cgY,[in]Float64 Efg,[in]Float64 Ebg);
+		[propget,helpcontext(IDH_ICrackedSectionSlice_Area),helpstring("property Area")] HRESULT Area([out,retval]Float64* pArea);
+		[propget,helpcontext(IDH_ICrackedSectionSlice_CG),helpstring("property CG")] HRESULT CG([out,retval]IPoint2d** pCG);
+		[propget,helpcontext(IDH_ICrackedSectionSlice_Efg),helpstring("property Efg")] HRESULT Efg([out,retval]Float64* pEfg);
+		[propget,helpcontext(IDH_ICrackedSectionSlice_Ebg),helpstring("property Ebg")] HRESULT Ebg([out,retval]Float64* pEbg);
+		[propget,helpcontext(IDH_ICrackedSectionSlice_Shape),helpstring("property Shape")] HRESULT Shape([out,retval]IShape** pShape);
+	};
+
+   [
+		object,
+		uuid(3B5642DB-676F-458d-94F6-33B325081475),
+		oleautomation,
+		helpstring("ICrackedSectionSolution Interface"),
+		helpcontext(IDH_ICrackedSectionSolution),
+		pointer_default(unique)
+	]
+	interface ICrackedSectionSolution : IUnknown
+	{
+		[helpcontext(IDH_ICrackedSectionSolution_InitSolution),helpstring("method InitSolution")] HRESULT InitSolution([in]IPoint2d* pntCG,[in]IUnkArray* slices);
+		[propget,helpcontext(IDH_ICrackedSectionSolution_CG),helpstring("property CG")] HRESULT CG([out,retval]IPoint2d** pntCG);
+		[propget,helpcontext(IDH_ICrackedSectionSolution_SliceCount),helpstring("property SliceCount")] HRESULT SliceCount([out,retval]CollectionIndexType* nSlices);
+		[propget,helpcontext(IDH_ICrackedSectionSolution_Slice),helpstring("property Slice")] HRESULT Slice([in] CollectionIndexType sliceIdx,[out,retval]ICrackedSectionSlice** pSlice);
+	};
+
+
+	[
+		object,
+		uuid(E4FD79AB-580B-4037-AFAC-56DE678B545A),
+		oleautomation,
+		helpstring("ICrackedSectionSolver Interface"),
+		helpcontext(IDH_ICrackedSectionSolver),
+		pointer_default(unique)
+	]
+	interface ICrackedSectionSolver : IUnknown
+	{
+		[propputref,helpcontext(IDH_ICrackedSectionSolver_Section),helpstring("property Section")] HRESULT Section([in]IGeneralSection* pSection);
+		[propget,helpcontext(IDH_ICrackedSectionSolver_Section),helpstring("property Section")] HRESULT Section([out,retval]IGeneralSection** pSection);
+      [propput,helpcontext(IDH_ICrackedSectionSolver_CGTolerance),helpstring("property CGTolerance")] HRESULT CGTolerance([in]Float64 tolerance);
+		[propget,helpcontext(IDH_ICrackedSectionSolver_CGTolerance),helpstring("property CGTolerance")] HRESULT CGTolerance([out,retval]Float64* tolerance);
+		[propput,helpcontext(IDH_ICrackedSectionSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([in]long maxIter);
+		[propget,helpcontext(IDH_ICrackedSectionSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([out,retval]long* maxIter);
+		[propput,helpcontext(IDH_ICrackedSectionSolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
+		[propget,helpcontext(IDH_ICrackedSectionSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval]long* nSlices);
+		[propput,helpcontext(IDH_ICrackedSectionSolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([in]Float64 sliceGrowthFactor);
+		[propget,helpcontext(IDH_ICrackedSectionSolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([out,retval]Float64* sliceGrowthFactor);
+		[helpcontext(IDH_ICrackedSectionSolver_Solve),helpstring("method Solve")] HRESULT Solve([out,retval]ICrackedSectionSolution** solution);
+	};
+
 	[
 		uuid(84A90446-34BC-445d-B7E1-EBC915159529),
 		oleautomation,
@@ -1250,5 +1309,36 @@ library WBFLRCCapacity
 	coclass CapacityReductionFactor
 	{
 		[default] interface ICapacityReductionFactor;
+	};
+
+
+	[
+		uuid(88B40E54-6EB0-4701-AC9B-71AA90841C73),
+		helpcontext(IDH_ICrackedSectionSolution),
+		helpstring("CrackedSectionSolution Class")
+	]
+	coclass CrackedSectionSolution
+	{
+		[default] interface ICrackedSectionSolution;
+	};
+
+	[
+		uuid(A3B11833-C6C5-4fad-96C0-5E162B8C4228),
+		helpcontext(IDH_ICrackedSectionSolver),
+		helpstring("CrackedSectionSolver Class")
+	]
+	coclass CrackedSectionSolver
+	{
+		[default] interface ICrackedSectionSolver;
+	};
+
+	[
+		uuid(EFF46265-14C7-41e3-AF39-45B820745A64),
+		helpcontext(IDH_ICrackedSectionSlice),
+		helpstring("CrackedSectionSlice Class")
+	]
+	coclass CrackedSectionSlice
+	{
+		[default] interface ICrackedSectionSlice;
 	};
 };

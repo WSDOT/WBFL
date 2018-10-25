@@ -152,7 +152,7 @@ HRESULT CStation::StationToString(int nDigOffset,int nDec,BSTR* strStation)
    // Check to make sure that v2 is not basically the same as shifter
    // If station = 69500.00000, we sometimes get 694+100.00 instead of
    // 695+00.
-   if ( IsZero(v2-shifter,pow(10.,-(nDec+1))) )
+   if ( IsZero(v2-shifter,5*pow(10.,-(nDec+1))) )
    {
       v2 = 0;
       v1++;

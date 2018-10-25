@@ -36,9 +36,9 @@ void MFCTOOLSFUNC DDX_CBStringExact(CDataExchange* pDX, int nIDC, std::string& s
 void MFCTOOLSFUNC DDX_CBStringExactCase(CDataExchange* pDX, int nIDC, std::string& str);
 void MFCTOOLSFUNC DDX_CBStringExactCase(CDataExchange* pDX, int nIDC, CString& str);
 
-void MFCTOOLSFUNC DDV_NonNegativeDouble(CDataExchange* pDX, Float64 value);
-void MFCTOOLSFUNC DDV_GreaterThanZero(CDataExchange* pDX, Float64 value);
-void MFCTOOLSFUNC DDV_LimitOrMore(CDataExchange* pDX,Float64 value,Float64 min);
+void MFCTOOLSFUNC DDV_NonNegativeDouble(CDataExchange* pDX, int nIDC,Float64 value);
+void MFCTOOLSFUNC DDV_GreaterThanZero(CDataExchange* pDX, int nIDC, Float64 value);
+void MFCTOOLSFUNC DDV_LimitOrMore(CDataExchange* pDX,int nIDC,Float64 value,Float64 min);
 
 void MFCTOOLSFUNC DDX_Check_Bool(CDataExchange* pDX, int nIDC, bool& value);
 void MFCTOOLSFUNC DDX_Text(CDataExchange* pDX, int nIDC, Uint16& value);
@@ -54,6 +54,36 @@ public:
 
 void MFCTOOLSFUNC DDV_Range(CDataExchange* pDX, mfcDDV::LowerBound lower,mfcDDV::UpperBound upper,Float64 value,Float64 min,Float64 max);
 
+// Exchanges a value or keyword. When putting data into the control, if value is < 0, the
+// control is filled with the keyword. When getting data from the control, if the keyword
+// is used, value is set to -1, otherwise, a normal DDX_Text is done.
+// Only the first three letters of the keyword need to be input.
+template <class T>
+void DDX_Keyword(CDataExchange* pDX,int nIDC,LPCTSTR lpszKeyword,T& value)
+{
+   if ( pDX->m_bSaveAndValidate )
+   {
+      CString strText;
+      pDX->m_pDlgWnd->GetDlgItem(nIDC)->GetWindowTextA(strText);
+      strText.Trim();
+      CString strKeyword = CString(lpszKeyword).Left(3);
+      if ( strText.GetLength() == 0 || strKeyword.CompareNoCase(strText.Left(3)) == 0 )
+      {
+         value = -1;
+      }
+      else
+      {
+         DDX_Text(pDX,nIDC,value);
+      }
+   }
+   else
+   {
+      if ( value < 0 )
+         DDX_Text(pDX,nIDC,CString(lpszKeyword));
+      else
+         DDX_Text(pDX,nIDC,value);
+   }
+}
 
 template <class T,class U>
 void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, T& value, T limit, bool bUnitModeSI, const U& usDisplayUnit, const U& siDisplayUnit )
@@ -485,6 +515,26 @@ void DDV_UnitValueZeroOrLess(CDataExchange* pDX, T& value, const U& umIndirectMe
 {
    T zero = 0;
    DDV_UnitValueLimitOrLess( pDX, value, zero, umIndirectMeasure );
+}
+
+template <class T,class U>
+void DDV_UnitValueRange(CDataExchange* pDX, T& value, T min, T max, const U& umIndirectMeasure )
+{
+	if (!pDX->m_bSaveAndValidate)
+	{
+		return;
+	}
+
+   if(  value < min || max < value )
+   {
+      CString msg;
+      msg.Format("Please enter a number in the range %f to %f %s", 
+                 ::ConvertFromSysUnits( min, umIndirectMeasure.UnitOfMeasure ), 
+                 ::ConvertFromSysUnits( max, umIndirectMeasure.UnitOfMeasure ), 
+                 umIndirectMeasure.UnitOfMeasure.UnitTag().c_str() );
+	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
+	   pDX->Fail();
+   }
 }
 
 #endif // INCLUDED_MFCTOOLS_CUSTOMDDX_H_

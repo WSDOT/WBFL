@@ -473,6 +473,23 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
          spanIdx = nSpans-1;
       }
 
+      // girder is in a different span then where the section cut is taken
+      // (probably because of skews)
+      SpanIndexType idx;
+      span->get_Index(&idx);
+      if ( idx != spanIdx )
+      {
+         // make sure that span has enough girders... if not, continue
+         CComPtr<ISpanCollection> spans;
+         CComPtr<ISpan> span_with_girderline_point;
+         bridge->get_Spans(&spans);
+         spans->get_Item(spanIdx,&span_with_girderline_point);
+         GirderIndexType nGirdersThisSpan;
+         span_with_girderline_point->get_GirderCount(&nGirdersThisSpan);
+         if ( nGirdersThisSpan <= girderIdx )
+            continue; // not enough girders
+      }
+
       // get offset of CL girder from CL alignment ( < 0 means left of CL alignment )
       Float64 girder_offset;
       m_BridgeGeometryTool->GirderPathOffset(bridge,spanIdx,girderIdx,CComVariant(station),&girder_offset);

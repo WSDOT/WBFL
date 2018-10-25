@@ -50,8 +50,7 @@
 
 #include <afxcmn.h> // for Animation control
 
-#include <WBFLTypes.h>
-#include <WBFLDebug.h>
+#include <Private\WBFLPackage.h>
 
 bool operator<(REFIID a,REFIID b);
 

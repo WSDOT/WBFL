@@ -53,5 +53,6 @@
 #define IDH_LBAMLRFDFactory_ConfigureDesignLiveLoad                  1820033
 #define IDH_LBAMLRFDFactory_ConfigureDeflectionLiveLoad              1820034
 #define IDH_LBAMLRFDFactory_ConfigureFatigueLiveLoad                 1820035
-
-
+#define IDH_LBAMLRFDFactory_ConfigureLegalLiveLoad                   1820036
+#define IDH_LBAMLRFDFactory_ConfigureNotionalRatingLoad              1820037
+#define IDH_LBAMLRFDFactory_ConfigureSpecializedHaulingUnits         1820038

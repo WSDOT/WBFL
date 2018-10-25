@@ -57,6 +57,7 @@ public:
    virtual bool Property(const char* name, bool* pvalue);
    virtual bool Eof() const;
    virtual std::string GetStateDump() const;
+   virtual std::string GetUnit() const;
 
 private:
    IStream*                        m_pIStream;
@@ -199,6 +200,12 @@ std::string sysStructuredLoadXmlPrs::GetStateDump() const
 {
    return m_pImp->GetStateDump();
 }
+
+std::string sysStructuredLoadXmlPrs::GetUnit() const
+{
+   return m_pImp->GetUnit();
+}
+
 //======================== ACCESS     =======================================
 //======================== INQUIRY    =======================================
 
@@ -641,6 +648,17 @@ std::string sysStructuredLoadXmlPrs_Impl::GetStateDump() const
       os <<"    <"<<(*it).Name<<", "<<(*it).Version<<">"<<std::endl;
    return os.str(); 
 }
+
+std::string sysStructuredLoadXmlPrs_Impl::GetUnit() const
+{
+   PRECONDITION(!m_UnitList.empty());
+   const MSXML::IXMLDOMNodePtr& rUnit = m_UnitList.back().spCurrentUnit;
+
+   _bstr_t bstrXML = rUnit->xml;
+
+   return std::string((char*)bstrXML);
+}
+
 //======================== ACCESS     =======================================
 //======================== INQUIRY    =======================================
 

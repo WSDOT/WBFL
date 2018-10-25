@@ -1,3 +1,26 @@
+///////////////////////////////////////////////////////////////////////
+// EAF - Extensible Application Framework
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
 // MainFrm.cpp : implementation of the CMainFrame class
 //
 
@@ -7,13 +30,22 @@
 #include <EAF\EAFToolBar.h>
 #include <EAF\EAFBrokerDocument.h>
 #include <EAF\EAFSplashScreen.h>
-#include "PluginCommandManager.h"
+#include <EAF\EAFApp.h>
+#include <EAF\EAFPluginCommandManager.h>
+#include "ToolBarDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
+
+// TODO: Need to rework all command IDs so there isn't going to be conflicts
+// menu stuff
+const int CMENU_BASE = 10; // command id's will be numbered 10, 11, 12, etc for each menu item
+const int MAX_CMENUS = 100; // this is limiting, but it is MFC's fault.
+const int CMENU_MAX  = CMENU_BASE + MAX_CMENUS;
 
 /////////////////////////////////////////////////////////////////////////////
 // CMainFrame
@@ -25,13 +57,20 @@ BEGIN_MESSAGE_MAP(CEAFMainFrame, CMDIFrameWnd)
 		// NOTE - the ClassWizard will add and remove mapping macros here.
 		//    DO NOT EDIT what you see in these blocks of generated code !
 	ON_WM_CREATE()
-	//}}AFX_MSG_MAP
-	// Global help commands
-	ON_COMMAND(ID_HELP_FINDER, CMDIFrameWnd::OnHelpFinder)
-	ON_COMMAND(ID_HELP, CMDIFrameWnd::OnHelp)
-	ON_COMMAND(ID_CONTEXT_HELP, CMDIFrameWnd::OnContextHelp)
-	ON_COMMAND(ID_DEFAULT_HELP, CMDIFrameWnd::OnHelpFinder)
+   ON_WM_CLOSE()
+   ON_WM_DESTROY()
 	ON_NOTIFY_EX_RANGE(TTN_NEEDTEXT, 0, 0xFFFF, OnToolTipText)
+
+	ON_COMMAND(ID_CONTEXT_HELP, CMDIFrameWnd::OnContextHelp)
+   ON_COMMAND(ID_HELP_FINDER, OnHelpFinder)
+   ON_COMMAND(ID_HELP, OnHelp)
+   ON_COMMAND(ID_DEFAULT_HELP, OnHelp)
+	ON_WM_DROPFILES()
+
+   ON_COMMAND(ID_VIEW_TOOLBAR, OnViewToolBar)
+   ON_UPDATE_COMMAND_UI(ID_VIEW_TOOLBAR, OnUpdateViewToolBar)
+   ON_COMMAND_RANGE(CMENU_BASE, CMENU_MAX, OnToolBarMenuSelected)
+	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -42,22 +81,55 @@ CEAFMainFrame::CEAFMainFrame()
    m_bDisableFailCreateMsg = FALSE;
    m_bCreateCanceled = FALSE;
 
-   m_ToolBarID = 1;
+   m_bDisableHideMainToolBar = FALSE;
+
+   m_pStatusBar = NULL;
+   m_pMainFrameToolBar = NULL;
+
+   m_bShowToolTips = TRUE;
+
+   m_ToolBarIDs.push_back(ID_MAINFRAME_TOOLBAR+1);
 }
 
 CEAFMainFrame::~CEAFMainFrame()
 {
+   if ( m_pStatusBar )
+      delete m_pStatusBar;
+
+   if (m_pMainFrameToolBar)
+      delete m_pMainFrameToolBar;
 }
 
 CEAFStatusBar* CEAFMainFrame::CreateStatusBar()
 {
-   std::auto_ptr<CEAFStatusBar> pStatusBar(new CEAFStatusBar());
+   CEAFStatusBar* pStatusBar = new CEAFStatusBar();
 	if (!pStatusBar->Create(this) )
 	{
+      delete pStatusBar;
       return NULL;
 	}
 
-   return pStatusBar.release();
+   return pStatusBar;
+}
+
+CToolBar* CEAFMainFrame::CreateMainFrameToolBar()
+{
+   CToolBar* pToolBar = new CToolBar();
+   
+   DWORD dwToolBarStyle = WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_SIZE_DYNAMIC;
+   if ( m_bShowToolTips )
+      dwToolBarStyle |= CBRS_TOOLTIPS | CBRS_FLYBY;
+
+   if ( !pToolBar->Create(this,dwToolBarStyle,ID_MAINFRAME_TOOLBAR) || !pToolBar->LoadToolBar(IDR_MAINFRAME) )
+   {
+      delete pToolBar;
+      return NULL;
+   }
+
+   pToolBar->EnableDocking(CBRS_ALIGN_ANY);
+   pToolBar->SetWindowText(AfxGetAppName());
+
+   return pToolBar;
 }
 
 int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -65,49 +137,113 @@ int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CMDIFrameWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
 	
-	if (!m_wndToolBar.CreateEx(this) ||
-		!m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
-	{
-		TRACE0("Failed to create toolbar\n");
-		return -1;      // fail to create
-	}
+   // Restore tool tips mode
+   m_bShowToolTips = (AfxGetApp()->GetProfileInt(CString((LPCSTR)IDS_REG_SETTINGS),
+                                                 CString((LPCSTR)IDS_TOOLTIP_STATE),
+                                                 1) !=0 );
 
-	if (!m_wndReBar.Create(this) ||
-		 !m_wndReBar.AddBar(&m_wndToolBar))
-	{
-		TRACE0("Failed to create rebar\n");
-		return -1;      // fail to create
-	}
+   // Restore the layout of the application window
+   WINDOWPLACEMENT wp;
+   if ( ((CEAFApp*)AfxGetApp())->ReadWindowPlacement(CString((LPCSTR)IDS_REG_WNDPOS),&wp))
+   {
+      SetWindowPlacement(&wp);
+   }
 
-   m_pStatusBar = std::auto_ptr<CEAFStatusBar>(CreateStatusBar());
-   if ( !m_pStatusBar.get() )
+   // Status Bar
+   m_pStatusBar = CreateStatusBar();
+   if ( !m_pStatusBar )
    {
       return -1;
    }
    m_pStatusBar->EnableModifiedFlag(FALSE);
 
-	// TODO: Remove this if you don't want tool tips
-	m_wndToolBar.SetBarStyle(m_wndToolBar.GetBarStyle() |
-		CBRS_TOOLTIPS | CBRS_FLYBY);
 
-   CEAFSplashScreen::ShowSplashScreen(this,TRUE);
+   // Tool Bars
+   EnableDocking(CBRS_ALIGN_ANY);
+   m_pMainFrameToolBar = CreateMainFrameToolBar();
+   if ( !m_pMainFrameToolBar )
+	{
+		TRACE0("Failed to create toolbar\n");
+		return -1;      // fail to create
+	}
+
+   DockControlBar( m_pMainFrameToolBar );
+
+   // Load the state of the application toolbar
+   LoadBarState( CString((LPCSTR)IDS_TOOLBAR_STATE) );
 
 	return 0;
 }
 
-BOOL CEAFMainFrame::PreCreateWindow(CREATESTRUCT& cs)
+void CEAFMainFrame::OnClose()
 {
-	if( !CMDIFrameWnd::PreCreateWindow(cs) )
-		return FALSE;
-	// TODO: Modify the Window class or styles here by modifying
-	//  the CREATESTRUCT cs
+   // Save the layout of the application window
+   WINDOWPLACEMENT wp;
+   wp.length = sizeof wp;
+   if (GetWindowPlacement(&wp))
+   {
+      wp.flags = 0;
+      wp.showCmd = SW_SHOWNORMAL;
+      ((CEAFApp*)AfxGetApp())->WriteWindowPlacement(CString((LPCSTR)IDS_REG_WNDPOS),&wp);
+   }
 
-	return TRUE;
+   // Save the ToolTips state
+   AfxGetApp()->WriteProfileInt(CString((LPCSTR)IDS_REG_SETTINGS),
+                                CString((LPCSTR)IDS_TOOLTIP_STATE),
+                                (m_bShowToolTips != 0) );
+
+   CMDIFrameWnd::OnClose();
 }
 
-BOOL CEAFMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo) 
+void CEAFMainFrame::OnDestroy()
 {
-   return CMDIFrameWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
+   // Save the state of the application toolbar
+   SaveBarState( CString((LPCSTR)IDS_TOOLBAR_STATE) );
+
+   CMDIFrameWnd::OnDestroy();
+}
+
+BOOL CEAFMainFrame::PreTranslateMessage(MSG* pMsg)
+{
+   // Add a toolbar popup menu if a right click happens in the docking space
+   if (pMsg->message == WM_RBUTTONDOWN)
+   {
+      CWnd* pWnd = CWnd::FromHandlePermanent(pMsg->hwnd);
+      CControlBar* pBar = DYNAMIC_DOWNCAST(CControlBar, pWnd);
+
+      if (pBar != NULL)
+      {
+         CMenu menu;
+         menu.CreatePopupMenu();
+
+         int offset = 0;
+         std::vector<CString> vNames  = GetToolBarNames();
+         std::vector<BOOL>    vStates = GetToolBarStates();
+         std::vector<CString>::iterator nameIter  = vNames.begin();
+         std::vector<BOOL>::iterator    stateIter = vStates.begin();
+
+         for ( ; nameIter != vNames.end(); nameIter++, stateIter++, offset++ )
+         {
+            CString strName = *nameIter;
+            BOOL bVisible = *stateIter;
+            UINT iFlags = MF_STRING | MF_ENABLED;
+            if ( bVisible )
+               iFlags |= MF_CHECKED;
+
+            CString strToolBarName;
+            menu.AppendMenu( iFlags, CMENU_BASE + offset, strName );
+         }
+
+         CPoint pt;
+         pt.x = LOWORD(pMsg->lParam);
+         pt.y = HIWORD(pMsg->lParam);
+         pBar->ClientToScreen(&pt);
+
+         menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, pt.x, pt.y, this );
+      }
+   }
+   
+   return CMDIFrameWnd::PreTranslateMessage(pMsg);
 }
 
 void CEAFMainFrame::GetMessageString(UINT nID, CString& rMessage) const
@@ -119,12 +255,12 @@ void CEAFMainFrame::GetMessageString(UINT nID, CString& rMessage) const
    if ( pChildWnd )
       pActiveDoc = pChildWnd->GetActiveDocument();
 
-   if ( pActiveDoc && pActiveDoc->IsKindOf(RUNTIME_CLASS(CEAFBrokerDocument)) )
+   if ( pActiveDoc && pActiveDoc->IsKindOf(RUNTIME_CLASS(CEAFDocument)) )
    {
-      CEAFBrokerDocument* pDoc = (CEAFBrokerDocument*)pActiveDoc;
+      CEAFDocument* pDoc = (CEAFDocument*)pActiveDoc;
       UINT nPluginCmdID;
       ICommandCallback* pCallback;
-      if ( pDoc->m_pPluginCommandMgr->GetCommandCallback(nID,&nPluginCmdID,&pCallback) )
+      if ( pDoc->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
       {
          // this command belogs to one of the plug-ins
          bHandledByPlugin = TRUE;
@@ -150,17 +286,13 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
       nID = ::GetDlgCtrlID((HWND)nID);
 	}
 
-   CDocument* pActiveDoc = NULL;
-   CMDIChildWnd* pChildWnd = MDIGetActive();
-   if ( pChildWnd )
-      pActiveDoc = pChildWnd->GetActiveDocument();
+   CEAFDocument* pDoc = GetDocument();
 
-   if ( nID != 0 && pActiveDoc && pActiveDoc->IsKindOf(RUNTIME_CLASS(CEAFBrokerDocument)) )
+   if ( nID != 0 && pDoc )
    {
-      CEAFBrokerDocument* pDoc = (CEAFBrokerDocument*)pActiveDoc;
       UINT nPluginCmdID;
       ICommandCallback* pCallback;
-      if ( pDoc->m_pPluginCommandMgr->GetCommandCallback(nID,&nPluginCmdID,&pCallback) )
+      if ( pDoc->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
       {
          // this command belogs to one of the plug-ins
          CString strTipText;
@@ -188,6 +320,11 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
    return FALSE; // not handled here
 }
 
+void CEAFMainFrame::UpdateFrameTitle(LPCTSTR lpszDocName)
+{
+   UpdateFrameTitleForDocument(lpszDocName);
+}
+
 void CEAFMainFrame::OnUpdateFrameTitle(BOOL bAddToTitle)
 {
    // Copied from CMDIFrameWnd
@@ -197,33 +334,27 @@ void CEAFMainFrame::OnUpdateFrameTitle(BOOL bAddToTitle)
    if ((GetStyle() & FWS_ADDTOTITLE) == 0)
       return;     // leave it alone!
 
-   CMDIChildWnd* pActiveChild = MDIGetActive();
-   CDocument* pDocument = GetActiveDocument();
+   CEAFDocument* pDoc = GetDocument();
 
-   if (pDocument == NULL && pActiveChild != NULL)
-      pDocument = pActiveChild->GetActiveDocument();
-
-   if (bAddToTitle &&
-       (pActiveChild != NULL) &&
-       (pDocument != NULL) )
+   if (bAddToTitle && pDoc)
    {
-      if (pDocument->GetPathName().GetLength() == 0)
-         UpdateFrameTitleForDocument(pDocument->GetTitle());
+      if (pDoc->GetPathName().GetLength() == 0)
+         UpdateFrameTitleForDocument(pDoc->GetTitle());
       else
       {
          char title[_MAX_PATH];
          WORD cbBuf = _MAX_PATH;
 
-         ::GetFileTitle(pDocument->GetPathName(),title,cbBuf);
+         ::GetFileTitle(pDoc->GetPathName(),title,cbBuf);
 
-         UpdateFrameTitle(title);
+         UpdateFrameTitleForDocument(title);
       }
    }
    else
-      UpdateFrameTitle(NULL);
+      UpdateFrameTitleForDocument(NULL);
 }
 
-void CEAFMainFrame::UpdateFrameTitle(LPCTSTR lpszDocName)
+void CEAFMainFrame::UpdateFrameTitleForDocument(LPCTSTR lpszDocName)
 {
    // Copied from CFrameWnd.
    // Modified to remove the :n
@@ -296,10 +427,22 @@ void CEAFMainFrame::CreateCanceled()
    m_bCreateCanceled = TRUE;
 }
 
+CEAFDocument* CEAFMainFrame::GetDocument()
+{
+   CMDIChildWnd* pActiveChild = MDIGetActive();
+   CDocument* pDoc = GetActiveDocument();
+   if ( pDoc == NULL && pActiveChild != NULL )
+      pDoc = pActiveChild->GetActiveDocument();
+
+   if ( pDoc != NULL && pDoc->IsKindOf(RUNTIME_CLASS(CEAFDocument)) )
+      return (CEAFDocument*)pDoc;
+   else
+      return NULL;
+}
 
 CView* CEAFMainFrame::CreateOrActivateFrame(CEAFDocTemplate* pTemplate)
 {
-   // If a view (specified by pViewClass) already exists, 
+   // If a view (specified by pTemplate->GetViewClass()) already exists, 
    // then activate the MDI child window containing
    // the view.  Otherwise, create a new view for the document.
    m_bCreateCanceled = false;
@@ -392,59 +535,360 @@ CView* CEAFMainFrame::CreateOrActivateFrame(CEAFDocTemplate* pTemplate)
    return pNewView;
 }
 
-CEAFToolBar* CEAFMainFrame::GetMainToolBar()
+void CEAFMainFrame::HideMainFrameToolBar()
 {
-   return &m_ToolBar;
+   if ( m_bDisableHideMainToolBar )
+      return;
+
+   ShowControlBar(m_pMainFrameToolBar,FALSE,FALSE);
 }
 
-CEAFToolBar* CEAFMainFrame::CreateToolBar(LPCTSTR lpszName,CPluginCommandManager* pCmdMgr)
+void CEAFMainFrame::ShowMainFrameToolBar()
 {
-   CEAFToolBar* pNewToolBar = new CEAFToolBar();
+   if ( m_bDisableHideMainToolBar )
+      return;
+
+   ShowControlBar(m_pMainFrameToolBar,TRUE,FALSE);
+}
+
+void CEAFMainFrame::ResetStatusBar()
+{
+   if ( m_pStatusBar )
+      m_pStatusBar->Reset();
+}
+
+UINT CEAFMainFrame::GetNextToolBarID()
+{
+   std::vector<UINT>::iterator iter;
+   for ( iter = m_ToolBarIDs.begin(); iter != m_ToolBarIDs.end(); iter++ )
+   {
+      UINT id = *iter;
+      if ( id == -1 )
+      {
+         iter--;     // back up one
+         id = *iter; // get the id
+         iter++;     // advance the iter
+         id++;       // increment the id
+         *iter = id; // assign id to this place in the vector
+         return id;  // done
+      }
+   }
+
+   // if we got this far, then all of the spots in the vector are used... add one at the end
+   UINT id = m_ToolBarIDs.back();
+   id++;
+   m_ToolBarIDs.push_back(id);
+   return id;
+}
+
+void CEAFMainFrame::RecycleToolBarID(UINT id)
+{
+   std::vector<UINT>::iterator iter;
+   for ( iter = m_ToolBarIDs.begin(); iter != m_ToolBarIDs.end(); iter++ )
+   {
+      if ( *iter == id )
+      {
+         *iter = -1;
+         return;
+      }
+   }
+
+   ATLASSERT(false); // should never get here... id wasn't in the vector
+}
+
+UINT CEAFMainFrame::CreateToolBar(LPCTSTR lpszName,CEAFPluginCommandManager* pCmdMgr)
+{
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
+   ATLASSERT(pCmdMgr != NULL);
+   if ( pCmdMgr == NULL )
+      return -1; // must have a command manager
+
+   CEAFToolBar* pEAFToolBar = new CEAFToolBar();
+
+   UINT tbID = GetNextToolBarID(); // this is a unique child window ID
+
+   CEAFToolBarInfo tbInfo;
+   tbInfo.m_pEAFToolBar  = pEAFToolBar;
+   tbInfo.m_ToolBarID    = tbID;
 
    CToolBar* pToolBar = new CToolBar;
-   pToolBar->CreateEx(this);
 
-	// TODO: Remove this if you don't want tool tips
-	pToolBar->SetBarStyle(pToolBar->GetBarStyle() | CBRS_TOOLTIPS | CBRS_FLYBY);
+   DWORD dwToolBarStyle = WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_SIZE_DYNAMIC;
+   if ( m_bShowToolTips )
+      dwToolBarStyle |= CBRS_TOOLTIPS | CBRS_FLYBY;
 
-   pNewToolBar->m_pCmdMgr = pCmdMgr;
-   pNewToolBar->m_pToolBar = pToolBar;
-   pNewToolBar->bOwnsToolBar = true;
+   pToolBar->Create(this,dwToolBarStyle,tbID);
+   pToolBar->EnableDocking(CBRS_ALIGN_ANY);
+   pToolBar->SetWindowText(lpszName);
 
-   m_wndReBar.AddBar(pToolBar,lpszName);
+   pEAFToolBar->m_ToolBarID  = tbID;
+   pEAFToolBar->m_pCmdMgr    = pCmdMgr;
+   pEAFToolBar->m_pToolBar   = pToolBar;
+   pEAFToolBar->bOwnsToolBar = true;
 
-   CReBarCtrl& rb = m_wndReBar.GetReBarCtrl();
-   UINT nBands = rb.GetBandCount();
-   REBARBANDINFO rbInfo;
-   rb.GetBandInfo(nBands-1,&rbInfo);
-   rbInfo.fMask |= RBBIM_ID;
-   rbInfo.wID = m_ToolBarID++;
-   rb.SetBandInfo(nBands-1,&rbInfo);
+   tbInfo.m_pMFCToolBar = pToolBar;
 
-   pNewToolBar->m_ID = rbInfo.wID;
+   if ( m_ToolBarInfo.size() == 0 )
+   {
+      DockControlBar(pToolBar);
+   }
+   else
+   {
+      CToolBar* pPrevToolBar = m_ToolBarInfo.back().m_pMFCToolBar;
+      DockControlBarLeftOf(pToolBar,pPrevToolBar);
+   }
 
-   for ( UINT i = 0; i < nBands; i++ )
-      rb.MinimizeBand(i);
+   m_ToolBarInfo.push_back(tbInfo);
 
-
-   return pNewToolBar;
+   return tbID;
 }
 
-void CEAFMainFrame::DestroyToolBar(CEAFToolBar* pToolBar)
+CEAFToolBar* CEAFMainFrame::GetToolBar(UINT toolbarID)
 {
-   CReBarCtrl& rb = m_wndReBar.GetReBarCtrl();
-   int idx = rb.IDToIndex(pToolBar->GetID());
-   rb.DeleteBand(idx);
-   delete pToolBar;
-   pToolBar = NULL;
+   if ( m_ToolBarInfo.size() == 0 )
+      return NULL;
+
+   CEAFToolBarInfo key;
+   key.m_ToolBarID = toolbarID;
+   ToolBarInfo::iterator found = std::find(m_ToolBarInfo.begin(),m_ToolBarInfo.end(),key);
+   if ( found == m_ToolBarInfo.end() )
+   {
+      ATLASSERT(false); // not found? why?
+      return NULL;
+   }
+
+   CEAFToolBarInfo tbInfo = *found;
+   return tbInfo.m_pEAFToolBar;
+}
+
+void CEAFMainFrame::DestroyToolBar(UINT tbID)
+{
+   CEAFToolBarInfo key;
+   key.m_ToolBarID = tbID;
+   ToolBarInfo::iterator found = std::find(m_ToolBarInfo.begin(),m_ToolBarInfo.end(),key);
+   if ( found == m_ToolBarInfo.end() )
+   {
+      ATLASSERT(false); // not found? why?
+      return;
+   }
+
+   CEAFToolBarInfo tbInfo = *found;
+
+   tbInfo.m_pMFCToolBar->DestroyWindow();
+   delete tbInfo.m_pEAFToolBar;
+
+   m_ToolBarInfo.erase(found);
+
+   RecycleToolBarID(tbID);
 
    RecalcLayout();
 }
 
+void CEAFMainFrame::DestroyToolBar(CEAFToolBar* pToolBar)
+{
+   DestroyToolBar(pToolBar->GetToolBarID());
+   pToolBar = NULL;
+}
+
 void CEAFMainFrame::EnableModifiedFlag(BOOL bEnable)
 {
-   if ( m_pStatusBar.get() )
+   if ( m_pStatusBar )
    {
       m_pStatusBar->EnableModifiedFlag(bEnable);
    }
+}
+
+void CEAFMainFrame::OnStatusChanged()
+{
+   if ( m_pStatusBar )
+   {
+      m_pStatusBar->OnStatusChanged();
+   }
+}
+
+void CEAFMainFrame::OnHelp()
+{
+   ::HtmlHelp( *this, AfxGetApp()->m_pszHelpFilePath, HH_DISPLAY_TOPIC, 0 );
+}
+
+void CEAFMainFrame::OnHelpFinder()
+{
+   ::HtmlHelp( *this, AfxGetApp()->m_pszHelpFilePath, HH_HELP_FINDER, 0 );
+}
+
+void CEAFMainFrame::OnDropFiles(HDROP hDropInfo) 
+{
+   // Don't allow multiple files to be dropped
+	UINT nFiles = ::DragQueryFile(hDropInfo, (UINT)-1, NULL, 0);
+   if (nFiles>1)
+      ::AfxMessageBox("Error - Multiple file drop not allowed. Please drop one file at a time.",MB_ICONEXCLAMATION|MB_OK);
+   else
+      CMDIFrameWnd::OnDropFiles(hDropInfo);
+}
+
+void CEAFMainFrame::OnViewToolBar() 
+{
+   CToolBarDlg dlg;
+   dlg.m_strToolBarNames = GetToolBarNames();
+   dlg.m_ToolBarStates   = GetToolBarStates();
+   dlg.m_bShowToolTips   = m_bShowToolTips;
+   
+   if ( dlg.DoModal() == IDOK )
+   {
+      m_bShowToolTips = dlg.m_bShowToolTips;
+      SetToolBarStates( dlg.m_ToolBarStates );
+   }
+}
+
+void CEAFMainFrame::OnUpdateViewToolBar(CCmdUI* pCmdUI) 
+{
+   // Does nothing... Gobble up this message so the MFC
+   // framework wont put a check mark next to the menu item.
+}
+
+void CEAFMainFrame::OnToolbarMenuSelected(UINT id)
+{
+   Uint16 idx = id - CMENU_BASE;
+   ToggleToolBarState( idx );
+}
+
+void CEAFMainFrame::DockControlBarLeftOf(CToolBar* Bar,CToolBar* LeftOf)
+{
+   CRect rect;
+   DWORD dw;
+   UINT n;
+
+   // get MFC to adjust the dimensions of all docked ToolBars
+   // so that GetWindowRect will be accurate
+   RecalcLayout();
+   LeftOf->GetWindowRect(&rect);
+   rect.OffsetRect(1,0);
+   dw=LeftOf->GetBarStyle();
+   n = 0;
+   n = (dw&CBRS_ALIGN_TOP) ? AFX_IDW_DOCKBAR_TOP : n;
+   n = (dw&CBRS_ALIGN_BOTTOM && n==0) ? AFX_IDW_DOCKBAR_BOTTOM : n;
+   n = (dw&CBRS_ALIGN_LEFT && n==0) ? AFX_IDW_DOCKBAR_LEFT : n;
+   n = (dw&CBRS_ALIGN_RIGHT && n==0) ? AFX_IDW_DOCKBAR_RIGHT : n;
+
+   // When we take the default parameters on rect, DockControlBar will dock
+   // each Toolbar on a seperate line.  By calculating a rectangle, we in effect
+   // are simulating a Toolbar being dragged to that location and docked.
+   DockControlBar(Bar,n,&rect);
+}
+
+std::vector<CString> CEAFMainFrame::GetToolBarNames()
+{
+   std::vector<CString> vNames;
+
+   // Resource ID's of the toolbars.
+   for ( ToolBarInfo::iterator iter = m_ToolBarInfo.begin(); iter != m_ToolBarInfo.end(); iter++ )
+   {
+      CEAFToolBarInfo& info = *iter;
+      CString strName;
+      info.m_pMFCToolBar->GetWindowText(strName);
+      vNames.push_back( strName );
+   }
+
+   if ( vNames.size() == 0 )
+   {
+      ASSERT(GetActiveDocument() == NULL); // there shouldn't be a document open (unless the current document does not have toolbars)
+      if ( GetActiveDocument() == NULL )
+      {
+         CString strName;
+         m_pMainFrameToolBar->GetWindowTextA(strName);
+         vNames.push_back(strName);
+      }
+   }
+
+   return vNames;
+}
+
+std::vector<BOOL> CEAFMainFrame::GetToolBarStates()
+{
+   std::vector<BOOL> vStates;
+
+   ToolBarInfo::iterator iter;
+   for ( iter = m_ToolBarInfo.begin(); iter < m_ToolBarInfo.end(); iter++ )
+   {
+      CEAFToolBarInfo& tbInfo = *iter;
+      vStates.push_back( tbInfo.m_pMFCToolBar->IsWindowVisible() ? TRUE : FALSE );
+   }
+
+
+   if ( vStates.size() == 0 )
+   {
+      ASSERT(GetActiveDocument() == NULL); // there shouldn't be a document open (unless the current document does not have toolbars)
+      if ( GetActiveDocument() == NULL )
+      {
+         CString strName;
+         vStates.push_back(m_pMainFrameToolBar->IsWindowVisible() ? TRUE : FALSE);
+      }
+   }
+
+   return vStates;
+}
+
+void CEAFMainFrame::SetToolBarStates(const std::vector<BOOL>& vStates)
+{
+   if ( m_ToolBarInfo.size() == 0 )
+   {
+      ATLASSERT(vStates.size() == 1 );
+      // this is the main frame toolbar state
+      SetToolBarState(m_pMainFrameToolBar,vStates.front());
+   }
+   else
+   {
+      ATLASSERT( vStates.size() == m_ToolBarInfo.size() );
+
+      ToolBarInfo::iterator tb_iter = m_ToolBarInfo.begin();
+      std::vector<BOOL>::const_iterator state_iter = vStates.begin();
+      for ( ; tb_iter < m_ToolBarInfo.end() && state_iter < vStates.end(); tb_iter++, state_iter++ )
+      {
+         CEAFToolBarInfo& tbInfo = *tb_iter;
+         BOOL bShow = *state_iter;
+         SetToolBarState(tbInfo.m_pMFCToolBar,bShow);
+      }
+   }
+}
+
+void CEAFMainFrame::SetToolBarState(CToolBar* pToolBar,BOOL bShow)
+{
+   BOOL bIsVisible = pToolBar->IsWindowVisible();
+
+   if ( bIsVisible && !bShow || !bIsVisible && bShow )
+     ShowControlBar( pToolBar, bShow, FALSE );
+
+   DWORD dwStyle = pToolBar->GetBarStyle();
+   BOOL bToolTipsEnabled = sysFlags<DWORD>::IsSet( dwStyle, CBRS_TOOLTIPS );
+   if ( bToolTipsEnabled && !m_bShowToolTips || !bToolTipsEnabled && m_bShowToolTips )
+   {
+      if ( m_bShowToolTips )
+         sysFlags<DWORD>::Set( &dwStyle, CBRS_TOOLTIPS | CBRS_FLYBY );
+      else
+         sysFlags<DWORD>::Clear( &dwStyle, CBRS_TOOLTIPS | CBRS_FLYBY );
+
+      pToolBar->SetBarStyle( dwStyle );
+   }
+}
+
+void CEAFMainFrame::ToggleToolBarState(UINT idx)
+{
+   if ( m_ToolBarInfo.size() == 0 )
+   {
+      BOOL bIsVisible = m_pMainFrameToolBar->IsWindowVisible();
+      ShowControlBar( m_pMainFrameToolBar, !bIsVisible, FALSE );
+   }
+   else
+   {
+      CEAFToolBarInfo& tbInfo = m_ToolBarInfo[idx];
+      BOOL bIsVisible = tbInfo.m_pMFCToolBar->IsWindowVisible();
+      ShowControlBar( tbInfo.m_pMFCToolBar, !bIsVisible, FALSE );
+   }
+}
+
+void CEAFMainFrame::OnToolBarMenuSelected(UINT id)
+{
+   Uint16 idx = id - CMENU_BASE;
+   ToggleToolBarState( idx );
 }

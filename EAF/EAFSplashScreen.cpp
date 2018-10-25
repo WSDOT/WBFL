@@ -1,3 +1,26 @@
+///////////////////////////////////////////////////////////////////////
+// EAF - Extensible Application Framework
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
 // EAFSplashScreen.cpp : implementation file
 //
 
@@ -16,7 +39,6 @@ static char THIS_FILE[] = __FILE__;
 
 IMPLEMENT_DYNAMIC(CEAFSplashScreen, CWnd)
 
-BOOL CEAFSplashScreen::c_bShowSplashWnd;
 CEAFSplashScreen* CEAFSplashScreen::c_pSplashWnd;
 CEAFSplashScreenInfo CEAFSplashScreen::m_Info;
 BOOL CEAFSplashScreen::m_bShowUntilClosed = FALSE;
@@ -25,7 +47,7 @@ UINT CEAFSplashScreen::m_Duration = 2000;
 
 CEAFSplashScreen::CEAFSplashScreen()
 {
-
+   m_Info.m_bShow = FALSE;
 }
 
 CEAFSplashScreen::~CEAFSplashScreen()
@@ -48,11 +70,6 @@ END_MESSAGE_MAP()
 
 // CEAFSplashScreen message handlers
 
-void CEAFSplashScreen::EnableSplashScreen(BOOL bEnable /*= TRUE*/)
-{
-	c_bShowSplashWnd = bEnable;
-}
-
 void CEAFSplashScreen::SetSplashScreenInfo(const CEAFSplashScreenInfo& info)
 {
    m_Info = info;
@@ -60,7 +77,7 @@ void CEAFSplashScreen::SetSplashScreenInfo(const CEAFSplashScreenInfo& info)
 
 void CEAFSplashScreen::ShowSplashScreen(CWnd* pParentWnd,BOOL bShowUntilClosed)
 {
-	if (!c_bShowSplashWnd || c_pSplashWnd != NULL)
+	if (!m_Info.m_bShow || c_pSplashWnd != NULL)
 		return;
 
    m_bShowUntilClosed = bShowUntilClosed;
@@ -114,11 +131,8 @@ void CEAFSplashScreen::HideSplashScreen()
 {
 	// Destroy the window, and update the mainframe.
 	DestroyWindow();
-	AfxGetMainWnd()->UpdateWindow();
-
-   //// Show the 'Tip of the Day'
-   //CPGSuperApp* pApp = (CPGSuperApp*)AfxGetApp();
-   //pApp->ShowTipAtStartup();
+   if ( AfxGetMainWnd() )
+	   AfxGetMainWnd()->UpdateWindow();
 }
 
 void CEAFSplashScreen::PostNcDestroy()
@@ -176,12 +190,18 @@ void CEAFSplashScreen::CloseOnNextTimeout()
    m_bCloseOnNextTimeout = TRUE;
 }
 
+void CEAFSplashScreen::Close()
+{
+   if ( c_pSplashWnd )
+      c_pSplashWnd->HideSplashScreen();
+}
+
 void CEAFSplashScreen::SetTimeout(UINT duration)
 {
    m_Duration = duration;
 }
 
-void CEAFSplashScreen::SetText(LPCSTR strText)
+void CEAFSplashScreen::SetText(const char* strText)
 {
 	if (c_pSplashWnd == NULL)
 		return;
@@ -203,8 +223,13 @@ void CEAFSplashScreen::SetText(LPCSTR strText)
 
    dc.SetBkColor(m_Info.m_BgColor);
    dc.SetTextColor(m_Info.m_TextColor);
-   dc.DrawText(strText,m_Info.m_Rect,DT_END_ELLIPSIS);
-   dc.TextOut(m_Info.m_Rect.left,m_Info.m_Rect.top,strText);
+   size_t extra = 4; // DrawText can add up to 4 more characters
+   size_t size = strlen(strText)+extra;
+   char* pText = new char[size];
+   memset((void*)pText,0,size);
+   strcpy_s(pText,size,strText);
+   dc.DrawText(pText,-1,m_Info.m_Rect,DT_MODIFYSTRING | DT_END_ELLIPSIS);
+   delete[] pText;
 
    dc.SelectObject(pOldBrush);
    dc.SelectObject(pOldPen);
