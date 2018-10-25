@@ -1,3 +1,26 @@
+///////////////////////////////////////////////////////////////////////
+// EAF - Extensible Application Framework
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
 #if !defined(AFX_EAFBrokerDocument_H__94649CAC_01E1_467D_9445_9E8CAA727538__INCLUDED_)
 #define AFX_EAFBrokerDocument_H__94649CAC_01E1_467D_9445_9E8CAA727538__INCLUDED_
 
@@ -14,8 +37,14 @@
 class CEAFDocProxyAgent;
 class CEAFDocTemplate;
 
+
 /////////////////////////////////////////////////////////////////////////////
 // CEAFBrokerDocument document
+//
+// Derived from CEAFDocument, the CEAFBrokerDocument class provides default
+// implementations necessary to support the Agent/Broker architecture.
+//
+// The GetAgentCategoryID() must be implemented by a derived class
 
 class EAFCLASS CEAFBrokerDocument : public CEAFDocument
 {
@@ -34,7 +63,8 @@ public:
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CEAFBrokerDocument)
 	protected:
-   virtual void OnCloseDocument();
+   virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
+   virtual void DeleteContents();
 
 	//}}AFX_VIRTUAL
 
@@ -56,8 +86,16 @@ protected:
    // can be initialized for menu and toolbar intergration functionality
    CEAFDocProxyAgent* m_pDocProxyAgent;
 
-   /// returns the CATID for the agents to be used with this document
+   // returns the CATID for the agents to be used with this document
+   // All agents registred with this category ID will be loaded when
+   // LoadAgents() is called
    virtual CATID GetAgentCategoryID() = 0;
+
+   // returns the CATID for the extension agents to be used with this document
+   // All agents registred with this category ID will be loaded when
+   // LoadAgents() is called.
+   // Return CLSID_NULL if you don't want to support extension agents
+   virtual CATID GetExtensionAgentCategoryID();
    
    /// called when a document is created (New or Open)
    virtual BOOL Init(); 
@@ -65,28 +103,38 @@ protected:
    /// called during initialization
    virtual BOOL LoadAgents(); 
 
-   /// called during initialization. load agents such as the WBFL Report Manager and Sys Agents
+   // called during initialization. Load agents such as the WBFL Report Manager and Sys Agents
+   // This method creates the EAFDocProxyAgent
    virtual BOOL LoadSpecialAgents(IBrokerInitEx2* pBrokerInit); 
 
-   /// helper function for loading an agent
-   virtual BOOL LoadAgents(IBrokerInitEx2* pBrokerInit, CLSID* pClsid, long nClsid);  
+   // helper function for loading an agent
+   virtual BOOL LoadAgents(IBrokerInitEx2* pBrokerInit, CLSID* pClsid, long nClsid,bool bRequiredAgent = true);  
    
-   /// called when an error occurs loading an agent
+   // called when an error occurs loading an agent
    virtual void OnLoadAgentsError(); 
 
-   /// called after all agents are loaded (called from CEAFDocTemplate::InitialUpdateFrame)
+   // called after all agents are loaded
    virtual void InitAgents(); 
 
-   // over-ride this method to create a different agent
-   virtual CEAFDocProxyAgent* CreateDocProxyAgent();
+   // Called by the framework to give plug-ins the opportunity to
+   // integrate with the user interface
+   virtual void DoIntegrateWithUI(BOOL bIntegrate);
 
    // creates the broker
    virtual BOOL CreateBroker();
 
+   // called by the framework when the it is time to shutdown the broker
+   virtual void BrokerShutDown();
+
    // Called by the base-class when thte document is to be loaded
    // and saved
    virtual HRESULT LoadTheDocument(IStructuredLoad* pStrLoad);
-   virtual HRESULT SaveTheDocument(IStructuredSave* pStrSave);
+   virtual HRESULT WriteTheDocument(IStructuredSave* pStrSave);
+
+   // Application logging
+   virtual CString GetLogFileName(); // returns the log file name (AppName.log is default)
+   virtual void OnLogFileOpened(); // called when the log file is first opened
+   virtual void OnLogFileClosing(); // called when the log file is about to close
 
 	//{{AFX_MSG(CEAFBrokerDocument)
 		// NOTE - the ClassWizard will add and remove member functions here.

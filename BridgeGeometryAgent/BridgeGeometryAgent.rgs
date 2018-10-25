@@ -1,0 +1,25 @@
+HKCR
+{
+	BridgeGeometryAgent.BridgeGeometryAgent.1 = s 'BridgeGeometryAgent Class'
+	{
+		CLSID = s '{E1A1F128-80F7-41A4-9028-A48208A0AD7E}'
+	}
+	BridgeGeometryAgent.BridgeGeometryAgent = s 'BridgeGeometryAgent Class'
+	{
+		CLSID = s '{E1A1F128-80F7-41A4-9028-A48208A0AD7E}'
+		CurVer = s 'BridgeGeometryAgent.BridgeGeometryAgent.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {E1A1F128-80F7-41A4-9028-A48208A0AD7E} = s 'BridgeGeometryAgent Class'
+		{
+			ProgID = s 'BridgeGeometryAgent.BridgeGeometryAgent.1'
+			VersionIndependentProgID = s 'BridgeGeometryAgent.BridgeGeometryAgent'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{0BA81D19-542C-4B4C-819F-966B1F9932B4}'
+		}
+	}
+}

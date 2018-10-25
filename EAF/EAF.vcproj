@@ -53,8 +53,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\Include;&quot;..\Include\$(ConfigurationName)&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;BUILDEAFLIB;_AFXEXT"
+				AdditionalIncludeDirectories="..\Include;&quot;..\Include\$(ConfigurationName)&quot;;&quot;$(VCInstallDir)atlmfc\src\mfc&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;BUILDEAFLIB;_AFXEXT;_ATL_NO_UUIDOF"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -75,7 +75,7 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
 				Culture="1033"
-				AdditionalIncludeDirectories="$(SolutionDir)RegFreeCOM\$(ConfigurationName)\"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)RegFreeCOM\$(ConfigurationName)\&quot;;\ARP\WBFL\Include\"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -83,6 +83,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				RegisterOutput="false"
+				AdditionalDependencies="htmlhelp.lib"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(OutDir)"
@@ -157,7 +158,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\Include;&quot;..\Include\$(ConfigurationName)&quot;"
+				AdditionalIncludeDirectories="..\Include;&quot;..\Include\$(ConfigurationName)&quot;;&quot;$(VCInstallDir)atlmfc\src\mfc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;BUILDEAFLIB;_AFXEXT;_ATL_NO_UUIDOF;_HAS_ITERATOR_DEBUGGING=0;_SECURE_SCL=0"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -180,7 +181,7 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
 				Culture="1033"
-				AdditionalIncludeDirectories="$(SolutionDir)RegFreeCOM\$(ConfigurationName)\"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)RegFreeCOM\$(ConfigurationName)\&quot;;\ARP\WBFL\Include\"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -188,6 +189,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				RegisterOutput="false"
+				AdditionalDependencies="htmlhelp.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;$(OutDir)&quot;"
 				ModuleDefinitionFile=".\EAF.def"
@@ -237,6 +239,14 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
+			<File
+				RelativePath=".\ChangeUnits.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\custsite.cpp"
+				>
+			</File>
 			<File
 				RelativePath="EAF.cpp"
 				>
@@ -317,6 +327,22 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\EAFAutoCalcDoc.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFAutoCalcReportView.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFAutoCalcView.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFAutoProgress.cpp"
+				>
+			</File>
+			<File
 				RelativePath="EAFBrokerDocument.cpp"
 				>
 				<FileConfiguration
@@ -359,6 +385,14 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\EAFCommandLineInfo.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFDocManager.cpp"
+				>
 			</File>
 			<File
 				RelativePath="EAFDocProxyAgent.cpp"
@@ -431,6 +465,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EAFInterfaceCache.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFLicensePlateChildFrame.cpp"
+				>
+			</File>
+			<File
 				RelativePath="EAFMainFrame.cpp"
 				>
 				<FileConfiguration
@@ -475,7 +517,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\EAFPluginManager.cpp"
+				RelativePath=".\EAFOutputChildFrame.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFPluginCommandManager.cpp"
 				>
 			</File>
 			<File
@@ -501,11 +547,23 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\EAFSelectReportDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\EAFSplashScreen.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\EAFStatusBar.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFStatusItem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFTemplateGroup.cpp"
 				>
 			</File>
 			<File
@@ -531,26 +589,20 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="PluginCommandManager.cpp"
+				RelativePath=".\EAFUtilities.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\NewProjectDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\StatusCenter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\StatusCenterDlg.cpp"
+				>
 			</File>
 			<File
 				RelativePath="StdAfx.cpp"
@@ -576,13 +628,45 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\TipDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ToolBarDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UnitsDlg.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
+				RelativePath="..\Include\AgentTools.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\EAF\AutoLib.h"
+				>
+			</File>
+			<File
+				RelativePath=".\BackDoor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ChangeUnits.h"
+				>
+			</File>
+			<File
+				RelativePath=".\custsite.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CustSiteVars.h"
 				>
 			</File>
 			<File
@@ -598,7 +682,23 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Include\EAF\EAFAppPlugin.h"
+				RelativePath="..\Include\EAF\EAFAppPluginManager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFAutoCalcDoc.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFAutoCalcReportView.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFAutoCalcView.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFAutoProgress.h"
 				>
 			</File>
 			<File
@@ -610,7 +710,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Include\EAF\EAFDocProxyAgent.h"
+				RelativePath="..\Include\EAF\EAFCommandLineInfo.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFDocManager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFDocPluginManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFDocProxyAgent.h"
 				>
 			</File>
 			<File
@@ -630,6 +742,18 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Include\EAF\EAFHints.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFInterfaceCache.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFLicensePlateChildFrame.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\EAF\EAFMainFrame.h"
 				>
 			</File>
@@ -638,11 +762,31 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Include\EAF\EAFOutputChildFrame.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFPluginCommandManager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\EAF\EAFPluginManager.h"
 				>
 			</File>
 			<File
+				RelativePath="..\Include\EAF\EAFProjectLog.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\EAF\EAFReportView.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFResources.h"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFSelectReportDlg.h"
 				>
 			</File>
 			<File
@@ -654,15 +798,27 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Include\EAF\EAFStatusItem.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFTemplateGroup.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\EAF\EAFToolBar.h"
 				>
 			</File>
 			<File
-				RelativePath="..\Include\EAF\EAFUIIntegration.h"
+				RelativePath="..\Include\EAF\EAFTypes.h"
 				>
 			</File>
 			<File
-				RelativePath="PluginCommandManager.h"
+				RelativePath="..\Include\EAF\EAFUtilities.h"
+				>
+			</File>
+			<File
+				RelativePath=".\NewProjectDlg.h"
 				>
 			</File>
 			<File
@@ -670,7 +826,27 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Include\EAF\StatusCenter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\StatusCenterDlg.h"
+				>
+			</File>
+			<File
 				RelativePath="StdAfx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TipDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ToolBarDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UnitsDlg.h"
 				>
 			</File>
 		</Filter>
@@ -683,7 +859,55 @@
 				>
 			</File>
 			<File
+				RelativePath=".\res\IconView.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\res\litebulb.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\lpframe.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\SmallIconView.ico"
+				>
+			</File>
+			<File
 				RelativePath="res\Toolbar.bmp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="IFace"
+			>
+			<File
+				RelativePath="..\Include\EAF\EAFAppPlugin.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFComponentInfo.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFDisplayUnits.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFDocumentPlugin.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFStatusCenter.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFTransactions.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFUIIntegration.h"
 				>
 			</File>
 		</Filter>

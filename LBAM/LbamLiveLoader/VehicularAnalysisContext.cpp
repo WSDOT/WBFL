@@ -415,6 +415,46 @@ STDMETHODIMP CVehicularAnalysisContext::putref_Pedestrian(ILiveLoadModel *newVal
 	return m_pLiveLoad->putref_Pedestrian(newVal);
 }
 
+STDMETHODIMP CVehicularAnalysisContext::get_LegalRoutineRating(ILiveLoadModel* *pVal)
+{
+	return m_pLiveLoad->get_LegalRoutineRating(pVal);
+}
+
+STDMETHODIMP CVehicularAnalysisContext::putref_LegalRoutineRating(ILiveLoadModel* newVal)
+{
+	return m_pLiveLoad->putref_LegalRoutineRating(newVal);
+}
+
+STDMETHODIMP CVehicularAnalysisContext::get_LegalSpecialRating(ILiveLoadModel* *pVal)
+{
+	return m_pLiveLoad->get_LegalSpecialRating(pVal);
+}
+
+STDMETHODIMP CVehicularAnalysisContext::putref_LegalSpecialRating(ILiveLoadModel* newVal)
+{
+	return m_pLiveLoad->putref_LegalSpecialRating(newVal);
+}
+
+STDMETHODIMP CVehicularAnalysisContext::get_PermitRoutineRating(ILiveLoadModel* *pVal)
+{
+	return m_pLiveLoad->get_PermitRoutineRating(pVal);
+}
+
+STDMETHODIMP CVehicularAnalysisContext::putref_PermitRoutineRating(ILiveLoadModel* newVal)
+{
+	return m_pLiveLoad->putref_PermitRoutineRating(newVal);
+}
+
+STDMETHODIMP CVehicularAnalysisContext::get_PermitSpecialRating(ILiveLoadModel* *pVal)
+{
+	return m_pLiveLoad->get_PermitSpecialRating(pVal);
+}
+
+STDMETHODIMP CVehicularAnalysisContext::putref_PermitSpecialRating(ILiveLoadModel* newVal)
+{
+	return m_pLiveLoad->putref_PermitSpecialRating(newVal);
+}
+
 STDMETHODIMP CVehicularAnalysisContext::Clear()
 {
 	return m_pLiveLoad->Clear();

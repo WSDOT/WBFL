@@ -80,13 +80,13 @@ void CBrokerImp2::ListConnectionPointLeaks(IAgentEx* pAgent)
 
 void CBrokerImp2::ClearAgents()
 {
+#if defined _DEBUG
    WATCHX(IFC,0,"Clearing Agents");
    Agents::iterator i;
    for ( i = m_Agents.begin(); i != m_Agents.end(); i++ )
    {
-      IAgentEx* pAgent = (*i).second;
+      CComPtr<IAgentEx> pAgent = (*i).second;
 
-#if defined _DEBUG
       USES_CONVERSION;
       OLECHAR szGUID[39];
       CLSID clsid;
@@ -94,16 +94,9 @@ void CBrokerImp2::ClearAgents()
       ::StringFromGUID2(clsid,szGUID,39);
 
       ListConnectionPointLeaks(pAgent);
-#endif
-
-      ULONG cRef = pAgent->Release();
-
-#if defined _DEBUG
-      WATCHX(IFC,0,"CLSID = " << OLE2A(szGUID) << " Ref Count = " << cRef);
-#endif
-
-      pAgent = 0;
    }
+#endif
+
    m_Agents.clear();
 }
 
@@ -118,6 +111,8 @@ bool SortByUsageFrequency(const InterfaceItem& item1,const InterfaceItem& item2)
 
 STDMETHODIMP CBrokerImp2::GetInterface( REFIID riid, void** ppv)
 {
+   ATLASSERT( m_bAgentsInitialized == true ); // agents have to be initialized
+
    // first check the most frequently used list
    InterfaceItem key;
    key.iid = riid;
@@ -188,12 +183,19 @@ STDMETHODIMP CBrokerImp2::GetInterface( REFIID riid, void** ppv)
 
 STDMETHODIMP CBrokerImp2::Reset()
 {
+   WATCHX(IFC,0,"Broker Reset");
+
+   if ( !m_bAgentsInitialized )
+      return S_OK; // do nothing if the agents weren't initialized
+
    Agents::iterator i;
    for ( i = m_Agents.begin(); i != m_Agents.end(); i++ )
    {
       IAgentEx* pAgent = (*i).second;
       pAgent->Reset();
    }
+
+   m_bAgentsInitialized = false;
 
    return S_OK;
 }
@@ -211,6 +213,11 @@ bool CompareCLSID(InterfaceItem& item1,InterfaceItem& item2)
 STDMETHODIMP CBrokerImp2::ShutDown()
 {
    WATCHX(IFC,0,"Broker ShutDown");
+
+   Reset();
+
+   m_bAgentsInitialized = true;
+
    Agents::iterator i;
    for ( i = m_Agents.begin(); i != m_Agents.end(); i++ )
    {
@@ -275,40 +282,43 @@ STDMETHODIMP CBrokerImp2::ShutDown()
 
    ClearAgents();
 
+   m_bAgentsInitialized = false;
+
    return S_OK;
 }
 
 //////////////////////////////////////////////////////
-// IBrokerInitEx2
-STDMETHODIMP CBrokerImp2::LoadAgents( CLSID * clsid, long nClsid,long* lErrIndex )
+// IBrokerInitEx2/3
+STDMETHODIMP CBrokerImp2::LoadAgents( CLSID * clsid, long nClsid,ILongArray** plErrIndex )
 {
+   CHECK_RETOBJ(plErrIndex);
+
+   CComPtr<ILongArray> arr;
+   arr.CoCreateInstance(CLSID_LongArray);
+   (*plErrIndex) = arr;
+   (*plErrIndex)->AddRef();
+
    HRESULT hr;
 
    // Load all the agents, wire them up with the broker, and tell them
    // to register their interfaces
    for ( long i = 0; i < nClsid; i++ )
    {
-      IAgentEx* pAgent;
+      CComPtr<IAgentEx> pAgent;
       hr = ::CoCreateInstance( clsid[i], NULL, CLSCTX_INPROC_SERVER, IID_IAgentEx, (void**)&pAgent );
       if ( SUCCEEDED( hr ) )
       {
          m_Agents.insert( std::make_pair(clsid[i],pAgent) );
-         if ( FAILED( pAgent->SetBroker( this) ) || 
-              FAILED(pAgent->RegInterfaces() ) )
+         if ( FAILED(pAgent->SetBroker(this)) || FAILED(pAgent->RegInterfaces()) )
          {
-            ClearAgents();
-            if ( lErrIndex )
-               *lErrIndex = i;
-            return BROKER_E_LOADAGENT;
+            if ( *plErrIndex )
+               (*plErrIndex)->Add(i);
          }
       }
       else
       {
-         ClearAgents();
-         if ( lErrIndex )
-            *lErrIndex = i;
-
-         return hr;
+         if ( *plErrIndex )
+            (*plErrIndex)->Add(i);
       }
    }
 
@@ -321,17 +331,21 @@ STDMETHODIMP CBrokerImp2::LoadAgents( CLSID * clsid, long nClsid,long* lErrIndex
       Agents::iterator iter;
       for ( iter = m_Agents.begin(); iter != m_Agents.end(); iter++ )
       {
-         IAgentEx* pAgent = (*iter).second;
+         CComPtr<IAgentEx> pAgent = (*iter).second;
          if ( FAILED(pAgent->Init()) )
          {
-            if ( lErrIndex )
-               *lErrIndex = count;
-
-            ClearAgents();
-            return BROKER_E_LOADAGENT;
+            if ( *plErrIndex )
+               (*plErrIndex)->Add( count );
          }
          count++;
       }
+   }
+
+   CollectionIndexType nErrors;
+   (*plErrIndex)->get_Count(&nErrors);
+   if ( 0 < nErrors )
+   {
+      return BROKER_E_LOADAGENT;
    }
 
 	return S_OK;
@@ -410,7 +424,13 @@ STDMETHODIMP CBrokerImp2::DelayInit()
 
 STDMETHODIMP CBrokerImp2::InitAgents()
 {
+   ATLASSERT(m_bAgentsInitialized == false); // should not be initializing agents more than once
+   if ( m_bAgentsInitialized )
+      return S_OK;
+
    std::vector<IAgentEx*> secondPassAgents;
+
+   m_bAgentsInitialized = true;
 
    Agents::iterator i;
    for ( i = m_Agents.begin(); i != m_Agents.end(); i++ )
@@ -418,7 +438,7 @@ STDMETHODIMP CBrokerImp2::InitAgents()
       IAgentEx* pAgent = (*i).second;
       HRESULT hr = pAgent->Init();
       if ( FAILED(hr) )
-         return BROKER_E_ADDAGENT;
+         return BROKER_E_INITAGENT;
 
       if ( hr == AGENT_S_SECONDPASSINIT )
       {
@@ -429,17 +449,33 @@ STDMETHODIMP CBrokerImp2::InitAgents()
       }
    }
 
-   std::vector< IAgentEx* >::iterator j;
+   std::vector<IAgentEx*>::iterator j;
    for ( j = secondPassAgents.begin(); j != secondPassAgents.end(); j++ )
    {
       IAgentEx* pAgent = *j;
       HRESULT hr = pAgent->Init2();
       pAgent->Release(); // release the AddRef call from QueryInterace above
       if ( FAILED(hr) )
-         return BROKER_E_ADDAGENT;
+         return BROKER_E_INITAGENT;
    }
 
    WATCHX(IFC,0,"# Agents = " << m_Agents.size() << " # Interfaces = " << m_Interfaces.size());
+
+   return S_OK;
+}
+
+STDMETHODIMP CBrokerImp2::IntegrateWithUI(BOOL bIntegrate)
+{
+   Agents::iterator i;
+   for ( i = m_Agents.begin(); i != m_Agents.end(); i++ )
+   {
+      IAgentEx* pAgent = (*i).second;
+      CComQIPtr<IAgentUIIntegration> pUI(pAgent);
+      if ( pUI )
+      {
+         pUI->IntegrateWithUI(bIntegrate);
+      }
+   }
 
    return S_OK;
 }
@@ -448,6 +484,8 @@ STDMETHODIMP CBrokerImp2::InitAgents()
 // IBrokerPersist
 STDMETHODIMP CBrokerImp2::Load(IStructuredLoad* pStrLoad)
 {
+   USES_CONVERSION;
+
    HRESULT hr = pStrLoad->BeginUnit("Broker");
    if ( FAILED(hr) )
    {
@@ -496,6 +534,12 @@ STDMETHODIMP CBrokerImp2::Load(IStructuredLoad* pStrLoad)
          // agent not found... 
          // this could be because it is a 3rd party agent and it isn't installed
          // skip to the next "Agent" unit
+         CComBSTR bstrRawUnit;
+         hr = pStrLoad->LoadRawUnit(&bstrRawUnit);
+         if ( FAILED(hr) )
+            return hr;
+
+         m_RawUnitData.push_back(OLE2A(bstrRawUnit));
       }
 
       pStrLoad->EndUnit(); // end of "Agent" unit
@@ -539,6 +583,12 @@ STDMETHODIMP CBrokerImp2::Save(IStructuredSave* pStrSave)
       }
    }
 
+   std::vector<std::string>::iterator iter2;
+   for ( iter2 = m_RawUnitData.begin(); iter2 != m_RawUnitData.end(); iter2++ )
+   {
+      pStrSave->SaveRawUnit(iter2->c_str());
+   }
+
    pStrSave->EndUnit(); // Broker
 
    return S_OK;
@@ -550,15 +600,23 @@ HRESULT CBrokerImp2::LoadOldFormat(IStructuredLoad* pStrLoad)
    for ( i = m_Agents.begin(); i != m_Agents.end(); i++ )
    {
       HRESULT hr = S_OK;
-      IAgentEx* pAgent = (*i).second;
-      IAgentPersist* pPersist;
-      hr = pAgent->QueryInterface( IID_IAgentPersist, (void**)&pPersist );
-      if ( SUCCEEDED(hr) )
+      CComPtr<IAgentEx> pAgent = (*i).second;
+      CComQIPtr<IAgentPersist> pPersist(pAgent);
+      if ( pPersist )
       {
          hr = pPersist->Load( pStrLoad );
-         pPersist->Release();
          if ( FAILED(hr) )
             return hr;
+
+
+         // The when we had the old format there was only one agent
+         // that persisted data. New, extension agents also implement the
+         // IAgentPersist interface and will get called if they are loaded.
+         // Since this is an old format file, there is no way they will
+         // have data in the file....
+         //
+         // Load from the first agent supporting IAgentPersist and break out of the loop
+         break;
       }
    }
 

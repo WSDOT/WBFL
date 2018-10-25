@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// EAF - Extension library for MFC
+// EAF - Extensible Application Framework
 // Copyright © 1999-2010  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //

@@ -168,6 +168,24 @@ void FixedTruck::Initialize(IVehicularLoad* pVehicularLoad, bool applyImpact, IL
       // Compute axle locations
       ComputeAxleLocations();
    }
+
+   LiveLoadApplicabilityType applicability;
+   pVehicularLoad->get_Applicability(&applicability);
+   switch( applicability )
+   {
+   case llaEntireStructure:
+      m_bNegMomentsAndReactions = false;
+      break;
+
+   case llaContraflexure:
+   case llaNegMomentAndInteriorPierReaction:
+      m_bNegMomentsAndReactions = true;
+      break;
+
+   default:
+      ATLASSERT(false); // is there a new applicability type?
+      m_bNegMomentsAndReactions = false;
+   }
 }
 
 void FixedTruck::ComputeAxleLocations()
@@ -533,6 +551,11 @@ Float64 FixedTruck::CenterOfGravity()
    Float64 cg = Sum_W_loc/Sum_W;
 
    return cg;
+}
+
+bool FixedTruck::NegMomentsAndReactions()
+{
+   return m_bNegMomentsAndReactions;
 }
 
 #if defined _DEBUG

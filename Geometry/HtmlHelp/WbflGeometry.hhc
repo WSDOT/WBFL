@@ -143,6 +143,10 @@
           <param name="Local" value="Objects\BulbTee\BottomFlangeWidth_Property_(BulbTee_Object).htm">
         </object>
         <li><object type="text/sitemap">
+          <param name="Name" value="C1">
+          <param name="Local" value="Objects\BulbTee\C1_Property_(BulbTee_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
           <param name="Name" value="D1">
           <param name="Local" value="Objects\BulbTee\D1_Property_(BulbTee_Object).htm">
         </object>

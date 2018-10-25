@@ -35,9 +35,9 @@
 // WARNING: Do not change this file unless it is absolutely necessary.
 //          Any changes to this file will cause a system wide recompile.
 
-// target platform is Win2000 or later
+// target platform is WinXP or later
 #ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0500
+#define _WIN32_WINNT 0x0501
 #endif
 
 #define VC_EXTRALEAN

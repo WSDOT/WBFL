@@ -60,6 +60,7 @@ BEGIN_COM_MAP(CProgressMonitorWindow)
 END_COM_MAP()
 
    HRESULT FinalConstruct();
+   void FinalRelease();
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
@@ -68,7 +69,7 @@ END_COM_MAP()
 public:
    STDMETHOD(Close)();
 	STDMETHOD(Hide)();
-	STDMETHOD(Show)(/*[in]*/BSTR msg);
+	STDMETHOD(Show)(/*[in]*/BSTR msg,/*[in]*/HWND hParent);
 	STDMETHOD(get_HasCancel)(/*[out, retval]*/ VARIANT_BOOL *pVal);
 	STDMETHOD(put_HasCancel)(/*[in]*/ VARIANT_BOOL newVal);
 	STDMETHOD(get_HasGauge)(/*[out, retval]*/ VARIANT_BOOL *pVal);
@@ -85,6 +86,7 @@ public:
 
 private:
    std::auto_ptr<CProgressMonitorDlg> m_pDlg;
+   CWnd m_wndParent;
 
    std::ofstream m_FileStream;
    bool m_IsFileOpen;

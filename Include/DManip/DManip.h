@@ -40,6 +40,7 @@
 #include <DManip\CoordinateMap.h>
 
 #include <DManip\DisplayMgr.h>
+#include <DManip\DisplayMgrEvents.h>
 
 #include <DManip\DisplayList.h>
 #include <DManip\DisplayObjectContainer.h>

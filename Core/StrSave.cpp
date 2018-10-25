@@ -29,6 +29,7 @@
 //#include "Core.h"
 #include "StrSave.h"
 #include <atlbase.h>
+#include <WBFLAtlExt.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -185,6 +186,12 @@ STDMETHODIMP CStrSave::Close()
       return HandleException( e );
    }
 
+   return S_OK;
+}
+
+STDMETHODIMP CStrSave::SaveRawUnit(LPCTSTR unitXML)
+{
+   m_StrSave.PutUnit(unitXML);
    return S_OK;
 }
 

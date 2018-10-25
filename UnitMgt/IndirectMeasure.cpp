@@ -53,8 +53,10 @@ unitmgtIndirectMeasure::unitmgtIndirectMeasure() :
    SmallStress( unitMeasure::MPa ),
    ModE( unitMeasure::MPa ),
    GeneralForce( unitMeasure::Kilonewton ),
+   Tonnage( unitMeasure::Kilonewton ),
    Shear( unitMeasure::Kilonewton ),
    Moment( unitMeasure::KilonewtonMeter ),
+   SmallMoment( unitMeasure::NewtonMillimeter ),
    Angle( unitMeasure::Degree ),
    RadAngle( unitMeasure::Radian ),
    Density( unitMeasure::KgPerMeter3 ),
@@ -87,8 +89,10 @@ unitmgtIndirectMeasure::unitmgtIndirectMeasure(const unitmgtIndirectMeasure& rOt
    SmallStress( unitMeasure::MPa ),
    ModE( unitMeasure::MPa ),
    GeneralForce( unitMeasure::Kilonewton ),
+   Tonnage( unitMeasure::Kilonewton ),
    Shear( unitMeasure::Kilonewton ),
    Moment( unitMeasure::KilonewtonMeter ),
+   SmallMoment( unitMeasure::NewtonMillimeter ),
    Angle( unitMeasure::Degree ),
    RadAngle( unitMeasure::Radian ),
    Density( unitMeasure::KgPerMeter3 ),
@@ -147,8 +151,10 @@ bool unitmgtIndirectMeasure::AssertValid() const
    TEST_MEASURE( AvOverS );
    TEST_MEASURE( ModE );
    TEST_MEASURE( GeneralForce );
+   TEST_MEASURE( Tonnage );
    TEST_MEASURE( Shear );
    TEST_MEASURE( Moment );
+   TEST_MEASURE( SmallMoment );
    TEST_MEASURE( Angle );
    TEST_MEASURE( RadAngle );
    TEST_MEASURE( Density );
@@ -189,8 +195,10 @@ void unitmgtIndirectMeasure::Dump(dbgDumpContext& os) const
    dump_it(os,"AvOverS",         AvOverS      );
    dump_it(os,"ModE",            ModE         );
    dump_it(os,"GeneralForce",    GeneralForce );
+   dump_it(os,"Tonnage",         Tonnage );
    dump_it(os,"Shear",           Shear        );
    dump_it(os,"Moment",          Moment       );
+   dump_it(os,"SmallMoment",     SmallMoment  );
    dump_it(os,"Angle",           Angle        );
    dump_it(os,"RadAngle",        RadAngle     );
    dump_it(os,"Density",         Density      );
@@ -234,8 +242,10 @@ void unitmgtIndirectMeasure::MakeCopy(const unitmgtIndirectMeasure& rOther)
    AvOverS         = rOther.AvOverS;
    ModE            = rOther.ModE;
    GeneralForce    = rOther.GeneralForce;
+   Tonnage         = rOther.Tonnage;
    Shear           = rOther.Shear;
    Moment          = rOther.Moment;
+   SmallMoment     = rOther.SmallMoment;
    Angle           = rOther.Angle;
    RadAngle        = rOther.RadAngle;
    Density         = rOther.Density;

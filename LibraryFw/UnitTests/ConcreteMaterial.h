@@ -88,7 +88,7 @@ public:
 
    //------------------------------------------------------------------------
    // Edit the entry
-   virtual bool Edit(libUnitsMode::Mode, bool allowEditing) {return false;}
+   virtual bool Edit(bool allowEditing) {return false;}
 
    void Notify(int hint) {}
 

@@ -44,6 +44,7 @@ static char THIS_FILE[] = __FILE__;
 HRESULT CBulbTee::FinalConstruct()
 {
    m_Rotation = 0.00;
+   m_C1 = 0.00;
    m_D1 = 0.00;
    m_D2 = 0.00;
    m_D3 = 0.00;
@@ -162,8 +163,8 @@ HRESULT CBulbTee::UpdateShape()
       m_pShape->Clear();
 
       // start at top center and go around counter-clockwise
-      // there are 19 points total. point 1 is top center. point 10 is bottom
-      // center. 
+      // there are 19 or 21 points total depending if there is a chamfer. 
+      // point 1 is top center. point 10/11 is bottom right. 
       Float64 p1_x =  0.;
       Float64 p1_y =  0.;
       Float64 p2_x = -m_W5/2;
@@ -187,7 +188,21 @@ HRESULT CBulbTee::UpdateShape()
       Float64 p9_x = -m_T2/2-m_W4-m_W3;
       Float64 p9_y = -m_D1-m_D2-m_D3-m_D7-m_D6-m_D5;
       Float64 p10_x =  p9_x;
-      Float64 p10_y =  -m_D1-m_D2-m_D3-m_D7-m_D6-m_D5-m_D4;
+
+      Float64 bot_y = -m_D1-m_D2-m_D3-m_D7-m_D6-m_D5-m_D4; // bottom elev.
+      Float64 p10_y;
+      Float64 p11_x;
+      Float64 p11_y;
+      if (m_C1>0.0)
+      {
+         p10_y = bot_y + m_C1;
+         p11_x = p10_x + m_C1;
+         p11_y = bot_y;
+      }
+      else
+      {
+         p10_y = bot_y;
+      }
 
       m_pShape->AddPoint( p1_x, p1_y);  // 1
       m_pShape->AddPoint( p2_x, p2_y);
@@ -199,22 +214,33 @@ HRESULT CBulbTee::UpdateShape()
       m_pShape->AddPoint( p8_x, p8_y);
       m_pShape->AddPoint( p9_x, p9_y);
       m_pShape->AddPoint( p10_x, p10_y);
-      m_pShape->AddPoint(    0,  p10_y);  // 10
+
+      if (m_C1>0.0)
+      {
+         m_pShape->AddPoint( p11_x, p11_y);
+         m_pShape->AddPoint(    0,  bot_y);  // 2 extra points for chamfer
+         m_pShape->AddPoint(-p11_x, p11_y);
+      }
+      else
+      {
+         m_pShape->AddPoint(    0,  bot_y);
+      }
+
       m_pShape->AddPoint(-p10_x, p10_y);
       m_pShape->AddPoint(-p9_x, p9_y);
       m_pShape->AddPoint(-p8_x, p8_y);
       m_pShape->AddPoint(-p7_x, p7_y);
       m_pShape->AddPoint(-p6_x, p6_y);
-      m_pShape->AddPoint(-p5_x, p5_y);  // 15
+      m_pShape->AddPoint(-p5_x, p5_y);
       m_pShape->AddPoint(-p4_x, p4_y);
       m_pShape->AddPoint(-p3_x, p3_y);
       m_pShape->AddPoint(-p2_x, p2_y);
-      m_pShape->AddPoint(-p1_x, p1_y);  // 19
+      m_pShape->AddPoint(-p1_x, p1_y);
 
       CComQIPtr<IXYPosition> pPosition(m_pShape);
 
       // move the shape so that the bottom center is at (0,0)
-      pPosition->Offset(0,-p10_y);
+      pPosition->Offset(0,-bot_y);
 
       if (!IsZero(m_Rotation))
       {
@@ -323,6 +349,25 @@ STDMETHODIMP CBulbTee::put_W5(Float64 newVal)
       return Error(IDS_E_DIMENSION,IID_IBulbTee,GEOMETRY_E_DIMENSION);
 
    m_W5 = newVal;
+   return S_OK;
+}
+
+STDMETHODIMP CBulbTee::get_C1(Float64 *pVal)
+{
+   CHECK_RETVAL(pVal);
+
+   *pVal = m_C1;
+   return S_OK;
+}
+
+STDMETHODIMP CBulbTee::put_C1(Float64 newVal)
+{
+   MakeDirty();
+
+   if ( newVal < 0.0 )
+      return Error(IDS_E_DIMENSION,IID_IBulbTee,GEOMETRY_E_DIMENSION);
+
+   m_C1 = newVal;
    return S_OK;
 }
 
@@ -615,6 +660,7 @@ STDMETHODIMP CBulbTee::Clone(IShape** pClone)
 
    CComPtr<IBulbTee> shape(pTheClone); // need at least one reference
 
+   pTheClone->put_C1( m_C1 );
    pTheClone->put_D1( m_D1 );
    pTheClone->put_D2( m_D2 );
    pTheClone->put_D3( m_D3 );
@@ -787,7 +833,8 @@ STDMETHODIMP CBulbTee::Save(IStructuredSave2* pSave)
 {
    CHECK_IN(pSave);
 
-   pSave->BeginUnit(CComBSTR("BulbTee"),1.0);
+   pSave->BeginUnit(CComBSTR("BulbTee"),2.0);
+   pSave->put_Property(CComBSTR("C1"),CComVariant(m_C1)); // added in version 2
    pSave->put_Property(CComBSTR("D1"),CComVariant(m_D1));
    pSave->put_Property(CComBSTR("D2"),CComVariant(m_D2));
    pSave->put_Property(CComBSTR("D3"),CComVariant(m_D3));
@@ -815,6 +862,19 @@ STDMETHODIMP CBulbTee::Load(IStructuredLoad2* pLoad)
 
    CComVariant var;
    pLoad->BeginUnit(CComBSTR("BulbTee"));
+
+   Float64 vers;
+   pLoad->get_Version(&vers);
+
+   if (vers>1.0)
+   {
+      pLoad->get_Property(CComBSTR("C1"),&var);
+      m_C1 = var.dblVal;
+   }
+   else
+   {
+      m_C1 = 0.0;
+   }
    
    pLoad->get_Property(CComBSTR("D1"),&var);
    m_D1 = var.dblVal;

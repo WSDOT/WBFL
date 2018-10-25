@@ -80,6 +80,8 @@ interface iDisplayObject : public IUnknown
    STDMETHOD_(CString,GetToolTipText)() PURE;
    STDMETHOD_(void,SetMaxTipWidth)(long maxWidth) PURE;
    STDMETHOD_(long,GetMaxTipWidth)() PURE;
+   STDMETHOD_(void,SetTipDisplayTime)(long iTime) PURE;
+   STDMETHOD_(long,GetTipDisplayTime)() PURE;
 
    // Interface Events
    // Called by the framework when UI events occur that are directed

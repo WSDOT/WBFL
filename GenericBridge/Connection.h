@@ -26,6 +26,7 @@ public:
 	{
       m_BearingOffset        = 0;
       m_EndDistance          = 0;
+      m_SupportWidth         = 0;
       m_BearingOffsetMeasurementType   = mtNormal;
       m_EndDistanceMeasurementType     = mtNormal;
       m_EndDistanceMeasurementLocation = mlCenterlinePier;

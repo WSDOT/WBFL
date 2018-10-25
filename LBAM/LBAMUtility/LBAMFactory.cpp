@@ -631,6 +631,26 @@ STDMETHODIMP CLBAMFactory::ConfigureDesignLiveLoad(ILBAMModel* pModel, LiveLoadM
          hr = liveload->get_Special(&liveloadmodel);
          break;
 
+      case lltLegalRoutineRating:
+         hr = liveload->get_LegalRoutineRating(&liveloadmodel);
+         break;
+
+      case lltLegalSpecialRating:
+         hr = liveload->get_LegalSpecialRating(&liveloadmodel);
+         break;
+      
+      case lltPermitRoutineRating:
+         hr = liveload->get_PermitRoutineRating(&liveloadmodel);
+         break;
+      
+      case lltPermitSpecialRating:
+         hr = liveload->get_PermitSpecialRating(&liveloadmodel);
+         break;
+
+      default:
+         ATLASSERT(false); // is there a new live load type???
+         hr = liveload->get_Design(&liveloadmodel);
+         break;
       }
 
       hr = liveloadmodel->put_Name(CComBSTR("LRFD Design Vehicular Live Load"));
@@ -1056,6 +1076,748 @@ STDMETHODIMP CLBAMFactory::ConfigureDeflectionLiveLoad(ILBAMModel* pModel, Float
          hr = deflection_truck_2->put_VariableMaxSpacing(deflection_truck_axles[2]);
 
          hr = vehicles->Add(deflection_truck_2);
+      }
+   }
+   catch(...)
+   {
+      return DealWithExceptions(this, IID_ILBAMLRFDFactory);
+   }
+   return S_OK;
+}
+
+STDMETHODIMP CLBAMFactory::ConfigureLegalLiveLoad(ILBAMModel* pModel, LiveLoadModelType llmt,
+                                     Float64 imTruck,
+                                     Float64 imLane, 
+                                     VARIANT_BOOL includeType33, // 0.75Type3-3 + Lane
+                                     VARIANT_BOOL includeDualType33, // 2@0.75Type3-3 + Lane
+                                     VARIANT_BOOL removeLaneLoad, // removes lane from Type33 and Dual Type 33 and uses a factor of 1.0
+                                     IUnitServer* pUnitServer)
+{
+   CHECK_IN(pModel);
+   CHECK_IN(pUnitServer);
+
+   CHRException hr;
+
+   try
+   {
+      CComPtr<ILiveLoad> liveload;
+      hr = pModel->get_LiveLoad(&liveload);
+
+      CComPtr<IUnitConvert> convert;
+      hr = pUnitServer->get_UnitConvert(&convert);
+
+      // set up ll model
+      CComPtr<ILiveLoadModel> liveloadmodel;
+      switch(llmt)
+      {
+      case lltNone:
+         return E_INVALIDARG;
+
+      case lltDeflection:
+         hr = liveload->get_Deflection(&liveloadmodel);
+         break;
+
+      case lltDesign:
+         hr = liveload->get_Design(&liveloadmodel);
+         break;
+
+      case lltPedestrian:
+         hr = liveload->get_Pedestrian(&liveloadmodel);
+         break;
+
+      case lltFatigue:
+         hr = liveload->get_Fatigue(&liveloadmodel);
+         break;
+
+      case lltPermit:
+         hr = liveload->get_Permit(&liveloadmodel);
+         break;
+
+      case lltSpecial:
+         hr = liveload->get_Special(&liveloadmodel);
+         break;
+
+      case lltLegalRoutineRating:
+         hr = liveload->get_LegalRoutineRating(&liveloadmodel);
+         break;
+
+      case lltLegalSpecialRating:
+         hr = liveload->get_LegalSpecialRating(&liveloadmodel);
+         break;
+
+      case lltPermitRoutineRating:
+         hr = liveload->get_PermitRoutineRating(&liveloadmodel);
+         break;
+
+      case lltPermitSpecialRating:
+         hr = liveload->get_PermitSpecialRating(&liveloadmodel);
+         break;
+
+      default:
+         ATLASSERT(false); // SHOULD NEVER GET HERE
+         hr = liveload->get_Design(&liveloadmodel);
+         break;
+      }
+
+      hr = liveloadmodel->put_Name(CComBSTR("AASHTO Legal Loads"));
+      hr = liveloadmodel->put_DistributionFactorType(dftEnvelope);
+
+      CComPtr<IVehicularLoads> vehicles;
+      hr = liveloadmodel->get_VehicularLoads(&vehicles);
+
+      // get the loads and axle spacing in base units
+      Float64 lane_load = 0.20;
+      hr = convert->ConvertToBaseUnits(lane_load,CComBSTR("kip/ft"),&lane_load);
+
+      // create type 3 truck
+      Float64 type_3_weight[3];
+      hr = convert->ConvertToBaseUnits(16.0,CComBSTR("kip"),&type_3_weight[0]);
+      hr = convert->ConvertToBaseUnits(17.0,CComBSTR("kip"),&type_3_weight[1]);
+      hr = convert->ConvertToBaseUnits(17.0,CComBSTR("kip"),&type_3_weight[2]);
+
+      Float64 type_3_axles[2];
+      hr = convert->ConvertToBaseUnits(15.0,CComBSTR("ft"),&type_3_axles[0]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&type_3_axles[1]);
+
+      {
+         CComPtr<IVehicularLoad> type_3_truck; 
+         hr = type_3_truck.CoCreateInstance(CLSID_VehicularLoad);
+
+         hr = type_3_truck->put_Name(CComBSTR("Type 3"));
+         hr = type_3_truck->put_Applicability(llaEntireStructure);
+         hr = type_3_truck->put_Configuration(vlcTruckOnly);
+         hr = type_3_truck->put_UseNotional(VARIANT_FALSE);
+         hr = type_3_truck->put_IMLane(imLane);
+         hr = type_3_truck->put_IMTruck(imTruck);
+         hr = type_3_truck->put_LaneFactor(1.0);
+         hr = type_3_truck->put_TruckFactor(1.0);
+         hr = type_3_truck->put_LaneLoad(0.0);
+
+         CComPtr<IAxles> axles;
+         hr = type_3_truck->get_Axles(&axles);
+
+         int nAxles = 3;
+         for ( int i = 0; i < nAxles; i++ )
+         {
+            CComPtr<IAxle> axle;
+            hr = axle.CoCreateInstance(CLSID_Axle);
+            hr = axle->put_Weight(type_3_weight[i]);
+            if ( i != nAxles-1 )
+               hr = axle->put_Spacing(type_3_axles[i]);
+            
+            hr = axles->Add(axle);
+         }
+
+         hr = vehicles->Add(type_3_truck);
+      }
+
+
+      // create type 3S2 truck
+      Float64 type_3S2_weight[5];
+      hr = convert->ConvertToBaseUnits(10.0,CComBSTR("kip"),&type_3S2_weight[0]);
+      hr = convert->ConvertToBaseUnits(15.5,CComBSTR("kip"),&type_3S2_weight[1]);
+      hr = convert->ConvertToBaseUnits(15.5,CComBSTR("kip"),&type_3S2_weight[2]);
+      hr = convert->ConvertToBaseUnits(15.5,CComBSTR("kip"),&type_3S2_weight[3]);
+      hr = convert->ConvertToBaseUnits(15.5,CComBSTR("kip"),&type_3S2_weight[4]);
+
+      Float64 type_3S2_axles[4];
+      hr = convert->ConvertToBaseUnits(11.0,CComBSTR("ft"),&type_3S2_axles[0]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&type_3S2_axles[1]);
+      hr = convert->ConvertToBaseUnits(22.0,CComBSTR("ft"),&type_3S2_axles[2]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&type_3S2_axles[3]);
+
+      {
+         CComPtr<IVehicularLoad> type_3S2_truck; 
+         hr = type_3S2_truck.CoCreateInstance(CLSID_VehicularLoad);
+
+         hr = type_3S2_truck->put_Name(CComBSTR("Type 3S2"));
+         hr = type_3S2_truck->put_Applicability(llaEntireStructure);
+         hr = type_3S2_truck->put_Configuration(vlcTruckOnly);
+         hr = type_3S2_truck->put_UseNotional(VARIANT_FALSE);
+         hr = type_3S2_truck->put_IMLane(imLane);
+         hr = type_3S2_truck->put_IMTruck(imTruck);
+         hr = type_3S2_truck->put_LaneFactor(1.0);
+         hr = type_3S2_truck->put_TruckFactor(1.0);
+         hr = type_3S2_truck->put_LaneLoad(0.0);
+
+         CComPtr<IAxles> axles;
+         hr = type_3S2_truck->get_Axles(&axles);
+
+         int nAxles = 5;
+         for ( int i = 0; i < nAxles; i++ )
+         {
+            CComPtr<IAxle> axle;
+            hr = axle.CoCreateInstance(CLSID_Axle);
+            hr = axle->put_Weight(type_3S2_weight[i]);
+            if ( i != nAxles-1 )
+               hr = axle->put_Spacing(type_3S2_axles[i]);
+            
+            hr = axles->Add(axle);
+         }
+
+         hr = vehicles->Add(type_3S2_truck);
+      }
+
+      // create type 3-3 truck
+      Float64 type_3_3_weight[6];
+      hr = convert->ConvertToBaseUnits(12.0,CComBSTR("kip"),&type_3_3_weight[0]);
+      hr = convert->ConvertToBaseUnits(12.0,CComBSTR("kip"),&type_3_3_weight[1]);
+      hr = convert->ConvertToBaseUnits(12.0,CComBSTR("kip"),&type_3_3_weight[2]);
+      hr = convert->ConvertToBaseUnits(16.0,CComBSTR("kip"),&type_3_3_weight[3]);
+      hr = convert->ConvertToBaseUnits(14.0,CComBSTR("kip"),&type_3_3_weight[4]);
+      hr = convert->ConvertToBaseUnits(14.0,CComBSTR("kip"),&type_3_3_weight[5]);
+
+      Float64 type_3_3_axles[6]; // index 5 is the headway spacing for dual type 3-3
+      hr = convert->ConvertToBaseUnits(15.0,CComBSTR("ft"),&type_3_3_axles[0]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&type_3_3_axles[1]);
+      hr = convert->ConvertToBaseUnits(15.0,CComBSTR("ft"),&type_3_3_axles[2]);
+      hr = convert->ConvertToBaseUnits(16.0,CComBSTR("ft"),&type_3_3_axles[3]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&type_3_3_axles[4]);
+      hr = convert->ConvertToBaseUnits(30.0,CComBSTR("ft"),&type_3_3_axles[5]);
+
+      {
+         CComPtr<IVehicularLoad> type_3_3_truck; 
+         hr = type_3_3_truck.CoCreateInstance(CLSID_VehicularLoad);
+
+         hr = type_3_3_truck->put_Name(CComBSTR("Type 3-3"));
+         hr = type_3_3_truck->put_Applicability(llaEntireStructure);
+         hr = type_3_3_truck->put_Configuration(vlcTruckOnly);
+         hr = type_3_3_truck->put_UseNotional(VARIANT_FALSE);
+         hr = type_3_3_truck->put_IMLane(imLane);
+         hr = type_3_3_truck->put_IMTruck(imTruck);
+         hr = type_3_3_truck->put_LaneFactor(1.0);
+         hr = type_3_3_truck->put_TruckFactor(1.0);
+         hr = type_3_3_truck->put_LaneLoad(0.0);
+
+         CComPtr<IAxles> axles;
+         hr = type_3_3_truck->get_Axles(&axles);
+
+         int nAxles = 6;
+         for ( int i = 0; i < nAxles; i++ )
+         {
+            CComPtr<IAxle> axle;
+            hr = axle.CoCreateInstance(CLSID_Axle);
+            hr = axle->put_Weight(type_3_3_weight[i]);
+            if ( i != nAxles-1 )
+               hr = axle->put_Spacing(type_3_3_axles[i]);
+            
+            hr = axles->Add(axle);
+         }
+
+         hr = vehicles->Add(type_3_3_truck);
+      }
+
+      if ( includeType33 == VARIANT_TRUE && removeLaneLoad == VARIANT_FALSE )
+      {
+         // include the 0.75(Type 3-3) + Lane Load
+         CComPtr<IVehicularLoad> type_3_3_truck_with_lane; 
+         hr = type_3_3_truck_with_lane.CoCreateInstance(CLSID_VehicularLoad);
+
+         hr = type_3_3_truck_with_lane->put_Name(CComBSTR("0.75(Type 3-3) + Lane Load"));
+         hr = type_3_3_truck_with_lane->put_Applicability(llaEntireStructure);
+         hr = type_3_3_truck_with_lane->put_Configuration(vlcTruckPlusLane);
+         hr = type_3_3_truck_with_lane->put_UseNotional(VARIANT_FALSE);
+         hr = type_3_3_truck_with_lane->put_IMLane(imLane);
+         hr = type_3_3_truck_with_lane->put_IMTruck(imTruck);
+         hr = type_3_3_truck_with_lane->put_LaneFactor(1.0);
+         hr = type_3_3_truck_with_lane->put_TruckFactor(0.75);
+         hr = type_3_3_truck_with_lane->put_LaneLoad(lane_load);
+
+         CComPtr<IAxles> axles;
+         hr = type_3_3_truck_with_lane->get_Axles(&axles);
+
+         int nAxles = 6;
+         for ( int i = 0; i < nAxles; i++ )
+         {
+            CComPtr<IAxle> axle;
+            hr = axle.CoCreateInstance(CLSID_Axle);
+            hr = axle->put_Weight(type_3_3_weight[i]);
+            if ( i != nAxles-1 )
+               hr = axle->put_Spacing(type_3_3_axles[i]);
+            
+            hr = axles->Add(axle);
+         }
+
+         hr = vehicles->Add(type_3_3_truck_with_lane);
+      }
+
+      if ( includeDualType33 == VARIANT_TRUE )
+      {
+         // include the 2x0.75(Type 3-3) + Lane Load
+         CComPtr<IVehicularLoad> dual_type_3_3_truck_with_lane; 
+         hr = dual_type_3_3_truck_with_lane.CoCreateInstance(CLSID_VehicularLoad);
+
+         if ( removeLaneLoad == VARIANT_TRUE )
+         {
+            hr = dual_type_3_3_truck_with_lane->put_Name(CComBSTR("Two Type 3-3 separated by 30ft"));
+            hr = dual_type_3_3_truck_with_lane->put_Configuration(vlcTruckOnly);
+            hr = dual_type_3_3_truck_with_lane->put_TruckFactor(1.0);
+            hr = dual_type_3_3_truck_with_lane->put_LaneLoad(0.0);
+         }
+         else
+         {
+            hr = dual_type_3_3_truck_with_lane->put_Name(CComBSTR("0.75(Two Type 3-3 separated by 30ft) + Lane Load"));
+            hr = dual_type_3_3_truck_with_lane->put_Configuration(vlcTruckPlusLane);
+            hr = dual_type_3_3_truck_with_lane->put_TruckFactor(0.75);
+            hr = dual_type_3_3_truck_with_lane->put_LaneLoad(lane_load);
+         }
+
+         hr = dual_type_3_3_truck_with_lane->put_Applicability(llaNegMomentAndInteriorPierReaction);
+         hr = dual_type_3_3_truck_with_lane->put_UseNotional(VARIANT_FALSE);
+         hr = dual_type_3_3_truck_with_lane->put_IMLane(imLane);
+         hr = dual_type_3_3_truck_with_lane->put_IMTruck(imTruck);
+         hr = dual_type_3_3_truck_with_lane->put_LaneFactor(1.0);
+
+         CComPtr<IAxles> axles;
+         hr = dual_type_3_3_truck_with_lane->get_Axles(&axles);
+
+         int nAxles = 6;
+         for ( int j = 0; j < 2; j++ )
+         {
+            for ( int i = 0; i < nAxles; i++ )
+            {
+               CComPtr<IAxle> axle;
+               hr = axle.CoCreateInstance(CLSID_Axle);
+               hr = axle->put_Weight(type_3_3_weight[i]);
+
+               if ( j == 0 )
+               {
+                  hr = axle->put_Spacing(type_3_3_axles[i]);
+               }
+               else
+               {
+                  if (i != nAxles-1)
+                     hr = axle->put_Spacing(type_3_3_axles[i]);
+               }
+               
+               hr = axles->Add(axle);
+            }
+         }
+
+         hr = vehicles->Add(dual_type_3_3_truck_with_lane);
+      }
+
+   }
+   catch(...)
+   {
+      return DealWithExceptions(this, IID_ILBAMLRFDFactory);
+   }
+   return S_OK;
+}
+
+
+STDMETHODIMP CLBAMFactory::ConfigureNotionalRatingLoad(ILBAMModel* pModel, LiveLoadModelType llmt,
+                                     Float64 imTruck,
+                                     Float64 imLane, 
+                                     IUnitServer* pUnitServer)
+{
+   CHECK_IN(pModel);
+   CHECK_IN(pUnitServer);
+
+   CHRException hr;
+
+   try
+   {
+      CComPtr<ILiveLoad> liveload;
+      hr = pModel->get_LiveLoad(&liveload);
+
+      CComPtr<IUnitConvert> convert;
+      hr = pUnitServer->get_UnitConvert(&convert);
+
+      // set up ll model
+      CComPtr<ILiveLoadModel> liveloadmodel;
+      switch(llmt)
+      {
+      case lltNone:
+         return E_INVALIDARG;
+
+      case lltDeflection:
+         hr = liveload->get_Deflection(&liveloadmodel);
+         break;
+
+      case lltDesign:
+         hr = liveload->get_Design(&liveloadmodel);
+         break;
+
+      case lltPedestrian:
+         hr = liveload->get_Pedestrian(&liveloadmodel);
+         break;
+
+      case lltFatigue:
+         hr = liveload->get_Fatigue(&liveloadmodel);
+         break;
+
+      case lltPermit:
+         hr = liveload->get_Permit(&liveloadmodel);
+         break;
+
+      case lltSpecial:
+         hr = liveload->get_Special(&liveloadmodel);
+         break;
+
+      case lltLegalRoutineRating:
+         hr = liveload->get_LegalRoutineRating(&liveloadmodel);
+         break;
+
+      case lltLegalSpecialRating:
+         hr = liveload->get_LegalSpecialRating(&liveloadmodel);
+         break;
+
+      case lltPermitRoutineRating:
+         hr = liveload->get_PermitRoutineRating(&liveloadmodel);
+         break;
+
+      case lltPermitSpecialRating:
+         hr = liveload->get_PermitSpecialRating(&liveloadmodel);
+         break;
+
+      default:
+         ATLASSERT(false); // SHOULD NEVER GET HERE
+         hr = liveload->get_Design(&liveloadmodel);
+         break;
+      }
+
+      hr = liveloadmodel->put_Name(CComBSTR("Notional Rating Load (NRL)"));
+      hr = liveloadmodel->put_DistributionFactorType(dftEnvelope);
+
+      CComPtr<IVehicularLoads> vehicles;
+      hr = liveloadmodel->get_VehicularLoads(&vehicles);
+
+      Float64 nrl_truck_weight[8];
+      hr = convert->ConvertToBaseUnits( 6.0,CComBSTR("kip"),&nrl_truck_weight[0]);
+      hr = convert->ConvertToBaseUnits( 8.0,CComBSTR("kip"),&nrl_truck_weight[1]);
+      hr = convert->ConvertToBaseUnits( 8.0,CComBSTR("kip"),&nrl_truck_weight[2]);
+      hr = convert->ConvertToBaseUnits(17.0,CComBSTR("kip"),&nrl_truck_weight[3]);
+      hr = convert->ConvertToBaseUnits(17.0,CComBSTR("kip"),&nrl_truck_weight[4]);
+      hr = convert->ConvertToBaseUnits( 8.0,CComBSTR("kip"),&nrl_truck_weight[5]);
+      hr = convert->ConvertToBaseUnits( 8.0,CComBSTR("kip"),&nrl_truck_weight[6]);
+      hr = convert->ConvertToBaseUnits( 8.0,CComBSTR("kip"),&nrl_truck_weight[7]);
+
+      Float64 nrl_truck_axles[9]; // index 8 = max value for variable axle spacing
+      hr = convert->ConvertToBaseUnits( 6.0,CComBSTR("ft"),&nrl_truck_axles[0]); // min variable axle
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&nrl_truck_axles[1]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&nrl_truck_axles[2]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&nrl_truck_axles[3]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&nrl_truck_axles[4]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&nrl_truck_axles[5]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&nrl_truck_axles[6]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&nrl_truck_axles[7]);
+      hr = convert->ConvertToBaseUnits(14.0,CComBSTR("ft"),&nrl_truck_axles[8]); // max variable axle
+
+      {
+         CComPtr<IVehicularLoad> nrl_truck; 
+         hr = nrl_truck.CoCreateInstance(CLSID_VehicularLoad);
+
+         hr = nrl_truck->put_Name(CComBSTR("NRL"));
+         hr = nrl_truck->put_Applicability(llaEntireStructure);
+         hr = nrl_truck->put_Configuration(vlcTruckOnly);
+         hr = nrl_truck->put_UseNotional(VARIANT_TRUE);
+         hr = nrl_truck->put_IMLane(imLane);
+         hr = nrl_truck->put_IMTruck(imTruck);
+         hr = nrl_truck->put_LaneFactor(1.0);
+         hr = nrl_truck->put_TruckFactor(1.0);
+         hr = nrl_truck->put_LaneLoad(0.0);
+
+         CComPtr<IAxles> axles;
+         hr = nrl_truck->get_Axles(&axles);
+
+         int nAxles = 8;
+         for ( int i = 0; i < nAxles; i++ )
+         {
+            CComPtr<IAxle> axle;
+            hr = axle.CoCreateInstance(CLSID_Axle);
+            hr = axle->put_Weight(nrl_truck_weight[i]);
+            if ( i != nAxles-1 )
+               hr = axle->put_Spacing(nrl_truck_axles[i]);
+            
+            hr = axles->Add(axle);
+         }
+
+         hr = nrl_truck->put_VariableAxle(0);
+         hr = nrl_truck->put_VariableMaxSpacing(nrl_truck_axles[8]);
+
+         hr = vehicles->Add(nrl_truck);
+      }
+   }
+   catch(...)
+   {
+      return DealWithExceptions(this, IID_ILBAMLRFDFactory);
+   }
+   return S_OK;
+}
+
+
+STDMETHODIMP CLBAMFactory::ConfigureSpecializedHaulingUnits(ILBAMModel* pModel, LiveLoadModelType llmt,
+                                                            Float64 imTruck,
+                                                            Float64 imLane, 
+                                                            IUnitServer* pUnitServer)
+{
+   CHECK_IN(pModel);
+   CHECK_IN(pUnitServer);
+
+   CHRException hr;
+
+   try
+   {
+      CComPtr<ILiveLoad> liveload;
+      hr = pModel->get_LiveLoad(&liveload);
+
+      CComPtr<IUnitConvert> convert;
+      hr = pUnitServer->get_UnitConvert(&convert);
+
+      // set up ll model
+      CComPtr<ILiveLoadModel> liveloadmodel;
+      switch(llmt)
+      {
+      case lltNone:
+         return E_INVALIDARG;
+
+      case lltDeflection:
+         hr = liveload->get_Deflection(&liveloadmodel);
+         break;
+
+      case lltDesign:
+         hr = liveload->get_Design(&liveloadmodel);
+         break;
+
+      case lltPedestrian:
+         hr = liveload->get_Pedestrian(&liveloadmodel);
+         break;
+
+      case lltFatigue:
+         hr = liveload->get_Fatigue(&liveloadmodel);
+         break;
+
+      case lltPermit:
+         hr = liveload->get_Permit(&liveloadmodel);
+         break;
+
+      case lltSpecial:
+         hr = liveload->get_Special(&liveloadmodel);
+         break;
+
+      case lltLegalRoutineRating:
+         hr = liveload->get_LegalRoutineRating(&liveloadmodel);
+         break;
+
+      case lltLegalSpecialRating:
+         hr = liveload->get_LegalSpecialRating(&liveloadmodel);
+         break;
+
+      case lltPermitRoutineRating:
+         hr = liveload->get_PermitRoutineRating(&liveloadmodel);
+         break;
+
+      case lltPermitSpecialRating:
+         hr = liveload->get_PermitSpecialRating(&liveloadmodel);
+         break;
+
+      default:
+         ATLASSERT(false); // SHOULD NEVER GET HERE
+         hr = liveload->get_Design(&liveloadmodel);
+         break;
+      }
+
+      hr = liveloadmodel->put_Name(CComBSTR("Single-Unit SHVs"));
+      hr = liveloadmodel->put_DistributionFactorType(dftEnvelope);
+
+      CComPtr<IVehicularLoads> vehicles;
+      hr = liveloadmodel->get_VehicularLoads(&vehicles);
+
+      ///////////////////////////////////////
+      // SU4
+      ///////////////////////////////////////
+      Float64 su4_truck_weight[4];
+      hr = convert->ConvertToBaseUnits(12.0,CComBSTR("kip"),&su4_truck_weight[0]);
+      hr = convert->ConvertToBaseUnits( 8.0,CComBSTR("kip"),&su4_truck_weight[1]);
+      hr = convert->ConvertToBaseUnits(17.0,CComBSTR("kip"),&su4_truck_weight[2]);
+      hr = convert->ConvertToBaseUnits(17.0,CComBSTR("kip"),&su4_truck_weight[3]);
+
+      Float64 su4_truck_axles[3]; 
+      hr = convert->ConvertToBaseUnits(10.0,CComBSTR("ft"),&su4_truck_axles[0]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&su4_truck_axles[1]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&su4_truck_axles[2]);
+
+      {
+         CComPtr<IVehicularLoad> su4_truck; 
+         hr = su4_truck.CoCreateInstance(CLSID_VehicularLoad);
+
+         hr = su4_truck->put_Name(CComBSTR("SU4"));
+         hr = su4_truck->put_Applicability(llaEntireStructure);
+         hr = su4_truck->put_Configuration(vlcTruckOnly);
+         hr = su4_truck->put_UseNotional(VARIANT_FALSE);
+         hr = su4_truck->put_IMLane(imLane);
+         hr = su4_truck->put_IMTruck(imTruck);
+         hr = su4_truck->put_LaneFactor(1.0);
+         hr = su4_truck->put_TruckFactor(1.0);
+         hr = su4_truck->put_LaneLoad(0.0);
+
+         CComPtr<IAxles> axles;
+         hr = su4_truck->get_Axles(&axles);
+
+         int nAxles = 4;
+         for ( int i = 0; i < nAxles; i++ )
+         {
+            CComPtr<IAxle> axle;
+            hr = axle.CoCreateInstance(CLSID_Axle);
+            hr = axle->put_Weight(su4_truck_weight[i]);
+            if ( i != nAxles-1 )
+               hr = axle->put_Spacing(su4_truck_axles[i]);
+            
+            hr = axles->Add(axle);
+         }
+
+         hr = vehicles->Add(su4_truck);
+      }
+
+      ///////////////////////////////////////
+      // SU5
+      ///////////////////////////////////////
+      Float64 su5_truck_weight[5];
+      hr = convert->ConvertToBaseUnits(12.0,CComBSTR("kip"),&su5_truck_weight[0]);
+      hr = convert->ConvertToBaseUnits( 8.0,CComBSTR("kip"),&su5_truck_weight[1]);
+      hr = convert->ConvertToBaseUnits( 8.0,CComBSTR("kip"),&su5_truck_weight[2]);
+      hr = convert->ConvertToBaseUnits(17.0,CComBSTR("kip"),&su5_truck_weight[3]);
+      hr = convert->ConvertToBaseUnits(17.0,CComBSTR("kip"),&su5_truck_weight[4]);
+
+      Float64 su5_truck_axles[4]; 
+      hr = convert->ConvertToBaseUnits(10.0,CComBSTR("ft"),&su5_truck_axles[0]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&su5_truck_axles[1]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&su5_truck_axles[2]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&su5_truck_axles[3]);
+
+      {
+         CComPtr<IVehicularLoad> su5_truck; 
+         hr = su5_truck.CoCreateInstance(CLSID_VehicularLoad);
+
+         hr = su5_truck->put_Name(CComBSTR("SU5"));
+         hr = su5_truck->put_Applicability(llaEntireStructure);
+         hr = su5_truck->put_Configuration(vlcTruckOnly);
+         hr = su5_truck->put_UseNotional(VARIANT_FALSE);
+         hr = su5_truck->put_IMLane(imLane);
+         hr = su5_truck->put_IMTruck(imTruck);
+         hr = su5_truck->put_LaneFactor(1.0);
+         hr = su5_truck->put_TruckFactor(1.0);
+         hr = su5_truck->put_LaneLoad(0.0);
+
+         CComPtr<IAxles> axles;
+         hr = su5_truck->get_Axles(&axles);
+
+         int nAxles = 5;
+         for ( int i = 0; i < nAxles; i++ )
+         {
+            CComPtr<IAxle> axle;
+            hr = axle.CoCreateInstance(CLSID_Axle);
+            hr = axle->put_Weight(su5_truck_weight[i]);
+            if ( i != nAxles-1 )
+               hr = axle->put_Spacing(su5_truck_axles[i]);
+            
+            hr = axles->Add(axle);
+         }
+
+         hr = vehicles->Add(su5_truck);
+      }
+
+      ///////////////////////////////////////
+      // SU6
+      ///////////////////////////////////////
+      Float64 su6_truck_weight[6];
+      hr = convert->ConvertToBaseUnits(11.5,CComBSTR("kip"),&su6_truck_weight[0]);
+      hr = convert->ConvertToBaseUnits( 8.0,CComBSTR("kip"),&su6_truck_weight[1]);
+      hr = convert->ConvertToBaseUnits( 8.0,CComBSTR("kip"),&su6_truck_weight[2]);
+      hr = convert->ConvertToBaseUnits(17.0,CComBSTR("kip"),&su6_truck_weight[3]);
+      hr = convert->ConvertToBaseUnits(17.0,CComBSTR("kip"),&su6_truck_weight[4]);
+      hr = convert->ConvertToBaseUnits( 8.0,CComBSTR("kip"),&su6_truck_weight[5]);
+
+      Float64 su6_truck_axles[5]; 
+      hr = convert->ConvertToBaseUnits(10.0,CComBSTR("ft"),&su6_truck_axles[0]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&su6_truck_axles[1]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&su6_truck_axles[2]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&su6_truck_axles[3]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&su6_truck_axles[4]);
+
+      {
+         CComPtr<IVehicularLoad> su6_truck; 
+         hr = su6_truck.CoCreateInstance(CLSID_VehicularLoad);
+
+         hr = su6_truck->put_Name(CComBSTR("SU6"));
+         hr = su6_truck->put_Applicability(llaEntireStructure);
+         hr = su6_truck->put_Configuration(vlcTruckOnly);
+         hr = su6_truck->put_UseNotional(VARIANT_FALSE);
+         hr = su6_truck->put_IMLane(imLane);
+         hr = su6_truck->put_IMTruck(imTruck);
+         hr = su6_truck->put_LaneFactor(1.0);
+         hr = su6_truck->put_TruckFactor(1.0);
+         hr = su6_truck->put_LaneLoad(0.0);
+
+         CComPtr<IAxles> axles;
+         hr = su6_truck->get_Axles(&axles);
+
+         int nAxles = 6;
+         for ( int i = 0; i < nAxles; i++ )
+         {
+            CComPtr<IAxle> axle;
+            hr = axle.CoCreateInstance(CLSID_Axle);
+            hr = axle->put_Weight(su6_truck_weight[i]);
+            if ( i != nAxles-1 )
+               hr = axle->put_Spacing(su6_truck_axles[i]);
+            
+            hr = axles->Add(axle);
+         }
+
+         hr = vehicles->Add(su6_truck);
+      }
+
+      ///////////////////////////////////////
+      // SU7
+      ///////////////////////////////////////
+      Float64 su7_truck_weight[7];
+      hr = convert->ConvertToBaseUnits(11.5,CComBSTR("kip"),&su7_truck_weight[0]);
+      hr = convert->ConvertToBaseUnits( 8.0,CComBSTR("kip"),&su7_truck_weight[1]);
+      hr = convert->ConvertToBaseUnits( 8.0,CComBSTR("kip"),&su7_truck_weight[2]);
+      hr = convert->ConvertToBaseUnits(17.0,CComBSTR("kip"),&su7_truck_weight[3]);
+      hr = convert->ConvertToBaseUnits(17.0,CComBSTR("kip"),&su7_truck_weight[4]);
+      hr = convert->ConvertToBaseUnits( 8.0,CComBSTR("kip"),&su7_truck_weight[5]);
+      hr = convert->ConvertToBaseUnits( 8.0,CComBSTR("kip"),&su7_truck_weight[6]);
+
+      Float64 su7_truck_axles[6]; 
+      hr = convert->ConvertToBaseUnits(10.0,CComBSTR("ft"),&su7_truck_axles[0]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&su7_truck_axles[1]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&su7_truck_axles[2]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&su7_truck_axles[3]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&su7_truck_axles[4]);
+      hr = convert->ConvertToBaseUnits( 4.0,CComBSTR("ft"),&su7_truck_axles[5]);
+
+      {
+         CComPtr<IVehicularLoad> su7_truck; 
+         hr = su7_truck.CoCreateInstance(CLSID_VehicularLoad);
+
+         hr = su7_truck->put_Name(CComBSTR("SU7"));
+         hr = su7_truck->put_Applicability(llaEntireStructure);
+         hr = su7_truck->put_Configuration(vlcTruckOnly);
+         hr = su7_truck->put_UseNotional(VARIANT_FALSE);
+         hr = su7_truck->put_IMLane(imLane);
+         hr = su7_truck->put_IMTruck(imTruck);
+         hr = su7_truck->put_LaneFactor(1.0);
+         hr = su7_truck->put_TruckFactor(1.0);
+         hr = su7_truck->put_LaneLoad(0.0);
+
+         CComPtr<IAxles> axles;
+         hr = su7_truck->get_Axles(&axles);
+
+         int nAxles = 7;
+         for ( int i = 0; i < nAxles; i++ )
+         {
+            CComPtr<IAxle> axle;
+            hr = axle.CoCreateInstance(CLSID_Axle);
+            hr = axle->put_Weight(su7_truck_weight[i]);
+            if ( i != nAxles-1 )
+               hr = axle->put_Spacing(su7_truck_axles[i]);
+            
+            hr = axles->Add(axle);
+         }
+
+         hr = vehicles->Add(su7_truck);
       }
    }
    catch(...)

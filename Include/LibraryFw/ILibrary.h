@@ -31,7 +31,6 @@
 // PROJECT INCLUDES
 //
 #include <LibraryFw\LibraryFwExp.h>
-#include <LibraryFw\UnitsMode.h>
 #include <LibraryFw\LibraryEntry.h>
 #include <System\IStructuredSave.h>
 #include <System\IStructuredLoad.h>
@@ -149,7 +148,7 @@ public:
                                           // edits retained.
                            
    //------------------------------------------------------------------------
-   virtual EntryEditOutcome EditEntry( const char* key, libUnitsMode::Mode mode )=0;
+   virtual EntryEditOutcome EditEntry( const char* key )=0;
 
    //------------------------------------------------------------------------
    // Rename an entry
@@ -202,6 +201,10 @@ public:
    //------------------------------------------------------------------------
    // Get the number of entries in the library
    virtual int GetCount( ) const=0;
+
+   //------------------------------------------------------------------------
+   // Returns the minimum number of required library entires
+   virtual int GetMinCount() const = 0;
 
    //------------------------------------------------------------------------
    // Get a const pointer to an entry by index

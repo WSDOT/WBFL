@@ -1,25 +1,55 @@
-#if !defined(AFX_EAFAPP_H__C8A0E941_6C55_4D2F_8BA8_4EDF03A2D99B__INCLUDED_)
-#define AFX_EAFAPP_H__C8A0E941_6C55_4D2F_8BA8_4EDF03A2D99B__INCLUDED_
+///////////////////////////////////////////////////////////////////////
+// EAF - Extensible Application Framework
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
 
-#if _MSC_VER > 1000
+
 #pragma once
-#endif // _MSC_VER > 1000
+
 // EAFApp.h : header file
 //
 
 #include <EAF\EAFExp.h>
 #include <EAF\EAFTypes.h>
-#include <EAF\EAFPluginManager.h>
+#include <EAF\EAFAppPluginManager.h>
 #include <EAF\EAFDocTemplateRegistrar.h>
 #include <EAF\EAFSplashScreen.h>
+#include <EAF\EAFCommandLineInfo.h>
 #include <comcat.h>
+
+#include <WBFLTools.h>
 
 #include <UnitMgt\UnitMgt.h>
 
+class iUnitModeListener
+{
+public:
+   virtual void OnUnitsModeChanged(eafTypes::UnitMode newUnitMode) = 0;
+};
+
+#include <EAF\EAFComponentInfo.h>
+typedef CEAFPluginManager<IEAFComponentInfo,CEAFApp> CEAFComponentInfoManager;
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFApp thread
-
 class EAFCLASS CEAFApp : public CWinApp
 {
 	DECLARE_DYNAMIC(CEAFApp)
@@ -36,6 +66,7 @@ public:
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CEAFApp)
 	public:
+	virtual int Run();
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
 	virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
@@ -43,27 +74,63 @@ public:
 	//}}AFX_VIRTUAL
 
    CEAFDocTemplateRegistrar* GetDocTemplateRegistrar();
-   CEAFPluginManager* GetPluginManager();
+   CEAFAppPluginManager* GetAppPluginManager();
+   CEAFComponentInfoManager* GetComponentInfoManager();
+
+   BOOL ReadWindowPlacement(const CString& strKey,LPWINDOWPLACEMENT pwp);
+   void WriteWindowPlacement(const CString& strKey,LPWINDOWPLACEMENT pwp);
+
+   // Registery helper functions
+   UINT GetLocalMachineInt(LPCTSTR lpszSection, LPCTSTR lpszEntry,int nDefault);
+   CString GetLocalMachineString(LPCTSTR lpszSection, LPCTSTR lpszEntry,LPCTSTR lpszDefault);
+
+   AcceptanceType ShowLegalNoticeAtStartup(void);
+   CString GetAppLocation();
+
+   BOOL IsDocLoaded();
 
 // Implementation
 protected:
 	virtual ~CEAFApp();
 
-   virtual LPCTSTR GetRegistryKey() = 0;
-   virtual OLECHAR* GetPluginCategoryName() = 0;
-   virtual CATID GetPluginCategoryID() = 0;
-
    virtual CEAFSplashScreenInfo GetSplashScreenInfo() = 0;
+   virtual LPCTSTR GetRegistryKey() = 0;
+   virtual BOOL CreateApplicationPlugins() = 0;
 
-   // calls IEAFAppPlugin::CreateDocTemplate for all
-   // registered application plugins
-   virtual void RegisterDocTemplates();
+   virtual CMDIFrameWnd* CreateMainFrame();
+
+   virtual CDocManager* CreateDocumentManager();
+   virtual CEAFDocTemplateRegistrar* CreateDocTemplateRegistrar();
+
+   // Calls CreateDocPlugins and then completes the document template
+   // registration process
+   virtual BOOL RegisterDocTemplates();
+
+   // called by the framework during InitInstance() when registry settings need to be read
+   virtual void RegistryInit();
+
+   // called by the framework during ExitInstance() when registry settings need to be saved
+   virtual void RegistryExit();
+
+   virtual CEAFCommandLineInfo& GetCommandLineInfo();
+
+   void EnableTipOfTheDay(LPCTSTR lpszTipFile);
+   bool IsTipOfTheDayEnabled();
+	virtual void ShowTipOfTheDay(void);
+
+   virtual CATID GetComponentInfoCategoryID() = 0;
 
 	// Generated message map functions
 	//{{AFX_MSG(CEAFApp)
 		// NOTE - the ClassWizard will add and remove member functions here.
+	afx_msg void OnAppLegal();
 	afx_msg void OnFileNew();
    afx_msg void OnFileOpen();
+	afx_msg void OnEditUnits();
+   afx_msg void OnSIUnits();
+   afx_msg void OnUpdateSIUnits(CCmdUI* pCmdUI);
+   afx_msg void OnUSUnits();
+   afx_msg void OnUpdateUSUnits(CCmdUI* pCmdUI);
 	//}}AFX_MSG
 
    virtual void OnAbout();
@@ -73,8 +140,31 @@ public:
    void SetUnitsMode(eafTypes::UnitMode newVal);
    const unitmgtIndirectMeasure* GetDisplayUnits() const;
 
+   void AddUnitModeListener(iUnitModeListener* pListener);
+   void RemoveUnitModeListener(iUnitModeListener* pListener);
+
+protected:
+   // Called by the framework when the command line parameters are invalid
+   // Display an informational message to the user before the application closes
+   virtual void DisplayCommandLineUsage();
+
+protected:
+   HKEY GetAppLocalMachineRegistryKey();
+   HKEY GetUninstallRegistryKey();
+   HKEY GetLocalMachineSectionKey(LPCTSTR lpszSection);
+   HKEY GetLocalMachineSectionKey(HKEY hAppKey,LPCTSTR lpszSection);
+   UINT GetLocalMachineInt(HKEY hAppKey,LPCTSTR lpszSection, LPCTSTR lpszEntry,int nDefault);
+   CString GetLocalMachineString(HKEY hAppKey,LPCTSTR lpszSection, LPCTSTR lpszEntry,LPCTSTR lpszDefault);
+
 private:
    CEAFDocTemplateRegistrar* m_pDocTemplateRegistrar;
+
+   CString m_TipFilePath;
+   bool m_bTipsEnabled;
+
+   // Manages legal notice at application start up
+	AcceptanceType ShowLegalNotice(VARIANT_BOOL bGiveChoice = VARIANT_FALSE);
+   VARIANT_BOOL m_bShowLegalNotice;
 
    // Display Units
    void InitDisplayUnits();
@@ -82,18 +172,31 @@ private:
    unitmgtLibrary m_UnitLibrary;
    const unitmgtIndirectMeasure* m_pDisplayUnits; // current setting
    eafTypes::UnitMode m_Units;
+   std::set<iUnitModeListener*> m_UnitModeListeners;
+   void Fire_UnitsChanged();
 
-   CEAFPluginManager m_PluginManager;
+   CEAFAppPluginManager m_PluginManager;
+   CEAFComponentInfoManager m_ComponentInfoManager;
+
+   CString m_strWindowPlacementFormat;
+
+   CEAFCommandLineInfo m_CommandLineInfo;
 
 	DECLARE_MESSAGE_MAP()
+
 public:
    afx_msg void OnAppAbout();
    virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
 
-/////////////////////////////////////////////////////////////////////////////
+class EAFCLASS CEAFPluginApp : public CEAFApp
+{
+	DECLARE_DYNAMIC(CEAFPluginApp)
+public:
+   BOOL InitInstance();
 
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_EAFAPP_H__C8A0E941_6C55_4D2F_8BA8_4EDF03A2D99B__INCLUDED_)
+   virtual OLECHAR* GetAppPluginCategoryName() = 0;
+   virtual CATID GetAppPluginCategoryID() = 0;
+   
+   virtual BOOL CreateApplicationPlugins();
+};

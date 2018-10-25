@@ -64,8 +64,20 @@ inline void GetLiveLoadModel(LiveLoadModelType type, ILiveLoad* pll, ILiveLoadMo
    case lltSpecial:
       hr = pll->get_Special(ppLlm);
       break;
+   case lltLegalRoutineRating:
+      hr = pll->get_LegalRoutineRating(ppLlm);
+      break;
+   case lltLegalSpecialRating:
+      hr = pll->get_LegalSpecialRating(ppLlm);
+      break;
+   case lltPermitRoutineRating:
+      hr = pll->get_PermitRoutineRating(ppLlm);
+      break;
+   case lltPermitSpecialRating:
+      hr = pll->get_PermitSpecialRating(ppLlm);
+      break;
    default:
-      ATLASSERT(0);
+      ATLASSERT(false);
       THROW_HR(E_FAIL);
    };
    PROCESS_HR(hr);

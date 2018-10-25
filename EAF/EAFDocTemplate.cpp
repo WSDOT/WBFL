@@ -1,30 +1,30 @@
 ///////////////////////////////////////////////////////////////////////
-// PGSuper - Prestressed Girder SUPERstructure Design and Analysis
+// EAF - Extensible Application Framework
 // Copyright © 1999-2010  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the Alternate Route Open Source License as 
-// published by the Washington State Department of Transportation, 
-// Bridge and Structures Office.
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
 //
-// This program is distributed in the hope that it will be useful, but 
-// distribution is AS IS, WITHOUT ANY WARRANTY; without even the implied 
-// warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
-// the Alternate Route Open Source License for more details.
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
 //
-// You should have received a copy of the Alternate Route Open Source 
-// License along with this program; if not, write to the Washington 
-// State Department of Transportation, Bridge and Structures Office, 
-// P.O. Box  47340, Olympia, WA 98503, USA or e-mail 
-// Bridge_Support@wsdot.wa.gov
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
 #include "StdAfx.h"
 #include <EAF\EAFDocTemplate.h>
 #include <EAF\EAFBrokerDocument.h>
 #include <EAF\EAFMainFrame.h>
-#include <EAF\EAFDocProxyAgent.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -40,9 +40,11 @@ CEAFDocTemplate::CEAFDocTemplate(UINT nIDResource,
                                  CRuntimeClass* pViewClass,
                                  HMENU hSharedMenu,
                                  int maxViewCount) :
-CMultiDocTemplate(nIDResource,pDocClass,pFrameClass,pViewClass)
+CMultiDocTemplate(nIDResource,pDocClass,pFrameClass,pViewClass),
+m_TemplateGroup(this)
 {
    m_pPlugin = NULL;
+   m_pCreateData = NULL;
 
    m_bSharedMenu = FALSE;
    if ( hSharedMenu != NULL )
@@ -51,6 +53,9 @@ CMultiDocTemplate(nIDResource,pDocClass,pFrameClass,pViewClass)
       m_hMenuShared = hSharedMenu;
    }
    m_MaxViewCount = maxViewCount;
+
+   m_pTemplateItem = NULL;
+
 }
 
 CEAFDocTemplate::~CEAFDocTemplate()
@@ -67,6 +72,139 @@ CEAFDocTemplate::~CEAFDocTemplate()
    }
 }
 
+CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisible)
+{
+   // We don't want to call the base class version
+   //CDocument* pDocument = CMultiDocTemplate::OpenDocumentFile(lpszPathName,bMakeVisible);
+
+	CDocument* pDocument = CreateNewDocument();
+	if (pDocument == NULL)
+	{
+		TRACE(traceAppMsg, 0, "CEAFDocTemplate::CreateNewDocument returned NULL.\n");
+		AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC);
+		return NULL;
+	}
+	ASSERT_VALID(pDocument);
+   ASSERT_KINDOF(CEAFDocument,pDocument);
+   CEAFDocument* pEAFDoc = (CEAFDocument*)pDocument;
+
+	BOOL bAutoDelete = pDocument->m_bAutoDelete;
+	pDocument->m_bAutoDelete = FALSE;   // don't destroy if something goes wrong
+	CFrameWnd* pFrame = CreateNewFrame(pDocument, NULL);
+	pDocument->m_bAutoDelete = bAutoDelete;
+
+	if (pFrame == NULL)
+	{
+		AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC);
+		delete pDocument;       // explicit delete on error
+		return NULL;
+	}
+	ASSERT_VALID(pFrame);
+
+   pEAFDoc->OnCreateInitialize();
+
+   if ( !DoOpenDocumentFile(lpszPathName,bMakeVisible,pEAFDoc,pFrame) )
+   {
+      pFrame->DestroyWindow();
+      return NULL;
+   }
+
+	InitialUpdateFrame(pFrame, pDocument, bMakeVisible);
+
+   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   pMainFrame->HideMainFrameToolBar();
+
+   pEAFDoc->OnCreateFinalize();
+
+   return pDocument;
+}
+
+BOOL CEAFDocTemplate::DoOpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisible,CEAFDocument* pDocument,CFrameWnd* pFrame)
+{
+	if (lpszPathName == NULL)
+	{
+		// create a new document - with default document name
+		SetDefaultTitle(pDocument);
+
+		// avoid creating temporary compound file when starting up invisible
+		if (!bMakeVisible)
+			pDocument->m_bEmbedded = TRUE;
+
+      CString strTemplateFile = m_pTemplateItem->GetTemplateFilePath();
+      if ( strTemplateFile.IsEmpty() )
+      {
+		   if (!pDocument->OnNewDocument())
+		   {
+			   // user has be alerted to what failed in OnNewDocument
+			   TRACE(traceAppMsg, 0, "CEAFDocument::OnNewDocument returned FALSE.\n");
+			   pFrame->DestroyWindow();
+			   return FALSE;
+		   }
+      }
+      else
+      {
+		   if (!pDocument->OnNewDocumentFromTemplate(strTemplateFile))
+		   {
+			   // user has be alerted to what failed in OnNewDocumentFromTemplate
+			   TRACE(traceAppMsg, 0, "CEAFDocument::OnNewDocumentFromTemplate returned FALSE.\n");
+			   pFrame->DestroyWindow();
+			   return FALSE;
+		   }
+      }
+
+		// it worked, now bump untitled count
+		m_nUntitledCount++;
+	}
+	else
+	{
+		// open an existing document
+		CWaitCursor wait;
+		if (!pDocument->OnOpenDocument(lpszPathName))
+		{
+			// user has be alerted to what failed in OnOpenDocument
+			TRACE(traceAppMsg, 0, "CEAFDocument::OnOpenDocument returned FALSE.\n");
+			pFrame->DestroyWindow();
+			return FALSE;
+		}
+		pDocument->SetPathName(lpszPathName);
+	}
+
+   return TRUE;
+}
+
+CString CEAFDocTemplate::GetTemplateGroupItemDescription(const CEAFTemplateItem* pItem) const
+{
+   CString strDesc;
+   strDesc.Format("Create a new %s",pItem->GetName());
+   return strDesc;
+}
+
+void CEAFDocTemplate::SetTemplateItem(const CEAFTemplateItem* pItem)
+{
+   m_pTemplateItem = pItem;
+}
+
+const CEAFTemplateGroup* CEAFDocTemplate::GetTemplateGroup() const
+{
+   return &m_TemplateGroup;
+}
+
+UINT CEAFDocTemplate::GetResourceID() const
+{
+   return m_nIDResource;
+}
+
+void CEAFDocTemplate::SetPlugin(IEAFAppPlugin* pPlugin)
+{
+   m_pPlugin = pPlugin;
+}
+
+void CEAFDocTemplate::GetPlugin(IEAFAppPlugin** ppPlugin)
+{
+   (*ppPlugin) = m_pPlugin;
+   (*ppPlugin)->AddRef();
+}
+
 int CEAFDocTemplate::GetMaxViewCount() const
 {
    return m_MaxViewCount;
@@ -77,37 +215,12 @@ CRuntimeClass* CEAFDocTemplate::GetViewClass()
    return m_pViewClass;
 }
 
-void CEAFDocTemplate::InitialUpdateFrame(CFrameWnd* pFrame,CDocument* pDoc,BOOL bMakeVisible)
+void CEAFDocTemplate::SetViewCreationData(LPVOID pCreateData)
 {
-   // only do this special initialization for the first view
-   int nViews = 0;
-   POSITION pos = pDoc->GetFirstViewPosition();
-   while(pos != NULL)
-   {
-      nViews++;
-      pDoc->GetNextView(pos);
-   }
+   m_pCreateData = pCreateData;
+}
 
-   if ( 1 < nViews )
-      return;
-
-   if ( pDoc->IsKindOf( RUNTIME_CLASS(CEAFBrokerDocument) ) )
-   {
-      CEAFBrokerDocument* pMyDoc = (CEAFBrokerDocument*)pDoc;
-
-
-      CEAFMainFrame* pMyFrame = (CEAFMainFrame*)AfxGetMainWnd();
-      ASSERT(pMyFrame->IsKindOf(RUNTIME_CLASS(CEAFMainFrame)));
-      ASSERT_VALID(pMyFrame);
-
-
-      // init the doc proxy agent
-      pMyDoc->m_pDocProxyAgent->SetDocument(pMyDoc);
-      pMyDoc->m_pDocProxyAgent->SetMainFrame(pMyFrame);
-
-      // finish the agent initialization
-      pMyDoc->InitAgents();
-   }
-
-   CMultiDocTemplate::InitialUpdateFrame(pFrame,pDoc,bMakeVisible);
+LPVOID CEAFDocTemplate::GetViewCreationData()
+{
+   return m_pCreateData;
 }

@@ -45,6 +45,9 @@ const unitMass unitMeasure::Gram       ( 0.0, 0.001,         0.0, "g"    );
 const unitMass unitMeasure::MetricTon  ( 0.0, 1.0e03,        0.0, "MT" );
 const unitMass unitMeasure::Slug       ( 0.0, 14.5939029372, 0.0, "slug" );
 const unitMass unitMeasure::PoundMass  ( 0.0, 0.45359237,    0.0, "lbm"  );
+const unitMass unitMeasure::KSlug      ( 0.0, 14593.9029372, 0.0, "kslug" );
+const unitMass unitMeasure::_12Slug    ( 0.0, 175.126835246, 0.0, "12slug" );
+const unitMass unitMeasure::_12KSlug   ( 0.0, 175126.835246, 0.0, "12kslug" );
 
 const unitMassPerLength unitMeasure::KgPerMeter ( 0.0, 1.000,         0.0, "kg/m" );
 const unitMassPerLength unitMeasure::LbmPerFeet ( 0.0, 0.671968975139, 0.0, "lbm/ft" );

@@ -63,7 +63,7 @@ bool TestLib(dbgLog& rlog)
 {
    TESTME_PROLOGUE("Library Persistence");
    // create some libaries, fill them with data to save
-   typedef libLibrary<libConcreteMaterial> LibType;
+   typedef libLibrary<libConcreteMaterial,0> LibType;
    LibType* psav1 = new LibType("CONC_LIB1", "Concrete Library 1");
    libConcreteMaterial mat;
    TRY_TESTME(mat.GetRefCount()==0);

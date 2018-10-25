@@ -83,6 +83,8 @@ public:
    virtual CString Do_GetToolTipText();
    virtual void Do_SetMaxTipWidth(long maxWidth);
    virtual long Do_GetMaxTipWidth();
+   virtual void Do_SetTipDisplayTime(long iTime);
+   virtual long Do_GetTipDisplayTime();
 
 
    // Interface Events
@@ -135,6 +137,7 @@ protected:
    BOOL m_bSelected;
    CString m_strToolTipText;
    long m_MaxToolTipWidth;
+   long m_ToolTipDisplayTime;
    SelectionType m_SelectionType;
    CComPtr<IRect2d> m_ReusableRect;
 

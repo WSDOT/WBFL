@@ -40,9 +40,14 @@ static char THIS_FILE[] = __FILE__;
 
 STDMETHODIMP CARPNotice::Show(VARIANT_BOOL bGiveChoice,LicenseType lt,AcceptanceType* accept)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
+   CWnd* pWnd;
+   {
+      AFX_MANAGE_STATE(AfxGetAppModuleState());
+      pWnd = AfxGetMainWnd();
+   }
 
-   CLegalWiz wiz( lt == ltAROSL ? IDR_AROSL : IDR_ARLOSL );
+   AFX_MANAGE_STATE(AfxGetStaticModuleState());
+   CLegalWiz wiz( pWnd, lt == ltAROSL ? IDR_AROSL : IDR_ARLOSL );
    wiz.GiveChoice( bGiveChoice );
    wiz.ShowLegalNoticeAgain( m_bShowAgain );
    int result = wiz.DoModal();

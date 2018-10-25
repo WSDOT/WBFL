@@ -44,7 +44,7 @@ class CLegalWiz : public CPropertySheet
 
 // Construction
 public:
-	CLegalWiz(UINT nLicense = IDR_AROSL);
+	CLegalWiz(CWnd* pParent,UINT nLicense = IDR_AROSL);
 
 // Attributes
 public:

@@ -148,7 +148,7 @@ private:
    Float64 GetHarpPatternFillAdjustment();
    HRESULT UpdateMaxStrandFill();
 
-   HRESULT GetStrandPositions(Float64 distFromStart, Float64 distBetweenGrids, ILongArray* fill, IStrandGridFiller* pStartGrid, IStrandGridFiller* pEndGrid, IPoint2dCollection** points);
+   HRESULT GetStrandPositions(Float64 distFromStart, Float64 distBetweenGrids, ILongArray* startFill, IStrandGridFiller* pStartGrid, ILongArray* endFill, IStrandGridFiller* pEndGrid, IPoint2dCollection** points);
 
 // ISupportsErrorInfo
 public:

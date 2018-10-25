@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.CrackedSectionSolution.1 = s 'CrackedSectionSolution Class'
+	{
+		CLSID = s '{88B40E54-6EB0-4701-AC9B-71AA90841C73}'
+	}
+	WBFLRCCapacity.CrackedSectionSolution = s 'CrackedSectionSolution Class'
+	{
+		CLSID = s '{88B40E54-6EB0-4701-AC9B-71AA90841C73}'
+		CurVer = s 'WBFLRCCapacity.CrackedSectionSolution.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {88B40E54-6EB0-4701-AC9B-71AA90841C73} = s 'CrackedSectionSolution Class'
+		{
+			ProgID = s 'WBFLRCCapacity.CrackedSectionSolution.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.CrackedSectionSolution'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

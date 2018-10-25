@@ -42,8 +42,8 @@ static char THIS_FILE[] = __FILE__;
 
 IMPLEMENT_DYNAMIC(CLegalWiz, CPropertySheet)
 
-CLegalWiz::CLegalWiz(UINT nLicense)
-	:CPropertySheet(_T("Legal Notice"),NULL,0)
+CLegalWiz::CLegalWiz(CWnd* pParent,UINT nLicense)
+	:CPropertySheet(_T("Legal Notice"),pParent,0)
 {
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
    m_License = nLicense;

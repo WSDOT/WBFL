@@ -86,7 +86,7 @@ void CLoadModifierPage::DoDataExchange(CDataExchange* pDX)
 	//}}AFX_DATA_MAP
 
    if ( m_Flag != 1 )
-     DDV_LimitOrMore( pDX, m_LimitStateFactor, (m_Flag == 0 ? 1.05 : 0.95) );
+     DDV_LimitOrMore( pDX, IDC_N, m_LimitStateFactor, (m_Flag == 0 ? 1.05 : 0.95) );
 }
 
 

@@ -29,6 +29,7 @@
 //#include "core.h" // local header file with CCoreApp
 #include "StrLoad.h"
 #include <atlbase.h>
+#include <WBFLAtlExt.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -198,6 +199,15 @@ STDMETHODIMP CStrLoad::Close()
    {
       return HandleException( e );
    }
+   return S_OK;
+}
+
+STDMETHODIMP CStrLoad::LoadRawUnit(BSTR* pbstrUnit)
+{
+   CHECK_RETSTRING(pbstrUnit);
+
+   std::string strXML = m_StrLoad.GetUnit();
+   *pbstrUnit = CComBSTR(strXML.c_str());
    return S_OK;
 }
 

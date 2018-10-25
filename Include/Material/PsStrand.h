@@ -83,7 +83,9 @@ public:
                D1270 = 0x0100,
                D1524 = 0x0200,
                D1778 = 0x0400,
-               D1320 = 0x0800}; // 1/2 HBS (Special)
+               D1320 = 0x0800,// 1/2 HBS (Special)
+               D1575 = 0x1000 // 0.62"
+   }; 
 
    // GROUP: LIFECYCLE
 

@@ -59,6 +59,11 @@ public:
       {
          return appBoth;
       }
+      else if ( llapplicability == llaNegMomentAndInteriorPierReaction )
+      {
+         if (optimizedEffect==fetMz && optimization==optMinimize)
+            return appBoth;
+      }
       else if (llapplicability==llaContraflexure)
       {
          // only applicable for negative moment in contraflexure zone
@@ -137,7 +142,7 @@ public:
       {
          return appBoth;
       }
-      else if (llapplicability==llaContraflexure)
+      else if ( llapplicability == llaNegMomentAndInteriorPierReaction || llapplicability==llaContraflexure)
       {
          // only applicable for interior supports
          HRESULT hr;

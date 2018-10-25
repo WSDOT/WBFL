@@ -1,0 +1,10 @@
+; BridgeGeometryAgent.def : Declares the module parameters.
+
+LIBRARY      "WBFLBridgeGeometryAgent.DLL"
+
+EXPORTS
+	DllCanUnloadNow		PRIVATE
+	DllGetClassObject	PRIVATE
+	DllRegisterServer	PRIVATE
+	DllUnregisterServer	PRIVATE
+	;DllInstall		PRIVATE

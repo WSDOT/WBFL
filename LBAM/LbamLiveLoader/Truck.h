@@ -87,6 +87,8 @@ struct FixedTruck
    Float64 MaxAxleSpacing();
    Float64 CenterOfGravity();
 
+   bool NegMomentsAndReactions();
+
    // returns the heaviest axle, excluding the first and last axle, that is nearest to the center of the truck
    // (center is in terms of # of axles and not geometric positions0
    AxleIndexType HeaviestCentralAxle();
@@ -122,6 +124,8 @@ private:
    Float64              m_Rear;
    AxleContainer       m_Axles;
    std::vector<bool>   m_ActiveAxles;
+
+   bool m_bNegMomentsAndReactions;
 
    AxleIndexType        m_VariableAxleIndex; // spacing after this axle is variable
    Float64              m_VariableAxleSpacing;

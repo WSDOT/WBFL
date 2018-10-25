@@ -65,6 +65,8 @@ END
 //
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+IDB_LPFRAME             BITMAP                  "res\\lpframe.bmp"
+IDB_LIGHTBULB           BITMAP                  "res\\litebulb.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -75,16 +77,6 @@ IDR_MAINFRAME TOOLBAR  16, 15
 BEGIN
     BUTTON      ID_FILE_NEW
     BUTTON      ID_FILE_OPEN
-    BUTTON      ID_FILE_SAVE
-    SEPARATOR
-    BUTTON      ID_EDIT_CUT
-    BUTTON      ID_EDIT_COPY
-    BUTTON      ID_EDIT_PASTE
-    SEPARATOR
-    BUTTON      ID_FILE_PRINT_DIRECT
-    SEPARATOR
-    BUTTON      ID_APP_ABOUT
-    BUTTON      ID_CONTEXT_HELP
 END
 
 
@@ -153,8 +145,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,2,0,1
- PRODUCTVERSION 3,2,0,1
+ FILEVERSION 3,2,0,2
+ PRODUCTVERSION 3,2,0,2
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -172,12 +164,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "EAF DLL"
-            VALUE "FileVersion", "3.2.0.1"
+            VALUE "FileVersion", "3.2.0.2"
             VALUE "InternalName", "EAF"
             VALUE "LegalCopyright", "Copyright © 1999-2010"
             VALUE "OriginalFilename", "EAF.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "3.2.0.1"
+            VALUE "ProductVersion", "3.2.0.2"
         END
     END
     BLOCK "VarFileInfo"
@@ -192,18 +184,95 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 235, 166
+IDD_TIP DIALOGEX 0, 0, 231, 164
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "About"
+CAPTION "Tip of the Day"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    LTEXT           "Version #",IDC_VERSION,40,10,119,8,SS_NOPREFIX
-    LTEXT           "Copyright © 1999-2010",IDC_COPYRIGHT,40,20,119,8
-    DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
-    ICON            128,IDC_APPICON,7,7,20,20
-    LTEXT           "Installed Components",IDC_STATIC,7,35,68,8
-    LTEXT           "This software is licenced under the terms and conditions of the Alternate Route Open Source License. Individual components may be licensed under different terms and conditions. Click on the components listed above for more information.",IDC_STATIC,7,125,221,34
-    CONTROL         "",IDC_PLUGINS,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHAREIMAGELISTS | LVS_ALIGNLEFT | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,47,221,71
+    CONTROL         "",IDC_FRAME,"Static",SS_ETCHEDFRAME,12,11,207,123
+    LTEXT           "Some String",IDC_TIPSTRING,28,63,177,60
+    DEFPUSHBUTTON   "&Close",IDOK,168,143,50,14,WS_GROUP
+    PUSHBUTTON      "&Next Tip",IDC_NEXTTIP,109,143,50,14,WS_GROUP
+    CONTROL         "&Show Tips on StartUp",IDC_STARTUP,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,13,146,85,10
+END
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 438, 235
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About"
+FONT 8, "MS Sans Serif", 400, 0, 0x0
+BEGIN
+    LTEXT           "Version #",IDC_VERSION,40,10,277,8,SS_NOPREFIX
+    LTEXT           "Copyright © 1999-2010",IDC_COPYRIGHT,40,22,335,8
+    DEFPUSHBUTTON   "OK",IDOK,381,214,50,14,WS_GROUP
+    ICON            128,IDC_APPICON,7,7,21,20
+    LTEXT           "Installed Components",IDC_STATIC,7,40,68,8
+    LISTBOX         IDC_APPLIST,7,52,359,65,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "This software is licenced under the terms and conditions of the Alternate Route Open Source License. Individual components may be licensed under different terms and conditions. Click on the components listed above for more information.",IDC_STATIC,7,202,359,26
+    LTEXT           "Component Description",IDC_STATIC,7,121,74,8
+    CONTROL         "Static",IDC_DESCRIPTION,"Static",SS_LEFTNOWORDWRAP | WS_BORDER | WS_GROUP,7,135,359,62
+    PUSHBUTTON      "More Information",IDC_MOREINFO,372,135,59,14
+END
+
+IDD_STATUSCENTER DIALOG  0, 0, 396, 238
+STYLE DS_SETFONT | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Status Center"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "Close",IDCLOSE,339,217,50,14
+    CONTROL         "List1",IDC_STATUSLIST,"SysListView32",LVS_REPORT | WS_BORDER | WS_TABSTOP,7,7,382,205
+    LTEXT           "Double click on each status item for more details and possible remedies",IDC_LABEL,7,223,224,8
+END
+
+IDD_UNITS DIALOGEX 0, 0, 187, 60
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Units"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "Select System of Units",IDC_STATIC,7,7,109,46,WS_GROUP
+    CONTROL         "&Customary U.S. Units",IDC_US_UNITS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,15,20,79,10
+    CONTROL         "&SI Units",IDC_SI_UNITS,"Button",BS_AUTORADIOBUTTON,15,34,39,10
+    DEFPUSHBUTTON   "OK",IDOK,130,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,130,23,50,14
+END
+
+IDD_SELECTREPORT DIALOG  0, 0, 275, 163
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Select Report"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,218,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,218,24,50,14
+    LTEXT           "Select a report to create",IDC_STATIC,7,7,77,8
+    LISTBOX         IDC_LIST,7,25,199,131,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_TOOLBARS DIALOGEX 0, 0, 251, 98
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Toolbars"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,194,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,194,24,50,14
+    LTEXT           "&Toolbars:",IDC_STATIC,7,7,49,8
+    LISTBOX         IDC_LIST,7,17,113,74,LBS_OWNERDRAWFIXED | LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | LBS_WANTKEYBOARDINPUT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "&Show ToolTips",IDC_TOOLTIPS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,124,17,62,10
+END
+
+IDD_NEWPROJECT DIALOGEX 0, 0, 409, 254
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_THICKFRAME
+EXSTYLE WS_EX_STATICEDGE
+CAPTION "New Project"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,295,233,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,352,233,50,14
+    LTEXT           "Project types:",IDC_STATIC,7,15,46,8
+    CONTROL         "",IDC_PROJECTTYPES,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | TVS_LINESATROOT | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,26,138,185
+    LTEXT           "Templates:",IDC_STATIC,145,15,36,8
+    CONTROL         "",IDC_TEMPLATES,"SysListView32",LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,147,26,255,185
+    CONTROL         "Large",IDC_LARGE,"Button",BS_AUTORADIOBUTTON | BS_ICON | BS_PUSHLIKE | WS_GROUP | WS_TABSTOP,367,7,16,16
+    CONTROL         "Small",IDC_SMALL,"Button",BS_AUTORADIOBUTTON | BS_ICON | BS_PUSHLIKE,386,7,16,16
+    LTEXT           "Static",IDC_DESCRIPTION,7,213,395,13,SS_CENTERIMAGE | WS_BORDER
 END
 
 
@@ -218,13 +287,55 @@ BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 228
+        RIGHTMARGIN, 431
         TOPMARGIN, 7
-        BOTTOMMARGIN, 159
+        BOTTOMMARGIN, 228
+    END
+
+    IDD_STATUSCENTER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 389
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 231
+    END
+
+    IDD_UNITS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 53
+    END
+
+    IDD_TOOLBARS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 244
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 91
+    END
+
+    IDD_NEWPROJECT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 402
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 247
     END
 END
 #endif    // APSTUDIO_INVOKED
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_LARGEICON           ICON                    "res\\IconView.ico"
+IDI_SMALLICON           ICON                    "res\\SmallIconView.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -235,6 +346,19 @@ STRINGTABLE
 BEGIN
     AFX_IDS_IDLEMESSAGE     "For Help, press F1"
     AFX_IDS_HELPMODEMESSAGE "Select an object on which to get Help"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_UNITS_SI             "Change units mode to SI\nSI Units"
+    ID_UNITS_US             "Change units mode to US\nUS Units"
+    ID_EDIT_UNITS           "Change the system of units\nUnits."
+    CG_IDS_TIPOFTHEDAY      "Displays a Tip of the Day."
+    CG_IDS_TIPOFTHEDAYMENU  "Ti&p of the Day..."
+    CG_IDS_DIDYOUKNOW       "Did you know..."
+    CG_IDS_FILE_ABSENT      "Tips file does not exist in the prescribed directory"
+    CG_IDP_FILE_CORRUPT     "Trouble reading the tips file"
+    CG_IDS_TIPOFTHEDAYHELP  "&Help"
 END
 
 STRINGTABLE 
@@ -330,6 +454,14 @@ END
 
 STRINGTABLE 
 BEGIN
+    IDS_TOOLBAR_STATE       "AppToolbars"
+    IDS_REG_SETTINGS        "Settings"
+    IDS_TOOLTIP_STATE       "ToolTips"
+    IDS_REG_WNDPOS          "WindowPosition"
+END
+
+STRINGTABLE 
+BEGIN
     AFX_IDS_SCSIZE          "Change the window size"
     AFX_IDS_SCMOVE          "Change the window position"
     AFX_IDS_SCMINIMIZE      "Reduce the window to an icon"
@@ -360,6 +492,25 @@ END
 STRINGTABLE 
 BEGIN
     ID_INDICATOR_MODIFIED   "Modified"
+    ID_INDICATOR_STATUS     "OK"
+    IDS_UPDATE_IN_PROGRESS  "Working..."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_E_NOBROWSER         "An error occured while trying to display the report.  The most likely cause is Internet Explorer Version 4.0 or later is not installed.  Please re-install your browser."
+    IDS_E_UPDATE            "The following error occured while updating the views.\n\n%1."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_WORKING             "Working..."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_RESULTS_NOT_AVAILABLE 
+                            "Results not available - Select ""Update Now"" from the Project menu"
 END
 
 #endif    // English (U.S.) resources

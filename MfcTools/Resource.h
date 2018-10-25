@@ -22,7 +22,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
+// Microsoft Visual C++ generated include file.
 // Used by MfcTools.rc
 //
 #define IDD_PRINT_STATUS                106
@@ -33,8 +33,10 @@
 #define IDC_PAGES                       1039
 #define IDR_MAINFRAME                   1128
 #define IDR_FILENETYPE                  1129
+#define IDD_QUESTION                    1130
 #define IDD_DOC_TEMPLATE_DIALOG         1131
 #define IDI_TEMPLATE                    1132
+#define IDD_CHOICE                      1133
 #define IDI_LARGE_ICON                  1134
 #define IDI_SMALL_ICON                  1135
 #define IDI_LIST_ICON                   1136
@@ -51,6 +53,10 @@
 #define IDC_RADIO2                      1214
 #define IDC_RADIO3                      1215
 #define IDC_N_SERVICE                   1216
+#define IDC_QUESTIONMARK                1217
+#define IDC_QUESTION                    1218
+#define IDC_ANSWER                      1219
+#define IDC_RESPONSE_CHOICES            1222
 #define IDS_E_BEARINGFMT                1301
 #define IDS_E_ANGLEFMT                  1302
 #define IDS_DDXFOLDER_TT_MODIFY         1303
@@ -66,9 +72,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        1130
+#define _APS_NEXT_RESOURCE_VALUE        1134
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1217
+#define _APS_NEXT_CONTROL_VALUE         1223
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -322,7 +322,13 @@ STDMETHODIMP CLiveLoadModelResponse::ComputeForces(ILongArray* poiIDs, BSTR stag
          // no vehicles - need to create empty results and return
          for (CollectionIndexType poiIdx = 0; poiIdx < nPOI; poiIdx++)
          {
-            hr = results->Add(0.0, NULL, 0.0, NULL);
+            CComPtr<ILiveLoadConfiguration> left_config, right_config;
+            if ( computePlacement == VARIANT_TRUE )
+            {
+               left_config.CoCreateInstance(CLSID_LiveLoadConfiguration);
+               right_config.CoCreateInstance(CLSID_LiveLoadConfiguration);
+            }
+            hr = results->Add(0.0, left_config, 0.0, right_config);
          }
       }
       else

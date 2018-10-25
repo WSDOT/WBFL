@@ -630,7 +630,7 @@ STDMETHODIMP CPrecastGirder::get_StraightStrandPositionsEx(Float64 distFromStart
    Float64 gdrLength;
    get_GirderLength(&gdrLength);
 
-   HRESULT hr = GetStrandPositions(distFromStart, gdrLength, fill, m_StraightGrid[etStart], m_StraightGrid[etEnd], points);
+   HRESULT hr = GetStrandPositions(distFromStart, gdrLength, fill, m_StraightGrid[etStart], fill, m_StraightGrid[etEnd], points);
    return hr;
 }
 
@@ -667,7 +667,7 @@ STDMETHODIMP CPrecastGirder::get_HarpedStrandPositionsEx(Float64 distFromStart, 
       HRESULT hr = ComputeHpFill(fill, &hp_fill);
       ATLASSERT( SUCCEEDED(hr) );
 
-      hr = GetStrandPositions(distFromStart - leftHP, rightHP-leftHP, hp_fill, m_HarpGridHp[etStart], m_HarpGridHp[etEnd], points);
+      hr = GetStrandPositions(distFromStart - leftHP, rightHP-leftHP, hp_fill, m_HarpGridHp[etStart], hp_fill, m_HarpGridHp[etEnd], points);
       ATLASSERT( SUCCEEDED(hr) );
       return hr;
    }
@@ -680,7 +680,7 @@ STDMETHODIMP CPrecastGirder::get_HarpedStrandPositionsEx(Float64 distFromStart, 
       HRESULT hr = ComputeHpFill(fill, &hp_fill);
       ATLASSERT( SUCCEEDED(hr) );
 
-      hr = GetStrandPositions(distFromStart, leftHP, hp_fill, m_HarpGridEnd[etStart], m_HarpGridHp[etStart], points);
+      hr = GetStrandPositions(distFromStart, leftHP, fill, m_HarpGridEnd[etStart], hp_fill, m_HarpGridHp[etStart], points);
       ATLASSERT( SUCCEEDED(hr) );
       return hr;
    }
@@ -693,7 +693,7 @@ STDMETHODIMP CPrecastGirder::get_HarpedStrandPositionsEx(Float64 distFromStart, 
       HRESULT hr = ComputeHpFill(fill, &hp_fill);
       ATLASSERT( SUCCEEDED(hr) );
 
-      hr = GetStrandPositions(distFromStart - rightHP, gdrLength - rightHP, hp_fill, m_HarpGridHp[etEnd], m_HarpGridEnd[etEnd], points);
+      hr = GetStrandPositions(distFromStart - rightHP, gdrLength - rightHP, hp_fill, m_HarpGridHp[etEnd], fill, m_HarpGridEnd[etEnd], points);
       ATLASSERT( SUCCEEDED(hr) );
       return hr;
    }
@@ -711,7 +711,7 @@ STDMETHODIMP CPrecastGirder::get_TempStrandPositionsEx(Float64 distFromStart, IL
    Float64 gdrLength;
    get_GirderLength(&gdrLength);
 
-   HRESULT hr = GetStrandPositions(distFromStart, gdrLength, fill, m_TempGrid[etStart], m_TempGrid[etEnd], points);
+   HRESULT hr = GetStrandPositions(distFromStart, gdrLength, fill, m_TempGrid[etStart], fill, m_TempGrid[etEnd], points);
    return hr;
 }
 
@@ -1854,12 +1854,12 @@ Float64 CPrecastGirder::GetHarpPointLocation(Float64 hp,bool bRight)
 }
 
 
-HRESULT CPrecastGirder::GetStrandPositions(Float64 distFromStart, Float64 distBetweenGrids, ILongArray* fill, IStrandGridFiller* pStartGrid, IStrandGridFiller* pEndGrid, IPoint2dCollection** points)
+HRESULT CPrecastGirder::GetStrandPositions(Float64 distFromStart, Float64 distBetweenGrids, ILongArray* startFill, IStrandGridFiller* pStartGrid, ILongArray* endFill, IStrandGridFiller* pEndGrid, IPoint2dCollection** points)
 {
    CComPtr<IPoint2dCollection> startPoints;
    CComPtr<IPoint2dCollection> endPoints;
-   pStartGrid->GetStrandPositionsEx(fill,&startPoints);
-   pEndGrid->GetStrandPositionsEx(fill,&endPoints);
+   pStartGrid->GetStrandPositionsEx(startFill,&startPoints);
+   pEndGrid->GetStrandPositionsEx(endFill,&endPoints);
 
    CollectionIndexType nPoints;
    startPoints->get_Count(&nPoints);
@@ -1906,16 +1906,16 @@ HRESULT CPrecastGirder::ComputeHpFill(ILongArray* endFill, ILongArray** hpFill)
    // if the odd number of strands option is activated
    if (m_AllowOddNumberOfHarpedStrands == VARIANT_TRUE)
    {
-      StrandIndexType cnt;
-      m_HarpGridEnd[etStart]->GetStrandCountEx(endFill, &cnt);
+      StrandIndexType nStrands;
+      m_HarpGridEnd[etStart]->GetStrandCountEx(endFill, &nStrands);
 
 #if defined _DEBUG
-      StrandIndexType nStrands;
-      m_HarpGridEnd[etEnd]->GetStrandCountEx(endFill,&nStrands);
+      StrandIndexType cnt;
+      m_HarpGridEnd[etEnd]->GetStrandCountEx(endFill,&cnt);
       ATLASSERT(cnt == nStrands);
 #endif
 
-      if (1 < cnt && cnt%2 == 1)
+      if (1 < nStrands && nStrands%2 != 0) // if there is more than 1 harped strand and the number of strands is odd
       {
          // we allow, and have, an odd number of strands.
 
@@ -1925,23 +1925,35 @@ HRESULT CPrecastGirder::ComputeHpFill(ILongArray* endFill, ILongArray** hpFill)
          endFill->get_Count(&fill_size);
          m_OddHpFill->Reserve(fill_size);
 
-         // put two strands in the first hp location;
-         StrandIndexType running_cnt=2;
-         m_OddHpFill->Add(2);
+         // put two strands in the first hp location
+#if defined _DEBUG
+         Int32 first_row;
+         endFill->get_Item(0,&first_row);
+         ASSERT(first_row == 1); // only one strand at the bottom... but we need it to be 2 for odd fill at top
+#endif
 
-         for (CollectionIndexType is=1; is<fill_size; is++)
+         StrandIndexType running_cnt = 2;
+         m_OddHpFill->Add(running_cnt); // start with 2 strands
+
+         for (CollectionIndexType is = 1; is < fill_size; is++)
          {
-            if (running_cnt<cnt)
+            if (running_cnt < nStrands)
             {
+               // there are still strands to fill
+
                Int32 fill_val;
                endFill->get_Item(is, &fill_val);
+               
                running_cnt += fill_val;
-               if (running_cnt<=cnt)
+               
+               if (running_cnt <= nStrands)
                {
+                  // not at the end yet, just fill it up
                   m_OddHpFill->Add(fill_val);
                }
                else
                {
+                  // we are at the end... add the odd strand
                   m_OddHpFill->Add(fill_val-1);
                   running_cnt--;
                }
@@ -1953,7 +1965,7 @@ HRESULT CPrecastGirder::ComputeHpFill(ILongArray* endFill, ILongArray** hpFill)
          }
 
          // Return with modified grid
-         ATLASSERT(running_cnt==cnt);
+         ATLASSERT(running_cnt==nStrands);
          return m_OddHpFill.CopyTo(hpFill);
       }
    }

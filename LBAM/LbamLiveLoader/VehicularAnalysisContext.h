@@ -133,6 +133,14 @@ public:
 	STDMETHOD(IsInteriorSupport)(/*[in]*/SupportIDType supportID, /*[out,retval]*/VARIANT_BOOL* isInterior);
 	STDMETHOD(Clear)();
 	STDMETHOD(Clone)(/*[out,retval]*/ILiveLoad** clone);
+   STDMETHOD(get_LegalRoutineRating)(/*[out, retval]*/ ILiveLoadModel* *pVal);
+   STDMETHOD(putref_LegalRoutineRating)(/*[in]*/ ILiveLoadModel* newVal);
+   STDMETHOD(get_LegalSpecialRating)(/*[out, retval]*/ ILiveLoadModel* *pVal);
+   STDMETHOD(putref_LegalSpecialRating)(/*[in]*/ ILiveLoadModel* newVal);
+   STDMETHOD(get_PermitRoutineRating)(/*[out, retval]*/ ILiveLoadModel* *pVal);
+   STDMETHOD(putref_PermitRoutineRating)(/*[in]*/ ILiveLoadModel* newVal);
+   STDMETHOD(get_PermitSpecialRating)(/*[out, retval]*/ ILiveLoadModel* *pVal);
+   STDMETHOD(putref_PermitSpecialRating)(/*[in]*/ ILiveLoadModel* newVal);
 	STDMETHOD(get_Pedestrian)(/*[out, retval]*/ ILiveLoadModel* *pVal);
 	STDMETHOD(putref_Pedestrian)(/*[in]*/ ILiveLoadModel* newVal);
 	STDMETHOD(get_Special)(/*[out, retval]*/ ILiveLoadModel* *pVal);

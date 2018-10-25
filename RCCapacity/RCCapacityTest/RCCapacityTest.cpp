@@ -48,6 +48,7 @@
 //#include "MomentCurvatureSolutionTest.h"
 #include "MomentCurvatureSolverTest.h"
 #include "MomentCapacitySolverTest.h"
+#include "CrackedSectionSolverTest.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -73,6 +74,7 @@ int main(int argc, char* argv[])
    //CMomentCurvatureSolutionTest::Test();
    CMomentCurvatureSolverTest::Test();
    CMomentCapacitySolverTest::Test();
+   CCrackedSectionSolverTest::Test();
    
    
    ::CoUninitialize();

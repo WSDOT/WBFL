@@ -202,7 +202,8 @@ library WBFLLBAM
    enum 
    {
 		llaEntireStructure = 1,
-		llaContraflexure   = 2
+		llaContraflexure   = 2,
+      llaNegMomentAndInteriorPierReaction = 3 // similar to llaContraflexure, but not limited to between points of contraflexure
    } LiveLoadApplicabilityType;
 
    typedef
@@ -220,7 +221,11 @@ library WBFLLBAM
 		lltPedestrian      = 2,
 		lltFatigue         = 3,
 		lltPermit          = 4,
-		lltSpecial         = 5    
+      lltSpecial         = 5,
+		lltLegalRoutineRating = 6,
+      lltLegalSpecialRating = 7,
+      lltPermitRoutineRating = 8,
+      lltPermitSpecialRating = 9
    } LiveLoadModelType;
 
    typedef
@@ -1058,6 +1063,8 @@ library WBFLLBAM
       HRESULT IMLane([in] Float64 newVal);
 		[helpstring("method Clone"),helpcontext(IDH_VehicularLoad_Clone)] 
       HRESULT Clone([out,retval]IVehicularLoad** clone);
+      [helpstring("method SumAxleWeights")]
+      HRESULT SumAxleWeights([out,retval]Float64* pWeight);
 	};
 
     [
@@ -1222,10 +1229,31 @@ library WBFLLBAM
       HRESULT Pedestrian([out, retval] ILiveLoadModel* *pVal);
 		[propputref, helpstring("property Pedestrian"),helpcontext(IDH_LiveLoad_Pedestrian)] 
       HRESULT Pedestrian([in] ILiveLoadModel* newVal);
-		[helpstring("method Clone"),helpcontext(IDH_LiveLoad_Clone)] 
+      [helpstring("method Clone"),helpcontext(IDH_LiveLoad_Clone)] 
       HRESULT Clone([out,retval]ILiveLoad** clone);
 		[helpstring("method Clear"),helpcontext(IDH_LiveLoad_Clear)] 
       HRESULT Clear();
+
+      // these are added down here so the v-table isn't messed up for existing installs
+      [propget, helpstring("property LegalRoutineRating"),helpcontext(IDH_LiveLoad_LegalRoutineRating)] 
+      HRESULT LegalRoutineRating([out, retval] ILiveLoadModel* *pVal);
+		[propputref, helpstring("property LegalRoutineRating"),helpcontext(IDH_LiveLoad_LegalRoutineRating)] 
+      HRESULT LegalRoutineRating([in] ILiveLoadModel* newVal);
+
+      [propget, helpstring("property LegalSpecialRating"),helpcontext(IDH_LiveLoad_LegalSpecialRating)] 
+      HRESULT LegalSpecialRating([out, retval] ILiveLoadModel* *pVal);
+		[propputref, helpstring("property LegalSpecialRating"),helpcontext(IDH_LiveLoad_LegalSpecialRating)] 
+      HRESULT LegalSpecialRating([in] ILiveLoadModel* newVal);
+
+      [propget, helpstring("property PermitRoutineRating"),helpcontext(IDH_LiveLoad_PermitRoutineRating)] 
+      HRESULT PermitRoutineRating([out, retval] ILiveLoadModel* *pVal);
+		[propputref, helpstring("property PermitRRoutineating"),helpcontext(IDH_LiveLoad_PermitRoutineRating)] 
+      HRESULT PermitRoutineRating([in] ILiveLoadModel* newVal);
+
+      [propget, helpstring("property PermitSpecialRating"),helpcontext(IDH_LiveLoad_PermitSpecialRating)] 
+      HRESULT PermitSpecialRating([out, retval] ILiveLoadModel* *pVal);
+		[propputref, helpstring("property PermitSpecialRating"),helpcontext(IDH_LiveLoad_PermitSpecialRating)] 
+      HRESULT PermitSpecialRating([in] ILiveLoadModel* newVal);
 	};
 
     [
@@ -2723,6 +2751,8 @@ library WBFLLBAM
       HRESULT AddLoadCaseFactor( [in]BSTR loadCaseName, [in]Float64 minFactor, [in]Float64 maxFactor);
 		[helpstring("method GetLoadCaseFactor"),helpcontext(IDH_LoadCombination_GetLoadCaseFactor)] 
       HRESULT GetLoadCaseFactor([in]CollectionIndexType index,  [out]BSTR* loadCaseName, [out]Float64* minFactor, [out]Float64* maxFactor);
+		[helpstring("method FindLoadCaseFactor"),helpcontext(IDH_LoadCombination_FindLoadCaseFactor)] 
+   	HRESULT FindLoadCaseFactor([in]BSTR loadCaseName, [out]Float64* minFactor, [out]Float64* maxFactor);
 		[helpstring("method Clear"),helpcontext(IDH_LoadCombination_Clear)] 
       HRESULT Clear();
 		[helpstring("method RemoveLoadCaseFactor"),helpcontext(IDH_LoadCombination_RemoveLoadCaseFactor)] 

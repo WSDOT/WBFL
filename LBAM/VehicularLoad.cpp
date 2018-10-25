@@ -154,7 +154,7 @@ STDMETHODIMP CVehicularLoad::get_Applicability(LiveLoadApplicabilityType *pVal)
 
 STDMETHODIMP CVehicularLoad::put_Applicability(LiveLoadApplicabilityType newVal)
 {
-   if ( (int)newVal<llaEntireStructure || (int)newVal>llaContraflexure )
+   if ( (int)newVal<llaEntireStructure || (int)newVal>llaNegMomentAndInteriorPierReaction )
       return E_INVALIDARG;
 
 	if (newVal != m_LiveLoadApplicability)
@@ -428,6 +428,8 @@ STDMETHODIMP CVehicularLoad::Load(IStructuredLoad2 * pload)
          m_LiveLoadApplicability = llaEntireStructure;
       else if (lc == llaContraflexure)
          m_LiveLoadApplicability = llaContraflexure;
+      else if (lc == llaNegMomentAndInteriorPierReaction)
+         m_LiveLoadApplicability = llaNegMomentAndInteriorPierReaction;
       else
       {
          ATLASSERT(0);
@@ -548,6 +550,27 @@ STDMETHODIMP CVehicularLoad::Save(IStructuredSave2 * psave)
    return S_OK;
 }
 
+STDMETHODIMP CVehicularLoad::SumAxleWeights(Float64* pWeight)
+{
+   CHECK_RETVAL(pWeight);
+   Float64 w = 0;
+
+   CollectionIndexType nAxles;
+   m_Axles->get_Count(&nAxles);
+   for ( CollectionIndexType axleIdx = 0; axleIdx < nAxles; axleIdx++ )
+   {
+      CComPtr<IAxle> axle;
+      m_Axles->get_Item(axleIdx,&axle);
+
+      Float64 axle_weight;
+      axle->get_Weight(&axle_weight);
+
+      w += axle_weight;
+   }
+
+   *pWeight = w;
+   return S_OK;
+}
 
 STDMETHODIMP CVehicularLoad::Clone(IVehicularLoad **clone)
 {

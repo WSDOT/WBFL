@@ -21,9 +21,9 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DISPLAYMGREVENTS_H_
-#define INCLUDED_DISPLAYMGREVENTS_H_
 #pragma once
+
+#include <DManip\DisplayMgr.h>
 
 interface iDisplayMgrEvents : public IUnknown
 {
@@ -39,5 +39,3 @@ interface iDisplayMgrEvents : public IUnknown
    STDMETHOD_(bool,OnKeyDown)(iDisplayMgr* pDO,UINT nChar, UINT nRepCnt, UINT nFlags) PURE;
    STDMETHOD_(bool,OnContextMenu)(iDisplayMgr* pDO,CWnd* pWnd,CPoint point) PURE;
 };
-
-#endif // INCLUDED_DISPLAYMGREVENTS_H_

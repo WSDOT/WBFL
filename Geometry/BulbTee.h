@@ -79,6 +79,7 @@ private:
    CComPtr<IPoint2d> m_pHookPoint; // BottomCenter
    CComPtr<IPolyShape> m_pShape; // Implementation Polygon
    Float64   m_Rotation;
+   Float64   m_C1;
    Float64   m_D1;
    Float64   m_D2;
    Float64   m_D3;
@@ -134,6 +135,8 @@ public:
 	STDMETHOD(put_D2)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_D1)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_D1)(/*[in]*/ Float64 newVal);
+	STDMETHOD(get_C1)(/*[out, retval]*/ Float64 *pVal);
+	STDMETHOD(put_C1)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_W5)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_W5)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_W4)(/*[out, retval]*/ Float64 *pVal);

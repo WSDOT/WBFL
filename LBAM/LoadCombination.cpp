@@ -118,7 +118,7 @@ STDMETHODIMP CLoadCombination::GetLiveLoadModel(CollectionIndexType index,LiveLo
 
 STDMETHODIMP CLoadCombination::AddLiveLoadModel(LiveLoadModelType newVal)
 {
-   if (newVal<lltNone || newVal>lltSpecial)
+   if (newVal < lltNone || lltPermitSpecialRating < newVal)
       return E_INVALIDARG;
 
    std::vector<LiveLoadModelType>::iterator iter;
@@ -231,6 +231,27 @@ STDMETHODIMP CLoadCombination::AddLoadCaseFactor(BSTR loadCaseName, Float64 minF
    }
 
 	return S_OK;
+}
+
+STDMETHODIMP CLoadCombination::FindLoadCaseFactor(BSTR loadCaseName, Float64* minFactor, Float64* maxFactor)
+{
+   CHECK_RETVAL(minFactor);
+   CHECK_RETVAL(maxFactor);
+
+   LoadCaseFactorContainer::iterator iter;
+   for ( iter = m_LoadCaseFactors.begin(); iter != m_LoadCaseFactors.end(); iter++ )
+   {
+      LoadCaseFactor& lcFactor = *iter;
+      if ( lcFactor.m_LoadCase == CComBSTR(loadCaseName) )
+      {
+         *minFactor = lcFactor.m_MinFactor;
+         *maxFactor = lcFactor.m_MaxFactor;
+
+         return S_OK;
+      }
+   }
+
+   return S_FALSE;
 }
 
 STDMETHODIMP CLoadCombination::GetLoadCaseFactor(CollectionIndexType index, BSTR *loadCaseName, Float64 *minFactor, Float64 *maxFactor)
@@ -427,6 +448,22 @@ STDMETHODIMP CLoadCombination::Load(IStructuredLoad2 * pload)
 		   else if (llt==lltSpecial)
          {
             m_LiveLoadModelTypes.push_back(lltSpecial);
+         }
+         else if (llt==lltLegalRoutineRating)
+         {
+            m_LiveLoadModelTypes.push_back(lltLegalRoutineRating);
+         }
+         else if (llt==lltLegalSpecialRating)
+         {
+            m_LiveLoadModelTypes.push_back(lltLegalSpecialRating);
+         }
+         else if (llt==lltPermitRoutineRating)
+         {
+            m_LiveLoadModelTypes.push_back(lltPermitRoutineRating);
+         }
+         else if (llt==lltPermitSpecialRating)
+         {
+            m_LiveLoadModelTypes.push_back(lltPermitSpecialRating);
          }
          else
          {

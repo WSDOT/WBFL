@@ -221,6 +221,10 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\CrackedSectionSolverTest.cpp"
+				>
+			</File>
+			<File
 				RelativePath="GeneralSectionSolverTest.cpp"
 				>
 				<FileConfiguration
@@ -557,6 +561,10 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
+			<File
+				RelativePath=".\CrackedSectionSolverTest.h"
+				>
+			</File>
 			<File
 				RelativePath="GeneralSectionSolverTest.h"
 				>

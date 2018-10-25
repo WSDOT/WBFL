@@ -61,6 +61,7 @@
 
 extern CComModule _Module;
 #include <atlcom.h>
+#include <afxwin.h>
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.

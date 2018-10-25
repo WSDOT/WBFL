@@ -35,8 +35,10 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 // live load names. Note that this sequence must match the enums in LiveLoadModelType
-static const int NUM_LLM=6;
-static const char* LL_NAMES[]={"Deflection","Design","Pedestrian","Fatigue","Permit","Special"};
+static const char* LL_NAMES[]={"Deflection","Design","Pedestrian","Fatigue","Permit","Special",
+"LegalRoutineRating","LegalSpecialRating","PermitRoutineRating","PermitSpecialRating"};
+
+static const int NUM_LLM = sizeof(LL_NAMES)/sizeof(const char*);
 
 /////////////////////////////////////////////////////////////////////////////
 // CLiveLoad
@@ -57,7 +59,7 @@ STDMETHODIMP CLiveLoad::InterfaceSupportsErrorInfo(REFIID riid)
 
 CLiveLoad::CLiveLoad()
 {
-   for (int i=0; i<6; i++)
+   for (int i=0; i<NUM_LLM; i++)
       m_Cookies[i]=0;
 }
 
@@ -191,6 +193,46 @@ STDMETHODIMP CLiveLoad::get_Pedestrian(ILiveLoadModel **pVal)
 STDMETHODIMP CLiveLoad::putref_Pedestrian(ILiveLoadModel *newVal)
 {
    return PutLiveLoadModel(lltPedestrian, newVal);
+}
+
+STDMETHODIMP CLiveLoad::get_LegalRoutineRating(ILiveLoadModel* *pVal)
+{
+   return m_Models[lltLegalRoutineRating].CopyTo(pVal);
+}
+
+STDMETHODIMP CLiveLoad::putref_LegalRoutineRating(ILiveLoadModel* newVal)
+{
+   return PutLiveLoadModel(lltLegalRoutineRating,newVal);
+}
+
+STDMETHODIMP CLiveLoad::get_LegalSpecialRating(ILiveLoadModel* *pVal)
+{
+   return m_Models[lltLegalSpecialRating].CopyTo(pVal);
+}
+
+STDMETHODIMP CLiveLoad::putref_LegalSpecialRating(ILiveLoadModel* newVal)
+{
+   return PutLiveLoadModel(lltLegalSpecialRating,newVal);
+}
+
+STDMETHODIMP CLiveLoad::get_PermitRoutineRating(ILiveLoadModel* *pVal)
+{
+   return m_Models[lltPermitRoutineRating].CopyTo(pVal);
+}
+
+STDMETHODIMP CLiveLoad::putref_PermitRoutineRating(ILiveLoadModel* newVal)
+{
+   return PutLiveLoadModel(lltPermitRoutineRating,newVal);
+}
+
+STDMETHODIMP CLiveLoad::get_PermitSpecialRating(ILiveLoadModel* *pVal)
+{
+   return m_Models[lltPermitSpecialRating].CopyTo(pVal);
+}
+
+STDMETHODIMP CLiveLoad::putref_PermitSpecialRating(ILiveLoadModel* newVal)
+{
+   return PutLiveLoadModel(lltPermitSpecialRating,newVal);
 }
 
 STDMETHODIMP CLiveLoad::Clear()

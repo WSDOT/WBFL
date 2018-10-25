@@ -44,6 +44,7 @@ CDisplayObjectDefaultImpl::CDisplayObjectDefaultImpl()
    m_pParent = 0;
    m_strToolTipText = "";
    m_MaxToolTipWidth = -1; // use default width
+   m_ToolTipDisplayTime = -1; // use default duration
    m_bSelected = FALSE;
    m_pDispList = 0;
 
@@ -513,6 +514,16 @@ void CDisplayObjectDefaultImpl::Do_SetMaxTipWidth(long maxWidth)
 long CDisplayObjectDefaultImpl::Do_GetMaxTipWidth()
 {
    return m_MaxToolTipWidth;
+}
+
+void CDisplayObjectDefaultImpl::Do_SetTipDisplayTime(long iTime)
+{
+   m_ToolTipDisplayTime = iTime;
+}
+
+long CDisplayObjectDefaultImpl::Do_GetTipDisplayTime()
+{
+   return m_ToolTipDisplayTime;
 }
 
 void CDisplayObjectDefaultImpl::Do_RegisterEventSink(iDisplayObjectEvents* pEventSink)

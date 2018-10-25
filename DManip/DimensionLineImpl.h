@@ -135,6 +135,8 @@ END_COM_MAP()
    STDMETHOD_(CString,GetToolTipText)();
    STDMETHOD_(void,SetMaxTipWidth)(long maxWidth);
    STDMETHOD_(long,GetMaxTipWidth)();
+   STDMETHOD_(void,SetTipDisplayTime)(long iTime);
+   STDMETHOD_(long,GetTipDisplayTime)();
 
    // Event Sink
    STDMETHOD_(void,RegisterEventSink)(iDisplayObjectEvents* pEventSink)

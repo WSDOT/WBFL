@@ -59,6 +59,8 @@
 #include <Lrfd\Utility.h>
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\VersionMgrListener.h>
+#include <Lrfd\LRFRVersionMgr.h>
+#include <Lrfd\LRFRVersionMgrListener.h>
 #include <Lrfd\CreepCoefficient.h>
 #include <Lrfd\CreepCoefficient2005.h>
 #include <Lrfd\XCreepCoefficient.h>
