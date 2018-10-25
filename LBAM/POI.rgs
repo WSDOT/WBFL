@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAM.POI.1 = s 'POI Class'
+	{
+		CLSID = s '{E6ECB21C-881C-11D5-B043-00105A9AF985}'
+	}
+	WBFLLBAM.POI = s 'POI Class'
+	{
+		CLSID = s '{E6ECB21C-881C-11D5-B043-00105A9AF985}'
+		CurVer = s 'WBFLLBAM.POI.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {E6ECB21C-881C-11D5-B043-00105A9AF985} = s 'POI Class'
+		{
+			ProgID = s 'WBFLLBAM.POI.1'
+			VersionIndependentProgID = s 'WBFLLBAM.POI'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{A60E8518-3A65-11D5-AFE5-00105A9AF985}'
+		}
+	}
+}

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAM.Span.1 = s 'Span Class'
+	{
+		CLSID = s '{BA6F5316-85BD-11D5-B040-00105A9AF985}'
+	}
+	WBFLLBAM.Span = s 'Span Class'
+	{
+		CLSID = s '{BA6F5316-85BD-11D5-B040-00105A9AF985}'
+		CurVer = s 'WBFLLBAM.Span.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {BA6F5316-85BD-11D5-B040-00105A9AF985} = s 'Span Class'
+		{
+			ProgID = s 'WBFLLBAM.Span.1'
+			VersionIndependentProgID = s 'WBFLLBAM.Span'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{A60E8518-3A65-11D5-AFE5-00105A9AF985}'
+		}
+	}
+}

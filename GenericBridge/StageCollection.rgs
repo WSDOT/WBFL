@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.StageCollection.1 = s 'StageCollection Class'
+	{
+		CLSID = s '{E88705F5-072E-4320-A5FE-92A92A7B02B9}'
+	}
+	WBFLGenericBridge.StageCollection = s 'StageCollection Class'
+	{
+		CLSID = s '{E88705F5-072E-4320-A5FE-92A92A7B02B9}'
+		CurVer = s 'WBFLGenericBridge.StageCollection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {E88705F5-072E-4320-A5FE-92A92A7B02B9} = s 'StageCollection Class'
+		{
+			ProgID = s 'WBFLGenericBridge.StageCollection.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.StageCollection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

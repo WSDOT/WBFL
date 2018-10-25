@@ -1,0 +1,26 @@
+HKCR
+{
+	Geometry.GeomOp.1 = s 'GeomOp Class'
+	{
+		CLSID = s '{1114EB22-FE2E-11D2-8CDF-8AFA61D12734}'
+	}
+	Geometry.GeomOp = s 'GeomOp Class'
+	{
+		CLSID = s '{1114EB22-FE2E-11D2-8CDF-8AFA61D12734}'
+		CurVer = s 'Geometry.GeomOp.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {1114EB22-FE2E-11D2-8CDF-8AFA61D12734} = s 'GeomOp Class'
+		{
+			ProgID = s 'Geometry.GeomOp.1'
+			VersionIndependentProgID = s 'Geometry.GeomOp'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

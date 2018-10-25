@@ -1,0 +1,2775 @@
+<html>
+<!-- Sitemap 1.0 -->
+<object type="text/site properties">
+  <param name="SiteType" value="toc">
+  <param name="Image Width" value="16">
+  <param name="Window Styles" value="0x800007">
+  <param name="ExWindow Styles" value="0x100">
+</object>
+<ul>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Welcome">
+    <param name="Local" value="Welcome.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="License">
+    <param name="Local" value="License_Agreement.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Concepts">
+  </object>
+  <ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Introduction">
+      <param name="Local" value="Concepts\Introduction.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Object Model">
+      <param name="Local" value="Concepts\Object_Model.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Offsets">
+      <param name="Local" value="Concepts\Offsets.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Angles, Directions and Stations">
+      <param name="Local" value="Concepts\Directions_and_Angles.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Collections and Enumerators">
+      <param name="Local" value="Concepts\Collections_and_Enumerators.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Factories">
+      <param name="Local" value="Concepts\Factories.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Units">
+      <param name="Local" value="Concepts\Units.htm">
+    </object>
+    </ul>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Objects">
+  </object>
+  <ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Alignment">
+      <param name="Local" value="Objects\Alignment\Alignment_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="Objects\Path\Count_Property_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="Objects\Path\Item_Property_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Profile">
+          <param name="Local" value="Objects\Path\Profile_Property_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RefStation">
+          <param name="Local" value="Objects\Alignment\RefStation_Property_(Alignment_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Add">
+          <param name="Local" value="Objects\Path\Add_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddEx">
+          <param name="Local" value="Objects\Path\AddEx_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Bearing">
+          <param name="Local" value="Objects\Alignment\Bearing_Method_(Alignment_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="Objects\Path\Clear_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\Path\Clone_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Insert">
+          <param name="Local" value="Objects\Path\Insert_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="InsertEx">
+          <param name="Local" value="Objects\Path\InsertEx_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LocatePoint">
+          <param name="Local" value="Objects\Alignment\LocatePoint_Method_(Alignment_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Normal">
+          <param name="Local" value="Objects\Alignment\Normal_Method_(Alignment_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Offset">
+          <param name="Local" value="Objects\Alignment\Offset_Method_(Alignment_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ProjectPoint">
+          <param name="Local" value="Objects\Path\ProjectPoint_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Remove">
+          <param name="Local" value="Objects\Path\Remove_Method_(Path_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPathChanged">
+          <param name="Local" value="Objects\Path\OnPathChanged_Event_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnProfileChanged">
+          <param name="Local" value="Objects\Path\OnProfileChanged_Event_(Path_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Restricted Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="_EnumPathElements">
+          <param name="Local" value="Objects\Path\_EnumPathElements_Property_(Path_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="AlignmentFactory">
+      <param name="Local" value="Objects\AlignmentFactory\AlignmentFactory_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CreatePath">
+          <param name="Local" value="Objects\AlignmentFactory\CreatePath_Method_(AlignmentFactory_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Angle">
+      <param name="Local" value="Objects\Angle\Angle_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Degree">
+          <param name="Local" value="Objects\Angle\Degree_Property_(Angle_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Minute">
+          <param name="Local" value="Objects\Angle\Minute_Property_(Angle_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Second">
+          <param name="Local" value="Objects\Angle\Second_Property_(Angle_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Value">
+          <param name="Local" value="Objects\Angle\Value_Property_(Angle_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\Angle\Clone_Method_(Angle_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="FromDMS">
+          <param name="Local" value="Objects\Angle\FromDMS_Method_(Angle_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="FromString">
+          <param name="Local" value="Objects\Angle\FromString_Method_(Angle_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Normalize">
+          <param name="Local" value="Objects\Angle\Normalize_Method_(Angle_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Increment">
+          <param name="Local" value="Objects\Angle\Increment_Method_(Angle_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="IncrementBy">
+          <param name="Local" value="Objects\Angle\IncrementBy_Method_(Angle_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="AngleDisplayUnitFormatter">
+      <param name="Local" value="Objects\AngleDisplayUnitFormatter\AngleDisplayUnitFormatter_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CondensedFormat">
+          <param name="Local" value="Objects\AngleDisplayUnitFormatter\CondensedFormat_Property_(AngleDisplayUnitFormatter_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Justification">
+          <param name="Local" value="Objects\AngleDisplayUnitFormatter\Justification_Property_(AngleDisplayUnitFormatter_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Notation">
+          <param name="Local" value="Objects\AngleDisplayUnitFormatter\Notation_Property_(AngleDisplayUnitFormatter_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Precision">
+          <param name="Local" value="Objects\AngleDisplayUnitFormatter\Precision_Property_(AngleDisplayUnitFormatter_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Signed">
+          <param name="Local" value="Objects\AngleDisplayUnitFormatter\Signed_Property_(AngleDisplayUnitFormatter_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="UsesTag">
+          <param name="Local" value="Objects\AngleDisplayUnitFormatter\UsesTag_Property_(AngleDisplayUnitFormatter_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Width">
+          <param name="Local" value="Objects\AngleDisplayUnitFormatter\Width_Property_(AngleDisplayUnitFormatter_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ZeroTolerance">
+          <param name="Local" value="Objects\AngleDisplayUnitFormatter\ZeroTolerance_Property_(AngleDisplayUnitFormatter_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Format">
+          <param name="Local" value="Objects\AngleDisplayUnitFormatter\Format_Method_(AngleDisplayUnitFormatter_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="FormatSpecifiers">
+          <param name="Local" value="Objects\AngleDisplayUnitFormatter\FormatSpecifiers_Method_(AngleDisplayUnitFormatter_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnFormatChanged">
+          <param name="Local" value="Objects\AngleDisplayUnitFormatter\OnFormatChanged_Event_(AngleDisplayUnitFormatter_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="CogoEngine">
+      <param name="Local" value="Objects\CogoEngine\CogoEngine_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Divide">
+          <param name="Local" value="Objects\CogoEngine\Divide_Property_(CogoEngine_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Intersect">
+          <param name="Local" value="Objects\CogoEngine\Intersect_Property_(CogoEngine_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LineSegmentFactory">
+          <param name="Local" value="Objects\CogoEngine\LineSegmentFactory_Property_(CogoEngine_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Locate">
+          <param name="Local" value="Objects\CogoEngine\Locate_Property_(CogoEngine_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Measure">
+          <param name="Local" value="Objects\CogoEngine\Measure_Property_(CogoEngine_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PointFactory">
+          <param name="Local" value="Objects\CogoEngine\PointFactory_Property_(CogoEngine_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Property">
+          <param name="Local" value="Objects\CogoEngine\Project_Property_(CogoEngine_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Tanget">
+          <param name="Local" value="Objects\CogoEngine\Tangent_Property_(CogoEngine_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="CogoModel">
+      <param name="Local" value="Objects\CogoModel\CogoModel_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AlignmentFactory">
+          <param name="Local" value="Objects\CogoModel\AlignmentFactory_Property_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Alignments">
+          <param name="Local" value="Objects\CogoModel\Alignments_Property_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Divide">
+          <param name="Local" value="Objects\CogoModel\Divide_Property_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="HorzCurveFactory">
+          <param name="Local" value="Objects\CogoModel\HorzCurveFactory_Property_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="HorzCurves">
+          <param name="Local" value="Objects\CogoModel\HorzCurves_Property_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Intersect">
+          <param name="Local" value="Objects\CogoModel\Intersect_Property_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LineSegmentFactory">
+          <param name="Local" value="Objects\CogoModel\LineSegmentFactory_Property_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LineSegments">
+          <param name="Local" value="Objects\CogoModel\LineSegments_Property_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Locate">
+          <param name="Local" value="Objects\CogoModel\Locate_Property_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Measure">
+          <param name="Local" value="Objects\CogoModel\Measure_Property_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PathFactory">
+          <param name="Local" value="Objects\CogoModel\PathFactory_Property_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Paths">
+          <param name="Local" value="Objects\CogoModel\Paths_Property_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PointFactory">
+          <param name="Local" value="Objects\CogoModel\PointFactory_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Points">
+          <param name="Local" value="Objects\CogoModel\Points_Property_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ProfilePointFactory">
+          <param name="Local" value="Objects\CogoModel\ProfilePointFactory_Property_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ProfilePoints">
+          <param name="Local" value="Objects\CogoModel\ProfilePoints_Property_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Project">
+          <param name="Local" value="Objects\CogoModel\Project_Property_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Tangent">
+          <param name="Local" value="Objects\CogoModel\Tangent_Property_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="VertCurveFactory">
+          <param name="Local" value="Objects\CogoModel\VertCurveFactory_Property_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="VertCurves">
+          <param name="Local" value="Objects\CogoModel\VertCurves_Property_(CogoModel_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="Objects\CogoModel\Clear_Method_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\CogoModel\Clone_Method_(CogoModel_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnAlignmentAdded">
+          <param name="Local" value="Objects\CogoModel\OnAlignmentAdded_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnAlignmentChanged">
+          <param name="Local" value="Objects\CogoModel\OnAlignmentChanged_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnAlignmentRemoved">
+          <param name="Local" value="Objects\CogoModel\OnAlignmentRemoved_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnAlignmentsCleared">
+          <param name="Local" value="Objects\CogoModel\OnAlignmentsCleared_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnHorzCurveAdded">
+          <param name="Local" value="Objects\CogoModel\OnHorzCurveAdded_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnHorzCurveChanged">
+          <param name="Local" value="Objects\CogoModel\OnHorzCurveChanged_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnHorzCurveRemoved">
+          <param name="Local" value="Objects\CogoModel\OnHorzCurveRemoved_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnHorzCurvesCleared">
+          <param name="Local" value="Objects\CogoModel\OnHorzCurvesCleared_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnLineSegmentAdded">
+          <param name="Local" value="Objects\CogoModel\OnLineSegmentAdded_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnLineSegmentChanged">
+          <param name="Local" value="Objects\CogoModel\OnLineSegmentChanged_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnLineSegmentRemoved">
+          <param name="Local" value="Objects\CogoModel\OnLineSegmentRemoved_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnLineSegmentsCleared">
+          <param name="Local" value="Objects\CogoModel\OnLineSegmentsCleared_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPathAdded">
+          <param name="Local" value="Objects\CogoModel\OnPathAdded_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPathChanged">
+          <param name="Local" value="Objects\CogoModel\OnPathChanged_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPathRemoved">
+          <param name="Local" value="Objects\CogoModel\OnPathRemoved_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPathsCleared">
+          <param name="Local" value="Objects\CogoModel\OnPathsCleared_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPointAdded">
+          <param name="Local" value="Objects\CogoModel\OnPointAdded_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPointChanged">
+          <param name="Local" value="Objects\CogoModel\OnPointChanged_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPointRemoved">
+          <param name="Local" value="Objects\CogoModel\OnPointRemoved_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPointsCleared">
+          <param name="Local" value="Objects\CogoModel\OnPointsCleared_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnProfileChanged">
+          <param name="Local" value="Objects\CogoModel\OnProfileChanged_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnProfilePointAdded">
+          <param name="Local" value="Objects\CogoModel\OnProfilePointAdded_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnProfilePointChanged">
+          <param name="Local" value="Objects\CogoModel\OnProfilePointChanged_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnProfilePointRemoved">
+          <param name="Local" value="Objects\CogoModel\OnProfilePointRemoved_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnProfilePointsCleared">
+          <param name="Local" value="Objects\CogoModel\OnProfilePointsCleared_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnVertCurveAdded">
+          <param name="Local" value="Objects\CogoModel\OnVertCurveAdded_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnVertCurveChanged">
+          <param name="Local" value="Objects\CogoModel\OnVertCurveChanged_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnVertCurveRemoved">
+          <param name="Local" value="Objects\CogoModel\OnVertCurveRemoved_Event_(CogoModel_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnVertCurvesCleared">
+          <param name="Local" value="Objects\CogoModel\OnVertCurvesCleared_Event_(CogoModel_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="CrossSection">
+      <param name="Local" value="Objects\CrossSection\CrossSection_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CrownPointOffset">
+          <param name="Local" value="Objects\CrossSection\CrownPointOffset_Property_(CrossSection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LeftCrownSlope">
+          <param name="Local" value="Objects\CrossSection\LeftCrownSlope_Property_(CrossSection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RightCrownSlope">
+          <param name="Local" value="Objects\CrossSection\RightCrownSlope_Property_(CrossSection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Station">
+          <param name="Local" value="Objects\CrossSection\Station_Property_(CrossSection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\CrossSection\Clone_Method_(CrossSection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnCrossSectionChanged">
+          <param name="Local" value="Objects\CrossSection\OnCrossSectionChanged_Event_(CrossSection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnCrossSectionMoved">
+          <param name="Local" value="Objects\CrossSection\OnCrossSectionMoved_Event_(CrossSection_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="CrossSectionCollection">
+      <param name="Local" value="Objects\CrossSectionCollection\CrossSectionCollection_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="Objects\CrossSectionCollection\Count_Property_(CrossSectionCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Factory">
+          <param name="Local" value="Objects\CrossSectionCollection\Factory_Property_(CrossSectionCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="Objects\CrossSectionCollection\Item_Property_(CrossSectionCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Add">
+          <param name="Local" value="Objects\CrossSectionCollection\Add_Method_(CrossSectionCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddEx">
+          <param name="Local" value="Objects\CrossSectionCollection\AddEx_Method_(CrossSectionCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="Objects\CrossSectionCollection\Clear_Method_(CrossSectionCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\CrossSectionCollection\Clone_Method_(CrossSectionCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CreateCrossSection">
+          <param name="Local" value="Objects\CrossSectionCollection\CreateCrossSection_Method_(CrossSectionCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CrownSlope">
+          <param name="Local" value="Objects\CrossSectionCollection\CrownSlope_Method_(CrossSectionCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LeftCrownSlope">
+          <param name="Local" value="Objects\CrossSectionCollection\LeftCrownSlope_Method_(CrossSectionCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Remove">
+          <param name="Local" value="Objects\CrossSectionCollection\Remove_Method_(CrossSectionCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RightCrownSlope">
+          <param name="Local" value="Objects\CrossSectionCollection\RightCrownSlope_Method_(CrossSectionCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnCrossSectionAdded">
+          <param name="Local" value="Objects\CrossSectionCollection\OnCrossSectionAdded_Event_(CrossSectionCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnCrossSectionChanged">
+          <param name="Local" value="Objects\CrossSectionCollection\OnCrossSectionChanged_Event_(CrossSectionCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnCrossSectionRemoved">
+          <param name="Local" value="Objects\CrossSectionCollection\OnCrossSectionRemoved_Event_(CrossSectionCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnCrossSectionsCleared">
+          <param name="Local" value="Objects\CrossSectionCollection\OnCrossSectionsCleared_Event_(CrossSectionCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Restricted Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="_EnumCrossSections">
+          <param name="Local" value="Objects\CrossSectionCollection\_EnumCrossSections_Property_(CrossSectionCollection_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="CrossSectionFactory">
+      <param name="Local" value="Objects\CrossSectionFactory\CrossSectionFactory_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CreateCrossSection">
+          <param name="Local" value="Objects\CrossSectionFactory\CreateCrossSection_Method_(CrossSectionFactory_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="CubicSpline">
+      <param name="Local" value="Objects\CubicSpline\CubicSpline_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="EndDirection">
+          <param name="Local" value="Objects\CubicSpline\EndDirection_Property_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="EndPoint">
+          <param name="Local" value="Objects\CubicSpline\EndPoint_Property_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Length">
+          <param name="Local" value="Objects\CubicSpline\Length_Property_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Point">
+          <param name="Local" value="Objects\CubicSpline\Point_Property_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PointCount">
+          <param name="Local" value="Objects\CubicSpline\PointCount_Property_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PointFactory">
+          <param name="Local" value="Objects\CubicSpline\PointFactory_Property_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Points">
+          <param name="Local" value="Objects\CubicSpline\Points_Property_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StartDirection">
+          <param name="Local" value="Objects\CubicSpline\StartDirection_Property_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StartPoint">
+          <param name="Local" value="Objects\CubicSpline\StartPoint_Property_(CubicSpline_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddPoint">
+          <param name="Local" value="Objects\CubicSpline\AddPoint_Method_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddPointEx">
+          <param name="Local" value="Objects\CubicSpline\AddPointEx_Method_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddPoints">
+          <param name="Local" value="Objects\CubicSpline\AddPoints_Method_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Bearing">
+          <param name="Local" value="Objects\CubicSpline\Bearing_Method_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="Objects\CubicSpline\Clear_Method_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\CubicSpline\Clone_Method_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="DistanceFromStart">
+          <param name="Local" value="Objects\CubicSpline\DistanceFromStart_Method_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Evaluate">
+          <param name="Local" value="Objects\CubicSpline\Evaluate_Method_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Intersect">
+          <param name="Local" value="Objects\CubicSpline\Intersect_Method_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Normal">
+          <param name="Local" value="Objects\CubicSpline\Normal_Method_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PointOnSpline">
+          <param name="Local" value="Objects\CubicSpline\PointOnSpline_Method_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ProjectPoint">
+          <param name="Local" value="Objects\CubicSpline\ProjectPoint_Method_(CubicSpline_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Slope">
+          <param name="Local" value="Objects\CubicSpline\Slope_Method_(CubicSpline_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnSplineChanged">
+          <param name="Local" value="Objects\CubicSpline\OnSplineChanged_Event_(CubicSpline_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Direction">
+      <param name="Local" value="Objects\Direction\Direction_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Degree">
+          <param name="Local" value="Objects\Direction\Degree_Property_(Direction_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="EWDirection">
+          <param name="Local" value="Objects\Direction\EWDirection_Property_(Direction_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Minute">
+          <param name="Local" value="Objects\Direction\Minute_Property_(Direction_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="NSDirection">
+          <param name="Local" value="Objects\Direction\NSDirection_Property_(Direction_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Second">
+          <param name="Local" value="Objects\Direction\Second_Property_(Direction_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Value">
+          <param name="Local" value="Objects\Direction\Value_Property_(Direction_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AngleBetween">
+          <param name="Local" value="Objects\Direction\AngleBetween_Method_(Direction_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\Direction\Clone_Method_(Direction_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="FromAzimuth">
+          <param name="Local" value="Objects\Direction\FromAzimuth_Method_(Direction_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="FromDMS">
+          <param name="Local" value="Objects\Direction\FromDMS_Method_(Direction_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="FromString">
+          <param name="Local" value="Objects\Direction\FromString_Method_(Direction_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Increment">
+          <param name="Local" value="Objects\Direction\Increment_Method_(Direction_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="IncrementBy">
+          <param name="Local" value="Objects\Direction\IncrementBy_Method_(Direction_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="DirectionDisplayUnitFormatter">
+      <param name="Local" value="Objects\DirectionDisplayUnitFormatter\DirectionDisplayUnitFormatter_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="BearingFormat">
+          <param name="Local" value="Objects\DirectionDisplayUnitFormatter\BearingFormat_Property_(DirectionDisplayUnitFormatter_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CondensedFormat">
+          <param name="Local" value="Objects\DirectionDisplayUnitFormatter\CondensedFormat_Property_(DirectionDisplayUnitFormatter_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Justification">
+          <param name="Local" value="Objects\DirectionDisplayUnitFormatter\Justification_Property_(DirectionDisplayUnitFormatter_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Notation">
+          <param name="Local" value="Objects\DirectionDisplayUnitFormatter\Notation_Property_(DirectionDisplayUnitFormatter_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Precision">
+          <param name="Local" value="Objects\DirectionDisplayUnitFormatter\Precision_Property_(DirectionDisplayUnitFormatter_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="UsesTag">
+          <param name="Local" value="Objects\DirectionDisplayUnitFormatter\UsesTag_Property_(DirectionDisplayUnitFormatter_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Width">
+          <param name="Local" value="Objects\DirectionDisplayUnitFormatter\Width_Property_(DirectionDisplayUnitFormatter_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ZeroTolerance">
+          <param name="Local" value="Objects\DirectionDisplayUnitFormatter\ZeroTolerance_Property_(DirectionDisplayUnitFormatter_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Format">
+          <param name="Local" value="Objects\DirectionDisplayUnitFormatter\Format_Method_(DirectionDisplayUnitFormatter_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="FormatSpecifiers">
+          <param name="Local" value="Objects\DirectionDisplayUnitFormatter\FormatSpecifiers_Method_(DirectionDisplayUnitFormatter_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnFormatChanged">
+          <param name="Local" value="Objects\DirectionDisplayUnitFormatter\OnFormatChanged_Event_(DirectionDisplayUnitFormatter_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="HorzCurve">
+      <param name="Local" value="Objects\HorzCurve\HorzCurve_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="BkTangentBrg">
+          <param name="Local" value="Objects\HorzCurve\BkTangentBrg_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="BkTangentLength">
+          <param name="Local" value="Objects\HorzCurve\BkTangentLength_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CC">
+          <param name="Local" value="Objects\HorzCurve\CC_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CCC">
+          <param name="Local" value="Objects\HorzCurve\CCC_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Chord">
+          <param name="Local" value="Objects\HorzCurve\Chord_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CircularCurveAngle">
+          <param name="Local" value="Objects\HorzCurve\CircularCurveAngle_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CS">
+          <param name="Local" value="Objects\HorzCurve\CS_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CurveAngle">
+          <param name="Local" value="Objects\HorzCurve\CurveAngle_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CurveBkTangentBrg">
+          <param name="Local" value="Objects\HorzCurve\CurveBkTangentBrg_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CurveFwdTangentBrg">
+          <param name="Local" value="Objects\HorzCurve\CurveFwdTangentBrg_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CurveLength">
+          <param name="Local" value="Objects\HorzCurve\CurveLength_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="DegreeCurvature">
+          <param name="Local" value="Objects\HorzCurve\DegreeCurvature_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="DE">
+          <param name="Local" value="Objects\HorzCurve\DE_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="DF">
+          <param name="Local" value="Objects\HorzCurve\DF_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="DH">
+          <param name="Local" value="Objects\HorzCurve\DH_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Direction">
+          <param name="Local" value="Objects\HorzCurve\Direction_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="External">
+          <param name="Local" value="Objects\HorzCurve\External_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="FwdTangentBrg">
+          <param name="Local" value="Objects\HorzCurve\FwdTangentBrg_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="FwdTangentLength">
+          <param name="Local" value="Objects\HorzCurve\FwdTangentLength_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LongTangent">
+          <param name="Local" value="Objects\HorzCurve\LongTangent_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="MidOrdinate">
+          <param name="Local" value="Objects\HorzCurve\MidOrdinate_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PBT">
+          <param name="Local" value="Objects\HorzCurve\PBT_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PCI">
+          <param name="Local" value="Objects\HorzCurve\PCI_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PFT">
+          <param name="Local" value="Objects\HorzCurve\PFT_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PI">
+          <param name="Local" value="Objects\HorzCurve\PI_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PointFactory">
+          <param name="Local" value="Objects\HorzCurve\PointFactory_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Q">
+          <param name="Local" value="Objects\HorzCurve\Q_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Radius">
+          <param name="Local" value="Objects\HorzCurve\Radius_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SC">
+          <param name="Local" value="Objects\HorzCurve\SC_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ShortTangent">
+          <param name="Local" value="Objects\HorzCurve\ShortTangent_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SPI">
+          <param name="Local" value="Objects\HorzCurve\SPI_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SpiralAngle">
+          <param name="Local" value="Objects\HorzCurve\SpiralAngle_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SpiralChord">
+          <param name="Local" value="Objects\HorzCurve\SpiralChord_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SpiralLength">
+          <param name="Local" value="Objects\HorzCurve\SpiralLength_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ST">
+          <param name="Local" value="Objects\HorzCurve\ST_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Tangent">
+          <param name="Local" value="Objects\HorzCurve\Tangent_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="TotalLength">
+          <param name="Local" value="Objects\HorzCurve\TotalLength_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="T">
+          <param name="Local" value="Objects\HorzCurve\Throw_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="TS">
+          <param name="Local" value="Objects\HorzCurve\TS_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="X">
+          <param name="Local" value="Objects\HorzCurve\X_Property_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Y">
+          <param name="Local" value="Objects\HorzCurve\Y_Property_(HorzCurve_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Bearing">
+          <param name="Local" value="Objects\HorzCurve\Bearing_Method_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\HorzCurve\Clone_Method_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="DistanceFromStart">
+          <param name="Local" value="Objects\HorzCurve\DistanceFromStart_Method_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Intersect">
+          <param name="Local" value="Objects\HorzCurve\Intersect_Method_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Normal">
+          <param name="Local" value="Objects\HorzCurve\Normal_Method_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PointOnCurve">
+          <param name="Local" value="Objects\HorzCurve\PointOnCurve_Method_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ProjectPoint">
+          <param name="Local" value="Objects\HorzCurve\ProjectPoint_Method_(HorzCurve_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnHorzCurveChanged">
+          <param name="Local" value="Objects\HorzCurve\OnHorzCurveChanged_Event_(HorzCurve_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="HorzCurveCollection">
+      <param name="Local" value="Objects\HorzCurveCollection\HorzCurveCollection_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="Objects\HorzCurveCollection\Count_Property_(HorzCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Factory">
+          <param name="Local" value="Objects\HorzCurveCollection\Factory_Property_(HorzCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="Objects\HorzCurveCollection\Item_Property_(HorzCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Add">
+          <param name="Local" value="Objects\HorzCurveCollection\Add_Method_(HorzCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddEx">
+          <param name="Local" value="Objects\HorzCurveCollection\AddEx_Method_(HorzCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="Objects\HorzCurveCollection\Clear_Method_(HorzCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\HorzCurveCollection\Clone_Method_(HorzCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="FindKey">
+          <param name="Local" value="Objects\HorzCurveCollection\FindKey_Method_(HorzCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Key">
+          <param name="Local" value="Objects\HorzCurveCollection\Key_Method_(HorzCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Remove">
+          <param name="Local" value="Objects\HorzCurveCollection\Remove_Method_(HorzCurveCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnHorzCurveAdded">
+          <param name="Local" value="Objects\HorzCurveCollection\OnHorzCurveAdded_Event_(HorzCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnHorzCurveChanged">
+          <param name="Local" value="Objects\HorzCurveCollection\OnHorzCurveChanged_Event_(HorzCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnHorzCurveRemoved">
+          <param name="Local" value="Objects\HorzCurveCollection\OnHorzCurveRemoved_Event_(HorzCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnHorzCurvesCleared">
+          <param name="Local" value="Objects\HorzCurveCollection\OnHorzCurvesCleared_Event_(HorzCurveCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Restricted Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="_EnumHorzCurves">
+          <param name="Local" value="Objects\HorzCurveCollection\_EnumHorzCurves_Property_(HorzCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="_EnumKeys">
+          <param name="Local" value="Objects\HorzCurveCollection\_EnumKeys_Property_(HorzCurveCollection_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="HorzCurveFactory">
+      <param name="Local" value="Objects\HorzCurveFactory\HorzCurveFactory_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CreateHorzCurve">
+          <param name="Local" value="Objects\HorzCurveFactory\CreateHorzCurve_Method_(HorzCurveFactory_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="LineSegmentCollection">
+      <param name="Local" value="Objects\LineSegmentCollection\LineSegmentCollection_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="Objects\LineSegmentCollection\Count_Property_(LineSegmentCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Factory">
+          <param name="Local" value="Objects\LineSegmentCollection\Factory_Property_(LineSegmentCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="Objects\LineSegmentCollection\Item_Property_(LineSegmentCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Add">
+          <param name="Local" value="Objects\LineSegmentCollection\Add_Method_(LineSegmentCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddEx">
+          <param name="Local" value="Objects\LineSegmentCollection\AddEx_Method_(LineSegmentCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="Objects\LineSegmentCollection\Clear_Method_(LineSegmentCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\LineSegmentCollection\Clone_Method_(LineSegmentCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="FindKey">
+          <param name="Local" value="Objects\LineSegmentCollection\FindKey_Method_(LineSegmentCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Key">
+          <param name="Local" value="Objects\LineSegmentCollection\Key_Method_(LineSegmentCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Remove">
+          <param name="Local" value="Objects\LineSegmentCollection\Remove_Method_(LineSegmentCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnLineSegmentAdded">
+          <param name="Local" value="Objects\LineSegmentCollection\OnLineSegmentAdded_Event_(LineSegmentCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnLineSegmentChanged">
+          <param name="Local" value="Objects\LineSegmentCollection\OnLineSegmentChanged_Event_(LineSegmentCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnLineSegmentRemoved">
+          <param name="Local" value="Objects\LineSegmentCollection\OnLineSegmentRemoved_Event_(LineSegmentCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnLineSegmentsCleared">
+          <param name="Local" value="Objects\LineSegmentCollection\OnLineSegmentsCleared_Event_(LineSegmentCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Restricted Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="_EnumKeys">
+          <param name="Local" value="Objects\LineSegmentCollection\_EnumKeys_Property_(LineSegmentCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="_EnumLineSegments">
+          <param name="Local" value="Objects\LineSegmentCollection\_EnumLineSegments_Property_(LineSegmentCollection_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Path">
+      <param name="Local" value="Objects\Path\Path_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="Objects\Path\Count_Property_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="Objects\Path\Item_Property_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Profile">
+          <param name="Local" value="Objects\Path\Profile_Property_(Path_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Add">
+          <param name="Local" value="Objects\Path\Add_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddEx">
+          <param name="Local" value="Objects\Path\AddEx_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Bearing">
+          <param name="Local" value="Objects\Path\Bearing_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="Objects\Path\Clear_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\Path\Clone_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CreateParallelPath">
+          <param name="Local" value="Objects\Path\CreateParallelPath_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Insert">
+          <param name="Local" value="Objects\Path\Insert_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="InsertEx">
+          <param name="Local" value="Objects\Path\InsertEx_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LocatePoint">
+          <param name="Local" value="Objects\Path\LocatePoint_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Move">
+          <param name="Local" value="Objects\Path\Move_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Normal">
+          <param name="Local" value="Objects\Path\Normal_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Offset">
+          <param name="Local" value="Objects\Path\Offset_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ProjectPoint">
+          <param name="Local" value="Objects\Path\ProjectPoint_Method_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Remove">
+          <param name="Local" value="Objects\Path\Remove_Method_(Path_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPathChanged">
+          <param name="Local" value="Objects\Path\OnPathChanged_Event_(Path_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnProfileChanged">
+          <param name="Local" value="Objects\Path\OnProfileChanged_Event_(Path_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Restricted Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="_EnumPathElements Property">
+          <param name="Local" value="Objects\Path\_EnumPathElements_Property_(Path_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="PathCollection">
+      <param name="Local" value="Objects\PathCollection\PathCollection_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="Objects\PathCollection\Count_Property_(PathCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Factory">
+          <param name="Local" value="Objects\PathCollection\Factory_Property_(PathCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="Objects\PathCollection\Item_Property_(PathCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Add">
+          <param name="Local" value="Objects\PathCollection\Add_Method_(PathCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddEx">
+          <param name="Local" value="Objects\PathCollection\AddEx_Method_(PathCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="Objects\PathCollection\Clear_Method_(PathCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\PathCollection\Clone_Method_(PathCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="FindKey">
+          <param name="Local" value="Objects\PathCollection\FindKey_Method_(PathCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Key">
+          <param name="Local" value="Objects\PathCollection\Key_Method_(PathCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Remove">
+          <param name="Local" value="Objects\PathCollection\Remove_Method_(PathCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPathAdded">
+          <param name="Local" value="Objects\PathCollection\OnPathAdded_Event_(PathCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPathChanged">
+          <param name="Local" value="Objects\PathCollection\OnPathChanged_Event_(PathCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPathRemoved">
+          <param name="Local" value="Objects\PathCollection\OnPathRemoved_Event_(PathCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPathsCleared">
+          <param name="Local" value="Objects\PathCollection\OnPathsCleared_Event_(PathCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnProfileChanged">
+          <param name="Local" value="Objects\PathCollection\OnProfileChanged_Event_(PathCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Restricted Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="_EnumPaths">
+          <param name="Local" value="Objects\PathCollection\_EnumPaths_Property_(PathCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="_EnumKeys">
+          <param name="Local" value="Objects\PathCollection\_EnumKeys_Property_(PathCollection_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="PathElement">
+      <param name="Local" value="Objects\PathElement\PathElement_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Type">
+          <param name="Local" value="Objects\PathElement\Type_Property_(PathElement_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Value">
+          <param name="Local" value="Objects\PathElement\Value_Property_(PathElement_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\PathElement\Clone_Method_(PathElement_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPathElementChanged">
+          <param name="Local" value="Objects\PathElement\OnPathElementChanged_Event_(PathElement_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="PathFactory">
+      <param name="Local" value="Objects\PathFactory\PathFactory_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage Property">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CreatePath">
+          <param name="Local" value="Objects\PathFactory\CreatePath_Method_(PathFactory_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="PointCollection">
+      <param name="Local" value="Objects\PointCollection\PointCollection_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="Objects\PointCollection\Count_Property_(PointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Factory">
+          <param name="Local" value="Objects\PointCollection\Factory_Property_(PointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="Objects\PointCollection\Item_Property_(PointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Add">
+          <param name="Local" value="Objects\PointCollection\Add_Method_(PointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddEx">
+          <param name="Local" value="Objects\PointCollection\AddEx_Method_(PointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="Objects\PointCollection\Clear_Method_(PointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\PointCollection\Clone_Method_(PointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="FindKey">
+          <param name="Local" value="Objects\PointCollection\FindKey_Method_(PointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Key">
+          <param name="Local" value="Objects\PointCollection\Key_Method_(PointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Remove">
+          <param name="Local" value="Objects\PointCollection\Remove_Method_(PointCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPointAdded">
+          <param name="Local" value="Objects\PointCollection\OnPointAdded_Event_(PointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPointChanged">
+          <param name="Local" value="Objects\PointCollection\OnPointChanged_Event_(PointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPointRemoved">
+          <param name="Local" value="Objects\PointCollection\OnPointRemoved_Event_(PointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPointsCleared">
+          <param name="Local" value="Objects\PointCollection\OnPointsCleared_Event_(PointCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Restricted Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="_EnumKeys">
+          <param name="Local" value="Objects\PointCollection\_EnumKeys_Property_(PointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="_EnumPoints">
+          <param name="Local" value="Objects\PointCollection\_EnumPoints_Property_(PointCollection_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Profile">
+      <param name="Local" value="Objects\Profile\Profile_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="Objects\Profile\Count_Property_(Profile_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CrossSections">
+          <param name="Local" value="Objects\Profile\CrossSections_Property_(Profile_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="Objects\Profile\Item_Property_(Profile_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Add">
+          <param name="Local" value="Objects\Profile\Add_Method_(Profile_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddEx">
+          <param name="Local" value="Objects\Profile\AddEx_Method_(Profile_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="Objects\Profile\Clear_Method_(Profile_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\Profile\Clone_Method_(Profile_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CrownSlope">
+          <param name="Local" value="Objects\Profile\CrownSlope_Method_(Profile_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Elevation">
+          <param name="Local" value="Objects\Profile\Elevation_Method_(Profile_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Grade">
+          <param name="Local" value="Objects\Profile\Grade_Method_(Profile_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LeftCrownSlope">
+          <param name="Local" value="Objects\Profile\LeftCrownSlope_Method_(Profile_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Remove">
+          <param name="Local" value="Objects\Profile\Remove_Method_(Profile_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RightCrownSlope">
+          <param name="Local" value="Objects\Profile\RightCrownSlope_Method_(Profile_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnProfileChanged">
+          <param name="Local" value="Objects\Profile\OnProfileChanged_Event_(Profile_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Restricted Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="_EnumProfileElements">
+          <param name="Local" value="Objects\Profile\_EnumProfileElements_Property_(Profile_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="ProfileElement">
+      <param name="Local" value="Objects\ProfileElement\ProfileElement_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Type">
+          <param name="Local" value="Objects\ProfileElement\Type_Property_(ProfileElement_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Value">
+          <param name="Local" value="Objects\ProfileElement\Value_Property_(ProfileElement_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\ProfileElement\Clone_Method_(ProfileElement_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnProfileElementChanged">
+          <param name="Local" value="Objects\ProfileElement\OnProfileElementChanged_Event_(Profile_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="ProfilePoint">
+      <param name="Local" value="Objects\ProfilePoint\ProfilePoint_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Elevation">
+          <param name="Local" value="Objects\ProfilePoint\Elevation_Property_(ProfilePoint_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Station">
+          <param name="Local" value="Objects\ProfilePoint\Station_Property_(ProfilePoint_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\ProfilePoint\Clone_Method_(ProfilePoint_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnProfilePointChanged">
+          <param name="Local" value="Objects\ProfilePoint\OnProfilePointChanged_Event_(ProfilePoint_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="ProfilePointCollection">
+      <param name="Local" value="Objects\ProfilePointCollection\ProfilePointCollection_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="Objects\ProfilePointCollection\Count_Property_(ProfilePointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Factory">
+          <param name="Local" value="Objects\ProfilePointCollection\Factory_Property_(ProfilePointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="Objects\ProfilePointCollection\Item_Property_(ProfilePointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Add">
+          <param name="Local" value="Objects\ProfilePointCollection\Add_Method_(ProfilePointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddEx">
+          <param name="Local" value="Objects\ProfilePointCollection\AddEx_Method_(ProfilePointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="Objects\ProfilePointCollection\Clear_Method_(ProfilePointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\ProfilePointCollection\Clone_Method_(ProfilePointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="FindKey">
+          <param name="Local" value="Objects\ProfilePointCollection\FindKey_Method_(ProfilePointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Key">
+          <param name="Local" value="Objects\ProfilePointCollection\Key_Method_(ProfilePointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Remove">
+          <param name="Local" value="Objects\ProfilePointCollection\Remove_Method_(ProfilePointCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnProfilePointAdded">
+          <param name="Local" value="Objects\ProfilePointCollection\OnProfilePointAdded_Event_(ProfilePointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnProfilePointChanged">
+          <param name="Local" value="Objects\ProfilePointCollection\OnProfilePointChanged_Event_(ProfilePointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnProfilePointRemoved">
+          <param name="Local" value="Objects\ProfilePointCollection\OnProfilePointRemoved_Event_(ProfilePointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnProfilePointsCleared">
+          <param name="Local" value="Objects\ProfilePointCollection\OnProfilePointsCleared_Event_(ProfilePointCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Restricted Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="_EnumKeys">
+          <param name="Local" value="Objects\ProfilePointCollection\_EnumKeys_Property_(ProfilePointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="_EnumProfilePoints">
+          <param name="Local" value="Objects\ProfilePointCollection\_EnumProfilePoints_Property_(ProfilePointCollection_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="ProfilePointFactory">
+      <param name="Local" value="Objects\ProfilePointFactory\ProfilePointFactory_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CreateProfilePoint">
+          <param name="Local" value="Objects\ProfilePointFactory\CreateProfilePoint_Method_(ProfilePointFactory_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Station">
+      <param name="Local" value="Objects\Station\Station_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Value">
+          <param name="Local" value="Objects\Station\Value_Property_(Station_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AsString">
+          <param name="Local" value="Objects\Station\AsString_Method_(Station_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\Station\Clone_Method_(Station_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="FromString">
+          <param name="Local" value="Objects\Station\FromString_Method_(Station_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnStationChanged">
+          <param name="Local" value="Objects\Station\OnStationChanged_Event_(Station_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="VertCurve">
+      <param name="Local" value="Objects\VertCurve\VertCurve_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="A">
+          <param name="Local" value="Objects\VertCurve\A_Property_(VertCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="BVC">
+          <param name="Local" value="Objects\VertCurve\BVC_Property_(VertCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="E">
+          <param name="Local" value="Objects\VertCurve\E_Property_(VertCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="EntryGrade">
+          <param name="Local" value="Objects\VertCurve\EntryGrade_Property_(VertCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="EVC">
+          <param name="Local" value="Objects\VertCurve\EVC_Property_(VertCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ExitGrade">
+          <param name="Local" value="Objects\VertCurve\ExitGrade_Property_(VertCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="H">
+          <param name="Local" value="Objects\VertCurve\H_Property_(VertCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="HighPoint">
+          <param name="Local" value="Objects\VertCurve\HighPoint_Property_(VertCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="K">
+          <param name="Local" value="Objects\VertCurve\K_Property_(VertCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="L1">
+          <param name="Local" value="Objects\VertCurve\L1_Property_(VertCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="L2">
+          <param name="Local" value="Objects\VertCurve\L2_Property_(VertCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Length">
+          <param name="Local" value="Objects\VertCurve\Length_Property_(VertCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LowPoint">
+          <param name="Local" value="Objects\VertCurve\LowPoint_Property_(VertCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PBG">
+          <param name="Local" value="Objects\VertCurve\PBG_Property_(VertCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PFG">
+          <param name="Local" value="Objects\VertCurve\PFG_Property_(VertCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ProfilePointFactory">
+          <param name="Local" value="Objects\VertCurve\ProfilePointFactory_Property_(VertCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PVI">
+          <param name="Local" value="Objects\VertCurve\PVI_Property_(VertCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\VertCurve\Clone_Method_(VertCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Elevation">
+          <param name="Local" value="Objects\VertCurve\Elevation_Method_(VertCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Grade">
+          <param name="Local" value="Objects\VertCurve\Grade_Method_(VertCurve_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnVertCurveChanged">
+          <param name="Local" value="Objects\VertCurve\OnVertCurveChanged_Event_(VertCurve_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="VertCurveCollection">
+      <param name="Local" value="Objects\VertCurveCollection\VertCurveCollection_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="Objects\VertCurveCollection\Count_Property_(VertCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Factory">
+          <param name="Local" value="Objects\VertCurveCollection\Factory_Property_(VertCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="Objects\VertCurveCollection\Item_Property_(VertCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Add">
+          <param name="Local" value="Objects\VertCurveCollection\Add_Method_(VertCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddEx">
+          <param name="Local" value="Objects\VertCurveCollection\AddEx_Method_(VertCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="Objects\VertCurveCollection\Clear_Method_(VertCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\VertCurveCollection\Clone_Method_(VertCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="FindKey">
+          <param name="Local" value="Objects\VertCurveCollection\FindKey_Method_(VertCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Key">
+          <param name="Local" value="Objects\VertCurveCollection\Key_Method_(VertCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Remove">
+          <param name="Local" value="Objects\VertCurveCollection\Remove_Method_(VertCurveCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnVertCurveAdded">
+          <param name="Local" value="Objects\VertCurveCollection\OnVertCurveAdded_Event_(VertCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnVertCurveChanged">
+          <param name="Local" value="Objects\VertCurveCollection\OnVertCurveChanged_Event_(VertCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnVertCurveRemoved">
+          <param name="Local" value="Objects\VertCurveCollection\OnVertCurveRemoved_Event_(VertCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnVertCurvesCleared">
+          <param name="Local" value="Objects\VertCurveCollection\OnVertCurvesCleared_Event_(VertCurveCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Restricted Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="_EnumKeys">
+          <param name="Local" value="Objects\VertCurveCollection\_EnumKeys_Property_(VertCurveCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="_EnumVertCurves">
+          <param name="Local" value="Objects\VertCurveCollection\_EnumVertCurves_Property_(VertCurveCollection_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="VertCurveFactory">
+      <param name="Local" value="Objects\VertCurveFactory\VertCurveFactory_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StructuredStorage">
+          <param name="Local" value="Objects\StructuredStorage_Property.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CreateVertCurve">
+          <param name="Local" value="Objects\VertCurveFactory\CreateVertCurve_Method_(VertCurveFactory_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    </ul>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Interfaces">
+  </object>
+  <ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="IDivide">
+      <param name="Local" value="Interfaces\IDivide\IDivide_Interface.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Arc">
+          <param name="Local" value="Interfaces\IDivide\Arc_Method_(IDivide_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="BetweenPoints">
+          <param name="Local" value="Interfaces\IDivide\BetweenPoints_Method_(IDivide_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="HorzCurve">
+          <param name="Local" value="Interfaces\IDivide\HorzCurve_Method_(IDivide_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LineSegment">
+          <param name="Local" value="Interfaces\IDivide\LineSegment_Method_(IDivide_Interface).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="IDivide2">
+      <param name="Local" value="Interfaces\IDivide2\IDivide2_Interface.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Arc">
+          <param name="Local" value="Interfaces\IDivide2\Arc_Method_(IDivide2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="BetweenPoints">
+          <param name="Local" value="Interfaces\IDivide2\BetweenPoints_Method_(IDivide2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="HorzCurve">
+          <param name="Local" value="Interfaces\IDivide2\HorzCurve_Method_(IDivide2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LineSegment">
+          <param name="Local" value="Interfaces\IDivide2\LineSegment_Method_(IDivide2_Interface).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="IIntersect">
+      <param name="Local" value="Interfaces\IIntersect\IIntersect_Interface.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="BearingCircle">
+          <param name="Local" value="Interfaces\IIntersect\BearingCircle_Method_(IIntersect_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Bearings">
+          <param name="Local" value="Interfaces\IIntersect\Bearings_Method_(IIntersect_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Circles">
+          <param name="Local" value="Interfaces\IIntersect\Circles_Method_(IIntersect_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LineByPointsCircle">
+          <param name="Local" value="Interfaces\IIntersect\LineByPointsCircle_Method_(IIntersect_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Lines">
+          <param name="Local" value="Interfaces\IIntersect\Lines_Method_(IIntersect_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LinesByPoints">
+          <param name="Local" value="Interfaces\IIntersect\LinesByPoint_Method_(IIntersect_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LineSegmentCircle">
+          <param name="Local" value="Interfaces\IIntersect\LineSegmentCircle_Method_(IIntersect_Interface).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Intersect2">
+      <param name="Local" value="Interfaces\IIntersect2\IIntersect2_Interface.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="BearingCircle">
+          <param name="Local" value="Interfaces\IIntersect2\BearingCircle_Method_(IIntersect2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Bearings">
+          <param name="Local" value="Interfaces\IIntersect2\Bearings_Method_(IIntersect2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Circles">
+          <param name="Local" value="Interfaces\IIntersect2\Circles_Method_(IIntersect2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LineByPointsCircle">
+          <param name="Local" value="Interfaces\IIntersect2\LineByPointsCircle_Method_(IIntersect2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Lines">
+          <param name="Local" value="Interfaces\IIntersect2\Lines_Method_(IIntersect2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LinesByPoints">
+          <param name="Local" value="Interfaces\IIntersect2\LinesByPoints_Method_(IIntersect2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LineSegmentCircle">
+          <param name="Local" value="Interfaces\IIntersect2\LineSegmentCircle_Method_(IIntersect2_Interface).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="ILocate">
+      <param name="Local" value="Interfaces\ILocate\ILocate_Interface.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ByDistAngle">
+          <param name="Local" value="Interfaces\ILocate\ByDistAngle_Method_(ILocate_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ByDistDefAngle">
+          <param name="Local" value="Interfaces\ILocate\ByDistDefAngle_Method_(ILocate_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ByDistDir">
+          <param name="Local" value="Interfaces\ILocate\ByDistDir_Method_(ILocate_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ParallelLineByPoints">
+          <param name="Local" value="Interfaces\ILocate\ParallelLineByPoints_Method_(ILocate_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ParallelLineSegment">
+          <param name="Local" value="Interfaces\ILocate\ParallelLineSegment_Method_(ILocate_Method).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PointOnLine">
+          <param name="Local" value="Interfaces\ILocate\PointOnLine_Method_(ILocate_Interface).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="ILocate2">
+      <param name="Local" value="Interfaces\ILocate2\ILocate2_Interface.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ByDistAngle">
+          <param name="Local" value="Interfaces\ILocate2\ByDistAngle_Method_(ILocate2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ByDistDefAngle">
+          <param name="Local" value="Interfaces\ILocate2\ByDistDefAngle_Method_(ILocate2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ByDistDir">
+          <param name="Local" value="Interfaces\ILocate2\ByDistDir_Method_(ILocate2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ParallelLinesByPoints">
+          <param name="Local" value="Interfaces\ILocate2\ParallelLinesByPoints_Method_(ILocate2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ParallelLineSegment">
+          <param name="Local" value="Interfaces\ILocate2\ParallelLineSegment_Method_(ILocate2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PointOnLine">
+          <param name="Local" value="Interfaces\ILocate2\PointOnLine_Method_(ILocate2_Interface).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="IMeasure">
+      <param name="Local" value="Interfaces\IMeasure\IMeasure_Interface.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Angle">
+          <param name="Local" value="Interfaces\IMeasure\Angle_Method_(IMeasure_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Area">
+          <param name="Local" value="Interfaces\IMeasure\Area_Method_(IMeasure_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Direction">
+          <param name="Local" value="Interfaces\IMeasure\Direction_Method_(IMeasure_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Distance">
+          <param name="Local" value="Interfaces\IMeasure\Distance_Method_(IMeasure_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Inverse">
+          <param name="Local" value="Interfaces\IMeasure\Inverse_Method_(IMeasure_Interface).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="IMeasure2">
+      <param name="Local" value="Interfaces\IMeasure2\IMeasure2_Interface.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Angle">
+          <param name="Local" value="Interfaces\IMeasure2\Angle_Method_(IMeasure2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Area">
+          <param name="Local" value="Interfaces\IMeasure2\Area_Method_(IMeasure2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Direction">
+          <param name="Local" value="Interfaces\IMeasure2\Direction_Method_(IMeasure2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Distance">
+          <param name="Local" value="Interfaces\IMeasure2\Distance_Method_(IMeasure2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Inverse">
+          <param name="Local" value="Interfaces\IMeasure2\Inverse_Method_(IMeasure2_Interface).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="IProject">
+      <param name="Local" value="Interfaces\IProject\IProject_Interface.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PointOnCurve">
+          <param name="Local" value="Interfaces\IProject\PointOnCurve_Method_(IProject_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PointOnLineByPoints">
+          <param name="Local" value="Interfaces\IProject\PointOnLineByPoints_Method_(IProject_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PointOnLineSegment">
+          <param name="Local" value="Interfaces\IProject\PointOnLineSegment_Method_(IProject_Interface).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="IProject2">
+      <param name="Local" value="Interfaces\IProject2\IProject2_Interface.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PointOnCurve">
+          <param name="Local" value="Interfaces\IProject2\PointOnCurve_Method_(IProject2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PointOnLineByPoints">
+          <param name="Local" value="Interfaces\IProject2\PointOnLineByPoints_Method_(IProject2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PointOnLineSegment">
+          <param name="Local" value="Interfaces\IProject2\PointOnLineSegment_Method_(IProject2_Interface).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="IStructuredStorage2">
+      <param name="Local" value="Interfaces\IStructuredStorage2\IStructuredStorage2_Interface.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="ITangent">
+      <param name="Local" value="Interfaces\ITangent\ITangent_Interface.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Cross">
+          <param name="Local" value="Interfaces\ITangent\Cross_Method_(ITangent_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="External">
+          <param name="Local" value="Interfaces\ITangent\External_Method_(ITangent_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Point">
+          <param name="Local" value="Interfaces\ITangent\Point_Method_(ITangent_Interface).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="ITangent2">
+      <param name="Local" value="Interfaces\ITangent2\ITangent2_Interface.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Cross">
+          <param name="Local" value="Interfaces\ITangent2\Cross_Method_(ITangent2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="External">
+          <param name="Local" value="Interfaces\ITangent2\External_Method_(ITangent2_Interface).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Point">
+          <param name="Local" value="Interfaces\ITangent2\Point_Method_(ITangent2_Interface).htm">
+        </object>
+        </ul>
+      </ul>
+    </ul>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Constants">
+  </object>
+  <ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="CurveDirectionType">
+      <param name="Local" value="Constants\CurveDirectionType.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="DegreeCurvatureType">
+      <param name="Local" value="Constants\DegreeCurvatureType.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="EWDirectionType">
+      <param name="Local" value="Constants\EWDirectionType.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="NSDirectionType">
+      <param name="Local" value="Constants\NSDirectionType.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="PathElementType">
+      <param name="Local" value="Constants\PathElementType.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="ProfileElementType">
+      <param name="Local" value="Constants\ProfileElementType.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="SpiralType">
+      <param name="Local" value="Constants\SpiralType.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="TangentSignType">
+      <param name="Local" value="Constants\TangentSignType.htm">
+    </object>
+    </ul>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Examples">
+    <param name="Local" value="Examples\Examples.htm">
+  </object>
+  <ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Examples">
+      <param name="Local" value="Examples\Examples.htm">
+    </object>
+    </ul>
+</ul>
+</html>

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.Material.1 = s 'Material Class'
+	{
+		CLSID = s '{D3894F80-C95C-4a8b-A839-EAB39D92F196}'
+	}
+	WBFLGenericBridge.Material = s 'Material Class'
+	{
+		CLSID = s '{D3894F80-C95C-4a8b-A839-EAB39D92F196}'
+		CurVer = s 'WBFLGenericBridge.Material.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {D3894F80-C95C-4a8b-A839-EAB39D92F196} = s 'Material Class'
+		{
+			ProgID = s 'WBFLGenericBridge.Material.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.Material'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

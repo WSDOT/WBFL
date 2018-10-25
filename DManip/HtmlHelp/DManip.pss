@@ -1,0 +1,61 @@
+[Target:WebHelp Pro]
+ResultFileName=!SSL!\WebHelp_Pro\DManip.htm
+SSLayoutType=32
+ServerProjectName=DManip
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:WebHelp]
+ResultFileName=!SSL!\WebHelp\DManip.htm
+SSLayoutType=2
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:Microsoft HTML Help]
+ResultFileName=C:\ARP\lib\DManip.chm
+SSLayoutType=1
+CreateProjectTime=15:06, February 09, 2009
+CreateProjectUser=BriceR
+SupportMas_MPJ=1
+ActionID For Generation=1013
+Remove Folder with prompt=1
+ViewFileName=C:\ARP\lib\DManip.chm
+ResultStatus=0
+BuildTimeHi=29985547
+BuildTimeLow=301079088
+Enable Result Dialog=1
+[Target:FlashHelp]
+ResultFileName=!SSL!\FlashHelp\DManip.htm
+SSLayoutType=2
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:Printed Documentation]
+ResultFileName=!SSL!\Printed_Documentation\DManip.doc
+SSLayoutType=7
+[Target:XML Output]
+ResultFileName=!SSL!\XML_Output\DManip.xml
+SSLayoutType=8192
+[PreSingleSource]
+Html Help Project=C:\ARP\WBFL\DManip\HtmlHelp\DManip.hhp
+Table Of Content=C:\ARP\WBFL\DManip\HtmlHelp\DManip.hhc
+Index=C:\ARP\WBFL\DManip\HtmlHelp\DManip_merged$.hhk
+See Also Index=C:\ARP\WBFL\DManip\HtmlHelp\DManip.hha
+Browse Sequence=C:\ARP\WBFL\DManip\HtmlHelp\DManip.brs
+Topic Properties=C:\ARP\WBFL\DManip\HtmlHelp\DManip.trs
+Active Folders=C:\ARP\WBFL\DManip\HtmlHelp\DManip.trf
+Baggage Files=C:\ARP\WBFL\DManip\HtmlHelp\DManip.trb
+Skin List=C:\ARP\WBFL\DManip\HtmlHelp\DManip.trk
+OriginalHhk=C:\ARP\WBFL\DManip\HtmlHelp\DManip.hhk
+Active Layout Names=C:\ARP\WBFL\DManip\HtmlHelp\DManip.trl
+Default Topic=C:\ARP\WBFL\DManip\HtmlHelp\Welcome.htm
+Build Tags0=14552;      
+Build Tags=
+Build Expression=
+Language ID=1033
+Language Name=English
+Language=C:\ARP\WBFL\DManip\HtmlHelp\RoboHHRE.lng
+Stop List=C:\ARP\WBFL\DManip\HtmlHelp\DManip.stp
+[Layout Settings]
+MRULayoutCount=1
+MRULayout0=Microsoft HTML Help]02/09/09]0

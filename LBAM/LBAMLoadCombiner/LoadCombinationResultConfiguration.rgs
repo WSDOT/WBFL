@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAMLoadCombiner.LoadCombinationResultConfiguration.1 = s 'LoadCombinationResultConfiguration Class'
+	{
+		CLSID = s '{947CD836-CB00-470F-BC22-51E989BC2CE2}'
+	}
+	WBFLLBAMLoadCombiner.LoadCombinationResultConfiguration = s 'LoadCombinationResultConfiguration Class'
+	{
+		CLSID = s '{947CD836-CB00-470F-BC22-51E989BC2CE2}'
+		CurVer = s 'WBFLLBAMLoadCombiner.LoadCombinationResultConfiguration.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {947CD836-CB00-470F-BC22-51E989BC2CE2} = s 'LoadCombinationResultConfiguration Class'
+		{
+			ProgID = s 'WBFLLBAMLoadCombiner.LoadCombinationResultConfiguration.1'
+			VersionIndependentProgID = s 'WBFLLBAMLoadCombiner.LoadCombinationResultConfiguration'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{F109AF06-2C48-4503-9780-D4FD8D2674FA}'
+		}
+	}
+}

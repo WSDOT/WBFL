@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rhpml majorversion="1" minorversion="0">
+	<folders>
+		<folder>
+			<name>LBAM_Model</name>
+		</folder>
+		<folder>
+			<name>LBAM_Analysis</name>
+		</folder>
+		<folder>
+			<name>LBAM_LiveLoader</name>
+		</folder>
+		<folder>
+			<name>LBAM_Analysis_Utility</name>
+		</folder>
+		<folder>
+			<name>LBAM_LoadCombiner</name>
+		</folder>
+		<folder>
+			<name>LBAM_Utility</name>
+		</folder>
+	</folders>
+	<topics/>
+</rhpml>

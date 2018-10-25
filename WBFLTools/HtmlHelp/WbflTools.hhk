@@ -1,0 +1,369 @@
+<html>
+<!-- Sitemap 1.0 -->
+<object type="text/site properties">
+  <param name="SiteType" value="index">
+</object>
+<ul>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Mohr's Circle">
+    <param name="Name" value="Mohr's Circle">
+    <param name="Local" value="Mohr's_Circle.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="VT_UI4">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\Property2.htm">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\PropertySave.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="VT_BSTR">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\Property2.htm">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\PropertySave.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="VARIANT_BOOL">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\Property2.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="VT_R8">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\Property2.htm">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\PropertySave.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="VT_I2">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\Property2.htm">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\PropertySave.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Property">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\Property2.htm">
+    <param name="Name" value="Variant had invalid type">
+    <param name="Local" value="StrStorage\Variant_had_invalid_type.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="VT_I4">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\Property2.htm">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\PropertySave.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="VARIANTs">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\Property2.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="VT_BOOL">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\Property2.htm">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\PropertySave.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="VT_UNKNOWN">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\Property2.htm">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\PropertySave.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="VT_UI2">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\Property2.htm">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\PropertySave.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="VT_R4">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\Property2.htm">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\PropertySave.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="VT_DISPATCH">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\Property2.htm">
+    <param name="Name" value="Property">
+    <param name="Local" value="StrStorage\PropertySave.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Error">
+    <param name="Name" value="Error initializing the XML parser">
+    <param name="Local" value="StrStorage\Error_initializing_the_XML_parser.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Internet Explorer">
+    <param name="Name" value="Error initializing the XML parser">
+    <param name="Local" value="StrStorage\Error_initializing_the_XML_parser.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Microsoft XML">
+    <param name="Name" value="Error initializing the XML parser">
+    <param name="Local" value="StrStorage\Error_initializing_the_XML_parser.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Syy">
+    <param name="Name" value="ComputeSyy Method (Mohr Circle Object)">
+    <param name="Local" value="ComputeSyy_Method_(Mohr_Circle_Object).htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Sii Property">
+    <param name="Name" value="Sii Property (Mohr Circle Object)">
+    <param name="Local" value="Sii_Property_(Mohr_Circle_Object).htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="PMohrCircle-&gt;put_Sii">
+    <param name="Name" value="Sii Property (Mohr Circle Object)">
+    <param name="Local" value="Sii_Property_(Mohr_Circle_Object).htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="PMohrCircle-&gt;get_Sii">
+    <param name="Name" value="Sii Property (Mohr Circle Object)">
+    <param name="Local" value="Sii_Property_(Mohr_Circle_Object).htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="EndUnit Method">
+    <param name="Name" value="EndUnit">
+    <param name="Local" value="StrStorage\EndUnit2.htm">
+    <param name="Name" value="EndUnit">
+    <param name="Local" value="StrStorage\EndUnitSave.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Load Method">
+    <param name="Name" value="Load">
+    <param name="Local" value="StrStorage\Load2.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="IStructuredLoad">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Version">
+    <param name="Name" value="Version">
+    <param name="Local" value="StrStorage\Version.htm">
+    <param name="Name" value="Version">
+    <param name="Local" value="StrStorage\VersionSave.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="TopVersion">
+    <param name="Name" value="TopVersion">
+    <param name="Local" value="StrStorage\TopVersionSave.htm">
+    <param name="Name" value="TopVersion">
+    <param name="Local" value="StrStorage\TopVersion.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Sxx">
+    <param name="Name" value="ComputeSxx Method (Mohr Circle Object)">
+    <param name="Local" value="ComputeSxx_Method_(Mohr_Circle_Object).htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="EndOfStorage Method">
+    <param name="Name" value="EndOfStorage">
+    <param name="Local" value="StrStorage\EndOfStorage2.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Terms">
+    <param name="Name" value="License Agreement">
+    <param name="Local" value="AROSL.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Examples">
+    <param name="Name" value="Examples">
+    <param name="Local" value="Examples.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="StructuredLoad2">
+    <param name="Name" value="StructuredLoad2">
+    <param name="Local" value="StrStorage\StructuredLoad2.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Open Method">
+    <param name="Name" value="Open">
+    <param name="Local" value="StrStorage\OpenSave.htm">
+    <param name="Name" value="Open">
+    <param name="Local" value="StrStorage\Open2.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Center Property">
+    <param name="Name" value="Center Property (Mohr Circle Object)">
+    <param name="Local" value="Center_Property_(Mohr_Circle_Object).htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="ShowAgain Property">
+    <param name="Name" value="ShowAgain Property (ARP Notice Object)">
+    <param name="Local" value="ShowAgain_Property_(ARP_Notice_Object).htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Structured Storage Objects">
+    <param name="Name" value="Structured Storage Classes and Interfaces">
+    <param name="Local" value="StrStorage\Structured_Storage_Classes_and_Interfaces.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Invalid type">
+    <param name="Name" value="Variant had invalid type">
+    <param name="Local" value="StrStorage\Variant_had_invalid_type.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Registered">
+    <param name="Name" value="Class is not registered on this computer.">
+    <param name="Local" value="StrStorage\Class_is_not_registered_on_this_computer..htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Radius Property">
+    <param name="Name" value="Radius Property (Mohr Circle Object)">
+    <param name="Local" value="Radius_Property_(Mohr_Circle_Object).htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="BeginUnit Method">
+    <param name="Name" value="BeginUnit">
+    <param name="Local" value="StrStorage\BeginUnit2.htm">
+    <param name="Name" value="BeginUnit">
+    <param name="Local" value="StrStorage\BeginUnitSave.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Sij Property">
+    <param name="Name" value="Sij Property (Mohr Circle Object)">
+    <param name="Local" value="Sij_Property_(Mohr_Circle_Object).htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="PrincipleDirection Property">
+    <param name="Name" value="PrincipleDirection Property (Mohr Cirlce Object)">
+    <param name="Local" value="PrincipleDirection_Property_(Mohr_Cirlce_Object).htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="StructuredSave2">
+    <param name="Name" value="StructuredSave2">
+    <param name="Local" value="StrStorage\StructuredSave2.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Persistable">
+    <param name="Name" value="StructuredSave2">
+    <param name="Local" value="StrStorage\StructuredSave2.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="StructuredSave">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Save Method">
+    <param name="Name" value="Save">
+    <param name="Local" value="StrStorage\Save2.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Invalid file format">
+    <param name="Name" value="Invalid file format">
+    <param name="Local" value="StrStorage\Invalid_file_format.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="IStructuredStorage2">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Problem">
+    <param name="Name" value="Problem writing to file">
+    <param name="Local" value="StrStorage\Problem_writing_to_file.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Writing">
+    <param name="Name" value="Problem writing to file">
+    <param name="Local" value="StrStorage\Problem_writing_to_file.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Close Method">
+    <param name="Name" value="Close">
+    <param name="Local" value="StrStorage\CloseSave.htm">
+    <param name="Name" value="Close">
+    <param name="Local" value="StrStorage\Close.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Tmax Property">
+    <param name="Name" value="Tmax Property (Mohr Circle Object)">
+    <param name="Local" value="Tmax_Property_(Mohr_Circle_Object).htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="EndUnit">
+    <param name="Name" value="EndUnit">
+    <param name="Local" value="StrStorage\EndUnitSave.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="AcceptanceType">
+    <param name="Name" value="AcceptanceType">
+    <param name="Local" value="AcceptanceType.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Support">
+    <param name="Name" value="Com objects must support the IPersist interface">
+    <param name="Local" value="StrStorage\Com_objects_must_support_the_IPersist_interface.htm">
+  </object>
+  <ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="IPersist">
+      <param name="Name" value="Com objects must support the IPersist interface">
+      <param name="Local" value="StrStorage\Com_objects_must_support_the_IPersist_interface.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="IPersist interface">
+      <param name="Name" value="Com objects must support the IPersist interface">
+      <param name="Local" value="StrStorage\Com_objects_must_support_the_IPersist_interface.htm">
+    </object>
+    </ul>
+  <li><object type="text/sitemap">
+    <param name="Name" value="IPersist interface">
+    <param name="Name" value="Com objects must support the IPersist interface">
+    <param name="Local" value="StrStorage\Com_objects_must_support_the_IPersist_interface.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Disclaimer">
+    <param name="Name" value="Disclaimer">
+    <param name="Local" value="Disclaimer.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Smin Property">
+    <param name="Name" value="Smin Property (Mohr Circle Object)">
+    <param name="Local" value="Smin_Property_(Mohr_Circle_Object).htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="BeginUnit">
+    <param name="Name" value="You must define at least one Unit">
+    <param name="Local" value="StrStorage\You_must_define_at_least_one_Unit.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="BeginUnit/EndUnit">
+    <param name="Name" value="You must define at least one Unit">
+    <param name="Local" value="StrStorage\You_must_define_at_least_one_Unit.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="StructuredLoad">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Mohr Circle Equations">
+    <param name="Name" value="Mohr Circle Equations">
+    <param name="Local" value="Mohr_Circle_Equations.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Smax Property">
+    <param name="Name" value="Smax Property (Mohr Circle Object)">
+    <param name="Local" value="Smax_Property_(Mohr_Circle_Object).htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Special Note For Visual Basic Class Authors">
+    <param name="Name" value="Special Notes For Visual Basic Class Authors">
+    <param name="Local" value="StrStorage\Special_Notes_For_Visual_Basic_Class_Authors.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="IStructuredStorage">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="ComputeSxy Method">
+    <param name="Name" value="ComputeSxy Method (Mohr Circle Object)">
+    <param name="Local" value="ComputeSxy_Method_(Mohr_Circle_Object).htm">
+  </object>
+</ul>
+</html>

@@ -1,0 +1,130 @@
+///////////////////////////////////////////////////////////////////////
+// ToolsStorage - Test driver for WBFLTools library
+// Copyright © 2009  Washington State Department of Transportation
+//                   Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the Alternate Route Library Open Source License as 
+// published by the Washington State Department of Transportation,
+// Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful,
+// but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// PURPOSE.  See the Alternate Route Library Open Source License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License
+// along with this program; if not, write to the Washington State
+// Department of Transportation, Bridge and Structures Office,
+// P.O. Box 47340, Olympia, WA 98503, USA or e-mail
+// Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// StorageTest.idl : IDL source for StorageTest.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (StorageTest.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "WBFLTypes.idl";
+//import "WBFLTools.idl";
+
+[
+	uuid(71A9DDC8-55D1-11D5-B005-00105A9AF985),
+	version(1.0),
+	helpstring("StorageTest 1.0 Type Library")
+]
+library STORAGETESTLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+   importlib("WBFLTools.tlb");
+
+	[
+		object,
+		uuid(2930A1A6-55D2-11d5-B005-00105A9AF985),
+		oleautomation,
+		helpstring("IPShape Interface"),
+		pointer_default(unique)
+	]
+	interface IPShape : IUnknown
+	{
+		[propget, helpstring("property X")] HRESULT X([out, retval] Float64 *pVal);
+		[propput, helpstring("property X")] HRESULT X([in] Float64 newVal);
+		[propget, helpstring("property Y")] HRESULT Y([out, retval] Float64 *pVal);
+		[propput, helpstring("property Y")] HRESULT Y([in] Float64 newVal);
+		[propget, helpstring("property IsComposite")] HRESULT IsComposite([out, retval] BOOL *pVal);
+		[propget, helpstring("property Count")] HRESULT Count([out, retval] long *pVal);
+		[propget, helpstring("property Item")] HRESULT Item([in]long index, [out, retval] IPShape* *pVal);
+		[helpstring("method Add")] HRESULT Add(IPShape*);
+	};
+	[
+		object,
+		uuid(3369971F-BA89-41c2-9047-84C1698AD95C),
+		dual,
+		helpstring("IPRectangle Interface"),
+		pointer_default(unique)
+	]
+	interface IPRectangle : IPShape
+	{
+		[propget, helpstring("property Name")] HRESULT Name([out, retval] BSTR *pVal);
+		[propput, helpstring("property Name")] HRESULT Name([in] BSTR newVal);
+	};
+	[
+		object,
+		uuid(29F6E6BF-0FE1-461e-8726-FB15ABF9C812),
+		dual,
+		helpstring("IPCircle Interface"),
+		pointer_default(unique)
+	]
+	interface IPCircle : IPShape
+	{
+		[propget, helpstring("property Diameter")] HRESULT Diameter([out, retval] Float64 *pVal);
+		[propput, helpstring("property Diameter")] HRESULT Diameter([in] Float64 newVal);
+	};
+	[
+		object,
+		uuid(15FFC95E-8857-4e41-AEDE-82434AAF1F5F),
+		dual,
+		helpstring("IPCompositeShape Interface"),
+		pointer_default(unique)
+	]
+	interface IPCompositeShape : IPShape
+	{
+	};
+
+   [
+		uuid(A7DDF82E-7884-4f59-AB4D-F098EE4510A0),
+		helpstring("PRectangle Class")
+	]
+	coclass PRectangle
+	{
+		[default] interface IPRectangle;
+        interface IStructuredStorage2;
+	};
+	[
+		uuid(FEA8093A-88CA-44ff-B3F7-F17A3D69F0A2),
+		helpstring("PCircle Class")
+	]
+	coclass PCircle
+	{
+		[default] interface IPCircle;
+        interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(EDC65DDC-ED4C-41d3-BC4B-5C6515EFB795),
+		helpstring("PCompositeShape Class")
+	]
+	coclass PCompositeShape
+	{
+		[default] interface IPCompositeShape;
+        interface IStructuredStorage2;
+        // interface IPersist;
+	};
+};

@@ -1,0 +1,556 @@
+<HTML>
+<HEAD>
+<META NAME="GENERATOR" Content="Microsoft Visual Studio 6.0">
+<TITLE></TITLE>
+<SCRIPT LANGUAGE=jscript>
+
+function jsArr2Msg(larr)
+{
+  var cnt;
+  cnt = larr.Count;
+  var i, msg;
+  msg  = "<p> Items in vector</p>";
+  msg += "<p>---------------</p>";
+  for (i=0; i<cnt; i++)
+  {
+     msg+="<p>" + larr.Item(i) + "</p>";
+  }
+  
+  return msg;
+}
+
+function jsArr2MsgNp(larr)
+{
+  var cnt;
+  cnt = larr.Count;
+  var i, msg;
+  msg  = "<p>Items in vector</p>";
+  msg += "<p>---------------</p><p>";
+  for (i=0; i<cnt; i++)
+  {
+     msg+= larr.Item(i);
+  }
+  msg += "</p>";
+  
+  return msg;
+}
+
+
+function JScriptTest_onclick() 
+{
+  var larr = new ActiveXObject("WBFLTools.LngArray");
+  larr.Reserve(6);
+  larr.Add(100);
+  larr.Add(101);
+  larr.Add(102);
+  larr.Add(103);
+  larr.Add(104);
+  larr.Add(105);
+  var msg;
+  msg = "<p>JScript Test</p>"
+  var cnt = larr.Count;
+  msg += "<p>Count is " + cnt + "</p>";
+  var i;
+  msg += jsArr2Msg(larr);
+  
+  larr.Insert(4, 111);
+  msg += "<p>After Insert at 4</p>";
+  msg += "<p>Count is " + larr.Count  + "</p>";
+  msg += jsArr2Msg(larr);
+  
+  larr.Remove(2);
+  msg += "<p>After Remove at 2</p>";
+  msg += "<p>Count is " + larr.Count + "</p>";
+  msg += jsArr2Msg(larr);
+  
+  var clone;
+  clone = larr.Clone();
+  msg += "<p>Clone looks like this</p>";
+  msg += "<p>Count is " + clone.Count + "</p>";
+  msg += jsArr2Msg(clone);
+  
+  larr.Clear();
+  msg += "<p>After Clear</p>";
+  msg += "<p>Count is " + larr.Count + "</p>";
+  
+  TheReport.innerHTML=msg;
+}
+
+function JScriptTestDbl_onclick() {
+  var larr = new ActiveXObject("WBFLTools.DblArray");
+  larr.Reserve(6);
+  larr.Add(1.00);
+  larr.Add(1.01);
+  larr.Add(1.02);
+  larr.Add(1.03);
+  larr.Add(1.04);
+  larr.Add(1.05);
+  var msg;
+  msg = "<p>JScript Test</p>"
+  var cnt = larr.Count;
+  msg += "<p>Count is " + cnt + "</p>";
+  var i;
+  msg += jsArr2Msg(larr);
+  
+  larr.Insert(4, 1.11);
+  msg += "<p>After Insert at 4</p>";
+  msg += "<p>Count is " + larr.Count  + "</p>";
+  msg += jsArr2Msg(larr);
+  
+  larr.Remove(2);
+  msg += "<p>After Remove at 2</p>";
+  msg += "<p>Count is " + larr.Count + "</p>";
+  msg += jsArr2Msg(larr);
+  
+  var clone;
+  clone = larr.Clone();
+  msg += "<p>Clone looks like this</p>";
+  msg += "<p>Count is " + clone.Count + "</p>";
+  msg += jsArr2Msg(clone);
+  
+  larr.Clear();
+  msg += "<p>After Clear</p>";
+  msg += "<p>Count is " + larr.Count + "</p>";
+  
+  TheReport.innerHTML=msg;
+}
+
+function JScriptTestBstr_onclick() {
+  var larr = new ActiveXObject("WBFLTools.BstrArray");
+  larr.Reserve(6);
+  larr.Add("The ");
+  larr.Add("quick ");
+  larr.Add("brown ");
+  larr.Add("fox ");
+  larr.Add("jumped ");
+  larr.Add("over ");
+  larr.Add("ther ");
+  larr.Add("lazy ");
+  larr.Add("brown ");
+  larr.Add("dog ");
+  var msg;
+  msg = "<p>JScript Test</p>"
+  var cnt = larr.Count;
+  msg += "<p>Count is " + cnt + "</p>";
+  var i;
+  msg += jsArr2MsgNp(larr);
+  
+  larr.Insert(3, "striped ");
+  msg += "<p>After Insert at 4</p>";
+  msg += "<p>Count is " + larr.Count  + "</p>";
+  msg += jsArr2MsgNp(larr);
+  
+  larr.Remove(2);
+  msg += "<p>After Remove at 2</p>";
+  msg += "<p>Count is " + larr.Count + "</p>";
+  msg += jsArr2MsgNp(larr);
+  
+  var idx;
+  idx = larr.Find("jumped ");
+  msg += "<p>jumped is at " + idx + "</p>";
+  
+  var clone;
+  clone = larr.Clone();
+  msg += "<p>Clone looks like this</p>";
+  msg += "<p>Count is " + clone.Count + "</p>";
+  msg += jsArr2MsgNp(clone);
+  
+  
+  larr.Clear();
+  msg += "<p>After Clear</p>";
+  msg += "<p>Count is " + larr.Count + "</p>";
+  
+  TheReport.innerHTML=msg;
+
+}
+
+function JScriptTestUnk_onclick() {
+
+  var larr = new ActiveXObject("WBFLTools.UnkArray");
+  larr.Reserve(6);
+  var mem1 = new ActiveXObject("Geometry.MohrCircle");
+  var mem2 = new ActiveXObject("WBFLTools.StructuredSave2");
+  var mem3 = new ActiveXObject("WBFLTools.StructuredLoad2");
+  
+  larr.Add(mem1);
+  larr.Add(mem2);
+  larr.Add(mem3);
+  larr.Add(mem3);
+  larr.Add(mem2);
+  
+  var msg;
+  msg = "<p>JScript Test</p>"
+  var cnt = larr.Count;
+  msg += "<p>Count is " + cnt + "</p>";
+  var i;
+  msg += jsArr2Msg(larr);
+  
+  larr.Insert(3, mem1)
+  msg += "<p>After Insert at 4</p>";
+  msg += "<p>Count is " + larr.Count  + "</p>";
+  msg += jsArr2Msg(larr);
+  
+  larr.Remove(2);
+  msg += "<p>After Remove at 2</p>";
+  msg += "<p>Count is " + larr.Count + "</p>";
+  msg += jsArr2Msg(larr);
+  
+  var clone;
+  clone = larr.Clone();
+  msg += "<p>Clone looks like this</p>";
+  msg += "<p>Count is " + clone.Count + "</p>";
+  msg += jsArr2Msg(clone);
+  
+  larr.Clear();
+  msg += "<p>After Clear</p>";
+  msg += "<p>Count is " + larr.Count + "</p>";
+  
+  TheReport.innerHTML=msg;
+  
+}
+
+
+</SCRIPT>
+<SCRIPT LANGUAGE=vbscript>
+
+function VbsArr2Msg(byref larr)
+  dim i
+  dim msg 
+  msg = ""
+  for each i in larr
+     dim msg2
+     msg2 =  "<p>" + CStr(i) + "</p>"
+     msg = msg + msg2
+  next
+
+  VbsArr2Msg = msg
+end function
+
+
+
+function VbsArr2MsgNp(byref larr)
+  dim i
+  dim msg 
+  msg = "<p>"
+  for each i in larr
+     msg = msg + CStr(i)
+  next
+  
+  msg = msg + "</p>"
+
+  VbsArr2MsgNp = msg
+end function
+
+function VBScriptTest_onclick()
+
+  dim larr
+  set  larr = CreateObject("WBFLTools.LngArray")
+  larr.Reserve(6)
+  larr.Add(100)
+  larr.Add(101)
+  larr.Add(102)
+  larr.Add(103)
+  larr.Add(104)
+  larr.Add(105)
+  dim msg
+  msg = "<p>VBScript Test</p>"
+  dim cnt
+  cnt = larr.Count
+  msg = msg + "<p>Count is " + CStr(cnt) + "</p>"
+  msg = msg + "<p>Items in vector</p>"
+  msg = msg + VbsArr2Msg(larr)
+  
+  larr.Insert 4, 111
+  msg = msg + "<p>After Insert at 4</p>"
+  msg = msg + "<p>Count is " + CStr(larr.Count)  + "</p>"
+  msg = msg + VbsArr2Msg(larr)
+  
+  larr.Remove 2
+  msg = msg + "<p>After Remove at 2</p>"
+  msg = msg + "<p>Count is " + CStr(larr.Count) + "</p>"
+  msg = msg + VbsArr2Msg(larr)
+  
+  dim clone
+  set clone = larr.Clone()
+  msg = msg + "<p>Clone looks like this</p>"
+  msg = msg + "<p>Count is " + CStr(clone.Count) + "</p>"
+  msg = msg + VbsArr2Msg(clone)
+  
+  larr.Clear()
+  msg = msg + "<p>After Clear</p>"
+  msg = msg + "<p>Count is " + CStr(larr.Count) + "</p>"
+  
+  TheReport.innerHTML=msg
+
+end function
+
+function VBScriptTestDbl_onclick() 
+
+  dim larr
+  set  larr = CreateObject("WBFLTools.DblArray")
+  larr.Reserve(6)
+  larr.Add(1.00)
+  larr.Add(1.01)
+  larr.Add(1.02)
+  larr.Add(1.03)
+  larr.Add(1.04)
+  larr.Add(1.05)
+  dim msg
+  msg = "<p>VBScript Test</p>"
+  dim cnt
+  cnt = larr.Count
+  msg = msg + "<p>Count is " + CStr(cnt) + "</p>"
+  msg = msg + "<p>Items in vector</p>"
+  msg = msg + VbsArr2Msg(larr)
+  
+  larr.Insert 4, 1.11
+  msg = msg + "<p>After Insert at 4</p>"
+  msg = msg + "<p>Count is " + CStr(larr.Count)  + "</p>"
+  msg = msg + VbsArr2Msg(larr)
+  
+  larr.Remove 2
+  msg = msg + "<p>After Remove at 2</p>"
+  msg = msg + "<p>Count is " + CStr(larr.Count) + "</p>"
+  msg = msg + VbsArr2Msg(larr)
+  
+  dim clone
+  set clone = larr.Clone()
+  msg = msg + "<p>Clone looks like this</p>"
+  msg = msg + "<p>Count is " + CStr(clone.Count) + "</p>"
+  msg = msg + VbsArr2Msg(clone)
+  
+  larr.Clear()
+  msg = msg + "<p>After Clear</p>"
+  msg = msg + "<p>Count is " + CStr(larr.Count) + "</p>"
+  
+  TheReport.innerHTML=msg
+
+end function
+
+function VBScriptTestBstr_onclick()
+
+  dim larr
+  set  larr = CreateObject("WBFLTools.BstrArray")
+  larr.Reserve(6)
+  larr.Add("The ")
+  larr.Add("quick ")
+  larr.Add("brown ")
+  larr.Add("fox ")
+  larr.Add("jumped ")
+  larr.Add("over ")
+  larr.Add("ther ")
+  larr.Add("lazy ")
+  larr.Add("brown ")
+  larr.Add("dog ")
+  dim msg
+  msg = "<p>VBScript Test</p>"
+  dim cnt
+  cnt = larr.Count
+  msg = msg + "<p>Count is " + CStr(cnt) + "</p>"
+  msg = msg + "<p>Items in vector</p>"
+  msg = msg + VbsArr2MsgNp(larr)
+  
+  larr.Insert 3, "striped "
+  msg = msg + "<p>After Insert at 4</p>"
+  msg = msg + "<p>Count is " + CStr(larr.Count)  + "</p>"
+  msg = msg + VbsArr2MsgNp(larr)
+  
+  larr.Remove 2
+  msg = msg + "<p>After Remove at 2</p>"
+  msg = msg + "<p>Count is " + CStr(larr.Count) + "</p>"
+  msg = msg + VbsArr2MsgNp(larr)
+  
+  dim clone
+  set clone = larr.Clone()
+  msg = msg + "<p>Clone looks like this</p>"
+  msg = msg + "<p>Count is " + CStr(clone.Count) + "</p>"
+  msg = msg + VbsArr2MsgNp(clone)
+  
+  larr.Clear()
+  msg = msg + "<p>After Clear</p>"
+  msg = msg + "<p>Count is " + CStr(larr.Count) + "</p>"
+  
+  TheReport.innerHTML=msg
+  
+end function
+
+function VBScriptTestUnk_onclick()
+  dim larr
+  set  larr = CreateObject("WBFLTools.UnkArray")
+  larr.Reserve(6)
+  
+  dim mem1, mem2, mem3
+  set mem1 = CreateObject("Geometry.MohrCircle")
+  set mem2 = CreateObject("WBFLTools.StructuredSave2")
+  set mem3 = CreateObject("WBFLTools.StructuredLoad2")
+  
+  larr.Add(mem1)
+  larr.Add(mem2)
+  larr.Add(mem3)
+  larr.Add(mem3)
+  larr.Add(mem2)
+  
+  dim msg
+  msg = "<p>VBScript Test</p>"
+  dim cnt
+  cnt = larr.Count
+  msg = msg + "<p>Count is " + CStr(cnt) + "</p>"
+  msg = msg + "<p>Items in vector</p>"
+  
+  larr.Insert 3, mem1
+  msg = msg + "<p>After Insert at 4</p>"
+  msg = msg + "<p>Count is " + CStr(larr.Count)  + "</p>"
+  
+  larr.Remove 2
+  msg = msg + "<p>After Remove at 2</p>"
+  msg = msg + "<p>Count is " + CStr(larr.Count) + "</p>"
+  
+  dim clone
+  set clone = larr.Clone()
+  msg = msg + "<p>Clone looks like this</p>"
+  msg = msg + "<p>Count is " + CStr(clone.Count) + "</p>"
+  
+  larr.Clear()
+  msg = msg + "<p>After Clear</p>"
+  msg = msg + "<p>Count is " + CStr(larr.Count) + "</p>"
+  
+  TheReport.innerHTML=msg
+
+end function
+
+
+</SCRIPT>
+<SCRIPT ID=clientEventHandlersJS LANGUAGE=javascript>
+<!--
+
+function jvaArr2Msg(larr)
+{
+  var cnt;
+  cnt = larr.Count;
+  var i, msg;
+  msg  = "<p>Items in vector</p>";
+  msg += "<p>---------------</p>";
+  for (i=0; i<cnt; i++)
+  {
+     msg+="<p>" + larr.Item(i) + "</p>";
+  }
+  
+  return msg;
+}
+
+
+function JavaScriptTest_onclick() {
+  var larr = new ActiveXObject("WBFLTools.LngArray");
+  larr.Reserve(6);
+  larr.Add(100);
+  larr.Add(101);
+  larr.Add(102);
+  larr.Add(103);
+  larr.Add(104);
+  larr.Add(105);
+  var msg;
+  msg = "<p>JavaScript Test</p>"
+  var cnt = larr.Count;
+  msg += "<p>Count is " + cnt + "</p>";
+  var i;
+  msg += jvaArr2Msg(larr);
+  
+  larr.Insert(4, 111);
+  msg += "<p>After Insert at 4</p>";
+  msg += "<p>Count is " + larr.Count  + "</p>";
+  msg += jvaArr2Msg(larr);
+  
+  larr.Remove(2);
+  msg += "<p>After Remove at 2</p>";
+  msg += "<p>Count is " + larr.Count + "</p>";
+  msg += jvaArr2Msg(larr);
+  
+  var clone;
+  clone = larr.Clone();
+  msg += "<p>Clone looks like this</p>";
+  msg += "<p>Count is " + clone.Count + "</p>";
+  msg += jsArr2Msg(clone);
+  
+  larr.Clear();
+  msg += "<p>After Clear</p>";
+  msg += "<p>Count is " + larr.Count + "</p>";
+  
+  TheReport.innerHTML=msg;
+}
+
+function JavaScriptTestDbl_onclick() {
+  var larr = new ActiveXObject("WBFLTools.DBLArray");
+  larr.Reserve(6);
+  larr.Add(1.00);
+  larr.Add(1.01);
+  larr.Add(1.02);
+  larr.Add(1.03);
+  larr.Add(1.04);
+  larr.Add(1.05);
+  var msg;
+  msg = "<p>JavaScript Test</p>"
+  var cnt = larr.Count;
+  msg += "<p>Count is " + cnt + "</p>";
+  var i;
+  msg += jvaArr2Msg(larr);
+  
+  larr.Insert(4, 1.11);
+  msg += "<p>After Insert at 4</p>";
+  msg += "<p>Count is " + larr.Count  + "</p>";
+  msg += jvaArr2Msg(larr);
+  
+  larr.Remove(2);
+  msg += "<p>After Remove at 2</p>";
+  msg += "<p>Count is " + larr.Count + "</p>";
+  msg += jvaArr2Msg(larr);
+  
+  larr.Clear();
+  msg += "<p>After Clear</p>";
+  msg += "<p>Count is " + larr.Count + "</p>";
+  
+  var clone;
+  clone = larr.Clone();
+  msg += "<p>Clone looks like this</p>";
+  msg += "<p>Count is " + clone.Count + "</p>";
+  msg += jsArr2Msg(clone);
+  
+  TheReport.innerHTML=msg;
+
+}
+
+
+//-->
+</SCRIPT>
+</HEAD>
+<BODY>
+
+<P><STRONG><U>WBFLTools Array Test</U></STRONG>  </P>
+<P>Test all functionality of LngArray</P>
+<P>
+<TABLE cellSpacing=1 cellPadding=1 width="75%" border=1>
+  
+  <TR>
+    <TD>LngArray</TD>
+    <TD>BstrArray</TD>
+    <TD>UnkArray</TD>
+    <TD>DblArray</TD></TR>
+  
+  <TR>
+    <TD>
+      <P><INPUT id=JScriptTest type=button value="Test JScript" onclick="return JScriptTest_onclick();"></P></TD>
+    <TD><INPUT id=JScriptTestBstr type=button value="Test JScript" LANGUAGE=javascript onclick="return JScriptTestBstr_onclick()"></TD>
+    <TD><INPUT id=JScriptTestUnk type=button value="Test JScript" LANGUAGE=javascript onclick="return JScriptTestUnk_onclick()"></TD>
+    <TD><INPUT id=JScriptTestDbl type=button value="Test JScript" LANGUAGE=javascript onclick="return JScriptTestDbl_onclick()">    </TD></TR>
+  <TR>
+    <TD><INPUT language='onclick="return' id=VBScriptTest type=button value="Test VBScript" onclick()? VBScriptTest_></TD>
+    <TD><INPUT type=button id=VBScriptTestBstr value="Test VBScript" LANGUAGE=javascript onclick="return VBScriptTestBstr_onclick()"></TD>
+    <TD><INPUT type=button id=VBScriptTestUnk value="Test VBScript" LANGUAGE=javascript onclick="return VBScriptTestUnk_onclick()"></TD>
+    <TD><INPUT type=button id=VBScriptTestDbl value="Test VBScript" LANGUAGE=javascript onclick="return VBScriptTestDbl_onclick()"></TD></TR>
+  <TR>
+    <TD><INPUT id=JavaScriptTest type=button value="Test JavaScript" LANGUAGE=javascript onclick="return JavaScriptTest_onclick()"></TD>
+    <TD></TD>
+    <TD></TD>
+    <TD><INPUT id=JavaScriptTestDbl type=button value="Test JavaScript"  LANGUAGE=javascript onclick="return JavaScriptTestDbl_onclick()"></TD></TR></TABLE></P>
+<P>Output</P>
+<HR>
+<PRE id=TheReport title="" name="outputArea"></PRE></BODY></HTML>

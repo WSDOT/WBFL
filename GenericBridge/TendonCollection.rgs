@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.TendonCollection.1 = s 'TendonCollection Class'
+	{
+		CLSID = s '{505D6372-B76F-4d91-9013-E71E3D17C4F6}'
+	}
+	WBFLGenericBridge.TendonCollection = s 'TendonCollection Class'
+	{
+		CLSID = s '{505D6372-B76F-4d91-9013-E71E3D17C4F6}'
+		CurVer = s 'WBFLGenericBridge.TendonCollection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {505D6372-B76F-4d91-9013-E71E3D17C4F6} = s 'TendonCollection Class'
+		{
+			ProgID = s 'WBFLGenericBridge.TendonCollection.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.TendonCollection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

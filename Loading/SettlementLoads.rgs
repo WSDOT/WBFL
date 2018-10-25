@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLoading.SettlementLoads.1 = s 'SettlementLoads Class'
+	{
+		CLSID = s '{7AA2979B-5D9B-43f6-86F0-D3E2432C0460}'
+	}
+	WBFLLoading.SettlementLoads = s 'SettlementLoads Class'
+	{
+		CLSID = s '{7AA2979B-5D9B-43f6-86F0-D3E2432C0460}'
+		CurVer = s 'WBFLLoading.SettlementLoads.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {7AA2979B-5D9B-43f6-86F0-D3E2432C0460} = s 'SettlementLoads Class'
+		{
+			ProgID = s 'WBFLLoading.SettlementLoads.1'
+			VersionIndependentProgID = s 'WBFLLoading.SettlementLoads'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{81DDDDC6-EC00-4E8D-A000-08C10F134EDA}'
+		}
+	}
+}

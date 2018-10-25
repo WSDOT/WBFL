@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.CircularManderSection.1 = s 'CircularManderSection Class'
+	{
+		CLSID = s '{9374FC6E-D9F9-4d58-BE0E-D6D74DFB66CD}'
+	}
+	WBFLRCCapacity.CircularManderSection = s 'CircularManderSection Class'
+	{
+		CLSID = s '{9374FC6E-D9F9-4d58-BE0E-D6D74DFB66CD}'
+		CurVer = s 'WBFLRCCapacity.CircularManderSection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {9374FC6E-D9F9-4d58-BE0E-D6D74DFB66CD} = s 'CircularManderSection Class'
+		{
+			ProgID = s 'WBFLRCCapacity.CircularManderSection.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.CircularManderSection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

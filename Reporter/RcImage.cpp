@@ -1,0 +1,175 @@
+///////////////////////////////////////////////////////////////////////
+// Reporter - Report Creation and Representation Library
+// Copyright (C) 1999  Washington State Department of Transportation
+//                     Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+#include <Reporter\ReporterLib.h>
+
+#include <Reporter\RcImage.h>
+#include <Reporter\RcVisitor.h>
+#include <sstream>
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+/****************************************************************************
+CLASS
+   rptRcImage
+****************************************************************************/
+
+
+////////////////////////// PUBLIC     ///////////////////////////////////////
+
+//======================== LIFECYCLE  =======================================
+rptRcImage::rptRcImage() :
+rptReportContent(),
+m_FileName("Unspecified"),
+m_Align(Bottom),
+m_Float(None)
+{
+}
+
+rptRcImage::rptRcImage(const std::string& fileName,rptRcImage::Align align,rptRcImage::Float flt):
+rptReportContent(),
+m_FileName( fileName ),
+m_Align(align),
+m_Float(flt)
+{
+}
+
+rptRcImage::rptRcImage(const rptRcImage& rOther) :
+rptReportContent(rOther)
+{
+   m_FileName = rOther.m_FileName;
+   m_PictureDescription = rOther.m_PictureDescription;
+   m_Align = rOther.m_Align;
+   m_Float = rOther.m_Float;
+}
+
+rptRcImage::~rptRcImage()
+{
+}
+
+//======================== OPERATORS  =======================================
+rptRcImage& rptRcImage::operator= (const rptRcImage& rOther)
+{
+   if( this != &rOther )
+   {
+      m_FileName = rOther.m_FileName;
+      m_PictureDescription = rOther.m_PictureDescription;
+      m_Align = rOther.m_Align;
+      m_Float = rOther.m_Float;
+   }
+
+   return *this;
+}
+
+//======================== OPERATIONS =======================================
+void rptRcImage::Accept( rptRcVisitor& rVisitor )
+{
+   rVisitor.VisitRcImage( this );
+}
+
+rptReportContent* rptRcImage::CreateClone() const
+{
+   return new rptRcImage( *this );
+}
+
+//======================== ACCESS     =======================================
+
+std::string rptRcImage::GetFileName() const
+{
+   return m_FileName;
+}
+
+void rptRcImage::SetFileName(const std::string& fileName)
+{
+   m_FileName = fileName;
+}
+
+std::string rptRcImage::GetPictureDescription() const
+{
+   return m_PictureDescription;
+}
+
+void rptRcImage::SetPictureDescription(const std::string& rPictureDescription)
+{
+   m_PictureDescription = rPictureDescription;
+}
+
+void rptRcImage::SetImageAlignment(rptRcImage::Align a)
+{
+   m_Align = a;
+}
+
+rptRcImage::Align rptRcImage::GetImageAlignment() const
+{
+   return m_Align;
+}
+
+void rptRcImage::SetImageFloat(rptRcImage::Float flt)
+{
+   m_Float = flt;
+}
+
+rptRcImage::Float rptRcImage::GetImageFloat() const
+{
+   return m_Float;
+}
+
+
+//======================== INQUIRY    =======================================
+//======================== DEBUG      =======================================
+#if defined _DEBUG
+bool rptRcImage::AssertValid() const
+{
+   //return rptReportContent::AssertValid();
+   return true;
+}
+
+void rptRcImage::Dump(dbgDumpContext& os) const
+{
+   //rptReportContent::Dump( os );
+   os << "rptRcImage : FileName           = " << m_FileName << endl;
+   os << "rptRcImage : PictureDescription = " << m_PictureDescription << endl;
+}
+#endif // _DEBUG
+
+////////////////////////// PROTECTED  ///////////////////////////////////////
+
+//======================== LIFECYCLE  =======================================
+//======================== OPERATORS  =======================================
+//======================== OPERATIONS =======================================
+//======================== ACCESS     =======================================
+//======================== INQUIRY    =======================================
+
+////////////////////////// PRIVATE    ///////////////////////////////////////
+
+//======================== LIFECYCLE  =======================================
+//======================== OPERATORS  =======================================
+//======================== OPERATIONS =======================================
+//======================== ACCESS     =======================================
+//======================== INQUERY    =======================================
+
+

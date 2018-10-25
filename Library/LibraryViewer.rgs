@@ -1,0 +1,34 @@
+HKCR
+{
+	WBFLLibrary.LibraryViewer.1 = s 'LibraryViewer Class'
+	{
+		CLSID = s '{14361D58-AF5B-11D4-8B4D-006097C68A9C}'
+	}
+	WBFLLibrary.LibraryViewer = s 'LibraryViewer Class'
+	{
+		CLSID = s '{14361D58-AF5B-11D4-8B4D-006097C68A9C}'
+		CurVer = s 'WBFLLibrary.LibraryViewer.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {14361D58-AF5B-11D4-8B4D-006097C68A9C} = s 'LibraryViewer Class'
+		{
+			ProgID = s 'WBFLLibrary.LibraryViewer.1'
+			VersionIndependentProgID = s 'WBFLLibrary.LibraryViewer'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			ForceRemove 'Control'
+			ForceRemove 'Insertable'
+			ForceRemove 'ToolboxBitmap32' = s '%MODULE%, 111'
+			'MiscStatus' = s '0'
+			{
+			    '1' = s '131473'
+			}
+			'TypeLib' = s '{627C17C7-86D8-4966-8C1B-61F78403DD09}'
+			'Version' = s '1.0'
+		}
+	}
+}

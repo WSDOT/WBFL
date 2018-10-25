@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.UnconfinedConcrete.1 = s 'UnconfinedConcrete Class'
+	{
+		CLSID = s '{4FAFD823-B4C9-4F88-8D46-74F84682893C}'
+	}
+	WBFLRCCapacity.UnconfinedConcrete = s 'UnconfinedConcrete Class'
+	{
+		CLSID = s '{4FAFD823-B4C9-4F88-8D46-74F84682893C}'
+		CurVer = s 'WBFLRCCapacity.UnconfinedConcrete.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {4FAFD823-B4C9-4F88-8D46-74F84682893C} = s 'UnconfinedConcrete Class'
+		{
+			ProgID = s 'WBFLRCCapacity.UnconfinedConcrete.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.UnconfinedConcrete'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

@@ -1,0 +1,1171 @@
+///////////////////////////////////////////////////////////////////////
+// UnitServer - Unit Conversion and Display Unit Management Library
+// Copyright © 2000  Washington State Department of Transportation
+//                   Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the Alternate Route Library Open Source License as 
+// published by the Washington State Department of Transportation,
+// Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful,
+// but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// PURPOSE.  See the Alternate Route Library Open Source License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License
+// along with this program; if not, write to the Washington State
+// Department of Transportation, Bridge and Structures Office,
+// P.O. Box 47340, Olympia, WA 98503, USA or e-mail
+// Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// WbflUnitsServer.idl : IDL source for UnitServer.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library WbflUnitsServer.tlb and marshalling code.
+import "oaidl.idl";
+import "ocidl.idl";
+import "WBFLTypes.idl";
+
+#include "UnitServer.hh"
+
+// Error Codes
+cpp_quote("#define UNITS_E_BASEUNITSSET           MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,512)")
+cpp_quote("#define UNITS_E_BADUNITTYPE            MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,513)")
+cpp_quote("#define UNITS_E_BADUNITTAG             MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,514)")
+cpp_quote("#define UNITS_E_UNITTYPEMISMATCH       MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,515)")
+cpp_quote("#define UNITS_E_UNITTYPEALREADYDEFINED MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,516)")
+cpp_quote("#define UNITS_E_UNITALREADYDEFINED     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,517)")
+cpp_quote("#define UNITS_E_UNITSERVERSET          MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,518)")
+cpp_quote("#define UNITS_E_GROUPALREADYDEFINED    MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,519)")
+cpp_quote("#define UNITS_E_BADDISPLAYUNITGROUP    MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,520)")
+cpp_quote("#define UNITS_E_DEFAULTNOTFOUND        MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,521)")
+cpp_quote("#define UNITS_E_APPUNITSYSNOTSET       MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,522)")
+
+
+	typedef [public,helpstring("Designates a style for formatting numbers in text strings"),helpcontext(IDH_NumericFormatType),uuid(24A18719-E49F-11d3-8A40-006097C68A9C)] 
+	enum 
+	{
+	   nftAutomatic = 1,
+	   nftFixed = 2,
+	   nftScientific = 3,
+	   nftEngineering = 4
+	} NumericFormatType;
+
+	typedef [public,helpstring("Designates justification of a block of text"),helpcontext(IDH_TextJustificationType),uuid(1DAA99B8-E4B3-11d3-8A40-006097C68A9C)] 
+	enum 
+	{
+	   tjLeft = 1,
+	   tjRight = 2
+	} TextJustificationType;
+
+	[
+		object,
+		uuid(D934CE44-CB38-11d3-8CE1-A85CC0A0E770),
+		oleautomation,
+		helpstring("IDisplayUnitFormatter Interface"),
+		helpcontext(IDH_IDisplayUnitFormatter),
+		pointer_default(unique)
+	]
+	interface IDisplayUnitFormatter : IUnknown
+	{
+	   [helpcontext(IDH_IDisplayUnitFormatter_FormatSpecifiers),helpstring("property FormatSpecifiers")]
+	   HRESULT FormatSpecifiers([in] Uint32 width,[in]Uint32 precision,[in] TextJustificationType justify,[in]NumericFormatType fmt,[in] Float64 zeroVal);
+
+	   [propget, helpcontext(IDH_IDisplayUnitFormatter_Width),helpstring("property Width")]
+      HRESULT Width([out,retval] Uint32* val);
+
+	   [propget, helpcontext(IDH_IDisplayUnitFormatter_Precision),helpstring("property Precision")]
+	   HRESULT Precision([out,retval] Uint32* val);
+
+	   [propget, helpcontext(IDH_IDisplayUnitFormatter_Notation),helpstring("property Notation")]
+	   HRESULT Notation([out,retval] NumericFormatType* notation);
+
+	   [propget, helpcontext(IDH_IDisplayUnitFormatter_Justification),helpstring("property Justification")]
+	   HRESULT Justification([out,retval] TextJustificationType* justify);
+
+	   [propget, helpcontext(IDH_IDisplayUnitFormatter_ZeroTolerance),helpstring("property ZeroTolerance")]
+	   HRESULT ZeroTolerance([out,retval] Float64* zeroTol);
+
+       [helpcontext(IDH_IDisplayUnitFormatter_Format),helpstring("method Format")]
+       HRESULT Format([in] Float64 val, [in] BSTR tag,[out,retval] BSTR* fmtString);
+
+       [propget, helpcontext(IDH_IDisplayUnitFormatter_UsesTag),helpstring("property UsesTag")]
+       HRESULT UsesTag([out,retval] VARIANT_BOOL *bUsesTag);
+	};
+
+	[
+	   object,
+	   uuid(61E29B40-CD8D-11d3-8CE1-926A77670A4E),
+      oleautomation,
+	   helpstring("IAnnotatedDisplayUnitFormatter Interface"),
+	   helpcontext(IDH_IAnnotatedDisplayUnitFormatter),
+	   pointer_default(unique)
+	]
+	interface IAnnotatedDisplayUnitFormatter : IDisplayUnitFormatter
+	{
+	   [propput, helpcontext(IDH_IAnnotatedDisplayUnitFormatter_OffsetDigits),helpstring("property OffsetDigits")]
+	   HRESULT OffsetDigits([in] Uint32 nDigits);
+
+	   [propget, helpcontext(IDH_IAnnotatedDisplayUnitFormatter_OffsetDigits),helpstring("property OffsetDigits")]
+	   HRESULT OffsetDigits([out,retval] Uint32* nDigits);
+
+	   [propput, helpcontext(IDH_IAnnotatedDisplayUnitFormatter_Multiplier),helpstring("property Multiplier")]
+	   HRESULT Multiplier([in] Float64 multiplier);
+
+	   [propget, helpcontext(IDH_IAnnotatedDisplayUnitFormatter_Multiplier),helpstring("property Multiplier")]
+	   HRESULT Multiplier([out,retval] Float64 *multiplier);
+
+	   [propput, helpcontext(IDH_IAnnotatedDisplayUnitFormatter_Annotation),helpstring("property Annotation")]
+	   HRESULT Annotation([in] BSTR bstrAnnotation);
+
+	   [propget, helpcontext(IDH_IAnnotatedDisplayUnitFormatter_Annotation),helpstring("property Annotation")]
+	   HRESULT Annotation([out,retval] BSTR* bstrAnnotation);
+	};
+
+[
+    uuid(C65F03B4-16AB-11D2-8D11-94FA07C10000),
+    version(1.0),
+    helpfile("WBFLUnitServer.chm"),
+    helpcontext(IDH_WbflUnitServer),
+    helpstring("WBFLUnitServer Library")
+]
+library WBFLUnitServer
+{
+    importlib("stdole32.tlb");
+    importlib("stdole2.tlb");
+
+	typedef [public,helpstring("Used to designate the unit system an object is associated with"),helpcontext(IDH_UnitSystemType),uuid(6F535332-84A0-11d2-887D-006097C68A9C)] 
+	enum 
+	{
+	   unitsSI = 1,
+	   unitsUS = 2,
+	   unitsAll = 3 // All unit systems 
+	} UnitSystemType;
+
+
+	typedef [public,helpstring("Used to designate a unit mode for an application or object"),helpcontext(IDH_UnitModeType),uuid(E1744920-CB90-11d3-8CE1-A85CC0A0E770)] 
+	enum 
+	{
+	   umSI = 1,
+	   umUS = 2
+	} UnitModeType;
+
+
+	typedef [public,helpstring("Used to designate a system of units related to a specification document (such as LRFD)"),uuid(81F8CB89-1C2B-4196-9936-7B471F57FFB5)] 
+	enum 
+	{
+	   suSI = 1,
+	   suUS = 2
+	} SpecUnitType;
+
+
+   //interface IUnit;
+   interface IUnits;
+   //interface IUnitType;
+   //interface IUnitTypes;
+   interface IUnitServer;
+   //interface IUnitServerEx;
+   interface IUnitConvert;
+   interface IUnitConvert2;
+   //interface IEnumUnitTypes;
+   //interface IEnumUnits;
+   //interface IDisplayUnit;
+   //interface IDisplayUnitMgr;
+   //interface IDisplayUnitMgrEx;
+   //interface IUnitModeController;
+   //interface ISupportDisplayUnits;
+   //interface ISupportDocUnitSystem;
+   //interface ISupportUnitServer;
+   //interface ISupportUnitSystem;
+
+    [
+        object,
+        uuid(F6474060-7E6F-11d2-8D11-50830CC10000),
+        oleautomation,
+        helpcontext(IDH_IUnitType),
+        helpstring("IUnitType Interface"),
+        pointer_default(unique)
+    ]
+    interface IUnitType : IUnknown
+    {
+       [propget,helpcontext(IDH_IUnitType_Label),helpstring("Returns the UnitType Label (the name of the UnitType)")]
+       HRESULT Label([out,retval]BSTR* pLabel);
+
+       [propget,helpcontext(IDH_IUnitType_Mass),helpstring("Returns the dimensionality for Mass")]
+       HRESULT Mass([out,retval]Float64* pMass);
+          
+       [propget,helpcontext(IDH_IUnitType_Length),helpstring("Returns the dimensionality for Length")]
+       HRESULT Length([out,retval]Float64* pLength);
+
+       [propget,helpcontext(IDH_IUnitType_Time),helpstring("Returns the dimensionality for Time")]
+       HRESULT Time([out,retval]Float64* pTime);
+
+       [propget,helpcontext(IDH_IUnitType_Temperature),helpstring("Returns the dimensionality for Temperature")]
+       HRESULT Temperature([out,retval]Float64* pTemperature);
+
+       [propget,helpcontext(IDH_IUnitType_Angle),helpstring("Returns the dimensionality for Angle")]
+       HRESULT Angle([out,retval]Float64* pAngle);
+
+       [propget,helpcontext(IDH_IUnitType_Units),helpstring("Returns a collection of Units that are of this UnitType")]
+       HRESULT Units([out,retval]IUnits** ppUnits);
+
+       [propget,helpcontext(IDH_IUnitType_UnitServer),helpstring("Returns the UnitServer")]
+       HRESULT UnitServer([out,retval]IUnitServer** unitServer);
+    };
+
+    [
+        object,
+        uuid(5CEF7DC0-B6A3-11d3-8CDF-C9DF305B3C59),
+		hidden,restricted,
+      oleautomation,
+	    pointer_default(unique)
+    ]
+    interface IEnumUnitTypes : IUnknown
+    {
+       HRESULT Clone([out] IEnumUnitTypes** enumUnitTypes );
+
+       HRESULT Next([in] ULONG celt,[out] IUnitType** rgelt, [in,out] ULONG* pceltFetched );
+
+       HRESULT Reset();
+
+       HRESULT Skip([in] ULONG celt);
+    };
+    [
+        object,
+        uuid(A03A9440-7E76-11d2-8D11-50830CC10000),
+        oleautomation,
+        helpcontext(IDH_IUnitTypes),
+        helpstring("IUnitTypes Interface"),
+        pointer_default(unique)
+    ]
+    interface IUnitTypes : IUnknown
+    {
+        [propget, helpcontext(IDH_IUnitTypes_Item),helpstring("Returns a UnitType object associated with the specified index.")]
+        HRESULT Item([in] VARIANT Index, [out, retval] IUnitType** retval);
+
+        [propget, restricted, helpstring("returns an enumerator for the collection.")]
+        HRESULT _NewEnum([out, retval] IUnknown** retval);
+
+        [propget, helpcontext(IDH_IUnitTypes_Count),helpstring("Returns the number of items in collection.")] 
+        HRESULT Count([out, retval] CollectionIndexType* retval);
+
+        [helpcontext(IDH_IUnitTypes_Add),helpstring("Creates a new UnitType and adds it to the collection.")]
+        HRESULT Add([in]BSTR label,[in]Float64 m,[in]Float64 l,[in]Float64 t,[in]Float64 k,[in]Float64 a,[out,retval]IUnitType** ppUnitType);
+
+        [helpcontext(IDH_IUnitTypes_Clear),helpstring("Clears all the UnitType object from this collection")]
+        HRESULT Clear();
+
+        [helpcontext(IDH_IUnitTypes_Remove),helpstring("Removes a UnitType object associated with the specified index from the collection.")]
+        HRESULT Remove(VARIANT Index);
+
+        [propget, restricted, helpcontext(IDH_IUnitTypes__EnumUnitTypes),helpstring("returns an enumerator") ]
+        HRESULT _EnumUnitTypes([out,retval] IEnumUnitTypes** enumUnitTypes);
+    };
+
+
+    [
+        object,
+        uuid(E38A041A-7F25-11d2-885B-006097C68A9C),
+        oleautomation,
+        helpcontext(IDH_IUnit),
+        helpstring("IUnit Interface"),
+        pointer_default(unique)
+    ]
+    interface IUnit : IUnknown
+    {
+        [propget, helpcontext(IDH_IUnit_Tag), helpstring("Returns the unit tag")]
+        HRESULT Tag([out, retval] BSTR *pVal);
+
+        [propget, helpcontext(IDH_IUnit_PreTerm), helpstring("Returns the Prefix Term")]
+        HRESULT PreTerm([out, retval] Float64 *pVal);
+
+        [propget, helpcontext(IDH_IUnit_ConvFactor), helpstring("Returns the Conversion Factor")]
+        HRESULT ConvFactor([out, retval] Float64 *pVal);
+
+        [propget, helpcontext(IDH_IUnit_PostTerm), helpstring("Returns the Postfix Term")]
+        HRESULT PostTerm([out, retval] Float64 *pVal);
+
+        [propget, helpcontext(IDH_IUnit_UnitSystem), helpstring("Returns the Unit System associated with this object")]
+        HRESULT UnitSystem([out, retval] UnitSystemType *pVal);
+
+        [propget, helpcontext(IDH_IUnit_UnitType), helpstring("Returns the unit type object for this unit")]
+        HRESULT UnitType([out,retval]IUnitType** ppUnitType);
+
+        [propget, helpcontext(IDH_IUnit_UnitServer), helpstring("Returns the Unit Server object")]
+        HRESULT UnitServer([out,retval]IUnitServer** unitServer);
+    };
+
+    [
+        object,
+        uuid(7F7D82A0-B6A4-11d3-8CDF-C9DF305B3C59),
+		hidden,restricted,
+      oleautomation,
+        pointer_default(unique)
+    ]
+    interface IEnumUnits : IUnknown
+    {
+       HRESULT Clone([out] IEnumUnits** enumUnits );
+
+       HRESULT Next([in] ULONG celt,[out] IUnit** rgelt, [in,out] ULONG* pceltFetched );
+
+       HRESULT Reset();
+
+       HRESULT Skip([in] ULONG celt);
+    };
+
+    [
+        object,
+        uuid(641DCEA1-19D1-11D2-8D11-94FA07C10000),
+        oleautomation,
+        helpcontext(IDH_IUnits),
+        helpstring("IUnits Interface"),
+        pointer_default(unique)
+    ]
+    interface IUnits : IUnknown
+    {
+       [propget, helpcontext(IDH_IUnits_Item),helpstring("Returns a Unit object associated with the specified index.")]
+       HRESULT Item([in] VARIANT Index, [out, retval] IUnit** retval);
+
+       [propget, restricted, helpstring("Returns an enumerator for the collection.")]
+       HRESULT _NewEnum([out, retval] IUnknown** retval);  
+
+       [propget, helpcontext(IDH_IUnits_Count),helpstring("Returns the number of items in collection.")] 
+       HRESULT Count([out, retval] CollectionIndexType* retval);
+
+       [helpcontext(IDH_IUnits_Add),helpstring("Creates a new unit of measure and adds it to the collection")]
+       HRESULT Add([in]BSTR tag,[in]Float64 preTerm,[in]Float64 cf,[in]Float64 postTerm,[in]UnitSystemType unitSystem,[out,retval]IUnit** ppUnit);
+
+       [helpcontext(IDH_IUnits_Clear),helpstring("Removes all items from the collection")]
+       HRESULT Clear();
+
+       [helpcontext(IDH_IUnits_Remove), helpstring("Removes a Unit object associated with the specified index from the collection.")]
+       HRESULT Remove([in] VARIANT Index);
+
+       [propget, restricted, helpcontext(IDH_IUnits__EnumUnits),helpstring("returns an enumerator")]
+       HRESULT _EnumUnits([out,retval] IEnumUnits** enumUnits);
+	};
+
+    [
+        object,
+        uuid(C65F03C3-16AB-11D2-8D11-94FA07C10000),
+        oleautomation,
+        helpcontext(IDH_IUnitServer),
+        helpstring("IUnitServer Interface"),
+        pointer_default(unique)
+    ]
+    interface IUnitServer : IUnknown
+    {
+        [helpcontext(IDH_IUnitServer_SetBaseUnits), helpstring("Sets the base units. This method can only be called once.")]
+        HRESULT SetBaseUnits([in] BSTR bstrMass, [in] BSTR bstrLength, [in] BSTR bstrTime, [in] BSTR bstrTemp, [in] BSTR bstrAngle);
+
+        [propget, helpcontext(IDH_IUnitServer_Mass), helpstring("Returns the name of the base unit for Mass")]
+        HRESULT Mass([out,retval]BSTR* pMass);
+
+        [propget, helpcontext(IDH_IUnitServer_Length), helpstring("Returns the name of the base unit for Length")]
+        HRESULT Length([out,retval]BSTR* pLength);
+        
+        [propget, helpcontext(IDH_IUnitServer_Time), helpstring("Returns the name of the base unit for Time")]
+        HRESULT Time([out,retval]BSTR* pTime);
+        
+        [propget, helpcontext(IDH_IUnitServer_Temperature), helpstring("Returns the name of the base unit for Temperature")]
+        HRESULT Temperature([out,retval]BSTR* pTemperature);
+        
+        [propget, helpcontext(IDH_IUnitServer_Angle), helpstring("Returns the name of the base unit for  Angle")]
+        HRESULT Angle([out,retval]BSTR* pAngle);
+
+        [propget, helpcontext(IDH_IUnitServer_UnitTypes),helpstring("Returns the UnitTypes collection")]
+        HRESULT UnitTypes([out,retval]IUnitTypes** ppUnitTypes);
+
+	[propget, helpcontext(IDH_IUnitServer_UnitConvert),helpstring("Returns the UnitConvert object")]
+	HRESULT UnitConvert([out,retval] IUnitConvert** convert);
+
+	[propget, helpcontext(IDH_IUnitServer_UnitConvert2),helpstring("Returns the UnitConvert2 object")]
+	HRESULT UnitConvert2([out,retval] IUnitConvert2** convert);
+    };
+
+
+
+    [
+       object,
+       uuid(45FEDF40-79AD-11d2-8D11-50830CC10000),
+       oleautomation,
+        helpcontext(IDH_IUnitConvert),
+       helpstring("IUnitConvert Interface"),
+       pointer_default(unique)
+    ]
+    interface IUnitConvert : IUnknown
+    {
+        [helpcontext(IDH_IUnitConvert_Convert), helpstring("Converts a number to an equivalent measure")]
+        HRESULT Convert([in] Float64 From,[in] BSTR fromUnit, [in] BSTR toUnit,[out,retval]Float64* pTo);
+
+        [helpcontext(IDH_IUnitConvert_ConvertToBaseUnits),helpstring("Converts a number in the specified units to base units")]
+        HRESULT ConvertToBaseUnits([in] Float64 val,[in] BSTR fromUnit,[out,retval]Float64* pConvVal);
+
+        [helpcontext(IDH_IUnitConvert_ConvertFromBaseUnits),helpstring("Converts a number from base units to the specified units")]
+        HRESULT ConvertFromBaseUnits([in] Float64 val, [in] BSTR toUnit,[out,retval]Float64* pConvVal);
+    };
+
+    [
+       object,
+       uuid(45FEDF41-79AD-11d2-8D11-50830CC10000),
+       oleautomation,
+       helpcontext(IDH_IUnitConvert2),
+       helpstring("IUnitConvert2 Interface"),
+       pointer_default(unique)
+    ]
+    interface IUnitConvert2 : IUnknown
+    {
+        [helpcontext(IDH_IUnitConvert2_Convert),helpstring("Converts a number to an equivalent measure")]
+        HRESULT Convert([in] Float64 From,[in] IUnit* pFromUnit, [in] IUnit* pToUnit,[out,retval]Float64* pTo);
+
+        [helpcontext(IDH_IUnitConvert2_ConvertToBaseUnits),helpstring("Converts a number in the specified units to base units")]
+        HRESULT ConvertToBaseUnits([in] Float64 val,[in] IUnit* pFromUnit,[out,retval]Float64* pConvVal);
+
+        [helpcontext(IDH_IUnitConvert2_ConvertFromBaseUnits),helpstring("Converts a number from base units to the specified units")]
+        HRESULT ConvertFromBaseUnits([in] Float64 val, [in] IUnit* pToUnit,[out,retval]Float64* pConvVal);
+    };
+
+
+	[
+		object,
+		uuid(D934CE43-CB38-11d3-8CE1-A85CC0A0E770),
+		oleautomation,
+		helpstring("IDisplayUnit Interface"),
+		helpcontext(IDH_IDisplayUnit),
+		pointer_default(unique)
+	]
+	interface IDisplayUnit : IUnknown
+	{
+	   [propget, helpcontext(IDH_IDisplayUnit_Formatter),helpstring("property Formatter")]
+	   HRESULT Formatter([out,retval]IDisplayUnitFormatter** formatter);
+
+	   [propputref, helpcontext(IDH_IDisplayUnit_Formatter),helpstring("property Formatter")]
+	   HRESULT Formatter([in]IDisplayUnitFormatter* formatter);
+
+	   [propget, helpcontext(IDH_IDisplayUnit_Unit),helpstring("property Unit")]
+	   HRESULT Unit([out,retval] IUnit** unit);
+
+	   [propget, helpcontext(IDH_IDisplayUnit_UnitTag),helpstring("property UnitTag")]
+	   HRESULT UnitTag([out,retval] BSTR* unitTag);
+
+	   [propget, helpcontext(IDH_IDisplayUnit_UnitSystem),helpstring("property UnitSystem")]
+	   HRESULT UnitSystem([out,retval] UnitSystemType* unitSystem);
+
+	   [helpcontext(IDH_IDisplayUnit_IsDefault),helpstring("method IsDefault")]
+	   HRESULT IsDefault([out,retval] VARIANT_BOOL* bIsDefault);
+
+       [helpcontext(IDH_IDisplayUnit_Format),helpstring("method Format")]
+       HRESULT Format([in] Float64 val,[in] VARIANT_BOOL bShowUnitTag,[out,retval] BSTR* fmtString);
+	};
+
+
+    [
+        object,
+        uuid(FD8E6EC0-D044-11d3-8CE1-F3DE57DF1F4D),
+		hidden,restricted,
+      oleautomation,
+        pointer_default(unique)
+    ]
+    interface IEnumDisplayUnits : IUnknown
+    {
+       HRESULT Clone([out] IEnumDisplayUnits** enumUnits );
+
+       HRESULT Next([in] ULONG celt,[out] IDisplayUnit** rgelt, [in,out] ULONG* pceltFetched );
+
+       HRESULT Reset();
+
+       HRESULT Skip([in] ULONG celt);
+    };
+
+	[
+        object,
+        uuid(D934CE41-CB38-11d3-8CE1-A85CC0A0E770),
+        oleautomation,
+        helpstring("IDisplayUnitGroup Interface"),
+	helpcontext(IDH_IDisplayUnitGroup),
+        pointer_default(unique)
+    ]
+    interface IDisplayUnitGroup : IUnknown
+    {
+       [propget,helpcontext(IDH_IDisplayUnitGroup_Name),helpstring("property Name")]
+       HRESULT Name([out,retval]BSTR* name);
+
+       [propget,helpcontext(IDH_IDisplayUnitGroup_UnitType),helpstring("property UnitType")]
+       HRESULT UnitType([out,retval]BSTR* unitType);
+
+       [propget,helpcontext(IDH_IDisplayUnitGroup_Item),helpstring("Given an index, returns an item in the collection.")]
+       HRESULT Item([in] BSTR unitTag, [out, retval] IDisplayUnit** retval);
+
+       [propget, restricted, helpstring("returns an enumerator for the collection.")]
+       HRESULT _NewEnum([out, retval] IUnknown** retval);
+
+       [propget, helpcontext(IDH_IDisplayUnitGroup_Count),helpstring("Returns number of items in collection.")] 
+       HRESULT Count([out, retval] CollectionIndexType* retval);
+
+       [helpcontext(IDH_IDisplayUnitGroup_Add),helpstring("Add an item to the collection")]
+       HRESULT Add([in]BSTR unitTag,[in]UnitSystemType unitSystem,[in] IDisplayUnitFormatter* formatter,[in] VARIANT_BOOL bDefault,[out,retval] IDisplayUnit** dispUnit);
+
+       [helpcontext(IDH_IDisplayUnitGroup_Clear),helpstring("Clears all the UnitType object from this collection")]
+       HRESULT Clear();
+
+       [helpcontext(IDH_IDisplayUnitGroup_Remove),helpstring("Removes an item from the collection")]
+       HRESULT Remove([in] BSTR unitTag);
+
+       [propget, helpcontext(IDH_IDisplayUnitGroup_Default),helpstring("property Default")]
+       HRESULT Default(UnitModeType unitMode, [out, retval] IDisplayUnit* *pVal);
+
+       [propget, restricted, helpcontext(IDH_IDisplayUnitGroup__EnumDisplayUnits),helpstring("returns an enumerator object")]
+       HRESULT _EnumDisplayUnits([out,retval] IEnumDisplayUnits** enumDisplayUnits);
+    };
+
+
+    [
+        object,
+        uuid(FD8E6EC1-D044-11d3-8CE1-F3DE57DF1F4D),
+		hidden,restricted,
+      oleautomation,
+        pointer_default(unique)
+    ]
+    interface IEnumDisplayUnitGroups : IUnknown
+    {
+       HRESULT Clone([out] IEnumDisplayUnitGroups** enumUnits );
+
+       HRESULT Next([in] ULONG celt,[out] IDisplayUnitGroup** rgelt, [in,out] ULONG* pceltFetched );
+
+       HRESULT Reset();
+
+       HRESULT Skip([in] ULONG celt);
+    };
+
+	[
+		object,
+		uuid(51F0A2A9-CAC1-11D3-8CE1-A85CC0A0E770),
+		oleautomation,
+		helpstring("IDisplayUnitMgr Interface"),
+		helpcontext(IDH_IDisplayUnitMgr),
+		pointer_default(unique)
+	]
+	interface IDisplayUnitMgr : IUnknown
+	{
+        [propget, helpcontext(IDH_IDisplayUnitMgr_Item),helpstring("Given an index, returns an item in the collection.")]
+        HRESULT Item([in] BSTR bstrGroup, [out, retval] IDisplayUnitGroup** group);
+
+        [propget, restricted, helpstring("returns an enumerator for the collection.")]
+        HRESULT _NewEnum([out, retval] IUnknown** retval);
+
+        [propget, helpcontext(IDH_IDisplayUnitMgr_Count),helpstring("Returns number of display groups")] 
+        HRESULT Count([out, retval] CollectionIndexType* retval);
+
+        [helpcontext(IDH_IDisplayUnitMgr_Add),helpstring("Creates a new display group")]
+        HRESULT Add([in]BSTR bstrGroup,[in] BSTR bstrUnitType,[out,retval] IDisplayUnitGroup** newGroup);
+
+        [helpcontext(IDH_IDisplayUnitMgr_Clear),helpstring("Clears the display unit manager")]
+        HRESULT Clear();
+
+        [helpcontext(IDH_IDisplayUnitMgr_Remove),helpstring("Removes display unit group")]
+        HRESULT Remove(BSTR bstrGroup);
+
+		[helpcontext(IDH_IDisplayUnitMgr_Format),helpstring("method Format")]
+		HRESULT Format([in] Float64 val,[in] BSTR group,[in] VARIANT_BOOL bShowUnitTag,[out,retval]BSTR* fmtString);
+
+        [propget, restricted, helpcontext(IDH_IDisplayUnitMgr__EnumDisplayUnitGroup),helpstring("returns an enumerator") ]
+        HRESULT _EnumDisplayUnitGroups([out,retval] IEnumDisplayUnitGroups** enumDisplayUnitGroups);
+
+		[propget, helpcontext(IDH_IDisplayUnitMgr_Tag),helpstring("property Tag")]
+		HRESULT Tag([in] BSTR group,[out,retval]BSTR* tag);
+
+		[helpcontext(IDH_IDisplayUnitMgr_ConvertToDisplayUnits),helpstring("method ConvertToDisplayUnits")]
+		HRESULT ConvertToDisplayUnits([in] Float64 value,[in] BSTR group,[out,retval]Float64* result);
+
+		[helpcontext(IDH_IDisplayUnitMgr_ConvertFromDisplayUnits),helpstring("method ConvertFromDisplayUnits")]
+		HRESULT ConvertFromDisplayUnits([in] Float64 value,[in] BSTR group,[out,retval]Float64* result);
+	};
+
+	[
+	    object,
+	    uuid(51F0A2A1-CAC1-11D3-8CE1-A85CC0A0E770),
+     	oleautomation,
+	    helpstring("IUnitModeController Interface"),
+        helpcontext(IDH_IUnitModeController),
+	    pointer_default(unique)
+	]
+	interface IUnitModeController : IUnknown
+	{
+	   [propget, helpcontext(IDH_IUnitModeController_UnitMode),helpstring("property UnitMode")]
+       HRESULT UnitMode([out, retval] UnitModeType *pVal);
+
+       [propput, helpcontext(IDH_IUnitModeController_UnitMode),helpstring("property UnitMode")]
+       HRESULT UnitMode([in] UnitModeType newVal);
+
+       [helpcontext(IDH_IUnitModeController_ShowSelectionDialog),helpstring("method ShowSelectionDialog")]
+       HRESULT ShowSelectionDialog();
+
+       [helpcontext(IDH_IUnitModeController_ShowSelectionDialogEx),helpstring("method ShowSelectionDialogEx")]
+       HRESULT ShowSelectionDialogEx([in] BSTR helpFile,[in] long nID);
+	};
+
+	[
+		object,
+		uuid(51F0A2C4-CAC1-11D3-8CE1-A85CC0A0E770),
+		oleautomation,
+		helpstring("IUnitSystem Interface"),
+		helpcontext(IDH_IUnitSystem),
+		pointer_default(unique)
+	]
+	interface IUnitSystem : IUnknown
+	{
+		[propget, helpcontext(IDH_IUnitSystem_UnitServer),helpstring("property UnitServer")]
+		HRESULT UnitServer([out, retval] IUnitServer* *pVal);
+
+		[propget, helpcontext(IDH_IUnitSystem_DisplayUnitMgr),helpstring("property DisplayUnitMgr")]
+		HRESULT DisplayUnitMgr([out, retval] IDisplayUnitMgr* *pVal);
+
+		[propget, helpcontext(IDH_IUnitSystem_UnitModeController),helpstring("property UnitModeController")]
+		HRESULT UnitModeController([out, retval] IUnitModeController* *pVal);
+	};
+
+
+
+	[
+		object,
+		uuid(CE8269CB-5568-11d4-8CE4-0080C7380027),
+		oleautomation,
+		helpstring("IDisplayUnitMgr2 Interface"),
+		helpcontext(IDH_IDisplayUnitMgr2),
+		pointer_default(unique)
+	]
+	interface IDisplayUnitMgr2 : IUnknown
+	{
+        [propget, helpcontext(IDH_IDisplayUnitMgr2_Item),helpstring("Given an index, returns an item in the collection.")]
+        HRESULT Item([in] BSTR bstrGroup, [out, retval] IDisplayUnitGroup** group);
+
+        [propget, restricted, helpstring("returns an enumerator for the collection.")]
+        HRESULT _NewEnum([out, retval] IUnknown** retval);
+
+        [propget, helpcontext(IDH_IDisplayUnitMgr2_Count),helpstring("Returns number of display groups")] 
+        HRESULT Count([out, retval] CollectionIndexType* retval);
+
+        [helpcontext(IDH_IDisplayUnitMgr2_Add),helpstring("Creates a new display group")]
+        HRESULT Add([in]BSTR bstrGroup,[in] BSTR bstrUnitType,[out,retval] IDisplayUnitGroup** newGroup);
+
+        [helpcontext(IDH_IDisplayUnitMgr2_Clear),helpstring("Clears the display unit manager")]
+        HRESULT Clear();
+
+        [helpcontext(IDH_IDisplayUnitMgr2_Remove),helpstring("Removes display unit group")]
+        HRESULT Remove(BSTR bstrGroup);
+
+        [propget, restricted, helpcontext(IDH_IDisplayUnitMgr2__EnumDisplayUnitGroup),helpstring("returns an enumerator") ]
+        HRESULT _EnumDisplayUnitGroups([out,retval] IEnumDisplayUnitGroups** enumDisplayUnitGroups);
+	};
+
+	[
+		object,
+		uuid(16683EE1-558C-11D4-8CE4-0080C7380027),
+		oleautomation,
+		helpstring("IAppUnitSystem Interface"),
+		helpcontext(IDH_IAppUnitSystem),
+		pointer_default(unique)
+	]
+	interface IAppUnitSystem : IUnknown
+	{
+	    [helpcontext(IDH_IAppUnitSystem_ConvertToBaseUnits),helpstring("method ConvertToBaseUnits")]
+		HRESULT ConvertToBaseUnits([in]Float64 value,[in]VARIANT fromUnit,[out,retval]Float64* retval);
+
+	    [helpcontext(IDH_IAppUnitSystem_ConvertFromBaseUnits),helpstring("method ConvertFromBaseUnits")]
+		HRESULT ConvertFromBaseUnits([in]Float64 value,[in]VARIANT toUnit,[out,retval]Float64* retval);
+
+		[propget, helpcontext(IDH_IAppUnitSystem_UnitServer),helpstring("property UnitServer")]
+		HRESULT UnitServer([out, retval] IUnitServer* *pVal);
+
+		[propget, helpcontext(IDH_IAppUnitSystem_DisplayUnitMgr),helpstring("property DisplayUnitMgr")]
+		HRESULT DisplayUnitMgr([out, retval] IDisplayUnitMgr2* *pVal);
+	};
+	[
+		object,
+		uuid(16683EE5-558C-11D4-8CE4-0080C7380027),
+		oleautomation,
+		helpstring("IDocUnitSystem Interface"),
+		helpcontext(IDH_IDocUnitSystem),
+		pointer_default(unique)
+	]
+	interface IDocUnitSystem : IUnknown
+	{
+		[propget, helpcontext(IDH_IDocUnitSystem_UnitMode),helpstring("property UnitMode")]
+		HRESULT UnitMode([out, retval] UnitModeType *pVal);
+
+		[propput, helpcontext(IDH_IDocUnitSystem_UnitMode),helpstring("property UnitMode")]
+        HRESULT UnitMode([in] UnitModeType newVal);
+
+		[propget, helpcontext(IDH_IDocUnitSystem_UnitModeController),helpstring("property UnitModeController")]
+		HRESULT UnitModeController([out, retval] IUnitModeController* *pVal);
+
+		[propget, helpcontext(IDH_IDocUnitSystem_AppUnitSystem),helpstring("property AppUnitSystem")]
+		HRESULT AppUnitSystem([out, retval] IAppUnitSystem* *pVal);
+
+		[propputref, helpcontext(IDH_IDocUnitSystem_AppUnitSystem),helpstring("property AppUnitSystem")]
+		HRESULT AppUnitSystem([in] IAppUnitSystem* newVal);
+
+		[helpcontext(IDH_IDocUnitSystem_ConvertToDisplayUnits),helpstring("method ConvertToDisplayUnits")]
+		HRESULT ConvertToDisplayUnits([in] Float64 value,[in] BSTR group,[out,retval]Float64* result);
+
+		[helpcontext(IDH_IDocUnitSystem_ConvertFromDisplayUnits),helpstring("method ConvertFromDisplayUnits")]
+		HRESULT ConvertFromDisplayUnits([in] Float64 value,[in] BSTR group,[out,retval]Float64* result);
+
+		[propget, helpcontext(IDH_IDocUnitSystem_Tag),helpstring("property Tag")]
+		HRESULT Tag([in] BSTR group,[out,retval]BSTR* tag);
+
+		[helpcontext(IDH_IDocUnitSystem_Format),helpstring("method Format")]
+		HRESULT Format([in] Float64 val,[in] BSTR group,[in] VARIANT_BOOL bShowUnitTag,[out,retval]BSTR* fmtString);
+	};
+
+
+	[
+	    object,
+		uuid(B6813130-1D7F-11d2-8EAC-006097DF3C68),
+		oleautomation,
+		helpstring("ISupportUnitServer Interface"),
+		helpcontext(IDH_ISupportUnitServer),
+		pointer_default(unique)
+	]
+	interface ISupportUnitServer : IUnknown
+	{
+		[propget, helpcontext(IDH_ISupportUnitServer_UnitServer),helpstring("property UnitServer")]
+		HRESULT UnitServer([out,retval] IUnitServer** ppVal );
+
+		[propputref, helpcontext(IDH_ISupportUnitServer_UnitServer),helpstring("property UnitServer")]
+		HRESULT UnitServer([in] IUnitServer* pNewVal );
+	};
+	[
+	    object,
+		uuid(FDA8EDC3-E3FE-11d3-8A3F-006097C68A9C),
+        oleautomation,
+		helpstring("ISupportUnitSystem Interface"),
+		helpcontext(IDH_ISupportUnitSystem),
+		pointer_default(unique)
+	]
+	interface ISupportUnitSystem : IUnknown
+	{
+		[propget, helpcontext(IDH_ISupportUnitSystem_UnitSystem),helpstring("property UnitSystem")]
+		HRESULT UnitSystem([out,retval] IUnitSystem** ppVal );
+
+		[propputref, helpcontext(IDH_ISupportUnitSystem_UnitSystem),helpstring("property UnitSystem")]
+		HRESULT UnitSystem([in] IUnitSystem* pNewVal );
+	};
+	[
+	    object,
+		uuid(24A18718-E49F-11d3-8A40-006097C68A9C),
+        oleautomation,
+		helpstring("ISupportDisplayUnits Interface"),
+		helpcontext(IDH_ISupportDisplayUnits),
+		pointer_default(unique)
+	]
+	interface ISupportDisplayUnits : IUnknown
+	{
+		[propget, helpcontext(IDH_ISupportDisplayUnits_DisplayUnitMgr),helpstring("property DisplayUnitMgr")]
+		HRESULT DisplayUnitMgr([out,retval] IDisplayUnitMgr** ppVal );
+
+		[propputref, helpcontext(IDH_ISupportDisplayUnits_DisplayUnitMgr),helpstring("property DisplayUnitMgr")]
+		HRESULT DisplayUnitMgr([in] IDisplayUnitMgr* pNewVal );
+	};
+	[
+	    object,
+		uuid(E7E9EAC0-5764-11d4-8CE4-0080C7380027),
+        oleautomation,
+		helpstring("ISupportDocUnitSystem Interface"),
+		helpcontext(IDH_ISupportDocUnitSystem),
+		pointer_default(unique)
+	]
+	interface ISupportDocUnitSystem : IUnknown
+	{
+		[propget, helpcontext(IDH_ISupportDocUnitSystem_UnitSystem),helpstring("property UnitSystem")]
+		HRESULT UnitSystem([out,retval] IDocUnitSystem** ppVal );
+
+		[propputref, helpcontext(IDH_ISupportDocUnitSystem_UnitSystem),helpstring("property UnitSystem")]
+		HRESULT UnitSystem([in] IDocUnitSystem* pNewVal );
+	};
+
+   [
+      object,
+      oleautomation,
+      uuid(2531DFCA-5873-4d25-8639-4414FBFD1997),
+      pointer_default(unique)
+   ]
+   interface IUnitServerEventSink : IUnknown
+   {
+          [helpcontext(IDH_IUnitServerEventSink_OnUnitAdded),helpstring("Fires when a Unit is added")]
+          HRESULT OnUnitAdded([in]IUnitType* unitType,[in]IUnit* unit);
+
+	      [helpcontext(IDH_IUnitServerEventSink_OnUnitRemoved),helpstring("Fires when a Unit is removed")]
+	      HRESULT OnUnitRemoved([in]IUnitType* unitType,[in]BSTR unit);
+
+          [helpcontext(IDH_IUnitServerEventSink_OnUnitsCleared),helpstring("Fires when a Units collection is cleared")]
+	      HRESULT OnUnitsCleared([in]IUnitType* unitType);
+
+	      [helpcontext(IDH_IUnitServerEventSink_OnUnitTypeAdded),helpstring("Fires when a UnitType is added")]
+	      HRESULT OnUnitTypeAdded([in]IUnitType* unitType);
+
+	      [helpcontext(IDH_IUnitServerEventSink_OnUnitTypeRemoved),helpstring("Fires when a UnitType is removed")]
+	      HRESULT OnUnitTypeRemoved([in]BSTR unitType);
+
+	      [helpcontext(IDH_IUnitServerEventSink_OnUnitTypesCleared),helpstring ("Fires when a UnitTypes collection is cleared")]
+	      HRESULT OnUnitTypesCleared();
+   };
+
+[
+   object,
+   oleautomation,
+   uuid(51A2D507-7A88-4103-80CC-708BDC662510),
+   pointer_default(unique)
+]
+interface IUnitsEventSink : IUnknown
+{
+       [helpcontext(IDH_IUnitsEventSink_OnUnitAdded),helpstring("Fires when a Unit is added")]
+       HRESULT OnUnitAdded([in]IUnit* unit);
+
+	   [helpcontext(IDH_IUnitsEventSink_OnUnitRemoved),helpstring("Fires when a Unit is removed")]
+	   HRESULT OnUnitRemoved([in]BSTR unit);
+
+       [helpcontext(IDH_IUnitsEventSink_OnUnitCleared),helpstring("Fires when the collection is cleared")]
+	   HRESULT OnUnitsCleared();
+};
+
+   [
+      object,
+      uuid(45D053AD-7893-4eb1-895B-750406204F84),
+      oleautomation,
+      pointer_default(unique)
+   ]
+   interface IUnitTypeEventSink : IUnknown
+   {
+       [helpcontext(IDH_IUnitTypeEventSink_OnUnitAdded),helpstring("Fires when a Unit is added")]
+       HRESULT OnUnitAdded([in]IUnitType* unitType,[in]IUnit* unit);
+
+	   [helpcontext(IDH_IUnitTypeEventSink_OnUnitRemoved),helpstring("Fires when a Unit is removed")]
+	   HRESULT OnUnitRemoved([in]IUnitType* unitType,[in]BSTR unit);
+
+       [helpcontext(IDH_IUnitTypeEventSink_OnUnitsCleared),helpstring("Fires when a Units collection is cleared")]
+	   HRESULT OnUnitsCleared([in]IUnitType* unitType);
+   };
+
+    [
+       object,
+       uuid(5A5CEF04-07AA-4285-B2A0-3A5452073762),
+       oleautomation,
+       pointer_default(unique)
+    ]
+    interface IUnitTypesEventSink : IUnknown
+    {
+       [helpcontext(IDH_IUnitTypesEventSink_OnUnitAdded),helpstring("Fires when a Unit is added")]
+       HRESULT OnUnitAdded([in]IUnitType* unitType,[in]IUnit* unit);
+
+	   [helpcontext(IDH_IUnitTypesEventSink_OnUnitRemoved),helpstring("Fires when a Unit is removed")]
+	   HRESULT OnUnitRemoved([in]IUnitType* unitType,[in]BSTR unit);
+
+       [helpcontext(IDH_IUnitTypesEventSink_OnUnitsCleared),helpstring("Fires when a Units collection is cleared")]
+	   HRESULT OnUnitsCleared([in]IUnitType* unitType);
+
+	   [helpcontext(IDH_IUnitTypesEventSink_OnUnitTypeAdded),helpstring("Fires when a UnitType is added")]
+	   HRESULT OnUnitTypeAdded([in]IUnitType* unitType);
+
+	   [helpcontext(IDH_IUnitTypesEventSink_OnUnitTypeRemoved),helpstring("Fires when a UnitType is removed")]
+	   HRESULT OnUnitTypeRemoved([in]BSTR unitType);
+
+	   [helpcontext(IDH_IUnitTypesEventSink_OnUnitTypesCleared),helpstring ("Fires when a UnitType collection is cleared")]
+	   HRESULT OnUnitTypesCleared();
+    };
+
+
+[
+   object,
+   oleautomation,
+   uuid(64A00B5C-FBDA-4bcd-9F22-472C48D0E73D),
+   pointer_default(unique)
+]
+interface IDisplayUnitEvents : IUnknown
+{
+       [helpcontext(IDH_IDisplayUnitEvents_OnFormatChanged),helpstring("event OnFormatChanged")]
+       HRESULT OnFormatChanged([in] IDisplayUnit* displayUnit);
+};
+
+[
+   object,
+   oleautomation,
+   uuid(DCAA5CAB-2DB4-41c5-B946-FC3E93FEE423),
+   pointer_default(unique)
+]
+interface IDisplayUnitGroupEvents : IUnknown
+{
+       [helpcontext(IDH_IDisplayUnitGroupEvents_OnFormatChanged),helpstring("event OnFormatChanged")]
+       HRESULT OnFormatChanged([in] IDisplayUnitGroup* group,[in]IDisplayUnit* displayUnit);
+
+       [helpcontext(IDH_IDisplayUnitGroupEvents_OnDisplayUnitCreated),helpstring("event OnDisplayUnitCreated")]
+       HRESULT OnDisplayUnitCreated([in] IDisplayUnitGroup* group,[in]IDisplayUnit* displayUnit);
+
+       [helpcontext(IDH_IDisplayUnitGroupEvents_OnDisplayUnitRemoved),helpstring("event OnDisplayUnitRemoved")]
+       HRESULT OnDisplayUnitRemoved([in] IDisplayUnitGroup* group,[in]BSTR displayUnit);
+
+       [helpcontext(IDH_IDisplayUnitGroupEvents_OnDisplayUnitGroupCreated),helpstring("event OnDisplayUnitGroupCleared")]
+       HRESULT OnDisplayUnitGroupCleared([in] IDisplayUnitGroup* group);
+};
+
+[
+   object,
+   oleautomation,
+   uuid(43581ACD-6397-404a-A9FA-0D79922A22C4),
+   pointer_default(unique)
+]
+interface IDisplayUnitMgrEvents : IUnknown
+{
+       [helpcontext(IDH_IDisplayUnitMgrEvents_OnFormatChanged),helpstring("event OnFormatChanged")]
+       HRESULT OnFormatChanged([in] IDisplayUnitGroup* group,[in]IDisplayUnit* displayUnit);
+
+       [helpcontext(IDH_IDisplayUnitMgrEvents_OnDisplayUnitCreated),helpstring("event OnDisplayUnitCreated")]
+       HRESULT OnDisplayUnitCreated([in] IDisplayUnitGroup* group,[in]IDisplayUnit* displayUnit);
+
+       [helpcontext(IDH_IDisplayUnitMgrEvents_OnDisplayUnitRemoved),helpstring("event OnDisplayUnitRemoved")]
+       HRESULT OnDisplayUnitRemoved([in] IDisplayUnitGroup* group,[in]BSTR displayUnit);
+
+       [helpcontext(IDH_IDisplayUnitMgrEvents_OnDisplayUnitGroupCleared),helpstring("event OnDisplayUnitGroupCleared")]
+       HRESULT OnDisplayUnitGroupCleared([in] IDisplayUnitGroup* group);
+
+       [helpcontext(IDH_IDisplayUnitMgrEvents_OnDisplayUnitGroupCreated),helpstring("event OnDisplayUnitGroupCreated")]
+       HRESULT OnDisplayUnitGroupCreated([in] IDisplayUnitGroup* group);
+
+       [helpcontext(IDH_IDisplayUnitMgrEvents_OnDisplayUnitGroupRemoved),helpstring("event OnDisplayUnitGroupRemoved")]
+       HRESULT OnDisplayUnitGroupRemoved([in] BSTR group);
+
+       [helpcontext(IDH_IDisplayUnitMgrEvents_OnDisplayUnitGroupsCleared),helpstring("event OnDisplayUnitGroupsCleared")]
+       HRESULT OnDisplayUnitGroupsCleared();
+};
+
+
+[
+   object,
+   oleautomation,
+   uuid(8D8BE756-EA66-4963-8FAC-935DCC57F434),
+   pointer_default(unique)
+]
+interface IUnitSystemEvents : IUnknown
+{
+	   [helpcontext(IDH_IUnitSystemEvents_OnUpdateDisplay),helpstring("event OnUpdateDisplay")]
+	   HRESULT OnUpdateDisplay();
+
+	   [helpcontext(IDH_IUnitSystemEvents_OnUnitServerChanged),helpstring("event OnUnitServerChanged")]
+	   HRESULT OnUnitServerChanged();
+};
+
+[
+   object,
+   oleautomation,
+   uuid(F71412A3-A63B-4f5b-8A02-9E263090F914),
+   pointer_default(unique)
+]
+interface IUnitModeControllerEvents : IUnknown
+{
+		[helpcontext(IDH_IUnitModeControllerEvents_OnUnitModeChanged),helpstring("method OnUnitModeChanged")]
+		HRESULT OnUnitModeChanged([in]UnitModeType newMode);
+};
+
+[
+   object,
+   oleautomation,
+   uuid(15AE8080-0171-4687-86DB-CD95393202FB),
+   pointer_default(unique)
+]
+interface IDisplayUnitFormatterEvents : IUnknown
+{
+       [helpcontext(IDH_IDisplayUnitFormatterEvents_OnFormatChanged),helpstring("event OnFormatChanged")]
+       HRESULT OnFormatChanged();
+};
+
+[
+   object,
+   oleautomation,
+   uuid(C7C8079B-87E8-4c37-9F31-073A388B5484),
+   pointer_default(unique)
+]
+interface IDocUnitSystemEvents : IUnknown
+{
+		[helpcontext(IDH_IDocUnitSystemEvents_OnUpdateDisplay), helpstring("method OnUpdateDisplay")]
+		HRESULT OnUpdateDisplay();
+};
+
+
+
+	[
+		uuid(16683EE6-558C-11D4-8CE4-0080C7380027),
+		helpstring("DocUnitSystem Class"),
+        helpcontext(IDH_DocUnitSystem)
+	]
+	coclass DocUnitSystem
+	{
+		[default] interface IDocUnitSystem;
+		[default, source] interface IDocUnitSystemEvents;
+	};
+	[
+		uuid(CE8269CC-5568-11d4-8CE4-0080C7380027),
+		helpstring("DisplayUnitMgr2 Class"),
+		helpcontext(IDH_DisplayUnitMgr2),
+		noncreatable // Not directly creatable
+	]
+	coclass DisplayUnitMgr2
+	{
+		[default] interface IDisplayUnitMgr2;
+		[default,source] interface IDisplayUnitMgrEvents;
+	};
+	
+	[
+		uuid(16683EE2-558C-11D4-8CE4-0080C7380027),
+		helpstring("AppUnitSystem Class"),
+		helpcontext(IDH_AppUnitSystem)
+	]
+	coclass AppUnitSystem
+	{
+		[default] interface IAppUnitSystem;
+		[default, source] interface IUnitSystemEvents;
+	};
+    [
+        uuid(C65F03C4-16AB-11D2-8D11-94FA07C10000),
+        helpcontext(IDH_UnitServer),
+        helpstring("UnitServer Class")
+    ]
+    coclass UnitServer
+    {
+        [default] interface IUnitServer;
+        [default,source] interface IUnitServerEventSink;
+        interface IUnitConvert;
+        interface IUnitConvert2;
+    };
+
+	[
+		uuid(51F0A2A2-CAC1-11D3-8CE1-A85CC0A0E770),
+		helpstring("UnitModeController Class"),
+        helpcontext(IDH_UnitModeController)
+	]
+	coclass UnitModeController
+	{
+		[default] interface IUnitModeController;
+		[default, source] interface IUnitModeControllerEvents;
+	};
+
+	[
+		uuid(51F0A2BD-CAC1-11D3-8CE1-A85CC0A0E770),
+		helpstring("DisplayUnitFormatter Class"),
+        helpcontext(IDH_DisplayUnitFormatter)
+	]
+	coclass DisplayUnitFormatter
+	{
+		[default] interface IDisplayUnitFormatter;
+		[default,source] interface IDisplayUnitFormatterEvents;
+	};
+	[
+		uuid(51F0A2BF-CAC1-11D3-8CE1-A85CC0A0E770),
+		helpstring("AnnotatedDisplayUnitFormatter Class"),
+		helpcontext(IDH_AnnotatedDisplayUnitFormatter)
+	]
+	coclass AnnotatedDisplayUnitFormatter
+	{
+		[default] interface IAnnotatedDisplayUnitFormatter;
+		[default,source] interface IDisplayUnitFormatterEvents;
+	};
+
+	[
+		uuid(51F0A2C5-CAC1-11D3-8CE1-A85CC0A0E770),
+		helpstring("UnitSystem Class"),
+		helpcontext(IDH_UnitSystem)
+	]
+	coclass UnitSystem
+	{
+		[default] interface IUnitSystem;
+		[default,source] interface IUnitSystemEvents;
+	};
+
+	[
+		uuid(DAC8CE20-D36F-11d3-8CE1-A4260772F04A),
+		helpstring("DisplayUnitMgr Class"),
+        helpcontext(IDH_DisplayUnitMgr),
+		noncreatable // Not directly creatable
+	]
+	coclass DisplayUnitMgr
+	{
+		[default] interface IDisplayUnitMgr;
+		[default,source] interface IDisplayUnitMgrEvents;
+	};
+	[
+		uuid(47D62466-C499-11d4-8B5B-006097C68A9C),
+		noncreatable,
+		helpstring("Unit Class"),
+        helpcontext(IDH_Unit)
+	]
+	coclass Unit
+	{
+		[default] interface IUnit;
+	};
+
+	[
+		uuid(47D62468-C499-11d4-8B5B-006097C68A9C),
+		noncreatable,
+		helpstring("Units Class"),
+        helpcontext(IDH_Units)
+	]
+	coclass Units
+	{
+		[default] interface IUnits;
+		[default,source] interface IUnitsEventSink;
+	};
+
+	[
+		uuid(47D62469-C499-11d4-8B5B-006097C68A9C),
+		noncreatable,
+		helpstring("UnitType Class"),
+        helpcontext(IDH_UnitType)
+	]
+	coclass UnitType
+	{
+		[default] interface IUnitType;
+		[default, source] interface IUnitTypeEventSink;
+	};
+
+	[
+		uuid(47D6246A-C499-11d4-8B5B-006097C68A9C),
+		noncreatable,
+		helpstring("UnitTypes Class"),
+        helpcontext(IDH_UnitTypes)
+	]
+	coclass UnitTypes
+	{
+		[default] interface IUnitTypes;
+		[default, source] interface IUnitTypesEventSink;
+	};
+
+	[
+		uuid(47D6246B-C499-11d4-8B5B-006097C68A9C),
+		noncreatable,
+		helpstring("DisplayUnit Class"),
+        helpcontext(IDH_DisplayUnit)
+	]
+	coclass DisplayUnit
+	{
+		[default] interface IDisplayUnit;
+		[default, source] interface IDisplayUnitEvents;
+	};
+
+	[
+		uuid(47D6246C-C499-11d4-8B5B-006097C68A9C),
+		noncreatable,
+		helpstring("DisplayUnitGroup Class"),
+        helpcontext(IDH_IDisplayUnitGroup)
+	]
+	coclass DisplayUnitGroup
+	{
+		[default] interface IDisplayUnitGroup;
+		[default, source] interface IDisplayUnitGroupEvents;
+	};
+
+};

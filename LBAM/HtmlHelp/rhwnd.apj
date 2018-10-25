@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rhpml majorversion="1" minorversion="0">
+	<windows>
+		<window>
+			<name>NewWindow</name>
+			<caption>WBFL LBAM (Longitudinal Bridge Analysis Model)</caption>
+			<tocfile></tocfile>
+			<indexfile></indexfile>
+			<defaultfile></defaultfile>
+			<homefile></homefile>
+			<jump1filename></jump1filename>
+			<jump1text></jump1text>
+			<jump2filename></jump2filename>
+			<jump2text></jump2text>
+			<flags>1312</flags>
+			<navpanewidth>0</navpanewidth>
+			<buttons>12302</buttons>
+			<windowplacement>
+				<left>12</left>
+				<top>12</top>
+				<right>812</right>
+				<bottom>612</bottom>
+			</windowplacement>
+			<windowstyle>0</windowstyle>
+			<windowstyleex>0</windowstyleex>
+			<expandedstate>0</expandedstate>
+			<defaulttab>0</defaulttab>
+			<tabposition>0</tabposition>
+			<showwindow>0</showwindow>
+		</window>
+		<window>
+			<name>NewWindow1</name>
+			<caption>WBFL LBAM (Longitudinal Bridge Analysis Model)</caption>
+			<tocfile></tocfile>
+			<indexfile></indexfile>
+			<defaultfile></defaultfile>
+			<homefile></homefile>
+			<jump1filename></jump1filename>
+			<jump1text></jump1text>
+			<jump2filename></jump2filename>
+			<jump2text></jump2text>
+			<flags>1312</flags>
+			<navpanewidth>0</navpanewidth>
+			<buttons>12294</buttons>
+			<windowplacement>
+				<left>5</left>
+				<top>5</top>
+				<right>805</right>
+				<bottom>605</bottom>
+			</windowplacement>
+			<windowstyle>0</windowstyle>
+			<windowstyleex>0</windowstyleex>
+			<expandedstate>0</expandedstate>
+			<defaulttab>0</defaulttab>
+			<tabposition>0</tabposition>
+			<showwindow>0</showwindow>
+		</window>
+	</windows>
+</rhpml>

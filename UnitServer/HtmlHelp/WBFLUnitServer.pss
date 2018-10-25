@@ -1,0 +1,57 @@
+[Target:WebHelp Pro]
+ResultFileName=!SSL!\WebHelp_Pro\WBFLUnitServer.htm
+SSLayoutType=32
+ServerProjectName=WBFLUnitServer
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:WebHelp]
+ResultFileName=!SSL!\WebHelp\WBFLUnitServer.htm
+SSLayoutType=2
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:Microsoft HTML Help]
+ResultFileName=C:\ARP\lib\WBFLUnitServer.chm
+SSLayoutType=1
+CreateProjectTime=15:28, February 09, 2009
+CreateProjectUser=BriceR
+SupportMas_MPJ=1
+ActionID For Generation=1002
+Remove Folder with prompt=1
+ViewFileName=C:\ARP\lib\WBFLUnitServer.chm
+ResultStatus=0
+BuildTimeHi=29985550
+BuildTimeLow=1448989700
+[Target:FlashHelp]
+ResultFileName=!SSL!\FlashHelp\WBFLUnitServer.htm
+SSLayoutType=2
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:Printed Documentation]
+ResultFileName=!SSL!\Printed_Documentation\WBFLUnitServer.doc
+SSLayoutType=7
+[Target:XML Output]
+ResultFileName=!SSL!\XML_Output\WBFLUnitServer.xml
+SSLayoutType=8192
+[PreSingleSource]
+Html Help Project=C:\ARP\WBFL\UnitServer\HtmlHelp\WBFLUnitServer.hhp
+Table Of Content=C:\ARP\WBFL\UnitServer\HtmlHelp\WBFLUnitServer.hhc
+Index=C:\ARP\WBFL\UnitServer\HtmlHelp\WBFLUnitServer_merged$.hhk
+See Also Index=C:\ARP\WBFL\UnitServer\HtmlHelp\WBFLUnitServer.hha
+Browse Sequence=C:\ARP\WBFL\UnitServer\HtmlHelp\WBFLUnitServer.brs
+Topic Properties=C:\ARP\WBFL\UnitServer\HtmlHelp\WBFLUnitServer.trs
+Active Folders=C:\ARP\WBFL\UnitServer\HtmlHelp\WBFLUnitServer.trf
+Baggage Files=C:\ARP\WBFL\UnitServer\HtmlHelp\WBFLUnitServer.trb
+Skin List=C:\ARP\WBFL\UnitServer\HtmlHelp\WBFLUnitServer.trk
+OriginalHhk=C:\ARP\WBFL\UnitServer\HtmlHelp\WBFLUnitServer.hhk
+Active Layout Names=C:\ARP\WBFL\UnitServer\HtmlHelp\WBFLUnitServer.trl
+Default Topic=C:\ARP\WBFL\UnitServer\HtmlHelp\Welcome.htm
+Build Tags0=18919;    
+Build Tags=
+Build Expression=
+Language ID=1033
+Language Name=English
+Language=C:\ARP\WBFL\UnitServer\HtmlHelp\RoboHHRE.lng
+Stop List=C:\ARP\WBFL\UnitServer\HtmlHelp\WBFLUnitServer.stp

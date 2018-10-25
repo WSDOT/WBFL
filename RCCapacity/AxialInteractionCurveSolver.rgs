@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.AxialInteractionCurveSolver.1 = s 'AxialInteractionCurveSolver Class'
+	{
+		CLSID = s '{E2032086-9161-453b-ABF0-2150CAA924AF}'
+	}
+	WBFLRCCapacity.AxialInteractionCurveSolver = s 'AxialInteractionCurveSolver Class'
+	{
+		CLSID = s '{E2032086-9161-453b-ABF0-2150CAA924AF}'
+		CurVer = s 'WBFLRCCapacity.AxialInteractionCurveSolver.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {E2032086-9161-453b-ABF0-2150CAA924AF} = s 'AxialInteractionCurveSolver Class'
+		{
+			ProgID = s 'WBFLRCCapacity.AxialInteractionCurveSolver.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.AxialInteractionCurveSolver'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

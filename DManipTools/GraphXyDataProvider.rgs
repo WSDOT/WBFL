@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManipTools.GraphXyDataProvider.1 = s 'GraphXyDataProvider Class'
+	{
+		CLSID = s '{0462D6DF-25DB-4fa0-B8B2-7B855A702A99}'
+	}
+	WBFLDManipTools.GraphXyDataProvider = s 'GraphXyDataProvider Class'
+	{
+		CLSID = s '{0462D6DF-25DB-4fa0-B8B2-7B855A702A99}'
+		CurVer = s 'WBFLDManipTools.GraphXyDataProvider.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {0462D6DF-25DB-4fa0-B8B2-7B855A702A99} = s 'GraphXyDataProvider Class'
+		{
+			ProgID = s 'WBFLDManipTools.GraphXyDataProvider.1'
+			VersionIndependentProgID = s 'WBFLDManipTools.GraphXyDataProvider'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B7B9C36E-FEAF-43BB-8907-C98A0EF3224E}'
+		}
+	}
+}

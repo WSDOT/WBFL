@@ -1,0 +1,158 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "1 TYPELIB ""WBFLLBAMLiveLoader.tlb""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 3,1,1,0
+ PRODUCTVERSION 3,1,1,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "A member of the Alternate Route Project\0"
+            VALUE "CompanyName", "Washington State Department of Transportation\0"
+            VALUE "FileDescription", "LBAMLiveLoader Module\0"
+            VALUE "FileVersion", "3.1.1.0\0"
+            VALUE "InternalName", "LBAMLiveLoader\0"
+            VALUE "LegalCopyright", "Copyright © 2000-2009\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OLESelfRegister", "\0"
+            VALUE "OriginalFilename", "LBAMLiveLoader.DLL\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "WBFL\0"
+            VALUE "ProductVersion", "3.1.1.0\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+
+IDR_VEHICULARANALYSISCONTEXT REGISTRY DISCARDABLE    "VehicularAnalysisContext.rgs"
+IDR_BASICVEHICULARRESPONSE REGISTRY DISCARDABLE    "BasicVehicularResponse.rgs"
+IDR_BRUTEFORCEVEHICULARRESPONSE REGISTRY DISCARDABLE    "BruteForceVehicularResponse.rgs"
+IDR_BRUTEFORCEVEHICULARRESPONSE2 REGISTRY DISCARDABLE    "BruteForceVehicularResponse2.rgs"
+IDR_LIVELOADCONFIGURATION REGISTRY DISCARDABLE    "LiveLoadConfiguration.rgs"
+IDR_LIVELOADMODELRESPONSE REGISTRY DISCARDABLE    "LiveLoadModelResponse.rgs"
+IDR_LIVELOADMODELRESULTS REGISTRY DISCARDABLE    "LiveLoadModelResults.rgs"
+IDR_LIVELOADMODELSTRESSRESULTS REGISTRY DISCARDABLE    "LiveLoadModelStressResults.rgs"
+IDR_LIVELOADMODELSECTIONRESULTS REGISTRY DISCARDABLE    "LiveLoadModelSectionResults.rgs"
+IDR_ENVELOPEDVEHICULARRESPONSEFACTORY REGISTRY DISCARDABLE "EnvelopedVehicularResponseFactory.rgs"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PROJNAME            "LBAMLiveLoader"
+    IDS_E_MUST_BE_ONE_MORE_SUPPORT_THAN_SPANS 
+                            "Invalid number of spans or supports. The number of spans must be one less than the number of supports."
+    IDS_E_SUPERSTRUCTURE_TOO_SHORT 
+                            "The total length of the SuperstructureMembers must be greater than or equal to the sum of the Span lengths plus the Left Overhang. This is not the case for your LBAM."
+    IDS_E_LL_INITIALIZATION "Initialize must be called once and only once."
+    IDS_E_INVALID_INTEGER_ARRAY 
+                            "Invalid SafeArray of Integers. Cannot process results."
+    IDS_E_INVALID_VEHICULAR_CONTEXT 
+                            "A problem occured getting an interface from the VehicularContext."
+    IDS_E_VAR_AXLE_OOR      "Index of variable axle out of range for Vehicular Load %S"
+    IDS_E_VAR_SPACING_OOR   "Variable axle spacing exceeds max for Vehicular Load %S"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_E_INVALID_VAR_SPACING 
+                            "Invalid variable axle spacing. The max spacing must be greater than the min spacing."
+    IDS_E_TS_NOT_FOUND      "Temporary Support %d referenced by POI %d does not exist."
+    IDS_SUPPORT_NOT_EXIST   "Support %d was not found in the model for the given stage."
+    IDS_E_VEHICULARLOAD_NOT_FOUND 
+                            "The specified vehicular load was not found "
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+1 TYPELIB "WBFLLBAMLiveLoader.tlb"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

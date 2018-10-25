@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLoading.StrainLoads.1 = s 'StrainLoads Class'
+	{
+		CLSID = s '{E94C40B2-A06F-425f-86BD-0614C7949A40}'
+	}
+	WBFLLoading.StrainLoads = s 'StrainLoads Class'
+	{
+		CLSID = s '{E94C40B2-A06F-425f-86BD-0614C7949A40}'
+		CurVer = s 'WBFLLoading.StrainLoads.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {E94C40B2-A06F-425f-86BD-0614C7949A40} = s 'StrainLoads Class'
+		{
+			ProgID = s 'WBFLLoading.StrainLoads.1'
+			VersionIndependentProgID = s 'WBFLLoading.StrainLoads'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{81DDDDC6-EC00-4E8D-A000-08C10F134EDA}'
+		}
+	}
+}

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManipTools.DManipToolsDisplayObjectFactory.1 = s 'DManipToolsDisplayObjectFactory Class'
+	{
+		CLSID = s '{D7C33DA2-EE8F-49a1-9A13-8653809262E9}'
+	}
+	WBFLDManipTools.DManipToolsDisplayObjectFactory = s 'DManipToolsDisplayObjectFactory Class'
+	{
+		CLSID = s '{D7C33DA2-EE8F-49a1-9A13-8653809262E9}'
+		CurVer = s 'WBFLDManipTools.DManipToolsDisplayObjectFactory.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {D7C33DA2-EE8F-49a1-9A13-8653809262E9} = s 'DManipToolsDisplayObjectFactory Class'
+		{
+			ProgID = s 'WBFLDManipTools.DManipToolsDisplayObjectFactory.1'
+			VersionIndependentProgID = s 'WBFLDManipTools.DManipToolsDisplayObjectFactory'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B7B9C36E-FEAF-43BB-8907-C98A0EF3224E}'
+		}
+	}
+}

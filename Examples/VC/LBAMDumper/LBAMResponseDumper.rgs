@@ -1,0 +1,26 @@
+HKCR
+{
+	LBAMDumper.LBAMResponseDumper.1 = s 'LBAMResponseDumper Class'
+	{
+		CLSID = s '{0F4EB9EE-1F5C-4460-BE11-53C71F8645FE}'
+	}
+	LBAMDumper.LBAMResponseDumper = s 'LBAMResponseDumper Class'
+	{
+		CLSID = s '{0F4EB9EE-1F5C-4460-BE11-53C71F8645FE}'
+		CurVer = s 'LBAMDumper.LBAMResponseDumper.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {0F4EB9EE-1F5C-4460-BE11-53C71F8645FE} = s 'LBAMResponseDumper Class'
+		{
+			ProgID = s 'LBAMDumper.LBAMResponseDumper.1'
+			VersionIndependentProgID = s 'LBAMDumper.LBAMResponseDumper'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{F10318E7-0E1C-4C5C-B320-4360286E5E59}'
+		}
+	}
+}

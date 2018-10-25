@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.LFDSolver.1 = s 'LFDSolver Class'
+	{
+		CLSID = s '{267BF7DB-1E9F-43e7-95AF-157776848D60}'
+	}
+	WBFLRCCapacity.LFDSolver = s 'LFDSolver Class'
+	{
+		CLSID = s '{267BF7DB-1E9F-43e7-95AF-157776848D60}'
+		CurVer = s 'WBFLRCCapacity.LFDSolver.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {267BF7DB-1E9F-43e7-95AF-157776848D60} = s 'LFDSolver Class'
+		{
+			ProgID = s 'WBFLRCCapacity.LFDSolver.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.LFDSolver'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

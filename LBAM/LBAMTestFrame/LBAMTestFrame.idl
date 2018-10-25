@@ -1,0 +1,415 @@
+// LBAMTestFrame.idl : IDL source for LBAMTestFrame.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (LBAMTestFrame.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "WBFLTools.idl";
+import "LBAM.idl";
+import "LBAMAnalysis.idl";
+
+cpp_quote("#define LBAMTF_E_INVALID_LOADING_TYPE  				     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,701)")
+cpp_quote("#define LBAMTF_E_INVALID_RESULTS_ORIENTATION              MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,702)")
+cpp_quote("#define LBAMTF_E_INVALID_RESULTS_SUMMATION                MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,703)")
+cpp_quote("#define LBAMTF_E_NO_MODEL                                 MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,704)")
+cpp_quote("#define LBAMTF_E_NO_LOADGROUP_RESPONSE                    MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,705)")
+cpp_quote("#define LBAMTF_E_NO_BENCHMARK                             MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,706)")
+cpp_quote("#define LBAMTF_E_FILE_NOT_OPEN                            MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,707)")
+cpp_quote("#define LBAMTF_E_INVALID_FORCE_EFFECT                     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,708)")
+cpp_quote("#define LBAMTF_E_INVALID_RESPONSE_TYPE                    MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,709)")
+cpp_quote("#define LBAMTF_E_NO_INFLUENCE_RESPONSE                    MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,710)")
+cpp_quote("#define LBAMTF_E_INVALID_PROCESSINGTYPE                    MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,711)")
+
+
+
+   typedef
+   [
+      public,
+      uuid(99DE7606-C96F-11d5-B085-00105A9AF985),
+      helpstring("Designates type of loading"),
+   ]
+   enum LoadingType
+   {
+        ltLoadGroup = 0,
+        ltLoadCase  = 1,
+        ltLoadCombination =2
+   } LoadingType;
+
+   typedef
+   [
+      public,
+      uuid(DD99FAFC-CA28-11d5-B086-00105A9AF985),
+      helpstring("Designates result of test"),
+   ] 
+   enum TestResult
+   {
+ 	   trFailed   = 0,
+	   trPassed   = 1
+   } TestResult;
+
+   typedef
+   [
+      public,
+      uuid(56675FFD-22C2-43ec-B1CF-235C69B9E89A),
+      helpstring("Designates type of response for influence - deflections or forces"),
+   ] 
+   enum ResponseType
+   {
+ 	   rtForces   = 0,
+	   rtDeflections   = 1
+   } ResponseType;
+
+   typedef
+   [
+      public,
+      uuid(56D1C1A9-37B7-408e-B027-EEAB18EFDA51),
+      helpstring("Designates processing to be applied to influence line"),
+   ]
+   enum InfluenceProcessingType
+   {
+ 	   iptRaw   = 0,
+	   iptFlattenPositive = 1,
+	   iptFlattenNegative = 2
+   } InfluenceProcessingType;
+
+	[
+		object,
+		uuid(DD99FAFD-CA28-11d5-B086-00105A9AF985),
+		dual,  nonextensible,
+		helpstring("ITestRequest Interface"),
+		pointer_default(unique)
+	]
+	interface ITestRequest : IDispatch
+	{
+		[propget, id(1), helpstring("Get Description of test request")] HRESULT Description([out, retval] BSTR *pVal);
+	};
+
+	[
+		object,
+		uuid(2349747F-C954-11D5-B085-00105A9AF985),
+		dual, nonextensible,
+		helpstring("ISectionResultRequest Interface"),
+		pointer_default(unique)
+	]
+	interface ISectionResultRequest : IDispatch
+	{
+		[propget, id(1), helpstring("property PoiId")] HRESULT PoiId([out, retval] long *pVal);
+		[propput, id(1), helpstring("property PoiId")] HRESULT PoiId([in] long newVal);
+		[propget, id(2), helpstring("property STage")] HRESULT Stage([out, retval] BSTR *pVal);
+		[propput, id(2), helpstring("property STage")] HRESULT Stage([in] BSTR newVal);
+		[propget, id(3), helpstring("property LoadingType")] HRESULT LoadingType([out, retval] LoadingType *pVal);
+		[propput, id(3), helpstring("property LoadingType")] HRESULT LoadingType([in] LoadingType newVal);
+		[propget, id(4), helpstring("property LoadingName")] HRESULT LoadingName([out, retval] BSTR *pVal);
+		[propput, id(4), helpstring("property LoadingName")] HRESULT LoadingName([in] BSTR newVal);
+		[propget, id(5), helpstring("property ResultsSummationType")] HRESULT ResultsSummationType([out, retval] ResultsSummationType *pVal);
+		[propput, id(5), helpstring("property ResultsSummationType")] HRESULT ResultsSummationType([in] ResultsSummationType newVal);
+		[propget, id(6), helpstring("property ResultsOrientation")] HRESULT ResultsOrientation([out, retval] ResultsOrientation *pVal);
+		[propput, id(6), helpstring("property ResultsOrientation")] HRESULT ResultsOrientation([in] ResultsOrientation newVal);
+		[propget, id(7), helpstring("property SectionForceResult")] HRESULT SectionForceResult([out, retval] ISectionResult3D* *pVal);
+		[propput, id(7), helpstring("property SectionForceResult")] HRESULT SectionForceResult([in] ISectionResult3D* newVal);
+		[id(8), helpstring("method Clone")] HRESULT Clone([out,retval]ISectionResultRequest* *clone);
+		[propget, id(9), helpstring("property DeflectionResult")] HRESULT DeflectionResult([out, retval] ISectionResult3D* *pVal);
+		[propput, id(9), helpstring("property DeflectionResult")] HRESULT DeflectionResult([in] ISectionResult3D* newVal);
+		[propget, id(10), helpstring("property StressResults")] HRESULT StressResults([out, retval] ISectionStressResult* *pVal);
+		[propput, id(10), helpstring("property StressResults")] HRESULT StressResults([in] ISectionStressResult* newVal);
+	};
+
+
+	[
+	   object,
+	   uuid(99DE7607-C96F-11d5-B085-00105A9AF985),
+	   helpstring("IEnumSectionResultRequest Interface"),
+	   oleautomation,nonextensible,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumSectionResultRequest : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumSectionResultRequest** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] ISectionResultRequest** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+		object,
+		uuid(0C73194D-C970-11D5-B085-00105A9AF985),
+		dual,  nonextensible,
+		helpstring("ISectionResultRequests Interface"),
+		pointer_default(unique)
+	]
+	interface ISectionResultRequests : IDispatch
+	{
+		[propget, id(DISPID_VALUE), helpstring("property Item")] 
+		HRESULT Item([in]long idx, [out, retval] ISectionResultRequest** pVal);
+
+		[propget, id(DISPID_NEWENUM), helpstring("returns an enumerator for the collection.")]
+		HRESULT _NewEnum([out, retval] IUnknown** retval);  
+
+		[propget, id(1), helpstring("property Count - Number of SectionResultRequests in collection")] 
+		HRESULT Count([out, retval] long *pVal);
+
+		[propget, id(2), helpstring("property _EnumElements")] 
+		HRESULT _EnumElements([out, retval] IEnumSectionResultRequest* *pVal);
+
+		[id(3), helpstring("Add a new SectionResultRequest to the model")] 
+		HRESULT Add([in] ISectionResultRequest *pVal);
+
+		[id(4), helpstring("Insert a new SectionResultRequest to the model")] 
+		HRESULT Insert([in] long index, [in] ISectionResultRequest *pVal);
+
+		[id(5), helpstring("method Remove Remove a SectionResultRequest using sequential index.")] 
+		HRESULT Remove([in]long index);
+
+		[id(6), helpstring("method Clear - Remove all SectionResultRequests")] 
+        HRESULT Clear();
+	};
+
+ 
+	[
+		object,
+		uuid(DD99FAFA-CA28-11d5-B086-00105A9AF985),
+		dual, oleautomation, nonextensible,
+		helpstring("ITestLogger Interface"),
+		pointer_default(unique)
+	]
+	interface ITestLogger : IDispatch
+	{
+		[propget, id(1), helpstring("Get total number of tests run")] HRESULT TotalTests([out, retval] long *pVal);
+		[propget,id(2), helpstring("Get total number of tests failed")] HRESULT TotalFails([out, retval] long *pVal);
+		[id(3),helpstring("method AddTestEntry")] HRESULT AddTestEntry([in]TestResult result, [in]BSTR message);
+		[id(4),helpstring("method AddDescriptionEntry")] HRESULT AddDescriptionEntry([in]BSTR description);
+	};
+
+	[
+		object,
+		uuid(2B11CDD5-CA1B-11D5-B086-00105A9AF985),
+		dual, oleautomation, nonextensible,
+		helpstring("IFileTestLogger Interface"),
+		pointer_default(unique)
+	]
+	interface IFileTestLogger : ITestLogger
+	{
+		[propget, id(221),helpstring("property FileName")] HRESULT FileName([out, retval] BSTR *pVal);
+		[id(222), helpstring("method Open")] HRESULT Open([in]BSTR FileName);
+		[id(223), helpstring("method Close")] HRESULT Close();
+	};
+
+
+	[
+		object,
+		uuid(3E708917-50A7-47F9-9027-1A851839CEB4),
+		dual,
+		helpstring("IInfluenceResultRequest Interface"),
+		pointer_default(unique)
+	]
+	interface IInfluenceResultRequest : IDispatch
+	{
+		[propget, id(1), helpstring("property PoiId")] HRESULT PoiId([out, retval] long *pVal);
+		[propput, id(1), helpstring("property PoiId")] HRESULT PoiId([in] long newVal);
+		[propget, id(2), helpstring("property STage")] HRESULT Stage([out, retval] BSTR *pVal);
+		[propput, id(2), helpstring("property STage")] HRESULT Stage([in] BSTR newVal);
+		[propget, id(3), helpstring("property ForceEffectType")] HRESULT ForceEffectType([out, retval] ForceEffectType *pVal);
+		[propput, id(3), helpstring("property ForceEffectType")] HRESULT ForceEffectType([in] ForceEffectType newVal);
+		[propget, id(6), helpstring("property ResultsOrientation")] HRESULT ResultsOrientation([out, retval] ResultsOrientation *pVal);
+		[propput, id(6), helpstring("property ResultsOrientation")] HRESULT ResultsOrientation([in] ResultsOrientation newVal);
+		[propget, id(7), helpstring("property InfluenceLine")] HRESULT InfluenceLine([out, retval] IInfluenceLine* *pVal);
+		[propput, id(7), helpstring("property InfluenceLine")] HRESULT InfluenceLine([in] IInfluenceLine* newVal);
+		[id(8), helpstring("method Clone")] HRESULT Clone([out,retval]IInfluenceResultRequest* *clone);
+		[propget, id(9), helpstring("property ResponseType")] HRESULT ResponseType([out, retval] ResponseType *pVal);
+		[propput, id(9), helpstring("property ResponseType")] HRESULT ResponseType([in] ResponseType newVal);
+		[propget, id(11), helpstring("property InfluenceProcessing")] HRESULT InfluenceProcessing([out, retval] InfluenceProcessingType *pVal);
+		[propput, id(11), helpstring("property InfluenceProcessing")] HRESULT InfluenceProcessing([in] InfluenceProcessingType newVal);
+	};
+
+	[
+	   object,
+	   uuid(46E91320-9A16-409a-9360-0FCB77D19D83),
+	   helpstring("IEnumInfluenceResultRequest Interface"),
+	   oleautomation,nonextensible,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumInfluenceResultRequest : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumInfluenceResultRequest** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] IInfluenceResultRequest** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+		object,
+		uuid(9AE3103E-4E1C-4002-9971-89152065A0DB),
+		dual,  nonextensible,
+		helpstring("IInfluenceResultRequests Interface"),
+		pointer_default(unique)
+	]
+	interface IInfluenceResultRequests : IDispatch
+	{
+		[propget, id(DISPID_VALUE), helpstring("property Item")] 
+		HRESULT Item([in]long idx, [out, retval] IInfluenceResultRequest** pVal);
+
+		[propget, id(DISPID_NEWENUM), helpstring("returns an enumerator for the collection.")]
+		HRESULT _NewEnum([out, retval] IUnknown** retval);  
+
+		[propget, id(1), helpstring("property Count - Number of InfluenceResultRequests in collection")] 
+		HRESULT Count([out, retval] long *pVal);
+
+		[propget, id(2), helpstring("property _EnumElements")] 
+		HRESULT _EnumElements([out, retval] IEnumInfluenceResultRequest* *pVal);
+
+		[id(3), helpstring("Add a new InfluenceResultRequest to the model")] 
+		HRESULT Add([in] IInfluenceResultRequest *pVal);
+
+		[id(4), helpstring("Insert a new InfluenceResultRequest to the model")] 
+		HRESULT Insert([in] long index, [in] IInfluenceResultRequest *pVal);
+
+		[id(5), helpstring("method Remove Remove a InfluenceResultRequest using sequential index.")] 
+		HRESULT Remove([in]long index);
+
+		[id(6), helpstring("method Clear - Remove all InfluenceResultRequests")] 
+        HRESULT Clear();
+	};
+
+	[
+		object,
+		uuid(0C73194F-C970-11D5-B085-00105A9AF985),
+		dual, nonextensible, 
+		helpstring("ILBAMTester Interface"),
+		pointer_default(unique)
+	]
+	interface ILBAMTester : IDispatch
+	{
+		[propget, id(1), helpstring("property ForceMinTolerance")] HRESULT ForceMinTolerance([out, retval] double *pVal);
+		[propput, id(1), helpstring("property ForceMinTolerance")] HRESULT ForceMinTolerance([in] double newVal);
+		[propget, id(2), helpstring("property ForceMinPercentDiff")] HRESULT ForceMinPercentDiff([out, retval] double *pVal);
+		[propput, id(2), helpstring("property ForceMinPercentDiff")] HRESULT ForceMinPercentDiff([in] double newVal);
+		[propget, id(3), helpstring("property Model")] HRESULT Model([out, retval] ILBAMModel* *pVal);
+		[propputref, id(3), helpstring("property Model")] HRESULT Model([in] ILBAMModel* newVal);
+		[id(4), helpstring("method AttachToModelFile")] HRESULT AttachToModelFile([in]BSTR FileName);
+		[propget, id(5), helpstring("property AnalysisType")] HRESULT AnalysisType([out, retval] AnalysisType *pVal);
+		[propput, id(5), helpstring("property AnalysisType")] HRESULT AnalysisType([in] AnalysisType newVal);
+		[propget, id(6), helpstring("property SectionResultRequests")] HRESULT SectionResultRequests([out, retval] ISectionResultRequests* *pVal);
+		[id(7), helpstring("method ValidateResults")] HRESULT ValidateResults([in]ITestLogger* Logger);
+		[id(8), helpstring("method FillResults")] HRESULT FillResults();
+		[propget, id(9), helpstring("property Description")] HRESULT Description([out, retval] BSTR *pVal);
+		[propput, id(9), helpstring("property Description")] HRESULT Description([in] BSTR newVal);
+		[propget, id(10), helpstring("property DoComputeForces")] HRESULT DoComputeForces([out, retval] VARIANT_BOOL *pVal);
+		[propput, id(10), helpstring("property DoComputeForces")] HRESULT DoComputeForces([in] VARIANT_BOOL newVal);
+		[propget, id(11), helpstring("property DoComputeDeflections")] HRESULT DoComputeDeflections([out, retval] VARIANT_BOOL *pVal);
+		[propput, id(11), helpstring("property DoComputeDeflections")] HRESULT DoComputeDeflections([in] VARIANT_BOOL newVal);
+		[propget, id(12), helpstring("property DeflectionMinPercentDiff")] HRESULT DeflectionMinPercentDiff([out, retval] double *pVal);
+		[propput, id(12), helpstring("property DeflectionMinPercentDiff")] HRESULT DeflectionMinPercentDiff([in] double newVal);
+		[propget, id(13), helpstring("property DeflectionMinTolerance")] HRESULT DeflectionMinTolerance([out, retval] double *pVal);
+		[propput, id(13), helpstring("property DeflectionMinTolerance")] HRESULT DeflectionMinTolerance([in] double newVal);
+		[propget, id(14), helpstring("property StressMinPercentDiff")] HRESULT StressMinPercentDiff([out, retval] double *pVal);
+		[propput, id(14), helpstring("property StressMinPercentDiff")] HRESULT StressMinPercentDiff([in] double newVal);
+		[propget, id(15), helpstring("property StressMinTolerance")] HRESULT StressMinTolerance([out, retval] double *pVal);
+		[propput, id(15), helpstring("property StressMinTolerance")] HRESULT StressMinTolerance([in] double newVal);
+		[propget, id(16), helpstring("property DoComputeStresses")] HRESULT DoComputeStresses([out, retval] VARIANT_BOOL *pVal);
+		[propput, id(16), helpstring("property DoComputeStresses")] HRESULT DoComputeStresses([in] VARIANT_BOOL newVal);
+		[id(17), helpstring("method ClearResults")] HRESULT ClearResults();
+		[id(18 ), helpstring("method ImportResultsFromFile")] HRESULT ImportResultsFromFile([in]BSTR FileName);
+		[id(19), helpstring("method LoadFromFile")] HRESULT LoadFromFile([in]BSTR fileName);
+		[id(20), helpstring("method SaveToFile")] HRESULT SaveToFile([in]BSTR fileName);
+		[propget, id(21), helpstring("property InfluenceResultRequests")] HRESULT InfluenceResultRequests([out, retval] IInfluenceResultRequests* *pVal);
+	}; 
+
+[
+	uuid(23497471-C954-11D5-B085-00105A9AF985),
+	version(1.0),
+	helpstring("WBFL LBAMTestFrame Version 1.0")
+]
+library WBFLLBAMTESTFRAMELib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(23497480-C954-11D5-B085-00105A9AF985),
+		helpstring("SectionResultRequest Class")
+	]
+	coclass SectionResultRequest
+	{
+		[default] interface ISectionResultRequest;
+        interface ITestRequest;
+        interface IPersist;
+        interface IStructuredStorage2;
+	};
+	[
+		uuid(0C73194E-C970-11D5-B085-00105A9AF985),
+		helpstring("SectionResultRequests Class")
+	]
+	coclass SectionResultRequests
+	{
+		[default] interface ISectionResultRequests;
+        interface IPersist;
+        interface IStructuredStorage2;
+	};
+	[
+		uuid(0C731950-C970-11D5-B085-00105A9AF985),
+		helpstring("LBAMTester Class")
+	]
+	coclass LBAMTester
+	{
+		[default] interface ILBAMTester;
+        interface IPersist;
+        interface IStructuredStorage2;
+	};
+
+	[
+		uuid(2B11CDD6-CA1B-11D5-B086-00105A9AF985),
+		helpstring("FileTestLogger Class")
+	]
+	coclass FileTestLogger
+	{
+		[default] interface IFileTestLogger;
+	};
+	[
+		uuid(D7D9D7FF-0041-483B-8641-E1042EFCF6C3),
+		helpstring("_IInfluenceResultRequestEvents Interface")
+	]
+	dispinterface _IInfluenceResultRequestEvents
+	{
+		properties:
+		methods:
+	};
+
+	[
+		uuid(E85066D7-9661-4EFA-9B76-0D5C4475F1E4),
+		helpstring("InfluenceResultRequest Class")
+	]
+	coclass InfluenceResultRequest
+	{
+		[default] interface IInfluenceResultRequest;
+		[default, source] dispinterface _IInfluenceResultRequestEvents;
+        interface ITestRequest;
+        interface IPersist;
+        interface IStructuredStorage2;
+	};
+	[
+		uuid(E8CE246A-5B63-496E-A9CF-329EAC0D838B),
+		helpstring("InfluenceResultRequests Class")
+	]
+	coclass InfluenceResultRequests
+	{
+		[default] interface IInfluenceResultRequests;
+	};
+};

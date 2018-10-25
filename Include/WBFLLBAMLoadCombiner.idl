@@ -1,0 +1,442 @@
+///////////////////////////////////////////////////////////////////////
+// LBAM Load Combiner - Longitindal Bridge Analysis Model
+// Copyright (C) 2009  Washington State Department of Transportation
+//                     Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// LBAMLoadCombiner.idl : IDL source for LBAMLoadCombiner.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (LBAMLoadCombiner.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "WBFLTypes.idl";
+import "WBFLTools.idl";
+import "WBFLLBAM.idl";
+import "WBFLLBAMAnalysis.idl";
+import "WBFLLBAMLiveLoader.idl";
+
+#include "LBAMLoadCombiner.hh"
+cpp_quote("#include \"LBAMLoadCombinerErrors.h\"")
+
+
+[
+	uuid(F109AF06-2C48-4503-9780-D4FD8D2674FA),
+	version(1.0),
+	helpstring("WBFLLBAMLoadCombiner Library"),
+   helpfile("WBFLLBam.chm"),
+   helpcontext(IDH_WBFLLBAMLoadCombiner)
+]
+library WBFLLBAMLoadCombiner
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+   typedef
+   [
+      public,
+      uuid(959322BB-58AE-4c8f-B5DB-0603DA5E9AD1),
+      helpstring("Designates target class of change. Not particularly useful to most clients except C++ DispInterface handlers"),
+   ] 
+   enum 
+   {
+     cctILoadCombinationAnalysisContextChanged = 80001,
+	  cctResultsChanged                         = 80002,
+	  cctCombinationChanged                     = 80003
+   } LBAMLCChangeTargetType;
+
+   typedef
+   [
+      public,
+      uuid(6EE31018-31E8-4dff-90A7-A9DA4A0BAE87),
+      helpstring("Designates type of combination - LoadCase or LoadCombination"),
+      helpcontext(IDH_ComboType)
+   ] 
+   enum 
+   {
+     ctLoadCase         = 1,
+	  ctLoadCombination  =2
+   } ComboType;
+
+
+	[
+		object,
+		uuid(27090848-5158-4AB7-AFCD-7B1DAD2F1C17),
+		oleautomation,
+		helpstring("ILoadCombinationAnalysisContext Interface"),
+      helpcontext(IDH_LoadCombinationAnalysisContext),
+		pointer_default(unique)
+	]
+	interface ILoadCombinationAnalysisContext : IUnknown
+	{
+		[helpstring("method Initialize"),helpcontext(IDH_LoadCombinationAnalysisContext_Initialize)] 
+      HRESULT Initialize([in]ILBAMModel* model, [in]ILoadGroupResponse* loadGroupResponse, 
+                         [in]ILiveLoadModelResponse* liveLoadModelResponse, [in]IBasicVehicularResponse* bvResponse,
+                         [in]IAnalysisPOIs* analysisPOIs,[in]IGetStressPoints* GetStressPoints);
+	};
+
+
+    [
+       object,
+       oleautomation,
+       uuid(B4B0AB00-60BB-49d2-8A47-2151E912C3DE),
+       pointer_default(unique),
+       helpcontext(IDH_LoadCombinationAnalysisContext),
+       helpstring("ILoadCombinationAnalysisContextEvents Interface")
+    ]
+	interface ILoadCombinationAnalysisContextEvents : IUnknown
+	{
+		[helpstring("method OnCombinationChanged"),helpcontext(IDH_LoadCombinationAnalysisContext_OnCombinationChanged)] 
+		HRESULT OnCombinationChanged([in]ComboType ctype, [in] BSTR combination);
+		[helpstring("method OnResultsChanged - Something changed to invalidate the analysis model"),helpcontext(IDH_LoadCombinationAnalysisContext_OnResultsChanged)] 
+		HRESULT OnResultsChanged();
+	};
+
+	[
+		object,
+		uuid(E8DCEFD6-1756-45a1-9E3E-79C9EDADA403),
+		oleautomation,
+		helpstring("IGetCombinationFactors Interface"),
+      helpcontext(IDH_GetCombinationFactors),
+		pointer_default(unique)
+	]
+	interface IGetCombinationFactors : IUnknown
+	{
+		[helpstring("method GetPOICombinationFactors"),helpcontext(IDH_GetCombinationFactors_GetPOICombinationFactors)] 
+      HRESULT GetPOICombinationFactors([in]PoiIDType POI, [in]BSTR Stage, [in]LoadCombinationType type, [out]Float64* minLoadModifier, [out]Float64* maxLoadModifier);
+		[helpstring("method GetSupportCombinationFactors"),helpcontext(IDH_GetCombinationFactors_GetSupportCombinationFactors)] 
+      HRESULT GetSupportCombinationFactors([in]SupportIDType supportID, [in]BSTR Stage, [in]LoadCombinationType type, [out]Float64* minLoadModifier, [out]Float64* maxLoadModifier);
+	};
+
+	[
+		object,
+		uuid(D30B0176-CB31-44B6-9296-F5957AF35297),
+		oleautomation,
+		helpstring("ILoadCaseResponse Interface"),
+      helpcontext(IDH_LoadCaseResponse),
+		pointer_default(unique)
+	]
+	interface ILoadCaseResponse : IUnknown
+	{
+		[helpstring("method ComputeForces"),helpcontext(IDH_LoadCaseResponse_ComputeForces)] 
+      HRESULT ComputeForces([in]BSTR LoadCase, [in]ILongArray* poiIDs, [in]BSTR Stage, [in]ResultsOrientation orientation, [in]ResultsSummationType summ, [out,retval]ISectionResult3Ds** results);
+		[helpstring("method ComputeDeflections"),helpcontext(IDH_LoadCaseResponse_ComputeDeflections)] 
+      HRESULT ComputeDeflections([in]BSTR LoadCase, [in]ILongArray* poiIDs, [in]BSTR Stage, [in]ResultsSummationType summ, [out,retval]ISectionResult3Ds** results);
+		[helpstring("method ComputeReactions"),helpcontext(IDH_LoadCaseResponse_ComputeReactions)] 
+      HRESULT ComputeReactions([in]BSTR LoadCase, [in]ILongArray* supportIDs, [in]BSTR Stage, [in]ResultsSummationType summ, [out,retval]IResult3Ds** results);
+		[helpstring("method ComputeSupportDeflections"),helpcontext(IDH_LoadCaseResponse_ComputeSupportDeflections)] 
+      HRESULT ComputeSupportDeflections([in]BSTR LoadCase, [in]ILongArray* supportIDs, [in]BSTR Stage, [in]ResultsSummationType summ, [out,retval]IResult3Ds** results);
+		[helpstring("method ComputeStresses"),helpcontext(IDH_LoadCaseResponse_ComputeStresses)] 
+      HRESULT ComputeStresses([in]BSTR LoadCase, [in]ILongArray* poiIDs, [in]BSTR Stage, [in]ResultsSummationType summ, [out,retval]ISectionStressResults** results);
+	};
+
+	[
+		object,
+		uuid(B08D9240-43D0-4b71-9949-A06BB56B11DC),
+		oleautomation,
+		helpstring("IDependOnLoadCombinationAnalysisContext Interface"),
+      helpcontext(IDH_DependOnLoadCombinationAnalysisContext),
+		pointer_default(unique)
+	]
+	interface IDependOnLoadCombinationAnalysisContext : IUnknown
+	{
+		[helpstring("Intialize the dependent strategy/module with a context"),helpcontext(IDH_DependOnLoadCombinationAnalysisContext_Initialize)] 
+		HRESULT Initialize([in]IUnknown* context);
+	};
+
+	[
+		object,
+		uuid(213F09DE-BB24-4A22-B8B3-7FD55651783E),
+		oleautomation,
+		helpstring("ILoadCombinationResultConfiguration Interface"),
+      helpcontext(IDH_LoadCombinationResultConfiguration),
+		pointer_default(unique)
+	]
+	interface ILoadCombinationResultConfiguration : IUnknown
+	{
+		[propget, helpstring("property LoadCaseFactorCount"),helpcontext(IDH_LoadCombinationResultConfiguration_LoadCaseFactorCount)] 
+      HRESULT LoadCaseFactorCount([out, retval] CollectionIndexType *pVal);
+		
+      [helpstring("method GetLoadCaseFactor"),helpcontext(IDH_LoadCombinationResultConfiguration_GetLoadCaseFactor)] 
+      HRESULT GetLoadCaseFactor([in]CollectionIndexType index, [out]BSTR* loadCase, [out]Float64* factor);
+		
+      [helpstring("method AddLoadCaseFactor"),helpcontext(IDH_LoadCombinationResultConfiguration_AddLoadCaseFactor)] 
+      HRESULT AddLoadCaseFactor( [in]BSTR loadCase, [in]Float64 factor);
+		
+      [propget, helpstring("property LiveLoadFactor"),helpcontext(IDH_LoadCombinationResultConfiguration_LiveLoadFactor)] 
+      HRESULT LiveLoadFactor([out, retval] Float64 *pVal);
+		
+      [propput, helpstring("property LiveLoadFactor"),helpcontext(IDH_LoadCombinationResultConfiguration_LiveLoadFactor)] 
+      HRESULT LiveLoadFactor([in] Float64 newVal);
+		
+      [helpstring("method AddLiveLoadConfiguration"),helpcontext(IDH_LoadCombinationResultConfiguration_LiveLoadConfiguration)] 
+      HRESULT AddLiveLoadConfiguration([in]ILiveLoadConfiguration* Config);
+		
+      [helpstring("method GetLiveLoadConfiguration"),helpcontext(IDH_LoadCombinationResultConfiguration_LiveLoadConfiguration)] 
+      HRESULT GetLiveLoadConfiguration([in] CollectionIndexType index,[out,retval]ILiveLoadConfiguration* *Config);
+		
+      [helpstring("method GetLiveLoadConfigurationCount"),helpcontext(IDH_LoadCombinationResultConfiguration_LiveLoadConfiguration)] 
+      HRESULT GetLiveLoadConfigurationCount([out,retval]CollectionIndexType* count);
+		
+      [propget, helpstring("property SummationType"),helpcontext(IDH_LoadCombinationResultConfiguration_SummationType)] 
+      HRESULT SummationType([out, retval] ResultsSummationType *pVal);
+		
+      [propput, helpstring("property SummationType"),helpcontext(IDH_LoadCombinationResultConfiguration_SummationType)] 
+      HRESULT SummationType([in] ResultsSummationType newVal);
+	};
+
+	[
+		object,
+		uuid(5FD09BF8-C76C-4955-B7BA-58FFAC06A10C),
+		oleautomation,
+		helpstring("ILoadCombinationResults Interface"),
+      helpcontext(IDH_LoadCombinationResults),
+		pointer_default(unique)
+	]
+	interface ILoadCombinationResults : IUnknown
+	{
+		[helpstring("method Clear"),helpcontext(IDH_LoadCombinationResults_Clear)] 
+      HRESULT Clear();
+		
+      [helpstring("method Reserve"),helpcontext(IDH_LoadCombinationResults_Reserve)] 
+      HRESULT Reserve([in]CollectionIndexType size);
+		
+      [propget, helpstring("property Count"),helpcontext(IDH_LoadCombinationResults_Count)] 
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+		
+      [helpstring("method Add"),helpcontext(IDH_LoadCombinationResults_Add)] 
+      HRESULT Add([in]Float64 Result, [in]ILoadCombinationResultConfiguration* Config);
+		
+      [helpstring("method SetResult"),helpcontext(IDH_LoadCombinationResults_SetResult)] 
+      HRESULT SetResult([in]CollectionIndexType index, [in]Float64 Result, [in]ILoadCombinationResultConfiguration* Config);
+		
+      [helpstring("method GetResult"),helpcontext(IDH_LoadCombinationResults_GetResult)] 
+      HRESULT GetResult([in]CollectionIndexType index, [out]Float64* Result, [out]ILoadCombinationResultConfiguration** Config);
+	};
+
+	[
+		object,
+		uuid(780AFAC0-F426-41F5-9632-0F46711CDCB6),
+		oleautomation,
+		helpstring("ILoadCombinationSectionResults Interface"),
+      helpcontext(IDH_LoadCombinationSectionResults),
+		pointer_default(unique)
+	]
+	interface ILoadCombinationSectionResults : IUnknown
+	{
+		[helpstring("method Clear"),helpcontext(IDH_LoadCombinationSectionResults_Clear)] 
+      HRESULT Clear();
+		
+      [helpstring("method Reserve"),helpcontext(IDH_LoadCombinationSectionResults_Reserve)] 
+      HRESULT Reserve([in]CollectionIndexType size);
+		
+      [propget, helpstring("property Count"),helpcontext(IDH_LoadCombinationSectionResults_Count)] 
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+		
+      [helpstring("method Add"),helpcontext(IDH_LoadCombinationSectionResults_Add)] 
+      HRESULT Add([in]Float64 leftResult, [in]ILoadCombinationResultConfiguration* leftConfig, [in]Float64 rightResult, [in]ILoadCombinationResultConfiguration* rightConfig);
+		
+      [helpstring("method SetResult"),helpcontext(IDH_LoadCombinationSectionResults_SetResult)] 
+      HRESULT SetResult([in]CollectionIndexType index, [in]Float64 leftResult, [in]ILoadCombinationResultConfiguration* leftConfig, [in]Float64 rightResult, [in]ILoadCombinationResultConfiguration* rightConfig);
+		
+      [helpstring("method GetResult"),helpcontext(IDH_LoadCombinationSectionResults_GetResult)] 
+      HRESULT GetResult([in]CollectionIndexType index, [out]Float64* leftResult, [out]ILoadCombinationResultConfiguration** leftConfig, [out]Float64* rightResult, [out]ILoadCombinationResultConfiguration** rightConfig);
+	};
+
+	[
+		object,
+		uuid(9F06ABE0-D32B-4394-90F4-BD73A172C59A),
+		oleautomation,
+		helpstring("ILoadCombinationStressResults Interface"),
+      helpcontext(IDH_LoadCombinationSectionResults),
+		pointer_default(unique)
+	]
+	interface ILoadCombinationStressResults : IUnknown
+	{
+		[helpstring("method Clear"),helpcontext(IDH_LoadCombinationStressResults_Clear)] 
+      HRESULT Clear();
+		
+      [helpstring("method Reserve"),helpcontext(IDH_LoadCombinationStressResults_Reserve)] 
+      HRESULT Reserve([in]CollectionIndexType size);
+		
+      [propget, helpstring("property Count"),helpcontext(IDH_LoadCombinationStressResults_Count)] 
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+		
+      [helpstring("method Add"),helpcontext(IDH_LoadCombinationStressResults_Add)] 
+      HRESULT Add([in]IStressResult* leftResult, [in]ILoadCombinationResultConfiguration* leftConfig, [in]IStressResult* rightResult, [in]ILoadCombinationResultConfiguration* rightConfig);
+		
+      [helpstring("method SetResult"),helpcontext(IDH_LoadCombinationStressResults_SetResult)] 
+      HRESULT SetResult([in]CollectionIndexType index, [in]IStressResult* leftResult, [in]ILoadCombinationResultConfiguration* leftConfig, [in]IStressResult* rightResult, [in]ILoadCombinationResultConfiguration* rightConfig);
+		
+      [helpstring("method GetResult"),helpcontext(IDH_LoadCombinationStressResults_GetResult)] 
+      HRESULT GetResult([in]CollectionIndexType index, [out]IStressResult** leftResult, [out]ILoadCombinationResultConfiguration** leftConfig, [out]IStressResult** rightResult, [out]ILoadCombinationResultConfiguration** rightConfig);
+	};
+
+	[
+		object,
+		uuid(6E738E23-95C4-48bf-9D00-1E2E5A8DF58E),
+		oleautomation,
+		helpstring("ILoadCombinationResponse Interface"),
+      helpcontext(IDH_LoadCombinationResponse),
+		pointer_default(unique)
+	]
+	interface ILoadCombinationResponse : IUnknown
+	{
+		[helpstring("method ComputeForces"),helpcontext(IDH_LoadCombinationResponse_ComputeForces)] 
+      HRESULT ComputeForces([in]BSTR LoadCombination, [in]ILongArray* poiIDs, [in]BSTR Stage, [in]ResultsOrientation orientation, 
+                            [in]ResultsSummationType summ, [in]ForceEffectType effect, [in]OptimizationType optimization, 
+                            [in]VARIANT_BOOL includeLiveLoad, [in]VARIANT_BOOL includeImpact, [in]VARIANT_BOOL computeConfig,
+                            [out,retval]ILoadCombinationSectionResults** results);
+
+		[helpstring("method ComputeDeflections"),helpcontext(IDH_LoadCombinationResponse_ComputeDeflections)] 
+      HRESULT ComputeDeflections([in]BSTR LoadCombination, [in]ILongArray* poiIDs, [in]BSTR Stage, 
+                                 [in]ResultsSummationType summ, [in]ForceEffectType effect, [in]OptimizationType optimization, 
+                                 [in]VARIANT_BOOL includeLiveLoad, [in]VARIANT_BOOL includeImpact, [in]VARIANT_BOOL computeConfig,
+                                 [out,retval]ILoadCombinationSectionResults** results);
+
+		[helpstring("method ComputeReactions"),helpcontext(IDH_LoadCombinationResponse_ComputeReactions)] 
+      HRESULT ComputeReactions([in]BSTR LoadCombination, [in]ILongArray* supportIDs, [in]BSTR Stage, 
+                                 [in]ResultsSummationType summ, [in]ForceEffectType effect, [in]OptimizationType optimization, 
+                                 [in]VARIANT_BOOL includeLiveLoad, [in]VARIANT_BOOL includeImpact, [in]VARIANT_BOOL computeConfig,
+                                 [out,retval]ILoadCombinationResults** results);
+
+		[helpstring("method ComputeSupportDeflections"),helpcontext(IDH_LoadCombinationResponse_ComputeSupportDeflections)] 
+      HRESULT ComputeSupportDeflections([in]BSTR LoadCombination, [in]ILongArray* supportIDs, [in]BSTR Stage, 
+                                 [in]ResultsSummationType summ, [in]ForceEffectType effect, [in]OptimizationType optimization, 
+                                 [in]VARIANT_BOOL includeLiveLoad, [in]VARIANT_BOOL includeImpact, [in]VARIANT_BOOL computeConfig,
+                                 [out,retval]ILoadCombinationResults** results);
+
+		[helpstring("method ComputeStresses"),helpcontext(IDH_LoadCombinationResponse_ComputeStresses)] 
+      HRESULT ComputeStresses([in]BSTR LoadCombination, [in]ILongArray* poiIDs, [in]BSTR Stage, 
+                              [in]ResultsSummationType summ, [in]ForceEffectType effect, [in]OptimizationType optimization, 
+                              [in]VARIANT_BOOL includeLiveLoad, [in]VARIANT_BOOL includeImpact, [in]VARIANT_BOOL computeConfig,
+                              [out,retval]ILoadCombinationStressResults** results);
+	};
+	[
+		object,
+		uuid(DCA0FA3E-E4BD-45CA-98D0-D18E7DD14080),
+		oleautomation,
+		helpstring("IConcurrentLoadCombinationResponseAgg Interface"),
+      helpcontext(IDH_ConcurrentLoadCombinationResponse),
+		pointer_default(unique)
+	]
+	interface IConcurrentLoadCombinationResponse : IUnknown
+	{
+		[helpstring("method ComputeForces"),helpcontext(IDH_ConcurrentLoadCombinationResponse_ComputeForces)] 
+      HRESULT ComputeForces([in]ILongArray* poiIDs, [in]BSTR stage, [in]ResultsOrientation orientation, [in]ILoadCombinationResultConfiguration* config, [out,retval]ISectionResult3Ds* *results);
+		
+      [helpstring("method ComputeDeflections"),helpcontext(IDH_ConcurrentLoadCombinationResponse_ComputeDeflections)] 
+      HRESULT ComputeDeflections([in]ILongArray* poiIDs, [in]BSTR stage, [in]ILoadCombinationResultConfiguration* config, [out,retval]ISectionResult3Ds* *results);
+		
+      [helpstring("method ComputeReactions"),helpcontext(IDH_ConcurrentLoadCombinationResponse_ComputeReactions)] 
+      HRESULT ComputeReactions([in]ILongArray* supportIDs, [in]BSTR stage, [in]ILoadCombinationResultConfiguration* config, [out,retval]IResult3Ds* *results);
+		
+      [helpstring("method ComputeSupportDeflections"),helpcontext(IDH_ConcurrentLoadCombinationResponse_ComputeSupportDeflections)] 
+      HRESULT ComputeSupportDeflections([in]ILongArray* supportIDs, [in]BSTR stage, [in]ILoadCombinationResultConfiguration* config, [out,retval]IResult3Ds* *results);
+		
+      [helpstring("method ComputeStresses"),helpcontext(IDH_ConcurrentLoadCombinationResponse_ComputeStresses)] 
+      HRESULT ComputeStresses([in]ILongArray* poiIDs, [in]BSTR stage, [in]ILoadCombinationResultConfiguration* config, [out,retval]ISectionStressResults* *results);
+	};
+
+	[
+		object,
+		uuid(FF00D72F-BEDA-4ea7-9801-AAAF72A7291F),
+		oleautomation,
+		helpstring("IGetActiveLoadCases Interface - Returns a list of names of LoadCases that have active loads"),
+		pointer_default(unique)
+	]
+	interface IGetActiveLoadCases : IUnknown
+	{
+		[helpstring("property GetActiveLoadCases")] 
+      HRESULT GetActiveLoadCases([out,retval]IBstrArray* *loadCases);
+	};
+
+// declarations so interfaces get put in this library
+    interface     ILoadCombinationAnalysisContextEvents;
+
+
+	[
+		uuid(03CBD1B0-60CB-4779-9778-27A436C5E96B),
+		helpstring("LoadCombinationAnalysisContext Class")
+	]
+	coclass LoadCombinationAnalysisContext
+	{
+		[default] interface ILoadCombinationAnalysisContext;
+      interface IGetStressPoints;
+      interface IAnalysisPOIs;
+      interface ILoadGroupResponse;
+      interface ILiveLoadModelResponse;
+      interface IBasicVehicularResponse;
+      interface IGetActiveLoadGroups;
+      interface IGetCombinationFactors;
+      interface ILoadCases;
+      interface ILoadCombinations;
+      interface IStages;
+		[default, source] interface ILoadCombinationAnalysisContextEvents;
+	};
+
+	[
+		uuid(B14CCE9F-891A-45C0-BA1C-CB1018CD57D6),
+		helpstring("LoadCombiner Class")
+	]
+	coclass LoadCombiner
+	{
+		[default] interface ILoadCaseResponse;
+      interface ILoadCombinationResponse;
+      interface IConcurrentLoadCombinationResponse;
+      interface IDependOnLoadCombinationAnalysisContext;
+      interface ISupportProgressMonitor;
+      interface IGetActiveLoadCases;
+	};
+	[
+		uuid(F6D90F11-6091-4A73-8A51-56E948F7416C),
+		helpstring("LoadCombinationSectionResults Class")
+	]
+	coclass LoadCombinationSectionResults
+	{
+		[default] interface ILoadCombinationSectionResults;
+	};
+	[
+		uuid(947CD836-CB00-470F-BC22-51E989BC2CE2),
+		helpstring("LoadCombinationResultConfiguration Class")
+	]
+	coclass LoadCombinationResultConfiguration
+	{
+		[default] interface ILoadCombinationResultConfiguration;
+	};
+	[
+		uuid(00F61030-02BB-4A53-9FF7-B8C27FFF1291),
+		helpstring("LoadCombinationResults Class")
+	]
+	coclass LoadCombinationResults
+	{
+		[default] interface ILoadCombinationResults;
+	};
+	[
+		uuid(EFE07497-0FC8-4404-9FCC-E7B449DA2696),
+		helpstring("LoadCombinationStressResults Class")
+	]
+	coclass LoadCombinationStressResults
+	{
+		[default] interface ILoadCombinationStressResults;
+	};
+};

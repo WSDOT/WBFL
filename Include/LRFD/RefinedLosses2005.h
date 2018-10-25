@@ -1,0 +1,373 @@
+///////////////////////////////////////////////////////////////////////
+// LRFD - Utility library to support equations, methods, and procedures
+//        from the AASHTO LRFD Bridge Design Specification
+// Copyright (C) 1999  Washington State Department of Transportation
+//                     Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+#ifndef INCLUDED_LRFD_REFINEDLOSSES2005_H_
+#define INCLUDED_LRFD_REFINEDLOSSES2005_H_
+#pragma once
+
+// SYSTEM INCLUDES
+//
+
+// PROJECT INCLUDES
+//
+#include <Lrfd\LrfdExp.h>
+#include <Lrfd\Losses.h>
+#include <Lrfd\CreepCoefficient2005.h>
+
+// LOCAL INCLUDES
+//
+
+// FORWARD DECLARATIONS
+//
+
+// MISCELLANEOUS
+//
+
+/*****************************************************************************
+CLASS 
+   lrfdRefinedLosses2005
+
+   Utility class for computing prestress losses using the LRFD Refined Estimate
+   Method.
+
+
+DESCRIPTION
+   Utility class for computing prestress losses using the LRFD Refined Estimate
+   Method. Encapsulates Articles 5.9.5.2.3 and 5.9.5.4.
+
+
+COPYRIGHT
+   Copyright (c) 1997
+   Washington State Department Of Transportation
+   All Rights Reserved
+
+LOG
+   rab : 12.01.1997 : Created file
+*****************************************************************************/
+
+class LRFDCLASS lrfdRefinedLosses2005 : public lrfdLosses
+{
+public:
+
+   // GROUP: LIFECYCLE
+
+   //------------------------------------------------------------------------
+   // Default constructor.
+   // Strand type = LowRelaxation
+   // Relative Humidity = 70%
+   // Ep = 197000 MPa
+   // Eci = 25000 MPa
+   // fpu = 1860 MPa
+   // fpj = 0.80*fpu
+   // fpy = 0.90*fpu
+   // Time to prestress transfer = 1 day
+   // Aps = 1mm^2
+   // A = 1mm^2
+   // I = 1mm^4
+   // e = 0 mm
+   // Mg = 0 N-m
+   // Mdl = 0 N-m
+   lrfdRefinedLosses2005();
+
+   //------------------------------------------------------------------------
+   // Constructor.  Initializes the object with the give values.
+   // fpy is initialized to 0.85fpu for StressRelieved strands and
+   // 0.90fpu for LowRelaxation strands.
+   lrfdRefinedLosses2005(Float64 x, // location along girder where losses are computed
+                         Float64 Lg,    // girder length
+                         matPsStrand::Grade gr,
+                         matPsStrand::Type type,
+                         Float64 fpjPerm, // fpj permanent strands
+                         Float64 fpjTemp, // fpj of temporary strands
+                         Float64 ApsPerm,  // area of permanent strand
+                         Float64 ApsTemp,  // area of TTS 
+                         Float64 aps,      // area of one strand
+                         Float64 eperm, // eccentricty of permanent ps strands with respect to CG of girder
+                         Float64 etemp, // eccentricty of temporary strands with respect to CG of girder
+                         TempStrandUsage usage,
+                         Float64 anchorSet,
+                         Float64 wobble,
+                         Float64 friction,
+                         Float64 angleChange,
+
+                         Float64 Fc,   // 28 day strength of girder concrete
+                         Float64 Fci,  // Release strength
+                         Float64 FcSlab,   
+                         Float64 Ec,   // Modulus of elasticity of girder
+                         Float64 Eci,  // Modulus of elasticity of girder at transfer
+                         Float64 Ecd,  // Modulus of elasticity of deck
+                         
+                         Float64 V,    // Volumne of girder
+                         Float64 S,    // Surface area of girder
+                         Float64 VSlab,    // Volumne of slab
+                         Float64 SSlab,    // Surface area of slab
+                         Float64 Ag,   // area of girder
+                         Float64 Ig,   // moment of inertia of girder
+                         Float64 Ybg,  // Centroid of girder measured from bottom
+                         Float64 Ac,   // area of composite girder
+                         Float64 Ic,   // moment of inertia of composite
+                         Float64 Ybc,  // Centroid of composite measured from bottom
+                         Float64 Ad,   // area of deck
+                         Float64 ed,   // eccentricity of deck CG with respect to CG of composite
+                         
+                         Float64 Mdlg,  // Dead load moment of girder only
+                         Float64 Madlg,  // Additional dead load on girder section
+                         Float64 Msidl, // Superimposed dead loads
+                         
+                         Float64 rh,  // Relative humidity [0,100]
+                         Float64 ti,   // Time until prestress transfer
+                         Float64 th,   // Time at hauling
+                         Float64 td,   // Time to deck placement
+                         Float64 tf,   // Final time
+                         lrfdCreepCoefficient2005::CuringMethod curingMethod,
+                         Float64 tCuringAdjustment, // time scale factor for curing method
+                         bool bIgnoreInitialRelaxation
+                         );
+
+   //------------------------------------------------------------------------
+   // Copy c'tor
+   lrfdRefinedLosses2005(const lrfdRefinedLosses2005& rOther);
+
+   //------------------------------------------------------------------------
+   // Destructor
+   ~lrfdRefinedLosses2005();
+
+   // GROUP: OPERATORS
+
+   //------------------------------------------------------------------------
+   // Assignment operator
+   lrfdRefinedLosses2005& operator=(const lrfdRefinedLosses2005& rOther);
+
+   // GROUP: OPERATIONS
+
+   //------------------------------------------------------------------------
+   // loss from transfer to shipping
+   Float64 TemporaryStrand_ShrinkageLossAtShipping() const;
+   Float64 TemporaryStrand_CreepLossAtShipping() const;
+   Float64 TemporaryStrand_RelaxationLossAtShipping() const;
+
+   Float64 PermanentStrand_ShrinkageLossAtShipping() const;
+   Float64 PermanentStrand_CreepLossAtShipping() const;
+   Float64 PermanentStrand_RelaxationLossAtShipping() const;
+
+   //------------------------------------------------------------------------
+   // loss from transfer to deck placement
+   Float64 ShrinkageLossBeforeDeckPlacement() const;
+   Float64 CreepLossBeforeDeckPlacement() const;
+   Float64 RelaxationLossBeforeDeckPlacement() const;
+
+   //------------------------------------------------------------------------
+   // loss from deck placement to final
+   Float64 ShrinkageLossAfterDeckPlacement() const;
+   Float64 CreepLossAfterDeckPlacement() const;
+   Float64 RelaxationLossAfterDeckPlacement() const;
+   Float64 DeckShrinkageLoss() const;
+
+   //------------------------------------------------------------------------
+   virtual Float64 TemporaryStrand_TimeDependentLossesAtShipping() const;
+   virtual Float64 PermanentStrand_TimeDependentLossesAtShipping() const;
+   virtual Float64 TimeDependentLossesBeforeDeck() const;
+   virtual Float64 TimeDependentLossesAfterDeck() const;
+   Float64 TimeDependentLosses() const;
+
+
+   //------------------------------------------------------------------------
+   const lrfdCreepCoefficient2005& GetCreepInitialToShipping() const;
+   const lrfdCreepCoefficient2005& GetCreepInitialToFinal() const;
+   const lrfdCreepCoefficient2005& GetCreepInitialToDeck() const;
+   const lrfdCreepCoefficient2005& GetCreepDeckToFinal() const;
+   const lrfdCreepCoefficient2005& GetCreepDeck() const;
+
+   //------------------------------------------------------------------------
+   Float64 GetTemporaryStrandFcgp() const;
+   Float64 GetPermanentStrandFcgp() const;
+   Float64 GetTemporaryStrandFpt() const;
+   Float64 GetPermanentStrandFpt() const;
+   Float64 GetDeltaFcd() const; // for creep deck to final
+   Float64 GetDeltaFcdf() const;
+
+   //------------------------------------------------------------------------
+   // Creep and shrinkage parameters
+   Float64 Getkhs() const;
+   Float64 Get_ebid() const;
+   Float64 Get_ebih() const;
+   Float64 GetKid() const;
+   Float64 GetTemporaryStrandKih() const;
+   Float64 GetPermanentStrandKih() const;
+   Float64 GetKL() const;
+   Float64 Get_ebdf() const;
+   Float64 GetKdf() const;
+   Float64 Get_eddf() const;
+
+   // GROUP: ACCESS
+
+
+   // Volume of non-composite member
+   void SetVolume(Float64 V);
+   Float64 GetVolume() const;
+
+   // Surface area of non-composite member
+   void SetSurfaceArea(Float64 S);
+   Float64 GetSurfaceArea() const;
+
+   // Volumne of slab
+   void SetVolumeSlab(Float64 V);
+   Float64 GetVolumeSlab() const;
+
+   // Surface area of slab
+   void SetSurfaceAreaSlab(Float64 S);
+   Float64 GetSurfaceAreaSlab() const;
+
+
+   void SetCuringMethod(lrfdCreepCoefficient2005::CuringMethod method);
+   lrfdCreepCoefficient2005::CuringMethod GetCuringMethod() const;
+
+   void SetCuringMethodTimeAdjustmentFactor(Float64 f);
+   Float64 GetCuringMethodTimeAdjustmentFactor() const;
+   Float64 GetAdjustedInitialAge() const;
+
+   void SetAgeAtHauling(Float64 t);
+   Float64 GetAgeAtHauling() const;
+
+   void SetAgeAtDeckPlacement(Float64 t);
+   Float64 GetAgeAtDeckPlacement() const;
+
+   void SetFinalAge(Float64 t);
+   Float64 GetFinalAge() const;
+
+
+   //------------------------------------------------------------------------
+   // Deck Geometry
+
+   // eccentricty of deck
+   void SetDeckEccentricity(Float64 e);
+   Float64 GetDeckEccentricity() const;
+
+   // area of deck
+   void SetAd(Float64 Ad);
+   Float64 GetAd() const;
+
+
+
+   
+   // GROUP: INQUIRY
+   // GROUP: DEBUG
+   #if defined _UNITTEST
+   static bool TestMe(dbgLog& rlog);
+   #endif // _UNITTEST
+
+protected:
+   // GROUP: DATA MEMBERS
+   // GROUP: LIFECYCLE
+   // GROUP: OPERATORS
+   // GROUP: OPERATIONS
+
+   //------------------------------------------------------------------------
+   void MakeAssignment( const lrfdRefinedLosses2005& rOther );
+
+   // GROUP: ACCESS
+   // GROUP: INQUIRY
+
+private:
+   // GROUP: DATA MEMBERS
+   Float64 m_V; // volumne (girder)
+   Float64 m_S; // surface area (girder)
+   Float64 m_VSlab; // volumne (slab)
+   Float64 m_SSlab; // surface area (slab)
+   Float64 m_th; // time at hauling
+   Float64 m_td; // age at deck placement
+   Float64 m_tf; // final time
+   Float64 m_CuringMethodTimeAdjustmentFactor;
+   mutable lrfdCreepCoefficient2005::CuringMethod m_CuringMethod;
+   mutable lrfdCreepCoefficient2005 m_CreepInitialToFinal;
+   mutable lrfdCreepCoefficient2005 m_CreepInitialToDeck;
+   mutable lrfdCreepCoefficient2005 m_CreepInitialToHauling;
+   mutable lrfdCreepCoefficient2005 m_CreepDeckToFinal;
+   mutable lrfdCreepCoefficient2005 m_CreepDeck; // for deck shrinkage
+
+   
+   Float64 m_Ad;    // Area of composite deck
+   Float64 m_ed;    // Eccentricity of deck with respect to the transformed net composite section (neg if deck is above girder)
+
+
+   mutable Float64 m_DeltaFcd2;
+   mutable Float64 m_DeltaFcd;
+   mutable Float64 m_DeltaFcdf;
+
+
+   mutable Float64 m_khs;
+   mutable Float64 m_ebid;
+   mutable Float64 m_ebih;
+   mutable Float64 m_Kid;
+   mutable Float64 m_Kih[2];
+   mutable Float64 m_KL;
+   mutable Float64 m_ebdf;
+   mutable Float64 m_Kdf;
+   mutable Float64 m_eddf;
+
+   mutable Float64 m_dfpSR;
+   mutable Float64 m_dfpCR;
+   mutable Float64 m_dfpR1;
+   mutable Float64 m_dfpSD;
+   mutable Float64 m_dfpCD;
+   mutable Float64 m_dfpR2;
+   mutable Float64 m_dfpSS;
+   mutable Float64 m_dfpLT;
+
+   // hauling losses
+   mutable Float64 m_dfpSRH[2];
+   mutable Float64 m_dfpCRH[2];
+   mutable Float64 m_dfpR1H[2];
+   mutable Float64 m_dfpTH[2];
+
+   // GROUP: LIFECYCLE
+   // GROUP: OPERATORS
+   // GROUP: OPERATIONS
+   //------------------------------------------------------------------------
+   void MakeCopy( const lrfdRefinedLosses2005& rOther );
+
+   //------------------------------------------------------------------------
+   virtual void ValidateParameters() const;
+   
+   //------------------------------------------------------------------------
+   virtual void UpdateLongTermLosses() const;
+   
+   //------------------------------------------------------------------------
+   virtual void UpdateHaulingLosses() const;
+
+   // GROUP: ACCESS
+   // GROUP: INQUIRY
+};
+
+// INLINE METHODS
+//
+inline void lrfdRefinedLosses2005::SetDeckEccentricity(Float64 e) { m_ed; m_IsDirty = true; }
+inline Float64 lrfdRefinedLosses2005::GetDeckEccentricity() const { return m_ed; }
+inline void lrfdRefinedLosses2005::SetAd(Float64 Ad) { m_Ad = Ad; m_IsDirty = true; }
+inline Float64 lrfdRefinedLosses2005::GetAd() const { return m_Ad; }
+
+// EXTERNAL REFERENCES
+//
+
+#endif // INCLUDED_LRFD_REFINEDLOSSES2005_H_

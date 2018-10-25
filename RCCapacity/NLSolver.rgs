@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.NLSolver.1 = s 'NLSolver Class'
+	{
+		CLSID = s '{E5848EAC-5DE6-4147-8771-78225B66F8B7}'
+	}
+	WBFLRCCapacity.NLSolver = s 'NLSolver Class'
+	{
+		CLSID = s '{E5848EAC-5DE6-4147-8771-78225B66F8B7}'
+		CurVer = s 'WBFLRCCapacity.NLSolver.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {E5848EAC-5DE6-4147-8771-78225B66F8B7} = s 'NLSolver Class'
+		{
+			ProgID = s 'WBFLRCCapacity.NLSolver.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.NLSolver'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

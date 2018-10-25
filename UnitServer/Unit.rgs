@@ -1,0 +1,24 @@
+HKCR
+{
+	WBFLUnitServer.Unit.1 = s 'Unit Class'
+	{
+		CLSID = s '{C74DD4D3-7FC4-11d2-885C-006097C68A9C}'
+	}
+	WBFLUnitServer.Unit = s 'Unit Class'
+	{
+		CurVer = s 'WBFLUnitServer.Unit.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {C74DD4D3-7FC4-11d2-885C-006097C68A9C} = s 'Unit Class'
+		{
+			ProgID = s 'WBFLUnitServer.Unit.1'
+			VersionIndependentProgID = s 'WBFLUnitServer.Unit'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+		}
+	}
+}

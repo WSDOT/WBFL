@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLTools.BstrArray.1 = s 'BstrArray Class'
+	{
+		CLSID = s '{FA223DB0-69C7-4FB6-90CC-0C20BE566982}'
+	}
+	WBFLTools.BstrArray = s 'BstrArray Class'
+	{
+		CLSID = s '{FA223DB0-69C7-4FB6-90CC-0C20BE566982}'
+		CurVer = s 'WBFLTools.BstrArray.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {FA223DB0-69C7-4FB6-90CC-0C20BE566982} = s 'BstrArray Class'
+		{
+			ProgID = s 'WBFLTools.BstrArray.1'
+			VersionIndependentProgID = s 'WBFLTools.BstrArray'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B9507D8C-7100-11D3-89BB-006097C68A9C}'
+		}
+	}
+}

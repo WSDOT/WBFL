@@ -1,0 +1,11 @@
+HKCR
+{
+	NoRemove AppID
+	{
+		{24DEEE83-5316-4A1D-93CC-2C81E7ADAC6C} = s 'Test'
+		'Test.EXE'
+		{
+			val AppID = s {24DEEE83-5316-4A1D-93CC-2C81E7ADAC6C}
+		}
+	}
+}

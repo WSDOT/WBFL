@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAMAnalysis.InfluenceLine.1 = s 'InfluenceLine Class'
+	{
+		CLSID = s '{262B8AF3-4DA9-4639-8681-31A96233FAB5}'
+	}
+	WBFLLBAMAnalysis.InfluenceLine = s 'InfluenceLine Class'
+	{
+		CLSID = s '{262B8AF3-4DA9-4639-8681-31A96233FAB5}'
+		CurVer = s 'WBFLLBAMAnalysis.InfluenceLine.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {262B8AF3-4DA9-4639-8681-31A96233FAB5} = s 'InfluenceLine Class'
+		{
+			ProgID = s 'WBFLLBAMAnalysis.InfluenceLine.1'
+			VersionIndependentProgID = s 'WBFLLBAMAnalysis.InfluenceLine'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{9EC1DB46-A140-11D5-B05C-00105A9AF985}'
+		}
+	}
+} 

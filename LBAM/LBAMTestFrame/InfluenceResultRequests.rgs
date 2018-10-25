@@ -1,0 +1,26 @@
+HKCR
+{
+	LBAMTestFrame.InfluenceResultRequests.1 = s 'InfluenceResultRequests Class'
+	{
+		CLSID = s '{E8CE246A-5B63-496E-A9CF-329EAC0D838B}'
+	}
+	LBAMTestFrame.InfluenceResultRequests = s 'InfluenceResultRequests Class'
+	{
+		CLSID = s '{E8CE246A-5B63-496E-A9CF-329EAC0D838B}'
+		CurVer = s 'LBAMTestFrame.InfluenceResultRequests.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {E8CE246A-5B63-496E-A9CF-329EAC0D838B} = s 'InfluenceResultRequests Class'
+		{
+			ProgID = s 'LBAMTestFrame.InfluenceResultRequests.1'
+			VersionIndependentProgID = s 'LBAMTestFrame.InfluenceResultRequests'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{23497471-C954-11D5-B085-00105A9AF985}'
+		}
+	}
+}

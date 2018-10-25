@@ -1,0 +1,350 @@
+///////////////////////////////////////////////////////////////////////
+// DManip - Direct Manipulation Framework
+// Copyright © 2001  Washington State Department of Transportation
+//                   Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the Alternate Route Library Open Source License as 
+// published by the Washington State Department of Transportation,
+// Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful,
+// but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// PURPOSE.  See the Alternate Route Library Open Source License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License
+// along with this program; if not, write to the Washington State
+// Department of Transportation, Bridge and Structures Office,
+// P.O. Box 47340, Olympia, WA 98503, USA or e-mail
+// Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// DManip.idl : IDL source for DManip.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (DManip.tlb) and marshalling code.
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+    uuid(011408A7-F865-11d4-8B9C-006097C68A9C),
+    version(1.0),
+//	helpcontext(IDH_WBFLCogo),
+    helpstring("WBFLDManip Library")
+]
+library WBFLDManip
+{
+    importlib("stdole32.tlb");
+    importlib("stdole2.tlb");
+
+	[
+		uuid(A2703706-F85B-11d4-8B9C-006097C68A9C),
+		helpstring("DisplayList Class")
+	]
+	coclass DisplayList
+	{
+		[default] interface IUnknown;
+	};
+
+	[
+		uuid(011408A6-F865-11d4-8B9C-006097C68A9C),
+		helpstring("DisplayMgr Class")
+	]
+	coclass DisplayMgr
+	{
+		[default] interface IUnknown;
+	};
+
+	[
+		uuid(011408C4-F865-11d4-8B9C-006097C68A9C),
+		helpstring("InplaceEditTask Class")
+	]
+	coclass InplaceEditTask
+	{
+		[default] interface IUnknown;
+	};
+
+	[
+		uuid(011408C5-F865-11d4-8B9C-006097C68A9C),
+		helpstring("RectSelectTask Class")
+	]
+	coclass RectSelectTask
+	{
+		[default] interface IUnknown;
+	};
+
+	[
+		uuid(011408C6-F865-11d4-8B9C-006097C68A9C),
+		helpstring("LocalDragDropTask Class")
+	]
+	coclass LocalDragDropTask
+	{
+		[default] interface IUnknown;
+	};
+
+	[
+		uuid(011408CB-F865-11d4-8B9C-006097C68A9C),
+		helpstring("ForeignDragDropTask Class")
+	]
+	coclass ForeignDragDropTask
+	{
+		[default] interface IUnknown;
+	};
+
+	[
+		uuid(011408C7-F865-11d4-8B9C-006097C68A9C),
+		helpstring("DragDataSource Class")
+	]
+	coclass DragDataSource
+	{
+		[default] interface IUnknown;
+	};
+
+	[
+		uuid(011408C8-F865-11d4-8B9C-006097C68A9C),
+		helpstring("DragDataSink Class")
+	]
+	coclass DragDataSink
+	{
+		[default] interface IUnknown;
+	};
+
+   [
+		uuid(011408CC-F865-11D4-8B9C-006097C68A9C),
+		helpstring("CenterOnPointTask Class")
+	]
+	coclass CenterOnPointTask
+	{
+		[default] interface IUnknown;
+	};
+
+   [
+		uuid(011408CD-F865-11d4-8B9C-006097C68A9C),
+		helpstring("ZoomRectTask Class")
+	]
+	coclass ZoomRectTask
+	{
+		[default] interface IUnknown;
+	};
+
+   [
+		uuid(011408CE-F865-11d4-8B9C-006097C68A9C),
+		helpstring("TaskFactory Class")
+	]
+	coclass TaskFactory
+	{
+		[default] interface IUnknown;
+	};
+
+   [
+		uuid(011408CF-F865-11d4-8B9C-006097C68A9C),
+		helpstring("DisplayObjectFactory Class")
+	]
+	coclass DisplayObjectFactory
+	{
+		[default] interface IUnknown;
+	};
+
+   [
+		uuid(011408D0-F865-11d4-8B9C-006097C68A9C),
+		helpstring("Mapping Class")
+	]
+	coclass Mapping
+	{
+		[default] interface IUnknown;
+	};
+
+   [
+		uuid(011408D1-F865-11d4-8B9C-006097C68A9C),
+		helpstring("Plug Class")
+	]
+	coclass Plug
+	{
+		[default] interface IUnknown;
+	};
+
+   [
+		uuid(011408D2-F865-11d4-8B9C-006097C68A9C),
+		helpstring("Socket Class")
+	]
+	coclass Socket
+	{
+		[default] interface IUnknown;
+	};
+
+   [
+		uuid(011408D3-F865-11d4-8B9C-006097C68A9C),
+		helpstring("SocketFactory Class")
+	]
+	coclass SocketFactory
+	{
+		[default] interface IUnknown;
+	};
+
+   [
+		uuid(011408D4-F865-11d4-8B9C-006097C68A9C),
+		helpstring("PointDisplayObject Class")
+	]
+	coclass PointDisplayObject
+	{
+		[default] interface IUnknown;
+	};
+
+   [
+		uuid(38D4D890-DF6E-404c-9374-E9375BDE0DF0),
+		helpstring("SimpleDrawPointStrategy Class")
+	]
+	coclass SimpleDrawPointStrategy
+	{
+		[default] interface IUnknown;
+	};
+
+   [
+		uuid(8EB55FED-8056-4d6b-9F89-09FC59C84618),
+		helpstring("TextBlock Class")
+	]
+	coclass TextBlock
+	{
+		[default] interface IUnknown;
+	};
+   
+   [
+		uuid(D66088C8-7E4A-49d7-A306-28BF10B53A88),
+		helpstring("EditableTextBlock Class")
+	]
+	coclass EditableTextBlock
+	{
+		[default] interface IUnknown;
+	};
+     
+   [
+		uuid(C24E4B67-AAC1-4da4-A3F2-373C558333D6),
+		helpstring("EditableUnitValueTextBlock Class")
+	]
+	coclass EditableUnitValueTextBlock
+	{
+		[default] interface IUnknown;
+	};
+    
+   [
+		uuid(531F5C30-FFC3-4a22-ADE5-D640C8CBE284),
+		helpstring("LineDisplayObject Class")
+	]
+	coclass LineDisplayObject
+	{
+		[default] interface IUnknown;
+	};
+    
+   [
+		uuid(9B7A1DE8-C7DB-4512-A94F-D6FF62505B12),
+		helpstring("DimensionLineDisplayObject Class")
+	]
+	coclass DimensionLineDisplayObject
+	{
+		[default] interface IUnknown;
+	};
+    
+   [
+		uuid(44D1610A-A8FF-41b0-B94F-24B0A59C629A),
+		helpstring("Tool Class")
+	]
+	coclass Tool
+	{
+		[default] interface IUnknown;
+	};
+    
+   [
+		uuid(A1C5BEE7-6799-462b-B72A-F4BD47E94341),
+		helpstring("CompositeDisplayObject Class")
+	]
+	coclass CompositeDisplayObject
+	{
+		[default] interface IUnknown;
+	};
+    
+   [
+		uuid(2F67AF5C-6D47-4dea-9D1F-D6F396E6831C),
+		helpstring("SimpleDrawLineStrategy Class")
+	]
+	coclass SimpleDrawLineStrategy
+	{
+		[default] interface IUnknown;
+	};
+    
+   [
+		uuid(682DF075-020C-45b1-BBF4-11C159644BA5),
+		helpstring("RectangleDrawLineStrategy Class")
+	]
+	coclass RectangleDrawLineStrategy
+	{
+		[default] interface IUnknown;
+	};
+    
+   [
+		uuid(4D0A0066-E3FE-41a7-8AE7-8E8A77851EA8),
+		helpstring("ShapeDrawStrategy Class")
+	]
+	coclass ShapeDrawStrategy
+	{
+		[default] interface IUnknown;
+	};
+    
+   [
+		uuid(E9E341BF-F158-46ae-8DB2-3E709E02AD8A),
+		helpstring("TargetDrawStrategy Class")
+	]
+	coclass TargetDrawStrategy
+	{
+		[default] interface IUnknown;
+	};
+    
+   [
+		uuid(326E7437-FC61-41ed-AA42-6EF8CE2583FF),
+		helpstring("CompoundDrawLineStrategy Class")
+	]
+	coclass CompoundDrawLineStrategy
+	{
+		[default] interface IUnknown;
+	};
+    
+   [
+		uuid(383B8C08-A236-44c7-BEE1-E41ADD831AC7),
+		helpstring("ExtRectangleDrawLineStrategy Class")
+	]
+	coclass ExtRectangleDrawLineStrategy
+	{
+		[default] interface IUnknown;
+	};
+    
+   [
+		uuid(6DBAF4E1-4291-4112-9687-9C8F9E0425B4),
+		helpstring("ViewTitle Class")
+	]
+	coclass ViewTitle
+	{
+		[default] interface IUnknown;
+	};
+    
+   [
+		uuid(DC3F42E8-7A6A-48be-8E0C-5D86E9D5EEBE),
+		helpstring("NorthArrow Class")
+	]
+	coclass NorthArrow
+	{
+		[default] interface IUnknown;
+	};
+  
+   [
+		uuid(4F2C8970-5720-437b-B6CA-EA9092311244),
+		helpstring("ShapeGravityWellStrategy Class")
+	]
+	coclass ShapeGravityWellStrategy
+	{
+		[default] interface IUnknown;
+	};
+};

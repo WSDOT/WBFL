@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLTools.DblArray.1 = s 'DblArray Class'
+	{
+		CLSID = s '{851D2378-0F8C-4040-8E84-B26C5E7F9528}'
+	}
+	WBFLTools.DblArray = s 'DblArray Class'
+	{
+		CLSID = s '{851D2378-0F8C-4040-8E84-B26C5E7F9528}'
+		CurVer = s 'WBFLTools.DblArray.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {851D2378-0F8C-4040-8E84-B26C5E7F9528} = s 'DblArray Class'
+		{
+			ProgID = s 'WBFLTools.DblArray.1'
+			VersionIndependentProgID = s 'WBFLTools.DblArray'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B9507D8C-7100-11D3-89BB-006097C68A9C}'
+		}
+	}
+}

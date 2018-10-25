@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.CompositeDisplayObject.1 = s 'CompositeDisplayObject Class'
+	{
+		CLSID = s '{A1C5BEE7-6799-462b-B72A-F4BD47E94341}'
+	}
+	WBFLDManip.CompositeDisplayObject = s 'CompositeDisplayObject Class'
+	{
+		CLSID = s '{A1C5BEE7-6799-462b-B72A-F4BD47E94341}'
+		CurVer = s 'WBFLDManip.CompositeDisplayObject.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {A1C5BEE7-6799-462b-B72A-F4BD47E94341} = s 'CompositeDisplayObject Class'
+		{
+			ProgID = s 'WBFLDManip.CompositeDisplayObject.1'
+			VersionIndependentProgID = s 'WBFLDManip.CompositeDisplayObject'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

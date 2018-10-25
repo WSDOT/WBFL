@@ -1,0 +1,1682 @@
+<html>
+<!-- Sitemap 1.0 -->
+<object type="text/site properties">
+  <param name="SiteType" value="toc">
+  <param name="Image Width" value="16">
+  <param name="Window Styles" value="0x800407">
+  <param name="ExWindow Styles" value="0x100">
+</object>
+<ul>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Welcome">
+    <param name="Local" value="Welcome.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Constants">
+  </object>
+  <ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="ConnectivityType">
+      <param name="Local" value="Constants\ConnectivityType.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="DirectionType">
+      <param name="Local" value="Constants\DirectionType.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="EndType">
+      <param name="Local" value="Constants\EndType.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="GirderLineType">
+      <param name="Local" value="Constants\GirderLineType.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="MeasurementType">
+      <param name="Local" value="Constants\MeasurementType.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="MemberType">
+      <param name="Local" value="Constants\MemberType.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="PierPointType">
+      <param name="Local" value="Constants\PierPointType.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="PositionType">
+      <param name="Local" value="Constants\PositionType.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="ReleaseType">
+      <param name="Local" value="Constants\ReleaseType.htm">
+    </object>
+    </ul>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Objects">
+  </object>
+  <ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="CogoInfo">
+      <param name="Local" value="Objects\CogoInfo\CogoInfo_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GirderPointID">
+          <param name="Local" value="Objects\CogoInfo\GirderPointID_Property_(CogoInfo_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PierPointID">
+          <param name="Local" value="Objects\CogoInfo\PierPointID_Property_(CogoInfo_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Column">
+      <param name="Local" value="Objects\Column\Column_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="BaseOffset">
+          <param name="Local" value="Objects\Column\BaseOffset_Property_(Column_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Fractional">
+          <param name="Local" value="Objects\Column\Fractional_Property_(Column_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Height">
+          <param name="Local" value="Objects\Column\Height_Property_(Column_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Length">
+          <param name="Local" value="Objects\Column\Length_Property_(Column_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Segment">
+          <param name="Local" value="Objects\Column\Segment_Property_(Column_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SegmentCount">
+          <param name="Local" value="Objects\Column\SegmentCount_Property_(Column_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SegmentLength">
+          <param name="Local" value="Objects\Column\SegmentLength_Property_(Column_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Symmetrical">
+          <param name="Local" value="Objects\Column\Symmetrical_Property_(Column_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddSegment">
+          <param name="Local" value="Objects\Column\AddSegment_Method_(Column_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CopySegmentTo">
+          <param name="Local" value="Objects\Column\CopySegmentTo_Method_(Column_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GetMemberSegments">
+          <param name="Local" value="Objects\Column\GetMemberSegments_Method_(Column_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GetSegmentForMemberLocation">
+          <param name="Local" value="Objects\Column\GetSegmentForMemberLocation_Method_(Column_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="InsertSegment">
+          <param name="Local" value="Objects\Column\InsertSegment_Method_(Column_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="MoveSegmentTo">
+          <param name="Local" value="Objects\Column\MoveSegmentTo_Method_(Column_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RemoveSegment">
+          <param name="Local" value="Objects\Column\RemoveSegment_Method_(Column_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RemoveSegments">
+          <param name="Local" value="Objects\Column\RemoveSegments_Method_(Column_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ReverseSegments">
+          <param name="Local" value="Objects\Column\ReverseSegments_Method_(Column_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnColumnChanged">
+          <param name="Local" value="Objects\Column\OnColumnChanged_Event_(Column_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="ColumnSpacing">
+      <param name="Local" value="Objects\ColumnSpacing\ColumnSpacing_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Column">
+          <param name="Local" value="Objects\ColumnSpacing\Column_Property_(ColumnSpacing_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ColumnCount">
+          <param name="Local" value="Objects\ColumnSpacing\ColumnCount_Property_(ColumnSpacing_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Overhang">
+          <param name="Local" value="Objects\ColumnSpacing\Overhang_Property_(ColumnSpacing_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Spacing">
+          <param name="Local" value="Objects\ColumnSpacing\Spacing_Property_(ColumnSpacing_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Uniform">
+          <param name="Local" value="Objects\ColumnSpacing\Uniform_Property_(ColumnSpacing_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Add">
+          <param name="Local" value="Objects\ColumnSpacing\Add_Method_(ColumnSpacing_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Insert">
+          <param name="Local" value="Objects\ColumnSpacing\Insert_Method_(ColumnSpacing_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Remove">
+          <param name="Local" value="Objects\ColumnSpacing\Remove_Method_(ColumnSpacing_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnColumnCountChanged">
+          <param name="Local" value="Objects\ColumnSpacing\OnColumnCountChanged_Event_(ColumnSpacing_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnColumnSpacingChanged">
+          <param name="Local" value="Objects\ColumnSpacing\OnColumnSpacingChanged_Event_(ColumnSpacing_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="CrossBeam">
+      <param name="Local" value="Objects\CrossBeam\CrossBeam_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Fractional">
+          <param name="Local" value="Objects\CrossBeam\Fractional_Property_(CrossBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Length">
+          <param name="Local" value="Objects\CrossBeam\Length_Property_(CrossBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Segment">
+          <param name="Local" value="Objects\CrossBeam\Segment_Property_(CrossBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SegmentCount">
+          <param name="Local" value="Objects\CrossBeam\SegmentCount_Property_(CrossBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SegmentLength">
+          <param name="Local" value="Objects\CrossBeam\SegmentLength_Property_(CrossBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Symmetrical">
+          <param name="Local" value="Objects\CrossBeam\Symmetrical_Property_(CrossBeam_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddSegment">
+          <param name="Local" value="Objects\CrossBeam\AddSegment_Method_(CrossBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CopySegmentTo">
+          <param name="Local" value="Objects\CrossBeam\CopySegmentTo_Method_(CrossBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GetMemberSegments">
+          <param name="Local" value="Objects\CrossBeam\GetMemberSegments_Method_(CrossBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GetSegmentForMemberLocation">
+          <param name="Local" value="Objects\CrossBeam\GetSegmentForMemberLocation_Method_(CrossBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="InsertSegment">
+          <param name="Local" value="Objects\CrossBeam\InsertSegment_Method_(CrossBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="MoveSegmentTo">
+          <param name="Local" value="Objects\CrossBeam\MoveSegmentTo_Method_(CrossBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RemoveSegment">
+          <param name="Local" value="Objects\CrossBeam\RemoveSegment_Method_(CrossBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RemoveSegments">
+          <param name="Local" value="Objects\CrossBeam\RemoveSegments_Method_(CrossBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ReverseSegments">
+          <param name="Local" value="Objects\CrossBeam\ReverseSegments_Method_(CrossBeam_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Evemts">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnCrossBeamChanged">
+          <param name="Local" value="Objects\CrossBeam\OnCrossBeamChanged_Event_(CrossBeam_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="DistributionFactor">
+      <param name="Local" value="Objects\DistributionFactor\DistributionFactor_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GDMul">
+          <param name="Local" value="Objects\DistributionFactor\GDMul_Property_(DistributionFactor_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GDSgl">
+          <param name="Local" value="Objects\DistributionFactor\GDSgl_Property_(DistributionFactor_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GFat">
+          <param name="Local" value="Objects\DistributionFactor\GFat_Property_(DistributionFactor_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GNMMul">
+          <param name="Local" value="Objects\DistributionFactor\GNMMul_Property_(DistributionFactor_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GNMSgl">
+          <param name="Local" value="Objects\DistributionFactor\GNMSgl_Property_(DistributionFactor_object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GPMMul">
+          <param name="Local" value="Objects\DistributionFactor\GPMMul_Property_(DistributionFactor_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GPMSgl">
+          <param name="Local" value="Objects\DistributionFactor\GPMSgl_Property_(DistributionFactor_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GRMul">
+          <param name="Local" value="Objects\DistributionFactor\GRMul_Property_(DistributionFactor_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GRSgl">
+          <param name="Local" value="Objects\DistributionFactor\GRSgl_Property_(DistributionFactor_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GTMul">
+          <param name="Local" value="Objects\DistributionFactor\GTMul_Property_(DistributionFactor_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GTSgl">
+          <param name="Local" value="Objects\DistributionFactor\GTSgl_Property_(DistributionFactor_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GVMul">
+          <param name="Local" value="Objects\DistributionFactor\GVMul_Property_(DistributionFactor_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GVSgl">
+          <param name="Local" value="Objects\DistributionFactor\GVSgl_Property_(DistributionFactor_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GetG">
+          <param name="Local" value="Objects\DistributionFactor\GetG_Method_(DistributionFactor_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SetG">
+          <param name="Local" value="Objects\DistributionFactor\SetG_Method_(DistributionFactor_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnDistributionFactorChanged">
+          <param name="Local" value="Objects\DistributionFactor\OnDistributionFactorChanged_Event_(DistributionFactor_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="FilteredSegmentCollection">
+      <param name="Local" value="Objects\FilteredSegmentCollection\FilteredSegmentCollection_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="Objects\FilteredSegmentCollection\Count_Property_(FilteredSegmentCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="Objects\FilteredSegmentCollection\Item_Property_(FilteredSegmentCollection_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="GenericBridge">
+      <param name="Local" value="Objects\GenericBridge\GenericBridge_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Alignment">
+          <param name="Local" value="Objects\GenericBridge\Alignment_Property_(GenericBridge_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CogoInfo">
+          <param name="Local" value="Objects\GenericBridge\CogoInfo_Property_(GenericBridge_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CogoModel">
+          <param name="Local" value="Objects\GenericBridge\CogoModel_Property_(GenericBridge_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GirderLineCount">
+          <param name="Local" value="Objects\GenericBridge\GirderLineCount_Property_(GenericBridge_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GirderLineLength">
+          <param name="Local" value="Objects\GenericBridge\GirderLineLength_Property_(GenericBridge_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GirderLineType">
+          <param name="Local" value="Objects\GenericBridge\GirderLineType_Property_(GenericBridge_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GirderSpacing">
+          <param name="Local" value="Objects\GenericBridge\GirderSpacing_Property_(GenericBridge_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Piers">
+          <param name="Local" value="Objects\GenericBridge\Piers_Property_(GenericBridge_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PointsOfInterest">
+          <param name="Local" value="Objects\GenericBridge\PointsOfInterest_Property_(GenericBridge_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Spans">
+          <param name="Local" value="Objects\GenericBridge\Spans_Property_(GenericBridge_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Stages">
+          <param name="Local" value="Objects\GenericBridge\Stages_Property_(GenericBridge_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SuperstructureMembers">
+          <param name="Local" value="Objects\GenericBridge\SuperstructureMembers_Property_(GenericBridge_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="Objects\GenericBridge\Clone_Method_(GenericBridge_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="InsertSpanAndPier">
+          <param name="Local" value="Objects\GenericBridge\InsertSpanAndPier_Method_(GenericBridge_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Move">
+          <param name="Local" value="Objects\GenericBridge\Move_Method_(GenericBridge_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="MoveToStation">
+          <param name="Local" value="Objects\GenericBridge\MoveToStation_Method_(GenericBridge_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RemoveSpanAndPier">
+          <param name="Local" value="Objects\GenericBridge\RemoveSpanAndPier_Method_(GenericBridge_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ResizeSpans">
+          <param name="Local" value="Objects\GenericBridge\ResizeSpans_Method_(GenericBridge_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnBridgeChanged">
+          <param name="Local" value="Objects\GenericBridge\OnBridgeChanged_Event_(GenericBridge_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="GirderSpacing">
+      <param name="Local" value="Objects\GirderSpacing\GirderSpacing_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GirderLineCount">
+          <param name="Local" value="Objects\GirderSpacing\GirderLineCount_Property_(GirderSpacing_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GirderLineIndex">
+          <param name="Local" value="Objects\GirderSpacing\GirderLineIndex_Property_(GirderSpacing_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Measurement">
+          <param name="Local" value="Objects\GirderSpacing\Measurement_Property_(GirderSpacing_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Overhang">
+          <param name="Local" value="Objects\GirderSpacing\Overhang_Property_(GirderSpacing_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Spacing">
+          <param name="Local" value="Objects\GirderSpacing\Spacing_Property_(GirderSpacing_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SuperstructureMembers">
+          <param name="Local" value="Objects\GirderSpacing\SuperstructureMembers_Property_(GirderSpacing_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Uniform">
+          <param name="Local" value="Objects\GirderSpacing\Uniform_Property_(GirderSpacing_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Width">
+          <param name="Local" value="Objects\GirderSpacing\Width_Property_(GirderSpacing_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Add">
+          <param name="Local" value="Objects\GirderSpacing\Add_Method_(GirderSpacing_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Insert">
+          <param name="Local" value="Objects\GirderSpacing\Insert_Method_(GirderSpacing_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Remove">
+          <param name="Local" value="Objects\GirderSpacing\Remove_Method_(GirderSpacing_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnGirderLineCountChanged">
+          <param name="Local" value="Objects\GirderSpacing\OnGirderLineCountChanged_Event_(GirderSpacing_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnGirderSpacingChanged">
+          <param name="Local" value="Objects\GirderSpacing\OnGirderSpacingChanged_Event_(GirderSpacing_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="LongitudinalPierDescription">
+      <param name="Local" value="Objects\LongitudinalPierDescription\LongitudinalPierDescription_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="BaseOffset">
+          <param name="Local" value="Objects\LongitudinalPierDescription\BaseOffset_Property_(LongitudinalPierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Connectivity">
+          <param name="Local" value="Objects\LongitudinalPierDescription\Connectivity_Property_(LongitudinalPierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ContinuityStage">
+          <param name="Local" value="Objects\LongitudinalPierDescription\ContinuityStage_Property_(LongitudinalPierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Fractional">
+          <param name="Local" value="Objects\LongitudinalPierDescription\Fractional_Property_(LongitudinalPierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Height">
+          <param name="Local" value="Objects\LongitudinalPierDescription\Height_Property_(LongitudinalPierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Length">
+          <param name="Local" value="Objects\LongitudinalPierDescription\Length_Property_(LongitudinalPierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Pier">
+          <param name="Local" value="Objects\LongitudinalPierDescription\Pier_Property_(LongitudinalPierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Segment">
+          <param name="Local" value="Objects\LongitudinalPierDescription\Segment_Property_(LongitudinalPierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SegmentCount">
+          <param name="Local" value="Objects\LongitudinalPierDescription\SegmentCount_Property_(LongitudinalPierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Symmetrical">
+          <param name="Local" value="Objects\LongitudinalPierDescription\Symmetrical_Property_(LongitudinalPierDescription_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddSegment">
+          <param name="Local" value="Objects\LongitudinalPierDescription\AddSegment_Method_(LongitudinalPierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CopySegmentTo">
+          <param name="Local" value="Objects\LongitudinalPierDescription\CopySegmentTo_Method_(LongitudinalPierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GetMemberSegments">
+          <param name="Local" value="Objects\LongitudinalPierDescription\GetMemberSegments_Method_(LongitudinalPierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GetSegmentForMemberLocation">
+          <param name="Local" value="Objects\LongitudinalPierDescription\GetSegmentForMemberLocation_Method_(LongitudinalPierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="InsertSegment">
+          <param name="Local" value="Objects\LongitudinalPierDescription\InsertSegment_Method_(LongitudinalPierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="MoveSegmentTo">
+          <param name="Local" value="Objects\LongitudinalPierDescription\MoveSegmentTo_Method_(LongitudinalPierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RemoveSegment">
+          <param name="Local" value="Objects\LongitudinalPierDescription\RemoveSegment_Method_(LongitudinalPierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RemoveSegments">
+          <param name="Local" value="Objects\LongitudinalPierDescription\RemoveSegments_Method_(LongitudinalPierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ReverseSegments">
+          <param name="Local" value="Objects\LongitudinalPierDescription\ReverseSegments_Method_(LongitudinalPierDescription_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnChanged">
+          <param name="Local" value="Objects\LongitudinalPierDescription\OnChanged_Event_(LongitudinalPierDescription_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Pier">
+      <param name="Local" value="Objects\Pier\Pier_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Direction">
+          <param name="Local" value="Objects\Pier\Direction_Property_(Pier_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LinkCount">
+          <param name="Local" value="Objects\Pier\LinkCount_Property_(Pier_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LinkSource">
+          <param name="Local" value="Objects\Pier\LinkSource_Property_(Pier_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LinkTarget">
+          <param name="Local" value="Objects\Pier\LinkTarget_Property_(Pier_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LongitudinalPierDescription">
+          <param name="Local" value="Objects\Pier\LongitudinalPierDescription_Property_(Pier_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Offset">
+          <param name="Local" value="Objects\Pier\Offset_Property_(Pier_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Orientation">
+          <param name="Local" value="Objects\Pier\Orientation_Property_(Pier_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SkewAngle">
+          <param name="Local" value="Objects\Pier\SkewAngle_Property_(Pier_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Station">
+          <param name="Local" value="Objects\Pier\Station_Property_(Pier_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="TransversePierDescription">
+          <param name="Local" value="Objects\Pier\TransversePierDescription_Property_(Pier_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CreateTransversePierDescription">
+          <param name="Local" value="Objects\Pier\CreateTransversePierDescription_Method_(Pier_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Link">
+          <param name="Local" value="Objects\Pier\Link_Method_(Pier_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RemoveTransversePierDescription">
+          <param name="Local" value="Objects\Pier\RemoveTransversePierDescription_Method_(Pier_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Unlink">
+          <param name="Local" value="Objects\Pier\Unlink_Method_(Pier_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPierChanged">
+          <param name="Local" value="Objects\Pier\OnPierChanged_Event_(Pier_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="PierCollection">
+      <param name="Local" value="Objects\PierCollection\PierCollection_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="Objects\PierCollection\Count_Property_(PierCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="Objects\PierCollection\Item_Property_(PierCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PierIndex">
+          <param name="Local" value="Objects\PierCollection\PierIndex_Property_(PierCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CopyTo">
+          <param name="Local" value="Objects\PierCollection\CopyTo_Method_(PierCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPierAdded">
+          <param name="Local" value="Objects\PierCollection\OnPierAdded_Event_(PierCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPierChanged">
+          <param name="Local" value="Objects\PierCollection\OnPierChanged_Event_(PierCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPierRemoved">
+          <param name="Local" value="Objects\PierCollection\OnPierRemoved_Event_(PierCollection_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="PointOfInterest">
+      <param name="Local" value="Objects\PointOfInterest\PointOfInterest_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ColumnIdx">
+          <param name="Local" value="Objects\PointOfInterest\ColumnIdx_Property_(PointOfInterest_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="DistributionFactor">
+          <param name="Local" value="Objects\PointOfInterest\DistributionFactor_Property_(PointOfInterest_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GirderLineIdx">
+          <param name="Local" value="Objects\PointOfInterest\GirderLineIdx_Property_(PointOfInterest_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ID">
+          <param name="Local" value="Objects\PointOfInterest\ID_Property_(PointOfInterest_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Location">
+          <param name="Local" value="Objects\PointOfInterest\Location_Property_(PointOfInterest_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="MemberType">
+          <param name="Local" value="Objects\PointOfInterest\MemberType_Property_(PointOfInterest_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SegmentIdx">
+          <param name="Local" value="Objects\PointOfInterest\SegmentIdx_Property_(PointOfInterestObject).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SpanIdx">
+          <param name="Local" value="Objects\PointOfInterest\SpanIdx_Property_(PointOfInterest_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SuperstructureMemberIdx">
+          <param name="Local" value="Objects\PointOfInterest\SuperstructureMemberIdx_Property_(PointOfInterest_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SupportIdx">
+          <param name="Local" value="Objects\PointOfInterest\SupportIdx_Property_(PointOfInterest_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="TemporarySupport">
+          <param name="Local" value="Objects\PointOfInterest\TemporarySupport_Property_(PointOfInterest_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPOIChanged">
+          <param name="Local" value="Objects\PointOfInterest\OnPOIChanged_Event_(PointOfInterest_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="PointOfInterestCollection">
+      <param name="Local" value="Objects\PointOfInterestCollection\PointOfInterestCollection_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="Objects\PointOfInterestCollection\Count_Property_(PointOfInterestCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="Objects\PointOfInterestCollection\Item_Property_(PointOfInterestCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddToColumn">
+          <param name="Local" value="Objects\PointOfInterestCollection\AddToColumn_Method_(PointOfInterestCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddToCrossBeam">
+          <param name="Local" value="Objects\PointOfInterestCollection\AddToCrossBeam_Method_(PointOfInterestCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddToGirderLine">
+          <param name="Local" value="Objects\PointOfInterestCollection\AddToGirderLine_Method_(PointOfInterestCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddToLongitudinalSupport">
+          <param name="Local" value="Objects\PointOfInterestCollection\AddToLongitudinalSupport_Method_(PointOfInterestCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddToSpan">
+          <param name="Local" value="Objects\PointOfInterestCollection\AddToSpan_Method_(PointOfInterestCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddToTemporaryColumn">
+          <param name="Local" value="Objects\PointOfInterestCollection\AddToTemporaryColumn_Method_(PointOfInterestCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddToTemporaryCrossBeam">
+          <param name="Local" value="Objects\PointOfInterestCollection\AddToTemporaryCrossBeam_Method_(PointOfInterestCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddToTemporaryLongitudinalSupport">
+          <param name="Local" value="Objects\PointOfInterestCollection\AddToTemporaryLongitudinalSupport_Method_(PointOfInterestCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="Objects\PointOfInterestCollection\Clear_Method_(PointOfInterestCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Find">
+          <param name="Local" value="Objects\PointOfInterestCollection\Find_Method_(PointOfInterestCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RemoveByID">
+          <param name="Local" value="Objects\PointOfInterestCollection\RemoveByID_Method_(PointOfInterestCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RemoveByIndex">
+          <param name="Local" value="Objects\PointOfInterestCollection\RemoveByIndex_Method_(PointOfInterestCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPointOfInterestAdded">
+          <param name="Local" value="Objects\PointOfInterestCollection\OnPointOfInterestAdded_Event_(PointOfInterestCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPointOfInterestChanged">
+          <param name="Local" value="Objects\PointOfInterestCollection\OnPointOfInterestChanged_Event_(PointOfInterestCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnPointOfInterestRemoved">
+          <param name="Local" value="Objects\PointOfInterestCollection\OnPointOfInterestRemoved_Event_(PointOfInterestCollection_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Segment">
+      <param name="Local" value="Objects\Segment\Segment_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CrossSection">
+          <param name="Local" value="Objects\Segment\CrossSection_Property_(Segment_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Length">
+          <param name="Local" value="Objects\Segment\Length_Property_(Segment_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnSegmentChanged">
+          <param name="Local" value="Objects\Segment\OnSegmentChanged_Event_(Segment_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="SegmentCrossSection">
+      <param name="Local" value="Objects\SegmentCrossSection\SegmentCrossSection_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Area">
+          <param name="Local" value="Objects\SegmentCrossSection\Area_Property_(SegmentCrossSection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CTE">
+          <param name="Local" value="Objects\SegmentCrossSection\CTE_Property_(SegmentCrossSection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="DeflectionMomentOfInertia">
+          <param name="Local" value="Objects\SegmentCrossSection\DeflectionMomentOfInertia_Property_(SegmentCrossSection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Density">
+          <param name="Local" value="Objects\SegmentCrossSection\Density_Property_(SegmentCrossSection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Depth">
+          <param name="Local" value="Objects\SegmentCrossSection\Depth_Property_(SegmentCrossSection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="E">
+          <param name="Local" value="Objects\SegmentCrossSection\E_Property_(SegmentCrossSection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="MomentOfInertia">
+          <param name="Local" value="Objects\SegmentCrossSection\MomentOfInertia_Property_(SegmentCrossSection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SelfWgtArea">
+          <param name="Local" value="Objects\SegmentCrossSection\SelfWgtArea_Property_(SegmentCrossSection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="StressPoints">
+          <param name="Local" value="Objects\SegmentCrossSection\StressPoints_Property_(SegmentCrossSection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnSegmentCrossSectionChanged">
+          <param name="Local" value="Objects\SegmentCrossSection\OnSegmentCrossSectionChanged_Event_(SegmentCrossSection_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="SegmentItem">
+      <param name="Local" value="Objects\SegmentItem\SegmentItem_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RelPosition">
+          <param name="Local" value="Objects\SegmentItem\RelPosition_Property_(SegmentItem_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Segment">
+          <param name="Local" value="Objects\SegmentItem\Segment_Property_(SegmentItem_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Stage">
+          <param name="Local" value="Objects\SegmentItem\Stage_Property_(SegmentItem_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnSegmentItemChanged">
+          <param name="Local" value="Objects\SegmentItem\OnSegmentItemChanged_Event_(SegmentItem_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Span">
+      <param name="Local" value="Objects\Span\Span_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GirderLineLength">
+          <param name="Local" value="Objects\Span\GirderLineLength_Property_(Span_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Length">
+          <param name="Local" value="Objects\Span\Length_Property_(Span_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="TemporaryPiers">
+          <param name="Local" value="Objects\Span\TemporaryPiers_Property_(Span_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnSpanChanged">
+          <param name="Local" value="Objects\Span\OnSpanChanged_Event_(Span_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="SpanCollection">
+      <param name="Local" value="Objects\SpanCollection\SpanCollection_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="Objects\SpanCollection\Count_Property_(SpanCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="Objects\SpanCollection\Item_Property_(SpanCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SpanIndex">
+          <param name="Local" value="Objects\SpanCollection\SpanIndex_Property_(SpanCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnSpanChanged">
+          <param name="Local" value="Objects\SpanCollection\OnSpanChanged_Event_(SpanCollection_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Stage">
+      <param name="Local" value="Objects\Stage\Stage_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Description">
+          <param name="Local" value="Objects\Stage\Description_Property_(Stage_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Name">
+          <param name="Local" value="Objects\Stage\Name_Property_(Stage_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnDescriptionChanged">
+          <param name="Local" value="Objects\Stage\OnDescriptionChanged_Event_(Stage_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnNameChanged">
+          <param name="Local" value="Objects\Stage\OnNameChanged_Event_(Stage_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="StageCollection">
+      <param name="Local" value="Objects\StageCollection\StageCollection_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="Objects\StageCollection\Count_Property_(StageCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="Objects\StageCollection\Item_Property_(StageCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CreateStage">
+          <param name="Local" value="Objects\StageCollection\CreateStage_Method_(StageCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CreateStageAt">
+          <param name="Local" value="Objects\StageCollection\CreateStageAt_Method_(StageCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Find">
+          <param name="Local" value="Objects\StageCollection\Find_Method_(StageCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="MoveStage">
+          <param name="Local" value="Objects\StageCollection\MoveStage_Method_(StageCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RemoveByIndex">
+          <param name="Local" value="Objects\StageCollection\RemoveByIndex_Method_(StageCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RemoveByName">
+          <param name="Local" value="Objects\StageCollection\RemoveByName_Method_(StageCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnStageAdded">
+          <param name="Local" value="Objects\StageCollection\OnStageAdded_Event_(StageCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnStageDescriptionChanged">
+          <param name="Local" value="Objects\StageCollection\OnStageDescriptionChanged_Event_(StageCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnStageMoved">
+          <param name="Local" value="Objects\StageCollection\OnStageMoved_Event_(StageCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnStageRemoved">
+          <param name="Local" value="Objects\StageCollection\OnStageRemoved_Event_(StageCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnStageRenamed">
+          <param name="Local" value="Objects\StageCollection\OnStageRenamed_Event_(StageCollection_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="StressPoint">
+      <param name="Local" value="Objects\StressPoint\StressPoint_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Sa">
+          <param name="Local" value="Objects\StressPoint\Sa_Property_(StressPoint_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Sm">
+          <param name="Local" value="Objects\StressPoint\Sm_Property_(StressPoint_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnStressPointChanged">
+          <param name="Local" value="Objects\StressPoint\OnStressPointChanged_Event_(StressPoint_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="StressPointCollection">
+      <param name="Local" value="Objects\StressPointCollection\StressPointCollection_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="Objects\StressPointCollection\Count_Property_(StressPointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="Objects\StressPointCollection\Item_Property_(StressPointCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Add">
+          <param name="Local" value="Objects\StressPointCollection\Add_Method_(StressPointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="Objects\StressPointCollection\Clear_Method_(StressPointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Insert">
+          <param name="Local" value="Objects\StressPointCollection\Insert_Method_(StressPointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Remove">
+          <param name="Local" value="Objects\StressPointCollection\Remove_Method_(StressPointCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnStressPointAdded">
+          <param name="Local" value="Objects\StressPointCollection\OnStressPointAdded_Event_(StressPointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnStressPointChanged">
+          <param name="Local" value="Objects\StressPointCollection\OnStressPointChanged_Event_(StressPointCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnStressPointRemoved">
+          <param name="Local" value="Objects\StressPointCollection\OnStressPointRemoved_Event_(StressPointCollection_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="SuperstructureMember">
+      <param name="Local" value="Objects\SuperstructureMember\SuperstructureMember_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Fractional">
+          <param name="Local" value="Objects\SuperstructureMember\Fractional_Property_(SuperstructureMember_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Length">
+          <param name="Local" value="Objects\SuperstructureMember\Length_Property_(SuperstructureMember_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Segment">
+          <param name="Local" value="Objects\SuperstructureMember\Segment_Property_(SuperstructureMember_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SegmentCount">
+          <param name="Local" value="Objects\SuperstructureMember\SegmentCount_Property_(SuperstructureMember_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SegmentLength">
+          <param name="Local" value="Objects\SuperstructureMember\SegmentLength_Property_(SuperstructureMember_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Symmetrical">
+          <param name="Local" value="Objects\SuperstructureMember\Symmetrical_Property_(SuperstructureMember_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="AddSegment">
+          <param name="Local" value="Objects\SuperstructureMember\AddSegment_Method_(SuperstructureMember_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CopySegmentTo">
+          <param name="Local" value="Objects\SuperstructureMember\CopySegmentTo_Method_(SuperstructureMember_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GetEndRelease">
+          <param name="Local" value="Objects\SuperstructureMember\GetEndRelease_Method_(SuperstructureMember_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GetMemberSegments">
+          <param name="Local" value="Objects\SuperstructureMember\GetMemberSegments_Method_(SuperstructureMember_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="GetSegmentForMemberLocation">
+          <param name="Local" value="Objects\SuperstructureMember\GetSegmentForMemberLocation_Method_(SuperstructureMember_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="InsertSegment">
+          <param name="Local" value="Objects\SuperstructureMember\InsertSegment_Method_(SuperstructureMember_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="MoveSegmentTo">
+          <param name="Local" value="Objects\SuperstructureMember\MoveSegmentTo_Method_(SuperstructureMember_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RemoveSegment">
+          <param name="Local" value="Objects\SuperstructureMember\RemoveSegment_Method_(SuperstructureMember_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RemoveSegments">
+          <param name="Local" value="Objects\SuperstructureMember\RemoveSegments_Method_(SuperstructureMember_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ReverseSegments">
+          <param name="Local" value="Objects\SuperstructureMember\ReverseSegments_Method_(SuperstructureMember_Objects).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SetEndRelease">
+          <param name="Local" value="Objects\SuperstructureMember\SetEndRelease_Method_(SuperstructureMember_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnSuperstructureMemberChanged">
+          <param name="Local" value="Objects\SuperstructureMember\OnSuperstructureMemberChanged_Event_(SuperstructureMember_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="SuperstructureMemberCollection">
+      <param name="Local" value="Objects\SuperstructureMemberCollection\SuperstructureMemberCollection_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\Count_Property_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Fractional">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\Fractional_Property_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\Item_Property_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LinkCount">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\LinkCount_Property_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LinkSource">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\LinkSource_Property_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LinkTarget">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\LinkTarget_Property_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="MemberLength">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\MemberLength_Property_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Offset">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\Offset_Property_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Symmetrical">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\Symmetrical_Property_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Add">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\Add_Method_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\Clear_Method_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CopyTo">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\CopyTo_Method_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Link">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\Link_Method_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="MoveTo">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\MoveTo_Method_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Remove">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\Remove_Method_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Reverse">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\Reverse_Method_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Unlink">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\Unlink_Method_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnSuperstructureMemberAdded">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\OnSuperstructureMemberAdded_Event_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnSuperstructureMemberChanged">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\OnSuperstructureMemberChanged_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnSuperstructureMemberCollectionChanged">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\OnSuperstructureMemberCollectionChanged_Event_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnSuperstructureMemberMoved">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\OnSuperstructureMemberMoved_Event_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnSuperstructureMemberRemoved">
+          <param name="Local" value="Objects\SuperstructureMemberCollection\OnSuperstructureMemberRemoved_Event_(SuperstructureMemberCollection_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="TemporaryPierItem">
+      <param name="Local" value="Objects\TemporaryPierItem\TemporaryPierItem_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ID">
+          <param name="Local" value="Objects\TemporaryPierItem\ID_Property_(TemporaryPierItem_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Location">
+          <param name="Local" value="Objects\TemporaryPierItem\Location_Property_(TemporaryPierItem_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Pier">
+          <param name="Local" value="Objects\TemporaryPierItem\Pier_Property_(TemporaryPierItem_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RemovalStage">
+          <param name="Local" value="Objects\TemporaryPierItem\RemovalStage_Property_(TemporaryPierItem_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnTemporaryPierChanged Event (TemporaryPierItem Object)">
+          <param name="Local" value="Objects\TemporaryPierItem\OnTemporaryPierChanged_Event_(TemporaryPierItem_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="TemporaryPierItemCollection">
+      <param name="Local" value="Objects\TemporaryPierItemCollection\TemporaryPierItemCollection_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="Objects\TemporaryPierItemCollection\Count_Property_(TemporaryPierItemCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="Objects\TemporaryPierItemCollection\Item_Property_(TemporaryPierItemCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Add">
+          <param name="Local" value="Objects\TemporaryPierItemCollection\Add_Method_(TemporaryPierItemCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="Objects\TemporaryPierItemCollection\Clear_Method_(TemporaryPierItemCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Find">
+          <param name="Local" value="Objects\TemporaryPierItemCollection\Find_Method_(TemporaryPierItemCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RemoveByID">
+          <param name="Local" value="Objects\TemporaryPierItemCollection\RemoveByID_Method_(TemporaryPierItemCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RemoveByIndex">
+          <param name="Local" value="Objects\TemporaryPierItemCollection\RemoveByIndex_Method_(TemporaryPierItemCollection_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnTemporaryPierItemAdded">
+          <param name="Local" value="Objects\TemporaryPierItemCollection\OnTemporaryPierItemAdded_Event_(TemporaryPierItemCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnTemporaryPierItemChanged">
+          <param name="Local" value="Objects\TemporaryPierItemCollection\OnTemporaryPierItemChanged_Event_(TemporaryPierItemCollection_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnTemporaryPierItemRemoved">
+          <param name="Local" value="Objects\TemporaryPierItemCollection\OnTemporaryPierItemRemoved_Event_(TempoaryPierItemCollection_Changed).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="TransversePierDescription">
+      <param name="Local" value="Objects\TransversePierDescription\TransversePierDescription_Object.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Column">
+          <param name="Local" value="Objects\TransversePierDescription\Column_Property_(TransversePierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ColumnSpacing">
+          <param name="Local" value="Objects\TransversePierDescription\ColumnSpacing_Property_(TransversePierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="CrossBeam">
+          <param name="Local" value="Objects\TransversePierDescription\CrossBeam_Property_(TransversePierDescription_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Pier">
+          <param name="Local" value="Objects\TransversePierDescription\Pier_Property_(TransversePierDescription_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Events">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="OnChanged">
+          <param name="Local" value="Objects\TransversePierDescription\OnChanged_Event_(TransversePierDescription_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    </ul>
+</ul>
+</html>

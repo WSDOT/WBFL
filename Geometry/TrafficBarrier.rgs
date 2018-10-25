@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.TrafficBarrier.1 = s 'TrafficBarrier Class'
+	{
+		CLSID = s '{2558CFC2-03CE-11D3-8CDF-EBFB6612CA35}'
+	}
+	WBFLGeometry.TrafficBarrier = s 'TrafficBarrier Class'
+	{
+		CLSID = s '{2558CFC2-03CE-11D3-8CDF-EBFB6612CA35}'
+		CurVer = s 'WBFLGeometry.TrafficBarrier.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {2558CFC2-03CE-11D3-8CDF-EBFB6612CA35} = s 'TrafficBarrier Class'
+		{
+			ProgID = s 'WBFLGeometry.TrafficBarrier.1'
+			VersionIndependentProgID = s 'WBFLGeometry.TrafficBarrier'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

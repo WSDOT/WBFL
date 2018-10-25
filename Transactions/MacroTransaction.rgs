@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLTransactions.MacroTransaction.1 = s 'MacroTransaction Class'
+	{
+		CLSID = s '{8CF1CDEA-D489-41C3-8A90-010D89474297}'
+	}
+	WBFLTransactions.MacroTransaction = s 'MacroTransaction Class'
+	{
+		CLSID = s '{8CF1CDEA-D489-41C3-8A90-010D89474297}'
+		CurVer = s 'WBFLTransactions.MacroTransaction.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {8CF1CDEA-D489-41C3-8A90-010D89474297} = s 'MacroTransaction Class'
+		{
+			ProgID = s 'WBFLTransactions.MacroTransaction.1'
+			VersionIndependentProgID = s 'WBFLTransactions.MacroTransaction'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{081C49DE-FBE8-4C8D-BEEC-F13ECFF2B56C}'
+		}
+	}
+}

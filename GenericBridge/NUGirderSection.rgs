@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.NUGirderSection.1 = s 'NUGirderSection Class'
+	{
+		CLSID = s '{5CD0487E-041E-4ADE-973D-0B6AE4472478}'
+	}
+	WBFLGenericBridge.NUGirderSection = s 'NUGirderSection Class'
+	{
+		CLSID = s '{5CD0487E-041E-4ADE-973D-0B6AE4472478}'
+		CurVer = s 'WBFLGenericBridge.NUGirderSection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {5CD0487E-041E-4ADE-973D-0B6AE4472478} = s 'NUGirderSection Class'
+		{
+			ProgID = s 'WBFLGenericBridge.NUGirderSection.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.NUGirderSection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

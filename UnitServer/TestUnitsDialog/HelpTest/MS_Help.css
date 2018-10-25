@@ -1,0 +1,86 @@
+
+ /* $MVD$:fontset("Verdana","Verdana") */
+ BODY { background-color : white;}
+ .mvd-BODY { background-color : white;}
+ P { font-family : "Verdana";
+     font-size : 10.0pt;
+     color : black;}
+ .mvd-P { font-family : "Verdana";
+          font-size : 10.0pt;
+          color : black;}
+ H1 { font-family : "Verdana";
+      font-weight : bold;
+      font-size : 12.0pt;
+      color : black;}
+ .mvd-H1 { font-family : "Verdana";
+           font-weight : bold;
+           font-size : 12.0pt;
+           color : black;}
+ H2 { font-family : "Verdana";
+      font-weight : bold;
+      font-size : 10.0pt;
+      color : black;}
+ .mvd-H2 { font-family : "Verdana";
+           font-weight : bold;
+           font-size : 10.0pt;
+           color : black;}
+ H3 { font-family : "Verdana";
+      font-weight : normal;
+      font-size : 10.0pt;
+      color : black;}
+ .mvd-H3 { font-family : "Verdana";
+           font-weight : normal;
+           font-size : 10.0pt;
+           color : black;}
+ H4 { font-family : "Verdana";
+      font-weight : normal;
+      font-size : 10.0pt;
+      color : black;}
+ .mvd-H4 { font-family : "Verdana";
+           font-weight : normal;
+           font-size : 10.0pt;
+           color : black;}
+ H5 { font-family : "Verdana";
+      font-weight : normal;
+      font-size : 10.0pt;
+      color : black;}
+ .mvd-H5 { font-family : "Verdana";
+           font-weight : normal;
+           font-size : 10.0pt;
+           color : black;}
+ H6 { font-family : "Verdana";
+      font-weight : normal;
+      font-size : 10.0pt;
+      color : black;}
+ .mvd-H6 { font-family : "Verdana";
+           font-weight : normal;
+           font-size : 10.0pt;
+           color : black;}
+ A:link { text-decoration :underline;
+          color : blue;}
+ A:visited { text-decoration :underline;
+             color : blue;}
+   CITE.expandspot { font-style : normal;
+            color : green;
+            cursor: hand;}
+ .mvd-CITE-expandspot { font-style : normal;
+                 color : green;
+                 cursor: hand;}
+ DFN.collapsed { font-style : italic;
+                 font-weight : normal;
+                 display :      'none';
+                 color : red;}
+.mvd-DFN-collapsed { font-style : italic;
+                      font-weight : normal;
+                      display :      'none';
+                      color : red;}
+ DFN.expanded { font-style : italic;
+                 font-weight : normal;
+                color : red;}
+ .mvd-DFN-expanded { font-style : italic;
+                 font-weight : normal;
+                     color : red;}
+EM.dropspot	{ cursor : hand;
+ 		  color : green;}
+.mvd-EM-dropspot { cursor : hand;
+ 		  color : green;}

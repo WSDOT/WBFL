@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLGeometry.ShapeCollection.1 = s 'ShapeCollection Class'
+	{
+		CLSID = s '{2A9E6E22-B982-11D4-8B56-006097C68A9C}'
+	}
+	WBFLGeometry.ShapeCollection = s 'ShapeCollection Class'
+	{
+		CLSID = s '{2A9E6E22-B982-11D4-8B56-006097C68A9C}'
+		CurVer = s 'WBFLGeometry.ShapeCollection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {2A9E6E22-B982-11D4-8B56-006097C68A9C} = s 'ShapeCollection Class'
+		{
+			ProgID = s 'WBFLGeometry.ShapeCollection.1'
+			VersionIndependentProgID = s 'WBFLGeometry.ShapeCollection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+		}
+	}
+}

@@ -1,0 +1,11 @@
+HKCR
+{
+	NoRemove AppID
+	{
+		{3663CD64-91B3-4BBA-912A-674AB34E21B6} = s 'LBAMViewer'
+		'LBAMViewer.EXE'
+		{
+			val AppID = s {3663CD64-91B3-4BBA-912A-674AB34E21B6}
+		}
+	}
+}

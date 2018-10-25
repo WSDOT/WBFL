@@ -1,0 +1,151 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "1 TYPELIB ""WBFLGenericBridgeTools.tlb""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 3,1,1,0
+ PRODUCTVERSION 3,1,1,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "A member of Alternate Route Project\0"
+            VALUE "CompanyName", "Washington State Department of Transportation\0"
+            VALUE "FileDescription", "GenericBridgeTools Module\0"
+            VALUE "FileVersion", "3.1.1.0\0"
+            VALUE "InternalName", "GenericBridgeTools\0"
+            VALUE "LegalCopyright", "Copyright © 2000-2009\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OLESelfRegister", "\0"
+            VALUE "OriginalFilename", "GenericBridgeTools.DLL\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "WBFL\0"
+            VALUE "ProductVersion", "3.1.1.0\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+
+IDR_EFFECTIVEFLANGEWIDTHTOOL REGISTRY DISCARDABLE    "EffectiveFlangeWidthTool.rgs"
+IDR_EFFECTIVEFLANGEWIDTHDETAILS REGISTRY DISCARDABLE    "EffectiveFlangeWidthDetails.rgs"
+IDR_SECTIONCUTTOOL      REGISTRY DISCARDABLE    "SectionCutTool.rgs"
+IDR_STRANDPATTERN       REGISTRY DISCARDABLE    "StrandPattern.rgs"
+IDR_STRANDGRID          REGISTRY DISCARDABLE    "StrandGrid.rgs"
+IDR_PRECASTGIRDER       REGISTRY DISCARDABLE    "PrecastGirder.rgs"
+IDR_BRIDGEGEOMETRYTOOL  REGISTRY DISCARDABLE    "BridgeGeometryTool.rgs"
+IDR_REBAR               REGISTRY DISCARDABLE    "Rebar.rgs"
+IDR_REBARSECTIONITEM    REGISTRY DISCARDABLE    "RebarSectionItem.rgs"
+IDR_REBARSECTION        REGISTRY DISCARDABLE    "RebarSection.rgs"
+IDR_REBARROWPATTERN     REGISTRY DISCARDABLE    "RebarRowPattern.rgs"
+IDR_FLEXREBARLAYOUTITEM REGISTRY DISCARDABLE    "FlexRebarLayoutItem.rgs"
+IDR_REBARLAYOUT         REGISTRY DISCARDABLE    "RebarLayout.rgs"
+IDR_REBARFACTORY        REGISTRY DISCARDABLE    "RebarFactory.rgs"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PROJNAME            "GenericBridgeTools"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_E_UNKNOWNDECKTYPE   "Unknown bridge deck type. Expecting cast deck or precast deck."
+    IDS_E_GIRDERSECTION     "Segment shape does not support the IGirderSection interface"
+    IDS_E_NODECK            "Bridge model does not contain a bridge deck, but one is required for this analysis"
+    IDS_E_COMPOSITEDECK     "The bridge deck must be composite"
+    IDS_E_MATERIAL          "Material properties required for calculations"
+    IDS_E_SHAPE             "Support for the IShape interface was expected"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+1 TYPELIB "WBFLGenericBridgeTools.tlb"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -1,0 +1,352 @@
+<!doctype HTML public "-//W3C//DTD HTML 4.0 Frameset//EN">
+
+<html>
+
+<!--(==============================================================)-->
+<!--(Document created with RoboEditor. )============================-->
+<!--(==============================================================)-->
+
+<head>
+
+<title>iSymbolLegendEntry</title>
+
+<!--(Meta)==========================================================-->
+
+<meta http-equiv=content-type content="text/html; charset=windows-1252">
+<meta name=topic-status content="In Progress">
+<meta name=topic-priority content=0>
+<meta name=topic-time-estimate content=0>
+<meta name=topic-comment content>
+<meta name=topic-id content>
+<meta name=generator content="RoboHELP by eHelp Corporation - www.ehelp.com">
+<meta name=generator-major-version content=0.1>
+<meta name=generator-minor-version content=1>
+<meta name=filetype content=kadov>
+<meta name=filetype-version content=1>
+<meta name=page-count content=0>
+<meta name=layout-height content=0>
+<meta name=layout-width content=0>
+
+
+<!--(Links)=========================================================-->
+
+<link REL=StyleSheet HREF="..\default.css">
+
+
+
+</head>
+
+<!--(Body)==========================================================-->
+
+
+<body>
+
+<h1>iSymbolLegendEntry</h1>
+
+<p>Interface to a type of <a HREF="iLegendEntry.htm">iLegendEntry</a> that 
+ uses font symbols to draw itself.</p>
+
+
+<!--(HR)============================================================-->
+<hr style="height: 2px;
+			width: 100%;
+			float: aligncenter;"
+	size=2
+	width=100%
+	align=center>
+
+
+<p><font style="font-family: 'Courier New';"
+		face="Courier New">void put_Name(BSTR *pVal)</font></p>
+
+<p>Set the name for the legend entry. Th entry name is put into the legend 
+ next to its symbol.</p>
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="width: 100%;
+				border-spacing: 0px;
+				margin-top: 14pt;"
+		cellspacing=0
+		width=100%>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 50%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=50%>
+<p style="margin-bottom: 0;">pVal</td>
+<td style="x-cell-content-align: TOP;
+			width: 50%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=50%>
+<p style="margin-bottom: 0;">String that is the name for this entry</td></tr>
+</table>
+
+
+<!--(HR)============================================================-->
+<hr style="height: 2px;
+			width: 100%;
+			float: aligncenter;"
+	size=2
+	width=100%
+	align=center>
+
+
+<p><font style="font-family: 'Courier New';"
+		face="Courier New">void </font>get_SymbolFontFace(char* *pName)<font 
+ style="font-family: 'Courier New';"
+	face="Courier New"><br>
+void </font>put_SymbolFontFace(char* pNamel)<br>
+<br>
+Get/set the name of the Windows font fact that will be used to draw the 
+ symbol.</p>
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="width: 100%;
+				border-spacing: 0px;
+				margin-top: 14pt;"
+		cellspacing=0
+		width=100%>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 50%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=50%>
+<p style="margin-bottom: 0;">pName</td>
+<td style="x-cell-content-align: TOP;
+			width: 50%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=50%>
+<p style="margin-bottom: 0;">Name of the Windows font face (e.g., &quot;Symbol&quot;). 
+ Note that the font face must exist on the target machine</td></tr>
+</table>
+
+
+<!--(HR)============================================================-->
+<hr style="height: 2px;
+			width: 100%;
+			float: aligncenter;"
+	size=2
+	width=100%
+	align=center>
+
+
+<p><font style="font-family: 'Courier New';"
+		face="Courier New">void </font>get_SymbolSize(long *pSize)<font 
+ style="font-family: 'Courier New';"
+	face="Courier New"><br>
+void </font>put_SymbolSize(long Size)<br>
+<br>
+Get/set the size of the symbol in 1/10 Points.</p>
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="width: 100%;
+				border-spacing: 0px;
+				margin-top: 14pt;"
+		cellspacing=0
+		width=100%>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 50%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=50%>
+<p style="margin-bottom: 0;">Size</td>
+<td style="x-cell-content-align: TOP;
+			width: 50%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=50%>
+<p style="margin-bottom: 0;">Size of the symbol in 1/10 points</td></tr>
+</table>
+
+
+<!--(HR)============================================================-->
+<hr style="height: 2px;
+			width: 100%;
+			float: aligncenter;"
+	size=2
+	width=100%
+	align=center>
+
+
+<p><font style="font-family: 'Courier New';"
+		face="Courier New">void </font>get_SymbolCharacterCode(DWORD* pCode)<font 
+ style="font-family: 'Courier New';"
+	face="Courier New"><br>
+void </font>put_SymbolCharacterCode(DWORD Code)<br>
+<br>
+Get/set the ascii code the the symbol to be drawn in the selected font 
+ face</p>
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="width: 100%;
+				border-spacing: 0px;
+				margin-top: 14pt;"
+		cellspacing=0
+		width=100%>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 50%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=50%>
+<p style="margin-bottom: 0;">Code</td>
+<td style="x-cell-content-align: TOP;
+			width: 50%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=50%>
+<p>Code for symbol to be drawn. A good reference for this is the &quot;Insert 
+ | Symbol&quot; dialog in MSFT Word.</p>
+<p style="margin-bottom: 0;">If this code is zero, then no symbol will 
+ be drawn and the entire legend rectangle will be filled with this entry's 
+ color.</td></tr>
+</table>
+
+
+<!--(HR)============================================================-->
+<hr style="height: 2px;
+			width: 100%;
+			float: aligncenter;"
+	size=2
+	width=100%
+	align=center>
+
+
+<p><font style="font-family: 'Courier New';"
+		face="Courier New">void </font>get_Color(COLORREF* color)<font 
+ style="font-family: 'Courier New';"
+	face="Courier New"><br>
+void </font>put_Color(COLORREF color)<br>
+<br>
+Get/set the color of the symbol.</p>
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="width: 100%;
+				border-spacing: 0px;
+				margin-top: 14pt;"
+		cellspacing=0
+		width=100%>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 50%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=50%>
+<p style="margin-bottom: 0;">color</td>
+<td style="x-cell-content-align: TOP;
+			width: 50%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=50%>
+<p style="margin-bottom: 0;">Symbol color</td></tr>
+</table>
+
+
+<!--(HR)============================================================-->
+<hr style="height: 2px;
+			width: 100%;
+			/*begin!kadov{{*/ float: aligncenter; /*}}end!kadov*/ "
+	size=2
+	width=100%
+	align=center>
+
+
+<p><font style="font-family: 'Courier New';"
+		face="Courier New">void </font>get_DoDrawLine(BOOL *pVal)<font 
+ style="font-family: 'Courier New';"
+	face="Courier New"><br>
+void </font>put_DoDrawLine(BOOL Val)</p>
+
+<p>&nbsp;<br>
+Get/set wheter a horizontal line is to be drawn through the symbol in the 
+ legend.</p>
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="width: 100%;
+				border-spacing: 0px;
+				margin-top: 14pt;"
+		cellspacing=0
+		width=100%>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 50%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=50%>
+<p style="margin-bottom: 0;">pVal</td>
+<td style="x-cell-content-align: TOP;
+			width: 50%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=50%>
+<p style="margin-bottom: 0;">If not FALSE, a line is drawn across the middle 
+ of the legend entry rectangle.</td></tr>
+</table>
+
+<p style="text-align: center;"
+	align=center>&nbsp;</p>
+
+<p style="margin-bottom: 0;">&nbsp; </p>
+
+</body>
+
+</html>

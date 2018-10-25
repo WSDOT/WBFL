@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridgeTools.FlexRebarLayoutItem.1 = s 'FlexRebarLayoutItem Class'
+	{
+		CLSID = s '{8B4B8193-D5C8-4e1f-86D1-D7044859B9CC}'
+	}
+	WBFLGenericBridgeTools.FlexRebarLayoutItem = s 'FlexRebarLayoutItem Class'
+	{
+		CLSID = s '{8B4B8193-D5C8-4e1f-86D1-D7044859B9CC}'
+		CurVer = s 'GenericBridge.FlexRebarLayoutItem.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {8B4B8193-D5C8-4e1f-86D1-D7044859B9CC} = s 'FlexRebarLayoutItem Class'
+		{
+			ProgID = s 'WBFLGenericBridgeTools.FlexRebarLayoutItem.1'
+			VersionIndependentProgID = s 'WBFLGenericBridgeTools.FlexRebarLayoutItem'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

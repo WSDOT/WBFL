@@ -1,0 +1,26 @@
+HKCR
+{
+	LBAMAnalysis.LoadGroupResponse.1 = s 'LoadGroupResponse Class'
+	{
+		CLSID = s '{9EC1DB53-A140-11D5-B05C-00105A9AF985}'
+	}
+	LBAMAnalysis.LoadGroupResponse = s 'LoadGroupResponse Class'
+	{
+		CLSID = s '{9EC1DB53-A140-11D5-B05C-00105A9AF985}'
+		CurVer = s 'LBAMAnalysis.LoadGroupResponse.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {9EC1DB53-A140-11D5-B05C-00105A9AF985} = s 'LoadGroupResponse Class'
+		{
+			ProgID = s 'LBAMAnalysis.LoadGroupResponse.1'
+			VersionIndependentProgID = s 'LBAMAnalysis.LoadGroupResponse'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{9EC1DB46-A140-11D5-B05C-00105A9AF985}'
+		}
+	}
+}

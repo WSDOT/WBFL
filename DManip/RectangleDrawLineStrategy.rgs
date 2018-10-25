@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.RectangleDrawLineStrategy.1 = s 'RectangleDrawLineStrategy Class'
+	{
+		CLSID = s '{682DF075-020C-45b1-BBF4-11C159644BA5}'
+	}
+	WBFLDManip.RectangleDrawLineStrategy = s 'RectangleDrawLineStrategy Class'
+	{
+		CLSID = s '{682DF075-020C-45b1-BBF4-11C159644BA5}'
+		CurVer = s 'WBFLDManip.RectangleDrawLineStrategy.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {682DF075-020C-45b1-BBF4-11C159644BA5} = s 'RectangleDrawLineStrategy Class'
+		{
+			ProgID = s 'WBFLDManip.RectangleDrawLineStrategy.1'
+			VersionIndependentProgID = s 'WBFLDManip.RectangleDrawLineStrategy'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

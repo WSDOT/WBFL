@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAMAnalysis.Result3d.1 = s 'Result3d Class'
+	{
+		CLSID = s '{57CCF24D-970B-11D5-B052-00105A9AF985}'
+	}
+	WBFLLBAMAnalysis.Result3d = s 'Result3d Class'
+	{
+		CLSID = s '{57CCF24D-970B-11D5-B052-00105A9AF985}'
+		CurVer = s 'WBFLLBAMAnalysis.Result3d.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {57CCF24D-970B-11D5-B052-00105A9AF985} = s 'Result3d Class'
+		{
+			ProgID = s 'WBFLLBAMAnalysis.Result3d.1'
+			VersionIndependentProgID = s 'WBFLLBAMAnalysis.Result3d'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{9EC1DB46-A140-11D5-B05C-00105A9AF985}'
+		}
+	}
+}

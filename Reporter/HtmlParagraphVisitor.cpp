@@ -1,0 +1,159 @@
+///////////////////////////////////////////////////////////////////////
+// Reporter - Report Creation and Representation Library
+// Copyright (C) 1999  Washington State Department of Transportation
+//                     Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+#include <Reporter\ReporterLib.h>
+#include <Reporter\HtmlParagraphVisitor.h>
+#include <Reporter\PageLayout.h>
+#include <Reporter\HtmlHelper.h>
+#include <Reporter\HtmlRcVisitor.h>
+#include <Reporter\RiStyle.h>
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+/****************************************************************************
+CLASS
+   rptHtmlParagraphVisitor
+****************************************************************************/
+
+
+
+////////////////////////// PUBLIC     ///////////////////////////////////////
+
+//======================== LIFECYCLE  =======================================
+rptHtmlParagraphVisitor::rptHtmlParagraphVisitor(std::ostream* pMyOstream, 
+                                                 const rptPageLayout*   MypPageLayout,
+                                                 const rptHtmlHelper&   rmyHelper,
+                                                 Uint32 logPixelsX,
+                                                 Uint32 logPixelsY):
+   rptOutputParagraphVisitor( pMyOstream ),
+   m_Helper(rmyHelper),
+   m_CurrAnchor(rptHtmlHelper::ParaStart),
+   m_LogPixelsX(logPixelsX),
+   m_LogPixelsY(logPixelsY)
+{
+   CHECK(MypPageLayout);
+   m_pPageLayout = MypPageLayout;
+}
+
+
+rptHtmlParagraphVisitor::~rptHtmlParagraphVisitor()
+{
+}
+
+//======================== OPERATORS  =======================================
+//======================== OPERATIONS =======================================
+void rptHtmlParagraphVisitor::VisitParagraph(rptParagraph* pPara)
+{
+   bool lib_style = false;
+
+   // get the paragraph's style name
+   rptStyleName style = pPara->GetStyleName();
+   // get corresponding element name for style name
+   std::string el_name = m_Helper.GetElementName(style);
+
+   // create a hypertext anchor for this chapter - to be placed in toc
+   const char* name = pPara->GetName();
+   if (name!=0)
+   {
+      Uint32 anchor = GetNextAnchor();
+      std::string sname(name);
+      *m_pOstream<<"<A ID=\"_"<<anchor<<"\" TITLE=\""<<sname<<"\" NAME=\"_"<<anchor<<"\">";
+   }
+
+   // Default styles use the <P> style
+   if (style=="Default")
+      *m_pOstream << "<P>";
+   else
+   {
+      *m_pOstream << "<P CLASS=" << el_name << ">";
+      lib_style=true;
+   }
+
+   // bullets - need to pull style from library
+
+   // get the font library singleton
+   rptFontStyleLibrary* plib = rptFontStyleLibrary::Instance();
+   const rptRiStyle& rstyle = plib->GetNamedStyle(style);
+
+   rptRiStyle::BulletType my_btype = rstyle.GetBullet();
+   switch (my_btype)
+   {
+   case rptRiStyle::DASH:
+      *m_pOstream << "<UL><LI>"<<std::endl; // dash doesn't work in html
+      break;
+   case rptRiStyle::ROUND:
+      *m_pOstream << "<UL><LI>"<<std::endl;
+      break;
+   }
+
+   // borders dont work for html
+   // TODO:could try table later if paragraph borders are really needed
+
+   // create a report content visitor
+   rptHtmlRcVisitor my_visitor(m_pOstream, m_pPageLayout, m_Helper, m_LogPixelsX, m_LogPixelsY);
+
+   // iterate over all report content 
+   rptParagraph::ConstParagraphContentIterator pci;
+   for (pci=pPara->ConstBegin(); pci!=pPara->ConstEnd(); pci++)
+   {
+      (*pci)->Accept( my_visitor );
+   }
+
+   // close out bullet if needed
+   if (my_btype != rptRiStyle::NOBULLET)
+      *m_pOstream << "</LI></UL>"<<std::endl;
+   else
+
+   // send paragraph end
+   if (!lib_style)
+      *m_pOstream << "</P>"<<std::endl;
+   else
+      // only "Hn" elements include a line break
+      *m_pOstream << "</P>"<< std::endl;
+
+
+
+}
+//======================== ACCESS     =======================================
+//======================== INQUIRY    =======================================
+
+////////////////////////// PROTECTED  ///////////////////////////////////////
+
+//======================== LIFECYCLE  =======================================
+//======================== OPERATORS  =======================================
+//======================== OPERATIONS =======================================
+//======================== ACCESS     =======================================
+//======================== INQUIRY    =======================================
+
+////////////////////////// PRIVATE    ///////////////////////////////////////
+
+//======================== LIFECYCLE  =======================================
+//======================== OPERATORS  =======================================
+//======================== OPERATIONS =======================================
+//======================== ACCESS     =======================================
+//======================== INQUERY    =======================================
+

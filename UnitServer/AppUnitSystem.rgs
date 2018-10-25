@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLUnitServer.AppUnitSystem.1 = s 'AppUnitSystem Class'
+	{
+		CLSID = s '{16683EE2-558C-11D4-8CE4-0080C7380027}'
+	}
+	WBFLUnitServer.AppUnitSystem = s 'AppUnitSystem Class'
+	{
+		CLSID = s '{16683EE2-558C-11D4-8CE4-0080C7380027}'
+		CurVer = s 'WBFLUnitServer.AppUnitSystem.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {16683EE2-558C-11D4-8CE4-0080C7380027} = s 'AppUnitSystem Class'
+		{
+			ProgID = s 'WBFLUnitServer.AppUnitSystem.1'
+			VersionIndependentProgID = s 'WBFLUnitServer.AppUnitSystem'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{C65F03B4-16AB-11D2-8D11-94FA07C10000}'
+		}
+	}
+}

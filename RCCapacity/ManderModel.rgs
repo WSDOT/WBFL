@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.ManderModel.1 = s 'ManderModel Class'
+	{
+		CLSID = s '{89C63EF1-9DA6-4fef-8892-D6C9E6359459}'
+	}
+	WBFLRCCapacity.ManderModel = s 'ManderModel Class'
+	{
+		CLSID = s '{89C63EF1-9DA6-4fef-8892-D6C9E6359459}'
+		CurVer = s 'WBFLRCCapacity.ManderModel.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {89C63EF1-9DA6-4fef-8892-D6C9E6359459} = s 'ManderModel Class'
+		{
+			ProgID = s 'WBFLRCCapacity.ManderModel.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.ManderModel'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

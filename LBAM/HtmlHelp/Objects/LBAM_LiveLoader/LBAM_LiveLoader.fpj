@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rhpml majorversion="1" minorversion="0">
+	<folders>
+		<folder>
+			<name>LiveLoadModelResults</name>
+		</folder>
+		<folder>
+			<name>LiveLoadConfiguration</name>
+		</folder>
+		<folder>
+			<name>LiveLoadModelSectionResults</name>
+		</folder>
+		<folder>
+			<name>LiveLoadModelStressResults</name>
+		</folder>
+		<folder>
+			<name>BasicVehicularResponse</name>
+		</folder>
+		<folder>
+			<name>LiveLoadModelResponse</name>
+		</folder>
+		<folder>
+			<name>EnvelopedVehicularResponse</name>
+		</folder>
+		<folder>
+			<name>EnvelopingStrategy</name>
+		</folder>
+		<folder>
+			<name>DependOnVehicularAnalysisContext</name>
+		</folder>
+		<folder>
+			<name>VehicularAnalysisContext</name>
+		</folder>
+		<folder>
+			<name>SupportLocations</name>
+		</folder>
+	</folders>
+	<topics>
+		<topic>
+			<name>LBAM_LiveLoad_Analysis.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+	</topics>
+</rhpml>

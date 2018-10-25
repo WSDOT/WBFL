@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.CastSlab.1 = s 'CastSlab Class'
+	{
+		CLSID = s '{994EBFE4-E2CE-4932-B58D-D0661ED9DE1A}'
+	}
+	WBFLGenericBridge.CastSlab = s 'CastSlab Class'
+	{
+		CLSID = s '{994EBFE4-E2CE-4932-B58D-D0661ED9DE1A}'
+		CurVer = s 'WBFLGenericBridge.CastSlab.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {994EBFE4-E2CE-4932-B58D-D0661ED9DE1A} = s 'CastSlab Class'
+		{
+			ProgID = s 'WBFLGenericBridge.CastSlab.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.CastSlab'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

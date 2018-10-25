@@ -1,0 +1,368 @@
+///////////////////////////////////////////////////////////////////////
+// CORE - Core elements of the Agent-Broker Architecture
+// Copyright (C) 1999  Washington State Department of Transportation
+//                     Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// Core.idl : IDL source for Core.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (Core.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "WBFLTypes.idl";
+
+cpp_quote("/////////////////////////////////////////////////////////////////////////////")
+cpp_quote("// IBroker, IBrokerInit, IBrokerPersist status codes")
+cpp_quote("#define BROKER_E_FIRST    MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0200)")
+cpp_quote("#define BROKER_E_LAST     MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x020F)")
+cpp_quote("")
+cpp_quote("#define BROKER_E_LOADAGENT           (BROKER_E_FIRST+0)")
+cpp_quote("// Error loading or initalizing an agent")
+cpp_quote("#define BROKER_E_ADDAGENT            (BROKER_E_FIRST+1)")
+cpp_quote("// Error loading adding an agent")
+
+cpp_quote("/////////////////////////////////////////////////////////////////////////////")
+cpp_quote("// IAgent, IAgentPersist, IAgentPersist2 status codes")
+cpp_quote("#define AGENT_E_FIRST    MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0200)")
+cpp_quote("#define AGENT_E_LAST     MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x020F)")
+cpp_quote("#define AGENT_S_FIRST    MAKE_SCODE(SEVERITY_SUCCESS, FACILITY_ITF, 0x0200)")
+cpp_quote("#define AGENT_S_LAST     MAKE_SCODE(SEVERITY_SUCCESS, FACILITY_ITF, 0x020F)")
+
+cpp_quote("// Agent wants a second pass during initialization")
+cpp_quote("#define AGENT_S_SECONDPASSINIT	(AGENT_S_FIRST+0)")
+
+cpp_quote("// Agent must implement the IAgentEx interface")
+cpp_quote("#define AGENT_E_NOTAGENTEX    	(AGENT_E_FIRST+0)")
+
+
+cpp_quote("/////////////////////////////////////////////////////////////////////////////")
+cpp_quote("// ILogFile status codes")
+cpp_quote("#define LOGFILE_E_FIRST    MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0200)")
+cpp_quote("#define LOGFILE_E_LAST     MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x020F)")
+cpp_quote("")
+cpp_quote("#define LOGFILE_E_CANTOPEN           (LOGFILE_E_FIRST+0)")
+cpp_quote("// unable to open the log file")
+cpp_quote("")
+cpp_quote("#define LOGFILE_E_BADWRITE           (LOGFILE_E_FIRST+1)")
+cpp_quote("// error occured while logging message")
+cpp_quote("")
+cpp_quote("#define LOGFILE_E_NOLOGFILE          (LOGFILE_E_FIRST+2)")
+cpp_quote("// invalid cookie was used")
+
+cpp_quote("/////////////////////////////////////////////////////////////////////////////")
+cpp_quote("// IProgress status codes")
+cpp_quote("#define PROGRESS_E_FIRST    MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0200)")
+cpp_quote("#define PROGRESS_E_LAST     MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x020F)")
+cpp_quote("")
+cpp_quote("#define PROGRESS_E_CREATE           (PROGRESS_E_FIRST+0)")
+cpp_quote("// Error creating progress window")
+
+cpp_quote("// Progress Window Flags")
+cpp_quote("#define PW_ALL        0x0000")
+cpp_quote("#define PW_NOMESSAGE  0x0001")
+cpp_quote("#define PW_NOGAUGE    0x0002")
+cpp_quote("#define PW_NOCANCEL   0x0004")
+
+
+cpp_quote("/////////////////////////////////////////////////////////////////////////////")
+cpp_quote("// IStructuredLoad status codes")
+cpp_quote("#define STRLOAD_E_FIRST    MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0200)")
+cpp_quote("#define STRLOAD_E_LAST     MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x020F)")
+cpp_quote("")
+cpp_quote("#define STRLOAD_E_CANTOPEN           (STRLOAD_E_FIRST+0)")
+cpp_quote("// unable to open the structured storage")
+cpp_quote("")
+cpp_quote("#define STRLOAD_E_INVALIDFORMAT      (STRLOAD_E_FIRST+1)")
+cpp_quote("// invalid structured storage format")
+cpp_quote("")
+cpp_quote("#define STRLOAD_E_BADVERSION         (STRLOAD_E_FIRST+2)")
+cpp_quote("// invalid version number encountered")
+cpp_quote("")
+cpp_quote("#define STRLOAD_E_FILENOTFOUND       (STRLOAD_E_FIRST+3)")
+cpp_quote("// the specified file was not found")
+cpp_quote("")
+cpp_quote("#define STRLOAD_E_USERDEFINED        (STRLOAD_E_FIRST+4)")
+cpp_quote("// a user defined error occured")
+
+
+cpp_quote("/////////////////////////////////////////////////////////////////////////////")
+cpp_quote("// IStructuredSave status codes")
+cpp_quote("#define STRSAVE_E_FIRST    MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0200)")
+cpp_quote("#define STRSAVE_E_LAST     MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x020F)")
+cpp_quote("")
+cpp_quote("#define STRSAVE_E_CANTOPEN           (STRSAVE_E_FIRST+0)")
+cpp_quote("// unable to open the structured storage")
+cpp_quote("")
+cpp_quote("#define STRSAVE_E_BADWRITE           (STRSAVE_E_FIRST+1)")
+cpp_quote("// could not write to stream")
+cpp_quote("")
+
+
+[
+	uuid(D820A190-2BE4-11D2-8EB3-006097DF3C68),
+	version(1.1),
+	helpstring("WBFLCore Library")
+]
+library WBFLCore
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+   interface IBroker;
+
+	[
+	
+		uuid(0131A8C2-26EB-11D2-8EB0-006097DF3C68),
+	
+		helpstring("IStructuredLoad Interface"),
+		pointer_default(unique)
+	]
+	interface IStructuredLoad : IUnknown
+	{
+		[helpstring("method Open")] HRESULT Open([in] LPCTSTR name);
+		[helpstring("method BeginUnit")] HRESULT BeginUnit([in] LPCTSTR name);
+		[helpstring("method EndUnit")] HRESULT EndUnit();
+		[propget, helpstring("property Version")] HRESULT Version([out, retval] Float64 *pVal);
+		[propget, helpstring("property ParentVersion")] HRESULT ParentVersion([out, retval] Float64 *pVal);
+		[propget, helpstring("property TopVersion")] HRESULT TopVersion([out, retval] Float64 *pVal);
+		[propget, helpstring("property Property")] HRESULT Property([in] LPCTSTR name, [out, retval] VARIANT *pVal);
+		[helpstring("method EndOfStorage")] HRESULT EndOfStorage();
+		[helpstring("method Close")] HRESULT Close();
+	};
+	[
+	
+		uuid(0131A8C4-26EB-11D2-8EB0-006097DF3C68),
+	
+		helpstring("IStructuredSave Interface"),
+		pointer_default(unique)
+	]
+	interface IStructuredSave : IUnknown
+	{
+		[helpstring("method Open")] HRESULT Open([in] LPCTSTR name);
+		[helpstring("method BeginUnit")] HRESULT BeginUnit([in] LPCTSTR name,[in] Float64 ver);
+		[helpstring("method EndUnit")] HRESULT EndUnit();
+		[propget, helpstring("property Version")] HRESULT Version([out, retval] Float64 *pVal);
+		[propget, helpstring("property ParentVersion")] HRESULT ParentVersion([out, retval] Float64 *pVal);
+		[propget, helpstring("property TopVersion")] HRESULT TopVersion([out, retval] Float64 *pVal);
+		[propput, helpstring("property Property")] HRESULT Property([in] LPCTSTR name, [in] VARIANT newVal);
+		[helpstring("method Close")] HRESULT Close();
+	};
+
+   [
+   object,
+   uuid(5693D0F4-AC55-11d4-8B4B-006097C68A9C),
+   helpstring("IStructuredStorage Interface"),
+   pointer_default(unique)
+   ]
+   interface IStructuredStorage : IUnknown
+   {
+      [helpstring("method Load")] HRESULT Load([in] IStructuredLoad* load);
+      [helpstring("method Save")] HRESULT Save([in] IStructuredSave* save);
+   };
+
+   [
+	
+		uuid(FF34DB70-2BEF-11d2-8EB3-006097DF3C68),
+	
+		helpstring("IProgress Interface"),
+		pointer_default(unique)
+	]
+	interface IProgress : IUnknown
+	{
+		[helpstring("method CreateProgressWindow")] HRESULT CreateProgressWindow([in] DWORD dwMask,[in] UINT nDelay);
+		[helpstring("method Init")] HRESULT Init([in] short begin, [in] short end, [in] short inc);
+		[helpstring("method Increment")] HRESULT Increment();
+		[helpstring("method UpdateMessage")] HRESULT UpdateMessage([in] LPCTSTR msg);
+		[helpstring("method Continue")] HRESULT Continue();
+		[helpstring("proprty EnableCancel"),propget] HRESULT EnableCancel([out,retval]BOOL* pbEnable);
+		[helpstring("proprty EnableCancel"),propput] HRESULT EnableCancel([in]BOOL bEnable);
+		[helpstring("method DestroyProgressWindow")] HRESULT DestroyProgressWindow();
+	};
+
+   [
+      uuid(0BC4B500-27FF-11d2-8EB2-006097DF3C68),
+      helpstring("ILogFile Interface"),
+      pointer_default(unique)
+   ]
+   interface ILogFile : IUnknown
+   {
+      [helpstring("method Open")] HRESULT Open([in] LPCTSTR name,[out] DWORD* pdwCookie);
+      [propput, helpstring("property EndLines")] HRESULT EndLines([in] BOOL bEndLines);
+      [propget, helpstring("property EndLines")] HRESULT EndLines([out,retval] BOOL* pbEndLines);
+      [helpstring("method LogMessage")] HRESULT LogMessage([in] DWORD dwCookie,[in] LPCTSTR msg);
+      [helpstring("method Close")] HRESULT Close([in] DWORD dwCookie);
+   };
+
+   [
+		uuid(BD40316D-259A-11D2-8EB0-006097DF3C68),
+		helpstring("IAgent Interface"),
+		pointer_default(unique)
+	]
+	interface IAgent : IUnknown
+	{
+		[helpstring("method SetBroker")] HRESULT SetBroker([in] IBroker* pBroker);
+		[helpstring("method RegInterfaces")] HRESULT RegInterfaces();
+		[helpstring("method Init")] HRESULT Init();
+		[helpstring("method Reset")] HRESULT Reset();
+		[helpstring("method ShutDown")] HRESULT ShutDown();
+	};
+	[
+	   uuid(0AE540FE-8525-4db3-BC36-31B90E74830B),
+	   helpstring("IAgentEx Interface"),
+	   pointer_default(unique)
+	]
+	interface IAgentEx : IAgent
+	{
+		[helpstring("method Init2")] HRESULT Init2();
+		[helpstring("method GetClassID")] HRESULT GetClassID([out]CLSID* pCLSID);
+	};
+	[
+		uuid(E6268300-26FA-11d2-8EB0-006097DF3C68),
+		helpstring("IAgentPersist Interface"),
+		pointer_default(unique)
+	]
+	interface IAgentPersist : IUnknown
+	{
+		[helpstring("method Load")] HRESULT Load([in] IStructuredLoad* pStrLoad);
+		[helpstring("method Save")] HRESULT Save([in] IStructuredSave* pStrSave);
+	};
+
+	[
+		uuid(53CAB1E0-262E-11d2-8EB0-006097DF3C68),
+		helpstring("IBrokerInit Interface"),
+		pointer_default(unique)
+	]
+	interface IBrokerInit : IUnknown
+	{
+		[helpstring("method LoadAgents")] HRESULT LoadAgents([in] CLSID* pClsid, [in] long nClsid,[out] long* lErrIndex);
+		[helpstring("method AddAgent")] HRESULT AddAgent([in] IAgent* pAgent);
+		[helpstring("method FindConnectionPoint")] HRESULT FindConnectionPoint([in] REFIID riid,[out] IConnectionPoint** ppCP);
+		[helpstring("method RegInterface")] HRESULT RegInterface([in] REFIID riid,[in] IAgent* pAgent);
+	};
+
+	[
+		uuid(673DC477-468D-4466-98AA-53EE7A0EECA5),
+		helpstring("IBrokerInitEx Interface"),
+		pointer_default(unique)
+	]
+	interface IBrokerInitEx : IUnknown
+	{
+		[helpstring("method LoadAgents")] HRESULT LoadAgents([in] CLSID* pClsid, [in] long nClsid,[out] long* lErrIndex);
+		[helpstring("method AddAgent")] HRESULT AddAgent([in] IAgentEx* pAgent);
+		[helpstring("method FindConnectionPoint")] HRESULT FindConnectionPoint([in] REFIID riid,[out] IConnectionPoint** ppCP);
+		[helpstring("method RegInterface")] HRESULT RegInterface([in] REFIID riid,[in] IAgentEx* pAgent);
+	};
+
+	[
+		uuid(7E70337A-DED7-43ae-936F-824EB1127012),
+		helpstring("IBrokerInit2 Interface"),
+		pointer_default(unique)
+	]
+	interface IBrokerInit2 : IBrokerInit
+	{
+		[helpstring("method DelayInit")] HRESULT DelayInit();
+		[helpstring("method InitAgents")] HRESULT InitAgents();
+	};
+
+	[
+		uuid(F4A9DD8F-273D-4ae6-B044-AC9DEAFD43D4),
+		helpstring("IBrokerInitEx2 Interface"),
+		pointer_default(unique)
+	]
+	interface IBrokerInitEx2 : IBrokerInitEx
+	{
+		[helpstring("method DelayInit")] HRESULT DelayInit();
+		[helpstring("method InitAgents")] HRESULT InitAgents();
+	};
+
+	[
+		uuid(C0E926D0-2620-11D2-8EB0-006097DF3C68),
+		helpstring("IBroker Interface"),
+		pointer_default(unique)
+	]
+	interface IBroker : IUnknown
+	{
+		[helpstring("method GetInterface")] HRESULT GetInterface([in] REFIID riid, [out,iid_is(riid)] void** ppv);
+		[helpstring("method Reset")] HRESULT Reset();
+		[helpstring("method ShutDown")] HRESULT ShutDown();
+	};
+	[
+		uuid(E6268301-26FA-11d2-8EB0-006097DF3C68),
+		helpstring("IBrokerPersist Interface"),
+		pointer_default(unique)
+	]
+	interface IBrokerPersist : IUnknown
+	{
+		[helpstring("method Load")] HRESULT Load([in] IStructuredLoad* pStrLoad);
+		[helpstring("method Save")] HRESULT Save([in] IStructuredSave* pStrSave);
+    };
+
+	[
+		uuid(C0E926D1-2620-11D2-8EB0-006097DF3C68),
+		helpstring("Broker Class")
+	]
+	coclass Broker
+	{
+		[default] interface IBroker;
+		interface IBrokerInit;
+		interface IBrokerPersist;
+	};
+	[
+		uuid(CF37B1E5-F9B8-4e78-B8B3-B91E326131CD),
+		helpstring("Broker2 Class")
+	]
+	coclass Broker2
+	{
+		[default] interface IBroker;
+		interface IBrokerInitEx2;
+		interface IBrokerPersist;
+	};
+	[
+	   uuid(D71212B0-2BEF-11d2-8EB3-006097DF3C68),
+	   helpstring("SysAgent Class")
+	]
+	coclass SysAgent
+	{
+	   [default] interface IAgent;
+	   interface IProgress;
+	   interface ILogFile;
+	};
+
+	[
+	   uuid(0131A8C3-26EB-11D2-8EB0-006097DF3C68),
+	   helpstring("StructuredLoad Class")
+	]
+	coclass StructuredLoad
+	{
+	   [default] interface IStructuredLoad;
+	};
+
+	[
+	   uuid(0131A8C5-26EB-11D2-8EB0-006097DF3C68),
+	   helpstring("StructuredSave Class")
+	]
+	coclass StructuredSave
+	{
+	   [default] interface IStructuredSave;
+	};
+};

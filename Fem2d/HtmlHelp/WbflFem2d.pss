@@ -1,0 +1,57 @@
+[Target:WebHelp Pro]
+ResultFileName=!SSL!\WebHelp_Pro\WbflFem2d.htm
+SSLayoutType=32
+ServerProjectName=WbflFem2d
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:WebHelp]
+ResultFileName=!SSL!\WebHelp\WbflFem2d.htm
+SSLayoutType=2
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:Microsoft HTML Help]
+ResultFileName=C:\ARP\lib\WbflFem2d.chm
+SSLayoutType=1
+CreateProjectTime=12:28, September 10, 2009
+CreateProjectUser=bricer
+SupportMas_MPJ=1
+ActionID For Generation=1002
+Remove Folder with prompt=1
+ViewFileName=C:\ARP\lib\WbflFem2d.chm
+ResultStatus=0
+BuildTimeHi=30028364
+BuildTimeLow=-193482587
+[Target:FlashHelp]
+ResultFileName=!SSL!\FlashHelp\WbflFem2d.htm
+SSLayoutType=2
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:Printed Documentation]
+ResultFileName=!SSL!\Printed_Documentation\WbflFem2d.doc
+SSLayoutType=7
+[Target:XML Output]
+ResultFileName=!SSL!\XML_Output\WbflFem2d.xml
+SSLayoutType=8192
+[PreSingleSource]
+Html Help Project=C:\ARP\WBFL\Fem2d\HtmlHelp\WbflFem2d.hhp
+Table Of Content=C:\ARP\WBFL\Fem2d\HtmlHelp\WbflFem2d.hhc
+Index=C:\ARP\WBFL\Fem2d\HtmlHelp\WbflFem2d_merged$.hhk
+See Also Index=C:\ARP\WBFL\Fem2d\HtmlHelp\WbflFem2d.hha
+Browse Sequence=C:\ARP\WBFL\Fem2d\HtmlHelp\WbflFem2d.brs
+Topic Properties=C:\ARP\WBFL\Fem2d\HtmlHelp\WbflFem2d.trs
+Active Folders=C:\ARP\WBFL\Fem2d\HtmlHelp\WbflFem2d.trf
+Baggage Files=C:\ARP\WBFL\Fem2d\HtmlHelp\WbflFem2d.trb
+Skin List=C:\ARP\WBFL\Fem2d\HtmlHelp\WbflFem2d.trk
+OriginalHhk=C:\ARP\WBFL\Fem2d\HtmlHelp\WbflFem2d.hhk
+Active Layout Names=C:\ARP\WBFL\Fem2d\HtmlHelp\WbflFem2d.trl
+Default Topic=C:\ARP\WBFL\Fem2d\HtmlHelp\Welcome.htm
+Build Tags0=5274;     
+Build Tags=
+Build Expression=
+Language ID=1033
+Language Name=English
+Language=C:\ARP\WBFL\Fem2d\HtmlHelp\RoboHHRE.lng
+Stop List=C:\ARP\WBFL\Fem2d\HtmlHelp\WbflFem2d.stp

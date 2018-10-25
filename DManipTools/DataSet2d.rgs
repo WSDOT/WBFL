@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManipTools.DataSet2d.1 = s 'DataSet2d Class'
+	{
+		CLSID = s '{4792CF33-B6FD-423F-90DE-314356A22848}'
+	}
+	WBFLDManipTools.DataSet2d = s 'DataSet2d Class'
+	{
+		CLSID = s '{4792CF33-B6FD-423F-90DE-314356A22848}'
+		CurVer = s 'WBFLDManipTools.DataSet2d.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {4792CF33-B6FD-423F-90DE-314356A22848} = s 'DataSet2d Class'
+		{
+			ProgID = s 'WBFLDManipTools.DataSet2d.1'
+			VersionIndependentProgID = s 'WBFLDManipTools.DataSet2d'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B7B9C36E-FEAF-43BB-8907-C98A0EF3224E}'
+		}
+	}
+}

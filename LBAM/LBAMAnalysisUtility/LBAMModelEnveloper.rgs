@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAMAnalysisUtility.LBAMModelEnveloper.1 = s 'LBAMModelEnveloper Class'
+	{
+		CLSID = s '{48715D04-3187-4ECD-A7B4-3AC4F3F58CA7}'
+	}
+	WBFLLBAMAnalysisUtility.LBAMModelEnveloper = s 'LBAMModelEnveloper Class'
+	{
+		CLSID = s '{48715D04-3187-4ECD-A7B4-3AC4F3F58CA7}'
+		CurVer = s 'WBFLLBAMEnveloper.LBAMModelEnveloper.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {48715D04-3187-4ECD-A7B4-3AC4F3F58CA7} = s 'LBAMModelEnveloper Class'
+		{
+			ProgID = s 'WBFLLBAMAnalysisUtility.LBAMModelEnveloper.1'
+			VersionIndependentProgID = s 'WBFLLBAMAnalysisUtility.LBAMModelEnveloper'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{947C85EA-9B05-4AD2-A144-7E7B8ED0B8CF}'
+		}
+	}
+}

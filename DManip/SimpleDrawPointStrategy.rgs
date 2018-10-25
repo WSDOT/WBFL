@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.SimpleDrawPointStrategy.1 = s 'SimpleDrawPointStrategy Class'
+	{
+		CLSID = s '{38D4D890-DF6E-404c-9374-E9375BDE0DF0}'
+	}
+	WBFLDManip.SimpleDrawPointStrategy = s 'SimpleDrawPointStrategy Class'
+	{
+		CLSID = s '{38D4D890-DF6E-404c-9374-E9375BDE0DF0}'
+		CurVer = s 'WBFLDManip.SimpleDrawPointStrategy.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {38D4D890-DF6E-404c-9374-E9375BDE0DF0} = s 'SimpleDrawPointStrategy Class'
+		{
+			ProgID = s 'WBFLDManip.SimpleDrawPointStrategy.1'
+			VersionIndependentProgID = s 'WBFLDManip.SimpleDrawPointStrategy'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

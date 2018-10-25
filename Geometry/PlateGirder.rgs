@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.PlateGirder.1 = s 'PlateGirder Class'
+	{
+		CLSID = s '{9F28211E-09D6-11D5-8BBF-006097C68A9C}'
+	}
+	WBFLGeometry.PlateGirder = s 'PlateGirder Class'
+	{
+		CLSID = s '{9F28211E-09D6-11D5-8BBF-006097C68A9C}'
+		CurVer = s 'WBFLGeometry.PlateGirder.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {9F28211E-09D6-11D5-8BBF-006097C68A9C} = s 'PlateGirder Class'
+		{
+			ProgID = s 'WBFLGeometry.PlateGirder.1'
+			VersionIndependentProgID = s 'WBFLGeometry.PlateGirder'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

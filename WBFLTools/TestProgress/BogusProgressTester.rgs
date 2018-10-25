@@ -1,0 +1,24 @@
+HKCR
+{
+	TestProgress.BogusProgressTester.1 = s 'BogusProgressTester Class'
+	{
+		CLSID = s '{305D0164-FB5A-4D2A-AA2D-77B118F5D543}'
+	}
+	TestProgress.BogusProgressTester = s 'BogusProgressTester Class'
+	{
+		CLSID = s '{305D0164-FB5A-4D2A-AA2D-77B118F5D543}'
+		CurVer = s 'TestProgress.BogusProgressTester.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {305D0164-FB5A-4D2A-AA2D-77B118F5D543} = s 'BogusProgressTester Class'
+		{
+			ProgID = s 'TestProgress.BogusProgressTester.1'
+			VersionIndependentProgID = s 'TestProgress.BogusProgressTester'
+			ForceRemove 'Programmable'
+			LocalServer32 = s '%MODULE%'
+			val AppID = s '{6C3A44AB-BECF-4B8A-B031-CFE06B6B0BD6}'
+			'TypeLib' = s '{58D8936C-CF1B-4802-BC9B-7C869ED93915}'
+		}
+	}
+}

@@ -1,0 +1,168 @@
+///////////////////////////////////////////////////////////////////////
+// Transactions - Utility library for managing transactions, undo/redo
+// Copyright (C) 1999  Washington State Department of Transportation
+//                     Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the Alternate Route Library Open Source License as 
+// published by the Washington State Department of Transportation,
+// Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful,
+// but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// PURPOSE.  See the Alternate Route Library Open Source License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License
+// along with this program; if not, write to the Washington State
+// Department of Transportation, Bridge and Structures Office,
+// P.O. Box 47340, Olympia, WA 98503, USA or e-mail
+// Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// Transactions.idl : IDL source for Transactions.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (Transactions.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	uuid(081C49DE-FBE8-4C8D-BEEC-F13ECFF2B56C),
+	version(1.0),
+	helpstring("Transactions 1.0 Type Library")
+]
+library WBFLTransactions
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+// Enumerators
+   typedef [public,helpstring("enum TxnModeType"),uuid(20D6F666-D2B1-4482-9353-301AC8061D01)] 
+   enum 
+   {
+       txnRepeat = 0,
+       txnRedo   = 1
+   } TxnModeType;
+
+	[
+		object,
+		uuid(DBB7742C-CD24-45d6-897B-58A91DD205F7),
+		oleautomation,
+		helpstring("ITransaction Interface"),
+		pointer_default(unique)
+	]
+	interface ITransaction : IUnknown
+	{
+		[helpstring("method Execute")] HRESULT Execute();
+		[helpstring("method Undo")] HRESULT Undo();
+		[propget, helpstring("property Name")] HRESULT Name([out, retval] BSTR *pVal);
+		[propget, helpstring("property IsUndoable")] HRESULT IsUndoable([out, retval] VARIANT_BOOL *pVal);
+		[propget, helpstring("property IsRepeatable")] HRESULT IsRepeatable([out, retval] VARIANT_BOOL *pVal);
+	};
+
+	[
+		object,
+		uuid(1B39F34E-247E-47EF-B750-50854784D0C4),
+		oleautomation,
+		helpstring("IMacroTransaction Interface"),
+		pointer_default(unique)
+	]
+	interface IMacroTransaction : IUnknown
+	{
+		[helpstring("method Execute")] HRESULT Execute();
+		[helpstring("method Undo")] HRESULT Undo();
+		[propget, helpstring("property Name")] HRESULT Name([out, retval] BSTR *pVal);
+		[propput, helpstring("property Name")] HRESULT Name([in] BSTR newVal);
+		[helpstring("method AddTransaction")] HRESULT AddTransaction([in] ITransaction* txn);
+		[propget, helpstring("property IsUndoable")] HRESULT IsUndoable([out, retval] VARIANT_BOOL *pVal);
+		[propget, helpstring("property IsRepeatable")] HRESULT IsRepeatable([out, retval] VARIANT_BOOL *pVal);
+		[propget, helpstring("property Count")] HRESULT Count([out, retval] long *pVal);
+	};
+
+	[
+		object,
+		uuid(2F8F8D41-5D23-45DC-9C94-EC70CFE53F07),
+		oleautomation,
+		helpstring("IMacroAdapter Interface"),
+		pointer_default(unique)
+	]
+	interface IMacroAdapter : ITransaction
+	{
+		[propget, helpstring("property Macro")] HRESULT Macro([out, retval] IMacroTransaction* *pVal);
+		[propputref, helpstring("property Macro")] HRESULT Macro([in] IMacroTransaction* newVal);
+	};
+
+	[
+		object,
+		uuid(AF78349C-CBC3-46AE-ACD8-08408F0A6231),
+		oleautomation,
+		helpstring("ITransactionMgr Interface"),
+		pointer_default(unique)
+	]
+	interface ITransactionMgr : IUnknown
+	{
+		[helpstring("method Execute")] HRESULT Execute([in]ITransaction* txn);
+		[helpstring("method Undo")] HRESULT Undo();
+		[helpstring("method Redo")] HRESULT Redo();
+		[helpstring("method Repeat")] HRESULT Repeat();
+		[propget, helpstring("property CanUndo")] HRESULT CanUndo([out, retval] VARIANT_BOOL *pVal);
+		[propget, helpstring("property CanRedo")] HRESULT CanRedo([out, retval] VARIANT_BOOL *pVal);
+		[propget, helpstring("property CanRepeat")] HRESULT CanRepeat([out, retval] VARIANT_BOOL *pVal);
+		[propget, helpstring("property UndoName")] HRESULT UndoName([out, retval] BSTR *pVal);
+		[propget, helpstring("property RedoName")] HRESULT RedoName([out, retval] BSTR *pVal);
+		[propget, helpstring("property RepeatName")] HRESULT RepeatName([out, retval] BSTR *pVal);
+		[propget, helpstring("property TransactionCount")] HRESULT TransactionCount([out, retval] long *pVal);
+		[propget, helpstring("property UndoCount")] HRESULT UndoCount([out, retval] long *pVal);
+      [helpstring("method PeekTransaction")] HRESULT PeekTransaction([in] long idx,[out,retval] ITransaction* *txn);
+      [helpstring("method PeekUndo")] HRESULT PeekUndo([in] long idx,[out,retval] ITransaction* *txn);
+		[helpstring("method ClearTransactionHistory")] HRESULT ClearTransactionHistory();
+		[helpstring("method ClearUndoHistory")] HRESULT ClearUndoHistory();
+		[helpstring("method Clear")] HRESULT Clear();
+		[propget, helpstring("property Mode")] HRESULT Mode([out, retval] TxnModeType* mode);
+      [helpstring("method BeginMacro")] HRESULT BeginMacro([in] VARIANT nameOrMacro);
+      [helpstring("method ExecuteMacro")] HRESULT ExecuteMacro();
+      [helpstring("method AbortMacro")] HRESULT AbortMacro();
+	};
+
+   [
+      object,
+      uuid(01D989A2-2D02-462f-BD20-DB2BAA426021),
+      helpstring("ISupportTransactions"),
+      pointer_default(unique)
+   ]
+   interface ISupportTransactions : IUnknown
+   {
+      [propputref,helpstring("property TransactionMgr")] HRESULT TransactionMgr([in]ITransactionMgr* txnMgr);
+   };
+   
+   [
+		uuid(05773828-07E0-4BE1-B99C-EF6D8E0326AE),
+		helpstring("TransactionMgr Class")
+	]
+	coclass TransactionMgr
+	{
+		[default] interface ITransactionMgr;
+	};
+	[
+		uuid(8CF1CDEA-D489-41C3-8A90-010D89474297),
+		helpstring("MacroTransaction Class")
+	]
+	coclass MacroTransaction
+	{
+		[default] interface IMacroTransaction;
+	};
+	[
+		uuid(125EC02E-C6FD-4385-931D-E9C44BEFB956),
+		helpstring("MacroAdapter Class")
+	]
+	coclass MacroAdapter
+	{
+		[default] interface IMacroAdapter;
+	};
+};

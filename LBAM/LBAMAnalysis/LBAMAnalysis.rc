@@ -1,0 +1,282 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "1 TYPELIB ""WBFLLBAMAnalysis.tlb""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 3,1,1,0
+ PRODUCTVERSION 3,1,1,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "A member of the Alternate Route Project\0"
+            VALUE "CompanyName", "Washington State Department of Transportation\0"
+            VALUE "FileDescription", "WBFL LBAMAnalysis Module\0"
+            VALUE "FileVersion", "3.1.1.0\0"
+            VALUE "InternalName", "LBAMAnalysis\0"
+            VALUE "LegalCopyright", "Copyright © 2000-2009\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OLESelfRegister", "\0"
+            VALUE "OriginalFilename", "LBAMAnalysis.DLL\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "WBFL\0"
+            VALUE "ProductVersion", "3.1.1.0\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+
+IDR_SECTIONRESULT3D     REGISTRY DISCARDABLE    "SectionResult3D.rgs"
+IDR_RESULT3D            REGISTRY DISCARDABLE    "Result3D.rgs"
+IDR_SECTIONRESULT3DS    REGISTRY DISCARDABLE    "SectionResult3Ds.rgs"
+IDR_RESULT3DS           REGISTRY DISCARDABLE    "Result3Ds.rgs"
+IDR_LOADGROUPDEFLECTIONRESPONSE REGISTRY DISCARDABLE    "LoadGroupDeflectionResponse.rgs"
+IDR_LOADGROUPFORCERESPONSE REGISTRY DISCARDABLE    "LoadGroupForceResponse.rgs"
+IDR_INFLUENCELINE       REGISTRY DISCARDABLE    "InfluenceLine.rgs"
+IDR_STRESSRESULT        REGISTRY DISCARDABLE    "StressResult.rgs"
+IDR_STRESSRESULTS       REGISTRY DISCARDABLE    "StressResults.rgs"
+IDR_SECTIONSTRESSRESULT REGISTRY DISCARDABLE    "SectionStressResult.rgs"
+IDR_SECTIONSTRESSRESULTS REGISTRY DISCARDABLE    "SectionStressResults.rgs"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PROJNAME            "LBAMAnalysis"
+    IDS_E_BLANK_STAGE_NAMES_NOT_ALLOWED "Blank stage names are not valid"
+    IDS_E_INVALID_INTEGER_ARRAY 
+                            " The array of integers passed into this method was invalid. Only well-formed SAFEARRAYS or longs or integers can be accepted."
+    IDS_E_BLANK_LOADGROUP_NAMES_NOT_ALLOWED 
+                            "Blank load group names are not valid"
+    IDS_E_DUPLICATE_STAGE_NAMES 
+                            "Duplicate stage names are not allowed in LBAM models. The stage %s appears at least twice."
+    IDS_E_DUPLICATE_LOADGROUP_NAMES 
+                            "Duplicate load group names are not allowed in LBAM models. The load group %s appears at least twice."
+    IDS_E_SPAN_LENGTH_MUST_BE_GT_ZERO 
+                            "The length of every Span must be greater than 1/10000th of the total superstructure length."
+    IDS_E_SPAN_LENGTH_EXCEEDS_SUPERSTRUCTUREMEMBERS 
+                            "The total length of SuperstructureMembers must be greater than or equal to the total length of Spans."
+    IDS_E_MEMBER_LENGTH_MUST_BE_GT_ZERO 
+                            "The length of every SuperstructureMember must be greater than 1/10000th of the total superstructure length."
+    IDS_E_SEGMENT_LENGTH_MUST_BE_GT_ZERO 
+                            "The length of every Segment must be greater than 1.0/10000.0 of the total superstructure length. Segment %d was not. "
+    IDS_E_NO_SEGMENT_FOR_MEMBER 
+                            "Every Superstructure member must have at least one segment. Member %d in Stage %s does not."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_E_NO_REM_STAGE_FOR_TS 
+                            "StageRemoved for temporary support does not exist. Stage name was %s."
+    IDS_E_INVALID_TS_LOCATION 
+                            "The location of TemporarySupport %d in Span %d is invalid"
+    IDS_E_INVALID_SECTION_PROP 
+                            "Invalid section property. The value of %S must be greater than zero."
+    IDS_E_MUST_HAVE_ONE_SPAN 
+                            "No spans found. You must have at least one Span in the model."
+    IDS_E_INVALID_SUPPORTS  "Invalid number of supports. For %d Spans, you must have %d supports."
+    IDS_E_SUPPORT_ROLLER_RELEASE 
+                            "Roller support connections are not allowed for Supports or TemporarySupports that have a top release. This makes the structure unstable. Support ID was %d."
+    IDS_E_NO_SEGMENT_FOR_SUPPORT 
+                            "All non-zero length supports must have at least one segment. In Stage %s, the following support does not: "
+    IDS_E_SUPPORT_OFFSET_GT_LENGTH 
+                            "The Offset for Support %d was greater than or equal to its length"
+    IDS_E_SUPPORT_LENGTH_MUST_BE_GT_ZERO 
+                            "The length of every non-zero length support must be greater than 1/10000 of the total superstructure length. Support %d does not satisfy this criteria."
+    IDS_E_INVALID_TS_ID_SUPPORT 
+                            "TemporarySupport %d in Span %d has an invalid ID. The ID must be unique with respect to Support numbers."
+    IDS_E_TEMPSUPPORT_OFFSET_GT_LENGTH 
+                            "The Offset for TemporarySupport %d in Span %d  was greater than or equal to its length."
+    IDS_E_TEMPSUPPORT_LENGTH_MUST_BE_GT_ZERO 
+                            "The length of every non-zero length support must be greater than 1/10000 of the total superstructure length. TemporarySupport %d  in Span %d does not satisfy this criteria."
+    IDS_SUPPORT_INFO        "  Support %d."
+    IDS_TEMPSUPPORT_INFO    "  TemporarySupport %d in Span %d."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_SUPERSTRUCTUREMEMBER_INFO "  Superstructure Member %d."
+    IDS_SS_SEGMENT_INFO     " Superstructuremember %d,  Segment %d."
+    IDS_SEGMENT_INFO        "  Segment %d."
+    IDS_E_INVALID_SEGMENT_LENGTH "The length of Segment %d was out of range."
+    IDS_E_TEMPORARY_SUPPORT_ID 
+                            "Temporary supports must have a unique ID. Temporary support %d does not. "
+    IDS_E_MUST_HAVE_ONE_SSM "No SuperstructureMembers defined. You must have at least one in the model."
+    IDS_E_POI_SPAN_OOR      "The Span specified by POI %d does not exist"
+    IDS_E_POI_SSM_OOR       "The SuperstructureMember specified by POI %d does not exist"
+    IDS_E_POI_SUPPORT_OOR   "The Support specified by POI %d does not exist"
+    IDS_E_POI_TEMP_SUPPORT_OOR 
+                            "The TemporarySupport specified by POI %d does not exist"
+    IDS_E_INVALID_POI_LOC   "The location of POI %d is out of range."
+    IDS_E_DUPLICATE_POI_ID  "All POIs must have unique ID's. POI %d is not."
+    IDS_E_TEMPSUPPORT_DIST  "Temporary supports must be farther than 1/10000th of the total superstructure length away from span ends. TemporarySupport %d  in Span %d does not satisfy this criteria."
+    IDS_E_POI_ZERO_LENGTH_SUPPORT 
+                            "POIs cannot be located at zero-length supports. POI %d is."
+    IDS_E_TEMPSUPPORT_NOT_EXIST "  TemporarySupport %d does not exist."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_E_SPAN_NOT_EXIST    "Span %d does not exist. Identifier out of range."
+    IDS_E_SUPPORT_NOT_EXIST "  Support %d does not exist.. Identifier out of range."
+    IDS_E_SSM_NOT_EXIST     "  SuperstructureMember %d does not exist.. Identifier out of range."
+    IDS_E_LOCATION_OOR      "  Location %f was out of range."
+    IDS_POI_INFO            "  POI %d."
+    IDS_E_LOC_4_ZERO_LENGTH_ZERO 
+                            "The location specifier at zero length supports must be equal to 0.0"
+    IDS_E_POINT_LOAD_LOC    "Point Load in LoadGroup %S is located off of the LBAM. "
+    IDS_E_POINT_LOAD_UNKNOWN 
+                            "Unknown error creating Point Load in LoadGroup %s while generating fem. "
+    IDS_E_LOADGROUP_NOT_FOUND "The LoadGroup %S is not defined in the LBAM"
+    IDS_E_STAGE_NOT_FOUND   "The Stage %S does not exist in the LBAM"
+    IDS_E_INVALID_MEMBER_TYPE "Invalid MemberType parameter."
+    IDS_E_GENERATING_DISTR_LOAD 
+                            " Generating distributed load in load group %S"
+    IDS_E_DIST_LOAD_ZERO_LENGTH 
+                            "Cannot apply distributed loads to zero-length members."
+    IDS_E_INVALID_DISTR_LOAD_LOCATION 
+                            "Invalid location for distributed load. Load must be located within the ends of the member"
+    IDS_E_INVALID_LOAD_ORIENTATION "Invalid LoadOrientation value."
+    IDS_E_INVALID_LOAD_DIRECTION "Invalid LoadDirection value."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_E_MODEL_DOES_NOT_EXIST 
+                            "No model exists for this response obect. You must first set the Model property before you can compute responses."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_E_INVALID_STRAIN_LOC 
+                            "A strain load was applied to an invalid member. The member could have been a zero-length support, or it's id was out of range. Location was %S."
+    IDS_E_GENERATING_STRAIN_LOAD "Generating strain load in load group %S"
+    IDS_E_INVALID_TEMPERATURE_LOC 
+                            "A temperature load was applied to an invalid member. The member could have been a zero-length support, or it's id was out of range. Location was %S."
+    IDS_E_GENERATING_TEMPERATURE_LOAD 
+                            " Generating temperature load in load group %S"
+    IDS_E_INVALID_DIST_LOC  "A distributed load was applied to an invalid member. The member could have been a zero-length support, or it's id was out of range. Location was %S."
+    IDS_E_GENERATING_SETTLEMENT_LOAD 
+                            " Generating settlement load in load group %S"
+    IDS_E_TEMPERATURE_ZERO_DEPTH 
+                            "Temperature loads may not be applied to members with cross sections with zero depth."
+    IDS_E_SETTLEMENT_LOC    "Settlement load applied at support %d. This support does not exist."
+    IDS_E_INVALID_HINGE_REMOVAL_STAGE 
+                            "Removal stage for end release was invalid. Stage name was %S"
+    IDS_E_TEMPORARY_SUPPORTS_TOO_CLOSE 
+                            "Temporary Supports placed too close together. They must be at least 1/1000th of the total superstructure length apart."
+    IDS_STAGE_CONTEXT       "  In stage %S"
+    IDS_E_INVALID_POI_MEMBER_TYPE "Invalid MemberType parameter for POI %d."
+    IDS_E_POI_NOT_FOUND     "POI %d not found in model."
+    IDS_E_STRESS_NC         "Stress could not be computed for POI %d."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_INFLUENCELOCATION   "For Influence Location %d."
+    IDS_POI_INFLUENCELOCATION " Generating influence load for POI %d"
+    IDS_E_NO_INFLUENCE_LOCATIONS 
+                            "No locations exist to place influence loads. You must specify some POIs or increase the POI generation increments in the IAnalysisPOIs interface."
+    IDS_E_TEMP_POIS_CUMMULATIVE 
+                            "Cumulative responses may not be requested for internally generated POIs. POI ID's must be positive when requesting cumulative results."
+    IDS_E_INVALID_REGION    "Invalid Float64 array defining regions. Number of items in array must be an even number. Values in array must be in increasing order. Region arrays must be zero-based. Regions must lie within length of Influence line."
+    IDS_E_MM_STRESSPOINTS   "The number of stress points at a given POI must be equal through stages if cumulative results are requested. This was not the case at POI %d"
+    IDS_E_INCOMP_STRESSRESULTS 
+                            "Stress results are incompatible. Results must have the same number of stress points in order to be summed."
+    IDS_E_INSTABILITY       "The Fem2D engine was unable to solve the model for stage %S. It is likely that this model is unstable."
+    IDS_E_FEM2D             "An error occured during the Fem2D solution for stage %S. This error was not further translated."
+    IDS_E_POINT_LOAD_ZERO_LENGTH 
+                            "Point loads cannot be applied to zero-length supports or temporary supports."
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+1 TYPELIB "WBFLLBAMAnalysis.tlb"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAM.SuperstructureMember.1 = s 'SuperstructureMember Class'
+	{
+		CLSID = s '{787BE35C-7C53-11D5-B036-00105A9AF985}'
+	}
+	WBFLLBAM.SuperstructureMember = s 'SuperstructureMember Class'
+	{
+		CLSID = s '{787BE35C-7C53-11D5-B036-00105A9AF985}'
+		CurVer = s 'WBFLLBAM.SuperstructureMember.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {787BE35C-7C53-11D5-B036-00105A9AF985} = s 'SuperstructureMember Class'
+		{
+			ProgID = s 'WBFLLBAM.SuperstructureMember.1'
+			VersionIndependentProgID = s 'WBFLLBAM.SuperstructureMember'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{A60E8518-3A65-11D5-AFE5-00105A9AF985}'
+		}
+	}
+}

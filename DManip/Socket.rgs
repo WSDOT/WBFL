@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.Socket.1 = s 'Socket Class'
+	{
+		CLSID = s '{011408D2-F865-11d4-8B9C-006097C68A9C}'
+	}
+	WBFLDManip.Socket = s 'Socket Class'
+	{
+		CLSID = s '{011408D2-F865-11d4-8B9C-006097C68A9C}'
+		CurVer = s 'WBFLDManip.Socket.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {011408D2-F865-11d4-8B9C-006097C68A9C} = s 'Socket Class'
+		{
+			ProgID = s 'WBFLDManip.Socket.1'
+			VersionIndependentProgID = s 'WBFLDManip.Socket'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

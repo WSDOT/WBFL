@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLGenericBridgeTools.PrecastGirder.1 = s 'PrecastGirder Class'
+	{
+		CLSID = s '{6E8068AB-ABC2-4cae-A31B-74ABD7500570}'
+	}
+	WBFLGenericBridgeTools.PrecastGirder = s 'PrecastGirder Class'
+	{
+		CLSID = s '{6E8068AB-ABC2-4cae-A31B-74ABD7500570}'
+		CurVer = s 'WBFLGenericBridgeTools.PrecastGirder.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {6E8068AB-ABC2-4cae-A31B-74ABD7500570} = s 'PrecastGirder Class'
+		{
+			ProgID = s 'WBFLGenericBridgeTools.PrecastGirder.1'
+			VersionIndependentProgID = s 'WBFLGenericBridgeTools.PrecastGirder'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}'
+		}
+	}
+}

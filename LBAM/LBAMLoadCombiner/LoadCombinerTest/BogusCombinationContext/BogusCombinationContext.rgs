@@ -1,0 +1,26 @@
+HKCR
+{
+	BogusCombinationContext.BogusComboContext.1 = s 'BogusComboContext Class'
+	{
+		CLSID = s '{1010712A-C54D-4071-922F-97B0C2738D31}'
+	}
+	BogusCombinationContext.BogusComboContext = s 'BogusComboContext Class'
+	{
+		CLSID = s '{1010712A-C54D-4071-922F-97B0C2738D31}'
+		CurVer = s 'BogusCombinationContext.BogusComboContext.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {1010712A-C54D-4071-922F-97B0C2738D31} = s 'BogusComboContext Class'
+		{
+			ProgID = s 'BogusCombinationContext.BogusComboContext.1'
+			VersionIndependentProgID = s 'BogusCombinationContext.BogusComboContext'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{921601A7-0DA7-4B50-8DCE-D1852B6EB557}'
+		}
+	}
+}

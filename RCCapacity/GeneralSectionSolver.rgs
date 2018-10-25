@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.GeneralSectionSolver.1 = s 'GeneralSectionSolver Class'
+	{
+		CLSID = s '{4B0F6910-9548-4629-B6DF-6CDA76F911CF}'
+	}
+	WBFLRCCapacity.GeneralSectionSolver = s 'GeneralSectionSolver Class'
+	{
+		CLSID = s '{4B0F6910-9548-4629-B6DF-6CDA76F911CF}'
+		CurVer = s 'WBFLRCCapacity.GeneralSectionSolver.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {4B0F6910-9548-4629-B6DF-6CDA76F911CF} = s 'GeneralSectionSolver Class'
+		{
+			ProgID = s 'WBFLRCCapacity.GeneralSectionSolver.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.GeneralSectionSolver'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

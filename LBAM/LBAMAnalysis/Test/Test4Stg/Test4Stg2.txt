@@ -1,0 +1,345 @@
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/27/01 12:45:45    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE     1  |
+      =======================================================================
+
+
+      ************************************************************************
+      *                                                                      *
+      * TYPE OF THE STRUCTURE                  : PLANE FRAME                 *
+      * RESTART STATUS                         :    NONE GIVEN               *
+      * DESIGNATED UNITS                       : KIPS     INCHES RADIANS     *
+      * NO. OF JOINTS DEFINED                  :    12                       *
+      * NO. OF MEMBERS DEFINED                 :    11                       *
+      * NO. OF PLATE ELEMENTS DEFINED          :     0                       *
+      * NO. OF DIFF. MATERIAL DEFINED          :     1                       *
+      * NO. OF DIFF. SECTION PROPERTIES DEFINED:     2                       *
+      * NO. OF DIFF. TYPES OF SPRINGS DEFINED  :     0                       *
+      *                                                                      *
+      ************************************************************************
+
+
+      *****************************
+      * LISTING OF THE INPUT FILE *
+      *****************************
+
+        1) TYPE PLANE FRAME
+        2) UNIT Inch
+        3) SAVE ON
+        4) JOINT COORDINATE
+        5) 1 0 0
+        6) 2 25  0
+        7) 3 50  0
+        8) 4 75  0
+        9) 5 100 0
+       10) 6 125 0
+       11) 7 150 0
+       12) 8 175 0
+       13) 9 200 0
+       14) 10  50 -10
+       15) 11 100 -15
+       16) 12 150 -10
+       17) JOINT RELEASE
+       18) 1 AS SUPPORT;1 FORCE X MOMENT
+       19) 9 AS SUPPORT;9 FORCE X MOMENT
+       20) 10 as support
+       21) 11 as support
+       22) 12 as support
+       23) MEMBER INCIDENCE
+       24) 1 1 2
+       25) 2 2 3
+       26) 3 3 4
+       27) 4 4 5
+       28) 5 5 6
+       29) 6 6 7
+
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/27/01 12:45:45    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE     2  |
+      =======================================================================
+
+
+      *****************************
+      * LISTING OF THE INPUT FILE *
+      *****************************
+
+       30) 7 7 8
+       31) 8 8 9
+       32) 9 10 3
+       33) 10 11 5
+       34) 11 12 7
+       35) MEMBER RELEASE
+       36) 4 END   MOMENT Z
+       37) 5 START MOMENT Z
+       38) Member Property
+       39) super  AX 1000 IZ 10000 SZ 10 YD 1 ZD 1 UNIT Inch
+       40) column AX 2000 IZ 1000  SZ 10 YD 1 ZD 1 UNIT Inch
+       41) SECTION PROPERTY
+       42) super 1 2 3 4 5 6 7 8
+       43) column 9 10 11
+       44) MATERIAL PROPERY
+       45) bogus E 1 DEN 0 CT 1 G 1  MEMBER  UNIT Inch Kip
+       46) MATERIAL PROPERTY
+       47) bogus 1 2 3 4 5 6 7 8 9 10 11
+       48) $
+       49) MERGE ON
+       50) $
+       51) STIFFNESS ANALYSIS
+       52) LOAD STAGE2
+       53) MEMBER LOAD
+       54) UNIT Kip Inch Rad
+       55) 1 TO 8 LINEAR GLOBAL FORCE Y WA -0.5 WB -0.5 LA 0 LB 1 FRACTION
+       56) LIST
+       57) SELECT ALL
+       58) PRINT ALL
+       59) LIST ALL
+       60) FINISH
+
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/27/01 12:45:45    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE     3  |
+      =======================================================================
+
+
+      * ACTIVE UNIT :  KIPS     INCHES RADIANS  
+      * NO. OF JOINTS DEFINED                  :    12
+        LEGENDS ( EXAMPLES AND EXPLANATIONS ) :
+        DX - GLOBAL X DIRECTION DISPLACEMENT DEGREE OF FREEDOM.
+        RZ - GLOBAL Z DIRECTION ROTATION DEGREE OF FREEDOM.
+        R - RESTRAINED.     S2 - TYPE 2 SPRING ATTACHED.
+
+       JOINT       X            Y     BOUNDARY CODE
+         NO.   COORDINATE   COORDINATE  RZ  DY  DX
+
+           1      0.00000      0.00000       R     
+           2     25.00000      0.00000 
+           3     50.00000      0.00000 
+           4     75.00000      0.00000 
+           5    100.00000      0.00000 
+           6    125.00000      0.00000 
+           7    150.00000      0.00000 
+           8    175.00000      0.00000 
+           9    200.00000      0.00000       R     
+          10     50.00000    -10.00000   R   R   R 
+          11    100.00000    -15.00000   R   R   R 
+          12    150.00000    -10.00000   R   R   R 
+
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/27/01 12:45:45    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE     4  |
+      =======================================================================
+
+
+      * NO. OF MEMBERS DEFINED                 :    11
+        LEGENDS ( EXAMPLES AND EXPLANATIONS ) :
+        R:ZYX - ROTATION DEGREE OF FREEDOM ALONG MEMBER AXIS.
+        D:ZYX - DISPLACEMENT DEGREE OF FREEDOM ALONG MEMBER AXIS.
+        F : FREED (RELEASED).   - : RESTRAINED.
+
+      MEM  #     I      J   MAT.    SECTION     I END REL. J END REL.    BETA   I END   J END
+              JOINT  JOINT  TAG.  PROPERTY TAG.  R:Z  D:YX  R:Z  D:YX    ANGLE   SIZE    SIZE  LENGTH
+
+          1      1      2 BOGUS           SUPER    -    --    -    --    0.00    0.00    0.00   25.00
+          2      2      3 BOGUS           SUPER    -    --    -    --    0.00    0.00    0.00   25.00
+          3      3      4 BOGUS           SUPER    -    --    -    --    0.00    0.00    0.00   25.00
+          4      4      5 BOGUS           SUPER    -    --    F    --    0.00    0.00    0.00   25.00
+          5      5      6 BOGUS           SUPER    F    --    -    --    0.00    0.00    0.00   25.00
+          6      6      7 BOGUS           SUPER    -    --    -    --    0.00    0.00    0.00   25.00
+          7      7      8 BOGUS           SUPER    -    --    -    --    0.00    0.00    0.00   25.00
+          8      8      9 BOGUS           SUPER    -    --    -    --    0.00    0.00    0.00   25.00
+          9     10      3 BOGUS          COLUMN    -    --    -    --    0.00    0.00    0.00   10.00
+         10     11      5 BOGUS          COLUMN    -    --    -    --    0.00    0.00    0.00   15.00
+         11     12      7 BOGUS          COLUMN    -    --    -    --    0.00    0.00    0.00   10.00
+
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/27/01 12:45:45    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE     5  |
+      =======================================================================
+
+
+      * ACTIVE UNIT :  KIPS     INCHES RADIANS  
+      * NO. OF DIFF. SECTION PROPERTIES DEFINED:     2
+
+   INDEX  SECTION TAG       TOT LENGTH   TOT WEIGHT
+  AREA AX  BEND'G IZ BEND'G IY     IX         AY        AZ        SY        SZ
+
+       1  SUPER                 200.00         0.00
+ 1000.0000 10000.0000    0.0000    0.0000    0.0000    0.0000    0.0000   10.0000
+       2  COLUMN                 35.00         0.00
+ 2000.0000 1000.0000    0.0000    0.0000    0.0000    0.0000    0.0000   10.0000
+
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/27/01 12:45:45    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE     6  |
+      =======================================================================
+
+
+      * ACTIVE UNIT :  KIPS     INCHES RADIANS  
+      * NO. OF DIFF. MATERIAL DEFINED          :     1
+
+     MAT MATERIAL  MODULUS OF  MATERIAL    THERMAL            G         POI
+     IND PROP TAG  ELASTICITY  WT DENSITY  EXPAN COEF
+
+     1    BOGUS    1.000000    0.000000    1.000000    1.000000    0.000000 
+
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/27/01 12:45:45    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE     7  |
+      =======================================================================
+
+
+
+      ***********************
+      * RESULTS OF ANALYSIS *
+      ***********************
+
+   TYPE OF PROBLEM :  PLANE FRAME         RESTART STATUS :     NONE GIVEN           
+   ACTIVE UNITS :  KIPS     INCHES RADIANS 
+
+
+
+     ***  LOAD INDEX :    1  LOAD TAG :      STAGE2  ***
+
+
+      RESULTANT JOINT DISPLACEMENTS -----
+
+     JOINT  /--- GLOBAL DISPLACEMENTS ---/-- ROTATION --/
+      NO.      X DIRECTION    Y DIRECTION    Z DIRECTION
+
+         1      0.0021310     -0.0000000     -0.1343214 
+         2      0.0021310     -1.7242298      0.0291831 
+         3      0.0021310     -0.1560446     -0.0011365 
+         4      0.0010655     -1.7895663     -0.0320689 
+         5     -0.0000000     -0.1408842      0.0000000 
+         6     -0.0010655     -1.7895663      0.0320689 
+         7     -0.0021310     -0.1560446      0.0011365 
+         8     -0.0021310     -1.7242298     -0.0291831 
+         9     -0.0021310     -0.0000000      0.1343214 
+        10     -0.0000000     -0.0000001      0.0000000 
+        11     -0.0000000     -0.0000001      0.0000000 
+        12      0.0000000     -0.0000001     -0.0000000 
+
+
+     ***  LOAD INDEX :    1  LOAD TAG :      STAGE2  ***
+
+
+      RESULTANT MEMBER FORCES -----
+
+    MEMBER        SECTION   JOINT /--- AXIAL ---/--- LOCAL Y --/-- LOCAL Z --/
+      NO.             TAG.    NO.      FORCE      SHEAR FORCE      MOMENT
+
+         1           SUPER     1         0.0000         9.3988        -0.0000 
+                               2         0.0000         3.1012        78.7203 
+         2           SUPER     2         0.0000        -3.1012       -78.7203 
+                               3         0.0000        15.6012      -155.0594 
+         3           SUPER     3         0.0426        15.6077       155.3862 
+                               4        -0.0426        -3.1077        78.5569 
+         4           SUPER     4         0.0426         3.1077       -78.5569 
+                               5        -0.0426         9.3923         0.0000 
+
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/27/01 12:45:45    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE     8  |
+      =======================================================================
+
+
+
+      RESULTANT MEMBER FORCES -----
+
+    MEMBER        SECTION   JOINT /--- AXIAL ---/--- LOCAL Y --/-- LOCAL Z --/
+      NO.             TAG.    NO.      FORCE      SHEAR FORCE      MOMENT
+
+         5           SUPER     5         0.0426         9.3923         0.0000 
+                               6        -0.0426         3.1077        78.5569 
+         6           SUPER     6         0.0426        -3.1077       -78.5569 
+                               7        -0.0426        15.6077      -155.3862 
+         7           SUPER     7        -0.0000        15.6012       155.0594 
+                               8         0.0000        -3.1012        78.7203 
+         8           SUPER     8        -0.0000         3.1012       -78.7203 
+                               9         0.0000         9.3988         0.0000 
+         9          COLUMN    10        31.2089        -0.0426        -0.0994 
+                               3       -31.2089         0.0426        -0.3268 
+        10          COLUMN    11        18.7846        -0.0000        -0.0000 
+                               5       -18.7846         0.0000         0.0000 
+        11          COLUMN    12        31.2089         0.0426         0.0994 
+                               7       -31.2089        -0.0426         0.3268 
+
+      RESULTANT MEMBER STRESS -----
+
+    MEMBER        SECTION   JOINT /--- AXIAL ---/--- LOCAL Y --/-- LOCAL Z --/
+      NO.                             STRESS     SHEAR STRESS  BENDING STRESS
+
+         1           SUPER     1         0.0000            N/A        -0.0000 
+                               2         0.0000            N/A         7.8720 
+         2           SUPER     2         0.0000            N/A        -7.8720 
+                               3         0.0000            N/A       -15.5059 
+         3           SUPER     3         0.0000            N/A        15.5386 
+                               4        -0.0000            N/A         7.8557 
+         4           SUPER     4         0.0000            N/A        -7.8557 
+                               5        -0.0000            N/A         0.0000 
+         5           SUPER     5         0.0000            N/A         0.0000 
+                               6        -0.0000            N/A         7.8557 
+         6           SUPER     6         0.0000            N/A        -7.8557 
+                               7        -0.0000            N/A       -15.5386 
+         7           SUPER     7        -0.0000            N/A        15.5059 
+                               8         0.0000            N/A         7.8720 
+         8           SUPER     8        -0.0000            N/A        -7.8720 
+                               9         0.0000            N/A         0.0000 
+         9          COLUMN    10         0.0156            N/A        -0.0099 
+                               3        -0.0156            N/A        -0.0327 
+        10          COLUMN    11         0.0094            N/A        -0.0000 
+                               5        -0.0094            N/A         0.0000 
+        11          COLUMN    12         0.0156            N/A         0.0099 
+                               7        -0.0156            N/A         0.0327 
+
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/27/01 12:45:45    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE     9  |
+      =======================================================================
+
+
+
+
+     ***  LOAD INDEX :    1  LOAD TAG :      STAGE2  ***
+
+
+      JOINT REACTIONS AT SUPPORTS -----
+
+     JOINT  LD      /------------ GLOBAL REACTIONS ------------/
+      NO.                  X FORCE        Y FORCE       Z MOMENT
+
+         1                 0.0000         9.3988         0.0000 
+         9                 0.0000         9.3988         0.0000 
+        10                 0.0426        31.2089        -0.0994 
+        11                 0.0000        18.7846        -0.0000 
+        12                -0.0426        31.2089         0.0994 
+
+     TOTAL                -0.0000       100.0000 
+

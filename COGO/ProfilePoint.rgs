@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.ProfilePoint.1 = s 'ProfilePoint Class'
+	{
+		CLSID = s '{849FD333-4FC9-4093-93F6-FBEC311FF45A}'
+	}
+	WBFLCogo.ProfilePoint = s 'ProfilePoint Class'
+	{
+		CLSID = s '{849FD333-4FC9-4093-93F6-FBEC311FF45A}'
+		CurVer = s 'WBFLCogo.ProfilePoint.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {849FD333-4FC9-4093-93F6-FBEC311FF45A} = s 'ProfilePoint Class'
+		{
+			ProgID = s 'WBFLCogo.ProfilePoint.1'
+			VersionIndependentProgID = s 'WBFLCogo.ProfilePoint'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

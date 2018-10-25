@@ -1,0 +1,44 @@
+[OPTIONS]
+Compiled File=DManipTools.chm
+Title=DManipTools Help
+Contents File=DManipTools.hhc
+Index File=DManipTools.hhk
+Default topic=Introduction.htm
+Default Window=DManipTools Help
+Error log file=
+Display compile progress=No
+Display compile notes=No
+Full-text search=Yes
+Binary Index=No
+Auto Index=No
+Enhanced decompilation=No
+Binary TOC=No
+Flat=No
+
+[WINDOWS]
+DManipTools Help="DManipTools Help","DManipTools.hhc","DManipTools.hhk","","",,,,,0x520,0,0x200e,[0,0,500,400],0x0,0x0,,0,0,0
+
+[FILES]
+Introduction.htm
+Interfaces\iSymbolLegendEntry.htm
+Interfaces\iLegendEntry.htm
+Interfaces\iGraphXyDisplayObject.htm
+Interfaces\iGraphXyDataProvider.htm
+Interfaces\iDataPointFactory.htm
+Interfaces\iDataPointDrawStrategy.htm
+Interfaces\iDataSet2d.htm
+Interfaces\iLegendDisplayObject.htm
+eHelp.xml
+RoboHHRE.lng
+
+DManipTools.brs
+[ALIAS]
+#include DManipTools.ali
+
+[MAP]
+#include BSSCDefault.h
+
+[TEXT POPUPS]
+BSSCDefault.h
+
+

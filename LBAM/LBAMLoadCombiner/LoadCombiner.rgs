@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAMLoadCombiner.LoadCombiner.1 = s 'LoadCombiner Class'
+	{
+		CLSID = s '{B14CCE9F-891A-45C0-BA1C-CB1018CD57D6}'
+	}
+	WBFLLBAMLoadCombiner.LoadCombiner = s 'LoadCombiner Class'
+	{
+		CLSID = s '{B14CCE9F-891A-45C0-BA1C-CB1018CD57D6}'
+		CurVer = s 'WBFLLBAMLoadCombiner.LoadCombiner.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {B14CCE9F-891A-45C0-BA1C-CB1018CD57D6} = s 'LoadCombiner Class'
+		{
+			ProgID = s 'WBFLLBAMLoadCombiner.LoadCombiner.1'
+			VersionIndependentProgID = s 'WBFLLBAMLoadCombiner.LoadCombiner'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{F109AF06-2C48-4503-9780-D4FD8D2674FA}'
+		}
+	}
+}

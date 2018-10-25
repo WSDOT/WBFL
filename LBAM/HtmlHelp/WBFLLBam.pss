@@ -1,0 +1,57 @@
+[Target:WebHelp Pro]
+ResultFileName=!SSL!\WebHelp_Pro\WBFLLBam.htm
+SSLayoutType=32
+ServerProjectName=WBFLLBam
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:WebHelp]
+ResultFileName=!SSL!\WebHelp\WBFLLBam.htm
+SSLayoutType=2
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:Microsoft HTML Help]
+ResultFileName=C:\ARP\lib\WBFLLBam.chm
+SSLayoutType=1
+CreateProjectTime=15:18, February 09, 2009
+CreateProjectUser=BriceR
+SupportMas_MPJ=1
+ActionID For Generation=1002
+Remove Folder with prompt=1
+ViewFileName=C:\ARP\lib\WBFLLBam.chm
+ResultStatus=0
+BuildTimeHi=29985549
+BuildTimeLow=776144496
+[Target:FlashHelp]
+ResultFileName=!SSL!\FlashHelp\WBFLLBam.htm
+SSLayoutType=2
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:Printed Documentation]
+ResultFileName=!SSL!\Printed_Documentation\WBFLLBam.doc
+SSLayoutType=7
+[Target:XML Output]
+ResultFileName=!SSL!\XML_Output\WBFLLBam.xml
+SSLayoutType=8192
+[PreSingleSource]
+Html Help Project=C:\ARP\WBFL\LBAM\HtmlHelp\WBFLLBam.hhp
+Table Of Content=C:\ARP\WBFL\LBAM\HtmlHelp\WBFLLBam.hhc
+Index=C:\ARP\WBFL\LBAM\HtmlHelp\WBFLLBam_merged$.hhk
+See Also Index=C:\ARP\WBFL\LBAM\HtmlHelp\WBFLLBam.hha
+Browse Sequence=C:\ARP\WBFL\LBAM\HtmlHelp\WBFLLBam.brs
+Topic Properties=C:\ARP\WBFL\LBAM\HtmlHelp\WBFLLBam.trs
+Active Folders=C:\ARP\WBFL\LBAM\HtmlHelp\WBFLLBam.trf
+Baggage Files=C:\ARP\WBFL\LBAM\HtmlHelp\WBFLLBam.trb
+Skin List=C:\ARP\WBFL\LBAM\HtmlHelp\WBFLLBam.trk
+OriginalHhk=C:\ARP\WBFL\LBAM\HtmlHelp\WBFLLBam.hhk
+Active Layout Names=C:\ARP\WBFL\LBAM\HtmlHelp\WBFLLBam.trl
+Default Topic=C:\ARP\WBFL\LBAM\HtmlHelp\Concepts\Basic_Concepts.htm
+Build Tags0=16910;              
+Build Tags=
+Build Expression=
+Language ID=1033
+Language Name=English
+Language=C:\ARP\WBFL\LBAM\HtmlHelp\RoboHHRE.lng
+Stop List=C:\ARP\WBFL\LBAM\HtmlHelp\WBFLLBam.stp

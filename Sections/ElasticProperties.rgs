@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLSections.ElasticProperties.1 = s 'ElasticProperties Class'
+	{
+		CLSID = s '{FD7B2E32-6DB3-4BF2-8A0A-484B19FD1CE6}'
+	}
+	WBFLSections.ElasticProperties = s 'ElasticProperties Class'
+	{
+		CLSID = s '{FD7B2E32-6DB3-4BF2-8A0A-484B19FD1CE6}'
+		CurVer = s 'WBFLSections.ElasticProperties.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {FD7B2E32-6DB3-4BF2-8A0A-484B19FD1CE6} = s 'ElasticProperties Class'
+		{
+			ProgID = s 'WBFLSections.ElasticProperties.1'
+			VersionIndependentProgID = s 'WBFLSections.ElasticProperties'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{8CFE60EA-6B58-4D72-B05A-E9F049C9C8CC}'
+		}
+	}
+}

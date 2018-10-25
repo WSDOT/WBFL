@@ -1,0 +1,158 @@
+.MCAD 304020000 1 74 171 0
+.CMD FORMAT  rd=d ct=10 im=i et=3 zt=15 pr=9 mass length time charge temperature tr=0 vm=0
+.CMD SET ORIGIN 0
+.CMD SET TOL 0.001000000000000
+.CMD SET PRNCOLWIDTH 8
+.CMD SET PRNPRECISION 4
+.CMD PRINT_SETUP 1.200000 1.218750 1.200000 1.200000 0
+.CMD HEADER_FOOTER 1 1 *empty* *empty* *empty* 0 1 *empty* *empty* *empty*
+.CMD HEADER_FOOTER_FONT fontID=14 family=Arial points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD HEADER_FOOTER_FONT fontID=15 family=Arial points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFAULT_TEXT_PARPROPS 0 0 0
+.CMD DEFINE_FONTSTYLE_NAME fontID=0 name=Variables
+.CMD DEFINE_FONTSTYLE_NAME fontID=1 name=Constants
+.CMD DEFINE_FONTSTYLE_NAME fontID=2 name=Text
+.CMD DEFINE_FONTSTYLE_NAME fontID=4 name=User^1
+.CMD DEFINE_FONTSTYLE_NAME fontID=5 name=User^2
+.CMD DEFINE_FONTSTYLE_NAME fontID=6 name=User^3
+.CMD DEFINE_FONTSTYLE_NAME fontID=7 name=User^4
+.CMD DEFINE_FONTSTYLE_NAME fontID=8 name=User^5
+.CMD DEFINE_FONTSTYLE_NAME fontID=9 name=User^6
+.CMD DEFINE_FONTSTYLE_NAME fontID=10 name=User^7
+.CMD DEFINE_FONTSTYLE fontID=0 family=Times^New^Roman points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=1 family=Times^New^Roman points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=2 family=Arial points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=4 family=Arial points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=5 family=Courier^New points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=6 family=System points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=7 family=Script points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=8 family=Roman points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=9 family=Modern points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=10 family=Times^New^Roman points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD UNITS U=1
+.CMD DIMENSIONS_ANALYSIS 0 0
+.CMD COLORTAB_ENTRY 0 0 0
+.CMD COLORTAB_ENTRY 128 0 0
+.CMD COLORTAB_ENTRY 0 128 0
+.CMD COLORTAB_ENTRY 128 128 0
+.CMD COLORTAB_ENTRY 0 0 128
+.CMD COLORTAB_ENTRY 128 0 128
+.CMD COLORTAB_ENTRY 0 128 128
+.CMD COLORTAB_ENTRY 128 128 128
+.CMD COLORTAB_ENTRY 192 192 192
+.CMD COLORTAB_ENTRY 255 0 0
+.CMD COLORTAB_ENTRY 0 255 0
+.CMD COLORTAB_ENTRY 255 255 0
+.CMD COLORTAB_ENTRY 0 0 255
+.CMD COLORTAB_ENTRY 255 0 255
+.CMD COLORTAB_ENTRY 0 255 255
+.CMD COLORTAB_ENTRY 255 255 255
+.TXT 2 2 1 0 0
+Cg a69.000000,69.000000,102
+{\rtf\ansi \deff0{\colortbl;\red0\green0\blue128;}{\fonttbl{\f0
+\fcharset0\fnil Arial;}}\plain\cf1\fs20 \pard Ultimate Capacity for a 
+doubly-reinforced rectangular concrete section using the \par Whitney 
+block method}
+.EQN 2 86 110 0 0
+{0:Beta}NAME({0:x}NAME):(((0.85){73}({0:x}NAME<28*(10)^(6)*({0:newton}NAME)/(({0:m}NAME)^(2)))){71}((0.65){73}({0:x}NAME>56*(10)^(6)*({0:newton}NAME)/(({0:m}NAME)^(2))))){71}({78}(.85-.05*({0:x}NAME-28*(10)^(6)*({0:newton}NAME)/(({0:m}NAME)^(2)))/(7*
+(10)^(6)*({0:newton}NAME)/(({0:m}NAME)^(2)))))
+.TXT 3 -85 108 0 0
+Cg a67.000000,67.000000,20
+{\rtf\ansi \deff0{\colortbl;\red0\green0\blue128;}{\fonttbl{\f0
+\fcharset0\fnil Arial;}}\plain\cf1\fs20 \pard English Input Values}
+.EQN 3 0 3 0 0
+{0:b}NAME:14*{0:in}NAME
+.EQN 0 17 4 0 0
+{0:Fc}NAME:5000*{0:psi}NAME
+.EQN 3 -17 52 0 0
+{0:dt}NAME:3*{0:in}NAME
+.EQN 1 17 6 0 0
+{0:Fy}NAME:60000*{0:psi}NAME
+.EQN 2 -17 53 0 0
+{0:db}NAME:26*{0:in}NAME
+.EQN 2 17 8 0 0
+{0:Es}NAME:29000000*{0:psi}NAME
+.EQN 1 -17 56 0 0
+{0:Asb}NAME:6.24*({0:in}NAME)^(2)
+.EQN 3 0 57 0 0
+{0:Ast}NAME:1.58*({0:in}NAME)^(2)
+.EQN 3 0 58 0 0
+{0:Depth}NAME:28*{0:in}NAME
+.EQN 0 29 171 0 0
+_n_u_l_l_
+.TXT 5 -29 89 0 0
+Cg a68.000000,68.000000,12
+{\rtf\ansi \deff0{\colortbl;\red0\green0\blue128;}{\fonttbl{\f0
+\fcharset0\fnil Arial;}}\plain\cf1\fs20 \pard Metric Units}
+.EQN 3 0 99 0 0
+{0:b}NAME={0}?_n_u_l_l_
+.EQN 0 19 100 0 0
+{0:Fc}NAME={0}?{0:Pa}NAME
+.EQN 3 -19 101 0 0
+{0:dt}NAME={0}?_n_u_l_l_
+.EQN 1 19 102 0 0
+{0:Fy}NAME={0}?{0:Pa}NAME
+.EQN 2 -19 103 0 0
+{0:db}NAME={0}?_n_u_l_l_
+.EQN 2 19 104 0 0
+{0:Es}NAME={0}?{0:Pa}NAME
+.EQN 1 -19 105 0 0
+{0:Asb}NAME={0}?_n_u_l_l_
+.EQN 3 0 106 0 0
+{0:Ast}NAME={0}?_n_u_l_l_
+.EQN 3 0 107 0 0
+{0:Depth}NAME={0}?_n_u_l_l_
+.TXT 4 0 109 0 0
+Cg a71.000000,71.000000,49
+{\rtf\ansi \deff0{\colortbl;\red0\green0\blue128;}{\fonttbl{\f0
+\fcharset0\fnil Arial;}}\plain\cf1\fs20 \pard Determine Neutral Axis 
+Location Using Equilibrium}
+.EQN 3 1 112 0 0
+{0:\b1}NAME:{0:Beta}NAME({0:Fc}NAME)
+.EQN 0 12 113 0 0
+{0:\b1}NAME={0}?_n_u_l_l_
+.EQN 0 16 129 0 0
+{0:\ey}NAME:({0:Fy}NAME)/({0:Es}NAME)
+.EQN 0 10 130 0 0
+{0:\ey}NAME={0}?_n_u_l_l_
+.EQN 4 -38 116 0 0
+{0:x}NAME:1*{0:in}NAME
+.TXT 0 8 117 0 0
+Cg a62.000000,62.000000,17
+{\rtf\ansi \deff0{\colortbl;\red0\green0\blue128;}{\fonttbl{\f0
+\fcharset0\fnil Arial;}}\plain\cf1\fs20 \pard Guess Value of na}
+.EQN 5 -8 115 0 0
+{0:na}NAME:{0:root}NAME(0.85*{0:Fc}NAME*({0:b}NAME*{0:\b1}NAME*{0:x}NAME)+({0:Es}NAME*(0.003)/({0:x}NAME)*({0:x}NAME-{0:dt}NAME)-.085*{0:Fc}NAME)*{0:Ast}NAME-{0:Fy}NAME*{0:Asb}NAME,{0:x}NAME)
+.EQN 4 0 150 0 0
+{0:na}NAME={0}?_n_u_l_l_
+.EQN 4 0 124 0 0
+{0:Cc}NAME:0.85*{0:Fc}NAME*({0:b}NAME*{0:\b1}NAME*{0:na}NAME)
+.EQN 0 32 142 0 0
+{0:Cc}NAME={0}?_n_u_l_l_
+.EQN 4 -32 127 0 0
+{0:\es}NAME:({0:na}NAME-{0:dt}NAME)/({0:na}NAME)*.003
+.EQN 0 32 143 0 0
+{0:\es}NAME={0}?_n_u_l_l_
+.TXT 0 12 144 0 0
+Cg a34.000000,34.000000,14
+{\rtf\ansi \deff0{\colortbl;\red0\green0\blue128;}{\fonttbl{\f0
+\fcharset0\fnil Arial;}{\f1\fcharset2\fnil Symbol;}}\plain\cf1\fs20 
+\pard Make sure < {\f1 e}y}
+.EQN 5 -44 132 0 0
+{0:Cs}NAME:({0:Es}NAME*(0.003)/({0:na}NAME)*({0:na}NAME-{0:dt}NAME)-.085*{0:Fc}NAME)*{0:Ast}NAME
+.EQN 0 32 141 0 0
+{0:Cs}NAME={0}?_n_u_l_l_
+.EQN 5 -32 137 0 0
+{0:T}NAME:{0:Asb}NAME*{0:Fy}NAME
+.EQN 0 16 138 0 0
+{0:T}NAME={0}?_n_u_l_l_
+.EQN 4 -16 149 0 0
+{0:T}NAME-({0:Cc}NAME+{0:Cs}NAME)={0}?_n_u_l_l_
+.EQN 4 1 153 0 0
+{0:Mn}NAME:{0:Cs}NAME*({0:db}NAME-{0:dt}NAME)+{0:Cc}NAME*({0:db}NAME-{0:\b1}NAME*({0:na}NAME)/(2))
+.EQN 4 0 154 0 0
+{0:Mn}NAME={0}?_n_u_l_l_
+.EQN 4 0 156 0 0
+{0:NAc}NAME:({0:Depth}NAME)/(2)-{0:na}NAME
+.EQN 0 17 157 0 0
+{0:NAc}NAME={0}?_n_u_l_l_

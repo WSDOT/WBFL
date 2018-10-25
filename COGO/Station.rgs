@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.Station.1 = s 'Station Class'
+	{
+		CLSID = s '{4C22AA8F-6739-49DD-B6DF-FDCD352FF969}'
+	}
+	WBFLCogo.Station = s 'Station Class'
+	{
+		CLSID = s '{4C22AA8F-6739-49DD-B6DF-FDCD352FF969}'
+		CurVer = s 'WBFLCogo.Station.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {4C22AA8F-6739-49DD-B6DF-FDCD352FF969} = s 'Station Class'
+		{
+			ProgID = s 'WBFLCogo.Station.1'
+			VersionIndependentProgID = s 'WBFLCogo.Station'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

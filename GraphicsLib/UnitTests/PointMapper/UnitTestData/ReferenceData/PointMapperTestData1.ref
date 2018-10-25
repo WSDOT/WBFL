@@ -1,0 +1,54 @@
+Unit test for class PointMapper
+===============================
+
+Device Data
+===========
+
+Device Origin x = 0 y = 200
+Device Extents dx = 100 dy = 200
+
+World Data
+==========
+
+World Origin x = 0 y = 0
+World Extends wx = 5280 wy = 5280
+
+Scales
+======
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+
+Pixel Density X = 300
+Pixel Density Y = 300
+
+Test Points
+===========
+
+Point: 0
+Map Mode: Anisotropic
+WP(0,0) = DP(0,200)
+
+Point: 1
+Map Mode: Anisotropic
+WP(5280,5280) = DP(100,0)
+
+Point: 2
+Map Mode: Anisotropic
+WP(5280,0) = DP(100,200)
+
+Point: 3
+Map Mode: Anisotropic
+DP(0,200) = WP(0,0)
+
+Point: 4
+Map Mode: Anisotropic
+DP(100,0) = WP(5280,5280)
+
+Point: 5
+Map Mode: Anisotropic
+DP(100,200) = WP(5280,0)
+

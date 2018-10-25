@@ -1,0 +1,10 @@
+#ifndef INCLUDED_WBFLTOOLS_HM_
+#define INCLUDED_WBFLTOOLS_HM_
+
+#define IDH_WbflTools						100
+
+#define IDH_ArpNotice						1000
+#define IDH_ArpNotice_ShowAgain				1001
+#define IDH_ArpNotice_Show					1002
+
+#endif // INCLUDED_WBFLTOOLS_HM_

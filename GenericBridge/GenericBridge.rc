@@ -1,0 +1,224 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "1 TYPELIB ""WBFLGenericBridge.tlb""\r\n"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 3,1,1,0
+ PRODUCTVERSION 3,1,1,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "A member of Alternate Route Project\0"
+            VALUE "CompanyName", "Washington State Department of Transportation\0"
+            VALUE "FileDescription", "GenericBridge Module\0"
+            VALUE "FileVersion", "3.1.1.0\0"
+            VALUE "InternalName", "GenericBridge\0"
+            VALUE "LegalCopyright", "Copyright © 2000-2009\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OLESelfRegister", "\0"
+            VALUE "OriginalFilename", "GenericBridge.DLL\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "WBFL\0"
+            VALUE "ProductVersion", "3.1.1.0\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+
+IDR_GENERICBRIDGE       REGISTRY DISCARDABLE    "GenericBridge.rgs"
+IDR_STAGE               REGISTRY DISCARDABLE    "Stage.rgs"
+IDR_STAGECOLLECTION     REGISTRY DISCARDABLE    "StageCollection.rgs"
+IDR_SPAN                REGISTRY DISCARDABLE    "Span.rgs"
+IDR_SPANCOLLECTION      REGISTRY DISCARDABLE    "SpanCollection.rgs"
+IDR_PIER                REGISTRY DISCARDABLE    "Pier.rgs"
+IDR_PIERCOLLECTION      REGISTRY DISCARDABLE    "PierCollection.rgs"
+IDR_LONGITUDINALPIERDESCRIPTION REGISTRY DISCARDABLE    "LongitudinalPierDescription.rgs"
+IDR_GIRDERSPACING       REGISTRY DISCARDABLE    "GirderSpacing.rgs"
+//IDR_ADAPTSTATION        REGISTRY DISCARDABLE    "AdaptStation.rgs"
+IDR_SUPERSTRUCTUREMEMBER REGISTRY DISCARDABLE    "SuperstructureMember.rgs"
+IDR_SEGMENT             REGISTRY DISCARDABLE    "Segment.rgs"
+IDR_SEGMENTITEM         REGISTRY DISCARDABLE    "SegmentItem.rgs"
+IDR_FILTEREDSEGMENTCOLLECTION REGISTRY DISCARDABLE    "FilteredSegmentCollection.rgs"
+IDR_SUPERSTRUCTUREMEMBERCOLLECTION REGISTRY DISCARDABLE    "SuperstructureMemberCollection.rgs"
+IDR_TEMPORARYPIERITEM   REGISTRY DISCARDABLE    "TemporaryPierItem.rgs"
+IDR_TEMPORARYPIERITEMCOLLECTION REGISTRY DISCARDABLE    "TemporaryPierItemCollection.rgs"
+IDR_COGOINFO            REGISTRY DISCARDABLE    "CogoInfo.rgs"
+IDR_COLUMN              REGISTRY DISCARDABLE    "Column.rgs"
+IDR_COLUMNSPACING       REGISTRY DISCARDABLE    "ColumnSpacing.rgs"
+IDR_CROSSBEAM           REGISTRY DISCARDABLE    "CrossBeam.rgs"
+IDR_TRANSVERSEPIERDESCRIPTION REGISTRY DISCARDABLE    "TransversePierDescription.rgs"
+IDR_MATERIAL            REGISTRY DISCARDABLE    "Material.rgs"
+IDR_CASTSLAB            REGISTRY DISCARDABLE    "CastSlab.rgs"
+IDR_ALIGNMENTOFFSETSTRATEGY REGISTRY DISCARDABLE    "AlignmentOffsetStrategy.rgs"
+IDR_PRECASTSLAB         REGISTRY DISCARDABLE    "PrecastSlab.rgs"
+IDR_OVERLAYSLAB         REGISTRY DISCARDABLE    "OverlaySlab.rgs"
+IDR_FLANGEDBEAM         REGISTRY DISCARDABLE    "FlangedBeam.rgs"
+IDR_NUGIRDERSECTION     REGISTRY DISCARDABLE    "NUGirderSection.rgs"
+IDR_UGIRDERSECTION      REGISTRY DISCARDABLE    "UGirderSection.rgs"
+IDR_UGIRDERSECTION2     REGISTRY DISCARDABLE    "UGirderSection2.rgs"
+IDR_FILTEREDSUPERSTRUCTUREMEMBERCOLLECTION REGISTRY DISCARDABLE    "FilteredSuperstructureMemberCollection.rgs"
+IDR_FSHAPEBARRIER       REGISTRY DISCARDABLE    "FShapeBarrier.rgs"
+IDR_CONNECTION          REGISTRY DISCARDABLE    "Connection.rgs"
+IDR_LINEARTENDONSEGMENT REGISTRY DISCARDABLE    "LinearTendonSegment.rgs"
+IDR_TENDON              REGISTRY DISCARDABLE    "Tendon.rgs"
+IDR_TENDONCOLLECTION    REGISTRY DISCARDABLE    "TendonCollection.rgs"
+IDR_PRESTRESSINGSTRAND  REGISTRY DISCARDABLE    "PrestressingStrand.rgs"
+IDR_BULBTEE             REGISTRY DISCARDABLE    "BulbTeeSection.rgs"
+IDR_MULTIWEBSECTION     REGISTRY DISCARDABLE    "MultiWebSection.rgs"
+IDR_EDGEPATHSTRATEGY    REGISTRY DISCARDABLE    "EdgePathStrategy.rgs"
+IDR_VOIDEDSLABSECTION   REGISTRY DISCARDABLE    "VoidedSlabSection.rgs"
+IDR_VOIDEDSLABSECTION2  REGISTRY DISCARDABLE    "VoidedSlabSection2.rgs"
+IDR_BOXBEAMSECTION      REGISTRY DISCARDABLE    "BoxBeamSection.rgs"
+IDR_MULTIWEBSECTION2    REGISTRY DISCARDABLE    "MultiWebSection2.rgs"
+IDR_SIDEWALKBARRIER     REGISTRY DISCARDABLE    "SidewalkBarrier.rgs"
+IDR_FLANGEDGIRDERENDBLOCKSEGMENT   REGISTRY DISCARDABLE "FlangedGirderEndBlockSegment.rgs"
+IDR_TAPEREDGIRDERSEGMENT REGISTRY DISCARDABLE "TaperedGirderSegment.rgs"
+IDR_VOIDEDSLABENDBLOCKSEGMENT REGISTRY DISCARDABLE "VoidedSlabEndBlockSegment.rgs"
+IDR_THICKENEDFLANGEBULBTEESEGMENT REGISTRY DISCARDABLE "ThickenedFlangeBulbTeeSegment.rgs"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PROJNAME            "GenericBridge"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_EDIT_FRAMINGPLAN     "Reconfigure the bridge by editing the framing plan\nEdit Framing Plan"
+    ID_EDIT_MOVEBRIDGE      "Position the bridge on the alignment\nMove Bridge"
+    ID_EDIT_SPANLENGTHS     "Reconfigure the bridge by editing span lengths\nEdit span lengths"
+    ID_EDIT_ALIGNMENT       "Define the roadway alignment\nEdit Alignment"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_E_NUMGIRDERLINES    "Number of girder lines must be at least 1"
+    IDS_E_PIERINDEX         "An inalid pier index was used"
+    IDS_E_SPANINDEX         "An invaild span index was used"
+    IDS_E_SPACEINDEX        "An invalid girder spacing index was used"
+    IDS_E_SPACING           "Spacing must be greater than zero"
+    IDS_E_AREA              "Area must be greater than zero"
+    IDS_E_MOMENTOFINERTIA   "Moment of inertia must be greater than zero"
+    IDS_E_MODULUSOFELASTICITY 
+                            "Modulus of elasticity must be greater than zero"
+    IDS_E_DENSITY           "Density must be zero or greater"
+    IDS_E_WIDTH             "Width must be greater than zero"
+    IDS_E_THERMALCOEFF      "Coefficient of thermal expansion must be zero or more"
+    IDS_E_LENGTH            "Length must be greater than zero"
+    IDS_E_CANTLINKSOURCE    "A source object cannot be linked to another object."
+    IDS_E_CANTLINKTOSELF    "An object can't be linked to itself"
+    IDS_E_CANTEDITLINKTARGET "A link target cannot be edited"
+    IDS_E_NO_SEGMENTS_FOR_STAGE "No Segments exist for stage %s"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_E_LOCATION_OUT_OF_RANGE "Location is out of range"
+    IDS_E_LESS_THAN_MIN_GIRDER_LINES 
+                            "Cannot complete. Less than minimum number of girder lines will result."
+    IDS_E_STAGE_NOT_FOUND   "Stage not found"
+    IDS_E_LOCATION          "Fractional locations must be between 0.0 and -1.0"
+    IDS_E_INVALID_NAME      "The supplied name is invalid."
+    IDS_E_DUPLICATENAME     "A stage with the given name already exists"
+    IDS_E_FRACTIONAL_EXPECTED "A fractional length was expected"
+    IDS_E_ABSOLUTE_EXPECTED "An absolute length was expected"
+    IDS_E_ID_IN_USE         "ID is in use"
+    IDS_E_OVERHANG          "Overhang must be greater than or equal to zeor"
+    IDS_E_LESS_THAN_MIN_COLUMNS 
+                            "Cannot complete. Less than minimum number of columns will result."
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+1 TYPELIB "WBFLGenericBridge.tlb"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

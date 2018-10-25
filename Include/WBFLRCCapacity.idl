@@ -1,0 +1,1254 @@
+///////////////////////////////////////////////////////////////////////
+// RCCapacity - Reinforced Concrete Capacity Analysis Library
+// Copyright © 2003  Washington State Department of Transportation
+//                   Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the Alternate Route Library Open Source License as 
+// published by the Washington State Department of Transportation,
+// Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful,
+// but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// PURPOSE.  See the Alternate Route Library Open Source License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License
+// along with this program; if not, write to the Washington State
+// Department of Transportation, Bridge and Structures Office,
+// P.O. Box 47340, Olympia, WA 98503, USA or e-mail
+// Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// RCCapacity.idl : IDL source for RCCapacity.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (RCCapacity.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "WBFLTypes.idl";
+import "WBFLTools.idl";
+import "WBFLGeometry.idl";
+import "WBFLUnitServer.idl";
+
+#include "RCCapacity.hh"
+
+// Error Codes
+cpp_quote("#define RC_E_INITCONCRETE           MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,512)")
+cpp_quote("#define RC_E_SOLUTIONNOTFOUND       MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,513)")
+cpp_quote("#define RC_E_BEAMNOTSYMMETRIC       MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,514)")
+cpp_quote("#define RC_E_MATERIALFAILURE        MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,515)")
+
+[
+	uuid(61618484-C4D1-4821-97C1-021305157FE4),
+	version(1.0),
+	helpstring("WBFLRCCapacity Library")
+]
+library WBFLRCCapacity
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+   typedef [public,helpstring("enum TransvReinforcementType"),helpcontext(IDH_TransvReinforcementType),uuid(7EEAA5E8-7AAE-4e1b-8F6B-0740BFE02F2F)] 
+   enum 
+   {
+      trtSpiral = 1,
+      trtHoops = 2
+   } TransvReinforcementType;
+
+
+   typedef [public,helpstring("enum SolutionMethod"),helpcontext(IDH_SolutionMethod),uuid(464B228A-D182-4823-BE7E-B8A20A22D055)] 
+   enum 
+   {
+		smFixedCurvature = 1,
+		smFixedCompressiveStrain = 2
+   } SolutionMethod;
+
+   typedef [public,helpstring("enum StrandGradeType"),helpcontext(IDH_StrandGradeType),uuid(3BE4F7FC-A94D-4BA3-90A8-D81BA56709EF)] 
+   enum 
+   {
+		sgtGrade250 = 1,
+		sgtGrade270 = 2
+   } StrandGradeType;
+
+   typedef [public,helpstring("enum ProductionMethodType"),helpcontext(IDH_ProductionMethodType),uuid(16237E1D-9EB8-4B93-B8F7-B33FAD9F0208)] 
+   enum 
+   {
+		pmtLowRelaxation = 1,
+		pmtStressRelieved = 2
+   } ProductionMethodType;
+
+	[
+		object,
+		uuid(0EE9658D-A9AB-45ba-8BBD-6486353E5885),
+		oleautomation,
+		helpstring("IStressStrain Interface"),
+      helpcontext(IDH_IStressStrain),
+		pointer_default(unique)
+	]
+	interface IStressStrain : IUnknown
+	{
+	  [propput,helpcontext(IDH_IStressStrain_Name),helpstring("property Name")] HRESULT Name([in]BSTR name);
+	  [propget,helpcontext(IDH_IStressStrain_Name),helpstring("property Name")] HRESULT Name([out,retval]BSTR *name);
+      [propget,helpcontext(IDH_IStressStrain_YieldStrain),helpstring("propety YieldStrain")] HRESULT YieldStrain([out,retval]Float64* pey);
+      [propget,helpcontext(IDH_IStressStrain_ModulusOfElasticity),helpstring("propety ModulusOfElasticity")] HRESULT ModulusOfElasticity([out,retval]Float64* pE);
+      [helpcontext(IDH_IStressStrain_ComputeStress),helpstring("method ComputeStress")] HRESULT ComputeStress([in] Float64 strain,[out,retval]Float64* pVal);
+	  [helpcontext(IDH_IStressStrain_StrainLimits),helpstring("method StrainLimits")] HRESULT StrainLimits([out]Float64* minStrain,[out]Float64* maxStrain);
+	  [propget,helpcontext(IDH_IStressStrain_StrainAtPeakStress),helpstring("property StrainAtPeakStress")] HRESULT StrainAtPeakStress([out,retval]Float64* strain);
+	};
+
+	[
+		object,
+		uuid(53B5167D-154B-44AB-9735-56A8953B0D4A),
+		oleautomation,
+      helpcontext(IDH_IRCBeam),
+		helpstring("IRCBeam Interface"),
+		pointer_default(unique)
+	]
+	interface IRCBeam : IUnknown
+	{
+		[propget, helpcontext(IDH_IRCBeam_b),helpstring("property b")] HRESULT b([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam_b),helpstring("property b")] HRESULT b([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam_bw),helpstring("property bw")] HRESULT bw([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam_bw),helpstring("property bw")] HRESULT bw([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam_hf),helpstring("property hf")] HRESULT hf([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam_hf),helpstring("property hf")] HRESULT hf([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam_h),helpstring("property h")] HRESULT h([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam_h),helpstring("property h")] HRESULT h([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam_As),helpstring("property As")] HRESULT As([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam_As),helpstring("property As")] HRESULT As([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam_Aps),helpstring("property Aps")] HRESULT Aps([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam_Aps),helpstring("property Aps")] HRESULT Aps([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam_ds),helpstring("property ds")] HRESULT ds([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam_ds),helpstring("property ds")] HRESULT ds([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam_dps),helpstring("property dps")] HRESULT dps([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam_dps),helpstring("property dps")] HRESULT dps([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam_fy),helpstring("property fy")] HRESULT fy([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam_fy),helpstring("property fy")] HRESULT fy([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam_fpu),helpstring("property fpu")] HRESULT fpu([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam_fpu),helpstring("property fpu")] HRESULT fpu([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam_fpy),helpstring("property fpy")] HRESULT fpy([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam_fpy),helpstring("property fpy")] HRESULT fpy([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam_fpe),helpstring("property fpe")] HRESULT fpe([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam_fpe),helpstring("property fpe")] HRESULT fpe([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam_FcSlab),helpstring("property FcSlab")] HRESULT FcSlab([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam_FcSlab),helpstring("property FcSlab")] HRESULT FcSlab([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam_FcBeam),helpstring("property FcBeam")] HRESULT FcBeam([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam_FcBeam),helpstring("property FcBeam")] HRESULT FcBeam([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam_Es),helpstring("property Es")] HRESULT Es([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam_Es),helpstring("property Es")] HRESULT Es([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam_Eps),helpstring("property Eps")] HRESULT Eps([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam_Eps),helpstring("property Eps")] HRESULT Eps([in] Float64 newVal);
+	};
+	[
+		object,
+		uuid(1344FBEC-4225-477A-A99A-B7460191C650),
+		oleautomation,
+		helpstring("IRCBeam2 Interface"),
+      helpcontext(IDH_IRCBeam2),
+		pointer_default(unique)
+	]
+	interface IRCBeam2 : IUnknown
+	{
+		[propget, helpcontext(IDH_IRCBeam2_b),helpstring("property b")] HRESULT b([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2_b),helpstring("property b")] HRESULT b([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam2_bw),helpstring("property bw")] HRESULT bw([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2_bw),helpstring("property bw")] HRESULT bw([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam2_hf),helpstring("property hf")] HRESULT hf([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2_hf),helpstring("property hf")] HRESULT hf([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam2_h),helpstring("property h")] HRESULT h([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2_h),helpstring("property h")] HRESULT h([in] Float64 newVal);
+		[helpcontext(IDH_IRCBeam2_AddRebarLayer), helpstring("method AddRebarLayer")] HRESULT AddRebarLayer([in] Float64 ds,[in] Float64 As,[in] Float64 devFactor);
+		[propget, helpcontext(IDH_IRCBeam2_RebarLayerCount), helpstring("property RebarLayerCount")] HRESULT RebarLayerCount([out,retval] CollectionIndexType * count);
+		[propget, helpcontext(IDH_IRCBeam2_RebarLayerDepth), helpstring("property RebarLayerDepth")] HRESULT RebarLayerDepth([in] CollectionIndexType index,[out,retval] Float64 * ds);
+		[propget, helpcontext(IDH_IRCBeam2_RebarLayerSteel), helpstring("property RebarLayerSteel")] HRESULT RebarLayerSteel([in] CollectionIndexType index,[out,retval] Float64 * As);
+		[propget, helpcontext(IDH_IRCBeam2_RebarLayerDevFactor), helpstring("property RebarLayerDevFactor")] HRESULT RebarLayerDevFactor([in] CollectionIndexType index,[out,retval] Float64 * devFactor);
+		[helpcontext(IDH_IRCBeam2_GetRebarLayer), helpstring("method GetRebarLayer")] HRESULT GetRebarLayer([in] CollectionIndexType index,[out] Float64 * ds, [out] Float64 * As,[out] Float64* devFactor);
+	    [helpcontext(IDH_IRCBeam2_RemoveRebarLayer), helpstring("method RemoveRebarLayer")] HRESULT RemoveRebarLayer([in] CollectionIndexType index);
+		[helpcontext(IDH_IRCBeam2_ClearRebarLayers), helpstring("method ClearRebarLayers")] HRESULT ClearRebarLayers();
+		[helpcontext(IDH_IRCBeam2_AddStrandLayer), helpstring("method AddStrandLayer")] HRESULT AddStrandLayer([in] Float64 dps,[in] Float64 Aps,[in] Float64 devFactor);
+		[propget, helpcontext(IDH_IRCBeam2_StrandLayerCount), helpstring("property StrandLayerCount")] HRESULT StrandLayerCount([out,retval] CollectionIndexType * count);
+		[propget, helpcontext(IDH_IRCBeam2_StrandLayerDepth), helpstring("property StrandLayerDepth")] HRESULT StrandLayerDepth([in] CollectionIndexType index,[out,retval] Float64 * dps);
+		[propget, helpcontext(IDH_IRCBeam2_StrandLayerSteel), helpstring("property StrandLayerSteel")] HRESULT StrandLayerSteel([in] CollectionIndexType index,[out,retval] Float64 * Aps);
+		[propget, helpcontext(IDH_IRCBeam2_StrandLayerDevFactor), helpstring("property StrandLayerDevFactor")] HRESULT StrandLayerDevFactor([in] CollectionIndexType index,[out,retval] Float64 * devFactor);
+		[helpcontext(IDH_IRCBeam2_GetStrandLayer), helpstring("method GetStrandLayer")] HRESULT GetStrandLayer([in] CollectionIndexType index,[out] Float64 * dps, [out] Float64 * Aps,[out] Float64* devFactor);
+		[helpcontext(IDH_IRCBeam2_RemoveStrandLayer), helpstring("method RemoveStrandLayer")] HRESULT RemoveStrandLayer([in] CollectionIndexType index);
+		[helpcontext(IDH_IRCBeam2_ClearStrandLayers), helpstring("method ClearStrandLayers")] HRESULT ClearStrandLayers();
+		[propget, helpcontext(IDH_IRCBeam2_fy),helpstring("property fy")] HRESULT fy([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2_fy),helpstring("property fy")] HRESULT fy([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam2_fpu),helpstring("property fpu")] HRESULT fpu([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2_fpu),helpstring("property fpu")] HRESULT fpu([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam2_fpy),helpstring("property fpy")] HRESULT fpy([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2_fpy),helpstring("property fpy")] HRESULT fpy([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam2_fpe),helpstring("property fpe")] HRESULT fpe([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2_fpe),helpstring("property fpe")] HRESULT fpe([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam2_FcSlab),helpstring("property FcSlab")] HRESULT FcSlab([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2_FcSlab),helpstring("property FcSlab")] HRESULT FcSlab([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam2_FcBeam),helpstring("property FcBeam")] HRESULT FcBeam([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2_FcBeam),helpstring("property FcBeam")] HRESULT FcBeam([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam2_Es),helpstring("property Es")] HRESULT Es([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2_Es),helpstring("property Es")] HRESULT Es([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam2_Eps),helpstring("property Eps")] HRESULT Eps([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2_Eps),helpstring("property Eps")] HRESULT Eps([in] Float64 newVal);
+	};
+	[
+		object,
+		uuid(F34B969D-6139-4A12-B75D-85D08C56A236),
+		oleautomation,
+		helpstring("IRCBeam2Ex Interface"),
+      helpcontext(IDH_IRCBeam2Ex),
+		pointer_default(unique)
+	]
+	interface IRCBeam2Ex : IUnknown
+	{
+		[propget, helpcontext(IDH_IRCBeam2Ex_b),helpstring("property b")] HRESULT b([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2Ex_b),helpstring("property b")] HRESULT b([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam2Ex_hf),helpstring("property hf")] HRESULT hf([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2Ex_hf),helpstring("property hf")] HRESULT hf([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam2Ex_Beam),helpstring("property Beam")] HRESULT Beam([out, retval] IShape* *pVal);
+		[propputref, helpcontext(IDH_IRCBeam2Ex_Beam),helpstring("property Beam")] HRESULT Beam([in] IShape* newVal);
+		[helpcontext(IDH_IRCBeam2Ex_AddRebarLayer), helpstring("method AddRebarLayer")] HRESULT AddRebarLayer([in] Float64 ds,[in] Float64 As,[in] Float64 devFactor);
+		[propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerCount), helpstring("property RebarLayerCount")] HRESULT RebarLayerCount([out,retval] CollectionIndexType * count);
+		[propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerDepth), helpstring("property RebarLayerDepth")] HRESULT RebarLayerDepth([in] CollectionIndexType index,[out,retval] Float64 * ds);
+		[propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerSteel), helpstring("property RebarLayerSteel")] HRESULT RebarLayerSteel([in] CollectionIndexType index,[out,retval] Float64 * As);
+		[propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerDevFactor), helpstring("property RebarLayerDevFactor")] HRESULT RebarLayerDevFactor([in] CollectionIndexType index,[out,retval] Float64 * devFactor);
+		[helpcontext(IDH_IRCBeam2Ex_GetRebarLayer), helpstring("method GetRebarLayer")] HRESULT GetRebarLayer([in] CollectionIndexType index,[out] Float64 * ds, [out] Float64 * As,[out] Float64* devFactor);
+	    [helpcontext(IDH_IRCBeam2Ex_RemoveRebarLayer), helpstring("method RemoveRebarLayer")] HRESULT RemoveRebarLayer([in] CollectionIndexType index);
+		[helpcontext(IDH_IRCBeam2Ex_ClearRebarLayers), helpstring("method ClearRebarLayers")] HRESULT ClearRebarLayers();
+		[helpcontext(IDH_IRCBeam2Ex_AddStrandLayer), helpstring("method AddStrandLayer")] HRESULT AddStrandLayer([in] Float64 dps,[in] Float64 Aps,[in] Float64 devFactor);
+		[propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerCount), helpstring("property StrandLayerCount")] HRESULT StrandLayerCount([out,retval] CollectionIndexType * count);
+		[propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerDepth), helpstring("property StrandLayerDepth")] HRESULT StrandLayerDepth([in] CollectionIndexType index,[out,retval] Float64 * dps);
+		[propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerSteel), helpstring("property StrandLayerSteel")] HRESULT StrandLayerSteel([in] CollectionIndexType index,[out,retval] Float64 * Aps);
+		[propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerDevFactor), helpstring("property StrandLayerDevFactor")] HRESULT StrandLayerDevFactor([in] CollectionIndexType index,[out,retval] Float64 * devFactor);
+		[helpcontext(IDH_IRCBeam2Ex_GetStrandLayer), helpstring("method GetStrandLayer")] HRESULT GetStrandLayer([in] CollectionIndexType index,[out] Float64 * dps, [out] Float64 * Aps,[out] Float64* devFactor);
+		[helpcontext(IDH_IRCBeam2Ex_RemoveStrandLayer), helpstring("method RemoveStrandLayer")] HRESULT RemoveStrandLayer([in] CollectionIndexType index);
+		[helpcontext(IDH_IRCBeam2Ex_ClearStrandLayers), helpstring("method ClearStrandLayers")] HRESULT ClearStrandLayers();
+		[propget, helpcontext(IDH_IRCBeam2Ex_fy),helpstring("property fy")] HRESULT fy([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2Ex_fy),helpstring("property fy")] HRESULT fy([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam2Ex_fpu),helpstring("property fpu")] HRESULT fpu([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2Ex_fpu),helpstring("property fpu")] HRESULT fpu([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam2Ex_fpy),helpstring("property fpy")] HRESULT fpy([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2Ex_fpy),helpstring("property fpy")] HRESULT fpy([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam2Ex_fpe),helpstring("property fpe")] HRESULT fpe([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2Ex_fpe),helpstring("property fpe")] HRESULT fpe([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam2Ex_FcSlab),helpstring("property FcSlab")] HRESULT FcSlab([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2Ex_FcSlab),helpstring("property FcSlab")] HRESULT FcSlab([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam2Ex_FcBeam),helpstring("property FcBeam")] HRESULT FcBeam([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2Ex_FcBeam),helpstring("property FcBeam")] HRESULT FcBeam([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam2Ex_Es),helpstring("property Es")] HRESULT Es([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2Ex_Es),helpstring("property Es")] HRESULT Es([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRCBeam2Ex_Eps),helpstring("property Eps")] HRESULT Eps([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRCBeam2Ex_Eps),helpstring("property Eps")] HRESULT Eps([in] Float64 newVal);
+	};
+	[
+		object,
+		uuid(6AAEF03C-D41E-4206-9CA0-EDF467325F52),
+		oleautomation,
+		helpstring("IRCSolution Interface"),
+      helpcontext(IDH_IRCSolution),
+		pointer_default(unique)
+	]
+	interface IRCSolution : IUnknown
+	{
+		[helpcontext(IDH_IRCSolution_InitSolution),helpstring("method InitSolution")] HRESULT InitSolution([in] Float64 Mn,[in] Float64 c,[in] Float64 fps,[in] Float64 Cflange,[in] Float64 Cweb,[in] Float64 T,[in] Float64 Yflange,[in] Float64 Yweb,[in] VARIANT_BOOL bOverReinforced);
+		[propget, helpcontext(IDH_IRCSolution_Mn),helpstring("property Mn")] HRESULT Mn([out, retval] Float64 *pVal);
+		[propget, helpcontext(IDH_IRCSolution_IsOverReinforced),helpstring("property IsOverReinforced")] HRESULT IsOverReinforced([out, retval] VARIANT_BOOL *pVal);
+      [propget, helpcontext(IDH_IRCSolution_NeutralAxisDepth),helpstring("property NeutralAxisDepth")] HRESULT NeutralAxisDepth([out, retval] Float64* pVal);
+      [propget, helpcontext(IDH_IRCSolution_fps),helpstring("property fps")] HRESULT fps([out,retval] Float64* fps);
+		[propget, helpcontext(IDH_IRCSolution_Cflange),helpstring("property Cflange")] HRESULT Cflange([out, retval] Float64 *pVal);
+		[propget, helpcontext(IDH_IRCSolution_Cweb),helpstring("property Cweb")] HRESULT Cweb([out, retval] Float64 *pVal);
+      [propget, helpcontext(IDH_IRCSolution_T),helpstring("property T")] HRESULT T([out,retval] Float64 *pVal);
+		[propget, helpcontext(IDH_IRCSolution_Yflange),helpstring("property Yflange")] HRESULT Yflange([out, retval] Float64 *pVal);
+		[propget, helpcontext(IDH_IRCSolution_Yweb),helpstring("property Yweb")] HRESULT Yweb([out, retval] Float64 *pVal);
+	};
+	[
+		object,
+		uuid(BDBC6326-24AA-433D-9703-1B6E0EC083EB),
+		oleautomation,
+		helpstring("IRCSolutionEx Interface"),
+      helpcontext(IDH_IRCSolutionEx),
+		pointer_default(unique)
+	]
+	interface IRCSolutionEx : IUnknown
+	{
+		[helpcontext(IDH_IRCSolutionEx_InitSolution),helpstring("method InitSolution")] HRESULT InitSolution([in] Float64 Mn,[in] Float64 c,[in] IDblArray* fs,[in] IDblArray* fps,[in] Float64 Cflange,[in] Float64 Cweb,[in] Float64 T,[in] Float64 Yflange,[in] Float64 Yweb);
+		[propget, helpcontext(IDH_IRCSolutionEx_Mn),helpstring("property Mn")] HRESULT Mn([out, retval] Float64 *pVal);
+      [propget, helpcontext(IDH_IRCSolutionEx_NeutralAxisDepth),helpstring("property NeutralAxisDepth")] HRESULT NeutralAxisDepth([out, retval] Float64* pVal);
+      [propget, helpcontext(IDH_IRCSolutionEx_fs),helpstring("property fs")] HRESULT fs([out,retval] IDblArray** fs);
+      [propget, helpcontext(IDH_IRCSolutionEx_fps),helpstring("property fps")] HRESULT fps([out,retval] IDblArray** fps);
+		[propget, helpcontext(IDH_IRCSolutionEx_Cflange),helpstring("property Cflange")] HRESULT Cflange([out, retval] Float64 *pVal);
+		[propget, helpcontext(IDH_IRCSolutionEx_Cweb),helpstring("property Cweb")] HRESULT Cweb([out, retval] Float64 *pVal);
+      [propget, helpcontext(IDH_IRCSolutionEx_T),helpstring("property T")] HRESULT T([out,retval] Float64 *pVal);
+		[propget, helpcontext(IDH_IRCSolutionEx_Yflange),helpstring("property Yflange")] HRESULT Yflange([out, retval] Float64 *pVal);
+		[propget, helpcontext(IDH_IRCSolutionEx_Yweb),helpstring("property Yweb")] HRESULT Yweb([out, retval] Float64 *pVal);
+	};
+	[
+		object,
+		uuid(10426F94-AA0A-4E23-B61F-02C1F1BD99A1),
+		oleautomation,
+		helpstring("IRCSolver Interface"),
+      helpcontext(IDH_IRCSolver),
+		pointer_default(unique)
+	]
+	interface IRCSolver : IUnknown
+	{
+		[helpcontext(IDH_IRCSolver_Solve),helpstring("method Solve")] HRESULT Solve([in] IRCBeam* beam,[out,retval] IRCSolution* *solution);
+	};
+	[
+		object,
+		uuid(6D40161C-A224-491b-ABE8-8523A5E64A29),
+		oleautomation,
+		helpstring("IRCSolver2 Interface"),
+      helpcontext(IDH_IRCSolver2),
+		pointer_default(unique)
+	]
+	interface IRCSolver2 : IUnknown
+	{
+		[helpcontext(IDH_IRCSolver2_Solver),helpstring("method Solve")] HRESULT Solve([in] IRCBeam2* beam,[out,retval] IRCSolution* *solution);
+	};
+	[
+		object,
+		uuid(5275D90C-BE12-4ca2-89C8-648E4EFDE53D),
+		oleautomation,
+		helpstring("IRCSolver2Ex Interface"),
+      helpcontext(IDH_IRCSolver2Ex),
+		pointer_default(unique)
+	]
+	interface IRCSolver2Ex : IUnknown
+	{
+		[helpcontext(IDH_IRCSolver2Ex_Solver),helpstring("method Solve")] HRESULT Solve([in] IRCBeam2Ex* beam,[out,retval] IRCSolutionEx* *solution);
+	};
+
+   [
+      object,
+      uuid(83AA28E9-D6BE-4663-8E3E-FBC8E8371367),
+      oleautomation,
+      helpstring("IPCISolver Interface"),
+      helpcontext(IDH_IPCISolver),
+      pointer_default(unique)
+   ]
+   interface IPCISolver : IRCSolver
+   {
+      [propput, helpcontext(IDH_IPCISolver_Tolerance),helpstring("property Tolerance")] HRESULT Tolerance([in] Float64 tolerance);
+      [propget, helpcontext(IDH_IPCISolver_Tolerance),helpstring("property Tolerance")] HRESULT Tolerance([out,retval] Float64* tolerance);
+      [propputref, helpcontext(IDH_IPCISolver_StrandModel),helpstring("property StrandModel")] HRESULT StrandModel([in] IStressStrain* model);
+      [propget, helpcontext(IDH_IPCISolver_StrandModel),helpstring("property StrandModel")] HRESULT StrandModel([out,retval] IStressStrain* *model);
+      [propputref, helpcontext(IDH_IPCISolver_RebarModel),helpstring("property RebarModel")] HRESULT RebarModel([in] IStressStrain* model);
+      [propget, helpcontext(IDH_IPCISolver_RebarModel),helpstring("property RebarModel")] HRESULT RebarModel([out,retval] IStressStrain* *model);
+      [propput, helpcontext(IDH_IPCISolver_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([in] SpecUnitType unitMode);
+      [propget, helpcontext(IDH_IPCISolver_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([out,retval] SpecUnitType* unitMode);
+		[propget, helpcontext(IDH_IPCISolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([out, retval] VARIANT_BOOL *pVal);
+		[propput, helpcontext(IDH_IPCISolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([in] VARIANT_BOOL newVal);
+   };
+   [
+      object,
+      uuid(CC88A1EC-B5CF-4080-8BEF-6C93FFC2DDA5),
+      oleautomation,
+      helpstring("INLSolver Interface"),
+      helpcontext(IDH_INLSolver),
+      pointer_default(unique)
+   ]
+   interface INLSolver : IRCSolver
+   {
+      [propput, helpcontext(IDH_INLSolver_Slices),helpstring("property Slices")] HRESULT Slices([in] long nSlices);
+      [propget, helpcontext(IDH_INLSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval] long* nSlices);
+      [propput, helpcontext(IDH_INLSolver_Tolerance),helpstring("property Tolerance")] HRESULT Tolerance([in] Float64 tolerance);
+      [propget, helpcontext(IDH_INLSolver_Tolerance),helpstring("property Tolerance")] HRESULT Tolerance([out,retval] Float64* tolerance);
+      [propputref, helpcontext(IDH_INLSolver_SlabConcreteModel),helpstring("property SlabConcreteModel")] HRESULT SlabConcreteModel([in] IStressStrain* model);
+      [propget, helpcontext(IDH_INLSolver_SlabConcreteModel),helpstring("property SlabConcreteModel")] HRESULT SlabConcreteModel([out,retval] IStressStrain* *model);
+      [propputref, helpcontext(IDH_INLSolver_BeamConcreteModel),helpstring("property BeamConcreteModel")] HRESULT BeamConcreteModel([in] IStressStrain* model);
+      [propget, helpcontext(IDH_INLSolver_BeamConcreteModel),helpstring("property BeamConcreteModel")] HRESULT BeamConcreteModel([out,retval] IStressStrain* *model);
+      [propputref, helpcontext(IDH_INLSolver_StrandModel),helpstring("property StrandModel")] HRESULT StrandModel([in] IStressStrain* model);
+      [propget, helpcontext(IDH_INLSolver_StrandModel),helpstring("property StrandModel")] HRESULT StrandModel([out,retval] IStressStrain* *model);
+      [propputref, helpcontext(IDH_INLSolver_RebarModel),helpstring("property RebarModel")] HRESULT RebarModel([in] IStressStrain* model);
+      [propget, helpcontext(IDH_INLSolver_RebarModel),helpstring("property RebarModel")] HRESULT RebarModel([out,retval] IStressStrain* *model);
+	  [propget, helpcontext(IDH_INLSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([out, retval] VARIANT_BOOL *pVal);
+	  [propput, helpcontext(IDH_INLSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([in] VARIANT_BOOL newVal);
+  	  [propput, helpcontext(IDH_INLSolver_ConcreteCrushingStrain), helpstring("property ConcreteCrushingStrain")] HRESULT ConcreteCrushingStrain([in] Float64 ec);
+  	  [propget, helpcontext(IDH_INLSolver_ConcreteCrushingStrain), helpstring("property ConcreteCrushingStrain")] HRESULT ConcreteCrushingStrain([out,retval] Float64* ec);
+   };
+
+
+   [
+      object,
+      uuid(134FCA67-6350-44e1-A133-F3BC300CC9C7),
+      oleautomation,
+      helpstring("ILRFDSolver Interface"),
+      helpcontext(IDH_ILRFDSolver),
+      pointer_default(unique)
+   ]
+   interface ILRFDSolver : IRCSolver
+   {
+      [propput, helpcontext(IDH_ILRFDSolver_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([in] SpecUnitType unitMode);
+      [propget, helpcontext(IDH_ILRFDSolver_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([out,retval] SpecUnitType* unitMode);
+		[propget, helpcontext(IDH_ILRFDSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([out, retval] VARIANT_BOOL *pVal);
+		[propput, helpcontext(IDH_ILRFDSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([in] VARIANT_BOOL newVal);
+   };
+   [
+      object,
+      uuid(B73E6FE9-0498-48f5-9057-513403A0E776),
+      oleautomation,
+      helpstring("ILFDSolver Interface"),
+      helpcontext(IDH_ILFDSolver),
+      pointer_default(unique)
+   ]
+   interface ILFDSolver : IRCSolver
+   {
+      [propput, helpcontext(IDH_ILFDSolver_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([in] SpecUnitType unitMode);
+      [propget, helpcontext(IDH_ILFDSolver_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([out,retval] SpecUnitType* unitMode);
+		[propget, helpcontext(IDH_ILFDSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([out, retval] VARIANT_BOOL *pVal);
+		[propput, helpcontext(IDH_ILFDSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([in] VARIANT_BOOL newVal);
+   };
+	[
+		object,
+		uuid(F72175D0-CBAD-49B1-89EA-92F0948B89B7),
+		oleautomation,
+		helpcontext(IDH_IMixedSolver),
+		helpstring("IMixedSolver Interface"),
+		pointer_default(unique)
+	]
+	interface IMixedSolver : IRCSolver
+	{
+      [propput, helpcontext(IDH_IMixedSolver_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([in] SpecUnitType unitMode);
+      [propget, helpcontext(IDH_IMixedSolver_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([out,retval] SpecUnitType* unitMode);
+		[propget, helpcontext(IDH_IMixedSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([out, retval] VARIANT_BOOL *pVal);
+		[propput, helpcontext(IDH_IMixedSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([in] VARIANT_BOOL newVal);
+	};
+	[
+		object,
+		uuid(CF4F8C9A-DA7B-4947-9671-FEBBB75A249A),
+		oleautomation,
+		helpstring("IUnconfinedConcrete Interface"),
+      helpcontext(IDH_IUnconfinedConcrete),
+		pointer_default(unique)
+	]
+	interface IUnconfinedConcrete : IUnknown
+	{
+		[propget, helpcontext(IDH_IUnconfinedConcrete_fc),helpstring("property fc")] HRESULT fc([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IUnconfinedConcrete_fc),helpstring("property fc")] HRESULT fc([in] Float64 newVal);
+	};
+	[
+		object,
+		uuid(7DE82909-026E-4C57-A9A3-8F1CB6AFAF1F),
+		oleautomation,
+		helpstring("IRebarModel Interface"),
+      helpcontext(IDH_IRebarModel),
+		pointer_default(unique)
+	]
+	interface IRebarModel : IUnknown
+	{
+		[helpcontext(IDH_IRebarModel_Init),helpstring("method Init")] HRESULT Init([in] Float64 fy,[in] Float64 Es,[in] Float64 maxStrain);
+		[propget, helpcontext(IDH_IRebarModel_fy),helpstring("property fy")] HRESULT fy([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRebarModel_fy),helpstring("property fy")] HRESULT fy([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRebarModel_Es),helpstring("property Es")] HRESULT Es([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRebarModel_Es),helpstring("property Es")] HRESULT Es([in] Float64 newVal);
+		[propget, helpcontext(IDH_IRebarModel_MaxStrain),helpstring("property MaxStrain")] HRESULT MaxStrain([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IRebarModel_MaxStrain),helpstring("property MaxStrain")] HRESULT MaxStrain([in] Float64 newVal);
+	};
+	[
+		object,
+		uuid(1D62DA5C-9E49-4a8a-8BAF-3F4A3CEA6E2C),
+		oleautomation,
+		helpstring("IStrainHardenedRebarModel Interface"),
+      helpcontext(IDH_IStrainHardenedRebarModel),
+		pointer_default(unique)
+	]
+	interface IStrainHardenedRebarModel : IUnknown
+	{
+		[helpcontext(IDH_IStrainHardenedRebarModel_Init),helpstring("method Init")] HRESULT Init([in] Float64 fy,[in] Float64 fu,[in] Float64 Es,[in] Float64 esh,[in] Float64 efr);
+		[propget, helpcontext(IDH_IStrainHardenedRebarModel_fy),helpstring("property fy")] HRESULT fy([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IStrainHardenedRebarModel_fy),helpstring("property fy")] HRESULT fy([in] Float64 newVal);
+		[propget, helpcontext(IDH_IStrainHardenedRebarModel_fu),helpstring("property fu")] HRESULT fu([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IStrainHardenedRebarModel_fu),helpstring("property fu")] HRESULT fu([in] Float64 newVal);
+		[propget, helpcontext(IDH_IStrainHardenedRebarModel_Es),helpstring("property Es")] HRESULT Es([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IStrainHardenedRebarModel_Es),helpstring("property Es")] HRESULT Es([in] Float64 newVal);
+		[propget, helpcontext(IDH_IStrainHardenedRebarModel_esh),helpstring("property esh")] HRESULT esh([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IStrainHardenedRebarModel_esh),helpstring("property esh")] HRESULT esh([in] Float64 newVal);
+		[propget, helpcontext(IDH_IStrainHardenedRebarModel_efr),helpstring("property efr")] HRESULT efr([out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_IStrainHardenedRebarModel_efr),helpstring("property efr")] HRESULT efr([in] Float64 newVal);
+	};
+	[
+		object,
+		uuid(08C750A1-E0D4-493C-85AE-76234B1DDFA9),
+		oleautomation,
+		helpstring("IPCISolution Interface"),
+      helpcontext(IDH_IPCISolution),
+		pointer_default(unique)
+	]
+	interface IPCISolution : IUnknown
+	{
+		[helpcontext(IDH_IPCISolution_InitSolution),helpstring("method InitSolution")] HRESULT InitSolution([in] Float64 Mn,[in] Float64 c,[in] Float64 fps,[in] Float64 Cflange,[in] Float64 Cweb,[in] Float64 T,[in] Float64 Yflange,[in] Float64 Yweb,[in] VARIANT_BOOL bOverReinforced,[in] Float64 avgBeta1);
+		[propget, helpcontext(IDH_IPCISolution_AvgBeta1), helpstring("property AvgBeta1")] HRESULT AvgBeta1([out, retval] Float64 *pVal);
+	};
+	[
+		object,
+		uuid(0D439ED6-A724-4B8C-8141-2B3BE6E87164),
+		oleautomation,
+		helpstring("IPCISolutionEx Interface"),
+      helpcontext(IDH_IPCISolutionEx),
+		pointer_default(unique)
+	]
+	interface IPCISolutionEx : IUnknown
+	{
+		[helpcontext(IDH_IPCISolutionEx_InitSolution),helpstring("method InitSolution")] HRESULT InitSolution([in] Float64 Mn,[in] Float64 c,[in] IDblArray* fs,[in] IDblArray* fps,[in] Float64 Cflange,[in] Float64 Cweb,[in] Float64 T,[in] Float64 Yflange,[in] Float64 Yweb,[in] Float64 avgBeta1);
+		[propget, helpcontext(IDH_IPCISolutionEx_AvgBeta1),helpstring("property AvgBeta1")] HRESULT AvgBeta1([out, retval] Float64 *pVal);
+	};
+
+	[
+		object,
+		uuid(018F0AFC-E51D-47D1-8477-974EA1C8192A),
+		oleautomation,
+		helpstring("IRoundColumn Interface"),
+		helpcontext(IDH_IRoundColumn),
+		pointer_default(unique)
+	]
+	interface IRoundColumn : IUnknown
+	{
+		[propput,helpcontext(IDH_IRoundColumn_Diameter),helpstring("property Diameter")] HRESULT Diameter([in]Float64 dia);
+		[propget,helpcontext(IDH_IRoundColumn_Diameter),helpstring("property Diameter")] HRESULT Diameter([out,retval]Float64* dia);
+		[propput,helpcontext(IDH_IRoundColumn_Cover),helpstring("property Cover")] HRESULT Cover([in]Float64 cover);
+		[propget,helpcontext(IDH_IRoundColumn_Cover),helpstring("property Cover")] HRESULT Cover([out,retval]Float64* cover);
+		[propput,helpcontext(IDH_IRoundColumn_As),helpstring("property As")] HRESULT As([in]Float64 as);
+		[propget,helpcontext(IDH_IRoundColumn_As),helpstring("property As")] HRESULT As([out,retval]Float64* as);
+		[propput,helpcontext(IDH_IRoundColumn_fc),helpstring("property fc")] HRESULT fc([in]Float64 fc);
+		[propget,helpcontext(IDH_IRoundColumn_fc),helpstring("property fc")] HRESULT fc([out,retval]Float64* fc);
+		[propput,helpcontext(IDH_IRoundColumn_fy),helpstring("property fy")] HRESULT fy([in]Float64 fy);
+		[propget,helpcontext(IDH_IRoundColumn_fy),helpstring("property fy")] HRESULT fy([out,retval]Float64* fy);
+		[propput,helpcontext(IDH_IRoundColumn_Es),helpstring("property Es")] HRESULT Es([in]Float64 es);
+		[propget,helpcontext(IDH_IRoundColumn_Es),helpstring("property Es")] HRESULT Es([out,retval]Float64* es);
+		[helpcontext(IDH_IRoundColumn_ComputerInteractionSurface),helpstring("method ComputeInteractionSurface")] HRESULT ComputeInteraction([in]long nSteps,[out,retval]IPoint2dCollection* *points);
+	};
+
+	[
+		object,
+		uuid(FE1EB4AB-F67A-459f-9360-6194916FDE37),
+		oleautomation,
+		helpstring("IGeneralSection Interface"),
+		helpcontext(IDH_IGeneralSection),
+		pointer_default(unique)
+	]
+	interface IGeneralSection : IUnknown
+	{
+		[helpcontext(IDH_IGeneralSection_AddShape),helpstring("method AddShape")] HRESULT AddShape([in]IShape* pShape,[in]IStressStrain* pfgMaterial,[in]IStressStrain* pbgMaterial,[in]Float64 ei);
+		[propget,helpcontext(IDH_IGeneralSection_ShapeCount),helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]CollectionIndexType* nShapes);
+		[propget,helpcontext(IDH_IGeneralSection_Shape),helpstring("property Shape")] HRESULT Shape([in]CollectionIndexType shapeIdx,[out,retval]IShape** pShape);
+		[propget,helpcontext(IDH_IGeneralSection_ForegroundMaterial),helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]CollectionIndexType shapeIdx,[out,retval]IStressStrain** pMaterial);
+		[propget,helpcontext(IDH_IGeneralSection_BackgroundMaterial),helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]CollectionIndexType shapeIdx,[out,retval]IStressStrain** pMaterial);
+		[propget,helpcontext(IDH_IGeneralSection_InitialStrain),helpstring("property InitialStrain")] HRESULT InitialStrain([in]CollectionIndexType shapeIdx,[out,retval]Float64* ei);
+	};
+
+	[
+		object,
+		uuid(D079B9D4-BEB3-40e3-B603-016F1D29CBCD),
+		oleautomation,
+		helpstring("IGeneralSectionSlice Interface"),
+		helpcontext(IDH_IGeneralSectionSlice),
+		pointer_default(unique)
+	]
+	interface IGeneralSectionSlice : IUnknown
+	{
+		[helpcontext(IDH_IGeneralSectionSlice_InitSlice),helpstring("method InitSlice")] HRESULT InitSlice([in]IShape* pShape,[in]Float64 A,[in]Float64 cgX,[in]Float64 cgY,[in]Float64 strain,[in]Float64 fgStress,[in]Float64 bgStress,[in]IStressStrain* pfgMaterial,[in]IStressStrain* pbgMaterial);
+		[propget,helpcontext(IDH_IGeneralSectionSlice_Area),helpstring("property Area")] HRESULT Area([out,retval]Float64* pArea);
+		[propget,helpcontext(IDH_IGeneralSectionSlice_CG),helpstring("property CG")] HRESULT CG([out,retval]IPoint2d** pCG);
+		[propget,helpcontext(IDH_IGeneralSectionSlice_Strain),helpstring("property Strain")] HRESULT Strain([out,retval]Float64* pStrain);
+		[propget,helpcontext(IDH_IGeneralSectionSlice_ForegroundStress),helpstring("property ForegroundStress")] HRESULT ForegroundStress([out,retval]Float64* pfgStress);
+		[propget,helpcontext(IDH_IGeneralSectionSlice_BackgroundStress),helpstring("property BackgroundStress")] HRESULT BackgroundStress([out,retval]Float64* pbgStress);
+		[propget,helpcontext(IDH_IGeneralSectionSlice_Shape),helpstring("property Shape")] HRESULT Shape([out,retval]IShape** pShape);
+		[propget,helpcontext(IDH_IGeneralSectionSlice_ForegroundMaterial),helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([out,retval]IStressStrain** pMaterial);
+		[propget,helpcontext(IDH_IGeneralSectionSlice_BackgroundMaterial),helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([out,retval]IStressStrain** pMaterial);
+	};
+
+	[
+		object,
+		uuid(52EF7B24-5383-4c47-AED7-DF25CC071B78),
+		oleautomation,
+		helpstring("IGeneralSectionSolution Interface"),
+		helpcontext(IDH_IGeneralSectionSolution),
+		pointer_default(unique)
+	]
+	interface IGeneralSectionSolution : IUnknown
+	{
+		[helpcontext(IDH_IGeneralSectionSolution_InitSolution),helpstring("method InitSolution")] HRESULT InitSolution([in]Float64 fz,[in]Float64 mx,[in]Float64 my,[in]ILine2d* neutralAxis,[in]IPoint2d* cgC,[in]Float64 C,[in]IPoint2d* cgT,[in]Float64 T,[in]IUnkArray* slices);
+		[propget,helpcontext(IDH_IGeneralSectionSolution_Fz),helpstring("property Fz")] HRESULT Fz([out,retval]Float64* fz);
+		[propget,helpcontext(IDH_IGeneralSectionSolution_Mx),helpstring("property Mx")] HRESULT Mx([out,retval]Float64* mx);
+		[propget,helpcontext(IDH_IGeneralSectionSolution_My),helpstring("property My")] HRESULT My([out,retval]Float64* my);
+		[propget,helpcontext(IDH_IGeneralSectionSolution_NeutralAxis),helpstring("property NeutralAxis")] HRESULT NeutralAxis([out,retval]ILine2d** neutralAxis);
+		[propget,helpcontext(IDH_IGeneralSectionSolution_NeutralAxisDirection),helpstring("property NeutralAxisDirection")] HRESULT NeutralAxisDirection([out,retval]Float64* neutralAxis);
+		[propget,helpcontext(IDH_IGeneralSectionSolution_CompressionResultant),helpstring("property CompressionResultant")] HRESULT CompressionResultant([out,retval]Float64* c);
+		[propget,helpcontext(IDH_IGeneralSectionSolution_TensionResultant),helpstring("property TensionResultant")] HRESULT TensionResultant([out,retval]Float64* t);
+		[propget,helpcontext(IDH_IGeneralSectionSolution_CompressionResultantLocation),helpstring("property CompressionResultantLocation")] HRESULT CompressionResultantLocation([out,retval]IPoint2d** cgC);
+		[propget,helpcontext(IDH_IGeneralSectionSolution_TensionResultantLocation),helpstring("property TensionResultantLocation")] HRESULT TensionResultantLocation([out,retval]IPoint2d** cgT);
+		[propget,helpcontext(IDH_IGeneralSectionSolution_SliceCount),helpstring("property SliceCount")] HRESULT SliceCount([out,retval]CollectionIndexType* nSlices);
+		[propget,helpcontext(IDH_IGeneralSectionSolution_Slice),helpstring("property Slice")] HRESULT Slice([in] CollectionIndexType sliceIdx,[out,retval]IGeneralSectionSlice** pSlice);
+	};
+
+
+	[
+		object,
+		uuid(4BE67D1E-A214-4bb3-8B10-5FA0380153C7),
+		oleautomation,
+		helpstring("IGeneralSectionSolver Interface"),
+		helpcontext(IDH_IGeneralSectionSolver),
+		pointer_default(unique)
+	]
+	interface IGeneralSectionSolver : IUnknown
+	{
+		[propputref,helpcontext(IDH_IGeneralSectionSolver_Section),helpstring("property Section")] HRESULT Section([in]IGeneralSection* pSection);
+		[propget,helpcontext(IDH_IGeneralSectionSolver_Section),helpstring("property Section")] HRESULT Section([out,retval]IGeneralSection** pSection);
+		[propput,helpcontext(IDH_IGeneralSectionSolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
+		[propget,helpcontext(IDH_IGeneralSectionSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval]long* nSlices);
+		[propput,helpcontext(IDH_IGeneralSectionSolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([in]Float64 sliceGrowthFactor);
+		[propget,helpcontext(IDH_IGeneralSectionSolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([out,retval]Float64* sliceGrowthFactor);
+		[helpcontext(IDH_IGeneralSectionSolver_Solve),helpstring("method Solve")] HRESULT Solve([in] IPlane3d* strainPlane,[out,retval]IGeneralSectionSolution** solution);
+	};
+
+	[
+		uuid(7FA3E79D-9C64-4333-9BA7-5FF84F71D1C5),
+		oleautomation,
+		helpstring("IMomentCurvatureSolution Interface"),
+		helpcontext(IDH_IMomentCurvatureSolution),
+		pointer_default(unique)
+	]
+	interface IMomentCurvatureSolution : IUnknown
+	{
+		[propget,helpcontext(IDH_IMomentCurvatureSolution_MaxMoment),helpstring("property MaxMoment")] HRESULT MaxMoment([out,retval]Float64* Mmax);
+		[propget,helpcontext(IDH_IMomentCurvatureSolution_MaxMomentCurvature),helpstring("property MaxMomentCurvature")] HRESULT MaxMomentCurvature([out,retval]Float64* k);
+		[helpcontext(IDH_IMomentCurvatureSolution_PeakCapacity),helpstring("method PeakCapacity")] HRESULT PeakCapacity([out]Float64* Mmax,[out]Float64* k);
+		[propget,helpcontext(IDH_IMomentCurvatureSolution_Moment),helpstring("property Moment")] HRESULT Moment([in]CollectionIndexType idx,[out,retval]Float64* Mmax);
+		[propget,helpcontext(IDH_IMomentCurvatureSolution_Curvature),helpstring("property Curvature")] HRESULT Curvature([in]CollectionIndexType idx,[out,retval]Float64* k);
+		[propget,helpcontext(IDH_IMomentCurvatureSolution_StrainPlane),helpstring("property StrainPlane")] HRESULT StrainPlane([in]CollectionIndexType idx,[out,retval]IPlane3d** StrainPlane);
+		[propget,helpcontext(IDH_IMomentCurvatureSolution_PointCount),helpstring("property PointCount")] HRESULT PointCount([out,retval]CollectionIndexType* nPoints);
+	};
+
+	[
+		uuid(4F3B5724-C503-44d1-A6E0-68D195CA2442),
+		oleautomation,
+		helpstring("IMomentCurvatureSolver Interface"),
+		helpcontext(IDH_IMomentCurvatureSolver),
+		pointer_default(unique)
+	]
+	interface IMomentCurvatureSolver : IUnknown
+	{
+		[propputref,helpcontext(IDH_IMomentCurvatureSolver_Section),helpstring("property Section")] HRESULT Section([in]IGeneralSection* pSection);
+		[propget,helpcontext(IDH_IMomentCurvatureSolver_Section),helpstring("property Section")] HRESULT Section([out,retval]IGeneralSection** pSection);
+		[propput,helpcontext(IDH_IMomentCurvatureSolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
+		[propget,helpcontext(IDH_IMomentCurvatureSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval]long* nSlices);
+	    [propput,helpcontext(IDH_IMomentCurvatureSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
+		[propget,helpcontext(IDH_IMomentCurvatureSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([out,retval]Float64* tolerance);
+		[propput,helpcontext(IDH_IMomentCurvatureSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([in]long maxIter);
+		[propget,helpcontext(IDH_IMomentCurvatureSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([out,retval]long* maxIter);
+		[propput,helpcontext(IDH_IMomentCurvatureSolver_InitialCurvatureStep),helpstring("property InitialCurvatureStep")] HRESULT InitialCurvatureStep([in]Float64 k);
+		[propget,helpcontext(IDH_IMomentCurvatureSolver_InitialCurvatureStep),helpstring("property InitialCurvatureStep")] HRESULT InitialCurvatureStep([out,retval]Float64* k);
+		[helpcontext(IDH_IMomentCurvatureSolver_Solve),helpstring("method Solve")] HRESULT Solve([in] Float64 Fz,[in] Float64 angle,[out,retval]IMomentCurvatureSolution** solution);
+	};
+
+	[
+		uuid(2BD13F88-3CF5-4c5d-8CF8-83DBA81AB361),
+		oleautomation,
+		helpstring("IMomentCapacitySolution Interface"),
+		helpcontext(IDH_IMomentCapacitySolution),
+		pointer_default(unique)
+	]
+	interface IMomentCapacitySolution : IUnknown
+	{
+		[helpcontext(IDH_IMomentCapacitySolution_InitSolution),helpstring("method InitSolution")] HRESULT InitSolution([in]Float64 fz,[in]Float64 mx,[in]Float64 my,[in]IPlane3d* strainPlane,[in]ILine2d* neutralAxis,[in]IPoint2d* cgC,[in]Float64 C,[in]IPoint2d* cgT,[in]Float64 T,[in]IGeneralSectionSolution* pSolution);
+		[propget,helpcontext(IDH_IMomentCapacitySolution_Fz),helpstring("property Fz")] HRESULT Fz([out,retval]Float64* fz);
+		[propget,helpcontext(IDH_IMomentCapacitySolution_Mx),helpstring("property Mx")] HRESULT Mx([out,retval]Float64* mx);
+		[propget,helpcontext(IDH_IMomentCapacitySolution_My),helpstring("property My")] HRESULT My([out,retval]Float64* my);
+		[propget,helpcontext(IDH_IMomentCapacitySolution_StrainPlane),helpstring("property StrainPlane")] HRESULT StrainPlane([out,retval]IPlane3d** strainPlane);
+		[propget,helpcontext(IDH_IMomentCapacitySolution_NeutralAxis),helpstring("property NeutralAxis")] HRESULT NeutralAxis([out,retval]ILine2d** neutralAxis);
+		[propget,helpcontext(IDH_IMomentCapacitySolution_NeutralAxisDirection),helpstring("property NeutralAxisDirection")] HRESULT NeutralAxisDirection([out,retval]Float64* angle);
+		[propget,helpcontext(IDH_IMomentCapacitySolution_CompressionResultant),helpstring("property CompressionResultant")] HRESULT CompressionResultant([out,retval]Float64* c);
+		[propget,helpcontext(IDH_IMomentCapacitySolution_TensionResultant),helpstring("property TensionResultant")] HRESULT TensionResultant([out,retval]Float64* t);
+		[propget,helpcontext(IDH_IMomentCapacitySolution_CompressionResultantLocation),helpstring("property CompressionResultantLocation")] HRESULT CompressionResultantLocation([out,retval]IPoint2d** cgC);
+		[propget,helpcontext(IDH_IMomentCapacitySolution_TensionResultantLocation),helpstring("property TensionResultantLocation")] HRESULT TensionResultantLocation([out,retval]IPoint2d** cgT);
+		[propget,helpcontext(IDH_IMomentCapacitySolution_GeneralSectionSolution),helpstring("property GeneralSectionSolution")] HRESULT GeneralSectionSolution([out,retval]IGeneralSectionSolution** solution);
+	};
+
+	[
+		uuid(A4B19FD5-ADD9-43bf-B2C6-EF65D59CD3C9),
+		oleautomation,
+		helpstring("IMomentCapacitySolver Interface"),
+		helpcontext(IDH_IMomentCapacitySolver),
+		pointer_default(unique)
+	]
+	interface IMomentCapacitySolver : IUnknown
+	{
+		[propputref,helpcontext(IDH_IMomentCapacitySolver_Section),helpstring("property Section")] HRESULT Section([in]IGeneralSection* pSection);
+		[propget,helpcontext(IDH_IMomentCapacitySolver_Section),helpstring("property Section")] HRESULT Section([out,retval]IGeneralSection** pSection);
+		[propput,helpcontext(IDH_IMomentCapacitySolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
+		[propget,helpcontext(IDH_IMomentCapacitySolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval]long* nSlices);
+	   [propput,helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([in]Float64 sliceGrowthFactor);
+		[propget,helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([out,retval]Float64* sliceGrowthFactor);
+      [propput,helpcontext(IDH_IMomentCapacitySolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
+		[propget,helpcontext(IDH_IMomentCapacitySolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([out,retval]Float64* tolerance);
+		[propput,helpcontext(IDH_IMomentCapacitySolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([in]long maxIter);
+		[propget,helpcontext(IDH_IMomentCapacitySolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([out,retval]long* maxIter);
+		[helpcontext(IDH_IMomentCapacitySolver_Solve),helpstring("method Solve")] HRESULT Solve([in]Float64 Fz,[in] Float64 angle,[in] Float64 k_or_ec,[in]SolutionMethod solutionMethod,[out,retval] IMomentCapacitySolution** solution);
+		[propget,helpcontext(IDH_IMomentCapacitySolver_PlasticCentroid),helpstring("property PlasticCentroid")] HRESULT PlasticCentroid([out,retval] IPoint2d** pcg);
+		[helpcontext(IDH_IMomentCapacitySolver_CompressionLimit)] HRESULT CompressionLimit([out]Float64* Fz,[out]Float64* Mx,[out]Float64* My,[out]Float64* eo);
+		[helpcontext(IDH_IMomentCapacitySolver_TensionLimit)] HRESULT TensionLimit([out]Float64* Fz,[out]Float64* Mx,[out]Float64* My,[out]Float64* eo);
+	};
+
+	[
+		uuid(169DAD38-B2EC-4d1a-AD6B-B04671662AFA),
+		oleautomation,
+		helpstring("IInteractionCurveSolution Interface"),
+		helpcontext(IDH_IInteractionCurveSolution),
+		pointer_default(unique)
+	]
+	interface IInteractionCurveSolution : IUnknown
+	{
+		[propget,helpcontext(IDH_IInteractionCurveSolution_NeutralAxisDirection),helpstring("property NeutralAxisDirection")] HRESULT NeutralAxisDirection([in]CollectionIndexType index,[out,retval]Float64* angle);
+		[propget,helpcontext(IDH_IInteractionCurveSolution_MomentCurvatureSolution),helpstring("property MomentCurvatureSolution")] HRESULT MomentCurvatureSolution([in]CollectionIndexType index,[out,retval]IMomentCurvatureSolution** solution);
+		[helpcontext(IDH_IInteractionCurveSolution_AddSolutionPoint),helpstring("method AddSolutionPoint")] HRESULT AddSolutionPoint([in]Float64 angle,[in]IMomentCurvatureSolution* solution);
+		[propget,helpcontext(IDH_IInteractionCurveSolution_SolutionPointCount),helpstring("property SolutionPointCount")] HRESULT SolutionPointCount([out,retval]CollectionIndexType* nPoints);
+	};
+
+	[
+		uuid(750A8100-D7EB-4b17-AE36-9DDDFEF6888B),
+		oleautomation,
+		helpstring("IInteractionCurveSolver IUnknown"),
+		helpcontext(IDH_IInteractionCurveSolver),
+		pointer_default(unique)
+	]
+	interface IInteractionCurveSolver : IUnknown
+	{
+		[propputref,helpcontext(IDH_IInteractionCurveSolver_Section),helpstring("property Section")] HRESULT Section([in]IGeneralSection* pSection);
+		[propget,helpcontext(IDH_IInteractionCurveSolver_Section),helpstring("property Section")] HRESULT Section([out,retval]IGeneralSection** pSection);
+		[propput,helpcontext(IDH_IInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
+		[propget,helpcontext(IDH_IInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval]long* nSlices);
+	    [propput,helpcontext(IDH_IInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
+		[propget,helpcontext(IDH_IInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([out,retval]Float64* tolerance);
+		[propput,helpcontext(IDH_IInteractionCurveSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([in]long maxIter);
+		[propget,helpcontext(IDH_IInteractionCurveSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([out,retval]long* maxIter);
+		[propput,helpcontext(IDH_IInteractionCurveSolver_InitialCurvatureStep),helpstring("property InitialCurvatureStep")] HRESULT InitialCurvatureStep([in]Float64 k);
+		[propget,helpcontext(IDH_IInteractionCurveSolver_InitialCurvatureStep),helpstring("property InitialCurvatureStep")] HRESULT InitialCurvatureStep([out,retval]Float64* k);
+		[helpcontext(IDH_IInteractionCurveSolver_Solve),helpstring("method Solve")] HRESULT Solve([in]Float64 Fz,[in] long naIncrement,[out,retval]IInteractionCurveSolution** solution);
+	};
+
+
+	[
+		uuid(EBFB4042-E5DC-4378-BFDB-8890C77A4E3D),
+		oleautomation,
+		helpstring("IInteractionCapacityCurveSolution Interface"),
+		helpcontext(IDH_IInteractionCapacityCurveSolution),
+		pointer_default(unique)
+	]
+	interface IInteractionCapacityCurveSolution : IUnknown
+	{
+		[propget,helpcontext(IDH_IInteractionCapacityCurveSolution_MomentCapacitySolution),helpstring("property MomentCapacitySolution")] HRESULT MomentCapacitySolution([in]CollectionIndexType index,[out,retval]IMomentCapacitySolution** solution);
+		[helpcontext(IDH_IInteractionCapacityCurveSolution_AddSolutionPoint),helpstring("method AddSolutionPoint")] HRESULT AddSolutionPoint([in]IMomentCapacitySolution* solution);
+		[propget,helpcontext(IDH_IInteractionCapacityCurveSolution_SolutionPointCount),helpstring("property SolutionPointCount")] HRESULT SolutionPointCount([out,retval]CollectionIndexType* nPoints);
+	};
+
+	[
+		uuid(AD04E104-0570-432b-9FF0-E5634F2CE942),
+		oleautomation,
+		helpstring("IAxialInteractionCurveSolver IUnknown"),
+		helpcontext(IDH_IAxialInteractionCurveSolver),
+		pointer_default(unique)
+	]
+	interface IAxialInteractionCurveSolver : IUnknown
+	{
+		[propputref,helpcontext(IDH_IAxialInteractionCurveSolver_Section),helpstring("property Section")] HRESULT Section([in]IGeneralSection* pSection);
+		[propget,helpcontext(IDH_IAxialInteractionCurveSolver_Section),helpstring("property Section")] HRESULT Section([out,retval]IGeneralSection** pSection);
+		[propput,helpcontext(IDH_IAxialInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
+		[propget,helpcontext(IDH_IAxialInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval]long* nSlices);
+	    [propput,helpcontext(IDH_IAxialInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
+		[propget,helpcontext(IDH_IAxialInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([out,retval]Float64* tolerance);
+		[propput,helpcontext(IDH_IAxialInteractionCurveSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([in]long maxIter);
+		[propget,helpcontext(IDH_IAxialInteractionCurveSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([out,retval]long* maxIter);
+		[helpcontext(IDH_IAxialInteractionCurveSolver_CompressionLimit)] HRESULT CompressionLimit([out]Float64* Fz,[out]Float64* Mx,[out]Float64* My,[out]Float64* eo);
+		[helpcontext(IDH_IAxialInteractionCurveSolver_TensionLimit)] HRESULT TensionLimit([out]Float64* Fz,[out]Float64* Mx,[out]Float64* My,[out]Float64* eo);
+		[helpcontext(IDH_IAxialInteractionCurveSolver_Solve),helpstring("method Solve")] HRESULT Solve([in]Float64 na,[in]long nFzSteps,[out,retval]IInteractionCapacityCurveSolution** solution);
+	};
+
+
+	[
+		uuid(7573B050-8EEC-4385-AFBF-9BD4690DCB7C),
+		oleautomation,
+		helpstring("IMomentInteractionCurveSolver IUnknown"),
+		helpcontext(IDH_IMomentInteractionCurveSolver),
+		pointer_default(unique)
+	]
+	interface IMomentInteractionCurveSolver : IUnknown
+	{
+		[propputref,helpcontext(IDH_IMomentInteractionCurveSolver_Section),helpstring("property Section")] HRESULT Section([in]IGeneralSection* pSection);
+		[propget,helpcontext(IDH_IMomentInteractionCurveSolver_Section),helpstring("property Section")] HRESULT Section([out,retval]IGeneralSection** pSection);
+		[propput,helpcontext(IDH_IMomentInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
+		[propget,helpcontext(IDH_IMomentInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval]long* nSlices);
+	    [propput,helpcontext(IDH_IMomentInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
+		[propget,helpcontext(IDH_IMomentInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([out,retval]Float64* tolerance);
+		[propput,helpcontext(IDH_IMomentInteractionCurveSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([in]long maxIter);
+		[propget,helpcontext(IDH_IMomentInteractionCurveSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([out,retval]long* maxIter);
+		[helpcontext(IDH_IMomentInteractionCurveSolver_CompressionLimit)] HRESULT CompressionLimit([out]Float64* Fz,[out]Float64* Mx,[out]Float64* My,[out]Float64* eo);
+		[helpcontext(IDH_IMomentInteractionCurveSolver_TensionLimit)] HRESULT TensionLimit([out]Float64* Fz,[out]Float64* Mx,[out]Float64* My,[out]Float64* eo);
+		[helpcontext(IDH_IMomentInteractionCurveSolver_Solve),helpstring("method Solve")] HRESULT Solve([in]Float64 Fz,[in]Float64 startNA,[in]Float64 endNA,[in]long nSteps,[out,retval]IInteractionCapacityCurveSolution** solution);
+	};
+
+	[
+		uuid(84A90446-34BC-445d-B7E1-EBC915159529),
+		oleautomation,
+		helpstring("IManderModelSection Interface"),
+		helpcontext(IDH_IManderModelSection),
+		pointer_default(unique)
+	]
+	interface IManderModelSection : IUnknown
+	{
+		[propput,helpcontext(IDH_IManderModelSection_TransvYieldStrength),helpstring("property TransvYieldStrength")] HRESULT TransvYieldStrength([in]Float64 fyh);
+		[propget,helpcontext(IDH_IManderModelSection_TransvYieldStrength),helpstring("property TransvYieldStrength")] HRESULT TransvYieldStrength([out,retval]Float64* fyh);
+		[propget,helpcontext(IDH_IManderModelSection_TransvReinforcementRatio),helpstring("property TransvReinforcementRatio")] HRESULT TransvReinforcementRatio([out,retval]Float64* ps);
+		[propget,helpcontext(IDH_IManderModelSection_ConfinementEffectivenessCoefficient),helpstring("property ConfinementEffectivenessCoefficient")] HRESULT ConfinementEffectivenessCoefficient([out,retval]Float64* ke);
+	};
+
+	[
+		uuid(6BA241A3-73FC-48a4-AE85-E2B4B496E3C1),
+		oleautomation,
+		helpstring("ICircularManderSection Interface"),
+		helpcontext(IDH_ICircularManderSection),
+		pointer_default(unique)
+	]
+	interface ICircularManderSection : IManderModelSection
+	{
+		[propput,helpcontext(IDH_ICircularManderSection_TransvReinforcementType),helpstring("property TransvReinforcementType")] HRESULT TransvReinforcementType([in]TransvReinforcementType trt);
+		[propget,helpcontext(IDH_ICircularManderSection_TransvReinforcementType),helpstring("property TransvReinforcementType")] HRESULT TransvReinforcementType([out,retval]TransvReinforcementType* trt);
+		[propput,helpcontext(IDH_ICircularManderSection_Asp),helpstring("property Asp")] HRESULT Asp([in]Float64 asp);
+		[propget,helpcontext(IDH_ICircularManderSection_Asp),helpstring("property Asp")] HRESULT Asp([out,retval]Float64* asp);
+		[propput,helpcontext(IDH_ICircularManderSection_As),helpstring("property As")] HRESULT As([in]Float64 as);
+		[propget,helpcontext(IDH_ICircularManderSection_As),helpstring("property As")] HRESULT As([out,retval]Float64* as);
+		[propput,helpcontext(IDH_ICircularManderSection_db),helpstring("property db")] HRESULT db([in]Float64 db);
+		[propget,helpcontext(IDH_ICircularManderSection_db),helpstring("property db")] HRESULT db([out,retval]Float64* db);
+		[propput,helpcontext(IDH_ICircularManderSection_S),helpstring("property S")] HRESULT S([in]Float64 s);
+		[propget,helpcontext(IDH_ICircularManderSection_S),helpstring("property S")] HRESULT S([out,retval]Float64* s);
+		[propput,helpcontext(IDH_ICircularManderSection_Diameter),helpstring("property Diameter")] HRESULT Diameter([in]Float64 d);
+		[propget,helpcontext(IDH_ICircularManderSection_Diameter),helpstring("property Diameter")] HRESULT Diameter([out,retval]Float64* d);
+		[propput,helpcontext(IDH_ICircularManderSection_Cover),helpstring("property Cover")] HRESULT Cover([in]Float64 c);
+		[propget,helpcontext(IDH_ICircularManderSection_Cover),helpstring("property Cover")] HRESULT Cover([out,retval]Float64* c);
+	};
+
+	[
+		uuid(5580011C-EE53-4323-8239-17C10E1F10CA),
+		oleautomation,
+		helpstring("IManderModel Interface"),
+		helpcontext(IDH_IManderModel),
+		pointer_default(unique)
+	]
+	interface IManderModel : IUnknown
+	{
+		[propputref,helpcontext(IDH_IManderModel_Section),helpstring("property Section")] HRESULT Section([in]IManderModelSection* section);
+		[propget,helpcontext(IDH_IManderModel_Section),helpstring("property Section")] HRESULT Section([out,retval]IManderModelSection** section);
+		[propput,helpcontext(IDH_IManderModel_fco),helpstring("property fco")] HRESULT fco([in]Float64 fco);
+		[propget,helpcontext(IDH_IManderModel_fco),helpstring("property fco")] HRESULT fco([out,retval]Float64* fco);
+		[propput,helpcontext(IDH_IManderModel_eco),helpstring("property eco")] HRESULT eco([in]Float64 eco);
+		[propget,helpcontext(IDH_IManderModel_eco),helpstring("property eco")] HRESULT eco([out,retval]Float64* eco);
+		[propput,helpcontext(IDH_IManderModel_R),helpstring("property R")] HRESULT R([in]Float64 r);
+		[propget,helpcontext(IDH_IManderModel_R),helpstring("property R")] HRESULT R([out,retval]Float64* r);
+	};
+
+	[
+		uuid(262F134D-3A3F-496A-8A10-ACBBA783DDEA),
+		oleautomation,
+		helpstring("IPowerFormula Interface"),
+		helpcontext(IDH_IPowerFormula),
+		pointer_default(unique)
+	]
+	interface IPowerFormula : IUnknown
+	{
+		[propget,helpcontext(IDH_IPowerFormula_Grade),helpstring("property Grade")]HRESULT Grade([out,retval]StrandGradeType* grade);
+		[propput,helpcontext(IDH_IPowerFormula_Grade),helpstring("property Grade")]HRESULT Grade([in]StrandGradeType grade);
+		[propget,helpcontext(IDH_IPowerFormula_ProductionMethod),helpstring("property ProductionMethod")]HRESULT ProductionMethod([out,retval]ProductionMethodType* type);
+		[propput,helpcontext(IDH_IPowerFormula_ProductionMethod),helpstring("property ProductionMethod")]HRESULT ProductionMethod([in]ProductionMethodType type);
+	};
+
+
+	[
+		uuid(4239F42F-055D-418a-B42A-D2A3DB540D69),
+		oleautomation,
+		helpstring("ISectionBuilder Interface"),
+		helpcontext(IDH_ISectionBuilder),
+		pointer_default(unique)
+	]
+	interface ISectionBuilder : IUnknown
+	{
+		[helpcontext(IDH_ISectionBuilder_RectangularColumn),helpstring("method RectangularColumn")]HRESULT RectangularColumn([in]Float64 H,[in]Float64 W,[in]Float64 cover,[in]long Nh,[in]long Nw,[in]Float64 As,[in]IStressStrain* concrete,[in]IStressStrain* rebar,[out,retval]IGeneralSection** section);
+		[helpcontext(IDH_ISectionBuilder_CircularColumn),helpstring("method CircularColumn")]HRESULT CircularColumn([in]Float64 D,[in]Float64 cover,[in]long Nb,[in]Float64 As,[in]IStressStrain* concrete,[in]IStressStrain* rebar,[out,retval]IGeneralSection** section);
+	};
+
+
+	[
+		uuid(A328DF26-75F1-4433-B74D-C0929A481B8C),
+		oleautomation,
+		helpstring("ICapacityReductionFactor Interface"),
+		helpcontext(IDH_ICapacityReductionFactor),
+		pointer_default(unique)
+	]
+	interface ICapacityReductionFactor : IUnknown
+	{
+		[helpcontext(IDH_ICapacityReductionFactor_Compute),helpstring("method Compute")] HRESULT Compute([in]IGeneralSection* section,[in]CollectionIndexType nConcShapes,[in]ILine2d* neutralAxis,[in]Float64 ppr,[out]Float64* c,[out]Float64* dt,[out]Float64* phi);
+		[helpcontext(IDH_ICapacityReductionFactor_ComputeEx),helpstring("method ComputeEx")] HRESULT ComputeEx([in]IUnkArray* pConcShapes,[in]IUnkArray* pReinfShapes,[in]ILine2d* neutralAxis,[in]Float64 ppr,[out]Float64* c,[out]Float64* dt,[out]Float64* phi);
+	};
+
+
+
+	[
+		uuid(4FAFD823-B4C9-4F88-8D46-74F84682893C),
+      helpcontext(IDH_IUnconfinedConcrete),
+		helpstring("UnconfinedConcrete Class")
+	]
+	coclass UnconfinedConcrete
+	{
+		[default] interface IUnconfinedConcrete;
+      interface IStressStrain;
+      interface ISupportUnitServer;
+      interface IStructuredStorage2;
+	};
+	[
+		uuid(75C05DC6-48F7-476B-B67A-ABD58180F9FB),
+      helpcontext(IDH_IPSPowerFormula),
+		helpstring("PSPowerFormula Class")
+	]
+	coclass PSPowerFormula
+	{
+		[default] interface IPowerFormula;
+		interface IStressStrain;
+      interface ISupportUnitServer;
+      interface IStructuredStorage2;
+	};
+	[
+		uuid(9F2A88AB-C3AF-49AB-9685-47444F74C3DC),
+      helpcontext(IDH_IRebarModel),
+		helpstring("RebarModel Class")
+	]
+	coclass RebarModel
+	{
+		[default] interface IRebarModel;
+      interface IStressStrain;
+      interface IStructuredStorage2;
+	};
+
+	[
+		uuid(030BB55E-DCE1-4bc2-9036-2D9F74A8A814),
+      helpcontext(IDH_IStrainHardenedRebarModel),
+		helpstring("StrainHardenedRebarModel Class")
+	]
+	coclass StrainHardenedRebarModel
+	{
+		[default] interface IStrainHardenedRebarModel;
+      interface IStressStrain;
+      interface IStructuredStorage2;
+	};
+
+	[
+		uuid(3DB23ADB-A45F-4093-A7B4-DE198847A825),
+      helpcontext(IDH_IRCBeam),
+		helpstring("RCBeam Class")
+	]
+	coclass RCBeam
+	{
+		[default] interface IRCBeam;
+      interface ISupportUnitServer;
+      interface IStructuredStorage2;
+	};
+	[
+		uuid(F9D85972-E047-4EA7-BC7A-24C67CDC5492),
+      helpcontext(IDH_IRCBeam2),
+		helpstring("RCBeam2 Class")
+	]
+	coclass RCBeam2
+	{
+		[default] interface IRCBeam2;
+      interface ISupportUnitServer;
+      interface IStructuredStorage2;
+	};
+	[
+		uuid(BD03891B-48D5-4324-8C37-B88865B5F5DA),
+		helpstring("RCBeam2Ex Class")
+	]
+	coclass RCBeam2Ex
+	{
+		[default] interface IRCBeam2Ex;
+      interface ISupportUnitServer;
+      interface IStructuredStorage2;
+	};
+	[
+		uuid(8B5C753D-82DC-46B8-9D89-6F28CFF9D3B8),
+      helpcontext(IDH_ILRFDSolver),
+		helpstring("LRFDSolver Class")
+	]
+	coclass LRFDSolver
+	{
+      [default] interface ILRFDSolver;
+		interface IRCSolver;
+	};
+	[
+		uuid(267BF7DB-1E9F-43e7-95AF-157776848D60),
+      helpcontext(IDH_ILFDSolver),
+		helpstring("LFDSolver Class")
+	]
+	coclass LFDSolver
+	{
+		[default] interface ILFDSolver;
+		interface IRCSolver;
+	};
+	[
+		uuid(F7F99D32-5E9E-4618-A858-ABE7089EE425),
+      helpcontext(IDH_IPCISolver),
+		helpstring("PCISolver Class")
+	]
+	coclass PCISolver
+	{
+		[default] interface IPCISolver;
+      interface IRCSolver;
+      interface IRCSolver2;
+      interface IRCSolver2Ex;
+	};
+	[
+		uuid(E5848EAC-5DE6-4147-8771-78225B66F8B7),
+      helpcontext(IDH_INLSolver),
+		helpstring("NLSolver Class")
+	]
+	coclass NLSolver
+	{
+		[default] interface INLSolver;
+      interface IRCSolver;
+      interface IRCSolver2;
+      interface IRCSolver2Ex;
+	};
+	[
+		uuid(DE9971B2-8ED4-4840-80EF-07B0F295410E),
+      helpcontext(IDH_IRCSolution),
+		helpstring("RCSolution Class")
+	]
+	coclass RCSolution
+	{
+		[default] interface IRCSolution;
+	};
+	[
+		uuid(FD1C3AFB-609A-4633-A0FE-2EE6A0154C33),
+		helpstring("RCSolutionEx Class")
+	]
+	coclass RCSolutionEx
+	{
+		[default] interface IRCSolutionEx;
+	};
+	[
+		uuid(D24CC053-6C5B-4392-B0F8-B34D07D815B3),
+      helpcontext(IDH_IPCISolution),
+		helpstring("PCISolution Class")
+	]
+	coclass PCISolution
+	{
+      [default] interface IRCSolution;
+		interface IPCISolution;
+	};
+	[
+		uuid(C1CD05E5-C0A6-48A6-98A4-E00011EAEAD0),
+		helpstring("PCISolutionEx Class")
+	]
+	coclass PCISolutionEx
+	{
+      [default] interface IRCSolutionEx;
+		interface IPCISolutionEx;
+	};
+	[
+		uuid(29CA6786-FA0C-402C-9683-404C6275E378),
+		helpcontext(IDH_IMixedSolver),
+		helpstring("MixedSolver Class")
+	]
+	coclass MixedSolver
+	{
+		[default] interface IMixedSolver;
+      interface IRCSolver;
+	};
+
+	[
+		uuid(0778C329-BF14-42DD-BC00-596BFDF80F5C),
+		helpcontext(IDH_IRoundColumn),
+		helpstring("RoundColumn Class")
+	]
+	coclass RoundColumn
+	{
+		[default] interface IRoundColumn;
+	};
+
+	[
+		uuid(62ABC849-D56B-4918-87AD-B7DF219E5909),
+		helpcontext(IDH_IGeneralSection),
+		helpstring("GeneralSection Class")
+	]
+	coclass GeneralSection
+	{
+		[default] interface IGeneralSection;
+	};
+
+	[
+		uuid(F57C14E7-B13A-4afd-8B48-CD68417457BB),
+		helpcontext(IDH_IGeneralSectionSlice),
+		helpstring("GeneralSectionSlice Class")
+	]
+	coclass GeneralSectionSlice
+	{
+		[default] interface IGeneralSectionSlice;
+	};
+
+	[
+		uuid(D9E5208E-8DE6-41b6-8700-4A0EFB749E1C),
+		helpcontext(IDH_IGeneralSectionSolution),
+		helpstring("GeneralSectionSolution Class")
+	]
+	coclass GeneralSectionSolution
+	{
+		[default] interface IGeneralSectionSolution;
+	};
+
+	[
+		uuid(4B0F6910-9548-4629-B6DF-6CDA76F911CF),
+		helpcontext(IDH_IGeneralSectionSolver),
+		helpstring("GeneralSectionSolver Class")
+	]
+	coclass GeneralSectionSolver
+	{
+		[default] interface IGeneralSectionSolver;
+	};
+
+	[
+		uuid(2048EC33-ACCC-4f35-A2AC-DEFB64126D45),
+		helpcontext(IDH_IMomentCurvatureSolution),
+		helpstring("MomentCurvatureSolution Class")
+	]
+	coclass MomentCurvatureSolution
+	{
+		[default] interface IMomentCurvatureSolution;
+	};
+
+	[
+		uuid(ABACF363-FDFF-4ae3-B305-4DD2B478174F),
+		helpcontext(IDH_IMomentCurvatureSolver),
+		helpstring("MomentCurvatureSolver Class")
+	]
+	coclass MomentCurvatureSolver
+	{
+		[default] interface IMomentCurvatureSolver;
+	};
+
+	[
+		uuid(B5DB837E-F239-4d17-8A13-D16219BE2F16),
+		helpcontext(IDH_IMomentCapacitySolution),
+		helpstring("MomentCapacitySolution Class")
+	]
+	coclass MomentCapacitySolution
+	{
+		[default] interface IMomentCapacitySolution;
+	};
+
+	[
+		uuid(C7173DB8-37C5-4800-A9DF-70379BD71530),
+		helpcontext(IDH_IMomentCapacitySolver),
+		helpstring("MomentCapacitySolver Class")
+	]
+	coclass MomentCapacitySolver
+	{
+		[default] interface IMomentCapacitySolver;
+	};
+
+	[
+		uuid(9374FC6E-D9F9-4d58-BE0E-D6D74DFB66CD),
+		helpcontext(IDH_ICircularManderSection),
+		helpstring("CircularManderSection Class")
+	]
+	coclass CircularManderSection
+	{
+		[default] interface ICircularManderSection;
+		interface IManderModelSection;
+	};
+
+	[
+		uuid(89C63EF1-9DA6-4fef-8892-D6C9E6359459),
+		helpcontext(IDH_IManderModel),
+		helpstring("ManderModel Class")
+	]
+	coclass ManderModel
+	{
+		[default] interface IManderModel;
+		interface IStressStrain;
+	    interface ISupportUnitServer;
+	};
+
+	[
+		uuid(3D136232-2592-4751-8D6C-55C0481C2FC6),
+		helpcontext(IDH_IInteractionCurveSolution),
+		helpstring("InteractionCurveSolution Class")
+	]
+    coclass InteractionCurveSolution
+	{
+		[default] interface IInteractionCurveSolution;
+	};
+
+	[
+		uuid(4D75A698-EF7C-4ca5-A0B2-C6F4C8FC3B6D),
+		helpcontext(IDH_IInteractionCurveSolver),
+		helpstring("InteractionCurveSolver Class")
+	]
+	coclass InteractionCurveSolver
+	{
+		[default] interface IInteractionCurveSolver;
+	};
+
+
+	[
+		uuid(90596D18-7307-49a8-8F7D-3FD9FB4AFF31),
+		helpcontext(IDH_IInteractionCapacityCurveSolution),
+		helpstring("InteractionCapacityCurveSolution Class")
+	]
+    coclass InteractionCapacityCurveSolution
+	{
+		[default] interface IInteractionCapacityCurveSolution;
+	};
+
+	[
+		uuid(E2032086-9161-453b-ABF0-2150CAA924AF),
+		helpcontext(IDH_IAxialInteractionCurveSolver),
+		helpstring("AxialInteractionCurveSolver Class")
+	]
+	coclass AxialInteractionCurveSolver
+	{
+		[default] interface IAxialInteractionCurveSolver;
+	};
+
+
+	[
+		uuid(F4816F27-B4D5-44e4-843B-4B3E8B2FF9FE),
+		helpcontext(IDH_IMomentInteractionCurveSolver),
+		helpstring("MomentInteractionCurveSolver Class")
+	]
+	coclass MomentInteractionCurveSolver
+	{
+		[default] interface IMomentInteractionCurveSolver;
+	};
+
+	[
+		uuid(4BD04EC7-9116-480c-9BED-607753E2E3F5),
+		helpcontext(IDH_ISectionBuilder),
+		helpstring("SectionBuilder Class")
+	]
+	coclass SectionBuilder
+	{
+		[default] interface ISectionBuilder;
+	};
+
+	[
+		uuid(A6C78DC5-0FD1-48b0-B393-D7241232AE11),
+		helpcontext(IDH_ICapacityReductionFactor),
+		helpstring("CapacityReductionFactor Class")
+	]
+	coclass CapacityReductionFactor
+	{
+		[default] interface ICapacityReductionFactor;
+	};
+};

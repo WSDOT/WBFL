@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAM.FilteredSegmentCollection.1 = s 'FilteredDfSegmentCollection Class'
+	{
+		CLSID = s '{6B54598E-5CBD-4876-A0A3-5F45FEC6FFA4}'
+	}
+	WBFLLBAM.FilteredSegmentCollection = s 'FilteredDfSegmentCollection Class'
+	{
+		CLSID = s '{6B54598E-5CBD-4876-A0A3-5F45FEC6FFA4}'
+		CurVer = s 'WBFLLBAM.FilteredSegmentCollection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {6B54598E-5CBD-4876-A0A3-5F45FEC6FFA4} = s 'FilteredDfSegmentCollection Class'
+		{
+			ProgID = s 'WBFLLBAM.FilteredSegmentCollection.1'
+			VersionIndependentProgID = s 'WBFLLBAM.FilteredSegmentCollection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{A60E8518-3A65-11D5-AFE5-00105A9AF985}'
+		}
+	}
+}

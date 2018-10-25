@@ -1,0 +1,169 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "1 TYPELIB ""WBFLRCCapacity.tlb""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 3,1,1,0
+ PRODUCTVERSION 3,1,1,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "A member of the Alternate Route Project\0"
+            VALUE "CompanyName", "Washington State Department of Transportation\0"
+            VALUE "FileDescription", "RCCapacity Module\0"
+            VALUE "FileVersion", "3.1.1.0\0"
+            VALUE "InternalName", "RCCapacity\0"
+            VALUE "LegalCopyright", "Copyright © 2000-2009\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OLESelfRegister", "\0"
+            VALUE "OriginalFilename", "RCCapacity.DLL\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "WBFL\0"
+            VALUE "ProductVersion", "3.1.1.0\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+
+IDR_RCBEAM              REGISTRY DISCARDABLE    "RCBeam.rgs"
+IDR_RCSOLUTION          REGISTRY DISCARDABLE    "RCSolution.rgs"
+IDR_LRFDSOLVER          REGISTRY DISCARDABLE    "LRFDSolver.rgs"
+IDR_LFDSOLVER           REGISTRY DISCARDABLE    "LFDSolver.rgs"
+IDR_PCISOLVER           REGISTRY DISCARDABLE    "PCISolver.rgs"
+IDR_NLSOLVER            REGISTRY DISCARDABLE    "NLSolver.rgs"
+IDR_RCBEAM2             REGISTRY DISCARDABLE    "RCBeam2.rgs"
+IDR_UNCONFINEDCONCRETE  REGISTRY DISCARDABLE    "UnconfinedConcrete.rgs"
+IDR_PSPOWERFORMULA      REGISTRY DISCARDABLE    "PSPowerFormula.rgs"
+IDR_REBARMODEL          REGISTRY DISCARDABLE    "RebarModel.rgs"
+IDR_PCISOLUTION         REGISTRY DISCARDABLE    "PCISolution.rgs"
+IDR_MIXEDSOLVER         REGISTRY DISCARDABLE    "MixedSolver.rgs"
+IDR_RCBEAM2EX           REGISTRY DISCARDABLE    "RCBeam2Ex.rgs"
+IDR_RCSOLUTIONEX        REGISTRY DISCARDABLE    "RCSolutionEx.rgs"
+IDR_PCISOLUTIONEX       REGISTRY DISCARDABLE    "PCISolutionEx.rgs"
+IDR_STRAINHARDENEDREBARMODEL REGISTRY DISCARDABLE    "StrainHardenedRebarModel.rgs"
+IDR_ROUNDCOLUMN         REGISTRY DISCARDABLE    "RoundColumn.rgs"
+IDR_GENERALSECTION      REGISTRY DISCARDABLE    "GeneralSection.rgs"
+IDR_GENERALSECTIONSLICE REGISTRY DISCARDABLE    "GeneralSectionSlice.rgs"
+IDR_GENERALSECTIONSOLVER REGISTRY DISCARDABLE    "GeneralSectionSolver.rgs"
+IDR_GENERALSECTIONSOLUTION REGISTRY DISCARDABLE    "GeneralSectionSolution.rgs"
+IDR_MOMENTCURVATURESOLUTION REGISTRY DISCARDABLE    "MomentCurvatureSolution.rgs"
+IDR_MOMENTCURVATURESOLVER REGISTRY DISCARDABLE    "MomentCurvatureSolver.rgs"
+IDR_MOMENTCAPACITYSOLVER REGISTRY DISCARDABLE    "MomentCapacitySolver.rgs"
+IDR_MOMENTCAPACITYSOLUTION REGISTRY DISCARDABLE    "MomentCapacitySolution.rgs"
+IDR_CIRCULARMANDERSECTION REGISTRY DISCARDABLE   "CircularManderSection.rgs"
+IDR_MANDERMODEL         REGISTRY DISCARDABLE    "ManderModel.rgs"
+IDR_INTERACTIONCURVESOLUTION REGISTRY DISCARDABLE "InteractionCurveSolution.rgs"
+IDR_INTERACTIONCURVESOLVER REGISTRY DISCARDABLE   "InteractionCurveSolver.rgs"
+IDR_INTERACTIONCAPACITYCURVESOLUTION REGISTRY DISCARDABLE "InteractionCapacityCurveSolution.rgs"
+IDR_AXIALINTERACTIONCURVESOLVER REGISTRY DISCARDABLE   "AxialInteractionCurveSolver.rgs"
+IDR_MOMENTINTERACTIONCURVESOLVER REGISTRY DISCARDABLE   "MomentInteractionCurveSolver.rgs"
+IDR_SECTIONBUILDER      REGISTRY DISCARDABLE    "SectionBuilder.rgs"
+IDR_CAPACITYREDUCTIONFACTOR REGISTRY DISCARDABLE "CapacityReductionFactor.rgs"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PROJNAME            "RCCapacity"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_E_INITCONCRETE      "Failed to initialize the concrete model"
+    IDS_E_SOLUTIONNOTFOUND  "A solution was not found"
+    IDS_E_BEAMNOTSYMMETRIC  "The beam is not symmetrical"
+    IDS_E_MATERIALFAILURE   "Capacity could not be determined because the strain limit exceeded the allowable strain limit for one of the materials in the section"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+1 TYPELIB "WBFLRCCapacity.tlb"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

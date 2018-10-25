@@ -1,0 +1,192 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "1 TYPELIB ""WBFLCOGO.tlb""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 3,1,1,0
+ PRODUCTVERSION 3,1,1,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "A member of the Alternate Route Project"
+            VALUE "CompanyName", "Washington State Department of Transportation"
+            VALUE "FileDescription", "WBFL COGO Module"
+            VALUE "FileVersion", "3.1.1.0"
+            VALUE "InternalName", "COGO"
+            VALUE "OriginalFilename", "COGO.DLL"
+            VALUE "ProductName", "WBFL"
+            VALUE "ProductVersion", "3.1.1.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+
+IDR_ANGLE               REGISTRY                "Angle.rgs"
+IDR_DIRECTION           REGISTRY                "Direction.rgs"
+IDR_COGOMODEL           REGISTRY                "CogoModel.rgs"
+IDR_LINESEGMENTCOLLECTION REGISTRY                "LineSegmentCollection.rgs"
+IDR_PROFILEPOINT        REGISTRY                "ProfilePoint.rgs"
+IDR_PROFILEPOINTCOLLECTION REGISTRY                "ProfilePointCollection.rgs"
+IDR_VERTCURVE           REGISTRY                "VertCurve.rgs"
+IDR_VERTCURVECOLLECTION REGISTRY                "VertCurveCollection.rgs"
+IDR_HORZCURVE           REGISTRY                "HorzCurve.rgs"
+IDR_HORZCURVECOLLECTION REGISTRY                "HorzCurveCollection.rgs"
+IDR_PROFILEELEMENT      REGISTRY                "ProfileElement.rgs"
+IDR_PROFILE             REGISTRY                "Profile.rgs"
+IDR_CROSSSECTION        REGISTRY                "CrossSection.rgs"
+IDR_CROSSSECTIONCOLLECTION REGISTRY                "CrossSectionCollection.rgs"
+IDR_PATHELEMENT         REGISTRY                "PathElement.rgs"
+IDR_ALIGNMENT           REGISTRY                "Alignment.rgs"
+IDR_VERTCURVEFACTORY    REGISTRY                "VertCurveFactory.rgs"
+IDR_PROFILEPOINTFACTORY REGISTRY                "ProfilePointFactory.rgs"
+IDR_HORZCURVEFACTORY    REGISTRY                "HorzCurveFactory.rgs"
+IDR_CROSSSECTIONFACTORY REGISTRY                "CrossSectionFactory.rgs"
+IDR_ALIGNMENTFACTORY    REGISTRY                "AlignmentFactory.rgs"
+IDR_ANGLEDISPLAYUNITFORMATTER REGISTRY                "AngleDisplayUnitFormatter.rgs"
+IDR_DIRECTIONDISPLAYUNITFORMATTER REGISTRY                "DirectionDisplayUnitFormatter.rgs"
+IDR_POINTFACTORY        REGISTRY                "PointFactory.rgs"
+IDR_LINESEGMENTFACTORY  REGISTRY                "LineSegmentFactory.rgs"
+IDR_STATION             REGISTRY                "Station.rgs"
+IDR_POINTCOLLECTION     REGISTRY                "PointCollection.rgs"
+IDR_COGOENGINE          REGISTRY                "CogoEngine.rgs"
+IDR_PATH                REGISTRY                "Path.rgs"
+IDR_PATHCOLLECTION      REGISTRY                "PathCollection.rgs"
+IDR_PATHFACTORY         REGISTRY                "PathFactory.rgs"
+IDR_CUBICSPLINE         REGISTRY                "CubicSpline.rgs"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_PROJNAME            "COGO"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_E_POINTNOTFOUND     "Point %d was not found"
+    IDS_E_POINTALREADYDEFINED "Point %d is already defined"
+    IDS_E_BADDIRECTIONSTRING 
+                            "Invalid direction string. Directions must be specified as N|S dd {mm {ss.s}} E|W. Examples: N 45 23 43.2 W, N 45 E"
+    IDS_E_BADAZIMUTH        "Azimuth must be between -359 59 59.999 and 359 59 59.999"
+    IDS_E_BADDIRECTION      "Invalid direction. Directions must be specified in the form N|S dd mm ss.s E|W. The angle (dd mm ss.s) must be 90 degrees or less."
+    IDS_E_BADANGLE          "Invalid angle. Minutes and Seconds must be greater than 0 and less than 60."
+    IDS_E_BADANGLESTRING    "Invalid angle string. Angles must be specifed as {+|-}ddd {mm {ss.s} } or ddd {mm {ss.s}} L|R. Examples: -35 12 34.5, 9 23 15 L"
+    IDS_E_ANGLE             "Three non-coincident points must be specified."
+    IDS_E_AREA              "An invalid list of point id's was specified. This method is not compatible with JavaScript."
+    IDS_E_THREEPNTSREQD     "Three points required to compute area."
+    IDS_E_RADIUS            "Radius must be greater than zero."
+    IDS_E_LINESEGMENTNOTFOUND "LineSegment %d was not found"
+    IDS_E_LINESEGMENTALREADYDEFINED "LineSegment %d is already defined"
+    IDS_E_PROFILEPOINTNOTFOUND "Profile Point %d was not found"
+    IDS_E_PROFILEPOINTALREADYDEFINED "Profile Point %d is already defined"
+    IDS_E_VERTCURVEPOINTS   "Vertical curve points are out of order. Check stations of the BVC, PVI, and EVC points"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_E_VERTCURVENOTFOUND "Vertical curve %d was not found"
+    IDS_E_VERTCURVEALREADYDEFINED "Vertical curve %d is already defined"
+    IDS_E_HORZCURVENOTFOUND "Horizontal curve %d was not found"
+    IDS_E_HORZCURVEALREADYDEFINED "Horizontal curve %d is already defined"
+    IDS_E_PROFILEELEMENTTYPE 
+                            "Profile element must be a ProfilePoint or VertCurve object"
+    IDS_E_PATHELEMENTTYPE   "Path element must be a Point, LineSegment, or HorzCurve object"
+    IDS_E_PATHNOTFOUND      "Path %d was not found"
+    IDS_E_PATHALREADYDEFINED "Path %d is already defined"
+    IDS_E_BADFORMATTAG      "The unit format tag for Angles and Directions must consists of three parts, seperated by commas."
+    IDS_E_COINCIDENTPOINTS  "The center of the circles must be non-coincident"
+    IDS_E_BADSTATIONSTRING  "Invalid station string. Stations must be specified in XX+YY.ZZ from for US units and XXX+YYY.ZZZ format for SI units"
+    IDS_E_SPIRALSOVERLAP    "The entry and exit spirals overlap. The angle of the central curve is negative"
+    IDS_E_POINTEVENTS       "The point class needs to support events"
+    IDS_E_CUBICSPLINEPOINTS "A spline must have at least two points"
+    IDS_E_POINTINCIRCLE     "The point cannot be on or inside the circle"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+1 TYPELIB "WBFLCOGO.tlb"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

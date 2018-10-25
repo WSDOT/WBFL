@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAM.StressPoints.1 = s 'StressPoints Class'
+	{
+		CLSID = s '{A60E8529-3A65-11D5-AFE5-00105A9AF985}'
+	}
+	WBFLLBAM.StressPoints = s 'StressPoints Class'
+	{
+		CLSID = s '{A60E8529-3A65-11D5-AFE5-00105A9AF985}'
+		CurVer = s 'WBFLLBAM.StressPoints.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {A60E8529-3A65-11D5-AFE5-00105A9AF985} = s 'StressPoints Class'
+		{
+			ProgID = s 'WBFLLBAM.StressPoints.1'
+			VersionIndependentProgID = s 'WBFLLBAM.StressPoints'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{A60E8518-3A65-11D5-AFE5-00105A9AF985}'
+		}
+	}
+}

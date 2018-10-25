@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.TaperedGirderSegment.1 = s 'TaperedGirderSegment Class'
+	{
+		CLSID = s '{432FB365-C5D0-46b0-9DCD-65F21A91580F}'
+	}
+	WBFLGenericBridge.TaperedGirderSegment = s 'TaperedGirderSegment Class'
+	{
+		CLSID = s '{432FB365-C5D0-46b0-9DCD-65F21A91580F}'
+		CurVer = s 'WBFLGenericBridge.TaperedGirderSegment.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {432FB365-C5D0-46b0-9DCD-65F21A91580F} = s 'TaperedGirderSegment Class'
+		{
+			ProgID = s 'WBFLGenericBridge.TaperedGirderSegment.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.TaperedGirderSegment'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

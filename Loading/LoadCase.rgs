@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLoading.LoadCase.1 = s 'LoadCase Class'
+	{
+		CLSID = s '{EBCC806B-3E7C-4fe9-B4BA-E35C7A4B9D37}'
+	}
+	WBFLLoading.LoadCase = s 'LoadCase Class'
+	{
+		CLSID = s '{EBCC806B-3E7C-4fe9-B4BA-E35C7A4B9D37}'
+		CurVer = s 'WBFLLoading.LoadCase.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {EBCC806B-3E7C-4fe9-B4BA-E35C7A4B9D37} = s 'LoadCase Class'
+		{
+			ProgID = s 'WBFLLoading.LoadCase.1'
+			VersionIndependentProgID = s 'WBFLLoading.LoadCase'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{81DDDDC6-EC00-4E8D-A000-08C10F134EDA}'
+		}
+	}
+}

@@ -1,0 +1,1307 @@
+///////////////////////////////////////////////////////////////////////
+// Fem2D - Two-dimensional Beam Analysis Engine
+// Copyright © 2001  Washington State Department of Transportation
+//                   Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the Alternate Route Library Open Source License as 
+// published by the Washington State Department of Transportation,
+// Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful,
+// but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// PURPOSE.  See the Alternate Route Library Open Source License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License
+// along with this program; if not, write to the Washington State
+// Department of Transportation, Bridge and Structures Office,
+// P.O. Box 47340, Olympia, WA 98503, USA or e-mail
+// Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+// Fem2d.idl : IDL source for Fem2d.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (Fem2d.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "WBFLTypes.idl";
+import "WBFLTools.idl";
+
+#include "Fem2d.hh"
+cpp_quote("#include \"Fem2dErrors.h\"")
+
+[
+	uuid(807A6228-AE89-11D4-AF38-00105A9AF985),
+	version(1.0),
+	helpstring("WBFLFem2d Library"),
+    helpfile("WBFLFem2d.chm"),
+    helpcontext(IDH_WbflFem2d),
+]
+library WBFLFem2d
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+   typedef
+   [
+     public,
+     uuid(FABE04A0-FF96-11d2-8CDF-F43C3928A334),
+     helpcontext(IDH_Fem2dAccessType),
+     helpstring("Designates whether to access the elements of a collection by sequential index or by ID"),
+   ] 
+   enum 
+   {
+      atIndex = 0, 
+      atID    = 1
+
+   } Fem2dAccessType;
+
+   typedef
+   [
+     public,
+     uuid(6D99D3D9-B9BC-11d4-AF44-00105A9AF985),
+     helpcontext(IDH_Fem2dMbrReleaseType),
+     helpstring("Designates member end release"),
+   ] 
+   enum 
+   {
+      mbrReleaseNone  = 0,
+      mbrReleaseMz    = 1
+
+   } Fem2dMbrReleaseType;
+
+   typedef
+   [
+     public,
+     uuid(3B343406-B05C-11d4-AF39-00105A9AF985),
+     helpcontext(IDH_Fem2dMbrEndType),
+     helpstring("Designates the Start or the End of a member"),
+   ] 
+   enum 
+   {
+      metStart  = 0,
+      metEnd    = 1
+
+   } Fem2dMbrEndType;
+
+   typedef
+   [
+     public,
+     uuid(40ABF188-B112-11d4-AF3A-00105A9AF985),
+     helpcontext(IDH_Fem2dJointReleaseType),
+     helpstring("Joint Release"),
+   ] 
+   enum 
+   {
+	   jrtNone =0,
+	   jrtFx   =1,
+	   jrtFy   =2,
+	   jrtMz   =4,
+	   jrtAll  =7
+   } Fem2dJointReleaseType;
+
+   typedef
+   [
+     public,
+     uuid(CA256DDA-BB27-11d4-AF47-00105A9AF985),
+     helpcontext(IDH_Fem2dLoadOrientation),
+     helpstring("Orientation of member loads"),
+   ]
+   enum 
+   {
+	   lotGlobal = 0,
+	   lotMember = 1,
+       lotGlobalProjected=2
+   } Fem2dLoadOrientation;
+
+   typedef
+   [
+     public,
+     uuid(6B8719C5-D774-11d4-AF64-00105A9AF985),
+     helpcontext(IDH_Fem2dLoadDirection),
+     helpstring("Load direction for distributed loads"),
+   ]
+   enum 
+   {
+	   loadDirFx = 0,
+	   loadDirFy = 1
+   } Fem2dLoadDirection;
+
+   typedef
+   [
+     public,
+     uuid(12033448-C0DC-11d4-AF4C-00105A9AF985),
+     helpcontext(IDH_Fem2dMbrFaceType),
+     helpstring("Designates left or right face at a member cut"),
+   ]
+   enum 
+   {
+	   mftLeft  = 0,
+	   mftRight = 1
+   } Fem2dMbrFaceType;
+
+   typedef
+   [
+     public,
+     uuid(DB3A3C38-082D-11d5-8BB9-006097C68A9C),
+     helpcontext(IDH_Fem2dJointDOF),
+     helpstring("Designates a degree of freedom for a joint or POI"),
+   ]
+   enum 
+   {
+	   jdofDx = 0,
+	   jdofDy = 1,
+	   jdofRz = 2
+   } Fem2dJointDOF;
+
+   typedef
+   [
+     public,
+     uuid(DB3A3C39-082D-11d5-8BB9-006097C68A9C),
+     helpcontext(IDH_Fem2dMbrDOF),
+     helpstring("Designates a degree of freedom for a beam member"),
+   ]
+   enum 
+   {
+	   mdofDxStart = 0,
+	   mdofDyStart = 1,
+	   mdofRzStart = 2,
+	   mdofDxEnd   = 3,
+	   mdofDyEnd   = 4,
+	   mdofRzEnd   = 5
+   } Fem2dMbrDOF;
+
+
+   [
+      object,
+      uuid(FFA6147B-F3E7-11d4-AF82-00105A9AF985),
+      helpstring("IFem2dEnumMemberID Interface"),
+      oleautomation,
+      hidden,restricted,
+      pointer_default(unique)
+   ]
+   interface IFem2dEnumMemberID : IUnknown
+   {
+      [helpstring("Clone")]
+      HRESULT Clone([out] IFem2dEnumMemberID** ppenum);
+
+      [helpstring("Next")]
+      HRESULT Next([in] ULONG celt, [out] MemberIDType* rgelt, [in,out] ULONG* pceltFetched);
+
+      [helpstring("Reset")]
+      HRESULT Reset();
+      
+      [helpstring("Skip")]
+      HRESULT Skip([in] ULONG celt);
+   };
+
+   [
+	   object,
+	   uuid(807A623A-AE89-11D4-AF38-00105A9AF985),
+      oleautomation,
+       helpcontext(IDH_IFem2dJoint),
+	   helpstring("IFem2dJoint Interface"),
+	   pointer_default(unique)
+   ]
+   interface IFem2dJoint : IUnknown
+   {
+	   [propget, helpcontext(IDH_IFem2dJoint_ID), helpstring("property ID - The ID for the Joint")] 
+       HRESULT ID([out, retval] JointIDType *pVal);
+
+	   [propget, helpcontext(IDH_IFem2dJoint_X), helpstring("property X - The X Location")] 
+       HRESULT X([out, retval] Float64 *pVal);
+
+	   [propput, helpcontext(IDH_IFem2dJoint_X), helpstring("property X - The X Location")] 
+       HRESULT X([in] Float64 newVal);
+
+	   [propget, helpcontext(IDH_IFem2dJoint_Y), helpstring("property Y - The Y Location")] 
+       HRESULT Y([out, retval] Float64 *pVal);
+
+	   [propput, helpcontext(IDH_IFem2dJoint_Y), helpstring("property Y - The Y Location")] 
+       HRESULT Y([in] Float64 newVal);
+
+	   [helpcontext(IDH_IFem2dJoint_IsDofReleased), helpstring("property IsDofReleased - TRUE if a particular DOF is released")] 
+       HRESULT IsDofReleased([in]Fem2dJointReleaseType rel, [out, retval] VARIANT_BOOL *pVal);
+
+	   [helpcontext(IDH_IFem2dJoint_IsSupport), helpstring("property IsSupport - TRUE if any DOF's are supported")] 
+       HRESULT IsSupport([out, retval] VARIANT_BOOL *pVal);
+
+	   [helpcontext(IDH_IFem2dJoint_Support), helpstring("method Support - Support all DOF's")] 
+       HRESULT Support();
+
+	   [helpcontext(IDH_IFem2dJoint_Free), helpstring("method Free - Release all DOF's")] 
+       HRESULT Free();
+
+	   [helpcontext(IDH_IFem2dJoint_ReleaseDof), helpstring("method ReleaseDof - Release a particular DOF")] 
+       HRESULT ReleaseDof([in] Fem2dJointReleaseType rel);
+
+	   [helpcontext(IDH_IFem2dJoint_IsDofSupported), helpstring("property IsDofSupported - TRUE if a particular DOF is supported")] 
+       HRESULT IsDofSupported([in]Fem2dJointReleaseType rel, [out, retval] VARIANT_BOOL *pVal);
+
+	   [propget, helpcontext(IDH_IFem2dJoint_Members), helpstring("property Members - returns collection of ID's of Members connected to this Joint")] 
+       HRESULT Members([out, retval] ILongArray **pVal);
+   };
+
+   [
+      object,
+      uuid(A9136294-B01B-11d4-AF39-00105A9AF985),
+      helpstring("IFem2dEnumJoint Interface"),
+      oleautomation,
+      hidden,restricted,
+      pointer_default(unique)
+   ]
+   interface IFem2dEnumJoint : IUnknown
+   {
+      [helpstring("Clone")]
+      HRESULT Clone([out] IFem2dEnumJoint** ppenum);
+
+      [helpstring("Next")]
+      HRESULT Next([in] ULONG celt, [out] IFem2dJoint** rgelt, [in,out] ULONG* pceltFetched);
+
+      [helpstring("Reset")]
+      HRESULT Reset();
+      
+      [helpstring("Skip")]
+      HRESULT Skip([in] ULONG celt);
+   };
+
+   [
+	   object,
+	   uuid(807A6238-AE89-11D4-AF38-00105A9AF985),
+	   oleautomation,
+       helpcontext(IDH_IFem2dJointCollection),
+	   helpstring("IFem2dJointCollection Interface"),
+	   pointer_default(unique)
+   ]
+   interface IFem2dJointCollection : IUnknown
+   {
+	   [propget, helpcontext(IDH_IFem2dJointCollection_Item), helpstring("property Item")] 
+	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dJoint** pVal);
+
+	   [propget, helpstring("returns an enumerator for the collection.")]
+	   HRESULT _NewEnum([out, retval] IUnknown** retval);  
+
+	   [propget, helpcontext(IDH_IFem2dJointCollection_Count), helpstring("property Count - Number of Joints in collection")] 
+	   HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+	   [propget, helpstring("property _EnumElements")] 
+	   HRESULT _EnumElements([out, retval] IFem2dEnumJoint* *pVal);
+
+	   [helpcontext(IDH_IFem2dJointCollection_Find), helpstring("property Find - find a particular joint")] 
+	   HRESULT Find([in]JointIDType ID, [out,retval] IFem2dJoint* *pVal);
+
+	   [helpcontext(IDH_IFem2dJointCollection_Create), helpstring("Create a new joint and add it to the model")] 
+	   HRESULT Create([in]JointIDType ID, [in]Float64 fltX, [in]Float64 fltY, [out, retval] IFem2dJoint* *pVal);
+
+	   [helpcontext(IDH_IFem2dJointCollection_Remove), helpstring("method Remove - Remove a particular joint using ID or index")] 
+	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod,[out,retval]JointIDType* pid);
+
+	   [helpcontext(IDH_IFem2dJointCollection_Clear), helpstring("method Clear - Remove all joints")] HRESULT Clear();
+   };
+   [
+	   object,
+	   uuid(3BA5C1A5-B009-11D4-AF39-00105A9AF985),
+	   oleautomation,
+	   helpstring("IFem2dMember Interface"),
+       helpcontext(IDH_IFem2dMember),
+	   pointer_default(unique)
+   ]
+   interface IFem2dMember : IUnknown
+   {
+	   [propget, helpcontext(IDH_IFem2dMember_ID), helpstring("property ID - The member's ID")] 
+       HRESULT ID([out, retval] MemberIDType *pVal);
+	   [propget, helpcontext(IDH_IFem2dMember_StartJoint), helpstring("property StartJoint")] 
+       HRESULT StartJoint([out, retval] JointIDType *pVal);
+	   [propput, helpcontext(IDH_IFem2dMember_StartJoint), helpstring("property StartJoint")] 
+       HRESULT StartJoint([in] JointIDType newVal);
+	   [propget, helpcontext(IDH_IFem2dMember_EndJoint), helpstring("property EndJoint")] 
+       HRESULT EndJoint([out, retval] JointIDType *pVal);
+	   [helpcontext(IDH_IFem2dMember_IsReleased), helpstring("property IsReleased - Test if a particular end is released")] 
+       HRESULT IsReleased([in]Fem2dMbrEndType end, [out, retval] VARIANT_BOOL *pVal);
+	   [helpcontext(IDH_IFem2dMember_ReleaseEnd), helpstring("method ReleaseEnd - release the start or end of the member")] 
+       HRESULT ReleaseEnd([in]Fem2dMbrEndType whichEnd, [in]Fem2dMbrReleaseType releaseType);
+	   [propput, helpcontext(IDH_IFem2dMember_EndJoint), helpstring("property EndJoint ")] 
+       HRESULT EndJoint([in] JointIDType newVal);
+	   [propget, helpcontext(IDH_IFem2dMember_EA), helpstring("property EA - Axial stiffness")] 
+       HRESULT EA([out, retval] Float64 *pVal);
+	   [propput, helpcontext(IDH_IFem2dMember_EA), helpstring("property EA - Axial stiffness")] 
+       HRESULT EA([in] Float64 newVal);
+	   [propget, helpcontext(IDH_IFem2dMember_EI), helpstring("property EI - Bending stiffness")] 
+       HRESULT EI([out, retval] Float64 *pVal);
+	   [propput, helpcontext(IDH_IFem2dMember_EI), helpstring("property EI - Bending stiffness")] 
+       HRESULT EI([in] Float64 newVal);
+	   [propget, helpcontext(IDH_IFem2dMember_Length), helpstring("property Length - Compute the member length")] 
+       HRESULT Length([out, retval] Float64 *pVal);
+   };
+
+   [
+      object,
+      uuid(F6ADC094-B057-11d4-AF39-00105A9AF985),
+      helpstring("IFem2dEnumMember Interface"),
+      oleautomation,
+      hidden,restricted,
+      pointer_default(unique)
+   ]
+   interface IFem2dEnumMember : IUnknown
+   {
+      [helpstring("Clone")]
+      HRESULT Clone([out] IFem2dEnumMember** ppenum);
+
+      [helpstring("Next")]
+      HRESULT Next([in] ULONG celt, [out] IFem2dMember** rgelt, [in,out] ULONG* pceltFetched);
+
+      [helpstring("Reset")]
+      HRESULT Reset();
+      
+      [helpstring("Skip")]
+      HRESULT Skip([in] ULONG celt);
+   };
+
+   [
+	   object,
+	   uuid(F6ADC095-B057-11d4-AF39-00105A9AF985),
+	   oleautomation,
+       helpcontext(IDH_IFem2dMemberCollection),
+	   helpstring("IFem2dMemberCollection Interface"),
+	   pointer_default(unique)
+   ]
+   interface IFem2dMemberCollection : IUnknown
+   {
+	   [propget, helpcontext(IDH_IFem2dMemberCollection_Item), helpstring("property Item")] 
+	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dMember** pVal);
+
+	   [propget, helpstring("returns an enumerator for the collection.")]
+	   HRESULT _NewEnum([out, retval] IUnknown** retval);  
+
+	   [propget, helpcontext(IDH_IFem2dMemberCollection_Count), helpstring("property Count")] 
+	   HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+	   [propget, helpstring("property _EnumElements")] 
+	   HRESULT _EnumElements([out, retval] IFem2dEnumMember* *pVal);
+
+	   [helpcontext(IDH_IFem2dMemberCollection_Find), helpstring("property Find - find a particular member")] 
+	   HRESULT Find([in]MemberIDType ID, [out,retval] IFem2dMember* *pVal);
+
+	   [helpcontext(IDH_IFem2dMemberCollection_Create), helpstring("Create a new Member and add it to the model")] 
+	   HRESULT Create([in]MemberIDType ID, [in]JointIDType startJoint, [in]JointIDType EndJoint, [in]Float64 EA, [in]Float64 EI, [out, retval] IFem2dMember* *pVal);
+
+	   [helpcontext(IDH_IFem2dMemberCollection_Remove), helpstring("Remove a particular member by ID or index")] 
+	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]MemberIDType* pid);
+
+	   [helpcontext(IDH_IFem2dMemberCollection_Clear), helpstring("method Clear - Remove all members")] HRESULT Clear();
+   };
+   [
+	   object,
+	   uuid(820F7F26-BA41-11D4-AF46-00105A9AF985),
+	   oleautomation,
+       helpcontext(IDH_IFem2dJointLoad),
+	   helpstring("IFem2dJointLoad Interface"),
+	   pointer_default(unique)
+   ]
+   interface IFem2dJointLoad : IUnknown
+   {
+	   [propget, helpcontext(IDH_IFem2dJointLoad_ID), helpstring("property ID")] 
+       HRESULT ID([out, retval] LoadIDType *pVal);
+	   [propget, helpcontext(IDH_IFem2dJointLoad_JointID), helpstring("property JointID - ID of loaded Joint")] 
+       HRESULT JointID([out, retval] JointIDType *pVal);
+	   [propput, helpcontext(IDH_IFem2dJointLoad_JointID), helpstring("property JointID - ID of loaded joint")] 
+       HRESULT JointID([in] JointIDType newVal);
+	   [propget, helpcontext(IDH_IFem2dJointLoad_Fx), helpstring("property Fx - Applied force in X direction")] 
+       HRESULT Fx([out, retval] Float64 *pVal);
+	   [propput, helpcontext(IDH_IFem2dJointLoad_Fx), helpstring("property Fx - Applied force in X direction")] 
+       HRESULT Fx([in] Float64 newVal);
+	   [propget, helpcontext(IDH_IFem2dJointLoad_Fy), helpstring("property Fy - Applied force in Y direction")] 
+       HRESULT Fy([out, retval] Float64 *pVal);
+	   [propput, helpcontext(IDH_IFem2dJointLoad_Fy), helpstring("property Fy - Applied force in Y direction")] 
+       HRESULT Fy([in] Float64 newVal);
+	   [propget, helpcontext(IDH_IFem2dJointLoad_Mz), helpstring("property Mz - Applied moment")] 
+       HRESULT Mz([out, retval] Float64  *pVal);
+	   [propput, helpcontext(IDH_IFem2dJointLoad_Mz), helpstring("property Mz - Applied moment")] 
+       HRESULT Mz([in] Float64  newVal);
+	   [helpcontext(IDH_IFem2dJointLoad_SetForce), helpstring("method SetForce - Set all force components at once")] 
+       HRESULT SetForce([in]Float64 Fx, [in]Float64 Fy, [in]Float64 Mz);
+	   [helpcontext(IDH_IFem2dJointLoad_GetForce), helpstring("method GetForce - Get all force components at once")] 
+       HRESULT GetForce([out]Float64* Fx, [out]Float64* Fy, [out]Float64* Mz);
+	   [propget, helpcontext(IDH_IFem2dJointLoad_Loading), helpstring("property Loading - ID of Loading this load belongs to")] 
+       HRESULT Loading([out, retval] LoadCaseIDType *pVal);
+   };
+
+   [
+      object,
+      uuid(6DEA0F48-BA83-11d4-AF46-00105A9AF985),
+      helpstring("IFem2dEnumJointLoad Interface"),
+      oleautomation,
+      hidden,restricted,
+      pointer_default(unique)
+   ]
+   interface IFem2dEnumJointLoad : IUnknown
+   {
+      [helpstring("Clone")]
+      HRESULT Clone([out] IFem2dEnumJointLoad** ppenum);
+
+      [helpstring("Next")]
+      HRESULT Next([in] ULONG celt, [out] IFem2dJointLoad** rgelt, [in,out] ULONG* pceltFetched);
+
+      [helpstring("Reset")]
+      HRESULT Reset();
+      
+      [helpstring("Skip")]
+      HRESULT Skip([in] ULONG celt);
+   };
+
+   [
+	   object,
+	   uuid(820F7F28-BA41-11D4-AF46-00105A9AF985),
+	   oleautomation,
+       helpcontext(IDH_IFem2dJointLoadCollection),
+	   helpstring("IFem2dJointLoadCollection Interface"),
+	   pointer_default(unique)
+   ]
+   interface IFem2dJointLoadCollection : IUnknown
+   {
+	   [propget, helpcontext(IDH_IFem2dJointLoadCollection_ID), helpstring("property Item")] 
+	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dJointLoad** pVal);
+
+	   [propget, helpstring("returns an enumerator for the collection.")]
+	   HRESULT _NewEnum([out, retval] IUnknown** retval);  
+
+	   [propget, helpcontext(IDH_IFem2dJointLoadCollection_Count), helpstring("property Count")] 
+	   HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+	   [propget, helpstring("property _EnumElements")] 
+	   HRESULT _EnumElements([out, retval] IFem2dEnumJointLoad* *pVal);
+
+	   [helpcontext(IDH_IFem2dJointLoadCollection_Find), helpstring("property Find - Find a particular JointLoad")] 
+	   HRESULT Find([in]LoadIDType ID, [out,retval] IFem2dJointLoad* *pVal);
+
+	   [helpcontext(IDH_IFem2dJointLoadCollection_Create), helpstring("Create a new JointLoad and add it to the model")] 
+	   HRESULT Create([in]LoadIDType ID, [in]JointIDType joint, [in]Float64 Fx, [in]Float64 Fy, [in]Float64 Mz, [out, retval] IFem2dJointLoad** pVal);
+
+	   [helpcontext(IDH_IFem2dJointLoadCollection_Remove), helpstring("method Remove - remove a specific JointLoad")] 
+	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadIDType* pid);
+
+	   [helpcontext(IDH_IFem2dJointLoadCollection_Clear), helpstring("method Clear - Remove all loads")] HRESULT Clear();
+
+   };
+
+   [
+	   object,
+	   uuid(A5642476-CFBF-11d4-AF5D-00105A9AF985),
+	   oleautomation,
+	   helpstring("IFem2dJointDisplacement Interface"),
+       helpcontext(IDH_IFem2dJointDisplacement),
+	   pointer_default(unique)
+   ]
+   interface IFem2dJointDisplacement : IUnknown
+   {
+	   [propget, helpcontext(IDH_IFem2dJointDisplacement_ID), helpstring("property ID")] HRESULT ID([out, retval] LoadIDType *pVal);
+	   [propget, helpcontext(IDH_IFem2dJointDisplacement_JointID), helpstring("property JointID - ID of displaced Joint")] HRESULT JointID([out, retval] JointIDType *pVal);
+	   [propput, helpcontext(IDH_IFem2dJointDisplacement_JointID), helpstring("property JointID - ID of displaced Joint")] HRESULT JointID([in] JointIDType newVal);
+	   [propget, helpcontext(IDH_IFem2dJointDisplacement_Dx), helpstring("property Dx - Applied displacement in X direction")] HRESULT Dx([out, retval] Float64 *pVal);
+	   [propput, helpcontext(IDH_IFem2dJointDisplacement_Dx), helpstring("property Dx - Applied displacement in X direction")] HRESULT Dx([in] Float64 newVal);
+	   [propget, helpcontext(IDH_IFem2dJointDisplacement_Dy), helpstring("property Dy - Applied displacement in Y direction")] HRESULT Dy([out, retval] Float64 *pVal);
+	   [propput, helpcontext(IDH_IFem2dJointDisplacement_Dy), helpstring("property Dy - Applied displacement in Y direction")] HRESULT Dy([in] Float64 newVal);
+	   [propget, helpcontext(IDH_IFem2dJointDisplacement_Rz), helpstring("property Rz - Applied rotation")] HRESULT Rz([out, retval] Float64  *pVal);
+	   [propput, helpcontext(IDH_IFem2dJointDisplacement_Rz), helpstring("property Rz - Applied rotation")] HRESULT Rz([in] Float64  newVal);
+	   [helpcontext(IDH_IFem2dJointDisplacement_SetDisplacement), helpstring("method SetDisplacement - Set all applied displacements")] HRESULT SetDisplacement([in]Float64 Dx, [in]Float64 Dy, [in]Float64 Rz);
+	   [helpcontext(IDH_IFem2dJointDisplacement_GetDisplacement), helpstring("method GetDisplacement - Get all applied displacements")] HRESULT GetDisplacement([out]Float64* Dx, [out]Float64* Dy, [out]Float64* Rz);
+	   [propget, helpcontext(IDH_IFem2dJointDisplacement_Loading), helpstring("property Loading - ID of Loading this load belongs to")] HRESULT Loading([out, retval] LoadCaseIDType *pVal);
+   };
+
+   [
+      object,
+      uuid(A5642477-CFBF-11d4-AF5D-00105A9AF985),
+      helpstring("IFem2dEnumJointDisplacement Interface"),
+      oleautomation,
+      hidden,restricted,
+      pointer_default(unique)
+   ]
+   interface IFem2dEnumJointDisplacement : IUnknown
+   {
+      [helpstring("Clone")]
+      HRESULT Clone([out] IFem2dEnumJointDisplacement** ppenum);
+
+      [helpstring("Next")]
+      HRESULT Next([in] ULONG celt, [out] IFem2dJointDisplacement** rgelt, [in,out] ULONG* pceltFetched);
+
+      [helpstring("Reset")]
+      HRESULT Reset();
+      
+      [helpstring("Skip")]
+      HRESULT Skip([in] ULONG celt);
+   };
+
+   [
+	   object,
+	   uuid(A5642478-CFBF-11d4-AF5D-00105A9AF985),
+	   oleautomation,
+       helpcontext(IDH_IFem2dJointDisplacementCollection),
+	   helpstring("IFem2dJointDisplacementCollection Interface"),
+	   pointer_default(unique)
+   ]
+   interface IFem2dJointDisplacementCollection : IUnknown
+   {
+	   [propget, helpcontext(IDH_IFem2dJointDisplacementCollection_Item), helpstring("property Item")] 
+	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dJointDisplacement** pVal);
+
+	   [propget, helpstring("returns an enumerator for the collection.")]
+	   HRESULT _NewEnum([out, retval] IUnknown** retval);  
+
+	   [propget, helpcontext(IDH_IFem2dJointDisplacementCollection_Count), helpstring("property Count")] 
+	   HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+	   [propget, helpstring("property _EnumElements")] 
+	   HRESULT _EnumElements([out, retval] IFem2dEnumJointDisplacement* *pVal);
+
+	   [helpcontext(IDH_IFem2dJointDisplacementCollection_Find), helpstring("property Find - Find a particular JointDisplacement")] 
+	   HRESULT Find([in]LoadIDType ID, [out,retval] IFem2dJointDisplacement* *pVal);
+
+	   [helpcontext(IDH_IFem2dJointDisplacementCollection_Create), helpstring("Create a new JointDisplacement and add it to the model")] 
+	   HRESULT Create([in]LoadIDType ID, [in]JointIDType joint, [in]Float64 Dx, [in]Float64 Dy, [in]Float64 Rz, [out, retval] IFem2dJointDisplacement** pVal);
+
+	   [helpcontext(IDH_IFem2dJointDisplacementCollection_Remove), helpstring("method Remove - Remove a particular JointDisplacement by ID or index")] 
+	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadIDType* pid);
+
+	   [helpcontext(IDH_IFem2dJointDisplacementCollection_Clear), helpstring("method Clear - Remove all loads")] HRESULT Clear();
+   };
+
+   [
+	   object,
+	   uuid(50D65B03-BB0D-11D4-AF47-00105A9AF985),
+      oleautomation,
+       helpcontext(IDH_IFem2dPointLoad),
+	   helpstring("IFem2dPointLoad Interface"),
+	   pointer_default(unique)
+   ]
+   interface IFem2dPointLoad : IUnknown
+   {
+	   [propget, helpcontext(IDH_IFem2dPointLoad_ID), helpstring("property ID")] 
+       HRESULT ID([out, retval] LoadIDType *pVal);
+	   [propget, helpcontext(IDH_IFem2dPointLoad_MemberID), helpstring("property MemberID - ID of loaded Member")] 
+       HRESULT MemberID([out, retval] MemberIDType *pVal);
+	   [propput, helpcontext(IDH_IFem2dPointLoad_MemberID), helpstring("property MemberID - ID of loaded Member")] 
+       HRESULT MemberID([in] MemberIDType newVal);
+	   [propget, helpcontext(IDH_IFem2dPointLoad_Orientation), helpstring("property Orientation - Orientation of load")] 
+       HRESULT Orientation([out, retval] Fem2dLoadOrientation *pVal);
+	   [propput, helpcontext(IDH_IFem2dPointLoad_Orientation), helpstring("property Orientation - Orientation of load")] 
+       HRESULT Orientation([in] Fem2dLoadOrientation newVal);
+	   [propget, helpcontext(IDH_IFem2dPointLoad_Fx), helpstring("property Fx - X force component of applied load")] 
+       HRESULT Fx([out, retval] Float64  *pVal);
+	   [propput, helpcontext(IDH_IFem2dPointLoad_Fx), helpstring("property Fx - X force component of applied load")] 
+       HRESULT Fx([in] Float64  newVal);
+	   [propget, helpcontext(IDH_IFem2dPointLoad_Fy), helpstring("property Fy - Y force component of applied load")] 
+       HRESULT Fy([out, retval] Float64 *pVal);
+	   [propput, helpcontext(IDH_IFem2dPointLoad_Fy), helpstring("property Fy - Y force component of applied load")] 
+       HRESULT Fy([in] Float64 newVal);
+	   [propget, helpcontext(IDH_IFem2dPointLoad_Mz), helpstring("property Mz - Moment component of applied load")] 
+       HRESULT Mz([out, retval] Float64 *pVal);
+	   [propput, helpcontext(IDH_IFem2dPointLoad_Mz), helpstring("property Mz - Moment component of applied load")] 
+       HRESULT Mz([in] Float64 newVal);
+	   [helpcontext(IDH_IFem2dPointLoad_SetForce), helpstring("method SetForce - Set all force components at once")] 
+       HRESULT SetForce([in]Float64 Fx, [in]Float64 Fy, [in]Float64 Mz);
+	   [helpcontext(IDH_IFem2dPointLoad_GetForce), helpstring("method GetForce - Get all force components at once")] 
+       HRESULT GetForce([out]Float64* Fx, [out]Float64* Fy, [out]Float64* Mz);
+	   [propget, helpcontext(IDH_IFem2dPointLoad_Location), helpstring("property Location - Location of load along member")] 
+       HRESULT Location([out, retval] Float64 *pVal);
+	   [propput, helpcontext(IDH_IFem2dPointLoad_Location), helpstring("property Location - Location of load along member")] 
+       HRESULT Location([in] Float64 newVal);
+	   [propget, helpcontext(IDH_IFem2dPointLoad_Loading), helpstring("property Loading - ID of Loading this load belongs to")] 
+       HRESULT Loading([out, retval] LoadCaseIDType *pVal);
+   };
+
+   [
+      object,
+      uuid(ED394556-BB29-11d4-AF47-00105A9AF985),
+      helpstring("IFem2dEnumPointLoad Interface"),
+      oleautomation,
+      hidden,restricted,
+      pointer_default(unique)
+   ]
+   interface IFem2dEnumPointLoad : IUnknown
+   {
+      [helpstring("Clone")]
+      HRESULT Clone([out] IFem2dEnumPointLoad** ppenum);
+
+      [helpstring("Next")]
+      HRESULT Next([in] ULONG celt, [out] IFem2dPointLoad** rgelt, [in,out] ULONG* pceltFetched);
+
+      [helpstring("Reset")]
+      HRESULT Reset();
+      
+      [helpstring("Skip")]
+      HRESULT Skip([in] ULONG celt);
+   };
+
+   [
+	   object,
+	   uuid(CA256DDB-BB27-11d4-AF47-00105A9AF985),
+	   oleautomation,
+	   helpstring("IFem2dPointLoadCollection Interface"),
+       helpcontext(IDH_IFem2dPointLoadCollection),
+	   pointer_default(unique)
+   ]
+   interface IFem2dPointLoadCollection : IUnknown
+   {
+	   [propget, helpcontext(IDH_IFem2dPointLoadCollection_Item), helpstring("property Item")] 
+	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dPointLoad** pVal);
+
+	   [propget, helpstring("returns an enumerator for the collection.")]
+	   HRESULT _NewEnum([out, retval] IUnknown** retval);  
+
+	   [propget, helpcontext(IDH_IFem2dPointLoadCollection_Count), helpstring("property Count")] 
+	   HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+	   [propget, helpstring("property _EnumElements")] 
+	   HRESULT _EnumElements([out, retval] IFem2dEnumPointLoad* *pVal);
+
+	   [helpcontext(IDH_IFem2dPointLoadCollection_Find), helpstring("property Find - Find a particular PointLoad")] 
+	   HRESULT Find([in]LoadIDType ID, [out,retval] IFem2dPointLoad* *pVal);
+
+	   [helpcontext(IDH_IFem2dPointLoadCollection_Create), helpstring("Create a new Point Load on a member and add it to the model")] 
+	   HRESULT Create([in]LoadIDType ID, [in]MemberIDType memberID, [in]Float64 location, [in]Float64 Fx, [in]Float64 Fy, [in]Float64 Mz, [in] Fem2dLoadOrientation orientation, [out, retval] IFem2dPointLoad** pVal);
+
+	   [helpcontext(IDH_IFem2dPointLoadCollection_Remove), helpstring("method Remove - Remove a particular PointLoad by ID or index")] 
+	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadIDType* pid);
+
+	   [helpcontext(IDH_IFem2dPointLoadCollection_Clear), helpstring("method Clear - Remove all loads")] HRESULT Clear();
+   };
+
+   [
+	   object,
+	   uuid(6B8719C2-D774-11d4-AF64-00105A9AF985),
+	   oleautomation,
+	   helpstring("IFem2dDistributedLoad Interface"),
+       helpcontext(IDH_IFem2dDistributedLoad),
+	   pointer_default(unique)
+   ]
+   interface IFem2dDistributedLoad : IUnknown
+   {
+	   [propget, helpcontext(IDH_IFem2dDistributedLoad_ID), helpstring("property ID")] 
+       HRESULT ID([out, retval] LoadIDType *pVal);
+	   [propget, helpcontext(IDH_IFem2dDistributedLoad_MemberID), helpstring("property MemberID - ID of Member this load is applied to")] 
+       HRESULT MemberID([out, retval] MemberIDType *pVal);
+	   [propput, helpcontext(IDH_IFem2dDistributedLoad_MemberID), helpstring("property MemberID - ID of Member this load is applied to")] 
+       HRESULT MemberID([in] MemberIDType newVal);
+	   [propget, helpcontext(IDH_IFem2dDistributedLoad_Orientation), helpstring("property Orientation - Orientation of applied load")] 
+       HRESULT Orientation([out, retval] Fem2dLoadOrientation *pVal);
+	   [propput, helpcontext(IDH_IFem2dDistributedLoad_Orientation), helpstring("property Orientation - Orientation of applied load")] 
+       HRESULT Orientation([in] Fem2dLoadOrientation newVal);
+	   [propget, helpcontext(IDH_IFem2dDistributedLoad_Direction), helpstring("property Direction - Direction of DistributedLoad")] 
+       HRESULT Direction([out, retval] Fem2dLoadDirection *pVal);
+	   [propput, helpcontext(IDH_IFem2dDistributedLoad_Direction), helpstring("property Direction - Direction of DistributedLoad")] 
+       HRESULT Direction([in] Fem2dLoadDirection newVal);
+	   [propget, helpcontext(IDH_IFem2dDistributedLoad_StartLocation), helpstring("property StartLocation - Location of start of load")] 
+       HRESULT StartLocation([out, retval] Float64  *pVal);
+	   [propput, helpcontext(IDH_IFem2dDistributedLoad_StartLocation), helpstring("property StartLocation - Location of start of load")] 
+       HRESULT StartLocation([in] Float64  newVal);
+	   [propget, helpcontext(IDH_IFem2dDistributedLoad_EndLocation), helpstring("property EndLocation - Location of end of load")] 
+       HRESULT EndLocation([out, retval] Float64 *pVal);
+	   [propput, helpcontext(IDH_IFem2dDistributedLoad_EndLocation), helpstring("property EndLocation")] 
+       HRESULT EndLocation([in] Float64 newVal);
+	   [propget, helpcontext(IDH_IFem2dDistributedLoad_WStart), helpstring("property WStart - Load value at start of load")] 
+       HRESULT WStart([out, retval] Float64 *pVal);
+	   [propput, helpcontext(IDH_IFem2dDistributedLoad_WStart), helpstring("property WStart - Load value at start of load")] 
+       HRESULT WStart([in] Float64 newVal);
+	   [propget, helpcontext(IDH_IFem2dDistributedLoad_WEnd), helpstring("property WEnd - Load value at end of load")] 
+       HRESULT WEnd([out, retval] Float64 *pVal);
+	   [propput, helpcontext(IDH_IFem2dDistributedLoad_WEnd), helpstring("property WEnd - Load value at end of load")] 
+       HRESULT WEnd([in] Float64 newVal);
+	   [propget, helpcontext(IDH_IFem2dDistributedLoad_Loading), helpstring("property Loading - ID of loading this load belongs to")] 
+       HRESULT Loading([out, retval] LoadCaseIDType *pVal);
+   };
+
+   [
+      object,
+      uuid(6B8719C3-D774-11d4-AF64-00105A9AF985),
+      helpstring("IFem2dEnumDistributedLoad Interface"),
+      oleautomation,
+      hidden,restricted,
+      pointer_default(unique)
+   ]
+   interface IFem2dEnumDistributedLoad : IUnknown
+   {
+      [helpstring("Clone")]
+      HRESULT Clone([out] IFem2dEnumDistributedLoad** ppenum);
+
+      [helpstring("Next")]
+      HRESULT Next([in] ULONG celt, [out] IFem2dDistributedLoad** rgelt, [in,out] ULONG* pceltFetched);
+
+      [helpstring("Reset")]
+      HRESULT Reset();
+      
+      [helpstring("Skip")]
+      HRESULT Skip([in] ULONG celt);
+   };
+
+   [
+	   object,
+	   uuid(6B8719C4-D774-11d4-AF64-00105A9AF985),
+	   oleautomation,,
+	   helpstring("IFem2dDistributedLoadCollection Interface"),
+       helpcontext(IDH_IFem2dDistributedLoadCollection),
+	   pointer_default(unique)
+   ]
+   interface IFem2dDistributedLoadCollection : IUnknown
+   {
+	   [propget, helpcontext(IDH_IFem2dDistributedLoadCollection_Item), helpstring("property Item")] 
+	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dDistributedLoad** pVal);
+
+	   [propget, helpstring("returns an enumerator for the collection.")]
+	   HRESULT _NewEnum([out, retval] IUnknown** retval);  
+
+	   [propget, helpcontext(IDH_IFem2dDistributedLoadCollection_Count), helpstring("property Count")] 
+	   HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+	   [propget, helpstring("property _EnumElements")] 
+	   HRESULT _EnumElements([out, retval] IFem2dEnumDistributedLoad* *pVal);
+
+	   [helpcontext(IDH_IFem2dDistributedLoadCollection_Find), helpstring("property Find - Find a particular DistributedLoad")] 
+	   HRESULT Find([in]LoadIDType ID, [out,retval] IFem2dDistributedLoad* *pVal);
+
+	   [helpcontext(IDH_IFem2dDistributedLoadCollection_Create), helpstring("Create a new Distributed load on a member and add it to the model")] 
+	   HRESULT Create([in]LoadIDType ID, [in]MemberIDType memberID, [in]Fem2dLoadDirection direction, [in]Float64 startLocation,[in]Float64 endLocation, [in]Float64 Wstart, [in]Float64 Wend, [in] Fem2dLoadOrientation orientation, [out, retval] IFem2dDistributedLoad** pVal);
+
+	   [helpcontext(IDH_IFem2dDistributedLoadCollection_Remove), helpstring("method Remove - Remove a particular DistributedLoad by ID or index")] 
+	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadIDType* pid);
+
+	   [helpcontext(IDH_IFem2dDistributedLoadCollection_Clear), helpstring("method Clear - Remove all loads")] 
+       HRESULT Clear();
+   };
+
+   [
+	   object,
+	   uuid(E07E9384-D113-11d4-AF5F-00105A9AF985),
+	   oleautomation,
+       helpcontext(IDH_IFem2dMemberStrain),
+	   helpstring("IFem2dMemberStrain Interface"),
+	   pointer_default(unique)
+   ]
+   interface IFem2dMemberStrain : IUnknown
+   {
+	   [propget, helpcontext(IDH_IFem2dMemberStrain_ID), helpstring("property ID")] HRESULT ID([out, retval] LoadIDType *pVal);
+	   [propget, helpcontext(IDH_IFem2dMemberStrain_MemberID), helpstring("property MemberID - ID of member strain is applied to")] HRESULT MemberID([out, retval] MemberIDType *pVal);
+	   [propput, helpcontext(IDH_IFem2dMemberStrain_MemberID), helpstring("property MemberID - ID of member strain is applied to")] HRESULT MemberID([in] MemberIDType newVal);
+	   [propget, helpcontext(IDH_IFem2dMemberStrain_AxialStrain), helpstring("property AxialStrain - Strain in axial direction. positive==longer")] HRESULT AxialStrain([out, retval] Float64 *pVal);
+	   [propput, helpcontext(IDH_IFem2dMemberStrain_AxialStrain), helpstring("property AxialStrain - Strain in axial direction. positive==longer")] HRESULT AxialStrain([in] Float64 newVal);
+	   [propget, helpcontext(IDH_IFem2dMemberStrain_CurvatureStrain), helpstring("property CurvatureStrain - Strain in curvature. positive==beam smile")] HRESULT CurvatureStrain([out, retval] Float64 *pVal);
+	   [propput, helpcontext(IDH_IFem2dMemberStrain_CurvatureStrain), helpstring("property CurvatureStrain - Strain in curvature. positive==beam smile")] HRESULT CurvatureStrain([in] Float64 newVal);
+	   [propget, helpcontext(IDH_IFem2dMemberStrain_Loading), helpstring("property Loading - ID of Loading this strain belongs to")] HRESULT Loading([out, retval] LoadCaseIDType *pVal);
+   };
+
+   [
+      object,
+      uuid(E07E9385-D113-11d4-AF5F-00105A9AF985),
+      helpstring("IFem2dEnumMemberStrain Interface"),
+      oleautomation,
+      hidden,restricted,
+      pointer_default(unique)
+   ]
+   interface IFem2dEnumMemberStrain : IUnknown
+   {
+      [helpstring("Clone")]
+      HRESULT Clone([out] IFem2dEnumMemberStrain** ppenum);
+
+      [helpstring("Next")]
+      HRESULT Next([in] ULONG celt, [out] IFem2dMemberStrain** rgelt, [in,out] ULONG* pceltFetched);
+
+      [helpstring("Reset")]
+      HRESULT Reset();
+      
+      [helpstring("Skip")]
+      HRESULT Skip([in] ULONG celt);
+   };
+
+   [
+	   object,
+	   uuid(E07E9386-D113-11d4-AF5F-00105A9AF985),
+	   oleautomation,
+       helpcontext(IDH_IFem2dMemberStrainCollection),
+	   helpstring("IFem2dMemberStrainCollection Interface"),
+	   pointer_default(unique)
+   ]
+   interface IFem2dMemberStrainCollection : IUnknown
+   {
+	   [propget, helpcontext(IDH_IFem2dMemberStrainCollection_Item), helpstring("property Item")] 
+	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dMemberStrain** pVal);
+
+	   [propget, helpstring("returns an enumerator for the collection.")]
+	   HRESULT _NewEnum([out, retval] IUnknown** retval);  
+
+	   [propget, helpcontext(IDH_IFem2dMemberStrainCollection_Count), helpstring("property Count")] 
+	   HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+	   [propget, helpstring("property _EnumElements")] 
+	   HRESULT _EnumElements([out, retval] IFem2dEnumMemberStrain* *pVal);
+
+	   [helpcontext(IDH_IFem2dMemberStrainCollection_Find), helpstring("property Find - Find a particular MemberStrain")] 
+	   HRESULT Find([in]LoadIDType ID, [out,retval] IFem2dMemberStrain* *pVal);
+
+	   [helpcontext(IDH_IFem2dMemberStrainCollection_Create), helpstring("Create a new Member Strain Load and add it to the model")] 
+	   HRESULT Create([in]LoadIDType ID, [in]MemberIDType member, [in]Float64 axialStrain, [in]Float64 curvatureStrain, [out, retval] IFem2dMemberStrain** pVal);
+
+	   [helpcontext(IDH_IFem2dMemberStrainCollection_Remove), helpstring("method Remove - Remove a particular load by ID or index")] 
+	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadIDType* pid);
+
+	   [helpcontext(IDH_IFem2dMemberStrainCollection_Clear), helpstring("method Clear - Remove all loads")] HRESULT Clear();
+   };
+
+   [
+	   object,
+	   uuid(820F7F2A-BA41-11D4-AF46-00105A9AF985),
+	   oleautomation,
+       helpcontext(IDH_IFem2dLoading),
+	   helpstring("IFem2dLoading Interface"),
+	   pointer_default(unique)
+   ]
+   interface IFem2dLoading : IUnknown
+   {
+	   [propget, helpcontext(IDH_IFem2dLoading_ID), helpstring("property ID")] 
+       HRESULT ID([out, retval] LoadCaseIDType *pVal);
+	   [propget, helpcontext(IDH_IFem2dLoading_JointLoads), helpstring("property JointLoads")] 
+       HRESULT JointLoads([out, retval] IFem2dJointLoadCollection* *pVal);
+	   [propget, helpcontext(IDH_IFem2dLoading_DistributedLoads), helpstring("property DistributedLoads")] 
+       HRESULT DistributedLoads([out, retval] IFem2dDistributedLoadCollection* *pVal);
+	   [propget, helpcontext(IDH_IFem2dLoading_JointDisplacements), helpstring("property JointDisplacements")] 
+       HRESULT JointDisplacements([out, retval] IFem2dJointDisplacementCollection* *pVal);
+	   [propget, helpcontext(IDH_IFem2dLoading_PointLoads), helpstring("property PointLoads")] 
+       HRESULT PointLoads([out, retval] IFem2dPointLoadCollection* *pVal);
+	   [propget, helpcontext(IDH_IFem2dLoading_MemberStrains), helpstring("property MemberStrains")] 
+       HRESULT MemberStrains([out, retval] IFem2dMemberStrainCollection* *pVal);
+   };
+
+   [
+      object,
+      uuid(4B3C129C-BA8E-11d4-AF46-00105A9AF985),
+      helpstring("IFem2dEnumLoading Interface"),
+      oleautomation,
+      hidden,restricted,
+      pointer_default(unique)
+   ]
+   interface IFem2dEnumLoading : IUnknown
+   {
+      [helpstring("Clone")]
+      HRESULT Clone([out] IFem2dEnumLoading** ppenum);
+
+      [helpstring("Next")]
+      HRESULT Next([in] ULONG celt, [out] IFem2dLoading** rgelt, [in,out] ULONG* pceltFetched);
+
+      [helpstring("Reset")]
+      HRESULT Reset();
+      
+      [helpstring("Skip")]
+      HRESULT Skip([in] ULONG celt);
+   };
+
+   [
+	   object,
+	   uuid(4B3C129D-BA8E-11d4-AF46-00105A9AF985),
+	   oleautomation,
+       helpcontext(IDH_IFem2dLoadingCollection),
+	   helpstring("IFem2dLoadingCollection Interface"),
+	   pointer_default(unique)
+   ]
+   interface IFem2dLoadingCollection : IUnknown
+   {
+	   [propget, helpcontext(IDH_IFem2dLoadingCollection_Item), helpstring("property Item")] 
+	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dLoading** pVal);
+
+	   [propget, helpstring("returns an enumerator for the collection.")]
+	   HRESULT _NewEnum([out, retval] IUnknown** retval);  
+
+	   [propget, helpcontext(IDH_IFem2dLoadingCollection_Count), helpstring("property Count")] 
+	   HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+	   [propget, helpstring("property _EnumElements")] 
+	   HRESULT _EnumElements([out, retval] IFem2dEnumLoading* *pVal);
+
+	   [helpcontext(IDH_IFem2dLoadingCollection_Find), helpstring("property Find")] 
+	   HRESULT Find([in]LoadCaseIDType ID, [out,retval] IFem2dLoading* *pVal);
+
+	   [helpcontext(IDH_IFem2dLoadingCollection_Create), helpstring("Create a new Loading and add it to the model")] 
+	   HRESULT Create([in]LoadCaseIDType ID, [out,retval]IFem2dLoading* *ppLoading);
+
+	   [helpcontext(IDH_IFem2dLoadingCollection_Remove), helpstring("method Remove")] 
+	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadCaseIDType* pid);
+
+	   [helpcontext(IDH_IFem2dLoadingCollection_Clear), helpstring("method Clear")] HRESULT Clear();
+   };
+
+   [
+	   object,
+	   uuid(FC8FA5C3-C08D-11D4-AF4C-00105A9AF985),
+	   oleautomation,
+       helpcontext(IDH_IFem2dPOI),
+	   helpstring("IFem2dPOI Interface"),
+	   pointer_default(unique)
+   ]
+   interface IFem2dPOI : IUnknown
+   {
+	   [propget, helpcontext(IDH_IFem2dPOI_ID), helpstring("property ID")] HRESULT ID([out, retval] PoiIDType *pVal);
+	   [propget, helpcontext(IDH_IFem2dPOI_MemberID), helpstring("property MemberID - ID of member POI is attached to")] HRESULT MemberID([out, retval] MemberIDType *pVal);
+	   [propput, helpcontext(IDH_IFem2dPOI_MemberID), helpstring("property MemberID - ID of member POI is attached to")] HRESULT MemberID([in] MemberIDType newVal);
+	   [propget, helpcontext(IDH_IFem2dPOI_Location), helpstring("property Location - Location of POI along member")] HRESULT Location([out, retval] Float64 *pVal);
+	   [propput, helpcontext(IDH_IFem2dPOI_Location), helpstring("property Location - Location of POI along member")] HRESULT Location([in] Float64 newVal);
+   };
+
+   [
+      object,
+      uuid(93740F38-C09C-11d4-AF4C-00105A9AF985),
+      helpstring("IFem2dEnumPOI Interface"),
+      oleautomation,
+      hidden,restricted,
+      pointer_default(unique)
+   ]
+   interface IFem2dEnumPOI : IUnknown
+   {
+      [helpstring("Clone")]
+      HRESULT Clone([out] IFem2dEnumPOI** ppenum);
+
+      [helpstring("Next")]
+      HRESULT Next([in] ULONG celt, [out] IFem2dPOI** rgelt, [in,out] ULONG* pceltFetched);
+
+      [helpstring("Reset")]
+      HRESULT Reset();
+      
+      [helpstring("Skip")]
+      HRESULT Skip([in] ULONG celt);
+   };
+
+   [
+	   object,
+	   uuid(93740F39-C09C-11d4-AF4C-00105A9AF985),
+	   oleautomation,
+       helpcontext(IDH_IFem2dPOICollection),
+	   helpstring("IFem2dPOICollection Interface"),
+	   pointer_default(unique)
+   ]
+   interface IFem2dPOICollection : IUnknown
+   {
+	   [propget, helpcontext(IDH_IFem2dPOICollection_Item), helpstring("property Item")] 
+	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dPOI** pVal);
+
+	   [propget, helpstring("returns an enumerator for the collection.")]
+	   HRESULT _NewEnum([out, retval] IUnknown** retval);  
+
+	   [propget, helpcontext(IDH_IFem2dPOICollection_Count), helpstring("property Count")] 
+	   HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+	   [propget, helpstring("property _EnumElements")] 
+	   HRESULT _EnumElements([out, retval] IFem2dEnumPOI* *pVal);
+
+	   [helpcontext(IDH_IFem2dPOICollection_Find), helpstring("property Find - Find a particular POI")] 
+	   HRESULT Find([in]PoiIDType ID, [out,retval] IFem2dPOI* *pVal);
+
+	   [helpcontext(IDH_IFem2dPOICollection_Create), helpstring("Create a new POI and add it to the model")] 
+	   HRESULT Create([in]PoiIDType ID, [in]MemberIDType memberID, [in]Float64 location, [out, retval] IFem2dPOI* *pVal);
+
+	   [helpcontext(IDH_IFem2dPOICollection_Remove), helpstring("method Remove - Remove a particular POI by ID or index")] 
+	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod,[out,retval]PoiIDType* pid);
+
+	   [helpcontext(IDH_IFem2dPOICollection_Clear), helpstring("method Clear - Remove all POI's")] HRESULT Clear();
+   };
+
+   [
+	   object,
+	   uuid(10E2C871-FD3C-11d4-AF98-00105A9AF985),
+	   oleautomation,
+       helpcontext(IDH_IFem2dModelResults),
+	   helpstring("IFem2dModelResults Interface - Type-safe, fast interface for getting results"),
+	   pointer_default(unique)
+   ]
+   interface IFem2dModelResults : IUnknown
+   {
+	   [helpcontext(IDH_IFem2dModelResults_ComputeJointDisplacements), helpstring("method ComputeJointDisplacements")] 
+       HRESULT ComputeJointDisplacements([in]LoadCaseIDType loadingID, [in]JointIDType jointID, [out]Float64* Dx, [out]Float64* Dy, [out]Float64* Rz);
+	   [helpcontext(IDH_IFem2dModelResults_ComputeMemberDisplacements), helpstring("method ComputeMemberDisplacements")] 
+       HRESULT ComputeMemberDisplacements([in]LoadCaseIDType loadingID, [in]MemberIDType memberID, [out]Float64* startDx, [out]Float64* startDy, [out]Float64* startRz, [out]Float64* endDx, [out]Float64* endDy, [out]Float64* endRz);
+	   [helpcontext(IDH_IFem2dModelResults_ComputePOIDisplacements), helpstring("method ComputePOIDisplacements")] 
+       HRESULT ComputePOIDisplacements([in]LoadCaseIDType loadingID, [in]PoiIDType poiID, [in]Fem2dLoadOrientation orientation, [out]Float64* Dx, [out]Float64* Dy, [out]Float64* Rz);
+	   [helpcontext(IDH_IFem2dModelResults_ComputeReactions), helpstring("method ComputeReactions")] 
+       HRESULT ComputeReactions([in]LoadCaseIDType loadingID, [in]JointIDType jointID, [out]Float64* Fx, [out]Float64* Fy, [out]Float64* Mz);
+	   [helpcontext(IDH_IFem2dModelResults_ComputeMemberForces), helpstring("method ComputeMemberForces")] 
+       HRESULT ComputeMemberForces([in]LoadCaseIDType loadingID, [in]MemberIDType memberID, [out]Float64* startFx, [out]Float64* startFy, [out]Float64* startMz, [out]Float64* endFx, [out]Float64* endFy, [out]Float64* endMz);
+	   [helpcontext(IDH_IFem2dModelResults_ComputePOIForces), helpstring("method ComputePOIForces")] 
+       HRESULT ComputePOIForces([in]LoadCaseIDType loadingID, [in]PoiIDType poiID, [in]Fem2dMbrFaceType face, [in]Fem2dLoadOrientation orientation, [out]Float64* Fx, [out]Float64* Fy, [out]Float64* Mz);
+   };
+
+   [
+	   object,
+	   uuid(70470A1E-8806-4294-AFE9-57E402CB262C),
+	   oleautomation,
+       helpcontext(IDH_IFem2dModelResultsEx),
+	   helpstring("IFem2dModelResultsEx Interface - Alternate, Type-safe, fast interface for getting results"),
+	   pointer_default(unique)
+   ]
+   interface IFem2dModelResultsEx : IUnknown
+   {
+	   [helpcontext(IDH_IFem2dModelResults_ComputeMemberForcesEx), helpstring("method ComputeMemberForcesEx")] 
+       HRESULT ComputeMemberForcesEx([in]LoadCaseIDType loadingID, [in]MemberIDType memberID, [in]Fem2dLoadOrientation orientation, [out]Float64* startFx, [out]Float64* startFy, [out]Float64* startMz, [out]Float64* endFx, [out]Float64* endFy, [out]Float64* endMz);
+   };
+
+   [
+	   object,
+	   uuid(1861FF4B-FD4F-11d4-AF98-00105A9AF985),
+	   oleautomation,
+       helpcontext(IDH_IFem2dModelResultsForScriptingClients),
+	   helpstring("IFem2dModelResultsForScriptingClients Interface - Interface for getting model results - uses variants for out data to appease scripting clients "),
+	   pointer_default(unique)
+   ]
+   interface IFem2dModelResultsForScriptingClients : IUnknown
+   {
+	   [helpcontext(IDH_IFem2dModel_ComputeJointDisplacements), helpstring("method ComputeJointDisplacements")] 
+       HRESULT ComputeJointDisplacements([in]LoadCaseIDType loadingID, [in]JointIDType jointID, [in] Fem2dJointDOF dof,[out,retval]Float64* pVal);
+
+	   [helpcontext(IDH_IFem2dModel_ComputeMemberDisplacements), helpstring("method ComputeMemberDisplacements")] 
+       HRESULT ComputeMemberDisplacements([in]LoadCaseIDType loadingID, [in]MemberIDType memberID, [in] Fem2dMbrDOF dof,[out,retval]Float64* pVal);
+
+	   [helpcontext(IDH_IFem2dModel_ComputePOIDisplacements), helpstring("method ComputePOIDisplacements")] 
+       HRESULT ComputePOIDisplacements([in]LoadCaseIDType loadingID, [in]PoiIDType poiID, [in]Fem2dLoadOrientation orientation, [in] Fem2dJointDOF dof,[out,retval]Float64* pVal);
+
+	   [helpcontext(IDH_IFem2dModel_ComputeReactions), helpstring("method ComputeReactions")] 
+       HRESULT ComputeReactions([in]LoadCaseIDType loadingID, [in]JointIDType jointID, [in] Fem2dJointDOF dof,[out,retval]Float64* pVal);
+
+	   [helpcontext(IDH_IFem2dModel_ComputeMemberForces), helpstring("method ComputeMemberForces")] 
+       HRESULT ComputeMemberForces([in]LoadCaseIDType loadingID, [in]MemberIDType memberID, [in] Fem2dMbrDOF dof,[out,retval]Float64* pVal);
+
+	   [helpcontext(IDH_IFem2dModel_ComputePOIForces), helpstring("method ComputePOIForces")] 
+       HRESULT ComputePOIForces([in]LoadCaseIDType loadingID, [in]PoiIDType poiID, [in]Fem2dMbrFaceType face, [in]Fem2dLoadOrientation orientation, [in] Fem2dJointDOF dof,[out,retval]Float64* pVal);
+   };
+
+
+
+
+   [
+	   object,
+	   uuid(807A6235-AE89-11D4-AF38-00105A9AF985),
+	   oleautomation,
+       helpcontext(IDH_IFem2dModel),
+	   helpstring("IFem2dModel Interface"),
+	   pointer_default(unique)
+   ]
+   interface IFem2dModel : IUnknown
+   {
+	   [propget, helpcontext(IDH_IFem2dModel_Joints), helpstring("property Joints - Get the Joint Collection")] 
+       HRESULT Joints([out, retval] IFem2dJointCollection* *pVal);
+	   [propget, helpcontext(IDH_IFem2dModel_Members), helpstring("property Members - Get the Member Collection")] 
+       HRESULT Members([out, retval] IFem2dMemberCollection* *pVal);
+	   [propget, helpcontext(IDH_IFem2dModel_Loadings), helpstring("property Loadings - Get the Loading Collection")] 
+       HRESULT Loadings([out, retval] IFem2dLoadingCollection* *pVal);
+	   [propget, helpcontext(IDH_IFem2dModel_POIs), helpstring("property POIs - Get the POI Collection")] 
+       HRESULT POIs([out, retval] IFem2dPOICollection* *pVal);
+	   [helpcontext(IDH_IFem2dModel_Clear), helpstring("method Clear - Clear all elements and results from the model")] 
+       HRESULT Clear();
+	   [propget, helpcontext(IDH_IFem2dModel_Results), helpstring("property Results - Return an Interface for getting Model Results")] 
+       HRESULT Results([out, retval] IFem2dModelResultsForScriptingClients* *pVal);
+	   [propget, helpcontext(IDH_IFem2dModel_StructuredStorage), helpstring("property Results - Return an Interface for getting Model Results")] 
+       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+   };
+
+   [
+	   uuid(807A6237-AE89-11D4-AF38-00105A9AF985),
+       helpcontext(IDH_IFem2dModelEvents),
+	   oleautomation,
+	   helpstring("IFem2dModelEvents Interface"),
+	   pointer_default(unique)
+   ]
+   interface IFem2dModelEvents : IUnknown
+   {
+	   [helpcontext(IDH_IFem2dModelEvents_OnModelChanged),helpstring("method OnModelChanged - Something changed the model stiffness")]
+	   HRESULT OnModelChanged();
+	   [helpcontext(IDH_IFem2dModelEvents_OnLoadingChanged), helpstring("method OnLoadingChanged - A load or loading changed")]
+	   HRESULT OnLoadingChanged([in] LoadCaseIDType loadingID);
+   };
+
+
+	[
+      // NOTE: RAB - If this class ID ever changes, it has to be changed in
+      // LBAMAnalysis::LBAMAnalysis.cpp as well
+		uuid(807A6236-AE89-11D4-AF38-00105A9AF985),
+		helpstring("Fem2dModel Class")
+	]
+	coclass Fem2dModel
+	{
+		[default] interface IFem2dModel;
+		[default,source] interface IFem2dModelEvents;
+        interface IStructuredStorage2;
+        // interface IPersist;
+        interface IFem2dModelResults;
+        interface IFem2dModelResultsEx;
+        interface IFem2dModelResultsForScriptingClients;
+	};
+
+	[
+		uuid(807A6239-AE89-11D4-AF38-00105A9AF985),
+		noncreatable,
+		helpstring("Fem2dJointCollection Class")
+	]
+	coclass Fem2dJointCollection
+	{
+		[default] interface IFem2dJointCollection;
+	};
+	[
+		uuid(5372D05A-9EBF-11D4-AF2B-00105A9AF985),
+		noncreatable,
+		helpstring("Fem2dJoint Class")
+	]
+	coclass Fem2dJoint
+	{
+		[default] interface IFem2dJoint;
+	};
+	[
+		uuid(3BA5C1A6-B009-11D4-AF39-00105A9AF985),
+		noncreatable,
+		helpstring("Fem2dMember Class")
+	]
+	coclass Fem2dMember
+	{
+		[default] interface IFem2dMember;
+	};
+	[
+		uuid(F6ADC096-B057-11d4-AF39-00105A9AF985),
+		noncreatable,
+		helpstring("Fem2dMemberCollection Class")
+	]
+	coclass Fem2dMemberCollection
+	{
+		[default] interface IFem2dMemberCollection;
+	};
+
+	[
+		uuid(820F7F27-BA41-11D4-AF46-00105A9AF985),
+		noncreatable,
+		helpstring("Fem2dJointLoad Class")
+	]
+	coclass Fem2dJointLoad
+	{
+		[default] interface IFem2dJointLoad;
+	};
+	[
+		uuid(820F7F29-BA41-11D4-AF46-00105A9AF985),
+		noncreatable,
+		helpstring("Fem2dJointLoadCollection Class")
+	]
+	coclass Fem2dJointLoadCollection
+	{
+		[default] interface IFem2dJointLoadCollection;
+	};
+
+	[
+		uuid(A5642479-CFBF-11d4-AF5D-00105A9AF985),
+		noncreatable,
+		helpstring("Fem2dJointDisplacement Class")
+	]
+	coclass Fem2dJointDisplacement
+	{
+		[default] interface IFem2dJointDisplacement;
+	};
+	[
+		uuid(A564247A-CFBF-11d4-AF5D-00105A9AF985),
+		noncreatable,
+		helpstring("Fem2dJointDisplacementCollection Class")
+	]
+	coclass Fem2dJointDisplacementCollection
+	{
+		[default] interface IFem2dJointDisplacementCollection;
+	};
+
+	[
+		uuid(E07E9387-D113-11d4-AF5F-00105A9AF985),
+		noncreatable,
+		helpstring("Fem2dMemberStrain Class")
+	]
+	coclass Fem2dMemberStrain
+	{
+		[default] interface IFem2dMemberStrain;
+	};
+	[
+		uuid(E07E9388-D113-11d4-AF5F-00105A9AF985),
+		noncreatable,
+		helpstring("Fem2dMemberStrainCollection Class")
+	]
+	coclass Fem2dMemberStrainCollection
+	{
+		[default] interface IFem2dMemberStrainCollection;
+	};
+
+	[
+		uuid(820F7F2B-BA41-11D4-AF46-00105A9AF985),
+		noncreatable,
+		helpstring("Fem2dLoading Class")
+	]
+	coclass LFem2doading
+	{
+		[default] interface IFem2dLoading;
+	};
+	[
+		uuid(8DADA19F-BB07-11d4-AF47-00105A9AF985),
+		noncreatable,
+		helpstring("Fem2dLoadingCollection Class")
+	]
+	coclass Fem2dLoadingCollection
+	{
+		[default] interface IFem2dLoadingCollection;
+	};
+	[
+		uuid(50D65B04-BB0D-11D4-AF47-00105A9AF985),
+		noncreatable,
+		helpstring("Fem2dPointLoad Class")
+	]
+	coclass Fem2dPointLoad
+	{
+		[default] interface IFem2dPointLoad;
+	};
+	[
+		uuid(6671D546-BB2A-11d4-AF47-00105A9AF985),
+		noncreatable,
+		helpstring("Fem2dPointLoadCollection Class")
+	]
+	coclass Fem2dPointLoadCollection
+	{
+		[default] interface IFem2dPointLoadCollection;
+	};
+
+	[
+		uuid(F7E1B926-D789-11d4-AF64-00105A9AF985),
+		noncreatable,
+		helpstring("Fem2dDistributedLoad Class")
+	]
+	coclass Fem2dDistributedLoad
+	{
+		[default] interface IFem2dDistributedLoad;
+	};
+	[
+		uuid(F7E1B927-D789-11d4-AF64-00105A9AF985),
+		noncreatable,
+		helpstring("Fem2dDistributedLoadCollection Class")
+	]
+	coclass Fem2dDistributedLoadCollection
+	{
+		[default] interface IFem2dDistributedLoadCollection;
+	};
+
+
+	[
+		uuid(FC8FA5C4-C08D-11D4-AF4C-00105A9AF985),
+		noncreatable,
+		helpstring("Fem2dPOI Class")
+	]
+	coclass Fem2dPOI
+	{
+		[default] interface IFem2dPOI;
+	};
+	[
+		uuid(93740F3A-C09C-11d4-AF4C-00105A9AF985),
+		noncreatable,
+		helpstring("Fem2dPOICollection Class")
+	]
+	coclass Fem2dPOICollection
+	{
+		[default] interface IFem2dPOICollection;
+	};
+};

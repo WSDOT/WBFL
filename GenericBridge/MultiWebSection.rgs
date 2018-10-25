@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.MultiWebSection.1 = s 'MultiWebSection Class'
+	{
+		CLSID = s '{D48BAC9D-876F-47ed-8B11-058009337492}'
+	}
+	WBFLGenericBridge.MultiWebSection = s 'MultiWebSection Class'
+	{
+		CLSID = s '{D48BAC9D-876F-47ed-8B11-058009337492}'
+		CurVer = s 'WBFLGenericBridge.MultiWebSection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {D48BAC9D-876F-47ed-8B11-058009337492} = s 'MultiWebSection Class'
+		{
+			ProgID = s 'WBFLGenericBridge.MultiWebSection.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.MultiWebSection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

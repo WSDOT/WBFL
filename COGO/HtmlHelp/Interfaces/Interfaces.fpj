@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rhpml majorversion="1" minorversion="0">
+	<folders>
+		<folder>
+			<name>IDivide</name>
+		</folder>
+		<folder>
+			<name>IIntersect</name>
+		</folder>
+		<folder>
+			<name>ILocate</name>
+		</folder>
+		<folder>
+			<name>IMeasure</name>
+		</folder>
+		<folder>
+			<name>IProject</name>
+		</folder>
+		<folder>
+			<name>IStructuredStorage2</name>
+		</folder>
+		<folder>
+			<name>ITangent</name>
+		</folder>
+		<folder>
+			<name>IDivide2</name>
+		</folder>
+		<folder>
+			<name>IIntersect2</name>
+		</folder>
+		<folder>
+			<name>ILocate2</name>
+		</folder>
+		<folder>
+			<name>IMeasure2</name>
+		</folder>
+		<folder>
+			<name>IProject2</name>
+		</folder>
+		<folder>
+			<name>ITangent2</name>
+		</folder>
+	</folders>
+	<topics/>
+</rhpml>

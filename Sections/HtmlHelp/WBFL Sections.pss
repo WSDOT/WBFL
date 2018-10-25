@@ -1,0 +1,60 @@
+[Target:WebHelp Pro]
+ResultFileName=!SSL!\WebHelp_Pro\WBFL_Sections.htm
+SSLayoutType=32
+ServerProjectName=WBFL Sections
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:WebHelp]
+ResultFileName=!SSL!\WebHelp\WBFL_Sections.htm
+SSLayoutType=2
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:Microsoft HTML Help]
+ResultFileName=C:\ARP\lib\WBFLSections.chm
+SSLayoutType=1
+CreateProjectTime=15:38, February 09, 2009
+CreateProjectUser=BriceR
+SupportMas_MPJ=1
+ActionID For Generation=1001
+Remove Folder with prompt=1
+ViewFileName=C:\ARP\lib\WBFLSections.chm
+ResultStatus=0
+BuildTimeHi=29985551
+BuildTimeLow=-2078601142
+[Target:FlashHelp]
+ResultFileName=!SSL!\FlashHelp\WBFL_Sections.htm
+SSLayoutType=2
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:Printed Documentation]
+ResultFileName=!SSL!\Printed_Documentation\WBFL_Sections.doc
+SSLayoutType=7
+[Target:XML Output]
+ResultFileName=!SSL!\XML_Output\WBFL_Sections.xml
+SSLayoutType=8192
+[PreSingleSource]
+Html Help Project=C:\ARP\WBFL\Sections\HtmlHelp\WBFL Sections.hhp
+Table Of Content=C:\ARP\WBFL\Sections\HtmlHelp\WBFL Sections.hhc
+Index=C:\ARP\WBFL\Sections\HtmlHelp\WBFL Sections_merged$.hhk
+See Also Index=C:\ARP\WBFL\Sections\HtmlHelp\WBFL Sections.hha
+Browse Sequence=C:\ARP\WBFL\Sections\HtmlHelp\WBFL Sections.brs
+Topic Properties=C:\ARP\WBFL\Sections\HtmlHelp\WBFL Sections.trs
+Active Folders=C:\ARP\WBFL\Sections\HtmlHelp\WBFL Sections.trf
+Baggage Files=C:\ARP\WBFL\Sections\HtmlHelp\WBFL Sections.trb
+Skin List=C:\ARP\WBFL\Sections\HtmlHelp\WBFL Sections.trk
+OriginalHhk=C:\ARP\WBFL\Sections\HtmlHelp\WBFL Sections.hhk
+Active Layout Names=C:\ARP\WBFL\Sections\HtmlHelp\WBFL Sections.trl
+Default Topic=C:\ARP\WBFL\Sections\HtmlHelp\Welcome.htm
+Build Tags0=9133;       
+Build Tags=
+Build Expression=
+Language ID=1033
+Language Name=English
+Language=C:\ARP\WBFL\Sections\HtmlHelp\RoboHHRE.lng
+Stop List=C:\ARP\WBFL\Sections\HtmlHelp\WBFL Sections.stp
+[Layout Settings]
+MRULayoutCount=1
+MRULayout0=Microsoft HTML Help]02/09/09]0

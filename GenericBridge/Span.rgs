@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.Span.1 = s 'Span Class'
+	{
+		CLSID = s '{3092CF8C-ACF9-433f-8361-19377C004370}'
+	}
+	WBFLGenericBridge.Span = s 'Span Class'
+	{
+		CLSID = s '{3092CF8C-ACF9-433f-8361-19377C004370}'
+		CurVer = s 'WBFLGenericBridge.Span.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {3092CF8C-ACF9-433f-8361-19377C004370} = s 'Span Class'
+		{
+			ProgID = s 'WBFLGenericBridge.Span.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.Span'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

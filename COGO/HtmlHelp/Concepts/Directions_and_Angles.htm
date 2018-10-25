@@ -1,0 +1,440 @@
+<!doctype HTML public "-//W3C//DTD HTML 4.0 Frameset//EN">
+
+<html>
+
+<!--(==============================================================)-->
+<!--(Document created with RoboEditor. )============================-->
+<!--(==============================================================)-->
+
+<head>
+
+<title>Directions and Angles</title>
+
+<!--(Meta)==========================================================-->
+
+<meta name="template" content="WSDOT.htt">
+<meta http-equiv=content-type content="text/html; charset=windows-1252">
+<meta name=topic-status content="In Progress">
+<meta name=topic-priority content=0>
+<meta name=topic-time-estimate content=0>
+<meta name=topic-comment content>
+<meta name=topic-id content>
+<meta name=generator content="RoboHELP by eHelp Corporation - www.ehelp.com">
+<meta name=generator-major-version content=0.1>
+<meta name=generator-minor-version content=1>
+<meta name=filetype content=kadov>
+<meta name=filetype-version content=1>
+<meta name=page-count content=1>
+<meta name=layout-height content=1107>
+<meta name=layout-width content=963>
+
+
+<!--(Links)=========================================================-->
+
+<link REL="StyleSheet" HREF="..\default.css">
+
+
+
+</head>
+
+<!--(Body)==========================================================-->
+
+
+<body>
+
+<h1>Angles, Directions and Stations</h1>
+
+<p>The WBFL COGO Library offers a very flexible format for specifing angles, 
+ directions and stations. Angles, and Drections can be specified in a method 
+ as a Direction (or Angle) object, a floating point value, or a text string. 
+ Stations may be specified as a Station object our a floating point value. 
+ The tables below describe how to specify directions and angles.</p>
+
+<h3>Angle</h3>
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="width: 100%;
+				margin-top: 14pt;
+				border-spacing: 0px;
+				border-spacing: 0px;"
+		cellspacing=0
+		width=100%>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p style="margin-bottom: 0;"><span style="font-weight: bold;">Method</span></td>
+<td style="x-cell-content-align: TOP;
+			width: 29%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=29%>
+<p style="margin-bottom: 0;"><span style="font-weight: bold;">Description</span></td>
+<td style="x-cell-content-align: TOP;
+			width: 59%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=59%>
+<p style="margin-bottom: 0;"><span style="font-weight: bold;">Example</span></td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p style="margin-bottom: 0;">Floating Point Value</td>
+<td style="x-cell-content-align: TOP;
+			width: 29%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=29%>
+<p style="margin-bottom: 0;">A counter-clockwise angle, measured from the 
+ X axis, in radians</td>
+<td style="x-cell-content-align: TOP;
+			width: 59%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=59%>
+<p>model.Locate.ByDistAngle(idNew,idFrom,idTo,dblDist,<span style="font-weight: bold;">0.785398</span>,dblOffset)</p>
+<p style="margin-bottom: 0;">The angle value is <font style="font-family: Symbol;"
+														face=Symbol>p</font>/4, 
+ or 45° 00' 00&quot; R.</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p style="margin-bottom: 0;">Angle object</td>
+<td style="x-cell-content-align: TOP;
+			width: 29%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=29%>
+<p style="margin-bottom: 0;">An Angle object is used</td>
+<td style="x-cell-content-align: TOP;
+			width: 59%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=59%>
+<p>model.Locate.ByDistAngle(idNew,idFrom,idTo,dblDist,<span style="font-weight: bold;">objAngle</span>,dblOffset)</p>
+<p style="margin-bottom: 0;">The angle is specified with an ANgle object</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p style="margin-bottom: 0;">Text string</td>
+<td style="x-cell-content-align: TOP;
+			width: 29%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=29%>
+<p>A text string in the one of the following formats:</p>
+<p>{[+|-]}ddd.ddd</p>
+<p>ddd.ddd {[L|R|l|r]}</p>
+<p>ddd mm ss.s {[L|R|l|r}]</p>
+<p style="margin-bottom: 0;">{[+|-]}ddd mm ss.s</td>
+<td style="x-cell-content-align: TOP;
+			width: 59%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=59%>
+<p>model.Locate.ByDistAngle(idNew,idFrom,idTo,dblDist,&quot;45 00 00 L&quot;,dblOffset)</p>
+<p style="margin-bottom: 0;">The angle is specified with a text string</td></tr>
+</table>
+
+<h3>Direction</h3>
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="width: 100%;
+				margin-top: 14pt;
+				border-spacing: 0px;
+				border-spacing: 0px;"
+		cellspacing=0
+		width=100%>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p style="margin-bottom: 0;"><span style="font-weight: bold;">Method</span></td>
+<td style="x-cell-content-align: TOP;
+			width: 29%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=29%>
+<p style="margin-bottom: 0;"><span style="font-weight: bold;">Description</span></td>
+<td style="x-cell-content-align: TOP;
+			width: 59%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=59%>
+<p style="margin-bottom: 0;"><span style="font-weight: bold;">Example</span></td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p style="margin-bottom: 0;">Floating Point Value</td>
+<td style="x-cell-content-align: TOP;
+			width: 29%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=29%>
+<p style="margin-bottom: 0;">A counter-clockwise angle, measured from the 
+ X axis, in radians</td>
+<td style="x-cell-content-align: TOP;
+			width: 59%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=59%>
+<p>model.Locate.ByDistDir(idNew,dblDist,<span style="font-weight: bold;">0.785398</span>,dblOffset)</p>
+<p style="margin-bottom: 0;">The direction value is <font style="font-family: Symbol;"
+															face=Symbol>p</font>/4, 
+ or N 45° 00' 00&quot; E.</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p style="margin-bottom: 0;">Direction Object</td>
+<td style="x-cell-content-align: TOP;
+			width: 29%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=29%>
+<p style="margin-bottom: 0;">A Direction object is used</td>
+<td style="x-cell-content-align: TOP;
+			width: 59%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=59%>
+<p>model.Locate.ByDistDir(idNew,dblDist,<span style="font-weight: bold;">objDir</span>,dblOffset)</p>
+<p style="margin-bottom: 0;">The direction is specified with a Direction 
+ object</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p style="margin-bottom: 0;">Text string</td>
+<td style="x-cell-content-align: TOP;
+			width: 29%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=29%>
+<p>A text string in the following format:</p>
+<p style="margin-bottom: 0;">[N|S|n|s] dd {mm {ss.s}} [E|W|e|w]</td>
+<td style="x-cell-content-align: TOP;
+			width: 59%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=59%>
+<p>model.Locate.ByDistDir(idNew,dlbDist,&quot;N 45 00 00 E&quot;,dblOffset)</p>
+<p style="margin-bottom: 0;">The direction is specified with a text string</td></tr>
+</table>
+
+<h3>Station</h3>
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="width: 100%;
+				margin-top: 14pt;
+				border-spacing: 0px;
+				border-spacing: 0px;"
+		cellspacing=0
+		width=100%>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p style="margin-bottom: 0;"><span style="font-weight: bold;">Method</span></td>
+<td style="x-cell-content-align: TOP;
+			width: 29%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=29%>
+<p style="margin-bottom: 0;"><span style="font-weight: bold;">Description</span></td>
+<td style="x-cell-content-align: TOP;
+			width: 59%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=59%>
+<p style="margin-bottom: 0;"><span style="font-weight: bold;">Example</span></td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p style="margin-bottom: 0;">Floating Point Value</td>
+<td style="x-cell-content-align: TOP;
+			width: 29%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=29%>
+<p style="margin-bottom: 0;">A value representing a station</td>
+<td style="x-cell-content-align: TOP;
+			width: 59%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=59%>
+<p style="margin-bottom: 0;">point = alignment.LocatPoint(<span style="font-weight: bold;">123.45</span>,objDir)</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p style="margin-bottom: 0;">Station object</td>
+<td style="x-cell-content-align: TOP;
+			width: 29%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=29%>
+<p style="margin-bottom: 0;">A Station object is used</td>
+<td style="x-cell-content-align: TOP;
+			width: 59%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=59%>
+<p style="margin-bottom: 0;">point = alignment.LocatePoint(<span style="font-weight: bold;">objStation</span>,objDir)</td></tr>
+</table>
+
+<h3>Notation of Text String Descriptions</h3>
+
+<p>Items between {} are optional. In dd {mm {ss.s}} the mm and ss.s parts 
+ are optional, but the mm part is required if the ss.s part is used.</p>
+
+<p>[ ] indicates you must choose one from the list of items seperated by 
+ |. In [N|S|n|s] you must select one of N, S, n, or s.</p>
+
+<!--kadov_tag{{<placeholder id="footer">}}-->
+</body>
+
+</html>

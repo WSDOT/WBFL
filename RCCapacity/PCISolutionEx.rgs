@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.PCISolutionEx.1 = s 'PCISolutionEx Class'
+	{
+		CLSID = s '{C1CD05E5-C0A6-48A6-98A4-E00011EAEAD0}'
+	}
+	WBFLRCCapacity.PCISolutionEx = s 'PCISolutionEx Class'
+	{
+		CLSID = s '{C1CD05E5-C0A6-48A6-98A4-E00011EAEAD0}'
+		CurVer = s 'WBFLRCCapacity.PCISolutionEx.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {C1CD05E5-C0A6-48A6-98A4-E00011EAEAD0} = s 'PCISolutionEx Class'
+		{
+			ProgID = s 'WBFLRCCapacity.PCISolutionEx.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.PCISolutionEx'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

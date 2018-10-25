@@ -1,0 +1,6 @@
+; EAF.def : Declares the module parameters for the DLL.
+
+LIBRARY      "WBFLEAF.dll"
+
+EXPORTS
+    ; Explicit exports can go here

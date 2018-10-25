@@ -1,0 +1,6 @@
+#ifndef INCLUDED_HELPID_H_
+#define INCLUDED_HELPID_H_
+
+#define IDH_HELPTEST 100
+
+#endif // INCLUDED_HELPID_H_

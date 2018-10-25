@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.ShapeGravityWellStrategy.1 = s 'ShapeGravityWellStrategy Class'
+	{
+		CLSID = s '{4F2C8970-5720-437b-B6CA-EA9092311244}'
+	}
+	WBFLDManip.ShapeGravityWellStrategy = s 'ShapeGravityWellStrategy Class'
+	{
+		CLSID = s '{4F2C8970-5720-437b-B6CA-EA9092311244}'
+		CurVer = s 'WBFLDManip.ShapeGravityWellStrategy.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {4F2C8970-5720-437b-B6CA-EA9092311244} = s 'ShapeGravityWellStrategy Class'
+		{
+			ProgID = s 'WBFLDManip.ShapeGravityWellStrategy.1'
+			VersionIndependentProgID = s 'WBFLDManip.ShapeGravityWellStrategy'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

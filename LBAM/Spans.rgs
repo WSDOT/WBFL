@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAM.Spans.1 = s 'Spans Class'
+	{
+		CLSID = s '{BA6F531A-85BD-11D5-B040-00105A9AF985}'
+	}
+	WBFLLBAM.Spans = s 'Spans Class'
+	{
+		CLSID = s '{BA6F531A-85BD-11D5-B040-00105A9AF985}'
+		CurVer = s 'WBFLLBAM.Spans.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {BA6F531A-85BD-11D5-B040-00105A9AF985} = s 'Spans Class'
+		{
+			ProgID = s 'WBFLLBAM.Spans.1'
+			VersionIndependentProgID = s 'WBFLLBAM.Spans'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{A60E8518-3A65-11D5-AFE5-00105A9AF985}'
+		}
+	}
+}

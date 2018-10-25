@@ -1,0 +1,207 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "1 TYPELIB ""WBFLFem2d.tlb""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 3,1,1,0
+ PRODUCTVERSION 3,1,1,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "A member of the Alternate Route Project\0"
+            VALUE "CompanyName", "Washington State Department of Transportation\0"
+            VALUE "FileDescription", "WBFL Fem2d Module\0"
+            VALUE "FileVersion", "3.1.1.0\0"
+            VALUE "InternalName", "Fem2d\0"
+            VALUE "LegalCopyright", "Copyright © 2000-2009\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OLESelfRegister", "\0"
+            VALUE "OriginalFilename", "Fem2d.DLL\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "WBFL\0"
+            VALUE "ProductVersion", "3.1.1.0\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+
+IDR_MODEL               REGISTRY DISCARDABLE    "Model.rgs"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PROJNAME            "Fem2d"
+    IDS_E_MEMBER_HAS_SAME_JOINTS 
+                            "Member %d cannot be connected to same joint at both ends"
+    IDS_E_MEMBER_JOINT_NOT_EXISTS 
+                            "Member %d references joint %d which does not exist"
+    IDS_E_MEMBER_WITH_ID_ALREADY_EXISTS 
+                            "Cannot create member. A member with this ID already exists"
+    IDS_E_JOINT_WITH_ID_ALREADY_EXISTS 
+                            "Cannot create joint. A joint with this ID already exists"
+    IDS_E_STIFFNESS_MUST_BE_POSITIVE 
+                            "Stiffness values (EA and EI)  must be greater than zero."
+    IDS_E_JOINT_LOAD_WITH_ID_ALREADY_EXISTS 
+                            "Cannot create joint load. A joint load with this ID already exists"
+    IDS_E_LOADING_WITH_ID_ALREADY_EXISTS 
+                            "Cannot create loading. A loading with this ID already exists"
+    IDS_E_POINT_LOAD_WITH_ID_ALREADY_EXISTS 
+                            "Cannot create point load. A point load with this ID already exists"
+    IDS_E_INVALID_POINT_LOAD_LOCATION 
+                            "Location of point load must be greater than or equal to -1.0"
+    IDS_E_INVALID_POI_LOCATION 
+                            "Location of POI must be greater than or equal to -1.0"
+    IDS_E_POI_WITH_ID_ALREADY_EXISTS 
+                            "Cannot create POI. A POI with this ID already exists"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_E_POINT_LOAD_OFF_GIRDER_END 
+                            "Point load is located beyond the end of a member"
+    IDS_E_FRACTIONAL_VALUE_OUT_OF_RANGE 
+                            "Fractional values must range from -1.0 to 0.0"
+    IDS_E_ZERO_LENGTH_MEMBER "Member %d has zero length."
+    IDS_E_JOINT_EQUILIBRIUM_NOT_SATISFIED 
+                            "Equilibrium not satisfied for joint %d"
+    IDS_E_MEMBER_EQUILIBRIUM_NOT_SATISFIED 
+                            "Equilibrium not satisfied for member %d"
+    IDS_E_POI_REFERENCES_MEMBER_NOT_EXISTS 
+                            "Poi %d refererences member %d, which does not exist."
+    IDS_E_POI_FRACTIONAL_OUT_OF_RANGE 
+                            "Poi %d has fractional location that is less than -1.0"
+    IDS_E_POI_LOCATED_OFF_MEMBER_END 
+                            "Poi %d is located beyond the end of member %d"
+    IDS_E_JOINT_NOT_FOUND   "Joint %d not found"
+    IDS_E_LOADING_NOT_FOUND "Loading %d not found"
+    IDS_E_MEMBER_NOT_FOUND  "Member %d not found"
+    IDS_E_POI_NOT_FOUND     "POI %d not found"
+    IDS_E_SOLVING_GLOBAL_STIFFNESS 
+                            "Error in global stiffness solution. Structure may be unstable. CDOF was %d."
+    IDS_E_INVALID_GLOBAL_DOF 
+                            "Invalid Global Degree of Freedom. in CJoint2d::GetGlobalDOF(). DOF was %d."
+    IDS_E_INVALID_CONDENSED_DOF 
+                            "Invalid Condensed Degree of Freedom. in CJoint2d::GetCondensedDOF(). DOF was %d."
+    IDS_E_JOINT_LOAD_REF_JOINT_NOT_EXISTS 
+                            "Joint load %d references joint %d which does not exist"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_E_POINT_LOAD_REF_MEMBER_NOT_EXISTS 
+                            "Point load %d references member %d, which does not exist"
+    IDS_E_JOINT_DISP_WITH_ID_ALREADY_EXISTS 
+                            "Cannot create joint displacement load. A load with this ID already exists"
+    IDS_E_JOINT_DISP_REF_JOINT_NOT_EXISTS 
+                            "Joint displacement %d references joint %d which does not exist"
+    IDS_E_JOINT_DISP_TO_FIXED_DOF_ONLY 
+                            "Joint displacements may be applied to supported DOF's only. Joint displacement %d at Joint %d attempts to load a free DOF."
+    IDS_E_MATRIX_BACK_SUBSTITUTION 
+                            "Error occured during matrix solution while solving for joint %d, dof=%d. It is likely that the structure is unstable."
+    IDS_E_MATRIX_FACTORING  "Error occured during matrix factoring while solving for joint %d, dof=%d. It is likely that the structure is unstable."
+    IDS_E_DIST_LOAD_OFF_GIRDER_END 
+                            "Distrubuted load %d in Loading %d  is located beyond the end of a member"
+    IDS_E_DIST_LOAD_REF_MEMBER_NOT_EXISTS 
+                            "Distributed Load %d refererences member %d, which does not exist."
+    IDS_E_INVALID_DIST_LOAD_LOCATION 
+                            "Location of distributed load start and end must be greater than or equal to -1.0"
+    IDS_E_DIST_LOAD_WITH_ID_ALREADY_EXISTS 
+                            "Cannot create distributed load. A distributed load with this ID already exists"
+    IDS_E_INVALID_LOAD_ORIENTATION "Invalid load orientation parameter"
+    IDS_E_MEMBER_STRAIN_WITH_ID_ALREADY_EXISTS 
+                            "Cannot create member strain. A load with this ID already exists"
+    IDS_E_MODEL_HAS_NO_MEMBERS "Model must have at least one Member"
+    IDS_E_MODEL_HAS_NO_JOINTS "Model must have at least one joint"
+END
+
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+1 TYPELIB "WBFLFem2d.tlb"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

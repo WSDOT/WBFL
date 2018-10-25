@@ -1,0 +1,9 @@
+; WBFLTools.def : Declares the module parameters.
+
+LIBRARY      "WBFLTools.DLL"
+
+EXPORTS
+	DllCanUnloadNow     PRIVATE
+	DllGetClassObject   PRIVATE
+	DllRegisterServer   PRIVATE
+	DllUnregisterServer	PRIVATE

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.Point3d.1 = s 'Point3d Class'
+	{
+		CLSID = s '{4F37A661-03FE-11D3-8CDF-882D80988F34}'
+	}
+	WBFLGeometry.Point3d = s 'Point3d Class'
+	{
+		CLSID = s '{4F37A661-03FE-11D3-8CDF-882D80988F34}'
+		CurVer = s 'WBFLGeometry.Point3d.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {4F37A661-03FE-11D3-8CDF-882D80988F34} = s 'Point3d Class'
+		{
+			ProgID = s 'WBFLGeometry.Point3d.1'
+			VersionIndependentProgID = s 'WBFLGeometry.Point3d'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAM.TemperatureLoads.1 = s 'TemperatureLoads Class'
+	{
+		CLSID = s '{FF2C8731-9357-11D5-B04E-00105A9AF985}'
+	}
+	WBFLLBAM.TemperatureLoads = s 'TemperatureLoads Class'
+	{
+		CLSID = s '{FF2C8731-9357-11D5-B04E-00105A9AF985}'
+		CurVer = s 'WBFLLBAM.TemperatureLoads.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {FF2C8731-9357-11D5-B04E-00105A9AF985} = s 'TemperatureLoads Class'
+		{
+			ProgID = s 'WBFLLBAM.TemperatureLoads.1'
+			VersionIndependentProgID = s 'WBFLLBAM.TemperatureLoads'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{A60E8518-3A65-11D5-AFE5-00105A9AF985}'
+		}
+	}
+}

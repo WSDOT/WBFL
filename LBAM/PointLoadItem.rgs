@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAM.PointLoadItem.1 = s 'PointLoadItem Class'
+	{
+		CLSID = s '{DE453FF7-90BF-11D5-B04B-00105A9AF985}'
+	}
+	WBFLLBAM.PointLoadItem = s 'PointLoadItem Class'
+	{
+		CLSID = s '{DE453FF7-90BF-11D5-B04B-00105A9AF985}'
+		CurVer = s 'WBFLLBAM.PointLoadItem.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {DE453FF7-90BF-11D5-B04B-00105A9AF985} = s 'PointLoadItem Class'
+		{
+			ProgID = s 'WBFLLBAM.PointLoadItem.1'
+			VersionIndependentProgID = s 'WBFLLBAM.PointLoadItem'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{A60E8518-3A65-11D5-AFE5-00105A9AF985}'
+		}
+	}
+}

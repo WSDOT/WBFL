@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.Circle.1 = s 'Circle Class'
+	{
+		CLSID = s '{219B8FC2-0154-11D3-8CDF-CCA4ADEF4534}'
+	}
+	WBFLGeometry.Circle = s 'Circle Class'
+	{
+		CLSID = s '{219B8FC2-0154-11D3-8CDF-CCA4ADEF4534}'
+		CurVer = s 'WBFLGeometry.Circle.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {219B8FC2-0154-11D3-8CDF-CCA4ADEF4534} = s 'Circle Class'
+		{
+			ProgID = s 'WBFLGeometry.Circle.1'
+			VersionIndependentProgID = s 'WBFLGeometry.Circle'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

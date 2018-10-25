@@ -1,0 +1,156 @@
+<!doctype HTML public "-//W3C//DTD HTML 4.0 Frameset//EN">
+
+<html>
+
+<!--(==============================================================)-->
+<!--(Document created with RoboEditor. )============================-->
+<!--(==============================================================)-->
+
+<head>
+
+<title>Describing Models</title>
+
+<!--(Meta)==========================================================-->
+
+<meta http-equiv=content-type content="text/html; charset=windows-1252">
+<meta name=topic-status content="In Progress">
+<meta name=topic-check-list content="Ran Smart Index">
+<meta name=topic-priority content=0>
+<meta name=topic-time-estimate content=0>
+<meta name=topic-comment content>
+<meta name=topic-id content>
+<meta name=generator content="RoboHELP by eHelp Corporation - www.ehelp.com">
+<meta name=generator-major-version content=0.1>
+<meta name=generator-minor-version content=1>
+<meta name=filetype content=kadov>
+<meta name=filetype-version content=1>
+<meta name=page-count content=0>
+<meta name=layout-height content=0>
+<meta name=layout-width content=0>
+
+
+<!--(Links)=========================================================-->
+
+<link REL=StyleSheet HREF="..\default.css">
+
+
+
+</head>
+
+<!--(Body)==========================================================-->
+
+
+<body>
+
+<h1>Describing Models</h1>
+
+<p>Longitudinal Bridge Analysis Models are used to model a bridge superstructure 
+ for the purpose of performing a single girderline analysis. LBAM's are 
+ an idealized representation of a bridge made up of beam members, distribution 
+ factors, and idealized loads. LBAM's consist only of the information required 
+ to analyze a bridge. They do not contain product-level information about 
+ a real bridge (e.g., you can't tell what type of girders they are made 
+ from, or what materials were used). LBAM's can be used to idealize and 
+ analyze most types of bridges that can be modeled using the AASHTO simplified 
+ (distribution factor-based) approach.</p>
+
+<p>LBAM models are a two-dimensional representation of a girderline in 
+ a bridge. Supports in the model can have zero length, or represent fixed-length 
+ columns to model sidesway. Note that the supports are in the same plane 
+ as the girderline, and do not accurately model a bent structure.</p>
+
+<h2>Do I Need To Build The Model In Any Specific Order?<a NAME=Order_of_Construction></a></h2>
+
+<p>This object model was designed to make it easy to build an LBAM model. 
+ For instance, the order in which you describe the model is not important. 
+ If you want, you could start out building a model by describing point 
+ loads, then spans, then load combinations, then supports, then stages, 
+ then boundary conditions, then superstructure members, and maybe some 
+ more point loads. The order of model construction just doesn't matter.</p>
+
+<p>However, when you request for analysis results, the model must be well-formed, 
+ and if it's not, an error will occur which gives a description of the 
+ problem.</p>
+
+<h2>Model Connectivity<a NAME=Model_Connectivity></a></h2>
+
+<p>Span and Support objects aren't directly linked together. Their relative 
+ ordering in the Spans and Supports collections determines their relative 
+ locations (left to right). The only constraint is that their must be one 
+ more Support than there are Spans (e.g., number of spans=3, number of 
+ supports=4), just like for a real bridge.</p>
+
+<p style="text-align: center;"
+	align=center><img src="..\Images\Model_Coordinates.gif"
+						style="width: 543px;
+								height: 286px;
+								border-style: none;
+								margin-top: 0px;
+								margin-bottom: 0px;
+								margin-left: 0px;
+								margin-right: 0px;"
+						width=543
+						height=286
+						border=0></p>
+
+<p>SuperstructureMembers describe the structural members (girders) in the 
+ superstructure and are laid out from left to right in their collection 
+ in the same way. As you can see in the figure above, the total length 
+ of all SuperstructureMembers must be at least as long as the total length 
+ of all Spans plus the left overhang dimension. A right overhang exists 
+ if the total length of the SuperstructureMembers exceeds this dimension.</p>
+
+<h2>Superstructure Definition<a NAME=Superstructure_Definition></a></h2>
+
+<p>A collection of sequential Spans is used to define the span lengths; 
+ which, of course, describes where the Supports are. The physical properties 
+ of the superstructure are described by a collection of <a HREF="..\Objects\LBAM_Model\SuperstructureMember\SuperstructureMember.htm">SuperstructureMember</a>'s 
+ which represent the actual beams that make up the superstructure. This 
+ allows you to build bridge models such that the beams making up the superstructure 
+ do not have to terminate at the supports. Examples of these types of bridges 
+ are spliced girder bridges and bridges built segmentally. However, the 
+ LBAM does not have direct support for incrementally launched structures.</p>
+
+<p>Hinged spans can be modeled by placing end releases on SuperStructureMembers. 
+ Hinges can be removed in subsequent stages by defining the removal stage 
+ for the release.</p>
+
+<h2>Substructure Definition<a NAME=Substructure_Definition></a></h2>
+
+<p>The substructure of an LBAM is defined by a collection of Support objects. 
+ The number of Support objects in an LBAM must be equal to the number of 
+ Spans plus one. See <a HREF="Types_of_Supports.htm">Types of Supports</a> 
+ for more information about defining Supports.</p>
+
+<p>It is also possible to define <a HREF="..\Objects\LBAM_Model\TemporarySupport\TemporarySupport.htm">TemporarySupport</a>'s, 
+ which are supports that can be removed from the model in a given stage. 
+ <a HREF="..\Objects\LBAM_Model\TemporarySupport\TemporarySupport.htm">TemporarySupports</a> 
+ are useful for modelling falsework and spliced girder configurations.</p>
+
+<h2>Force and Deflection Models<a NAME=Force_and_Deflection_Models></a></h2>
+
+<p>For some types of structures, the AASHTO LRFD Specifications require 
+ that different section stiffness properties be used for calculation of 
+ force and deflection responses. An example of this is for concrete structures 
+ as outlined in LRFD, Section 5.7.3.6. For this reason, there are two different 
+ types of member stiffnesses (e.g., EADefl, EAForce) in the <a HREF="..\Objects\LBAM_Model\CrossSection\CrossSection.htm">CrossSection</a> 
+ object. This means that we must build different structural analysis (FE) 
+ models in order to compute force and deflection responses.</p>
+
+
+<!--(HR)============================================================-->
+<hr style="height: 2px;
+			width: 100%;
+			float: aligncenter;"
+	size=2
+	width=100%
+	align=center>
+
+
+<p>Copyright © 2000-2002, Washington State Department of Transportation</p>
+
+<p style="margin-bottom: 0;">&nbsp; </p>
+
+</body>
+
+</html>

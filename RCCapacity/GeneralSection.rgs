@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.GeneralSection.1 = s 'GeneralSection Class'
+	{
+		CLSID = s '{62ABC849-D56B-4918-87AD-B7DF219E5909}'
+	}
+	WBFLRCCapacity.GeneralSection = s 'GeneralSection Class'
+	{
+		CLSID = s '{62ABC849-D56B-4918-87AD-B7DF219E5909}'
+		CurVer = s 'WBFLRCCapacity.GeneralSection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {62ABC849-D56B-4918-87AD-B7DF219E5909} = s 'GeneralSection Class'
+		{
+			ProgID = s 'WBFLRCCapacity.GeneralSection.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.GeneralSection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

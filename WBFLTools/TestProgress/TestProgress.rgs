@@ -1,0 +1,11 @@
+HKCR
+{
+	NoRemove AppID
+	{
+		{6C3A44AB-BECF-4B8A-B031-CFE06B6B0BD6} = s 'TestProgress'
+		'TestProgress.EXE'
+		{
+			val AppID = s {6C3A44AB-BECF-4B8A-B031-CFE06B6B0BD6}
+		}
+	}
+}

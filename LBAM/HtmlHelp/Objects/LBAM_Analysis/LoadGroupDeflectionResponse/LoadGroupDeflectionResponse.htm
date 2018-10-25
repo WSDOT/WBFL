@@ -1,0 +1,486 @@
+<!doctype HTML public "-//W3C//DTD HTML 4.0 Frameset//EN">
+
+<html>
+
+<!--(==============================================================)-->
+<!--(Document created with RoboEditor. )============================-->
+<!--(==============================================================)-->
+
+<head>
+
+<title>LoadGroupDeflectionResponse</title>
+
+<!--(Meta)==========================================================-->
+
+<meta http-equiv=content-type content="text/html; charset=windows-1252">
+<meta name=topic-status content="In Progress">
+<meta name=topic-priority content=0>
+<meta name=topic-time-estimate content=0>
+<meta name=topic-comment content>
+<meta name=topic-id content>
+<meta name=generator content="RoboHELP by eHelp Corporation - www.ehelp.com">
+<meta name=generator-major-version content=0.1>
+<meta name=generator-minor-version content=1>
+<meta name=filetype content=kadov>
+<meta name=filetype-version content=1>
+<meta name=page-count content=0>
+<meta name=layout-height content=0>
+<meta name=layout-width content=0>
+
+
+<!--(Links)=========================================================-->
+
+<link REL=StyleSheet HREF="..\..\..\default.css">
+
+
+
+</head>
+
+<!--(Body)==========================================================-->
+
+
+<body>
+
+<h1>LoadGroupDeflectionResponse</h1>
+
+<p>This object implements the <a HREF="..\LoadGroupResponse\LoadGroupResponse.htm">ILoadGroupResponse</a> 
+ interface. The properties used to compute stiffnesses are the <span style="font-style: italic; font-weight: bold;">Deflection</span> 
+ properties for the LBAMModel.</p>
+
+<p>Results are be requested for multiple POI's (or Support's) and are returned 
+ in a collection that is in the same order as the request.</p>
+
+<h2>Interfaces</h2>
+
+<p>This interfaces may be obtained via QueryInterface from the LoadGroupForceResponse 
+ object</p>
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="width: 100%;
+				border-spacing: 0px;
+				margin-top: 14pt;"
+		cellspacing=0
+		width=100%>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\interface.gif"
+									style="width: 20px;
+											height: 18px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=20
+									height=18
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 31%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=31%>
+<p style="margin-bottom: 0;"><a HREF="..\LoadGroupResponse\LoadGroupResponse.htm">ILoadGroupResponse</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Compute the reponse due to member loads in 
+ LoadGroups</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\interface.gif"
+									style="width: 20px;
+											height: 18px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=20
+									height=18
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 31%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=31%>
+<p style="margin-bottom: 0;"><a HREF="..\AnalysisPOIs\AnalysisPOIs.htm">IAnalysisPOIs</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Defines the minimum spacing between POI's 
+ that are to be placed on the superstructure for analysis</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\interface.gif"
+									style="width: 20px;
+											height: 18px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=20
+									height=18
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 31%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=31%>
+<p style="margin-bottom: 0;"><a HREF="..\ContraflexureResponse\ContraflexureResponse.htm">IContraflexureResponse</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Computes the zones along the superstructure 
+ where a negative moment response occurs due to a unit uniform load applied 
+ along the entire superstructure. These zones are called contraflexure 
+ zones.</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\interface.gif"
+									style="width: 20px;
+											height: 18px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=20
+									height=18
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 31%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=31%>
+<p style="margin-bottom: 0;"><a HREF="..\DependOnLBAM\DependOnLBAM.htm">DependOnLBAM</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Used to Set/Get the LBAMModel associated with 
+ this response object.</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\interface.gif"
+									style="width: 20px;
+											height: 18px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=20
+									height=18
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 31%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=31%>
+<p style="margin-bottom: 0;"><a HREF="..\GetActiveLoadGroups\IGetActiveLoadGroups.htm">IGetActiveLoadGroups</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Interface used to determine which LoadGroups 
+ actually have loads</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\interface.gif"
+									style="width: 20px;
+											height: 18px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=20
+									height=18
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 31%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=31%>
+<p style="margin-bottom: 0;"><a HREF="..\GetCrossSection\GetCrossSection.htm">IGetCrossSection</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Interface to determine the cross section at 
+ a given location</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\interface.gif"
+									style="width: 20px;
+											height: 18px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=20
+									height=18
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 31%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=31%>
+<p style="margin-bottom: 0;"><a HREF="..\GetDistributionFactors\GetDistributionFactors.htm">IGetDistributionFactors</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Interface to determine the live load distributon 
+ factors at a given location</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\interface.gif"
+									style="width: 20px;
+											height: 18px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=20
+									height=18
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 31%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=31%>
+<p style="margin-bottom: 0;"><a HREF="..\GetFemForLoadGroupResponse\GetFemForLoadGroupResponse.htm">IGetFemForLoadGroupResponse</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Interface to save the generated FEM model 
+ used to analyze the LBAMModel to a file</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\interface.gif"
+									style="width: 20px;
+											height: 18px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=20
+									height=18
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 31%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=31%>
+<p style="margin-bottom: 0;"><a HREF="..\GetStressPoints\GetStressPoints.htm">IGetStressPoints</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Interface to determine the stress points at 
+ a given location</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\interface.gif"
+									style="width: 20px;
+											height: 18px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=20
+									height=18
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 31%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=31%>
+<p style="margin-bottom: 0;"><a HREF="..\InfluenceLineResponse\InfluenceLineResponse.htm">IInfluenceLineResponse</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Interface to compute influence lines for a 
+ given location and Stage</td></tr>
+</table>
+
+
+<!--(HR)============================================================-->
+<hr style="height: 2px;
+			width: 100%;
+			float: aligncenter;"
+	size=2
+	width=100%
+	align=center>
+
+
+<p>Copyright © 2000-2002, Washington State Department of Transportation</p>
+
+<h1 style="margin-bottom: 0;">&nbsp; </h1>
+
+</body>
+
+</html>

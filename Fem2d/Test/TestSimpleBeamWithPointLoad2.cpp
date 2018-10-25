@@ -1,0 +1,834 @@
+///////////////////////////////////////////////////////////////////////
+// Fem2D - Two-dimensional Beam Analysis Engine
+// Copyright © 2001  Washington State Department of Transportation
+//                   Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the Alternate Route Library Open Source License as 
+// published by the Washington State Department of Transportation,
+// Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful,
+// but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// PURPOSE.  See the Alternate Route Library Open Source License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License
+// along with this program; if not, write to the Washington State
+// Department of Transportation, Bridge and Structures Office,
+// P.O. Box 47340, Olympia, WA 98503, USA or e-mail
+// Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+// TestSimpleBeamWithPointLoad2.cpp: implementation of the CTestSimpleBeamWithPointLoad class.
+//
+//////////////////////////////////////////////////////////////////////
+
+#include "stdafx.h"
+#include "TestSimpleBeamWithPointLoad2.h"
+#include <MathEx.h>
+#include <iostream> 
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+//////////////////////////////////////////////////////////////////////
+// Construction/Destruction
+//////////////////////////////////////////////////////////////////////
+
+
+CTestSimpleBeamWithPointLoad2::CTestSimpleBeamWithPointLoad2()
+{
+
+}
+
+CTestSimpleBeamWithPointLoad2::~CTestSimpleBeamWithPointLoad2()
+{
+
+}
+
+
+void CTestSimpleBeamWithPointLoad2::Test()
+{
+// create a model
+/*////////////////////////////////////////////////////
+
+                         | P=4 at L/2
+           ]             V               [
+           ]=============================[  // fixed ends
+           ]                             [
+
+       L = 8           Mc = PL/4 = 8
+       EA = 3.0        Dc = PL^3/48EI = 
+       EI = 7.0
+
+*/////////////////////////////////////////////////
+   CComPtr<IFem2dModel> pmodel;
+   pmodel = CreateModel();
+   ATLASSERT(pmodel);
+
+   // create joints
+   CComPtr<IFem2dJointCollection> pJoints;
+   TRY_TEST_HR(pmodel->get_Joints(&pJoints));
+
+   CComPtr<IFem2dJoint> pJoint0,pJoint8;
+   TRY_TEST_MC(pJoints->Create(0,  0.0,  0.0, &pJoint0));
+   TRY_TEST_MC(pJoints->Create(8,  8.0,  0.0, &pJoint8));
+
+   // boundary conditions
+   TRY_TEST_MC(pJoint0->Support());
+   TRY_TEST_MC(pJoint8->Support());
+
+   // create members
+   CComPtr<IFem2dMemberCollection> pMembers;
+   TRY_TEST_HR(pmodel->get_Members(&pMembers));
+
+   CComPtr<IFem2dMember> pMember1;
+   TRY_TEST_MC(pMembers->Create(1,  0,  8, 3.0, 7.0, &pMember1));
+
+   // create load case and apply point load to joint
+   CComPtr<IFem2dLoadingCollection> pLoadings;
+   TRY_TEST_HR(pmodel->get_Loadings(&pLoadings));
+   CComPtr<IFem2dLoading> pLoading;
+   TRY_TEST_LC(pLoadings->Create(0, &pLoading));
+   CComPtr<IFem2dPointLoadCollection> pPointLoads;
+   TRY_TEST_HR(pLoading->get_PointLoads(&pPointLoads));
+   CComPtr<IFem2dPointLoad> pPointLoad;
+   TRY_TEST_LC(pPointLoads->Create(0, 1, 4.0, 0.0, -4.0, 0.0, lotMember, &pPointLoad));
+
+   // create a second loading using a point moment
+   CComPtr<IFem2dLoading> pLoading2;
+   TRY_TEST_LC(pLoadings->Create(2, &pLoading2));
+   CComPtr<IFem2dPointLoadCollection> pPointLoads2;
+   TRY_TEST_HR(pLoading2->get_PointLoads(&pPointLoads2));
+   CComPtr<IFem2dPointLoad> pPointLoad2;
+   TRY_TEST_LC(pPointLoads2->Create(0, 1, 4.0, 0.0, 0.0, 3.0, lotMember, &pPointLoad2));
+
+
+   // now let's add some POI's at 1/4 points in member 1
+   // these results are pre-calculated
+   CComPtr<IFem2dPOICollection> pPOIs;
+   TRY_TEST_HR(pmodel->get_POIs(&pPOIs));
+
+   CComPtr<IFem2dPOI> pPOI10,pPOI15,pPOI12;
+   TRY_TEST_HR(pPOIs->Create(10,  1,  0.0, &pPOI10));
+   TRY_TEST_HR(pPOIs->Create(15,  1,  -.25, &pPOI15));
+   TRY_TEST_HR(pPOIs->Create(12,  1,  -0.5, &pPOI12));
+
+   // get results interface
+   CComQIPtr<IFem2dModelResults> presults(pmodel);
+
+   // get joint displacements
+   Float64 dx, dy, rz;
+   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 0, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0) );
+   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 8, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0) );
+
+   TRY_TEST_HR(presults->ComputeJointDisplacements(2, 0, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0) );
+   TRY_TEST_HR(presults->ComputeJointDisplacements(2, 8, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0) );
+
+   // get member end forces
+   Float64 sfx, sfy, smz, efx, efy, emz;
+   TRY_TEST_HR(presults->ComputeMemberForces(0, 1, &sfx, &sfy, &smz, &efx, &efy, &emz));
+   TRY_TEST_B( IsEqual(sfx, 0.0) );
+   TRY_TEST_B( IsEqual(sfy, 2.0));
+   TRY_TEST_B( IsEqual(smz, 4.0));
+   TRY_TEST_B( IsEqual(efx, 0.0));
+   TRY_TEST_B( IsEqual(efy, 2.0));
+   TRY_TEST_B( IsEqual(emz,-4.0));
+
+   TRY_TEST_HR(presults->ComputeMemberForces(2, 1, &sfx, &sfy, &smz, &efx, &efy, &emz));
+   TRY_TEST_B( IsEqual(sfx, 0.0) );
+   TRY_TEST_B( IsEqual(sfy, 0.5625));
+   TRY_TEST_B( IsEqual(smz, 0.75));
+   TRY_TEST_B( IsEqual(efx, 0.0));
+   TRY_TEST_B( IsEqual(efy,-0.5625));
+   TRY_TEST_B( IsEqual(emz, 0.75));
+
+   Float64 fx, fy, mz;
+   TRY_TEST_HR(presults->ComputeReactions(0, 0, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  2.0));
+   TRY_TEST_B( IsEqual(mz,  4.0));
+   TRY_TEST_HR(presults->ComputeReactions(0, 8, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  2.0));
+   TRY_TEST_B( IsEqual(mz, -4.0));
+
+   TRY_TEST_HR(presults->ComputeReactions(2, 0, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.5625));
+   TRY_TEST_B( IsEqual(mz,  0.75));
+   TRY_TEST_HR(presults->ComputeReactions(2, 8, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.5625));
+   TRY_TEST_B( IsEqual(mz,  0.75));
+
+   // get member end displacements
+   Float64 sdx, sdy, srz, edx, edy, erz;
+   TRY_TEST_HR(presults->ComputeMemberDisplacements(0, 1, &sdx, &sdy, &srz, &edx, &edy, &erz));
+   TRY_TEST_B( IsEqual(sdx,   0.0) );
+   TRY_TEST_B( IsEqual(sdy,   0.0));
+   TRY_TEST_B( IsEqual(srz,   0.0));
+   TRY_TEST_B( IsEqual(edx,   0.0));
+   TRY_TEST_B( IsEqual(edy,   0.0));
+   TRY_TEST_B( IsEqual(erz,   0.0));
+
+   TRY_TEST_HR(presults->ComputeMemberDisplacements(2, 1, &sdx, &sdy, &srz, &edx, &edy, &erz));
+   TRY_TEST_B( IsEqual(sdx,   0.0) );
+   TRY_TEST_B( IsEqual(sdy,   0.0));
+   TRY_TEST_B( IsEqual(srz,   0.0));
+   TRY_TEST_B( IsEqual(edx,   0.0));
+   TRY_TEST_B( IsEqual(edy,   0.0));
+   TRY_TEST_B( IsEqual(erz,   0.0));
+
+   // now let's add some POI's at 1/4 points of on second half
+   // these results are calculated on the fly
+   CComPtr<IFem2dPOI> pPOI20,pPOI25,pPOI22;
+   TRY_TEST_HR(pPOIs->Create(20,  1,  4.0, &pPOI20));
+   TRY_TEST_HR(pPOIs->Create(25,  1,  6.0, &pPOI25));
+   TRY_TEST_HR(pPOIs->Create(22,  1,  8.0, &pPOI22));
+
+   // look at displacements
+   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 10,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 15,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,-0.76190476190476));
+   TRY_TEST_B( IsEqual(rz,-0.57142857142857) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 12,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,-1.5238095238095));
+   TRY_TEST_B( IsEqual(rz, 0.0) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 20,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,-1.5238095238095));
+   TRY_TEST_B( IsEqual(rz, 0.0) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 25,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,-0.76190476190476));
+   TRY_TEST_B( IsEqual(rz, 0.57142857142857) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 22,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0));
+
+   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 10,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 15,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,-0.10714285714286));
+   TRY_TEST_B( IsEqual(rz,-0.053571428571429) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 12,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0));
+   TRY_TEST_B( IsEqual(rz, 0.21428571428571) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 20,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0));
+   TRY_TEST_B( IsEqual(rz, 0.21428571428571) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 25,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.10714285714286));
+   TRY_TEST_B( IsEqual(rz,-0.053571428571429) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 22,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0));
+
+   // next look at poi forces
+   TRY_TEST_HR(presults->ComputePOIForces(0, 10, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -2.0));
+   TRY_TEST_B( IsEqual(mz, -4.0));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 10, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  2.0));
+   TRY_TEST_B( IsEqual(mz,  4.0));
+
+   TRY_TEST_HR(presults->ComputePOIForces(0, 15, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -2.0));
+   TRY_TEST_B( IsEqual(mz,  0.0));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 15, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  2.0));
+   TRY_TEST_B( IsEqual(mz,  0.0));
+
+   TRY_TEST_HR(presults->ComputePOIForces(0, 12, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -2.0));
+   TRY_TEST_B( IsEqual(mz,  4.0));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 12, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -2.0));
+   TRY_TEST_B( IsEqual(mz, -4.0));
+
+   TRY_TEST_HR(presults->ComputePOIForces(0, 20, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -2.0));
+   TRY_TEST_B( IsEqual(mz,  4.0));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 20, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -2.0));
+   TRY_TEST_B( IsEqual(mz, -4.0));
+
+   TRY_TEST_HR(presults->ComputePOIForces(0, 25, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  2.0));
+   TRY_TEST_B( IsEqual(mz,  0.0));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 25, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -2.0));
+   TRY_TEST_B( IsEqual(mz,  0.0));
+
+   TRY_TEST_HR(presults->ComputePOIForces(0, 22, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  2.0));
+   TRY_TEST_B( IsEqual(mz, -4.0));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 22, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -2.0));
+   TRY_TEST_B( IsEqual(mz,  4.0));
+
+   TRY_TEST_HR(presults->ComputePOIForces(2, 10, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.5625));
+   TRY_TEST_B( IsEqual(mz, -0.75));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 10, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.5625));
+   TRY_TEST_B( IsEqual(mz,  0.75));
+
+   TRY_TEST_HR(presults->ComputePOIForces(2, 15, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.5625));
+   TRY_TEST_B( IsEqual(mz,  0.375));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 15, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.5625));
+   TRY_TEST_B( IsEqual(mz, -0.375));
+
+   TRY_TEST_HR(presults->ComputePOIForces(2, 12, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.5625));
+   TRY_TEST_B( IsEqual(mz,  1.5));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 12, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.5625));
+   TRY_TEST_B( IsEqual(mz,  1.5));
+
+   TRY_TEST_HR(presults->ComputePOIForces(2, 20, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.5625));
+   TRY_TEST_B( IsEqual(mz,  1.5));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 20, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.5625));
+   TRY_TEST_B( IsEqual(mz,  1.5));
+
+   TRY_TEST_HR(presults->ComputePOIForces(2, 25, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.5625));
+   TRY_TEST_B( IsEqual(mz, -0.375));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 25, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.5625));
+   TRY_TEST_B( IsEqual(mz,  0.375));
+
+   TRY_TEST_HR(presults->ComputePOIForces(2, 22, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.5625));
+   TRY_TEST_B( IsEqual(mz,  0.75));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 22, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.5625));
+   TRY_TEST_B( IsEqual(mz, -0.75));
+
+
+///////////////////////////////////////////////
+///===========================================
+   // try a pin-fix orientation
+   TRY_TEST_MC(pMember1->ReleaseEnd(metStart, mbrReleaseMz));
+
+   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 0, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0) );
+   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 8, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0) );
+
+   TRY_TEST_HR(presults->ComputeJointDisplacements(2, 0, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0) );
+   TRY_TEST_HR(presults->ComputeJointDisplacements(2, 8, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0) );
+
+   // get member end forces
+   TRY_TEST_HR(presults->ComputeMemberForces(0, 1, &sfx, &sfy, &smz, &efx, &efy, &emz));
+   TRY_TEST_B( IsEqual(sfx, 0.0) );
+   TRY_TEST_B( IsEqual(sfy, 1.25));
+   TRY_TEST_B( IsEqual(smz, 0.0));
+   TRY_TEST_B( IsEqual(efx, 0.0));
+   TRY_TEST_B( IsEqual(efy, 2.75));
+   TRY_TEST_B( IsEqual(emz,-6.0));
+
+   TRY_TEST_HR(presults->ComputeMemberForces(2, 1, &sfx, &sfy, &smz, &efx, &efy, &emz));
+   TRY_TEST_B( IsEqual(sfx, 0.0) );
+   TRY_TEST_B( IsEqual(sfy, 0.42187500000000));
+   TRY_TEST_B( IsEqual(smz, 0.0));
+   TRY_TEST_B( IsEqual(efx, 0.0));
+   TRY_TEST_B( IsEqual(efy, -0.42187500000000));
+   TRY_TEST_B( IsEqual(emz, 0.37500000000000));
+
+   TRY_TEST_HR(presults->ComputeReactions(0, 0, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  1.25));
+   TRY_TEST_B( IsEqual(mz,  0.0));
+   TRY_TEST_HR(presults->ComputeReactions(0, 8, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  2.75));
+   TRY_TEST_B( IsEqual(mz, -6.0));
+
+   TRY_TEST_HR(presults->ComputeReactions(2, 0, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.421875));
+   TRY_TEST_B( IsEqual(mz,  0.0));
+   TRY_TEST_HR(presults->ComputeReactions(2, 8, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  -0.421875));
+   TRY_TEST_B( IsEqual(mz, 0.375));
+
+   // get member end displacements
+   TRY_TEST_HR(presults->ComputeMemberDisplacements(0, 1, &sdx, &sdy, &srz, &edx, &edy, &erz));
+   TRY_TEST_B( IsEqual(sdx,   0.0) );
+   TRY_TEST_B( IsEqual(sdy,   0.0));
+   TRY_TEST_B( IsEqual(srz,  -1.1428571428571));
+   TRY_TEST_B( IsEqual(edx,   0.0));
+   TRY_TEST_B( IsEqual(edy,   0.0));
+   TRY_TEST_B( IsEqual(erz,   0.0));
+
+   TRY_TEST_HR(presults->ComputeMemberDisplacements(2, 1, &sdx, &sdy, &srz, &edx, &edy, &erz));
+   TRY_TEST_B( IsEqual(sdx,   0.0) );
+   TRY_TEST_B( IsEqual(sdy,   0.0));
+   TRY_TEST_B( IsEqual(srz,  -0.21428571428571));
+   TRY_TEST_B( IsEqual(edx,   0.0));
+   TRY_TEST_B( IsEqual(edy,   0.0));
+   TRY_TEST_B( IsEqual(erz,   0.0));
+
+   // look at displacements
+   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 10,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz,-1.1428571428571) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 15,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,-2.047619047));
+   TRY_TEST_B( IsEqual(rz,-0.785714285));
+   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 12,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,-2.66667));
+   TRY_TEST_B( IsEqual(rz, 0.2857142857) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 20,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,-2.66667));
+   TRY_TEST_B( IsEqual(rz, 0.2857142857) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 25,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,-1.1904761904762));
+   TRY_TEST_B( IsEqual(rz, 0.92857142857143) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 22,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0));
+
+   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 10,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz,-0.21428571428571) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 15,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,-0.34821428571429));
+   TRY_TEST_B( IsEqual(rz,-0.093750000000000));
+   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 12,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,-0.21428571428571));
+   TRY_TEST_B( IsEqual(rz, 0.26785714285714) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 20,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,-0.21428571428571));
+   TRY_TEST_B( IsEqual(rz, 0.26785714285714) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 25,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,0.026785714285714));
+   TRY_TEST_B( IsEqual(rz, 0.013392857142857) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 22,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0));
+
+
+   // next look at poi forces
+   TRY_TEST_HR(presults->ComputePOIForces(0, 10, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -1.25));
+   TRY_TEST_B( IsEqual(mz,  0.0));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 10, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  1.25));
+   TRY_TEST_B( IsEqual(mz,  0.0));
+
+   TRY_TEST_HR(presults->ComputePOIForces(0, 15, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -1.25));
+   TRY_TEST_B( IsEqual(mz,  2.5));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 15, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  1.25));
+   TRY_TEST_B( IsEqual(mz, -2.5));
+
+   TRY_TEST_HR(presults->ComputePOIForces(0, 12, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -1.25));
+   TRY_TEST_B( IsEqual(mz,  5.0));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 12, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -2.75));
+   TRY_TEST_B( IsEqual(mz, -5.0));
+
+   TRY_TEST_HR(presults->ComputePOIForces(0, 20, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -1.25));
+   TRY_TEST_B( IsEqual(mz,  5.0));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 20, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -2.75));
+   TRY_TEST_B( IsEqual(mz, -5.0));
+
+   TRY_TEST_HR(presults->ComputePOIForces(0, 25, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  2.75));
+   TRY_TEST_B( IsEqual(mz, -0.5));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 25, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -2.75));
+   TRY_TEST_B( IsEqual(mz,  0.5));
+
+   TRY_TEST_HR(presults->ComputePOIForces(0, 22, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  2.75));
+   TRY_TEST_B( IsEqual(mz, -6.0));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 22, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -2.75));
+   TRY_TEST_B( IsEqual(mz,  6.0));
+
+
+   TRY_TEST_HR(presults->ComputePOIForces(2, 10, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.421875));
+   TRY_TEST_B( IsEqual(mz,  0.0));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 10, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.421875));
+   TRY_TEST_B( IsEqual(mz,  0.0));
+
+   TRY_TEST_HR(presults->ComputePOIForces(2, 15, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.421875));
+   TRY_TEST_B( IsEqual(mz,  0.84375000000000));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 15, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.421875));
+   TRY_TEST_B( IsEqual(mz, -0.84375000000000));
+
+   TRY_TEST_HR(presults->ComputePOIForces(2, 12, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.421875));
+   TRY_TEST_B( IsEqual(mz,  1.6875000000000));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 12, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.421875));
+   TRY_TEST_B( IsEqual(mz,  1.3125000000000));
+
+   TRY_TEST_HR(presults->ComputePOIForces(2, 20, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.421875));
+   TRY_TEST_B( IsEqual(mz,  1.6875000000000));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 20, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.421875));
+   TRY_TEST_B( IsEqual(mz,  1.3125000000000));
+
+   TRY_TEST_HR(presults->ComputePOIForces(2, 25, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.421875));
+   TRY_TEST_B( IsEqual(mz, -0.46875000000000));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 25, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.421875));
+   TRY_TEST_B( IsEqual(mz,  0.46875000000000));
+
+   TRY_TEST_HR(presults->ComputePOIForces(2, 22, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.421875));
+   TRY_TEST_B( IsEqual(mz,  0.375000000000000));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 22, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.421875));
+   TRY_TEST_B( IsEqual(mz, -0.37500000000000));
+
+///////////////////////////////////////////////
+///===========================================
+   // try a fix-pin orientation
+   TRY_TEST_MC(pMember1->ReleaseEnd(metStart, mbrReleaseNone));
+   TRY_TEST_MC(pMember1->ReleaseEnd(metEnd  , mbrReleaseMz));
+
+   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 0, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0) );
+   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 8, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0) );
+
+   TRY_TEST_HR(presults->ComputeJointDisplacements(2, 0, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0) );
+   TRY_TEST_HR(presults->ComputeJointDisplacements(2, 8, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0) );
+
+   // get member end forces
+   TRY_TEST_HR(presults->ComputeMemberForces(0, 1, &sfx, &sfy, &smz, &efx, &efy, &emz));
+   TRY_TEST_B( IsEqual(sfx, 0.0) );
+   TRY_TEST_B( IsEqual(sfy, 2.75));
+   TRY_TEST_B( IsEqual(smz, 6.0));
+   TRY_TEST_B( IsEqual(efx, 0.0));
+   TRY_TEST_B( IsEqual(efy, 1.25));
+   TRY_TEST_B( IsEqual(emz, 0.0));
+
+   TRY_TEST_HR(presults->ComputeMemberForces(2, 1, &sfx, &sfy, &smz, &efx, &efy, &emz));
+   TRY_TEST_B( IsEqual(sfx, 0.0) );
+   TRY_TEST_B( IsEqual(sfy, 0.421875));
+   TRY_TEST_B( IsEqual(smz, 0.375));
+   TRY_TEST_B( IsEqual(efx, 0.0));
+   TRY_TEST_B( IsEqual(efy,-0.421875));
+   TRY_TEST_B( IsEqual(emz, 0.0));
+
+   TRY_TEST_HR(presults->ComputeReactions(0, 0, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  2.75));
+   TRY_TEST_B( IsEqual(mz,  6.0));
+   TRY_TEST_HR(presults->ComputeReactions(0, 8, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  1.25));
+   TRY_TEST_B( IsEqual(mz,  0.0));
+
+   TRY_TEST_HR(presults->ComputeReactions(2, 0, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.421875));
+   TRY_TEST_B( IsEqual(mz,  0.375));
+   TRY_TEST_HR(presults->ComputeReactions(2, 8, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.421875));
+   TRY_TEST_B( IsEqual(mz,  0.0));
+
+   // get member end displacements
+   TRY_TEST_HR(presults->ComputeMemberDisplacements(0, 1, &sdx, &sdy, &srz, &edx, &edy, &erz));
+   TRY_TEST_B( IsEqual(sdx,   0.0) );
+   TRY_TEST_B( IsEqual(sdy,   0.0));
+   TRY_TEST_B( IsEqual(srz,   0.0));
+   TRY_TEST_B( IsEqual(edx,   0.0));
+   TRY_TEST_B( IsEqual(edy,   0.0));
+   TRY_TEST_B( IsEqual(erz,   1.1428571428571));
+
+   TRY_TEST_HR(presults->ComputeMemberDisplacements(2, 1, &sdx, &sdy, &srz, &edx, &edy, &erz));
+   TRY_TEST_B( IsEqual(sdx,   0.0) );
+   TRY_TEST_B( IsEqual(sdy,   0.0));
+   TRY_TEST_B( IsEqual(srz,   0.0));
+   TRY_TEST_B( IsEqual(edx,   0.0));
+   TRY_TEST_B( IsEqual(edy,   0.0));
+   TRY_TEST_B( IsEqual(erz,  -0.21428571428571));
+
+   // look at displacements
+   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 10,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 15,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,-1.1904761904762));
+   TRY_TEST_B( IsEqual(rz,-0.92857142857143) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 12,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,-2.66667));
+   TRY_TEST_B( IsEqual(rz,-0.2857142857) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 20,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,-2.66667));
+   TRY_TEST_B( IsEqual(rz,-0.2857142857) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 25,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,-2.047619047));
+   TRY_TEST_B( IsEqual(rz, 0.785714285));
+   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 22,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 1.1428571428571));
+
+   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 10,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, 0.0) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 15,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,-0.026785714285714));
+   TRY_TEST_B( IsEqual(rz, 0.013392857142857) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 12,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,0.21428571428571));
+   TRY_TEST_B( IsEqual(rz,0.26785714285714) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 20,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,0.21428571428571));
+   TRY_TEST_B( IsEqual(rz,0.26785714285714) );
+   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 25,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy,  0.34821428571429));
+   TRY_TEST_B( IsEqual(rz, -0.093750000000000));
+   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 22,  lotMember, &dx, &dy, &rz));
+   TRY_TEST_B( IsEqual(dx, 0.0) );
+   TRY_TEST_B( IsEqual(dy, 0.0) );
+   TRY_TEST_B( IsEqual(rz, -0.21428571428571));
+
+   // next look at poi forces
+   TRY_TEST_HR(presults->ComputePOIForces(0, 10, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -2.75));
+   TRY_TEST_B( IsEqual(mz, -6.0));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 10, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  2.75));
+   TRY_TEST_B( IsEqual(mz,  6.0));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 15, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -2.75));
+   TRY_TEST_B( IsEqual(mz, -0.5));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 15, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  2.75));
+   TRY_TEST_B( IsEqual(mz,  0.5));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 12, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -2.75));
+   TRY_TEST_B( IsEqual(mz,  5.0));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 12, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -1.25));
+   TRY_TEST_B( IsEqual(mz, -5.0));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 20, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -2.75));
+   TRY_TEST_B( IsEqual(mz,  5.0));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 20, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -1.25));
+   TRY_TEST_B( IsEqual(mz, -5.0));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 25, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  1.25));
+   TRY_TEST_B( IsEqual(mz,  2.5));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 25, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -1.25));
+   TRY_TEST_B( IsEqual(mz, -2.5));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 22, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  1.25));
+   TRY_TEST_B( IsEqual(mz,  0.0));
+   TRY_TEST_HR(presults->ComputePOIForces(0, 22, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -1.25));
+   TRY_TEST_B( IsEqual(mz,  0.0));
+
+
+   TRY_TEST_HR(presults->ComputePOIForces(2, 10, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.421875));
+   TRY_TEST_B( IsEqual(mz, -0.375));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 10, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.421875));
+   TRY_TEST_B( IsEqual(mz,  0.375));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 15, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.421875));
+   TRY_TEST_B( IsEqual(mz,  0.46875));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 15, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.421875));
+   TRY_TEST_B( IsEqual(mz, -0.46875));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 12, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.421875));
+   TRY_TEST_B( IsEqual(mz,  1.3125));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 12, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.421875));
+   TRY_TEST_B( IsEqual(mz,  1.6875));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 20, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.421875));
+   TRY_TEST_B( IsEqual(mz,  1.3125));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 20, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.421875));
+   TRY_TEST_B( IsEqual(mz,  1.6875));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 25, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.421875));
+   TRY_TEST_B( IsEqual(mz, -0.84375000000000));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 25, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.421875));
+   TRY_TEST_B( IsEqual(mz,  0.84375000000000));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 22, mftLeft, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy, -0.421875));
+   TRY_TEST_B( IsEqual(mz,  0.0));
+   TRY_TEST_HR(presults->ComputePOIForces(2, 22, mftRight, lotGlobal, &fx, &fy, &mz));
+   TRY_TEST_B( IsEqual(fx,  0.0));
+   TRY_TEST_B( IsEqual(fy,  0.421875));
+   TRY_TEST_B( IsEqual(mz,  0.0));
+
+   ReleaseModel(pmodel);
+}

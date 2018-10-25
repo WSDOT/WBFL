@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCore.StructuredSave.1 = s 'StructuredSave Class'
+	{
+		CLSID = s '{0131A8C5-26EB-11D2-8EB0-006097DF3C68}'
+	}
+	WBFLCore.StructuredSave = s 'StructuredSave Class'
+	{
+		CLSID = s '{0131A8C5-26EB-11D2-8EB0-006097DF3C68}'
+		CurVer = s 'WBFLCore.StructuredSave.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {0131A8C5-26EB-11D2-8EB0-006097DF3C68} = s 'StructuredSave Class'
+		{
+			ProgID = s 'WBFLCore.StructuredSave.1'
+			VersionIndependentProgID = s 'WBFLCore.StructuredSave'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{D820A190-2BE4-11D2-8EB3-006097DF3C68}'
+		}
+	}
+}

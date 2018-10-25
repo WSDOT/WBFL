@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.SegmentItem.1 = s 'SegmentItem Class'
+	{
+		CLSID = s '{A81D7FA1-41CF-4980-AC98-F0CC555AA181}'
+	}
+	WBFLGenericBridge.SegmentItem = s 'SegmentItem Class'
+	{
+		CLSID = s '{A81D7FA1-41CF-4980-AC98-F0CC555AA181}'
+		CurVer = s 'WBFLGenericBridge.SegmentItem.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {A81D7FA1-41CF-4980-AC98-F0CC555AA181} = s 'SegmentItem Class'
+		{
+			ProgID = s 'WBFLGenericBridge.SegmentItem.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.SegmentItem'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

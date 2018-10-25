@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.Mapping.1 = s 'Mapping Class'
+	{
+		CLSID = s '{011408D0-F865-11d4-8B9C-006097C68A9C}'
+	}
+	WBFLDManip.Mapping = s 'Mapping Class'
+	{
+		CLSID = s '{011408D0-F865-11d4-8B9C-006097C68A9C}'
+		CurVer = s 'WBFLDManip.Mapping.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {011408D0-F865-11d4-8B9C-006097C68A9C} = s 'Mapping Class'
+		{
+			ProgID = s 'WBFLDManip.Mapping.1'
+			VersionIndependentProgID = s 'WBFLDManip.Mapping'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

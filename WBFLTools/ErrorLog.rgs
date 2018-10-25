@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLTools.ErrorLog.1 = s 'ErrorLog Class'
+	{
+		CLSID = s '{49E8A61D-E83B-4b60-B0D7-96B0D1A96CC3}'
+	}
+	WBFLTools.ErrorLog = s 'ErrorLog Class'
+	{
+		CLSID = s '{49E8A61D-E83B-4b60-B0D7-96B0D1A96CC3}'
+		CurVer = s 'WBFLTools.ErrorLog.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {49E8A61D-E83B-4b60-B0D7-96B0D1A96CC3} = s 'MohrCircle Class'
+		{
+			ProgID = s 'WBFLTools.ErrorLog.1'
+			VersionIndependentProgID = s 'WBFLTools.ErrorLog'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B9507D8C-7100-11D3-89BB-006097C68A9C}'
+		}
+	}
+}

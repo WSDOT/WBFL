@@ -1,0 +1,143 @@
+<!doctype HTML public "-//W3C//DTD HTML 4.0 Frameset//EN">
+
+<html>
+
+<!--(==============================================================)-->
+<!--(Document created with RoboEditor. )============================-->
+<!--(==============================================================)-->
+
+<head>
+
+<title>Setting Up Stress Calculations</title>
+
+<!--(Meta)==========================================================-->
+
+<meta http-equiv=content-type content="text/html; charset=windows-1252">
+<meta name=topic-status content="In Progress">
+<meta name=topic-priority content=0>
+<meta name=topic-time-estimate content=0>
+<meta name=topic-comment content>
+<meta name=topic-id content>
+<meta name=generator content="RoboHELP by eHelp Corporation - www.ehelp.com">
+<meta name=generator-major-version content=0.1>
+<meta name=generator-minor-version content=1>
+<meta name=filetype content=kadov>
+<meta name=filetype-version content=1>
+<meta name=page-count content=0>
+<meta name=layout-height content=0>
+<meta name=layout-width content=0>
+
+
+<!--(Links)=========================================================-->
+
+<link REL=StyleSheet HREF="..\default.css">
+
+
+
+</head>
+
+<!--(Body)==========================================================-->
+
+
+<body>
+
+<h1>Setting Up Stress Calculations</h1>
+
+<p>If a populated StressPoints collection exists at a POI, an LBAM analysis 
+ engine can compute stresses at that location.</p>
+
+<p>Stresses are computed using the stress coefficients, Sa and Sm, at a 
+ StressPoint along with the member forces at the location using the formula:</p>
+
+<!--(Table)=========================================================-->
+<!--begin!kadov{{--><div align=left><!--}}end!kadov-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="width: 100%;
+				border-spacing: 0px;
+				float: alignleft;
+				margin-top: 14pt;"
+		cellspacing=0
+		width=100%>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 10%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=10%>
+<p>&nbsp;</td>
+<td style="x-cell-content-align: TOP;
+			width: 50%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=50%>
+<p style="margin-bottom: 0;"><font style="font-family: Symbol;"
+									face=Symbol>s</font> = P*Sa + M*Sm</td></tr>
+</table>
+<!--begin!kadov{{--></div><!--}}end!kadov-->
+<p style="text-align: left;"
+	align=left>Where:</p>
+
+<ol>
+	
+	<li class=kadov-P><p style="text-align: left;"
+						align=left>P = Axial force at the location (tension 
+ is positive)</p></li>
+	
+	<li class=kadov-P><p style="text-align: left;"
+						align=left>M = Moment at the location</p></li>
+</ol>
+
+<p style="text-align: left;"
+	align=left>At first, this form might seem a bit different to some users 
+ (think Sa=1/A, and Sm=c/I or 1/S), but it provides a flexible and expedient 
+ way to input data into the LBAM.</p>
+
+<h2>Specifying StressPoints</h2>
+
+<p>There are two ways to specify StressPoints at a POI location.</p>
+
+<p>1) Explicitly populate the StressPoints collection at the POI object 
+ in question. Or,</p>
+
+<p>2) Populate the StressPoints collection at the <a HREF="..\Objects\LBAM_Model\CrossSection\CrossSection.htm">CrossSection</a> 
+ located at the POI.</p>
+
+<p>The first method provides a way to override any StressPoints that might 
+ be at the cross section. This can be handy when modeling haunched girders 
+ where a prismatic section model might be good enough for modeling stiffness 
+ properties, but may not provide adequate accuracy for stress calculations.</p>
+
+<h2>Accumulation of Stresses Over Stages</h2>
+
+<p>Stress results can also be accumulated over Stages by the LBAM engines, 
+ if requested. However, <span style="font-style: italic; font-weight: bold;">the 
+ number of StressPoint's at a location must be constant over all stages</span> 
+ (e.g., if there are four StressPoints in &quot;Stage1&quot;, there must 
+ be four StressPoints in &quot;Stage2&quot; and &quot;Stage3&quot;). If 
+ this is not the case, an analysis error will occur.</p>
+
+
+<!--(HR)============================================================-->
+<hr style="height: 2px;
+			width: 100%;
+			float: aligncenter;"
+	size=2
+	width=100%
+	align=center>
+
+
+<p style="text-align: left; margin-bottom: 0;"
+	align=left>Copyright © 2000-2002, Washington State Department of Transportation 
+ </p>
+
+</body>
+
+</html>

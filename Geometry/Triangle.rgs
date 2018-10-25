@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.Triangle.1 = s 'Triangle Class'
+	{
+		CLSID = s '{0C89D3A2-02E2-11D3-8CDF-DDE6AA65DF35}'
+	}
+	WBFLGeometry.Triangle = s 'Triangle Class'
+	{
+		CLSID = s '{0C89D3A2-02E2-11D3-8CDF-DDE6AA65DF35}'
+		CurVer = s 'WBFLGeometry.Triangle.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {0C89D3A2-02E2-11D3-8CDF-DDE6AA65DF35} = s 'Triangle Class'
+		{
+			ProgID = s 'WBFLGeometry.Triangle.1'
+			VersionIndependentProgID = s 'WBFLGeometry.Triangle'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

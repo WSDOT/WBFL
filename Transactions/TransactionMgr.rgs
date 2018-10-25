@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLTransactions.TransactionMgr.1 = s 'TransactionMgr Class'
+	{
+		CLSID = s '{05773828-07E0-4BE1-B99C-EF6D8E0326AE}'
+	}
+	WBFLTransactions.TransactionMgr = s 'TransactionMgr Class'
+	{
+		CLSID = s '{05773828-07E0-4BE1-B99C-EF6D8E0326AE}'
+		CurVer = s 'WBFLTransactions.TransactionMgr.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {05773828-07E0-4BE1-B99C-EF6D8E0326AE} = s 'TransactionMgr Class'
+		{
+			ProgID = s 'WBFLTransactions.TransactionMgr.1'
+			VersionIndependentProgID = s 'WBFLTransactions.TransactionMgr'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{081C49DE-FBE8-4C8D-BEEC-F13ECFF2B56C}'
+		}
+	}
+}

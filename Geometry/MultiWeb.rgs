@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.MultiWeb.1 = s 'MultiWeb Class'
+	{
+		CLSID = s '{3D4E4B7B-A78C-4419-8DCD-DAF644499AC1}'
+	}
+	WBFLGeometry.MultiWeb = s 'MultiWeb Class'
+	{
+		CLSID = s '{3D4E4B7B-A78C-4419-8DCD-DAF644499AC1}'
+		CurVer = s 'WBFLGeometry.MultiWeb.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {3D4E4B7B-A78C-4419-8DCD-DAF644499AC1} = s 'MultiWeb Class'
+		{
+			ProgID = s 'WBFLGeometry.MultiWeb.1'
+			VersionIndependentProgID = s 'WBFLGeometry.MultiWeb'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

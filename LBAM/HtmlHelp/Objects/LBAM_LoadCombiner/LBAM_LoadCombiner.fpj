@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rhpml majorversion="1" minorversion="0">
+	<folders>
+		<folder>
+			<name>ConcurrentLoadCombinationResponse</name>
+		</folder>
+		<folder>
+			<name>DependOnLoadCombinationAnalysisContext</name>
+		</folder>
+		<folder>
+			<name>LoadCombinationAnalysisContext</name>
+		</folder>
+		<folder>
+			<name>LoadCombinationResultConfiguration</name>
+		</folder>
+		<folder>
+			<name>GetCombinationFactors</name>
+		</folder>
+		<folder>
+			<name>LoadCaseResponse</name>
+		</folder>
+		<folder>
+			<name>LoadCombinationResponse</name>
+		</folder>
+		<folder>
+			<name>LoadCombinationResults</name>
+		</folder>
+		<folder>
+			<name>LoadCombinationSectionResults</name>
+		</folder>
+		<folder>
+			<name>LoadCombinationStressResults</name>
+		</folder>
+	</folders>
+	<topics>
+		<topic>
+			<name>LBAM_Load_Combination_Analysis.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+	</topics>
+</rhpml>

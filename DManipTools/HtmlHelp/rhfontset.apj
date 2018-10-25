@@ -1,0 +1,837 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rhpml majorversion="1" minorversion="0">
+	<fontsets>
+		<fontset>
+			<name>Marlett</name>
+			<fontlist>Marlett</fontlist>
+		</fontset>
+		<fontset>
+			<name>Arial</name>
+			<fontlist>Arial</fontlist>
+		</fontset>
+		<fontset>
+			<name>Arial CE</name>
+			<fontlist>Arial CE</fontlist>
+		</fontset>
+		<fontset>
+			<name>Arial CYR</name>
+			<fontlist>Arial CYR</fontlist>
+		</fontset>
+		<fontset>
+			<name>Arial Greek</name>
+			<fontlist>Arial Greek</fontlist>
+		</fontset>
+		<fontset>
+			<name>Arial TUR</name>
+			<fontlist>Arial TUR</fontlist>
+		</fontset>
+		<fontset>
+			<name>Courier New</name>
+			<fontlist>Courier New</fontlist>
+		</fontset>
+		<fontset>
+			<name>Courier New CE</name>
+			<fontlist>Courier New CE</fontlist>
+		</fontset>
+		<fontset>
+			<name>Courier New CYR</name>
+			<fontlist>Courier New CYR</fontlist>
+		</fontset>
+		<fontset>
+			<name>Courier New Greek</name>
+			<fontlist>Courier New Greek</fontlist>
+		</fontset>
+		<fontset>
+			<name>Courier New TUR</name>
+			<fontlist>Courier New TUR</fontlist>
+		</fontset>
+		<fontset>
+			<name>Lucida Console</name>
+			<fontlist>Lucida Console</fontlist>
+		</fontset>
+		<fontset>
+			<name>Lucida Sans Unicode</name>
+			<fontlist>Lucida Sans Unicode</fontlist>
+		</fontset>
+		<fontset>
+			<name>Times New Roman</name>
+			<fontlist>Times New Roman</fontlist>
+		</fontset>
+		<fontset>
+			<name>Times New Roman CE</name>
+			<fontlist>Times New Roman CE</fontlist>
+		</fontset>
+		<fontset>
+			<name>Times New Roman CYR</name>
+			<fontlist>Times New Roman CYR</fontlist>
+		</fontset>
+		<fontset>
+			<name>Times New Roman Greek</name>
+			<fontlist>Times New Roman Greek</fontlist>
+		</fontset>
+		<fontset>
+			<name>Times New Roman TUR</name>
+			<fontlist>Times New Roman TUR</fontlist>
+		</fontset>
+		<fontset>
+			<name>Wingdings</name>
+			<fontlist>Wingdings</fontlist>
+		</fontset>
+		<fontset>
+			<name>Symbol</name>
+			<fontlist>Symbol</fontlist>
+		</fontset>
+		<fontset>
+			<name>Verdana</name>
+			<fontlist>Verdana</fontlist>
+		</fontset>
+		<fontset>
+			<name>Arial Black</name>
+			<fontlist>Arial Black</fontlist>
+		</fontset>
+		<fontset>
+			<name>Comic Sans MS</name>
+			<fontlist>Comic Sans MS</fontlist>
+		</fontset>
+		<fontset>
+			<name>Impact</name>
+			<fontlist>Impact</fontlist>
+		</fontset>
+		<fontset>
+			<name>Georgia</name>
+			<fontlist>Georgia</fontlist>
+		</fontset>
+		<fontset>
+			<name>Palatino Linotype</name>
+			<fontlist>Palatino Linotype</fontlist>
+		</fontset>
+		<fontset>
+			<name>Tahoma</name>
+			<fontlist>Tahoma</fontlist>
+		</fontset>
+		<fontset>
+			<name>Trebuchet MS</name>
+			<fontlist>Trebuchet MS</fontlist>
+		</fontset>
+		<fontset>
+			<name>Webdings</name>
+			<fontlist>Webdings</fontlist>
+		</fontset>
+		<fontset>
+			<name>Microsoft Sans Serif</name>
+			<fontlist>Microsoft Sans Serif</fontlist>
+		</fontset>
+		<fontset>
+			<name>Arial Narrow</name>
+			<fontlist>Arial Narrow</fontlist>
+		</fontset>
+		<fontset>
+			<name>Book Antiqua</name>
+			<fontlist>Book Antiqua</fontlist>
+		</fontset>
+		<fontset>
+			<name>Bookman Old Style</name>
+			<fontlist>Bookman Old Style</fontlist>
+		</fontset>
+		<fontset>
+			<name>Century Gothic</name>
+			<fontlist>Century Gothic</fontlist>
+		</fontset>
+		<fontset>
+			<name>Garamond</name>
+			<fontlist>Garamond</fontlist>
+		</fontset>
+		<fontset>
+			<name>Haettenschweiler</name>
+			<fontlist>Haettenschweiler</fontlist>
+		</fontset>
+		<fontset>
+			<name>Monotype Corsiva</name>
+			<fontlist>Monotype Corsiva</fontlist>
+		</fontset>
+		<fontset>
+			<name>MS Outlook</name>
+			<fontlist>MS Outlook</fontlist>
+		</fontset>
+		<fontset>
+			<name>Wingdings 2</name>
+			<fontlist>Wingdings 2</fontlist>
+		</fontset>
+		<fontset>
+			<name>Wingdings 3</name>
+			<fontlist>Wingdings 3</fontlist>
+		</fontset>
+		<fontset>
+			<name>Agency FB</name>
+			<fontlist>Agency FB</fontlist>
+		</fontset>
+		<fontset>
+			<name>Algerian</name>
+			<fontlist>Algerian</fontlist>
+		</fontset>
+		<fontset>
+			<name>Arial Rounded MT Bold</name>
+			<fontlist>Arial Rounded MT Bold</fontlist>
+		</fontset>
+		<fontset>
+			<name>Baskerville Old Face</name>
+			<fontlist>Baskerville Old Face</fontlist>
+		</fontset>
+		<fontset>
+			<name>Bauhaus 93</name>
+			<fontlist>Bauhaus 93</fontlist>
+		</fontset>
+		<fontset>
+			<name>Bell MT</name>
+			<fontlist>Bell MT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Berlin Sans FB</name>
+			<fontlist>Berlin Sans FB</fontlist>
+		</fontset>
+		<fontset>
+			<name>Bernard MT Condensed</name>
+			<fontlist>Bernard MT Condensed</fontlist>
+		</fontset>
+		<fontset>
+			<name>Blackadder ITC</name>
+			<fontlist>Blackadder ITC</fontlist>
+		</fontset>
+		<fontset>
+			<name>Bradley Hand ITC</name>
+			<fontlist>Bradley Hand ITC</fontlist>
+		</fontset>
+		<fontset>
+			<name>Britannic Bold</name>
+			<fontlist>Britannic Bold</fontlist>
+		</fontset>
+		<fontset>
+			<name>Broadway</name>
+			<fontlist>Broadway</fontlist>
+		</fontset>
+		<fontset>
+			<name>Brush Script MT</name>
+			<fontlist>Brush Script MT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Californian FB</name>
+			<fontlist>Californian FB</fontlist>
+		</fontset>
+		<fontset>
+			<name>Calisto MT</name>
+			<fontlist>Calisto MT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Castellar</name>
+			<fontlist>Castellar</fontlist>
+		</fontset>
+		<fontset>
+			<name>Centaur</name>
+			<fontlist>Centaur</fontlist>
+		</fontset>
+		<fontset>
+			<name>Century Schoolbook</name>
+			<fontlist>Century Schoolbook</fontlist>
+		</fontset>
+		<fontset>
+			<name>Chiller</name>
+			<fontlist>Chiller</fontlist>
+		</fontset>
+		<fontset>
+			<name>Colonna MT</name>
+			<fontlist>Colonna MT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Cooper Black</name>
+			<fontlist>Cooper Black</fontlist>
+		</fontset>
+		<fontset>
+			<name>Copperplate Gothic Bold</name>
+			<fontlist>Copperplate Gothic Bold</fontlist>
+		</fontset>
+		<fontset>
+			<name>Copperplate Gothic Light</name>
+			<fontlist>Copperplate Gothic Light</fontlist>
+		</fontset>
+		<fontset>
+			<name>Curlz MT</name>
+			<fontlist>Curlz MT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Edwardian Script ITC</name>
+			<fontlist>Edwardian Script ITC</fontlist>
+		</fontset>
+		<fontset>
+			<name>Elephant</name>
+			<fontlist>Elephant</fontlist>
+		</fontset>
+		<fontset>
+			<name>Engravers MT</name>
+			<fontlist>Engravers MT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Eras Bold ITC</name>
+			<fontlist>Eras Bold ITC</fontlist>
+		</fontset>
+		<fontset>
+			<name>Eras Demi ITC</name>
+			<fontlist>Eras Demi ITC</fontlist>
+		</fontset>
+		<fontset>
+			<name>Eras Light ITC</name>
+			<fontlist>Eras Light ITC</fontlist>
+		</fontset>
+		<fontset>
+			<name>Eras Medium ITC</name>
+			<fontlist>Eras Medium ITC</fontlist>
+		</fontset>
+		<fontset>
+			<name>Felix Titling</name>
+			<fontlist>Felix Titling</fontlist>
+		</fontset>
+		<fontset>
+			<name>Footlight MT Light</name>
+			<fontlist>Footlight MT Light</fontlist>
+		</fontset>
+		<fontset>
+			<name>Forte</name>
+			<fontlist>Forte</fontlist>
+		</fontset>
+		<fontset>
+			<name>Franklin Gothic Book</name>
+			<fontlist>Franklin Gothic Book</fontlist>
+		</fontset>
+		<fontset>
+			<name>Franklin Gothic Demi</name>
+			<fontlist>Franklin Gothic Demi</fontlist>
+		</fontset>
+		<fontset>
+			<name>Franklin Gothic Demi Cond</name>
+			<fontlist>Franklin Gothic Demi Cond</fontlist>
+		</fontset>
+		<fontset>
+			<name>Franklin Gothic Heavy</name>
+			<fontlist>Franklin Gothic Heavy</fontlist>
+		</fontset>
+		<fontset>
+			<name>Franklin Gothic Medium</name>
+			<fontlist>Franklin Gothic Medium</fontlist>
+		</fontset>
+		<fontset>
+			<name>Franklin Gothic Medium Cond</name>
+			<fontlist>Franklin Gothic Medium Cond</fontlist>
+		</fontset>
+		<fontset>
+			<name>Freestyle Script</name>
+			<fontlist>Freestyle Script</fontlist>
+		</fontset>
+		<fontset>
+			<name>French Script MT</name>
+			<fontlist>French Script MT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Gigi</name>
+			<fontlist>Gigi</fontlist>
+		</fontset>
+		<fontset>
+			<name>Gill Sans MT</name>
+			<fontlist>Gill Sans MT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Gill Sans MT Condensed</name>
+			<fontlist>Gill Sans MT Condensed</fontlist>
+		</fontset>
+		<fontset>
+			<name>Gill Sans Ultra Bold</name>
+			<fontlist>Gill Sans Ultra Bold</fontlist>
+		</fontset>
+		<fontset>
+			<name>Gill Sans Ultra Bold Condensed</name>
+			<fontlist>Gill Sans Ultra Bold Condensed</fontlist>
+		</fontset>
+		<fontset>
+			<name>Gill Sans MT Ext Condensed Bold</name>
+			<fontlist>Gill Sans MT Ext Condensed Bold</fontlist>
+		</fontset>
+		<fontset>
+			<name>Gloucester MT Extra Condensed</name>
+			<fontlist>Gloucester MT Extra Condensed</fontlist>
+		</fontset>
+		<fontset>
+			<name>Goudy Old Style</name>
+			<fontlist>Goudy Old Style</fontlist>
+		</fontset>
+		<fontset>
+			<name>Goudy Stout</name>
+			<fontlist>Goudy Stout</fontlist>
+		</fontset>
+		<fontset>
+			<name>Harlow Solid Italic</name>
+			<fontlist>Harlow Solid Italic</fontlist>
+		</fontset>
+		<fontset>
+			<name>Harrington</name>
+			<fontlist>Harrington</fontlist>
+		</fontset>
+		<fontset>
+			<name>High Tower Text</name>
+			<fontlist>High Tower Text</fontlist>
+		</fontset>
+		<fontset>
+			<name>Imprint MT Shadow</name>
+			<fontlist>Imprint MT Shadow</fontlist>
+		</fontset>
+		<fontset>
+			<name>Jokerman</name>
+			<fontlist>Jokerman</fontlist>
+		</fontset>
+		<fontset>
+			<name>Juice ITC</name>
+			<fontlist>Juice ITC</fontlist>
+		</fontset>
+		<fontset>
+			<name>Kristen ITC</name>
+			<fontlist>Kristen ITC</fontlist>
+		</fontset>
+		<fontset>
+			<name>Kunstler Script</name>
+			<fontlist>Kunstler Script</fontlist>
+		</fontset>
+		<fontset>
+			<name>Lucida Bright</name>
+			<fontlist>Lucida Bright</fontlist>
+		</fontset>
+		<fontset>
+			<name>Lucida Calligraphy</name>
+			<fontlist>Lucida Calligraphy</fontlist>
+		</fontset>
+		<fontset>
+			<name>Lucida Fax</name>
+			<fontlist>Lucida Fax</fontlist>
+		</fontset>
+		<fontset>
+			<name>Lucida Handwriting</name>
+			<fontlist>Lucida Handwriting</fontlist>
+		</fontset>
+		<fontset>
+			<name>Lucida Sans</name>
+			<fontlist>Lucida Sans</fontlist>
+		</fontset>
+		<fontset>
+			<name>Lucida Sans Typewriter</name>
+			<fontlist>Lucida Sans Typewriter</fontlist>
+		</fontset>
+		<fontset>
+			<name>Magneto</name>
+			<fontlist>Magneto</fontlist>
+		</fontset>
+		<fontset>
+			<name>Maiandra GD</name>
+			<fontlist>Maiandra GD</fontlist>
+		</fontset>
+		<fontset>
+			<name>Matura MT Script Capitals</name>
+			<fontlist>Matura MT Script Capitals</fontlist>
+		</fontset>
+		<fontset>
+			<name>Mistral</name>
+			<fontlist>Mistral</fontlist>
+		</fontset>
+		<fontset>
+			<name>Modern No. 20</name>
+			<fontlist>Modern No. 20</fontlist>
+		</fontset>
+		<fontset>
+			<name>Niagara Engraved</name>
+			<fontlist>Niagara Engraved</fontlist>
+		</fontset>
+		<fontset>
+			<name>Niagara Solid</name>
+			<fontlist>Niagara Solid</fontlist>
+		</fontset>
+		<fontset>
+			<name>OCR A Extended</name>
+			<fontlist>OCR A Extended</fontlist>
+		</fontset>
+		<fontset>
+			<name>Old English Text MT</name>
+			<fontlist>Old English Text MT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Onyx</name>
+			<fontlist>Onyx</fontlist>
+		</fontset>
+		<fontset>
+			<name>Palace Script MT</name>
+			<fontlist>Palace Script MT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Papyrus</name>
+			<fontlist>Papyrus</fontlist>
+		</fontset>
+		<fontset>
+			<name>Parchment</name>
+			<fontlist>Parchment</fontlist>
+		</fontset>
+		<fontset>
+			<name>Perpetua</name>
+			<fontlist>Perpetua</fontlist>
+		</fontset>
+		<fontset>
+			<name>Perpetua Titling MT</name>
+			<fontlist>Perpetua Titling MT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Playbill</name>
+			<fontlist>Playbill</fontlist>
+		</fontset>
+		<fontset>
+			<name>Poor Richard</name>
+			<fontlist>Poor Richard</fontlist>
+		</fontset>
+		<fontset>
+			<name>Pristina</name>
+			<fontlist>Pristina</fontlist>
+		</fontset>
+		<fontset>
+			<name>Rage Italic</name>
+			<fontlist>Rage Italic</fontlist>
+		</fontset>
+		<fontset>
+			<name>Ravie</name>
+			<fontlist>Ravie</fontlist>
+		</fontset>
+		<fontset>
+			<name>Rockwell</name>
+			<fontlist>Rockwell</fontlist>
+		</fontset>
+		<fontset>
+			<name>Rockwell Condensed</name>
+			<fontlist>Rockwell Condensed</fontlist>
+		</fontset>
+		<fontset>
+			<name>Rockwell Extra Bold</name>
+			<fontlist>Rockwell Extra Bold</fontlist>
+		</fontset>
+		<fontset>
+			<name>Informal Roman</name>
+			<fontlist>Informal Roman</fontlist>
+		</fontset>
+		<fontset>
+			<name>Script MT Bold</name>
+			<fontlist>Script MT Bold</fontlist>
+		</fontset>
+		<fontset>
+			<name>Showcard Gothic</name>
+			<fontlist>Showcard Gothic</fontlist>
+		</fontset>
+		<fontset>
+			<name>Snap ITC</name>
+			<fontlist>Snap ITC</fontlist>
+		</fontset>
+		<fontset>
+			<name>Stencil</name>
+			<fontlist>Stencil</fontlist>
+		</fontset>
+		<fontset>
+			<name>Tempus Sans ITC</name>
+			<fontlist>Tempus Sans ITC</fontlist>
+		</fontset>
+		<fontset>
+			<name>Tw Cen MT</name>
+			<fontlist>Tw Cen MT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Tw Cen MT Condensed</name>
+			<fontlist>Tw Cen MT Condensed</fontlist>
+		</fontset>
+		<fontset>
+			<name>Viner Hand ITC</name>
+			<fontlist>Viner Hand ITC</fontlist>
+		</fontset>
+		<fontset>
+			<name>Vivaldi</name>
+			<fontlist>Vivaldi</fontlist>
+		</fontset>
+		<fontset>
+			<name>Vladimir Script</name>
+			<fontlist>Vladimir Script</fontlist>
+		</fontset>
+		<fontset>
+			<name>Wide Latin</name>
+			<fontlist>Wide Latin</fontlist>
+		</fontset>
+		<fontset>
+			<name>Berlin Sans FB Demi</name>
+			<fontlist>Berlin Sans FB Demi</fontlist>
+		</fontset>
+		<fontset>
+			<name>Tw Cen MT Condensed Extra Bold</name>
+			<fontlist>Tw Cen MT Condensed Extra Bold</fontlist>
+		</fontset>
+		<fontset>
+			<name>Verdana Ref</name>
+			<fontlist>Verdana Ref</fontlist>
+		</fontset>
+		<fontset>
+			<name>MathSoftText</name>
+			<fontlist>MathSoftText</fontlist>
+		</fontset>
+		<fontset>
+			<name>Heritage</name>
+			<fontlist>Heritage</fontlist>
+		</fontset>
+		<fontset>
+			<name>Bodoni-DTC</name>
+			<fontlist>Bodoni-DTC</fontlist>
+		</fontset>
+		<fontset>
+			<name>Balloon</name>
+			<fontlist>Balloon</fontlist>
+		</fontset>
+		<fontset>
+			<name>Copperplate</name>
+			<fontlist>Copperplate</fontlist>
+		</fontset>
+		<fontset>
+			<name>Dom Casual</name>
+			<fontlist>Dom Casual</fontlist>
+		</fontset>
+		<fontset>
+			<name>Fette Engschrift</name>
+			<fontlist>Fette Engschrift</fontlist>
+		</fontset>
+		<fontset>
+			<name>Eurostile Extended</name>
+			<fontlist>Eurostile Extended</fontlist>
+		</fontset>
+		<fontset>
+			<name>Franklin Cond. Gothic</name>
+			<fontlist>Franklin Cond. Gothic</fontlist>
+		</fontset>
+		<fontset>
+			<name>Franklin Extra Cond. Gothic</name>
+			<fontlist>Franklin Extra Cond. Gothic</fontlist>
+		</fontset>
+		<fontset>
+			<name>Franklin Gothic</name>
+			<fontlist>Franklin Gothic</fontlist>
+		</fontset>
+		<fontset>
+			<name>Flare Light Gothic</name>
+			<fontlist>Flare Light Gothic</fontlist>
+		</fontset>
+		<fontset>
+			<name>Frugal Sans</name>
+			<fontlist>Frugal Sans</fontlist>
+		</fontset>
+		<fontset>
+			<name>Garrison Sans</name>
+			<fontlist>Garrison Sans</fontlist>
+		</fontset>
+		<fontset>
+			<name>Garrison Cond. Sans</name>
+			<fontlist>Garrison Cond. Sans</fontlist>
+		</fontset>
+		<fontset>
+			<name>Garrison ExtraBold Sans</name>
+			<fontlist>Garrison ExtraBold Sans</fontlist>
+		</fontset>
+		<fontset>
+			<name>Garrison ExtraCond. Sans</name>
+			<fontlist>Garrison ExtraCond. Sans</fontlist>
+		</fontset>
+		<fontset>
+			<name>Garrison Light Sans</name>
+			<fontlist>Garrison Light Sans</fontlist>
+		</fontset>
+		<fontset>
+			<name>Latin Wide</name>
+			<fontlist>Latin Wide</fontlist>
+		</fontset>
+		<fontset>
+			<name>Marriage</name>
+			<fontlist>Marriage</fontlist>
+		</fontset>
+		<fontset>
+			<name>Mural Script</name>
+			<fontlist>Mural Script</fontlist>
+		</fontset>
+		<fontset>
+			<name>Optimum</name>
+			<fontlist>Optimum</fontlist>
+		</fontset>
+		<fontset>
+			<name>Serpentine</name>
+			<fontlist>Serpentine</fontlist>
+		</fontset>
+		<fontset>
+			<name>Stop</name>
+			<fontlist>Stop</fontlist>
+		</fontset>
+		<fontset>
+			<name>Swis721 Lt BT</name>
+			<fontlist>Swis721 Lt BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Swis721 Blk BT</name>
+			<fontlist>Swis721 Blk BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>PosterBodoni BT</name>
+			<fontlist>PosterBodoni BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>PosterBodoni It BT</name>
+			<fontlist>PosterBodoni It BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Futura XBlk BT</name>
+			<fontlist>Futura XBlk BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Futura XBlkIt BT</name>
+			<fontlist>Futura XBlkIt BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Futura MdCn BT</name>
+			<fontlist>Futura MdCn BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Futura BdCn BT</name>
+			<fontlist>Futura BdCn BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Futura XBlkCn BT</name>
+			<fontlist>Futura XBlkCn BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Futura XBlkCnIt BT</name>
+			<fontlist>Futura XBlkCnIt BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Clarendon Blk BT</name>
+			<fontlist>Clarendon Blk BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>OCR-A BT</name>
+			<fontlist>OCR-A BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Geometr415 Md BT</name>
+			<fontlist>Geometr415 Md BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>ItalianGarmnd BT</name>
+			<fontlist>ItalianGarmnd BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Swiss921 BT</name>
+			<fontlist>Swiss921 BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Staccato222 BT</name>
+			<fontlist>Staccato222 BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Cheltenhm BT</name>
+			<fontlist>Cheltenhm BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>CommercialScript BT</name>
+			<fontlist>CommercialScript BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Schadow BlkCn BT</name>
+			<fontlist>Schadow BlkCn BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Staccato555 BT</name>
+			<fontlist>Staccato555 BT</fontlist>
+		</fontset>
+		<fontset>
+			<name>Dutch 801 SWA</name>
+			<fontlist>Dutch 801 SWA</fontlist>
+		</fontset>
+		<fontset>
+			<name>Swiss 721 SWA</name>
+			<fontlist>Swiss 721 SWA</fontlist>
+		</fontset>
+		<fontset>
+			<name>Zapf Calligraphic 801 SWA</name>
+			<fontlist>Zapf Calligraphic 801 SWA</fontlist>
+		</fontset>
+		<fontset>
+			<name>Swiss 721 Narrow SWA</name>
+			<fontlist>Swiss 721 Narrow SWA</fontlist>
+		</fontset>
+		<fontset>
+			<name>VAG Round</name>
+			<fontlist>VAG Round</fontlist>
+		</fontset>
+		<fontset>
+			<name>Village Square</name>
+			<fontlist>Village Square</fontlist>
+		</fontset>
+		<fontset>
+			<name>Vivante-DTC</name>
+			<fontlist>Vivante-DTC</fontlist>
+		</fontset>
+		<fontset>
+			<name>Windsor</name>
+			<fontlist>Windsor</fontlist>
+		</fontset>
+		<fontset>
+			<name>Intergraph ANSI</name>
+			<fontlist>Intergraph ANSI</fontlist>
+		</fontset>
+		<fontset>
+			<name>Intergraph ANSI1 Symbols</name>
+			<fontlist>Intergraph ANSI1 Symbols</fontlist>
+		</fontset>
+		<fontset>
+			<name>Intergraph ANSI2 Symbols</name>
+			<fontlist>Intergraph ANSI2 Symbols</fontlist>
+		</fontset>
+		<fontset>
+			<name>Intergraph Architectural</name>
+			<fontlist>Intergraph Architectural</fontlist>
+		</fontset>
+		<fontset>
+			<name>Intergraph ISO</name>
+			<fontlist>Intergraph ISO</fontlist>
+		</fontset>
+		<fontset>
+			<name>Intergraph ISO1 Symbols</name>
+			<fontlist>Intergraph ISO1 Symbols</fontlist>
+		</fontset>
+		<fontset>
+			<name>Intergraph ISO2 Symbols</name>
+			<fontlist>Intergraph ISO2 Symbols</fontlist>
+		</fontset>
+		<fontset>
+			<name>Intergraph Left Italic</name>
+			<fontlist>Intergraph Left Italic</fontlist>
+		</fontset>
+		<fontset>
+			<name>Beesknees ITC</name>
+			<fontlist>Beesknees ITC</fontlist>
+		</fontset>
+		<fontset>
+			<name>Eras Ultra ITC</name>
+			<fontlist>Eras Ultra ITC</fontlist>
+		</fontset>
+		<fontset>
+			<name>Matisse ITC</name>
+			<fontlist>Matisse ITC</fontlist>
+		</fontset>
+		<fontset>
+			<name>MT Extra</name>
+			<fontlist>MT Extra</fontlist>
+		</fontset>
+		<fontset>
+			<name>Sydnie</name>
+			<fontlist>Sydnie</fontlist>
+		</fontset>
+	</fontsets>
+</rhpml>

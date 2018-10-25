@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAMTestFrame.FileTestLogger.1 = s 'FileTestLogger Class'
+	{
+		CLSID = s '{2B11CDD6-CA1B-11D5-B086-00105A9AF985}'
+	}
+	WBFLLBAMTestFrame.FileTestLogger = s 'FileTestLogger Class'
+	{
+		CLSID = s '{2B11CDD6-CA1B-11D5-B086-00105A9AF985}'
+		CurVer = s 'WBFLLBAMTestFrame.FileTestLogger.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {2B11CDD6-CA1B-11D5-B086-00105A9AF985} = s 'FileTestLogger Class'
+		{
+			ProgID = s 'WBFLLBAMTestFrame.FileTestLogger.1'
+			VersionIndependentProgID = s 'WBFLLBAMTestFrame.FileTestLogger'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{23497471-C954-11D5-B085-00105A9AF985}'
+		}
+	}
+}

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLoading.Axle.1 = s 'Axle Class'
+	{
+		CLSID = s '{6C8C9861-27F5-4453-8B5C-3D64BF6CA67E}'
+	}
+	WBFLLoading.Axle = s 'Axle Class'
+	{
+		CLSID = s '{6C8C9861-27F5-4453-8B5C-3D64BF6CA67E}'
+		CurVer = s 'WBFLLoading.Axle.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {6C8C9861-27F5-4453-8B5C-3D64BF6CA67E} = s 'Axle Class'
+		{
+			ProgID = s 'WBFLLoading.Axle.1'
+			VersionIndependentProgID = s 'WBFLLoading.Axle'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{81DDDDC6-EC00-4E8D-A000-08C10F134EDA}'
+		}
+	}
+}

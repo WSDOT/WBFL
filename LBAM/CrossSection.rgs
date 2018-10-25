@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAM.SegmentCrossSection.1 = s 'SegmentCrossSection Class'
+	{
+		CLSID = s '{1E602C36-2A98-11D5-AFCE-00105A9AF985}'
+	}
+	WBFLLBAM.SegmentCrossSection = s 'SegmentCrossSection Class'
+	{
+		CLSID = s '{1E602C36-2A98-11D5-AFCE-00105A9AF985}'
+		CurVer = s 'WBFLLBAM.SegmentCrossSection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {1E602C36-2A98-11D5-AFCE-00105A9AF985} = s 'SegmentCrossSection Class'
+		{
+			ProgID = s 'WBFLLBAM.SegmentCrossSection.1'
+			VersionIndependentProgID = s 'WBFLLBAM.SegmentCrossSection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{A60E8518-3A65-11D5-AFE5-00105A9AF985}'
+		}
+	}
+}

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.MomentInteractionCurveSolver.1 = s 'MomentInteractionCurveSolver Class'
+	{
+		CLSID = s '{F4816F27-B4D5-44e4-843B-4B3E8B2FF9FE}'
+	}
+	WBFLRCCapacity.MomentInteractionCurveSolver = s 'MomentInteractionCurveSolver Class'
+	{
+		CLSID = s '{F4816F27-B4D5-44e4-843B-4B3E8B2FF9FE}'
+		CurVer = s 'WBFLRCCapacity.MomentInteractionCurveSolver.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {F4816F27-B4D5-44e4-843B-4B3E8B2FF9FE} = s 'MomentInteractionCurveSolver Class'
+		{
+			ProgID = s 'WBFLRCCapacity.MomentInteractionCurveSolver.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.MomentInteractionCurveSolver'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}
