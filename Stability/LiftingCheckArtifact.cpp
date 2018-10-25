@@ -176,12 +176,26 @@ void stbLiftingCheckArtifact::GetControllingCompressionCase(const stbLiftingSect
 
 bool stbLiftingCheckArtifact::Passed() const
 {
+   for (int i = 0; i < 3; i++)
+   {
+      stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+      for (int w = 0; w < 2; w++)
+      {
+         stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+         if (!m_Results.bIsStable[impact][wind])
+         {
+            return false;
+         }
+      }
+   }
+
+
    return (PassedCrackingCheck() && PassedFailureCheck() && PassedStressCheck());
 }
 
 bool stbLiftingCheckArtifact::PassedCrackingCheck() const
 {
-   return m_Criteria.MinFScr < m_Results.MinFScr;
+   return m_Criteria.MinFScr < m_Results.FScrMin;
 }
 
 bool stbLiftingCheckArtifact::PassedFailureCheck() const
@@ -278,7 +292,7 @@ bool stbLiftingCheckArtifact::PassedTensionCheck() const
 
 Float64 stbLiftingCheckArtifact::GetAllowableTension(const stbLiftingSectionResult& sectionResult,stbTypes::ImpactDirection impact,stbTypes::WindDirection wind) const
 {
-   if ( sectionResult.bSectionHasRebar[impact][wind] && 0 <= sectionResult.AsRequired[impact][wind])
+   if ( sectionResult.altTensionRequirements[impact][wind].bIsAdequateRebar && 0 <= sectionResult.altTensionRequirements[impact][wind].AsRequired)
    {
       return m_Criteria.AllowableTensionWithRebar;
    }

@@ -136,7 +136,7 @@ private:
    void ComputeReactions();
    void GetReactions(Float64 *react) const;
 
-   bool IsEquilibriumSatisfied(Float64 tolerance);
+   bool IsEquilibriumSatisfied(Float64 forceTolerance,Float64 momentTolerance);
 
    // could make functions public, but at least we know who our friends are
    friend CModel;

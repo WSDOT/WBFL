@@ -630,7 +630,7 @@ void CEAFApp::OnHelpSource()
 
 void CEAFApp::OnUpdateHelpSource(CCmdUI* pCmdUI)
 {
-   pCmdUI->SetText(m_bUseOnlineDocumentation ? _T("Use local documentaiton") : _T("Use online documentation"));
+   pCmdUI->SetText(m_bUseOnlineDocumentation ? _T("Use local documentation") : _T("Use online documentation"));
 }
 
 void CEAFApp::OnFileNew()

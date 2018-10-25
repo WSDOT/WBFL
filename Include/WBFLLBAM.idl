@@ -3103,6 +3103,11 @@ library WBFLLBAM
 		[propget, helpstring("property DistributionFactors"),helpcontext(IDH_Model_ComputeLocation)] 
       HRESULT DistributionFactors([out, retval] IDistributionFactors* *pVal);
 
+      [propput, helpstring("property ForceEquilibriumTolerance")] HRESULT ForceEquilibriumTolerance([in]Float64 tol);
+      [propget, helpstring("property ForceEquilibriumTolerance")] HRESULT ForceEquilibriumTolerance([out,retval]Float64* tol);
+      [propput, helpstring("property MomentEquilibriumTolerance")] HRESULT MomentEquilibriumTolerance([in]Float64 tol);
+      [propget, helpstring("property MomentEquilibriumTolerance")] HRESULT MomentEquilibriumTolerance([out, retval]Float64* tol);
+
 	   [propget, helpstring("property StructuredStorage - Return IStructuredStorage2 Interface"),helpcontext(IDH_Model_ComputeLocation)] 
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
 	};

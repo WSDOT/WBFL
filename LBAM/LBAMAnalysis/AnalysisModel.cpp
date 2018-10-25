@@ -3557,6 +3557,12 @@ void CAnalysisModel::GenerateFemModel(SuperNodeLocs* pNodeLocs)
       throw;
    }
 
+   Float64 forceTolerance, momentTolerance;
+   m_pLBAMModel->get_ForceEquilibriumTolerance(&forceTolerance);
+   m_pLBAMModel->get_MomentEquilibriumTolerance(&momentTolerance);
+   m_pFem2d->put_ForceEquilibriumTolerance(forceTolerance);
+   m_pFem2d->put_MomentEquilibriumTolerance(momentTolerance);
+
    CComPtr<IFem2dJointCollection> pJoints;
    m_pFem2d->get_Joints(&pJoints);
 

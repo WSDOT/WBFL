@@ -51,10 +51,9 @@ public:
    void GetControllingTensionCase(stbTypes::HaulingSlope slope,const stbHaulingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const;
    void GetControllingCompressionCase(stbTypes::HaulingSlope slope,const stbHaulingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const;
 
-   bool Passed() const;
+   bool Passed(bool bIgnoreConfigurationLimits) const;
    bool Passed(stbTypes::HaulingSlope slope) const;
    bool PassedCrackingCheck(stbTypes::HaulingSlope slope) const;
-   bool PassedFailureCheck(stbTypes::HaulingSlope slope) const;
    bool PassedRolloverCheck(stbTypes::HaulingSlope slope) const;
    bool PassedDirectStressCheck(stbTypes::HaulingSlope slope) const;
    bool PassedDirectCompressionCheck(stbTypes::HaulingSlope slope) const;

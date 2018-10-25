@@ -1111,6 +1111,11 @@ library WBFLFem2d
        HRESULT Results([out, retval] IFem2dModelResultsForScriptingClients* *pVal);
 	   [propget, helpcontext(IDH_IFem2dModel_StructuredStorage), helpstring("property Results - Return an Interface for getting Model Results")] 
        HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+
+       [propput, helpstring("property ForceEquilibriumTolerance")] HRESULT ForceEquilibriumTolerance([in]Float64 tol);
+       [propget, helpstring("property ForceEquilibriumTolerance")] HRESULT ForceEquilibriumTolerance([out, retval]Float64* tol);
+       [propput, helpstring("property MomentEquilibriumTolerance")] HRESULT MomentEquilibriumTolerance([in]Float64 tol);
+       [propget, helpstring("property MomentEquilibriumTolerance")] HRESULT MomentEquilibriumTolerance([out, retval]Float64* tol);
    };
 
    [

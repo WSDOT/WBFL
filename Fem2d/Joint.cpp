@@ -589,7 +589,7 @@ void CJoint::Link(CMember* pel)
    m_AttachedMembers.insert(pel);
 }
 
-bool CJoint::IsEquilibriumSatisfied(Float64 tolerance)
+bool CJoint::IsEquilibriumSatisfied(Float64 forceTolerance, Float64 momentTolerance)
 {
    Float64 Fx, Fy, Mz; // Forces from attached elements
    Float64 fx, fy, mz; // Externally applied loads and reactions
@@ -621,19 +621,19 @@ bool CJoint::IsEquilibriumSatisfied(Float64 tolerance)
    Mz -= mz;
 
    // Check equilibrium
-   if (!IsZero(Fx,tolerance))
+   if (!IsZero(Fx, forceTolerance))
    {
       ATLASSERT(false);
       return false;
    }
 
-   if (!IsZero(Fy,tolerance))
+   if (!IsZero(Fy, forceTolerance))
    {
       ATLASSERT(false);
       return false;
    }
 
-   if (!IsZero(Mz,tolerance))
+   if (!IsZero(Mz,momentTolerance))
    {
       ATLASSERT(false);
       return false;

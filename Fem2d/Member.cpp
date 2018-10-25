@@ -1221,7 +1221,7 @@ void CMember::GetFglobal(Float64 *f)
       f[i] = m_Fglobal(i) - dforce(i);
 }
 
-bool CMember::IsEquilibriumSatisfied(Float64 tolerance)
+bool CMember::IsEquilibriumSatisfied(Float64 forceTolerance, Float64 momentTolerance)
 {
    Float64 _fx, _fy, _mz; // Contribution of a single external load
    Float64 fx, fy, mz; // Contribution of all external loads on the member
@@ -1264,19 +1264,19 @@ bool CMember::IsEquilibriumSatisfied(Float64 tolerance)
    Mz = mz + mz1 + mz2 + length*fy2;
 
 
-   if (!IsZero(Fx,tolerance))
+   if (!IsZero(Fx, forceTolerance))
    {
       ATLASSERT(false);
       return false;
    }
 
-   if (!IsZero(Fy,tolerance))
+   if (!IsZero(Fy, forceTolerance))
    {
       ATLASSERT(false);
       return false;
    }
 
-   if (!IsZero(Mz,tolerance))
+   if (!IsZero(Mz, momentTolerance))
    {
       ATLASSERT(false);
       return false;

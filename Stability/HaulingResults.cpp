@@ -32,59 +32,181 @@ static char THIS_FILE[] = __FILE__;
 
 stbHaulingSectionResult::stbHaulingSectionResult()
 {
-   memset((void*)this,0,sizeof(stbHaulingSectionResult));
-   memset((void*)bSectionHasRebar,false,sizeof(bSectionHasRebar));
+   AnalysisPointIndex = INVALID_INDEX;
+
+   Mg = 0;
+   Mw = 0;
+   Mcf = 0;
+
+   memset((void*)fps, 0, sizeof(fps));
+   memset((void*)fg, 0, sizeof(fg));
+   memset((void*)fw, 0, sizeof(fw));
+   memset((void*)fcf, 0, sizeof(fcf));
+
+   memset((void*)fDirect, 0, sizeof(fDirect));
+   memset((void*)fTilt, 0, sizeof(fTilt));
+   memset((void*)f, 0, sizeof(f));
+
+   memset((void*)fMinDirect, 0, sizeof(fMinDirect));
+   memset((void*)MinDirectStressImpactDirection, 0, sizeof(MinDirectStressImpactDirection));
+   memset((void*)MinDirectStressWindDirection, 0, sizeof(MinDirectStressWindDirection));
+   memset((void*)MinDirectStressCorner, 0, sizeof(MinDirectStressCorner));
+
+   memset((void*)fMaxDirect, 0, sizeof(fMaxDirect));
+   memset((void*)MaxDirectStressImpactDirection, 0, sizeof(MaxDirectStressImpactDirection));
+   memset((void*)MaxDirectStressWindDirection, 0, sizeof(MaxDirectStressWindDirection));
+   memset((void*)MaxDirectStressCorner, 0, sizeof(MaxDirectStressCorner));
+
+   memset((void*)fMin, 0, sizeof(fMin));
+   memset((void*)MinStressImpactDirection, 0, sizeof(MinStressImpactDirection));
+   memset((void*)MinStressWindDirection, 0, sizeof(MinStressWindDirection));
+   memset((void*)MinStressCorner, 0, sizeof(MinStressCorner));
+
+   memset((void*)fMax, 0, sizeof(fMax));
+   memset((void*)MaxStressImpactDirection, 0, sizeof(MaxStressImpactDirection));
+   memset((void*)MaxStressWindDirection, 0, sizeof(MaxStressWindDirection));
+   memset((void*)MaxStressCorner, 0, sizeof(MaxStressCorner));
+
+   memset((void*)Mcr, 0, sizeof(Mcr));
+   memset((void*)ThetaCrack, 0, sizeof(ThetaCrack));
+
+   memset((void*)FScr, 0, sizeof(FScr));
+
+   memset((void*)FScrMin, 0, sizeof(FScrMin));
+   memset((void*)FScrImpactDirection, 0, sizeof(FScrImpactDirection));
+   memset((void*)FScrWindDirection, 0, sizeof(FScrWindDirection));
+   memset((void*)FScrCorner, 0, sizeof(FScrCorner));
+
+
+   for (int s = 0; s < 2; s++)
+   {
+      stbTypes::HaulingSlope slope = (stbTypes::HaulingSlope)s;
+      fMinDirect[slope][stbTypes::Top] = Float64_Max;
+      fMinDirect[slope][stbTypes::Bottom] = Float64_Max;
+      fMaxDirect[slope][stbTypes::Top] = -Float64_Max;
+      fMaxDirect[slope][stbTypes::Bottom] = -Float64_Max;
+
+      fMin[slope][stbTypes::Top] = Float64_Max;
+      fMin[slope][stbTypes::Bottom] = Float64_Max;
+      fMax[slope][stbTypes::Top] = -Float64_Max;
+      fMax[slope][stbTypes::Bottom] = -Float64_Max;
+
+      FScrMin[slope] = Float64_Max;
+   }
+
 }
 
 //////////////////////////////////////////
 
 stbHaulingResults::stbHaulingResults()
 {
-
    for ( int s = 0; s < 2; s++ )
    {
       stbTypes::HaulingSlope slope = (stbTypes::HaulingSlope)s;
 
-      MaxDirectStress[slope] = 0;
-      MaxDirectStressAnalysisPointIndex[slope] = INVALID_INDEX;
+      MaxDirectStress[slope] = -Float64_Max;
+      MaxDirectStressAnalysisPointIndex[slope] = 0;
       MaxDirectStressImpactDirection[slope] = stbTypes::NoImpact;
       MaxDirectStressWindDirection[slope] = stbTypes::Left;
       MaxDirectStressCorner[slope] = stbTypes::TopLeft;
 
-      MinDirectStress[slope] = 0;
-      MinDirectStressAnalysisPointIndex[slope] = INVALID_INDEX;
+      MinDirectStress[slope] = Float64_Max;
+      MinDirectStressAnalysisPointIndex[slope] = 0;
       MinDirectStressImpactDirection[slope] = stbTypes::NoImpact;
       MinDirectStressWindDirection[slope] = stbTypes::Left;
       MinDirectStressCorner[slope] = stbTypes::TopLeft;
 
-      MaxStress[slope] = 0;
-      MaxStressAnalysisPointIndex[slope] = INVALID_INDEX;
+      MaxStress[slope] = -Float64_Max;
+      MaxStressAnalysisPointIndex[slope] = 0;
       MaxStressImpactDirection[slope] = stbTypes::NoImpact;
       MaxStressWindDirection[slope] = stbTypes::Left;
       MaxStressCorner[slope] = stbTypes::TopLeft;
 
-      MinStress[slope] = 0;
-      MinStressAnalysisPointIndex[slope] = INVALID_INDEX;
+      MinStress[slope] = Float64_Max;
+      MinStressAnalysisPointIndex[slope] = 0;
       MinStressImpactDirection[slope] = stbTypes::NoImpact;
       MinStressWindDirection[slope] = stbTypes::Left;
       MinStressCorner[slope] = stbTypes::TopLeft;
 
-      MinFScr[slope] = 0;
-      FScrAnalysisPointIndex[slope] = INVALID_INDEX;
+      MinFScr[slope] = Float64_Max;
+      FScrAnalysisPointIndex[slope] = 0;
       FScrImpactDirection[slope] = stbTypes::NoImpact;
       FScrWindDirection[slope] = stbTypes::Left;
+      FScrCorner[slope] = stbTypes::TopLeft;
 
-      FSfImpactDirection[slope] = stbTypes::NoImpact;
-      FSfWindDirection[slope] = stbTypes::Left;
-      MinFsFailure[slope] = 0;
-
+      
       FSroImpactDirection[slope] = stbTypes::NoImpact;
       FSroWindDirection[slope] = stbTypes::Left;
-      MinFsRollover[slope] = 0;
+      MinFsRollover[slope] = Float64_Max;
+
+      for (int i = 0; i < 3; i++)
+      {
+         stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+         for (int w = 0; w < 2; w++)
+         {
+            stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+            bRotationalStability[slope][impact][wind] = true;
+         }
+      }
    }
 
-   memset((void*)ThetaMax,0,sizeof(ThetaMax));
-   memset((void*)FsFailure,0,sizeof(FsFailure));
-   memset((void*)ThetaRollover,0,sizeof(ThetaRollover));
+   bCrackedAtRollover = false;
+   
+   memset((void*)bLeftRolloverStability, 0, sizeof(bLeftRolloverStability));
+   memset((void*)LeftThetaRollover, 0, sizeof(LeftThetaRollover));
+   memset((void*)bRightRolloverStability, 0, sizeof(bRightRolloverStability));
+   memset((void*)RightThetaRollover, 0, sizeof(RightThetaRollover));
+   memset((void*)bRolloverStability, 0, sizeof(bRolloverStability));
+   memset((void*)ThetaRollover, 0, sizeof(ThetaRollover));
    memset((void*)FsRollover,0,sizeof(FsRollover));
+}
+
+bool stbHaulingResults::HasRotationalStablity() const
+{
+   for (int s = 0; s < 2; s++)
+   {
+      stbTypes::HaulingSlope slope = (stbTypes::HaulingSlope)s;
+      for (int i = 0; i < 3; i++)
+      {
+         stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+         for (int w = 0; w < 2; w++)
+         {
+            stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+            if (!bRotationalStability[slope][impact][wind])
+            {
+               // only one has to be false
+               return false;
+            }
+         }
+      }
+   }
+   return true;
+}
+
+bool stbHaulingResults::HasRolloverStability() const
+{
+   for (int s = 0; s < 2; s++)
+   {
+      stbTypes::HaulingSlope slope = (stbTypes::HaulingSlope)s;
+      for (int i = 0; i < 3; i++)
+      {
+         stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+         for (int w = 0; w < 2; w++)
+         {
+            stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+            if (!bRolloverStability[slope][impact][wind])
+            {
+               // only one has to be false
+               return false;
+            }
+         }
+      }
+   }
+
+   return true;
+}
+
+bool stbHaulingResults::IsStable() const
+{
+   return HasRotationalStablity() && HasRolloverStability();
 }

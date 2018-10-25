@@ -122,7 +122,7 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
 
          for(const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind],1.850,0.001) );
+            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind][sectionResult.MinFScrCorner[impact][wind]],1.850,0.001) );
 
             TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[impact][wind][stbTypes::TopLeft    ],unitMeasure::KSI), 0.113,0.001) );
             TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[impact][wind][stbTypes::BottomRight],unitMeasure::KSI),-3.290,0.001) );
@@ -143,7 +143,7 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
          stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
          for(const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind],impact == stbTypes::ImpactDown ? 1.714 : 1.850,0.001) );
+            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind][sectionResult.MinFScrCorner[impact][wind]],impact == stbTypes::ImpactDown ? 1.714 : 1.850,0.001) );
          }
 
          TRY_TESTME( ::IsEqual(result.FsFailure[impact][wind],impact == stbTypes::ImpactDown ? 1.600 : 1.847,0.001) );
@@ -162,11 +162,12 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
          stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
          for( const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind],wind == stbTypes::Left ? 2.556 : 1.197/*1.581*/,0.001) );
-            TRY_TESTME( sectionResult.CrackedFlange[impact][wind] == (wind == stbTypes::Left ? stbTypes::TopLeft : stbTypes::TopRight) );
+            stbTypes::Corner corner = wind == stbTypes::Left ? stbTypes::TopLeft : stbTypes::TopRight;
+            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind][corner],wind == stbTypes::Left ? 2.556 : 1.197/*1.581*/,0.001) );
          }
 
-         TRY_TESTME( ::IsEqual(result.FsFailure[impact][wind],wind == stbTypes::Left ? 2.516 : 1.546,0.001) );
+         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], wind == stbTypes::Left ? 1.100/*2.516*/ : 1.665/*1.546*/, 0.001));
+         TRY_TESTME(::IsEqual(result.AdjFsFailure[impact][wind], wind == stbTypes::Left ? 2.556 : 1.665/*1.546*/, 0.001));
       }
    }
 
@@ -181,11 +182,12 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
          stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
          for(const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind],wind == stbTypes::Left ? 2.425 : 1.349/*1.633*/,0.001) );
-            TRY_TESTME( sectionResult.CrackedFlange[impact][wind] == (wind == stbTypes::Left ? stbTypes::TopLeft : stbTypes::TopRight) );
+            stbTypes::Corner corner = wind == stbTypes::Left ? stbTypes::TopLeft : stbTypes::TopRight;
+            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind][corner],wind == stbTypes::Left ? 2.425 : 1.349/*1.633*/,0.001) );
          }
 
-         TRY_TESTME( ::IsEqual(result.FsFailure[impact][wind],wind == stbTypes::Left ? 2.270 : 1.471,0.001) );
+         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], wind == stbTypes::Left ? 1.103/*2.270*/ : 1.579/*1.471*/, 0.001));
+         TRY_TESTME(::IsEqual(result.AdjFsFailure[impact][wind], wind == stbTypes::Left ? 2.425/*2.270*/ : 1.579/*1.471*/, 0.001));
       }
    }
 
@@ -256,14 +258,14 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
          stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
          for(const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[stbTypes::Superelevation][impact][wind],1.476/*1.429*/,0.001) );
+            TRY_TESTME( ::IsEqual(sectionResult.FScr[stbTypes::Superelevation][impact][wind][stbTypes::TopLeft],1.476/*1.429*/,0.001) );
 
             TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::TopLeft    ],unitMeasure::KSI), 0.453/*0.466*/,0.001) );
             TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::BottomRight],unitMeasure::KSI),-3.478/*-3.486*/,0.001) );
          }
 
-         TRY_TESTME( ::IsEqual(result.FsFailure[stbTypes::Superelevation][impact][wind],2.854/*2.857*/,0.001) );
-         TRY_TESTME( ::IsEqual(result.FsRollover[stbTypes::Superelevation][impact][wind],2.016/*1.986*/,0.001) );
+         //TRY_TESTME( ::IsEqual(result.FsFailure[stbTypes::Superelevation][impact][wind],2.854/*2.857*/,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsRollover[stbTypes::Superelevation][impact][wind],2.108/*1.986*/,0.001) );
       }
    }
 
@@ -282,14 +284,14 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
          stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
          for(const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[stbTypes::Superelevation][impact][wind],1.002/*0.970*/,0.001) );
+            TRY_TESTME( ::IsEqual(sectionResult.FScr[stbTypes::Superelevation][impact][wind][stbTypes::TopLeft],1.002/*0.970*/,0.001) );
 
             TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::TopLeft    ],unitMeasure::KSI), 0.634/*0.647*/,0.001) );
             TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::BottomRight],unitMeasure::KSI),-3.590/*-3.598*/,0.001) );
          }
 
-         TRY_TESTME( ::IsEqual(result.FsFailure[stbTypes::Superelevation][impact][wind],2.847/*2.824*/,0.001) );
-         TRY_TESTME( ::IsEqual(result.FsRollover[stbTypes::Superelevation][impact][wind],1.903/*1.868*/,0.001) );
+         //TRY_TESTME( ::IsEqual(result.FsFailure[stbTypes::Superelevation][impact][wind],2.813/*2.824*/,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsRollover[stbTypes::Superelevation][impact][wind],1.921/*1.868*/,0.001) );
       }
    }
    TESTME_EPILOG("PCIHaulingExamples");

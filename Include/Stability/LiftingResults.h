@@ -25,6 +25,7 @@
 
 #include <Stability\StabilityExp.h>
 #include <Stability\Results.h>
+#include <WBFLGenericBridgeTools\AlternativeTensileStressCalculator.h>
 
 /*****************************************************************************
 CLASS 
@@ -75,27 +76,27 @@ public:
    stbTypes::WindDirection MaxStressWindDirection[2];      // wind direction associated with the maximum girder stress
    stbTypes::Corner MaxStressCorner[2];             // corner where the maximum girder stress occurs
 
+   // FScr computation values at each corner for each impact and wind
    Float64 Mcr[3][2][4];        // cracking moment
    Float64 ThetaCrack[3][2][4]; // rotation angle causing cracking
-   stbTypes::Corner CrackedFlange[3][2]; // indicates the flange and corner that is cracked (TOP_LEFT, etc)
-   Float64 FScr[3][2]; // factor of safety against cracking
+   Float64 FScr[3][2][4]; // factor of safety against cracking
+   
+   // Governing FScr and corner where it occurs for each impact and wind
+   Float64 MinFScr[3][2]; // same as FScr[impact][wind][MinFScrCorner[impact][wind]]
+   stbTypes::Corner MinFScrCorner[3][2]; // corner for MinFScr
+
+   // Governing FScr at this section for all load cases
    Float64 FScrMin;
-   stbTypes::ImpactDirection FScrImpactDirection;
-   stbTypes::WindDirection FScrWindDirection;
-   stbTypes::Corner FScrCorner;
+   stbTypes::ImpactDirection FScrMinImpactDirection;
+   stbTypes::WindDirection FScrMinWindDirection;
+   stbTypes::Corner FScrMinCorner;
 
    // parameters related to laterial moment due to axial force of inclined cables
    Float64 OffsetFactor; // cg offset factor at this section
    Float64 eh[3][2]; // eccentricity of axial force of inclined cables from roll axis at this location
    Float64 Mh[3][2]; // lateral moment due to axial force of inclined cables
 
-   bool bSectionHasRebar[3][2]; // true if there is sufficient bonded reinforcement at this section to use the higher allowable tension limit
-   Float64 Yna[3][2];
-   Float64 NAslope[3][2];
-   Float64 AreaTension[3][2];
-   Float64 T[3][2];
-   Float64 AsProvided[3][2];
-   Float64 AsRequired[3][2];
+   gbtAlternativeTensileStressRequirements altTensionRequirements[3][2];
 };
 
 /*****************************************************************************
@@ -111,13 +112,14 @@ class STABILITYCLASS stbLiftingResults : public stbResults
 public:
    stbLiftingResults();
 
-   bool bIsStable[3]; // if false, the girder is not stable for lifting... it will just roll over. 
+   bool bIsStable[3][2]; // if false, the girder is not stable for lifting... it will just roll over. 
                       // if the girder is not stable, the analysis results below are not valid
+                      // (array index in one of the stbTypes::Impact enum values)
 
    Float64 Pcrit; // critical compression load
    Float64 Plift; // axial force due to inclination of lift cables for the no-impact case
    Float64 dLift; // deflection due to lifting cable force for the no-impact case
-   Float64 emag[3];  // lateral deflection magnification factor (array index in one of the IMPACT_xxx constants)
+   Float64 emag[3];  // lateral deflection magnification factor (array index in one of the stbTypes::Impact enum values)
 
    Float64 ThetaEq[3][2];    // tilt angle at equilibrium (array index is [impact][wind])
 
@@ -147,11 +149,17 @@ public:
    stbTypes::WindDirection MinStressWindDirection;      // wind direction associated with the minimum girder stress
    stbTypes::Corner MinStressCorner;             // corner where the minimum girder stress occurs
 
-   Float64 MinFScr;                  // minimum factor of safety against cracking
-   IndexType FScrAnalysisPointIndex; // analysis point index associated with the minimum factor of safety against cracking
-   stbTypes::ImpactDirection FScrImpactDirection;    // impact direction associated with the minimum factor of safety against cracking
-   stbTypes::WindDirection FScrWindDirection;      // wind direction associated with the minimum factor of safety against cracking
-   stbTypes::Corner FScrCorner;             // corner associated with the minimum factor of safety against cracking
+   // controlling FScr for a load case [impact][wind]
+   Float64 MinFScr[3][2];                  // minimum factor of safety against cracking
+   IndexType FScrAnalysisPointIndex[3][2]; // analysis point index associated with the minimum factor of safety against cracking
+   stbTypes::Corner FScrCorner[3][2];             // corner associated with the minimum factor of safety against cracking
+
+   // overall controlling FScr
+   Float64 FScrMin;                  // minimum factor of safety against cracking
+   IndexType FScrMinAnalysisPointIndex; // analysis point index associated with the minimum factor of safety against cracking
+   stbTypes::ImpactDirection FScrMinImpactDirection;    // impact direction associated with the minimum factor of safety against cracking
+   stbTypes::WindDirection FScrMinWindDirection;      // wind direction associated with the minimum factor of safety against cracking
+   stbTypes::Corner FScrMinCorner;             // corner associated with the minimum factor of safety against cracking
 
    // Array indicies [Impact Direction][Side enum (wind direction)]
    Float64 ThetaMax[3][2];     // maximum tilt angle of the cracked section
