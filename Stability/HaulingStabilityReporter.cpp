@@ -1780,7 +1780,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             *pPara << _T("Factor of Safety Against Failure") << rptNewLine;
             pPara = new rptParagraph;
             *pChapter << pPara;
-            *pPara << Sub2(symbol(theta),_T("max")) << _T(" = ") << symbol(alpha) << _T(" + ") << symbol(ROOT) << _T("{") << Super2(symbol(alpha),_T("2")) << _T("[") << Sub2(_T("e"),_T("i")) << _T(" + ") << Sub2(_T("M"),_T("ot")) << _T("/") << Sub2(_T("W"),_T("g")) << _T(" + (") << Sub2(_T("z"),_T("o")) << _T(" ") << strWindSign.c_str() << _T(" ") << Sub2(_T("z"),_T("wind"));
+            *pPara << Sub2(symbol(theta),_T("max")) << _T(" = ") << symbol(alpha) << _T(" + ") << symbol(ROOT) << _T("{") << Super2(symbol(alpha),_T("2")) << _T(" + [") << Sub2(_T("e"),_T("i")) << _T(" + ") << Sub2(_T("M"),_T("ot")) << _T("/") << Sub2(_T("W"),_T("g")) << _T(" + (") << Sub2(_T("z"),_T("o")) << _T(" ") << strWindSign.c_str() << _T(" ") << Sub2(_T("z"),_T("wind"));
             if ( slope == stbTypes::MaxSuper )
             {
                *pPara << _T(" ") << strOppCFSign.c_str() << _T(" ") << Sub2(_T("z"),_T("cf"));
@@ -1828,7 +1828,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             {
                *pPara << _T("(IM)");
             }
-            *pPara << Sub2(_T("W"),_T("g")) << _T("(") << Sub2(_T("W"),_T("cc")) << _T("/2") << _T(" - ") << Sub2(_T("H"),_T("rs")) << symbol(alpha) << _T(" - ") << Sub2(_T("e"),_T("bunk")) << _T(") ") << strWindSign.c_str() << _T(" ") << Sub2(_T("M"),_T("rowind"));
+            *pPara << Sub2(_T("W"),_T("g")) << _T("(") << Sub2(_T("W"),_T("cc")) << _T("/2") << _T(" - ") << Sub2(_T("H"),_T("rc")) << symbol(alpha) << _T(" - ") << Sub2(_T("e"),_T("bunk")) << _T(") ") << strWindSign.c_str() << _T(" ") << Sub2(_T("M"),_T("rowind"));
             if ( slope == stbTypes::MaxSuper )
             {
                *pPara << _T(" ") << strCFSign.c_str() << _T(" ") << Sub2(_T("M"),_T("rocf"));

@@ -28,7 +28,7 @@
 #include <sdkddkver.h>
 
 #ifndef _WBFL_VERSION
-#define _WBFL_VERSION 420 // version 4.2.0
+#define _WBFL_VERSION 422 // version 4.2.2
 #endif 
 
 
