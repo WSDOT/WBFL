@@ -1214,6 +1214,9 @@
       <comClass clsid="{5F9006C8-B6A7-488E-88BB-24304ED93E4D}"
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                 description="RebarRowPattern"></comClass>
+     <comClass clsid="{0FBA0FAD-AF0B-4969-84DF-BA49A7D352B6}"
+          tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
+          description="RebarRowFacePattern"></comClass>
      <comClass clsid="{9E669BF9-FE19-4e06-85C9-8307AE1BEE68}"
           tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
           description="CrossBeamRebarPattern"></comClass>

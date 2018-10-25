@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.RebarRowFacePattern.1 = s 'RebarRowFacePattern Class'
+	{
+		CLSID = s '{0FBA0FAD-AF0B-4969-84DF-BA49A7D352B6}'
+	}
+	WBFLGenericBridge.RebarRowFacePattern = s 'RebarRowFacePattern Class'
+	{
+		CLSID = s '{0FBA0FAD-AF0B-4969-84DF-BA49A7D352B6}'
+		CurVer = s 'WBFLGenericBridge.RebarRowFacePattern.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {0FBA0FAD-AF0B-4969-84DF-BA49A7D352B6} = s 'RebarRowFacePattern Class'
+		{
+			ProgID = s 'WBFLGenericBridge.RebarRowFacePattern.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.RebarRowFacePattern'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

@@ -3148,6 +3148,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RebarRowFacePattern.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\RebarRowPattern.cpp"
 				>
 			</File>
@@ -4369,6 +4373,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RebarRowFacePattern.h"
+				>
+			</File>
+			<File
 				RelativePath=".\RebarRowPattern.h"
 				>
 			</File>
@@ -4643,6 +4651,10 @@
 			</File>
 			<File
 				RelativePath="RebarLayout.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\RebarRowFacePattern.rgs"
 				>
 			</File>
 			<File

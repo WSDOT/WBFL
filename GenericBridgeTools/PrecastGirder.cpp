@@ -1801,6 +1801,17 @@ STDMETHODIMP CPrecastGirder::get_NumHarpedStrandsInRow(Float64 distFromStart,Row
    return grid->get_NumStrandsInRow(rowIdx, nStrands);
 }
 
+STDMETHODIMP CPrecastGirder::get_SuperstructureMemberSegment(ISuperstructureMemberSegment** segment)
+{
+   CHECK_RETOBJ(segment);
+   (*segment) = m_pSegment;
+   if ( m_pSegment )
+   {
+      (*segment)->AddRef();
+   }
+   return S_OK;
+}
+
 STDMETHODIMP CPrecastGirder::get_RebarLayout(IRebarLayout** rebarLayout)
 {
    CHECK_RETOBJ(rebarLayout);
