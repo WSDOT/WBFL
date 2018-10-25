@@ -1064,7 +1064,6 @@
     <Image Include="res\lpframe.bmp" />
     <Image Include="res\SmallIconView.ico" />
     <Image Include="res\Toolbar.bmp" />
-    <Image Include="res\toolbar1.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

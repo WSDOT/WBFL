@@ -292,8 +292,6 @@ stbStabilityProblemImp::stbStabilityProblemImp()
 
    m_WindLoadType = stbTypes::Speed;
    m_WindLoad = 0.;
-
-   m_bComputeStressesAtEquilibriumAngle = true;
 }
 
 stbStabilityProblemImp::stbStabilityProblemImp(const stbStabilityProblemImp& other)
@@ -370,9 +368,6 @@ bool stbStabilityProblemImp::operator==(const stbStabilityProblemImp& other) con
       return false;
 
    if ( !IsEqual(m_WindLoad,other.m_WindLoad) )
-      return false;
-
-   if (m_bComputeStressesAtEquilibriumAngle != other.m_bComputeStressesAtEquilibriumAngle)
       return false;
 
    return true;
@@ -770,16 +765,6 @@ bool stbStabilityProblemImp::CompareAnalysisPoints(const stbStabilityProblemImp&
    return true;
 }
 
-void stbStabilityProblemImp::EvaluateStressesAtEquilibriumAngle(bool bStressesAtEquilibrium)
-{
-   m_bComputeStressesAtEquilibriumAngle = bStressesAtEquilibrium;
-}
-
-bool stbStabilityProblemImp::EvaluateStressesAtEquilibriumAngle() const
-{
-   return m_bComputeStressesAtEquilibriumAngle;
-}
-
 void stbStabilityProblemImp::MakeCopy(const stbStabilityProblemImp& other)
 {
    ClearAnalysisPoints();
@@ -815,8 +800,6 @@ void stbStabilityProblemImp::MakeCopy(const stbStabilityProblemImp& other)
 
    m_WindLoadType = other.m_WindLoadType;
    m_WindLoad = other.m_WindLoad;
-
-   m_bComputeStressesAtEquilibriumAngle = other.m_bComputeStressesAtEquilibriumAngle;
 }
 
 void stbStabilityProblemImp::MakeAssignment(const stbStabilityProblemImp& other)
@@ -830,6 +813,8 @@ void stbStabilityProblemImp::MakeAssignment(const stbStabilityProblemImp& other)
 stbLiftingStabilityProblem::stbLiftingStabilityProblem()
 {
    m_LiftAngle = PI_OVER_2;
+
+   m_bComputeStressesAtEquilibriumAngle = true;
 }
 
 stbLiftingStabilityProblem::stbLiftingStabilityProblem(const stbLiftingStabilityProblem& other)
@@ -859,6 +844,9 @@ bool stbLiftingStabilityProblem::operator==(const stbLiftingStabilityProblem& ot
    if ( m_Imp != other.m_Imp )
       return false;
 
+   if (m_bComputeStressesAtEquilibriumAngle != other.m_bComputeStressesAtEquilibriumAngle)
+      return false;
+
    return true;
 }
 
@@ -881,6 +869,7 @@ void stbLiftingStabilityProblem::MakeCopy(const stbLiftingStabilityProblem& othe
 {
    m_Imp = other.m_Imp;
    m_LiftAngle = other.m_LiftAngle;
+   m_bComputeStressesAtEquilibriumAngle = other.m_bComputeStressesAtEquilibriumAngle;
 }
 
 void stbLiftingStabilityProblem::MakeAssignment(const stbLiftingStabilityProblem& other)
@@ -902,6 +891,9 @@ stbHaulingStabilityProblem::stbHaulingStabilityProblem()
    m_Velocity = 0;
    m_Radius = DBL_MAX;
    m_CFType = stbTypes::Favorable;
+
+   m_bComputeStressesAtEquilibriumAngle[stbTypes::CrownSlope] = true;
+   m_bComputeStressesAtEquilibriumAngle[stbTypes::Superelevation] = true;
 }
 
 stbHaulingStabilityProblem::stbHaulingStabilityProblem(const stbHaulingStabilityProblem& other)
@@ -953,6 +945,12 @@ bool stbHaulingStabilityProblem::operator==(const stbHaulingStabilityProblem& ot
       return false;
 
    if ( m_CFType != other.m_CFType )
+      return false;
+
+   if (m_bComputeStressesAtEquilibriumAngle[stbTypes::CrownSlope] != other.m_bComputeStressesAtEquilibriumAngle[stbTypes::CrownSlope])
+      return false;
+
+   if (m_bComputeStressesAtEquilibriumAngle[stbTypes::Superelevation] != other.m_bComputeStressesAtEquilibriumAngle[stbTypes::Superelevation])
       return false;
 
    return true;
@@ -1067,6 +1065,10 @@ void stbHaulingStabilityProblem::MakeCopy(const stbHaulingStabilityProblem& othe
    m_Velocity = other.m_Velocity;
    m_Radius = other.m_Radius;
    m_CFType = other.m_CFType;
+
+
+   m_bComputeStressesAtEquilibriumAngle[stbTypes::CrownSlope] = other.m_bComputeStressesAtEquilibriumAngle[stbTypes::CrownSlope];
+   m_bComputeStressesAtEquilibriumAngle[stbTypes::Superelevation] = other.m_bComputeStressesAtEquilibriumAngle[stbTypes::Superelevation];
 }
 
 void stbHaulingStabilityProblem::MakeAssignment(const stbHaulingStabilityProblem& other)

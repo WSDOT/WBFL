@@ -306,7 +306,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
          pArtifact->GetControllingTensionCase(slope,sectionResult,&impact,&wind,&corner,&fAllow,&bPassed,&cd);
 
          Float64 f;
-         if (pStabilityProblem->EvaluateStressesAtEquilibriumAngle())
+         if (pStabilityProblem->EvaluateStressesAtEquilibriumAngle(slope))
          {
             f = sectionResult.f[slope][impact][wind][corner];
          }
@@ -347,7 +347,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
          // compression status
          pArtifact->GetControllingCompressionCase(slope,sectionResult,&impact,&wind,&corner,&fAllow,&bPassed,&cd);
 
-         if (pStabilityProblem->EvaluateStressesAtEquilibriumAngle())
+         if (pStabilityProblem->EvaluateStressesAtEquilibriumAngle(slope))
          {
             f = sectionResult.f[slope][impact][wind][corner];
          }

@@ -643,6 +643,42 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
          }
       }
    }
+   else
+   {
+      // No haunch.... need to model the bottom of the slab
+      if (bIsNormal)
+      {
+         // surface templates are faster than surface profiles but they only work if the section
+         // cut is normal to the alignment
+         for ( IndexType ridgePointIdx = 0; ridgePointIdx < nRidgePoints; ridgePointIdx++)
+         {
+            // get offset (measured from the alignment) and the elevation of the ridge point
+            Float64 offset, elev;
+            profile->RidgePointElevation(COGO_FINISHED_SURFACE_ID, CComVariant(objStation), ridgePointIdx, alignmentPointIdx, &offset, &elev);
+
+            // if the ridge point is between the edges of the deck, add it to the deck shape
+            if (::InRange(left_deck_offset, offset, right_deck_offset))
+            {
+               slab_shape->AddPoint(offset, elev - gross_depth);
+            }
+         }
+      }
+      else
+      {
+         for (IndexType ridgePointIdx = 0; ridgePointIdx < nRidgePoints; ridgePointIdx++)
+         {
+            // get offset (measured from the alignment) and the elevation of the ridge point
+            Float64 offset, elev;
+            surfaceProfile->GetRidgePointElevation(ridgePointIdx, &offset, &elev);
+
+            // if the ridge point is between the edges of the deck, add it to the deck shape
+            if (::InRange(left_deck_offset, offset, right_deck_offset))
+            {
+               slab_shape->AddPoint(offset, elev - gross_depth);
+            }
+         }
+      }
+   }
 
    slab_shape.QueryInterface(shape);
 

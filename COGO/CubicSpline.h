@@ -111,8 +111,6 @@ public:
    STDMETHOD(putref_PointFactory)(/*[in]*/ IPoint2dFactory *factory) override;
    STDMETHOD(Clone)(/*[out,retval]*/ ICubicSpline* *clone) override;
    STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pVal) override;
-   STDMETHOD(Evaluate)(/*[in]*/Float64 x,/*[in]*/VARIANT_BOOL bProjectBack,/*[in]*/VARIANT_BOOL bProjectAhead,/*[out,retval]*/Float64* y) override;
-	STDMETHOD(Slope)(/*[in]*/Float64 x,/*[in]*/VARIANT_BOOL bProjectBack,/*[in]*/VARIANT_BOOL bProjectAhead,/*[out,retval]*/Float64* dy) override;
 
 // IStructuredStorage2
 public:
@@ -122,6 +120,7 @@ public:
 private:
    HRESULT UpdateSpline();
 
+   HRESULT Slope(Float64 distance, VARIANT_BOOL bProjectBack, VARIANT_BOOL bProjectAhead, Float64* dy);
    HRESULT CreateSplineSegments();
    std::vector<CSplineSegment> m_SplineSegments;
 

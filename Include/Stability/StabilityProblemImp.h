@@ -232,9 +232,6 @@ public:
    const std::vector<stbIAnalysisPoint*>& GetAnalysisPoints() const;
    virtual const stbIAnalysisPoint* GetAnalysisPoint(IndexType idx) const;
 
-   void EvaluateStressesAtEquilibriumAngle(bool bStressesAtEquilibrium);
-   virtual bool EvaluateStressesAtEquilibriumAngle() const;
-
 protected:
    void MakeCopy(const stbStabilityProblemImp& other);
    void MakeAssignment(const stbStabilityProblemImp& other);
@@ -269,8 +266,6 @@ protected:
 
    stbTypes::WindType m_WindLoadType;
    Float64 m_WindLoad; // velocity or pressure, depending on m_WindLoadType
-
-   bool m_bComputeStressesAtEquilibriumAngle;
 };
 
 class STABILITYCLASS stbLiftingStabilityProblem : public stbILiftingStabilityProblem
@@ -330,8 +325,8 @@ public:
    virtual std::vector<stbIAnalysisPoint*> GetAnalysisPoints() const  override { return m_Imp.GetAnalysisPoints(); }
    virtual const stbIAnalysisPoint* GetAnalysisPoint(IndexType idx) const  override { return m_Imp.GetAnalysisPoint(idx); }
 
-   void EvaluateStressesAtEquilibriumAngle(bool bStressesAtEquilibrium) { return m_Imp.EvaluateStressesAtEquilibriumAngle(bStressesAtEquilibrium); }
-   virtual bool EvaluateStressesAtEquilibriumAngle() const override { return m_Imp.EvaluateStressesAtEquilibriumAngle(); }
+   void EvaluateStressesAtEquilibriumAngle(bool bStressesAtEquilibrium) { m_bComputeStressesAtEquilibriumAngle = bStressesAtEquilibrium; }
+   virtual bool EvaluateStressesAtEquilibriumAngle() const override { return m_bComputeStressesAtEquilibriumAngle; }
 
 protected:
    void MakeCopy(const stbLiftingStabilityProblem& other);
@@ -339,6 +334,8 @@ protected:
 
    stbStabilityProblemImp m_Imp;
    Float64 m_LiftAngle;
+
+   bool m_bComputeStressesAtEquilibriumAngle;
 };
 
 class STABILITYCLASS stbHaulingStabilityProblem :  public stbIHaulingStabilityProblem
@@ -423,8 +420,8 @@ public:
    virtual std::vector<stbIAnalysisPoint*> GetAnalysisPoints() const  { return m_Imp.GetAnalysisPoints(); }
    virtual const stbIAnalysisPoint* GetAnalysisPoint(IndexType idx) const override { return m_Imp.GetAnalysisPoint(idx); }
 
-   void EvaluateStressesAtEquilibriumAngle(bool bStressesAtEquilibrium) { return m_Imp.EvaluateStressesAtEquilibriumAngle(bStressesAtEquilibrium); }
-   virtual bool EvaluateStressesAtEquilibriumAngle() const override { return m_Imp.EvaluateStressesAtEquilibriumAngle(); }
+   void EvaluateStressesAtEquilibriumAngle(stbTypes::HaulingSlope slope,bool bStressesAtEquilibrium) { m_bComputeStressesAtEquilibriumAngle[slope] = bStressesAtEquilibrium; }
+   virtual bool EvaluateStressesAtEquilibriumAngle(stbTypes::HaulingSlope slope) const override { return m_bComputeStressesAtEquilibriumAngle[slope]; }
 
 protected:
    void MakeCopy(const stbHaulingStabilityProblem& other);
@@ -443,4 +440,6 @@ protected:
    Float64 m_Velocity;
    Float64 m_Radius;
    stbTypes::CFType m_CFType;
+
+   bool m_bComputeStressesAtEquilibriumAngle[2];
 };

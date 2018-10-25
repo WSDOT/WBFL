@@ -1135,8 +1135,6 @@ date/T &gt; $(IntDir)mt2.dep
     <ClInclude Include="FlangedSplicedGirderSegment.h" />
     <ClInclude Include="FShapeBarrier.h" />
     <ClInclude Include="GenericBarrier.h" />
-    <ClInclude Include="GenericBridge.hh" />
-    <ClInclude Include="GenericBridgeCP.h" />
     <ClInclude Include="GenericBridgeHelpers.h" />
     <ClInclude Include="GenericBridgeImpl.h" />
     <ClInclude Include="GirderSectionImpl.h" />

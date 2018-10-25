@@ -831,62 +831,19 @@ STDMETHODIMP CCubicSpline::Load(IStructuredLoad2* pLoad)
    return S_OK;
 }
 
-STDMETHODIMP CCubicSpline::Evaluate(Float64 x,VARIANT_BOOL bProjectBack,VARIANT_BOOL bProjectAhead,Float64* y)
+HRESULT CCubicSpline::Slope(Float64 distance,VARIANT_BOOL bProjectBack,VARIANT_BOOL bProjectAhead, Float64* dy)
 {
-   CHECK_RETVAL(y);
-
    CComPtr<IPoint2d> p;
-   p.CoCreateInstance(CLSID_Point2d);
-   p->Move(x,0);
-
-   CComPtr<IVector2d> v;
-   v.CoCreateInstance(CLSID_Vector2d);
-   v->put_Direction(PI_OVER_2); // vertical
-
-   CComPtr<ILine2d> line;
-   line.CoCreateInstance(CLSID_Line2d);
-
-   line->SetExplicit(p,v);
-
-   CComPtr<IPoint2dCollection> points;
-   HRESULT hr = Intersect(line,bProjectBack,bProjectAhead,&points);
-   if ( FAILED(hr) )
+   HRESULT hr = PointOnSpline(distance, &p);
+   if (FAILED(hr))
    {
+      ATLASSERT(false);
       return hr;
    }
 
-   CollectionIndexType nPoints;
-   points->get_Count(&nPoints);
-   if ( nPoints == 0 )
-   {
-      *y = -999;
-      return E_INVALIDARG;
-   }
-
-   CComPtr<IPoint2d> pnt;
-   points->get_Item(0,&pnt);
-   pnt->get_Y(y);
-   return S_OK;
-}
-
-STDMETHODIMP CCubicSpline::Slope(Float64 x,VARIANT_BOOL bProjectBack,VARIANT_BOOL bProjectAhead,Float64* dy)
-{
-   // x is global X value
-   CHECK_RETVAL(dy);
-
-   // get the point on the spline where we want to evaluate the slope
-   Float64 y;
-   HRESULT hr = Evaluate(x,bProjectBack,bProjectAhead,&y);
-   if ( FAILED(hr) )
-   {
-      return hr;
-   }
-
-   // convert X into spline coordinates
-   CComPtr<IPoint2d> p;
-   p.CoCreateInstance(CLSID_Point2d);
-   p->Move(x,y); // point on spline where we want to evaluate the slope
+   // transform point to spline coordinates
    m_CoordXform->Xform(&p.p, xfrmOldToNew);
+
    Float64 xs; // x in spline coordinates
    p->get_X(&xs);
 
@@ -896,36 +853,34 @@ STDMETHODIMP CCubicSpline::Slope(Float64 x,VARIANT_BOOL bProjectBack,VARIANT_BOO
    m_SplineSegments.front().pntA->get_X(&xStart);
    m_SplineSegments.back().pntB->get_X(&xEnd);
 
-   if ( (xs < xStart && bProjectBack == VARIANT_FALSE) ||
-        (xEnd < xs && bProjectAhead == VARIANT_FALSE) )
+   if ((xs < xStart && bProjectBack == VARIANT_FALSE) ||
+      (xEnd < xs && bProjectAhead == VARIANT_FALSE))
    {
       return E_INVALIDARG;
    }
 
    // check if x is before the start of the spline
-   if ( xs < xStart && bProjectBack == VARIANT_TRUE )
+   if (xs < xStart && bProjectBack == VARIANT_TRUE)
    {
       *dy = tan(m_StartDirection - m_RotationAngle);
       return S_OK;
    }
 
    // check if x is after the end of the spline
-   if ( xEnd < xs && bProjectAhead == VARIANT_TRUE )
+   if (xEnd < xs && bProjectAhead == VARIANT_TRUE)
    {
       *dy = tan(m_EndDirection - m_RotationAngle);
       return S_OK;
    }
 
    // find the spline that contains x
-   std::vector<CSplineSegment>::iterator iter;
-   for ( iter = m_SplineSegments.begin(); iter != m_SplineSegments.end(); iter++ )
+   for ( const auto& splineSegment : m_SplineSegments )
    {
-      CSplineSegment splineSegment = *iter;
-      Float64 xa,xb;
+      Float64 xa, xb;
       splineSegment.pntA->get_X(&xa);
       splineSegment.pntB->get_X(&xb);
 
-      if ( InRange(xa,xs,xb) )
+      if (InRange(xa, xs, xb))
       {
          Float64 slope = splineSegment.Slope(xs);
          *dy = slope + tan(m_RotationAngle);
@@ -1002,7 +957,8 @@ HRESULT CCubicSpline::CreateSplineSegments()
 
 HRESULT CCubicSpline::UpdateSpline()
 {
-   // See http://www.physics.arizona.edu/~restrepo/475A/Notes/sourcea/node35.html
+   // See http://www.physics.arizona.edu/~restrepo/475A/Notes/sourcea-/node35.html
+   // https://en.wikipedia.org/wiki/Spline_(mathematics)
 
    if ( !m_bUpdateSpline )
    {
@@ -1108,12 +1064,6 @@ HRESULT CCubicSpline::UpdateSpline()
    //     ci=zi-[ui*c(i+1)]
    //     bi=[a(i+1)-ai]/hi-{hi*{c(i+1)+[2*ci]}/3
    //     di=[c(i+1)-ci]/[3*hi]
-   //for( i = nPoints-2; i >= 0; i--)
-   //{
-   //   cn[i]=(zi[i]-(ui[i]*cn[(i+1)]));
-	  // bn[i]=(((an[(i+1)]-an[i])/hi[i])-((hi[i]*(cn[(i+1)]+(2*cn[i])))/3));
-   //   dn[i]=((cn[(i+1)]-cn[i])/(3*hi[i]));
-   //}
    for( i = nPoints-1; i >= 1; i--)
    {
       cn[i-1]=(zi[i-1]-(ui[i-1]*cn[(i)]));

@@ -457,9 +457,6 @@
     <ResourceCompile Include="WBFLGraphManager.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\GraphicsLib\GraphicsLib.vcxproj">
       <Project>{dafd2249-df6b-4834-aec0-ddee31239496}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

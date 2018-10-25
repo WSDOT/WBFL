@@ -244,8 +244,6 @@ void CEAFDocument::ResetApplicationIcon()
 {
    // put the main frame toolbar back the way it was
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
-   pMainFrame->ShowMainFrameToolBar();
-   pMainFrame->ShowStartPage();
 
    // Put the main frame icon back the way it was
    pMainFrame->SetIcon(m_hMainFrameBigIcon,TRUE);
@@ -1314,17 +1312,20 @@ void CEAFDocument::OnCloseDocument()
 
    UnloadDocumentPlugins();
 
-   // put the main frame toolbar back the way it was
-   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
-   pMainFrame->ShowMainFrameToolBar();
-   pMainFrame->ShowStartPage();
-
    ResetApplicationIcon();
 
    // this has to come last as the document deletes itself
    CDocument::OnCloseDocument();
 
-   // DON'T DO ANYTHING ELSE HERE.... Document has deleted itself
+   // DON'T DO ANYTHING ELSE HERE WITH THE DOCUMENT.... Document has deleted itself
+
+   // this must come after OnCloseDocument we the menus reset if there is a start page
+
+   // put the main frame toolbar back the way it was
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
+   pMainFrame->ShowMainFrameToolBar();
+   pMainFrame->ShowStartPage();
+   pMainFrame->OnUpdateFrameTitle(FALSE); // now that the document is closed, set the frame title to its default state
 
    // need to clean up the status bar
    CEAFStatusBar* pStatusBar = pMainFrame->GetStatusBar();
@@ -1332,8 +1333,6 @@ void CEAFDocument::OnCloseDocument()
    {
       pStatusBar->Reset();
    }
-
-   pMainFrame->OnUpdateFrameTitle(FALSE); // now that the document is closed, set the frame title to its default state
 }
 
 CEAFStatusCenter& CEAFDocument::GetStatusCenter()

@@ -63,7 +63,18 @@ Float64 mathBisectionRootFinder2d::FindRootInRange(const mathFunction2d& eval,
    try  // eval could throw...
    {
       Float64 fa = eval.Evaluate(a);
+      if (IsZero(fa, tol))
+      {
+         // the root is at a
+         return a;
+      }
+
       Float64 fb = eval.Evaluate(b);
+      if (IsZero(fb, tol))
+      {
+         // the root is at b
+         return b;
+      }
       
       // Ensure that the root is bracketed
       if (fa*fb > 0.0) 

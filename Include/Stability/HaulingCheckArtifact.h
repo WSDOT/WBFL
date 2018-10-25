@@ -40,13 +40,13 @@ class STABILITYCLASS stbHaulingCheckArtifact
 {
 public:
    stbHaulingCheckArtifact();
-   stbHaulingCheckArtifact(const stbHaulingResults& results,const stbHaulingCriteria& criteria,bool bComputeStressesAtEquilibriumAngle);
-   void Init(const stbHaulingResults& results,const stbHaulingCriteria& criteria,bool bComputeStressesAtEquilibriumAngle);
+   stbHaulingCheckArtifact(const stbHaulingResults& results,const stbHaulingCriteria& criteria,bool bComputeCrownSlopeStressesAtEquilibriumAngle, bool bComputeSuperelevationStressesAtEquilibriumAngle);
+   void Init(const stbHaulingResults& results,const stbHaulingCriteria& criteria, bool bComputeCrownSlopeStressesAtEquilibriumAngle, bool bComputeSuperelevationStressesAtEquilibriumAngle);
 
    const stbHaulingResults& GetHaulingResults() const;
    const stbHaulingCriteria& GetCriteria() const;
 
-   bool EvaluateStressesAtEquilibriumAngle() const;
+   bool EvaluateStressesAtEquilibriumAngle(stbTypes::HaulingSlope slope) const;
 
    void GetControllingTensionCase(stbTypes::HaulingSlope slope,const stbHaulingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const;
    void GetControllingCompressionCase(stbTypes::HaulingSlope slope,const stbHaulingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const;
@@ -76,5 +76,5 @@ public:
 protected:
    stbHaulingResults m_Results;
    stbHaulingCriteria m_Criteria;
-   bool m_bComputeStressesAtEquilibriumAngle;
+   bool m_bComputeStressesAtEquilibriumAngle[2]; // HaulingSlope is the array index
 };

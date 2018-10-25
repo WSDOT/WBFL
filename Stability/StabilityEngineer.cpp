@@ -91,7 +91,7 @@ stbLiftingCheckArtifact stbStabilityEngineer::CheckLifting(const stbIGirder* pGi
 stbHaulingCheckArtifact stbStabilityEngineer::CheckHauling(const stbIGirder* pGirder,const stbIHaulingStabilityProblem* pStabilityProblem,const stbHaulingCriteria& criteria) const
 {
    stbHaulingResults results = AnalyzeHauling(pGirder,pStabilityProblem);
-   stbHaulingCheckArtifact artifact(results,criteria,pStabilityProblem->EvaluateStressesAtEquilibriumAngle());
+   stbHaulingCheckArtifact artifact(results,criteria,pStabilityProblem->EvaluateStressesAtEquilibriumAngle(stbTypes::CrownSlope), pStabilityProblem->EvaluateStressesAtEquilibriumAngle(stbTypes::Superelevation));
    return artifact;
 }
 

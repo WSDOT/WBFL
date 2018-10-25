@@ -863,9 +863,6 @@
     <ClInclude Include="TestSupportMovement.h" />
     <ClInclude Include="TestTrussSennett2-11.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

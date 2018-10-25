@@ -67,16 +67,6 @@ void CTestCubicSpline::Test()
    CComPtr<ICubicSpline> spline;
    TRY_TEST(spline.CoCreateInstance(CLSID_CubicSpline),S_OK);
 
-   // there must be at least 2 points
-   spline->AddPoint(1,1);
-   TRY_TEST( spline->Evaluate(6,VARIANT_TRUE,VARIANT_TRUE,&y), COGO_E_CUBICSPLINEPOINTS );
-
-   // spline points must be in increasing X order when an X-axis is placed between
-   // the fist and last points
-   spline->AddPoint(5,5);
-   spline->AddPoint(3,1);
-   TRY_TEST( spline->Evaluate(6,VARIANT_TRUE,VARIANT_TRUE,&y), COGO_E_CUBICSPLINEPOINTS );
-
    // test spline by evaluating it against a known solution
    // see http://math.fullerton.edu/mathews/n2003/splines/CubicSplinesMod/Links/CubicSplinesMod_lnk_4.html
    spline->Clear();
@@ -90,58 +80,36 @@ void CTestCubicSpline::Test()
    spline->put_StartDirection(CComVariant( atan2(-0.2,1) ));
    spline->put_EndDirection(CComVariant( atan2(-2.5,1) ));
 
-   TRY_TEST(spline->Evaluate(-1,VARIANT_TRUE,VARIANT_TRUE,nullptr), E_POINTER );
+   //TRY_TEST(spline->Evaluate(-1,VARIANT_TRUE,VARIANT_TRUE,nullptr), E_POINTER );
 
-   spline->Evaluate(-1,VARIANT_TRUE,VARIANT_TRUE,&y); TRY_TEST( IsEqual(y,1.2), true);
-   spline->Evaluate(0,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,1.0), true);
-   spline->Evaluate(1,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,0.0), true);
-   spline->Evaluate(2,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,0.0), true);
-   spline->Evaluate(3,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,1.0), true);
-   spline->Evaluate(4,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,2.0), true);
-   spline->Evaluate(5,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,2.0), true);
-   spline->Evaluate(6,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,1.0), true);
-   spline->Evaluate(7,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,-1.5), true);
+   //spline->Evaluate(-1,VARIANT_TRUE,VARIANT_TRUE,&y); TRY_TEST( IsEqual(y,1.2), true);
+   //spline->Evaluate(0,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,1.0), true);
+   //spline->Evaluate(1,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,0.0), true);
+   //spline->Evaluate(2,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,0.0), true);
+   //spline->Evaluate(3,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,1.0), true);
+   //spline->Evaluate(4,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,2.0), true);
+   //spline->Evaluate(5,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,2.0), true);
+   //spline->Evaluate(6,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,1.0), true);
+   //spline->Evaluate(7,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,-1.5), true);
 
    // test spline slope (derivative = bearing)
-   Float64 dy;
-   TRY_TEST(spline->Slope(-1,VARIANT_TRUE,VARIANT_TRUE,nullptr), E_POINTER );
+   //Float64 dy;
+   //TRY_TEST(spline->Slope(-1,VARIANT_TRUE,VARIANT_TRUE,nullptr), E_POINTER );
 
-   spline->Slope(-1,VARIANT_TRUE,VARIANT_TRUE,&dy); TRY_TEST( IsEqual(dy,-0.2), true);
-   spline->Slope(0,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-0.2), true);
-   spline->Slope(1,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-0.86628205128205149), true);
-   spline->Slope(2,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy, 0.66512820512820525), true);
-   spline->Slope(3,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy, 1.2057692307692305), true);
-   spline->Slope(4,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy, 0.51179487179487160), true);
-   spline->Slope(5,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-0.25294871794871754), true);
-   spline->Slope(6,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-2.5), true);
-   spline->Slope(7,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-2.5), true);
+   //spline->Slope(-1,VARIANT_TRUE,VARIANT_TRUE,&dy); TRY_TEST( IsEqual(dy,-0.2), true);
+   //spline->Slope(0,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-0.2), true);
+   //spline->Slope(1,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-0.86628205128205149), true);
+   //spline->Slope(2,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy, 0.66512820512820525), true);
+   //spline->Slope(3,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy, 1.2057692307692305), true);
+   //spline->Slope(4,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy, 0.51179487179487160), true);
+   //spline->Slope(5,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-0.25294871794871754), true);
+   //spline->Slope(6,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-2.5), true);
+   //spline->Slope(7,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-2.5), true);
 
    // spline length
    Float64 L;
    spline->get_Length(&L);
    TRY_TEST( IsEqual(L,7.878,0.001), true);
-
-   // test point on spline... get the point at a given distance
-   // then evaluate the spline at x. y should be the same at all points
-   for ( long j = 0; j < 12; j++ )
-   {
-      Float64 s = j*L/11;
-      CComPtr<IPoint2d> pnt;
-      spline->PointOnSpline(s,&pnt);
-
-      pnt->get_X(&x);
-      pnt->get_Y(&y);
-      spline->Evaluate(x,VARIANT_FALSE,VARIANT_FALSE,&dy);
-      TRY_TEST(IsEqual(y,dy),true);
-   }
-
-   // points are off of spline (and end points not projected)
-   TRY_TEST( spline->Evaluate(-10,VARIANT_FALSE,VARIANT_FALSE,&y), E_INVALIDARG );
-   TRY_TEST( spline->Evaluate( 10,VARIANT_FALSE,VARIANT_FALSE,&y), E_INVALIDARG );
-
-   // points are off of spline (and end points not projected)
-   TRY_TEST( spline->Slope(-10,VARIANT_FALSE,VARIANT_FALSE,&y), E_INVALIDARG );
-   TRY_TEST( spline->Slope( 10,VARIANT_FALSE,VARIANT_FALSE,&y), E_INVALIDARG );
 
    // test bearing at start and end... should match the start/end direction values
    CComPtr<IDirection> direction;
@@ -359,15 +327,6 @@ void CTestCubicSpline::Test()
    spline->AddPoint(6+offset,1+offset);
    spline->put_StartDirection(CComVariant( atan2(-0.2,1) ));
    spline->put_EndDirection(CComVariant( atan2(-2.5,1) ));
-   spline->Slope(-1+offset,VARIANT_TRUE,VARIANT_TRUE,&dy); TRY_TEST( IsEqual(dy,-0.2), true);
-   spline->Slope(0+offset,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-0.2), true);
-   spline->Slope(1+offset,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-0.86628205128205149), true);
-   spline->Slope(2+offset,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy, 0.66512820512820525), true);
-   spline->Slope(3+offset,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy, 1.2057692307692305), true);
-   spline->Slope(4+offset,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy, 0.51179487179487160), true);
-   spline->Slope(5+offset,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-0.25294871794871754), true);
-   spline->Slope(6+offset,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-2.5), true);
-   spline->Slope(7+offset,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-2.5), true);
 
    // now test the spline as a cogo object
 
@@ -390,16 +349,6 @@ void CTestCubicSpline::Test()
    spline->get_Length(&L);
    Float64 l = (2*M_PI*R)/4;
    TRY_TEST(IsEqual(L,l,0.1),true);
-
-   for ( CollectionIndexType i = 0; i < 2*nPoints; i++ )
-   {
-      angle = (M_PI/2)*i/(2*nPoints-1);
-      x = cx + R*cos(angle);
-      y = cy + R*sin(angle);
-      
-      spline->Evaluate(x,VARIANT_FALSE,VARIANT_FALSE,&dy);
-      TRY_TEST(IsEqual(y,dy,0.1),true);
-   }
 
    // straignt line
    spline->Clear();

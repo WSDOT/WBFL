@@ -1133,9 +1133,6 @@ date/T &gt; $(IntDir)mt2.dep
     <ClInclude Include="ZoomRectTaskImpl.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\EAF\EAF.vcxproj">
       <Project>{60e04843-976a-4a9f-9839-709e295d04e1}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

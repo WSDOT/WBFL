@@ -121,10 +121,6 @@ public:
 
    // returns an analysis point
    virtual const stbIAnalysisPoint* GetAnalysisPoint(IndexType idx) const = 0;
-
-   // returns true if stresses are to be evaluted in the tilted equilibrium condition
-   virtual bool EvaluateStressesAtEquilibriumAngle() const = 0;
-
 };
 
 
@@ -141,6 +137,9 @@ public:
    // returns the angle of lift cables, measured from the horizontal
    // will return PI_OVER_2 for a vertical lift
    virtual Float64 GetLiftAngle() const = 0; 
+
+   // returns true if stresses are to be evaluted in the tilted equilibrium condition
+   virtual bool EvaluateStressesAtEquilibriumAngle() const = 0;
 };
 
 
@@ -183,4 +182,7 @@ public:
 
    // returns the type of centrifugal force
    virtual stbTypes::CFType GetCentrifugalForceType() const = 0;
+
+   // returns true if stresses are to be evaluted in the tilted equilibrium condition
+   virtual bool EvaluateStressesAtEquilibriumAngle(stbTypes::HaulingSlope slope) const = 0;
 };

@@ -2055,13 +2055,13 @@ const CModel::PoiResult* CModel::StorePoiResults(LoadCaseIDType lcase, PoiIDType
    // and functions to compute points of inflection made multiple sequential calls for same results, then no need to cache long term
    if ( m_SimplePOIResultCache.IsHit(poiid, lcase) )
    {
-      ATLASSERT(0); // outer code should prevent hits here
+      ATLASSERT(false); // outer code should prevent hits here
       return &(m_SimplePOIResultCache.poiResult);
    }
 
    // get poi and member
    CPOI *poi = m_pPOIs->Find(poiid);
-   if (poi==0)
+   if (poi == nullptr)
    {
       CComBSTR msg = ::CreateErrorMsg1(IDS_E_POI_NOT_FOUND, poiid);
       THROW_MSG(msg, FEM2D_E_POI_NOT_FOUND, IDH_E_POI_NOT_FOUND);
@@ -2070,7 +2070,7 @@ const CModel::PoiResult* CModel::StorePoiResults(LoadCaseIDType lcase, PoiIDType
    MemberIDType mid;
    poi->get_MemberID(&mid);
    CMember *mbr = m_pMembers->Find(mid);
-   if (mbr==0)
+   if (mbr == nullptr)
    {
       // poi references a non-existent member
       CComBSTR msg = CreateErrorMsg2(IDS_E_POI_REFERENCES_MEMBER_NOT_EXISTS, poiid, mid);
@@ -2080,7 +2080,7 @@ const CModel::PoiResult* CModel::StorePoiResults(LoadCaseIDType lcase, PoiIDType
    // next step is to restore element state where is was fresh after solution for this load case
    // need to get loading
    CLoading *loading = m_pLoadings->Find(lcase);
-   if (loading==0)
+   if (loading == nullptr)
    {
       // references a non-existent loading
       CComBSTR msg = CreateErrorMsg1(IDS_E_LOADING_NOT_FOUND, lcase);
@@ -2097,7 +2097,7 @@ const CModel::PoiResult* CModel::StorePoiResults(LoadCaseIDType lcase, PoiIDType
    CMember::MbrResultArray* array = mrit->second;
 
    const CMember::MbrResult* mbrResult = array->Find(lcase);
-   if (0 == mbrResult)
+   if (mbrResult == nullptr)
    {
       CComBSTR msg = ::CreateErrorMsg1(IDS_E_LOADING_NOT_FOUND, lcase);
       THROW_MSG(msg, FEM2D_E_LOADING_NOT_FOUND,IDH_E_LOADING_NOT_FOUND);
@@ -2107,10 +2107,10 @@ const CModel::PoiResult* CModel::StorePoiResults(LoadCaseIDType lcase, PoiIDType
    Float64 pl, poiloc;
    poi->get_Location(&pl); // in input coord's
    poiloc = mbr->GetRealLocation(pl);
-   if (poiloc==-1.0)
+   if (poiloc == -1.0)
    {
       // poi is located in lala land
-      if (pl<0.0)
+      if (pl < 0.0)
       {
          CComBSTR msg = CreateErrorMsg1(IDS_E_POI_FRACTIONAL_OUT_OF_RANGE, poiid);
          THROW_MSG(msg, FEM2D_E_POI_FRACTIONAL_OUT_OF_RANGE, IDH_E_POI_FRACTIONAL_OUT_OF_RANGE);
@@ -2134,8 +2134,10 @@ const CModel::PoiResult* CModel::StorePoiResults(LoadCaseIDType lcase, PoiIDType
    mbr->GetInternalForces(poiloc, mftRight, &force[3]);
 
    // reverse sign of forces to comply to sign conventions
-   for (long i = 0; i<6; i++)
+   for (long i = 0; i < 6; i++)
+   {
       force[i] = -1.0 * force[i];
+   }
 
 
 #if defined ENABLE_LOGGING
@@ -2148,13 +2150,13 @@ const CModel::PoiResult* CModel::StorePoiResults(LoadCaseIDType lcase, PoiIDType
    mbr->GetDeflection(poiloc,disp);
    PoiResult result(lcase,force,disp);
 
-   if (lcase > 0)
+   if (0 < lcase)
    {
       // Positive load cases get long term caching
 
       PoiResultIterator rit( m_PoiResults.find(poiid) );
-      PoiResultArray* parray = (rit == m_PoiResults.end()) ? 0 : rit->second;
-      if (!parray)
+      PoiResultArray* parray = (rit == m_PoiResults.end()) ? nullptr : rit->second;
+      if (parray == nullptr)
       {
          parray = new PoiResultArray(poiid);
          m_PoiResults.insert(PoiResultContainer::value_type(poiid,parray));
@@ -2162,14 +2164,14 @@ const CModel::PoiResult* CModel::StorePoiResults(LoadCaseIDType lcase, PoiIDType
       
       const PoiResult* cpres;
       PoiResult* pres = parray->Find(lcase);
-      if (pres!=0)
+      if ( pres == nullptr )
       {
-         *pres = result;
-         cpres = pres;
+         cpres = parray->Add(result);
       }
       else
       {
-         cpres = parray->Add(result);
+         *pres = result;
+         cpres = pres;
       }
 
       return cpres;

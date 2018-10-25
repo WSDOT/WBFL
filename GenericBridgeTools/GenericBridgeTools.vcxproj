@@ -951,7 +951,6 @@ date/T &gt; $(IntDir)mt2.dep
     <ClInclude Include="EffectiveFlangeWidthDetails.h" />
     <ClInclude Include="EffectiveFlangeWidthTool.h" />
     <ClInclude Include="FlexRebarLayoutItem.h" />
-    <ClInclude Include="GenericBridgeToolsCP.h" />
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="PrecastGirder.h" />
     <ClInclude Include="Resource.h" />
