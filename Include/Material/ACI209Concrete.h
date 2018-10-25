@@ -76,6 +76,11 @@ public:
    static Float64 ComputeFc28(Float64 fc,Float64 age,Float64 a,Float64 b);
    static Float64 ComputeEc28(Float64 ec,Float64 age,Float64 a,Float64 b);
 
+   // Computes the values for Alpha and Beta giving a concrete strength (fc1) at at age of t1,
+   // and a later strength (fc2) at age t2. (fc1,fc2 are in system units, t1 and t2 are in days,
+   // Alpha is in system units, Beta is unitless
+   static void ComputeParameters(Float64 fc1,Float64 t1,Float64 fc2,Float64 t2,Float64* pA,Float64* pB);
+
    // Returns the compressive strength of the concrete at time t. If
    // t occurs before the time at casting, zero is returned.
    virtual Float64 GetFc(Float64 t) const;
