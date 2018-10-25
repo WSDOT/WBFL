@@ -1011,6 +1011,42 @@ eafTypes::HelpResult CEAFBrokerDocument::GetDocumentLocation(LPCTSTR lpszDocSetN
    return eafTypes::hrDocSetNotFound;
 }
 
+BOOL CEAFBrokerDocument::IsReportCommand(UINT nID,BOOL bQuickReport)
+{
+   if ( m_pReportManager )
+   {
+      CollectionIndexType nReports = m_pReportManager->GetReportBuilderCount();
+      BOOL bIsReport      = (GetReportCommand(0,false) <= nID && nID <= GetReportCommand(nReports-1,false));
+      BOOL bIsQuickReport = (GetReportCommand(0,true)  <= nID && nID <= GetReportCommand(nReports-1,true));
+      if ( bQuickReport )
+      {
+         return bIsQuickReport;
+      }
+      else
+      {
+         return bIsReport;
+      }
+   }
+   else
+   {
+      return FALSE;
+   }
+}
+
+BOOL CEAFBrokerDocument::IsGraphCommand(UINT nID)
+{
+   if ( m_pGraphManager )
+   {
+      CollectionIndexType nGraphs = m_pGraphManager->GetGraphBuilderCount();
+      BOOL bIsGraph = (GetGraphCommand(0) <= nID && nID <= GetGraphCommand(nGraphs-1));
+      return bIsGraph;
+   }
+   else
+   {
+      return FALSE;
+   }
+}
+
 BOOL CEAFBrokerDocument::GetStatusBarMessageString(UINT nID,CString& rMessage) const
 {
    BOOL bHandled = FALSE;

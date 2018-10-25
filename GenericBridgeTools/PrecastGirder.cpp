@@ -1447,10 +1447,14 @@ STDMETHODIMP CPrecastGirder::ComputeAvgHarpedStrandSlopeEx(Float64 distFromStart
       cg_end += startOffset;
       cg_hp  += hp1Offset;
 
-      if (cg_end != cg_hp)
+      if ( !::IsEqual(cg_end,cg_hp) )
+      {
          *slope = hp1/(cg_hp - cg_end);
+      }
       else
+      {
          *slope = DBL_MAX;
+      }
    }
    else if ( ::IsLE(hp2,distFromStart) )
    {
@@ -1470,10 +1474,14 @@ STDMETHODIMP CPrecastGirder::ComputeAvgHarpedStrandSlopeEx(Float64 distFromStart
       cg_end += endOffset;
       cg_hp  += hp2Offset;
 
-      if (cg_end != cg_hp)
+      if ( !::IsEqual(cg_end,cg_hp) )
+      {
          *slope = (gdr_length - hp2) / (cg_end - cg_hp);
+      }
       else
+      {
          *slope = DBL_MAX;
+      }
    }
    else
    {
@@ -1502,10 +1510,14 @@ STDMETHODIMP CPrecastGirder::ComputeAvgHarpedStrandSlope(Float64 distFromStart, 
       m_HarpGridEnd[etStart]->get_CG(&cg_x, &cg_end);
       m_HarpGridHp[etStart]->get_CG(&cg_x, &cg_hp);
 
-      if (cg_end!=cg_hp)
+      if ( !::IsEqual(cg_end,cg_hp) )
+      {
          *slope = hp1/(cg_hp - cg_end);
+      }
       else
+      {
          *slope = DBL_MAX;
+      }
    }
    else if ( ::IsLE(hp2,distFromStart) )
    {
@@ -1513,10 +1525,14 @@ STDMETHODIMP CPrecastGirder::ComputeAvgHarpedStrandSlope(Float64 distFromStart, 
       m_HarpGridEnd[etEnd]->get_CG(&cg_x, &cg_end);
       m_HarpGridHp[etEnd]->get_CG(&cg_x, &cg_hp);
 
-      if (cg_end!=cg_hp)
+      if ( !::IsEqual(cg_end,cg_hp) )
+      {
          *slope = (gdr_length - hp2) / (cg_end - cg_hp);
+      }
       else
+      {
          *slope = DBL_MAX;
+      }
    }
    else
    {
@@ -1700,20 +1716,25 @@ STDMETHODIMP CPrecastGirder::GetStraightStrandBondedLengthByPositionIndex(/*[in]
    *rightBond = rightBond1;
    *YCoord = ::LinInterp(distFromStart,Y1,Y2,gdr_length);
 
-   Float64 Hstart = GetSectionHeight(0);
-   Float64 Hend   = GetSectionHeight(gdr_length);
+   CComQIPtr<ITaperedGirderSegment> taperedSegment(m_pSegment);
+   CComQIPtr<IThickenedFlangeBulbTeeSegment> thickenedSegment(m_pSegment);
+   if ( taperedSegment || thickenedSegment )
+   {
+      Float64 Hstart = GetSectionHeight(0);
+      Float64 Hend   = GetSectionHeight(gdr_length);
 
-   // Height of section at distFromStart assuming a straight line connection top of the girder
-   // at the start and end grids
-   Float64 H = ::LinInterp(distFromStart,Hstart,Hend,gdr_length);
+      // Height of section at distFromStart assuming a straight line connection top of the girder
+      // at the start and end grids
+      Float64 H = ::LinInterp(distFromStart,Hstart,Hend,gdr_length);
 
-   // Get actual height of section at distFromStart
-   Float64 Hg = GetSectionHeight(distFromStart);
+      // Get actual height of section at distFromStart
+      Float64 Hg = GetSectionHeight(distFromStart);
 
-   // amount to vertically adjust the elevation of the strands
-   Float64 Yadj = Hg - H;
+      // amount to vertically adjust the elevation of the strands
+      Float64 Yadj = Hg - H;
 
-   *YCoord -= Yadj;
+      *YCoord -= Yadj;
+   }
 
 
    return S_OK;
@@ -1736,20 +1757,25 @@ STDMETHODIMP CPrecastGirder::GetStraightStrandBondedLengthByGridIndex(/*[in]*/Gr
    *rightBond = rightBond1;
    *YCoord = ::LinInterp(distFromStart,Y1,Y2,gdr_length);
 
-   Float64 Hstart = GetSectionHeight(0);
-   Float64 Hend   = GetSectionHeight(gdr_length);
+   CComQIPtr<ITaperedGirderSegment> taperedSegment(m_pSegment);
+   CComQIPtr<IThickenedFlangeBulbTeeSegment> thickenedSegment(m_pSegment);
+   if ( taperedSegment || thickenedSegment )
+   {
+      Float64 Hstart = GetSectionHeight(0);
+      Float64 Hend   = GetSectionHeight(gdr_length);
 
-   // Height of section at distFromStart assuming a straight line connection top of the girder
-   // at the start and end grids
-   Float64 H = ::LinInterp(distFromStart,Hstart,Hend,gdr_length);
+      // Height of section at distFromStart assuming a straight line connection top of the girder
+      // at the start and end grids
+      Float64 H = ::LinInterp(distFromStart,Hstart,Hend,gdr_length);
 
-   // Get actual height of section at distFromStart
-   Float64 Hg = GetSectionHeight(distFromStart);
+      // Get actual height of section at distFromStart
+      Float64 Hg = GetSectionHeight(distFromStart);
 
-   // amount to vertically adjust the elevation of the strands
-   Float64 Yadj = Hg - H;
+      // amount to vertically adjust the elevation of the strands
+      Float64 Yadj = Hg - H;
 
-   *YCoord -= Yadj;
+      *YCoord -= Yadj;
+   }
 
    return S_OK;
 }
@@ -1883,40 +1909,46 @@ Float64 CPrecastGirder::GetHarpPointLocation(Float64 hp,HarpPointReference hpRef
 
 HRESULT CPrecastGirder::GetStrandPositions(Float64 distFromStart, Float64 distToStartGrid, Float64 distBetweenGrids, IIndexArray* startFill, IStrandGridFiller* pStartGrid, IIndexArray* endFill, IStrandGridFiller* pEndGrid, IPoint2dCollection** points)
 {
-   Float64 Hstart, Hend;
-   StrandGridType gridType;
-   EndType endType;
-   CComPtr<IStrandMover> mover;
-   pStartGrid->GetStrandMover(&gridType,&endType,&mover);
-   if ( mover )
+   Float64 Yadj = 0;
+   CComQIPtr<ITaperedGirderSegment> taperedSegment(m_pSegment);
+   CComQIPtr<IThickenedFlangeBulbTeeSegment> thickenedSegment(m_pSegment);
+   if ( taperedSegment || thickenedSegment )
    {
-      mover->get_SectionHeight(&Hstart);
-   }
-   else
-   {
-      Hstart = GetSectionHeight(distToStartGrid);
-   }
+      Float64 Hstart, Hend;
+      StrandGridType gridType;
+      EndType endType;
+      CComPtr<IStrandMover> mover;
+      pStartGrid->GetStrandMover(&gridType,&endType,&mover);
+      if ( mover )
+      {
+         mover->get_SectionHeight(&Hstart);
+      }
+      else
+      {
+         Hstart = GetSectionHeight(distToStartGrid);
+      }
 
-   mover.Release();
-   pEndGrid->GetStrandMover(&gridType,&endType,&mover);
-   if ( mover )
-   {
-      mover->get_SectionHeight(&Hend);
+      mover.Release();
+      pEndGrid->GetStrandMover(&gridType,&endType,&mover);
+      if ( mover )
+      {
+         mover->get_SectionHeight(&Hend);
+      }
+      else
+      {
+         Hend = GetSectionHeight(distToStartGrid + distBetweenGrids);
+      }
+
+      // Height of section at distFromStart assuming a straight line connection top of the girder
+      // at the start and end grids
+      Float64 H = ::LinInterp(distFromStart-distToStartGrid,Hstart,Hend,distBetweenGrids);
+
+      // Get actual height of section at distFromStart
+      Float64 Hg = GetSectionHeight(distFromStart);
+
+      // amount to vertically adjust the elevation of the strands
+      Yadj = Hg - H;
    }
-   else
-   {
-      Hend = GetSectionHeight(distToStartGrid + distBetweenGrids);
-   }
-
-   // Height of section at distFromStart assuming a straight line connection top of the girder
-   // at the start and end grids
-   Float64 H = ::LinInterp(distFromStart-distToStartGrid,Hstart,Hend,distBetweenGrids);
-
-   // Get actual height of section at distFromStart
-   Float64 Hg = GetSectionHeight(distFromStart);
-
-   // amount to vertically adjust the elevation of the strands
-   Float64 Yadj = Hg - H;
 
    CComPtr<IPoint2dCollection> startPoints;
    CComPtr<IPoint2dCollection> endPoints;
@@ -2017,9 +2049,13 @@ HRESULT CPrecastGirder::ComputeHpFill(IIndexArray* endFill, IIndexArray** hpFill
                {
                   // we are at the end... add the odd strand
                   if ( m_UseDifferentHarpedGirdAtEnds == VARIANT_TRUE )
+                  {
                      m_OddHpFill->Add(fill_val-1);
+                  }
                   else
+                  {
                      m_OddHpFill->Add(fill_val);
+                  }
 
                   running_cnt--;
                }
@@ -2081,17 +2117,11 @@ void CPrecastGirder::GetHarpedStrandGrid(Float64 distFromStart,IStrandGridFiller
    }
 }
 
-Float64 CPrecastGirder::GetSectionHeight(Float64 distFromStart)
+Float64 CPrecastGirder::GetSectionHeight(Float64 Xs)
 {
    Float64 Hg;
-   CComPtr<ISuperstructureMember> ssmbr;
-   m_pSegment->get_SuperstructureMember(&ssmbr);
-   Float64 Xs;
-   SegmentIndexType segIdx;
-   CComPtr<ISuperstructureMemberSegment> seg;
-   ssmbr->GetDistanceFromStartOfSegment(distFromStart,&Xs,&segIdx,&seg);
    CComPtr<IShape> shape;
-   seg->get_PrimaryShape(Xs,&shape);
+   m_pSegment->get_PrimaryShape(Xs,&shape);
    CComPtr<IRect2d> bbox;
    shape->get_BoundingBox(&bbox);
    bbox->get_Height(&Hg);

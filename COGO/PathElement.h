@@ -87,6 +87,7 @@ END_CONNECTION_POINT_MAP()
 // IPathElement
 public:
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
+   STDMETHOD(Offset)(/*[in]*/Float64 dx,/*[in]*/Float64 dy);
    STDMETHOD(Move)(/*[in]*/ Float64 dist,/*[in]*/ IDirection* direction);
    STDMETHOD(Clone)(/*[out,retval]*/ IPathElement* *clone);
 	STDMETHOD(get_Value)(/*[out, retval]*/ IUnknown* *pVal);

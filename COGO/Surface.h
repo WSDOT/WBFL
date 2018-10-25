@@ -208,5 +208,5 @@ private:
 
    void InvalidateRidgeLines();
    void ValidateRidgeLines();
-   std::map<IndexType,std::vector<CComPtr<ILineSegment2d>>> m_RidgeLines; // key is the sub-surface index
+   std::map<IndexType,std::vector<CComPtr<IPath>>> m_RidgeLines; // key is the sub-surface index
 };
