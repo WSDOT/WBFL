@@ -94,9 +94,9 @@ public:
    STDMETHOD(get_MinWebThickness)(/*[out,retval]*/Float64* tWeb) override;
    STDMETHOD(get_EffectiveWebThickness)(/*[out,retval]*/Float64* tWeb) override;
    STDMETHOD(get_MatingSurfaceCount)(/*[out,retval]*/MatingSurfaceIndexType* nMatingSurfaces) override;
-	STDMETHOD(get_MatingSurfaceLocation)(/*[in]*/MatingSurfaceIndexType idx,/*[out,retval]*/Float64* location) override;
-	STDMETHOD(get_MatingSurfaceWidth)(/*[in]*/MatingSurfaceIndexType idx,/*[out,retval]*/Float64* wMatingSurface) override;
-   STDMETHOD(get_MatingSurfaceProfile)(/*[in]*/MatingSurfaceIndexType idx, /*[out, retval]*/IPoint2dCollection** ppProfile) override;
+	STDMETHOD(get_MatingSurfaceLocation)(/*[in]*/MatingSurfaceIndexType idx, /*[in]*/ VARIANT_BOOL bGirderOnly,/*[out,retval]*/Float64* location) override;
+	STDMETHOD(get_MatingSurfaceWidth)(/*[in]*/MatingSurfaceIndexType idx, /*[in]*/ VARIANT_BOOL bGirderOnly, /*[out,retval]*/Float64* wMatingSurface) override;
+   STDMETHOD(get_MatingSurfaceProfile)(/*[in]*/MatingSurfaceIndexType idx, /*[in]*/ VARIANT_BOOL bGirderOnly, /*[out, retval]*/IPoint2dCollection** ppProfile) override;
    STDMETHOD(get_TopFlangeCount)(/*[out,retval]*/FlangeIndexType* nTopFlanges) override;
 	STDMETHOD(get_TopFlangeLocation)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* location) override;
 	STDMETHOD(get_TopFlangeWidth)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* width) override;

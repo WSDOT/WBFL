@@ -1790,9 +1790,9 @@ library WBFLGenericBridge
 	   [propget,helpstring("property EffectiveWebThickness")] HRESULT EffectiveWebThickness([out,retval]Float64* tWeb);
 
       [propget,helpstring("property MatingSurfaceCount")] HRESULT MatingSurfaceCount([out,retval]MatingSurfaceIndexType* nMatingSurfaces);
-	   [propget,helpstring("property MatingSurfaceLocation")] HRESULT MatingSurfaceLocation([in]MatingSurfaceIndexType idx,[out,retval]Float64* location);
-	   [propget,helpstring("property MatingSurfaceWidth")] HRESULT MatingSurfaceWidth([in]MatingSurfaceIndexType idx,[out,retval]Float64* wMatingSurface);
-      [propget,helpstring("property MatingSurfaceProfile")] HRESULT MatingSurfaceProfile([in]MatingSurfaceIndexType idx, [out, retval]IPoint2dCollection** ppProfile);
+	   [propget,helpstring("property MatingSurfaceLocation")] HRESULT MatingSurfaceLocation([in]MatingSurfaceIndexType idx, [in] VARIANT_BOOL bGirderOnly,[out,retval]Float64* location);
+	   [propget,helpstring("property MatingSurfaceWidth")] HRESULT MatingSurfaceWidth([in]MatingSurfaceIndexType idx, [in] VARIANT_BOOL bGirderOnly, [out,retval]Float64* wMatingSurface);
+      [propget,helpstring("property MatingSurfaceProfile")] HRESULT MatingSurfaceProfile([in]MatingSurfaceIndexType idx, [in] VARIANT_BOOL bGirderOnly, [out, retval]IPoint2dCollection** ppProfile);
 
 
        [propget,helpstring("property TopFlangeCount")] HRESULT TopFlangeCount([out,retval]FlangeIndexType* nTopFlanges);

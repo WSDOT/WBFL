@@ -1,0 +1,59 @@
+/ArpMacros.vsmacros/1.16/Fri Sep 18 20:13:27 2015/-kb/
+/License.rtf/1.5/Wed Aug  5 18:22:30 2009/-kb/
+/License.txt/1.5/Wed Aug  5 18:22:30 2009//
+/ReadMe.txt/1.3/Tue Sep 30 18:34:50 2008//
+/UpdateBinFiles.bat/1.19/Wed Nov  8 19:26:00 2017//
+/WBFL.props/1.2/Tue Mar 20 14:33:31 2018//
+/WBFL.sln/1.22/Wed May  2 22:03:02 2018//
+D/BridgeAnalysis////
+D/BridgeGeometry////
+D/BridgeGeometryAgent////
+D/BridgeModeling////
+D/COGO////
+D/Core////
+D/DManip////
+D/DManipTools////
+D/Depreciated////
+D/EAF////
+D/EngTools////
+D/Examples////
+D/Fem2d////
+D/GenericBridge////
+D/GenericBridgeTools////
+D/GeomModel////
+D/GeometricPrimitives////
+D/Geometry////
+D/GraphManager////
+D/GraphManagerAgent////
+D/GraphicsLib////
+D/Include////
+D/LBAM////
+D/LRFD////
+D/Library////
+D/LibraryFw////
+D/Loading////
+D/Material////
+D/Math////
+D/MfcTools////
+D/RCCapacity////
+D/RegFreeCOM////
+D/ReinforcedConcrete////
+D/ReportManager////
+D/ReportManagerAgent////
+D/Reporter////
+D/Roark////
+D/Sections////
+D/SimErr////
+D/Stability////
+D/Supporting Documentation////
+D/System////
+D/Transactions////
+D/UUID////
+D/UnitMgt////
+D/UnitServer////
+D/UnitTest////
+D/Units////
+D/WBFLTools////
+D/WBFLTypes////
+D/bin////
+D/installer////

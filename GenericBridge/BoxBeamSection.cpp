@@ -267,17 +267,17 @@ STDMETHODIMP CBoxBeamSection::get_MatingSurfaceCount(MatingSurfaceIndexType* nMa
    return get_TopFlangeCount(nMatingSurfaces);
 }
 
-STDMETHODIMP CBoxBeamSection::get_MatingSurfaceLocation(MatingSurfaceIndexType idx,Float64* location)
+STDMETHODIMP CBoxBeamSection::get_MatingSurfaceLocation(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly,Float64* location)
 {
    return get_TopFlangeLocation(idx,location);
 }
 
-STDMETHODIMP CBoxBeamSection::get_MatingSurfaceWidth(MatingSurfaceIndexType idx,Float64* wMatingSurface)
+STDMETHODIMP CBoxBeamSection::get_MatingSurfaceWidth(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly,Float64* wMatingSurface)
 {
    return get_TopFlangeWidth(idx,wMatingSurface);
 }
 
-STDMETHODIMP CBoxBeamSection::get_MatingSurfaceProfile(MatingSurfaceIndexType idx, IPoint2dCollection** ppProfile)
+STDMETHODIMP CBoxBeamSection::get_MatingSurfaceProfile(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly, IPoint2dCollection** ppProfile)
 {
    return E_NOTIMPL;
 }

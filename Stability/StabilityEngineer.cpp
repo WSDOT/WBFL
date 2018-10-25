@@ -123,7 +123,7 @@ void stbStabilityEngineer::PrepareResults(const stbIGirder* pGirder,const stbISt
       stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
       if (pStabilityProblem->IncludeLateralRollAxisOffset())
       {
-         results.EccLateralSweep[impact] = results.OffsetFactor*(results.LateralSweep + pStabilityProblem->GetLateralCamber()) + pStabilityProblem->GetSupportPlacementTolerance() + results.Xleft;
+         results.EccLateralSweep[impact] = results.OffsetFactor*(results.LateralSweep + fabs(pStabilityProblem->GetLateralCamber())) + pStabilityProblem->GetSupportPlacementTolerance() + results.Xleft;
       }
       else
       {
@@ -177,7 +177,6 @@ void stbStabilityEngineer::Analyze(const stbIGirder* pGirder,const stbIStability
    
    Ytop = Min(Ytop1, Ytop2);
 
-   //results.Yr = Yra - results.Ytop; // location from the center of gravity from the roll axis (positive means roll center is above CG)
    results.Yr = Yra - Ytop; // location from the center of gravity from the roll axis (positive means roll center is above CG)
 
    Float64 Dra = fabs(results.Yr);  // adjusted distance between CG and roll axis (using fabs because distance is an absolute value)
@@ -367,8 +366,18 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
       CComPtr<IShape> shape;
       if ( segment )
       {
-         rebarLayout->CreateRebarSection(X,0,&rebarSection);
-         segment->get_PrimaryShape(X,sbLeft,&shape);
+         rebarLayout->CreateRebarSection(X,INVALID_INDEX,&rebarSection);
+         segment->get_PrimaryShape(X,sbLeft,&shape); // this is in bridge section coordinates
+
+         // position the shape in centroidal/stress pointscoordinates
+         CComPtr<IShapeProperties> props;
+         shape->get_ShapeProperties(&props);
+         CComPtr<IPoint2d> pntCG;
+         props->get_Centroid(&pntCG);
+         Float64 x, y;
+         pntCG->Location(&x, &y);
+         CComQIPtr<IXYPosition> position(shape);
+         position->Offset(-x, -y);
       }
 
       // eccentricity of horizontal load due to inclined cable at X
@@ -520,7 +529,8 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
 
                // stress due to lateral loads caused by the girder being tilted
                Float64 Mx = 0;
-               Float64 My = -1.0*IM[impact] * ((sectionResult.Mg - Plift*results.Zo[impact])*results.ThetaEq[impact][wind] + sectionResult.Mh[impact][wind]);
+               Float64 tilt_sign = (results.MaxDirectStressCorner == stbTypes::TopLeft || results.MaxDirectStressCorner == stbTypes::BottomRight ? -1 : 1);
+               Float64 My = tilt_sign*IM[impact] * ((sectionResult.Mg - Plift*results.Zo[impact])*results.ThetaEq[impact][wind] + sectionResult.Mh[impact][wind]);
                Float64 f = ((My*Ixx + Mx*Ixy)*pntStress[corner].X() - (Mx*Iyy + My*Ixy)*pntStress[corner].Y()) / D;
                sectionResult.fTilt[impact][wind][corner] = f;
 
@@ -612,12 +622,6 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
 
             if ( segment )
             {
-               CComPtr<IShape> shape;
-               segment->get_PrimaryShape(X,sbLeft,&shape);
-
-               CComPtr<IRebarSection> rebarSection;
-               rebarLayout->CreateRebarSection(X,INVALID_INDEX,&rebarSection);
-
                Float64 fy = pStabilityProblem->GetRebarYieldStrength();
                Float64 fsMax = ::ConvertToSysUnits(30.0,unitMeasure::KSI);
                gbtAlternativeTensileStressCalculator altCalc(concrete,fy,true,fsMax);
@@ -627,21 +631,19 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
                if ( pStabilityProblem->EvaluateStressesAtEquilibriumAngle() )
                {
                   altCalc.ComputeAlternativeStressRequirements(shape, rebarSection,
-                     Wtf, Wbf,
-                     sectionResult.f[impact][wind][stbTypes::TopLeft],
-                     sectionResult.f[impact][wind][stbTypes::TopRight],
-                     sectionResult.f[impact][wind][stbTypes::BottomLeft],
-                     sectionResult.f[impact][wind][stbTypes::BottomRight],
+                     gpPoint3d(pntStress[stbTypes::TopLeft].X(), pntStress[stbTypes::TopLeft].Y(), sectionResult.f[impact][wind][stbTypes::TopLeft]),
+                     gpPoint3d(pntStress[stbTypes::TopRight].X(), pntStress[stbTypes::TopRight].Y(), sectionResult.f[impact][wind][stbTypes::TopRight]),
+                     gpPoint3d(pntStress[stbTypes::BottomLeft].X(), pntStress[stbTypes::BottomLeft].Y(), sectionResult.f[impact][wind][stbTypes::BottomLeft]),
+                     gpPoint3d(pntStress[stbTypes::BottomRight].X(), pntStress[stbTypes::BottomRight].Y(), sectionResult.f[impact][wind][stbTypes::BottomRight]),
                      &Yna, &NAslope, &AreaTension, &T, &AsProvided, &AsRequired, &bIsAdequateRebar);
                }
                else
                {
                   altCalc.ComputeAlternativeStressRequirements(shape, rebarSection,
-                     Wtf, Wbf,
-                     sectionResult.fDirect[impact][wind][stbTypes::TopLeft],
-                     sectionResult.fDirect[impact][wind][stbTypes::TopRight],
-                     sectionResult.fDirect[impact][wind][stbTypes::BottomLeft],
-                     sectionResult.fDirect[impact][wind][stbTypes::BottomRight],
+                     gpPoint3d(pntStress[stbTypes::TopLeft].X(), pntStress[stbTypes::TopLeft].Y(), sectionResult.fDirect[impact][wind][stbTypes::TopLeft]),
+                     gpPoint3d(pntStress[stbTypes::TopRight].X(), pntStress[stbTypes::TopRight].Y(), sectionResult.fDirect[impact][wind][stbTypes::TopRight]),
+                     gpPoint3d(pntStress[stbTypes::BottomLeft].X(), pntStress[stbTypes::BottomLeft].Y(), sectionResult.fDirect[impact][wind][stbTypes::BottomLeft]),
+                     gpPoint3d(pntStress[stbTypes::BottomRight].X(), pntStress[stbTypes::BottomRight].Y(), sectionResult.fDirect[impact][wind][stbTypes::BottomRight]),
                      &Yna, &NAslope, &AreaTension, &T, &AsProvided, &AsRequired, &bIsAdequateRebar);
                }
 
@@ -806,6 +808,24 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
       stbHaulingSectionResult sectionResult;
 
       sectionResult.AnalysisPointIndex = analysisPointIdx++;
+
+      CComPtr<IRebarSection> rebarSection;
+      CComPtr<IShape> shape;
+      if (segment)
+      {
+         rebarLayout->CreateRebarSection(X, INVALID_INDEX, &rebarSection);
+         segment->get_PrimaryShape(X, sbLeft, &shape); // this is in bridge section coordinates
+
+         // position the shape in centroidal/stress pointscoordinates
+         CComPtr<IShapeProperties> props;
+         shape->get_ShapeProperties(&props);
+         CComPtr<IPoint2d> pntCG;
+         props->get_Centroid(&pntCG);
+         Float64 x, y;
+         pntCG->Location(&x, &y);
+         CComQIPtr<IXYPosition> position(shape);
+         position->Offset(-x, -y);
+      }
 
       for ( int s = 0; s < 2; s++ )
       {
@@ -980,7 +1000,8 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
 
                   // stress due to lateral loads caused by the girder being tilted
                   Float64 Mx = 0;
-                  Float64 My = -1.0 * im * sectionResult.Mg*results.ThetaEq[slope][impact][wind];
+                  Float64 tilt_sign = (results.MaxDirectStressCorner[slope] == stbTypes::TopLeft || results.MaxDirectStressCorner[slope] == stbTypes::BottomRight ? -1 : 1);
+                  Float64 My = tilt_sign * im * sectionResult.Mg*results.ThetaEq[slope][impact][wind];
                   Float64 f = ((My*Ixx + Mx*Ixy)*pntStress[corner].X() - (Mx*Iyy + My*Ixy)*pntStress[corner].Y()) / D;
                   sectionResult.fTilt[slope][impact][wind][corner] = f;
 
@@ -1071,12 +1092,6 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
 
                if ( segment )
                {
-                  CComPtr<IShape> shape;
-                  segment->get_PrimaryShape(X,sbLeft,&shape);
-
-                  CComPtr<IRebarSection> rebarSection;
-                  rebarLayout->CreateRebarSection(X,INVALID_INDEX,&rebarSection);
-
                   Float64 fy = pStabilityProblem->GetRebarYieldStrength();
                   Float64 fsMax = ::ConvertToSysUnits(30.0,unitMeasure::KSI);
                   gbtAlternativeTensileStressCalculator altCalc(concrete,fy,true,fsMax);
@@ -1084,11 +1099,10 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                   Float64 Yna, NAslope, AreaTension,T,AsProvided,AsRequired;
                   bool bIsAdequateRebar;
                   altCalc.ComputeAlternativeStressRequirements(shape,rebarSection,
-                     Wtf,Wbf,
-                     sectionResult.f[slope][impact][wind][stbTypes::TopLeft],
-                     sectionResult.f[slope][impact][wind][stbTypes::TopRight],
-                     sectionResult.f[slope][impact][wind][stbTypes::BottomLeft],
-                     sectionResult.f[slope][impact][wind][stbTypes::BottomRight],
+                     gpPoint3d(pntStress[stbTypes::TopLeft].X(), pntStress[stbTypes::TopLeft].Y(), sectionResult.f[slope][impact][wind][stbTypes::TopLeft]),
+                     gpPoint3d(pntStress[stbTypes::TopRight].X(), pntStress[stbTypes::TopRight].Y(), sectionResult.f[slope][impact][wind][stbTypes::TopRight]),
+                     gpPoint3d(pntStress[stbTypes::BottomLeft].X(), pntStress[stbTypes::BottomLeft].Y(), sectionResult.f[slope][impact][wind][stbTypes::BottomLeft]),
+                     gpPoint3d(pntStress[stbTypes::BottomRight].X(), pntStress[stbTypes::BottomRight].Y(), sectionResult.f[slope][impact][wind][stbTypes::BottomRight]),
                      &Yna,&NAslope,&AreaTension,&T,&AsProvided,&AsRequired,&bIsAdequateRebar);
 
                      sectionResult.bSectionHasRebar[slope][impact][wind] = bIsAdequateRebar;

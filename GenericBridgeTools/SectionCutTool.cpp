@@ -556,17 +556,17 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
             for ( CollectionIndexType msIdx = 0; msIdx < nMatingSurfaces; msIdx++ )
             {
                Float64 ms_width;
-               girder_section->get_MatingSurfaceWidth(msIdx, &ms_width);
+               girder_section->get_MatingSurfaceWidth(msIdx, VARIANT_FALSE, &ms_width);
 
                Float64 ms_location; // relative to center of beam
-               girder_section->get_MatingSurfaceLocation(msIdx, &ms_location);
+               girder_section->get_MatingSurfaceLocation(msIdx, VARIANT_FALSE, &ms_location);
 
                // adjust for skew
                ms_width /= cos_skew;
                ms_location /= cos_skew;
 
                CComPtr<IPoint2dCollection> matingSurfaceProfile;
-               bool bHasMSProfile = (FAILED(girder_section->get_MatingSurfaceProfile(msIdx, &matingSurfaceProfile)) || matingSurfaceProfile == nullptr) ? false : true;
+               bool bHasMSProfile = (FAILED(girder_section->get_MatingSurfaceProfile(msIdx, VARIANT_FALSE, &matingSurfaceProfile)) || matingSurfaceProfile == nullptr) ? false : true;
 
                Float64 x23; // x location of points 2 & 3
                Float64 x45; // x location of points 4 & 5
@@ -1319,12 +1319,12 @@ HRESULT CSectionCutTool::CreateDeckShape(IGenericBridge* bridge, GirderIDType ss
       // Determine out to out location of all mating surfaces. We will center our slab shape over this
       Float64 msleft, msright;
       Float64 msloc, mswid;
-      pGirderSection->get_MatingSurfaceWidth(0, &mswid);
-      pGirderSection->get_MatingSurfaceLocation(0, &msloc);
+      pGirderSection->get_MatingSurfaceWidth(0, VARIANT_FALSE, &mswid);
+      pGirderSection->get_MatingSurfaceLocation(0, VARIANT_FALSE, &msloc);
       msleft = msloc - mswid / 2.0;
 
-      pGirderSection->get_MatingSurfaceWidth(nMatingSurfaces-1, &mswid);
-      pGirderSection->get_MatingSurfaceLocation(nMatingSurfaces-1, &msloc);
+      pGirderSection->get_MatingSurfaceWidth(nMatingSurfaces-1, VARIANT_FALSE, &mswid);
+      pGirderSection->get_MatingSurfaceLocation(nMatingSurfaces-1, VARIANT_FALSE, &msloc);
       msright = msloc + mswid / 2.0;
 
       Float64 xms_cl = xTC + (msleft + msright) / 2.0; // CL of all mating surfaces in bridge coords. This is where our slab is centered over
@@ -1333,15 +1333,15 @@ HRESULT CSectionCutTool::CreateDeckShape(IGenericBridge* bridge, GirderIDType ss
       for ( CollectionIndexType msIdx = 0; msIdx < nMatingSurfaces; msIdx++ )
       {
          Float64 ms_width;
-         pGirderSection->get_MatingSurfaceWidth(msIdx, &ms_width);
+         pGirderSection->get_MatingSurfaceWidth(msIdx, VARIANT_FALSE, &ms_width);
 
          Float64 ms_location; // relative to center of beam
-         pGirderSection->get_MatingSurfaceLocation(msIdx, &ms_location);
+         pGirderSection->get_MatingSurfaceLocation(msIdx, VARIANT_FALSE, &ms_location);
 
          ms_location += xTC; // make relative bridge coords
 
          CComPtr<IPoint2dCollection> matingSurfaceProfile;
-         bool bHasMSProfile = (FAILED(pGirderSection->get_MatingSurfaceProfile(msIdx, &matingSurfaceProfile)) || matingSurfaceProfile == nullptr) ? false : true;
+         bool bHasMSProfile = (FAILED(pGirderSection->get_MatingSurfaceProfile(msIdx, VARIANT_FALSE, &matingSurfaceProfile)) || matingSurfaceProfile == nullptr) ? false : true;
 
          Float64 x12; // x location of points 1 & 2
          Float64 x34; // x location of points 3 & 4

@@ -207,17 +207,17 @@ STDMETHODIMP CMultiWebSection::get_MatingSurfaceCount(MatingSurfaceIndexType* nM
    return get_TopFlangeCount(nMatingSurfaces);
 }
 
-STDMETHODIMP CMultiWebSection::get_MatingSurfaceLocation(MatingSurfaceIndexType idx,Float64* location)
+STDMETHODIMP CMultiWebSection::get_MatingSurfaceLocation(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly,Float64* location)
 {
    return get_TopFlangeLocation(idx,location);
 }
 
-STDMETHODIMP CMultiWebSection::get_MatingSurfaceWidth(MatingSurfaceIndexType idx,Float64* wMatingSurface)
+STDMETHODIMP CMultiWebSection::get_MatingSurfaceWidth(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly,Float64* wMatingSurface)
 {
    return get_TopFlangeWidth(idx,wMatingSurface);
 }
 
-STDMETHODIMP CMultiWebSection::get_MatingSurfaceProfile(MatingSurfaceIndexType idx, IPoint2dCollection** ppProfile)
+STDMETHODIMP CMultiWebSection::get_MatingSurfaceProfile(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly, IPoint2dCollection** ppProfile)
 {
    return E_NOTIMPL;
 }

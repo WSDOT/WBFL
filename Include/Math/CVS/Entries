@@ -1,0 +1,24 @@
+/1dRange.h/1.15/Wed Dec 20 17:03:04 2017//
+/AutoLib.h/1.20/Wed Dec 20 17:03:04 2017//
+/BisectionRootFinder2d.h/1.15/Wed Dec 20 17:03:04 2017//
+/BrentsRootFinder2d.h/1.15/Wed Dec 20 17:03:04 2017//
+/CDRatio.h/1.5/Wed Dec 20 17:03:04 2017//
+/CompositeFunction2d.h/1.12/Wed Dec 20 17:03:04 2017//
+/CoordMapper1d.h/1.15/Wed Dec 20 17:03:04 2017//
+/CubicSolver.h/1.15/Wed Dec 20 17:03:04 2017//
+/FixedPointIteration.h/1.15/Wed Dec 20 17:03:04 2017//
+/Function2d.h/1.18/Wed Dec 20 17:03:04 2017//
+/LinFunc2d.h/1.17/Wed Dec 20 17:03:04 2017//
+/Math.h/1.19/Wed May  2 22:03:01 2018//
+/MathExp.h/1.14/Wed Dec 20 17:03:04 2017//
+/MathLib.h/1.14/Wed Dec 20 17:03:04 2017//
+/MathUtils.h/1.2/Wed May  2 22:03:01 2018//
+/NumericIntegrator2d.h/1.15/Wed Dec 20 17:03:04 2017//
+/Polynomial2d.h/1.11/Wed Dec 20 17:03:04 2017//
+/PwLinearFunction2d.h/1.18/Wed Dec 20 17:03:04 2017//
+/PwLinearFunction2dUsingPoints.h/1.20/Wed Dec 20 17:03:04 2017//
+/QuadraticSolver.h/1.16/Wed Dec 20 17:03:04 2017//
+/RootFinder2d.h/1.16/Wed Dec 20 17:03:04 2017//
+/TrapezoidalRuleIntegrator.h/1.15/Wed Dec 20 17:03:04 2017//
+/UnitTest.h/1.15/Wed Dec 20 17:03:04 2017//
+D

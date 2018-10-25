@@ -244,11 +244,11 @@ public:
       return S_OK;
    }
 
-	STDMETHODIMP get_MatingSurfaceWidth(MatingSurfaceIndexType idx,Float64* wMatingSurface) override
+	STDMETHODIMP get_MatingSurfaceWidth(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly,Float64* wMatingSurface) override
    {
       // total width is the width of our mating surface profile
       CComPtr<IPoint2dCollection> points;
-      get_MatingSurfaceProfile(idx, &points);
+      get_MatingSurfaceProfile(idx, bGirderOnly, &points);
 
       IndexType npts;
       points->get_Count(&npts);
@@ -265,11 +265,11 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP get_MatingSurfaceLocation(MatingSurfaceIndexType idx,Float64* pLocation) override
+   STDMETHODIMP get_MatingSurfaceLocation(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly,Float64* pLocation) override
    {
       // total width is the width of our mating surface profile. Profile can be offset from center on exterior beams
       CComPtr<IPoint2dCollection> points;
-      get_MatingSurfaceProfile(idx, &points);
+      get_MatingSurfaceProfile(idx, bGirderOnly, &points);
 
       IndexType npts;
       points->get_Count(&npts);
@@ -296,7 +296,7 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP get_MatingSurfaceProfile(MatingSurfaceIndexType idx, IPoint2dCollection** ppProfile) override
+   STDMETHODIMP get_MatingSurfaceProfile(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly, IPoint2dCollection** ppProfile) override
    {
       // overide the base class implentation with this
       CHECK_RETOBJ(ppProfile);
@@ -304,18 +304,21 @@ public:
       CComPtr<IPoint2d> leftTop, leftBottom, topCentral, rightTop, rightBottom;
       m_Beam->GetTopFlangePoints(&leftTop, &leftBottom, &topCentral, &rightTop, &rightBottom);
 
-      if (m_LeftJoint)
+      if (bGirderOnly == VARIANT_FALSE)
       {
-         leftTop.Release();
-         CComQIPtr<IPolyShape> shape(m_LeftJoint);
-         shape->get_Point(0, &leftTop);
-      }
+         if (m_LeftJoint)
+         {
+            leftTop.Release();
+            CComQIPtr<IPolyShape> shape(m_LeftJoint);
+            shape->get_Point(0, &leftTop);
+         }
 
-      if (m_RightJoint)
-      {
-         rightTop.Release();
-         CComQIPtr<IPolyShape> shape(m_RightJoint);
-         shape->get_Point(0, &rightTop);
+         if (m_RightJoint)
+         {
+            rightTop.Release();
+            CComQIPtr<IPolyShape> shape(m_RightJoint);
+            shape->get_Point(3, &rightTop);
+         }
       }
 
       CComPtr<IPoint2dCollection> points;
