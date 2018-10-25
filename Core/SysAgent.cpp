@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // CORE - Core elements of the Agent-Broker Architecture
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -153,12 +153,9 @@ STDMETHODIMP CSysAgent::CreateProgressWindow(DWORD dwMask,UINT nDelay)
    }
 
    // Run the progress window in a UI thread
-   m_pThread = (CProgressThread*)AfxBeginThread(RUNTIME_CLASS(CProgressThread),THREAD_PRIORITY_NORMAL,0,CREATE_SUSPENDED);
-   m_pThread->m_bAutoDelete = TRUE;
-   m_pThread->ResumeThread();
+   m_pThread = (CProgressThread*)AfxBeginThread(RUNTIME_CLASS(CProgressThread));
 
-   m_pActiveWnd = CWnd::GetActiveWindow();
-   CWnd* pMainWnd;
+   CWnd* pMainWnd = NULL;
    {
       AFX_MANAGE_STATE(AfxGetAppModuleState());
       pMainWnd = AfxGetMainWnd();
@@ -169,7 +166,7 @@ STDMETHODIMP CSysAgent::CreateProgressWindow(DWORD dwMask,UINT nDelay)
    if ( FAILED(hr) )
    {
       m_cProgressRef--;
-      m_pThread->EndThread();
+      m_pThread->PostThreadMessage(WM_KILLTHREAD,0,0);
       m_pThread = NULL;
       return PROGRESS_E_CREATE;
    }
@@ -177,8 +174,6 @@ STDMETHODIMP CSysAgent::CreateProgressWindow(DWORD dwMask,UINT nDelay)
    m_ProgressMsgMarker.push_back(0);
    UpdateMessage(_T("Working..."));
 
-   // disable the main window
-   pMainWnd->EnableWindow(FALSE);
    return S_OK;
 }
 
@@ -229,21 +224,14 @@ STDMETHODIMP CSysAgent::put_EnableCancel(BOOL bEnable)
 STDMETHODIMP CSysAgent::DestroyProgressWindow()
 {
    m_cProgressRef--;
-   ATLASSERT( m_cProgressRef >= 0 );
+   ATLASSERT( 0 <= m_cProgressRef );
 
    if ( m_cProgressRef == 0 )
    {
       m_pThread->DestroyProgressWindow();
-      m_pThread->EndThread();
+      m_pThread->PostThreadMessage(WM_KILLTHREAD,0,0);
+      ::WaitForSingleObject(m_pThread->m_hThread,INFINITE);
       m_pThread = NULL;
-
-      // enable the main window
-      {
-         AFX_MANAGE_STATE(AfxGetAppModuleState());
-         //AfxGetMainWnd()->EnableWindow(TRUE);
-         m_pActiveWnd->EnableWindow(TRUE);
-         m_pActiveWnd->SetActiveWindow();
-      }
    }
    else
    {

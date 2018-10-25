@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // CORE - Core elements of the Agent-Broker Architecture
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -65,10 +65,16 @@ public:
    void PumpMessage();
    void UpdateMessage(LPCTSTR msg);
 
+   void GrabInput();
+   void ReleaseInput();
+
 
 // Implementation
 protected:
    BOOL m_bContinue;
+
+   CWnd* m_pwndFocus;
+   CWnd* m_pwndCapture;
 
 	// Generated message map functions
 	//{{AFX_MSG(CProgressDlg)
