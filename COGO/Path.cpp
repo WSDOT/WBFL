@@ -770,7 +770,7 @@ void CPath::Unadvise(long idx)
    InternalAddRef(); // Counteract InternalRelease() in Advise
 
    // Find the connection point and disconnection
-   HRESULT hr = AtlUnadvise( var.pdispVal, IID_IPathElementEvents, dwCookie );
+   HRESULT hr = AtlUnadvise( var.pdispVal, IID_IPathElementEvents, (DWORD)dwCookie );
    ATLASSERT(SUCCEEDED(hr));
 
    p.first = 0;

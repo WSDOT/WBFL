@@ -99,6 +99,7 @@ typedef Int32  LoadCombinationIDType;
 
 typedef Int32 BarSizeType;
 
+typedef Int32 IndexType;
 typedef Int32 StageIndexType;
 typedef Int32 SupportIndexType;
 typedef Int32 StrandIndexType;
