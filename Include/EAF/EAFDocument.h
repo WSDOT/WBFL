@@ -123,14 +123,15 @@ public:
    /// called when a document is created (New or Open)
    virtual BOOL Init(); 
 
-   /// Called by the framework during document creation. Load any registry settings
+   // Called by the framework during document creation. Load any registry settings
    virtual void LoadDocumentSettings();
-   /// Called by the framework during document creation. Save any registry settings
+   
+   // Called by the framework during document creation. Save any registry settings
    virtual void SaveDocumentSettings();
 
-   /// Use this method to log a message when
-   /// the during application start-up
-   /// Writes message to file named ("AppName.log")
+   // Use this method to log a message
+   // during application start-up.
+   // Writes message to file named ("AppName.log")
    virtual void FailSafeLogMessage(LPCTSTR msg);
 
    // returns the main menu object
@@ -196,18 +197,25 @@ public:
    // called after the document data is created/loaded
    virtual void OnCreateFinalize();
 
-   virtual BOOL OpenTheDocument(LPCTSTR lpszPathName);
-   virtual BOOL SaveTheDocument(LPCTSTR lpszPathName);
+   // If true, a copy of the original file is created prior to
+   // saving the document. The name of the backup file is
+   // ~ilename (first character of original filename is replaced with ~)
+   // If an error occurs while saving the file, the backup file is restored.
+   void EnableBackupOnSave(BOOL bEnable);
+   BOOL EnableBackupOnSave() const;
 
+   virtual BOOL OpenTheDocument(LPCTSTR lpszPathName);
    virtual void HandleOpenDocumentError( HRESULT hr, LPCTSTR lpszPathName );
+
+   virtual BOOL SaveTheDocument(LPCTSTR lpszPathName);
    virtual void HandleSaveDocumentError( HRESULT hr, LPCTSTR lpszPathName );
 
    virtual HRESULT ConvertTheDocument(LPCTSTR lpszPathName, CString* realFileName);
    virtual void HandleConvertDocumentError( HRESULT hr, LPCTSTR lpszPathName );
 
    // Called by the framework when the document is to be loaded and saved
-   virtual HRESULT WriteTheDocument(IStructuredSave* pStrSave) = 0;
-   virtual HRESULT LoadTheDocument(IStructuredLoad* pStrLoad) = 0;
+   virtual HRESULT WriteTheDocument(IStructuredSave* pStrSave);
+   virtual HRESULT LoadTheDocument(IStructuredLoad* pStrLoad);
 
    // Called by OpenDocumentRootNode to get the root node name
    // By default the root node name is pApp->m_pszAppName with all whitespace removed
@@ -290,6 +298,8 @@ private:
    IEAFStatusCenterEventSink* m_pStatusCenterEventSink;
 
    BOOL m_bUIIntegrated; // true if UI intergration happened
+
+   BOOL m_bEnableSaveBackup; // if true, backup files are created during the save process
 
 
    // called after document is created and initialized (called from CEAFDocTemplate::InitialUpdateFrame with TRUE
