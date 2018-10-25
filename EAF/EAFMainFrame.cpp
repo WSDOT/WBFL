@@ -420,17 +420,17 @@ void CEAFMainFrame::GetMessageString(UINT nID, CString& rMessage) const
       }
    }
 
-   if ( !bHandledByPlugin && pActiveDoc )
+   if ( !bHandledByPlugin && pActiveDoc && pActiveDoc->IsKindOf(RUNTIME_CLASS(CEAFDocument)))
    {
       CEAFDocument* pDoc = (CEAFDocument*)pActiveDoc;
       CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)pDoc->GetDocTemplate();
-      if ( pTemplate->GetCommandCallback() )
+      if (pTemplate && pTemplate->GetCommandCallback())
       {
-         bHandledByPlugin = pTemplate->GetCommandCallback()->GetStatusBarMessageString(nID,rMessage);
+         bHandledByPlugin = pTemplate->GetCommandCallback()->GetStatusBarMessageString(nID, rMessage);
       }
       else
       {
-         bHandledByPlugin = pDoc->GetStatusBarMessageString(nID,rMessage);
+         bHandledByPlugin = pDoc->GetStatusBarMessageString(nID, rMessage);
       }
    }
 
@@ -458,7 +458,7 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
    BOOL bHandledByPlugin = FALSE;
    CString strTipText;
 
-   if ( nID != 0 && pDoc )
+   if ( nID != 0 && pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CEAFDocument)) )
    {
       UINT nPluginCmdID;
       IEAFCommandCallback* pCallback;
@@ -488,7 +488,7 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
       }
    }
 
-   if (!bHandledByPlugin && pDoc )
+   if (!bHandledByPlugin && pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CEAFDocument)) )
    {
       CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)pDoc->GetDocTemplate();
       if ( pTemplate->GetCommandCallback() )
