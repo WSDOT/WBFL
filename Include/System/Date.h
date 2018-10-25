@@ -114,6 +114,8 @@ public:
    // Construct a sysDate from a sysTime
    sysDate( const sysTime& ); 
 
+   sysDate( JulTy j );
+
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
    // Date comparisons:
@@ -172,7 +174,7 @@ public:
 
    //------------------------------------------------------------------------
    // a unique hash value for the date
-   Uint16 Hash() const;
+   Uint32 Hash() const;
 
    //------------------------------------------------------------------------
    // is date valid?
@@ -272,7 +274,6 @@ private:
 
     void ParseFrom( std::istream  & );     // Reading dates
     void  Mdy( MonthTy  &, DayTy  &, YearTy  & ) const;
-    sysDate( JulTy j );
 
 };
 
@@ -405,7 +406,7 @@ inline sysDate::sysDate( JulTy j )
     Julnum = j;
 }
 
-SYSCLASS inline Uint16 HashValue( sysDate  & d )
+SYSCLASS inline Uint32 HashValue( sysDate  & d )
 {
     return d.Hash();
 }

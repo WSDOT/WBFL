@@ -23,19 +23,21 @@
 
 #include "stdafx.h"
 #include <EAF\EAFUtilities.h>
-#include <EAF\EAFMainFrame.h>
 #include <EAF\EAFBrokerDocument.h>
 
 #include "ManagePluginsDlg.h"
+
+EAFFUNC CEAFApp* EAFGetApp()
+{
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+   return (CEAFApp*)AfxGetApp();
+}
 
 // Global function for getting the broker from the current document
 HRESULT EAFGetBroker(IBroker** ppBroker)
 {
    // let's try it the easy way first
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CWnd* pWnd = AfxGetMainWnd();
-   ASSERT_KINDOF(CEAFMainFrame,pWnd);
-   CEAFMainFrame* pFrame = (CEAFMainFrame*)pWnd;
+   CEAFMainFrame* pFrame = EAFGetMainFrame();
    CEAFDocument* pDoc = pFrame->GetDocument();
 
    if ( pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CEAFBrokerDocument)) )
@@ -46,7 +48,7 @@ HRESULT EAFGetBroker(IBroker** ppBroker)
    else
    {
       // looks like we have to do it the hard way
-      CWinApp* pApp = AfxGetApp();
+      CWinApp* pApp = EAFGetApp();
       CDocument* pDocument = NULL;
       bool bDone = false;
       POSITION doc_template_pos = pApp->GetFirstDocTemplatePosition();
@@ -77,8 +79,55 @@ HRESULT EAFGetBroker(IBroker** ppBroker)
    return E_FAIL;
 }
 
-void EAFManagePlugins(const CATID& catid,CWnd* pParent)
+std::vector<CEAFPluginState> EAFManagePlugins(LPCSTR lpszTitle,const CATID& catid,CWnd* pParent)
 {
-   CManagePluginsDlg dlg(catid,pParent);
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+   CManagePluginsDlg dlg(lpszTitle,catid,pParent);
    dlg.DoModal(); // this DoModal is correct... dialog takes care of its own data
+   return dlg.m_PluginStates;
+}
+
+CEAFMainFrame* EAFGetMainFrame()
+{
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+   CEAFMainFrame* pFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   ASSERT_KINDOF(CEAFMainFrame,pFrame);
+   return pFrame;
+}
+
+
+bool operator<(REFIID a,REFIID b)
+{
+   /*
+   typedef struct _GUID {
+      unsigned long  Data1;
+      unsigned short Data2;
+      unsigned short Data3;
+      unsigned char  Data4[8];} GUID;
+    */
+
+    if ( a.Data1 > b.Data1 )
+       return false;
+    if ( a.Data1 < b.Data1 )
+       return true;
+
+    if ( a.Data2 > b.Data2 )
+       return false;
+    if ( a.Data2 < b.Data2 )
+       return true;
+
+    if ( a.Data3 > b.Data3 )
+       return false;
+    if ( a.Data3 < b.Data3 )
+       return true;
+
+    for ( int i = 0; i < 8; i++ )
+    {
+       if ( a.Data4[i] > b.Data4[i] )
+          return false;
+       if ( a.Data4[i] < b.Data4[i] )
+          return true;
+    }
+
+    return false;
 }

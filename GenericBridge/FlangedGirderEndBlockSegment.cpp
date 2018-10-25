@@ -207,7 +207,18 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_Shape(Float64 distAlongSegment,I
       // adjust dimensions based on end block size
 
       // near top flange
-      if ( W2 + T1/2 < Wt/2)
+      if ( 2*(W1+W2) + T1 < Wt )
+      {
+         // end block is wider than the top flange
+         w1 = 0;
+         w2 = 0;
+         d1 = 0;
+         d2 = 0;
+         d3 = 0;
+         d7 += D1 + D2 + D3;
+         t1 = Wt;
+      }
+      else if ( W2 + T1/2 < Wt/2)
       {
          // end block extends beyond top fillet
          w2 = 0;
@@ -223,10 +234,22 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_Shape(Float64 distAlongSegment,I
          w2 = W2 + T1/2 - Wt/2;
          d3 = (D3/W2)*w2;
          d7 += (D3 - d3);
+         t1 = Wt;
       }
 
       // near bottom flange
-      if ( W4 + T2/2 < Wb/2 )
+      if ( 2*(W3+W4) + T2 < Wb )
+      {
+         // end block is wider than the bottom flange
+         w3 = 0;
+         w4 = 0;
+         d4 = 0;
+         d5 = 0;
+         d6 = 0;
+         d7 += D4 + D5 + D6;
+         t2 = Wb;
+      }
+      else if ( W4 + T2/2 < Wb/2 )
       {
          // end block extends beyond bottom fillet
          w4 = 0;
@@ -238,14 +261,17 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_Shape(Float64 distAlongSegment,I
       }
       else if ( T2/2 < Wb/2)
       {
-         // end block intersects bottomfillet
+         // end block intersects bottom fillet
          w4 = W4 + T2/2 - Wb/2;
          d6 = (D6/W4)*w4;
          d7 += D6 - d6;
+         t2 = Wb;
       }
 
       // verify girder height is unchanged
       ATLASSERT(IsEqual(d1+d2+d3+d4+d5+d6+d7,D1+D2+D3+D4+D5+D6+D7));
+      ATLASSERT(IsEqual(2*(w1+w2)+t1,2*(W1+W2)+T1) || IsEqual(2*(w1+w2)+t1,Wt));
+      ATLASSERT(IsEqual(2*(w3+w4)+t2,2*(W3+W4)+T2) || IsEqual(2*(w3+w4)+t2,Wb));
 
       // create a new shape that is a clone of the original
       CComQIPtr<IShape> shape(m_Beam);

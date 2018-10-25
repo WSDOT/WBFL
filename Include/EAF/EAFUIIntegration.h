@@ -25,6 +25,7 @@
 
 #include <EAF\EAFMenu.h>
 #include <EAF\EAFToolBar.h>
+#include <EAF\EAFCommandLineInfo.h>
 
 // The interfaces defined in this file are used by plug-ins that are integrating themselves into
 // the user interface of an EAFApp/EAFBrokerDocument based application
@@ -40,7 +41,7 @@ DEFINE_GUID(IID_IEAFViewRegistrar,
 interface IEAFViewRegistrar : IUnknown
 {
    // Registers a view class and its associated frame class. Returns the view key
-   virtual long RegisterView(CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=NULL,int maxViewCount = -1) = 0;
+   virtual long RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=NULL,int maxViewCount = -1) = 0;
 
    // Removes a previously registered view
    virtual void RemoveView(long key) = 0;
@@ -86,6 +87,7 @@ interface IEAFMainMenu : IUnknown
 {
    // returns the applications main menu
    virtual CEAFMenu* GetMainMenu() = 0;
+   virtual CEAFMenu* CreateContextMenu() = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -122,6 +124,9 @@ DEFINE_GUID(IID_IEAFAcceleratorTable,
 0x2d663f88, 0x1b17, 0x4d1b, 0x9d, 0xe8, 0x8c, 0xd0, 0x60, 0x50, 0xe2, 0xc2);
 interface IEAFAcceleratorTable : IUnknown
 {
+   // Adds an accelerator table
+   virtual BOOL AddAccelTable(HACCEL hAccel,IEAFCommandCallback* pCallback) = 0;
+
    // Adds an accelerator key
    virtual BOOL AddAccelKey(BYTE fVirt,WORD key,WORD cmd,IEAFCommandCallback* pCallback) = 0;
 
@@ -157,6 +162,36 @@ interface IEAFDocument : IUnknown
 
    // Notifies all views of an update
    virtual void UpdateAllViews(CView* pSender,LPARAM lHint = 0L,CObject* pHint = NULL) = 0;
+};
+
+
+//////////////////////////////////////////////////////////////////////////
+// IEAFProcessCommandLine
+//
+// Implement this interface in agents and extension agents that process
+// command line prameters. DO NOT register this interface with the broker.
+
+// {D39456A3-33CD-4ea0-91EE-D15BBEA574B8}
+DEFINE_GUID(IID_IEAFProcessCommandLine, 
+0xd39456a3, 0x33cd, 0x4ea0, 0x91, 0xee, 0xd1, 0x5b, 0xbe, 0xa5, 0x74, 0xb8);
+
+interface IEAFProcessCommandLine : IUnknown
+{
+   // Processes command line options. Return TRUE if they were handled, otherwise FALSE.
+   // cmdInfo is the basic command line information from the application class. You may
+   // need to re-parse the command line parameters to get your parameters. The following
+   // example may be used
+   //
+   // CMyCommandLineInfo ci; // your custom command line parser derived from CEAFCommandLineInfo
+   // EAFGetApp()->ParcseCommandLine(ci);
+   // cmdInfo = ci; // copies the base parameters... note there will be object slicing here
+   // if ( ci.IsThisMyCommandLine )
+   // {
+   //    DoSomethingUseful(); // note, if there was a file name on the command line, the file is already open
+   //    return TRUE; // handled
+   // }
+   // return FALSE;
+   virtual BOOL ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo) = 0;
 };
 
 // Virtual key codes not defined by Windows API

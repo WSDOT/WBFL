@@ -23,13 +23,24 @@
 
 #pragma once
 
+class CEAFApp;
+
 #include <EAF\EAFExp.h>
+#include <EAF\EAFMainFrame.h>
+#include <EAF\EAFPluginState.h>
+#include <vector>
 #include <WBFLCore.h> // IBroker
+
+EAFFUNC CEAFApp* EAFGetApp();
 
 // Returns a pointer to the broker. Only call this method if you are using a document
 // type that is a desendent of CEAFBrokerDocument
-HRESULT EAFFUNC EAFGetBroker(IBroker** ppBroker);
+EAFFUNC HRESULT EAFGetBroker(IBroker** ppBroker);
 
 // Displays a dialog for enabling/disabling plugin components. catid is the component
 // category ID of the type of plugin to be managed.
-void EAFFUNC EAFManagePlugins(const CATID& catid,CWnd* pParent = NULL);
+EAFFUNC std::vector<CEAFPluginState> EAFManagePlugins(LPCSTR lpszTitle,const CATID& catid,CWnd* pParent = NULL);
+
+EAFFUNC CEAFMainFrame* EAFGetMainFrame();
+
+EAFFUNC bool operator<(REFIID a,REFIID b);

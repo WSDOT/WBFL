@@ -106,6 +106,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
    virtual void EditReport();
+   virtual void RefreshReport(); // called from EditReport when the report needs to be refreshed
    virtual void CreateReportSpecification(CollectionIndexType rptIdx,bool bCreateDefaultReport);
    virtual HRESULT UpdateReportBrowser();
 

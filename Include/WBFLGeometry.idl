@@ -2781,6 +2781,12 @@ interface IVoidedSlab2 : IUnknown
    [propget,helpstring("property C2")/*,helpcontext(IDH_IVoidedSlab_C2)*/]
    HRESULT C2([out,retval]Float64* c2);
 
+   [propput,helpstring("property C3")/*,helpcontext(IDH_IVoidedSlab_C3)*/]
+   HRESULT C3([in]Float64 c3);
+
+   [propget,helpstring("property C3")/*,helpcontext(IDH_IVoidedSlab_C3)*/]
+   HRESULT C3([out,retval]Float64* c3);
+
    [propput,helpstring("property LeftBlockOut")/*,helpcontext(IDH_IVoidedSlab_LeftBlockOut)*/]
    HRESULT LeftBlockOut([in]VARIANT_BOOL bLeftBlockOut);
 

@@ -252,6 +252,8 @@ STDMETHODIMP CSysAgent::DestroyProgressWindow()
    {
       m_ProgressDlg.KillTimer( g_TimerID );
       g_pTimerWnd = 0;
+
+      AFX_MANAGE_STATE(AfxGetAppModuleState());
       m_ProgressDlg.DestroyWindow();
    }
 

@@ -819,7 +819,7 @@ void CLoadCombinationDumper::DumpLoadCombinationForces(std::ostream& os, std::os
    CComPtr<ILoadCombinationSectionResults> lcresults;
    hr = m_LCR->ComputeForces(params.LcName, poi_ids, stgn, roMember, params.Summation, 
                              params.ForceEffect, params.Optimization,
-					    	        params.DoIncludeLiveLoad, VARIANT_TRUE, VARIANT_FALSE, &lcresults);
+					    	        params.DoIncludeLiveLoad, VARIANT_TRUE, VARIANT_TRUE, &lcresults);
 
    os<<"        <------ Left -----> <----- Right ----->"<<endl;
    os<<"   POI    Result      Key     Result      Key"<<endl;
@@ -934,7 +934,7 @@ void CLoadCombinationDumper::DumpLoadCombinationDeflections(std::ostream& os, st
    CComPtr<ILoadCombinationSectionResults> lcresults;
    hr = m_LCR->ComputeDeflections(params.LcName, poi_ids, stgn, params.Summation, 
                              params.ForceEffect, params.Optimization,
-					    	        params.DoIncludeLiveLoad, VARIANT_TRUE, VARIANT_FALSE, &lcresults);
+					    	        params.DoIncludeLiveLoad, VARIANT_TRUE, VARIANT_TRUE, &lcresults);
 
    os<<"        <------ Left -----> <----- Right ----->"<<endl;
    os<<"   POI    Result      Key     Result      Key"<<endl;
@@ -1050,7 +1050,7 @@ void CLoadCombinationDumper::DumpLoadCombinationStresses(std::ostream& os, std::
    CComPtr<ILoadCombinationStressResults> lcresults;
    hr = m_LCR->ComputeStresses(params.LcName, poi_ids, stgn, params.Summation, 
                              params.ForceEffect, params.Optimization,
-					    	        params.DoIncludeLiveLoad, VARIANT_TRUE, VARIANT_FALSE, &lcresults);
+					    	        params.DoIncludeLiveLoad, VARIANT_TRUE, VARIANT_TRUE, &lcresults);
 
    os<<"        <----------------- Left ---------------------------> <-------------------------- Right -------------------->"<<endl;
    os<<"   POI     SP0        SP1         SP2        SP3      Key       SP0        SP1        SP2        SP3       Key"<<endl;
@@ -1200,7 +1200,7 @@ void CLoadCombinationDumper::DumpLoadCombinationReactions(std::ostream& os, std:
    CComPtr<ILoadCombinationResults> lcresults;
    hr = m_LCR->ComputeReactions(params.LcName, spt_ids, stgn, params.Summation, 
                              params.ForceEffect, params.Optimization,
-					    	        params.DoIncludeLiveLoad, VARIANT_TRUE, VARIANT_FALSE, &lcresults);
+					    	        params.DoIncludeLiveLoad, VARIANT_TRUE, VARIANT_TRUE, &lcresults);
 
    os<<"   SPT    Result      Key  "<<endl;
    os<<" ------ ---------- --------"<<endl;
@@ -1294,7 +1294,7 @@ void CLoadCombinationDumper::DumpLoadCombinationSupportDeflections(std::ostream&
    CComPtr<ILoadCombinationResults> lcresults;
    hr = m_LCR->ComputeSupportDeflections(params.LcName, spt_ids, stgn, params.Summation, 
                              params.ForceEffect, params.Optimization,
-					    	        params.DoIncludeLiveLoad, VARIANT_TRUE, VARIANT_FALSE, &lcresults);
+					    	        params.DoIncludeLiveLoad, VARIANT_TRUE, VARIANT_TRUE, &lcresults);
 
    os<<"   SPT    Result      Key  "<<endl;
    os<<" ------ ---------- --------"<<endl;

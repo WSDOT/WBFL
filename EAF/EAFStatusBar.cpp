@@ -25,10 +25,11 @@
 //
 
 #include "stdafx.h"
+#include "resource.h"
+#include <EAF\EAFResources.h>
 #include <EAF\EAFStatusBar.h>
 #include <EAF\EAFDocument.h>
 #include <EAF\StatusCenter.h>
-#include "resource.h"
 #include <Colors.h>
 
 #define STATUS_OK_COLOR    GREEN
@@ -96,12 +97,21 @@ BOOL CEAFStatusBar::Create(CWnd* pParentWnd, DWORD dwStyle , UINT nID)
 
    SetPaneStyle( GetStatusPaneIndex(), SBPS_NORMAL | SBT_OWNERDRAW );
    SetPaneStyle( GetModifiedPaneIndex(), SBPS_DISABLED );
+
+   for ( int i = 0; i < m_nIndicators; i++ )
+   {
+      UINT style = GetPaneStyle(i);
+      style |= SBPS_NOBORDERS;
+      SetPaneStyle(i,style);
+   }
+
    return bResult;
 }
 
 void CEAFStatusBar::EnableModifiedFlag(BOOL bEnable)
 {
-   SetPaneStyle(GetModifiedPaneIndex(), bEnable ? SBPS_NORMAL : SBPS_DISABLED );
+   UINT style = (bEnable ? SBPS_NORMAL : SBPS_DISABLED) | SBPS_NOBORDERS;
+   SetPaneStyle(GetModifiedPaneIndex(), style );
 }
 
 int CEAFStatusBar::GetPaneCount()
@@ -153,12 +163,10 @@ int CEAFStatusBar::GetStatusPaneIndex()
 
 CEAFDocument* CEAFStatusBar::GetDocument()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CWnd* pMainWnd = AfxGetMainWnd();
-   if ( pMainWnd->IsKindOf(RUNTIME_CLASS(CFrameWnd)) )
+   CEAFMainFrame* pFrame = EAFGetMainFrame();
+   if ( pFrame->IsKindOf(RUNTIME_CLASS(CFrameWnd)) )
    {
-      CFrameWnd* pMainFrame = (CFrameWnd*)pMainWnd;
-      CMDIChildWnd* pChild = (CMDIChildWnd*)pMainFrame->GetActiveFrame();
+      CMDIChildWnd* pChild = (CMDIChildWnd*)pFrame->GetActiveFrame();
       CView* pView = pChild->GetActiveView();
       CDocument* pDoc = NULL;
       if ( pView )

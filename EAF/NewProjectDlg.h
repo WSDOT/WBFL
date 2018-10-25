@@ -60,7 +60,7 @@ protected:
 
    void AddProjectGroup(HTREEITEM hParent,HTREEITEM hAfter,const CEAFTemplateGroup* pGroup);
    
-   void ExpandProjectTypes(HTREEITEM hRoot);
+   void ExpandProjectTypes();
 
 	DECLARE_MESSAGE_MAP()
 public:

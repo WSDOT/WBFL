@@ -26,6 +26,8 @@
 #include <EAF\EAFBrokerDocument.h>
 #include <EAF\EAFMainFrame.h>
 
+#include <afximpl.h>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -35,6 +37,7 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNAMIC(CEAFDocTemplate,CMultiDocTemplate)
 
 CEAFDocTemplate::CEAFDocTemplate(UINT nIDResource,
+                                 IEAFCommandCallback* pCallback,
                                  CRuntimeClass* pDocClass,
                                  CRuntimeClass* pFrameClass,
                                  CRuntimeClass* pViewClass,
@@ -44,6 +47,8 @@ CMultiDocTemplate(nIDResource,pDocClass,pFrameClass,pViewClass),
 m_TemplateGroup(this)
 {
    m_pPlugin = NULL;
+   m_pCommandCallback = pCallback;
+
    m_pCreateData = NULL;
 
    m_bSharedMenu = FALSE;
@@ -55,7 +60,6 @@ m_TemplateGroup(this)
    m_MaxViewCount = maxViewCount;
 
    m_pTemplateItem = NULL;
-
 }
 
 CEAFDocTemplate::~CEAFDocTemplate()
@@ -70,6 +74,15 @@ CEAFDocTemplate::~CEAFDocTemplate()
 
       m_hMenuShared = NULL;
    }
+}
+
+void CEAFDocTemplate::LoadTemplate()
+{
+   CMultiDocTemplate::LoadTemplate();
+
+   m_AccelTable.Init(EAFGetApp()->GetPluginCommandManager());
+   m_AccelTable.AddAccelTable(m_hAccelTable,GetCommandCallback());
+   m_hAccelTable = NULL;
 }
 
 void CEAFDocTemplate::CreateDefaultItem(HICON hIcon)
@@ -127,8 +140,7 @@ CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisi
 
 	InitialUpdateFrame(pFrame, pDocument, bMakeVisible);
 
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    pMainFrame->HideMainFrameToolBar();
 
    pEAFDoc->OnCreateFinalize();
@@ -210,6 +222,11 @@ UINT CEAFDocTemplate::GetResourceID() const
    return m_nIDResource;
 }
 
+IEAFCommandCallback* CEAFDocTemplate::GetCommandCallback()
+{
+   return m_pCommandCallback;
+}
+
 void CEAFDocTemplate::SetPlugin(IEAFAppPlugin* pPlugin)
 {
    m_pPlugin = pPlugin;
@@ -218,7 +235,67 @@ void CEAFDocTemplate::SetPlugin(IEAFAppPlugin* pPlugin)
 void CEAFDocTemplate::GetPlugin(IEAFAppPlugin** ppPlugin)
 {
    (*ppPlugin) = m_pPlugin;
-   (*ppPlugin)->AddRef();
+   if ( *ppPlugin )
+      (*ppPlugin)->AddRef();
+}
+
+CDocTemplate::Confidence CEAFDocTemplate::MatchDocType(LPCTSTR lpszPathName,CDocument*& rpDocMatch)
+{
+   // There seems to be a bug in the base-class version so we are going to do this ourselves.
+
+	ASSERT(lpszPathName != NULL);
+	rpDocMatch = NULL;
+
+	// go through all documents
+	POSITION pos = GetFirstDocPosition();
+	while (pos != NULL)
+	{
+		CDocument* pDoc = GetNextDoc(pos);
+		if (AfxComparePath(pDoc->GetPathName(), lpszPathName))
+		{
+			// already open
+			rpDocMatch = pDoc;
+			return yesAlreadyOpen;
+		}
+	}
+
+	// see if it matches our default suffix
+	CString strFilterExt;
+	if (GetDocString(strFilterExt, CDocTemplate::filterExt) &&
+	  !strFilterExt.IsEmpty())
+	{
+		// see if extension matches
+      // This is where the bug is in the base-class version... there can be more than
+      // one valid extension in the strFilterExt string, separated with ;.
+		ASSERT(strFilterExt[0] == '.');
+		LPCTSTR lpszDot = ::PathFindExtension(lpszPathName);
+		if (lpszDot != NULL)
+        {
+           int iStart = 0;
+           do
+           {
+               CString strExtension = strFilterExt.Tokenize(_T(";"),iStart);
+
+               if ( iStart != -1 )
+               {
+                  if(::AfxComparePath(lpszDot, static_cast<const TCHAR *>(strExtension)))
+                  {
+			          return yesAttemptNative; // extension matches, looks like ours
+                  }
+               }
+           }
+           while (iStart != -1);
+
+        }
+	}
+
+	// otherwise we will guess it may work
+	return yesAttemptForeign;
+}
+
+CEAFAcceleratorTable* CEAFDocTemplate::GetAcceleratorTable()
+{
+   return &m_AccelTable;
 }
 
 int CEAFDocTemplate::GetMaxViewCount() const

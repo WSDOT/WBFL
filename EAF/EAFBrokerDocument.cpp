@@ -27,6 +27,7 @@
 #include "stdafx.h"
 #include <EAF\EAFResources.h>
 #include <EAF\EAFBrokerDocument.h>
+#include <EAF\EAFUtilities.h>
 #include "EAFDocProxyAgent.h"
 #include <AgentTools.h>
 #include <IReportManager.h>
@@ -55,8 +56,7 @@ CEAFBrokerDocument::CEAFBrokerDocument()
    // However, the DocProxyAgent also registers as a listener
    // This generates 2 units changed events whenever the units change
    // Remove this document from the listener list so that only one event is received
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    pApp->RemoveUnitModeListener(this);
 }
 
@@ -255,8 +255,7 @@ BOOL CEAFBrokerDocument::LoadAgents()
       while (SUCCEEDED(pIEnumCLSID->Next(nMaxAgents,clsid,&nAgentsLoaded)) && 0 < nAgentsLoaded )
       {
          // load the extension agents - do it one at a time so that disabled ones can be skipped
-         AFX_MANAGE_STATE(AfxGetAppModuleState());
-         CWinApp* pApp = AfxGetApp();
+         CEAFApp* pApp = EAFGetApp();
          for (ULONG i = 0; i < nAgentsLoaded; i++ )
          {
             USES_CONVERSION;
@@ -269,9 +268,6 @@ BOOL CEAFBrokerDocument::LoadAgents()
             {
                CLSID* pCLSID = &clsid[i];
                LoadAgents(pBrokerInit,pCLSID,1,false); // false = not required
-
-               // it is ok if extension agents fail to load... need to present user with a UI
-               // to disable these agents so they wont be loaded in the future
             }
 
             ::CoTaskMemFree((void*)pszCLSID);
@@ -286,7 +282,12 @@ BOOL CEAFBrokerDocument::LoadAgents(IBrokerInitEx2* pBrokerInit, CLSID* pClsid, 
 {
    // this function does the actual work of loading an agent
    CComPtr<ILongArray> lErrArray;
-   HRESULT hr = pBrokerInit->LoadAgents( pClsid, nClsid, &lErrArray );
+   HRESULT hr;
+   if ( bRequiredAgent )
+      hr = pBrokerInit->LoadAgents( pClsid, nClsid, &lErrArray );
+   else
+      hr = pBrokerInit->LoadExtensionAgents( pClsid, nClsid, &lErrArray );
+
    if ( FAILED(hr) )
    {
       long nErrors;
@@ -321,8 +322,7 @@ BOOL CEAFBrokerDocument::LoadAgents(IBrokerInitEx2* pBrokerInit, CLSID* pClsid, 
             strMsg.Format("Failed to load %s.\n\nWould you like to disable this component?",OLE2A(pszUserType));
             if ( AfxMessageBox(strMsg,MB_YESNO | MB_ICONQUESTION) == IDYES )
             {
-               AFX_MANAGE_STATE(AfxGetAppModuleState());
-               CWinApp* pApp = AfxGetApp();
+               CEAFApp* pApp = EAFGetApp();
                pApp->WriteProfileString(_T("Extensions"),OLE2A(pszCLSID),_T("Disabled"));
             }
          }
@@ -343,8 +343,7 @@ BOOL CEAFBrokerDocument::LoadSpecialAgents(IBrokerInitEx2* pBrokerInit)
    // provides the bridge between the MFC Doc/View architecture
    // and the WBFL Agent/Broker architecture.
 
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
 
    CComObject<CEAFDocProxyAgent>* pDocProxyAgent;
    CComObject<CEAFDocProxyAgent>::CreateInstance(&pDocProxyAgent);
@@ -376,6 +375,44 @@ void CEAFBrokerDocument::DoIntegrateWithUI(BOOL bIntegrate)
    pBrokerInit->IntegrateWithUI(bIntegrate);
 }
 
+BOOL CEAFBrokerDocument::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
+{
+   if ( CEAFDocument::ProcessCommandLineOptions(cmdInfo) )
+      return TRUE; // handled
+
+   CComQIPtr<IManageAgents> manageAgents(m_pBroker);
+   CollectionIndexType nAgents;
+   manageAgents->get_AgentCount(&nAgents);
+   for ( CollectionIndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
+   {
+      CComPtr<IAgent> agent;
+      manageAgents->get_Agent(agentIdx,&agent);
+
+      CComQIPtr<IEAFProcessCommandLine,&IID_IEAFProcessCommandLine> processCommandLine(agent);
+      if ( processCommandLine )
+      {
+         if ( processCommandLine->ProcessCommandLineOptions(cmdInfo) )
+            return TRUE; // handled
+      }
+   }
+
+   manageAgents->get_ExtensionAgentCount(&nAgents);
+   for ( CollectionIndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
+   {
+      CComPtr<IAgent> agent;
+      manageAgents->get_ExtensionAgent(agentIdx,&agent);
+
+      CComQIPtr<IEAFProcessCommandLine,&IID_IEAFProcessCommandLine> processCommandLine(agent);
+      if ( processCommandLine )
+      {
+         if ( processCommandLine->ProcessCommandLineOptions(cmdInfo) )
+            return TRUE; // handled
+      }
+   }
+
+   return FALSE; // not handled
+}
+
 void CEAFBrokerDocument::OnLoadAgentsError()
 {
    // over ride this method to provide an error message or log 
@@ -397,7 +434,7 @@ HRESULT CEAFBrokerDocument::WriteTheDocument(IStructuredSave* pStrSave)
 CString CEAFBrokerDocument::GetLogFileName()
 {
    CString strFileName;
-   strFileName.Format("%s.log",AfxGetApp()->m_pszExeName);
+   strFileName.Format("%s.log",EAFGetApp()->m_pszExeName);
    return strFileName;
 }
 
@@ -463,28 +500,6 @@ void CEAFBrokerDocument::PopulateReportMenu(CEAFMenu* pReportMenu)
    BuildReportMenu(pReportMenu,false);
 
    m_bIsReportMenuPopulated = true;
-}
-
-void CEAFBrokerDocument::BuildReportMenu(CMenu* pMenu,bool bQuickReport)
-{
-   GET_IFACE(IReportManager,pReportMgr);
-   std::vector<std::string> rptNames = pReportMgr->GetReportNames();
-
-   UINT i = 0;
-   std::vector<std::string>::iterator iter;
-   for ( iter = rptNames.begin(); iter != rptNames.end(); iter++ )
-   {
-      std::string rptName = *iter;
-      UINT_PTR nCmd = GetReportCommand(i,bQuickReport);
-      pMenu->AppendMenu(MF_STRING,nCmd,rptName.c_str());
-
-      const CBitmap* pBmp = pReportMgr->GetMenuBitmap(rptName);
-      pMenu->SetMenuItemBitmaps(nCmd,MF_BYCOMMAND,pBmp,NULL);
-
-      i++;
-
-      ASSERT(i <= EAF_REPORT_MENU_COUNT);
-   }
 }
 
 void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,bool bQuickReport)

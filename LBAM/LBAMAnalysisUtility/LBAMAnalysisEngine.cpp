@@ -245,7 +245,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType fo
       }
       else
       {
-         hrr = m_pEnvResponse.CoCreateInstance( CLSID_BruteForceVehicularResponse );
+         hrr = m_pEnvResponse.CoCreateInstance( CLSID_BruteForceVehicularResponse2 );
          if (FAILED(hrr))
          {
             CComBSTR msg = CreateErrorMsg1S(IDS_E_INVALID_CONTEXT, CComBSTR("Unable to create Brute Force Vehicular Response component"));

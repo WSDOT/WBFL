@@ -83,6 +83,19 @@ void CBrokerImp2::ClearAgents()
 #if defined _DEBUG
    WATCHX(IFC,0,"Clearing Agents");
    Agents::iterator i;
+   for ( i = m_ExtensionAgents.begin(); i != m_ExtensionAgents.end(); i++ )
+   {
+      CComPtr<IAgentEx> pAgent = (*i).second;
+
+      USES_CONVERSION;
+      OLECHAR szGUID[39];
+      CLSID clsid;
+      pAgent->GetClassID(&clsid);
+      ::StringFromGUID2(clsid,szGUID,39);
+
+      ListConnectionPointLeaks(pAgent);
+   }
+
    for ( i = m_Agents.begin(); i != m_Agents.end(); i++ )
    {
       CComPtr<IAgentEx> pAgent = (*i).second;
@@ -97,6 +110,7 @@ void CBrokerImp2::ClearAgents()
    }
 #endif
 
+   m_ExtensionAgents.clear();
    m_Agents.clear();
 }
 
@@ -189,11 +203,18 @@ STDMETHODIMP CBrokerImp2::Reset()
       return S_OK; // do nothing if the agents weren't initialized
 
    Agents::iterator i;
+   for ( i = m_ExtensionAgents.begin(); i != m_ExtensionAgents.end(); i++ )
+   {
+      IAgentEx* pAgent = (*i).second;
+      pAgent->Reset();
+   }
+
    for ( i = m_Agents.begin(); i != m_Agents.end(); i++ )
    {
       IAgentEx* pAgent = (*i).second;
       pAgent->Reset();
    }
+
 
    m_bAgentsInitialized = false;
 
@@ -219,6 +240,12 @@ STDMETHODIMP CBrokerImp2::ShutDown()
    m_bAgentsInitialized = true;
 
    Agents::iterator i;
+   for ( i = m_ExtensionAgents.begin(); i != m_ExtensionAgents.end(); i++ )
+   {
+      IAgent* pAgent = (*i).second;
+      pAgent->ShutDown();
+   }
+
    for ( i = m_Agents.begin(); i != m_Agents.end(); i++ )
    {
       IAgent* pAgent = (*i).second;
@@ -289,7 +316,17 @@ STDMETHODIMP CBrokerImp2::ShutDown()
 
 //////////////////////////////////////////////////////
 // IBrokerInitEx2/3
+STDMETHODIMP CBrokerImp2::LoadExtensionAgents( CLSID * clsid, long nClsid,ILongArray** plErrIndex )
+{
+   return LoadAgents(clsid,nClsid,plErrIndex,m_ExtensionAgents);
+}
+
 STDMETHODIMP CBrokerImp2::LoadAgents( CLSID * clsid, long nClsid,ILongArray** plErrIndex )
+{
+   return LoadAgents(clsid,nClsid,plErrIndex,m_Agents);
+}
+
+HRESULT CBrokerImp2::LoadAgents( CLSID * clsid, long nClsid,ILongArray** plErrIndex, Agents& agents )
 {
    CHECK_RETOBJ(plErrIndex);
 
@@ -308,7 +345,7 @@ STDMETHODIMP CBrokerImp2::LoadAgents( CLSID * clsid, long nClsid,ILongArray** pl
       hr = ::CoCreateInstance( clsid[i], NULL, CLSCTX_INPROC_SERVER, IID_IAgentEx, (void**)&pAgent );
       if ( SUCCEEDED( hr ) )
       {
-         m_Agents.insert( std::make_pair(clsid[i],pAgent) );
+         agents.insert( std::make_pair(clsid[i],pAgent) );
          if ( FAILED(pAgent->SetBroker(this)) || FAILED(pAgent->RegInterfaces()) )
          {
             if ( *plErrIndex )
@@ -329,7 +366,7 @@ STDMETHODIMP CBrokerImp2::LoadAgents( CLSID * clsid, long nClsid,ILongArray** pl
    {
       long count = 0;
       Agents::iterator iter;
-      for ( iter = m_Agents.begin(); iter != m_Agents.end(); iter++ )
+      for ( iter = agents.begin(); iter != agents.end(); iter++ )
       {
          CComPtr<IAgentEx> pAgent = (*iter).second;
          if ( FAILED(pAgent->Init()) )
@@ -351,7 +388,17 @@ STDMETHODIMP CBrokerImp2::LoadAgents( CLSID * clsid, long nClsid,ILongArray** pl
 	return S_OK;
 }
 
+STDMETHODIMP CBrokerImp2::AddExtensionAgent(IAgentEx* pAgent)
+{
+   return AddAgent(pAgent,m_ExtensionAgents);
+}
+
 STDMETHODIMP CBrokerImp2::AddAgent(IAgentEx* pAgent)
+{
+   return AddAgent(pAgent,m_Agents);
+}
+
+HRESULT CBrokerImp2::AddAgent(IAgentEx* pAgent,Agents& agents)
 {
    HRESULT hr = S_OK;
 
@@ -374,19 +421,29 @@ STDMETHODIMP CBrokerImp2::AddAgent(IAgentEx* pAgent)
    CLSID clsid;
    pAgent->GetClassID(&clsid);
 
-   m_Agents.insert( std::make_pair(clsid,pAgent) );
+   agents.insert( std::make_pair(clsid,pAgent) );
 
    return S_OK;
 }
 
 STDMETHODIMP CBrokerImp2::FindConnectionPoint( REFIID riid, IConnectionPoint** ppCP)
 {
+   HRESULT hr = FindConnectionPoint( riid, m_Agents.begin(), m_Agents.end(), ppCP );
+   if ( SUCCEEDED(hr) )
+      return hr;
+
+   hr = FindConnectionPoint( riid, m_ExtensionAgents.begin(), m_ExtensionAgents.end(), ppCP );
+
+   return hr;
+}
+
+HRESULT CBrokerImp2::FindConnectionPoint( REFIID riid, Agents::iterator begin,Agents::iterator end,IConnectionPoint** ppCP)
+{
    IConnectionPointContainer* pCPC;
    HRESULT hr = E_NOINTERFACE;
-   Agents::iterator i;
-   for ( i = m_Agents.begin(); i != m_Agents.end(); i++ )
+   while ( begin != end )
    {
-      IAgentEx* pAgent = (*i).second;
+      IAgentEx* pAgent = (*begin).second;
 
       hr = pAgent->QueryInterface( IID_IConnectionPointContainer, (void**)&pCPC );
       if ( SUCCEEDED( hr ) )
@@ -400,10 +457,13 @@ STDMETHODIMP CBrokerImp2::FindConnectionPoint( REFIID riid, IConnectionPoint** p
          if ( SUCCEEDED(hr) )
             return hr;
       }
+
+      begin++;
    }
 
-	return hr;
+   return hr;
 }
+
 
 STDMETHODIMP CBrokerImp2::RegInterface( REFIID riid, IAgentEx* pAgent)
 {
@@ -427,6 +487,17 @@ STDMETHODIMP CBrokerImp2::DelayInit()
 
 STDMETHODIMP CBrokerImp2::InitAgents()
 {
+   HRESULT hr = InitAgents(m_Agents.begin(),m_Agents.end());
+   if ( FAILED(hr) )
+      return hr;
+
+   m_bAgentsInitialized = false;
+
+   return InitAgents(m_ExtensionAgents.begin(),m_ExtensionAgents.end());
+}
+
+HRESULT CBrokerImp2::InitAgents(Agents::iterator begin,Agents::iterator end)
+{
    ATLASSERT(m_bAgentsInitialized == false); // should not be initializing agents more than once
    if ( m_bAgentsInitialized )
       return S_OK;
@@ -435,10 +506,9 @@ STDMETHODIMP CBrokerImp2::InitAgents()
 
    m_bAgentsInitialized = true;
 
-   Agents::iterator i;
-   for ( i = m_Agents.begin(); i != m_Agents.end(); i++ )
+   while ( begin != end )
    {
-      IAgentEx* pAgent = (*i).second;
+      IAgentEx* pAgent = (*begin).second;
       HRESULT hr = pAgent->Init();
       if ( FAILED(hr) )
          return BROKER_E_INITAGENT;
@@ -450,6 +520,8 @@ STDMETHODIMP CBrokerImp2::InitAgents()
          if ( SUCCEEDED(hr) && pAgentEx )
             secondPassAgents.push_back(pAgentEx);
       }
+
+      begin++;
    }
 
    std::vector<IAgentEx*>::iterator j;
@@ -462,22 +534,39 @@ STDMETHODIMP CBrokerImp2::InitAgents()
          return BROKER_E_INITAGENT;
    }
 
-   WATCHX(IFC,0,"# Agents = " << m_Agents.size() << " # Interfaces = " << m_Interfaces.size());
-
    return S_OK;
 }
 
 STDMETHODIMP CBrokerImp2::IntegrateWithUI(BOOL bIntegrate)
 {
-   Agents::iterator i;
-   for ( i = m_Agents.begin(); i != m_Agents.end(); i++ )
+   if ( bIntegrate )
    {
-      IAgentEx* pAgent = (*i).second;
+      // when integrating, do the main agents first, then the extensions
+      IntegrateWithUI(true,m_Agents.begin(),m_Agents.end());
+      IntegrateWithUI(true,m_ExtensionAgents.begin(),m_ExtensionAgents.end());
+   }
+   else
+   {
+      // when removing, let the extensions go first
+      IntegrateWithUI(false,m_ExtensionAgents.begin(),m_ExtensionAgents.end());
+      IntegrateWithUI(false,m_Agents.begin(),m_Agents.end());
+   }
+
+   return S_OK;
+}
+
+HRESULT CBrokerImp2::IntegrateWithUI(BOOL bIntegrate,Agents::iterator begin,Agents::iterator end)
+{
+   while ( begin != end )
+   {
+      IAgentEx* pAgent = (*begin).second;
       CComQIPtr<IAgentUIIntegration> pUI(pAgent);
       if ( pUI )
       {
          pUI->IntegrateWithUI(bIntegrate);
       }
+
+      begin++;
    }
 
    return S_OK;
@@ -485,6 +574,7 @@ STDMETHODIMP CBrokerImp2::IntegrateWithUI(BOOL bIntegrate)
 
 ////////////////////////////////////////////////////////
 // IBrokerPersist
+
 STDMETHODIMP CBrokerImp2::Load(IStructuredLoad* pStrLoad)
 {
    USES_CONVERSION;
@@ -513,11 +603,9 @@ STDMETHODIMP CBrokerImp2::Load(IStructuredLoad* pStrLoad)
          return hr;
 
       // get the agent
-      Agents::iterator found = m_Agents.find(clsid);
-      if ( found != m_Agents.end() )
+      IAgentEx* pAgent;
+      if ( SUCCEEDED( FindAgent(clsid,&pAgent) ) )
       {
-         IAgentEx* pAgent = (*found).second;
-
          IAgentPersist* pPersist;
          hr = pAgent->QueryInterface(IID_IAgentPersist,(void**)&pPersist);
          if ( SUCCEEDED(hr) )
@@ -557,34 +645,13 @@ STDMETHODIMP CBrokerImp2::Save(IStructuredSave* pStrSave)
 {
    pStrSave->BeginUnit("Broker",1.0);
 
-   Agents::iterator iter;
-   for ( iter = m_Agents.begin(); iter != m_Agents.end(); iter++ )
-   {
-      HRESULT hr = S_OK;
-      IAgentEx* pAgent = (*iter).second;
-      IAgentPersist* pPersist;
-      hr = pAgent->QueryInterface( IID_IAgentPersist, (void**)&pPersist );
-      if ( SUCCEEDED(hr) )
-      {
-         // create a unit around each agent's data
-         pStrSave->BeginUnit("Agent",1.0);
+   HRESULT hr = SaveAgentData(pStrSave,m_Agents.begin(),m_Agents.end());
+   if ( FAILED(hr) )
+      return hr;
 
-         LPOLESTR postr = 0;
-         hr = StringFromCLSID((*iter).first, &postr);
-
-         // capture the class id of the agent
-         pStrSave->put_Property("CLSID",CComVariant(postr));
-
-         CoTaskMemFree(postr);
-
-         hr = pPersist->Save( pStrSave ); // agent to save its own data
-         pPersist->Release();
-         if ( FAILED(hr) )
-            return hr;
-
-         pStrSave->EndUnit(); // end of "Agent" unit
-      }
-   }
+   hr = SaveAgentData(pStrSave,m_ExtensionAgents.begin(),m_ExtensionAgents.end());
+   if ( FAILED(hr) )
+      return hr;
 
    if ( m_bSaveMissingAgentData == VARIANT_TRUE )
    {
@@ -600,6 +667,41 @@ STDMETHODIMP CBrokerImp2::Save(IStructuredSave* pStrSave)
    return S_OK;
 }
 
+HRESULT CBrokerImp2::SaveAgentData(IStructuredSave* pStrSave,Agents::iterator begin,Agents::iterator end)
+{
+   while ( begin != end )
+   {
+      HRESULT hr = S_OK;
+      IAgentEx* pAgent = (*begin).second;
+      IAgentPersist* pPersist;
+      hr = pAgent->QueryInterface( IID_IAgentPersist, (void**)&pPersist );
+      if ( SUCCEEDED(hr) )
+      {
+         // create a unit around each agent's data
+         pStrSave->BeginUnit("Agent",1.0);
+
+         LPOLESTR postr = 0;
+         hr = StringFromCLSID((*begin).first, &postr);
+
+         // capture the class id of the agent
+         pStrSave->put_Property("CLSID",CComVariant(postr));
+
+         CoTaskMemFree(postr);
+
+         hr = pPersist->Save( pStrSave ); // agent to save its own data
+         pPersist->Release();
+         if ( FAILED(hr) )
+            return hr;
+
+         pStrSave->EndUnit(); // end of "Agent" unit
+      }
+
+      begin++;
+   }
+
+   return S_OK;
+}
+
 STDMETHODIMP CBrokerImp2::SetSaveMissingAgentDataFlag(VARIANT_BOOL bSetFlag)
 {
    m_bSaveMissingAgentData = bSetFlag;
@@ -610,6 +712,50 @@ STDMETHODIMP CBrokerImp2::GetSaveMissingAgentDataFlag(VARIANT_BOOL* bFlag)
 {
    CHECK_RETVAL(bFlag);
    *bFlag = m_bSaveMissingAgentData;
+   return S_OK;
+}
+
+STDMETHODIMP CBrokerImp2::get_AgentCount(CollectionIndexType* nAgents)
+{
+   CHECK_RETVAL(nAgents);
+   *nAgents = m_Agents.size();
+   return S_OK;
+}
+
+STDMETHODIMP CBrokerImp2::get_Agent(CollectionIndexType idx,IAgent** ppAgent)
+{
+   CHECK_RETOBJ(ppAgent);
+
+   Agents::iterator iter;
+   CollectionIndexType i = 0;
+   for ( iter = m_Agents.begin(); iter != m_Agents.end() && i != idx; iter++, i++ )
+   {   }
+
+   (*ppAgent) = iter->second;
+   (*ppAgent)->AddRef();
+
+   return S_OK;
+}
+
+STDMETHODIMP CBrokerImp2::get_ExtensionAgentCount(CollectionIndexType* nAgents)
+{
+   CHECK_RETVAL(nAgents);
+   *nAgents = m_ExtensionAgents.size();
+   return S_OK;
+}
+
+STDMETHODIMP CBrokerImp2::get_ExtensionAgent(CollectionIndexType idx,IAgent** ppAgent)
+{
+   CHECK_RETOBJ(ppAgent);
+
+   Agents::iterator iter;
+   CollectionIndexType i = 0;
+   for ( iter = m_ExtensionAgents.begin(); iter != m_ExtensionAgents.end() && i != idx; iter++, i++ )
+   {   }
+
+   (*ppAgent) = iter->second;
+   (*ppAgent)->AddRef();
+
    return S_OK;
 }
 
@@ -640,4 +786,23 @@ HRESULT CBrokerImp2::LoadOldFormat(IStructuredLoad* pStrLoad)
    }
 
    return S_OK;
+}
+
+HRESULT CBrokerImp2::FindAgent(const CLSID& clsid,IAgentEx** ppAgent)
+{
+   Agents::iterator found = m_Agents.find(clsid);
+   if ( found != m_Agents.end() )
+   {
+      (*ppAgent) = (*found).second;
+      return S_OK;
+   }
+
+   found = m_ExtensionAgents.find(clsid);
+   if ( found != m_ExtensionAgents.end() )
+   {
+      (*ppAgent) = (*found).second;
+      return S_OK;
+   }
+
+   return E_FAIL;
 }

@@ -28,6 +28,7 @@
 #include "stdafx.h"
 #include "StatusCenterDlg.h"
 #include <EAF\EAFStatusItem.h>
+#include <EAF\EAFUtilities.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -46,8 +47,7 @@ CStatusCenterDlg::CStatusCenterDlg(CEAFStatusCenter& statusCenter)
 	//{{AFX_DATA_INIT(CStatusCenterDlg)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   Create(CStatusCenterDlg::IDD,AfxGetMainWnd());
+   Create(CStatusCenterDlg::IDD,EAFGetMainFrame());
 
    m_StatusCenter.SinkEvents(this);
 }

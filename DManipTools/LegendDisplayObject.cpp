@@ -124,16 +124,12 @@ void::CLegendDisplayObject::FinalRelease()
 
 STDMETHODIMP_(CString) CLegendDisplayObject::GetToolTipText()
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    return CString(m_Title);
 }
 
 
 STDMETHODIMP_(void) CLegendDisplayObject::put_Position(IPoint2d* pos,BOOL bRedraw,BOOL bFireEvent)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    if ( bRedraw )
    {
       // Erase the old graphic
@@ -183,29 +179,21 @@ STDMETHODIMP_(void) CLegendDisplayObject::put_Position(IPoint2d* pos,BOOL bRedra
 
 STDMETHODIMP_(void) CLegendDisplayObject::get_Position(IPoint2d* *pos)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    m_Position.CopyTo(pos);
 }
 
 STDMETHODIMP_(void) CLegendDisplayObject::get_Title(BSTR *pVal)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    m_Title.CopyTo(pVal);
 }
 
 STDMETHODIMP_(void) CLegendDisplayObject::put_Title(BSTR newVal)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    m_Title = newVal;
 }
 
 STDMETHODIMP_(void) CLegendDisplayObject::put_Font(const LOGFONT& Font)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    if (Font.lfHeight>20) // 20 is arbitrary, but who wants a 2 point font?
    {
       m_Font = Font;
@@ -217,29 +205,21 @@ STDMETHODIMP_(void) CLegendDisplayObject::put_Font(const LOGFONT& Font)
 
 STDMETHODIMP_(void) CLegendDisplayObject::get_Font(LOGFONT* pFont)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    *pFont = m_Font;
 }
 
 STDMETHODIMP_(void) CLegendDisplayObject::get_NumEntries(long* count)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    *count = m_Container.size();
 }
 
 STDMETHODIMP_(void) CLegendDisplayObject::AddEntry(iLegendEntry* entry)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    m_Container.push_back(ContainerItem( entry ));
 }
 
 STDMETHODIMP_(HRESULT) CLegendDisplayObject::InsertEntry(long index, iLegendEntry* entry)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    if (index<0 || index>(long)m_Container.size()+1)
       return E_INVALIDARG;
 
@@ -258,8 +238,6 @@ STDMETHODIMP_(HRESULT) CLegendDisplayObject::InsertEntry(long index, iLegendEntr
 
 STDMETHODIMP_(HRESULT) CLegendDisplayObject::get_Entry(long index, iLegendEntry* *entry)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    (*entry) = 0;
    if ( index < 0 || (long)m_Container.size() <= index )
       return E_FAIL;
@@ -270,8 +248,6 @@ STDMETHODIMP_(HRESULT) CLegendDisplayObject::get_Entry(long index, iLegendEntry*
 
 STDMETHODIMP_(HRESULT) CLegendDisplayObject::RemoveEntry(long index)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    if (index<0 || index>(long)m_Container.size()-1)
       return E_INVALIDARG;
 
@@ -284,22 +260,16 @@ STDMETHODIMP_(HRESULT) CLegendDisplayObject::RemoveEntry(long index)
 
 STDMETHODIMP_(void) CLegendDisplayObject::ClearEntries()
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    m_Container.clear();
 }
 
 STDMETHODIMP_(void) CLegendDisplayObject::get_NumRows(long* count)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    *count = m_NumRows;
 }
 
 STDMETHODIMP_(void) CLegendDisplayObject::put_NumRows(long count)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    if (count>0 && m_NumRows!=count)
    {
       CComPtr<iDisplayList> pDL;
@@ -325,22 +295,16 @@ STDMETHODIMP_(void) CLegendDisplayObject::put_NumRows(long count)
 
 STDMETHODIMP_(void) CLegendDisplayObject::get_CellSize(CSize* size)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    *size = m_CellSize;
 }
 
 STDMETHODIMP_(void) CLegendDisplayObject::put_CellSize(CSize size)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    m_CellSize = size;
 }
 
 STDMETHODIMP_(void) CLegendDisplayObject::GetMinCellSize(CSize* size)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    // font size in twips
    long font_twips = m_Font.lfHeight * 2; // height is in 10th points
    ATLASSERT(font_twips>0.0);
@@ -397,58 +361,42 @@ STDMETHODIMP_(void) CLegendDisplayObject::GetMinCellSize(CSize* size)
 
 STDMETHODIMP_(void) CLegendDisplayObject::get_DoDrawBorder(BOOL* doDraw)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    *doDraw = m_DoDrawBorder;
 }
 
 STDMETHODIMP_(void) CLegendDisplayObject::put_DoDrawBorder(BOOL doDraw)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    m_DoDrawBorder = doDraw==FALSE ? FALSE:TRUE;
 }
 
 STDMETHODIMP_(void) CLegendDisplayObject::get_IsDraggable(BOOL* doDraw)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    *doDraw = m_IsDraggable;
 }
 
 STDMETHODIMP_(void) CLegendDisplayObject::put_IsDraggable(BOOL doDraw)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    m_IsDraggable = doDraw==FALSE ? FALSE:TRUE;
 }
 
 
 STDMETHODIMP_(void) CLegendDisplayObject::put_DoFill(BOOL doDraw)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    m_DoFill = doDraw==FALSE ? FALSE:TRUE;
 }
 
 STDMETHODIMP_(void) CLegendDisplayObject::get_DoFill(BOOL* doDraw)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    *doDraw = m_DoFill;
 }
 
 STDMETHODIMP_(void) CLegendDisplayObject::put_FillColor(COLORREF doDraw)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    m_FillColor = doDraw==FALSE ? FALSE:TRUE;
 }
 
 STDMETHODIMP_(COLORREF) CLegendDisplayObject::get_FillColor()
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    return m_FillColor;
 }
 
@@ -456,8 +404,6 @@ STDMETHODIMP_(COLORREF) CLegendDisplayObject::get_FillColor()
 // iDrawPointStrategy
 STDMETHODIMP_(void) CLegendDisplayObject::Draw(CDC* pDC)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    Highlite(pDC, IsSelected());
 }
 
@@ -473,8 +419,6 @@ STDMETHODIMP_(void) CLegendDisplayObject::DrawDragImage(CDC* pDC, iCoordinateMap
 
 STDMETHODIMP_(void) CLegendDisplayObject::Highlite(CDC* pDC,BOOL bHighlite)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    CComPtr<iDisplayList> pDL;
    this->GetDisplayList(&pDL);
    CComPtr<iDisplayMgr> pDispMgr;
@@ -498,8 +442,6 @@ STDMETHODIMP_(void) CLegendDisplayObject::Highlite(CDC* pDC,BOOL bHighlite)
 
 void CLegendDisplayObject::Draw(CDC* pDC, iCoordinateMap* pMap, const CPoint& location, BOOL bHighlite, BOOL beingDragged)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    CComPtr<iDisplayList> pDL;
    this->GetDisplayList(&pDL);
    CComPtr<iDisplayMgr> pDispMgr;
@@ -666,15 +608,11 @@ void CLegendDisplayObject::Draw(CDC* pDC, iCoordinateMap* pMap, const CPoint& lo
 
 STDMETHODIMP_(void) CLegendDisplayObject::GetBoundingBox(IRect2d** rect)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    GetBoundingBoxEx(rect,true);
 }
 
 void CLegendDisplayObject::GetBoundingBoxEx(IRect2d** rect, bool includeTitle)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    CComPtr<iDisplayList> pDL;
    this->GetDisplayList(&pDL);
    CComPtr<iDisplayMgr> pDispMgr;
@@ -726,30 +664,22 @@ void CLegendDisplayObject::GetBoundingBoxEx(IRect2d** rect, bool includeTitle)
 // idraggable
 STDMETHODIMP_(void) CLegendDisplayObject::SetDragData(iDragData* dd)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    m_pDragData = dd;
 }
 
 STDMETHODIMP_(void) CLegendDisplayObject::GetDragData(iDragData** dd)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    *dd = m_pDragData;
    (*dd)->AddRef();
 }
 
 STDMETHODIMP_(UINT) CLegendDisplayObject::Format()
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    return ms_cfFormat;
 }
 
 STDMETHODIMP_(void) CLegendDisplayObject::PrepareDrag(iDragDataSink* pSink)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    pSink->CreateFormat(ms_cfFormat);
 
    // position
@@ -796,8 +726,6 @@ STDMETHODIMP_(void) CLegendDisplayObject::PrepareDrag(iDragDataSink* pSink)
 
 STDMETHODIMP_(void) CLegendDisplayObject::OnDrop(iDragDataSource* pSource)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    // Tell the source we are about to read from our format
    pSource->PrepareFormat(ms_cfFormat);
 
@@ -852,8 +780,6 @@ STDMETHODIMP_(void) CLegendDisplayObject::OnDrop(iDragDataSource* pSource)
 
 STDMETHODIMP_(void) CLegendDisplayObject::OnDragMoved(ISize2d* offset)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    CComPtr<iDisplayList> pDL;
    this->GetDisplayList(&pDL);
    CComPtr<iDisplayMgr> pDispMgr;
@@ -874,8 +800,6 @@ STDMETHODIMP_(void) CLegendDisplayObject::OnDragMoved(ISize2d* offset)
 
 STDMETHODIMP_(void) CLegendDisplayObject::OnMoved()
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    // This display object got moved onto another drop target
    Fire_OnMoved();
 }
@@ -890,8 +814,6 @@ STDMETHODIMP_(void) CLegendDisplayObject::OnCopied()
 
 bool CLegendDisplayObject::OnLButtonDblClk(UINT nFlags,CPoint point)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    if ( m_EventSink )
    {
       return m_EventSink->OnLButtonDblClk(this,nFlags,point);
@@ -904,8 +826,6 @@ bool CLegendDisplayObject::OnLButtonDblClk(UINT nFlags,CPoint point)
 
 bool CLegendDisplayObject::OnLButtonDown(UINT nFlags,CPoint point)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    // let event sink handle 
    if ( m_EventSink )
    {
@@ -958,8 +878,6 @@ bool CLegendDisplayObject::OnLButtonDown(UINT nFlags,CPoint point)
 
 bool CLegendDisplayObject::OnLButtonUp(UINT nFlags,CPoint point)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    if ( m_EventSink )
    {
       return m_EventSink->OnLButtonUp(this,nFlags,point);
@@ -972,8 +890,6 @@ bool CLegendDisplayObject::OnLButtonUp(UINT nFlags,CPoint point)
 
 bool CLegendDisplayObject::OnRButtonDown(UINT nFlags,CPoint point)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    if ( m_EventSink )
    {
       return m_EventSink->OnRButtonDown(this,nFlags,point);
@@ -1021,8 +937,6 @@ bool CLegendDisplayObject::OnRButtonDown(UINT nFlags,CPoint point)
 
 bool CLegendDisplayObject::OnRButtonUp(UINT nFlags,CPoint point)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    if ( m_EventSink )
    {
       return m_EventSink->OnRButtonUp(this,nFlags,point);
@@ -1035,8 +949,6 @@ bool CLegendDisplayObject::OnRButtonUp(UINT nFlags,CPoint point)
 
 bool CLegendDisplayObject::OnRButtonDblClk(UINT nFlags,CPoint point)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    if ( m_EventSink )
    {
       return m_EventSink->OnRButtonDblClk(this,nFlags,point);
@@ -1049,8 +961,6 @@ bool CLegendDisplayObject::OnRButtonDblClk(UINT nFlags,CPoint point)
 
 bool CLegendDisplayObject::OnMouseMove(UINT nFlags,CPoint point)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    if ( m_EventSink )
    {
       return m_EventSink->OnMouseMove(this,nFlags,point);
@@ -1063,8 +973,6 @@ bool CLegendDisplayObject::OnMouseMove(UINT nFlags,CPoint point)
 
 bool CLegendDisplayObject::OnMouseWheel(UINT nFlags,short zDelta,CPoint point)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    if ( m_EventSink )
    {
       return m_EventSink->OnMouseWheel(this,nFlags,zDelta,point);
@@ -1077,8 +985,6 @@ bool CLegendDisplayObject::OnMouseWheel(UINT nFlags,short zDelta,CPoint point)
 
 bool CLegendDisplayObject::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    if ( m_EventSink )
    {
       return m_EventSink->OnKeyDown(this,nChar,nRepCnt,nFlags);
@@ -1143,8 +1049,6 @@ bool CLegendDisplayObject::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 bool CLegendDisplayObject::OnContextMenu(CWnd* pWnd,CPoint point)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState())
-
    if ( m_EventSink )
    {
       return m_EventSink->OnContextMenu(this,pWnd,point);

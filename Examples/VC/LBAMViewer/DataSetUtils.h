@@ -75,7 +75,7 @@ inline void FillDataSet(IDblArray* locList, iDataSet2d* dataSet, ISectionResult3
          right *= -1.0;
       }
 
-      if (!IsEqual(left, right))
+      //if (!IsEqual(left, right))
       {
          CComPtr<IPoint2d> pnt2;
          hr = pnt2.CoCreateInstance(CLSID_Point2d);

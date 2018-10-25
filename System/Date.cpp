@@ -286,9 +286,9 @@ DayTy sysDate::FirstDayOfMonth( MonthTy month ) const
     return firstDay;
 }
 
-Uint16 sysDate::Hash() const
+Uint32 sysDate::Hash() const
 {
-    return (Uint16)Julnum;
+    return (Uint32)Julnum;
 }
 
 //

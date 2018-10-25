@@ -27,8 +27,10 @@
 #include "stdafx.h"
 #include <EAF\EAFDocManager.h>
 #include <EAF\EAFDocTemplate.h>
-#include "NewProjectDlg.h"
+#include <EAF\EAFApp.h>
+#include <EAF\EAFUtilities.h>
 
+#include "NewProjectDlg.h"
 
 AFX_STATIC void AFXAPI _AfxAppendFilterSuffix(CString& filter, OPENFILENAME& ofn,
 	CDocTemplate* pTemplate, CString* pstrDefaultExt)
@@ -95,10 +97,14 @@ IMPLEMENT_DYNAMIC(CEAFDocManager, CDocManager)
 
 CEAFDocManager::CEAFDocManager()
 {
+   CEAFApp* pApp = EAFGetApp();
+   m_strCurrentFilter = pApp->GetProfileString(_T("Settings"),_T("Filter"),_T(""));
 }
 
 CEAFDocManager::~CEAFDocManager()
 {
+   CEAFApp* pApp = EAFGetApp();
+   pApp->WriteProfileString(_T("Settings"),_T("Filter"),m_strCurrentFilter);
 }
 
 void CEAFDocManager::OnFileNew()
@@ -113,8 +119,8 @@ void CEAFDocManager::OnFileNew()
 		return;
 	}
 
-	CDocTemplate* pTemplate = (CDocTemplate*)m_templateList.GetHead();
-	if ( 1 < m_templateList.GetCount() )
+	CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)m_templateList.GetHead();
+	if ( 1 < m_templateList.GetCount() || 0 < pTemplate->GetTemplateGroup()->GetGroupCount() )
 	{
 		// more than one document template to choose from
 		// bring up dialog prompting user
@@ -129,6 +135,11 @@ void CEAFDocManager::OnFileNew()
 
       CEAFDocTemplate* pEAFTemplate = (CEAFDocTemplate*)pTemplate;
       pEAFTemplate->SetTemplateItem(dlg.m_pTemplateItem);
+   }
+   else
+   {
+      CEAFDocTemplate* pEAFTemplate = (CEAFDocTemplate*)pTemplate;
+      pEAFTemplate->SetTemplateItem(pEAFTemplate->GetTemplateGroup()->GetItem(0));
    }
 
    pTemplate->OpenDocumentFile(NULL);
@@ -166,24 +177,50 @@ BOOL CEAFDocManager::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD l
 			pTemplate = (CDocTemplate*)m_templateList.GetNext(pos);
 			_AfxAppendFilterSuffix(strFilter, dlgFile.m_ofn, pTemplate,
 				bFirst ? &strDefault : NULL);
-			bFirst = FALSE;
+
+         bFirst = FALSE;
 		}
 	}
 
-	//// append the "*.*" all files filter
-	//CString allFilter;
-	//VERIFY(allFilter.LoadString(AFX_IDS_ALLFILTER));
-	//strFilter += allFilter;
-	//strFilter += (TCHAR)'\0';   // next string please
-	//strFilter += _T("*.*");
-	//strFilter += (TCHAR)'\0';   // last string
-	//dlgFile.m_ofn.nMaxCustFilter++;
 
 	dlgFile.m_ofn.lpstrFilter = strFilter;
 	dlgFile.m_ofn.lpstrTitle = title;
 	dlgFile.m_ofn.lpstrFile = fileName.GetBuffer(_MAX_PATH);
 
+   TCHAR strCustomFilter[40] = { "\0\0" };
+   dlgFile.m_ofn.lpstrCustomFilter = strCustomFilter;
+   dlgFile.m_ofn.nMaxCustFilter = 40;
+
+   if ( !m_strCurrentFilter.IsEmpty() )
+   {
+      int count = 0;
+      int length = strFilter.GetLength();
+      for ( int i = 0; i < length; i++ )
+      {
+         if ( strFilter.GetAt(i) == 0 )
+         {
+            count++;
+            if ( m_strCurrentFilter.Compare(strFilter.Mid(i+1)) == 0 )
+            {
+               dlgFile.m_ofn.nFilterIndex = (count+1)/2;
+               break;
+            }
+         }
+      }
+   }
+
 	INT_PTR nResult = dlgFile.DoModal();
+
+   TCHAR* pstrCustomFilter = strCustomFilter;
+   pstrCustomFilter++;
+   m_strCurrentFilter.Format("%s",pstrCustomFilter);
+
 	fileName.ReleaseBuffer();
+
 	return nResult == IDOK;
+}
+
+void CEAFDocManager::RemoveDocTemplate(POSITION pos)
+{
+   m_templateList.RemoveAt(pos);
 }

@@ -34,6 +34,7 @@ public:
    HBITMAP m_hBitmap;     // handle to the splash screen bitman
    COLORREF m_TextColor;  // color of the text to be written on the splash screen
    COLORREF m_BgColor;    // text background color
+   COLORREF m_TransparencyColor; // color for transparancy
    CRect m_Rect;          // rectangle into which text is written
 
    CEAFSplashScreenInfo()
@@ -42,6 +43,7 @@ public:
       m_hBitmap = 0;
       m_TextColor = BLACK;
       m_BgColor   = WHITE;
+      m_TransparencyColor = HOTPINK;
       m_Rect      = CRect(0,0,20,200);
    }
 
@@ -51,6 +53,7 @@ public:
       m_hBitmap   = other.m_hBitmap;
       m_TextColor = other.m_TextColor;
       m_BgColor   = other.m_BgColor;
+      m_TransparencyColor = other.m_TransparencyColor;
       m_Rect      = other.m_Rect;
 
       return *this;
@@ -96,6 +99,8 @@ protected:
    static BOOL m_bShowUntilClosed;
    static BOOL m_bCloseOnNextTimeout;
    static UINT m_Duration;
+   static CImageList m_ImageList;
+   static CBitmap m_Bitmap;
 
 // Generated message map functions
 protected:

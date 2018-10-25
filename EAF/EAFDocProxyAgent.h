@@ -144,13 +144,14 @@ public:
 
 // IEAFViewRegistrar
 public:
-   virtual long RegisterView(CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=NULL,int maxViewCount=-1);
+   virtual long RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=NULL,int maxViewCount=-1);
    virtual void RemoveView(long key);
    virtual CView* CreateView(long key,LPVOID pData=0);
 
 // IEAFMainMenu
 public:
    virtual CEAFMenu* GetMainMenu();
+   virtual CEAFMenu* CreateContextMenu();
 
 // IEAFToolbars
 public:
@@ -161,6 +162,7 @@ public:
 
 // IEAFAcceleratorTable
 public:
+   virtual BOOL AddAccelTable(HACCEL hAccel,IEAFCommandCallback* pCallback);
    virtual BOOL AddAccelKey(BYTE fVirt,WORD key,WORD cmd,IEAFCommandCallback* pCallback);
    virtual BOOL RemoveAccelKey(WORD cmd,IEAFCommandCallback* pCallback);
    virtual BOOL RemoveAccelKey(BYTE fVirt,WORD key);

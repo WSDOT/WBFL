@@ -41,11 +41,12 @@ class EAFCLASS CEAFAcceleratorTable
 {
 public:
    CEAFAcceleratorTable();
-	CEAFAcceleratorTable(HACCEL hAccelTable,CEAFPluginCommandManager* pCmdMgr);
 	CEAFAcceleratorTable(const CEAFAcceleratorTable& rOther);
 	virtual ~CEAFAcceleratorTable();
 
    void Init(CEAFPluginCommandManager* pCmdMgr);
+
+   BOOL AddAccelTable(HACCEL hAccelTable,IEAFCommandCallback* pCallback);
 
    BOOL AddAccelKey(BYTE fVirt,WORD key,WORD cmd,IEAFCommandCallback* pCallback);
    BOOL RemoveAccelKey(WORD cmd,IEAFCommandCallback* pCallback);

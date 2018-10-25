@@ -22,7 +22,7 @@
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
+			CharacterSet="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -87,7 +87,6 @@
 			<Tool
 				Name="VCManifestTool"
 				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)\WBFL.manifest"
-				InputResourceManifests="&quot;\ARP\WBFL\RegFreeCOM\$(ConfigurationName)\LBAMDumper.dll;#2&quot;"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -115,7 +114,7 @@
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
+			CharacterSet="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -179,7 +178,6 @@
 			<Tool
 				Name="VCManifestTool"
 				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)\WBFL.manifest"
-				InputResourceManifests="&quot;\ARP\WBFL\RegFreeCOM\$(ConfigurationName)\LBAMDumper.dll;#2&quot;"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"

@@ -27,6 +27,8 @@
 #include "stdafx.h"
 #include "resource.h"
 #include <EAF\EAFSplashScreen.h>
+#include <EAF\EAFApp.h>
+#include <EAF\EAFUtilities.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -44,6 +46,8 @@ CEAFSplashScreenInfo CEAFSplashScreen::m_Info;
 BOOL CEAFSplashScreen::m_bShowUntilClosed = FALSE;
 BOOL CEAFSplashScreen::m_bCloseOnNextTimeout = FALSE;
 UINT CEAFSplashScreen::m_Duration = 2000;
+CImageList CEAFSplashScreen::m_ImageList;
+CBitmap CEAFSplashScreen::m_Bitmap;
 
 CEAFSplashScreen::CEAFSplashScreen()
 {
@@ -114,26 +118,27 @@ BOOL CEAFSplashScreen::PreTranslateAppMessage(MSG* pMsg)
 
 BOOL CEAFSplashScreen::Create(CWnd* pParentWnd /*= NULL*/)
 {
+   m_Bitmap.Attach(m_Info.m_hBitmap);
 	BITMAP bm;
-   CBitmap bmp;
-   bmp.Attach( m_Info.m_hBitmap );
-	bmp.GetBitmap(&bm);
+	m_Bitmap.GetBitmap(&bm);
 
 	BOOL bResult = CreateEx(0,
-		AfxRegisterWndClass(0, AfxGetApp()->LoadStandardCursor(IDC_ARROW)),
+		AfxRegisterWndClass(0, EAFGetApp()->LoadStandardCursor(IDC_ARROW)),
 		NULL, WS_POPUP | WS_VISIBLE, 0, 0, bm.bmWidth, bm.bmHeight, pParentWnd->GetSafeHwnd(), NULL);
 
-   bmp.Detach();
    return bResult;
 }
 
 void CEAFSplashScreen::HideSplashScreen()
 {
 	// Destroy the window, and update the mainframe.
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
+   m_Bitmap.Detach();
+   m_ImageList.DeleteImageList();
+
 	DestroyWindow();
-   if ( AfxGetMainWnd() )
-	   AfxGetMainWnd()->UpdateWindow();
+   CEAFMainFrame* pFrame = EAFGetMainFrame();
+   if ( pFrame )
+	   pFrame->UpdateWindow();
 }
 
 void CEAFSplashScreen::PostNcDestroy()
@@ -146,6 +151,11 @@ int CEAFSplashScreen::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
+
+	BITMAP bm;
+	m_Bitmap.GetBitmap(&bm);
+   m_ImageList.Create(bm.bmWidth,bm.bmHeight,TRUE,1,1);
+   m_ImageList.Add(&m_Bitmap,m_Info.m_TransparencyColor);
 
 	// Center the window.
 	CenterWindow();
@@ -160,21 +170,8 @@ void CEAFSplashScreen::OnPaint()
 {
 	CPaintDC dc(this);
 
-	CDC dcImage;
-	if (!dcImage.CreateCompatibleDC(&dc))
-		return;
-
-	BITMAP bm;
-   CBitmap bmp;
-   bmp.Attach(m_Info.m_hBitmap);
-   bmp.GetBitmap(&bm);
-
-	// Paint the image.
-	CBitmap* pOldBitmap = dcImage.SelectObject(&bmp);
-	dc.BitBlt(0, 0, bm.bmWidth, bm.bmHeight, &dcImage, 0, 0, SRCCOPY);
-	dcImage.SelectObject(pOldBitmap);
-
-   bmp.Detach();
+   CPoint pt(0,0);
+   m_ImageList.Draw(&dc,0,pt,ILD_NORMAL);
 }
 
 void CEAFSplashScreen::OnTimer(UINT nIDEvent)

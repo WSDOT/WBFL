@@ -29,6 +29,7 @@
 #include <map>
 #include <WBFLCore.h>
 #include <EAF\EAFStatusCenter.h>
+#include <EAF\EAFUtilities.h>
 
 // provides a localized interface cache so the agent doesn't
 // have to go to the broker over and over again to get an interface

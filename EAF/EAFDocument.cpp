@@ -26,6 +26,7 @@
 
 #include "stdafx.h"
 #include "resource.h"
+#include <EAF\EAFResources.h>
 #include <EAF\EAFDocument.h>
 #include <EAF\EAFApp.h>
 #include <EAF\EAFMainFrame.h>
@@ -92,7 +93,7 @@ CEAFDocument::CEAFDocument()
 
    m_DocPluginMgr.SetParent(this);
 
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    pApp->AddUnitModeListener(this);
 
    m_bUIIntegrated = FALSE;
@@ -126,7 +127,7 @@ CEAFDocument::~CEAFDocument()
       m_pStatusCenterEventSink = NULL;
    }
 
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    pApp->RemoveUnitModeListener(this);
 }
 
@@ -201,15 +202,13 @@ CEAFMenu* CEAFDocument::GetMainMenu()
 
 CEAFAcceleratorTable* CEAFDocument::GetAcceleratorTable()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    return pMainFrame->GetAcceleratorTable();
 }
 
 CEAFMenu* CEAFDocument::CreateMainMenu()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   return new CEAFMenu(AfxGetMainWnd(),GetPluginCommandManager());
+   return new CEAFMenu(EAFGetMainFrame(),GetPluginCommandManager());
 }
 
 CEAFPluginCommandManager* CEAFDocument::GetPluginCommandManager()
@@ -244,8 +243,7 @@ void CEAFDocument::IntegrateWithUI(BOOL bIntegrate)
    }
 
    // save toolbar state before they are removed
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CFrameWnd* pFrame = (CFrameWnd*)AfxGetMainWnd();
+   CEAFMainFrame* pFrame = EAFGetMainFrame();
    if ( !bIntegrate )
       pFrame->SaveBarState(GetToolbarSectionName());
 
@@ -270,50 +268,61 @@ void CEAFDocument::DoIntegrateWithUI(BOOL bIntegrate)
    }
 }
 
+BOOL CEAFDocument::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
+{
+   CEAFDocPluginManager* pPluginMgr = GetDocPluginManager();
+   UINT nPlugins = pPluginMgr->GetPluginCount();
+   for (UINT idx = 0; idx < nPlugins; idx++ )
+   {
+      CComPtr<IEAFDocumentPlugin> plugin;
+      pPluginMgr->GetPlugin(idx,&plugin);
+
+      CComQIPtr<IEAFDocCommandLine> cmdLinePlugin(plugin);
+      if ( cmdLinePlugin )
+      {
+         if ( cmdLinePlugin->ProcessCommandLineOptions(cmdInfo) )
+            return TRUE; // handled
+      }
+   }
+
+   return FALSE;
+}
+
 UINT CEAFDocument::CreateToolBar(LPCTSTR lpszName)
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    return pMainFrame->CreateToolBar(lpszName,GetPluginCommandManager());
 }
 
 CEAFToolBar* CEAFDocument::GetToolBar(UINT toolbarID)
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    return pMainFrame->GetToolBar(toolbarID);
 }
 
 void CEAFDocument::DestroyToolBar(CEAFToolBar* pToolBar)
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    pMainFrame->DestroyToolBar(pToolBar);
 }
 
 void CEAFDocument::DestroyToolBar(UINT toolbarID)
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    pMainFrame->DestroyToolBar(toolbarID);
 }
 
-long CEAFDocument::RegisterView(CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu,int maxViewCount)
+long CEAFDocument::RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu,int maxViewCount)
 {
-   CEAFDocTemplate* pMyTemplate = (CEAFDocTemplate*)(GetDocTemplate());
-   CComPtr<IEAFAppPlugin> appPlugin;
-   pMyTemplate->GetPlugin(&appPlugin);
-   UINT nResourceID = appPlugin->GetDocumentResourceID();
-
    if ( hSharedMenu == NULL )
    {
-      CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+      CEAFMainFrame* pMainFrame = EAFGetMainFrame();
       hSharedMenu = pMainFrame->GetMenu()->GetSafeHmenu();
    }
 
-   CEAFDocTemplate* pNewDocTemplate = new CEAFDocTemplate(nResourceID,GetRuntimeClass(),pFrameClass,pViewClass,hSharedMenu,maxViewCount);
+   CEAFDocTemplate* pNewDocTemplate = new CEAFDocTemplate(nResourceID,pCallback,GetRuntimeClass(),pFrameClass,pViewClass,hSharedMenu,maxViewCount);
 
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    CEAFDocTemplateRegistrar* pRegistrar = pApp->GetDocTemplateRegistrar();
 
    long key = pRegistrar->AddDocTemplate(pNewDocTemplate);
@@ -322,14 +331,14 @@ long CEAFDocument::RegisterView(CRuntimeClass* pFrameClass,CRuntimeClass* pViewC
 
 void CEAFDocument::RemoveView(long key)
 {
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    CEAFDocTemplateRegistrar* pRegistrar = pApp->GetDocTemplateRegistrar();
    pRegistrar->RemoveDocTemplate(key);
 }
 
 CView* CEAFDocument::CreateView(long key,LPVOID pData)
 {
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
 
    // if this assert fires, you probably added AFX_MANAGE_STATE(AfxGetStaticModuleState())
    // in the scope of calling this method
@@ -344,7 +353,7 @@ CView* CEAFDocument::CreateView(long key,LPVOID pData)
    CEAFDocTemplate* pMyTemplate = (CEAFDocTemplate*)GetDocTemplate();
    pMyTemplate->SetViewCreationData(pData);
 
-   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
 
    CEAFDocTemplateRegistrar* pRegistrar = pApp->GetDocTemplateRegistrar();
    CEAFDocTemplate*          pTemplate  = pRegistrar->GetDocTemplate(key);
@@ -358,8 +367,7 @@ CView* CEAFDocument::CreateView(long key,LPVOID pData)
 
 void CEAFDocument::FailSafeLogMessage(const char* msg)
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CString strLogFile = AfxGetApp()->m_pszExeName;
+   CString strLogFile = EAFGetApp()->m_pszExeName;
    strLogFile += ".log";
 
    std::ofstream ofile(strLogFile);
@@ -367,7 +375,7 @@ void CEAFDocument::FailSafeLogMessage(const char* msg)
    now.PrintDate(true);
    ofile << "Log opened " << now << std::endl;
 
-   CString strExe = AfxGetApp()->m_pszAppName;
+   CString strExe = EAFGetApp()->m_pszAppName;
    strExe += ".exe";
    
    CVersionInfo verInfo;
@@ -391,11 +399,9 @@ void CEAFDocument::FailSafeLogMessage(const char* msg)
 
 void CEAFDocument::SetModifiedFlag(BOOL bModified)
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CDocument::SetModifiedFlag(bModified);
 
-   CEAFMainFrame* pFrame = (CEAFMainFrame*)AfxGetMainWnd();
-   ASSERT_KINDOF(CEAFMainFrame,pFrame);
+   CEAFMainFrame* pFrame = EAFGetMainFrame();
 
    pFrame->EnableModifiedFlag(IsModified());
 }
@@ -412,13 +418,12 @@ BOOL CEAFDocument::GetSaveMissingPluginDataFlag()
 
 void CEAFDocument::InitFailMessage()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CString msg, msg1, msg2;
 
-   CString strLogFile = AfxGetApp()->m_pszExeName;
+   CString strLogFile = EAFGetApp()->m_pszExeName;
    strLogFile += ".log";
 
-   AfxFormatString1(msg1, IDS_E_BADINSTALL, AfxGetApp()->m_pszExeName );
+   AfxFormatString1(msg1, IDS_E_BADINSTALL, EAFGetApp()->m_pszExeName );
    AfxFormatString1( msg2, IDS_E_PROBPERSISTS, strLogFile );
    AfxFormatString2(msg, IDS_E_FORMAT, msg1, msg2 );
    AfxMessageBox( msg );
@@ -495,8 +500,7 @@ BOOL CEAFDocument::OnNewDocument()
    OnStatusChanged();
 
    // update the mainframe
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    pMainFrame->UpdateFrameTitle("Untitled");
    pMainFrame->EnableModifiedFlag( IsModified() );
 
@@ -536,8 +540,7 @@ BOOL CEAFDocument::OnOpenDocument(LPCTSTR lpszPathName)
    {
       SetPathName(lpszPathName);
 
-      AFX_MANAGE_STATE(AfxGetAppModuleState());
-      CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+      CEAFMainFrame* pMainFrame = EAFGetMainFrame();
       pMainFrame->UpdateFrameTitle(lpszPathName);
    }
 
@@ -635,8 +638,7 @@ BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
    OnStatusChanged();
 
    // update title frame
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    pMainFrame->UpdateFrameTitle(lpszPathName);
 
    return TRUE;
@@ -686,15 +688,18 @@ void CEAFDocument::OnCloseDocument()
    UnloadDocumentPlugins();
 
    // put the main frame toolbar back the way it was
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    pMainFrame->ShowMainFrameToolBar();
 
    // this has to come last as the document deletes itself
    CDocument::OnCloseDocument();
 
    // DON'T DO ANYTHING ELSE HERE.... Document has deleted itself
-   pMainFrame->ResetStatusBar();
+
+   // need to clean up the status bar
+   CEAFStatusBar* pStatusBar = pMainFrame->GetStatusBar();
+   if ( pStatusBar )
+      pStatusBar->Reset();
 }
 
 BOOL CEAFDocument::OpenTheDocument(LPCTSTR lpszPathName)
@@ -808,7 +813,7 @@ void CEAFDocument::HandleConvertDocumentError( HRESULT hr, LPCTSTR lpszPathName 
 
 CString CEAFDocument::GetRootNodeName()
 {
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    CString str = pApp->m_pszAppName;
    str.Trim();
    str.Replace(" ","");
@@ -1031,8 +1036,7 @@ void CEAFDocument::OnUpdateRedo(CCmdUI* pCmdUI)
 
 void CEAFDocument::OnStatusChanged()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFMainFrame* pFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   CEAFMainFrame* pFrame = EAFGetMainFrame();
    pFrame->OnStatusChanged();
 }
 

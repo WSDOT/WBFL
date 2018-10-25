@@ -47,6 +47,14 @@ CEAFMenu::CEAFMenu(CWnd* pWnd,CEAFPluginCommandManager* pCmdMgr)
    Init(pWnd,pCmdMgr);
 }
 
+CEAFMenu::CEAFMenu(HMENU hMenu,CEAFPluginCommandManager* pCmdMgr)
+{
+   m_Menu.Attach(hMenu);
+   m_bOwnsMenuHandle = true;
+   
+   Init(NULL,pCmdMgr);
+}
+
 CEAFMenu::CEAFMenu()
 {
    m_pWnd    = NULL;
@@ -114,6 +122,16 @@ CEAFMenu* CEAFMenu::GetSubMenu(INT pos)
       return NULL;
 
    return m_Popups[pos];
+}
+
+CEAFMenu* CEAFMenu::CreateContextMenu(CEAFPluginCommandManager* pCmdMgr)
+{
+   CEAFMenu* pNewMenu = new CEAFMenu;
+   pNewMenu->m_Menu.CreatePopupMenu();
+   pNewMenu->m_bOwnsMenuHandle = true;
+   pNewMenu->Init( NULL, pCmdMgr );
+
+   return pNewMenu;
 }
 
 CEAFMenu* CEAFMenu::CreatePopupMenu(INT pos,LPCTSTR lpszName)
@@ -202,6 +220,9 @@ BOOL CEAFMenu::AppendMenu(UINT nID,LPCTSTR lpszNewItem,IEAFCommandCallback* pCal
       m_pCmdMgr->RemoveCommandCallback(nCmdID);
       return FALSE;
    }
+   
+   m_Popups.push_back(NULL);
+
    return TRUE;
 }
 
@@ -217,6 +238,9 @@ BOOL CEAFMenu::InsertMenu(UINT nPosition, UINT nID, LPCTSTR lpszNewItem, IEAFCom
       m_pCmdMgr->RemoveCommandCallback(nCmdID);
       return FALSE;
    }
+   
+   m_Popups.insert(m_Popups.begin()+nPosition,NULL);
+
    return TRUE;
 }
 

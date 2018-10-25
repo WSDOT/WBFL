@@ -31,16 +31,27 @@ class EAFCLASS CEAFCommandLineInfo : public CCommandLineInfo
 public:
    CEAFCommandLineInfo();
    virtual ~CEAFCommandLineInfo();
-   void ParseParam(LPCTSTR lpszParam, BOOL bFlag, BOOL bLast);
 
-   bool  m_CommandLineMode; // set this to true if this is a batch run
-   bool  m_bAbort; // set this to true if there is a problem with the command line
+   UINT m_nParams;
+   BOOL  m_bUsageMessage; // set to TRUE if a usage message is required (/?)
+   BOOL  m_bCommandLineMode; // set this to TRUE if this is a batch run
+   BOOL  m_bError; // set this to TRUE if there is a problem with the command line and the application
+                   // needs to display the command line usage message and exit
+
+   virtual void ParseParam(LPCTSTR lpszParam,BOOL bFlag,BOOL bLast);
+
+   void SetErrorInfo(const char* strError);
 
    virtual CString GetUsageMessage();
+   virtual CString GetErrorMessage();
+
+   CEAFCommandLineInfo& operator=(const CEAFCommandLineInfo& other);
 
 protected:
    // Prevent accidental copying and assignment
    CEAFCommandLineInfo(const CEAFCommandLineInfo&);
-   CEAFCommandLineInfo& operator=(const CEAFCommandLineInfo&);
+
+   CString m_strErrorMsg;
+
 
 };

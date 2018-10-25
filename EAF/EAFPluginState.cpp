@@ -21,43 +21,44 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#pragma once
-
-#include "afxwin.h"
-#include "resource.h"
-
+#include "stdafx.h"
 #include <EAF\EAFPluginState.h>
-#include <vector>
 
-// CManagePluginsDlg dialog
-
-class CManagePluginsDlg : public CDialog
+CEAFPluginState::CEAFPluginState(const CLSID& clsid,const CString& strCLSID,bool bInitiallyEnabled)
 {
-	DECLARE_DYNAMIC(CManagePluginsDlg)
+   m_CLSID = clsid;
+   m_strCLSID = strCLSID;
+   m_bInitiallyEnabled = bInitiallyEnabled;
+   m_bNewState = m_bInitiallyEnabled;
+}
 
-public:
-	CManagePluginsDlg(LPCTSTR lpszTitle,const CATID& catid,CWnd* pParent = NULL);   // standard constructor
-	virtual ~CManagePluginsDlg();
+void CEAFPluginState::SetState(bool bNewState)
+{
+   m_bNewState = bNewState;
+}
 
-// Dialog Data
-	enum { IDD = IDD_MANAGE_PLUGINS };
+bool CEAFPluginState::InitiallyEnabled()
+{
+   return m_bInitiallyEnabled;
+}
 
-   std::vector<CEAFPluginState> m_PluginStates;
+bool CEAFPluginState::StateChanged()
+{
+   return m_bInitiallyEnabled != m_bNewState ? true : false;
+}
 
-protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+bool CEAFPluginState::IsEnabled()
+{
+   return (InitiallyEnabled() && StateChanged() ? false : true);
+}
 
-   CString m_Title;
+CLSID CEAFPluginState::GetCLSID()
+{
+   return m_CLSID;
+}
 
-   CCheckListBox m_PluginList;
-   CString m_strSection;
-   CATID m_CATID;
-   BOOL InitList();
+CString CEAFPluginState::GetCLSIDString()
+{
+   return m_strCLSID;
+}
 
-	DECLARE_MESSAGE_MAP()
-public:
-   virtual BOOL OnInitDialog();
-   virtual void OnOK();
-protected:
-   virtual void OnCancel();
-};

@@ -86,6 +86,7 @@ private:
    Float64   m_Sint;
    Float64   m_C1;
    Float64   m_C2;
+   Float64   m_C3;
    Float64   m_Hext;
    Float64   m_Hint;
    CollectionIndexType m_VoidCount;
@@ -113,6 +114,8 @@ public:
    STDMETHOD(get_C1)(/*[out,retval]*/Float64* c1);
    STDMETHOD(put_C2)(/*[in]*/Float64 c2);
    STDMETHOD(get_C2)(/*[out,retval]*/Float64* c2);
+   STDMETHOD(put_C3)(/*[in]*/Float64 c3);
+   STDMETHOD(get_C3)(/*[out,retval]*/Float64* c3);
    STDMETHOD(put_LeftBlockOut)(/*[in]*/VARIANT_BOOL bLeftBlockOut);
    STDMETHOD(get_LeftBlockOut)(/*[out,retval]*/VARIANT_BOOL* pbLeftBlockOut);
    STDMETHOD(put_RightBlockOut)(/*[in]*/VARIANT_BOOL bRightBlockOut);

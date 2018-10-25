@@ -27,6 +27,8 @@
 #include "stdafx.h"
 #include "NewProjectDlg.h"
 #include <EAF\EAFDocTemplate.h>
+#include <EAF\EAFApp.h>
+#include <EAF\EAFUtilities.h>
 #include "commctrl.h"
 #include "BackDoor.h"
 // CNewProjectDlg dialog
@@ -115,7 +117,7 @@ BOOL CNewProjectDlg::OnInitDialog()
 
    GetDlgItem(IDC_DESCRIPTION)->SetWindowText("");
 
-   CWinApp* pApp = AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    m_ViewMode = pApp->GetProfileInt(strNewDialogSection,_T("ViewMode"),IDC_LARGE);
    CheckRadioButton(IDC_LARGE,IDC_SMALL,m_ViewMode);
    OnViewModeClicked(m_ViewMode);
@@ -180,7 +182,7 @@ BOOL CNewProjectDlg::OnInitDialog()
 
 
    // Expand the entire tree 
-   ExpandProjectTypes(hItem);
+   ExpandProjectTypes();
 
    SetOKButtonState();
 
@@ -190,22 +192,13 @@ BOOL CNewProjectDlg::OnInitDialog()
    // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CNewProjectDlg::ExpandProjectTypes(HTREEITEM hRoot)
+void CNewProjectDlg::ExpandProjectTypes()
 {
-   m_ProjectTypes.Expand(hRoot,TVE_EXPAND);
-
-   HTREEITEM hChild = m_ProjectTypes.GetNextItem(hRoot,TVGN_CHILD);
-   if ( hChild )
+   HTREEITEM hItem = m_ProjectTypes.GetFirstVisibleItem();
+   while (hItem )
    {
-      m_ProjectTypes.Expand(hChild,TVE_EXPAND);
-      ExpandProjectTypes(hChild);
-   }
-
-   HTREEITEM hSibling = m_ProjectTypes.GetNextItem(hRoot,TVGN_NEXT);
-   while ( hSibling )
-   {
-      m_ProjectTypes.Expand(hSibling,TVE_EXPAND);
-      hSibling = m_ProjectTypes.GetNextItem(hSibling,TVGN_NEXT);
+      m_ProjectTypes.Expand(hItem,TVE_EXPAND);
+      hItem = m_ProjectTypes.GetNextVisibleItem(hItem);
    }
 }
 
@@ -441,7 +434,7 @@ void CNewProjectDlg::OnSize(UINT nType, int cx, int cy)
 
 void CNewProjectDlg::OnDestroy()
 {
-   CWinApp* pApp = AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    m_ViewMode = GetCheckedRadioButton(IDC_LARGE,IDC_SMALL);
    pApp->WriteProfileInt(strNewDialogSection,_T("ViewMode"),m_ViewMode);
 

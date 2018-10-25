@@ -25,14 +25,17 @@
 
 #include <EAF\EAFExp.h>
 #include <EAF\EAFTemplateGroup.h>
+#include <EAF\EAFAcceleratorTable.h>
 
 interface IEAFAppPlugin;
+interface IEAFCommandCallback;
 class CEAFDocument;
 
 class EAFCLASS CEAFDocTemplate : public CMultiDocTemplate
 {
 public:
    CEAFDocTemplate(UINT nIDResource,
+                   IEAFCommandCallback* pCallback,
                    CRuntimeClass* pDocClass,
                    CRuntimeClass* pFrameClass,
                    CRuntimeClass* pViewClass,
@@ -40,11 +43,13 @@ public:
                    int maxViewCount = -1);
    virtual ~CEAFDocTemplate();
 
+   virtual void LoadTemplate();
+
    // Creates a default template group item
    virtual void CreateDefaultItem(HICON hIcon);
 
    // Redefines the base-class implementation
-   virtual CDocument* OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisible);
+   virtual CDocument* OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisible=TRUE);
 
    // Returns the document template group associated with this document type
    // The template group is seen on the left hand side of the New dialog
@@ -69,17 +74,26 @@ public:
    // Returns the resource ID associated with this tempalte
    UINT GetResourceID() const;
 
+   IEAFCommandCallback* GetCommandCallback();
+
    // Associates the application plugin that created this document template
-   void SetPlugin(IEAFAppPlugin* pPlugin);
-   void GetPlugin(IEAFAppPlugin** ppPlugin);
+   virtual void SetPlugin(IEAFAppPlugin* pPlugin);
+   virtual void GetPlugin(IEAFAppPlugin** ppPlugin);
+
+   virtual CDocTemplate::Confidence MatchDocType(LPCTSTR lpszPathName,CDocument*& rpDocMatch);
+
+   virtual CEAFAcceleratorTable* GetAcceleratorTable();
 
    DECLARE_DYNAMIC(CEAFDocTemplate)
 
 protected:
    // weak reference to plugin that created this doc template
    IEAFAppPlugin* m_pPlugin;
+   IEAFCommandCallback* m_pCommandCallback;
 
    CEAFTemplateGroup m_TemplateGroup;
+
+   CEAFAcceleratorTable m_AccelTable;
 
    const CEAFTemplateItem* m_pTemplateItem; // the selected template item from New Project dialog
 

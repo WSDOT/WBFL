@@ -1234,7 +1234,7 @@ library WBFLFem2d
 		noncreatable,
 		helpstring("Fem2dLoading Class")
 	]
-	coclass LFem2doading
+	coclass Fem2dLoading
 	{
 		[default] interface IFem2dLoading;
 	};

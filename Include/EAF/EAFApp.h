@@ -63,6 +63,7 @@ protected:
 
 // Attributes
 public:
+   virtual CEAFCommandLineInfo& GetCommandLineInfo();
 
 // Operations
 public:
@@ -104,6 +105,7 @@ public:
 protected:
 	virtual ~CEAFApp();
 
+   virtual CString GetProductCode() = 0;
    virtual CEAFSplashScreenInfo GetSplashScreenInfo() = 0;
    virtual LPCTSTR GetRegistryKey() = 0;
    virtual BOOL CreateApplicationPlugins() = 0;
@@ -125,8 +127,6 @@ protected:
 
    // called by the framework during ExitInstance() when registry settings need to be saved
    virtual void RegistryExit();
-
-   virtual CEAFCommandLineInfo& GetCommandLineInfo();
 
    void EnableTipOfTheDay(LPCTSTR lpszTipFile);
    bool IsTipOfTheDayEnabled();
@@ -157,10 +157,21 @@ public:
    void AddUnitModeListener(iUnitModeListener* pListener);
    void RemoveUnitModeListener(iUnitModeListener* pListener);
 
+   sysDate GetInstallDate();
+   sysDate GetLastRunDate();
+   BOOL IsFirstRun();
+
 protected:
+   // Called during InitInstance when command line parameters need to be handled
+   virtual void ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo);
+
+   // Called when the user starts the application with the /? or /help flags
+   // Displays command line usage parameters
+   virtual void ShowUsageMessage();
+
    // Called by the framework when the command line parameters are invalid
    // Display an informational message to the user before the application closes
-   virtual void DisplayCommandLineUsage();
+   virtual void DisplayCommandLineErrorMessage();
 
 protected:
    HKEY GetAppLocalMachineRegistryKey();
@@ -177,6 +188,8 @@ private:
 
    CString m_TipFilePath;
    bool m_bTipsEnabled;
+
+   sysDate m_LastRunDate;
 
    // Manages legal notice at application start up
 	AcceptanceType ShowLegalNotice(VARIANT_BOOL bGiveChoice = VARIANT_FALSE);
@@ -215,5 +228,11 @@ public:
    virtual OLECHAR* GetAppPluginCategoryName() = 0;
    virtual CATID GetAppPluginCategoryID() = 0;
    
+   afx_msg void OnUpdateManageApplicationPlugins(CCmdUI* pCmdUI);
+   afx_msg void OnManageApplicationPlugins();
+
+	DECLARE_MESSAGE_MAP()
+
+protected:
    virtual BOOL CreateApplicationPlugins();
 };

@@ -32,9 +32,10 @@
 #include "AgentTools.h"
 #include "EAFSelectReportDlg.h"
 
-#include <EAF\EAFBrokerDocument.h>
+#include <EAF\EAFDocument.h>
 #include <EAF\EAFMainFrame.h>
 #include <EAF\EAFHints.h>
+#include <EAF\EAFCustSiteVars.h>
 
 #include <ReportManager\ReportBuilderManager.h>
 #include <IReportManager.h>
@@ -42,7 +43,6 @@
 #include <MfcTools\XUnwind.h>
 #include <MfcTools\Text.h>
 
-#include "CustSiteVars.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -191,9 +191,7 @@ void CEAFReportView::CreateReportSpecification(CollectionIndexType rptIdx,bool b
 
             // The view creation must fail and this is intentional
             // Turn off the error message so the user doesn't see it
-            CWnd* pWnd = AfxGetMainWnd();
-            ASSERT_KINDOF(CEAFMainFrame,pWnd);
-            CEAFMainFrame* pFrame = (CEAFMainFrame*)pWnd;
+            CEAFMainFrame* pFrame = EAFGetMainFrame();
             pFrame->DisableFailCreateMessage();
             m_pReportSpec = boost::shared_ptr<CReportSpecification>();
             return;
@@ -226,9 +224,7 @@ void CEAFReportView::CreateReportSpecification(CollectionIndexType rptIdx,bool b
 
       // The view creation must fail and this is intentional
       // Turn off the error message so the user doesn't see it
-      CWnd* pWnd = AfxGetMainWnd();
-      ASSERT_KINDOF(CEAFMainFrame,pWnd);
-      CEAFMainFrame* pFrame = (CEAFMainFrame*)pWnd;
+      CEAFMainFrame* pFrame = EAFGetMainFrame();
       pFrame->DisableFailCreateMessage();
       pFrame->CreateCanceled();
    }
@@ -242,9 +238,6 @@ HRESULT CEAFReportView::UpdateReportBrowser()
    HRESULT hr = m_pReportSpec->Validate();
    if ( FAILED(hr) )
       return hr;
-
-   CComPtr<IBroker> pBroker;
-   EAFGetBroker(&pBroker);
 
    try
    {
@@ -265,7 +258,8 @@ HRESULT CEAFReportView::UpdateReportBrowser()
          boost::shared_ptr<CReportBuilder> pBuilder = GetReportBuilder( m_pReportSpec->GetReportName() );
          boost::shared_ptr<rptReport> pReport = pBuilder->CreateReport( m_pReportSpec );
 
-         m_btnEdit.ShowWindow(SW_SHOW);
+         if ( m_btnEdit.GetSafeHwnd() )
+            m_btnEdit.ShowWindow(SW_SHOW);
 
          m_pReportBrowser->UpdateReport( pReport, true );
       }
@@ -293,7 +287,9 @@ HRESULT CEAFReportView::UpdateReportBrowser()
    if ( m_pReportBrowser )
    {
       Invalidate();
-      m_btnEdit.ShowWindow(SW_SHOW);
+
+      if ( m_btnEdit.GetSafeHwnd() )
+         m_btnEdit.ShowWindow(SW_SHOW);
 
       // size the browser window to fill the view
       CRect rect;
@@ -302,7 +298,9 @@ HRESULT CEAFReportView::UpdateReportBrowser()
    }
    else
    {
-      m_btnEdit.ShowWindow(SW_HIDE);
+      if ( m_btnEdit.GetSafeHwnd() ) 
+         m_btnEdit.ShowWindow(SW_HIDE);
+
       m_bNoBrowser = true;
    }
 
@@ -320,22 +318,20 @@ void CEAFReportView::EditReport()
    if ( m_pReportBrowser->Edit(false) ) // just edit, don't update... we need to wrap a progress window around the updating
    {
       // returning false means the user cancelled the edit
-
-      CComPtr<IBroker> pBroker;
-      EAFGetBroker(&pBroker);
-      GET_IFACE2(pBroker,IProgress,pProgress);
-      CEAFAutoProgress progress(pProgress);
-      pProgress->UpdateMessage("Updating report...");
-
-      m_pReportSpec = m_pReportBrowser->GetReportSpecification();
-
-      boost::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(m_pReportSpec->GetReportName());
-
-      boost::shared_ptr<rptReport> pReport = pRptBuilder->CreateReport( m_pReportSpec );
-      m_pReportBrowser->UpdateReport(pReport,true);
-
-      UpdateViewTitle();
+      RefreshReport();
    }
+}
+
+void CEAFReportView::RefreshReport()
+{
+   m_pReportSpec = m_pReportBrowser->GetReportSpecification();
+
+   boost::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(m_pReportSpec->GetReportName());
+
+   boost::shared_ptr<rptReport> pReport = pRptBuilder->CreateReport( m_pReportSpec );
+   m_pReportBrowser->UpdateReport(pReport,true);
+
+   UpdateViewTitle();
 }
 
 void CEAFReportView::OnSize(UINT nType, int cx, int cy) 
@@ -344,12 +340,11 @@ void CEAFReportView::OnSize(UINT nType, int cx, int cy)
 
    if ( m_pReportBrowser )
    {
-      CRect btnRect;
-      m_btnEdit.GetClientRect(&btnRect);
       m_pReportBrowser->Size( CSize(cx,cy) );
    }
 
-   m_btnEdit.SetWindowPos(&CWnd::wndTop,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
+   if ( m_btnEdit.GetSafeHwnd() )
+      m_btnEdit.SetWindowPos(&CWnd::wndTop,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
 }
 
 void CEAFReportView::OnFilePrint() 
@@ -382,7 +377,9 @@ void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
       m_ErrorMsg = *pmsg;
       m_bUpdateError = true;
 
-      m_btnEdit.ShowWindow(SW_HIDE);
+      if ( m_btnEdit.GetSafeHwnd() )
+         m_btnEdit.ShowWindow(SW_HIDE);
+
       // delete the report browser because what ever it is displaying is totally invalid
       // also need to elimintate it so that we can draw the error message on the view window itself
       m_pReportBrowser = boost::shared_ptr<CReportBrowser>();
@@ -392,16 +389,17 @@ void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
       return;
    }
 
-   CComPtr<IBroker> pBroker;
-   EAFGetBroker(&pBroker);
-   GET_IFACE2(pBroker,IEAFStatusCenter,pStatusCenter);
+   CEAFDocument* pDoc = (CEAFDocument*)GetDocument();
+   CEAFStatusCenter& statusCenter = pDoc->GetStatusCenter();
 
-   if ( pStatusCenter->GetSeverity() == eafTypes::statusError )
+   if ( statusCenter.GetSeverity() == eafTypes::statusError )
    {
       m_bUpdateError = true;
       m_ErrorMsg = "Errors exist that prevent analysis. Review the errors posted in the status center for more information";
 
-      m_btnEdit.ShowWindow(SW_HIDE);
+      if ( m_btnEdit.GetSafeHwnd() )
+         m_btnEdit.ShowWindow(SW_HIDE);
+
       // delete the report browser because what ever it is displaying is totally invalid
       // also need to elimintate it so that we can draw the error message on the view window itself
       m_pReportBrowser = boost::shared_ptr<CReportBrowser>();
@@ -456,19 +454,6 @@ void CEAFReportView::UpdateNow()
 
 void CEAFReportView::OnInitialUpdate() 
 {
-   CComPtr<IBroker> pBroker;
-   EAFGetBroker(&pBroker);
-   GET_IFACE2(pBroker,IEAFStatusCenter,pStatusCenter);
-
-   if ( pStatusCenter->GetSeverity() == eafTypes::statusError )
-   {
-      m_bUpdateError = true;
-      m_ErrorMsg = "Errors exist that prevent analysis. Review the errors posted in the status center for more information";
-      Invalidate();
-      UpdateWindow();
-      return;
-   }
-
    m_bIsNewReport = true;
 
    try

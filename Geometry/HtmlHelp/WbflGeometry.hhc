@@ -2501,6 +2501,10 @@
           <param name="Local" value="Objects\VoidedSlab2\C2_Property_(VoidedSlab2_Object).htm">
         </object>
         <li><object type="text/sitemap">
+          <param name="Name" value="C3">
+          <param name="Local" value="Objects\VoidedSlab2\C3_Property_(VoidedSlab2_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
           <param name="Name" value="ExteriorVoidDiameter">
           <param name="Local" value="Objects\VoidedSlab2\ExteriorVoidDiameter_Property_(VoidedSlab2_Object).htm">
         </object>

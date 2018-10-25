@@ -91,6 +91,7 @@ CReportBrowser::~CReportBrowser()
    if ( m_pTweakIESettings )
       delete m_pTweakIESettings;
 
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    if ( m_pWebBrowser )
       delete m_pWebBrowser;
 }
@@ -116,6 +117,8 @@ void CReportBrowser::UpdateReport(boost::shared_ptr<rptReport>& pReport,bool bRe
 
 bool CReportBrowser::Initialize(HWND hwnd,CReportBuilderManager* pRptMgr,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<rptReport>& pReport)
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
    // Did you forget something?  This method needs a pointer to a rptReport
    ATLASSERT( pReport != 0 );
 

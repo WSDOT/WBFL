@@ -302,7 +302,7 @@ private:
 
 	STDMETHOD(ComputeResponse)(/*[in]*/ILongArray* poiIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
                               /*[in]*/VehicleIndexType vehicleIndex, 
-                              /*[in]*/ForceEffectType effect, /*[in]*/OptimizationType optimization,
+                              /*[in]*/ForceEffectType effect,
                               /*[in]*/VehicularLoadConfigurationType vehConfiguration,
                               /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/DistributionFactorType distributionType,
                               /*[in]*/VARIANT_BOOL computePlacements, /*[out]*/ILiveLoadModelSectionResults** results);
@@ -320,7 +320,6 @@ private:
    iDistributionFactorStrategy*       m_pDfStrategy;
    iLLApplicabilityStrategy*          m_pApplicabilityStrategy;
 
-   bool                               m_bCaptureJumps; // true if live load position tweak for shear is sued
    bool                               m_bComputingReaction; // true if we are computing a reaction
    bool                               m_bComputingMaximumInteriorSupportReaction; // true if we are computing a maximum reaction at an interior support
    bool                               m_bComputingMinimumMoment; // true if we are computing a minimum moment
@@ -341,6 +340,10 @@ private:
    void ConfigureAnalysisCache(BSTR stage, LiveLoadModelType type, VehicleIndexType vehicleIndex, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL doApplyImpact);
    void ConfigureAxleSpacings();
    void ConfigureAnalysisPoints(BSTR stage);
+
+   OptimizationType m_RealOptimization; // sometimes we have to play games with the optimization type
+                                        // because of sign flips.
+                                        // this parameter holds the real optimization we are doing
 
    // the values we cache
    // ------------------
@@ -437,11 +440,11 @@ private:
    typedef std::set<InflResponseRecord>::iterator InflResponseIterator;
    typedef std::set<InflResponseRecord>::const_iterator ConstInflResponseIterator;
 
-   bool GetInflResponse(long poiID,LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect, OptimizationType optimization, 
+   bool GetInflResponse(long poiID,LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect,
                         VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL doApplyImpact,
                         iLLCompare** ppLeftCompare, iLLCompare** ppRightCompare);
 
-   void SaveInflResponse(long poiID,LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect, OptimizationType optimization, 
+   void SaveInflResponse(long poiID,LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect, 
                          VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL doApplyImpact,
                          iLLCompare* pLeftCompare, iLLCompare* pRightCompare);
 };

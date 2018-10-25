@@ -506,8 +506,8 @@ void CLoadGroupDumper::DumpLoadGroupResponse(std::ostream& os)
       hr = loadgroup->get_Name(&lg_name);
 
       CollectionIndexType idx;
-      hr = active_lgs->Find(lg_name, &idx);
-      if (idx == -1)
+      HRESULT hres = active_lgs->Find(lg_name, &idx);
+      if (FAILED(hres))
       {
          // not found in active list
          hr = dead_lgs->Add(lg_name);

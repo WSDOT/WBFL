@@ -338,7 +338,9 @@ STDMETHODIMP CInfluenceLine::Evaluate(Float64 location, InfluenceSideType side, 
 
       // use index used in last call as a guess for this one - not very high tech, but effective
       const InflPoint& first_gs = container[ m_LastFound[side] ];
-      if (location< first_gs.m_Location)
+
+      // Use of tolerance allows points very near dual-value points to nail the location
+      if (location+ZERO_TOLER < first_gs.m_Location)
       {
          // look backward
          for(long i=m_LastFound[side]-1; i>-1; i--)
@@ -380,7 +382,7 @@ STDMETHODIMP CInfluenceLine::Evaluate(Float64 location, InfluenceSideType side, 
             }
          }
       }
-      else if (location> first_gs.m_Location)
+      else if (location > first_gs.m_Location+ZERO_TOLER)
       {
          // look forward
          long num_pts = container.size();
@@ -430,7 +432,7 @@ STDMETHODIMP CInfluenceLine::Evaluate(Float64 location, InfluenceSideType side, 
             // go to next value
             const InflPoint& rgt = container[m_LastFound[side]+1];
             ATLASSERT(rgt.m_LocationType==iflDualRight);
-            ATLASSERT(rgt.m_Location==location);
+            ATLASSERT(IsEqual(rgt.m_Location,location,ZERO_TOLER));
             *isDualValue = VARIANT_TRUE;
             *leftValue = first_gs.m_Value;
             *rightValue= rgt.m_Value;
@@ -439,7 +441,7 @@ STDMETHODIMP CInfluenceLine::Evaluate(Float64 location, InfluenceSideType side, 
          {
             const InflPoint& lft = container[m_LastFound[side]-1];
             ATLASSERT(lft.m_LocationType==iflDualLeft);
-            ATLASSERT(lft.m_Location==location);
+            ATLASSERT(IsEqual(lft.m_Location,location,ZERO_TOLER));
             *isDualValue = VARIANT_TRUE;
             *leftValue = lft.m_Value;
             *rightValue= first_gs.m_Value;

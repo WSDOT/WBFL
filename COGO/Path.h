@@ -194,9 +194,9 @@ private:
    void CreateParallelPoint(long elementIdx,Float64 offset,IPoint2d** pPoint);
 
 
-   HRESULT CreateSubPathElement(Float64 start,Float64 end,ILineSegment2d* pLS,ILineSegment2d** ppLineSegment);
-   HRESULT CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,IUnknown** ppResult1,IUnknown** ppResult2,IUnknown** ppResult3);
-   HRESULT CreateSubPathElement(Float64 start,Float64 end,ICubicSpline* pSpine,IUnknown** ppResult);
+   HRESULT CreateSubPathElement(Float64 start,Float64 end,ILineSegment2d* pLS,bool bProjectAhead,bool bProjectBack,ILineSegment2d** ppLineSegment);
+   HRESULT CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,bool bProjectAhead,bool bProjectBack,IUnknown** ppResult1,IUnknown** ppResult2,IUnknown** ppResult3);
+   HRESULT CreateSubPathElement(Float64 start,Float64 end,ICubicSpline* pSpine,bool bProjectAhead,bool bProjectBack,IUnknown** ppResult);
    HRESULT CreateSubCurveSpline(Float64 start,Float64 end,long nPoints,IHorzCurve* pHC,ICubicSpline** ppSpline);
    HRESULT SavePathElement(IPath* pPath,IUnknown* pUnk);
 

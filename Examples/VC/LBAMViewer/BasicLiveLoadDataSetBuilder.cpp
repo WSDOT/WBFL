@@ -84,36 +84,28 @@ void BasicLiveLoadDataSetBuilder::BuildForceDataSets(ILongArray* poiList, IDblAr
 {
 
    HRESULT hr;
-   // create datasets for min and max responses
-   CComPtr<iGraphXyDataProvider> max_dataset_p, min_dataset_p;
-   hr = max_dataset_p.CoCreateInstance(CLSID_GraphXyDataProvider);
-   ATLASSERT(SUCCEEDED(hr));
-   hr = min_dataset_p.CoCreateInstance(CLSID_GraphXyDataProvider);
+
+   // create dataset
+   CComPtr<iGraphXyDataProvider> dataset_p;
+   hr = dataset_p.CoCreateInstance(CLSID_GraphXyDataProvider);
    ATLASSERT(SUCCEEDED(hr));
 
    // deal with legend
-   CComPtr<iDataPointFactory> max_fac, min_fac;
-   max_dataset_p->get_DataPointFactory(&max_fac);
-   min_dataset_p->get_DataPointFactory(&min_fac);
-   CComQIPtr<iSymbolLegendEntry> max_entry(max_fac), min_entry(min_fac);
+   CComPtr<iDataPointFactory> fac;
+   dataset_p->get_DataPointFactory(&fac);
+   CComQIPtr<iSymbolLegendEntry> entry(fac);
 
-   max_entry->put_Color(color);
-   min_entry->put_Color(color);
-   max_entry->put_SymbolCharacterCode(197);
-   min_entry->put_SymbolCharacterCode(198);
-   max_entry->put_DoDrawLine(TRUE);
-   min_entry->put_DoDrawLine(TRUE);
+   entry->put_Color(color);
+   entry->put_SymbolCharacterCode(198);
+   entry->put_DoDrawLine(TRUE);
 
-   CString tmpn, tmpx;
-   tmpn.Format("%s %d - Min", LL_NAMES[m_LlmType], m_LlIndex);
-   tmpx.Format("%s %d - Max", LL_NAMES[m_LlmType], m_LlIndex);
-   CComBSTR btmpn(tmpn), btmpx(tmpx);
-   max_entry->put_Name(btmpx);
-   min_entry->put_Name(btmpn);
+   CString tmp;
+   tmp.Format("%s %d", LL_NAMES[m_LlmType], m_LlIndex);
+   CComBSTR btmp(tmp);
+   entry->put_Name(btmp);
 
-   CComPtr<iDataSet2d> max_dataset, min_dataset;
-   max_dataset_p->get_DataSet(&max_dataset);
-   min_dataset_p->get_DataSet(&min_dataset);
+   CComPtr<iDataSet2d> dataset;
+   dataset_p->get_DataSet(&dataset);
 
    CComPtr<ISectionResult3Ds> srs;
 
@@ -142,9 +134,6 @@ void BasicLiveLoadDataSetBuilder::BuildForceDataSets(ILongArray* poiList, IDblAr
 
    m_Placement->put_ForceEffect(fet);
 
-   // maximize
-   m_Placement->put_Optimization(optMaximize);
-
    if (is_force)
    {
       hr = m_Response->ComputeForces(poiList, currStg, roGlobal, m_Placement, &srs);
@@ -156,27 +145,8 @@ void BasicLiveLoadDataSetBuilder::BuildForceDataSets(ILongArray* poiList, IDblAr
    PROCESS_HR(hr);
 
 
-   FillDataSet(locList, max_dataset, srs, currRt);
-
-   srs.Release();
-
-   // minimize
-   m_Placement->put_Optimization(optMinimize);
-
-   if (is_force)
-   {
-      hr = m_Response->ComputeForces(poiList, currStg,  roGlobal, m_Placement, &srs);
-   }
-   else
-   {
-      hr = m_Response->ComputeDeflections(poiList, currStg,  m_Placement, &srs);
-   }
-   PROCESS_HR(hr);
-
-   FillDataSet(locList, min_dataset, srs, currRt);
-
-   dataSets->push_back( min_dataset_p.Detach());
-   dataSets->push_back( max_dataset_p.Detach());
+   FillDataSet(locList, dataset, srs, currRt);
+   dataSets->push_back( dataset_p.Detach());
 }
 
 void BasicLiveLoadDataSetBuilder::BuildStressDataSets(ILongArray* poiList, IDblArray* locList, BSTR currStg,

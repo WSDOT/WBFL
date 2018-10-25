@@ -56,7 +56,8 @@ class ATL_NO_VTABLE CBrokerImp2 :
 	public CComCoClass<CBrokerImp2, &CLSID_Broker2>,
    public IBroker,
    public IBrokerInitEx3,
-   public IBrokerPersist2
+   public IBrokerPersist2,
+   public IManageAgents
 {
 public:
    CBrokerImp2() :
@@ -81,6 +82,7 @@ BEGIN_COM_MAP(CBrokerImp2)
 	COM_INTERFACE_ENTRY(IBrokerInitEx3)
 	COM_INTERFACE_ENTRY(IBrokerPersist)
 	COM_INTERFACE_ENTRY(IBrokerPersist2)
+   COM_INTERFACE_ENTRY(IManageAgents)
 END_COM_MAP()
 
 // IBroker
@@ -92,7 +94,9 @@ public:
 // IBrokerInitEx3
 public:
    STDMETHOD(LoadAgents)(/*[in]*/ CLSID* pClsid, /*[in]*/ long nClsid,/*[out]*/ ILongArray** lErrIndex);
+   STDMETHOD(LoadExtensionAgents)(/*[in]*/ CLSID * clsid,/*[in]*/  long nClsid,/*[out]*/ ILongArray** plErrIndex );
    STDMETHOD(AddAgent)(/*[in]*/ IAgentEx* pAgent);
+   STDMETHOD(AddExtensionAgent)(/*[in]*/ IAgentEx* pAgent);
 	STDMETHOD(FindConnectionPoint)(/*[in]*/ REFIID riid,/*[out]*/ IConnectionPoint** ppCP);
 	STDMETHOD(RegInterface)(/*[in]*/ REFIID riid,/*[in]*/ IAgentEx* pAgent);
    STDMETHOD(DelayInit)();
@@ -106,6 +110,13 @@ public:
    STDMETHOD(SetSaveMissingAgentDataFlag)(/*[in]*/VARIANT_BOOL bSetFlag);
    STDMETHOD(GetSaveMissingAgentDataFlag)(/*[out]*/VARIANT_BOOL* bFlag);
 
+// IManageAgents
+public:
+   STDMETHOD(get_AgentCount)(/*[out,retval]*/CollectionIndexType* nAgents);
+   STDMETHOD(get_Agent)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IAgent** ppAgent);
+   STDMETHOD(get_ExtensionAgentCount)(/*[out,retval]*/CollectionIndexType* nAgents);
+   STDMETHOD(get_ExtensionAgent)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IAgent** ppAgent);
+
 private:
    typedef std::set<InterfaceItem> Interfaces;
    Interfaces m_Interfaces; // collection of all interface records
@@ -114,6 +125,7 @@ private:
 
    typedef std::map<CLSID,CComPtr<IAgentEx>> Agents; // interface pointers are referenced counted
    Agents m_Agents;
+   Agents m_ExtensionAgents;
 
    bool m_DelayInit;
    bool m_bAgentsInitialized; // true if the agents where initialized
@@ -126,6 +138,15 @@ private:
    // loads agents using the file format for Class Broker
    HRESULT LoadOldFormat(IStructuredLoad* strLoad);
    void ClearAgents();
+
+   HRESULT LoadAgents( CLSID * clsid, long nClsid,ILongArray** plErrIndex, Agents& agents );
+   HRESULT AddAgent(IAgentEx* pAgent,Agents& agents);
+   HRESULT FindConnectionPoint( REFIID riid, Agents::iterator begin,Agents::iterator end,IConnectionPoint** ppCP);
+   HRESULT InitAgents(Agents::iterator begin,Agents::iterator end);
+   HRESULT IntegrateWithUI(BOOL bIntegrate,Agents::iterator begin,Agents::iterator end);
+   HRESULT SaveAgentData(IStructuredSave* pStrSave,Agents::iterator begin,Agents::iterator end);
+   HRESULT FindAgent(const CLSID& clsid,IAgentEx** ppAgent);
+
 
 #if defined _DEBUG
    void ListConnectionPointLeaks(IAgentEx* pAgent);

@@ -23,41 +23,23 @@
 
 #pragma once
 
-#include "afxwin.h"
-#include "resource.h"
+#include <EAF\EAFExp.h>
 
-#include <EAF\EAFPluginState.h>
-#include <vector>
-
-// CManagePluginsDlg dialog
-
-class CManagePluginsDlg : public CDialog
+class EAFCLASS CEAFPluginState
 {
-	DECLARE_DYNAMIC(CManagePluginsDlg)
-
 public:
-	CManagePluginsDlg(LPCTSTR lpszTitle,const CATID& catid,CWnd* pParent = NULL);   // standard constructor
-	virtual ~CManagePluginsDlg();
+   CEAFPluginState(const CLSID& clsid,const CString& strCLSID,bool bInitiallyEnabled);
+   void SetState(bool bNewState);
+   bool InitiallyEnabled();
+   bool StateChanged();
+   bool IsEnabled();
+   CLSID GetCLSID();
+   CString GetCLSIDString();
 
-// Dialog Data
-	enum { IDD = IDD_MANAGE_PLUGINS };
-
-   std::vector<CEAFPluginState> m_PluginStates;
-
-protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
-   CString m_Title;
-
-   CCheckListBox m_PluginList;
-   CString m_strSection;
-   CATID m_CATID;
-   BOOL InitList();
-
-	DECLARE_MESSAGE_MAP()
-public:
-   virtual BOOL OnInitDialog();
-   virtual void OnOK();
-protected:
-   virtual void OnCancel();
+private:
+   CLSID m_CLSID;
+   CString m_strCLSID;
+   bool m_bInitiallyEnabled;
+   bool m_bNewState;
 };
+

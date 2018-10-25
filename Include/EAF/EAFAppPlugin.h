@@ -31,6 +31,7 @@
 //
 
 #include <EAF\EAFDocTemplate.h>
+#include <EAF\EAFCommandLineInfo.h>
 
 class CEAFApp;
 
@@ -50,7 +51,7 @@ interface IEAFAppPlugin : IUnknown
    // Called for self-initialization
    virtual BOOL Init(CEAFApp* pParent) = 0;
 
-   // Called when the application is about to terminat
+   // Called when the application is about to terminate
    virtual void Terminate() = 0;
 
    // Called to give this plugin the opportunity to integrate itself
@@ -71,6 +72,29 @@ interface IEAFAppPlugin : IUnknown
 
    // return the name of the plugin. This name is used throughout the user interface
    virtual CString GetName() = 0;
+};
+
+
+/////////////////////////////////////////////////////////////////////////////
+// IEAFAppCommandLine
+//
+// IEAFAppPlugin objects may implement this interface if they process
+// command line parameters.
+
+// {FAD83B53-6555-40ac-9B41-5B6A6EF4D16F}
+DEFINE_GUID(IID_IEAFAppCommandLine, 
+0xfad83b53, 0x6555, 0x40ac, 0x9b, 0x41, 0x5b, 0x6a, 0x6e, 0xf4, 0xd1, 0x6f);
+struct __declspec(uuid("{FAD83B53-6555-40ac-9B41-5B6A6EF4D16F}")) IEAFAppCommandLine;// for __uuidof
+
+interface IEAFAppCommandLine : IUnknown
+{
+   virtual CString GetUsageMessage() = 0;
+
+   // Called by the framework to give this application plugin an opportinuity
+   // to process command line options. The application plug-in may need to re-parse
+   // the command line parameters using the parent object supplied in Init().
+   // Return TRUE if the command line was processed, otherwise return FALSE.
+   virtual BOOL ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo) = 0;
 };
 
 #endif // !defined(AFX_EAFAPPPLUGIN_H__DC344A29_BA50_41C3_AAD4_DD3571113293__INCLUDED_)

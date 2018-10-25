@@ -27,5 +27,3 @@
 // There were problems getting the instance handle for this DLL. This function
 // is a back door to get the handle.
 HINSTANCE GetInstanceHandle();
-
-bool operator<(REFIID a,REFIID b);

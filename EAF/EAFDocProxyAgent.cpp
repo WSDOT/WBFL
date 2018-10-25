@@ -54,8 +54,7 @@ CEAFDocProxyAgent::CEAFDocProxyAgent()
    m_pDoc = 0;
    m_pMainFrame = 0;
 
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    pApp->AddUnitModeListener(this);
 
    // Log File
@@ -135,8 +134,7 @@ STDMETHODIMP CEAFDocProxyAgent::ShutDown()
 
    AGENT_CLEAR_INTERFACE_CACHE;
 
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    pApp->RemoveUnitModeListener(this);
 
    return S_OK;
@@ -150,9 +148,9 @@ STDMETHODIMP CEAFDocProxyAgent::GetClassID(CLSID* pCLSID)
 
 ///////////////////////////////////////////////////////
 // IEAFViewRegistrar
-long CEAFDocProxyAgent::RegisterView(CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu,int maxViewCount)
+long CEAFDocProxyAgent::RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu,int maxViewCount)
 {
-   return m_pDoc->RegisterView(pFrameClass,pViewClass,hSharedMenu,maxViewCount);
+   return m_pDoc->RegisterView(nResourceID,pCallback,pFrameClass,pViewClass,hSharedMenu,maxViewCount);
 }
 
 void CEAFDocProxyAgent::RemoveView(long key)
@@ -170,6 +168,11 @@ CView* CEAFDocProxyAgent::CreateView(long key,LPVOID pData)
 CEAFMenu* CEAFDocProxyAgent::GetMainMenu()
 {
    return m_pDoc->GetMainMenu();
+}
+
+CEAFMenu* CEAFDocProxyAgent::CreateContextMenu()
+{
+   return CEAFMenu::CreateContextMenu(m_pDoc->GetPluginCommandManager());
 }
 
 ///////////////////////////////////////////////////////
@@ -196,6 +199,11 @@ void CEAFDocProxyAgent::DestroyToolBar(UINT toolbarID)
 
 ///////////////////////////////////////////////////////
 // IEAFAcceleratorTable
+BOOL CEAFDocProxyAgent::AddAccelTable(HACCEL hAccel,IEAFCommandCallback* pCallback)
+{
+   return m_pDoc->GetAcceleratorTable()->AddAccelTable(hAccel,pCallback);
+}
+
 BOOL CEAFDocProxyAgent::AddAccelKey(BYTE fVirt,WORD key,WORD cmd,IEAFCommandCallback* pCallback)
 {
    return m_pDoc->GetAcceleratorTable()->AddAccelKey(fVirt,key,cmd,pCallback);
@@ -289,232 +297,199 @@ void CEAFDocProxyAgent::UpdateAllViews(CView* pSender,LPARAM lHint,CObject* pHin
 //
 void CEAFDocProxyAgent::SetUnitMode(eafTypes::UnitMode unitMode)
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    pApp->SetUnitsMode(unitMode);
 }
 
 eafTypes::UnitMode CEAFDocProxyAgent::GetUnitMode()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetUnitsMode();
 }
 
 const unitStationFormat& CEAFDocProxyAgent::GetStationFormat()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->StationFormat;
 }
 
 const unitmgtScalar& CEAFDocProxyAgent::GetScalarFormat()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Scalar;
 }
 
 const unitmgtLengthData& CEAFDocProxyAgent::GetComponentDimUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->ComponentDim;
 }
 
 const unitmgtLengthData& CEAFDocProxyAgent::GetXSectionDimUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->XSectionDim;
 }
 
 const unitmgtLengthData& CEAFDocProxyAgent::GetSpanLengthUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->SpanLength;
 }
 
 const unitmgtLengthData&  CEAFDocProxyAgent::GetAlignmentLengthUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->AlignmentLength;
 }
 
 const unitmgtLengthData&  CEAFDocProxyAgent::GetDisplacementUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Displacement;
 }
 
 const unitmgtLength2Data& CEAFDocProxyAgent::GetAreaUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Area;
 }
 
 const unitmgtLength4Data& CEAFDocProxyAgent::GetMomentOfInertiaUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->MomentOfInertia;
 }
 
 const unitmgtLength3Data& CEAFDocProxyAgent::GetSectModulusUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->SectModulus;
 }
 
 const unitmgtPressureData& CEAFDocProxyAgent::GetStressUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Stress;
 }
 
 const unitmgtPressureData& CEAFDocProxyAgent::GetModEUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->ModE;
 }
 
 const unitmgtForceData& CEAFDocProxyAgent::GetGeneralForceUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->GeneralForce;
 }
 
 const unitmgtForceData& CEAFDocProxyAgent::GetTonnageUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Tonnage;
 }
 
 const unitmgtForceData& CEAFDocProxyAgent::GetShearUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Shear;
 }
 
 const unitmgtMomentData& CEAFDocProxyAgent::GetMomentUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Moment;
 }
 
 const unitmgtMomentData& CEAFDocProxyAgent::GetSmallMomentUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->SmallMoment;
 }
 
 const unitmgtAngleData& CEAFDocProxyAgent::GetAngleUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Angle;
 }
 
 const unitmgtAngleData& CEAFDocProxyAgent::GetRadAngleUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->RadAngle;
 }
 
 const unitmgtDensityData& CEAFDocProxyAgent::GetDensityUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Density;
 }
 
 const unitmgtMassPerLengthData& CEAFDocProxyAgent::GetMassPerLengthUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->MassPerLength;
 }
 
 const unitmgtForcePerLengthData& CEAFDocProxyAgent::GetForcePerLengthUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->ForcePerLength;
 }
 
 const unitmgtMomentPerAngleData& CEAFDocProxyAgent::GetMomentPerAngleUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->MomentPerAngle;
 }
 
 const unitmgtTimeData& CEAFDocProxyAgent::GetShortTimeUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Time;
 }
 
 const unitmgtTimeData& CEAFDocProxyAgent::GetLongTimeUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Time2;
 }
 
 const unitmgtAreaPerLengthData& CEAFDocProxyAgent::GetAvOverSUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->AvOverS;
 }
 
 const unitmgtForceLength2Data& CEAFDocProxyAgent::GetStiffnessUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->ForceLength2;
 }
 
 const unitmgtSqrtPressureData& CEAFDocProxyAgent::GetTensionCoefficientUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->SqrtPressure;
 }
 
 const unitmgtPerLengthData& CEAFDocProxyAgent::GetPerLengthUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->PerLength;
 }
 
 const unitmgtPressureData& CEAFDocProxyAgent::GetSidewalkPressureUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->SmallStress;
 }
 
 const unitmgtPressureData& CEAFDocProxyAgent::GetOverlayWeightUnit()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->SmallStress;
 }
 

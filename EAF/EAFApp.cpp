@@ -27,13 +27,15 @@
 #include "stdafx.h"
 
 #include "resource.h"
-#include <EAF\EAFApp.h>
+#include <EAF\EAFResources.h>
+//#include <EAF\EAFApp.h>
 #include <EAF\EAFMainFrame.h>
 #include <EAF\EAFDocManager.h>
 #include <EAF\EAFPluginManager.h>
 #include <EAF\EAFSplashScreen.h>
 #include <EAF\EAFBrokerDocument.h>
 #include <EAF\EAFProjectLog.h>
+#include <EAF\EAFUtilities.h>
 #include <AgentTools.h>
 #include <System\ComCatMgr.h>
 
@@ -113,9 +115,9 @@ BOOL CEAFApp::InitInstance()
    RegistryInit();
 
    // more initialization before we can do any work
-   m_PluginManager.SetParent(this);
-   m_ComponentInfoManager.SetParent(this);
-   m_ComponentInfoManager.SetCATID(GetComponentInfoCategoryID());
+   GetAppPluginManager()->SetParent(this);
+   GetComponentInfoManager()->SetParent(this);
+   GetComponentInfoManager()->SetCATID(GetComponentInfoCategoryID());
    m_pDocManager = CreateDocumentManager();
    m_pDocTemplateRegistrar = CreateDocTemplateRegistrar();
 
@@ -125,72 +127,75 @@ BOOL CEAFApp::InitInstance()
    // Parse command line for standard shell commands, DDE, file open
 	CEAFCommandLineInfo& cmdInfo = GetCommandLineInfo();
 	ParseCommandLine(cmdInfo);
-   if ( cmdInfo.m_bAbort )
+
+
+   // Don't display a new window on startup (Q141725)
+   if ( cmdInfo.m_nShellCommand == CCommandLineInfo::FileNew )
    {
-      DisplayCommandLineUsage();
+      cmdInfo.m_nShellCommand = CCommandLineInfo::FileNothing;
+   }
+
+   // The only default MFC command line options that are supported are Nothing and Open
+   // Any other options (such as /dde, /p, /pt, etc) should result in the command line usage
+   // message being displayed
+   if ( cmdInfo.m_nShellCommand != CCommandLineInfo::FileNothing && 
+        cmdInfo.m_nShellCommand != CCommandLineInfo::FileOpen )
+   {
+      cmdInfo.m_bError = TRUE;
+   }
+
+   if ( cmdInfo.m_bError )
+   {
+      DisplayCommandLineErrorMessage();
       return FALSE;
    }
 
-   if ( !cmdInfo.m_CommandLineMode )
+   if ( !cmdInfo.m_bCommandLineMode )
    {
       // Show legal notice if not in command line mode
       if ( ShowLegalNoticeAtStartup() == atReject )
          return FALSE; // License was not accepted
    }
 
+   // create main MDI Frame window
+   m_pMainWnd = CreateMainFrame();
+   if ( !m_pMainWnd )
+      return FALSE;
+
    // Show splash screen (does nothing if splash screen is disabled)
    CEAFSplashScreen::SetSplashScreenInfo(GetSplashScreenInfo());
-   CEAFSplashScreen::ShowSplashScreen(NULL,TRUE);
+   if ( !cmdInfo.m_bCommandLineMode )
+   {
+      CEAFSplashScreen::ShowSplashScreen(m_pMainWnd,TRUE);
+   }
 
    // Register the document templates... this is where the "plug-ins" get integrated
    // into the application framework
    if ( !RegisterDocTemplates() )
       return FALSE;
 
-   // TODO: Add a method call that causes all app-plugins that need to 
-   // check and possibly refresh a cache the opportunity to do so
-   // - or do it in RegisterDOcTEmplates... or with the plugin manager
-
-   // create main MDI Frame window
-   m_pMainWnd = CreateMainFrame();
-   if ( !m_pMainWnd )
-      return FALSE;
-
-   // Don't display a new window on startup
-   // Q141725
-   if ( cmdInfo.m_nShellCommand == CCommandLineInfo::FileNew )
-      cmdInfo.m_nShellCommand = CCommandLineInfo::FileNothing;
-
-	// Dispatch commands specified on the command line
-   // This is not a virtual function... it needs to be called so MFC can do its job
-   // but somehow we need to direct command line information to the correct
-   // app-plugin (based on file extension and keyword parameter)
-   // Whatever virtual function get called here, this is where the /Test parameter
-   // is processed (see notes in CPGSuperApp
-	if (!ProcessShellCommand(cmdInfo))
-		return FALSE;
+   // Give app plugins an opporunity to integrate with the UI
+   if ( !AppPluginUIIntegration(true) )
+      return FALSE;	
 
    // Done with splash screen
    CEAFSplashScreen::CloseOnNextTimeout();
 
-	// Check to see if launched as OLE server
-	if (cmdInfo.m_bRunEmbedded || cmdInfo.m_bRunAutomated)
-	{
-		// Application was run with /Embedding or /Automation.  Don't show the
-		//  main window in this case.
-		return TRUE;
-	}
-
-   // Give app plugins an opporunity to integrate with the UI
-   if ( !AppPluginUIIntegration(true) )
+   if ( cmdInfo.m_bUsageMessage )
+   {
+      ShowUsageMessage();
       return FALSE;
+   }
 
 	// The main window has been initialized, so show and update it.
 	m_pMainWnd->ShowWindow(m_nCmdShow);
 	m_pMainWnd->UpdateWindow();
 
-   if ( IsTipOfTheDayEnabled() && cmdInfo.m_bShowSplash )
+   if ( IsTipOfTheDayEnabled() && !cmdInfo.m_bCommandLineMode )
       ShowTipOfTheDay();
+   
+   if ( cmdInfo.m_nParams != 0 )
+      ProcessCommandLineOptions(cmdInfo);
 
 	return TRUE;
 }
@@ -211,9 +216,9 @@ int CEAFApp::ExitInstance()
 
    m_pDocManager = NULL;
    
-   m_PluginManager.UnloadPlugins();
+   GetAppPluginManager()->UnloadPlugins();
    m_PluginCommandMgr.Clear();
-   m_ComponentInfoManager.UnloadPlugins();
+   GetComponentInfoManager()->UnloadPlugins();
 
    if ( m_pDocTemplateRegistrar )
       delete m_pDocTemplateRegistrar;
@@ -237,11 +242,24 @@ void CEAFApp::RegistryInit()
       m_bShowLegalNotice = VARIANT_TRUE;
    else
       m_bShowLegalNotice = VARIANT_FALSE;
+
+   // the "default" time of last run will be the install time less one day so that if the
+   // "LastRun" setting is not in the registry, this will look like there was a new install
+   // prior to this run
+   sysDate install_date = GetInstallDate();
+   --install_date;
+   sysTime default_time(install_date);
+   
+   ClockTy last_run = GetProfileInt(_T("Settings"),_T("LastRun"),default_time.Seconds());
+   m_LastRunDate = sysTime(last_run);
 }
 
 void CEAFApp::RegistryExit()
 {
    VERIFY(WriteProfileString( _T("Settings"),_T("LegalNotice"),m_bShowLegalNotice == VARIANT_TRUE ? _T("On") : _T("Off") ));
+
+   sysTime time;
+   WriteProfileInt(_T("Settings"),_T("LastRun"),time.Seconds());
 }
 
 CEAFCommandLineInfo& CEAFApp::GetCommandLineInfo()
@@ -249,11 +267,38 @@ CEAFCommandLineInfo& CEAFApp::GetCommandLineInfo()
    return m_CommandLineInfo;
 }
 
-void CEAFApp::DisplayCommandLineUsage()
+void CEAFApp::ShowUsageMessage()
 {
    CEAFCommandLineInfo& cmdInfo = GetCommandLineInfo();
-   CString strMsg = cmdInfo.GetUsageMessage();
-   AfxMessageBox(strMsg,MB_OK | MB_ICONEXCLAMATION);
+   ASSERT( cmdInfo.m_bUsageMessage );
+
+   CString strUsage;
+   strUsage.Format("%s",cmdInfo.GetUsageMessage());
+   
+   UINT nPlugins = GetAppPluginManager()->GetPluginCount();
+   for ( UINT idx = 0; idx < nPlugins; idx++ )
+   {
+      CComPtr<IEAFAppPlugin> appPlugin;
+      GetAppPluginManager()->GetPlugin(idx,&appPlugin);
+
+      CComQIPtr<IEAFAppCommandLine> appCmdLine(appPlugin);
+      if ( appCmdLine )
+      {
+         CString str = appCmdLine->GetUsageMessage();
+
+         strUsage += "\n";
+         strUsage += str;
+      }
+   }
+
+   AfxMessageBox(strUsage,MB_OK | MB_ICONINFORMATION);
+}
+
+void CEAFApp::DisplayCommandLineErrorMessage()
+{
+   CEAFCommandLineInfo& cmdInfo = GetCommandLineInfo();
+   CString strMsg = cmdInfo.GetErrorMessage();
+   AfxMessageBox(strMsg,MB_OK | MB_ICONSTOP);
 }
 
 CMDIFrameWnd* CEAFApp::CreateMainFrame()
@@ -317,14 +362,13 @@ bool CEAFApp::IsTipOfTheDayEnabled()
 void CEAFApp::ShowTipOfTheDay(void)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
-	CTipDlg dlg(m_TipFilePath,AfxGetMainWnd());
+	CTipDlg dlg(m_TipFilePath,EAFGetMainFrame());
 	dlg.DoModal();
 }
 
 BOOL CEAFApp::IsDocLoaded()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    CEAFDocument* pDoc = pMainFrame->GetDocument();
    return (pDoc == NULL ? FALSE : TRUE);
 }
@@ -356,19 +400,19 @@ END_MESSAGE_MAP()
 // CEAFApp message handlers
 BOOL CEAFApp::RegisterDocTemplates()
 {
-   if ( !m_ComponentInfoManager.LoadPlugins() )
+   if ( !GetComponentInfoManager()->LoadPlugins() )
       return FALSE;
 
-   if ( !m_ComponentInfoManager.InitPlugins() )
+   if ( !GetComponentInfoManager()->InitPlugins() )
       return FALSE;
 
    if ( !CreateApplicationPlugins() )
       return FALSE;
 
-   if ( !m_PluginManager.InitPlugins() )
+   if ( !GetAppPluginManager()->InitPlugins() )
       return FALSE;
    
-   if ( !m_PluginManager.RegisterDocTemplates(this) )
+   if ( !GetAppPluginManager()->RegisterDocTemplates(this) )
       return FALSE;
 
    return TRUE;
@@ -376,7 +420,10 @@ BOOL CEAFApp::RegisterDocTemplates()
 
 BOOL CEAFApp::AppPluginUIIntegration(BOOL bIntegrate)
 {
-   m_PluginManager.IntegrateWithUI(bIntegrate);
+   if ( bIntegrate )
+      CEAFSplashScreen::SetText("Integrating components into the user interface");
+
+   GetAppPluginManager()->IntegrateWithUI(bIntegrate);
    return TRUE;
 }
 
@@ -543,7 +590,7 @@ LRESULT CEAFApp::ProcessWndProcException(CException* e, const MSG* pMsg)
 
 void CEAFApp::ForEachDoc(DocCallback pfn,void* pStuff)
 {
-   CWinApp* pApp = AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    POSITION tplpos = pApp->GetFirstDocTemplatePosition();
    while ( tplpos != NULL )
    {
@@ -647,6 +694,33 @@ void CEAFApp::RemoveUnitModeListener(iUnitModeListener* pListener)
    m_UnitModeListeners.erase(pListener);
 }
 
+sysDate CEAFApp::GetInstallDate()
+{
+   HKEY hKey = GetUninstallRegistryKey();
+
+   CString strProductCode = GetProductCode();
+
+   // The GUID used here is the Product Code from InstallShield
+   // This code uniquely identifies PGSuper so don't change it
+   CString strDate = GetLocalMachineString(hKey,strProductCode,_T("InstallDate"),_T("191001015"));
+   int year  = atoi(strDate.Left(4));
+   int month = atoi(strDate.Mid(4,2));
+   int day   = atoi(strDate.Right(2));
+
+   sysDate date(day,month,year);
+   return date;
+}
+
+sysDate CEAFApp::GetLastRunDate()
+{
+   return m_LastRunDate;
+}
+
+BOOL CEAFApp::IsFirstRun()
+{
+   return ( GetLastRunDate() < GetInstallDate() ) ? TRUE : FALSE;
+}
+
 void CEAFApp::Fire_UnitsChanged()
 {
    std::set<iUnitModeListener*>::iterator iter;
@@ -659,9 +733,6 @@ void CEAFApp::Fire_UnitsChanged()
 
 void CEAFApp::OnMainFrameClosing()
 {
-   // tell plug-ins to get out of the UI
-   m_PluginManager.IntegrateWithUI(FALSE);
-   
    m_PluginCommandMgr.Clear(); // make sure all the plugin commands are cleared
 }
 
@@ -684,11 +755,96 @@ BOOL CEAFApp::PreTranslateMessage(MSG* pMsg)
    return CWinApp::PreTranslateMessage(pMsg);
 }
 
+void CEAFApp::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
+{
+   // Give MFC first crack at the command line
+	if ( !ProcessShellCommand(cmdInfo) )
+   {
+      cmdInfo.m_bError = TRUE;
+      cmdInfo.m_bCommandLineMode = TRUE; // will cause an application shutdown
+   }
+
+   if ( !cmdInfo.m_bError )
+   {
+      // If a document was opened when processing the shell command, get the doc template
+      // and then the app plugin... let the app plugin deal with command line options
+      CEAFMainFrame* pMainFrame = EAFGetMainFrame();
+      CEAFDocument* pDoc = pMainFrame->GetDocument();
+      if ( pDoc )
+      {
+         ASSERT( cmdInfo.m_nShellCommand == CCommandLineInfo::FileOpen );
+
+         // get the template
+         CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)pDoc->GetDocTemplate();
+
+         // get the plugin
+         CComPtr<IEAFAppPlugin> appPlugin;
+         pTemplate->GetPlugin(&appPlugin);
+
+         CComQIPtr<IEAFAppCommandLine> appCmdLine(appPlugin);
+         if ( appCmdLine )
+         {
+            // let the plugin deal with the command line
+            appCmdLine->ProcessCommandLineOptions(cmdInfo);
+            if ( cmdInfo.m_bError )
+            {
+               cmdInfo.m_bCommandLineMode = TRUE; // will cause an application shutdown
+            }
+         }
+      }
+      else
+      {
+         // otherwise, if no document, try to figure out which app plugin deals with it.
+         BOOL bHandled = false;
+         UINT nPlugins = GetAppPluginManager()->GetPluginCount();
+         for ( UINT idx = 0; idx < nPlugins; idx++ )
+         {
+            CComPtr<IEAFAppPlugin> appPlugin;
+            GetAppPluginManager()->GetPlugin(idx,&appPlugin);
+
+            CComQIPtr<IEAFAppCommandLine> appCmdLine(appPlugin);
+            if ( appCmdLine )
+            {
+               bHandled = appCmdLine->ProcessCommandLineOptions(cmdInfo);
+               if ( bHandled )
+               {
+                  break;
+               }
+            }
+         }
+
+         // none of the plug-ins dealt with it...
+         // the parameters are not correct
+         if ( !bHandled )
+         {
+            cmdInfo.m_bError = true;
+            cmdInfo.m_bCommandLineMode = TRUE;
+         }
+      }
+   }
+
+   if ( cmdInfo.m_bError )
+   {
+      DisplayCommandLineErrorMessage();
+   }
+
+   // We are doing command line processing, and it should have already happened...
+   // At this point, the application is done running, but we don't want to return FALSE
+   // because that says application initialization failed which isn't the case.
+   // Close the documents and post a WM_QUIT message and return TRUE. This will cause
+   // the application to close normally and to do all of its necessary cleanup
+   if ( cmdInfo.m_bCommandLineMode )
+   {
+      CloseAllDocuments(TRUE);
+      AfxPostQuitMessage(0);
+   }
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // Helpers for saving/restoring window state
 BOOL CEAFApp::ReadWindowPlacement(const CString& strKey,LPWINDOWPLACEMENT pwp)
 {
-   CString strBuffer = AfxGetApp()->GetProfileString(CString((LPCSTR)IDS_REG_SETTINGS), strKey);
+   CString strBuffer = GetProfileString(CString((LPCSTR)IDS_REG_SETTINGS), strKey);
 
    if (strBuffer.IsEmpty())
       return FALSE;
@@ -721,7 +877,7 @@ void CEAFApp::WriteWindowPlacement(const CString& strKey,LPWINDOWPLACEMENT pwp)
       pwp->rcNormalPosition.left, pwp->rcNormalPosition.top,
       pwp->rcNormalPosition.right, pwp->rcNormalPosition.bottom);
 
-   AfxGetApp()->WriteProfileString(CString((LPCSTR)IDS_REG_SETTINGS), strKey, szBuffer);
+   WriteProfileString(CString((LPCSTR)IDS_REG_SETTINGS), strKey, szBuffer);
 }
 
 // returns key for HKEY_LOCAL_MACHINE\Software\Washington State Department of Transportation\PGSuper"
@@ -940,6 +1096,86 @@ BOOL CEAFPluginApp::InitInstance()
    sysComCatMgr::CreateCategory(GetAppPluginCategoryName(),GetAppPluginCategoryID());
 
    return TRUE;
+}
+
+BEGIN_MESSAGE_MAP(CEAFPluginApp, CEAFApp)
+	//{{AFX_MSG_MAP(CEAFPluginApp)
+		// NOTE - the ClassWizard will add and remove mapping macros here.
+	//}}AFX_MSG_MAP
+	ON_COMMAND(ID_MANAGE_APP_PLUGINS, OnManageApplicationPlugins)
+	ON_UPDATE_COMMAND_UI(ID_MANAGE_APP_PLUGINS, OnUpdateManageApplicationPlugins)
+END_MESSAGE_MAP()
+
+void CEAFPluginApp::OnUpdateManageApplicationPlugins(CCmdUI* pCmdUI)
+{
+   CString strTitle;
+   strTitle.Format("Manage %s Document Types...",this->m_pszAppName);
+   pCmdUI->SetText(strTitle);
+}
+
+void CEAFPluginApp::OnManageApplicationPlugins()
+{
+   CString strTitle;
+   strTitle.Format("Manage %s Document Types",this->m_pszAppName);
+   std::vector<CEAFPluginState> pluginStates = EAFManagePlugins(strTitle,GetAppPluginCategoryID(),EAFGetMainFrame());
+   std::vector<CEAFPluginState>::iterator iter;
+   for ( iter = pluginStates.begin(); iter != pluginStates.end(); iter++ )
+   {
+      CEAFAppPluginManager* pPluginMgr = GetAppPluginManager();
+
+      CEAFPluginState& state = *iter;
+      if ( state.StateChanged() )
+      {
+         if ( state.InitiallyEnabled() )
+         {
+            // was initially enabled, now it is disabled
+            CComPtr<IEAFAppPlugin> plugin;
+            pPluginMgr->GetPlugin( state.GetCLSID(), &plugin);
+            plugin->IntegrateWithUI(FALSE);
+            
+            pPluginMgr->RemovePlugin(state.GetCLSID());
+
+            POSITION pos = m_pDocManager->GetFirstDocTemplatePosition();
+            while ( pos != NULL )
+            {
+               POSITION current_pos = pos;
+               CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)(m_pDocManager->GetNextDocTemplate( pos ));
+               CComPtr<IEAFAppPlugin> my_plugin;
+               pTemplate->GetPlugin(&my_plugin);
+               if ( my_plugin.IsEqualObject(plugin) )
+               {
+                  ((CEAFDocManager*)m_pDocManager)->RemoveDocTemplate(current_pos);
+                  pos = NULL;
+               }
+            }
+
+            WriteProfileString(_T("Plugins"),state.GetCLSIDString(),_T("Disabled"));
+         }
+         else
+         {
+            // was not initially enabled, but it is now enabled
+            CComPtr<IEAFAppPlugin> plugin;
+            if ( SUCCEEDED(plugin.CoCreateInstance(state.GetCLSID())) )
+            {
+               pPluginMgr->AddPlugin( state.GetCLSID(), plugin );
+               plugin->IntegrateWithUI(TRUE); // must come after AddPlugin
+
+               CEAFDocTemplate* pDocTemplate = plugin->CreateDocTemplate();
+               if ( pDocTemplate )
+               {
+                  pDocTemplate->SetPlugin(plugin);
+                  m_pDocManager->AddDocTemplate( pDocTemplate );
+               }
+
+               WriteProfileString(_T("Plugins"),state.GetCLSIDString(),_T("Enabled"));
+            }
+            else
+            {
+               AfxMessageBox("Error creating plugin");
+            }
+         }
+      }
+   }
 }
 
 BOOL CEAFPluginApp::CreateApplicationPlugins()
