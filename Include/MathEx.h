@@ -296,6 +296,48 @@ inline long MinIndex(const T& a,const T& b, const T& c, const T& d)
    return 3;
 }
 
+template <class T>
+inline T MaxMagnitude(const T& a,const T& b)
+{
+   // want the value with the greatest magnitude, but we want to retain the sign
+   return (fabs(b) < fabs(a) ? a : b);
+}
+
+template <class T>
+inline T MaxMagnitude(const T& a,const T& b,const T& c)
+{
+   // want the value with the greatest magnitude, but we want to retain the sign
+   return MaxMagnitude(MaxMagnitude(a,b),c);
+}
+
+template <class T>
+inline T MaxMagnitude(const T& a,const T& b,const T& c,const T& d)
+{
+   // want the value with the greatest magnitude, but we want to retain the sign
+   return MaxMagnitude(MaxMagnitude(a,b),MaxMagnitude(c,d));
+}
+
+template <class T>
+inline T MinMagnitude(const T& a,const T& b)
+{
+   // want the value with the smallest magnitude, but we want to retain the sign
+   return (fabs(b) < fabs(a) ? b : a);
+}
+
+template <class T>
+inline T MinMagnitude(const T& a,const T& b,const T& c)
+{
+   // want the value with the smallest magnitude, but we want to retain the sign
+   return MinMagnitude(MinMagnitude(a,b),c);
+}
+
+template <class T>
+inline T MinMagnitude(const T& a,const T& b,const T& c,const T& d)
+{
+   // want the value with the smallest magnitude, but we want to retain the sign
+   return MinMagnitude(MinMagnitude(a,b),MinMagnitude(c,d));
+}
+
 // Difference between an approximate value and an exact value
 template <class T>
 inline T PercentError(const T& approx,const T& exact)

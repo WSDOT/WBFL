@@ -63,7 +63,7 @@ private:
 // CSurfaceTemplateCollection
 HRESULT CSurfaceTemplateCollection::FinalConstruct()
 {
-   m_pProfile = NULL;
+   m_pSurface = NULL;
    return S_OK;
 }
 
@@ -87,30 +87,30 @@ STDMETHODIMP CSurfaceTemplateCollection::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CSurfaceTemplateCollection::get_Profile(IProfile* *pVal)
+STDMETHODIMP CSurfaceTemplateCollection::get_Surface(ISurface* *pVal)
 {
    CHECK_RETOBJ(pVal);
-   if ( m_pProfile )
+   if ( m_pSurface )
    {
-      (*pVal) = m_pProfile;
+      (*pVal) = m_pSurface;
       (*pVal)->AddRef();
    }
 
    return S_OK;
 }
 
-STDMETHODIMP CSurfaceTemplateCollection::putref_Profile(IProfile* pProfile)
+STDMETHODIMP CSurfaceTemplateCollection::putref_Surface(ISurface* pSurface)
 {
-   m_pProfile = pProfile;
+   m_pSurface = pSurface;
 
    CComPtr<IEnumSurfaceTemplates> enumSurfaceTemplates;
    get__EnumSurfaceTemplates(&enumSurfaceTemplates);
 
-   CComPtr<ISurfaceTemplate> widening;
-   while ( enumSurfaceTemplates->Next(1,&widening,NULL) != S_FALSE )
+   CComPtr<ISurfaceTemplate> surfaceTemplate;
+   while ( enumSurfaceTemplates->Next(1,&surfaceTemplate,NULL) != S_FALSE )
    {
-      widening->putref_Profile(m_pProfile);
-      widening.Release();
+      surfaceTemplate->putref_Surface(m_pSurface);
+      surfaceTemplate.Release();
    };
 
    return S_OK;
@@ -142,14 +142,10 @@ STDMETHODIMP CSurfaceTemplateCollection::putref_Item(CollectionIndexType idx,ISu
    if ( !IsValidIndex(idx,m_coll) )
       return E_INVALIDARG;
 
-   //hr = ValidateStation(pVal);
-   //if ( FAILED(hr) )
-   //   return hr;
-
    // Get the item
    SurfaceTemplateType& cst = m_coll[idx];
    CComVariant& var = cst.second; // Variant holding IDispatch to SurfaceTemplate
-   pVal->putref_Profile(m_pProfile);
+   pVal->putref_Surface(m_pSurface);
 
    UnadviseElement(idx); // Unadvise from the current element
 
@@ -177,6 +173,12 @@ STDMETHODIMP CSurfaceTemplateCollection::GetBoundingTemplates(VARIANT varStation
    if ( FAILED(hr) )
       return hr;
 
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+
    SurfaceTemplates::iterator iter1(m_coll.begin());
    SurfaceTemplates::iterator iter2(iter1+1);
    SurfaceTemplates::iterator end(m_coll.end());
@@ -195,8 +197,8 @@ STDMETHODIMP CSurfaceTemplateCollection::GetBoundingTemplates(VARIANT varStation
       template1->get_Station(&station1);
       template2->get_Station(&station2);
 
-      if ( 0 <= cogoUtil::Compare(m_pProfile,station1,objStation) && // station is at or after station1
-           0 <= cogoUtil::Compare(m_pProfile,objStation,station2) )  // station is at or before station2
+      if ( 0 <= cogoUtil::Compare(profile,station1,objStation) && // station is at or after station1
+           0 <= cogoUtil::Compare(profile,objStation,station2) )  // station is at or before station2
       {
          // station is between station1 and station2... these are the templates that we want
          template1.CopyTo(ppStart);
@@ -220,13 +222,18 @@ STDMETHODIMP CSurfaceTemplateCollection::Add(ISurfaceTemplate* pSurfaceTemplate)
 {
    CHECK_IN(pSurfaceTemplate);
 
-   pSurfaceTemplate->putref_Profile(m_pProfile);
+   pSurfaceTemplate->putref_Surface(m_pSurface);
 
    DWORD dwCookie;
    AdviseElement(pSurfaceTemplate,&dwCookie);
    m_coll.push_back( std::make_pair(dwCookie,CComVariant(pSurfaceTemplate)));
 
-   std::sort(m_coll.begin(),m_coll.end(),SortSurfaceTemplates(m_pProfile));
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+   std::sort(m_coll.begin(),m_coll.end(),SortSurfaceTemplates(profile));
 
    Fire_OnSurfaceTemplateAdded(pSurfaceTemplate);
    return S_OK;
@@ -261,7 +268,7 @@ STDMETHODIMP CSurfaceTemplateCollection::Clone(ISurfaceTemplateCollection* *clon
    (*clone) = pClone;
    (*clone)->AddRef();
 
-   (*clone)->putref_Profile(m_pProfile);
+   (*clone)->putref_Surface(m_pSurface);
 
    CComPtr<IEnumSurfaceTemplates> enumSurfaceTemplates;
    get__EnumSurfaceTemplates(&enumSurfaceTemplates);

@@ -218,9 +218,19 @@ Float64 lrfdPsStrand::GetFpj(const matPsStrand& strand,Float64 timeToXfer,Float6
    return fpj;
 }
 
-Float64 lrfdPsStrand::GetXferLength(const matPsStrand& strand)
+Float64 lrfdPsStrand::GetXferLength(const matPsStrand& strand,bool bEpoxyCoated)
 {
-   return 60.0 * strand.GetNominalDiameter();
+   if ( bEpoxyCoated )
+   {
+      // see PCI "Guidelines for the use of Epoxy-Coated Strand"
+      // PCI Journal, July-August 1993
+      return 50.0 * strand.GetNominalDiameter();
+   }
+   else
+   {
+      // See LRFD
+      return 60.0 * strand.GetNominalDiameter();
+   }
 }
 
 Float64 lrfdPsStrand::GetDevLengthFactor(Float64 mbrDepth,bool bDebonded)
@@ -329,25 +339,25 @@ bool lrfdPsStrand::TestMe(dbgLog& rlog)
    lrfdVersionMgr::SetVersion( lrfdVersionMgr::FirstEdition1994 );
 
    // Grade 1725 SR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D1270 );
+   pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::None, matPsStrand::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
    Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1153.82, 0.01 ) );
 
    // Grade 1725 LR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1270 );
+   pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::None, matPsStrand::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
    Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1249.97, 0.01 ) );
 
    // Grade 1860 SR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D1270 );
+   pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::None, matPsStrand::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
    Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1321.92, 0.01 ) );
 
    // Grade 1860 LR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1270 );
+   pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::None, matPsStrand::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
    Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1432.08, 0.01 ) );
@@ -358,25 +368,25 @@ bool lrfdPsStrand::TestMe(dbgLog& rlog)
    lrfdVersionMgr::SetVersion( lrfdVersionMgr::FirstEditionWith1997Interims );
 
    // Grade 1725 SR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D1270 );
+   pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::None, matPsStrand::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
    Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1171.98, 0.01 ) );
 
    // Grade 1725 LR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1270 );
+   pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::None, matPsStrand::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
    Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1214.12, 0.01 ) );
 
    // Grade 1860 SR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D1270 );
+   pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::None, matPsStrand::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
    Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1342.72, 0.01 ) );
 
    // Grade 1860 LR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1270 );
+   pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::None, matPsStrand::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
    Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1391.01, 0.01 ) );

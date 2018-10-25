@@ -23,9 +23,9 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// FilteredSuperstructureMemberCollection.cpp : Implementation of CFilteredSuperstructureMemberCollection
+// SuperstructureMemberCollection.cpp : Implementation of CSuperstructureMemberCollection
 #include "stdafx.h"
-#include "FilteredSuperstructureMemberCollection.h"
+#include "SuperstructureMemberCollection.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -34,13 +34,13 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
-// CFilteredSuperstructureMemberCollection
+// CSuperstructureMemberCollection
 
-STDMETHODIMP CFilteredSuperstructureMemberCollection::InterfaceSupportsErrorInfo(REFIID riid)
+STDMETHODIMP CSuperstructureMemberCollection::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_IFilteredSuperstructureMemberCollection
+		&IID_ISuperstructureMemberCollection
 	};
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{

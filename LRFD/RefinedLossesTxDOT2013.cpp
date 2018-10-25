@@ -59,8 +59,12 @@ lrfdRefinedLossesTxDOT2013::lrfdRefinedLossesTxDOT2013()
 lrfdRefinedLossesTxDOT2013::lrfdRefinedLossesTxDOT2013(Float64 x, // location along girder where losses are computed
                          Float64 Lg,    // girder length
                          lrfdLosses::SectionPropertiesType sectionProperties,
-                         matPsStrand::Grade gr,
-                         matPsStrand::Type type,
+                         matPsStrand::Grade gradePerm, // strand grade
+                         matPsStrand::Type typePerm, // strand type
+                         matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
+                         matPsStrand::Grade gradeTemp, // strand grade
+                         matPsStrand::Type typeTemp, // strand type
+                         matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
                          Float64 fpjPerm, // fpj permanent strands
                          Float64 fpjTemp, // fpj of temporary strands
                          Float64 ApsPerm,  // area of permanent strand
@@ -108,7 +112,7 @@ lrfdRefinedLossesTxDOT2013::lrfdRefinedLossesTxDOT2013(Float64 x, // location al
                          lrfdElasticShortening::FcgpComputationMethod method,
                          bool bValidateParameters
                          ) :
-lrfdLosses(x,Lg,sectionProperties,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Mllim,Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,/* ignore initial relaxation */ true,bValidateParameters)
+lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Mllim,Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,/* ignore initial relaxation */ true,bValidateParameters)
 {
    Init();
 
@@ -275,17 +279,24 @@ void lrfdRefinedLossesTxDOT2013::UpdateLongTermLosses() const
 
       if (lrfdElasticShortening::fcgp07Fpu == m_ElasticShortening.GetFcgpComputationMethod())
       {
-         m_fpt = 0.7 * this->m_Fpu;
+         m_fpt = 0.7 * this->m_FpuPerm;
       }
       else
       {
          m_fpt = m_FpjPerm - m_dfpR0[PERMANENT_STRAND] - m_dfpES[PERMANENT_STRAND];
       }
 
-      m_KL = (m_Type == matPsStrand::LowRelaxation ? 30 : 7);
+      m_KL = (m_TypePerm == matPsStrand::LowRelaxation ? 30 : 7);
 
-      m_dfpR1 = (m_fpt <= 0.0) ? 0 : (m_fpt/m_KL)*(m_fpt/m_Fpy - 0.55);
+      m_dfpR1 = (m_fpt <= 0.0) ? 0 : (m_fpt/m_KL)*(m_fpt/m_FpyPerm - 0.55);
       m_dfpR1 = (m_dfpR1 < 0 ? 0 : m_dfpR1); // Fpt can't be less than 0.55Fpy
+
+      if ( m_CoatingPerm != matPsStrand::None )
+      {
+         // See PCI Guidelines for the use of epoxy-coated strand
+         // PCI Journal July-August 1993. Section 5.3
+         m_dfpR1 *= 2;
+      }
 
       m_dfpR2 = m_dfpR1; // Relaxation loss at deck placement is 1/2 of total
    }

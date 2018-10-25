@@ -94,7 +94,7 @@ public:
 
    //------------------------------------------------------------------------
    // Computes the prestress transfer length. 5.11.4.1
-   static Float64 GetXferLength(const matPsStrand& strand);
+   static Float64 GetXferLength(const matPsStrand& strand,bool bEpoxyCoated);
 
    //------------------------------------------------------------------------
    // Returns the coefficient k used to compute the prestress development length. 5.11.4.2

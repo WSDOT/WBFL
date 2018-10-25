@@ -96,7 +96,7 @@ public:
    STDMETHOD(Clone)(/*[out,retval]*/ IProfile* *clone);
 	STDMETHOD(Clear)();
 	STDMETHOD(Slope)(/*[in]*/ VARIANT varStation,/*[in]*/ Float64 offset,/*[out,retval]*/ Float64* slope);
-   STDMETHOD(TemplateSegmentSlope)(/*[in]*/VARIANT varStation,/*[in]*/CollectionIndexType templateSegmentIdx,/*[out,retval]*/Float64* pSlope);
+   STDMETHOD(TemplateSegmentSlope)(/*[in]*/CogoObjectID id,/*[in]*/VARIANT varStation,/*[in]*/CollectionIndexType templateSegmentIdx,/*[out,retval]*/Float64* pSlope);
 	STDMETHOD(Grade)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ Float64* grade);
 	STDMETHOD(Elevation)(/*[in]*/ VARIANT varStation,/*[in]*/ Float64 offset,/*[out,retval]*/ Float64* elev);
 	STDMETHOD(Remove)(/*[in]*/ VARIANT varID);
@@ -108,9 +108,9 @@ public:
    STDMETHOD(get__EnumProfileElements)(/*[out, retval]*/ IEnumProfileElements** retval);  
    STDMETHOD(get_Surfaces)(/*[out,retval]*/ISurfaceCollection** ppSurfaces);
    STDMETHOD(putref_Surfaces)(/*[in]*/ISurfaceCollection* pSurfaces);
-   STDMETHOD(GetSurface)(VARIANT varStation,ISurface** ppSurface);
-   STDMETHOD(RidgePointOffset)(VARIANT varStation,IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset);
-   STDMETHOD(RidgePointElevation)(VARIANT varStation,IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset,Float64* pElev);
+   STDMETHOD(GetSurface)(CogoObjectID id,VARIANT varStation,ISurface** ppSurface);
+   STDMETHOD(RidgePointOffset)(CogoObjectID id,VARIANT varStation,IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset);
+   STDMETHOD(RidgePointElevation)(CogoObjectID id,VARIANT varStation,IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset,Float64* pElev);
 
 // IStructuredStorage2
 public:
@@ -158,11 +158,11 @@ private:
 
    HRESULT GetStation(VARIANT varStation,IStation** station);
 
-   HRESULT GradeAndElevation(CComPtr<IStation>& station,Float64 offset,Float64* grade,Float64* elev,Float64* pSlope);
-   void BeforeProfileGradeAndElevation(CComPtr<IStation>& station,Float64* grade,Float64* elev);
-   void ProfileGradeAndElevation(CComPtr<IStation>& station,Float64* grade,Float64* elev);
-   void AfterProfileGradeAndElevation(CComPtr<IStation>& station,Float64*grade, Float64* elev);
-   HRESULT AdjustForOffset(CComPtr<IStation>& station,Float64 offset,Float64 elev,Float64* pAdjElev,Float64* pSlope);
+   HRESULT GradeAndElevation(IStation* pStation,Float64 offset,Float64* grade,Float64* elev,Float64* pSlope);
+   void BeforeProfileGradeAndElevation(IStation* pStation,Float64* grade,Float64* elev);
+   void ProfileGradeAndElevation(IStation* pStation,Float64* grade,Float64* elev);
+   void AfterProfileGradeAndElevation(IStation* pStation,Float64*grade, Float64* elev);
+   HRESULT AdjustForOffset(IStation* pStation,Float64 offset,Float64 profileElev,Float64* pAdjElev,Float64* pSlope);
 
    void AdviseElement(IProfileElement* element,DWORD* pdwCookie);
    void UnadviseElement(CollectionIndexType idx);

@@ -79,9 +79,9 @@ public:
 
 // ISuperelevation
 public:
-   STDMETHOD(Init)(IProfile* pProfile,VARIANT varBeginStation,VARIANT varBeginFullStation,VARIANT varEndFullStation,VARIANT varEndStation,Float64 rate,IndexType pivotPoint,SuperTransitionType beginType,Float64 beginL1,Float64 beginL2,SuperTransitionType endType,Float64 endL1,Float64 endL2);
-   STDMETHOD(get_Profile)(IProfile* *pVal);
-   STDMETHOD(putref_Profile)(IProfile* newVal);
+   STDMETHOD(Init)(ISurface* pSurface,VARIANT varBeginStation,VARIANT varBeginFullStation,VARIANT varEndFullStation,VARIANT varEndStation,Float64 rate,IndexType pivotPoint,SuperTransitionType beginType,Float64 beginL1,Float64 beginL2,SuperTransitionType endType,Float64 endL1,Float64 endL2);
+   STDMETHOD(get_Surface)(ISurface* *pVal);
+   STDMETHOD(putref_Surface)(ISurface* newVal);
    STDMETHOD(put_BeginTransition)(VARIANT varBeginTransition);
    STDMETHOD(get_BeginTransition)(IStation** ppBeginTransition);
    STDMETHOD(put_BeginFullSuper)(VARIANT varBeginFullSuper);
@@ -112,7 +112,7 @@ public:
    STDMETHOD(Load)(IStructuredLoad2* pLoad);
 
 private:
-   IProfile* m_pProfile; // weak reference
+   ISurface* m_pSurface; // weak reference
    CComPtr<IStation> m_BeginTransition;
    CComPtr<IStation> m_BeginFullSuper;
    CComPtr<IStation> m_EndFullSuper;

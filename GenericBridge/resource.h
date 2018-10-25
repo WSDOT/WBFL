@@ -190,7 +190,7 @@
 #define IDC_SYMMETRICAL                 282
 #define IDR_UGIRDERSECTION              282
 #define IDR_UGIRDERSECTION2              283
-#define IDR_FILTEREDSUPERSTRUCTUREMEMBERCOLLECTION 284
+#define IDR_SUPERSTRUCTUREMEMBERCOLLECTION 284
 #define IDC_TITLE                       285
 #define IDC_LINKAGE                     286
 #define IDC_START_OFFSET                293

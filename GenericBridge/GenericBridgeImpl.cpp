@@ -32,7 +32,7 @@
 #include "SuperstructureMember.h"
 #include <MathEx.h>
 
-#include "FilteredSuperstructureMemberCollection.h"
+#include "SuperstructureMemberCollection.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -350,78 +350,6 @@ STDMETHODIMP CGenericBridge::get__EnumSuperstructureMembers(IEnumSuperstructureM
       delete pEnum;
 
    return hr;
-}
-
-STDMETHODIMP CGenericBridge::get_SuperstructureMembersAtStation(Float64 station,IFilteredSuperstructureMemberCollection** ppMbrs)
-{
-   CComObject<CFilteredSuperstructureMemberCollection>* pCollection;
-   CComObject<CFilteredSuperstructureMemberCollection>::CreateInstance(&pCollection);
-
-   (*ppMbrs) = pCollection;
-   (*ppMbrs)->AddRef();
-
-   PierIndexType nPiers;
-   m_Piers->get_Count(&nPiers);
-   CComPtr<IBridgePier> firstPier, lastPier;
-   m_Piers->get_Item(0,&firstPier);
-   m_Piers->get_Item(nPiers-1,&lastPier);
-
-   CComPtr<IStation> startBridgeStation, endBridgeStation;
-   firstPier->get_Station(&startBridgeStation);
-   lastPier->get_Station(&endBridgeStation);
-
-   Float64 startBridgeStationValue, endBridgeStationValue;
-   startBridgeStation->get_Value(&startBridgeStationValue);
-   endBridgeStation->get_Value(&endBridgeStationValue);
-
-   CComPtr<IEnumSuperstructureMembers> enumMbrs;
-   get__EnumSuperstructureMembers(&enumMbrs);
-
-   CComPtr<ISuperstructureMember> mbr;
-   while ( enumMbrs->Next(1,&mbr,NULL) != S_FALSE )
-   {
-      CollectionIndexType nSegments;
-      mbr->get_SegmentCount(&nSegments);
-
-      CComPtr<ISuperstructureMemberSegment> firstSegment, lastSegment;
-      mbr->get_Segment(0,&firstSegment);
-      mbr->get_Segment(nSegments-1,&lastSegment);
-
-      CComPtr<IGirderLine> firstGirderLine, lastGirderLine;
-      firstSegment->get_GirderLine(&firstGirderLine);
-      lastSegment->get_GirderLine(&lastGirderLine);
-
-      CComPtr<IPierLine> firstPierLine, lastPierLine;
-      firstGirderLine->get_StartPier(&firstPierLine);
-      lastGirderLine->get_EndPier(&lastPierLine);
-
-      CComPtr<IStation> firstStation, lastStation;
-      firstPierLine->get_Station(&firstStation);
-      lastPierLine->get_Station(&lastStation);
-
-      Float64 firstStationValue, lastStationValue;
-      firstStation->get_Value(&firstStationValue);
-      lastStation->get_Value(&lastStationValue);
-
-      if ( ::IsEqual(station,startBridgeStationValue) || ::IsEqual(station,endBridgeStationValue) )
-      {
-         if ( ::InRange(firstStationValue,station,lastStationValue) )
-         {
-            pCollection->Add(mbr);
-         }
-      }
-      else
-      {
-         if ( ::IsGE(firstStationValue,station) && station < lastStationValue )
-         {
-            pCollection->Add(mbr);
-         }
-      }
-
-      mbr.Release();
-   }
-
-   return S_OK;
 }
 
 /////////////////////////////////////////////////////

@@ -246,7 +246,32 @@ STDMETHODIMP CSurfaceCollection::Clone(ISurfaceCollection* *clone)
    return S_OK;
 }
 
-STDMETHODIMP CSurfaceCollection::GetSurface(VARIANT varStation,ISurface** ppSurface)
+STDMETHODIMP CSurfaceCollection::FindSurface(CogoObjectID id,ISurface** ppSurface)
+{
+   CHECK_RETOBJ(ppSurface);
+
+   CComPtr<IEnumSurfaces> enumSurfaces;
+   get__EnumSurfaces(&enumSurfaces);
+   CComPtr<ISurface> surface;
+   while ( enumSurfaces->Next(1,&surface,NULL) != S_FALSE )
+   {
+      CogoObjectID surfaceID;
+      surface->get_ID(&surfaceID);
+      if ( surfaceID == id )
+      {
+         // this is the surface
+         (*ppSurface) = surface;
+         (*ppSurface)->AddRef();
+         return S_OK;
+      }
+
+      surface.Release();
+   }
+
+   return E_FAIL; // surface not found
+}
+
+STDMETHODIMP CSurfaceCollection::GetSurface(CogoObjectID id,VARIANT varStation,ISurface** ppSurface)
 {
    CHECK_RETOBJ(ppSurface);
    (*ppSurface) = NULL;
@@ -261,22 +286,27 @@ STDMETHODIMP CSurfaceCollection::GetSurface(VARIANT varStation,ISurface** ppSurf
    CComPtr<ISurface> surface;
    while ( enumSurfaces->Next(1,&surface,NULL) != S_FALSE )
    {
-      CComPtr<IStation> objStartStation,objEndStation;
-      surface->GetStationRange(&objStartStation,&objEndStation);
-
-      if ( 0 <= cogoUtil::Compare(m_pProfile,objStartStation,objStation) && // station is after start
-           0 <= cogoUtil::Compare(m_pProfile,objStation,objEndStation) )  // and station is before end
+      CogoObjectID surfaceID;
+      surface->get_ID(&surfaceID);
+      if ( surfaceID == id )
       {
-         // this is the surface
-         (*ppSurface) = surface;
-         (*ppSurface)->AddRef();
-         return S_OK;
+         CComPtr<IStation> objStartStation,objEndStation;
+         surface->GetStationRange(&objStartStation,&objEndStation);
+
+         if ( 0 <= cogoUtil::Compare(m_pProfile,objStartStation,objStation) && // station is after start
+              0 <= cogoUtil::Compare(m_pProfile,objStation,objEndStation) )  // and station is before end
+         {
+            // this is the surface
+            (*ppSurface) = surface;
+            (*ppSurface)->AddRef();
+            return S_OK;
+         }
       }
 
       surface.Release();
    }
 
-   return S_FALSE; // surface not found
+   return E_FAIL; // surface not found
 }
 
 STDMETHODIMP CSurfaceCollection::get_StructuredStorage(IStructuredStorage2* *pStg)

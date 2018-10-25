@@ -62,8 +62,12 @@ lrfdRefinedLosses::lrfdRefinedLosses()
 lrfdRefinedLosses::lrfdRefinedLosses(Float64 x, // location along girder where losses are computed
                          Float64 Lg,    // girder length
                          lrfdLosses::SectionPropertiesType sectionProperties,
-                         matPsStrand::Grade gr,
-                         matPsStrand::Type type,
+                         matPsStrand::Grade gradePerm, // strand grade
+                         matPsStrand::Type typePerm, // strand type
+                         matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
+                         matPsStrand::Grade gradeTemp, // strand grade
+                         matPsStrand::Type typeTemp, // strand type
+                         matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
                          Float64 fpjPerm, // fpj permanent strands
                          Float64 fpjTemp, // fpj of temporary strands
                          Float64 ApsPerm,  // area of permanent strand
@@ -110,7 +114,7 @@ lrfdRefinedLosses::lrfdRefinedLosses(Float64 x, // location along girder where l
                          Float64 shipping,
                          bool bValidateParameters
                          ) :
-lrfdLosses(x,Lg,sectionProperties,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Mllim,Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,false,bValidateParameters)
+lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Mllim,Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,false,bValidateParameters)
 {
    m_Shipping = shipping;
 }
@@ -200,7 +204,7 @@ Float64 lrfdRefinedLosses::TemporaryStrand_RelaxationLossesAtXfer() const
       UpdateLosses();
    }
 
-   return m_dfpR0[0];
+   return m_dfpR0[TEMPORARY_STRAND];
 }
 
 Float64 lrfdRefinedLosses::PermanentStrand_RelaxationLossesAtXfer() const
@@ -210,7 +214,7 @@ Float64 lrfdRefinedLosses::PermanentStrand_RelaxationLossesAtXfer() const
       UpdateLosses();
    }
 
-   return m_dfpR0[1];
+   return m_dfpR0[PERMANENT_STRAND];
 }
 
 Float64 lrfdRefinedLosses::RelaxationLossesAfterXfer() const
@@ -230,7 +234,7 @@ Float64 lrfdRefinedLosses::TemporaryStrand_ImmediatelyBeforeXferLosses() const
       UpdateLosses();
    }
 
-   return m_dfpR0[0];
+   return m_dfpR0[TEMPORARY_STRAND];
 }
 
 Float64 lrfdRefinedLosses::PermanentStrand_ImmediatelyBeforeXferLosses() const
@@ -240,7 +244,7 @@ Float64 lrfdRefinedLosses::PermanentStrand_ImmediatelyBeforeXferLosses() const
       UpdateLosses();
    }
 
-   return m_dfpR0[1];
+   return m_dfpR0[PERMANENT_STRAND];
 }
 
 Float64 lrfdRefinedLosses::TemporaryStrand_ImmediatelyAfterXferLosses() const
@@ -250,7 +254,7 @@ Float64 lrfdRefinedLosses::TemporaryStrand_ImmediatelyAfterXferLosses() const
       UpdateLosses();
    }
 
-   return m_dfpES[0] + m_dfpR0[0];
+   return m_dfpES[TEMPORARY_STRAND] + m_dfpR0[TEMPORARY_STRAND];
 }
 
 Float64 lrfdRefinedLosses::PermanentStrand_ImmediatelyAfterXferLosses() const
@@ -260,7 +264,7 @@ Float64 lrfdRefinedLosses::PermanentStrand_ImmediatelyAfterXferLosses() const
       UpdateLosses();
    }
 
-   return m_dfpES[1] + m_dfpR0[1];
+   return m_dfpES[PERMANENT_STRAND] + m_dfpR0[PERMANENT_STRAND];
 }
 
 void lrfdRefinedLosses::ValidateParameters() const
@@ -284,7 +288,14 @@ void lrfdRefinedLosses::UpdateLongTermLosses() const
 
       m_dfpCR = creep_losses( m_ElasticShortening.PermanentStrand_Fcgp()/* + m_DeltaFcgp*/, m_DeltaFcd1 );
 
-      m_dfpR2 = relaxation_after_transfer( m_Type, m_dfpES[1] + m_dfpp, m_dfpSR, m_dfpCR );
+      m_dfpR2 = relaxation_after_transfer( m_TypePerm, m_dfpES[PERMANENT_STRAND] + m_dfpp, m_dfpSR, m_dfpCR );
+   }
+
+   if ( m_CoatingPerm != matPsStrand::None )
+   {
+      // See PCI Guidelines for the use of epoxy-coated strand
+      // PCI Journal July-August 1993. Section 5.3
+      m_dfpR2 *= 2;
    }
 }
 

@@ -90,8 +90,8 @@ public:
 
 // ISurfaceTemplateCollection
 public:
-   STDMETHOD(get_Profile)(/*[out, retval]*/ IProfile* *pVal);
-   STDMETHOD(putref_Profile)(/*[in]*/ IProfile* newVal);
+   STDMETHOD(get_Surface)(/*[out, retval]*/ ISurface* *pVal);
+   STDMETHOD(putref_Surface)(/*[in]*/ ISurface* newVal);
 	STDMETHOD(Clear)();
 	STDMETHOD(Add)(ISurfaceTemplate* newVal);
 	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx);
@@ -127,6 +127,6 @@ private:
    //HRESULT ValidateStation(ISurfaceTemplate* pSurfaceTemplate);
    //HRESULT ValidateStation(VARIANT varStation,bool bClone,IStation** station);
 
-   IProfile* m_pProfile; // weak referece to associated profile
+   ISurface* m_pSurface; // weak referece to associated profile
 };
 

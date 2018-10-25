@@ -139,6 +139,9 @@ Uint8 rptOutputRcVisitor::GetRomanForGreek(rptRcSymbol::SymbolType sym)
    case rptRcSymbol::NU:
       symlet='n';
       break;
+   case rptRcSymbol::varphi:
+      symlet=0x6A;
+      break;
    case rptRcSymbol::phi:
       symlet='f';
       break;

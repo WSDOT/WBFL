@@ -285,6 +285,14 @@ library WBFLGenericBridge
       D6200 = 0x1000,// 0.62"
    } StrandSize;
 
+   typedef [public,helpstring("enum StrandCoating"),uuid(A6EE8250-D1D0-4ade-9C20-BA286A4215FA)]
+   enum 
+   {
+       None        = 0x00010000, 
+       SmoothEpoxy = 0x00020000,
+       GritEpoxy   = 0x00040000
+   } StrandCoating;
+
    typedef [public,helpstring("enum SplittingDirection"),uuid(E32B1A87-2444-42e3-878E-CD5742837900)]
    enum 
    {
@@ -764,6 +772,8 @@ library WBFLGenericBridge
 	   [propput,helpstring("property Grade")] HRESULT Grade([in] StrandGrade grade);
 	   [propget,helpstring("property Type")] HRESULT Type([out,retval] StrandType* type);
 	   [propput,helpstring("property Type")] HRESULT Type([in] StrandType type);
+	   [propget,helpstring("property Coating")] HRESULT Coating([out,retval] StrandCoating* coating);
+	   [propput,helpstring("property Coating")] HRESULT Coating([in] StrandCoating coating);
 	   [propget,helpstring("property Size")] HRESULT Size([out,retval] StrandSize* size);
 	   [propput,helpstring("property Size")] HRESULT Size([in] StrandSize size);
       [propget,helpstring("property InstallationStage")] HRESULT InstallationStage([out,retval]StageIndexType* pStageIdx);
@@ -1121,15 +1131,20 @@ library WBFLGenericBridge
 		object,
 		uuid(6129251E-9A42-4af7-8090-20DC84F50E94),
 		oleautomation,
-		helpstring("IFilteredSuperstructureMemberCollection Interface"),
+		helpstring("ISuperstructureMemberCollection Interface"),
 		pointer_default(unique)
 	]
-	interface IFilteredSuperstructureMemberCollection : IUnknown
+	interface ISuperstructureMemberCollection : IUnknown
 	{
+      [helpstring("method Add")] HRESULT Add([in]ISuperstructureMember* pSSMbr);
 		[propget, helpstring("property Count")] HRESULT Count([out, retval] CollectionIndexType *pVal);
 		[propget, helpstring("property Item")] HRESULT Item([in]CollectionIndexType index, [out, retval] ISuperstructureMember* *pVal);
 		[propget, helpstring("property _EnumElements")] HRESULT _EnumElements([out, retval] IEnumSuperstructureMembers* *pVal);
 		[propget] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+      [helpstring("method Remove")] HRESULT Remove([in] CollectionIndexType Index);
+ 	   [helpstring("method Clear")] HRESULT Clear();
+      [helpstring("method Reverse")] HRESULT Reverse();
+      [helpstring("method Insert")] HRESULT Insert([in]CollectionIndexType index,[in]ISuperstructureMember* pVal);
 	};
    [
 		object,
@@ -1544,17 +1559,12 @@ library WBFLGenericBridge
       [propput, helpstring("property Type")] HRESULT Type([in]PierType type);
       [propget, helpstring("property Type")] HRESULT Type([out,retval]PierType* type);
 
-      // Top of deck elevation where the CL Pier intersects the alignment
-      [propget,helpstring("property DeckElevation")] HRESULT DeckElevation([out,retval]Float64* pElev);
+      // Profile of the deck, in the plane of the pier. X = offset from alignment. Y = elevation
+      // X = 0 is at the alignment.
+      [propget, helpstring("property DeckProfile")] HRESULT DeckProfile([out,retval]IPoint2dCollection** ppPoints);
 
       // Gross deck thickness at CL Pier.
       [propget,helpstring("property DeckThickness")] HRESULT DeckThickness([out,retval]Float64* pTDeck);
-
-      // Offset from the alignment to the crown point
-      [propget,helpstring("property CrownPointOffset")] HRESULT CrownPointOffset([out,retval]Float64* pCPO);
-
-      // Crown slope (left/right of crown point offset), measured in the plane of the pier
-      [propget,helpstring("property CrownSlope")] HRESULT CrownSlope([in]DirectionType side,[out,retval]Float64* pSlope);
 
       // Curb line offset (left/right offset from alignment to curb line), measured in the plane of the pier
       [propget,helpstring("property CurbLineOffset")] HRESULT CurbLineOffset([in]DirectionType side,[out,retval]Float64* pCLO);
@@ -1574,10 +1584,10 @@ library WBFLGenericBridge
       [helpstring("method ConvertCurbLineToCrossBeamCoordinate")] HRESULT ConvertCurbLineToCrossBeamCoordinate([in]Float64 Xcl,[out,retval]Float64* pXxb);
       [helpstring("method ConvertPierToCrossBeamCoordinate")] HRESULT ConvertPierToCrossBeamCoordinate([in]Float64 Xp,[out,retval]Float64* pXxb);
       [helpstring("method ConvertCrossBeamToPierCoordinate")] HRESULT ConvertCrossBeamToPierCoordinate([in]Float64 Xxb,[out,retval]Float64* pXp);
+      [helpstring("method ConvertPierToCurbLineCoordinate")] HRESULT ConvertPierToCurbLineCoordinate([in]Float64 Xp,[out,retval]Float64* pXcl);
+      [helpstring("method ConvertCurbLineToPierCoordinate")] HRESULT ConvertCurbLineToPierCoordinate([in]Float64 Xcl,[out,retval]Float64* pXp);
 
       [propget,helpstring("property Elevation")] HRESULT Elevation([in]Float64 Xcl,[out,retval]Float64* pElev);
-      [propget,helpstring("property CrownPointLocation")] HRESULT CrownPointLocation([out,retval]Float64* pXcl);
-      [propget,helpstring("property CrownPointElevation")] HRESULT CrownPointElevation([out,retval]Float64* pElev);
       [propget,helpstring("property CurbLineElevation")] HRESULT CurbLineElevation([in]DirectionType side,[out,retval]Float64* pElev);
 	};
 
@@ -1608,10 +1618,8 @@ library WBFLGenericBridge
 	]
 	interface IPierEx : IPier
 	{
-      [propput,helpstring("property DeckElevation")] HRESULT DeckElevation([in]Float64 elev);
+      [propputref,helpstring("property DeckProfile")] HRESULT DeckProfile([in]IPoint2dCollection* pPoints);
       [propput,helpstring("property DeckThickness")] HRESULT DeckThickness([in]Float64 tDeck);
-      [propput,helpstring("property CrownPointOffset")] HRESULT CrownPointOffset([in]Float64 cpo);
-      [propput,helpstring("property CrownSlope")] HRESULT CrownSlope([in]DirectionType side,[in]Float64 slope);
       [propput,helpstring("property CurbLineOffset")] HRESULT CurbLineOffset([in]DirectionType side,[in]Float64 clo);
 	};
 
@@ -2027,7 +2035,6 @@ library WBFLGenericBridge
      [helpstring("method CreateSuperstructureMember")] HRESULT CreateSuperstructureMember([in]GirderIDType id,[in] LocationType locationType,[out,retval]ISuperstructureMember** ppMbr);
      [propget, helpstring("property SuperstrucuterMember")] HRESULT SuperstructureMember([in]GirderIDType id,[out,retval]ISuperstructureMember** ppMbr);
      [propget, restricted, helpstring("property _EnumSuperstructureMembers")] HRESULT _EnumSuperstructureMembers([out,retval]IEnumSuperstructureMembers* *enumSSMbrs);
-     [propget, helpstring("property SuperstructureMembersAtStation")] HRESULT SuperstructureMembersAtStation([in]Float64 station,[out,retval]IFilteredSuperstructureMemberCollection** ppMbrs);
 
      [helpstring("method UpdateBridgeModel")] HRESULT UpdateBridgeModel();
 	};
@@ -2308,12 +2315,11 @@ library WBFLGenericBridge
 	};
 	[
 		uuid(627E1C31-A568-406e-8583-7887AD068D0B),
-      helpstring("FilteredSuperstructureMemberCollection Class"),
-      noncreatable
+      helpstring("SuperstructureMemberCollection Class")
 	]
-	coclass FilteredSuperstructureMemberCollection
+	coclass SuperstructureMemberCollection
 	{
-		[default] interface IFilteredSuperstructureMemberCollection;
+		[default] interface ISuperstructureMemberCollection;
 	};
 	[
 		uuid(CB50DBAC-CF8D-4204-B581-9C8A7705EEB2),

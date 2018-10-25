@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.SurfaceProfile.1 = s 'SurfaceProfile Class'
+	{
+		CLSID = s '{1B216215-3EEC-407e-BBEC-52BB0C0FBCBD}'
+	}
+	WBFLCogo.SurfaceProfile = s 'SurfaceProfile Class'
+	{
+		CLSID = s '{1B216215-3EEC-407e-BBEC-52BB0C0FBCBD}'
+		CurVer = s 'WBFLCogo.SurfaceProfile.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {1B216215-3EEC-407e-BBEC-52BB0C0FBCBD} = s 'SurfaceProfile Class'
+		{
+			ProgID = s 'WBFLCogo.SurfaceProfile.1'
+			VersionIndependentProgID = s 'WBFLCogo.SurfaceProfile'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

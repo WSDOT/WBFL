@@ -126,7 +126,7 @@ HRESULT CBridgePier::ValidateOrientation(BSTR bstrOrientation)
 
 //////////////////////////////////////////////////////////////////////////////////////
 // IPier
-STDMETHODIMP CBridgePier::get_DeckElevation(/*[out,retval]*/Float64* pElev)
+STDMETHODIMP CBridgePier::get_DeckProfile(/*[out,retval]*/IPoint2dCollection** ppPoints)
 {
 #pragma Reminder("IMPLEMENT")
    ATLASSERT(false);
@@ -134,20 +134,6 @@ STDMETHODIMP CBridgePier::get_DeckElevation(/*[out,retval]*/Float64* pElev)
 }
 
 STDMETHODIMP CBridgePier::get_DeckThickness(/*[out,retval]*/Float64* pTDeck)
-{
-#pragma Reminder("IMPLEMENT")
-   ATLASSERT(false);
-   return E_NOTIMPL;
-}
-
-STDMETHODIMP CBridgePier::get_CrownPointOffset(/*[out,retval]*/Float64* pCPO)
-{
-#pragma Reminder("IMPLEMENT")
-   ATLASSERT(false);
-   return E_NOTIMPL;
-}
-
-STDMETHODIMP CBridgePier::get_CrownSlope(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pSlope)
 {
 #pragma Reminder("IMPLEMENT")
    ATLASSERT(false);
@@ -211,7 +197,7 @@ STDMETHODIMP CBridgePier::Load(IStructuredLoad2* load)
 {
    CHECK_IN(load);
    CComVariant var;
-   load->BeginUnit(CComBSTR("Pier"));
+   load->BeginUnit(CComBSTR("BridgePier"));
 
 #pragma Reminder("IMPLMEENT: Load BridgePier")
 
@@ -225,7 +211,7 @@ STDMETHODIMP CBridgePier::Save(IStructuredSave2* save)
 {
    CHECK_IN(save);
 
-   save->BeginUnit(CComBSTR("Pier"),1.0);
+   save->BeginUnit(CComBSTR("BridgePier"),1.0);
 
 #pragma Reminder("IMPLMEENT: Save BridgePier")
 

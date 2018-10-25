@@ -117,9 +117,13 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
 
 private:
-   void GetUpperXBeamPoints(IPoint2d** ppTL,IPoint2d** ppTC,IPoint2d** ppTR,IPoint2d** ppBL,IPoint2d** ppBC,IPoint2d** ppBR);
-   void GetLowerXBeamPoints(IPoint2d** ppTL,IPoint2d** ppTC,IPoint2d** ppTR,IPoint2d** ppBL,IPoint2d** ppBL2,IPoint2d** ppBC,IPoint2d** ppBR2,IPoint2d** ppBR);
-   void GetLowerXBeamShape(Float64 Xxb,IShape** ppShape);
-   void GetUpperXBeamShape(Float64 Xxb,IShape** ppShape);
+   HRESULT GetUpperXBeamProfile(IPoint2dCollection** ppPoints);
+   HRESULT GetLowerXBeamProfile(IPoint2dCollection** ppPoints);
+   HRESULT GetBottomXBeamProfile(IPoint2dCollection** ppPoints);
+   HRESULT GetLowerXBeamShape(Float64 Xxb,IShape** ppShape);
+   HRESULT GetUpperXBeamShape(Float64 Xxb,IShape** ppShape);
+
+   HRESULT TrimLeftToLine(IPoint2dCollection* pPoints,ILine2d* pLine);
+   HRESULT TrimRightToLine(IPoint2dCollection* pPoints,ILine2d* pLine);
 };
 

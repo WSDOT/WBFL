@@ -83,7 +83,7 @@ static void NegateMpf(lrfdILiveLoadDistributionFactor::DFResult& g)
 
    if (g.LanesBeamsData.bWasUsed)
    {
-      Float64 mpf =  g.RigidData.m;
+      Float64 mpf =  g.LanesBeamsData.m;
       g.LanesBeamsData.mg /= mpf;
       g.LanesBeamsData.m = 1.0;
 

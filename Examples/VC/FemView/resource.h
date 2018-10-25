@@ -18,6 +18,7 @@
 #define IDD_JOINT_LIST1                 140
 #define IDD_POI_LIST                    140
 #define IDD_STRAIN_LOAD_LIST            141
+#define IDD_RESULTS_LIST                142
 #define IDS_INDICATOR_WORLDPOINT        199
 #define IDS_INDICATOR_LOGICALPOINT      200
 #define IDS_INDICATOR_DEVICEPOINT       201
@@ -43,6 +44,8 @@
 #define IDC_RELEASE_MZ_START            1021
 #define IDC_RELEASE_MZ_END              1022
 #define IDC_LIST                        1023
+#define IDC_COMBO1                      1028
+#define IDC_LOADING                     1028
 #define ID_VIEW_SCALETOFIT              32771
 #define ID_VIEW_CENTERONPOINT           32772
 #define ID_VIEW_ZOOM                    32773
@@ -62,7 +65,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        140
 #define _APS_NEXT_COMMAND_VALUE         32782
-#define _APS_NEXT_CONTROL_VALUE         1028
+#define _APS_NEXT_CONTROL_VALUE         1029
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

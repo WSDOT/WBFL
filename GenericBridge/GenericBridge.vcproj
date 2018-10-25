@@ -1761,94 +1761,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="FilteredSuperstructureMemberCollection.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\FixedLengthRebarLayoutItem.cpp"
 				>
 			</File>
@@ -3801,6 +3713,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\SuperstructureMemberCollection.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\TaperedGirderSegment.cpp"
 				>
 			</File>
@@ -4342,10 +4258,6 @@
 				>
 			</File>
 			<File
-				RelativePath="FilteredSuperstructureMemberCollection.h"
-				>
-			</File>
-			<File
 				RelativePath=".\FixedLengthRebarLayoutItem.h"
 				>
 			</File>
@@ -4514,6 +4426,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SuperstructureMemberCollection.h"
+				>
+			</File>
+			<File
 				RelativePath=".\TaperedGirderSegment.h"
 				>
 			</File>
@@ -4636,10 +4552,6 @@
 			</File>
 			<File
 				RelativePath="FilteredSegmentCollection.rgs"
-				>
-			</File>
-			<File
-				RelativePath="FilteredSuperstructureMemberCollection.rgs"
 				>
 			</File>
 			<File

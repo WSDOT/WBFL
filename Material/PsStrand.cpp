@@ -51,6 +51,7 @@ m_Name(_T("Unknown"))
    m_Grade    = Gr1725;
    m_Type     = LowRelaxation;
    m_Size     = D1270;
+   m_Coating  = None;
    m_Diameter = g_12p70_MM;
    m_Area     = g_98p71_MM2;
    m_Fpu      = g_1725_MPA;
@@ -58,13 +59,14 @@ m_Name(_T("Unknown"))
    m_ModE     = g_197000_MPA;
 }
 
-matPsStrand::matPsStrand(const std::_tstring& name,Grade grade,Type type,Size size,
+matPsStrand::matPsStrand(const std::_tstring& name,Grade grade,Type type,Coating coating,Size size,
                          Float64 fpu,Float64 fpy,Float64 modE,
                          Float64 d, Float64 a) :
 m_Name( name )
 {
    m_Grade    = grade;
    m_Type     = type;
+   m_Coating  = coating;
    m_Size     = size;
    m_Diameter = d;
    m_Area     = a;
@@ -105,6 +107,9 @@ bool matPsStrand::operator==(const matPsStrand& rOther) const
       return false;
 
    if ( m_Size != rOther.m_Size )
+      return false;
+
+   if ( m_Coating != rOther.m_Coating )
       return false;
 
    if ( !IsEqual( m_Diameter, rOther.m_Diameter ) )
@@ -257,6 +262,7 @@ void matPsStrand::MakeCopy(const matPsStrand& rOther)
    m_Grade    = rOther.m_Grade;
    m_Type     = rOther.m_Type;
    m_Size     = rOther.m_Size;
+   m_Coating  = rOther.m_Coating;
    m_Diameter = rOther.m_Diameter;
    m_Area     = rOther.m_Area;
    m_Fpu      = rOther.m_Fpu;

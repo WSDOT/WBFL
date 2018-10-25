@@ -216,6 +216,23 @@ STDMETHODIMP CPoint3d::Location(Float64* pX,Float64* pY,Float64* pZ)
    return S_OK;
 }
 
+STDMETHODIMP CPoint3d::Distance(Float64 x,Float64 y,Float64 z,Float64* pDistance)
+{
+   Float64 dx = x - m_X;
+   Float64 dy = y - m_Y;
+   Float64 dz = z - m_Z;
+   *pDistance = sqrt(dx*dx + dy*dy + dz*dz);
+   return S_OK;
+}
+
+STDMETHODIMP CPoint3d::DistanceEx(IPoint3d* pOther,Float64* pDistance)
+{
+   CHECK_IN(pOther);
+   Float64 x,y,z;
+   pOther->Location(&x,&y,&z);
+   return Distance(x,y,z,pDistance);
+}
+
 STDMETHODIMP CPoint3d::Clone(IPoint3d** ppPoint)
 {
    CHECK_RETOBJ(ppPoint);

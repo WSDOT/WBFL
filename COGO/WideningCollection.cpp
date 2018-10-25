@@ -63,7 +63,7 @@ private:
 // CWideningCollection
 HRESULT CWideningCollection::FinalConstruct()
 {
-   m_pProfile = NULL;
+   m_pSurface = NULL;
    return S_OK;
 }
 
@@ -87,21 +87,21 @@ STDMETHODIMP CWideningCollection::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CWideningCollection::get_Profile(IProfile* *pVal)
+STDMETHODIMP CWideningCollection::get_Surface(ISurface* *pVal)
 {
    CHECK_RETOBJ(pVal);
-   if ( m_pProfile )
+   if ( m_pSurface )
    {
-      (*pVal) = m_pProfile;
+      (*pVal) = m_pSurface;
       (*pVal)->AddRef();
    }
 
    return S_OK;
 }
 
-STDMETHODIMP CWideningCollection::putref_Profile(IProfile* pProfile)
+STDMETHODIMP CWideningCollection::putref_Surface(ISurface* pSurface)
 {
-   m_pProfile = pProfile;
+   m_pSurface = pSurface;
 
    CComPtr<IEnumWidenings> enumWidenings;
    get__EnumWidenings(&enumWidenings);
@@ -109,7 +109,7 @@ STDMETHODIMP CWideningCollection::putref_Profile(IProfile* pProfile)
    CComPtr<IWidening> widening;
    while ( enumWidenings->Next(1,&widening,NULL) != S_FALSE )
    {
-      widening->putref_Profile(m_pProfile);
+      widening->putref_Surface(m_pSurface);
       widening.Release();
    };
 
@@ -149,7 +149,7 @@ STDMETHODIMP CWideningCollection::putref_Item(CollectionIndexType idx,IWidening*
    // Get the item
    WideningType& cst = m_coll[idx];
    CComVariant& var = cst.second; // Variant holding IDispatch to Widening
-   pVal->putref_Profile(m_pProfile);
+   pVal->putref_Surface(m_pSurface);
 
    UnadviseElement(idx); // Unadvise from the current element
 
@@ -178,6 +178,12 @@ STDMETHODIMP CWideningCollection::GetWidening(VARIANT varStation,IWidening** wid
    if ( FAILED(hr) )
       return hr;
 
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+
    Widenings::iterator iter(m_coll.begin());
    Widenings::iterator end(m_coll.end());
    for ( ; iter != end; iter++ )
@@ -188,8 +194,8 @@ STDMETHODIMP CWideningCollection::GetWidening(VARIANT varStation,IWidening** wid
       thisWidening->get_BeginTransition(&startStation);
       thisWidening->get_EndTransition(&endStation);
 
-      if ( 0 <= cogoUtil::Compare(m_pProfile,startStation,station) &&
-           0 <= cogoUtil::Compare(m_pProfile,station,endStation) )
+      if ( 0 <= cogoUtil::Compare(profile,startStation,station) &&
+           0 <= cogoUtil::Compare(profile,station,endStation) )
       {
          return thisWidening.CopyTo(widening);
       }
@@ -210,17 +216,20 @@ STDMETHODIMP CWideningCollection::AddEx(IWidening* widening)
    CHECK_IN(widening);
 
    HRESULT hr = S_OK;
-   //hr = ValidateStation(widening);
-   //if ( FAILED(hr) )
-   //   return hr;
 
-   widening->putref_Profile(m_pProfile);
+   widening->putref_Surface(m_pSurface);
 
    DWORD dwCookie;
    AdviseElement(widening,&dwCookie);
    m_coll.push_back( std::make_pair(dwCookie,CComVariant(widening)));
 
-   std::sort(m_coll.begin(),m_coll.end(),SortWidenings(m_pProfile));
+   CComPtr<IProfile> profile;
+   if ( m_pSurface )
+   {
+      m_pSurface->get_Profile(&profile); 
+   }
+
+   std::sort(m_coll.begin(),m_coll.end(),SortWidenings(profile));
 
    Fire_OnWideningAdded(widening);
    return S_OK;
@@ -238,7 +247,7 @@ STDMETHODIMP CWideningCollection::Add(VARIANT varBeginStation,VARIANT varBeginFu
    CComPtr<IWidening> newWidening;
    newWidening = pNewWidening;
 
-   HRESULT hr = newWidening->Init(m_pProfile,varBeginStation,varBeginFullStation,varEndFullStation,varEndStation,widening,pnt1,pnt2);
+   HRESULT hr = newWidening->Init(m_pSurface,varBeginStation,varBeginFullStation,varEndFullStation,varEndStation,widening,pnt1,pnt2);
    if ( FAILED(hr) )
       return hr;
 
@@ -280,7 +289,7 @@ STDMETHODIMP CWideningCollection::Clone(IWideningCollection* *clone)
    (*clone) = pClone;
    (*clone)->AddRef();
 
-   (*clone)->putref_Profile(m_pProfile);
+   (*clone)->putref_Surface(m_pSurface);
 
    CComPtr<IEnumWidenings> enumWidenings;
    get__EnumWidenings(&enumWidenings);

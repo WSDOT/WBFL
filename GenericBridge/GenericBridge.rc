@@ -55,8 +55,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,0,0,34
- PRODUCTVERSION 4,0,0,34
+ FILEVERSION 4,0,0,35
+ PRODUCTVERSION 4,0,0,35
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -74,7 +74,7 @@ BEGIN
             VALUE "Comments", "A member of Alternate Route Project\0"
             VALUE "CompanyName", "Washington State Department of Transportation\0"
             VALUE "FileDescription", "GenericBridge Module\0"
-            VALUE "FileVersion", "4.0.0.34\0"
+            VALUE "FileVersion", "4.0.0.35\0"
             VALUE "InternalName", "GenericBridge\0"
             VALUE "LegalCopyright", "Copyright © 1999-2015, Washington State Department of Transportation, All Rights Reserved"
             VALUE "LegalTrademarks", "\0"
@@ -82,7 +82,7 @@ BEGIN
             VALUE "OriginalFilename", "GenericBridge.DLL\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "WBFL\0"
-            VALUE "ProductVersion", "4.0.0.34\0"
+            VALUE "ProductVersion", "4.0.0.35\0"
             VALUE "SpecialBuild", "\0"
         END
     END
@@ -122,7 +122,7 @@ IDR_FLANGEDBEAM         REGISTRY DISCARDABLE    "FlangedBeam.rgs"
 IDR_NUGIRDERSECTION     REGISTRY DISCARDABLE    "NUGirderSection.rgs"
 IDR_UGIRDERSECTION      REGISTRY DISCARDABLE    "UGirderSection.rgs"
 IDR_UGIRDERSECTION2     REGISTRY DISCARDABLE    "UGirderSection2.rgs"
-IDR_FILTEREDSUPERSTRUCTUREMEMBERCOLLECTION REGISTRY DISCARDABLE    "FilteredSuperstructureMemberCollection.rgs"
+IDR_SUPERSTRUCTUREMEMBERCOLLECTION REGISTRY DISCARDABLE    "SuperstructureMemberCollection.rgs"
 IDR_FSHAPEBARRIER       REGISTRY DISCARDABLE    "FShapeBarrier.rgs"
 IDR_GENERICBARRIER      REGISTRY DISCARDABLE    "GenericBarrier.rgs"
 IDR_LINEARTENDONSEGMENT REGISTRY DISCARDABLE    "LinearTendonSegment.rgs"

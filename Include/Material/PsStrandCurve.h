@@ -101,7 +101,7 @@ public:
    matStressStrainCurve::StrainState GetStress(Float64 strain,Float64* pStress) const;
 
    //------------------------------------------------------------------------
-   // Given stress, computes the corrosponding strain.  Returns the strain
+   // Given stress, computes the corresponding strain.  Returns the strain
    // state of the material for the give stress level.  If the return value
    // is TensileFractured or CompressionFractured, the strain is undefined.
    matStressStrainCurve::StrainState GetStrain(Float64 stress,Float64* pStrain) const;

@@ -100,8 +100,6 @@ void CMetaFileStatic::SetImage( HINSTANCE hInstance,LPCTSTR lpName, LPCTSTR lpTy
 
    HENHMETAFILE hmeta;
    hmeta = ::SetEnhMetaFileBits(dwSize,(BYTE*)pVoid);
-   ASSERT(hmeta!=NULL);
-   SetEnhMetaFile(hmeta);
 
    if ( flag != EMF_FIT )
    {
@@ -140,7 +138,7 @@ void CMetaFileStatic::SetImage( HINSTANCE hInstance,LPCTSTR lpName, LPCTSTR lpTy
       }
       else if ( flag == EMF_VRATIO )
       {
-         // adjust the hieghtof the control so the aspect ratio
+         // adjust the hieght of the control so the aspect ratio
          // of the control matches the image
          cx = cxi;
          cy = cyi*cxc/cxi;
@@ -152,6 +150,9 @@ void CMetaFileStatic::SetImage( HINSTANCE hInstance,LPCTSTR lpName, LPCTSTR lpTy
       }
       SetWindowPos(NULL,0,0,cx,cy,SWP_NOMOVE | SWP_NOZORDER);
    }
+
+   ASSERT(hmeta!=NULL);
+   SetEnhMetaFile(hmeta);
 }
 
 void CMetaFileStatic::OnDestroy() 

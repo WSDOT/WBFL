@@ -45,10 +45,6 @@ HRESULT CPier::FinalConstruct()
       return hr;
    }
 
-   m_DeckElevation = 0;
-   m_CrownPointOffset = 0;
-   m_Slope[qcbLeft] = 0;
-   m_Slope[qcbRight] = 0;
    m_CurbLineOffset[qcbLeft] = 0;
    m_CurbLineOffset[qcbRight] = 0;
 
@@ -76,31 +72,16 @@ STDMETHODIMP CPier::InterfaceSupportsErrorInfo(REFIID riid)
 
 /////////////////////////////////////////////////////////////////////////////
 // IPier
-STDMETHODIMP CPier::get_DeckElevation(/*[out,retval]*/Float64* pElev)
+STDMETHODIMP CPier::get_DeckProfile(IPoint2dCollection** ppPoints)
 {
-   CHECK_RETVAL(pElev);
-   *pElev = m_DeckElevation;
-   return S_OK;
+   CHECK_RETOBJ(ppPoints);
+   return m_DeckProfile.CopyTo(ppPoints);
 }
 
 STDMETHODIMP CPier::get_DeckThickness(/*[out,retval]*/Float64* pTDeck)
 {
    CHECK_RETVAL(pTDeck);
    *pTDeck = m_tDeck;
-   return S_OK;
-}
-
-STDMETHODIMP CPier::get_CrownPointOffset(/*[out,retval]*/Float64* pCPO)
-{
-   CHECK_RETVAL(pCPO);
-   *pCPO = m_CrownPointOffset;
-   return S_OK;
-}
-
-STDMETHODIMP CPier::get_CrownSlope(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pSlope)
-{
-   CHECK_RETVAL(pSlope);
-   *pSlope = m_Slope[side];
    return S_OK;
 }
 
@@ -113,27 +94,16 @@ STDMETHODIMP CPier::get_CurbLineOffset(/*[in]*/DirectionType side,/*[out,retval]
 
 /////////////////////////////////////////////////////////////////////////////
 // IPierEx
-STDMETHODIMP CPier::put_DeckElevation(/*[in]*/Float64 elev)
+STDMETHODIMP CPier::putref_DeckProfile(IPoint2dCollection* pPoints)
 {
-   m_DeckElevation = elev;
+   CHECK_IN(pPoints);
+   m_DeckProfile = pPoints;
    return S_OK;
 }
 
 STDMETHODIMP CPier::put_DeckThickness(/*[in]*/Float64 tDeck)
 {
    m_tDeck = tDeck;
-   return S_OK;
-}
-
-STDMETHODIMP CPier::put_CrownPointOffset(/*[in]*/Float64 cpo)
-{
-   m_CrownPointOffset = cpo;
-   return S_OK;
-}
-
-STDMETHODIMP CPier::put_CrownSlope(/*[in]*/DirectionType side,/*[in]*/Float64 slope)
-{
-   m_Slope[side] = slope;
    return S_OK;
 }
 

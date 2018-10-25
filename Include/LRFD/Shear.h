@@ -91,7 +91,7 @@ struct LRFDCLASS lrfdShearData
 
    // Vci/Vcw parameters
    Float64 Vd;
-   Float64 Vi; // shear corrosponding to Mu (Mu = Mmax)
+   Float64 Vi; // shear corresponding to Mu (Mu = Mmax)
    Float64 Mcre; // cracking moment per LRFD 5.8.3.4.3-2
    Float64 fpc;
 

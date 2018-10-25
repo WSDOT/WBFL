@@ -417,7 +417,7 @@ void CJoint::InitModel(LONG nGDOF,LONG nCDOF,LONG &nGDOFused,LONG &nCDOFused)
 
 // GetCondensedDOF
 //
-// Retreives the condensed dof number corrosponding to one of the
+// Retreives the condensed dof number corresponding to one of the
 // joints local dof's. 0 = dx, 1 = dy, and 2 = rz.
 LONG CJoint::GetCondensedDOF(LONG dof) const
 {
@@ -434,7 +434,7 @@ LONG CJoint::GetCondensedDOF(LONG dof) const
 
 // GetGlobalDOF
 //
-// Retreives the global dof number corrosponding to one of the
+// Retreives the global dof number corresponding to one of the
 // joints local dof's. 0 = dx, 1 = dy, and 2 = rz.
 LONG CJoint::GetGlobalDOF(LONG dof) const
 {

@@ -57,7 +57,7 @@
 #include "ThickenedFlangeBulbTeeSegment.h"
 #include "SegmentItem.h"
 #include "FilteredSegmentCollection.h"
-#include "FilteredSuperstructureMemberCollection.h"
+#include "SuperstructureMemberCollection.h"
 
 #include "Column.h"
 #include "ColumnLayout.h"
@@ -163,6 +163,7 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_ColumnLayout,CColumnLayout)
    OBJECT_ENTRY(CLSID_BearingLayout,CBearingLayout)
    OBJECT_ENTRY(CLSID_Pier,CPier)
+   OBJECT_ENTRY(CLSID_SuperstructureMemberCollection,CSuperstructureMemberCollection)
    OBJECT_ENTRY_NON_CREATEABLE(CBridgePier)
    OBJECT_ENTRY_NON_CREATEABLE(CPierCollection)
    OBJECT_ENTRY_NON_CREATEABLE(CSuperstructureMember)
