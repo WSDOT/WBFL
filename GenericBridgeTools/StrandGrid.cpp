@@ -1010,56 +1010,43 @@ STDMETHODIMP CStrandGrid::get_NumStrandsInRow(/*[in]*/RowIndexType rowIdx,/*[out
    return S_OK;
 }
 
-STDMETHODIMP CStrandGrid::get_StrandsInRow(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/IIndexArray** gridIndex)
+STDMETHODIMP CStrandGrid::get_StrandsInRow(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/IIndexArray** ppStrandIndicies)
 {
+   CHECK_RETOBJ(ppStrandIndicies);
+
    HRESULT hr = ValidateFill();
    if (FAILED(hr))
+   {
       return hr;
+   }
 
-   if ( (RowIndexType)m_Rows.size() <= rowIdx )
+   if ((RowIndexType)m_Rows.size() <= rowIdx)
+   {
       return E_INVALIDARG; // row index is out of range
-
-   CHECK_RETOBJ(gridIndex);
+   }
 
    CComPtr<IIndexArray> strandIndicies;
    strandIndicies.CoCreateInstance(CLSID_IndexArray);
 
-   RowIndexType currentRowIdx = 0;
-   std::set<Row>::const_iterator iter;
+   auto iter(std::cbegin(m_Rows));
+   std::advance(iter, rowIdx);
+   const Row& row = *iter;
 
-   // loop over all of the rows
-   for ( iter = m_Rows.begin(); iter != m_Rows.end(); iter++ )
+   // loop over all the grid points in this row
+   const Row::GridPointsType& grid_points_in_row = row.GridPoints;
+   for( const auto& gridPointInRowIdx : grid_points_in_row )
    {
-      const Row& row = *iter;
+      StrandIndexType nStrandsAtGridPoint = m_GridPoints[gridPointInRowIdx].nStrandsAtGridPoint;
 
-      if (rowIdx == currentRowIdx)
+      ATLASSERT(0 < nStrandsAtGridPoint); // if nStrandsAtGridPoint == 0, StrandPositionIndex is undefined
+      for (StrandIndexType idx = 0; idx < nStrandsAtGridPoint; idx++)
       {
-         // this is the row we are looking for
-
-         // loop over all the grid points in this row
-         const Row::GridPointsType& grid_points_in_row = row.GridPoints;
-         Row::GridPointsType::const_iterator gridPointIter;
-         for (gridPointIter = grid_points_in_row.begin(); gridPointIter != grid_points_in_row.end(); gridPointIter++)
-         {
-            GridIndexType gridPointInRowIdx = *gridPointIter;
-
-            StrandIndexType nStrandsAtGridPoint = m_GridPoints[gridPointInRowIdx].nStrandsAtGridPoint;
-
-            ATLASSERT(0 < nStrandsAtGridPoint); // if nStrandsAtGridPoint == 0, StrandPositionIndex is undefined
-            for ( StrandIndexType idx = 0; idx < nStrandsAtGridPoint; idx++ )
-            {
-               StrandIndexType strandPositionIndex = m_GridPoints[gridPointInRowIdx].StrandPositionIndex[idx];
-               strandIndicies->Add(strandPositionIndex);
-            }
-         }
-
-         break;
+         StrandIndexType strandPositionIndex = m_GridPoints[gridPointInRowIdx].StrandPositionIndex[idx];
+         strandIndicies->Add(strandPositionIndex);
       }
-
-      currentRowIdx++;
    }
 
-   return strandIndicies.CopyTo(gridIndex);
+   return strandIndicies.CopyTo(ppStrandIndicies);
 }
 
 STDMETHODIMP CStrandGrid::GetStrandDebondCount(/*[in]*/ WDebondLocationType loc, /*[out,retval]*/ StrandIndexType* count)
@@ -1462,22 +1449,19 @@ STDMETHODIMP CStrandGrid::IsExteriorStrandDebondedInRow(/*[in]*/ RowIndexType ro
       return E_INVALIDARG;
 
    // advance the iterator
-   std::set<Row>::const_iterator iter = m_Rows.begin();
-   for ( RowIndexType i = 0; i < rowIndex; i++ )
-      iter++;
+   auto& iter = std::cbegin(m_Rows);
+   std::advance(iter, rowIndex);
 
    // this is the row we want
-   const Row& row = *iter;
+   const auto& row = *iter;
 
    GridIndexType exteriorGridPointIndex; // grid point index of the exterior strand in this row
 
    Float64 xmax = 0; // distance from Y axis to grid point
 
    // iterate over all the grid points in this row
-   Row::GridPointsType::const_iterator gridPointInRowIter;
-   for ( gridPointInRowIter = row.GridPoints.begin(); gridPointInRowIter != row.GridPoints.end(); gridPointInRowIter++ )
+   for ( const auto& gridPointInRowIndex : row.GridPoints )
    {
-      GridIndexType gridPointInRowIndex = *gridPointInRowIter;
       const GridPoint2d& gridPoint = m_GridPoints[gridPointInRowIndex];
 
       Float64 x = gridPoint.dPointX;
@@ -1910,6 +1894,7 @@ void CStrandGrid::AdjustStrand(Float64 originalX, Float64 originalY, Float64* ne
 {
    if (m_pStrandMover)
    {
+      // if we have a strand mover, use it to adjust the start locations
       Float64 x;
       if (m_StrandGridType == sgtEnd)
       {
@@ -1919,12 +1904,14 @@ void CStrandGrid::AdjustStrand(Float64 originalX, Float64 originalY, Float64* ne
       {
          m_pStrandMover->TranslateHpStrand(m_EndType, originalX, originalY, m_Yadj, &x, newY);
       }
+
+      // the strand mover applies the vertical adjustment, but now we have to apply the lateral adjustment
       *newXleft = -x + m_Xadj;
       *newXright = x + m_Xadj;
    }
    else
    {
-      // by default just translate verticaly
+      // no strand mover, adjust using the adjustment parameters
       *newXleft = -originalX + m_Xadj;
       *newXright = originalX + m_Xadj;
       *newY = originalY + m_Yadj;

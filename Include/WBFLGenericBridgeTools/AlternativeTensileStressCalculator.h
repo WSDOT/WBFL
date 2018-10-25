@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include <Lrfd\LrfdExp.h>
+#include <WBFLGenericBridgeTools\WBFLGenericBridgeToolsExp.h>
 #include <Material\Concrete.h>
 #include <WBFLGeometry.h>
 
@@ -32,19 +32,19 @@ interface IRebarSection;
 
 /*****************************************************************************
 CLASS 
-   lrfdAlternativeTensileStressCalculator
+   gbtAlternativeTensileStressCalculator
 
    Utility class for dealing with alternative tensile stress in casting yard and at lifting
 *****************************************************************************/
 
-class LRFDCLASS lrfdAlternativeTensileStressCalculator
+class WBFLGENERICBRIDGETOOLSCLASS gbtAlternativeTensileStressCalculator
 {
 public:
-   lrfdAlternativeTensileStressCalculator(const matConcrete& concrete,Float64 fy,bool bLimitBarStress,Float64 fsMax);
+   gbtAlternativeTensileStressCalculator(const matConcrete& concrete,Float64 fy,bool bLimitBarStress,Float64 fsMax);
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdAlternativeTensileStressCalculator()
+   virtual ~gbtAlternativeTensileStressCalculator()
    {;}
 
    void SetReinforcementYieldStrength(Float64 fy);
@@ -72,7 +72,7 @@ public:
                           Float64* pFcNo,Float64* pFcWithRebar);
 
 private:
-   lrfdAlternativeTensileStressCalculator(); // no default constructor
+   gbtAlternativeTensileStressCalculator(); // no default constructor
 
    Float64 m_fy;
 

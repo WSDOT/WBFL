@@ -36,21 +36,22 @@
 
 
                  Y                 V
-                 |                 *
-                 |             *      *
-                 |          *           *
-                 |        *               *
-                 |      *                  *
-                 |     *                    *
-                 |    *                      *
+                 |                 * ---------------------------
+                 |             *      *                      ^
+                 |          *           *                    |
+                 |        *               *                  |
+                 |      *                  *                 |  Vy
+                 |     *                    *                |
+                 |    *                      *               v
              --------*------------------------*---------------------------- x
-                 |  *S                        E*
-                 | *                            *
-                 |
+                 |  *S                        E*             ^
+                 | *                            *            |  dy
+                 |                                           v
+             -------------------------------------------------------------- X
                  |
                  |
 */
-inline mathPolynomial2d GenerateParabola(Float64 Sx,Float64 Ex,Float64 Vy)
+inline mathPolynomial2d GenerateParabola(Float64 Sx,Float64 Ex,Float64 Vy,Float64 dy=0.0)
 {
    ATLASSERT(Sx<Ex);
    Float64 Vx  = (Sx + Ex)/2.0;   // X ordinate of vertex
@@ -59,7 +60,7 @@ inline mathPolynomial2d GenerateParabola(Float64 Sx,Float64 Ex,Float64 Vy)
    // y = Ax^2 + Bx + C
    Float64 A = -Vy/SV2;
    Float64 B = 2*Vy*Vx/SV2;
-   Float64 C = Vy - Vy*Vx*Vx/SV2;
+   Float64 C = Vy - Vy*Vx*Vx/SV2 + dy;
 
    std::vector<Float64> coefficients;
    coefficients.push_back(A);

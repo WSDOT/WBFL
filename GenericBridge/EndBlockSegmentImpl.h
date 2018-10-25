@@ -34,6 +34,7 @@
 #include "ItemDataManager.h"
 #include "SuperstructureMemberSegmentImpl.h"
 
+
 template<class T_IBeam>
 class VoidedEndBlock
 {
@@ -147,7 +148,26 @@ public:
    STDMETHOD(putref_NextSegment)(ISegment* segment) override { return m_Impl.putref_NextSegment(segment); }
    STDMETHOD(get_NextSegment)(ISegment** segment) override { return m_Impl.get_NextSegment(segment); }
 
-   STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs,ISection** ppSection) override
+   bool IsInEndBlock(Float64 Xs, SectionBias sectionBias)
+   {
+      Float64 length;
+      get_Length(&length);
+
+
+      if (
+         (0.0 < m_EndBlockLength[etStart] && (sectionBias == sbLeft ? IsLE(Xs, m_EndBlockLength[etStart]) : IsLT(Xs, m_EndBlockLength[etStart]))) ||
+         (0.0 < m_EndBlockLength[etEnd] && (sectionBias == sbLeft ? IsLT(length - Xs, m_EndBlockLength[etEnd]) : IsLE(length - Xs, m_EndBlockLength[etEnd])))
+         )
+      {
+         return true;
+      }
+      else
+      {
+         return false;
+      }
+   }
+
+   STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
    {
       CHECK_RETOBJ(ppSection);
 
@@ -177,8 +197,7 @@ public:
       get_Length(&length);
 
       // Section is in the end block so use the outline of the shape only
-      if ( (0.0 < m_EndBlockLength[etStart] && IsLE(Xs,m_EndBlockLength[etStart])) || 
-           (0.0 < m_EndBlockLength[etEnd]   && IsLE(length - Xs,m_EndBlockLength[etEnd])) )
+      if ( IsInEndBlock(Xs,sectionBias) )
       {
          T_ENDBLOCK::InEndBlock(newBeam);;
       }
@@ -259,7 +278,7 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(get_PrimaryShape)(Float64 Xs,IShape** ppShape) override
+   STDMETHOD(get_PrimaryShape)(Float64 Xs,SectionBias sectionBias,IShape** ppShape)
    {
       CHECK_RETOBJ(ppShape);
 
@@ -289,8 +308,7 @@ public:
       get_Length(&length);
 
       // Section is in the end block so use the outline of the shape only
-      if ( (0.0 < m_EndBlockLength[etStart] && IsLE(Xs,m_EndBlockLength[etStart])) || 
-           (0.0 < m_EndBlockLength[etEnd]   && IsLE(length - Xs,m_EndBlockLength[etEnd])) )
+      if (IsInEndBlock(Xs, sectionBias))
       {
          T_ENDBLOCK::InEndBlock(newBeam);;
       }
@@ -390,6 +408,8 @@ public:
       // *         +-------+---------------\  
       // |         |       .               /
       // |         +-------+---------------\  
+      //
+      //          Elevation View
 
       CComQIPtr<IXYPosition> position(shape);
       CComPtr<IPoint2d> topLeft;
@@ -418,6 +438,8 @@ public:
    STDMETHOD(ComputeHaunchDepth)(Float64 distAlongSegment, Float64* pVal) override { return m_Impl.ComputeHaunchDepth(distAlongSegment, pVal); }
    STDMETHOD(put_Fillet)(/*[in]*/Float64 Fillet) override { return m_Impl.put_Fillet(Fillet); }
    STDMETHOD(get_Fillet)(/*[out,retval]*/Float64* Fillet) override { return m_Impl.get_Fillet(Fillet); }
+   STDMETHOD(put_FilletShape)(/*[in]*/FilletShape FilletShape) override { return m_Impl.put_FilletShape(FilletShape); }
+   STDMETHOD(get_FilletShape)(/*[out,retval]*/FilletShape* FilletShape) override { return m_Impl.get_FilletShape(FilletShape); }
    STDMETHOD(put_Precamber)(/*[in]*/Float64 precamber) override { return m_Impl.put_Precamber(precamber); }
    STDMETHOD(get_Precamber)(/*[out,retval]*/Float64* pPrecamber) override { return m_Impl.get_Precamber(pPrecamber); }
    STDMETHOD(ComputePrecamber)(/*[in]*/Float64 distAlongSegment, /*[out,retval]*/Float64* pPrecamber) override { return m_Impl.ComputePrecamber(distAlongSegment, pPrecamber); }

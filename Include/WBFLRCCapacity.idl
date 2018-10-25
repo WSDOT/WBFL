@@ -49,6 +49,8 @@ cpp_quote("#define RC_E_SECTION                MAKE_HRESULT(SEVERITY_ERROR,FACIL
 cpp_quote("#define RC_E_FGMATERIAL             MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,518)")
 cpp_quote("#define RC_E_BGMATERIAL             MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,519)")
 
+interface IMomentCapacitySolution;
+
 [
 	uuid(61618484-C4D1-4821-97C1-021305157FE4),
 	version(1.0),
@@ -681,8 +683,9 @@ library WBFLRCCapacity
 		[helpcontext(IDH_IMomentCurvatureSolution_PeakCapacity),helpstring("method PeakCapacity")] HRESULT PeakCapacity([out]Float64* Mmax,[out]Float64* k);
 		[propget,helpcontext(IDH_IMomentCurvatureSolution_Moment),helpstring("property Moment")] HRESULT Moment([in]CollectionIndexType idx,[out,retval]Float64* Mmax);
 		[propget,helpcontext(IDH_IMomentCurvatureSolution_Curvature),helpstring("property Curvature")] HRESULT Curvature([in]CollectionIndexType idx,[out,retval]Float64* k);
-		[propget,helpcontext(IDH_IMomentCurvatureSolution_StrainPlane),helpstring("property StrainPlane")] HRESULT StrainPlane([in]CollectionIndexType idx,[out,retval]IPlane3d** StrainPlane);
-		[propget,helpcontext(IDH_IMomentCurvatureSolution_PointCount),helpstring("property PointCount")] HRESULT PointCount([out,retval]CollectionIndexType* nPoints);
+      [propget, helpcontext(IDH_IMomentCurvatureSolution_StrainPlane), helpstring("property StrainPlane")] HRESULT StrainPlane([in]CollectionIndexType idx, [out, retval]IPlane3d** StrainPlane);
+      [propget, /*helpcontext(IDH_IMomentCurvatureSolution_StrainPlane),*/ helpstring("property CapacitySolution")] HRESULT CapacitySolution([in]CollectionIndexType idx, [out, retval]IMomentCapacitySolution** solution);
+      [propget,helpcontext(IDH_IMomentCurvatureSolution_PointCount),helpstring("property PointCount")] HRESULT PointCount([out,retval]CollectionIndexType* nPoints);
 	};
 
 	[
@@ -698,7 +701,9 @@ library WBFLRCCapacity
 		[propget,helpcontext(IDH_IMomentCurvatureSolver_Section),helpstring("property Section")] HRESULT Section([out,retval]IGeneralSection** pSection);
 		[propput,helpcontext(IDH_IMomentCurvatureSolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
 		[propget,helpcontext(IDH_IMomentCurvatureSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval]long* nSlices);
-	    [propput,helpcontext(IDH_IMomentCurvatureSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
+      [propput, helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor), helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([in]Float64 sliceGrowthFactor);
+      [propget, helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor), helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([out, retval]Float64* sliceGrowthFactor);
+      [propput,helpcontext(IDH_IMomentCurvatureSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
 		[propget,helpcontext(IDH_IMomentCurvatureSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([out,retval]Float64* tolerance);
 		[propput,helpcontext(IDH_IMomentCurvatureSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([in]long maxIter);
 		[propget,helpcontext(IDH_IMomentCurvatureSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([out,retval]long* maxIter);
@@ -783,7 +788,9 @@ library WBFLRCCapacity
 		[propget,helpcontext(IDH_IInteractionCurveSolver_Section),helpstring("property Section")] HRESULT Section([out,retval]IGeneralSection** pSection);
 		[propput,helpcontext(IDH_IInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
 		[propget,helpcontext(IDH_IInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval]long* nSlices);
-	    [propput,helpcontext(IDH_IInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
+      [propput, helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor), helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([in]Float64 sliceGrowthFactor);
+      [propget, helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor), helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([out, retval]Float64* sliceGrowthFactor);
+      [propput,helpcontext(IDH_IInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
 		[propget,helpcontext(IDH_IInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([out,retval]Float64* tolerance);
 		[propput,helpcontext(IDH_IInteractionCurveSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([in]long maxIter);
 		[propget,helpcontext(IDH_IInteractionCurveSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([out,retval]long* maxIter);
@@ -820,7 +827,9 @@ library WBFLRCCapacity
 		[propget,helpcontext(IDH_IAxialInteractionCurveSolver_Section),helpstring("property Section")] HRESULT Section([out,retval]IGeneralSection** pSection);
 		[propput,helpcontext(IDH_IAxialInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
 		[propget,helpcontext(IDH_IAxialInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval]long* nSlices);
-	    [propput,helpcontext(IDH_IAxialInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
+      [propput, helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor), helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([in]Float64 sliceGrowthFactor);
+      [propget, helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor), helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([out, retval]Float64* sliceGrowthFactor);
+      [propput,helpcontext(IDH_IAxialInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
 		[propget,helpcontext(IDH_IAxialInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([out,retval]Float64* tolerance);
 		[propput,helpcontext(IDH_IAxialInteractionCurveSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([in]long maxIter);
 		[propget,helpcontext(IDH_IAxialInteractionCurveSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([out,retval]long* maxIter);
@@ -923,7 +932,9 @@ library WBFLRCCapacity
 	{
 		[propput,helpcontext(IDH_IManderModelSection_TransvYieldStrength),helpstring("property TransvYieldStrength")] HRESULT TransvYieldStrength([in]Float64 fyh);
 		[propget,helpcontext(IDH_IManderModelSection_TransvYieldStrength),helpstring("property TransvYieldStrength")] HRESULT TransvYieldStrength([out,retval]Float64* fyh);
-		[propget,helpcontext(IDH_IManderModelSection_TransvReinforcementRatio),helpstring("property TransvReinforcementRatio")] HRESULT TransvReinforcementRatio([out,retval]Float64* ps);
+      [propput, helpstring("property TransvReinforcementRuptureStrain")] HRESULT TransvReinforcementRuptureStrain([in]Float64 esu);
+      [propget, helpstring("property TransvReinforcementRuptureStrain")] HRESULT TransvReinforcementRuptureStrain([out,retval]Float64* esu);
+      [propget,helpcontext(IDH_IManderModelSection_TransvReinforcementRatio),helpstring("property TransvReinforcementRatio")] HRESULT TransvReinforcementRatio([out,retval]Float64* ps);
 		[propget,helpcontext(IDH_IManderModelSection_ConfinementEffectivenessCoefficient),helpstring("property ConfinementEffectivenessCoefficient")] HRESULT ConfinementEffectivenessCoefficient([out,retval]Float64* ke);
 	};
 
@@ -969,6 +980,7 @@ library WBFLRCCapacity
 		[propget,helpcontext(IDH_IManderModel_eco),helpstring("property eco")] HRESULT eco([out,retval]Float64* eco);
 		[propput,helpcontext(IDH_IManderModel_R),helpstring("property R")] HRESULT R([in]Float64 r);
 		[propget,helpcontext(IDH_IManderModel_R),helpstring("property R")] HRESULT R([out,retval]Float64* r);
+      [helpstring("GetConcreteParameters")] HRESULT GetConcreteParameters([out]Float64* pfr, [out]Float64* pfcc, [out]Float64* pecc);
 	};
 
 	[

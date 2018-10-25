@@ -31,6 +31,13 @@
 #include <EAF\EAFUtilities.h>
 #include "commctrl.h"
 #include "BackDoor.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
 // CNewProjectDlg dialog
 
 IMPLEMENT_DYNAMIC(CNewProjectDlg, CDialog)
@@ -99,8 +106,10 @@ void CNewProjectDlg::AddProjectGroup(HTREEITEM hParent,HTREEITEM hAfter,const CE
 
    HTREEITEM hGroup = m_ctrlProjectTypes.InsertItem(TVIF_TEXT | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE,pGroup->GetGroupName(),imageIdx,seletedImageIdx,0,0,(LPARAM)(pGroup),hParent,hAfter);
 
-   if ( isInSelectedProject && pGroup->GetGroupName() == strLastSelection )
+   if (isInSelectedProject && pGroup->GetGroupName() == strLastSelection)
+   {
       *pDefaultItem = hGroup;
+   }
 
    CollectionIndexType nGroups = pGroup->GetGroupCount();
    for ( CollectionIndexType grpIdx = 0; grpIdx < nGroups; grpIdx++ )
@@ -182,8 +191,10 @@ BOOL CNewProjectDlg::OnInitDialog()
       HTREEITEM hPrevItem = TVI_ROOT;
       hPrevItem = m_ctrlProjectTypes.InsertItem(TVIF_TEXT | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE,strTypeName,imageIdx,seletedImageIdx,0,0,(LPARAM)(pTemplateGroup),TVI_ROOT,hPrevItem);
 
-      if ( strTypeName == strLastSelection )
+      if (strTypeName == strLastSelection)
+      {
          hSelectedItem = hPrevItem;
+      }
 
       CollectionIndexType nGroups = pTemplateGroup->GetGroupCount();
       for ( CollectionIndexType grpIdx = 0; grpIdx < nGroups; grpIdx++ )
@@ -248,8 +259,8 @@ void CNewProjectDlg::OnProjectTypeSelectionChanged(NMHDR *pNMHDR, LRESULT *pResu
          const CEAFTemplateItem* pItem = pGroup->GetItem(itemIdx);
 
          HICON hIcon = pItem->GetIcon();
-         m_TemplateLargeImageList.Add(hIcon);
-         m_TemplateSmallImageList.Add(hIcon);
+         m_TemplateLargeImageList.Add(hIcon == nullptr ? m_hDefaultIcon : hIcon);
+         m_TemplateSmallImageList.Add(hIcon == nullptr ? m_hDefaultIcon : hIcon);
 
          CString itemName = pItem->GetName();
          m_ctrlTemplates.InsertItem(LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE,(int)itemIdx,itemName,0,0,(int)itemIdx,(LPARAM)pItem);

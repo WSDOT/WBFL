@@ -47,12 +47,12 @@ void CMomentCurvatureSolution::FinalRelease()
 {
 }
 
-void CMomentCurvatureSolution::AddCurvaturePoint(Float64 M,Float64 k,IPlane3d* strainPlane)
+void CMomentCurvatureSolution::AddCurvaturePoint(Float64 M,Float64 k,IMomentCapacitySolution* solution)
 {
    CurvaturePoint cp;
    cp.M = M;
    cp.k = k;
-   cp.StrainPlane = strainPlane;
+   cp.Solution = solution;
 
    m_CurvaturePoints.push_back(cp);
    std::sort(m_CurvaturePoints.begin(),m_CurvaturePoints.end());
@@ -122,14 +122,21 @@ STDMETHODIMP CMomentCurvatureSolution::get_Curvature(CollectionIndexType idx,Flo
 STDMETHODIMP CMomentCurvatureSolution::get_StrainPlane(CollectionIndexType idx,IPlane3d** strainPlane)
 {
    CHECK_RETOBJ(strainPlane);
-   (*strainPlane) = m_CurvaturePoints[idx].StrainPlane;
+   m_CurvaturePoints[idx].Solution->get_StrainPlane(strainPlane);
+   return S_OK;
+}
 
-   if ( *strainPlane )
-      (*strainPlane)->AddRef();
+STDMETHODIMP CMomentCurvatureSolution::get_CapacitySolution(CollectionIndexType idx, IMomentCapacitySolution** solution)
+{
+   CHECK_RETOBJ(solution);
+   (*solution) = m_CurvaturePoints[idx].Solution;
+
+   if (*solution)
+      (*solution)->AddRef();
 
    return S_OK;
 }
-   
+
 STDMETHODIMP CMomentCurvatureSolution::get_PointCount(CollectionIndexType* nPoints)
 {
    CHECK_RETVAL(nPoints);

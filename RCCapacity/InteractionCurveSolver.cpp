@@ -84,6 +84,16 @@ STDMETHODIMP CInteractionCurveSolver::get_Slices(long* nSlices)
    return m_Solver->get_Slices(nSlices);
 }
 
+STDMETHODIMP CInteractionCurveSolver::put_SliceGrowthFactor(Float64 sliceGrowthFactor)
+{
+   return m_Solver->put_SliceGrowthFactor(sliceGrowthFactor);
+}
+
+STDMETHODIMP CInteractionCurveSolver::get_SliceGrowthFactor(Float64* sliceGrowthFactor)
+{
+   return m_Solver->get_SliceGrowthFactor(sliceGrowthFactor);
+}
+
 STDMETHODIMP CInteractionCurveSolver::put_AxialTolerance(Float64 tolerance)
 {
    return m_Solver->put_AxialTolerance(tolerance);

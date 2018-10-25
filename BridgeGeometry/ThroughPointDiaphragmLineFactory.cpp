@@ -29,6 +29,13 @@
 #include "ThroughPointDiaphragmLineFactory.h"
 #include "DiaphragmLine.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 // CThroughPointDiaphragmLineFactory
 STDMETHODIMP CThroughPointDiaphragmLineFactory::put_Point(IPoint2d* point)
 {

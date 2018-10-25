@@ -41,7 +41,7 @@
 #include <System\EngNotation.h>
 #include <System\Exception.h>
 #include <System\FileDumpContext.h>
-#include <System\LogDumpContext.h>
+#include <WBFLTools\LogDumpContext.h>
 #include <System\Flags.h>
 #include <System\IStructuredLoad.h>
 #include <System\IStructuredSave.h>

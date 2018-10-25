@@ -31,6 +31,13 @@
 #include <EAF\EAFAppPlugin.h>
 #include <MFCTools\VersionInfo.h>
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 // NOTE: Do not call our own methods directly... Always call them through the m_pAppPlugin. This gives the app plugin
 // a chance to set modulue states.
 

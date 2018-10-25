@@ -47,6 +47,8 @@
 #define IDS_E_FILE_NOT_OPEN             107
 #define IDS_STRSAVE_E_FILE_NOT_OPEN     107
 #define IDR_STRUCTUREDLOAD21            108
+#define IDR_STRLOAD                     138
+#define IDR_STRSAVE                     139
 #define IDS_E_FILE_NOT_FOUND            108
 #define IDS_STRLOAD_E_FILENOTFOUND      108
 #define IDS_E_INVALID_FILE_FORMAT       109
@@ -81,6 +83,13 @@
 #define IDC_DISCLAIMER                  1006
 #define IDC_CHECK                       1007
 #define IDC_LIC_TEXT                    1008
+#define IDS_E_BADWRITE                  1512
+#define IDS_E_INVALIDFORMAT             1513
+#define IDS_E_BADREAD                   1514
+#define IDS_E_BADVERSION                1515
+#define IDS_E_OUTOFMEMORY               1516
+#define IDS_E_FILENOTFOUND              1517
+#define IDS_E_CANTOPEN                  1518
 
 // Next default values for new objects
 // 

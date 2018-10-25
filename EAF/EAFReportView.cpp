@@ -299,8 +299,10 @@ HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
             m_ErrorMsg = _T("The report specified when creating this window no longer exists. Please close this window.");
             m_bUpdateError = true;
 
-            if ( m_pBtnEdit->GetSafeHwnd() )
+            if (m_pBtnEdit->GetSafeHwnd())
+            {
                m_pBtnEdit->ShowWindow(SW_HIDE);
+            }
 
             // delete the report browser because what ever it is displaying is totally invalid
             // also need to elimintate it so that we can draw the error message on the view window itself
@@ -312,16 +314,22 @@ HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
          {
             std::shared_ptr<rptReport> pReport = pBuilder->CreateReport( m_pReportSpec );
 
-            if ( m_pBtnEdit->GetSafeHwnd() )
+            if (m_pBtnEdit->GetSafeHwnd())
+            {
                m_pBtnEdit->ShowWindow(SW_SHOW);
+            }
 
+            CWaitCursor wait;
             m_pReportBrowser->UpdateReport( pReport, true );
          }
       }
       else
       {
          // create the report and browser
-         m_pReportBrowser = CreateReportBrowser(GetSafeHwnd(),m_pReportSpec,m_pRptSpecBuilder);
+         {
+            CWaitCursor wait;
+            m_pReportBrowser = CreateReportBrowser(GetSafeHwnd(), m_pReportSpec, m_pRptSpecBuilder);
+         }
 
          if ( 0 < m_pReportSpec->GetChapterCount() && CanEditReport() )
          {
@@ -388,7 +396,11 @@ void CEAFReportView::RefreshReport()
    std::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(m_pReportSpec->GetReportName());
 
    std::shared_ptr<rptReport> pReport = pRptBuilder->CreateReport( m_pReportSpec );
-   m_pReportBrowser->UpdateReport(pReport,true);
+
+   {
+      CWaitCursor wait;
+      m_pReportBrowser->UpdateReport(pReport, true);
+   }
 
    UpdateViewTitle();
 }
@@ -427,7 +439,7 @@ void CEAFReportView::OnUpdateFilePrint(CCmdUI* pCmdUI)
 
 void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint) 
 {
-   if ( lHint == EAF_HINT_FAVORITE_REPORTS_CHANGED )
+   if ( lHint == EAF_HINT_FAVORITE_REPORTS_CHANGED || lHint == EAF_HINT_UNITS_CHANGING)
    {
       return;
    }

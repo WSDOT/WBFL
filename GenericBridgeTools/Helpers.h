@@ -29,10 +29,12 @@
 
 #include "WBFLGenericBridge.h"
 
-HRESULT GetGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,IGirderSection** section);
+HRESULT GetGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias,IGirderSection** section);
 HRESULT GetAlignment(IGenericBridge* bridge,IAlignment** alignment);
 Float64 DistanceToStation(IGenericBridge* bridge,Float64 distFromStartOfBridge);
 Float64 StationToDistance(IGenericBridge* bridge,Float64 station);
 void GetPiers(IGenericBridge* bridge,Float64 station,PierIndexType* pPrevPier,PierIndexType* pNextPier);
+
+HRESULT GetCGFromPoints(IPoint2dCollection* points, IPoint2d** pCG);
 
 #endif // INCLUDED_HELPERS_H_

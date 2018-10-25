@@ -266,12 +266,12 @@ library WBFLGenericBridge
 	   Grade270 = 0x0002 
    } StrandGrade;
 
-   typedef [public,helpstring("enum StrandType"),uuid(11E75BB6-8E13-4ac2-A608-F13FAC0577D9)]
+   typedef [public,helpstring("enum StrandMaterialType"),uuid(11E75BB6-8E13-4ac2-A608-F13FAC0577D9)]
    enum 
    {
       LowRelaxation = 0x0004,
 	  StressRelieved = 0x0008 
-   } StrandType;
+   } StrandMaterialType;
 
    typedef [public,helpstring("enum StrandSize"),uuid(B853E36E-FD4B-4e20-A8B0-2EC1E605EB97)]
    enum { 
@@ -363,6 +363,23 @@ library WBFLGenericBridge
       xblTopLowerXBeam,
       xblBottomXBeam
    } XBeamLocation;
+
+   // defines the bias at a section cut... defines whether a cut is for the left or right face
+   // this is important at abrupt section changes like end block boundaries
+   typedef [public, helpstring("enum SectionBias"), uuid(6F41E721-5589-4C0A-9453-A47F37CE8C3F)]
+   enum
+   {
+      sbLeft,
+      sbRight
+   } SectionBias;
+
+   // Shape of the fillet - either angled like a fillet weld, or squared off
+   typedef [public, helpstring("enum FilletShape"), uuid(D1B0E9D1-8D2B-4DBD-9D24-2FEE89FD4F35)]
+   enum
+   {
+      flsSquared,
+      flsAngled
+   } FilletShape;
 
 // Interface definitions
 
@@ -830,8 +847,8 @@ library WBFLGenericBridge
 	   [propput,helpstring("property Name")] HRESULT Name([in] BSTR name);
 	   [propget,helpstring("property Grade")] HRESULT Grade([out,retval] StrandGrade* grade);
 	   [propput,helpstring("property Grade")] HRESULT Grade([in] StrandGrade grade);
-	   [propget,helpstring("property Type")] HRESULT Type([out,retval] StrandType* type);
-	   [propput,helpstring("property Type")] HRESULT Type([in] StrandType type);
+	   [propget,helpstring("property Type")] HRESULT Type([out,retval] StrandMaterialType* type);
+	   [propput,helpstring("property Type")] HRESULT Type([in] StrandMaterialType type);
 	   [propget,helpstring("property Coating")] HRESULT Coating([out,retval] StrandCoating* coating);
 	   [propput,helpstring("property Coating")] HRESULT Coating([in] StrandCoating coating);
 	   [propget,helpstring("property Size")] HRESULT Size([out,retval] StrandSize* size);
@@ -1088,8 +1105,8 @@ library WBFLGenericBridge
    interface ISegment : IUnknown
    {
       [propget, helpstring("property Length")] HRESULT Length([out, retval] Float64 *pVal);
-      [propget, helpstring("property PrimaryShape")] HRESULT PrimaryShape([in]Float64 Xs,[out,retval]IShape** ppShape);
-		[propget, helpstring("property Section")] HRESULT Section([in]StageIndexType stageIdx,[in] Float64 Xs,[out,retval]ISection** ppSection);
+      [propget, helpstring("property PrimaryShape")] HRESULT PrimaryShape([in]Float64 Xs,[in]SectionBias sectionBias,[out,retval]IShape** ppShape);
+		[propget, helpstring("property Section")] HRESULT Section([in]StageIndexType stageIdx,[in] Float64 Xs,[in]SectionBias sectionBias,[out,retval]ISection** ppSection);
       [propget, helpstring("property PrevSegment")] HRESULT PrevSegment([out,retval]ISegment** segment);
       [propget, helpstring("property NextSegment")] HRESULT NextSegment([out,retval]ISegment** segment);
 
@@ -1103,7 +1120,7 @@ library WBFLGenericBridge
 		object,
 		uuid(ACA24CD2-8201-459d-BF2B-D19D7DF87ACF),
 		oleautomation,
-		helpstring("ISuperstructureSegment Interface"),
+		helpstring("ISuperstructureMemberSegment Interface"),
 		pointer_default(unique)
    ]
    interface ISuperstructureMemberSegment : ISegment
@@ -1122,9 +1139,13 @@ library WBFLGenericBridge
       [helpstring("SetHaunchDepth")] HRESULT SetHaunchDepth([in]Float64 startVal,[in]Float64 midVal,[in]Float64 endVal);
       [helpstring("method ComputeHaunchDepth")] HRESULT ComputeHaunchDepth([in]Float64 distAlongSegment,[out,retval]Float64* pVal);
 
-      // Geometric fillet between bottom of slab and haunch. Note this is only geometric, and does not have same context as wsdot fillet
+      // Fillet between bottom of slab and haunch.
 		[propput,helpstring("property Fillet")] HRESULT Fillet([in]Float64 Fillet);
 		[propget,helpstring("property Fillet")] HRESULT Fillet([out,retval]Float64* Fillet);
+
+      // Fillet can be square or angled
+		[propput,helpstring("property FilletShape")] HRESULT FilletShape([in]FilletShape Fillet);
+		[propget,helpstring("property FilletShape")] HRESULT FilletShape([out,retval]FilletShape* Fillet);
 
       [propput, helpstring("property Precamber")] HRESULT Precamber([in]Float64 precamber);
       [propget, helpstring("property Precamber")] HRESULT Precamber([out, retval]Float64* pPrecamber);
@@ -1407,8 +1428,9 @@ library WBFLGenericBridge
       [helpstring("method SetVariationParameters")] HRESULT SetVariationParameters([in] SegmentZoneType zone,[in]Float64 length,[in]Float64 height,[in]Float64 bottomFlangeDepth);
       [helpstring("method GetVariationParameters")] HRESULT GetVariationParameters([in] SegmentZoneType zone,[out]Float64* length,[out]Float64* height,[out]Float64* bottomFlangeDepth);
 
-      [helpstring("method GetSegmentHeight")] HRESULT GetSegmentHeight([in]Float64 distFromStartOfSegment,[out,retval]Float64* pHeight);
+      [helpstring("method GetSegmentHeight")] HRESULT GetSegmentHeight([in]Float64 Xs,[out,retval]Float64* pHeight);
       [propget, helpstring("property BottomFlangeProfile")] HRESULT BottomFlangeProfile([out,retval]IPoint2dCollection** ppPoints);
+      [helpstring("method ProfileControlPoints")] HRESULT GetProfileControlPoints([in]VARIANT_BOOL bIncludeClosure,[in]VARIANT_BOOL bSegmentCoordinates,[out, retval]IDblArray** ppArray);
 
       [propget, helpstring("property ClosureJointLength")] HRESULT ClosureJointLength([in]EndType endType,[out,retval]Float64* pLength);
       [propput, helpstring("property ClosureJointFgMaterial")] HRESULT ClosureJointForegroundMaterial([in]EndType endType,[in]IMaterial* pFGMaterial);
@@ -1469,7 +1491,9 @@ library WBFLGenericBridge
    interface IThickenedFlangeSegment : ISuperstructureMemberSegment
    {
       [propput, helpstring("property FlangeThickeningType")] HRESULT FlangeThickeningType([in]ThickeningType type);
+      [propget, helpstring("property FlangeThickeningType")] HRESULT FlangeThickeningType([out,retval]ThickeningType* pType);
       [propput, helpstring("property FlangeThickening")] HRESULT FlangeThickening([in]Float64 flangeThickening);
+      [propget, helpstring("property FlangeThickening")] HRESULT FlangeThickening([out,retval]Float64* pFlangeThickening);
       [propget, helpstring("property TopFlangeThickening")] HRESULT TopFlangeThickening([in]Float64 Xs, [out, retval]Float64* pThickening);
    
       [helpstring("method Shape")] HRESULT AddShape([in] IShape* pShape,[in]IMaterial* pFGMaterial,[in]IMaterial* pBGMaterial);

@@ -27,6 +27,13 @@
 #include <EAF\EAFDocument.h>
 #include <EAF\EAFBrokerDocument.h>
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 void EAFHelp(LPCTSTR lpszDocSetName,UINT nHID)
 {
    CString strURL;

@@ -27,5 +27,12 @@
 #include "stdafx.h"
 #include "UGirderSection2EndBlockSegment.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 // Instantiate template in our dll
 template class TEndBlockSegmentImpl<IUGirderSection2EndBlockSegment, IUGirderSection2, IUBeam2, &CLSID_UGirderSection2EndBlockSegment, IDR_UGIRDERSECTION2ENDBLOCKSEGMENT, OutlineEndBlock<IUBeam2>>;

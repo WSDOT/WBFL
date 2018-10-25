@@ -54,13 +54,6 @@ HRESULT CMomentCurvatureSolver::FinalConstruct()
 
    m_CapacitySolver = pSolver;
 
-   CComObject<CMomentCapacitySolution>* pSolution;
-   hr = CComObject<CMomentCapacitySolution>::CreateInstance(&pSolution);
-   if ( FAILED(hr) )
-      return hr;
-
-   m_CapacitySolution = pSolution;
-
    m_kInitialStep = 1e-5;
 
    return S_OK;
@@ -104,6 +97,16 @@ STDMETHODIMP CMomentCurvatureSolver::put_Slices(long nSlices)
 STDMETHODIMP CMomentCurvatureSolver::get_Slices(long* nSlices)
 {
    return m_CapacitySolver->get_Slices(nSlices);
+}
+
+STDMETHODIMP CMomentCurvatureSolver::put_SliceGrowthFactor(Float64 sliceGrowthFactor)
+{
+   return m_CapacitySolver->put_SliceGrowthFactor(sliceGrowthFactor);
+}
+
+STDMETHODIMP CMomentCurvatureSolver::get_SliceGrowthFactor(Float64* sliceGrowthFactor)
+{
+   return m_CapacitySolver->get_SliceGrowthFactor(sliceGrowthFactor);
 }
 
 STDMETHODIMP CMomentCurvatureSolver::put_AxialTolerance(Float64 tolerance)
@@ -166,7 +169,7 @@ STDMETHODIMP CMomentCurvatureSolver::Solve(Float64 Fz,Float64 angle,IMomentCurva
    (*solution) = pSolution;
    (*solution)->AddRef();
 
-   return S_OK;
+   return hr;
 }
 
 Float64 CMomentCurvatureSolver::GetCurvatureIncrement(Uint32 nFail)
@@ -174,17 +177,18 @@ Float64 CMomentCurvatureSolver::GetCurvatureIncrement(Uint32 nFail)
    return m_kInitialStep/pow(2.,Float64(nFail));
 }
 
-HRESULT CMomentCurvatureSolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 k,CMomentCurvatureSolution* solution)
+HRESULT CMomentCurvatureSolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 k,CMomentCurvatureSolution* pCurvatureSolution)
 {
    HRESULT hr;
 
-   hr = m_CapacitySolver->Solve(Fz,angle,k,smFixedCurvature,&m_CapacitySolution.p);
+   CComPtr<IMomentCapacitySolution> capacity_solution;
+   hr = m_CapacitySolver->Solve(Fz,angle,k,smFixedCurvature,&capacity_solution);
    if ( FAILED(hr) )
       return hr;
 
 #if defined _DEBUG
    Float64 Pz;
-   m_CapacitySolution->get_Fz(&Pz);
+   capacity_solution->get_Fz(&Pz);
 
    Float64 tolerance;
    get_AxialTolerance(&tolerance);
@@ -192,15 +196,10 @@ HRESULT CMomentCurvatureSolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 
    ATLASSERT(IsEqual(Fz,Pz,tolerance));
 #endif
    Float64 Mx,My;
-   CComPtr<IPlane3d> strainPlane;
-
-   m_CapacitySolution->get_Mx(&Mx);
-   m_CapacitySolution->get_My(&My);
-
+   capacity_solution->get_Mx(&Mx);
+   capacity_solution->get_My(&My);
    Float64 M = sqrt(Mx*Mx + My*My);
-
-   m_CapacitySolution->get_StrainPlane(&strainPlane);
-   solution->AddCurvaturePoint(M,k,strainPlane);
+   pCurvatureSolution->AddCurvaturePoint(M,k, capacity_solution);
 
    return S_OK;
 }

@@ -24,6 +24,13 @@
 #include "stdafx.h"
 #include <EAF\EAFPluginState.h>
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 CEAFPluginState::CEAFPluginState(LPCTSTR lpszName,const CLSID& clsid,const CString& strCLSID,bool bInitiallyEnabled)
 {
    m_Name = lpszName;

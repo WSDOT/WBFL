@@ -47,8 +47,7 @@ public:
       m_XFurthest = -999999;
       m_YFurthest = -999999;
 
-      m_bUpdateTensionLimit = true;
-      m_bUpdateCompressionLimit = true;
+      m_bUpdateLimits = true;
 	}
 
    HRESULT FinalConstruct();
@@ -76,15 +75,13 @@ private:
    bool m_bFurthestPointUpdated;
    Float64 m_XFurthest, m_YFurthest;
 
-   bool m_bUpdateTensionLimit;
+   bool m_bUpdateLimits;
    Float64 m_FzTensionLimit, m_MxTensionLimit, m_MyTensionLimit, m_eoTensionLimit;
-
-   bool m_bUpdateCompressionLimit;
    Float64 m_FzCompressionLimit, m_MxCompressionLimit, m_MyCompressionLimit, m_eoCompressionLimit;
+   HRESULT UpdateLimits();
 
    void UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Float64 eo,SolutionMethod solutionMethod);
    void UpdateFurthestPoint(Float64 angle);
-   Float64 GetCurvature(CollectionIndexType idx);
    HRESULT GetNeutralAxisParameterRange(Float64 k_or_ec,SolutionMethod solutionMethod,Float64 angle,Float64 Fz,Float64* peo_lower,Float64* peo_upper,Float64* pFz_lower,Float64* pFz_upper);
    HRESULT AnalyzeSection(Float64 Fz,Float64 angle,Float64 k_or_ec,SolutionMethod solutionMethod,IMomentCapacitySolution** solution);
    HRESULT ZeroCapacitySolution(IMomentCapacitySolution** solution);

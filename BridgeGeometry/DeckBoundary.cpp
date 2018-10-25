@@ -31,6 +31,13 @@
 #include <vector>
 #include <functional>
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 typedef std::map<Float64,CComPtr<IPoint2d>> PathPointCollection;
 typedef std::pair<Float64,CComPtr<IPoint2d>> PathPointEntry;
 

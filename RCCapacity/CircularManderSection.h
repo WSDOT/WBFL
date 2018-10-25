@@ -42,6 +42,7 @@ class ATL_NO_VTABLE CCircularManderSection :
 public:
 	CCircularManderSection()
 	{
+      m_esu = 0.004;
 	}
 
    HRESULT FinalConstruct();
@@ -66,6 +67,7 @@ private:
    Float64 m_Diameter;
    Float64 m_Cover;
    Float64 m_fyh;
+   Float64 m_esu;
 
    Float64 Get_ds();
 
@@ -77,7 +79,9 @@ public:
 public:
    STDMETHOD(put_TransvYieldStrength)(/*[in]*/Float64 fyh) override;
 	STDMETHOD(get_TransvYieldStrength)(/*[out,retval]*/Float64* fyh) override;
-	STDMETHOD(get_TransvReinforcementRatio)(/*[out,retval]*/Float64* ps) override;
+   STDMETHOD(put_TransvReinforcementRuptureStrain)(/*[in]*/Float64 esu) override;
+   STDMETHOD(get_TransvReinforcementRuptureStrain)(/*[out,retval]*/Float64* esu) override;
+   STDMETHOD(get_TransvReinforcementRatio)(/*[out,retval]*/Float64* ps) override;
 	STDMETHOD(get_ConfinementEffectivenessCoefficient)(/*[out,retval]*/Float64* ke) override;
 
 // ICircularManderSection

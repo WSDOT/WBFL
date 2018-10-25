@@ -47,7 +47,7 @@ public:
    HRESULT FinalConstruct();
    void FinalRelease();
 
-   void AddCurvaturePoint(Float64 M,Float64 k,IPlane3d* strainPlane);
+   void AddCurvaturePoint(Float64 M,Float64 k,IMomentCapacitySolution* pSolution);
 
 
 DECLARE_REGISTRY_RESOURCEID(IDR_MOMENTCURVATURESOLUTION)
@@ -64,7 +64,7 @@ private:
    {
       Float64 M;
       Float64 k;
-      CComPtr<IPlane3d> StrainPlane;
+      CComPtr<IMomentCapacitySolution> Solution;
 
       bool operator<(const CurvaturePoint& other) const { return k < other.k; }
    };
@@ -82,6 +82,7 @@ public:
    STDMETHOD(get_Moment)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/Float64* Mmax) override;
 	STDMETHOD(get_Curvature)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/Float64* k) override;
 	STDMETHOD(get_StrainPlane)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IPlane3d** strainPlane) override;
+   STDMETHOD(get_CapacitySolution)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IMomentCapacitySolution** solution) override;
    STDMETHOD(get_PointCount)(/*[out,retval]*/CollectionIndexType* nPoints) override;
 };
 

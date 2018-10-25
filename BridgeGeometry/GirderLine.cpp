@@ -29,6 +29,13 @@
 #include "GirderLine.h"
 #include "BridgeGeometryHelper.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 
 // CGirderLine
 STDMETHODIMP CGirderLine::get_BearingOffset(EndType endType,Float64* pBrgOffset)

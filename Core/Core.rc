@@ -53,8 +53,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,2,0,0
- PRODUCTVERSION 4,2,0,0
+ FILEVERSION 4,2,1,0
+ PRODUCTVERSION 4,2,1,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -72,12 +72,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "Core Services"
-            VALUE "FileVersion", "4.2.0.0"
+            VALUE "FileVersion", "4.2.1.0"
             VALUE "InternalName", "Core"
             VALUE "LegalCopyright", "Copyright © 1999-2018, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "Core30.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "4.2.0.0"
+            VALUE "ProductVersion", "4.2.1.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -138,8 +138,6 @@ IDR_ANIMATE             AVI                     "res\\Working.avi"
 IDR_CORE                REGISTRY                "Core.rgs"
 IDR_BROKER              REGISTRY                "Broker.rgs"
 IDR_BROKER2             REGISTRY                "Broker2.rgs"
-IDR_STRLOAD             REGISTRY                "StrLoad.rgs"
-IDR_STRSAVE             REGISTRY                "StrSave.rgs"
 IDR_SYSAGENT            REGISTRY                "SysAgent.rgs"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -150,17 +148,6 @@ IDR_SYSAGENT            REGISTRY                "SysAgent.rgs"
 STRINGTABLE 
 BEGIN
     IDS_PROJNAME            "Core"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_E_BADWRITE          "Error writing file"
-    IDS_E_INVALIDFORMAT     "Invalid fail format"
-    IDS_E_BADREAD           "Error reading from file"
-    IDS_E_BADVERSION        "Incorrect file version encountered"
-    IDS_E_OUTOFMEMORY       "Out of memory"
-    IDS_E_FILENOTFOUND      "File not found"
-    IDS_E_CANTOPEN          "Error opening file"
 END
 
 #endif    // English (U.S.) resources

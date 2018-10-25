@@ -31,9 +31,9 @@ class CEAFApp;
 #include <EAF\EAFTypes.h>
 #include <vector>
 #include <map>
-#include <WBFLCore.h> // IBroker
 
 class CEAFStatusItem;
+interface IBroker;
 
 // Returns the main application object
 EAFFUNC CEAFApp* EAFGetApp();

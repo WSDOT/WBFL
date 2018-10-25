@@ -21,14 +21,14 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <System\SysLib.h>
+#include "StdAfx.h"
 
 /****************************************************************************
 CLASS
    dbgLogDumpContext
 ****************************************************************************/
 
-#include <System\LogDumpContext.h>
+#include <WBFLTools\LogDumpContext.h>
 #include <System\SectionValue.h>
 #include <TCHAR.h>
 
@@ -65,11 +65,7 @@ dbgLogDumpContext::~dbgLogDumpContext()
 }
 
 //======================== OPERATORS  =======================================
-#if defined UNICODE
 dbgDumpContext& dbgLogDumpContext::operator<<(const std::_tstring& s)
-#else
-dbgDumpContext& dbgLogDumpContext::operator<<(const std::_tstring& s)
-#endif
 {
    if ( m_pLog )
       m_pLog->LogMessage(m_dwCookie,s.c_str());

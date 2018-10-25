@@ -84,7 +84,7 @@ END_CONNECTION_POINT_MAP()
 private:
    CComBSTR m_bstrName;
    StrandGrade m_Grade;
-   StrandType m_Type;
+   StrandMaterialType m_Type;
    StrandCoating m_Coating;
    StrandSize m_Size;
    StageIndexType m_InstallationStageIdx;
@@ -99,8 +99,8 @@ public:
 	STDMETHOD(put_Name)(/*[in]*/ BSTR name) override;
 	STDMETHOD(get_Grade)(/*[out,retval]*/ StrandGrade* grade) override;
 	STDMETHOD(put_Grade)(/*[in]*/ StrandGrade grade) override;
-	STDMETHOD(get_Type)(/*[out,retval]*/ StrandType* type) override;
-	STDMETHOD(put_Type)(/*[in]*/ StrandType type) override;
+	STDMETHOD(get_Type)(/*[out,retval]*/ StrandMaterialType* type) override;
+	STDMETHOD(put_Type)(/*[in]*/ StrandMaterialType type) override;
 	STDMETHOD(get_Coating)(/*[out,retval]*/ StrandCoating* coating) override;
 	STDMETHOD(put_Coating)(/*[in]*/ StrandCoating coating) override;
 	STDMETHOD(get_Size)(/*[out,retval]*/ StrandSize* size) override;

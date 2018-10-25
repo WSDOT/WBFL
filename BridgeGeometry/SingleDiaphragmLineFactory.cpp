@@ -29,6 +29,13 @@
 #include "SingleDiaphragmLineFactory.h"
 #include "DiaphragmLine.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 // CSingleDiaphragmLineFactory
 STDMETHODIMP CSingleDiaphragmLineFactory::put_AlignmentID(CogoObjectID ID)
 {

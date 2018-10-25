@@ -25,6 +25,7 @@
 
 #include "stdafx.h"
 #include "SuperstructureMemberSegmentImpl.h"
+#include <GenericBridge\Helpers.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -42,7 +43,10 @@ CSuperstructureMemberSegmentImpl::CSuperstructureMemberSegmentImpl()
    m_HaunchDepth[0] = 0;
    m_HaunchDepth[1] = 0;
    m_HaunchDepth[2] = 0;
+   m_HaunchMode = hmPrismatic;
+
    m_Fillet = 0;
+   m_FilletShape = flsSquared;
    m_Precamber = 0;
 }
 
@@ -195,45 +199,65 @@ STDMETHODIMP CSuperstructureMemberSegmentImpl::SetHaunchDepth(Float64 startVal, 
    m_HaunchDepth[0] = startVal;
    m_HaunchDepth[1] = midVal;
    m_HaunchDepth[2] = endVal;
+
+   // determine how we are going to compute haunch depth
+   if (startVal == midVal && midVal == endVal)
+   {
+      m_HaunchMode = hmPrismatic;
+   }
+   else if (IsEqual(midVal, (startVal+endVal)/2.0))
+   {
+      m_HaunchMode = hmLinear;
+   }
+   else
+   {
+      m_HaunchMode = hmParabolic;
+   }
+
    return S_OK;
 }
 
 STDMETHODIMP CSuperstructureMemberSegmentImpl::ComputeHaunchDepth(Float64 distAlongSegment, Float64* pVal)
 {
    CHECK_RETVAL(pVal);
-   Float64 startHaunch(m_HaunchDepth[0]), midHaunch(m_HaunchDepth[1]), endHaunch(m_HaunchDepth[2]);
-
-   Float64 segment_length;
-   get_Length(&segment_length);
-
-   // Shape can be linear or parabolic
-   // Linear portion of haunch based on end values
-   Float64 lin_haunch = ::LinInterp(distAlongSegment, startHaunch, endHaunch, segment_length);
-
-   // see if any bulge at mid-span
-   Float64 mid_bulge = midHaunch - (startHaunch + endHaunch) / 2.0;
-   if (IsZero(mid_bulge))
+   if (m_HaunchMode == hmPrismatic)
    {
-      // No bulge, haunch is linear. just return
-      *pVal = lin_haunch;
+      *pVal = m_HaunchDepth[0];
    }
    else
    {
-      // haunch is parabolic. Compute height of bulge at location
-      // Made an OPTIMIZATION here - this function is called many, many times.
-      // Was using GenerateParabola() in MathUtils.h, but calls were costly. Refer to that derivation
-      // for how we got here.
-      Float64 Vx = (segment_length) / 2.0;   // X ordinate of peak
+      Float64 startHaunch(m_HaunchDepth[0]), midHaunch(m_HaunchDepth[1]), endHaunch(m_HaunchDepth[2]);
 
-                                             // y = Ax^2 + Bx + C
-      Float64 A = -mid_bulge / (Vx*Vx);
-      Float64 B = 2 * mid_bulge / Vx;
-      // Float64 C = 0.0;
+      Float64 segment_length;
+      get_Length(&segment_length);
 
-      Float64 para_haunch = A*distAlongSegment*distAlongSegment + B*distAlongSegment;
+      // Shape can be linear or parabolic
+      // Linear portion of haunch based on end values
+      Float64 lin_haunch = ::LinInterp(distAlongSegment, startHaunch, endHaunch, segment_length);
 
-      Float64 haunch = lin_haunch + para_haunch; // haunch is sum of linear part and parabolic sliver
-      *pVal = haunch;
+      if (m_HaunchMode == hmLinear)
+      {
+         // Haunch is linear. just return
+         *pVal = lin_haunch;
+      }
+      else
+      {
+         // haunch is parabolic. Compute height of bulge at location
+         // Made an OPTIMIZATION here - this function is called many, many times.
+         // Was using GenerateParabola() in MathUtils.h, but calls were costly. Refer to that derivation
+         // for how we got here.
+         Float64 mid_bulge = midHaunch - (startHaunch + endHaunch) / 2.0;
+         Float64 Vx = (segment_length) / 2.0;   // X ordinate of peak
+                                                // y = Ax^2 + Bx + C
+         Float64 A = -mid_bulge / (Vx*Vx);
+         Float64 B = 2 * mid_bulge / Vx;
+         // Float64 C = 0.0;
+
+         Float64 para_haunch = A*distAlongSegment*distAlongSegment + B*distAlongSegment;
+
+         Float64 haunch = lin_haunch + para_haunch; // haunch is sum of linear part and parabolic sliver
+         *pVal = haunch;
+      }
    }
 
    return S_OK;
@@ -249,6 +273,19 @@ STDMETHODIMP CSuperstructureMemberSegmentImpl::get_Fillet(Float64* Fillet)
 {
    CHECK_RETVAL(Fillet);
    (*Fillet) = m_Fillet;
+   return S_OK;
+}
+
+STDMETHODIMP CSuperstructureMemberSegmentImpl::put_FilletShape(FilletShape filletShape)
+{
+   m_FilletShape = filletShape;
+   return S_OK;
+}
+
+STDMETHODIMP CSuperstructureMemberSegmentImpl::get_FilletShape(FilletShape* filletShape)
+{
+   CHECK_RETVAL(filletShape);
+   (*filletShape) = m_FilletShape;
    return S_OK;
 }
 
@@ -277,5 +314,5 @@ STDMETHODIMP CSuperstructureMemberSegmentImpl::ComputePrecamber(Float64 distAlon
 
 Float64 CSuperstructureMemberSegmentImpl::ComputePrecamber(Float64 Xs, Float64 Ls)
 {
-   return (4 * m_Precamber / Ls)*Xs*(1 - Xs / Ls);
+   return ::ComputePrecamber(Xs, Ls, m_Precamber);
 }

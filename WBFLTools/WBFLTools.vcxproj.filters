@@ -55,6 +55,15 @@
     <ClCompile Include="WBFLTools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="StrLoad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StrSave.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LogDumpContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ARPNotice.h">
@@ -117,6 +126,18 @@
     <ClInclude Include="UnkArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="StrLoad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StrSave.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\WBFLTools\LogDumpContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\WBFLTools\WBFLToolsExp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\Include\WBFLTools.idl" />
@@ -160,6 +181,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="UnkArray.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="StrLoad.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="StrSave.rgs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

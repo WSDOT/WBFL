@@ -26,6 +26,13 @@
 #include "stdafx.h"
 #include "BridgeGeometryHelper.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 HRESULT PierAlignmentIntersect(IPierLine* pPier,IAlignment* pAlignment,IPoint2d** ppPoint)
 {
    CComPtr<ILine2d> line;

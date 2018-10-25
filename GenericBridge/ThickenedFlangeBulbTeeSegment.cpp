@@ -27,6 +27,7 @@
 #include "stdafx.h"
 #include "WBFLGenericBridge.h"
 #include "ThickenedFlangeBulbTeeSegment.h"
+#include <GenericBridge\Helpers.h>
 #include <MathEx.h>
 
 #ifdef _DEBUG
@@ -39,14 +40,6 @@ static char THIS_FILE[] = __FILE__;
 // CThickenedFlangeBulbTeeSegment
 HRESULT CThickenedFlangeBulbTeeSegment::FinalConstruct()
 {
-   //m_pGirderLine = nullptr;
-   //m_Orientation = 0;
-   //m_HaunchDepth[0] = 0;
-   //m_HaunchDepth[1] = 0;
-   //m_HaunchDepth[2] = 0;
-   //m_Fillet = 0;
-   //m_Precamber = 0;
-
    m_FlangeThickening = 0;
    m_FlangeThickeningType = ttEnds;
 
@@ -55,7 +48,6 @@ HRESULT CThickenedFlangeBulbTeeSegment::FinalConstruct()
 
 void CThickenedFlangeBulbTeeSegment::FinalRelease()
 {
-   //m_pGirderLine = nullptr;
    m_Shapes.clear();
 }
 
@@ -76,7 +68,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::InterfaceSupportsErrorInfo(REFIID r
 
 ////////////////////////////////////////////////////////////////////////
 // ISuperstructureMemberSegment implementation
-STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx,Float64 Xs,ISection** ppSection)
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
 {
    CHECK_RETOBJ(ppSection);
 
@@ -88,7 +80,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx
 
    HRESULT hr;
    CComPtr<IShape> primaryShape;
-   hr = get_PrimaryShape(Xs, &primaryShape);
+   hr = get_PrimaryShape(Xs,sectionBias,&primaryShape);
    ATLASSERT(SUCCEEDED(hr));
    if ( FAILED(hr) )
    {
@@ -193,7 +185,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx
    return S_OK;
 }
 
-STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_PrimaryShape(Float64 Xs,IShape** ppShape)
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_PrimaryShape(Float64 Xs,SectionBias sectionBias,IShape** ppShape)
 {
    CComPtr<IShape> girderShape;
    get_GirderShape(Xs, &girderShape);
@@ -217,9 +209,15 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Profile(VARIANT_BOOL bIncludeCl
    CComPtr<IPolyShape> shape;
    shape.CoCreateInstance(CLSID_PolyShape);
 
+   CComPtr<ISegment> prevSegment;
+   get_PrevSegment(&prevSegment);
+
+   CComPtr<ISegment> nextSegment;
+   get_NextSegment(&nextSegment);
+
    Float64 l;
    Float64 brgOffset, endDist;
-   if (bIncludeClosure == VARIANT_TRUE)
+   if (bIncludeClosure == VARIANT_TRUE && nextSegment)
    {
       m_Impl.m_pGirderLine->get_LayoutLength(&l);
       brgOffset = 0;
@@ -232,7 +230,16 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Profile(VARIANT_BOOL bIncludeCl
       m_Impl.m_pGirderLine->get_EndDistance(etStart, &endDist);
    }
 
-   shape->AddPoint(l,0.0); // bottom right
+   CComQIPtr<IBulbTeeSection> beam(m_Shapes.front().Shape);
+   ATLASSERT(beam);
+
+   CComPtr<IBulbTee2> pcBeam;
+   beam->get_Beam(&pcBeam);
+
+   Float64 H;
+   pcBeam->get_MaxHeight(&H);
+
+   shape->AddPoint(0.0,0.0); // bottom left
 
    Float64 Ls;
    m_Impl.m_pGirderLine->get_GirderLength(&Ls);
@@ -241,12 +248,12 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Profile(VARIANT_BOOL bIncludeCl
    int nSpaces = nPoints - 1;
    if (!IsZero(m_Impl.m_Precamber))
    {
-      // work right to left along bottom of segment
+      // work left to right along bottom of segment
       for (int i = 0; i < nPoints; i++)
       {
-         Float64 x = Ls - i*Ls / nSpaces;
+         Float64 x = i*Ls / nSpaces;
          Float64 y = m_Impl.ComputePrecamber(x,Ls);
-         if (bIncludeClosure == VARIANT_TRUE)
+         if (bIncludeClosure == VARIANT_TRUE && prevSegment)
          {
             x += (brgOffset - endDist);
          }
@@ -254,29 +261,26 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Profile(VARIANT_BOOL bIncludeCl
       }
    }
 
-   shape->AddPoint(0.0,0.0); // bottom left
+   shape->AddPoint(Ls,0.0); // bottom right
 
-   CComQIPtr<IBulbTeeSection> beam(m_Shapes.front().Shape);
-   ATLASSERT(beam); // if this is nullptr... how did it get in the system????
+   if (bIncludeClosure == VARIANT_TRUE && nextSegment)
+   {
+      shape->AddPoint(l, 0.0);
+   }
 
-   // get dimensions of beam shape at start and end of segment
-   CComPtr<IBulbTee2> pcBeam;
-   beam->get_Beam(&pcBeam);
 
-   Float64 H;
-   pcBeam->get_MaxHeight(&H);
-
-   // work left to right along top of segment
+   // work right to keft along top of segment
    if (!IsZero(m_Impl.m_Precamber) || !IsZero(m_FlangeThickening))
    {
       for (int i = 0; i < nPoints; i++)
       {
-         Float64 x = i*Ls / nSpaces;
-         Float64 top_flange_thickening = GetFlangeThickening(x);
+         Float64 x = Ls - i*Ls / nSpaces;
+         Float64 top_flange_thickening = ComputeTopFlangeThickening(x, Ls, m_FlangeThickeningType, m_FlangeThickening);
+
          Float64 precamber = m_Impl.ComputePrecamber(x,Ls);
          Float64 y = H + top_flange_thickening + precamber;
 
-         if (bIncludeClosure == VARIANT_TRUE)
+         if (bIncludeClosure == VARIANT_TRUE && prevSegment)
          {
             x += (brgOffset - endDist);
          }
@@ -286,11 +290,14 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Profile(VARIANT_BOOL bIncludeCl
    }
    else
    {
-      shape->AddPoint(0.0, H); // top left
       shape->AddPoint(l, H); // top right
+      shape->AddPoint(0.0, H); // top left
    }
 
-   // Shape is to be in girder path coordinates so (0,0) is at the CL Pier and at the elevation of the top of the shape
+   // Shape is to be in girder path coordinates so X = 0 is at the CL Pier
+   // Y = 0 is also at the CL Pier and is estabilished by projecting a horizontal
+   // line from the top,left corner of the profile... That is, the elevation of the top
+   // left corner of the profile is 0.
    //
    // CL Pier   Start of segment
    // |         |       CL Bearing
@@ -459,8 +466,9 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_GirderShape(Float64 Xs, IShape*
    pcBeam->get_n2(&n2);
 
    // parabolic interpolation of the depth of the top flange thickening
-
-   Float64 top_flange_thickening = GetFlangeThickening(Xs);
+   Float64 Ls;
+   get_Length(&Ls);
+   Float64 top_flange_thickening = ComputeTopFlangeThickening(Xs, Ls, m_FlangeThickeningType, m_FlangeThickening);
 
    // create a new shape that is a clone of the original
    CComQIPtr<IShape> shape(beam);
@@ -486,12 +494,15 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_GirderShape(Float64 Xs, IShape*
    newBeam->put_W6(W6); // right top flange overhang
    newBeam->put_T1(T1);
    newBeam->put_T2(T2);
-   newBeam->put_C1(C1);
+   newBeam->put_C1(C1); // chamfer
    newBeam->put_C2(C2); // location of crown point measured from left flange tip
    newBeam->put_n1(n1); // left crown slope
    newBeam->put_n2(n2); // right crown slope
 
-   AdjustPosition(Xs, btSection, newShape);
+   CComQIPtr<IXYPosition> position(newBeam);
+   position->Offset(0, -top_flange_thickening);
+
+   AdjustPosition(Xs, newBeam);
 
    *ppShape = newShape;
    (*ppShape)->AddRef();
@@ -505,16 +516,40 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::put_FlangeThickeningType(Thickening
    return S_OK;
 }
 
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_FlangeThickeningType(ThickeningType* pType)
+{
+   CHECK_RETVAL(pType);
+   *pType = m_FlangeThickeningType;
+   return S_OK;
+}
+
 STDMETHODIMP CThickenedFlangeBulbTeeSegment::put_FlangeThickening(Float64 flangeThickening)
 {
+   if (flangeThickening < 0)
+   {
+      ATLASSERT(false);
+      return E_INVALIDARG;
+   }
+
    m_FlangeThickening = flangeThickening;
+   return S_OK;
+}
+
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_FlangeThickening(Float64* pFlangeThickening)
+{
+   CHECK_RETVAL(pFlangeThickening);
+   *pFlangeThickening = m_FlangeThickening;
    return S_OK;
 }
 
 STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_TopFlangeThickening(Float64 Xs, Float64* pThickening)
 {
    CHECK_RETVAL(pThickening);
-   *pThickening = GetFlangeThickening(Xs);
+
+   Float64 Ls;
+   get_Length(&Ls);
+   *pThickening = ComputeTopFlangeThickening(Xs, Ls, m_FlangeThickeningType, m_FlangeThickening);
+
    return S_OK;
 }
 
@@ -543,7 +578,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_JointMaterial(IMaterial** mater
 STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_JointShapes(Float64 Xs, IShape** ppLeftJoint, IShape** ppRightJoint)
 {
    CComPtr<IShape> primaryShape;
-   get_PrimaryShape(Xs,&primaryShape);
+   get_PrimaryShape(Xs,sbRight,&primaryShape);
    CComQIPtr<IBulbTeeSection> btSection(primaryShape);
    ATLASSERT(btSection);
    return GetJointShapes(Xs, btSection, ppLeftJoint, ppRightJoint);
@@ -607,66 +642,33 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::Save(IStructuredSave2* save)
    //return S_OK;
 }
 
-Float64 CThickenedFlangeBulbTeeSegment::GetFlangeThickening(Float64 Xs)
+HRESULT CThickenedFlangeBulbTeeSegment::AdjustPosition(Float64 Xs, IBulbTee2* pBeam)
 {
-   // parabolic interpolation of the depth of the top flange thickening
-   Float64 segLength;
-   get_Length(&segLength);
+   // This method puts pBeam in Bridge Section Coordinates
 
-   Float64 thickening;
-   if (m_FlangeThickeningType == ttEnds)
-   {
-      thickening = 4 * m_FlangeThickening*Xs*Xs / (segLength*segLength) - 4 * m_FlangeThickening*Xs / segLength + m_FlangeThickening;
-   }
-   else
-   {
-      thickening = -4 * m_FlangeThickening*Xs*Xs / (segLength*segLength) + 4 * m_FlangeThickening*Xs / segLength;
-   }
-   return thickening;
-}
+   // Get the point where the girder line is loaded in bridge section coordiantes
+   // This point corresponds to the point on the top of the girder above the CL web
+   CComPtr<IPoint2d> pntGirderLine;
+   GB_GetSectionLocation(this, Xs, &pntGirderLine);
 
-HRESULT CThickenedFlangeBulbTeeSegment::AdjustPosition(Float64 distAlongSegment, IBulbTeeSection* pSection, IShape* pShape)
-{
-   CComPtr<IPoint2d> pntTopCenter;
-   GB_GetSectionLocation(this, distAlongSegment, &pntTopCenter); // this is the top center of the bounding box in bridge coordinates
+   // We don't have direct access to a point in pBeam for the top of girder at CL Web
+   // but the hook point is at bottom of beam at CL of web... if we put this point at
+   // the right location, the entire shape will be moved to the correct location
 
-                                                                 // adjust the top center point so that the top of the girder is at the correct elevation,
-                                                                 // not the top center of the bounding box.
+   // the beam hook point is at the bottom CL of the web
+   // Adjust the position of the beam so that the hook point is horizonally aligned with pntGirderLine and
+   // is the CL height below pntGirderLine
 
-                                                                 // because the top flange may be sloped and the high point can be anywhere along the top of the girder
-                                                                 // we need to adjust the elevation of the top center of the bounding box by the difference in elevation between
-                                                                 // the top edge of the bounding box and the top of the actual girder on the vertical line passing through
-                                                                 // the top center of the bounding box.
+   CComPtr<IPoint2d> pntHook;
+   pBeam->get_HookPoint(&pntHook);
 
+   Float64 x, y;
+   pntGirderLine->Location(&x, &y);
 
-   CComPtr<IBulbTee2> pcBeam;
-   pSection->get_Beam(&pcBeam);
+   Float64 Hcl;
+   pBeam->get_CLHeight(&Hcl);
 
-   Float64 W5, W6;
-   Float64 C2;
-   Float64 n1, n2;
-
-   pcBeam->get_W5(&W5); // distance from left side of girder at grade n1
-   pcBeam->get_W6(&W6); // distance from right side of girder at grade n2
-   pcBeam->get_C2(&C2); // distance from left edge to grade break between n1 and n2
-   pcBeam->get_n1(&n1); // grade on left side of girder
-   pcBeam->get_n2(&n2); // grade on right side of girder
-
-   Float64 W = 0.5*(W5 + W6); // this is the center point measured from the left
-
-   if (IsEqual(C2, W) && 0 < n1 && n2 < 0)
-   {
-      // do nothing
-      // The crown point is exactly on the CL of the girder and it is higher than the flange tips
-      // The top center point is in the correct location
-   }
-   else
-   {
-      pntTopCenter->Offset(0, fabs(n1*C2 + n2*(W - C2))); // raise the top center of the bounding box by the approprate amount, which will raise the girder to the correct elevlation
-   }
-
-   CComQIPtr<IXYPosition> position(pShape);
-   position->put_LocatorPoint(lpTopCenter, pntTopCenter);
+   pntHook->Move(x, y - Hcl);
 
    return S_OK;
 }

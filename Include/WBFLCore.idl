@@ -56,21 +56,6 @@ cpp_quote("#define AGENT_S_SECONDPASSINIT	(AGENT_S_FIRST+0)")
 cpp_quote("// Agent must implement the IAgentEx interface")
 cpp_quote("#define AGENT_E_NOTAGENTEX    	(AGENT_E_FIRST+0)")
 
-
-cpp_quote("/////////////////////////////////////////////////////////////////////////////")
-cpp_quote("// ILogFile status codes")
-cpp_quote("#define LOGFILE_E_FIRST    MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0200)")
-cpp_quote("#define LOGFILE_E_LAST     MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x020F)")
-cpp_quote("")
-cpp_quote("#define LOGFILE_E_CANTOPEN           (LOGFILE_E_FIRST+0)")
-cpp_quote("// unable to open the log file")
-cpp_quote("")
-cpp_quote("#define LOGFILE_E_BADWRITE           (LOGFILE_E_FIRST+1)")
-cpp_quote("// error occured while logging message")
-cpp_quote("")
-cpp_quote("#define LOGFILE_E_NOLOGFILE          (LOGFILE_E_FIRST+2)")
-cpp_quote("// invalid cookie was used")
-
 cpp_quote("/////////////////////////////////////////////////////////////////////////////")
 cpp_quote("// IProgress status codes")
 cpp_quote("#define PROGRESS_E_FIRST    MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0200)")
@@ -86,39 +71,6 @@ cpp_quote("#define PW_NOGAUGE    0x0002")
 cpp_quote("#define PW_NOCANCEL   0x0004")
 
 
-cpp_quote("/////////////////////////////////////////////////////////////////////////////")
-cpp_quote("// IStructuredLoad status codes")
-cpp_quote("#define STRLOAD_E_FIRST    MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0200)")
-cpp_quote("#define STRLOAD_E_LAST     MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x020F)")
-cpp_quote("")
-cpp_quote("#define STRLOAD_E_CANTOPEN           (STRLOAD_E_FIRST+0)")
-cpp_quote("// unable to open the structured storage")
-cpp_quote("")
-cpp_quote("#define STRLOAD_E_INVALIDFORMAT      (STRLOAD_E_FIRST+1)")
-cpp_quote("// invalid structured storage format")
-cpp_quote("")
-cpp_quote("#define STRLOAD_E_BADVERSION         (STRLOAD_E_FIRST+2)")
-cpp_quote("// invalid version number encountered")
-cpp_quote("")
-cpp_quote("#define STRLOAD_E_FILENOTFOUND       (STRLOAD_E_FIRST+3)")
-cpp_quote("// the specified file was not found")
-cpp_quote("")
-cpp_quote("#define STRLOAD_E_USERDEFINED        (STRLOAD_E_FIRST+4)")
-cpp_quote("// a user defined error occured")
-
-
-cpp_quote("/////////////////////////////////////////////////////////////////////////////")
-cpp_quote("// IStructuredSave status codes")
-cpp_quote("#define STRSAVE_E_FIRST    MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0200)")
-cpp_quote("#define STRSAVE_E_LAST     MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x020F)")
-cpp_quote("")
-cpp_quote("#define STRSAVE_E_CANTOPEN           (STRSAVE_E_FIRST+0)")
-cpp_quote("// unable to open the structured storage")
-cpp_quote("")
-cpp_quote("#define STRSAVE_E_BADWRITE           (STRSAVE_E_FIRST+1)")
-cpp_quote("// could not write to stream")
-cpp_quote("")
-
 
 [
 	uuid(D820A190-2BE4-11D2-8EB3-006097DF3C68),
@@ -132,59 +84,6 @@ library WBFLCore
 
    interface IBroker;
 
-	[
-	
-		uuid(0131A8C2-26EB-11D2-8EB0-006097DF3C68),
-	
-		helpstring("IStructuredLoad Interface"),
-		pointer_default(unique)
-	]
-	interface IStructuredLoad : IUnknown
-	{
-		[helpstring("method Open")] HRESULT Open([in] LPCTSTR name);
-		[helpstring("method BeginUnit")] HRESULT BeginUnit([in] LPCTSTR name);
-		[helpstring("method EndUnit")] HRESULT EndUnit();
-		[propget, helpstring("property Version")] HRESULT Version([out, retval] Float64 *pVal);
-		[propget, helpstring("property ParentVersion")] HRESULT ParentVersion([out, retval] Float64 *pVal);
-		[propget, helpstring("property TopVersion")] HRESULT TopVersion([out, retval] Float64 *pVal);
-      [propget, helpstring("property ParentUnit")] HRESULT ParentUnit([out,retval]BSTR* pParentUnit);
-		[propget, helpstring("property Property")] HRESULT Property([in] LPCTSTR name, [out, retval] VARIANT *pVal);
-		[helpstring("method EndOfStorage")] HRESULT EndOfStorage();
-		[helpstring("method Close")] HRESULT Close();
-      [helpstring("mehtod LoadRawUnit")] HRESULT LoadRawUnit([out] BSTR* pbstrUnit);
-	};
-	[
-	
-		uuid(0131A8C4-26EB-11D2-8EB0-006097DF3C68),
-	
-		helpstring("IStructuredSave Interface"),
-		pointer_default(unique)
-	]
-	interface IStructuredSave : IUnknown
-	{
-		[helpstring("method Open")] HRESULT Open([in] LPCTSTR name);
-		[helpstring("method BeginUnit")] HRESULT BeginUnit([in] LPCTSTR name,[in] Float64 ver);
-		[helpstring("method EndUnit")] HRESULT EndUnit();
-		[propget, helpstring("property Version")] HRESULT Version([out, retval] Float64 *pVal);
-		[propget, helpstring("property ParentVersion")] HRESULT ParentVersion([out, retval] Float64 *pVal);
-      [propget, helpstring("property ParentUnit")] HRESULT ParentUnit([out,retval]BSTR* pParentUnit);
-		[propget, helpstring("property TopVersion")] HRESULT TopVersion([out, retval] Float64 *pVal);
-		[propput, helpstring("property Property")] HRESULT Property([in] LPCTSTR name, [in] VARIANT newVal);
-		[helpstring("method Close")] HRESULT Close();
-      [helpstring("mehtod SaveRawUnit")] HRESULT SaveRawUnit([in]LPCTSTR unitXML);
-	};
-
-   [
-   object,
-   uuid(5693D0F4-AC55-11d4-8B4B-006097C68A9C),
-   helpstring("IStructuredStorage Interface"),
-   pointer_default(unique)
-   ]
-   interface IStructuredStorage : IUnknown
-   {
-      [helpstring("method Load")] HRESULT Load([in] IStructuredLoad* load);
-      [helpstring("method Save")] HRESULT Save([in] IStructuredSave* save);
-   };
 
    [
 	
@@ -202,20 +101,6 @@ library WBFLCore
 		[helpstring("method Continue")] HRESULT Continue();
 		[helpstring("method DestroyProgressWindow")] HRESULT DestroyProgressWindow();
 	};
-
-   [
-      uuid(0BC4B500-27FF-11d2-8EB2-006097DF3C68),
-      helpstring("ILogFile Interface"),
-      pointer_default(unique)
-   ]
-   interface ILogFile : IUnknown
-   {
-      [helpstring("method Open")] HRESULT Open([in] LPCTSTR name,[out] DWORD* pdwCookie);
-      [propput, helpstring("property EndLines")] HRESULT EndLines([in] BOOL bEndLines);
-      [propget, helpstring("property EndLines")] HRESULT EndLines([out,retval] BOOL* pbEndLines);
-      [helpstring("method LogMessage")] HRESULT LogMessage([in] DWORD dwCookie,[in] LPCTSTR msg);
-      [helpstring("method Close")] HRESULT Close([in] DWORD dwCookie);
-   };
 
    [
 		uuid(BD40316D-259A-11D2-8EB0-006097DF3C68),
@@ -440,23 +325,5 @@ library WBFLCore
 	   [default] interface IAgent;
 	   interface IProgress;
 	   interface ILogFile;
-	};
-
-	[
-	   uuid(0131A8C3-26EB-11D2-8EB0-006097DF3C68),
-	   helpstring("StructuredLoad Class")
-	]
-	coclass StructuredLoad
-	{
-	   [default] interface IStructuredLoad;
-	};
-
-	[
-	   uuid(0131A8C5-26EB-11D2-8EB0-006097DF3C68),
-	   helpstring("StructuredSave Class")
-	]
-	coclass StructuredSave
-	{
-	   [default] interface IStructuredSave;
 	};
 };

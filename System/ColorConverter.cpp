@@ -26,6 +26,13 @@
 #include <System\XProgrammingError.h>
 #include <MathEx.h>
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 void sysColorConverter::HLStoRGB(Float64 hue,Float64 lightness,Float64 saturation,BYTE* pRed,BYTE* pGreen,BYTE* pBlue)
 {
    Float64 red,green,blue;

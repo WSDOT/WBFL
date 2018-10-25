@@ -122,6 +122,7 @@ public:
    STDMETHOD(get_RightBlockOut)(/*[out,retval]*/VARIANT_BOOL* pbRightBlockOut) override;
    STDMETHOD(put_VoidCount)(/*[in]*/CollectionIndexType nv) override;
    STDMETHOD(get_VoidCount)(/*[out,retval]*/CollectionIndexType* nv) override;
+   STDMETHOD(get_Height)(/*[out, retval]*/Float64* pVal) override;
    STDMETHOD(get_HookPoint)(/*[out,retval]*/IPoint2d** hookPnt) override;
    STDMETHOD(putref_HookPoint)(/*[in]*/ IPoint2d* hookPnt) override;
    STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;

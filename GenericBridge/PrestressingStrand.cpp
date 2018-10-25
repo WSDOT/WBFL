@@ -104,14 +104,14 @@ STDMETHODIMP CPrestressingStrand::put_Grade(StrandGrade grade)
    return S_OK;
 }
 
-STDMETHODIMP CPrestressingStrand::get_Type(StrandType* type)
+STDMETHODIMP CPrestressingStrand::get_Type(StrandMaterialType* type)
 {
    CHECK_RETVAL(type);
    *type = m_Type;
    return m_Type;
 }
 
-STDMETHODIMP CPrestressingStrand::put_Type(StrandType type)
+STDMETHODIMP CPrestressingStrand::put_Type(StrandMaterialType type)
 {
    m_Type = type;
    return S_OK;

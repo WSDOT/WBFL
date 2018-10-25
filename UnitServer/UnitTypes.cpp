@@ -217,7 +217,7 @@ HRESULT CUnitTypes::InitDefaultUnits()
    END_NEWUNIT();
 
    // Length4 (Moment of Interita)
-   BEGIN_NEWUNIT( CComBSTR("Length4"), 0,4,0,0,0 );
+   BEGIN_NEWUNIT( CComBSTR("Length4"), 0,4,0,1,0 );
       NEWUNIT( CComBSTR("m^4"),    0.0, 1.0,               0.0, unitsSI );
       NEWUNIT( CComBSTR("mm^4"),   0.0, 1.0e-12,           0.0, unitsSI );
       NEWUNIT( CComBSTR("cm^4"),   0.0, 1.0e-08,           0.0, unitsSI );

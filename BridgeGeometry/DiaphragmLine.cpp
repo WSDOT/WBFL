@@ -28,6 +28,13 @@
 #include "stdafx.h"
 #include "DiaphragmLine.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 
 // CDiaphragmLine
 STDMETHODIMP CDiaphragmLine::get_Point(GirderIDType gdrLineID,EndType endType,IPoint2d** ppPoint)

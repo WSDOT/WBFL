@@ -716,10 +716,17 @@ STDMETHODIMP CBoxBeam::get_TopFlangeWidth(Float64 *pVal)
 STDMETHODIMP CBoxBeam::get_Width(Float64* pVal)
 {
    CHECK_RETVAL(pVal);
-   Float64 top = 2*(m_W1+m_W2) + m_W3;
-   Float64 bot = 2*(m_W4+m_W2) + m_W3;
+   Float64 top = 2 * (m_W1 + m_W2) + m_W3;
+   Float64 bot = 2 * (m_W4 + m_W2) + m_W3;
 
-   *pVal = max(top,bot);
+   *pVal = max(top, bot);
+   return S_OK;
+}
+
+STDMETHODIMP CBoxBeam::get_Height(Float64* pVal)
+{
+   CHECK_RETVAL(pVal);
+   *pVal = m_H1 + m_H2 + m_H3;
    return S_OK;
 }
 

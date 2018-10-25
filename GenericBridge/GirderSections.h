@@ -212,6 +212,58 @@ public:
       return S_OK;
    }
 
+	STDMETHODIMP get_MatingSurfaceWidth(MatingSurfaceIndexType idx,Float64* wMatingSurface) override
+   {
+      // total width is the width of our mating surface profile
+      CComPtr<IPoint2dCollection> points;
+      get_MatingSurfaceProfile(idx, &points);
+
+      IndexType npts;
+      points->get_Count(&npts);
+      CComPtr<IPoint2d> ps, pe;
+      points->get_Item(0, &ps);
+      points->get_Item(npts-1, &pe);
+
+      Float64 xs, xe;
+      ps->get_X(&xs);
+      pe->get_X(&xe);
+
+      *wMatingSurface = xe - xs;
+
+      return S_OK;
+   }
+
+   STDMETHODIMP get_MatingSurfaceLocation(MatingSurfaceIndexType idx,Float64* pLocation) override
+   {
+      // total width is the width of our mating surface profile. Profile can be offset from center on exterior beams
+      CComPtr<IPoint2dCollection> points;
+      get_MatingSurfaceProfile(idx, &points);
+
+      IndexType npts;
+      points->get_Count(&npts);
+      CComPtr<IPoint2d> ps, pe;
+      points->get_Item(0, &ps);
+      points->get_Item(npts-1, &pe);
+
+      Float64 xs, xe;
+      ps->get_X(&xs);
+      pe->get_X(&xe);
+
+      Float64 msglocation = (xs + xe) / 2.0; // in bridge coords
+
+      CComPtr<IPoint2d> topCenter;
+      get_LocatorPoint(lpTopCenter, &topCenter);
+      Float64 tcloc;
+      topCenter->get_X(&tcloc);
+
+      Float64 location = msglocation - tcloc;
+
+      *pLocation = location;
+
+
+      return S_OK;
+   }
+
    STDMETHODIMP get_MatingSurfaceProfile(MatingSurfaceIndexType idx, IPoint2dCollection** ppProfile) override
    {
       // overide the base class implentation with this
@@ -256,16 +308,20 @@ public:
 
    STDMETHODIMP get_TopFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
    {
-      if ( idx != 0 )
+      if (idx != 0)
+      {
          return E_INVALIDARG;
+      }
 
       return m_Beam->get_D1(tFlange);
    }
 
    STDMETHODIMP get_BottomFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
    {
-      if ( idx != 0 )
+      if (idx != 0)
+      {
          return E_INVALIDARG;
+      }
 
       return m_Beam->get_D5(tFlange);
    }
@@ -274,25 +330,22 @@ public:
    STDMETHODIMP get_TopFlangeLocation(FlangeIndexType idx, Float64* location) override
    {
       if (idx != 0)
+      {
          return E_INVALIDARG;
+      }
 
+      // location < 0 means the CL of the flange is to the left of the CL of the beam bounding box
       Float64 w5, w6;
       m_Beam->get_W5(&w5);
       m_Beam->get_W6(&w6);
-      *location = w5 - 0.5*(w5 + w6);
+      *location = 0.5*(w6 - w5);
+
       return S_OK;
    }
 
    STDMETHODIMP get_BottomFlangeLocation(FlangeIndexType idx, Float64* location) override
    {
-      if (idx != 0)
-         return E_INVALIDARG;
-
-      Float64 w5, w6;
-      m_Beam->get_W5(&w5);
-      m_Beam->get_W6(&w6);
-      *location = w5 - 0.5*(w5 + w6);
-      return S_OK;
+      return get_TopFlangeLocation(idx, location);
    }
 
    // IPrestressedGirderSection

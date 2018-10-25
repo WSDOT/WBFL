@@ -31,11 +31,21 @@
 #include "ItemDataManager.h"
 #include "SuperstructureMemberSegmentImpl.h"
 
+#include <GenericBridge\Helpers.h>
+
 #include <Math\CompositeFunction2d.h>
 #include <Math\LinFunc2d.h>
 #include <Math\MathUtils.h>
 
 #include <algorithm>
+#include <array>
+
+
+inline bool IsParabolicVariation(SegmentVariationType variationType)
+{
+   return (variationType == svtParabolic || variationType == svtDoubleParabolic ? true : false);
+}
+
 
 /////////////////////////////////////////////////////////////////////////////
 // ISplicedGirderSegmentImpl
@@ -49,20 +59,6 @@ class ATL_NO_VTABLE ISplicedGirderSegmentImpl :
 public:
    ISplicedGirderSegmentImpl()
    {
-      //m_pSSMbr       = nullptr;
-      //m_pGirderLine = nullptr;
-      //m_pPrevSegment = nullptr;
-      //m_pNextSegment = nullptr;
-
-      //m_Orientation = 0;
-
-      //m_HaunchDepth[0] = 0;
-      //m_HaunchDepth[1] = 0;
-      //m_HaunchDepth[2] = 0;
-
-      //m_Fillet = 0;
-      //m_Precamber = 0;
-
       m_EndBlockLength[etStart]           = 0;
       m_EndBlockLength[etEnd]             = 0;
       m_EndBlockTransitionLength[etStart] = 0;
@@ -77,8 +73,9 @@ public:
          m_VariationBottomFlangeDepth[i] = 0;
       }
       
-      m_bSegmentHeightProfile = false;
-      m_bBottomFlangeHeightProfile = false;
+      m_bSegmentRange = false;
+      m_XgpStart = DBL_MAX;
+      m_XgpEnd = -DBL_MAX;
 
       m_ClosureJointFgMaterial[etStart] = nullptr;
       m_ClosureJointFgMaterial[etEnd]   = nullptr;
@@ -90,13 +87,6 @@ public:
 protected:
    CSuperstructureMemberSegmentImpl m_Impl;
 
-   //IGirderLine* m_pGirderLine; // weak reference to the girder line in the geometry model that provies the geometry for this segment
-   //ISuperstructureMember* m_pSSMbr; // weak reference to parent superstructure member
-   //ISuperstructureMemberSegment* m_pPrevSegment; // weak reference to previous segment
-   //ISuperstructureMemberSegment* m_pNextSegment; // weak reference to next segment
-
-   //Float64 m_Orientation; // orientation of girder... plumb = 0... rotated CW is +... radians
-
    struct ShapeData
    {
       CComPtr<IShape> Shape;
@@ -107,39 +97,29 @@ protected:
 
    CItemDataManager m_ItemDataMgr;
 
-   //// index is EndType
-   //Float64 m_HaunchDepth[3]; // depth from top of slab to top of girder at CL Bearing at start/end of girder
-
-   //Float64 m_Fillet;
-   //Float64 m_Precamber;
+   // cached segment range values
+   bool m_bSegmentRange;
+   Float64 m_XgpStart;
+   Float64 m_XgpEnd;
 
    // index is EndType
-   Float64 m_EndBlockLength[2]; // length of end block from end of girder to transitation
-   Float64 m_EndBlockTransitionLength[2]; // length of transition
-   Float64 m_EndBlockWidth[2]; // width of end block at end of girder... constant until transition
+   std::array<Float64, 2> m_EndBlockLength; // length of end block from end of girder to transitation
+   std::array<Float64, 2> m_EndBlockTransitionLength; // length of transition
+   std::array<Float64, 2> m_EndBlockWidth; // width of end block at end of girder... constant until transition
                                // then transitions to the section
 
    SegmentVariationType m_VariationType;
-   Float64 m_VariationLength[4]; // index is the SegmentZoneType enum
-   Float64 m_VariationHeight[4];
-   Float64 m_VariationBottomFlangeDepth[4];
+   std::array<Float64, 4> m_VariationLength; // index is the SegmentZoneType enum
+   std::array<Float64, 4> m_VariationHeight;
+   std::array<Float64, 4> m_VariationBottomFlangeDepth;
 
    // index is EndType
-   CComPtr<IMaterial> m_ClosureJointFgMaterial[2]; // foreground material
-   CComPtr<IMaterial> m_ClosureJointBgMaterial[2]; // background material
-
-   bool m_bSegmentHeightProfile;
-   mathCompositeFunction2d m_SegmentHeightProfile; // this function returns the segment height
-                                                   // at various location along the segment.
-                                                   // if you plot this function, it will be upside down
-                                                   // from the actual girder segment
-
-   bool m_bBottomFlangeHeightProfile;
-   mathCompositeFunction2d m_BottomFlangeHeightProfile;
+   std::array<CComPtr<IMaterial>, 2> m_ClosureJointFgMaterial; // foreground material
+   std::array<CComPtr<IMaterial>, 2> m_ClosureJointBgMaterial; // background material
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid)
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override
    {
 	   static const IID* arr[] = 
 	   {
@@ -166,108 +146,34 @@ public:
    STDMETHOD(putref_NextSegment)(ISegment* segment) override { return m_Impl.putref_NextSegment(segment); }
    STDMETHOD(get_NextSegment)(ISegment** segment) override { return m_Impl.get_NextSegment(segment); }
 
-	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs,ISection** ppSection)
+	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs,SectionBias sectionBias,ISection** ppSection) override
    {
-      return GetSection(stageIdx,Xs,ppSection);
+      return GetSection(stageIdx,Xs,sectionBias,ppSection);
    }
 
-	STDMETHOD(get_PrimaryShape)(Float64 Xs,IShape** ppShape)
+	STDMETHOD(get_PrimaryShape)(Float64 Xs,SectionBias sectionBias,IShape** ppShape) override
    {
-      return GetPrimaryShape(Xs,ppShape);
+      return GetPrimaryShape(Xs,sectionBias,ppShape);
    }
 
-   STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure,IShape** ppShape)
+   STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure,IShape** ppShape) override
    {
       CComPtr<IPolyShape> polyShape;
       polyShape.CoCreateInstance(CLSID_PolyShape);
 
-      // Start and end of the segment in Girder Path Coordinates
-      Float64 xStart, xEnd;
-      GetSegmentRange(&xStart,&xEnd);
-      Float64 xStartSegment = xStart;
-      Float64 xEndSegment   = xEnd;
-
-      // if the closure joints are not to be included in the profile
-      // move the start and end locations to the face of the segment
-      if ( bIncludeClosure == VARIANT_FALSE )
-      {
-         CComPtr<IGirderLine> girderLine;
-         get_GirderLine(&girderLine);
-         Float64 brgOffset, endDist;
-         girderLine->get_BearingOffset(etStart,&brgOffset);
-         girderLine->get_EndDistance(etStart,&endDist);
-         xStart += (brgOffset-endDist);
-
-         girderLine->get_BearingOffset(etEnd,&brgOffset);
-         girderLine->get_EndDistance(etEnd,&endDist);
-         xEnd -= (brgOffset-endDist);
-      }
-
-
-      // determine key X-values (locations where the depth of the section changes)
       std::vector<Float64> xValues;
-      if ( m_VariationType == svtLinear || m_VariationType == svtParabolic )
+      GetProfilePointLocations(bIncludeClosure, VARIANT_FALSE, &xValues); // want girder path coordinates
+
+      for ( const auto Xgp: xValues)
       {
-         Float64 dist = xStartSegment + m_VariationLength[sztLeftPrismatic];
-         if ( ::InRange(xStart,dist,xEnd) )
-         {
-            xValues.push_back(dist);
-         }
-
-         dist = xEndSegment - m_VariationLength[sztRightPrismatic];
-         if ( ::InRange(xStart,dist,xEnd) )
-         {
-            xValues.push_back(dist);
-         }
-      }
-      else if ( m_VariationType == svtDoubleLinear || m_VariationType == svtDoubleParabolic )
-      {
-         Float64 dist = xStartSegment + m_VariationLength[sztLeftPrismatic];
-         if ( ::InRange(xStart,dist,xEnd) )
-         {
-            xValues.push_back(dist);
-         }
-
-         dist = xStartSegment + m_VariationLength[sztLeftPrismatic]  + m_VariationLength[sztLeftTapered];
-         if ( ::InRange(xStart,dist,xEnd) )
-         {
-            xValues.push_back(dist);
-         }
-
-         dist = xEndSegment - m_VariationLength[sztRightPrismatic] - m_VariationLength[sztRightTapered];
-         if ( ::InRange(xStart,dist,xEnd) )
-         {
-            xValues.push_back(dist);
-         }
-
-         dist = xEndSegment - m_VariationLength[sztRightPrismatic];
-         if ( ::InRange(xStart,dist,xEnd) )
-         {
-            xValues.push_back(dist);
-         }
-      }
-
-      for ( int i = 0; i < 11; i++ )
-      {
-         Float64 x = i*(xEnd - xStart)/10 + xStart;
-         xValues.push_back(x);
-      }
-
-      std::sort(xValues.begin(),xValues.end());
-
-      std::vector<Float64>::iterator iter(xValues.begin());
-      std::vector<Float64>::iterator end(xValues.end());
-      for ( ; iter != end; iter++ )
-      {
-         Float64 Xgp = *iter;
          Float64 Xs = ConvertToSegmentCoordinate(Xgp);
          Float64 H = GetSectionDepth(Xs);
          polyShape->AddPoint(Xgp,-H);
       }
 
       // points across the top of the segment
-      polyShape->AddPoint(xEnd,0);
-      polyShape->AddPoint(xStart,0);
+      polyShape->AddPoint(xValues.back(),0);
+      polyShape->AddPoint(xValues.front(),0);
 
       polyShape->get_Shape(ppShape);
 
@@ -283,13 +189,15 @@ public:
    STDMETHOD(ComputeHaunchDepth)(Float64 distAlongSegment, Float64* pVal) override { return m_Impl.ComputeHaunchDepth(distAlongSegment, pVal); }
    STDMETHOD(put_Fillet)(/*[in]*/Float64 Fillet) override { return m_Impl.put_Fillet(Fillet); }
    STDMETHOD(get_Fillet)(/*[out,retval]*/Float64* Fillet) override { return m_Impl.get_Fillet(Fillet); }
+   STDMETHOD(put_FilletShape)(/*[in]*/FilletShape FilletShape) override { return m_Impl.put_FilletShape(FilletShape); }
+   STDMETHOD(get_FilletShape)(/*[out,retval]*/FilletShape* FilletShape) override { return m_Impl.get_FilletShape(FilletShape); }
    STDMETHOD(put_Precamber)(/*[in]*/Float64 precamber) override { return m_Impl.put_Precamber(precamber); }
    STDMETHOD(get_Precamber)(/*[out,retval]*/Float64* pPrecamber) override { return m_Impl.get_Precamber(pPrecamber); }
    STDMETHOD(ComputePrecamber)(/*[in]*/Float64 distAlongSegment, /*[out,retval]*/Float64* pPrecamber) override { return m_Impl.ComputePrecamber(distAlongSegment, pPrecamber); }
 
 // ISplicedGirderSegment
 public:
-	STDMETHOD(AddShape)(IShape* pShape,IMaterial* pFGMaterial,IMaterial* pBGMaterial)
+	STDMETHOD(AddShape)(IShape* pShape,IMaterial* pFGMaterial,IMaterial* pBGMaterial) override
    {
       CHECK_IN(pShape);
       if ( m_Shapes.size() == 0 )
@@ -312,14 +220,14 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(get_ShapeCount)(IndexType* nShapes)
+   STDMETHOD(get_ShapeCount)(IndexType* nShapes) override
    {
       CHECK_RETVAL(nShapes);
       *nShapes = m_Shapes.size();
       return S_OK;
    }
 
-   STDMETHOD(get_ForegroundMaterial)(IndexType index,IMaterial* *material)
+   STDMETHOD(get_ForegroundMaterial)(IndexType index,IMaterial* *material) override
    {
       if ( m_Shapes.size() <= index || index == INVALID_INDEX )
          return E_INVALIDARG;
@@ -333,80 +241,82 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(get_BackgroundMaterial)(IndexType index,IMaterial* *material)
+   STDMETHOD(get_BackgroundMaterial)(IndexType index,IMaterial* *material) override
    {
-      if ( m_Shapes.size() <= index || index == INVALID_INDEX )
+      if (m_Shapes.size() <= index || index == INVALID_INDEX)
+      {
          return E_INVALIDARG;
+      }
 
       CHECK_RETVAL(material);
       (*material) = m_Shapes[index].BGMaterial;
 
-      if ( *material )
+      if (*material)
+      {
          (*material)->AddRef();
+      }
 
       return S_OK;
    }
 
-   STDMETHOD(put_EndBlockLength)(EndType endType,Float64 length)
+   STDMETHOD(put_EndBlockLength)(EndType endType,Float64 length) override
    {
       m_EndBlockLength[endType] = length;
       return S_OK;
    }
 
-   STDMETHOD(get_EndBlockLength)(EndType endType,Float64* pLength)
+   STDMETHOD(get_EndBlockLength)(EndType endType,Float64* pLength) override
    {
       *pLength = m_EndBlockLength[endType];
       return S_OK;
    }
 
-   STDMETHOD(put_EndBlockTransitionLength)(EndType endType,Float64 length)
+   STDMETHOD(put_EndBlockTransitionLength)(EndType endType,Float64 length) override
    {
       m_EndBlockTransitionLength[endType] = length;
       return S_OK;
    }
 
-   STDMETHOD(get_EndBlockTransitionLength)(EndType endType,Float64* pLength)
+   STDMETHOD(get_EndBlockTransitionLength)(EndType endType,Float64* pLength) override
    {
       *pLength = m_EndBlockTransitionLength[endType];
       return S_OK;
    }
 
-   STDMETHOD(put_EndBlockWidth)(EndType endType,Float64 width)
+   STDMETHOD(put_EndBlockWidth)(EndType endType,Float64 width) override
    {
       m_EndBlockWidth[endType] = width;
       return S_OK;
    }
 
-   STDMETHOD(get_EndBlockWidth)(EndType endType,Float64* pWidth)
+   STDMETHOD(get_EndBlockWidth)(EndType endType,Float64* pWidth) override
    {
       *pWidth = m_EndBlockWidth[endType];
       return S_OK;
    }
 
-   STDMETHOD(put_VariationType)(SegmentVariationType variationType)
+   STDMETHOD(put_VariationType)(SegmentVariationType variationType) override
    {
       m_VariationType = variationType;
-      m_bSegmentHeightProfile = false;
       return S_OK;
    }
 
-   STDMETHOD(get_VariationType)(SegmentVariationType* variationType)
+   STDMETHOD(get_VariationType)(SegmentVariationType* variationType) override
    {
       CHECK_RETVAL(variationType);
       *variationType = m_VariationType;
       return S_OK;
    }
 
-   STDMETHOD(SetVariationParameters)(SegmentZoneType zone,Float64 length,Float64 height,Float64 bottomFlangeDepth)
+   STDMETHOD(SetVariationParameters)(SegmentZoneType zone,Float64 length,Float64 height,Float64 bottomFlangeDepth) override
    {
       m_VariationLength[zone] = length;
       m_VariationHeight[zone] = height;
       m_VariationBottomFlangeDepth[zone] = bottomFlangeDepth;
-      m_bSegmentHeightProfile = false;
       return S_OK;
    }
 
-   STDMETHOD(GetVariationParameters)(SegmentZoneType zone,Float64* length,Float64* height,Float64* bottomFlangeDepth)
+   STDMETHOD(GetVariationParameters)(SegmentZoneType zone,Float64* length,Float64* height,Float64* bottomFlangeDepth) override
    {
       CHECK_RETVAL(length);
       CHECK_RETVAL(height);
@@ -418,56 +328,32 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(GetSegmentHeight)(Float64 Xs,Float64* pHeight)
+   STDMETHOD(GetSegmentHeight)(Float64 Xs,Float64* pHeight) override
    {
       CHECK_RETVAL(pHeight);
       *pHeight = GetSectionDepth(Xs);
       return S_OK;
    }
 
-   STDMETHOD(get_BottomFlangeProfile)(IPoint2dCollection** ppPoints)
+   STDMETHOD(get_BottomFlangeProfile)(IPoint2dCollection** ppPoints) override
    {
       CHECK_RETOBJ(ppPoints);
       CComPtr<IPoint2dCollection> points;
       points.CoCreateInstance(CLSID_Point2dCollection);
 
-      Float64 xStart, xEnd;
-      GetSegmentRange(&xStart,&xEnd);
-
       std::vector<Float64> xValues;
-      if ( m_VariationType == svtLinear || m_VariationType == svtParabolic )
-      {
-         xValues.push_back(xStart + m_VariationLength[sztLeftPrismatic]);
-         xValues.push_back(xEnd   - m_VariationLength[sztRightPrismatic]);
-      }
-      else if ( m_VariationType == svtDoubleLinear || m_VariationType == svtDoubleParabolic )
-      {
-         xValues.push_back(xStart + m_VariationLength[sztLeftPrismatic]);
-         xValues.push_back(xStart + m_VariationLength[sztLeftPrismatic]  + m_VariationLength[sztLeftTapered]);
-         xValues.push_back(xEnd   - m_VariationLength[sztRightPrismatic] - m_VariationLength[sztRightTapered]);
-         xValues.push_back(xEnd   - m_VariationLength[sztRightPrismatic]);
-      }
+      GetProfilePointLocations(VARIANT_FALSE, VARIANT_FALSE, &xValues); // exclude closure, want girder path coordinates
 
-      for ( int i = 0; i < 11; i++ )
+      for (const auto Xgp : xValues)
       {
-         Float64 x = i*(xEnd - xStart)/10 + xStart;
-         xValues.push_back(x);
-      }
-
-      std::sort(xValues.begin(),xValues.end());
-
-      std::vector<Float64>::iterator iter(xValues.begin());
-      std::vector<Float64>::iterator end(xValues.end());
-      for ( ; iter != end; iter++ )
-      {
-         Float64 x = *iter;
-         Float64 section_depth = GetSectionDepth(x - xStart);
-         Float64 bottom_flange_height = GetBottomFlangeHeight(x - xStart);
+         Float64 Xs = ConvertToSegmentCoordinate(Xgp);
+         Float64 section_depth = GetSectionDepth(Xs);
+         Float64 bottom_flange_height = GetBottomFlangeHeight(Xs);
          Float64 y = section_depth - bottom_flange_height;
 
          CComPtr<IPoint2d> point;
          point.CoCreateInstance(CLSID_Point2d);
-         point->Move(x,-y);
+         point->Move(Xgp,-y);
          points->Add(point);
       }
       points.CopyTo(ppPoints);
@@ -475,7 +361,23 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(get_ClosureJointLength)(/*[in]*/EndType endType,/*[out,retval]*/Float64* pLength)
+   STDMETHOD(GetProfileControlPoints)(VARIANT_BOOL bIncludeClosure, VARIANT_BOOL bSegmentCoordinates, IDblArray** ppArray) override
+   {
+      CHECK_RETOBJ(ppArray);
+      std::vector<Float64> xValues;
+      GetProfilePointLocations(bIncludeClosure, bSegmentCoordinates, &xValues);
+
+      CComPtr<IDblArray> array;
+      array.CoCreateInstance(CLSID_DblArray);
+      for (const auto& x : xValues)
+      {
+         array->Add(x);
+      }
+
+      return array.CopyTo(ppArray);
+   }
+
+   STDMETHOD(get_ClosureJointLength)(/*[in]*/EndType endType,/*[out,retval]*/Float64* pLength) override
    {
       CHECK_RETVAL(pLength);
 
@@ -496,28 +398,28 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(put_ClosureJointForegroundMaterial)(/*[in]*/EndType endType,/*[in]*/IMaterial* pFGMaterial)
+   STDMETHOD(put_ClosureJointForegroundMaterial)(/*[in]*/EndType endType,/*[in]*/IMaterial* pFGMaterial) override
    {
       CHECK_IN(pFGMaterial);
       m_ClosureJointFgMaterial[endType] = pFGMaterial;
       return S_OK;
    }
 
-   STDMETHOD(get_ClosureJointForegroundMaterial)(/*[in]*/EndType endType,/*[out,retval]*/IMaterial** ppFGMaterial)
+   STDMETHOD(get_ClosureJointForegroundMaterial)(/*[in]*/EndType endType,/*[out,retval]*/IMaterial** ppFGMaterial) override
    {
       CHECK_RETOBJ(ppFGMaterial);
       m_ClosureJointFgMaterial[endType].CopyTo(ppFGMaterial);
       return S_OK;
    }
 
-   STDMETHOD(put_ClosureJointBackgroundMaterial)(/*[in]*/EndType endType,/*[in]*/IMaterial* pBGMaterial)
+   STDMETHOD(put_ClosureJointBackgroundMaterial)(/*[in]*/EndType endType,/*[in]*/IMaterial* pBGMaterial) override
    {
       CHECK_IN(pBGMaterial);
       m_ClosureJointBgMaterial[endType] = pBGMaterial;
       return S_OK;
    }
 
-   STDMETHOD(get_ClosureJointBackgroundMaterial)(/*[in]*/EndType endType,/*[out,retval]*/IMaterial** ppBGMaterial)
+   STDMETHOD(get_ClosureJointBackgroundMaterial)(/*[in]*/EndType endType,/*[out,retval]*/IMaterial** ppBGMaterial) override
    {
       CHECK_RETOBJ(ppBGMaterial);
       m_ClosureJointBgMaterial[endType].CopyTo(ppBGMaterial);
@@ -526,29 +428,29 @@ public:
 
 // IItemData
 public:
-   STDMETHOD(AddItemData)(/*[in]*/BSTR name,/*[in]*/IUnknown* data)
+   STDMETHOD(AddItemData)(/*[in]*/BSTR name,/*[in]*/IUnknown* data) override
    {
       return m_ItemDataMgr.AddItemData(name,data);
    }
 
-   STDMETHOD(GetItemData)(/*[in]*/BSTR name,/*[out,retval]*/IUnknown** data)
+   STDMETHOD(GetItemData)(/*[in]*/BSTR name,/*[out,retval]*/IUnknown** data) override
    {
       return m_ItemDataMgr.GetItemData(name,data);
    }
 
-   STDMETHOD(RemoveItemData)(/*[in]*/BSTR name)
+   STDMETHOD(RemoveItemData)(/*[in]*/BSTR name) override
    {
       return m_ItemDataMgr.RemoveItemData(name);
    }
 
-   STDMETHOD(GetItemDataCount)(/*[out,retval]*/CollectionIndexType* count)
+   STDMETHOD(GetItemDataCount)(/*[out,retval]*/CollectionIndexType* count) override
    {
       return m_ItemDataMgr.GetItemDataCount(count);
    }
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load)
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override
    {
       ATLASSERT(false);
       return E_NOTIMPL;
@@ -568,7 +470,7 @@ public:
       //return S_OK;
    }
 
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save)
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override
    {
       ATLASSERT(false);
       return E_NOTIMPL;
@@ -585,9 +487,9 @@ public:
    }
 
 protected:
-   virtual HRESULT GetPrimaryShape(Float64 distAlongSegment,IShape** ppShape) = 0;
+   virtual HRESULT GetPrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape) = 0;
 
-   virtual HRESULT GetSection(StageIndexType stageIdx,Float64 Xs,ISection** ppSection)
+   virtual HRESULT GetSection(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
    {
       CHECK_RETOBJ(ppSection);
 
@@ -599,7 +501,7 @@ protected:
 
       HRESULT hr;
       CComPtr<IShape> primaryShape;
-      hr = GetPrimaryShape(Xs,&primaryShape);
+      hr = GetPrimaryShape(Xs,sectionBias,&primaryShape);
       ATLASSERT(SUCCEEDED(hr));
       if ( FAILED(hr) )
          return hr;
@@ -755,438 +657,66 @@ protected:
       return 0; // Xs is not in a closure
    }
 
-   Float64 GetBottomFlangeHeight(Float64 Xs)
+   std::array<Float64, 4> GetTransitionPoints()
    {
-      Float64 XgpStart, XgpEnd;
-      GetSegmentRange(&XgpStart,&XgpEnd);
+      Float64 Lg;
+      get_Length(&Lg);
 
-      Float64 Xsp = ConvertToSegmentPathCoordinate(Xs);
+      std::array<Float64, 4> X;
 
-      Float64 Xgp = XgpStart + Xsp;
-
-      if ( m_bBottomFlangeHeightProfile )
+      if (m_VariationType == svtNone)
       {
-         return m_BottomFlangeHeightProfile.Evaluate(Xgp);
+         X[ZoneBreakType::Start] = 0;
+         X[ZoneBreakType::LeftBreak] = Lg / 2;
+         X[ZoneBreakType::RightBreak] = Lg / 2;
+         X[ZoneBreakType::End] = Lg;
+      }
+      else if (m_VariationType == svtLinear)
+      {
+         X[ZoneBreakType::Start] = m_VariationLength[ZoneBreakType::Start];
+         X[ZoneBreakType::LeftBreak] = Lg / 2;
+         X[ZoneBreakType::RightBreak] = Lg / 2;
+         X[ZoneBreakType::End] = Lg - m_VariationLength[ZoneBreakType::End];
+      }
+      else
+      {
+         X[ZoneBreakType::Start] = m_VariationLength[ZoneBreakType::Start];
+         X[ZoneBreakType::LeftBreak] = m_VariationLength[ZoneBreakType::Start] + m_VariationLength[ZoneBreakType::LeftBreak];
+         X[ZoneBreakType::RightBreak] = Lg - m_VariationLength[ZoneBreakType::RightBreak] - m_VariationLength[ZoneBreakType::End];
+         X[ZoneBreakType::End] = Lg - m_VariationLength[ZoneBreakType::End];
       }
 
-      UpdateProfile(false,&m_BottomFlangeHeightProfile);
-
-      m_bBottomFlangeHeightProfile = true;
-      return m_BottomFlangeHeightProfile.Evaluate(Xgp);
+      return X;
    }
 
    Float64 GetSectionDepth(Float64 Xs)
    {
-      Float64 XgpStart, XgpEnd;
-      GetSegmentRange(&XgpStart,&XgpEnd);
+      Float64 Lg;
+      get_Length(&Lg);
 
-      Float64 Xsp = ConvertToSegmentPathCoordinate(Xs);
+      bool bParabolas = IsParabolicVariation(m_VariationType);
 
-      Float64 Xgp = XgpStart + Xsp;
-
-      if ( m_bSegmentHeightProfile )
-      {
-         return m_SegmentHeightProfile.Evaluate(Xgp);
-      }
-
-      UpdateProfile(true,&m_SegmentHeightProfile);
-
-      m_bSegmentHeightProfile = true;
-      return m_SegmentHeightProfile.Evaluate(Xgp);
+      std::array<Float64, 4> X = GetTransitionPoints();
+      Float64 Xl, Yl, Xr, Yr;
+      ZoneType zone = ::GetControlPoints(Xs, Lg, X, m_VariationHeight, &Xl, &Yl, &Xr, &Yr);
+      Float64 H = ::GetSectionDepth(Xs, Xl, Yl, Xr, Yr, TransitionTypeFromZone(zone, bParabolas));
+      return H;
    }
 
-   void UpdateProfile(bool bGirderProfile,mathCompositeFunction2d* pProfile)
+   Float64 GetBottomFlangeHeight(Float64 Xs)
    {
-      // The profile is modeled as a composite math function. The independent variable, X,
-      // is measured in the Girder Path Coordiante System. X = 0 is at the intersection of the
-      // centerline of the first segment and the CL Pier at the start of the girder. The dependent
-      // variable, Y, is the height of the section (bGirderProfile is true) or the 
-      // height of the bottom flange (bGirderProfile is false).
-      //
-      // Clients will get information about this segment using the Segment Coordinate System.
-      // Access to the composite math function must take this into account
-      //
-      // The range of the composite math function is between the faces of the girder at the start
-      // and end of the girder. That means, from X=0 to X=XstartFace and X=XendFace to X=LengthGirder
-      // the function is undefined.
-      pProfile->Clear();
+      Float64 Lg;
+      get_Length(&Lg);
 
-      Float64 xSegmentStart = 0; // start of segment
-      Float64 xStart = 0; // start of curve section
-      Float64 xEnd = 0; // end of curve section
+      bool bParabolas = IsParabolicVariation(m_VariationType);
 
-      bool bParabola = false;
-      Float64 xParabolaStart,xParabolaEnd;
-      Float64 yParabolaStart,yParabolaEnd;
-      Float64 slopeParabola;
-
-      // Find the first segment in the girder
-      CComPtr<ISuperstructureMemberSegment> segment1;
-      m_Impl.m_pSSMbr->get_Segment(0,&segment1);
-      CComQIPtr<ISplicedGirderSegment> firstSegment(segment1);
-
-      // go down each segment and create piece-wise functions for each part of the girder profile
-      CComPtr<ISplicedGirderSegment> currSegment( firstSegment );
-      CComPtr<ISplicedGirderSegment> prevSegment;
-      CComPtr<ISplicedGirderSegment> nextSegment;
-      do
-      {
-         CComPtr<ISegment> prevSeg;
-         CComPtr<ISegment> nextSeg;
-         currSegment->get_PrevSegment(&prevSeg);
-         currSegment->get_NextSegment(&nextSeg);
-
-         CComQIPtr<ISuperstructureMemberSegment> ps(prevSeg);
-         CComQIPtr<ISuperstructureMemberSegment> ns(nextSeg);
-
-         SegmentVariationType prevVariationType,variationType,nextVariationType;
-         Float64 prev_segment_length, segment_length, next_segment_length;
-         if ( ps )
-         {
-            ps.QueryInterface(&prevSegment);
-            prevSegment->get_VariationType(&prevVariationType);
-            prevSegment->get_LayoutLength(&prev_segment_length);
-         }
-
-         currSegment->get_VariationType(&variationType);
-         currSegment->get_LayoutLength(&segment_length);
-
-         if ( ns )
-         {
-            ns.QueryInterface(&nextSegment);
-            nextSegment->get_VariationType(&nextVariationType);
-            nextSegment->get_LayoutLength(&next_segment_length);
-         }
-
-         if ( !ps )
-         {
-            // this is the first segment
-            CComPtr<IGirderLine> girderLine;
-            currSegment->get_GirderLine(&girderLine);
-            Float64 end_distance, bearing_offset;
-            girderLine->get_EndDistance(etStart,&end_distance);
-            girderLine->get_BearingOffset(etStart,&bearing_offset);
-
-            Float64 offset_dist = bearing_offset - end_distance;
-            offset_dist = IsZero(offset_dist) ? 0 : offset_dist;
-            segment_length -= offset_dist;
-
-            // start at the face of the segment
-            xSegmentStart = offset_dist;
-         }
-
-         if ( !ns )
-         {
-            // this is the last segment
-            CComPtr<IGirderLine> girderLine;
-            currSegment->get_GirderLine(&girderLine);
-            Float64 end_distance, bearing_offset;
-            girderLine->get_EndDistance(etEnd,&end_distance);
-            girderLine->get_BearingOffset(etEnd,&bearing_offset);
-
-            Float64 offset_dist = bearing_offset - end_distance;
-            offset_dist = IsZero(offset_dist) ? 0 : offset_dist;
-
-            // adjust the length of the last segment so we end at the end face of the segment
-            segment_length -= offset_dist;
-         }
-
-         xStart = xSegmentStart;
-
-         Float64 left_prismatic_length,  left_prismatic_height,  left_prismatic_bottom_flange_depth;
-         Float64 left_tapered_length,    left_tapered_height,    left_tapered_bottom_flange_depth;
-         Float64 right_tapered_length,   right_tapered_height,   right_tapered_bottom_flange_depth;
-         Float64 right_prismatic_length, right_prismatic_height, right_prismatic_bottom_flange_depth;
-         currSegment->GetVariationParameters(sztLeftPrismatic, &left_prismatic_length, &left_prismatic_height, &left_prismatic_bottom_flange_depth);
-         currSegment->GetVariationParameters(sztLeftTapered,   &left_tapered_length,   &left_tapered_height,   &left_tapered_bottom_flange_depth);
-         currSegment->GetVariationParameters(sztRightTapered,  &right_tapered_length,  &right_tapered_height,  &right_tapered_bottom_flange_depth);
-         currSegment->GetVariationParameters(sztRightPrismatic,&right_prismatic_length,&right_prismatic_height,&right_prismatic_bottom_flange_depth);
-
-         Float64 prev_segment_left_prismatic_length,  prev_segment_left_prismatic_height,  prev_segment_left_prismatic_bottom_flange_depth;
-         Float64 prev_segment_left_tapered_length,    prev_segment_left_tapered_height,    prev_segment_left_tapered_bottom_flange_depth;
-         Float64 prev_segment_right_tapered_length,   prev_segment_right_tapered_height,   prev_segment_right_tapered_bottom_flange_depth;
-         Float64 prev_segment_right_prismatic_length, prev_segment_right_prismatic_height, prev_segment_right_prismatic_bottom_flange_depth;
-         if ( prevSegment )
-         {
-            prevSegment->GetVariationParameters(sztLeftPrismatic, &prev_segment_left_prismatic_length, &prev_segment_left_prismatic_height, &prev_segment_left_prismatic_bottom_flange_depth);
-            prevSegment->GetVariationParameters(sztLeftTapered,   &prev_segment_left_tapered_length,   &prev_segment_left_tapered_height,   &prev_segment_left_tapered_bottom_flange_depth);
-            prevSegment->GetVariationParameters(sztRightTapered,  &prev_segment_right_tapered_length,  &prev_segment_right_tapered_height,  &prev_segment_right_tapered_bottom_flange_depth);
-            prevSegment->GetVariationParameters(sztRightPrismatic,&prev_segment_right_prismatic_length,&prev_segment_right_prismatic_height,&prev_segment_right_prismatic_bottom_flange_depth);
-         }
-
-         Float64 next_segment_left_prismatic_length,  next_segment_left_prismatic_height,  next_segment_left_prismatic_bottom_flange_depth;
-         Float64 next_segment_left_tapered_length,    next_segment_left_tapered_height,    next_segment_left_tapered_bottom_flange_depth;
-         Float64 next_segment_right_tapered_length,   next_segment_right_tapered_height,   next_segment_right_tapered_bottom_flange_depth;
-         Float64 next_segment_right_prismatic_length, next_segment_right_prismatic_height, next_segment_right_prismatic_bottom_flange_depth;
-         if ( nextSegment )
-         {
-            nextSegment->GetVariationParameters(sztLeftPrismatic, &next_segment_left_prismatic_length, &next_segment_left_prismatic_height, &next_segment_left_prismatic_bottom_flange_depth);
-            nextSegment->GetVariationParameters(sztLeftTapered,   &next_segment_left_tapered_length,   &next_segment_left_tapered_height,   &next_segment_left_tapered_bottom_flange_depth);
-            nextSegment->GetVariationParameters(sztRightTapered,  &next_segment_right_tapered_length,  &next_segment_right_tapered_height,  &next_segment_right_tapered_bottom_flange_depth);
-            nextSegment->GetVariationParameters(sztRightPrismatic,&next_segment_right_prismatic_length,&next_segment_right_prismatic_height,&next_segment_right_prismatic_bottom_flange_depth);
-         }
-
-         Float64 h1,h2,h3,h4;
-         if ( bGirderProfile )
-         {
-            h1 = left_prismatic_height;
-            h2 = right_prismatic_height;
-            h3 = left_tapered_height;
-            h4 = right_tapered_height;
-         }
-         else
-         {
-            h1 = left_prismatic_bottom_flange_depth;
-            h2 = right_prismatic_bottom_flange_depth;
-            h3 = left_tapered_bottom_flange_depth;
-            h4 = right_tapered_bottom_flange_depth;
-         }
-
-
-         // add a dummy function before the start of the profile
-         // so we don't have issues with points that are just a little bit off
-         if ( pProfile->GetFunctionCount() == 0 )
-         {
-            mathLinFunc2d func(0.0,h1);
-            pProfile->AddFunction(xStart - 100*fabs(xStart),xStart,func);
-         }
-
-         if ( variationType == svtNone || 0 < left_prismatic_length )
-         {
-            // create a prismatic segment
-            mathLinFunc2d func(0.0, h1);
-            xEnd = xStart + (variationType == svtNone ? segment_length/2 : left_prismatic_length);
-            pProfile->AddFunction(xStart,xEnd,func);
-            slopeParabola = 0;
-            xStart = xEnd;
-         }
-
-         if ( variationType == svtLinear )
-         {
-            // create a linear taper segment
-            Float64 taper_length = segment_length - left_prismatic_length - right_prismatic_length;
-            Float64 slope = (h2 - h1)/taper_length;
-            Float64 b = h1 - slope*xStart;
-
-            mathLinFunc2d func(slope, b);
-            xEnd = xStart + taper_length;
-            pProfile->AddFunction(xStart,xEnd,func);
-            xStart = xEnd;
-            slopeParabola = slope;
-         }
-         else if ( variationType == svtDoubleLinear )
-         {
-            // create a linear taper for left side of segment
-            Float64 slope = (h3 - h1)/left_tapered_length;
-            Float64 b = h1 - slope*xStart;
-
-            mathLinFunc2d left_func(slope, b);
-            xEnd = xStart + left_tapered_length;
-            pProfile->AddFunction(xStart,xEnd,left_func);
-            xStart = xEnd;
-
-            // create a linear segment between left and right tapers
-            Float64 taper_length = segment_length - left_prismatic_length - left_tapered_length - right_prismatic_length - right_tapered_length;
-            if ( !IsZero(taper_length) )
-            {
-               slope = (h4 - h3)/taper_length;
-               b = h3 - slope*xStart;
-
-               mathLinFunc2d middle_func(slope, b);
-               xEnd = xStart + taper_length;
-               pProfile->AddFunction(xStart,xEnd,middle_func);
-               xStart = xEnd;
-            }
-
-            // create a linear taper for right side of segment
-            slope = (h2 - h4)/right_tapered_length;
-            b = h4 - slope*xStart;
-
-            mathLinFunc2d right_func(slope, b);
-            xEnd = xStart + right_tapered_length;
-            pProfile->AddFunction(xStart,xEnd,right_func);
-            xStart = xEnd;
-            slopeParabola = slope;
-         }
-         else if ( variationType == svtParabolic )
-         {
-            if ( !bParabola )
-            {
-               // this is the start of a parabolic segment
-               bParabola = true;
-               xParabolaStart = xStart;
-               yParabolaStart = h1;
-            }
-
-            // Parabola ends in this segment if
-            // 1) this segment has a prismatic segment on the right end -OR-
-            // 2) this is the last segment -OR-
-            // 3) the next segment starts with a prismatic segment -OR-
-            // 4) the next segment has a linear transition
-            if (
-                 0 < right_prismatic_length || // parabola ends in this segment -OR-
-                 nextSegment == nullptr        || // this is the last segment (parabola ends here) -OR-
-                 0 < next_segment_left_prismatic_length || // next segment starts with prismatic section -OR-
-                 (nextVariationType == svtNone || nextVariationType == svtLinear || nextVariationType == svtDoubleLinear) // next segment is linear 
-               )
-            {
-               // parabola ends in this segment
-               Float64 xParabolaEnd = xStart + segment_length - right_prismatic_length;
-               Float64 yParabolaEnd = h2;
-
-               if ( yParabolaEnd < yParabolaStart )
-               {
-                  // slope at end is zero
-                  mathPolynomial2d func = GenerateParabola2(xParabolaStart,yParabolaStart,xParabolaEnd,yParabolaEnd,0.0);
-                  pProfile->AddFunction(xParabolaStart,xParabolaEnd,func);
-               }
-               else
-               {
-                  // slope at start is zero
-                  mathPolynomial2d func = GenerateParabola1(xParabolaStart,yParabolaStart,xParabolaEnd,yParabolaEnd,slopeParabola);
-                  pProfile->AddFunction(xParabolaStart,xParabolaEnd,func);
-               }
-
-               bParabola = false;
-               xStart = xParabolaEnd;
-            }
-            else
-            {
-               // parabola ends further down the girderline
-               // do nothing???
-            }
-         }
-         else if ( variationType == svtDoubleParabolic )
-         {
-            // left parabola ends in this segment
-            if ( !bParabola )
-            {
-               // not currently in a parabola, based the start point on this segment
-               xParabolaStart = xSegmentStart + left_prismatic_length;
-               yParabolaStart = h1;
-            }
-
-   #pragma Reminder("BUG: Assuming slope at start is zero, but it may not be if tangent to a linear segment")
-            xParabolaEnd = xSegmentStart + left_prismatic_length + left_tapered_length;
-            yParabolaEnd = h3;
-            mathPolynomial2d func_left_parabola;
-            if ( yParabolaEnd < yParabolaStart )
-               func_left_parabola = GenerateParabola2(xParabolaStart,yParabolaStart,xParabolaEnd,yParabolaEnd,0.0);
-            else
-               func_left_parabola = GenerateParabola1(xParabolaStart,yParabolaStart,xParabolaEnd,yParabolaEnd,slopeParabola);
-
-            pProfile->AddFunction(xParabolaStart,xParabolaEnd,func_left_parabola);
-
-            // parabola on right side of this segment starts here
-            xParabolaStart = xSegmentStart + segment_length - right_prismatic_length - right_tapered_length;
-            yParabolaStart = h4;
-            bParabola = true;
-
-            if ( !IsZero(xParabolaStart - xParabolaEnd) )
-            {
-               // create a line segment between parabolas
-               Float64 taper_length = segment_length - left_prismatic_length - left_tapered_length - right_prismatic_length - right_tapered_length;
-               Float64 slope = -(h4 - h3)/taper_length;
-               Float64 b = h3 - slope*xParabolaEnd;
-
-               mathLinFunc2d middle_func(slope, b);
-               pProfile->AddFunction(xParabolaEnd,xParabolaStart,middle_func);
-               slopeParabola = slope;
-            }
-
-            // parabola ends in this segment if
-            // 1) this is the last segment
-            // 2) right prismatic section length > 0
-            // 3) next segment is not parabolic
-            if ( 0 < right_prismatic_length || 
-                 nextSegment == nullptr        || 
-                 (nextVariationType == svtNone || nextVariationType == svtLinear || nextVariationType == svtDoubleLinear) // next segment is linear 
-               )
-            {
-               bParabola = false;
-               xParabolaEnd = xSegmentStart + segment_length - right_prismatic_length;
-               yParabolaEnd = h2;
-
-        
-               mathPolynomial2d func_right_parabola;
-               if ( yParabolaEnd < yParabolaStart )
-               {
-                  // compute slope at end of parabola
-                  if ( nextSegment )
-                  {
-                     if ( nextVariationType == svtLinear )
-                     {
-                        // next segment is linear
-                        if ( IsZero(next_segment_left_prismatic_length) )
-                        {
-                           Float64 dist = next_segment_length - next_segment_left_prismatic_length - next_segment_right_prismatic_length;
-                           slopeParabola = -(next_segment_right_prismatic_height - next_segment_left_prismatic_height)/dist;
-                        }
-                     }
-                     else if ( nextVariationType == svtDoubleLinear )
-                     {
-                        if ( IsZero(next_segment_left_prismatic_length) )
-                        {
-                           Float64 dist = next_segment_left_tapered_length;
-                           slopeParabola = -(next_segment_left_tapered_length - next_segment_left_prismatic_length)/dist;
-                        }
-                     }
-                  }
-                  else
-                  {
-                     slopeParabola = 0;
-                  }
-                  func_right_parabola = GenerateParabola2(xParabolaStart,yParabolaStart,xParabolaEnd,yParabolaEnd,slopeParabola);
-               }
-               else
-               {
-                  func_right_parabola = GenerateParabola1(xParabolaStart,yParabolaStart,xParabolaEnd,yParabolaEnd,slopeParabola);
-               }
-
-               pProfile->AddFunction(xParabolaStart,xParabolaEnd,func_right_parabola);
-            }
-            else
-            {
-               // parabola ends further down the girderline
-               bParabola = true;
-            }
-
-            xStart = xSegmentStart + segment_length - right_prismatic_length;
-         }
-
-         if ( variationType == svtNone ||  0 < right_prismatic_length )
-         {
-            // create a prismatic segment
-            mathLinFunc2d func(0.0, h2);
-            xEnd = xStart + (variationType == svtNone ? segment_length/2 : right_prismatic_length);
-            pProfile->AddFunction(xStart,xEnd,func);
-            slopeParabola = 0;
-            xStart = xEnd;
-         }
-
-         xSegmentStart += segment_length;
-
-         currSegment = nextSegment;
-         prevSegment.Release();
-         nextSegment.Release();
-      } while ( currSegment );
-
-
-      // add a dummy run out function at the end so we don't crash
-      // for points that are just a bit off the end
-#pragma Reminder("UPDATE: this isn't the best technique... make this more deterministic")
-      // for bridges with multiple groups, and the groups are made continuous or integral at the
-      // common pier, the 10th point of the span falls between the girders and it isn't captured
-      // in the profile. when we get the profile at these locations, *crash*
-      IndexType nFunctions = pProfile->GetFunctionCount();
-      const mathFunction2d* pLastFunction;
-      Float64 xMin,xMax;
-      pProfile->GetFunction(nFunctions-1,&pLastFunction,&xMin,&xMax);
-      Float64 h = pLastFunction->Evaluate(xMax);
-      mathLinFunc2d func(0.0,h);
-      pProfile->AddFunction(xMax,xMax + 100*fabs(xMax-xMin),func);
+      std::array<Float64, 4> X = GetTransitionPoints();
+      Float64 Xl, Yl, Xr, Yr;
+      ZoneType zone = ::GetControlPoints(Xs, Lg, X, m_VariationBottomFlangeDepth, &Xl, &Yl, &Xr, &Yr);
+      Float64 H = ::GetSectionDepth(Xs, Xl, Yl, Xr, Yr, TransitionTypeFromZone(zone, bParabolas));
+      return H;
    }
-
+   
    Float64 ConvertToSegmentPathCoordinate(Float64 Xs)
    {
       CComPtr<IGirderLine> girderLine;
@@ -1216,6 +746,13 @@ protected:
 
    void GetSegmentRange(Float64* pXgpStart,Float64* pXgpEnd)
    {
+      if (m_bSegmentRange)
+      {
+         *pXgpStart = m_XgpStart;
+         *pXgpEnd = m_XgpEnd;
+         return;
+      }
+
       // Returns the start and end of the segment in Girder Path Coordinates.
       // This is the start/end of the segment path coordinate system in
       // girder path coordinates
@@ -1249,5 +786,133 @@ protected:
       Float64 layout_length;
       girderLine->get_LayoutLength(&layout_length);
       *pXgpEnd = *pXgpStart + layout_length;
+
+      m_XgpStart = *pXgpStart;
+      m_XgpEnd = *pXgpEnd;
+   }
+
+
+   void GetProfilePointLocations(VARIANT_BOOL bIncludeClosure, VARIANT_BOOL bSegmentCoordinates, std::vector<Float64>* pvXvalues)
+   {
+      pvXvalues->clear();
+      pvXvalues->reserve(20);
+
+      // Start and end of the segment in Girder Path Coordinates
+      Float64 xStart, xEnd;
+      if (bSegmentCoordinates == VARIANT_FALSE)
+      {
+         // we are working in girder path coordinates so get the
+         // start and end in this coordinate system
+         GetSegmentRange(&xStart, &xEnd);
+      }
+      else
+      {
+         xStart = 0;
+         get_Length(&xEnd);
+      }
+      Float64 xStartSegment = xStart;
+      Float64 xEndSegment = xEnd;
+
+      // if the closure joints are not to be included in the profile
+      // move the start and end locations to the face of the segment
+      Float64 leftClosureAdj(0); // the left/right prismatic variation length are measured from the CL Closure... when skipping the closure, an adjustment is required
+      Float64 rightClosureAdj(0);
+      CComPtr<IGirderLine> girderLine;
+      get_GirderLine(&girderLine);
+      Float64 brgOffset, endDist;
+      girderLine->get_BearingOffset(etStart, &brgOffset);
+      girderLine->get_EndDistance(etStart, &endDist);
+      leftClosureAdj = (brgOffset - endDist);
+
+      girderLine->get_BearingOffset(etEnd, &brgOffset);
+      girderLine->get_EndDistance(etEnd, &endDist);
+      rightClosureAdj = (brgOffset - endDist);
+
+      if (bIncludeClosure == VARIANT_FALSE && bSegmentCoordinates == VARIANT_FALSE)
+      {
+         xStart += leftClosureAdj;
+         xEnd -= rightClosureAdj;
+      }
+
+      pvXvalues->push_back(xStart);
+
+      // determine key X-values (locations where the depth of the section changes)
+      if (m_VariationType == svtLinear || m_VariationType == svtParabolic)
+      {
+         Float64 dist = xStartSegment + (m_VariationLength[sztLeftPrismatic] - leftClosureAdj);
+         if (::InRange(xStart, dist, xEnd))
+         {
+            pvXvalues->push_back(dist);
+         }
+
+         dist = xEndSegment - (m_VariationLength[sztRightPrismatic] - rightClosureAdj);
+         if (::InRange(xStart, dist, xEnd))
+         {
+            pvXvalues->push_back(dist);
+         }
+      }
+      else if (m_VariationType == svtDoubleLinear || m_VariationType == svtDoubleParabolic)
+      {
+         Float64 dist = xStartSegment + (m_VariationLength[sztLeftPrismatic] - leftClosureAdj);
+         if (::InRange(xStart, dist, xEnd))
+         {
+            pvXvalues->push_back(dist);
+         }
+
+         dist = xStartSegment + (m_VariationLength[sztLeftPrismatic] - leftClosureAdj) + m_VariationLength[sztLeftTapered];
+         if (::InRange(xStart, dist, xEnd))
+         {
+            pvXvalues->push_back(dist);
+         }
+
+         dist = xEndSegment - (m_VariationLength[sztRightPrismatic] - rightClosureAdj) - m_VariationLength[sztRightTapered];
+         if (::InRange(xStart, dist, xEnd))
+         {
+            pvXvalues->push_back(dist);
+         }
+
+         dist = xEndSegment - (m_VariationLength[sztRightPrismatic] - rightClosureAdj);
+         if (::InRange(xStart, dist, xEnd))
+         {
+            pvXvalues->push_back(dist);
+         }
+      }
+
+      if (IsParabolicVariation(m_VariationType))
+      {
+         if (m_VariationType == svtParabolic)
+         {
+            Float64 start = xStart + (m_VariationLength[sztLeftPrismatic] - leftClosureAdj);
+            Float64 end = xEnd - (m_VariationLength[sztRightPrismatic] - rightClosureAdj);
+            Float64 dx = (end - start) / 10;
+            for (int i = 0; i < 11; i++)
+            {
+               Float64 x = i*dx + start;
+               pvXvalues->push_back(x);
+            }
+         }
+         else
+         {
+            // double parabolic
+            Float64 leftStart = xStart + (m_VariationLength[sztLeftPrismatic] - leftClosureAdj);
+            Float64 leftEnd = leftStart + m_VariationLength[sztLeftTapered];
+            Float64 rightEnd = xEnd - (m_VariationLength[sztRightPrismatic] - rightClosureAdj);
+            Float64 rightStart = rightEnd - m_VariationLength[sztRightTapered];
+            Float64 leftDX = (leftEnd - leftStart) / 10;
+            Float64 rightDX = (rightEnd - rightStart) / 10;
+            for (int i = 0; i < 11; i++)
+            {
+               Float64 Xl = i*leftDX + leftStart;
+               Float64 Xr = i*rightDX + rightStart;
+               pvXvalues->push_back(Xl);
+               pvXvalues->push_back(Xr);
+            }
+         }
+      }
+
+      pvXvalues->push_back(xEnd);
+
+      std::sort(pvXvalues->begin(), pvXvalues->end());
+      pvXvalues->erase(std::unique(pvXvalues->begin(), pvXvalues->end()), pvXvalues->end());
    }
 };

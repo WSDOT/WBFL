@@ -38,6 +38,8 @@
 #include "WBFLTools_i.c"
 #include "ARPNotice.h"
 #include "MohrCircle.h"
+#include "StrSave.h"
+#include "StrLoad.h"
 #include "StructuredSave2.h"
 #include "StructuredLoad2.h"
 #include "ErrorLog.h"
@@ -49,11 +51,20 @@
 #include "IDArray.h"
 #include "IndexArray.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 CComModule _Module;
 
 BEGIN_OBJECT_MAP(ObjectMap)
 OBJECT_ENTRY(CLSID_ARPNotice, CARPNotice)
 OBJECT_ENTRY(CLSID_MohrCircle, CMohrCircle)
+OBJECT_ENTRY(CLSID_StructuredSave, CStrSave)
+OBJECT_ENTRY(CLSID_StructuredLoad, CStrLoad)
 OBJECT_ENTRY(CLSID_StructuredSave2, CStructuredSave2)
 OBJECT_ENTRY(CLSID_StructuredLoad2, CStructuredLoad2)
 OBJECT_ENTRY(CLSID_WBFLErrorLog, CErrorLog)

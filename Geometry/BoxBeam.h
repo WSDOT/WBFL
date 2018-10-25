@@ -157,6 +157,7 @@ public:
    STDMETHOD(put_RightBlockOut)(/*[in]*/VARIANT_BOOL bRightBlockOut) override;
    STDMETHOD(get_RightBlockOut)(/*[out,retval]*/VARIANT_BOOL* pbRightBlockOut) override;
    STDMETHOD(get_Width)(/*[out,retval]*/Float64* pVal) override;
+   STDMETHOD(get_Height)(/*[out,retval]*/Float64* pVal) override;
    STDMETHOD(put_UseOverallWidth)(/*[in]*/VARIANT_BOOL bUseOverallWidth) override;
    STDMETHOD(get_UseOverallWidth)(/*[out,retval]*/VARIANT_BOOL* pbUseOverallWidth) override;
 

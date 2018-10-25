@@ -24,6 +24,13 @@
 #include "WbflUnitServer.h"
 #include <WBFLUnitServer\OpenBridgeML.h>
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 UnitSystemType GetWBFLUnitSystemType(OpenBridgeML::Units::UnitSystemEnum ust)
 {
    switch(ust)
