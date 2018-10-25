@@ -155,7 +155,8 @@ double DistributionFactorDataSetBuilder::GetVal(IDistributionFactor* pdf)
       hr = pdf->get_GRMul(&val);
       break;
    case dtGFat:
-      hr = pdf->get_GFat(&val);
+      Float64 val2;
+      hr = pdf->GetGFat(&val,&val2);
       break;
    default:
       ATLASSERT(0);

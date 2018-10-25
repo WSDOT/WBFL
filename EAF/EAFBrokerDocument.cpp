@@ -28,6 +28,7 @@
 #include <EAF\EAFResources.h>
 #include <EAF\EAFBrokerDocument.h>
 #include <EAF\EAFUtilities.h>
+#include <EAF\EAFHints.h>
 #include "EAFDocProxyAgent.h"
 #include <AgentTools.h>
 #include <IReportManager.h>
@@ -550,11 +551,7 @@ void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,bool bQuickReport)
 
       // list all or favorites
       bool dolist = false;
-      if (!bQuickReport && m_DisplayFavoriteReports==FALSE)
-      {
-         dolist = true;
-      }
-      else if( m_FavoriteReports.end() != std::find(m_FavoriteReports.begin(), m_FavoriteReports.end(), rptName))
+      if ( m_DisplayFavoriteReports == FALSE || IsFavoriteReport(rptName) )
       {
          dolist = true;
       }
@@ -643,7 +640,12 @@ bool CEAFBrokerDocument::GetDoDisplayFavoriteReports() const
 
 void CEAFBrokerDocument::SetDoDisplayFavoriteReports(bool doDisplay)
 {
-   m_DisplayFavoriteReports = doDisplay ? TRUE : FALSE;
+   BOOL bDoDisplay = doDisplay == true ? TRUE : FALSE;
+   if ( m_DisplayFavoriteReports != bDoDisplay )
+   {
+      m_DisplayFavoriteReports = bDoDisplay;
+      UpdateAllViews(NULL,EAF_HINT_FAVORITE_REPORTS_CHANGED,NULL);
+   }
 }
 
 std::vector<std::_tstring> CEAFBrokerDocument::GetFavoriteReports() const
@@ -654,6 +656,11 @@ std::vector<std::_tstring> CEAFBrokerDocument::GetFavoriteReports() const
 void CEAFBrokerDocument::SetFavoriteReports( std::vector<std::_tstring> reports)
 {
    m_FavoriteReports = reports;
+}
+
+bool CEAFBrokerDocument::IsFavoriteReport(const std::_tstring& rptName)
+{
+   return (m_FavoriteReports.end() != std::find(m_FavoriteReports.begin(), m_FavoriteReports.end(), rptName));
 }
 
 CEAFCustomReports CEAFBrokerDocument::GetCustomReports() const
@@ -669,9 +676,8 @@ void CEAFBrokerDocument::SetCustomReports(const CEAFCustomReports& reports)
 void CEAFBrokerDocument::OnReportMenuDisplayMode()
 {
    // flip value
-   m_DisplayFavoriteReports = !m_DisplayFavoriteReports;
-
-   OnChangedFavoriteReports(m_DisplayFavoriteReports!=FALSE);
+   SetDoDisplayFavoriteReports(!m_DisplayFavoriteReports);
+   OnChangedFavoriteReports(m_DisplayFavoriteReports!=FALSE, true);
 }
 
 void CEAFBrokerDocument::OnUpdateReportMenuDisplayMode(CCmdUI* pCmdUI)
@@ -698,11 +704,11 @@ void CEAFBrokerDocument::OnConfigureReports()
       m_CustomReports = dlg.m_CustomReports;
 
       IntegrateCustomReports(false);
-      OnChangedFavoriteReports(m_DisplayFavoriteReports!=FALSE);
+      OnChangedFavoriteReports(m_DisplayFavoriteReports!=FALSE, false);
    }
 }
 
-void CEAFBrokerDocument::OnChangedFavoriteReports(bool isFavorites)
+void CEAFBrokerDocument::OnChangedFavoriteReports(bool isFavorites, bool fromMenu)
 {
    // Do nothing in base class
 }

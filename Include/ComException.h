@@ -221,7 +221,7 @@ protected:
 private:
    CComException(); // no default constructor
    // GROUP: DATA MEMBERS
-   std::wstring m_File;
+   std::_tstring m_File;
    long        m_Line;
    HRESULT     m_HR;
    DWORD       m_HelpID;

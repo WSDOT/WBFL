@@ -19,24 +19,24 @@ public:
 	CLoadCombinationDumper(ILBAMAnalysisEngine* engine, CDumperUtil* util);
 	virtual ~CLoadCombinationDumper();
 
-   void DumpLoadCaseResponse(std::ostream& os);
-   void DumpLoadCombinationResponse(std::ostream& os, std::ostream& cos);
+   void DumpLoadCaseResponse(std::_tostream& os);
+   void DumpLoadCombinationResponse(std::_tostream& os, std::_tostream& cos);
 
 private:
 	CLoadCombinationDumper();
 
-   void DumpLoadCaseForces(std::ostream& os, BSTR lcName, long ist, ResultsSummationType summ);
-   void DumpLoadCaseDeflections(std::ostream& os, BSTR lcName, long ist, ResultsSummationType summ);
-   void DumpLoadCaseStresses(std::ostream& os, BSTR lcName, long ist, ResultsSummationType summ);
+   void DumpLoadCaseForces(std::_tostream& os, BSTR lcName, StageIndexType ist, ResultsSummationType summ);
+   void DumpLoadCaseDeflections(std::_tostream& os, BSTR lcName, StageIndexType ist, ResultsSummationType summ);
+   void DumpLoadCaseStresses(std::_tostream& os, BSTR lcName, StageIndexType ist, ResultsSummationType summ);
 
-   void DumpLoadCombinationForces(std::ostream& os, std::ostream& cos, const LcParams& params);
-   void DumpLoadCombinationDeflections(std::ostream& os, std::ostream& cos, const LcParams& params);
-   void DumpLoadCombinationReactions(std::ostream& os, std::ostream& cos, const LcParams& params);
-   void DumpLoadCombinationSupportDeflections(std::ostream& os, std::ostream& cos, const LcParams& params);
-   void DumpLoadCombinationStresses(std::ostream& os, std::ostream& cos, const LcParams& params);
+   void DumpLoadCombinationForces(std::_tostream& os, std::_tostream& cos, const LcParams& params);
+   void DumpLoadCombinationDeflections(std::_tostream& os, std::_tostream& cos, const LcParams& params);
+   void DumpLoadCombinationReactions(std::_tostream& os, std::_tostream& cos, const LcParams& params);
+   void DumpLoadCombinationSupportDeflections(std::_tostream& os, std::_tostream& cos, const LcParams& params);
+   void DumpLoadCombinationStresses(std::_tostream& os, std::_tostream& cos, const LcParams& params);
 
 
-   void DumpLoadCombinationConfiguration(std::ostream& os, ILoadCombinationResultConfiguration* config);
+   void DumpLoadCombinationConfiguration(std::_tostream& os, ILoadCombinationResultConfiguration* config);
 
    CComPtr<ILBAMAnalysisEngine> m_Engine;
    CDumperUtil*                 m_Util;

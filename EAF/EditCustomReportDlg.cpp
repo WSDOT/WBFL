@@ -79,9 +79,10 @@ void CEditCustomReportDlg::DoDataExchange(CDataExchange* pDX)
          pDX->Fail();
       }
 
-      if (-1 != strName.FindOneOf(_T(",")))
+      if (-1 != strName.FindOneOf(_T("\t")))
       {
-         AfxMessageBox(_T("Report Name cannot contain commas"), MB_ICONEXCLAMATION);
+         // UI should make this impossible, but...
+         AfxMessageBox(_T("Report Name cannot contain Tabs"), MB_ICONEXCLAMATION);
          pDX->Fail();
       }
 

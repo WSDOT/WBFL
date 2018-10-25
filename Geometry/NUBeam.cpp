@@ -640,6 +640,7 @@ STDMETHODIMP CNUBeam::Clone(IShape** pClone)
    pTheClone->put_R2( m_R2 );
    pTheClone->put_R3( m_R3 );
    pTheClone->put_R4( m_R4 );
+   pTheClone->put_C1( m_C1 );
 
    CComPtr<IPoint2d> hookPnt;
    CreatePoint(m_pHookPoint,NULL,&hookPnt);
@@ -795,7 +796,7 @@ STDMETHODIMP CNUBeam::Save(IStructuredSave2* pSave)
 {
    CHECK_IN(pSave);
 
-   pSave->BeginUnit(CComBSTR("NUBeam"),1.0);
+   pSave->BeginUnit(CComBSTR("NUBeam"),2.0);
    pSave->put_Property(CComBSTR("D1"),CComVariant(m_D1));
    pSave->put_Property(CComBSTR("D2"),CComVariant(m_D2));
    pSave->put_Property(CComBSTR("D3"),CComVariant(m_D3));
@@ -808,6 +809,7 @@ STDMETHODIMP CNUBeam::Save(IStructuredSave2* pSave)
    pSave->put_Property(CComBSTR("R2"),CComVariant(m_R2));
    pSave->put_Property(CComBSTR("R3"),CComVariant(m_R3));
    pSave->put_Property(CComBSTR("R4"),CComVariant(m_R4));
+   pSave->put_Property(CComBSTR("C1"),CComVariant(m_C1)); // added in version 2.0
    pSave->put_Property(CComBSTR("Rotation"),CComVariant(m_Rotation));
    pSave->put_Property(CComBSTR("HookPoint"),CComVariant(m_pHookPoint));
    pSave->EndUnit();
@@ -857,6 +859,14 @@ STDMETHODIMP CNUBeam::Load(IStructuredLoad2* pLoad)
    
    pLoad->get_Property(CComBSTR("R4"),&var);
    m_R4 = var.dblVal;
+
+   Float64 version;
+   pLoad->get_Version(&version);
+   if ( 1.0 < version )
+   {
+      pLoad->get_Property(CComBSTR("C1"),&var);
+      m_C1 = var.dblVal;
+   }
    
    pLoad->get_Property(CComBSTR("Rotation"),&var);
    m_Rotation = var.dblVal;
@@ -877,12 +887,22 @@ STDMETHODIMP CNUBeam::Load(IStructuredLoad2* pLoad)
 
 void CNUBeam::GenerateFillet(IPolyShape* pShape,Float64 cx,Float64 cy,Float64 r,Float64 startAngle,Float64 delta,long nSpaces)
 {
-   Float64 dAngle = delta/nSpaces;
-   for ( long i = 0; i <= nSpaces; i++ )
+   if (!IsZero(r))
    {
-      Float64 x = cx + r*cos(startAngle + i*dAngle);
-      Float64 y = cy + r*sin(startAngle + i*dAngle);
+      Float64 dAngle = delta/nSpaces;
+      for ( long i = 0; i <= nSpaces; i++ )
+      {
+         Float64 x = cx + r*cos(startAngle + i*dAngle);
+         Float64 y = cy + r*sin(startAngle + i*dAngle);
 
+         pShape->AddPoint(x,y);
+      }
+   }
+   else
+   {
+      // No radius 
+      Float64 x = cx;
+      Float64 y = cy;
       pShape->AddPoint(x,y);
    }
 }

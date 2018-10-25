@@ -58,8 +58,8 @@ void CEAFCustomReports::LoadFromRegistry(CWinApp* theApp)
          CEAFCustomReport report;
          report.m_ReportName = reportName;
 
-         // Report data is comma separated
-         sysTokenizer tokenizer(_T(","));
+         // Report data is tab separated
+         sysTokenizer tokenizer(_T("\t"));
          tokenizer.push_back(reportString);
          if (tokenizer.size() > 0)
          {
@@ -67,13 +67,20 @@ void CEAFCustomReports::LoadFromRegistry(CWinApp* theApp)
             // name of parent report is first in list
             report.m_ParentReportName = *it++;
 
-            while( it != tokenizer.end() )
+            if (!tokenizer.empty())
             {
-               report.m_Chapters.push_back( *it );
-               it++;
-            }
+               while( it != tokenizer.end() )
+               {
+                  report.m_Chapters.push_back( *it );
+                  it++;
+               }
 
-            m_Reports.insert( report );
+               m_Reports.insert( report );
+            }
+            else
+            {
+               ATLASSERT(0); // Reports written to the registry should always have chapters.
+            }
          }
          else
          {
@@ -102,12 +109,12 @@ void CEAFCustomReports::SaveToRegistry(CWinApp* theApp) const
    {
       const CEAFCustomReport& rReport = *iter;
 
-      // report names are stored as CSV's. build string
+      // report names are stored as tab separated values. build string
       CString reportString(rReport.m_ParentReportName.c_str());
       std::vector<std::_tstring>::const_iterator it = rReport.m_Chapters.begin();
       while (it != rReport.m_Chapters.end())
       {
-         reportString += _T(",");
+         reportString += _T("\t");
          reportString += it->c_str();
 
          it++;

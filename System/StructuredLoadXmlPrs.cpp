@@ -35,6 +35,14 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+// Utility function to parse a BSTR to double
+inline Float64 ConvertBSTRtoFloat(const BSTR bstr)
+{
+   USES_CONVERSION;
+   return _tstof(OLE2T(bstr));
+}
+
+
 class sysStructuredLoadXmlPrs_Impl : public sysIStructuredLoad
 {
 public:
@@ -446,8 +454,7 @@ bool sysStructuredLoadXmlPrs_Impl::BeginUnit(LPCTSTR name)
          {
             // this will throw if no version attribute - not a big deal.
             bsvers = ptest->attributes->getNamedItem("version")->text;
-            _variant_t vvers(bsvers);
-            vers = atof(bsvers);
+            vers = ConvertBSTRtoFloat(bsvers);
 
 // RAB: 11/29/07
 // ChangeType is an easy function to use, but it doesn't work for us if foreign locals are used
@@ -598,7 +605,7 @@ bool sysStructuredLoadXmlPrs_Impl::Property(LPCTSTR name, Float64* pvalue)
    _variant_t val;
    if (GetProperty(name, &val))
    {
-      *pvalue = atof((_bstr_t)val);
+      *pvalue = ConvertBSTRtoFloat(val.bstrVal);
       retval = true;
    }
 
