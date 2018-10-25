@@ -563,6 +563,30 @@ public:
       }
    }
 
+   virtual void EnableCopy(LPCTSTR key,bool enable)
+   {
+      T* pent = LookupEntryPrv(key);
+      if (pent!=0)
+         pent->EnableCopying(enable);
+      else
+         CHECK(0); // bad key
+   }
+
+   virtual bool IsCopyingEnabled(LPCTSTR key) const
+   {
+      const T* pent = LookupEntry(key);
+      if (pent!=0)
+      {
+         pent->Release();
+         return pent->IsCopyingEnabled();
+      }
+      else
+      {
+         CHECK(0); // bad key
+         return false;
+      }
+   }
+
    //------------------------------------------------------------------------
    // Returns true if entry can be edited
    virtual bool IsEditingEnabled(LPCTSTR key) const

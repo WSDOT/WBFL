@@ -130,6 +130,9 @@ public:
    // Enables or disables editing of entries
    void EnableEditing(bool enable);
 
+   void EnableCopying(bool bEnable);
+   bool IsCopyingEnabled() const;
+
    //------------------------------------------------------------------------
    // Save to structured storage
    virtual bool SaveMe(sysIStructuredSave* pSave)=0;
@@ -163,6 +166,7 @@ private:
    const libILibrary* m_pLibrary;
    mutable Uint32 m_RefCnt;
    bool              m_IsEditingEnabled;
+   bool m_bCanCopy;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS

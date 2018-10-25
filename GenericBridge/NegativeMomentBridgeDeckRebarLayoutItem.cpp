@@ -113,16 +113,7 @@ STDMETHODIMP CNegativeMomentBridgeDeckRebarLayoutItem::ContainsLocation(Float64 
    get_Length(&length);
    Float64 end = start+length;
 
-   if ( IsEqual(start,distFromStart) || IsEqual(end,distFromStart) )
-   {
-      // deal with the case of the cut being at the ends of the bar
-      // within tolerance
-      *bResult = VARIANT_TRUE;
-   }
-   else
-   {
-      *bResult = (distFromStart < start || end < distFromStart ) ? VARIANT_FALSE : VARIANT_TRUE;
-   }
+   *bResult = (::InRange(start,distFromStart,end) ? VARIANT_TRUE : VARIANT_FALSE);
 
    return S_OK;
 }

@@ -100,7 +100,7 @@ STDMETHODIMP CBridgeDeckRebarLayoutItem::ContainsLocation(Float64 distFromStart,
    get_Length(&length);
    Float64 end = start + length;
 
-   *bResult = (distFromStart < start || end < distFromStart ) ? VARIANT_FALSE : VARIANT_TRUE;
+   *bResult = (::InRange(start,distFromStart,end) ? VARIANT_TRUE : VARIANT_FALSE);
 
    return S_OK;
 }
