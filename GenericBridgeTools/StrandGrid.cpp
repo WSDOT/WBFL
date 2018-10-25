@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -242,7 +242,7 @@ STDMETHODIMP CStrandGrid::get_StrandFill(/*[out,retval]*/IIndexArray** fill)
    return m_CurrentFill->Clone(fill);
 }
 
-STDMETHODIMP CStrandGrid::put_StrandFill(/*[in]*/IIndexArray* fill)
+STDMETHODIMP CStrandGrid::putref_StrandFill(/*[in]*/IIndexArray* fill)
 {
    // fill contains the number of strands to be used at each grid position
    // if fill->Item == 2, the a strand is placed at +x and -x
@@ -285,7 +285,7 @@ STDMETHODIMP CStrandGrid::put_StrandFill(/*[in]*/IIndexArray* fill)
 }
 
 
-STDMETHODIMP CStrandGrid::put_StrandMover(/*[out,retval]*/IStrandMover* mover)
+STDMETHODIMP CStrandGrid::putref_StrandMover(/*[out,retval]*/IStrandMover* mover)
 {
    CHECK_IN(mover);
 

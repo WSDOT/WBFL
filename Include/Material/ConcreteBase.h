@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -95,6 +95,10 @@ public:
    void SetCureMethod(matConcreteBase::CureMethod method);
    matConcreteBase::CureMethod GetCureMethod() const;
 
+   // Returns the age of the concrete at time t. Return value is < 0
+   // if t is before casting
+   Float64 GetAge(Float64 t) const;
+
    // Returns the compressive strength of the concrete at time t. If
    // t occurs before the time at casting, zero is returned.
    virtual Float64 GetFc(Float64 t) const = 0;
@@ -127,10 +131,6 @@ protected:
    matConcreteBase& operator = (const matConcreteBase& rOther);
 
    virtual void OnChanged();
-
-   // Returns the age of the concrete at time t. Return value is < 0
-   // if t is before casting
-   Float64 GetAge(Float64 t) const;
 
 protected:
    Type        m_Type;

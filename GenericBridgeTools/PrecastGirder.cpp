@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -117,13 +117,34 @@ STDMETHODIMP CPrecastGirder::Initialize(ISegment* segment,IStrandMover* strandMo
    m_pStrandMover = strandMover;
 
 
-   m_HarpGridEnd[etStart]->put_StrandMover(strandMover);
-   m_HarpGridEnd[etEnd]->put_StrandMover(strandMover);
+   m_HarpGridEnd[etStart]->putref_StrandMover(strandMover);
+   m_HarpGridEnd[etEnd]->putref_StrandMover(strandMover);
 
-   m_HarpGridHp[etStart]->put_StrandMover(strandMover);
-   m_HarpGridHp[etEnd]->put_StrandMover(strandMover);
+   m_HarpGridHp[etStart]->putref_StrandMover(strandMover);
+   m_HarpGridHp[etEnd]->putref_StrandMover(strandMover);
 
    return S_OK;
+}
+
+STDMETHODIMP CPrecastGirder::putref_StrandMover(/*[in]*/IStrandMover* strandMover)
+{
+   CHECK_IN(strandMover);
+
+   m_pStrandMover = strandMover;
+
+   m_HarpGridEnd[etStart]->putref_StrandMover(strandMover);
+   m_HarpGridEnd[etEnd]->putref_StrandMover(strandMover);
+
+   m_HarpGridHp[etStart]->putref_StrandMover(strandMover);
+   m_HarpGridHp[etEnd]->putref_StrandMover(strandMover);
+
+   return S_OK;
+}
+
+STDMETHODIMP CPrecastGirder::get_StrandMover(/*[out,retval]*/IStrandMover** ppStrandMover)
+{
+   CHECK_RETOBJ(ppStrandMover);
+   return m_pStrandMover.CopyTo(ppStrandMover);
 }
 
 STDMETHODIMP CPrecastGirder::putref_StraightStrandMaterial(IPrestressingStrand* pMaterial)
@@ -516,13 +537,13 @@ STDMETHODIMP CPrecastGirder::get_StraightStrandFill(IIndexArray** fill)
    return m_StraightGrid[etStart]->get_StrandFill(fill);
 }
 
-STDMETHODIMP CPrecastGirder::put_StraightStrandFill(/*[inl]*/IIndexArray* fill)
+STDMETHODIMP CPrecastGirder::putref_StraightStrandFill(/*[inl]*/IIndexArray* fill)
 {
-   HRESULT hr = m_StraightGrid[etStart]->put_StrandFill(fill);
+   HRESULT hr = m_StraightGrid[etStart]->putref_StrandFill(fill);
    if ( FAILED(hr) )
       return hr;
 
-   hr = m_StraightGrid[etEnd]->put_StrandFill(fill);
+   hr = m_StraightGrid[etEnd]->putref_StrandFill(fill);
    if ( FAILED(hr) )
       return hr;
 
@@ -534,16 +555,16 @@ STDMETHODIMP CPrecastGirder::get_HarpedStrandFill(IIndexArray** fill)
    return m_HarpGridEnd[etStart]->get_StrandFill(fill);
 }
 
-STDMETHODIMP CPrecastGirder::put_HarpedStrandFill(/*[inl]*/IIndexArray* fill)
+STDMETHODIMP CPrecastGirder::putref_HarpedStrandFill(/*[inl]*/IIndexArray* fill)
 {
-   HRESULT hr = m_HarpGridEnd[etStart]->put_StrandFill(fill);
+   HRESULT hr = m_HarpGridEnd[etStart]->putref_StrandFill(fill);
    if (FAILED(hr))
    {
       ATLASSERT(false);
       return hr;
    }
 
-   hr = m_HarpGridEnd[etEnd]->put_StrandFill(fill);
+   hr = m_HarpGridEnd[etEnd]->putref_StrandFill(fill);
    if (FAILED(hr))
    {
       ATLASSERT(false);
@@ -558,14 +579,14 @@ STDMETHODIMP CPrecastGirder::put_HarpedStrandFill(/*[inl]*/IIndexArray* fill)
       return hr;
    }
 
-   hr = m_HarpGridHp[etStart]->put_StrandFill(hp_fill);
+   hr = m_HarpGridHp[etStart]->putref_StrandFill(hp_fill);
    if (FAILED(hr))
    {
       ATLASSERT(false);
       return hr;
    }
 
-   hr = m_HarpGridHp[etEnd]->put_StrandFill(hp_fill);
+   hr = m_HarpGridHp[etEnd]->putref_StrandFill(hp_fill);
    if (FAILED(hr))
    {
       ATLASSERT(false);
@@ -580,16 +601,16 @@ STDMETHODIMP CPrecastGirder::get_TemporaryStrandFill(IIndexArray** fill)
    return m_TempGrid[etStart]->get_StrandFill(fill);
 }
 
-STDMETHODIMP CPrecastGirder::put_TemporaryStrandFill(/*[inl]*/IIndexArray* fill)
+STDMETHODIMP CPrecastGirder::putref_TemporaryStrandFill(/*[inl]*/IIndexArray* fill)
 {
-   HRESULT hr = m_TempGrid[etStart]->put_StrandFill(fill);
+   HRESULT hr = m_TempGrid[etStart]->putref_StrandFill(fill);
    if (FAILED(hr))
    {
       ATLASSERT(false);
       return hr;
    }
 
-   hr = m_TempGrid[etEnd]->put_StrandFill(fill);
+   hr = m_TempGrid[etEnd]->putref_StrandFill(fill);
    if (FAILED(hr))
    {
       ATLASSERT(false);

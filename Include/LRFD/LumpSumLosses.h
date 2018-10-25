@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -115,7 +115,6 @@ public:
    virtual Float64 PermanentStrand_AfterDeckPlacement() const;
    virtual Float64 PermanentStrand_AfterSIDL() const;
    virtual Float64 PermanentStrand_Final() const;
-   virtual Float64 PermanentStrand_FinalWithLiveLoad(Float64 gLL) const;
 
    virtual Float64 TemporaryStrand_BeforeTransfer() const;
    virtual Float64 TemporaryStrand_AfterTransfer() const;

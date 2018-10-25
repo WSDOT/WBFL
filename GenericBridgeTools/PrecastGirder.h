@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -157,6 +157,9 @@ public:
 public:
 	STDMETHOD(Initialize)(ISegment* segment,IStrandMover* strandMover);
 
+	STDMETHOD(putref_StrandMover)(/*[in]*/IStrandMover* pStrandMover);
+	STDMETHOD(get_StrandMover)(/*[out,retval]*/IStrandMover** ppStrandMover);
+
    STDMETHOD(putref_StraightStrandMaterial)(IPrestressingStrand* pMaterial);
    STDMETHOD(get_StraightStrandMaterial)(IPrestressingStrand** ppMaterial);
 
@@ -212,11 +215,11 @@ public:
    STDMETHOD(get_StraightMaxStrandFill)(/*[out,retval]*/IIndexArray** fill);
 
    STDMETHOD(get_StraightStrandFill)(/*[out,retval]*/IIndexArray** fill);
-   STDMETHOD(put_StraightStrandFill)(/*[in]*/IIndexArray* fill);
+   STDMETHOD(putref_StraightStrandFill)(/*[in]*/IIndexArray* fill);
    STDMETHOD(get_HarpedStrandFill)(/*[out,retval]*/IIndexArray** fill);
-   STDMETHOD(put_HarpedStrandFill)(/*[in]*/IIndexArray* fill);
+   STDMETHOD(putref_HarpedStrandFill)(/*[in]*/IIndexArray* fill);
    STDMETHOD(get_TemporaryStrandFill)(/*[out,retval]*/IIndexArray** fill);
-   STDMETHOD(put_TemporaryStrandFill)(/*[in]*/IIndexArray* fill);
+   STDMETHOD(putref_TemporaryStrandFill)(/*[in]*/IIndexArray* fill);
 
    STDMETHOD(get_StraightStrandPositions)(/*[in]*/Float64 distFromStart, /*[out,retval]*/IPoint2dCollection** points);
    STDMETHOD(get_StraightStrandPositionsEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[out,retval]*/IPoint2dCollection** points);

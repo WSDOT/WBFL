@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -184,14 +184,8 @@ Float64 lrfdApproximateLosses::PermanentStrand_Final() const
       UpdateLosses();
    }
 
-   Float64 loss = PermanentStrand_AfterTransfer() // initial relaxation + elastic shortening
-                + GetDeltaFptr() // change in loss due to temporary strand removal
+   Float64 loss = PermanentStrand_AfterTransfer() // initial relaxation
                 + TimeDependentLosses(); // total lump sum time dependent losses
-
-   if ( m_TempStrandUsage != tsPretensioned )
-   {
-      loss += GetDeltaFpp();//m_dfpp = effect of post-tensioning
-   }
 
    return loss;
 }
@@ -214,7 +208,7 @@ Float64 lrfdApproximateLosses::PermanentStrand_AfterTemporaryStrandRemoval() con
       UpdateLosses();
    }
 
-   Float64 loss = PermanentStrand_BeforeTemporaryStrandRemoval() + GetDeltaFptr();//m_dfptr;;
+   Float64 loss = PermanentStrand_BeforeTemporaryStrandRemoval();
    return loss;
 }
 

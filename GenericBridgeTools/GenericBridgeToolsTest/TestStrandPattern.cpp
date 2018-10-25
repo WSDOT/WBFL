@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeToolsTest - Test driver for generic bridge tools library
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -173,19 +173,19 @@ void CTestStrandPattern::Test()
    CComPtr<IIndexArray> fill_array;
    TRY_TEST(strand_filler->GetMaxStrandFill(&fill_array),S_OK);
 
-   TRY_TEST(strand_filler->put_StrandFill(fill_array),S_OK);
+   TRY_TEST(strand_filler->putref_StrandFill(fill_array),S_OK);
 
    TRY_TEST(strand_filler->GetStrandCount(NULL),E_POINTER);
    TRY_TEST(strand_filler->GetStrandCount(&nStrands),S_OK);
    TRY_TEST(nStrands == 15, true);
 
    fill_array->put_Item(0,0);
-   TRY_TEST(strand_filler->put_StrandFill(fill_array),S_OK);
+   TRY_TEST(strand_filler->putref_StrandFill(fill_array),S_OK);
    TRY_TEST(strand_filler->GetStrandCount(&nStrands),S_OK);
    TRY_TEST(nStrands == 14, true);
 
    fill_array->put_Item(0,2);
-   TRY_TEST(strand_filler->put_StrandFill(fill_array),S_OK);
+   TRY_TEST(strand_filler->putref_StrandFill(fill_array),S_OK);
    TRY_TEST(strand_filler->GetStrandCount(&nStrands),S_OK);
    TRY_TEST(nStrands == 16, true);
 
@@ -193,17 +193,17 @@ void CTestStrandPattern::Test()
    TRY_TEST(strand_filler->GetStrandCount(&nStrands),S_OK);
    TRY_TEST(nStrands == 0, true);
 
-   TRY_TEST(strand_filler->put_StrandFill(fill_array),S_OK);
+   TRY_TEST(strand_filler->putref_StrandFill(fill_array),S_OK);
    TRY_TEST(strand_filler->GetStrandCount(&nStrands),S_OK);
    TRY_TEST(nStrands == 16, true);
 
    CComPtr<IIndexArray> new_array;
    new_array.CoCreateInstance(CLSID_IndexArray);
-   TRY_TEST(strand_filler->put_StrandFill(new_array),S_OK);
+   TRY_TEST(strand_filler->putref_StrandFill(new_array),S_OK);
    TRY_TEST(strand_filler->GetStrandCount(&nStrands),S_OK);
    TRY_TEST(nStrands == 0, true);
 
-   TRY_TEST(strand_filler->put_StrandFill(fill_array),S_OK);
+   TRY_TEST(strand_filler->putref_StrandFill(fill_array),S_OK);
    TRY_TEST(strand_filler->GetStrandCount(&nStrands),S_OK);
    TRY_TEST(nStrands == 16, true);
 
