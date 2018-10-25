@@ -2,6 +2,8 @@
 // Microsoft Visual C++ generated include file.
 // Used by EAF.rc
 //
+#define IDOK2                           3
+#define IDEDIT                          3
 #define IDS_UPDATE_IN_PROGRESS          102
 #define IDB_LIGHTBULB                   103
 #define IDD_TIP                         104
@@ -75,6 +77,7 @@
 #define IDC_INFORMATION                 1034
 #define IDC_WARNING                     1035
 #define IDC_ERROR                       1036
+#define IDREMOVE                        1037
 #define IDC_PLUGIN_LIST                 1108
 #define IDD_UIHINTS                     1135
 #define IDC_TOOLTIPS                    1156
@@ -88,7 +91,7 @@
 #define IDS_TOOLBAR_STATE               1730
 #define IDS_REG_SETTINGS                1733
 #define IDS_TOOLTIP_STATE               1735
-#define IDS_WINDOW_POSITIONS                  1737
+#define IDS_WINDOW_POSITIONS            1737
 #define IDS_WORKING                     1746
 #define IDC_APPLIST                     3333
 #define IDC_REPORT_WEB_BROWSER          5001
@@ -109,9 +112,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        151
+#define _APS_NEXT_RESOURCE_VALUE        152
 #define _APS_NEXT_COMMAND_VALUE         32778
-#define _APS_NEXT_CONTROL_VALUE         1037
+#define _APS_NEXT_CONTROL_VALUE         1038
 #define _APS_NEXT_SYMED_VALUE           1015
 #endif
 #endif

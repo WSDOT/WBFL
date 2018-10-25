@@ -51,7 +51,7 @@ public:
    HRESULT FinalConstruct();
    void FinalRelease();
 
-   void Init(GirderIDType id,LocationType locationType,IGenericBridge* pBridge);
+   void Init(GirderIDType id,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,IGenericBridge* pBridge);
 
 
 DECLARE_REGISTRY_RESOURCEID(IDR_SUPERSTRUCTUREMEMBER)
@@ -68,6 +68,7 @@ END_COM_MAP()
 
 private:
    GirderIDType m_ID;
+   GirderIDType m_LeftSSMbrID, m_RightSSMbrID;
    IGenericBridge* m_pBridge; // weak referece to bridge
 
    typedef std::pair<EndType,std::pair<CComBSTR,ReleaseType> > MemberReleaseDataType;
@@ -76,8 +77,6 @@ private:
 
    ReleaseType m_Release[2];
    StageIndexType m_ReleaseStageIndex[2];
-
-   LocationType m_LocationType;
 
    CItemDataManager m_ItemDataMgr;
 
@@ -97,6 +96,8 @@ public:
 	STDMETHOD(SetEndRelease)(/*[in]*/ EndType end,/*[in]*/ StageIndexType stageIdx,/*[in]*/ ReleaseType release) override;
    STDMETHOD(GetPlanAngle)(/*[in]*/Float64 distFromStartOfSSMbr,/*[out,retval]*/IAngle** ppAngle) override;
    STDMETHOD(get_LocationType)(LocationType* pVal) override;
+   STDMETHOD(get_LeftSSMbrID)(/*[out, retval]*/ GirderIDType* pID) override;
+   STDMETHOD(get_RightSSMbrID)(/*[out, retval]*/ GirderIDType* pID) override;
    STDMETHOD(get_Bridge)(IGenericBridge** ppBridge) override;
 
 // IItemData

@@ -80,7 +80,7 @@ STDMETHODIMP CLoadCombinationResults::get_Count(CollectionIndexType *pVal)
 STDMETHODIMP CLoadCombinationResults::Add(Float64 Result, ILoadCombinationResultConfiguration *Config)
 {
 
-   m_ComboResults.push_back( ComboRes(Result, Config) );
+   m_ComboResults.emplace_back(Result, Config);
 
 	return S_OK;
 }
@@ -154,7 +154,7 @@ HRESULT CLoadCombinationResults::AllocateResults(CollectionIndexType size, bool 
       }
 
       // add empty result
-      m_ComboResults.push_back( ComboRes(0.0, config) );
+      m_ComboResults.emplace_back(0.0, config);
    }
 
    return S_OK;

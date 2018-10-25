@@ -484,7 +484,7 @@ void CLoadCombiner::ValidateLoadCombinations()
 
             if (!rloadgroups.empty())
             {
-               rcombo_data.m_LoadCaseFactors.push_back(ComboData::LoadCaseFactors(lcs_name, min_factor, max_factor));
+               rcombo_data.m_LoadCaseFactors.emplace_back(lcs_name, min_factor, max_factor);
             }
          }
          else

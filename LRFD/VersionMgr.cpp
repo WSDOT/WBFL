@@ -212,6 +212,9 @@ LPCTSTR lrfdVersionMgr::GetVersionString(lrfdVersionMgr::Version version,bool bA
    case SeventhEditionWith2016Interims:
       return (bAbbreviated ? _T("AashtoLrfd2016") : _T("Seventh Edition 2014 with 2016 interim provisions"));
 
+   case EighthEdition2017:
+      return (bAbbreviated ? _T("AashtoLrfd2017") : _T("Eighth Edition 2017"));
+
    default:
       ASSERT(false);
       return _T("Unknown");
@@ -226,7 +229,11 @@ LPCTSTR lrfdVersionMgr::GetUnitString()
 lrfdVersionMgr::Version lrfdVersionMgr::GetVersion(LPCTSTR strAbbrev)
 {
    std::_tstring tmp(strAbbrev);
-   if(tmp==_T("AashtoLrfd2016"))
+   if(tmp==_T("AashtoLrfd2017"))
+   {
+      return lrfdVersionMgr::EighthEdition2017;
+   }
+   else if(tmp==_T("AashtoLrfd2016"))
    {
       return lrfdVersionMgr::SeventhEditionWith2016Interims;
    }

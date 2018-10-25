@@ -27,7 +27,8 @@
 #include <Lrfd\LrfdExp.h>
 #include <Material\Concrete.h>
 #include <WBFLGeometry.h>
-#include <WBFLGenericBridge.h>
+
+interface IRebarSection;
 
 /*****************************************************************************
 CLASS 

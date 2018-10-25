@@ -161,6 +161,10 @@ HRESULT CBulbTee2::GetLocatorPoint(LocatorPointType lp,Float64* px,Float64* py)
 
 void CBulbTee2::GetHeight(Float64* pHl, Float64* pHc, Float64* pHr) const
 {
+   // Hl = height at left edge
+   // Hc = height at C2
+   // Hr = height at right edge
+
    Float64 H = m_D1 + m_D2 + m_D3 + m_D4 + m_D5 + m_D6 + m_D7; // basic height
 
    Float64 dL = m_n1*m_C2; // change in depth on left side of crown point
@@ -706,11 +710,20 @@ STDMETHODIMP CBulbTee2::get_CLHeight(Float64 *pVal)
    Float64 Hl, Hc, Hr;
    GetHeight(&Hl, &Hc, &Hr);
    if (m_W5 < m_C2)
+   {
       *pVal = Hl + m_n1*m_W5;
+   }
    else
+   {
       *pVal = Hl + m_n1*m_C2 + m_n2*(m_W5 - m_C2);
+   }
    
    return S_OK;
+}
+
+STDMETHODIMP CBulbTee2::get_Height(Float64 *pVal)
+{
+   return get_MaxHeight(pVal);
 }
 
 STDMETHODIMP CBulbTee2::get_AvgWebWidth(Float64 *pVal)
@@ -736,6 +749,134 @@ STDMETHODIMP CBulbTee2::get_TopFlangeWidth(Float64 *pVal)
    CHECK_RETVAL(pVal);
 
    *pVal = m_W5 + m_W6;
+
+   return S_OK;
+}
+
+STDMETHODIMP CBulbTee2::GetTopFlangeThickness(Float64* pHl, Float64* pHc, Float64* pHr)
+{
+   CHECK_RETVAL(pHl);
+   CHECK_RETVAL(pHc);
+   CHECK_RETVAL(pHr);
+
+   Float64 Hl, Hc, Hr;
+   GetHeight(&Hl, &Hc, &Hr);
+
+   Float64 baseHeight = /*m_D1 +*/ m_D2 + m_D3 + m_D4 + m_D5 + m_D6 + m_D7; // basic height
+
+   *pHl = Hl - baseHeight;
+   *pHc = Hc - baseHeight;
+   *pHr = Hr - baseHeight;
+
+   return S_OK;
+}
+
+STDMETHODIMP CBulbTee2::GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppTopCentral, IPoint2d** ppRightTop, IPoint2d** ppRightBottom)
+{
+   CHECK_RETOBJ(ppLeftTop);
+   CHECK_RETOBJ(ppLeftBottom);
+   CHECK_RETOBJ(ppTopCentral);
+   CHECK_RETOBJ(ppRightTop);
+   CHECK_RETOBJ(ppRightBottom);
+
+   IndexType leftTopIdx(11), leftBottomIdx(12), topCentralIdx(10), rightTopIdx(9), rightBottomIdx(8); // index into the polygon points
+   if (IsZero(m_C1))
+   {
+      // we don't have a chamfer in the bottom flange... reduce indicies by one
+      leftTopIdx--;
+      leftBottomIdx--;
+      topCentralIdx--;
+      rightTopIdx--;
+      rightBottomIdx--;
+   }
+
+   if (IsZero(m_C2) || IsEqual(m_C2, m_W5 + m_W6))
+   {
+      // there isn't a crown point between flange tips
+      // high point is at left or right flange tip... reduce one from left flange indicies
+      leftTopIdx--;
+      leftBottomIdx--;
+
+      if (IsZero(m_C2))
+      {
+         // top flange is thicker on the right side
+         topCentralIdx = rightTopIdx;
+      }
+      else
+      {
+         // top flange is thicker on the left side
+         topCentralIdx = leftTopIdx;
+      }
+   }
+
+   UpdateShape();
+
+   // get the points from our polygon implementation
+   CComPtr<IPoint2d> leftTop, leftBottom, topCentral, rightTop, rightBottom;
+   m_pShape->get_Point(leftTopIdx, &leftTop);
+   m_pShape->get_Point(leftBottomIdx, &leftBottom);
+   m_pShape->get_Point(topCentralIdx, &topCentral);
+   m_pShape->get_Point(rightTopIdx, &rightTop);
+   m_pShape->get_Point(rightBottomIdx, &rightBottom);
+
+   // these are the actual points... we don't want external users to change
+   // them and mess up our shape so we must create clones
+   leftTop->Clone(ppLeftTop);
+   leftBottom->Clone(ppLeftBottom);
+   topCentral->Clone(ppTopCentral);
+   rightTop->Clone(ppRightTop);
+   rightBottom->Clone(ppRightBottom);
+
+#if defined _DEBUG
+   Float64 Hl, Hc, Hr;
+   GetTopFlangeThickness(&Hl, &Hc, &Hr);
+   Float64 hl, hr;
+   leftTop->DistanceEx(leftBottom, &hl);
+   rightTop->DistanceEx(rightBottom, &hr);
+   ATLASSERT(IsEqual(hl, Hl));
+   ATLASSERT(IsEqual(hr, Hr));
+#endif
+
+   return S_OK;
+}
+
+STDMETHODIMP CBulbTee2::GetBottomFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppRightTop, IPoint2d** ppRightBottom)
+{
+   CHECK_RETOBJ(ppLeftTop);
+   CHECK_RETOBJ(ppLeftBottom);
+   CHECK_RETOBJ(ppRightTop);
+   CHECK_RETOBJ(ppRightBottom);
+
+   UpdateShape();
+   IndexType nPoints;
+   m_pShape->get_NumPoints(&nPoints);
+
+   // get the points from our polygon implementation
+   CComPtr<IPoint2d> leftTop, leftBottom,  rightTop, rightBottom;
+   if (IsZero(m_C1))
+   {
+      // no chamfer
+      m_pShape->get_Point(0, &rightBottom);
+      m_pShape->get_Point(0, &rightTop);
+
+      m_pShape->get_Point(nPoints - 1, &leftTop);
+      m_pShape->get_Point(nPoints - 1, &leftBottom);
+   }
+   else
+   {
+      m_pShape->get_Point(0, &rightBottom);
+      m_pShape->get_Point(1, &rightTop);
+
+      m_pShape->get_Point(nPoints - 2, &leftTop);
+      m_pShape->get_Point(nPoints - 1, &leftBottom);
+   }
+
+   // these are the actual points... we don't want external users to change
+   // them and mess up our shape so we must create clones
+   leftTop->Clone(ppLeftTop);
+   leftBottom->Clone(ppLeftBottom);
+   rightTop->Clone(ppRightTop);
+   rightBottom->Clone(ppRightBottom);
 
    return S_OK;
 }

@@ -33,7 +33,6 @@
 #include <Stability\HaulingCheckArtifact.h>
 
 #include <WBFLFem2d.h>
-#include <WBFLUnitServer.h>
 
 #include <WBFLGenericBridge.h>
 
@@ -48,7 +47,7 @@ DESCRIPTION
 class STABILITYCLASS stbStabilityEngineer
 {
 public:
-   stbStabilityEngineer(IUnitConvert* pUnitConvert);
+   stbStabilityEngineer();
 
    // Performs a lifting stress and stability analysis
    stbLiftingResults AnalyzeLifting(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem) const;
@@ -63,8 +62,6 @@ public:
    stbHaulingCheckArtifact CheckHauling(const stbIGirder* pGirder,const stbIHaulingStabilityProblem* pStabilityProblem,const stbHaulingCriteria& criteria) const;
 
 private:
-   IUnitConvert* m_pUnitConvert; // weak reference
-
    CComPtr<IRebarFactory> m_RebarFactory;
 
    mutable PoiIDType m_StartPoi, m_MidSpanPoi; // poi at start of girder and mid-span. used for computing deflection relative to the ends of a girder
@@ -86,6 +83,9 @@ private:
 
    // analyze for hauling
    void AnalyzeHauling(const stbIGirder* pGirder,const stbIHaulingStabilityProblem* pStabilityProblem,stbHaulingResults& results) const;
+
+   // Determines Xleft, relative to the roll axis
+   Float64 ComputeXcg(const stbIGirder* pGirder, stbResults& results) const;
 
    // Deterimes how to compute Zo
    void GetZoComputationMethod(const stbIGirder* pGirder,const stbIStabilityProblem* pStabilityProblem,IFem2dModel* pModel,stbResults& results) const;

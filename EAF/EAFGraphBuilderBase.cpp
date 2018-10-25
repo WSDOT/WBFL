@@ -28,6 +28,8 @@
 #include <EAF\EAFGraphControlWindow.h>
 #include <EAF\EAFGraphView.h>
 #include <EAF\EAFHints.h>
+#include <EAF\EAFViewControllerFactory.h>
+#include "EAFViewController.h"
 
 #include <MFCTools\Text.h> // for MultiLineTextOut
 
@@ -101,6 +103,16 @@ CEAFGraphView* CEAFGraphBuilderBase::GetView()
    {
       return nullptr;
    }
+}
+
+void CEAFGraphBuilderBase::CreateViewController(IEAFViewController** ppViewControler)
+{
+   CComObject<CEAFViewController>* pController;
+   CComObject<CEAFViewController>::CreateInstance(&pController);
+   pController->Init(m_pFrame);
+
+   (*ppViewControler) = pController;
+   (*ppViewControler)->AddRef();
 }
 
 void CEAFGraphBuilderBase::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)

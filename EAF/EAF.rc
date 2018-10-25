@@ -14,13 +14,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -67,23 +65,28 @@ END
 //
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+
 IDB_LPFRAME             BITMAP                  "res\\lpframe.bmp"
+
 IDB_LIGHTBULB           BITMAP                  "res\\litebulb.bmp"
+
 IDB_CREPORT_BMP         BITMAP                  "res\\bitmap1.bmp"
+
 IDR_HELP                BITMAP                  "res\\Help.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Toolbar
 //
 
-IDR_MAINFRAME TOOLBAR  16, 16
+IDR_MAINFRAME TOOLBAR 16, 16
 BEGIN
     BUTTON      ID_FILE_NEW
     BUTTON      ID_FILE_OPEN
 END
 
-IDR_HELP TOOLBAR  16, 16
+IDR_HELP TOOLBAR 16, 16
 BEGIN
     BUTTON      EAFID_HELPWND_BACK
     BUTTON      EAFID_HELPWND_FORWARD
@@ -97,7 +100,7 @@ END
 // Menu
 //
 
-IDR_MAINFRAME MENU 
+IDR_MAINFRAME MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -125,7 +128,7 @@ BEGIN
     END
 END
 
-IDR_RECENT_FILE MENU 
+IDR_RECENT_FILE MENU
 BEGIN
     POPUP "RecentFileOpen"
     BEGIN
@@ -133,7 +136,7 @@ BEGIN
     END
 END
 
-IDR_HELP MENU 
+IDR_HELP MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -154,7 +157,7 @@ END
 // Accelerator
 //
 
-IDR_MAINFRAME ACCELERATORS 
+IDR_MAINFRAME ACCELERATORS
 BEGIN
     "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
@@ -174,7 +177,7 @@ BEGIN
     VK_F1,          ID_HELP,                VIRTKEY 
 END
 
-IDR_HELP ACCELERATORS 
+IDR_HELP ACCELERATORS
 BEGIN
     "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL, NOINVERT
 END
@@ -186,8 +189,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,1,8,0
- PRODUCTVERSION 4,1,8,0
+ FILEVERSION 4,2,0,0
+ PRODUCTVERSION 4,2,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -205,12 +208,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "EAF DLL"
-            VALUE "FileVersion", "4.1.8.0"
+            VALUE "FileVersion", "4.2.0.0"
             VALUE "InternalName", "EAF"
             VALUE "LegalCopyright", "Copyright © 1999-2018, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "EAF.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "4.1.8.0"
+            VALUE "ProductVersion", "4.2.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -262,7 +265,7 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     PUSHBUTTON      "Close",IDCLOSE,383,165,50,14
     CONTROL         "List1",IDC_STATUSLIST,"SysListView32",LVS_REPORT | WS_BORDER | WS_TABSTOP,7,21,426,142
-    LTEXT           "Double click on each status item for more details and possible remedies",IDC_LABEL,7,171,224,8
+    LTEXT           "Double click on each status item for more details and possible remedies",IDC_LABEL,7,171,300,8
     LTEXT           "Information",IDC_INFORMATION,7,7,65,8
     LTEXT           "Warning",IDC_WARNING,79,7,65,8
     LTEXT           "Error",IDC_ERROR,153,7,65,8
@@ -280,7 +283,7 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,130,23,50,14
 END
 
-IDD_SELECTREPORT DIALOG  0, 0, 275, 163
+IDD_SELECTREPORT DIALOG 0, 0, 275, 163
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Select Report"
 FONT 8, "MS Sans Serif"
@@ -376,7 +379,7 @@ CAPTION "Custom Reports"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Manage Custom Reports",IDC_STATIC,7,7,346,222
-    CONTROL         145,IDC_STATIC,"Static",SS_BITMAP,14,23,11,10
+    CONTROL         IDB_CREPORT_BMP,IDC_STATIC,"Static",SS_BITMAP,14,23,11,10
     LTEXT           "Custom reports consist of selected chapters from a built-in report. You can create your own custom reports in the list below.",IDC_STATIC,34,20,307,16
     CONTROL         "",IDC_CUSTOM_REPORT_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,24,43,317,147
     PUSHBUTTON      "Add New",IDC_ADDNEW,73,206,50,14
@@ -428,12 +431,13 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Status Message"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "Remove",IDOK,160,144,50,14
-    PUSHBUTTON      "Close",IDCANCEL,214,144,50,14
+    DEFPUSHBUTTON   "Remove",IDREMOVE,160,144,50,14
+    PUSHBUTTON      "Close",IDCLOSE,214,144,50,14
     PUSHBUTTON      "Help",IDHELP,267,144,50,14
     EDITTEXT        IDC_MESSAGE,18,24,265,104,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | NOT WS_BORDER
     GROUPBOX        "Error Message",IDC_GROUP,7,7,310,132
     ICON            "",IDC_MY_ICON,294,16,20,20
+    DEFPUSHBUTTON   "Edit",IDEDIT,103,144,50,14
 END
 
 IDD_UIHINTS DIALOGEX 0, 0, 316, 183
@@ -453,7 +457,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
@@ -578,7 +582,9 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_LARGEICON           ICON                    "res\\IconView.ico"
+
 IDI_SMALLICON           ICON                    "res\\SmallIconView.ico"
+
 IDI_HELP                ICON                    "res\\Help.ico"
 
 
@@ -612,19 +618,24 @@ BEGIN
     0, 0, 0, 0
 END
 
+IDD_STATUS_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_IDLEMESSAGE     "For Help, press F1"
     AFX_IDS_HELPMODEMESSAGE "Select an object on which to get Help"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     EAFID_UNITS_SI          "Change units mode to SI\nSI Units"
     EAFID_UNITS_US          "Change units mode to US\nUS Units"
@@ -640,12 +651,12 @@ BEGIN
     EAFID_HELPWND_BACK      "Browse Back\nBrowse Back"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     EAFID_HELPWND_FORWARD   "Browse Forward\nBrowse Forward"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     EAFID_INDICATOR_MODIFIED "Modified"
     EAFID_INDICATOR_STATUS  "OK"
@@ -653,7 +664,7 @@ BEGIN
     EAFID_INDICATOR_AUTOCALC_OFF "AutoCalc : Off"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_UPDATE_IN_PROGRESS  "Working..."
     CG_IDS_TIPOFTHEDAYMENU  "Ti&p of the Day..."
@@ -663,13 +674,13 @@ BEGIN
     CG_IDS_TIPOFTHEDAYHELP  "&Help"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_FATAL_MSG_SAVE      """%1\n\nThe application is going to shut down!\n\nWould you like to attempt to save your project first?\n\n%2"""
     IDS_FATAL_MSG_NOSAVE    """%1\n\nThe application is going to shut down!\n\n%2"""
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_INDICATOR_EXT        "EXT"
     ID_INDICATOR_CAPS       "CAP"
@@ -679,7 +690,7 @@ BEGIN
     ID_INDICATOR_REC        "REC"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_FILE_NEW             "Create a new document\nNew"
     ID_FILE_OPEN            "Open an existing document\nOpen"
@@ -692,7 +703,7 @@ BEGIN
     ID_FILE_PRINT_PREVIEW   "Display full pages\nPrint Preview"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
     ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
@@ -703,7 +714,7 @@ BEGIN
     ID_HELP                 "Display help for current task or command\nHelp"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_FILE_MRU_FILE1       "Open this document"
     ID_FILE_MRU_FILE2       "Open this document"
@@ -723,13 +734,13 @@ BEGIN
     ID_FILE_MRU_FILE16      "Open this document"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
     ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_WINDOW_NEW           "Open another window for the active document\nNew Window"
     ID_WINDOW_ARRANGE       "Arrange icons at the bottom of the window\nArrange Icons"
@@ -739,7 +750,7 @@ BEGIN
     ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_EDIT_CLEAR           "Erase the selection\nErase"
     ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
@@ -754,21 +765,21 @@ BEGIN
     ID_EDIT_REDO            "Redo the previously undone action\nRedo"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_VIEW_TOOLBAR         "Show or hide the toolbar\nToggle ToolBar"
     ID_VIEW_STATUS_BAR      "Show or hide the status bar\nToggle StatusBar"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_TOOLBAR_STATE       "AppToolbars"
     IDS_REG_SETTINGS        "Settings"
     IDS_TOOLTIP_STATE       "ToolTips"
-    IDS_WINDOW_POSITIONS          "Window Positions"
+    IDS_WINDOW_POSITIONS    "Window Positions"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_SCSIZE          "Change the window size"
     AFX_IDS_SCMOVE          "Change the window position"
@@ -779,14 +790,14 @@ BEGIN
     AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_SCRESTORE       "Restore the window to normal size"
     AFX_IDS_SCTASKLIST      "Activate Task List"
     AFX_IDS_MDICHILD        "Activate this window"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_PREVIEW_CLOSE   "Close print preview mode\nCancel Preview"
     IDS_E_CREATEWND         "An error occured while creating the window."
@@ -797,24 +808,24 @@ BEGIN
     IDS_E_UNSAFESAVE        "A backup copy of your last successful save could not be made. If an error occurs while saving  your data, your file may become corrupt and unrecoverable.\n\n Would  you like to proceed?"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_E_NOBROWSER         "An error occured while trying to display the report.  The most likely cause is Internet Explorer Version 4.0 or later is not installed.  Please re-install your browser."
     IDS_E_UPDATE            "The following error occured while updating the views.\n\n%1."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_WORKING             "Working..."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_RESULTS_NOT_AVAILABLE 
                             "Results not available - Select ""Update Now"" from the Project menu"
 END
 
-#endif    // English (U.S.) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

@@ -78,7 +78,7 @@ STDMETHODIMP CLoadCombinationResultConfiguration::AddLoadCaseFactor(BSTR loadCas
 {
    CHECK_IN(loadCase);
 
-   m_LoadCaseFactors.push_back( LoadCaseFactor(loadCase, factor));
+   m_LoadCaseFactors.emplace_back(loadCase, factor);
 
 	return S_OK;
 }

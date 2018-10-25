@@ -221,7 +221,7 @@ STDMETHODIMP CWideningCollection::AddEx(IWidening* widening)
 
    DWORD dwCookie;
    AdviseElement(widening,&dwCookie);
-   m_coll.push_back( std::make_pair(dwCookie,CComVariant(widening)));
+   m_coll.emplace_back(dwCookie,CComVariant(widening));
 
    CComPtr<IProfile> profile;
    if ( m_pSurface )
@@ -229,7 +229,7 @@ STDMETHODIMP CWideningCollection::AddEx(IWidening* widening)
       m_pSurface->get_Profile(&profile); 
    }
 
-   std::sort(m_coll.begin(),m_coll.end(),SortWidenings(profile));
+   std::sort(std::begin(m_coll),std::end(m_coll),SortWidenings(profile));
 
    Fire_OnWideningAdded(widening);
    return S_OK;

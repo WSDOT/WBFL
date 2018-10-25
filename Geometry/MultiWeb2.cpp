@@ -58,7 +58,7 @@ HRESULT CMultiWeb2::FinalConstruct()
    m_F2       = 0.00;
    m_C1       = 0.00;
    m_C2       = 0.00;
-   m_WebCount = 0;
+   m_WebCount = 2;
    m_bLeftBlockOut = VARIANT_TRUE;
    m_bRightBlockOut = VARIANT_TRUE;
 
@@ -732,12 +732,17 @@ STDMETHODIMP CMultiWeb2::get_WebLocation(WebIndexType webIdx,Float64* location)
    Float64 W;
    get_TopFlangeWidth(&W);
 
-   WebIndexType nExteriorWebs, nInteriorWebs;
-   nInteriorWebs = m_WebCount - 2;
-   if ( nInteriorWebs < 0 )
+   WebIndexType nInteriorWebs;
+   if (m_WebCount < 3)
+   {
       nInteriorWebs = 0;
+   }
+   else
+   {
+      nInteriorWebs = m_WebCount - 2;
+   }
    
-   nExteriorWebs = m_WebCount - nInteriorWebs;
+   WebIndexType nExteriorWebs = m_WebCount - nInteriorWebs;
 
    if ( webIdx == 0 )
    {
@@ -747,7 +752,7 @@ STDMETHODIMP CMultiWeb2::get_WebLocation(WebIndexType webIdx,Float64* location)
    else if ( webIdx == m_WebCount-1 )
    {
       // last web
-      (*location) = m_W1 + m_T1+m_T2+m_T3 + nInteriorWebs*(m_T4+m_T5+m_T4) + (nInteriorWebs-1)*m_W2 + m_T3 + m_T2/2 - W/2;
+      (*location) = W / 2 - (m_W1 + m_T1 + m_T2 / 2);
    }
    else
    {

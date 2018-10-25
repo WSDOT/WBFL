@@ -112,17 +112,21 @@ private:
 public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
-// IBulbTee
+// IBulbTee2
 public:
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
 	STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
 	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
 	STDMETHOD(get_TopFlangeWidth)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(get_BottomFlangeWidth)(/*[out, retval]*/ Float64 *pVal) override;
-	STDMETHOD(get_AvgWebWidth)(/*[out, retval]*/ Float64 *pVal) override;
+   STDMETHOD(GetBottomFlangePoints)(/*[out]*/IPoint2d** ppLeftTop, /*[out]*/IPoint2d** ppLeftBottom, /*[out]*/IPoint2d** ppRightTop, /*[out]*/IPoint2d** ppRightBottom);
+   STDMETHOD(GetTopFlangePoints)(/*[out]*/IPoint2d** ppLeftTop, /*[out]*/IPoint2d** ppLeftBottom, /*[out]*/IPoint2d** ppTopCentral,/*[out]*/IPoint2d** ppRightTop, /*[out]*/IPoint2d** ppRightBottom);
+   STDMETHOD(GetTopFlangeThickness)(/*[out]*/Float64* pHl, /*[out]*/Float64* pHc, /*[out]*/Float64* pHr);
+   STDMETHOD(get_AvgWebWidth)(/*[out, retval]*/ Float64 *pVal) override;
    STDMETHOD(get_MinHeight)(/*[out, retval]*/ Float64 *pVal) override;
    STDMETHOD(get_MaxHeight)(/*[out, retval]*/ Float64 *pVal) override;
    STDMETHOD(get_CLHeight)(/*[out, retval]*/ Float64 *pVal) override;
+   STDMETHOD(get_Height)(/*[out, retval]*/ Float64 *pVal) override;
    STDMETHOD(get_HookPoint)(/*[out,retval]*/ IPoint2d** hookPnt) override;
    STDMETHOD(putref_HookPoint)(/*[in]*/ IPoint2d* hookPnt) override;
    STDMETHOD(get_n2)(/*[out, retval]*/ Float64 *pVal) override;

@@ -74,7 +74,7 @@ STDMETHODIMP_(void) CDataSet2dImpl::Add(IPoint2d *pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
-   m_Container.push_back(ContainerItem(pVal));
+   m_Container.emplace_back(pVal);
 }
 
 STDMETHODIMP CDataSet2dImpl::Insert(CollectionIndexType index, IPoint2d *pVal)

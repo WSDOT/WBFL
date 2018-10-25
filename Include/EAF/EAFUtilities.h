@@ -56,7 +56,7 @@ EAFFUNC CEAFDocument* EAFGetDocument();
 EAFFUNC CView* EAFGetActiveView();
 
 // Displays the common status center item message dialog box
-EAFFUNC void EAFShowStatusMessage(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityType severity,BOOL bRemoveableOnError,LPCTSTR lpszDocSetName=nullptr,UINT helpID=0);
+EAFFUNC eafTypes::StatusItemDisplayReturn EAFShowStatusMessage(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityType severity,BOOL bRemoveableOnError,BOOL bEnableEdit,LPCTSTR lpszDocSetName=nullptr,UINT helpID=0);
 
 // Compares IIDs
 EAFFUNC bool operator<(REFIID a,REFIID b);

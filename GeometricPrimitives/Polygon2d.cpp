@@ -74,7 +74,7 @@ gpPolygon2d& gpPolygon2d::operator= (const gpPolygon2d& rOther)
 //======================== OPERATIONS =======================================
 Uint32 gpPolygon2d::AddPoint(const gpPoint2d& p)
 {
-   m_PointContainer.push_back( PointEntry( m_LastKey, p ) );
+   m_PointContainer.emplace_back(m_LastKey, p);
    return m_LastKey++;
 }
 

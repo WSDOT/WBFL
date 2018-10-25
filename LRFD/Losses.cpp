@@ -1172,8 +1172,8 @@ void lrfdLosses::UpdatePostTensionLosses() const
          lg = ::ConvertFromSysUnits(m_Lg,unitMeasure::Feet);
       }
 
-      m_dfpF  = m_FpjTemp*(1 - exp(-K*x  + m_AngleChange*m_FrictionCoefficient));
-      m_dfpFT = m_FpjTemp*(1 - exp(-K*lg + m_AngleChange*m_FrictionCoefficient));
+      m_dfpF  = m_FpjTemp*(1 - exp(-(K*x  + m_AngleChange*m_FrictionCoefficient)));
+      m_dfpFT = m_FpjTemp*(1 - exp(-(K*lg + m_AngleChange*m_FrictionCoefficient)));
 
       // anchor set loss
       m_La = sqrt(m_Ep*m_AnchorSet*m_Lg/m_dfpFT);

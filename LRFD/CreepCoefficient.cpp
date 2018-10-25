@@ -46,7 +46,7 @@ CLASS
 //======================== LIFECYCLE  =======================================
 lrfdCreepCoefficient::lrfdCreepCoefficient()
 {
-   m_CuringMethodTimeAdjustmentFactor = ::ConvertToSysUnits(7.0,unitMeasure::Day);
+   m_CuringMethodTimeAdjustmentFactor = 7;
    m_bUpdate = true;
 }
 
@@ -289,14 +289,13 @@ void lrfdCreepCoefficient::Update() const
       x2 = -0.54;
    }
 
+   Float64 ti;
    m_tiAdjusted = m_ti;
+   ti = ::ConvertFromSysUnits(m_ti,unitMeasure::Day);
    if ( m_CuringMethod == Accelerated )
    {
-      // NCHRP 496...
-      // ti = age of concrete, in days, when load is initially applied for accelerated curing, 
-      // or the age minus 6 days for moist (normal) curing (m_CuringMethodTimeAdjustmentFactor is typically 7 days)
-      Float64 one_day = ::ConvertToSysUnits(1.0, unitMeasure::Day);
-      m_tiAdjusted += m_CuringMethodTimeAdjustmentFactor - one_day; // days
+      ti += m_CuringMethodTimeAdjustmentFactor - 1; // days
+      m_tiAdjusted = ::ConvertToSysUnits(ti,unitMeasure::Day);
    }
 
    Float64 t = ::ConvertFromSysUnits( m_t, unitMeasure::Day );
@@ -307,13 +306,13 @@ void lrfdCreepCoefficient::Update() const
 
    m_kc = (a/b)*(c/2.587);
 
-   if (t < m_tiAdjusted)
+   if (t < ti)
    {
       m_Ct = 0;
    }
    else
    {
-      m_Ct = 3.5*m_kc*m_kf*(1.58 - m_H / 120.)*pow(m_tiAdjusted, -0.118) * (pow(t - m_tiAdjusted, 0.6) / (10.0 + pow(t - m_tiAdjusted, 0.6)));
+      m_Ct = 3.5*m_kc*m_kf*(1.58 - m_H / 120.)*pow(ti, -0.118) * (pow(t - ti, 0.6) / (10.0 + pow(t - ti, 0.6)));
    }
 
    m_bUpdate = false;

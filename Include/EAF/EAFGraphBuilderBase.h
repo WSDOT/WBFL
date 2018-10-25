@@ -71,6 +71,10 @@ public:
    // being called.
    virtual CEAFGraphControlWindow* GetGraphControlWindow() = 0;
 
+   // Creates a view controller object that can be used to programatically control
+   // the graph view
+   virtual void CreateViewController(IEAFViewController** ppViewControler);
+
    // called by the framework when the view's OnUpdate method is called
    virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
 

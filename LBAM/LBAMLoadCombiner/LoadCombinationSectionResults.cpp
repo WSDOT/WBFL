@@ -80,7 +80,7 @@ STDMETHODIMP CLoadCombinationSectionResults::get_Count(CollectionIndexType *pVal
 STDMETHODIMP CLoadCombinationSectionResults::Add(Float64 leftResult, ILoadCombinationResultConfiguration *leftConfig, Float64 rightResult, ILoadCombinationResultConfiguration *rightConfig)
 {
 
-   m_ComboResults.push_back( ComboRes(leftResult, rightResult, leftConfig, rightConfig) );
+   m_ComboResults.emplace_back(leftResult, rightResult, leftConfig, rightConfig);
 
 	return S_OK;
 }
@@ -180,7 +180,7 @@ HRESULT CLoadCombinationSectionResults::AllocateResults(CollectionIndexType size
       }
 
       // add empty result
-      m_ComboResults.push_back( ComboRes(0.0, 0.0, left_config, right_config) );
+      m_ComboResults.emplace_back(0.0, 0.0, left_config, right_config);
    }
 
    return S_OK;

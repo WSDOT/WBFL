@@ -80,7 +80,7 @@ class LoadCombinationEngineBase
             hr = ifactors->GetSupportCombinationFactors(id, Stage, lmType, &min_load_modifier, &max_load_modifier);
          }
 
-         m_ComboFactors.push_back(ComboFactors(min_load_modifier, max_load_modifier));
+         m_ComboFactors.emplace_back(min_load_modifier, max_load_modifier);
       }
    }
 

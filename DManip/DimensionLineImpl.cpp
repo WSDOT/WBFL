@@ -78,6 +78,7 @@ HRESULT CDimensionLineImpl::FinalConstruct()
 
 void CDimensionLineImpl::FinalRelease()
 {
+   CConnectorImpl::FinalRelease();
    CDisplayObjectDefaultImpl::Do_FinalRelease();
 }
 

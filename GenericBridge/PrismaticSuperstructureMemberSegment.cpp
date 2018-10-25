@@ -39,20 +39,11 @@ static char THIS_FILE[] = __FILE__;
 // CPrismaticSuperstructureMemberSegment
 HRESULT CPrismaticSuperstructureMemberSegment::FinalConstruct()
 {
-   m_pGirderLine = nullptr;
-   m_Orientation = 0;
-   m_HaunchDepth[0] = 0;
-   m_HaunchDepth[1] = 0;
-   m_HaunchDepth[2] = 0;
-   m_Fillet = 0;
-   m_pPrevSegment = nullptr;
-   m_pNextSegment = nullptr;
    return S_OK;
 }
 
 void CPrismaticSuperstructureMemberSegment::FinalRelease()
 {
-   m_pGirderLine = nullptr;
    m_Shapes.clear();
 }
 
@@ -72,19 +63,8 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::InterfaceSupportsErrorInfo(R
 }
 
 ////////////////////////////////////////////////////////////////////////
-// ISegment implementation
-
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Length(Float64 *pVal)
-{
-   return m_pGirderLine->get_GirderLength(pVal);
-}
-
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_LayoutLength(Float64 *pVal)
-{
-   return m_pGirderLine->get_LayoutLength(pVal);
-}
-
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
+// ISuperstructureMemberSegment implementation
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
 {
    CHECK_RETOBJ(ppSection);
 
@@ -105,35 +85,27 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType s
       ShapeData& shapeData = *iter;
 
       Float64 Efg = 0;
-      if (shapeData.FGMaterial)
-      {
-         shapeData.FGMaterial->get_E(stageIdx, &Efg);
-      }
+      if ( shapeData.FGMaterial )
+         shapeData.FGMaterial->get_E(stageIdx,&Efg);
 
       Float64 Ebg = 0;
-      if (shapeData.BGMaterial)
-      {
-         shapeData.BGMaterial->get_E(stageIdx, &Ebg);
-      }
+      if ( shapeData.BGMaterial )
+         shapeData.BGMaterial->get_E(stageIdx,&Ebg);
 
       Float64 Dfg = 0;
-      if (shapeData.FGMaterial)
-      {
-         shapeData.FGMaterial->get_Density(stageIdx, &Dfg);
-      }
+      if ( shapeData.FGMaterial )
+         shapeData.FGMaterial->get_Density(stageIdx,&Dfg);
 
       Float64 Dbg = 0;
-      if (shapeData.BGMaterial)
-      {
-         shapeData.BGMaterial->get_Density(stageIdx, &Dbg);
-      }
+      if ( shapeData.BGMaterial )
+         shapeData.BGMaterial->get_Density(stageIdx,&Dbg);
 
       CComPtr<IShape> shape;
       shapeData.Shape->Clone(&shape);
 
       // position the shape
       CComPtr<IPoint2d> pntTopCenter;
-      GB_GetSectionLocation(this,Xs,&pntTopCenter);
+      GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
 
       CComQIPtr<IXYPosition> position(shape);
       position->put_LocatorPoint(lpTopCenter,pntTopCenter);
@@ -147,7 +119,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType s
    return S_OK;
 }
 
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_PrimaryShape(Float64 distAlongSegment,IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
    if ( m_Shapes.size() == 0 )
@@ -161,7 +133,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_PrimaryShape(Float64 Xs,
 
    // position the shape
    CComPtr<IPoint2d> pntTopCenter;
-   GB_GetSectionLocation(this,Xs,&pntTopCenter);
+   GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
 
    CComQIPtr<IXYPosition> position(*ppShape);
    position->put_LocatorPoint(lpTopCenter,pntTopCenter);
@@ -183,202 +155,96 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Profile(VARIANT_BOOL bIn
 
    Float64 l;
    Float64 brgOffset, endDist;
-   if ( bIncludeClosure == VARIANT_TRUE )
+   if (bIncludeClosure == VARIANT_TRUE)
    {
-      m_pGirderLine->get_LayoutLength(&l);
+      m_Impl.m_pGirderLine->get_LayoutLength(&l);
       brgOffset = 0;
       endDist = 0;
    }
    else
    {
-      m_pGirderLine->get_GirderLength(&l);
-      m_pGirderLine->get_BearingOffset(etStart,&brgOffset);
-      m_pGirderLine->get_EndDistance(etStart,&endDist);
+      m_Impl.m_pGirderLine->get_GirderLength(&l);
+      m_Impl.m_pGirderLine->get_BearingOffset(etStart, &brgOffset);
+      m_Impl.m_pGirderLine->get_EndDistance(etStart, &endDist);
    }
 
-   CComPtr<IRectangle> shape;
-   shape.CoCreateInstance(CLSID_Rect);
-   shape->put_Height(h);
-   shape->put_Width(l);
+   CComPtr<IShape> shape;
+   if (IsZero(m_Impl.m_Precamber))
+   {
+      CComPtr<IRectangle> profile;
+      profile.CoCreateInstance(CLSID_Rect);
+      profile->put_Height(h);
+      profile->put_Width(l);
 
-   // Shape is to be in girder path coordinates so (0,0) is at the CL Pier and at the elevation of the top of the shape
+      profile.QueryInterface(&shape);
+   }
+   else
+   {
+      CComPtr<IPolyShape> profile;
+      profile.CoCreateInstance(CLSID_PolyShape);
+      profile->AddPoint(0, 0); // top left corner
+
+      // work left to right along top of segment
+      int nPoints = 11;
+      int nSpaces = nPoints - 1;
+
+      Float64 Ls;
+      m_Impl.m_pGirderLine->get_GirderLength(&Ls);
+      for (int i = 0; i < nPoints; i++)
+      {
+         Float64 x = i*Ls / nSpaces;
+         Float64 y = m_Impl.ComputePrecamber(x,Ls);
+         if (bIncludeClosure == VARIANT_TRUE)
+         {
+            x += (brgOffset - endDist);
+         }
+         profile->AddPoint(x, y);
+      }
+
+      profile->AddPoint(l, 0); // top right corner
+
+      for (int i = 0; i < nPoints; i++)
+      {
+         Float64 x = Ls - i*Ls / nSpaces;
+         Float64 y = m_Impl.ComputePrecamber(x, Ls) + h;
+         if (bIncludeClosure == VARIANT_TRUE)
+         {
+            x += (brgOffset - endDist);
+         }
+         profile->AddPoint(x, y);
+      }
+
+      profile->AddPoint(0, h);
+
+      profile.QueryInterface(&shape);
+   }
+
+   // CL Pier/Top Shape is at (0,0)
    //
-   // CL Pier   Start of segment
+   // CL Pier   End of segment
    // |         |       CL Bearing
-   // |(0,0)    |       |
+   // | (0,0)   |       |
    // *         +-------+---------------\  
    // |         |       .               /
    // |         +-------+---------------\  
    //
    //          Elevation View
 
-
-
    CComQIPtr<IXYPosition> position(shape);
    CComPtr<IPoint2d> topLeft;
-   position->get_LocatorPoint(lpTopLeft,&topLeft);
-   topLeft->Move(brgOffset-endDist,0);
-   position->put_LocatorPoint(lpTopLeft,topLeft);
+   position->get_LocatorPoint(lpTopLeft, &topLeft);
+   if (0 < m_Impl.m_Precamber)
+   {
+      topLeft->Move(brgOffset - endDist, m_Impl.m_Precamber);
+   }
+   else
+   {
+      topLeft->Move(brgOffset - endDist, 0);
+   }
+   position->put_LocatorPoint(lpTopLeft, topLeft);
 
    shape->QueryInterface(ppShape);
 
-   return S_OK;
-}
-
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::putref_SuperstructureMember(ISuperstructureMember* ssMbr)
-{
-   CHECK_IN(ssMbr);
-   m_pSSMbr = ssMbr;
-   return S_OK;
-}
-
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_SuperstructureMember(ISuperstructureMember** ssMbr)
-{
-   CHECK_RETOBJ(ssMbr);
-   if ( m_pSSMbr )
-   {
-      (*ssMbr) = m_pSSMbr;
-      (*ssMbr)->AddRef();
-   }
-   else
-   {
-      (*ssMbr) = nullptr;
-   }
-
-   return S_OK;
-}
-
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::putref_GirderLine(IGirderLine* girderLine)
-{
-   CHECK_IN(girderLine);
-   m_pGirderLine = girderLine;
-   return S_OK;
-}
-
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_GirderLine(IGirderLine** girderLine)
-{
-   CHECK_RETOBJ(girderLine);
-   if ( m_pGirderLine )
-   {
-      (*girderLine) = m_pGirderLine;
-      (*girderLine)->AddRef();
-   }
-   else
-   {
-      (*girderLine) = nullptr;
-   }
-
-   return S_OK;
-
-}
-
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::putref_PrevSegment(ISegment* segment)
-{
-   CHECK_IN(segment);
-   ISuperstructureMemberSegment* pMySeg = m_pPrevSegment; // weak references so no change in ref count
-   m_pPrevSegment = nullptr;
-   HRESULT hr = segment->QueryInterface(&m_pPrevSegment); // causes ref count to increment
-   if ( FAILED(hr) )
-   {
-      m_pPrevSegment = pMySeg;
-      return hr;
-   }
-   m_pPrevSegment->Release(); // need to decrement ref count causd by QueryInterface to maintain this as a weak reference
-   return S_OK;
-}
-
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_PrevSegment(ISegment** segment)
-{
-   CHECK_RETVAL(segment);
-   if ( m_pPrevSegment )
-   {
-      return m_pPrevSegment->QueryInterface(segment);
-   }
-   else
-   {
-      *segment = nullptr;
-      return E_FAIL;
-   }
-}
-
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::putref_NextSegment(ISegment* segment)
-{
-   CHECK_IN(segment);
-   ISuperstructureMemberSegment* pMySeg = m_pNextSegment; // weak references so no change in ref count
-   m_pNextSegment = nullptr;
-   HRESULT hr = segment->QueryInterface(&m_pNextSegment); // causes ref count to increment
-   if ( FAILED(hr) )
-   {
-      m_pNextSegment = pMySeg;
-      return hr;
-   }
-   m_pNextSegment->Release(); // need to decrement ref count causd by QueryInterface to maintain this as a weak reference
-   return S_OK;
-}
-
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_NextSegment(ISegment** segment)
-{
-   CHECK_RETVAL(segment);
-   if ( m_pNextSegment )
-   {
-      return m_pNextSegment->QueryInterface(segment);
-   }
-   else
-   {
-      *segment = nullptr;
-      return E_FAIL;
-   }
-}
-
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::put_Orientation(Float64 orientation)
-{
-   m_Orientation = orientation;
-   return S_OK;
-}
-
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Orientation(Float64* orientation)
-{
-   CHECK_RETVAL(orientation);
-   (*orientation) = m_Orientation;
-   return S_OK;
-}
-
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::GetHaunchDepth(Float64* pStartVal,Float64* pMidVal,Float64* pEndVal)
-{
-   CHECK_RETVAL(pStartVal);
-   CHECK_RETVAL(pMidVal);
-   CHECK_RETVAL(pEndVal);
-   *pStartVal = m_HaunchDepth[0];
-   *pMidVal   = m_HaunchDepth[1];
-   *pEndVal   = m_HaunchDepth[2];
-   return S_OK;
-}
-
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::SetHaunchDepth(Float64 startVal,Float64 midVal,Float64 endVal)
-{
-   m_HaunchDepth[0] = startVal;
-   m_HaunchDepth[1] = midVal;
-   m_HaunchDepth[2] = endVal;
-   return S_OK;
-}
-
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::ComputeHaunchDepth(Float64 distAlongSegment,Float64* pVal)
-{
-   CHECK_RETVAL(pVal);
-   *pVal = ::GB_GetHaunchDepth(this,distAlongSegment);
-   return S_OK;
-}
-
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::put_Fillet(Float64 Fillet)
-{
-   m_Fillet = Fillet;
-   return S_OK;
-}
-
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Fillet(Float64* Fillet)
-{
-   CHECK_RETVAL(Fillet);
-   (*Fillet) = m_Fillet;
    return S_OK;
 }
 

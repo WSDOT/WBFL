@@ -246,6 +246,7 @@ library WBFLCogo
         [helpstring("method FromVariant")] HRESULT FromVariant([in] VARIANT varDirection);
 		  [helpstring("method AngleBetween"),helpcontext(IDH_Direction_AngleBetween)] HRESULT AngleBetween([in] IDirection* dir,[out,retval]IAngle** pVal);
         [helpstring("method Clone"),helpcontext(IDH_Direction_Clone)] HRESULT Clone([out,retval] IDirection* *clone);
+        [helpstring("method IsEqual")] HRESULT IsEqual(IDirection* pDirection);
 
         [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
     };

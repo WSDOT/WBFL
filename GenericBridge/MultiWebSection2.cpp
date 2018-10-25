@@ -254,6 +254,11 @@ STDMETHODIMP CMultiWebSection2::get_MatingSurfaceWidth(MatingSurfaceIndexType id
    return get_TopFlangeWidth(idx,wMatingSurface);
 }
 
+STDMETHODIMP CMultiWebSection2::get_MatingSurfaceProfile(MatingSurfaceIndexType idx, IPoint2dCollection** ppProfile)
+{
+   return E_NOTIMPL;
+}
+
 STDMETHODIMP CMultiWebSection2::get_TopFlangeCount(FlangeIndexType* nTopFlanges)
 {
    CHECK_RETVAL(nTopFlanges);
@@ -412,7 +417,7 @@ STDMETHODIMP CMultiWebSection2::get_MinBottomFlangeThickness(Float64* tf)
 STDMETHODIMP CMultiWebSection2::get_CL2ExteriorWebDistance(DirectionType side, Float64* wd)
 {
    HRESULT hr;
-   CHECK_RETVAL(*wd);
+   CHECK_RETVAL(wd);
 
    WebIndexType nwebs;
    hr = get_WebCount(&nwebs);
@@ -446,6 +451,16 @@ STDMETHODIMP CMultiWebSection2::get_CL2ExteriorWebDistance(DirectionType side, F
       *wd = webwid/2.0;
    }
 
+   return S_OK;
+}
+
+STDMETHODIMP CMultiWebSection2::RemoveSacrificalDepth(Float64 sacDepth)
+{
+   Float64 H3;
+   m_Beam->get_H3(&H3);
+   ATLASSERT(sacDepth < H3);
+   H3 -= sacDepth;
+   m_Beam->put_H3(H3);
    return S_OK;
 }
 

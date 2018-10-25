@@ -181,6 +181,12 @@ library WBFLGeometry
       [helpstring("method DistanceEx"),helpcontext(IDH_IPoint2d_DistanceEx)]
       HRESULT DistanceEx([in]IPoint2d* pOther,[out,retval]Float64* pDistance);
 
+      [helpstring("method Size")]
+      HRESULT Size([in]Float64 x, [in]Float64 y, [out, retval]ISize2d** ppSize);
+
+      [helpstring("method SizeEx")]
+      HRESULT SizeEx([in]IPoint2d* pPoint, [out, retval]ISize2d** ppSize);
+
       [helpstring("method Clone")/*,helpcontext(IDH_IPoint2d_Location)*/]
       HRESULT Clone([out,retval]IPoint2d** ppPoint);
    };
@@ -2069,6 +2075,9 @@ library WBFLGeometry
       [propget, helpstring("property CLHeight"), helpcontext(IDH_IBulbTee_Height)]
       HRESULT CLHeight([out, retval] Float64 *pVal);
 
+      [propget, helpstring("property Height"), helpcontext(IDH_IBulbTee_Height)]
+      HRESULT Height([out, retval] Float64 *pVal);
+
       [propget, helpstring("property AvgWebWidth"), helpcontext(IDH_IBulbTee_AvgWebWidth)]
       HRESULT AvgWebWidth([out, retval] Float64 *pVal);
 
@@ -2077,6 +2086,15 @@ library WBFLGeometry
 
       [propget, helpstring("property TopFlangeWidth"), helpcontext(IDH_IBulbTee_TopFlangeWidth)]
       HRESULT TopFlangeWidth([out, retval] Float64 *pVal);
+
+      [helpstring("property GetTopFlangePoints")]
+      HRESULT GetTopFlangePoints([out]IPoint2d** ppLeftTop, [out]IPoint2d** ppLeftBottom, [out]IPoint2d** ppTopCentral, [out]IPoint2d** ppRightTop, [out]IPoint2d** ppRightBottom);
+
+      [helpstring("property GetBottomFlangePoints")]
+      HRESULT GetBottomFlangePoints([out]IPoint2d** ppLeftTop, [out]IPoint2d** ppLeftBottom, [out]IPoint2d** ppRightTop, [out]IPoint2d** ppRightBottom);
+
+      [helpstring("method GetTopFlangeThickness")]
+      HRESULT GetTopFlangeThickness([out]Float64* pHl, [out]Float64* pHc, [out]Float64* pHr);
 
       [propget, helpstring("property XYPosition"), helpcontext(IDH_IBulbTee_XYPosition)]
       HRESULT XYPosition([out, retval] IXYPosition* *pVal);

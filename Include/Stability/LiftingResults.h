@@ -44,10 +44,11 @@ public:
    Float64 Mg;  // moment due to girder weight
    Float64 Mw;  // transverse moment due to wind
 
-   Float64 fps[2]; // top/bottom stress due to prestressing
-   Float64 fcable[2]; // top/bottom stress due to inclined lift cable without impact
-   Float64 fg[2]; // top/bottom stress due to girder weight without impact
-   Float64 fw[4]; // corner stresses due to wind towards the left
+   // array index is stbTypes::Corner
+   Float64 fps[4]; // stress due to prestressing
+   Float64 fcable[4]; // stress due to inclined lift cable without impact
+   Float64 fg[4]; // stress due to girder weight without impact
+   Float64 fw[4]; // stress due to wind towards the left (multiply by -1 to get stress due to wind towards the right)
 
    // Array indicies are [ImpactDirection enum][Side enum (wind)][Corner enum]
    Float64 fDirect[3][2][4]; // stress due to direct loads (girder self weight, wind, CF, and ps)
@@ -118,7 +119,7 @@ public:
    Float64 dLift; // deflection due to lifting cable force for the no-impact case
    Float64 emag[3];  // lateral deflection magnification factor (array index in one of the IMPACT_xxx constants)
 
-   Float64 ThetaEq[3][2];    // tilt angle at equilibrium
+   Float64 ThetaEq[3][2];    // tilt angle at equilibrium (array index is [impact][wind])
 
    std::vector<stbLiftingSectionResult> vSectionResults; // analysis results for each analysis point in the stability problem object
 

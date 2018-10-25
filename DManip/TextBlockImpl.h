@@ -172,6 +172,9 @@ END_COM_MAP()
    STDMETHOD_(void,SetAngle)(LONG angle);
    STDMETHOD_(LONG,GetAngle)();
 
+   STDMETHOD_(void, SetPointSize)(LONG pointSize);
+   STDMETHOD_(LONG, GetPointSize)();
+
    STDMETHOD_(void,SetText)(LPCTSTR lpszText);
    STDMETHOD_(CString,GetText)();
 

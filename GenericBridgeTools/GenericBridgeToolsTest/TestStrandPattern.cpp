@@ -263,9 +263,10 @@ void CTestStrandPattern::Test()
    new_array->Add(1);
    new_array->Add(2);
 
-   TRY_TEST(strand_filler->put_VerticalStrandAdjustment( 2.5),S_OK);
-   TRY_TEST(strand_filler->get_VerticalStrandAdjustment( nullptr),E_POINTER);
-   TRY_TEST(strand_filler->get_VerticalStrandAdjustment( &dval),S_OK);
+   TRY_TEST(strand_filler->SetStrandAdjustment( 0.0, 2.5),S_OK);
+   TRY_TEST(strand_filler->GetStrandAdjustment(&dval, nullptr), E_POINTER);
+   TRY_TEST(strand_filler->GetStrandAdjustment(nullptr,&dval), E_POINTER);
+   TRY_TEST(strand_filler->GetStrandAdjustment( &dval,&dval),S_OK);
    TRY_TEST(dval == 2.5, true);
 
 
@@ -319,26 +320,26 @@ void CTestStrandPattern::Test()
    Float64 dl, dr;
    for (CollectionIndexType is = 0; is < count; is++)
    {
-      TRY_TEST(strand_filler->GetDebondLengthByGridIndex(is,&y,&dl, &dr),S_FALSE);
+      TRY_TEST(strand_filler->GetDebondLengthByGridIndex(is,&x,&y,&dl, &dr),S_FALSE);
       TRY_TEST(dl == 0.0,true);
       TRY_TEST(dr == 0.0,true);
 
-      TRY_TEST(strand_filler->GetBondedLengthByGridIndex(is,1.0, 20.0, &y, &dl, &dr),S_FALSE);
+      TRY_TEST(strand_filler->GetBondedLengthByGridIndex(is,1.0, 20.0, &x, &y, &dl, &dr),S_FALSE);
       TRY_TEST(dl == 1.0,true);
       TRY_TEST(dr == 19.0,true);
    }
 
-   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(55,&y,&dl, &dr),E_INVALIDARG);
+   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(55, &x, &y,&dl, &dr),E_INVALIDARG);
 
    TRY_TEST(strand_filler->GetStrandCount(&nStrands),S_OK);
    TRY_TEST(nStrands == 16, true);
    for (StrandIndexType is = 0; is<nStrands; is++)
    {
-      TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(is,&y,&dl, &dr),S_FALSE);
+      TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(is, &x, &y,&dl, &dr),S_FALSE);
       TRY_TEST(dl == 0.0,true);
       TRY_TEST(dr == 0.0,true);
 
-      TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(is, 1.0, 20.0, &y, &dl, &dr),S_FALSE);
+      TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(is, 1.0, 20.0, &x, &y, &dl, &dr),S_FALSE);
       TRY_TEST(dl == 1.0,true);
       TRY_TEST(dr == 19.0,true);
    }
@@ -378,77 +379,77 @@ void CTestStrandPattern::Test()
    TRY_TEST(nStrands , 5);
 
    Float64 l1, l2;
-   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(50,&y,&l1,&l2),E_INVALIDARG);
-   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(0,&y,nullptr,&l2),E_POINTER);
-   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(0,&y,&l1,nullptr),E_POINTER);
-   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(0,&y,&l1,&l2),S_FALSE); // not debonded
+   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(50, &x, &y,&l1,&l2),E_INVALIDARG);
+   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(0, &x, &y,nullptr,&l2),E_POINTER);
+   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(0, &x, &y,&l1,nullptr),E_POINTER);
+   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(0, &x, &y,&l1,&l2),S_FALSE); // not debonded
    TRY_TEST(IsEqual(l1,0.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(1,&y,&l1,&l2),S_FALSE);
+   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(1, &x, &y,&l1,&l2),S_FALSE);
    TRY_TEST(IsEqual(l1,0.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(3,&y,&l1,&l2),S_OK);
+   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(3, &x, &y,&l1,&l2),S_OK);
    TRY_TEST(IsEqual(l1,2.0),true);
    TRY_TEST(IsEqual(l2,3.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(4,&y,&l1,&l2),S_FALSE);
+   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(4, &x, &y,&l1,&l2),S_FALSE);
    TRY_TEST(IsEqual(l1,0.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(5,&y,&l1,&l2),S_OK);
+   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(5, &x, &y,&l1,&l2),S_OK);
    TRY_TEST(IsEqual(l1,3.0),true);
    TRY_TEST(IsEqual(l2,4.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(8,&y,&l1,&l2),S_OK);
+   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(8, &x, &y,&l1,&l2),S_OK);
    TRY_TEST(IsEqual(l1,5.0),true);
    TRY_TEST(IsEqual(l2,6.0),true);
 
-   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(0,&y,&l1,&l2),S_FALSE); // not debonded
+   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(0, &x, &y,&l1,&l2),S_FALSE); // not debonded
    TRY_TEST(IsEqual(l1,0.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(1,&y,&l1,&l2),S_FALSE); // not debonded
+   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(1, &x, &y,&l1,&l2),S_FALSE); // not debonded
    TRY_TEST(IsEqual(l1,0.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(2,&y,&l1,&l2),S_FALSE); // not debonded
+   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(2, &x, &y,&l1,&l2),S_FALSE); // not debonded
    TRY_TEST(IsEqual(l1,0.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(3,&y,&l1,&l2),S_FALSE); // not debonded
+   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(3, &x, &y,&l1,&l2),S_FALSE); // not debonded
    TRY_TEST(IsEqual(l1,0.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(4,&y,&l1,&l2),S_FALSE); // not debonded
+   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(4, &x, &y,&l1,&l2),S_FALSE); // not debonded
    TRY_TEST(IsEqual(l1,0.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(5,&y,&l1,&l2),S_FALSE); // not debonded
+   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(5, &x, &y,&l1,&l2),S_FALSE); // not debonded
    TRY_TEST(IsEqual(l1,0.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(6,&y,&l1,&l2),S_OK);
+   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(6, &x, &y,&l1,&l2),S_OK);
    TRY_TEST(IsEqual(l1,2.0),true);
    TRY_TEST(IsEqual(l2,3.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(7,&y,&l1,&l2),S_FALSE); // not debonded
+   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(7, &x, &y,&l1,&l2),S_FALSE); // not debonded
    TRY_TEST(IsEqual(l1,0.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(8,&y,&l1,&l2),S_FALSE); // not debonded
+   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(8, &x, &y,&l1,&l2),S_FALSE); // not debonded
    TRY_TEST(IsEqual(l1,0.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(9,&y,&l1,&l2),S_OK);
+   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(9, &x, &y,&l1,&l2),S_OK);
    TRY_TEST(IsEqual(l1,3.0),true);
    TRY_TEST(IsEqual(l2,4.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(10,&y,&l1,&l2),S_OK);
+   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(10, &x, &y,&l1,&l2),S_OK);
    TRY_TEST(IsEqual(l1,3.0),true);
    TRY_TEST(IsEqual(l2,4.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(11,&y,&l1,&l2),S_FALSE); // not debonded
+   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(11, &x, &y,&l1,&l2),S_FALSE); // not debonded
    TRY_TEST(IsEqual(l1,0.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(12,&y,&l2,&l2),S_FALSE); // not debonded
+   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(12, &x, &y,&l2,&l2),S_FALSE); // not debonded
    TRY_TEST(IsEqual(l1,0.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(13,&y,&l1,&l2),S_FALSE); // not debonded
+   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(13, &x, &y,&l1,&l2),S_FALSE); // not debonded
    TRY_TEST(IsEqual(l1,0.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(14,&y,&l1,&l2),S_OK);
+   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(14, &x, &y,&l1,&l2),S_OK);
    TRY_TEST(IsEqual(l1,5.0),true);
    TRY_TEST(IsEqual(l2,6.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(15,&y,&l1,&l2),S_OK);
+   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(15, &x, &y,&l1,&l2),S_OK);
    TRY_TEST(IsEqual(l1,5.0),true);
    TRY_TEST(IsEqual(l2,6.0),true);
-   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(16,&y,&l1,&l2),E_INVALIDARG);
+   TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(16, &x, &y,&l1,&l2),E_INVALIDARG);
 
    TRY_TEST(strand_filler->get_StrandDebondInRow(-1,&nStrands),E_INVALIDARG);
    TRY_TEST(strand_filler->get_StrandDebondInRow(4,&nStrands),E_INVALIDARG);
@@ -515,39 +516,39 @@ void CTestStrandPattern::Test()
    TRY_TEST(strand_filler->GetStrandsDebondedByPositionIndex(-1, 40.0, &fill_array),E_INVALIDARG);
 
 
-   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(16,4.0,40,&y,&l1,&l2),E_INVALIDARG);
+   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(16,4.0,40, &x, &y,&l1,&l2),E_INVALIDARG);
 
-   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(1,0.0,40,&y,&l1,&l2),S_FALSE);
+   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(1,0.0,40, &x, &y,&l1,&l2),S_FALSE);
    TRY_TEST(IsEqual(l1,0.0),true);
    TRY_TEST(IsEqual(l2,40.0),true);
-   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(1,4.0,40,&y,&l1,&l2),S_FALSE);
+   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(1,4.0,40, &x, &y,&l1,&l2),S_FALSE);
    TRY_TEST(IsEqual(l1,4.0),true);
    TRY_TEST(IsEqual(l2,36.0),true);
-   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(6,4.0,40,&y,&l1,&l2),S_OK);
+   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(6,4.0,40, &x, &y,&l1,&l2),S_OK);
    TRY_TEST(IsEqual(l1,2.0),true);
    TRY_TEST(IsEqual(l2,33.0),true);
-   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(6,1.0,40,&y,&l1,&l2),S_OK);
+   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(6,1.0,40, &x, &y,&l1,&l2),S_OK);
    TRY_TEST(IsEqual(l1,0.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
-   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(6,24.0,40,&y,&l1,&l2),S_OK);
+   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(6,24.0,40, &x, &y,&l1,&l2),S_OK);
    TRY_TEST(IsEqual(l1,22.0),true);
    TRY_TEST(IsEqual(l2,13.0),true);
-   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(7,24.0,40,&y,&l1,&l2),S_FALSE);
+   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(7,24.0,40, &x, &y,&l1,&l2),S_FALSE);
    TRY_TEST(IsEqual(l1,24.0),true);
    TRY_TEST(IsEqual(l2,16.0),true);
-   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(7,40.0,40,&y,&l1,&l2),S_FALSE);
+   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(7,40.0,40, &x, &y,&l1,&l2),S_FALSE);
    TRY_TEST(IsEqual(l1,40.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
-   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(7,20.0,40,&y,&l1,&l2),S_FALSE);
+   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(7,20.0,40, &x, &y,&l1,&l2),S_FALSE);
    TRY_TEST(IsEqual(l1,20.0),true);
    TRY_TEST(IsEqual(l2,20.0),true);
-   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(9,40.0,40,&y,&l1,&l2),S_OK);
+   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(9,40.0,40, &x, &y,&l1,&l2),S_OK);
    TRY_TEST(IsEqual(l1,0.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
-   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(9,38.0,40,&y,&l1,&l2),S_OK);
+   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(9,38.0,40, &x, &y,&l1,&l2),S_OK);
    TRY_TEST(IsEqual(l1,0.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
-   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(9,36.0,40,&y,&l1,&l2),S_OK);
+   TRY_TEST(strand_filler->GetBondedLengthByPositionIndex(9,36.0,40, &x, &y,&l1,&l2),S_OK);
    TRY_TEST(IsEqual(l1,33.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
 

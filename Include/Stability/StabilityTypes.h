@@ -94,11 +94,11 @@ typedef struct stbTypes
       Favorable // CF is towards the right
    } CFType;
 
-   typedef enum ZoMethod
+   typedef enum CalculationMethod
    {
       Exact,
       Approximate
-   } ZoMethod;
+   } CalculationMethod;
 
    typedef enum HaulingSlope
    {

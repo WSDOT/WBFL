@@ -125,7 +125,7 @@ public:
 	STDMETHOD(put_SacrificialDepth)(/*[in]*/Float64 depth) override;
    STDMETHOD(get_SacrificialDepthStage)(/*[out,retval]*/StageIndexType* stage) override;
 	STDMETHOD(put_SacrificialDepthStage)(/*[in]*/StageIndexType stage) override;
-   STDMETHOD(CreateSuperstructureMember)(GirderIDType id,LocationType locationType,ISuperstructureMember** ppMbr) override;
+   STDMETHOD(CreateSuperstructureMember)(GirderIDType id,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,ISuperstructureMember** ppMbr) override;
    STDMETHOD(get_SuperstructureMember)(GirderIDType id,ISuperstructureMember** ppMbr) override;
    STDMETHOD(get__EnumSuperstructureMembers)(IEnumSuperstructureMembers* *enumSSMbrs) override;
 

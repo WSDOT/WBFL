@@ -61,8 +61,6 @@ HRESULT GB_GetTemporarySupportGirderPointId(SpanIndexType spanIdx,SupportIndexTy
 enum FracRes {frTooSmall, frTooBig};
 Float64 GB_GetFracDistance(Float64 fracLoc, Float64 Length, bool ignoreTooBig=false); // throw FracRes
 
-Float64 GB_GetHaunchDepth(ISuperstructureMemberSegment* pSegment,Float64 distAlongSegment);
-
 HRESULT GB_GetSectionLocation(ISuperstructureMemberSegment* pSegment,Float64 distAlongSegment,IPoint2d** ppTopCenter);
 
 #endif // INCLUDED_GENERICBRIDGEHELPERS_H_

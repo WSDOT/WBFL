@@ -680,7 +680,6 @@ STDMETHODIMP CLBAMFactory::ConfigureDesignLiveLoad(ILBAMModel* pModel, LiveLoadM
       }
 
       // create tandem with lane vehicular load
-      {
          CComPtr<IVehicularLoad> design_tandem;
          hr = design_tandem.CoCreateInstance(CLSID_VehicularLoad);
 
@@ -708,7 +707,6 @@ STDMETHODIMP CLBAMFactory::ConfigureDesignLiveLoad(ILBAMModel* pModel, LiveLoadM
          hr = axles->Add(axle1);
 
          hr = vehicles->Add(design_tandem);
-      }      
 
       // create dual truck train
       if ( includeDualTrucks == VARIANT_TRUE )
@@ -2459,7 +2457,7 @@ STDMETHODIMP CLBAMFactory::GetSuperstructurePOIs(ILBAMModel* pModel, IIDArray* *
             Float64 xloc, yloc;
             hr = pModel->ComputeLocation(mbr_id, mbr_type, poi_loc, &xloc, &yloc);
 
-            poi_list.push_back( PoiLoc(poi_id, mbr_type, mbr_id, poi_loc, xloc) );
+            poi_list.emplace_back(poi_id, mbr_type, mbr_id, poi_loc, xloc);
          }
       }
 

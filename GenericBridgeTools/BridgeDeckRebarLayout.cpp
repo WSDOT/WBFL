@@ -144,7 +144,7 @@ STDMETHODIMP CBridgeDeckRebarLayout::get_EffectiveFlangeWidthTool(IEffectiveFlan
    return S_OK;
 }
 
-STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,IDType leftSSMbrID,IDType rightSSMbrID,IRebarSection** section)
+STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,IRebarSection** section)
 {
    CHECK_RETOBJ(section);
    CComPtr<IRebarSection> pSection;
@@ -159,10 +159,10 @@ STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIn
    // when the traffic barrier is structurally continuous and additional
    // width, based on barrier stiffness, is added to the effective flange width
    Float64 effFlangeWidth;
-   m_EffFlangeTool->EffectiveFlangeWidthBySegment(m_Bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,&effFlangeWidth);
+   m_EffFlangeTool->EffectiveFlangeWidthBySegment(m_Bridge,ssMbrID,segIdx,Xs,&effFlangeWidth);
 
    Float64 tribFlangeWidth;
-   m_EffFlangeTool->TributaryFlangeWidthBySegment(m_Bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,&tribFlangeWidth);
+   m_EffFlangeTool->TributaryFlangeWidthBySegment(m_Bridge,ssMbrID,segIdx,Xs,&tribFlangeWidth);
 
    Float64 rebarSectionWidth = Min(effFlangeWidth,tribFlangeWidth);
 

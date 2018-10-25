@@ -1167,7 +1167,7 @@ void CBruteForceVehicularResponse::Compute(BSTR stage, LiveLoadModelType type, V
          // remove redundant locations
          if (first || last_loc!=loc)
          {
-            m_PoiLocations.push_back( PoiLocation(poiID,loc) );
+            m_PoiLocations.emplace_back(poiID,loc);
          }
       }
 

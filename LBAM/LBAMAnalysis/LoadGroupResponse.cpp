@@ -987,7 +987,7 @@ void CLoadGroupResponse::CAnalysisController::UpdateTemporarySupportLoadings(ILB
          StageIndexType removalStageIdx;
          if ( GetStageIndex(bstrRemovalStage,&removalStageIdx) )
          {
-            m_TemporarySupportInfo.push_back(TemporarySupportInfo(tempSupportID, removalStageIdx));
+            m_TemporarySupportInfo.emplace_back(tempSupportID, removalStageIdx);
          }
 
          //if ( !GetStageIndex(bstrRemovalStage,&removalStageIdx) )
@@ -1121,7 +1121,7 @@ void CLoadGroupResponse::CAnalysisController::GetResponseControlInfo(BSTR loadGr
 
    for (StageIndexType stageIdx = startStageIdx; stageIdx <= endStageIdx; stageIdx++)
    {
-      tempSuppportLoadInfo.push_back(TemporarySupportLoadInfo(femLoadCaseID, stageIdx));
+      tempSuppportLoadInfo.emplace_back(femLoadCaseID, stageIdx);
    }
 }
 

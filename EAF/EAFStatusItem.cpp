@@ -91,5 +91,5 @@ eafTypes::StatusSeverityType CEAFStatusItemCallback::GetSeverity()
 
 void CEAFStatusItemCallback::Execute(CEAFStatusItem* pItem)
 {
-   EAFShowStatusMessage(pItem,m_Severity,FALSE,m_strDocSetName,m_HelpID);
+   EAFShowStatusMessage(pItem,m_Severity,FALSE,FALSE,m_strDocSetName,m_HelpID);
 }

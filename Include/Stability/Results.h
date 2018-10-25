@@ -42,7 +42,10 @@ public:
    Float64 Lr; // right overhang (leading overhang)
    Float64 Ls; // span length between supports
    Float64 Wg; // total weight of girder
-   Float64 Ycg; // location of the CG in girder section coordinates (measured down from the top of the girder)
+   Float64 Ytop; // location of the CG in girder section coordinates (measured down from the top of the girder)
+
+   stbTypes::CalculationMethod XcgMethod;
+   Float64 Xleft; // horizontal location of the CG with respect to the roll axis
 
    Float64 Yr;  // location from the center of gravity from the roll axis in girder section coordinates (positive means roll center is above CG)
    Float64 Dra[3]; // distance from the center of gravity to the roll axis, adjusted for camber
@@ -57,7 +60,7 @@ public:
    Float64 EccWind[3]; // Vertical eccentricty of the girder self-weight load with respect to the roll axis (array index is IMPACT_xxx)
    Float64 Wwind;   // total wind force (applied at EccWind)
 
-   stbTypes::ZoMethod ZoMethod;
+   stbTypes::CalculationMethod ZoMethod;
    Float64 Zo[3];  // lateral deflection of center of gravity for full dead load applied laterally (array index is IMPACT_xxx)
    Float64 ZoWind[3]; // lateral deflection of center of gravity for full wind applied laterally
 };

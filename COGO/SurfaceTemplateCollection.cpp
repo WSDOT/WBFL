@@ -226,14 +226,14 @@ STDMETHODIMP CSurfaceTemplateCollection::Add(ISurfaceTemplate* pSurfaceTemplate)
 
    DWORD dwCookie;
    AdviseElement(pSurfaceTemplate,&dwCookie);
-   m_coll.push_back( std::make_pair(dwCookie,CComVariant(pSurfaceTemplate)));
+   m_coll.emplace_back( dwCookie,CComVariant(pSurfaceTemplate));
 
    CComPtr<IProfile> profile;
    if ( m_pSurface )
    {
       m_pSurface->get_Profile(&profile); 
    }
-   std::sort(m_coll.begin(),m_coll.end(),SortSurfaceTemplates(profile));
+   std::sort(std::begin(m_coll),std::end(m_coll),SortSurfaceTemplates(profile));
 
    Fire_OnSurfaceTemplateAdded(pSurfaceTemplate);
    return S_OK;

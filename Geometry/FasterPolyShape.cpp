@@ -152,7 +152,7 @@ STDMETHODIMP CFasterPolyShape::InterfaceSupportsErrorInfo(REFIID riid)
 
 STDMETHODIMP CFasterPolyShape::AddPoint(Float64 x,Float64 y)
 {
-   m_Points.push_back( gpPoint2d(x, y) );
+   m_Points.emplace_back(x,y);
 
    MakeDirty();
 
@@ -802,7 +802,7 @@ HRESULT CFasterPolyShape::ClipWithgpLine(gpLine2d& theLine,IShape** pShape)
    {
       was_last_added = true;
 
-      pClipShape->m_Points.push_back( gpPoint2d(lx,ly) );
+      pClipShape->m_Points.emplace_back(lx,ly);
    }
 
    gpLine2d line2; // Line to be clipped
@@ -1283,7 +1283,7 @@ STDMETHODIMP CFasterPolyShape::Load(IStructuredLoad2* pLoad)
       VARIANT_BOOL bEnd;
       pLoad->EndUnit(&bEnd);
 
-      m_Points.push_back(gpPoint2d(x,y));
+      m_Points.emplace_back(x,y);
    }
 
    VARIANT_BOOL bEnd;

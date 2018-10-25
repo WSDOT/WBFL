@@ -241,8 +241,8 @@ STDMETHODIMP CProfile::Add(IProfileElement *element)
    DWORD dwCookie;
    AdviseElement(element,&dwCookie);
    AssociateWithProfile(element);
-   m_coll.push_back( std::make_pair(dwCookie,CComVariant(element)) );
-   std::sort(m_coll.begin(),m_coll.end(),SortProfileElements(m_pAlignment));
+   m_coll.emplace_back(dwCookie,CComVariant(element) );
+   std::sort(std::begin(m_coll),std::end(m_coll),SortProfileElements(m_pAlignment));
 
    Fire_OnProfileChanged(this);
 

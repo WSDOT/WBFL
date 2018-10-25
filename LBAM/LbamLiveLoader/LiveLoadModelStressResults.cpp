@@ -80,7 +80,7 @@ STDMETHODIMP CLiveLoadModelStressResults::Add(IStressResult *leftResult, ILiveLo
    CHECK_IN(leftResult);
    CHECK_IN(rightResult);
 
-	m_Results.push_back( LlmResults(leftResult, leftConfig, rightResult, rightConfig) );
+	m_Results.emplace_back(leftResult, leftConfig, rightResult, rightConfig);
 
 	return S_OK;
 }

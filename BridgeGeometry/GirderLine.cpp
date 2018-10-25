@@ -48,7 +48,7 @@ STDMETHODIMP CGirderLine::get_EndDistance(EndType endType,Float64* pEndDistance)
 STDMETHODIMP CGirderLine::get_Direction(IDirection** ppDirection)
 {
    CHECK_RETOBJ(ppDirection);
-   return m_Direction.CopyTo(ppDirection);
+   return m_Direction->Clone(ppDirection);
 }
 
 STDMETHODIMP CGirderLine::get_Path(IPath** pVal)
@@ -408,11 +408,7 @@ HRESULT CGirderLine::LocatePoints()
    measure->Inverse(m_PierPoint[etStart],m_BearingPoint[etStart],&offset,&direction);
    if ( !IsZero(offset) )
    {
-      Float64 d1,d2;
-      direction->get_Value(&d1);
-      m_Direction->get_Value(&d2);
-
-      if ( !IsEqual(d1,d2) )
+      if ( m_Direction->IsEqual(direction) == S_FALSE )
       {
          m_BearingOffset[etStart] *= -1;
       }
@@ -422,11 +418,7 @@ HRESULT CGirderLine::LocatePoints()
    measure->Inverse(m_BearingPoint[etEnd],m_PierPoint[etEnd],&offset,&direction);
    if ( !IsZero(offset) )
    {
-      Float64 d1,d2;
-      direction->get_Value(&d1);
-      m_Direction->get_Value(&d2);
-
-      if ( !IsEqual(d1,d2) )
+      if (m_Direction->IsEqual(direction) == S_FALSE)
       {
          m_BearingOffset[etEnd] *= -1;
       }

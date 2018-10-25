@@ -92,7 +92,7 @@ public:
 
    //------------------------------------------------------------------------
    // Get the name of the entry
-   std::_tstring GetName() const;
+   const std::_tstring& GetName() const;
 
    //------------------------------------------------------------------------
    // Set a pointer back to our library

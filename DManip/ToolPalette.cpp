@@ -71,7 +71,7 @@ void CToolPalette::AddTool(iTool* tool)
    if ( tool == nullptr )
       return;
 
-   m_Tools.push_back( CAdapt<CComPtr<iTool> >(tool) );
+   m_Tools.emplace_back(tool);
 
    CWnd* pWnd = GetDlgItem(tool->GetID());
    ASSERT(pWnd); // if this fires, the dialog does not have an item
@@ -124,6 +124,15 @@ void CToolPalette::RemoveTool(CollectionIndexType idx)
 
    m_ctrlToolTip.DelTool(pWnd,tool->GetID());
    pWnd->DestroyWindow();
+}
+
+void CToolPalette::AddTooltip(CWnd* pWnd)
+{
+   CString strTip;
+   pWnd->GetWindowText(strTip);
+   CRect rWnd;
+   pWnd->GetClientRect(&rWnd);
+   m_ctrlToolTip.AddTool(pWnd, strTip, rWnd, pWnd->GetDlgCtrlID());
 }
 
 void CToolPalette::RemoveTool(IDType id)

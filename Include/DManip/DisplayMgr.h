@@ -100,7 +100,7 @@ interface iDisplayMgr : public IUnknown
    STDMETHOD_(void,SetSelectionLineColor)(COLORREF color) PURE;
    STDMETHOD_(COLORREF,GetSelectionFillColor)() PURE;
    STDMETHOD_(COLORREF,GetSelectionLineColor)() PURE;
-   STDMETHOD_(void,GetBoundingBox)(iCoordinateMap* pMap, bool boundOrigin, IRect2d** ppRect) PURE;
+   STDMETHOD_(void,GetBoundingBox)(bool boundOrigin, IRect2d** ppRect) PURE;
    STDMETHOD_(void,InvalidateRect)(LPCRECT lpRect) PURE;
    STDMETHOD_(void,InvalidateRgn)(CRgn* pRgn) PURE;
 

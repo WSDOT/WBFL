@@ -72,7 +72,7 @@ CollectionIndexType libLibraryManager::AddLibrary(libILibrary* pLibrary)
    PRECONDITIONX(!plib,_T("Libraries must have unique id names"));
    pLibrary->SetLibraryManager(this);
 
-   m_Libraries.push_back(LibraryEntryType(pLibrary));
+   m_Libraries.emplace_back(pLibrary);
    return m_Libraries.size()-1;
 }
 

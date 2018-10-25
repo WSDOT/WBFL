@@ -217,6 +217,11 @@ STDMETHODIMP CMultiWebSection::get_MatingSurfaceWidth(MatingSurfaceIndexType idx
    return get_TopFlangeWidth(idx,wMatingSurface);
 }
 
+STDMETHODIMP CMultiWebSection::get_MatingSurfaceProfile(MatingSurfaceIndexType idx, IPoint2dCollection** ppProfile)
+{
+   return E_NOTIMPL;
+}
+
 STDMETHODIMP CMultiWebSection::get_TopFlangeCount(FlangeIndexType* nTopFlanges)
 {
    CHECK_RETVAL(nTopFlanges);
@@ -387,7 +392,7 @@ STDMETHODIMP CMultiWebSection::get_MinBottomFlangeThickness(Float64* tf)
 STDMETHODIMP CMultiWebSection::get_CL2ExteriorWebDistance(DirectionType side, Float64* wd)
 {
    HRESULT hr;
-   CHECK_RETVAL(*wd);
+   CHECK_RETVAL(wd);
 
    WebIndexType nwebs;
    hr = get_WebCount(&nwebs);
@@ -424,6 +429,15 @@ STDMETHODIMP CMultiWebSection::get_CL2ExteriorWebDistance(DirectionType side, Fl
    return S_OK;
 }
 
+STDMETHODIMP CMultiWebSection::RemoveSacrificalDepth(Float64 sacDepth)
+{
+   Float64 D1;
+   m_Beam->get_D1(&D1);
+   ATLASSERT(sacDepth < D1);
+   D1 -= sacDepth;
+   m_Beam->put_D1(D1);
+   return S_OK;
+}
 
 STDMETHODIMP CMultiWebSection::get_SplittingZoneDimension(Float64* pSZD)
 {

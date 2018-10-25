@@ -80,7 +80,7 @@ STDMETHODIMP CLoadCombinationStressResults::Add(IStressResult* leftResult, ILoad
 	CHECK_IN(leftResult);
 	CHECK_IN(rightResult);
 
-   m_ComboResults.push_back( ComboRes(leftResult, rightResult, leftConfig, rightConfig) );
+   m_ComboResults.emplace_back(leftResult, rightResult, leftConfig, rightConfig);
 
 	return S_OK;
 }

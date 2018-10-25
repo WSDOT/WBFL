@@ -57,6 +57,7 @@ DESCRIPTION
 
 LOG
    rab : 11.14.1997 : Created file
+
 *****************************************************************************/
 
 class LRFDCLASS lrfdVersionMgr
@@ -86,6 +87,7 @@ public:
                   SeventhEdition2014            = 19,
                   SeventhEditionWith2015Interims = 20,
                   SeventhEditionWith2016Interims = 21,
+                  EighthEdition2017              = 22,
                   LastVersion
    };
 
@@ -214,6 +216,20 @@ private:
 
 // INLINE METHODS
 //
+// Function to support the 8th Edition, 2017 reorganization of chapter 5 of the Specifications
+// The mapping document for this endeavor by AASHTO T10 was called "Crosswalk", hence the function name
+inline LPCTSTR LrfdCw8th(LPCTSTR oldStr, LPCTSTR newStr)
+{
+   // Map to the current version of the spec
+   if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::EighthEdition2017)
+   {
+      return oldStr;
+   }
+   else
+   {
+      return newStr;
+   }
+}
 
 // EXTERNAL REFERENCES
 //

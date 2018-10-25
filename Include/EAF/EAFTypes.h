@@ -74,6 +74,15 @@ struct eafTypes
       hrDocSetNotFound,
       hrTopicNotFound
    } HelpResult;
+
+   // Return values from EAFShowStatusMessage
+   typedef enum StatusItemDisplayReturn 
+   { 
+      eafsiClose,   // dialog closed without doing anything
+      eafsiRemove,  // dialog closed after removing status item
+      eafsiEdit     // dialog closed 
+   } StatusItemDisplayReturn;
+
 };
 
 typedef IDType StatusGroupIDType;

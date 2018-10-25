@@ -26,6 +26,7 @@
 #include <Stability\StabilityExp.h>
 #include <Stability\StabilityProblem.h>
 #include <set>
+#include <GeometricPrimitives\GeometricPrimitives.h>
 
 struct STABILITYCLASS stbFpe
 {
@@ -66,18 +67,60 @@ struct STABILITYCLASS stbFpe
 
 bool STABILITYFUNC operator<(const stbFpe& a,const stbFpe& b);
 
-
-class STABILITYCLASS stbSectionProperties
+struct STABILITYCLASS stbStressPoints
 {
-public:
+   gpPoint2d pntTL[2];
+   gpPoint2d pntTR[2];
+   gpPoint2d pntBL[2];
+   gpPoint2d pntBR[2];
+
+   bool operator==(const stbStressPoints& other) const
+   {
+      for (int i = 0; i < 2; i++)
+      {
+         if (pntTL[i] != other.pntTL[i])
+         {
+            return false;
+         }
+
+         if (pntTR[i] != other.pntTR[i])
+         {
+            return false;
+         }
+
+         if (pntBL[i] != other.pntBL[i])
+         {
+            return false;
+         }
+
+         if (pntBR[i] != other.pntBR[i])
+         {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   bool operator!=(const stbStressPoints& other) const
+   {
+      return !operator==(other);
+   }
+};
+
+struct STABILITYCLASS stbSectionProperties
+{
    Float64 Ag[2]; // area of girder
-   Float64 Ix[2]; // strong axis moment of inertia
-   Float64 Iy[2]; // weak axis moment of inertia
-   Float64 Yt[2]; // centroid from top of girder
+   Float64 Ixx[2]; // strong axis moment of inertia
+   Float64 Iyy[2]; // weak axis moment of inertia
+   Float64 Ixy[2]; 
+   Float64 Ytop[2]; // center of mass (centroid) from top of girder
+   Float64 Xleft[2]; // center of mass from roll center
    Float64 Hg[2];
    Float64 Wtf[2];
    Float64 Wbf[2];
    Float64 L; // distance over which these properties apply
+
+   std::shared_ptr<stbStressPoints> m_pStressPoints;
 
    bool operator==(const stbSectionProperties& other) const
    {
@@ -89,13 +132,19 @@ public:
          if ( !IsEqual(Ag[i],other.Ag[i]) )
             return false;
 
-         if ( !IsEqual(Ix[i],other.Ix[i]) )
+         if ( !IsEqual(Ixx[i],other.Ixx[i]) )
             return false;
 
-         if ( !IsEqual(Iy[i],other.Iy[i]) )
+         if (!IsEqual(Iyy[i], other.Iyy[i]))
             return false;
 
-         if ( !IsEqual(Yt[i],other.Yt[i]) )
+         if (!IsEqual(Ixy[i], other.Ixy[i]))
+            return false;
+
+         if (!IsEqual(Ytop[i], other.Ytop[i]))
+            return false;
+
+         if (!IsEqual(Xleft[i], other.Xleft[i]))
             return false;
 
          if ( !IsEqual(Hg[i],other.Hg[i]) )
@@ -106,6 +155,19 @@ public:
 
          if ( !IsEqual(Wbf[i],other.Wbf[i]) )
             return false;
+      }
+
+      if ((m_pStressPoints == nullptr && other.m_pStressPoints != nullptr) ||
+         (m_pStressPoints != nullptr && other.m_pStressPoints == nullptr))
+      {
+         return false;
+      }
+      else if (m_pStressPoints != nullptr)
+      {
+         if (*m_pStressPoints != *other.m_pStressPoints)
+         {
+            return false;
+         }
       }
 
       return true;
@@ -124,28 +186,41 @@ public:
    void SetSegment(ISegment* pSegment);
    virtual void GetSegment(ISegment** ppSegment) const override;
 
-   void ClearSections();
-   void SetSectionProperties(IndexType sectIdx,Float64 Length,Float64 Ag,Float64 Ix,Float64 Iy,Float64 Yt,Float64 Hg,Float64 Wtf,Float64 Wbf);
-   void SetSectionProperties(IndexType sectIdx,Float64 Length,Float64 Ag,Float64 Ix,Float64 Iy,Float64 Yt,Float64 Hg,Float64 Wtf,Float64 Wbf,Float64 Ag2,Float64 Ix2,Float64 Iy2,Float64 Yt2,Float64 Hg2,Float64 Wtf2,Float64 Wbf2);
-   void AddSection(Float64 Length,Float64 Ag,Float64 Ix,Float64 Iy,Float64 Yt,Float64 Hg,Float64 Wtf,Float64 Wbf);
-   void AddSection(Float64 Length,Float64 Ag,Float64 Ix,Float64 Iy,Float64 Yt,Float64 Hg,Float64 Wtf,Float64 Wbf,Float64 Ag2,Float64 Ix2,Float64 Iy2,Float64 Yt2,Float64 Hg2,Float64 Wtf2,Float64 Wbf2);
+   void ClearSections(); // clears sections and stress points
+
+   // Adds a new section to the girder. Returns the section index. 
+   IndexType AddSection(Float64 Length, Float64 Ag, Float64 Ixx, Float64 Iyy, Float64 Ixy, Float64 Xleft, Float64 Ytop, Float64 Hg, Float64 Wtf, Float64 Wbf);
+   IndexType AddSection(Float64 Length, Float64 Ag, Float64 Ixx, Float64 Iyy, Float64 Ixy, Float64 Xleft, Float64 Ytop, Float64 Hg, Float64 Wtf, Float64 Wbf, Float64 Ag2, Float64 Ixx2, Float64 Iyy2, Float64 Ixy2, Float64 Xcg2, Float64 Ycg2, Float64 Hg2, Float64 Wtf2, Float64 Wbf2);
+
+   // Change the section properties for a section 
+   void SetSectionProperties(IndexType sectIdx,Float64 Length,Float64 Ag,Float64 Ixx,Float64 Iyy,Float64 Ixy,Float64 Xleft,Float64 Ytop,Float64 Hg,Float64 Wtf,Float64 Wbf);
+   void SetSectionProperties(IndexType sectIdx,Float64 Length,Float64 Ag,Float64 Ixx,Float64 Iyy,Float64 Ixy, Float64 Xleft,Float64 Yt,Float64 Hg,Float64 Wtf,Float64 Wbf,Float64 Ag2,Float64 Ixx2,Float64 Iyy2, Float64 Ixy2,Float64 Xcg2,Float64 Yt2,Float64 Hg2,Float64 Wtf2,Float64 Wbf2);
+
+   // Assigns stress point values to a section. 
+   void SetStressPoints(IndexType sectIdx, const gpPoint2d& pntTL, const gpPoint2d& pntTR, const gpPoint2d& pntBL, const gpPoint2d& pntBR);
+   void SetStressPoints(IndexType sectIdx, const gpPoint2d& pntTL, const gpPoint2d& pntTR, const gpPoint2d& pntBL, const gpPoint2d& pntBR, const gpPoint2d& pntTL2, const gpPoint2d& pntTR2, const gpPoint2d& pntBL2, const gpPoint2d& pntBR2);
 
    void ClearPointLoads();
    void AddPointLoad(Float64 X,Float64 P);
 
-   IndexType GetSectionCount() const;
-   Float64 GetSectionLength(IndexType sectIdx) const;
-   void GetSectionProperties(IndexType sectIdx,stbTypes::Section section,Float64* pAg,Float64* pIx,Float64* pIy,Float64* pYt,Float64* pHg,Float64* pWtop,Float64* pWbot) const;
-   void GetSectionProperties(Float64 X,Float64* pAg,Float64* pIx,Float64* pIy,Float64* pYt,Float64* pHg,Float64* pWtop,Float64* pWbot) const;
+   virtual IndexType GetSectionCount() const override;
+   virtual Float64 GetSectionLength(IndexType sectIdx) const override;
+   virtual void GetSectionProperties(IndexType sectIdx,stbTypes::Section section,Float64* pAg,Float64* pIxx,Float64* pIyy,Float64* pIxy,Float64* pXleft,Float64* pYtop,Float64* pHg,Float64* pWtop,Float64* pWbot) const override;
+   virtual void GetSectionProperties(Float64 X,Float64* pAg,Float64* pIxx,Float64* pIyy,Float64* pIxy,Float64* pXleft,Float64* pYtop,Float64* pHg,Float64* pWtop,Float64* pWbot) const override;
+   virtual void GetStressPoints(IndexType sectIdx, stbTypes::Section section, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const override;
+   virtual void GetStressPoints(Float64 X, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const override;
 
-   Float64 GetGirderLength() const;
+   virtual Float64 GetGirderLength() const override;
    Float64 GetStrandLocation(stbTypes::StrandType strandType,Float64 X) const;
 
    void SetAdditionalLoads(const std::vector<std::pair<Float64,Float64>>& vLoads);
-   std::vector<std::pair<Float64,Float64>> GetAdditionalLoads() const;
+   virtual std::vector<std::pair<Float64,Float64>> GetAdditionalLoads() const override;
 
-   virtual Float64 GetDragCoefficient() const;
+   virtual Float64 GetDragCoefficient() const override;
    void SetDragCoefficient(Float64 Cd);
+
+   virtual Float64 GetPrecamber() const override;
+   void SetPrecamber(Float64 precamber);
 
 protected:
    ISegment* m_pSegment; // weak refernce
@@ -156,6 +231,9 @@ protected:
 
    Float64 m_DragCoefficient;
 
+   Float64 m_Precamber;
+
+   void GetStressPoints(const stbSectionProperties& props, stbTypes::Section section, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const;
    void UpdateLength() const;
    mutable bool m_bLengthNeedsUpdate;
    mutable Float64 m_L;
@@ -193,6 +271,8 @@ public:
    Float64 GetXferLength() const;
 
    void SetCamber(bool bDirectCamber,Float64 camber);
+   void SetLateralCamber(Float64 camber);
+   void IncludeLateralRollAxisOffset(bool bInclude);
 
    virtual const matConcreteEx& GetConcrete() const;
    virtual matConcreteEx& GetConcrete();
@@ -207,11 +287,17 @@ public:
    void SetSupportPlacementTolerance(Float64 spt);
    void SetImpact(Float64 up,Float64 down);
 
-   virtual void GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pYps) const;
+   void GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pYps) const;
+
+   void SetFpeLateralEccentricity(Float64 ex);
+   Float64 GetFpeLateralEccentricity() const;
 
    void GetCamber(bool* pbDirectCamber,Float64* pCamber) const;
    void SetCamberMultiplier(Float64 m);
    Float64 GetCamberMultiplier() const;
+
+   Float64 GetLateralCamber() const;
+   bool IncludeLateralRollAxisOffset() const;
 
    Float64 GetEc() const;
    Float64 GetFr() const;
@@ -244,10 +330,15 @@ protected:
    Float64 m_Lg; // length of girder
 
    std::set<stbFpe> m_vFpe;
+
+   Float64 m_ex; // lateral eccentricty of prestress force
    
    bool m_bDirectCamber; // if true, a camber value has been input, otherwise, camber is estimated by increasing the height from the CG to the roll center by a percentage
    Float64 m_Camber; // direct camber value if bDirectCamber is true, otherwise camber estimate parameter
    Float64 m_CamberMultiplier;
+
+   bool m_bIncludeRollAxisLateralOffset;
+   Float64 m_LateralCamber;
 
    matConcreteEx m_Concrete;
 
@@ -285,6 +376,8 @@ public:
    void GetFpe(IndexType fpeIdx, Float64* pX, Float64* pFpeStraight, Float64* pYpsStraight, Float64* pFpeHarped, Float64* pYpsHarped, Float64* pFpeTemp, Float64* pYpsTemp) const { return m_Imp.GetFpe(fpeIdx, pX, pFpeStraight, pYpsStraight, pFpeHarped, pYpsHarped, pFpeTemp, pYpsTemp); }
    void SetFpe(IndexType fpeIdx, Float64 X, Float64 FpeStraight, Float64 YpsStraight, Float64 FpeHarped, Float64 YpsHarped, Float64 FpeTemp, Float64 YpsTemp) { return m_Imp.SetFpe(fpeIdx, X, FpeStraight, YpsStraight, FpeHarped, YpsHarped, FpeTemp, YpsTemp); }
 
+   void SetFpeLateralEccentricity(Float64 ex) { m_Imp.SetFpeLateralEccentricity(ex); }
+
    bool AdjustForXferLength() const { return m_Imp.AdjustForXferLength(); }
    void AdjustForXferLength(bool bAdjust) { m_Imp.AdjustForXferLength(bAdjust); }
    void SetXferLength(Float64 xferLength, Float64 Lg) { m_Imp.SetXferLength(xferLength, Lg); }
@@ -293,6 +386,9 @@ public:
    void SetCamber(bool bDirectCamber, Float64 camber) { m_Imp.SetCamber(bDirectCamber, camber); }
    void SetCamberMultiplier(Float64 m) { m_Imp.SetCamberMultiplier(m); }
    Float64 GetCamberMultiplier() const { return m_Imp.GetCamberMultiplier(); }
+
+   void SetLateralCamber(Float64 camber) { m_Imp.SetLateralCamber(camber); }
+   void IncludeLateralRollAxisOffset(bool bInclude) { m_Imp.IncludeLateralRollAxisOffset(bInclude); }
 
    void SetConcrete(const matConcreteEx& concrete) { m_Imp.SetConcrete(concrete); }
    const matConcreteEx& GetConcrete() const { return m_Imp.GetConcrete(); }
@@ -307,7 +403,10 @@ public:
    void SetSupportPlacementTolerance(Float64 spt)  {  m_Imp.SetSupportPlacementTolerance(spt); }
    void SetImpact(Float64 up,Float64 down)  { m_Imp.SetImpact(up,down);   }
    virtual void GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pYps) const  override { m_Imp.GetFpe(strandType,X,pFpe,pYps); }
+   virtual Float64 GetFpeLateralEccentricity() const override { return m_Imp.GetFpeLateralEccentricity(); }
    virtual void GetCamber(bool* pbDirectCamber,Float64* pCamber) const  override {  return m_Imp.GetCamber(pbDirectCamber,pCamber);   }
+   virtual Float64 GetLateralCamber() const override { return m_Imp.GetLateralCamber(); }
+   virtual bool IncludeLateralRollAxisOffset() const override { return m_Imp.IncludeLateralRollAxisOffset(); }
    virtual void GetSupportLocations(Float64* pLeft,Float64* pRight) const  override { m_Imp.GetSupportLocations(pLeft,pRight); }
    virtual Float64 GetYRollAxis() const override { return m_Imp.GetYRollAxis(); }
    virtual Float64 GetSweepTolerance() const  override { return m_Imp.GetSweepTolerance(); }
@@ -355,6 +454,8 @@ public:
    void GetFpe(IndexType fpeIdx,Float64* pX,Float64* pFpeStraight,Float64* pYpsStraight,Float64* pFpeHarped,Float64* pYpsHarped,Float64* pFpeTemp,Float64* pYpsTemp) const { return m_Imp.GetFpe(fpeIdx,pX,pFpeStraight,pYpsStraight,pFpeHarped,pYpsHarped,pFpeTemp,pYpsTemp); }
    void SetFpe(IndexType fpeIdx,Float64 X,Float64 FpeStraight,Float64 YpsStraight,Float64 FpeHarped,Float64 YpsHarped,Float64 FpeTemp,Float64 YpsTemp) { return m_Imp.SetFpe(fpeIdx,X,FpeStraight,YpsStraight,FpeHarped,YpsHarped,FpeTemp,YpsTemp); }
 
+   void SetFpeLateralEccentricity(Float64 ex) { m_Imp.SetFpeLateralEccentricity(ex); }
+
    bool AdjustForXferLength() const { return m_Imp.AdjustForXferLength(); }
    void AdjustForXferLength(bool bAdjust) { m_Imp.AdjustForXferLength(bAdjust); }
    void SetXferLength(Float64 xferLength,Float64 Lg) { m_Imp.SetXferLength(xferLength,Lg); }
@@ -363,6 +464,9 @@ public:
    void SetCamber(bool bDirectCamber,Float64 camber) { m_Imp.SetCamber(bDirectCamber,camber); }
    void SetCamberMultiplier(Float64 m) { m_Imp.SetCamberMultiplier(m); }
    Float64 GetCamberMultiplier() const { return m_Imp.GetCamberMultiplier(); }
+
+   void SetLateralCamber(Float64 camber) { m_Imp.SetLateralCamber(camber); }
+   void IncludeLateralRollAxisOffset(bool bInclude) { m_Imp.IncludeLateralRollAxisOffset(bInclude); }
 
    void SetConcrete(const matConcreteEx& concrete) { m_Imp.SetConcrete(concrete); }
    const matConcreteEx& GetConcrete() const { return m_Imp.GetConcrete(); }
@@ -377,7 +481,10 @@ public:
    void SetSupportPlacementTolerance(Float64 spt)  {  m_Imp.SetSupportPlacementTolerance(spt); }
    void SetImpact(Float64 up,Float64 down)  { m_Imp.SetImpact(up,down);   }
    virtual void GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pYps) const  override { m_Imp.GetFpe(strandType,X,pFpe,pYps); }
+   virtual Float64 GetFpeLateralEccentricity() const override { return m_Imp.GetFpeLateralEccentricity(); }
    virtual void GetCamber(bool* pbDirectCamber,Float64* pCamber) const  override {   return m_Imp.GetCamber(pbDirectCamber,pCamber);   }
+   virtual Float64 GetLateralCamber() const override { return m_Imp.GetLateralCamber(); }
+   virtual bool IncludeLateralRollAxisOffset() const override { return m_Imp.IncludeLateralRollAxisOffset(); }
    virtual void GetSupportLocations(Float64* pLeft,Float64* pRight) const override { m_Imp.GetSupportLocations(pLeft,pRight); }
    virtual Float64 GetYRollAxis() const override { return m_Imp.GetYRollAxis(); }
    virtual Float64 GetSweepTolerance() const override { return m_Imp.GetSweepTolerance(); }

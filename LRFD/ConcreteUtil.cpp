@@ -603,7 +603,7 @@ lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Fl
 
       Float64 avf_min = ::ConvertToSysUnits(avf, unitMeasure::Millimeter);
 
-      hsAvfOverSMin.res5_8_4_4_1 = avf_min;
+      hsAvfOverSMin.res5_7_4_2_1 = avf_min;
       hsAvfOverSMin.AvfOverSMin  = avf_min;
    }
    else
@@ -619,7 +619,7 @@ lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Fl
 
       Float64 avf_min = ::ConvertToSysUnits(avf, unitMeasure::Inch);
 
-      hsAvfOverSMin.res5_8_4_4_1 = avf_min;
+      hsAvfOverSMin.res5_7_4_2_1 = avf_min;
       hsAvfOverSMin.AvfOverSMin  = avf_min;
    }
 
@@ -630,14 +630,14 @@ lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Fl
 
       Float64 vuh = max(Vuh.Left(),Vuh.Right());
 
-      // Equation 5.8.4.1-3
+      // Equation 5.7.4.1-3 (pre 2017: 5.8.4.1-3)
       // this is a unit consistent equation... no unit conversions needed
       Float64 avf_min = (1.33*vuh - phi*(c*bv + u*pc))/(phi*u*fy);
 
-      hsAvfOverSMin.res5_8_4_1_3 = avf_min;
+      hsAvfOverSMin.res5_7_4_2_3 = avf_min;
 
       // Final is min of two equations
-      hsAvfOverSMin.AvfOverSMin = min(hsAvfOverSMin.res5_8_4_1_3, hsAvfOverSMin.res5_8_4_4_1);
+      hsAvfOverSMin.AvfOverSMin = min(hsAvfOverSMin.res5_7_4_2_3, hsAvfOverSMin.res5_7_4_2_1);
 
       // But, less than zero means the reinforcement isn't needed to satify strength
       // requirements. Set to zero if so

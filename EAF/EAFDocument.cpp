@@ -539,7 +539,7 @@ void CEAFDocument::FailSafeLogMessage(LPCTSTR msg)
    }
    else
    {
-      strings.push_back(CString(_T("Product Version Information not available")));
+      strings.emplace_back(_T("Product Version Information not available"));
    }
 
    strings.push_back(CString(msg));

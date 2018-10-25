@@ -257,6 +257,11 @@ STDMETHODIMP CUGirderSection2::get_MatingSurfaceWidth(MatingSurfaceIndexType idx
    return get_TopFlangeWidth(idx,wMatingSurface);
 }
 
+STDMETHODIMP CUGirderSection2::get_MatingSurfaceProfile(MatingSurfaceIndexType idx, IPoint2dCollection** ppProfile)
+{
+   return E_NOTIMPL;
+}
+
 STDMETHODIMP CUGirderSection2::get_TopFlangeCount(FlangeIndexType* nTopFlanges)
 {
    CHECK_RETVAL(nTopFlanges);
@@ -419,13 +424,27 @@ STDMETHODIMP CUGirderSection2::get_MinBottomFlangeThickness(Float64* tf)
 STDMETHODIMP CUGirderSection2::get_CL2ExteriorWebDistance(DirectionType side, Float64* wd)
 {
    HRESULT hr;
-   CHECK_RETVAL(*wd);
+   CHECK_RETVAL(wd);
 
    Float64 spacing;
    hr = m_Beam->get_WebSpacing(&spacing);
    *wd = spacing/2.0;
 
    return hr;
+}
+
+STDMETHODIMP CUGirderSection2::RemoveSacrificalDepth(Float64 sacDepth)
+{
+   Float64 D1,D5;
+   m_Beam->get_D1(&D1);
+   m_Beam->get_D5(&D5);
+   ATLASSERT(sacDepth < D1);
+   ATLASSERT(sacDepth < D5);
+   D1 -= sacDepth;
+   D5 -= sacDepth;
+   m_Beam->put_D1(D1);
+   m_Beam->put_D5(D5);
+   return S_OK;
 }
 
 STDMETHODIMP CUGirderSection2::get_SplittingZoneDimension(Float64* pSZD)

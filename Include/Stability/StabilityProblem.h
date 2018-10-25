@@ -28,6 +28,8 @@
 #include <Material\ConcreteEx.h>
 #include <Stability\AnalysisPoint.h>
 
+class gpPoint2d;
+
 /*****************************************************************************
 CLASS 
    stbIGirder
@@ -54,10 +56,16 @@ public:
    virtual Float64 GetSectionLength(IndexType sectIdx) const = 0;
 
    // gets the properties associated with a girder section
-   virtual void GetSectionProperties(IndexType sectIdx,stbTypes::Section section,Float64* pAg,Float64* pIx,Float64* pIy,Float64* pYt,Float64* pHg,Float64* pWtop,Float64* pWbot) const = 0;
+   virtual void GetSectionProperties(IndexType sectIdx,stbTypes::Section section,Float64* pAg,Float64* pIxx,Float64* pIyy,Float64* pIxy,Float64* pXleft,Float64* pYtop,  Float64* pHg,Float64* pWtop,Float64* pWbot) const = 0;
 
    // gets the properties of the girder at a specified location
-   virtual void GetSectionProperties(Float64 X,Float64* pAg,Float64* pIx,Float64* pIy,Float64* pYt,Float64* pHg,Float64* pWtop,Float64* pWbot) const = 0;
+   virtual void GetSectionProperties(Float64 X,Float64* pAg,Float64* pIxx,Float64* pIyy,Float64* pIxy,Float64* pXleft,Float64* pYtop, Float64* pHg,Float64* pWtop,Float64* pWbot) const = 0;
+
+   // gets the stress points associated with a girder section
+   virtual void GetStressPoints(IndexType sectIdx, stbTypes::Section section, gpPoint2d* pTL,gpPoint2d* pTR,gpPoint2d* pBL,gpPoint2d* pBR) const = 0;
+
+   // gets the stress points at a specified location
+   virtual void GetStressPoints(Float64 X, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const = 0;
 
    // returns additional loads applied to the girder. The first parameters is the location of the load measured from
    // the left end of the girder and the section is the magintude of the load. Positive values are in the direction of gravity.
@@ -66,6 +74,9 @@ public:
 
    // drag coefficient for wind loads
    virtual Float64 GetDragCoefficient() const = 0;
+
+   // returns the precamber that is built into the girder
+   virtual Float64 GetPrecamber() const = 0;
 };
 
 
@@ -81,6 +92,10 @@ class STABILITYCLASS stbIStabilityProblem
 public:
    // returns the effective prestress force and its vertical location from the top of teh girder at a location along the girder
    virtual void GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pYps) const = 0;
+
+   // returns the lateral eccentricity of the prestress force. This is a constant value along the length of the girder
+   // Positive values mean the prestress force is to the left of the CG
+   virtual Float64 GetFpeLateralEccentricity() const = 0;
 
    // returns the concrete model
    virtual const matConcreteEx& GetConcrete() const = 0;
@@ -109,6 +124,15 @@ public:
 
    // returns the camber multiplier used to modify direct camber
    virtual Float64 GetCamberMultiplier() const = 0;
+
+   // returns the lateral camber, often due to asymmetric prestressing or prestressing
+   // of an asymmetric section
+   virtual Float64 GetLateralCamber() const = 0;
+
+   // returns true if lateral offset of the CG from the roll axis and lateral camber are to be considered in the analysis
+   // the roll axis is assumed to be the vertical centerline of the girder
+   // lateral offset of the CG generally occurs for asymmetric sections
+   virtual bool IncludeLateralRollAxisOffset() const = 0;
 
    // returns the impact up and down (fractional value, both positive)
    virtual void GetImpact(Float64* pIMup,Float64* pIMdown) const = 0;

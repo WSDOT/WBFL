@@ -42,6 +42,9 @@ interface iTextBlock : public iDisplayObject
    STDMETHOD_(void,SetAngle)(LONG angle) PURE;
    STDMETHOD_(LONG,GetAngle)() PURE;
 
+   STDMETHOD_(void, SetPointSize)(LONG pointSize) PURE;
+   STDMETHOD_(LONG, GetPointSize)() PURE;
+
    STDMETHOD_(void,SetText)(LPCTSTR lpszText) PURE;
    STDMETHOD_(CString,GetText)() PURE;
 
@@ -69,6 +72,20 @@ interface iViewTitle : public iDisplayObject
    // set font. Note that font height is in 10th of points.
    STDMETHOD_(void,SetFont)(const LOGFONT& Font) PURE;
    STDMETHOD_(void,GetFont)(LOGFONT* pFont) PURE;
+};
+
+// Draw text at a location anchored in the view using view coordinates
+interface iAnchoredTextBlock : public iDisplayObject
+{
+   STDMETHOD_(void, SetLocation)(const POINT& point) PURE;
+   STDMETHOD_(POINT, GetLocation)() const PURE;
+
+   STDMETHOD_(void, SetText)(LPCTSTR lpszText) PURE;
+   STDMETHOD_(CString, GetText)() PURE;
+
+   // set font. Note that font height is in 10th of points.
+   STDMETHOD_(void, SetFont)(const LOGFONT& Font) PURE;
+   STDMETHOD_(void, GetFont)(LOGFONT* pFont) PURE;
 };
 
 #endif // INCLUDED_TEXTBLOCK_H_

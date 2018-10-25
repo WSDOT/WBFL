@@ -90,8 +90,13 @@ STDMETHODIMP CPlane3d::ThroughPoints(IPoint3d *p1, IPoint3d *p2, IPoint3d *p3)
    m_C = v1[x]*v2[y] - v1[y]*v2[x];
 
    m_D = -1*(m_A*x1 + m_B*y1 + m_C*z1);
-   ATLASSERT(IsEqual(m_D,-1*(m_A*x2 + m_B*y2 + m_C*z2)));
-   ATLASSERT(IsEqual(m_D,-1*(m_A*x3 + m_B*y3 + m_C*z3)));
+
+#if defined _DEBUG
+   Float64 d2 = -1 * (m_A*x2 + m_B*y2 + m_C*z2);
+   Float64 d3 = -1 * (m_A*x3 + m_B*y3 + m_C*z3);
+   ATLASSERT(IsEqual(m_D,d2));
+   ATLASSERT(IsEqual(m_D,d3));
+#endif
 
    return S_OK;
 }

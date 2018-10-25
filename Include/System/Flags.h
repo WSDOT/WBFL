@@ -61,7 +61,11 @@ public:
 
    //------------------------------------------------------------------------
    // Clears the bits defined by mask in flag.
-   static void Clear(T* flag,T mask);
+   static void Clear(T* flag, T mask);
+
+   //------------------------------------------------------------------------
+   // Toggles the bits defined by mask in flag.
+   static void Toggle(T* flag, T mask);
 
    //------------------------------------------------------------------------
    // Clears all the bits in flag.
@@ -79,31 +83,37 @@ public:
 // INLINE METHODS
 //
 template <class T>
-void sysFlags<T>::Set(T* flag,T mask)
+inline void sysFlags<T>::Set(T* flag,T mask)
 {
    (*flag) |= mask;
 }
 
 template <class T>
-void sysFlags<T>::Clear(T* flag,T mask)
+inline void sysFlags<T>::Clear(T* flag, T mask)
 {
    (*flag) &= ~mask;
 }
 
 template <class T>
-void sysFlags<T>::ClearAll(T* flag)
+inline void sysFlags<T>::Toggle(T* flag, T mask)
+{
+   (*flag) ^= mask;
+}
+
+template <class T>
+inline void sysFlags<T>::ClearAll(T* flag)
 {
    *flag = 0;
 }
 
 template <class T>
-bool sysFlags<T>::IsSet(T flag,T mask)
+inline bool sysFlags<T>::IsSet(T flag,T mask)
 {
    return (flag & mask) ? true : false;
 }
 
 template <class T>
-bool sysFlags<T>::IsClear(T flag,T mask)
+inline bool sysFlags<T>::IsClear(T flag,T mask)
 {
    return !IsSet(flag,mask);
 }

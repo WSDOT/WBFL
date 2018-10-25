@@ -70,6 +70,8 @@ public:
    void RemoveTool(IndexType idx);
    void RemoveTool(IDType id);
 
+   void AddTooltip(CWnd* pWnd);
+
 // Implementation
 protected:
    typedef std::vector<CAdapt<CComPtr<iTool> > > ToolContainer;

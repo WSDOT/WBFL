@@ -65,6 +65,7 @@ HRESULT CLineImpl::FinalConstruct()
 
 void CLineImpl::FinalRelease()
 {
+   CConnectorImpl::FinalRelease();
    CDisplayObjectDefaultImpl::Do_FinalRelease();
 }
 

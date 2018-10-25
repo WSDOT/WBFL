@@ -88,7 +88,7 @@ STDMETHODIMP_(IDType) CDisplayListImpl::GetID()
 
 STDMETHODIMP_(void) CDisplayListImpl::AddDisplayObject(iDisplayObject* pDO)
 {
-   m_DisplayObjects.push_back(DisplayObjectItem(pDO));
+   m_DisplayObjects.emplace_back(pDO);
    pDO->SetDisplayList(this);
    Fire_OnDisplayObjectAdded(pDO);
 }

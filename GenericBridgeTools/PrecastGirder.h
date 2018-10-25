@@ -45,7 +45,7 @@ class ATL_NO_VTABLE CPrecastGirder :
 public:
 	CPrecastGirder()
 	{
-      m_pSegment = 0;
+      m_pSegment = nullptr;
 
       // default harping point... fraction of girder length, measured from left end
       m_HPMeasure = hpmFractionOfGirderLength;
@@ -94,6 +94,9 @@ private:
    CComPtr<IStrandGridFiller> m_HarpGridEnd[2];
    CComPtr<IStrandGridFiller> m_HarpGridHp[2];
    CComPtr<IStrandGridFiller> m_TempGrid[2];
+
+   StrandProfileType m_StraightStrandProfileType;
+   StrandProfileType m_TemporaryStrandProfileType;
 
    void GetHarpedStrandGrid(Float64 distFromStart,IStrandGridFiller** ppGrid);
    
@@ -153,7 +156,10 @@ private:
    Float64 GetHarpPatternFillAdjustment();
    HRESULT UpdateMaxStrandFill();
 
-   HRESULT GetStrandPositions(Float64 distFromStart, Float64 distToStartGrid, Float64 distBetweenGrids, IIndexArray* startFill, IStrandGridFiller* pStartGrid, IIndexArray* endFill, IStrandGridFiller* pEndGrid, IPoint2dCollection** points);
+   Float64 GetGirderDepthAdjustment(Float64 Xs, Float64 distToStartGrid, Float64 distBetweenGrids, IStrandGridFiller* pStartGridFiller=nullptr, IStrandGridFiller* pEndGridFiller=nullptr);
+   Float64 GetGirderWidthAdjustment(Float64 Xs);
+   HRESULT GetStrandPositions(Float64 distFromStart, Float64 distToStartGrid, Float64 distBetweenGrids, Float64 Lg, Float64 startPrecamber, Float64 endPrecamber, IIndexArray* startFill, IStrandGridFiller* pStartGridFiller, IIndexArray* endFill, IStrandGridFiller* pEndGridFiller, IPoint2dCollection** points);
+   void RemoveStraightStrandDebondedStrandPositions(Float64 distFromStart, IPoint2dCollection* pPoints);
 
 // ISupportsErrorInfo
 public:
@@ -232,6 +238,18 @@ public:
    STDMETHOD(get_TemporaryStrandFill)(/*[out,retval]*/IIndexArray** fill) override;
    STDMETHOD(putref_TemporaryStrandFill)(/*[in]*/IIndexArray* fill) override;
 
+   STDMETHOD(put_StraightStrandProfileType)(/*[in]*/StrandProfileType profileType) override;
+   STDMETHOD(get_StraightStrandProfileType)(/*[out, retval]*/StrandProfileType* pProfileType) override;
+   STDMETHOD(put_TemporaryStrandProfileType)(/*[in]*/StrandProfileType profileType) override;
+   STDMETHOD(get_TemporaryStrandProfileType)(/*[out, retval]*/StrandProfileType* pProfileType) override;
+
+   STDMETHOD(get_StraightStrandCG)(/*[in]*/Float64 distFromStart, /*[out,retval]*/IPoint2d** pntCG) override;
+   STDMETHOD(get_StraightStrandCGEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[out,retval]*/IPoint2d** pntCG) override;
+   STDMETHOD(get_HarpedStrandCG)(/*[in]*/Float64 distFromStart, /*[out,retval]*/IPoint2d** pntCG) override;
+   STDMETHOD(get_HarpedStrandCGEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[out,retval]*/IPoint2d** pntCG) override;
+   STDMETHOD(get_TemporaryStrandCG)(/*[in]*/Float64 distFromStart, /*[out,retval]*/IPoint2d** pntCG) override;
+   STDMETHOD(get_TemporaryStrandCGEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[out,retval]*/IPoint2d** pntCG) override;
+
    STDMETHOD(get_StraightStrandPositions)(/*[in]*/Float64 distFromStart, /*[out,retval]*/IPoint2dCollection** points) override;
    STDMETHOD(get_StraightStrandPositionsEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[out,retval]*/IPoint2dCollection** points) override;
    STDMETHOD(get_HarpedStrandPositions)(/*[in]*/Float64 distFromStart, /*[out,retval]*/IPoint2dCollection** points) override;
@@ -287,6 +305,11 @@ public:
 	STDMETHOD(GetHarpedStrandCountEx)(/*[in]*/ IIndexArray* fill, /*[out,retval]*/ StrandIndexType* nStrands) override;
 	STDMETHOD(GetTemporaryStrandCountEx)(/*[in]*/ IIndexArray* fill, /*[out,retval]*/ StrandIndexType* nStrands) override;
 
+   STDMETHOD(GetStraightStrandProfile)(/*[in]*/StrandIndexType strandIdx,/*[out, retval]*/IPoint2dCollection** ppProfilePoints) override;
+   STDMETHOD(GetHarpedStrandProfile)(/*[in]*/StrandIndexType strandIdx,/*[out, retval]*/IPoint2dCollection** ppProfilePoints) override;
+   STDMETHOD(GetTemporaryStrandProfile)(/*[in]*/StrandIndexType strandIdx,/*[out, retval]*/IPoint2dCollection** ppProfilePoints) override;
+   STDMETHOD(GetStrandCGProfile)(/*[in]*/VARIANT_BOOL bIncludeTempStrands, /*[out, retval]*/IPoint2dCollection** ppProfilePoints) override;
+
    // rough count of debonded strands for current fill
    STDMETHOD(GetStraightStrandDebondCount)(/*[in]*/ WDebondLocationType loc, /*[out,retval]*/ StrandIndexType* count) override;
 
@@ -294,10 +317,10 @@ public:
    STDMETHOD(ClearStraightStrandDebonding)() override;
 	STDMETHOD(DebondStraightStrandByGridIndex)(/*[in]*/GridIndexType grdIndex,/*[in]*/Float64 l1,/*[in]*/Float64 l2) override;
 	STDMETHOD(GetDebondedStraightStrandsByGridIndex)(/*[out,retval]*/IIndexArray** grdIndexes) override;
-	STDMETHOD(GetStraightStrandDebondLengthByGridIndex)(/*[in]*/EndType endType,/*[in]*/GridIndexType grdIndex,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2) override;
+	STDMETHOD(GetStraightStrandDebondLengthByGridIndex)(/*[in]*/EndType endType,/*[in]*/GridIndexType grdIndex,/*[out]*/Float64* XCoord, /*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2) override;
 
    // Debonded straight strands based on Positions index (i.e., from get_StraightStrandPositions)
-	STDMETHOD(GetStraightStrandDebondLengthByPositionIndex)(/*[in]*/EndType endType,/*[in]*/StrandIndexType positionIndex,/*[out]*/Float64* YCoord,/*[out]*/Float64* l1,/*[out]*/Float64* l2) override;
+	STDMETHOD(GetStraightStrandDebondLengthByPositionIndex)(/*[in]*/EndType endType,/*[in]*/StrandIndexType positionIndex,/*[out]*/Float64* XCoord,/*[out]*/Float64* YCoord,/*[out]*/Float64* l1,/*[out]*/Float64* l2) override;
 	STDMETHOD(GetStraightStrandsDebondedByPositionIndex)(/*[in]*/EndType endType,/*[in]*/Float64 distFromStart, /*[out,retval]*/IIndexArray** positionIndexes) override;
 
 	STDMETHOD(get_StraightStrandRowsWithStrand)(/*[out,retval]*/RowIndexType* nRows) override;
@@ -315,9 +338,13 @@ public:
 	STDMETHOD(GetStraightStrandDebondAtRightSection)(/*[in]*/SectionIndexType sectionIdx,/*[out,retval]*/IIndexArray** pstnIndexes) override;
 
    STDMETHOD(GetStraightStrandBondedLengthByPositionIndex)(/*[in]*/StrandIndexType positionIndex, /*[in]*/Float64 distFromStart, 
-                                                /*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond);
+      /*[out]*/Float64* XCoord, /*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond);
    STDMETHOD(GetStraightStrandBondedLengthByGridIndex)(/*[in]*/GridIndexType grdIndex, /*[in]*/Float64 distFromStart, 
-                                               /*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond);
+      /*[out]*/Float64* XCoord, /*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond);
+
+   STDMETHOD(GetStraightStrandDebondedRows)(/*[out]*/IIndexArray** ppRowIndexes);
+   STDMETHOD(GetStraightStrandDebondedConfigurationCountByRow)(/*[in]*/RowIndexType rowIdx, /*[out]*/IndexType* pConfigCount);
+   STDMETHOD(GetStraightStrandDebondConfigurationByRow)(/*[in]*/RowIndexType rowIdx, /*[in]*/IndexType configIdx, /*[out]*/Float64* pXstart, /*[out]*/Float64* pBondedLength, /*[out]*/IndexType* pnStrands);
 
    STDMETHOD(get_SuperstructureMemberSegment)(/*[out,retval]*/ISuperstructureMemberSegment** segment) override;
    STDMETHOD(get_RebarLayout)(/*[out,retval]*/IRebarLayout** rebarLayout) override;
@@ -325,6 +352,7 @@ public:
 
 private:
    Float64 GetSectionHeight(Float64 distFromStart);
+   void GetCGFromPoints(IPoint2dCollection* points, IPoint2d** pCG);
 };
 
 #endif //__PRECASTGIRDER_H_

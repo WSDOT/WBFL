@@ -92,8 +92,8 @@ public:
    STDMETHOD(get_PrevSegment)(ISegment** segment) override;
    STDMETHOD(putref_NextSegment)(ISegment* segment) override;
    STDMETHOD(get_NextSegment)(ISegment** segment) override;
-	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs,SectionBias sectionBias,ISection** ppSection) override;
-   STDMETHOD(get_PrimaryShape)(Float64 Xs, SectionBias sectionBias,IShape** ppShape) override;
+	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection) override;
+   STDMETHOD(get_PrimaryShape)(Float64 distAlongSegment,IShape** ppShape) override;
 	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override;
 
 // IPrismaticSegment

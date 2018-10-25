@@ -83,6 +83,8 @@ private:
 public:
    STDMETHOD(Clone)(/*[out,retval]*/IPoint2d** ppPoint) override;
 
+   STDMETHOD(Size)(Float64 x, Float64 y, ISize2d** ppSize) override;
+   STDMETHOD(SizeEx)(IPoint2d* pPoint, ISize2d** ppSize) override;
    STDMETHOD(Distance)(Float64 x,Float64 y,Float64* pDistance) override;
    STDMETHOD(DistanceEx)(IPoint2d* pOther,Float64* pDistance) override;
    STDMETHOD(Location)(/*[out]*/Float64* pX,/*[out]*/Float64* pY) override;

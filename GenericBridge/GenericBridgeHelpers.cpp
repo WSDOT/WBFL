@@ -139,45 +139,6 @@ Float64 GB_GetFracDistance(Float64 fracLoc, Float64 Length, bool ignoreTooBig)
    return 0.0;
 }
 
-Float64 GB_GetHaunchDepth(ISuperstructureMemberSegment* pSegment,Float64 distAlongSegment)
-{
-   Float64 startHaunch, midHaunch, endHaunch;
-   pSegment->GetHaunchDepth(&startHaunch, &midHaunch, &endHaunch);
-
-   Float64 segment_length;
-   pSegment->get_Length(&segment_length);
-
-   // Shape can be linear or parabolic
-   // Linear portion of haunch based on end values
-   Float64 lin_haunch = ::LinInterp(distAlongSegment,startHaunch,endHaunch,segment_length);
-
-   // see if any bulge at mid-span
-   Float64 mid_bulge = midHaunch - (startHaunch+endHaunch)/2.0;
-   if (IsZero(mid_bulge))
-   {
-      // No bulge, haunch is linear. just return
-      return lin_haunch;
-   }
-   else
-   {
-      // haunch is parabolic. Compute height of bulge at location
-      // Made an OPTIMIZATION here - this function is called many, many times.
-      // Was using GenerateParabola() in MathUtils.h, but calls were costly. Refer to that derivation
-      // for how we got here.
-      Float64 Vx  = (segment_length)/2.0;   // X ordinate of peak
-
-      // y = Ax^2 + Bx + C
-      Float64 A = -mid_bulge/(Vx*Vx);
-      Float64 B = 2*mid_bulge/Vx;
-      // Float64 C = 0.0;
-
-      Float64 para_haunch = A*distAlongSegment*distAlongSegment + B*distAlongSegment;
-
-      Float64 haunch = lin_haunch + para_haunch; // haunch is sum of linear part and parabolic sliver
-      return haunch;
-   }
-}
-
 HRESULT GB_GetSectionLocation(ISuperstructureMemberSegment* pSegment,Float64 distAlongSegment,IPoint2d** ppTopCenter)
 {
    CComPtr<IGirderLine> gdrLine;

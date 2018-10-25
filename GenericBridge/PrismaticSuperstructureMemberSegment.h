@@ -29,6 +29,7 @@
 
 #include "resource.h"       // main symbols
 #include "ItemDataManager.h"
+#include "SuperstructureMemberSegmentImpl.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPrismaticSuperstructureMemberSegment
@@ -67,13 +68,7 @@ BEGIN_COM_MAP(CPrismaticSuperstructureMemberSegment)
 END_COM_MAP()
 
 private:
-   IGirderLine* m_pGirderLine; // weak reference to the girder line in the geometry model that provies the geometry for this segment
-
-   ISuperstructureMember* m_pSSMbr; // weak reference to parent superstructure member
-   ISuperstructureMemberSegment* m_pPrevSegment; // weak reference to previous segment
-   ISuperstructureMemberSegment* m_pNextSegment; // weak reference to next segment
-
-   Float64 m_Orientation; // orientation of girder... plumb = 0... rotated CW is +... radians
+   CSuperstructureMemberSegmentImpl m_Impl;
 
    struct ShapeData
    {
@@ -82,9 +77,6 @@ private:
       CComPtr<IMaterial> BGMaterial;
    };
    std::vector<ShapeData> m_Shapes;
-
-   Float64 m_HaunchDepth[3];
-   Float64 m_Fillet;
    
    CItemDataManager m_ItemDataMgr;
 
@@ -92,28 +84,31 @@ private:
 public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
-// ISegment
+   // ISuperstructureMemberSegment
 public:
-   STDMETHOD(putref_SuperstructureMember)(ISuperstructureMember* ssMbr) override;
-   STDMETHOD(get_SuperstructureMember)(ISuperstructureMember** ssMbr) override;
-   STDMETHOD(putref_GirderLine)(IGirderLine* girderLine) override;
-   STDMETHOD(get_GirderLine)(IGirderLine** girderLine) override;
-   STDMETHOD(putref_PrevSegment)(ISegment* segment) override;
-   STDMETHOD(get_PrevSegment)(ISegment** segment) override;
-   STDMETHOD(putref_NextSegment)(ISegment* segment) override;
-   STDMETHOD(get_NextSegment)(ISegment** segment) override;
-	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection) override;
-   STDMETHOD(get_PrimaryShape)(Float64 Xs, SectionBias sectionBias,IShape** ppShape) override;
-   STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure,IShape** ppShape) override;
-	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override;
-	STDMETHOD(get_LayoutLength)(/*[out, retval]*/ Float64 *pVal) override;
-   STDMETHOD(put_Orientation)(/*[in]*/Float64 orientation) override;
-	STDMETHOD(get_Orientation)(/*[out,retval]*/Float64* orientation) override;
-   STDMETHOD(GetHaunchDepth)(Float64* pStartVal,Float64* pMidVal,Float64* pEndVal) override;
-   STDMETHOD(SetHaunchDepth)(Float64 startVal,Float64 midVal,Float64 endVal) override;
-   STDMETHOD(ComputeHaunchDepth)(Float64 distAlongSegment,Float64* pVal) override;
-   STDMETHOD(put_Fillet)(/*[in]*/Float64 Fillet) override;
-	STDMETHOD(get_Fillet)(/*[out,retval]*/Float64* Fillet) override;
+   STDMETHOD(putref_SuperstructureMember)(ISuperstructureMember* ssMbr) override { return m_Impl.putref_SuperstructureMember(ssMbr); }
+   STDMETHOD(get_SuperstructureMember)(ISuperstructureMember** ssMbr) override { return m_Impl.get_SuperstructureMember(ssMbr); }
+   STDMETHOD(putref_GirderLine)(IGirderLine* girderLine) override { return m_Impl.putref_GirderLine(girderLine); }
+   STDMETHOD(get_GirderLine)(IGirderLine** girderLine) override { return m_Impl.get_GirderLine(girderLine); }
+   STDMETHOD(putref_PrevSegment)(ISegment* segment) override { return m_Impl.putref_PrevSegment(segment); }
+   STDMETHOD(get_PrevSegment)(ISegment** segment) override { return m_Impl.get_PrevSegment(segment); }
+   STDMETHOD(putref_NextSegment)(ISegment* segment) override { return m_Impl.putref_NextSegment(segment); }
+   STDMETHOD(get_NextSegment)(ISegment** segment) override { return m_Impl.get_NextSegment(segment); }
+   STDMETHOD(get_Section)(StageIndexType stageIdx, Float64 distAlongSegment, ISection** ppSection) override;
+   STDMETHOD(get_PrimaryShape)(Float64 distAlongSegment, IShape** ppShape) override;
+   STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure, IShape** ppShape) override;
+   STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override { return m_Impl.get_Length(pVal); }
+   STDMETHOD(get_LayoutLength)(/*[out, retval]*/ Float64 *pVal) override { return m_Impl.get_LayoutLength(pVal); }
+   STDMETHOD(put_Orientation)(/*[in]*/Float64 orientation) override { return m_Impl.put_Orientation(orientation); }
+   STDMETHOD(get_Orientation)(/*[out,retval]*/Float64* orientation) override { return m_Impl.get_Orientation(orientation); }
+   STDMETHOD(GetHaunchDepth)(Float64* pStartVal, Float64* pMidVal, Float64* pEndVal) override { return m_Impl.GetHaunchDepth(pStartVal, pMidVal, pEndVal); }
+   STDMETHOD(SetHaunchDepth)(Float64 startVal, Float64 midVal, Float64 endVal) override { return m_Impl.SetHaunchDepth(startVal, midVal, endVal); }
+   STDMETHOD(ComputeHaunchDepth)(Float64 distAlongSegment, Float64* pVal) override { return m_Impl.ComputeHaunchDepth(distAlongSegment, pVal); }
+   STDMETHOD(put_Fillet)(/*[in]*/Float64 Fillet) override { return m_Impl.put_Fillet(Fillet); }
+   STDMETHOD(get_Fillet)(/*[out,retval]*/Float64* Fillet) override { return m_Impl.get_Fillet(Fillet); }
+   STDMETHOD(put_Precamber)(/*[in]*/Float64 precamber) override { return m_Impl.put_Precamber(precamber); }
+   STDMETHOD(get_Precamber)(/*[out,retval]*/Float64* pPrecamber) override { return m_Impl.get_Precamber(pPrecamber); }
+   STDMETHOD(ComputePrecamber)(/*[in]*/Float64 distAlongSegment, /*[out,retval]*/Float64* pPrecamber) override { return m_Impl.ComputePrecamber(distAlongSegment, pPrecamber); }
 
 // IPrismaticSuperstructureMemberSegment
 public:

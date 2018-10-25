@@ -449,6 +449,14 @@ STDMETHODIMP CDirection::Clone(IDirection* *clone)
    return S_OK;
 }
 
+STDMETHODIMP CDirection::IsEqual(IDirection* pDirection)
+{
+   CHECK_IN(pDirection);
+   Float64 value;
+   pDirection->get_Value(&value);
+   return ::IsEqual(m_Direction, value) ? S_OK : S_FALSE;
+}
+
 STDMETHODIMP CDirection::get_StructuredStorage(IStructuredStorage2* *pStg)
 {
    CHECK_RETOBJ(pStg);
@@ -533,8 +541,10 @@ HRESULT CDirection::UpdateDirection(NSDirectionType nsDir, long deg, long min, F
 
    angle += sign * cogoUtil::FromDMS(deg,min,sec);
 
-   if ( IsEqual( angle, TWO_PI ) )
+   if (::IsEqual(angle, TWO_PI))
+   {
       angle = 0;
+   }
 
    m_Direction = angle;
    return S_OK;

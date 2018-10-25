@@ -91,29 +91,58 @@ void DDX_Keyword(CDataExchange* pDX,int nIDC,LPCTSTR lpszKeyword,T& value)
 }
 
 template <class U>
-void DDX_KeywordUnitValueAndTag(CDataExchange* pDX,int nIDC,int nIDCTag,LPCTSTR lpszKeyword,Float64& value, const U& umIndirectMeasure)
+void DDX_KeywordUnitValueAndTag(CDataExchange* pDX,int nIDC,int nIDCTag,LPCTSTR lpszKeywords,Float64& value, const U& umIndirectMeasure,int keywordLength=3)
 {
+   pDX->PrepareEditCtrl(nIDC);
+
+   sysTokenizer tokenizer(_T("|"));
+   tokenizer.push_back(lpszKeywords);
    if ( pDX->m_bSaveAndValidate )
    {
       CString strText;
       pDX->m_pDlgWnd->GetDlgItem(nIDC)->GetWindowText(strText);
       strText.Trim();
-      CString strKeyword = CString(lpszKeyword).Left(3);
-      if ( strText.GetLength() == 0 || strKeyword.CompareNoCase(strText.Left(3)) == 0 )
+      int keywordCount = 1;
+      bool bTokenFound = false;
+      sysTokenizer::iterator iter = tokenizer.begin();
+      sysTokenizer::iterator end = tokenizer.end();
+      for (; iter != end; iter++, keywordCount++)
       {
-         value = -1;
+         CString strToken(iter->c_str());
+         if (strText.GetLength() == 0 || strToken.Left(keywordLength).CompareNoCase(strText.Left(keywordLength)) == 0)
+         {
+            value = -keywordCount;
+            bTokenFound = true;
+            break;
+         }
       }
-      else
+      if ( !bTokenFound )
       {
-         DDX_UnitValueAndTag(pDX,nIDC,nIDCTag,value, umIndirectMeasure );
+         double d;
+         if (_sntscanf_s(strText.GetBuffer(), strText.GetLength(), _T("%lf"), &d) != 1)
+         {
+            CString strMsg(_T("Enter "));
+            iter = tokenizer.begin();
+            for (; iter != end; iter++)
+            {
+               strMsg += CString(iter->c_str()) + _T(", ");
+            }
+            strMsg += _T("or a number");
+            AfxMessageBox(strMsg, MB_OK);
+            pDX->Fail();
+         }
+
+         DDX_UnitValueAndTag(pDX, nIDC, nIDCTag, value, umIndirectMeasure);
       }
    }
    else
    {
-      if ( value == -1 )
+      if (value < 0)
       {
-         DDX_Text(pDX,nIDC,CString(lpszKeyword));
-         DDX_Tag(pDX,nIDCTag,umIndirectMeasure);
+         int tokenIdx = (int)abs(value)-1;
+         CString strToken(tokenizer[tokenIdx].c_str());
+         DDX_Text(pDX, nIDC, CString(strToken));
+         DDX_Tag(pDX, nIDCTag, umIndirectMeasure);
       }
       else
       {

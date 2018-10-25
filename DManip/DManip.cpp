@@ -60,6 +60,7 @@
 #include "DisplayObjectFactoryImpl.h"
 #include "PointDisplayObjectImpl.h"
 #include "TextBlockImpl.h"
+#include "AnchoredTextBlockImpl.h"
 #include "ViewTitleImpl.h"
 #include "EditableTextBlockImpl.h"
 #include "EditableUnitValueTextBlockImpl.h"
@@ -114,7 +115,8 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_DisplayObjectFactory,CDisplayObjectFactoryImpl)
    OBJECT_ENTRY(CLSID_PointDisplayObject,CPointDisplayObjectImpl)
    OBJECT_ENTRY(CLSID_TextBlock,CTextBlockImpl)
-   OBJECT_ENTRY(CLSID_ViewTitle,CViewTitleImpl)
+   OBJECT_ENTRY(CLSID_ViewTitle, CViewTitleImpl)
+   OBJECT_ENTRY(CLSID_AnchoredTextBlock, CAnchoredTextBlockImpl)
    OBJECT_ENTRY(CLSID_EditableTextBlock,CEditableTextBlockImpl)
    OBJECT_ENTRY(CLSID_EditableUnitValueTextBlock,CEditableUnitValueTextBlockImpl)
    OBJECT_ENTRY(CLSID_LineDisplayObject,CLineImpl)

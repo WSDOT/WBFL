@@ -1313,7 +1313,7 @@ void CBruteForceVehicularResponse2::ConfigureAnalysisPoints(BSTR stage)
          // remove redundant locations
          if (first || last_loc!=loc)
          {
-            m_PoiLocations.push_back( PoiLocation(id,loc) );
+            m_PoiLocations.emplace_back(id,loc);
          }
       }
 

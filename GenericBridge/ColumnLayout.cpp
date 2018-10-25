@@ -69,7 +69,7 @@ void CColumnLayout::ClearColumns()
 
 void CColumnLayout::AddColumn(IColumn* column)
 {
-   m_Columns.push_back(CComPtr<IColumn>(column));
+   m_Columns.emplace_back(column);
 
    RenumberColumns();
 }

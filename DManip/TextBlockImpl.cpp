@@ -120,6 +120,8 @@ STDMETHODIMP_(void) CTextBlockImpl::Draw(CDC* pDC)
    COLORREF fgColor = pDC->SetTextColor(m_FgColor);
 
    Float64 textAngle = ::ToRadians(m_Font.lfEscapement/10.0);
+   Float64 sin_textAngle = sin(textAngle);
+   Float64 cos_textAngle = cos(textAngle);
    for ( INT_PTR i = 0; i < strArray.GetSize(); i++ )
    {
       CString str = strArray.GetAt(i);
@@ -127,8 +129,8 @@ STDMETHODIMP_(void) CTextBlockImpl::Draw(CDC* pDC)
       pDC->TextOut(lx,ly,str);
 
 
-      int dx = size.cy*sin( textAngle );
-      int dy = size.cy*cos( textAngle );
+      int dx = size.cy*sin_textAngle;
+      int dy = size.cy*cos_textAngle;
       lx += dx;
       ly += dy;
    }
@@ -299,6 +301,16 @@ STDMETHODIMP_(void) CTextBlockImpl::SetAngle(LONG angle)
 STDMETHODIMP_(LONG) CTextBlockImpl::GetAngle()
 {
    return m_Font.lfEscapement;
+}
+
+STDMETHODIMP_(void) CTextBlockImpl::SetPointSize(LONG pointSize)
+{
+   m_Font.lfHeight = pointSize;
+}
+
+STDMETHODIMP_(LONG) CTextBlockImpl::GetPointSize()
+{
+   return m_Font.lfHeight;
 }
 
 STDMETHODIMP_(void) CTextBlockImpl::SetText(LPCTSTR lpszText)

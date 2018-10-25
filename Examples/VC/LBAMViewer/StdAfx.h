@@ -14,7 +14,7 @@
 
 // target platform is Win2000 or later
 #ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0500
+#define _WIN32_WINNT 0x0501
 #endif
 
 

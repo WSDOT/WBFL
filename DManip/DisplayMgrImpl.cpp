@@ -156,7 +156,7 @@ STDMETHODIMP_(void) CDisplayMgrImpl::AddDisplayList(iDisplayList* pDL)
    if ( pDLExists )
       return; // A display list with this id already exists
 
-   m_DisplayLists.push_back(DisplayListItem(pDL));
+   m_DisplayLists.emplace_back(pDL);
    pDL->SetDisplayMgr(this);
 
    pDL->RegisterEventSink(this);
@@ -272,7 +272,7 @@ STDMETHODIMP_(void) CDisplayMgrImpl::SelectObject(iDisplayObject* pDO,BOOL bClea
    if ( !pDO->IsSelected() && pDO->GetSelectionType() != stNone )
    {
       pDO->Select(TRUE);
-      m_SelectedObjects.push_back(DisplayObjectItem(pDO));
+      m_SelectedObjects.emplace_back(pDO);
 
       CRect bbox = pDO->GetBoundingBox();
       InvalidateRect(bbox);
@@ -1174,7 +1174,7 @@ STDMETHODIMP_(void) CDisplayMgrImpl::CreateDragObjects(COleDataObject* pDataObje
       source->SetDataObject(pDataObject);
       draggable->OnDrop(source); // Rebuild the tool object from the data object
 
-      m_DragList.push_back( DragMember(draggable.p) );
+      m_DragList.emplace_back(draggable.p);
    }
    else
    {
@@ -1204,8 +1204,10 @@ STDMETHODIMP_(void) CDisplayMgrImpl::CreateDragObjects(COleDataObject* pDataObje
                }
             }
 
-            if ( bCreated )
-               m_DragList.push_back( DragMember(pDraggable.p) );
+            if (bCreated)
+            {
+               m_DragList.emplace_back(pDraggable.p);
+            }
          }
       }
    }
@@ -1348,7 +1350,7 @@ STDMETHODIMP_(CollectionIndexType) CDisplayMgrImpl::GetDisplayObjectFactoryCount
 
 STDMETHODIMP_(void) CDisplayMgrImpl::AddDisplayObjectFactory(iDisplayObjectFactory* factory)
 {
-   m_pDisplayObjectFactories.push_back( DisplayObjectFactoriesItem(factory) );
+   m_pDisplayObjectFactories.emplace_back(factory);
 }
 
 STDMETHODIMP_(void) CDisplayMgrImpl::GetDisplayObjectFactory(CollectionIndexType idx, iDisplayObjectFactory** factory)
@@ -1390,61 +1392,61 @@ STDMETHODIMP_(void) CDisplayMgrImpl::SetTask(iTask* pTask)
    }
 }
 
-void CDisplayMgrImpl::GetBoundingBox(iCoordinateMap* pMap, bool boundOrigin, IRect2d** pRect)
+void CDisplayMgrImpl::GetBoundingBox(bool boundOrigin, IRect2d** pRect)
 {
    CComPtr<IRect2d> rect;
    rect.CoCreateInstance(CLSID_Rect2d);
 
-   if ( GetDisplayObjectCount() > 0 )
+   // Begin with an inverted world
+   Float64 rl =  DBL_MAX;
+   Float64 rr = -DBL_MAX;
+   Float64 rt = -DBL_MAX;
+   Float64 rb =  DBL_MAX;
+
+   // Iterate through all of the display objects to determine the physical extents
+   bool bHasDO = false;
+   for ( auto& pDL : m_DisplayLists )
    {
-      // Begin with an inverted world
-      Float64 rl =  DBL_MAX;
-      Float64 rr = -DBL_MAX;
-      Float64 rt = -DBL_MAX;
-      Float64 rb =  DBL_MAX;
-
-      // Iterate through all of the display objects to determine the physical extents
-      DisplayListContainer::iterator iter;
-      for ( iter = m_DisplayLists.begin(); iter != m_DisplayLists.end(); iter++ )
+      CollectionIndexType nDisplayObjects = pDL->GetDisplayObjectCount();
+      for ( CollectionIndexType i = 0; i < nDisplayObjects; i++ )
       {
-         CComPtr<iDisplayList> pDL = *iter;
+         bHasDO = true;
 
-         CollectionIndexType nDisplayObjects = pDL->GetDisplayObjectCount();
-         for ( CollectionIndexType i = 0; i < nDisplayObjects; i++ )
+         CComPtr<iDisplayObject> pDO;
+         pDL->GetDisplayObject(i,&pDO);
+
+         if ( pDO->IsVisible() )
          {
-            CComPtr<iDisplayObject> pDO;
-            pDL->GetDisplayObject(i,&pDO);
+            CComPtr<IRect2d> box;
+            pDO->GetBoundingBox(&box);
 
-            if ( pDO->IsVisible() )
-            {
-               CComPtr<IRect2d> box;
-               pDO->GetBoundingBox(&box);
+            Float64 lBox,rBox,tBox,bBox;
+            box->get_Left(&lBox);
+            box->get_Right(&rBox);
+            box->get_Top(&tBox);
+            box->get_Bottom(&bBox);
 
-               Float64 lBox,rBox,tBox,bBox;
-               box->get_Left(&lBox);
-               box->get_Right(&rBox);
-               box->get_Top(&tBox);
-               box->get_Bottom(&bBox);
-
-               rl = Min(rl,lBox);
-               rr = Max(rr,rBox);
-               rt = Max(rt,tBox);
-               rb = Min(rb,bBox);
-            }
+            rl = Min(rl,lBox);
+            rr = Max(rr,rBox);
+            rt = Max(rt,tBox);
+            rb = Min(rb,bBox);
          }
       }
+   }
 
-      rect->put_Left(  rl );
-      rect->put_Right( rr );
-      rect->put_Top(   rt );
-      rect->put_Bottom(rb  );
+   if (bHasDO)
+   {
+      rect->put_Left(rl);
+      rect->put_Right(rr);
+      rect->put_Top(rt);
+      rect->put_Bottom(rb);
+   }
 
-      if ( boundOrigin )
-      {
-         // If BoundZero is enabled, force the bottom left corner of the
-         // world rect to (0,0) if it does not already contain it.
-         rect->BoundPoint(0,0);
-      }
+   if ( boundOrigin )
+   {
+      // If BoundZero is enabled, force the bottom left corner of the
+      // world rect to (0,0) if it does not already contain it.
+      rect->BoundPoint(0,0);
    }
 
    rect.CopyTo(pRect);

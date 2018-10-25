@@ -189,9 +189,9 @@ STDMETHODIMP CSurfaceCollection::Add(ISurface* surface)
 
    DWORD dwCookie;
    AdviseElement(surface,&dwCookie);
-   m_coll.push_back( std::make_pair(dwCookie,CComVariant(surface)));
+   m_coll.emplace_back( dwCookie,CComVariant(surface));
 
-   std::sort(m_coll.begin(),m_coll.end(),SortSurfaces(m_pProfile));
+   std::sort(std::begin(m_coll),std::end(m_coll),SortSurfaces(m_pProfile));
 
    Fire_OnSurfaceAdded(surface);
    return S_OK;

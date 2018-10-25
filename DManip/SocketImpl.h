@@ -62,7 +62,8 @@ END_COM_MAP()
    STDMETHOD_(void,Move)(ISize2d* offset);
 
    STDMETHOD_(void,Connect)(iPlug* plug,DWORD* pdwCookie);
-   STDMETHOD_(void,Disconnect)(DWORD dwCookie);
+   STDMETHOD_(void, Disconnect)(DWORD dwCookie);
+   STDMETHOD_(void, Disconnect)(iPlug* plug);
    STDMETHOD_(void,DisconnectAll)();
 
    STDMETHOD_(void,Draw)(CDC* pDC,iCoordinateMap* pMap);

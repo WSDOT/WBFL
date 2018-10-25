@@ -179,6 +179,27 @@ STDMETHODIMP CPoint2d::DistanceEx(IPoint2d* pOther,Float64* pDistance)
    return Distance(x,y,pDistance);
 }
 
+STDMETHODIMP CPoint2d::Size(Float64 x, Float64 y, ISize2d** ppSize)
+{
+   CHECK_RETOBJ(ppSize);
+   Float64 dx = m_X - x;
+   Float64 dy = m_Y - y;
+   CComPtr<ISize2d> size;
+   size.CoCreateInstance(CLSID_Size2d);
+   size->put_Dx(dx);
+   size->put_Dy(dy);
+   size.CopyTo(ppSize);
+   return S_OK;
+}
+
+STDMETHODIMP CPoint2d::SizeEx(IPoint2d* pPoint, ISize2d** ppSize)
+{
+   CHECK_IN(pPoint);
+   Float64 x, y;
+   pPoint->Location(&x, &y);
+   return Size(x, y, ppSize);
+}
+
 STDMETHODIMP CPoint2d::SameLocation(IPoint2d* pOther)
 {
    CHECK_IN(pOther);

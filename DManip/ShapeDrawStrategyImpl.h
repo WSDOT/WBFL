@@ -37,7 +37,8 @@
 class ATL_NO_VTABLE CShapeDrawStrategyImpl : 
 	public CComObjectRootEx<CComSingleThreadModel>,
 	public CComCoClass<CShapeDrawStrategyImpl, &CLSID_ShapeDrawStrategy>,
-   public iShapeDrawStrategy
+   public iShapeDrawStrategy,
+   public iGravityWellStrategy
 {
 public:
 	CShapeDrawStrategyImpl();
@@ -50,6 +51,7 @@ DECLARE_REGISTRY_RESOURCEID(IDR_SHAPEDRAWSTRATEGY)
 BEGIN_COM_MAP(CShapeDrawStrategyImpl)
    COM_INTERFACE_ENTRY(iShapeDrawStrategy)
 	COM_INTERFACE_ENTRY(iDrawPointStrategy)
+   COM_INTERFACE_ENTRY(iGravityWellStrategy)
 END_COM_MAP()
 
    // iShapeDrawStrategy Implementation
@@ -85,6 +87,9 @@ END_COM_MAP()
    STDMETHOD_(void,DrawHighlite)(iPointDisplayObject* pDO,CDC* pDC,BOOL bHighlite);
    STDMETHOD_(void,DrawDragImage)(iPointDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint);
    STDMETHOD_(void,GetBoundingBox)(iPointDisplayObject* pDO, IRect2d** box);
+
+   // iGravityWellStrategy
+   STDMETHOD_(void, GetGravityWell)(iDisplayObject* pDO, CRgn* pRgn) override;
 
 private:
    LineStyleType m_SolidLineStyle;

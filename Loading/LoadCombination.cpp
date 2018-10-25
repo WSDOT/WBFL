@@ -188,7 +188,7 @@ STDMETHODIMP CLoadCombination::AddLoadCaseFactor(BSTR loadCaseName, Float64 minF
       CComBSTR tmp(loadCaseName);
       if (tmp.Length()>0)
       {
-	      m_LoadCaseFactors.push_back(LoadCaseFactor(loadCaseName,minFactor, maxFactor));
+	      m_LoadCaseFactors.emplace_back(loadCaseName,minFactor, maxFactor);
          Fire_OnLoadCombinationChanged(this, ldcgCombination);
       }
       else

@@ -124,19 +124,8 @@ bool lrfdLldfTypeHIJ::TestRangeOfApplicability(Location loc) const
    if (!InteriorMomentEquationRule(bSISpec, true))
       return false;
 
-   if (!IsZero(m_SkewAngle1) || !IsZero(m_SkewAngle2))
-   {
-      // NOTE: In LRFD 7th Edition, 2014 Table 4.6.2.2.2e-1 was expanded to include type i and j if connected to prevent vertical displacements
-      // however, Table 4.6.2.2.3c was not updated and therefore skew is still not applicable to this type of girder.
-      if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEdition2014)
-      {
-         THROW_DF(lrfdXRangeOfApplicability, SkewAngle, _T("Skew corrections are not defined for this girder type. See 4.6.2.2.2e"));
-      }
-      else
-      {
-         THROW_DF(lrfdXRangeOfApplicability, SkewAngle, _T("Skew corrections are not defined for this girder type. See 4.6.2.2.3c"));
-      }
-   }
+   if ( !IsZero(m_SkewAngle1) || !IsZero(m_SkewAngle2) )
+      THROW_DF( lrfdXRangeOfApplicability, SkewAngle, _T("Skew corrections are not defined for this girder type. See 4.6.2.2.2e"));
 
    // This is not an out of range of applicability case... skew adjustment simply isn't applied in this case
    //Float64 skew_delta_max = ::ConvertToSysUnits( 10.0, unitMeasure::Degree );
