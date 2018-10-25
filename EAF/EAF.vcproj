@@ -2362,6 +2362,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ReportButton.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\StatusCenter.cpp"
 				>
 			</File>
@@ -2676,6 +2680,10 @@
 			</File>
 			<File
 				RelativePath=".\NewProjectDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ReportButton.h"
 				>
 			</File>
 			<File

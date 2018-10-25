@@ -175,11 +175,11 @@ boost::shared_ptr<CReportSpecificationBuilder> CReportBuilderManager::GetReportS
    return GetReportSpecificationBuilder( rptDesc.GetReportName() );
 }
 
-boost::shared_ptr<CReportBrowser> CReportBuilderManager::CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec)
+boost::shared_ptr<CReportBrowser> CReportBuilderManager::CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder)
 {
    boost::shared_ptr<rptReport> pReport = CreateReport(pRptSpec);
    boost::shared_ptr<CReportBrowser> pBrowser( new CReportBrowser() );
-   bool bSuccess = pBrowser->Initialize(hwndParent,this,pRptSpec,pReport);
+   bool bSuccess = pBrowser->Initialize(hwndParent,this,pRptSpec,pRptSpecBuilder,pReport);
    if ( !bSuccess )
    {
       pBrowser = boost::shared_ptr<CReportBrowser>();
@@ -188,11 +188,11 @@ boost::shared_ptr<CReportBrowser> CReportBuilderManager::CreateReportBrowser(HWN
    return pBrowser;
 }
 
-INT_PTR CReportBuilderManager::DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec)
+INT_PTR CReportBuilderManager::DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder)
 {
    // flags will be used in the future to control attribues of the dialog
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
-   CReportDlg dlg(*this,pRptSpec);
+   CReportDlg dlg(*this,pRptSpec,pRptSpecBuilder);
    return dlg.DoModal();
 }
 

@@ -39,9 +39,11 @@ class REPORTMANAGERCLASS CReportSpecification
 {
 public:
 	CReportSpecification(LPCTSTR strReportName);
+   CReportSpecification(const CReportSpecification& other);
 	virtual ~CReportSpecification();
 
    // report name = "Details Report"
+   void SetReportName(LPCTSTR strName);
    std::_tstring GetReportName() const;
 
    // report title = "Details Report for Span 1, Girder A"
@@ -49,13 +51,30 @@ public:
    virtual std::_tstring GetReportTitle() const;
 
    void AddChapter(LPCTSTR strName,LPCTSTR strKey,Uint16 level);
+   void SetChapterInfo(const std::vector<CChapterInfo>& chInfo);
    std::vector<CChapterInfo> GetChapterInfo() const;
+
+   // Text for printed report headers and footers
+   // The right header is always the Date, and the right footer is always Page # of #
+   void SetLeftHeader(LPCTSTR text);
+   std::_tstring GetLeftHeader() const;
+   void SetCenterHeader(LPCTSTR text);
+   std::_tstring GetCenterHeader() const;
+   void SetLeftFooter(LPCTSTR text);
+   std::_tstring GetLeftFooter() const;
+   void SetCenterFooter(LPCTSTR text);
+   std::_tstring GetCenterFooter() const;
 
    virtual HRESULT Validate() const;
 
 private:
    std::_tstring m_ReportName;
    std::vector<CChapterInfo> m_Chapters; /// chapter info for the chapters that are used in the report and the level at which to report
+
+   std::_tstring m_LeftHeader;
+   std::_tstring m_CenterHeader;
+   std::_tstring m_LeftFooter;
+   std::_tstring m_CenterFooter;
 };
 
 #endif // !defined(AFX_REPORTSPECIFICATION_H__7EF33026_9D78_49D4_A226_4681AD3B514C__INCLUDED_)

@@ -26,9 +26,9 @@
 // EAF is going to reserve 256 command IDs
 #define EAF_RESERVED_COMMAND_BASE 32768 // base identifier for reserved commands
 #define EAF_REPORT_MENU_BASE EAF_RESERVED_COMMAND_BASE // reserve commands IDs for the report popup menus
-#define EAF_REPORT_MENU_COUNT 100
-#define EAF_TOOLBAR_MENU_BASE EAF_REPORT_MENU_BASE + EAF_REPORT_MENU_COUNT + 1 // reserver command IDs for toolbar menu
-#define EAF_TOOLBAR_MENU_COUNT 20
+#define EAF_REPORT_MENU_COUNT 50
+#define EAF_TOOLBAR_MENU_BASE EAF_REPORT_MENU_BASE + 2*EAF_REPORT_MENU_COUNT + 1 // reserver command IDs for toolbar menu
+#define EAF_TOOLBAR_MENU_COUNT 40
 #define EAF_COMMAND_BASE EAF_TOOLBAR_MENU_BASE + EAF_TOOLBAR_MENU_COUNT + 1 // base command identifier
 #define EAF_FIRST_USER_COMMAND 33024 // (0x8100) first command ID that can be used by sub-classes
 

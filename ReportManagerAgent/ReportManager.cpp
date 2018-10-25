@@ -159,12 +159,12 @@ boost::shared_ptr<CReportSpecificationBuilder> CReportManager::GetReportSpecific
    return m_RptMgr.GetReportSpecificationBuilder(rptDesc);
 }
 
-boost::shared_ptr<CReportBrowser> CReportManager::CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec)
+boost::shared_ptr<CReportBrowser> CReportManager::CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder)
 {
-   return m_RptMgr.CreateReportBrowser(hwndParent,pRptSpec);
+   return m_RptMgr.CreateReportBrowser(hwndParent,pRptSpec,pRptSpecBuilder);
 }
 
-INT_PTR CReportManager::DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec)
+INT_PTR CReportManager::DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder)
 {
-   return m_RptMgr.DisplayReportDialog(flags,pRptSpec);
+   return m_RptMgr.DisplayReportDialog(flags,pRptSpec,pRptSpecBuilder);
 }

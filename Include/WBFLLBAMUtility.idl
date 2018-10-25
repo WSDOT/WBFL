@@ -130,10 +130,10 @@ library WBFLLBAMUtility
       HRESULT ConfigureDesignLiveLoad([in]ILBAMModel* pModel, [in] LiveLoadModelType llmt,[in] Float64 imTruck,[in]Float64 imLane, [in]VARIANT_BOOL includeDualTrucks, [in]VARIANT_BOOL includeLowBoy, [in]SpecUnitType units,[in]IUnitServer* pUnitServer);
 
  	 [helpstring("method ConfigureFatigueLiveLoad"), helpcontext(IDH_LBAMLRFDFactory_ConfigureFatigueLiveLoad)] 
-      HRESULT ConfigureFatigueLiveLoad([in]ILBAMModel* pModel,[in] Float64 imTruck,[in]Float64 imLane, [in]SpecUnitType units,[in]IUnitServer* pUnitServer);
+      HRESULT ConfigureFatigueLiveLoad([in]ILBAMModel* pModel,[in] LiveLoadModelType llmt,[in] Float64 imTruck,[in]Float64 imLane, [in]SpecUnitType units,[in]IUnitServer* pUnitServer);
 
  	 [helpstring("method ConfigureDeflectionLiveLoad"), helpcontext(IDH_LBAMLRFDFactory_ConfigureDeflectionLiveLoad)] 
-      HRESULT ConfigureDeflectionLiveLoad([in]ILBAMModel* pModel,[in] Float64 imTruck,[in]Float64 imLane, [in]SpecUnitType units,[in]IUnitServer* pUnitServer);
+      HRESULT ConfigureDeflectionLiveLoad([in]ILBAMModel* pModel,[in] LiveLoadModelType llmt,[in] Float64 imTruck,[in]Float64 imLane, [in]SpecUnitType units,[in]IUnitServer* pUnitServer);
 	};
 
 	[

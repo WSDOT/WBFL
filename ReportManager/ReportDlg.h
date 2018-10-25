@@ -41,7 +41,7 @@ class CReportDlg : public CDialog
 {
 // Construction
 public:
-   CReportDlg(CReportBuilderManager& rptMgr,boost::shared_ptr<CReportSpecification>& pRptSpec,CWnd* pParent = NULL);   // standard constructor
+   CReportDlg(CReportBuilderManager& rptMgr,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder,CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CReportDlg)
@@ -65,6 +65,7 @@ protected:
    CString m_strRptName;
    CReportBuilderManager& m_RptMgr;
    boost::shared_ptr<CReportSpecification> m_pRptSpec;
+   boost::shared_ptr<CReportSpecificationBuilder> m_pRptSpecBuilder;
    boost::shared_ptr<CReportBrowser> m_pBrowser;
 
 	// Generated message map functions

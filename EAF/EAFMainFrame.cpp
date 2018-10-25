@@ -789,9 +789,17 @@ UINT CEAFMainFrame::CreateToolBar(LPCTSTR lpszName,CEAFPluginCommandManager* pCm
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
+   if ( EAF_TOOLBAR_MENU_COUNT <= m_ToolBarInfo.size() )
+   {
+      ATLASSERT(false); // can't load any more toolbars as the maximum has been reached
+      return -1;
+   }
+
    ATLASSERT(pCmdMgr != NULL);
    if ( pCmdMgr == NULL )
+   {
       return -1; // must have a command manager
+   }
 
    CEAFToolBar* pEAFToolBar = new CEAFToolBar();
 

@@ -38,13 +38,14 @@ static char THIS_FILE[] = __FILE__;
 // CReportDlg dialog
 
 
-CReportDlg::CReportDlg(CReportBuilderManager& rptMgr,boost::shared_ptr<CReportSpecification>& pRptSpec,CWnd* pParent /*=NULL*/)
+CReportDlg::CReportDlg(CReportBuilderManager& rptMgr,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder,CWnd* pParent /*=NULL*/)
 	: CDialog(CReportDlg::IDD, pParent), m_RptMgr(rptMgr)
 {
 	//{{AFX_DATA_INIT(CReportDlg)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
    m_pRptSpec = pRptSpec;
+   m_pRptSpecBuilder = pRptSpecBuilder;
 }
 
 
@@ -75,7 +76,7 @@ BOOL CReportDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 	
 	// TODO: Add extra initialization here
-   m_pBrowser = m_RptMgr.CreateReportBrowser(m_Browser.GetSafeHwnd(),m_pRptSpec);
+   m_pBrowser = m_RptMgr.CreateReportBrowser(m_Browser.GetSafeHwnd(),m_pRptSpec,m_pRptSpecBuilder);
 
    CRect rect;
    m_Browser.GetClientRect(&rect);

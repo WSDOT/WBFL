@@ -35,16 +35,34 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
+// Initialize static data members... using the all remaining commands for plug-ins
+UINT CEAFPluginCommandManager::ms_MinID = EAF_FIRST_USER_COMMAND;
+UINT CEAFPluginCommandManager::ms_MaxID = 0xDFFF;
+UINT CEAFPluginCommandManager::ms_NextID = CEAFPluginCommandManager::ms_MinID;
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
+void CEAFPluginCommandManager::ReserveTotalCommandIDRange(UINT nMinID,UINT nMaxID)
+{
+   ATLASSERT(EAF_FIRST_USER_COMMAND <= nMinID);
+   ATLASSERT(nMaxID <= 0xDFFF);
+   ms_MinID = nMinID;
+   ms_MaxID = nMaxID;
+   ms_NextID = ms_MinID;
+}
+
+UINT CEAFPluginCommandManager::GetCommandTotal()
+{
+   return ms_MaxID - ms_MinID;
+}
 
 CEAFPluginCommandManager::CEAFPluginCommandManager()
 {
-   // The maximum command id is 0xDFFF (57343), see MFC Tech Note 022
-   // This will give 5000 plug-in command IDs.
-   // The user can still change this by calling SetBaseCommandID
-   m_nBaseID = 57343 - 5000;
+   // bogus values to detect if user forget to call ReseveCommandIDRange 
+   m_nBaseID   = -1;
+   m_nCommands = -1;
+   m_nNextID   = -1;
 }
 
 CEAFPluginCommandManager::~CEAFPluginCommandManager()
@@ -52,26 +70,60 @@ CEAFPluginCommandManager::~CEAFPluginCommandManager()
 
 }
 
-void CEAFPluginCommandManager::SetBaseCommandID(UINT nBaseID)
+UINT CEAFPluginCommandManager::ReserveCommandIDRange(UINT nCommands)
 {
-   // set the base ID to be 1 more than the highest command ID used by non-plugin objects
-   m_nBaseID = nBaseID;
+   if ( 0xDFFF <= CEAFPluginCommandManager::ms_MaxID )
+      return -1; // out of room.... all the command IDs given to us by MFC have been used up
+
+   UINT nActualCommands;
+   if ( 0xDFFF <= CEAFPluginCommandManager::ms_NextID + nCommands )
+      nActualCommands = 0xDFFF - CEAFPluginCommandManager::ms_NextID; // requesting more than we have left
+   else
+      nActualCommands = nCommands;
+
+   m_nBaseID = CEAFPluginCommandManager::ms_NextID;
+   m_nCommands = nActualCommands;
+   m_nNextID = m_nBaseID;
+ 
+   m_Callbacks.clear(); // remove any previously mapped command IDs
+
+   // increment for the next command range requested
+   CEAFPluginCommandManager::ms_NextID += nActualCommands;
+
+   return nActualCommands;
+}
+
+UINT CEAFPluginCommandManager::GetReservedCommandIDCount() const
+{
+   return m_nCommands;
+}
+
+void CEAFPluginCommandManager::GetReservedCommandIDRange(UINT* pFirst,UINT* pLast) const
+{
+   *pFirst = m_nBaseID;
+   *pLast  = m_nBaseID + m_nCommands;
 }
 
 BOOL CEAFPluginCommandManager::AddCommandCallback(UINT nPluginCmdID,IEAFCommandCallback* pCallback,UINT* pMappedID)
 {
+   // If these asserts fire, you forgot to callReserveCommandIDRange
+   ATLASSERT(m_nBaseID != -1);
+   ATLASSERT(m_nCommands != -1);
+
    if ( GetMappedCommandID(nPluginCmdID,pCallback,pMappedID) )
+   {
       return TRUE;
+   }
 
    // command callback was not previously added... add it now
 
    if ( pCallback )
    {
-      *pMappedID = m_nBaseID++; // generate the next command ID for the menus
+      *pMappedID = m_nNextID++; // generate the next command ID for the menus
 
-      if ( 0xDFFF < *pMappedID )
+      if ( m_nBaseID+m_nCommands < *pMappedID )
       {
-         ATLASSERT(FALSE); // command ID exceeds max value (See MFC tech note 022)
+         ATLASSERT(FALSE); // command ID exceeds max value reserved for our range
          return FALSE;
       }
    }

@@ -49,7 +49,7 @@ public:
 	virtual ~CReportBrowser();
 
    void UpdateReport(boost::shared_ptr<rptReport>& pReport,bool bRefresh);
-   bool Initialize(HWND hwnd,CReportBuilderManager* pRptMgr,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<rptReport>& pReport);
+   bool Initialize(HWND hwnd,CReportBuilderManager* pRptMgr,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder,boost::shared_ptr<rptReport>& pReport);
    boost::shared_ptr<CReportSpecification> GetReportSpecification();
    boost::shared_ptr<rptReport> GetReport();
    std::_tstring GetReportTitle();
@@ -65,11 +65,13 @@ public:
    void Forward();
    void NavigateAnchor(long id);
 
+   CWnd* GetBrowserWnd();
+
 private:
    CWebBrowser* m_pWebBrowser;
-   TweakIESettings* m_pTweakIESettings;
    std::_tstring m_Filename;
    boost::shared_ptr<CReportSpecification> m_pRptSpec;
+   boost::shared_ptr<CReportSpecificationBuilder> m_pRptSpecBuilder;
    boost::shared_ptr<rptReport> m_pReport;
    CReportBuilderManager* m_pRptMgr;
 

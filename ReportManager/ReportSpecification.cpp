@@ -45,9 +45,25 @@ m_ReportName(strReportName)
 
 }
 
+CReportSpecification::CReportSpecification(const CReportSpecification& other)
+{
+   m_ReportName = other.m_ReportName;
+   m_Chapters = other.m_Chapters;
+
+   m_LeftHeader = other.m_LeftHeader;
+   m_CenterHeader = other.m_CenterHeader;
+   m_LeftFooter = other.m_LeftFooter;
+   m_CenterFooter = other.m_CenterFooter;
+}
+
 CReportSpecification::~CReportSpecification()
 {
 
+}
+
+void CReportSpecification::SetReportName(LPCTSTR strName)
+{
+   m_ReportName = strName;
 }
 
 std::_tstring CReportSpecification::GetReportName() const
@@ -69,6 +85,11 @@ void CReportSpecification::AddChapter(LPCTSTR strName,LPCTSTR strKey,Uint16 leve
    m_Chapters.push_back(chInfo);
 }
 
+void CReportSpecification::SetChapterInfo(const std::vector<CChapterInfo>& chInfo)
+{
+   m_Chapters = chInfo;
+}
+
 std::vector<CChapterInfo> CReportSpecification::GetChapterInfo() const
 {
    return m_Chapters;
@@ -77,4 +98,44 @@ std::vector<CChapterInfo> CReportSpecification::GetChapterInfo() const
 HRESULT CReportSpecification::Validate() const
 {
    return S_OK;
+}
+
+void CReportSpecification::SetLeftHeader(LPCTSTR text)
+{
+   m_LeftHeader = text;
+}
+
+std::_tstring CReportSpecification::GetLeftHeader() const
+{
+   return m_LeftHeader;
+}
+
+void CReportSpecification::SetCenterHeader(LPCTSTR text)
+{
+   m_CenterHeader = text;
+}
+
+std::_tstring CReportSpecification::GetCenterHeader() const
+{
+   return m_CenterHeader;
+}
+
+void CReportSpecification::SetLeftFooter(LPCTSTR text)
+{
+   m_LeftFooter = text;
+}
+
+std::_tstring CReportSpecification::GetLeftFooter() const
+{
+   return m_LeftFooter;
+}
+
+void CReportSpecification::SetCenterFooter(LPCTSTR text)
+{
+   m_CenterFooter = text;
+}
+
+std::_tstring CReportSpecification::GetCenterFooter() const
+{
+   return m_CenterFooter;
 }
