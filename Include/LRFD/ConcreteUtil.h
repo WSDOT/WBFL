@@ -96,7 +96,8 @@ public:
    //------------------------------------------------------------------------
    // Returns the modulus of rupture.  The modulus of rupture is computed in
    // accordnace with Article 5.4.2.6
-   static Float64 ModRupture(Float64 fc, DensityType densityType,Float64 k = -1);
+   static Float64 ModRupture(Float64 fc, DensityType densityType);
+   static Float64 ModRupture(Float64 fc, Float64 k);
 
    //------------------------------------------------------------------------
    // Returns the beta1 factor.  The beta1 factor is computed in accordance
@@ -205,6 +206,7 @@ private:
    // GROUP: OPERATIONS
    // GROUP: ACCESS
    // GROUP: INQUIRY
+   static Float64 ModRupture(Float64 fc, DensityType densityType,Float64 k);
 };
 
 // INLINE METHODS

@@ -229,10 +229,14 @@ void grGraphXY::DrawBackground(HDC hDC)
 
    // draw the axis'
    if (m_DoDrawAxis)    
+   {
       DrawAxes( hDC );
+   }
 
    if ( m_bDrawLegend )
+   {
       DrawLegend( hDC );
+   }
 
    // draw the title and subtitle
    LONG tx;
@@ -886,10 +890,14 @@ void grGraphXY::DrawCurve(HDC hDC)
       {
          gpPoint2d p = *ds_iter;
          if ( scaleX == grAxisXY::INTEGRAL )
+         {
             p.X() = count+1;
+         }
 
          if ( scaleY == grAxisXY::INTEGRAL )
+         {
             p.Y() = count+1;
+         }
 
          POINT dp;
          m_PointMapper.WPtoDP( scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL ? p.X() : log10(p.X()),
@@ -923,10 +931,14 @@ void grGraphXY::DrawAxes(HDC hDC)
    grAxisXY::AxisScale scaleY = m_YAxis.GetScale();
 
    if ( scaleX == grAxisXY::LOGARITHMIC )
+   {
       x_increment = floor(pow(10.0,left_val))/10.0;
+   }
 
    if ( scaleY == grAxisXY::LOGARITHMIC )
+   {
       y_increment = floor(pow(10.0,bot_val))/10.0;
+   }
 
    if (m_DoDrawGrid)
    {
@@ -936,9 +948,13 @@ void grGraphXY::DrawAxes(HDC hDC)
       LONG   ldx, ldy, rdx, rdy;
       Float64 curr_val;
       if ( scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL )
+      {
          curr_val = left_val + x_increment;
+      }
       else
+      {
          curr_val = x_increment;
+      }
 
       while ( ::IsLE(curr_val,right_val) )
       {
@@ -950,7 +966,9 @@ void grGraphXY::DrawAxes(HDC hDC)
          ::LineTo(hDC,rdx,rdy);
 
          if ( scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL )
+         {
             curr_val += x_increment;
+         }
          else
          {
             curr_val = pow(10,x_increment);
@@ -960,9 +978,13 @@ void grGraphXY::DrawAxes(HDC hDC)
 
       // y axis grid
       if ( scaleY == grAxisXY::LINEAR || scaleY == grAxisXY::INTEGRAL)
+      {
          curr_val = bot_val + y_increment;
+      }
       else
+      {
          curr_val = y_increment;
+      }
 
       while ( ::IsLE(curr_val,top_val) )
       {
@@ -974,7 +996,9 @@ void grGraphXY::DrawAxes(HDC hDC)
          ::LineTo(hDC,rdx,rdy);
 
          if ( scaleY == grAxisXY::LINEAR || scaleY == grAxisXY::INTEGRAL )
+         {
             curr_val += y_increment;
+         }
          else
          {
             curr_val = pow(10,y_increment);
@@ -1025,7 +1049,9 @@ void grGraphXY::DrawLegend(HDC hDC)
 
       // if there is no data, skip the data label
       if ( gd.Series.size() == 0 || gd.Label.length() == 0 )
+      {
          continue;
+      }
 
       int x = m_LegendRect.left + col*m_LegendItemSize.cx;
       int y = m_LegendRect.top  + row*m_LegendItemSize.cy;
@@ -1114,7 +1140,9 @@ void grGraphXY::SetXAxisNiceRange(bool nice)
    m_XAxisNiceRange = nice;
 
    if ( m_XAxisNiceRange && m_XAxis.GetScale() == grAxisXY::INTEGRAL )
+   {
       m_XAxis.SetScale(grAxisXY::LINEAR); // can't have nice range and INTEGRAL
+   }
 }
 
 bool grGraphXY::GetYAxisNiceRange()
@@ -1127,7 +1155,9 @@ void grGraphXY::SetYAxisNiceRange(bool nice)
    m_YAxisNiceRange = nice;
 
    if ( m_YAxisNiceRange && m_YAxis.GetScale() == grAxisXY::INTEGRAL )
+   {
       m_YAxis.SetScale(grAxisXY::LINEAR); // can't have nice range and INTEGRAL
+   }
 }
 
 bool grGraphXY::GetPinYAxisAtZero()

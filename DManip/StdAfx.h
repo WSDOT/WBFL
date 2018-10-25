@@ -62,7 +62,7 @@
 extern CComModule _Module;
 #include <atlcom.h>
 
-#include <WBFLDebug.h>
+#include <WBFLAll.h>
 #include <WBFLTools.h>
 #include <WBFLGeometry.h>
 #include <WBFLAtlExt.h>

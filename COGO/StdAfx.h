@@ -44,7 +44,6 @@ extern CComModule _Module;
 #include <atlctl.h>
 
 #include <WbflAtlExt.h>
-#include <WBFLAll.h>
 #include <WBFLComCollections.h>
 
 #include <WBFLGeometry.h>

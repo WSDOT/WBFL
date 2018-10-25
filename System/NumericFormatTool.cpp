@@ -75,9 +75,13 @@ std::_tstring sysNumericFormatTool::AsString(Float64 value) const
       if ( IsEqual(fabs(value)/Float64_Max,1.0) )
       {
          if ( value > 0 )
+         {
             return _T("INF");
+         }
          else 
+         {
             return _T("-INF");
+         }
       }
    }
 
@@ -121,7 +125,9 @@ std::_tstring sysNumericFormatTool::AsString(const sysSectionValue& value) const
    Float64 right_value = value.Right();
 
    if ( IsEqual( left_value, right_value ) )
+   {
       return AsString( left_value );
+   }
 
    //
    // Setup stream for floating point format, width, and precision
@@ -146,13 +152,17 @@ std::_tstring sysNumericFormatTool::AsString(const sysSectionValue& value) const
    {
       os << eng_notation(left_value,m_Width,m_Precision);
       if ( !IsEqual(left_value, right_value) )
+      {
          os << "/" << eng_notation(right_value,m_Width,m_Precision);
+      }
    }
    else
    {
       os << left_value;
       if ( !IsEqual(left_value, right_value) )
+      {
          os << "/" << right_value;
+      }
    }
 
    os << std::endl;
@@ -202,7 +212,9 @@ Uint16 get_width_demand(Float64 value,Uint16 precision)
 {
    Float64 dLeft = log(fabs(value))/log(10.);
    if ( dLeft > (Uint16_Max - 2 - precision))
+   {
       return Uint16_Max;
+   }
 
    Uint16 left = Uint16( dLeft ) + 1;
 

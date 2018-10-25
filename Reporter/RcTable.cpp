@@ -137,6 +137,12 @@ rptParagraph& rptRcTable::operator()( RowIndexType RowNo, ColumnIndexType ColNo)
 {
    CHECK(ColNo<m_NumColumns);
 
+   if ( m_NumColumns <= ColNo )
+   {
+      ::MessageBox(NULL,_T("Table Error"),_T("Table Error"),MB_OK | MB_ICONEXCLAMATION);
+      ColNo = m_NumColumns-1;
+   }
+
    // check if row entry has been allocated. if not, push default paragraphs
    // on as a placeholder
    RowIndexType nRows = m_TableData[ColNo].size();

@@ -43,12 +43,15 @@
 #include <atlcom.h>
 #include <atlctl.h>
 
+
 #include <WBFLAtlExt.h>
 
 using namespace ATL;
 
 #include "BridgeGeometryHelper.h"
 #include <MathEx.h>
+
+#include <WBFLAll.h>
 #include <WBFLDebug.h>
 
 #undef ASSERTVALID

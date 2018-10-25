@@ -2153,11 +2153,18 @@ void CPath::ProjectPointOnElement(IPoint2d* point,IPathElement* pElement,IPoint2
 
       CComPtr<ILine2d> line;
       line.CoCreateInstance(CLSID_Line2d);
-      line->ThroughPoints(start,end);
-
-      CComPtr<IPoint2d> p;
-      m_GeomUtil->PointOnLineNearest(line,point,&p);
-      p.QueryInterface(pNewPoint);
+      if ( SUCCEEDED(line->ThroughPoints(start,end)) )
+      {
+         CComPtr<IPoint2d> p;
+         m_GeomUtil->PointOnLineNearest(line,point,&p);
+         p.QueryInterface(pNewPoint);
+      }
+      else
+      {
+         CComPtr<IPoint2d> p;
+         start->Clone(&p);
+         p.QueryInterface(pNewPoint);
+      }
    }
    else if ( type == petHorzCurve )
    {
@@ -2365,7 +2372,7 @@ HRESULT CPath::DistanceAndOffset(IPoint2d* point,Float64* pDistance,Float64* pOf
          m_GeomUtil->Distance(startPoint,prjPoint,&dist1);
          m_GeomUtil->Distance(endPoint,prjPoint,&dist2);
          dist = dist1;
-         if ( IsEqual(dist1+length,dist2) )
+         if ( IsEqual(dist1+length,dist2) && !IsZero(dist) )
          {
             dist *= -1; // Point is before start of line segment
          }
@@ -2375,8 +2382,17 @@ HRESULT CPath::DistanceAndOffset(IPoint2d* point,Float64* pDistance,Float64* pOf
          // Compute Offset
          CComPtr<ILine2d> line;
          line.CoCreateInstance(CLSID_Line2d);
-         line->ThroughPoints(startPoint,endPoint);
-         m_GeomUtil->ShortestDistanceToPoint(line,point,&offset);
+         if ( SUCCEEDED(line->ThroughPoints(startPoint,endPoint)) )
+         {
+            m_GeomUtil->ShortestDistanceToPoint(line,point,&offset);
+         }
+         else
+         {
+            // line->ThroughPoints fails if startPoint and endPoint are at the same location
+            // in this case the offset is just the distance to the point from either end point
+            ATLASSERT(IsZero(dist));
+            offset = 0;
+         }
       }
       else if ( type == petHorzCurve )
       {

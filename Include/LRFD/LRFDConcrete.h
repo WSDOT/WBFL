@@ -23,32 +23,45 @@
 
 #pragma once
 
-#include <Material\MaterialExp.h>
+#include <Lrfd\LrfdExp.h>
 #include <Material\ConcreteBase.h>
 #include <Material\ConcreteEx.h>
 
 
 /*****************************************************************************
 CLASS 
-   matLRFDConcrete
+   lrfdLRFDConcrete
 
    Pseudo Time-dependent concrete model based on AASHTO LRFD. This is a
    step function that uses f'ci and Eci until a specified time and then
    f'c and Ec. This class is an adaptor for matConcreteEx
 *****************************************************************************/
 
-class MATCLASS matLRFDConcrete : public matConcreteBase
+class LRFDCLASS lrfdLRFDConcrete : public matConcreteBase
 {
 public:
-   matLRFDConcrete(LPCTSTR name = _T("Unknown"));
-   virtual ~matLRFDConcrete();
+   lrfdLRFDConcrete(LPCTSTR name = _T("Unknown"));
+   virtual ~lrfdLRFDConcrete();
 
    void SetConcreteModels(const matConcreteEx& initial,const matConcreteEx& final);
    const matConcreteEx& GetInitialConcreteModel() const;
    const matConcreteEx& GetFinalConcreteModel() const;
 
+   void SetStartTime(Float64 t);
+   Float64 GetStartTime() const;
+
    void SetStepTime(Float64 t);
    Float64 GetStepTime() const;
+
+   // aggregate correction and bounding factors.
+   // see NCHRP Report 496
+   void SetEcCorrectionFactors(Float64 K1,Float64 K2);
+   void GetEcCorrectionFactors(Float64* pK1,Float64* pK2) const;
+   void SetCreepCorrectionFactors(Float64 K1,Float64 K2);
+   void GetCreepCorrectionFactors(Float64* pK1,Float64* pK2) const;
+   void SetShrinkageCorrectionFactors(Float64 K1,Float64 K2);
+   void GetShrinkageCorrectionFactors(Float64* pK1,Float64* pK2) const;
+
 
    // Returns the compressive strength of the concrete at time t. If
    // t occurs before the time at casting, zero is returned.
@@ -74,10 +87,22 @@ public:
 
 protected:
    // prevent copying and assignment (use CreateClone instead)
-   matLRFDConcrete(const matLRFDConcrete& rOther);
-   matLRFDConcrete& operator = (const matLRFDConcrete& rOther);
+   lrfdLRFDConcrete(const lrfdLRFDConcrete& rOther);
+   lrfdLRFDConcrete& operator = (const lrfdLRFDConcrete& rOther);
+
+   Float64 GetFreeShrinkageStrainBefore2005(Float64 t) const;
+   Float64 GetFreeShrinkageStrain2005(Float64 t) const;
+   Float64 GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const;
+   Float64 GetCreepCoefficient2005(Float64 t,Float64 tla) const;
 
 private:
    matConcreteEx m_InitialConcrete, m_FinalConcrete;
+   Float64 m_StartTime;
    Float64 m_StepTime;
+   Float64 m_EcK1;
+   Float64 m_EcK2;
+   Float64 m_CreepK1;
+   Float64 m_CreepK2;
+   Float64 m_ShrinkageK1;
+   Float64 m_ShrinkageK2;
 };

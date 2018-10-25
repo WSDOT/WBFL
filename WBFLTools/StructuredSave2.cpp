@@ -108,7 +108,7 @@ void CStructuredSave2::BeginSave(IStream* pis)
    m_ObjectSet.clear();
 
    // create our document
-   MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument));
+   MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument60));
    if (!(bool)pDoc)
    {
       THROW_IDS(IDS_STRSAVE_E_INITIALIZING_THE_PARSER,STRSAVE_E_INITIALIZING_THE_PARSER,IDH_STRSAVE_E_INITIALIZING_THE_PARSER);

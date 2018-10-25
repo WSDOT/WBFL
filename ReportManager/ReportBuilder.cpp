@@ -115,10 +115,8 @@ boost::shared_ptr<CChapterBuilder> CReportBuilder::GetChapterBuilder(CollectionI
 
 boost::shared_ptr<CChapterBuilder> CReportBuilder::GetChapterBuilder(LPCTSTR strKey)
 {
-   ChapterBuilderContainer::iterator iter;
-   for ( iter = m_ChapterBuilders.begin(); iter != m_ChapterBuilders.end(); iter++ )
+   BOOST_FOREACH(boost::shared_ptr<CChapterBuilder> pChBuilder,m_ChapterBuilders)
    {
-      boost::shared_ptr<CChapterBuilder> pChBuilder = (*iter);
       if ( std::_tstring(pChBuilder->GetKey()) == std::_tstring(strKey) )
       {
          return pChBuilder;
@@ -132,10 +130,9 @@ CReportDescription CReportBuilder::GetReportDescription()
 {
    CReportDescription rptDesc(m_Name.c_str());
 
-   ChapterBuilderContainer::iterator iter;
-   for ( iter = m_ChapterBuilders.begin(); iter < m_ChapterBuilders.end(); iter++ )
+   BOOST_FOREACH(boost::shared_ptr<CChapterBuilder> pChBuilder,m_ChapterBuilders)
    {
-      const CChapterBuilder* pBuilder = (*iter).get();
+      const CChapterBuilder* pBuilder = pChBuilder.get();
       rptDesc.AddChapter( pBuilder );
    }
 
@@ -161,10 +158,8 @@ bool CReportBuilder::NeedsUpdate(CReportHint* pHint,boost::shared_ptr<CReportSpe
       return true;
    }
 
-   std::vector<CChapterInfo>::iterator iter;
-   for ( iter = vchInfo.begin(); iter != vchInfo.end(); iter++ )
+   BOOST_FOREACH(CChapterInfo chInfo,vchInfo)
    {
-      CChapterInfo chInfo = *iter;
       boost::shared_ptr<CChapterBuilder> pChBuilder = GetChapterBuilder( chInfo.Key.c_str() );
       if ( pChBuilder->NeedsUpdate(pHint,pRptSpec.get(),chInfo.MaxLevel) )
       {
@@ -180,10 +175,8 @@ boost::shared_ptr<rptReport> CReportBuilder::CreateReport(boost::shared_ptr<CRep
    boost::shared_ptr<rptReport> pReport( new rptReport(pRptSpec->GetReportName()) );
    std::vector<CChapterInfo> vchInfo = pRptSpec->GetChapterInfo();
 
-   std::vector<CChapterInfo>::iterator iter;
-   for ( iter = vchInfo.begin(); iter != vchInfo.end(); iter++ )
+   BOOST_FOREACH(CChapterInfo chInfo,vchInfo)
    {
-      CChapterInfo chInfo = *iter;
       boost::shared_ptr<CChapterBuilder> pChBuilder = GetChapterBuilder( chInfo.Key.c_str() );
       rptChapter* pChapter = pChBuilder->Build( pRptSpec.get(), chInfo.MaxLevel );
       if ( pChapter )

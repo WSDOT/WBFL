@@ -80,7 +80,7 @@ std::_tstring libLibraryEntry::GetName() const
    return m_Name;
 }
 
-bool libLibraryEntry::Edit(bool allowEditing)
+bool libLibraryEntry::Edit(bool allowEditing,int nPage)
 {
    return false;
 }

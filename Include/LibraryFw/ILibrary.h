@@ -148,7 +148,7 @@ public:
                                           // edits retained.
                            
    //------------------------------------------------------------------------
-   virtual EntryEditOutcome EditEntry( LPCTSTR key )=0;
+   virtual EntryEditOutcome EditEntry( LPCTSTR key,UINT nPage=0)=0;
 
    //------------------------------------------------------------------------
    // Rename an entry

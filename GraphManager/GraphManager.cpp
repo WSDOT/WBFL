@@ -113,11 +113,9 @@ boost::shared_ptr<CGraphBuilder> CGraphManager::RemoveGraphBuilder(const std::_t
 std::vector<std::_tstring> CGraphManager::GetGraphNames() const
 {
    std::vector<std::_tstring> names;
-   GraphBuilderContainer::const_iterator iter(m_GraphBuilders.begin());
-   GraphBuilderContainer::const_iterator end(m_GraphBuilders.end());
-   for ( ; iter != end; iter++ )
+   BOOST_FOREACH(const GraphBuilderEntry& entry,m_GraphBuilders)
    {
-      names.push_back( (*iter).first );
+      names.push_back( entry.first );
    }
 
    return names;

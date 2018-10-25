@@ -759,10 +759,8 @@ BOOL CEAFApp::IsFirstRun()
 
 void CEAFApp::Fire_UnitsChanged()
 {
-   std::set<iUnitModeListener*>::iterator iter;
-   for ( iter = m_UnitModeListeners.begin(); iter != m_UnitModeListeners.end(); iter++ )
+   BOOST_FOREACH(iUnitModeListener* pListener,m_UnitModeListeners)
    {
-      iUnitModeListener* pListener = *iter;
       pListener->OnUnitsModeChanged(m_Units);
    }
 }
@@ -1150,12 +1148,10 @@ void CEAFPluginApp::OnUpdateManageApplicationPlugins(CCmdUI* pCmdUI)
 void CEAFPluginApp::OnManageApplicationPlugins()
 {
    std::vector<CEAFPluginState> pluginStates = EAFManageApplicationPlugins(_T("Manage Project Types"),GetAppPluginCategoryID(),EAFGetMainFrame());
-   std::vector<CEAFPluginState>::iterator iter;
-   for ( iter = pluginStates.begin(); iter != pluginStates.end(); iter++ )
+   BOOST_FOREACH(CEAFPluginState& state,pluginStates)
    {
       CEAFAppPluginManager* pPluginMgr = GetAppPluginManager();
 
-      CEAFPluginState& state = *iter;
       if ( state.StateChanged() )
       {
          if ( state.InitiallyEnabled() )
@@ -1193,11 +1189,8 @@ void CEAFPluginApp::OnManageApplicationPlugins()
                plugin->IntegrateWithUI(TRUE); // must come after AddPlugin
 
                std::vector<CEAFDocTemplate*> vDocTemplates = plugin->CreateDocTemplates();
-               std::vector<CEAFDocTemplate*>::iterator iter(vDocTemplates.begin());
-               std::vector<CEAFDocTemplate*>::iterator end(vDocTemplates.end());
-               for ( ; iter != end; iter++ )
+               BOOST_FOREACH(CEAFDocTemplate* pDocTemplate,vDocTemplates)
                {
-                  CEAFDocTemplate* pDocTemplate = *iter;
                   if ( pDocTemplate )
                   {
                      pDocTemplate->SetPlugin(plugin);

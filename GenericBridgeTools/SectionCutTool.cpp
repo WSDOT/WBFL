@@ -1917,9 +1917,11 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
       // include it in the model. Edeck will be zero in stages before it
       // is cast
 
-      // Need to get effective flange width of the slab
-      Float64 eff_flange_width;
-      HRESULT hr = m_EffFlangeTool->EffectiveFlangeWidthBySegment(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,&eff_flange_width);
+      // Need to get tributary flange width of the slab
+      // This is the big difference between CreateGirderSection and CreateGirderShape.... Section is structural
+      // and uses the effective flange width, Shape is graphical and uses the tributary width
+      Float64 trib_flange_width, twLeft, twRight;
+      HRESULT hr = m_EffFlangeTool->TributaryFlangeWidthBySegmentEx(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,&twLeft,&twRight,&trib_flange_width);
       if ( FAILED(hr) )
       {
          return hr;
@@ -1933,9 +1935,16 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
       CComPtr<IRectangle> slab;
       slab.CoCreateInstance(CLSID_Rect);
       slab->put_Height(structural_depth);
-      slab->put_Width(eff_flange_width);
+      slab->put_Width(trib_flange_width);
 
-      // put slab on top of beam
+      // put slab on top of beam 
+      // for exterior girders, overhang and spacing may not be the same.
+      // since we want a graphical representation here, offset the slab so that it is in the correct location
+      Float64 X;
+      pntTopCenter->get_X(&X);
+      X -= twLeft;
+      X += trib_flange_width/2;
+      pntTopCenter->put_X(X);
       CComQIPtr<IXYPosition> slab_position(slab);
       slab_position->put_LocatorPoint(lpBottomCenter,pntTopCenter);
 

@@ -35,7 +35,6 @@
 #include <Material\ConcreteEx.h>
 #include <Material\ConcreteBase.h>
 #include <Material\ACI209Concrete.h>
-#include <Material\LRFDConcrete.h>
 #include <Material\ConcreteListener.h>
 #include <Material\LinearStressStrainCurve.h>
 #include <Material\Metal.h>

@@ -102,5 +102,6 @@ private:
    };
 
    typedef std::map<UINT,CCallbackItem> CallbackContainer;
+   typedef std::pair<UINT,CCallbackItem> CallbackEntry;
    CallbackContainer m_Callbacks;
 };
