@@ -77,7 +77,13 @@ STDMETHODIMP COverlaySlab::InterfaceSupportsErrorInfo(REFIID riid)
 STDMETHODIMP COverlaySlab::get_StructuralDepth(Float64* depth)
 {
    CHECK_RETVAL(depth);
-   *depth = m_GrossDepth - m_SacrificialDepth;
+
+   Float64 sacDepth = 0;
+   if ( m_pBridge )
+      m_pBridge->get_SacrificialDepth(&sacDepth);
+
+   *depth = m_GrossDepth - sacDepth;
+
    return S_OK;
 }
 
@@ -103,25 +109,6 @@ STDMETHODIMP COverlaySlab::put_GrossDepth(Float64 depth)
    return S_OK;
 }
 
-STDMETHODIMP COverlaySlab::get_SacrificialDepth(Float64* depth)
-{
-   CHECK_RETVAL(depth);
-   *depth = m_SacrificialDepth;
-   return S_OK;
-}
-
-STDMETHODIMP COverlaySlab::put_SacrificialDepth(Float64 depth)
-{
-   if ( depth < 0 )
-      return E_INVALIDARG;
-
-   if ( IsEqual(m_SacrificialDepth,depth) )
-      return S_OK;
-
-   m_SacrificialDepth = depth;
-   Fire_OnBridgeDeckChanged(this);
-   return S_OK;
-}
 
 STDMETHODIMP COverlaySlab::get_LeftOverhangPathStrategy(IOverhangPathStrategy** strategy)
 {
@@ -260,7 +247,6 @@ STDMETHODIMP COverlaySlab::Clone(IBridgeDeck** clone)
    IBridgeDeckImpl<COverlaySlab>::Clone(&deck);
 
    slab->put_GrossDepth(m_GrossDepth);
-   slab->put_SacrificialDepth(m_SacrificialDepth);
    slab->putref_LeftOverhangPathStrategy(m_LeftPathStrategy);
    slab->putref_RightOverhangPathStrategy(m_RightPathStrategy);
 
@@ -281,9 +267,6 @@ STDMETHODIMP COverlaySlab::Load(IStructuredLoad2* load)
    load->get_Property(CComBSTR("GrossDepth"),&var);
    m_GrossDepth = var.dblVal;
 
-   load->get_Property(CComBSTR("SacrificialDepth"),&var);
-   m_SacrificialDepth = var.dblVal;
-
    IBridgeDeckImpl<COverlaySlab>::Load(load);
 
    VARIANT_BOOL bEnd;
@@ -296,7 +279,6 @@ STDMETHODIMP COverlaySlab::Save(IStructuredSave2* save)
    save->BeginUnit(CComBSTR("OverlaySlab"),1.0);
 
    save->put_Property(CComBSTR("GrossDepth"),CComVariant(m_GrossDepth));
-   save->put_Property(CComBSTR("SacrificalDepth"),CComVariant(m_SacrificialDepth));
    
    IBridgeDeckImpl<COverlaySlab>::Save(save);
 

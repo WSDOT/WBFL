@@ -57,6 +57,7 @@ private:
    static void TestAlignment();
    static void TestCogoInfo();
    static void TestCogoModel();
+   static void TestWearingSurface();
    static void TestPiers();
    static void TestSpans();
    static void TestStageCollection();

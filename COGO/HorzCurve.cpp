@@ -627,7 +627,10 @@ STDMETHODIMP CHorzCurve::get_Tangent(Float64* tangent)
 {
    CHECK_RETVAL(tangent);
    CComPtr<IAngle> angle;
-   get_CircularCurveAngle(&angle);
+   HRESULT hr = get_CircularCurveAngle(&angle);
+   if ( FAILED(hr) )
+      return hr;
+
    Float64 val;
    angle->get_Value(&val);
    *tangent = m_Radius * tan(val/2);
@@ -638,7 +641,10 @@ STDMETHODIMP CHorzCurve::get_MidOrdinate(Float64* mo)
 {
    CHECK_RETVAL(mo);
    CComPtr<IAngle> angle;
-   get_CircularCurveAngle(&angle);
+   HRESULT hr = get_CircularCurveAngle(&angle);
+   if ( FAILED(hr) )
+      return hr;
+
    Float64 val;
    angle->get_Value(&val);
    *mo = m_Radius * (1 - cos(val/2));
@@ -650,7 +656,10 @@ STDMETHODIMP CHorzCurve::get_External(Float64* external)
 {
    CHECK_RETVAL(external);
    CComPtr<IAngle> angle;
-   get_CircularCurveAngle(&angle);
+   HRESULT hr = get_CircularCurveAngle(&angle);
+   if ( FAILED(hr) )
+      return hr;
+
    Float64 val;
    angle->get_Value(&val);
    *external = m_Radius * (1/cos(val/2) - 1);
@@ -1177,7 +1186,10 @@ STDMETHODIMP CHorzCurve::get_CurveLength(Float64* pVal)
    CHECK_RETVAL(pVal);
 
    CComPtr<IAngle> objAngle;
-   get_CircularCurveAngle(&objAngle);
+   HRESULT hr = get_CircularCurveAngle(&objAngle);
+   if ( FAILED(hr) )
+      return hr;
+
    Float64 angle;
    objAngle->get_Value(&angle);
 
@@ -1191,7 +1203,9 @@ STDMETHODIMP CHorzCurve::get_TotalLength(Float64* pVal)
    CHECK_RETVAL(pVal);
 
    Float64 L;
-   get_CurveLength(&L);
+   HRESULT hr = get_CurveLength(&L);
+   if ( FAILED(hr) )
+      return hr;
 
    *pVal = m_Ls1 + L + m_Ls2;
 
@@ -1229,10 +1243,14 @@ STDMETHODIMP CHorzCurve::Bearing(Float64 distance,IDirection* *pVal)
    CHECK_RETOBJ(pVal);
 
    Float64 Lc; // Length of cicular curve
-   get_CurveLength(&Lc);
+   HRESULT hr = get_CurveLength(&Lc);
+   if ( FAILED(hr) )
+      return hr;
 
    Float64 Lt; // Total length of curve
-   get_TotalLength(&Lt);
+   hr = get_TotalLength(&Lt);
+   if ( FAILED(hr) )
+      return hr;
 
    if ( distance <= 0 )
    {
@@ -1319,10 +1337,14 @@ STDMETHODIMP CHorzCurve::PointOnCurve(Float64 distance,IPoint2d* *pVal)
    CHECK_RETOBJ(pVal);
 
    Float64 Lc; // Length of cicular curve
-   get_CurveLength(&Lc);
+   HRESULT hr = get_CurveLength(&Lc);
+   if ( FAILED(hr) )
+      return hr;
 
    Float64 Lt; // Total length of curve
-   get_TotalLength(&Lt);
+   hr = get_TotalLength(&Lt);
+   if ( FAILED(hr) )
+      return hr;
 
    if ( distance <= 0 )
    {

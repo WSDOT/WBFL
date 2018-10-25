@@ -1250,14 +1250,28 @@ Float64 compute_strain(lrfdShearData* pData,Float64 theta)
    Float64 ex;
 
    theta = ::Convert(theta, unitMeasure::Degree, unitMeasure::Radian);
-   ex = Mu/dv + 0.5*Nu + 0.5*Vu/tan(theta) - Aps*fpo;
-   ex /= Es*As + Ep*Aps;
+   if ( IsZero(Es*As + Ep*Aps) )
+   {
+      ex = 0;
+   }
+   else
+   {
+      ex = Mu/dv + 0.5*Nu + 0.5*Vu/tan(theta) - Aps*fpo;
+      ex /= Es*As + Ep*Aps;
+   }
 
    if ( ex < 0.0 )
    {
       Float64 Fe;
-      Fe = Es*As + Ep*Aps;
-      Fe /= Ec*Ac + Es*As + Ep*Aps;
+      if ( IsZero(Ec*Ac + Es*As + Ep*Aps) )
+      {
+         Fe = 0;
+      }
+      else
+      {
+         Fe = Es*As + Ep*Aps;
+         Fe /= Ec*Ac + Es*As + Ep*Aps;
+      }
 
       ex *= Fe; // See "Design of Highway Bridges", Barker and Puckett, pg 641
    }

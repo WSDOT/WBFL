@@ -170,7 +170,7 @@ void CreateBridge(const std::vector<Float64>& spanLengths,Float64 gdrSpacing,Gir
       slab.CoCreateInstance(CLSID_CastSlab);
       slab->put_Fillet(0.75/12);
       slab->put_GrossDepth(9./12);
-      slab->put_SacrificialDepth(1./12);
+      bridge->put_SacrificialDepth(1./12);
 
       slab->putref_LeftOverhangPathStrategy(lstrategy);
       slab->putref_RightOverhangPathStrategy(rstrategy);
@@ -184,7 +184,7 @@ void CreateBridge(const std::vector<Float64>& spanLengths,Float64 gdrSpacing,Gir
       slab->put_Fillet(0.75/12);
       slab->put_PanelDepth(5./12);
       slab->put_CastDepth(4./12);
-      slab->put_SacrificialDepth(1./12);
+      bridge->put_SacrificialDepth(1./12);
 
       slab->putref_LeftOverhangPathStrategy(lstrategy);
       slab->putref_RightOverhangPathStrategy(rstrategy);
@@ -196,7 +196,7 @@ void CreateBridge(const std::vector<Float64>& spanLengths,Float64 gdrSpacing,Gir
       CComPtr<IOverlaySlab> slab;
       slab.CoCreateInstance(CLSID_OverlaySlab);
       slab->put_GrossDepth(9./12);
-      slab->put_SacrificialDepth(1./12);
+      bridge->put_SacrificialDepth(1./12);
 
       slab->putref_LeftOverhangPathStrategy(lstrategy);
       slab->putref_RightOverhangPathStrategy(rstrategy);

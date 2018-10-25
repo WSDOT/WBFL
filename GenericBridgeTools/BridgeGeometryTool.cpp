@@ -1049,6 +1049,18 @@ HRESULT CBridgeGeometryTool::GetDeckEdgePath(IGenericBridge* bridge,DirectionTyp
    CComPtr<IBridgeDeck> deck;
    bridge->get_Deck(&deck);
 
+   if ( deck == NULL )
+   {
+      // no deck...use the traffic barrier path
+      CComPtr<ISidewalkBarrier> barrier;
+      if ( side == qcbLeft )
+         bridge->get_LeftBarrier(&barrier);
+      else
+         bridge->get_RightBarrier(&barrier);
+
+      return barrier->get_Path(ppPath);
+   }
+
    CComQIPtr<ICastSlab> cip(deck);
    CComQIPtr<IPrecastSlab> sip(deck);
    CComQIPtr<IOverlaySlab> overlay(deck);

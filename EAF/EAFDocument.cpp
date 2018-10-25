@@ -97,6 +97,7 @@ CEAFDocument::CEAFDocument()
    pApp->AddUnitModeListener(this);
 
    m_bUIIntegrated = FALSE;
+   m_bEnableSaveBackup = TRUE;
 }
 
 CEAFDocument::~CEAFDocument()
@@ -570,6 +571,16 @@ BOOL CEAFDocument::OnNewDocumentFromTemplate(LPCTSTR lpszPathName)
    return FALSE;
 }
 
+void CEAFDocument::EnableBackupOnSave(BOOL bEnable)
+{
+   m_bEnableSaveBackup = bEnable;
+}
+
+BOOL CEAFDocument::EnableBackupOnSave() const
+{
+   return m_bEnableSaveBackup;
+}
+
 BOOL CEAFDocument::OnOpenDocument(LPCTSTR lpszPathName)
 {
    CWaitCursor cursor;
@@ -601,53 +612,55 @@ BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
    // Not using MFC Serialization so don't call base class.
    //	return CDocument::OnSaveDocument(lpszPathName);
 
-   //
-   // If the file already exists, back it up before we save
-   //
-
-   // Make sure this file actually exists before we attempt to back it up
-   BOOL bDidCopy = false;
-   CString strBackup(lpszPathName);
-
-   HANDLE hFile;
-   WIN32_FIND_DATA find_file_data;
-   hFile = ::FindFirstFile( lpszPathName, &find_file_data );
-   if ( hFile != INVALID_HANDLE_VALUE )
+   BOOL bDidCreateBackup = FALSE;
+   CString strBackupFile(lpszPathName);
+   if ( m_bEnableSaveBackup )
    {
-      ::FindClose(hFile); // don't want no stinkin resource leaks.
-     
-      // OK, The file exists.
-      // check to make sure it's not read-only
-	   DWORD dwAttrib = GetFileAttributes(lpszPathName);
-	   if (dwAttrib & FILE_ATTRIBUTE_READONLY)
-      {
-         CString msg;
-         msg.Format(_T("Cannot save file. The file %s is read-only. Please try to save again to a different file."), lpszPathName);
-         AfxMessageBox(msg );
-         return FALSE;
-      }
+      //
+      // If the file already exists, back it up before we save
+      //
 
-      // Create a backup copy of the last good save.
-      // Backup filename is orginial filename, except the first
-      // letter is a ~.
-      int idx = strBackup.ReverseFind( _T('\\') ); // look for last '\'. 
-                                               // This is one character before the 
-                                               // beginning of the filename
-      ASSERT( idx != -1 ); // '\' wasn't found
-      idx++;
-      strBackup.SetAt(idx,_T('~'));
-
-      bDidCopy = ::CopyFile( lpszPathName, strBackup, FALSE );
-      if ( !bDidCopy && AfxMessageBox(IDS_E_UNSAFESAVE,MB_YESNO) == IDNO )
+      // Make sure this file actually exists before we attempt to back it up
+      HANDLE hFile;
+      WIN32_FIND_DATA find_file_data;
+      hFile = ::FindFirstFile( lpszPathName, &find_file_data );
+      if ( hFile != INVALID_HANDLE_VALUE )
       {
-         return FALSE;
+         ::FindClose(hFile); // don't want no stinkin resource leaks.
+        
+         // OK, The file exists.
+         // check to make sure it's not read-only
+	      DWORD dwAttrib = GetFileAttributes(lpszPathName);
+	      if (dwAttrib & FILE_ATTRIBUTE_READONLY)
+         {
+            CString msg;
+            msg.Format(_T("Cannot save file. The file %s is read-only. Please try to save again to a different file."), lpszPathName);
+            AfxMessageBox(msg );
+            return FALSE;
+         }
+
+         // Create a backup copy of the last good save.
+         // Backup filename is orginial filename, except the first
+         // letter is a ~.
+         int idx = strBackupFile.ReverseFind( _T('\\') ); // look for last '\'. 
+                                                  // This is one character before the 
+                                                  // beginning of the filename
+         ASSERT( idx != -1 ); // '\' wasn't found
+         idx++;
+         strBackupFile.SetAt(idx,_T('~'));
+
+         bDidCreateBackup = ::CopyFile( lpszPathName, strBackupFile, FALSE );
+         if ( !bDidCreateBackup && AfxMessageBox(IDS_E_UNSAFESAVE,MB_YESNO) == IDNO )
+         {
+            return FALSE;
+         }
       }
    }
 
    // Attempt to save the document
-   if ( !SaveTheDocument( lpszPathName ) && bDidCopy )
+   if ( !SaveTheDocument( lpszPathName ) && bDidCreateBackup )
    {
-      // Save failed... Restore the backup
+      // Save failed... Restore the backup (if it was created)
 
       // Delete the bad save
       BOOL bDidDelete = ::DeleteFile( lpszPathName );
@@ -655,20 +668,20 @@ BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
       {
          // Opps... Couldn't delete it.
          // Alter the user so he's not screwed.
-         OnErrorDeletingBadSave(lpszPathName,strBackup);
+         OnErrorDeletingBadSave(lpszPathName,strBackupFile);
       }
 
       if ( bDidDelete )
       {
          // OK, We were able to delete the bad save.
          // Rename the backup to the original name.
-         BOOL bDidMove = ::MoveFile( strBackup, lpszPathName ); // Rename the file
+         BOOL bDidMove = ::MoveFile( strBackupFile, lpszPathName ); // Rename the file
          if ( !bDidMove )
          {
             // Opps... A file with the original name is gone, and we can't
             // rename the backup to the file with the orignal name.
             // Alert the user so he's not screwed.
-            OnErrorRenamingSaveBackup(lpszPathName,strBackup);
+            OnErrorRenamingSaveBackup(lpszPathName,strBackupFile);
          }
       }
 
@@ -677,8 +690,8 @@ BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
    else
    {
       // Save was successful... Delete the backup if one was created
-      if ( bDidCopy )
-         ::DeleteFile( strBackup );
+      if ( bDidCreateBackup )
+         ::DeleteFile( strBackupFile );
       // It's no big deal if this call fails.  The user is simply left
       // with an out of date backup file on their disk drive.
    }
@@ -717,89 +730,6 @@ void CEAFDocument::OnErrorRenamingSaveBackup(LPCTSTR lpszPathName,LPCTSTR lpszBa
               _T("   2. Rename "), lpszBackup, _T(" to "), lpszPathName);
    
    AfxMessageBox(msg);
-}
-
-BOOL CEAFDocument::GetStatusBarMessageString(UINT nID,CString& rMessage) const
-{
-	// load appropriate string
-   BOOL bHandled = FALSE;
-
-	LPTSTR lpsz = rMessage.GetBuffer(255);
-	if (AfxLoadString(nID, lpsz) != 0)
-	{
-		// first newline terminates actual string
-		lpsz = _tcschr(lpsz, '\n');
-		if (lpsz != NULL)
-			*lpsz = '\0';
-
-      bHandled = TRUE;
-	}
-	else
-	{
-		// not found
-		TRACE(traceAppMsg, 0, "Warning (CEAFDocument): no message line prompt for ID %d.\n", nID);
-      bHandled = FALSE;
-	}
-	rMessage.ReleaseBuffer();
-
-   return bHandled;
-}
-
-BOOL CEAFDocument::GetToolTipMessageString(UINT nID, CString& rMessage) const
-{
-   CString string;
-   // load appropriate string
-   BOOL bHandled = FALSE;
-
-   if ( string.LoadString(nID) )
-	{
-		// tip is after first newline 
-      int pos = string.Find('\n');
-      if ( 0 < pos )
-         rMessage = string.Mid(pos+1);
-
-      bHandled = TRUE;
-	}
-	else
-	{
-		// not found
-		TRACE1("Warning (CEAFDocument): no tool tip for ID %d.\n", nID);
-      bHandled = FALSE;
-	}
-
-   return bHandled;
-}
-
-void CEAFDocument::OnCloseDocument()
-{
-   SetModifiedFlag(FALSE);
-   OnStatusChanged();
-
-   // remove ui elements that plug-ins provided
-   if ( m_bUIIntegrated )
-   {
-      ATLASSERT(m_pMainMenu != NULL);
-      IntegrateWithUI(FALSE);
-      GetPluginCommandManager()->Clear();
-   }
-
-   SaveDocumentSettings();
-
-   UnloadDocumentPlugins();
-
-   // put the main frame toolbar back the way it was
-   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
-   pMainFrame->ShowMainFrameToolBar();
-
-   // this has to come last as the document deletes itself
-   CDocument::OnCloseDocument();
-
-   // DON'T DO ANYTHING ELSE HERE.... Document has deleted itself
-
-   // need to clean up the status bar
-   CEAFStatusBar* pStatusBar = pMainFrame->GetStatusBar();
-   if ( pStatusBar )
-      pStatusBar->Reset();
 }
 
 BOOL CEAFDocument::OpenTheDocument(LPCTSTR lpszPathName)
@@ -897,7 +827,35 @@ HRESULT CEAFDocument::ConvertTheDocument(LPCTSTR lpszPathName, CString* realFile
 
 void CEAFDocument::HandleConvertDocumentError( HRESULT hr, LPCTSTR lpszPathName )
 {
-   AfxMessageBox(_T("Error converting document"));
+   CString strMsg;
+   strMsg.Format(_T("An error occured while converting %s (%d)"),lpszPathName,hr);
+   AfxMessageBox(strMsg,MB_OK | MB_ICONEXCLAMATION);
+}
+
+void CEAFDocument::HandleOpenDocumentError( HRESULT hr, LPCTSTR lpszPathName )
+{
+   CString strMsg;
+   strMsg.Format(_T("An error occured while opening %s (%d)"),lpszPathName,hr);
+   AfxMessageBox(strMsg,MB_OK | MB_ICONEXCLAMATION);
+}
+
+void CEAFDocument::HandleSaveDocumentError( HRESULT hr, LPCTSTR lpszPathName )
+{
+   CString strMsg;
+   strMsg.Format(_T("An error occured while saving %s (%d)"),lpszPathName,hr);
+   AfxMessageBox(strMsg,MB_OK | MB_ICONEXCLAMATION);
+}
+
+HRESULT CEAFDocument::WriteTheDocument(IStructuredSave* pStrSave)
+{
+   // Do nothing by default
+   return S_OK;
+}
+
+HRESULT CEAFDocument::LoadTheDocument(IStructuredLoad* pStrLoad)
+{
+   // Do nothing by default
+   return S_OK;
 }
 
 CString CEAFDocument::GetRootNodeName()
@@ -1002,14 +960,87 @@ BOOL CEAFDocument::SaveTheDocument(LPCTSTR lpszPathName)
 	return TRUE;
 }
 
-void CEAFDocument::HandleOpenDocumentError( HRESULT hr, LPCTSTR lpszPathName )
+BOOL CEAFDocument::GetStatusBarMessageString(UINT nID,CString& rMessage) const
 {
-   AfxMessageBox(_T("Error opening document"));
+	// load appropriate string
+   BOOL bHandled = FALSE;
+
+	LPTSTR lpsz = rMessage.GetBuffer(255);
+	if (AfxLoadString(nID, lpsz) != 0)
+	{
+		// first newline terminates actual string
+		lpsz = _tcschr(lpsz, '\n');
+		if (lpsz != NULL)
+			*lpsz = '\0';
+
+      bHandled = TRUE;
+	}
+	else
+	{
+		// not found
+		TRACE(traceAppMsg, 0, "Warning (CEAFDocument): no message line prompt for ID %d.\n", nID);
+      bHandled = FALSE;
+	}
+	rMessage.ReleaseBuffer();
+
+   return bHandled;
 }
 
-void CEAFDocument::HandleSaveDocumentError( HRESULT hr, LPCTSTR lpszPathName )
+BOOL CEAFDocument::GetToolTipMessageString(UINT nID, CString& rMessage) const
 {
-   AfxMessageBox(_T("Error saving document"));
+   CString string;
+   // load appropriate string
+   BOOL bHandled = FALSE;
+
+   if ( string.LoadString(nID) )
+	{
+		// tip is after first newline 
+      int pos = string.Find('\n');
+      if ( 0 < pos )
+         rMessage = string.Mid(pos+1);
+
+      bHandled = TRUE;
+	}
+	else
+	{
+		// not found
+		TRACE1("Warning (CEAFDocument): no tool tip for ID %d.\n", nID);
+      bHandled = FALSE;
+	}
+
+   return bHandled;
+}
+
+void CEAFDocument::OnCloseDocument()
+{
+   SetModifiedFlag(FALSE);
+   OnStatusChanged();
+
+   // remove ui elements that plug-ins provided
+   if ( m_bUIIntegrated )
+   {
+      ATLASSERT(m_pMainMenu != NULL);
+      IntegrateWithUI(FALSE);
+      GetPluginCommandManager()->Clear();
+   }
+
+   SaveDocumentSettings();
+
+   UnloadDocumentPlugins();
+
+   // put the main frame toolbar back the way it was
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
+   pMainFrame->ShowMainFrameToolBar();
+
+   // this has to come last as the document deletes itself
+   CDocument::OnCloseDocument();
+
+   // DON'T DO ANYTHING ELSE HERE.... Document has deleted itself
+
+   // need to clean up the status bar
+   CEAFStatusBar* pStatusBar = pMainFrame->GetStatusBar();
+   if ( pStatusBar )
+      pStatusBar->Reset();
 }
 
 CEAFStatusCenter& CEAFDocument::GetStatusCenter()

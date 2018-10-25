@@ -76,15 +76,6 @@ void CTestBridgeDeck::Test(IUnknown* pUnk)
    TRY_TEST(deck->get_Material(&material),S_OK);
    TRY_TEST(material != NULL,true);
 
-   Float64 value;
-   TRY_TEST(deck->get_WearingSurfaceDensity(NULL),E_POINTER);
-   TRY_TEST(deck->get_WearingSurfaceDensity(&value),S_OK);
-   TRY_TEST(value,0.0);
-
-   TRY_TEST(deck->get_WearingSurfaceDepth(NULL),E_POINTER);
-   TRY_TEST(deck->get_WearingSurfaceDepth(&value),S_OK);
-   TRY_TEST(value,0.0);
-
    // Manipulate values while testing for event handling
    CComObject<CTestBridgeDeck>* pTestBridgeDeck;
    CComObject<CTestBridgeDeck>::CreateInstance(&pTestBridgeDeck);
@@ -125,30 +116,6 @@ void CTestBridgeDeck::Test(IUnknown* pUnk)
    bstrStage.Empty();
    deck->get_ConstructionStage(&bstrStage);
    TRY_TEST(bstrStage,CComBSTR("Stage 2"));
-
-   pTestBridgeDeck->InitEventTest();
-   TRY_TEST(deck->put_WearingSurfaceDensity(-10),E_INVALIDARG);
-   TRY_TEST(deck->put_WearingSurfaceDensity(0),S_OK);
-   TRY_TEST(pTestBridgeDeck->PassedEventTest(), false );
-
-   pTestBridgeDeck->InitEventTest();
-   TRY_TEST(deck->put_WearingSurfaceDensity(150),S_OK);
-   TRY_TEST(pTestBridgeDeck->PassedEventTest(), true );
-
-   deck->get_WearingSurfaceDensity(&value);
-   TRY_TEST(IsEqual(value,150.),true);
-
-   pTestBridgeDeck->InitEventTest();
-   TRY_TEST(deck->put_WearingSurfaceDepth(-10),E_INVALIDARG);
-   TRY_TEST(deck->put_WearingSurfaceDepth(0),S_OK);
-   TRY_TEST(pTestBridgeDeck->PassedEventTest(), false );
-
-   pTestBridgeDeck->InitEventTest();
-   TRY_TEST(deck->put_WearingSurfaceDepth(150),S_OK);
-   TRY_TEST(pTestBridgeDeck->PassedEventTest(), true );
-
-   deck->get_WearingSurfaceDepth(&value);
-   TRY_TEST(IsEqual(value,150.),true);
 
    CComPtr<IMaterial> material2;
    material2.CoCreateInstance(CLSID_Material);

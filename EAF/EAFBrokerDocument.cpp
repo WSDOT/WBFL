@@ -436,9 +436,19 @@ HRESULT CEAFBrokerDocument::WriteTheDocument(IStructuredSave* pStrSave)
 
 CString CEAFBrokerDocument::GetLogFileName()
 {
+   // Creates the log file on the User's desktop so that it is easy to find
    CString strFileName;
    strFileName.Format(_T("%s.log"),EAFGetApp()->m_pszExeName);
-   return strFileName;
+
+   PWSTR strDesktop;
+   ::SHGetKnownFolderPath(FOLDERID_Desktop,0,NULL,&strDesktop);
+
+   CString strFilePath;
+   strFilePath.Format(_T("%s\\%s"),strDesktop,strFileName);
+
+   ::CoTaskMemFree((void*)strDesktop);
+
+   return strFilePath;
 }
 
 void CEAFBrokerDocument::OnLogFileOpened()

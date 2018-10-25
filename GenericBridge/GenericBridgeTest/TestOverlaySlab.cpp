@@ -67,10 +67,6 @@ void CTestOverlaySlab::Test()
    TRY_TEST(slab->get_GrossDepth(&value),S_OK);
    TRY_TEST(IsZero(value),true);
 
-   TRY_TEST(slab->get_SacrificialDepth(NULL),E_POINTER);
-   TRY_TEST(slab->get_SacrificialDepth(&value),S_OK);
-   TRY_TEST(IsZero(value),true);
-
    ///////////////////////////////////////
    // Test Set with event sink
    CComObject<CTestOverlaySlab>* pTestOverlaySlab;
@@ -91,18 +87,6 @@ void CTestOverlaySlab::Test()
    TRY_TEST(pTestOverlaySlab->PassedEventTest(), true );
 
    slab->get_GrossDepth(&value);
-   TRY_TEST(IsEqual(value,10.0),true);
-  
-   pTestOverlaySlab->InitEventTest();
-   TRY_TEST(slab->put_SacrificialDepth(-10),E_INVALIDARG);
-   TRY_TEST(slab->put_SacrificialDepth(0),S_OK);
-   TRY_TEST(pTestOverlaySlab->PassedEventTest(), false );
-
-   pTestOverlaySlab->InitEventTest();
-   TRY_TEST(slab->put_SacrificialDepth(10),S_OK);
-   TRY_TEST(pTestOverlaySlab->PassedEventTest(), true );
-
-   slab->get_SacrificialDepth(&value);
    TRY_TEST(IsEqual(value,10.0),true);
 
    // Done with events

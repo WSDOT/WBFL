@@ -75,10 +75,6 @@ void CTestCastSlab::Test()
    TRY_TEST(slab->get_OverhangDepth(&value),S_OK);
    TRY_TEST(IsZero(value),true);
 
-   TRY_TEST(slab->get_SacrificialDepth(NULL),E_POINTER);
-   TRY_TEST(slab->get_SacrificialDepth(&value),S_OK);
-   TRY_TEST(IsZero(value),true);
-
    DeckOverhangTaper taper;
    TRY_TEST(slab->get_OverhangTaper(NULL),E_POINTER);
    TRY_TEST(slab->get_OverhangTaper(&taper),S_OK);
@@ -126,19 +122,6 @@ void CTestCastSlab::Test()
    TRY_TEST(pTestCastSlab->PassedEventTest(), true );
 
    slab->get_GrossDepth(&value);
-   TRY_TEST(IsEqual(value,10.0),true);
-
-  
-   pTestCastSlab->InitEventTest();
-   TRY_TEST(slab->put_SacrificialDepth(-10),E_INVALIDARG);
-   TRY_TEST(slab->put_SacrificialDepth(0),S_OK);
-   TRY_TEST(pTestCastSlab->PassedEventTest(), false );
-
-   pTestCastSlab->InitEventTest();
-   TRY_TEST(slab->put_SacrificialDepth(10),S_OK);
-   TRY_TEST(pTestCastSlab->PassedEventTest(), true );
-
-   slab->get_SacrificialDepth(&value);
    TRY_TEST(IsEqual(value,10.0),true);
   
    pTestCastSlab->InitEventTest();
