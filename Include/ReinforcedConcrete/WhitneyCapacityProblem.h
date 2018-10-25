@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RC - Reinforced Concrete Section Capacity Analysis Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -53,12 +53,6 @@ CLASS
 DESCRIPTION
    Overrides the DoCaluclateCompressionBlock method to create a compression
    block offset equal to Beta1*c
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 01.22.1998 : Created file

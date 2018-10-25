@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,6 +30,7 @@
 #include <EAF\EAFExp.h>
 #include <EAF\EAFTypes.h>
 #include <EAF\EAFAppPluginManager.h>
+#include <EAF\EAFPluginManager.h>
 #include <EAF\EAFDocTemplateRegistrar.h>
 #include <EAF\EAFPluginCommandManager.h>
 #include <EAF\EAFSplashScreen.h>
@@ -53,13 +54,14 @@ public:
 };
 
 #include <EAF\EAFComponentInfo.h>
-typedef CEAFPluginManager<IEAFComponentInfo,CEAFApp> CEAFComponentInfoManager;
+typedef CEAFPluginManagerBase<IEAFComponentInfo,CEAFApp> CEAFComponentInfoManager;
 
 
 class CEAFHelpWindowThread;
 
 /////////////////////////////////////////////////////////////////////////////
-// CEAFApp thread
+// CEAFApp class
+// Basic EAF Application class based on MFC's doc/view architecture
 class EAFCLASS CEAFApp : public CWinApp
 {
 	DECLARE_DYNAMIC(CEAFApp)
@@ -265,7 +267,7 @@ private:
    void Fire_UnitsChanged();
 
    CEAFPluginCommandManager m_PluginCommandMgr;
-   CEAFAppPluginManager m_PluginManager;
+   CEAFAppPluginManager m_AppPluginManager;
    CEAFComponentInfoManager m_ComponentInfoManager;
 
    CString m_strWindowPlacementFormat;
@@ -281,20 +283,38 @@ public:
    virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
 
+/////////////////////////////////////////////////////////////////////////////
+// CEAFPluginApp class
+// Extends the basic application type to include plug-in applications
 class EAFCLASS CEAFPluginApp : public CEAFApp
 {
 	DECLARE_DYNAMIC(CEAFPluginApp)
 public:
    BOOL InitInstance();
 
+   // Category information for plug-in applications
    virtual OLECHAR* GetAppPluginCategoryName() = 0;
    virtual CATID GetAppPluginCategoryID() = 0;
+
+   // Category information for plug-ins to the main application
+   virtual OLECHAR* GetPluginCategoryName() = 0;
+   virtual CATID GetPluginCategoryID() = 0;
    
    afx_msg void OnUpdateManageApplicationPlugins(CCmdUI* pCmdUI);
    afx_msg void OnManageApplicationPlugins();
 
 	DECLARE_MESSAGE_MAP()
 
+   CEAFPluginManager* GetPluginManager();
+
 protected:
+
+   CEAFPluginManager m_PluginManager;
+
+   BOOL RegisterDocTemplates();
+   BOOL AppPluginUIIntegration(BOOL bIntegrate);
    virtual BOOL CreateApplicationPlugins();
+   virtual BOOL CreatePlugins();
+   virtual void LoadDocumentationMap();
+   virtual eafTypes::HelpResult GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL);
 };

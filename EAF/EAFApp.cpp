@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,7 +29,7 @@
 #include "resource.h"
 #include <EAF\EAFMainFrame.h>
 #include <EAF\EAFDocManager.h>
-#include <EAF\EAFPluginManager.h>
+#include <EAF\EAFPluginManagerBase.h>
 #include <EAF\EAFSplashScreen.h>
 #include <EAF\EAFBrokerDocument.h>
 #include <EAF\EAFProjectLog.h>
@@ -880,7 +880,7 @@ CEAFDocTemplateRegistrar* CEAFApp::GetDocTemplateRegistrar()
 
 CEAFAppPluginManager* CEAFApp::GetAppPluginManager()
 {
-   return &m_PluginManager;
+   return &m_AppPluginManager;
 }
 
 CEAFPluginCommandManager* CEAFApp::GetPluginCommandManager()
@@ -1440,6 +1440,8 @@ IMPLEMENT_DYNAMIC(CEAFPluginApp, CEAFApp)
 
 BOOL CEAFPluginApp::InitInstance()
 {
+   GetPluginManager()->SetParent(this);
+
    if ( !CEAFApp::InitInstance() )
    {
       return FALSE;
@@ -1458,6 +1460,12 @@ BEGIN_MESSAGE_MAP(CEAFPluginApp, CEAFApp)
 	ON_COMMAND(EAFID_MANAGE_APP_PLUGINS, OnManageApplicationPlugins)
 	ON_UPDATE_COMMAND_UI(EAFID_MANAGE_APP_PLUGINS, OnUpdateManageApplicationPlugins)
 END_MESSAGE_MAP()
+
+
+CEAFPluginManager* CEAFPluginApp::GetPluginManager()
+{
+   return &m_PluginManager;
+}
 
 void CEAFPluginApp::OnUpdateManageApplicationPlugins(CCmdUI* pCmdUI)
 {
@@ -1541,11 +1549,61 @@ BOOL CEAFPluginApp::CreateApplicationPlugins()
    return TRUE;
 }
 
+BOOL CEAFPluginApp::CreatePlugins()
+{
+   GetPluginManager()->SetCATID(GetPluginCategoryID());
+   if ( !GetPluginManager()->LoadPlugins() )
+   {
+      return FALSE;
+   }
+
+   return TRUE;
+}
+
+BOOL CEAFPluginApp::RegisterDocTemplates()
+{
+   if ( !CreatePlugins() )
+   {
+      return FALSE;
+   }
+
+   if ( !GetPluginManager()->InitPlugins() )
+   {
+      return FALSE;
+   }
+
+   return CEAFApp::RegisterDocTemplates();
+}
+
+BOOL CEAFPluginApp::AppPluginUIIntegration(BOOL bIntegrate)
+{
+   CEAFApp::AppPluginUIIntegration(bIntegrate);
+   GetPluginManager()->IntegrateWithUI(bIntegrate);
+   return TRUE;
+}
+
+void CEAFPluginApp::LoadDocumentationMap()
+{
+   CEAFApp::LoadDocumentationMap();
+
+   GetPluginManager()->LoadDocumentationMaps();
+}
+
+eafTypes::HelpResult CEAFPluginApp::GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL)
+{
+   eafTypes::HelpResult result = CEAFApp::GetDocumentLocation(lpszDocSetName,nHID,strURL);
+   if ( result == eafTypes::hrDocSetNotFound )
+   {
+      result = GetPluginManager()->GetDocumentLocation(lpszDocSetName,nHID,strURL);
+   }
+   return result;
+}
+
 void save_doc(CDocument* pDoc,void* pStuff)
 {
    if ( pDoc->IsModified() )
    {
-         pDoc->DoFileSave();
+      pDoc->DoFileSave();
    }
 }
 

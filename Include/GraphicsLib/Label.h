@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphicsLib - Utility library graphics
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -56,11 +56,6 @@ DESCRIPTION
    std::endl's (\n's) into the label string.
 
    The point size of the font can be specified, but the font is always arial.
-
-COPYRIGHT
-   Copyright © 1997-1998
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 05.05.1999 : Created file

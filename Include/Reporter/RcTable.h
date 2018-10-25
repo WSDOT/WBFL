@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -55,11 +55,6 @@ CLASS
 DESCRIPTION
    This class defines a two-dimensional table of report content. Each cell in
    the table may be treated as a separate paragraph.
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 04.21.1997 : Created file

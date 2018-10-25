@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -54,12 +54,6 @@ CLASS
 DESCRIPTION
    Live load distribution factor calculator for cross section types B and C
    with concrete decks.
-
-
-COPYRIGHT
-   Copyright © 1997-2001
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 10.09.2001 : Created file
@@ -209,12 +203,6 @@ DESCRIPTION
       effectiveness of diaphragms on the laterial distribution of truck loads
       is investigated.
 
-
-COPYRIGHT
-   Copyright © 1997-2001
-   Washington State Department Of Transportation
-   All Rights Reserved
-
 LOG
    rab : 10.09.2001 : Created file
 *****************************************************************************/
@@ -333,11 +321,6 @@ DESCRIPTION
 
    3) The live load used to design the exterior beam must never be less than the live
       load used to design an interior beam.
-
-COPYRIGHT
-   Copyright © 1997-2001
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 10.09.2001 : Created file

@@ -74,12 +74,6 @@ CLASS
 DESCRIPTION
    Standard interface for all live load distribution factor calculators.
 
-
-COPYRIGHT
-   Copyright © 1997-1998
-   Washington State Department Of Transportation
-   All Rights Reserved
-
 LOG
    rab : 11.12.1998 : Created file
 *****************************************************************************/

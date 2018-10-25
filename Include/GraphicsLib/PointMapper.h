@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphicsLib - Utility library graphics
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -104,11 +104,6 @@ DESCRIPTION
                 mapper.WPtoDP(5280.,5280.,dx,dy); // dx = 100, dy = 0
                 mapper.WPtoDP(5280.,0.,dx,dy);    // dx = 100, dy = 200
    END
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 *****************************************************************************/
 
 class GRCLASS grlibPointMapper

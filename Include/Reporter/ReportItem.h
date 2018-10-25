@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -53,11 +53,6 @@ DESCRIPTION
    This class is an abstract representation of the qualities needed for items that are
    to be a part of a report. The main duty of this class is to implement the style chain
    of responsibility.
-   
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 *****************************************************************************/
 
 class REPORTERCLASS rptReportItem

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -25,14 +25,14 @@
 
 #include <EAF\EAFExp.h>
 #include <EAF\EAFApp.h>
-#include <EAF\EAFPluginManager.h>
+#include <EAF\EAFPluginManagerBase.h>
 #include <EAF\EAFDocumentPlugin.h>
 #include <WBFLCore.h> // IStructuredSave, IStructuredLoad, et. al.
 #include <vector>
 
 // Plugin manager for CEAFDocument plugins
 
-class EAFCLASS CEAFDocPluginManager : public CEAFPluginManager<IEAFDocumentPlugin,CEAFDocument>
+class EAFCLASS CEAFDocPluginManager : public CEAFPluginManagerBase<IEAFDocumentPlugin,CEAFDocument>
 {
 public:
    CEAFDocPluginManager();

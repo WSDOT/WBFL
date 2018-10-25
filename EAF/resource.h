@@ -72,6 +72,9 @@
 #define IDC_NAME_STATIC                 1031
 #define IDC_EDIT1                       1032
 #define IDC_REPORT_NAME_EDIT            1032
+#define IDC_INFORMATION                 1034
+#define IDC_WARNING                     1035
+#define IDC_ERROR                       1036
 #define IDC_PLUGIN_LIST                 1108
 #define IDD_UIHINTS                     1135
 #define IDC_TOOLTIPS                    1156
@@ -88,6 +91,7 @@
 #define IDS_REG_WNDPOS                  1737
 #define IDS_WORKING                     1746
 #define IDC_APPLIST                     3333
+#define IDC_REPORT_WEB_BROWSER          5001
 #define IDD_SELECTREPORT                12925
 #define IDD_FAVORITE_REPORT_DLG         12926
 #define IDC_FRAME                       13012
@@ -100,8 +104,6 @@
 #define IDS_E_BADINSTALL                61449
 #define IDS_E_PROBPERSISTS              61450
 #define IDS_E_UNSAFESAVE                61451
-#define IDC_HELP_WEB_BROWSER            AFX_IDW_PANE_FIRST
-#define IDC_REPORT_WEB_BROWSER          5001
 
 // Next default values for new objects
 // 
@@ -109,7 +111,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        151
 #define _APS_NEXT_COMMAND_VALUE         32778
-#define _APS_NEXT_CONTROL_VALUE         1034
+#define _APS_NEXT_CONTROL_VALUE         1037
 #define _APS_NEXT_SYMED_VALUE           1015
 #endif
 #endif

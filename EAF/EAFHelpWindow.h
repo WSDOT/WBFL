@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,6 +31,7 @@
 #include <afxext.h>
 #include "webbrowser.h"
 
+#define IDC_HELP_WEB_BROWSER            AFX_IDW_PANE_FIRST
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFHelpWindow

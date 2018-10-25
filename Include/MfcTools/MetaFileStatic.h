@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -37,12 +37,6 @@ DESCRIPTION
    CStatic-derived control for displaying a metafile. To use this class, add it
    as a member to a dialog and then use the DDX_MetaFileStatic method to connect
    it to the metafile.
-
-
-COPYRIGHT
-   Copyright © 1997-1998
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 11.1.1999 : Created file

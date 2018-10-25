@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -54,12 +54,6 @@ CLASS
 DESCRIPTION
    Live load distribution factor calculator for cross section types H and I and J
    if not sufficiently connected.
-
-
-COPYRIGHT
-   Copyright © 2005
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 07.15.2005 : Created file
@@ -197,12 +191,6 @@ DESCRIPTION
    Live load distribution factor calculator for cross section type F
    if not sufficiently connected.
 
-
-COPYRIGHT
-   Copyright © 2005
-   Washington State Department Of Transportation
-   All Rights Reserved
-
 LOG
    rab : 07.15.2005 : Created file
 *****************************************************************************/
@@ -313,12 +301,6 @@ DESCRIPTION
 
    3) TxDOT equations do not deal with slab overhangs. Force user to overrride for this case.
 
-
-COPYRIGHT
-   Copyright © 1997-2001
-   Washington State Department Of Transportation
-   All Rights Reserved
-
 LOG
    rab : 10.09.2001 : Created file
 *****************************************************************************/
@@ -383,6 +365,9 @@ protected:
    virtual DFResult GetShearDF_Ext_2_Strength() const;
 
    //------------------------------------------------------------------------
+   virtual bool InteriorMomentEquationRule(bool bSISpec, bool doThrow) const;
+   virtual bool ExteriorMomentEquationRule(bool bSISpec, bool doThrow) const;
+
    virtual bool TestRangeOfApplicability(Location loc) const;
 
    //------------------------------------------------------------------------
@@ -448,12 +433,6 @@ DESCRIPTION
       Article 4.6.2.2.2e nor for shear as suggested in Article 4.6.2.2.3c.
 
    3) Exterior g cannot exceed interior factor
-
-
-COPYRIGHT
-   Copyright © 1997-2001
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 10.09.2001 : Created file

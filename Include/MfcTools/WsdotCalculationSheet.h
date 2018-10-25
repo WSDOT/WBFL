@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -53,12 +53,6 @@ CLASS
 DESCRIPTION
    This class prints a standard WSDOT calculation page border. You will need
    to set all parameters to get it to look right.
-
-
-COPYRIGHT
-   Copyright © 1997-1998
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 02.23.2000 : Created file

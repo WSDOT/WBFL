@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -52,11 +52,6 @@ CLASS
 DESCRIPTION
    This class is a ChapterVisitor that generates HTML for a given chapter and
    sends it to the ostream defined in the constructor
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 04.09.1997 : Created file

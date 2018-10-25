@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // WBFLTools - Utility Tools for the WBFL
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -36,18 +36,32 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
-const UINT g_TimerID = 1;
+const UINT g_ShowProgressWndTimerID = 1;
+const UINT g_PumpProgressWndTimerID = 2;
+
 CProgressDlg* g_pTimerWnd = 0;
-void CALLBACK EXPORT TimerProc(HWND hWnd,UINT nMsg,UINT_PTR nIDEvent,DWORD dwTime)
+
+void CALLBACK EXPORT PumpProgressWndTimerProc(HWND hWnd,UINT nMsg,UINT_PTR nIDEvent,DWORD dwTime)
 {
    CHECK( g_pTimerWnd != 0 );
    CHECK( g_pTimerWnd->GetSafeHwnd() == hWnd );
-   CHECK( nIDEvent == g_TimerID );
+   CHECK( nIDEvent == g_PumpProgressWndTimerID );
+   g_pTimerWnd->PumpMessage();
+}
 
-   g_pTimerWnd->KillTimer( g_TimerID );
+void CALLBACK EXPORT ShowProgressWndTimerProc(HWND hWnd,UINT nMsg,UINT_PTR nIDEvent,DWORD dwTime)
+{
+   CHECK( g_pTimerWnd != 0 );
+   CHECK( g_pTimerWnd->GetSafeHwnd() == hWnd );
+   CHECK( nIDEvent == g_ShowProgressWndTimerID );
+
+   g_pTimerWnd->KillTimer( g_ShowProgressWndTimerID );
    g_pTimerWnd->ShowWindow( SW_SHOW );
    g_pTimerWnd->GrabInput();
-   g_pTimerWnd = 0;
+   
+   // make the progress window pump its message queue every 5 seconds so
+   // it doesn't look like the application is stuck
+   g_pTimerWnd->SetTimer(g_PumpProgressWndTimerID,5000,&PumpProgressWndTimerProc);
 }
 
 // CProgressThread
@@ -100,7 +114,7 @@ HRESULT CProgressThread::CreateProgressWindow(CWnd* pParentWnd,DWORD dwMask,UINT
    ATLASSERT( m_ProgressDlg.IsWindowVisible() == false );
 
    g_pTimerWnd = &(m_ProgressDlg);
-   m_ProgressDlg.SetTimer( g_TimerID, nDelay, &TimerProc );
+   m_ProgressDlg.SetTimer( g_ShowProgressWndTimerID, nDelay, &ShowProgressWndTimerProc );
    m_ProgressDlg.PumpMessage();
    
    return S_OK;
@@ -137,7 +151,8 @@ BOOL CProgressThread::Continue()
 
 void CProgressThread::DestroyProgressWindow()
 {
-   m_ProgressDlg.KillTimer( g_TimerID );
+   m_ProgressDlg.KillTimer( g_ShowProgressWndTimerID );
+   m_ProgressDlg.KillTimer( g_PumpProgressWndTimerID );
    g_pTimerWnd = 0;
    m_ProgressDlg.ReleaseInput();
    m_ProgressDlg.DestroyWindow();

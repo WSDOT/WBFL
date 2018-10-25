@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -55,12 +55,6 @@ DESCRIPTION
    methods in this interface.  Each callback is implemented with a do-nothing
    function.  Subclasses need only override those events they are interesting
    in listening to.
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 11.17.1997 : Created file

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitMgt - Service for managing display units indirectly
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -50,12 +50,6 @@ CLASS
 
 DESCRIPTION
    Template class for an XEntryNotFound exception.
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 11.09.1997 : Created file
@@ -139,12 +133,6 @@ CLASS
 DESCRIPTION
    Template class for a unit library.  This class provides library services
    that can be used to categorize indirect units of measure.
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 11.09.1997 : Created file
@@ -289,12 +277,6 @@ CLASS
 DESCRIPTION
    Template iterator class for a unit library.  Use this class to iterator
    through the elements in the library.
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 11.09.1997 : Created file
@@ -454,12 +436,6 @@ CLASS
 DESCRIPTION
    Template iterator class for a unit library.  Use this class to iterator
    through the elements in the library.
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 11.09.1997 : Created file

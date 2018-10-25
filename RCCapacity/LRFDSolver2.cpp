@@ -58,8 +58,6 @@ STDMETHODIMP CLRFDSolver2::get_Tolerance(Float64* tolerance)
 
 STDMETHODIMP CLRFDSolver2::putref_StrandModel(IStressStrain* model)
 {
-   CHECK_IN(model);
-
    m_StrandModel = model;
    return S_OK;
 }
@@ -78,8 +76,6 @@ STDMETHODIMP CLRFDSolver2::get_StrandModel(IStressStrain* *model)
 
 STDMETHODIMP CLRFDSolver2::putref_RebarModel(IStressStrain* model)
 {
-   CHECK_IN(model);
-
    m_RebarModel = model;
    return S_OK;
 }

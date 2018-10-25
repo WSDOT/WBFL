@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Modeling of geometric primitives
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -55,12 +55,6 @@ CLASS
 DESCRIPTION
    Encapsulates the notion of a two-dimensional quantity that usually 
    represents a displacement or the height and width of a rectangle.
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 11.03.1997 : Created file
@@ -239,12 +233,6 @@ CLASS
 DESCRIPTION
    Encapsulates the notion of a two-dimensional point that represents a
    position in a Cartesian coordinate system.
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 11.03.1997 : Created file
@@ -444,11 +432,6 @@ DESCRIPTION
    are provided for comparing, assigning, and manipulating sizes.
 
   The origin of the rectangle is at the bottom left corner
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 *****************************************************************************/
 class GEOMCLASS gpRect2d
 {

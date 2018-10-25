@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Math - Utility library of mathematical services
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -53,11 +53,6 @@ CLASS
 
 DESCRIPTION
    Exception class for mathNumericIntegrator2d.
-
-COPYRIGHT
-   Copyright (c) 2008
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 06.24.2008 : Created file
@@ -131,12 +126,6 @@ CLASS
 
 DESCRIPTION
    Abstract base class for two dimensional numerical integration.
-
-
-COPYRIGHT
-   Copyright (c) 2008
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 06.24.2008 : Created file

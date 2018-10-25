@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -50,11 +50,6 @@ DESCRIPTION
    This class defines a chapter in a report. For the purposes of the Reporter, 
    a paragraph is merely a collection of report content. A paragraph may also store some
    style information for its report content. Paragraphs also always define a line break.
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 *****************************************************************************/
 
 class REPORTERCLASS rptParagraph : public rptReportItem

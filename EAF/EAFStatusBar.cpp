@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,11 +29,6 @@
 #include <EAF\EAFStatusBar.h>
 #include <EAF\EAFDocument.h>
 #include <EAF\StatusCenter.h>
-#include <Colors.h>
-
-#define STATUS_OK_COLOR    LIME
-#define STATUS_WARN_COLOR  YELLOW
-#define STATUS_ERROR_COLOR RED
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -335,8 +330,8 @@ void CEAFStatusBar::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
       if ( status_center.IsEnabled() )
       {
          eafTypes::StatusSeverityType severity = status_center.GetSeverity();
-         color = (severity == eafTypes::statusOK      ? STATUS_OK_COLOR :
-                  severity == eafTypes::statusWarning ? STATUS_WARN_COLOR : STATUS_ERROR_COLOR);
+         color = (severity == eafTypes::statusInformation ? STATUS_INFORMATION_COLOR :
+                  severity == eafTypes::statusWarning ? STATUS_WARNING_COLOR : STATUS_ERROR_COLOR);
 
          status_count = status_center.Count();
 

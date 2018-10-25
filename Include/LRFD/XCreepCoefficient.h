@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -55,12 +55,6 @@ DESCRIPTION
    Exception object thrown when the lrfdCreepCoefficient class can't compute
    the creep coefficient.  This will only occur when the V/S ratio exceeds the
    limit specified in the LRFD specification;
-
-
-COPYRIGHT
-   Copyright (c) 1997-1999
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 03.16.1999 : Created file

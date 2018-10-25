@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -51,12 +51,6 @@ DESCRIPTION
    Pure interface class for persistance.  Derive from this class if you wish
    to support persistance.  You will probably want to use the structured
    storage macros to assist with persistance implementation.
-
-
-COPYRIGHT
-   Copyright © 1997-1998
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 12.18.1998 : Created file

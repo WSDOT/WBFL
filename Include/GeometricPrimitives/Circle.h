@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Modeling of geometric primitives
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -52,11 +52,6 @@ CLASS
 
 DESCRIPTION
    A class to represent a circle in the X-Y Plane
-
-COPYRIGHT
-   Copyright (c) 1999
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    Richard Brice : 05.07.1999 : Created file

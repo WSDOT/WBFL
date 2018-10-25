@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,12 +34,6 @@ CLASS
 
 DESCRIPTION
    Abstract interface for defining a girder
-
-
-COPYRIGHT
-   Copyright © 1997-2016
-   Washington State Department Of Transportation
-   All Rights Reserved
 *****************************************************************************/
 
 class STABILITYCLASS stbIGirder
@@ -81,12 +75,6 @@ CLASS
 
 DESCRIPTION
    Abstract interface for defining the basic stability problem
-
-
-COPYRIGHT
-   Copyright © 1997-2016
-   Washington State Department Of Transportation
-   All Rights Reserved
 *****************************************************************************/
 class STABILITYCLASS stbIStabilityProblem
 {
@@ -139,12 +127,6 @@ CLASS
 
 DESCRIPTION
    Abstract interface that extends stbIStabilityProblem for lifting analysis
-
-
-COPYRIGHT
-   Copyright © 1997-2016
-   Washington State Department Of Transportation
-   All Rights Reserved
 *****************************************************************************/
 class STABILITYCLASS stbILiftingStabilityProblem : public stbIStabilityProblem
 {
@@ -166,12 +148,6 @@ CLASS
 
 DESCRIPTION
    Abstract interface that extends stbIStabilityProblem for hauling analysis
-
-
-COPYRIGHT
-   Copyright © 1997-2016
-   Washington State Department Of Transportation
-   All Rights Reserved
 *****************************************************************************/
 class STABILITYCLASS stbIHaulingStabilityProblem :  public stbIStabilityProblem
 {

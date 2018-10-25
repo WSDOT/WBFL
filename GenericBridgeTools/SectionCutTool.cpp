@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -266,7 +266,7 @@ STDMETHODIMP CSectionCutTool::CreateRightBarrierSection(IGenericBridge* bridge,F
    return S_OK;
 }
 
-STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 station,IDirection* pDirection,IShape** shape)
+STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 station,IDirection* pDirection,VARIANT_BOOL bIncludeHaunch,IShape** shape)
 {
    CHECK_IN(bridge);
    CHECK_RETOBJ(shape);
@@ -442,199 +442,201 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    slab_shape->AddPoint(left_deck_offset,elev - overhang_depth);
 
    // work left to right across bottom of deck back to the bottom-right corner
-
-   std::vector<GirderPointRecord> vGirderPoints = GetGirderPoints(bridge,objStation,dirCutLine);
-   if ( vGirderPoints.size() == 0 )
+   if ( bIncludeHaunch == VARIANT_TRUE )
    {
-      // cut does not intersect any girders. make the bottom of the slab parallel the top of the slab
-      for ( IndexType ridgePointIdx = 0; ridgePointIdx < nRidgePoints; ridgePointIdx++ )
+      std::vector<GirderPointRecord> vGirderPoints = GetGirderPoints(bridge,objStation,dirCutLine);
+      if ( vGirderPoints.size() == 0 )
       {
-         // get offset (measured from the alignment) and the elevation of the ridge point
-         Float64 offset, elev;
-         if ( bIsNormal )
+         // cut does not intersect any girders. make the bottom of the slab parallel the top of the slab
+         for ( IndexType ridgePointIdx = 0; ridgePointIdx < nRidgePoints; ridgePointIdx++ )
          {
-            profile->RidgePointElevation(COGO_FINISHED_SURFACE_ID,CComVariant(objStation),ridgePointIdx,alignmentPointIdx,&offset,&elev);
-         }
-         else
-         {
-            surfaceProfile->GetRidgePointElevation(ridgePointIdx,&offset,&elev);
-         }
+            // get offset (measured from the alignment) and the elevation of the ridge point
+            Float64 offset, elev;
+            if ( bIsNormal )
+            {
+               profile->RidgePointElevation(COGO_FINISHED_SURFACE_ID,CComVariant(objStation),ridgePointIdx,alignmentPointIdx,&offset,&elev);
+            }
+            else
+            {
+               surfaceProfile->GetRidgePointElevation(ridgePointIdx,&offset,&elev);
+            }
 
-         // if the ridge point is between the edges of the deck, add it to the deck shape
-         if ( ::InRange(left_deck_offset,offset,right_deck_offset) )
-         {
-            slab_shape->AddPoint(offset,elev-gross_depth);
+            // if the ridge point is between the edges of the deck, add it to the deck shape
+            if ( ::InRange(left_deck_offset,offset,right_deck_offset) )
+            {
+               slab_shape->AddPoint(offset,elev-gross_depth);
+            }
          }
       }
-   }
-   else
-   {
-      // Haunches along bottom of slab
-      // haunch is defined by 6 points per mating surface
-      //
-      //    --------1\      /6------
-      //             2      5
-      //             |      |
-      //             3------4
-      //
-      BOOST_FOREACH(GirderPointRecord& girderPoint,vGirderPoints)
+      else
       {
-         CComPtr<ISuperstructureMember> ssmbr;
-         bridge->get_SuperstructureMember(girderPoint.girderID,&ssmbr);
-
-         CComPtr<ISuperstructureMemberSegment> segment;
-         ssmbr->get_Segment(girderPoint.segIdx,&segment);
-
-         // orientation of girder in radians... 0 = plumb, rotated CW is +
-         Float64 orientation;
-         segment->get_Orientation(&orientation); // section view orientation
-
-         CComPtr<IShape> girder_shape;
-         segment->get_PrimaryShape(girderPoint.Xs,&girder_shape);
-
-         CComQIPtr<IGirderSection> girder_section(girder_shape);
-
-         // get skew angle. its not just the pier skew
-         CComPtr<IGirderLine> girderLine;
-         segment->get_GirderLine(&girderLine);
-         CComPtr<IDirection> objGirderLineDirection;
-         girderLine->get_Direction(&objGirderLineDirection);
-         Float64 dirGirderLine;
-         objGirderLineDirection->get_Value(&dirGirderLine);
-         Float64 skew = fabs(dirCutLineValue - (dirGirderLine + PI_OVER_2));
-
-         Float64 min_top_flange_thickness;
-         girder_section->get_MinTopFlangeThickness(&min_top_flange_thickness);
-
-         Float64 haunch = 0;
-         segment->ComputeHaunchDepth(girderPoint.Xs,&haunch);
-
-         Float64 xfillet;
-         segment->get_Fillet(&xfillet);
-
-         Float64 yfillet = min(xfillet, haunch); // don't draw fillet deeper than the haunch depth
-
-         Float64 elclg; // elevation at CL of girder
-         profile->Elevation(CComVariant(girderPoint.objGirderStation),girderPoint.normalOffset,&elclg);
-
-         MatingSurfaceIndexType nMatingSurfaces;
-         girder_section->get_MatingSurfaceCount(&nMatingSurfaces);
-         for ( CollectionIndexType msIdx = 0; msIdx < nMatingSurfaces; msIdx++ )
+         // Haunches along bottom of slab
+         // haunch is defined by 6 points per mating surface
+         //
+         //    --------1\      /6------
+         //             2      5
+         //             |      |
+         //             3------4
+         //
+         BOOST_FOREACH(GirderPointRecord& girderPoint,vGirderPoints)
          {
-            Float64 ms_width;
-            girder_section->get_MatingSurfaceWidth(msIdx,&ms_width);
+            CComPtr<ISuperstructureMember> ssmbr;
+            bridge->get_SuperstructureMember(girderPoint.girderID,&ssmbr);
 
-            Float64 ms_location; // relative to center of beam
-            girder_section->get_MatingSurfaceLocation(msIdx,&ms_location);
+            CComPtr<ISuperstructureMemberSegment> segment;
+            ssmbr->get_Segment(girderPoint.segIdx,&segment);
 
-            // adjust for skew
-            ms_width /= cos(skew);
-            ms_location /= cos(skew);
+            // orientation of girder in radians... 0 = plumb, rotated CW is +
+            Float64 orientation;
+            segment->get_Orientation(&orientation); // section view orientation
 
-            Float64 x23; // x location of points 2 & 3
-            Float64 x45; // x location of points 4 & 5
-            Float64 xcl; // x location of centerline of flange
-            xcl = girderPoint.cutLineOffset + ms_location;
-            x23 = xcl - ms_width/2;
-            x45 = xcl + ms_width/2;
+            CComPtr<IShape> girder_shape;
+            segment->get_PrimaryShape(girderPoint.Xs,&girder_shape);
 
-            if ( InRange(left_deck_offset,x23,right_deck_offset) && InRange(left_deck_offset,x45,right_deck_offset))
+            CComQIPtr<IGirderSection> girder_section(girder_shape);
+
+            // get skew angle. its not just the pier skew
+            CComPtr<IGirderLine> girderLine;
+            segment->get_GirderLine(&girderLine);
+            CComPtr<IDirection> objGirderLineDirection;
+            girderLine->get_Direction(&objGirderLineDirection);
+            Float64 dirGirderLine;
+            objGirderLineDirection->get_Value(&dirGirderLine);
+            Float64 skew = fabs(dirCutLineValue - (dirGirderLine + PI_OVER_2));
+
+            Float64 min_top_flange_thickness;
+            girder_section->get_MinTopFlangeThickness(&min_top_flange_thickness);
+
+            Float64 haunch = 0;
+            segment->ComputeHaunchDepth(girderPoint.Xs,&haunch);
+
+            Float64 xfillet;
+            segment->get_Fillet(&xfillet);
+
+            Float64 yfillet = min(xfillet, haunch); // don't draw fillet deeper than the haunch depth
+
+            Float64 elclg; // elevation at CL of girder
+            profile->Elevation(CComVariant(girderPoint.objGirderStation),girderPoint.normalOffset,&elclg);
+
+            MatingSurfaceIndexType nMatingSurfaces;
+            girder_section->get_MatingSurfaceCount(&nMatingSurfaces);
+            for ( CollectionIndexType msIdx = 0; msIdx < nMatingSurfaces; msIdx++ )
             {
-               Float64 el23; // deck elevation above points 2 & 3
-               Float64 el45; // deck elevation above points 4 & 5
-               Float64 elcl; // deck elevation above centerline of flange
-               profile->Elevation(CComVariant(girderPoint.objGirderStation),x23,&el23);
-               profile->Elevation(CComVariant(girderPoint.objGirderStation),x45,&el45);
-               profile->Elevation(CComVariant(girderPoint.objGirderStation),xcl,&elcl);
+               Float64 ms_width;
+               girder_section->get_MatingSurfaceWidth(msIdx,&ms_width);
 
-               Float64 el3; // top of girder elevation on left side of flange (point 3)
-               el3 = elclg - gross_depth - haunch - (ms_location - ms_width/2)*sin(orientation);
+               Float64 ms_location; // relative to center of beam
+               girder_section->get_MatingSurfaceLocation(msIdx,&ms_location);
 
-               Float64 el4; // top of girder elevation on right side of flange (point 4)
-               el4 = elclg - gross_depth - haunch - (ms_location + ms_width/2)*sin(orientation);
+               // adjust for skew
+               ms_width /= cos(skew);
+               ms_location /= cos(skew);
 
-               if ( girderPoint.girderLocation != ltLeftExteriorGirder || msIdx != 0 || overhang_taper == dotNone || overhang_taper == dotBottomTopFlange )
+               Float64 x23; // x location of points 2 & 3
+               Float64 x45; // x location of points 4 & 5
+               Float64 xcl; // x location of centerline of flange
+               xcl = girderPoint.cutLineOffset + ms_location;
+               x23 = xcl - ms_width/2;
+               x45 = xcl + ms_width/2;
+
+               if ( InRange(left_deck_offset,x23,right_deck_offset) && InRange(left_deck_offset,x45,right_deck_offset))
                {
-                  // only use this point if this is an interior girder or an interior web
-                  // on the first girder, or the deck overhang is not tapered
-                  Float64 dy;
-                  Float64 dx;
-                  if (girderPoint.girderLocation != ltLeftExteriorGirder || msIdx != 0)
+                  Float64 el23; // deck elevation above points 2 & 3
+                  Float64 el45; // deck elevation above points 4 & 5
+                  Float64 elcl; // deck elevation above centerline of flange
+                  profile->Elevation(CComVariant(girderPoint.objGirderStation),x23,&el23);
+                  profile->Elevation(CComVariant(girderPoint.objGirderStation),x45,&el45);
+                  profile->Elevation(CComVariant(girderPoint.objGirderStation),xcl,&elcl);
+
+                  Float64 el3; // top of girder elevation on left side of flange (point 3)
+                  el3 = elclg - gross_depth - haunch - (ms_location - ms_width/2)*sin(orientation);
+
+                  Float64 el4; // top of girder elevation on right side of flange (point 4)
+                  el4 = elclg - gross_depth - haunch - (ms_location + ms_width/2)*sin(orientation);
+
+                  if ( girderPoint.girderLocation != ltLeftExteriorGirder || msIdx != 0 || overhang_taper == dotNone || overhang_taper == dotBottomTopFlange )
                   {
-                     // not exterior girder, or exterior web of exterior girder
-                     dy = gross_depth;
-                     dx = 0;
-                  }
-                  else
-                  {
-                     // this is the left exterior web on the left exterior girder
-                     if ( overhang_taper == dotNone )
+                     // only use this point if this is an interior girder or an interior web
+                     // on the first girder, or the deck overhang is not tapered
+                     Float64 dy;
+                     Float64 dx;
+                     if (girderPoint.girderLocation != ltLeftExteriorGirder || msIdx != 0)
                      {
-                        dy = overhang_depth;
+                        // not exterior girder, or exterior web of exterior girder
+                        dy = gross_depth;
                         dx = 0;
                      }
                      else
                      {
-                        // slab overhang taper goes to the bottom of the top flange
-                        dy = gross_depth + haunch - (elcl-el23) + min_top_flange_thickness;
+                        // this is the left exterior web on the left exterior girder
+                        if ( overhang_taper == dotNone )
+                        {
+                           dy = overhang_depth;
+                           dx = 0;
+                        }
+                        else
+                        {
+                           // slab overhang taper goes to the bottom of the top flange
+                           dy = gross_depth + haunch - (elcl-el23) + min_top_flange_thickness;
 
-                        Float64 slope;
-                        profile->Slope(CComVariant(girderPoint.objGirderStation),x23,&slope);
-                        dx = slope*min_top_flange_thickness/cos(skew);
+                           Float64 slope;
+                           profile->Slope(CComVariant(girderPoint.objGirderStation),x23,&slope);
+                           dx = slope*min_top_flange_thickness/cos(skew);
+                        }
+                     }
+
+                     if ( overhang_taper == dotBottomTopFlange || xfillet==0.0 || girderPoint.girderLocation == ltLeftExteriorGirder )
+                     {
+                        slab_shape->AddPoint(x23-dx,el23-dy); // 1,2
+                     }
+                     else
+                     {
+                        slab_shape->AddPoint(x23-dx-xfillet,el23-dy); // 1
+                        slab_shape->AddPoint(x23-dx,el23-dy-yfillet); // 2
                      }
                   }
 
-                  if ( overhang_taper == dotBottomTopFlange || xfillet==0.0 || girderPoint.girderLocation == ltLeftExteriorGirder )
-                  {
-                     slab_shape->AddPoint(x23-dx,el23-dy); // 1,2
-                  }
-                  else
-                  {
-                     slab_shape->AddPoint(x23-dx-xfillet,el23-dy); // 1
-                     slab_shape->AddPoint(x23-dx,el23-dy-yfillet); // 2
-                  }
-               }
+                  slab_shape->AddPoint(x23,el3); // 3
+                  slab_shape->AddPoint(x45,el4); // 4
 
-               slab_shape->AddPoint(x23,el3); // 3
-               slab_shape->AddPoint(x45,el4); // 4
-
-               if ( girderPoint.girderLocation != ltRightExteriorGirder || msIdx != nMatingSurfaces-1 || overhang_taper == dotNone || overhang_taper == dotBottomTopFlange)
-               {
-                  // only use this point if this is an interior girder or an interior web
-                  // on the last girder, or the deck overhang is not tapered
-                  Float64 dy;
-                  Float64 dx;
-                  if ( girderPoint.girderLocation != ltRightExteriorGirder || msIdx != nMatingSurfaces-1)
+                  if ( girderPoint.girderLocation != ltRightExteriorGirder || msIdx != nMatingSurfaces-1 || overhang_taper == dotNone || overhang_taper == dotBottomTopFlange)
                   {
-                     // not exterior girder, or exterior web of exterior girder
-                     dy = gross_depth;
-                     dx = 0;
-                  }
-                  else
-                  {
-                     if ( overhang_taper == dotNone )
+                     // only use this point if this is an interior girder or an interior web
+                     // on the last girder, or the deck overhang is not tapered
+                     Float64 dy;
+                     Float64 dx;
+                     if ( girderPoint.girderLocation != ltRightExteriorGirder || msIdx != nMatingSurfaces-1)
                      {
-                        dy = overhang_depth;
+                        // not exterior girder, or exterior web of exterior girder
+                        dy = gross_depth;
                         dx = 0;
                      }
                      else
                      {
-                        dy = gross_depth + haunch - (elcl-el45) + min_top_flange_thickness; // slab overhang to bottom of girder top flange
+                        if ( overhang_taper == dotNone )
+                        {
+                           dy = overhang_depth;
+                           dx = 0;
+                        }
+                        else
+                        {
+                           dy = gross_depth + haunch - (elcl-el45) + min_top_flange_thickness; // slab overhang to bottom of girder top flange
 
-                        Float64 slope;
-                        profile->Slope(CComVariant(girderPoint.objGirderStation),x45,&slope);
-                        dx = slope*min_top_flange_thickness/cos(skew);
+                           Float64 slope;
+                           profile->Slope(CComVariant(girderPoint.objGirderStation),x45,&slope);
+                           dx = slope*min_top_flange_thickness/cos(skew);
+                        }
                      }
-                  }
 
-                  if ( overhang_taper == dotBottomTopFlange || xfillet==0.0 || girderPoint.girderLocation == ltRightExteriorGirder)
-                  {
-                     slab_shape->AddPoint(x45+dx,el45-dy); // 5, 6
-                  }
-                  else
-                  {
-                     slab_shape->AddPoint(x45+dx,el45-dy-yfillet); // 5
-                     slab_shape->AddPoint(x45+dx+xfillet,el45-dy); // 6
+                     if ( overhang_taper == dotBottomTopFlange || xfillet==0.0 || girderPoint.girderLocation == ltRightExteriorGirder)
+                     {
+                        slab_shape->AddPoint(x45+dx,el45-dy); // 5, 6
+                     }
+                     else
+                     {
+                        slab_shape->AddPoint(x45+dx,el45-dy-yfillet); // 5
+                        slab_shape->AddPoint(x45+dx+xfillet,el45-dy); // 6
+                     }
                   }
                }
             }
@@ -691,7 +693,7 @@ STDMETHODIMP CSectionCutTool::GetDeckProperties(IGenericBridge* bridge,IndexType
 
    Float64 station = startStation;
    CComPtr<IShape> prevDeckShape;
-   CreateSlabShape(bridge,startStation,NULL,&prevDeckShape);
+   CreateSlabShape(bridge,startStation,NULL,VARIANT_TRUE/*include haunch*/,&prevDeckShape);
 
    Float64 prevPerimeter;
    prevDeckShape->get_Perimeter(&prevPerimeter);
@@ -718,7 +720,7 @@ STDMETHODIMP CSectionCutTool::GetDeckProperties(IGenericBridge* bridge,IndexType
          station += increment;
 
          CComPtr<IShape> deckShape;
-         CreateSlabShape(bridge,station,NULL,&deckShape);
+         CreateSlabShape(bridge,station,NULL,VARIANT_TRUE/*include haunch*/,&deckShape);
 
          Float64 perimeter;
          deckShape->get_Perimeter(&perimeter);

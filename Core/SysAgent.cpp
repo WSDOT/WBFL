@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // CORE - Core elements of the Agent-Broker Architecture
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -210,18 +210,30 @@ STDMETHODIMP CSysAgent::Continue()
 
 STDMETHODIMP CSysAgent::DestroyProgressWindow()
 {
+#if defined _DEBUG
+   if ( 0 < m_cProgressRef )
+   {
+      // if there is at least one creater of the progress window
+      // the thread had better still be alive
+      ATLASSERT(m_pThread != NULL);
+   }
+#endif
+
    m_cProgressRef--;
    ATLASSERT( 0 <= m_cProgressRef );
 
    if ( m_cProgressRef == 0 )
    {
       m_pThread->DestroyProgressWindow();
-      m_pThread->PostThreadMessage(WM_KILLTHREAD,0,0);
-      DWORD result = ::WaitForSingleObject(m_pThread->m_hThread,10000/*INFINITE*/);
-      if ( result == WAIT_TIMEOUT || result == WAIT_FAILED )
+      if ( m_pThread != NULL )
       {
-         ATLASSERT(false); // for some reason, the WM_KILLTHREAD message never got to the message handler
-         m_pThread->OnKillThread(0,0);
+         m_pThread->PostThreadMessage(WM_KILLTHREAD,0,0);
+         DWORD result = ::WaitForSingleObject(m_pThread->m_hThread,10000/*INFINITE*/);
+         if ( result == WAIT_TIMEOUT || result == WAIT_FAILED )
+         {
+            ATLASSERT(false); // for some reason, the WM_KILLTHREAD message never got to the message handler
+            m_pThread->OnKillThread(0,0);
+         }
       }
       m_pThread = NULL;
    }

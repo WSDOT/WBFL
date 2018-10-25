@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -56,12 +56,6 @@ CLASS
 DESCRIPTION
    Utility class for computing prestress losses using the TxDOT Project 0-6374 Refined Estimate
    Method. Encapsulates Articles 5.9.5.2.3 and 5.9.5.4.
-
-
-COPYRIGHT
-   Copyright (c) 2013
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 11.02.2013 : Created file

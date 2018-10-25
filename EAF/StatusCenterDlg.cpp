@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,13 +29,13 @@
 #include "StatusCenterDlg.h"
 #include <EAF\EAFStatusItem.h>
 #include <EAF\EAFUtilities.h>
+#include <EAF\EAFStatusBar.h> // for colors
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
 
 COLORREF CStatusItemListCtrl::OnGetCellBkColor(int nRow,int nColumn)
 {
@@ -50,14 +50,14 @@ COLORREF CStatusItemListCtrl::OnGetCellBkColor(int nRow,int nColumn)
    COLORREF color;
    switch(severity)
    {
-   case eafTypes::statusOK:
-      color = RGB(0,255,0);
+   case eafTypes::statusInformation:
+      color = STATUS_INFORMATION_COLOR;
       break;
    case eafTypes::statusWarning:
-      color = RGB(255,255,0);
+      color = STATUS_WARNING_COLOR;
       break;
    case eafTypes::statusError:
-      color = RGB(255,0,0);
+      color = STATUS_ERROR_COLOR;
       break;
    default:
       ATLASSERT(false); // should never get here
@@ -99,6 +99,11 @@ CStatusCenterDlg::CStatusCenterDlg(CEAFStatusCenter& statusCenter)
 	//{{AFX_DATA_INIT(CStatusCenterDlg)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
+
+   m_nInfo = 0;
+   m_nWarn = 0;
+   m_nError = 0;
+
    Create(CStatusCenterDlg::IDD,EAFGetMainFrame());
 
    m_StatusCenter.SinkEvents(this);
@@ -129,6 +134,7 @@ BEGIN_MESSAGE_MAP(CStatusCenterDlg, CDialog)
 	//}}AFX_MSG_MAP
    ON_NOTIFY(NM_DBLCLK,IDC_STATUSLIST,OnDoubleClick)
    ON_NOTIFY(HDN_ITEMCLICK,0,OnHeaderClicked)
+   ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -149,6 +155,8 @@ BOOL CStatusCenterDlg::OnInitDialog()
 	
    m_ctrlList.SetSortColumn(0,m_bSortAscending);
 
+   UpdateStatusItemCounts();
+
    return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -164,34 +172,68 @@ void CStatusCenterDlg::OnStatusItemAdded(CEAFStatusItem* pNewItem)
    VERIFY( m_ctrlList.SetItemText(idx,1,pNewItem->GetDescription()) );
    VERIFY( m_ctrlList.SetItemData(idx,MAKELONG(pNewItem->GetID(),severity)) );
 
+   if ( severity == eafTypes::statusInformation )
+   {
+      m_nInfo++;
+   }
+   else if ( severity == eafTypes::statusWarning )
+   {
+      m_nWarn++;
+   }
+   else
+   {
+      m_nError++;
+   }
+   UpdateStatusItemCounts();
+
    Sort();
 }
 
 void CStatusCenterDlg::OnStatusItemRemoved(StatusItemIDType id)
 {
-   LVFINDINFO info;
-   info.flags = LVFI_PARAM;
-   info.lParam = MAKELONG(id,eafTypes::statusOK);
-
    if ( GetSafeHwnd() == NULL )
       return;
+
+   eafTypes::StatusSeverityType severity;
+
+   LVFINDINFO info;
+   severity = eafTypes::statusInformation;
+   info.flags = LVFI_PARAM;
+   info.lParam = MAKELONG(id,severity);
 
    int idx = m_ctrlList.FindItem(&info);
    if ( idx == -1 )
    {
-      info.lParam = MAKELONG(id,eafTypes::statusWarning);
+      severity = eafTypes::statusWarning;
+      info.lParam = MAKELONG(id,severity);
       idx = m_ctrlList.FindItem(&info);
    }
 
    if ( idx == -1 )
    {
-      info.lParam = MAKELONG(id,eafTypes::statusError);
+      severity = eafTypes::statusError;
+      info.lParam = MAKELONG(id,severity);
       idx = m_ctrlList.FindItem(&info);
    }
 
    if ( idx != -1 )
    {
       m_ctrlList.DeleteItem(idx);
+
+      if ( severity == eafTypes::statusInformation )
+      {
+         m_nInfo--;
+      }
+      else if ( severity == eafTypes::statusWarning )
+      {
+         m_nWarn--;
+      }
+      else
+      {
+         m_nError--;
+      }
+
+      UpdateStatusItemCounts();
    }
 
    Sort();
@@ -290,4 +332,39 @@ void CStatusCenterDlg::OnSize(UINT nType, int cx, int cy)
    int w = rc.Width() - 2*border;
    int h = rc.Height() - 3*border - rBtn.Height();
    m_ctrlList.SetWindowPos(NULL,0,0,w,h,SWP_NOMOVE | SWP_NOZORDER);
+}
+
+void CStatusCenterDlg::UpdateStatusItemCounts()
+{
+   CString str;
+   str.Format(_T("Information (%d)"),m_nInfo);
+   GetDlgItem(IDC_INFORMATION)->SetWindowText(str);
+
+   str.Format(_T("Warning (%d)"),m_nWarn);
+   GetDlgItem(IDC_WARNING)->SetWindowText(str);
+
+   str.Format(_T("Error (%d)"),m_nError);
+   GetDlgItem(IDC_ERROR)->SetWindowText(str);
+}
+
+HBRUSH CStatusCenterDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+   HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+   int ID = pWnd->GetDlgCtrlID();
+   switch( ID )
+   {
+   case IDC_INFORMATION:
+      pDC->SetBkColor(STATUS_INFORMATION_COLOR);
+      break;
+
+   case IDC_WARNING:
+      pDC->SetBkColor(STATUS_WARNING_COLOR);
+      break;
+
+   case IDC_ERROR:
+      pDC->SetBkColor(STATUS_ERROR_COLOR);
+      break;
+   }
+
+   return hbr;
 }

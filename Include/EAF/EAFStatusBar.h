@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,6 +30,12 @@
 // CEAFStatusBar
 
 #include <EAF\EAFExp.h>
+
+#include <Colors.h>
+
+#define STATUS_INFORMATION_COLOR    LIME
+#define STATUS_WARNING_COLOR        YELLOW
+#define STATUS_ERROR_COLOR          RED
 
 class CEAFDocument;
 

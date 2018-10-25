@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -54,12 +54,6 @@ CLASS
 DESCRIPTION
    Live load distribution factor calculator for cross section types H and I and J
    if not sufficiently connected.
-
-
-COPYRIGHT
-   Copyright © 2005
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 07.15.2005 : Created file

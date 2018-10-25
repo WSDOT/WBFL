@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -60,12 +60,6 @@ DESCRIPTION
    AASHTO M31 are stored in this flyweight pool.
 
    All rebar are Grade 60.
-
-
-COPYRIGHT
-   Copyright (c) 1998
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 07.10.1998 : Created file
@@ -174,12 +168,6 @@ CLASS
 
 DESCRIPTION
    Iterates over the various rebar sizes stored in lrfdRebarPool.
-
-
-COPYRIGHT
-   Copyright (c) 1998
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 07.10.1998 : Created file

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -57,12 +57,6 @@ DESCRIPTION
 
    This class assumes that prestressing strands do not have any compressive
    capacity.  Zero stress will result for all compressive strains.
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 11.18.1997 : Created file

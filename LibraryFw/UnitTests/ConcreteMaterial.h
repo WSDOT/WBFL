@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LibraryFW - Framework for implementing library features in programs
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -51,12 +51,6 @@ CLASS
 
 DESCRIPTION
    This class may be used to describe concrete materials in a library.
-
-
-COPYRIGHT
-   Copyright © 1997-1998
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 07.20.1998 : Created file
