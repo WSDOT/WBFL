@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -26,6 +26,7 @@
 
 #include "stdafx.h"
 #include <EAF\EAFChildFrame.h>
+#include <EAF\EAFApp.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -40,6 +41,8 @@ IMPLEMENT_DYNCREATE(CEAFChildFrame, CMDIChildWnd)
 
 CEAFChildFrame::CEAFChildFrame()
 {
+   m_bIsSnapped = false;
+   m_wndPlacement.length = sizeof(WINDOWPLACEMENT);
 }
 
 CEAFChildFrame::~CEAFChildFrame()
@@ -124,6 +127,46 @@ BOOL CEAFChildFrame::PreCreateWindow(CREATESTRUCT& cs)
 	cs.style &= ~(LONG)FWS_ADDTOTITLE;
 	
 	return CMDIChildWnd::PreCreateWindow(cs);
+}
+
+LRESULT CEAFChildFrame::WindowProc(UINT message, WPARAM wParam, LPARAM lParam) 
+{
+   CEAFApp* pApp = EAFGetApp();
+   pApp->GetMDIWndSnapper().OnMessage(this, message, wParam, lParam);	
+	return CMDIChildWnd::WindowProc(message, wParam, lParam);
+}
+
+void CEAFChildFrame::SnapToRect(LPCRECT lpRect)
+{
+   if ( lpRect )
+   {
+      GetWindowPlacement(&m_wndPlacement);
+      m_bIsSnapped = true;
+      MoveWindow(lpRect);
+   }
+   else
+   {
+      if ( m_bIsSnapped )
+      {
+         SetWindowPlacement(&m_wndPlacement);
+      }
+      m_bIsSnapped = false;
+   }
+}
+
+void CEAFChildFrame::Unsnap()
+{
+   if ( m_bIsSnapped )
+   {
+      m_wndPlacement.rcNormalPosition;
+      SetWindowPos(NULL,m_wndPlacement.rcNormalPosition.left,m_wndPlacement.rcNormalPosition.top,m_wndPlacement.rcNormalPosition.right-m_wndPlacement.rcNormalPosition.left,m_wndPlacement.rcNormalPosition.bottom - m_wndPlacement.rcNormalPosition.top,SWP_NOZORDER | SWP_NOMOVE);
+      m_bIsSnapped = false;
+   }
+}
+
+bool CEAFChildFrame::IsSnapped()
+{
+   return m_bIsSnapped;
 }
 
 BOOL CEAFChildFrame::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CMDIFrameWnd* pParentWnd, CCreateContext* pContext) 

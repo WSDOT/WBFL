@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -77,6 +77,7 @@ protected:
    // Generated message map functions
 protected:
 	//{{AFX_MSG(CEAFGraphChildFrame)
+   afx_msg LRESULT OnCommandHelp(WPARAM, LPARAM lParam);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
  

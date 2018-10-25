@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -2822,7 +2822,7 @@ void MemberStrainBeam::GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
 
 void MemberStrainBeam::GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
-   ATLASSERT(x>=0.0 && x<=m_L);
+   ATLASSERT(::InRange(0.0,x,m_L));
    fx = m_Fxl;
    fy = m_Fyl;
    mz = m_Mzl + m_Fyl*x;
@@ -2830,7 +2830,7 @@ void MemberStrainBeam::GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 
 void MemberStrainBeam::GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
-   ATLASSERT(x>=0.0 && x<=m_L);
+   ATLASSERT(::InRange(0.0,x,m_L));
    Float64 x2 = x*x;
    Float64 x3 = x2*x;
 

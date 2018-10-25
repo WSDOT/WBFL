@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -79,8 +79,8 @@ void CEAFStatusItem::RemoveAfterEdit(BOOL bRemoveAfterEdit)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-CEAFStatusItemCallback::CEAFStatusItemCallback(eafTypes::StatusSeverityType severity,UINT helpID):
-m_Severity(severity), m_HelpID(helpID)
+CEAFStatusItemCallback::CEAFStatusItemCallback(eafTypes::StatusSeverityType severity,LPCTSTR lpszDocSetName,UINT helpID):
+m_Severity(severity), m_strDocSetName(lpszDocSetName),m_HelpID(helpID)
 {
 }
 
@@ -91,5 +91,5 @@ eafTypes::StatusSeverityType CEAFStatusItemCallback::GetSeverity()
 
 void CEAFStatusItemCallback::Execute(CEAFStatusItem* pItem)
 {
-   EAFShowStatusMessage(pItem,m_Severity,FALSE,m_HelpID);
+   EAFShowStatusMessage(pItem,m_Severity,FALSE,m_strDocSetName,m_HelpID);
 }

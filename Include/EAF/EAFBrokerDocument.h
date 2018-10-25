@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -111,7 +111,13 @@ public:
    // before calling this method
    virtual void ShowCustomReportHelp(eafTypes::CustomReportHelp helpType) = 0;
 
-   // Generated message map functions
+   // Causes the documentation map file to be loaded
+   virtual void LoadDocumentationMap();
+
+   // Returns the full documentation URL for the given URL
+   virtual eafTypes::HelpResult GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL);
+
+// Generated message map functions
 protected:
    IBroker* m_pBroker;
 

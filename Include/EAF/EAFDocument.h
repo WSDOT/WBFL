@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -267,6 +267,42 @@ public:
    void SetUIHintSettings(UINT settings);
    virtual void ResetUIHints(); // called when all hints are reset/enabled
 
+   /////////////////////////////////////
+   // Help/Documentation
+
+   // called by the framework when the documentation source changes
+   virtual void DocumentationSourceChanged();
+
+   // Returns the documentation set name for this document
+   // The default implentation returns the IEAFAppPlugin's documentation
+   // set name
+   virtual CString GetDocumentationSetName();
+
+   // Return the root location for application documentation
+   // Can be in the form of a WEB URL (http://www.mysite.com/Documentation/")
+   // or a file system URL (C:/Program Files/MyApp/Documentation/")
+   // Include the last '/'
+   // Documents may use this to build their documentation URLs
+   virtual CString GetDocumentationRootLocation() = 0;
+
+   // Return the URL for documation for the application
+   // Called by GetDocumenentLocation to form the complete
+   // documentation URL. The default documentation URL is:
+   // For an Online source
+   //     GetDocumentationRootLocation() + m_pszExeName + major.minor version number
+   // For a local source
+   //     GetDocumentationRootLocation() + m_pszExename
+   virtual CString GetDocumentationURL();
+
+   // Returns the name of the documentation map file
+   virtual CString GetDocumentationMapFile();
+
+   // Causes the documentation map file to be loaded
+   virtual void LoadDocumentationMap();
+
+   // Returns the full documentation URL for the given URL
+   virtual eafTypes::HelpResult GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL);
+
 
 protected:
    //{{AFX_MSG(CEAFDocument)
@@ -327,6 +363,10 @@ private:
    IEAFStatusCenterEventSink* m_pStatusCenterEventSink;
 
    BOOL m_bUIIntegrated; // true if UI intergration happened
+
+
+   CString m_strDocumentationMapFile;
+   std::map<UINT,CString> m_HelpTopics;
 
    BOOL m_bEnableSaveBackup; // if true, backup files are created during the save process
 

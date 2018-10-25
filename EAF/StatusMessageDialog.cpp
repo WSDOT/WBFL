@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -26,6 +26,7 @@
 #include "stdafx.h"
 #include "StatusMessageDialog.h"
 #include <EAF\EAFStatusItem.h>
+#include <EAF\EAFHelp.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -35,9 +36,9 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CStatusMessageDialog dialog
-CStatusMessageDialog::CStatusMessageDialog(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityType severity,BOOL bRemoveableOnError,UINT helpID,CWnd* pParent /*=NULL*/)
+CStatusMessageDialog::CStatusMessageDialog(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityType severity,BOOL bRemoveableOnError,LPCTSTR lpszDocSetName,UINT helpID,CWnd* pParent /*=NULL*/)
 	: CDialog(CStatusMessageDialog::IDD, pParent),
-   m_Message(pStatusItem->GetDescription()),m_HelpID(helpID), m_Severity(severity), m_bRemoveableOnError(bRemoveableOnError)
+   m_Message(pStatusItem->GetDescription()),m_strDocSetName(lpszDocSetName),m_HelpID(helpID), m_Severity(severity), m_bRemoveableOnError(bRemoveableOnError)
 {
 	//{{AFX_DATA_INIT(CStatusMessageDialog)
 	//}}AFX_DATA_INIT
@@ -63,7 +64,7 @@ END_MESSAGE_MAP()
 // CStatusMessageDialog message handlers
 void CStatusMessageDialog::OnHelp() 
 {
-   ::HtmlHelp( *this, AfxGetApp()->m_pszHelpFilePath, HH_HELP_CONTEXT, m_HelpID );
+   EAFHelp(m_strDocSetName,m_HelpID);
 }
 
 BOOL CStatusMessageDialog::OnInitDialog() 

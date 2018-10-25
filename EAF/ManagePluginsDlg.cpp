@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -26,7 +26,7 @@
 
 #include "stdafx.h"
 #include "ManagePluginsDlg.h"
-#include <EAF\EAFHelpIDs.h>
+#include <EAF\EAFHelp.h>
 #include <EAF\EAFApp.h>
 
 
@@ -34,13 +34,15 @@
 
 IMPLEMENT_DYNAMIC(CManagePluginsDlg, CDialog)
 
-CManagePluginsDlg::CManagePluginsDlg(LPCTSTR lpszTitle,LPCTSTR lpszText,const CATID& catid,CWnd* pParent /*=NULL*/)
+CManagePluginsDlg::CManagePluginsDlg(LPCTSTR lpszTitle,LPCTSTR lpszText,const CATID& catid,CWnd* pParent,LPCTSTR lpszDocSetName,UINT nHID)
 	: CDialog(CManagePluginsDlg::IDD, pParent),
    m_strSection("Plugins")
 {
    m_Title = lpszTitle;
    m_Text = lpszText;
    m_CATID = catid;
+   m_DocSetName = lpszDocSetName;
+   m_nHelpID = nHID;
 }
 
 CManagePluginsDlg::~CManagePluginsDlg()
@@ -66,7 +68,9 @@ BOOL CManagePluginsDlg::OnInitDialog()
    CDialog::OnInitDialog();
 
    if ( !m_Title.IsEmpty() )
+   {
       SetWindowText(m_Title);
+   }
 
    if ( !m_Text.IsEmpty() )
    {
@@ -74,6 +78,25 @@ BOOL CManagePluginsDlg::OnInitDialog()
    }
 
    m_PluginList.SetCheckStyle( BS_AUTOCHECKBOX );
+
+   if ( m_nHelpID == 0 )
+   {
+      CWnd* wndOK = GetDlgItem(IDOK);
+      CWnd* wndCancel = GetDlgItem(IDCANCEL);
+      CWnd* wndHelp = GetDlgItem(IDHELP);
+
+      CRect rHelp;
+      wndHelp->GetWindowRect(&rHelp);
+      ScreenToClient(&rHelp);
+
+      CRect rCancel;
+      wndCancel->GetWindowRect(&rCancel);
+      ScreenToClient(&rCancel);
+
+      wndHelp->ShowWindow(SW_HIDE);
+      wndCancel->MoveWindow(rHelp);
+      wndOK->MoveWindow(rCancel);
+   }
 
    InitList();
 
@@ -163,5 +186,5 @@ void CManagePluginsDlg::OnCancel()
 
 void CManagePluginsDlg::OnBnClickedHelp()
 {
-   ::HtmlHelp( *this, AfxGetApp()->m_pszHelpFilePath, HH_HELP_CONTEXT, IDH_MANAGE_PLUGINS );
+   EAFHelp(m_DocSetName,m_nHelpID);
 }

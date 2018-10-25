@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -54,7 +54,13 @@ public:
    virtual BOOL LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL);
 	protected:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 	//}}AFX_VIRTUAL
+
+public:
+   virtual void SnapToRect(LPCRECT lpRect);
+   virtual void Unsnap();
+   virtual bool IsSnapped();
 
 public:
    virtual void OnBeforeMaxViewActivate(void* pvCreateData);
@@ -73,6 +79,10 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
    virtual void OnUpdateFrameTitle(BOOL bAddToTitle);
+
+protected:
+   bool m_bIsSnapped;
+   WINDOWPLACEMENT m_wndPlacement;
 };
 
 /////////////////////////////////////////////////////////////////////////////

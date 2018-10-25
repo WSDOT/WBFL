@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // CORE - Core elements of the Agent-Broker Architecture
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -40,7 +40,7 @@ DIAG_DEFINE_GROUP(IFC,DIAG_GROUP_ENABLE,0);
 
 
 template <class T>
-HRESULT Integrate(BOOL bIntegrating,BOOL bIntegrateWithUI,BOOL bIntegrateWithReporting,BOOL bIntegrateWithGraphing,
+HRESULT Integrate(BOOL bIntegrating,BOOL bIntegrateWithUI,BOOL bIntegrateWithReporting,BOOL bIntegrateWithGraphing,BOOL bIntegrateWithDocumentation,
                   T& begin,T& end)
 {
    while ( begin != end )
@@ -70,6 +70,15 @@ HRESULT Integrate(BOOL bIntegrating,BOOL bIntegrateWithUI,BOOL bIntegrateWithRep
          if ( pUI )
          {
             pUI->IntegrateWithGraphing(bIntegrating);
+         }
+      }
+
+      if ( bIntegrateWithDocumentation && bIntegrating )
+      {
+         CComQIPtr<IAgentDocumentationIntegration> pUI(pAgent);
+         if ( pUI )
+         {
+            pUI->LoadDocumentationMap();
          }
       }
 
@@ -666,22 +675,22 @@ HRESULT CBrokerImp2::InitAgents(Agents::iterator begin,Agents::iterator end)
    return S_OK;
 }
 
-STDMETHODIMP CBrokerImp2::Integrate(BOOL bIntegrateWithUI,BOOL bIntegrateWithReporting,BOOL bIntegrateWithGraphing)
+STDMETHODIMP CBrokerImp2::Integrate(BOOL bIntegrateWithUI,BOOL bIntegrateWithReporting,BOOL bIntegrateWithGraphing,BOOL bIntegrateWithDocumentation)
 {
    m_bIntegrateWithUI        = bIntegrateWithUI;
    m_bIntegrateWithReporting = bIntegrateWithReporting;
    m_bIntegrateWithGraphing  = bIntegrateWithGraphing;
 
-   ::Integrate(TRUE,m_bIntegrateWithUI,m_bIntegrateWithReporting,m_bIntegrateWithGraphing,m_Agents.begin(),m_Agents.end());
-   ::Integrate(TRUE,m_bIntegrateWithUI,m_bIntegrateWithReporting,m_bIntegrateWithGraphing,m_ExtensionAgents.begin(),m_ExtensionAgents.end());
+   ::Integrate(TRUE,m_bIntegrateWithUI,m_bIntegrateWithReporting,m_bIntegrateWithGraphing,bIntegrateWithDocumentation,m_Agents.begin(),m_Agents.end());
+   ::Integrate(TRUE,m_bIntegrateWithUI,m_bIntegrateWithReporting,m_bIntegrateWithGraphing,bIntegrateWithDocumentation,m_ExtensionAgents.begin(),m_ExtensionAgents.end());
 
    return S_OK;
 }
 
 STDMETHODIMP CBrokerImp2::RemoveIntegration()
 {
-   ::Integrate(FALSE,m_bIntegrateWithUI,m_bIntegrateWithReporting,m_bIntegrateWithGraphing,m_ExtensionAgents.rbegin(),m_ExtensionAgents.rend());
-   ::Integrate(FALSE,m_bIntegrateWithUI,m_bIntegrateWithReporting,m_bIntegrateWithGraphing,m_Agents.rbegin(),m_Agents.rend());
+   ::Integrate(FALSE,m_bIntegrateWithUI,m_bIntegrateWithReporting,m_bIntegrateWithGraphing,FALSE,m_ExtensionAgents.rbegin(),m_ExtensionAgents.rend());
+   ::Integrate(FALSE,m_bIntegrateWithUI,m_bIntegrateWithReporting,m_bIntegrateWithGraphing,FALSE,m_Agents.rbegin(),m_Agents.rend());
    return S_OK;
 }
 

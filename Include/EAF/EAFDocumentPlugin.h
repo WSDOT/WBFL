@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -53,6 +53,13 @@ interface IEAFDocumentPlugin : IUnknown
 
    // return the name of the plugin. This name is used throughout the user interface
    virtual CString GetName() = 0;
+
+   // returns the name of the documentation set for this plug-in
+   virtual CString GetDocumentationSetName() = 0;
+
+   // gets the URL for the help document associated with nHID
+   // returns TRUE on success
+   virtual eafTypes::HelpResult GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL) = 0;
 };
 
 

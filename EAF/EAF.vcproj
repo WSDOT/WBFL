@@ -1435,6 +1435,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\EAFAppPluginDocumentationImpl.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\EAFAutoCalcDoc.cpp"
 				>
 			</File>
@@ -1985,6 +1989,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EAFHelp.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\EAFInterfaceCache.cpp"
 				>
 			</File>
@@ -2085,6 +2093,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\EAFMDISnapper.cpp"
+				>
 			</File>
 			<File
 				RelativePath="EAFMenu.cpp"
@@ -2626,6 +2638,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Include\EAF\EAFAppPluginDocumentationImpl.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\EAF\EAFAppPluginManager.h"
 				>
 			</File>
@@ -2738,7 +2754,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Include\EAF\EAFHelpIDs.h"
+				RelativePath="..\Include\EAF\EAFHelp.h"
 				>
 			</File>
 			<File
@@ -2755,6 +2771,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\EAF\EAFMainFrame.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFMDISnapper.h"
 				>
 			</File>
 			<File

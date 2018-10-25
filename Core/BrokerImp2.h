@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // CORE - Core elements of the Agent-Broker Architecture
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -99,7 +99,7 @@ public:
 	STDMETHOD(RegInterface)(/*[in]*/ REFIID riid,/*[in]*/ IAgentEx* pAgent);
    STDMETHOD(DelayInit)();
 	STDMETHOD(InitAgents)();
-   STDMETHOD(Integrate)(BOOL bIntegrateWithUI,BOOL bIntegrateWithReporting,BOOL bIntegrateWithGraphing);
+   STDMETHOD(Integrate)(BOOL bIntegrateWithUI,BOOL bIntegrateWithReporting,BOOL bIntegrateWithGraphing,BOOL bIntegrateWithDocumentation);
    STDMETHOD(RemoveIntegration)();
 
 // IBrokerPersist2

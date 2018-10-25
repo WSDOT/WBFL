@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -47,9 +47,10 @@
 #define EAFID_OPTIONS_HINTS                (EAF_RESERVED_COMMAND_BASE+11)
 #define EAFID_TOGGLE_AUTOCALC              (EAF_RESERVED_COMMAND_BASE+12)
 #define EAFID_AUTOCALC_UPDATENOW           (EAF_RESERVED_COMMAND_BASE+13)
+#define EAFID_HELP_SOURCE                  (EAF_RESERVED_COMMAND_BASE+14)
 
 // reserve commands IDs for the report popup menus (first ID must be one more than the EAFID_xxx above)
-#define EAF_REPORT_MENU_BASE (EAF_RESERVED_COMMAND_BASE+14)
+#define EAF_REPORT_MENU_BASE (EAF_RESERVED_COMMAND_BASE+15)
 #define EAF_REPORT_MENU_COUNT 50 // maximum 50 reports
 #define EAF_REPORT_MENU_LAST (EAF_REPORT_MENU_BASE + 2*EAF_REPORT_MENU_COUNT)
 
