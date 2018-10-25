@@ -73,6 +73,8 @@ END_CONNECTION_POINT_MAP()
 private:
    CComPtr<IPoint3d> m_Start;
    CComPtr<IPoint3d> m_End;
+   CComPtr<ITendonSegment> m_PrevSegment;
+   CComPtr<ITendonSegment> m_NextSegment;
    CComPtr<IGeomUtil3d> m_GeomUtil;
 
    ITendon* m_pTendon; // weak reference
@@ -87,6 +89,10 @@ public:
 	STDMETHOD(get_Start)(/*[out,retval]*/ IPoint3d** start);
 	STDMETHOD(put_End)(/*[in]*/ IPoint3d* end);
    STDMETHOD(get_End)(/*[out,retval]*/ IPoint3d** end);
+   STDMETHOD(putref_PrevTendonSegment)(/*[in]*/ITendonSegment* pTendonSegment);
+   STDMETHOD(get_PrevTendonSegment)(/*[out,retval]*/ITendonSegment** ppTendonSegment);
+   STDMETHOD(putref_NextTendonSegment)(/*[in]*/ITendonSegment* pTendonSegment);
+   STDMETHOD(get_NextTendonSegment)(/*[out,retval]*/ITendonSegment** ppTendonSegment);
 
 // ITendonSegment
 public:
@@ -97,6 +103,7 @@ public:
    STDMETHOD(get_Centerline)(/*[in]*/ TendonMeasure measure,/*[out,retval]*/IPoint3dCollection** ppPoints);
    STDMETHOD(putref_Tendon)(/*[in]*/ITendon* pTendon);
    STDMETHOD(get_Tendon)(/*[out,retval]*/ITendon** ppTendon);
+   STDMETHOD(get_MinimumRadiusOfCurvature)(/*[out,retval]*/Float64* pMinRadiusOfCurvature);
 
 // IStructuredStorage2
 public:

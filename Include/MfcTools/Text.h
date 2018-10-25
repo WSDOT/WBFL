@@ -28,5 +28,6 @@
 #include <MfcTools\MfcToolsExp.h>
 
 void MFCTOOLSFUNC MultiLineTextOut(CDC* pDC,int x,int y,LPCTSTR lpszText);
+void MFCTOOLSFUNC ChangeComboBoxString(CComboBox* pCB,int idx,LPCTSTR lpszNewString);
 
 #endif // INCLUDED_MFCTOOLS_TEXT_H_

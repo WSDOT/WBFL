@@ -107,6 +107,7 @@ public:
    STDMETHOD(get_Centerline)(/*[in]*/ TendonMeasure measure,/*[out,retval]*/IPoint3dCollection** ppPoints);
    STDMETHOD(putref_Tendon)(/*[in]*/ITendon* pTendon);
    STDMETHOD(get_Tendon)(/*[out,retval]*/ITendon** ppTendon);
+   STDMETHOD(get_MinimumRadiusOfCurvature)(/*[out,retval]*/Float64* pMinRadiusOfCurvature);
 
 // IStructuredStorage2
 public:

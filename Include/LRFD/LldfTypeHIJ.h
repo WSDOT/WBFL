@@ -76,7 +76,8 @@ public:
                    Uint32 Nl, Float64 wLane,
                    Float64 L,Float64 W,Float64 I,Float64 J,Float64 PossionRatio,
                    Float64 leftDe,Float64 rightDe,
-                   Float64 skewAngle1, Float64 skewAngle2);
+                   Float64 skewAngle1, Float64 skewAngle2,
+                   bool bMomentSkew, bool bShearSkew);
 
    //------------------------------------------------------------------------
    // Copy constructor

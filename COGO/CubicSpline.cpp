@@ -579,14 +579,20 @@ STDMETHODIMP CCubicSpline::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VAR
       if ( bkTangentPoint )
       {
          // intersection must occur before the start of the spline
-         Float64 xa;
-         startPnt->get_X(&xa);
 
-         Float64 x;
-         bkTangentPoint->get_X(&x);
+         // get the distance and direction from the start point to the back tangent point
+         // distance is always positive and should be greater than zero.
+         // if the directions are the same, the direction from the start of the spline
+         // to the back tangent point, the intersection occurs within the spline and
+         // that isn't what we are looking for
+         Float64 dist;
+         CComPtr<IDirection> d;
+         cogoUtil::Inverse(startPnt,bkTangentPoint,&dist,&d);
 
+         Float64 value;
+         d->get_Value(&value);
 
-         if ( x < xa )
+         if ( !IsEqual(m_StartDirection,value) )
          {
             // intersection is before the start of the spline so
             // we'll keep that point
@@ -678,14 +684,20 @@ STDMETHODIMP CCubicSpline::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VAR
       if ( aheadTangentPoint )
       {
          // intersection must occur after the end of the spline
-         Float64 xb;
-         endPoint->get_X(&xb);
 
-         Float64 x;
-         aheadTangentPoint->get_X(&x);
+         // get the distance and direction from the end point to the ahead tangent point
+         // distance is always positive and should be greater than zero.
+         // if the directions are the same, the direction from the end of the spline
+         // to the ahead tangent point, the intersection occurs after the spline and
+         // that is what we are looking for
+         Float64 dist;
+         CComPtr<IDirection> d;
+         cogoUtil::Inverse(endPoint,aheadTangentPoint,&dist,&d);
 
+         Float64 value;
+         d->get_Value(&value);
 
-         if ( IsEqual(xb,x) || xb < x )
+         if ( IsEqual(m_EndDirection,value) )
          {
             // intersection is after the end of the spline so
             // we'll keep that point

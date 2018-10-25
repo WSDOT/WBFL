@@ -1522,7 +1522,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
          {
             // Put holes for ducts into girder
             Float64 ductDiameter;
-            tendon->get_DuctDiameter(&ductDiameter);
+            tendon->get_OutsideDiameter(&ductDiameter);
 
             CComPtr<ICircle> duct;
             duct.CoCreateInstance(CLSID_Circle);
@@ -1881,7 +1881,7 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
          if ( IsZero(Etendon) )
          {
             Float64 ductDiameter;
-            tendon->get_DuctDiameter(&ductDiameter);
+            tendon->get_OutsideDiameter(&ductDiameter);
 
             CComPtr<ICircle> duct;
             duct.CoCreateInstance(CLSID_Circle);

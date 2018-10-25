@@ -342,6 +342,27 @@ STDMETHODIMP CParabolicTendonSegment::get_Tendon(ITendon** ppTendon)
    return S_OK;
 }
 
+STDMETHODIMP CParabolicTendonSegment::get_MinimumRadiusOfCurvature(Float64* pMinRadiusOfCurvature)
+{
+   CHECK_RETVAL(pMinRadiusOfCurvature);
+
+   mathPolynomial2d fx = CParabolicTendonSegment::GetParabolaY();
+   std::vector<Float64> coefficients(fx.GetCoefficients());
+   ATLASSERT(coefficients.size() == 3);
+   Float64 A = coefficients[0];
+   Float64 B = coefficients[1];
+
+   // Parabola in the form of y = Ax^2 + Bx + C
+   // if the coefficient A is zero, then the tendon path is linear,
+   // the curvature is zero and the radius of curvature is infinite
+
+   Float64 r = IsZero(A) ? DBL_MAX : 1/(2*A);
+
+   *pMinRadiusOfCurvature = fabs(r);
+
+   return S_OK;
+}
+
 /////////////////////////////////////////////////////
 // IStructuredStorage2 implementation
 STDMETHODIMP CParabolicTendonSegment::Load(IStructuredLoad2* load)
@@ -433,6 +454,7 @@ mathPolynomial2d CParabolicTendonSegment::GetParabolaY()
       B = m_Slope - 2*A*z2;
       C = y1 - A*z1*z1 - B*z1;
    }
+
 
    std::vector<Float64> coefficients;
    coefficients.push_back(A); // y = Az^2 + Bz + C

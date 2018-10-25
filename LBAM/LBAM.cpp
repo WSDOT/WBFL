@@ -81,6 +81,7 @@
 #include "LoadCombinations.h"
 #include "DistributionFactors.h"
 #include "DistributionFactorSegment.h"
+#include "LinearDistributionFactorSegment.h"
 #include "FilteredDfSegmentCollection.h"
 #include "POIStressPointsItem.h"
 #include "POIStressPoints.h"
@@ -136,6 +137,7 @@ OBJECT_ENTRY(CLSID_LoadCombinations, CLoadCombinations)
 OBJECT_ENTRY(CLSID_DistributionFactor, CDistributionFactor)
 OBJECT_ENTRY(CLSID_DistributionFactors, CDistributionFactors)
 OBJECT_ENTRY(CLSID_DistributionFactorSegment, CDistributionFactorSegment)
+OBJECT_ENTRY(CLSID_LinearDistributionFactorSegment, CLinearDistributionFactorSegment)
 OBJECT_ENTRY(CLSID_FilteredDfSegmentCollection, CFilteredDfSegmentCollection)
 OBJECT_ENTRY(CLSID_POIStressPointsItem, CPOIStressPointsItem)
 OBJECT_ENTRY(CLSID_POIStressPoints, CPOIStressPoints)

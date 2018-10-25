@@ -2319,6 +2319,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\LinearDistributionFactorSegment.cpp"
+				>
+			</File>
+			<File
 				RelativePath="LiveLoad.cpp"
 				>
 				<FileConfiguration
@@ -6172,6 +6176,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LinearDistributionFactorSegment.h"
+				>
+			</File>
+			<File
 				RelativePath="LiveLoad.h"
 				>
 			</File>
@@ -6414,6 +6422,10 @@
 			</File>
 			<File
 				RelativePath="FilteredSegmentCollection.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\LinearDistributionFactorSegment.rgs"
 				>
 			</File>
 			<File
