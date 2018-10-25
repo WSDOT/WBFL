@@ -205,15 +205,15 @@ void CTestIntersect::Test()
    points->Add(3,15,15,nullptr);
    points->Add(10,0,20,nullptr);
 
-   TRY_TEST(intersect->LineByPointsCircle(4,1,3,0.0,2,5.0,3,nullptr),E_POINTER);
+   TRY_TEST(intersect->LineByPointsCircle(4,1,3,1.0,2,5.0,3,nullptr),E_POINTER);
    TRY_TEST(intersect->LineByPointsCircle(4,-1,3,0.0,2,5.0,3,&bFound),COGO_E_POINTNOTFOUND);
    TRY_TEST(intersect->LineByPointsCircle(4,1,-3,0.0,2,5.0,3,&bFound),COGO_E_POINTNOTFOUND);
    TRY_TEST(intersect->LineByPointsCircle(1,1,3,0.0,2,5.0,3,&bFound),COGO_E_POINTALREADYDEFINED);
-   TRY_TEST(intersect->LineByPointsCircle(4,1,3,0.0,-2,5.0,3,&bFound),COGO_E_POINTNOTFOUND);
-   TRY_TEST(intersect->LineByPointsCircle(4,1,3,0.0,2,5.0,-3,&bFound),COGO_E_POINTNOTFOUND);
-   TRY_TEST(intersect->LineByPointsCircle(4,1,3,0.0,2,-5.0,3,&bFound),COGO_E_RADIUS);
+   TRY_TEST(intersect->LineByPointsCircle(4,1,3,1.0,-2,5.0,3,&bFound),COGO_E_POINTNOTFOUND);
+   TRY_TEST(intersect->LineByPointsCircle(4,1,3,1.0,2,5.0,-3,&bFound),COGO_E_POINTNOTFOUND);
+   TRY_TEST(intersect->LineByPointsCircle(4,1,3,1.0,2,-5.0,3,&bFound),COGO_E_RADIUS);
 
-   TRY_TEST(intersect->LineByPointsCircle(4,1,3,0.0,2,5.0,3,&bFound),S_OK);
+   TRY_TEST(intersect->LineByPointsCircle(4,1,3,1.0,2,5.0,3,&bFound),S_OK);
    TRY_TEST(bFound,VARIANT_TRUE);
    pnt.Release();
    points->get_Item(4,&pnt);

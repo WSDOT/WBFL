@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<LIBRARY_MANAGER version="1"><LIBRARY version="2.1"><NAME>ConcreteLibrary</NAME><DESCRIPTION>This is 
+a multi-line description
+With a twist &amp;gt;</DESCRIPTION><CONCRETE_ENTRY><Special>A string with &amp;dq;special char&amp;sq;s &amp;lt; &amp;gt; &amp;amp;&amp;amp; &amp;amp; things&amp;gt;&amp;lt;</Special><Density>150.19999999999999</Density><IsLightWeight>-1</IsLightWeight><Int32_Max>2147483647</Int32_Max><Int32_Min>-2147483648</Int32_Min><Uint32_Max>4294967295</Uint32_Max><Int16_Max>32767</Int16_Max><Int16_Min>-32768</Int16_Min><Uint16_Max>65535</Uint16_Max></CONCRETE_ENTRY></LIBRARY></LIBRARY_MANAGER>
