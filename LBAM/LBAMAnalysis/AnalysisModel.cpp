@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -799,7 +799,7 @@ void CAnalysisModel::GetFemMemberLocationAlongMemberList( Float64 globalLoc, Flo
       // location is at start of elements
       MemberIDType mbr_id = memberList.front().m_FemMemberID;
       *pfemMbrId = mbr_id;
-      *plocType = mltStraddle;
+      *plocType = mltLeftEnd;
       *pfemLoc = 0.0;
    }
    else if ( IsEqual(globalLoc,rightEnd, LOC_TOL) )
@@ -807,7 +807,7 @@ void CAnalysisModel::GetFemMemberLocationAlongMemberList( Float64 globalLoc, Flo
       // location is at right end
       MemberIDType mbr_id = memberList.back().m_FemMemberID;
       *pfemMbrId = mbr_id;
-      *plocType = mltStraddle;
+      *plocType = mltRightEnd;
       *pfemLoc = -1.0;
    }
    else

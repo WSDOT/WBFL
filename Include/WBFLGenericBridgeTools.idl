@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -73,7 +73,9 @@ library WBFLGenericBridgeTools
    typedef [public,helpstring("enum SectionPropertyMethod"),uuid(B7DC993C-340A-4fb0-A058-6286F9C890B7)]
    enum
    {
+      spmGrossNoncomposite,
       spmGross,
+      spmTransformedNoncomposite,
       spmTransformed,
       spmNet
    } SectionPropertyMethod;
@@ -243,12 +245,12 @@ library WBFLGenericBridgeTools
       // If Grid point has positive X value and 1 is input, the strand is placed at X=0.0
       // If Grid point has zero X value and 2 is input, two strands are placed at X=0.0
       [propget, helpstring("property StrandFill")] HRESULT StrandFill([out,retval]IIndexArray** fill);
-      [propput, helpstring("property StrandFill")] HRESULT StrandFill([in]IIndexArray* fill);
+      [propputref, helpstring("property StrandFill")] HRESULT StrandFill([in]IIndexArray* fill);
 
 	   [helpstring("method RemoveAllStrands")] HRESULT RemoveAllStrands();
 
       // Set the strand mover. By default strands just move up or down
-      [propput, helpstring("property StrandMover")] HRESULT StrandMover([in]IStrandMover* mover);
+      [propputref, helpstring("property StrandMover")] HRESULT StrandMover([in]IStrandMover* mover);
 
       // adjust strands upward or downward (up is positive)
       [propget, helpstring("property VerticalStrandAdjustment")] HRESULT VerticalStrandAdjustment([out,retval]Float64* adjust);
@@ -341,6 +343,9 @@ library WBFLGenericBridgeTools
 	{
       [helpstring("method Initialize")] HRESULT Initialize([in]ISegment* segment, [in]IStrandMover* strandMover);
 
+	   [propputref,helpstring("property StrandMover")] HRESULT StrandMover([in]IStrandMover* pStrandMover);
+	   [propget,helpstring("property StrandMover")] HRESULT StrandMover([out,retval]IStrandMover** ppStrandMover);
+
       [propputref,helpstring("property StraightStrandMaterial")] HRESULT StraightStrandMaterial([in]IPrestressingStrand* pMaterial);
       [propget,helpstring("property StraightStrandMaterial")] HRESULT StraightStrandMaterial([out,retval]IPrestressingStrand** ppMaterial);
 
@@ -404,11 +409,11 @@ library WBFLGenericBridgeTools
       [propget,helpstring("property TemporaryMaxStrandFill")] HRESULT TemporaryMaxStrandFill([out,retval]IIndexArray** fill);
 
       [propget,helpstring("property StraightStrandFill")] HRESULT StraightStrandFill([out,retval]IIndexArray** fill);
-      [propput,helpstring("property StraightStrandFill")] HRESULT StraightStrandFill([in]IIndexArray* fill);
+      [propputref,helpstring("property StraightStrandFill")] HRESULT StraightStrandFill([in]IIndexArray* fill);
       [propget,helpstring("property HarpedStrandFill")] HRESULT HarpedStrandFill([out,retval]IIndexArray** fill);
-      [propput,helpstring("property HarpedStrandFill")] HRESULT HarpedStrandFill([in]IIndexArray* fill);
+      [propputref,helpstring("property HarpedStrandFill")] HRESULT HarpedStrandFill([in]IIndexArray* fill);
       [propget,helpstring("property TemporaryStrandFill")] HRESULT TemporaryStrandFill([out,retval]IIndexArray** fill);
-      [propput,helpstring("property TemporaryStrandFill")] HRESULT TemporaryStrandFill([in]IIndexArray* fill);
+      [propputref,helpstring("property TemporaryStrandFill")] HRESULT TemporaryStrandFill([in]IIndexArray* fill);
 
       // Get all strand locations based on current fill, or input fill. 
       // Debonded strands are not removed

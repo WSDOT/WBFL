@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -142,11 +142,6 @@ Float64 lrfdLumpSumLosses::PermanentStrand_AfterSIDL() const
 Float64 lrfdLumpSumLosses::PermanentStrand_Final() const
 {
    return (m_ApsPerm != 0 && m_FpjPerm != 0) ? m_Final : 0;
-}
-
-Float64 lrfdLumpSumLosses::PermanentStrand_FinalWithLiveLoad(Float64 gLL) const
-{
-   return PermanentStrand_Final();
 }
 
 Float64 lrfdLumpSumLosses::TemporaryStrand_BeforeTransfer() const

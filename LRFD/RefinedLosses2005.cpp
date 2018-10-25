@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -347,7 +347,8 @@ Float64 lrfdRefinedLosses2005::TimeDependentLossesAfterDeck() const
       UpdateLosses();
    }
 
-   return m_dfpSD + m_dfpCD + m_dfpR2 - m_dfpSS;
+   Float64 loss = m_dfpSD + m_dfpCD + m_dfpR2;
+   return loss;
 }
 
 Float64 lrfdRefinedLosses2005::TimeDependentLosses() const
@@ -742,7 +743,7 @@ void lrfdRefinedLosses2005::GetDeckShrinkageEffects(Float64* pA,Float64* pM) con
       UpdateLosses();
    }
 
-   *pA = m_Ksh*m_eddf*m_Ad*m_Ecd/(1 + 0.7*m_CreepDeck.GetCreepCoefficient());
+   *pA = m_eddf*m_Ad*m_Ecd/(1 + 0.7*m_CreepDeck.GetCreepCoefficient());
    *pM = (*pA)*(m_ed);
 }
 
@@ -1073,7 +1074,11 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_dfpSS = IsZero(m_ApsPerm) ? 0.0 : (m_Ep/m_Ec)*m_DeltaFcdf*m_Kdf*(1 + 0.7*m_CreepDeckToFinal.GetCreepCoefficient());
 
 
-   m_dfpLT = m_dfpSR + m_dfpCR + m_dfpR1 + m_dfpSD + m_dfpCD + m_dfpR2 - m_dfpSS;
+   m_dfpLT = m_dfpSR + m_dfpCR + m_dfpR1 + m_dfpSD + m_dfpCD + m_dfpR2;
+   if ( m_SectionProperties == sptGross )
+   {
+      m_dfpLT -= m_dfpSS;
+   }
 }
 
 

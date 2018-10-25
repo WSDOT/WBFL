@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -436,8 +436,7 @@ Float64 lrfdLosses::PermanentStrand_AfterTransfer() const
       UpdateLosses();
    }
 
-   Float64 loss = PermanentStrand_RelaxationLossesBeforeTransfer() + PermanentStrand_ElasticShorteningLosses();
-
+   Float64 loss = PermanentStrand_RelaxationLossesBeforeTransfer();
    return loss;
 }
 
@@ -449,11 +448,6 @@ Float64 lrfdLosses::PermanentStrand_AtLifting() const
    }
 
    Float64 loss = PermanentStrand_AfterTransfer();
-
-   if ( m_TempStrandUsage == tsPTBeforeLifting )
-   {
-      loss += GetDeltaFpp();//m_dfpp;
-   }
 
    return loss;
 }
@@ -467,11 +461,6 @@ Float64 lrfdLosses::PermanentStrand_AtShipping() const
 
    Float64 loss = PermanentStrand_AtLifting() + PermanentStrand_TimeDependentLossesAtShipping();
 
-   if ( m_TempStrandUsage == tsPTBeforeShipping )
-   {
-      loss += GetDeltaFpp();//m_dfpp;
-   }
-
    return loss;
 }
 
@@ -483,11 +472,6 @@ Float64 lrfdLosses::PermanentStrand_AfterTemporaryStrandInstallation() const
    }
 
    Float64 loss = PermanentStrand_AfterTransfer();
-
-   if ( m_TempStrandUsage != tsPretensioned )
-   {
-      loss += GetDeltaFpp();//m_dfpp;
-   }
 
    if ( m_TempStrandUsage == tsPTBeforeShipping )
    {
@@ -515,7 +499,7 @@ Float64 lrfdLosses::PermanentStrand_AfterTemporaryStrandRemoval() const
       UpdateLosses();
    }
 
-   Float64 loss = PermanentStrand_AtShipping() + GetDeltaFptr();//m_dfptr;
+   Float64 loss = PermanentStrand_AtShipping();
    return loss;
 }
 
@@ -526,12 +510,7 @@ Float64 lrfdLosses::PermanentStrand_AfterDeckPlacement() const
       UpdateLosses();
    }
 
-   Float64 loss = PermanentStrand_AfterTransfer() + TimeDependentLossesBeforeDeck() + GetDeltaFptr() - ElasticGainDueToDeckPlacement();
-
-   if ( m_TempStrandUsage != tsPretensioned )
-   {
-      loss += GetDeltaFpp();//m_dfpp;
-   }
+   Float64 loss = PermanentStrand_AfterTransfer() + TimeDependentLossesBeforeDeck();
 
    return loss;
 }
@@ -543,7 +522,7 @@ Float64 lrfdLosses::PermanentStrand_AfterSIDL() const
       UpdateLosses();
    }
 
-   Float64 loss = PermanentStrand_AfterDeckPlacement() - ElasticGainDueToSIDL();
+   Float64 loss = PermanentStrand_AfterDeckPlacement();
 
    return loss;
 }
@@ -557,16 +536,6 @@ Float64 lrfdLosses::PermanentStrand_Final() const
 
    Float64 loss = PermanentStrand_AfterSIDL() + TimeDependentLossesAfterDeck();
    return loss;
-}
-
-Float64 lrfdLosses::PermanentStrand_FinalWithLiveLoad(Float64 gLL) const
-{
-   if ( m_IsDirty )
-   {
-      UpdateLosses();
-   }
-
-   return PermanentStrand_Final() - gLL*ElasticGainDueToLiveLoad();
 }
 
 Float64 lrfdLosses::TemporaryStrand_BeforeTransfer() const

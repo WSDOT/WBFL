@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -297,8 +297,7 @@ public:
    bool IgnoreInitialRelaxation() const;
 
    //------------------------------------------------------------------------
-   // These methods return the Effective prestress loss
-   // Effective Losss = Actual Loss + Elastic Gains
+   // These methods return only the time-dependent loss
    virtual Float64 PermanentStrand_BeforeTransfer() const;
    virtual Float64 PermanentStrand_AfterTransfer() const;
    virtual Float64 PermanentStrand_AtLifting() const;
@@ -309,7 +308,6 @@ public:
    virtual Float64 PermanentStrand_AfterDeckPlacement() const;
    virtual Float64 PermanentStrand_AfterSIDL() const;
    virtual Float64 PermanentStrand_Final() const;
-   virtual Float64 PermanentStrand_FinalWithLiveLoad(Float64 gLL) const;
 
    virtual Float64 TemporaryStrand_BeforeTransfer() const;
    virtual Float64 TemporaryStrand_AfterTransfer() const;
@@ -380,7 +378,7 @@ public:
    Float64 GetFcgpp() const;
 
    //------------------------------------------------------------------------
-   // Change in stress in permanent strands due to post-tensioning strands
+   // Change in stress in permanent strands due to post-tensioning temporary strands strands
    Float64 GetDeltaFpp() const;
 
    //------------------------------------------------------------------------

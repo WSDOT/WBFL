@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -968,7 +968,7 @@ HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDT
    (*section)->AddRef();
 
    // for net properties, we only want the girder
-   if ( sectionPropMethod == spmNet )
+   if ( sectionPropMethod == spmGrossNoncomposite || sectionPropMethod == spmTransformedNoncomposite || sectionPropMethod == spmNet )
    {
       return S_OK;
    }
@@ -1276,7 +1276,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
    bool bIsPointOnSegment = ( InRange(0.0,Xs,segment_length) ? true : false );
 
    // Add Strands and Rebar
-   if ( sectionPropMethod != spmGross )
+   if ( sectionPropMethod != spmGross && sectionPropMethod != spmGrossNoncomposite )
    {
       if ( bIsPointOnSegment )
       {
@@ -1373,7 +1373,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
 
                centroid->Move(xTop + x,yTop + y);
 
-               if ( sectionPropMethod == spmTransformed )
+               if ( sectionPropMethod == spmTransformed || sectionPropMethod == spmTransformedNoncomposite )
                {
                   if ( bDebonded )
                   {

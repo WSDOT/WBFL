@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -98,9 +98,9 @@ public:
    // If Grid point has positive X value and 1 is input, the strand is placed at X=0.0
    // If Grid point has zero X value and 2 is input, one strand is placed at X=0.0
    STDMETHOD(get_StrandFill)(/*[out,retval]*/IIndexArray** fill);
-   STDMETHOD(put_StrandFill)(/*[in]*/IIndexArray* fill);
+   STDMETHOD(putref_StrandFill)(/*[in]*/IIndexArray* fill);
 
-   STDMETHOD(put_StrandMover)(/*[in]*/IStrandMover* mover);
+   STDMETHOD(putref_StrandMover)(/*[in]*/IStrandMover* mover);
 
    STDMETHOD(get_VerticalStrandAdjustment)(/*[out,retval]*/Float64* adjustment);
    STDMETHOD(put_VerticalStrandAdjustment)(/*[in]*/Float64 adjustment);

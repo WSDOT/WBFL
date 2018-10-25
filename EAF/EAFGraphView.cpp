@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -193,6 +193,12 @@ void CEAFGraphView::OnInitialUpdate()
    }
    catch(...)
    {
+      // The view creation must fail and this is intentional
+      // Turn off the error message so the user doesn't see it
+      CEAFMainFrame* pFrame = EAFGetMainFrame();
+      pFrame->DisableFailCreateMessage();
+      pFrame->CreateCanceled();
+
       throw; // keep the exception moving
    }
 }
