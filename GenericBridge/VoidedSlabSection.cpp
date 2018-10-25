@@ -295,7 +295,7 @@ STDMETHODIMP CVoidedSlabSection::get_MatingSurfaceCount(MatingSurfaceIndexType* 
    return S_OK;
 }
 
-STDMETHODIMP CVoidedSlabSection::get_MatingSurfaceLocation(MatingSurfaceIndexType idx,Float64* location)
+STDMETHODIMP CVoidedSlabSection::get_MatingSurfaceLocation(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly,Float64* location)
 {
    if ( idx != 0 )
    {
@@ -306,7 +306,7 @@ STDMETHODIMP CVoidedSlabSection::get_MatingSurfaceLocation(MatingSurfaceIndexTyp
    return S_OK;
 }
 
-STDMETHODIMP CVoidedSlabSection::get_MatingSurfaceWidth(MatingSurfaceIndexType idx,Float64* wMatingSurface)
+STDMETHODIMP CVoidedSlabSection::get_MatingSurfaceWidth(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly,Float64* wMatingSurface)
 {
    if ( idx != 0 )
    {
@@ -316,7 +316,7 @@ STDMETHODIMP CVoidedSlabSection::get_MatingSurfaceWidth(MatingSurfaceIndexType i
    return get_TopWidth(wMatingSurface);
 }
 
-STDMETHODIMP CVoidedSlabSection::get_MatingSurfaceProfile(MatingSurfaceIndexType idx, IPoint2dCollection** ppProfile)
+STDMETHODIMP CVoidedSlabSection::get_MatingSurfaceProfile(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly, IPoint2dCollection** ppProfile)
 {
    return E_NOTIMPL;
 }

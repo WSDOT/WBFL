@@ -27,6 +27,7 @@
 #include <WBFLGenericBridgeTools\WBFLGenericBridgeToolsExp.h>
 #include <Material\Concrete.h>
 #include <WBFLGeometry.h>
+#include <GeometricPrimitives\Primitives3d.h>
 
 interface IRebarSection;
 
@@ -61,9 +62,9 @@ public:
    void SetConcrete(const matConcrete& concrete);
    const matConcrete& GetConcrete() const;
 
+   // shape must be in centroidal/stress point coordinates
    void ComputeAlternativeStressRequirements(IShape* pShape,IRebarSection* pRebarSection,
-                                                Float64 Wtop,Float64 Wbot,
-                                                Float64 fTopLeft, Float64 fTopRight, Float64 fBotLeft, Float64 fBotRight,
+                                                const gpPoint3d& pntTopLeft,const gpPoint3d& pntTopRight,const gpPoint3d& pntBotLeft,const gpPoint3d& pntBotRight,
                                                 Float64 *pYna, Float64* pNAslope, Float64 *pAreaTens, Float64 *pT, 
                                                 Float64 *pAsProvd, Float64 *pAsReqd, bool* pbIsAdequateRebar);
 

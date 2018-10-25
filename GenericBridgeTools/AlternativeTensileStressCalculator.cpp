@@ -90,24 +90,23 @@ const matConcrete& gbtAlternativeTensileStressCalculator::GetConcrete() const
 }
 
 void gbtAlternativeTensileStressCalculator::ComputeAlternativeStressRequirements(IShape* pShape,IRebarSection* pRebarSection,
-                                        Float64 Wtop,Float64 Wbot,
-                                        Float64 fTopLeft, Float64 fTopRight, Float64 fBotLeft, Float64 fBotRight,
+                                        const gpPoint3d& pntTopLeft, const gpPoint3d& pntTopRight, const gpPoint3d& pntBotLeft, const gpPoint3d& pntBotRight,
                                         Float64 *pYna, Float64* pNAslope, Float64 *pAreaTens, Float64 *pT, 
                                         Float64 *pAsProvd, Float64 *pAsReqd, bool* pbIsAdequateRebar)
 {
    // Determine neutral axis location and mild steel requirement for alternative tensile stress
+
+   // Shape must be in Centroidal/Stress Point coordinates
+
    typedef enum {slAllTens, slAllComp, slOther} StressLocation;
    StressLocation stressLoc;
    *pYna = -1;
    *pNAslope = -1;
 
-   CComPtr<IShapeProperties> shapeProps;
-   pShape->get_ShapeProperties(&shapeProps);
-   Float64 Ytop, Ybot;
-   shapeProps->get_Ytop(&Ytop);
-   shapeProps->get_Ybottom(&Ybot);
-
-   Float64 H = Ybot + Ytop;
+   Float64 fTopLeft = pntTopLeft.Z();
+   Float64 fTopRight = pntTopRight.Z();
+   Float64 fBotLeft = pntBotLeft.Z();
+   Float64 fBotRight = pntBotRight.Z();
 
    // Max bar stress for computing higher allowable temporary tensile (5.9.4.1.2)
    Float64 allowable_bar_stress = 0.5*m_fy;
@@ -130,15 +129,13 @@ void gbtAlternativeTensileStressCalculator::ComputeAlternativeStressRequirements
    else
    {
       stressLoc = slOther;
-   //   ATLASSERT( BinarySign(fBot) != BinarySign(fTop) );
-
-   //   stressLoc = 0.0 <= fBot ? slBotTens : slTopTens;
-
-   //   // Location of neutral axis from Bottom of Girder/Deck
-   //   Yna = (IsZero(fBot) ? 0 : H - (fTop*H/(fTop-fBot)) );
-
-   //   ATLASSERT( 0 <= Yna );
    }
+
+   CComQIPtr<IXYPosition> position(pShape);
+   CComPtr<IPoint2d> pntTC;
+   position->get_LocatorPoint(lpTopCenter, &pntTC);
+   Float64 Xtc, Ytc;
+   pntTC->Location(&Xtc, &Ytc);
 
    // Compute area on concrete in tension and total tension
    Float64 AreaTens; // area of concrete in tension
@@ -153,6 +150,8 @@ void gbtAlternativeTensileStressCalculator::ComputeAlternativeStressRequirements
    else if ( stressLoc == slAllTens )
    {
       // Tension over entire cross section
+      CComPtr<IShapeProperties> shapeProps;
+      pShape->get_ShapeProperties(&shapeProps);
       shapeProps->get_Area(&AreaTens);
 
       Float64 fAvg = (Max(fTopLeft,fTopRight,fBotLeft,fBotRight) + Min(fTopLeft,fTopRight,fBotLeft,fBotRight))/2;
@@ -167,61 +166,25 @@ void gbtAlternativeTensileStressCalculator::ComputeAlternativeStressRequirements
       // use a 3d plane to determine the neutral axis
       stressPlane.CoCreateInstance(CLSID_Plane3d);
 
-      CComQIPtr<IXYPosition> position(pShape);
       CComPtr<IPoint3d> p1,p2,p3;
       p1.CoCreateInstance(CLSID_Point3d);
       p2.CoCreateInstance(CLSID_Point3d);
       p3.CoCreateInstance(CLSID_Point3d);
-      if ( Wtop < Wbot )
-      {
-         CComPtr<IPoint2d> tc,bl,br;
-         position->get_LocatorPoint(lpTopCenter,&tc);
-         position->get_LocatorPoint(lpBottomLeft,&bl);
-         position->get_LocatorPoint(lpBottomRight,&br);
-
-         Float64 fTop = (fTopLeft + fTopRight)/2;
-         Float64 x,y;
-         tc->Location(&x,&y);
-         p1->Move(x,y,fTop);
-
-         bl->Location(&x,&y);
-         p2->Move(x,y,fBotLeft);
-
-         br->Location(&x,&y);
-         p3->Move(x,y,fBotRight);
-      }
-      else
-      {
-         CComPtr<IPoint2d> tl,tr,bc;
-         position->get_LocatorPoint(lpTopLeft,&tl);
-         position->get_LocatorPoint(lpTopRight,&tr);
-         position->get_LocatorPoint(lpBottomCenter,&bc);
-
-         Float64 fBot = (fBotLeft + fBotRight)/2;
-         Float64 x,y;
-         bc->Location(&x,&y);
-         p1->Move(x,y,fBot);
-
-         tl->Location(&x,&y);
-         p2->Move(x,y,fTopLeft);
-
-         tr->Location(&x,&y);
-         p3->Move(x,y,fTopRight);
-      }
-
+      p1->Move(pntTopLeft.X(), pntTopLeft.Y(), pntTopLeft.Z());
+      p2->Move(pntTopRight.X(), pntTopRight.Y(), pntTopRight.Z());
+      p3->Move(pntBotLeft.X(), pntBotLeft.Y(), pntBotLeft.Z());
       stressPlane->ThroughPoints(p1,p2,p3);
 
-      CComPtr<IPoint2d> tl,tr;
-      position->get_LocatorPoint(lpTopLeft,&tl);
-      position->get_LocatorPoint(lpTopRight,&tr);
-      Float64 x1;
-      tl->get_X(&x1);
+      Float64 x1 = pntTopLeft.X();
       Float64 y1;
       stressPlane->GetY(x1,0,&y1);
-      Float64 x2;
-      tr->get_X(&x2);
+      Float64 x2 = pntTopRight.X();
       Float64 y2;
       stressPlane->GetY(x2,0,&y2);
+
+#if defined _DEBUG
+      Float64 slope = (y2 - y1) / (x2 - x1);
+#endif
 
       CComPtr<IPoint2d> pnt1,pnt2;
       pnt1.CoCreateInstance(CLSID_Point2d);
@@ -251,30 +214,25 @@ void gbtAlternativeTensileStressCalculator::ComputeAlternativeStressRequirements
          line->Reverse();
       }
 
-      // depth of neutral axis
-      CComPtr<IPoint2d> center;
-      position->get_LocatorPoint(lpCenterCenter,&center);
-      Float64 x;
-      center->get_X(&x);
-      stressPlane->GetY(x,0.0,pYna);
-
       // get angle of neutral axis
       CComPtr<IPoint2d> pnt;
       CComPtr<IVector2d> v;
       line->GetExplicit(&pnt,&v);
-      v->get_Direction(pNAslope);
-      if ( IsEqual(TWO_PI,*pNAslope) )
-      {
-         *pNAslope = 0;
-      }
-
-      if ( IsLE(M_PI,*pNAslope) )
-      {
-         *pNAslope -= M_PI;
-      }
-
+      Float64 vx, vy;
+      v->get_X(&vx);
+      v->get_Y(&vy);
+      *pNAslope = IsZero(vx) ? Float64_Max : vy / vx;
       *pNAslope = IsZero(*pNAslope) ? 0 : *pNAslope;
-      
+      ATLASSERT(IsEqual(slope, *pNAslope));
+
+      // depth of neutral axis
+      // neutral asxis line in y=mx+b form
+      // y1 = mx1 + b... b = y1 - mx1
+      Float64 b = y1 - (*pNAslope)*x1;
+      *pYna = (*pNAslope)*Xtc + b; // this is Y at vertical line passing through center of bounding box in CG coordinates
+      *pYna -= Ytc; // convert to girder section coordinates (now measured from 0,0 at top center of bounding box)
+
+
       Float64 fAvg = Max(fTopLeft,fTopRight,fBotLeft,fBotRight)/2;
 
       CComPtr<IShape> clipped_shape;
@@ -294,22 +252,11 @@ void gbtAlternativeTensileStressCalculator::ComputeAlternativeStressRequirements
       }
 
       T = fAvg * AreaTens;
-
-      //ATLASSERT( !::IsZero(T) );
    }
 
    // Area of steel required to meet higher tensile stress requirement
    Float64 AsReqd = T/allowable_bar_stress;
    ATLASSERT( 0 <= AsReqd );
-
-   CComQIPtr<IXYPosition> position(pShape);
-   CComPtr<IPoint2d> tc;
-   position->get_LocatorPoint(lpTopCenter,&tc);
-   Float64 Xtc, Ytc;
-   tc->Location(&Xtc,&Ytc);
-
-   // NOTE: This function assumes that longitudinal rebar does not change during design.
-   // This will need to be revisited if we start designing longitudinal rebar.
 
    // Compute area of rebar actually provided in tension zone. Reduce values for development
    Float64 AsProvd = 0.0; // As provided
@@ -367,10 +314,9 @@ void gbtAlternativeTensileStressCalculator::ComputeAlternativeStressRequirements
             rebarSectionItem->get_Location(&location);
 
             Float64 x,y;
-            location->get_X(&x);
-            location->get_Y(&y);
+            location->Location(&x, &y); // in girder section coordinates (0,0 at top center)
 
-            // put the bar into section coordinates
+            // put the bar into centroid coordinates
             x += Xtc;
             y += Ytc;
 
@@ -396,10 +342,6 @@ void gbtAlternativeTensileStressCalculator::ComputeAlternativeStressRequirements
    {
       *pbIsAdequateRebar = (::IsLE(AsReqd,AsProvd,0.000001) ? true : false);
    }
-
-   // convert the location of the neutral axis so that it is relative
-   // to the top of the girder shape
-   *pYna -= Ytc;
 
    *pAreaTens = AreaTens;
    *pT        = T;

@@ -210,17 +210,17 @@ public:
       return get_TopFlangeCount(nMatingSurfaces);
    }
 
-   STDMETHODIMP get_MatingSurfaceLocation(MatingSurfaceIndexType idx,Float64* location) override
+   STDMETHODIMP get_MatingSurfaceLocation(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly,Float64* location) override
    {
       return get_TopFlangeLocation(idx,location);
    }
 
-	STDMETHODIMP get_MatingSurfaceWidth(MatingSurfaceIndexType idx,Float64* wMatingSurface) override
+	STDMETHODIMP get_MatingSurfaceWidth(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly,Float64* wMatingSurface) override
    {
       return get_TopFlangeWidth(idx,wMatingSurface);
    }
 
-   STDMETHODIMP get_MatingSurfaceProfile(MatingSurfaceIndexType idx, IPoint2dCollection** ppProfile) override
+   STDMETHODIMP get_MatingSurfaceProfile(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly, IPoint2dCollection** ppProfile) override
    {
       return E_NOTIMPL;
    }

@@ -1,0 +1,13 @@
+/Interfaces.fpj///1222800242/////
+D/IEnumPoint2d////////
+D/IEnumPoint3d////////
+D/IEnumShape////////
+D/IGeomUtil2d////////
+D/IGeomUtil3d////////
+D/ILine2dFactory////////
+D/ILineSegment2dFactory////////
+D/IPoint2dFactory////////
+D/IPoint3dFactory////////
+D/IShape////////
+D/IStructuredStorage2////////
+D/IXYPosition////////

@@ -1692,7 +1692,8 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             rptRcTable* pRebarTable = nullptr;
             if ( segment )
             {
-               pRebarTable = rptStyleManager::CreateDefaultTable(7,_T("Bonded reinforcement requirements [C5.9.4.1.2]"));
+               std::_tstring strTitle(_T("Bonded reinforcement requirements [") + std::_tstring(LrfdCw8th(_T("C5.9.4.1.2"), _T("C5.9.2.3.1b"))) + std::_tstring(_T("]")));
+               pRebarTable = rptStyleManager::CreateDefaultTable(7,strTitle);
             
                col = 0;
                if ( lpszLocColumnLabel )
