@@ -75,6 +75,7 @@ protected:
 
 	// Generated message map functions
 	//{{AFX_MSG(CEAFChildFrame)
+   afx_msg void OnNcMButtonDown(UINT nHitTest, CPoint point);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
