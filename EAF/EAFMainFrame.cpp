@@ -36,6 +36,8 @@
 #include <EAF\EAFChildFrame.h>
 #include "ToolBarDlg.h"
 
+#include "MFCToolBar.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -114,7 +116,7 @@ CEAFStatusBar* CEAFMainFrame::CreateStatusBar()
 
 CToolBar* CEAFMainFrame::CreateMainFrameToolBar()
 {
-   CToolBar* pToolBar = new CToolBar();
+   CToolBar* pToolBar = new CMyToolBar();
    
    DWORD dwToolBarStyle = WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER;
    if ( m_bShowToolTips )
@@ -809,7 +811,7 @@ UINT CEAFMainFrame::CreateToolBar(LPCTSTR lpszName,CEAFPluginCommandManager* pCm
    tbInfo.m_pEAFToolBar  = pEAFToolBar;
    tbInfo.m_ToolBarID    = tbID;
 
-   CToolBar* pToolBar = new CToolBar;
+   CToolBar* pToolBar = new CMyToolBar;
 
    DWORD dwToolBarStyle = WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER;
    if ( m_bShowToolTips )
