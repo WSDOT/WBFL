@@ -40,8 +40,6 @@ static char THIS_FILE[] = __FILE__;
 HRESULT CSegment::FinalConstruct()
 {
    m_Orientation = 0;
-   m_HaunchDepth[etStart] = 0;
-   m_HaunchDepth[etEnd] = 0;
    m_pPrevSegment = NULL;
    m_pNextSegment = NULL;
    return S_OK;

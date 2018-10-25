@@ -1237,10 +1237,18 @@ STDMETHODIMP_(void) CDisplayMgrImpl::DestroyDragObjects()
 STDMETHODIMP_(void) CDisplayMgrImpl::RegisterDropSite(iDropSite* pDropSite)
 {
    m_pDropSite = pDropSite;
+   if ( m_pDropSite )
+   {
+      m_pDropSite->AddRef();
+   }
 }
 
 STDMETHODIMP_(void) CDisplayMgrImpl::UnregisterDropSite()
 {
+   if ( m_pDropSite )
+   {
+      m_pDropSite->Release();
+   }
    m_pDropSite = 0;
 }
 

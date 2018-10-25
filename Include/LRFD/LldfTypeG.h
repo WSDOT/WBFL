@@ -500,8 +500,11 @@ protected:
    //------------------------------------------------------------------------
    virtual DFResult GetMomentDF_Ext_2_Strength() const;
    //------------------------------------------------------------------------
+      
+   DFResult GetBaseShearDF_Ext_1_Strength() const;
    virtual DFResult GetShearDF_Ext_1_Strength() const;
    //------------------------------------------------------------------------
+   DFResult GetBaseShearDF_Ext_2_Strength() const;
    virtual DFResult GetShearDF_Ext_2_Strength() const;
 
    //------------------------------------------------------------------------

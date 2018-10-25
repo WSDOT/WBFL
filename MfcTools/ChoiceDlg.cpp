@@ -80,25 +80,55 @@ BOOL CChoiceDlg::OnInitDialog()
 
    m_Icon.SetIcon(::LoadIcon(NULL,IDI_QUESTION));
 
-   if ( !m_bCancel )
+   if ( m_bCancel && m_pHelpHandler == NULL )
    {
-      CWnd* pCancel = GetDlgItem(IDCANCEL);
+      // [OK][Cancel]
       CWnd* pOK     = GetDlgItem(IDOK);
+      CWnd* pCancel = GetDlgItem(IDCANCEL);
+      CWnd* pHelp   = GetDlgItem(IDHELP);
+      
+      CRect rHelp;
+      pHelp->GetWindowRect(&rHelp);
+      
+      CRect rCancel;
+      pCancel->GetWindowRect(&rCancel);
 
+      pHelp->ShowWindow(SW_HIDE);
+      ScreenToClient(&rHelp);
+      ScreenToClient(&rCancel);
+      pCancel->MoveWindow(rHelp);
+      pOK->MoveWindow(rCancel);
+   }
+   else if ( !m_bCancel && m_pHelpHandler != NULL )
+   {
+      // [OK][Help]
+      CWnd* pOK     = GetDlgItem(IDOK);
+      CWnd* pCancel = GetDlgItem(IDCANCEL);
+      
       CRect rCancel;
       pCancel->GetWindowRect(&rCancel);
 
       ScreenToClient(&rCancel);
-
-      pOK->MoveWindow(rCancel);
       pCancel->ShowWindow(SW_HIDE);
-
+      pOK->MoveWindow(rCancel);
       ModifyStyle(WS_SYSMENU,0);
    }
-
-   if ( m_pHelpHandler == NULL )
+   else if ( !m_bCancel && m_pHelpHandler == NULL )
    {
-      GetDlgItem(IDHELP)->ShowWindow(SW_HIDE);
+      // [OK]
+      CWnd* pOK     = GetDlgItem(IDOK);
+      CWnd* pCancel = GetDlgItem(IDCANCEL);
+      CWnd* pHelp   = GetDlgItem(IDHELP);
+      
+      CRect rHelp;
+      pHelp->GetWindowRect(&rHelp);
+
+      pHelp->ShowWindow(SW_HIDE);
+      pCancel->ShowWindow(SW_HIDE);
+
+      ScreenToClient(&rHelp);
+      pOK->MoveWindow(rHelp);
+      ModifyStyle(WS_SYSMENU,0);
    }
 
    return TRUE;  // return TRUE unless you set the focus to a control

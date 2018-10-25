@@ -32,7 +32,7 @@
 
 #include <Math\CompositeFunction2d.h>
 #include <Math\LinFunc2d.h>
-#include <Math\Polynomial2d.h>
+#include <Math\MathUtils.h>
 
 #include <algorithm>
 
@@ -55,8 +55,11 @@ public:
 
       m_Orientation = 0;
 
-      m_HaunchDepth[etStart] = 0;
-      m_HaunchDepth[etEnd]   = 0;
+      m_HaunchDepth[0] = 0;
+      m_HaunchDepth[1] = 0;
+      m_HaunchDepth[2] = 0;
+
+      m_Fillet = 0;
 
       m_EndBlockLength[etStart]           = 0;
       m_EndBlockLength[etEnd]             = 0;
@@ -101,7 +104,9 @@ protected:
    CItemDataManager m_ItemDataMgr;
 
    // index is EndType
-   Float64 m_HaunchDepth[2]; // depth from top of slab to top of girder at CL Bearing at start/end of girder
+   Float64 m_HaunchDepth[3]; // depth from top of slab to top of girder at CL Bearing at start/end of girder
+
+   Float64 m_Fillet;
 
    // index is EndType
    Float64 m_EndBlockLength[2]; // length of end block from end of girder to transitation
@@ -395,25 +400,45 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(get_HaunchDepth)(EndType endType,Float64* pVal)
+   STDMETHOD(GetHaunchDepth)(Float64* pStartVal,Float64* pMidVal,Float64* pEndVal)
    {
-      CHECK_RETVAL(pVal);
-      *pVal = m_HaunchDepth[endType];
+      CHECK_RETVAL(pStartVal);
+      CHECK_RETVAL(pMidVal);
+      CHECK_RETVAL(pEndVal);
+      *pStartVal = m_HaunchDepth[0];
+      *pMidVal   = m_HaunchDepth[1];
+      *pEndVal   = m_HaunchDepth[2];
       return S_OK;
    }
 
-   STDMETHOD(put_HaunchDepth)(EndType endType,Float64 val)
+   STDMETHOD(SetHaunchDepth)(Float64 startVal,Float64 midVal,Float64 endVal)
    {
-      m_HaunchDepth[endType] = val;
+      m_HaunchDepth[0] = startVal;
+      m_HaunchDepth[1] = midVal;
+      m_HaunchDepth[2] = endVal;
       return S_OK;
    }
 
-   STDMETHOD(GetHaunchDepth)(Float64 Xs,Float64* pVal)
+   STDMETHOD(ComputeHaunchDepth)(Float64 distAlongSegment,Float64* pVal)
    {
       CHECK_RETVAL(pVal);
+      *pVal = ::GB_GetHaunchDepth(this,distAlongSegment);
+      return S_OK;
+   }
 
-      *pVal = GB_GetHaunchDepth(this,Xs);
+   STDMETHOD(put_Fillet)(/*[in]*/Float64 Fillet)
+   {
+      if ( IsEqual(m_Fillet,Fillet) )
+         return S_OK;
 
+      m_Fillet = Fillet;
+      return S_OK;
+   }
+
+	STDMETHOD(get_Fillet)(/*[out,retval]*/Float64* Fillet)
+   {
+      CHECK_RETVAL(Fillet);
+      (*Fillet) = m_Fillet;
       return S_OK;
    }
 
@@ -1315,36 +1340,6 @@ protected:
       Float64 h = pLastFunction->Evaluate(xMax);
       mathLinFunc2d func(0.0,h);
       pProfile->AddFunction(xMax,xMax + 100*fabs(xMax-xMin),func);
-   }
-
-   mathPolynomial2d GenerateParabola1(Float64 x1,Float64 y1,Float64 x2,Float64 y2,Float64 slope)
-   {
-      // slope is known at left end
-      Float64 A = ((y2-y1) - (x2-x1)*slope)/((x2-x1)*(x2-x1));
-      Float64 B = slope - 2*A*x1;
-      Float64 C = y1 - A*x1*x1 - B*x1;
-
-      std::vector<Float64> coefficients;
-      coefficients.push_back(A);
-      coefficients.push_back(B);
-      coefficients.push_back(C);
-
-      return mathPolynomial2d(coefficients);
-   }
-
-   mathPolynomial2d GenerateParabola2(Float64 x1,Float64 y1,Float64 x2,Float64 y2,Float64 slope)
-   {
-      // slope is known at right end
-      Float64 A = -((y2-y1) - (x2-x1)*slope)/((x2-x1)*(x2-x1));
-      Float64 B = slope - 2*A*x2;
-      Float64 C = y1 - A*x1*x1 - B*x1;
-
-      std::vector<Float64> coefficients;
-      coefficients.push_back(A);
-      coefficients.push_back(B);
-      coefficients.push_back(C);
-
-      return mathPolynomial2d(coefficients);
    }
 
    Float64 ConvertToSegmentPathCoordinate(Float64 Xs)

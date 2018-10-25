@@ -366,6 +366,20 @@ STDMETHODIMP CVertCurve::get_LowPoint(IProfilePoint **pVal)
    CHECK_RETOBJ(pVal);
    UPDATE_CURVE;
 
+   if ( IsZero(m_L1) && IsZero(m_L2) )
+   {
+      // this curve is has no length so it is just a profile point
+      CComPtr<IStation> staPVI;
+      Float64 elevPVI;
+      m_PVI->get_Station(&staPVI);
+      m_PVI->get_Elevation(&elevPVI);
+
+      m_Factory->CreateProfilePoint(pVal);
+      (*pVal)->put_Station(CComVariant(staPVI));
+      (*pVal)->put_Elevation(elevPVI);
+      return S_OK;
+   }
+
    CComPtr<IProfilePoint> bvc;
    get_BVC(&bvc);
 
@@ -466,6 +480,20 @@ STDMETHODIMP CVertCurve::get_HighPoint(IProfilePoint **pVal)
 {
    CHECK_RETOBJ(pVal);
    UPDATE_CURVE;
+
+   if ( IsZero(m_L1) && IsZero(m_L2) )
+   {
+      // this curve is has no length so it is just a profile point
+      CComPtr<IStation> staPVI;
+      Float64 elevPVI;
+      m_PVI->get_Station(&staPVI);
+      m_PVI->get_Elevation(&elevPVI);
+
+      m_Factory->CreateProfilePoint(pVal);
+      (*pVal)->put_Station(CComVariant(staPVI));
+      (*pVal)->put_Elevation(elevPVI);
+      return S_OK;
+   }
 
    CComPtr<IProfilePoint> bvc;
    get_BVC(&bvc);
@@ -575,6 +603,43 @@ STDMETHODIMP CVertCurve::Elevation(VARIANT varStation, Float64 *elev)
    {
       return hr;
    }
+   Float64 staValue = cogoUtil::GetNormalizedStationValue(m_pProfile,sta);
+
+   Float64 g1, g2;
+   get_EntryGrade(&g1);
+   get_ExitGrade(&g2);
+
+
+   if ( IsZero(m_L1) && IsZero(m_L2) )
+   {
+      // this curve is has no length so it is just a profile point
+      CComPtr<IStation> staPVI;
+      Float64 elevPVI;
+      m_PVI->get_Station(&staPVI);
+      m_PVI->get_Elevation(&elevPVI);
+      Float64 pviValue = cogoUtil::GetNormalizedStationValue(m_pProfile,staPVI);
+
+      if ( IsEqual(pviValue,staValue) )
+      {
+         *elev = elevPVI;
+      }
+      else if ( staValue < pviValue )
+      {
+         // Before curve
+         *elev = elevPVI - g1*(pviValue - staValue);
+      }
+      else if ( pviValue < staValue )
+      {
+         // After curve
+         *elev = elevPVI + g2*(staValue - pviValue);
+      }
+      else
+      {
+         ATLASSERT(false); // should not get here
+      }
+
+      return S_OK;
+   }
 
    CComPtr<IProfilePoint> bvc;
    get_BVC(&bvc);
@@ -593,13 +658,6 @@ STDMETHODIMP CVertCurve::Elevation(VARIANT varStation, Float64 *elev)
    evc->get_Station(&staEVC);
    evc->get_Elevation(&elevEVC);
    Float64 evcValue = cogoUtil::GetNormalizedStationValue(m_pProfile,staEVC);
-
-   Float64 staValue = cogoUtil::GetNormalizedStationValue(m_pProfile,sta);
-
-   Float64 g1, g2;
-   get_EntryGrade(&g1);
-   get_ExitGrade(&g2);
-
 
    if ( staValue < bvcValue )
    {
@@ -669,6 +727,36 @@ STDMETHODIMP CVertCurve::Grade(VARIANT varStation, Float64 *grade)
       return hr;
    }
 
+   Float64 g1, g2;
+   get_EntryGrade(&g1);
+   get_ExitGrade(&g2);
+
+   if ( IsZero(m_L1) && IsZero(m_L2) )
+   {
+      // this curve is has no length so it is just a profile point
+      CComPtr<IStation> staPVI;
+      m_PVI->get_Station(&staPVI);
+
+      if ( 0 < cogoUtil::Compare(m_pProfile,sta,staPVI) )
+      {
+         // Before curve
+         *grade = g1;
+      }
+      else if ( 0 < cogoUtil::Compare(m_pProfile,staPVI,sta) )
+      {
+         // After curve
+         *grade = g2;
+      }
+      else
+      {
+         // exactly at PVI
+         *grade = g1;
+      }
+
+      return S_OK;
+   }
+
+
    CComPtr<IProfilePoint> bvc;
    get_BVC(&bvc);
 
@@ -684,11 +772,6 @@ STDMETHODIMP CVertCurve::Grade(VARIANT varStation, Float64 *grade)
    Float64 elevEVC;
    evc->get_Station(&staEVC);
    evc->get_Elevation(&elevEVC);
-
-   Float64 g1, g2;
-   get_EntryGrade(&g1);
-   get_ExitGrade(&g2);
-
 
    if ( 0 < cogoUtil::Compare(m_pProfile,sta,staBVC) )
    {
@@ -810,6 +893,12 @@ STDMETHODIMP CVertCurve::get_E(Float64 t,Float64* e)
 
    Float64 h;
    get_H(&h);
+
+   if ( IsZero(h) )
+   {
+      *e = 0;
+      return S_OK;
+   }
 
    if (t < L1)
    {
@@ -1107,12 +1196,12 @@ HRESULT CVertCurve::Update()
       Float64 dx = cogoUtil::Distance(m_pProfile,staPBG,staPVI);
       Float64 dy = elevPVI - elevPBG;
 
-      m_g1 = dy/dx;
+      m_g1 = IsZero(dx) ? 0 : dy/dx;
 
       dx = cogoUtil::Distance(m_pProfile,staPVI,staPFG);
       dy = elevPFG - elevPVI;
 
-      m_g2 = dy/dx;
+      m_g2 = IsZero(dx) ? 0 : dy/dx;
 
       // Compute BVC and EVC
       Float64 staPVIValue = cogoUtil::GetNormalizedStationValue(m_pProfile,staPVI);

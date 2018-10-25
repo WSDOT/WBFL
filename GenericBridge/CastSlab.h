@@ -48,7 +48,6 @@ public:
 	{
       m_GrossDepth = 0;
       m_OverhangDepth = 0;
-      m_Fillet = 0;
       m_Taper = dotNone;
 
       m_pDeckBoundary = NULL;
@@ -60,7 +59,6 @@ public:
 private:
    Float64 m_GrossDepth;
    Float64 m_OverhangDepth;
-   Float64 m_Fillet;
    DeckOverhangTaper m_Taper;
 
    IDeckBoundary* m_pDeckBoundary; // weak reference
@@ -94,8 +92,6 @@ public:
 	STDMETHOD(put_GrossDepth)(/*[in]*/Float64 depth);
 	STDMETHOD(get_OverhangDepth)(/*[out,retval]*/Float64* depth);
 	STDMETHOD(put_OverhangDepth)(/*[in]*/Float64 depth);
-	STDMETHOD(get_Fillet)(/*[out,retval]*/Float64* depth);
-	STDMETHOD(put_Fillet)(/*[in]*/Float64 depth);
 	STDMETHOD(get_OverhangTaper)(/*[out,retval]*/DeckOverhangTaper* taper);
 	STDMETHOD(put_OverhangTaper)(/*[in]*/DeckOverhangTaper taper);
 

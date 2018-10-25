@@ -24,8 +24,10 @@
 #define IDB_CREPORT_BMP                 145
 #define IDD_DIALOG1                     146
 #define IDD_STATUS_DIALOG               146
+#define IDR_HELP                        147
 #define IDI_LARGEICON                   150
 #define IDI_SMALLICON                   151
+#define IDI_HELP                        152
 #define IDB_LPFRAME                     154
 #define IDD_TOOLBARS                    159
 #define IDC_EDIT                        200
@@ -75,7 +77,10 @@
 #define IDC_NAME_STATIC                 1031
 #define IDC_EDIT1                       1032
 #define IDC_REPORT_NAME_EDIT            1032
+#define IDD_UIHINTS                     1135
 #define IDC_TOOLTIPS                    1156
+#define IDC_TEXT                        1225
+#define IDC_DONTSHOWAGAIN               1226
 #define IDS_E_NOBROWSER                 1648
 #define IDS_E_UPDATE                    1649
 #define IDS_RESULTS_NOT_AVAILABLE       1697
@@ -99,16 +104,13 @@
 #define IDS_E_BADINSTALL                61449
 #define IDS_E_PROBPERSISTS              61450
 #define IDS_E_UNSAFESAVE                61451
-#define IDC_TEXT                        1225
-#define IDC_DONTSHOWAGAIN               1226
-#define IDD_UIHINTS                     1135
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        147
-#define _APS_NEXT_COMMAND_VALUE         32771
+#define _APS_NEXT_RESOURCE_VALUE        151
+#define _APS_NEXT_COMMAND_VALUE         32778
 #define _APS_NEXT_CONTROL_VALUE         1034
 #define _APS_NEXT_SYMED_VALUE           1015
 #endif

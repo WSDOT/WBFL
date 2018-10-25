@@ -239,7 +239,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderPathOffset(IGenericBridge* bridge,Girder
    return S_OK;
 }
 
-STDMETHODIMP CBridgeGeometryTool::GirderPathPoint(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx, VARIANT varStation,VARIANT varDirection,IPoint2d** ppPoint)
+STDMETHODIMP CBridgeGeometryTool::GirderPathPoint(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx, VARIANT varStation,VARIANT varDirection,VARIANT_BOOL vbProject,IPoint2d** ppPoint)
 {
    CComPtr<IAlignment> alignment;
    GetAlignment(bridge,&alignment);
@@ -283,21 +283,31 @@ STDMETHODIMP CBridgeGeometryTool::GirderPathPoint(IGenericBridge* bridge,GirderI
    girderLine->get_EndPoint(etStart,&p1);
    girderLine->get_EndPoint(etEnd,  &p2);
 
-   CComPtr<ILineSegment2d> gdrLine;
-   gdrLine.CoCreateInstance(CLSID_LineSegment2d);
-   gdrLine->putref_StartPoint(p1);
-   gdrLine->putref_EndPoint(p2);
-
-   // Going to use the geometric utility object
-   CComPtr<IGeomUtil2d> geom_util;
-   geom_util.CoCreateInstance(CLSID_GeomUtil);
-   ATLASSERT(geom_util != NULL);
-
-   geom_util->IntersectLineWithLineSegment(cutLine,gdrLine,ppPoint);
-
-   if ( *ppPoint == NULL )
+   if ( vbProject == VARIANT_TRUE )
    {
-      return E_FAIL;
+      CComPtr<ILine2d> gdrLine;
+      gdrLine.CoCreateInstance(CLSID_Line2d);
+      gdrLine->ThroughPoints(p1,p2);
+
+      // Going to use the geometric utility object
+      HRESULT hr = m_GeomUtil->LineLineIntersect(cutLine,gdrLine,ppPoint);
+      ATLASSERT(SUCCEEDED(hr));
+      ATLASSERT(*ppPoint != NULL);
+   }
+   else
+   {
+      CComPtr<ILineSegment2d> gdrLine;
+      gdrLine.CoCreateInstance(CLSID_LineSegment2d);
+      gdrLine->putref_StartPoint(p1);
+      gdrLine->putref_EndPoint(p2);
+
+      // Going to use the geometric utility object
+      m_GeomUtil->IntersectLineWithLineSegment(cutLine,gdrLine,ppPoint);
+
+      if ( *ppPoint == NULL )
+      {
+         return E_FAIL;
+      }
    }
 
    return S_OK;

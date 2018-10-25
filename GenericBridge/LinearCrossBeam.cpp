@@ -795,6 +795,9 @@ HRESULT CLinearCrossBeam::GetUpperXBeamShape(Float64 Xxb,IShape** ppShape)
    if ( pierType == ptExpansion )
    {
       // model expansion pier with two rectangles... one for the diaphragm on each side of the pier
+      CComPtr<ICompositeShape> compositeShape;
+      compositeShape.CoCreateInstance(CLSID_CompositeShape);
+
       CComPtr<IBearingLayout> bearingLayout;
       m_pPier->get_BearingLayout(&bearingLayout);
       IndexType nBearingLines;
@@ -803,7 +806,27 @@ HRESULT CLinearCrossBeam::GetUpperXBeamShape(Float64 Xxb,IShape** ppShape)
       Float64 aheadBrgOffset = 0;
       if ( nBearingLines == 1 )
       {
-         bearingLayout->get_BearingLineOffset(0,&backBrgOffset);
+         CComQIPtr<IBridgePier> bridgePier(m_pPier);
+         if ( bridgePier )
+         {
+            CComPtr<IGenericBridge> bridge;
+            bridgePier->get_Bridge(&bridge);
+
+            PierIndexType pierIdx;
+            bridgePier->get_Index(&pierIdx);
+            if ( pierIdx == 0 )
+            {
+               bearingLayout->get_BearingLineOffset(0,&aheadBrgOffset);
+            }
+            else
+            {
+               bearingLayout->get_BearingLineOffset(0,&backBrgOffset);
+            }
+         }
+         else
+         {
+            bearingLayout->get_BearingLineOffset(0,&backBrgOffset);
+         }
       }
       else
       {
@@ -821,26 +844,27 @@ HRESULT CLinearCrossBeam::GetUpperXBeamShape(Float64 Xxb,IShape** ppShape)
       position->get_LocatorPoint(lpTopCenter,&pnt);
       pnt->Move(backBrgOffset,Y);
       position->put_LocatorPoint(lpTopCenter,pnt);
-
-      CComPtr<IRectangle> rightUpperXBeamShape;
-      rightUpperXBeamShape.CoCreateInstance(CLSID_Rect);
-      rightUpperXBeamShape->put_Height(m_H5);
-      rightUpperXBeamShape->put_Width(m_W2/2);
-
-      position.Release();
-      rightUpperXBeamShape.QueryInterface(&position);
-      pnt.Release();
-      position->get_LocatorPoint(lpTopCenter,&pnt);
-      pnt->Move(aheadBrgOffset,Y);
-      position->put_LocatorPoint(lpTopCenter,pnt);
-
       CComQIPtr<IShape> leftShape(leftUpperXBeamShape);
-      CComQIPtr<IShape> rightShape(rightUpperXBeamShape);
-
-      CComPtr<ICompositeShape> compositeShape;
-      compositeShape.CoCreateInstance(CLSID_CompositeShape);
       compositeShape->AddShape(leftShape,VARIANT_FALSE);
-      compositeShape->AddShape(rightShape,VARIANT_FALSE);
+
+      if ( 1 < nBearingLines )
+      {
+         CComPtr<IRectangle> rightUpperXBeamShape;
+         rightUpperXBeamShape.CoCreateInstance(CLSID_Rect);
+         rightUpperXBeamShape->put_Height(m_H5);
+         rightUpperXBeamShape->put_Width(m_W2/2);
+
+         position.Release();
+         rightUpperXBeamShape.QueryInterface(&position);
+         pnt.Release();
+         position->get_LocatorPoint(lpTopCenter,&pnt);
+         pnt->Move(aheadBrgOffset,Y);
+         position->put_LocatorPoint(lpTopCenter,pnt);
+         CComQIPtr<IShape> rightShape(rightUpperXBeamShape);
+         compositeShape->AddShape(rightShape,VARIANT_FALSE);
+      }
+
+
 
       compositeShape->get_Shape(ppShape);
    }

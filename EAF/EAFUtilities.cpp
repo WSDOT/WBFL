@@ -377,39 +377,40 @@ eafTypes::HttpGetResult EAFGetFileFromHTTPServer(const CString& strFileURL, cons
 	return retVal;
 }
 
-
-
-void EAFLoadDocumentationMap(LPCTSTR lpszDocMapFile,std::map<UINT,CString>& topicMap)
+BOOL EAFLoadDocumentationMap(LPCTSTR lpszDocMapFile,std::map<UINT,CString>& topicMap)
 {
    topicMap.clear();
 
    CString strMapFile(lpszDocMapFile);
    std::ifstream ifMapFile(strMapFile);
-   char buffer[256];
-   if ( !ifMapFile.bad() && ifMapFile.is_open() )
+   if ( ifMapFile.bad() || !ifMapFile.is_open() )
    {
-      while (!ifMapFile.eof())
+      return FALSE;
+   }
+
+   char buffer[256];
+   while (!ifMapFile.eof())
+   {
+      ifMapFile.getline(buffer,256);
+      CString str(buffer);
+      if ( !str.IsEmpty() )
       {
-         ifMapFile.getline(buffer,256);
-         CString str(buffer);
-         if ( !str.IsEmpty() )
-         {
-            int pos = str.Find(_T("="));
-            CString token = str.Left(pos);
-            token.Trim();
-            UINT nID = ::_tstol(token.GetBuffer());
+         int pos = str.Find(_T("="));
+         CString token = str.Left(pos);
+         token.Trim();
+         UINT nID = ::_tstol(token.GetBuffer());
 
-            CString strTopic = str.Mid(pos+1);
-            strTopic.Trim();
+         CString strTopic = str.Mid(pos+1);
+         strTopic.Trim();
 
-            topicMap.insert(std::make_pair(nID,strTopic));
-         }
+         topicMap.insert(std::make_pair(nID,strTopic));
       }
    }
+
+   return TRUE;
 }
 
-
-CString EAFGetDocumentationMapFile(LPCTSTR lpszDocSetName,LPCTSTR lpszDocumentationURL,LPCTSTR lpszDocumentationRootLocation)
+CString EAFGetDocumentationMapFile(LPCTSTR lpszDocSetName,LPCTSTR lpszDocumentationURL)
 {
    CEAFApp* pApp = EAFGetApp();
    if ( pApp->UseOnlineDocumentation() )
@@ -458,7 +459,7 @@ CString EAFGetDocumentationMapFile(LPCTSTR lpszDocSetName,LPCTSTR lpszDocumentat
    else
    {
       CString str;
-      str.Format(_T("%s%s\\%s.dm"),lpszDocumentationRootLocation,lpszDocSetName,lpszDocSetName);
+      str.Format(_T("%s\\%s.dm"),lpszDocumentationURL,lpszDocSetName);
       return str;
    }
 

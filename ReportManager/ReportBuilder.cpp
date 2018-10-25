@@ -200,7 +200,7 @@ bool CReportBuilder::NeedsUpdate(CReportHint* pHint,boost::shared_ptr<CReportSpe
    BOOST_FOREACH(CChapterInfo chInfo,vchInfo)
    {
       boost::shared_ptr<CChapterBuilder> pChBuilder = GetChapterBuilder( chInfo.Key.c_str() );
-      if ( pChBuilder->NeedsUpdate(pHint,pRptSpec.get(),chInfo.MaxLevel) )
+      if ( pChBuilder && pChBuilder->NeedsUpdate(pHint,pRptSpec.get(),chInfo.MaxLevel) )
       {
          return true;
       }
@@ -219,10 +219,13 @@ boost::shared_ptr<rptReport> CReportBuilder::CreateReport(boost::shared_ptr<CRep
    BOOST_FOREACH(CChapterInfo chInfo,vchInfo)
    {
       boost::shared_ptr<CChapterBuilder> pChBuilder = GetChapterBuilder( chInfo.Key.c_str() );
-      rptChapter* pChapter = pChBuilder->Build( pRptSpec.get(), chInfo.MaxLevel );
-      if ( pChapter )
+      if ( pChBuilder )
       {
-         (*pReport) << pChapter;
+         rptChapter* pChapter = pChBuilder->Build( pRptSpec.get(), chInfo.MaxLevel );
+         if ( pChapter )
+         {
+            (*pReport) << pChapter;
+         }
       }
    }
 

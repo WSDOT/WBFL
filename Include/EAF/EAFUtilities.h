@@ -64,7 +64,12 @@ EAFFUNC bool operator<(REFIID a,REFIID b);
 // Displays the standard Hints dialog. Returns TRUE if the user never wants to see this hint again
 EAFFUNC BOOL EAFShowUIHints(LPCTSTR lpszText,LPCTSTR lpszTitle = _T("Hints"));
 
+// Retrieves a file from an HTTP server.
 EAFFUNC eafTypes::HttpGetResult EAFGetFileFromHTTPServer(const CString& strFileURL, const CString& strLocalTargetFile);
 
-EAFFUNC CString EAFGetDocumentationMapFile(LPCTSTR lpszDocSetName,LPCTSTR lpszDocumentationURL,LPCTSTR lpszDocumentationRootLocation);
-EAFFUNC void EAFLoadDocumentationMap(LPCTSTR lpszDocMapFile,std::map<UINT,CString>& topicMap);
+// Returns the name of the documentaion map (.DM) file
+EAFFUNC CString EAFGetDocumentationMapFile(LPCTSTR lpszDocSetName,LPCTSTR lpszDocumentationURL);
+
+// Causes the specified documentation map file to be loaded and fills topicMap with the help topic ID mapping 
+// returns TRUE if successful
+EAFFUNC BOOL EAFLoadDocumentationMap(LPCTSTR lpszDocMapFile,std::map<UINT,CString>& topicMap);

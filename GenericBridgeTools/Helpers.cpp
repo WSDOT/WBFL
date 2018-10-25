@@ -61,28 +61,6 @@ HRESULT GetGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,Se
    return S_OK;
 }
 
-HRESULT GetGirderHaunchBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,Float64* pHaunch)
-{
-   CComPtr<ISuperstructureMember> ssmbr;
-   HRESULT hr = bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<ISuperstructureMemberSegment> segment;
-   ssmbr->get_Segment(segIdx,&segment);
-
-   Float64 startHaunch, endHaunch;
-   segment->get_HaunchDepth(etStart,&startHaunch);
-   segment->get_HaunchDepth(etEnd,  &endHaunch);
-
-   Float64 length;
-   segment->get_Length(&length);
-
-   Float64 haunch = ::LinInterp(distFromStartOfSegment,startHaunch,endHaunch,length);
-   *pHaunch = haunch;
-   return S_OK;
-}
-
 HRESULT GetAlignment(IGenericBridge* bridge,IAlignment** alignment)
 {
    return bridge->get_Alignment(alignment);

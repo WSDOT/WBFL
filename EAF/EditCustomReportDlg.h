@@ -76,4 +76,5 @@ public:
    afx_msg void OnBnClickedRemoveAllButton();
    afx_msg void OnLbnDblclkAvailableList();
    afx_msg void OnLbnDblclkSelectedList();
+   afx_msg void OnBnClickedHelp();
 };

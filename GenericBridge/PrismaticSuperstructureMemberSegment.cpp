@@ -41,8 +41,10 @@ HRESULT CPrismaticSuperstructureMemberSegment::FinalConstruct()
 {
    m_pGirderLine = NULL;
    m_Orientation = 0;
-   m_HaunchDepth[etStart] = 0;
-   m_HaunchDepth[etEnd] = 0;
+   m_HaunchDepth[0] = 0;
+   m_HaunchDepth[1] = 0;
+   m_HaunchDepth[2] = 0;
+   m_Fillet = 0;
    m_pPrevSegment = NULL;
    m_pNextSegment = NULL;
    return S_OK;
@@ -333,23 +335,42 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Orientation(Float64* ori
    return S_OK;
 }
 
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_HaunchDepth(EndType endType,Float64* pVal)
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::GetHaunchDepth(Float64* pStartVal,Float64* pMidVal,Float64* pEndVal)
 {
-   CHECK_RETVAL(pVal);
-   *pVal = m_HaunchDepth[endType];
+   CHECK_RETVAL(pStartVal);
+   CHECK_RETVAL(pMidVal);
+   CHECK_RETVAL(pEndVal);
+   *pStartVal = m_HaunchDepth[0];
+   *pMidVal   = m_HaunchDepth[1];
+   *pEndVal   = m_HaunchDepth[2];
    return S_OK;
 }
 
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::put_HaunchDepth(EndType endType,Float64 val)
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::SetHaunchDepth(Float64 startVal,Float64 midVal,Float64 endVal)
 {
-   m_HaunchDepth[endType] = val;
+   m_HaunchDepth[0] = startVal;
+   m_HaunchDepth[1] = midVal;
+   m_HaunchDepth[2] = endVal;
    return S_OK;
 }
 
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::GetHaunchDepth(Float64 distAlongSegment,Float64 *pVal)
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::ComputeHaunchDepth(Float64 distAlongSegment,Float64* pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = GB_GetHaunchDepth(this,distAlongSegment);
+   *pVal = ::GB_GetHaunchDepth(this,distAlongSegment);
+   return S_OK;
+}
+
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::put_Fillet(Float64 Fillet)
+{
+   m_Fillet = Fillet;
+   return S_OK;
+}
+
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Fillet(Float64* Fillet)
+{
+   CHECK_RETVAL(Fillet);
+   (*Fillet) = m_Fillet;
    return S_OK;
 }
 

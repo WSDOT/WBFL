@@ -1756,6 +1756,12 @@ STDMETHODIMP CPath::CreateParallelPath(Float64 offset,IPath** path)
 {
    CHECK_RETOBJ(path);
 
+   // if the offset is zero, the parallel path is just a copy of this path
+   if ( IsZero(offset) )
+   {
+      return Clone(path);
+   }
+
    // +offset = right
    // -offset = left
 
@@ -2143,7 +2149,7 @@ void CPath::CreateParallelHorzCurve(Float64 offset,IHorzCurve* hc,IUnknown** res
    hc->putref_PFT(newPFT);
 
    hc->put_SpiralLength(spEntry,LsEntry);
-   hc->put_SpiralLength(spExit,LsEntry);
+   hc->put_SpiralLength(spExit,LsExit);
 
    hc->put_Radius(newRadius);
 

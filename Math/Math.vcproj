@@ -2671,6 +2671,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Include\Math\MathUtils.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\Math\NumericIntegrator2d.h"
 				>
 			</File>

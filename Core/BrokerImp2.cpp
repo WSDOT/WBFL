@@ -702,6 +702,7 @@ STDMETHODIMP CBrokerImp2::Load(IStructuredLoad* pStrLoad)
    USES_CONVERSION;
 
    HRESULT hr = pStrLoad->BeginUnit(_T("Broker"));
+   HRESULT hrResult = S_OK;
    if ( FAILED(hr) )
    {
       // the data isn't saved in the current format
@@ -740,6 +741,8 @@ STDMETHODIMP CBrokerImp2::Load(IStructuredLoad* pStrLoad)
             pPersist->Release();
             if ( FAILED(hr) )
                return hr;
+
+            hrResult = max(hr,hrResult);
          }
          else
          {
@@ -764,7 +767,7 @@ STDMETHODIMP CBrokerImp2::Load(IStructuredLoad* pStrLoad)
 
    pStrLoad->EndUnit(); // Broker
 
-   return S_OK;
+   return hrResult;
 }
 
 STDMETHODIMP CBrokerImp2::Save(IStructuredSave* pStrSave)

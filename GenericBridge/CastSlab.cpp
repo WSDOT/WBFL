@@ -143,22 +143,6 @@ STDMETHODIMP CCastSlab::put_OverhangDepth(Float64 depth)
    return S_OK;
 }
 
-STDMETHODIMP CCastSlab::get_Fillet(Float64* fillet)
-{
-   CHECK_RETVAL(fillet);
-   *fillet = m_Fillet;
-   return S_OK;
-}
-
-STDMETHODIMP CCastSlab::put_Fillet(Float64 fillet)
-{
-   if ( fillet < 0 )
-      return E_INVALIDARG;
-
-   m_Fillet = fillet;
-   return S_OK;
-}
-
 STDMETHODIMP CCastSlab::get_OverhangTaper(DeckOverhangTaper* taper)
 {
    CHECK_RETVAL(taper);
@@ -184,9 +168,6 @@ STDMETHODIMP CCastSlab::Load(IStructuredLoad2* load)
 
    CComVariant var;
 
-   load->get_Property(CComBSTR("Fillet"),&var);
-   m_Fillet = var.dblVal;
-
    load->get_Property(CComBSTR("GrossDepth"),&var);
    m_GrossDepth = var.dblVal;
 
@@ -207,7 +188,6 @@ STDMETHODIMP CCastSlab::Save(IStructuredSave2* save)
 {
    save->BeginUnit(CComBSTR("CastSlab"),1.0);
 
-   save->put_Property(CComBSTR("Fillet"),CComVariant(m_Fillet));
    save->put_Property(CComBSTR("GrossDepth"),CComVariant(m_GrossDepth));
    save->put_Property(CComBSTR("OverhangDepth"),CComVariant(m_OverhangDepth));
    save->put_Property(CComBSTR("Taper"),CComVariant(m_Taper));

@@ -80,8 +80,6 @@ private:
    };
    std::vector<ShapeData> m_Shapes;
 
-   Float64 m_HaunchDepth[2];
-   
    CItemDataManager m_ItemDataMgr;
 
 // ISupportsErrorInfo

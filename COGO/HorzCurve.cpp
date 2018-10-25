@@ -642,7 +642,7 @@ STDMETHODIMP CHorzCurve::get_CircularCurveAngle(IAngle* *pVal)
    Float64 chord;
    get_Chord(&chord);
    Float64 val = 2.0*asin(chord/(2*m_Radius));
-   ATLASSERT( IsEqual(val,angle) );
+   ATLASSERT( IsEqual(val,angle,0.001) );
 #endif // _DEBUG
 
    return S_OK;

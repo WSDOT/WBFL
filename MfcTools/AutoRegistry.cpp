@@ -24,18 +24,24 @@
 #include "StdAfx.h"
 #include <MFCTools\AutoRegistry.h>
 
-CAutoRegistry::CAutoRegistry(LPCTSTR lpszProfile)
+CAutoRegistry::CAutoRegistry(LPCTSTR lpszProfile,CWinApp* pApp)
 {
-   CWinApp* pApp = AfxGetApp();
+   if ( pApp == NULL )
+   {
+      m_pApp = AfxGetApp();
+   }
+   else
+   {
+      m_pApp = pApp;
+   }
 
-   m_strAppProfileName = pApp->m_pszProfileName;
-   free((void*)pApp->m_pszProfileName);
-   pApp->m_pszProfileName = _tcsdup(lpszProfile);
+   m_strAppProfileName = m_pApp->m_pszProfileName;
+   free((void*)m_pApp->m_pszProfileName);
+   m_pApp->m_pszProfileName = _tcsdup(lpszProfile);
 }
 
 CAutoRegistry::~CAutoRegistry()
 {
-   CWinApp* pApp = AfxGetApp();
-   free((void*)pApp->m_pszProfileName);
-   pApp->m_pszProfileName = _tcsdup(m_strAppProfileName);
+   free((void*)m_pApp->m_pszProfileName);
+   m_pApp->m_pszProfileName = _tcsdup(m_strAppProfileName);
 }

@@ -86,7 +86,9 @@ private:
    };
    std::vector<ShapeData> m_Shapes;
 
-   Float64 m_HaunchDepth[2];
+   Float64 m_HaunchDepth[3];
+
+   Float64 m_Fillet;
 
    // index is EndType
    Float64 m_EndBlockLength[2]; // length of end block from end of girder to transitation
@@ -122,8 +124,11 @@ public:
 
       m_Orientation = 0;
 
-      m_HaunchDepth[etStart]           = 0;
-      m_HaunchDepth[etEnd]             = 0;
+      m_HaunchDepth[0] = 0;
+      m_HaunchDepth[1] = 0;
+      m_HaunchDepth[2] = 0;
+
+      m_Fillet = 0;
 
       m_EndBlockLength[etStart]           = 0;
       m_EndBlockLength[etEnd]             = 0;
@@ -478,23 +483,47 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(get_HaunchDepth)(EndType endType,Float64* pVal)
+   STDMETHOD(GetHaunchDepth)(Float64* pStartVal,Float64* pMidVal,Float64* pEndVal)
    {
-      CHECK_RETVAL(pVal);
-      *pVal = m_HaunchDepth[endType];
+      CHECK_RETVAL(pStartVal);
+      CHECK_RETVAL(pMidVal);
+      CHECK_RETVAL(pEndVal);
+      *pStartVal = m_HaunchDepth[0];
+      *pMidVal   = m_HaunchDepth[1];
+      *pEndVal   = m_HaunchDepth[2];
       return S_OK;
    }
 
-   STDMETHOD(put_HaunchDepth)(EndType endType,Float64 val)
+   STDMETHOD(SetHaunchDepth)(Float64 startVal,Float64 midVal,Float64 endVal)
    {
-      m_HaunchDepth[endType] = val;
+      m_HaunchDepth[0] = startVal;
+      m_HaunchDepth[1] = midVal;
+      m_HaunchDepth[2] = endVal;
       return S_OK;
    }
 
-   STDMETHOD(GetHaunchDepth)(Float64 distAlongSegment,Float64* pVal)
+   STDMETHOD(ComputeHaunchDepth)(Float64 distAlongSegment,Float64* pVal)
    {
       CHECK_RETVAL(pVal);
       *pVal = ::GB_GetHaunchDepth(this,distAlongSegment);
+      return S_OK;
+   }
+
+   STDMETHOD(put_Fillet)(Float64 Fillet)
+   {
+      if ( IsEqual(m_Fillet,Fillet) )
+      {
+         return S_OK;
+      }
+
+      m_Fillet = Fillet;
+      return S_OK;
+   }
+
+   STDMETHOD(get_Fillet)(Float64* Fillet)
+   {
+      CHECK_RETVAL(Fillet);
+      (*Fillet) = m_Fillet;
       return S_OK;
    }
 
