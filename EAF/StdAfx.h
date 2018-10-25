@@ -68,7 +68,7 @@ extern CComModule _Module;
 #include <UnitMgt\UnitMgt.h>
 #include <afxdlgs.h>
 #include <afxwin.h>
-
+#include <afxmt.h>
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

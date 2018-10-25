@@ -46,6 +46,10 @@
 
 #include "custsite.h"
 
+
+#include "EAFHelpWindowThread.h"
+
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -75,6 +79,8 @@ m_strWindowPlacementFormat("%u,%u,%d,%d,%d,%d,%d,%d,%d,%d")
    m_bShowLegalNotice = VARIANT_TRUE;
    m_bTipsEnabled = false;
    m_bUseOnlineDocumentation = TRUE;
+
+   m_pHelpWindowThread = NULL;
 
    // if this assert fires, we've used more than commands then are
    // reserved for EAF standard processing
@@ -218,11 +224,21 @@ BOOL CEAFApp::InitInstance()
 
    LoadDocumentationMap();
 
+   // Start the help window thread
+   m_pHelpWindowThread = (CEAFHelpWindowThread*)AfxBeginThread(RUNTIME_CLASS(CEAFHelpWindowThread));
+
 	return TRUE;
 }
 
 int CEAFApp::ExitInstance()
 {
+   // if the help window thread exists, tell it to quit
+   if ( m_pHelpWindowThread )
+   {
+      m_pHelpWindowThread->PostThreadMessage(WM_TERMINATE_HELP_WINDOW_THREAD,0,0);
+      ::WaitForSingleObject(m_pHelpWindowThread->m_hThread,INFINITE); // wait for the help window thread to terminate, otherwise we will get memory leaks
+   }
+
 	int result = CWinApp::ExitInstance(); // must call before UnloadPlugins
 
    delete m_pCommandLineInfo;
@@ -306,28 +322,22 @@ CString CEAFApp::GetDocumentationURL()
 {
    CString strURL;
 
-   if ( UseOnlineDocumentation() )
-   {
-      CString strExe( m_pszExeName );
-      strExe += _T(".exe");
+   CString strExe( m_pszExeName );
+   strExe += _T(".exe");
 
-      CVersionInfo verInfo;
-      verInfo.Load(strExe);
-      
-      CString strVersion = verInfo.GetProductVersionAsString();
+   CVersionInfo verInfo;
+   verInfo.Load(strExe);
+   
+   CString strVersion = verInfo.GetProductVersionAsString();
 
-      // remove the build and release number
-      int pos = strVersion.ReverseFind(_T('.')); // find the last '.'
-      strVersion = strVersion.Left(pos);
-      pos = strVersion.ReverseFind(_T('.')); // find the last '.'
-      strVersion = strVersion.Left(pos);
+   // remove the build and release number
+   int pos = strVersion.ReverseFind(_T('.')); // find the last '.'
+   strVersion = strVersion.Left(pos);
+   pos = strVersion.ReverseFind(_T('.')); // find the last '.'
+   strVersion = strVersion.Left(pos);
 
-      strURL.Format(_T("%s%s/%s/"),GetDocumentationRootLocation(),m_pszExeName,strVersion);
-   }
-   else
-   {
-      strURL.Format(_T("%s%s\\"),GetDocumentationRootLocation(),m_pszExeName);
-   }
+   strURL.Format(_T("%s%s/%s/"),GetDocumentationRootLocation(),m_pszExeName,strVersion);
+
    return strURL;
 }
 
@@ -389,6 +399,12 @@ void CEAFApp::UseOnlineDocumentation(BOOL bUseOnLine)
 BOOL CEAFApp::UseOnlineDocumentation() const
 {
    return m_bUseOnlineDocumentation;
+}
+
+void CEAFApp::HelpWindowNavigate(LPCTSTR lpszURL)
+{
+   ATLASSERT(m_pHelpWindowThread != NULL);
+   m_pHelpWindowThread->Navigate(lpszURL);
 }
 
 void CEAFApp::ShowUsageMessage()
@@ -1079,6 +1095,10 @@ void CEAFApp::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
    if ( cmdInfo.m_bCommandLineMode )
    {
       CloseAllDocuments(TRUE);
+      if ( m_pMainWnd )
+      {
+         m_pMainWnd->DestroyWindow();
+      }
       AfxPostQuitMessage(0);
    }
 }
@@ -1130,7 +1150,7 @@ void CEAFApp::WriteWindowPlacement(const CString& strSection,const CString& strK
 // returns key for HKEY_LOCAL_MACHINE\Software\Washington State Department of Transportation\PGSuper"
 // responsibility of the caller to call RegCloseKey() on the returned HKEY
 // key is not created if missing (
-HKEY CEAFApp::GetAppLocalMachineRegistryKey()
+HKEY CEAFApp::GetAppLocalMachineRegistryKey(REGSAM samDesired)
 {
 	ASSERT(m_pszRegistryKey != NULL);
 	ASSERT(m_pszProfileName != NULL);
@@ -1141,15 +1161,15 @@ HKEY CEAFApp::GetAppLocalMachineRegistryKey()
 
 
    // open the "software" key
-   LONG result = RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("software"), 0, KEY_WRITE|KEY_READ, &hSoftKey);
+   LONG result = RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("software"), 0, samDesired, &hSoftKey);
 	if ( result == ERROR_SUCCESS)
 	{
       // open the "Washington State Department of Transportation" key
-      result = RegOpenKeyEx(hSoftKey, m_pszRegistryKey, 0, KEY_WRITE|KEY_READ, &hCompanyKey);
+      result = RegOpenKeyEx(hSoftKey, m_pszRegistryKey, 0, samDesired, &hCompanyKey);
 		if (result == ERROR_SUCCESS)
 		{
          // Open the "PGSuper" key
-			result = RegOpenKeyEx(hCompanyKey, m_pszProfileName, 0, KEY_WRITE|KEY_READ, &hAppKey);
+			result = RegOpenKeyEx(hCompanyKey, m_pszProfileName, 0, samDesired, &hAppKey);
 		}
 	}
 
@@ -1169,31 +1189,31 @@ HKEY CEAFApp::GetAppLocalMachineRegistryKey()
 // returns key for:
 //      HKEY_LOCAL_MACHINE\"Software"\Washington State Deparment of Transportation\PGSuper\lpszSection
 // responsibility of the caller to call RegCloseKey() on the returned HKEY
-HKEY CEAFApp::GetLocalMachineSectionKey(LPCTSTR lpszSection)
+HKEY CEAFApp::GetLocalMachineSectionKey(LPCTSTR lpszSection,REGSAM samDesired)
 {
-	HKEY hAppKey = GetAppLocalMachineRegistryKey();
+	HKEY hAppKey = GetAppLocalMachineRegistryKey(samDesired);
 	if (hAppKey == NULL)
    {
 		return NULL;
    }
 
-   return GetLocalMachineSectionKey(hAppKey,lpszSection);
+   return GetLocalMachineSectionKey(hAppKey,lpszSection,samDesired);
 }
 
-HKEY CEAFApp::GetLocalMachineSectionKey(HKEY hAppKey,LPCTSTR lpszSection)
+HKEY CEAFApp::GetLocalMachineSectionKey(HKEY hAppKey,LPCTSTR lpszSection,REGSAM samDesired)
 {
 	ASSERT(lpszSection != NULL);
 
 	HKEY hSectionKey = NULL;
 
-	LONG result = RegOpenKeyEx(hAppKey, lpszSection, 0, KEY_WRITE|KEY_READ, &hSectionKey);
+	LONG result = RegOpenKeyEx(hAppKey, lpszSection, 0, samDesired, &hSectionKey);
 	RegCloseKey(hAppKey);
 	return hSectionKey;
 }
 
 UINT CEAFApp::GetLocalMachineInt(LPCTSTR lpszSection, LPCTSTR lpszEntry,int nDefault)
 {
-	HKEY hAppKey = GetAppLocalMachineRegistryKey();
+	HKEY hAppKey = GetAppLocalMachineRegistryKey(KEY_READ);
 	if (hAppKey == NULL)
    {
 		return nDefault;
@@ -1208,7 +1228,7 @@ UINT CEAFApp::GetLocalMachineInt(HKEY hAppKey,LPCTSTR lpszSection, LPCTSTR lpszE
 	ASSERT(lpszEntry != NULL);
 	ASSERT(m_pszRegistryKey != NULL);
 
-	HKEY hSecKey = GetLocalMachineSectionKey(hAppKey,lpszSection);
+	HKEY hSecKey = GetLocalMachineSectionKey(hAppKey,lpszSection,KEY_READ);
 	if (hSecKey == NULL)
    {
 		return nDefault;
@@ -1231,7 +1251,7 @@ UINT CEAFApp::GetLocalMachineInt(HKEY hAppKey,LPCTSTR lpszSection, LPCTSTR lpszE
 
 CString CEAFApp::GetLocalMachineString(LPCTSTR lpszSection, LPCTSTR lpszEntry,LPCTSTR lpszDefault)
 {
-	HKEY hAppKey = GetAppLocalMachineRegistryKey();
+	HKEY hAppKey = GetAppLocalMachineRegistryKey(KEY_READ);
 	if (hAppKey == NULL)
    {
 		return lpszDefault;
@@ -1245,7 +1265,7 @@ CString CEAFApp::GetLocalMachineString(HKEY hAppKey,LPCTSTR lpszSection, LPCTSTR
 	ASSERT(lpszSection != NULL);
 	ASSERT(lpszEntry != NULL);
 	ASSERT(m_pszRegistryKey != NULL);
-	HKEY hSecKey = GetLocalMachineSectionKey(hAppKey,lpszSection);
+	HKEY hSecKey = GetLocalMachineSectionKey(hAppKey,lpszSection,KEY_READ);
 	if (hSecKey == NULL)
    {
 		return lpszDefault;
@@ -1369,7 +1389,7 @@ CString CEAFApp::GetDocumentationMapFile()
 
    if ( m_strDocumentationMapFile.IsEmpty() )
    {
-      m_strDocumentationMapFile = EAFGetDocumentationMapFile(GetDocumentationSetName(),GetDocumentationURL(),GetDocumentationRootLocation());
+      m_strDocumentationMapFile = EAFGetDocumentationMapFile(GetDocumentationSetName(),GetDocumentationURL());
 
       if ( UseOnlineDocumentation() )
       {
@@ -1382,7 +1402,7 @@ CString CEAFApp::GetDocumentationMapFile()
 
 void CEAFApp::LoadDocumentationMap()
 {
-   EAFLoadDocumentationMap(GetDocumentationMapFile(),m_HelpTopics);
+   VERIFY(EAFLoadDocumentationMap(GetDocumentationMapFile(),m_HelpTopics));
 }
 
 
@@ -1619,7 +1639,7 @@ unitmgtIndirectMeasure init_english_units()
    im.SqrtPressure.Update(    unitMeasure::SqrtKSI,         0.001, 9, 4, sysNumericFormatTool::Fixed );
    im.PerLength.Update( unitMeasure::PerFeet, 1.0e-5, 9, 4, sysNumericFormatTool::Fixed);
    im.Curvature.Update( unitMeasure::PerInch, 1.0e-9, 14, 8, sysNumericFormatTool::Fixed);
-   im.SmallStress.Update(          unitMeasure::PSF,             0.001, 8, 3, sysNumericFormatTool::Fixed );
+   im.SmallStress.Update(          unitMeasure::KSF,              1.0e-5, 8, 3, sysNumericFormatTool::Fixed );
 
    return im;
 }

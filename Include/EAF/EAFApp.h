@@ -54,6 +54,9 @@ public:
 #include <EAF\EAFComponentInfo.h>
 typedef CEAFPluginManager<IEAFComponentInfo,CEAFApp> CEAFComponentInfoManager;
 
+
+class CEAFHelpWindowThread;
+
 /////////////////////////////////////////////////////////////////////////////
 // CEAFApp thread
 class EAFCLASS CEAFApp : public CWinApp
@@ -133,6 +136,8 @@ public:
 
    // Returns true if an online source is being used for documentation
    BOOL UseOnlineDocumentation() const;
+
+   void HelpWindowNavigate(LPCTSTR lpszURL);
 
 // Implementation
 protected:
@@ -214,10 +219,10 @@ protected:
    virtual void DisplayCommandLineErrorMessage();
 
 protected:
-   HKEY GetAppLocalMachineRegistryKey();
+   HKEY GetAppLocalMachineRegistryKey(REGSAM samDesired);
    HKEY GetUninstallRegistryKey();
-   HKEY GetLocalMachineSectionKey(LPCTSTR lpszSection);
-   HKEY GetLocalMachineSectionKey(HKEY hAppKey,LPCTSTR lpszSection);
+   HKEY GetLocalMachineSectionKey(LPCTSTR lpszSection,REGSAM samDesired);
+   HKEY GetLocalMachineSectionKey(HKEY hAppKey,LPCTSTR lpszSection,REGSAM samDesired);
    UINT GetLocalMachineInt(HKEY hAppKey,LPCTSTR lpszSection, LPCTSTR lpszEntry,int nDefault);
    CString GetLocalMachineString(HKEY hAppKey,LPCTSTR lpszSection, LPCTSTR lpszEntry,LPCTSTR lpszDefault);
 
@@ -226,6 +231,9 @@ protected:
 
 private:
    CEAFDocTemplateRegistrar* m_pDocTemplateRegistrar;
+
+   friend CEAFHelpWindowThread;
+   CEAFHelpWindowThread* m_pHelpWindowThread;
 
    BOOL m_bUseOnlineDocumentation; // set to TRUE if documenation is from an online source
    CString m_strOnlineDocumentationMapFile;

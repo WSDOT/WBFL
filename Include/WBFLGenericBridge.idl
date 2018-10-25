@@ -867,8 +867,6 @@ library WBFLGenericBridge
 	   [propput, helpstring("property GrossDepth")] HRESULT GrossDepth([in]Float64 depth);
 	   [propget, helpstring("property OverhangDepth")] HRESULT OverhangDepth([out,retval]Float64* depth);
 	   [propput, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]Float64 depth);
-	   [propget, helpstring("property Fillet")] HRESULT Fillet([out,retval]Float64* depth);
-	   [propput, helpstring("property Fillet")] HRESULT Fillet([in]Float64 depth);
 	   [propget, helpstring("property OverhangTaper")] HRESULT OverhangTaper([out,retval]DeckOverhangTaper* taper);
 	   [propput, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DeckOverhangTaper taper);
 	};
@@ -888,8 +886,6 @@ library WBFLGenericBridge
 	   [propput, helpstring("property PanelDepth")] HRESULT PanelDepth([in]Float64 depth);
 	   [propget, helpstring("property OverhangDepth")] HRESULT OverhangDepth([out,retval]Float64* depth);
 	   [propput, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]Float64 depth);
-	   [propget, helpstring("property Fillet")] HRESULT Fillet([out,retval]Float64* depth);
-	   [propput, helpstring("property Fillet")] HRESULT Fillet([in]Float64 depth);
 	   [propget, helpstring("property OverhangTaper")] HRESULT OverhangTaper([out,retval]DeckOverhangTaper* taper);
 	   [propput, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DeckOverhangTaper taper);
 	};
@@ -1040,9 +1036,14 @@ library WBFLGenericBridge
 		[propput,helpstring("property Orientation")] HRESULT Orientation([in]Float64 orientation);
 		[propget,helpstring("property Orientation")] HRESULT Orientation([out,retval]Float64* orientation);
 
-      [propget,helpstring("property HaunchDepth")] HRESULT HaunchDepth([in] EndType endType,[out,retval]Float64* pVal);
-      [propput,helpstring("property HaunchDepth")] HRESULT HaunchDepth([in] EndType endType,[in]Float64 val);
-      [helpstring("method GetHaunchDepth")] HRESULT GetHaunchDepth([in]Float64 distAlongSegment,[out,retval]Float64* pVal);
+      // Depth of haunch at start, middle, and end of segment. Distribution will be constant, linear, or parabolic depending on start/mid/end values
+      [helpstring("GetHaunchDepth")] HRESULT GetHaunchDepth([out]Float64* pStartVal, [out]Float64* pMidVal, [out]Float64* pEndVal);
+      [helpstring("SetHaunchDepth")] HRESULT SetHaunchDepth([in]Float64 startVal,[in]Float64 midVal,[in]Float64 endVal);
+      [helpstring("method ComputeHaunchDepth")] HRESULT ComputeHaunchDepth([in]Float64 distAlongSegment,[out,retval]Float64* pVal);
+
+      // Geometric fillet between bottom of slab and haunch. Note this is only geometric, and does not have same context as wsdot fillet
+		[propput,helpstring("property Fillet")] HRESULT Fillet([in]Float64 Fillet);
+		[propget,helpstring("property Fillet")] HRESULT Fillet([out,retval]Float64* Fillet);
 
       // These functions are called by the internal framework. Do not call them directly unless you
       // want to mess up your bridge model

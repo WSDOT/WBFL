@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// MfcTools - Extension library for MFC
+// EAF - Extensible Application Framework
 // Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -22,17 +22,26 @@
 ///////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include <MfcTools\MfcToolsExp.h>
+#define WM_TERMINATE_HELP_WINDOW_THREAD WM_USER+1
 
-// class that sets the application profile name for this plug-in and then
-// rolls it back to the original value when the object goes out of scope
-class MFCTOOLSCLASS CAutoRegistry
+class CEAFHelpWindowThread : public CWinThread
 {
-public:
-   CAutoRegistry(LPCTSTR lpszProfile,CWinApp* pApp=NULL);
-   ~CAutoRegistry();
+	DECLARE_DYNCREATE(CEAFHelpWindowThread)
 
-private:
-   CString m_strAppProfileName;
-   CWinApp* m_pApp;
+protected:
+	CEAFHelpWindowThread();           // protected constructor used by dynamic creation
+	virtual ~CEAFHelpWindowThread();
+
+public:
+	virtual BOOL InitInstance();
+   virtual int ExitInstance();
+
+   void Navigate(LPCTSTR lpszURL);
+   afx_msg void OnKillThread(WPARAM wParam,LPARAM lParam);
+
+protected:
+	DECLARE_MESSAGE_MAP()
+   CEvent m_Event;
 };
+
+

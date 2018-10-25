@@ -65,6 +65,7 @@ CEAFBrokerDocument::CEAFBrokerDocument()
    m_bDisplayFavoriteReports = FALSE;
    m_helpIDCustom = -1;
    m_helpIDFavorite = -1;
+   m_helpIDCustomReportDefinition = -1;
 }
 
 CEAFBrokerDocument::~CEAFBrokerDocument()
@@ -1143,6 +1144,15 @@ UINT CEAFBrokerDocument::GetCustomReportHelpID(eafTypes::CustomReportHelp helpTy
    }
 }
 
+void CEAFBrokerDocument::SetCustomReportDefinitionHelpID(UINT nHelpID)
+{
+   m_helpIDCustomReportDefinition = nHelpID;
+}
+
+UINT CEAFBrokerDocument::GetCustomReportDefinitionHelpID() const
+{
+   return m_helpIDCustomReportDefinition;
+}
 
 void CEAFBrokerDocument::OnChangedFavoriteReports(BOOL bIsFavorites, BOOL bFromMenu)
 {
@@ -1194,6 +1204,15 @@ void CEAFBrokerDocument::ShowCustomReportHelp(eafTypes::CustomReportHelp helpTyp
    if ( 0 < helpID )
    {
       EAFHelp(GetDocumentationSetName(),helpID);
+   }
+}
+
+void CEAFBrokerDocument::ShowCustomReportDefinitionHelp()
+{
+   // Base class must call AFX_MANAGE_STATE(AfxGetStaticModuleState()) before calling this method
+   if ( 0 < m_helpIDCustomReportDefinition )
+   {
+      EAFHelp(GetDocumentationSetName(),m_helpIDCustomReportDefinition);
    }
 }
 

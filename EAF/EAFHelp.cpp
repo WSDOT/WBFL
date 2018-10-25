@@ -52,7 +52,8 @@ void EAFHelp(LPCTSTR lpszDocSetName,UINT nHID)
 
    if ( hr == eafTypes::hrOK )
    {
-      ::ShellExecute(NULL,_T("open"),strURL, NULL,NULL,SW_SHOWDEFAULT);
+      CEAFApp* pApp = EAFGetApp();
+      pApp->HelpWindowNavigate(strURL);
    }
    else
    {

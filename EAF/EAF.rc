@@ -70,16 +70,25 @@ IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
 IDB_LPFRAME             BITMAP                  "res\\lpframe.bmp"
 IDB_LIGHTBULB           BITMAP                  "res\\litebulb.bmp"
 IDB_CREPORT_BMP         BITMAP                  "res\\bitmap1.bmp"
+IDR_HELP                BITMAP                  "res\\Help.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Toolbar
 //
 
-IDR_MAINFRAME TOOLBAR  16, 15
+IDR_MAINFRAME TOOLBAR  16, 16
 BEGIN
     BUTTON      ID_FILE_NEW
     BUTTON      ID_FILE_OPEN
+END
+
+IDR_HELP TOOLBAR  16, 16
+BEGIN
+    BUTTON      EAFID_HELPWND_BACK
+    BUTTON      EAFID_HELPWND_FORWARD
+    SEPARATOR
+    BUTTON      ID_FILE_PRINT
 END
 
 
@@ -124,6 +133,21 @@ BEGIN
     END
 END
 
+IDR_HELP MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
+        MENUITEM SEPARATOR
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+    END
+    POPUP "&Navigate"
+    BEGIN
+        MENUITEM "&Back",                       EAFID_HELPWND_BACK
+        MENUITEM "&Forward",                    EAFID_HELPWND_FORWARD
+    END
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -150,6 +174,11 @@ BEGIN
     VK_F1,          ID_HELP,                VIRTKEY 
 END
 
+IDR_HELP ACCELERATORS 
+BEGIN
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL, NOINVERT
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -157,8 +186,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,0,0,43
- PRODUCTVERSION 4,0,0,43
+ FILEVERSION 4,0,0,44
+ PRODUCTVERSION 4,0,0,44
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -176,12 +205,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "EAF DLL"
-            VALUE "FileVersion", "4.0.0.43"
+            VALUE "FileVersion", "4.0.0.44"
             VALUE "InternalName", "EAF"
             VALUE "LegalCopyright", "Copyright © 1999-2016, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "EAF.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "4.0.0.43"
+            VALUE "ProductVersion", "4.0.0.44"
         END
     END
     BLOCK "VarFileInfo"
@@ -313,7 +342,7 @@ END
 
 IDD_EDIT_CUSTOM_REPORT DIALOGEX 0, 0, 408, 332
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Edit Custom Report"
+CAPTION "Custom Report Definition"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "Report Name",IDC_STATIC,7,15,43,8
@@ -332,8 +361,9 @@ BEGIN
     PUSHBUTTON      "<< ALL <<",IDC_REMOVE_ALL_BUTTON,172,212,50,14
     PUSHBUTTON      "Move Up",IDC_MOVE_UP_BUTTON,256,269,50,14
     PUSHBUTTON      "Move Down",IDC_MOVE_DOWN_BUTTON,319,269,50,14
-    DEFPUSHBUTTON   "OK",IDOK,297,311,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,351,311,50,14
+    DEFPUSHBUTTON   "OK",IDOK,249,311,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,300,311,50,14
+    PUSHBUTTON      "Help",ID_HELP,351,311,50,14
 END
 
 IDD_CUSTOM_REPORTS_PAGE DIALOGEX 0, 0, 373, 287
@@ -545,6 +575,7 @@ END
 // remains consistent on all systems.
 IDI_LARGEICON           ICON                    "res\\IconView.ico"
 IDI_SMALLICON           ICON                    "res\\SmallIconView.ico"
+IDI_HELP                ICON                    "res\\Help.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -570,6 +601,12 @@ BEGIN
     EAFID_AUTOCALC_UPDATENOW 
                             "Update all views, reports, and graphs\nUpdate Now (F5)"
     EAFID_HELP_SOURCE       "Change help documentation between online and offline sources"
+    EAFID_HELPWND_BACK      "Browse Back\nBrowse Back"
+END
+
+STRINGTABLE 
+BEGIN
+    EAFID_HELPWND_FORWARD   "Browse Forward\nBrowse Forward"
 END
 
 STRINGTABLE 

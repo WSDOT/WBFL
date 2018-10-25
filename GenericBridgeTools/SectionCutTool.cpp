@@ -359,26 +359,22 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    Float64 gross_depth;
    deck->get_GrossDepth(&gross_depth);
 
-   Float64 fillet;
    Float64 overhang_depth;
    DeckOverhangTaper overhang_taper;
    if ( cip )
    {
       cip->get_OverhangDepth(&overhang_depth);
       cip->get_OverhangTaper(&overhang_taper);
-      cip->get_Fillet(&fillet);
    }
    else if ( sip )
    {
       sip->get_OverhangDepth(&overhang_depth);
       sip->get_OverhangTaper(&overhang_taper);
-      sip->get_Fillet(&fillet);
    }
    else
    {
       overhang_depth = gross_depth;
       overhang_taper = dotNone;
-      fillet = 0.0;
    }
 
    // Top of Deck
@@ -511,7 +507,12 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
          girder_section->get_MinTopFlangeThickness(&min_top_flange_thickness);
 
          Float64 haunch = 0;
-         segment->GetHaunchDepth(girderPoint.Xs,&haunch);
+         segment->ComputeHaunchDepth(girderPoint.Xs,&haunch);
+
+         Float64 xfillet;
+         segment->get_Fillet(&xfillet);
+
+         Float64 yfillet = min(xfillet, haunch); // don't draw fillet deeper than the haunch depth
 
          Float64 elclg; // elevation at CL of girder
          profile->Elevation(CComVariant(girderPoint.objGirderStation),girderPoint.normalOffset,&elclg);
@@ -589,8 +590,8 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                   }
                   else
                   {
-                     slab_shape->AddPoint(x23-dx-fillet,el23-dy); // 1
-                     slab_shape->AddPoint(x23-dx,el23-dy-fillet); // 2
+                     slab_shape->AddPoint(x23-dx-xfillet,el23-dy); // 1
+                     slab_shape->AddPoint(x23-dx,el23-dy-yfillet); // 2
                   }
                }
 
@@ -632,8 +633,8 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                   }
                   else
                   {
-                     slab_shape->AddPoint(x45+dx,el45-dy-fillet); // 5
-                     slab_shape->AddPoint(x45+dx+fillet,el45-dy); // 6
+                     slab_shape->AddPoint(x45+dx,el45-dy-yfillet); // 5
+                     slab_shape->AddPoint(x45+dx+xfillet,el45-dy); // 6
                   }
                }
             }

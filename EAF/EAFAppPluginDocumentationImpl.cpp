@@ -62,38 +62,31 @@ CString CEAFAppPluginDocumentationImpl::GetDocumentationURL()
    CString strBaseURL;
    strBaseURL.Format(_T("%s%s/"),pApp->GetDocumentationRootLocation(),m_DocSetName);
 
-   if ( pApp->UseOnlineDocumentation() )
-   {
-      CVersionInfo verInfo;
+   CVersionInfo verInfo;
 
-      CWinApp* pMe = AfxGetApp();
-      CString strAppName = pMe->m_pszExeName;
-      //CString strAppName = AfxGetAppName(); // needs module state
-      strAppName += _T(".dll");
-      verInfo.Load(strAppName);
+   CWinApp* pMe = AfxGetApp();
+   CString strAppName = pMe->m_pszExeName;
+   //CString strAppName = AfxGetAppName(); // needs module state
+   strAppName += _T(".dll");
+   verInfo.Load(strAppName);
 
-      CString strVersion = verInfo.GetProductVersionAsString();
-      // remove the build and release number
-      int pos = strVersion.ReverseFind(_T('.')); // find the last '.'
-      strVersion = strVersion.Left(pos);
-      pos = strVersion.ReverseFind(_T('.')); // find the last '.'
-      strVersion = strVersion.Left(pos);
+   CString strVersion = verInfo.GetProductVersionAsString();
+   // remove the build and release number
+   int pos = strVersion.ReverseFind(_T('.')); // find the last '.'
+   strVersion = strVersion.Left(pos);
+   pos = strVersion.ReverseFind(_T('.')); // find the last '.'
+   strVersion = strVersion.Left(pos);
 
-      CString strURL;
-      strURL.Format(_T("%s%s/"),strBaseURL,strVersion);
-      return strURL;
-   }
-   else
-   {
-      return strBaseURL;
-   }
+   CString strURL;
+   strURL.Format(_T("%s%s/"),strBaseURL,strVersion);
+   return strURL;
 }
 
 CString CEAFAppPluginDocumentationImpl::GetDocumentationMapFile()
 {
    ATLASSERT(!m_DocSetName.IsEmpty()); // did you forget to call Init()?
    CEAFApp* pApp = EAFGetApp();
-   return EAFGetDocumentationMapFile(m_DocSetName,m_pAppPlugin->GetDocumentationURL(),pApp->GetDocumentationRootLocation());
+   return EAFGetDocumentationMapFile(m_DocSetName,m_pAppPlugin->GetDocumentationURL());
 }
 
 void CEAFAppPluginDocumentationImpl::LoadDocumentationMap()

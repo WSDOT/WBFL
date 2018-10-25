@@ -933,10 +933,10 @@ BOOL CEAFDocument::OpenTheDocument(LPCTSTR lpszPathName)
          return FALSE;
       }
 
-      hr = LoadTheDocument(pStrLoad);
-      if ( FAILED(hr) )
+      HRESULT hrLoad = LoadTheDocument(pStrLoad);
+      if ( FAILED(hrLoad) )
       {
-         HandleOpenDocumentError( hr, lpszPathName );
+         HandleOpenDocumentError( hrLoad, lpszPathName );
          return FALSE;
       }
 
@@ -964,6 +964,9 @@ BOOL CEAFDocument::OpenTheDocument(LPCTSTR lpszPathName)
          HandleOpenDocumentError( hr, lpszPathName );
          return FALSE;
       }
+
+      SetModifiedFlag(hrLoad == S_FALSE ? TRUE : FALSE);
+      OnStatusChanged();
    }
 
    if ( hr_convert == S_OK )
@@ -971,9 +974,6 @@ BOOL CEAFDocument::OpenTheDocument(LPCTSTR lpszPathName)
       // file was converted and written to a temporary file. delete the temp file
       VERIFY(::DeleteFile(real_file_name));
    }
-
-   SetModifiedFlag(FALSE);
-   OnStatusChanged();
 
    return TRUE;
 }
@@ -1242,14 +1242,14 @@ CString CEAFDocument::GetDocumentationMapFile()
 {
    if ( m_strDocumentationMapFile.IsEmpty() )
    {
-      m_strDocumentationMapFile = EAFGetDocumentationMapFile(GetDocumentationSetName(),GetDocumentationURL(),GetDocumentationRootLocation());
+      m_strDocumentationMapFile = EAFGetDocumentationMapFile(GetDocumentationSetName(),GetDocumentationURL());
    }
    return m_strDocumentationMapFile;
 }
 
 void CEAFDocument::LoadDocumentationMap()
 {
-   EAFLoadDocumentationMap(GetDocumentationMapFile(),m_HelpTopics);
+   VERIFY(EAFLoadDocumentationMap(GetDocumentationMapFile(),m_HelpTopics));
 }
 
 eafTypes::HelpResult CEAFDocument::GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL)

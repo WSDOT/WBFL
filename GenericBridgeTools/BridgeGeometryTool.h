@@ -82,7 +82,7 @@ public:
 	STDMETHOD(StationAndOffsetBySSMbr)(IGenericBridge* bridge,GirderIDType ssMbrID, Float64 distFromStartOfSSMbr, IStation** station, Float64* offset);
    STDMETHOD(StationAndOffsetBySegment)(IGenericBridge* bridge,GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, IStation** station, Float64* offset);
 	STDMETHOD(GirderPathOffset)(IGenericBridge* bridge,GirderIDType ssMbrID, SegmentIndexType segIdx, VARIANT varStation, Float64* offset);
-   STDMETHOD(GirderPathPoint)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx, VARIANT varStation,VARIANT varDirection,IPoint2d** ppPoint);
+   STDMETHOD(GirderPathPoint)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx, VARIANT varStation,VARIANT varDirection,VARIANT_BOOL vbProject,IPoint2d** ppPoint);
    STDMETHOD(DeckEdgePoint)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ IDirection* direction,/*[in]*/ DirectionType side,/*[out,retval]*/ IPoint2d** point);
    STDMETHOD(DeckEdgePoints)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ DirectionType side,/*[in]*/ CollectionIndexType nPoints,/*[out,retval]*/ IPoint2dCollection** points);
    STDMETHOD(DeckOffset)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ IDirection* direction,/*[in]*/ DirectionType side,/*[out]*/IStation** ppOffsetStation,/*[out]*/ Float64* pOffset);

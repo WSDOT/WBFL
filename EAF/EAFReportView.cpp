@@ -690,12 +690,15 @@ BOOL CEAFReportView::PreCreateWindow(CREATESTRUCT& cs)
 
 void CEAFReportView::CreateEditButton()
 {
-   CWnd* pWeb = m_pReportBrowser->GetBrowserWnd();
+   if ( m_pReportBrowser )
+   {
+      CWnd* pWeb = m_pReportBrowser->GetBrowserWnd();
 
-   CRect rect(0,0,50,21);
-   m_pBtnEdit->Create(_T("Edit"),WS_CHILD | WS_TABSTOP | BS_PUSHBUTTON | BS_TEXT, rect, pWeb, IDC_EDIT);
-   m_btnFont.Attach( GetStockObject(DEFAULT_GUI_FONT) );
-   m_pBtnEdit->SetFont(&m_btnFont);
+      CRect rect(0,0,50,21);
+      m_pBtnEdit->Create(_T("Edit"),WS_CHILD | WS_TABSTOP | BS_PUSHBUTTON | BS_TEXT, rect, pWeb, IDC_EDIT);
+      m_btnFont.Attach( GetStockObject(DEFAULT_GUI_FONT) );
+      m_pBtnEdit->SetFont(&m_btnFont);
+   }
 }
 
 std::vector<std::_tstring> CEAFReportView::GetReportNames()

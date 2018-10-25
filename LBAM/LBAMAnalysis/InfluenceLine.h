@@ -204,6 +204,8 @@ public:
    };
 protected:
 
+   static Float64 ms_LocationTolerance;
+
    // local functional class used in stl algoritm for zeroing out influence values
    class ZeroOutInflPoint
    {

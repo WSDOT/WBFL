@@ -111,6 +111,9 @@ public:
    // before calling this method
    virtual void ShowCustomReportHelp(eafTypes::CustomReportHelp helpType) = 0;
 
+   // called when help on the Custom Report Definition dialog is activated.
+   virtual void ShowCustomReportDefinitionHelp() = 0;
+
    // Causes the documentation map file to be loaded
    virtual void LoadDocumentationMap();
 
@@ -200,6 +203,8 @@ protected:
    BOOL FavoriteReports() const;
    void SetCustomReportHelpID(eafTypes::CustomReportHelp helpType,UINT nHelpID);
    UINT GetCustomReportHelpID(eafTypes::CustomReportHelp helpType) const;
+   void SetCustomReportDefinitionHelpID(UINT nHelpID);
+   UINT GetCustomReportDefinitionHelpID() const;
    virtual void OnChangedFavoriteReports(BOOL bIsFavorites, BOOL bFromMenu);
    virtual void OnCustomReportError(eafTypes::CustomReportError error, LPCTSTR lpszReportName, LPCTSTR lpszOtherName);
    void IntegrateCustomReports(bool bFirst=false);
@@ -233,6 +238,7 @@ private:
 
    UINT m_helpIDCustom;
    UINT m_helpIDFavorite;
+   UINT m_helpIDCustomReportDefinition;
    BOOL m_bFavoriteReports;
 
    // callback IDs for any status callbacks we register

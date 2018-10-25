@@ -30,6 +30,8 @@
 #include <AgentTools.h>
 #include <IReportManager.h>
 
+#include <EAF\EAFBrokerDocument.h>
+
 // CEditCustomReportDlg dialog
 
 IMPLEMENT_DYNAMIC(CEditCustomReportDlg, CDialog)
@@ -147,6 +149,7 @@ BEGIN_MESSAGE_MAP(CEditCustomReportDlg, CDialog)
    ON_BN_CLICKED(IDC_REMOVE_ALL_BUTTON, &CEditCustomReportDlg::OnBnClickedRemoveAllButton)
    ON_LBN_DBLCLK(IDC_AVAILABLE_LIST, &CEditCustomReportDlg::OnLbnDblclkAvailableList)
    ON_LBN_DBLCLK(IDC_SELECTED_LIST, &CEditCustomReportDlg::OnLbnDblclkSelectedList)
+   ON_BN_CLICKED(ID_HELP, &CEditCustomReportDlg::OnBnClickedHelp)
 END_MESSAGE_MAP()
 
 // CEditCustomReportDlg message handlers
@@ -380,4 +383,15 @@ void CEditCustomReportDlg::OnLbnDblclkAvailableList()
 void CEditCustomReportDlg::OnLbnDblclkSelectedList()
 {
    OnBnClickedRemoveButton();
+}
+
+void CEditCustomReportDlg::OnBnClickedHelp()
+{
+   CEAFDocument* pDoc = EAFGetDocument();
+
+   if ( pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CEAFBrokerDocument)) )
+   {
+      CEAFBrokerDocument* pBrokerDoc = (CEAFBrokerDocument*)pDoc;
+      pBrokerDoc->ShowCustomReportDefinitionHelp();
+   }
 }

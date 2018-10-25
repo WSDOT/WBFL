@@ -1993,6 +1993,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EAFHelpWindow.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFHelpWindowThread.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\EAFInterfaceCache.cpp"
 				>
 			</File>
@@ -2588,6 +2596,10 @@
 				RelativePath=".\UnitsDlg.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\webbrowser.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -2758,6 +2770,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EAFHelpWindow.h"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFHelpWindowThread.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\EAF\EAFHints.h"
 				>
 			</File>
@@ -2917,6 +2937,10 @@
 				RelativePath=".\UnitsDlg.h"
 				>
 			</File>
+			<File
+				RelativePath=".\webbrowser.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
@@ -2948,6 +2972,10 @@
 			</File>
 			<File
 				RelativePath="res\Toolbar.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\toolbar1.bmp"
 				>
 			</File>
 		</Filter>

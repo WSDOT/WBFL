@@ -684,7 +684,6 @@ void CreateDeck(int deckType,Float64 maxWidth,Float64 overhang,IBridgeGeometry* 
    {
       CComPtr<ICastSlab> slab;
       slab.CoCreateInstance(CLSID_CastSlab);
-      slab->put_Fillet(0.75/12);
       slab->put_GrossDepth(9./12);
 
       slab.QueryInterface(deck);
@@ -693,7 +692,6 @@ void CreateDeck(int deckType,Float64 maxWidth,Float64 overhang,IBridgeGeometry* 
    {
       CComPtr<IPrecastSlab> slab;
       slab.CoCreateInstance(CLSID_PrecastSlab);
-      slab->put_Fillet(0.75/12);
       slab->put_PanelDepth(5./12);
       slab->put_CastDepth(4./12);
       

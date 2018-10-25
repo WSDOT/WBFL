@@ -153,9 +153,7 @@ STDMETHODIMP CSysAgent::CreateProgressWindow(DWORD dwMask,UINT nDelay)
    }
 
    // Run the progress window in a UI thread
-   m_pThread = (CProgressThread*)AfxBeginThread(RUNTIME_CLASS(CProgressThread),THREAD_PRIORITY_NORMAL,0,CREATE_SUSPENDED);
-   m_pThread->m_bAutoDelete = TRUE;
-   m_pThread->ResumeThread();
+   m_pThread = (CProgressThread*)AfxBeginThread(RUNTIME_CLASS(CProgressThread));
 
    CWnd* pMainWnd = NULL;
    {
@@ -168,7 +166,7 @@ STDMETHODIMP CSysAgent::CreateProgressWindow(DWORD dwMask,UINT nDelay)
    if ( FAILED(hr) )
    {
       m_cProgressRef--;
-      m_pThread->EndThread();
+      m_pThread->PostThreadMessage(WM_KILLTHREAD,0,0);
       m_pThread = NULL;
       return PROGRESS_E_CREATE;
    }
@@ -231,7 +229,8 @@ STDMETHODIMP CSysAgent::DestroyProgressWindow()
    if ( m_cProgressRef == 0 )
    {
       m_pThread->DestroyProgressWindow();
-      m_pThread->EndThread();
+      m_pThread->PostThreadMessage(WM_KILLTHREAD,0,0);
+      ::WaitForSingleObject(m_pThread->m_hThread,INFINITE);
       m_pThread = NULL;
    }
    else

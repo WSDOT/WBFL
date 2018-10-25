@@ -4401,10 +4401,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Span.h"
-				>
-			</File>
-			<File
 				RelativePath=".\SplicedGirderSegmentImpl.h"
 				>
 			</File>
