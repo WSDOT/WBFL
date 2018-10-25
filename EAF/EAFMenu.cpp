@@ -160,6 +160,37 @@ CEAFMenu* CEAFMenu::CreatePopupMenu(INT pos,LPCTSTR lpszName)
    return pNewMenu;
 }
 
+void CEAFMenu::LoadSubMenu(CEAFMenu* pEAFMenu,CMenu* pMenu,IEAFCommandCallback* pCallback)
+{
+   UINT nMenuItems = pMenu->GetMenuItemCount();
+   for (UINT i = 0; i < nMenuItems; i++ )
+   {
+      INT nID = pMenu->GetMenuItemID(i);
+      if ( nID < 0 )
+      {
+         CMenu* pSubMenu = pMenu->GetSubMenu(i);
+         ASSERT( pSubMenu->GetSafeHmenu() != NULL );
+
+         CString strName;
+         pMenu->GetMenuString(i,strName,MF_BYPOSITION);
+
+         CEAFMenu* pEAFSubMenu = CreatePopupMenu(-1,strName);
+         LoadSubMenu(pEAFSubMenu,pSubMenu,pCallback); // sub-menu
+         m_Popups.push_back(pEAFSubMenu);
+      }
+      else if ( nID == 0 )
+      {
+         pEAFMenu->AppendSeparator(); // separator
+      }
+      else
+      {
+         CString strMenuItem;
+         pMenu->GetMenuString( nID, strMenuItem, MF_BYCOMMAND );
+         pEAFMenu->AppendMenu(nID,strMenuItem,pCallback);
+      }
+   }
+}
+
 void CEAFMenu::LoadMenu(CMenu* pMenu,IEAFCommandCallback* pCallback)
 {
    UINT nMenuItems = pMenu->GetMenuItemCount();
@@ -168,7 +199,21 @@ void CEAFMenu::LoadMenu(CMenu* pMenu,IEAFCommandCallback* pCallback)
       INT nID = pMenu->GetMenuItemID(i);
       if ( nID < 0 )
       {
-         LoadMenu(pMenu->GetSubMenu(i),pCallback); // sub-menu
+         CMenu* pSubMenu = pMenu->GetSubMenu(i);
+         ASSERT( pSubMenu->GetSafeHmenu() != NULL );
+
+         CString strName;
+         pMenu->GetMenuString(i,strName,MF_BYPOSITION);
+         if ( strName.GetLength() == 0 )
+         {
+            LoadMenu(pSubMenu,pCallback);
+         }
+         else
+         {
+            CEAFMenu* pEAFSubMenu = CreatePopupMenu(-1,strName);
+            m_Popups.push_back(pEAFSubMenu);
+            LoadSubMenu(pEAFSubMenu,pSubMenu,pCallback); // sub-menu
+         }
       }
       else if ( nID == 0 )
       {
@@ -242,7 +287,7 @@ BOOL CEAFMenu::InsertMenu(UINT nPosition, UINT nID, LPCTSTR lpszNewItem, IEAFCom
       return FALSE;
    }
    
-   ASSERT(nPosition < m_Popups.size());
+   ASSERT(nPosition <= m_Popups.size());
    m_Popups.insert(m_Popups.begin()+nPosition,NULL);
 
    return TRUE;
@@ -450,7 +495,6 @@ void CEAFMenu::CreateSubMenus()
       CMenu* pSubMenu = pMenu->GetSubMenu(menuIdx);
       if ( pSubMenu )
       {
-
          if ( pSubMenu->GetSafeHmenu() != NULL )
          {
             CEAFMenu* pEAFSubMenu = new CEAFMenu();
