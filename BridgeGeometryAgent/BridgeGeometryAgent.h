@@ -3,20 +3,18 @@
 #pragma once
 #include "resource.h"       // main symbols
 
-#include <BridgeGeometry\BridgeGeometry.h>
+#include <WBFLBridgeGeometry.h>
 #include <WBFLGenericBridge.h>
 #include <WBFLCogo.h>
 #include "BridgeGeometryInterfaces.h"
 #include "CPBridgeGeometryAgent.h"
 #include <EAF\EAFUIIntegration.h> // for ICommandCallback
 
-#include <BridgeGeometry\AlignmentManager.h>
-
 class CBridgeGeometryAgent;
 
-// It is easies to use the MFC command routing
+// It is easiest to use the MFC command routing
 // system. Create a specialized command target
-// the routes the messages back to the agent.
+// that routes the messages back to the agent.
 //
 // If I was really smart, I'd figure out how
 // to use the ATL message routing system instead of
@@ -102,10 +100,10 @@ private:
    void UnregisterViews();
 
    void Validate();
-   HRESULT GetAlignment(Int32 alignmentID,IAlignment** ppAlignment);
+   HRESULT GetAlignment(CogoObjectID alignmentID,IAlignment** ppAlignment);
 
 
-   CAlignmentManager m_AlignmentMgr;
+   //CAlignmentManager m_AlignmentMgr;
 
    // Initialization helper functions
    CEAFMenu* m_pAlignmentMenu;
@@ -131,8 +129,8 @@ public:
 
 // IRoadway
 public:
-   virtual void GetBearing(Int32 alignmentID,Float64 station,IDirection** ppBearing);
-   virtual void GetNormal(Int32 alignmentID,Float64 station,IDirection** ppBearing);
+   virtual void GetBearing(IDType alignmentID,Float64 station,IDirection** ppBearing);
+   virtual void GetNormal(IDType alignmentID,Float64 station,IDirection** ppBearing);
 
 // ICommandCallback
 public:
@@ -142,11 +140,11 @@ public:
 
 // IRoadwayData
 public:
-   virtual Uint32 GetAlignmentCount();
-   virtual Uint32 GetAlignmentIndex(Int32 alignmentID);
-   virtual Int32 GetAlignmentID(Uint32 alignmentIdx);
-   virtual void SetAlignmentDescription(Int32 alignmentID,const CAlignmentDescription& alignmentDesc);
-   virtual CAlignmentDescription GetAlignmentDescription(Int32 alignmentID);
+   virtual IndexType GetAlignmentCount();
+   virtual IndexType GetAlignmentIndex(IDType alignmentID);
+   virtual IDType GetAlignmentID(IndexType alignmentIdx);
+//   virtual void SetAlignmentDescription(Int32 alignmentID,const CAlignmentDescription& alignmentDesc);
+   //virtual CAlignmentDescription GetAlignmentDescription(Int32 alignmentID);
 
 // IRoadwayDisplayBuilder
 public:

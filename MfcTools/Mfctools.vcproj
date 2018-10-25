@@ -1140,6 +1140,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ChoiceListDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath="choosedirdlg.cpp"
 				>
 				<FileConfiguration
@@ -3650,6 +3654,10 @@
 			</File>
 			<File
 				RelativePath=".\ChoiceDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ChoiceListDlg.h"
 				>
 			</File>
 			<File

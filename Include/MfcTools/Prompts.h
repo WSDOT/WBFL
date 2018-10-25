@@ -31,4 +31,19 @@ BOOL MFCTOOLSFUNC AfxQuestion(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lps
 // This function prompts the user with a question. The user has to select from a list of
 // responses. lpszResponses is a \n separated list of responses. defChoice is the index of the
 // default choice. The return value is the index of the selected choice or -1 if the Cancel button was pressed
-int MFCTOOLSFUNC AfxChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,BOOL bCancelButton=FALSE,int defChoice=0,LPCTSTR lpszHelpFile=NULL,UINT helpID=0);
+int MFCTOOLSFUNC AfxChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int defChoice=0,BOOL bCancelButton=FALSE,LPCTSTR lpszHelpFile=NULL,UINT helpID=0);
+
+// A validator object for the AfxMultiChoice method
+// The select list of options is passed to the IsValid method to validate the
+// choices. Over-ride IsValid in a sub-class to provide context specific validation
+class MFCTOOLSCLASS CMultiChoiceValidator
+{
+public:
+   virtual BOOL IsValid(const std::vector<int>& options) {return TRUE;}
+   virtual void DisplayValidationErrorMessage() {};
+};
+
+// This function prompts the user with a question. The use has to select one or more items from a list
+// of options. lpszOptions is a \n separated list of options.  defChoice is the index of the
+// default choice. The return value is the index of the selected choice or -1 if the Cancel button was pressed
+std::vector<int> MFCTOOLSFUNC AfxMultiChoice(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszOptions,CMultiChoiceValidator* pValidator=NULL,const std::vector<int>& defOptions=std::vector<int>(),BOOL bCancelButton=FALSE,LPCTSTR lpszHelpFile=NULL,UINT helpID=0);

@@ -4,8 +4,6 @@
 #include <WBFLBridgeGeometryAgent.h>
 #include "BridgeGeometryAgent.h"
 #include "BridgeGeometryInterfaces.h"
-#include <BridgeGeometry\BridgeGeometryFrame.h>
-#include <BridgeGeometry\BridgeGeometryView.h>
 
 #include <DManip\DManip.h>
 
@@ -32,8 +30,8 @@ void CBridgeGeometryAgent::IntegrateMenuCommands()
 
    INT nMenus = pMenu->GetMenuItemCount();
 
-   m_pAlignmentMenu = pMenu->CreatePopupMenu(nMenus-1,"&Alignment");
-   m_pAlignmentMenu->AppendMenu(ID_EDIT_ALIGNMENT,"Edit",this);
+   m_pAlignmentMenu = pMenu->CreatePopupMenu(nMenus-1,_T("&Alignment"));
+   m_pAlignmentMenu->AppendMenu(ID_EDIT_ALIGNMENT,_T("Edit"),this);
 }
 
 void CBridgeGeometryAgent::RemoveMenuCommands()
@@ -49,11 +47,11 @@ void CBridgeGeometryAgent::RemoveMenuCommands()
 // Command Functions
 void CBridgeGeometryAgent::OnEditAlignment()
 {
-   if ( m_AlignmentMgr.EditAlignment() )
-   {
-      m_bNeedsValidation = true;
-      Fire_OnRoadwayChanged();
-   }
+   //if ( m_AlignmentMgr.EditAlignment() )
+   //{
+   //   m_bNeedsValidation = true;
+   //   Fire_OnRoadwayChanged();
+   //}
 }
 
 void CBridgeGeometryAgent::AdviseConnectionPoints()
@@ -110,43 +108,43 @@ void CBridgeGeometryAgent::Validate()
    CComPtr<IPointCollection> points;
    m_CogoModel->get_Points(&points);
 
-   Uint32 nAlignments = m_AlignmentMgr.GetAlignmentCount();
-   for ( Uint32 alignmentIdx = 0; alignmentIdx < nAlignments; alignmentIdx++ )
-   {
-      Int32 alignmentID = m_AlignmentMgr.GetAlignmentID(alignmentIdx);
-      CAlignmentDescription alignmentDesc = m_AlignmentMgr.GetAlignmentDescription(alignmentID);
-
-      CComPtr<IPath> path;
-      alignments->Add(alignmentIdx,&path);
-      CComQIPtr<IAlignment> alignment(path);
-
-//      if ( pRoadwayData->GetHorzCurveCount(alignmentIdx) == 0 )
-      {
-         Int32 id1 = -20000;
-         Int32 id2 = -20001;
-
-         points->Add(id1,0,0,NULL);
-
-         CComQIPtr<ILocate> locate(m_CogoModel);
-         locate->ByDistDir(id2,id1,100.00,CComVariant(alignmentDesc.GetInitialDirection()),0.00);
-
-         CComPtr<IPoint2d> pnt1, pnt2;
-         points->get_Item(id1,&pnt1);
-         points->get_Item(id2,&pnt2);
-
-         alignment->put_RefStation(CComVariant(0.00));
-         alignment->AddEx(pnt1);
-         alignment->AddEx(pnt2);
-      }
+//   Uint32 nAlignments = m_AlignmentMgr.GetAlignmentCount();
+//   for ( Uint32 alignmentIdx = 0; alignmentIdx < nAlignments; alignmentIdx++ )
+//   {
+//      Int32 alignmentID = m_AlignmentMgr.GetAlignmentID(alignmentIdx);
+//      CAlignmentDescription alignmentDesc = m_AlignmentMgr.GetAlignmentDescription(alignmentID);
+//
+//      CComPtr<IPath> path;
+//      alignments->Add(alignmentIdx,&path);
+//      CComQIPtr<IAlignment> alignment(path);
+//
+////      if ( pRoadwayData->GetHorzCurveCount(alignmentIdx) == 0 )
+//      {
+//         Int32 id1 = -20000;
+//         Int32 id2 = -20001;
+//
+//         points->Add(id1,0,0,NULL);
+//
+//         CComQIPtr<ILocate> locate(m_CogoModel);
+//         locate->ByDistDir(id2,id1,100.00,CComVariant(alignmentDesc.GetInitialDirection()),0.00);
+//
+//         CComPtr<IPoint2d> pnt1, pnt2;
+//         points->get_Item(id1,&pnt1);
+//         points->get_Item(id2,&pnt2);
+//
+//         alignment->put_RefStation(CComVariant(0.00));
+//         alignment->AddEx(pnt1);
+//         alignment->AddEx(pnt2);
+//      }
       //else
       //{
       //}
-   }
+//   }
 
    m_bNeedsValidation = false;
 }
 
-HRESULT CBridgeGeometryAgent::GetAlignment(Int32 alignmentID,IAlignment** ppAlignment)
+HRESULT CBridgeGeometryAgent::GetAlignment(CogoObjectID alignmentID,IAlignment** ppAlignment)
 {
    CComPtr<IPathCollection> alignments;
    m_CogoModel->get_Alignments(&alignments);
@@ -281,7 +279,7 @@ BOOL CBridgeGeometryAgent::GetToolTipMessageString(UINT nID, CString& rMessage) 
 
 ////////////////////////////////////////////////////////
 // IRoadway
-void CBridgeGeometryAgent::GetBearing(Int32 alignmentID,Float64 station,IDirection** ppBearing)
+void CBridgeGeometryAgent::GetBearing(IDType alignmentID,Float64 station,IDirection** ppBearing)
 {
    Validate();
    CComPtr<IAlignment> alignment;
@@ -289,7 +287,7 @@ void CBridgeGeometryAgent::GetBearing(Int32 alignmentID,Float64 station,IDirecti
    alignment->Bearing(CComVariant(station),ppBearing);
 }
 
-void CBridgeGeometryAgent::GetNormal(Int32 alignmentID,Float64 station,IDirection** ppBearing)
+void CBridgeGeometryAgent::GetNormal(IDType alignmentID,Float64 station,IDirection** ppBearing)
 {
    Validate();
    CComPtr<IAlignment> alignment;
@@ -299,30 +297,34 @@ void CBridgeGeometryAgent::GetNormal(Int32 alignmentID,Float64 station,IDirectio
 
 ////////////////////////////////////////////////////////
 // IRoadwayData
-Uint32 CBridgeGeometryAgent::GetAlignmentCount()
+IndexType CBridgeGeometryAgent::GetAlignmentCount()
 {
-   return m_AlignmentMgr.GetAlignmentCount();
+//   return m_AlignmentMgr.GetAlignmentCount();
+   return 0;
 }
 
-Uint32 CBridgeGeometryAgent::GetAlignmentIndex(Int32 alignmentID)
+IndexType CBridgeGeometryAgent::GetAlignmentIndex(IDType alignmentID)
 {
-   return m_AlignmentMgr.GetAlignmentIndex(alignmentID);
+   //return m_AlignmentMgr.GetAlignmentIndex(alignmentID);
+   return 0;
 }
 
-Int32 CBridgeGeometryAgent::GetAlignmentID(Uint32 alignmentIdx)
+IDType CBridgeGeometryAgent::GetAlignmentID(IndexType alignmentIdx)
 {
-   return m_AlignmentMgr.GetAlignmentID(alignmentIdx);
+   //return m_AlignmentMgr.GetAlignmentID(alignmentIdx);
+   return 0;
 }
-
-void CBridgeGeometryAgent::SetAlignmentDescription(Int32 alignmentID,const CAlignmentDescription& alignmentDesc)
-{
-   m_AlignmentMgr.SetAlignmentDescription(alignmentID,alignmentDesc);
-}
-
-CAlignmentDescription CBridgeGeometryAgent::GetAlignmentDescription(Int32 alignmentID)
-{
-   return m_AlignmentMgr.GetAlignmentDescription(alignmentID);
-}
+//
+//void CBridgeGeometryAgent::SetAlignmentDescription(Int32 alignmentID,const CAlignmentDescription& alignmentDesc)
+//{
+//   //m_AlignmentMgr.SetAlignmentDescription(alignmentID,alignmentDesc);
+//}
+//
+//CAlignmentDescription CBridgeGeometryAgent::GetAlignmentDescription(Int32 alignmentID)
+//{
+//   //return m_AlignmentMgr.GetAlignmentDescription(alignmentID);
+//   return CAlignmentDescription();
+//}
 
 ////////////////////////////////////////////////////////
 // IRoadwayDisplayBuilder
@@ -343,7 +345,7 @@ void CBridgeGeometryAgent::BuildRoadwayDisplay(CDisplayView* pView)
 
    CComPtr<iTextBlock> doText;
    doText.CoCreateInstance(CLSID_TextBlock);
-   doText->SetText("Text block");
+   doText->SetText(_T("Text block"));
 
    CComPtr<IPoint2d> pnt;
    doText->GetPosition(&pnt);

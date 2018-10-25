@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
-// BAM - Bridge Analysis Model, Analytical modeling of bridge structures
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// BMF - Bridge Modeling Framework - Product modeling of bridge structures
+// Copyright © 1999-2013  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -17,19 +17,36 @@
 //
 // You should have received a copy of the Alternate Route Library Open Source License 
 // along with this program; if not, write to the Washington State Department of 
-// Transportation, Bridge and Structures Office, 4500 3rd Ave SE - P.O. Box  47340, 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#pragma once
+#include <BridgeModeling\BridgeModelingLib.h>
 
-#if !defined (BUILDBRIDGEGEOMETRYLIB)
+#include <System\dllTest.h>
+#include <BridgeModeling\UnitTest.h>
 
-#define BRIDGEGEOMETRY_AUTOLIBNAME "WBFLBridgeGeometry.lib"
+#include <initguid.h>
+#include <WBFLGeometry_i.c>
+#include <WBFLCogo_i.c>
 
-#pragma comment(lib,BRIDGEGEOMETRY_AUTOLIBNAME)
-#if defined AUTOLIB
-#pragma message("WBFL::BridgeGeometry will automatically link with " BRIDGEGEOMETRY_AUTOLIBNAME )
-#endif // AUTOLIB
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
-#endif // BUILDBRIDGEGEOMETRYLIB
+// Every DLL has an entry point DllEntryPoint
+BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
+                           DWORD     /*fdwRreason*/,
+                           LPVOID    /*plvReserved*/)
+{
+    return 1;   // Indicate that the DLL was initialized successfully.
+}
+
+
+// call unit test routines for all packages belonging to this dll.
+bool WINAPI UnitTest(dbgLog& rlog)
+{
+   return bmfUnitTest::TestMe(rlog);
+}

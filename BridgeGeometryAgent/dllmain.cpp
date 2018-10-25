@@ -3,7 +3,7 @@
 #include "stdafx.h"
 #include "resource.h"
 #include <initguid.h>
-#include <BridgeGeometry\BridgeGeometry.h>
+#include <WBFLBridgeGeometry.h>
 #include "WBFLBridgeGeometryAgent.h"
 #include "WBFLBridgeGeometryAgent_i.c"
 #include "BridgeGeometryInterfaces.h"

@@ -27,7 +27,7 @@
 			UseOfMFC="2"
 			UseOfATL="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="0"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -49,8 +49,8 @@
 				TargetEnvironment="1"
 				GenerateStublessProxies="true"
 				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
-				HeaderFileName="..\Include\$(ConfigurationName)\$(ProjectName).h"
-				InterfaceIdentifierFileName="..\Include\$(ConfigurationName)\$(ProjectName)_i.c"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
 				ProxyFileName=""
 				ValidateParameters="true"
 			/>
@@ -93,7 +93,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)\WBFL.manifest"
+				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -119,7 +119,7 @@
 			UseOfMFC="2"
 			UseOfATL="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="0"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -141,8 +141,8 @@
 				TargetEnvironment="3"
 				GenerateStublessProxies="true"
 				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
-				HeaderFileName="..\Include\$(ConfigurationName)\$(ProjectName).h"
-				InterfaceIdentifierFileName="..\Include\$(ConfigurationName)\$(ProjectName)_i.c"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
 				ProxyFileName=""
 			/>
 			<Tool
@@ -184,7 +184,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)\WBFL.manifest"
+				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -210,7 +210,7 @@
 			UseOfMFC="2"
 			UseOfATL="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="0"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -232,8 +232,8 @@
 				TargetEnvironment="1"
 				GenerateStublessProxies="true"
 				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
-				HeaderFileName="..\Include\$(ConfigurationName)\$(ProjectName).h"
-				InterfaceIdentifierFileName="..\Include\$(ConfigurationName)\$(ProjectName)_i.c"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
 				ProxyFileName=""
 				ValidateParameters="true"
 			/>
@@ -276,7 +276,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)\WBFL.manifest"
+				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -302,7 +302,7 @@
 			UseOfMFC="2"
 			UseOfATL="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="0"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -324,8 +324,8 @@
 				TargetEnvironment="3"
 				GenerateStublessProxies="true"
 				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
-				HeaderFileName="..\Include\$(ConfigurationName)\$(ProjectName).h"
-				InterfaceIdentifierFileName="..\Include\$(ConfigurationName)\$(ProjectName)_i.c"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
 				ProxyFileName=""
 			/>
 			<Tool
@@ -367,7 +367,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)\WBFL.manifest"
+				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -393,7 +393,7 @@
 			UseOfMFC="2"
 			UseOfATL="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="0"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -415,8 +415,8 @@
 				TargetEnvironment="1"
 				GenerateStublessProxies="true"
 				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
-				HeaderFileName="..\Include\$(ConfigurationName)\$(ProjectName).h"
-				InterfaceIdentifierFileName="..\Include\$(ConfigurationName)\$(ProjectName)_i.c"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
 				ProxyFileName=""
 				ValidateParameters="true"
 			/>
@@ -459,7 +459,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)\WBFL.manifest"
+				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -485,7 +485,7 @@
 			UseOfMFC="2"
 			UseOfATL="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="0"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -507,8 +507,8 @@
 				TargetEnvironment="3"
 				GenerateStublessProxies="true"
 				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
-				HeaderFileName="..\Include\$(ConfigurationName)\$(ProjectName).h"
-				InterfaceIdentifierFileName="..\Include\$(ConfigurationName)\$(ProjectName)_i.c"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
 				ProxyFileName=""
 			/>
 			<Tool
@@ -550,7 +550,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)\WBFL.manifest"
+				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -576,7 +576,7 @@
 			UseOfMFC="2"
 			UseOfATL="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="0"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -598,8 +598,8 @@
 				TargetEnvironment="1"
 				GenerateStublessProxies="true"
 				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
-				HeaderFileName="..\Include\$(ConfigurationName)\$(ProjectName).h"
-				InterfaceIdentifierFileName="..\Include\$(ConfigurationName)\$(ProjectName)_i.c"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
 				ProxyFileName=""
 				ValidateParameters="true"
 			/>
@@ -642,7 +642,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)\WBFL.manifest"
+				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -668,7 +668,7 @@
 			UseOfMFC="2"
 			UseOfATL="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="0"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -690,8 +690,8 @@
 				TargetEnvironment="3"
 				GenerateStublessProxies="true"
 				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
-				HeaderFileName="..\Include\$(ConfigurationName)\$(ProjectName).h"
-				InterfaceIdentifierFileName="..\Include\$(ConfigurationName)\$(ProjectName)_i.c"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
 				ProxyFileName=""
 			/>
 			<Tool
@@ -733,7 +733,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)\WBFL.manifest"
+				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"

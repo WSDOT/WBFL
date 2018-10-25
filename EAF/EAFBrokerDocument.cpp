@@ -458,50 +458,61 @@ BOOL CEAFBrokerDocument::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHAND
 {
    if ( m_pBroker )
    {
-      // Interrupt the normal command processing to handle reports
-      // The report menu items are dynamically generated and so are their IDs
-      // If the command code is in the range IDM_REPORT to IDM_REPORT+nReports a specific
-      // report name was selected from a menu. Send the message on to the OnReport handler
+      // Interrupt the normal command processing to handle reports and graphs
+      // The report and graph menu items are dynamically generated and so are their IDs
+      // If the command code is in the range of the report/graphg commands a specific
+      // report/graph name was selected from a menu. Send the message on to the OnReport/OnGraph handler
       // and tell MFC that this message has been handled (return TRUE)
-      GET_IFACE(IReportManager,pReportMgr);
-      CollectionIndexType nReports = pReportMgr->GetReportBuilderCount();
-      BOOL bIsReport      = (GetReportCommand(0,false) <= nID && nID <= GetReportCommand(nReports-1,false));
-      BOOL bIsQuickReport = (GetReportCommand(0,true)  <= nID && nID <= GetReportCommand(nReports-1,true));
 
-      if ( bIsReport || bIsQuickReport )
+      // Don't use GET_IFACE because the ASSERTs will fire if the interface is missing (which is valid in this case)
+      CComPtr<IReportManager> pReportMgr;
+      m_pBroker->GetInterface(IID_IReportManager,(void**)&pReportMgr);
+      if ( pReportMgr )
       {
-         if ( nCode == CN_UPDATE_COMMAND_UI )
-         {
-            CCmdUI* pCmdUI = (CCmdUI*)(pExtra);
-            pCmdUI->Enable(TRUE);
-            return TRUE;
-         }
-         else if ( nCode == CN_COMMAND )
-         {
-            if ( bIsQuickReport )
-               OnQuickReport(nID);
-            else
-               OnReport(nID);
+         CollectionIndexType nReports = pReportMgr->GetReportBuilderCount();
+         BOOL bIsReport      = (GetReportCommand(0,false) <= nID && nID <= GetReportCommand(nReports-1,false));
+         BOOL bIsQuickReport = (GetReportCommand(0,true)  <= nID && nID <= GetReportCommand(nReports-1,true));
 
-            return TRUE;
+         if ( bIsReport || bIsQuickReport )
+         {
+            if ( nCode == CN_UPDATE_COMMAND_UI )
+            {
+               CCmdUI* pCmdUI = (CCmdUI*)(pExtra);
+               pCmdUI->Enable(TRUE);
+               return TRUE;
+            }
+            else if ( nCode == CN_COMMAND )
+            {
+               if ( bIsQuickReport )
+                  OnQuickReport(nID);
+               else
+                  OnReport(nID);
+
+               return TRUE;
+            }
          }
       }
 
-      GET_IFACE(IGraphManager,pGraphMgr);
-      CollectionIndexType nGraphs = pGraphMgr->GetGraphBuilderCount();
-      BOOL bIsGraph = (GetGraphCommand(0) <= nID && nID <= GetGraphCommand(nGraphs-1));
-      if ( bIsGraph )
+      // Don't use GET_IFACE because the ASSERTs will fire if the interface is missing (which is valid in this case)
+      CComPtr<IGraphManager> pGraphMgr;
+      m_pBroker->GetInterface(IID_IGraphManager,(void**)&pGraphMgr);
+      if ( pGraphMgr )
       {
-         if ( nCode == CN_UPDATE_COMMAND_UI )
+         CollectionIndexType nGraphs = pGraphMgr->GetGraphBuilderCount();
+         BOOL bIsGraph = (GetGraphCommand(0) <= nID && nID <= GetGraphCommand(nGraphs-1));
+         if ( bIsGraph )
          {
-            CCmdUI* pCmdUI = (CCmdUI*)(pExtra);
-            pCmdUI->Enable(TRUE);
-            return TRUE;
-         }
-         else if ( nCode == CN_COMMAND )
-         {
-            OnGraph(nID);
-            return TRUE;
+            if ( nCode == CN_UPDATE_COMMAND_UI )
+            {
+               CCmdUI* pCmdUI = (CCmdUI*)(pExtra);
+               pCmdUI->Enable(TRUE);
+               return TRUE;
+            }
+            else if ( nCode == CN_COMMAND )
+            {
+               OnGraph(nID);
+               return TRUE;
+            }
          }
       }
    }
