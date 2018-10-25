@@ -51,7 +51,6 @@ public:
       m_PanelDepth = 0;
       m_CastDepth = 0;
       m_OverhangDepth = 0;
-      m_SacrificialDepth = 0;
       m_Fillet = 0;
       m_Taper = dotNone;
       m_pDeckBoundary = NULL;
@@ -65,7 +64,6 @@ private:
    Float64 m_PanelDepth;
    Float64 m_CastDepth;
    Float64 m_OverhangDepth;
-   Float64 m_SacrificialDepth;
    Float64 m_Fillet;
    DeckOverhangTaper m_Taper;
    StageIndexType  m_CastingStageIdx;
@@ -106,8 +104,6 @@ public:
 	STDMETHOD(put_CastDepth)(/*[in]*/Float64 depth);
 	STDMETHOD(get_OverhangDepth)(/*[out,retval]*/Float64* depth);
 	STDMETHOD(put_OverhangDepth)(/*[in]*/Float64 depth);
-	STDMETHOD(get_SacrificialDepth)(/*[out,retval]*/Float64* depth);
-	STDMETHOD(put_SacrificialDepth)(/*[in]*/Float64 depth);
 	STDMETHOD(get_Fillet)(/*[out,retval]*/Float64* depth);
 	STDMETHOD(put_Fillet)(/*[in]*/Float64 depth);
 	STDMETHOD(get_OverhangTaper)(/*[out,retval]*/DeckOverhangTaper* taper);

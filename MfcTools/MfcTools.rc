@@ -64,8 +64,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,0,0,3
- PRODUCTVERSION 4,0,0,3
+ FILEVERSION 4,0,0,4
+ PRODUCTVERSION 4,0,0,4
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -83,12 +83,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "MfcTools DLL"
-            VALUE "FileVersion", "4.0.0.3"
+            VALUE "FileVersion", "4.0.0.4"
             VALUE "InternalName", "MfcTools"
             VALUE "LegalCopyright", "Copyright © 1999-2013, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "MfcTools.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "4.0.0.3"
+            VALUE "ProductVersion", "4.0.0.4"
         END
     END
     BLOCK "VarFileInfo"

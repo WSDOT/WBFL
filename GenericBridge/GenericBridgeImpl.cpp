@@ -113,6 +113,7 @@ STDMETHODIMP CGenericBridge::get_Deck(IBridgeDeck** deck)
 STDMETHODIMP CGenericBridge::putref_Deck(IBridgeDeck* deck)
 {
    m_Deck = deck;
+   m_Deck->putref_Bridge(this);
    return S_OK;
 }
 
@@ -219,6 +220,83 @@ STDMETHODIMP CGenericBridge::putref_RightBarrier(ISidewalkBarrier* barrier)
       return S_OK;
 
    m_RightBarrier = barrier;
+   return S_OK;
+}
+
+STDMETHODIMP CGenericBridge::get_WearingSurfaceStage(StageIndexType* stage)
+{
+   CHECK_RETVAL(stage);
+   *stage = m_WearingSurfaceStage;
+   return S_OK;
+}
+
+STDMETHODIMP CGenericBridge::put_WearingSurfaceStage(StageIndexType stage)
+{
+   m_WearingSurfaceStage = stage;
+   return S_OK;
+}
+
+STDMETHODIMP CGenericBridge::get_WearingSurfaceDepth(/*[out,retval]*/Float64* d)
+{
+   CHECK_RETVAL(d);
+   *d = m_WearingSurfaceDepth;
+   return S_OK;
+}
+
+STDMETHODIMP CGenericBridge::put_WearingSurfaceDepth(/*[in]*/Float64 depth)
+{
+   if ( depth < 0 )
+      return E_INVALIDARG;
+
+   m_WearingSurfaceDepth = depth;
+
+   return S_OK;
+}
+
+STDMETHODIMP CGenericBridge::get_WearingSurfaceDensity(/*[out,retval]*/Float64* d)
+{
+   CHECK_RETVAL(d);
+   *d = m_WearingSurfaceDensity;
+   return S_OK;
+}
+
+STDMETHODIMP CGenericBridge::put_WearingSurfaceDensity(/*[in]*/Float64 density)
+{
+   if ( density < 0 )
+      return E_INVALIDARG;
+
+   m_WearingSurfaceDensity = density;
+
+   return S_OK;
+}
+
+STDMETHODIMP CGenericBridge::get_SacrificialDepthStage(StageIndexType* stage)
+{
+   CHECK_RETVAL(stage);
+   *stage = m_SacrificialDepthStage;
+   return S_OK;
+}
+
+STDMETHODIMP CGenericBridge::put_SacrificialDepthStage(StageIndexType stage)
+{
+   m_SacrificialDepthStage = stage;
+   return S_OK;
+}
+
+STDMETHODIMP CGenericBridge::get_SacrificialDepth(Float64* depth)
+{
+   CHECK_RETVAL(depth);
+   *depth = m_SacrificialDepth;
+   return S_OK;
+}
+
+STDMETHODIMP CGenericBridge::put_SacrificialDepth(Float64 depth)
+{
+   if ( depth < 0 )
+      return E_INVALIDARG;
+
+   m_SacrificialDepth = depth;
+
    return S_OK;
 }
 

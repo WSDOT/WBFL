@@ -37,9 +37,9 @@ class IBridgeDeckImpl : public IBridgeDeck,
 public:
    IBridgeDeckImpl()
    {
+      m_pBridge = NULL;
+
       m_bComposite = VARIANT_TRUE;
-      m_WearingSurfaceDepth = 0;
-      m_WearingSurfaceDensity = 0;
 
       m_Material.CoCreateInstance(CLSID_Material);
    }
@@ -49,13 +49,14 @@ public:
       return S_OK;
    }
 
+protected:
+   IGenericBridge* m_pBridge; // weak reference
+
 
 private:
    VARIANT_BOOL m_bComposite;
    //StageIndexType m_ConstructionStage;
    //StageIndexType m_CompositeStage;
-   Float64 m_WearingSurfaceDepth;
-   Float64 m_WearingSurfaceDensity;
    CComPtr<IMaterial> m_Material;
 
    CItemDataManager m_ItemDataMgr;
@@ -63,6 +64,23 @@ private:
 
 // IBridgeDeck
 public:
+   STDMETHOD(putref_Bridge)(/*[in]*/IGenericBridge* pBridge)
+   {
+      CHECK_IN(pBridge);
+      m_pBridge = pBridge; // weak reference
+      return S_OK;
+   }
+
+   STDMETHOD(get_Bridge)(/*[out,retval]*/IGenericBridge** ppBridge)
+   {
+      CHECK_RETOBJ(ppBridge);
+      (*ppBridge) = m_pBridge;
+      if ( *ppBridge )
+         (*ppBridge)->AddRef();
+
+      return S_OK;
+   }
+
    STDMETHOD(get_Composite)(/*[out,retval]*/VARIANT_BOOL* bComposite)
    {
       CHECK_RETVAL(bComposite);
@@ -76,46 +94,6 @@ public:
          return S_OK;
 
       m_bComposite = bComposite;
-
-      return S_OK;
-   }
-
-	STDMETHOD(get_WearingSurfaceDepth)(/*[out,retval]*/Float64* d)
-   {
-      CHECK_RETVAL(d);
-      *d = m_WearingSurfaceDepth;
-      return S_OK;
-   }
-
-	STDMETHOD(put_WearingSurfaceDepth)(/*[in]*/Float64 depth)
-   {
-      if ( depth < 0 )
-         return E_INVALIDARG;
-
-      if ( IsEqual(m_WearingSurfaceDepth,depth) )
-         return S_OK;
-
-      m_WearingSurfaceDepth = depth;
-
-      return S_OK;
-   }
-
-	STDMETHOD(get_WearingSurfaceDensity)(/*[out,retval]*/Float64* d)
-   {
-      CHECK_RETVAL(d);
-      *d = m_WearingSurfaceDensity;
-      return S_OK;
-   }
-
-	STDMETHOD(put_WearingSurfaceDensity)(/*[in]*/Float64 density)
-   {
-      if ( density < 0 )
-         return E_INVALIDARG;
-
-      if ( IsEqual(m_WearingSurfaceDensity,density) )
-         return S_OK;
-
-      m_WearingSurfaceDensity = density;
 
       return S_OK;
    }
@@ -176,12 +154,6 @@ protected:
       load->get_Property(CComBSTR("Composite"),&var);
       m_bComposite = var.boolVal;
 
-      load->get_Property(CComBSTR("WearingSurfaceDensity"),&var);
-      m_WearingSurfaceDensity = var.dblVal;
-
-      load->get_Property(CComBSTR("WearingSurfaceDepth"),&var);
-      m_WearingSurfaceDepth = var.dblVal;
-
       load->get_Property(CComBSTR("Material"),&var);
       m_Material.Release();
       var.punkVal->QueryInterface(&m_Material);
@@ -192,8 +164,6 @@ protected:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save)
    {
       save->put_Property(CComBSTR("Composite"),CComVariant(m_bComposite));
-      save->put_Property(CComBSTR("WearingSurfaceDensity"),CComVariant(m_WearingSurfaceDensity));
-      save->put_Property(CComBSTR("WearingSurfaceDepth"),CComVariant(m_WearingSurfaceDepth));
       save->put_Property(CComBSTR("Material"),CComVariant(m_Material));
 
       return S_OK;

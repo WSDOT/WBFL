@@ -42,6 +42,8 @@ public:
    CTestVertCurve();
 
    static void Test();
+   static void Test1();
+   static void Test2();
 
    void InitEventTest() { m_bTestState = false; }
    bool PassedEventTest() { return m_bTestState; }

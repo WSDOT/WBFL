@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.SurfaceCollection.1 = s 'SurfaceCollection Class'
+	{
+		CLSID = s '{A0AE194C-0D1D-4acb-8514-85E4B77DD326}'
+	}
+	WBFLCogo.SurfaceCollection = s 'SurfaceCollection Class'
+	{
+		CLSID = s '{A0AE194C-0D1D-4acb-8514-85E4B77DD326}'
+		CurVer = s 'WBFLCogo.SurfaceCollection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {A0AE194C-0D1D-4acb-8514-85E4B77DD326} = s 'SurfaceCollection Class'
+		{
+			ProgID = s 'WBFLCogo.SurfaceCollection.1'
+			VersionIndependentProgID = s 'WBFLCogo.SurfaceCollection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

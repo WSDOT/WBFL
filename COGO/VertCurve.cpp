@@ -31,7 +31,6 @@
 #include "CogoHelpers.h"
 #include <xutility> // for _cpp_min and _cpp_max
 #include <limits>
-#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -49,6 +48,7 @@ HRESULT CVertCurve::FinalConstruct()
    CComObject<CProfilePointFactory>* pFactory;
    CComObject<CProfilePointFactory>::CreateInstance(&pFactory);
    m_Factory = pFactory;
+   m_Factory->putref_Profile(m_pProfile);
 
    m_Factory->CreateProfilePoint(&m_PBG);
    m_Factory->CreateProfilePoint(&m_PVI);
@@ -95,6 +95,28 @@ STDMETHODIMP CVertCurve::InterfaceSupportsErrorInfo(REFIID riid)
    return S_FALSE;
 }
 
+STDMETHODIMP CVertCurve::get_Profile(IProfile* *pVal)
+{
+   CHECK_RETOBJ(pVal);
+   if ( m_pProfile )
+   {
+      (*pVal) = m_pProfile;
+      (*pVal)->AddRef();
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP CVertCurve::putref_Profile(IProfile* newVal)
+{
+   m_pProfile = newVal;
+   m_Factory->putref_Profile(m_pProfile);
+   m_PBG->putref_Profile(m_pProfile);
+   m_PVI->putref_Profile(m_pProfile);
+   m_PFG->putref_Profile(m_pProfile);
+   return S_OK;
+}
+
 STDMETHODIMP CVertCurve::get_PBG(IProfilePoint **pVal)
 {
    CHECK_RETOBJ(pVal);
@@ -109,8 +131,14 @@ STDMETHODIMP CVertCurve::putref_PBG(IProfilePoint *newVal)
 {
    CHECK_IN(newVal);
 
+   HRESULT hr = ValidateStation(newVal);
+   if ( FAILED(hr) )
+      return hr;
+
    MyUnadvise(m_PBG,m_dwPBG);
+   m_PBG->putref_Profile(NULL);
    m_PBG = newVal;
+   m_PBG->putref_Profile(m_pProfile);
    MyAdvise(m_PBG,&m_dwPBG);
 
    Fire_OnVertCurveChanged(this);
@@ -132,8 +160,14 @@ STDMETHODIMP CVertCurve::putref_PVI(IProfilePoint *newVal)
 {
    CHECK_IN(newVal);
 
+   HRESULT hr = ValidateStation(newVal);
+   if ( FAILED(hr) )
+      return hr;
+
    MyUnadvise(m_PVI,m_dwPVI);
+   m_PVI->putref_Profile(NULL);
    m_PVI = newVal;
+   m_PVI->putref_Profile(m_pProfile);
    MyAdvise(m_PVI,&m_dwPVI);
 
    Fire_OnVertCurveChanged(this);
@@ -155,8 +189,14 @@ STDMETHODIMP CVertCurve::putref_PFG(IProfilePoint *newVal)
 {
    CHECK_IN(newVal);
 
+   HRESULT hr = ValidateStation(newVal);
+   if ( FAILED(hr) )
+      return hr;
+
    MyUnadvise(m_PFG,m_dwPFG);
+   m_PFG->putref_Profile(NULL);
    m_PFG = newVal;
+   m_PFG->putref_Profile(m_pProfile);
    MyAdvise(m_PFG,&m_dwPFG);
 
    Fire_OnVertCurveChanged(this);
@@ -211,8 +251,7 @@ STDMETHODIMP CVertCurve::get_BVC(IProfilePoint* *pVal)
    m_PVI->get_Station(&objPVI);
    m_PVI->get_Elevation(&elevPVI);
 
-   Float64 staPVI;
-   objPVI->get_Value(&staPVI);
+   Float64 staPVI = cogoUtil::GetNormalizedStationValue(m_pProfile,objPVI);
 
    Float64 staBVC;
    Float64 elevBVC;
@@ -221,7 +260,9 @@ STDMETHODIMP CVertCurve::get_BVC(IProfilePoint* *pVal)
    elevBVC = elevPVI - g1*m_L1;
 
    m_Factory->CreateProfilePoint(pVal);
-   (*pVal)->put_Station(CComVariant(staBVC));
+   CComPtr<IStation> objBVC;
+   cogoUtil::CreateStation(m_pProfile,staBVC,&objBVC);
+   (*pVal)->put_Station(CComVariant(objBVC));
    (*pVal)->put_Elevation(elevBVC);
 
    return S_OK;
@@ -239,8 +280,7 @@ STDMETHODIMP CVertCurve::get_EVC(IProfilePoint* *pVal)
    m_PVI->get_Station(&objPVI);
    m_PVI->get_Elevation(&elevPVI);
 
-   Float64 staPVI;
-   objPVI->get_Value(&staPVI);
+   Float64 staPVI = cogoUtil::GetNormalizedStationValue(m_pProfile,objPVI);
 
    Float64 staEVC, elevEVC;
 
@@ -248,7 +288,9 @@ STDMETHODIMP CVertCurve::get_EVC(IProfilePoint* *pVal)
    elevEVC = elevPVI + g2*m_L2;
 
    m_Factory->CreateProfilePoint(pVal);
-   (*pVal)->put_Station(CComVariant(staEVC));
+   CComPtr<IStation> objEVC;
+   cogoUtil::CreateStation(m_pProfile,staEVC,&objEVC);
+   (*pVal)->put_Station(CComVariant(objEVC));
    (*pVal)->put_Elevation(elevEVC);
 
    return S_OK;
@@ -277,7 +319,7 @@ STDMETHODIMP CVertCurve::get_EntryGrade(Float64 *pVal)
    m_PBG->get_Elevation(&elePBG);
    m_PVI->get_Elevation(&elePVI);
 
-   Float64 dx = staPVI - staPBG;
+   Float64 dx = cogoUtil::Distance(m_pProfile,staPBG,staPVI);
    Float64 dy = elePVI - elePBG;
 
    *pVal = dy/dx;
@@ -298,7 +340,7 @@ STDMETHODIMP CVertCurve::get_ExitGrade(Float64 *pVal)
    m_PVI->get_Elevation(&elePVI);
    m_PFG->get_Elevation(&elePFG);
 
-   Float64 dx = staPFG - staPVI;
+   Float64 dx = cogoUtil::Distance(m_pProfile,staPVI,staPFG);
    Float64 dy = elePFG - elePVI;
 
    *pVal = dy/dx;
@@ -340,10 +382,8 @@ STDMETHODIMP CVertCurve::get_LowPoint(IProfilePoint **pVal)
    TransitionPoint(&staTrans,&elevTrans,&gTrans);
 
    // Low point on left curve
-   Float64 bvcValue;
-   staBVC->get_Value(&bvcValue);
-   Float64 transValue;
-   staTrans->get_Value(&transValue);
+   Float64 bvcValue = cogoUtil::GetNormalizedStationValue(m_pProfile,staBVC);
+   Float64 transValue = cogoUtil::GetNormalizedStationValue(m_pProfile,staTrans);
    Float64 xLeft = -g1*m_L1/(gTrans - g1) + bvcValue;
    Float64 yLeft;
    if ( bvcValue < xLeft && xLeft < transValue )
@@ -356,19 +396,18 @@ STDMETHODIMP CVertCurve::get_LowPoint(IProfilePoint **pVal)
       // low point is off the curve, check the ends
       if ( elevTrans < elevBVC )
       {
-         staTrans->get_Value(&xLeft);
+         xLeft = transValue;
          yLeft = elevTrans;
       }
       else
       {
-         staBVC->get_Value(&xLeft);
+         xLeft = bvcValue;
          yLeft = elevBVC;
       }
    }
 
    // Low point on right curve
-   Float64 evcValue;
-   staEVC->get_Value(&evcValue);
+   Float64 evcValue = cogoUtil::GetNormalizedStationValue(m_pProfile,staEVC);
    Float64 xRight = -gTrans*m_L2/(g2 - gTrans) + transValue;
    Float64 yRight;
    if ( transValue < xRight && xRight < evcValue )
@@ -381,12 +420,12 @@ STDMETHODIMP CVertCurve::get_LowPoint(IProfilePoint **pVal)
       // low point is off the curve, check the ends
       if ( elevTrans < elevEVC )
       {
-         staTrans->get_Value(&xRight);
+         xRight = transValue;;
          yRight = elevTrans;
       }
       else
       {
-         staEVC->get_Value(&xRight);
+         xRight = evcValue;
          yRight = elevEVC;
       }
    }
@@ -394,12 +433,16 @@ STDMETHODIMP CVertCurve::get_LowPoint(IProfilePoint **pVal)
    m_Factory->CreateProfilePoint(pVal);
    if ( yLeft < yRight )
    {
-      (*pVal)->put_Station(CComVariant(xLeft));
+      CComPtr<IStation> station;
+      cogoUtil::CreateStation(m_pProfile,xLeft,&station);
+      (*pVal)->put_Station(CComVariant(station));
       (*pVal)->put_Elevation(yLeft);
    }
    else
    {
-      (*pVal)->put_Station(CComVariant(xRight));
+      CComPtr<IStation> station;
+      cogoUtil::CreateStation(m_pProfile,xRight,&station);
+      (*pVal)->put_Station(CComVariant(station));
       (*pVal)->put_Elevation(yRight);
    }
 
@@ -441,10 +484,8 @@ STDMETHODIMP CVertCurve::get_HighPoint(IProfilePoint **pVal)
    TransitionPoint(&staTrans,&elevTrans,&gTrans);
 
    // High point on left curve
-   Float64 bvcValue;
-   staBVC->get_Value(&bvcValue);
-   Float64 transValue;
-   staTrans->get_Value(&transValue);
+   Float64 bvcValue = cogoUtil::GetNormalizedStationValue(m_pProfile,staBVC);
+   Float64 transValue = cogoUtil::GetNormalizedStationValue(m_pProfile,staTrans);
    Float64 xLeft = -g1*m_L1/(gTrans - g1) + bvcValue;
    Float64 yLeft;
    if ( bvcValue < xLeft && xLeft < transValue )
@@ -468,8 +509,7 @@ STDMETHODIMP CVertCurve::get_HighPoint(IProfilePoint **pVal)
    }
 
    // High point on right curve
-   Float64 evcValue;
-   staEVC->get_Value(&evcValue);
+   Float64 evcValue = cogoUtil::GetNormalizedStationValue(m_pProfile,staEVC);
    Float64 xRight = -gTrans*m_L2/(g2 - gTrans) + transValue;
    Float64 yRight;
    if ( transValue < xRight && xRight < evcValue )
@@ -480,7 +520,7 @@ STDMETHODIMP CVertCurve::get_HighPoint(IProfilePoint **pVal)
    else
    {
       // high point is off the curve, check the extreme ends
-      if ( elevTrans > elevEVC )
+      if ( elevEVC < elevTrans )
       {
          xRight = transValue;
          yRight = elevTrans;
@@ -495,12 +535,16 @@ STDMETHODIMP CVertCurve::get_HighPoint(IProfilePoint **pVal)
    m_Factory->CreateProfilePoint(pVal);
    if ( yRight <= yLeft )
    {
-      (*pVal)->put_Station(CComVariant(xLeft));
+      CComPtr<IStation> station;
+      cogoUtil::CreateStation(m_pProfile,xLeft,&station);
+      (*pVal)->put_Station(CComVariant(station));
       (*pVal)->put_Elevation(yLeft);
    }
    else
    {
-      (*pVal)->put_Station(CComVariant(xRight));
+      CComPtr<IStation> station;
+      cogoUtil::CreateStation(m_pProfile,xRight,&station);
+      (*pVal)->put_Station(CComVariant(station));
       (*pVal)->put_Elevation(yRight);
    }
 
@@ -513,7 +557,7 @@ STDMETHODIMP CVertCurve::Elevation(VARIANT varStation, Float64 *elev)
    CHECK_CURVE;
 
    CComPtr<IStation> sta;
-   HRESULT hr = cogoUtil::StationFromVariant(varStation,&sta);
+   HRESULT hr = ValidateStation(varStation,&sta);
    if ( FAILED(hr) )
       return hr;
 
@@ -524,6 +568,7 @@ STDMETHODIMP CVertCurve::Elevation(VARIANT varStation, Float64 *elev)
    Float64 elevBVC;
    bvc->get_Station(&staBVC);
    bvc->get_Elevation(&elevBVC);
+   Float64 bvcValue = cogoUtil::GetNormalizedStationValue(m_pProfile,staBVC);
 
    CComPtr<IProfilePoint> evc;
    get_EVC(&evc);
@@ -532,21 +577,24 @@ STDMETHODIMP CVertCurve::Elevation(VARIANT varStation, Float64 *elev)
    Float64 elevEVC;
    evc->get_Station(&staEVC);
    evc->get_Elevation(&elevEVC);
+   Float64 evcValue = cogoUtil::GetNormalizedStationValue(m_pProfile,staEVC);
+
+   Float64 staValue = cogoUtil::GetNormalizedStationValue(m_pProfile,sta);
 
    Float64 g1, g2;
    get_EntryGrade(&g1);
    get_ExitGrade(&g2);
 
 
-   if ( sta < staBVC )
+   if ( staValue < bvcValue )
    {
       // Before curve
-      *elev = elevBVC - g1*(staBVC - sta);
+      *elev = elevBVC - g1*(bvcValue - staValue);
    }
-   else if ( staEVC < sta )
+   else if ( evcValue < staValue )
    {
       // After curve
-      *elev = elevEVC + g2*(sta - staEVC);
+      *elev = elevEVC + g2*(staValue - evcValue);
    }
    else
    {
@@ -554,29 +602,38 @@ STDMETHODIMP CVertCurve::Elevation(VARIANT varStation, Float64 *elev)
       CComPtr<IStation> staTrans;
       Float64 elevTrans, gradeTrans; // transition point
       TransitionPoint(&staTrans,&elevTrans,&gradeTrans);
+      Float64 transValue = cogoUtil::GetNormalizedStationValue(m_pProfile,staTrans);
 
-      if ( sta < staTrans )
+      if ( staValue < transValue )
       {
          // station is left of PVI
-         Float64 x = sta - staBVC;
-         Float64 L = staTrans - staBVC;
+         Float64 x = staValue - bvcValue;
+         Float64 L = transValue - bvcValue;
          Float64 y;
          if ( IsZero(L) )
+         {
             y = elevBVC;
+         }
          else
+         {
             y = (gradeTrans-g1)*pow(x,2)/(2*L) + g1*x + elevBVC;
+         }
          *elev = y;
       }
       else
       {
          // station is right of PVI
-         Float64 x = sta - staTrans;
-         Float64 L = staEVC - staTrans;
+         Float64 x = staValue - transValue;
+         Float64 L = evcValue - transValue;
          Float64 y;
          if ( IsZero(L) )
+         {
             y = elevTrans;
+         }
          else
+         {
             y = (g2-gradeTrans)*pow(x,2)/(2*L) + gradeTrans*x + elevTrans;
+         }
 
          *elev = y;
       }
@@ -591,7 +648,7 @@ STDMETHODIMP CVertCurve::Grade(VARIANT varStation, Float64 *grade)
    CHECK_CURVE;
 
    CComPtr<IStation> sta;
-   HRESULT hr = cogoUtil::StationFromVariant(varStation,&sta);
+   HRESULT hr = ValidateStation(varStation,&sta);
    if ( FAILED(hr) )
       return hr;
 
@@ -616,12 +673,12 @@ STDMETHODIMP CVertCurve::Grade(VARIANT varStation, Float64 *grade)
    get_ExitGrade(&g2);
 
 
-   if ( sta < staBVC )
+   if ( 0 < cogoUtil::Compare(m_pProfile,sta,staBVC) )
    {
       // Before curve
       *grade = g1;
    }
-   else if ( staEVC < sta )
+   else if ( 0 < cogoUtil::Compare(m_pProfile,staEVC,sta) )
    {
       // After curve
       *grade = g2;
@@ -633,19 +690,19 @@ STDMETHODIMP CVertCurve::Grade(VARIANT varStation, Float64 *grade)
       Float64 elevTrans, gradeTrans; // transition point
       TransitionPoint(&staTrans,&elevTrans,&gradeTrans);
 
-      if ( sta < staTrans )
+      if ( 0 < cogoUtil::Compare(m_pProfile,sta,staTrans) )
       {
          // station is left of PVI
-         Float64 x = sta - staBVC;
-         Float64 L = staTrans - staBVC;
+         Float64 x = cogoUtil::Distance(m_pProfile,staBVC,sta);
+         Float64 L = cogoUtil::Distance(m_pProfile,staBVC,staTrans);
          Float64 g = (gradeTrans-g1)*x/L + g1;
          *grade = g;
       }
       else
       {
          // station is right of PVI
-         Float64 x = sta - staTrans;
-         Float64 L = staEVC - staTrans;
+         Float64 x = cogoUtil::Distance(m_pProfile,staTrans,sta);
+         Float64 L = cogoUtil::Distance(m_pProfile,staTrans,staEVC);
          Float64 g = (g2-gradeTrans)*x/L + gradeTrans;
          *grade = g;
       }
@@ -776,8 +833,9 @@ STDMETHODIMP CVertCurve::Clone(IVertCurve* *clone)
    (*clone)->put_L1(m_L1);
    (*clone)->put_L2(m_L2);
 
-   // Factory isn't cloned
+   // These items aren't cloned
    (*clone)->putref_ProfilePointFactory(m_Factory);
+   (*clone)->putref_Profile(m_pProfile);
 
    return S_OK;
 }
@@ -827,8 +885,6 @@ STDMETHODIMP CVertCurve::Load(IStructuredLoad2* pLoad)
    CComPtr<IProfilePointFactory> factory;
    _CopyVariantToInterface<IProfilePointFactory>::copy(&factory,&var);
    putref_ProfilePointFactory(factory);
-   
-
 
    VARIANT_BOOL bEnd;
    pLoad->EndUnit(&bEnd);
@@ -871,7 +927,11 @@ HRESULT CVertCurve::IsValid()
    m_PVI->get_Station(&staPVI);
    m_PFG->get_Station(&staPFG);
 
-   if ( staPBG < staPVI && staPVI < staPFG )
+   Float64 pbg = cogoUtil::GetNormalizedStationValue(m_pProfile,staPBG);
+   Float64 pvi = cogoUtil::GetNormalizedStationValue(m_pProfile,staPVI);
+   Float64 pfg = cogoUtil::GetNormalizedStationValue(m_pProfile,staPFG);
+
+   if ( pbg < pvi && pvi < pfg )
       return S_OK;
 
    return Error(IDS_E_VERTCURVEPOINTS,IID_IVertCurve,COGO_E_VERTCURVEPOINTS);
@@ -919,4 +979,29 @@ void CVertCurve::TransitionPoint(IStation** sta,Float64* elev,Float64* grade)
       *grade = g1;
    else
       *grade = (*elev - elevPVI1)*2/m_L1;
+}
+
+HRESULT CVertCurve::ValidateStation(IProfilePoint* profilePoint)
+{
+   CComPtr<IStation> station;
+   profilePoint->get_Station(&station);
+   CComPtr<IStation> sta;
+   return ValidateStation(CComVariant(station),&sta);
+}
+
+HRESULT CVertCurve::ValidateStation(VARIANT varStation,IStation** station)
+{
+   HRESULT hr = cogoUtil::StationFromVariant(varStation,false,station);
+   if ( FAILED(hr) )
+      return hr;
+
+   if ( m_pProfile == NULL )
+   {
+      ZoneIndexType staEqnZoneIdx;
+      (*station)->get_StationZoneIndex(&staEqnZoneIdx);
+      if ( staEqnZoneIdx != INVALID_INDEX )
+         return E_INVALIDARG; // station must be normalized
+   }
+
+   return S_OK;
 }

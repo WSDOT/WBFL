@@ -36,7 +36,7 @@
 
 class ATL_NO_VTABLE CTestAlignment :
    public CComObjectRootEx<CComSingleThreadModel>,
-   public IPathEvents
+   public IAlignmentEvents
 {
 public:
    CTestAlignment();
@@ -47,13 +47,14 @@ public:
    bool PassedEventTest() { return m_bTestState; }
 
 BEGIN_COM_MAP(CTestAlignment)
-   COM_INTERFACE_ENTRY(IPathEvents)
+   COM_INTERFACE_ENTRY(IAlignmentEvents)
 END_COM_MAP()
 
-// IPathEvents
+// IAlignmentEvents
 public:
-	STDMETHOD(OnPathChanged)(IPath* pp);
+	STDMETHOD(OnAlignmentChanged)(IAlignment* alignment);
 	STDMETHOD(OnProfileChanged)(IProfile* profile);
+   STDMETHOD(OnStationEquationsChanged)(IStationEquationCollection* equations);
 
 private:
    bool m_bTestState;

@@ -29,7 +29,6 @@
 #include "CrossSectionCollection.h"
 #include "CrossSectionFactory.h"
 #include "CogoHelpers.h"
-#include <MathEx.h>
 
 #include <algorithm>
 
@@ -42,6 +41,7 @@ static char THIS_FILE[] = __FILE__;
 class SortCrossSections
 {
 public:
+   SortCrossSections(IProfile* pProfile) { m_pProfile = pProfile; }
    bool operator()(CSType& pX,CSType& pY)
    {
       CComVariant& varX = pX.second;
@@ -53,9 +53,10 @@ public:
 
       csX->get_Station(&staX);
       csY->get_Station(&staY);
-
-      return staX < staY;
+      return 0 < cogoUtil::Compare(m_pProfile,staX,staY);
    }
+private:
+   IProfile* m_pProfile; // weak reference
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -73,6 +74,24 @@ HRESULT CCrossSectionCollection::FinalConstruct()
 void CCrossSectionCollection::FinalRelease()
 {
    UnadviseAll();
+}
+
+void CCrossSectionCollection::PutProfile(IProfile* pProfile)
+{
+   m_pProfile = pProfile;
+
+   m_Factory->putref_Profile(m_pProfile);
+
+   CComPtr<IEnumCrossSections> enumSections;
+   get__EnumCrossSections(&enumSections);
+
+   CComPtr<ICrossSection> cs;
+   while ( enumSections->Next(1,&cs,NULL) != S_FALSE )
+   {
+      CComPtr<ICrossSection> csClone;
+      cs->putref_Profile(m_pProfile);
+      cs.Release();
+   };
 }
 
 STDMETHODIMP CCrossSectionCollection::InterfaceSupportsErrorInfo(REFIID riid)
@@ -114,9 +133,14 @@ STDMETHODIMP CCrossSectionCollection::putref_Item(CollectionIndexType idx,ICross
    if ( !IsValidIndex(idx,m_coll) )
       return E_INVALIDARG;
 
+   HRESULT hr = ValidateStation(pVal);
+   if ( FAILED(hr) )
+      return hr;
+
    // Get the item
    CSType& cst = m_coll[idx];
    CComVariant& var = cst.second; // Variant holding IDispatch to CrossSection
+   pVal->putref_Profile(m_pProfile);
 
    UnadviseElement(idx); // Unadvise from the current element
 
@@ -145,10 +169,17 @@ STDMETHODIMP CCrossSectionCollection::AddEx(ICrossSection* csect)
 {
    CHECK_IN(csect);
 
+   HRESULT hr = ValidateStation(csect);
+   if ( FAILED(hr) )
+      return hr;
+
+   csect->putref_Profile(m_pProfile);
+
    DWORD dwCookie;
    AdviseElement(csect,&dwCookie);
    m_coll.push_back( std::make_pair(dwCookie,CComVariant(csect)));
-   std::sort(m_coll.begin(),m_coll.end(),SortCrossSections());
+
+   std::sort(m_coll.begin(),m_coll.end(),SortCrossSections(m_pProfile));
 
    Fire_OnCrossSectionAdded(csect);
    return S_OK;
@@ -161,9 +192,15 @@ STDMETHODIMP CCrossSectionCollection::Add(VARIANT varStation, Float64 cpo, Float
       CHECK_RETOBJ(cs);
    }
 
+   CComPtr<IStation> station;
+   HRESULT hr = ValidateStation(varStation,true,&station); // if varStation contains an IStation object, we want to store a copy of it (so pass true for cloning)
+   if ( FAILED(hr) )
+      return hr;
+
    CComPtr<ICrossSection> newCS;
    m_Factory->CreateCrossSection(&newCS);
-   HRESULT hr = newCS->put_Station(varStation);
+
+   hr = newCS->put_Station(CComVariant(station));
    if ( FAILED(hr) )
       return hr;
 
@@ -247,6 +284,78 @@ STDMETHODIMP CCrossSectionCollection::RightCrownSlope(VARIANT varStation, Float6
    return S_OK;
 }
 
+STDMETHODIMP CCrossSectionCollection::GetCrossSectionData(VARIANT varStation,Float64* pCPO,Float64* pLeft,Float64* pRight)
+{
+   CComPtr<IStation> station;
+   HRESULT hr = ValidateStation(varStation,false,&station);
+
+   if ( m_coll.size() == 0 )
+   {
+      *pCPO   = 0.0;
+      *pLeft  = 0.0;
+      *pRight = 0.0;
+      return S_OK;
+   }
+
+   // See out first cross section after "station"
+   CComPtr<IStation> nextStation;
+   CComPtr<ICrossSection> csNext;
+   CrossSections::iterator iter = m_coll.begin();
+   do
+   {
+      CSType& type = *iter++;
+      CComVariant& var = type.second;
+      csNext.Release();
+      var.pdispVal->QueryInterface(&csNext);
+
+      nextStation.Release();
+      csNext->get_Station(&nextStation);
+   } while ( 0 < cogoUtil::Compare(m_pProfile,nextStation,station) && iter < m_coll.end() );
+
+   if ( iter == m_coll.begin()+1 || iter == m_coll.end() && 0 < cogoUtil::Compare(m_pProfile,nextStation,station) )
+   {
+      // Station occurs before first or after the last defined cross section
+      // Simply grab the data from that cross section
+      csNext->get_CrownPointOffset(pCPO);
+      csNext->get_LeftCrownSlope(pLeft);
+      csNext->get_RightCrownSlope(pRight);
+      return S_OK;
+   }
+
+   // If we get this far, there must be at least 2 cross sections defined
+   ATLASSERT(2 <= m_coll.size());
+
+   // Get the previous cross section
+   iter--;
+   iter--;
+   CSType& typePrev = *iter;
+   CComVariant& varPrev = typePrev.second;
+   CComQIPtr<ICrossSection> csPrev(varPrev.pdispVal);
+   CComPtr<IStation> prevStation;
+   csPrev->get_Station(&prevStation);
+
+   Float64 prevLeft, prevRight, prevCPO;
+   Float64 nextLeft, nextRight, nextCPO;
+
+   csNext->get_LeftCrownSlope(&nextLeft);
+   csNext->get_RightCrownSlope(&nextRight);
+   csNext->get_CrownPointOffset(&nextCPO);
+
+   csPrev->get_LeftCrownSlope(&prevLeft);
+   csPrev->get_RightCrownSlope(&prevRight);
+   csPrev->get_CrownPointOffset(&prevCPO);
+
+   // Lineraly interpolate the cross section parameters
+   Float64 a     = cogoUtil::Distance(m_pProfile,prevStation,station);
+   Float64 range = cogoUtil::Distance(m_pProfile,prevStation,nextStation);
+
+   *pLeft  = LinInterp(a, prevLeft,  nextLeft,  range);
+   *pRight = LinInterp(a, prevRight, nextRight, range);
+   *pCPO   = LinInterp(a, prevCPO,   nextCPO,   range);
+
+   return S_OK;
+}
+
 STDMETHODIMP CCrossSectionCollection::CreateCrossSection(VARIANT varStation, ICrossSection* *objCS)
 {
    CHECK_RETOBJ(objCS);
@@ -288,6 +397,7 @@ STDMETHODIMP CCrossSectionCollection::Clone(ICrossSectionCollection* *clone)
    (*clone)->AddRef();
 
    pClone->PutProfile(m_pProfile);
+   (*clone)->putref_Factory(m_Factory);
 
    CComPtr<IEnumCrossSections> enumSections;
    get__EnumCrossSections(&enumSections);
@@ -303,7 +413,6 @@ STDMETHODIMP CCrossSectionCollection::Clone(ICrossSectionCollection* *clone)
       cs.Release();
    };
 
-   (*clone)->putref_Factory(m_Factory);
 
    return S_OK;
 }
@@ -327,7 +436,7 @@ STDMETHODIMP CCrossSectionCollection::OnCrossSectionMoved(ICrossSection * csect)
 {
    // Re-sort the collection
    m_CrownPointPath.Release();
-   std::sort(m_coll.begin(),m_coll.end(),SortCrossSections());
+   std::sort(m_coll.begin(),m_coll.end(),SortCrossSections(m_pProfile));
    Fire_OnCrossSectionChanged(csect);
    return S_OK;
 }
@@ -390,6 +499,7 @@ STDMETHODIMP CCrossSectionCollection::putref_Factory(ICrossSectionFactory* facto
 {
    CHECK_IN(factory);
    m_Factory = factory;
+   m_Factory->putref_Profile(m_pProfile);
    return S_OK;
 }
 
@@ -443,77 +553,6 @@ STDMETHODIMP CCrossSectionCollection::Load(IStructuredLoad2* pLoad)
 
 //////////////////////////////////////////
 // Helper methods
-HRESULT CCrossSectionCollection::GetCrossSectionData(VARIANT varStation,Float64* pCPO,Float64* pLeft,Float64* pRight)
-{
-   if ( m_coll.size() == 0 )
-   {
-      *pCPO   = 0.0;
-      *pLeft  = 0.0;
-      *pRight = 0.0;
-      return S_OK;
-   }
-
-   CComPtr<IStation> station;
-   HRESULT hr = cogoUtil::StationFromVariant(varStation,&station);
-
-   // See out first cross section after "station"
-   CComPtr<IStation> nextStation;
-   CComPtr<ICrossSection> csNext;
-   CrossSections::iterator iter = m_coll.begin();
-   do
-   {
-      CSType& type = *iter++;
-      CComVariant& var = type.second;
-      csNext.Release();
-      var.pdispVal->QueryInterface(&csNext);
-
-      nextStation.Release();
-      csNext->get_Station(&nextStation);
-   } while ( nextStation < station && iter < m_coll.end() );
-
-   if ( iter == m_coll.begin()+1 || iter == m_coll.end() && nextStation < station )
-   {
-      // Station occurs before first or after the last defined cross section
-      // Simply grab the data from that cross section
-      csNext->get_CrownPointOffset(pCPO);
-      csNext->get_LeftCrownSlope(pLeft);
-      csNext->get_RightCrownSlope(pRight);
-      return S_OK;
-   }
-
-   // If we get this far, there must be at least 2 cross sections defined
-   ATLASSERT(m_coll.size() >= 2);
-
-   // Get the previous cross section
-   iter--;
-   iter--;
-   CSType& typePrev = *iter;
-   CComVariant& varPrev = typePrev.second;
-   CComQIPtr<ICrossSection> csPrev(varPrev.pdispVal);
-   CComPtr<IStation> prevStation;
-   csPrev->get_Station(&prevStation);
-
-   Float64 prevLeft, prevRight, prevCPO;
-   Float64 nextLeft, nextRight, nextCPO;
-
-   csNext->get_LeftCrownSlope(&nextLeft);
-   csNext->get_RightCrownSlope(&nextRight);
-   csNext->get_CrownPointOffset(&nextCPO);
-
-   csPrev->get_LeftCrownSlope(&prevLeft);
-   csPrev->get_RightCrownSlope(&prevRight);
-   csPrev->get_CrownPointOffset(&prevCPO);
-
-   // Lineraly interpolate the cross section parameters
-   Float64 a = station - prevStation;
-   Float64 range = nextStation - prevStation;
-
-   *pLeft  = LinInterp(a, prevLeft,  nextLeft,  range);
-   *pRight = LinInterp(a, prevRight, nextRight, range);
-   *pCPO   = LinInterp(a, prevCPO,   nextCPO,   range);
-
-   return S_OK;
-}
 
 void CCrossSectionCollection::AdviseElement(ICrossSection* cs,DWORD* pdwCookie)
 {
@@ -580,9 +619,8 @@ HRESULT CCrossSectionCollection::UpdateCrownPointPath()
 {
    ATLASSERT(m_CrownPointPath == NULL);
 
-   CComPtr<IPath> alignment_path;
-   m_pProfile->get_Path(&alignment_path);
-   CComQIPtr<IAlignment> alignment(alignment_path);
+   CComPtr<IAlignment> alignment;
+   m_pProfile->get_Alignment(&alignment);
    if ( alignment == NULL )
       return E_FAIL; // need to be conncted to an alignment
 
@@ -614,6 +652,31 @@ HRESULT CCrossSectionCollection::UpdateCrownPointPath()
       CComPtr<IPoint2d> point;
       alignment->LocatePoint(CComVariant(station),omtAlongDirection,cpo,CComVariant(normal),&point);
       m_CrownPointPath->AddEx(point);
+   }
+
+   return S_OK;
+}
+
+HRESULT CCrossSectionCollection::ValidateStation(ICrossSection* csect)
+{
+   CComPtr<IStation> station;
+   csect->get_Station(&station);
+   CComPtr<IStation> sta;
+   return ValidateStation(CComVariant(station),false,&sta);
+}
+
+HRESULT CCrossSectionCollection::ValidateStation(VARIANT varStation,bool bClone,IStation** station)
+{
+   HRESULT hr = cogoUtil::StationFromVariant(varStation,bClone,station);
+   if ( FAILED(hr) )
+      return hr;
+
+   if ( m_pProfile == NULL )
+   {
+      ZoneIndexType staEqnZoneIdx;
+      (*station)->get_StationZoneIndex(&staEqnZoneIdx);
+      if ( staEqnZoneIdx != INVALID_INDEX )
+         return E_INVALIDARG; // station must be normalized
    }
 
    return S_OK;

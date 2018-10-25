@@ -34,7 +34,7 @@
 #include "COGOCP.h"
 
 class CPathCollection;
-typedef PersistentKeyedCollection<CPathCollection,IPathCollection,&IID_IPathCollection,CogoObjectID,IPath> PathCollectionImpl;
+typedef PersistentIDCollection<CPathCollection,IPathCollection,&IID_IPathCollection,CogoObjectID,IPath> PathCollectionImpl;
 
 /////////////////////////////////////////////////////////////////////////////
 // CPathCollection
@@ -87,42 +87,37 @@ public:
 	STDMETHOD(get_Factory)(/*[out,retval]*/IPathFactory** factory);
 	STDMETHOD(putref_Factory)(/*[in]*/IPathFactory* factory);
 //   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-   STDMETHOD(get_Item)(/*[in]*/ CogoObjectID key, /*[out, retval]*/ IPath* *pVal);
-   STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID key, /*[in]*/ IPath* pVal);
+   STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ IPath* *pVal);
+   STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ IPath* pVal);
    STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-   STDMETHOD(AddEx)(/*[in]*/ CogoObjectID key,/*[in]*/ IPath* newVal);
-   STDMETHOD(Add)(/*[in]*/ CogoObjectID key,/*[out,retval]*/ IPath* *Path);
-   STDMETHOD(Remove)(/*[in]*/ CogoObjectID key);
+   STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ IPath* newVal);
+   STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[out,retval]*/ IPath* *Path);
+   STDMETHOD(Remove)(/*[in]*/ CogoObjectID id);
    STDMETHOD(Clear)();
-   STDMETHOD(FindKey)(/*[in]*/ IPath* Path,/*[out,retval]*/CogoObjectID* key);
-   STDMETHOD(get__EnumKeys)(/*[out,retval]*/ IEnumKeys** ppenum);
+   STDMETHOD(FindID)(/*[in]*/ IPath* Path,/*[out,retval]*/CogoObjectID* ID);
+   STDMETHOD(get__EnumIDs)(/*[out,retval]*/ IEnumIDs** ppenum);
 //	STDMETHOD(get_Factory)(/*[out,retval]*/IPoint2dFactory** factory);
 //	STDMETHOD(putref_Factory)(/*[in]*/IPoint2dFactory* factory);
-   STDMETHOD(Key)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* key);
+   STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID);
 
 // IPathEvents
 	STDMETHOD(OnPathChanged)(IPath * Path)
 	{
-      CogoObjectID key;
-      FindKey(Path,&key);
-      Fire_OnPathChanged(this,key,Path);
-		return S_OK;
-	}
-	STDMETHOD(OnProfileChanged)(IProfile * profile)
-	{
-      Fire_OnProfileChanged(this,profile);
+      CogoObjectID id;
+      FindID(Path,&id);
+      Fire_OnPathChanged(this,id,Path);
 		return S_OK;
 	}
 
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
-   HRESULT PathNotFound(CogoObjectID key);
-   HRESULT PathAlreadyDefined(CogoObjectID key);
-   HRESULT PathKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes);
+   HRESULT PathNotFound(CogoObjectID id);
+   HRESULT PathAlreadyDefined(CogoObjectID id);
+   HRESULT PathIDError(CogoObjectID id,UINT nHelpString,HRESULT hRes);
 
-   void Advise(CogoObjectID key,IPath* Path);
-   void Unadvise(CogoObjectID key,IPath* Path);
+   void Advise(CogoObjectID id,IPath* Path);
+   void Unadvise(CogoObjectID id,IPath* Path);
    void UnadviseAll();
    std::map<CogoObjectID,DWORD> m_Cookies;
 

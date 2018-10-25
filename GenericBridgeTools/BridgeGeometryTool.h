@@ -68,6 +68,9 @@ private:
    CComPtr<ILineSegment2d> m_LineSegment2;
    CComPtr<IGeomUtil2d> m_GeomUtil;
 
+   HRESULT GetDeckEdgePath(IGenericBridge* bridge,DirectionType side,IPath** ppPath);
+
+
 // ISupportsErrorInfo
 public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);

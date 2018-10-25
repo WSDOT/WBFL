@@ -55,6 +55,7 @@ class ATL_NO_VTABLE CCogoModel :
    public IVertCurveCollectionEvents,
    public IHorzCurveCollectionEvents,
    public IPathCollectionEvents,
+   public IAlignmentCollectionEvents,
    public CProxyDCogoModelEvents< CCogoModel >,
    public IPersistImpl<CCogoModel>
 {
@@ -66,7 +67,7 @@ public:
    HRESULT FinalConstruct();
    void FinalRelease();
 
-   HRESULT PutRef_Alignments(IPathCollection* alignments);
+   HRESULT PutRef_Alignments(IAlignmentCollection* alignments);
    HRESULT PutRef_Paths(IPathCollection* paths);
    HRESULT PutRef_HorzCurves(IHorzCurveCollection* horzCurves);
    HRESULT PutRef_Lines(ILineSegmentCollection* lines);
@@ -89,16 +90,12 @@ BEGIN_COM_MAP(CCogoModel)
    COM_INTERFACE_ENTRY(IStructuredStorage2)
 
    COM_INTERFACE_ENTRY(IPointCollectionEvents)
-
    COM_INTERFACE_ENTRY(ILineSegmentCollectionEvents)
-
    COM_INTERFACE_ENTRY(IProfilePointCollectionEvents)
-
    COM_INTERFACE_ENTRY(IVertCurveCollectionEvents)
-
    COM_INTERFACE_ENTRY(IHorzCurveCollectionEvents)
-
    COM_INTERFACE_ENTRY(IPathCollectionEvents)
+   COM_INTERFACE_ENTRY(IAlignmentCollectionEvents)
 
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
 	COM_INTERFACE_ENTRY(IConnectionPointContainer)
@@ -127,8 +124,8 @@ public:
 	STDMETHOD(get_VertCurveFactory)(/*[out,retval]*/IVertCurveFactory** factory);
 	STDMETHOD(putref_HorzCurveFactory)(/*[in]*/IHorzCurveFactory* factory);
 	STDMETHOD(get_HorzCurveFactory)(/*[out,retval]*/IHorzCurveFactory** factory);
-	STDMETHOD(putref_AlignmentFactory)(/*[in]*/IPathFactory* factory);
-	STDMETHOD(get_AlignmentFactory)(/*[out,retval]*/IPathFactory** factory);
+	STDMETHOD(putref_AlignmentFactory)(/*[in]*/IAlignmentFactory* factory);
+	STDMETHOD(get_AlignmentFactory)(/*[out,retval]*/IAlignmentFactory** factory);
 	STDMETHOD(putref_PathFactory)(/*[in]*/IPathFactory* factory);
 	STDMETHOD(get_PathFactory)(/*[out,retval]*/IPathFactory** factory);
 	STDMETHOD(putref_PointFactory)(/*[in]*/IPoint2dFactory* factory);
@@ -142,7 +139,7 @@ public:
 	STDMETHOD(get_Locate)(/*[out, retval]*/ ILocate* *pVal);
 	STDMETHOD(get_Intersect)(/*[out, retval]*/ IIntersect* *pVal);
 	STDMETHOD(Clear)();
-	STDMETHOD(get_Alignments)(/*[out,retval]*/ IPathCollection* *pVal);
+	STDMETHOD(get_Alignments)(/*[out,retval]*/ IAlignmentCollection* *pVal);
    STDMETHOD(get_Paths)(/*[out,retval]*/ IPathCollection* *pVal);
    STDMETHOD(get_VertCurves)(/*[out, retval]*/ IVertCurveCollection* *pVal);
    STDMETHOD(get_HorzCurves)(/*[out, retval]*/ IHorzCurveCollection* *pVal);
@@ -153,7 +150,7 @@ public:
 // IMeasure
 public:
   	STDMETHOD(Angle)(/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID vertexID,/*[in]*/ CogoObjectID toID,/*[out,retval]*/ IAngle** angle);
-	STDMETHOD(Area)(/*[in]*/ VARIANT keys,/*[out,retval]*/ Float64* area);
+	STDMETHOD(Area)(/*[in]*/ VARIANT IDs,/*[out,retval]*/ Float64* area);
 	STDMETHOD(Distance)(/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID toID,/*[out,retval]*/ Float64* dist);
 	STDMETHOD(Direction)(/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID toID,/*[out,retval]*/ IDirection** dir);
    STDMETHOD(Inverse)(/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID toID,/*[out]*/ Float64* dist,/*[out]*/ IDirection** dir);
@@ -204,46 +201,54 @@ public:
 
 // IPointCollectionEvents
 public:
-   STDMETHOD(OnPointChanged)(/*[in]*/ CogoObjectID key,/*[in]*/ IPoint2d* point);
-   STDMETHOD(OnPointAdded)(/*[in]*/ CogoObjectID key,/*[in]*/ IPoint2d* point);
-   STDMETHOD(OnPointRemoved)(/*[in]*/ CogoObjectID key);
+   STDMETHOD(OnPointChanged)(/*[in]*/ CogoObjectID id,/*[in]*/ IPoint2d* point);
+   STDMETHOD(OnPointAdded)(/*[in]*/ CogoObjectID id,/*[in]*/ IPoint2d* point);
+   STDMETHOD(OnPointRemoved)(/*[in]*/ CogoObjectID id);
    STDMETHOD(OnPointsCleared)();
 
 // ILineSegmentCollectionEvents
 public:
-   STDMETHOD(OnLineSegmentChanged)(/*[in]*/ CogoObjectID key,/*[in]*/ ILineSegment2d* lineSeg);
-   STDMETHOD(OnLineSegmentAdded)(/*[in]*/ CogoObjectID key,/*[in]*/ ILineSegment2d* lineSeg);
-   STDMETHOD(OnLineSegmentRemoved)(/*[in]*/ CogoObjectID key);
+   STDMETHOD(OnLineSegmentChanged)(/*[in]*/ CogoObjectID id,/*[in]*/ ILineSegment2d* lineSeg);
+   STDMETHOD(OnLineSegmentAdded)(/*[in]*/ CogoObjectID id,/*[in]*/ ILineSegment2d* lineSeg);
+   STDMETHOD(OnLineSegmentRemoved)(/*[in]*/ CogoObjectID id);
    STDMETHOD(OnLineSegmentsCleared)();
 
 // IProfilePointCollectionEvents
 public:
-   STDMETHOD(OnProfilePointChanged)(/*[in]*/ CogoObjectID key,/*[in]*/ IProfilePoint* pp);
-   STDMETHOD(OnProfilePointAdded)(/*[in]*/ CogoObjectID key,/*[in]*/ IProfilePoint* pp);
-   STDMETHOD(OnProfilePointRemoved)(/*[in]*/ CogoObjectID key);
+   STDMETHOD(OnProfilePointChanged)(/*[in]*/ CogoObjectID id,/*[in]*/ IProfilePoint* pp);
+   STDMETHOD(OnProfilePointAdded)(/*[in]*/ CogoObjectID id,/*[in]*/ IProfilePoint* pp);
+   STDMETHOD(OnProfilePointRemoved)(/*[in]*/ CogoObjectID id);
    STDMETHOD(OnProfilePointsCleared)();
 
 // IVertCurveCollectionEvents
 public:
-   STDMETHOD(OnVertCurveChanged)(/*[in]*/ CogoObjectID key,/*[in]*/ IVertCurve* vc);
-   STDMETHOD(OnVertCurveAdded)(/*[in]*/ CogoObjectID key,/*[in]*/ IVertCurve* vc);
-   STDMETHOD(OnVertCurveRemoved)(/*[in]*/ CogoObjectID key);
+   STDMETHOD(OnVertCurveChanged)(/*[in]*/ CogoObjectID id,/*[in]*/ IVertCurve* vc);
+   STDMETHOD(OnVertCurveAdded)(/*[in]*/ CogoObjectID id,/*[in]*/ IVertCurve* vc);
+   STDMETHOD(OnVertCurveRemoved)(/*[in]*/ CogoObjectID id);
    STDMETHOD(OnVertCurvesCleared)();
 
 // IHorzCurveCollectionEvents
 public:
-   STDMETHOD(OnHorzCurveChanged)(/*[in]*/ CogoObjectID key,/*[in]*/ IHorzCurve* hc);
-   STDMETHOD(OnHorzCurveAdded)(/*[in]*/ CogoObjectID key,/*[in]*/ IHorzCurve* hc);
-   STDMETHOD(OnHorzCurveRemoved)(/*[in]*/ CogoObjectID key);
+   STDMETHOD(OnHorzCurveChanged)(/*[in]*/ CogoObjectID id,/*[in]*/ IHorzCurve* hc);
+   STDMETHOD(OnHorzCurveAdded)(/*[in]*/ CogoObjectID id,/*[in]*/ IHorzCurve* hc);
+   STDMETHOD(OnHorzCurveRemoved)(/*[in]*/ CogoObjectID id);
    STDMETHOD(OnHorzCurvesCleared)();
 
 // IPathCollectionEvents
 public:
-   STDMETHOD(OnPathChanged)(/*[in]*/IPathCollection* coll,/*[in]*/CogoObjectID key, /*[in]*/IPath* path);
-   STDMETHOD(OnProfileChanged)(/*[in]*/IPathCollection* coll,/*[in]*/ IProfile* profile);
-   STDMETHOD(OnPathAdded)(/*[in]*/IPathCollection* coll,/*[in]*/ CogoObjectID key,/*[in]*/ IPath* path);
-   STDMETHOD(OnPathRemoved)(/*[in]*/IPathCollection* coll,/*[in]*/ CogoObjectID key);
+   STDMETHOD(OnPathChanged)(/*[in]*/IPathCollection* coll,/*[in]*/CogoObjectID id, /*[in]*/IPath* path);
+   STDMETHOD(OnPathAdded)(/*[in]*/IPathCollection* coll,/*[in]*/ CogoObjectID id,/*[in]*/ IPath* path);
+   STDMETHOD(OnPathRemoved)(/*[in]*/IPathCollection* coll,/*[in]*/ CogoObjectID id);
    STDMETHOD(OnPathsCleared)(/*[in]*/IPathCollection* coll);
+
+// IAlignmentCollectionEvents
+public:
+   STDMETHOD(OnAlignmentChanged)(/*[in]*/IAlignmentCollection* coll,/*[in]*/CogoObjectID id, /*[in]*/IAlignment* Alignment);
+   STDMETHOD(OnProfileChanged)(/*[in]*/IAlignmentCollection* coll,/*[in]*/ IProfile* profile);
+   STDMETHOD(OnAlignmentAdded)(/*[in]*/IAlignmentCollection* coll,/*[in]*/ CogoObjectID id,/*[in]*/ IAlignment* Alignment);
+   STDMETHOD(OnAlignmentRemoved)(/*[in]*/IAlignmentCollection* coll,/*[in]*/ CogoObjectID id);
+   STDMETHOD(OnAlignmentsCleared)(/*[in]*/IAlignmentCollection* coll);
+   STDMETHOD(OnStationEquationsChanged)(/*[in]*/IAlignmentCollection* coll,/*[in]*/IStationEquationCollection* equations);
 
 private:
    CComPtr<ICogoEngine> m_Engine;
@@ -263,7 +268,7 @@ private:
    CComPtr<IHorzCurveCollection> m_HorzCurves;
    DWORD m_dwHorzCurvesCookie;
 
-   CComPtr<IPathCollection> m_Alignments;
+   CComPtr<IAlignmentCollection> m_Alignments;
    DWORD m_dwAlignmentCookie;
 
    CComPtr<IPathCollection> m_Paths;

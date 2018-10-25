@@ -53,8 +53,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,0,0,3
- PRODUCTVERSION 4,0,0,3
+ FILEVERSION 4,0,0,4
+ PRODUCTVERSION 4,0,0,4
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -72,12 +72,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "WBFL COGO Module"
-            VALUE "FileVersion", "4.0.0.3"
+            VALUE "FileVersion", "4.0.0.4"
             VALUE "InternalName", "COGO"
             VALUE "LegalCopyright", "Copyright © 1999-2013, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "COGO.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "4.0.0.3"
+            VALUE "ProductVersion", "4.0.0.4"
         END
     END
     BLOCK "VarFileInfo"
@@ -108,6 +108,7 @@ IDR_CROSSSECTION        REGISTRY                "CrossSection.rgs"
 IDR_CROSSSECTIONCOLLECTION REGISTRY                "CrossSectionCollection.rgs"
 IDR_PATHELEMENT         REGISTRY                "PathElement.rgs"
 IDR_ALIGNMENT           REGISTRY                "Alignment.rgs"
+IDR_ALIGNMENTCOLLECTION REGISTRY                "AlignmentCollection.rgs"
 IDR_VERTCURVEFACTORY    REGISTRY                "VertCurveFactory.rgs"
 IDR_PROFILEPOINTFACTORY REGISTRY                "ProfilePointFactory.rgs"
 IDR_HORZCURVEFACTORY    REGISTRY                "HorzCurveFactory.rgs"
@@ -124,6 +125,17 @@ IDR_PATH                REGISTRY                "Path.rgs"
 IDR_PATHCOLLECTION      REGISTRY                "PathCollection.rgs"
 IDR_PATHFACTORY         REGISTRY                "PathFactory.rgs"
 IDR_CUBICSPLINE         REGISTRY                "CubicSpline.rgs"
+IDR_STATIONEQUATION     REGISTRY                "StationEquation.rgs"
+IDR_STATIONEQUATIONCOLLECTION REGISTRY                "StationEquationCollection.rgs"
+IDR_WIDENING            REGISTRY                "Widening.rgs"
+IDR_WIDENINGCOLLECTION  REGISTRY                "WideningCollection.rgs"
+IDR_SUPERELEVATION      REGISTRY                "Superelevation.rgs"
+IDR_SUPERELEVATIONCOLLECTION REGISTRY                "SuperelevationCollection.rgs"
+IDR_TEMPLATESEGMENT     REGISTRY                "TemplateSegment.rgs"
+IDR_SURFACETEMPLATE     REGISTRY                "SurfaceTemplate.rgs"
+IDR_SURFACETEMPLATECOLLECTION REGISTRY                "SurfaceTemplateCollection.rgs"
+IDR_SURFACE             REGISTRY                "Surface.rgs"
+IDR_SURFACECOLLECTION   REGISTRY                "SurfaceCollection.rgs"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -175,6 +187,26 @@ BEGIN
     IDS_E_CUBICSPLINEPOINTS "A spline must have at least two points"
     IDS_E_POINTINCIRCLE     "The point cannot be on or inside the circle"
     IDS_E_NOINTERSECTION    "The interection point was not found"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_E_ALIGNMENTNOTFOUND "Alignment %d was not found"
+    IDS_E_ALIGNMENTALREADYDEFINED "Alignment %d is already defined"
+    IDS_E_STATIONEQUATIONBACK 
+                            "Back station must be after the previous Ahead station"
+    IDS_E_STATIONEQUATIONAHEAD 
+                            "Ahead station must be before the previous Back station"
+    IDS_E_STATIONRANGEERROR "The station is not with the limits of the station equation zone"
+    IDS_E_SUPERTRANSITIONERROR 
+                            "The length of the parabolic transitions exceeds the length of the superelevation transition"
+    IDS_E_SURFACELAYOUTERROR 
+                            "The surface must be defined with at least two Surface Templates"
+    IDS_E_SURFACEDEFINITIONERROR 
+                            "The number of template segments must be the same in adjacent Surface Templates"
+    IDS_E_SURFACESLOPEMISMATCHERROR 
+                            "The slope type in adjacent segments are not compatible"
+    IDS_E_INVALIDRIDGEPOINT "The ridge point index is invalid."
 END
 
 #endif    // English (U.S.) resources

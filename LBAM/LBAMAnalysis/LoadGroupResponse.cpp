@@ -1958,7 +1958,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeForceInfluenceLine(PoiIDType poiID, BSTR
       else
       {
          // need to compute it
-         CacheInfluenceLines(poiID,stage,orientation);
+         hr = CacheInfluenceLines(poiID,stage,orientation);
 
          LGR_HANDLE_CANCEL_PROGRESS(); 
 
@@ -2005,7 +2005,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeDeflectionInfluenceLine(PoiIDType poiID,
       else
       {
          // need to compute it
-         CacheInfluenceLines(poiID,stage,roMember);
+         hr = CacheInfluenceLines(poiID,stage,roMember);
 
          LGR_HANDLE_CANCEL_PROGRESS(); 
 
@@ -2363,6 +2363,7 @@ STDMETHODIMP CLoadGroupResponse::GetSuperstructurePois(BSTR stage, IIDArray* *po
 
 STDMETHODIMP CLoadGroupResponse::GetPoiInfo(BSTR stage, PoiIDType poiID, MemberType* lbamMemberType, MemberIDType* memberID, Float64* memberLocation)
 {
+   HRESULT hr = S_OK;
    try
    {
       // first validate our models
@@ -2374,14 +2375,14 @@ STDMETHODIMP CLoadGroupResponse::GetPoiInfo(BSTR stage, PoiIDType poiID, MemberT
       // get fem model for this stage
       CAnalysisModel& rfemModel = *(m_Models[stg_idx]);
 
-      rfemModel.GetPoiInfo(poiID, lbamMemberType, memberID, memberLocation);
+      hr = rfemModel.GetPoiInfo(poiID, lbamMemberType, memberID, memberLocation);
    }
    catch(...)
    {
       return DealWithMyExceptions();
    }
 
-   return S_OK;
+   return hr;
 }
 
 ///////////////////////////////////////////////////////////////
@@ -2505,10 +2506,9 @@ STDMETHODIMP CLoadGroupResponse::GetSupportDistributionFactor(SupportIDType supp
    return S_OK;
 }
 
-
-
-void CLoadGroupResponse::CacheInfluenceLines(PoiIDType poiID, BSTR stage,ResultsOrientation orientation)
+HRESULT CLoadGroupResponse::CacheInfluenceLines(PoiIDType poiID, BSTR stage,ResultsOrientation orientation)
 {
+   HRESULT hr = S_OK;
    try
    {
       StageIndexType stg_idx = m_AnalysisController.CheckedStageOrder(stage);
@@ -2536,6 +2536,8 @@ void CLoadGroupResponse::CacheInfluenceLines(PoiIDType poiID, BSTR stage,Results
    }
    catch(...)
    {
-      DealWithMyExceptions();
+      return DealWithMyExceptions();
    }
+
+   return hr;
 }

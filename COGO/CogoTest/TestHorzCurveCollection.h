@@ -42,7 +42,7 @@ public:
 	static void Test();
 	CTestHorzCurveCollection();
 
-   void InitEventTest(CogoObjectID expectedKey) { m_expectedKey = expectedKey; m_bTestState = false; }
+   void InitEventTest(CogoObjectID expectedID) { m_expectedID = expectedID; m_bTestState = false; }
    bool PassedEventTest() { return m_bTestState; }
 
 BEGIN_COM_MAP(CTestHorzCurveCollection)
@@ -58,7 +58,7 @@ public:
 
 private:
    bool m_bTestState;
-   CogoObjectID m_expectedKey;
+   CogoObjectID m_expectedID;
    void Pass() { m_bTestState = true; }
 };
 

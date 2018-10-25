@@ -53,17 +53,19 @@
 #include "TestVertCurveCollection.h"
 #include "TestHorzCurve.h"
 #include "TestHorzCurveCollection.h"
-#include "TestCrossSection.h"
-#include "TestCrossSectionCollection.h"
 #include "TestProfileElement.h"
 #include "TestProfile.h"
 #include "TestPathElement.h"
 #include "TestPathCollection.h"
 #include "TestAlignment.h"
+#include "TestAlignmentCollection.h"
 #include "TestAngleDisplayUnitFormatter.h"
 #include "TestDirectionDisplayUnitFormatter.h"
 #include "TestStation.h"
 #include "TestCubicSpline.h"
+#include "TestStationEquationCollection.h"
+
+#include "TestWidening.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -75,6 +77,8 @@ CComModule _Module;
 
 int main(int argc, TCHAR* argv[])
 {
+   //_crtBreakAlloc = 782229; // causes program to break at a specific memory allocation
+
    ::CoInitialize(NULL);
 
    CTestAngle::Test();
@@ -90,13 +94,15 @@ int main(int argc, TCHAR* argv[])
    CTestHorzCurveCollection::Test();
    CTestCubicSpline::Test();
 
-   CTestCrossSection::Test();
-   CTestCrossSectionCollection::Test();
+   CTestWidening::Test();
+
    CTestProfileElement::Test();
    CTestProfile::Test();
    CTestPathElement::Test();
    CTestPathCollection::Test();
    CTestAlignment::Test();
+   CTestAlignmentCollection::Test();
+   CTestStationEquationCollection::Test();
 
    CTestAngleDisplayUnitFormatter::Test();
    CTestDirectionDisplayUnitFormatter::Test();

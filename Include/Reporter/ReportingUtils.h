@@ -73,6 +73,7 @@
 #define RPT_FPE italic(ON) << Sub2(_T("f"),_T("pe")) << italic(OFF)
 #define RPT_FPC italic(ON) << Sub2(_T("f"),_T("pc")) << italic(OFF)
 #define RPT_FPO italic(ON) << Sub2(_T("f"),_T("po")) << italic(OFF)
+#define RPT_FPBT italic(ON) << Sub2(_T("f"),_T("pbt")) << italic(OFF)
 #define RPT_AC  Sub2(_T("A"),_T("c"))
 #define RPT_AS  Sub2(_T("A"),_T("s"))
 #define RPT_APS Sub2(_T("A"),_T("ps"))

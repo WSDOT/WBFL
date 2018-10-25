@@ -63,6 +63,8 @@ CComModule _Module;
 
 int main(int argc, TCHAR* argv[])
 {
+   //_crtBreakAlloc = 526; // causes program to break at a specific memory allocation
+
    ::CoInitialize(NULL);
 
    CTestGenericBridge::Test();

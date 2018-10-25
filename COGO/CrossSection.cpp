@@ -38,6 +38,17 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CCrossSection
+HRESULT CCrossSection::FinalConstruct()
+{
+   CComObject<CStation>* pStation;
+   CComObject<CStation>::CreateInstance(&pStation);
+   m_Station = pStation;
+   m_CrownPtOffset = 0.0;
+   m_Left = 0.0;
+   m_Right = 0.0;
+   return S_OK;
+}
+
 STDMETHODIMP CCrossSection::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
@@ -53,33 +64,39 @@ STDMETHODIMP CCrossSection::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
+STDMETHODIMP CCrossSection::get_Profile(IProfile* *pVal)
+{
+   CHECK_RETOBJ(pVal);
+   if ( m_pProfile )
+   {
+      (*pVal) = m_pProfile;
+      (*pVal)->AddRef();
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP CCrossSection::putref_Profile(IProfile* newVal)
+{
+   m_pProfile = newVal;
+   return S_OK;
+}
+
 STDMETHODIMP CCrossSection::get_Station(IStation* *station)
 {
-   CHECK_RETOBJ(station);
-
-   CComObject<CStation>* pStation;
-   CComObject<CStation>::CreateInstance(&pStation);
-   pStation->put_Value(m_Station);
-
-   (*station) = pStation;
-   (*station)->AddRef();
-
-	return S_OK;
+   return m_Station->Clone(station);
 }
 
 STDMETHODIMP CCrossSection::put_Station(VARIANT varStation)
 {
    CComPtr<IStation> objStation;
-   HRESULT hr = cogoUtil::StationFromVariant(varStation,&objStation);
+   HRESULT hr = cogoUtil::StationFromVariant(varStation,true,&objStation);
    if ( FAILED(hr) )
       return hr;
 
-   Float64 station;
-   objStation->get_Value(&station);
-
-   if ( !IsEqual(m_Station,station) )
+   if ( cogoUtil::Compare(m_pProfile,m_Station,objStation) != 0 )
    {
-      m_Station = station;
+      m_Station = objStation;
       Fire_OnCrossSectionMoved(this);
    }
 
@@ -172,7 +189,8 @@ STDMETHODIMP CCrossSection::Load(IStructuredLoad2* pLoad)
    pLoad->BeginUnit(CComBSTR("CrossSection"));
 
    pLoad->get_Property(CComBSTR("Station"),&var);
-   m_Station = var.dblVal;
+   m_Station.Release();
+   _CopyVariantToInterface<IStation>::copy(&m_Station,&var);
 
    pLoad->get_Property(CComBSTR("CrownPointOffset"),&var);
    m_CrownPtOffset = var.dblVal;

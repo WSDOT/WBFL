@@ -130,6 +130,7 @@ void DDX_Angle(CDataExchange* pDX,int nIDC,IAngle* pAngle,IDisplayUnitFormatter*
 
 void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, bool bUnitModeSI, const unitLength& usDisplayUnit, const unitLength& siDisplayUnit )
 {
+#pragma Reminder("UPDATE: does this need to take station equation zone index into account")
    const unitLength& displayUnit = ( bUnitModeSI ? siDisplayUnit : usDisplayUnit );
 
    HWND hWndCtrl = pDX->PrepareEditCtrl( nIDC );
@@ -165,7 +166,7 @@ void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, bool bUnitMode
       station = ::ConvertFromSysUnits( station, displayUnit );
       objStation->put_Value(station);
       CComBSTR bstrStation;
-      hr = objStation->AsString(bUnitModeSI ? umSI : umUS,&bstrStation);
+      hr = objStation->AsString(bUnitModeSI ? umSI : umUS,VARIANT_FALSE,&bstrStation);
       if ( FAILED(hr) )
       {
          // Something got screwed up!!!
@@ -185,6 +186,7 @@ void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, bool bUnitMode
 
 void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, const unitStationFormat& unitStation )
 {
+#pragma Reminder("UPDATE: does this need to take station equation zone index into account")
    UnitModeType unitMode = unitStation.GetUnitOfMeasure() == unitStationFormat::Feet ? umUS : umSI;
    const unitLength& displayUnit = (unitMode == umUS ? unitMeasure::Feet : unitMeasure::Meter);
 
@@ -229,7 +231,7 @@ void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, const unitStat
       station = ::ConvertFromSysUnits( station, displayUnit );
       objStation->put_Value(station);
       CComBSTR bstrStation;
-      hr = objStation->AsString(unitMode,&bstrStation);
+      hr = objStation->AsString(unitMode,VARIANT_FALSE,&bstrStation);
       if ( FAILED(hr) )
       {
          // Something got screwed up!!!
@@ -250,6 +252,8 @@ void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, const unitStat
 
 void DDV_GreaterThanStation( CDataExchange* pDX, Float64 station, Float64 stationLimit, bool bUnitsModeSI, const unitLength& usDisplayUnit, const unitLength& siDisplayUnit )
 {
+#pragma Reminder("UPDATE: does this need to take station equation zone index into account")
+
    const unitLength& displayUnit = ( bUnitsModeSI ? siDisplayUnit : usDisplayUnit );
 	if (!pDX->m_bSaveAndValidate)
 	{
@@ -268,7 +272,7 @@ void DDV_GreaterThanStation( CDataExchange* pDX, Float64 station, Float64 statio
       objStation->put_Value(stationLimit);
 
       CComBSTR bstrStationLimit;
-      hr = objStation->AsString(bUnitsModeSI ? umSI : umUS,&bstrStationLimit);
+      hr = objStation->AsString(bUnitsModeSI ? umSI : umUS,VARIANT_FALSE,&bstrStationLimit);
       ATLASSERT( SUCCEEDED(hr) );
 
       msg.Format(_T("Please enter a station that is greater than %s"), CString(bstrStationLimit));

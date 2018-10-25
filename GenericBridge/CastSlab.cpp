@@ -77,7 +77,12 @@ STDMETHODIMP CCastSlab::InterfaceSupportsErrorInfo(REFIID riid)
 STDMETHODIMP CCastSlab::get_StructuralDepth(Float64* depth)
 {
    CHECK_RETVAL(depth);
-   *depth = m_GrossDepth - m_SacrificialDepth;
+
+   Float64 sacDepth = 0;
+   if ( m_pBridge )
+      m_pBridge->get_SacrificialDepth(&sacDepth);
+
+   *depth = m_GrossDepth - sacDepth;
    return S_OK;
 }
 
@@ -118,9 +123,6 @@ STDMETHODIMP CCastSlab::put_GrossDepth(Float64 depth)
    if ( depth < 0 )
       return E_INVALIDARG;
 
-   if ( IsEqual(m_GrossDepth,depth) )
-      return S_OK;
-
    m_GrossDepth = depth;
    return S_OK;
 }
@@ -137,29 +139,7 @@ STDMETHODIMP CCastSlab::put_OverhangDepth(Float64 depth)
    if ( depth < 0 )
       return E_INVALIDARG;
 
-   if ( IsEqual(m_OverhangDepth,depth) )
-      return S_OK;
-
    m_OverhangDepth = depth;
-   return S_OK;
-}
-
-STDMETHODIMP CCastSlab::get_SacrificialDepth(Float64* depth)
-{
-   CHECK_RETVAL(depth);
-   *depth = m_SacrificialDepth;
-   return S_OK;
-}
-
-STDMETHODIMP CCastSlab::put_SacrificialDepth(Float64 depth)
-{
-   if ( depth < 0 )
-      return E_INVALIDARG;
-
-   if ( IsEqual(m_SacrificialDepth,depth) )
-      return S_OK;
-
-   m_SacrificialDepth = depth;
    return S_OK;
 }
 
@@ -174,9 +154,6 @@ STDMETHODIMP CCastSlab::put_Fillet(Float64 fillet)
 {
    if ( fillet < 0 )
       return E_INVALIDARG;
-
-   if ( IsEqual(m_Fillet,fillet) )
-      return S_OK;
 
    m_Fillet = fillet;
    return S_OK;
@@ -193,9 +170,6 @@ STDMETHODIMP CCastSlab::put_OverhangTaper(DeckOverhangTaper taper)
 {
    if ( taper != dotNone && taper != dotTopTopFlange && taper != dotBottomTopFlange )
       return E_INVALIDARG;
-
-   if ( m_Taper == taper )
-      return S_OK;
 
    m_Taper = taper;
 
@@ -219,9 +193,6 @@ STDMETHODIMP CCastSlab::Load(IStructuredLoad2* load)
    load->get_Property(CComBSTR("OverhangDepth"),&var);
    m_OverhangDepth = var.dblVal;
 
-   load->get_Property(CComBSTR("SacrificialDepth"),&var);
-   m_SacrificialDepth = var.dblVal;
-
    load->get_Property(CComBSTR("Taper"),&var);
    m_Taper = (DeckOverhangTaper)var.lVal;
 
@@ -239,7 +210,6 @@ STDMETHODIMP CCastSlab::Save(IStructuredSave2* save)
    save->put_Property(CComBSTR("Fillet"),CComVariant(m_Fillet));
    save->put_Property(CComBSTR("GrossDepth"),CComVariant(m_GrossDepth));
    save->put_Property(CComBSTR("OverhangDepth"),CComVariant(m_OverhangDepth));
-   save->put_Property(CComBSTR("SacrificalDepth"),CComVariant(m_SacrificialDepth));
    save->put_Property(CComBSTR("Taper"),CComVariant(m_Taper));
    
    IBridgeDeckImpl<CCastSlab>::Save(save);

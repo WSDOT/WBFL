@@ -53,6 +53,24 @@ STDMETHODIMP CProfilePointFactory::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
+STDMETHODIMP CProfilePointFactory::get_Profile(IProfile* *pVal)
+{
+   CHECK_RETOBJ(pVal);
+   if ( m_pProfile )
+   {
+      (*pVal) = m_pProfile;
+      (*pVal)->AddRef();
+   }
+   return S_OK;
+}
+
+STDMETHODIMP CProfilePointFactory::putref_Profile(IProfile* newVal)
+{
+   CHECK_IN(newVal);
+   m_pProfile = newVal;
+   return S_OK;
+}
+
 STDMETHODIMP CProfilePointFactory::CreateProfilePoint(IProfilePoint **pVal)
 {
    CHECK_RETOBJ(pVal);
@@ -62,6 +80,8 @@ STDMETHODIMP CProfilePointFactory::CreateProfilePoint(IProfilePoint **pVal)
 
    (*pVal) = pPP;
    (*pVal)->AddRef();
+
+   (*pVal)->putref_Profile(m_pProfile);
 
 	return S_OK;
 }

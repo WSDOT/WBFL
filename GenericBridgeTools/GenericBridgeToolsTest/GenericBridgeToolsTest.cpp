@@ -57,6 +57,8 @@ CComModule _Module;
 
 int main(int argc, TCHAR* argv[])
 {
+   //_crtBreakAlloc = 355517; // causes program to break at a specific memory allocation
+
    ::CoInitialize(NULL);
 
    CTestBridgeGeometryTool::Test();
@@ -116,13 +118,11 @@ void CreateBasicBridge(IGenericBridge** ppBridge)
    //
    // Create the Alignment
    //
-   CComPtr<IPathCollection> alignments;
+   CComPtr<IAlignmentCollection> alignments;
    cogoModel->get_Alignments(&alignments);
 
-   CComPtr<IPath> path;
-   alignments->Add(0,&path);
-
-   CComQIPtr<IAlignment> alignment(path);
+   CComPtr<IAlignment> alignment;
+   alignments->Add(0,&alignment);
 
    CComPtr<IPoint2d> p1;
    p1.CoCreateInstance(CLSID_Point2d);
@@ -372,6 +372,7 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
    }
 
    bridge->putref_Deck(deck);
+   bridge->put_SacrificialDepth(1./12);
 
    bridge->UpdateBridgeModel(); // forces the geometry to be up to date
 
@@ -630,6 +631,7 @@ void CreateSplicedGirderBridge(IGenericBridge** ppBridge)
    }
 
    bridge->putref_Deck(deck);
+   bridge->put_SacrificialDepth(1./12);
 
    bridge->UpdateBridgeModel(); // forces the geometry to be up to date
    bridge.CopyTo(ppBridge);
@@ -671,7 +673,6 @@ void CreateDeck(int deckType,Float64 maxWidth,Float64 overhang,IBridgeGeometry* 
       slab.CoCreateInstance(CLSID_CastSlab);
       slab->put_Fillet(0.75/12);
       slab->put_GrossDepth(9./12);
-      slab->put_SacrificialDepth(1./12);
 
       slab.QueryInterface(deck);
    }
@@ -682,7 +683,6 @@ void CreateDeck(int deckType,Float64 maxWidth,Float64 overhang,IBridgeGeometry* 
       slab->put_Fillet(0.75/12);
       slab->put_PanelDepth(5./12);
       slab->put_CastDepth(4./12);
-      slab->put_SacrificialDepth(1./12);
       
       slab.QueryInterface(deck);
    }
@@ -691,7 +691,6 @@ void CreateDeck(int deckType,Float64 maxWidth,Float64 overhang,IBridgeGeometry* 
       CComPtr<IOverlaySlab> slab;
       slab.CoCreateInstance(CLSID_OverlaySlab);
       slab->put_GrossDepth(9./12);
-      slab->put_SacrificialDepth(1./12);
       
       slab.QueryInterface(deck);
    }

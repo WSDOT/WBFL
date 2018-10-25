@@ -75,8 +75,11 @@ public:
       m_bSegmentHeightProfile = false;
       m_bBottomFlangeHeightProfile = false;
 
-      m_ClosurePourMaterial[etStart] = NULL;
-      m_ClosurePourMaterial[etEnd]   = NULL;
+      m_ClosurePourFgMaterial[etStart] = NULL;
+      m_ClosurePourFgMaterial[etEnd]   = NULL;
+
+      m_ClosurePourBgMaterial[etStart] = NULL;
+      m_ClosurePourBgMaterial[etEnd]   = NULL;
    }
 
 protected:
@@ -97,7 +100,8 @@ protected:
 
    CItemDataManager m_ItemDataMgr;
 
-   Float64 m_HaunchDepth[2];
+   // index is EndType
+   Float64 m_HaunchDepth[2]; // depth from top of slab to top of girder at CL Bearing at start/end of girder
 
    // index is EndType
    Float64 m_EndBlockLength[2]; // length of end block from end of girder to transitation
@@ -110,8 +114,9 @@ protected:
    Float64 m_VariationHeight[4];
    Float64 m_VariationBottomFlangeDepth[4];
 
-   Float64 m_ClosurePourLength[2];
-   CComPtr<IMaterial> m_ClosurePourMaterial[2];
+   // index is EndType
+   CComPtr<IMaterial> m_ClosurePourFgMaterial[2]; // foreground material
+   CComPtr<IMaterial> m_ClosurePourBgMaterial[2]; // background material
 
    bool m_bSegmentHeightProfile;
    mathCompositeFunction2d m_SegmentHeightProfile; // this function returns the segment height
@@ -279,17 +284,6 @@ public:
 
       Float64 xStart, xEnd;
       GetSegmentRange(bIncludeClosure,&xStart,&xEnd);
-
-      //Float64 end_distance = 0;
-      //Float64 bearing_offset = 0;
-      //CComPtr<IGirderLine> girderLine;
-
-      //if ( bIncludeClosure == VARIANT_FALSE )
-      //{
-      //   get_GirderLine(&girderLine);
-      //   girderLine->get_EndDistance(etStart,&end_distance);
-      //   girderLine->get_BearingOffset(etStart,&bearing_offset);
-      //}
 
       std::vector<Float64> xValues;
       if ( m_VariationType == svtLinear || m_VariationType == svtParabolic )
@@ -570,17 +564,31 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(put_ClosurePourMaterial)(/*[in]*/EndType endType,/*[in]*/IMaterial* pFGMaterial)
+   STDMETHOD(put_ClosurePourForegroundMaterial)(/*[in]*/EndType endType,/*[in]*/IMaterial* pFGMaterial)
    {
       CHECK_IN(pFGMaterial);
-      m_ClosurePourMaterial[endType] = pFGMaterial;
+      m_ClosurePourFgMaterial[endType] = pFGMaterial;
       return S_OK;
    }
 
-   STDMETHOD(get_ClosurePourMaterial)(/*[in]*/EndType endType,/*[out,retval]*/IMaterial** ppFGMaterial)
+   STDMETHOD(get_ClosurePourForegroundMaterial)(/*[in]*/EndType endType,/*[out,retval]*/IMaterial** ppFGMaterial)
    {
       CHECK_RETOBJ(ppFGMaterial);
-      m_ClosurePourMaterial[endType].CopyTo(ppFGMaterial);
+      m_ClosurePourFgMaterial[endType].CopyTo(ppFGMaterial);
+      return S_OK;
+   }
+
+   STDMETHOD(put_ClosurePourBackgroundMaterial)(/*[in]*/EndType endType,/*[in]*/IMaterial* pBGMaterial)
+   {
+      CHECK_IN(pBGMaterial);
+      m_ClosurePourBgMaterial[endType] = pBGMaterial;
+      return S_OK;
+   }
+
+   STDMETHOD(get_ClosurePourBackgroundMaterial)(/*[in]*/EndType endType,/*[out,retval]*/IMaterial** ppBGMaterial)
+   {
+      CHECK_RETOBJ(ppBGMaterial);
+      m_ClosurePourBgMaterial[endType].CopyTo(ppBGMaterial);
       return S_OK;
    }
 
@@ -645,8 +653,118 @@ public:
    }
 
 protected:
-   virtual HRESULT GetSection(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection) = 0;
    virtual HRESULT GetPrimaryShape(Float64 distAlongSegment,IShape** ppShape) = 0;
+
+   virtual HRESULT GetSection(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
+   {
+      CHECK_RETOBJ(ppSection);
+
+      if (m_Shapes.size() == 0 )
+      {
+         *ppSection = 0;
+         return S_OK;
+      }
+
+      HRESULT hr;
+      CComPtr<IShape> primaryShape;
+      hr = GetPrimaryShape(distAlongSegment,&primaryShape);
+      ATLASSERT(SUCCEEDED(hr));
+      if ( FAILED(hr) )
+         return hr;
+
+      // create our section object
+      CComPtr<ICompositeSectionEx> section;
+      section.CoCreateInstance(CLSID_CompositeSectionEx);
+
+      section->QueryInterface(IID_ISection,(void**)ppSection);
+      ATLASSERT(*ppSection != NULL);
+
+      int isClosurePour = IsClosurePour(distAlongSegment);
+
+      // add the primary shape
+      Float64 Efg = 0;
+      if ( isClosurePour == 0 )
+      {
+         m_Shapes.front().FGMaterial->get_E(stageIdx,&Efg);
+      }
+      else
+      {
+         EndType endType(isClosurePour < 0 ? etStart : etEnd);
+         m_ClosurePourFgMaterial[endType]->get_E(stageIdx,&Efg);
+      }
+      
+      Float64 Ebg = 0;
+      if ( isClosurePour == 0 )
+      {
+         if ( m_Shapes.front().BGMaterial )
+            m_Shapes.front().BGMaterial->get_E(stageIdx,&Ebg);
+      }
+      else
+      {
+         EndType endType(isClosurePour < 0 ? etStart : etEnd);
+         if ( m_ClosurePourBgMaterial[endType] )
+            m_ClosurePourBgMaterial[endType]->get_E(stageIdx,&Ebg);
+      }
+
+      Float64 Dfg = 0;
+      if ( isClosurePour == 0 )
+      {
+         m_Shapes.front().FGMaterial->get_Density(stageIdx,&Dfg);
+      }
+      else
+      {
+         EndType endType(isClosurePour < 0 ? etStart : etEnd);
+         m_ClosurePourFgMaterial[endType]->get_Density(stageIdx,&Dfg);
+      }
+      
+      Float64 Dbg = 0;
+      if ( isClosurePour == 0 )
+      {
+         if ( m_Shapes.front().BGMaterial )
+            m_Shapes.front().BGMaterial->get_Density(stageIdx,&Dbg);
+      }
+      else
+      {
+         EndType endType(isClosurePour < 0 ? etStart : etEnd);
+         if ( m_ClosurePourBgMaterial[endType] )
+            m_ClosurePourBgMaterial[endType]->get_Density(stageIdx,&Dbg);
+      }
+
+      section->AddSection(primaryShape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
+
+      // add all the secondary shapes
+      std::vector<ShapeData>::iterator iter(m_Shapes.begin());
+      std::vector<ShapeData>::iterator end(m_Shapes.end());
+      iter++; // skip the first shape, we already processed it
+
+      for ( ; iter != end; iter++ )
+      {
+         ShapeData& shapeData = *iter;
+
+         Float64 Efg = 0;
+         if ( shapeData.FGMaterial )
+            shapeData.FGMaterial->get_E(stageIdx,&Efg);
+
+         Float64 Ebg;
+         if ( shapeData.BGMaterial )
+            shapeData.BGMaterial->get_E(stageIdx,&Ebg);
+
+         Float64 Dfg = 0;
+         if ( shapeData.FGMaterial )
+            shapeData.FGMaterial->get_Density(stageIdx,&Dfg);
+
+         Float64 Dbg = 0;
+         if ( shapeData.BGMaterial )
+            shapeData.BGMaterial->get_Density(stageIdx,&Dbg);
+
+         CComPtr<IShape> shape;
+         shapeData.Shape->Clone(&shape);
+
+         section->AddSection(shape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
+      }
+
+      return S_OK;
+   }
 
    int IsClosurePour(Float64 distAlongSegment)
    {
@@ -1094,5 +1212,4 @@ protected:
       
       *pXEnd = x + length;
    }
-
 };

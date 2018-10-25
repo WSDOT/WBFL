@@ -171,9 +171,10 @@ STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIn
    pier->get_Station(&firstStation);
 
    // location is distance between stations
+   CComPtr<IAlignment> alignment;
+   m_Bridge->get_Alignment(&alignment);
    Float64 cutLocation;
-   station->Distance(firstStation,&cutLocation);
-
+   alignment->DistanceBetweenStations(CComVariant(station),CComVariant(firstStation),&cutLocation);
    
    CComPtr<IEnumBridgeDeckRebarLayoutItems> enumItems;
    get__EnumRebarLayoutItems(&enumItems);

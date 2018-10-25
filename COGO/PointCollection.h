@@ -34,7 +34,7 @@
 #include "Collections.h"
 
 class CPointCollection;
-typedef PersistentKeyedCollection<CPointCollection,IPointCollection,&IID_IPointCollection,CogoObjectID,IPoint2d> PointCollectionImpl;
+typedef PersistentIDCollection<CPointCollection,IPointCollection,&IID_IPointCollection,CogoObjectID,IPoint2d> PointCollectionImpl;
 
 /////////////////////////////////////////////////////////////////////////////
 // CPointCollection
@@ -83,18 +83,18 @@ public:
 //   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
    STDMETHOD(Clone)(/*[out,retval]*/IPointCollection* *clone);
 	STDMETHOD(Clear)();
-	STDMETHOD(Add)(/*[in]*/ CogoObjectID key,/*[in]*/ Float64 x,/*[in]*/ Float64 y,/*[out,retval]*/ IPoint2d* *point);
-	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID key,/*[in]*/ IPoint2d* newVal);
-	STDMETHOD(Remove)(/*[in]*/ CogoObjectID key);
+	STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[in]*/ Float64 x,/*[in]*/ Float64 y,/*[out,retval]*/ IPoint2d* *point);
+	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ IPoint2d* newVal);
+	STDMETHOD(Remove)(/*[in]*/ CogoObjectID id);
 	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID key, /*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID key, /*[in]*/ IPoint2d* newVal);
+	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ IPoint2d* *pVal);
+	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ IPoint2d* newVal);
 // STDMETHOD(get__NewEnum)(IUnknown** retval);
-   STDMETHOD(get__EnumKeys)(IEnumKeys** ppenum);
-	STDMETHOD(FindKey)(/*[in]*/ IPoint2d* point,/*[out,retval]*/CogoObjectID* key);
+   STDMETHOD(get__EnumIDs)(IEnumIDs** ppenum);
+	STDMETHOD(FindID)(/*[in]*/ IPoint2d* point,/*[out,retval]*/CogoObjectID* ID);
 	STDMETHOD(get_Factory)(/*[out,retval]*/IPoint2dFactory** factory);
 	STDMETHOD(putref_Factory)(/*[in]*/IPoint2dFactory* factory);
-	STDMETHOD(Key)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* key);
+	STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID);
    STDMETHOD(get__EnumPoints)(/*[out,retval]*/ IEnumPoint2d** ppenum);
 
 // IPointEvents
@@ -107,12 +107,12 @@ private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
 
-   HRESULT PointNotFound(CogoObjectID key);
-   HRESULT PointAlreadyDefined(CogoObjectID key);
-   HRESULT PointKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes);
+   HRESULT PointNotFound(CogoObjectID id);
+   HRESULT PointAlreadyDefined(CogoObjectID id);
+   HRESULT PointIDError(CogoObjectID id,UINT nHelpString,HRESULT hRes);
 
-   void Advise(CogoObjectID key,IPoint2d* point);
-   void Unadvise(CogoObjectID key,IPoint2d* point);
+   void Advise(CogoObjectID id,IPoint2d* point);
+   void Unadvise(CogoObjectID id,IPoint2d* point);
    void UnadviseAll();
    std::map<CogoObjectID,DWORD> m_Cookies;
 };

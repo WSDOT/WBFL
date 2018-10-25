@@ -29,7 +29,6 @@
 #include "ProfilePoint.h"
 #include "CogoHelpers.h"
 #include "Station.h"
-#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -39,6 +38,14 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CProfilePoint
+HRESULT CProfilePoint::FinalConstruct()
+{
+   CComObject<CStation>* pStation;
+   CComObject<CStation>::CreateInstance(&pStation);
+   m_Station = pStation;
+
+   return S_OK;
+}
 
 STDMETHODIMP CProfilePoint::InterfaceSupportsErrorInfo(REFIID riid)
 {
@@ -55,33 +62,45 @@ STDMETHODIMP CProfilePoint::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
+STDMETHODIMP CProfilePoint::get_Profile(IProfile* *pVal)
+{
+   CHECK_RETOBJ(pVal);
+   if ( m_pProfile )
+   {
+      (*pVal) = m_pProfile;
+      (*pVal)->AddRef();
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP CProfilePoint::putref_Profile(IProfile* newVal)
+{
+   m_pProfile = newVal;
+   return S_OK;
+}
+
 STDMETHODIMP CProfilePoint::get_Station(IStation* *station)
 {
    CHECK_RETOBJ(station);
-
-   CComObject<CStation>* pStation;
-   CComObject<CStation>::CreateInstance(&pStation);
-   pStation->put_Value(m_Station);
-   
-   (*station) = pStation;
-   (*station)->AddRef();
-
-   return S_OK;
+   return m_Station->Clone(station);
 }
 
 STDMETHODIMP CProfilePoint::put_Station(VARIANT varStation)
 {
    CComPtr<IStation> objStation;
-   HRESULT hr = cogoUtil::StationFromVariant(varStation,&objStation);
+   HRESULT hr = cogoUtil::StationFromVariant(varStation,true,&objStation);
    if ( FAILED(hr) )
       return hr;
 
-   Float64 station;
-   objStation->get_Value(&station);
+   hr = ValidateStation(objStation);
+   if ( FAILED(hr) )
+      return hr;
 
-   if ( !IsEqual(station,m_Station) )
+   if ( !cogoUtil::IsEqual(m_pProfile,objStation,m_Station) )
    {
-      m_Station = station;
+      m_Station.Release();
+      objStation->Clone(&m_Station);
       Fire_OnProfilePointChanged(this);
    }
 	return S_OK;
@@ -143,13 +162,29 @@ STDMETHODIMP CProfilePoint::Load(IStructuredLoad2* pLoad)
    pLoad->BeginUnit(CComBSTR("ProfilePoint"));
 
    pLoad->get_Property(CComBSTR("Station"),&var);
-   m_Station = var.dblVal;
+   CComPtr<IStation> station;
+   _CopyVariantToInterface<IStation>::copy(&station,&var);
+   m_Station = station;
 
    pLoad->get_Property(CComBSTR("Elevation"),&var);
    m_Elevation = var.dblVal;
 
    VARIANT_BOOL bEnd;
    pLoad->EndUnit(&bEnd);
+
+   return S_OK;
+}
+
+HRESULT CProfilePoint::ValidateStation(IStation* station)
+{
+   if ( m_pProfile == NULL )
+   {
+      // if not associated with a profile, station must be normalized
+      ZoneIndexType staEqnZoneIdx;
+      station->get_StationZoneIndex(&staEqnZoneIdx);
+      if ( staEqnZoneIdx != INVALID_INDEX )
+         return E_INVALIDARG; // station must be normalized
+   }
 
    return S_OK;
 }

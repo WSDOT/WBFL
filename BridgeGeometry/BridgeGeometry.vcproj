@@ -903,23 +903,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Include\BridgeGeometry\AutoLib.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Bridge.h"
 				>
 			</File>
 			<File
-				RelativePath="..\Include\BridgeGeometry\BridgeGeometryExp.h"
-				>
-			</File>
-			<File
 				RelativePath=".\BridgeGeometryHelper.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Include\BridgeGeometry\BridgeGeometryLib.h"
 				>
 			</File>
 			<File
@@ -976,10 +964,6 @@
 			</File>
 			<File
 				RelativePath=".\stdafx.h"
-				>
-			</File>
-			<File
-				RelativePath=".\targetver.h"
 				>
 			</File>
 			<File

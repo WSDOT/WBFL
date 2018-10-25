@@ -27,7 +27,6 @@
 #pragma once
 
 #include <string>
-#include <MathEx.h>
 
 /*****************************************************************************
 CLASS 
@@ -69,7 +68,7 @@ public:
 
    static HRESULT DirectionFromVariant(VARIANT varDir,IDirection** dir);
    static HRESULT AngleFromVariant(VARIANT varAngle,IAngle** angle);
-   static HRESULT StationFromVariant(VARIANT varStation,IStation** station);
+   static HRESULT StationFromVariant(VARIANT varStation,bool bClone,IStation** station);
    static HRESULT LocateByDistDir(IPoint2d* from,Float64 dist,IDirection* dir,Float64 offset,IPoint2dFactory* pFactory,IPoint2d** ppoint);
 
    static bool IsEqual(IPoint2d* p1,IPoint2d* p2);
@@ -120,6 +119,26 @@ public:
 
    static HRESULT ParseAngleTags(std::_tstring& strTag,std::_tstring* strDegTag,std::_tstring* strMinTag,std::_tstring* strSecTag);
 
+   static bool IsEqual(IProfile* pProfile,IStation* pSta1,IStation* pSta2);
+   static bool IsEqual(IAlignment* pAlignment,IStation* pSta1,IStation* pSta2);
+   static bool IsEqual(IStationEquationCollection* pEquations,IStation* pSta1,IStation* pSta2);
+
+   static Float64 Distance(IProfile* pProfile,IStation* pSta1,IStation* pSta2);
+   static Float64 Distance(IAlignment* pAlignment,IStation* pSta1,IStation* pSta2);
+   static Float64 Distance(IStationEquationCollection* pEquations,IStation* pSta1,IStation* pSta2);
+
+   static Int8 Compare(IProfile* pProfile,IStation* pSta1,IStation* pSta2);
+   static Int8 Compare(IAlignment* pAlignment,IStation* pSta1,IStation* pSta2);
+   static Int8 Compare(IStationEquationCollection* pEquations,IStation* pSta1,IStation* pSta2);
+
+   static Float64 GetNormalizedStationValue(IProfile* pProfile,IStation* pSta);
+   static Float64 GetNormalizedStationValue(IAlignment* pAlignment,IStation* pSta);
+   static Float64 GetNormalizedStationValue(IStationEquationCollection* pEquations,IStation* pSta);
+
+   static void CreateStation(IProfile* pProfile,Float64 normalizedStation,IStation** pSta);
+   static void CreateStation(IAlignment* pAlignment,Float64 normalizedStation,IStation** pSta);
+   static void CreateStation(IStationEquationCollection* pEquations,Float64 normalizedStation,IStation** pSta);
+
    // GROUP: ACCESS
    // GROUP: INQUIRY
 
@@ -152,64 +171,6 @@ private:
 //HRESULT CreateCogoPoint2d( VARIANT id,Float64 x,Float64 y, IPoint2dEx** ppPoint);
 //HRESULT CreateAngle(const cogoAngle& angle,IAngle** ppAngle);
 HRESULT CreateDirection(Float64 dir,IDirection** ppDirection);
-
-
-inline bool operator<(CComPtr<IStation> sta1,CComPtr<IStation> sta2)
-{
-   if ( sta1.p == NULL || sta2.p == NULL )
-      return false;
-
-   Float64 val1, val2;
-   sta1->get_Value(&val1);
-   sta2->get_Value(&val2);
-   return val1 < val2;
-}
-
-inline bool operator<=(CComPtr<IStation> sta1,CComPtr<IStation> sta2)
-{
-   if ( sta1.p == NULL || sta2.p == NULL )
-      return false;
-
-   Float64 val1, val2;
-   sta1->get_Value(&val1);
-   sta2->get_Value(&val2);
-   return (val1 < val2) || IsEqual(val1,val2);
-}
-
-inline bool operator==(CComPtr<IStation> sta1,CComPtr<IStation> sta2)
-{
-   if ( sta1.p == NULL && sta2.p == NULL )
-      return true;
-
-   if ( (sta1.p != NULL && sta2.p == NULL) || (sta1.p == NULL && sta2.p != NULL))
-      return false;
-
-   Float64 val1, val2;
-   sta1->get_Value(&val1);
-   sta2->get_Value(&val2);
-   return IsEqual(val1,val2);
-}
-
-inline bool operator!=(CComPtr<IStation> sta1,CComPtr<IStation> sta2)
-{
-   return !(sta1 == sta2);
-}
-
-inline Float64 operator-(CComPtr<IStation> sta1,CComPtr<IStation> sta2)
-{
-   Float64 val1, val2;
-   sta1->get_Value(&val1);
-   sta2->get_Value(&val2);
-   return val1 - val2;
-}
-
-inline Float64 operator+(CComPtr<IStation> sta1,CComPtr<IStation> sta2)
-{
-   Float64 val1, val2;
-   sta1->get_Value(&val1);
-   sta2->get_Value(&val2);
-   return val1 + val2;
-}
 
 #endif // INCLUDED_COGO_COGOHELPERS_H_
 

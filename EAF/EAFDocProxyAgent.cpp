@@ -639,8 +639,11 @@ void CEAFDocProxyAgent::LogMessage( LPCTSTR lpszMsg )
    if ( !IsLogFileOpen() )
       OpenLogFile();
 
-   GET_IFACE(ILogFile,pLogFile);
-   pLogFile->LogMessage( m_dwLogFileCookie, lpszMsg );
+   if ( IsLogFileOpen() )
+   {
+      GET_IFACE(ILogFile,pLogFile);
+      pLogFile->LogMessage( m_dwLogFileCookie, lpszMsg );
+   }
 }
 
 void CEAFDocProxyAgent::Destroy()
@@ -664,7 +667,10 @@ void CEAFDocProxyAgent::OpenLogFile()
    m_LogFileName = m_pDoc->GetLogFileName();
 
    GET_IFACE(ILogFile,pLogFile);
-   pLogFile->Open( m_LogFileName, &m_dwLogFileCookie );
-   m_pDoc->OnLogFileOpened();
+   HRESULT hr = pLogFile->Open( m_LogFileName, &m_dwLogFileCookie );
+   if ( SUCCEEDED(hr) )
+   {
+      m_pDoc->OnLogFileOpened();
+   }
 }
 

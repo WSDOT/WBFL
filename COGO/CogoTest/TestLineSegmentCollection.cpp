@@ -139,7 +139,7 @@ void CTestLineSegmentCollection::Test()
    pColl->get_Count(&count);
    TRY_TEST(count,3);
 
-   // Getting the item with key = 2 should fail
+   // Getting the item with id = 2 should fail
    ls.Release();
    TRY_TEST( pColl->get_Item(2,&ls), COGO_E_LINESEGMENTNOTFOUND);
 
@@ -172,23 +172,23 @@ void CTestLineSegmentCollection::Test()
    TRY_TEST(ls.IsEqualObject(ls1),true);
 
    //
-   // Test FindKey
+   // Test FindID
    //
-   CogoObjectID key;
-   TRY_TEST(pColl->FindKey(NULL,&key),E_INVALIDARG);
-   TRY_TEST(pColl->FindKey(ls4,NULL),E_POINTER);
-   TRY_TEST(pColl->FindKey(ls4,&key),S_OK);
-   TRY_TEST(key,4);
-   TRY_TEST(pColl->FindKey(ls3,&key),E_FAIL); // ls3 is not part of collection, see putref_Item above
+   CogoObjectID id;
+   TRY_TEST(pColl->FindID(NULL,&id),E_INVALIDARG);
+   TRY_TEST(pColl->FindID(ls4,NULL),E_POINTER);
+   TRY_TEST(pColl->FindID(ls4,&id),S_OK);
+   TRY_TEST(id,4);
+   TRY_TEST(pColl->FindID(ls3,&id),E_FAIL); // ls3 is not part of collection, see putref_Item above
 
    //
-   // Test Key
+   // Test ID
    //
-   TRY_TEST(pColl->Key(-1,&key),E_INVALIDARG);
-   TRY_TEST(pColl->Key(500,&key),E_INVALIDARG);
-   TRY_TEST(pColl->Key(3,NULL),E_POINTER);
-   TRY_TEST(pColl->Key(3,&key),S_OK);
-   TRY_TEST(key,4);
+   TRY_TEST(pColl->ID(-1,&id),E_INVALIDARG);
+   TRY_TEST(pColl->ID(500,&id),E_INVALIDARG);
+   TRY_TEST(pColl->ID(3,NULL),E_POINTER);
+   TRY_TEST(pColl->ID(3,&id),S_OK);
+   TRY_TEST(id,4);
 
    //
    // Test _Enum
@@ -198,15 +198,15 @@ void CTestLineSegmentCollection::Test()
    TRY_TEST(pColl->AddEx(2,ls2),S_OK);
    TRY_TEST(pColl->AddEx(3,ls3),S_OK);
    TRY_TEST(pColl->AddEx(4,ls4),S_OK);
-   CComPtr<IEnumKeys> pEnum;
-   TRY_TEST(pColl->get__EnumKeys(NULL), E_POINTER );
-   TRY_TEST( pColl->get__EnumKeys(&pEnum), S_OK );
+   CComPtr<IEnumIDs> pEnum;
+   TRY_TEST(pColl->get__EnumIDs(NULL), E_POINTER );
+   TRY_TEST( pColl->get__EnumIDs(&pEnum), S_OK );
 
    ULONG fetched;
-   CogoObjectID target_key = 1;
-   while( pEnum->Next(1,&key,&fetched ) == S_OK )
+   CogoObjectID target_id = 1;
+   while( pEnum->Next(1,&id,&fetched ) == S_OK )
    {
-      TRY_TEST(key,target_key++);
+      TRY_TEST(id,target_id++);
    }
 
    
@@ -307,28 +307,28 @@ void CTestLineSegmentCollection::Test()
    TRY_TEST( TestIObjectSafety(CLSID_LineSegmentCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
-STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentChanged(CogoObjectID key,ILineSegment2d* lineSeg)
+STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentChanged(CogoObjectID id,ILineSegment2d* lineSeg)
 {
 //   MessageBox(NULL,"LineSegmentChanged","Event",MB_OK);
-   if ( key == m_expectedKey )
+   if ( id == m_expectedID )
       Pass();
 
    return S_OK;
 }
 
-STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentAdded(CogoObjectID key,ILineSegment2d* lineSeg)
+STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentAdded(CogoObjectID id,ILineSegment2d* lineSeg)
 {
 //   MessageBox(NULL,"LineSegmentAdded","Event",MB_OK);
-   if ( key == m_expectedKey )
+   if ( id == m_expectedID )
       Pass();
 
    return S_OK;
 }
 
-STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentRemoved(CogoObjectID key)
+STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentRemoved(CogoObjectID id)
 {
 //   MessageBox(NULL,"LineSegmentRemoved","Event",MB_OK);
-   if ( key == m_expectedKey )
+   if ( id == m_expectedID )
       Pass();
 
    return S_OK;

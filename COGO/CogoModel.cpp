@@ -29,8 +29,8 @@
 #include "CogoModel.h"
 #include "CogoEngine.h"
 #include "PointCollection.h"
-#include "AlignmentFactory.h"
 #include "PathCollection.h"
+#include "AlignmentCollection.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -90,8 +90,8 @@ HRESULT CCogoModel::FinalConstruct()
    ATLASSERT(SUCCEEDED(hr));
 
    // Alignments collection
-   CComObject<CPathCollection>* pAlignments;
-   hr = CComObject<CPathCollection>::CreateInstance(&pAlignments);
+   CComObject<CAlignmentCollection>* pAlignments;
+   hr = CComObject<CAlignmentCollection>::CreateInstance(&pAlignments);
    if ( FAILED(hr) )
       return hr;
 
@@ -99,15 +99,8 @@ HRESULT CCogoModel::FinalConstruct()
    pAlignments->SetItemName(CComBSTR("Alignment"));
    m_Alignments = pAlignments;
 
-   hr = CrAdvise(m_Alignments,this,IID_IPathCollectionEvents,&m_dwAlignmentCookie);
+   hr = CrAdvise(m_Alignments,this,IID_IAlignmentCollectionEvents,&m_dwAlignmentCookie);
    ATLASSERT(SUCCEEDED(hr));
-
-   // Create a specialized path factory and give it to the alignment collection so that
-   // Alignment objects are created instead of Path objects
-   CComObject<CAlignmentFactory>* pAlignmentFactory;
-   CComObject<CAlignmentFactory>::CreateInstance(&pAlignmentFactory);
-   CComPtr<IPathFactory> alignment_factory = pAlignmentFactory;
-   m_Alignments->putref_Factory(alignment_factory);
 
 
    // Paths collection
@@ -131,13 +124,13 @@ void CCogoModel::FinalRelease()
    CrUnadvise(m_ProfilePoints, this, IID_IProfilePointCollectionEvents, m_dwProfilePointsCookie);
    CrUnadvise(m_VertCurves,    this, IID_IVertCurveCollectionEvents,    m_dwVertCurvesCookie);
    CrUnadvise(m_HorzCurves,    this, IID_IHorzCurveCollectionEvents,    m_dwHorzCurvesCookie);
-   CrUnadvise(m_Alignments,    this, IID_IPathCollectionEvents,         m_dwAlignmentCookie);
+   CrUnadvise(m_Alignments,    this, IID_IAlignmentCollectionEvents,    m_dwAlignmentCookie);
    CrUnadvise(m_Paths,         this, IID_IPathCollectionEvents,         m_dwPathCookie);
 }
 
-HRESULT CCogoModel::PutRef_Alignments(IPathCollection* alignments)
+HRESULT CCogoModel::PutRef_Alignments(IAlignmentCollection* alignments)
 {
-   return CrAssignPointer(m_Alignments,alignments,this,IID_IPathCollectionEvents,&m_dwAlignmentCookie);
+   return CrAssignPointer(m_Alignments,alignments,this,IID_IAlignmentCollectionEvents,&m_dwAlignmentCookie);
 }
 
 HRESULT CCogoModel::PutRef_Paths(IPathCollection* paths)
@@ -236,7 +229,7 @@ STDMETHODIMP CCogoModel::get_HorzCurves(IHorzCurveCollection* *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::get_Alignments(IPathCollection* *pVal)
+STDMETHODIMP CCogoModel::get_Alignments(IAlignmentCollection* *pVal)
 {
    CHECK_RETOBJ(pVal);
    *pVal = m_Alignments;
@@ -354,12 +347,12 @@ STDMETHODIMP CCogoModel::get_HorzCurveFactory(IHorzCurveFactory** factory)
    return m_HorzCurves->get_Factory(factory);
 }
 
-STDMETHODIMP CCogoModel::putref_AlignmentFactory(IPathFactory* factory)
+STDMETHODIMP CCogoModel::putref_AlignmentFactory(IAlignmentFactory* factory)
 {
    return m_Alignments->putref_Factory(factory);
 }
 
-STDMETHODIMP CCogoModel::get_AlignmentFactory(IPathFactory** factory)
+STDMETHODIMP CCogoModel::get_AlignmentFactory(IAlignmentFactory** factory)
 {
    return m_Alignments->get_Factory(factory);
 }
@@ -390,7 +383,7 @@ STDMETHODIMP CCogoModel::Clone(ICogoModel* *clone)
    (*clone) = pClone;
    (*clone)->AddRef();
 
-   CComPtr<IPathCollection> cloneAlignments;
+   CComPtr<IAlignmentCollection> cloneAlignments;
    m_Alignments->Clone(&cloneAlignments);
    pClone->PutRef_Alignments(cloneAlignments);
 
@@ -454,47 +447,47 @@ STDMETHODIMP CCogoModel::Angle(CogoObjectID fromID, CogoObjectID vertexID, CogoO
    return measure->Angle(from,vertex,to,angle);
 }
 
-STDMETHODIMP CCogoModel::Area(VARIANT keys,Float64* area)
+STDMETHODIMP CCogoModel::Area(VARIANT IDs,Float64* area)
 {
    CHECK_RETVAL(area);
 
-   if ( keys.vt != (VT_BYREF | VT_VARIANT) &&  // VB Script
-        keys.vt != (VT_ARRAY | VT_I2)      &&  // VB/C++
-        keys.vt != (VT_ARRAY | VT_I4) )        // VB/C++
+   if ( IDs.vt != (VT_BYREF | VT_VARIANT) &&  // VB Script
+        IDs.vt != (VT_ARRAY | VT_I2)      &&  // VB/C++
+        IDs.vt != (VT_ARRAY | VT_I4) )        // VB/C++
    {
       return Error(IDS_E_AREA,IID_IMeasure,COGO_E_AREA);
    }
 
    // Extract the SAFEARRAY
-   SAFEARRAY* pKeys;
-   if ( keys.vt & VT_BYREF )
+   SAFEARRAY* pIDs;
+   if ( IDs.vt & VT_BYREF )
    {
-      if ( !(keys.pvarVal->vt & (VT_BYREF | VT_ARRAY)) )
+      if ( !(IDs.pvarVal->vt & (VT_BYREF | VT_ARRAY)) )
          return Error(IDS_E_AREA,IID_IMeasure,COGO_E_AREA);
 
-      pKeys = *(keys.pvarVal->pparray); // VBScript
+      pIDs = *(IDs.pvarVal->pparray); // VBScript
    }
    else
    {
-      pKeys = keys.parray; // VB or C++
+      pIDs = IDs.parray; // VB or C++
    }
 
    // Check out the safe array. Make sure it is the right size
    // and contains the right stuff
    HRESULT hr;
    VARTYPE vt;
-   hr = SafeArrayGetVartype(pKeys,&vt);
+   hr = SafeArrayGetVartype(pIDs,&vt);
    if ( FAILED(hr) )
       return hr;
 
-   if ( keys.vt & VT_BYREF && vt != VT_VARIANT )
+   if ( IDs.vt & VT_BYREF && vt != VT_VARIANT )
       return Error(IDS_E_AREA,IID_IMeasure,COGO_E_AREA);
 
-   if ( keys.vt & VT_ARRAY && vt != VT_I4 && vt != VT_I2 )
+   if ( IDs.vt & VT_ARRAY && vt != VT_I4 && vt != VT_I2 )
       return Error(IDS_E_AREA,IID_IMeasure,COGO_E_AREA);
 
    // Make sure this is a 1 dimensional array
-   if ( SafeArrayGetDim(pKeys) != 1 )
+   if ( SafeArrayGetDim(pIDs) != 1 )
       return Error(IDS_E_AREA,IID_IMeasure,COGO_E_AREA);
 
    // Need a container to hold the points
@@ -506,8 +499,8 @@ STDMETHODIMP CCogoModel::Area(VARIANT keys,Float64* area)
    // Get the array bounds, loop over the array,
    // find the specified points, and build up the polyshape
    long lb,ub;
-   SafeArrayGetLBound(pKeys,1,&lb);
-   SafeArrayGetUBound(pKeys,1,&ub);
+   SafeArrayGetLBound(pIDs,1,&lb);
+   SafeArrayGetUBound(pIDs,1,&ub);
    if ( (ub - lb + 1) < 3 )
    {
       // Must consist of at least 3 points
@@ -516,24 +509,24 @@ STDMETHODIMP CCogoModel::Area(VARIANT keys,Float64* area)
 
    for ( long i = lb; i <= ub; i++ )
    {
-      LONG key;
-      VARIANT varKey;
-      if ( pKeys->fFeatures & FADF_VARIANT )
+      LONG ID;
+      VARIANT varID;
+      if ( pIDs->fFeatures & FADF_VARIANT )
       {
          // VBScript
-         hr = SafeArrayGetElement(pKeys,&i,&varKey);
+         hr = SafeArrayGetElement(pIDs,&i,&varID);
          ATLASSERT(SUCCEEDED(hr));
-         key = varKey.iVal;
+         ID = varID.iVal;
       }
       else
       {
          // VB
-         hr = SafeArrayGetElement(pKeys,&i,&key);
+         hr = SafeArrayGetElement(pIDs,&i,&ID);
          ATLASSERT(SUCCEEDED(hr));
       }
 
       CComPtr<IPoint2d> point;
-      hr = m_Points->get_Item(key,&point);
+      hr = m_Points->get_Item(ID,&point);
       if ( FAILED(hr) )
          return hr;
 
@@ -1249,9 +1242,9 @@ STDMETHODIMP CCogoModel::Arc(CogoObjectID firstID, CogoObjectID idInc, CogoObjec
    CComPtr<IPoint2d> pnt;
    for ( CollectionIndexType i = 0; i < nParts-1; i++ )
    {
-      CogoObjectID key = CogoObjectID(firstID + i*idInc);
+      CogoObjectID id = CogoObjectID(firstID + i*idInc);
       pnt.Release();
-      hr = m_Points->get_Item(key,&pnt);
+      hr = m_Points->get_Item(id,&pnt);
       if ( SUCCEEDED(hr) )
          return Error(IDS_E_POINTALREADYDEFINED,IID_IDivide,COGO_E_POINTALREADYDEFINED);
    }
@@ -1282,7 +1275,7 @@ STDMETHODIMP CCogoModel::Arc(CogoObjectID firstID, CogoObjectID idInc, CogoObjec
    // Store the points in the points collection
    for (CollectionIndexType i = 0; i < nParts-1; i++)
    {
-      CogoObjectID key = firstID + i*idInc;
+      CogoObjectID id = firstID + i*idInc;
       CComPtr<IPoint2d> p;
       points->get_Item(i+1,&p); // get the point from the collection
 
@@ -1292,7 +1285,7 @@ STDMETHODIMP CCogoModel::Arc(CogoObjectID firstID, CogoObjectID idInc, CogoObjec
       // If not, a factory got let in that shouldn't have
       ATLASSERT(pEx != NULL);
 
-      hr = m_Points->AddEx(key,pEx); // add it to the cogo model
+      hr = m_Points->AddEx(id,pEx); // add it to the cogo model
       ATLASSERT(SUCCEEDED(hr));
    }
 
@@ -1312,9 +1305,9 @@ STDMETHODIMP CCogoModel::BetweenPoints(CogoObjectID firstID, CogoObjectID idInc,
    CComPtr<IPoint2d> pnt;
    for ( CollectionIndexType i = 0; i < nParts-1; i++ )
    {
-      CogoObjectID key = CogoObjectID(firstID + i*idInc);
+      CogoObjectID id = CogoObjectID(firstID + i*idInc);
       pnt.Release();
-      hr = m_Points->get_Item(key,&pnt);
+      hr = m_Points->get_Item(id,&pnt);
       if ( SUCCEEDED(hr) )
          return Error(IDS_E_POINTALREADYDEFINED,IID_IDivide,COGO_E_POINTALREADYDEFINED);
    }
@@ -1340,7 +1333,7 @@ STDMETHODIMP CCogoModel::BetweenPoints(CogoObjectID firstID, CogoObjectID idInc,
    // Store the points in the points collection
    for (CollectionIndexType i = 0; i < nParts-1; i++)
    {
-      CogoObjectID key = firstID + i*idInc;
+      CogoObjectID id = firstID + i*idInc;
       CComPtr<IPoint2d> p;
       points->get_Item(i+1,&p); // get the point from the collection
 
@@ -1350,7 +1343,7 @@ STDMETHODIMP CCogoModel::BetweenPoints(CogoObjectID firstID, CogoObjectID idInc,
       // If not, a factory got let in that shouldn't have
       ATLASSERT(pEx != NULL);
 
-      hr = m_Points->AddEx(key,pEx); // add it to the cogo model
+      hr = m_Points->AddEx(id,pEx); // add it to the cogo model
       ATLASSERT(SUCCEEDED(hr));
    }
 
@@ -1370,9 +1363,9 @@ STDMETHODIMP CCogoModel::LineSegment(CogoObjectID firstID, CogoObjectID idInc, C
    CComPtr<IPoint2d> pnt;
    for ( CollectionIndexType i = 0; i < nParts-1; i++ )
    {
-      CogoObjectID key = CogoObjectID(firstID + i*idInc);
+      CogoObjectID id = CogoObjectID(firstID + i*idInc);
       pnt.Release();
-      hr = m_Points->get_Item(key,&pnt);
+      hr = m_Points->get_Item(id,&pnt);
       if ( SUCCEEDED(hr) )
          return Error(IDS_E_POINTALREADYDEFINED,IID_IDivide,COGO_E_POINTALREADYDEFINED);
    }
@@ -1393,7 +1386,7 @@ STDMETHODIMP CCogoModel::LineSegment(CogoObjectID firstID, CogoObjectID idInc, C
    // Store the points in the points collection
    for (CollectionIndexType i = 0; i < nParts-1; i++)
    {
-      CogoObjectID key = firstID + i*idInc;
+      CogoObjectID id = firstID + i*idInc;
       CComPtr<IPoint2d> p;
       points->get_Item(i+1,&p); // get the point from the collection
 
@@ -1403,7 +1396,7 @@ STDMETHODIMP CCogoModel::LineSegment(CogoObjectID firstID, CogoObjectID idInc, C
       // If not, a factory got let in that shouldn't have
       ATLASSERT(pEx != NULL);
 
-      hr = m_Points->AddEx(key,pEx); // add it to the cogo model
+      hr = m_Points->AddEx(id,pEx); // add it to the cogo model
       ATLASSERT(SUCCEEDED(hr));
    }
 
@@ -1423,9 +1416,9 @@ STDMETHODIMP CCogoModel::HorzCurve(CogoObjectID firstID, CogoObjectID idInc, Cog
    CComPtr<IPoint2d> pnt;
    for ( CollectionIndexType i = 0; i < nParts-1; i++ )
    {
-      CogoObjectID key = firstID + i*idInc;
+      CogoObjectID id = firstID + i*idInc;
       pnt.Release();
-      hr = m_Points->get_Item(key,&pnt);
+      hr = m_Points->get_Item(id,&pnt);
       if ( SUCCEEDED(hr) )
          return Error(IDS_E_POINTALREADYDEFINED,IID_IDivide,COGO_E_POINTALREADYDEFINED);
    }
@@ -1450,7 +1443,7 @@ STDMETHODIMP CCogoModel::HorzCurve(CogoObjectID firstID, CogoObjectID idInc, Cog
    CogoObjectID i = 0;
    while ( enum_points->Next(1,&p,NULL) != S_FALSE )
    {
-      CogoObjectID key = firstID + i*idInc;
+      CogoObjectID id = firstID + i*idInc;
 
       CComQIPtr<IPoint2d> pEx(p);
 
@@ -1458,7 +1451,7 @@ STDMETHODIMP CCogoModel::HorzCurve(CogoObjectID firstID, CogoObjectID idInc, Cog
       // If not, a factory got let in that shouldn't have
       ATLASSERT(pEx != NULL);
 
-      hr = m_Points->AddEx(key,pEx); // add it to the cogo model
+      hr = m_Points->AddEx(id,pEx); // add it to the cogo model
       if ( FAILED(hr) )
          return hr;
 
@@ -1482,9 +1475,9 @@ STDMETHODIMP CCogoModel::Path(CogoObjectID firstID,CogoObjectID idInc,CogoObject
    CComPtr<IPoint2d> pnt;
    for ( CollectionIndexType i = 0; i < nParts-1; i++ )
    {
-      CogoObjectID key = firstID + i*idInc;
+      CogoObjectID id = firstID + i*idInc;
       pnt.Release();
-      hr = m_Points->get_Item(key,&pnt);
+      hr = m_Points->get_Item(id,&pnt);
       if ( SUCCEEDED(hr) )
          return Error(IDS_E_POINTALREADYDEFINED,IID_IDivide,COGO_E_POINTALREADYDEFINED);
    }
@@ -1509,7 +1502,7 @@ STDMETHODIMP CCogoModel::Path(CogoObjectID firstID,CogoObjectID idInc,CogoObject
    CogoObjectID i = 0;
    while ( enum_points->Next(1,&p,NULL) != S_FALSE )
    {
-      CogoObjectID key = firstID + i*idInc;
+      CogoObjectID id = firstID + i*idInc;
 
       CComQIPtr<IPoint2d> pEx(p);
 
@@ -1517,7 +1510,7 @@ STDMETHODIMP CCogoModel::Path(CogoObjectID firstID,CogoObjectID idInc,CogoObject
       // If not, a factory got let in that shouldn't have
       ATLASSERT(pEx != NULL);
 
-      hr = m_Points->AddEx(key,pEx); // add it to the cogo model
+      hr = m_Points->AddEx(id,pEx); // add it to the cogo model
       if ( FAILED(hr) )
          return hr;
 
@@ -1757,21 +1750,21 @@ STDMETHODIMP CCogoModel::Load(IStructuredLoad2* pLoad)
 
 ////////////////////////////////////////////////////////
 // IPointCollectionEvents
-STDMETHODIMP CCogoModel::OnPointChanged(CogoObjectID key,IPoint2d* point)
+STDMETHODIMP CCogoModel::OnPointChanged(CogoObjectID id,IPoint2d* point)
 {
-   Fire_OnPointChanged(this,key,point);
+   Fire_OnPointChanged(this,id,point);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnPointAdded(CogoObjectID key,IPoint2d* point)
+STDMETHODIMP CCogoModel::OnPointAdded(CogoObjectID id,IPoint2d* point)
 {
-   Fire_OnPointAdded(this,key,point);
+   Fire_OnPointAdded(this,id,point);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnPointRemoved(CogoObjectID key)
+STDMETHODIMP CCogoModel::OnPointRemoved(CogoObjectID id)
 {
-   Fire_OnPointRemoved(this,key);
+   Fire_OnPointRemoved(this,id);
    return S_OK;
 }
 
@@ -1783,21 +1776,21 @@ STDMETHODIMP CCogoModel::OnPointsCleared()
 
 ////////////////////////////////////////////////////////
 // ILineSegmentCollectionEvents
-STDMETHODIMP CCogoModel::OnLineSegmentChanged(CogoObjectID key, ILineSegment2d* lineSeg)
+STDMETHODIMP CCogoModel::OnLineSegmentChanged(CogoObjectID id, ILineSegment2d* lineSeg)
 {
-   Fire_OnLineSegmentChanged(this,key,lineSeg);
+   Fire_OnLineSegmentChanged(this,id,lineSeg);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnLineSegmentAdded(CogoObjectID key, ILineSegment2d* lineSeg)
+STDMETHODIMP CCogoModel::OnLineSegmentAdded(CogoObjectID id, ILineSegment2d* lineSeg)
 {
-   Fire_OnLineSegmentAdded(this,key,lineSeg);
+   Fire_OnLineSegmentAdded(this,id,lineSeg);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnLineSegmentRemoved(CogoObjectID key)
+STDMETHODIMP CCogoModel::OnLineSegmentRemoved(CogoObjectID id)
 {
-   Fire_OnLineSegmentRemoved(this,key);
+   Fire_OnLineSegmentRemoved(this,id);
    return S_OK;
 }
 
@@ -1809,21 +1802,21 @@ STDMETHODIMP CCogoModel::OnLineSegmentsCleared()
 
 ////////////////////////////////////////////////////////
 // IProfilePointCollectionEvents
-STDMETHODIMP CCogoModel::OnProfilePointChanged(CogoObjectID key,IProfilePoint* pp)
+STDMETHODIMP CCogoModel::OnProfilePointChanged(CogoObjectID id,IProfilePoint* pp)
 {
-   Fire_OnProfilePointChanged(this,key,pp);
+   Fire_OnProfilePointChanged(this,id,pp);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnProfilePointAdded(CogoObjectID key,IProfilePoint* pp)
+STDMETHODIMP CCogoModel::OnProfilePointAdded(CogoObjectID id,IProfilePoint* pp)
 {
-   Fire_OnProfilePointAdded(this,key,pp);
+   Fire_OnProfilePointAdded(this,id,pp);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnProfilePointRemoved(CogoObjectID key)
+STDMETHODIMP CCogoModel::OnProfilePointRemoved(CogoObjectID id)
 {
-   Fire_OnProfilePointRemoved(this,key);
+   Fire_OnProfilePointRemoved(this,id);
    return S_OK;
 }
 
@@ -1835,21 +1828,21 @@ STDMETHODIMP CCogoModel::OnProfilePointsCleared()
 
 ////////////////////////////////////////////////////////
 // IVertCurveCollectionEvents
-STDMETHODIMP CCogoModel::OnVertCurveChanged(CogoObjectID key,IVertCurve* vc)
+STDMETHODIMP CCogoModel::OnVertCurveChanged(CogoObjectID id,IVertCurve* vc)
 {
-   Fire_OnVertCurveChanged(this,key,vc);
+   Fire_OnVertCurveChanged(this,id,vc);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnVertCurveAdded(CogoObjectID key,IVertCurve* vc)
+STDMETHODIMP CCogoModel::OnVertCurveAdded(CogoObjectID id,IVertCurve* vc)
 {
-   Fire_OnVertCurveAdded(this,key,vc);
+   Fire_OnVertCurveAdded(this,id,vc);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnVertCurveRemoved(CogoObjectID key)
+STDMETHODIMP CCogoModel::OnVertCurveRemoved(CogoObjectID id)
 {
-   Fire_OnVertCurveRemoved(this,key);
+   Fire_OnVertCurveRemoved(this,id);
    return S_OK;
 }
 
@@ -1861,21 +1854,21 @@ STDMETHODIMP CCogoModel::OnVertCurvesCleared()
 
 ////////////////////////////////////////////////////////
 // IHorzCurveCollectionEvents
-STDMETHODIMP CCogoModel::OnHorzCurveChanged(CogoObjectID key,IHorzCurve* hc)
+STDMETHODIMP CCogoModel::OnHorzCurveChanged(CogoObjectID id,IHorzCurve* hc)
 {
-   Fire_OnHorzCurveChanged(this,key,hc);
+   Fire_OnHorzCurveChanged(this,id,hc);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnHorzCurveAdded(CogoObjectID key,IHorzCurve* hc)
+STDMETHODIMP CCogoModel::OnHorzCurveAdded(CogoObjectID id,IHorzCurve* hc)
 {
-   Fire_OnHorzCurveAdded(this,key,hc);
+   Fire_OnHorzCurveAdded(this,id,hc);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnHorzCurveRemoved(CogoObjectID key)
+STDMETHODIMP CCogoModel::OnHorzCurveRemoved(CogoObjectID id)
 {
-   Fire_OnHorzCurveRemoved(this,key);
+   Fire_OnHorzCurveRemoved(this,id);
    return S_OK;
 }
 
@@ -1888,40 +1881,34 @@ STDMETHODIMP CCogoModel::OnHorzCurvesCleared()
 ////////////////////////////////////////////////////////
 // IPathCollectionEvents
 
-STDMETHODIMP CCogoModel::OnProfileChanged(IPathCollection* coll,IProfile* profile)
-{
-   Fire_OnProfileChanged(this,profile);
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnPathChanged(IPathCollection* coll,CogoObjectID key,IPath* path)
+STDMETHODIMP CCogoModel::OnPathChanged(IPathCollection* coll,CogoObjectID id,IPath* path)
 {
    CComQIPtr<IAlignment> alignment(path);
    if ( m_Alignments.IsEqualObject(coll) )
-      Fire_OnAlignmentChanged(this,key,alignment);
+      Fire_OnAlignmentChanged(this,id,alignment);
    else
-      Fire_OnPathChanged(this,key,path);
+      Fire_OnPathChanged(this,id,path);
 
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnPathAdded(IPathCollection* coll,CogoObjectID key,IPath* path)
+STDMETHODIMP CCogoModel::OnPathAdded(IPathCollection* coll,CogoObjectID id,IPath* path)
 {
    CComQIPtr<IAlignment> alignment(path);
    if ( m_Alignments.IsEqualObject(coll) )
-      Fire_OnAlignmentAdded(this,key,alignment);
+      Fire_OnAlignmentAdded(this,id,alignment);
    else
-      Fire_OnPathAdded(this,key,path);
+      Fire_OnPathAdded(this,id,path);
 
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnPathRemoved(IPathCollection* coll,CogoObjectID key)
+STDMETHODIMP CCogoModel::OnPathRemoved(IPathCollection* coll,CogoObjectID id)
 {
    if ( m_Alignments.IsEqualObject(coll) )
-      Fire_OnAlignmentRemoved(this,key);
+      Fire_OnAlignmentRemoved(this,id);
    else
-      Fire_OnPathRemoved(this,key);
+      Fire_OnPathRemoved(this,id);
 
    return S_OK;
 }
@@ -1932,6 +1919,63 @@ STDMETHODIMP CCogoModel::OnPathsCleared(IPathCollection* coll)
       Fire_OnAlignmentsCleared(this);
    else
       Fire_OnPathsCleared(this);
+
+   return S_OK;
+}
+
+////////////////////////////////////////////////////////
+// IAlignmentCollectionEvents
+
+STDMETHODIMP CCogoModel::OnProfileChanged(IAlignmentCollection* coll,IProfile* profile)
+{
+   Fire_OnProfileChanged(this,profile);
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::OnStationEquationsChanged(IAlignmentCollection* coll,IStationEquationCollection* equations)
+{
+   Fire_OnStationEquationsChanged(this,equations);
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::OnAlignmentChanged(IAlignmentCollection* coll,CogoObjectID id,IAlignment* Alignment)
+{
+   CComQIPtr<IAlignment> alignment(Alignment);
+   if ( m_Alignments.IsEqualObject(coll) )
+      Fire_OnAlignmentChanged(this,id,alignment);
+   else
+      Fire_OnAlignmentChanged(this,id,Alignment);
+
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::OnAlignmentAdded(IAlignmentCollection* coll,CogoObjectID id,IAlignment* Alignment)
+{
+   CComQIPtr<IAlignment> alignment(Alignment);
+   if ( m_Alignments.IsEqualObject(coll) )
+      Fire_OnAlignmentAdded(this,id,alignment);
+   else
+      Fire_OnAlignmentAdded(this,id,Alignment);
+
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::OnAlignmentRemoved(IAlignmentCollection* coll,CogoObjectID id)
+{
+   if ( m_Alignments.IsEqualObject(coll) )
+      Fire_OnAlignmentRemoved(this,id);
+   else
+      Fire_OnAlignmentRemoved(this,id);
+
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::OnAlignmentsCleared(IAlignmentCollection* coll)
+{
+   if ( m_Alignments.IsEqualObject(coll) )
+      Fire_OnAlignmentsCleared(this);
+   else
+      Fire_OnAlignmentsCleared(this);
 
    return S_OK;
 }

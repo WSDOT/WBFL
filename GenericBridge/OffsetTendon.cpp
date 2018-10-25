@@ -42,6 +42,7 @@ HRESULT COffsetTendon::FinalConstruct()
 {
    m_DuctDiameter     = 0.0;
    m_StrandCount    = 0;
+   m_JackingEnd = jeLeft;
 
    return S_OK;
 }
@@ -288,6 +289,19 @@ STDMETHODIMP COffsetTendon::get_End(IPoint3d** end)
    y += offset_y;
    (*end)->put_Y(y);
 
+   return S_OK;
+}
+
+STDMETHODIMP COffsetTendon::get_JackingEnd(JackingEndType* type)
+{
+   CHECK_RETVAL(type);
+   *type = m_JackingEnd;
+   return S_OK;
+}
+
+STDMETHODIMP COffsetTendon::put_JackingEnd(JackingEndType type)
+{
+   m_JackingEnd = type;
    return S_OK;
 }
 

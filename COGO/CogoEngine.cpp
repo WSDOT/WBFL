@@ -31,7 +31,6 @@
 #include "LineSegmentFactory.h"
 #include "Angle.h"
 #include "CogoHelpers.h"
-#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

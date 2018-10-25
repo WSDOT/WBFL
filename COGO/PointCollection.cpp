@@ -51,14 +51,14 @@ void CPointCollection::FinalRelease()
 }
 
 
-STDMETHODIMP CPointCollection::get_Item(CogoObjectID key, IPoint2d **pVal)
+STDMETHODIMP CPointCollection::get_Item(CogoObjectID id, IPoint2d **pVal)
 {
    CHECK_RETVAL(pVal);
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found == m_coll.end() )
    {
-      return PointNotFound(key);
+      return PointNotFound(id);
    }
 
    std::pair<CogoObjectID,CComVariant> p = *found;
@@ -67,26 +67,26 @@ STDMETHODIMP CPointCollection::get_Item(CogoObjectID key, IPoint2d **pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CPointCollection::putref_Item(CogoObjectID key, IPoint2d *newVal)
+STDMETHODIMP CPointCollection::putref_Item(CogoObjectID id, IPoint2d *newVal)
 {
    CHECK_IN(newVal);
 
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found == m_coll.end() )
    {
-      return PointNotFound(key);
+      return PointNotFound(id);
    }
 
    CComVariant& var = (*found).second;
 
    CComQIPtr<IPoint2d> old_point(var.pdispVal);
-   Unadvise(key,old_point);
+   Unadvise(id,old_point);
 
    var = newVal;
-   Advise(key,newVal);
+   Advise(id,newVal);
 
-   Fire_OnPointChanged(key,newVal);
+   Fire_OnPointChanged(id,newVal);
 
 	return S_OK;
 }
@@ -98,27 +98,27 @@ STDMETHODIMP CPointCollection::get_Count(CollectionIndexType *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CPointCollection::Remove(CogoObjectID key)
+STDMETHODIMP CPointCollection::Remove(CogoObjectID id)
 {
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found == m_coll.end() )
    {
-      return PointNotFound(key);
+      return PointNotFound(id);
    }
 
    CComVariant& var = (*found).second;
    CComQIPtr<IPoint2d> point(var.pdispVal);
-   Unadvise(key,point);
+   Unadvise(id,point);
 
    m_coll.erase(found);
 
-   Fire_OnPointRemoved(key);
+   Fire_OnPointRemoved(id);
 
 	return S_OK;
 }
 
-STDMETHODIMP CPointCollection::Add(CogoObjectID key, Float64 x, Float64 y,IPoint2d* *point)
+STDMETHODIMP CPointCollection::Add(CogoObjectID id, Float64 x, Float64 y,IPoint2d* *point)
 {
    if ( point != NULL )
    {
@@ -136,33 +136,33 @@ STDMETHODIMP CPointCollection::Add(CogoObjectID key, Float64 x, Float64 y,IPoint
       (*point)->AddRef();
    }
 
-   return AddEx(key,newPoint);
+   return AddEx(id,newPoint);
 }
 
-STDMETHODIMP CPointCollection::AddEx(CogoObjectID key, IPoint2d* newVal)
+STDMETHODIMP CPointCollection::AddEx(CogoObjectID id, IPoint2d* newVal)
 {
    CHECK_IN(newVal);
    
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found != m_coll.end() )
    {
-      return PointAlreadyDefined(key);
+      return PointAlreadyDefined(id);
    }
 
    CComQIPtr<IUnknown,&IID_IUnknown> pDisp(newVal);
    CComVariant var(pDisp);
    std::pair<std::map<CogoObjectID,CComVariant>::iterator,bool> result;
-   result = m_coll.insert(std::make_pair(key,var));
+   result = m_coll.insert(std::make_pair(id,var));
    if ( result.second == false )
    {
       return E_FAIL;
    }
 
    // Hookup to the connection point
-   Advise(key,newVal);
+   Advise(id,newVal);
 
-   Fire_OnPointAdded(key,newVal);
+   Fire_OnPointAdded(id,newVal);
 
 	return S_OK;
 }
@@ -175,10 +175,10 @@ STDMETHODIMP CPointCollection::Clear()
 	return S_OK;
 }
 
-STDMETHODIMP CPointCollection::FindKey(IPoint2d* point,CogoObjectID* key)
+STDMETHODIMP CPointCollection::FindID(IPoint2d* point,CogoObjectID* id)
 {
    CHECK_IN(point);
-   CHECK_RETVAL(key);
+   CHECK_RETVAL(id);
 
    std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
@@ -188,7 +188,7 @@ STDMETHODIMP CPointCollection::FindKey(IPoint2d* point,CogoObjectID* key)
       ATLASSERT( value != NULL );
       if ( value.IsEqualObject(point) )
       {
-         *key = item.first;
+         *id = item.first;
          return S_OK;
       }
    }
@@ -196,11 +196,11 @@ STDMETHODIMP CPointCollection::FindKey(IPoint2d* point,CogoObjectID* key)
    return E_FAIL;
 }
 
-STDMETHODIMP CPointCollection::get__EnumKeys(IEnumKeys** ppenum)
+STDMETHODIMP CPointCollection::get__EnumIDs(IEnumIDs** ppenum)
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumKeys,&IID_IEnumKeys, CogoObjectID, MapCopyKey<std::map<CogoObjectID,CComVariant>>, std::map<CogoObjectID,CComVariant> > Enum;
+   typedef CComEnumOnSTL<IEnumIDs,&IID_IEnumIDs, CogoObjectID, MapCopyID<std::map<CogoObjectID,CComVariant>>, std::map<CogoObjectID,CComVariant> > Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -230,9 +230,9 @@ STDMETHODIMP CPointCollection::putref_Factory(IPoint2dFactory* factory)
    return S_OK;
 }
 
-STDMETHODIMP CPointCollection::Key(CollectionIndexType index,CogoObjectID* key)
+STDMETHODIMP CPointCollection::ID(CollectionIndexType index,CogoObjectID* id)
 {
-   CHECK_RETVAL(key);
+   CHECK_RETVAL(id);
 
    if ( !IsValidIndex(index,m_coll) )
       return E_INVALIDARG;
@@ -242,7 +242,7 @@ STDMETHODIMP CPointCollection::Key(CollectionIndexType index,CogoObjectID* key)
       iter++;
 
    std::pair<CogoObjectID,CComVariant> p = *iter;
-   *key = p.first;
+   *id = p.first;
 
    return S_OK;
 }
@@ -289,10 +289,10 @@ STDMETHODIMP CPointCollection::Clone(IPointCollection* *clone)
 
       clonePoint->MoveEx(point);
 
-      CogoObjectID key;
-      Key(count++,&key);
+      CogoObjectID id;
+      ID(count++,&id);
 
-      (*clone)->AddEx(key,clonePoint);
+      (*clone)->AddEx(id,clonePoint);
 
       point.Release();
    };
@@ -325,7 +325,7 @@ STDMETHODIMP CPointCollection::Clone(IPointCollection* *clone)
 //      pSave->BeginUnit(CComBSTR("Point"),1.0);
 //
 //      std::pair<const long,CComVariant>& pair = *iter;
-//      pSave->put_Property(CComBSTR("Key"),CComVariant(pair.first));
+//      pSave->put_Property(CComBSTR("ID"),CComVariant(pair.first));
 //      pSave->put_Property(CComBSTR("Value"),CComVariant(pair.second));
 //
 //      pSave->EndUnit();
@@ -355,17 +355,17 @@ STDMETHODIMP CPointCollection::Clone(IPointCollection* *clone)
 //
 //   for ( long i = 0; i < count; i++ )
 //   {
-//      long key;
+//      long ID;
 //      pLoad->BeginUnit(CComBSTR("Point"));
 //
-//      pLoad->get_Property(CComBSTR("key"),&var);
-//      key = var;
+//      pLoad->get_Property(CComBSTR("ID"),&var);
+//      ID = var;
 //
 //      pLoad->get_Property(CComBSTR("Value"),&var);
 //      CComPtr<IPoint2d> point;
 //      _CopyVariantToInterface<IPoint2d>::copy(&point,&var);
 //
-//      AddEx(key,point);
+//      AddEx(ID,point);
 //
 //      pLoad->EndUnit(&bEnd);
 //   }
@@ -398,17 +398,17 @@ STDMETHODIMP CPointCollection::OnPointChanged(IPoint2d* point)
    // Better be listening only to IPoint2d objects
    ATLASSERT( pointEx != NULL );
 
-   CogoObjectID key;
-   HRESULT hr = FindKey(pointEx,&key);
+   CogoObjectID id;
+   HRESULT hr = FindID(pointEx,&id);
 
    // This container only listens to events from point objects in this 
-   // container. If the key isn't found an error has been made somewhere
-   Fire_OnPointChanged(key,pointEx);
+   // container. If the id isn't found an error has been made somewhere
+   Fire_OnPointChanged(id,pointEx);
 
    return S_OK;
 }
 
-void CPointCollection::Advise(CogoObjectID key,IPoint2d* point)
+void CPointCollection::Advise(CogoObjectID id,IPoint2d* point)
 {
    ATLASSERT(point != 0);
 
@@ -421,12 +421,12 @@ void CPointCollection::Advise(CogoObjectID key,IPoint2d* point)
       return;
    }
 
-   m_Cookies.insert( std::make_pair(key,dwCookie) );
+   m_Cookies.insert( std::make_pair(id,dwCookie) );
 
    InternalRelease(); // Break circular reference
 }
 
-void CPointCollection::Unadvise(CogoObjectID key,IPoint2d* point)
+void CPointCollection::Unadvise(CogoObjectID id,IPoint2d* point)
 {
    ATLASSERT(point != 0);
 
@@ -436,7 +436,7 @@ void CPointCollection::Unadvise(CogoObjectID key,IPoint2d* point)
 
    // Lookup the cookie
    std::map<CogoObjectID,DWORD>::iterator found;
-   found = m_Cookies.find( key );
+   found = m_Cookies.find( id );
    if ( found == m_Cookies.end() )
    {
       ATLTRACE("Failed to disconnect connection point with Point object\n");
@@ -454,7 +454,7 @@ void CPointCollection::Unadvise(CogoObjectID key,IPoint2d* point)
    ATLASSERT(SUCCEEDED(hr));
 
    // Remove cookie from map
-   m_Cookies.erase( key );
+   m_Cookies.erase( id );
 }
 
 void CPointCollection::UnadviseAll()
@@ -462,30 +462,30 @@ void CPointCollection::UnadviseAll()
    std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
    {
-      CogoObjectID key = (*iter).first;
+      CogoObjectID id = (*iter).first;
       CComQIPtr<IPoint2d> point( (*iter).second.pdispVal );
-      Unadvise(key,point);
+      Unadvise(id,point);
    }
 }
 
-HRESULT CPointCollection::PointNotFound(CogoObjectID key)
+HRESULT CPointCollection::PointNotFound(CogoObjectID id)
 {
-   return PointKeyError(key,IDS_E_POINTNOTFOUND,COGO_E_POINTNOTFOUND);
+   return PointIDError(id,IDS_E_POINTNOTFOUND,COGO_E_POINTNOTFOUND);
 }
 
-HRESULT CPointCollection::PointAlreadyDefined(CogoObjectID key)
+HRESULT CPointCollection::PointAlreadyDefined(CogoObjectID id)
 {
-   return PointKeyError(key,IDS_E_POINTALREADYDEFINED,COGO_E_POINTALREADYDEFINED);
+   return PointIDError(id,IDS_E_POINTALREADYDEFINED,COGO_E_POINTALREADYDEFINED);
 }
 
-HRESULT CPointCollection::PointKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes)
+HRESULT CPointCollection::PointIDError(CogoObjectID id,UINT nHelpString,HRESULT hRes)
 {
    USES_CONVERSION;
 
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nHelpString, str, 256);
    TCHAR msg[256];
-   int cOut = _stprintf_s( msg, 256, str, key );
+   int cOut = _stprintf_s( msg, 256, str, id );
    _ASSERTE( cOut < 256 );
    CComBSTR oleMsg(msg);
    return Error(oleMsg, IID_IPointCollection, hRes);

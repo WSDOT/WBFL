@@ -49,6 +49,12 @@ public:
 
    CGenericBridge()
 	{
+      m_WearingSurfaceDepth = 0;
+      m_WearingSurfaceDensity = 0;
+      m_WearingSurfaceStage = INVALID_INDEX;
+
+      m_SacrificialDepth = 0;
+      m_SacrificialDepthStage = INVALID_INDEX;
    }
 
    HRESULT FinalConstruct();
@@ -74,6 +80,13 @@ private:
    CComPtr<IPierCollection> m_Piers;
 
    CComPtr<IBridgeGeometry> m_BridgeGeometry;
+
+   Float64 m_WearingSurfaceDepth;
+   Float64 m_WearingSurfaceDensity;
+   StageIndexType m_WearingSurfaceStage; // stage when wearing surface is applied (not applied if INVALID_INDEX)
+
+   Float64 m_SacrificialDepth;
+   StageIndexType m_SacrificialDepthStage; // stage when deck surface is assumed to be reduced by the sacrifical depth (INVALID_INDEX if not used)
 
    CComPtr<IBridgeDeck> m_Deck;
 
@@ -102,6 +115,16 @@ public:
 	STDMETHOD(putref_LeftBarrier)(/*[in]*/ ISidewalkBarrier* barrier);
 	STDMETHOD(get_RightBarrier)(/*[out,retval]*/ ISidewalkBarrier** barrier);
 	STDMETHOD(putref_RightBarrier)(/*[in]*/ ISidewalkBarrier* barrier);
+   STDMETHOD(get_WearingSurfaceStage)(/*[out,retval]*/StageIndexType* stage);
+	STDMETHOD(put_WearingSurfaceStage)(/*[in]*/StageIndexType stage);
+	STDMETHOD(get_WearingSurfaceDepth)(/*[out,retval]*/Float64* d);
+	STDMETHOD(put_WearingSurfaceDepth)(/*[in]*/Float64 d);
+	STDMETHOD(get_WearingSurfaceDensity)(/*[out,retval]*/Float64* d);
+	STDMETHOD(put_WearingSurfaceDensity)(/*[in]*/Float64 d);
+	STDMETHOD(get_SacrificialDepth)(/*[out,retval]*/Float64* depth);
+	STDMETHOD(put_SacrificialDepth)(/*[in]*/Float64 depth);
+   STDMETHOD(get_SacrificialDepthStage)(/*[out,retval]*/StageIndexType* stage);
+	STDMETHOD(put_SacrificialDepthStage)(/*[in]*/StageIndexType stage);
    STDMETHOD(CreateSuperstructureMember)(GirderIDType id,LocationType locationType,ISuperstructureMember** ppMbr);
    STDMETHOD(get_SuperstructureMember)(GirderIDType id,ISuperstructureMember** ppMbr);
    STDMETHOD(get__EnumSuperstructureMembers)(IEnumSuperstructureMembers* *enumSSMbrs);

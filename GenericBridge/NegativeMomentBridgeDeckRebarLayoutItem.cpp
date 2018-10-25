@@ -148,7 +148,10 @@ STDMETHODIMP CNegativeMomentBridgeDeckRebarLayoutItem::put_Pier(PierIndexType pi
    firstPier->get_Station(&firstStation);
    m_Pier->get_Station(&pierStation);
 
-   pierStation->Distance(firstStation,&m_PierLocation);
+   CComPtr<IAlignment> alignment;
+   m_pBridge->get_Alignment(&alignment);
+
+   alignment->DistanceBetweenStations(CComVariant(pierStation),CComVariant(firstStation),&m_PierLocation);
 
    return S_OK;
 }

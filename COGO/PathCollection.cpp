@@ -52,14 +52,14 @@ void CPathCollection::FinalRelease()
    m_coll.clear();
 }
 
-STDMETHODIMP CPathCollection::get_Item(CogoObjectID key, IPath **pVal)
+STDMETHODIMP CPathCollection::get_Item(CogoObjectID id, IPath **pVal)
 {
    CHECK_RETVAL(pVal);
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found == m_coll.end() )
    {
-      return PathNotFound(key);
+      return PathNotFound(id);
    }
 
    std::pair<CogoObjectID,CComVariant> p = *found;
@@ -68,26 +68,26 @@ STDMETHODIMP CPathCollection::get_Item(CogoObjectID key, IPath **pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CPathCollection::putref_Item(CogoObjectID key, IPath *newVal)
+STDMETHODIMP CPathCollection::putref_Item(CogoObjectID id, IPath *newVal)
 {
    CHECK_IN(newVal);
 
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found == m_coll.end() )
    {
-      return PathNotFound(key);
+      return PathNotFound(id);
    }
 
    CComVariant& var = (*found).second;
 
    CComQIPtr<IPath> old_Path(var.pdispVal);
-   Unadvise(key,old_Path);
+   Unadvise(id,old_Path);
 
    var = newVal;
-   Advise(key,newVal);
+   Advise(id,newVal);
 
-   Fire_OnPathChanged(this,key,newVal);
+   Fire_OnPathChanged(this,id,newVal);
 
 	return S_OK;
 }
@@ -99,27 +99,27 @@ STDMETHODIMP CPathCollection::get_Count(CollectionIndexType *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CPathCollection::Remove(CogoObjectID key)
+STDMETHODIMP CPathCollection::Remove(CogoObjectID id)
 {
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found == m_coll.end() )
    {
-      return PathNotFound(key);
+      return PathNotFound(id);
    }
 
    CComVariant& var = (*found).second;
    CComQIPtr<IPath> pp(var.pdispVal);
-   Unadvise(key,pp);
+   Unadvise(id,pp);
 
    m_coll.erase(found);
 
-   Fire_OnPathRemoved(this,key);
+   Fire_OnPathRemoved(this,id);
 
 	return S_OK;
 }
 
-STDMETHODIMP CPathCollection::Add(CogoObjectID key, IPath* *path)
+STDMETHODIMP CPathCollection::Add(CogoObjectID id, IPath* *path)
 {
    if ( path != NULL )
    {
@@ -135,10 +135,10 @@ STDMETHODIMP CPathCollection::Add(CogoObjectID key, IPath* *path)
       (*path)->AddRef();
    }
 
-   return AddEx(key,newPath);
+   return AddEx(id,newPath);
 }
 
-STDMETHODIMP CPathCollection::AddEx(CogoObjectID key, IPath* newVal)
+STDMETHODIMP CPathCollection::AddEx(CogoObjectID id, IPath* newVal)
 {
    CHECK_IN(newVal);
 
@@ -148,20 +148,20 @@ STDMETHODIMP CPathCollection::AddEx(CogoObjectID key, IPath* newVal)
       return E_INVALIDARG;
    
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found != m_coll.end() )
    {
-      return PathAlreadyDefined(key);
+      return PathAlreadyDefined(id);
    }
 
    CComQIPtr<IUnknown,&IID_IUnknown> pDisp(newVal);
    CComVariant var(pDisp);
-   m_coll.insert(std::make_pair(key,var));
+   m_coll.insert(std::make_pair(id,var));
 
    // Hookup to the connection Path
-   Advise(key,newVal);
+   Advise(id,newVal);
 
-   Fire_OnPathAdded(this,key,newVal);
+   Fire_OnPathAdded(this,id,newVal);
 
 	return S_OK;
 }
@@ -174,10 +174,10 @@ STDMETHODIMP CPathCollection::Clear()
 	return S_OK;
 }
 
-STDMETHODIMP CPathCollection::FindKey(IPath* pp,CogoObjectID* key)
+STDMETHODIMP CPathCollection::FindID(IPath* pp,CogoObjectID* id)
 {
    CHECK_IN(pp);
-   CHECK_RETVAL(key);
+   CHECK_RETVAL(id);
 
    std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
@@ -187,7 +187,7 @@ STDMETHODIMP CPathCollection::FindKey(IPath* pp,CogoObjectID* key)
       ATLASSERT( value != NULL );
       if ( value.IsEqualObject(pp) )
       {
-         *key = item.first;
+         *id = item.first;
          return S_OK;
       }
    }
@@ -195,11 +195,11 @@ STDMETHODIMP CPathCollection::FindKey(IPath* pp,CogoObjectID* key)
    return E_FAIL;
 }
 
-STDMETHODIMP CPathCollection::get__EnumKeys(IEnumKeys** ppenum)
+STDMETHODIMP CPathCollection::get__EnumIDs(IEnumIDs** ppenum)
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumKeys,&IID_IEnumKeys, CogoObjectID, MapCopyKey<std::map<CogoObjectID,CComVariant>>, std::map<CogoObjectID,CComVariant> > Enum;
+   typedef CComEnumOnSTL<IEnumIDs,&IID_IEnumIDs, CogoObjectID, MapCopyID<std::map<CogoObjectID,CComVariant>>, std::map<CogoObjectID,CComVariant> > Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -214,9 +214,9 @@ STDMETHODIMP CPathCollection::get__EnumKeys(IEnumKeys** ppenum)
    return S_OK;
 }
 
-STDMETHODIMP CPathCollection::Key(CollectionIndexType index,CogoObjectID* key)
+STDMETHODIMP CPathCollection::ID(CollectionIndexType index,CogoObjectID* id)
 {
-   CHECK_RETVAL(key);
+   CHECK_RETVAL(id);
 
    if ( !IsValidIndex(index,m_coll) )
       return E_INVALIDARG;
@@ -226,7 +226,7 @@ STDMETHODIMP CPathCollection::Key(CollectionIndexType index,CogoObjectID* key)
       iter++;
 
    std::pair<CogoObjectID,CComVariant> p = *iter;
-   *key = p.first;
+   *id = p.first;
 
    return S_OK;
 }
@@ -286,10 +286,10 @@ STDMETHODIMP CPathCollection::Clone(IPathCollection* *clone)
       CComPtr<IPath> clonePath;
       Path->Clone(&clonePath);
 
-      CogoObjectID key;
-      Key(count++,&key);
+      CogoObjectID id;
+      ID(count++,&id);
 
-      (*clone)->AddEx(key,clonePath);
+      (*clone)->AddEx(id,clonePath);
 
       Path.Release();
    };
@@ -299,7 +299,7 @@ STDMETHODIMP CPathCollection::Clone(IPathCollection* *clone)
    return S_OK;
 }
 
-void CPathCollection::Advise(CogoObjectID key,IPath* Path)
+void CPathCollection::Advise(CogoObjectID id,IPath* Path)
 {
    DWORD dwCookie;
    HRESULT hr = AtlAdvise(Path,GetUnknown(),IID_IPathEvents,&dwCookie);
@@ -309,12 +309,12 @@ void CPathCollection::Advise(CogoObjectID key,IPath* Path)
       return;
    }
 
-   m_Cookies.insert( std::make_pair(key,dwCookie) );
+   m_Cookies.insert( std::make_pair(id,dwCookie) );
 
    InternalRelease(); // Break circular reference
 }
 
-void CPathCollection::Unadvise(CogoObjectID key,IPath* Path)
+void CPathCollection::Unadvise(CogoObjectID id,IPath* Path)
 {
    ATLASSERT(Path != 0);
 
@@ -324,7 +324,7 @@ void CPathCollection::Unadvise(CogoObjectID key,IPath* Path)
 
    // Lookup the cookie
    std::map<CogoObjectID,DWORD>::iterator found;
-   found = m_Cookies.find( key );
+   found = m_Cookies.find( id );
    if ( found == m_Cookies.end() )
    {
       ATLTRACE("Failed to disconnect connection point with Path object\n");
@@ -339,7 +339,7 @@ void CPathCollection::Unadvise(CogoObjectID key,IPath* Path)
    ATLASSERT(SUCCEEDED(hr));
 
    // Remove cookie from map
-   m_Cookies.erase( key );
+   m_Cookies.erase( id );
 }
 
 void CPathCollection::UnadviseAll()
@@ -347,30 +347,30 @@ void CPathCollection::UnadviseAll()
    std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
    {
-      CogoObjectID key = (*iter).first;
+      CogoObjectID id = (*iter).first;
       CComQIPtr<IPath> Path( (*iter).second.pdispVal );
-      Unadvise(key,Path);
+      Unadvise(id,Path);
    }
 }
 
-HRESULT CPathCollection::PathNotFound(CogoObjectID key)
+HRESULT CPathCollection::PathNotFound(CogoObjectID id)
 {
-   return PathKeyError(key,IDS_E_PATHNOTFOUND,COGO_E_PATHNOTFOUND);
+   return PathIDError(id,IDS_E_PATHNOTFOUND,COGO_E_PATHNOTFOUND);
 }
 
-HRESULT CPathCollection::PathAlreadyDefined(CogoObjectID key)
+HRESULT CPathCollection::PathAlreadyDefined(CogoObjectID id)
 {
-   return PathKeyError(key,IDS_E_PATHALREADYDEFINED,COGO_E_PATHALREADYDEFINED);
+   return PathIDError(id,IDS_E_PATHALREADYDEFINED,COGO_E_PATHALREADYDEFINED);
 }
 
-HRESULT CPathCollection::PathKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes)
+HRESULT CPathCollection::PathIDError(CogoObjectID id,UINT nHelpString,HRESULT hRes)
 {
    USES_CONVERSION;
 
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nHelpString, str, 256);
    TCHAR msg[256];
-   int cOut = _stprintf_s( msg, 256, str, key );
+   int cOut = _stprintf_s( msg, 256, str, id );
    _ASSERTE( cOut < 256 );
    CComBSTR oleMsg(msg);
    return CComCoClass<CPathCollection,&CLSID_PathCollection>::Error(oleMsg, IID_IPathCollection, hRes);

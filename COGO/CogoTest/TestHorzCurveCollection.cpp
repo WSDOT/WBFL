@@ -127,16 +127,16 @@ void CTestHorzCurveCollection::Test()
    TRY_TEST(pColl->putref_Item(1,hc),S_OK);
 
    //
-   // Test FindKey
+   // Test FindID
    //
-   CogoObjectID key;
-   TRY_TEST(pColl->FindKey(NULL,&key),E_INVALIDARG);
-   TRY_TEST(pColl->FindKey(hc,NULL),E_POINTER);
-   TRY_TEST(pColl->FindKey(hc,&key),S_OK);
-   TRY_TEST(key,1);
+   CogoObjectID id;
+   TRY_TEST(pColl->FindID(NULL,&id),E_INVALIDARG);
+   TRY_TEST(pColl->FindID(hc,NULL),E_POINTER);
+   TRY_TEST(pColl->FindID(hc,&id),S_OK);
+   TRY_TEST(id,1);
 
    //
-   // Test Key
+   // Test ID
    //
    pColl->Clear();
    pColl->Add(1,pbt,pi,pft,500,100,200,NULL);
@@ -144,11 +144,11 @@ void CTestHorzCurveCollection::Test()
    pColl->Add(3,pbt,pi,pft,500,100,200,NULL);
    pColl->Add(4,pbt,pi,pft,500,100,200,NULL);
 
-   TRY_TEST(pColl->Key(-1,&key),E_INVALIDARG);
-   TRY_TEST(pColl->Key(500,&key),E_INVALIDARG);
-   TRY_TEST(pColl->Key(3,NULL),E_POINTER);
-   TRY_TEST(pColl->Key(3,&key),S_OK);
-   TRY_TEST(key,4);
+   TRY_TEST(pColl->ID(-1,&id),E_INVALIDARG);
+   TRY_TEST(pColl->ID(500,&id),E_INVALIDARG);
+   TRY_TEST(pColl->ID(3,NULL),E_POINTER);
+   TRY_TEST(pColl->ID(3,&id),S_OK);
+   TRY_TEST(id,4);
    
 
    //
@@ -164,15 +164,15 @@ void CTestHorzCurveCollection::Test()
    pColl->get_Item(2,&hcurve[1]);
    pColl->get_Item(3,&hcurve[2]);
    pColl->get_Item(4,&hcurve[3]);
-   CComPtr<IEnumKeys> pEnum;
-   TRY_TEST(pColl->get__EnumKeys(NULL), E_POINTER );
-   TRY_TEST( pColl->get__EnumKeys(&pEnum), S_OK );
+   CComPtr<IEnumIDs> pEnum;
+   TRY_TEST(pColl->get__EnumIDs(NULL), E_POINTER );
+   TRY_TEST( pColl->get__EnumIDs(&pEnum), S_OK );
 
    ULONG fetched;
-   CogoObjectID target_key = 1;
-   while( pEnum->Next(1,&key,&fetched ) == S_OK )
+   CogoObjectID target_id = 1;
+   while( pEnum->Next(1,&id,&fetched ) == S_OK )
    {
-      TRY_TEST(key,target_key++);
+      TRY_TEST(id,target_id++);
    }
    
    //
@@ -256,28 +256,28 @@ void CTestHorzCurveCollection::Test()
    TRY_TEST( TestIObjectSafety(CLSID_HorzCurveCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
-STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveChanged(CogoObjectID key,IHorzCurve* hc)
+STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveChanged(CogoObjectID id,IHorzCurve* hc)
 {
 //   MessageBox(NULL,"HorzCurveChanged","Event",MB_OK);
-   if ( key == m_expectedKey )
+   if ( id == m_expectedID )
       Pass();
 
    return S_OK;
 }
 
-STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveAdded(CogoObjectID key,IHorzCurve* hc)
+STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveAdded(CogoObjectID id,IHorzCurve* hc)
 {
 //   MessageBox(NULL,"HorzCurveAdded","Event",MB_OK);
-   if ( key == m_expectedKey )
+   if ( id == m_expectedID )
       Pass();
 
    return S_OK;
 }
 
-STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveRemoved(CogoObjectID key)
+STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveRemoved(CogoObjectID id)
 {
 //   MessageBox(NULL,"HorzCurveRemoved","Event",MB_OK);
-   if ( key == m_expectedKey )
+   if ( id == m_expectedID )
       Pass();
 
    return S_OK;

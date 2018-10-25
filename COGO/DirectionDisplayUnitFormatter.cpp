@@ -28,7 +28,6 @@
 #include "WBFLCOGO.h"
 #include "DirectionDisplayUnitFormatter.h"
 #include "CogoHelpers.h"
-#include <MathEx.h>
 #include <sstream>
 #include <iomanip>
 

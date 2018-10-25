@@ -52,6 +52,24 @@ STDMETHODIMP CCrossSectionFactory::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
+STDMETHODIMP CCrossSectionFactory::get_Profile(IProfile* *pVal)
+{
+   CHECK_RETOBJ(pVal);
+   if ( m_pProfile )
+   {
+      (*pVal) = m_pProfile;
+      (*pVal)->AddRef();
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP CCrossSectionFactory::putref_Profile(IProfile* newVal)
+{
+   m_pProfile = newVal;
+   return S_OK;
+}
+
 STDMETHODIMP CCrossSectionFactory::CreateCrossSection(ICrossSection **pVal)
 {
    CHECK_RETOBJ(pVal);
@@ -60,6 +78,8 @@ STDMETHODIMP CCrossSectionFactory::CreateCrossSection(ICrossSection **pVal)
 
    (*pVal) = pCS;
    (*pVal)->AddRef();
+
+   (*pVal)->putref_Profile(m_pProfile);
 
 	return S_OK;
 }

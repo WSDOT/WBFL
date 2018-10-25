@@ -48,9 +48,13 @@ class ATL_NO_VTABLE CProfilePoint :
 public:
 	CProfilePoint()
 	{
+      m_pProfile = NULL;
       m_Station = 0;
       m_Elevation = 0;
 	}
+
+   	HRESULT FinalConstruct();
+
 
 DECLARE_REGISTRY_RESOURCEID(IDR_PROFILEPOINT)
 
@@ -72,10 +76,13 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
+public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
 
 // IProfilePoint
 public:
+   STDMETHOD(get_Profile)(IProfile* *pVal);
+   STDMETHOD(putref_Profile)(IProfile* newVal);
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
 	STDMETHOD(get_Station)(/*[out, retval]*/ IStation* *station);
 	STDMETHOD(put_Station)(/*[in]*/ VARIANT varStation);
@@ -89,8 +96,11 @@ public:
    STDMETHOD(Load)(IStructuredLoad2* pLoad);
 
 private:
-   Float64 m_Station;
+   IProfile* m_pProfile; // weak reference
+   CComPtr<IStation> m_Station;
    Float64 m_Elevation;
+
+   HRESULT ValidateStation(IStation* station);
 };
 
 #endif //__PROFILEPOINT_H_

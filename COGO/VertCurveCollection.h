@@ -34,7 +34,7 @@
 #include "Collections.h"
 
 class CVertCurveCollection;
-typedef PersistentKeyedCollection<CVertCurveCollection,IVertCurveCollection,&IID_IVertCurveCollection,CogoObjectID,IVertCurve> VertCurveCollectionImpl;
+typedef PersistentIDCollection<CVertCurveCollection,IVertCurveCollection,&IID_IVertCurveCollection,CogoObjectID,IVertCurve> VertCurveCollectionImpl;
 
 /////////////////////////////////////////////////////////////////////////////
 // CVertCurveCollection
@@ -82,17 +82,17 @@ public:
 	STDMETHOD(putref_Factory)(/*[in]*/IVertCurveFactory* factory);
 	STDMETHOD(get_Factory)(/*[out,retval]*/IVertCurveFactory* *factory);
 	STDMETHOD(Clear)();
-	STDMETHOD(Add)(/*[in]*/ CogoObjectID key,/*[in]*/ IProfilePoint* pbg,/*[in]*/ IProfilePoint* pvi,/*[in]*/ IProfilePoint* pfg,/*[in]*/Float64 l1,/*[in]*/ Float64 l2,/*[out,retval]*/IVertCurve* *vc);
-	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID key,/*[in]*/ IVertCurve* newVal);
-	STDMETHOD(Remove)(/*[in]*/ CogoObjectID key);
+	STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[in]*/ IProfilePoint* pbg,/*[in]*/ IProfilePoint* pvi,/*[in]*/ IProfilePoint* pfg,/*[in]*/Float64 l1,/*[in]*/ Float64 l2,/*[out,retval]*/IVertCurve* *vc);
+	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ IVertCurve* newVal);
+	STDMETHOD(Remove)(/*[in]*/ CogoObjectID id);
 	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID key, /*[out, retval]*/ IVertCurve* *pVal);
-	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID key, /*[in]*/ IVertCurve* newVal);
+	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ IVertCurve* *pVal);
+	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ IVertCurve* newVal);
 // STDMETHOD(get__NewEnum)(IUnknown** retval);
-   STDMETHOD(get__EnumKeys)(IEnumKeys** ppenum);
+   STDMETHOD(get__EnumIDs)(IEnumIDs** ppenum);
  	STDMETHOD(get__EnumVertCurves)(/*[out,retval]*/ IEnumVertCurves** ppenum);
-	STDMETHOD(FindKey)(/*[in]*/ IVertCurve* vc,/*[out,retval]*/CogoObjectID* key);
-	STDMETHOD(Key)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* key);
+	STDMETHOD(FindID)(/*[in]*/ IVertCurve* vc,/*[out,retval]*/CogoObjectID* ID);
+	STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID);
 
 // IVertCurveEvents
 public:
@@ -101,12 +101,12 @@ public:
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
-   HRESULT VertCurveNotFound(CogoObjectID key);
-   HRESULT VertCurveAlreadyDefined(CogoObjectID key);
-   HRESULT VertCurveKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes);
+   HRESULT VertCurveNotFound(CogoObjectID id);
+   HRESULT VertCurveAlreadyDefined(CogoObjectID id);
+   HRESULT VertCurveIDError(CogoObjectID id,UINT nHelpString,HRESULT hRes);
 
-   void Advise(CogoObjectID key,IVertCurve* vc);
-   void Unadvise(CogoObjectID key,IVertCurve* vc);
+   void Advise(CogoObjectID id,IVertCurve* vc);
+   void Unadvise(CogoObjectID id,IVertCurve* vc);
    void UnadviseAll();
    std::map<CogoObjectID,DWORD> m_Cookies;
 

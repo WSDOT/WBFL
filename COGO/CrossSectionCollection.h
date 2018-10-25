@@ -62,7 +62,7 @@ public:
    HRESULT FinalConstruct();
    void FinalRelease();
 
-   void PutProfile(IProfile* pProfile) { m_pProfile = pProfile; }
+   void PutProfile(IProfile* pProfile);
 
 DECLARE_REGISTRY_RESOURCEID(IDR_CROSSSECTIONCOLLECTION)
 
@@ -111,6 +111,7 @@ public:
 	STDMETHOD(LeftCrownSlope)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ Float64* slope);
 	STDMETHOD(RightCrownSlope)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ Float64* slope);
 	STDMETHOD(CrownPointOffset)(/*[in]*/ VARIANT varStation,/*[out,retval]*/Float64* cpoffset);
+   STDMETHOD(GetCrossSectionData)(VARIANT varStation,Float64* pCPO,Float64* pLeft,Float64* pRight);
 
 // IStructuredStorage2
 public:
@@ -125,10 +126,12 @@ public:
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
-   HRESULT GetCrossSectionData(VARIANT varStation,Float64* pCPO,Float64* pLeft,Float64* pRight);
    void AdviseElement(ICrossSection* cs,DWORD* pdwCookie);
    void UnadviseElement(CollectionIndexType idx);
    void UnadviseAll();
+
+   HRESULT ValidateStation(ICrossSection* csect);
+   HRESULT ValidateStation(VARIANT varStation,bool bClone,IStation** station);
 
    CComPtr<ICrossSectionFactory> m_Factory;
 

@@ -55,7 +55,28 @@ void CTestStation::Test()
    TRY_TEST(station->get_Value(&value),S_OK);
    TRY_TEST(IsZero(value),true);
 
+   ZoneIndexType zoneIdx;
+   TRY_TEST(station->get_StationZoneIndex(NULL),E_POINTER);
+   TRY_TEST(station->get_StationZoneIndex(&zoneIdx),S_OK);
+   TRY_TEST(zoneIdx == INVALID_INDEX,true);
+
+   TRY_TEST(station->GetStation(NULL,&value),E_POINTER);
+   TRY_TEST(station->GetStation(&zoneIdx,NULL),E_POINTER);
+   TRY_TEST(station->GetStation(&zoneIdx,&value),S_OK);
+   TRY_TEST(IsZero(value),true);
+   TRY_TEST(zoneIdx == INVALID_INDEX,true);
+
    TRY_TEST(station->put_Value(100),S_OK);
+   TRY_TEST(station->put_StationZoneIndex(2),S_OK);
+   TRY_TEST(station->get_Value(&value),S_OK);
+   TRY_TEST(IsEqual(value,100.0),true);
+   TRY_TEST(station->get_StationZoneIndex(&zoneIdx),S_OK);
+   TRY_TEST(zoneIdx == 2,true);
+
+   TRY_TEST(station->SetStation(3,200.0),S_OK);
+   TRY_TEST(station->GetStation(&zoneIdx,&value),S_OK);
+   TRY_TEST(IsEqual(value,200.0),true);
+   TRY_TEST(zoneIdx == 3,true);
 
    // Valid US station
    CComBSTR usStation("3+34.54");
@@ -67,6 +88,12 @@ void CTestStation::Test()
    TRY_TEST(station->FromString(usStation2,umUS),S_OK);
    TRY_TEST(station->get_Value(&value),S_OK);
    TRY_TEST(IsEqual(value,-334.54),true);
+
+   CComBSTR usStationWithZone("3+34.54,5");
+   TRY_TEST(station->FromString(usStationWithZone,umUS),S_OK);
+   TRY_TEST(station->GetStation(&zoneIdx,&value),S_OK);
+   TRY_TEST(IsEqual(value,334.54),true);
+   TRY_TEST(zoneIdx == 4,true);
 
    // Valid SI station
    CComBSTR siStation("3+034.54");
@@ -87,33 +114,49 @@ void CTestStation::Test()
 
    station->put_Value(3434.34);
    CComBSTR bstrStation;
-   TRY_TEST(station->AsString(umUS,&bstrStation),S_OK);
+   TRY_TEST(station->AsString(umUS,VARIANT_FALSE,&bstrStation),S_OK);
    TRY_TEST(bstrStation == CComBSTR("34+34.34"),true);
 
    station->put_Value(9999.99);
    bstrStation.Empty();
-   TRY_TEST(station->AsString(umUS,&bstrStation),S_OK);
+   TRY_TEST(station->AsString(umUS,VARIANT_FALSE,&bstrStation),S_OK);
    TRY_TEST(bstrStation == CComBSTR("99+99.99"),true);
 
    station->put_Value(9999.99);
    bstrStation.Empty();
-   TRY_TEST(station->AsString(umSI,&bstrStation),S_OK);
+   TRY_TEST(station->AsString(umSI,VARIANT_FALSE,&bstrStation),S_OK);
    TRY_TEST(bstrStation == CComBSTR("9+999.990"),true);
 
    station->put_Value(-9999.99);
    bstrStation.Empty();
-   TRY_TEST(station->AsString(umUS,&bstrStation),S_OK);
+   TRY_TEST(station->AsString(umUS,VARIANT_FALSE,&bstrStation),S_OK);
    TRY_TEST(bstrStation == CComBSTR("-99+99.99"),true);
 
    station->put_Value(0.45);
    bstrStation.Empty();
-   TRY_TEST(station->AsString(umUS,&bstrStation),S_OK);
+   TRY_TEST(station->AsString(umUS,VARIANT_FALSE,&bstrStation),S_OK);
    TRY_TEST(bstrStation == CComBSTR("0+00.45"),true);
 
    station->put_Value(0.45);
    bstrStation.Empty();
-   TRY_TEST(station->AsString(umSI,&bstrStation),S_OK);
+   TRY_TEST(station->AsString(umSI,VARIANT_FALSE,&bstrStation),S_OK);
    TRY_TEST(bstrStation == CComBSTR("0+000.450"),true);
+
+   station->put_Value(9999.99);
+   station->put_StationZoneIndex(INVALID_INDEX);
+   bstrStation.Empty();
+   TRY_TEST(station->AsString(umUS,VARIANT_TRUE,&bstrStation),S_OK);
+   TRY_TEST(bstrStation == CComBSTR("99+99.99,1"),true);
+
+   station->put_Value(9999.99);
+   station->put_StationZoneIndex(3);
+   bstrStation.Empty();
+   TRY_TEST(station->AsString(umUS,VARIANT_TRUE,&bstrStation),S_OK);
+   TRY_TEST(bstrStation == CComBSTR("99+99.99,4"),true);
+
+   bstrStation.Empty();
+   TRY_TEST(station->AsString(umSI,VARIANT_TRUE,&bstrStation),S_OK);
+   TRY_TEST(bstrStation == CComBSTR("9+999.990,4"),true);
 
    TRY_TEST( TestIObjectSafety(CLSID_Station,IID_IStation,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
    TRY_TEST( TestIObjectSafety(CLSID_Station,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);

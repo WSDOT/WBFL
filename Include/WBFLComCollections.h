@@ -367,6 +367,8 @@ protected:
    virtual HRESULT OnAfterRemove( IndexType idx) { return S_OK; }
    virtual HRESULT OnBeforeReplace( StoredType* pVal, IndexType idx) { return S_OK; }
    virtual HRESULT OnAfterReplace( StoredType* pVal, IndexType idx) { return S_OK; }
+   virtual HRESULT OnBeforeClear() { return S_OK; }
+   virtual HRESULT OnAfterClear() { return S_OK; }
 
 protected:
    typedef typename std::vector< StoredType >             ContainerType;
@@ -529,6 +531,7 @@ public:
       // can't use a standard for loop since we are erasing as we iterate
       IndexType idx=0;
       bool go = true;
+      OnBeforeClear();
       while (go)
       {
          ContainerIteratorType it( m_coll.begin() );
@@ -555,6 +558,7 @@ public:
             go = false; // done with loop
          }
       }
+      OnAfterClear();
 
       return S_OK;
    }

@@ -62,18 +62,18 @@ void CTestAlignment3::Test1()
 
    alignment->put_RefStation(CComVariant(100.00));
 
-   CComPtr<IPath> subPath;
+   CComPtr<IAlignment> subAlignment;
    // sub path that captures entire element
-   TRY_TEST(alignment->CreateSubPath(CComVariant(-10.0),CComVariant(300),NULL), E_POINTER);
-   TRY_TEST(alignment->CreateSubPath(CComVariant(-10.0),CComVariant(300),&subPath), S_OK);
+   TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(300),NULL), E_POINTER);
+   TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(300),&subAlignment), S_OK);
 
    CollectionIndexType nElements;
-   subPath->get_Count(&nElements);
+   subAlignment->get_Count(&nElements);
 
    TRY_TEST(nElements,2);
 
    CComPtr<IPathElement> element;
-   subPath->get_Item(0,&element);
+   subAlignment->get_Item(0,&element);
 
    PathElementType type;
    element->get_Type(&type);
@@ -91,7 +91,7 @@ void CTestAlignment3::Test1()
    TRY_TEST(IsEqual(y,   0.0),true);
 
    element.Release();
-   subPath->get_Item(1,&element);
+   subAlignment->get_Item(1,&element);
    element->get_Type(&type);
    TRY_TEST(type,petLineSegment);
 
@@ -112,16 +112,16 @@ void CTestAlignment3::Test1()
    TRY_TEST( IsEqual(x,100.0), true);
    TRY_TEST( IsEqual(y,  0.0), true);
 
-   // sub-path that captures start
-   subPath.Release();
-   TRY_TEST(alignment->CreateSubPath(CComVariant(-10.0),CComVariant(-5.0),&subPath),S_OK);
+   // sub-Alignment that captures start
+   subAlignment.Release();
+   TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(-5.0),&subAlignment),S_OK);
 
-   subPath->get_Count(&nElements);
+   subAlignment->get_Count(&nElements);
 
    TRY_TEST(nElements,3);
 
    element.Release();
-   subPath->get_Item(0,&element);
+   subAlignment->get_Item(0,&element);
 
    element->get_Type(&type);
    TRY_TEST(type,petPoint);
@@ -137,7 +137,7 @@ void CTestAlignment3::Test1()
    TRY_TEST(IsEqual(y,   0.0),true);
 
    element.Release();
-   subPath->get_Item(1,&element);
+   subAlignment->get_Item(1,&element);
    punk.Release();
    element->get_Value(&punk);
    element->get_Type(&type);
@@ -151,7 +151,7 @@ void CTestAlignment3::Test1()
    TRY_TEST(IsEqual(y,   0.0),true);
 
    element.Release();
-   subPath->get_Item(2,&element);
+   subAlignment->get_Item(2,&element);
    punk.Release();
    element->get_Value(&punk);
    element->get_Type(&type);
@@ -164,16 +164,16 @@ void CTestAlignment3::Test1()
    TRY_TEST(IsEqual(x,-105.0),true);
    TRY_TEST(IsEqual(y,   0.0),true);
 
-   // sub-path that captures "middle"
-   subPath.Release();
-   TRY_TEST(alignment->CreateSubPath(CComVariant(110.0),CComVariant(200.0),&subPath),S_OK);
+   // sub-alignment that captures "middle"
+   subAlignment.Release();
+   TRY_TEST(alignment->CreateSubAlignment(CComVariant(110.0),CComVariant(200.0),&subAlignment),S_OK);
 
-   subPath->get_Count(&nElements);
+   subAlignment->get_Count(&nElements);
 
    TRY_TEST(nElements,2);
 
    element.Release();
-   subPath->get_Item(1,&element);
+   subAlignment->get_Item(1,&element);
 
    element->get_Type(&type);
    TRY_TEST(type,petLineSegment);
@@ -217,18 +217,18 @@ void CTestAlignment3::Test2()
    alignment->AddEx(pnt1);
    alignment->AddEx(pnt2);
 
-   CComPtr<IPath> subPath;
-   // sub path that captures entire element
-   TRY_TEST(alignment->CreateSubPath(CComVariant(-10.0),CComVariant(300),NULL), E_POINTER);
-   TRY_TEST(alignment->CreateSubPath(CComVariant(-10.0),CComVariant(300),&subPath), S_OK);
+   CComPtr<IAlignment> subAlignment;
+   // sub alignment that captures entire element
+   TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(300),NULL), E_POINTER);
+   TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(300),&subAlignment), S_OK);
 
    CollectionIndexType nElements;
-   subPath->get_Count(&nElements);
+   subAlignment->get_Count(&nElements);
 
    TRY_TEST(nElements,2);
 
    CComPtr<IPathElement> element;
-   subPath->get_Item(0,&element);
+   subAlignment->get_Item(0,&element);
 
    PathElementType type;
    element->get_Type(&type);
@@ -244,7 +244,7 @@ void CTestAlignment3::Test2()
    TRY_TEST(IsEqual(y,-67.781745930520231),true);
 
    element.Release();
-   subPath->get_Item(1,&element);
+   subAlignment->get_Item(1,&element);
 
    element->get_Type(&type);
    TRY_TEST(type,petLineSegment);
@@ -266,16 +266,16 @@ void CTestAlignment3::Test2()
    TRY_TEST( IsEqual(x,110.0), true);
    TRY_TEST( IsEqual(y,110.0), true);
 
-   // sub-path that captures start
-   subPath.Release();
-   TRY_TEST(alignment->CreateSubPath(CComVariant(-10.0),CComVariant(-5.0),&subPath),S_OK);
+   // sub-alignment that captures start
+   subAlignment.Release();
+   TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(-5.0),&subAlignment),S_OK);
 
-   subPath->get_Count(&nElements);
+   subAlignment->get_Count(&nElements);
 
    TRY_TEST(nElements,3);
 
    element.Release();
-   subPath->get_Item(0,&element);
+   subAlignment->get_Item(0,&element);
 
    element->get_Type(&type);
    TRY_TEST(type,petPoint);
@@ -291,7 +291,7 @@ void CTestAlignment3::Test2()
    TRY_TEST(IsEqual(y,-67.781745930520231),true);
 
    element.Release();
-   subPath->get_Item(1,&element);
+   subAlignment->get_Item(1,&element);
    punk.Release();
    element->get_Value(&punk);
    element->get_Type(&type);
@@ -305,7 +305,7 @@ void CTestAlignment3::Test2()
    TRY_TEST(IsEqual(y,-67.781745930520231),true);
 
    element.Release();
-   subPath->get_Item(2,&element);
+   subAlignment->get_Item(2,&element);
    punk.Release();
    element->get_Value(&punk);
    element->get_Type(&type);
@@ -318,16 +318,16 @@ void CTestAlignment3::Test2()
    TRY_TEST(IsEqual(x,-64.246212024587493),true);
    TRY_TEST(IsEqual(y,-64.246212024587493),true);
 
-   // sub-path that captures "middle"
-   subPath.Release();
-   TRY_TEST(alignment->CreateSubPath(CComVariant(110.0),CComVariant(200.0),&subPath),S_OK);
+   // sub-alignment that captures "middle"
+   subAlignment.Release();
+   TRY_TEST(alignment->CreateSubAlignment(CComVariant(110.0),CComVariant(200.0),&subAlignment),S_OK);
 
-   subPath->get_Count(&nElements);
+   subAlignment->get_Count(&nElements);
 
    TRY_TEST(nElements,2);
 
    element.Release();
-   subPath->get_Item(1,&element);
+   subAlignment->get_Item(1,&element);
 
    element->get_Type(&type);
    TRY_TEST(type,petLineSegment);
@@ -353,7 +353,6 @@ void CTestAlignment3::Test2()
    TRY_TEST( IsEqual(x,80.710678118654755), true);
    TRY_TEST( IsEqual(y,80.710678118654755), true);
 
-   CComQIPtr<IAlignment> subAlignment(subPath);
    CompareAlignments(alignment,subAlignment,110,200,10);
 }
 
@@ -385,24 +384,23 @@ void CTestAlignment3::Test3()
 
    alignment->AddEx(hc);
 
-   CComPtr<IPath> subPath;
+   CComPtr<IAlignment> subAlignment;
 
-   // sub path that captures entire element
-   TRY_TEST(alignment->CreateSubPath(CComVariant(-10.0),CComVariant(300),NULL), E_POINTER);
+   // sub alignment that captures entire element
+   TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(300),NULL), E_POINTER);
 
    // start on back tangent, end in circular curve
-   TRY_TEST(alignment->CreateSubPath(CComVariant(-10.0),CComVariant(300),&subPath), S_OK);
+   TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(300),&subAlignment), S_OK);
 
-   CComQIPtr<IAlignment> subAlignment(subPath);
    CompareAlignments(alignment,subAlignment,-10,300,10);
 
    CollectionIndexType nElements;
-   subPath->get_Count(&nElements);
+   subAlignment->get_Count(&nElements);
 
    TRY_TEST(nElements,2);
 
    CComPtr<IPathElement> element;
-   subPath->get_Item(0,&element);
+   subAlignment->get_Item(0,&element);
 
    PathElementType type;
    element->get_Type(&type);
@@ -418,7 +416,7 @@ void CTestAlignment3::Test3()
    TRY_TEST(IsEqual(y,  0.),true);
 
    element.Release();
-   subPath->get_Item(1,&element);
+   subAlignment->get_Item(1,&element);
    element->get_Type(&type);
    TRY_TEST(type,petHorzCurve);
 
@@ -437,101 +435,73 @@ void CTestAlignment3::Test3()
    TRY_TEST( IsEqual(value,0.), true);
 
    // start on back tangent and end in entry spiral
-   subPath.Release();
    subAlignment.Release();
-   alignment->CreateSubPath(CComVariant(-10.0),CComVariant(110.),&subPath);
-   subPath.QueryInterface(&subAlignment);
+   alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(110.),&subAlignment);
    CompareAlignments(alignment,subAlignment,-10.0,110.0,10);
 
    // start on back tangent and end in exit spiral
-   subPath.Release();
    subAlignment.Release();
-   alignment->CreateSubPath(CComVariant(-10.0),CComVariant(550.),&subPath);
-   subPath.QueryInterface(&subAlignment);
+   alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(550.),&subAlignment);
    CompareAlignments(alignment,subAlignment,-10.0,550.0,10);
 
    // start on back tangent and end on forward tangent
-   subPath.Release();
    subAlignment.Release();
-   alignment->CreateSubPath(CComVariant(-10.0),CComVariant(800.),&subPath);
-   subPath.QueryInterface(&subAlignment);
+   alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(800.),&subAlignment);
    CompareAlignments(alignment,subAlignment,-10.0,800.0,10);
 
    // start in entry spiral, end in entry spiral
-   subPath.Release();
    subAlignment.Release();
-   alignment->CreateSubPath(CComVariant(110.),CComVariant(118.),&subPath);
-   subPath.QueryInterface(&subAlignment);
+   alignment->CreateSubAlignment(CComVariant(110.),CComVariant(118.),&subAlignment);
    CompareAlignments(alignment,subAlignment,110.0,118.0,10);
 
    // start in entry spiral, end in circular curve
-   subPath.Release();
    subAlignment.Release();
-   alignment->CreateSubPath(CComVariant(110.),CComVariant(300.),&subPath);
-   subPath.QueryInterface(&subAlignment);
+   alignment->CreateSubAlignment(CComVariant(110.),CComVariant(300.),&subAlignment);
    CompareAlignments(alignment,subAlignment,110.0,300.0,10);
 
    // start in entry spiral, end in exit spiral
-   subPath.Release();
    subAlignment.Release();
-   alignment->CreateSubPath(CComVariant(110.),CComVariant(560.),&subPath);
-   subPath.QueryInterface(&subAlignment);
+   alignment->CreateSubAlignment(CComVariant(110.),CComVariant(560.),&subAlignment);
    CompareAlignments(alignment,subAlignment,110.0,560.0,10);
 
    // start in entry spiral, end on fwd tangent
-   subPath.Release();
    subAlignment.Release();
-   alignment->CreateSubPath(CComVariant(110.),CComVariant(800.),&subPath);
-   subPath.QueryInterface(&subAlignment);
+   alignment->CreateSubAlignment(CComVariant(110.),CComVariant(800.),&subAlignment);
    CompareAlignments(alignment,subAlignment,110.0,800.0,10);
 
    // start and end in circular curve
-   subPath.Release();
    subAlignment.Release();
-   alignment->CreateSubPath(CComVariant(200.),CComVariant(500.),&subPath);
-   subPath.QueryInterface(&subAlignment);
+   alignment->CreateSubAlignment(CComVariant(200.),CComVariant(500.),&subAlignment);
    CompareAlignments(alignment,subAlignment,200.0,500.0,10);
 
    // start in circular curve, end in exit spiral
-   subPath.Release();
    subAlignment.Release();
-   alignment->CreateSubPath(CComVariant(300.),CComVariant(550.),&subPath);
-   subPath.QueryInterface(&subAlignment);
+   alignment->CreateSubAlignment(CComVariant(300.),CComVariant(550.),&subAlignment);
    CompareAlignments(alignment,subAlignment,300.0,550.0,10);
 
    // start in circular curve, end in fwd tangent
-   subPath.Release();
    subAlignment.Release();
-   alignment->CreateSubPath(CComVariant(300.),CComVariant(1000.),&subPath);
-   subPath.QueryInterface(&subAlignment);
+   alignment->CreateSubAlignment(CComVariant(300.),CComVariant(1000.),&subAlignment);
    CompareAlignments(alignment,subAlignment,300.0,1000.0,10);
 
    // start in exit spiral, end in exit spiral
-   subPath.Release();
    subAlignment.Release();
-   alignment->CreateSubPath(CComVariant(545.),CComVariant(570.),&subPath);
-   subPath.QueryInterface(&subAlignment);
+   alignment->CreateSubAlignment(CComVariant(545.),CComVariant(570.),&subAlignment);
    CompareAlignments(alignment,subAlignment,545.0,570.0,10);
 
    // start in exit spiral, end in fwd tangent
-   subPath.Release();
    subAlignment.Release();
-   alignment->CreateSubPath(CComVariant(545.),CComVariant(1000.),&subPath);
-   subPath.QueryInterface(&subAlignment);
+   alignment->CreateSubAlignment(CComVariant(545.),CComVariant(1000.),&subAlignment);
    CompareAlignments(alignment,subAlignment,545.0,1000.0,10);
 
    // start and end on back tangent
-   subPath.Release();
    subAlignment.Release();
-   alignment->CreateSubPath(CComVariant(-10.),CComVariant(50.),&subPath);
-   subPath.QueryInterface(&subAlignment);
+   alignment->CreateSubAlignment(CComVariant(-10.),CComVariant(50.),&subAlignment);
    CompareAlignments(alignment,subAlignment,-10.0,50.0,10);
 
    // start and end on fwd tangent
-   subPath.Release();
    subAlignment.Release();
-   alignment->CreateSubPath(CComVariant(600.),CComVariant(800.),&subPath);
-   subPath.QueryInterface(&subAlignment);
+   alignment->CreateSubAlignment(CComVariant(600.),CComVariant(800.),&subAlignment);
    CompareAlignments(alignment,subAlignment,600.0,800.0,10);
 }
 
@@ -563,58 +533,47 @@ void CTestAlignment3::Test4()
    alignment->AddEx(spline);
 
    // full length of spline
-   CComPtr<IPath> subPath;
+   CComPtr<IAlignment> subAlignment;
    Float64 startStation = refStation;
    Float64 endStation = startStation+Ls;
-   alignment->CreateSubPath(CComVariant(startStation),CComVariant(endStation),&subPath);
-   CComQIPtr<IAlignment> subAlignment(subPath);
+   alignment->CreateSubAlignment(CComVariant(startStation),CComVariant(endStation),&subAlignment);
    CompareAlignments(alignment,subAlignment,startStation,endStation,10);
 
 
    // before spline
-   subPath.Release();
    subAlignment.Release();
    startStation = refStation-50;
    endStation = startStation+49;
-   alignment->CreateSubPath(CComVariant(startStation),CComVariant(endStation),&subPath);
-   subPath.QueryInterface(&subAlignment);
+   alignment->CreateSubAlignment(CComVariant(startStation),CComVariant(endStation),&subAlignment);
    CompareAlignments(alignment,subAlignment,startStation,endStation,10);
 
 
    // after spline
-   subPath.Release();
    subAlignment.Release();
    startStation = refStation+Ls+50;
    endStation = startStation+50;
-   alignment->CreateSubPath(CComVariant(startStation),CComVariant(endStation),&subPath);
-   subPath.QueryInterface(&subAlignment);
+   alignment->CreateSubAlignment(CComVariant(startStation),CComVariant(endStation),&subAlignment);
    CompareAlignments(alignment,subAlignment,startStation,endStation,10);
 
    // mid-spline
-   subPath.Release();
    subAlignment.Release();
    startStation = refStation+int(Ls/4);
    endStation = startStation+int(Ls/2);
-   alignment->CreateSubPath(CComVariant(startStation),CComVariant(endStation),&subPath);
-   subPath.QueryInterface(&subAlignment);
+   alignment->CreateSubAlignment(CComVariant(startStation),CComVariant(endStation),&subAlignment);
    CompareAlignments(alignment,subAlignment,startStation,endStation,10);
 
    // start before spline, end mid-spline
-   subPath.Release();
    subAlignment.Release();
    startStation = refStation-20;
    endStation = startStation+3*Ls/4;
-   alignment->CreateSubPath(CComVariant(startStation),CComVariant(endStation),&subPath);
-   subPath.QueryInterface(&subAlignment);
+   alignment->CreateSubAlignment(CComVariant(startStation),CComVariant(endStation),&subAlignment);
    CompareAlignments(alignment,subAlignment,startStation,endStation,10);
 
    // start mid-spline, end after spline
-   subPath.Release();
    subAlignment.Release();
    startStation = refStation+Ls/4;
    endStation = startStation+Ls+10;
-   alignment->CreateSubPath(CComVariant(startStation),CComVariant(endStation),&subPath);
-   subPath.QueryInterface(&subAlignment);
+   alignment->CreateSubAlignment(CComVariant(startStation),CComVariant(endStation),&subAlignment);
    CompareAlignments(alignment,subAlignment,startStation,endStation,10);
 }
 //

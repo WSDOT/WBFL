@@ -34,7 +34,7 @@
 #include "Collections.h"
 
 class CProfilePointCollection;
-typedef PersistentKeyedCollection<CProfilePointCollection,IProfilePointCollection,&IID_IProfilePointCollection,CogoObjectID,IProfilePoint> ProfilePointCollectionImpl;
+typedef PersistentIDCollection<CProfilePointCollection,IProfilePointCollection,&IID_IProfilePointCollection,CogoObjectID,IProfilePoint> ProfilePointCollectionImpl;
 
 /////////////////////////////////////////////////////////////////////////////
 // CProfilePointCollection
@@ -81,16 +81,16 @@ public:
 	STDMETHOD(get_Factory)(/*[out,retval]*/IProfilePointFactory* *factory);
    STDMETHOD(putref_Factory)(/*[in]*/IProfilePointFactory* factory);
 	STDMETHOD(Clear)();
-	STDMETHOD(Add)(/*[in]*/ CogoObjectID key,/*[in]*/ VARIANT varStation,/*[in]*/ Float64 elevation,/*[out,retval]*/IProfilePoint* *pp);
-	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID key,/*[in]*/ IProfilePoint* newVal);
-	STDMETHOD(Remove)(/*[in]*/ CogoObjectID key);
+	STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[in]*/ VARIANT varStation,/*[in]*/ Float64 elevation,/*[out,retval]*/IProfilePoint* *pp);
+	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ IProfilePoint* newVal);
+	STDMETHOD(Remove)(/*[in]*/ CogoObjectID id);
 	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID key, /*[out, retval]*/ IProfilePoint* *pVal);
-	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID key, /*[in]*/ IProfilePoint* newVal);
+	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ IProfilePoint* *pVal);
+	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ IProfilePoint* newVal);
 // STDMETHOD(get__NewEnum)(IUnknown** retval);
-   STDMETHOD(get__EnumKeys)(IEnumKeys** ppenum);
-	STDMETHOD(FindKey)(/*[in]*/ IProfilePoint* pp,/*[out,retval]*/CogoObjectID* key);
-	STDMETHOD(Key)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* key);
+   STDMETHOD(get__EnumIDs)(IEnumIDs** ppenum);
+	STDMETHOD(FindID)(/*[in]*/ IProfilePoint* pp,/*[out,retval]*/CogoObjectID* ID);
+	STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID);
 
 // IProfilePointEvents
 public:
@@ -99,12 +99,12 @@ public:
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
-   HRESULT ProfilePointNotFound(CogoObjectID key);
-   HRESULT ProfilePointAlreadyDefined(CogoObjectID key);
-   HRESULT ProfilePointKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes);
+   HRESULT ProfilePointNotFound(CogoObjectID id);
+   HRESULT ProfilePointAlreadyDefined(CogoObjectID id);
+   HRESULT ProfilePointIDError(CogoObjectID id,UINT nHelpString,HRESULT hRes);
 
-   void Advise(CogoObjectID key,IProfilePoint* pp);
-   void Unadvise(CogoObjectID key,IProfilePoint* pp);
+   void Advise(CogoObjectID id,IProfilePoint* pp);
+   void Unadvise(CogoObjectID id,IProfilePoint* pp);
    void UnadviseAll();
    std::map<CogoObjectID,DWORD> m_Cookies;
 

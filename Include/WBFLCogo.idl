@@ -36,7 +36,7 @@ import "WBFLTools.idl";
 import "WBFLGeometry.idl";
 import "WBFLUnitServer.idl";
 
-#include "cogo.hh"
+#include "COGO.hh"
 #include "UnitServer.hh"
 
 cpp_quote("#include <WBFLUnitServer.h>")
@@ -75,9 +75,20 @@ cpp_quote("#define COGO_E_POINTEVENTS                  MAKE_HRESULT(SEVERITY_ERR
 cpp_quote("#define COGO_E_CUBICSPLINEPOINTS            MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,541)")
 cpp_quote("#define COGO_E_POINTINCIRCLE                MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,542)")
 cpp_quote("#define COGO_E_NOINTERSECTION               MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,543)")
+cpp_quote("#define COGO_E_ALIGNMENTNOTFOUND            MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,544)")
+cpp_quote("#define COGO_E_ALIGNMENTALREADYDEFINED      MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,545)")
+cpp_quote("#define COGO_E_STATIONEQUATIONBACK          MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,546)")
+cpp_quote("#define COGO_E_STATIONEQUATIONAHEAD         MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,547)")
+cpp_quote("#define COGO_E_STATIONRANGEERROR            MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,548)")
+cpp_quote("#define COGO_E_SUPERTRANSITIONERROR         MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,549)")
+cpp_quote("#define COGO_E_SURFACELAYOUTERROR           MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,550)")
+cpp_quote("#define COGO_E_SURFACEDEFINITIONERROR       MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,551)")
+cpp_quote("#define COGO_E_SURFACESLOPEMISMATCHERROR    MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,552)")
+cpp_quote("#define COGO_E_INVALIDRIDGEPOINTINDEX       MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,553)")
 
 interface IProfile;
 interface IPath;
+interface IAlignment;
 
 [
     uuid(1128D28F-55F7-11D5-8C29-006097C68A9C),
@@ -157,6 +168,21 @@ library WBFLCogo
        omtAlongDirection =  1,
        omtNormal         =  2,
     } OffsetMeasureType;
+
+    typedef [public,helpstring("Defines superelevation transition type"),uuid(9CF798F5-D551-4b7f-A5BB-FAF9C3AEDA8B)]
+    enum SuperTransitionType
+    {
+       stLinear,
+       stParabolic
+    } SuperTransitionType;
+
+    typedef [public,helpstring("Defines how a template segment slope is measured"),uuid(E565E720-42ED-47b5-A00C-6435E6E8195A)]
+    enum TemplateSlopeType
+    {
+       tsHorizontal,      // measured as rise/1
+       tsFixedHorizontal, // measured as rise/1 and is not changed by superelevations
+       tsFixedVertical    // measured as 1/run and is not changed by superelevations
+    } TemplateSlopeType;
 
 
     [
@@ -266,15 +292,15 @@ library WBFLCogo
     [
        object,
        uuid(5C3C09D6-5E7F-11d5-8C32-006097C68A9C),
-       helpstring("IEnumKeys Interface"),
+       helpstring("IEnumIDs Interface"),
        oleautomation,
        hidden,restricted,
        pointer_default(unique)
     ]
-    interface IEnumKeys : IUnknown
+    interface IEnumIDs : IUnknown
     {
        [helpstring("Clone")]
-       HRESULT Clone([out] IEnumKeys** ppenum);
+       HRESULT Clone([out] IEnumIDs** ppenum);
 
        [helpstring("Next")]
        HRESULT Next([in] ULONG celt, [out] CogoObjectID* rgelt, [in,out] ULONG* pceltFetched);
@@ -297,18 +323,18 @@ library WBFLCogo
     interface IPointCollection : IUnknown
     {
         [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
-        [propget, helpstring("property Item"),helpcontext(IDH_PointCollection_Item)] HRESULT Item([in] CogoObjectID key, [out, retval] IPoint2d* *pVal);
-        [propputref, helpstring("property Item"),helpcontext(IDH_PointCollection_Item)] HRESULT Item([in] CogoObjectID key, [in] IPoint2d* newVal);
+        [propget, helpstring("property Item"),helpcontext(IDH_PointCollection_Item)] HRESULT Item([in] CogoObjectID id, [out, retval] IPoint2d* *pVal);
+        [propputref, helpstring("property Item"),helpcontext(IDH_PointCollection_Item)] HRESULT Item([in] CogoObjectID id, [in] IPoint2d* newVal);
         [propget, helpstring("property Count"),helpcontext(IDH_PointCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
-        [helpstring("method Add"),helpcontext(IDH_PointCollection_Add)] HRESULT Add([in] CogoObjectID key,[in] Float64 x,[in] Float64 y,[out,retval] IPoint2d* *point);
-        [helpstring("method AddEx"),helpcontext(IDH_PointCollection_AddEx)] HRESULT AddEx([in] CogoObjectID key,[in] IPoint2d* newVal);
-        [helpstring("method Remove"),helpcontext(IDH_PointCollection_Remove)] HRESULT Remove([in] CogoObjectID key);
+        [helpstring("method Add"),helpcontext(IDH_PointCollection_Add)] HRESULT Add([in] CogoObjectID id,[in] Float64 x,[in] Float64 y,[out,retval] IPoint2d* *point);
+        [helpstring("method AddEx"),helpcontext(IDH_PointCollection_AddEx)] HRESULT AddEx([in] CogoObjectID id,[in] IPoint2d* newVal);
+        [helpstring("method Remove"),helpcontext(IDH_PointCollection_Remove)] HRESULT Remove([in] CogoObjectID id);
         [helpstring("method Clear"),helpcontext(IDH_PointCollection_Clear)] HRESULT Clear();
-        [helpstring("method FindKey"),helpcontext(IDH_PointCollection_FindKey)] HRESULT FindKey([in] IPoint2d* point,[out,retval]CogoObjectID* key);
-        [propget,restricted,helpstring("property _EnumKeys"),helpcontext(IDH_PointCollection__EnumKeys)] HRESULT _EnumKeys([out,retval] IEnumKeys** ppenum);
+        [helpstring("method FindID"),helpcontext(IDH_PointCollection_FindID)] HRESULT FindID([in] IPoint2d* point,[out,retval]CogoObjectID* ID);
+        [propget,restricted,helpstring("property _EnumIDs"),helpcontext(IDH_PointCollection__EnumIDs)] HRESULT _EnumIDs([out,retval] IEnumIDs** ppenum);
 		[propget, helpstring("method Factory"),helpcontext(IDH_PointCollection_Factory)] HRESULT Factory([out,retval]IPoint2dFactory** factory);
 		[propputref, helpstring("method Factory"),helpcontext(IDH_PointCollection_Factory)] HRESULT Factory([in]IPoint2dFactory* factory);
-		[helpstring("method Key"),helpcontext(IDH_PointCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoObjectID* key);
+		[helpstring("method ID"),helpcontext(IDH_PointCollection_ID)] HRESULT ID([in] CollectionIndexType index,[out,retval] CogoObjectID* ID);
         [propget,restricted,helpstring("property _EnumPoints"),helpcontext(IDH_PointCollection__EnumPoints)] HRESULT _EnumPoints([out,retval] IEnumPoint2d** ppenum);
         [helpstring("method Clone"), helpcontext(IDH_PointCollection_Clone)] HRESULT Clone([out,retval]IPointCollection* *clone);
 
@@ -326,9 +352,9 @@ library WBFLCogo
     ]
     interface IPointCollectionEvents : IUnknown
     {
-        [helpstring("event OnPointChanged"),helpcontext(IDH_PointCollection_OnPointChanged)] HRESULT OnPointChanged([in] CogoObjectID key,[in] IPoint2d* point);
-        [helpstring("event OnPointAdded"),helpcontext(IDH_PointCollection_OnPointAdded)] HRESULT OnPointAdded([in] CogoObjectID key,[in] IPoint2d* point);
-        [helpstring("event OnPointRemoved"),helpcontext(IDH_PointCollection_OnPointRemoved)] HRESULT OnPointRemoved([in] CogoObjectID key);
+        [helpstring("event OnPointChanged"),helpcontext(IDH_PointCollection_OnPointChanged)] HRESULT OnPointChanged([in] CogoObjectID id,[in] IPoint2d* point);
+        [helpstring("event OnPointAdded"),helpcontext(IDH_PointCollection_OnPointAdded)] HRESULT OnPointAdded([in] CogoObjectID id,[in] IPoint2d* point);
+        [helpstring("event OnPointRemoved"),helpcontext(IDH_PointCollection_OnPointRemoved)] HRESULT OnPointRemoved([in] CogoObjectID id);
         [helpstring("event OnPointsCleared"),helpcontext(IDH_PointCollection_OnPointsCleared)] HRESULT OnPointsCleared();
     };
 
@@ -450,18 +476,18 @@ library WBFLCogo
    interface ILineSegmentCollection : IUnknown
    {
      [propget, restricted, helpstring("returns an enumerator for the collection.")]  HRESULT _NewEnum([out, retval] IUnknown** retval);  
-       [propget, helpstring("property Item"),helpcontext(IDH_LineSegmentCollection_Item)] HRESULT Item([in] CogoObjectID key, [out, retval] ILineSegment2d* *pVal);
-       [propputref, helpstring("property Item"),helpcontext(IDH_LineSegmentCollection_Item)] HRESULT Item([in] CogoObjectID key, [in] ILineSegment2d* newVal);
+       [propget, helpstring("property Item"),helpcontext(IDH_LineSegmentCollection_Item)] HRESULT Item([in] CogoObjectID id, [out, retval] ILineSegment2d* *pVal);
+       [propputref, helpstring("property Item"),helpcontext(IDH_LineSegmentCollection_Item)] HRESULT Item([in] CogoObjectID id, [in] ILineSegment2d* newVal);
        [propget, helpstring("property Count"),helpcontext(IDH_LineSegmentCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
-       [helpstring("method Add"),helpcontext(IDH_LineSegmentCollection_Add)] HRESULT Add([in] CogoObjectID key,[in] IPoint2d* start,[in] IPoint2d* end,[out,retval]ILineSegment2d* *ls);
-       [helpstring("method AddEx"),helpcontext(IDH_LineSegmentCollection_AddEx)] HRESULT AddEx([in] CogoObjectID key,[in] ILineSegment2d* newVal);
-       [helpstring("method Remove"),helpcontext(IDH_LineSegmentCollection_Remove)] HRESULT Remove([in] CogoObjectID key);
+       [helpstring("method Add"),helpcontext(IDH_LineSegmentCollection_Add)] HRESULT Add([in] CogoObjectID id,[in] IPoint2d* start,[in] IPoint2d* end,[out,retval]ILineSegment2d* *ls);
+       [helpstring("method AddEx"),helpcontext(IDH_LineSegmentCollection_AddEx)] HRESULT AddEx([in] CogoObjectID id,[in] ILineSegment2d* newVal);
+       [helpstring("method Remove"),helpcontext(IDH_LineSegmentCollection_Remove)] HRESULT Remove([in] CogoObjectID id);
        [helpstring("method Clear"),helpcontext(IDH_LineSegmentCollection_Clear)] HRESULT Clear();
-       [helpstring("method FindKey"),helpcontext(IDH_LineSegmentCollection_FindKey)] HRESULT FindKey([in] ILineSegment2d* ls,[out,retval]CogoObjectID* key);
-     [propget,restricted,helpstring("property _EnumKeys"),helpcontext(IDH_LineSegmentCollection__EnumKeys)] HRESULT _EnumKeys([out,retval] IEnumKeys** ppenum);
+       [helpstring("method FindID"),helpcontext(IDH_LineSegmentCollection_FindID)] HRESULT FindID([in] ILineSegment2d* ls,[out,retval]CogoObjectID* ID);
+     [propget,restricted,helpstring("property _EnumIDs"),helpcontext(IDH_LineSegmentCollection__EnumIDs)] HRESULT _EnumIDs([out,retval] IEnumIDs** ppenum);
 	   [propget, helpstring("property Factory"),helpcontext(IDH_LineSegmentCollection_Factory)] HRESULT Factory([out,retval] ILineSegment2dFactory** factory);
 	   [propputref, helpstring("property Factory"),helpcontext(IDH_LineSegmentCollection_Factory)] HRESULT Factory([in] ILineSegment2dFactory* factory);
-		[helpstring("method Key"),helpcontext(IDH_LineSegmentCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoObjectID* key);
+		[helpstring("method ID"),helpcontext(IDH_LineSegmentCollection_ID)] HRESULT ID([in] CollectionIndexType index,[out,retval] CogoObjectID* ID);
         [propget,restricted,helpstring("property _EnumLineSegments"),helpcontext(IDH_LineSegmentCollection__EnumLineSegments)] HRESULT _EnumLineSegments([out,retval] IEnumLineSegments** ppenum);
         [helpstring("method Clone"), helpcontext(IDH_LineSegmentCollection_Clone)] HRESULT Clone([out,retval] ILineSegmentCollection* *clone);
 
@@ -479,11 +505,12 @@ library WBFLCogo
    ]
    interface ILineSegmentCollectionEvents : IUnknown
    {
-       [helpstring("event OnLineSegmentChanged"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentChanged)] HRESULT OnLineSegmentChanged([in] CogoObjectID key,[in] ILineSegment2d* lineSeg);
-       [helpstring("event OnLineSegmentAdded"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentAdded)] HRESULT OnLineSegmentAdded([in] CogoObjectID key,[in] ILineSegment2d* lineSeg);
-       [helpstring("event OnLineSegmentRemoved"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentRemoved)] HRESULT OnLineSegmentRemoved([in] CogoObjectID key);
+       [helpstring("event OnLineSegmentChanged"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentChanged)] HRESULT OnLineSegmentChanged([in] CogoObjectID id,[in] ILineSegment2d* lineSeg);
+       [helpstring("event OnLineSegmentAdded"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentAdded)] HRESULT OnLineSegmentAdded([in] CogoObjectID id,[in] ILineSegment2d* lineSeg);
+       [helpstring("event OnLineSegmentRemoved"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentRemoved)] HRESULT OnLineSegmentRemoved([in] CogoObjectID id);
        [helpstring("event OnLineSegmentsCleared"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentsCleared)] HRESULT OnLineSegmentsCleared();
    };
+
 	[
 		object,
 		uuid(337799AD-766C-4FB7-A238-9A4C61FFBE29),
@@ -494,13 +521,16 @@ library WBFLCogo
 	]
 	interface IStation : IUnknown
 	{
-      [helpstring("method Distance")] HRESULT Distance([in]IStation* station,[out,retval]Float64* pDist);
       [helpstring("method FromVariant")] HRESULT FromVariant([in] VARIANT varStation);
-      [helpstring("method Increment")] HRESULT Increment([in] Float64 value);
+		[propget, helpstring("property StationZoneIndex"), helpcontext(IDH_Station_StationZoneIndex)] HRESULT StationZoneIndex([out, retval] ZoneIndexType *pVal);
+		[propput, helpstring("property StationZoneIndex"), helpcontext(IDH_Station_StationZoneIndex)] HRESULT StationZoneIndex([in] ZoneIndexType newVal);
 		[propget, helpstring("property Value"), helpcontext(IDH_Station_Value)] HRESULT Value([out, retval] Float64 *pVal);
 		[propput, helpstring("property Value"), helpcontext(IDH_Station_Value)] HRESULT Value([in] Float64 newVal);
+      [helpstring("method GetStation")] HRESULT GetStation([out]ZoneIndexType* pZoneIdx,[out]Float64* pStation);
+      [helpstring("method SetStation")] HRESULT SetStation([in]ZoneIndexType zoneIdx,[in]Float64 station);
+      [propget,helpstring("property NormalizedValue")] HRESULT NormalizedValue([in]IAlignment* pAlignment,[out,retval]Float64* pValue);
       [helpstring("method FromString"), helpcontext(IDH_Station_FromString)] HRESULT FromString([in] BSTR station,[in] UnitModeType unitMode);
-      [helpstring("method AsString"), helpcontext(IDH_Station_AsString)] HRESULT AsString([in] UnitModeType unitMode, [out,retval] BSTR* station);
+      [helpstring("method AsString"), helpcontext(IDH_Station_AsString)] HRESULT AsString([in] UnitModeType unitMode, [in] VARIANT_BOOL vbIncludeStationZone, [out,retval] BSTR* station);
       [helpstring("method Clone"), helpcontext(IDH_Station_Clone)] HRESULT Clone([out,retval] IStation* *clone);
 
      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
@@ -516,8 +546,95 @@ library WBFLCogo
 	]
 	interface IStationEvents : IUnknown
    {
-       [helpstring("event OnStationChanged"),helpcontext(IDH_Station_OnStationChanged)] HRESULT OnStationChanged(Float64 newVal);
+       [helpstring("event OnStationChanged"),helpcontext(IDH_Station_OnStationChanged)] HRESULT OnStationChanged(ZoneIndexType zoneIdx,Float64 station);
    };
+
+   [
+      object,
+      uuid(F3EE95F1-C4B9-4c9b-9B44-17DC06F7444A),
+      oleautomation,
+      helpcontext(IDH_StationEquation),
+      helpstring("IStationEquation Interface"),
+      pointer_default(unique)
+   ]
+   interface IStationEquation : IUnknown
+   {
+      [helpstring("method GetEquation"),helpcontext(IDH_StationEquation_GetEquation)] HRESULT GetEquation([out]Float64* pBackStation,[out]Float64* pAheadStation);
+      [propget,helpstring("property Back"),helpcontext(IDH_StationEquation_Back)] HRESULT Back([out,retval]Float64* pBack);
+      [propget,helpstring("property Ahead"),helpcontext(IDH_StationEquation_Ahead)] HRESULT Ahead([out,retval]Float64* pAhead);
+      [propget,helpstring("property NormalizedValue"),helpcontext(IDH_StationEquation_NormalizedValue)] HRESULT NormalizedValue([out,retval]Float64* pNormalizedValue);
+
+     [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+   };
+
+	[
+	   object,
+	   uuid(90A4A76D-EE9D-46c3-8FC6-17786B062164),
+	   helpstring("IEnumStationEquations Interface"),
+	   //helpcontext(IDH_IEnumProfilePoints),
+	   oleautomation,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumStationEquations : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumStationEquations** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] IStationEquation** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+   [
+       object,
+       uuid(DA2874E5-2A2E-439f-B35A-708863DA91E6),
+       oleautomation,
+	   helpcontext(IDH_StationEquationCollection),
+       helpstring("IStationEquationCollection Interface"),
+       pointer_default(unique)
+   ]
+   interface IStationEquationCollection : IUnknown
+   {
+      [propget,helpstring("property Alignment")] HRESULT Alignment([out,retval]IAlignment** ppAlignment);
+     [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+       [propget, helpstring("property Item"),helpcontext(IDH_StationEquationCollection_Item)] HRESULT Item([in] CollectionIndexType idx, [out, retval] IStationEquation* *pVal);
+       [propget, helpstring("property Count"),helpcontext(IDH_StationEquationCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
+       [helpstring("method Add"),helpcontext(IDH_StationEquationCollection_Add)] HRESULT Add([in] Float64 back,[in] Float64 ahead,[out,retval]IStationEquation* *pp);
+       [helpstring("method Remove"),helpcontext(IDH_StationEquationCollection_Remove)] HRESULT Remove([in] CollectionIndexType idx);
+       [helpstring("method Clear"),helpcontext(IDH_StationEquationCollection_Clear)] HRESULT Clear();
+     [propget,restricted,helpstring("property _EnumStationEquations"),helpcontext(IDH_StationEquationCollection__EnumStationEquations)] HRESULT _EnumStationEquations([out,retval] IEnumStationEquations** ppenum);
+
+     [helpstring("method Distance")] HRESULT Distance([in]VARIANT varStation1,[in]VARIANT varStation2,[out,retval]Float64* pDist);
+     [helpstring("method Increment")] HRESULT Increment([in]VARIANT varStation,[in] Float64 value,[out,retval]IStation** station);
+     [helpstring("method IncrementBy")] HRESULT IncrementBy([in]IStation* station,[in] Float64 value);
+     [helpstring("method ConvertToNormalizedStation")] HRESULT ConvertToNormalizedStation([in] VARIANT varStation,[out,retval] Float64* station);
+     [helpstring("method ConvertToNormalizedStationEx")] HRESULT ConvertToNormalizedStationEx([in] VARIANT varStation,[out,retval] IStation** station);
+     [helpstring("method ConvertFromNormalizedStation")] HRESULT ConvertFromNormalizedStation([in] Float64 normalizedStation,[out,retval] IStation** station);
+     [helpstring("method ConvertFromNormalizedStationEx")] HRESULT ConvertFromNormalizedStationEx([in] VARIANT varStation,[out,retval] IStation** station);
+
+        [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+   };
+
+
+   [
+       object,
+       uuid(459B10C5-0C87-4db8-9C2C-2AC15DD03A90),
+       oleautomation,
+	   helpcontext(IDH_StationEquationCollection),
+       helpstring("IStationEquationCollectionEvents Interface"),
+       pointer_default(unique)
+   ]
+   interface IStationEquationCollectionEvents : IUnknown
+   {
+       [helpstring("event OnEquationAdded"),helpcontext(IDH_StationEquationCollection_OnEquationAdded)] HRESULT OnEquationAdded([in] CollectionIndexType idx,[in] IStationEquation* pp);
+       [helpstring("event OnEquationRemoved"),helpcontext(IDH_StationEquationCollection_OnEquationRemoved)] HRESULT OnEquationRemoved([in] CollectionIndexType idx);
+       [helpstring("event OnEquationsCleared"),helpcontext(IDH_StationEquationCollection_OnEquationsCleared)] HRESULT OnEquationsCleared();
+  };
 
    [
        object,
@@ -529,6 +646,8 @@ library WBFLCogo
    ]
    interface IProfilePoint : IUnknown
    {
+       [propget, helpstring("property Profile"), helpcontext(IDH_ProfilePoint_Profile)] HRESULT Profile([out, retval] IProfile* *pVal);
+       [propputref, helpstring("property Profile"), helpcontext(IDH_ProfilePoint_Profile)] HRESULT Profile([in] IProfile* newVal);
        [propget, helpstring("property Station"),helpcontext(IDH_ProfilePoint_Station)] HRESULT Station([out, retval] IStation* *station);
        [propput, helpstring("property Station"),helpcontext(IDH_ProfilePoint_Station)] HRESULT Station([in] VARIANT varStation);
        [propget, helpstring("property Elevation"),helpcontext(IDH_ProfilePoint_Elevation)] HRESULT Elevation([out, retval] Float64 *pVal);
@@ -585,6 +704,8 @@ library WBFLCogo
 	]
 	interface IProfilePointFactory : IUnknown
 	{
+       [propget, helpstring("property Profile"), helpcontext(IDH_ProfilePointFactory_Profile)] HRESULT Profile([out, retval] IProfile* *pVal);
+       [propputref, helpstring("property Profile"), helpcontext(IDH_ProfilePointFactory_Profile)] HRESULT Profile([in] IProfile* newVal);
 		[helpstring("method CreateProfilePoint"), helpcontext(IDH_ProfilePointFactory_CreateProfilePoint)] HRESULT CreateProfilePoint([out,retval]IProfilePoint* *pVal);
 
      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
@@ -600,16 +721,16 @@ library WBFLCogo
    interface IProfilePointCollection : IUnknown
    {
      [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
-       [propget, helpstring("property Item"),helpcontext(IDH_ProfilePointCollection_Item)] HRESULT Item([in] CogoObjectID key, [out, retval] IProfilePoint* *pVal);
-       [propputref, helpstring("property Item"),helpcontext(IDH_ProfilePointCollection_Item)] HRESULT Item([in] CogoObjectID key, [in] IProfilePoint* newVal);
+       [propget, helpstring("property Item"),helpcontext(IDH_ProfilePointCollection_Item)] HRESULT Item([in] CogoObjectID id, [out, retval] IProfilePoint* *pVal);
+       [propputref, helpstring("property Item"),helpcontext(IDH_ProfilePointCollection_Item)] HRESULT Item([in] CogoObjectID id, [in] IProfilePoint* newVal);
        [propget, helpstring("property Count"),helpcontext(IDH_ProfilePointCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
-       [helpstring("method Add"),helpcontext(IDH_ProfilePointCollection_Add)] HRESULT Add([in] CogoObjectID key,[in] VARIANT varStation,[in] Float64 elevation,[out,retval]IProfilePoint* *pp);
-       [helpstring("method AddEx"),helpcontext(IDH_ProfilePointCollection_AddEx)] HRESULT AddEx([in] CogoObjectID key,[in] IProfilePoint* newVal);
-       [helpstring("method Remove"),helpcontext(IDH_ProfilePointCollection_Remove)] HRESULT Remove([in] CogoObjectID key);
+       [helpstring("method Add"),helpcontext(IDH_ProfilePointCollection_Add)] HRESULT Add([in] CogoObjectID id,[in] VARIANT varStation,[in] Float64 elevation,[out,retval]IProfilePoint* *pp);
+       [helpstring("method AddEx"),helpcontext(IDH_ProfilePointCollection_AddEx)] HRESULT AddEx([in] CogoObjectID id,[in] IProfilePoint* newVal);
+       [helpstring("method Remove"),helpcontext(IDH_ProfilePointCollection_Remove)] HRESULT Remove([in] CogoObjectID id);
        [helpstring("method Clear"),helpcontext(IDH_ProfilePointCollection_Clear)] HRESULT Clear();
-       [helpstring("method FindKey"),helpcontext(IDH_ProfilePointCollection_FindKey)] HRESULT FindKey([in] IProfilePoint* pp,[out,retval]CogoObjectID* key);
-     [propget,restricted,helpstring("property _EnumKeys"),helpcontext(IDH_ProfilePointCollection__EnumKeys)] HRESULT _EnumKeys([out,retval] IEnumKeys** ppenum);
-		[helpstring("method Key"),helpcontext(IDH_ProfilePointCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoObjectID* key);
+       [helpstring("method FindID"),helpcontext(IDH_ProfilePointCollection_FindID)] HRESULT FindID([in] IProfilePoint* pp,[out,retval]CogoObjectID* ID);
+     [propget,restricted,helpstring("property _EnumIDs"),helpcontext(IDH_ProfilePointCollection__EnumIDs)] HRESULT _EnumIDs([out,retval] IEnumIDs** ppenum);
+		[helpstring("method ID"),helpcontext(IDH_ProfilePointCollection_ID)] HRESULT ID([in] CollectionIndexType index,[out,retval] CogoObjectID* ID);
 		[propget,helpstring("property Factory"),helpcontext(IDH_ProfilePointCollection_Factory)] HRESULT Factory([out,retval]IProfilePointFactory* *factory);
 		[propputref,helpstring("property Factory"),helpcontext(IDH_ProfilePointCollection_Factory)] HRESULT Factory([in]IProfilePointFactory* factory);
      [propget,restricted,helpstring("property _EnumProfilePoints"),helpcontext(IDH_ProfilePointCollection__EnumProfilePoints)] HRESULT _EnumProfilePoints([out,retval] IEnumProfilePoints** ppenum);
@@ -629,9 +750,9 @@ library WBFLCogo
    ]
    interface IProfilePointCollectionEvents : IUnknown
    {
-       [helpstring("event OnPointChanged"),helpcontext(IDH_ProfilePointCollection_OnPointChanged)] HRESULT OnProfilePointChanged([in] CogoObjectID key,[in] IProfilePoint* pp);
-       [helpstring("event OnPointAdded"),helpcontext(IDH_ProfilePointCollection_OnPointAdded)] HRESULT OnProfilePointAdded([in] CogoObjectID key,[in] IProfilePoint* pp);
-       [helpstring("event OnPointRemoved"),helpcontext(IDH_ProfilePointCollection_OnPointRemoved)] HRESULT OnProfilePointRemoved([in] CogoObjectID key);
+       [helpstring("event OnPointChanged"),helpcontext(IDH_ProfilePointCollection_OnPointChanged)] HRESULT OnProfilePointChanged([in] CogoObjectID id,[in] IProfilePoint* pp);
+       [helpstring("event OnPointAdded"),helpcontext(IDH_ProfilePointCollection_OnPointAdded)] HRESULT OnProfilePointAdded([in] CogoObjectID id,[in] IProfilePoint* pp);
+       [helpstring("event OnPointRemoved"),helpcontext(IDH_ProfilePointCollection_OnPointRemoved)] HRESULT OnProfilePointRemoved([in] CogoObjectID id);
        [helpstring("event OnPointsCleared"),helpcontext(IDH_ProfilePointCollection_OnPointsCleared)] HRESULT OnProfilePointsCleared();
   };
    [
@@ -644,6 +765,8 @@ library WBFLCogo
    ]
    interface IVertCurve : IUnknown
    {
+       [propget, helpstring("property Profile"), helpcontext(IDH_VertCurve_Profile)] HRESULT Profile([out, retval] IProfile* *pVal);
+       [propputref, helpstring("property Profile"), helpcontext(IDH_VertCurve_Profile)] HRESULT Profile([in] IProfile* newVal);
        [propget, helpstring("property PBG"), helpcontext(IDH_VertCurve_PBG)] HRESULT PBG([out, retval] IProfilePoint* *pVal);
        [propputref, helpstring("property PBG"), helpcontext(IDH_VertCurve_PBG)] HRESULT PBG([in] IProfilePoint* newVal);
        [propget, helpstring("property PVI"), helpcontext(IDH_VertCurve_PVI)] HRESULT PVI([out, retval] IProfilePoint* *pVal);
@@ -726,17 +849,17 @@ library WBFLCogo
    interface IVertCurveCollection : IUnknown
    {
      [propget, restricted,helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
-       [propget, helpstring("property Item"), helpcontext(IDH_VertCurveCollection_Item)] HRESULT Item([in] CogoObjectID key, [out, retval] IVertCurve* *pVal);
-       [propputref, helpstring("property Item"), helpcontext(IDH_VertCurveCollection_Item)] HRESULT Item([in] CogoObjectID key, [in] IVertCurve* newVal);
+       [propget, helpstring("property Item"), helpcontext(IDH_VertCurveCollection_Item)] HRESULT Item([in] CogoObjectID id, [out, retval] IVertCurve* *pVal);
+       [propputref, helpstring("property Item"), helpcontext(IDH_VertCurveCollection_Item)] HRESULT Item([in] CogoObjectID id, [in] IVertCurve* newVal);
        [propget, helpstring("property Count"), helpcontext(IDH_VertCurveCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
-       [helpstring("method Add"), helpcontext(IDH_VertCurveCollection_Add)] HRESULT Add([in] CogoObjectID key,[in] IProfilePoint* pbg,[in] IProfilePoint* pvi, [in] IProfilePoint* pfg,[in]Float64 l1,[in] Float64 l2,[out,retval]IVertCurve* *vc);
-       [helpstring("method AddEx"), helpcontext(IDH_VertCurveCollection_AddEx)] HRESULT AddEx([in] CogoObjectID key,[in] IVertCurve* newVal);
-       [helpstring("method Remove"), helpcontext(IDH_VertCurveCollection_Remove)] HRESULT Remove([in] CogoObjectID key);
+       [helpstring("method Add"), helpcontext(IDH_VertCurveCollection_Add)] HRESULT Add([in] CogoObjectID id,[in] IProfilePoint* pbg,[in] IProfilePoint* pvi, [in] IProfilePoint* pfg,[in]Float64 l1,[in] Float64 l2,[out,retval]IVertCurve* *vc);
+       [helpstring("method AddEx"), helpcontext(IDH_VertCurveCollection_AddEx)] HRESULT AddEx([in] CogoObjectID id,[in] IVertCurve* newVal);
+       [helpstring("method Remove"), helpcontext(IDH_VertCurveCollection_Remove)] HRESULT Remove([in] CogoObjectID id);
        [helpstring("method Clear"), helpcontext(IDH_VertCurveCollection_Clear)] HRESULT Clear();
-       [helpstring("method FindKey"), helpcontext(IDH_VertCurveCollection_FindKey)] HRESULT FindKey([in] IVertCurve* vc,[out,retval]CogoObjectID* key);
-       [propget,restricted,helpstring("property _EnumKeys"), helpcontext(IDH_VertCurveCollection__EnumKeys)] HRESULT _EnumKeys([out,retval] IEnumKeys** ppenum);
+       [helpstring("method FindID"), helpcontext(IDH_VertCurveCollection_FindID)] HRESULT FindID([in] IVertCurve* vc,[out,retval]CogoObjectID* ID);
+       [propget,restricted,helpstring("property _EnumIDs"), helpcontext(IDH_VertCurveCollection__EnumIDs)] HRESULT _EnumIDs([out,retval] IEnumIDs** ppenum);
  	   [propget,restricted,helpstring("property _EnumVertCurves"), helpcontext(IDH_VertCurveCollection__EnumVertCurves)] HRESULT _EnumVertCurves([out,retval] IEnumVertCurves** ppenum);
-	   [helpstring("method Key"), helpcontext(IDH_VertCurveCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoObjectID* key);
+	   [helpstring("method ID"), helpcontext(IDH_VertCurveCollection_ID)] HRESULT ID([in] CollectionIndexType index,[out,retval] CogoObjectID* ID);
 	   [propputref,helpstring("property Factory"), helpcontext(IDH_VertCurveCollection_Factory)] HRESULT Factory([in]IVertCurveFactory* factory);
 	   [propget,helpstring("property Factory"), helpcontext(IDH_VertCurveCollection_Factory)] HRESULT Factory([out,retval]IVertCurveFactory* *factory);
       [helpstring("method Clone"), helpcontext(IDH_VertCurveCollection_Clone)] HRESULT Clone([out,retval] IVertCurveCollection* *clone);
@@ -754,9 +877,9 @@ library WBFLCogo
    ]
    interface IVertCurveCollectionEvents : IUnknown
    {
-       [helpstring("event OnVertCurveChanged"), helpcontext(IDH_VertCurveCollection_OnVertCurveChanged)] HRESULT OnVertCurveChanged([in] CogoObjectID key,[in] IVertCurve* vc);
-       [helpstring("event OnVertCurveAdded"), helpcontext(IDH_VertCurveCollection_OnVertCurveAdded)] HRESULT OnVertCurveAdded([in] CogoObjectID key,[in] IVertCurve* vc);
-       [helpstring("event OnVertCurveRemoved"), helpcontext(IDH_VertCurveCollection_OnVertCurveRemoved)] HRESULT OnVertCurveRemoved([in] CogoObjectID key);
+       [helpstring("event OnVertCurveChanged"), helpcontext(IDH_VertCurveCollection_OnVertCurveChanged)] HRESULT OnVertCurveChanged([in] CogoObjectID id,[in] IVertCurve* vc);
+       [helpstring("event OnVertCurveAdded"), helpcontext(IDH_VertCurveCollection_OnVertCurveAdded)] HRESULT OnVertCurveAdded([in] CogoObjectID id,[in] IVertCurve* vc);
+       [helpstring("event OnVertCurveRemoved"), helpcontext(IDH_VertCurveCollection_OnVertCurveRemoved)] HRESULT OnVertCurveRemoved([in] CogoObjectID id);
        [helpstring("event OnVertCurvesCleared"), helpcontext(IDH_VertCurveCollection_OnVertCurvesCleared)] HRESULT OnVertCurvesCleared();
    };
 	
@@ -808,18 +931,18 @@ library WBFLCogo
 	interface IHorzCurveCollection : IUnknown
 	{
         [propget, restricted,helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
-        [propget, helpstring("property Item"), helpcontext(IDH_HorzCurveCollection_Item)] HRESULT Item([in] CogoObjectID key, [out, retval] IHorzCurve* *pVal);
-        [propputref, helpstring("property Item"), helpcontext(IDH_HorzCurveCollection_Item)] HRESULT Item([in] CogoObjectID key, [in] IHorzCurve* newVal);
+        [propget, helpstring("property Item"), helpcontext(IDH_HorzCurveCollection_Item)] HRESULT Item([in] CogoObjectID id, [out, retval] IHorzCurve* *pVal);
+        [propputref, helpstring("property Item"), helpcontext(IDH_HorzCurveCollection_Item)] HRESULT Item([in] CogoObjectID id, [in] IHorzCurve* newVal);
         [propget, helpstring("property Count"), helpcontext(IDH_HorzCurveCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
-        [helpstring("method Add"), helpcontext(IDH_HorzCurveCollection_Add)] HRESULT Add([in] CogoObjectID key,[in] IPoint2d* pbt,[in] IPoint2d* pi,[in] IPoint2d* pft,[in] Float64 radius,[in] Float64 Ls1,[in] Float64 Ls2,[out,retval]IHorzCurve** hc);
-        [helpstring("method AddEx"), helpcontext(IDH_HorzCurveCollection_AddEx)] HRESULT AddEx([in] CogoObjectID key,[in] IHorzCurve* newVal);
-        [helpstring("method Remove"), helpcontext(IDH_HorzCurveCollection_Remove)] HRESULT Remove([in] CogoObjectID key);
+        [helpstring("method Add"), helpcontext(IDH_HorzCurveCollection_Add)] HRESULT Add([in] CogoObjectID id,[in] IPoint2d* pbt,[in] IPoint2d* pi,[in] IPoint2d* pft,[in] Float64 radius,[in] Float64 Ls1,[in] Float64 Ls2,[out,retval]IHorzCurve** hc);
+        [helpstring("method AddEx"), helpcontext(IDH_HorzCurveCollection_AddEx)] HRESULT AddEx([in] CogoObjectID id,[in] IHorzCurve* newVal);
+        [helpstring("method Remove"), helpcontext(IDH_HorzCurveCollection_Remove)] HRESULT Remove([in] CogoObjectID id);
         [helpstring("method Clear"), helpcontext(IDH_HorzCurveCollection_Clear)] HRESULT Clear();
-        [helpstring("method FindKey"), helpcontext(IDH_HorzCurveCollection_FindKey)] HRESULT FindKey([in] IHorzCurve* hc,[out,retval]CogoObjectID* key);
-        [propget,restricted,helpstring("property _EnumKeys"), helpcontext(IDH_HorzCurveCollection__EnumKeys)] HRESULT _EnumKeys([out,retval] IEnumKeys** ppenum);
+        [helpstring("method FindID"), helpcontext(IDH_HorzCurveCollection_FindID)] HRESULT FindID([in] IHorzCurve* hc,[out,retval]CogoObjectID* ID);
+        [propget,restricted,helpstring("property _EnumIDs"), helpcontext(IDH_HorzCurveCollection__EnumIDs)] HRESULT _EnumIDs([out,retval] IEnumIDs** ppenum);
 		[propget, helpstring("method Factory"), helpcontext(IDH_HorzCurveCollection_Factory)] HRESULT Factory([out,retval]IHorzCurveFactory** factory);
 		[propputref, helpstring("method Factory"), helpcontext(IDH_HorzCurveCollection_Factory)] HRESULT Factory([in]IHorzCurveFactory* factory);
-		[helpstring("method Key"), helpcontext(IDH_HorzCurveCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoObjectID* key);
+		[helpstring("method ID"), helpcontext(IDH_HorzCurveCollection_ID)] HRESULT ID([in] CollectionIndexType index,[out,retval] CogoObjectID* ID);
         [propget,restricted,helpstring("property _EnumHorzCurves"), helpcontext(IDH_HorzCurveCollection__EnumHorzCurves)] HRESULT _EnumHorzCurves([out,retval] IEnumHorzCurves** ppenum);
         [helpstring("method Clone"), helpcontext(IDH_HorzCurveCollection_Clone)] HRESULT Clone([out,retval] IHorzCurveCollection* *clone);
 
@@ -836,9 +959,9 @@ library WBFLCogo
 	]
 	interface IHorzCurveCollectionEvents : IUnknown
    {
-       [helpstring("event OnHorzCurveChanged"), helpcontext(IDH_HorzCurveCollection_OnHorzCurveChanged)] HRESULT OnHorzCurveChanged([in] CogoObjectID key,[in] IHorzCurve* vc);
-       [helpstring("event OnHorzCurveAdded"), helpcontext(IDH_HorzCurveCollection_OnHorzCurveAdded)] HRESULT OnHorzCurveAdded([in] CogoObjectID key,[in] IHorzCurve* vc);
-       [helpstring("event OnHorzCurveRemoved"), helpcontext(IDH_HorzCurveCollection_OnHorzCurveRemoved)] HRESULT OnHorzCurveRemoved([in] CogoObjectID key);
+       [helpstring("event OnHorzCurveChanged"), helpcontext(IDH_HorzCurveCollection_OnHorzCurveChanged)] HRESULT OnHorzCurveChanged([in] CogoObjectID id,[in] IHorzCurve* vc);
+       [helpstring("event OnHorzCurveAdded"), helpcontext(IDH_HorzCurveCollection_OnHorzCurveAdded)] HRESULT OnHorzCurveAdded([in] CogoObjectID id,[in] IHorzCurve* vc);
+       [helpstring("event OnHorzCurveRemoved"), helpcontext(IDH_HorzCurveCollection_OnHorzCurveRemoved)] HRESULT OnHorzCurveRemoved([in] CogoObjectID id);
        [helpstring("event OnHorzCurvesCleared"), helpcontext(IDH_HorzCurveCollection_OnHorzCurvesCleared)] HRESULT OnHorzCurvesCleared();
    };
 
@@ -897,58 +1020,65 @@ library WBFLCogo
        [helpstring("event OnSplineChanged")/*, helpcontext(IDH_CubicSpline_OnSplineChanged)*/] HRESULT OnSplineChanged([in] ICubicSpline* spline);
    };
 
-	[
-		object,
-		uuid(68BB6E7C-E147-480E-AE0C-361078EC460A),
-		oleautomation,
-		helpcontext(IDH_CrossSection),
-		helpstring("ICrossSection Interface"),
-		pointer_default(unique)
-	]
-	interface ICrossSection : IUnknown
-	{
-		[propget, helpstring("property Station"), helpcontext(IDH_CrossSection_Station)] HRESULT Station([out, retval] IStation* *station);
-		[propput, helpstring("property Station"), helpcontext(IDH_CrossSection_Station)] HRESULT Station([in] VARIANT varStation);
-		[propget, helpstring("property CrownPointOffset"), helpcontext(IDH_CrossSection_CrownPointOffset)] HRESULT CrownPointOffset([out, retval] Float64 *pVal);
-		[propput, helpstring("property CrownPointOffset"), helpcontext(IDH_CrossSection_CrownPointOffset)] HRESULT CrownPointOffset([in] Float64 newVal);
-		[propget, helpstring("property LeftCrownSlope"), helpcontext(IDH_CrossSection_LeftCrownSlope)] HRESULT LeftCrownSlope([out, retval] Float64 *pVal);
-		[propput, helpstring("property LeftCrownSlope"), helpcontext(IDH_CrossSection_LeftCrownSlope)] HRESULT LeftCrownSlope([in] Float64 newVal);
-		[propget, helpstring("property RightCrownSlope"), helpcontext(IDH_CrossSection_RightCrownSlope)] HRESULT RightCrownSlope([out, retval] Float64 *pVal);
-		[propput, helpstring("property RightCrownSlope"), helpcontext(IDH_CrossSection_RightCrownSlope)] HRESULT RightCrownSlope([in] Float64 newVal);
-      [helpstring("method Clone"), helpcontext(IDH_CrossSection_Clone)] HRESULT Clone([out,retval] ICrossSection* *clone);
-
-        [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
-	};
-
-	[
-		object,
-		uuid(7AF9C2A9-B90B-4ecb-AEEB-D527B9B1C93C),
-		oleautomation,
-		helpcontext(IDH_CrossSection),
-		helpstring("ICrossSectionEvents Interface"),
-		pointer_default(unique)
-	]
-	interface ICrossSectionEvents : IUnknown
+   [
+      object,
+      uuid(5FA0BC50-322E-4b8c-84AB-5315122966AE),
+      oleautomation,
+      //helpcontext(IDH_Widening),
+      helpstring("IWidening Interface"),
+      pointer_default(unique)
+   ]
+   interface IWidening : IUnknown
    {
-       [helpstring("event OnCrossSectionChanged"), helpcontext(IDH_CrossSection_OnCrossSectionChanged)] HRESULT OnCrossSectionChanged([in] ICrossSection* csect);
-       [helpstring("event OnCrossSectionMoved"), helpcontext(IDH_CrossSection_OnCrossSectionMoved)] HRESULT OnCrossSectionMoved([in] ICrossSection* csect);
+      [helpstring("method Init")] HRESULT Init([in]IProfile* pProfile,[in] VARIANT varBeginStation,[in] VARIANT varBeginFullStation, [in] VARIANT varEndFullStation,[in] VARIANT varEndStation,[in] Float64 widening,[in]IndexType pnt1,[in]IndexType pnt2);
+      [propget, helpstring("property Profile")] HRESULT Profile([out, retval] IProfile* *pVal);
+      [propputref, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
+      [propput,helpstring("property BeginTransition")] HRESULT BeginTransition([in]VARIANT varStation);
+      [propget,helpstring("property BeginTransition")] HRESULT BeginTransition([out,retval]IStation** station);
+      [propput,helpstring("property BeginFullWidening")] HRESULT BeginFullWidening([in]VARIANT varStation);
+      [propget,helpstring("property BeginFullWidening")] HRESULT BeginFullWidening([out,retval]IStation** station);
+      [propput,helpstring("property EndFullWidening")] HRESULT EndFullWidening([in]VARIANT varStation);
+      [propget,helpstring("property EndFullWidening")] HRESULT EndFullWidening([out,retval]IStation** station);
+      [propput,helpstring("property EndTransition")] HRESULT EndTransition([in]VARIANT varStation);
+      [propget,helpstring("property EndTransition")] HRESULT EndTransition([out,retval]IStation** station);
+      [propput,helpstring("property Widening")] HRESULT Widening([in]Float64 value);
+      [propget,helpstring("property Widening")] HRESULT Widening([out,retval]Float64* value);
+      [propput,helpstring("property Segment")] HRESULT Segment([in]IndexType pntIdx,[in]IndexType segmentIdx);
+      [propget,helpstring("property Segment")] HRESULT Segment([in]IndexType pntIdx,[out,retval]IndexType* segmentIdx);
+      [helpstring("method GetWidening")] HRESULT GetWidening([in]VARIANT varStation,[in]IndexType templateSegmentIdx,[out,retval]Float64* pWidening);
+      [helpstring("method Clone")] HRESULT Clone([out,retval]IWidening** ppClone);
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
    };
+
+   [
+      object,
+      uuid(4C081EEC-CB28-465c-AA42-93B92458E8F4),
+      oleautomation,
+      //helpcontext(IDH_Widening),
+      helpstring("IWideningEvents Interface"),
+      pointer_default(unique)
+   ]
+   interface IWideningEvents : IUnknown
+   {
+      [helpstring("event OnWideningChanged")] HRESULT OnWideningChanged([in]IWidening* pWidening);
+   };
+
 	[
 	   object,
-	   uuid(6E208BD8-856F-4386-B46D-B1D9A4938356),
-	   helpstring("IEnumCrossSections Interface"),
-	   //helpcontext(IDH_IEnumCrossSections),
+	   uuid(F580E4A7-C6CE-4482-8C00-5639CFDC26CF),
+	   helpstring("IEnumWidenings Interface"),
+	   //helpcontext(IDH_IEnumWidenings),
 	   oleautomation,
 	   hidden,restricted,
 	   pointer_default(unique)
 	]
-	interface IEnumCrossSections : IUnknown
+	interface IEnumWidenings : IUnknown
 	{
        [helpstring("Clone")]
-	   HRESULT Clone([out] IEnumCrossSections** ppenum);
+	   HRESULT Clone([out] IEnumWidenings** ppenum);
 
 	   [helpstring("Next")]
-	   HRESULT Next([in] ULONG celt, [out] ICrossSection** rgelt, [in,out] ULONG* pceltFetched);
+	   HRESULT Next([in] ULONG celt, [out] IWidening** rgelt, [in,out] ULONG* pceltFetched);
 
 	   [helpstring("Reset")]
 	   HRESULT Reset();
@@ -956,67 +1086,412 @@ library WBFLCogo
 	   [helpstring("Skip")]
 	   HRESULT Skip([in] ULONG celt);
 	};
-	[
-		object,
-		uuid(230879D3-BCE1-412B-AE5F-BA5B67AB37C0),
-		oleautomation,
-		helpcontext(IDH_CrossSectionFactory),
-		helpstring("ICrossSectionFactory Interface"),
-		pointer_default(unique)
-	]
-	interface ICrossSectionFactory : IUnknown
-	{
-		[helpstring("method CreateCrossSection"), helpcontext(IDH_CrossSectionFactory_CreateCrossSection)] HRESULT CreateCrossSection([out,retval] ICrossSection* *pVal);
 
-     [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
-	};
 	[
 		object,
-		uuid(9CCCFB5F-FEF9-458C-A9DF-A65A3469573A),
+		uuid(D7723EA4-F8F0-4749-AF6F-CD4A1BD53546),
 		oleautomation,
-		helpcontext(IDH_CrossSectionCollection),
-		helpstring("ICrossSectionCollection Interface"),
+		//helpcontext(IDH_WideningCollection),
+		helpstring("IWideningCollection Interface"),
 		pointer_default(unique)
 	]
-	interface ICrossSectionCollection : IUnknown
+	interface IWideningCollection : IUnknown
 	{
+      [propget, helpstring("property Profile")] HRESULT Profile([out, retval] IProfile* *pVal);
+      [propputref, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
         [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
-		[propget, helpstring("property Item"), helpcontext(IDH_CrossSectionCollection_Item)] HRESULT Item([in] CollectionIndexType idx,[out, retval] ICrossSection* *pVal);
-		[propputref, helpstring("property Item"), helpcontext(IDH_CrossSectionCollection_Item)] HRESULT Item([in] CollectionIndexType idx,[in] ICrossSection* pVal);
-		[propget, helpstring("property Count"), helpcontext(IDH_CrossSectionCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
-		[helpstring("method Add"), helpcontext(IDH_CrossSectionCollection_Add)] HRESULT Add([in] VARIANT varStation,[in] Float64 cpo, [in] Float64 left,[in] Float64 right,[out,retval]ICrossSection* *cs);
-		[helpstring("method AddEx"), helpcontext(IDH_CrossSectionCollection_AddEx)] HRESULT AddEx([in] ICrossSection* csect);
-		[helpstring("method Remove"), helpcontext(IDH_CrossSectionCollection_Remove)] HRESULT Remove([in] CollectionIndexType idx);
-		[helpstring("method CrownSlope"), helpcontext(IDH_CrossSectionCollection_CrownSlope)] HRESULT CrownSlope([in] VARIANT varStation,[in] Float64 offset,[out,retval] Float64* slope);
-		[helpstring("method LeftCrownSlope"), helpcontext(IDH_CrossSectionCollection_LeftCrownSlope)] HRESULT LeftCrownSlope([in] VARIANT varStation,[out,retval] Float64* slope);
-		[helpstring("method RightCrownSlope"), helpcontext(IDH_CrossSectionCollection_RightCrownSlope)] HRESULT RightCrownSlope([in] VARIANT varStation,[out,retval] Float64* slope);
-		[helpstring("method CreateCrossSection"), helpcontext(IDH_CrossSectionCollection_CreateCrossSection)] HRESULT CreateCrossSection([in] VARIANT varStation,[out,retval] ICrossSection* *objCS);
-		[helpstring("method CrownPointOffset"),helpcontext(IDH_CrossSectionCollection_CrownPointOffset)] HRESULT CrownPointOffset([in] VARIANT varStation,[out,retval]Float64* cpoffset);
-		[helpstring("method Clear"), helpcontext(IDH_CrossSectionCollection_Clear)] HRESULT Clear();
-        [propget, restricted, helpstring("property _EnumCrossSections"), helpcontext(IDH_CrossSectionCollection__EnumCrossSections)] HRESULT _EnumCrossSections([out, retval] IEnumCrossSections** retval);  
-		[propget, helpstring("property Factory"), helpcontext(IDH_CrossSectionCollection_Factory)] HRESULT Factory([out,retval]ICrossSectionFactory* *factory);
-		[propputref, helpstring("property Factory"), helpcontext(IDH_CrossSectionCollection_Factory)] HRESULT Factory([in]ICrossSectionFactory* factory);
-      [helpstring("method Clone"),helpcontext(IDH_CrossSectionCollection_Clone)] HRESULT Clone([out,retval] ICrossSectionCollection* *clone);
+		[propget, helpstring("property Item")/*, helpcontext(IDH_WideningCollection_Item)*/] HRESULT Item([in] CollectionIndexType idx,[out, retval] IWidening* *pVal);
+		[propputref, helpstring("property Item")/*, helpcontext(IDH_WideningCollection_Item)*/] HRESULT Item([in] CollectionIndexType idx,[in] IWidening* pVal);
+		[propget, helpstring("property Count")/*, helpcontext(IDH_WideningCollection_Count)*/] HRESULT Count([out, retval] CollectionIndexType *pVal);
+		[helpstring("method Add")/*, helpcontext(IDH_WideningCollection_Add)*/] HRESULT Add([in] VARIANT varBeginStation,[in] VARIANT varBeginFullStation, [in] VARIANT varEndFullStation,[in] VARIANT varEndStation,[in] Float64 widening,[in]IndexType pnt1,[in]IndexType pnt2,[out,retval]IWidening* *pWidening);
+		[helpstring("method AddEx")/*, helpcontext(IDH_WideningCollection_AddEx)*/] HRESULT AddEx([in] IWidening* csect);
+		[helpstring("method Remove")/*, helpcontext(IDH_WideningCollection_Remove)*/] HRESULT Remove([in] CollectionIndexType idx);
+		[helpstring("method Clear")/*, helpcontext(IDH_WideningCollection_Clear)*/] HRESULT Clear();
+      [propget, restricted, helpstring("property _EnumWidenings")/*, helpcontext(IDH_WideningCollection__EnumWidenings)*/] HRESULT _EnumWidenings([out, retval] IEnumWidenings** retval);  
+      [helpstring("method Clone")/*,helpcontext(IDH_WideningCollection_Clone)*/] HRESULT Clone([out,retval] IWideningCollection* *clone);
+     [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+     [helpstring("method GetWidening")] HRESULT GetWidening([in]VARIANT varStation,[out,retval]IWidening** widening);
+	};
 
-      [propget,helpstring("property Profile")] HRESULT Profile([out,retval]IProfile** ppProfile);
-      [propget,helpstring("property CrownPointPath")] HRESULT CrownPointPath([out,retval]IPath** ppPath);
+	[
+		object,
+		uuid(D3C1C368-EDBF-4302-8FC0-65B2150E1C57),
+		oleautomation,
+		//helpcontext(IDH_WideningCollection),
+		helpstring("IWideningCollectionEvents Interface"),
+		pointer_default(unique)
+	]
+	interface IWideningCollectionEvents : IUnknown
+   {
+       [helpstring("event OnWideningChanged")/*, helpcontext(IDH_CrossSectionCollection_OnCrossSectionChanged)*/] HRESULT OnWideningChanged([in] IWidening* pWidening);
+       [helpstring("event OnWideningAdded")/*, helpcontext(IDH_CrossSectionCollection_OnPointAdded)*/] HRESULT OnWideningAdded([in] IWidening* pWidening);
+       [helpstring("event OnWideningRemoved")/*, helpcontext(IDH_CrossSectionCollection_OnPointRemoved)*/] HRESULT OnWideningRemoved();
+       [helpstring("event OnWideningsCleared")/*, helpcontext(IDH_CrossSectionCollection_OnPointsCleared)*/] HRESULT OnWideningsCleared();
+   };
+
+   [
+      object,
+      uuid(C261362D-E01F-49c5-95ED-E8A8FBC68FB9),
+      oleautomation,
+      //helpcontext(IDH_Superelevation),
+      helpstring("ISuperelevation Interface"),
+      pointer_default(unique)
+   ]
+   interface ISuperelevation : IUnknown
+   {
+      [helpstring("method Init")] HRESULT Init([in]IProfile* pProfile,[in] VARIANT varBeginStation,[in] VARIANT varBeginFullStation, [in] VARIANT varEndFullStation,[in] VARIANT varEndStation,[in] Float64 rate,[in]IndexType pivotPoint,[in]SuperTransitionType beginType,[in]Float64 beginL1,[in]Float64 beginL2,[in]SuperTransitionType endType,[in]Float64 endL1,[in]Float64 endL2);
+      [propget, helpstring("property Profile")] HRESULT Profile([out, retval] IProfile* *pVal);
+      [propputref, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
+      [propput, helpstring("property BeginTransition")] HRESULT BeginTransition([in] VARIANT varBeginTransition);
+      [propget, helpstring("property BeginTransition")] HRESULT BeginTransition([out,retval] IStation** ppBeginTransition);
+      [propput, helpstring("property BeginFullSuper")] HRESULT BeginFullSuper([in] VARIANT varBeginFullSuper);
+      [propget, helpstring("property BeginFullSuper")] HRESULT BeginFullSuper([out,retval] IStation** ppBeginFullSuper);
+      [propput, helpstring("property EndFullSuper")] HRESULT EndFullSuper([in] VARIANT varEndFullSuper);
+      [propget, helpstring("property EndFullSuper")] HRESULT EndFullSuper([out,retval] IStation** ppEndFullSuper);
+      [propput, helpstring("property EndTransition")] HRESULT EndTransition([in] VARIANT varEndTransition);
+      [propget, helpstring("property EndTransition")] HRESULT EndTransition([out,retval] IStation** ppEndTransition);
+      [propput, helpstring("property Rate")] HRESULT Rate([in]Float64 rate);
+      [propget, helpstring("property Rate")] HRESULT Rate([out,retval]Float64* rate);
+      [propput, helpstring("property PivotPoint")] HRESULT PivotPoint([in]IndexType pivotPointIdx);
+      [propget, helpstring("property PivotPoint")] HRESULT PivotPoint([out,retval]IndexType* pivotPointIdx);
+      [propput, helpstring("property BeginTransitionType")] HRESULT BeginTransitionType([in]SuperTransitionType type);
+      [propget, helpstring("property BeginTransitionType")] HRESULT BeginTransitionType([out,retval]SuperTransitionType* type);
+      [helpstring("method SetBeginTransitionParameters")] HRESULT SetBeginTransitionParameters([in]Float64 L1,[in]Float64 L2);
+      [helpstring("method GetBeginTransitionParameters")] HRESULT GetBeginTransitionParameters([out]Float64* L1,[out]Float64* L2);
+      [propput, helpstring("property EndTransitionType")] HRESULT EndTransitionType([in]SuperTransitionType type);
+      [propget, helpstring("property EndTransitionType")] HRESULT EndTransitionType([out,retval]SuperTransitionType* type);
+      [helpstring("method SetEndTransitionParameters")] HRESULT SetEndTransitionParameters([in]Float64 L1,[in]Float64 L2);
+      [helpstring("method GetEndTransitionParameters")] HRESULT GetEndTransitionParameters([out]Float64* L1,[out]Float64* L2);
+      [helpstring("method GetSlope")] HRESULT GetSlope([in]VARIANT varStation,[in]Float64 templateSlope,[out,retval]Float64* pSlope);
+      [helpstring("method Clone")] HRESULT Clone([out,retval] ISuperelevation* *clone);
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+   };
+
+   [
+      object,
+      uuid(B8D6C861-BFCA-4dc7-B65B-C7EE2ED6371F),
+      oleautomation,
+      //helpcontext(IDH_Superelevation),
+      helpstring("ISuperelevationEvents Interface"),
+      pointer_default(unique)
+   ]
+   interface ISuperelevationEvents : IUnknown
+   {
+      [helpstring("event OnSuperelevationChanged")] HRESULT OnSuperelevationChanged([in]ISuperelevation* pSuperelevation);
+   };
+
+	[
+	   object,
+	   uuid(FD9B1B87-7F5D-4654-80A3-F86E05DCDDE8),
+	   helpstring("IEnumSuperelevations Interface"),
+	   //helpcontext(IDH_IEnumSuperelevations),
+	   oleautomation,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumSuperelevations : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumSuperelevations** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] ISuperelevation** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+		object,
+		uuid(6A398C05-0903-42a7-9C50-34CD958E036E),
+		oleautomation,
+		//helpcontext(IDH_SuperelevationCollection),
+		helpstring("ISuperelevationCollection Interface"),
+		pointer_default(unique)
+	]
+	interface ISuperelevationCollection : IUnknown
+	{
+      [propget, helpstring("property Profile")] HRESULT Profile([out, retval] IProfile* *pVal);
+      [propputref, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
+        [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+		[propget, helpstring("property Item")/*, helpcontext(IDH_SuperelevationCollection_Item)*/] HRESULT Item([in] CollectionIndexType idx,[out, retval] ISuperelevation* *pVal);
+		[propputref, helpstring("property Item")/*, helpcontext(IDH_SuperelevationCollection_Item)*/] HRESULT Item([in] CollectionIndexType idx,[in] ISuperelevation* pVal);
+		[propget, helpstring("property Count")/*, helpcontext(IDH_SuperelevationCollection_Count)*/] HRESULT Count([out, retval] CollectionIndexType *pVal);
+		[helpstring("method Add")/*, helpcontext(IDH_SuperelevationCollection_Add)*/] HRESULT Add([in] VARIANT varBeginStation,[in] VARIANT varBeginFullStation, [in] VARIANT varEndFullStation,[in] VARIANT varEndStation,[in] Float64 rate,[in]IndexType pivotPoint,[in]SuperTransitionType beginType,[in]Float64 beginL1,[in]Float64 beginL2,[in]SuperTransitionType endType,[in]Float64 endL1,[in]Float64 endL2,[out,retval]ISuperelevation* *pSuperelevation);
+		[helpstring("method AddEx")/*, helpcontext(IDH_SuperelevationCollection_AddEx)*/] HRESULT AddEx([in] ISuperelevation* pVal);
+		[helpstring("method Remove")/*, helpcontext(IDH_SuperelevationCollection_Remove)*/] HRESULT Remove([in] CollectionIndexType idx);
+		[helpstring("method Clear")/*, helpcontext(IDH_SuperelevationCollection_Clear)*/] HRESULT Clear();
+     [helpstring("method GetSuperelevation")] HRESULT GetSuperelevation([in]VARIANT varStation,[out,retval]ISuperelevation** superelevation);
+      [propget, restricted, helpstring("property _EnumSuperelevations")/*, helpcontext(IDH_SuperelevationCollection__EnumSuperelevations)*/] HRESULT _EnumSuperelevations([out, retval] IEnumSuperelevations** retval);  
+      [helpstring("method Clone")/*,helpcontext(IDH_SuperelevationCollection_Clone)*/] HRESULT Clone([out,retval] ISuperelevationCollection* *clone);
      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
 	};
 
 	[
 		object,
-		uuid(F2596D77-1890-4ea6-B661-717F50983378),
+		uuid(6E02AF30-D533-4bc3-9341-B901CF331FB1),
 		oleautomation,
-		helpcontext(IDH_CrossSectionCollection),
-		helpstring("ICrossSectionCollectionEvents Interface"),
+		//helpcontext(IDH_SuperelevationCollection),
+		helpstring("ISuperelevationCollectionEvents Interface"),
 		pointer_default(unique)
 	]
-	interface ICrossSectionCollectionEvents : IUnknown
+	interface ISuperelevationCollectionEvents : IUnknown
    {
-       [helpstring("event OnCrossSectionChanged"), helpcontext(IDH_CrossSectionCollection_OnCrossSectionChanged)] HRESULT OnCrossSectionChanged([in] ICrossSection* csect);
-       [helpstring("event OnPointAdded"), helpcontext(IDH_CrossSectionCollection_OnPointAdded)] HRESULT OnCrossSectionAdded([in] ICrossSection* csect);
-       [helpstring("event OnPointRemoved"), helpcontext(IDH_CrossSectionCollection_OnPointRemoved)] HRESULT OnCrossSectionRemoved();
-       [helpstring("event OnPointsCleared"), helpcontext(IDH_CrossSectionCollection_OnPointsCleared)] HRESULT OnCrossSectionsCleared();
+       [helpstring("event OnSuperelevationChanged")] HRESULT OnSuperelevationChanged([in] ISuperelevation* pSuperelevation);
+       [helpstring("event OnSuperelevationAdded")] HRESULT OnSuperelevationAdded([in] ISuperelevation* pSuperelevation);
+       [helpstring("event OnSuperelevationRemoved")] HRESULT OnSuperelevationRemoved();
+       [helpstring("event OnSuperelevationsCleared")] HRESULT OnSuperelevationsCleared();
+   };
+
+   [
+      object,
+      uuid(B3D0955A-0174-4085-A6F7-C71ACAC612D7),
+      oleautomation,
+      //helpcontext(IDH_TemplateSegment),
+      helpstring("ITemplateSegment Interface"),
+      pointer_default(unique)
+   ]
+   interface ITemplateSegment : IUnknown
+   {
+      [helpstring("method Init")] HRESULT Init([in]Float64 width,[in]Float64 slope,[in]TemplateSlopeType slopeType);
+      [propput, helpstring("property Width")] HRESULT Width([in]Float64 width);
+      [propget, helpstring("property Width")] HRESULT Width([out,retval]Float64* width);
+      [propput, helpstring("property Slope")] HRESULT Slope([in]Float64 slope);
+      [propget, helpstring("property Slope")] HRESULT Slope([out,retval]Float64* slope);
+      [propput, helpstring("property SlopeType")] HRESULT SlopeType([in]TemplateSlopeType type);
+      [propget, helpstring("property SlopeType")] HRESULT SlopeType([out,retval]TemplateSlopeType* type);
+      [helpstring("method Clone")] HRESULT Clone([out,retval] ITemplateSegment* *clone);
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+   };
+
+   [
+      object,
+      uuid(65775E88-FC55-4387-9752-5F45686DC55B),
+      oleautomation,
+      //helpcontext(IDH_TemplateSegment),
+      helpstring("ITemplateSegmentEvents Interface"),
+      pointer_default(unique)
+   ]
+   interface ITemplateSegmentEvents : IUnknown
+   {
+      [helpstring("event OnTemplateSegmentChanged")] HRESULT OnTemplateSegmentChanged([in]ITemplateSegment* pSegment);
+   };
+
+   [
+      object,
+      uuid(D2286685-D34F-4a59-B7C7-9B531D1C9713),
+      oleautomation,
+      //helpcontext(IDH_SurfaceTemplate),
+      helpstring("ISurfaceTemplate Interface"),
+      pointer_default(unique)
+   ]
+   interface ISurfaceTemplate : IUnknown
+   {
+      [propget, helpstring("property Profile")] HRESULT Profile([out, retval] IProfile* *pVal);
+      [propputref, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
+      [propput,helpstring("property Station")] HRESULT Station([in]VARIANT varStation);
+      [propget,helpstring("property Station")] HRESULT Station([out,retval]IStation** station);
+      [helpstring("method AddSegment")] HRESULT AddSegment([in]Float64 width,[in]Float64 slope,[in]TemplateSlopeType slopeType);
+      [helpstring("method AddSegmentEx")] HRESULT AddSegmentEx([in]ITemplateSegment* segment);
+      [helpstring("method RemoveSegment")] HRESULT RemoveSegment([in]CollectionIndexType idx);
+      [propget,helpstring("property Count")] HRESULT Count([out,retval]CollectionIndexType* count);
+      [propget,helpstring("property Item")] HRESULT Item([in]CollectionIndexType idx,[out,retval]ITemplateSegment** segment);
+      [helpstring("method GetRidgePointElevationChange")] HRESULT GetRidgePointElevationChange([in]CollectionIndexType ridgePointIdx1,[in]CollectionIndexType ridgePointIdx2,[out,retval]Float64* deltaElevation);
+      [helpstring("method GetElevationChange")] HRESULT GetElevationChange([in]CollectionIndexType ridgePointIdx,[in]Float64 offset,[out,retval]Float64* deltaElevation);
+      [helpstring("method GetSlope")] HRESULT GetSlope([in]CollectionIndexType ridgePointIdx,[in]Float64 offset,[out,retval]Float64* pSlope);
+      [helpstring("method GetSegmentSlope")] HRESULT GetSegmentSlope([in]CollectionIndexType segmentIdx,[out,retval]Float64* pSlope);
+      [helpstring("method GetRidgePointOffset")] HRESULT GetRidgePointOffset([in]IndexType ridgePointIdx,[in]IndexType refPointIdx,[out]Float64* pOffset);
+      [helpstring("method Clear")] HRESULT Clear();
+      [helpstring("method Clone")] HRESULT Clone([out,retval] ISurfaceTemplate* *clone);
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+   };
+
+   [
+      object,
+      uuid(E7E90090-DECB-4646-BAFB-4C8BF9B765B4),
+      oleautomation,
+      //helpcontext(IDH_SurfaceTemplate),
+      helpstring("ISurfaceTemplateEvents Interface"),
+      pointer_default(unique)
+   ]
+   interface ISurfaceTemplateEvents : IUnknown
+   {
+      [helpstring("event OnSurfaceTemplateChanged")] HRESULT OnSurfaceTemplateChanged([in]ISurfaceTemplate* pTemplate);
+      [helpstring("event OnTemplateSegmentAdded")] HRESULT OnTemplateSegmentAdded([in]ISurfaceTemplate* pTemplate,[in]ITemplateSegment* pSegment);
+      [helpstring("event OnTemplateSegmentRemoved")] HRESULT OnTemplateSegmentRemoved([in]ISurfaceTemplate* pTemplate);
+      [helpstring("event OnTemplateSegmentsCleared")] HRESULT OnTemplateSegmentsCleared([in]ISurfaceTemplate* pTemplate);
+   };
+
+
+	[
+	   object,
+	   uuid(D0644265-55FE-499e-9090-5E80B6641247),
+	   helpstring("IEnumSurfaceTemplates Interface"),
+	   //helpcontext(IDH_IEnumSurfaceTemplates),
+	   oleautomation,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumSurfaceTemplates : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumSurfaceTemplates** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] ISurfaceTemplate** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+		object,
+		uuid(9F5259B4-F4A0-48b4-8899-AF80C1B26DB9),
+		oleautomation,
+		//helpcontext(IDH_SurfaceTemplateCollection),
+		helpstring("ISurfaceTemplateCollection Interface"),
+		pointer_default(unique)
+	]
+	interface ISurfaceTemplateCollection : IUnknown
+	{
+      [propget, helpstring("property Profile")] HRESULT Profile([out, retval] IProfile* *pVal);
+      [propputref, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
+        [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+		[propget, helpstring("property Item")] HRESULT Item([in] CollectionIndexType idx,[out, retval] ISurfaceTemplate* *pVal);
+		[propputref, helpstring("property Item")] HRESULT Item([in] CollectionIndexType idx,[in] ISurfaceTemplate* pVal);
+		[propget, helpstring("property Count")] HRESULT Count([out, retval] CollectionIndexType *pVal);
+		[helpstring("method Add")] HRESULT Add([in] ISurfaceTemplate* pVal);
+		[helpstring("method Remove")] HRESULT Remove([in] CollectionIndexType idx);
+		[helpstring("method Clear")] HRESULT Clear();
+      [helpstring("method GetBoundingTemplates")] HRESULT GetBoundingTemplates([in]VARIANT varStation,[out]ISurfaceTemplate** ppStart,[out]ISurfaceTemplate** ppEnd);
+      [propget, restricted, helpstring("property _EnumSurfaceTemplates")] HRESULT _EnumSurfaceTemplates([out, retval] IEnumSurfaceTemplates** retval);  
+      [helpstring("method Clone")] HRESULT Clone([out,retval] ISurfaceTemplateCollection* *clone);
+     [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+	};
+
+	[
+		object,
+		uuid(32093DF8-B30F-4377-9EA0-2369B2ED7C23),
+		oleautomation,
+		//helpcontext(IDH_SurfaceTemplateCollection),
+		helpstring("ISurfaceTemplateCollectionEvents Interface"),
+		pointer_default(unique)
+	]
+	interface ISurfaceTemplateCollectionEvents : IUnknown
+   {
+       [helpstring("event OnSurfaceTemplateChanged")] HRESULT OnSurfaceTemplateChanged([in] ISurfaceTemplate* pSurfaceTemplate);
+       [helpstring("event OnSurfaceTemplateAdded")] HRESULT OnSurfaceTemplateAdded([in] ISurfaceTemplate* pSurfaceTemplate);
+       [helpstring("event OnSurfaceTemplateRemoved")] HRESULT OnSurfaceTemplateRemoved();
+       [helpstring("event OnSurfaceTemplatesCleared")] HRESULT OnSurfaceTemplatesCleared();
+   };
+
+   [
+      object,
+      uuid(07A3322F-F4C1-4635-9339-7B2954BB589D),
+      oleautomation,
+      //helpcontext(IDH_Surface),
+      helpstring("ISurface Interface"),
+      pointer_default(unique)
+   ]
+   interface ISurface : IUnknown
+   {
+      [propget, helpstring("property Profile")] HRESULT Profile([out, retval] IProfile* *pVal);
+      [propputref, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
+      [propget,helpstring("property SurfaceTemplates")] HRESULT SurfaceTemplates([out,retval]ISurfaceTemplateCollection** ppTemplates);
+      [propput,helpstring("property AlignmentPoint")] HRESULT AlignmentPoint([in]IndexType pntIdx);
+      [propget,helpstring("property AlignmentPoint")] HRESULT AlignmentPoint([out,retval]IndexType* pntIdx);
+      [propput,helpstring("property ProfileGradePoint")] HRESULT ProfileGradePoint([in]IndexType pntIdx);
+      [propget,helpstring("property ProfileGradePoint")] HRESULT ProfileGradePoint([out,retval]IndexType* pntIdx);
+      [propget,helpstring("property Superelevations")] HRESULT Superelevations([out,retval]ISuperelevationCollection** ppSuperelevations);
+      [propget,helpstring("property Widenings")] HRESULT Widenings([out,retval]IWideningCollection** ppWidenings);
+      [helpstring("method GetStationRange")] HRESULT GetStationRange([out]IStation** ppStart,[out]IStation** ppEnd);
+      [helpstring("method CreateSurfaceTemplate")] HRESULT CreateSurfaceTemplate([in]VARIANT varStation,[in]VARIANT_BOOL bApplySuperelevations,[out,retval]ISurfaceTemplate** ppSurfaceTemplate);
+      [helpstring("method Clone")] HRESULT Clone([out,retval] ISurface* *clone);
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+   };
+
+   [
+      object,
+      uuid(19B01B9A-E4F1-4c8c-A255-3234AFC13CFC),
+      oleautomation,
+      //helpcontext(IDH_Surface),
+      helpstring("ISurfaceEvents Interface"),
+      pointer_default(unique)
+   ]
+   interface ISurfaceEvents : IUnknown
+   {
+      [helpstring("event OnSurfaceChanged")] HRESULT OnSurfaceChanged([in]ISurface* pSurface);
+   };
+
+	[
+	   object,
+	   uuid(8395542A-0B80-4d6a-BA86-E3EDAA575798),
+	   helpstring("IEnumSurfaces Interface"),
+	   //helpcontext(IDH_IEnumSurfaces),
+	   oleautomation,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumSurfaces : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumSurfaces** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] ISurface** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+		object,
+		uuid(44E00FE5-285A-45c2-9622-CB9E828234B7),
+		oleautomation,
+		//helpcontext(IDH_SurfaceCollection),
+		helpstring("ISurfaceCollection Interface"),
+		pointer_default(unique)
+	]
+	interface ISurfaceCollection : IUnknown
+	{
+      [propget, helpstring("property Profile")] HRESULT Profile([out, retval] IProfile* *pVal);
+      [propputref, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
+        [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+		[propget, helpstring("property Item")] HRESULT Item([in] CollectionIndexType idx,[out, retval] ISurface* *pVal);
+		[propputref, helpstring("property Item")] HRESULT Item([in] CollectionIndexType idx,[in] ISurface* pVal);
+		[propget, helpstring("property Count")] HRESULT Count([out, retval] CollectionIndexType *pVal);
+		[helpstring("method Add")] HRESULT Add([in] ISurface* pVal);
+		[helpstring("method Remove")] HRESULT Remove([in] CollectionIndexType idx);
+		[helpstring("method Clear")] HRESULT Clear();
+     [helpstring("method GetSurface")] HRESULT GetSurface([in]VARIANT varStation,[out,retval]ISurface** ppSurface);
+      [propget, restricted, helpstring("property _EnumSurfaces")] HRESULT _EnumSurfaces([out, retval] IEnumSurfaces** retval);  
+      [helpstring("method Clone")] HRESULT Clone([out,retval] ISurfaceCollection* *clone);
+     [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+	};
+
+	[
+		object,
+		uuid(86CE6349-FF88-482f-91A6-E0BDC9D5B22A),
+		oleautomation,
+		//helpcontext(IDH_SurfaceCollection),
+		helpstring("ISurfaceCollectionEvents Interface"),
+		pointer_default(unique)
+	]
+	interface ISurfaceCollectionEvents : IUnknown
+   {
+       [helpstring("event OnSurfaceChanged")] HRESULT OnSurfaceChanged([in] ISurface* pSurface);
+       [helpstring("event OnSurfaceAdded")] HRESULT OnSurfaceAdded([in] ISurface* pSurface);
+       [helpstring("event OnSurfaceRemoved")] HRESULT OnSurfaceRemoved();
+       [helpstring("event OnSurfaceCleared")] HRESULT OnSurfacesCleared();
    };
 
 	[
@@ -1082,29 +1557,27 @@ library WBFLCogo
 	]
 	interface IProfile : IUnknown
 	{
-        [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+      [propget,helpstring("property Alignment")] HRESULT Alignment([out,retval]IAlignment** ppAlignment);
+      [propget,helpstring("property Surfaces")] HRESULT Surfaces([out,retval]ISurfaceCollection** ppSurfaces);
+      [propputref,helpstring("property Surfaces")] HRESULT Surfaces([in]ISurfaceCollection* pSurfaces);
+      [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
 		[propget, helpstring("property Item"), helpcontext(IDH_Profile_Item)] HRESULT Item([in] CollectionIndexType idx,[out, retval] IProfileElement* *pVal);
 		[propputref, helpstring("property Item"), helpcontext(IDH_Profile_Item)] HRESULT Item([in] CollectionIndexType idx,[in] IProfileElement* pVal);
 		[propget, helpstring("property Count"), helpcontext(IDH_Profile_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
-		[propget, helpstring("property CrossSections"), helpcontext(IDH_Profile_CrossSections)] HRESULT CrossSections([out, retval] ICrossSectionCollection* *pVal);
-		[propputref, helpstring("property CrossSections"), helpcontext(IDH_Profile_CrossSections)] HRESULT CrossSections([in] ICrossSectionCollection* pVal);
 		[helpstring("method Add"), helpcontext(IDH_Profile_Add)] HRESULT Add([in] IProfileElement* element);
 		[helpstring("method AddEx"), helpcontext(IDH_Profile_AddEx)] HRESULT AddEx([in] IUnknown* dispElement);
-		[helpstring("method Remove"), helpcontext(IDH_Profile_Remove)] HRESULT Remove([in] VARIANT varKey);
+		[helpstring("method Remove"), helpcontext(IDH_Profile_Remove)] HRESULT Remove([in] VARIANT varID);
+      [helpstring("method Clear"), helpcontext(IDH_Profile_Clear)] HRESULT Clear();
 		[helpstring("method Elevation"), helpcontext(IDH_Profile_Elevation)] HRESULT Elevation([in] VARIANT varStation,[in] Float64 offset,[out,retval] Float64* elev);
 		[helpstring("method Grade"), helpcontext(IDH_Profile_Grade)] HRESULT Grade([in] VARIANT varStation,[out,retval] Float64* grade);
-		[helpstring("method LeftCrownSlope"), helpcontext(IDH_Profile_LeftCrownSlope)] HRESULT LeftCrownSlope([in] VARIANT varStation,[out,retval] Float64* slope);
-		[helpstring("method RightCrownSlope"), helpcontext(IDH_Profile_RightCrownSlope)] HRESULT RightCrownSlope([in] VARIANT varStation,[out,retval] Float64* slope);
-		[helpstring("method CrownSlope"), helpcontext(IDH_Profile_CrownSlope)] HRESULT CrownSlope([in] VARIANT varStation,[in] Float64 offset,[out,retval] Float64* slope);
-		[helpstring("method CrownPointOffset"),helpcontext(IDH_Profile_CrownPointOffset)] HRESULT CrownPointOffset([in] VARIANT varStation,[out,retval]Float64* cpoffset);
-		[helpstring("method Clear"), helpcontext(IDH_Profile_Clear)] HRESULT Clear();
-        [propget, restricted,helpstring("property _EnumProfileElements"), helpcontext(IDH_Profile__EnumProfileElements)] HRESULT _EnumProfileElements([out, retval] IEnumProfileElements** retval);  
+		[helpstring("method Slope"), helpcontext(IDH_Profile_Slope)] HRESULT Slope([in] VARIANT varStation,[in] Float64 offset,[out,retval] Float64* slope);
+      [helpstring("method TemplateSegmentSlope")] HRESULT TemplateSegmentSlope([in]VARIANT varStation,[in]CollectionIndexType templateSegmentIdx,[out,retval]Float64* pSlope);
+      [helpstring("method GetSurface")] HRESULT GetSurface([in]VARIANT varStation,[out,retval]ISurface** ppSurface);
+      [helpstring("method RidgePointOffset")] HRESULT RidgePointOffset([in]VARIANT varStation,[in]IndexType ridgePointIdx,[in]IndexType refPointIdx,[out]Float64* pOffset);
+      [helpstring("method RidgePointElevation")] HRESULT RidgePointElevation([in]VARIANT varStation,[in]IndexType ridgePointIdx,[in]IndexType refPointIdx,[out]Float64* pOffset,[out]Float64* pElev);
+      [propget, restricted,helpstring("property _EnumProfileElements"), helpcontext(IDH_Profile__EnumProfileElements)] HRESULT _EnumProfileElements([out, retval] IEnumProfileElements** retval);  
       [helpstring("method Clone"), helpcontext(IDH_Profile_Clone)] HRESULT Clone([out,retval] IProfile* *clone);
-
-      [propget,helpstring("property Path")] HRESULT Path([out,retval]IPath** ppPath);
-      [propputref,helpstring("property Path")] HRESULT Path([in]IPath* pPath);
-
-     [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
 	};
 
 	[
@@ -1155,7 +1628,7 @@ library WBFLCogo
 	   object,
 	   uuid(BD543403-0846-4502-841F-1904DC1F1144),
 	   helpstring("IEnumPathElements Interface"),
-	   //helpcontext(IDH_IEnumPathElements),
+	   helpcontext(IDH_IEnumPathElements),
 	   oleautomation,
 	   hidden,restricted,
 	   pointer_default(unique)
@@ -1180,40 +1653,38 @@ library WBFLCogo
 		object,
 		uuid(A43DACE9-956A-4421-9A3A-01D2453FCE03),
 		oleautomation,
-		helpcontext(IDH_Alignment),
-		helpstring("IAlignment Interface"),
+		helpcontext(IDH_Path),
+		helpstring("IPath Interface"),
 		pointer_default(unique)
 	]
 	interface IPath : IUnknown
 	{
         [propget, restricted, helpstring("returns an enumerator for the collection.")]  HRESULT _NewEnum([out, retval] IUnknown** retval);  
-		[propget, helpstring("property Profile"), helpcontext(IDH_Alignment_Profile)] HRESULT Profile([out, retval] IProfile* *pVal);
-		[propputref, helpstring("property Profile"), helpcontext(IDH_Alignment_Profile)] HRESULT Profile([in] IProfile* pVal);
-		[propget, helpstring("property Item"), helpcontext(IDH_Alignment_Item)] HRESULT Item([in] CollectionIndexType idx,[out, retval] IPathElement* *pVal);
-		[propputref, helpstring("property Item"), helpcontext(IDH_Alignment_Item)] HRESULT Item([in] CollectionIndexType idx,[in] IPathElement *pVal);
-		[propget, helpstring("property Count"), helpcontext(IDH_Alignment_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
-		[helpstring("method Add"), helpcontext(IDH_Alignment_Add)] HRESULT Add([in] IPathElement* element);
-		[helpstring("method AddEx"), helpcontext(IDH_Alignment_AddEx)] HRESULT AddEx([in] IUnknown* dispElement);
-		[helpstring("method Insert"), helpcontext(IDH_Alignment_Insert)] HRESULT Insert([in] CollectionIndexType idx,[in] IPathElement* element);
-		[helpstring("method InsertEx"), helpcontext(IDH_Alignment_InsertEx)] HRESULT InsertEx([in] CollectionIndexType idx,[in] IUnknown* dispElement);
-		[helpstring("method Remove"), helpcontext(IDH_Alignment_Remove)] HRESULT Remove([in] VARIANT varKey);
-		[helpstring("method Clear"), helpcontext(IDH_Alignment_Clear)] HRESULT Clear();
-		[helpstring("method LocatePoint"), helpcontext(IDH_Alignment_LocatePoint)] HRESULT LocatePoint([in] Float64 distance, [in] OffsetMeasureType offsetMeasure,[in] Float64 offset, [in] VARIANT varDir,[out,retval] IPoint2d* *newPoint); 
-		[helpstring("method Bearing"), helpcontext(IDH_Alignment_Bearing)] HRESULT Bearing([in] Float64 distance,[out,retval] IDirection* *dir); 
-		[helpstring("method Normal"), helpcontext(IDH_Alignment_Normal)] HRESULT Normal([in] Float64 distance,[out,retval] IDirection* *dir); 
-		[helpstring("method ProjectPoint"), helpcontext(IDH_Alignment_ProjectPoint)] HRESULT ProjectPoint([in] IPoint2d* point,[out,retval] IPoint2d* *newPoint); 
-		[helpstring("method Offset"), helpcontext(IDH_Alignment_Offset)] HRESULT Offset([in] IPoint2d* point,[out] Float64* distance,[out] Float64* offset); 
+		[propget, helpstring("property Item"), helpcontext(IDH_Path_Item)] HRESULT Item([in] CollectionIndexType idx,[out, retval] IPathElement* *pVal);
+		[propputref, helpstring("property Item"), helpcontext(IDH_Path_Item)] HRESULT Item([in] CollectionIndexType idx,[in] IPathElement *pVal);
+		[propget, helpstring("property Count"), helpcontext(IDH_Path_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
+		[helpstring("method Add"), helpcontext(IDH_Path_Add)] HRESULT Add([in] IPathElement* element);
+		[helpstring("method AddEx"), helpcontext(IDH_Path_AddEx)] HRESULT AddEx([in] IUnknown* dispElement);
+		[helpstring("method Insert"), helpcontext(IDH_Path_Insert)] HRESULT Insert([in] CollectionIndexType idx,[in] IPathElement* element);
+		[helpstring("method InsertEx"), helpcontext(IDH_Path_InsertEx)] HRESULT InsertEx([in] CollectionIndexType idx,[in] IUnknown* dispElement);
+		[helpstring("method Remove"), helpcontext(IDH_Path_Remove)] HRESULT Remove([in] VARIANT varID);
+		[helpstring("method Clear"), helpcontext(IDH_Path_Clear)] HRESULT Clear();
+		[helpstring("method LocatePoint"), helpcontext(IDH_Path_LocatePoint)] HRESULT LocatePoint([in] Float64 distance, [in] OffsetMeasureType offsetMeasure,[in] Float64 offset, [in] VARIANT varDir,[out,retval] IPoint2d* *newPoint); 
+		[helpstring("method Bearing"), helpcontext(IDH_Path_Bearing)] HRESULT Bearing([in] Float64 distance,[out,retval] IDirection* *dir); 
+		[helpstring("method Normal"), helpcontext(IDH_Path_Normal)] HRESULT Normal([in] Float64 distance,[out,retval] IDirection* *dir); 
+		[helpstring("method ProjectPoint"), helpcontext(IDH_Path_ProjectPoint)] HRESULT ProjectPoint([in] IPoint2d* point,[out,retval] IPoint2d* *newPoint); 
+		[helpstring("method Offset"), helpcontext(IDH_Path_Offset)] HRESULT Offset([in] IPoint2d* point,[out] Float64* distance,[out] Float64* offset); 
 		[helpstring("method Intersect")] HRESULT Intersect([in] ILine2d* line,[in]IPoint2d* pNearest,[out,retval]IPoint2d** point);
       [helpstring("method IntersectEx")] HRESULT IntersectEx([in]ILine2d* line,[in]IPoint2d* pNearest,[in]VARIANT_BOOL vbProjectBack,[in]VARIANT_BOOL vbProjectAhead,[out,retval]IPoint2d** point);
       [propget,helpstring("property Length")] HRESULT Length([out,retval]Float64* pLength);
-		[propget, helpstring("property PointFactory"), helpcontext(IDH_Alignment_PointFactory)] HRESULT PointFactory([out,retval]IPoint2dFactory* *factory); 
-		[propputref, helpstring("property PointFactory"), helpcontext(IDH_Alignment_PointFactory)] HRESULT PointFactory([in]IPoint2dFactory* factory); 
-        [propget, restricted, helpstring("property _EnumPathElements"), helpcontext(IDH_Alignment__EnumPathElements)] HRESULT _EnumPathElements([out, retval] IEnumPathElements** pVal);  
-        [helpstring("method Clone"), helpcontext(IDH_Alignment_Clone)] HRESULT Clone([out,retval] IPath* *clone);
-		[helpstring("method CreateParallelPath"),helpcontext(IDH_Alignment_CreateParallelPath)] HRESULT CreateParallelPath([in] Float64 offset,[out,retval]IPath** path);
-		[helpstring("method CreateSubPath"),/*helpcontext(IDH_Alignment_CreateSubPath)*/] HRESULT CreateSubPath([in]Float64 start,[in]Float64 end,[out,retval]IPath** path);
-		[helpstring("method CreateConnectedPath"),helpcontext(IDH_Alignment_CreateConnectedPath)] HRESULT CreateConnectedPath([out,retval]IPath** path);
-		[helpstring("method Move"),helpcontext(IDH_Alignment_Move)] HRESULT Move([in] Float64 dist,[in] IDirection* direction);
+		[propget, helpstring("property PointFactory"), helpcontext(IDH_Path_PointFactory)] HRESULT PointFactory([out,retval]IPoint2dFactory* *factory); 
+		[propputref, helpstring("property PointFactory"), helpcontext(IDH_Path_PointFactory)] HRESULT PointFactory([in]IPoint2dFactory* factory); 
+        [propget, restricted, helpstring("property _EnumPathElements"), helpcontext(IDH_Path__EnumPathElements)] HRESULT _EnumPathElements([out, retval] IEnumPathElements** pVal);  
+        [helpstring("method Clone"), helpcontext(IDH_Path_Clone)] HRESULT Clone([out,retval] IPath* *clone);
+		[helpstring("method CreateParallelPath"),helpcontext(IDH_Path_CreateParallelPath)] HRESULT CreateParallelPath([in] Float64 offset,[out,retval]IPath** path);
+		[helpstring("method CreateSubPath"),helpcontext(IDH_Path_CreateSubPath)] HRESULT CreateSubPath([in]Float64 start,[in]Float64 end,[out,retval]IPath** path);
+		[helpstring("method CreateConnectedPath"),helpcontext(IDH_Path_CreateConnectedPath)] HRESULT CreateConnectedPath([out,retval]IPath** path);
+		[helpstring("method Move"),helpcontext(IDH_Path_Move)] HRESULT Move([in] Float64 dist,[in] IDirection* direction);
  
         [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
 	};
@@ -1221,14 +1692,13 @@ library WBFLCogo
 		object,
 		uuid(BC341CD7-1B43-4f73-9975-93B02DD949F2),
 		oleautomation,
-		helpcontext(IDH_Alignment),
+		helpcontext(IDH_Path),
 		helpstring("IPathEvents Interface"),
 		pointer_default(unique)
 	]
 	interface IPathEvents : IUnknown
 	{
 	   [helpstring("event OnPathChanged"), helpcontext(IDH_Alignment_OnAlignmentChanged)] HRESULT OnPathChanged([in] IPath* path);
-	   [helpstring("event OnProfileChanged"), helpcontext(IDH_Alignment_OnProfileChanged)] HRESULT OnProfileChanged([in] IProfile* profile);
 	};
 	[
 	   object,
@@ -1257,8 +1727,8 @@ library WBFLCogo
 		object,
 		uuid(97990706-8447-459c-A05B-74540273CBE3),
 		oleautomation,
-		helpcontext(IDH_AlignmentFactory),
-		helpstring("IAlignmentFactory Interface"),
+		helpcontext(IDH_PathFactory),
+		helpstring("PathFactory Interface"),
 		pointer_default(unique)
 	]
 	interface IPathFactory : IUnknown
@@ -1280,18 +1750,18 @@ library WBFLCogo
 	interface IPathCollection : IUnknown
 	{
         [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
-        [propget, helpstring("property Item"), helpcontext(IDH_PathCollection_Item)] HRESULT Item([in] CogoObjectID key, [out, retval] IPath* *pVal);
-        [propputref, helpstring("property Item"), helpcontext(IDH_PathCollection_Item)] HRESULT Item([in] CogoObjectID key, [in] IPath* pVal);
+        [propget, helpstring("property Item"), helpcontext(IDH_PathCollection_Item)] HRESULT Item([in] CogoObjectID id, [out, retval] IPath* *pVal);
+        [propputref, helpstring("property Item"), helpcontext(IDH_PathCollection_Item)] HRESULT Item([in] CogoObjectID id, [in] IPath* pVal);
         [propget, helpstring("property Count"), helpcontext(IDH_PathCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
-        [helpstring("method Add"), helpcontext(IDH_PathCollection_Add)] HRESULT Add([in] CogoObjectID key,[out,retval] IPath* *path);
-        [helpstring("method AddEx"), helpcontext(IDH_PathCollection_AddEx)] HRESULT AddEx([in] CogoObjectID key,[in] IPath* newVal);
-        [helpstring("method Remove"), helpcontext(IDH_PathCollection_Remove)] HRESULT Remove([in] CogoObjectID key);
+        [helpstring("method Add"), helpcontext(IDH_PathCollection_Add)] HRESULT Add([in] CogoObjectID id,[out,retval] IPath* *path);
+        [helpstring("method AddEx"), helpcontext(IDH_PathCollection_AddEx)] HRESULT AddEx([in] CogoObjectID id,[in] IPath* newVal);
+        [helpstring("method Remove"), helpcontext(IDH_PathCollection_Remove)] HRESULT Remove([in] CogoObjectID id);
         [helpstring("method Clear"), helpcontext(IDH_PathCollection_Clear)] HRESULT Clear();
-        [helpstring("method FindKey"), helpcontext(IDH_PathCollection_FindKey)] HRESULT FindKey([in] IPath* path,[out,retval]CogoObjectID* key);
-        [propget,restricted,helpstring("property _EnumKeys"), helpcontext(IDH_PathCollection__EnumKeys)] HRESULT _EnumKeys([out,retval] IEnumKeys** ppenum);
+        [helpstring("method FindID"), helpcontext(IDH_PathCollection_FindID)] HRESULT FindID([in] IPath* path,[out,retval]CogoObjectID* ID);
+        [propget,restricted,helpstring("property _EnumIDs"), helpcontext(IDH_PathCollection__EnumIDs)] HRESULT _EnumIDs([out,retval] IEnumIDs** ppenum);
 		[propget, helpstring("method Factory"), helpcontext(IDH_PathCollection_Factory)] HRESULT Factory([out,retval]IPathFactory** factory);
 		[propputref, helpstring("method Factory"), helpcontext(IDH_PathCollection_Factory)] HRESULT Factory([in]IPathFactory* factory);
-		[helpstring("method Key"), helpcontext(IDH_PathCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoObjectID* key);
+		[helpstring("method ID"), helpcontext(IDH_PathCollection_ID)] HRESULT ID([in] CollectionIndexType index,[out,retval] CogoObjectID* ID);
         [propget,restricted,helpstring("property _EnumPaths"), helpcontext(IDH_PathCollection__EnumPaths)] HRESULT _EnumPaths([out,retval] IEnumPaths** ppenum);
         [helpstring("method Clone"), helpcontext(IDH_PathCollection_Clone)] HRESULT Clone([out,retval] IPathCollection* *clone);
 
@@ -1308,10 +1778,9 @@ library WBFLCogo
 	]
 	interface IPathCollectionEvents : IUnknown
 	{
-	   [helpstring("event OnProfileChanged"), helpcontext(IDH_PathCollection_OnProfileChanged)] HRESULT OnProfileChanged([in]IPathCollection* coll,[in] IProfile* profile);
-	   [helpstring("event OnPathChanged"), helpcontext(IDH_PathCollection_OnAlignmentChanged)] HRESULT OnPathChanged([in]IPathCollection* coll,[in] CogoObjectID key,[in] IPath* path);
-       [helpstring("event OnPathAdded"), helpcontext(IDH_PathCollection_OnAlignmentAdded)] HRESULT OnPathAdded([in]IPathCollection* coll,[in] CogoObjectID key,[in] IPath* path);
-       [helpstring("event OnPathRemoved"), helpcontext(IDH_PathCollection_OnAlignmentRemoved)] HRESULT OnPathRemoved([in]IPathCollection* coll,[in] CogoObjectID key);
+	   [helpstring("event OnPathChanged"), helpcontext(IDH_PathCollection_OnAlignmentChanged)] HRESULT OnPathChanged([in]IPathCollection* coll,[in] CogoObjectID id,[in] IPath* path);
+       [helpstring("event OnPathAdded"), helpcontext(IDH_PathCollection_OnAlignmentAdded)] HRESULT OnPathAdded([in]IPathCollection* coll,[in] CogoObjectID id,[in] IPath* path);
+       [helpstring("event OnPathRemoved"), helpcontext(IDH_PathCollection_OnAlignmentRemoved)] HRESULT OnPathRemoved([in]IPathCollection* coll,[in] CogoObjectID id);
        [helpstring("event OnPathsCleared"), helpcontext(IDH_PathCollection_OnAlignmentCleared)] HRESULT OnPathsCleared([in]IPathCollection* coll);
 	};
 ////
@@ -1323,20 +1792,143 @@ library WBFLCogo
 		helpstring("IAlignment Interface"),
 		pointer_default(unique)
 	]
-	interface IAlignment : IPath
+	interface IAlignment : IUnknown
 	{
+      [propget, restricted, helpstring("returns an enumerator for the collection.")]  HRESULT _NewEnum([out, retval] IUnknown** retval);  
+		[propget, helpstring("property Item"), helpcontext(IDH_Alignment_Item)] HRESULT Item([in] CollectionIndexType idx,[out, retval] IPathElement* *pVal);
+		[propputref, helpstring("property Item"), helpcontext(IDH_Alignment_Item)] HRESULT Item([in] CollectionIndexType idx,[in] IPathElement *pVal);
+		[propget, helpstring("property Count"), helpcontext(IDH_Alignment_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
 		[propget, helpstring("property RefStation"), helpcontext(IDH_Alignment_RefStation)] HRESULT RefStation([out, retval] IStation* *station);
 		[propput, helpstring("property RefStation"), helpcontext(IDH_Alignment_RefStation)] HRESULT RefStation([in] VARIANT varStation);
+		[propget, helpstring("property Profile"), helpcontext(IDH_Alignment_Profile)] HRESULT Profile([out, retval] IProfile* *pVal);
+		[propget, helpstring("property StationEquations"), helpcontext(IDH_Alignment_StationEquations)] HRESULT StationEquations([out, retval] IStationEquationCollection* *pVal);
+ 		[helpstring("method Add"), helpcontext(IDH_Alignment_Add)] HRESULT Add([in] IPathElement* element);
+		[helpstring("method AddEx"), helpcontext(IDH_Alignment_AddEx)] HRESULT AddEx([in] IUnknown* dispElement);
+		[helpstring("method Insert"), helpcontext(IDH_Alignment_Insert)] HRESULT Insert([in] CollectionIndexType idx,[in] IPathElement* element);
+		[helpstring("method InsertEx"), helpcontext(IDH_Alignment_InsertEx)] HRESULT InsertEx([in] CollectionIndexType idx,[in] IUnknown* dispElement);
+		[helpstring("method Remove"), helpcontext(IDH_Alignment_Remove)] HRESULT Remove([in] VARIANT varID);
+		[helpstring("method Clear"), helpcontext(IDH_Alignment_Clear)] HRESULT Clear();
 		[helpstring("method LocatePoint"), helpcontext(IDH_Alignment_LocatePoint)] HRESULT LocatePoint([in] VARIANT varStation, [in] OffsetMeasureType offsetMeasure, [in] Float64 offset, [in] VARIANT varDir,[out,retval] IPoint2d* *newPoint); 
-		[helpstring("method LocateCrownPoint2D")/*, helpcontext(IDH_Alignment_LocateCrownPoint)*/] HRESULT LocateCrownPoint2D([in] VARIANT varStation, [in] VARIANT varDir,[out,retval] IPoint2d* *newPoint); 
-		[helpstring("method LocateCrownPoint3D")/*, helpcontext(IDH_Alignment_LocateCrownPoint)*/] HRESULT LocateCrownPoint3D([in] VARIANT varStation, [in] VARIANT varDir,[out,retval] IPoint3d* *newPoint); 
 		[helpstring("method Bearing"), helpcontext(IDH_Alignment_Bearing)] HRESULT Bearing([in] VARIANT varStation,[out,retval] IDirection* *dir); 
 		[helpstring("method Normal"), helpcontext(IDH_Alignment_Normal)] HRESULT Normal([in] VARIANT varStation,[out,retval] IDirection* *dir); 
 		[helpstring("method Offset"), helpcontext(IDH_Alignment_Offset)] HRESULT Offset([in] IPoint2d* point,[out] IStation* *station,[out] Float64* offset); 
-		[helpstring("method CreateSubPath"),/*helpcontext(IDH_Alignment_CreateSubPath)*/] HRESULT CreateSubPath([in]VARIANT varStartStation,[in]VARIANT varEndStation,[out,retval]IPath** path);
+		[helpstring("method ProjectPoint"), helpcontext(IDH_Alignment_ProjectPoint)] HRESULT ProjectPoint([in] IPoint2d* point,[out,retval] IPoint2d* *newPoint); 
+		[helpstring("method Intersect")] HRESULT Intersect([in] ILine2d* line,[in]IPoint2d* pNearest,[out,retval]IPoint2d** point);
+      [helpstring("method IntersectEx")] HRESULT IntersectEx([in]ILine2d* line,[in]IPoint2d* pNearest,[in]VARIANT_BOOL vbProjectBack,[in]VARIANT_BOOL vbProjectAhead,[out,retval]IPoint2d** point);
+      [propget,helpstring("property Length")] HRESULT Length([out,retval]Float64* pLength);
+		[propget, helpstring("property PointFactory"), helpcontext(IDH_Alignment_PointFactory)] HRESULT PointFactory([out,retval]IPoint2dFactory* *factory); 
+		[propputref, helpstring("property PointFactory"), helpcontext(IDH_Alignment_PointFactory)] HRESULT PointFactory([in]IPoint2dFactory* factory); 
+      [propget, restricted, helpstring("property _EnumAlignmentElements"), helpcontext(IDH_Alignment__EnumAlignmentElements)] HRESULT _EnumAlignmentElements([out, retval] IEnumPathElements** pVal);  
+      [helpstring("method Clone"), helpcontext(IDH_Alignment_Clone)] HRESULT Clone([out,retval] IAlignment* *clone);
+		[helpstring("method CreateParallelAlignment"),helpcontext(IDH_Alignment_CreateParallelAlignment)] HRESULT CreateParallelAlignment([in] Float64 offset,[out,retval]IAlignment** alignment);
+		[helpstring("method CreateSubAlignment"),helpcontext(IDH_Alignment_CreateSubAlignment)] HRESULT CreateSubAlignment([in]VARIANT varStartStation,[in]VARIANT varEndStation,[out,retval]IAlignment** alignment);
+		[helpstring("method CreateConnectedAlignment"),helpcontext(IDH_Alignment_CreateConnectedAlignment)] HRESULT CreateConnectedAlignment([out,retval]IAlignment** alignment);
+		[helpstring("method CreateParallelPath"),helpcontext(IDH_Alignment_CreateParallelPath)] HRESULT CreateParallelPath([in] Float64 offset,[out,retval]IPath** path);
+		[helpstring("method CreateSubPath"),helpcontext(IDH_Alignment_CreateSubPath)] HRESULT CreateSubPath([in]VARIANT varStartStation,[in]VARIANT varEndStation,[out,retval]IPath** path);
+		[helpstring("method CreateConnectedPath"),helpcontext(IDH_Alignment_CreateConnectedPath)] HRESULT CreateConnectedPath([out,retval]IPath** path);
+		[helpstring("method Move"),helpcontext(IDH_Alignment_Move)] HRESULT Move([in] Float64 dist,[in] IDirection* direction);
       [helpstring("method GetDirection")] HRESULT GetDirection([in] VARIANT varStation, [in] BSTR bstrOrientation,[out,retval] IDirection** direction);
+      [helpstring("method DistanceBetweenStations")] HRESULT DistanceBetweenStations([in] VARIANT station1,[in] VARIANT station2,[out,retval]Float64* pDist);
+   };
+	[
+		object,
+		uuid(D99C606A-2AFA-4779-92BF-D2FB7E71D3B2),
+		oleautomation,
+		helpcontext(IDH_Alignment),
+		helpstring("IAlignmentEvents Interface"),
+		pointer_default(unique)
+	]
+	interface IAlignmentEvents : IUnknown
+	{
+	   [helpstring("event OnAlignmentChanged"), helpcontext(IDH_Alignment_OnAlignmentChanged)] HRESULT OnAlignmentChanged([in] IAlignment* alignment);
+	   [helpstring("event OnProfileChanged"), helpcontext(IDH_Alignment_OnProfileChanged)] HRESULT OnProfileChanged([in] IProfile* profile);
+      [helpstring("event OnStationEquationsChanged"),helpcontext(IDH_Alignment_OnStationEquationsChanged)] HRESULT OnStationEquationsChanged([in]IStationEquationCollection* equations);
+	};
+	[
+	   object,
+	   uuid(AE7730EB-3289-45de-9158-0345C1B93879),
+	   helpstring("IEnumAlignments Interface"),
+	   //helpcontext(IDH_IEnumCrossSections),
+	   oleautomation,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumAlignments : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumAlignments** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] IAlignment** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+	[
+		object,
+		uuid(B19475E6-68F6-4afe-80CC-C513D0836508),
+		oleautomation,
+		helpcontext(IDH_AlignmentFactory),
+		helpstring("IAlignmentFactory Interface"),
+		pointer_default(unique)
+	]
+	interface IAlignmentFactory : IUnknown
+	{
+		[helpstring("method CreateAlignment"), helpcontext(IDH_AlignmentFactory_CreateAlignment)] HRESULT CreateAlignment([out,retval]IAlignment* *pVal);
+		[helpstring("method IsValidType"), helpcontext(IDH_AlignmentFactory_IsValidType)] HRESULT IsValidType([in]IAlignment* alignment,[out,retval]VARIANT_BOOL* bIsValid);
+ 
+        [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
 	};
 
+	[
+		object,
+		uuid(9982DEC2-337E-462f-84C6-9E3CE075DE65),
+		oleautomation,
+		helpcontext(IDH_AlignmentCollection),
+		helpstring("IAlignmentCollection Interface"),
+		pointer_default(unique)
+	]
+	interface IAlignmentCollection : IUnknown
+	{
+        [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+        [propget, helpstring("property Item"), helpcontext(IDH_AlignmentCollection_Item)] HRESULT Item([in] CogoObjectID id, [out, retval] IAlignment* *pVal);
+        [propputref, helpstring("property Item"), helpcontext(IDH_AlignmentCollection_Item)] HRESULT Item([in] CogoObjectID id, [in] IAlignment* pVal);
+        [propget, helpstring("property Count"), helpcontext(IDH_AlignmentCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
+        [helpstring("method Add"), helpcontext(IDH_AlignmentCollection_Add)] HRESULT Add([in] CogoObjectID id,[out,retval] IAlignment* *Alignment);
+        [helpstring("method AddEx"), helpcontext(IDH_AlignmentCollection_AddEx)] HRESULT AddEx([in] CogoObjectID id,[in] IAlignment* newVal);
+        [helpstring("method Remove"), helpcontext(IDH_AlignmentCollection_Remove)] HRESULT Remove([in] CogoObjectID id);
+        [helpstring("method Clear"), helpcontext(IDH_AlignmentCollection_Clear)] HRESULT Clear();
+        [helpstring("method FindID"), helpcontext(IDH_AlignmentCollection_FindID)] HRESULT FindID([in] IAlignment* Alignment,[out,retval]CogoObjectID* ID);
+        [propget,restricted,helpstring("property _EnumIDs"), helpcontext(IDH_AlignmentCollection__EnumIDs)] HRESULT _EnumIDs([out,retval] IEnumIDs** ppenum);
+		[propget, helpstring("method Factory"), helpcontext(IDH_AlignmentCollection_Factory)] HRESULT Factory([out,retval]IAlignmentFactory** factory);
+		[propputref, helpstring("method Factory"), helpcontext(IDH_AlignmentCollection_Factory)] HRESULT Factory([in]IAlignmentFactory* factory);
+		[helpstring("method ID"), helpcontext(IDH_AlignmentCollection_ID)] HRESULT ID([in] CollectionIndexType index,[out,retval] CogoObjectID* ID);
+        [propget,restricted,helpstring("property _EnumAlignments"), helpcontext(IDH_AlignmentCollection__EnumAlignments)] HRESULT _EnumAlignments([out,retval] IEnumAlignments** ppenum);
+        [helpstring("method Clone"), helpcontext(IDH_AlignmentCollection_Clone)] HRESULT Clone([out,retval] IAlignmentCollection* *clone);
+
+        [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+	};
+
+	[
+		object,
+		uuid(46D1C201-C51F-4eb1-AFCC-922DDBC62D16),
+		oleautomation,
+		helpcontext(IDH_AlignmentCollection),
+		helpstring("IAlignmentCollectionEvents Interface"),
+		pointer_default(unique)
+	]
+	interface IAlignmentCollectionEvents : IUnknown
+	{
+	   [helpstring("event OnProfileChanged"), helpcontext(IDH_AlignmentCollection_OnProfileChanged)] HRESULT OnProfileChanged([in]IAlignmentCollection* coll,[in] IProfile* profile);
+      [helpstring("event OnStationEquationsChanged"),helpcontext(IDH_AlignmentCollection_OnStationEquationsChanged)] HRESULT OnStationEquationsChanged([in]IAlignmentCollection* coll,[in]IStationEquationCollection* equations);
+	   [helpstring("event OnAlignmentChanged"), helpcontext(IDH_AlignmentCollection_OnAlignmentChanged)] HRESULT OnAlignmentChanged([in]IAlignmentCollection* coll,[in] CogoObjectID id,[in] IAlignment* Alignment);
+       [helpstring("event OnAlignmentAdded"), helpcontext(IDH_AlignmentCollection_OnAlignmentAdded)] HRESULT OnAlignmentAdded([in]IAlignmentCollection* coll,[in] CogoObjectID id,[in] IAlignment* Alignment);
+       [helpstring("event OnAlignmentRemoved"), helpcontext(IDH_AlignmentCollection_OnAlignmentRemoved)] HRESULT OnAlignmentRemoved([in]IAlignmentCollection* coll,[in] CogoObjectID id);
+       [helpstring("event OnAlignmentsCleared"), helpcontext(IDH_AlignmentCollection_OnAlignmentCleared)] HRESULT OnAlignmentsCleared([in]IAlignmentCollection* coll);
+	};
    [
         object,
         uuid(C659E538-5EBE-11d5-8C32-006097C68A9C),
@@ -1348,7 +1940,7 @@ library WBFLCogo
     interface IMeasure : IUnknown
     {
         [helpstring("method Angle"),helpcontext(IDH_IMeasure_Angle)] HRESULT Angle([in] CogoObjectID fromID,[in] CogoObjectID vertexID,[in] CogoObjectID toID,[out,retval] IAngle** angle);
-        [helpstring("method Area"),helpcontext(IDH_IMeasure_Area)] HRESULT Area([in] VARIANT keys,[out,retval] Float64* area);
+        [helpstring("method Area"),helpcontext(IDH_IMeasure_Area)] HRESULT Area([in] VARIANT IDs,[out,retval] Float64* area);
         [helpstring("method Distance"),helpcontext(IDH_IMeasure_Distance)] HRESULT Distance([in] CogoObjectID fromID,[in] CogoObjectID toID,[out,retval] Float64* dist);
         [helpstring("method Direction"),helpcontext(IDH_IMeasure_Direction)] HRESULT Direction([in] CogoObjectID fromID,[in] CogoObjectID toID,[out,retval] IDirection** dir);
         [helpstring("method Inverse"),helpcontext(IDH_IMeasure_Inverse)] HRESULT Inverse([in] CogoObjectID fromID,[in] CogoObjectID toID,[out] Float64* dist,[out] IDirection** dir);
@@ -1571,7 +2163,7 @@ library WBFLCogo
       [propget, helpstring("property ProfilePoints"),helpcontext(IDH_CogoModel_ProfilePoints)] HRESULT ProfilePoints([out, retval] IProfilePointCollection* *pVal);
       [propget, helpstring("property VertCurves"),helpcontext(IDH_CogoModel_VertCurves)] HRESULT VertCurves([out, retval] IVertCurveCollection* *pVal);
       [propget, helpstring("property HorzCurves"),helpcontext(IDH_CogoModel_HorzCurves)] HRESULT HorzCurves([out, retval] IHorzCurveCollection* *pVal);
-      [propget, helpstring("property Alignments"),helpcontext(IDH_CogoModel_Alignments)] HRESULT Alignments([out,retval] IPathCollection* *pVal);
+      [propget, helpstring("property Alignments"),helpcontext(IDH_CogoModel_Alignments)] HRESULT Alignments([out,retval] IAlignmentCollection* *pVal);
       [propget, helpstring("property Paths"),helpcontext(IDH_CogoModel_Alignments)] HRESULT Paths([out,retval] IPathCollection* *pVal);
       [helpstring("method Clear"),helpcontext(IDH_CogoModel_Clear)] HRESULT Clear();
       [propget, helpstring("property Intersect"),helpcontext(IDH_CogoModel_Intersect)] HRESULT Intersect([out, retval] IIntersect* *pVal);
@@ -1590,8 +2182,8 @@ library WBFLCogo
       [propget, helpstring("property VertCurveFactory"),helpcontext(IDH_CogoModel_VertCurveFactory)] HRESULT VertCurveFactory([out,retval]IVertCurveFactory** factory);
       [propputref, helpstring("property HorzCurveFactory"),helpcontext(IDH_CogoModel_HorzCurveFactory)] HRESULT HorzCurveFactory([in]IHorzCurveFactory* factory);
       [propget, helpstring("property HorzCurveFactory"),helpcontext(IDH_CogoModel_HorzCurveFactory)] HRESULT HorzCurveFactory([out,retval]IHorzCurveFactory** factory);
-      [propputref, helpstring("property AlignmentFactory"),helpcontext(IDH_CogoModel_AlignmentFactory)] HRESULT AlignmentFactory([in]IPathFactory* factory);
-      [propget, helpstring("property AlignmentFactory"),helpcontext(IDH_CogoModel_AlignmentFactory)] HRESULT AlignmentFactory([out,retval]IPathFactory** factory);
+      [propputref, helpstring("property AlignmentFactory"),helpcontext(IDH_CogoModel_AlignmentFactory)] HRESULT AlignmentFactory([in]IAlignmentFactory* factory);
+      [propget, helpstring("property AlignmentFactory"),helpcontext(IDH_CogoModel_AlignmentFactory)] HRESULT AlignmentFactory([out,retval]IAlignmentFactory** factory);
       [propputref, helpstring("property PathFactory"),helpcontext(IDH_CogoModel_PathFactory)] HRESULT PathFactory([in]IPathFactory* factory);
       [propget, helpstring("property PathFactory"),helpcontext(IDH_CogoModel_PathFactory)] HRESULT PathFactory([out,retval]IPathFactory** factory);
       [propget, helpstring("property Engine")/*,helpcontext(IDH_CogoModel_Engine)*/] HRESULT Engine([out,retval]ICogoEngine** engine);
@@ -1610,34 +2202,35 @@ library WBFLCogo
    ]
    interface ICogoModelEvents : IUnknown
    {
-       [helpstring("event OnPointChanged"),helpcontext(IDH_CogoModel_OnPointChanged)] HRESULT OnPointChanged([in] ICogoModel* cm,[in] CogoObjectID key,[in] IPoint2d* point);
-       [helpstring("event OnPointAdded"),helpcontext(IDH_CogoModel_OnPointAdded)] HRESULT OnPointAdded([in] ICogoModel* cm,[in] CogoObjectID key,[in] IPoint2d* point);
-       [helpstring("event OnPointRemoved"),helpcontext(IDH_CogoModel_OnPointRemoved)] HRESULT OnPointRemoved([in] ICogoModel* cm,[in] CogoObjectID key);
+       [helpstring("event OnPointChanged"),helpcontext(IDH_CogoModel_OnPointChanged)] HRESULT OnPointChanged([in] ICogoModel* cm,[in] CogoObjectID id,[in] IPoint2d* point);
+       [helpstring("event OnPointAdded"),helpcontext(IDH_CogoModel_OnPointAdded)] HRESULT OnPointAdded([in] ICogoModel* cm,[in] CogoObjectID id,[in] IPoint2d* point);
+       [helpstring("event OnPointRemoved"),helpcontext(IDH_CogoModel_OnPointRemoved)] HRESULT OnPointRemoved([in] ICogoModel* cm,[in] CogoObjectID id);
        [helpstring("event OnPointsCleared"),helpcontext(IDH_CogoModel_OnPointsCleared)] HRESULT OnPointsCleared([in] ICogoModel* cm);
-       [helpstring("event OnLineSegmentChanged"),helpcontext(IDH_CogoModel_OnLineSegmentChanged)] HRESULT OnLineSegmentChanged([in] ICogoModel* cm,[in] CogoObjectID key,[in] ILineSegment2d* lineSeg);
-       [helpstring("event OnLineSegmentAdded"),helpcontext(IDH_CogoModel_OnLineSegmentAdded)] HRESULT OnLineSegmentAdded([in] ICogoModel* cm,[in] CogoObjectID key,[in] ILineSegment2d* lineSeg);
-       [helpstring("event OnLineSegmentRemoved"),helpcontext(IDH_CogoModel_OnLineSegmentRemoved)] HRESULT OnLineSegmentRemoved([in] ICogoModel* cm,[in] CogoObjectID key);
+       [helpstring("event OnLineSegmentChanged"),helpcontext(IDH_CogoModel_OnLineSegmentChanged)] HRESULT OnLineSegmentChanged([in] ICogoModel* cm,[in] CogoObjectID id,[in] ILineSegment2d* lineSeg);
+       [helpstring("event OnLineSegmentAdded"),helpcontext(IDH_CogoModel_OnLineSegmentAdded)] HRESULT OnLineSegmentAdded([in] ICogoModel* cm,[in] CogoObjectID id,[in] ILineSegment2d* lineSeg);
+       [helpstring("event OnLineSegmentRemoved"),helpcontext(IDH_CogoModel_OnLineSegmentRemoved)] HRESULT OnLineSegmentRemoved([in] ICogoModel* cm,[in] CogoObjectID id);
        [helpstring("event OnLineSegmentsCleared"),helpcontext(IDH_CogoModel_OnLineSegmentsCleared)] HRESULT OnLineSegmentsCleared([in] ICogoModel* cm);
-       [helpstring("event OnProfilePointChanged"),helpcontext(IDH_CogoModel_OnProfilePointChanged)] HRESULT OnProfilePointChanged([in] ICogoModel* cm,[in] CogoObjectID key,[in] IProfilePoint* pp);
-       [helpstring("event OnProfilePointAdded"),helpcontext(IDH_CogoModel_OnProfilePointAdded)] HRESULT OnProfilePointAdded([in] ICogoModel* cm,[in] CogoObjectID key,[in] IProfilePoint* pp);
-       [helpstring("event OnProfilePointRemoved"),helpcontext(IDH_CogoModel_OnProfilePointRemoved)] HRESULT OnProfilePointRemoved([in] ICogoModel* cm,[in] CogoObjectID key);
+       [helpstring("event OnProfilePointChanged"),helpcontext(IDH_CogoModel_OnProfilePointChanged)] HRESULT OnProfilePointChanged([in] ICogoModel* cm,[in] CogoObjectID id,[in] IProfilePoint* pp);
+       [helpstring("event OnProfilePointAdded"),helpcontext(IDH_CogoModel_OnProfilePointAdded)] HRESULT OnProfilePointAdded([in] ICogoModel* cm,[in] CogoObjectID id,[in] IProfilePoint* pp);
+       [helpstring("event OnProfilePointRemoved"),helpcontext(IDH_CogoModel_OnProfilePointRemoved)] HRESULT OnProfilePointRemoved([in] ICogoModel* cm,[in] CogoObjectID id);
        [helpstring("event OnProfilePointsCleared"),helpcontext(IDH_CogoModel_OnProfilePointsCleared)] HRESULT OnProfilePointsCleared([in] ICogoModel* cm);
-       [helpstring("event OnVertCurveChanged"),helpcontext(IDH_CogoModel_OnVertCurveChanged)] HRESULT OnVertCurveChanged([in] ICogoModel* cm,[in] CogoObjectID key,[in] IVertCurve* vc);
-       [helpstring("event OnVertCurveAdded"),helpcontext(IDH_CogoModel_OnVertCurveAdded)] HRESULT OnVertCurveAdded([in] ICogoModel* cm,[in] CogoObjectID key,[in] IVertCurve* vc);
-       [helpstring("event OnVertCurveRemoved"),helpcontext(IDH_CogoModel_OnVertCurveRemoved)] HRESULT OnVertCurveRemoved([in] ICogoModel* cm,[in] CogoObjectID key);
+       [helpstring("event OnVertCurveChanged"),helpcontext(IDH_CogoModel_OnVertCurveChanged)] HRESULT OnVertCurveChanged([in] ICogoModel* cm,[in] CogoObjectID id,[in] IVertCurve* vc);
+       [helpstring("event OnVertCurveAdded"),helpcontext(IDH_CogoModel_OnVertCurveAdded)] HRESULT OnVertCurveAdded([in] ICogoModel* cm,[in] CogoObjectID id,[in] IVertCurve* vc);
+       [helpstring("event OnVertCurveRemoved"),helpcontext(IDH_CogoModel_OnVertCurveRemoved)] HRESULT OnVertCurveRemoved([in] ICogoModel* cm,[in] CogoObjectID id);
        [helpstring("event OnVertCurvesCleared"),helpcontext(IDH_CogoModel_OnVertCurvesCleared)] HRESULT OnVertCurvesCleared([in] ICogoModel* cm);
-       [helpstring("event OnHorzCurveChanged"),helpcontext(IDH_CogoModel_OnHorzCurveChanged)] HRESULT OnHorzCurveChanged([in] ICogoModel* cm,[in] CogoObjectID key,[in] IHorzCurve* vc);
-       [helpstring("event OnHorzCurveAdded"),helpcontext(IDH_CogoModel_OnHorzCurveAdded)] HRESULT OnHorzCurveAdded([in] ICogoModel* cm,[in] CogoObjectID key,[in] IHorzCurve* vc);
-       [helpstring("event OnHorzCurveRemoved"),helpcontext(IDH_CogoModel_OnHorzCurveRemoved)] HRESULT OnHorzCurveRemoved([in] ICogoModel* cm,[in] CogoObjectID key);
+       [helpstring("event OnHorzCurveChanged"),helpcontext(IDH_CogoModel_OnHorzCurveChanged)] HRESULT OnHorzCurveChanged([in] ICogoModel* cm,[in] CogoObjectID id,[in] IHorzCurve* vc);
+       [helpstring("event OnHorzCurveAdded"),helpcontext(IDH_CogoModel_OnHorzCurveAdded)] HRESULT OnHorzCurveAdded([in] ICogoModel* cm,[in] CogoObjectID id,[in] IHorzCurve* vc);
+       [helpstring("event OnHorzCurveRemoved"),helpcontext(IDH_CogoModel_OnHorzCurveRemoved)] HRESULT OnHorzCurveRemoved([in] ICogoModel* cm,[in] CogoObjectID id);
        [helpstring("event OnHorzCurvesCleared"),helpcontext(IDH_CogoModel_OnHorzCurvesCleared)] HRESULT OnHorzCurvesCleared([in] ICogoModel* cm);
 	    [helpstring("event OnProfileChanged"),helpcontext(IDH_CogoModel_OnProfileChanged)] HRESULT OnProfileChanged([in] ICogoModel* cm,[in] IProfile* profile);
-	    [helpstring("event OnAlignmentChanged"),helpcontext(IDH_CogoModel_OnAlignmentChanged)] HRESULT OnAlignmentChanged([in] ICogoModel* cm,[in] CogoObjectID key,[in] IAlignment* alignment);
-       [helpstring("event OnAlignmentAdded"),helpcontext(IDH_CogoModel_OnAlignmentAdded)] HRESULT OnAlignmentAdded([in] ICogoModel* cm,[in] CogoObjectID key,[in] IAlignment* alignment);
-       [helpstring("event OnAlignmentRemoved"),helpcontext(IDH_CogoModel_OnAlignmentRemoved)] HRESULT OnAlignmentRemoved([in] ICogoModel* cm,[in] CogoObjectID key);
+	    [helpstring("event OnStationEquationsChanged"),helpcontext(IDH_CogoModel_OnStationEquationsChanged)] HRESULT OnStationEquationsChanged([in] ICogoModel* cm,[in] IStationEquationCollection* equations);
+	    [helpstring("event OnAlignmentChanged"),helpcontext(IDH_CogoModel_OnAlignmentChanged)] HRESULT OnAlignmentChanged([in] ICogoModel* cm,[in] CogoObjectID id,[in] IAlignment* alignment);
+       [helpstring("event OnAlignmentAdded"),helpcontext(IDH_CogoModel_OnAlignmentAdded)] HRESULT OnAlignmentAdded([in] ICogoModel* cm,[in] CogoObjectID id,[in] IAlignment* alignment);
+       [helpstring("event OnAlignmentRemoved"),helpcontext(IDH_CogoModel_OnAlignmentRemoved)] HRESULT OnAlignmentRemoved([in] ICogoModel* cm,[in] CogoObjectID id);
        [helpstring("event OnAlignmentCleared"),helpcontext(IDH_CogoModel_OnAlignmentCleared)] HRESULT OnAlignmentsCleared([in] ICogoModel* cm);
-	    [helpstring("event OnPathChanged"),helpcontext(IDH_CogoModel_OnPathChanged)] HRESULT OnPathChanged([in] ICogoModel* cm,[in] CogoObjectID key,[in] IPath* path);
-       [helpstring("event OnPathAdded"),helpcontext(IDH_CogoModel_OnPathAdded)] HRESULT OnPathAdded([in] ICogoModel* cm,[in] CogoObjectID key,[in] IPath* path);
-       [helpstring("event OnPathRemoved"),helpcontext(IDH_CogoModel_OnPathRemoved)] HRESULT OnPathRemoved([in] ICogoModel* cm,[in] CogoObjectID key);
+	    [helpstring("event OnPathChanged"),helpcontext(IDH_CogoModel_OnPathChanged)] HRESULT OnPathChanged([in] ICogoModel* cm,[in] CogoObjectID id,[in] IPath* path);
+       [helpstring("event OnPathAdded"),helpcontext(IDH_CogoModel_OnPathAdded)] HRESULT OnPathAdded([in] ICogoModel* cm,[in] CogoObjectID id,[in] IPath* path);
+       [helpstring("event OnPathRemoved"),helpcontext(IDH_CogoModel_OnPathRemoved)] HRESULT OnPathRemoved([in] ICogoModel* cm,[in] CogoObjectID id);
        [helpstring("event OnPathCleared"),helpcontext(IDH_CogoModel_OnPathCleared)] HRESULT OnPathsCleared([in] ICogoModel* cm);
    };
 
@@ -1825,32 +2418,116 @@ library WBFLCogo
       interface IStructuredStorage2;
         // interface IPersist;
 	};
-	[
-		uuid(F9C121FB-B55C-4D1F-99C9-EC0671D299A2),
-		helpcontext(IDH_CrossSection),
-		helpstring("CrossSection Class")
-	]
-	coclass CrossSection
-	{
-		[default] interface ICrossSection;
-		[default, source] interface ICrossSectionEvents;
-      interface IStructuredStorage2;
-	   // interface IPersist;
-   };
-	[
-		uuid(AE736431-9805-49AB-A8A3-658A90E139C1),
-		helpcontext(IDH_CrossSectionCollection),
-		helpstring("CrossSectionCollection Class")
-	]
-	coclass CrossSectionCollection
-	{
-		[default] interface ICrossSectionCollection;
-		[default, source] interface ICrossSectionCollectionEvents;
-      interface IStructuredStorage2;
-        // interface IPersist;
-	};
 
-	[
+   [
+      uuid(3B817FBD-D099-49a2-8E43-E90F49A8B5B8),
+      //helpcontext(IDH_Widening),
+      helpstring("Widening Class")
+   ]
+   coclass Widening
+   {
+      [default] interface IWidening;
+      [default,source] interface IWideningEvents;
+      interface IStructuredStorage2;
+   };
+
+   [
+      uuid(9AD670B4-C5FE-4639-A714-67008906B54D),
+      //helpcontext(IDH_WideningCollection),
+      helpstring("WideningCollection Class")
+   ]
+   coclass WideningCollection
+   {
+      [default] interface IWideningCollection;
+      [default,source] interface IWideningCollectionEvents;
+      interface IStructuredStorage2;
+   };
+
+   [
+      uuid(9D3C25CB-61D1-466e-AE30-1FD5C460D50B),
+      //helpcontext(IDH_Superelevation),
+      helpstring("Superelevation Class")
+   ]
+   coclass Superelevation
+   {
+      [default] interface ISuperelevation;
+      [default,source] interface ISuperelevationEvents;
+      interface IStructuredStorage2;
+   };
+
+   [
+      uuid(981C286A-8B4B-4be9-BB9D-E927FFFF680C),
+      //helpcontext(IDH_SuperelevationCollection),
+      helpstring("SuperelevationCollection Class")
+   ]
+   coclass SuperelevationCollection
+   {
+      [default] interface ISuperelevationCollection;
+      [default,source] interface ISuperelevationCollectionEvents;
+      interface IStructuredStorage2;
+   };
+
+   [
+      uuid(B853F944-3791-4f03-AC3C-547C71B74743),
+      //helpcontext(IDH_TemplateSegment),
+      helpstring("TemplateSegment Class")
+   ]
+   coclass TemplateSegment
+   {
+      [default] interface ITemplateSegment;
+      [default,source] interface ITemplateSegmentEvents;
+      interface IStructuredStorage2;
+   };
+
+   [
+      uuid(A479017E-BFE5-4e1e-B41D-E7BBF2534F52),
+      //helpcontext(IDH_SurfaceTemplate),
+      helpstring("SurfaceTemplate Class")
+   ]
+   coclass SurfaceTemplate
+   {
+      [default] interface ISurfaceTemplate;
+      [default,source] interface ISurfaceTemplateEvents;
+      interface IStructuredStorage2;
+   };
+
+   [
+      uuid(D3148A9A-D53F-45d0-A0B7-A03EE35A36F3),
+      //helpcontext(IDH_SurfaceTemplateCollection),
+      helpstring("SurfaceTemplateCollection Class")
+   ]
+   coclass SurfaceTemplateCollection
+   {
+      [default] interface ISurfaceTemplateCollection;
+      [default,source] interface ISurfaceTemplateCollectionEvents;
+      interface IStructuredStorage2;
+   };
+
+   [
+      uuid(B8A4A5A2-A456-4161-9276-669D92B9FC5C),
+      //helpcontext(IDH_Surface),
+      helpstring("Surface Class")
+   ]
+   coclass Surface
+   {
+      [default] interface ISurface;
+      [default,source] interface ISurfaceEvents;
+      interface IStructuredStorage2;
+   };
+
+   [
+      uuid(A0AE194C-0D1D-4acb-8514-85E4B77DD326),
+      //helpcontext(IDH_SurfaceCollection),
+      helpstring("SurfaceCollection Class")
+   ]
+   coclass SurfaceCollection
+   {
+      [default] interface ISurfaceCollection;
+      [default,source] interface ISurfaceCollectionEvents;
+      interface IStructuredStorage2;
+   };
+
+   [
 		uuid(B21FFF37-F9A2-4DA0-8226-C5C3604E8262),
 		helpcontext(IDH_PathElement),
 		helpstring("PathElement Class")
@@ -1870,13 +2547,25 @@ library WBFLCogo
 	coclass Alignment
 	{
 		[default] interface IAlignment;
-		[default, source] interface IPathEvents;
+		[default, source] interface IAlignmentEvents;
       interface IStructuredStorage2;
         // interface IPersist;
 	};
 	[
+		uuid(9B77429D-4A92-4ddd-BAFA-4330EEAF167C),
+		helpcontext(IDH_AlignmentCollection),
+		helpstring("AlignmentCollection Class")
+	]
+	coclass AlignmentCollection
+	{
+		[default] interface IAlignmentCollection;
+		[default, source] interface IAlignmentCollectionEvents;
+        interface IStructuredStorage2;
+        // interface IPersist;
+   };
+	[
 		uuid(4A138368-CF5F-4a12-BC2D-224FC85E8B8D),
-		helpcontext(IDH_Alignment),
+		helpcontext(IDH_Path),
 		helpstring("Path Class")
 	]
 	coclass Path
@@ -1933,19 +2622,8 @@ library WBFLCogo
         // interface IPersist;
 	};
 	[
-		uuid(0AFA71AC-3F98-4DD0-9BC2-E33D00725C67),
-		helpcontext(IDH_CrossSectionFactory),
-		helpstring("CrossSectionFactory Class")
-	]
-	coclass CrossSectionFactory
-	{
-		[default] interface ICrossSectionFactory;
-      interface IStructuredStorage2;
-        // interface IPersist;
-	};
-	[
 		uuid(016F7CE4-7013-47db-88EA-BBF0EA82AA30),
-		helpcontext(IDH_AlignmentFactory),
+		helpcontext(IDH_PathFactory),
 		helpstring("PathFactory Class")
 	]
 	coclass PathFactory
@@ -1961,7 +2639,7 @@ library WBFLCogo
 	]
 	coclass AlignmentFactory
 	{
-		[default] interface IPathFactory;
+		[default] interface IAlignmentFactory;
       interface IStructuredStorage2;
         // interface IPersist;
 	};
@@ -2022,6 +2700,24 @@ library WBFLCogo
 		[default] interface IStation;
       [default,source] interface IStationEvents;
 	};
+   [
+		uuid(ABC35194-EDA2-4fa3-AC6B-B58A5F0C2385),
+      noncreatable,
+		helpstring("StationEquation Class")
+   ]
+   coclass StationEquation
+   {
+		[default] interface IStationEquation;
+   };
+   [
+		uuid(000FDA40-7B33-4354-8ADF-9E28D4EEE2D3),
+		helpstring("StationEquationCollection Class")
+   ]
+   coclass StationEquationCollection
+   {
+		[default] interface IStationEquationCollection;
+      [default,source] interface IStationEquationCollectionEvents;
+   };
 	[
 		uuid(C7E7D393-7C90-4AF5-88DF-A761FA3BCE19),
 		helpstring("CogoEngine Class")

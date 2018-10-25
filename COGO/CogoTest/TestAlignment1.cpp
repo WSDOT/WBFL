@@ -491,6 +491,56 @@ void CTestAlignment1::Test1()
    TRY_TEST(IsEqual(offset,0.0),true);
    station->get_Value(&stationVal);
    TRY_TEST(IsEqual(stationVal,700.00),true);
+
+
+   // Add a station equation
+   CComPtr<IStationEquationCollection> equations;
+   alignment->get_StationEquations(&equations);
+   CComPtr<IStationEquation> equation;
+   equations->Add(650,800,&equation);
+
+   CComPtr<IStation> objStation;
+   equations->ConvertFromNormalizedStation(700,&objStation);
+
+   ZoneIndexType idx;
+   objStation->GetStation(&idx,&stationVal);
+   TRY_TEST(idx,1);
+   TRY_TEST(IsEqual(stationVal,850.0),true);
+
+   // Sta 8+50 (station range 1)
+   dir.Release();
+   TRY_TEST(alignment->Bearing(CComVariant(objStation),&dir),S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal,M_PI/4),true);
+
+   dir.Release();
+   TRY_TEST(alignment->Normal(CComVariant(objStation),&dir),S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal,M_PI/4 + 3*PI_OVER_2),true);
+
+   pnt.Release();
+   TRY_TEST(alignment->LocatePoint(CComVariant(objStation),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
+   TRY_TEST(IsEqual(x,528.6024,0.001),true);
+   TRY_TEST(IsEqual(y,114.4603,0.001),true);
+
+   station.Release();
+   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
+   TRY_TEST(IsEqual(offset, 10.0),true);
+   station->GetStation(&idx,&stationVal);
+   TRY_TEST(idx,1);
+   TRY_TEST(IsEqual(stationVal,850.0),true);
+
+   newPnt.Release();
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+
+   station.Release();
+   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
+   TRY_TEST(IsEqual(offset,0.0),true);
+   station->GetStation(&idx,&stationVal);
+   TRY_TEST(idx,1);
+   TRY_TEST(IsEqual(stationVal,850.0),true);
 }
 
 void CTestAlignment1::Test2()

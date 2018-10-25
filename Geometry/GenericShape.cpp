@@ -294,7 +294,7 @@ STDMETHODIMP CGenericShape::get_BoundingBox(IRect2d* *rect)
    Float64 cx,cy;
    m_pCG->Location(&cx,&cy);
 
-   return ::CreateRect(m_Xleft, m_Ytop, m_Xright, m_Ybottom, rect);
+   return ::CreateRect(cx-m_Xleft, cy+m_Ytop, cx+m_Xright, cy-m_Ybottom, rect);
 }
 
 STDMETHODIMP CGenericShape::get_PolyPoints(IPoint2dCollection** ppPolyPoints)
@@ -321,8 +321,11 @@ STDMETHODIMP CGenericShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult
    Float64 x,y;
    pPoint->Location(&x,&y);
 
-   if ( (m_Xleft <= x && x <= m_Xright) &&
-        (m_Ybottom <= y && y <= m_Ytop) )
+   Float64 cx,cy;
+   m_pCG->Location(&cx,&cy);
+
+   if ( (cx-m_Xleft <= x && x <= cx+m_Xright) &&
+        (cy-m_Ybottom <= y && y <= cy+m_Ytop) )
    {
       *pbResult = VARIANT_TRUE;
    }

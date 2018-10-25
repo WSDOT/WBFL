@@ -1651,10 +1651,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="Fem2dCollections.h"
-				>
-			</File>
-			<File
 				RelativePath="Joint.cpp"
 				>
 				<FileConfiguration
@@ -3571,6 +3567,10 @@
 			</File>
 			<File
 				RelativePath="DistributedLoadCollection.h"
+				>
+			</File>
+			<File
+				RelativePath="Fem2dCollections.h"
 				>
 			</File>
 			<File

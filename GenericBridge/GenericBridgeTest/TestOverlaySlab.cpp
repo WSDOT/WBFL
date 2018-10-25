@@ -67,10 +67,6 @@ void CTestOverlaySlab::Test()
    TRY_TEST(slab->get_GrossDepth(&value),S_OK);
    TRY_TEST(IsZero(value),true);
 
-   TRY_TEST(slab->get_SacrificialDepth(NULL),E_POINTER);
-   TRY_TEST(slab->get_SacrificialDepth(&value),S_OK);
-   TRY_TEST(IsZero(value),true);
-
    ///////////////////////////////////////
    // Test Error Info
    CComQIPtr<ISupportErrorInfo> eInfo(slab);

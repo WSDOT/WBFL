@@ -1,3 +1,28 @@
+///////////////////////////////////////////////////////////////////////
+// BridgeGeometry
+// Copyright © 1999-2013  Washington State Department of Transportation
+//                        Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the Alternate Route Library Open Source License as 
+// published by the Washington State Department of Transportation,
+// Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful,
+// but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// PURPOSE.  See the Alternate Route Library Open Source License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License
+// along with this program; if not, write to the Washington State
+// Department of Transportation, Bridge and Structures Office,
+// P.O. Box 47340, Olympia, WA 98503, USA or e-mail
+// Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
 // GirderLine.h : Declaration of the CGirderLine
 
 #pragma once
@@ -48,9 +73,6 @@ END_COM_MAP()
       m_MeasureType[etEnd]  = mtAlongItem;
       m_MeasureLocation[etEnd] = mlPierLine;
 
-      m_pStartPier   = NULL;
-      m_pEndPier     = NULL;
-
       m_LayoutLength     = -9999999999999; // obviously a bogus value
       m_GirderLength     = -9999999999999; // obviously a bogus value
       m_SpanLength       = -9999999999999; // obviously a bogus value
@@ -74,8 +96,8 @@ END_COM_MAP()
    MeasurementLocation m_MeasureLocation[2];
 
    IBridgeGeometry* m_pBridge;
-   IPierLine* m_pStartPier; // weak reference to pier at start of this girder line
-   IPierLine* m_pEndPier;   // weak reference to pier at end of this girder line
+   CComPtr<IPierLine> m_StartPierLine;
+   CComPtr<IPierLine> m_EndPierLine;
    CComPtr<IPath> m_Path;
    CComPtr<IPoint2d> m_PierPoint[2];    // intersection of girder line and CL pier (index is EndType constant)
    CComPtr<IPoint2d> m_BearingPoint[2]; // intersection with CL bearing

@@ -51,6 +51,7 @@ class ATL_NO_VTABLE CVertCurve :
 public:
 	CVertCurve()
 	{
+      m_pProfile = NULL;
 	}
 
 	HRESULT FinalConstruct();
@@ -78,10 +79,13 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
+public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
 
 // IVertCurve
 public:
+   STDMETHOD(get_Profile)(IProfile* *pVal);
+   STDMETHOD(putref_Profile)(IProfile* newVal);
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
    STDMETHOD(Clone)(/*[out,retval]*/ IVertCurve* *clone);
 	STDMETHOD(get_A)(/*[out,retval]*/Float64* a);
@@ -120,6 +124,7 @@ public:
 	STDMETHOD(OnProfilePointChanged)(IProfilePoint* pp);
 
 private:
+   IProfile* m_pProfile; // weak reference
    CComPtr<IProfilePointFactory> m_Factory;
    CComPtr<IProfilePoint> m_PBG;
    CComPtr<IProfilePoint> m_PVI;
@@ -131,6 +136,8 @@ private:
    void MyAdvise(IProfilePoint* pp,DWORD* pdwCookie);
    void MyUnadvise(IProfilePoint* pp,DWORD dwCookie);
 
+   HRESULT ValidateStation(IProfilePoint* profilePoint);
+   HRESULT ValidateStation(VARIANT varStation,IStation** station);
    void TransitionPoint(IStation* *sta,Float64* elev,Float64* grade);
 };
 

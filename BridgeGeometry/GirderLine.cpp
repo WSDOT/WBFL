@@ -1,3 +1,28 @@
+///////////////////////////////////////////////////////////////////////
+// BridgeGeometry
+// Copyright © 1999-2013  Washington State Department of Transportation
+//                        Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the Alternate Route Library Open Source License as 
+// published by the Washington State Department of Transportation,
+// Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful,
+// but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// PURPOSE.  See the Alternate Route Library Open Source License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License
+// along with this program; if not, write to the Washington State
+// Department of Transportation, Bridge and Structures Office,
+// P.O. Box 47340, Olympia, WA 98503, USA or e-mail
+// Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
 // GirderLine.cpp : Implementation of CGirderLine
 
 #include "stdafx.h"
@@ -95,7 +120,7 @@ STDMETHODIMP CGirderLine::get_LayoutLength(Float64* pLength)
 STDMETHODIMP CGirderLine::get_StartPier(IPierLine** pVal)
 {
    CHECK_RETOBJ(pVal);
-   (*pVal) = m_pStartPier;
+   (*pVal) = m_StartPierLine;
    if ( *pVal )
       (*pVal)->AddRef();
 
@@ -105,7 +130,7 @@ STDMETHODIMP CGirderLine::get_StartPier(IPierLine** pVal)
 STDMETHODIMP CGirderLine::get_EndPier(IPierLine** pVal)
 {
    CHECK_RETOBJ(pVal);
-   (*pVal) = m_pEndPier;
+   (*pVal) = m_EndPierLine;
    if ( *pVal )
       (*pVal)->AddRef();
 
@@ -149,25 +174,27 @@ HRESULT CGirderLine::CreatePath()
       return hr;
 
    // get the pier lines that this girder line intersects with
-   hr = m_pBridge->FindPierLine(m_StartPierID,&m_pStartPier);
+   m_StartPierLine.Release();
+   hr = m_pBridge->FindPierLine(m_StartPierID,&m_StartPierLine);
    ATLASSERT( SUCCEEDED(hr) ); // pier must exist before updating geometry
    if ( FAILED(hr) )
       return hr;
 
-   hr = m_pBridge->FindPierLine(m_EndPierID,&m_pEndPier);
+   m_EndPierLine.Release();
+   hr = m_pBridge->FindPierLine(m_EndPierID,&m_EndPierLine);
    ATLASSERT( SUCCEEDED(hr) ); // pier must exist before updating geometry
    if ( FAILED(hr) )
       return hr;
 
    // get CL Pier/Alignment intersection points
    CComPtr<IPoint2d> pntStartPier, pntEndPier;
-   m_pStartPier->get_AlignmentPoint(&pntStartPier);
-   m_pEndPier->get_AlignmentPoint(&pntEndPier);
+   m_StartPierLine->get_AlignmentPoint(&pntStartPier);
+   m_EndPierLine->get_AlignmentPoint(&pntEndPier);
 
    // get the centerline of the piers
    CComPtr<ILine2d> clStartPier, clEndPier;
-   m_pStartPier->get_Centerline(&clStartPier);
-   m_pEndPier->get_Centerline(&clEndPier);
+   m_StartPierLine->get_Centerline(&clStartPier);
+   m_EndPierLine->get_Centerline(&clEndPier);
 
 
    if ( m_Type == glChord )
@@ -176,12 +203,12 @@ HRESULT CGirderLine::CreatePath()
 
       // get the lines the girder spacing is measured along
       CComPtr<ILine2d> leftLine, rightLine;
-      hr = GetGirderSpacingLine(etStart,m_pStartPier,&leftLine);
+      hr = GetGirderSpacingLine(etStart,m_StartPierLine,&leftLine);
       ATLASSERT( SUCCEEDED(hr) );
       if ( FAILED(hr) )
          return hr;
 
-      hr = GetGirderSpacingLine(etEnd,m_pEndPier,&rightLine);
+      hr = GetGirderSpacingLine(etEnd,m_EndPierLine,&rightLine);
       ATLASSERT( SUCCEEDED(hr) );
       if ( FAILED(hr) )
          return hr;
@@ -197,8 +224,8 @@ HRESULT CGirderLine::CreatePath()
       line->ThroughPoints(pnt1,pnt2);
 
       // intersect the CL Piers with the girder work line
-      PierLineIntersect(m_pStartPier,line,&m_PierPoint[etStart]);
-      PierLineIntersect(m_pEndPier,  line,&m_PierPoint[etEnd]);
+      PierLineIntersect(m_StartPierLine,line,&m_PierPoint[etStart]);
+      PierLineIntersect(m_EndPierLine,  line,&m_PierPoint[etEnd]);
 
       // girder line is a straight line cord between the intersection of the CL-piers
       CComPtr<ILineSegment2d> lineSegment;
@@ -254,18 +281,18 @@ HRESULT CGirderLine::LocatePoints()
    // Locate intersection of girder line and centerline bearing
    //
    Float64 brgOffset[2];
-   m_pStartPier->get_BearingOffset(pfAhead,&brgOffset[etStart]);
-   m_pEndPier->get_BearingOffset(pfBack,&brgOffset[etEnd]);
+   m_StartPierLine->get_BearingOffset(pfAhead,&brgOffset[etStart]);
+   m_EndPierLine->get_BearingOffset(pfBack,&brgOffset[etEnd]);
 
    MeasurementType brgMeasureType[2];
-   m_pStartPier->get_BearingOffsetMeasurementType(pfAhead,&brgMeasureType[etStart]);
-   m_pEndPier->get_BearingOffsetMeasurementType(pfBack,&brgMeasureType[etEnd]);
+   m_StartPierLine->get_BearingOffsetMeasurementType(pfAhead,&brgMeasureType[etStart]);
+   m_EndPierLine->get_BearingOffsetMeasurementType(pfBack,&brgMeasureType[etEnd]);
 
    if ( brgMeasureType[etStart] == mtNormal )
    {
       // convert to distance along girder centerline
       CComPtr<IDirection> dirPier;
-      m_pStartPier->get_Direction(&dirPier);
+      m_StartPierLine->get_Direction(&dirPier);
       dirPier->IncrementBy(CComVariant(-PI_OVER_2)); // make this the pier normal
       CComPtr<IAngle> angle;
       dirPier->AngleBetween(m_Direction,&angle);
@@ -279,7 +306,7 @@ HRESULT CGirderLine::LocatePoints()
    {
       // convert to distance along girder centerline
       CComPtr<IDirection> dirPier;
-      m_pEndPier->get_Direction(&dirPier);
+      m_EndPierLine->get_Direction(&dirPier);
       dirPier->IncrementBy(CComVariant(-PI_OVER_2)); // make this the pier normal
       CComPtr<IAngle> angle;
       dirPier->AngleBetween(m_Direction,&angle);
@@ -297,16 +324,16 @@ HRESULT CGirderLine::LocatePoints()
    //
 
    Float64 endDistance[2];
-   m_pStartPier->get_EndDistance(pfAhead,&endDistance[etStart]);
-   m_pEndPier->get_EndDistance(pfBack,&endDistance[etEnd]);
+   m_StartPierLine->get_EndDistance(pfAhead,&endDistance[etStart]);
+   m_EndPierLine->get_EndDistance(pfBack,&endDistance[etEnd]);
 
    MeasurementType measureType[2];
-   m_pStartPier->get_EndDistanceMeasurementType(pfAhead,&measureType[etStart]);
-   m_pEndPier->get_EndDistanceMeasurementType(pfBack,&measureType[etEnd]);
+   m_StartPierLine->get_EndDistanceMeasurementType(pfAhead,&measureType[etStart]);
+   m_EndPierLine->get_EndDistanceMeasurementType(pfBack,&measureType[etEnd]);
 
    MeasurementLocation measureLocation[2];
-   m_pStartPier->get_EndDistanceMeasurementLocation(pfAhead,&measureLocation[etStart]);
-   m_pEndPier->get_EndDistanceMeasurementLocation(pfBack,&measureLocation[etEnd]);
+   m_StartPierLine->get_EndDistanceMeasurementLocation(pfAhead,&measureLocation[etStart]);
+   m_EndPierLine->get_EndDistanceMeasurementLocation(pfBack,&measureLocation[etEnd]);
 
    m_EndPoint[etStart].Release();
    m_EndPoint[etEnd].Release();
@@ -315,7 +342,7 @@ HRESULT CGirderLine::LocatePoints()
    {
       // convert to distance along girder centerline
       CComPtr<IDirection> dirPier;
-      m_pStartPier->get_Direction(&dirPier);
+      m_StartPierLine->get_Direction(&dirPier);
       dirPier->IncrementBy(CComVariant(-PI_OVER_2)); // make this the pier normal
       CComPtr<IAngle> angle;
       dirPier->AngleBetween(m_Direction,&angle);
@@ -329,7 +356,7 @@ HRESULT CGirderLine::LocatePoints()
    {
       // convert to distance along girder centerline
       CComPtr<IDirection> dirPier;
-      m_pEndPier->get_Direction(&dirPier);
+      m_EndPierLine->get_Direction(&dirPier);
       dirPier->IncrementBy(CComVariant(-PI_OVER_2)); // make this the pier normal
       CComPtr<IAngle> angle;
       dirPier->AngleBetween(m_Direction,&angle);

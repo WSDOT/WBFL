@@ -34,7 +34,7 @@
 #include "COGOCP.h"
 
 class CHorzCurveCollection;
-typedef PersistentKeyedCollection<CHorzCurveCollection,IHorzCurveCollection,&IID_IHorzCurveCollection,CogoObjectID,IHorzCurve> HorzCurveCollectionImpl;
+typedef PersistentIDCollection<CHorzCurveCollection,IHorzCurveCollection,&IID_IHorzCurveCollection,CogoObjectID,IHorzCurve> HorzCurveCollectionImpl;
 
 /////////////////////////////////////////////////////////////////////////////
 // CHorzCurveCollection
@@ -79,18 +79,18 @@ END_CONNECTION_POINT_MAP()
 // IHorzCurveCollection
 public:
 	STDMETHOD(Clear)();
-   STDMETHOD(Add)(/*[in]*/ CogoObjectID key,/*[in]*/ IPoint2d* pbt,/*[in]*/ IPoint2d* pi,/*[in]*/ IPoint2d* pft,/*[in]*/ Float64 radius,/*[in]*/ Float64 Ls1,/*[in]*/ Float64 Ls2,/*[out,retval]*/IHorzCurve** hc);
-	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID key,/*[in]*/ IHorzCurve* newVal);
-	STDMETHOD(Remove)(/*[in]*/ CogoObjectID key);
+   STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[in]*/ IPoint2d* pbt,/*[in]*/ IPoint2d* pi,/*[in]*/ IPoint2d* pft,/*[in]*/ Float64 radius,/*[in]*/ Float64 Ls1,/*[in]*/ Float64 Ls2,/*[out,retval]*/IHorzCurve** hc);
+	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ IHorzCurve* newVal);
+	STDMETHOD(Remove)(/*[in]*/ CogoObjectID id);
 	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID key, /*[out, retval]*/ IHorzCurve* *pVal);
-	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID key, /*[in]*/ IHorzCurve* newVal);
+	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ IHorzCurve* *pVal);
+	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ IHorzCurve* newVal);
 // STDMETHOD(get__NewEnum)(IUnknown** retval);
-   STDMETHOD(get__EnumKeys)(IEnumKeys** ppenum);
-	STDMETHOD(FindKey)(/*[in]*/ IHorzCurve* hc,/*[out,retval]*/CogoObjectID* key);
+   STDMETHOD(get__EnumIDs)(IEnumIDs** ppenum);
+	STDMETHOD(FindID)(/*[in]*/ IHorzCurve* hc,/*[out,retval]*/CogoObjectID* ID);
 	STDMETHOD(get_Factory)(/*[out,retval]*/IHorzCurveFactory** factory);
 	STDMETHOD(putref_Factory)(/*[in]*/IHorzCurveFactory* factory);
-	STDMETHOD(Key)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* key);
+	STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID);
    STDMETHOD(get__EnumHorzCurves)(/*[out,retval]*/ IEnumHorzCurves** ppenum);
    STDMETHOD(Clone)(/*[out,retval]*/ IHorzCurveCollection* *clone);
 
@@ -102,12 +102,12 @@ private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
 
-   HRESULT HorzCurveNotFound(CogoObjectID key);
-   HRESULT HorzCurveAlreadyDefined(CogoObjectID key);
-   HRESULT HorzCurveKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes);
+   HRESULT HorzCurveNotFound(CogoObjectID id);
+   HRESULT HorzCurveAlreadyDefined(CogoObjectID id);
+   HRESULT HorzCurveIDError(CogoObjectID id,UINT nHelpString,HRESULT hRes);
 
-   void Advise(CogoObjectID key,IHorzCurve* hc);
-   void Unadvise(CogoObjectID key,IHorzCurve* hc);
+   void Advise(CogoObjectID id,IHorzCurve* hc);
+   void Unadvise(CogoObjectID id,IHorzCurve* hc);
    void UnadviseAll();
    std::map<CogoObjectID,DWORD> m_Cookies;
 

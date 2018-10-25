@@ -37,6 +37,7 @@ import "WBFLUnitServer.idl";
 import "WBFLGeometry.idl";
 import "WBFLSections.idl";
 import "WBFLCogo.idl";
+import "WBFLBridgeGeometry.idl";
 //import "WBFLGenericBridge.idl";
 
 cpp_quote("#include <WBFLGenericBridge.h>")
