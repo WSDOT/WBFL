@@ -90,6 +90,8 @@ BOOL CChoiceDlg::OnInitDialog()
 
       pOK->MoveWindow(rCancel);
       pCancel->ShowWindow(SW_HIDE);
+
+      ModifyStyle(WS_SYSMENU,0);
    }
 
    if ( m_HelpFile.GetLength() == 0 )
