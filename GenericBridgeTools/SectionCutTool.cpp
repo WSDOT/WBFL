@@ -2125,16 +2125,24 @@ HRESULT CSectionCutTool::CreateBarrierShape(DirectionType side,IGenericBridge* b
    CComPtr<IPoint2d> pntAlignment; // point on the alignment at station
    alignment->LocatePoint(CComVariant(objStation),omtAlongDirection,0.0,CComVariant(pDirection),&pntAlignment);
 
-   // Get Left top point of deck
+   // get deck edge point
    CComPtr<IPoint2d> pntDeckEdge;
    m_BridgeGeometryTool->DeckEdgePoint(bridge,station,dirCutLine,side,&pntDeckEdge);
 
+   // get station and offset
    CComPtr<IStation> offsetStation;
    Float64 offset_normal_to_alignment;
    alignment->Offset(pntDeckEdge,&offsetStation,&offset_normal_to_alignment);
 
+   // get elevation
    Float64 deck_edge_elev;
    profile->Elevation(CComVariant(offsetStation),offset_normal_to_alignment,&deck_edge_elev);
+
+   // get the offset from the alignment, to the deck edge points, measured along the cut direction
+   Float64 deck_offset;
+   pntAlignment->DistanceEx(pntDeckEdge, &deck_offset); // distance is always a positive value
+   deck_offset *= ::BinarySign(offset_normal_to_alignment); // match the sign of the edge offset  
+
 
    CComPtr<ISidewalkBarrier> barrier;
    if ( side == qcbLeft )
@@ -2167,7 +2175,7 @@ HRESULT CSectionCutTool::CreateBarrierShape(DirectionType side,IGenericBridge* b
    position->RotateEx(hook_point,angle);
 
    // move shape into bridge section coordinates
-   position->Offset(offset_normal_to_alignment,deck_edge_elev);
+   position->Offset(deck_offset,deck_edge_elev);
 
    // Project shape onto cut line
    CComPtr<IDirection> normal;

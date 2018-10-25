@@ -5,17 +5,8 @@ REM - Binary Files for basic development
 
 set BINTARGET=bin
 
-xcopy /y /d  "RegFreeCOM\Win32\Release\WBFL*.dll"	"%BINTARGET%\Libraries\Win32\"
-xcopy /y /d  "RegFreeCOM\Win32\Release\WBFL*.lib"	"%BINTARGET%\Lib\Win32\"
-
 xcopy /y /d  "RegFreeCOM\x64\Release\WBFL*.dll"	"%BINTARGET%\Libraries\x64\"
 xcopy /y /d  "RegFreeCOM\x64\Release\WBFL*.lib"	"%BINTARGET%\Lib\x64\"
-
-xcopy /y /d  "RegFreeCOM\Win32\VBA_Release\WBFL*.dll"	"%BINTARGET%\Libraries\VBA\"
-xcopy /y /d  "RegFreeCOM\Win32\VBA_Release\WBFL*.lib"	"%BINTARGET%\Lib\VBA\"
-
-xcopy /y /d  "RegFreeCOM\x64\VBA_Release\WBFL*.dll"	"%BINTARGET%\Libraries\VBA_x64\"
-xcopy /y /d  "RegFreeCOM\x64\VBA_Release\WBFL*.lib"	"%BINTARGET%\Lib\VBA_x64\"
 
 xcopy /y /d  License.rtf 			"%BINTARGET%"
 

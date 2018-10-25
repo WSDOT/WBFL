@@ -49,11 +49,17 @@ public:
 //   virtual void DestroyEditControl() = 0;
 //   virtual void OnTextChanged(LPCTSTR lpszText) = 0;
 
+   virtual void Do_SetParent(iDisplayObject* pParent);
+   virtual void Do_GetParent(iDisplayObject** ppParent);
+
+
 protected:
    // Abstract methods that must be implemented by subclasses
 
    // Creates an Inplace Edit task
    virtual void CreateTask(iTask** task);
+
+   iDisplayObject* m_pCompositeParent; // weak reference to parent object... typically used when this DO is part of a composite
 
 public:
    // Returns the CDisplayView canvas

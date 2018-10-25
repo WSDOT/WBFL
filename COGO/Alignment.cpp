@@ -205,8 +205,18 @@ STDMETHODIMP CAlignment::LocatePoint( VARIANT varStation, OffsetMeasureType offs
 {
    Float64 distance;
    HRESULT hr = StationToPathDistance(varStation,&distance);
-   if ( FAILED(hr) )
+   if (FAILED(hr))
+   {
       return hr;
+   }
+
+   // if direction is nullptr, then assume offset direction is normal to the alignment
+   if (varDir.vt == VT_UNKNOWN && varDir.punkVal == nullptr)
+   {
+      CComPtr<IDirection> dir;
+      Normal(varStation, &dir);
+      dir.QueryInterface(&varDir.punkVal);
+   }
 
    return m_Path->LocatePoint(distance,offsetMeasure,offset,varDir,newPoint);
 }

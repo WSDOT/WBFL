@@ -88,7 +88,7 @@
 #define IDS_TOOLBAR_STATE               1730
 #define IDS_REG_SETTINGS                1733
 #define IDS_TOOLTIP_STATE               1735
-#define IDS_REG_WNDPOS                  1737
+#define IDS_WINDOW_POSITIONS                  1737
 #define IDS_WORKING                     1746
 #define IDC_APPLIST                     3333
 #define IDC_REPORT_WEB_BROWSER          5001

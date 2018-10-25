@@ -201,8 +201,32 @@ bool stbLiftingCheckArtifact::PassedDirectCompressionCheck() const
 
 bool stbLiftingCheckArtifact::PassedDirectTensionCheck() const
 {
-   Float64 fAllow = GetAllowableTension(m_Results.vSectionResults[m_Results.MaxDirectStressAnalysisPointIndex],m_Results.MaxDirectStressImpactDirection,m_Results.MaxDirectStressWindDirection);
-   return (::IsLE(m_Results.MaxDirectStress,fAllow) ? true : false);
+   // since the allowable tension can change based on the amount of reinforcement
+   // in the tension region, we have to check every point for every condition
+   // against its associted allowable
+   for (const auto& sectionResult : m_Results.vSectionResults)
+   {
+      for (IndexType i = 0; i < 3; i++)
+      {
+         stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+         for (IndexType w = 0; w < 2; w++)
+         {
+            stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+            for (IndexType c = 0; c < 4; c++)
+            {
+               stbTypes::Corner corner = (stbTypes::Corner)c;
+               Float64 fAllow = GetAllowableTension(sectionResult, impact, wind);
+               Float64 f = sectionResult.fDirect[impact][wind][corner];
+               if (::IsLE(fAllow, f))
+               {
+                  return false;
+               }
+            }
+         }
+      }
+   }
+
+   return true;
 }
 
 bool stbLiftingCheckArtifact::PassedStressCheck() const
@@ -224,8 +248,32 @@ bool stbLiftingCheckArtifact::PassedCompressionCheck() const
 
 bool stbLiftingCheckArtifact::PassedTensionCheck() const
 {
-   Float64 fAllow = GetAllowableTension(m_Results.vSectionResults[m_Results.MaxStressAnalysisPointIndex],m_Results.MaxStressImpactDirection,m_Results.MaxStressWindDirection);
-   return (::IsLE(m_Results.MaxStress,fAllow) ? true : false);
+   // since the allowable tension can change based on the amount of reinforcement
+   // in the tension region, we have to check every point for every condition
+   // against its associted allowable
+   for (const auto& sectionResult : m_Results.vSectionResults)
+   {
+      for (IndexType i = 0; i < 3; i++)
+      {
+         stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+         for (IndexType w = 0; w < 2; w++)
+         {
+            stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+            for (IndexType c = 0; c < 4; c++)
+            {
+               stbTypes::Corner corner = (stbTypes::Corner)c;
+               Float64 fAllow = GetAllowableTension(sectionResult, impact, wind);
+               Float64 f = sectionResult.f[impact][wind][corner];
+               if (::IsLE(fAllow, f))
+               {
+                  return false;
+               }
+            }
+         }
+      }
+   }
+
+   return true;
 }
 
 Float64 stbLiftingCheckArtifact::GetAllowableTension(const stbLiftingSectionResult& sectionResult,stbTypes::ImpactDirection impact,stbTypes::WindDirection wind) const

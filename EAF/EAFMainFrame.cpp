@@ -53,7 +53,8 @@ BEGIN_MESSAGE_MAP(CEAFMainFrame, CMDIFrameWnd)
 		// NOTE - the ClassWizard will add and remove mapping macros here.
 		//    DO NOT EDIT what you see in these blocks of generated code !
    ON_WM_SIZE()
-	ON_WM_CREATE()
+   ON_WM_SHOWWINDOW()
+   ON_WM_CREATE()
    ON_WM_CLOSE()
    ON_WM_DESTROY()
 	ON_NOTIFY_EX_RANGE(TTN_NEEDTEXT, 0, 0xFFFF, OnToolTipText)
@@ -89,6 +90,8 @@ CEAFMainFrame::CEAFMainFrame()
    m_pStartPageWnd = nullptr;
 
    m_bShowToolTips = TRUE;
+
+   m_bKeepStartPageOpen = FALSE;
 
    m_ToolBarIDs.push_back(ID_MAINFRAME_TOOLBAR+1);
 }
@@ -162,25 +165,30 @@ CEAFStartPageWnd* CEAFMainFrame::CreateStartPage()
 void CEAFMainFrame::OnSize(UINT nType, int cx, int cy)
 {
    CMDIFrameWnd::OnSize(nType,cx,cy);
-   if ( m_pStartPageWnd && !m_pStartPageWnd->IsZoomed() )
+   ResizeStartPage();
+}
+
+void CEAFMainFrame::ResizeStartPage()
+{
+   if (m_pStartPageWnd )
    {
       // get the range of control bar IDs
       UINT minID = UINT_MAX;
       UINT maxID = 0;
 
-	   POSITION pos = m_listControlBars.GetHeadPosition();
-	   while (pos != nullptr)
-	   {
-		   CControlBar* pBar = (CControlBar*)m_listControlBars.GetNext(pos);
+      POSITION pos = m_listControlBars.GetHeadPosition();
+      while (pos != nullptr)
+      {
+         CControlBar* pBar = (CControlBar*)m_listControlBars.GetNext(pos);
          UINT id = pBar->GetDlgCtrlID();
-         minID = Min(id,minID);
-         maxID = Max(id,maxID);
-	   }
+         minID = Min(id, minID);
+         maxID = Max(id, maxID);
+      }
 
       CRect rect;
       UINT bkID = m_pStartPageWnd->GetDlgCtrlID();
-      RepositionBars(minID,maxID,bkID,CWnd::reposQuery,&rect);
-      m_pStartPageWnd->SetWindowPos(nullptr,0/*rect.left*/,0/*rect.top*/,rect.Size().cx,rect.Size().cy,SWP_NOZORDER);
+      RepositionBars(minID, maxID, bkID, CWnd::reposQuery, &rect);
+      m_pStartPageWnd->SetWindowPos(nullptr, 0/*rect.left*/, 0/*rect.top*/, rect.Size().cx, rect.Size().cy, SWP_NOZORDER);
    }
 }
 
@@ -201,22 +209,6 @@ int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
    m_bShowToolTips = (EAFGetApp()->GetProfileInt(CString((LPCTSTR)IDS_REG_SETTINGS),
                                                  CString((LPCTSTR)IDS_TOOLTIP_STATE),
                                                  1) !=0 );
-
-   // Restore the layout of the application window
-   WINDOWPLACEMENT wp;
-   if ( EAFGetApp()->ReadWindowPlacement(CString((LPCTSTR)IDS_REG_SETTINGS),CString((LPCTSTR)IDS_REG_WNDPOS),&wp) )
-   {
-      if ( sysFlags<LONG>::IsSet(lpCreateStruct->style,WS_VISIBLE) )
-      {
-         wp.showCmd = SW_SHOW;
-      }
-      else
-      {
-         wp.showCmd = SW_HIDE;
-      }
-
-      SetWindowPlacement(&wp);
-   }
 
    // Status Bar
    m_pStatusBar = CreateStatusBar();
@@ -245,13 +237,25 @@ int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
    m_pMainMenu = CreateMainMenu();
 
    // Start Page Window
-   m_pStartPageWnd = CreateStartPage();
-   if ( m_pStartPageWnd )
-   {
-      m_pStartPageWnd->Create(nullptr,_T("Start Page"),WS_CHILD | WS_VISIBLE,rectDefault,this);
-   }
+   ShowStartPage();
 
 	return 0;
+}
+
+void CEAFMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
+{
+   CMDIFrameWnd::OnShowWindow(bShow, nStatus);
+
+   // Restore the layout of the application window
+   WINDOWPLACEMENT wp;
+   if (EAFGetApp()->ReadWindowPlacement(CString((LPCTSTR)IDS_WINDOW_POSITIONS), AfxGetAppName(), &wp))
+   {
+      SetWindowPos(NULL, wp.rcNormalPosition.left, wp.rcNormalPosition.top, wp.rcNormalPosition.right - wp.rcNormalPosition.left, wp.rcNormalPosition.bottom - wp.rcNormalPosition.top, 0);
+      if (wp.flags == WPF_RESTORETOMAXIMIZED)
+      {
+         ShowWindow(SW_MAXIMIZE);
+      }
+   }
 }
 
 void CEAFMainFrame::OnClose()
@@ -260,12 +264,9 @@ void CEAFMainFrame::OnClose()
 
    // Save the layout of the application window
    WINDOWPLACEMENT wp;
-   wp.length = sizeof wp;
    if (GetWindowPlacement(&wp))
    {
-      wp.flags = 0;
-      wp.showCmd = SW_SHOWNORMAL;
-      pApp->WriteWindowPlacement(CString((LPCTSTR)IDS_REG_SETTINGS),CString((LPCTSTR)IDS_REG_WNDPOS),&wp);
+      pApp->WriteWindowPlacement(CString((LPCTSTR)IDS_WINDOW_POSITIONS), AfxGetAppName(),&wp);
    }
 
    // Save the ToolTips state
@@ -609,6 +610,21 @@ void CEAFMainFrame::UpdateFrameTitleForDocument(LPCTSTR lpszDocName)
    // copy first part of title loaded at time of frame creation
    TCHAR szText[256+_MAX_PATH];
 
+
+   CString strTitle = m_strTitle;
+   CEAFDocument* pDoc = GetDocument();
+   if (pDoc)
+   {
+      CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)pDoc->GetDocTemplate();
+
+      // get the plugin
+      CComPtr<IEAFAppPlugin> appPlugin;
+      pTemplate->GetPlugin(&appPlugin);
+
+      strTitle = appPlugin->GetName();
+   }
+
+
    if (GetStyle() & FWS_PREFIXTITLE)
    {
       szText[0] = '\0';   // start with nothing
@@ -619,12 +635,12 @@ void CEAFMainFrame::UpdateFrameTitleForDocument(LPCTSTR lpszDocName)
          lstrcpy(szText, lpszDocName);
          lstrcat(szText, _T(" - "));
       }
-      lstrcat(szText, m_strTitle);
+      lstrcat(szText, strTitle);
    }
    else
    {
       // get name of currently active view
-      lstrcpy(szText, m_strTitle);
+      lstrcpy(szText, strTitle);
       if (lpszDocName != nullptr)
       {
          lstrcat(szText, _T(" - "));
@@ -861,21 +877,37 @@ void CEAFMainFrame::ShowMainFrameToolBar()
    ShowControlBar(m_pMainFrameToolBar,TRUE,FALSE);
 }
 
+BOOL CEAFMainFrame::KeepStartPageOpen() const
+{
+   return m_bKeepStartPageOpen;
+}
+
+BOOL CEAFMainFrame::KeepStartPageOpen(BOOL bKeepOpen)
+{
+   BOOL bOldValue = m_bKeepStartPageOpen;
+   m_bKeepStartPageOpen = bKeepOpen;
+   return bOldValue;
+}
+
 void CEAFMainFrame::HideStartPage()
 {
-   if ( m_pStartPageWnd )
+   if ( m_pStartPageWnd && !m_bKeepStartPageOpen )
    {
-      m_pStartPageWnd->EnableWindow(FALSE);
-      m_pStartPageWnd->ShowWindow(SW_HIDE);
+      m_pStartPageWnd->PostMessage(WM_CLOSE, 0, 0);
+      m_pStartPageWnd = nullptr;
    }
 }
 
 void CEAFMainFrame::ShowStartPage()
 {
-   if ( m_pStartPageWnd )
+   if (m_pStartPageWnd == nullptr)
    {
-      m_pStartPageWnd->ShowWindow(SW_SHOW);
-      m_pStartPageWnd->EnableWindow(TRUE);
+      m_pStartPageWnd = CreateStartPage();
+      if (m_pStartPageWnd)
+      {
+         m_pStartPageWnd->Create(nullptr, _T("Start Page"), WS_CHILD | WS_VISIBLE, rectDefault, this);
+         ResizeStartPage();
+      }
    }
 }
 

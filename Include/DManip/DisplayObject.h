@@ -106,6 +106,10 @@ interface iDisplayObject : public IUnknown
    STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite) PURE;
    STDMETHOD_(void,UnregisterDropSite)() PURE;
    STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) PURE;
+
+   // Composite linkage
+   STDMETHOD_(void, SetParent)(iDisplayObject* pParent) PURE;
+   STDMETHOD_(void, GetParent)(iDisplayObject** ppParent) PURE;
 };
 
 #endif // INCLUDED_DISPLAYOBJECT_H_

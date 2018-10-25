@@ -64,7 +64,7 @@ BEGIN_MESSAGE_MAP(CEAFHelpWindow, CFrameWnd)
 	//{{AFX_MSG_MAP(CEAFHelpWindow)
 	ON_WM_CREATE()
    ON_WM_CLOSE()
-   ON_WM_DESTROY()
+   ON_WM_SHOWWINDOW()
    ON_COMMAND(ID_FILE_CLOSE,OnFileClose)
    ON_COMMAND(ID_FILE_PRINT,OnFilePrint)
    ON_COMMAND(EAFID_HELPWND_BACK,OnBack)
@@ -125,22 +125,6 @@ int CEAFHelpWindow::OnCreate(LPCREATESTRUCT lpCreateStruct)
       return -1;
    }
 
-
-   WINDOWPLACEMENT wp;
-   if ( EAFGetApp()->ReadWindowPlacement(CString((LPCTSTR)IDS_REG_SETTINGS),_T("HelpWindowPosition"),&wp) )
-   {
-      if ( sysFlags<LONG>::IsSet(lpCreateStruct->style,WS_VISIBLE) )
-      {
-         wp.showCmd = SW_SHOW;
-      }
-      else
-      {
-         wp.showCmd = SW_HIDE;
-      }
-
-      SetWindowPlacement(&wp);
-   }
-
    SetIcon(AfxGetApp()->LoadIcon(IDI_HELP),FALSE);
    SetWindowText(_T("Help"));
 
@@ -151,6 +135,7 @@ void CEAFHelpWindow::OnClose()
 {
    if ( m_bCanClose )
    {
+      SaveWindowPosition();
       CFrameWnd::OnClose();
    }
    else
@@ -159,18 +144,18 @@ void CEAFHelpWindow::OnClose()
    }
 }
 
-void CEAFHelpWindow::OnDestroy()
+void CEAFHelpWindow::OnShowWindow(BOOL bShow, UINT nStatus)
 {
-   WINDOWPLACEMENT wp;
-   wp.length = sizeof wp;
-   if (GetWindowPlacement(&wp))
-   {
-      wp.flags = 0;
-      wp.showCmd = SW_SHOWNORMAL;
-      EAFGetApp()->WriteWindowPlacement(CString((LPCTSTR)IDS_REG_SETTINGS),_T("HelpWindowPosition"),&wp);
-   }
+   CFrameWnd::OnShowWindow(bShow, nStatus);
 
-   CFrameWnd::OnDestroy();
+   if (bShow)
+   {
+      RestoreWindowPosition();
+   }
+   else
+   {
+      SaveWindowPosition();
+   }
 }
 
 void CEAFHelpWindow::OnFileClose()
@@ -186,9 +171,12 @@ void CEAFHelpWindow::OnFilePrint()
 void CEAFHelpWindow::Navigate(LPCTSTR lpszURL)
 {
    CWaitCursor wait;
-   ShowWindow(SW_SHOW);
    m_WebBrowser.Navigate(lpszURL);
-   SetWindowPos(&wndTop,0,0,0,0,SWP_NOSIZE);
+
+   if (!IsWindowVisible())
+   {
+      ShowWindow(SW_SHOW);
+   }
 }
 
 void CEAFHelpWindow::OnBack()
@@ -246,3 +234,26 @@ void CEAFHelpWindow::OnCmenuSelected(UINT id)
      break;
    }
 }
+
+void CEAFHelpWindow::SaveWindowPosition()
+{
+   WINDOWPLACEMENT wp;
+   if (GetWindowPlacement(&wp))
+   {
+      EAFGetApp()->WriteWindowPlacement(CString((LPCTSTR)IDS_WINDOW_POSITIONS), _T("Help"), &wp);
+   }
+}
+
+void CEAFHelpWindow::RestoreWindowPosition()
+{
+   WINDOWPLACEMENT wp;
+   if (EAFGetApp()->ReadWindowPlacement(CString((LPCTSTR)IDS_WINDOW_POSITIONS), _T("Help"), &wp))
+   {
+      SetWindowPos(NULL, wp.rcNormalPosition.left, wp.rcNormalPosition.top, wp.rcNormalPosition.right - wp.rcNormalPosition.left, wp.rcNormalPosition.bottom - wp.rcNormalPosition.top, 0);
+      if (wp.flags == WPF_RESTORETOMAXIMIZED)
+      {
+         ShowWindow(SW_MAXIMIZE);
+      }
+   }
+}
+

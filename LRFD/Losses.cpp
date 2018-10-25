@@ -41,85 +41,84 @@ CLASS
    lrfdLosses
 ****************************************************************************/
 
-lrfdLosses::lrfdLosses(  Float64 x,
-                         Float64 Lg,
-                         lrfdLosses::SectionPropertiesType sectionProperties,
-                         matPsStrand::Grade gradePerm, // strand grade
-                         matPsStrand::Type typePerm, // strand type
-                         matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
-                         matPsStrand::Grade gradeTemp, // strand grade
-                         matPsStrand::Type typeTemp, // strand type
-                         matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
-                         Float64 fpjPerm, // fpj permanent strands
-                         Float64 fpjTemp,  // fpj of temporary strands
-                         Float64 ApsPerm,  // area of permanent strand
-                         Float64 ApsTemp,   // area of TTS 
-                         Float64 aps,      // area of one temp strand
-                         Float64 epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
-                         Float64 epermFinal,
-                         Float64 etemp, // eccentricty of temporary strands with respect to CG of girder
-                         lrfdLosses::TempStrandUsage usage,
-                         Float64 anchorSet,
-                         Float64 wobble,
-                         Float64 friction,
-                         Float64 angleChange,
+lrfdLosses::lrfdLosses(Float64 x,
+   Float64 Lg,
+   lrfdLosses::SectionPropertiesType sectionProperties,
+   matPsStrand::Grade gradePerm, // strand grade
+   matPsStrand::Type typePerm, // strand type
+   matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
+   matPsStrand::Grade gradeTemp, // strand grade
+   matPsStrand::Type typeTemp, // strand type
+   matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
+   Float64 fpjPerm, // fpj permanent strands
+   Float64 fpjTemp,  // fpj of temporary strands
+   Float64 ApsPerm,  // area of permanent strand
+   Float64 ApsTemp,   // area of TTS 
+   Float64 aps,      // area of one temp strand
+   Float64 epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
+   Float64 epermFinal,
+   Float64 etemp, // eccentricty of temporary strands with respect to CG of girder
+   lrfdLosses::TempStrandUsage usage,
+   Float64 anchorSet,
+   Float64 wobble,
+   Float64 friction,
+   Float64 angleChange,
 
-                         Float64 Fc,   // 28 day strength of girder concrete
-                         Float64 Fci,  // Release strength
-                         Float64 FcSlab,   
-                         Float64 Ec,   // Modulus of elasticity of girder
-                         Float64 Eci,  // Modulus of elasticity of girder at transfer
-                         Float64 Ecd,  // Modulus of elasticity of deck
+   Float64 Fc,   // 28 day strength of girder concrete
+   Float64 Fci,  // Release strength
+   Float64 FcSlab,
+   Float64 Ec,   // Modulus of elasticity of girder
+   Float64 Eci,  // Modulus of elasticity of girder at transfer
+   Float64 Ecd,  // Modulus of elasticity of deck
 
-                         Float64 Mdlg,  // Dead load moment of girder only
-                         Float64 Madlg,  // Additional dead load on girder section
-                         Float64 Msidl, // Superimposed dead loads
-                         Float64 Mllim, // Live load moment
+   Float64 Mdlg,  // Dead load moment of girder only
+   Float64 Madlg,  // Additional dead load on girder section
+   Float64 Msidl, // Superimposed dead loads
 
-                         Float64 Ag,   // area of girder
-                         Float64 Ig,   // moment of inertia of girder
-                         Float64 Ybg,   // Centroid of girder measured from bottom
-                         Float64 Ac,    // Area of the composite girder and deck
-                         Float64 Ic,    // Moment of inertia of composite
-                         Float64 Ybc,   // Centroid of composite measured from bottom
+   Float64 Ag,   // area of girder
+   Float64 Ig,   // moment of inertia of girder
+   Float64 Ybg,   // Centroid of girder measured from bottom
+   Float64 Ac,    // Area of the composite girder and deck
+   Float64 Ic,    // Moment of inertia of composite
+   Float64 Ybc,   // Centroid of composite measured from bottom
 
-                         Float64 An,   // area of girder
-                         Float64 In,   // moment of inertia of girder
-                         Float64 Ybn,   // Centroid of girder measured from bottom
-                         Float64 Acn,    // Area of the composite girder and deck
-                         Float64 Icn,    // Moment of inertia of composite
-                         Float64 Ybcn,   // Centroid of composite measured from bottom
+   Float64 An,   // area of girder
+   Float64 In,   // moment of inertia of girder
+   Float64 Ybn,   // Centroid of girder measured from bottom
+   Float64 Acn,    // Area of the composite girder and deck
+   Float64 Icn,    // Moment of inertia of composite
+   Float64 Ybcn,   // Centroid of composite measured from bottom
 
-                         Float64 rh, // relative humidity
-                         Float64 ti,   // Time until prestress transfer
+   Float64 rh, // relative humidity
+   Float64 ti,   // Time until prestress transfer
 
-                         bool bIgnoreInitialRelaxation,
-                         bool bValidateParameters
-                         )
+   bool bIgnoreInitialRelaxation,
+   bool bValidateParameters
+)
 {
    Init();
 
    m_bValidateParameters = bValidateParameters;
-   m_GradePerm             = gradePerm;
-   m_TypePerm              = typePerm;
-   m_CoatingPerm           = coatingPerm;
-   m_GradeTemp             = gradeTemp;
-   m_TypeTemp              = typeTemp;
-   m_CoatingTemp           = coatingTemp;
-   m_FpjPerm               = fpjPerm;
-   m_FpjTemp               = fpjTemp;
-   m_ApsPerm               = ApsPerm;
-   m_ApsTemp               = ApsTemp;
-   m_aps                   = aps;
-   m_epermRelease          = epermRelease;
-   m_epermFinal            = epermFinal;
-   m_etemp                 = etemp;
-   m_Fc                    = Fc;
-   m_Fci                   = Fci;
-   m_FcSlab                = FcSlab;
-   m_Ec                    = Ec;
-   m_Eci                   = Eci;
-   m_Ecd                   = Ecd;
+   m_GradePerm = gradePerm;
+   m_TypePerm = typePerm;
+   m_CoatingPerm = coatingPerm;
+   m_GradeTemp = gradeTemp;
+   m_TypeTemp = typeTemp;
+   m_CoatingTemp = coatingTemp;
+   m_FpjPerm = fpjPerm;
+   m_FpjTemp = fpjTemp;
+   m_ApsPerm = ApsPerm;
+   m_ApsTemp = ApsTemp;
+   m_aps = aps;
+   m_epermRelease = epermRelease;
+   m_epermFinal = epermFinal;
+   m_etemp = etemp;
+   m_Fc = Fc;
+   m_Fci = Fci;
+   m_FcSlab = FcSlab;
+   m_Ec = Ec;
+   m_Eci = Eci;
+   m_Ecd = Ecd;
 
    m_X = x;
    m_Lg = Lg;
@@ -130,18 +129,17 @@ lrfdLosses::lrfdLosses(  Float64 x,
    m_FrictionCoefficient = friction;
    m_AngleChange = angleChange;
 
-   m_Ep                    = lrfdPsStrand::GetModE();
+   m_Ep = lrfdPsStrand::GetModE();
 
-   m_FpuPerm               = lrfdPsStrand::GetUltimateStrength( m_GradePerm );
-   m_FpyPerm               = lrfdPsStrand::GetYieldStrength( m_GradePerm, m_TypePerm );
-   m_FpuTemp               = lrfdPsStrand::GetUltimateStrength( m_GradeTemp );
-   m_FpyTemp               = lrfdPsStrand::GetYieldStrength( m_GradeTemp, m_TypeTemp );
+   m_FpuPerm = lrfdPsStrand::GetUltimateStrength(m_GradePerm);
+   m_FpyPerm = lrfdPsStrand::GetYieldStrength(m_GradePerm, m_TypePerm);
+   m_FpuTemp = lrfdPsStrand::GetUltimateStrength(m_GradeTemp);
+   m_FpyTemp = lrfdPsStrand::GetYieldStrength(m_GradeTemp, m_TypeTemp);
 
-   m_Mdlg                  = Mdlg;
-   m_Madlg                 = Madlg;
-   m_Msidl                 = Msidl;
-   m_Mllim                 = Mllim;
-   
+   m_Mdlg = Mdlg;
+   m_Madlg = Madlg;
+   m_Msidl = Msidl;
+
    m_bIgnoreInitialRelaxation = bIgnoreInitialRelaxation;
 
    m_SectionProperties = sectionProperties;
@@ -213,8 +211,7 @@ lrfdLosses::lrfdLosses()
    m_Mdlg                  = 0;
    m_Madlg                 = 0;
    m_Msidl                 = 0;
-   m_Mllim                 = 0;
-   
+
    m_bIgnoreInitialRelaxation = true;
 
    m_SectionProperties = sptGross;
@@ -256,7 +253,6 @@ void lrfdLosses::Init()
    m_dfpED = 0;
    m_dfpSIDL = 0;
    m_dfpSS = 0;
-   m_dfpLL = 0;
    m_dfpp = 0;
    m_fpL = 0;
    m_fpD = 0;
@@ -276,7 +272,6 @@ void lrfdLosses::Init()
    m_Ptr = 0;
    m_DeltaFcd1 = 0;
    m_DeltaFcd2 = 0;
-   m_DeltaFcdLL = 0;
    m_dfpF = 0;
    m_dfpFT = 0;
    m_dfpA = 0;
@@ -773,14 +768,11 @@ Float64 lrfdLosses::ElasticGainDueToDeckShrinkage() const
    return m_dfpSS;
 }
 
-Float64 lrfdLosses::ElasticGainDueToLiveLoad() const
+Float64 lrfdLosses::ElasticGainDueToLiveLoad(Float64 Mllim) const
 {
-   if ( m_IsDirty )
-   {
-      UpdateLosses();
-   }
-
-   return m_dfpLL;
+   Float64 dFcdLL = GetDeltaFcdLL(Mllim);
+   Float64 dfLL = IsZero(m_ApsPerm) ? 0 : (m_Ep / m_Ec)*dFcdLL;
+   return dfLL;
 }
 
 void lrfdLosses::GetDeckShrinkageEffects(Float64* pA,Float64* pM) const
@@ -999,14 +991,9 @@ Float64 lrfdLosses::GetDeltaFcd2() const
    return m_DeltaFcd2;
 }
 
-Float64 lrfdLosses::GetDeltaFcdLL() const
+Float64 lrfdLosses::GetDeltaFcdLL(Float64 Mllim) const
 {
-   if ( m_IsDirty )
-   {
-      UpdateLosses();
-   }
-
-   return m_DeltaFcdLL;
+   return Mllim * (m_Ybc - m_Ybg + m_epermFinal) / m_Ic;
 }
 
 void lrfdLosses::UpdateLosses() const
@@ -1371,7 +1358,6 @@ void lrfdLosses::MakeCopy( const lrfdLosses& rOther )
    m_Mdlg                  = rOther.m_Mdlg;
    m_Madlg                 = rOther.m_Madlg;
    m_Msidl                 = rOther.m_Msidl;
-   m_Mllim                 = rOther.m_Mllim;
 
    m_ti                    = rOther.m_ti;
    
@@ -1404,7 +1390,6 @@ void lrfdLosses::MakeCopy( const lrfdLosses& rOther )
    m_dfpED                 = rOther.m_dfpED;
    m_dfpSIDL               = rOther.m_dfpSIDL;
    m_dfpSS                 = rOther.m_dfpSS;
-   m_dfpLL                 = rOther.m_dfpLL;
 
    m_dfpF                  = rOther.m_dfpF;
    m_dfpFT                 = rOther.m_dfpFT;
@@ -1438,8 +1423,6 @@ void lrfdLosses::MakeCopy( const lrfdLosses& rOther )
 
    m_DeltaFcd1             = rOther.m_DeltaFcd1;
    m_DeltaFcd2             = rOther.m_DeltaFcd2;
-
-   m_DeltaFcdLL            = rOther.m_DeltaFcdLL;
 
    m_ElasticShortening     = rOther.m_ElasticShortening;
 

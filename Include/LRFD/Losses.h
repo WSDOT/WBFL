@@ -35,6 +35,10 @@
 #define TEMPORARY_STRAND 0
 #define PERMANENT_STRAND 1
 
+#define SERVICE_I_LIVELOAD 0
+#define SERVICE_III_LIVELOAD 1
+#define FATIGUE_LIVELOAD 2
+
 class LRFDCLASS lrfdLosses : public lrfdVersionMgrListener
 {
 public:
@@ -76,7 +80,6 @@ public:
               Float64 Mdlg,  // Dead load moment of girder only
               Float64 Madlg,  // Additional dead load on girder section
               Float64 Msidl, // Superimposed dead loads
-              Float64 Mllim,   // live load moment (factored)
 
               // Transform/Gross properties
               Float64 Ag,    // Area of girder
@@ -273,10 +276,6 @@ public:
    void SetSidlMoment(Float64 Msidl);
    Float64 GetSidlMoment() const;
 
-   // moment due to live loads
-   void SetLiveLoadMoment(Float64 Mllim);
-   Float64 GetLiveLoadMoment() const;
-
    //------------------------------------------------------------------------
    // Post-tension related parameters
 
@@ -347,7 +346,7 @@ public:
    Float64 ElasticGainDueToDeckPlacement() const;
    Float64 ElasticGainDueToSIDL() const;
    Float64 ElasticGainDueToDeckShrinkage() const;
-   Float64 ElasticGainDueToLiveLoad() const;
+   Float64 ElasticGainDueToLiveLoad(Float64 Mllim) const;
 
    virtual void GetDeckShrinkageEffects(Float64* pA,Float64* pM) const;
 
@@ -422,7 +421,7 @@ public:
 
    //------------------------------------------------------------------------
    // Change in stress at level of permanent strand due to live load
-   Float64 GetDeltaFcdLL() const;
+   Float64 GetDeltaFcdLL(Float64 Mllim) const;
 
 protected:
    bool m_bValidateParameters;
@@ -484,7 +483,6 @@ protected:
    Float64 m_Mdlg;  // Dead load moment of girder
    Float64 m_Madlg; // Additional dead load moment on girder section
    Float64 m_Msidl; // Superimposed dead loads
-   Float64 m_Mllim; // Live load moment
    Float64 m_ti; // initial time
 
    // Transformed/Gross Properties
@@ -516,7 +514,6 @@ protected:
    mutable Float64 m_dfpED; // elastic gain due to deck placement
    mutable Float64 m_dfpSIDL; // elastic gain due to superimposed dead loads
    mutable Float64 m_dfpSS; // elastic gain due to deck shrinkage
-   mutable Float64 m_dfpLL; // elastic gain due to live load
 
    // post tension losses
    mutable Float64 m_dfpp; // change in stress in perm strand due to pt
@@ -540,8 +537,6 @@ protected:
 
    mutable Float64 m_DeltaFcd1; // change in stress at level of permanent strand due to deck placement
    mutable Float64 m_DeltaFcd2; // change in stress at level of permanent strand due to superimposed dead loads
-
-   mutable Float64 m_DeltaFcdLL; // change in stress at level of permanent strand due to live load
 
    mutable Float64 m_dfpF;  // friction loss 
    mutable Float64 m_dfpFT; // total friction loss 
@@ -620,8 +615,6 @@ inline void lrfdLosses::SetAddlGdrMoment(Float64 Madlg) { m_Madlg = Madlg; m_IsD
 inline Float64 lrfdLosses::GetAddlGdrMoment() const { return m_Madlg; }
 inline void lrfdLosses::SetSidlMoment(Float64 Msidl) { m_Msidl = Msidl; m_IsDirty = true; }
 inline Float64 lrfdLosses::GetSidlMoment() const { return m_Msidl; }
-inline void lrfdLosses::SetLiveLoadMoment(Float64 Mllim) { m_Mllim = Mllim; m_IsDirty = true; }
-inline Float64 lrfdLosses::GetLiveLoadMoment() const { return m_Mllim; }
 
 inline void lrfdLosses::SetGirderLength(Float64 lg) { m_Lg = lg; m_IsDirty = true; }
 inline Float64 lrfdLosses::GetGirderLength() const {  return m_Lg; }

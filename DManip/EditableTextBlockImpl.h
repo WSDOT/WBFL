@@ -137,6 +137,10 @@ END_COM_MAP()
    STDMETHOD_(void,UnregisterDropSite)() override;
    STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) override;
 
+   // Composite
+   STDMETHOD_(void, SetParent)(iDisplayObject* pParent) override { Do_SetParent(pParent); }
+   STDMETHOD_(void, GetParent)(iDisplayObject** ppParent) override { Do_GetParent(ppParent); }
+
    // iTextBlock overrides
    STDMETHOD_(void,SetPosition)(IPoint2d* pos) override;
    STDMETHOD_(void,GetPosition)(IPoint2d** pos) override;

@@ -88,6 +88,22 @@ public:
    virtual HRESULT OnBeforeAdd ( TemporarySupportVectorImpl::StoredType* pVal)
    {
       CHECK_IN(pVal);
+
+#if defined _DEBUG
+      // make sure we aren't adding a temporary support at the same location
+      // where one was previously defined
+      Float64 location;
+      pVal->second.m_T->get_Location(&location);
+
+      for (iterator it = begin(); it != end(); it++)
+      {
+         CComPtr<ITemporarySupport> ts = it->second;
+         Float64 loc;
+         ts->get_Location(&loc);
+         ATLASSERT(!IsEqual(loc, location));
+      }
+#endif
+
       try
       {
          // set up connection point

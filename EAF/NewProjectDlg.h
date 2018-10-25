@@ -82,8 +82,8 @@ public:
    afx_msg void OnTemplatesItemChanged(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnViewModeClicked(UINT i);
    afx_msg BOOL OnToolTipNotify(UINT id,NMHDR* pNMHDR, LRESULT* pResult);
-   afx_msg void OnSize(UINT nType, int cx, int cy);
-   virtual LRESULT WindowProc(UINT message,WPARAM wParam,LPARAM lParam);
+   virtual LRESULT WindowProc(UINT message,WPARAM wParam,LPARAM lParam) override;
    afx_msg void OnDestroy();
    afx_msg void OnTemplatesDblClick(NMHDR *pNMHDR, LRESULT *pResult);
+   afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 };

@@ -153,6 +153,10 @@ public:
    STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite) override { Do_RegisterDropSite(pDropSite); }
    STDMETHOD_(void,UnregisterDropSite)()  override { Do_UnregisterDropSite(); }
    STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) override { Do_GetDropSite(dropSite); }
+
+   // Composite
+   STDMETHOD_(void, SetParent)(iDisplayObject* pParent) override { Do_SetParent(pParent); }
+   STDMETHOD_(void, GetParent)(iDisplayObject** ppParent) override { Do_GetParent(ppParent); }
 };
 
 #endif //__HORZCURVEDISPLAYOBJECT_H_

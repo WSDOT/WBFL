@@ -112,6 +112,10 @@ public:
    virtual void Do_UnregisterDropSite();
    virtual void Do_GetDropSite(iDropSite** dropSite);
 
+   // Composite
+   virtual void Do_SetParent(iDisplayObject* pParent);
+   virtual void Do_GetParent(iDisplayObject** ppParent);
+
    // Notifies all sinks of display object events
    virtual void Fire_OnChanged();
    virtual void Fire_OnDragMoved(ISize2d* offset);
@@ -134,7 +138,7 @@ public:
 protected:
    IDType m_ID;
    BOOL m_bIsVisible;
-   iDisplayObject* m_pParent;
+   iDisplayObject* m_pParent; // this parent is the DO that owns this implementation object
    CComPtr<iGravityWellStrategy> m_pGravityWellStrategy;
    iDisplayList* m_pDispList;
    CComPtr<iDropSite> m_pDropSite;
@@ -149,6 +153,8 @@ protected:
    bool m_bDeleteItemData;
 
    CComPtr<iDisplayObjectEvents> m_EventSink;
+
+   iDisplayObject* m_pCompositeParent; // weak reference to parent object... typically used when this DO is part of a composite
 };
 
 #endif // !defined(AFX_DISPLAYOBJECTDEFAULTIMPL_H__BCB8A107_E659_11D4_8B81_006097C68A9C__INCLUDED_)

@@ -187,16 +187,15 @@ bool lrfdLldfTypeBC::ExteriorMomentEquationRule(bool bSISpec, bool doThrow) cons
 {
    if ( InteriorMomentEquationRule(bSISpec, doThrow) )
    {
-      if ( GetNb() < 3 ) // one could argue that this should be 4
-         THROW_DF( lrfdXRangeOfApplicability, NumGirders, _T("Number of girders is out of range. Must be >=4, see 4.6.2.2.1"));
-
       //  check de for exterior girders - it's not applicable for interior
       Float64 demin = 0.0;
       Float64 demax = ::ConvertToSysUnits( bSISpec ?  1400. : 4.5, bSISpec ? unitMeasure::Millimeter : unitMeasure::Feet);
 
       Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
-      if ( !InRange( demin, de_raw, demax ) )
-         THROW_DF( lrfdXRangeOfApplicability, CurbLineOffset, _T("Curb offset (de) is out of range. See Table 4.6.2.2.2d-1"));
+      if (!InRange(demin, de_raw, demax))
+      {
+         THROW_DF(lrfdXRangeOfApplicability, CurbLineOffset, _T("Curb offset (de) is out of range. See Table 4.6.2.2.2d-1"));
+      }
    }
    else
    {

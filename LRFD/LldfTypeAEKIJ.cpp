@@ -142,7 +142,7 @@ bool lrfdLldfTypeAEKIJ::TestRangeOfApplicability(Location loc) const
 
          if ( GetNb() < 3 )
          {
-            THROW_DF( lrfdXRangeOfApplicability, NumGirders, _T("Number of girders is out of range. See Table 4.6.2.2.2b-1"));
+            THROW_DF( lrfdXRangeOfApplicability, NumGirders, _T("Number of girders is out of range. See Table 4.6.2.2.2d-1"));
          }
       }
       else

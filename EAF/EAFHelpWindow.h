@@ -70,7 +70,7 @@ protected:
 	//{{AFX_MSG(CEAFReportView)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
    afx_msg void OnClose();
-   afx_msg void OnDestroy();
+   afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 
    afx_msg void OnFileClose();
    afx_msg void OnFilePrint();
@@ -88,4 +88,7 @@ protected:
    CWebBrowser m_WebBrowser;
    CToolBar m_Toolbar;
    CStatusBar m_StatusBar;
+
+   void SaveWindowPosition();
+   void RestoreWindowPosition();
 };

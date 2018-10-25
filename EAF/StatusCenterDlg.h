@@ -70,6 +70,9 @@ protected:
 
    CStatusItemListCtrl m_ctrlList;
 
+   int m_cxMin;
+   int m_cyMin;
+
    IndexType m_nInfo;
    IndexType m_nWarn;
    IndexType m_nError;
@@ -80,11 +83,17 @@ protected:
 
 	// Generated message map functions
 	//{{AFX_MSG(CStatusCenterDlg)
-	virtual BOOL OnInitDialog();
-	afx_msg void OnClose();
-	afx_msg void OnSize(UINT nType, int cx, int cy);
+	virtual BOOL OnInitDialog() override;
+   virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam) override;
+   afx_msg void OnClosePressed();
    afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	//}}AFX_MSG
+   afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
+   afx_msg void OnClose();
+   //}}AFX_MSG
+
+   void SaveWindowPosition();
+   void RestoreWindowPosition();
+
 	DECLARE_MESSAGE_MAP()
 };
 

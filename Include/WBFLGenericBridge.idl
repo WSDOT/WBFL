@@ -342,6 +342,14 @@ library WBFLGenericBridge
       ftBottomFace
    } FaceType;
 
+   typedef [public, helpstring("enum XBeamLocation"),uuid(8B252C51-C3E7-4533-9A6A-CC04540E3F77)]
+   enum
+   {
+      xblTopUpperXBeam,
+      xblTopLowerXBeam,
+      xblBottomXBeam
+   } XBeamLocation;
+
 // Interface definitions
 
    [
@@ -1500,12 +1508,13 @@ library WBFLGenericBridge
       [propputref, helpstring("property Pier")] HRESULT Pier([in]IPier* pPier);
       [propget, helpstring("property Pier")] HRESULT Pier([out,retval]IPier** ppPier);
 
-      [propget, helpstring("property Length")] HRESULT Length([out,retval] Float64* length);
+      [propget, helpstring("property Length")] HRESULT Length([in]XBeamLocation location,[out,retval] Float64* length);
       [propget, helpstring("property Depth")] HRESULT Depth([in]StageIndexType stageIdx,[in]Float64 Xxb,[out,retval]Float64* pDepth);
       [propget, helpstring("property FullDepth")] HRESULT FullDepth([in]Float64 Xxb,[out,retval]Float64* pDepth);
       [propget, helpstring("property Profile")] HRESULT Profile([in]StageIndexType stageIdx,[out,retval]IShape** ppShape);
       [propget, helpstring("property TopSurface")] HRESULT TopSurface([in]StageIndexType stageIdx,[out,retval]IPoint2dCollection** ppPoints);
       [propget, helpstring("property BottomSurface")] HRESULT BottomSurface([in]StageIndexType stageIdx,[out,retval]IPoint2dCollection** ppPoints);
+      [propget, helpstring("property Surface")] HRESULT Surface([in]CrossBeamRebarDatum datum,[in]Float64 offset, [out, retval]IPoint2dCollection** ppPoints);
       [propget, helpstring("property Shape")] HRESULT Shape([in]StageIndexType stageIdx,[in]Float64 Xxb,[out,retval]IShape** ppShape);
       [propget, helpstring("property BasicShape")] HRESULT BasicShape([in]Float64 Xxb,[out,retval]IShape** ppShape);
       [propget,helpstring("property RebarLayout")] HRESULT RebarLayout([out,retval]IRebarLayout** ppRebarLayout);

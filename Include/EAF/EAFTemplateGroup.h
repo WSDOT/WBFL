@@ -130,8 +130,13 @@ public:
    bool operator<(const CEAFTemplateGroup& other) const;
    bool operator==(const CEAFTemplateGroup& other) const;
 
+   // returns the total number of templates summed from
+   // this group, all sub groups, and all items
+   CollectionIndexType GetTemplateCount() const;
+
 protected:
    void DeepCopy(const CEAFTemplateGroup* pGroup);
+   CollectionIndexType DeepCount(const CEAFTemplateGroup* pGroup) const;
 
 private:
    CString m_GroupName;

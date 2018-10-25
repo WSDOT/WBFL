@@ -307,7 +307,7 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
    // this parameter is used to compute the moment arm for the horizontal force in the inclined
    // lift cable measured transversely from the laterally deflected beam.
    // we are conservative to assume equal overhangs based on the smallest overhang
-   // this puts the force furthest from the arc which is soncervative
+   // this puts the force furthest from the arc which is concervative
    Float64 a = Min(Ll,Lr);
 
    bool bDirectCamber;
@@ -326,17 +326,17 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
 
       sectionResult.AnalysisPointIndex = analysisPointIdx++;
 
-      sectionResult.fMin[stbTypes::Top]    =  DBL_MAX;
-      sectionResult.fMin[stbTypes::Bottom] =  DBL_MAX;
-      sectionResult.fMax[stbTypes::Top]    = -DBL_MAX;
-      sectionResult.fMax[stbTypes::Bottom] = -DBL_MAX;
+      sectionResult.fMin[stbTypes::Top]    =  Float64_Max;
+      sectionResult.fMin[stbTypes::Bottom] =  Float64_Max;
+      sectionResult.fMax[stbTypes::Top]    = -Float64_Max;
+      sectionResult.fMax[stbTypes::Bottom] = -Float64_Max;
 
-      sectionResult.fMinDirect[stbTypes::Top]    =  DBL_MAX;
-      sectionResult.fMinDirect[stbTypes::Bottom] =  DBL_MAX;
-      sectionResult.fMaxDirect[stbTypes::Top]    = -DBL_MAX;
-      sectionResult.fMaxDirect[stbTypes::Bottom] = -DBL_MAX;
+      sectionResult.fMinDirect[stbTypes::Top]    =  Float64_Max;
+      sectionResult.fMinDirect[stbTypes::Bottom] =  Float64_Max;
+      sectionResult.fMaxDirect[stbTypes::Top]    = -Float64_Max;
+      sectionResult.fMaxDirect[stbTypes::Bottom] = -Float64_Max;
 
-      sectionResult.FScrMin = DBL_MAX;
+      sectionResult.FScrMin = Float64_Max;
 
       CComPtr<IRebarSection> rebarSection;
       CComPtr<IShape> shape;
@@ -414,7 +414,7 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
 
             Float64 windSign = (wind == stbTypes::Left ? 1 : -1);
 
-            sectionResult.FScr[impact][wind] =  DBL_MAX;
+            sectionResult.FScr[impact][wind] =  Float64_Max;
 
             if ( IsZero(Plift) )
             {
@@ -668,17 +668,17 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
    results.vSectionResults.reserve(pStabilityProblem->GetAnalysisPoints().size());
 
    // we will be finding the minimum value for all analysis points considered
-   // initialize to DBL_MAX
+   // initialize to Float64_Max
    for ( int s = 0; s < 2; s++ )
    {
       stbTypes::HaulingSlope slope = (stbTypes::HaulingSlope)s;
-      results.MinFScr[slope]         =  DBL_MAX;
-      results.MinFsFailure[slope]    =  DBL_MAX;
-      results.MinFsRollover[slope]   =  DBL_MAX;
-      results.MaxStress[slope]       = -DBL_MAX;
-      results.MinStress[slope]       =  DBL_MAX;
-      results.MaxDirectStress[slope] = -DBL_MAX;
-      results.MinDirectStress[slope] =  DBL_MAX;
+      results.MinFScr[slope]         =  Float64_Max;
+      results.MinFsFailure[slope]    =  Float64_Max;
+      results.MinFsRollover[slope]   =  Float64_Max;
+      results.MaxStress[slope]       = -Float64_Max;
+      results.MinStress[slope]       =  Float64_Max;
+      results.MaxDirectStress[slope] = -Float64_Max;
+      results.MinDirectStress[slope] =  Float64_Max;
    }
 
    Float64 Lg = pGirder->GetGirderLength();
@@ -762,17 +762,17 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
       {
          stbTypes::HaulingSlope slope = (stbTypes::HaulingSlope)s;
 
-         sectionResult.fMinDirect[slope][stbTypes::Top]    =  DBL_MAX;
-         sectionResult.fMinDirect[slope][stbTypes::Bottom] =  DBL_MAX;
-         sectionResult.fMaxDirect[slope][stbTypes::Top]    = -DBL_MAX;
-         sectionResult.fMaxDirect[slope][stbTypes::Bottom] = -DBL_MAX;
+         sectionResult.fMinDirect[slope][stbTypes::Top]    =  Float64_Max;
+         sectionResult.fMinDirect[slope][stbTypes::Bottom] =  Float64_Max;
+         sectionResult.fMaxDirect[slope][stbTypes::Top]    = -Float64_Max;
+         sectionResult.fMaxDirect[slope][stbTypes::Bottom] = -Float64_Max;
 
-         sectionResult.fMin[slope][stbTypes::Top]    =  DBL_MAX;
-         sectionResult.fMin[slope][stbTypes::Bottom] =  DBL_MAX;
-         sectionResult.fMax[slope][stbTypes::Top]    = -DBL_MAX;
-         sectionResult.fMax[slope][stbTypes::Bottom] = -DBL_MAX;
+         sectionResult.fMin[slope][stbTypes::Top]    =  Float64_Max;
+         sectionResult.fMin[slope][stbTypes::Bottom] =  Float64_Max;
+         sectionResult.fMax[slope][stbTypes::Top]    = -Float64_Max;
+         sectionResult.fMax[slope][stbTypes::Bottom] = -Float64_Max;
 
-         sectionResult.FScrMin[slope] = DBL_MAX;
+         sectionResult.FScrMin[slope] = Float64_Max;
       }
 
       // Get forces from external loads
@@ -842,7 +842,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
             for ( int s = 0; s < 2; s++ )
             {
                stbTypes::HaulingSlope slope = (stbTypes::HaulingSlope)s;
-               sectionResult.FScr[slope][impact][wind] = DBL_MAX;
+               sectionResult.FScr[slope][impact][wind] = Float64_Max;
 
                Float64 im = 1.0;
                if ( impactUsage == stbTypes::Both ||
@@ -1084,7 +1084,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
             Float64 Mr = Ktheta*(theta_max - alpha); // resisting moment
             Float64 zo = im*results.Zo[stbTypes::NoImpact]*(1.0 + 2.5*theta_max);
             Float64 Ma = im*Wg*((zo + results.Dra[stbTypes::NoImpact])*theta_max + ei + Zt*theta_max*(1 + 2.5*theta_max)) + Mot; // acting moment
-            Float64 FSf = IsLE(Ma,0.0) ? DBL_MAX : Mr/Ma;
+            Float64 FSf = IsLE(Ma,0.0) ? Float64_Max : Mr/Ma;
             results.FsFailure[slope][impact][wind] = FSf;
          
             // if FSf < FScr then FSf = FScr (if the girder doesn't crack, it doesn't fail)
@@ -1113,7 +1113,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
             Mr = Ktheta*(theta_roll - alpha); // resisting moment
             zo = im*results.Zo[stbTypes::NoImpact]*(1.0 + 2.5*theta_roll);
             Ma = im*Wg*((zo + results.Dra[stbTypes::NoImpact])*theta_roll + ei + Zt*(1 + 2.5*theta_roll)) + Mro; // acting moment
-            Float64 FSr = IsLE(Ma,0.0) ? DBL_MAX : Mr/Ma;
+            Float64 FSr = IsLE(Ma,0.0) ? Float64_Max : Mr/Ma;
             results.FsRollover[slope][impact][wind] = FSr;
 
             if ( ::IsLT(results.FsRollover[slope][impact][wind],results.MinFsRollover[slope]) )

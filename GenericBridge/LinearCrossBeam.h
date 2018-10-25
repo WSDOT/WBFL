@@ -79,6 +79,8 @@ private:
    CComPtr<IPoint2dCollection> m_UXBProfile;
    CComPtr<IPoint2dCollection> m_BXBProfile;
 
+   CComPtr<IGeomUtil2d> m_GeomUtil;
+
 
 // ISupportsErrorInfo
 public:
@@ -88,12 +90,13 @@ public:
 public:
    STDMETHOD(putref_Pier)(/*[in]*/IPier* pPier) override;
    STDMETHOD(get_Pier)(/*[out,retval]*/IPier** ppPier) override;
-   STDMETHOD(get_Length)(/*[out,retval]*/ Float64* length) override;
+   STDMETHOD(get_Length)(/*[in]*/XBeamLocation location,/*[out,retval]*/ Float64* length) override;
    STDMETHOD(get_Depth)(/*[in]*/StageIndexType stageIdx,/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pDepth) override;
    STDMETHOD(get_FullDepth)(/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pDepth) override;
    STDMETHOD(get_Profile)(/*[in]*/StageIndexType stageIdx,/*[out,retval]*/IShape** ppShape) override;
    STDMETHOD(get_TopSurface)(/*[in]*/StageIndexType stageIdx,/*[out,retval]*/IPoint2dCollection** ppPoints) override;
    STDMETHOD(get_BottomSurface)(/*[in]*/StageIndexType stageIdx,/*[out,retval]*/IPoint2dCollection** ppPoints) override;
+   STDMETHOD(get_Surface)(/*[in]*/CrossBeamRebarDatum datum, /*[in]*/Float64 offset, /*[out, retval]*/IPoint2dCollection** ppPoints) override;
    STDMETHOD(get_BasicShape)(/*[in]*/Float64 Xxb,/*[out,retval]*/IShape** ppShape) override;
    STDMETHOD(get_Shape)(/*[in]*/StageIndexType stageIdx,/*[in]*/Float64 Xxb,/*[out,retval]*/IShape** ppShape) override;
    STDMETHOD(get_RebarLayout)(/*[out,retval]*/IRebarLayout** ppRebarLayout) override;
@@ -130,13 +133,12 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 
 private:
-   HRESULT GetUpperXBeamProfile(IPoint2dCollection** ppPoints);
-   HRESULT GetLowerXBeamProfile(IPoint2dCollection** ppPoints);
-   HRESULT GetBottomXBeamProfile(IPoint2dCollection** ppPoints);
+   HRESULT GetUpperXBeamProfile(IPoint2dCollection** ppPoints,bool bClone = true);
+   HRESULT GetLowerXBeamProfile(IPoint2dCollection** ppPoints, bool bClone = true);
+   HRESULT GetBottomXBeamProfile(IPoint2dCollection** ppPoints, bool bClone = true);
    HRESULT GetLowerXBeamShape(Float64 Xxb,IShape** ppShape);
    HRESULT GetUpperXBeamShape(Float64 Xxb,IShape** ppShape);
 
-   HRESULT TrimLeftToLine(IPoint2dCollection* pPoints,ILine2d* pLine);
-   HRESULT TrimRightToLine(IPoint2dCollection* pPoints,ILine2d* pLine);
+   void CLinearCrossBeam::GetUpperXBeamDeltas(Float64* pUXBleft, Float64* pUXBright);
 };
 
