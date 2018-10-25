@@ -128,35 +128,59 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_GirderLine(IGirderLine** girderL
 STDMETHODIMP CFlangedGirderEndBlockSegment::putref_PrevSegment(ISegment* segment)
 {
    CHECK_IN(segment);
-   m_pPrevSegment = segment;
+   ISuperstructureMemberSegment* pMySeg = m_pPrevSegment; // weak references so no change in ref count
+   m_pPrevSegment = NULL;
+   HRESULT hr = segment->QueryInterface(&m_pPrevSegment); // causes ref count to increment
+   if ( FAILED(hr) )
+   {
+      m_pPrevSegment = pMySeg;
+      return hr;
+   }
+   m_pPrevSegment->Release(); // need to decrement ref count causd by QueryInterface to maintain this as a weak reference
    return S_OK;
 }
 
 STDMETHODIMP CFlangedGirderEndBlockSegment::get_PrevSegment(ISegment** segment)
 {
    CHECK_RETVAL(segment);
-   *segment = m_pPrevSegment;
-   if ( *segment )
-      (*segment)->AddRef();
-
-   return S_OK;
+   if ( m_pPrevSegment )
+   {
+      return m_pPrevSegment->QueryInterface(segment);
+   }
+   else
+   {
+      *segment = NULL;
+      return E_FAIL;
+   }
 }
 
 STDMETHODIMP CFlangedGirderEndBlockSegment::putref_NextSegment(ISegment* segment)
 {
    CHECK_IN(segment);
-   m_pNextSegment = segment;
+   ISuperstructureMemberSegment* pMySeg = m_pNextSegment; // weak references so no change in ref count
+   m_pNextSegment = NULL;
+   HRESULT hr = segment->QueryInterface(&m_pNextSegment); // causes ref count to increment
+   if ( FAILED(hr) )
+   {
+      m_pNextSegment = pMySeg;
+      return hr;
+   }
+   m_pNextSegment->Release(); // need to decrement ref count causd by QueryInterface to maintain this as a weak reference
    return S_OK;
 }
 
 STDMETHODIMP CFlangedGirderEndBlockSegment::get_NextSegment(ISegment** segment)
 {
    CHECK_RETVAL(segment);
-   *segment = m_pNextSegment;
-   if ( *segment )
-      (*segment)->AddRef();
-
-   return S_OK;
+   if ( m_pNextSegment )
+   {
+      return m_pNextSegment->QueryInterface(segment);
+   }
+   else
+   {
+      *segment = NULL;
+      return E_FAIL;
+   }
 }
 
 STDMETHODIMP CFlangedGirderEndBlockSegment::get_Length(Float64 *pVal)

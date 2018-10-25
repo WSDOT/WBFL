@@ -287,7 +287,8 @@ STDMETHODIMP CDistributedLoad::put_Orientation(Fem2dLoadOrientation newVal)
       catch (...)
       {
          ATLASSERT(false);
-         return E_FAIL;
+         //return E_FAIL;
+         throw;
       }
    }
 

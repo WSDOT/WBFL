@@ -932,25 +932,40 @@ library WBFLGenericBridge
 	};
 
    [
-		object,
-		uuid(ACA24CD2-8201-459d-BF2B-D19D7DF87ACF),
-		oleautomation,
-		helpstring("ISegment Interface"),
-		pointer_default(unique)
+      object,
+      uuid(74FEB936-F483-4c0a-9C26-723F28C4C2B6),
+      oleautomation,
+      helpstring("ISegment Interface"),
+      pointer_default(unique)
    ]
    interface ISegment : IUnknown
    {
-      [propget, helpstring("property SuperstructureMember")] HRESULT SuperstructureMember([out,retval]ISuperstructureMember** ssmbr);
-      [propget, helpstring("property GirderLine")] HRESULT GirderLine([out,retval]IGirderLine** girderLine);
+      [propget, helpstring("property Length")] HRESULT Length([out, retval] Float64 *pVal);
+      [propget, helpstring("property PrimaryShape")] HRESULT PrimaryShape([in]Float64 distAlongSegment,[out,retval]IShape** ppShape);
+		[propget, helpstring("property Section")] HRESULT Section([in]StageIndexType stageIdx,[in] Float64 distAlongSegment,[out,retval]ISection** ppSection);
       [propget, helpstring("property PrevSegment")] HRESULT PrevSegment([out,retval]ISegment** segment);
       [propget, helpstring("property NextSegment")] HRESULT NextSegment([out,retval]ISegment** segment);
 
-      [propget, helpstring("property LayoutLength")] HRESULT LayoutLength([out, retval] Float64 *pVal);
-      [propget, helpstring("property Length")] HRESULT Length([out, retval] Float64 *pVal);
-		[propget, helpstring("property Profile")] HRESULT Profile([in] VARIANT_BOOL bIncludeClosure,[out,retval]IShape** ppShape);
+      // These functions are called by the internal framework. Do not call them directly unless you
+      // want to mess up your bridge model
+      [propputref, helpstring("property PrevSegment")] HRESULT PrevSegment([in]ISegment* segment);
+      [propputref, helpstring("property NextSegment")] HRESULT NextSegment([in]ISegment* segment);
+   };
 
-		[propget, helpstring("property Section")] HRESULT Section([in]StageIndexType stageIdx,[in] Float64 distAlongSegment,[out,retval]ISection** ppSection);
-      [propget, helpstring("property PrimaryShape")] HRESULT PrimaryShape([in]Float64 distAlongSegment,[out,retval]IShape** ppShape);
+   [
+		object,
+		uuid(ACA24CD2-8201-459d-BF2B-D19D7DF87ACF),
+		oleautomation,
+		helpstring("ISuperstructureSegment Interface"),
+		pointer_default(unique)
+   ]
+   interface ISuperstructureMemberSegment : ISegment
+   {
+      [propget, helpstring("property SuperstructureMember")] HRESULT SuperstructureMember([out,retval]ISuperstructureMember** ssmbr);
+      [propget, helpstring("property GirderLine")] HRESULT GirderLine([out,retval]IGirderLine** girderLine);
+
+      [propget, helpstring("property LayoutLength")] HRESULT LayoutLength([out, retval] Float64 *pVal);
+		[propget, helpstring("property Profile")] HRESULT Profile([in] VARIANT_BOOL bIncludeClosure,[out,retval]IShape** ppShape);
 
 		[propput,helpstring("property Orientation")] HRESULT Orientation([in]Float64 orientation);
 		[propget,helpstring("property Orientation")] HRESULT Orientation([out,retval]Float64* orientation);
@@ -963,8 +978,6 @@ library WBFLGenericBridge
       // want to mess up your bridge model
       [propputref, helpstring("property SuperstructureMember")] HRESULT SuperstructureMember([in]ISuperstructureMember* ssMbr);
       [propputref, helpstring("property GirderLine")] HRESULT GirderLine([in]IGirderLine* girderLine);
-      [propputref, helpstring("property PrevSegment")] HRESULT PrevSegment([in]ISegment* segment);
-      [propputref, helpstring("property NextSegment")] HRESULT NextSegment([in]ISegment* segment);
    };
 
 	[
@@ -1021,10 +1034,10 @@ library WBFLGenericBridge
    interface ISuperstructureMember : IUnknown
    {
       [propget, helpstring("property ID")] HRESULT ID([out,retval] GirderIDType* pID);
-		[helpstring("method AddSegment")] HRESULT AddSegment([in]ISegment* segment);
-		[propget, helpstring("property Segment")] HRESULT Segment([in] SegmentIndexType idx, [out, retval] ISegment* *pVal);
+		[helpstring("method AddSegment")] HRESULT AddSegment([in]ISuperstructureMemberSegment* segment);
+		[propget, helpstring("property Segment")] HRESULT Segment([in] SegmentIndexType idx, [out, retval] ISuperstructureMemberSegment* *pVal);
 		[propget, helpstring("property SegmentCount")] HRESULT SegmentCount([out, retval] SegmentIndexType *pVal);
-		[helpstring("method GetDistanceFromStartOfSegment")] HRESULT GetDistanceFromStartOfSegment([in] Float64 Xg,[out] Float64* pXs,[out] SegmentIndexType* pSegIdx,[out] ISegment** ppSeg);
+		[helpstring("method GetDistanceFromStartOfSegment")] HRESULT GetDistanceFromStartOfSegment([in] Float64 Xg,[out] Float64* pXs,[out] SegmentIndexType* pSegIdx,[out] ISuperstructureMemberSegment** ppSeg);
       [helpstring("method GetDistanceFromStart")] HRESULT GetDistanceFromStart([in]SegmentIndexType segIdx,[in]Float64 Xs,[out,retval]Float64* pXg);
 		[helpstring("method SetEndRelease")] HRESULT SetEndRelease([in] EndType end,[in] StageIndexType stageIdx,[in] ReleaseType release);
 		[helpstring("method GetEndRelease")] HRESULT GetEndRelease([in] EndType end,[out] StageIndexType* pStageIdx,[out] ReleaseType* release);
@@ -1079,6 +1092,20 @@ library WBFLGenericBridge
       [propget, helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
 		[propget, helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
    };
+   [
+		object,
+		uuid(DD5F5FF3-B22A-4fd6-820C-15F9E02A766D),
+		oleautomation,
+		helpstring("IPrismaticSuperstructureMemberSegment Interface"),
+		pointer_default(unique)
+   ]
+   interface IPrismaticSuperstructureMemberSegment : ISuperstructureMemberSegment
+   {
+		[helpstring("method Shape")] HRESULT AddShape([in] IShape* pShape,[in]IMaterial* pFGMaterial,[in]IMaterial* pBGMaterial);
+      [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
+      [propget, helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
+		[propget, helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
+   };
 
    [
 		object,
@@ -1087,7 +1114,7 @@ library WBFLGenericBridge
 		helpstring("IFlangedGirderEndBlockSegment Interface"),
 		pointer_default(unique)
    ]
-   interface IFlangedGirderEndBlockSegment : ISegment
+   interface IFlangedGirderEndBlockSegment : ISuperstructureMemberSegment
    {
       [helpstring("method Shape")] HRESULT AddShape([in] IShape* pShape,[in]IMaterial* pFGMaterial,[in]IMaterial* pBGMaterial);
       [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
@@ -1109,7 +1136,7 @@ library WBFLGenericBridge
 		helpstring("IVoidedSlabEndBlockSegment Interface"),
 		pointer_default(unique)
    ]
-   interface IVoidedSlabEndBlockSegment : ISegment
+   interface IVoidedSlabEndBlockSegment : ISuperstructureMemberSegment
    {
       [helpstring("method Shape")] HRESULT AddShape([in] IShape* pShape,[in]IMaterial* pFGMaterial,[in]IMaterial* pBGMaterial);
       [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
@@ -1127,7 +1154,7 @@ library WBFLGenericBridge
 		helpstring("IDeckedSlabBeamEndBlockSegment Interface"),
 		pointer_default(unique)
    ]
-   interface IDeckedSlabBeamEndBlockSegment : ISegment
+   interface IDeckedSlabBeamEndBlockSegment : ISuperstructureMemberSegment
    {
       [helpstring("method Shape")] HRESULT AddShape([in] IShape* pShape,[in]IMaterial* pFGMaterial,[in]IMaterial* pBGMaterial);
       [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
@@ -1145,7 +1172,7 @@ library WBFLGenericBridge
 		helpstring("IBoxBeamEndBlockSegment Interface"),
 		pointer_default(unique)
    ]
-   interface IBoxBeamEndBlockSegment : ISegment
+   interface IBoxBeamEndBlockSegment : ISuperstructureMemberSegment
    {
       [helpstring("method Shape")] HRESULT AddShape([in] IShape* pShape,[in]IMaterial* pFGMaterial,[in]IMaterial* pBGMaterial);
       [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
@@ -1163,7 +1190,7 @@ library WBFLGenericBridge
 		helpstring("IUGirderSection2EndBlockSegment Interface"),
 		pointer_default(unique)
    ]
-   interface IUGirderSection2EndBlockSegment : ISegment
+   interface IUGirderSection2EndBlockSegment : ISuperstructureMemberSegment
    {
       [helpstring("method Shape")] HRESULT AddShape([in] IShape* pShape,[in]IMaterial* pFGMaterial,[in]IMaterial* pBGMaterial);
       [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
@@ -1182,7 +1209,7 @@ library WBFLGenericBridge
 		helpstring("ITaperedGirderSegment Interface"),
 		pointer_default(unique)
    ]
-   interface ITaperedGirderSegment : ISegment
+   interface ITaperedGirderSegment : ISuperstructureMemberSegment
    {
       [helpstring("method Shape")] HRESULT AddShape([in] IShape* pStartShape,[in]IShape* pEndShape,[in]IMaterial* pFGMaterial,[in]IMaterial* pBGMaterial);
       [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
@@ -1198,7 +1225,7 @@ library WBFLGenericBridge
 		helpstring("ISplicedGirderSegment Interface"),
 		pointer_default(unique)
    ]
-   interface ISplicedGirderSegment : ISegment
+   interface ISplicedGirderSegment : ISuperstructureMemberSegment
    {
       [helpstring("method Shape")] HRESULT AddShape([in] IShape* pShape,[in]IMaterial* pFGMaterial,[in]IMaterial* pBGMaterial);
       [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
@@ -1273,7 +1300,7 @@ library WBFLGenericBridge
 		helpstring("IThickenedFlangeBulbTeeSegment Interface"),
 		pointer_default(unique)
    ]
-   interface IThickenedFlangeBulbTeeSegment : ISegment
+   interface IThickenedFlangeBulbTeeSegment : ISuperstructureMemberSegment
    {
 		[propput, helpstring("property FlangeThickening")] HRESULT FlangeThickening([in]Float64 flangeThickening);
       [helpstring("method Shape")] HRESULT AddShape([in] IShape* pShape,[in]IMaterial* pFGMaterial,[in]IMaterial* pBGMaterial);
@@ -2077,6 +2104,15 @@ library WBFLGenericBridge
    coclass PrismaticSegment
    {
       [default] interface IPrismaticSegment;
+   };
+
+   [
+      uuid(391BFF16-7930-4fcc-B35F-B7BBFBF345A4),
+      helpstring("PrismaticSuperstructureMemberSegment Class")
+   ]
+   coclass PrismaticSuperstructureMemberSegment
+   {
+      [default] interface IPrismaticSuperstructureMemberSegment;
    };
 
    

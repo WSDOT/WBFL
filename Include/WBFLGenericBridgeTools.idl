@@ -341,7 +341,7 @@ library WBFLGenericBridgeTools
 	]
 	interface IPrecastGirder : IUnknown
 	{
-      [helpstring("method Initialize")] HRESULT Initialize([in]ISegment* segment, [in]IStrandMover* strandMover);
+      [helpstring("method Initialize")] HRESULT Initialize([in]ISuperstructureMemberSegment* segment, [in]IStrandMover* strandMover);
 
 	   [propputref,helpstring("property StrandMover")] HRESULT StrandMover([in]IStrandMover* pStrandMover);
 	   [propget,helpstring("property StrandMover")] HRESULT StrandMover([out,retval]IStrandMover** ppStrandMover);

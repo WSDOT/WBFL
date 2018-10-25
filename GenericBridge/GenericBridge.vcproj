@@ -3469,6 +3469,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\PrismaticSuperstructureMemberSegment.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Rebar.cpp"
 				>
 			</File>
@@ -4762,6 +4766,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PrismaticSuperstructureMemberSegment.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Rebar.h"
 				>
 			</File>
@@ -5032,6 +5040,10 @@
 			</File>
 			<File
 				RelativePath="PrestressingStrand.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\PrismaticSuperstructureMemberSegment.rgs"
 				>
 			</File>
 			<File

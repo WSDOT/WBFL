@@ -138,7 +138,7 @@ Float64 GB_GetFracDistance(Float64 fracLoc, Float64 Length, bool ignoreTooBig)
    return 0.0;
 }
 
-Float64 GB_GetHaunchDepth(ISegment* pSegment,Float64 distAlongSegment)
+Float64 GB_GetHaunchDepth(ISuperstructureMemberSegment* pSegment,Float64 distAlongSegment)
 {
    Float64 startHaunch,endHaunch;
    pSegment->get_HaunchDepth(etStart,&startHaunch);
@@ -151,7 +151,7 @@ Float64 GB_GetHaunchDepth(ISegment* pSegment,Float64 distAlongSegment)
    return haunch;
 }
 
-HRESULT GB_GetSectionLocation(ISegment* pSegment,Float64 distAlongSegment,IPoint2d** ppTopCenter)
+HRESULT GB_GetSectionLocation(ISuperstructureMemberSegment* pSegment,Float64 distAlongSegment,IPoint2d** ppTopCenter)
 {
    CComPtr<IGirderLine> gdrLine;
    pSegment->get_GirderLine(&gdrLine);

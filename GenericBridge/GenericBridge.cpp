@@ -47,6 +47,7 @@
 #include "PierCollection.h"
 #include "SuperstructureMember.h"
 #include "Segment.h"
+#include "PrismaticSuperstructureMemberSegment.h"
 #include "FlangedGirderEndBlockSegment.h"
 #include "VoidedSlabEndBlockSegment.h"
 #include "DeckedSlabBeamEndBlockSegment.h"
@@ -120,6 +121,7 @@ CComModule _Module;
 BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_GenericBridge, CGenericBridge)
    OBJECT_ENTRY(CLSID_PrismaticSegment, CSegment)
+   OBJECT_ENTRY(CLSID_PrismaticSuperstructureMemberSegment, CPrismaticSuperstructureMemberSegment)
    OBJECT_ENTRY(CLSID_FlangedGirderEndBlockSegment, CFlangedGirderEndBlockSegment)
    OBJECT_ENTRY(CLSID_VoidedSlabEndBlockSegment, CVoidedSlabEndBlockSegment)
    OBJECT_ENTRY(CLSID_UGirderSection2EndBlockSegment, CUGirderSection2EndBlockSegment)

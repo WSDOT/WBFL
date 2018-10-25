@@ -121,7 +121,7 @@ void CTestGenericBridge::TestSegments(IGenericBridge* bridge)
       ssMbr->get_SegmentCount(&nSegments);
       ATLASSERT(nSegments == 1);
 
-      CComPtr<ISegment> segment;
+      CComPtr<ISuperstructureMemberSegment> segment;
       ssMbr->get_Segment(0,&segment);
 
       Float64 length;

@@ -67,9 +67,6 @@ BEGIN_COM_MAP(CSegment)
 END_COM_MAP()
 
 private:
-   IGirderLine* m_pGirderLine; // weak reference to the girder line in the geometry model that provies the geometry for this segment
-
-   ISuperstructureMember* m_pSSMbr; // weak reference to parent superstructure member
    ISegment* m_pPrevSegment; // weak reference to previous segment
    ISegment* m_pNextSegment; // weak reference to next segment
 
@@ -93,24 +90,13 @@ public:
 
 // ISegment
 public:
-   STDMETHOD(putref_SuperstructureMember)(ISuperstructureMember* ssMbr);
-   STDMETHOD(get_SuperstructureMember)(ISuperstructureMember** ssMbr);
-   STDMETHOD(putref_GirderLine)(IGirderLine* girderLine);
-   STDMETHOD(get_GirderLine)(IGirderLine** girderLine);
    STDMETHOD(putref_PrevSegment)(ISegment* segment);
    STDMETHOD(get_PrevSegment)(ISegment** segment);
    STDMETHOD(putref_NextSegment)(ISegment* segment);
    STDMETHOD(get_NextSegment)(ISegment** segment);
 	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection);
    STDMETHOD(get_PrimaryShape)(Float64 distAlongSegment,IShape** ppShape);
-   STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure,IShape** ppShape);
 	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_LayoutLength)(/*[out, retval]*/ Float64 *pVal);
-   STDMETHOD(put_Orientation)(/*[in]*/Float64 orientation);
-	STDMETHOD(get_Orientation)(/*[out,retval]*/Float64* orientation);
-   STDMETHOD(get_HaunchDepth)(EndType endType,Float64* pVal);
-   STDMETHOD(put_HaunchDepth)(EndType endType,Float64 val);
-   STDMETHOD(GetHaunchDepth)(Float64 distAlongSegment,Float64 *pVal);
 
 // IPrismaticSegment
 public:
@@ -131,9 +117,6 @@ public:
 public:
 	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
-
-private:
-   Float64 GetSuperstructureMemberLength();
 };
 
 #endif //__SEGMENT_H_

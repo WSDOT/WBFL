@@ -128,7 +128,7 @@ STDMETHODIMP CBridgeGeometryTool::PointBySSMbr(IGenericBridge* bridge,GirderIDTy
    CComPtr<ISuperstructureMember> ssmbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
 
-   CComPtr<ISegment> segment;
+   CComPtr<ISuperstructureMemberSegment> segment;
    Float64 Xs;
    SegmentIndexType segIdx;
    ssmbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
@@ -142,7 +142,7 @@ STDMETHODIMP CBridgeGeometryTool::PointBySegment(IGenericBridge* bridge,GirderID
    CComPtr<ISuperstructureMember> ssmbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
 
-   CComPtr<ISegment> segment;
+   CComPtr<ISuperstructureMemberSegment> segment;
    ssmbr->get_Segment(segIdx,&segment);
 
    CComPtr<IGirderLine> girderLine;
@@ -168,7 +168,7 @@ STDMETHODIMP CBridgeGeometryTool::StationAndOffsetBySSMbr(IGenericBridge* bridge
    CComPtr<ISuperstructureMember> ssmbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
 
-   CComPtr<ISegment> segment;
+   CComPtr<ISuperstructureMemberSegment> segment;
    Float64 Xs;
    SegmentIndexType segIdx;
    HRESULT hr = ssmbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
@@ -205,7 +205,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderPathOffset(IGenericBridge* bridge,Girder
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
 
    // get the segment
-   CComPtr<ISegment> segment;
+   CComPtr<ISuperstructureMemberSegment> segment;
    ssmbr->get_Segment(segIdx,&segment);
 
    // the the girder line
@@ -744,7 +744,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
    CComPtr<IPoint2d> pntSegment;
    for ( SegmentIndexType segIdx = 0; segIdx < nSegments; segIdx++ )
    {
-      CComPtr<ISegment> segment;
+      CComPtr<ISuperstructureMemberSegment> segment;
       ssmbr->get_Segment(segIdx,&segment);
 
       CComPtr<IGirderLine> girderLine;
@@ -769,7 +769,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
    if ( pntSegment == NULL )
    {
       // extend the last segment until there is an intersection
-      CComPtr<ISegment> segment;
+      CComPtr<ISuperstructureMemberSegment> segment;
       ssmbr->get_Segment(nSegments-1,&segment);
 
       CComPtr<IGirderLine> girderLine;
@@ -842,7 +842,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhangBySSMbr(IGenericBridge* bridge,Gir
    CComPtr<ISuperstructureMember> ssmbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
 
-   CComPtr<ISegment> segment;
+   CComPtr<ISuperstructureMemberSegment> segment;
    Float64 Xs;
    SegmentIndexType segIdx;
    ssmbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
@@ -910,7 +910,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhangBySegment(IGenericBridge* bridge,G
    CComPtr<ISuperstructureMember> ssmbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
 
-   CComPtr<ISegment> segment;
+   CComPtr<ISuperstructureMemberSegment> segment;
    ssmbr->get_Segment(segIdx,&segment);
 
    CComPtr<IGirderLine> girderLine;
@@ -999,7 +999,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySSMbr(IGenericBridge* bridge,Gi
    CComPtr<ISuperstructureMember> ssmbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
 
-   CComPtr<ISegment> segment;
+   CComPtr<ISuperstructureMemberSegment> segment;
    Float64 Xs;
    SegmentIndexType segIdx;
    ssmbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
@@ -1023,7 +1023,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySegment(IGenericBridge* bridge,
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
    ATLASSERT(ssmbr); // why? bad ssMbrID?
 
-   CComPtr<ISegment> segment;
+   CComPtr<ISuperstructureMemberSegment> segment;
    ssmbr->get_Segment(segIdx,&segment);
    ATLASSERT(segment);
 
@@ -1059,7 +1059,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySegment(IGenericBridge* bridge,
    CComPtr<IPoint2d> pntOnOtherGirder;
    for ( SegmentIndexType segIdx = 0; segIdx < nSegments; segIdx++ )
    {
-      CComPtr<ISegment> otherSegment;
+      CComPtr<ISuperstructureMemberSegment> otherSegment;
       otherSSMbr->get_Segment(segIdx,&otherSegment);
       otherSegment->get_GirderLine(&otherGirderLine);
 

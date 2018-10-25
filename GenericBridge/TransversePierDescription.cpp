@@ -40,6 +40,9 @@ static char THIS_FILE[] = __FILE__;
 // CTransversePierDescription
 HRESULT CTransversePierDescription::FinalConstruct()
 {
+   m_pBridge = NULL;
+   m_pPier   = NULL;
+
    CComObject<CCrossBeam>* pCrossBeam;
    CComObject<CCrossBeam>::CreateInstance(&pCrossBeam);
    m_CrossBeam = pCrossBeam;

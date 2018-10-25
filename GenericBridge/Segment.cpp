@@ -39,7 +39,6 @@ static char THIS_FILE[] = __FILE__;
 // CSegment
 HRESULT CSegment::FinalConstruct()
 {
-   m_pGirderLine = NULL;
    m_Orientation = 0;
    m_HaunchDepth[etStart] = 0;
    m_HaunchDepth[etEnd] = 0;
@@ -50,7 +49,6 @@ HRESULT CSegment::FinalConstruct()
 
 void CSegment::FinalRelease()
 {
-   m_pGirderLine = NULL;
    m_Shapes.clear();
 }
 
@@ -74,12 +72,8 @@ STDMETHODIMP CSegment::InterfaceSupportsErrorInfo(REFIID riid)
 
 STDMETHODIMP CSegment::get_Length(Float64 *pVal)
 {
-   return m_pGirderLine->get_GirderLength(pVal);
-}
-
-STDMETHODIMP CSegment::get_LayoutLength(Float64 *pVal)
-{
-   return m_pGirderLine->get_LayoutLength(pVal);
+#pragma Reminder("IMPLEMENT")
+   return S_OK;
 }
 
 STDMETHODIMP CSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
@@ -104,29 +98,38 @@ STDMETHODIMP CSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegm
 
       Float64 Efg = 0;
       if ( shapeData.FGMaterial )
+      {
          shapeData.FGMaterial->get_E(stageIdx,&Efg);
+      }
 
       Float64 Ebg = 0;
       if ( shapeData.BGMaterial )
+      {
          shapeData.BGMaterial->get_E(stageIdx,&Ebg);
+      }
 
       Float64 Dfg = 0;
       if ( shapeData.FGMaterial )
+      {
          shapeData.FGMaterial->get_Density(stageIdx,&Dfg);
+      }
 
       Float64 Dbg = 0;
       if ( shapeData.BGMaterial )
+      {
          shapeData.BGMaterial->get_Density(stageIdx,&Dbg);
+      }
 
       CComPtr<IShape> shape;
       shapeData.Shape->Clone(&shape);
 
       // position the shape
-      CComPtr<IPoint2d> pntTopCenter;
-      GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
+#pragma Reminder("REVIEW - does this need to be fixed?")
+      //CComPtr<IPoint2d> pntTopCenter;
+      //GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
 
-      CComQIPtr<IXYPosition> position(shape);
-      position->put_LocatorPoint(lpTopCenter,pntTopCenter);
+      //CComQIPtr<IXYPosition> position(shape);
+      //position->put_LocatorPoint(lpTopCenter,pntTopCenter);
 
       section->AddSection(shape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
    }
@@ -149,117 +152,15 @@ STDMETHODIMP CSegment::get_PrimaryShape(Float64 distAlongSegment,IShape** ppShap
    // this is a prismatic shape, so distAlongSegment doesn't matter
    m_Shapes.front().Shape->Clone(ppShape);
 
-   // position the shape
-   CComPtr<IPoint2d> pntTopCenter;
-   GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
+#pragma Reminder("REVIEW - does this need to be fixed?")
+   //// position the shape
+   //CComPtr<IPoint2d> pntTopCenter;
+   //GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
 
-   CComQIPtr<IXYPosition> position(*ppShape);
-   position->put_LocatorPoint(lpTopCenter,pntTopCenter);
-
-   return S_OK;
-}
-
-STDMETHODIMP CSegment::get_Profile(VARIANT_BOOL bIncludeClosure,IShape** ppShape)
-{
-   CHECK_RETOBJ(ppShape);
-   CComPtr<IRect2d> rect;
-
-   // it is assumed that the first shape is the main shape in the section and all
-   // other shapes are inside of it
-   m_Shapes[0].Shape->get_BoundingBox(&rect);
-
-   Float64 h;
-   rect->get_Height(&h);
-
-   Float64 l;
-   Float64 brgOffset, endDist;
-   if ( bIncludeClosure == VARIANT_TRUE )
-   {
-      m_pGirderLine->get_LayoutLength(&l);
-      brgOffset = 0;
-      endDist = 0;
-   }
-   else
-   {
-      m_pGirderLine->get_GirderLength(&l);
-      m_pGirderLine->get_BearingOffset(etStart,&brgOffset);
-      m_pGirderLine->get_EndDistance(etStart,&endDist);
-   }
-
-   CComPtr<IRectangle> shape;
-   shape.CoCreateInstance(CLSID_Rect);
-   shape->put_Height(h);
-   shape->put_Width(l);
-
-   // Shape is to be in girder path coordinates so (0,0) is at the CL Pier and at the elevation of the top of the shape
-   //
-   // CL Pier   Start of segment
-   // |         |       CL Bearing
-   // |(0,0)    |       |
-   // *         +-------+---------------\  
-   // |         |       .               /
-   // |         +-------+---------------\  
-   //
-   //          Elevation View
-
-
-
-   CComQIPtr<IXYPosition> position(shape);
-   CComPtr<IPoint2d> topLeft;
-   position->get_LocatorPoint(lpTopLeft,&topLeft);
-   topLeft->Move(brgOffset-endDist,0);
-   position->put_LocatorPoint(lpTopLeft,topLeft);
-
-   shape->QueryInterface(ppShape);
+   //CComQIPtr<IXYPosition> position(*ppShape);
+   //position->put_LocatorPoint(lpTopCenter,pntTopCenter);
 
    return S_OK;
-}
-
-STDMETHODIMP CSegment::putref_SuperstructureMember(ISuperstructureMember* ssMbr)
-{
-   CHECK_IN(ssMbr);
-   m_pSSMbr = ssMbr;
-   return S_OK;
-}
-
-STDMETHODIMP CSegment::get_SuperstructureMember(ISuperstructureMember** ssMbr)
-{
-   CHECK_RETOBJ(ssMbr);
-   if ( m_pSSMbr )
-   {
-      (*ssMbr) = m_pSSMbr;
-      (*ssMbr)->AddRef();
-   }
-   else
-   {
-      (*ssMbr) = NULL;
-   }
-
-   return S_OK;
-}
-
-STDMETHODIMP CSegment::putref_GirderLine(IGirderLine* girderLine)
-{
-   CHECK_IN(girderLine);
-   m_pGirderLine = girderLine;
-   return S_OK;
-}
-
-STDMETHODIMP CSegment::get_GirderLine(IGirderLine** girderLine)
-{
-   CHECK_RETOBJ(girderLine);
-   if ( m_pGirderLine )
-   {
-      (*girderLine) = m_pGirderLine;
-      (*girderLine)->AddRef();
-   }
-   else
-   {
-      (*girderLine) = NULL;
-   }
-
-   return S_OK;
-
 }
 
 STDMETHODIMP CSegment::putref_PrevSegment(ISegment* segment)
@@ -274,9 +175,12 @@ STDMETHODIMP CSegment::get_PrevSegment(ISegment** segment)
    CHECK_RETVAL(segment);
    *segment = m_pPrevSegment;
    if ( *segment )
+   {
       (*segment)->AddRef();
+      return S_OK;
+   }
 
-   return S_OK;
+   return E_FAIL;
 }
 
 STDMETHODIMP CSegment::putref_NextSegment(ISegment* segment)
@@ -291,42 +195,12 @@ STDMETHODIMP CSegment::get_NextSegment(ISegment** segment)
    CHECK_RETVAL(segment);
    *segment = m_pNextSegment;
    if ( *segment )
+   {
       (*segment)->AddRef();
+      return S_OK;
+   }
 
-   return S_OK;
-}
-
-STDMETHODIMP CSegment::put_Orientation(Float64 orientation)
-{
-   m_Orientation = orientation;
-   return S_OK;
-}
-
-STDMETHODIMP CSegment::get_Orientation(Float64* orientation)
-{
-   CHECK_RETVAL(orientation);
-   (*orientation) = m_Orientation;
-   return S_OK;
-}
-
-STDMETHODIMP CSegment::get_HaunchDepth(EndType endType,Float64* pVal)
-{
-   CHECK_RETVAL(pVal);
-   *pVal = m_HaunchDepth[endType];
-   return S_OK;
-}
-
-STDMETHODIMP CSegment::put_HaunchDepth(EndType endType,Float64 val)
-{
-   m_HaunchDepth[endType] = val;
-   return S_OK;
-}
-
-STDMETHODIMP CSegment::GetHaunchDepth(Float64 distAlongSegment,Float64 *pVal)
-{
-   CHECK_RETVAL(pVal);
-   *pVal = GB_GetHaunchDepth(this,distAlongSegment);
-   return S_OK;
+   return E_FAIL;
 }
 
 ////////////////////////////////////////////////////////////////////

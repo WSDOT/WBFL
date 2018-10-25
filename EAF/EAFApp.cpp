@@ -594,18 +594,38 @@ LRESULT CEAFApp::ProcessWndProcException(CException* e, const MSG* pMsg)
 {
    LRESULT lResult = 0L;
 
-	if ( e->IsKindOf(RUNTIME_CLASS(CXShutDown) ) )
+	if ( e->IsKindOf(RUNTIME_CLASS(CXShutDown)) || e->IsKindOf(RUNTIME_CLASS(CMemoryException)) )
    {
-      CXShutDown* pXShutDown = (CXShutDown*)e;
       std::_tstring error_msg;
-      pXShutDown->GetErrorMessage( &error_msg );
+      BOOL bAttemptSave;
+
+      if ( e->IsKindOf(RUNTIME_CLASS(CXShutDown)) )
+      {
+         CXShutDown* pXShutDown = (CXShutDown*)e;
+         pXShutDown->GetErrorMessage( &error_msg );
+         bAttemptSave = pXShutDown->AttemptSave();
+      }
+      else
+      {
+         TCHAR szCause[255];
+         CMemoryException* pXMemory = (CMemoryException*)e;
+         pXMemory->GetErrorMessage(szCause,255);
+         error_msg = szCause;
+         bAttemptSave = TRUE;
+      }
 
       CString msg1;
       AfxFormatString1( msg1, IDS_E_PROBPERSISTS, _T("log") ); 
       CString msg2;
-      AfxFormatString2( msg2, pXShutDown->AttemptSave() ? IDS_FATAL_MSG_SAVE : IDS_FATAL_MSG_NOSAVE, error_msg.c_str(), msg1 );
-      int retval = AfxMessageBox( msg2, (pXShutDown->AttemptSave() ? MB_YESNO : MB_OK) | MB_ICONEXCLAMATION );
-      ForEachDoc(log_error,(void*)pXShutDown);
+      AfxFormatString2( msg2, bAttemptSave ? IDS_FATAL_MSG_SAVE : IDS_FATAL_MSG_NOSAVE, error_msg.c_str(), msg1 );
+      int retval = AfxMessageBox( msg2, (bAttemptSave ? MB_YESNO : MB_OK) | MB_ICONEXCLAMATION );
+      
+      if ( e->IsKindOf(RUNTIME_CLASS(CXShutDown)) )
+      {
+         CXShutDown* pXShutDown = (CXShutDown*)e;
+         ForEachDoc(log_error,(void*)pXShutDown);
+      }
+
       if ( retval == IDYES )
       {
          ForEachDoc( save_doc, NULL );

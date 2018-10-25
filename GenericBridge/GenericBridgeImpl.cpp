@@ -380,7 +380,7 @@ STDMETHODIMP CGenericBridge::get_SuperstructureMembersAtStation(Float64 station,
       CollectionIndexType nSegments;
       mbr->get_SegmentCount(&nSegments);
 
-      CComPtr<ISegment> firstSegment, lastSegment;
+      CComPtr<ISuperstructureMemberSegment> firstSegment, lastSegment;
       mbr->get_Segment(0,&firstSegment);
       mbr->get_Segment(nSegments-1,&lastSegment);
 

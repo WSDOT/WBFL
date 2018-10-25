@@ -108,7 +108,7 @@ STDMETHODIMP CPrecastGirder::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CPrecastGirder::Initialize(ISegment* segment,IStrandMover* strandMover)
+STDMETHODIMP CPrecastGirder::Initialize(ISuperstructureMemberSegment* segment,IStrandMover* strandMover)
 {
    CHECK_IN(segment);
    //CHECK_IN(strandMover);

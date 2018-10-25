@@ -118,35 +118,59 @@ STDMETHODIMP CTaperedGirderSegment::get_GirderLine(IGirderLine** girderLine)
 STDMETHODIMP CTaperedGirderSegment::putref_PrevSegment(ISegment* segment)
 {
    CHECK_IN(segment);
-   m_pPrevSegment = segment;
+   ISuperstructureMemberSegment* pMySeg = m_pPrevSegment; // weak references so no change in ref count
+   m_pPrevSegment = NULL;
+   HRESULT hr = segment->QueryInterface(&m_pPrevSegment); // causes ref count to increment
+   if ( FAILED(hr) )
+   {
+      m_pPrevSegment = pMySeg;
+      return hr;
+   }
+   m_pPrevSegment->Release(); // need to decrement ref count causd by QueryInterface to maintain this as a weak reference
    return S_OK;
 }
 
 STDMETHODIMP CTaperedGirderSegment::get_PrevSegment(ISegment** segment)
 {
    CHECK_RETVAL(segment);
-   *segment = m_pPrevSegment;
-   if ( *segment )
-      (*segment)->AddRef();
-
-   return S_OK;
+   if ( m_pPrevSegment )
+   {
+      return m_pPrevSegment->QueryInterface(segment);
+   }
+   else
+   {
+      *segment = NULL;
+      return E_FAIL;
+   }
 }
 
 STDMETHODIMP CTaperedGirderSegment::putref_NextSegment(ISegment* segment)
 {
    CHECK_IN(segment);
-   m_pNextSegment = segment;
+   ISuperstructureMemberSegment* pMySeg = m_pNextSegment; // weak references so no change in ref count
+   m_pNextSegment = NULL;
+   HRESULT hr = segment->QueryInterface(&m_pNextSegment); // causes ref count to increment
+   if ( FAILED(hr) )
+   {
+      m_pNextSegment = pMySeg;
+      return hr;
+   }
+   m_pNextSegment->Release(); // need to decrement ref count causd by QueryInterface to maintain this as a weak reference
    return S_OK;
 }
 
 STDMETHODIMP CTaperedGirderSegment::get_NextSegment(ISegment** segment)
 {
    CHECK_RETVAL(segment);
-   *segment = m_pNextSegment;
-   if ( *segment )
-      (*segment)->AddRef();
-
-   return S_OK;
+   if ( m_pNextSegment )
+   {
+      return m_pNextSegment->QueryInterface(segment);
+   }
+   else
+   {
+      *segment = NULL;
+      return E_FAIL;
+   }
 }
 
 STDMETHODIMP CTaperedGirderSegment::get_Length(Float64 *pVal)
@@ -175,7 +199,9 @@ STDMETHODIMP CTaperedGirderSegment::get_Section(StageIndexType stageIdx,Float64 
    HRESULT hr = get_PrimaryShape(distAlongSegment,&primaryShape);
    ATLASSERT(SUCCEEDED(hr));
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
 
    CComPtr<ICompositeSectionEx> section;
@@ -189,14 +215,18 @@ STDMETHODIMP CTaperedGirderSegment::get_Section(StageIndexType stageIdx,Float64 
    
    Float64 Ebg = 0;
    if ( m_Shapes[etStart].front().BGMaterial )
+   {
       m_Shapes[etStart].front().BGMaterial->get_E(stageIdx,&Ebg);
+   }
 
    Float64 Dfg = 0;
    m_Shapes[etStart].front().FGMaterial->get_Density(stageIdx,&Dfg);
    
    Float64 Dbg = 0;
    if ( m_Shapes[etStart].front().BGMaterial )
+   {
       m_Shapes[etStart].front().BGMaterial->get_Density(stageIdx,&Dbg);
+   }
 
    section->AddSection(primaryShape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
 
@@ -216,19 +246,27 @@ STDMETHODIMP CTaperedGirderSegment::get_Section(StageIndexType stageIdx,Float64 
 
       Float64 Efg = 0;
       if ( startShapeData.FGMaterial )
+      {
          startShapeData.FGMaterial->get_E(stageIdx,&Efg);
+      }
 
       Float64 Ebg;
       if ( startShapeData.BGMaterial )
+      {
          startShapeData.BGMaterial->get_E(stageIdx,&Ebg);
+      }
 
       Float64 Dfg = 0;
       if ( startShapeData.FGMaterial )
+      {
          startShapeData.FGMaterial->get_Density(stageIdx,&Dfg);
+      }
 
       Float64 Dbg = 0;
       if ( startShapeData.BGMaterial )
+      {
          startShapeData.BGMaterial->get_Density(stageIdx,&Dbg);
+      }
 
       // Assuming that all the secondary shapes are prismatic, but could be at different locations at
       // either end of the segment. Locate the cg of the shape at each end and then use the average location
@@ -472,13 +510,17 @@ STDMETHODIMP CTaperedGirderSegment::get_ForegroundMaterial(IndexType index,IMate
 {
    ATLASSERT(m_Shapes[etStart].size() == m_Shapes[etEnd].size());
    if ( m_Shapes[etStart].size() <= index || index == INVALID_INDEX )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(material);
    (*material) = m_Shapes[etStart][index].FGMaterial;
 
    if ( *material )
+   {
       (*material)->AddRef();
+   }
 
    return S_OK;
 }
@@ -487,13 +529,17 @@ STDMETHODIMP CTaperedGirderSegment::get_BackgroundMaterial(IndexType index,IMate
 {
    ATLASSERT(m_Shapes[etStart].size() == m_Shapes[etEnd].size());
    if ( m_Shapes[etStart].size() <= index || index == INVALID_INDEX )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(material);
    (*material) = m_Shapes[etStart][index].BGMaterial;
 
    if ( *material )
+   {
       (*material)->AddRef();
+   }
 
    return S_OK;
 }

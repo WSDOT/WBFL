@@ -87,7 +87,7 @@ STDMETHODIMP CSuperstructureMember::get_ID(GirderIDType* pID)
    return S_OK;
 }
 
-STDMETHODIMP CSuperstructureMember::AddSegment(ISegment* segment)
+STDMETHODIMP CSuperstructureMember::AddSegment(ISuperstructureMemberSegment* segment)
 {
    m_Segments.push_back(segment);
 
@@ -103,7 +103,7 @@ STDMETHODIMP CSuperstructureMember::AddSegment(ISegment* segment)
    return S_OK;
 }
 
-STDMETHODIMP CSuperstructureMember::get_Segment(SegmentIndexType idx, ISegment **pVal)
+STDMETHODIMP CSuperstructureMember::get_Segment(SegmentIndexType idx, ISuperstructureMemberSegment **pVal)
 {
    if ( idx < 0 || m_Segments.size() <= idx )
       return E_INVALIDARG;
@@ -111,7 +111,7 @@ STDMETHODIMP CSuperstructureMember::get_Segment(SegmentIndexType idx, ISegment *
    return m_Segments[idx].CopyTo(pVal);
 }
 
-STDMETHODIMP CSuperstructureMember::GetDistanceFromStartOfSegment(Float64 Xg,Float64* pXs,SegmentIndexType* pSegIdx,ISegment** ppSeg)
+STDMETHODIMP CSuperstructureMember::GetDistanceFromStartOfSegment(Float64 Xg,Float64* pXs,SegmentIndexType* pSegIdx,ISuperstructureMemberSegment** ppSeg)
 {
    if ( Xg < 0 )
    {
@@ -122,7 +122,7 @@ STDMETHODIMP CSuperstructureMember::GetDistanceFromStartOfSegment(Float64 Xg,Flo
       return S_FALSE;
    }
 
-   CComPtr<ISegment> firstSegment(m_Segments.front());
+   CComPtr<ISuperstructureMemberSegment> firstSegment(m_Segments.front());
    CComPtr<IGirderLine> firstGirderLine;
    firstSegment->get_GirderLine(&firstGirderLine);
    Float64 brgOffset,endDist;
@@ -132,17 +132,13 @@ STDMETHODIMP CSuperstructureMember::GetDistanceFromStartOfSegment(Float64 Xg,Flo
    // it is easier to work in girder path coordinates
    Float64 Xgp = Xg + (brgOffset-endDist);
 
-   std::vector<CComPtr<ISegment>>::iterator segIter(m_Segments.begin());
-   std::vector<CComPtr<ISegment>>::iterator segIterEnd(m_Segments.end());
+   std::vector<CComPtr<ISuperstructureMemberSegment>>::iterator segIter(m_Segments.begin());
+   std::vector<CComPtr<ISuperstructureMemberSegment>>::iterator segIterEnd(m_Segments.end());
 
    Float64 currentDistFromStart = 0;
    for ( ; segIter != segIterEnd; segIter++ )
    {
-      CComPtr<ISegment> segment(*segIter);
-
-      CComPtr<ISegment> prevSegment, nextSegment;
-      segment->get_PrevSegment(&prevSegment);
-      segment->get_NextSegment(&nextSegment);
+      CComPtr<ISuperstructureMemberSegment> segment(*segIter);
 
       Float64 segmentLength;
       segment->get_LayoutLength(&segmentLength);
@@ -177,7 +173,7 @@ STDMETHODIMP CSuperstructureMember::GetDistanceFromStartOfSegment(Float64 Xg,Flo
    // this, however does not mean the point isn't on the girder. if the distance between
    // the Xgp and the end of the girder path coordinate system is less than the end size
    // Xgp is on the end of the last segment.
-   CComPtr<ISegment> lastSegment(m_Segments.back());
+   CComPtr<ISuperstructureMemberSegment> lastSegment(m_Segments.back());
    CComPtr<IGirderLine> lastGirderLine;
    lastSegment->get_GirderLine(&lastGirderLine);
    lastGirderLine->get_BearingOffset(etEnd,&brgOffset);
@@ -216,11 +212,11 @@ STDMETHODIMP CSuperstructureMember::GetDistanceFromStart(SegmentIndexType segIdx
    // sum layout lengths until we get to the start of the segment in question
    Float64 XgpStart = 0;
    ATLASSERT( segIdx < m_Segments.size() );
-   std::vector<CComPtr<ISegment>>::iterator segIter(m_Segments.begin());
-   std::vector<CComPtr<ISegment>>::iterator segIterEnd(segIter + segIdx);
+   std::vector<CComPtr<ISuperstructureMemberSegment>>::iterator segIter(m_Segments.begin());
+   std::vector<CComPtr<ISuperstructureMemberSegment>>::iterator segIterEnd(segIter + segIdx);
    for ( ; segIter != segIterEnd; segIter++ )
    {
-      CComPtr<ISegment> segment(*segIter);
+      CComPtr<ISuperstructureMemberSegment> segment(*segIter);
 
       CComPtr<IGirderLine> girderLine;
       segment->get_GirderLine(&girderLine);
@@ -247,7 +243,7 @@ STDMETHODIMP CSuperstructureMember::GetDistanceFromStart(SegmentIndexType segIdx
    //    |
    //    +-- offset
 
-   CComPtr<ISegment> thisSegment(*(m_Segments.begin()+segIdx));
+   CComPtr<ISuperstructureMemberSegment> thisSegment(*(m_Segments.begin()+segIdx));
    CComPtr<IGirderLine> girderLine;
    thisSegment->get_GirderLine(&girderLine);
    Float64 brgOffset, endDist;
@@ -306,7 +302,7 @@ STDMETHODIMP CSuperstructureMember::GetPlanAngle(Float64 distFromStartOfSSMbr,IA
 {
    Float64 distFromStartOfSegment;
    SegmentIndexType segIdx;
-   CComPtr<ISegment> segment;
+   CComPtr<ISuperstructureMemberSegment> segment;
    HRESULT hr = GetDistanceFromStartOfSegment(distFromStartOfSSMbr,&distFromStartOfSegment,&segIdx,&segment);
 
    SegmentIndexType nSegments;
@@ -315,10 +311,10 @@ STDMETHODIMP CSuperstructureMember::GetPlanAngle(Float64 distFromStartOfSSMbr,IA
    Float64 cummAngle = 0;
    for ( SegmentIndexType sIdx = 1; sIdx <= segIdx; sIdx++ )
    {
-      CComPtr<ISegment> backSegment;
+      CComPtr<ISuperstructureMemberSegment> backSegment;
       get_Segment(sIdx-1,&backSegment);
 
-      CComPtr<ISegment> aheadSegment;
+      CComPtr<ISuperstructureMemberSegment> aheadSegment;
       get_Segment(sIdx,&aheadSegment);
 
       CComPtr<IGirderLine> backGdrLine, aheadGdrLine;

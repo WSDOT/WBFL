@@ -223,6 +223,11 @@ CollectionIndexType mathPwLinearFunction2dUsingPoints::AddPoint(const gpPoint2d&
    return GetNumPoints();
 }
 
+CollectionIndexType mathPwLinearFunction2dUsingPoints::AddPoint(Float64 X,Float64 Y)
+{
+   return AddPoint(gpPoint2d(X,Y));
+}
+
 void mathPwLinearFunction2dUsingPoints::Clear()
 {
    ASSERTVALID;

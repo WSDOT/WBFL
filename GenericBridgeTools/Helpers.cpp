@@ -43,7 +43,7 @@ HRESULT GetGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,Se
    if ( FAILED(hr) )
       return hr;
 
-   CComPtr<ISegment> segment;
+   CComPtr<ISuperstructureMemberSegment> segment;
    ssmbr->get_Segment(segIdx,&segment);
    ATLASSERT(segment);
 
@@ -68,7 +68,7 @@ HRESULT GetGirderHaunchBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,Seg
    if ( FAILED(hr) )
       return hr;
 
-   CComPtr<ISegment> segment;
+   CComPtr<ISuperstructureMemberSegment> segment;
    ssmbr->get_Segment(segIdx,&segment);
 
    Float64 startHaunch, endHaunch;

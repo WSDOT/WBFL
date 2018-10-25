@@ -1266,7 +1266,10 @@
       <comClass clsid="{5AC7585F-2AE5-4B15-9416-7FEA7A53CD03}"
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                 description="PrismaticSegment Class"></comClass>
-      <comClass clsid="{A81D7FA1-41CF-4980-AC98-F0CC555AA181}"
+     <comClass clsid="{391BFF16-7930-4fcc-B35F-B7BBFBF345A4}"
+               tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
+               description="PrismaticSuperstructureMemberSegment Class"></comClass>
+     <comClass clsid="{A81D7FA1-41CF-4980-AC98-F0CC555AA181}"
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                 description="SegmentItem Class"></comClass>
       <comClass clsid="{9217644C-AD9D-4AA2-9A76-29DE6D8CE8B3}"

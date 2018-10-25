@@ -276,8 +276,9 @@ HRESULT DealWithExceptions(T* psource, const IID& iid)
    {
       // could make up a custom message here, but we don't know what happened so why try?
       // the main point is not to let the exception out into the com world
-      ATLASSERT(0);
-      return E_FAIL;
+      ATLASSERT(false);
+      throw;
+      //return E_FAIL;
    }
 }
 

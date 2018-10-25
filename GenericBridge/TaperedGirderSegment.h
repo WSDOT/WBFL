@@ -62,6 +62,7 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 BEGIN_COM_MAP(CTaperedGirderSegment)
 	COM_INTERFACE_ENTRY(ITaperedGirderSegment)
 	COM_INTERFACE_ENTRY(ISegment)
+   COM_INTERFACE_ENTRY(ISuperstructureMemberSegment)
 	COM_INTERFACE_ENTRY(IItemData)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
@@ -71,8 +72,8 @@ END_COM_MAP()
 private:
    IGirderLine* m_pGirderLine; // weak reference to the girder line in the geometry model that provies the geometry for this segment
    ISuperstructureMember* m_pSSMbr; // weak reference to parent superstructure member
-   ISegment* m_pPrevSegment; // weak reference to previous segment
-   ISegment* m_pNextSegment; // weak reference to next segment
+   ISuperstructureMemberSegment* m_pPrevSegment; // weak reference to previous segment
+   ISuperstructureMemberSegment* m_pNextSegment; // weak reference to next segment
 
    Float64 m_Orientation; // orientation of girder... plumb = 0... rotated CW is +... radians
 

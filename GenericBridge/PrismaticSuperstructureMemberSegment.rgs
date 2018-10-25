@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.PrismaticSuperstructureMemberSegment.1 = s 'PrismaticSuperstructureMemberSegment Class'
+	{
+		CLSID = s '{391BFF16-7930-4fcc-B35F-B7BBFBF345A4}'
+	}
+	WBFLGenericBridge.PrismaticSuperstructureMemberSegment = s 'PrismaticSuperstructureMemberSegment Class'
+	{
+		CLSID = s '{391BFF16-7930-4fcc-B35F-B7BBFBF345A4}'
+		CurVer = s 'GenericBridge.PrismaticSuperstructureMemberSegment.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {391BFF16-7930-4fcc-B35F-B7BBFBF345A4} = s 'PrismaticSuperstructureMemberSegment Class'
+		{
+			ProgID = s 'WBFLGenericBridge.PrismaticSuperstructureMemberSegment.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.PrismaticSuperstructureMemberSegment'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}
