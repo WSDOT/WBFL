@@ -159,9 +159,8 @@ HRESULT CVoidedSlab2::UpdateShape()
 {
    if (m_Dirty)
    {
-      // create a new shape
-      m_pShape.Release();
-      CreateCompositeShape(&m_pShape);
+      IndexType nShapes;
+      m_pShape->get_Count(&nShapes);
 
       // Create the main slab rectangle
       CComPtr<IPolyShape> slab;
@@ -198,7 +197,10 @@ HRESULT CVoidedSlab2::UpdateShape()
       slab->AddPoint(-m_W/2 + m_C3,0); 
 
       CComQIPtr<IShape> slabShape(slab);
-      m_pShape->AddShape(slabShape,VARIANT_FALSE);
+      if ( nShapes == 0 )
+         m_pShape->AddShape(slabShape,VARIANT_FALSE);
+      else
+         m_pShape->Replace(0,slabShape);
 
       if ( m_VoidCount == 0 )
       {
@@ -217,7 +219,10 @@ HRESULT CVoidedSlab2::UpdateShape()
          center->Move(0,m_Hext);
 
          CComQIPtr<IShape> voidShape(circle);
-         m_pShape->AddShape(voidShape,VARIANT_TRUE);
+         if ( nShapes == 0 )
+            m_pShape->AddShape(voidShape,VARIANT_TRUE);
+         else
+            m_pShape->Replace(1,voidShape);
       }
       else if ( m_VoidCount == 2 )
       {
@@ -233,7 +238,10 @@ HRESULT CVoidedSlab2::UpdateShape()
          center->Move(-x,m_Hext);
 
          CComQIPtr<IShape> voidShape(circle);
-         m_pShape->AddShape(voidShape,VARIANT_TRUE);
+         if ( nShapes == 0 )
+            m_pShape->AddShape(voidShape,VARIANT_TRUE);
+         else
+            m_pShape->Replace(1,voidShape);
 
          // right exterior void
          circle.Release();
@@ -244,7 +252,10 @@ HRESULT CVoidedSlab2::UpdateShape()
          circle->get_Center(&center);
          center->Move(x,m_Hext);
          circle->QueryInterface(&voidShape);
-         m_pShape->AddShape(voidShape,VARIANT_TRUE);
+         if ( nShapes == 0 )
+            m_pShape->AddShape(voidShape,VARIANT_TRUE);
+         else
+            m_pShape->Replace(2,voidShape);
       }
       else
       {
@@ -267,7 +278,10 @@ HRESULT CVoidedSlab2::UpdateShape()
          center->Move(-x,m_Hext);
 
          CComQIPtr<IShape> voidShape(circle);
-         m_pShape->AddShape(voidShape,VARIANT_TRUE);
+         if ( nShapes == 0 )
+            m_pShape->AddShape(voidShape,VARIANT_TRUE);
+         else
+            m_pShape->Replace(1,voidShape);
 
          // right exterior void
          circle.Release();
@@ -278,7 +292,10 @@ HRESULT CVoidedSlab2::UpdateShape()
          circle->get_Center(&center);
          center->Move(x,m_Hext);
          circle->QueryInterface(&voidShape);
-         m_pShape->AddShape(voidShape,VARIANT_TRUE);
+         if ( nShapes == 0 )
+            m_pShape->AddShape(voidShape,VARIANT_TRUE);
+         else
+            m_pShape->Replace(nIntVoids+2,voidShape);
 
          // interior voids
          x = -m_Sint*(nIntVoids-1)/2;
@@ -294,7 +311,10 @@ HRESULT CVoidedSlab2::UpdateShape()
             center->Move(x,m_Hint);
 
             CComQIPtr<IShape> voidShape(intVoid);
-            m_pShape->AddShape(voidShape,VARIANT_TRUE);
+            if ( nShapes == 0 )
+               m_pShape->AddShape(voidShape,VARIANT_TRUE);
+            else
+               m_pShape->Replace(voidIdx+2,voidShape);
 
             x += m_Sint;
          }

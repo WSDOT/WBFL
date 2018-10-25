@@ -127,6 +127,7 @@ typedef IDType  LoadCombinationIDType;
 typedef IDType  GirderIDType;
 typedef IDType  GroupIDType;
 typedef IDType  SegmentIDType;
+typedef IDType  ClosureIDType;
 typedef IDType  StageIDType;
 typedef IDType  EventIDType;
 

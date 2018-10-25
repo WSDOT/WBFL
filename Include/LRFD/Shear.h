@@ -74,11 +74,14 @@ struct LRFDCLASS lrfdShearData
    Float64 bv;
    Float64 Es;
    Float64 As;
-   Float64 Ep;
+   Float64 Eps;
    Float64 Aps;
+   Float64 Ept;
+   Float64 Apt;
    Float64 Ec;
    Float64 Ac;
-   Float64 fpo;
+   Float64 fpops;
+   Float64 fpopt;
    Float64 fc;
    matConcrete::Type ConcreteType;
    bool bHasfct;

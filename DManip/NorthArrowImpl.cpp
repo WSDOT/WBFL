@@ -68,6 +68,11 @@ HRESULT CNorthArrowImpl::FinalConstruct()
    return S_OK;
 }
 
+void CNorthArrowImpl::FinalRelease()
+{
+   CDisplayObjectDefaultImpl::Do_FinalRelease();
+}
+
 // iDisplayObject Implementation
 // This are the methods not delegated to the implementation object
 STDMETHODIMP_(void) CNorthArrowImpl::Draw(CDC* pDC)

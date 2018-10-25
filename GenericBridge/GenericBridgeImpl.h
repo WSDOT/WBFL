@@ -37,7 +37,7 @@ class CPierCollection;
 // CGenericBridge
 class ATL_NO_VTABLE CGenericBridge :
 	public CComObjectRootEx<CComSingleThreadModel>,
-//   public CComRefCountTracer<CGenericBridge,CComObjectRootEx<CComSingleThreadModel> >,
+   //public CComRefCountTracer<CGenericBridge,CComObjectRootEx<CComSingleThreadModel> >,
 	public CComCoClass<CGenericBridge, &CLSID_GenericBridge>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CGenericBridge,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,

@@ -522,6 +522,7 @@ library WBFLRCCapacity
 		[propput,helpcontext(IDH_IRoundColumn_Es),helpstring("property Es")] HRESULT Es([in]Float64 es);
 		[propget,helpcontext(IDH_IRoundColumn_Es),helpstring("property Es")] HRESULT Es([out,retval]Float64* es);
 		[helpcontext(IDH_IRoundColumn_ComputerInteractionSurface),helpstring("method ComputeInteractionSurface")] HRESULT ComputeInteraction([in]long nSteps,[out,retval]IPoint2dCollection* *points);
+		[helpcontext(IDH_IRoundColumn_ComputerInteractionSurface),helpstring("method ComputeInteractionSurfaceEx")] HRESULT ComputeInteractionEx([in]long nSteps,[in]Float64 ecl,[in]Float64 etl,[out]IPoint2dCollection** ppUnfactored,[out]IPoint2dCollection** ppFactored);
 	};
 
 	[

@@ -133,7 +133,8 @@ END_COM_MAP()
    STDMETHOD_(void,GetEventSink)(iDisplayObjectEvents** pEventSink);
 
    // Drag Drop
-   STDMETHOD_(void,SetDropSite)(iDropSite* pDropSite);
+   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite);
+   STDMETHOD_(void,UnregisterDropSite)();
    STDMETHOD_(void,GetDropSite)(iDropSite** dropSite);
 
    // iTextBlock overrides
@@ -198,7 +199,7 @@ private:
    CComPtr<iTextBlock> m_TextBlock;
    CInplaceEdit* m_pEdit;
    BOOL m_bAutoUpdate;
-   CComPtr<iDisplayObjectEvents> m_EventSink;
+   iDisplayObjectEvents* m_pEventSink; // weak reference
    CString m_strCtrlText; // Text that was in the edit control immedately before it was destroyed
    CFont* m_pFont; // Pointer to the font used by the edit control. NULL when m_pEdit's window handle is invalid
    EditableTextBlockFormatType m_Format;

@@ -43,6 +43,9 @@ class ATL_NO_VTABLE CPolyLineDisplayObjectImpl :
 public:
    CPolyLineDisplayObjectImpl();
 
+   HRESULT FinalConstruct();
+   void FinalRelease();
+
 DECLARE_REGISTRY_RESOURCEID(IDR_POLYLINEDISPLAYOBJECT)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
@@ -125,7 +128,8 @@ END_CONNECTION_POINT_MAP()
    { m_pDisplayObject->GetEventSink(pEventSink); }
 
    // Drag Drop
-   STDMETHOD_(void,SetDropSite)(iDropSite* pDropSite) { m_pDisplayObject->SetDropSite(pDropSite); }
+   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite) { m_pDisplayObject->RegisterDropSite(pDropSite); }
+   STDMETHOD_(void,UnregisterDropSite)() { m_pDisplayObject->UnregisterDropSite(); }
    STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) { m_pDisplayObject->GetDropSite(dropSite); }
 
 // IPolyLineDisplayObject
@@ -143,9 +147,6 @@ public:
    STDMETHOD_(void,get_Width)(long* width);
    STDMETHOD_(void,put_PointType)(PolyLinePointType ptType);
    STDMETHOD_(void,get_PointType)(PolyLinePointType* ptType);
-
-   HRESULT FinalConstruct();
-   void FinalRelease();
 
    CComPtr<iCompositeDisplayObject> m_pDisplayObject;
 
@@ -166,7 +167,7 @@ private:
    HRESULT RebuildDisplayObjects();
    void AddMyDisplayObject(iDisplayObject* pdo);
    void ClearDisplayObjects();
-   void BuildLine(iCompositeDisplayObject* pCdo, IPoint2d* fromPoint,IPoint2d* toPoint);
+   void BuildLine(IPoint2d* fromPoint,IPoint2d* toPoint);
 };
 
 #endif //__PolyLineDISPLAYOBJECT_H_

@@ -149,7 +149,7 @@ BOOL CEAFPluginCommandManager::GetMappedCommandID(UINT nPluginCmdID,IEAFCommandC
    {
       CCallbackItem callbackItem = (*iter).second;
 
-      CComQIPtr<IUnknown, &IID_IUnknown> pUnk2(callbackItem.pCallback.m_T);
+      CComQIPtr<IUnknown, &IID_IUnknown> pUnk2(callbackItem.pCallback);
       if ( pUnk1 == pUnk2 && nPluginCmdID == callbackItem.nPluginCmdID )
       {
          *pMappedCmdID = (*iter).first;
@@ -168,7 +168,7 @@ BOOL CEAFPluginCommandManager::GetCommandCallback(UINT nMappedID,UINT* pPluginCm
    {
       CCallbackItem callbackItem = (*found).second;
       *pPluginCmdID = callbackItem.nPluginCmdID;
-      (*ppCallback) = callbackItem.pCallback.m_T;
+      (*ppCallback) = callbackItem.pCallback;
       if (*ppCallback)
          (*ppCallback)->AddRef();
 
@@ -200,7 +200,7 @@ std::vector<UINT> CEAFPluginCommandManager::GetMappedCommandIDs(IEAFCommandCallb
    {
       CCallbackItem callbackItem = (*iter).second;
 
-      CComQIPtr<IUnknown, &IID_IUnknown> pUnk2(callbackItem.pCallback.m_T);
+      CComQIPtr<IUnknown, &IID_IUnknown> pUnk2(callbackItem.pCallback);
 
       if ( pUnk1 == pUnk2 )
       {

@@ -263,7 +263,7 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
          endWidth += endWidth;
       }
 
-      maxWidth = ::Max3(maxWidth,startWidth,endWidth);
+      maxWidth = ::Max(maxWidth,startWidth,endWidth);
 
       // create the layout lines
       geometry->CreateLayoutLines(layoutLineFactory);

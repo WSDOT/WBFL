@@ -120,6 +120,7 @@ HRESULT CLegendDisplayObject::FinalConstruct()
 
 void::CLegendDisplayObject::FinalRelease()
 {
+   CDisplayObjectDefaultImpl::Do_FinalRelease();
 }
 
 STDMETHODIMP_(CString) CLegendDisplayObject::GetToolTipText()

@@ -44,6 +44,7 @@ HRESULT CBridgeDeckRebarPattern::FinalConstruct()
 
 void CBridgeDeckRebarPattern::FinalRelease()
 {
+   m_RebarLayoutItem.Detach();
 }
 
 STDMETHODIMP CBridgeDeckRebarPattern::InterfaceSupportsErrorInfo(REFIID riid)
@@ -79,7 +80,8 @@ STDMETHODIMP CBridgeDeckRebarPattern::get_Rebar(IRebar** rebar)
 STDMETHODIMP CBridgeDeckRebarPattern::putref_RebarLayoutItem(IBridgeDeckRebarLayoutItem* rebarLayoutItem)
 {
    CHECK_IN(rebarLayoutItem);
-   m_RebarLayoutItem = rebarLayoutItem;
+   m_RebarLayoutItem.Detach();
+   m_RebarLayoutItem.Attach(rebarLayoutItem);
    return S_OK;
 }
 

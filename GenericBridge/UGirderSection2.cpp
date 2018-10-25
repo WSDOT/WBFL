@@ -83,7 +83,7 @@ void CUGirderSection2::GetSplittingZone(Float64* pH,SplittingDirection* pSD)
    m_Beam->get_W1(&w1);
    m_Beam->get_W2(&w2);
 
-   long idx = Min3Index(h,w1,w2);
+   long idx = MinIndex(h,w1,w2);
    if ( idx == 0 )
    {
       *pH = h;

@@ -51,6 +51,7 @@
 #include <Lrfd\ApproximateLosses.h>
 #include <Lrfd\ApproximateLosses2005.h>
 #include <Lrfd\NoncompositeApproximateLosses2005.h>
+#include <Lrfd\RefinedLossesTxDOT2013.h> 
 #include <Lrfd\ElasticShortening.h>
 #include <Lrfd\PsStrand.h>
 #include <Lrfd\RebarPool.h>

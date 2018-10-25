@@ -76,6 +76,7 @@ HRESULT CHorzCurveDisplayObjectImpl::FinalConstruct()
 
 void::CHorzCurveDisplayObjectImpl::FinalRelease()
 {
+   CDisplayObjectDefaultImpl::Do_FinalRelease();
 }
 
 STDMETHODIMP_(CString) CHorzCurveDisplayObjectImpl::GetToolTipText()
@@ -491,17 +492,17 @@ STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::GetBoundingBox(IRect2d** rect)
 
    if (m_DrawMode == hcFull )
    {
-      left   = Min4(ts_x,pi_x,st_x,cc_x);
-      right  = Max4(ts_x,pi_x,st_x,cc_x);
-      top    = Max4(ts_y,pi_y,st_y,cc_y);
-      bottom = Min4(ts_y,pi_y,st_y,cc_y);
+      left   = Min(ts_x,pi_x,st_x,cc_x);
+      right  = Max(ts_x,pi_x,st_x,cc_x);
+      top    = Max(ts_y,pi_y,st_y,cc_y);
+      bottom = Min(ts_y,pi_y,st_y,cc_y);
    }
    else
    {
-      left   = Min3(ts_x,pi_x,st_x);
-      right  = Max3(ts_x,pi_x,st_x);
-      top    = Max3(ts_y,pi_y,st_y);
-      bottom = Min3(ts_y,pi_y,st_y);
+      left   = Min(ts_x,pi_x,st_x);
+      right  = Max(ts_x,pi_x,st_x);
+      top    = Max(ts_y,pi_y,st_y);
+      bottom = Min(ts_y,pi_y,st_y);
    }
 
    CComPtr<IRect2d> bounding_box;

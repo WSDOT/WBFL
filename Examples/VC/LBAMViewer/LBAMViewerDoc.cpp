@@ -113,6 +113,7 @@ void CLBAMViewerDoc::CreateDocument()
    // initialize the engine with default values (NULL), except for the vehicular response enveloper
    m_pLBAMAnalysisEngine->InitializeEx(m_pModel,atForce,
                                        NULL, // load group response
+                                       NULL, // unit load response
                                        NULL, // influence line response
                                        NULL, // analysis pois
                                        NULL, // basic vehicular response

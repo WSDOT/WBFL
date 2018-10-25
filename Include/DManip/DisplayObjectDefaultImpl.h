@@ -47,6 +47,9 @@ public:
 	CDisplayObjectDefaultImpl();
 	virtual ~CDisplayObjectDefaultImpl();
 
+   virtual HRESULT Do_FinalConstruct();
+   virtual void Do_FinalRelease();
+
    void SetDisplayObject(iDisplayObject* pParent);
 
    // iDisplayObject implementation
@@ -105,7 +108,8 @@ public:
    virtual void Do_GetEventSink(iDisplayObjectEvents** pEventSink);
 
    // Drag Drop
-   virtual void Do_SetDropSite(iDropSite* pDropSite);
+   virtual void Do_RegisterDropSite(iDropSite* pDropSite);
+   virtual void Do_UnregisterDropSite();
    virtual void Do_GetDropSite(iDropSite** dropSite);
 
    // Notifies all sinks of display object events

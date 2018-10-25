@@ -411,7 +411,7 @@ void sysStructuredLoadXmlPrs_Impl::EndLoad()
    for ( ; iter != end; iter++ )
    {
       const ListItem& item = *iter;
-      WATCH("Open Unit: " << item.Name);
+      //WATCH("Open Unit: " << item.Name);
    }
 #endif
    dbgDiagBase::EnableWarnPopup(true);
@@ -490,7 +490,7 @@ bool sysStructuredLoadXmlPrs_Impl::BeginUnit(LPCTSTR name)
       THROW_LOAD(InvalidFileFormat,this);
    }
 
-   WATCH("BeginUnit: " << m_UnitList.back().Name);
+   //WATCH("BeginUnit: " << m_UnitList.back().Name);
 
    return retval;
 }
@@ -505,7 +505,7 @@ bool sysStructuredLoadXmlPrs_Impl::EndUnit()
       if (m_Level<=0)
          THROW_LOAD(InvalidFileFormat,this);
 
-      WATCH("EndUnit: " << m_UnitList.back().Name);
+      //WATCH("EndUnit: " << m_UnitList.back().Name);
 
       // climb back up the tree
       m_UnitList.pop_back();
@@ -874,7 +874,7 @@ HRESULT CheckLoad(MSXML::IXMLDOMDocument* pDoc)
        }
        else
        {
-           WATCH("XML document loaded successfully");
+           //WATCH("XML document loaded successfully");
        }
    }
    catch (sysXStructuredLoad& e)

@@ -167,18 +167,54 @@ inline T ForceIntoRange(const T& l,const T& v,const T& h)
    return v <= l ? l : v >= h ? h : v;
 }
 
-// Returns the maximum of 3 values
+// Returns the maximum value
 template <class T>
-inline T Max3(const T& a,const T& b, const T& c)
+inline T Max(const T& a,const T& b)
 {
-   return _cpp_max(_cpp_max(a,b),c);
+   return _cpp_max(a,b);
 }
 
-// Returns the index of the maximum of 3 values
+// Returns the index of the maximum values
 template <class T>
-inline long Max3Index(const T& a,const T& b, const T& c)
+inline long MaxIndex(const T& a,const T& b)
 {
-   T value = Max3(a,b,c);
+   T value = Max(a,b);
+   if ( IsEqual(a,value) )
+      return 0;
+
+   return 1;
+}
+
+// Returns the minimum value
+template <class T>
+inline T Min(const T& a,const T& b)
+{
+   return _cpp_min(a,b);
+}
+
+// Returns the index of the minimum values
+template <class T>
+inline long MinIndex(const T& a,const T& b)
+{
+   T value = Min(a,b);
+   if ( IsEqual(a,value) )
+      return 0;
+
+   return 1;
+}
+
+// Returns the maximum value
+template <class T>
+inline T Max(const T& a,const T& b, const T& c)
+{
+   return Max(Max(a,b),c);
+}
+
+// Returns the index of the maximum value
+template <class T>
+inline long MaxIndex(const T& a,const T& b, const T& c)
+{
+   T value = Max(a,b,c);
    if ( IsEqual(a,value) )
       return 0;
 
@@ -188,18 +224,18 @@ inline long Max3Index(const T& a,const T& b, const T& c)
    return 2;
 }
 
-// Returns the minimum of 3 values
+// Returns the minimum value
 template <class T>
-inline T Min3(const T& a,const T& b, const T& c)
+inline T Min(const T& a,const T& b, const T& c)
 {
-   return _cpp_min(_cpp_min(a,b),c);
+   return Min(Min(a,b),c);
 }
 
-// Returns the index of the minimum of 3 values
+// Returns the index of the minimum value
 template <class T>
-inline long Min3Index(const T& a,const T& b, const T& c)
+inline long MinIndex(const T& a,const T& b, const T& c)
 {
-   T value = Min3(a,b,c);
+   T value = Min(a,b,c);
    if ( IsEqual(a,value) )
       return 0;
 
@@ -209,18 +245,18 @@ inline long Min3Index(const T& a,const T& b, const T& c)
    return 2;
 }
 
-// Returns the maximum of 4 values
+// Returns the maximum value
 template <class T>
-inline T Max4(const T& a,const T& b, const T& c, const T& d)
+inline T Max(const T& a,const T& b, const T& c, const T& d)
 {
-   return _cpp_max(_cpp_max(a,b),_cpp_max(c,d));
+   return Max(Max(a,b),Max(c,d));
 }
 
-// Returns the index of the maximum of 4 values
+// Returns the index of the maximum value
 template <class T>
-inline long Max4Index(const T& a,const T& b, const T& c, const T& d)
+inline long MaxIndex(const T& a,const T& b, const T& c, const T& d)
 {
-   T value = Max4(a,b,c,d);
+   T value = Max(a,b,c,d);
    if ( IsEqual(a,value) )
       return 0;
 
@@ -233,18 +269,18 @@ inline long Max4Index(const T& a,const T& b, const T& c, const T& d)
    return 3;
 }
 
-// Returns the minimum of 4 values
+// Returns the minimum value
 template <class T>
-inline T Min4(const T& a,const T& b, const T& c, const T& d)
+inline T Min(const T& a,const T& b, const T& c, const T& d)
 {
-   return _cpp_min(_cpp_min(a,b),_cpp_min(c,d));
+   return Min(Min(a,b),Min(c,d));
 }
 
-// Returns the index of the minimum of 4 values
+// Returns the index of the minimum value
 template <class T>
-inline long Min4Index(const T& a,const T& b, const T& c, const T& d)
+inline long MinIndex(const T& a,const T& b, const T& c, const T& d)
 {
-   T value = Min4(a,b,c,d);
+   T value = Min(a,b,c,d);
    if ( IsEqual(a,value) )
       return 0;
 
@@ -257,13 +293,36 @@ inline long Min4Index(const T& a,const T& b, const T& c, const T& d)
    return 3;
 }
 
+// Difference between an approximate value and an exact value
+template <class T>
+inline T PercentError(const T& approx,const T& exact)
+{
+   if (exact == 0)
+      return 0;
+
+   return (fabs(approx-exact)/exact)*(T)100;
+}
+
+// Compares an "old" value to a "new" value
 template <class T>
 inline T PercentChange(const T& a,const T& b)
 {
    if ( a == 0 )
       return 0;
 
-   return ((b-a)/a)*100;
+   return ((b-a)/a)*(T)100;
+}
+
+// The difference between town values divided by the average of the two
+// values, as a percentage. Use when both values mean the same kind of thing
+// and neither value is more signifant that the other.
+template <class T>
+inline T PercentDifference(const T& a,const T& b)
+{
+   if ( IsZero(a+b) )
+      return 0;
+
+   return ((fabs(a-b)/((a+b)/2)))*(T)100;
 }
 
 #undef  M_PI

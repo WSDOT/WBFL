@@ -51,7 +51,7 @@ CDisplayObjectDefaultImpl::CDisplayObjectDefaultImpl()
    m_ID = -1;
    m_bIsVisible = TRUE;
 
-   m_pDropSite = 0;
+   m_pDropSite  = NULL;
 
    m_SelectionType = stNone;
 
@@ -68,6 +68,17 @@ CDisplayObjectDefaultImpl::~CDisplayObjectDefaultImpl()
       delete m_pItemData;
       m_pItemData = NULL;
    }
+}
+
+HRESULT CDisplayObjectDefaultImpl::Do_FinalConstruct()
+{
+   return S_OK;
+}
+
+void CDisplayObjectDefaultImpl::Do_FinalRelease()
+{
+   Do_UnregisterEventSink();
+   Do_UnregisterDropSite();
 }
 
 void CDisplayObjectDefaultImpl::SetDisplayObject(iDisplayObject* pParent)
@@ -528,27 +539,38 @@ INT CDisplayObjectDefaultImpl::Do_GetTipDisplayTime()
 
 void CDisplayObjectDefaultImpl::Do_RegisterEventSink(iDisplayObjectEvents* pEventSink)
 {
+   Do_UnregisterEventSink();
+
    m_EventSink = pEventSink;
 }
 
 void CDisplayObjectDefaultImpl::Do_UnregisterEventSink()
 {
-   m_EventSink = 0;
+   m_EventSink = NULL;
 }
 
 void CDisplayObjectDefaultImpl::Do_GetEventSink(iDisplayObjectEvents** pEventSink)
 {
-   if ( pEventSink == NULL )
-      return;
-
    (*pEventSink) = m_EventSink;
-   (*pEventSink)->AddRef();
+   if (m_EventSink)
+   {
+      (*pEventSink)->AddRef();
+   }
 }
 
-void CDisplayObjectDefaultImpl::Do_SetDropSite(iDropSite* pDropSite)
+void CDisplayObjectDefaultImpl::Do_RegisterDropSite(iDropSite* pDropSite)
 {
    m_pDropSite = pDropSite;
    m_pDropSite->SetDisplayObject(m_pParent);
+}
+
+void CDisplayObjectDefaultImpl::Do_UnregisterDropSite()
+{
+   if ( m_pDropSite )
+   {
+      m_pDropSite->SetDisplayObject(NULL);
+      m_pDropSite = NULL;
+   }
 }
 
 void CDisplayObjectDefaultImpl::Do_GetDropSite(iDropSite** dropSite)

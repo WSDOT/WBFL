@@ -453,11 +453,14 @@ void compute_theta_and_beta1(lrfdShearData* pData)
    Float64 bv  = pData->bv;
    Float64 Es  = pData->Es;
    Float64 As  = pData->As;
-   Float64 Ep  = pData->Ep;
+   Float64 Eps = pData->Eps;
    Float64 Aps = pData->Aps;
+   Float64 Ept = pData->Ept;
+   Float64 Apt = pData->Apt;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
-   Float64 fpo = pData->fpo;
+   Float64 fpops = pData->fpops;
+   Float64 fpopt = pData->fpopt;
    Float64 fc  = pData->fc;
 
    pData->Eqn = 0; // Not applicable
@@ -551,11 +554,14 @@ void compute_theta_and_beta2(lrfdShearData* pData)
    Float64 bv  = pData->bv;
    Float64 Es  = pData->Es;
    Float64 As  = pData->As;
-   Float64 Ep  = pData->Ep;
+   Float64 Eps = pData->Eps;
    Float64 Aps = pData->Aps;
+   Float64 Ept = pData->Ept;
+   Float64 Apt = pData->Apt;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
-   Float64 fpo = pData->fpo;
+   Float64 fpops = pData->fpops;
+   Float64 fpopt = pData->fpopt;
    Float64 fc  = pData->fc;
 
    pData->Eqn = 0; // Not applicable
@@ -654,7 +660,7 @@ void compute_theta_and_beta2(lrfdShearData* pData)
    // Back out Fe... If ex > 0, use a code value of -1
    if ( ex < 0 )
    {
-      pData->Fe = (pData->Es*pData->As + pData->Ep*pData->Aps)/(pData->Ec*pData->Ac + pData->Es*pData->As + pData->Ep*pData->Aps);
+      pData->Fe = (pData->Es*pData->As + pData->Eps*pData->Aps + pData->Ept*pData->Apt)/(pData->Ec*pData->Ac + pData->Es*pData->As + pData->Eps*pData->Aps + pData->Ept*pData->Apt);
    }
    else
    {
@@ -711,11 +717,14 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
    Float64 bv  = pData->bv;
    Float64 Es  = pData->Es;
    Float64 As  = pData->As;
-   Float64 Ep  = pData->Ep;
+   Float64 Eps = pData->Eps;
    Float64 Aps = pData->Aps;
+   Float64 Ept = pData->Ept;
+   Float64 Apt = pData->Apt;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
-   Float64 fpo = pData->fpo;
+   Float64 fpops = pData->fpops;
+   Float64 fpopt = pData->fpopt;
    Float64 fc  = pData->fc;
    Float64 fy  = pData->fy;
    Float64 Avs = pData->AvS;
@@ -766,16 +775,16 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
       if ( eqn == 1 )
       {
          // Eqn 5.8.3.4.2-1
-         if ( IsZero(Es*As + Ep*Aps) )
+         if ( IsZero(Es*As + Eps*Aps + Ept*Apt) )
          {
             ex_calc = 0.0;
          }
          else
          {
             if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
-               ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpo)/(2*(Es*As + Ep*Aps));
+               ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/(2*(Es*As + Eps*Aps + Ept*Apt));
             else
-               ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpo)/(2*(Es*As + Ep*Aps));
+               ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/(2*(Es*As + Eps*Aps + Ept*Apt));
          }
 
          if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SecondEditionWith2003Interims )
@@ -788,16 +797,16 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
       else
       {
          // Eqn 5.8.3.4.2-2
-         if ( IsZero(Es*As + Ep*Aps) )
+         if ( IsZero(Es*As + Eps*Aps + Ept*Apt) )
          {
             ex_calc = 0.0;
          }
          else
          {
             if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
-               ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpo)/((Es*As + Ep*Aps));
+               ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpopt - Aps*fpopt)/((Es*As + Eps*Aps + Ept*Apt));
             else
-               ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpo)/((Es*As + Ep*Aps));
+               ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/((Es*As + Eps*Aps + Ept*Apt));
          }
 
          ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
@@ -810,9 +819,9 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
          pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
 
          if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
-            ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpo)/(2*(Ec*Ac + Es*As + Ep*Aps));
+            ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/(2*(Ec*Ac + Es*As + Eps*Aps + Ept*Apt));
          else
-            ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpo)/(2*(Ec*Ac + Es*As + Ep*Aps));
+            ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/(2*(Ec*Ac + Es*As + Eps*Aps + Ept*Apt));
       }
 
       Float64 ex_table = get_ex(col);
@@ -872,11 +881,14 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
    Float64 bv  = pData->bv;
    Float64 Es  = pData->Es;
    Float64 As  = pData->As;
-   Float64 Ep  = pData->Ep;
+   Float64 Eps = pData->Eps;
    Float64 Aps = pData->Aps;
+   Float64 Ept = pData->Ept;
+   Float64 Apt = pData->Apt;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
-   Float64 fpo = pData->fpo;
+   Float64 fpops = pData->fpops;
+   Float64 fpopt = pData->fpopt;
    Float64 fc  = pData->fc;
    Float64 fy  = pData->fy;
    Float64 Avs = pData->AvS;
@@ -922,16 +934,16 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
       if ( eqn == 1 )
       {
          // Eqn 5.8.3.4.2-1
-         if ( IsZero(Es*As + Ep*Aps) )
+         if ( IsZero(Es*As + Eps*Aps + Ept*Apt) )
          {
             ex_calc = 0.0;
          }
          else
          {
             if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
-               ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpo)/(2*(Es*As + Ep*Aps));
+               ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/(2*(Es*As + Eps*Aps + Ept*Apt));
             else
-               ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpo)/(2*(Es*As + Ep*Aps));
+               ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/(2*(Es*As + Eps*Aps + Ept*Apt));
          }
 
          if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SecondEditionWith2003Interims )
@@ -944,16 +956,16 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
       else
       {
          // Eqn 5.8.3.4.2-2
-         if ( IsZero(Es*As + Ep*Aps) )
+         if ( IsZero(Es*As + Eps*Aps + Ept*Apt) )
          {
             ex_calc = 0.0;
          }
          else
          {
             if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
-               ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpo)/((Es*As + Ep*Aps));
+               ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/((Es*As + Eps*Aps + Ept*Apt));
             else
-               ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpo)/((Es*As + Ep*Aps));
+               ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/((Es*As + Eps*Aps + Ept*Apt));
          }
 
          ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
@@ -966,9 +978,9 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
          pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
 
          if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
-            ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpo)/(2*(Ec*Ac + Es*As + Ep*Aps));
+            ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/(2*(Ec*Ac + Es*As + Eps*Aps + Ept*Apt));
          else
-            ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpo)/(2*(Ec*Ac + Es*As + Ep*Aps));
+            ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/(2*(Ec*Ac + Es*As + Eps*Aps + Ept*Apt));
       }
 
       Float64 ex_table = get_ex_mtr(col);
@@ -1031,11 +1043,14 @@ void compute_theta_and_beta4(lrfdShearData* pData)
    Float64 bv  = pData->bv;
    Float64 Es  = pData->Es;
    Float64 As  = pData->As;
-   Float64 Ep  = pData->Ep;
+   Float64 Eps = pData->Eps;
    Float64 Aps = pData->Aps;
+   Float64 Ept = pData->Ept;
+   Float64 Apt = pData->Apt;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
-   Float64 fpo = pData->fpo;
+   Float64 fpops = pData->fpops;
+   Float64 fpopt = pData->fpopt;
    Float64 fc  = pData->fc;
    Float64 fy  = pData->fy;
    Float64 Avs = pData->AvS;
@@ -1089,10 +1104,10 @@ void compute_theta_and_beta4(lrfdShearData* pData)
    Float64 ex_calc;
    if ( eqn == 1 )
    {
-      if ( IsZero(Es*As + Ep*Aps) )
+      if ( IsZero(Es*As + Eps*Aps + Ept*Apt) )
          ex_calc = 0.0;
       else
-         ex_calc = (Mu/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpo)/(2*(Es*As + Ep*Aps));
+         ex_calc = (Mu/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpops - Apt*fpopt)/(2*(Es*As + Eps*Aps + Ept*Apt));
 
       if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SecondEditionWith2003Interims )
          ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
@@ -1104,10 +1119,10 @@ void compute_theta_and_beta4(lrfdShearData* pData)
    else
    {
       // Eqn 5.8.3.4.2-2
-      if ( IsZero(Es*As + Ep*Aps) )
+      if ( IsZero(Es*As + Eps*Aps + Ept*Apt) )
          ex_calc = 0.0;
       else
-         ex_calc = (Mu/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpo)/((Es*As + Ep*Aps));
+         ex_calc = (Mu/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpops - Apt*fpopt)/((Es*As + Eps*Aps + Ept*Apt));
 
       ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
       pData->Eqn = 2;
@@ -1118,8 +1133,8 @@ void compute_theta_and_beta4(lrfdShearData* pData)
       // Eqn 5.8.3.4.2-3
       pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
 
-      ATLASSERT( !IsZero(Es*As + Ep*Aps) ); // should be able to get here if zero
-      ex_calc = (Mu/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpo)/(2*(Ec*Ac + Es*As + Ep*Aps));
+      ATLASSERT( !IsZero(Es*As + Eps*Aps + Ept*Apt) ); // should be able to get here if zero
+      ex_calc = (Mu/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpops - Apt*fpopt)/(2*(Ec*Ac + Es*As + Eps*Aps + Ept*Apt));
    }
 
    // Find the column in the beta/theta table (table 5.8.3.4.2-1) with a strain that is
@@ -1161,11 +1176,14 @@ void compute_theta_and_beta5(lrfdShearData* pData)
    Float64 bv  = pData->bv;
    Float64 Es  = pData->Es;
    Float64 As  = pData->As;
-   Float64 Ep  = pData->Ep;
+   Float64 Eps = pData->Eps;
    Float64 Aps = pData->Aps;
+   Float64 Ept = pData->Ept;
+   Float64 Apt = pData->Apt;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
-   Float64 fpo = pData->fpo;
+   Float64 fpops = pData->fpops;
+   Float64 fpopt = pData->fpopt;
    Float64 fc  = pData->fc;
    Float64 fy  = pData->fy;
    Float64 Avs = pData->AvS;
@@ -1176,14 +1194,14 @@ void compute_theta_and_beta5(lrfdShearData* pData)
 
    // Compute strain 
    Float64 ex_calc;
-   if ( IsZero(Es*As + Ep*Aps) )
+   if ( IsZero(Es*As + Eps*Aps + Ept*Apt) )
       ex_calc = 0.0;
    else
-      ex_calc = (fabs(Mu)/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpo)/(Es*As + Ep*Aps);
+      ex_calc = (fabs(Mu)/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpops - Apt*fpopt)/(Es*As + Eps*Aps + Ept*Apt);
 
    if ( ex_calc < 0 )
    {
-      ex_calc = (fabs(Mu)/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpo)/(Es*As + Ep*Aps + Ec*Ac);
+      ex_calc = (fabs(Mu)/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpops - Apt*fpopt)/(Es*As + Eps*Aps + Ept*Apt + Ec*Ac);
    }
 
    ex_calc = ForceIntoRange(-0.4e-3,ex_calc,6e-3);
@@ -1240,37 +1258,40 @@ Float64 compute_strain(lrfdShearData* pData,Float64 theta)
    Float64 bv  = pData->bv;
    Float64 Es  = pData->Es;
    Float64 As  = pData->As;
-   Float64 Ep  = pData->Ep;
+   Float64 Eps = pData->Eps;
    Float64 Aps = pData->Aps;
+   Float64 Ept = pData->Ept;
+   Float64 Apt = pData->Apt;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
-   Float64 fpo = pData->fpo;
+   Float64 fpops = pData->fpops;
+   Float64 fpopt = pData->fpopt;
    Float64 fc  = pData->fc;
 
    Float64 ex;
 
    theta = ::Convert(theta, unitMeasure::Degree, unitMeasure::Radian);
-   if ( IsZero(Es*As + Ep*Aps) )
+   if ( IsZero(Es*As + Eps*Aps + Ept*Apt) )
    {
       ex = 0;
    }
    else
    {
-      ex = Mu/dv + 0.5*Nu + 0.5*Vu/tan(theta) - Aps*fpo;
-      ex /= Es*As + Ep*Aps;
+      ex = Mu/dv + 0.5*Nu + 0.5*Vu/tan(theta) - Aps*fpops - Apt*fpopt;
+      ex /= Es*As + Eps*Aps + Ept*Apt;
    }
 
    if ( ex < 0.0 )
    {
       Float64 Fe;
-      if ( IsZero(Ec*Ac + Es*As + Ep*Aps) )
+      if ( IsZero(Ec*Ac + Es*As + Eps*Aps + Ept*Apt) )
       {
          Fe = 0;
       }
       else
       {
-         Fe = Es*As + Ep*Aps;
-         Fe /= Ec*Ac + Es*As + Ep*Aps;
+         Fe = Es*As + Eps*Aps + Ept*Apt;
+         Fe /= Ec*Ac + Es*As + Eps*Aps + Ept*Apt;
       }
 
       ex *= Fe; // See "Design of Highway Bridges", Barker and Puckett, pg 641

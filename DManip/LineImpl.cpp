@@ -63,6 +63,11 @@ HRESULT CLineImpl::FinalConstruct()
    return CConnectorImpl::FinalConstruct();
 }
 
+void CLineImpl::FinalRelease()
+{
+   CDisplayObjectDefaultImpl::Do_FinalRelease();
+}
+
 /////////////////////////////////////////////////////////
 // iDisplayObject Implementation
 

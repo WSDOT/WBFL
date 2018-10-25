@@ -63,6 +63,7 @@ HRESULT CEditableUnitValueTextBlockImpl::FinalConstruct()
 
    m_EditableTextBlock = pTextBlock;
    m_EditableTextBlock->RegisterEventSink(this);
+
    m_EditableTextBlock->SetFormat(etbfNumeric);
    CString str;
    str.Format(_T("%f"),m_Value);
@@ -75,6 +76,9 @@ HRESULT CEditableUnitValueTextBlockImpl::FinalConstruct()
 
 void CEditableUnitValueTextBlockImpl::FinalRelease()
 {
+   m_EditableTextBlock->UnregisterEventSink();
+   m_EditableTextBlock.Release();
+
    delete m_pctlUnitTag;
    m_pctlUnitTag = NULL;
 
@@ -432,6 +436,8 @@ STDMETHODIMP_(bool) CEditableUnitValueTextBlockImpl::OnContextMenu(CWnd* pWnd,CP
 
 STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::RegisterEventSink(iDisplayObjectEvents* pEventSink)
 {
+   UnregisterEventSink();
+
    m_EventSink = pEventSink;
 }
 
@@ -446,10 +452,16 @@ STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::GetEventSink(iDisplayObject
    (*pEventSink)->AddRef();
 }
 
-STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::SetDropSite(iDropSite* pDropSite)
+STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::RegisterDropSite(iDropSite* pDropSite)
 {
    CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_EditableTextBlock);
-   dispObj->SetDropSite(pDropSite);
+   dispObj->RegisterDropSite(pDropSite);
+}
+
+STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::UnregisterDropSite()
+{
+   CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_EditableTextBlock);
+   dispObj->UnregisterDropSite();
 }
 
 STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::GetDropSite(iDropSite** dropSite)

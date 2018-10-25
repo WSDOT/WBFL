@@ -144,7 +144,8 @@ public:
    STDMETHOD_(void,CreateDragObjects)(COleDataObject* pDataObject);
    STDMETHOD_(void,DrawDragObjects)(const CPoint& dragStart, const CPoint& dragPoint);
    STDMETHOD_(void,DestroyDragObjects)();
-   STDMETHOD_(void,SetDropSite)(iDropSite* pDropSite);
+   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite);
+   STDMETHOD_(void,UnregisterDropSite)();
    STDMETHOD_(void,GetDropSite)(iDropSite** dropSite);
    STDMETHOD_(void,HighliteDropSite)(BOOL bHighlite);
    STDMETHOD_(void,OnDragFinished)(DROPEFFECT de);

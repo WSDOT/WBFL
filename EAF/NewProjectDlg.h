@@ -65,6 +65,7 @@ protected:
 
    void AddProjectGroup(HTREEITEM hParent,HTREEITEM hAfter,const CEAFTemplateGroup* pGroup,const CString& strLastSelection,HTREEITEM* pDefaultItem);
    
+   void ExpandProjectType(HTREEITEM hItem);
    void ExpandProjectTypes();
 
 	DECLARE_MESSAGE_MAP()

@@ -75,11 +75,11 @@ public:
       m_bSegmentHeightProfile = false;
       m_bBottomFlangeHeightProfile = false;
 
-      m_ClosurePourFgMaterial[etStart] = NULL;
-      m_ClosurePourFgMaterial[etEnd]   = NULL;
+      m_ClosureJointFgMaterial[etStart] = NULL;
+      m_ClosureJointFgMaterial[etEnd]   = NULL;
 
-      m_ClosurePourBgMaterial[etStart] = NULL;
-      m_ClosurePourBgMaterial[etEnd]   = NULL;
+      m_ClosureJointBgMaterial[etStart] = NULL;
+      m_ClosureJointBgMaterial[etEnd]   = NULL;
    }
 
 protected:
@@ -115,8 +115,8 @@ protected:
    Float64 m_VariationBottomFlangeDepth[4];
 
    // index is EndType
-   CComPtr<IMaterial> m_ClosurePourFgMaterial[2]; // foreground material
-   CComPtr<IMaterial> m_ClosurePourBgMaterial[2]; // background material
+   CComPtr<IMaterial> m_ClosureJointFgMaterial[2]; // foreground material
+   CComPtr<IMaterial> m_ClosureJointBgMaterial[2]; // background material
 
    bool m_bSegmentHeightProfile;
    mathCompositeFunction2d m_SegmentHeightProfile; // this function returns the segment height
@@ -241,7 +241,7 @@ public:
 
 	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal)
    {
-      // Returns the overlay layout length of the segment...
+      // Returns the overall layout length of the segment...
       // however, if this is the first or last segment then deduct
       // the distance from the CLPier to the start/end of girder
       Float64 length;
@@ -285,18 +285,49 @@ public:
       Float64 xStart, xEnd;
       GetSegmentRange(bIncludeClosure,&xStart,&xEnd);
 
+      Float64 xStartSegment,xEndSegment;
+      GetSegmentRange(VARIANT_TRUE,&xStartSegment,&xEndSegment);
+
       std::vector<Float64> xValues;
       if ( m_VariationType == svtLinear || m_VariationType == svtParabolic )
       {
-         xValues.push_back(xStart + m_VariationLength[sztLeftPrismatic]);
-         xValues.push_back(xEnd   - m_VariationLength[sztRightPrismatic]);
+         Float64 dist = xStartSegment + m_VariationLength[sztLeftPrismatic];
+         if ( ::InRange(xStart,dist,xEnd) )
+         {
+            xValues.push_back(dist);
+         }
+
+         dist = xEndSegment - m_VariationLength[sztRightPrismatic];
+         if ( ::InRange(xStart,dist,xEnd) )
+         {
+            xValues.push_back(dist);
+         }
       }
       else if ( m_VariationType == svtDoubleLinear || m_VariationType == svtDoubleParabolic )
       {
-         xValues.push_back(xStart + m_VariationLength[sztLeftPrismatic]);
-         xValues.push_back(xStart + m_VariationLength[sztLeftPrismatic]  + m_VariationLength[sztLeftTapered]);
-         xValues.push_back(xEnd   - m_VariationLength[sztRightPrismatic] - m_VariationLength[sztRightTapered]);
-         xValues.push_back(xEnd   - m_VariationLength[sztRightPrismatic]);
+         Float64 dist = xStartSegment + m_VariationLength[sztLeftPrismatic];
+         if ( ::InRange(xStart,dist,xEnd) )
+         {
+            xValues.push_back(dist);
+         }
+
+         dist = xStartSegment + m_VariationLength[sztLeftPrismatic]  + m_VariationLength[sztLeftTapered];
+         if ( ::InRange(xStart,dist,xEnd) )
+         {
+            xValues.push_back(dist);
+         }
+
+         dist = xEndSegment - m_VariationLength[sztRightPrismatic] - m_VariationLength[sztRightTapered];
+         if ( ::InRange(xStart,dist,xEnd) )
+         {
+            xValues.push_back(dist);
+         }
+
+         dist = xEndSegment - m_VariationLength[sztRightPrismatic];
+         if ( ::InRange(xStart,dist,xEnd) )
+         {
+            xValues.push_back(dist);
+         }
       }
 
       for ( int i = 0; i < 11; i++ )
@@ -551,7 +582,7 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(get_ClosurePourLength)(/*[in]*/EndType endType,/*[out,retval]*/Float64* pLength)
+   STDMETHOD(get_ClosureJointLength)(/*[in]*/EndType endType,/*[out,retval]*/Float64* pLength)
    {
       CHECK_RETVAL(pLength);
       CComPtr<IGirderLine> girderLine;
@@ -564,31 +595,31 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(put_ClosurePourForegroundMaterial)(/*[in]*/EndType endType,/*[in]*/IMaterial* pFGMaterial)
+   STDMETHOD(put_ClosureJointForegroundMaterial)(/*[in]*/EndType endType,/*[in]*/IMaterial* pFGMaterial)
    {
       CHECK_IN(pFGMaterial);
-      m_ClosurePourFgMaterial[endType] = pFGMaterial;
+      m_ClosureJointFgMaterial[endType] = pFGMaterial;
       return S_OK;
    }
 
-   STDMETHOD(get_ClosurePourForegroundMaterial)(/*[in]*/EndType endType,/*[out,retval]*/IMaterial** ppFGMaterial)
+   STDMETHOD(get_ClosureJointForegroundMaterial)(/*[in]*/EndType endType,/*[out,retval]*/IMaterial** ppFGMaterial)
    {
       CHECK_RETOBJ(ppFGMaterial);
-      m_ClosurePourFgMaterial[endType].CopyTo(ppFGMaterial);
+      m_ClosureJointFgMaterial[endType].CopyTo(ppFGMaterial);
       return S_OK;
    }
 
-   STDMETHOD(put_ClosurePourBackgroundMaterial)(/*[in]*/EndType endType,/*[in]*/IMaterial* pBGMaterial)
+   STDMETHOD(put_ClosureJointBackgroundMaterial)(/*[in]*/EndType endType,/*[in]*/IMaterial* pBGMaterial)
    {
       CHECK_IN(pBGMaterial);
-      m_ClosurePourBgMaterial[endType] = pBGMaterial;
+      m_ClosureJointBgMaterial[endType] = pBGMaterial;
       return S_OK;
    }
 
-   STDMETHOD(get_ClosurePourBackgroundMaterial)(/*[in]*/EndType endType,/*[out,retval]*/IMaterial** ppBGMaterial)
+   STDMETHOD(get_ClosureJointBackgroundMaterial)(/*[in]*/EndType endType,/*[out,retval]*/IMaterial** ppBGMaterial)
    {
       CHECK_RETOBJ(ppBGMaterial);
-      m_ClosurePourBgMaterial[endType].CopyTo(ppBGMaterial);
+      m_ClosureJointBgMaterial[endType].CopyTo(ppBGMaterial);
       return S_OK;
    }
 
@@ -679,55 +710,55 @@ protected:
       section->QueryInterface(IID_ISection,(void**)ppSection);
       ATLASSERT(*ppSection != NULL);
 
-      int isClosurePour = IsClosurePour(distAlongSegment);
+      int isClosureJoint = IsClosureJoint(distAlongSegment);
 
       // add the primary shape
       Float64 Efg = 0;
-      if ( isClosurePour == 0 )
+      if ( isClosureJoint == 0 )
       {
          m_Shapes.front().FGMaterial->get_E(stageIdx,&Efg);
       }
       else
       {
-         EndType endType(isClosurePour < 0 ? etStart : etEnd);
-         m_ClosurePourFgMaterial[endType]->get_E(stageIdx,&Efg);
+         EndType endType(isClosureJoint < 0 ? etStart : etEnd);
+         m_ClosureJointFgMaterial[endType]->get_E(stageIdx,&Efg);
       }
       
       Float64 Ebg = 0;
-      if ( isClosurePour == 0 )
+      if ( isClosureJoint == 0 )
       {
          if ( m_Shapes.front().BGMaterial )
             m_Shapes.front().BGMaterial->get_E(stageIdx,&Ebg);
       }
       else
       {
-         EndType endType(isClosurePour < 0 ? etStart : etEnd);
-         if ( m_ClosurePourBgMaterial[endType] )
-            m_ClosurePourBgMaterial[endType]->get_E(stageIdx,&Ebg);
+         EndType endType(isClosureJoint < 0 ? etStart : etEnd);
+         if ( m_ClosureJointBgMaterial[endType] )
+            m_ClosureJointBgMaterial[endType]->get_E(stageIdx,&Ebg);
       }
 
       Float64 Dfg = 0;
-      if ( isClosurePour == 0 )
+      if ( isClosureJoint == 0 )
       {
          m_Shapes.front().FGMaterial->get_Density(stageIdx,&Dfg);
       }
       else
       {
-         EndType endType(isClosurePour < 0 ? etStart : etEnd);
-         m_ClosurePourFgMaterial[endType]->get_Density(stageIdx,&Dfg);
+         EndType endType(isClosureJoint < 0 ? etStart : etEnd);
+         m_ClosureJointFgMaterial[endType]->get_Density(stageIdx,&Dfg);
       }
       
       Float64 Dbg = 0;
-      if ( isClosurePour == 0 )
+      if ( isClosureJoint == 0 )
       {
          if ( m_Shapes.front().BGMaterial )
             m_Shapes.front().BGMaterial->get_Density(stageIdx,&Dbg);
       }
       else
       {
-         EndType endType(isClosurePour < 0 ? etStart : etEnd);
-         if ( m_ClosurePourBgMaterial[endType] )
-            m_ClosurePourBgMaterial[endType]->get_Density(stageIdx,&Dbg);
+         EndType endType(isClosureJoint < 0 ? etStart : etEnd);
+         if ( m_ClosureJointBgMaterial[endType] )
+            m_ClosureJointBgMaterial[endType]->get_Density(stageIdx,&Dbg);
       }
 
       section->AddSection(primaryShape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
@@ -766,14 +797,14 @@ protected:
       return S_OK;
    }
 
-   int IsClosurePour(Float64 distAlongSegment)
+   int IsClosureJoint(Float64 distAlongSegment)
    {
       Float64 length;
       m_pGirderLine->get_LayoutLength(&length);
 
       Float64 Lcp[2];
-      get_ClosurePourLength(etStart,&Lcp[etStart]);
-      get_ClosurePourLength(etEnd,  &Lcp[etEnd]);
+      get_ClosureJointLength(etStart,&Lcp[etStart]);
+      get_ClosureJointLength(etEnd,  &Lcp[etEnd]);
 
       if ( distAlongSegment < Lcp[etStart] )
          return -1; // in closure pour at start
@@ -959,13 +990,16 @@ protected:
 
             // create a linear segment between left and right tapers
             Float64 taper_length = segment_length - left_prismatic_length - left_tapered_length - right_prismatic_length - right_tapered_length;
-            slope = (h4 - h3)/taper_length;
-            b = h3 - slope*xStart;
+            if ( !IsZero(taper_length) )
+            {
+               slope = (h4 - h3)/taper_length;
+               b = h3 - slope*xStart;
 
-            mathLinFunc2d middle_func(slope, b);
-            xEnd = xStart + taper_length;
-            pProfile->AddFunction(xStart,xEnd,middle_func);
-            xStart = xEnd;
+               mathLinFunc2d middle_func(slope, b);
+               xEnd = xStart + taper_length;
+               pProfile->AddFunction(xStart,xEnd,middle_func);
+               xStart = xEnd;
+            }
 
             // create a linear taper for right side of segment
             slope = (h2 - h4)/right_tapered_length;
@@ -1175,7 +1209,7 @@ protected:
    {
       Float64 x = 0; // start at zero
 
-      // summ the length of all the previous segments
+      // sum the length of all the previous segments
       CComPtr<ISegment> prevSegment;
       get_PrevSegment(&prevSegment);
       while ( prevSegment )
@@ -1186,30 +1220,79 @@ protected:
          Float64 length;
          girderLine->get_LayoutLength(&length);
 
-         x += length;
-
          CComPtr<ISegment> s;
          prevSegment->get_PrevSegment(&s);
+
+         if ( s == NULL )
+         {
+            Float64 end_distance, bearing_offset;
+            girderLine->get_EndDistance(etStart,&end_distance);
+            girderLine->get_BearingOffset(etStart,&bearing_offset);
+            length -= (bearing_offset - end_distance);
+         }
+
+         x += length;
+
          prevSegment.Release();
          prevSegment = s;
       }
 
+      // x is now the distance from the start of the girder
+      // to the CL of the closure joint at the start of this segment
+      *pXStart = x;
 
+      prevSegment.Release();
+      get_PrevSegment(&prevSegment);
+
+      CComPtr<ISegment> nextSegment;
+      get_NextSegment(&nextSegment);
+
+      // if closure joints are not included in the range,
+      // move up by the start closure joint length
+      // (don't make this adjustment for the first segment)
+      if ( bIncludeClosure == VARIANT_FALSE && prevSegment != NULL )
+      {
+         Float64 Lclosure;
+         get_ClosureJointLength(etStart,&Lclosure);
+         *pXStart += Lclosure;
+      }
+
+      // locate end of range
       CComPtr<IGirderLine> girderLine;
       get_GirderLine(&girderLine);
 
-      if ( bIncludeClosure == VARIANT_FALSE )
+      Float64 length;
+      if ( prevSegment == NULL )
+      {
+         // this is the first segment so use the girder length
+         girderLine->get_GirderLength(&length);
+         if ( nextSegment )
+         {
+            // if there is a next segment, add the closure length so that
+            // when added to x below x is at the CL of the closure joint at the end of this segment
+            Float64 Lclosure;
+            get_ClosureJointLength(etEnd,&Lclosure);
+            length += Lclosure;
+         }
+      }
+      else
+      {
+         // use the layout length because it includes the closure lengths
+         girderLine->get_LayoutLength(&length);
+      }
+      x += length; // x is now at the CL of the closure joint at the end of this segment
+      *pXEnd = x;
+
+      // if closure joints are not included in the range,
+      // back up end closure joint length.
+      // if there is not a next segment, this is the last segment so back
+      // up from the very end of the girder layout length to the actual
+      // end of the girder
+      if ( bIncludeClosure == VARIANT_FALSE || nextSegment == NULL)
       {
          Float64 Lclosure;
-         get_ClosurePourLength(etStart,&Lclosure);
-         x += Lclosure;
+         get_ClosureJointLength(etEnd,&Lclosure);
+         *pXEnd -= Lclosure;
       }
-
-      *pXStart = x;
-
-      Float64 length;
-      girderLine->get_GirderLength(&length);
-      
-      *pXEnd = x + length;
    }
 };

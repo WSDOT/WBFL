@@ -77,7 +77,10 @@ END_CONNECTION_POINT_MAP()
 
 // ISupport
 public:
-	STDMETHOD(get_TopRelease)(/*[out, retval]*/ VARIANT_BOOL *pVal);
+	STDMETHOD(AddAssociatedSupport)(/*[in]*/SupportIDType id);
+   STDMETHOD(GetAssociatedSupportCount)(/*[out,retval]*/SupportIndexType* pCount);
+   STDMETHOD(GetAssociatedSupportID)(/*[in]*/IndexType index,/*[out,retval]*/SupportIDType* pID);
+   STDMETHOD(get_TopRelease)(/*[out, retval]*/ VARIANT_BOOL *pVal);
 	STDMETHOD(put_TopRelease)(/*[in]*/ VARIANT_BOOL newVal);
 	STDMETHOD(get_DistributionFactor)(/*[out, retval]*/ IDistributionFactor* *pVal);
 	STDMETHOD(putref_DistributionFactor)(/*[in]*/ IDistributionFactor* newVal);
@@ -141,6 +144,7 @@ public:
    CComPtr<IDistributionFactor>     m_DistributionFactor;
    DWORD                            m_DistributionFactorCookie;
 
+   std::vector<SupportIDType> m_AssociatedSupportIDs;
 };
 
 #endif //__Support_H_

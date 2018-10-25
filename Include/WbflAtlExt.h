@@ -103,7 +103,7 @@ public:
    {  
       ULONG ulReturn = T::OuterAddRef();  
       const type_info& t = typeid((C*)this);
-      ATLTRACE(_T("%d+ %s::%p\n"),m_dwRef,t.name(),this);  
+      ATLTRACE("%d+ %s::%p\n",m_dwRef,t.name(),this);  
       return ulReturn;  
    }  
 
@@ -111,7 +111,7 @@ public:
    {  
       ULONG ulReturn = T::OuterRelease();  
       const type_info& t = typeid((C*)this);
-      ATLTRACE(_T("%d- %s::%p\n"),m_dwRef,t.name(),this);
+      ATLTRACE("%d- %s::%p\n",m_dwRef,t.name(),this);
       return ulReturn;  
    } 
 
@@ -119,7 +119,7 @@ public:
    { 
       ULONG ulReturn = T::InternalAddRef(); 
       const type_info& t = typeid((C*)this);
-      ATLTRACE(_T("%d+ %s::%p\n"),m_dwRef,t.name(),this);  
+      ATLTRACE("%d+ %s::%p\n",m_dwRef,t.name(),this);  
       return ulReturn; 
    } 
 
@@ -127,7 +127,7 @@ public:
    { 
       ULONG ulReturn = T::InternalRelease(); 
       const type_info& t = typeid((C*)this);
-      ATLTRACE(_T("%d- %s::%p\n"),m_dwRef,t.name(),this);
+      ATLTRACE("%d- %s::%p\n",m_dwRef,t.name(),this);
       return ulReturn; 
    } 
 };

@@ -49,6 +49,7 @@ public:
 	CPointDisplayObjectImpl();
 	virtual ~CPointDisplayObjectImpl();
    HRESULT FinalConstruct();
+   void FinalRelease();
 
    ULONG OuterAddRef()
    {
@@ -169,10 +170,9 @@ END_COM_MAP()
    { Do_GetEventSink(pEventSink); }
 
    // Drag Drop
-   STDMETHOD_(void,SetDropSite)(iDropSite* pDropSite)
-   { Do_SetDropSite(pDropSite); }
-   STDMETHOD_(void,GetDropSite)(iDropSite** dropSite)
-   { Do_GetDropSite(dropSite); }
+   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite) { Do_RegisterDropSite(pDropSite); }
+   STDMETHOD_(void,UnregisterDropSite)() { Do_UnregisterDropSite(); }
+   STDMETHOD_(void,GetDropSite)(iDropSite** dropSite)  { Do_GetDropSite(dropSite); }
 
    // iDraggable Implementation
    STDMETHOD_(void,SetDragData)(iDragData* dd);

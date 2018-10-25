@@ -1131,6 +1131,10 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
    CComPtr<ISegment> segment;
    ssmbr->get_Segment(segIdx,&segment);
 
+   Float64 segment_length;
+   segment->get_Length(&segment_length);
+   distFromStartOfSegment = ::ForceIntoRange(0.0,distFromStartOfSegment,segment_length);
+
    // this is the primary section (the girder)
    CComPtr<ISection> section;
    HRESULT hr = segment->get_Section(stageIdx,distFromStartOfSegment,&section);
@@ -1205,11 +1209,6 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
    Float64 xTop,yTop;
    pntTopCenter->Location(&xTop,&yTop);
 
-   CComPtr<IPoint2d> pntBottomCenter;
-   position->get_LocatorPoint(lpBottomCenter,&pntBottomCenter);
-   Float64 xBottom,yBottom;
-   pntBottomCenter->Location(&xBottom,&yBottom);
-
    // background properties are the foreground properties of the girder concrete (the holes are in the girder)
    Float64 Econc,Dconc;
    csi->get_Efg(&Econc);
@@ -1224,8 +1223,8 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
    CComQIPtr<IPrecastGirder> girder(punk);
    ATLASSERT(girder != NULL);
 
-   Float64 segment_length; // end-to-end segment length
-   girder->get_GirderLength(&segment_length);
+   Float64 girder_length; // end-to-end segment length
+   girder->get_GirderLength(&girder_length);
 
    // need to make sure the location we are looking at is actually
    // on the precast girder or if it is in a closure pour region
@@ -1237,7 +1236,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
 
    // Distace measure from the face of the segment (not from the CLPier/CLTempSupport)
    Float64 distFromFaceOfSegment = distFromStartOfSegment - (brgOffset-endDistance);
-   bool bIsPointOnSegment = ( 0 <= distFromFaceOfSegment && distFromFaceOfSegment <= segment_length ) ? true : false;
+   bool bIsPointOnSegment = ( 0 <= distFromFaceOfSegment && distFromFaceOfSegment <= girder_length ) ? true : false;
 
    // Add Strands and Rebar
    if ( sectionPropMethod != spmGross )
@@ -1278,7 +1277,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
             while ( enum_points->Next(1,&point,NULL) != S_FALSE )
             {
                // x measured from CL girder
-               // y measured from bottom of girder
+               // y measured from top of girder
                Float64 x,y;
                point->Location(&x,&y);
 
@@ -1297,7 +1296,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
                CComPtr<IPoint2d> centroid;
                strandShape->get_Centroid(&centroid);
 
-               centroid->Move(x,yBottom + y);
+               centroid->Move(xTop + x,yTop + y);
 
                // If the strand doesn't have strength or density in this stage, then it
                // doesn't really exist in the section. 
@@ -1336,7 +1335,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
          CComPtr<IRebarSection> rebarSection;
          rebarLayout->CreateRebarSection(distFromFaceOfSegment,&rebarSection);
 
-         LayoutRebar(compositeSection,Econc,Dconc,rebarSection,yBottom,stageIdx,sectionPropMethod);
+         LayoutRebar(compositeSection,Econc,Dconc,rebarSection,xTop,yTop,stageIdx,sectionPropMethod);
 
       } // is point on precast girder
       else
@@ -1349,7 +1348,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
          CComPtr<IRebarSection> rebarSection;
          rebarLayout->CreateRebarSection(distFromFaceOfSegment,&rebarSection);
 
-         LayoutRebar(compositeSection,Econc,Dconc,rebarSection,yBottom,stageIdx,sectionPropMethod);
+         LayoutRebar(compositeSection,Econc,Dconc,rebarSection,xTop,yTop,stageIdx,sectionPropMethod);
       } // is point on precast girder
    } // if not gross properties
 
@@ -1405,9 +1404,11 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
       CComPtr<IPoint3d> pntCG;
       tendon->get_CG(distFromStart,tmPath,&pntCG);
 
-      // location of duct in cross section coordinates
+      // location of duct in Gross Section Coordinates
       Float64 x,y,z;
       pntCG->Location(&x,&y,&z);
+      ATLASSERT(IsEqual(distFromStart,z));
+      ATLASSERT(y < 0); // below top of girder
 
       // if Etendon is zero, the tendon is not installed yet
       // Model the hole for the duct. Model this hole for gross, transformed and net properties
@@ -1475,7 +1476,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
    return S_OK;
 }
 
-HRESULT CSectionCutTool::LayoutRebar(ICompositeSectionEx* compositeSection,Float64 Econc,Float64 Dconc,IRebarSection* rebarSection,Float64 yBottom,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod)
+HRESULT CSectionCutTool::LayoutRebar(ICompositeSectionEx* compositeSection,Float64 Econc,Float64 Dconc,IRebarSection* rebarSection,Float64 xTop,Float64 yTop,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod)
 {
    CComPtr<IEnumRebarSectionItem> enumRebarSectionItem;
    rebarSection->get__EnumRebarSectionItem(&enumRebarSectionItem);
@@ -1487,7 +1488,7 @@ HRESULT CSectionCutTool::LayoutRebar(ICompositeSectionEx* compositeSection,Float
       rebarSectionItem->get_Location(&pntRebar);
 
       // x measured from CL girder
-      // y measured from bottom of girder
+      // y measured from top of girder
       Float64 x,y;
       pntRebar->Location(&x,&y);
 
@@ -1509,7 +1510,7 @@ HRESULT CSectionCutTool::LayoutRebar(ICompositeSectionEx* compositeSection,Float
       CComPtr<IPoint2d> centroid;
       rebarShape->get_Centroid(&centroid);
 
-      centroid->Move(x,yBottom + y);
+      centroid->Move(xTop + x,yTop + y);
 
       CComQIPtr<IMaterial> material(rebar);
       ATLASSERT(material);
@@ -1661,9 +1662,9 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
    CComQIPtr<ICompositeShape> compositeShape(primary_shape);
    ATLASSERT(compositeShape); // primary_shape must be a composite so we can put holes in it
 
-   // Internal shapes, such as ducts, have coordinates that are relative to the girder....
-   // need to get the offset distance so these objects can
-   // be put in the correct location of the cross section
+   // Internal shapes, such as ducts, are in Girder Section Coordinates.
+   // The shape is in Bridge Section Coordinates. Get the top center of the
+   // shape so that the internal shapes can be moved into Bridge Section Coordinates
    CComQIPtr<IXYPosition> position(primary_shape);
    CComPtr<IPoint2d> pntTopCenter;
    position->get_LocatorPoint(lpTopCenter,&pntTopCenter);
@@ -1745,10 +1746,10 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
          material->get_E(stageIdx,&Etendon);
 
          // create a circle for the tendon
-         Float64 distFromStart; // in girder path coordinates
-         ssmbr->GetDistanceFromStart(segIdx,distFromStartOfSegment,&distFromStart);
+         Float64 Xgp; // in girder path coordinates
+         ssmbr->GetDistanceFromStart(segIdx,distFromStartOfSegment,&Xgp);
 
-         // Adjust distFromStart to girder coordinates
+         // Convert Xgp to Xg
          CComPtr<ISegment> segment;
          ssmbr->get_Segment(0,&segment);
          CComPtr<IGirderLine> girderLine;
@@ -1757,24 +1758,24 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
          girderLine->get_BearingOffset(etStart,&brgOffset);
          girderLine->get_EndDistance(etStart,&endDist);
          Float64 offset = brgOffset-endDist;
-         distFromStart -= offset; // now measured in Girder Coordinates
-
+         Float64 Xg = Xgp - offset; // int Girder Coordinates
 
          CComPtr<IPoint3d> pntCG;
-         tendon->get_CG(distFromStart,tmPath,&pntCG); // distFromStart needs to be in Girder Coordinates
+         tendon->get_CG(Xg,tmPath,&pntCG); // Xg is in Girder Coordinates
 
          if ( pntCG == NULL )
          {
 #pragma Reminder("UPDATE: review this code")
             // this code was put here to deal with the case that tendon->get_CG() fails
             // and allows testing to continue
-            ATLASSERT(false);
             continue;
          }
 
-         // location of duct in cross section coordinates
+         // location of duct in Girde Section Coordinates
          Float64 x,y,z;
          pntCG->Location(&x,&y,&z);
+         ATLASSERT(IsEqual(Xg,z));
+         ATLASSERT(y < 0); // tendon must be below top of girder
 
          // Tendon is not installed in this stage
          if ( IsZero(Etendon) )

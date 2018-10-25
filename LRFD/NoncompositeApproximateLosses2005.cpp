@@ -328,7 +328,8 @@ void lrfdNoncompositeApproximateLosses2005::UpdateInitialLosses() const
                             m_Mdlg,
                             1.0,
                             m_Eci,
-                            m_Ep);
+                            m_Ep,
+                            lrfdElasticShortening::fcgpIterative);
 
    m_Fcgp = es.PermanentStrand_Fcgp();
    m_dfES = es.PermanentStrand_ElasticShorteningLosses();

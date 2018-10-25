@@ -49,6 +49,7 @@ CEditableTextBlockImpl::CEditableTextBlockImpl()
    m_pFont = NULL;
    m_Format = etbfText;
    m_pOnMouseOverCursor = NULL;
+   m_pEventSink = NULL;
 }
 
 CEditableTextBlockImpl::~CEditableTextBlockImpl()
@@ -72,6 +73,8 @@ HRESULT CEditableTextBlockImpl::FinalConstruct()
 
 void CEditableTextBlockImpl::FinalRelease()
 {
+   m_TextBlock->UnregisterEventSink();
+
    delete m_pEdit;
    m_pEdit = 0;
 }
@@ -485,24 +488,37 @@ STDMETHODIMP_(bool) CEditableTextBlockImpl::OnContextMenu(CWnd* pWnd,CPoint poin
 
 STDMETHODIMP_(void) CEditableTextBlockImpl::RegisterEventSink(iDisplayObjectEvents* pEventSink)
 {
-   m_EventSink = pEventSink;
+   UnregisterEventSink();
+
+   m_pEventSink = pEventSink;
+   m_TextBlock->RegisterEventSink(this);
 }
 
 STDMETHODIMP_(void) CEditableTextBlockImpl::UnregisterEventSink()
 {
-   m_EventSink.Release();
+   m_pEventSink = NULL;
+   m_TextBlock->UnregisterEventSink();
 }
 
 STDMETHODIMP_(void) CEditableTextBlockImpl::GetEventSink(iDisplayObjectEvents** pEventSink)
 {
-   *pEventSink = m_EventSink;
-   (*pEventSink)->AddRef();
+   *pEventSink = m_pEventSink;
+   if ( m_pEventSink )
+   {
+      (*pEventSink)->AddRef();
+   }
 }
 
-STDMETHODIMP_(void) CEditableTextBlockImpl::SetDropSite(iDropSite* pDropSite)
+STDMETHODIMP_(void) CEditableTextBlockImpl::RegisterDropSite(iDropSite* pDropSite)
 {
    CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_TextBlock);
-   dispObj->SetDropSite(pDropSite);
+   dispObj->RegisterDropSite(pDropSite);
+}
+
+STDMETHODIMP_(void) CEditableTextBlockImpl::UnregisterDropSite()
+{
+   CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_TextBlock);
+   dispObj->UnregisterDropSite();
 }
 
 STDMETHODIMP_(void) CEditableTextBlockImpl::GetDropSite(iDropSite** dropSite)
@@ -649,9 +665,9 @@ STDMETHODIMP_(EditableTextBlockFormatType) CEditableTextBlockImpl::GetFormat()
 // iDisplayObjectEvents
 STDMETHODIMP_(bool) CEditableTextBlockImpl::OnLButtonDblClk(iDisplayObject* pDO,UINT nFlags,CPoint point)
 {
-   if ( m_EventSink )
+   if ( m_pEventSink )
    {
-      return m_EventSink->OnLButtonDblClk(pDO,nFlags,point);
+      return m_pEventSink->OnLButtonDblClk(pDO,nFlags,point);
    }
    else
    {
@@ -661,9 +677,9 @@ STDMETHODIMP_(bool) CEditableTextBlockImpl::OnLButtonDblClk(iDisplayObject* pDO,
 
 STDMETHODIMP_(bool) CEditableTextBlockImpl::OnLButtonDown(iDisplayObject* pDO,UINT nFlags,CPoint point)
 {
-   if ( m_EventSink )
+   if ( m_pEventSink )
    {
-      return m_EventSink->OnLButtonDown(pDO,nFlags,point);
+      return m_pEventSink->OnLButtonDown(pDO,nFlags,point);
    }
    else
    {
@@ -673,9 +689,9 @@ STDMETHODIMP_(bool) CEditableTextBlockImpl::OnLButtonDown(iDisplayObject* pDO,UI
 
 STDMETHODIMP_(bool) CEditableTextBlockImpl::OnLButtonUp(iDisplayObject* pDO,UINT nFlags,CPoint point)
 {
-   if ( m_EventSink )
+   if ( m_pEventSink )
    {
-      return m_EventSink->OnLButtonUp(pDO,nFlags,point);
+      return m_pEventSink->OnLButtonUp(pDO,nFlags,point);
    }
    else
    {
@@ -685,9 +701,9 @@ STDMETHODIMP_(bool) CEditableTextBlockImpl::OnLButtonUp(iDisplayObject* pDO,UINT
 
 STDMETHODIMP_(bool) CEditableTextBlockImpl::OnRButtonDblClk(iDisplayObject* pDO,UINT nFlags,CPoint point)
 {
-   if ( m_EventSink )
+   if ( m_pEventSink )
    {
-      return m_EventSink->OnRButtonDblClk(pDO,nFlags,point);
+      return m_pEventSink->OnRButtonDblClk(pDO,nFlags,point);
    }
    else
    {
@@ -697,9 +713,9 @@ STDMETHODIMP_(bool) CEditableTextBlockImpl::OnRButtonDblClk(iDisplayObject* pDO,
 
 STDMETHODIMP_(bool) CEditableTextBlockImpl::OnRButtonDown(iDisplayObject* pDO,UINT nFlags,CPoint point)
 {
-   if ( m_EventSink )
+   if ( m_pEventSink )
    {
-      return m_EventSink->OnRButtonDown(pDO,nFlags,point);
+      return m_pEventSink->OnRButtonDown(pDO,nFlags,point);
    }
    else
    {
@@ -709,9 +725,9 @@ STDMETHODIMP_(bool) CEditableTextBlockImpl::OnRButtonDown(iDisplayObject* pDO,UI
 
 STDMETHODIMP_(bool) CEditableTextBlockImpl::OnRButtonUp(iDisplayObject* pDO,UINT nFlags,CPoint point)
 {
-   if ( m_EventSink )
+   if ( m_pEventSink )
    {
-      return m_EventSink->OnRButtonUp(pDO,nFlags,point);
+      return m_pEventSink->OnRButtonUp(pDO,nFlags,point);
    }
    else
    {
@@ -721,9 +737,9 @@ STDMETHODIMP_(bool) CEditableTextBlockImpl::OnRButtonUp(iDisplayObject* pDO,UINT
 
 STDMETHODIMP_(bool) CEditableTextBlockImpl::OnMouseMove(iDisplayObject* pDO,UINT nFlags,CPoint point)
 {
-   if ( m_EventSink )
+   if ( m_pEventSink )
    {
-      return m_EventSink->OnMouseMove(pDO,nFlags,point);
+      return m_pEventSink->OnMouseMove(pDO,nFlags,point);
    }
    else
    {
@@ -733,9 +749,9 @@ STDMETHODIMP_(bool) CEditableTextBlockImpl::OnMouseMove(iDisplayObject* pDO,UINT
 
 STDMETHODIMP_(bool) CEditableTextBlockImpl::OnMouseWheel(iDisplayObject* pDO,UINT nFlags,short zDelta,CPoint point)
 {
-   if ( m_EventSink )
+   if ( m_pEventSink )
    {
-      return m_EventSink->OnMouseWheel(pDO,nFlags,zDelta,point);
+      return m_pEventSink->OnMouseWheel(pDO,nFlags,zDelta,point);
    }
    else
    {
@@ -745,9 +761,9 @@ STDMETHODIMP_(bool) CEditableTextBlockImpl::OnMouseWheel(iDisplayObject* pDO,UIN
 
 STDMETHODIMP_(bool) CEditableTextBlockImpl::OnKeyDown(iDisplayObject* pDO,UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-   if ( m_EventSink )
+   if ( m_pEventSink )
    {
-      return m_EventSink->OnKeyDown(pDO,nChar,nRepCnt,nFlags);
+      return m_pEventSink->OnKeyDown(pDO,nChar,nRepCnt,nFlags);
    }
    else
    {
@@ -757,9 +773,9 @@ STDMETHODIMP_(bool) CEditableTextBlockImpl::OnKeyDown(iDisplayObject* pDO,UINT n
 
 STDMETHODIMP_(bool) CEditableTextBlockImpl::OnContextMenu(iDisplayObject* pDO,CWnd* pWnd,CPoint point)
 {
-   if ( m_EventSink )
+   if ( m_pEventSink )
    {
-      return m_EventSink->OnContextMenu(this,pWnd,point);
+      return m_pEventSink->OnContextMenu(this,pWnd,point);
    }
    else
    {
@@ -769,42 +785,42 @@ STDMETHODIMP_(bool) CEditableTextBlockImpl::OnContextMenu(iDisplayObject* pDO,CW
 
 STDMETHODIMP_(void) CEditableTextBlockImpl::OnChanged(iDisplayObject* pDO)
 {
-   if ( m_EventSink )
-      m_EventSink->OnChanged(pDO);
+   if ( m_pEventSink )
+      m_pEventSink->OnChanged(pDO);
 }
 
 STDMETHODIMP_(void) CEditableTextBlockImpl::OnDragMoved(iDisplayObject* pDO,ISize2d* offset)
 {
-   if ( m_EventSink )
-      m_EventSink->OnDragMoved(pDO,offset);
+   if ( m_pEventSink )
+      m_pEventSink->OnDragMoved(pDO,offset);
 }
 
 STDMETHODIMP_(void) CEditableTextBlockImpl::OnMoved(iDisplayObject* pDO)
 {
-   if ( m_EventSink )
-      m_EventSink->OnMoved(pDO);
+   if ( m_pEventSink )
+      m_pEventSink->OnMoved(pDO);
 }
 
 STDMETHODIMP_(void) CEditableTextBlockImpl::OnCopied(iDisplayObject* pDO)
 {
-   if ( m_EventSink )
-      m_EventSink->OnCopied(pDO);
+   if ( m_pEventSink )
+      m_pEventSink->OnCopied(pDO);
 }
 
 STDMETHODIMP_(void) CEditableTextBlockImpl::OnSelect(iDisplayObject* pDO)
 {
    ASSERT(m_TextBlock.IsEqualObject(pDO));
 
-   if ( m_EventSink )
-      m_EventSink->OnSelect(this);
+   if ( m_pEventSink )
+      m_pEventSink->OnSelect(this);
 }
 
 STDMETHODIMP_(void) CEditableTextBlockImpl::OnUnselect(iDisplayObject* pDO)
 {
    ASSERT(m_TextBlock.IsEqualObject(pDO));
 
-   if ( m_EventSink )
-      m_EventSink->OnUnselect(this);
+   if ( m_pEventSink )
+      m_pEventSink->OnUnselect(this);
 }
 
 /////////////////////////////////////////////////

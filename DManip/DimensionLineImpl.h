@@ -48,6 +48,7 @@ public:
 	CDimensionLineImpl();
 	virtual ~CDimensionLineImpl();
    HRESULT FinalConstruct();
+   void FinalRelease();
 
    ULONG OuterAddRef()
    {
@@ -69,6 +70,11 @@ public:
 
    ULONG InternalRelease()
    {
+      if ( m_dwRef == 1 && m_TextBlock )
+      {
+         InternalAddRef();
+         m_TextBlock->UnregisterEventSink();
+      }
       ULONG ulReturn = CComObjectRootEx<CComSingleThreadModel>::InternalRelease();
       return ulReturn;
    }
@@ -147,7 +153,8 @@ END_COM_MAP()
    { Do_GetEventSink(pEventSink); }
 
    // Drag Drop
-   STDMETHOD_(void,SetDropSite)(iDropSite* pDropSite) { Do_SetDropSite(pDropSite); }
+   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite) { Do_RegisterDropSite(pDropSite); }
+   STDMETHOD_(void,UnregisterDropSite)() { Do_UnregisterDropSite(); }
    STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) { Do_GetDropSite(dropSite); }
 
    // IDimensionLine Implementation
@@ -155,6 +162,8 @@ END_COM_MAP()
    STDMETHOD_(Float64,GetAngle)();
    STDMETHOD_(void,SetWitnessLength)(LONG l);
    STDMETHOD_(LONG,GetWitnessLength)();
+   STDMETHOD_(void,SetHiddenWitnessLength)(LONG l);
+   STDMETHOD_(LONG,GetHiddenWitnessLength)();
    STDMETHOD_(void,SetWitnessOffset)(LONG wOffset);
    STDMETHOD_(LONG,GetWitnessOffset)();
    STDMETHOD_(void,SetArrowHeadSize)(CSize size);
@@ -185,10 +194,11 @@ END_COM_MAP()
    STDMETHOD_(void,OnUnselect)(iDisplayObject* pDO);
 
 private:
-   CComPtr<iTextBlock> m_pTextBlock;
+   CComPtr<iTextBlock> m_TextBlock;
 
    Float64 m_Angle;
    BOOL   m_bAlignWithPlugs;
+   LONG   m_HiddenWitnessLength;
    LONG   m_LenWitness;
    LONG   m_DimOffset;
    LONG   m_WitnessOffset;

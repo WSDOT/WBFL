@@ -76,6 +76,11 @@ HRESULT CPointDisplayObjectImpl::FinalConstruct()
    return S_OK;
 }
 
+void CPointDisplayObjectImpl::FinalRelease()
+{
+   CDisplayObjectDefaultImpl::Do_FinalRelease();
+}
+
 STDMETHODIMP_(void) CPointDisplayObjectImpl::SetPosition(IPoint2d* pos,BOOL bRedraw,BOOL bFireEvent)
 {
    if ( bRedraw )
@@ -225,8 +230,9 @@ STDMETHODIMP_(void) CPointDisplayObjectImpl::PrepareDrag(iDragDataSink* pSink)
    pSink->Write(ms_cfFormat,&y,size);
 
    if ( m_pDragData )
+   {
       m_pDragData->PrepareForDrag(this,pSink);
-
+   }
 }
 
 STDMETHODIMP_(void) CPointDisplayObjectImpl::OnDrop(iDragDataSource* pSource)

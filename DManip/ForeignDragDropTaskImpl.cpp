@@ -214,7 +214,7 @@ STDMETHODIMP_(void) CForeignDragDropTaskImpl::DestroyDragObjects()
    m_pDispMgr->DestroyDragObjects();
 
    m_pDispMgr->HighliteDropSite(FALSE);
-   m_pDispMgr->SetDropSite(NULL);
+   m_pDispMgr->UnregisterDropSite();
 }
 
 STDMETHODIMP_(DROPEFFECT) CForeignDragDropTaskImpl::DetermineDropEffect()
@@ -258,7 +258,7 @@ STDMETHODIMP_(DROPEFFECT) CForeignDragDropTaskImpl::DetermineDropEffect()
                }
 
                // Set the new drop site
-               m_pDispMgr->SetDropSite(pDropSite);
+               m_pDispMgr->RegisterDropSite(pDropSite);
 
                // draw in highlited stage
                m_pDispMgr->HighliteDropSite(TRUE);
@@ -274,7 +274,7 @@ STDMETHODIMP_(DROPEFFECT) CForeignDragDropTaskImpl::DetermineDropEffect()
    {
       // Cursor is not over a display object - relegate to view
       m_pDispMgr->HighliteDropSite(FALSE);
-      m_pDispMgr->SetDropSite(NULL);
+      m_pDispMgr->UnregisterDropSite();
 
       // Ask the View if we can drop the payload on the canvas
       Float64 wx, wy;

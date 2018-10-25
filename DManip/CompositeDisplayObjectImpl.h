@@ -165,10 +165,9 @@ public:
    { Do_GetEventSink(pEventSink); }
 
    // Drag Drop
-   STDMETHOD_(void,SetDropSite)(iDropSite* pDropSite)
-   { Do_SetDropSite(pDropSite); }
-   STDMETHOD_(void,GetDropSite)(iDropSite** dropSite)
-   { Do_GetDropSite(dropSite); }
+   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite){ Do_RegisterDropSite(pDropSite); }
+   STDMETHOD_(void,UnregisterDropSite)(){ Do_UnregisterDropSite(); }
+   STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) { Do_GetDropSite(dropSite); }
 };
 
 #endif // !defined(AFX_COMPOSITEDISPLAYOBJECT_H__9E3A6AF5_E734_11D4_8B83_006097C68A9C__INCLUDED_)

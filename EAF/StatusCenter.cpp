@@ -49,20 +49,22 @@ CEAFStatusCenter::CEAFStatusCenter()
 
 CEAFStatusCenter::~CEAFStatusCenter()
 {
-   Container::iterator iter;
-   for ( iter = m_Items.begin(); iter != m_Items.end(); iter++ )
+   Container::iterator itemIter(m_Items.begin());
+   Container::iterator itemIterEnd(m_Items.end());
+   for ( ; itemIter != itemIterEnd; itemIter++ )
    {
-      CEAFStatusItem* pItem = *iter;
+      CEAFStatusItem* pItem = *itemIter;
       delete pItem;
       pItem = NULL;
    }
 
-   Callbacks::iterator iter2;
-   for ( iter2 = m_Callbacks.begin(); iter2 != m_Callbacks.end(); iter2++ )
+   Callbacks::iterator callbackIter(m_Callbacks.begin());
+   Callbacks::iterator callbackIterEnd(m_Callbacks.end());
+   for ( ; callbackIter != callbackIterEnd; callbackIter++ )
    {
-      iStatusCallback* pCallback = (*iter2).second;
+      iStatusCallback* pCallback = (*callbackIter).second;
       delete pCallback;
-      (*iter2).second = NULL;
+      (*callbackIter).second = NULL;
    }
 }
 
@@ -113,15 +115,16 @@ StatusItemIDType CEAFStatusCenter::Add(CEAFStatusItem* pItem)
 
 bool CEAFStatusCenter::RemoveByID(StatusItemIDType id)
 {
-   Container::iterator iter;
-   for ( iter = m_Items.begin(); iter != m_Items.end(); iter++ )
+   Container::iterator itemIter(m_Items.begin());
+   Container::iterator itemIterEnd(m_Items.end());
+   for ( ; itemIter != itemIterEnd; itemIter++ )
    {
-      CEAFStatusItem* pItem = *iter;
+      CEAFStatusItem* pItem = *itemIter;
       if ( pItem->GetID() == id && m_pCurrentItem != pItem )
       {
          delete pItem;
          pItem = NULL;
-         m_Items.erase(iter);
+         m_Items.erase(itemIter);
          NotifyRemoved(id);
          return true;
       }
@@ -141,7 +144,9 @@ bool CEAFStatusCenter::RemoveByIndex(CollectionIndexType index)
 
    Container::iterator iter = m_Items.begin();
    for ( CollectionIndexType i = 0; i <= index; i++ )
+   {
       iter++;
+   }
 
    CEAFStatusItem* pItem = *iter;
    if ( m_pCurrentItem != pItem )
@@ -169,9 +174,11 @@ bool CEAFStatusCenter::RemoveByStatusGroupID(StatusGroupIDType id)
    Container items = m_Items;
    m_Items.clear();
 
-   for ( iter = items.begin(); iter != items.end(); iter++)
+   Container::iterator itemIter(items.begin());
+   Container::iterator itemIterEnd(items.end());
+   for ( ; itemIter != itemIterEnd; itemIter++ )
    {
-      CEAFStatusItem* pItem = *iter;
+      CEAFStatusItem* pItem = *itemIter;
       if ( pItem->GetStatusGroupID() == id )
       {
          if ( m_pCurrentItem != pItem )
@@ -199,10 +206,11 @@ bool CEAFStatusCenter::RemoveByStatusGroupID(StatusGroupIDType id)
 
 CEAFStatusItem* CEAFStatusCenter::GetByID(StatusItemIDType id)
 {
-   Container::iterator iter;
-   for ( iter = m_Items.begin(); iter != m_Items.end(); iter++ )
+   Container::iterator itemIter(m_Items.begin());
+   Container::iterator itemIterEnd(m_Items.end());
+   for ( ; itemIter != itemIterEnd; itemIter++ )
    {
-      CEAFStatusItem* pItem = *iter;
+      CEAFStatusItem* pItem = *itemIter;
       if ( pItem->GetID() == id )
          return pItem;
    }
@@ -217,7 +225,9 @@ CEAFStatusItem* CEAFStatusCenter::GetByIndex(CollectionIndexType index)
 
    Container::iterator iter = m_Items.begin();
    for ( CollectionIndexType i = 0; i < index; i++ )
+   {
       iter ++;
+   }
 
    return *iter;
 }
@@ -231,10 +241,11 @@ eafTypes::StatusSeverityType CEAFStatusCenter::GetSeverity()
 {
    eafTypes::StatusSeverityType severity = eafTypes::statusOK;
 
-   Container::iterator iter;
-   for ( iter = m_Items.begin(); iter != m_Items.end(); iter++ )
+   Container::iterator itemIter(m_Items.begin());
+   Container::iterator itemIterEnd(m_Items.end());
+   for ( ; itemIter != itemIterEnd; itemIter++ )
    {
-      CEAFStatusItem* pItem = *iter;
+      CEAFStatusItem* pItem = *itemIter;
       severity = _cpp_max(severity, GetSeverity(pItem->GetCallbackID()));
    }
 
@@ -258,8 +269,9 @@ void CEAFStatusCenter::NotifyAdded(CEAFStatusItem* pNewItem)
    if ( !IsEnabled() )
       return;
 
-   Sinks::iterator iter;
-   for ( iter = m_Sinks.begin(); iter != m_Sinks.end(); iter++ )
+   Sinks::iterator iter(m_Sinks.begin());
+   Sinks::iterator end(m_Sinks.end());
+   for ( ; iter != end; iter++ )
    {
       IEAFStatusCenterEventSink* pSink = *iter;
       pSink->OnStatusItemAdded(pNewItem);
@@ -271,8 +283,9 @@ void CEAFStatusCenter::NotifyRemoved(StatusItemIDType id)
    if ( !IsEnabled() )
       return;
 
-   Sinks::iterator iter;
-   for ( iter = m_Sinks.begin(); iter != m_Sinks.end(); iter++ )
+   Sinks::iterator iter(m_Sinks.begin());
+   Sinks::iterator end(m_Sinks.end());
+   for ( ; iter != end; iter++ )
    {
       IEAFStatusCenterEventSink* pSink = *iter;
       pSink->OnStatusItemRemoved(id);

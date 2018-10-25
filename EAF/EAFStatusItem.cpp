@@ -38,6 +38,10 @@ m_Description(strDescription), m_bRemoveAfterEdit(false)
    m_ID = INVALID_ID;
 }
 
+CEAFStatusItem::~CEAFStatusItem()
+{
+}
+
 void CEAFStatusItem::SetID(StatusItemIDType id)
 {
    m_ID = id;

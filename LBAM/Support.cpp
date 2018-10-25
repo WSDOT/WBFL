@@ -222,6 +222,29 @@ STDMETHODIMP CSupport::putref_DistributionFactor(IDistributionFactor *newVal)
 	return S_OK;
 }
 
+STDMETHODIMP CSupport::AddAssociatedSupport(/*[in]*/SupportIDType id)
+{
+   m_AssociatedSupportIDs.push_back(id);
+   return S_OK;
+}
+
+STDMETHODIMP CSupport::GetAssociatedSupportCount(/*[out,retval]*/SupportIndexType* pCount)
+{
+   CHECK_RETVAL(pCount);
+   *pCount = m_AssociatedSupportIDs.size();
+   return S_OK;
+}
+
+STDMETHODIMP CSupport::GetAssociatedSupportID(/*[in]*/IndexType index,/*[out,retval]*/SupportIDType* pID)
+{
+   CHECK_RETVAL(pID);
+   if ( index == INVALID_INDEX || m_AssociatedSupportIDs.size() <= index )
+      return E_INVALIDARG;
+
+   *pID = m_AssociatedSupportIDs[index];
+   return S_OK;
+}
+
 STDMETHODIMP CSupport::get_TopRelease(VARIANT_BOOL *pVal)
 {
    CHECK_RETVAL(pVal);
@@ -538,6 +561,32 @@ STDMETHODIMP CSupport::Load(IStructuredLoad2 * pload)
          return hr;
 
       m_pSegments->Load(pload);
+
+
+      hr = pload->BeginUnit(_T("AssociatedSupports"));
+      var.Clear();
+      hr = pload->get_Property(_T("Count"),&var);
+      if ( FAILED(hr) )
+         return hr;
+      
+      IndexType count = VARIANT2INDEX(var);
+      m_AssociatedSupportIDs.clear();
+      for ( IndexType i = 0; i < count; i++ )
+      {
+         var.Clear();
+         hr = pload->get_Property(_T("SupportID"),&var);
+         if ( FAILED(hr) )
+            return hr;
+
+         m_AssociatedSupportIDs.push_back(VARIANT2ID(var));
+      }
+      VARIANT_BOOL eb;
+      hr = pload->EndUnit(&eb); // Associated Supports
+      if (FAILED(hr))
+         return hr;
+
+      if (eb!=VARIANT_TRUE)
+         return STRLOAD_E_INVALIDFORMAT;
    }
 
    VARIANT_BOOL eb;
@@ -582,6 +631,16 @@ STDMETHODIMP CSupport::Save(IStructuredSave2 * psave)
       hr = psave->put_Property(CComBSTR("DistributionFactor"),_variant_t(m_DistributionFactor));
       
       m_pSegments->Save(psave);
+
+      hr = psave->BeginUnit(_T("AssociatedSupports"),1.0);
+      hr = psave->put_Property(_T("Count"),_variant_t(m_AssociatedSupportIDs.size()));
+      std::vector<SupportIDType>::iterator iter(m_AssociatedSupportIDs.begin());
+      std::vector<SupportIDType>::iterator end(m_AssociatedSupportIDs.end());
+      for ( ; iter != end; iter++ )
+      {
+         hr = psave->put_Property(_T("SupportID"),_variant_t(*iter));
+      }
+      hr = psave->EndUnit(); // Associated Supports
 
       hr = psave->EndUnit();
    }
@@ -649,6 +708,8 @@ STDMETHODIMP CSupport::Clone(ISupport **clone)
    hr = m_pSegments->Copy( pnew->m_pSegments );
    if (FAILED(hr))
       return hr;
+
+   pnew->m_AssociatedSupportIDs = m_AssociatedSupportIDs;
 
    return spsm.CopyTo(clone);
 }

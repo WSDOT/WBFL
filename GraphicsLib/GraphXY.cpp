@@ -631,8 +631,8 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
    if ( m_XAxis.GetScale() == grAxisXY::INTEGRAL )
    {
       client_left = 1;
-      client_right = (Float64)nMaxDataPoints;
       inc = 1;
+      client_right = max(client_left+inc,(Float64)nMaxDataPoints);
       m_XAxis.SetForcedAxisRange(client_left,client_right,inc);
    }
    else

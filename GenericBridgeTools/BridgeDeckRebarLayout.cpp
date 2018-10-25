@@ -61,6 +61,8 @@ HRESULT CBridgeDeckRebarLayout::FinalConstruct()
 void CBridgeDeckRebarLayout::FinalRelease()
 {
    m_EffFlangeTool.Release();
+   m_BridgeGeometryTool.Release();
+   m_Bridge.Detach();
 }
 
 STDMETHODIMP CBridgeDeckRebarLayout::InterfaceSupportsErrorInfo(REFIID riid)
@@ -117,7 +119,7 @@ HRESULT CBridgeDeckRebarLayout::DoLoadItem(IStructuredLoad2* load,IRebarPattern*
 STDMETHODIMP CBridgeDeckRebarLayout::putref_Bridge(IGenericBridge* pBridge)
 {
    CHECK_IN(pBridge);
-   m_Bridge = pBridge;
+   m_Bridge.Attach(pBridge); // does not call add ref
    return S_OK;
 }
 

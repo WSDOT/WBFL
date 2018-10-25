@@ -309,6 +309,7 @@ STDMETHODIMP_(void) CDisplayListImpl::DrawGravityWells(CDC* pDC)
 
 void CDisplayListImpl::RegisterEventSink(iDisplayListEvents* pEventSink)
 {
+   UnregisterEventSink();
    m_EventSink = pEventSink;
 }
 

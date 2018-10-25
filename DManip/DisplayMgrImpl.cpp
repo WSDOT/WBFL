@@ -882,8 +882,9 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnMouseMove(UINT nFlags, CPoint point)
       DisplayObjectContainer dispObjs;
       FindDisplayObjects(point,&dispObjs);
 
-      DisplayObjectContainer::iterator iter;
-      for ( iter = dispObjs.begin(); iter != dispObjs.end(); iter++ )
+      DisplayObjectContainer::iterator iter(dispObjs.begin());
+      DisplayObjectContainer::iterator end(dispObjs.end());
+      for ( ; iter != end; iter++ )
       {
          CComPtr<iDisplayObject> pDO = *iter;
          if(pDO->OnMouseMove(nFlags,point))
@@ -1227,9 +1228,14 @@ STDMETHODIMP_(void) CDisplayMgrImpl::DestroyDragObjects()
    m_DragList.clear();
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::SetDropSite(iDropSite* pDropSite)
+STDMETHODIMP_(void) CDisplayMgrImpl::RegisterDropSite(iDropSite* pDropSite)
 {
    m_pDropSite = pDropSite;
+}
+
+STDMETHODIMP_(void) CDisplayMgrImpl::UnregisterDropSite()
+{
+   m_pDropSite = 0;
 }
 
 STDMETHODIMP_(void) CDisplayMgrImpl::GetDropSite(iDropSite** dropSite)
@@ -1365,7 +1371,9 @@ STDMETHODIMP_(void) CDisplayMgrImpl::SetTask(iTask* pTask)
    m_pCurrTask = pTask;
 
    if ( m_pCurrTask )
+   {
       m_pCurrTask->Start();
+   }
 }
 
 void CDisplayMgrImpl::GetBoundingBox(iCoordinateMap* pMap, bool boundOrigin, IRect2d** pRect)
@@ -1534,6 +1542,7 @@ STDMETHODIMP_(void) CDisplayMgrImpl::OnDisplayObjectsCleared(IDType listID)
 
 void CDisplayMgrImpl::RegisterEventSink(iDisplayMgrEvents* pEventSink)
 {
+   UnregisterEventSink();
    m_EventSink = pEventSink;
 }
 
