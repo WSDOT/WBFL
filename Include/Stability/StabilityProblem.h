@@ -121,6 +121,10 @@ public:
 
    // returns an analysis point
    virtual const stbIAnalysisPoint* GetAnalysisPoint(IndexType idx) const = 0;
+
+   // returns true if stresses are to be evaluted in the tilted equilibrium condition
+   virtual bool EvaluateStressesAtEquilibriumAngle() const = 0;
+
 };
 
 
@@ -134,10 +138,6 @@ DESCRIPTION
 class STABILITYCLASS stbILiftingStabilityProblem : public stbIStabilityProblem
 {
 public:
-   // returns true if stresses are to be evaluted for a plumb girder
-   // otherwise stresses are evaluted in the tilted equilibrium condition
-   virtual bool EvaluateStressesForPlumbGirder() const = 0;
-
    // returns the angle of lift cables, measured from the horizontal
    // will return PI_OVER_2 for a vertical lift
    virtual Float64 GetLiftAngle() const = 0; 

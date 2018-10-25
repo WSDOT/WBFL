@@ -292,6 +292,8 @@ stbStabilityProblemImp::stbStabilityProblemImp()
 
    m_WindLoadType = stbTypes::Speed;
    m_WindLoad = 0.;
+
+   m_bComputeStressesAtEquilibriumAngle = true;
 }
 
 stbStabilityProblemImp::stbStabilityProblemImp(const stbStabilityProblemImp& other)
@@ -368,6 +370,9 @@ bool stbStabilityProblemImp::operator==(const stbStabilityProblemImp& other) con
       return false;
 
    if ( !IsEqual(m_WindLoad,other.m_WindLoad) )
+      return false;
+
+   if (m_bComputeStressesAtEquilibriumAngle != other.m_bComputeStressesAtEquilibriumAngle)
       return false;
 
    return true;
@@ -765,6 +770,16 @@ bool stbStabilityProblemImp::CompareAnalysisPoints(const stbStabilityProblemImp&
    return true;
 }
 
+void stbStabilityProblemImp::EvaluateStressesAtEquilibriumAngle(bool bStressesAtEquilibrium)
+{
+   m_bComputeStressesAtEquilibriumAngle = bStressesAtEquilibrium;
+}
+
+bool stbStabilityProblemImp::EvaluateStressesAtEquilibriumAngle() const
+{
+   return m_bComputeStressesAtEquilibriumAngle;
+}
+
 void stbStabilityProblemImp::MakeCopy(const stbStabilityProblemImp& other)
 {
    ClearAnalysisPoints();
@@ -800,6 +815,8 @@ void stbStabilityProblemImp::MakeCopy(const stbStabilityProblemImp& other)
 
    m_WindLoadType = other.m_WindLoadType;
    m_WindLoad = other.m_WindLoad;
+
+   m_bComputeStressesAtEquilibriumAngle = other.m_bComputeStressesAtEquilibriumAngle;
 }
 
 void stbStabilityProblemImp::MakeAssignment(const stbStabilityProblemImp& other)
@@ -812,7 +829,6 @@ void stbStabilityProblemImp::MakeAssignment(const stbStabilityProblemImp& other)
 
 stbLiftingStabilityProblem::stbLiftingStabilityProblem()
 {
-   m_bPlumbGirderStresses = false;
    m_LiftAngle = PI_OVER_2;
 }
 
@@ -837,9 +853,6 @@ stbLiftingStabilityProblem& stbLiftingStabilityProblem::operator=(const stbLifti
 
 bool stbLiftingStabilityProblem::operator==(const stbLiftingStabilityProblem& other) const
 {
-   if ( m_bPlumbGirderStresses != other.m_bPlumbGirderStresses )
-      return false;
-
    if ( !IsEqual(m_LiftAngle,other.m_LiftAngle) )
       return false;
 
@@ -864,20 +877,9 @@ Float64 stbLiftingStabilityProblem::GetLiftAngle() const
    return m_LiftAngle;
 }
 
-void stbLiftingStabilityProblem::EvaluateStressesForPlumbGirder(bool bPlumbStresses)
-{
-   m_bPlumbGirderStresses = bPlumbStresses;
-}
-
-bool stbLiftingStabilityProblem::EvaluateStressesForPlumbGirder() const
-{
-   return m_bPlumbGirderStresses;
-}
-
 void stbLiftingStabilityProblem::MakeCopy(const stbLiftingStabilityProblem& other)
 {
    m_Imp = other.m_Imp;
-   m_bPlumbGirderStresses = other.m_bPlumbGirderStresses;
    m_LiftAngle = other.m_LiftAngle;
 }
 

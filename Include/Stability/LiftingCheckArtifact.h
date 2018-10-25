@@ -40,13 +40,13 @@ class STABILITYCLASS stbLiftingCheckArtifact
 {
 public:
    stbLiftingCheckArtifact();
-   stbLiftingCheckArtifact(const stbLiftingResults& results,const stbLiftingCriteria& criteria,bool bPlumbGirderStresses);
-   void Init(const stbLiftingResults& results,const stbLiftingCriteria& criteria,bool bPlumbGirderStresses);
+   stbLiftingCheckArtifact(const stbLiftingResults& results,const stbLiftingCriteria& criteria,bool bComputeStressesAtEquilibriumAngle);
+   void Init(const stbLiftingResults& results,const stbLiftingCriteria& criteria,bool bComputeStressesAtEquilibriumAngle);
 
    const stbLiftingResults& GetLiftingResults() const;
    const stbLiftingCriteria& GetCriteria() const;
 
-   bool PlumbGirderStressesEvaluated() const;
+   bool EvaluateStressesAtEquilibriumAngle() const;
 
    void GetControllingTensionCase(const stbLiftingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const;
    void GetControllingCompressionCase(const stbLiftingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const;
@@ -70,5 +70,5 @@ public:
 protected:
    stbLiftingResults m_Results;
    stbLiftingCriteria m_Criteria;
-   bool m_bPlumbGirderStresses;
+   bool m_bComputeStressesAtEquilibriumAngle;
 };

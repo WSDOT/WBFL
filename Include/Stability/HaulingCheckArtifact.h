@@ -40,11 +40,13 @@ class STABILITYCLASS stbHaulingCheckArtifact
 {
 public:
    stbHaulingCheckArtifact();
-   stbHaulingCheckArtifact(const stbHaulingResults& results,const stbHaulingCriteria& criteria);
-   void Init(const stbHaulingResults& results,const stbHaulingCriteria& criteria);
+   stbHaulingCheckArtifact(const stbHaulingResults& results,const stbHaulingCriteria& criteria,bool bComputeStressesAtEquilibriumAngle);
+   void Init(const stbHaulingResults& results,const stbHaulingCriteria& criteria,bool bComputeStressesAtEquilibriumAngle);
 
    const stbHaulingResults& GetHaulingResults() const;
    const stbHaulingCriteria& GetCriteria() const;
+
+   bool EvaluateStressesAtEquilibriumAngle() const;
 
    void GetControllingTensionCase(stbTypes::HaulingSlope slope,const stbHaulingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const;
    void GetControllingCompressionCase(stbTypes::HaulingSlope slope,const stbHaulingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const;
@@ -54,6 +56,9 @@ public:
    bool PassedCrackingCheck(stbTypes::HaulingSlope slope) const;
    bool PassedFailureCheck(stbTypes::HaulingSlope slope) const;
    bool PassedRolloverCheck(stbTypes::HaulingSlope slope) const;
+   bool PassedDirectStressCheck(stbTypes::HaulingSlope slope) const;
+   bool PassedDirectCompressionCheck(stbTypes::HaulingSlope slope) const;
+   bool PassedDirectTensionCheck(stbTypes::HaulingSlope slope) const;
    bool PassedStressCheck(stbTypes::HaulingSlope slope) const;
    bool PassedCompressionCheck(stbTypes::HaulingSlope slope) const;
    bool PassedTensionCheck(stbTypes::HaulingSlope slope) const;
@@ -71,4 +76,5 @@ public:
 protected:
    stbHaulingResults m_Results;
    stbHaulingCriteria m_Criteria;
+   bool m_bComputeStressesAtEquilibriumAngle;
 };

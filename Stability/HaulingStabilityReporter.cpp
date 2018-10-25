@@ -305,19 +305,15 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
          Float64 cd;
          pArtifact->GetControllingTensionCase(slope,sectionResult,&impact,&wind,&corner,&fAllow,&bPassed,&cd);
 
-#if defined MATCH_OLD_ANALYSIS
          Float64 f;
-         if ( slope == stbTypes::CrownSlope )
-         {
-            f = sectionResult.fDirect[slope][impact][wind][corner];
-         }
-         else
+         if (pStabilityProblem->EvaluateStressesAtEquilibriumAngle())
          {
             f = sectionResult.f[slope][impact][wind][corner];
          }
-#else
-         Float64 f = sectionResult.f[slope][impact][wind][corner];
-#endif
+         else
+         {
+            f = sectionResult.fDirect[slope][impact][wind][corner];
+         }
 
          (*pStressTable)(row,col++) << stress.SetValue(f);
          (*pStressTable)(row,col++) << strCorner[corner];
@@ -351,18 +347,15 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
          // compression status
          pArtifact->GetControllingCompressionCase(slope,sectionResult,&impact,&wind,&corner,&fAllow,&bPassed,&cd);
 
-#if defined MATCH_OLD_ANALYSIS
-         if ( slope == stbTypes::CrownSlope )
-         {
-            f = sectionResult.fDirect[slope][impact][wind][corner];
-         }
-         else
+         if (pStabilityProblem->EvaluateStressesAtEquilibriumAngle())
          {
             f = sectionResult.f[slope][impact][wind][corner];
          }
-#else
-         f = sectionResult.f[slope][impact][wind][corner];
-#endif
+         else
+         {
+            f = sectionResult.fDirect[slope][impact][wind][corner];
+         }
+
          (*pStressTable)(row,col++) << stress.SetValue(f);
          (*pStressTable)(row,col++) << strCorner[corner];
          if ( bLabelImpact )

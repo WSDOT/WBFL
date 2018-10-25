@@ -296,13 +296,13 @@ void stbLiftingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       pArtifact->GetControllingTensionCase(sectionResult,&impact,&wind,&corner,&fAllow,&bPassed,&cd);
 
       Float64 f;
-      if ( pStabilityProblem->EvaluateStressesForPlumbGirder() )
+      if ( pStabilityProblem->EvaluateStressesAtEquilibriumAngle() )
       {
-         f = sectionResult.fDirect[impact][wind][corner];
+         f = sectionResult.f[impact][wind][corner];
       }
       else
       {
-         f = sectionResult.f[impact][wind][corner];
+         f = sectionResult.fDirect[impact][wind][corner];
       }
       (*pStressTable)(row,col++) << stress.SetValue(f);
       (*pStressTable)(row,col++) << strCorner[corner];
@@ -336,13 +336,13 @@ void stbLiftingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       // compression status
       pArtifact->GetControllingCompressionCase(sectionResult,&impact,&wind,&corner,&fAllow,&bPassed,&cd);
 
-      if ( pStabilityProblem->EvaluateStressesForPlumbGirder() )
+      if ( pStabilityProblem->EvaluateStressesAtEquilibriumAngle() )
       {
-         f = sectionResult.fDirect[impact][wind][corner];
+         f = sectionResult.f[impact][wind][corner];
       }
       else
       {
-         f = sectionResult.f[impact][wind][corner];
+         f = sectionResult.fDirect[impact][wind][corner];
       }
       (*pStressTable)(row,col++) << stress.SetValue(f);
       (*pStressTable)(row,col++) << strCorner[corner];
