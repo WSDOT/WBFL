@@ -56,6 +56,7 @@ m_Fc28(0),
 m_Ec28(0),
 m_bUserEc(false),
 m_bIsValid(false),
+m_bCorrectionFactorsValidated(false),
 m_Eshu(-780E-6),
 m_Cu(2.35)
 {
@@ -65,6 +66,7 @@ matACI209Concrete::matACI209Concrete(const matACI209Concrete& rOther) :
 matConcreteBase(rOther)
 {
    m_bIsValid = false;
+   m_bCorrectionFactorsValidated = false;
    m_Fc28     = rOther.m_Fc28;
    m_Ec28     = rOther.m_Ec28;
    m_bUserEc  = rOther.m_bUserEc;
@@ -223,7 +225,7 @@ Float64 matACI209Concrete::GetShearFr(Float64 t) const
 
 Float64 matACI209Concrete::GetFreeShrinkageStrain(Float64 t) const
 {
-   Validate();
+   ValidateCorrectionFactors();
 
    // age of the concrete at time t (duration of time after casting)
    Float64 concrete_age = GetAge(t);
@@ -266,7 +268,7 @@ Float64 matACI209Concrete::GetFreeShrinkageStrain(Float64 t) const
 
 Float64 matACI209Concrete::GetCreepCoefficient(Float64 t,Float64 tla) const
 {
-   Validate();
+   ValidateCorrectionFactors();
 
    Float64 age_at_time_under_consideration = GetAge(t);
    Float64 age_at_loading = GetAge(tla);
@@ -325,7 +327,7 @@ void matACI209Concrete::SetUltimateShrinkageStrain(Float64 eu)
    if ( m_Eshu != eu )
    {
       m_Eshu = eu;
-      m_bIsValid = false;
+      m_bCorrectionFactorsValidated = false;
    }
 }
 
@@ -339,7 +341,7 @@ void matACI209Concrete::SetUltimateCreepCoefficient(Float64 cu)
    if ( m_Cu != cu )
    {
       m_Cu = cu;
-      m_bIsValid = false;
+      m_bCorrectionFactorsValidated = false;
    }
 }
 
@@ -350,32 +352,38 @@ Float64 matACI209Concrete::GetUltimateCreepCoefficient() const
 
 Float64 matACI209Concrete::GetRelativeHumidityFactorCreep() const
 {
-   Validate();
+   ValidateCorrectionFactors();
    return m_RHC;
 }
 
 Float64 matACI209Concrete::GetRelativeHumidityFactorShrinkage() const
 {
-   Validate();
+   ValidateCorrectionFactors();
    return m_RHS;
 }
 
 Float64 matACI209Concrete::GetInitialMoistCureFactor() const
 {
-   Validate();
+   ValidateCorrectionFactors();
    return m_CP;
 }
 
 Float64 matACI209Concrete::GetSizeFactorCreep() const
 {
-   Validate();
+   ValidateCorrectionFactors();
    return m_VSC;
 }
 
 Float64 matACI209Concrete::GetSizeFactorShrinkage() const
 {
-   Validate();
+   ValidateCorrectionFactors();
    return m_VSS;
+}
+
+void matACI209Concrete::OnChanged()
+{
+   m_bIsValid = false;
+   m_bCorrectionFactorsValidated = false;
 }
 
 void matACI209Concrete::Validate() const
@@ -394,6 +402,18 @@ void matACI209Concrete::Validate() const
    else
    {
       m_Ec = ModE(m_Fc28,GetStrengthDensity());
+   }
+
+   m_bIsValid = true;
+}
+
+void matACI209Concrete::ValidateCorrectionFactors() const
+{
+   Validate();
+
+   if ( m_bCorrectionFactorsValidated )
+   {
+      return;
    }
 
    // Initial Moist Cure (2.5.3)
@@ -449,12 +469,13 @@ void matACI209Concrete::Validate() const
    }
 
    // V/S ratio correction factor (2.5.5b)
+   ATLASSERT(0 < m_VS); // did you forget to set V/S ratio?
    Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
    m_VSC = (2.0/3.0)*(1.0 + 1.13*exp(-0.54*vs)); // creep (2-21)
    m_VSS = 1.2*exp(-0.12*vs);                    // shrinkage (2-22)
 
 
-   m_bIsValid = true;
+   m_bCorrectionFactorsValidated = true;
 }
 
 Float64 matACI209Concrete::GetFr(Float64 t) const

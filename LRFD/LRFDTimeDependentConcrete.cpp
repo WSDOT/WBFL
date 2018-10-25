@@ -379,6 +379,7 @@ Float64 lrfdLRFDTimeDependentConcrete::GetSizeFactorCreep(Float64 t,Float64 tla)
    Validate();
 
    Float64 ks;
+   ATLASSERT(0 < m_VS); // did you forget to set V/S ratio?
    if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
    {
       // LRFD 5.4.2.3.2-1
@@ -419,6 +420,7 @@ Float64 lrfdLRFDTimeDependentConcrete::GetSizeFactorShrinkage(Float64 t) const
    Validate();
 
    Float64 ks;
+   ATLASSERT(0 < m_VS); // did you forget to set V/S ratio?
    if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
    {
       // LRFD C5.4.2.3.3-1

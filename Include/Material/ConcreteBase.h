@@ -127,6 +127,8 @@ protected:
    matConcreteBase(const matConcreteBase& rOther);
    matConcreteBase& operator = (const matConcreteBase& rOther);
 
+   virtual void OnChanged();
+
    // Returns the age of the concrete at time t. Return value is < 0
    // if t is before casting
    Float64 GetAge(Float64 t) const;

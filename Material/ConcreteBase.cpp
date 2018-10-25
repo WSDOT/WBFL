@@ -48,7 +48,7 @@ m_Type(matConcreteBase::Normal),
 m_Fct(0),
 m_bHasFct(false),
 m_RelativeHumidity(40.0),
-m_VS(::ConvertToSysUnits(1.0,unitMeasure::Inch))
+m_VS(-9999)
 {
 }
 
@@ -75,7 +75,11 @@ matConcreteBase::~matConcreteBase()
 //======================== OPERATORS  =======================================
 void matConcreteBase::SetType(matConcreteBase::Type type)
 {
-   m_Type = type;
+   if ( m_Type != type )
+   {
+      m_Type = type;
+      OnChanged();
+   }
 }
 
 matConcreteBase::Type matConcreteBase::GetType() const
@@ -119,7 +123,11 @@ matConcreteBase::Type matConcreteBase::GetTypeFromName(LPCTSTR strName)
 
 void matConcreteBase::SetName(const std::_tstring& name)
 {
-   m_Name = name;
+   if ( m_Name != name )
+   {
+      m_Name = name; 
+      OnChanged();
+   }
 }
 
 std::_tstring matConcreteBase::GetName() const
@@ -129,7 +137,11 @@ std::_tstring matConcreteBase::GetName() const
 
 void matConcreteBase::SetAggSplittingStrength(Float64 fct)
 {
-   m_Fct = fct;
+   if ( m_Fct != fct )
+   {
+      m_Fct = fct;
+      OnChanged();
+   }
 }
 
 Float64 matConcreteBase::GetAggSplittingStrength() const
@@ -139,7 +151,11 @@ Float64 matConcreteBase::GetAggSplittingStrength() const
 
 void matConcreteBase::HasAggSplittingStrength(bool bHasFct)
 {
-   m_bHasFct = bHasFct;
+   if ( m_bHasFct != bHasFct )
+   {
+      m_bHasFct = bHasFct;
+      OnChanged();
+   }
 }
 
 bool matConcreteBase::HasAggSplittingStrength() const
@@ -149,7 +165,11 @@ bool matConcreteBase::HasAggSplittingStrength() const
 
 void matConcreteBase::SetStrengthDensity(Float64 density)
 {
-   m_StrengthDensity = density;
+   if ( m_StrengthDensity != density )
+   {
+      m_StrengthDensity = density;
+      OnChanged();
+   }
 }
 
 Float64 matConcreteBase::GetStrengthDensity() const
@@ -159,7 +179,11 @@ Float64 matConcreteBase::GetStrengthDensity() const
 
 void matConcreteBase::SetWeightDensity(Float64 density)
 {
-   m_WeightDensity = density;
+   if ( m_WeightDensity != density )
+   {
+      m_WeightDensity = density;
+      OnChanged();
+   }
 }
 
 Float64 matConcreteBase::GetWeightDensity() const
@@ -169,7 +193,11 @@ Float64 matConcreteBase::GetWeightDensity() const
 
 void matConcreteBase::SetMaxAggregateSize(Float64 size)
 {
-   m_MaxAggregateSize = size;
+   if ( m_MaxAggregateSize != size )
+   {
+      m_MaxAggregateSize = size;
+      OnChanged();
+   }
 }
 
 Float64 matConcreteBase::GetMaxAggregateSize() const
@@ -179,7 +207,11 @@ Float64 matConcreteBase::GetMaxAggregateSize() const
 
 void matConcreteBase::SetRelativeHumidity(Float64 rh)
 {
-   m_RelativeHumidity = rh;
+   if ( m_RelativeHumidity != rh )
+   {
+      m_RelativeHumidity = rh;   
+      OnChanged();
+   }
 }
 
 Float64 matConcreteBase::GetRelativeHumidity() const
@@ -189,7 +221,11 @@ Float64 matConcreteBase::GetRelativeHumidity() const
 
 void matConcreteBase::SetVSRatio(Float64 vs)
 {
-   m_VS = vs;
+   if ( m_VS != vs )
+   {
+      m_VS = vs;
+      OnChanged();
+   }
 }
 
 Float64 matConcreteBase::GetVSRatio() const
@@ -199,7 +235,11 @@ Float64 matConcreteBase::GetVSRatio() const
 
 void matConcreteBase::SetTimeAtCasting(Float64 time)
 {
-   m_TimeAtCasting = time;
+   if ( m_TimeAtCasting != time )
+   {
+      m_TimeAtCasting = time;
+      OnChanged();
+   }
 }
 
 Float64 matConcreteBase::GetTimeAtCasting() const
@@ -209,7 +249,11 @@ Float64 matConcreteBase::GetTimeAtCasting() const
 
 void matConcreteBase::SetCureTime(Float64 t)
 {
-   m_CureTime = t;
+   if ( m_CureTime != t )
+   {
+      m_CureTime = t;
+      OnChanged();
+   }
 }
 
 Float64 matConcreteBase::GetCureTime() const
@@ -219,12 +263,21 @@ Float64 matConcreteBase::GetCureTime() const
 
 void matConcreteBase::SetCureMethod(matConcreteBase::CureMethod method)
 {
-   m_CureMethod = method;
+   if ( m_CureMethod != method )
+   {
+      m_CureMethod = method;
+      OnChanged();
+   }
 }
 
 matConcreteBase::CureMethod matConcreteBase::GetCureMethod() const
 {
    return m_CureMethod;
+}
+
+void matConcreteBase::OnChanged()
+{
+   // by default, do nothing
 }
 
 Float64 matConcreteBase::GetAge(Float64 t) const

@@ -127,13 +127,15 @@ protected:
    matACI209Concrete(const matACI209Concrete& rOther);
    matACI209Concrete& operator = (const matACI209Concrete& rOther);
 
+   virtual void OnChanged();
+
 private:
    Float64 m_Eshu; // ultimate shrinkage strain
    Float64 m_Cu;   // ultimate creep coefficient
    Float64 m_Fc28;
    Float64 m_Ec28;
    Float64 m_A; // in system units
-   mutable Float64 m_Alpha; // convert to days
+   mutable Float64 m_Alpha; // converted to days
    Float64 m_Beta; // unitless
    bool m_bUserEc;
 
@@ -148,6 +150,9 @@ private:
 
    mutable bool m_bIsValid;
    void Validate() const;
+
+   mutable bool m_bCorrectionFactorsValidated;
+   void ValidateCorrectionFactors() const;
 
    Float64 GetFr(Float64 t) const;
    Float64 ModE(Float64 fc,Float64 density) const;
