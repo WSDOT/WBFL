@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2013  Washington State Department of Transportation
+Copyright © 1999-2014, Washington State Department of Transportation, All Rights Reserved
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -203,9 +203,8 @@ BOOL CNewProjectDlg::OnInitDialog()
       hSelectedItem = m_ctrlProjectTypes.GetNextItem(TVI_ROOT, TVGN_ROOT);
    VERIFY(m_ctrlProjectTypes.SelectItem(hSelectedItem));
 
-
-   // Expand the entire tree 
-   ExpandProjectTypes();
+   // Expand the selected branch in the tree
+   ExpandProjectType(hSelectedItem);
 
    SetOKButtonState();
 
@@ -215,12 +214,17 @@ BOOL CNewProjectDlg::OnInitDialog()
    // EXCEPTION: OCX Property Pages should return FALSE
 }
 
+void CNewProjectDlg::ExpandProjectType(HTREEITEM hItem)
+{
+   m_ctrlProjectTypes.Expand(hItem,TVE_EXPAND);
+}
+
 void CNewProjectDlg::ExpandProjectTypes()
 {
    HTREEITEM hItem = m_ctrlProjectTypes.GetFirstVisibleItem();
    while (hItem )
    {
-      m_ctrlProjectTypes.Expand(hItem,TVE_EXPAND);
+      ExpandProjectType(hItem);
       hItem = m_ctrlProjectTypes.GetNextVisibleItem(hItem);
    }
 }

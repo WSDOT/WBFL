@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Units - Unit conversion and system unit management service
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2014, Washington State Department of Transportation, All Rights Reserved
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
