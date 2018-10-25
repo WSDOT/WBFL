@@ -41,6 +41,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+
 /////////////////////////////////////////////////////////////////////////////
 // CPath
 HRESULT CPath::FinalConstruct()
@@ -169,7 +170,7 @@ STDMETHODIMP CPath::Insert(CollectionIndexType idx, IPathElement* element)
    m_coll.insert(m_coll.begin() + idx,std::make_pair(dwCookie,CComVariant(element)) );
 
    m_PathElements.clear();
-
+   
    Fire_OnPathChanged(this);
    return S_OK;
 }
@@ -291,7 +292,7 @@ STDMETHODIMP CPath::Remove(VARIANT varID)
    }
 
    m_PathElements.clear();
-
+   
    Fire_OnPathChanged(this);
 	return S_OK;
 }
@@ -742,16 +743,23 @@ void CPath::FindElement(Float64 distance,Float64* pBeginDist,IPathElement* *pEle
    testElement.end   = distance;
 
    std::vector<Element>& vElements = GetPathElements();
-   std::vector<Element>::iterator lowerBound = std::lower_bound(vElements.begin(), vElements.end(), testElement, [](const auto& v1, const auto& v2) {return v1.end < v2.start;});
+
+   // NOTE: lower_bound performs a binary search
+   std::vector<Element>::iterator lowerBound = std::lower_bound(vElements.begin(), vElements.end(), testElement, [](const auto& v1, const auto& v2) {return IsLE(v1.end,v2.start);});
    if ( lowerBound == vElements.end() )
    {
-      if ( distance < vElements.front().start )
+      if ( IsLE(distance,vElements.front().start) )
       {
          lowerBound = vElements.begin();
       }
-      else if ( vElements.back().end < distance )
+      else if ( IsLE(vElements.back().end,distance) )
       {
          lowerBound = vElements.end()-1;
+      }
+      else
+      {
+         ATLASSERT(vElements.size() == 1);
+         lowerBound = vElements.begin();
       }
    }
    Element& element(*lowerBound);
@@ -1105,10 +1113,8 @@ std::vector<Element>& CPath::GetPathElements()
             }
             else if ( prevType == petHorzCurve )
             {
-               CComQIPtr<IHorzCurve> prevHC(prevVal);
-               CComPtr<IPoint2d> st;
-               prevHC->get_ST(&st);
-               st.QueryInterface(&prevPoint);
+               // if previous type is a horizontal curve, then it projected a line
+               // to this point... nothing left to do
             }
             else if ( prevType == petCubicSpline )
             {
@@ -1151,7 +1157,7 @@ std::vector<Element>& CPath::GetPathElements()
          }
          else if ( lastType == petLineSegment || lastType == petHorzCurve || lastType == petCubicSpline )
          {
-            // The last element is a line segment or horz curve... Simply return that element
+            // The last element is a line segment, horiz curve, or spline... Simply add the last element
             Float64 length = GetElementLength(lastElement);
             Element myElement;
             myElement.start = currDist;
@@ -1439,6 +1445,14 @@ void CPath::ProjectPointOnElement(IPoint2d* point,IPathElement* pElement,IPoint2
       {
          CComPtr<IPoint2d> p;
          m_GeomUtil->PointOnLineNearest(line,point,&p);
+         if (p->SameLocation(start) == S_OK)
+         {
+            p->MoveEx(start);
+         }
+         else if (p->SameLocation(end) == S_OK)
+         {
+            p->MoveEx(end);
+         }
          p.QueryInterface(pNewPoint);
       }
       else
@@ -1575,8 +1589,8 @@ bool CPath::DoesPointProjectOntoElement(IPoint2d* point,IPathElement* element,bo
    // and the point ends up not being projected onto anything. This is
    // a bug. Just leave x1 alone.
    //// Supress round off error
-   //x1 = IsZero(x1) ? 0.00 : x1;
-   x2 = IsZero(x2) ? 0.00 : x2;
+   x1 = IsZero(x1) && BinarySign(x1) < 0 ? 0.00 : x1;
+   //x2 = IsZero(x2) && 0 < BinarySign(x2) ? 0.00 : x2;
 
    // Adjust mapping if the element is to be extended
    if ( bExtendBack )
@@ -1589,7 +1603,7 @@ bool CPath::DoesPointProjectOntoElement(IPoint2d* point,IPathElement* element,bo
       x2 = 1;
    }
 
-   if ( 0 < x1 && 0 <= x2 )
+   if ( 0 <= x1 && 0 < x2 )
    {
       bDoesProject = true;
    }

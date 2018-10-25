@@ -77,8 +77,11 @@ protected:
    afx_msg void OnBack();
    afx_msg void OnForward();
 
-   afx_msg void OnNavigate(NMHDR* pNotifyStruct,LRESULT* result);
+   afx_msg void OnBeforeNavigate(NMHDR* pNotifyStruct, LRESULT* result);
+   afx_msg void OnAfterNavigate(NMHDR* pNotifyStruct, LRESULT* result);
    afx_msg void OnCmenuSelected(UINT id);
+
+   afx_msg void OnTimer(UINT_PTR nIDEvent);
 
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

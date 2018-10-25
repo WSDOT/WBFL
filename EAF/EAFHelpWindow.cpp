@@ -43,6 +43,9 @@ static UINT indicators[] =
    ID_SEPARATOR,
 };
 
+#define ID_NAVIGATION_TIMER 1000
+static const UINT gs_NavigationTimeout = 10000; // timeout in milliseconds (10,000 = 10 sec)
+
 /////////////////////////////////////////////////////////////////////////////
 // CEAFHelpWindow
 
@@ -69,8 +72,10 @@ BEGIN_MESSAGE_MAP(CEAFHelpWindow, CFrameWnd)
    ON_COMMAND(ID_FILE_PRINT,OnFilePrint)
    ON_COMMAND(EAFID_HELPWND_BACK,OnBack)
    ON_COMMAND(EAFID_HELPWND_FORWARD,OnForward)
-   ON_NOTIFY(CWebBrowser::BeforeNavigate2,AFX_IDW_PANE_FIRST,OnNavigate)
+   ON_NOTIFY(CWebBrowser::BeforeNavigate2, AFX_IDW_PANE_FIRST, OnBeforeNavigate)
+   ON_NOTIFY(CWebBrowser::DocumentComplete, AFX_IDW_PANE_FIRST, OnAfterNavigate)
    ON_COMMAND_RANGE(CCS_CMENU_BASE, CCS_CMENU_MAX, OnCmenuSelected)
+   ON_WM_TIMER()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -189,10 +194,35 @@ void CEAFHelpWindow::OnForward()
    m_WebBrowser.GoForward();
 }
 
-void CEAFHelpWindow::OnNavigate(NMHDR* pNotifyStruct,LRESULT* result)
+void CEAFHelpWindow::OnBeforeNavigate(NMHDR* pNotifyStruct,LRESULT* result)
 {
    CWebBrowser::Notification* pNotification = (CWebBrowser::Notification*)(pNotifyStruct);
    m_StatusBar.SetPaneText(0,pNotification->URL);
+   SetTimer(ID_NAVIGATION_TIMER, gs_NavigationTimeout,nullptr);
+}
+
+void CEAFHelpWindow::OnAfterNavigate(NMHDR* pNotifyStruct, LRESULT* result)
+{
+   // navigation was successful so kill the timer
+   KillTimer(ID_NAVIGATION_TIMER);
+}
+
+void CEAFHelpWindow::OnTimer(UINT_PTR nIDEvent)
+{
+   if (nIDEvent == ID_NAVIGATION_TIMER)
+   {
+      // the timer went off and we aren't dont navigating... kill the navigation
+      m_WebBrowser.Stop();
+      CEAFApp* pApp = EAFGetApp();
+      if (pApp->UseOnlineDocumentation())
+      {
+         if (AfxMessageBox(_T("Unable to access online documentation, would you like to use the local documentation?"), MB_YESNO | MB_ICONQUESTION) == IDYES)
+         {
+            pApp->UseOnlineDocumentation(FALSE);
+            AfxMessageBox(_T("Documentation has been switch to the local source."));
+         }
+      }
+   }
 }
 
 void CEAFHelpWindow::OnCmenuSelected(UINT id)
