@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // CORE - Core elements of the Agent-Broker Architecture
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -115,27 +115,26 @@ void CProgressDlg::OnCancel()
 
 BOOL CProgressDlg::OnInitDialog() 
 {
-   AFX_MANAGE_STATE(AfxGetStaticModuleState());
-
    CDialog::OnInitDialog();
 
+   AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
-   //// disable the main window
-   //if (m_hMainWnd==0)
-   //{
-   //   // for some reason, only the first call to this function succeeds. 
-   //   // later calls fail so...
-   //	AFX_MANAGE_STATE(AfxGetAppModuleState());
-   //   CWnd* pwnd = ::AfxGetMainWnd();
-   //   CHECK(pwnd!=0);
-   //   m_hMainWnd = pwnd->GetSafeHwnd();
-   //   CHECK(m_hMainWnd!=0);
-   //}
+   // disable the main window
+   if (m_hMainWnd==0)
+   {
+      // for some reason, only the first call to this function succeeds. 
+      // later calls fail so...
+   	AFX_MANAGE_STATE(AfxGetAppModuleState());
+      CWnd* pwnd = ::AfxGetMainWnd();
+      ASSERT(pwnd!=0);
+      m_hMainWnd = pwnd->GetSafeHwnd();
+      ASSERT(m_hMainWnd!=0);
+   }
 
-   //::EnableWindow(m_hMainWnd, FALSE);
+   ::EnableWindow(m_hMainWnd, FALSE);
 
    m_Animate.Open(IDR_ANIMATE);
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -144,9 +143,10 @@ void CProgressDlg::OnDestroy()
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
    // re-enable the main application window
-   //CHECK(m_hMainWnd);
-   //::EnableWindow(m_hMainWnd, TRUE);
-   //::SetActiveWindow(m_hMainWnd);
+   ASSERT(m_hMainWnd);
+   ::EnableWindow(m_hMainWnd, TRUE);
+   ::SetActiveWindow(m_hMainWnd);
+
 
 	CDialog::OnDestroy();
 }

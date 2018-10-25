@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 2000  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -31,6 +31,7 @@
 #define IDH_ISize2d_Dy                 102
 #define IDH_ISize2d_Magnitude          103
 #define IDH_ISize2d_Scale              104
+#define IDH_ISize2d_Dimensions         105
 
 #define IDH_IPoint2d                   200
 #define IDH_IPoint2d_X                 201
@@ -42,6 +43,8 @@
 #define IDH_IPoint2d_Rotate            207
 #define IDH_IPoint2d_RotateEx          208
 #define IDH_IPoint2d_OnChanged         209
+#define IDH_IPoint2d_SameLocation      210
+#define IDH_IPoint2d_Location          211
 
 #define IDH_IRect2d                    300
 #define IDH_IRect2d_Area               301
@@ -128,6 +131,7 @@
 #define IDH_ISize3d_Dz                 703
 #define IDH_ISize3d_Magnitude          704
 #define IDH_ISize3d_Scale              705
+#define IDH_ISize3d_Dimensions         706
 
 #define IDH_IPoint3d                   800
 #define IDH_IPoint3d_X                 801
@@ -140,6 +144,8 @@
 #define IDH_IPoint3d_Rotate            808
 #define IDH_IPoint3d_RotateEx          809
 #define IDH_IPoint3d_OnChanged         810
+#define IDH_IPoint3d_SameLocation      811
+#define IDH_IPoint3d_Location          812
 
 #define IDH_IPoint2dCollection                    900
 #define IDH_IPoint2dCollection__Enum              901

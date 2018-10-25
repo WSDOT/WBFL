@@ -1,8 +1,8 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -143,61 +143,69 @@ ms_SIStrand.insert( std::make_pair(hash(grade,type,size), boost::shared_ptr<matP
 lrfdStrandPool::lrfdStrandPool()
 { 
    NEW_US_STRAND( "Grade 250 Stress Relieved 0.25in",   matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D635,    250., 0.85*250., 28500., 0.25,   0.036 );
-   NEW_US_STRAND( "Grade 250 Stress Relieved 0.3125in", matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D794,  250., 0.85*250., 28500., 0.3125, 0.058 );
-   NEW_US_STRAND( "Grade 250 Stress Relieved 0.375in",  matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D953,   250., 0.85*250., 28500., 0.375,  0.080 );
-   NEW_US_STRAND( "Grade 250 Stress Relieved 0.4375in", matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D1111, 250., 0.85*250., 28500., 0.4375, 0.108 );
+   NEW_US_STRAND( "Grade 250 Stress Relieved 0.3125in", matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D794,    250., 0.85*250., 28500., 0.3125, 0.058 );
+   NEW_US_STRAND( "Grade 250 Stress Relieved 0.375in",  matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D953,    250., 0.85*250., 28500., 0.375,  0.080 );
+   NEW_US_STRAND( "Grade 250 Stress Relieved 0.4375in", matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D1111,   250., 0.85*250., 28500., 0.4375, 0.108 );
    NEW_US_STRAND( "Grade 250 Stress Relieved 0.50in",   matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D1270,   250., 0.85*250., 28500., 0.50,   0.1440 );
+   NEW_US_STRAND( "Grade 250 Stress Relieved 1/2\" Special",   matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D1320,   250., 0.85*250., 28500., 0.52,   0.167 );
    NEW_US_STRAND( "Grade 250 Stress Relieved 0.60in",   matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D1524,   250., 0.85*250., 28500., 0.60,   0.216 );
    NEW_US_STRAND( "Grade 250 Stress Relieved 0.70in",   matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D1778,   250., 0.85*250., 28500., 0.70,   0.294 );
 
-   NEW_US_STRAND( "Grade 250 Low Relaxation 0.25in",   matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D635,   250., 0.90*250., 28500., 0.25,   0.036 );
-   NEW_US_STRAND( "Grade 250 Low Relaxation 0.3125in", matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D794, 250., 0.90*250., 28500., 0.3125, 0.058 );
-   NEW_US_STRAND( "Grade 250 Low Relaxation 0.375in",  matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D953,  250., 0.90*250., 28500., 0.375,  0.080 );
-   NEW_US_STRAND( "Grade 250 Low Relaxation 0.4375in", matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1111,250., 0.90*250., 28500., 0.4375, 0.108 );
-   NEW_US_STRAND( "Grade 250 Low Relaxation 0.50in",   matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1270,  250., 0.90*250., 28500., 0.50,   0.1440 );
-   NEW_US_STRAND( "Grade 250 Low Relaxation 0.60in",   matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1524,  250., 0.90*250., 28500., 0.60,   0.216 );
-   NEW_US_STRAND( "Grade 250 Low Relaxation 0.70in",   matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1778,  250., 0.90*250., 28500., 0.70,   0.294 );
+   NEW_US_STRAND( "Grade 250 Low Relaxation 0.25in",    matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D635,   250., 0.90*250., 28500., 0.25,   0.036 );
+   NEW_US_STRAND( "Grade 250 Low Relaxation 0.3125in",  matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D794,   250., 0.90*250., 28500., 0.3125, 0.058 );
+   NEW_US_STRAND( "Grade 250 Low Relaxation 0.375in",   matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D953,   250., 0.90*250., 28500., 0.375,  0.080 );
+   NEW_US_STRAND( "Grade 250 Low Relaxation 0.4375in",  matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1111,  250., 0.90*250., 28500., 0.4375, 0.108 );
+   NEW_US_STRAND( "Grade 250 Low Relaxation 0.50in",    matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1270,  250., 0.90*250., 28500., 0.50,   0.1440 );
+   NEW_US_STRAND( "Grade 250 Low Relaxation 1/2\" Special",    matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1320,  250., 0.90*250., 28500., 0.52,   0.167 );
+   NEW_US_STRAND( "Grade 250 Low Relaxation 0.60in",    matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1524,  250., 0.90*250., 28500., 0.60,   0.216 );
+   NEW_US_STRAND( "Grade 250 Low Relaxation 0.70in",    matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1778,  250., 0.90*250., 28500., 0.70,   0.294 );
 
-   NEW_US_STRAND( "Grade 270 Stress Relieved 0.375in",  matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D953,   270., 0.85*270., 28500., 0.375,  0.085 );
+   NEW_US_STRAND( "Grade 270 Stress Relieved 0.375in",  matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D953,  270., 0.85*270., 28500., 0.375,  0.085 );
    NEW_US_STRAND( "Grade 270 Stress Relieved 0.4375in", matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D1111, 270., 0.85*270., 28500., 0.4375, 0.115 );
-   NEW_US_STRAND( "Grade 270 Stress Relieved 0.50in",   matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D1270,   270., 0.85*270., 28500., 0.50,   0.153 );
-   NEW_US_STRAND( "Grade 270 Stress Relieved 0.60in",   matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D1524,   270., 0.85*270., 28500., 0.60,   0.217 );
-   NEW_US_STRAND( "Grade 270 Stress Relieved 0.70in",   matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D1778,   270., 0.85*270., 28500., 0.70,   0.294 );
+   NEW_US_STRAND( "Grade 270 Stress Relieved 0.50in",   matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D1270, 270., 0.85*270., 28500., 0.50,   0.153 );
+   NEW_US_STRAND( "Grade 270 Stress Relieved 1/2\" Special",   matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D1320, 270., 0.85*270., 28500., 0.52,   0.167 );
+   NEW_US_STRAND( "Grade 270 Stress Relieved 0.60in",   matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D1524, 270., 0.85*270., 28500., 0.60,   0.217 );
+   NEW_US_STRAND( "Grade 270 Stress Relieved 0.70in",   matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D1778, 270., 0.85*270., 28500., 0.70,   0.294 );
 
-   NEW_US_STRAND( "Grade 270 Low Relaxation 0.375in",  matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D953,   270., 0.90*270., 28500.,  0.375,  0.085 );
-   NEW_US_STRAND( "Grade 270 Low Relaxation 0.4375in", matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1111, 270., 0.90*270., 28500.,  0.4375, 0.115 );
-   NEW_US_STRAND( "Grade 270 Low Relaxation 0.50in",   matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1270,   270., 0.90*270., 28500.,  0.50,   0.153 );
-   NEW_US_STRAND( "Grade 270 Low Relaxation 0.60in",   matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1524,   270., 0.90*270., 28500.,  0.60,   0.217 );
-   NEW_US_STRAND( "Grade 270 Low Relaxation 0.70in",   matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1778,   270., 0.90*270., 28500.,  0.70,   0.294 );
+   NEW_US_STRAND( "Grade 270 Low Relaxation 0.375in",   matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D953,  270., 0.90*270., 28500.,  0.375,  0.085 );
+   NEW_US_STRAND( "Grade 270 Low Relaxation 0.4375in",  matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1111, 270., 0.90*270., 28500.,  0.4375, 0.115 );
+   NEW_US_STRAND( "Grade 270 Low Relaxation 0.50in",    matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1270, 270., 0.90*270., 28500.,  0.50,   0.153 );
+   NEW_US_STRAND( "Grade 270 Low Relaxation 1/2\" Special",    matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1320, 270., 0.90*270., 28500.,  0.52,   0.167 );
+   NEW_US_STRAND( "Grade 270 Low Relaxation 0.60in",    matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1524, 270., 0.90*270., 28500.,  0.60,   0.217 );
+   NEW_US_STRAND( "Grade 270 Low Relaxation 0.70in",    matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1778, 270., 0.90*270., 28500.,  0.70,   0.294 );
 
 
    NEW_SI_STRAND( "Grade 1725 Stress Relieved 6.35mm",  matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D635,  1725., 0.85*1725., 197000., 6.35,   23.22 );
-   NEW_SI_STRAND( "Grade 1725 Stress Relieved 7.94mm",  matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D794,  1725., 0.85*1725., 197000., 7.94, 37.42 );
-   NEW_SI_STRAND( "Grade 1725 Stress Relieved 9.53mm",  matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D953,  1725., 0.85*1725., 197000., 9.53,  51.61 );
-   NEW_SI_STRAND( "Grade 1725 Stress Relieved 11.11mm", matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D1111, 1725., 0.85*1725., 197000., 11.11, 69.68 );
-   NEW_SI_STRAND( "Grade 1725 Stress Relieved 12.70mm", matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D1270, 1725., 0.85*1725., 197000., 12.70,   92.90 );
-   NEW_SI_STRAND( "Grade 1725 Stress Relieved 15.24mm", matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D1524, 1725., 0.85*1725., 197000., 15.24,   139.35 );
-   NEW_SI_STRAND( "Grade 1725 Stress Relieved 17.78mm", matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D1778, 1725., 0.85*1725., 197000., 17.78,   189.68 );
+   NEW_SI_STRAND( "Grade 1725 Stress Relieved 7.94mm",  matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D794,  1725., 0.85*1725., 197000., 7.94,   37.42 );
+   NEW_SI_STRAND( "Grade 1725 Stress Relieved 9.53mm",  matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D953,  1725., 0.85*1725., 197000., 9.53,   51.61 );
+   NEW_SI_STRAND( "Grade 1725 Stress Relieved 11.11mm", matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D1111, 1725., 0.85*1725., 197000., 11.11,  69.68 );
+   NEW_SI_STRAND( "Grade 1725 Stress Relieved 12.70mm", matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D1270, 1725., 0.85*1725., 197000., 12.70,  92.90 );
+   NEW_SI_STRAND( "Grade 1725 Stress Relieved 13.20mm", matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D1320, 1725., 0.85*1725., 197000., 13.20, 107.7  );
+   NEW_SI_STRAND( "Grade 1725 Stress Relieved 15.24mm", matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D1524, 1725., 0.85*1725., 197000., 15.24, 139.35 );
+   NEW_SI_STRAND( "Grade 1725 Stress Relieved 17.78mm", matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::D1778, 1725., 0.85*1725., 197000., 17.78, 189.68 );
 
-   NEW_SI_STRAND( "Grade 1725 Low Relaxation 6.35mm",  matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D635,  1725., 0.90*1725., 197000., 6.35,  23.22 );
-   NEW_SI_STRAND( "Grade 1725 Low Relaxation 7.94mm",  matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D794,  1725., 0.90*1725., 197000., 7.94, 37.42 );
-   NEW_SI_STRAND( "Grade 1725 Low Relaxation 9.53mm",  matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D953,  1725., 0.90*1725., 197000., 9.53,  51.61 );
-   NEW_SI_STRAND( "Grade 1725 Low Relaxation 11.11mm", matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1111, 1725., 0.90*1725., 197000., 11.11, 69.68 );
-   NEW_SI_STRAND( "Grade 1725 Low Relaxation 12.70mm", matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1270, 1725., 0.90*1725., 197000., 17.20,   92.90 );
-   NEW_SI_STRAND( "Grade 1725 Low Relaxation 15.24mm", matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1524, 1725., 0.90*1725., 197000., 15.24,   139.35 );
-   NEW_SI_STRAND( "Grade 1725 Low Relaxation 17.78mm", matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1778, 1725., 0.85*1725., 197000., 17.78,   189.68 );
+   NEW_SI_STRAND( "Grade 1725 Low Relaxation 6.35mm",  matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D635,  1725., 0.90*1725., 197000., 6.35,   23.22 );
+   NEW_SI_STRAND( "Grade 1725 Low Relaxation 7.94mm",  matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D794,  1725., 0.90*1725., 197000., 7.94,   37.42 );
+   NEW_SI_STRAND( "Grade 1725 Low Relaxation 9.53mm",  matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D953,  1725., 0.90*1725., 197000., 9.53,   51.61 );
+   NEW_SI_STRAND( "Grade 1725 Low Relaxation 11.11mm", matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1111, 1725., 0.90*1725., 197000., 11.11,  69.68 );
+   NEW_SI_STRAND( "Grade 1725 Low Relaxation 12.70mm", matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1270, 1725., 0.90*1725., 197000., 12.70,  92.90 );
+   NEW_SI_STRAND( "Grade 1725 Low Relaxation 13.20mm", matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1320, 1725., 0.90*1725., 197000., 13.20, 107.70 );
+   NEW_SI_STRAND( "Grade 1725 Low Relaxation 15.24mm", matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1524, 1725., 0.90*1725., 197000., 15.24, 139.35 );
+   NEW_SI_STRAND( "Grade 1725 Low Relaxation 17.78mm", matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::D1778, 1725., 0.90*1725., 197000., 17.78, 189.68 );
 
-   NEW_SI_STRAND( "Grade 1860 Stress Relieved 9.53mm",  matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D953,  1860., 0.85*1860., 197000., 9.53,  54.84 );
-   NEW_SI_STRAND( "Grade 1860 Stress Relieved 11.11mm", matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D1111, 1860., 0.85*1860., 197000., 1.111, 74.19 );
-   NEW_SI_STRAND( "Grade 1860 Stress Relieved 12.70mm", matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D1270, 1860., 0.85*1860., 197000., 12.70,   98.71 );
-   NEW_SI_STRAND( "Grade 1860 Stress Relieved 15.24mm", matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D1524, 1860., 0.85*1860., 197000., 15.24,   140.00 );
-   NEW_SI_STRAND( "Grade 1860 Stress Relieved 17.78mm", matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D1778, 1860., 0.85*1725., 197000., 17.78,   189.68 );
+   NEW_SI_STRAND( "Grade 1860 Stress Relieved 9.53mm",  matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D953,  1860., 0.85*1860., 197000., 9.53,   54.84 );
+   NEW_SI_STRAND( "Grade 1860 Stress Relieved 11.11mm", matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D1111, 1860., 0.85*1860., 197000., 1.111,  74.19 );
+   NEW_SI_STRAND( "Grade 1860 Stress Relieved 12.70mm", matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D1270, 1860., 0.85*1860., 197000., 12.70,  98.71 );
+   NEW_SI_STRAND( "Grade 1860 Stress Relieved 13.20mm", matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D1320, 1860., 0.85*1860., 197000., 13.20, 107.70 );
+   NEW_SI_STRAND( "Grade 1860 Stress Relieved 15.24mm", matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D1524, 1860., 0.85*1860., 197000., 15.24, 140.00 );
+   NEW_SI_STRAND( "Grade 1860 Stress Relieved 17.78mm", matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::D1778, 1860., 0.85*1860., 197000., 17.78, 189.68 );
 
-   NEW_SI_STRAND( "Grade 1860 Low Relaxation 9.53mm",  matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D953,  1860., 0.90*1860., 197000.,  9.53,  54.84 );
-   NEW_SI_STRAND( "Grade 1860 Low Relaxation 11.11mm", matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1111, 1860., 0.90*1860., 197000.,  11.11, 74.19 );
-   NEW_SI_STRAND( "Grade 1860 Low Relaxation 12.70mm", matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1270, 1860., 0.90*1860., 197000.,  12.70,   98.71 );
-   NEW_SI_STRAND( "Grade 1860 Low Relaxation 15.24mm", matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1524, 1860., 0.90*1860., 197000.,  15.24,   140.00 );
-   NEW_SI_STRAND( "Grade 1860 Low Relaxation 17.78mm", matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1778, 1860., 0.85*1725., 197000., 17.78,   189.68 );
+   NEW_SI_STRAND( "Grade 1860 Low Relaxation 9.53mm",  matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D953,  1860., 0.90*1860., 197000.,  9.53,   54.84 );
+   NEW_SI_STRAND( "Grade 1860 Low Relaxation 11.11mm", matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1111, 1860., 0.90*1860., 197000.,  11.11,  74.19 );
+   NEW_SI_STRAND( "Grade 1860 Low Relaxation 12.70mm", matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1270, 1860., 0.90*1860., 197000.,  12.70,  98.71 );
+   NEW_SI_STRAND( "Grade 1860 Low Relaxation 13.20mm", matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1320, 1860., 0.90*1860., 197000.,  13.20, 107.70 );
+   NEW_SI_STRAND( "Grade 1860 Low Relaxation 15.24mm", matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1524, 1860., 0.90*1860., 197000.,  15.24, 140.00 );
+   NEW_SI_STRAND( "Grade 1860 Low Relaxation 17.78mm", matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::D1778, 1860., 0.90*1860., 197000., 17.78,  189.68 );
 }
 
 //======================== OPERATORS  =======================================
@@ -247,6 +255,24 @@ lrfdStrandIter& lrfdStrandIter::operator=(const lrfdStrandIter& rOther)
 }
 
 //======================== OPERATIONS =======================================
+// predicate class to sort strands by diameter
+class StrandDiaSorter
+{
+public:
+   int operator() (const matPsStrand* ps1,const matPsStrand* ps2)
+   {
+      if (ps1->GetNominalDiameter() == ps2->GetNominalDiameter() )
+      {
+         return ps1->GetUltimateStrength() < ps2->GetUltimateStrength();
+      }
+      else
+      {
+         return ps1->GetNominalDiameter() < ps2->GetNominalDiameter();
+      }
+   }
+};
+
+
 void lrfdStrandIter::Begin()
 {
    m_Strands.clear();
@@ -266,6 +292,9 @@ void lrfdStrandIter::Begin()
       if ( pStrand->GetGrade() == m_Grade && pStrand->GetType() == m_Type )
          m_Strands.push_back( pStrand );
    }
+
+   // sort by diameter to make list pretty
+   std::sort(m_Strands.begin(), m_Strands.end(), StrandDiaSorter());
 
    m_Begin   = m_Strands.begin();
    m_Current = m_Begin;

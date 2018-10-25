@@ -423,6 +423,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\DeckedSlabBeam.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Geometry.cpp"
 				>
 				<FileConfiguration
@@ -1178,6 +1182,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DeckedSlabBeam.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\Geometry.hh"
 				>
 			</File>
@@ -1420,6 +1428,10 @@
 			</File>
 			<File
 				RelativePath="Rectangle.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\registry.bin"
 				>
 			</File>
 			<File

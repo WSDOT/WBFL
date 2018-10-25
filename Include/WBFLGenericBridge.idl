@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 2009  Washington State Department of Transportation
-//                   Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -84,6 +84,8 @@ library WBFLGenericBridge
    interface ITransversePierDescription;
    interface ISpan;
    interface IVoidedSlabSection2;
+   interface IDeckedSlabBeamSection;
+   interface IBoxBeamSection;
 
 // Enumerators
    typedef [public,helpstring("enum SidewalkPositionType"),uuid(F7126E78-8EDF-4af7-9CFA-59C2D1F6C6B1)] 
@@ -930,7 +932,35 @@ library WBFLGenericBridge
    ]
    interface IVoidedSlabEndBlockSegment : ISegment
    {
-		[propputref, helpstring("property VoidedSlabSection")] HRESULT VoidedSlabSection([in] IVoidedSlabSection2* pPrecastBeam);
+		[propputref, helpstring("property BeamSection")] HRESULT BeamSection([in] IVoidedSlabSection2* pBeamSection);
+      [propput, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[in] Float64 length);
+      [propget, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[out,retval] Float64* pLength);
+   };
+
+   [
+		object,
+		uuid(319AC118-E4C8-4a9b-B653-67958B6CD071),
+		oleautomation,
+		helpstring("IDeckedSlabBeamEndBlockSegment Interface"),
+		pointer_default(unique)
+   ]
+   interface IDeckedSlabBeamEndBlockSegment : ISegment
+   {
+		[propputref, helpstring("property BeamSection")] HRESULT BeamSection([in] IDeckedSlabBeamSection* pBeamSection);
+      [propput, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[in] Float64 length);
+      [propget, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[out,retval] Float64* pLength);
+   };
+
+   [
+		object,
+		uuid(D492FA18-90EB-40a0-A90C-1395A19C7F92),
+		oleautomation,
+		helpstring("IBoxBeamEndBlockSegment Interface"),
+		pointer_default(unique)
+   ]
+   interface IBoxBeamEndBlockSegment : ISegment
+   {
+		[propputref, helpstring("property BeamSection")] HRESULT BeamSection([in] IBoxBeamSection* pBeamSection);
       [propput, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[in] Float64 length);
       [propget, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[out,retval] Float64* pLength);
    };
@@ -1346,6 +1376,19 @@ library WBFLGenericBridge
 	{
 	   [propput,helpstring("property Beam")] HRESULT Beam([in]IVoidedSlab2* beam);
 	   [propget,helpstring("property Beam")] HRESULT Beam([out,retval]IVoidedSlab2** beam);
+	};
+
+	[
+	   object,
+	   uuid(FADE6744-A4F6-4bec-8522-82F578E70A9C),
+	   oleautomation,
+	   helpstring("IDeckedSlabBeamSection Interface"),
+	   pointer_default(unique)
+	]
+	interface IDeckedSlabBeamSection : IUnknown
+	{
+	   [propput,helpstring("property Beam")] HRESULT Beam([in]IDeckedSlabBeam* beam);
+	   [propget,helpstring("property Beam")] HRESULT Beam([out,retval]IDeckedSlabBeam** beam);
 	};
 
 	[
@@ -1950,6 +1993,26 @@ library WBFLGenericBridge
    };
 
    [
+      uuid(F952F1A6-7FDD-4c6c-96BE-891E500390EF),
+		helpstring("DeckedSlabBeamEndBlockSegment Class")
+   ]
+   coclass DeckedSlabBeamEndBlockSegment
+   {
+      [default] interface IDeckedSlabBeamEndBlockSegment;
+	  [default, source] interface ISegmentEvents;
+   };
+
+   [
+      uuid(B0E705F3-5B54-43e4-B869-222C77B2BD28),
+		helpstring("BoxBeamEndBlockSegment Class")
+   ]
+   coclass BoxBeamEndBlockSegment
+   {
+      [default] interface IBoxBeamEndBlockSegment;
+	  [default, source] interface ISegmentEvents;
+   };
+
+   [
       uuid(432FB365-C5D0-46b0-9DCD-65F21A91580F),
 		helpstring("TaperedGirderSegment Class")
    ]
@@ -2245,6 +2308,18 @@ library WBFLGenericBridge
 	coclass VoidedSlabSection2
 	{
 	   [default] interface IVoidedSlabSection2;
+	   interface IGirderSection;
+	   interface IPrestressedGirderSection;
+	   interface IShape;
+	};
+
+	[
+	   uuid(DED3DC73-280E-4fd2-8C1D-BCE96BB78750),
+	   helpstring("DeckedSlabBeamSection Class")
+	]
+	coclass DeckedSlabBeamSection
+	{
+	   [default] interface IDeckedSlabBeamSection;
 	   interface IGirderSection;
 	   interface IPrestressedGirderSection;
 	   interface IShape;

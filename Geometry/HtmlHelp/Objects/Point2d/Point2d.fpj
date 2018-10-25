@@ -3,37 +3,7 @@
 	<folders/>
 	<topics>
 		<topic>
-			<name>Point2d.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Y_Property_(Point2d_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>RotateEx_Method_(Point2d_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
 			<name>Rotate_Method_(Point2d_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>OffsetEx_Method_(Point2d_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Offset_Method_(Point2d_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>X_Property_(Point2d_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -43,12 +13,52 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
+			<name>Point2d.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>X_Property_(Point2d_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
 			<name>Move_Method_(Point2d_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
+			<name>OffsetEx_Method_(Point2d_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>RotateEx_Method_(Point2d_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Y_Property_(Point2d_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Offset_Method_(Point2d_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
 			<name>OnPoint2dChanged.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>SameLocation_Method_(Point2d_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Location_Method_(point2d_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>

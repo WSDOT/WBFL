@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 2000  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -79,6 +79,8 @@ private:
 
 // IPoint3d
 public:
+   STDMETHOD(Location)(/*[out]*/Float64* pX,/*[out]*/Float64* pY,/*[out]*/Float64* pZ);
+   STDMETHOD(SameLocation)(/*[in]*/IPoint3d* pOther);
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
    STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 cz, /*[in]*/ IVector3d* vector,/*[in]*/ Float64 angle);
    STDMETHOD(RotateEx)(/*[in]*/ IPoint3d* center,/*[in]*/ IVector3d* vector,/*[in]*/ Float64 angle);

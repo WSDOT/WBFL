@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 2001  Washington State Department of Transportation
-//                   Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -62,6 +62,8 @@ HRESULT CHorzCurve::FinalConstruct()
 
    m_GeomUtil.CoCreateInstance(CLSID_GeomUtil);
 
+   m_bHoldEvents = false;
+   m_bPendingEvents = false;
 
    return S_OK;
 }
@@ -751,24 +753,24 @@ STDMETHODIMP CHorzCurve::get_CC(IPoint2d** pVal)
    CComPtr<IPoint2d> testPoint;
    m_GeomUtil->LineLineIntersect(t1,t2,&testPoint);
    Float64 x1,y1, x2,y2;
-   m_PI->get_X(&x1); m_PI->get_Y(&y1);
-   testPoint->get_X(&x2); testPoint->get_Y(&y2);
+   m_PI->Location(&x1,&y1);
+   testPoint->Location(&x2,&y2);
    ATLASSERT( IsEqual(x1,x2) && IsEqual(y1,y2) );
 
    // intersect forward tangent and its normal
    // should intersect at TS
    testPoint.Release();
    m_GeomUtil->LineLineIntersect(t1,n1,&testPoint);
-   TS->get_X(&x1); TS->get_Y(&y1);
-   testPoint->get_X(&x2); testPoint->get_Y(&y2);
+   TS->Location(&x1,&y1);
+   testPoint->Location(&x2,&y2);
    ATLASSERT( IsEqual(x1,x2) && IsEqual(y1,y2) );
 
    // intersect back tangent and its normal
    // should intersect at ST
    testPoint.Release();
    m_GeomUtil->LineLineIntersect(t2,n2,&testPoint);
-   ST->get_X(&x1); ST->get_Y(&y1);
-   testPoint->get_X(&x2); testPoint->get_Y(&y2);
+   ST->Location(&x1,&y1);
+   testPoint->Location(&x2,&y2);
    ATLASSERT( IsEqual(x1,x2) && IsEqual(y1,y2) );
 #endif // _DEBUG
 
@@ -1709,6 +1711,24 @@ STDMETHODIMP CHorzCurve::putref_PointFactory(IPoint2dFactory *factory)
    return S_OK;
 }
 
+STDMETHODIMP CHorzCurve::Offset(Float64 dx,Float64 dy)
+{
+   m_bHoldEvents = true;
+   m_bPendingEvents = false;
+
+   m_PBT->Offset(dx,dy);
+   m_PI->Offset(dx,dy);
+   m_PFT->Offset(dx,dy);
+
+   m_bHoldEvents = false;
+   if ( m_bPendingEvents )
+   {
+      Fire_OnHorzCurveChanged(this);
+   }
+
+   return S_OK;
+}
+
 ///////////////////////////////////////////
 // IPointEvents
 STDMETHODIMP CHorzCurve::OnPointChanged(IPoint2d* point)
@@ -1723,7 +1743,10 @@ STDMETHODIMP CHorzCurve::OnPointChanged(IPoint2d* point)
    ATLASSERT( pointEx != NULL );
 #endif // _DEBUG
 
-   Fire_OnHorzCurveChanged(this);
+   if ( m_bHoldEvents )
+      m_bPendingEvents = true;
+   else
+      Fire_OnHorzCurveChanged(this);
 
    return S_OK;
 }

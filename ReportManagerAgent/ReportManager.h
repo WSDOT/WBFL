@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManagerAgent - Provides report manager as an Agent
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -72,9 +72,12 @@ public:
 // IReportManager
 public:
    virtual void AddReportBuilder(CReportBuilder* pReportBuilder);
+   virtual void AddReportBuilder(boost::shared_ptr<CReportBuilder>& pReportBuilder);
    virtual Uint32 GetReportBuilderCount(bool bIncludeHidden) const;
    virtual boost::shared_ptr<CReportBuilder> GetReportBuilder(const char* strReportName);
    virtual boost::shared_ptr<CReportBuilder> GetReportBuilder(const std::string& strReportName);
+   virtual boost::shared_ptr<CReportBuilder> RemoveReportBuilder(const char* strReportName);
+   virtual boost::shared_ptr<CReportBuilder> RemoveReportBuilder(const std::string& strReportName);
    virtual std::vector<std::string> GetReportNames(bool bIncludeHidden) const;
    virtual CReportDescription GetReportDescription(const char* strReportName);
    virtual CReportDescription GetReportDescription(const std::string& strReportName);

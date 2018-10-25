@@ -80,6 +80,10 @@
           <param name="Local" value="Objects\BoxBeam\H8_Property_(BoxBeam_Object).htm">
         </object>
         <li><object type="text/sitemap">
+          <param name="Name" value="VoidCount">
+          <param name="Local" value="Objects\BoxBeam\voidcount_property_(boxbeam_object).htm">
+        </object>
+        <li><object type="text/sitemap">
           <param name="Name" value="HookPoint">
           <param name="Local" value="Objects\BoxBeam\HookPoint_Property_(BoxBeam_Object).htm">
         </object>
@@ -467,6 +471,68 @@
         </ul>
       </ul>
     <li><object type="text/sitemap">
+      <param name="Name" value="DeckedSlabBeam">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="A Property (DeckedSlabBeam Object)">
+          <param name="Local" value="Objects\DeckedSlabBeam\A_Property_(DeckedSlabBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="B Property (DeckedSlabBeam Object)">
+          <param name="Local" value="Objects\DeckedSlabBeam\B_Property_(DeckedSlabBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="C Property (DeckedSlabBeam Object)">
+          <param name="Local" value="Objects\DeckedSlabBeam\C_Property_(DeckedSlabBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="F Property (DeckedSlabBeam Object)">
+          <param name="Local" value="Objects\DeckedSlabBeam\F_Property_(DeckedSlabBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="VoidCount">
+          <param name="Local" value="Objects\DeckedSlabBeam\voidcount_property_(deckedslabbeam_object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="HookPoint Property (DeckedSlabBeam Object)">
+          <param name="Local" value="Objects\DeckedSlabBeam\HookPoint_Property_(DeckedSlabBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LeftBlockOut Property (DeckedSlabBeam Object)">
+          <param name="Local" value="Objects\DeckedSlabBeam\LeftBlockOut_Property_(DeckedSlabBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RightBlockOut Property (DeckedSlabBeam Object)">
+          <param name="Local" value="Objects\DeckedSlabBeam\RightBlockOut_Property_(DeckedSlabBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Shape Property (Decked Slab Beam)">
+          <param name="Local" value="Objects\DeckedSlabBeam\Shape_Property_(Decked_Slab_Beam).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Tb Property (DeckedSlabBeam Object)">
+          <param name="Local" value="Objects\DeckedSlabBeam\Tb_Property_(DeckedSlabBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Tt Property (DeckedSlabBeam Object)">
+          <param name="Local" value="Objects\DeckedSlabBeam\Tt_Property_(DeckedSlabBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="W Property (DeckedSlabBeam Object)">
+          <param name="Local" value="Objects\DeckedSlabBeam\W_Property_(DeckedSlabBeam_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="XYPosition Property (DeckedSlabBeam Object)">
+          <param name="Local" value="Objects\DeckedSlabBeam\XYPosition_Property_(DeckedSlabBeam_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
       <param name="Name" value="GeomUtil">
       <param name="Local" value="Objects\GeomUtil\GeomUtil.htm">
     </object>
@@ -778,6 +844,14 @@
           <param name="Name" value="XYPosition">
           <param name="Local" value="Objects\MultiWeb2\XYPosition_Property_(MultiWeb2_Object).htm">
         </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="LeftBlockout">
+          <param name="Local" value="Objects\MultiWeb2\LeftBlockout_Property_(MultiWeb2_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="RightBlockOut">
+          <param name="Local" value="Objects\MultiWeb2\RightBlockOut_Property_(MultiWeb2_Object).htm">
+        </object>
         </ul>
       </ul>
     <li><object type="text/sitemap">
@@ -1005,6 +1079,10 @@
       </object>
       <ul>
         <li><object type="text/sitemap">
+          <param name="Name" value="Location">
+          <param name="Local" value="Objects\Point2d\Location_Method_(point2d_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
           <param name="Name" value="Move">
           <param name="Local" value="Objects\Point2d\Move_Method_(Point2d_Object).htm">
         </object>
@@ -1027,6 +1105,10 @@
         <li><object type="text/sitemap">
           <param name="Name" value="RotateEx">
           <param name="Local" value="Objects\Point2d\RotateEx_Method_(Point2d_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SameLocation">
+          <param name="Local" value="Objects\Point2d\SameLocation_Method_(Point2d_Object).htm">
         </object>
         </ul>
       <li><object type="text/sitemap">
@@ -1140,6 +1222,10 @@
       </object>
       <ul>
         <li><object type="text/sitemap">
+          <param name="Name" value="Location">
+          <param name="Local" value="Objects\Point3d\Location_Method_(Point3d_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
           <param name="Name" value="Move">
           <param name="Local" value="Objects\Point3d\Move_Method_(Point3d_Object).htm">
         </object>
@@ -1162,6 +1248,10 @@
         <li><object type="text/sitemap">
           <param name="Name" value="RotateEx">
           <param name="Local" value="Objects\Point3d\RotateEx_Method_(Point3d_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="SameLocation">
+          <param name="Local" value="Objects\Point3d\SameLocation_Method_(Point3d_Object).htm">
         </object>
         </ul>
       <li><object type="text/sitemap">
@@ -1781,6 +1871,10 @@
       </object>
       <ul>
         <li><object type="text/sitemap">
+          <param name="Name" value="Dimensions">
+          <param name="Local" value="Objects\Size2d\Dimensions_Method_(Size2d_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
           <param name="Name" value="Scale">
           <param name="Local" value="Objects\Size2d\Scale_Method_(Size2d_Object).htm">
         </object>
@@ -1820,6 +1914,10 @@
         <param name="Name" value="Methods">
       </object>
       <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Dimensions">
+          <param name="Local" value="Objects\Size3d\Dimensions_Method_(Size3d_Object).htm">
+        </object>
         <li><object type="text/sitemap">
           <param name="Name" value="Scale">
           <param name="Local" value="Objects\Size3d\Scale_Method_(Size3d_Object).htm">

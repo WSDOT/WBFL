@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 2009  Washington State Department of Transportation
-//                   Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -169,8 +169,29 @@ STDMETHODIMP CBoxBeamSection::get_WebThickness(WebIndexType idx,Float64* tWeb)
       return E_INVALIDARG;
 
    CHECK_RETVAL(tWeb);
-   
-   m_Beam->get_W2(tWeb);
+
+   Float64 W1,W2,W4,H1,H2,H3,H4,H7,F1,F2;
+   m_Beam->get_W1(&W1);
+   m_Beam->get_W2(&W2);
+   m_Beam->get_W4(&W4);
+   m_Beam->get_H1(&H1);
+   m_Beam->get_H2(&H2);
+   m_Beam->get_H3(&H3);
+   m_Beam->get_H4(&H4);
+   m_Beam->get_H7(&H7);
+   m_Beam->get_F1(&F1);
+   m_Beam->get_F2(&F2);
+
+   bool bSmallShearKey    = (W1 < W2/2 || W4 < W2/2)       ? true : false;
+   bool bShearKeyAtTop    = (H4 < H1 && H2+H3-F1 < H7) ? true : false;
+   bool bShearKeyAtBottom = (H7 < H3 && H1+H2-F2 < H4) ? true : false;
+
+   if ( bSmallShearKey && bShearKeyAtTop )
+      *tWeb = W2 + W4;
+   else if ( bSmallShearKey && bShearKeyAtBottom )
+      *tWeb = W1 + W2;
+   else
+      *tWeb = W2;
 
    return S_OK;
 }

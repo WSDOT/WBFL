@@ -283,6 +283,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\BoxBeamEndBlockSegment.cpp"
+				>
+			</File>
+			<File
 				RelativePath="BoxBeamSection.cpp"
 				>
 				<FileConfiguration
@@ -428,6 +432,14 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\DeckedSlabBeamEndBlockSegment.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DeckedSlabBeamSection.cpp"
+				>
 			</File>
 			<File
 				RelativePath="EdgePathStrategy.cpp"
@@ -1292,6 +1304,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\BoxBeamEndBlockSegment.h"
+				>
+			</File>
+			<File
 				RelativePath="BoxBeamSection.h"
 				>
 			</File>
@@ -1321,6 +1337,14 @@
 			</File>
 			<File
 				RelativePath="CrossBeam.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DeckedSlabBeamEndBlockSegment.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DeckedSlabBeamSection.h"
 				>
 			</File>
 			<File
@@ -1521,15 +1545,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\BoxBeamEndBlockSegment.rgs"
+				>
+			</File>
+			<File
 				RelativePath="BoxBeamSection.rgs"
 				>
 			</File>
 			<File
 				RelativePath="BulbTeeSection.rgs"
-				>
-			</File>
-			<File
-				RelativePath="..\Geometry\BulbTeeSection.rgs"
 				>
 			</File>
 			<File
@@ -1554,6 +1578,14 @@
 			</File>
 			<File
 				RelativePath="CrossBeam.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\DeckedSlabBeamEndBlockSegment.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\DeckedSlabBeamSection.rgs"
 				>
 			</File>
 			<File

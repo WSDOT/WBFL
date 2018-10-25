@@ -13,12 +13,12 @@
 	</folders>
 	<topics>
 		<topic>
-			<name>Welcome.htm</name>
+			<name>License_Agreement.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>License_Agreement.htm</name>
+			<name>Welcome.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>

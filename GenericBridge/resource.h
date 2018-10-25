@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 2009  Washington State Department of Transportation
-//                   Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -73,9 +73,12 @@
 #define IDR_MULTIWEBSECTION2            143
 #define IDR_SIDEWALKBARRIER             144
 #define IDR_FLANGEDGIRDERENDBLOCKSEGMENT  145
-#define IDR_TAPEREDGIRDERSEGMENT         146
-#define IDR_VOIDEDSLABENDBLOCKSEGMENT   147
+#define IDR_TAPEREDGIRDERSEGMENT          146
+#define IDR_VOIDEDSLABENDBLOCKSEGMENT     147
 #define IDR_THICKENEDFLANGEBULBTEESEGMENT 148
+#define IDR_DECKEDSLABBEAMSECTION         149
+#define IDR_DECKEDSLABBEAMENDBLOCKSEGMENT 150
+#define IDR_BOXBEAMENDBLOCKSEGMENT        151
 
 #define IDS_STAGENAME                   201
 #define IDS_STAGEDESCRIPTION            203

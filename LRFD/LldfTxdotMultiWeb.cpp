@@ -1,8 +1,8 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -47,13 +47,13 @@ CLASS
 //======================== LIFECYCLE  =======================================
 lrfdTxdotLldfMultiWeb::lrfdTxdotLldfMultiWeb(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
                                              Uint32 Nl, Float64 wLane,
-                                             Float64 W, Float64 L, Uint32 Nwebs,
+                                             Float64 W, Float64 L, Float64 Kfactor,
                                              Float64 skewAngle1, Float64 skewAngle2) :
 lrfdLiveLoadDistributionFactorBase(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,Nl,wLane)
 {
    m_W           = W;
    m_L           = L;
-   m_Nwebs       = Nwebs;
+   m_Kfactor       = Kfactor;
    m_SkewAngle1  = skewAngle1;
    m_SkewAngle2  = skewAngle2;
 }
@@ -94,7 +94,7 @@ void lrfdTxdotLldfMultiWeb::MakeCopy(const lrfdTxdotLldfMultiWeb& rOther)
 
    m_L           = rOther.m_L;
    m_W           = rOther.m_W;
-   m_Nwebs       = rOther.m_Nwebs;
+   m_Kfactor     = rOther.m_Kfactor;
    m_SkewAngle1  = rOther.m_SkewAngle1;
    m_SkewAngle2  = rOther.m_SkewAngle2;
 }
@@ -145,10 +145,10 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfMultiWeb::GetMomentDF_Int
       f = 1;
    }
 
-   Float64 K = (m_Nwebs>1) ? 2.2 : 2.0;
-   Float64 C = K*(W/L);
-   if ( K < C )
-      C = K;
+//   Float64 K = (m_Nwebs>1) ? 2.2 : 2.0;
+   Float64 C = m_Kfactor*(W/L);
+   if ( m_Kfactor < C )
+      C = m_Kfactor;
 
    // cannot have case where C>5, so:
    Float64 D = f*(11.5 - m_Nl + 1.4*m_Nl*pow(1-0.2*C,2));
@@ -170,7 +170,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfMultiWeb::GetMomentDF_Int
       g.EqnData.bWasUsed = true;
       g.EqnData.D = ::ConvertToSysUnits(D,bSI? unitMeasure::Millimeter : unitMeasure::Feet);;
       g.EqnData.C = C;
-      g.EqnData.K = K;
+      g.EqnData.K = m_Kfactor;
       g.EqnData.mg = mg;
       g.EqnData.bWasUsed = true;
    }

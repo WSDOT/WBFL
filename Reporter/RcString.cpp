@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -115,6 +115,13 @@ bool rptRcString::NoWrap() const
 {
    return m_bNoWrap;
 }
+
+rptReportContent&  rptRcString::SetValue(const char* str)
+{
+   m_TheString = str;
+   return *this;
+}
+
 
 //======================== ACCESS     =======================================
 //======================== INQUIRY    =======================================

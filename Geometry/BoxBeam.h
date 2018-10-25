@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
 // Copyright © 2005  Washington State Department of Transportation
-//                     Bridge and Structures Office
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -96,6 +96,8 @@ private:
    Float64   m_F2;
    Float64   m_C1;
 
+   CollectionIndexType m_VoidCount;
+
    bool   m_Dirty;
    unsigned long   m_HookPointCookie;
 
@@ -137,6 +139,8 @@ public:
    STDMETHOD(put_F2)(/*[in]*/ Float64 newVal);
    STDMETHOD(get_C1)(/*[out, retval]*/ Float64 *pVal);
    STDMETHOD(put_C1)(/*[in]*/ Float64 newVal);
+   STDMETHOD(put_VoidCount)(/*[in]*/CollectionIndexType nv);
+   STDMETHOD(get_VoidCount)(/*[out,retval]*/CollectionIndexType* nv);
    STDMETHOD(get_HookPoint)(/*[out,retval]*/ IPoint2d** hookPnt);
    STDMETHOD(putref_HookPoint)(/*[in]*/ IPoint2d* hookPnt);
    STDMETHOD(get_WebWidth)(/*[out, retval]*/ Float64 *pVal);

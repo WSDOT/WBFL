@@ -1,8 +1,8 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -347,7 +347,7 @@ void lrfdApproximateLosses2005::ValidateParameters() const
    if ( lrfdVersionMgr::FourthEditionWith2009Interims <= lrfdVersionMgr::GetVersion() )
       fcMax = (is_si ? ::ConvertToSysUnits( 69.05, unitMeasure::MPa ) : ::ConvertToSysUnits( 10.05, unitMeasure::KSI ) );
 
-   if ( m_Fci < fcMin || fcMax < m_Fci )
+   if ( m_Fc < fcMin || fcMax < m_Fc )
       THROW(lrfdXPsLosses,fcOutOfRange);
 }
 

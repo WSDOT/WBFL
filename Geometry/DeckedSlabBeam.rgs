@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.DeckedSlabBeam.1 = s 'DeckedSlabBeam Class'
+	{
+		CLSID = s '{09785C7E-27E9-4709-B4E1-4B8120CB1ECD}'
+	}
+	WBFLGeometry.DeckedSlabBeam = s 'DeckedSlabBeam Class'
+	{
+		CLSID = s '{09785C7E-27E9-4709-B4E1-4B8120CB1ECD}'
+		CurVer = s 'WBFLGeometry.DeckedSlabBeam.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {09785C7E-27E9-4709-B4E1-4B8120CB1ECD} = s 'DeckedSlabBeam Class'
+		{
+			ProgID = s 'WBFLGeometry.DeckedSlabBeam.1'
+			VersionIndependentProgID = s 'WBFLGeometry.DeckedSlabBeam'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

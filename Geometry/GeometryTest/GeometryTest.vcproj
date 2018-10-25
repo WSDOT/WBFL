@@ -422,6 +422,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\TestDeckedSlabBeam.cpp"
+				>
+			</File>
+			<File
 				RelativePath="TestGeomUtil.cpp"
 				>
 				<FileConfiguration
@@ -1124,6 +1128,10 @@
 			</File>
 			<File
 				RelativePath="TestCoordinateXform3d.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TestDeckedSlabBeam.h"
 				>
 			</File>
 			<File

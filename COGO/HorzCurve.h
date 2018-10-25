@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 2001  Washington State Department of Transportation
-//                   Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -144,6 +144,7 @@ public:
 	STDMETHOD(putref_PI)(/*[in]*/ IPoint2d* newVal);
 	STDMETHOD(get_PBT)(/*[out, retval]*/ IPoint2d* *pVal);
 	STDMETHOD(putref_PBT)(/*[in]*/ IPoint2d* newVal);
+   STDMETHOD(Offset)(/*[in]*/Float64 dx,/*[in]*/Float64 dy);
 
 // IStructuredStorage2
 public:
@@ -155,6 +156,9 @@ public:
 	STDMETHOD(OnPointChanged)(IPoint2d* point);
 
 private:
+   bool m_bHoldEvents;
+   bool m_bPendingEvents;
+
    CComPtr<IPoint2d> m_PBT, m_PI, m_PFT;
    DWORD m_dwPBT, m_dwPI, m_dwPFT;
 

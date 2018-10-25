@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity - Reinforced Concrete Capacity Analysis Library
 // Copyright © 2003  Washington State Department of Transportation
-//                   Bridge and Structures Office
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project

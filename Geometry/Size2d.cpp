@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 2000  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -106,6 +106,16 @@ STDMETHODIMP CSize2d::get_StructuredStorage(IStructuredStorage2* *pStg)
 {
    CHECK_RETOBJ(pStg);
    return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
+}
+
+STDMETHODIMP CSize2d::Dimensions(Float64* pDx,Float64* pDy)
+{
+   CHECK_RETVAL(pDx);
+   CHECK_RETVAL(pDy);
+
+   *pDx = m_Dx;
+   *pDy = m_Dy;
+   return S_OK;
 }
 
 // IPersist

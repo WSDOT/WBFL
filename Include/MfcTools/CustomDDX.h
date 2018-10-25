@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -376,7 +376,7 @@ void DDX_OffsetAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, Float64& data,
 }
 
 template <class T,class U>
-void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, T& value, T limit, const U& umIndirectMeasure )
+void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, T& value, T limit, const U& umIndirectMeasure, const char* message="Please enter a number that is greater than %f %s" )
 {
 	if (!pDX->m_bSaveAndValidate)
 	{
@@ -386,7 +386,7 @@ void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, T& value, T limit, const 
    if( !(limit < value) )
    {
       CString msg;
-      msg.Format("Please enter a number that is greater than %f %s", 
+      msg.Format(message, 
                  ::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure ), 
                  umIndirectMeasure.UnitOfMeasure.UnitTag().c_str() );
 
@@ -396,7 +396,7 @@ void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, T& value, T limit, const 
 }
 
 template <class T,class U>
-void DDV_UnitValueLimitOrMore(CDataExchange* pDX, T& value, T limit, const U& umIndirectMeasure )
+void DDV_UnitValueLimitOrMore(CDataExchange* pDX, T& value, T limit, const U& umIndirectMeasure, const char* message="Please enter a number that is at least %f %s" )
 {
 	if (!pDX->m_bSaveAndValidate)
 	{
@@ -406,7 +406,7 @@ void DDV_UnitValueLimitOrMore(CDataExchange* pDX, T& value, T limit, const U& um
    if( !IsEqual(value,limit) && value < limit )
    {
       CString msg;
-      msg.Format("Please enter a number that is at least %f %s", 
+      msg.Format(message, 
                  ::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure ), 
                  umIndirectMeasure.UnitOfMeasure.UnitTag().c_str() );
 
@@ -416,7 +416,7 @@ void DDV_UnitValueLimitOrMore(CDataExchange* pDX, T& value, T limit, const U& um
 }
 
 template <class T,class U>
-void DDV_UnitValueLessThanLimit(CDataExchange* pDX, T& value, T limit, const U& umIndirectMeasure )
+void DDV_UnitValueLessThanLimit(CDataExchange* pDX, T& value, T limit, const U& umIndirectMeasure, const char* message="Please enter a number that is less than %f %s" )
 {
 	if (!pDX->m_bSaveAndValidate)
 	{
@@ -427,7 +427,7 @@ void DDV_UnitValueLessThanLimit(CDataExchange* pDX, T& value, T limit, const U& 
    if( !(value < limit) )
    {
       CString msg;
-      msg.Format("Please enter a number that is less than %f %s", 
+      msg.Format(message, 
                  ::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure  ), 
                  umIndirectMeasure.UnitOfMeasure.UnitTag().c_str() );
 
@@ -436,8 +436,9 @@ void DDV_UnitValueLessThanLimit(CDataExchange* pDX, T& value, T limit, const U& 
    }
 }
 
+
 template <class T,class U>
-void DDV_UnitValueLimitOrLess(CDataExchange* pDX, T& value, T limit, const U& umIndirectMeasure )
+void DDV_UnitValueLimitOrLess(CDataExchange* pDX, T& value, T limit, const U& umIndirectMeasure, const char* message="Please enter a number that is not more than %f %s")
 {
 	if (!pDX->m_bSaveAndValidate)
 	{
@@ -448,7 +449,7 @@ void DDV_UnitValueLimitOrLess(CDataExchange* pDX, T& value, T limit, const U& um
    if( !IsEqual(limit,value) && limit < value )
    {
       CString msg;
-      msg.Format("Please enter a number that is not more than %f %s", 
+      msg.Format(message, 
                  ::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure ), 
                  umIndirectMeasure.UnitOfMeasure.UnitTag().c_str() );
 
@@ -456,6 +457,7 @@ void DDV_UnitValueLimitOrLess(CDataExchange* pDX, T& value, T limit, const U& um
 	   pDX->Fail();
    }
 }
+
 
 template <class T,class U>
 void DDV_UnitValueGreaterThanZero(CDataExchange* pDX, T& value, const U& umIndirectMeasure )

@@ -112,6 +112,9 @@
 		<folder>
 			<name>VoidedSlab2</name>
 		</folder>
+		<folder>
+			<name>DeckedSlabBeam</name>
+		</folder>
 	</folders>
 	<topics>
 		<topic>

@@ -3,22 +3,7 @@
 	<folders/>
 	<topics>
 		<topic>
-			<name>Scale_Method_(Size3d_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Magnitude_Property_(Size3d_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Dy_Property_(Size3d_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Dx_Property_(Size3d_Object).htm</name>
+			<name>Dz_Property_(Size3d_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -28,7 +13,27 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>Dz_Property_(Size3d_Object).htm</name>
+			<name>Dx_Property_(Size3d_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Dy_Property_(Size3d_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Magnitude_Property_(Size3d_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Scale_Method_(Size3d_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Dimensions_Method_(Size3d_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 2001  Washington State Department of Transportation
-//                   Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -203,174 +203,14 @@ STDMETHODIMP CPathElement::Move(Float64 dist,IDirection* direction)
    case petHorzCurve:
       {
          CComQIPtr<IHorzCurve> hc(m_Value);
-         CComPtr<IPoint2d> pbt, pi, pft;
-         hc->get_PBT(&pbt);
-         hc->get_PI(&pi);
-         hc->get_PFT(&pft);
-
-#if defined _DEBUG
-         WATCH("Before move");
-         Float64 x,y;
-         pbt->get_X(&x);
-         pbt->get_Y(&y);
-         WATCH("PBT = (" << x << ", " << y << ")");
-
-         pi->get_X(&x);
-         pi->get_Y(&y);
-         WATCH("PI = (" << x << ", " << y << ")");
-
-         pft->get_X(&x);
-         pft->get_Y(&y);
-         WATCH("PFT = (" << x << ", " << y << ")");
-
-         CComPtr<IPoint2d> old_cc;
-         hc->get_CC(&old_cc);
-         old_cc->get_X(&x);
-         old_cc->get_Y(&y);
-         WATCH("CC = (" << x << ", " << y << ")");
-
-         CComPtr<IPoint2d> old_ts;
-         hc->get_TS(&old_ts);
-         old_ts->get_X(&x);
-         old_ts->get_Y(&y);
-         WATCH("TS = (" << x << ", " << y << ")");
-
-         CComPtr<IPoint2d> old_sc;
-         hc->get_SC(&old_sc);
-         old_sc->get_X(&x);
-         old_sc->get_Y(&y);
-         WATCH("SC = (" << x << ", " << y << ")");
-
-         CComPtr<IPoint2d> old_cs;
-         hc->get_CS(&old_cs);
-         old_cs->get_X(&x);
-         old_cs->get_Y(&y);
-         WATCH("CS = (" << x << ", " << y << ")");
-
-         CComPtr<IPoint2d> old_st;
-         hc->get_ST(&old_st);
-         old_st->get_X(&x);
-         old_st->get_Y(&y);
-         WATCH("ST = (" << x << ", " << y << ")");
-
-         Float64 old_bk_tangent, old_fw_tangent;
-         hc->get_BkTangentLength(&old_bk_tangent);
-         hc->get_FwdTangentLength(&old_fw_tangent);
-         WATCH("BK Tangent = " << old_bk_tangent);
-         WATCH("FW Tangent = " << old_fw_tangent);
-
-         Float64 radius_before;
-         hc->get_Radius(&radius_before);
-#endif
-
-         pbt->Offset(dx,dy);
-         pi->Offset(dx,dy);
-         pft->Offset(dx,dy);
-
-#if defined _DEBUG
-         CComPtr<IPoint2d> new_cc;
-         hc->get_CC(&new_cc);
-
-
-         Float64 radius_after;
-         hc->get_Radius(&radius_after);
-
-         ATLASSERT( IsEqual(radius_before,radius_after) );
-
-         WATCH("After move");
-         pbt->get_X(&x);
-         pbt->get_Y(&y);
-         WATCH("PBT = (" << x << ", " << y << ")");
-
-         pi->get_X(&x);
-         pi->get_Y(&y);
-         WATCH("PI = (" << x << ", " << y << ")");
-
-         pft->get_X(&x);
-         pft->get_Y(&y);
-         WATCH("PFT = (" << x << ", " << y << ")");
-
-         Float64 x1,y1, x2, y2;
-         old_cc->get_X(&x1);
-         old_cc->get_Y(&y1);
-         new_cc->get_X(&x2);
-         new_cc->get_Y(&y2);
-
-         Float64 _dx, _dy;
-         _dx = x2 - x1;
-         _dy = y2 - y1;
-
-         ATLASSERT( IsEqual(dx,_dx) );
-         ATLASSERT( IsEqual(dy,_dy) );
-         WATCH("CC = (" << x2 << ", " << y2 << ")");
-
-         CComPtr<IPoint2d> new_ts;
-         hc->get_TS(&new_ts);
-         old_ts->get_X(&x1);
-         old_ts->get_Y(&y1);
-         new_ts->get_X(&x2);
-         new_ts->get_Y(&y2);
-         _dx = x2 - x1;
-         _dy = y2 - y1;
-         ATLASSERT( IsEqual(dx,_dx) );
-         ATLASSERT( IsEqual(dy,_dy) );
-         WATCH("TS = (" << x2 << ", " << y2 << ")");
-
-         CComPtr<IPoint2d> new_sc;
-         hc->get_SC(&new_sc);
-         old_sc->get_X(&x1);
-         old_sc->get_Y(&y1);
-         new_sc->get_X(&x2);
-         new_sc->get_Y(&y2);
-         _dx = x2 - x1;
-         _dy = y2 - y1;
-         ATLASSERT( IsEqual(dx,_dx) );
-         ATLASSERT( IsEqual(dy,_dy) );
-         WATCH("SC = (" << x2 << ", " << y2 << ")");
-
-         CComPtr<IPoint2d> new_cs;
-         hc->get_CS(&new_cs);
-         old_cs->get_X(&x1);
-         old_cs->get_Y(&y1);
-         new_cs->get_X(&x2);
-         new_cs->get_Y(&y2);
-         _dx = x2 - x1;
-         _dy = y2 - y1;
-         ATLASSERT( IsEqual(dx,_dx) );
-         ATLASSERT( IsEqual(dy,_dy) );
-         WATCH("CS = (" << x2 << ", " << y2 << ")");
-
-         CComPtr<IPoint2d> new_st;
-         hc->get_ST(&new_st);
-         old_st->get_X(&x1);
-         old_st->get_Y(&y1);
-         new_st->get_X(&x2);
-         new_st->get_Y(&y2);
-         _dx = x2 - x1;
-         _dy = y2 - y1;
-         ATLASSERT( IsEqual(dx,_dx) );
-         ATLASSERT( IsEqual(dy,_dy) );
-         WATCH("ST = (" << x2 << ", " << y2 << ")");
-
-         Float64 new_bk_tangent, new_fw_tangent;
-         hc->get_BkTangentLength(&new_bk_tangent);
-         hc->get_FwdTangentLength(&new_fw_tangent);
-         WATCH("BK Tangent = " << new_bk_tangent);
-         WATCH("FW Tangent = " << new_fw_tangent);
-#endif
+         hc->Offset(dx,dy);
       }
       break;
 
    case petLineSegment:
       {
          CComQIPtr<ILineSegment2d> ls(m_Value);
-         CComPtr<IPoint2d> start;
-         CComPtr<IPoint2d> end;
-         ls->get_StartPoint(&start);
-         ls->get_EndPoint(&end);
-
-         start->Offset(dx,dy);
-         end->Offset(dx,dy);
+         ls->Offset(dx,dy);
       }
       break;
    }
