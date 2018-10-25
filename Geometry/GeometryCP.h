@@ -258,4 +258,28 @@ public:
 		}
 	}
 };
+
+
+template <class T>
+class CProxyDLineSegment3dEvents : public IConnectionPointImpl<T, &IID_ILineSegment3dEvents, CComDynamicUnkArray>
+{
+	//Warning this class may be recreated by the wizard.
+public:
+	VOID Fire_OnLineSegmentChanged(ILineSegment3d * lineSegment)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ILineSegment3dEvents> events(sp);
+         if ( events )
+            events->OnLineSegmentChanged(lineSegment);
+		}
+	}
+};
 #endif

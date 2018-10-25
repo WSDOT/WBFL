@@ -185,7 +185,10 @@ Float64 lrfdPsStrand::GetFpj(const matPsStrand& strand,Float64 timeToXfer,Float6
       t = ::ConvertFromSysUnits( timeToXfer, unitMeasure::Day );
 
       Float64 K; // log(24t)/k from eqn 5.9.5.4.4b
-      K = log10(24.0*t)/k;
+      if ( t*24. < 1 )
+         K = 0;
+      else
+         K = log10(24.0*t)/k;
 
       Float64 a,b,c; // coefficients for a quadratic equation
       a = K / fpy;

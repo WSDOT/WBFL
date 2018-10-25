@@ -46,6 +46,7 @@ public:
    virtual const char* GetKey() const;
    virtual const char* GetName() const = 0;
    virtual Uint16 GetMaxLevel() const = 0;
+   virtual bool Select() const = 0; // return true if this chapter is to be selected by default
    virtual rptChapter* Build(CReportSpecification* pRptSpec,Uint16 level) const = 0;
    virtual CChapterBuilder* Clone() const = 0;
 };

@@ -563,6 +563,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\LineSegment3d.cpp"
+				>
+			</File>
+			<File
 				RelativePath="MultiWeb.cpp"
 				>
 				<FileConfiguration
@@ -1375,6 +1379,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LineSegment3d.rgs"
+				>
+			</File>
+			<File
 				RelativePath="MultiWeb.rgs"
 				>
 			</File>
@@ -1428,10 +1436,6 @@
 			</File>
 			<File
 				RelativePath="Rectangle.rgs"
-				>
-			</File>
-			<File
-				RelativePath=".\registry.bin"
 				>
 			</File>
 			<File

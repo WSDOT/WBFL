@@ -152,7 +152,7 @@ void CGenericBridge::SetCollections(IStageCollection* stages,ISpanCollection* sp
 
    LinkSpansAndPiers();
 
-   UpdateBridgeModel();
+   DoUpdateBridgeModel();
 }
 
 void CGenericBridge::LinkSpansAndPiers()
@@ -225,8 +225,11 @@ CSpanCollection* CGenericBridge::GetSpanCollection()
    return dynamic_cast<CSpanCollection*>(m_Spans.p);
 }
 
-void CGenericBridge::UpdateBridgeModel()
+void CGenericBridge::DoUpdateBridgeModel()
 {
+   if ( m_bHoldUpdate )
+      return;
+
    //////////////////////////////////
    // Update COGO model
 
@@ -886,6 +889,14 @@ HRESULT CGenericBridge::UnadviseChild(IUnknown* punk,REFIID riid,DWORD dwCookie)
 
 /////////////////////////////////////////////////////
 // IGenericBridge implementation
+STDMETHODIMP CGenericBridge::UpdateBridgeModel()
+{
+   m_bHoldUpdate = false;
+   DoUpdateBridgeModel();
+   m_bHoldUpdate = true;
+   return S_OK;
+}
+
 STDMETHODIMP CGenericBridge::get_CogoModel(ICogoModel* *cogoModel)
 {
    CHECK_RETOBJ(cogoModel);
@@ -945,7 +956,7 @@ STDMETHODIMP CGenericBridge::putref_Alignment(IAlignment *alignment)
    alignments->Remove(g_AlignmentKey);
    alignments->AddEx(g_AlignmentKey,alignment);
 
-   UpdateBridgeModel();
+   DoUpdateBridgeModel();
    Fire_OnBridgeChanged(this);
 
    return S_OK;
@@ -1245,7 +1256,7 @@ HRESULT CGenericBridge::InsertSpanAndPier(SpanIndexType spanIdx, Float64 spanLen
    }
    dynamic_cast<CSpan*>(newSpan.p)->SetLength(spanLength); // use backdoor so extra events and txn don't happen
 
-   UpdateBridgeModel();
+   DoUpdateBridgeModel();
 
    Fire_OnBridgeChanged(this);
 
@@ -1305,7 +1316,7 @@ HRESULT CGenericBridge::RemoveSpanAndPier(SpanIndexType spanIdx, DirectionType s
       }
    }
 
-   UpdateBridgeModel();
+   DoUpdateBridgeModel();
 
    Fire_OnBridgeChanged(this);
 
@@ -1746,7 +1757,7 @@ STDMETHODIMP CGenericBridge::Load(IStructuredLoad2* load)
 //   VARIANT_BOOL bEnd;
 //   load->EndUnit(&bEnd);
 //
-//   UpdateBridgeModel(); // Generate the COGO model
+//   DoUpdateBridgeModel(); // Generate the COGO model
 //
 //   // Turn on connection points
 //   AdviseSuperstructureMembers();

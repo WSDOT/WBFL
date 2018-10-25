@@ -54,6 +54,7 @@
 #include "PrecastBeam.h"
 #include "TrafficBarrier.h"
 #include "Point3d.h"
+#include "LineSegment3d.h"
 #include "Size3d.h"
 #include "Vector3d.h"
 #include "Plane3d.h"
@@ -102,6 +103,7 @@ OBJECT_ENTRY(CLSID_Triangle, CTriangle)
 OBJECT_ENTRY(CLSID_PrecastBeam, CPrecastBeam)
 OBJECT_ENTRY(CLSID_TrafficBarrier, CTrafficBarrier)
 OBJECT_ENTRY(CLSID_Point3d, CPoint3d)
+OBJECT_ENTRY(CLSID_LineSegment3d, CLineSegment3d)
 OBJECT_ENTRY(CLSID_Size3d, CSize3d)
 OBJECT_ENTRY(CLSID_Vector3d, CVector3d)
 OBJECT_ENTRY(CLSID_Plane3d, CPlane3d)

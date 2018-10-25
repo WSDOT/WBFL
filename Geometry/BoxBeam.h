@@ -96,6 +96,9 @@ private:
    Float64   m_F2;
    Float64   m_C1;
 
+   VARIANT_BOOL m_bLeftBlockOut, m_bRightBlockOut;
+   VARIANT_BOOL m_bUseOverallWidth;
+
    CollectionIndexType m_VoidCount;
 
    bool   m_Dirty;
@@ -149,6 +152,13 @@ public:
    STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal);
    STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal);
    STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pStg);
+   STDMETHOD(put_LeftBlockOut)(/*[in]*/VARIANT_BOOL bLeftBlockOut);
+   STDMETHOD(get_LeftBlockOut)(/*[out,retval]*/VARIANT_BOOL* pbLeftBlockOut);
+   STDMETHOD(put_RightBlockOut)(/*[in]*/VARIANT_BOOL bRightBlockOut);
+   STDMETHOD(get_RightBlockOut)(/*[out,retval]*/VARIANT_BOOL* pbRightBlockOut);
+   STDMETHOD(get_Width)(/*[out,retval]*/Float64* pVal);
+   STDMETHOD(put_UseOverallWidth)(/*[in]*/VARIANT_BOOL bUseOverallWidth);
+   STDMETHOD(get_UseOverallWidth)(/*[out,retval]*/VARIANT_BOOL* pbUseOverallWidth);
 
 // IShape
 	STDMETHOD(FurthestDistance)(/*[in]*/ILine2d* line,/*[out, retval]*/ Float64 *pVal);

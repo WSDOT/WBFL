@@ -1834,6 +1834,8 @@ library WBFLGenericBridge
 	  [propputref, helpstring("property LeftBarrier")] HRESULT LeftBarrier([in] IBarrier* barrier);
 	  [propget, helpstring("property RightBarrier")] HRESULT RightBarrier([out,retval] IBarrier** barrier);
 	  [propputref, helpstring("property RightBarrier")] HRESULT RightBarrier([in] IBarrier* barrier);
+
+     [] HRESULT UpdateBridgeModel();
 	};
    [
 		object,

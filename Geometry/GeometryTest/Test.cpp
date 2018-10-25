@@ -45,6 +45,7 @@
 #include "TestPoint3d.h"
 #include "TestPoint3dCollection.h"
 #include "TestPlane3d.h"
+#include "TestLineSegment3d.h"
 
 #include "TestCoordinateXform2d.h"
 #include "TestCoordinateXform3d.h"
@@ -98,6 +99,7 @@ int main(int argc, char* argv[])
    CTestVector3d::Test();
    CTestPoint3d::Test();
    CTestPoint3dCollection::Test();
+   CTestLineSegment3d::Test();
    CTestPlane3d::Test();
    CTestCoordinateXform2d::Test();
    CTestCoordinateXform3d::Test();

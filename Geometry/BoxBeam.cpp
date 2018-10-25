@@ -67,6 +67,10 @@ HRESULT CBoxBeam::FinalConstruct()
 
    CreateCompositeShape( &m_pShape );
 
+   m_bLeftBlockOut = VARIANT_TRUE;
+   m_bRightBlockOut = VARIANT_TRUE;
+   m_bUseOverallWidth = VARIANT_FALSE;
+
    m_Dirty = true;
 
    return S_OK;
@@ -178,7 +182,7 @@ HRESULT CBoxBeam::UpdateShape()
       Float64 wbot = 2.0*(m_W4 + m_W2) + m_W3;
       Float64 hgt = m_H1 + m_H2 + m_H3;
 
-      Float64 x[9],y[9]; 
+      Float64 x[17],y[17]; 
       int np = 0;
 
       // bottom center
@@ -201,43 +205,101 @@ HRESULT CBoxBeam::UpdateShape()
          y[np++] = m_C1;
       }
 
-      // up the right edge, H7
-      x[np]   = x[np-1];
-      y[np++] = m_H7;
-
-      // bottom of the right key way, H6
-      x[np]   = x[np-1] - m_W4;
-      y[np++] = m_H7 + m_H6;
-
-      // top of the right key way
-      if(m_H5>0.0 || m_H4>0.0)
+      if ( m_bRightBlockOut == VARIANT_TRUE )
       {
+         // up the right edge, H7
          x[np]   = x[np-1];
-         y[np++] = hgt - m_H4 - m_H5;
-      }
+         y[np++] = m_H7;
 
-      // right edge near top, H4
-      if(m_H4>0.0)
-      {
+         // bottom of the right key way, H6
+         x[np]   = x[np-1] - m_W4;
+         y[np++] = m_H7 + m_H6;
+
+         // top of the right key way
+         if(m_H5>0.0 || m_H4>0.0)
+         {
+            x[np]   = x[np-1];
+            y[np++] = hgt - m_H4 - m_H5;
+         }
+
+         // right edge near top, H4
+         if(m_H4>0.0)
+         {
+            x[np]   = wtop/2;
+            y[np++] = hgt - m_H4; 
+         }
+
+         // top right corner
          x[np]   = wtop/2;
-         y[np++] = hgt - m_H4; 
+         y[np++] = hgt;
+      }
+      else
+      {
+         // top right corner
+         x[np]   = wbot/2;
+         y[np++] = hgt;
       }
 
-      // top right corner
-      x[np]   = wtop/2;
-      y[np] = hgt;
 
-      ATLASSERT(np<9);
 
-      for (int ip=0; ip<=np; ip++)
+      if ( m_bLeftBlockOut == VARIANT_TRUE )
+      {
+         // top left corner
+         x[np] = -wtop/2;
+         y[np++] = hgt;
+
+         // left edge near top, H4
+         if(m_H4>0.0)
+         {
+            x[np]   = -wtop/2;
+            y[np++] = hgt - m_H4; 
+         }
+
+         // top of the left key way
+         if(m_H5>0.0 || m_H4>0.0)
+         {
+            x[np]   = x[np-1] + m_W1;
+            y[np++] = hgt - m_H4 - m_H5;
+         }
+
+         // bottom of the left key way, H6
+         x[np]   = x[np-1];
+         y[np++] = m_H7 + m_H6;
+
+         // left edge, H7
+         x[np]   = x[np-1] - m_W4;
+         y[np++] = m_H7;
+      }
+      else
+      {
+         // top left corner
+         x[np] = -wbot/2;
+         y[np++] = hgt;
+      }
+
+      if (m_C1 <= 0.0)
+      {
+         // bottom left
+         x[np]   = -wbot/2;
+         y[np++] = 0;
+      }
+      else
+      {
+         // deal with chamfer
+         x[np]   = -wbot/2;
+         y[np++] = m_C1;
+
+         x[np]   = -wbot/2 + m_C1;
+         y[np++] = 0;
+      }
+
+      // bottom center
+      x[np]   = 0; 
+      y[np++] = 0;
+
+      for (int ip=0; ip < np; ip++)
       {
          outer->AddPoint(x[ip], y[ip]);
-      }
-
-      // the left side is a mirror image so just use -x
-      for (int ip = np; 0 <= ip; ip--)
-      {
-         outer->AddPoint(-x[ip], y[ip]);
       }
 
       CComQIPtr<IShape> outer_shape(outer);
@@ -577,6 +639,34 @@ STDMETHODIMP CBoxBeam::put_VoidCount(CollectionIndexType newVal)
    return S_OK;
 }
 
+STDMETHODIMP CBoxBeam::put_LeftBlockOut(VARIANT_BOOL bLeftBlockOut)
+{
+   MakeDirty();
+   m_bLeftBlockOut = bLeftBlockOut;
+   return S_OK;
+}
+
+STDMETHODIMP CBoxBeam::get_LeftBlockOut(VARIANT_BOOL* pbLeftBlockOut)
+{
+   CHECK_RETVAL(pbLeftBlockOut);
+   *pbLeftBlockOut = m_bLeftBlockOut;
+   return S_OK;
+}
+
+STDMETHODIMP CBoxBeam::put_RightBlockOut(VARIANT_BOOL bRightBlockOut)
+{
+   MakeDirty();
+   m_bRightBlockOut = bRightBlockOut;
+   return S_OK;
+}
+
+STDMETHODIMP CBoxBeam::get_RightBlockOut(VARIANT_BOOL* pbRightBlockOut)
+{
+   CHECK_RETVAL(pbRightBlockOut);
+   *pbRightBlockOut = m_bRightBlockOut;
+   return S_OK;
+}
+
 STDMETHODIMP CBoxBeam::get_WebWidth(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
@@ -597,6 +687,9 @@ STDMETHODIMP CBoxBeam::get_WebWidth(Float64 *pVal)
 
 STDMETHODIMP CBoxBeam::get_BottomFlangeWidth(Float64 *pVal)
 {
+   if ( m_bUseOverallWidth == VARIANT_TRUE )
+      return get_Width(pVal);
+
    CHECK_RETVAL(pVal);
    *pVal = 2*(m_W4+m_W2) + m_W3;
    return S_OK;
@@ -604,8 +697,42 @@ STDMETHODIMP CBoxBeam::get_BottomFlangeWidth(Float64 *pVal)
 
 STDMETHODIMP CBoxBeam::get_TopFlangeWidth(Float64 *pVal)
 {
+   if ( m_bUseOverallWidth == VARIANT_TRUE )
+      return get_Width(pVal);
+
    CHECK_RETVAL(pVal);
-   *pVal = 2*(m_W1+m_W2) + m_W3;
+
+   if ( m_bLeftBlockOut == VARIANT_FALSE && m_bRightBlockOut == VARIANT_FALSE )
+      return get_BottomFlangeWidth(pVal); // no block out
+
+   if ( m_bLeftBlockOut != m_bRightBlockOut )
+      *pVal = m_W3 + 2*m_W2 + m_W1 + m_W4; // block out on one side
+   else
+      *pVal = 2*(m_W1+m_W2) + m_W3; // block out on both sides
+
+   return S_OK;
+}
+
+STDMETHODIMP CBoxBeam::get_Width(Float64* pVal)
+{
+   CHECK_RETVAL(pVal);
+   Float64 top = 2*(m_W1+m_W2) + m_W3;
+   Float64 bot = 2*(m_W4+m_W2) + m_W3;
+
+   *pVal = max(top,bot);
+   return S_OK;
+}
+
+STDMETHODIMP CBoxBeam::put_UseOverallWidth(VARIANT_BOOL bUseOverallWidth)
+{
+   m_bUseOverallWidth = bUseOverallWidth;
+   return S_OK;
+}
+
+STDMETHODIMP CBoxBeam::get_UseOverallWidth(VARIANT_BOOL* pbUseOverallWidth)
+{
+   CHECK_RETVAL(pbUseOverallWidth);
+   *pbUseOverallWidth = m_bUseOverallWidth;
    return S_OK;
 }
 
@@ -720,6 +847,9 @@ STDMETHODIMP CBoxBeam::Clone(IShape** pClone)
    pTheClone->put_F2(m_F2);
    pTheClone->put_C1(m_C1);
    pTheClone->put_VoidCount( m_VoidCount );
+   pTheClone->put_LeftBlockOut(m_bLeftBlockOut);
+   pTheClone->put_RightBlockOut(m_bRightBlockOut);
+   pTheClone->put_UseOverallWidth(m_bUseOverallWidth);
 
    CComPtr<IPoint2d> hookPnt;
    CreatePoint(m_pHookPoint,NULL,&hookPnt);

@@ -95,6 +95,12 @@ CEAFMainFrame* EAFGetMainFrame()
    return pFrame;
 }
 
+CEAFDocument* EAFGetDocument()
+{
+   CEAFMainFrame* pFrame = EAFGetMainFrame();
+   return pFrame->GetDocument();
+}
+
 
 bool operator<(REFIID a,REFIID b)
 {

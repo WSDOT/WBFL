@@ -54,6 +54,7 @@ BEGIN_MESSAGE_MAP(CEAFMainFrame, CMDIFrameWnd)
    ON_WM_CLOSE()
    ON_WM_DESTROY()
 	ON_NOTIFY_EX_RANGE(TTN_NEEDTEXT, 0, 0xFFFF, OnToolTipText)
+   ON_NOTIFY_EX_RANGE(TBN_DROPDOWN, 0, 0xFFFF, OnToolbarDropDown)
 
 	ON_COMMAND(ID_CONTEXT_HELP, CMDIFrameWnd::OnContextHelp)
    ON_COMMAND(ID_HELP_FINDER, OnHelpFinder)
@@ -125,7 +126,11 @@ CToolBar* CEAFMainFrame::CreateMainFrameToolBar()
       return NULL;
    }
 
-
+   pToolBar->GetToolBarCtrl().SetExtendedStyle(TBSTYLE_EX_DRAWDDARROWS);
+   int idx = pToolBar->CommandToIndex(ID_FILE_OPEN);
+   DWORD dwStyle = pToolBar->GetButtonStyle(idx);
+   dwStyle |= BTNS_DROPDOWN;
+   pToolBar->SetButtonStyle(idx,dwStyle);
 
    pToolBar->EnableDocking(CBRS_ALIGN_ANY);
    pToolBar->SetWindowText(AfxGetAppName());
@@ -147,6 +152,11 @@ int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
    WINDOWPLACEMENT wp;
    if ( EAFGetApp()->ReadWindowPlacement(CString((LPCSTR)IDS_REG_WNDPOS),&wp) )
    {
+      if ( sysFlags<LONG>::IsSet(lpCreateStruct->style,WS_VISIBLE) )
+         wp.showCmd = SW_SHOW;
+      else
+         wp.showCmd = SW_HIDE;
+
       SetWindowPlacement(&wp);
    }
 
@@ -208,6 +218,13 @@ void CEAFMainFrame::OnDestroy()
    SaveBarState( CString((LPCSTR)IDS_TOOLBAR_STATE) );
 
    CMDIFrameWnd::OnDestroy();
+}
+
+BOOL CEAFMainFrame::PreCreateWindow(CREATESTRUCT& cs)
+{
+   cs.style &= ~WS_VISIBLE;
+
+   return CMDIFrameWnd::PreCreateWindow(cs);
 }
 
 BOOL CEAFMainFrame::PreTranslateMessage(MSG* pMsg)
@@ -311,6 +328,14 @@ void CEAFMainFrame::GetMessageString(UINT nID, CString& rMessage) const
       }
    }
 
+   if ( !bHandledByPlugin && pActiveDoc )
+   {
+      CEAFDocument* pDoc = (CEAFDocument*)pActiveDoc;
+      CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)pDoc->GetDocTemplate();
+      if ( pTemplate->GetCommandCallback() )
+         bHandledByPlugin = pTemplate->GetCommandCallback()->GetStatusBarMessageString(nID,rMessage);
+   }
+
    if ( !bHandledByPlugin )
       CMDIFrameWnd::GetMessageString(nID,rMessage);
 }
@@ -330,6 +355,8 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
 	}
 
    CEAFDocument* pDoc = GetDocument();
+   BOOL bHandledByPlugin = FALSE;
+   CString strTipText;
 
    if ( nID != 0 && pDoc )
    {
@@ -338,10 +365,31 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
       if ( pDoc->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
       {
          // this command belogs to one of the plug-ins
-         CString strTipText;
-         pCallback->GetToolTipMessageString(nPluginCmdID,strTipText);
+         bHandledByPlugin = pCallback->GetToolTipMessageString(nPluginCmdID,strTipText);
+      }
+   }
 
+   if ( !bHandledByPlugin )
+   {
+      CEAFApp* pApp = EAFGetApp();
+      UINT nPluginCmdID;
+      IEAFCommandCallback* pCallback;
+      if ( pApp->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
+      {
+         // this command belogs to one of the application plug-ins
+         bHandledByPlugin = pCallback->GetToolTipMessageString(nPluginCmdID,strTipText);
+      }
+   }
 
+   if (!bHandledByPlugin && pDoc )
+   {
+      CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)pDoc->GetDocTemplate();
+      if ( pTemplate->GetCommandCallback() )
+         bHandledByPlugin = pTemplate->GetCommandCallback()->GetToolTipMessageString(nID,strTipText);
+   }
+
+   if ( bHandledByPlugin )
+   {
 #ifndef _UNICODE
 	   if (pTTTStruct->code == TTN_NEEDTEXTA)
 		   lstrcpyn(pTTTA->szText, strTipText, strTipText.GetLength()+1);
@@ -354,40 +402,43 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
 		   lstrcpyn(pTTTW->szText, strTipText, strTipText.GetLength()+1);
 #endif
 
-         *pResult = 0;
-
-         return TRUE;
-      }
-   }
-
-   CEAFApp* pApp = EAFGetApp();
-   UINT nPluginCmdID;
-   IEAFCommandCallback* pCallback;
-   if ( pApp->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
-   {
-      // this command belogs to one of the application plug-ins
-      CString strTipText;
-      pCallback->GetToolTipMessageString(nPluginCmdID,strTipText);
-
-
-#ifndef _UNICODE
-   if (pTTTStruct->code == TTN_NEEDTEXTA)
-	   lstrcpyn(pTTTA->szText, strTipText, strTipText.GetLength()+1);
-   else
-	   _mbstowcsz(pTTTW->szText, strTipText, strTipText.GetLength()+1);
-#else
-   if (pTTTStruct->code == TTN_NEEDTEXTA)
-	   _wcstombsz(pTTTA->szText, strTipText, strTipText.GetLength()+1);
-   else
-	   lstrcpyn(pTTTW->szText, strTipText, strTipText.GetLength()+1);
-#endif
-
       *pResult = 0;
 
       return TRUE;
    }
 
-      return FALSE; // not handled here
+   return FALSE; // not handled here
+}
+
+BOOL CEAFMainFrame::OnToolbarDropDown(UINT nToolbarID,NMHDR* pnmhdr,LRESULT* plr)
+{
+   NMTOOLBAR* pnmtb = (NMTOOLBAR*)(pnmhdr);
+   UINT nID;
+
+   switch(pnmtb->iItem)
+   {
+   case ID_FILE_OPEN:
+      nID = IDR_RECENT_FILE;
+      break;
+
+   default:
+      return FALSE;
+   }
+
+   CMenu menu;
+   menu.LoadMenu(nID);
+   CMenu* pPopup = menu.GetSubMenu(0);
+   ASSERT(pPopup);
+
+   CRect rc;
+   ::SendMessage(pnmtb->hdr.hwndFrom,TB_GETRECT,pnmtb->iItem,(LPARAM)&rc);
+
+   CPoint pntBottomLeft(rc.left,rc.bottom);
+   ::ClientToScreen(pnmtb->hdr.hwndFrom,&pntBottomLeft);
+
+   pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_VERTICAL, pntBottomLeft.x, pntBottomLeft.y, this, &rc);
+
+   return TRUE;
 }
 
 void CEAFMainFrame::UpdateFrameTitle(LPCTSTR lpszDocName)

@@ -63,7 +63,9 @@ public:
       m_dwAlignmentCookie = 0;
       m_dwDeckCookie = 0;
       m_AlignmentOffset = 0;
-	}
+
+      m_bHoldUpdate = true;
+   }
 
    HRESULT FinalConstruct();
    void FinalRelease();
@@ -94,7 +96,9 @@ BEGIN_CONNECTION_POINT_MAP(CGenericBridge)
 END_CONNECTION_POINT_MAP()
 
 private:
-   void UpdateBridgeModel();
+   bool m_bHoldUpdate;
+
+   void DoUpdateBridgeModel();
    HRESULT AdviseChild(IUnknown* punk,REFIID riid,DWORD* pdwCookie);
    HRESULT UnadviseChild(IUnknown* punk,REFIID riid,DWORD dwCookie);
 
@@ -167,6 +171,8 @@ public:
 	STDMETHOD(get_RightBarrier)(/*[out,retval]*/ IBarrier** barrier);
 	STDMETHOD(putref_RightBarrier)(/*[in]*/ IBarrier* barrier);
 
+   STDMETHOD(UpdateBridgeModel)();
+
 // IStructuredStorage2
 public:
 	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
@@ -176,21 +182,21 @@ public:
 public:
 	STDMETHOD(OnPierChanged)(IPier * pier)
 	{
-      UpdateBridgeModel();
+      DoUpdateBridgeModel();
       Fire_OnBridgeChanged(this);
 		return S_OK;
 	}
    
    STDMETHOD(OnPierAdded)(/*[in]*/IPier* pier)
    {
-      UpdateBridgeModel();
+      DoUpdateBridgeModel();
       Fire_OnBridgeChanged(this);
       return S_OK;
    }
 
    STDMETHOD(OnPierRemoved)(/*[in]*/PierIndexType idx)
    {
-      UpdateBridgeModel();
+      DoUpdateBridgeModel();
       Fire_OnBridgeChanged(this);
       return S_OK;
    }
@@ -199,7 +205,7 @@ public:
 public:
 	STDMETHOD(OnSpanChanged)(ISpan * span)
 	{
-      UpdateBridgeModel();
+      DoUpdateBridgeModel();
       Fire_OnBridgeChanged(this);
 		return S_OK;
 	}
@@ -221,14 +227,14 @@ public:
 public:
    STDMETHOD(OnPathChanged)(/*[in]*/ IPath* path)
    {
-      UpdateBridgeModel();
+      DoUpdateBridgeModel();
       Fire_OnBridgeChanged(this);
 		return S_OK;
    }
 
 	STDMETHOD(OnProfileChanged)(/*[in]*/ IProfile* profile)
    {
-      UpdateBridgeModel();
+      DoUpdateBridgeModel();
       Fire_OnBridgeChanged(this);
 		return S_OK;
    }
@@ -237,7 +243,7 @@ public:
 public:
    STDMETHOD(OnBridgeDeckChanged)(IBridgeDeck* deck)
    {
-      //UpdateBridgeModel();
+      //DoUpdateBridgeModel();
       Fire_OnBridgeChanged(this);
 		return S_OK;
    }

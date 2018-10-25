@@ -54,8 +54,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,2,0,4
- PRODUCTVERSION 3,2,0,4
+ FILEVERSION 3,2,0,5
+ PRODUCTVERSION 3,2,0,5
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -73,7 +73,7 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project\0"
             VALUE "CompanyName", "Washington State Department of Transportation\0"
             VALUE "FileDescription", "WBFL Geometry Module\0"
-            VALUE "FileVersion", "3.2.0.4\0"
+            VALUE "FileVersion", "3.2.0.5\0"
             VALUE "InternalName", "Geometry\0"
             VALUE "LegalCopyright", "Copyright © 1999-2010\0"
             VALUE "LegalTrademarks", "\0"
@@ -81,7 +81,7 @@ BEGIN
             VALUE "OriginalFilename", "Geometry.DLL\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "WBFL\0"
-            VALUE "ProductVersion", "3.2.0.4\0"
+            VALUE "ProductVersion", "3.2.0.5\0"
             VALUE "SpecialBuild", "\0"
         END
     END
@@ -105,6 +105,7 @@ IDR_RECT2D              REGISTRY DISCARDABLE    "Rect2d.rgs"
 IDR_VECTOR2D            REGISTRY DISCARDABLE    "Vector2d.rgs"
 IDR_POINT2DCOLLECTION   REGISTRY DISCARDABLE    "Point2dCollection.rgs"
 IDR_LINESEGMENT2D       REGISTRY DISCARDABLE    "LineSegment2d.rgs"
+IDR_LINESEGMENT3D       REGISTRY DISCARDABLE    "LineSegment3d.rgs"
 IDR_LINE2D              REGISTRY DISCARDABLE    "Line2d.rgs"
 IDR_SHAPEPROPERTIES     REGISTRY DISCARDABLE    "ShapeProperties.rgs"
 IDR_POLYSHAPE           REGISTRY DISCARDABLE    "PolyShape.rgs"

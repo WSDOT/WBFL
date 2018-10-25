@@ -26,7 +26,7 @@
 
 // menu stuff for CCustomControlSite
 #define CCS_CMENU_BASE    300 
-#define CCS_MAX_CMENUS    250 
+#define CCS_MAX_CMENUS    10000 
 #define CCS_CMENU_MAX     CCS_CMENU_BASE + CCS_MAX_CMENUS
 #define CCS_RB_EDIT         0
 #define CCS_RB_FIND         1

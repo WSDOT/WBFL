@@ -220,7 +220,19 @@ BOOL CEAFDocManager::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD l
 	return nResult == IDOK;
 }
 
+void CEAFDocManager::AddDocTemplate(CDocTemplate* pTemplate)
+{
+   CDocManager::AddDocTemplate(pTemplate);
+   SortDocTemplates();
+}
+
 void CEAFDocManager::RemoveDocTemplate(POSITION pos)
 {
    m_templateList.RemoveAt(pos);
+}
+
+void CEAFDocManager::SortDocTemplates()
+{
+   // need to sort the document templates by pTemplate->GetDocString(strTypeName, CDocTemplate::fileNewName)
+   // so that the always display in a consistent order in the New Project dialog
 }

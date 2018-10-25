@@ -307,7 +307,11 @@ void lrfdNoncompositeApproximateLosses2005::UpdateInitialLosses() const
    // Losses from jacking to release
    Float64 t_days = ::ConvertFromSysUnits( m_Time, unitMeasure::Day );
    Float64 A = (m_Type == matPsStrand::LowRelaxation ? 40. : 10. );
-   m_dfR1 = (log10(24.*t_days)/A) * (m_Fpj/m_Fpy - 0.55) * m_Fpj;
+
+   if ( t_days*24. < 1 )
+      m_dfR1 = 0; // log10(<1) = < 0... t_days < 1/24 is less than one hour
+   else
+      m_dfR1 = (log10(24.*t_days)/A) * (m_Fpj/m_Fpy - 0.55) * m_Fpj;
 
    // Elastic shortening
    lrfdElasticShortening es(m_Fpj,

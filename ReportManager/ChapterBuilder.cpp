@@ -41,7 +41,6 @@ static char THIS_FILE[]=__FILE__;
 
 CChapterBuilder::CChapterBuilder()
 {
-
 }
 
 CChapterBuilder::~CChapterBuilder()

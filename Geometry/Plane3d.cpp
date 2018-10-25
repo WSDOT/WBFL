@@ -27,6 +27,7 @@
 #include "stdafx.h"
 #include "WBFLGeometry.h"
 #include "Plane3d.h"
+#include "Point3d.h"
 #include "Helper.h"
 #include <MathEx.h>
 #include <Float.h>
@@ -201,6 +202,103 @@ STDMETHODIMP CPlane3d::GetZ(Float64 x, Float64 y, Float64 *pVal)
 
    *pVal = z;
 	return S_OK;
+}
+
+STDMETHODIMP CPlane3d::LineSegmentIntersect(ILineSegment3d* pLineSegment,IPoint3d** ppPoint)
+{
+   // Reference: http://en.wikipedia.org/wiki/Line-plane_intersection
+   CHECK_IN(pLineSegment);
+   CHECK_RETVAL(ppPoint);
+
+   CComPtr<IPoint3d> start, end;
+   pLineSegment->get_StartPoint(&start);
+   pLineSegment->get_EndPoint(&end);
+
+   Float64 Xa,Ya,Za;
+   start->Location(&Xa,&Ya,&Za);
+
+   Float64 Xb,Yb,Zb;
+   end->Location(&Xb,&Yb,&Zb);
+
+   Float64 Dx = Xb - Xa;
+   Float64 Dy = Yb - Ya;
+   Float64 Dz = Zb - Za;
+
+   Float64 Q = -m_D - m_A*Xa - m_B*Ya - m_C*Za;
+   Float64 R = m_A*Dx + m_B*Dy + m_C*Dz;
+
+   if ( IsZero(R) ) // Line is parallel to plane
+      return Error(IDS_E_NOSOLUTIONS,IID_IPlane3d,GEOMETRY_E_NOSOLUTIONS);
+
+   if ( IsZero(Q) && IsZero(R) ) // Line is on plane
+      return Error(IDS_E_NOSOLUTIONS,IID_IPlane3d,GEOMETRY_E_NOSOLUTIONS);
+
+   Float64 t = Q/R;
+
+   CComObject<CPoint3d>* pPoint;
+   HRESULT hr = CComObject<CPoint3d>::CreateInstance(&pPoint);
+   if ( FAILED(hr) )
+      return hr;
+
+   Float64 x = Xa + t*Dx;
+   Float64 y = Ya + t*Dy;
+   Float64 z = Za + t*Dz;
+
+   *ppPoint = pPoint;
+   (*ppPoint)->AddRef();
+   (*ppPoint)->Move(x,y,z);
+
+   if ( t < 0 || 1 < t )
+      return S_FALSE; // an intersection was found, but it is not between the ends of the line segment
+
+   return S_OK;
+}
+
+STDMETHODIMP CPlane3d::SortestDistance(IPoint3d* point,Float64* pDistance)
+{
+   // REFERENCE: http://en.wikipedia.org/wiki/Plane_(geometry)#Distance_from_a_point_to_a_plane
+   CHECK_IN(point);
+   CHECK_RETVAL(pDistance);
+
+   Float64 K = m_A*m_A + m_B*m_B + m_C*m_C;
+   if ( IsZero(K) )
+      return E_FAIL;
+
+   Float64 x,y,z;
+   point->Location(&x,&y,&z);
+
+   *pDistance = (m_A*x + m_B*y + m_C*z + m_D)/sqrt(K);
+
+   // distance > 0... point is above plane (on same side as normal)
+   // distance < 0... point is below plane
+
+   return S_OK;
+}
+
+STDMETHODIMP CPlane3d::PointOnPlaneNearestOrigin(IPoint3d** ppPoint)
+{
+   // REFERENCE: http://en.wikipedia.org/wiki/Point_on_plane_closest_to_origin
+   CHECK_RETOBJ(ppPoint);
+
+   Float64 K = m_A*m_A + m_B*m_B + m_C*m_C;
+   if ( IsZero(K) )
+      return E_FAIL;
+
+   Float64 x = m_A*m_D/K;
+   Float64 y = m_B*m_D/K;
+   Float64 z = m_C*m_D/K;
+
+
+   CComObject<CPoint3d>* pPoint;
+   HRESULT hr = CComObject<CPoint3d>::CreateInstance(&pPoint);
+   if ( FAILED(hr) )
+      return hr;
+
+   *ppPoint = pPoint;
+   (*ppPoint)->AddRef();
+   (*ppPoint)->Move(x,y,z);
+
+   return S_OK;
 }
 
 STDMETHODIMP CPlane3d::Clone(IPlane3d** clone)

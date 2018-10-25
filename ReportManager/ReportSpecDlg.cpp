@@ -120,7 +120,7 @@ void CReportSpecDlg::UpdateChapterList()
       int idx = m_ChapterList.AddString( chInfo.Name.c_str() );
       if ( idx != LB_ERR )
       {
-         m_ChapterList.SetCheck(idx,1); // turn check on
+         m_ChapterList.SetCheck(idx,chInfo.Select ? 1 : 0); // turn check on
          m_ChapterList.SetItemData(idx,chInfo.MaxLevel);
       }
    }

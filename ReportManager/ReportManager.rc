@@ -7,6 +7,9 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
 #include "afxres.h"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -65,8 +68,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,2,0,4
- PRODUCTVERSION 3,2,0,4
+ FILEVERSION 3,2,0,5
+ PRODUCTVERSION 3,2,0,5
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -84,11 +87,11 @@ BEGIN
             VALUE "Comments", "A member of Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "ReportManager DLL"
-            VALUE "FileVersion", "3.2.0.4"
+            VALUE "FileVersion", "3.2.0.5"
             VALUE "InternalName", "ReportManager"
             VALUE "OriginalFilename", "WBFLReportManager.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "3.2.0.4"
+            VALUE "ProductVersion", "3.2.0.5"
         END
     END
     BLOCK "VarFileInfo"

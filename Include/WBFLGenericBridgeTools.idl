@@ -528,6 +528,7 @@ library WBFLGenericBridgeTools
 	]
 	interface IBridgeGeometryTool : IUnknown
 	{
+	   [helpstring("method Point")] HRESULT Point([in] IGenericBridge* bridge,[in] SpanIndexType spanIdx,[in] GirderIndexType gdrIdx, [in] Float64 distFromStartOfSpan,[out] IPoint2d** point);
 	   [helpstring("method StationAndOffset")] HRESULT StationAndOffset([in] IGenericBridge* bridge,[in] SpanIndexType spanIdx,[in] GirderIndexType gdrIdx, [in] Float64 distFromStartOfSpan,[out] IStation** station, [out] Float64* offset);
 	   [helpstring("method GirderPathOffset")] HRESULT GirderPathOffset([in] IGenericBridge* bridge,[in] SpanIndexType spanIdx,[in] GirderIndexType gdrIdx, [in] VARIANT varStation, [out,retval] Float64* offset);
 	   [helpstring("method GirderLineBearing")] HRESULT GirderLineBearing([in] IGenericBridge* bridge,[in] SpanIndexType spanIdx,[in] GirderIndexType gdrIdx, [out,retval] IDirection** direction);

@@ -175,6 +175,23 @@ STDMETHODIMP CLineSegment2d::OffsetEx(ISize2d *pSize)
    return S_OK;
 }
 
+STDMETHODIMP CLineSegment2d::ThroughPoints(IPoint2d* p1, IPoint2d* p2)
+{
+   CHECK_IN(p1);
+   CHECK_IN(p2);
+
+   HRESULT hr = CrAssignPointer(m_pStart, p1, this, IID_IPoint2dEvents, &m_dwStartCookie);
+   if ( FAILED(hr) )
+      return hr;
+
+   hr = CrAssignPointer(m_pEnd, p2, this, IID_IPoint2dEvents, &m_dwEndCookie);
+   if ( FAILED(hr) )
+      return hr;
+
+   Fire_OnLineSegmentChanged(this);
+   return S_OK;
+}
+
 STDMETHODIMP CLineSegment2d::get_StructuredStorage(IStructuredStorage2* *pStg)
 {
    CHECK_RETOBJ(pStg);

@@ -48,6 +48,9 @@
     <comClass clsid="{546BBDC2-96C0-11D2-8D11-14830CC10000}"
               tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
               description="LineSegment2d Class"></comClass>
+    <comClass clsid="{56CD2A28-FABF-4015-AA70-F27D95334249}"
+              tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+              description="LineSegment3d Class"></comClass>
     <comClass clsid="{D72D7403-F9DB-11D2-8CDF-444553540000}"
               tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
               description="Line2d Class"></comClass>

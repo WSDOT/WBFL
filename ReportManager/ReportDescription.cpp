@@ -73,6 +73,7 @@ std::vector<CChapterInfo> CReportDescription::GetChapterInfo() const
       chInfo.Name     = pChBuilder->GetName();
       chInfo.Key      = pChBuilder->GetKey();
       chInfo.MaxLevel = pChBuilder->GetMaxLevel();
+      chInfo.Select   = pChBuilder->Select();
 
       v.push_back(chInfo);
    }

@@ -644,6 +644,17 @@ HRESULT CreateGeomUtil(IGeomUtil2d** ppUtil)
    return S_OK;
 }
 
+HRESULT CreateGeomUtil(IGeomUtil3d** ppUtil)
+{
+   CComPtr<IGeomUtil2d> pUtil2d;
+   HRESULT hr = CreateGeomUtil(&pUtil2d);
+   if ( FAILED(hr) )
+      return hr;
+
+   return pUtil2d->QueryInterface(ppUtil);
+}
+
+
 VARIANT_BOOL MakeBool(bool boolean)
 {
    return boolean ? VARIANT_TRUE : VARIANT_FALSE;

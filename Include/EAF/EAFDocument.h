@@ -206,6 +206,9 @@ public:
    // By default the root node name is pApp->m_pszAppName with all whitespace removed
    virtual CString GetRootNodeName();
 
+   // Returns the version number of the root data block
+   virtual Float64 GetRootNodeVersion();
+
    // Called before WriteTheDocument to write a root node BeginUnit block
    virtual HRESULT OpenDocumentRootNode(IStructuredSave* pStrSave);
    // Called after WriteTheDocument and after saving of plugin data to write a root node EndUnit block

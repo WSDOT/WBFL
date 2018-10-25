@@ -58,6 +58,7 @@ public:
 
    DWORD GetOwnerID() const; // returns the key of the object creating this toolbar
    UINT GetToolBarID() const;   // returns the ID of this toolbar
+   DWORD GetExtendedStyle();
    void SetExtendedStyle(DWORD dwStyleEx);
    BOOL HideButton(int nID,IEAFCommandCallback* pCallback,BOOL bHide=TRUE);
    BOOL GetItemRect(int nIndex,LPRECT lpRect);
@@ -67,6 +68,8 @@ public:
    BOOL SetButtonText(int nIndex,LPCTSTR lpszText) const;
    CString GetButtonText(int nIndex) const;
    BOOL MoveButton(UINT nOldIndex,UINT nNewIndex);
+
+   BOOL CreateDropDownButton(UINT nPluginCmd,IEAFCommandCallback* pCallback,DWORD dwBtnStyle);
 
    // CWnd
    BOOL IsWindowVisible();

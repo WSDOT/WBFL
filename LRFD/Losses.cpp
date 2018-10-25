@@ -814,11 +814,22 @@ void lrfdLosses::UpdateRelaxationBeforeTransfer() const
       Float64 A = (m_Type == matPsStrand::LowRelaxation ? 40. : 10. );
 
       if ( m_TempStrandUsage == tsPretensioned )
-         m_dfpR0[0] = (log10(24.*t_days)/A) * (m_FpjTemp/m_Fpy - 0.55) * m_FpjTemp;
+      {
+         if ( t_days*24. < 1 )
+            m_dfpR0[0] = 0; // log10(<1) = < 0... t_days < 1/24 is less than one hour
+         else
+            m_dfpR0[0] = (log10(24.*t_days)/A) * (m_FpjTemp/m_Fpy - 0.55) * m_FpjTemp;
+      }
       else
+      {
          m_dfpR0[0] = 0; // no initial relaxation if not pre-tensioned
+      }
 
-      m_dfpR0[1] = (log10(24.*t_days)/A) * (m_FpjPerm/m_Fpy - 0.55) * m_FpjPerm;
+
+      if ( t_days*24. < 1 )
+         m_dfpR0[1] = 0; // log10(<1) = < 0... t_days < 1/24 is less than one hour
+      else
+         m_dfpR0[1] = (log10(24.*t_days)/A) * (m_FpjPerm/m_Fpy - 0.55) * m_FpjPerm;
    }
    else
    {

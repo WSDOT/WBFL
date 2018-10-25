@@ -42,5 +42,6 @@ EAFFUNC HRESULT EAFGetBroker(IBroker** ppBroker);
 EAFFUNC std::vector<CEAFPluginState> EAFManagePlugins(LPCSTR lpszTitle,const CATID& catid,CWnd* pParent = NULL);
 
 EAFFUNC CEAFMainFrame* EAFGetMainFrame();
+EAFFUNC CEAFDocument* EAFGetDocument();
 
 EAFFUNC bool operator<(REFIID a,REFIID b);
