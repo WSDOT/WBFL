@@ -62,11 +62,11 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-// Generated message map functions
+   void OnUpdateFrameTitle(BOOL bAddToTitle);
+
+   // Generated message map functions
 protected:
 	//{{AFX_MSG(COutputChildFrame)
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
-
-   void OnUpdateFrameTitle(BOOL bAddToTitle);
 };

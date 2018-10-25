@@ -143,14 +143,18 @@ CEAFMenu* CEAFMenu::CreatePopupMenu(INT pos,LPCTSTR lpszName)
    pNewMenu->m_strMenu = lpszName;
    pNewMenu->Init( NULL, m_pCmdMgr );
 
-   m_Popups.push_back( pNewMenu );
-
    CMenu* pMenu = GetMenu();
 
    if ( pos < 0 )
+   {
+      m_Popups.push_back(pNewMenu);
       pMenu->AppendMenu(MF_POPUP, (UINT)pNewMenu->m_Menu.m_hMenu, lpszName );
+   }
    else
+   {
+      m_Popups.insert( m_Popups.begin() + pos, pNewMenu );
       pMenu->InsertMenu(pos,MF_BYPOSITION | MF_POPUP, (UINT)pNewMenu->m_Menu.m_hMenu, lpszName );
+   }
 
    if ( m_pWnd )
       m_pWnd->DrawMenuBar();
@@ -287,6 +291,33 @@ BOOL CEAFMenu::RemoveMenu(UINT nPosition,UINT nFlags, IEAFCommandCallback* pCall
 
    return pMenu->RemoveMenu(nPosition,nFlags);
 }
+
+int CEAFMenu::GetMenuString(UINT nIDItem,LPTSTR lpString,int nMaxCount,UINT nFlags, IEAFCommandCallback* pCallback) const
+{
+   if ( nFlags == MF_BYCOMMAND )
+   {
+      // nIDItem comes in as a command ID defined by the plugin
+      // Convert nIDItem into the unique command ID for the application
+      m_pCmdMgr->GetMappedCommandID(nIDItem,pCallback,&nIDItem);
+   }
+
+   const CMenu* pMenu = GetMenu();
+   return pMenu->GetMenuString(nIDItem,lpString,nMaxCount,nFlags);
+}
+
+int CEAFMenu::GetMenuString(UINT nIDItem,CString& rString,UINT nFlags, IEAFCommandCallback* pCallback) const
+{
+   if ( nFlags == MF_BYCOMMAND )
+   {
+      // nIDItem comes in as a command ID defined by the plugin
+      // Convert nIDItem into the unique command ID for the application
+      m_pCmdMgr->GetMappedCommandID(nIDItem,pCallback,&nIDItem);
+   }
+
+   const CMenu* pMenu = GetMenu();
+   return pMenu->GetMenuString(nIDItem,rString,nFlags);
+}
+
 
 int CEAFMenu::GetMenuString(UINT nIDItem,LPTSTR lpString,int nMaxCount,UINT nFlags) const
 {

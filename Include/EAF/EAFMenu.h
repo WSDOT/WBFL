@@ -66,6 +66,11 @@ public:
    void AppendSeparator();
    void InsertSeparator(UINT nPosition,UINT nFlags);
 
+   // if nFlags is MF_BYCOMMAND, nIDItem is a plug-in command ID
+   int GetMenuString(UINT nIDItem,LPTSTR lpString,int nMaxCount,UINT nFlags, IEAFCommandCallback* pCallback) const;
+   int GetMenuString(UINT nIDItem,CString& rString,UINT nFlags, IEAFCommandCallback* pCallback) const;
+
+   // if nFlags is MF_BYCOMMAND, nIDItem is an application unique command ID
    int GetMenuString(UINT nIDItem,LPTSTR lpString,int nMaxCount,UINT nFlags) const;
    int GetMenuString(UINT nIDItem,CString& rString,UINT nFlags) const;
 
