@@ -83,13 +83,24 @@ typedef UINT64 Uint64;
 typedef float  Float32;
 typedef double Float64;
 
-cpp_quote("#define INVALID_ID SIZE_MAX")
 
+#if defined VBA_BUILD
+cpp_quote("#pragma warning(disable:4018 4244 4267)")
+cpp_quote("#define INVALID_ID -1")
+#else
+cpp_quote("#define INVALID_ID SIZE_MAX")
+#endif
+
+#if defined VBA_BUILD
+typedef INT16 IDType;
+#else
 #if defined _WIN64
 typedef INT64   IDType;
 #else
 typedef INT32   IDType;
 #endif
+#endif
+
 typedef IDType  SpanIDType;
 typedef IDType  PierIDType;
 typedef IDType  JointIDType;
@@ -104,18 +115,29 @@ typedef IDType  LoadCombinationIDType;
 typedef Int32 BarSizeType;
 
 
+#if defined VBA_BUILD
+cpp_quote("#define INVALID_INDEX    -1")
+#else
 cpp_quote("#define INVALID_INDEX    SIZE_MAX")
+#endif
+
 cpp_quote("#define FIXED_AXLE_TRUCK INVALID_INDEX")
 cpp_quote("#define ALL_SPANS        INVALID_INDEX")
 cpp_quote("#define ALL_PIERS        INVALID_INDEX")
 cpp_quote("#define ALL_GIRDERS      INVALID_INDEX")
 cpp_quote("#define INVALID_BAR_SIZE INVALID_INDEX")
 
+// VBA does not support UINT32 or UINT64 so we need to use LONG as the IndexType for VBA builds
+#if defined VBA_BUILD
+typedef long IndexType;
+#else
 #if defined _WIN64
 typedef UINT64 IndexType;
 #else
 typedef UINT32 IndexType;
 #endif
+#endif
+
 typedef IndexType CollectionIndexType;
 typedef IndexType StageIndexType;
 typedef IndexType SupportIndexType;

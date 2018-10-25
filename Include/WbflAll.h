@@ -42,7 +42,10 @@
 
 #define RPC_NO_WINDOWS_H // causes WbflTypes.h to not include Windows.h via rpc.h
                          // mfc must include Windows.h directly
+
 #include <WBFLTypes.h>
+
+
 #include <WBFLVersion.h>
 
 #endif // INCLUDED_WBFLALL_H_

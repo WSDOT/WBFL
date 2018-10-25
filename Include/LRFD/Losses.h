@@ -66,6 +66,7 @@ public:
                          Float64 Mdlg,  // Dead load moment of girder only
                          Float64 Madlg,  // Additional dead load on girder section
                          Float64 Msidl, // Superimposed dead loads
+                         Float64 Mllim,   // live load moment (factored)
 
                          Float64 Ag,    // Area of girder
                          Float64 Ig,    // Moment of inertia of girder
@@ -209,6 +210,10 @@ public:
    void SetSidlMoment(Float64 Msidl);
    Float64 GetSidlMoment() const;
 
+   // moment due to live loads
+   void SetLiveLoadMoment(Float64 Mllim);
+   Float64 GetLiveLoadMoment() const;
+
    //------------------------------------------------------------------------
    // Post-tension related parameters
 
@@ -243,6 +248,9 @@ public:
    void IgnoreInitialRelaxation(bool bIgnore);
    bool IgnoreInitialRelaxation() const;
 
+   //------------------------------------------------------------------------
+   // These methods return the Effective prestress loss
+   // Effective Losss = Actual Loss + Elastic Gains
    virtual Float64 PermanentStrand_BeforeTransfer() const;
    virtual Float64 PermanentStrand_AfterTransfer() const;
    virtual Float64 PermanentStrand_AtLifting() const;
@@ -253,6 +261,7 @@ public:
    virtual Float64 PermanentStrand_AfterDeckPlacement() const;
    virtual Float64 PermanentStrand_AfterSIDL() const;
    virtual Float64 PermanentStrand_Final() const;
+   virtual Float64 PermanentStrand_FinalWithLiveLoad() const;
 
    virtual Float64 TemporaryStrand_BeforeTransfer() const;
    virtual Float64 TemporaryStrand_AfterTransfer() const;
@@ -276,6 +285,10 @@ public:
 
    Float64 ElasticGainDueToDeckPlacement() const;
    Float64 ElasticGainDueToSIDL() const;
+   Float64 ElasticGainDueToDeckShrinkage() const;
+   Float64 ElasticGainDueToLiveLoad() const;
+
+   virtual void GetDeckShrinkageEffects(Float64* pA,Float64* pM) const;
 
 
    virtual Float64 TemporaryStrand_TimeDependentLossesAtShipping() const = 0;
@@ -346,6 +359,10 @@ public:
    // Change in stress at level of permanent strand due to superimposed dead loads
    Float64 GetDeltaFcd2() const;
 
+   //------------------------------------------------------------------------
+   // Change in stress at level of permanent strand due to live load
+   Float64 GetDeltaFcdLL() const;
+
 protected:
    bool m_bValidateParameters;
    mutable bool m_IsDirty;
@@ -395,6 +412,7 @@ protected:
    Float64 m_Mdlg;  // Dead load moment of girder
    Float64 m_Madlg; // Additional dead load moment on girder section
    Float64 m_Msidl; // Superimposed dead loads
+   Float64 m_Mllim; // Live load moment
    Float64 m_ti; // initial time
 
    Float64 m_Ag;    // Area of the girder
@@ -416,6 +434,8 @@ protected:
 
    mutable Float64 m_dfpED; // elastic gain due to deck placement
    mutable Float64 m_dfpSIDL; // elastic gain due to superimposed dead loads
+   mutable Float64 m_dfpSS; // elastic gain due to deck shrinkage
+   mutable Float64 m_dfpLL; // elastic gain due to live load
 
    // post tension losses
    mutable Float64 m_dfpp; // change in stress in perm strand due to pt
@@ -439,6 +459,8 @@ protected:
 
    mutable Float64 m_DeltaFcd1; // change in stress at level of permanent strand due to deck placement
    mutable Float64 m_DeltaFcd2; // change in stress at level of permanent strand due to superimposed dead loads
+
+   mutable Float64 m_DeltaFcdLL; // change in stress at level of permanent strand due to live load
 
    mutable Float64 m_dfpF;  // friction loss 
    mutable Float64 m_dfpFT; // total friction loss 
@@ -492,6 +514,8 @@ inline void lrfdLosses::SetAddlGdrMoment(Float64 Madlg) { m_Madlg = Madlg; m_IsD
 inline Float64 lrfdLosses::GetAddlGdrMoment() const { return m_Madlg; }
 inline void lrfdLosses::SetSidlMoment(Float64 Msidl) { m_Msidl = Msidl; m_IsDirty = true; }
 inline Float64 lrfdLosses::GetSidlMoment() const { return m_Msidl; }
+inline void lrfdLosses::SetLiveLoadMoment(Float64 Mllim) { m_Mllim = Mllim; m_IsDirty = true; }
+inline Float64 lrfdLosses::GetLiveLoadMoment() const { return m_Mllim; }
 
 inline void lrfdLosses::SetGirderLength(Float64 lg) { m_Lg = lg; m_IsDirty = true; }
 inline Float64 lrfdLosses::GetGirderLength() const {  return m_Lg; }

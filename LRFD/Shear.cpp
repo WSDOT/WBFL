@@ -51,6 +51,8 @@ CLASS
 void compute_theta_and_beta1(lrfdShearData* pData);
 void compute_theta_and_beta2(lrfdShearData* pData);
 void compute_theta_and_beta3(lrfdShearData* pData,bool bWSDOT);
+void compute_theta_and_beta3_tbl1(lrfdShearData* pData,bool bWSDOT);
+void compute_theta_and_beta3_tbl2(lrfdShearData* pData,bool bWSDOT);
 void compute_theta_and_beta4(lrfdShearData* pData); // WSDOT method per June 18, 2001 Design Memo (7-2001)
 void compute_theta_and_beta5(lrfdShearData* pData);
 Float64 compute_strain(lrfdShearData* pData,Float64 theta);
@@ -167,6 +169,51 @@ BT get_beta_theta(Int16 row,Int16 col)
    else // 2000 - Present
       return gs_Data_2000_interims[row][col];
 }
+
+// Functions, constants and data for Sections with Less than Minimum Transverse Reinforcement.
+static const Float64 gs_sxe_mtr[] = {5, 10, 15, 20, 30, 40, 60, 80};
+static const Float64 gs_ex_mtr[] = {-0.2e-3,-0.1e-3,-0.5e-4,0.0e-3,0.125e-3,0.25e-3,0.50e-3,0.75e-3,1.00e-3,1.50e-3,2.00e-3};
+static const Int16 gs_sxe_count_mtr = sizeof(gs_sxe_mtr)/sizeof(Float64);
+static const Int16 gs_ex_count_mtr = sizeof(gs_ex_mtr)/sizeof(Float64);
+
+static const BT gs_Data_Min_Transverse_Reinf[gs_sxe_count_mtr][gs_ex_count_mtr] = 
+{            // -0,20       -0.10         -0.05        0.0           0.125         0.25        0.50        0.75          1.00          1.50          2.00
+/*   5   */ {{25.4,6.36}, {25.5,6.06}, {25.9,5.56}, {26.4,5.15}, {27.7,4.41}, {28.9,3.91}, {30.9,3.26}, {32.4,2.86}, {33.7,2.58}, {35.6,2.21}, {37.2,1.96}},
+/*  10   */ {{27.6,5.78}, {27.6,5.78}, {28.3,5.38}, {29.3,4.89}, {31.6,4.05}, {33.5,3.52}, {36.3,2.88}, {38.4,2.50}, {40.1,2.23}, {42.7,1.88}, {44.7,1.65}},
+/*  15   */ {{29.5,5.34}, {29.5,5.34}, {29.7,5.27}, {31.1,4.73}, {34.1,3.82}, {36.5,3.28}, {39.9,2.64}, {42.4,2.26}, {44.4,2.01}, {47.4,1.68}, {49.7,1.46}},
+/*  20   */ {{31.2,4.99}, {31.2,4.99}, {31.2,4.99}, {32.3,4.61}, {36.0,3.65}, {38.8,3.09}, {42.7,2.46}, {45.5,2.09}, {47.6,1.85}, {50.9,1.52}, {53.4,1.31}},
+/*  30   */ {{34.1,4.46}, {34.1,4.46}, {34.1,4.46}, {34.2,4.43}, {38.9,3.39}, {42.3,2.82}, {46.9,2.19}, {50.1,1.84}, {52.6,1.60}, {56.3,1.30}, {59.0,1.10}},
+/*  40   */ {{36.6,4.06}, {36.6,4.06}, {36.6,4.06}, {36.6,4.06}, {41.2,3.20}, {45.0,2.62}, {50.2,2.00}, {53.7,1.66}, {56.3,1.43}, {60.2,1.14}, {63.0,0.95}},
+/*  60   */ {{40.8,3.50}, {40.8,3.50}, {40.8,3.50}, {40.8,3.50}, {44.5,2.92}, {49.2,2.32}, {55.1,1.72}, {58.9,1.40}, {61.8,1.18}, {65.8,0.92}, {68.6,0.75}},
+/*  80   */ {{44.3,3.10}, {44.3,3.10}, {44.3,3.10}, {44.3,3.10}, {47.1,2.71}, {52.3,2.11}, {58.7,1.52}, {62.8,1.21}, {65.7,1.01}, {69.7,0.76}, {72.4,0.62}}
+};
+
+Float64 get_sxe_mtr(Int16 row)
+{
+   return gs_sxe_mtr[row];
+}
+
+Int16 get_sxe_count_mtr()
+{
+   return gs_sxe_count_mtr;
+}
+
+Float64 get_ex_mtr(Int16 col)
+{
+   return gs_ex_mtr[col];
+}
+
+Int16 get_ex_count_mtr()
+{
+   return gs_ex_count_mtr;
+}
+
+BT get_beta_theta_mtr(Int16 row,Int16 col)
+{
+   return gs_Data_Min_Transverse_Reinf[row][col];
+}
+
+void get_row_index_mtr(Float64 sxe,Int16* pr1,Int16* pr2);
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
@@ -621,7 +668,40 @@ void compute_theta_and_beta2(lrfdShearData* pData)
 // There is no need to interpolate between rows and columns as in version 2 of this method
 void compute_theta_and_beta3(lrfdShearData* pData, bool bWSDOT)
 {
-   // Copy input data (this will make life a little easier)
+   Float64 bv  = pData->bv;
+   Float64 fc  = pData->fc;
+   Float64 fy  = pData->fy;
+   Float64 Avs = pData->AvS;
+
+   // we are using a table
+   pData->BetaEqn = 0;
+
+   // Determine whether we meet minimum steel requirements - then we can choose equations and tables
+   Float64 minSteel;
+   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   {
+      minSteel = 0.083*sqrt(::ConvertFromSysUnits(fc,unitMeasure::MPa))*::ConvertFromSysUnits(bv,unitMeasure::Millimeter)/::ConvertFromSysUnits(fy,unitMeasure::MPa);
+      minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Millimeter); // (mm^2/mm)
+   }
+   else
+   {
+      minSteel = 0.0316*sqrt(::ConvertFromSysUnits(fc,unitMeasure::KSI))*::ConvertFromSysUnits(bv,unitMeasure::Inch)/::ConvertFromSysUnits(fy,unitMeasure::KSI);
+      minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Inch); // (in^2/in)
+   }
+
+   if ( Avs < minSteel )
+   {
+      compute_theta_and_beta3_tbl2(pData, bWSDOT); // Use LRFD Eqn 5.8.3.4.2-2 and table 2
+   }
+   else
+   {
+      compute_theta_and_beta3_tbl1(pData, bWSDOT); // Use LRFD Eqn 5.8.3.4.2-1 and table 1
+   }
+}
+
+void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
+{
+   // Compute beta and theta for case where steel meets min steel requirments
    Float64 Mu  = pData->Mu;
    Float64 Nu  = pData->Nu;
    Float64 Vu  = pData->Vu;
@@ -640,29 +720,7 @@ void compute_theta_and_beta3(lrfdShearData* pData, bool bWSDOT)
    Float64 fy  = pData->fy;
    Float64 Avs = pData->AvS;
 
-   Float64 minSteel;
-   Int16 eqn;
-
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
-   {
-      minSteel = 0.083*sqrt(::ConvertFromSysUnits(fc,unitMeasure::MPa))*::ConvertFromSysUnits(bv,unitMeasure::Millimeter)/::ConvertFromSysUnits(fy,unitMeasure::MPa);
-      minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Millimeter); // (mm^2/mm)
-   }
-   else
-   {
-      minSteel = 0.0316*sqrt(::ConvertFromSysUnits(fc,unitMeasure::KSI))*::ConvertFromSysUnits(bv,unitMeasure::Inch)/::ConvertFromSysUnits(fy,unitMeasure::KSI);
-      minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Inch); // (in^2/in)
-   }
-
-   if ( Avs < minSteel )
-   {
-      eqn = 2; // Use LRFD Eqn 5.8.3.4.2-2
-   }
-   else
-   {
-      eqn = 1; // Use LRFD Eqn 5.8.3.4.2-1
-   }
-
+   Int16 eqn = 1; // Use LRFD Eqn 5.8.3.4.2-1 - we always meet min steel in this function
 
    // Setup problem
    const Float64 v = (Vu - phi*Vp)/(phi*bv*dv);
@@ -793,6 +851,7 @@ void compute_theta_and_beta3(lrfdShearData* pData, bool bWSDOT)
 //   if ( bWSDOT && bt.Theta < 25 )
 //      bt.Theta = 25;
 
+   pData->BetaTheta_tbl = 1; 
    pData->vfc_tbl = get_vfc(row);
    pData->ex_tbl = get_ex(col);
    pData->Beta = bt.Beta;
@@ -800,6 +859,163 @@ void compute_theta_and_beta3(lrfdShearData* pData, bool bWSDOT)
    pData->Fe = -1; // Not appicable
    pData->ex = ex_last;
 }
+
+void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
+{
+   // Compute beta and theta for case min steel requirments are not met
+   Float64 Mu  = pData->Mu;
+   Float64 Nu  = pData->Nu;
+   Float64 Vu  = pData->Vu;
+   Float64 phi = pData->phi;
+   Float64 Vp  = pData->Vp;
+   Float64 dv  = pData->dv;
+   Float64 bv  = pData->bv;
+   Float64 Es  = pData->Es;
+   Float64 As  = pData->As;
+   Float64 Ep  = pData->Ep;
+   Float64 Aps = pData->Aps;
+   Float64 Ec  = pData->Ec;
+   Float64 Ac  = pData->Ac;
+   Float64 fpo = pData->fpo;
+   Float64 fc  = pData->fc;
+   Float64 fy  = pData->fy;
+   Float64 Avs = pData->AvS;
+   Float64 sx  = pData->sx;
+   Float64 ag  = pData->ag;
+
+   Int16 eqn = 2;
+
+   // Setup problem
+   // 5.8.3.4.2-5
+   Float64 sxe = ::ConvertFromSysUnits(sx,unitMeasure::Inch) * 1.38/(::ConvertFromSysUnits(ag,unitMeasure::Inch)+0.63);
+
+   // Bound sxe
+   sxe = ForceIntoRange(5.0, sxe, 80.0); // Note: any spec changes to table range would affect this
+
+   pData->sxe   =  ::ConvertToSysUnits(sxe,unitMeasure::Inch);
+
+   // Find out which rows we are spanning
+   Int16 row1, row2;
+   get_row_index_mtr( sxe, &row1, &row2 ); // row 2 is the one we want to use
+   Int16 row = row2;
+
+   // start at the right most column in table 5.8.3.4.2-2 and work backwards until
+   // we come to a column where ex_calc < ex_table. The column we are looking for is
+   // the one to the right of the current column.
+   bool bFoundSolution = false;
+   Int16 col = get_ex_count_mtr()-1;
+   Float64 ex_calc;
+   Float64 ex_last;
+   Int16 eq_last;
+   while ( col >= 0 && !bFoundSolution )
+   {
+      BT bt = get_beta_theta_mtr(row,col);
+
+// This is being removed from the BDM... RAB 7/25/2006
+//      // Minimum theta is 25degrees per BDM 5.2.4F.2
+//      if ( bWSDOT && bt.Theta < 25 )
+//         bt.Theta = 25;
+
+      Float64 angle = ::Convert(bt.Theta,unitMeasure::Degree,unitMeasure::Radian);
+      Float64 cot = 1.0/tan(angle);
+
+      if ( eqn == 1 )
+      {
+         // Eqn 5.8.3.4.2-1
+         if ( IsZero(Es*As + Ep*Aps) )
+         {
+            ex_calc = 0.0;
+         }
+         else
+         {
+            if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+               ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpo)/(2*(Es*As + Ep*Aps));
+            else
+               ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpo)/(2*(Es*As + Ep*Aps));
+         }
+
+         if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SecondEditionWith2003Interims )
+            ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
+         else
+            ex_calc = (ex_calc > 0.001) ? 0.001 : ex_calc;
+
+         pData->Eqn = 1;
+      }
+      else
+      {
+         // Eqn 5.8.3.4.2-2
+         if ( IsZero(Es*As + Ep*Aps) )
+         {
+            ex_calc = 0.0;
+         }
+         else
+         {
+            if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+               ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpo)/((Es*As + Ep*Aps));
+            else
+               ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpo)/((Es*As + Ep*Aps));
+         }
+
+         ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
+         pData->Eqn = 2;
+      }
+
+      if ( ex_calc < 0 )
+      {
+         // Eqn 5.8.3.4.2-3
+         pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
+
+         if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+            ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpo)/(2*(Ec*Ac + Es*As + Ep*Aps));
+         else
+            ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpo)/(2*(Ec*Ac + Es*As + Ep*Aps));
+      }
+
+      Float64 ex_table = get_ex_mtr(col);
+
+      if ( col == get_ex_count_mtr()-1 )
+      {
+         ex_last = ex_calc;
+         eq_last = pData->Eqn;
+      }
+
+      if ( ex_calc > ex_table )
+      {
+         col++;
+         bFoundSolution = true;
+         pData->ex = ex_last;
+         pData->Eqn = eq_last;
+      }
+      else
+      {
+         col--;
+      }
+      ex_last = ex_calc;
+      eq_last = pData->Eqn;
+   }
+
+   // The computed strain is less than the strain limit in the left most column. The solution is column 0
+   if ( col < 0 )
+      col = 0; 
+
+   assert(0 <= col && col < get_ex_count_mtr());
+
+   BT bt = get_beta_theta_mtr(row,col);
+
+// This is being removed from the BDM... RAB 7/25/2006
+//   // Minimum theta is 25degrees per BDM 5.2.4F.2
+//   if ( bWSDOT && bt.Theta < 25 )
+//      bt.Theta = 25;
+
+   pData->BetaTheta_tbl = 2; 
+   pData->sxe_tbl = ::ConvertToSysUnits(get_sxe_mtr(row), unitMeasure::Inch);
+   pData->ex_tbl = get_ex_mtr(col);
+   pData->Beta = bt.Beta;
+   pData->Theta = ::ConvertToSysUnits(bt.Theta,unitMeasure::Degree);
+   pData->Fe = -1; // Not appicable
+   pData->ex = ex_last;
+}
+
 
 void compute_theta_and_beta4(lrfdShearData* pData)
 {
@@ -953,6 +1169,8 @@ void compute_theta_and_beta5(lrfdShearData* pData)
    Float64 fc  = pData->fc;
    Float64 fy  = pData->fy;
    Float64 Avs = pData->AvS;
+   Float64 ag  = pData->ag;
+   Float64 sx  = pData->sx;
 
    // Setup problem
 
@@ -972,11 +1190,40 @@ void compute_theta_and_beta5(lrfdShearData* pData)
 
 
    // Get Beta/Theta;
+   Float64 minSteel;
+   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   {
+      minSteel = 0.083*sqrt(::ConvertFromSysUnits(fc,unitMeasure::MPa))*::ConvertFromSysUnits(bv,unitMeasure::Millimeter)/::ConvertFromSysUnits(fy,unitMeasure::MPa);
+      minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Millimeter); // (mm^2/mm)
+   }
+   else
+   {
+      minSteel = 0.0316*sqrt(::ConvertFromSysUnits(fc,unitMeasure::KSI))*::ConvertFromSysUnits(bv,unitMeasure::Inch)/::ConvertFromSysUnits(fy,unitMeasure::KSI);
+      minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Inch); // (in^2/in)
+   }
+
+   if ( Avs < minSteel )
+   {
+      pData->BetaEqn = 2; // Use LRFD Eqn 5.8.3.4.2-2
+
+      // 5.8.3.4.2-5
+      Float64 sxe = ::ConvertFromSysUnits(sx,unitMeasure::Inch) * 1.38/(::ConvertFromSysUnits(ag,unitMeasure::Inch)+0.63);
+      sxe = ForceIntoRange(12.0, sxe, 80.0);
+
+      pData->sxe   =  ::ConvertToSysUnits(sxe,unitMeasure::Inch);
+      pData->Beta  = (4.8/(1 + 750*ex_calc)) * (51/(39 + sxe));
+   }
+   else
+   {
+      pData->BetaEqn = 1; // Use LRFD Eqn 5.8.3.4.2-1
+
+      pData->Beta    = 4.8/(1 + 750*ex_calc);
+   }
+
    pData->ex = ex_calc;
    Float64 v = fabs(Vu - phi*Vp)/(phi*bv*dv);
    pData->vfc = v/fc;
    pData->vfc_tbl = -1; // Not applicable
-   pData->Beta = 4.8/(1 + 750*ex_calc);
    pData->Theta = ::ConvertToSysUnits(29+3500*ex_calc,unitMeasure::Degree);
    pData->Fe = -1; // Not appicable
 }
@@ -1256,6 +1503,44 @@ void get_row_and_col_index(Float64 vfc,Float64 ex,
    get_col_index(ex, pc1,pc2);
    get_row_index(vfc,pr1,pr2);
 }
+
+
+// More functions for minimum transverse reinforcement
+void get_row_index_mtr(Float64 sxe,Int16* pr1,Int16* pr2)
+{
+   //
+   // Sanity check the input
+   //
+   // Don't pass NULL pointers
+   CHECK( pr1 != 0 && pr2 != 0 );
+
+   // Initialize indexes
+   *pr1 = -1;
+   *pr2 = -1;
+
+   // Find the row index
+   if ( sxe <= get_sxe_mtr(0) )
+   {
+         *pr1 = 0;
+         *pr2 = 0;
+   }
+   else
+   {
+      for ( Int16 i = 0; i < get_sxe_count_mtr()-1; i++ )
+      {
+         if ( get_sxe_mtr(i) < sxe  && sxe <= get_sxe_mtr(i+1) )
+         {
+            *pr1 = i;
+            *pr2 = i+1;
+            break;
+         }
+      }
+   }
+
+   // We should always get valid row indices
+   CHECK( *pr1 != -1 && *pr2 != -1 );
+}
+
 
 #if defined _UNITTEST
 bool lrfdShear::TestMe(dbgLog& rlog)

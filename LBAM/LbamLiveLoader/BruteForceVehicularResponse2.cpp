@@ -1902,6 +1902,16 @@ void CBruteForceVehicularResponse2::Evaluate(LiveLoadModelType type, VehicleInde
    std::vector<AxleState> applied_axles;
    applied_axles.reserve(num_axles);
 
+
+   // evaluate every axle on every POI
+   AxleIndexType nAxlePositions = num_axles;
+   AxleIndexType* pivotAxles = new AxleIndexType[nAxlePositions];
+
+   for ( AxleIndexType axleIdx = 0; axleIdx < nAxlePositions; axleIdx++ )
+   {
+      pivotAxles[axleIdx] = axleIdx;
+   }
+
    // loop over each axle spacing for the truck
    AxleSpacingIterator ias( m_AxleSpacings.begin() );
    AxleSpacingIterator iasend( m_AxleSpacings.end() );
@@ -1911,49 +1921,6 @@ void CBruteForceVehicularResponse2::Evaluate(LiveLoadModelType type, VehicleInde
       if ( m_Truck.IsVariableAxle() )
       {
          m_Truck.SetVariableAxleSpacing( axle_spacing );
-      }
-
-      // stop truck at first, heaviest central, and last axle
-      AxleIndexType nAxlePositions = min(num_axles,3);
-      AxleIndexType pivotAxles[3];
-      if ( nAxlePositions == 1 )
-      {
-         pivotAxles[0] = 0; // only one axle
-      }
-      else if ( nAxlePositions == 2 )
-      {
-         // first and last if 2 axles
-         pivotAxles[0] = 0;
-         pivotAxles[1] = num_axles-1;
-      }
-      else
-      {
-         if ( effect == fetFy )
-         {
-            // if we are computing shear, then just the first and last axle positions 
-            pivotAxles[0] = num_axles-1;
-            nAxlePositions = 1;
-         }
-         else
-         {
-            // first, heaviest near center, last
-            pivotAxles[0] = 0;
-            pivotAxles[1] = m_Truck.HeaviestCentralAxle();
-            pivotAxles[2] = num_axles-1;
-
-            if ( pivotAxles[0] == pivotAxles[1] )
-            {
-               // first and second are the same axle... use only 2 and move the 3rd to the second position
-               nAxlePositions = 2;
-               pivotAxles[1] = pivotAxles[2];
-            }
-
-            if ( pivotAxles[1] == pivotAxles[2] )
-            {
-               // second and third are the same... use only 2 axle positions
-               nAxlePositions = 2;
-            }
-         }
       }
 
       // loop over all pois and place each axle at every poi
@@ -1998,6 +1965,9 @@ void CBruteForceVehicularResponse2::Evaluate(LiveLoadModelType type, VehicleInde
          } // next axle
       } // next poi
    } // next axle spacing (variable axle)
+
+   // done with this array
+   delete[] pivotAxles;
 
    // get the enveloped results
    *pLeftResult   = pLeftCompare->GetResult();

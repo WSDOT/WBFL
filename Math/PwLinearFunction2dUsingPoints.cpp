@@ -559,7 +559,7 @@ bool mathPwLinearFunction2dUsingPoints::TestMe(dbgLog& rlog)
    r.SetLeftBoundLocation(-4.0);
    r.SetRightBoundLocation(3.0);
    fun1.GetMaximumsInRange(r, &fmin, &fmax);
-   TRY_TESTME(fmin==-3.0);
+   TRY_TESTME(fmin==-2.0);
    TRY_TESTME(fmax==2.0);
 
    r.SetLeftBoundLocation(2.0);

@@ -54,7 +54,7 @@ void BasicLiveLoadDataSetBuilder::GetTruckInfo(LiveLoadModelType* modelType, Veh
    m_Placement.CopyTo(placement);
 }
 
-void BasicLiveLoadDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArray* locList, BSTR currStg,
+void BasicLiveLoadDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
                                                 CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
                                                 COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
 {
@@ -78,7 +78,7 @@ CString BasicLiveLoadDataSetBuilder::GetDescription()
    return tmp;
 }
 
-void BasicLiveLoadDataSetBuilder::BuildForceDataSets(ILongArray* poiList, IDblArray* locList, BSTR currStg,
+void BasicLiveLoadDataSetBuilder::BuildForceDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
                                            COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
 {
@@ -149,7 +149,7 @@ void BasicLiveLoadDataSetBuilder::BuildForceDataSets(ILongArray* poiList, IDblAr
    dataSets->push_back( dataset_p.Detach());
 }
 
-void BasicLiveLoadDataSetBuilder::BuildStressDataSets(ILongArray* poiList, IDblArray* locList, BSTR currStg,
+void BasicLiveLoadDataSetBuilder::BuildStressDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
                                            COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
 {
@@ -258,7 +258,7 @@ void BasicLiveLoadDataSetBuilder::BuildStressDataSets(ILongArray* poiList, IDblA
 
 
 
-void BasicLiveLoadDataSetBuilder::BuildReactionReport(ILongArray* supportlist, BSTR currStg,
+void BasicLiveLoadDataSetBuilder::BuildReactionReport(IIDArray* supportlist, BSTR currStg,
                                        CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
                                        std::_tostream& os)
 {
@@ -497,7 +497,7 @@ void BasicLiveLoadDataSetBuilder::InitializePlacement()
       // set up initial variable axle spacing
       AxleIndexType var_spc_idx;
       vehicular_load->get_VariableAxle(&var_spc_idx);
-      if ( var_spc_idx != INVALID_INDEX )
+      if ( var_spc_idx != FIXED_AXLE_TRUCK )
       {
          // truck has variable axle spacing - initialize spacing to minimum
          double min_var_spc;

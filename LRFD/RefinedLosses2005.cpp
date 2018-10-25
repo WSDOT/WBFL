@@ -70,7 +70,9 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005()
    m_CuringMethod          = lrfdCreepCoefficient2005::Accelerated;
    m_Ad                    = g_600_IN2;
    m_ed                    = g_m25p865_IN;
+   m_Ksh                   = 1.0;
    m_CuringMethodTimeAdjustmentFactor = 7;
+   m_RelaxationMethod = Simplified;
 }
 
 lrfdRefinedLosses2005::lrfdRefinedLosses2005(
@@ -120,10 +122,12 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005(
                          Float64 Ybc,  // Centroid of composite measured from bottom
                          Float64 Ad,   // area of deck
                          Float64 ed,   // eccentricity of deck CG with respect to CG of composite
+                         Float64 Ksh,  // deck shrinkage strain effectiveness
                          
                          Float64 Mdlg,  // Dead load moment of girder only
                          Float64 Madlg,  // Additional dead load on girder section
                          Float64 Msidl, // Superimposed dead loads
+                         Float64 Mllim, // live load
 
                          Float64 rh,  // Relative humidity [0,100]
                          Float64 ti,   // Time until prestress transfer
@@ -133,9 +137,10 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005(
                          lrfdCreepCoefficient2005::CuringMethod curingMethod,
                          Float64 curingMethodTimeFactor,
                          bool bIgnoreInitialRelaxation,
-                         bool bValidateParameters
+                         bool bValidateParameters,
+                         RelaxationLossMethod relaxationMethod
                          ) :
-lrfdLosses(x,Lg,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,eperm,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Ag,Ig,Ybg,Ac,Ic,Ybc,rh,ti,bIgnoreInitialRelaxation,bValidateParameters)
+lrfdLosses(x,Lg,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,eperm,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Mllim,Ag,Ig,Ybg,Ac,Ic,Ybc,rh,ti,bIgnoreInitialRelaxation,bValidateParameters)
 {
    m_V                     = V;
    m_S                     = S;
@@ -143,6 +148,7 @@ lrfdLosses(x,Lg,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,eperm,etemp,usage,an
    m_SSlab                 = SSlab;
    m_Ad                    = Ad;
    m_ed                    = ed;
+   m_Ksh                   = Ksh;
    m_ti                    = ti;
    m_th                    = th;
    m_td                    = td;
@@ -161,6 +167,7 @@ lrfdLosses(x,Lg,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,eperm,etemp,usage,an
    m_DeckShrinkageK1 = DeckShrinkageK1;
    m_DeckShrinkageK2 = DeckShrinkageK2;
 
+   m_RelaxationMethod = relaxationMethod;
 }
 
 lrfdRefinedLosses2005::lrfdRefinedLosses2005(const lrfdRefinedLosses2005& rOther)
@@ -253,12 +260,6 @@ Float64 lrfdRefinedLosses2005::RelaxationLossAfterDeckPlacement() const
 {
    if ( m_IsDirty ) UpdateLosses();
    return m_dfpR2;
-}
-
-Float64 lrfdRefinedLosses2005::DeckShrinkageLoss() const
-{
-   if ( m_IsDirty ) UpdateLosses();
-   return m_dfpSS;
 }
 
 Float64 lrfdRefinedLosses2005::TemporaryStrand_TimeDependentLossesAtShipping() const
@@ -612,6 +613,25 @@ Float64 lrfdRefinedLosses2005::GetFinalAge() const
    return m_tf;
 }
 
+void lrfdRefinedLosses2005::SetRelaxationLossMethod(lrfdRefinedLosses2005::RelaxationLossMethod method)
+{
+   m_RelaxationMethod = method;
+   m_IsDirty = true;
+}
+
+lrfdRefinedLosses2005::RelaxationLossMethod lrfdRefinedLosses2005::GetRelaxationLossMethod() const
+{
+   return m_RelaxationMethod;
+}
+
+void lrfdRefinedLosses2005::GetDeckShrinkageEffects(Float64* pA,Float64* pM) const
+{
+   if ( m_IsDirty )
+      UpdateLosses();
+
+   *pA = m_Ksh*m_eddf*m_Ad*m_Ecd/(1 + 0.7*m_CreepDeck.GetCreepCoefficient());
+   *pM = (*pA)*(m_ed);
+}
 
 //======================== INQUIRY    =======================================
 //======================== DEBUG      =======================================
@@ -654,6 +674,7 @@ void lrfdRefinedLosses2005::MakeCopy( const lrfdRefinedLosses2005& rOther )
    m_CreepDeck             = rOther.m_CreepDeck;
    m_Ad                    = rOther.m_Ad;
    m_ed                    = rOther.m_ed;
+   m_Ksh                   = rOther.m_Ksh;
    m_Fcgpt                 = rOther.m_Fcgpt;
    m_DeltaFcd              = rOther.m_DeltaFcd;
    m_DeltaFcdf             = rOther.m_DeltaFcdf;
@@ -674,7 +695,6 @@ void lrfdRefinedLosses2005::MakeCopy( const lrfdRefinedLosses2005& rOther )
    m_dfpSD                 = rOther.m_dfpSD;
    m_dfpCD                 = rOther.m_dfpCD;
    m_dfpR2                 = rOther.m_dfpR2;
-   m_dfpSS                 = rOther.m_dfpSS;
    m_dfpLT                 = rOther.m_dfpLT;
 
    m_dfpSRH[0]             = rOther.m_dfpSRH[0];
@@ -699,7 +719,7 @@ void lrfdRefinedLosses2005::MakeCopy( const lrfdRefinedLosses2005& rOther )
    m_DeckShrinkageK1 = rOther.m_DeckShrinkageK1;
    m_DeckShrinkageK2 = rOther.m_DeckShrinkageK2;
 
-
+   m_RelaxationMethod = rOther.m_RelaxationMethod;
 }
 
 void lrfdRefinedLosses2005::ValidateParameters() const
@@ -717,6 +737,13 @@ void lrfdRefinedLosses2005::ValidateParameters() const
    Float64 fcMax = (is_si ? g_105p05_MPA : g_15p05_KSI );
    if ( m_Fc < fcMin || fcMax < m_Fc )
       THROW(lrfdXPsLosses,fcOutOfRange);
+
+   // strand type must be low relaxation if lump sum relaxation loss is used
+   if ( m_RelaxationMethod == LumpSum && m_Type != matPsStrand::LowRelaxation )
+   {
+      THROW(lrfdXPsLosses,StrandType);
+   }
+
 }
 
 void lrfdRefinedLosses2005::UpdateLongTermLosses() const
@@ -761,6 +788,14 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    Float64 khs = m_khs;
    m_ebid = m_ShrinkageK1*m_ShrinkageK2*kvs*khs*kf*ktd*0.48e-03;
 
+   if ( AdjustShrinkageStrain() )
+   {
+      // LRFD 5.4.2.3.3
+      // If the concrete is exposed to drying before 5 days of curing have elapsed,
+      // the shrinkage as determined in Eq 5.4.2.3.3-1 should be increased by 20%
+      m_ebid *= 1.2;
+   }
+
    m_dfpSR = IsZero(m_ApsPerm) ? 0 : m_ebid * m_Ep * m_Kid;
 
    // Creep of Girder Concrete [5.9.5.4.2b]
@@ -773,8 +808,31 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    Float64 td  = ::ConvertFromSysUnits(m_td,unitMeasure::Day);
    Float64 ti  = ::ConvertFromSysUnits(m_ti,unitMeasure::Day);
 
-   m_dfpR1 = IsZero(fpt) ? 0 : (fpt/m_KL)*(log10(24*td)/log10(24*ti))*(fpt/m_Fpy - 0.55)*(1 - 3*(m_dfpSR + m_dfpCR)/fpt)*m_Kid;
-   m_dfpR1 = (m_dfpR1 < 0 ? 0 : m_dfpR1); // Fpt can't be less than 0.55Fpy
+   switch( m_RelaxationMethod )
+   {
+   case Simplified:
+      m_dfpR1 = IsZero(fpt) ? 0 : (fpt/m_KL)*(fpt/m_Fpy - 0.55);
+      m_dfpR1 = (m_dfpR1 < 0 ? 0 : m_dfpR1); // Fpt can't be less than 0.55Fpy
+      break;
+
+   case Refined:
+      m_dfpR1 = IsZero(fpt) ? 0 : (fpt/m_KL)*(log10(24*td)/log10(24*ti))*(fpt/m_Fpy - 0.55)*(1 - 3*(m_dfpSR + m_dfpCR)/fpt)*m_Kid;
+      m_dfpR1 = (m_dfpR1 < 0 ? 0 : m_dfpR1); // Fpt can't be less than 0.55Fpy
+      break;
+
+   case LumpSum:
+      // strand type must be low relaxation if lump sum relaxation loss is used
+      if ( m_Type != matPsStrand::LowRelaxation )
+      {
+         THROW(lrfdXPsLosses,StrandType);
+      }
+      m_dfpR1 = IsZero(fpt) ? 0 : ::ConvertToSysUnits(1.2,unitMeasure::KSI);
+      break;
+
+   default:
+      ATLASSERT(false); // should never get here
+      m_dfpR1 = 0;
+   }
 
    //////////////////////////////////////////////////////////////////////////////////////
    // Losses: Time of Deck Placement to Final Time
@@ -790,6 +848,13 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    // 2. Compute shrinkage strain
    ktd = m_CreepInitialToFinal.GetKtd();
    m_ebif = m_ShrinkageK1*m_ShrinkageK2*kvs*khs*kf*ktd*0.48e-03;
+   if ( AdjustShrinkageStrain() )
+   {
+      // LRFD 5.4.2.3.3
+      // If the concrete is exposed to drying before 5 days of curing have elapsed,
+      // the shrinkage as determined in Eq 5.4.2.3.3-1 should be increased by 20%
+      m_ebif *= 1.2;
+   }
    m_ebdf = m_ebif - m_ebid;
 
    // if there aren't any strands then there can't be loss due to shrinkage
@@ -822,13 +887,13 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepDeckToFinal.SetK2(m_CreepK2);
 
    // 3. Compute Delta Fcd
-   m_DeltaFcd1 = IsZero(m_ApsPerm) ? 0 : -1*(m_Madlg*m_eperm/m_Ig);
-   m_DeltaFcd2 = IsZero(m_ApsPerm) ? 0 : -1*(m_Msidl*( m_Ybc - m_Ybg + m_eperm )/m_Ic);
-   m_DeltaFcd3 = -1*((m_dfpCR + m_dfpSR + m_dfpR1)*m_ApsPerm/m_Ag + (m_dfpCR + m_dfpSR + m_dfpR1)*m_ApsPerm*m_eperm*m_eperm/m_Ig);
+   m_DeltaFcd1 = IsZero(m_ApsPerm) ? 0 : (m_Madlg*m_eperm/m_Ig);
+   m_DeltaFcd2 = IsZero(m_ApsPerm) ? 0 : (m_Msidl*( m_Ybc - m_Ybg + m_eperm )/m_Ic);
+   m_DeltaFcd3 = (m_dfpCR + m_dfpSR + m_dfpR1)*m_ApsPerm/m_Ag + (m_dfpCR + m_dfpSR + m_dfpR1)*m_ApsPerm*m_eperm*m_eperm/m_Ig;
    // change sign because these moments cause tension at the level of
    // the strands which reduces creep
 
-   m_DeltaFcd = m_DeltaFcd1 + m_DeltaFcd2 + m_DeltaFcd3;
+   m_DeltaFcd = -1.0*(m_DeltaFcd1 + m_DeltaFcd2 + m_DeltaFcd3);
 
    if ( IsZero(m_ApsPerm) )
    {
@@ -853,6 +918,10 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    // Elastic gain due to superimposed dead loads
    m_dfpSIDL = IsZero(m_ApsPerm) ? 0 : (m_Ep/m_Ec)*m_DeltaFcd2;
 
+   // Elastic gain due to live load
+   m_DeltaFcdLL = (m_Mllim*( m_Ybc - m_Ybg + m_eperm )/m_Ic);
+   m_dfpLL = IsZero(m_ApsPerm) ? 0 : (m_Ep/m_Ec)*m_DeltaFcdLL;
+
    // Relaxation of Prestressing Strands [5.9.5.4.3c]
    m_dfpR2 = m_dfpR1;
 
@@ -871,26 +940,35 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    kf  = m_CreepDeck.GetKf();
    ktd = m_CreepDeck.GetKtd();
    if ( IsZero(m_VSlab) || IsZero(m_SSlab) )
+   {
       m_eddf = 0.0;
+   }
    else
-      m_eddf = -m_DeckShrinkageK1*m_DeckShrinkageK2*kvs*khs*kf*ktd*0.48e-03;
+   {
+      m_eddf = -m_Ksh*m_DeckShrinkageK1*m_DeckShrinkageK2*kvs*khs*kf*ktd*0.48e-03;
+      // Assume deck is cured for more than 5 days so 20% increase does not apply
+   }
 
    // LRFD 2007 has a "-" in 1/Ac - epc*ed/I
    // we use a "+" because ed is < 0 for typical construction per our sign convension
    m_DeltaFcdf = m_eddf*m_Ad*m_Ecd*(1/m_Ac + (epc*m_ed)/m_Ic)/(1 + 0.7*m_CreepDeck.GetCreepCoefficient());
 
-   // if there aren't any strands, then there can't be losses due to deck shrinkage
+   // if there aren't any strands, then there can't be gain due to deck shrinkage
    m_dfpSS = IsZero(m_ApsPerm) ? 0.0 : (m_Ep/m_Ec)*m_DeltaFcdf*m_Kdf*(1 + 0.7*m_CreepDeckToFinal.GetCreepCoefficient());
 
 
-   m_dfpLT = m_dfpSR + m_dfpCR + m_dfpR1 + m_dfpSD + m_dfpCD + m_dfpR2 - m_dfpSS;
+   m_dfpLT = m_dfpSR + m_dfpCR + m_dfpR1 + m_dfpSD + m_dfpCD + m_dfpR2;
 }
 
 
 void lrfdRefinedLosses2005::UpdateHaulingLosses() const
 {
    // Losses: Time of Transfer to Time of Lifting [5.9.5.4.2]
-   m_KL = (m_Type == matPsStrand::LowRelaxation ? 45 : 10);
+   if ( m_RelaxationMethod == Simplified )
+      m_KL = (m_Type == matPsStrand::LowRelaxation ? 30 : 7);
+   else
+      m_KL = (m_Type == matPsStrand::LowRelaxation ? 45 : 10);
+
    m_khs = 2.0 - 0.014*m_H;
 
    // Shrinkage of Girder Concrete [5.9.5.4.2a]
@@ -938,6 +1016,13 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
    Float64 kf  = m_CreepInitialToHauling.GetKf();
    Float64 khs = m_khs;
    m_ebih = m_ShrinkageK1*m_ShrinkageK2*kvs*khs*kf*ktd*0.48e-03;
+   if ( AdjustShrinkageStrain() )
+   {
+      // LRFD 5.4.2.3.3
+      // If the concrete is exposed to drying before 5 days of curing have elapsed,
+      // the shrinkage as determined in Eq 5.4.2.3.3-1 should be increased by 20%
+      m_ebih *= 1.2;
+   }
    m_dfpSRH[0] = IsZero(m_ApsTemp*m_FpjTemp) ? 0 : m_ebih * m_Ep * m_Kih[0];
    m_dfpSRH[1] = IsZero(m_ApsPerm*m_FpjPerm) ? 0 : m_ebih * m_Ep * m_Kih[1];
 
@@ -955,17 +1040,80 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
 
    Float64 fpj = IsZero(m_ApsTemp) ? 0 : m_FpjTemp;
    Float64 fpt = fpj - m_dfpR0[0] - m_dfpES[0];
-   m_dfpR1H[0] = IsZero(fpt) ? 0 : (fpt/m_KL)*(log10(24*th)/log10(24*ti))*(fpt/m_Fpy - 0.55)*(1 - 3*(m_dfpSRH[0] + m_dfpCRH[0])/fpt)*m_Kih[0];
-   m_dfpR1H[0] = (m_dfpR1H[0] < 0 ? 0 : m_dfpR1H[0]); // Fpt can't be less than 0.55Fpy
+
+   switch(m_RelaxationMethod)
+   {
+   case Simplified:
+      m_dfpR1H[0] = IsZero(fpt) ? 0 : (fpt/m_KL)*(fpt/m_Fpy - 0.55);
+      m_dfpR1H[0] = (m_dfpR1H[0] < 0 ? 0 : m_dfpR1H[0]); // Fpt can't be less than 0.55Fpy
+      break;
+   
+   case Refined:
+      m_dfpR1H[0] = IsZero(fpt) ? 0 : (fpt/m_KL)*(log10(24*th)/log10(24*ti))*(fpt/m_Fpy - 0.55)*(1 - 3*(m_dfpSRH[0] + m_dfpCRH[0])/fpt)*m_Kih[0];
+      m_dfpR1H[0] = (m_dfpR1H[0] < 0 ? 0 : m_dfpR1H[0]); // Fpt can't be less than 0.55Fpy
+      break;
+   
+   case LumpSum:
+      m_dfpR1H[0] = ::ConvertToSysUnits(1.2,unitMeasure::KSI);
+      break;
+
+   default:
+      ATLASSERT(false);
+      m_dfpR1H[0] = 0;
+      break;
+   }
 
    fpj = IsZero(m_ApsPerm) ? 0 : m_FpjPerm;
    fpt = fpj - m_dfpR0[1] - m_dfpES[1];
-   m_dfpR1H[1] = IsZero(fpt) ? 0 : (fpt/m_KL)*(log10(24*th)/log10(24*ti))*(fpt/m_Fpy - 0.55)*(1 - 3*(m_dfpSRH[1] + m_dfpCRH[1])/fpt)*m_Kih[1];
-   m_dfpR1H[1] = (m_dfpR1H[1] < 0 ? 0 : m_dfpR1H[1]); // Fpt can't be less than 0.55Fpy
+
+   switch(m_RelaxationMethod)
+   {
+   case Simplified:
+      m_dfpR1H[1] = IsZero(fpt) ? 0 : (fpt/m_KL)*(fpt/m_Fpy - 0.55);
+      m_dfpR1H[1] = (m_dfpR1H[1] < 0 ? 0 : m_dfpR1H[1]); // Fpt can't be less than 0.55Fpy
+      break;
+   
+   case Refined:
+      m_dfpR1H[1] = IsZero(fpt) ? 0 : (fpt/m_KL)*(log10(24*th)/log10(24*ti))*(fpt/m_Fpy - 0.55)*(1 - 3*(m_dfpSRH[1] + m_dfpCRH[1])/fpt)*m_Kih[1];
+      m_dfpR1H[1] = (m_dfpR1H[1] < 0 ? 0 : m_dfpR1H[1]); // Fpt can't be less than 0.55Fpy
+      break;
+   
+   case LumpSum:
+      m_dfpR1H[1] = ::ConvertToSysUnits(1.2,unitMeasure::KSI);
+      break;
+
+   default:
+      ATLASSERT(false);
+      m_dfpR1H[1] = 0;
+      break;
+   }
 
    // Total time dependent losses at shipping
    m_dfpTH[0] = m_dfpSRH[0] + m_dfpCRH[0] + m_dfpR1H[0];
    m_dfpTH[1] = m_dfpSRH[1] + m_dfpCRH[1] + m_dfpR1H[1];
+}
+
+bool lrfdRefinedLosses2005::AdjustShrinkageStrain() const
+{
+   //if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007 )
+   //{
+      //if ( GetAdjustedInitialAge() < ::ConvertToSysUnits(5.0,unitMeasure::Day) )
+      //   return true;
+   //}
+   //else
+   //{
+   //   // In LRFD 4th Edition, 2007 the 1 day of steam curing = 7 days normal curing
+   //   // was removed.
+   //   if ( GetInitialAge() < ::ConvertToSysUnits(5.0,unitMeasure::Day) )
+   //      return true;
+   //}
+
+   // not confortable with increasing the strain by 20%. it is questionable whether it actually
+   // applies to precast girders. PCI does not include it in their examples
+
+   // keep this method as a placeholder, but don't actually adjust the shrinkage strain 
+
+   return false;
 }
 
 //======================== ACCESS     =======================================
@@ -1023,10 +1171,12 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
                          1.1133322567444859,  // Centroid of composite measured from bottom
                          0.34838640001448046,   // area of deck
                          -0.65196774325551399,   // eccentricity of deck CG with respect to CG of composite
+                         1.0,
                          
                          2701223.1744837998,  // Dead load moment of girder only
                          2144430.8154568151,  // Additional dead load on girder section
                          494526.00384487113, // Superimposed dead loads
+                         0.0, // live load moment
                          
                          75,  // Relative humidity [0,100]
                          86400.000000000000,   // Time until prestress transfer
@@ -1035,7 +1185,7 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
                          172800000.00000000,   // Final time
                          lrfdCreepCoefficient2005::Accelerated,
                          7, // time scale factor for curing method
-                         false,true
+                         false,true,Refined
                          );
 
    lrfdVersionMgr::RegisterListener( &loss );
@@ -1058,22 +1208,22 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual(value,120602629.93431854) );
 
    value = loss.PermanentStrand_AtShipping();
-   TRY_TESTME( IsEqual(value,161640424.74374515) );
+   TRY_TESTME( IsEqual(value,158978553.78300115) );
 
    value = loss.PermanentStrand_BeforeTemporaryStrandRemoval();
-   TRY_TESTME( IsEqual(value,161640424.74374515) );
+   TRY_TESTME( IsEqual(value,158978553.78300115) );
 
    value = loss.PermanentStrand_AfterTemporaryStrandRemoval();
-   TRY_TESTME( IsEqual(value,164929970.05799773) );
+   TRY_TESTME( IsEqual(value,162273328.34395421) );
 
    value = loss.PermanentStrand_AfterDeckPlacement();
-   TRY_TESTME( IsEqual(value,220117979.23064584) );
+   TRY_TESTME( IsEqual(value,219867904.03153318) );
 
    value = loss.PermanentStrand_AfterSIDL();
-   TRY_TESTME( IsEqual(value,212991990.04773825) );
+   TRY_TESTME( IsEqual(value,212741914.84862563) );
 
    value = loss.PermanentStrand_Final();
-   TRY_TESTME( IsEqual(value,271762357.13140631) );
+   TRY_TESTME( IsEqual(value,227988414.33598420) );
 
    // temporary strands
    value = loss.TemporaryStrand_BeforeTransfer();
@@ -1089,10 +1239,10 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual(value,57859070.448777609) );
 
    value = loss.TemporaryStrand_AtShipping();
-   TRY_TESTME( IsEqual(value,96177231.626787215) );
+   TRY_TESTME( IsEqual(value,94110660.599749312) );
 
    value = loss.TemporaryStrand_BeforeTemporaryStrandRemoval();
-   TRY_TESTME( IsEqual(value,96177231.626787215) );
+   TRY_TESTME( IsEqual(value,94110660.599749312) );
 
    value = loss.TemporaryStrand_AfterTemporaryStrandRemoval();
    TRY_TESTME( IsEqual(value,0.) );
