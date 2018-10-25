@@ -482,7 +482,7 @@ void CEAFReportView::UpdateNow(CReportHint* pHint)
             m_bInvalidReport = false;
          }
 
-
+         UpdateViewTitle();
       }
       catch(...)
       {
@@ -686,4 +686,9 @@ boost::shared_ptr<CReportBrowser> CEAFReportView::CreateReportBrowser(HWND hwndP
 void CEAFReportView::NotifyReportButtonWasClicked()
 {
    EditReport();
+}
+
+boost::shared_ptr<CReportSpecification> CEAFReportView::GetReportSpecification()
+{
+   return m_pReportSpec;
 }

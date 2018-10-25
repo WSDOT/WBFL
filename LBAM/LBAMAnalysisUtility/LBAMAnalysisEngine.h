@@ -79,12 +79,14 @@ public:
 	STDMETHOD(get_BasicVehicularResponse)(/*[out, retval]*/ IBasicVehicularResponse* *pVal);
 	STDMETHOD(get_AnalysisPOIs)(/*[out, retval]*/ IAnalysisPOIs* *pVal);
 	STDMETHOD(get_InfluenceLineResponse)(/*[out, retval]*/ IInfluenceLineResponse* *pVal);
+   STDMETHOD(get_UnitLoadResponse)(/*[out, retval]*/ IUnitLoadResponse* *pVal);
 	STDMETHOD(get_LoadGroupResponse)(/*[out, retval]*/ ILoadGroupResponse* *pVal);
 	STDMETHOD(get_LoadCombinationResponse)(/*[out, retval]*/ ILoadCombinationResponse* *pVal);
 	STDMETHOD(get_ConcurrentLoadCombinationResponse)(/*[out, retval]*/ IConcurrentLoadCombinationResponse* *pVal);
 	STDMETHOD(Initialize)(/*[in]*/ILBAMModel* model, /*[in]*/AnalysisType forceOrDeflection);
    STDMETHOD(InitializeEx)(/*[in]*/ILBAMModel* model, /*[in]*/AnalysisType forceOrDeflection,
 		                     /*[in]*/ ILoadGroupResponse* plgResponse,
+		                     /*[in]*/ IUnitLoadResponse* pUnitLoadResponse,
 		                     /*[in]*/ IInfluenceLineResponse* pilResponse,
 		                     /*[in]*/ IAnalysisPOIs* pPois,
 		                     /*[in]*/ IBasicVehicularResponse* pBVR,
@@ -103,6 +105,7 @@ private:
    AnalysisType                                 m_AnalysisType;
 
    CComPtr<ILBAMModel>                          m_pModel;
+   CComPtr<IUnitLoadResponse>                   m_pUnitLoadResponse;
    CComPtr<IContraflexureResponse>              m_pContraflexureResponse;
    CComPtr<ILoadGroupResponse>                  m_pLoadGroupResponse;
    CComPtr<ILiveLoadNegativeMomentRegion>       m_pLiveLoadNegativeMomentRegion;

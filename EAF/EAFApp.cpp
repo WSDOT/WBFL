@@ -28,7 +28,6 @@
 
 #include "resource.h"
 #include <EAF\EAFResources.h>
-//#include <EAF\EAFApp.h>
 #include <EAF\EAFMainFrame.h>
 #include <EAF\EAFDocManager.h>
 #include <EAF\EAFPluginManager.h>
@@ -166,9 +165,9 @@ BOOL CEAFApp::InitInstance()
 
    // Show splash screen (does nothing if splash screen is disabled)
    CEAFSplashScreen::SetSplashScreenInfo(GetSplashScreenInfo());
-   if ( !cmdInfo.m_bCommandLineMode )
+   if ( !cmdInfo.m_bCommandLineMode && cmdInfo.m_bShowSplash )
    {
-      CEAFSplashScreen::ShowSplashScreen(m_pMainWnd,TRUE);
+      CEAFSplashScreen::Show(m_pMainWnd);
    }
 
    // Register the document templates... this is where the "plug-ins" get integrated
@@ -181,7 +180,7 @@ BOOL CEAFApp::InitInstance()
       return FALSE;	
 
    // Done with splash screen
-   CEAFSplashScreen::CloseOnNextTimeout();
+   CEAFSplashScreen::Hide();
 
    if ( cmdInfo.m_bUsageMessage )
    {
@@ -191,6 +190,7 @@ BOOL CEAFApp::InitInstance()
 
 	// The main window has been initialized, so show and update it.
 	m_pMainWnd->ShowWindow(m_nCmdShow);
+   m_pMainWnd->SetWindowPos(&CWnd::wndTop,0,0,0,0,SWP_NOSIZE | SWP_NOMOVE | SWP_NOREDRAW);
 	m_pMainWnd->UpdateWindow();
 
    if ( IsTipOfTheDayEnabled() && !cmdInfo.m_bCommandLineMode )
@@ -350,12 +350,26 @@ void CEAFApp::EnableTipOfTheDay(LPCTSTR lpszTipFile)
    if ( lpszTipFile == NULL )
    {
       m_bTipsEnabled = false;
-      m_TipFilePath.Empty();
+      m_TipFiles.clear();
    }
    else
    {
       m_bTipsEnabled = true;
-      m_TipFilePath = lpszTipFile;
+      m_TipFiles.push_back(lpszTipFile);
+   }
+}
+
+void CEAFApp::EnableTipOfTheDay(const std::vector<CString>& vTipFiles)
+{
+   if ( vTipFiles.size() == 0 )
+   {
+      m_bTipsEnabled = false;
+      m_TipFiles.clear();
+   }
+   else
+   {
+      m_bTipsEnabled = true;
+      m_TipFiles = vTipFiles;
    }
 }
 
@@ -368,7 +382,7 @@ bool CEAFApp::IsTipOfTheDayEnabled()
 void CEAFApp::ShowTipOfTheDay(void)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
-	CTipDlg dlg(m_TipFilePath,EAFGetMainFrame());
+	CTipDlg dlg(m_TipFiles,EAFGetMainFrame());
 	dlg.DoModal();
 }
 
@@ -383,19 +397,19 @@ BEGIN_MESSAGE_MAP(CEAFApp, CWinApp)
 	//{{AFX_MSG_MAP(CEAFApp)
 		// NOTE - the ClassWizard will add and remove mapping macros here.
 	//}}AFX_MSG_MAP
-	ON_COMMAND(ID_TIPOFTHEDAY, ShowTipOfTheDay)
-	ON_COMMAND(ID_APP_LEGAL, OnAppLegal)
+	ON_COMMAND(EAFID_TIPOFTHEDAY, ShowTipOfTheDay)
+	ON_COMMAND(EAFID_APP_LEGAL, OnAppLegal)
 
 	// Standard file based document commands
 	ON_COMMAND(ID_FILE_NEW, OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, OnFileOpen)
 
    // Standard unit mode commands
-	ON_COMMAND(ID_EDIT_UNITS, OnEditUnits)
-   ON_COMMAND(ID_UNITS_SI,OnSIUnits)
-   ON_UPDATE_COMMAND_UI(ID_UNITS_SI, OnUpdateSIUnits)
-   ON_COMMAND(ID_UNITS_US,OnUSUnits)
-   ON_UPDATE_COMMAND_UI(ID_UNITS_US, OnUpdateUSUnits)
+	ON_COMMAND(EAFID_EDIT_UNITS, OnEditUnits)
+   ON_COMMAND(EAFID_UNITS_SI,OnSIUnits)
+   ON_UPDATE_COMMAND_UI(EAFID_UNITS_SI, OnUpdateSIUnits)
+   ON_COMMAND(EAFID_UNITS_US,OnUSUnits)
+   ON_UPDATE_COMMAND_UI(EAFID_UNITS_US, OnUpdateUSUnits)
 
 	// Standard print setup command
 	ON_COMMAND(ID_FILE_PRINT_SETUP, CWinApp::OnFilePrintSetup)
@@ -406,7 +420,9 @@ END_MESSAGE_MAP()
 // CEAFApp message handlers
 BOOL CEAFApp::RegisterDocTemplates()
 {
-   if ( !GetComponentInfoManager()->LoadPlugins(TRUE) ) // always attempt to load
+   //if ( !GetComponentInfoManager()->LoadPlugins(TRUE) ) // always attempt to load
+   //   return FALSE;
+   if ( !GetComponentInfoManager()->LoadPlugins(FALSE) ) // always attempt to load
       return FALSE;
 
    if ( !GetComponentInfoManager()->InitPlugins() )
@@ -1122,8 +1138,8 @@ BEGIN_MESSAGE_MAP(CEAFPluginApp, CEAFApp)
 	//{{AFX_MSG_MAP(CEAFPluginApp)
 		// NOTE - the ClassWizard will add and remove mapping macros here.
 	//}}AFX_MSG_MAP
-	ON_COMMAND(ID_MANAGE_APP_PLUGINS, OnManageApplicationPlugins)
-	ON_UPDATE_COMMAND_UI(ID_MANAGE_APP_PLUGINS, OnUpdateManageApplicationPlugins)
+	ON_COMMAND(EAFID_MANAGE_APP_PLUGINS, OnManageApplicationPlugins)
+	ON_UPDATE_COMMAND_UI(EAFID_MANAGE_APP_PLUGINS, OnUpdateManageApplicationPlugins)
 END_MESSAGE_MAP()
 
 void CEAFPluginApp::OnUpdateManageApplicationPlugins(CCmdUI* pCmdUI)
@@ -1309,7 +1325,7 @@ unitmgtIndirectMeasure init_english_units()
    im.ComponentDim.Update(    unitMeasure::Inch,            0.001, 9, 3, sysNumericFormatTool::Fixed );
    im.XSectionDim.Update(     unitMeasure::Feet,            0.001, 9, 3, sysNumericFormatTool::Fixed );
    im.SpanLength.Update(      unitMeasure::Feet,            0.001, 9, 3, sysNumericFormatTool::Fixed );
-   im.AlignmentLength.Update( unitMeasure::Feet,            0.001,16, 4, sysNumericFormatTool::Fixed );
+   im.AlignmentLength.Update( unitMeasure::Feet,            0.001,16, 3, sysNumericFormatTool::Fixed );
    im.Displacement.Update(    unitMeasure::Inch,            0.001, 8, 3, sysNumericFormatTool::Fixed );
    im.Area.Update(            unitMeasure::Inch2,           0.001,10, 3, sysNumericFormatTool::Fixed );
    im.MomentOfInertia.Update( unitMeasure::Inch4,           0.001,12, 1, sysNumericFormatTool::Fixed );

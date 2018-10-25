@@ -117,8 +117,8 @@ void grAxisXY::Draw(HDC hDC)
    // will be the A axis.
    mathCoordMapper1d axis_mapper;
 
-   axis_mapper.SetCoordinateMap(m_Scale == LINEAR ? m_LeftAxisValue  : log10(m_LeftAxisValue),  m_MinLocation, 
-                                m_Scale == LINEAR ? m_RightAxisValue : log10(m_RightAxisValue), m_MaxLocation);
+   axis_mapper.SetCoordinateMap(m_Scale == LINEAR || m_Scale == INTEGRAL ? m_LeftAxisValue  : log10(m_LeftAxisValue),  m_MinLocation, 
+                                m_Scale == LINEAR || m_Scale == INTEGRAL ? m_RightAxisValue : log10(m_RightAxisValue), m_MaxLocation);
 
    // Draw the main axis line
    POINT p1, p2;
@@ -141,7 +141,7 @@ void grAxisXY::Draw(HDC hDC)
    if (m_DoShowTics)
    {
       // draw tics and values
-      if ( m_Scale == LINEAR )
+      if ( m_Scale == LINEAR || m_Scale == INTEGRAL )
       {
          Float64 tic_value = m_LeftAxisValue;
          Float64 tic_prev;
@@ -307,8 +307,6 @@ void grAxisXY::Draw(HDC hDC)
    if (m_DoShowText)
    {
       // set text alignment for axis titles
-
-      //Int32 tit_hl = (Int32)Round( m_Scale == LINEAR ? axis_mapper.GetB( (m_LeftAxisValue+m_RightAxisValue)/2 ) : axis_mapper.GetB( log10( (m_LeftAxisValue+m_RightAxisValue)/2 ) ));
       Int32 tit_hl = (m_MinLocation + m_MaxLocation)/2;
 
       if (m_Orientation == X_AXIS)
@@ -354,7 +352,7 @@ void grAxisXY::SetNiceAxisRange(Float64 leftVal, Float64 rightVal,bool bOffsetZe
       grGraphTool::CalculateNiceRange(leftVal, rightVal, bOffsetZero, num_tic, m_LeftAxisValue, 
                                       m_RightAxisValue, m_AxisIncrement);
    }
-   else //( m_Scale == LOGARITHMIC )
+   else if ( m_Scale == LOGARITHMIC )
    {
       // Compute nice log value
       Float64 exp1 = floor(log10(leftVal));
@@ -364,6 +362,10 @@ void grAxisXY::SetNiceAxisRange(Float64 leftVal, Float64 rightVal,bool bOffsetZe
       m_RightAxisValue = pow(10,exp2);
 
       m_AxisIncrement = (m_RightAxisValue - m_LeftAxisValue)/(exp2-exp1);
+   }
+   else // (m_Scale == INTEGRAL )
+   {
+      ATLASSERT(false); // INTEGRAL mode cannot be used with Nice axis range
    }
 }
 
@@ -579,6 +581,8 @@ bool grAxisXY::GetShowText()
 
 void grAxisXY::SetScale(grAxisXY::AxisScale scale)
 {
+   m_MetricsDirtyFlag = true;
+
    m_Scale = scale;
 }
 

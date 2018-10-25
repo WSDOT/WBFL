@@ -631,6 +631,19 @@ library WBFLLBAMAnalysis
 								[out,retval]ISectionStressResults **results);
 	};
 
+   [
+      object,
+      uuid(7D6930D2-707E-49a2-9E77-7786C51E70FF),
+      oleautomation,
+      helpstring("IUnitLoadResponse"),
+      //helpcontext(),
+      pointer_default(unique)
+   ]
+   interface IUnitLoadResponse : IUnknown
+   {
+      [] HRESULT ComputeForces([in]IIDArray* poiIDs,[in]PoiIDType ldPoiID,[in]BSTR bstrStage,[in]ResultsOrientation orientation, [out,retval]ISectionResult3Ds** results);
+   };
+
 
 	[
 		object,
@@ -878,6 +891,7 @@ library WBFLLBAMAnalysis
 	coclass LoadGroupDeflectionResponse
 	{
 		[default] interface ILoadGroupResponse;
+      interface IUnitLoadResponse;
 		interface IInfluenceLineResponse;
 		interface IContraflexureResponse;
 		interface IGetFemForLoadGroupResponse;
@@ -896,6 +910,7 @@ library WBFLLBAMAnalysis
 	coclass LoadGroupForceResponse
 	{
 		[default] interface ILoadGroupResponse;
+      interface IUnitLoadResponse;
 		interface IInfluenceLineResponse;
 		interface IContraflexureResponse;
 		interface IGetFemForLoadGroupResponse;

@@ -165,6 +165,11 @@ STDMETHODIMP CProgressMonitorWindow::Hide()
       m_FileStream << ">>Hide called"<<std::endl;
    }
 
+   if ( m_wndParent.GetSafeHwnd() )
+   {
+      m_wndParent.SetWindowPos(&CWnd::wndTop,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
+   }
+
    m_wndParent.Detach();
 
 	return S_OK;
@@ -190,6 +195,11 @@ STDMETHODIMP CProgressMonitorWindow::Close()
    if (m_IsFileOpen)
    {
       m_FileStream << ">>Close called"<<std::endl;
+   }
+
+   if ( m_wndParent.GetSafeHwnd() )
+   {
+      m_wndParent.SetWindowPos(&CWnd::wndTop,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
    }
 
    m_wndParent.Detach();

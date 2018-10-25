@@ -208,7 +208,8 @@ SubNodeLocs* SuperNodeLoc::GetSubNodeLocs()
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-InfluenceLoadLocation::InfluenceLoadLocation(Float64 globalX, MemberIDType mbrId, Float64 mbrLoc,Float64 P):
+InfluenceLoadLocation::InfluenceLoadLocation(PoiIDType poiID,Float64 globalX, MemberIDType mbrId, Float64 mbrLoc,Float64 P):
+   m_LBAMPoiID(poiID),
    m_GlobalX(globalX),
    m_LocationType(iflSingle),
    m_FemMemberID(mbrId),

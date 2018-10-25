@@ -52,6 +52,7 @@
 #include <MfcTools\WSDOTCalculationSheet.h>
 #include <MfcTools\LoadModifiersDlg.h>
 #include <MfcTools\Exceptions.h>
+#include <MfcTools\Format.h>
 
 // Making DoDataExchange work for CPropertySheet
 // 1) In your subclassed CPropertySheet, implement OnInitDialog and

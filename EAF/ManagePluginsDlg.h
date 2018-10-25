@@ -60,4 +60,6 @@ public:
    virtual void OnOK();
 protected:
    virtual void OnCancel();
+public:
+   afx_msg void OnBnClickedHelp();
 };

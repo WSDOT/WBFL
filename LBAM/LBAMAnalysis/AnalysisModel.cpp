@@ -200,9 +200,6 @@ void CAnalysisModel::BuildModel(BSTR bstrName)
    // generate loads for all load groups
    GenerateLoads();
 
-   // generate POI's
-   GeneratePOIs();
-
 #if defined _DEBUG
    // Dump the fem model for testing
    CComPtr<IStructuredSave2> pSave;
@@ -217,6 +214,9 @@ void CAnalysisModel::BuildModel(BSTR bstrName)
    storage->Save(pSave);
    pSave->Close();
 #endif
+
+   // generate POI's
+   GeneratePOIs();
 }
 
 void CAnalysisModel::GetDeflection(LoadGroupIDType lgId, PoiIDType poiId, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz)
@@ -269,6 +269,49 @@ void CAnalysisModel::GetForce(LoadGroupIDType lgId, PoiIDType poiId, ResultsOrie
    }
 }
 
+void CAnalysisModel::GetUnitForceResponse(PoiIDType poiID,PoiIDType loadPoiID, ResultsOrientation orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight,  Float64* fyRight, Float64* mzRight)
+{
+   ATLASSERT(m_pFem2d!=NULL);
+   CHRException hr;
+
+
+   // get poi information
+   PoiMapIterator itpoi(m_PoiMap.find( &PoiMap(poiID) ));
+   if (itpoi!= m_PoiMap.end() )
+   {
+      PoiMap& poi_map = *(*itpoi);
+
+      // optimization here - don't need to do coordinate transform for pois in superstructure since we know it is flat
+      if (poi_map.GetLBAMMemberType()==mtSpan || poi_map.GetLBAMMemberType()==mtSuperstructureMember)
+      {
+         orientation = roMember;
+      }
+
+      LoadIDType loadID = INVALID_ID;
+      InfluenceLoadSet::iterator iter(m_InfluenceLoadSet.begin());
+      InfluenceLoadSet::iterator end(m_InfluenceLoadSet.end());
+      for ( ; iter != end; iter++ )
+      {
+         InfluenceLoadLocation& ilLocation(*iter);
+         if ( ilLocation.m_LBAMPoiID == loadPoiID )
+         {
+            loadID = ilLocation.m_FemLoadCaseID;
+            break;
+         }
+      }
+
+      ATLASSERT(loadID != INVALID_ID);
+
+
+      // use the poi map to compute the influence line.
+      poi_map.GetForce(loadID,m_pFem2d,orientation,fxLeft,fyLeft,mzLeft,fxRight,fyRight,mzRight);
+   }
+   else
+   {
+      CComBSTR msg = ::CreateErrorMsg1L(IDS_E_POI_NOT_FOUND, poiID);
+      THROW_LBAMA_MSG(POI_NOT_FOUND,msg);
+   }
+}
 
 void CAnalysisModel::GetStress(LoadGroupIDType lg_id, PoiIDType poiId, std::vector<Float64>& sLeft, std::vector<Float64>& sRight, bool* wasComputed)
 {
@@ -963,7 +1006,7 @@ void CAnalysisModel::GetSuperstructureMemberLocationAlongSpan(SpanIndexType span
 
          *mbrID = (iter - m_SuperstructureMemberEnds.begin());
          *pMbrLoc = spanStart + spanLoc -  ssmbrStart;
-         if ( *pMbrLoc <= (ssmbrEnd - ssmbrStart) )
+         if ( ::IsLE(*pMbrLoc,(ssmbrEnd - ssmbrStart)) )
             return;
       }
       else if ( (ssmbrStart <= spanStart && spanStart <= ssmbrEnd) && (ssmbrStart <= spanEnd && spanEnd <= ssmbrEnd) )
@@ -4834,7 +4877,7 @@ void CAnalysisModel::GenerateInfluenceLoadLocations()
 
          if (lbamMemberType == mtSpan || lbamMemberType == mtSuperstructureMember)
          {
-            ComputeInfluenceLoadLocation(lbamMemberType, lbamMemberID, lbamPoiLocation, m_InfluenceLoadSet);
+            ComputeInfluenceLoadLocation(poiID,lbamMemberType, lbamMemberID, lbamPoiLocation, m_InfluenceLoadSet);
          }
       }
    }
@@ -4867,19 +4910,19 @@ void CAnalysisModel::GenerateInfluenceLoadLocations()
 
          // some debug code here to check that we don't have three or more of the same location
 #if defined (_DEBUG)
-         if (it1->m_GlobalX == it2->m_GlobalX)
-         {
-            if (last_matched)
-            {
-               ATLASSERT(0); // have three points at the same location - this is bad form and indicates an inefficient influence line
-            }
-            last_matched = true;
-            last_loc = it2->m_GlobalX;
-         }
-         else
-         {
-            last_matched = false;
-         }
+         //if (it1->m_GlobalX == it2->m_GlobalX)
+         //{
+         //   if (last_matched)
+         //   {
+         //      ATLASSERT(0); // have three points at the same location - this is bad form and indicates an inefficient influence line
+         //   }
+         //   last_matched = true;
+         //   last_loc = it2->m_GlobalX;
+         //}
+         //else
+         //{
+         //   last_matched = false;
+         //}
 #endif
          // loop
          it1++;
@@ -4899,7 +4942,7 @@ void CAnalysisModel::GenerateInfluenceLoadLocations()
 //   ATLTRACE(_T("Influence Load Locations - done"));
 }
 
-void CAnalysisModel::ComputeInfluenceLoadLocation(MemberType lbmbrType, MemberIDType lbamMemberID, Float64 lbmbrLoc, InfluenceLoadSet& influenceLoadSet )
+void CAnalysisModel::ComputeInfluenceLoadLocation(PoiIDType poiID,MemberType lbmbrType, MemberIDType lbamMemberID, Float64 lbmbrLoc, InfluenceLoadSet& influenceLoadSet )
 {
    CHRException hr;
 
@@ -4948,7 +4991,8 @@ void CAnalysisModel::ComputeInfluenceLoadLocation(MemberType lbmbrType, MemberID
    if ( vbIsLinkMember == VARIANT_TRUE )
       P = 0;
 
-   influenceLoadSet.insert( InfluenceLoadLocation( xloc, fem_id, fem_loc, P) );
+   influenceLoadSet.push_back( InfluenceLoadLocation( poiID, xloc, fem_id, fem_loc, P) );
+   std::sort(influenceLoadSet.begin(),influenceLoadSet.end());
 
    if ( mbl_type == mltStraddle )
    {
@@ -4964,7 +5008,8 @@ void CAnalysisModel::ComputeInfluenceLoadLocation(MemberType lbmbrType, MemberID
             ssmbr->get_LinkMember(&vbIsLinkMember);
             P = (vbIsLinkMember == VARIANT_TRUE ? 0.0 : -1.0);
 
-            influenceLoadSet.insert( InfluenceLoadLocation( xloc, fem_id-1, -1.0, P) );
+            influenceLoadSet.push_back( InfluenceLoadLocation( poiID, xloc, fem_id-1, -1.0, P) );
+            std::sort(influenceLoadSet.begin(),influenceLoadSet.end());
          }
       }
       else
@@ -4982,7 +5027,8 @@ void CAnalysisModel::ComputeInfluenceLoadLocation(MemberType lbmbrType, MemberID
             ssmbr->get_LinkMember(&vbIsLinkMember);
             P = (vbIsLinkMember == VARIANT_TRUE ? 0.0 : -1.0);
 
-            influenceLoadSet.insert( InfluenceLoadLocation( xloc, fem_id+1, 0.0, P) );
+            influenceLoadSet.push_back( InfluenceLoadLocation( poiID, xloc, fem_id+1, 0.0, P) );
+            std::sort(influenceLoadSet.begin(),influenceLoadSet.end());
          }
       }
    }

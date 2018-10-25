@@ -131,6 +131,7 @@ protected:
    virtual void RegistryExit();
 
    void EnableTipOfTheDay(LPCTSTR lpszTipFile);
+   void EnableTipOfTheDay(const std::vector<CString>& vTipFiles);
    bool IsTipOfTheDayEnabled();
 	virtual void ShowTipOfTheDay(void);
 
@@ -190,7 +191,7 @@ private:
 
    CString m_LastError;
 
-   CString m_TipFilePath;
+   std::vector<CString> m_TipFiles;
    bool m_bTipsEnabled;
 
    sysDate m_LastRunDate;

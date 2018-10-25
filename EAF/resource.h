@@ -2,6 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by EAF.rc
 //
+#define IDCANCEL2                       3
 #define IDS_UPDATE_IN_PROGRESS          102
 #define IDB_LIGHTBULB                   103
 #define IDD_TIP                         104

@@ -47,6 +47,7 @@ class ATL_NO_VTABLE CLoadGroupResponse :
 	public ISupportErrorInfo,
 	public IConnectionPointContainerImpl<CLoadGroupResponse>,
 	public ILoadGroupResponse,
+   public IUnitLoadResponse,
 	public IDependOnLBAM,
 	public IInfluenceLineResponse,
 	public IContraflexureResponse,
@@ -95,6 +96,7 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CLoadGroupResponse)
 	COM_INTERFACE_ENTRY(ILoadGroupResponse)
+   COM_INTERFACE_ENTRY(IUnitLoadResponse)
 	COM_INTERFACE_ENTRY(IDependOnLBAM)
 	COM_INTERFACE_ENTRY(IGetFemForLoadGroupResponse)
 	COM_INTERFACE_ENTRY(IInfluenceLineResponse)
@@ -141,6 +143,10 @@ public:
    STDMETHOD(ComputeReactions)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* supportIDs, /*[in]*/BSTR Stage,/*[in]*/ResultsSummationType summ,/*[out,retval]*/IResult3Ds** results);
    STDMETHOD(ComputeSupportDeflections)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* supportIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/IResult3Ds** results);
    STDMETHOD(ComputeStresses)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ,  /*[out,retval]*/ISectionStressResults **results);
+
+// IUnitLoadReponse
+   STDMETHOD(ComputeForces)(/*[in]*/IIDArray* poiIDs,/*[in]*/PoiIDType ldPoiID,/*[in]*/BSTR bstrStage,/*[in]*/ResultsOrientation orientation, /*[out,retval]*/ISectionResult3Ds** results);
+
 
 // IInfluenceLineResponse
    STDMETHOD(ComputeForceInfluenceLine)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType forceEffect, /*[in]*/ ResultsOrientation orientation, /*[out]*/IInfluenceLine** leftInfl, /*[out]*/IInfluenceLine** rightInfl);

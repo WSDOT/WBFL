@@ -1802,6 +1802,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Format.cpp"
+				>
+			</File>
+			<File
 				RelativePath="HyperLink.cpp"
 				>
 				<FileConfiguration
@@ -3682,6 +3686,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\MfcTools\Exceptions.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\MfcTools\Format.h"
 				>
 			</File>
 			<File

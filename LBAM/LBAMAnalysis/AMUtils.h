@@ -144,6 +144,7 @@ typedef SuperNodeLocs::iterator SuperNodeLocIterator;
 //////////////////////////////////////////////////////////
 struct InfluenceLoadLocation
 {
+   PoiIDType              m_LBAMPoiID;
    Float64                m_GlobalX;  // X in LBAM global coordinates
    InfluenceLocationType m_LocationType;
    MemberIDType           m_FemMemberID;
@@ -153,7 +154,7 @@ struct InfluenceLoadLocation
    Float64 m_P;
 
    // constructor for member-based locations
-   InfluenceLoadLocation(Float64 globalX, MemberIDType mbrId, Float64 mbrLoc,Float64 P);
+   InfluenceLoadLocation(PoiIDType poiID,Float64 globalX, MemberIDType mbrId, Float64 mbrLoc,Float64 P);
 
    // for container life
    bool operator< (const InfluenceLoadLocation& other) const;
@@ -162,7 +163,7 @@ private:
    InfluenceLoadLocation();
 };
 
-typedef std::set<InfluenceLoadLocation>    InfluenceLoadSet;
+typedef std::vector<InfluenceLoadLocation>    InfluenceLoadSet;
 typedef InfluenceLoadSet::iterator         InfluenceLoadSetIterator;
 
 

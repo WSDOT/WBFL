@@ -131,6 +131,11 @@ BOOL CEAFBrokerDocument::Init()
       return FALSE;
    }
 
+   // tell the broker to wait on calling the IAgent::Init function until
+   // pBrokerInit->InitAgents() is called
+   CComQIPtr<IBrokerInitEx2> pBrokerInit(m_pBroker);
+   pBrokerInit->DelayInit();
+
    BOOL bAgentsLoaded = LoadAgents();
    if ( !bAgentsLoaded )
    {
@@ -165,10 +170,6 @@ BOOL CEAFBrokerDocument::CreateBroker()
       FailSafeLogMessage(_T("Wrong version of Broker installed\nRe-install"));
       return FALSE;
    }
-
-   // tell the broker to wait on calling the IAgent::Init function until
-   // pBrokerInit->InitAgents() is called
-   pBrokerInit->DelayInit();
 
    return TRUE;
 }
@@ -537,7 +538,7 @@ void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,bool bQuickReport)
    UINT i = 0;
    std::vector<std::_tstring>::iterator iter(rptNames.begin());
    std::vector<std::_tstring>::iterator end(rptNames.end());
-   for ( ; iter != end; iter++ )
+   for ( ; iter != end && i < EAF_REPORT_MENU_COUNT; iter++ )
    {
       std::_tstring rptName = *iter;
       UINT nCmd = GetReportCommand(i,bQuickReport);
@@ -635,7 +636,7 @@ void CEAFBrokerDocument::BuildGraphMenu(CEAFMenu* pMenu)
    UINT i = 0;
    std::vector<std::_tstring>::iterator iter(graphNames.begin());
    std::vector<std::_tstring>::iterator end(graphNames.end());
-   for ( ; iter != end; iter++ )
+   for ( ; iter != end && i < EAF_GRAPH_MENU_COUNT; iter++ )
    {
       std::_tstring graphName = *iter;
       UINT nCmd = GetGraphCommand(i);

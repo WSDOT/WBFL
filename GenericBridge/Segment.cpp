@@ -74,7 +74,7 @@ STDMETHODIMP CSegment::InterfaceSupportsErrorInfo(REFIID riid)
 
 STDMETHODIMP CSegment::get_Length(Float64 *pVal)
 {
-   return m_pGirderLine->get_LayoutLength(pVal);
+   return m_pGirderLine->get_GirderLength(pVal);
 }
 
 STDMETHODIMP CSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)

@@ -195,7 +195,7 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
    bool bHeading = false;
    for (RowIndexType rowno=0; rowno<num_rows; rowno++)
    {
-      if (rowno == 0)
+      if (rowno == 0 && 0 < num_head_rows)
       {
          bHeading = true;
          *m_pOstream << _T("<THEAD>")<<std::endl; // first row is start of header row
@@ -204,7 +204,10 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
       if (num_head_rows == rowno)
       {
          // first row of body
-         *m_pOstream << _T("</THEAD>")<<std::endl;
+         if ( 0 < num_head_rows )
+         {
+            *m_pOstream << _T("</THEAD>")<<std::endl;
+         }
 
          *m_pOstream << _T("<TBODY>")<<std::endl; // first row is start of header row
          bHeading = false;

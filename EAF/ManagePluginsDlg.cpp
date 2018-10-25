@@ -26,7 +26,7 @@
 
 #include "stdafx.h"
 #include "ManagePluginsDlg.h"
-
+#include <EAF\EAFHelpIDs.h>
 #include <EAF\EAFApp.h>
 
 
@@ -54,6 +54,7 @@ void CManagePluginsDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CManagePluginsDlg, CDialog)
+   ON_BN_CLICKED(IDHELP, &CManagePluginsDlg::OnBnClickedHelp)
 END_MESSAGE_MAP()
 
 
@@ -150,4 +151,9 @@ void CManagePluginsDlg::OnCancel()
    m_PluginStates.clear();
 
    CDialog::OnCancel();
+}
+
+void CManagePluginsDlg::OnBnClickedHelp()
+{
+   ::HtmlHelp( *this, AfxGetApp()->m_pszHelpFilePath, HH_HELP_CONTEXT, IDH_MANAGE_PLUGINS );
 }

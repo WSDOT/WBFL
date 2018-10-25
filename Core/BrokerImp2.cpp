@@ -604,8 +604,12 @@ STDMETHODIMP CBrokerImp2::Load(IStructuredLoad* pStrLoad)
       if ( FAILED(hr) )
          return hr;
 
+      CComBSTR bstrCLSID(varCLSID.bstrVal);
+      bstrCLSID.ToUpper();
+      bstrCLSID = TranslateCLSID(bstrCLSID);
+
       CLSID clsid;
-      hr = ::CLSIDFromString(CComBSTR(varCLSID.bstrVal), &clsid);
+      hr = ::CLSIDFromString(bstrCLSID, &clsid);
       if ( FAILED(hr) )
          return hr;
 
@@ -723,6 +727,12 @@ STDMETHODIMP CBrokerImp2::GetSaveMissingAgentDataFlag(VARIANT_BOOL* bFlag)
    return S_OK;
 }
 
+STDMETHODIMP CBrokerImp2::AddCLSID(BSTR bstrOldCLSID,BSTR bstrNewCLSID)
+{
+   m_CLSIDMap.insert(std::make_pair(CComBSTR(bstrOldCLSID),CComBSTR(bstrNewCLSID)));
+   return S_OK;
+}
+
 STDMETHODIMP CBrokerImp2::get_AgentCount(CollectionIndexType* nAgents)
 {
    CHECK_RETVAL(nAgents);
@@ -816,4 +826,13 @@ HRESULT CBrokerImp2::FindAgent(const CLSID& clsid,IAgentEx** ppAgent)
    }
 
    return E_FAIL;
+}
+
+CComBSTR CBrokerImp2::TranslateCLSID(const CComBSTR bstrCLSID)
+{
+   std::map<CComBSTR,CComBSTR>::iterator found(m_CLSIDMap.find(bstrCLSID));
+   if ( found == m_CLSIDMap.end() )
+      return bstrCLSID;
+
+   return found->second;
 }

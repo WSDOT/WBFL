@@ -64,6 +64,10 @@ HRESULT CGenericShape::FinalConstruct()
    m_Ixy       = 0.0;
    m_Perimeter = 0.0;
    m_Rotation  = 0.0;
+   m_Xleft     = 0.0;
+   m_Xright    = 0.0;
+   m_Ytop      = 0.0;
+   m_Ybottom   = 0.0;
 
    HRESULT hr = CreatePoint(0.00,0.00,NULL,&m_pCG);
    if (FAILED(hr))
@@ -123,6 +127,71 @@ STDMETHODIMP CGenericShape::putref_Centroid(IPoint2d* newVal)
    CHECK_IN(newVal);
    HRESULT hr = CrAssignPointer(m_pCG, newVal, this, IID_IPoint2dEvents, &m_cgCookie);
    return hr;
+}
+
+STDMETHODIMP CGenericShape::get_Xleft(Float64 *pVal)
+{
+   CHECK_RETVAL(pVal);
+   *pVal = m_Xleft;
+   return S_OK;
+}
+
+STDMETHODIMP CGenericShape::put_Xleft(Float64 newVal)
+{
+   if ( newVal < 0 )
+      return E_INVALIDARG;
+
+   m_Xleft = newVal;
+   return S_OK;
+}
+
+STDMETHODIMP CGenericShape::get_Xright(Float64 *pVal)
+{
+   CHECK_RETVAL(pVal);
+   *pVal = m_Xright;
+   return S_OK;
+}
+
+STDMETHODIMP CGenericShape::put_Xright(Float64 newVal)
+{
+   if ( newVal < 0 )
+      return E_INVALIDARG;
+
+   m_Xright = newVal;
+   return S_OK;
+}
+
+STDMETHODIMP CGenericShape::get_Ytop(Float64 *pVal)
+{
+   CHECK_RETVAL(pVal);
+   *pVal = m_Ytop;
+   return S_OK;
+}
+
+STDMETHODIMP CGenericShape::put_Ytop(Float64 newVal)
+{
+   if ( newVal < 0 )
+      return E_INVALIDARG;
+
+   m_Ytop = newVal;
+   return S_OK;
+}
+
+STDMETHODIMP CGenericShape::get_Ybottom(Float64 *pVal)
+{
+   CHECK_RETVAL(pVal);
+
+   *pVal = m_Ybottom;
+   return S_OK;
+}
+
+STDMETHODIMP CGenericShape::put_Ybottom(Float64 newVal)
+{
+   if ( newVal < 0 )
+      return E_INVALIDARG;
+
+   m_Ybottom = newVal;
+   return S_OK;
 }
 
 STDMETHODIMP CGenericShape::get_Ixx(Float64 *pVal)
@@ -202,10 +271,10 @@ STDMETHODIMP CGenericShape::get_ShapeProperties(IShapeProperties* *props)
    (*props)->put_Ixx(     ixx    );
    (*props)->put_Iyy(     iyy    );
    (*props)->put_Ixy(     ixy    );
-   (*props)->put_Xleft(   0.0    );
-   (*props)->put_Xright(  0.0    );
-   (*props)->put_Ytop(    0.0    );
-   (*props)->put_Ybottom( 0.0    );
+   (*props)->put_Xleft(   m_Xleft   );
+   (*props)->put_Xright(  m_Xright  );
+   (*props)->put_Ytop(    m_Ytop    );
+   (*props)->put_Ybottom( m_Ybottom );
 
    CComPtr<IPoint2d> centroid;
    centroid.CoCreateInstance(CLSID_Point2d);
@@ -225,7 +294,7 @@ STDMETHODIMP CGenericShape::get_BoundingBox(IRect2d* *rect)
    Float64 cx,cy;
    m_pCG->Location(&cx,&cy);
 
-   return ::CreateRect(cx, cy, cx, cy, rect);
+   return ::CreateRect(m_Xleft, m_Ytop, m_Xright, m_Ybottom, rect);
 }
 
 STDMETHODIMP CGenericShape::get_PolyPoints(IPoint2dCollection** ppPolyPoints)
@@ -249,7 +318,18 @@ STDMETHODIMP CGenericShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult
    CHECK_IN(pPoint);
    CHECK_RETVAL(pbResult);
 
-   *pbResult = (m_pCG->SameLocation(pPoint) == S_OK ? VARIANT_TRUE : VARIANT_FALSE);
+   Float64 x,y;
+   pPoint->Location(&x,&y);
+
+   if ( (m_Xleft <= x && x <= m_Xright) &&
+        (m_Ybottom <= y && y <= m_Ytop) )
+   {
+      *pbResult = VARIANT_TRUE;
+   }
+   else
+   {
+      *pbResult = VARIANT_FALSE;
+   }
    return S_OK;
 }
 
@@ -269,6 +349,11 @@ STDMETHODIMP CGenericShape::Clone(IShape** pClone)
    pTheClone->put_Ixx(m_Ixx);
    pTheClone->put_Iyy(m_Iyy);
    pTheClone->put_Ixy(m_Ixy);
+
+   pTheClone->put_Xleft(m_Xleft);
+   pTheClone->put_Xright(m_Xright);
+   pTheClone->put_Ytop(m_Ytop);
+   pTheClone->put_Ybottom(m_Ybottom);
 
    CComPtr<IPoint2d> cg;
    hr = CreatePoint(m_pCG,NULL,&cg);
@@ -360,15 +445,76 @@ STDMETHODIMP CGenericShape::OffsetEx(ISize2d* pSize)
 STDMETHODIMP CGenericShape::get_LocatorPoint(LocatorPointType lp, IPoint2d** point)
 {
    CHECK_RETOBJ(point);
-   // this shape doesn't have any "size" so all points on the bounding box
-   // are at the CG
-   return m_pCG->QueryInterface( point );
+
+   CComPtr<IPoint2d> p;
+   p.CoCreateInstance(CLSID_Point2d);
+   Float64 x,y;
+   m_pCG->Location(&x,&y);
+   p->Move(x,y);
+   switch(lp)
+   {
+   case lpHookPoint:
+      break;
+
+   case lpTopLeft:
+      p->Offset(-m_Xleft,m_Ytop);
+      break;
+
+   case lpTopCenter:
+      p->Offset(0,m_Ytop);
+      break;
+
+   case lpTopRight:
+      p->Offset(m_Xright,m_Ytop);
+      break;
+
+   case lpCenterLeft:
+      p->Offset(-m_Xleft,0);
+      break;
+
+   case lpCenterCenter:
+      p->Offset(0,0);
+      break;
+
+   case lpCenterRight:
+      p->Offset(m_Xright,0);
+      break;
+
+   case lpBottomLeft:
+      p->Offset(-m_Xleft,-m_Ybottom);
+      break;
+
+   case lpBottomCenter:
+      p->Offset(0,-m_Ybottom);
+      break;
+
+   case lpBottomRight:
+      p->Offset(m_Xright,-m_Ybottom);
+      break;
+   }
+
+   p.CopyTo(point);
+
+   return S_OK;
 }
 
 STDMETHODIMP CGenericShape::put_LocatorPoint(LocatorPointType lp, IPoint2d* point)
 {
    CHECK_IN(point);
-   return m_pCG->MoveEx(point);
+
+   CComPtr<IPoint2d> p;
+   get_LocatorPoint(lp,&p);
+
+   Float64 x1,y1;
+   p->Location(&x1,&y1);
+
+   Float64 x2,y2;
+   point->Location(&x2,&y2);
+
+   Float64 dx = x2-x1;
+   Float64 dy = y2-y1;
+
+   return m_pCG->Offset(dx,dy);
 }
 
 STDMETHODIMP CGenericShape::MoveEx(IPoint2d* pFrom,IPoint2d* pTo)
@@ -382,9 +528,7 @@ STDMETHODIMP CGenericShape::MoveEx(IPoint2d* pFrom,IPoint2d* pTo)
    pFrom->Location(&x1,&y1);
    pTo->Location(&x2,&y2);
 
-   m_pCG->Offset( x2-x1, y2-y1 );
-
-   return S_OK;
+   return Offset( x2-x1, y2-y1 );
 }
 
 STDMETHODIMP CGenericShape::RotateEx(IPoint2d* pPoint,Float64 angle)
@@ -425,7 +569,7 @@ STDMETHODIMP CGenericShape::Save(IStructuredSave2* pSave)
 {
    CHECK_IN(pSave);
 
-   pSave->BeginUnit(CComBSTR("GenericShape"),1.0);
+   pSave->BeginUnit(CComBSTR("GenericShape"),2.0);
    pSave->put_Property(CComBSTR("Area"),CComVariant(m_Area));
    pSave->put_Property(CComBSTR("Perimeter"),CComVariant(m_Perimeter));
    pSave->put_Property(CComBSTR("Ixx"),CComVariant(m_Ixx));
@@ -433,6 +577,10 @@ STDMETHODIMP CGenericShape::Save(IStructuredSave2* pSave)
    pSave->put_Property(CComBSTR("Ixy"),CComVariant(m_Ixy));
    pSave->put_Property(CComBSTR("Rotation"),CComVariant(m_Rotation));
    pSave->put_Property(CComBSTR("Centroid"),CComVariant(m_pCG));
+   pSave->put_Property(CComBSTR("Xleft"),CComVariant(m_Xleft));
+   pSave->put_Property(CComBSTR("Xright"),CComVariant(m_Xright));
+   pSave->put_Property(CComBSTR("Ytop"),CComVariant(m_Ytop));
+   pSave->put_Property(CComBSTR("Ybottom"),CComVariant(m_Ybottom));
    pSave->EndUnit();
 
    return S_OK;
@@ -444,6 +592,9 @@ STDMETHODIMP CGenericShape::Load(IStructuredLoad2* pLoad)
 
    CComVariant var;
    pLoad->BeginUnit(CComBSTR("GenericShape"));
+
+   Float64 version;
+   pLoad->get_Version(&version);
 
    pLoad->get_Property(CComBSTR("Area"),&var);
    m_Area = var.dblVal;
@@ -466,6 +617,21 @@ STDMETHODIMP CGenericShape::Load(IStructuredLoad2* pLoad)
    pLoad->get_Property(CComBSTR("Centroid"),&var);
    if ( FAILED( _CopyVariantToInterface<IPoint2d>::copy(&m_pCG,&var)) )
       return STRLOAD_E_INVALIDFORMAT;
+
+   if ( 1 < version )
+   {
+      pLoad->get_Property(CComBSTR("Xleft"),&var);
+      m_Xleft = var.dblVal;
+
+      pLoad->get_Property(CComBSTR("Xright"),&var);
+      m_Xright = var.dblVal;
+
+      pLoad->get_Property(CComBSTR("Ytop"),&var);
+      m_Ytop = var.dblVal;
+
+      pLoad->get_Property(CComBSTR("Ybottom"),&var);
+      m_Ybottom = var.dblVal;
+   }
 
 
    VARIANT_BOOL bEnd;

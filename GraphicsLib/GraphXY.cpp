@@ -71,6 +71,7 @@ m_LegendBoarderType(lbCheckerBoarder),
 m_XAxisNiceRange(true),
 m_YAxisNiceRange(true),
 m_PinYAxisAtZero(true),
+m_bIsotropicAxes(false),
 m_MinZoomHeight(DEFAULT_ZOOM),
 m_MinZoomWidth(DEFAULT_ZOOM)
 {
@@ -407,6 +408,8 @@ const sysINumericFormatToolBase* grGraphXY::GetXAxisValueFormat() const
 void grGraphXY::SetXAxisScale(grAxisXY::AxisScale scale)
 {
    m_XAxis.SetScale(scale);
+   if ( m_XAxis.GetScale() == grAxisXY::INTEGRAL )
+      m_XAxisNiceRange = false; // can't have nice range with INTEGRAL
 }
 
 grAxisXY::AxisScale grGraphXY::GetXAxisScale() const
@@ -417,6 +420,8 @@ grAxisXY::AxisScale grGraphXY::GetXAxisScale() const
 void grGraphXY::SetYAxisScale(grAxisXY::AxisScale scale)
 {
    m_YAxis.SetScale(scale);
+   if ( m_YAxis.GetScale() == grAxisXY::INTEGRAL )
+      m_YAxisNiceRange = false; // can't have nice range with INTEGRAL
 }
 
 grAxisXY::AxisScale grGraphXY::GetYAxisScale() const
@@ -551,12 +556,14 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
    m_WorldRect.Set(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
 
    IndexType nDataPoints = 0;
+   IndexType nMaxDataPoints = 0;
    GraphDataMap::iterator map_iter;
    for ( map_iter = m_GraphDataMap.begin(); map_iter != m_GraphDataMap.end(); map_iter++ )
    {
       GraphData& gd = (*map_iter).second;
 
       DataSeries::iterator ds_iter;
+      IndexType nDP = 0;
       for ( ds_iter = gd.Series.begin(); ds_iter != gd.Series.end(); ds_iter++ )
       {
          gpPoint2d& p = *ds_iter;
@@ -565,7 +572,9 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
          m_WorldRect.Top()    = max( p.Y(), m_WorldRect.Top() );
          m_WorldRect.Bottom() = min( p.Y(), m_WorldRect.Bottom() );
          nDataPoints++;
+         nDP++;
       }
+      nMaxDataPoints = max(nMaxDataPoints,nDP);
    }
 
    // if there is not any data points, then make the world 1x1
@@ -599,55 +608,92 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
       m_WorldRect.Left()  = cen - m_MinZoomWidth/2.0;
    }
 
+   if ( m_bIsotropicAxes )
+   {
+      Float64 width = m_WorldRect.Width();
+      Float64 height = m_WorldRect.Height();
+      gpPoint2d center = m_WorldRect.Center();
+      if ( width < height )
+      {
+         m_WorldRect.Left()  = center.X() - height/2;
+         m_WorldRect.Right() = center.X() + height/2;
+      }
+      else
+      {
+         m_WorldRect.Top()    = center.Y() + width/2;
+         m_WorldRect.Bottom() = center.Y() - width/2;
+      }
+   }
+
    // set ranges on axis to create graph world client rect area size
    Float64 client_left, client_right, client_bottom, client_top;
    Float64 inc;
-   if (GetXAxisNiceRange())
+   if ( m_XAxis.GetScale() == grAxisXY::INTEGRAL )
    {
-      m_XAxis.SetNiceAxisRange(m_WorldRect.Left(), m_WorldRect.Right(),false);
-      m_XAxis.GetAxisRange(client_left, client_right, inc);
+      client_left = 1;
+      client_right = (Float64)nMaxDataPoints;
+      inc = 1;
+      m_XAxis.SetForcedAxisRange(client_left,client_right,inc);
    }
    else
    {
-      client_left = m_WorldRect.Left();
-      client_right = m_WorldRect.Right();
-      CHECK(client_left!=client_right);
-      Float64 wid = client_right-client_left;
-      LONG numtic = GetXAxisNumberOfMajorTics() - 1;
-      if (0 < numtic)
+      if (GetXAxisNiceRange())
       {
-         inc = wid/numtic;
+         m_XAxis.SetNiceAxisRange(m_WorldRect.Left(), m_WorldRect.Right(),false);
+         m_XAxis.GetAxisRange(client_left, client_right, inc);
       }
       else
       {
-         CHECKX(0,_T("Number of tics must be >0"));
-         inc = wid;
+         client_left = m_WorldRect.Left();
+         client_right = m_WorldRect.Right();
+         CHECK(client_left!=client_right);
+         Float64 wid = client_right-client_left;
+         LONG numtic = GetXAxisNumberOfMajorTics() - 1;
+         if (0 < numtic)
+         {
+            inc = wid/numtic;
+         }
+         else
+         {
+            CHECKX(0,_T("Number of tics must be >0"));
+            inc = wid;
+         }
+         m_XAxis.SetForcedAxisRange(client_left, client_right, inc);
       }
-      m_XAxis.SetForcedAxisRange(client_left, client_right, inc);
    }
 
-   if (GetYAxisNiceRange())
+   if ( m_YAxis.GetScale() == grAxisXY::INTEGRAL )
    {
-      m_YAxis.SetNiceAxisRange(m_WorldRect.Bottom(), m_WorldRect.Top(),true);
-      m_YAxis.GetAxisRange(client_bottom, client_top, inc);
+      client_bottom = 1;
+      client_top = (Float64)nMaxDataPoints;
+      inc = 1;
+      m_YAxis.SetForcedAxisRange(client_top, client_bottom, inc);
    }
    else
    {
-      client_top = m_WorldRect.Top();
-      client_bottom = m_WorldRect.Bottom();
-      CHECK(client_top!=client_bottom);
-      Float64 wid = client_bottom-client_top;
-      LONG numtic = GetYAxisNumberOfMajorTics() - 1;
-      if (0 < numtic)
+      if (GetYAxisNiceRange())
       {
-         inc = wid/numtic;
+         m_YAxis.SetNiceAxisRange(m_WorldRect.Bottom(), m_WorldRect.Top(),true);
+         m_YAxis.GetAxisRange(client_bottom, client_top, inc);
       }
       else
       {
-         CHECKX(0,_T("Number of tics must be >0"));
-         inc = wid;
+         client_top = m_WorldRect.Top();
+         client_bottom = m_WorldRect.Bottom();
+         CHECK(client_top!=client_bottom);
+         Float64 wid = client_bottom-client_top;
+         LONG numtic = GetYAxisNumberOfMajorTics() - 1;
+         if (0 < numtic)
+         {
+            inc = wid/numtic;
+         }
+         else
+         {
+            CHECKX(0,_T("Number of tics must be >0"));
+            inc = wid;
+         }
+         m_YAxis.SetForcedAxisRange(client_bottom, client_top, inc);
       }
-      m_YAxis.SetForcedAxisRange(client_top, client_bottom, inc);
    }
 
    if ( m_XAxis.GetScale() == grAxisXY::LOGARITHMIC )
@@ -791,11 +837,18 @@ void grGraphXY::DrawCurve(HDC hDC)
       DataSeries::iterator ds_iter;
       for ( ds_iter = gd.Series.begin(); ds_iter != gd.Series.end(); ds_iter++ )
       {
-         const gpPoint2d& p = *ds_iter;
+         gpPoint2d p = *ds_iter;
+         if ( scaleX == grAxisXY::INTEGRAL )
+            p.X() = count+1;
+
+         if ( scaleY == grAxisXY::INTEGRAL )
+            p.Y() = count+1;
+
          POINT dp;
-         m_PointMapper.WPtoDP( scaleX == grAxisXY::LINEAR ? p.X() : log10(p.X()),
-                               scaleY == grAxisXY::LINEAR ? p.Y() : log10(p.Y()),
+         m_PointMapper.WPtoDP( scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL ? p.X() : log10(p.X()),
+                               scaleY == grAxisXY::LINEAR || scaleY == grAxisXY::INTEGRAL ? p.Y() : log10(p.Y()),
                                &dp.x, &dp.y );
+
          p_points[count++] = dp;
       }
 
@@ -835,21 +888,21 @@ void grGraphXY::DrawAxes(HDC hDC)
       // x axis grid
       LONG   ldx, ldy, rdx, rdy;
       Float64 curr_val;
-      if ( scaleX == grAxisXY::LINEAR )
+      if ( scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL )
          curr_val = left_val + x_increment;
       else
          curr_val = x_increment;
 
       while (curr_val <= right_val)
       {
-         m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR ? curr_val : log10(curr_val), scaleY == grAxisXY::LINEAR ? bot_val : log10(bot_val), &ldx, &ldy);
-         m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR ? curr_val : log10(curr_val), scaleY == grAxisXY::LINEAR ? top_val : log10(top_val), &rdx, &rdy);
+         m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL? curr_val : log10(curr_val), scaleY == grAxisXY::LINEAR || scaleY == grAxisXY::INTEGRAL? bot_val : log10(bot_val), &ldx, &ldy);
+         m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL? curr_val : log10(curr_val), scaleY == grAxisXY::LINEAR || scaleY == grAxisXY::INTEGRAL? top_val : log10(top_val), &rdx, &rdy);
 
          POINT pnt;
          ::MoveToEx(hDC,ldx,ldy,&pnt);
          ::LineTo(hDC,rdx,rdy);
 
-         if ( scaleX == grAxisXY::LINEAR )
+         if ( scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL )
             curr_val += x_increment;
          else
          {
@@ -859,21 +912,21 @@ void grGraphXY::DrawAxes(HDC hDC)
       }
 
       // y axis grid
-      if ( scaleY == grAxisXY::LINEAR )
+      if ( scaleY == grAxisXY::LINEAR || scaleY == grAxisXY::INTEGRAL)
          curr_val = bot_val + y_increment;
       else
          curr_val = y_increment;
 
       while (curr_val <= top_val)
       {
-         m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR ? left_val  : log10(left_val),  scaleY == grAxisXY::LINEAR ? curr_val : log10(curr_val), &ldx, &ldy);
-         m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR ? right_val : log10(right_val), scaleY == grAxisXY::LINEAR ? curr_val : log10(curr_val), &rdx, &rdy);
+         m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL ? left_val  : log10(left_val),  scaleY == grAxisXY::LINEAR || scaleY == grAxisXY::INTEGRAL ? curr_val : log10(curr_val), &ldx, &ldy);
+         m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL ? right_val : log10(right_val), scaleY == grAxisXY::LINEAR || scaleY == grAxisXY::INTEGRAL ? curr_val : log10(curr_val), &rdx, &rdy);
 
          POINT pnt;
          ::MoveToEx(hDC, ldx,ldy,&pnt);
          ::LineTo(hDC,rdx,rdy);
 
-         if ( scaleY == grAxisXY::LINEAR )
+         if ( scaleY == grAxisXY::LINEAR || scaleY == grAxisXY::INTEGRAL )
             curr_val += y_increment;
          else
          {
@@ -889,8 +942,8 @@ void grGraphXY::DrawAxes(HDC hDC)
       {
          LONG   ldx, ldy, rdx, rdy;
 
-         m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR ? left_val  : log10(left_val),  0., &ldx, &ldy);
-         m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR ? right_val : log10(right_val), 0., &rdx, &rdy);
+         m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL ? left_val  : log10(left_val),  0., &ldx, &ldy);
+         m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL ? right_val : log10(right_val), 0., &rdx, &rdy);
 
          POINT pnt;
          ::MoveToEx(hDC,ldx,ldy,&pnt);
@@ -1007,6 +1060,9 @@ bool grGraphXY::GetXAxisNiceRange()
 void grGraphXY::SetXAxisNiceRange(bool nice)
 {
    m_XAxisNiceRange = nice;
+
+   if ( m_XAxisNiceRange && m_XAxis.GetScale() == grAxisXY::INTEGRAL )
+      m_XAxis.SetScale(grAxisXY::LINEAR); // can't have nice range and INTEGRAL
 }
 
 bool grGraphXY::GetYAxisNiceRange()
@@ -1017,6 +1073,9 @@ bool grGraphXY::GetYAxisNiceRange()
 void grGraphXY::SetYAxisNiceRange(bool nice)
 {
    m_YAxisNiceRange = nice;
+
+   if ( m_YAxisNiceRange && m_YAxis.GetScale() == grAxisXY::INTEGRAL )
+      m_YAxis.SetScale(grAxisXY::LINEAR); // can't have nice range and INTEGRAL
 }
 
 bool grGraphXY::GetPinYAxisAtZero()
@@ -1029,6 +1088,15 @@ void grGraphXY::SetPinYAxisAtZero(bool pin)
    m_PinYAxisAtZero = pin;
 }
 
+void grGraphXY::SetIsotropicAxes(bool bIsotropic)
+{
+   m_bIsotropicAxes = bIsotropic;
+}
+
+bool grGraphXY::GetIsotropicAxes() const
+{
+   return m_bIsotropicAxes;
+}
 
 int grGraphXY::UpdateLegendMetrics(HDC hDC)
 {

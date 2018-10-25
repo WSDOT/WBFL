@@ -1839,6 +1839,69 @@ STDMETHODIMP CLoadGroupResponse::ComputeSupportDeflections(BSTR LoadGroup, IIDAr
 }
 
 ///////////////////////////////////////////////////////////////
+////// IUnitLoadReponse
+///////////////////////////////////////////////////////////////
+// 
+STDMETHODIMP CLoadGroupResponse::ComputeForces(IIDArray* poiIDs,PoiIDType ldPoiID,BSTR bstrStage,ResultsOrientation orientation,ISectionResult3Ds** results)
+{
+   CHECK_IN(poiIDs);
+   CHECK_RETOBJ(results);
+
+   try
+   {
+      CHRException hr;
+
+      ValidateInfluenceCalc(bstrStage);
+
+      StageIndexType stageIdx = m_AnalysisController.CheckedStageOrder(bstrStage);
+      boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[stageIdx];
+
+
+      // let's see how many pois we have to return results for
+      CollectionIndexType nPOIs;
+      hr = poiIDs->get_Count(&nPOIs);
+
+      // create our results collection 
+      CComObject<CSectionResult3Ds>* pcresults;
+      hr = CComObject<CSectionResult3Ds>::CreateInstance(&pcresults);
+      CComPtr<ISectionResult3Ds> the_results(pcresults);
+      hr = the_results->Reserve(nPOIs);
+
+      LGR_HANDLE_CANCEL_PROGRESS();  // could put this in poi loop, but might cause performance problems
+
+      // loop over stages and poi's
+      Float64 fx_left, fx_right, fy_left, fy_right, mz_left, mz_right;
+      for (CollectionIndexType poiIdx = 0; poiIdx < nPOIs; poiIdx++)
+      {
+         PoiIDType poiID;
+         hr = poiIDs->get_Item(poiIdx, &poiID);
+
+         // create results object and add it to the collection
+         CComObject<CSectionResult3D>* presult;
+         hr = CComObject<CSectionResult3D>::CreateInstance(&presult);
+         CComPtr<ISectionResult3D> the_result(presult);
+
+         hr = the_results->Add(the_result);
+
+         pFemModel->GetUnitForceResponse(poiID,ldPoiID,orientation, &fx_left, &fy_left, &mz_left, &fx_right, &fy_right, &mz_right);
+
+         // sum results 
+         hr = the_result->Sum(fx_left, fy_left, mz_left, fx_right, fy_right, mz_right);
+      }
+
+      LGR_HANDLE_CANCEL_PROGRESS(); 
+
+      hr = the_results.CopyTo(results);
+   }
+   catch(...)
+   {
+      return DealWithMyExceptions();
+   }
+
+   return S_OK;
+}
+
+///////////////////////////////////////////////////////////////
 ////// IInfluenceLineResponse
 ///////////////////////////////////////////////////////////////
 // 

@@ -108,7 +108,7 @@ public:
    // Axis orientation either horizontal (X) or vertical (Y)
    enum AxisOrientation {X_AXIS, Y_AXIS};
 
-   enum AxisScale { LINEAR, LOGARITHMIC };
+   enum AxisScale { LINEAR, LOGARITHMIC, INTEGRAL };
 
    // GROUP: LIFECYCLE
 

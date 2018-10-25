@@ -323,6 +323,16 @@ library WBFLCore
 		[helpstring("method IntegrateWithUI")] HRESULT IntegrateWithUI(BOOL bIntegrate);
 	};
 
+   [
+      uuid(1ED36EAA-D850-424c-96D6-3A993DB5EECF),
+      helpstring("ICLSIDMap Interface"),
+      pointer_default(unique)
+   ]
+   interface ICLSIDMap : IUnknown
+   {
+      [helpstring("method AddCLSID")] HRESULT AddCLSID(BSTR bstrOldCLSID,BSTR bstrNewCLSID);
+   };
+
 	[
 		uuid(C0E926D0-2620-11D2-8EB0-006097DF3C68),
 		helpstring("IBroker Interface"),
@@ -388,6 +398,7 @@ library WBFLCore
 		interface IBrokerInitEx3;
 		interface IBrokerInitEx2;
 		interface IBrokerPersist;
+      interface ICLSIDMap;
 	};
 	[
 	   uuid(D71212B0-2BEF-11d2-8EB3-006097DF3C68),

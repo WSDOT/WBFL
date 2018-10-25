@@ -48,8 +48,8 @@ static char THIS_FILE[] = __FILE__;
 static UINT indicators[] =
 {
 	ID_SEPARATOR,           // status line indicator
-   ID_INDICATOR_MODIFIED,
-   ID_INDICATOR_STATUS,
+   EAFID_INDICATOR_MODIFIED,
+   EAFID_INDICATOR_STATUS,
    ID_INDICATOR_CAPS,
 	ID_INDICATOR_NUM,
 	ID_INDICATOR_SCRL,
@@ -85,15 +85,27 @@ void CEAFStatusBar::GetStatusIndicators(const UINT** lppIDArray,int* pnIDCount)
    *pnIDCount = sizeof(indicators)/sizeof(UINT);
 }
 
+BOOL CEAFStatusBar::SetStatusIndicators(const UINT* lpIDArray, int nIDCount)
+{
+   return SetIndicators(lpIDArray,nIDCount);
+}
+
 BOOL CEAFStatusBar::Create(CWnd* pParentWnd, DWORD dwStyle , UINT nID)
 {
+   // MFC is expecting the status bar window to be created in the app module state
+   // so force it here. Below, SetStatusIndicators is called instead of 
+   // CStatusBar::SetIndicators so that app plugins can set the module
+   // state to their module state so status indicator text strings can
+   // be read from their string tables.
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
    BOOL bResult = CStatusBar::Create(pParentWnd, dwStyle, nID);
    if ( !bResult )
       return bResult;
 
    const UINT* pIndicators;
    GetStatusIndicators(&pIndicators,&m_nIndicators);
-   bResult = SetIndicators(pIndicators,m_nIndicators);
+   bResult = SetStatusIndicators(pIndicators,m_nIndicators);
 
    int idx = GetStatusPaneIndex();
    if ( 0 <= idx )
@@ -137,7 +149,7 @@ int CEAFStatusBar::GetModifiedPaneIndex()
          int cxWidth;
          GetPaneInfo(i,nID,nStyle,cxWidth);
 
-         if ( nID == ID_INDICATOR_MODIFIED )
+         if ( nID == EAFID_INDICATOR_MODIFIED )
          {
             m_ModifiedPaneIdx = i;
             break;
@@ -158,7 +170,7 @@ int CEAFStatusBar::GetStatusPaneIndex()
          int cxWidth;
          GetPaneInfo(i,nID,nStyle,cxWidth);
 
-         if ( nID == ID_INDICATOR_STATUS )
+         if ( nID == EAFID_INDICATOR_STATUS )
          {
             m_StatusPaneIdx = i;
             break;
@@ -257,7 +269,7 @@ void CEAFStatusBar::OnLButtonDblClk(UINT nFlags, CPoint point)
          GetStatusBarCtrl().GetRect(GetStatusPaneIndex(),&rect);
          if (rect.PtInRect(point))
          {
-            PostMessage(WM_COMMAND,ID_VIEW_STATUSCENTER,0);
+            PostMessage(WM_COMMAND,EAFID_VIEW_STATUSCENTER,0);
          }
       }
    }

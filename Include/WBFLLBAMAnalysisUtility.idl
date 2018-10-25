@@ -72,6 +72,7 @@ library WBFLLBAMAnalysisUtility
 
 	  HRESULT InitializeEx([in]ILBAMModel* model, [in]AnalysisType forceOrDeflection,
 		[in] ILoadGroupResponse* plgResponse,
+		[in] IUnitLoadResponse* pUnitLoadResponse,
 		[in] IInfluenceLineResponse* pilResponse,
 		[in] IAnalysisPOIs* pPois,
 		[in] IBasicVehicularResponse* pBVR,
@@ -85,6 +86,8 @@ library WBFLLBAMAnalysisUtility
 
 		[propget, helpstring("property LoadGroupResponse"),helpcontext(IDH_LBAMAnalysisEngine_LoadGroupResponse)] 
       HRESULT LoadGroupResponse([out, retval] ILoadGroupResponse* *pVal);
+		[propget] 
+      HRESULT UnitLoadResponse([out, retval] IUnitLoadResponse* *pVal);
 		[propget, helpstring("property InfluenceLineResponse"),helpcontext(IDH_LBAMAnalysisEngine_InfluenceLineResponse)] 
       HRESULT InfluenceLineResponse([out, retval] IInfluenceLineResponse* *pVal);
 		[propget, helpstring("property AnalysisPOIs"),helpcontext(IDH_LBAMAnalysisEngine_AnalysisPOIs)] 

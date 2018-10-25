@@ -35,6 +35,15 @@
 #define Overline(a) overline(ON) << a << overline(OFF)
 #define LineThrough(a) linethrough(ON) << a << linethrough(OFF)
 
+#define DECLARE_UV_PROTOTYPE( type, proto ) type proto
+#define DEFINE_UV_PROTOTYPE( proto, im, _bShowTag ) \
+   proto.SetUnitOfMeasure(&im.UnitOfMeasure ); \
+   proto.ShowUnitTag(_bShowTag); \
+   proto.SetZeroTolerance( im.Tol ); \
+   proto.SetFormat( im.Format );\
+   proto.SetWidth( im.Width ); \
+   proto.SetPrecision( im.Precision )
+
 #define INIT_UV_PROTOTYPE( type, proto, im, _bShowTag ) \
    type proto( &im.UnitOfMeasure, im.Tol, _bShowTag ); \
    proto.SetFormat( im.Format );\
@@ -85,5 +94,8 @@
 #define RPT_PASS color(Green) << _T("Pass") << color(Black)
 #define RPT_FAIL color(Red) << bold(ON) << _T("Fail") << bold(OFF) << color(Black)
 #define RPT_NA color(Blue) << _T("N/A") << color(Black)
+
+#define RPT_OFFSET(_value_,_um_) \
+_um_.SetValue(fabs(_value_)) << (::Sign(_value_) < 0 ? _T(" L") : (::Sign(_value_) > 0 ? _T(" R") : _T("")))
 
 #endif // INCLUDED_REPORTER_REPORTINGUTILS_H_

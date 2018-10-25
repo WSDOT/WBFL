@@ -66,7 +66,7 @@ inline bool IsLT(const T& value, const T& threshold, T tolerance = TOLERANCE)
 
 // Returns true if value is greater than the threshold value
 template <class T>
-inline bool IsGT(const T& value, const T& threshold, T tolerance = TOLERANCE)
+inline bool IsGT(const T& threshold,const T& value, T tolerance = TOLERANCE)
 {   return (threshold < value && !IsEqual(value,threshold,tolerance)); }
 
 // Returns true if value is greater than or equal to the threshold value

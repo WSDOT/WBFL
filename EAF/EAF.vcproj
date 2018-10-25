@@ -2647,6 +2647,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Include\EAF\EAFHelpIDs.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\EAF\EAFHints.h"
 				>
 			</File>

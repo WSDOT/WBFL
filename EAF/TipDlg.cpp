@@ -48,21 +48,28 @@ static const TCHAR szIntFilePos[] = _T("FilePos");
 static const TCHAR szTimeStamp[] = _T("TimeStamp");
 static const TCHAR szIntStartup[] = _T("StartUp");
 
-CTipDlg::CTipDlg(LPCTSTR lpszTipeFile,CWnd* pParent /*=NULL*/)
+CTipDlg::CTipDlg(const std::vector<CString>& vTipFiles,CWnd* pParent /*=NULL*/)
 	: CDialog(IDD_TIP, pParent)
 {
 	//{{AFX_DATA_INIT(CTipDlg)
 	m_bStartup = TRUE;
 	//}}AFX_DATA_INIT
 
+   int idx = rand()%vTipFiles.size();
+
+   CFileFind finder;
+   finder.FindFile(vTipFiles[idx]);
+   finder.FindNextFile();
+   m_strSection.Format(_T("%s\\%s"),szSection,finder.GetFileTitle());
+
 	// We need to find out what the startup and file position parameters are
 	// If startup does not exist, we assume that the Tips on startup is checked TRUE.
 	CEAFApp* pApp = EAFGetApp();
-	m_bStartup = pApp->GetProfileInt(szSection, szIntStartup, 0);
-	UINT iFilePos = pApp->GetProfileInt(szSection, szIntFilePos, 0);
+	m_bStartup = pApp->GetProfileInt(m_strSection, szIntStartup, 0);
+	UINT iFilePos = pApp->GetProfileInt(m_strSection, szIntFilePos, 0);
 
 	// Now try to open the tips file
-	if (_tfopen_s(&m_pStream,lpszTipeFile, _T("r")) != 0 || m_pStream == NULL) 
+	if (_tfopen_s(&m_pStream,vTipFiles[idx], _T("r")) != 0 || m_pStream == NULL) 
 	{
 		m_strTip.LoadString(CG_IDS_FILE_ABSENT);
 		return;
@@ -79,11 +86,11 @@ CTipDlg::CTipDlg(LPCTSTR lpszTipeFile,CWnd* pParent /*=NULL*/)
 	CString strCurrentTime(buffer);
 	strCurrentTime.TrimRight();
 	CString strStoredTime = 
-		pApp->GetProfileString(szSection, szTimeStamp, NULL);
+		pApp->GetProfileString(m_strSection, szTimeStamp, NULL);
 	if (strCurrentTime != strStoredTime) 
 	{
 		iFilePos = 0;
-		pApp->WriteProfileString(szSection, szTimeStamp, strCurrentTime);
+		pApp->WriteProfileString(m_strSection, szTimeStamp, strCurrentTime);
 	}
 
 	if (fseek(m_pStream, iFilePos, SEEK_SET) != 0) 
@@ -107,7 +114,7 @@ CTipDlg::~CTipDlg()
 	if (m_pStream != NULL) 
 	{
 		CEAFApp* pApp = EAFGetApp();
-		pApp->WriteProfileInt(szSection, szIntFilePos, ftell(m_pStream));
+		pApp->WriteProfileInt(m_strSection, szIntFilePos, ftell(m_pStream));
 		fclose(m_pStream);
 	}
 }
@@ -184,7 +191,7 @@ void CTipDlg::OnOK()
 	
     // Update the startup information stored in the INI file
 	CEAFApp* pApp = EAFGetApp();
-	pApp->WriteProfileInt(szSection, szIntStartup, m_bStartup);
+	pApp->WriteProfileInt(m_strSection, szIntStartup, m_bStartup);
 }
 
 BOOL CTipDlg::OnInitDialog()

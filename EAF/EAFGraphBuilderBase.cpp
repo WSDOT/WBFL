@@ -110,6 +110,8 @@ void CEAFGraphBuilderBase::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint
    // there was an update request, but not because of an error
    m_bUpdateError = false;
 
+   GetGraphControlWindow()->OnUpdate(pSender,lHint,pHint);
+
    // Update the graph
    Update();
 }

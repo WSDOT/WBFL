@@ -39,6 +39,7 @@ static char THIS_FILE[] = __FILE__;
 
 // use member function pointers to simplify life (at least cut down on a pile of repetitive code)
 typedef HRESULT(__stdcall IDistributionFactor::* PdfFn)(Float64* factor);
+typedef HRESULT(__stdcall IDistributionFactor::* PdfFnFat)(Float64* gM, Float64* gV);
 
 inline void GetDF(IDistributionFactor* leftDf, IDistributionFactor* rightDf, PdfFn Function, Float64* leftFactor, Float64* rightFactor)
 {
@@ -60,6 +61,41 @@ inline void GetDF1(IDistributionFactor* Df, PdfFn Function, Float64* Factor)
    hr = (Df->*Function)(Factor);
 }
 
+inline Float64 GetGfactor(ForceEffectType effect, Float64 gM, Float64 gV)
+{
+   switch(effect)
+   {
+	case(fetFx):
+	case(fetFy):
+      return gV;
+      break;
+	case(fetMz):
+      return gM;
+      break;
+   default:
+      ATLASSERT(0);
+      return gM;
+      break;
+   }
+}
+
+inline void GetDF3(IDistributionFactor* leftDf, IDistributionFactor* rightDf, PdfFnFat Function, ForceEffectType effect,
+                     Float64* leftFactor, Float64* rightFactor)
+{
+   CHRException hr;
+   Float64 gM, gV;
+   hr = (leftDf->*Function)(&gM, &gV);
+   *leftFactor = GetGfactor(effect, gM, gV);
+   if (rightDf!=NULL)
+   {
+      hr = (rightDf->*Function)(&gM, &gV);
+      *rightFactor = GetGfactor(effect, gM, gV);
+   }
+   else
+   {
+      *rightFactor = *leftFactor;
+   }
+}
 
 ///////////////////////////////////////////////////////
 // Force strategy
@@ -179,7 +215,7 @@ void ForceDistributionFactorStrategy::GetOptimalDfs(PoiIDType poiID, BSTR Stage,
       break;
    case dftFatigue:
       {
-         GetDF(left_df, right_df, &IDistributionFactor::get_GFat, leftFactor, rightFactor);
+         GetDF3(left_df, right_df, &IDistributionFactor::GetGFat, effect, leftFactor, rightFactor);
          *usedLeftDistributionType = dftFatigue;
          *usedRightDistributionType = dftFatigue;
       }
@@ -311,14 +347,9 @@ void ForceDistributionFactorStrategy::GetConcurrentDfs(PoiIDType poiID, BSTR Sta
       break;
    case dftFatigue:
       {
-         Float64 left_factor, right_factor;
-         GetDF(left_df, right_df, &IDistributionFactor::get_GFat, &left_factor, &right_factor);
-         *leftFxFactor  = left_factor;
-         *leftFyFactor  = left_factor;
-         *leftMzFactor  = left_factor;
-         *rightFxFactor = right_factor;
-         *rightFyFactor = right_factor;
-         *rightMzFactor = right_factor;
+         GetDF3(left_df, right_df, &IDistributionFactor::GetGFat, fetMz, leftMzFactor, rightMzFactor);
+         GetDF3(left_df, right_df, &IDistributionFactor::GetGFat, fetFx, leftFxFactor, rightFxFactor);
+         GetDF3(left_df, right_df, &IDistributionFactor::GetGFat, fetFy, leftFyFactor, rightFyFactor);
       }
       break;
    case dftPedestrian:
@@ -439,7 +470,7 @@ void DeflectionDistributionFactorStrategy::GetOptimalDfs(PoiIDType poiID, BSTR S
       break;
    case dftFatigue:
       {
-         GetDF(left_df, right_df, &IDistributionFactor::get_GFat, leftFactor, rightFactor);
+         GetDF3(left_df, right_df, &IDistributionFactor::GetGFat, effect, leftFactor, rightFactor);
          *usedLeftDistributionType = dftFatigue;
          *usedRightDistributionType = dftFatigue;
       }
@@ -552,13 +583,17 @@ void DeflectionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType poiID,
    case dftFatigue:
       {
          Float64 left_factor, right_factor;
-         GetDF(left_df, right_df, &IDistributionFactor::get_GFat, &left_factor, &right_factor);
-         *leftFxFactor  = left_factor;
-         *leftFyFactor  = left_factor;
+         GetDF3(left_df, right_df, &IDistributionFactor::GetGFat, fetMz, &left_factor, &right_factor);
          *leftMzFactor  = left_factor;
-         *rightFxFactor = right_factor;
-         *rightFyFactor = right_factor;
          *rightMzFactor = right_factor;
+
+         GetDF3(left_df, right_df, &IDistributionFactor::GetGFat, fetFx, &left_factor, &right_factor);
+         *leftFxFactor  = left_factor;
+         *rightFxFactor = right_factor;
+
+         GetDF3(left_df, right_df, &IDistributionFactor::GetGFat, fetFy, &left_factor, &right_factor);
+         *leftFyFactor  = left_factor;
+         *rightFyFactor = right_factor;
       }
       break;
    case dftPedestrian:
@@ -641,7 +676,8 @@ void ReactionDistributionFactorStrategy::GetOptimalDfs(SupportIDType sptID, BSTR
       break;
    case dftFatigue:
       {
-         GetDF1(df, &IDistributionFactor::get_GFat, leftFactor);
+         Float64 dummy;
+         GetDF3(df, NULL, &IDistributionFactor::GetGFat, effect, leftFactor, &dummy);
          *usedLeftDistributionType = dftFatigue;
       }
       break;
@@ -747,14 +783,9 @@ void ReactionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType sptID, B
       break;
    case dftFatigue:
       {
-         Float64 factor;
-         GetDF1(df, &IDistributionFactor::get_GFat, &factor);
-         *leftFxFactor  = factor;
-         *leftFyFactor  = factor;
-         *leftMzFactor  = factor;
-         *rightFxFactor = factor;
-         *rightFyFactor = factor;
-         *rightMzFactor = factor;
+         GetDF3(df, NULL, &IDistributionFactor::GetGFat, fetMz, leftMzFactor, rightMzFactor);
+         GetDF3(df, NULL, &IDistributionFactor::GetGFat, fetFx, leftFxFactor, rightFxFactor);
+         GetDF3(df, NULL, &IDistributionFactor::GetGFat, fetFy, leftFyFactor, rightFyFactor);
       }
       break;
    case dftPedestrian:
@@ -850,7 +881,7 @@ void SupportDeflectionDistributionFactorStrategy::GetOptimalDfs(SupportIDType sp
       break;
    case dftFatigue:
       {
-         GetDF(df, NULL, &IDistributionFactor::get_GFat, leftFactor, rightFactor);
+         GetDF3(df, NULL, &IDistributionFactor::GetGFat, effect, leftFactor, rightFactor);
          *usedLeftDistributionType = dftFatigue;
          *usedRightDistributionType = dftFatigue;
       }
@@ -929,14 +960,9 @@ void SupportDeflectionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType
       break;
    case dftFatigue:
       {
-         Float64 left_factor, right_factor;
-         GetDF(df, NULL, &IDistributionFactor::get_GFat, &left_factor, &right_factor);
-         *leftFxFactor  = left_factor;
-         *leftFyFactor  = left_factor;
-         *leftMzFactor  = left_factor;
-         *rightFxFactor = right_factor;
-         *rightFyFactor = right_factor;
-         *rightMzFactor = right_factor;
+         GetDF3(df, NULL, &IDistributionFactor::GetGFat, fetMz, leftMzFactor, rightMzFactor);
+         GetDF3(df, NULL, &IDistributionFactor::GetGFat, fetFx, leftFxFactor, rightFxFactor);
+         GetDF3(df, NULL, &IDistributionFactor::GetGFat, fetFy, leftFyFactor, rightFyFactor);
       }
       break;
    case dftPedestrian:

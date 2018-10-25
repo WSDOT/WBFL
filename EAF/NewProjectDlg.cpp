@@ -92,18 +92,22 @@ END_MESSAGE_MAP()
 
 
 // CNewProjectDlg message handlers
-void CNewProjectDlg::AddProjectGroup(HTREEITEM hParent,HTREEITEM hAfter,const CEAFTemplateGroup* pGroup)
+void CNewProjectDlg::AddProjectGroup(HTREEITEM hParent,HTREEITEM hAfter,const CEAFTemplateGroup* pGroup,const CString& strLastSelection,HTREEITEM* pDefaultItem)
 {
    HICON hIcon = pGroup->GetIcon();
    int imageIdx        = (hIcon == NULL ? m_DefaultIconIdx         : m_ProjectTypeImageList.Add(hIcon));
    int seletedImageIdx = (hIcon == NULL ? m_DefaultSelectedIconIdx : imageIdx);
 
    HTREEITEM hGroup = m_ctrlProjectTypes.InsertItem(TVIF_TEXT | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE,pGroup->GetGroupName(),imageIdx,seletedImageIdx,0,0,(LPARAM)(pGroup),hParent,hAfter);
+
+   if ( pGroup->GetGroupName() == strLastSelection )
+      *pDefaultItem = hGroup;
+
    CollectionIndexType nGroups = pGroup->GetGroupCount();
    for ( CollectionIndexType grpIdx = 0; grpIdx < nGroups; grpIdx++ )
    {
       const CEAFTemplateGroup* p = pGroup->GetGroup(grpIdx);
-      AddProjectGroup(hGroup,hGroup,p);
+      AddProjectGroup(hGroup,hGroup,p,strLastSelection,pDefaultItem);
    }
 }
 
@@ -162,6 +166,8 @@ BOOL CNewProjectDlg::OnInitDialog()
    m_DefaultIconIdx         = m_ProjectTypeImageList.Add(m_hDefaultIcon);
    m_DefaultSelectedIconIdx = m_ProjectTypeImageList.Add(m_hDefaultSelectedIcon);
 
+   CString strLastSelection = pApp->GetProfileString(strNewDialogSection,_T("LastSelection"));
+   HTREEITEM hSelectedItem = TVI_ROOT;
 
 	// add all the CDocTemplates in the project tree by name
    GroupIndexType nGroups = m_pRootTemplateGroup->GetGroupCount();
@@ -178,11 +184,14 @@ BOOL CNewProjectDlg::OnInitDialog()
       HTREEITEM hPrevItem = TVI_ROOT;
       hPrevItem = m_ctrlProjectTypes.InsertItem(TVIF_TEXT | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE,strTypeName,imageIdx,seletedImageIdx,0,0,(LPARAM)(pTemplateGroup),TVI_ROOT,hPrevItem);
 
+      if ( strTypeName == strLastSelection )
+         hSelectedItem = hPrevItem;
+
       CollectionIndexType nGroups = pTemplateGroup->GetGroupCount();
       for ( CollectionIndexType grpIdx = 0; grpIdx < nGroups; grpIdx++ )
       {
          const CEAFTemplateGroup* pGroup = pTemplateGroup->GetGroup(grpIdx);
-         AddProjectGroup(hPrevItem,hPrevItem,pGroup);
+         AddProjectGroup(hPrevItem,hPrevItem,pGroup,strLastSelection,&hSelectedItem);
       }
    }
 
@@ -190,8 +199,9 @@ BOOL CNewProjectDlg::OnInitDialog()
    m_ctrlProjectTypes.SortChildren(TVI_ROOT);
 
    // Select one of the tree nodes... the list box will be updated when the selection event fires
-   HTREEITEM hItem = m_ctrlProjectTypes.GetNextItem(TVI_ROOT, TVGN_ROOT);
-   m_ctrlProjectTypes.SelectItem(hItem);
+   if ( hSelectedItem == TVI_ROOT )
+      hSelectedItem = m_ctrlProjectTypes.GetNextItem(TVI_ROOT, TVGN_ROOT);
+   VERIFY(m_ctrlProjectTypes.SelectItem(hSelectedItem));
 
 
    // Expand the entire tree 
@@ -452,6 +462,10 @@ void CNewProjectDlg::OnDestroy()
    GetClientRect(&rect);
    pApp->WriteProfileInt(strNewDialogSection,_T("cx"),rect.Width());
    pApp->WriteProfileInt(strNewDialogSection,_T("cy"),rect.Height());
+
+   HTREEITEM hItem = m_ctrlProjectTypes.GetSelectedItem();
+   CString strSelection = m_ctrlProjectTypes.GetItemText(hItem);
+   pApp->WriteProfileString(strNewDialogSection,_T("LastSelection"),strSelection);
 
    CDialog::OnDestroy();
 }
