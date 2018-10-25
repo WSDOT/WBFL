@@ -84,6 +84,25 @@ void CReportBuilder::AddChapterBuilder(boost::shared_ptr<CChapterBuilder>& pChap
    m_ChapterBuilders.push_back( pChapterBuilder );
 }
 
+bool CReportBuilder::InsertChapterBuilder(boost::shared_ptr<CChapterBuilder>& pNewChapterBuilder,LPCTSTR strAfterChapter)
+{
+   std::_tstring tstrAfterChapter(strAfterChapter);
+
+   ChapterBuilderContainer::iterator iter(m_ChapterBuilders.begin());
+   ChapterBuilderContainer::iterator end(m_ChapterBuilders.end());
+   for ( ; iter != end; iter++ )
+   {
+      boost::shared_ptr<CChapterBuilder>& pChapterBuilder(*iter);
+      if ( std::_tstring(pChapterBuilder->GetName()) == tstrAfterChapter )
+      {
+         m_ChapterBuilders.insert(++iter,pNewChapterBuilder);
+         return true;
+      }
+   }
+
+   return false;
+}
+
 CollectionIndexType CReportBuilder::GetChapterBuilderCount() const
 {
    return m_ChapterBuilders.size();

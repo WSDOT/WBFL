@@ -2025,12 +2025,6 @@ void CPath::CreateDummyPathElement(IPoint2d* pStart,IPoint2d* pEnd,IPathElement*
    dummyElement.CoCreateInstance(CLSID_PathElement);
    dummyElement->putref_Value(dummyLS);
 
-#if defined _DEBUG
-   Float64 length;
-   dummyLS->get_Length(&length);
-   ATLASSERT(!IsZero(length));
-#endif
-
    (*pElement) = dummyElement;
    (*pElement)->AddRef();
 }

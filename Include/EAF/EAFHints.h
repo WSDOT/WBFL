@@ -27,3 +27,4 @@
 #define EAF_HINT_BASE                     1000        
 #define EAF_HINT_UPDATEERROR              EAF_HINT_BASE + 0
 #define EAF_HINT_UNITS_CHANGED            EAF_HINT_BASE + 1
+#define EAF_HINT_FAVORITE_REPORTS_CHANGED EAF_HINT_BASE + 2

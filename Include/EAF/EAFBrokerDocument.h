@@ -94,6 +94,7 @@ public:
    // Current list of favorite reports
    const std::vector<std::_tstring>& GetFavoriteReports() const;
    void SetFavoriteReports(const std::vector<std::_tstring>& reports);
+   bool IsFavoriteReport(const std::_tstring& rptName);
 
    // Custom, user-defined reports
    const CEAFCustomReports& GetCustomReports() const;

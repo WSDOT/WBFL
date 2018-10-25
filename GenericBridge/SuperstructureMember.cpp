@@ -116,10 +116,10 @@ STDMETHODIMP CSuperstructureMember::GetDistanceFromStartOfSegment(Float64 Xg,Flo
    if ( Xg < 0 )
    {
       // location before start, return first segment
-      ATLASSERT(false);
       m_Segments.front().CopyTo(ppSeg);
       *pSegIdx = 0;
-      return E_FAIL;
+      *pXs = Xg;
+      return S_FALSE;
    }
 
    CComPtr<ISegment> firstSegment(m_Segments.front());
@@ -182,7 +182,7 @@ STDMETHODIMP CSuperstructureMember::GetDistanceFromStartOfSegment(Float64 Xg,Flo
    lastSegment->get_GirderLine(&lastGirderLine);
    lastGirderLine->get_BearingOffset(etEnd,&brgOffset);
    lastGirderLine->get_EndDistance(etEnd,&endDist);
-   if ( currentDistFromStart-Xgp <= brgOffset-endDist )
+   if ( fabs(currentDistFromStart-Xgp) <= fabs(brgOffset-endDist) )
    {
       lastSegment.CopyTo(ppSeg);
       *pSegIdx = m_Segments.size()-1;
