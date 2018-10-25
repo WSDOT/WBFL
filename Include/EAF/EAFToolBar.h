@@ -88,6 +88,8 @@ private:
    bool bOwnsToolBar;
    CToolBar* m_pToolBar;
    CEAFPluginCommandManager* m_pCmdMgr;
+
+   UINT GetMappedID(UINT nPluginCmdID,IEAFCommandCallback* pCallback) const; 
 };
 
 #endif // !defined(AFX_EAFTOOLBAR_H__44A9C83E_AD58_4EF2_9D53_FDD7452FFC9B__INCLUDED_)

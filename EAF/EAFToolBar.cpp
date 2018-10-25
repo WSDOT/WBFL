@@ -27,7 +27,7 @@
 
 #include "stdafx.h"
 #include <EAF\EAFToolBar.h>
-
+#include <EAF\EAFUtilities.h>
 #include <EAF\EAFPluginCommandManager.h>
 
 #ifdef _DEBUG
@@ -349,8 +349,17 @@ BOOL CEAFToolBar::CreateDropDownButton(UINT nPluginCmd,IEAFCommandCallback* pCal
       return FALSE;
 
    DWORD dwStyle = GetButtonStyle(idx);
-   dwStyle |= dwBtnStyle;
+   dwStyle |= dwBtnStyle | BTNS_AUTOSIZE;
    SetButtonStyle(idx,dwStyle);
 
    return TRUE;
+}
+
+UINT CEAFToolBar::GetMappedID(UINT nPluginCmdID,IEAFCommandCallback* pCallback) const
+{
+   UINT nMappedCmdID; // unique command id
+   if ( !m_pCmdMgr->GetMappedCommandID(nPluginCmdID,pCallback,&nMappedCmdID) )
+      return -1;
+
+   return nMappedCmdID;
 }

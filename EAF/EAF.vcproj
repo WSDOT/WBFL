@@ -2358,6 +2358,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MFCToolBar.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\NewProjectDlg.cpp"
 				>
 			</File>
@@ -2676,6 +2680,10 @@
 			</File>
 			<File
 				RelativePath=".\ManagePluginsDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MFCToolBar.h"
 				>
 			</File>
 			<File
