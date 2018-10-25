@@ -88,27 +88,16 @@ HRESULT CProgressThread::CreateProgressWindow(CWnd* pParentWnd,DWORD dwMask,UINT
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
    BOOL bCreated;
+   m_ProgressDlg.m_dwMask = dwMask;
    bCreated = m_ProgressDlg.Create( CProgressDlg::IDD, pParentWnd );
    ATLASSERT( bCreated == TRUE );
    if ( !bCreated )
+   {
       return PROGRESS_E_CREATE;
+   }
 
    // Make sure the visible flag isn't set in the dialog resource.
    ATLASSERT( m_ProgressDlg.IsWindowVisible() == false );
-
-   if ( dwMask & PW_NOMESSAGE )
-      m_ProgressDlg.m_MessageCtrl.ShowWindow( SW_HIDE );
-
-//   if ( dwMask & PW_NOGAUGE ) // Always hide
-      m_ProgressDlg.m_ProgressBar.ShowWindow( SW_HIDE );
-   
-   m_bCancelEnabled = TRUE;
-   if ( dwMask & PW_NOCANCEL )
-   {
-      m_ProgressDlg.m_Cancel.ShowWindow( SW_HIDE );
-      m_ProgressDlg.m_Cancel.EnableWindow(FALSE);
-      m_bCancelEnabled = FALSE;
-   }
 
    g_pTimerWnd = &(m_ProgressDlg);
    m_ProgressDlg.SetTimer( g_TimerID, nDelay, &TimerProc );
@@ -143,18 +132,6 @@ void CProgressThread::UpdateMessage( LPCTSTR msg)
 BOOL CProgressThread::Continue()
 {
    return m_ProgressDlg.Continue();
-}
-
-BOOL CProgressThread::EnableCancel()
-{
-   return m_bCancelEnabled;
-}
-
-void CProgressThread::EnableCancel(BOOL bEnable)
-{
-   m_bCancelEnabled = bEnable;
-   m_ProgressDlg.m_Cancel.ShowWindow( bEnable ? SW_SHOW : SW_HIDE );
-   m_ProgressDlg.m_Cancel.EnableWindow(bEnable);
 }
 
 void CProgressThread::DestroyProgressWindow()

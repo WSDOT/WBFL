@@ -25,8 +25,8 @@
 //
 
 #include "stdafx.h"
-//#include "core.h"
 #include "ProgressDlg.h"
+#include "WBFLCore.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -41,6 +41,7 @@ static char THIS_FILE[] = __FILE__;
 CProgressDlg::CProgressDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CProgressDlg::IDD, pParent)
 {
+   m_dwMask = 0;
    m_bContinue = TRUE;
 	//{{AFX_DATA_INIT(CProgressDlg)
 	m_Message = _T("Working...");
@@ -148,6 +149,23 @@ BOOL CProgressDlg::OnInitDialog()
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
    m_Animate.Open(IDR_ANIMATE);
 
-	return TRUE;  // return TRUE unless you set the focus to a control
+
+   if ( m_dwMask & PW_NOMESSAGE )
+   {
+      m_MessageCtrl.ShowWindow( SW_HIDE );
+   }
+
+   if ( m_dwMask & PW_NOGAUGE )
+   {
+      m_ProgressBar.ShowWindow( SW_HIDE );
+   }
+   
+   if ( m_dwMask & PW_NOCANCEL )
+   {
+      m_Cancel.ShowWindow( SW_HIDE );
+      m_Cancel.EnableWindow(FALSE);
+   }
+
+   return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }

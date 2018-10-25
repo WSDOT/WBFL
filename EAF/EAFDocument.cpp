@@ -1331,6 +1331,8 @@ void CEAFDocument::OnCloseDocument()
    {
       pStatusBar->Reset();
    }
+
+   pMainFrame->OnUpdateFrameTitle(FALSE); // now that the document is closed, set the frame title to its default state
 }
 
 CEAFStatusCenter& CEAFDocument::GetStatusCenter()

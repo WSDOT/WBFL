@@ -284,15 +284,6 @@ rptRcTable* rptStyleLibrary::CreateTableNoHeading(unsigned numColumns, std::_tst
    return pTable;
 }
 
-void make_upper( std::_tstring::iterator begin,std::_tstring::iterator end)
-{
-   while ( begin != end )
-   {
-      *begin = toupper(*begin);
-      begin++;
-   }
-}
-
 const std::_tstring& rptStyleLibrary::GetImagePath()
 {
    return ms_ImagePath;

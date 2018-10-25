@@ -81,8 +81,6 @@ public:
 	STDMETHOD(Increment)();
 	STDMETHOD(UpdateMessage)(/*[in]*/ LPCTSTR msg);
 	STDMETHOD(Continue)();
-	STDMETHOD(get_EnableCancel)(/*[in]*/BOOL* pbEnable);
-	STDMETHOD(put_EnableCancel)(/*[in]*/BOOL bEnable);
 	STDMETHOD(DestroyProgressWindow)();
 
 // ILogFile

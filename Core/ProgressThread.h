@@ -47,14 +47,11 @@ public:
    void Init(short begin, short end, short inc);
    void Increment();
    void UpdateMessage( LPCTSTR msg);
-   BOOL EnableCancel();
-   void EnableCancel(BOOL bEnable);
    BOOL Continue();
    void DestroyProgressWindow();
 
 protected:
    CProgressDlg m_ProgressDlg;
-   BOOL m_bCancelEnabled;
 
    afx_msg void OnKillThread(WPARAM wParam,LPARAM lParam);
 

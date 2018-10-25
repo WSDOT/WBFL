@@ -145,9 +145,8 @@ STDMETHODIMP CSysAgent::CreateProgressWindow(DWORD dwMask,UINT nDelay)
 
    m_cProgressRef++;
 
-   if ( m_cProgressRef > 1 )
+   if ( 1 < m_cProgressRef )
    {
-      //m_ProgressDlg.ResetContinueState();
       m_ProgressMsgMarker.push_back(m_Messages.size());
       return S_OK;
    }
@@ -207,18 +206,6 @@ STDMETHODIMP CSysAgent::Continue()
       return m_pThread->Continue() ? S_OK : S_FALSE;
 
    return hr;
-}
-
-STDMETHODIMP CSysAgent::get_EnableCancel(BOOL* pbEnable)
-{
-   *pbEnable = m_pThread->EnableCancel();
-   return S_OK;
-}
-
-STDMETHODIMP CSysAgent::put_EnableCancel(BOOL bEnable)
-{
-   m_pThread->EnableCancel(bEnable);
-   return S_OK;
 }
 
 STDMETHODIMP CSysAgent::DestroyProgressWindow()

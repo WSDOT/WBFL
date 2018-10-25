@@ -83,8 +83,31 @@ public:
 // Functor class for giving tolerance for finding floats in map containers
 // usage
 // std::map<Float64,ValueType,Float64_less> myMap;
-class Float64_less
+template<class T>
+class float_less
 {
 public:
-   bool operator()(const Float64& d1,const Float64& d2) const { return ::IsLT(d1,d2); }
+   bool operator()(const T& d1,const T& d2) const { return ::IsLT(d1,d2); }
 };
+
+typedef float_less<Float32> Float32_less;
+typedef float_less<Float64> Float64_less;
+
+#include <ctype.h>
+inline void make_upper( std::_tstring::iterator begin,std::_tstring::iterator end)
+{
+   while ( begin != end )
+   {
+      *begin = toupper(*begin);
+      begin++;
+   }
+}
+
+inline void make_lower( std::_tstring::iterator begin,std::_tstring::iterator end)
+{
+   while ( begin != end )
+   {
+      *begin = tolower(*begin);
+      begin++;
+   }
+}
