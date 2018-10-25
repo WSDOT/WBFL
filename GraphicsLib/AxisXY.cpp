@@ -105,9 +105,13 @@ void grAxisXY::Draw(HDC hDC)
 
    // set text alignement for axis value labels
    if ( m_ValueAngle == 0 )
+   {
       ::SetTextAlign(hDC, TA_CENTER | TA_TOP);
+   }
    else
+   {
       ::SetTextAlign(hDC, TA_RIGHT  | TA_TOP);
+   }
 
    // make sure metrics are up to date
    UpdateAxisMetrics(hDC);
@@ -144,7 +148,8 @@ void grAxisXY::Draw(HDC hDC)
       {
          Float64 tic_value = m_LeftAxisValue;
          Float64 tic_prev;
-         Int32 num_incrs = (Int32)ceil( (m_RightAxisValue-m_LeftAxisValue)/m_AxisIncrement );
+         Float64 inc = (m_RightAxisValue-m_LeftAxisValue)/m_AxisIncrement;
+         Int32 num_incrs = (IsEqual(inc,Float64((int)inc)) ? (Int32)inc : (Int32)ceil(inc));
          for (Int32 i=0; i<=num_incrs; i++)
          {
             Int32 tic_l = (Int32)Round( axis_mapper.GetB(tic_value) );
@@ -163,6 +168,11 @@ void grAxisXY::Draw(HDC hDC)
                ::LineTo(hDC, pt2.x, pt2.y);
             }
 
+            if ( IsZero(tic_value,m_AxisIncrement/1000) )
+            {
+               tic_value = 0;
+            }
+
             // draw value text
             if (m_DoShowText)
             {
@@ -172,13 +182,27 @@ void grAxisXY::Draw(HDC hDC)
                {
                   LONG old_a;
                   if ( m_ValueAngle == 0 )
+                  {
                      old_a = ::SetTextAlign(hDC, TA_CENTER | TA_TOP);
+                  }
                   else
+                  {
                      old_a = ::SetTextAlign(hDC, TA_RIGHT  | TA_TOP);
+                  }
 
-                  grGraphTool::TextOutRotated(hDC, tic_l, m_AxisMetrics.ValueTextLoc, m_ValueAngle,
-                                     value_text.c_str(), (LONG)value_text.size(),
-                                     m_AxisValueSize);
+                  Int32 x = tic_l;
+                  if ( m_Scale == INTEGRAL )
+                  {
+                     Int32 tic_r = (Int32)Round( axis_mapper.GetB(tic_value+m_AxisIncrement) );
+                     x = (tic_l + tic_r)/2;
+                  }
+
+                  if ( m_Scale == LINEAR || (m_Scale == INTEGRAL && i != num_incrs) )
+                  {
+                     grGraphTool::TextOutRotated(hDC, x, m_AxisMetrics.ValueTextLoc, m_ValueAngle,
+                                        value_text.c_str(), (LONG)value_text.size(),
+                                        m_AxisValueSize);
+                  }
                   ::SetTextAlign(hDC, old_a);            
                }
                else
@@ -265,9 +289,13 @@ void grAxisXY::Draw(HDC hDC)
                {
                   LONG old_a;
                   if ( m_ValueAngle == 0 )
+                  {
                      old_a = ::SetTextAlign(hDC, TA_CENTER | TA_TOP);
+                  }
                   else
+                  {
                      old_a = ::SetTextAlign(hDC, TA_RIGHT  | TA_TOP);
+                  }
 
                   grGraphTool::TextOutRotated(hDC, tic_l, m_AxisMetrics.ValueTextLoc, m_ValueAngle,
                                      value_text.c_str(), (LONG)value_text.size(),
@@ -507,9 +535,13 @@ void grAxisXY::SetNumberOfMajorTics(Int32 numTics)
    m_MetricsDirtyFlag = true;
 
    if (numTics<1)
+   {
       m_NumberOfMajorTics = 1;
+   }
    else
+   {
       m_NumberOfMajorTics = numTics;
+   }
 }
 
 
@@ -524,9 +556,13 @@ void grAxisXY::SetNumberOfMinorTics(Int32 numTics)
    m_MetricsDirtyFlag = true;
 
    if (numTics<2)
+   {
       m_NumberOfMinorTics = 0;
+   }
    else
+   {
       m_NumberOfMinorTics = numTics;
+   }
 }
 
 Int32 grAxisXY::GetNumberOfMinorTics()
@@ -731,7 +767,9 @@ void grAxisXY::UpdateAxisMetrics(HDC hDC)
          m_AxisMetrics.MinorTicTop    = m_YLocation;
       }
       else
+      {
          CHECKX(0, _T("Bad tic location") );
+      }
    }
    else
    {
@@ -752,12 +790,18 @@ void grAxisXY::UpdateAxisMetrics(HDC hDC)
    {
       // location of text for values
       if (m_TextLocation == TEXT_ABOVE)
+      {
          m_AxisMetrics.ValueTextLoc = m_AxisMetrics.MajorTicTop - m_AxisMetrics.TicSize/2;
+      }
       else
+      {
          m_AxisMetrics.ValueTextLoc = m_AxisMetrics.MajorTicBottom + m_AxisMetrics.TicSize/2;
+      }
    }
    else
+   {
       m_AxisMetrics.ValueTextLoc = m_AxisMetrics.MajorTicBottom;
+   }
 
 
    // Title and subtitle
@@ -781,17 +825,25 @@ void grAxisXY::UpdateAxisMetrics(HDC hDC)
          m_AxisMetrics.SubtitleTextLoc = m_AxisMetrics.ValueTextLoc - value_space;
 
          if (!m_AxisSubtitle.empty())
+         {
             m_AxisMetrics.TitleTextLoc = m_AxisMetrics.SubtitleTextLoc - subtitle_size;
+         }
          else
+         {
             m_AxisMetrics.TitleTextLoc = m_AxisMetrics.ValueTextLoc - value_space;
+         }
          
          m_AxisMetrics.UpperLimit = m_AxisMetrics.TitleTextLoc;
 
          if (!m_AxisTitle.empty())
+         {
             m_AxisMetrics.UpperLimit = m_AxisMetrics.TitleTextLoc - title_size;
+         }
 
          if (!m_AxisSubtitle.empty())
+         {
             m_AxisMetrics.UpperLimit = m_AxisMetrics.SubtitleTextLoc - subtitle_size;
+         }
       }
       else
       {
@@ -799,10 +851,14 @@ void grAxisXY::UpdateAxisMetrics(HDC hDC)
          m_AxisMetrics.SubtitleTextLoc = m_AxisMetrics.TitleTextLoc + 3*subtitle_size/2;
 
          if (!m_AxisTitle.empty())
+         {
             m_AxisMetrics.LowerLimit = m_AxisMetrics.TitleTextLoc + title_size;
+         }
 
          if (!m_AxisSubtitle.empty())
+         {
             m_AxisMetrics.LowerLimit = m_AxisMetrics.SubtitleTextLoc + subtitle_size;
+         }
       }
    }
    else

@@ -345,7 +345,7 @@ void sysStructuredLoadXmlPrs_Impl::BeginLoad(IStream* pis)
       m_pIStream->AddRef();
 
       // create our document
-      MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument));
+      MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument60));
       if (!(bool)pDoc)
       {
          THROW_LOAD(CantInitializeTheParser,this);

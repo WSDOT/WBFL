@@ -28,6 +28,10 @@
 #include "stdafx.h"
 #include "DeckBoundary.h"
 #include <map>
+#include <vector>
+
+typedef std::map<Float64,CComPtr<IPoint2d>> PathPointCollection;
+typedef std::pair<Float64,CComPtr<IPoint2d>> PathPointEntry;
 
 // CDeckBoundary
 
@@ -334,7 +338,7 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
    m_EdgePath[stLeft]->Offset( pntLeftEnd,  &left_edge_end,  &offset);
    m_EdgePath[stRight]->Offset(pntRightEnd, &right_edge_end, &offset);
 
-   std::map<Float64,CComPtr<IPoint2d>> rightPathPoints;
+   PathPointCollection rightPathPoints;
    CComPtr<IEnumPathElements> enumPathElements;
    m_EdgePath[stRight]->get__EnumPathElements(&enumPathElements);
    CComPtr<IPathElement> pathElement;
@@ -403,11 +407,8 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
       }
       pathElement.Release();
 
-      std::vector<CComPtr<IPoint2d>>::iterator iter(points.begin());
-      std::vector<CComPtr<IPoint2d>>::iterator end(points.end());
-      for ( ; iter != end; iter++ )
+      BOOST_FOREACH(CComPtr<IPoint2d> point,points)
       {
-         CComPtr<IPoint2d> point(*iter);
          m_EdgePath[stRight]->Offset(point,&distance,&offset); 
          if (::InRange(right_edge_start,distance,right_edge_end) )
          {
@@ -425,11 +426,9 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
       rightPathPoints.insert(std::make_pair(distanceAlongPath,point));
    }
 
-   std::map<Float64,CComPtr<IPoint2d>>::iterator rightPathPointIter(rightPathPoints.begin());
-   std::map<Float64,CComPtr<IPoint2d>>::iterator rightPathPointIterEnd(rightPathPoints.end());
-   for ( ; rightPathPointIter != rightPathPointIterEnd; rightPathPointIter++ )
+   BOOST_FOREACH(PathPointEntry rightPathPointEntry,rightPathPoints)
    {
-      CComPtr<IPoint2d> point = rightPathPointIter->second;
+      CComPtr<IPoint2d> point = rightPathPointEntry.second;
       boundaryPoints->Add(point);
    }
 
@@ -526,11 +525,8 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
       }
       pathElement.Release();
 
-      std::vector<CComPtr<IPoint2d>>::iterator iter(points.begin());
-      std::vector<CComPtr<IPoint2d>>::iterator end(points.end());
-      for ( ; iter != end; iter++ )
+      BOOST_FOREACH(CComPtr<IPoint2d> point,points)
       {
-         CComPtr<IPoint2d> point(*iter);
          m_EdgePath[stLeft]->Offset(point,&distance,&offset); 
          if (::InRange(left_edge_start,distance,left_edge_end) )
          {
@@ -548,11 +544,9 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
       leftPathPoints.insert(std::make_pair(distanceAlongPath,point));
    }
 
-   std::map<Float64,CComPtr<IPoint2d>,std::greater<Float64>>::iterator leftPathPointIter(leftPathPoints.begin());
-   std::map<Float64,CComPtr<IPoint2d>,std::greater<Float64>>::iterator leftPathPointIterEnd(leftPathPoints.end());
-   for ( ; leftPathPointIter != leftPathPointIterEnd; leftPathPointIter++ )
+   BOOST_FOREACH(PathPointEntry leftPathPointEntry,leftPathPoints)
    {
-      CComPtr<IPoint2d> point = leftPathPointIter->second;
+      CComPtr<IPoint2d> point = leftPathPointEntry.second;
       boundaryPoints->Add(point);
    }
 

@@ -52,7 +52,7 @@ public:
    const CBitmap* GetMenuBitmap(const std::_tstring& strReportName);
 
 private:
-   typedef std::map<std::_tstring, boost::shared_ptr<CGraphBuilder> > GraphBuilderContainer;
-   typedef std::pair<std::_tstring, boost::shared_ptr<CGraphBuilder> > GraphBuilderEntry;
+   typedef std::pair<std::_tstring, boost::shared_ptr<CGraphBuilder>> GraphBuilderEntry;
+   typedef std::map<std::_tstring, boost::shared_ptr<CGraphBuilder>> GraphBuilderContainer;
    GraphBuilderContainer m_GraphBuilders;
 };

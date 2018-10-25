@@ -66,10 +66,8 @@ std::vector<CChapterInfo> CReportDescription::GetChapterInfo() const
 {
    std::vector<CChapterInfo> v;
 
-   std::vector<const CChapterBuilder*>::const_iterator iter;
-   for ( iter = m_ChapterBuilders.begin(); iter != m_ChapterBuilders.end(); iter++ )
+   BOOST_FOREACH(const CChapterBuilder* pChBuilder,m_ChapterBuilders)
    {
-      const CChapterBuilder* pChBuilder = *iter;
       CChapterInfo chInfo;
       chInfo.Name     = pChBuilder->GetName();
       chInfo.Key      = pChBuilder->GetKey();
@@ -85,12 +83,13 @@ std::vector<CChapterInfo> CReportDescription::GetChapterInfo() const
 void CReportDescription::ConfigureReportSpecification(boost::shared_ptr<CReportSpecification>& pRptSpec) const
 {
    std::vector<CChapterInfo> vChInfo = GetChapterInfo();
-   std::vector<CChapterInfo>::const_iterator iter;
-   for ( iter = vChInfo.begin(); iter != vChInfo.end(); iter++ )
+
+   BOOST_FOREACH(const CChapterInfo& chInfo,vChInfo)
    {
-      CChapterInfo chInfo = *iter;
       if (chInfo.Select)
+      {
          pRptSpec->AddChapter(chInfo.Name.c_str(),chInfo.Key.c_str(),chInfo.MaxLevel);
+      }
    }
 }
 
@@ -98,16 +97,15 @@ void CReportDescription::ConfigureReportSpecification(const std::vector<std::_ts
 {
    std::vector<CChapterInfo> vChInfo = GetChapterInfo();
 
-   std::vector<std::_tstring>::const_iterator iter;
-   for ( iter = chList.begin(); iter != chList.end(); iter++ )
+   BOOST_FOREACH(const std::_tstring& strChName,chList)
    {
       CChapterInfo search;
-      search.Name = *iter;
+      search.Name = strChName;
 
       std::vector<CChapterInfo>::iterator found = std::find(vChInfo.begin(),vChInfo.end(),search);
       ATLASSERT( found != vChInfo.end() ); // if this fires, the supplied chapter list isn't consistent with the report description
       CChapterInfo chInfo = *found;
-      ATLASSERT( chInfo.Name == *iter);
+      ATLASSERT( chInfo.Name == strChName);
       pRptSpec->AddChapter(chInfo.Name.c_str(),chInfo.Key.c_str(),chInfo.MaxLevel);
    }
 }

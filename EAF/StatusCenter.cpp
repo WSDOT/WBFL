@@ -110,7 +110,7 @@ StatusItemIDType CEAFStatusCenter::Add(CEAFStatusItem* pItem)
       pItem = NULL;
    }
 
-   return -1; // failed
+   return INVALID_ID; // failed
 }
 
 bool CEAFStatusCenter::RemoveByID(StatusItemIDType id)

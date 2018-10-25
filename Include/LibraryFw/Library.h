@@ -205,7 +205,7 @@ public:
 
    //------------------------------------------------------------------------
    // Open the editing interface for the given entry. 
-   libILibrary::EntryEditOutcome EditEntry( LPCTSTR key )
+   libILibrary::EntryEditOutcome EditEntry( LPCTSTR key,UINT nPage=0 )
    {
       T* pentry = LookupEntryPrv(key);
       if (!pentry)
@@ -215,7 +215,7 @@ public:
       }
       else
       {
-         if (pentry->Edit(pentry->IsEditingEnabled()))
+         if (pentry->Edit(pentry->IsEditingEnabled(),nPage))
          {
             int hint = LibraryHints::EntryEdited;
             // it's a tough call what to do here if the user changes the name of the 

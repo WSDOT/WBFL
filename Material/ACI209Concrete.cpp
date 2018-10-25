@@ -188,7 +188,9 @@ Float64 matACI209Concrete::GetFc(Float64 t) const
    // ACI209 Eqn 2-1
    Float64 age = GetAge(t);
    if ( age < 0 )
+   {
       return 0;
+   }
 
    Float64 fc = age*m_Fc28/(m_Alpha + m_Beta*age);
    return fc;
@@ -200,7 +202,9 @@ Float64 matACI209Concrete::GetEc(Float64 t) const
 
    Float64 age = GetAge(t);
    if ( age < 0 )
+   {
       return 0;
+   }
 
    // Eqn 2-5
    Float64 Ec = m_Ec*sqrt(age/(m_Alpha + m_Beta*age));
@@ -224,7 +228,9 @@ Float64 matACI209Concrete::GetFreeShrinkageStrain(Float64 t) const
    // age of the concrete at time t (duration of time after casting)
    Float64 concrete_age = GetAge(t);
    if ( concrete_age < 0 )
+   {
       return 0;
+   }
 
    // duration of time after initial curing
    Float64 shrinkage_time = concrete_age - m_CureTime;
@@ -250,7 +256,7 @@ Float64 matACI209Concrete::GetFreeShrinkageStrain(Float64 t) const
    correction_factor *= m_VSS;
 
    // Limits (see paragraph between 2.5.5b and 2.5.6
-   correction_factor = max(correction_factor,0.2);
+   correction_factor = Max(correction_factor,0.2);
 
    // Shrinakge strain
    Float64 sh = time_factor * correction_factor * m_Eshu;
@@ -266,7 +272,9 @@ Float64 matACI209Concrete::GetCreepCoefficient(Float64 t,Float64 tla) const
    Float64 age_at_loading = GetAge(tla);
 
    if ( age_at_time_under_consideration <= 0 || age_at_loading <= 0 )
+   {
       return 0;
+   }
 
    Float64 time_after_loading = age_at_time_under_consideration - age_at_loading;
    ATLASSERT( 0 <= time_after_loading ); // loading can't occur before concrete is cast
@@ -281,11 +289,17 @@ Float64 matACI209Concrete::GetCreepCoefficient(Float64 t,Float64 tla) const
    Float64 LA = 1.0;
    if (m_CureMethod == matConcreteBase::Moist)
    {
-      LA = 1.25*pow(age_at_loading,-0.118);
+      if ( 7 < age_at_loading )
+      {
+         LA = 1.25*pow(age_at_loading,-0.118);
+      }
    }
    else
    {
-      LA = 1.13*pow(age_at_loading,-0.094);
+      if ( 3 < age_at_loading )
+      {
+         LA = 1.13*pow(age_at_loading,-0.094);
+      }
    }
    correction_factor *= LA;
 
@@ -367,7 +381,9 @@ Float64 matACI209Concrete::GetSizeFactorShrinkage() const
 void matACI209Concrete::Validate() const
 {
    if ( m_bIsValid )
+   {
       return;
+   }
 
    m_Alpha = ::ConvertFromSysUnits(m_A,unitMeasure::Day);
 
@@ -418,18 +434,24 @@ void matACI209Concrete::Validate() const
    // Relative Humidity correction factors (2.5.4)
    m_RHC = 1.0;
    if ( 40.0 < m_RelativeHumidity )
+   {
       m_RHC = 1.27 - 0.0067*m_RelativeHumidity;
+   }
 
    m_RHS = 1.0;
    if ( 40.0 <= m_RelativeHumidity && m_RelativeHumidity <= 80.0 )
+   {
       m_RHS = 1.40 - 0.0102*m_RelativeHumidity;
+   }
    else if ( 80.0 < m_RelativeHumidity )
+   {
       m_RHS = 3.00 - 0.030*m_RelativeHumidity;
+   }
 
    // V/S ratio correction factor (2.5.5b)
    Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
    m_VSC = (2.0/3.0)*(1.0 + 1.13*exp(-0.54*vs)); // creep (2-21)
-   m_VSS = 1.2*exp(-0.12*m_VS);                    // shrinkage (2-22)
+   m_VSS = 1.2*exp(-0.12*vs);                    // shrinkage (2-22)
 
 
    m_bIsValid = true;
@@ -441,7 +463,9 @@ Float64 matACI209Concrete::GetFr(Float64 t) const
 
    Float64 age = GetAge(t);
    if ( age < 0 )
+   {
       return 0;
+   }
 
    Float64 fc = GetFc(t);
 

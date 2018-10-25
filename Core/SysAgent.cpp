@@ -240,7 +240,7 @@ STDMETHODIMP CSysAgent::DestroyProgressWindow()
       // enable the main window
       {
          AFX_MANAGE_STATE(AfxGetAppModuleState());
-         AfxGetMainWnd()->EnableWindow(TRUE);
+         //AfxGetMainWnd()->EnableWindow(TRUE);
          if ( m_pActiveWnd )
          {
             m_pActiveWnd->EnableWindow(TRUE);
@@ -252,7 +252,10 @@ STDMETHODIMP CSysAgent::DestroyProgressWindow()
    {
       m_Messages.erase(m_Messages.begin()+m_ProgressMsgMarker.back(),m_Messages.end());
       m_ProgressMsgMarker.pop_back();
-      m_pThread->UpdateMessage(m_Messages.back().c_str());
+      if (0 < m_Messages.size() )
+      {
+         m_pThread->UpdateMessage(m_Messages.back().c_str());
+      }
    }
 
    return S_OK;

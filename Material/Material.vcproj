@@ -1481,10 +1481,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\LRFDConcrete.cpp"
-				>
-			</File>
-			<File
 				RelativePath="main.cpp"
 				>
 				<FileConfiguration
@@ -2371,10 +2367,6 @@
 			</File>
 			<File
 				RelativePath="..\Include\Material\LinearStressStrainCurve.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Include\Material\LRFDConcrete.h"
 				>
 			</File>
 			<File

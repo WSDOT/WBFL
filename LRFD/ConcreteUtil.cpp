@@ -171,6 +171,16 @@ Float64 lrfdConcreteUtil::FcFromEc(Float64 ec,Float64 density)
    return fc;
 }
 
+Float64 lrfdConcreteUtil::ModRupture(Float64 fc, Float64 k)
+{
+   return lrfdConcreteUtil::ModRupture(fc,NormalDensity,k);
+}
+
+Float64 lrfdConcreteUtil::ModRupture(Float64 fc, DensityType densityType)
+{
+   return lrfdConcreteUtil::ModRupture(fc,densityType,-1);
+}
+
 Float64 lrfdConcreteUtil::ModRupture(Float64 fc, DensityType densityType,Float64 k)
 {
    const unitStress* p_fc_unit;

@@ -2695,6 +2695,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\LRFDConcrete.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LRFDTimeDependentConcrete.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\LRFRVersionMgr.cpp"
 				>
 			</File>
@@ -4678,11 +4686,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Include\LRFD\LRFDConcrete.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\LRFD\LrfdExp.h"
 				>
 			</File>
 			<File
 				RelativePath="..\Include\LRFD\LrfdLib.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\LRFD\LRFDTimeDependentConcrete.h"
 				>
 			</File>
 			<File

@@ -108,9 +108,11 @@ END_COM_MAP()
    CComPtr<IPierLineCollection> m_PierLines; // pier layout lines
    
    typedef std::map<GirderIDType,CComPtr<IGirderLine>> GirderLineCollection;
+   typedef std::pair<GirderIDType,CComPtr<IGirderLine>> GirderLineEntry;
    GirderLineCollection m_GirderLines;
    
    typedef std::map<GirderIDType,CComPtr<IDiaphragmLine>> DiaphragmLineCollection;
+   typedef std::pair<GirderIDType,CComPtr<IDiaphragmLine>> DiaphragmLineEntry;
    DiaphragmLineCollection m_DiaphragmLines;
 
    CComPtr<IDeckBoundary> m_DeckBoundary;

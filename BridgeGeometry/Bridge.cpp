@@ -437,11 +437,9 @@ HRESULT CBridge::UpdatePierGeometry()
 
 HRESULT CBridge::UpdateGirderGeometry()
 {
-   GirderLineCollection::iterator gdrLineIter(m_GirderLines.begin());
-   GirderLineCollection::iterator gdrLineIterEnd(m_GirderLines.end());
-   for ( ; gdrLineIter != gdrLineIterEnd; gdrLineIter++ )
+   BOOST_FOREACH(GirderLineEntry gdrLineEntry,m_GirderLines)
    {
-      CComPtr<IGirderLine> girderLine( gdrLineIter->second );
+      CComPtr<IGirderLine> girderLine( gdrLineEntry.second );
       CGirderLine* pGirderLine = (CGirderLine*)girderLine.p;
       HRESULT hr = pGirderLine->UpdateGeometry();
       if ( FAILED(hr) )
@@ -455,11 +453,9 @@ HRESULT CBridge::UpdateGirderGeometry()
 
 HRESULT CBridge::UpdateDiaphragmGeometry()
 {
-   DiaphragmLineCollection::iterator diaphragmLineIter(m_DiaphragmLines.begin());
-   DiaphragmLineCollection::iterator diaphragmLineIterEnd(m_DiaphragmLines.end());
-   for ( ; diaphragmLineIter != diaphragmLineIterEnd; diaphragmLineIter++ )
+   BOOST_FOREACH(DiaphragmLineEntry diaphragmLineEntry,m_DiaphragmLines)
    {
-      CComPtr<IDiaphragmLine> DiaphragmLine( diaphragmLineIter->second );
+      CComPtr<IDiaphragmLine> DiaphragmLine( diaphragmLineEntry.second );
       CDiaphragmLine* pDiaphragmLine = (CDiaphragmLine*)DiaphragmLine.p;
       HRESULT hr = pDiaphragmLine->UpdateGeometry();
       if ( FAILED(hr) )

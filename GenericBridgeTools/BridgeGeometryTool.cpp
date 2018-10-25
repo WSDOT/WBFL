@@ -1011,7 +1011,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySSMbr(IGenericBridge* bridge,Gi
    return GirderSpacingBySegment(bridge,ssMbrID,segIdx,Xs,otherSSMbrID,pSpacing);
 }
 
-STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,GirderIDType otherSSMbrID,Float64* pSpacing)
+STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType otherSSMbrID,Float64* pSpacing)
 {
    // Computes the perpendicular distance between the superstructure member (ssMbrID) at the a distance along this 
    // superstructure member (distFromStartOfSSMbr) and another superstructure member (otherSSMbrID)
@@ -1043,7 +1043,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySegment(IGenericBridge* bridge,
 
    // locate point on girder line where spacing is measured
    CComPtr<IPoint2d> pntOnGirder;
-   locate->PointOnLine(p1,p2,distFromStartOfSegment,0.00,&pntOnGirder);
+   locate->PointOnLine(p1,p2,Xs,0.00,&pntOnGirder);
 
    // Use m_Line1 for a line that is perpendicular to the girder line, throught pntOnGirder
    USE_LINE(m_Line1);

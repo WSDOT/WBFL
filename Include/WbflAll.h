@@ -45,4 +45,8 @@
 #include <WBFLTypes.h>
 #include <WBFLVersion.h>
 
+// Common BOOST stuff that we use all the time
+// Boost Libraries from http://www.boost.org
+#include <boost\foreach.hpp>
+
 #endif // INCLUDED_WBFLALL_H_

@@ -142,17 +142,16 @@ BOOL CEAFPluginCommandManager::AddCommandCallback(UINT nPluginCmdID,IEAFCommandC
 
 BOOL CEAFPluginCommandManager::GetMappedCommandID(UINT nPluginCmdID,IEAFCommandCallback* pCallback,UINT* pMappedCmdID)
 {
-   CallbackContainer::iterator iter;
    CComQIPtr<IUnknown, &IID_IUnknown> pUnk1(pCallback);
 
-   for ( iter = m_Callbacks.begin(); iter != m_Callbacks.end(); iter++ )
+   BOOST_FOREACH(CallbackEntry callbackEntry,m_Callbacks)
    {
-      CCallbackItem callbackItem = (*iter).second;
+      CCallbackItem callbackItem = callbackEntry.second;
 
       CComQIPtr<IUnknown, &IID_IUnknown> pUnk2(callbackItem.pCallback);
       if ( pUnk1 == pUnk2 && nPluginCmdID == callbackItem.nPluginCmdID )
       {
-         *pMappedCmdID = (*iter).first;
+         *pMappedCmdID = callbackEntry.first;
          return TRUE;
       }
    }
@@ -170,7 +169,9 @@ BOOL CEAFPluginCommandManager::GetCommandCallback(UINT nMappedID,UINT* pPluginCm
       *pPluginCmdID = callbackItem.nPluginCmdID;
       (*ppCallback) = callbackItem.pCallback;
       if (*ppCallback)
+      {
          (*ppCallback)->AddRef();
+      }
 
       return TRUE;
    }
@@ -192,19 +193,17 @@ void CEAFPluginCommandManager::RemoveCommandCallback(UINT nMappedID)
 std::vector<UINT> CEAFPluginCommandManager::GetMappedCommandIDs(IEAFCommandCallback* pCallback)
 {
    std::vector<UINT> nMappedIDs;
-
-   CallbackContainer::iterator iter;
    CComQIPtr<IUnknown, &IID_IUnknown> pUnk1(pCallback);
 
-   for ( iter = m_Callbacks.begin(); iter != m_Callbacks.end(); iter++ )
+   BOOST_FOREACH(CallbackEntry callbackEntry,m_Callbacks)
    {
-      CCallbackItem callbackItem = (*iter).second;
+      CCallbackItem callbackItem = callbackEntry.second;
 
       CComQIPtr<IUnknown, &IID_IUnknown> pUnk2(callbackItem.pCallback);
 
       if ( pUnk1 == pUnk2 )
       {
-         nMappedIDs.push_back((*iter).first);
+         nMappedIDs.push_back(callbackEntry.first);
       }
    }
 

@@ -104,11 +104,8 @@ void CEAFCustomReports::SaveToRegistry(CWinApp* theApp) const
       ::RegCloseKey(hSecKey);
    }
 
-   ReportConstIterator iter;
-   for ( iter = m_Reports.begin(); iter != m_Reports.end(); iter++ )
+   BOOST_FOREACH(const CEAFCustomReport& rReport,m_Reports)
    {
-      const CEAFCustomReport& rReport = *iter;
-
       // report names are stored as tab separated values. build string
       CString reportString(rReport.m_ParentReportName.c_str());
       std::vector<std::_tstring>::const_iterator it = rReport.m_Chapters.begin();

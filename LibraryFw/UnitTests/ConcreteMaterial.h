@@ -88,7 +88,7 @@ public:
 
    //------------------------------------------------------------------------
    // Edit the entry
-   virtual bool Edit(bool allowEditing) {return false;}
+   virtual bool Edit(bool allowEditing,int nPage=0) {return false;}
 
    void Notify(int hint) {}
 
