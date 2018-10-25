@@ -26,7 +26,7 @@
 #pragma once
 
 #ifndef _WBFL_VERSION
-#define _WBFL_VERSION 331 // version 3.3.1
+#define _WBFL_VERSION 340 // version 3.4.0
 #endif 
 
 

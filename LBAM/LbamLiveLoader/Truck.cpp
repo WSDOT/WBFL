@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Live Loader - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -123,7 +123,7 @@ void FixedTruck::Initialize(IVehicularLoad* pVehicularLoad, bool applyImpact, IL
          m_Axles.push_back( FtAxle(spacing, weight) );
 
          // Apply axle unless it's in current configuration
-         m_ActiveAxles.push_back(true);
+         m_ActiveAxles.push_back(AxleOn);
 
          if (is_axle_config)
          {
@@ -131,7 +131,7 @@ void FixedTruck::Initialize(IVehicularLoad* pVehicularLoad, bool applyImpact, IL
             HRESULT hResult = axle_config->Find(axleIdx, &fi);
             if ( SUCCEEDED(hResult) )
             {
-               m_ActiveAxles[axleIdx] = false;
+               m_ActiveAxles[axleIdx] = AxleOff;
             }
          }
 
@@ -197,7 +197,11 @@ void FixedTruck::ComputeAxleLocations()
    Float64 axleLocation = 0.0;
    AxleIndexType axleIndex = 0;
 
-   for (AxleIterator axleIter = m_Axles.begin(); axleIter != m_Axles.end(); axleIter++)
+   // precompute iterator bounds for speed
+   AxleIterator axleEnd( m_Axles.end() );
+   AxleIterator axleIter(m_Axles.begin());
+
+   for (; axleIter != axleEnd; axleIter++)
    {
       FtAxle& axle = *axleIter;
       axle.m_Location = axleLocation;
@@ -223,9 +227,10 @@ void FixedTruck::ComputeAxleLocations()
       FtAxle& pivotAxle = m_Axles[m_PivotAxleIndex];
       Float64 pivotAxleOffset = pivotAxle.m_Location;
 
-      for (AxleIterator axleIter = m_Axles.begin(); axleIter != m_Axles.end(); axleIter++)
+      AxleIterator axleIter2(m_Axles.begin());
+      for (; axleIter2 != axleEnd; axleIter2++)
       {
-         FtAxle& axle = *axleIter;
+         FtAxle& axle = *axleIter2;
          axle.m_Location -= pivotAxleOffset;
       }
 
@@ -245,7 +250,7 @@ void FixedTruck::ComputeAxleLocations()
 
 // compute response for one influence line
 void FixedTruck::EvaluatePrimaryInfl(Float64 position, InfluenceSideType side, IInfluenceLine* influence,
-                                     std::vector<bool>* appliedAxles,
+                                     std::vector<AxleState>* appliedAxles,
                                      VARIANT_BOOL* isDualValued, Float64* leftValue, Float64* rightValue)
 {
    CHRException hr;
@@ -253,15 +258,17 @@ void FixedTruck::EvaluatePrimaryInfl(Float64 position, InfluenceSideType side, I
    Float64 right_response=0.0;
    *isDualValued = VARIANT_FALSE;
 
-   if ( appliedAxles )
+   if ( appliedAxles && !appliedAxles->empty() ) // According to VTune, checking for empty before clearing is faster
       appliedAxles->clear();
 
    AxleIndexType axleIndex = 0;
    // loop over axles and get response. Only apply active axles
-   for (AxleIterator iter = m_Axles.begin(); iter != m_Axles.end(); iter++)
+   AxleIterator axleEnd(m_Axles.end());
+   AxleIterator iter(m_Axles.begin());
+   for (; iter != axleEnd; iter++)
    {
       FtAxle axle = *iter;
-      if (m_ActiveAxles[axleIndex])
+      if (m_ActiveAxles[axleIndex]==AxleOn)
       {
          Float64 axle_loc = axle.m_Location + position;
          Float64 axle_wgt = axle.m_Weight;
@@ -286,7 +293,7 @@ void FixedTruck::EvaluatePrimaryInfl(Float64 position, InfluenceSideType side, I
             }
 
             if (appliedAxles != NULL)
-               appliedAxles->push_back(true);
+               appliedAxles->push_back(AxleOn);
          }
          else
          {
@@ -297,19 +304,19 @@ void FixedTruck::EvaluatePrimaryInfl(Float64 position, InfluenceSideType side, I
                left_response  += response;
                right_response += response;
                if (appliedAxles!=NULL)
-                  appliedAxles->push_back(true);
+                  appliedAxles->push_back(AxleOn);
             }
             else
             {
                if (appliedAxles!=NULL)
-                  appliedAxles->push_back(false);
+                  appliedAxles->push_back(AxleOff);
             }
          }
       }
       else
       {
          if (appliedAxles!=NULL)
-            appliedAxles->push_back(false);
+            appliedAxles->push_back(AxleOff);
       }
 
       axleIndex++;
@@ -324,7 +331,7 @@ void FixedTruck::EvaluatePrimaryInfl(Float64 position, InfluenceSideType side, I
 
 void FixedTruck::EvaluatePrimary(Float64 position, InfluenceSideType side, Float64 flipFactor, 
                                  IInfluenceLine* lftInfluence, IInfluenceLine* rgtInfluence, 
-                                 std::vector<bool>* lftAppliedAxles, std::vector<bool>* rgtAppliedAxles,
+                                 std::vector<AxleState>* lftAppliedAxles, std::vector<AxleState>* rgtAppliedAxles,
                                  VARIANT_BOOL* isDualValued, Float64* leftValue, Float64* rightValue)
 {
    CHRException hr;
@@ -355,15 +362,15 @@ void FixedTruck::EvaluatePrimary(Float64 position, InfluenceSideType side, Float
 
 AxleIndexType FixedTruck::HeaviestCentralAxle()
 {
-   AxleIterator begin = m_Axles.begin() + 1;
-   AxleIterator end   = m_Axles.end()   - 1;
+   AxleIterator begin( m_Axles.begin() + 1 );
+   AxleIterator end(   m_Axles.end()   - 1 );
 
    // find the size of the range of central axles
    AxleIndexType nAxles = end - begin;
 
    // place two iterators at the center of this range
-   AxleIterator fwdIter = begin + (nAxles-1)/2;
-   AxleIterator bkIter  = end   - (nAxles-1)/2;
+   AxleIterator fwdIter( begin + (nAxles-1)/2 );
+   AxleIterator bkIter(  end   - (nAxles-1)/2 );
 
    // if there is an odd number of axles, then the center most might get missed
    // fix that problem
@@ -375,11 +382,11 @@ AxleIndexType FixedTruck::HeaviestCentralAxle()
 
    // working out from the center, find the heaviest axle nearest the center
    Float64 maxWeight = 0;
-   AxleIterator heaviestIter = fwdIter;
+   AxleIterator heaviestIter( fwdIter );
    while ( fwdIter != end && bkIter != begin )
    {
-      FtAxle fwdAxle = *fwdIter;
-      FtAxle bkAxle  = *bkIter;
+      FtAxle fwdAxle( *fwdIter );
+      FtAxle bkAxle ( *bkIter  );
 
       if ( maxWeight < fwdAxle.m_Weight )
       {
@@ -504,9 +511,11 @@ Float64 FixedTruck::MinAxleSpacing()
 {
    Float64 minSpacing = Float64_Max;
 
-   for ( AxleIterator iter = m_Axles.begin(); iter != m_Axles.end()-1; iter++ )
+   AxleIterator axleEnd( m_Axles.end() );
+   AxleIterator iter(m_Axles.begin());
+   for (; iter != axleEnd-1; iter++ )
    {
-      FtAxle axle = *iter;
+      FtAxle axle( *iter );
       minSpacing = _cpp_min(minSpacing,axle.m_OriginalSpacing);
    }
 
@@ -517,9 +526,11 @@ Float64 FixedTruck::MaxAxleSpacing()
 {
    Float64 maxSpacing = 0;
 
-   for ( AxleIterator iter = m_Axles.begin(); iter != m_Axles.end(); iter++ )
+   AxleIterator axleEnd( m_Axles.end() );
+   AxleIterator iter( m_Axles.begin() );
+   for (; iter != axleEnd; iter++ )
    {
-      FtAxle axle = *iter;
+      FtAxle axle( *iter );
       maxSpacing = _cpp_max(maxSpacing,axle.m_OriginalSpacing);
    }
 
@@ -533,9 +544,11 @@ Float64 FixedTruck::CenterOfGravity()
    Float64 Sum_W_loc = 0;
    Float64 Sum_W  = 0;
 
-   for ( AxleIterator iter = m_Axles.begin(); iter != m_Axles.end(); iter++ )
+   AxleIterator axleEnd( m_Axles.end() );
+   AxleIterator iter( m_Axles.begin() );
+   for (; iter != axleEnd; iter++ )
    {
-      FtAxle axle = *iter;
+      FtAxle axle( *iter );
       Sum_W_loc += (axle.m_Location)*(axle.m_Weight);
       Sum_W     += axle.m_Weight;
    }
@@ -558,7 +571,7 @@ void FixedTruck::DumpAxles(Float64 position)
    for (AxleIterator iter = m_Axles.begin(); iter != m_Axles.end(); iter++)
    {
       FtAxle axle = *iter;
-      if (m_ActiveAxles[axleIdx])
+      if (m_ActiveAxles[axleIdx]==AxleOn)
       {
          Float64 axle_loc = axle.m_Location + position;
          Float64 axle_wgt = axle.m_Weight;

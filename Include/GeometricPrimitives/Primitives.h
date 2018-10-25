@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Modeling of geometric primitives
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -226,7 +226,7 @@ inline GEOMFUNC gpSize2d operator*(gpSize2d& size, Float64 c)
 {   return size.operator*( c ); }
 inline GEOMFUNC gpSize2d operator*(Float64 c,gpSize2d& size)
 {   return size.operator*( c ); }
-GEOMFUNC std::ostream& operator<<(std::ostream& os,gpSize2d& size);
+GEOMFUNC std::_tostream& operator<<(std::_tostream& os,gpSize2d& size);
 
 /*****************************************************************************
 CLASS 
@@ -429,7 +429,7 @@ GEOMFUNC bool operator==(const gpPoint2d& lhs, const gpPoint2d& rhs);
 GEOMFUNC bool operator!=(const gpPoint2d& lhs, const gpPoint2d& rhs);
 
 //------------------------------------------------------------------------
-GEOMFUNC std::ostream& operator<<(std::ostream& os,const gpPoint2d& p);
+GEOMFUNC std::_tostream& operator<<(std::_tostream& os,const gpPoint2d& p);
 
 /*****************************************************************************
 CLASS 
@@ -743,6 +743,14 @@ public:
    // points with this rectangle; otherwise, it returns <b>false</b>.
    bool Touches(const gpRect2d& other) const;
 
+   //------------------------------------------------------------------------
+   // Check if other rectangle is Enclosed (possibly touching boundaries),
+   // Intersects (has union), or Entirely outside of this.
+   enum rctPosition {rpContains, rpTouches, rpOutside};
+
+   rctPosition GetPosition(const gpRect2d& other) const;
+
+
 #if defined _DEBUG
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
@@ -801,6 +809,6 @@ GEOMFUNC bool operator==(const gpRect2d& lhs, const gpRect2d& rhs);
 GEOMFUNC bool operator!=(const gpRect2d& lhs, const gpRect2d& rhs);
 
 //------------------------------------------------------------------------
-GEOMFUNC std::ostream& operator<<(std::ostream& os,const gpRect2d& rect);
+GEOMFUNC std::_tostream& operator<<(std::_tostream& os,const gpRect2d& rect);
 
 #endif // INCLUDED_GEOMETRY_PRIMITIVES_H_

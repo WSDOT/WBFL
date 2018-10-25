@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Live Loader - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -1391,8 +1391,6 @@ void CBruteForceVehicularResponse2::EvaluateForMinMoment(LiveLoadModelType type,
 {
    CHRException hr;
 
-   std::vector<bool> applied_axles;
-
    ATLASSERT( m_Truck.IsVariableAxle() );
    long variableAxleIndex = m_Truck.GetVariableAxleIndex();
 
@@ -1400,6 +1398,9 @@ void CBruteForceVehicularResponse2::EvaluateForMinMoment(LiveLoadModelType type,
    Float64 maxVariableAxleSpacing = m_Truck.GetMaxVariableAxleSpacing();
 
    AxleIndexType nAxles = m_Truck.GetNumAxles();
+
+   std::vector<AxleState> applied_axles;
+   applied_axles.reserve(nAxles);
 
    CComPtr<IDblArray> supportLocations;
    m_SupportLocations->get_SupportLocations(&supportLocations);
@@ -1775,14 +1776,15 @@ void CBruteForceVehicularResponse2::EvaluateForInteriorSupportReaction(LiveLoadM
 {
    CHRException hr;
 
-   std::vector<bool> applied_axles;
-
    ATLASSERT( m_Truck.IsVariableAxle() );
    AxleIndexType variableAxleIndex = m_Truck.GetVariableAxleIndex();
 
    Float64 minVariableAxleSpacing = m_Truck.GetMinVariableAxleSpacing();
 
    AxleIndexType nAxles = m_Truck.GetNumAxles();
+
+   std::vector<AxleState> applied_axles; 
+   applied_axles.reserve(nAxles);
 
    CComPtr<IDblArray> supportLocations;
    m_SupportLocations->get_SupportLocations(&supportLocations);
@@ -1893,10 +1895,13 @@ void CBruteForceVehicularResponse2::Evaluate(LiveLoadModelType type, VehicleInde
 
    AxleIndexType num_axles = m_Truck.GetNumAxles();
 
-   std::vector<bool> applied_axles;
+   std::vector<AxleState> applied_axles;
+   applied_axles.reserve(num_axles);
 
    // loop over each axle spacing for the truck
-   for (AxleSpacingIterator ias = m_AxleSpacings.begin(); ias != m_AxleSpacings.end(); ias++)
+   AxleSpacingIterator ias( m_AxleSpacings.begin() );
+   AxleSpacingIterator iasend( m_AxleSpacings.end() );
+   for (; ias != iasend; ias++)
    {
       Float64 axle_spacing = *ias;
       if ( m_Truck.IsVariableAxle() )
@@ -1948,7 +1953,9 @@ void CBruteForceVehicularResponse2::Evaluate(LiveLoadModelType type, VehicleInde
       }
 
       // loop over all pois and place each axle at every poi
-      for (PoiLocationIterator pli = m_PoiLocations.begin(); pli != m_PoiLocations.end(); pli++)
+      PoiLocationIterator pli( m_PoiLocations.begin() );
+      PoiLocationIterator pliend( m_PoiLocations.end() );
+      for (; pli != pliend; pli++)
       {
          Float64 poi_loc = pli->Location;
 
@@ -1999,7 +2006,7 @@ bool CBruteForceVehicularResponse2::GetInflResponse(PoiIDType poiID,LiveLoadMode
 {
    InflResponseRecord key(poiID,type,vehicleIndex, effect, m_RealOptimization, vehConfiguration, doApplyImpact );
 
-   ConstInflResponseIterator found = m_pResultsCache->find(key);
+   ConstInflResponseIterator found( m_pResultsCache->find(key) );
    if ( found == m_pResultsCache->end() )
    {
       return false;
@@ -2018,6 +2025,6 @@ void CBruteForceVehicularResponse2::SaveInflResponse(PoiIDType poiID,LiveLoadMod
 {
    InflResponseRecord record(poiID, type, vehicleIndex, effect, m_RealOptimization, vehConfiguration, doApplyImpact, pLeftCompare, pRightCompare);
 
-   std::pair<InflResponseIterator,bool> result = m_pResultsCache->insert(record);
+   std::pair<InflResponseIterator,bool> result( m_pResultsCache->insert(record) );
    ATLASSERT( result.second == true );
 }

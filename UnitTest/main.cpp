@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitTest - Utility program to run unit tests on WBFL DLL's
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -75,7 +75,7 @@ int main()
 
 
    // run testme's for all libraries
-   int n = sizeof(lib_list)/sizeof(LPTSTR);
+   int n = sizeof(lib_list)/sizeof(TCHAR*);
    for (int i=0; i<n; i++)
       st |= TestDll(lib_list[i], tl);
 

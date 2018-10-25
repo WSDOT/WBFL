@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -208,7 +208,7 @@ void CAnalysisModel::GetDeflection(LoadGroupIDType lgId, PoiIDType poiId, Float6
    try
    {
       // Location of results depends on poi type
-      PoiMapIterator it = m_PoiMap.find( &PoiMap(poiId) );
+      PoiMapIterator it(m_PoiMap.find( &PoiMap(poiId) ));
       if (it != m_PoiMap.end() )
       {
          PoiMap& rinfo = *(*it);
@@ -233,7 +233,7 @@ void CAnalysisModel::GetForce(LoadGroupIDType lgId, PoiIDType poiId, ResultsOrie
    try
    {
       // get poi information and call local function
-      PoiMapIterator it = m_PoiMap.find( &PoiMap(poiId) );
+      PoiMapIterator it(m_PoiMap.find( &PoiMap(poiId) ));
       if (it != m_PoiMap.end() )
       {
          PoiMap& rinfo = *(*it);
@@ -261,7 +261,7 @@ void CAnalysisModel::GetStress(LoadGroupIDType lg_id, PoiIDType poiId, std::vect
    sRight.clear();
    *wasComputed = false;
 
-   PoiMapIterator it = m_PoiMap.find( &PoiMap(poiId) );
+   PoiMapIterator it(m_PoiMap.find( &PoiMap(poiId) ));
    if (it != m_PoiMap.end() )
    {
       PoiMap& info = *(*it);
@@ -343,7 +343,7 @@ void CAnalysisModel::GetReaction(LoadGroupIDType loadGroupID, SupportIDType supp
       else
       {
          // see if a temporary support is requested
-         IdMapIterator itm = m_TemporarySupportNodes.find(supportID);
+         IdMapIterator itm(m_TemporarySupportNodes.find(supportID));
          if (itm != m_TemporarySupportNodes.end())
          {
             jointID = itm->second;
@@ -371,7 +371,7 @@ void CAnalysisModel::GetReaction(LoadGroupIDType loadGroupID, SupportIDType supp
    catch (CComException& re)
    {
       _bstr_t msg=CreateErrorMsg1S(IDS_STAGE_CONTEXT, m_Stage);
-      re.AppendToMessage((LPTSTR)msg);
+      re.AppendToMessage((TCHAR*)msg);
       throw re;
    }
 }
@@ -390,7 +390,7 @@ void CAnalysisModel::GetSupportDeflection(LoadGroupIDType loadGroupID, SupportID
       else
       {
          // see if a temporary support is requested
-         IdMapIterator itm = m_TemporarySupportNodes.find(supportID);
+         IdMapIterator itm(m_TemporarySupportNodes.find(supportID));
          if (itm != m_TemporarySupportNodes.end())
          {
             jointID = itm->second;
@@ -418,7 +418,7 @@ void CAnalysisModel::GetSupportDeflection(LoadGroupIDType loadGroupID, SupportID
    catch (CComException& re)
    {
       _bstr_t msg=CreateErrorMsg1S(IDS_STAGE_CONTEXT, m_Stage);
-      re.AppendToMessage((LPTSTR)msg);
+      re.AppendToMessage((TCHAR*)msg);
       throw re;
    }
 }
@@ -427,7 +427,7 @@ void CAnalysisModel::GetTemporarySupportReaction(LoadGroupIDType loadGroupID, Su
 {
    // temporary support is either zero-length or has elements (fixed length).
    // Look for fixed length first
-   ElementLayoutMapIterator it = m_TemporarySupportElements.find(tempSupportID);
+   ElementLayoutMapIterator it(m_TemporarySupportElements.find(tempSupportID));
    ATLASSERT(it != m_TemporarySupportElements.end());
    ElementLayoutVec& rvec = it->second;
    if (!rvec.empty())
@@ -449,7 +449,7 @@ void CAnalysisModel::GetTemporarySupportReaction(LoadGroupIDType loadGroupID, Su
    {
       // zero-length support
       // see if ts has a support node
-      IdMapIterator itm = m_TemporarySupportNodes.find(tempSupportID);
+      IdMapIterator itm(m_TemporarySupportNodes.find(tempSupportID));
       if (itm != m_TemporarySupportNodes.end())
       {
          CComQIPtr<IFem2dModelResults> results(m_pFem2d);
@@ -475,7 +475,7 @@ void CAnalysisModel::GetTemporarySupportReaction(LoadGroupIDType loadGroupID, Su
 
 void CAnalysisModel::ApplyTemporarySupportReaction(LoadCaseIDType tempSupportLoadCaseID, SupportIDType tempSupportID, Float64 fx, Float64 fy, Float64 mz)
 {
-   IdMapIterator iter = m_TemporarySupportNodeLocs.find(tempSupportID);
+   IdMapIterator iter(m_TemporarySupportNodeLocs.find(tempSupportID));
    if (iter != m_TemporarySupportNodeLocs.end())
    {
       JointIDType jointID = iter->second;
@@ -619,7 +619,7 @@ void CAnalysisModel::GetFemMembersForLBAMMember(MemberType mbrType, MemberIDType
       break;
    case mtTemporarySupport:
       {
-         ElementLayoutMapIterator tst = m_TemporarySupportElements.find(mbrId);
+         ElementLayoutMapIterator tst(m_TemporarySupportElements.find(mbrId));
          if (tst == m_TemporarySupportElements.end())
          {
             CComBSTR msg =CreateErrorMsg1L(IDS_E_TEMPSUPPORT_NOT_EXIST,mbrId);
@@ -737,7 +737,9 @@ void CAnalysisModel::GetFemMemberLocationAlongMemberList( Float64 globalLoc, Flo
       bool first = true;
       bool found = false;
       MemberIDType last_mbr_id = memberList.back().m_FemMemberID;
-      for( ElementLayoutVecIterator idi=memberList.begin(); idi!=memberList.end(); idi++)
+      ElementLayoutVecIterator idi(memberList.begin());
+      ElementLayoutVecIterator idend(memberList.end());
+      for(; idi!=idend; idi++)
       {
          MemberIDType mbr_id = idi->m_FemMemberID;
 
@@ -985,7 +987,9 @@ void CAnalysisModel::GetFemMemberLocationAlongSupport(const ElementLayoutVec* pM
          XyLoc start_loc = bottom;
          XyLoc end_loc;
          bool found = false;
-         for( ElementLayoutVec::const_iterator idi=pMemberList->begin(); idi!=pMemberList->end(); idi++)
+         ElementLayoutVec::const_iterator idi( pMemberList->begin() );
+         ElementLayoutVec::const_iterator idend( pMemberList->end() );
+         for( ; idi!=idend; idi++)
          {
             MemberIDType mbr_id = idi->m_FemMemberID;
 
@@ -1042,7 +1046,9 @@ void CAnalysisModel::ClearLoads()
    }
 
    // then do removal
-   for (std::vector<Int32>::iterator iid=remove_list.begin(); iid!= remove_list.end(); iid++)
+   std::vector<Int32>::iterator iid(remove_list.begin());
+   std::vector<Int32>::iterator iidend(remove_list.end());
+   for (; iid!= iidend; iid++)
    {
       Int32 rem_id = *iid;
       Int32 id;
@@ -1079,6 +1085,7 @@ void CAnalysisModel::GenerateLoadsForLoadGroup(BSTR loadGroup)
 
       CComPtr<IFem2dLoading> fem_loading;
       fem_loadings->Create(fem_lgid,&fem_loading);
+      ATLASSERT(fem_loading != NULL);
 
       bool were_loads_applied=false;
       bool wla;
@@ -1177,7 +1184,7 @@ void CAnalysisModel::GeneratePointLoadsForLoadGroup(BSTR loadGroup, IFem2dLoadin
             else
             {
                // temporary support
-               IdMapIterator it = m_TemporarySupportNodes.find(member_id);
+               IdMapIterator it( m_TemporarySupportNodes.find(member_id) );
                if (it!=m_TemporarySupportNodes.end())
                {
                   joint_id = it->second;
@@ -1360,7 +1367,7 @@ void CAnalysisModel::GenerateDistributedLoadsForLoadGroup(BSTR loadGroup, IFem2d
    {
       // add some more information
       _bstr_t msg =CreateErrorMsg1S(IDS_E_GENERATING_DISTR_LOAD, loadGroup);
-      re.AppendToMessage((LPTSTR)msg);
+      re.AppendToMessage((TCHAR*)msg);
       throw;
    }
 }
@@ -1425,7 +1432,9 @@ void CAnalysisModel::GenDistributedLoadAlongElements(IFem2dDistributedLoadCollec
    GetMemberEnd(start_id, members, joints, metStart, &joint_id, &(start_loc.m_X), &(start_loc.m_Y));
 
    XyLoc cur_loc;
-   for (ElementLayoutVec::const_iterator i=pfemMbrList->begin(); i!=pfemMbrList->end(); i++)
+   ElementLayoutVec::const_iterator i(pfemMbrList->begin());
+   ElementLayoutVec::const_iterator iend(pfemMbrList->end());
+   for (; i!=iend; i++)
    {
       MemberIDType id = i->m_FemMemberID;
       GetMemberEnd(id, members, joints, metEnd, &joint_id, &(cur_loc.m_X), &(cur_loc.m_Y));
@@ -1513,7 +1522,7 @@ void CAnalysisModel::GenerateStrainLoadsForLoadGroup(BSTR loadGroup, IFem2dLoadi
          CComPtr<IFem2dMemberStrainCollection> fem_strain_loads;
          pFemLoading->get_MemberStrains(&fem_strain_loads);
 
-         long last_load_id = 1;
+         LoadIDType last_load_id = 1;
 
          for (CollectionIndexType il=0; il<cnt; il++)
          {
@@ -1538,7 +1547,7 @@ void CAnalysisModel::GenerateStrainLoadsForLoadGroup(BSTR loadGroup, IFem2dLoadi
             GetFemMembersForLBAMMember(mtype, member_id, &pfem_mbr_list );
             ATLASSERT(pfem_mbr_list !=0 );
 
-            long num_elements = pfem_mbr_list->size();
+            CollectionIndexType num_elements = pfem_mbr_list->size();
 
             if (num_elements==0)
             {
@@ -1548,7 +1557,7 @@ void CAnalysisModel::GenerateStrainLoadsForLoadGroup(BSTR loadGroup, IFem2dLoadi
             }
 
             // iterate over fem elements and apply curvature load for this load case
-            for (long ie=0; ie<num_elements; ie++)
+            for (CollectionIndexType ie=0; ie<num_elements; ie++)
             {
                MemberIDType mbr_id = pfem_mbr_list->at(ie).m_FemMemberID;
                CComPtr<IFem2dMemberStrain> strainLoad;
@@ -1562,7 +1571,7 @@ void CAnalysisModel::GenerateStrainLoadsForLoadGroup(BSTR loadGroup, IFem2dLoadi
    {
       // add some more information
       _bstr_t msg =CreateErrorMsg1S(IDS_E_GENERATING_STRAIN_LOAD, loadGroup);
-      re.AppendToMessage((LPTSTR)msg);
+      re.AppendToMessage((TCHAR*)msg);
       throw;
    }
 }
@@ -1595,7 +1604,7 @@ void CAnalysisModel::GenerateTemperatureLoadsForLoadGroup(BSTR loadGroup, IFem2d
          CComPtr<IFem2dMemberStrainCollection> fem_strain_loads;
          pFemLoading->get_MemberStrains(&fem_strain_loads);
 
-         long last_load_id = 1;
+         LoadIDType last_load_id = 1;
 
          for (CollectionIndexType il=0; il<cnt; il++)
          {
@@ -1623,7 +1632,7 @@ void CAnalysisModel::GenerateTemperatureLoadsForLoadGroup(BSTR loadGroup, IFem2d
             GetFemMembersForLBAMMember(mtype, member_id, &pfem_mbr_list );
             ATLASSERT(pfem_mbr_list !=0 );
 
-            long num_elements = pfem_mbr_list->size();
+            CollectionIndexType num_elements = pfem_mbr_list->size();
 
             if (num_elements==0)
             {
@@ -1633,7 +1642,7 @@ void CAnalysisModel::GenerateTemperatureLoadsForLoadGroup(BSTR loadGroup, IFem2d
             }
 
             // iterate over fem elements and apply temperature load for this load case
-            for (long ie=0; ie<num_elements; ie++)
+            for ( CollectionIndexType ie=0; ie<num_elements; ie++)
             {
                MemberIDType mbr_id = pfem_mbr_list->at(ie).m_FemMemberID;
                CComPtr<ISegmentCrossSection> psect = pfem_mbr_list->at(ie).m_XSect;
@@ -1667,7 +1676,7 @@ void CAnalysisModel::GenerateTemperatureLoadsForLoadGroup(BSTR loadGroup, IFem2d
    {
       // add some more information
       _bstr_t msg =CreateErrorMsg1S(IDS_E_GENERATING_TEMPERATURE_LOAD, loadGroup);
-      re.AppendToMessage((LPTSTR)msg);
+      re.AppendToMessage((TCHAR*)msg);
       throw;
    }
 }
@@ -1699,7 +1708,7 @@ void CAnalysisModel::GenerateSettlementLoadsForLoadGroup(BSTR loadGroup, IFem2dL
          CComPtr<IFem2dJointDisplacementCollection> fem_settlement_loads;
          pFemLoading->get_JointDisplacements(&fem_settlement_loads);
 
-         long last_load_id = 1;
+         LoadIDType last_load_id = 1;
 
          for (CollectionIndexType il=0; il<cnt; il++)
          {
@@ -1730,7 +1739,7 @@ void CAnalysisModel::GenerateSettlementLoadsForLoadGroup(BSTR loadGroup, IFem2dL
             else
             {
                // check temporary supports
-               IdMapIterator idi = m_TemporarySupportNodes.find(support_id);
+               IdMapIterator idi(m_TemporarySupportNodes.find(support_id));
                if (idi != m_TemporarySupportNodes.end())
                {
                   jointID = idi->second;
@@ -1756,7 +1765,7 @@ void CAnalysisModel::GenerateSettlementLoadsForLoadGroup(BSTR loadGroup, IFem2dL
    {
       // add some more information
       _bstr_t msg =CreateErrorMsg1S(IDS_E_GENERATING_SETTLEMENT_LOAD, loadGroup);
-      re.AppendToMessage((LPTSTR)msg);
+      re.AppendToMessage((TCHAR*)msg);
       throw;
    }
 }
@@ -2120,14 +2129,12 @@ void CAnalysisModel::GenerateUserDefinedPOIs()
    CComPtr<IPOIs> lbam_pois;
    hr = m_pLBAMModel->get_POIs(&lbam_pois);
 
-   CollectionIndexType poi_cnt;
-   hr = lbam_pois->get_Count(&poi_cnt);
+   CComPtr<IEnumPOI> enum_pois;
+   hr = lbam_pois->get__EnumElements(&enum_pois);
 
-   for (CollectionIndexType ipoi=0; ipoi<poi_cnt; ipoi++)
+   CComPtr<IPOI> lbam_poi;
+   while ( enum_pois->Next(1,&lbam_poi,NULL) != S_FALSE )
    {
-      CComPtr<IPOI> lbam_poi;
-      hr = lbam_pois->get_Item(ipoi, &lbam_poi);
-
       MemberType mtype;
       hr = lbam_poi->get_MemberType(&mtype);
 
@@ -2162,6 +2169,8 @@ void CAnalysisModel::GenerateUserDefinedPOIs()
          CComBSTR msg =CreateErrorMsg1L(IDS_E_INVALID_POI_MEMBER_TYPE, poi_id);
          THROW_LBAMA_MSG(INVALID_POI_MEMBER_TYPE,msg);
       }
+
+      lbam_poi.Release();
    }
 
 #if defined(_DEBUG_LOGGING)
@@ -2187,7 +2196,7 @@ void CAnalysisModel::CreateTemporarySupportPOI(PoiIDType poiID, SupportIDType su
    {
       // location not found. add some context and rethrow
       _bstr_t msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
-      re.AppendToMessage((LPTSTR)msg);
+      re.AppendToMessage((TCHAR*)msg);
       throw;
    }
 
@@ -2207,7 +2216,7 @@ void CAnalysisModel::CreateTemporarySupportPOI(PoiIDType poiID, SupportIDType su
       {
          // location not found. add some context and rethrow
          _bstr_t msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
-         re.AppendToMessage((LPTSTR)msg);
+         re.AppendToMessage((TCHAR*)msg);
          throw;
       }
 
@@ -2252,7 +2261,7 @@ void CAnalysisModel::CreateSupportPOI(PoiIDType poiID, SupportIDType supportID, 
    {
       // location not found. add some context and rethrow
       _bstr_t msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
-      re.AppendToMessage((LPTSTR)msg);
+      re.AppendToMessage((TCHAR*)msg);
       throw;
    }
 
@@ -2296,7 +2305,7 @@ void CAnalysisModel::CreateSsmPOI(PoiIDType poiID, CollectionIndexType ssmIdx, F
    {
       // location not found. add some context and rethrow
       _bstr_t msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
-      re.AppendToMessage((LPTSTR)msg);
+      re.AppendToMessage((TCHAR*)msg);
       throw;
    }
 
@@ -2327,7 +2336,7 @@ void CAnalysisModel::CreateSpanPOI(PoiIDType poiID, SpanIndexType spanIdx, Float
    {
       // location not found. add some context and rethrow
       _bstr_t msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
-      re.AppendToMessage((LPTSTR)msg);
+      re.AppendToMessage((TCHAR*)msg);
       throw;
    }
 
@@ -2622,7 +2631,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtPOI(PoiIDType poiId, ISegmentCrossS
    *rightCs = NULL;
 
    // get from cached data
-   PoiMapIterator it = m_PoiMap.find( &PoiMap(poiId) );
+   PoiMapIterator it(m_PoiMap.find( &PoiMap(poiId) ));
    if (it != m_PoiMap.end() )
    {
       PoiMap& info = *(*it);
@@ -2652,7 +2661,7 @@ void CAnalysisModel::GetStressPointsAtPOI(long poiId, IStressPoints* *leftSps, I
    *rightSps = NULL;
 
    // get from cached data
-   PoiMapIterator it = m_PoiMap.find( &PoiMap(poiId) );
+   PoiMapIterator it(m_PoiMap.find( &PoiMap(poiId) ));
    if (it != m_PoiMap.end() )
    {
       PoiMap& info = *(*it);
@@ -2971,11 +2980,11 @@ void CAnalysisModel::ConfigurePoiMap(MemberType mbrType, MemberIDType lbamMbrID,
 bool CAnalysisModel::IsTempSupportInModel(long tmpSupportID)
 {
    // this tests if it exists in the lbam at all
-   IdSetIterator idsi = m_TemporarySupportIDs.find(tmpSupportID);
+   IdSetIterator idsi( m_TemporarySupportIDs.find(tmpSupportID) );
    if ( idsi != m_TemporarySupportIDs.end() )
    {
       // see if it has a support node - if it does, it's in this model
-      IdMapIterator itm = m_TemporarySupportNodes.find(tmpSupportID);
+      IdMapIterator itm( m_TemporarySupportNodes.find(tmpSupportID) );
       if (itm != m_TemporarySupportNodes.end())
          return true;
       else
@@ -3092,7 +3101,9 @@ void SetNodeNumbering(SuperNodeLocs* pNodeLocs)
    // cycle through model from left to right and number nodes
    long curr_node=0;
 
-   for (SuperNodeLocIterator isn=pNodeLocs->begin(); isn!=pNodeLocs->end(); isn++)
+   SuperNodeLocIterator isn(pNodeLocs->begin());
+   SuperNodeLocIterator isnend(pNodeLocs->end());
+   for (; isn!=isnend; isn++)
    {
       SuperNodeLoc& rsnl = *isn;
 
@@ -3117,7 +3128,9 @@ void SetNodeNumberForSupport(SubNodeLocs* pSnls, JointIDType* pcurrNode)
    // support nodes are ordered from bottom up
    bool first = true;
    typedef SubNodeLocs::reverse_iterator SnRi;
-   for ( SnRi ri=pSnls->rbegin(); ri!=pSnls->rend(); ri++)
+   SnRi ri(pSnls->rbegin());
+   SnRi riend(pSnls->rend());
+   for ( ; ri!=riend; ri++)
    {
       SubNodeLoc& rsnl = *ri;
       if (!first)
@@ -3186,8 +3199,8 @@ void CAnalysisModel::GenerateSuperstructureFemModel(SuperNodeLocs* pNodeLocs,  I
    long curr_ssm     =  0;  // current superstructuremember
 
    // walk our superstructure layout and create only superstructure elements (members)
-   SuperNodeLocIterator lefty=pNodeLocs->begin();
-   SuperNodeLocIterator righty = lefty;
+   SuperNodeLocIterator lefty(pNodeLocs->begin());
+   SuperNodeLocIterator righty(lefty);
    righty++;
    ATLASSERT(righty!= pNodeLocs->end());
 
@@ -3275,8 +3288,9 @@ void CAnalysisModel::CheckFemModelStability(SuperNodeLocs* pNodeLocs,  IFem2dJoi
    // FEM model is built, but there may be some supports that are not connected to members and some
    // ssm nodes that were generated but never attached to anything
    // iterator over all nodes and check to see if ssm and span ends are connected to members
-
-   for (SuperNodeLocIterator superstructureNodeIter = pNodeLocs->begin(); superstructureNodeIter != pNodeLocs->end(); superstructureNodeIter++)
+   SuperNodeLocIterator superstructureNodeIter(pNodeLocs->begin());
+   SuperNodeLocIterator superstructureNodeIterEnd(pNodeLocs->end());
+   for (; superstructureNodeIter != superstructureNodeIterEnd; superstructureNodeIter++)
    {
       SuperNodeLoc& superstructureNodeLocation = *superstructureNodeIter;
       if (superstructureNodeLocation.IsReason(nrSpanEnd) || 
@@ -3400,7 +3414,9 @@ void CAnalysisModel::GenerateSubstructureFemModel(SuperNodeLocs* pNodeLocs,  IFe
 
    // walk our superstructure layout looking for supports
    // loop through node layout and generate members
-   for (SuperNodeLocIterator superstructureNodeIter = pNodeLocs->begin(); superstructureNodeIter != pNodeLocs->end(); superstructureNodeIter++ )
+   SuperNodeLocIterator superstructureNodeIter(pNodeLocs->begin());
+   SuperNodeLocIterator send(pNodeLocs->end());
+   for (; superstructureNodeIter != send; superstructureNodeIter++ )
    {
       SuperNodeLoc superstructureNodeLocation = *superstructureNodeIter;
 
@@ -3413,7 +3429,7 @@ void CAnalysisModel::GenerateSubstructureFemModel(SuperNodeLocs* pNodeLocs,  IFe
          GenerateSupportFemModel(substructureNodeLocations, pJoints, pMembers, &m_SupportElements[nextSupportID], pNextFemMemberID);
 
          // store location of support bottom node
-         SubNodeLocs::iterator substructureNodeIter = substructureNodeLocations->begin();
+         SubNodeLocs::iterator substructureNodeIter(substructureNodeLocations->begin());
          m_SupportNodes.push_back(substructureNodeIter->m_FemJointID);
 
          nextSupportID++;
@@ -3440,7 +3456,7 @@ void CAnalysisModel::GenerateSubstructureFemModel(SuperNodeLocs* pNodeLocs,  IFe
          GenerateSupportFemModel(substructureNodeLocations, pJoints, pMembers, &rvec, pNextFemMemberID);
 
          // store node number at bottom of temporary support
-         SubNodeLocs::iterator isnl = substructureNodeLocations->begin();
+         SubNodeLocs::iterator isnl(substructureNodeLocations->begin());
          JointIDType jointID = isnl->m_FemJointID;
          std::pair<IdMapIterator, bool> result2;
          result2 = m_TemporarySupportNodes.insert(IdMap::value_type(lbamTempSupportID, jointID));
@@ -3496,7 +3512,7 @@ void CAnalysisModel::GenerateSupportFemModel(SubNodeLocs* pSnls,
       if (nSubstructureNodeLocations == 1)
       {
          // we have a zero-length support. We only need concern ourselves with boundary conditions
-         SubNodeLocIterator substructureNodeLocationIter = pSnls->begin();
+         SubNodeLocIterator substructureNodeLocationIter(pSnls->begin());
          SubNodeLoc& substructureNodeLocation = *substructureNodeLocationIter;
          CComPtr<IFem2dJoint> pjnt;
          pJoints->Find(substructureNodeLocation.m_FemJointID,&pjnt);
@@ -3508,12 +3524,12 @@ void CAnalysisModel::GenerateSupportFemModel(SubNodeLocs* pSnls,
          // support has members. generate them
          // walk list from bottom up
          Uint32 nSubstructureMembers = 2;
-         SubNodeLocIterator lefty, righty;
-         lefty = pSnls->begin();
-         righty = lefty;
+         SubNodeLocIterator lefty(pSnls->begin());
+         SubNodeLocIterator righty(lefty);
          righty++;
 
-         while( righty != pSnls->end() )
+         SubNodeLocIterator send(pSnls->end());
+         while( righty != send )
          {
             SubNodeLoc& rlefty  = *lefty;
             SubNodeLoc& rrighty = *righty;
@@ -3656,7 +3672,7 @@ void CAnalysisModel::LayoutSpanNodes(ISuperstructureMembers* pMembers, ISpans* p
          hr = tempSupport->get_ID(&tempSupportID);
 
          // add to list of all temporary supports. This will save us from having to hunt this down later
-         std::pair<IdSetIterator,bool> ids = m_TemporarySupportIDs.insert(tempSupportID);
+         std::pair<IdSetIterator,bool> ids( m_TemporarySupportIDs.insert(tempSupportID));
          if (!ids.second)
          {
             // there are two temporary supports with the same id
@@ -3810,7 +3826,7 @@ void CAnalysisModel::LayoutSuperstructureMemberNodes(ISuperstructureMembers* pMe
          catch (CComException& re)
          {
             _bstr_t msg1(::CreateErrorMsg2L(IDS_SS_SEGMENT_INFO, mbrIdx, segmentIdx));
-            re.AppendToMessage( (LPTSTR)msg1);
+            re.AppendToMessage( (TCHAR*)msg1);
             throw re;
          }
 
@@ -3904,7 +3920,7 @@ void CAnalysisModel::PlaceHinges(ISuperstructureMembers* pMembers, Float64 LeftO
       if (IsMemberEndReleased(member, ssLeft))
       {
          SuperNodeLoc nodeLocation(start_loc, nrSegmentEnd); // SuperNodeReason has no consequence
-         SuperNodeLocIterator found = node_locs->find(nodeLocation);
+         SuperNodeLocIterator found (node_locs->find(nodeLocation));
          if (found != node_locs->end())
          {
             found->SetRelease(mrRightPinned); // pin right side of node
@@ -3917,7 +3933,7 @@ void CAnalysisModel::PlaceHinges(ISuperstructureMembers* pMembers, Float64 LeftO
       if (IsMemberEndReleased(member, ssRight))
       {
          SuperNodeLoc nodeLocation(end_loc, nrSegmentEnd); // SuperNodeReason has no consequence
-         SuperNodeLocIterator found = node_locs->find(nodeLocation);
+         SuperNodeLocIterator found( node_locs->find(nodeLocation) );
          if (found != node_locs->end())
          {
             found->SetRelease(mrLeftPinned);
@@ -3936,8 +3952,7 @@ void InsertSuperSegmentNode(SuperNodeLocs* node_locs, Float64 loc, ISegmentCross
 {
    SuperNodeLoc seg_end(loc, reason, pcs);
 
-   std::pair<SuperNodeLocIterator, bool> result;
-   result = node_locs->insert( seg_end );
+   std::pair<SuperNodeLocIterator, bool> result(node_locs->insert( seg_end ));
 
    if (result.second == false)
    {
@@ -3959,10 +3974,11 @@ void InsertSuperSegmentNode(SuperNodeLocs* node_locs, Float64 loc, ISegmentCross
 void CondenseSuperNodeSections(SuperNodeLocs* node_locs, Float64 layoutTolerance)
 {
    // walk node list and get rid of nodes that are too close together 
-   SuperNodeLocIterator lefty  = node_locs->begin();
-   SuperNodeLocIterator righty = lefty;
+   SuperNodeLocIterator lefty( node_locs->begin());
+   SuperNodeLocIterator righty( lefty );
+   SuperNodeLocIterator snend( node_locs->end() );
    righty++;
-   while(  righty != node_locs->end() )
+   while(  righty != snend )
    {
       Float64 leftyloc = lefty->GetLoc();
       Float64 rightyloc = righty->GetLoc();
@@ -4104,9 +4120,8 @@ void AssignSectionsToNodes(SuperNodeLocs* node_locs)
    // sections have not been assigned to all nodes yet -we need to assign unassigned 
    // nodes to the closest section to the left of a section. The easiest way to do this
    // is to walk the list in reverse.
-   SuperNodeLocs::reverse_iterator lefty, righty;
-   righty = node_locs->rbegin();
-   lefty = righty;
+   SuperNodeLocs::reverse_iterator righty( node_locs->rbegin() );
+   SuperNodeLocs::reverse_iterator lefty( righty );
    lefty++;
 
    // have to be able to get the ball rolling here. If the right-most node in the list
@@ -4142,9 +4157,8 @@ void CondenseSupportNodeSections(SubNodeLocs* nodeLocs, Float64 layoutTolerance)
 
    // layout for support nodes is straightforward. The only chance for a tolerancing
    // problem is on the last (top) node.
-   SubNodeLocs::reverse_iterator lefty, righty;
-   righty = nodeLocs->rbegin();
-   lefty = righty;
+   SubNodeLocs::reverse_iterator righty( nodeLocs->rbegin() );
+   SubNodeLocs::reverse_iterator lefty (righty);
    lefty++;
 
    Float64 dist = righty->Distance(*lefty);
@@ -4327,7 +4341,7 @@ void CAnalysisModel::LayoutTemporarySupportNodes( SpanIndexType spanIdx, Float64
       {
          // add some more info to error message
          _bstr_t msg(::CreateErrorMsg2L(IDS_TEMPSUPPORT_INFO, tempSupportID, spanIdx));
-         re.AppendToMessage((LPTSTR)msg);
+         re.AppendToMessage((TCHAR*)msg);
          throw re;
       }
    }
@@ -4414,7 +4428,7 @@ void CAnalysisModel::LayoutSupportNodes( SupportIDType supportID, ISupports* pSu
       {
          // add some more info to error message
          _bstr_t msg(::CreateErrorMsg1L(IDS_SUPPORT_INFO, supportID));
-         re.AppendToMessage((LPTSTR)msg);
+         re.AppendToMessage((TCHAR*)msg);
          throw re;
       }
    }
@@ -4470,7 +4484,7 @@ void LayoutSupportSegments(BSTR stage, IFilteredSegmentCollection* pFilteredSegs
       catch (CComException& re)
       {
          _bstr_t msg1(::CreateErrorMsg1L(IDS_SEGMENT_INFO, iseg));
-         re.AppendToMessage( (LPTSTR)msg1);
+         re.AppendToMessage( (TCHAR*)msg1);
          throw re;
       }
 
@@ -4494,14 +4508,13 @@ void InsertSubSegmentNode(SubNodeLocs* node_locs, Float64 xloc, Float64 yloc, IS
 {
    SubNodeLoc seg_end(xloc,  yloc, reason, pcs);
 
-   std::pair<SubNodeLocIterator, bool> itst;
-   itst = node_locs->insert( seg_end );
+   std::pair<SubNodeLocIterator, bool> itst( node_locs->insert(seg_end) );
 
    if (itst.second == false)
    {
       // Insert failed, there must already a node there, 
       // It must be a support end. get it and set its cross section;
-      SubNodeLocIterator fnd = node_locs->find(seg_end);
+      SubNodeLocIterator fnd( node_locs->find(seg_end) );
       if (fnd != node_locs->end())
       {
          ATLASSERT(fnd->IsReason(sbnrSupportEnd));
@@ -4557,7 +4570,9 @@ void CAnalysisModel::ClearInfluenceLoads()
    }
 
    // then do removal
-   for (std::vector<LoadCaseIDType>::iterator iter = remove_list.begin(); iter != remove_list.end(); iter++)
+   std::vector<LoadCaseIDType>::iterator iter( remove_list.begin() );
+   std::vector<LoadCaseIDType>::iterator iterend( remove_list.end() );
+   for (; iter != iterend; iter++)
    {
       LoadCaseIDType femLoadCaseID = *iter;
       LoadCaseIDType id;
@@ -4589,7 +4604,9 @@ void CAnalysisModel::GenerateInfluenceLoads()
    // apply unit point load for loading at location
 //   ATLTRACE(_T("Influence Load Generation"));
    LoadCaseIDType fem_lc = INFLUENCE_LC;
-   for (InfluenceLoadSetIterator it=m_InfluenceLoadSet.begin(); it!=m_InfluenceLoadSet.end(); it++)
+   InfluenceLoadSetIterator it( m_InfluenceLoadSet.begin() );
+   InfluenceLoadSetIterator itend( m_InfluenceLoadSet.end() );
+   for (; it!=itend; it++)
    {
       InfluenceLoadLocation& infl_locn = *it;
       infl_locn.m_FemLoadCaseID = fem_lc;
@@ -4628,7 +4645,9 @@ void CAnalysisModel::GenerateInfluenceLoadLocations()
    PoiIDType poiID;
    try
    {
-      for (PoiMapIterator ipoi=m_PoiMap.begin(); ipoi!=m_PoiMap.end(); ipoi++)
+      PoiMapIterator ipoi(m_PoiMap.begin());
+      PoiMapIterator ipoiend(m_PoiMap.end());
+      for (; ipoi!=ipoiend; ipoi++)
       {
          PoiMap& info = *(*ipoi);
 
@@ -4647,7 +4666,7 @@ void CAnalysisModel::GenerateInfluenceLoadLocations()
    {
       // location not found. add some context and rethrow
       _bstr_t msg =CreateErrorMsg1L(IDS_POI_INFLUENCELOCATION,poiID);
-      re.AppendToMessage((LPTSTR)msg);
+      re.AppendToMessage((TCHAR*)msg);
       throw;
    }
 
@@ -4659,9 +4678,10 @@ void CAnalysisModel::GenerateInfluenceLoadLocations()
       Float64 last_loc;
 #endif
       bool last_matched=false;
-      InfluenceLoadSetIterator it2 = m_InfluenceLoadSet.begin();
-      InfluenceLoadSetIterator it1 = it2++;
-      while( it2!=m_InfluenceLoadSet.end())
+      InfluenceLoadSetIterator it2(m_InfluenceLoadSet.begin());
+      InfluenceLoadSetIterator it1(it2++);
+      InfluenceLoadSetIterator itend(m_InfluenceLoadSet.end());
+      while( it2!=itend)
       {
          if (it1->m_GlobalX == it2->m_GlobalX)
          {
@@ -4758,10 +4778,15 @@ void CAnalysisModel::GenerateContraflexureLoads()
 
    // loop over all superstructure member elements and apply unit uniform load
    LoadIDType loadID = 0;
-   for (ElementLayoutGroupIterator its=m_SuperstructureMemberElements.begin(); its!=m_SuperstructureMemberElements.end(); its++)
+   ElementLayoutGroupIterator its(m_SuperstructureMemberElements.begin());
+   ElementLayoutGroupIterator itsend(m_SuperstructureMemberElements.end());
+   for (; its!=itsend; its++)
    {
       ElementLayoutVec& vec = *its;
-      for (ElementLayoutVecIterator itv=vec.begin(); itv!=vec.end(); itv++)
+
+      ElementLayoutVecIterator itv(vec.begin());
+      ElementLayoutVecIterator itvend(vec.end());
+      for (; itv!=itvend; itv++)
       {
          ElementLayout& lo = *itv;
          MemberIDType mbr_id = lo.m_FemMemberID;
@@ -4955,7 +4980,9 @@ void CAnalysisModel::GetContraflexureForce( ForceEffectType effect, CInfluenceLi
    // set processing type for influence line so it retains raw values
    results->SetProcessingType(CInfluenceLine::iptRaw);
 
-   for (SortedPoiMapTracker::iterator it = poi_tracker.begin(); it!=poi_tracker.end(); it++)
+   SortedPoiMapTracker::iterator it(poi_tracker.begin());
+   SortedPoiMapTracker::iterator itend(poi_tracker.end());
+   for (; it!=itend; it++)
    {
       PoiMap& info = *(*it);
 
@@ -5040,7 +5067,7 @@ void CAnalysisModel::IsPOIInNegativeLiveLoadMomentZone(long poiID, InZoneType* i
       // check right exterior span
       if (m_RightOverhang<m_LayoutTolerance)
       {
-         std::set<Float64>::iterator it = m_AllSpanEnds.end();
+         std::set<Float64>::iterator it(m_AllSpanEnds.end());
          Float64 end, lst;
          if ( m_AllSpanEnds.size() == 1 )
          {
@@ -5105,7 +5132,7 @@ void CAnalysisModel::GetNegativeMomentRegions(IDblArray* *locations)
          Float64 right_cf;
          hr = locs->get_Item(num_locs-1, &right_cf);
 
-         std::set<Float64>::iterator it = m_AllSpanEnds.end();
+         std::set<Float64>::iterator it(m_AllSpanEnds.end());
          Float64 end = *(--it);
          Float64 lst = *(--it);
          Float64 ms = (end+lst)/2.0;  // middle of last span
@@ -5187,7 +5214,7 @@ void CAnalysisModel::GetInfluenceLines(long poiID,
 
 
    // get poi information
-   PoiMapIterator itpoi = m_PoiMap.find( &PoiMap(poiID) );
+   PoiMapIterator itpoi(m_PoiMap.find( &PoiMap(poiID) ));
    if (itpoi!= m_PoiMap.end() )
    {
       PoiMap& poi_map = *(*itpoi);
@@ -5240,7 +5267,7 @@ void CAnalysisModel::GetReactionInfluenceLine(SupportIDType supportID, ForceEffe
    else
    {
       // see if a temporary support is requested
-      IdMapIterator itm = m_TemporarySupportNodes.find(supportID);
+      IdMapIterator itm( m_TemporarySupportNodes.find(supportID) );
       if (itm != m_TemporarySupportNodes.end())
       {
          jointID = itm->second;
@@ -5264,7 +5291,9 @@ void CAnalysisModel::GetReactionInfluenceLine(SupportIDType supportID, ForceEffe
       {
       // Reactions
       // loop through all influence loads for this poi
-         for (InfluenceLoadSetIterator iter = m_InfluenceLoadSet.begin(); iter != m_InfluenceLoadSet.end(); iter++)
+         InfluenceLoadSetIterator iter( m_InfluenceLoadSet.begin() );
+         InfluenceLoadSetIterator iterend( m_InfluenceLoadSet.end() );
+         for (; iter != iterend; iter++)
          {
             const InfluenceLoadLocation& influenceLoadLocation = *iter;
 
@@ -5335,7 +5364,7 @@ void CAnalysisModel::GetSupportDeflectionInfluenceLine(SupportIDType supportID, 
    else
    {
       // see if a temporary support is requested
-      IdMapIterator itm = m_TemporarySupportNodes.find(supportID);
+      IdMapIterator itm( m_TemporarySupportNodes.find(supportID) );
       if (itm != m_TemporarySupportNodes.end())
       {
          jointID = itm->second;
@@ -5359,7 +5388,9 @@ void CAnalysisModel::GetSupportDeflectionInfluenceLine(SupportIDType supportID, 
       {
       // Reactions
       // loop through all influence loads for this poi
-         for (InfluenceLoadSetIterator iter = m_InfluenceLoadSet.begin(); iter != m_InfluenceLoadSet.end(); iter++)
+         InfluenceLoadSetIterator iter( m_InfluenceLoadSet.begin() );
+         InfluenceLoadSetIterator iterend( m_InfluenceLoadSet.end() );
+         for (; iter != iterend; iter++)
          {
             const InfluenceLoadLocation& influenceLoadLocation = *iter;
 
@@ -5461,7 +5492,9 @@ HRESULT CAnalysisModel::GetSuperstructurePois(ILongArray* *poiIDs, IDblArray* *p
       return hr;
 
    Uint32 i=0;
-   for (SortedPoiMapTracker::iterator itp=m_pPoiTracker->begin(); itp!=m_pPoiTracker->end(); itp++)
+   SortedPoiMapTracker::iterator itp(m_pPoiTracker->begin());
+   SortedPoiMapTracker::iterator itpend(m_pPoiTracker->end());
+   for (; itp!=itpend; itp++)
    {
       PoiMap& info = *(*itp);
       poi_ids->Add(info.GetLBAMPoiID());
@@ -5483,7 +5516,7 @@ HRESULT CAnalysisModel::GetPoiInfo(PoiIDType poiID, MemberType* lbamMemberType, 
 
 HRESULT CAnalysisModel::GetPoiInfoPrv(PoiIDType poiID, MemberType* lbamMemberType, MemberIDType* memberID, Float64* memberLoc, Float64* globalLoc)
 {
-   PoiMapIterator itpoi = m_PoiMap.find( &PoiMap(poiID) );
+   PoiMapIterator itpoi( m_PoiMap.find( &PoiMap(poiID) ));
    if (itpoi!= m_PoiMap.end() )
    {
       PoiMap& info = *(*itpoi);
@@ -5502,7 +5535,7 @@ HRESULT CAnalysisModel::GetPoiInfoPrv(PoiIDType poiID, MemberType* lbamMemberTyp
 HRESULT CAnalysisModel::GetSsPoiInfo(PoiIDType poiID, MemberType* lbamMemberType, MemberIDType* memberID, Float64* globalX)
 {
    PoiMap findme(poiID);
-   SortedPoiMapTracker::iterator itp= std::find_if(m_pPoiTracker->begin(), m_pPoiTracker->end(), PoiMapIdMatch(poiID) );
+   SortedPoiMapTracker::iterator itp( std::find_if(m_pPoiTracker->begin(), m_pPoiTracker->end(), PoiMapIdMatch(poiID) ) );
 
    if (itp!=m_pPoiTracker->end())
    {

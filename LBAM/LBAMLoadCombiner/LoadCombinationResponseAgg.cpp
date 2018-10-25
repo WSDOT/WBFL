@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Load Combiner - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -405,7 +405,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, IL
 
 
       // get cached information for combo
-      CLoadCombiner::LoadCombinationIterator lcit = m_pCombiner->m_LoadCombinations.find( CLoadCombiner::NameHolder(loadCombination) );
+      CLoadCombiner::LoadCombinationIterator lcit( m_pCombiner->m_LoadCombinations.find( CLoadCombiner::NameHolder(loadCombination) ) );
       if (lcit == m_pCombiner->m_LoadCombinations.end())
       {
          CComBSTR msg = CreateErrorMsg1S(IDS_E_LOADCOMBO_NO_EXIST, loadCombination);
@@ -443,8 +443,9 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, IL
                          rcombo_data.m_LiveLoadFactor != 0.0;
       if (is_liveload)
       {
-         std::vector<LiveLoadModelType>::iterator iter;
-         for ( iter = rcombo_data.m_LiveLoadModels.begin(); iter != rcombo_data.m_LiveLoadModels.end(); iter++ )
+         std::vector<LiveLoadModelType>::iterator iter( rcombo_data.m_LiveLoadModels.begin() );
+         std::vector<LiveLoadModelType>::iterator iterend( rcombo_data.m_LiveLoadModels.end() );
+         for ( ; iter != iterend; iter++ )
          {
             LiveLoadModelType llt = *iter;
             if ( llt == lltNone )
@@ -499,7 +500,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(BSTR loadCombinatio
       m_pCombiner->Validate();
 
       // get cached information for combo
-      CLoadCombiner::LoadCombinationIterator lcit = m_pCombiner->m_LoadCombinations.find( CLoadCombiner::NameHolder(loadCombination) );
+      CLoadCombiner::LoadCombinationIterator lcit( m_pCombiner->m_LoadCombinations.find( CLoadCombiner::NameHolder(loadCombination) ) );
       if (lcit == m_pCombiner->m_LoadCombinations.end())
       {
          CComBSTR msg = CreateErrorMsg1S(IDS_E_LOADCOMBO_NO_EXIST, loadCombination);
@@ -537,8 +538,9 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(BSTR loadCombinatio
 
       if (is_liveload)
       {
-         std::vector<LiveLoadModelType>::iterator iter;
-         for ( iter = rcombo_data.m_LiveLoadModels.begin(); iter != rcombo_data.m_LiveLoadModels.end(); iter++ )
+         std::vector<LiveLoadModelType>::iterator iter( rcombo_data.m_LiveLoadModels.begin() );
+         std::vector<LiveLoadModelType>::iterator iterend( rcombo_data.m_LiveLoadModels.end() );
+         for ( ; iter != iterend; iter++ )
          {
             LiveLoadModelType llt = *iter;
             if (llt == lltNone )
@@ -583,7 +585,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(BSTR loadCombination,
       m_pCombiner->Validate();
 
       // get cached information for combo
-      CLoadCombiner::LoadCombinationIterator lcit = m_pCombiner->m_LoadCombinations.find( CLoadCombiner::NameHolder(loadCombination) );
+      CLoadCombiner::LoadCombinationIterator lcit( m_pCombiner->m_LoadCombinations.find( CLoadCombiner::NameHolder(loadCombination) ) );
       if (lcit == m_pCombiner->m_LoadCombinations.end())
       {
          CComBSTR msg = CreateErrorMsg1S(IDS_E_LOADCOMBO_NO_EXIST, loadCombination);
@@ -621,8 +623,9 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(BSTR loadCombination,
 
       if (is_liveload)
       {
-         std::vector<LiveLoadModelType>::iterator iter;
-         for ( iter = rcombo_data.m_LiveLoadModels.begin(); iter != rcombo_data.m_LiveLoadModels.end(); iter++ )
+         std::vector<LiveLoadModelType>::iterator iter( rcombo_data.m_LiveLoadModels.begin() );
+         std::vector<LiveLoadModelType>::iterator iterend( rcombo_data.m_LiveLoadModels.end() );
+         for (; iter != iterend; iter++ )
          {
             LiveLoadModelType llt = *iter;
             if ( llt == lltNone )
@@ -667,7 +670,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(BSTR loadCom
       m_pCombiner->Validate();
 
       // get cached information for combo
-      CLoadCombiner::LoadCombinationIterator lcit = m_pCombiner->m_LoadCombinations.find( CLoadCombiner::NameHolder(loadCombination) );
+      CLoadCombiner::LoadCombinationIterator lcit( m_pCombiner->m_LoadCombinations.find( CLoadCombiner::NameHolder(loadCombination) ) );
       if (lcit == m_pCombiner->m_LoadCombinations.end())
       {
          CComBSTR msg = CreateErrorMsg1S(IDS_E_LOADCOMBO_NO_EXIST, loadCombination);
@@ -705,8 +708,9 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(BSTR loadCom
 
       if (is_liveload)
       {
-         std::vector<LiveLoadModelType>::iterator iter;
-         for ( iter = rcombo_data.m_LiveLoadModels.begin(); iter != rcombo_data.m_LiveLoadModels.end(); iter++ )
+         std::vector<LiveLoadModelType>::iterator iter( rcombo_data.m_LiveLoadModels.begin() );
+         std::vector<LiveLoadModelType>::iterator iterend( rcombo_data.m_LiveLoadModels.end() );
+         for ( ; iter != iterend; iter++ )
          {
             LiveLoadModelType llt = *iter;
             if ( llt == lltNone )

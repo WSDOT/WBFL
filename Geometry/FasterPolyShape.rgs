@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.FasterPolyShape.1 = s 'FasterPolyShape Class'
+	{
+		CLSID = s '{(AFB02F20-6824-491f-B804-1AD34DAA965E}'
+	}
+	WBFLGeometry.FasterPolyShape = s 'FasterPolyShape Class'
+	{
+		CLSID = s '{(AFB02F20-6824-491f-B804-1AD34DAA965E}'
+		CurVer = s 'WBFLGeometry.FasterPolyShape.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {(AFB02F20-6824-491f-B804-1AD34DAA965E} = s 'FasterPolyShape Class'
+		{
+			ProgID = s 'WBFLGeometry.FasterPolyShape.1'
+			VersionIndependentProgID = s 'WBFLGeometry.FasterPolyShape'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

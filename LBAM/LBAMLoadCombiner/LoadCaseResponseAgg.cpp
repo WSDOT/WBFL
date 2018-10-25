@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Load Combiner - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -108,7 +108,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeForces(BSTR LoadCase, ILongArray* POIs
       m_pCombiner->Validate();
 
       // get the list of active load groups for the load case
-      CLoadCombiner::LoadCaseIterator lcit = m_pCombiner->m_LoadCases.find( CLoadCombiner::NameHolder(LoadCase) );
+      CLoadCombiner::LoadCaseIterator lcit( m_pCombiner->m_LoadCases.find( CLoadCombiner::NameHolder(LoadCase) ) );
       if (lcit == m_pCombiner->m_LoadCases.end())
       {
          CComBSTR msg = CreateErrorMsg1S(IDS_E_LOADCASE_NO_EXIST, LoadCase);
@@ -191,7 +191,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeDeflections(BSTR LoadCase, ILongArray*
       m_pCombiner->Validate();
 
       // get the list of active load groups for the load case
-      CLoadCombiner::LoadCaseIterator lcit = m_pCombiner->m_LoadCases.find( CLoadCombiner::NameHolder(LoadCase) );
+      CLoadCombiner::LoadCaseIterator lcit( m_pCombiner->m_LoadCases.find( CLoadCombiner::NameHolder(LoadCase) ) );
       if (lcit == m_pCombiner->m_LoadCases.end())
       {
          CComBSTR msg = CreateErrorMsg1S(IDS_E_LOADCASE_NO_EXIST, LoadCase);
@@ -276,7 +276,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeReactions(BSTR LoadCase, ILongArray* P
       m_pCombiner->Validate();
 
       // get the list of active load groups for the load case
-      CLoadCombiner::LoadCaseIterator lcit = m_pCombiner->m_LoadCases.find( CLoadCombiner::NameHolder(LoadCase) );
+      CLoadCombiner::LoadCaseIterator lcit( m_pCombiner->m_LoadCases.find( CLoadCombiner::NameHolder(LoadCase) ) );
       if (lcit == m_pCombiner->m_LoadCases.end())
       {
          CComBSTR msg = CreateErrorMsg1S(IDS_E_LOADCASE_NO_EXIST, LoadCase);
@@ -359,7 +359,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeSupportDeflections(BSTR LoadCase, ILon
       m_pCombiner->Validate();
 
       // get the list of active load groups for the load case
-      CLoadCombiner::LoadCaseIterator lcit = m_pCombiner->m_LoadCases.find( CLoadCombiner::NameHolder(LoadCase) );
+      CLoadCombiner::LoadCaseIterator lcit( m_pCombiner->m_LoadCases.find( CLoadCombiner::NameHolder(LoadCase) ) );
       if (lcit == m_pCombiner->m_LoadCases.end())
       {
          CComBSTR msg = CreateErrorMsg1S(IDS_E_LOADCASE_NO_EXIST, LoadCase);
@@ -442,7 +442,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeStresses(BSTR LoadCase, ILongArray* PO
       m_pCombiner->Validate();
 
       // get the list of active load groups for the load case
-      CLoadCombiner::LoadCaseIterator lcit = m_pCombiner->m_LoadCases.find( CLoadCombiner::NameHolder(LoadCase) );
+      CLoadCombiner::LoadCaseIterator lcit( m_pCombiner->m_LoadCases.find( CLoadCombiner::NameHolder(LoadCase) ) );
       if (lcit == m_pCombiner->m_LoadCases.end())
       {
          CComBSTR msg = CreateErrorMsg1S(IDS_E_LOADCASE_NO_EXIST, LoadCase);

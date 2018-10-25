@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -981,7 +981,7 @@ STDMETHODIMP CVoidedSlab2::Load(IStructuredLoad2* pLoad)
    m_Hint = var.dblVal;
    
    pLoad->get_Property(CComBSTR("VoidCount"),&var);
-   m_VoidCount = var.lVal;
+   m_VoidCount = var.iVal;
    
    pLoad->get_Property(CComBSTR("Rotation"),&var);
    m_Rotation = var.dblVal;

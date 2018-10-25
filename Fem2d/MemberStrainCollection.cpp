@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -63,7 +63,7 @@ STDMETHODIMP CMemberStrainCollection::Create(/*[in]*/LoadIDType id,  /*[in]*/Mem
    HRESULT hr = E_FAIL;
 
    // see if a joint load with our id already exists
-   ContainerIteratorType it = m_coll.find(id);
+   ContainerIteratorType it( m_coll.find(id) );
    if (it != m_coll.end())
    {
       // exists - return error
@@ -83,8 +83,7 @@ STDMETHODIMP CMemberStrainCollection::Create(/*[in]*/LoadIDType id,  /*[in]*/Mem
       pstrn->Init(m_pModel, m_pEvents, m_pLoading, id, memberID, axialStrain, curvatureStrain);
 
       // insert new load
-      std::pair<ContainerIteratorType,bool> st;
-      st = m_coll.insert(ContainerValueType(id, CComVariant(*ppMemberStrain) ));
+      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, CComVariant(*ppMemberStrain) )) );
       if (!st.second)
       {
          ATLASSERT(0); // insert failed - better check why

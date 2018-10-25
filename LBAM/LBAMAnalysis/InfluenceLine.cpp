@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -151,7 +151,7 @@ STDMETHODIMP CInfluenceLine::Remove(/*[in]*/CollectionIndexType idx)
 
       if ( 0 <= idx && idx < (CollectionIndexType)container.size() )
       {
-         InfluencePointIterator it = container.begin();
+         InfluencePointIterator it( container.begin() );
          it += idx;
          container.erase(it);
 
@@ -231,8 +231,9 @@ STDMETHODIMP CInfluenceLine::FindMaxValue(Float64 start,Float64 end,Float64* pLo
       }
 
 
-      InfluencePointIterator iter;
-      for ( iter = container.begin() + startIdx; iter != container.end(); iter++ )
+      InfluencePointIterator iter(container.begin() + startIdx);
+      InfluencePointIterator iterend( container.end() );
+      for (; iter != iterend; iter++ )
       {
          InflPoint& inflPoint = *iter;
          if ( (start <= inflPoint.m_Location && inflPoint.m_Location <= end) && // in range
@@ -286,8 +287,9 @@ STDMETHODIMP CInfluenceLine::FindMinValue(Float64 start,Float64 end,Float64* pLo
       }
 
 
-      InfluencePointIterator iter;
-      for ( iter = container.begin() + startIdx; iter != container.end(); iter++ )
+      InfluencePointIterator iter( container.begin() + startIdx );
+      InfluencePointIterator iterend( container.end() );
+      for (; iter != iterend; iter++ )
       {
          InflPoint& inflPoint = *iter;
          if ( (start <= inflPoint.m_Location && inflPoint.m_Location <= end) && // in range
@@ -786,12 +788,13 @@ void CInfluenceLine::OptimizeInfluence(const InfluencePointContainer& source, In
 
    if (source_size>2)
    {
-      ConstInfluencePointIterator it3 = source.begin();
-      ConstInfluencePointIterator it1 = it3++;
-      ConstInfluencePointIterator it2 = it3++;
+      ConstInfluencePointIterator it3( source.begin() );
+      ConstInfluencePointIterator it1( it3++ );
+      ConstInfluencePointIterator it2( it3++ );
       long misfit=1;
       bool last_was_misfit=false;
-      while( it3!=source.end() )
+      ConstInfluencePointIterator itend( source.end() );
+      while( it3!=itend )
       {
          if (IsEqual(it1->m_Value, it2->m_Value, m_ZeroTolerance) )
          {
@@ -875,9 +878,10 @@ void CInfluenceLine::OptimizeInfluence(const InfluencePointContainer& source, In
    {
       bool last_matched=false;
       Float64 last_loc;
-      InfluencePointIterator it2 = target.begin();
-      InfluencePointIterator it1 = it2++;
-      while( it2!=target.end())
+      InfluencePointIterator it2( target.begin() );
+      InfluencePointIterator it1( it2++ );
+      InfluencePointIterator itend( target.end() );
+      while( it2!=itend )
       {
          if (it1->m_Location == it2->m_Location)
          {
@@ -936,8 +940,8 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
          local_infl.reserve(orig_size*12/10);  // make room for intersections
 
          // whack positive values
-         InfluencePointIterator it2=primary_container.begin();
-         InfluencePointIterator it1=it2++;
+         InfluencePointIterator it2( primary_container.begin() );
+         InfluencePointIterator it1(it2++ );
 
          // first deal with end condition
          InflPoint& p1 = *it1;
@@ -952,7 +956,8 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
          }
 
          // loop through and flatten
-         while( it2 != primary_container.end() )
+         InfluencePointIterator itend( primary_container.end() );
+         while( it2 != itend )
          {
             InflPoint& p1 = *it1;
             InflPoint& p2 = *it2;
@@ -1032,8 +1037,8 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
          local_infl.reserve(orig_size*12/10);  // make room for intersections
 
          // whack negative values
-         InfluencePointIterator it2=primary_container.begin();
-         InfluencePointIterator it1=it2++;
+         InfluencePointIterator it2( primary_container.begin() );
+         InfluencePointIterator it1( it2++ );
 
          // first deal with end condition
          InflPoint& p1 = *it1;
@@ -1048,7 +1053,8 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
          }
 
          // loop through and flatten
-         while( it2 != primary_container.end() )
+         InfluencePointIterator itend( primary_container.end() );
+         while( it2 != itend )
          {
             InflPoint& p1 = *it1;
             InflPoint& p2 = *it2;
@@ -1235,12 +1241,13 @@ void CInfluenceLine::DoComputeArea()
    }
    else
    {
-      InfluencePointIterator it2=container.begin();
-      InfluencePointIterator it1=it2++;
+      InfluencePointIterator it2( container.begin() );
+      InfluencePointIterator it1( it2++ );
       
       Float64 pos_area=0.0;
       Float64 neg_area=0.0;
-      while(it2!=container.end())
+      InfluencePointIterator itend( container.end() );
+      while(it2!=itend)
       {
          const InflPoint& pnt1 = *it1;
          const InflPoint& pnt2 = *it2;
@@ -1273,13 +1280,14 @@ STDMETHODIMP CInfluenceLine::ComputeNonZeroRegions(InfluenceSideType side, IDblA
          if (side==ilsPositive)
          {
             // get regions that have positive values
-            InfluencePointIterator it2 = container.begin();
-            InfluencePointIterator it1 = it2++;
+            InfluencePointIterator it2( container.begin() );
+            InfluencePointIterator it1( it2++ );
 
             int iseg=0;
             int numsegs = size-1;
             bool in_zone = false;
-            while (it2 != container.end() )
+            InfluencePointIterator itend( container.end() );
+            while (it2 != itend )
             {
                InflPoint& pnt1 = *it1;
                InflPoint& pnt2 = *it2;
@@ -1336,13 +1344,14 @@ STDMETHODIMP CInfluenceLine::ComputeNonZeroRegions(InfluenceSideType side, IDblA
          }
          else if (side==ilsNegative)
          {
-            InfluencePointIterator it2 = container.begin();
-            InfluencePointIterator it1 = it2++;
+            InfluencePointIterator it2( container.begin() );
+            InfluencePointIterator it1( it2++ );
 
             int iseg=0;
             int numsegs = size-1;
             bool in_zone = false;
-            while (it2 != container.end() )
+            InfluencePointIterator itend( container.end() );
+            while (it2 != itend )
             {
                InflPoint& pnt1 = *it1;
                InflPoint& pnt2 = *it2;
@@ -1400,13 +1409,14 @@ STDMETHODIMP CInfluenceLine::ComputeNonZeroRegions(InfluenceSideType side, IDblA
          {
             // look for any non-zero regions
             // get regions that have positive values
-            InfluencePointIterator it2 = container.begin();
-            InfluencePointIterator it1 = it2++;
+            InfluencePointIterator it2( container.begin() );
+            InfluencePointIterator it1( it2++ );
 
             int iseg=0;
             int numsegs = size-1;
             bool in_zone = false;
-            while (it2 != container.end() )
+            InfluencePointIterator itend( container.end() );
+            while (it2 != itend )
             {
                InflPoint& pnt1 = *it1;
                InflPoint& pnt2 = *it2;
@@ -1488,7 +1498,7 @@ void CInfluenceLine::FindInflPnt(Float64 location, InfluencePointIterator& curso
 
    while (cursor!=end)
    {
-      InfluencePointIterator cur = cursor;
+      InfluencePointIterator cur(cursor);
       cur++;
 
       if (cur!=end)
@@ -1509,7 +1519,7 @@ Float64 CInfluenceLine::CalcInflArea(Float64 startLoc, Float64 endLoc, Influence
    Float64 val_cur = cursor->m_Value;
    ATLASSERT(loc_cur <= startLoc);
 
-   InfluencePointIterator lcur = cursor;
+   InfluencePointIterator lcur(cursor);
    lcur++;
    if (lcur==end)
    {
@@ -1639,8 +1649,8 @@ STDMETHODIMP CInfluenceLine::ComputeAreaInRegions(IDblArray* regions, Float64* p
 
          // Compute areas
          InfluencePointContainer& container = GetContainer(ilsBoth);
-         InfluencePointIterator cursor = container.begin();
-         InfluencePointIterator end = container.end();
+         InfluencePointIterator cursor( container.begin() );
+         InfluencePointIterator end( container.end() );
 
          Float64 area = 0.0;
          long num_rgns = rgn_size/2;
@@ -1695,8 +1705,9 @@ STDMETHODIMP CInfluenceLine::IsZero(InfluenceSideType side, VARIANT_BOOL* isZero
 
       InfluencePointContainer& container = GetContainer(side);
 
-      InfluencePointIterator it=container.begin();
-      while(it!=container.end())
+      InfluencePointIterator it( container.begin() );
+      InfluencePointIterator itend( container.end() );
+      while(it!=itend)
       {
          InflPoint& p1 = *it++;
 

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EngTools - Library of miscellaneous engineering tools
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -284,7 +284,7 @@ bool etBiaxialBeamStrain::TestMe()
    if(!IsEqual(bs.GetXStrainLocation(-.56667,-4.,flag),-4.,.001)) return false;
    if(!IsEqual(bs.GetYStrainLocation(0.23333, 4.,flag), 4.,.001)) return false;
 
-//   bs.Dump(std::_tcout);
+//   bs.Dump(std::cout);
 
    return true;
 }

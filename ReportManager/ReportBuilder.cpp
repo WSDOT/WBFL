@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManager - Manages report definitions
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -150,12 +150,6 @@ boost::shared_ptr<rptReport> CReportBuilder::CreateReport(boost::shared_ptr<CRep
    boost::shared_ptr<rptReport> pReport( new rptReport(pRptSpec->GetReportName()) );
    std::vector<CChapterInfo> vchInfo = pRptSpec->GetChapterInfo();
 
-   if ( m_pTitlePageBuilder.get() )
-   {
-      rptChapter* pTitlePage = m_pTitlePageBuilder->Build( pRptSpec );
-      (*pReport) << pTitlePage;
-   }
-
    std::vector<CChapterInfo>::iterator iter;
    for ( iter = vchInfo.begin(); iter != vchInfo.end(); iter++ )
    {
@@ -163,6 +157,13 @@ boost::shared_ptr<rptReport> CReportBuilder::CreateReport(boost::shared_ptr<CRep
       boost::shared_ptr<CChapterBuilder> pChBuilder = GetChapterBuilder( chInfo.Key.c_str() );
       rptChapter* pChapter = pChBuilder->Build( pRptSpec.get(), chInfo.MaxLevel );
       (*pReport) << pChapter;
+   }
+
+   // Build title page after all others to assure that all status items have been created
+   if ( m_pTitlePageBuilder.get() )
+   {
+      rptChapter* pTitlePage = m_pTitlePageBuilder->Build( pRptSpec );
+      pReport->InsertChapterAt(0, pTitlePage);
    }
 
    return pReport;

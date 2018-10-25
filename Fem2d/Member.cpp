@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -673,7 +673,9 @@ void CMember::ComputeClassicResults()
 
    // for every load in the current Loading
    // compute member end displacements, rotations, and forces
-   for (MbrLoadPointerIterator ld= m_Loads.begin(); ld!=m_Loads.end(); ld++)
+   MbrLoadPointerIterator ld( m_Loads.begin() );
+   MbrLoadPointerIterator ldend( m_Loads.end() );
+   for (; ld!=ldend; ld++)
    {
       MbrLoad& mbrLd = **ld;
 
@@ -914,7 +916,9 @@ void CMember::GetInternalForces(Float64 loc,Fem2dMbrFaceType face,Float64 *force
    Float64 angle  = m_JointKeeper.GetAngle();
    Float64 length = m_JointKeeper.GetLength();
    // Iterate over all loads on this member, for the active Loading
-   for (MbrLoadPointerIterator ld=m_Loads.begin(); ld!=m_Loads.end(); ld++)
+   MbrLoadPointerIterator ld( m_Loads.begin() );
+   MbrLoadPointerIterator ldend( m_Loads.end() );
+   for (; ld!=ldend; ld++)
    {
       // Member loads know how to compute their own internal force effects.
       MbrLoad *mbrLd = *ld;
@@ -972,7 +976,9 @@ void CMember::GetDeflection(Float64 loc,Float64 *disp)
    Float64 length = m_JointKeeper.GetLength();
 
    // Iterate over all loads on this member, for the active Loading
-   for (MbrLoadPointerIterator ld=m_Loads.begin(); ld!=m_Loads.end(); ld++)
+   MbrLoadPointerIterator ld( m_Loads.begin() );
+   MbrLoadPointerIterator ldend( m_Loads.end() );
+   for (; ld!=ldend; ld++)
    {  
       // Member loads know how to compute their own internal displacements.
       MbrLoad *mbrLd = *ld;
@@ -1034,7 +1040,9 @@ void CMember::GetPinPinRotation(Float64 &rz1,Float64 &rz2)
    Float64 angle  = m_JointKeeper.GetAngle();
    Float64 length = m_JointKeeper.GetLength();
 
-   for (MbrLoadPointerIterator i=m_Loads.begin(); i!=m_Loads.end(); i++)
+   MbrLoadPointerIterator i( m_Loads.begin() );
+   MbrLoadPointerIterator iend( m_Loads.end() );
+   for (; i!=iend; i++)
    {
       MbrLoad *load = *i;
       load->GetDispVector(mtPinPin,length,angle,
@@ -1064,7 +1072,9 @@ void CMember::GetPinFixRotation(Float64 &rz1)
    Float64 length = m_JointKeeper.GetLength();
 
    // rotation due to internal forces
-   for (MbrLoadPointerIterator i=m_Loads.begin(); i!=m_Loads.end(); i++)
+   MbrLoadPointerIterator i( m_Loads.begin() );
+   MbrLoadPointerIterator iend( m_Loads.end() );
+   for (; i!=iend; i++)
    {
       MbrLoad *load = *i;
       load->GetDispVector(mtPinFix,length,angle,
@@ -1094,7 +1104,9 @@ void CMember::GetFixPinRotation(Float64 &rz2)
    Float64 angle  = m_JointKeeper.GetAngle();
    Float64 length = m_JointKeeper.GetLength();
 
-   for (MbrLoadPointerIterator i=m_Loads.begin(); i!=m_Loads.end(); i++)
+   MbrLoadPointerIterator i( m_Loads.begin() );
+   MbrLoadPointerIterator iend( m_Loads.end() );
+   for (; i!=iend; i++)
    {
       MbrLoad *load = *i;
       load->GetDispVector(mtFixPin,length,angle,
@@ -1133,7 +1145,10 @@ void CMember::AssembleF()
    // Iterate over all loads on this member
    // Point Loads
    Float64 vector[TotalDOF];
-   for (MbrLoadPointerIterator ld=m_Loads.begin(); ld!=m_Loads.end(); ld++)
+
+   MbrLoadPointerIterator ld( m_Loads.begin() );
+   MbrLoadPointerIterator ldend( m_Loads.end() );
+   for (; ld!=ldend; ld++)
    {
       was_loaded = true;
       MbrLoad *mbrLd = *ld;
@@ -1226,8 +1241,9 @@ bool CMember::IsEquilibriumSatisfied(Float64 tolerance)
 
    // Iterate over all loads on this member, for the active Loading
    // Get force effects at start of member from the applied loads.
-   MbrLoadPointerIterator iter = m_Loads.begin();
-   while(iter!=m_Loads.end())
+   MbrLoadPointerIterator iter( m_Loads.begin() );
+   MbrLoadPointerIterator iterend( m_Loads.end() );
+   while(iter!=iterend)
    {
       // Member loads know how to compute their own internal force effects.
       MbrLoad *mbrLd = *(iter++);

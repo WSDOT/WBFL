@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Modeling Library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -100,7 +100,7 @@ public:
 //   //
 //   // Returns zero on success, required size of str if it is too small, or -1 on
 //   // an other error.
-//   static short StationToString(Float64 station,short nDigOffset,short nDec,LPTSTR str,short cch);
+//   static short StationToString(Float64 station,short nDigOffset,short nDec,TCHAR* str,short cch);
 //
 //   //------------------------------------------------------------------------
 //   // Converts a station string to a floating point number.  nDigOffset is the 

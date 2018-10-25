@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -128,7 +128,9 @@ STDMETHODIMP CSupports::Clone(ISupports* *pColl)
    // clone properties
 
    // clone collection
-   for (iterator it= begin(); it != end(); it++)
+   iterator it( begin() );
+   iterator ite( end() );
+   for (; it != ite; it++)
    {
       CComPtr<ISupport> isp;
       

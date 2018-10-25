@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Load Combiner Test - Test driver for LBAM analysis library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -75,7 +75,7 @@ inline void CompareCmbForceResults(BSTR loadCombination, BSTR Stage, Optimizatio
    // working correctly. 
    // Of course, both engines could be computing the wrong answer....
    os<<"---------------------------------------------------"<< std::endl;
-   os<<"Results for "<<(LPTSTR)_bstr_t(loadCombination)<< " for stage "<<(LPTSTR)_bstr_t(Stage)<<std::endl;
+   os<<"Results for "<<(TCHAR*)_bstr_t(loadCombination)<< " for stage "<<(TCHAR*)_bstr_t(Stage)<<std::endl;
    os<< (optmization==optMaximize ? "Maximized Positive ":"Maximized Negative ")<<
       (forceType==fetMz? "Moment " : "Shear ")<<std::endl;
 
@@ -158,7 +158,7 @@ inline void CompareCmbDeflectionResults(BSTR loadCombination, BSTR Stage, Optimi
    // working correctly. 
    // Of course, both engines could be computing the wrong answer....
    os<<"---------------------------------------------------"<< std::endl;
-   os<<"Deflection Results for "<<(LPTSTR)_bstr_t(loadCombination)<< " for stage "<<(LPTSTR)_bstr_t(Stage)<<std::endl;
+   os<<"Deflection Results for "<<(TCHAR*)_bstr_t(loadCombination)<< " for stage "<<(TCHAR*)_bstr_t(Stage)<<std::endl;
    os<< (optmization==optMaximize ? "Maximized Positive ":"Maximized Negative ");
    if (forceType==fetFx)
       os<<"Horizontal Displacement"<<std::endl;
@@ -249,7 +249,7 @@ inline void CompareCmbReactionResults(ILBAMModel* Model, BSTR loadCombination, B
    // working correctly. 
    // Of course, both engines could be computing the wrong answer....
    os<<"---------------------------------------------------"<< std::endl;
-   os<<"Reactions for "<<(LPTSTR)_bstr_t(loadCombination)<< " for stage "<<(LPTSTR)_bstr_t(Stage)<<std::endl;
+   os<<"Reactions for "<<(TCHAR*)_bstr_t(loadCombination)<< " for stage "<<(TCHAR*)_bstr_t(Stage)<<std::endl;
    os<< (optmization==optMaximize ? "Maximized Positive ":"Maximized Negative ");
 
    if (forceType==fetFx)
@@ -322,7 +322,7 @@ inline void CompareCmbSupportDeflectionResults(ILBAMModel* Model, BSTR loadCombi
    // working correctly. 
    // Of course, both engines could be computing the wrong answer....
    os<<"---------------------------------------------------"<< std::endl;
-   os<<"Support Deflections for "<<(LPTSTR)_bstr_t(loadCombination)<< " for stage "<<(LPTSTR)_bstr_t(Stage)<<std::endl;
+   os<<"Support Deflections for "<<(TCHAR*)_bstr_t(loadCombination)<< " for stage "<<(TCHAR*)_bstr_t(Stage)<<std::endl;
    os<< (optmization==optMaximize ? "Maximized Positive ":"Maximized Negative ");
 
    if (forceType==fetFx)

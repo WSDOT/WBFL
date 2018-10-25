@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis Test - Test driver for LBAM analysis library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -248,7 +248,7 @@ ILBAMModel* TestStressPoints::CreateModel(bool doPois)
    CComPtr<ILoadGroups> pLoadGroups;
    TRY_TEST(psm->get_LoadGroups(&pLoadGroups), S_OK);
 
-   LPTSTR lgns[]={_T("Point Loads"),_T("Distributed Loads")};
+   TCHAR* lgns[]={_T("Point Loads"),_T("Distributed Loads")};
    for (int i=0; i<2; i++)
    {
       CComPtr<ILoadGroup> pLoadGroup;

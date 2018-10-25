@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -205,7 +205,7 @@ HRESULT CStation::StringToStation(BSTR strString,int nDigOffset,int nDec)
 
    CComBSTR bstrStation(strString);
 
-   LPTSTR pBuffer = 0;
+   TCHAR* pBuffer = 0;
    HRESULT hr = S_OK;
 
    TCHAR chFirst;

@@ -64,8 +64,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,3,2,0
- PRODUCTVERSION 3,3,2,0
+ FILEVERSION 3,4,0,0
+ PRODUCTVERSION 3,4,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -83,12 +83,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "MfcTools DLL"
-            VALUE "FileVersion", "3.3.2.0"
+            VALUE "FileVersion", "3.4.0.0"
             VALUE "InternalName", "MfcTools"
-            VALUE "LegalCopyright", "Copyright © 1999-2010"
+            VALUE "LegalCopyright", "Copyright © 1999-2011"
             VALUE "OriginalFilename", "MfcTools.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "3.3.2.0"
+            VALUE "ProductVersion", "3.4.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -136,10 +136,11 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Dialog"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    ICON            "",IDC_QUESTIONMARK,7,7,21,20
+    ICON            "",IDC_QUESTIONMARK,7,7,20,20
     LTEXT           "Static",IDC_QUESTION,43,7,266,21
     EDITTEXT        IDC_ANSWER,41,47,268,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,259,72,50,14
+    DEFPUSHBUTTON   "OK",IDOK,207,72,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,259,72,50,14
 END
 
 IDD_CHOICE DIALOGEX 0, 0, 316, 90
@@ -147,10 +148,10 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Dialog"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,206,69,50,14
+    ICON            "",IDC_QUESTIONMARK,7,7,20,20
     LTEXT           "Static",IDC_QUESTION,44,7,265,22
     COMBOBOX        IDC_RESPONSE_CHOICES,43,42,266,63,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    ICON            "",IDC_QUESTIONMARK,7,7,20,20
+    DEFPUSHBUTTON   "OK",IDOK,206,69,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,259,69,50,14
 END
 

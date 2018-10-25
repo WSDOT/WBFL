@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -77,7 +77,9 @@ END_CONNECTION_POINT_MAP()
    STDMETHOD(OnDistributedLoadChanged)(/*[in]*/IDistributedLoad* DistributedLoad)
    {
       // Load can be in more than one item
-      for (iterator i=begin(); i!=end(); i++)
+      iterator i(begin());
+      iterator iend(end());
+      for (; i!=iend; i++)
       {
          CComPtr<IDistributedLoad> pl;
          HRESULT hr = i->get_Load(&pl);
@@ -127,7 +129,9 @@ public:
 
    STDMETHOD(FinalRelease)()
    {
-      for (iterator i=begin(); i!=end(); i++)
+      iterator i( begin() );
+      iterator iend( end() );
+      for (; i!=iend; i++)
       {
          OnBeforeRemove(*i);
       }

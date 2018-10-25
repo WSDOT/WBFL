@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Live Load Test - Test driver for LBAM analysis library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -41,7 +41,7 @@ inline void CompLLForceResults(BSTR Stage, OptimizationType optmization, ForceEf
    // working correctly. 
    // Of course, both engines could be computing the wrong answer....
    os<<"---------------------------------------------------"<< std::endl;
-   os<<"Force Reponse for "<<(LPTSTR)_bstr_t(Stage)<<std::endl;
+   os<<"Force Reponse for "<<(TCHAR*)_bstr_t(Stage)<<std::endl;
    os<< (optmization==optMaximize ? "Maximized Positive ":"Maximized Negative ")<<
       (forceType==fetMz? "Moment " : "Shear ")<<std::endl;
 
@@ -154,7 +154,7 @@ inline void CompLLDeflResults(BSTR Stage, OptimizationType optmization, ForceEff
    // working correctly. 
    // Of course, both engines could be computing the wrong answer....
    os<<"---------------------------------------------------"<< std::endl;
-   os<<"Deflection Reponse for "<<(LPTSTR)_bstr_t(Stage)<<std::endl;
+   os<<"Deflection Reponse for "<<(TCHAR*)_bstr_t(Stage)<<std::endl;
    os<< (optmization==optMaximize ? "Maximized Positive ":"Maximized Negative ")<<
       (forceType==fetMz? "Rotation " : "Vertical Deflection ")<<std::endl;
 
@@ -268,7 +268,7 @@ inline void CompLLReactionResults(ILBAMModel* Model, BSTR Stage, OptimizationTyp
    // working correctly. 
    // Of course, both engines could be computing the wrong answer....
    os<<"---------------------------------------------------"<< std::endl;
-   os<<"Reaction Reponse for "<<(LPTSTR)_bstr_t(Stage)<<std::endl;
+   os<<"Reaction Reponse for "<<(TCHAR*)_bstr_t(Stage)<<std::endl;
    os<< (optmization==optMaximize ? "Maximized Positive ":"Maximized Negative ");
    if (forceType==fetFx)
       os<<"X Direction"<<std::endl;
@@ -367,7 +367,7 @@ inline void CompLLSupportDeflectionResults(ILBAMModel* Model, BSTR Stage, Optimi
    // working correctly. 
    // Of course, both engines could be computing the wrong answer....
    os<<"---------------------------------------------------"<< std::endl;
-   os<<"SupportDeflection Reponse for "<<(LPTSTR)_bstr_t(Stage)<<std::endl;
+   os<<"SupportDeflection Reponse for "<<(TCHAR*)_bstr_t(Stage)<<std::endl;
    os<< (optmization==optMaximize ? "Maximized Positive ":"Maximized Negative ");
    if (forceType==fetFx)
       os<<"X Direction"<<std::endl;

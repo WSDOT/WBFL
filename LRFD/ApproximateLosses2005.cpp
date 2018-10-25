@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -42,6 +42,19 @@ CLASS
    lrfdApproximateLosses2005
 ****************************************************************************/
 
+// precompute conversions
+static const Float64 g_17_MPA  = ::ConvertToSysUnits(17.0,unitMeasure::MPa);
+static const Float64 g_70_MPA  = ::ConvertToSysUnits(70.0,unitMeasure::MPa);
+static const Float64 g_27p95_MPA  = ::ConvertToSysUnits(27.95,unitMeasure::MPa);
+static const Float64 g_69p05_MPA  = ::ConvertToSysUnits(69.05,unitMeasure::MPa);
+static const Float64 g_105p05_MPA  = ::ConvertToSysUnits(105.05,unitMeasure::MPa);
+
+static const Float64 g_2p4_KSI    = ::ConvertToSysUnits(2.4,unitMeasure::KSI);
+static const Float64 g_2p5_KSI    = ::ConvertToSysUnits(2.5,unitMeasure::KSI);
+static const Float64 g_3p95_KSI   = ::ConvertToSysUnits(3.95,unitMeasure::KSI);
+static const Float64 g_10_KSI     = ::ConvertToSysUnits(10.0,unitMeasure::KSI);
+static const Float64 g_10p05_KSI  = ::ConvertToSysUnits(10.05,unitMeasure::KSI);
+static const Float64 g_15p05_KSI  = ::ConvertToSysUnits(15.05,unitMeasure::KSI);
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
@@ -137,25 +150,25 @@ Float64 lrfdApproximateLosses2005::RelaxationLossesAtXfer() const
    {
       if (is_si)
       {
-         loss = ::ConvertToSysUnits(17.0,unitMeasure::MPa);
+         loss = g_17_MPA;
       }
       else
       {
          if ( lrfdVersionMgr::FourthEdition2007 <= lrfdVersionMgr::GetVersion() )
-            loss = ::ConvertToSysUnits(2.4,unitMeasure::KSI);
+            loss = g_2p4_KSI;
          else
-            loss = ::ConvertToSysUnits(2.5,unitMeasure::KSI);
+            loss = g_2p5_KSI;
       }
    }
    else
    {
       if (is_si)
       {
-         loss = ::ConvertToSysUnits(70.0,unitMeasure::MPa);
+         loss = g_70_MPA;
       }
       else
       {
-         loss = ::ConvertToSysUnits(10.0,unitMeasure::KSI);
+         loss = g_10_KSI;
       }
    }
 
@@ -342,12 +355,12 @@ void lrfdApproximateLosses2005::ValidateParameters() const
    // that have a little round-off error in them.
    // 5.4.2.1 - Sets limits between 4 and 10KSI, but allows greater than 10 KSI when specific articles permit it
    // 5.9.5.1 permits up to 15KSI for loss calculations
-   Float64 fcMin = (is_si ? ::ConvertToSysUnits( 27.95, unitMeasure::MPa ) : ::ConvertToSysUnits( 3.95, unitMeasure::KSI ) );
-   Float64 fcMax = (is_si ? ::ConvertToSysUnits( 105.05, unitMeasure::MPa ) : ::ConvertToSysUnits( 15.05, unitMeasure::KSI ) );
+   Float64 fcMin = (is_si ? g_27p95_MPA : g_3p95_KSI );
+   Float64 fcMax = (is_si ? g_105p05_MPA : g_15p05_KSI );
 
    // LRFD 2009 limits approximate stresses per 5.9.5.3 to 10 KSI
    if ( lrfdVersionMgr::FourthEditionWith2009Interims <= lrfdVersionMgr::GetVersion() )
-      fcMax = (is_si ? ::ConvertToSysUnits( 69.05, unitMeasure::MPa ) : ::ConvertToSysUnits( 10.05, unitMeasure::KSI ) );
+      fcMax = (is_si ? g_69p05_MPA : g_10p05_KSI );
 
    if ( m_Fc < fcMin || fcMax < m_Fc )
       THROW(lrfdXPsLosses,fcOutOfRange);

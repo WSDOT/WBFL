@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -84,7 +84,9 @@ public:
 
 	virtual ~CComKeyedCollection()
 	{
-      for (ContainerIteratorType it= m_coll.begin(); it != m_coll.end(); it++)
+      ContainerIteratorType it(m_coll.begin());
+      ContainerIteratorType itend(m_coll.end());
+      for (; it != itend; it++)
       {
          CComQIPtr<ItemType> item(it->second.punkVal);
          item.Release();
@@ -127,7 +129,7 @@ public:
       if (AccessMethod==atID)
       {
          // erase by id
-         ContainerType::iterator it = m_coll.find(IDorIndex);
+         ContainerType::iterator it(m_coll.find(IDorIndex));
          if (it!=m_coll.end())
          {
             // must release element before erasing it
@@ -153,7 +155,7 @@ public:
          else
          {
             // zero-based access
-            ContainerType::iterator it = m_coll.begin();
+            ContainerType::iterator it(m_coll.begin());
             for (CollectionIndexType i=0; i<IDorIndex; i++)
             {
                it++;
@@ -171,7 +173,7 @@ public:
    {
       CHECK_RETOBJ(pVal);
 
-      ContainerType::iterator it = m_coll.find(id);
+      ContainerType::iterator it(m_coll.find(id));
       if (it!=m_coll.end())
       {
          CComQIPtr<ItemType> item(it->second.punkVal);
@@ -217,13 +219,14 @@ public:
          return E_INVALIDARG;
 
  		// idx--; uncomment this line if you want one-based access
-		ContainerType::iterator iter = m_coll.begin();
-		while (iter != m_coll.end() && idx > 0)
+		ContainerType::iterator iter(m_coll.begin());
+		ContainerType::iterator iterend(m_coll.end());
+		while (iter != iterend && idx > 0)
 		{
 			iter++;
 			idx--;
 		}
-		if (iter != m_coll.end())
+		if (iter != iterend)
       {
          CComQIPtr<ItemType> item(iter->second.punkVal);
          *pVal = item;
@@ -237,7 +240,9 @@ public:
    STDMETHOD(Clear)()
    {
       // release all members first, then clear
-      for (ContainerIteratorType it= m_coll.begin(); it != m_coll.end(); it++)
+		ContainerType::iterator it(m_coll.begin());
+		ContainerType::iterator itend(m_coll.end());
+      for (; it != itend; it++)
       {
          CComQIPtr<ItemType> item(it->second.punkVal);
          item.Release();
@@ -250,7 +255,7 @@ public:
 // Classes for local C++ clients
    StoredType* Find(IDType id)
    {
-      ContainerType::iterator it = m_coll.find(id);
+      ContainerType::iterator it(m_coll.find(id));
       if (it!=m_coll.end())
       {
          // Get the COM pointer
@@ -274,6 +279,10 @@ public:
       friend CComKeyedCollection;
 
    public:
+      iterator(const ContainerIteratorType& rit):
+      m_it(rit)
+      {;}
+
 		iterator& operator++()
       {
          m_it++;			
@@ -282,7 +291,7 @@ public:
 
 		iterator operator++(int)
       {
-         iterator tmp = *this;
+         iterator tmp(this->m_it);
 			m_it++;
 			return (tmp); 
       }
@@ -327,15 +336,13 @@ public:
 
    iterator begin()
    {
-      iterator it;
-      it.m_it = m_coll.begin();
+      iterator it(m_coll.begin());
       return it;
    }
 
    iterator end()
    {
-      iterator it;
-      it.m_it = m_coll.end();
+      iterator it(m_coll.end());
       return it;
    }
 };

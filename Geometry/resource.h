@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -69,6 +69,7 @@
 #define IDR_MULTIWEB2                   140
 #define IDR_DECKEDSLABBEAM              141
 #define IDR_LINESEGMENT3D               142
+#define IDR_FASTERPOLYSHAPE             143
 
 #define IDS_E_NOTNORMALIZED             512
 #define IDS_E_ZEROMAGNITUDE             513

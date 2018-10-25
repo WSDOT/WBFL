@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -40,6 +40,13 @@ CLASS
    lrfdPsStrand
 ****************************************************************************/
 
+// preconvert for performance
+static const Float64 g_197000_MPA = ::ConvertToSysUnits( 197000., unitMeasure::MPa );
+static const Float64 g_1725_MPA   = ::ConvertToSysUnits( 1725, unitMeasure::MPa );
+static const Float64 g_1860_MPA   = ::ConvertToSysUnits( 1860, unitMeasure::MPa );
+static const Float64 g_28500_KSI  = ::ConvertToSysUnits( 28500., unitMeasure::KSI );
+static const Float64 g_250_KSI    = ::ConvertToSysUnits(  250, unitMeasure::KSI );
+static const Float64 g_270_KSI    = ::ConvertToSysUnits(  270, unitMeasure::KSI );
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
@@ -55,11 +62,13 @@ Float64 lrfdPsStrand::GetUltimateStrength(matPsStrand::Grade gr)
    Float64 fpu;
    bool is_si = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
    if ( gr == matPsStrand::Gr1725 )
-      fpu = is_si ? ::ConvertToSysUnits( 1725, unitMeasure::MPa )
-                  : ::ConvertToSysUnits(  250, unitMeasure::KSI );
+   {
+      fpu = is_si ? g_1725_MPA : g_250_KSI;
+   }
    else
-      fpu = is_si ? ::ConvertToSysUnits( 1860, unitMeasure::MPa )
-                  : ::ConvertToSysUnits(  270, unitMeasure::KSI );
+   {
+      fpu = is_si ? g_1860_MPA : g_270_KSI;
+   }
 
    return fpu;
 }
@@ -115,11 +124,11 @@ Float64 lrfdPsStrand::GetModE()
 
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
-      e = ::ConvertToSysUnits( 197000., unitMeasure::MPa );
+      e = g_197000_MPA;
    }
    else
    {
-      e = ::ConvertToSysUnits( 28500., unitMeasure::KSI );
+      e = g_28500_KSI;
    }
 
    return e;

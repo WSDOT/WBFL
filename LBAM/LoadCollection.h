@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -22,7 +22,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -309,7 +309,7 @@ public:
       if (index<0)
          return E_INVALIDARG;
 
-      ContainerIteratorType it = m_Container.begin();
+      ContainerIteratorType it( m_Container.begin() );
       for (CollectionIndexType i=0; i<index; i++)
          it++;
 
@@ -347,7 +347,7 @@ public:
       CHECK_IN(newVal);
       HRESULT hr;
 
-      ContainerIteratorType it = m_Container.find(ID);
+      ContainerIteratorType it( m_Container.find(ID) );
       if (it != m_Container.end())
       {
          IItemType* item = it->second;
@@ -449,8 +449,7 @@ public:
       }
 
       // insert new member
-      std::pair<ContainerIteratorType,bool> st;
-      st = m_Container.insert(ContainerValueType(pitem->m_ID, pitem));
+      std::pair<ContainerIteratorType,bool> st( m_Container.insert(ContainerValueType(pitem->m_ID, pitem)) );
       if (!st.second)
       {
          ATLASSERT(0); // insert failed - better check why
@@ -466,7 +465,7 @@ public:
    {
       CHECK_RETOBJ(retVal);
 
-      ContainerIteratorType it = m_Container.find(ID);
+      ContainerIteratorType it( m_Container.find(ID) );
       if (it != m_Container.end())
       {
          *retVal = it->second;
@@ -482,7 +481,7 @@ public:
 
    STDMETHOD(RemoveByID)(LoadIDType ID)
    {
-      ContainerIteratorType it = m_Container.find(ID);
+      ContainerIteratorType it( m_Container.find(ID) );
       if (it != m_Container.end())
       {
          HRESULT hr = OnBeforeRemove(it->second);
@@ -501,7 +500,7 @@ public:
       if (index<0)
          return E_INVALIDARG;
 
-      ContainerIteratorType it = m_Container.begin();
+      ContainerIteratorType it( m_Container.begin() );
       for (CollectionIndexType i=0; i<index; i++, it++)
       ;
 
@@ -540,7 +539,9 @@ public:
 
       // iterate through our collection and find matching items
       bool first = true;
-      for (ContainerIteratorType i=m_Container.begin(); i!=m_Container.end(); i++)
+      ContainerIteratorType i(m_Container.begin());
+      ContainerIteratorType iend(m_Container.end());
+      for (; i!=iend; i++)
       {
          // we know that all IItemType's under our watch are CItemType's
          CItemType* pitm = dynamic_cast<CItemType*>(i->second.p);
@@ -600,7 +601,9 @@ public:
       // clone properties
 
       // clone collection
-      for (ContainerIteratorType it= m_Container.begin(); it != m_Container.end(); it++)
+      ContainerIteratorType it( m_Container.begin() );
+      ContainerIteratorType itend( m_Container.end() );
+      for (; it != itend; it++)
       {
          // we know that all IItem's under our watch are CItem's
          CItemType* pitem = dynamic_cast<CItemType*>(it->second.p);
@@ -630,7 +633,9 @@ public:
 
    STDMETHOD(Clear)()
    {
-      for (ContainerIteratorType it= m_Container.begin(); it != m_Container.end(); it++)
+      ContainerIteratorType it(m_Container.begin());
+      ContainerIteratorType itend(m_Container.end());
+      for (; it != itend; it++)
       {
          OnBeforeRemove(it->second);
       }
@@ -680,8 +685,8 @@ public:
          return E_INVALIDARG;
 
       // iterate through our collection and find matching items
-      ContainerIteratorType cur = m_Container.begin();
-      ContainerIteratorType end = m_Container.end();
+      ContainerIteratorType cur( m_Container.begin() );
+      ContainerIteratorType end( m_Container.end() );
 
       while( cur != end )
       {
@@ -839,8 +844,7 @@ public:
             return hr;
 
          // insert new member
-         std::pair<ContainerIteratorType,bool> st;
-         st = m_Container.insert(ContainerValueType(pitem->m_ID, pitem));
+         std::pair<ContainerIteratorType,bool> st( m_Container.insert(ContainerValueType(pitem->m_ID, pitem)) );
          if (!st.second)
          {
             ATLASSERT(0); // insert failed - better check why
@@ -876,7 +880,9 @@ public:
          return hr;
 
       // cycle though collection and save members
-      for (ContainerIteratorType it=m_Container.begin(); it!=m_Container.end(); it++)
+      ContainerIteratorType it(  m_Container.begin() );
+      ContainerIteratorType itend(  m_Container.end() );
+      for (; it!=itend; it++)
       {
          CItemType* pitm = dynamic_cast<CItemType*>(it->second.p);
          if (pitm == 0)

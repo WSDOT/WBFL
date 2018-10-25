@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -129,33 +129,33 @@ cpp_quote("typedef Int32 SpanGirderHashType;")
 cpp_quote("typedef Int32 PierGirderHashType;")
 cpp_quote("#endif")
 
-cpp_quote("inline Uint16 make_Uint16(Uint8  lo, Uint8  hi) {return Uint16(lo | (Uint16(hi) << 8));}")
-cpp_quote("inline Int16  make_Int16 (Int8   lo, Int8   hi) {return Int16(lo  | (Int16(hi)  << 8));}")
-cpp_quote("inline Uint32 make_Uint32(Uint16 lo, Uint16 hi) {return Uint32(lo | (Uint32(hi) << 16));}")
-cpp_quote("inline Int32  make_Int32 (Int16  lo, Int16  hi) {return Int32( lo | (Int32(hi)  << 16));}")
 
-cpp_quote("inline Uint16 low_Uint16(Uint32 u32) {return Uint16(u32);}")
-cpp_quote("inline Int16  low_Int16(Int32 u32) {  return Int16(u32);}")
 
-cpp_quote("inline Uint16 high_Uint16(Uint32 u32) {  return Uint16(u32 >> 16);}")
-cpp_quote("inline Int16 high_Int16(Uint32 u32) {  return Int16(u32 >> 16);}")
+cpp_quote("inline Uint16 make_Uint16(Uint8  lo, Uint8  hi) {return (Uint16)(lo & 0xFF)  | (Uint16)(hi & 0xFF) << 8;}")
+cpp_quote("inline Int16  make_Int16 (Int8   lo, Int8   hi) {return (Int16)(lo  & 0xFF) | (Int16) (hi & 0xFF)  << 8;}")
+cpp_quote("inline Uint32 make_Uint32(Uint16 lo, Uint16 hi) {return (Uint32)(lo & 0xFFFF) | (Uint32)(hi & 0xFFFF) << 16;}")
+cpp_quote("inline Int32  make_Int32 (Int16  lo, Int16  hi) {return (Int32)( lo & 0xFFFF) | (Int32)( hi & 0xFFFF) << 16;}")
 
-cpp_quote("inline Uint8 low_Uint8(Uint16 u16) {  return Uint8(u16);}")
-cpp_quote("inline Int8 low_Int8(Uint16 u16) {  return Int8(u16);}")
+cpp_quote("inline Uint16 low_Uint16(Uint32 u32) {return u32 & 0xFF;}")
+cpp_quote("inline Int16  low_Int16(Int32 u32)   {return u32 & 0xFF;}")
 
-cpp_quote("inline Uint8 high_Uint8(Uint16 u16) {  return Uint8(u16 >> 8);}")
-cpp_quote("inline Int8 high_Int8(Uint16 u16) {  return Int8(u16 >> 8);}")
+cpp_quote("inline Uint16 high_Uint16(Uint32 u32) {  return u32 >> 16;}")
+cpp_quote("inline Int16  high_Int16(Uint32 u32)  {  return u32 >> 16;}")
 
+cpp_quote("inline Uint8 low_Uint8(Uint16 u16){ return u16 & 0xFF;}")
+cpp_quote("inline Int8  low_Int8(Uint16 u16) { return u16 & 0xFF;}")
+
+cpp_quote("inline Uint8 high_Uint8(Uint16 u16) { return u16 >> 8;}")
+cpp_quote("inline Int8  high_Int8(Uint16 u16)  { return u16 >> 8;}")
 
 cpp_quote("#if 1200 < _MSC_VER")
-cpp_quote("inline Uint64 make_Uint64(Uint32 lo, Uint32 hi) {return Uint64(lo | (Uint64(hi) << 32));}")
-cpp_quote("inline Int64  make_Int64 (Int32  lo, Int32  hi) {return Int64( lo | (Int64(hi)  << 32));}")
+cpp_quote("inline Uint64 make_Uint64(Uint32  lo, Uint32  hi) {return (Uint64)(lo &  0xFFFFFFFF) | (Uint64)( hi &  0xFFFFFFFF) << 32;}")
+cpp_quote("inline Uint32 low_Uint32(Uint64 u64) {return u64 & 0xFFFFFFFF;}")
+cpp_quote("inline Uint32 high_Uint32(Uint64 u64) {return u64 >> 32;}")
 
-cpp_quote("inline Uint32 low_Uint32(Uint64 u64) {return Uint32(u64);}")
-cpp_quote("inline Uint32 low_Int32(Int64 u64) {return Int32(u64);}")
-
-cpp_quote("inline Uint32 high_Uint32(Uint64 u64) {  return Uint32(u64 >> 32);}")
-cpp_quote("inline Uint32 high_Int32(Int64 u64) {  return Int32(u64 >> 32);}")
+cpp_quote("inline Int64 make_Int64 (Int32  lo, Int32  hi) {return (Int64)(lo &  0xFFFFFFFF) | (Int64)( hi &  0xFFFFFFFF) << 32;}")
+cpp_quote("inline Int32 low_Int32(Int64 u64) {return u64 & 0xFFFFFFFF;}")
+cpp_quote("inline Int32 high_Int32(Int64 u64) {return u64 >> 32;}")
 cpp_quote("#endif")
 
 cpp_quote("#if 1200 < _MSC_VER")

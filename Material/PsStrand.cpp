@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -36,6 +36,11 @@ CLASS
    matPsStrand
 ****************************************************************************/
 
+// precomputed conversions
+static const Float64 g_12p70_MM   = ::ConvertToSysUnits( 12.70, unitMeasure::Millimeter );
+static const Float64 g_98p71_MM2  = ::ConvertToSysUnits( 98.71, unitMeasure::Millimeter2 );
+static const Float64 g_1725_MPA   =  ::ConvertToSysUnits( 1725., unitMeasure::MPa );
+static const Float64 g_197000_MPA = ::ConvertToSysUnits( 197000., unitMeasure::MPa );
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
@@ -46,11 +51,11 @@ m_Name(_T("Unknown"))
    m_Grade    = Gr1725;
    m_Type     = LowRelaxation;
    m_Size     = D1270;
-   m_Diameter = ::ConvertToSysUnits( 12.70, unitMeasure::Millimeter );
-   m_Area     = ::ConvertToSysUnits( 98.71, unitMeasure::Millimeter2 );
-   m_Fpu      = ::ConvertToSysUnits( 1725., unitMeasure::MPa );
+   m_Diameter = g_12p70_MM;
+   m_Area     = g_98p71_MM2;
+   m_Fpu      = g_1725_MPA;
    m_Fpy      = 0.90 * m_Fpu;
-   m_ModE     = ::ConvertToSysUnits( 197000., unitMeasure::MPa );
+   m_ModE     = g_197000_MPA;
 }
 
 matPsStrand::matPsStrand(const std::_tstring& name,Grade grade,Type type,Size size,

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -62,6 +62,8 @@ public:
    void SetExtendedStyle(DWORD dwStyleEx);
    BOOL HideButton(int nID,IEAFCommandCallback* pCallback,BOOL bHide=TRUE);
    BOOL GetItemRect(int nIndex,LPRECT lpRect);
+   void SetItemID(int nIndex,UINT nID,IEAFCommandCallback* pCallback);
+   void GetItemID(int nIndex,UINT* pID,IEAFCommandCallback** ppCallback);
    int CommandToIndex(UINT nPluginCmdID,IEAFCommandCallback* pCallback) const; 
    void SetButtonStyle(int nIndex,UINT nStyle);
    UINT GetButtonStyle(int nIndex) const;

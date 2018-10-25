@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -35,9 +35,9 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CEAFLicensePlateChildFrame
 
-IMPLEMENT_DYNCREATE(CEAFLicensePlateChildFrame, CMDIChildWnd)
+IMPLEMENT_DYNCREATE(CEAFLicensePlateChildFrame, CEAFChildFrame)
 
-BEGIN_MESSAGE_MAP(CEAFLicensePlateChildFrame, CMDIChildWnd)
+BEGIN_MESSAGE_MAP(CEAFLicensePlateChildFrame, CEAFChildFrame)
 	//{{AFX_MSG_MAP(CEAFLicensePlateChildFrame)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
@@ -87,12 +87,12 @@ CView* CEAFLicensePlateChildFrame::GetView()
 #ifdef _DEBUG
 void CEAFLicensePlateChildFrame::AssertValid() const
 {
-	CMDIChildWnd::AssertValid();
+	CEAFChildFrame::AssertValid();
 }
 
 void CEAFLicensePlateChildFrame::Dump(CDumpContext& dc) const
 {
-	CMDIChildWnd::Dump(dc);
+	CEAFChildFrame::Dump(dc);
 }
 
 #endif //_DEBUG
@@ -102,7 +102,7 @@ void CEAFLicensePlateChildFrame::Dump(CDumpContext& dc) const
 
 int CEAFLicensePlateChildFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) 
 {
-   if (CMDIChildWnd::OnCreate(lpCreateStruct) == -1)
+   if (CEAFChildFrame::OnCreate(lpCreateStruct) == -1)
 		return -1;
 	
 	// TODO: Add your specialized creation code here
@@ -114,7 +114,7 @@ int CEAFLicensePlateChildFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void CEAFLicensePlateChildFrame::OnSize(UINT nType, int cx, int cy) 
 {
-   CMDIChildWnd::OnSize(nType, cx, cy);
+   CEAFChildFrame::OnSize(nType, cx, cy);
 
    UpdateOuterRect();
 
@@ -126,7 +126,7 @@ void CEAFLicensePlateChildFrame::OnSize(UINT nType, int cx, int cy)
 BOOL CEAFLicensePlateChildFrame::OnEraseBkgnd(CDC* pDC) 
 {
    if ( !IsLicensePlateModeEnabled() )
-   	return CMDIChildWnd::OnEraseBkgnd(pDC);
+   	return CEAFChildFrame::OnEraseBkgnd(pDC);
    else
    {
       // document data is invalid - fill background with bitmap or solid red

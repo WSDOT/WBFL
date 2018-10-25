@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -175,6 +175,8 @@ BOOL CNewProjectDlg::OnInitDialog()
       idx++;
 	}
 
+   // sort alphabetically
+   m_ProjectTypes.SortChildren(TVI_ROOT);
 
    // Select one of the tree nodes... the list box will be updated when the selection event fires
    HTREEITEM hItem = m_ProjectTypes.GetNextItem(TVI_ROOT, TVGN_ROOT);

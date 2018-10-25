@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -357,7 +357,7 @@ STDMETHODIMP CModel::ComputeJointDisplacements(LoadCaseIDType lc, JointIDType jn
       Compute();
 
       // retrieve results
-      JntResultIterator jit = m_JntResults.find(jnt);
+      JntResultIterator jit( m_JntResults.find(jnt) );
       if (jit == m_JntResults.end())
       {
          CComBSTR msg(::CreateErrorMsg1(IDS_E_JOINT_NOT_FOUND, jnt));
@@ -400,7 +400,7 @@ STDMETHODIMP CModel::ComputeMemberDisplacements(LoadCaseIDType lc, MemberIDType 
       Compute();
 
          // retrieve results
-      MbrResultIterator jit = m_MbrResults.find(mbr);
+      MbrResultIterator jit( m_MbrResults.find(mbr) );
       if (jit == m_MbrResults.end())
       {
          CComBSTR msg(::CreateErrorMsg1(IDS_E_MEMBER_NOT_FOUND, mbr));
@@ -445,7 +445,7 @@ STDMETHODIMP CModel::ComputeReactions(LoadCaseIDType lc, JointIDType jnt, Float6
       Compute();
 
          // retrieve results
-      JntResultIterator jit = m_JntResults.find(jnt);
+      JntResultIterator jit( m_JntResults.find(jnt) );
       if (jit == m_JntResults.end())
       {
          CComBSTR msg(::CreateErrorMsg1(IDS_E_JOINT_NOT_FOUND, jnt));
@@ -493,7 +493,7 @@ STDMETHODIMP CModel::ComputeMemberForcesEx(LoadCaseIDType lc, MemberIDType mid, 
       Compute();
 
       // retrieve results
-      MbrResultIterator jit = m_MbrResults.find(mid);
+      MbrResultIterator jit( m_MbrResults.find(mid) );
       if (jit == m_MbrResults.end())
       {
          CComBSTR msg(::CreateErrorMsg1(IDS_E_MEMBER_NOT_FOUND, mid));
@@ -581,7 +581,7 @@ STDMETHODIMP CModel::ComputePOIDisplacements(LoadCaseIDType lc, PoiIDType poiID,
       const PoiResult* poiResult = 0;
 
       // first see if results have already been calculated
-      PoiResultIterator jit = m_PoiResults.find(poiID);
+      PoiResultIterator jit( m_PoiResults.find(poiID) );
       if (jit != m_PoiResults.end())
       {
          PoiResultArray* array = jit->second;
@@ -674,7 +674,7 @@ STDMETHODIMP CModel::ComputePOIForces(LoadCaseIDType lc, PoiIDType poiID, Fem2dM
       const PoiResult* poiResult = 0;
 
       // first see if results have already been calculated
-      PoiResultIterator jit = m_PoiResults.find(poiID);
+      PoiResultIterator jit( m_PoiResults.find(poiID) );
       if (jit != m_PoiResults.end())
       {
          PoiResultArray* array = jit->second;
@@ -1279,8 +1279,9 @@ long CModel::ComputeBandWidth()
    long j,k;
    long dof1, dof2;
 
-   MemberIterator i = m_pMembers->begin();
-   while(i != m_pMembers->end() )
+   MemberIterator i( m_pMembers->begin() );
+   MemberIterator iend( m_pMembers->end() );
+   while(i != iend)
    {
       long nDOF;
       CMember* mbr = *(i++);
@@ -1316,8 +1317,9 @@ void CModel::Compute()
       // need to recalculate all loadings
       m_DirtyLoadings.clear();
 
-      LoadingIterator ldIter = m_pLoadings->begin();
-      while(ldIter != m_pLoadings->end())
+      LoadingIterator ldIter( m_pLoadings->begin() );
+      LoadingIterator ldIterEnd( m_pLoadings->end() );
+      while(ldIter != ldIterEnd)
       {
          LoadCaseIDType id;
          ldIter->get_ID(&id);
@@ -1404,8 +1406,9 @@ void CModel::FemAnalysis()
 
 void CModel::ComputeLoadings()
 {
-   DirtyLoadingsIterator ldIter = m_DirtyLoadings.begin();
-   while(ldIter != m_DirtyLoadings.end())
+   DirtyLoadingsIterator ldIter( m_DirtyLoadings.begin() );
+   DirtyLoadingsIterator ldIterEnd( m_DirtyLoadings.end() );
+   while(ldIter != ldIterEnd)
    {
       ClearLoads(); // clear any previously applied loadings
 
@@ -1497,9 +1500,11 @@ void CModel::AssembleJointLoads()
 {
    Float64 f[CJoint::NumDof];
    long ndof = CJoint::NumDof;
-   JointIterator j = m_pJoints->begin();
 
-   while(j != m_pJoints->end())
+   JointIterator j( m_pJoints->begin() );
+   JointIterator jend( m_pJoints->end() );
+
+   while(j != jend)
    {
       CJoint *jnt = *(j++);
 
@@ -1529,9 +1534,10 @@ void CModel::AssembleElementLoads()
 {
    Float64 f[MAX_ELEMENT_DOF];
 
-   MemberIterator e = m_pMembers->begin();
+   MemberIterator e( m_pMembers->begin() );
+   MemberIterator eend( m_pMembers->end() );
 
-   while(e != m_pMembers->end())
+   while(e != eend)
    {
       CMember *mbr = *(e++);
       long ndof = mbr->GetNumDOF();
@@ -1566,9 +1572,10 @@ void CModel::AssembleGlobalStiffnessMatrix()
 {
    AllocateKGlobal();
 
-   MemberIterator iter = m_pMembers->begin();
+   MemberIterator iter( m_pMembers->begin() );
+   MemberIterator iterend( m_pMembers->end() );
 
-   while(iter != m_pMembers->end())
+   while(iter != iterend)
    {
       long i,j;
       long dof;
@@ -1612,8 +1619,9 @@ void CModel::InitModel()
    m_NumCondensedDOF = 0;
    m_NumGlobalDOF    = 0;
 
-   JointIterator j = m_pJoints->begin();
-   while(j!=m_pJoints->end())
+   JointIterator j( m_pJoints->begin() );
+   JointIterator jend( m_pJoints->end() );
+   while(j!=jend)
    {
       long nGDOFused,nCDOFused;
       CJoint *jnt = *(j++);
@@ -1623,8 +1631,9 @@ void CModel::InitModel()
    }
 
    // Allow all the elements a chance to initialize themselves
-   MemberIterator m = m_pMembers->begin();
-   while(m != m_pMembers->end())
+   MemberIterator m( m_pMembers->begin() );
+   MemberIterator mend( m_pMembers->end() );
+   while(m != mend)
    {
       CMember *mbr = *(m++);
       mbr->InitModel();
@@ -1633,15 +1642,17 @@ void CModel::InitModel()
 
 void CModel::ClearLoads()
 {
-   JointIterator i = m_pJoints->begin();
-   while(i != m_pJoints->end())
+   JointIterator i( m_pJoints->begin() );
+   JointIterator iend( m_pJoints->end() );
+   while(i != iend)
    {
       CJoint *jnt = *(i++);
       jnt->ClearLoads();
    }
 
-   MemberIterator j = m_pMembers->begin();
-   while(j != m_pMembers->end())
+   MemberIterator j( m_pMembers->begin() );
+   MemberIterator jend( m_pMembers->end() );
+   while(j != jend)
    {
       CMember *mbr = *(j++);
       mbr->ClearLoads();
@@ -1656,8 +1667,9 @@ void CModel::ApplyJntDisplacements()
    Float64 disp[CJoint::NumDof];
    long ndof = CJoint::NumDof;
 
-   JointIterator j = m_pJoints->begin();
-   while(j != m_pJoints->end())
+   JointIterator j( m_pJoints->begin() );
+   JointIterator jend( m_pJoints->end() );
+   while(j != jend)
    {
       long cdof, dof;
       CJoint *jnt = *(j++);
@@ -1679,8 +1691,9 @@ void CModel::ApplyJntDisplacements()
 
 void CModel::ComputeMemberResults()
 {
-   MemberIterator i = m_pMembers->begin();
-   while(i != m_pMembers->end())
+   MemberIterator i( m_pMembers->begin() );
+   MemberIterator iend( m_pMembers->end() );
+   while(i != iend)
    {
       CMember *mbr = *(i++);
       mbr->ComputeResults();
@@ -1689,9 +1702,10 @@ void CModel::ComputeMemberResults()
 
 void CModel::ComputeReactions()
 {
-   JointIterator j = m_pJoints->begin();
+   JointIterator j( m_pJoints->begin() );
+   JointIterator jend( m_pJoints->end() );
 
-   while (j != m_pJoints->end())
+   while (j != jend)
    {
       CJoint *jnt = *(j++);
       jnt->ComputeReactions();
@@ -1708,11 +1722,12 @@ void CModel::SolveDisplacementsClassical()
    // Individual elements shall modify member end displacements based upon
    // member end boundary conditions
 
-   JointIterator j = m_pJoints->begin();
+   JointIterator j( m_pJoints->begin() );
+   JointIterator jend( m_pJoints->end() );
 
    const Float64 disp[3]={0,0,0};
 
-   while(j != m_pJoints->end())
+   while(j != jend)
    {
       CJoint *jnt = *(j++);
       jnt->SetDisplacement(disp);
@@ -1724,8 +1739,9 @@ void CModel::CheckEquilibrium()
 
    Float64 tol = GetEquilibriumCheckTolerance();
 
-   JointIterator j = m_pJoints->begin();
-   while(j != m_pJoints->end())
+   JointIterator j( m_pJoints->begin() );
+   JointIterator jend( m_pJoints->end() );
+   while(j != jend)
    {
       CJoint *jnt = *(j++);
       if (!jnt->IsEquilibriumSatisfied(tol))
@@ -1737,8 +1753,9 @@ void CModel::CheckEquilibrium()
       }
    }
 
-   MemberIterator i = m_pMembers->begin();
-   while(i != m_pMembers->end() )
+   MemberIterator i( m_pMembers->begin() );
+   MemberIterator iend( m_pMembers->end() );
+   while(i != iend )
    {
       CMember *ele = *(i++);
       if (!ele->IsEquilibriumSatisfied(tol))
@@ -1789,8 +1806,9 @@ void CModel::StoreJntResults(LoadCaseIDType lcase)
    logfile << "Loading " << lcase << std::endl;
 #endif
 
-   JointIterator j = m_pJoints->begin();
-   while(j != m_pJoints->end())
+   JointIterator j( m_pJoints->begin() );
+   JointIterator jend( m_pJoints->end() );
+   while(j != jend)
    {
       CJoint *jnt = *(j++);
 
@@ -1807,7 +1825,7 @@ void CModel::StoreJntResults(LoadCaseIDType lcase)
 #endif
 
       JntResultArray* array;
-      JntResultIterator ir = m_JntResults.find(id);
+      JntResultIterator ir( m_JntResults.find(id) );
       if (ir != m_JntResults.end())
       {
          array = ir->second;
@@ -1838,14 +1856,15 @@ void CModel::StoreMbrResults(LoadCaseIDType lcase)
    logfile << "StoreMbrResults::Loading = " << lcase << std::endl;
 #endif
 
-   MemberIterator i = m_pMembers->begin();
-   while(i != m_pMembers->end())
+   MemberIterator i( m_pMembers->begin() );
+   MemberIterator iend( m_pMembers->end() );
+   while(i != iend)
    {
       CMember *mbr = *(i++);
       MemberIDType mid;
       mbr->get_ID(&mid);
 
-      MbrResultIterator rit = m_MbrResults.find(mid);
+      MbrResultIterator rit( m_MbrResults.find(mid) );
       CMember::MbrResultArray* array = (rit == m_MbrResults.end()) ? 0 : rit->second;
       if (!array)
       {
@@ -1884,8 +1903,9 @@ void CModel::StorePoiResults(LoadCaseIDType lcase)
 #endif
 
    // loop over all pois and calc and store results
-   POIIterator i = m_pPOIs->begin();
-   while(i != m_pPOIs->end())
+   POIIterator i (m_pPOIs->begin() );
+   POIIterator iend (m_pPOIs->end() );
+   while(i != iend)
    {
       // get poi and member
       CPOI *poi = *(i++);
@@ -1943,7 +1963,7 @@ void CModel::StorePoiResults(LoadCaseIDType lcase)
 
       PoiResult result(lcase,force,disp);
 
-      PoiResultIterator rit = m_PoiResults.find(poiid);
+      PoiResultIterator rit( m_PoiResults.find(poiid) );
       PoiResultArray* parray = (rit == m_PoiResults.end()) ? 0 : rit->second;
       if (!parray)
       {
@@ -1995,7 +2015,7 @@ const CModel::PoiResult* CModel::StorePoiResults(LoadCaseIDType lcase, PoiIDType
    }
 
    // next raw member results for this loading
-   MbrResultIterator mrit = m_MbrResults.find(mid);
+   MbrResultIterator mrit( m_MbrResults.find(mid) );
    if (mrit == m_MbrResults.end())
    {
       CComBSTR msg = ::CreateErrorMsg1(IDS_E_MEMBER_NOT_FOUND, mid);
@@ -2055,7 +2075,7 @@ const CModel::PoiResult* CModel::StorePoiResults(LoadCaseIDType lcase, PoiIDType
    mbr->GetDeflection(poiloc,disp);
    PoiResult result(lcase,force,disp);
 
-   PoiResultIterator rit = m_PoiResults.find(poiid);
+   PoiResultIterator rit( m_PoiResults.find(poiid) );
    PoiResultArray* parray = (rit == m_PoiResults.end()) ? 0 : rit->second;
    if (!parray)
    {
@@ -2093,17 +2113,24 @@ void CModel::RemoveResults(LoadCaseIDType lcase)
    // remove all results for a given load case
    // ignore return code since we don't know (care) if loading results exist
    int st;
-   for (JntResultIterator ji = m_JntResults.begin(); ji!=m_JntResults.end(); ji++)
+
+   JntResultIterator ji( m_JntResults.begin() );
+   JntResultIterator jiend( m_JntResults.end() );
+   for (; ji!=jiend; ji++)
    {
       st = ji->second->Remove(lcase);
    }
 
-   for (MbrResultIterator mi = m_MbrResults.begin(); mi!=m_MbrResults.end(); mi++)
+   MbrResultIterator mi( m_MbrResults.begin() );
+   MbrResultIterator miend( m_MbrResults.end() );
+   for (; mi!=miend; mi++)
    {
       st = mi->second->Remove(lcase);
    }
 
-   for (PoiResultIterator pi = m_PoiResults.begin(); pi!=m_PoiResults.end(); pi++)
+   PoiResultIterator pi( m_PoiResults.begin() );
+   PoiResultIterator piend( m_PoiResults.end() );
+   for (; pi!=piend; pi++)
    {
       st = pi->second->Remove(lcase);
    }
@@ -2112,7 +2139,7 @@ void CModel::RemoveResults(LoadCaseIDType lcase)
 void CModel::RemovePoiResults(PoiIDType poiid)
 {
    // zap results for given poi
-   PoiResultIterator jit = m_PoiResults.find(poiid);
+   PoiResultIterator jit( m_PoiResults.find(poiid) );
    if (jit != m_PoiResults.end())
    {
       PoiResultArray* array = jit->second;
@@ -2131,8 +2158,9 @@ void CModel::GetJointFromDof(long dof, JointIDType* joint, long* jdof)
    *joint = -1; // assume the worst
    *jdof = -1;
 
-   JointIterator j = m_pJoints->begin();
-   while(j != m_pJoints->end())
+   JointIterator j( m_pJoints->begin() );
+   JointIterator jend( m_pJoints->end() );
+   while(j != jend)
    {
       CJoint *jnt = *(j++);
 

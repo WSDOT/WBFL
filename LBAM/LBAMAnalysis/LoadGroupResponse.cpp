@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -671,7 +671,7 @@ bool CLoadGroupResponse::ChangeManager::IsInfluenceCalcHosed(BSTR stage)
       return true;
    }
 
-   InfluenceStageIterator it = m_UpdatedInfluenceLoadStages.find(stage);
+   InfluenceStageIterator it( m_UpdatedInfluenceLoadStages.find(stage) );
    return it==m_UpdatedInfluenceLoadStages.end();
 }
 
@@ -767,7 +767,9 @@ CLoadGroupResponse::ChangeManager::NameList CLoadGroupResponse::ChangeManager::L
    ATLASSERT(!m_ModelHosed); // shouldn't be asking if this is the case
 
    NameList list;
-   for (NameEventListIterator it = m_LoadGroupsEvents.begin(); it!=m_LoadGroupsEvents.end(); it++)
+   NameEventListIterator it( m_LoadGroupsEvents.begin() );
+   NameEventListIterator itend( m_LoadGroupsEvents.end() );
+   for (; it!=itend; it++)
    {
       if (it->second == event)
       {
@@ -783,7 +785,9 @@ CLoadGroupResponse::ChangeManager::IntegerList CLoadGroupResponse::ChangeManager
    ATLASSERT(!m_ModelHosed); // shouldn't be asking if this is the case
 
    IntegerList list;
-   for (IntegerEventListIterator it = m_POIsEvents.begin(); it!=m_POIsEvents.end(); it++)
+   IntegerEventListIterator it( m_POIsEvents.begin() );
+   IntegerEventListIterator itend( m_POIsEvents.end() );
+   for (; it!=itend; it++)
    {
       if (it->second == event)
       {
@@ -815,7 +819,9 @@ bool CLoadGroupResponse::CAnalysisController::GetStageIndex(BSTR stage,StageInde
 {
    CComBSTR bstg(stage);
    StageIndexType stageIdx = 0;
-   for (StagesTypeIterator it =m_Stages.begin(); it != m_Stages.end(); it++)
+   StagesTypeIterator it( m_Stages.begin() );
+   StagesTypeIterator itend( m_Stages.end() );
+   for (; it != itend; it++)
    {
       if (*it == bstg)
       {
@@ -915,8 +921,7 @@ void CLoadGroupResponse::CAnalysisController::UpdateLoadGroupOrder(ILBAMModel* p
       // temporary support, up to TS_LIMIT, for each load case.
       m_LastFemLoadCase+=TS_LIMIT;
 
-      std::pair<LoadGroupsTypeIterator, bool> tst;
-      tst = m_LoadGroups.insert(LoadGroupsType::value_type( (BSTR)name, LoadGroupInfo(m_LastFemLoadCase,ist==VARIANT_TRUE)));
+      std::pair<LoadGroupsTypeIterator, bool> tst ( m_LoadGroups.insert(LoadGroupsType::value_type( (BSTR)name, LoadGroupInfo(m_LastFemLoadCase,ist==VARIANT_TRUE))) );
       if (!tst.second)
       {
          // could not insert - loadgroup name is duplicate
@@ -988,7 +993,9 @@ CollectionIndexType CLoadGroupResponse::CAnalysisController::LoadGroupCount()
 CComBSTR CLoadGroupResponse::CAnalysisController::LoadGroup(CollectionIndexType index)
 {
    CollectionIndexType cnt=0;
-   for (LoadGroupsTypeIterator it=m_LoadGroups.begin(); it!=m_LoadGroups.end(); it++)
+   LoadGroupsTypeIterator it( m_LoadGroups.begin() );
+   LoadGroupsTypeIterator itend( m_LoadGroups.end() );
+   for (; it!=itend; it++)
    {
       if (cnt==index)
          return it->first;
@@ -1003,7 +1010,9 @@ CComBSTR CLoadGroupResponse::CAnalysisController::LoadGroup(CollectionIndexType 
 void CLoadGroupResponse::CAnalysisController::GetLoadGroupInfoByIndex(CollectionIndexType loadGroupIdx, LoadGroupIDType* femLgId, bool* isTransient)
 {
    CollectionIndexType currentLoadGroupIdx = 0;
-   for (LoadGroupsTypeIterator it = m_LoadGroups.begin(); it != m_LoadGroups.end(); it++)
+   LoadGroupsTypeIterator it( m_LoadGroups.begin() );
+   LoadGroupsTypeIterator itend( m_LoadGroups.end() );
+   for (; it != itend; it++)
    {
       if (currentLoadGroupIdx == loadGroupIdx)
       {
@@ -1023,7 +1032,7 @@ void CLoadGroupResponse::CAnalysisController::GetLoadGroupInfo(BSTR loadGroup, L
    if (::SysStringLen(loadGroup)==0)
       THROW_LBAMA(BLANK_LOADGROUP_NAMES_NOT_ALLOWED);
 
-   LoadGroupsTypeIterator it = m_LoadGroups.find(loadGroup);
+   LoadGroupsTypeIterator it( m_LoadGroups.find(loadGroup) );
    if (it != m_LoadGroups.end())
    {
       *femLoadCaseID = it->second.m_FemLoadCaseID;
@@ -1085,7 +1094,7 @@ void CLoadGroupResponse::CAnalysisController::SetLoadGroupAsActive(BSTR loadGrou
    if (::SysStringLen(loadGroup)==0)
       THROW_LBAMA(BLANK_LOADGROUP_NAMES_NOT_ALLOWED);
 
-   LoadGroupsTypeIterator it = m_LoadGroups.find(loadGroup);
+   LoadGroupsTypeIterator it( m_LoadGroups.find(loadGroup) );
    if (it != m_LoadGroups.end())
    {
       it->second.m_IsLoaded =true ;
@@ -1105,7 +1114,9 @@ IBstrArray* CLoadGroupResponse::CAnalysisController::GetActiveLoadGroups()
    names.CoCreateInstance(CLSID_BstrArray);
    names->Reserve(ttlsize);
 
-   for (LoadGroupsTypeIterator it=m_LoadGroups.begin(); it!=m_LoadGroups.end(); it++ )
+   LoadGroupsTypeIterator it( m_LoadGroups.begin() );
+   LoadGroupsTypeIterator itend( m_LoadGroups.end() );
+   for (; it!=itend; it++ )
    {
       if (it->second.m_IsLoaded)
       {
@@ -1427,8 +1438,9 @@ STDMETHODIMP CLoadGroupResponse::ComputeForces(BSTR LoadGroup, ILongArray* poiID
          hr = the_results->Add(the_result);
 
          // loop over stages to and load cases associated with the request
-         CAnalysisController::TemporarySupportLoadInfoIterator iter;
-         for (iter = tempSupportLoadInfo.begin(); iter != tempSupportLoadInfo.end(); iter++)
+         CAnalysisController::TemporarySupportLoadInfoIterator iter(tempSupportLoadInfo.begin() );
+         CAnalysisController::TemporarySupportLoadInfoIterator iterend(tempSupportLoadInfo.end() );
+         for (; iter != iterend; iter++)
          {
             const CAnalysisController::TemporarySupportLoadInfo& tempSupportLoadInfo = *iter;
             boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[tempSupportLoadInfo.m_StageIdx];
@@ -1502,8 +1514,9 @@ STDMETHODIMP CLoadGroupResponse::ComputeDeflections(BSTR LoadGroup, ILongArray* 
          hr = the_results->Add(the_result);
 
          // loop over stages to and load cases associated with the request
-         CAnalysisController::TemporarySupportLoadInfoIterator iter;
-         for (iter = tempSupportLoadInfo.begin(); iter != tempSupportLoadInfo.end(); iter++)
+         CAnalysisController::TemporarySupportLoadInfoIterator iter( tempSupportLoadInfo.begin() );
+         CAnalysisController::TemporarySupportLoadInfoIterator iterend( tempSupportLoadInfo.end() );
+         for (; iter != iterend; iter++)
          {
             const CAnalysisController::TemporarySupportLoadInfo& tempSupportLoadInfo = *iter;
             boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[tempSupportLoadInfo.m_StageIdx];
@@ -1571,8 +1584,9 @@ STDMETHODIMP CLoadGroupResponse::ComputeReactions(BSTR LoadGroup, ILongArray* su
          hr = the_results->Add(the_result);
 
          // loop over stages and load cases associated with the request
-         CAnalysisController::TemporarySupportLoadInfoIterator iter;
-         for (iter = tempSupportLoadInfo.begin(); iter != tempSupportLoadInfo.end(); iter++)
+         CAnalysisController::TemporarySupportLoadInfoIterator iter( tempSupportLoadInfo.begin() );
+         CAnalysisController::TemporarySupportLoadInfoIterator iterend( tempSupportLoadInfo.end() );
+         for (; iter != iterend; iter++)
          {
             const CAnalysisController::TemporarySupportLoadInfo& tempSupportLoadInfo = *iter;
             boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[tempSupportLoadInfo.m_StageIdx];
@@ -1654,8 +1668,9 @@ STDMETHODIMP CLoadGroupResponse::ComputeStresses(BSTR LoadGroup, ILongArray* poi
          bool was_computed=false;
          bool first=true;
          std::vector<Float64> s_left, s_right;
-         CAnalysisController::TemporarySupportLoadInfoIterator iter;
-         for (iter = tempSupportLoadInfo.begin(); iter != tempSupportLoadInfo.end(); iter++)
+         CAnalysisController::TemporarySupportLoadInfoIterator iter( tempSupportLoadInfo.begin() );
+         CAnalysisController::TemporarySupportLoadInfoIterator iterend( tempSupportLoadInfo.end() );
+         for (; iter != iterend; iter++)
          {
             const CAnalysisController::TemporarySupportLoadInfo& tempSupportLoadInfo = *iter;
             boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[tempSupportLoadInfo.m_StageIdx];
@@ -1760,8 +1775,9 @@ STDMETHODIMP CLoadGroupResponse::ComputeSupportDeflections(BSTR LoadGroup, ILong
          hr = the_results->Add(the_result);
 
          // loop over stages and load cases associated with the request
-         CAnalysisController::TemporarySupportLoadInfoIterator iter;
-         for (iter = tempSupportLoadInfo.begin(); iter != tempSupportLoadInfo.end(); iter++)
+         CAnalysisController::TemporarySupportLoadInfoIterator iter( tempSupportLoadInfo.begin() );
+         CAnalysisController::TemporarySupportLoadInfoIterator iterend( tempSupportLoadInfo.end() );
+         for (; iter != iterend; iter++)
          {
             const CAnalysisController::TemporarySupportLoadInfo& tempSupportLoadInfo = *iter;
             boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[tempSupportLoadInfo.m_StageIdx];
@@ -1831,8 +1847,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeForceInfluenceLine(PoiIDType poiID, BSTR
       StageIndexType stageIdx = m_AnalysisController.CheckedStageOrder(stage);
 
       // check to see if we've already stored our influence line
-      DvInfluenceLineCacheIterator it = 
-         m_CachedForceInfluenceLines.find( DvInfluenceLineKeeper(poiID, stageIdx, forceEffect, orientation, NULL, NULL) );
+      DvInfluenceLineCacheIterator it( m_CachedForceInfluenceLines.find( DvInfluenceLineKeeper(poiID, stageIdx, forceEffect, orientation, NULL, NULL) ) );
 
       LGR_HANDLE_CANCEL_PROGRESS(); 
 
@@ -1849,8 +1864,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeForceInfluenceLine(PoiIDType poiID, BSTR
 
          LGR_HANDLE_CANCEL_PROGRESS(); 
 
-         DvInfluenceLineCacheIterator it = 
-            m_CachedForceInfluenceLines.find( DvInfluenceLineKeeper(poiID, stageIdx, forceEffect, orientation, NULL, NULL) );
+         DvInfluenceLineCacheIterator it ( m_CachedForceInfluenceLines.find( DvInfluenceLineKeeper(poiID, stageIdx, forceEffect, orientation, NULL, NULL) ) );
 
          ATLASSERT(it != m_CachedForceInfluenceLines.end());
          hr = it->LeftInfluenceLine.CopyTo(leftInfl);
@@ -1882,8 +1896,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeDeflectionInfluenceLine(PoiIDType poiID,
       LGR_HANDLE_CANCEL_PROGRESS(); 
 
       // check to see if we've already stored our influence line
-      DvInfluenceLineCacheIterator it = 
-         m_CachedDeflectionInfluenceLines.find( DvInfluenceLineKeeper(poiID, stageIdx, deflectionEffect, roGlobal, NULL,NULL) );
+      DvInfluenceLineCacheIterator it( m_CachedDeflectionInfluenceLines.find( DvInfluenceLineKeeper(poiID, stageIdx, deflectionEffect, roGlobal, NULL,NULL) ) );
 
       if (it != m_CachedDeflectionInfluenceLines.end())
       {
@@ -1898,8 +1911,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeDeflectionInfluenceLine(PoiIDType poiID,
 
          LGR_HANDLE_CANCEL_PROGRESS(); 
 
-         DvInfluenceLineCacheIterator it = 
-            m_CachedDeflectionInfluenceLines.find( DvInfluenceLineKeeper(poiID, stageIdx, deflectionEffect, roGlobal, NULL, NULL) );
+         DvInfluenceLineCacheIterator it( m_CachedDeflectionInfluenceLines.find( DvInfluenceLineKeeper(poiID, stageIdx, deflectionEffect, roGlobal, NULL, NULL) ) );
 
          ATLASSERT(it != m_CachedDeflectionInfluenceLines.end());
          hr = it->LeftInfluenceLine.CopyTo(leftInfl);
@@ -1930,8 +1942,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeReactionInfluenceLine(SupportIDType supp
       LGR_HANDLE_CANCEL_PROGRESS(); 
 
       // check to see if we've already stored our influence line
-      SvInfluenceLineCacheIterator it = 
-         m_CachedReactionInfluenceLines.find( SvInfluenceLineKeeper(supportID, stageIdx, ReactionEffect, roGlobal, NULL) );
+      SvInfluenceLineCacheIterator it( m_CachedReactionInfluenceLines.find( SvInfluenceLineKeeper(supportID, stageIdx, ReactionEffect, roGlobal, NULL) ) );
 
       if (it != m_CachedReactionInfluenceLines.end())
       {
@@ -1983,8 +1994,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeSupportDeflectionInfluenceLine(SupportID
       LGR_HANDLE_CANCEL_PROGRESS(); 
 
       // check to see if we've already stored our influence line
-      SvInfluenceLineCacheIterator it = 
-         m_CachedSupportDeflectionInfluenceLines.find( SvInfluenceLineKeeper(supportID, stageIdx, SupportDeflectionEffect, roGlobal, NULL) );
+      SvInfluenceLineCacheIterator it( m_CachedSupportDeflectionInfluenceLines.find( SvInfluenceLineKeeper(supportID, stageIdx, SupportDeflectionEffect, roGlobal, NULL) ) );
 
       if (it != m_CachedSupportDeflectionInfluenceLines.end())
       {

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Modeling of geometric primitives
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -185,8 +185,8 @@ Float64& gpSize2d::Dy()
 
 void gpSize2d::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for gpSize2d" << endl;
-   os << "  (m_Dx, m_Dy) = ("<< m_Dx<<", "<< m_Dy<<")"<<endl;
+   os <<_T( "Dump for gpSize2d") << endl;
+   os << _T("  (m_Dx, m_Dy) = (")<< m_Dx<<_T(", ")<< m_Dy<<_T(")")<<endl;
 }
 
 #endif // _DEBUG
@@ -217,9 +217,9 @@ void gpSize2d::MakeAssignment(const gpSize2d& rOther)
 //======================== OPERATIONS =======================================
 //======================== ACCESS     =======================================
 //======================== INQUERY    =======================================
-std::ostream& operator<<(std::ostream& os,gpSize2d& size)
+std::_tostream& operator<<(std::_tostream& os,gpSize2d& size)
 {
-   os << "(" << size.Dx() << " x " << size.Dy() << ")";
+   os << _T("(") << size.Dx() << _T(" x ") << size.Dy() << _T(")");
    return os;
 }
 
@@ -387,8 +387,8 @@ Float64& gpPoint2d::Y()
 
 void gpPoint2d::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for gpPointd" << endl;
-   os << "  (m_X, m_Y) = ("<< m_X<<", "<< m_Y<<")"<<endl;
+   os << _T("Dump for gpPointd") << endl;
+   os << _T("  (m_X, m_Y) = (")<< m_X<<_T(", ")<< m_Y<<_T(")")<<endl;
 }
 
 #endif // _DEBUG
@@ -431,9 +431,9 @@ bool operator!=(const gpPoint2d& lhs, const gpPoint2d& rhs)
    return !( lhs == rhs );
 }
 
-std::ostream& operator<<(std::ostream& os,const gpPoint2d& p)
+std::_tostream& operator<<(std::_tostream& os,const gpPoint2d& p)
 {
-   os << "(" << p.X() << "," << p.Y() << ")";
+   os << _T("(") << p.X() << _T(",") << p.Y() << _T(")");
    return os;
 }
 
@@ -837,9 +837,9 @@ bool operator!=(const gpRect2d& lhs, const gpRect2d& rhs)
    return !( lhs == rhs );
 }
 
-std::ostream& operator<<(std::ostream& os,const gpRect2d& rect)
+std::_tostream& operator<<(std::_tostream& os,const gpRect2d& rect)
 {
-   os << rect.TopLeft() << " " << rect.BottomRight();
+   os << rect.TopLeft() << _T(" ") << rect.BottomRight();
    return os;
 }
 
@@ -871,14 +871,39 @@ bool gpRect2d::Touches(const gpRect2d& other) const
    return ( (m_Left   < other.Right() && other.Left()   < m_Right) &&
             (m_Bottom < other.Top()   && other.Bottom() < m_Top) );
 }
+
+gpRect2d::rctPosition gpRect2d::GetPosition(const gpRect2d& other) const
+{
+   Float64 oLeft   = other.m_Left;
+   Float64 oRight  = other.m_Right;
+   Float64 oBottom = other.m_Bottom;
+   Float64 oTop    = other.m_Top;
+
+   // Use contains and touches algorithms above
+   if ( (m_Left  <=oLeft    && oRight<=m_Right) &&
+        (m_Bottom<= oBottom && oTop  <= m_Top) )
+   {
+      return gpRect2d::rpContains;
+   }
+   else if ( (m_Left   < oRight && oLeft   < m_Right) &&
+             (m_Bottom < oTop   && oBottom < m_Top) )
+   {
+      return gpRect2d::rpTouches;
+   }
+   else
+   {
+      return gpRect2d::rpOutside;
+   }
+}
+
 //======================== DEBUG      =======================================
 #if defined _DEBUG
 
 void gpRect2d::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for gpRect2d" << endl;
-   os << "  (Bottom,Left,Right,Top) = ("<< m_Bottom<<", "<< m_Left
-      <<", "<< m_Right<<", "<< m_Top<<")"<<endl;
+   os << _T("Dump for gpRect2d") << endl;
+   os << _T("  (Bottom,Left,Right,Top) = (")<< m_Bottom<<_T(", ")<< m_Left
+      <<_T(", ")<< m_Right<<_T(", ")<< m_Top<<_T(")")<<endl;
 }
 #endif // _DEBUG
 

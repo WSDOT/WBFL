@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -56,7 +56,9 @@ STDMETHODIMP CSpans::get_Length(Float64 *pVal)
    Float64 length = 0.0;
 
    // clone collection
-   for (iterator it= begin(); it != end(); it++)
+   iterator it( begin() );
+   iterator itend( end() );
+   for (; it != itend; it++)
    {
       Float64 len;
       CComPtr<ISpan>& isp = it->second.m_T;
@@ -94,7 +96,9 @@ STDMETHODIMP CSpans::Clone(ISpans* *pColl)
    // clone properties
 
    // clone collection
-   for (iterator it= begin(); it != end(); it++)
+   iterator it( begin() );
+   iterator itend( end() );
+   for (; it != itend; it++)
    {
       CComPtr<ISpan> isp;
       

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeToolsTest - Test driver for generic bridge tools library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -50,7 +50,7 @@ static char THIS_FILE[] = __FILE__;
 
 CComModule _Module;
 
-int main(int argc, LPTSTR argv[])
+int main(int argc, TCHAR* argv[])
 {
    ::CoInitialize(NULL);
 

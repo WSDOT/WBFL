@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -115,7 +115,8 @@ public:
 	STDMETHOD(put_Right)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_Left)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_Left)(/*[in]*/ Float64 newVal);
-
+	STDMETHOD(SetBounds)(/*[in]*/ Float64 Left, /*[in]*/ Float64 Right, /*[in]*/ Float64 Bottom, /*[in]*/ Float64 Top);
+	STDMETHOD(GetBounds)(/*[out, retval]*/ Float64* pLeft, /*[out, retval]*/ Float64* pRight, /*[out, retval]*/ Float64* pBottom, /*[out, retval]*/ Float64* pTop);
 // IPersist
 public:
    STDMETHOD(GetClassID)(CLSID* pClassID);

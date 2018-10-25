@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManipTools - Direct Manipulation Tools
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -65,7 +65,7 @@ public:
    STDMETHOD_(void,ReadDragData)(iDragDataSource* pSource, UINT cfFormat);
 
 // iSymbolLegendEntry 
-   STDMETHOD_(void,get_SymbolFontFace)(LPTSTR *pVal);
+   STDMETHOD_(void,get_SymbolFontFace)(TCHAR* *pVal);
    STDMETHOD_(void,put_SymbolFontFace)(LPCTSTR newVal);
    STDMETHOD_(long,get_SymbolSize)();
    STDMETHOD_(void,put_SymbolSize)(long code);

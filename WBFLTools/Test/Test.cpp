@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Tools Test - Test driver for WBFLTools library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -45,7 +45,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-int main(int argc, char* argv[])
+int main(int argc, LPTSTR  argv[])
 {
    ::CoInitialize(NULL);
 

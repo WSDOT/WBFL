@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -276,8 +276,9 @@ void CLoading::ApplyLoads(CModel *model)
    CJointCollection* joints = model->GetJoints();
 
    // apply joint loads
-   JointLoadIterator jntLdIter = m_pJointLoads->begin();
-   while (jntLdIter!=m_pJointLoads->end())
+   JointLoadIterator jntLdIter( m_pJointLoads->begin() );
+   JointLoadIterator jntLdIterEnd( m_pJointLoads->end() );
+   while (jntLdIter!=jntLdIterEnd)
    {
       CJointLoad *jntLd = *(jntLdIter++);
       JointIDType id;
@@ -295,8 +296,9 @@ void CLoading::ApplyLoads(CModel *model)
    }
 
    // apply joint displacements
-   JointDisplacementIterator jntDispIter = m_pJointDisplacements->begin();
-   while (jntDispIter!=m_pJointDisplacements->end())
+   JointDisplacementIterator jntDispIter( m_pJointDisplacements->begin() );
+   JointDisplacementIterator jntDispIterEnd( m_pJointDisplacements->end() );
+   while (jntDispIter!=jntDispIterEnd)
    {
       CJointDisplacement *jntDisp = *(jntDispIter++);
       JointIDType id;
@@ -316,8 +318,9 @@ void CLoading::ApplyLoads(CModel *model)
 
    CMemberCollection* members = model->GetMembers();
    // point loads applied to members
-   PointLoadIterator ptLdIter = m_pPointLoads->begin();
-   while(ptLdIter!=m_pPointLoads->end())
+   PointLoadIterator ptLdIter( m_pPointLoads->begin() );
+   PointLoadIterator ptLdIterEnd( m_pPointLoads->end() );
+   while(ptLdIter!=ptLdIterEnd)
    {
       CPointLoad *ptLd = *(ptLdIter++);
       MemberIDType id;
@@ -335,8 +338,9 @@ void CLoading::ApplyLoads(CModel *model)
    }
 
    // Distributed loads applied to members
-   DistributedLoadIterator dstLdIter = m_pDistributedLoads->begin();
-   while(dstLdIter!=m_pDistributedLoads->end())
+   DistributedLoadIterator dstLdIter( m_pDistributedLoads->begin() );
+   DistributedLoadIterator dstLdIterEnd( m_pDistributedLoads->end() );
+   while(dstLdIter!=dstLdIterEnd)
    {
       CDistributedLoad *pdstLd = *(dstLdIter++);
       MemberIDType id;
@@ -354,8 +358,9 @@ void CLoading::ApplyLoads(CModel *model)
    }
 
    // member strains
-   MemberStrainIterator pmsIter = m_pMemberStrains->begin();
-   while(pmsIter!=m_pMemberStrains->end())
+   MemberStrainIterator pmsIter( m_pMemberStrains->begin() );
+   MemberStrainIterator pmsIterEnd( m_pMemberStrains->end() );
+   while(pmsIter!=pmsIterEnd)
    {
       CMemberStrain *pms = *(pmsIter++);
       MemberIDType id;
@@ -382,8 +387,9 @@ void CLoading::ApplyLoads(CMember *pmbr)
    pmbr->get_ID(&mid);
 
    // Point loads
-   PointLoadIterator ptLdIter = m_pPointLoads->begin();
-   while(ptLdIter!=m_pPointLoads->end())
+   PointLoadIterator ptLdIter( m_pPointLoads->begin() );
+   PointLoadIterator ptLdIterEnd( m_pPointLoads->end() );
+   while(ptLdIter!=ptLdIterEnd)
    {
       CPointLoad *ptLd = *(ptLdIter++);
       MemberIDType id;
@@ -395,8 +401,9 @@ void CLoading::ApplyLoads(CMember *pmbr)
    }
 
    // Distributed loads
-   DistributedLoadIterator dstLdIter = m_pDistributedLoads->begin();
-   while(dstLdIter!=m_pDistributedLoads->end())
+   DistributedLoadIterator dstLdIter( m_pDistributedLoads->begin() );
+   DistributedLoadIterator dstLdIterEnd( m_pDistributedLoads->end() );
+   while(dstLdIter!=dstLdIterEnd)
    {
       CDistributedLoad *ptLd = *(dstLdIter++);
       MemberIDType id;
@@ -408,8 +415,9 @@ void CLoading::ApplyLoads(CMember *pmbr)
    }
 
    // member strains
-   MemberStrainIterator pmsIter = m_pMemberStrains->begin();
-   while(pmsIter!=m_pMemberStrains->end())
+   MemberStrainIterator pmsIter( m_pMemberStrains->begin() );
+   MemberStrainIterator pmsIterEnd( m_pMemberStrains->end() );
+   while(pmsIter!=pmsIterEnd)
    {
       CMemberStrain *pms = *(pmsIter++);
       MemberIDType id;

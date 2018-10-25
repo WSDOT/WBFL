@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -35,6 +35,29 @@
 static char THIS_FILE[] = __FILE__;
 #endif
  
+static const Float64 g_p7_MPA    = ::ConvertToSysUnits(0.7,unitMeasure::MPa);
+static const Float64 g_p52_MPA   = ::ConvertToSysUnits(0.52,unitMeasure::MPa);
+static const Float64 g_1p9_MPA   = ::ConvertToSysUnits(1.9,unitMeasure::MPa);
+static const Float64 g_5p5_MPA   = ::ConvertToSysUnits(5.5,unitMeasure::MPa);
+static const Float64 g_9p0_MPA   = ::ConvertToSysUnits(9.0,unitMeasure::MPa);
+static const Float64 g_12p4_MPA  = ::ConvertToSysUnits(12.4,unitMeasure::MPa);
+static const Float64 g_14p0_MPA  = ::ConvertToSysUnits(14.0,unitMeasure::MPa);
+
+static const Float64 g_p1_KSI    = ::ConvertToSysUnits(0.100,unitMeasure::KSI);
+static const Float64 g_p210_KSI  = ::ConvertToSysUnits(0.210,unitMeasure::KSI);
+static const Float64 g_p280_KSI  = ::ConvertToSysUnits(0.280,unitMeasure::KSI);
+static const Float64 g_p075_KSI  = ::ConvertToSysUnits(0.075,unitMeasure::KSI);
+static const Float64 g_p8_KSI    = ::ConvertToSysUnits(0.8,unitMeasure::KSI);
+static const Float64 g_1p3_KSI   = ::ConvertToSysUnits(1.3,unitMeasure::KSI);
+static const Float64 g_1p8_KSI   = ::ConvertToSysUnits(1.8,unitMeasure::KSI);
+
+static const Float64 g_0p6_M = ::ConvertToSysUnits(0.6, unitMeasure::Meter);
+static const Float64 g_0p9_M = ::ConvertToSysUnits(0.9, unitMeasure::Meter);
+
+static const Float64 g_36_IN = ::ConvertToSysUnits(36.0, unitMeasure::Inch);
+
+static const Float64 g_2_FT = ::ConvertToSysUnits(2.0, unitMeasure::Feet);
+
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
@@ -274,16 +297,16 @@ Float64 lrfdConcreteUtil::ShearCohesionFactor(bool isRoughened,lrfdConcreteUtil:
       if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
       {
          if (isRoughened)
-            c = ::ConvertToSysUnits(0.70,unitMeasure::MPa);
+            c = g_p7_MPA;
          else
-            c =::ConvertToSysUnits(0.52,unitMeasure::MPa);
+            c =g_p52_MPA;
       }
       else
       {
          if (isRoughened)
-            c = ::ConvertToSysUnits(0.100,unitMeasure::KSI);
+            c = g_p1_KSI;
          else
-            c = ::ConvertToSysUnits(0.075,unitMeasure::KSI);
+            c = g_p075_KSI;
       }
 
       return c*lamda;
@@ -295,22 +318,22 @@ Float64 lrfdConcreteUtil::ShearCohesionFactor(bool isRoughened,lrfdConcreteUtil:
       {
          if (isRoughened)
          {
-            return ::ConvertToSysUnits(0.280,unitMeasure::KSI);
+            return g_p280_KSI;
          }
          else
          {
-            return ::ConvertToSysUnits(0.075,unitMeasure::KSI);
+            return g_p075_KSI;
          }
       }
       else
       {
          if (isRoughened)
          {
-            return ::ConvertToSysUnits(1.9,unitMeasure::MPa);
+            return g_1p9_MPA;
          }
          else
          {
-            return ::ConvertToSysUnits(0.52,unitMeasure::MPa);
+            return g_p52_MPA;
          }
       }
    }
@@ -344,9 +367,7 @@ Float64 lrfdConcreteUtil::HorizShearK2(bool isRoughened,lrfdConcreteUtil::Densit
 
    if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007 )
    {
-      K2 = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI) ?
-           ::ConvertToSysUnits(5.5,unitMeasure::MPa) : 
-           ::ConvertToSysUnits(0.8,unitMeasure::KSI);
+      K2 = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI) ? g_5p5_MPA : g_p8_KSI;
    }
    else
    {
@@ -355,22 +376,22 @@ Float64 lrfdConcreteUtil::HorizShearK2(bool isRoughened,lrfdConcreteUtil::Densit
       {
          if ( isRoughened )
          {
-            K2 = (bIsNWC ? ::ConvertToSysUnits(1.8,unitMeasure::KSI) : ::ConvertToSysUnits(1.3,unitMeasure::KSI) );
+            K2 = (bIsNWC ? g_1p8_KSI : g_1p3_KSI );
          }
          else
          {
-            K2 = ::ConvertToSysUnits( 0.8,unitMeasure::KSI);
+            K2 = g_p8_KSI;
          }
       }
       else
       {
          if ( isRoughened )
          {
-            K2 = (bIsNWC ? ::ConvertToSysUnits(12.4,unitMeasure::MPa) : ::ConvertToSysUnits( 9.0,unitMeasure::MPa) );
+            K2 = (bIsNWC ? g_12p4_MPA : g_9p0_MPA );
          }
          else
          {
-            K2 = ::ConvertToSysUnits( 5.5,unitMeasure::MPa);
+            K2 = g_5p5_MPA;
          }
       }
    }
@@ -401,11 +422,11 @@ Float64 lrfdConcreteUtil::LowerLimitOfShearStrength(bool isRoughened)
       // 4th edition or later
       if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
       {
-         return isRoughened ? ::ConvertToSysUnits(1.40, unitMeasure::MPa) : 0.0;
+         return isRoughened ? g_14p0_MPA : 0.0;
       }
       else
       {
-         return isRoughened ? ::ConvertToSysUnits(0.21, unitMeasure::KSI) : 0.0;
+         return isRoughened ? g_p210_KSI : 0.0;
       }
    }
    else if (lrfdVersionMgr::SecondEdition1998 <= lrfdVersionMgr::GetVersion())
@@ -415,11 +436,11 @@ Float64 lrfdConcreteUtil::LowerLimitOfShearStrength(bool isRoughened)
       // 2nd to 4th it didn't matter if surface was roughened
       if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
       {
-         return ::ConvertToSysUnits(0.7, unitMeasure::MPa);
+         return g_p7_MPA;
       }
       else
       {
-         return ::ConvertToSysUnits(0.1, unitMeasure::KSI);
+         return g_p1_KSI;
       }
    }
    else
@@ -436,11 +457,11 @@ Float64 lrfdConcreteUtil::UpperLimitForBv()
       // This requirement was removed in the 1998 Section Edition
       if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
       {
-         return ::ConvertToSysUnits(0.9, unitMeasure::Meter);
+         return g_0p9_M;
       }
       else
       {
-         return ::ConvertToSysUnits(36.0, unitMeasure::Inch);
+         return g_36_IN;
       }
    }
    else
@@ -512,9 +533,9 @@ Float64 lrfdConcreteUtil::AvfOverSMin(Float64 bv, Float64 fy,const sysSectionVal
 Float64 lrfdConcreteUtil::MaxStirrupSpacingForHoriz()
 {
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
-      return ::ConvertToSysUnits(0.6, unitMeasure::Meter);
+      return g_0p6_M;
    else
-      return ::ConvertToSysUnits(2.0, unitMeasure::Feet);
+      return g_2_FT;
 }
 
 //======================== ACCESS     =======================================

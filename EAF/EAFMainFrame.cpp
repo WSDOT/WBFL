@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -33,6 +33,7 @@
 #include <EAF\EAFSplashScreen.h>
 #include <EAF\EAFApp.h>
 #include <EAF\EAFPluginCommandManager.h>
+#include <EAF\EAFChildFrame.h>
 #include "ToolBarDlg.h"
 
 #ifdef _DEBUG
@@ -181,7 +182,7 @@ int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
    DockControlBar( m_pMainFrameToolBar );
 
    // Load the state of the application toolbar
-   LoadBarState( CString((LPCTSTR)IDS_TOOLBAR_STATE) );
+   LoadBarState( CString("Toolbars\\") + CString((LPCTSTR)IDS_TOOLBAR_STATE) );
 
    m_pMainMenu = CreateMainMenu();
 
@@ -215,7 +216,7 @@ void CEAFMainFrame::OnClose()
 void CEAFMainFrame::OnDestroy()
 {
    // Save the state of the application toolbar
-   SaveBarState( CString((LPCTSTR)IDS_TOOLBAR_STATE) );
+   SaveBarState( CString("Toolbars\\") + CString((LPCTSTR)IDS_TOOLBAR_STATE) );
 
    CMDIFrameWnd::OnDestroy();
 }
@@ -274,8 +275,14 @@ BOOL CEAFMainFrame::PreTranslateMessage(MSG* pMsg)
       }
    }
    
-	if (pMsg->message >= WM_KEYFIRST && pMsg->message <= WM_KEYLAST)
+	if ( WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST )
    {
+      // this is a little hack to get the accelerator keys translated when the shift, alt (menu), or control key is pressed
+      if ( pMsg->message == WM_KEYUP && (::GetKeyState(VK_SHIFT) || ::GetKeyState(VK_MENU) || ::GetKeyState(VK_CONTROL)) )
+      {
+         pMsg->message = WM_KEYDOWN;
+      }
+
       if ( GetAcceleratorTable()->TranslateMessage(this,pMsg) )
          return TRUE;
 
@@ -336,7 +343,13 @@ void CEAFMainFrame::GetMessageString(UINT nID, CString& rMessage) const
       CEAFDocument* pDoc = (CEAFDocument*)pActiveDoc;
       CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)pDoc->GetDocTemplate();
       if ( pTemplate->GetCommandCallback() )
+      {
          bHandledByPlugin = pTemplate->GetCommandCallback()->GetStatusBarMessageString(nID,rMessage);
+      }
+      else
+      {
+         bHandledByPlugin = pDoc->GetStatusBarMessageString(nID,rMessage);
+      }
    }
 
    if ( !bHandledByPlugin )
@@ -391,7 +404,13 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
    {
       CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)pDoc->GetDocTemplate();
       if ( pTemplate->GetCommandCallback() )
+      {
          bHandledByPlugin = pTemplate->GetCommandCallback()->GetToolTipMessageString(nID,strTipText);
+      }
+      else
+      {
+         bHandledByPlugin = pDoc->GetToolTipMessageString(nID,strTipText);
+      }
    }
 
    if ( bHandledByPlugin )
@@ -563,8 +582,11 @@ CEAFDocument* CEAFMainFrame::GetDocument()
    AFX_MANAGE_STATE(AfxGetAppModuleState());
    CMDIChildWnd* pActiveChild = MDIGetActive();
    CDocument* pDoc = GetActiveDocument();
+   CView* pView = GetActiveView();
    if ( pDoc == NULL && pActiveChild != NULL )
       pDoc = pActiveChild->GetActiveDocument();
+   else if ( pDoc == NULL && pView != NULL )
+      pDoc = pView->GetDocument();
 
    if ( pDoc != NULL && pDoc->IsKindOf(RUNTIME_CLASS(CEAFDocument)) )
       return (CEAFDocument*)pDoc;
@@ -613,7 +635,13 @@ CView* CEAFMainFrame::CreateOrActivateFrame(CEAFDocTemplate* pTemplate)
       {
          // This attempt would cause the maximim view count to be
          // exceeded. Activate the last view of this type.
-         pLastView->GetParentFrame()->ActivateFrame();
+         CFrameWnd* pFrame = pLastView->GetParentFrame();
+         if (pFrame->IsKindOf(RUNTIME_CLASS(CEAFChildFrame)))
+         {
+            CEAFChildFrame* pEAFFrame = (CEAFChildFrame*)(pFrame);
+            pEAFFrame->OnBeforeMaxViewActivate(pTemplate->GetViewCreationData());
+         }
+         pFrame->ActivateFrame();
          return pLastView;
       }
    }
@@ -1049,6 +1077,26 @@ void CEAFMainFrame::ToggleToolBarState(UINT idx)
       BOOL bIsVisible = tbInfo.m_pMFCToolBar->IsWindowVisible();
       ShowControlBar( tbInfo.m_pMFCToolBar, !bIsVisible, FALSE );
    }
+}
+
+void CEAFMainFrame::LoadBarState(LPCTSTR lpszProfileName)
+{
+	CDockState state;
+	state.LoadState(lpszProfileName);
+   {
+      AFX_MANAGE_STATE(AfxGetAppModuleState());
+   	SetDockState(state);
+   }
+}
+
+void CEAFMainFrame::SaveBarState(LPCTSTR lpszProfileName) const
+{
+	CDockState state;
+   {
+      AFX_MANAGE_STATE(AfxGetAppModuleState());
+	   GetDockState(state);
+   }
+	state.SaveState(lpszProfileName);
 }
 
 CEAFMenu* CEAFMainFrame::CreateMainMenu()

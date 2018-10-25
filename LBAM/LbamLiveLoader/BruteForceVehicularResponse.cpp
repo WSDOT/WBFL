@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Live Loader - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -827,8 +827,8 @@ void CBruteForceVehicularResponse::ComputeInflResponse(LiveLoadModelType type, V
       {
          AxleIndexType num_axles = m_Truck.GetNumAxles();
 
-         std::vector<bool> applied_axles;
-         applied_axles.reserve(16);
+         std::vector<AxleState> applied_axles;
+         applied_axles.reserve(num_axles);
 
          // loop over truck forward and backwards
          TruckDirectionType directions[2] = {ltdForward, ltdReverse};

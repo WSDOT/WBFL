@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -73,7 +73,9 @@ void CDistributionFactors::FinalRelease()
 {
    // free up all of our connectionpoints on destruct
    CollectionIndexType cnt=0;
-   for (iterator it= begin(); it != end(); it++)
+   iterator it( begin() );
+   iterator itend( end() );
+   for (; it != itend; it++)
    {
       OnBeforeRemove(*it, cnt++);
    }
@@ -114,7 +116,9 @@ STDMETHODIMP CDistributionFactors::get_Length(Float64 superstructureLength,Float
    Float64 length = 0.0;
 
    // clone collection
-   for (iterator it= begin(); it != end(); it++)
+   iterator it( begin() );
+   iterator itend( end() );
+   for (; it != itend; it++)
    {
       Float64 len;
       CComPtr<IDistributionFactorSegment>& isp = it->second;
@@ -183,7 +187,9 @@ STDMETHODIMP CDistributionFactors::GetSegmentForLocation(Float64 location, Float
 
       // search the vector for our segment
       Float64 seg_end=0;
-      for (iterator it=this->begin(); it!=this->end(); it++)
+      iterator it( begin() );
+      iterator itend( end() );
+      for (; it!=itend; it++)
       {
          IDistributionFactorSegment* pseg = it->second.m_T;
 
@@ -208,7 +214,7 @@ STDMETHODIMP CDistributionFactors::GetSegmentForLocation(Float64 location, Float
             {
                // We are within tolerance - only need to check if this is the last segment
                // If this is not the last segment, assign it to right side. If it is, Right is NULL.
-               iterator it2 = it;
+               iterator it2(it);
                if ( ++it2 != this->end() )
                {
                   IDistributionFactorSegment* psegi2 = it2->second.m_T;
@@ -376,7 +382,9 @@ HRESULT CDistributionFactors::LayoutSegments(Float64 layoutLength, Float64 total
    HRESULT hr;
    Float64 len=0.0;
    Float64 prevlen=0.0;
-   for (iterator it=this->begin(); it!=this->end(); it++)
+   iterator it(this->begin());
+   iterator itend(this->end());
+   for (; it!=itend; it++)
    {
       IDistributionFactorSegment* pseg = it->second.m_T;
 
@@ -481,7 +489,9 @@ STDMETHODIMP CDistributionFactors::Clone(/*[out,retval]*/IDistributionFactors** 
    pnew->m_IsSymmetrical = m_IsSymmetrical;
 
    // clone collection
-   for (iterator it= begin(); it != end(); it++)
+   iterator it( begin() );
+   iterator itend( end() );
+   for (; it != itend; it++)
    {
       CComPtr<IDistributionFactorSegment> isp;
       

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -86,6 +86,7 @@ library WBFLGenericBridge
    interface IVoidedSlabSection2;
    interface IDeckedSlabBeamSection;
    interface IBoxBeamSection;
+   interface IUGirderSection2;
 
 // Enumerators
    typedef [public,helpstring("enum SidewalkPositionType"),uuid(F7126E78-8EDF-4af7-9CFA-59C2D1F6C6B1)] 
@@ -964,6 +965,21 @@ library WBFLGenericBridge
       [propput, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[in] Float64 length);
       [propget, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[out,retval] Float64* pLength);
    };
+
+   [
+		object,
+		uuid(FC05CC1E-5BF7-4c6c-858A-325C115209A8),
+		oleautomation,
+		helpstring("IUGirderSection2EndBlockSegment Interface"),
+		pointer_default(unique)
+   ]
+   interface IUGirderSection2EndBlockSegment : ISegment
+   {
+		[propputref, helpstring("property BeamSection")] HRESULT BeamSection([in] IUGirderSection2* pBeamSection);
+      [propput, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[in] Float64 length);
+      [propget, helpstring("property EndBlockLength")] HRESULT EndBlockLength([in]EndType endType,[out,retval] Float64* pLength);
+   };
+
 
    [
 		object,
@@ -2011,6 +2027,16 @@ library WBFLGenericBridge
    coclass BoxBeamEndBlockSegment
    {
       [default] interface IBoxBeamEndBlockSegment;
+	  [default, source] interface ISegmentEvents;
+   };
+
+   [
+      uuid(E5E3C9E4-909B-47eb-8B40-E1279A1FE65E),
+		helpstring("UGirderSection2EndBlockSegment Class")
+   ]
+   coclass UGirderSection2EndBlockSegment
+   {
+      [default] interface IUGirderSection2EndBlockSegment;
 	  [default, source] interface ISegmentEvents;
    };
 

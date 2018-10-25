@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Live Loader - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -250,7 +250,7 @@ private:
       }
 
       void StoreState(Float64 newMax, Float64 truckLocation, TruckDirectionType direction,
-                      std::vector<bool>& appliedAxles, Float64 variableSpacing)
+                      std::vector<AxleState>& appliedAxles, Float64 variableSpacing)
       {
          ATLASSERT(!m_FirstCompare);
 
@@ -287,17 +287,20 @@ private:
          llConfig->put_DoApplyImpact(doApplyImpact);
 
          // count number of falses and create array of inactive axles
-         AxleIndexType nInactiveAxles = std::count(m_AppliedAxles.begin(), m_AppliedAxles.end(), false);
+         AxleIndexType nInactiveAxles = std::count(m_AppliedAxles.begin(), m_AppliedAxles.end(), AxleOff);
 
          CComPtr<ILongArray> inactive_axles;
          inactive_axles.CoCreateInstance(CLSID_LongArray);
 
+         if (nInactiveAxles>0)
+            inactive_axles->Reserve(nInactiveAxles);
+
          AxleIndexType axleIdx = 0;
-         std::vector<bool>::iterator  axleIter;
+         std::vector<AxleState>::iterator  axleIter;
          for (axleIter = m_AppliedAxles.begin(); axleIter != m_AppliedAxles.end(); axleIter++)
          {
-            bool bAxleApplied = *axleIter;
-            if (!bAxleApplied)
+            int bAxleApplied = *axleIter;
+            if (0==bAxleApplied)
             {
                inactive_axles->Add(axleIdx);
             }
@@ -313,7 +316,7 @@ private:
       Float64 m_OptimizedVal;
       Float64 m_TruckLocation;
       TruckDirectionType m_Direction;
-      std::vector<bool>  m_AppliedAxles;
+      std::vector<AxleState>  m_AppliedAxles;
       Float64 m_VariableSpacing;
    };
 

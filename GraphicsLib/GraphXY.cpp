@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphicsLib - Utility library graphics
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -67,6 +67,7 @@ m_ClientAreaColor(RGB(240,240,240)),
 m_DoDrawAxis(true),
 m_DoDrawGrid(true),
 m_bDrawLegend(true),
+m_LegendBoarderType(lbCheckerBoarder),
 m_XAxisNiceRange(true),
 m_YAxisNiceRange(true),
 m_PinYAxisAtZero(true),
@@ -457,6 +458,16 @@ void grGraphXY::SetMinimumZoomBounds(Float64 Height, Float64 Width)
    m_MinZoomWidth  = Width;
 }
 
+void grGraphXY::SetLegendBoarderStyle(LegendBoarderType type)
+{
+   m_LegendBoarderType = type;
+}
+
+grGraphXY::LegendBoarderType grGraphXY::GetLegendBoarderStyle() const
+{
+   return m_LegendBoarderType;
+}
+
 //======================== INQUIRY    =======================================
 
 const grlibPointMapper& grGraphXY::GetClientAreaPointMapper(HDC hDC)
@@ -825,6 +836,12 @@ void grGraphXY::DrawLegend(HDC hDC)
 {
    UINT textAlign = ::SetTextAlign(hDC,TA_TOP | TA_LEFT);
 
+   if (m_LegendBoarderType==lbBoundary)
+   {
+      // bound entire legend rect
+      ::Rectangle(hDC,m_LegendRect.left,m_LegendRect.top,m_LegendRect.right,m_LegendRect.bottom);
+   }
+
    // draw the data labels
    int i = 0;
    int row = 0;
@@ -841,8 +858,11 @@ void grGraphXY::DrawLegend(HDC hDC)
       int x = m_LegendRect.left + col*m_LegendItemSize.cx;
       int y = m_LegendRect.top  + row*m_LegendItemSize.cy;
 
-      // draw a cell for the legend item
-      ::Rectangle(hDC,x,y,x+m_LegendItemSize.cx,y+m_LegendItemSize.cy);
+      if (m_LegendBoarderType==lbCheckerBoarder)
+      {
+         // Draw a cell for each individual legend item
+         ::Rectangle(hDC,x,y,x+m_LegendItemSize.cx,y+m_LegendItemSize.cy);
+      }
 
       // draw the line symbol
       HPEN pen = ::CreatePen(gd.Pen.Style,gd.Pen.Width,gd.Pen.Color);
@@ -870,6 +890,7 @@ void grGraphXY::DrawLegend(HDC hDC)
          row++;
       }
    }
+
 
    ::SetTextAlign(hDC,textAlign);
 }
@@ -940,8 +961,8 @@ void grGraphXY::SetPinYAxisAtZero(bool pin)
 int grGraphXY::UpdateLegendMetrics(HDC hDC)
 {
    int dpi = ::GetDeviceCaps(hDC,LOGPIXELSX);
-   m_LegendBorder = dpi/16; // 1/16" border
-   m_LegendSymbolLength = dpi/2; // 1/2" symbol
+   m_LegendBorder = dpi/32; // 1/16" border
+   m_LegendSymbolLength = dpi/3; // 1/2" symbol
 
    HFONT font = grGraphTool::CreateRotatedFont(hDC, 0, m_LegendFontSize);
    HGDIOBJ old_font = ::SelectObject(hDC, font);

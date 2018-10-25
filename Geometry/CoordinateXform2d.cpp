@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -51,8 +51,6 @@ HRESULT CCoordinateXform2d::FinalConstruct()
 
    origin->QueryInterface( &m_Origin );
 
-   m_Angle = 0.0;
-
    return S_OK;
 }
 
@@ -101,6 +99,8 @@ STDMETHODIMP CCoordinateXform2d::get_RotationAngle(Float64 *pVal)
 STDMETHODIMP CCoordinateXform2d::put_RotationAngle(Float64 newVal)
 {
    m_Angle = newVal;
+   m_CosAngle = cos(m_Angle);
+   m_SinAngle = sin(m_Angle);
    return S_OK;
 }
 
@@ -134,9 +134,8 @@ STDMETHODIMP CCoordinateXform2d::OldToNew(IPoint2d* point)
    GetCoordinates(m_Origin,&xo,&yo);
 
    Float64 x1,y1;
-
-   x1 =  (x-xo)*cos(m_Angle) + (y-yo)*sin(m_Angle);
-   y1 = -(x-xo)*sin(m_Angle) + (y-yo)*cos(m_Angle);
+   x1 =  (x-xo)*m_CosAngle + (y-yo)*m_SinAngle;
+   y1 = -(x-xo)*m_SinAngle + (y-yo)*m_CosAngle;
 
    point->Move(x1,y1);
 
@@ -152,12 +151,10 @@ STDMETHODIMP CCoordinateXform2d::NewToOld(IPoint2d* point)
    GetCoordinates(m_Origin,&xo,&yo);
 
    Float64 x1,y1;
+   x1 = x*m_CosAngle - y*m_SinAngle + xo;
+   y1 = x*m_SinAngle + y*m_CosAngle + yo;
 
-   x1 = x*cos(m_Angle) - y*sin(m_Angle) + xo;
-   y1 = x*sin(m_Angle) + y*cos(m_Angle) + yo;
-
-   point->put_X(x1);
-   point->put_Y(y1);
+   point->Move(x1,y1);
 
    return S_OK;
 }

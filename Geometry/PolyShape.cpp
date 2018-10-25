@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -279,7 +279,7 @@ void CPolyShape::UpdateShapeProperties()
       Float64 area_local =0;
 
       // loop over all points - make sure of closure
-      long idx0, idx1;
+      CollectionIndexType idx0, idx1;
       idx0 = 0;
       idx1 = 1;
 
@@ -522,8 +522,8 @@ STDMETHODIMP CPolyShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult)
 
    Float64 sum = 0;
 
-   long idx0 = 0;
-   long idx1 = 1;
+   CollectionIndexType idx0 = 0;
+   CollectionIndexType idx1 = 1;
    bool loop       = true;
    bool last_round = false;
    while (loop)

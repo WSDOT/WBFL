@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Live Loader - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,6 +30,11 @@
 
 #include <vector>
 
+// This enum defines whether an axle is used or not for notional truck loads
+// Previous version used a std::vector<bool>, but we found that performance was
+// dramatically worse.
+enum AxleState {AxleOff, AxleOn};
+
 struct FtAxle
 {
    FtAxle( Float64 originalSpacing, Float64 weight):
@@ -56,11 +61,11 @@ struct FixedTruck
    // applied (returned non-zero) in the vector<bool>
    void EvaluatePrimary(Float64 position, InfluenceSideType side, Float64 flipFactor, 
                         IInfluenceLine* lftInfluence, IInfluenceLine* rgtInfluence, 
-                        std::vector<bool>* lftAppliedAxles, std::vector<bool>* rgtAppliedAxles,
+                        std::vector<AxleState>* lftAppliedAxles, std::vector<AxleState>* rgtAppliedAxles,
                         VARIANT_BOOL* isDualValued, Float64* leftValue, Float64* rightValue);
 
    // evaluate for a single influence line - left and right values are returned in left-side coordinates
-   void EvaluatePrimaryInfl(Float64 position, InfluenceSideType side, IInfluenceLine* influence, std::vector<bool>* appliedAxles,
+   void EvaluatePrimaryInfl(Float64 position, InfluenceSideType side, IInfluenceLine* influence, std::vector<AxleState>* appliedAxles,
                                      VARIANT_BOOL* isDualValued, Float64* leftValue, Float64* rightValue);
 
 
@@ -120,10 +125,10 @@ private:
    typedef std::vector<FtAxle>     AxleContainer;
    typedef AxleContainer::iterator AxleIterator;
 
-   Float64              m_Front;
-   Float64              m_Rear;
-   AxleContainer       m_Axles;
-   std::vector<bool>   m_ActiveAxles;
+   Float64                m_Front;
+   Float64                m_Rear;
+   AxleContainer          m_Axles;
+   std::vector<AxleState> m_ActiveAxles;
 
    bool m_bNegMomentsAndReactions;
 

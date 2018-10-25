@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -69,6 +69,7 @@ public:
    typedef std::vector<boost::shared_ptr<rptChapter> > ChapterVec;
    typedef ChapterVec::iterator ChapterListIterator;
    typedef ChapterVec::const_iterator ConstChapterListIterator;
+   typedef ChapterVec::size_type ChapterListSizeType;
 
    // GROUP: LIFECYCLE
 
@@ -92,6 +93,16 @@ public:
    // Stream a pointer to a rptChapter object. NOTE that the Report
    // now becomes responsible for deleting this object
    virtual rptReport& operator << (rptChapter* pChapter );
+
+   //------------------------------------------------------------------------
+   // Insert a chapter into a specific location in the report
+   // now becomes responsible for deleting this object
+   virtual bool InsertChapterAt(ChapterListSizeType location, rptChapter* pChapter );
+
+   //------------------------------------------------------------------------
+   // Insert a chapter into a specific location in the report
+   // now becomes responsible for deleting this object
+   virtual ChapterListSizeType GetChapterCount() const;
 
    // GROUP: OPERATIONS
 

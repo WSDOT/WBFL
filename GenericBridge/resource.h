@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -79,6 +79,7 @@
 #define IDR_DECKEDSLABBEAMSECTION         149
 #define IDR_DECKEDSLABBEAMENDBLOCKSEGMENT 150
 #define IDR_BOXBEAMENDBLOCKSEGMENT        151
+#define IDR_UGIRDERSECTION2ENDBLOCKSEGMENT 152
 
 #define IDS_STAGENAME                   201
 #define IDS_STAGEDESCRIPTION            203

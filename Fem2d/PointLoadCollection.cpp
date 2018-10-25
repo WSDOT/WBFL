@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -65,7 +65,7 @@ STDMETHODIMP CPointLoadCollection::Create(/*[in]*/LoadIDType id, /*[in]*/MemberI
    HRESULT hr = E_FAIL;
 
    // see if a Point load with our id already exists
-   ContainerIteratorType it = m_coll.find(id);
+   ContainerIteratorType it( m_coll.find(id) );
    if (it != m_coll.end())
    {
       // exists - return error
@@ -85,8 +85,7 @@ STDMETHODIMP CPointLoadCollection::Create(/*[in]*/LoadIDType id, /*[in]*/MemberI
       ppl->Init(m_pModel, m_pEvents, m_pLoading, id, memberID, location, Fx, Fy, Mz, orientation);
 
       // insert new Point
-      std::pair<ContainerIteratorType,bool> st;
-      st = m_coll.insert(ContainerValueType(id, CComVariant(*ppPointLoad) ));
+      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, CComVariant(*ppPointLoad) )) );
       if (!st.second)
       {
          ATLASSERT(0); // insert failed - better check why
