@@ -494,7 +494,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
       {
          // Haunches along bottom of slab
          // haunch is defined by 6 (or more) points per mating surface
-         // Points 3 and 4, and possibily addition points in between, are defined by the section mating surface profile
+         // Points 3 and 4, and possibily additional points in between, are defined by the section mating surface profile
          // If the section does not provide a mating surface profile, use points 2 and 5 with an elevation offset equal to the build up depth
          //
          //    --------1\      /6------
@@ -884,7 +884,7 @@ STDMETHODIMP CSectionCutTool::get_EffectiveFlangeWidthTool(IEffectiveFlangeWidth
 }
 
 STDMETHODIMP CSectionCutTool::CreateGirderSectionBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg,SectionBias sectionBias,StageIndexType stageIdx,
-                                          SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, IndexType* pBeamIdx, IndexType* pSlabIdx,ISection** section)
+                                          SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile, IndexType* pBeamIdx, IndexType* pSlabIdx,ISection** section)
 {
    CComPtr<ISuperstructureMember> ssMbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssMbr);
@@ -894,20 +894,20 @@ STDMETHODIMP CSectionCutTool::CreateGirderSectionBySSMbr(IGenericBridge* bridge,
    CComPtr<ISuperstructureMemberSegment> segment;
    ssMbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
 
-   return CreateGirderSectionBySegment(bridge,ssMbrID,segIdx,Xs,sectionBias,stageIdx,sectionPropMethod,haunchMethod,pBeamIdx,pSlabIdx,section);
+   return CreateGirderSectionBySegment(bridge,ssMbrID,segIdx,Xs,sectionBias,stageIdx,sectionPropMethod,haunchMethod,bFollowMatingSurfaceProfile,pBeamIdx,pSlabIdx,section);
 }
 
 STDMETHODIMP CSectionCutTool::CreateGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias,
-   StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, IndexType* pBeamIdx, IndexType* pSlabIdx,ISection** section)
+   StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile, IndexType* pBeamIdx, IndexType* pSlabIdx,ISection** section)
 {
    // Validate input
    CHECK_RETOBJ(section);
    CHECK_IN(bridge);
 
-   return CreateCompositeSection(bridge,ssMbrID,segIdx,Xs,sectionBias,stageIdx,sectionPropMethod,haunchMethod,pBeamIdx,pSlabIdx,section);
+   return CreateCompositeSection(bridge,ssMbrID,segIdx,Xs,sectionBias,stageIdx,sectionPropMethod,haunchMethod,bFollowMatingSurfaceProfile,pBeamIdx,pSlabIdx,section);
 }
 
-STDMETHODIMP CSectionCutTool::CreateNetDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,StageIndexType stageIdx,HaunchDepthMethod haunchMethod,ISection** section)
+STDMETHODIMP CSectionCutTool::CreateNetDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,StageIndexType stageIdx,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,ISection** section)
 {
    CHECK_IN(bridge);
    CHECK_RETOBJ(section);
@@ -929,15 +929,43 @@ STDMETHODIMP CSectionCutTool::CreateNetDeckSection(IGenericBridge* bridge,Girder
    CComQIPtr<IGirderSection> girder_section(sishape);
    ATLASSERT(girder_section);
 
-   return CreateDeckSection(bridge,ssMbrID,segIdx,Xs,stageIdx,spmNet,haunchMethod,girder_section,section);
+   return CreateDeckSection(bridge,ssMbrID,segIdx,Xs,stageIdx,spmNet,haunchMethod,bFollowMatingSurfaceProfile,girder_section,section);
 }
 
-STDMETHODIMP CSectionCutTool::CreateDeckAnalysisShape(IGenericBridge * bridge,IGirderSection* pSection, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, Float64 haunchDepth, StageIndexType stageIdx, IShape ** shape)
+STDMETHODIMP CSectionCutTool::CreateDeckAnalysisShape(IGenericBridge * bridge,IGirderSection* pSection, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, Float64 haunchDepth, BOOL bFollowMatingSurfaceProfile, StageIndexType stageIdx, IShape ** shape)
 {
    CHECK_IN(bridge);
    CHECK_RETOBJ(shape);
 
-   return CreateDeckShape(bridge, ssMbrID, segIdx, Xs, haunchDepth, pSection, shape);
+   CComPtr<IBridgeDeck> deck;
+   bridge->get_Deck(&deck);
+
+   // this model doesn't have a deck... get the heck outta here
+   if (deck == nullptr)
+   {
+      return S_FALSE;
+   }
+
+   VARIANT_BOOL bComposite;
+   deck->get_Composite(&bComposite);
+   if (bComposite == VARIANT_FALSE)
+   {
+      // if deck is not composite, we are done
+      return S_FALSE;
+   }
+
+   Float64 Econc;
+   CComPtr<IMaterial> material;
+   deck->get_Material(&material);
+   material->get_E(stageIdx, &Econc);
+
+   if (IsZero(Econc))
+   {
+      // Deck isn't cast yet, we are done
+      return S_FALSE;
+   }
+
+   return CreateDeckShape(bridge, ssMbrID, segIdx, Xs, haunchDepth, bFollowMatingSurfaceProfile, pSection, shape);
 }
 
 STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64 distFromStartOfBridge,StageIndexType stageIdx,BarrierSectionCut bsc,ISection** section)
@@ -1139,7 +1167,7 @@ STDMETHODIMP CSectionCutTool::CreateLongitudinalJointShapeBySegment(IGenericBrid
    return CreateJointShapes(bridge, ssMbrID, segIdx, Xs, ppLeftJointShape,ppRightJointShape);
 }
 
-STDMETHODIMP CSectionCutTool::CreateGirderShapeBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg,SectionBias sectionBias,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod,IShape** ppShape)
+STDMETHODIMP CSectionCutTool::CreateGirderShapeBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg,SectionBias sectionBias,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,IShape** ppShape)
 {
    CComPtr<ISuperstructureMember> ssMbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssMbr);
@@ -1149,19 +1177,19 @@ STDMETHODIMP CSectionCutTool::CreateGirderShapeBySSMbr(IGenericBridge* bridge,Gi
    CComPtr<ISuperstructureMemberSegment> segment;
    ssMbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
 
-   return CreateGirderShapeBySegment(bridge,ssMbrID,segIdx,Xs,sectionBias,bIncludeDeck,haunchMethod,ppShape);
+   return CreateGirderShapeBySegment(bridge,ssMbrID,segIdx,Xs,sectionBias,bIncludeDeck,haunchMethod,bFollowMatingSurfaceProfile,ppShape);
 }
 
-STDMETHODIMP CSectionCutTool::CreateGirderShapeBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionBias sectionBias,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod,IShape** ppShape)
+STDMETHODIMP CSectionCutTool::CreateGirderShapeBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionBias sectionBias,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,IShape** ppShape)
 {
    // Validate input
    CHECK_RETOBJ(ppShape);
    CHECK_IN(bridge);
 
-   return CreateGirderShape(bridge,ssMbrID,segIdx,Xs,sectionBias,bIncludeDeck,haunchMethod,ppShape);
+   return CreateGirderShape(bridge,ssMbrID,segIdx,Xs,sectionBias,bIncludeDeck,haunchMethod,bFollowMatingSurfaceProfile,ppShape);
 }
 
-HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, IndexType* pBeamIdx, IndexType* pSlabIdx,ISection** section)
+HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile, IndexType* pBeamIdx, IndexType* pSlabIdx,ISection** section)
 {
    CComPtr<ISection> ncsection;
    HRESULT hr = CreateNoncompositeSection(bridge,ssMbrID,segIdx,Xs,sectionBias,stageIdx,sectionPropMethod,&ncsection);
@@ -1192,7 +1220,7 @@ HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDT
    ATLASSERT(girder_section);
 
    CComPtr<ISection> deckSection;
-   hr = CreateDeckSection(bridge,ssMbrID,segIdx,Xs,stageIdx,sectionPropMethod,haunchMethod,girder_section,&deckSection);
+   hr = CreateDeckSection(bridge,ssMbrID,segIdx,Xs,stageIdx,sectionPropMethod,haunchMethod,bFollowMatingSurfaceProfile,girder_section,&deckSection);
    if ( FAILED(hr) )
    {
       return hr;
@@ -1233,9 +1261,8 @@ HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDT
 
    return S_OK;
 }
-
    
-HRESULT CSectionCutTool::CreateDeckShape(IGenericBridge* bridge, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, Float64 haunchDepth,IGirderSection* pGirderSection, IShape** pShape)
+HRESULT CSectionCutTool::CreateDeckShape(IGenericBridge* bridge, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, Float64 haunchDepth,BOOL bFollowMatingSurfaceProfile,IGirderSection* pGirderSection, IShape** pShape)
 {
    CComPtr<IBridgeDeck> deck;
    bridge->get_Deck(&deck);
@@ -1267,7 +1294,7 @@ HRESULT CSectionCutTool::CreateDeckShape(IGenericBridge* bridge, GirderIDType ss
    // Build a slab shape and add it to the section
    CComPtr<IShape> shape;
 
-   if (IsZero(haunchDepth))
+   if (IsZero(haunchDepth) && bFollowMatingSurfaceProfile == FALSE)
    {
       // No haunch - just use a rectangle
       CComPtr<IRectangle> slab;
@@ -1350,20 +1377,29 @@ HRESULT CSectionCutTool::CreateDeckShape(IGenericBridge* bridge, GirderIDType ss
          x12 = xcl - ms_width / 2;
          x34 = xcl + ms_width / 2;
 
-         slab_shape->AddPoint(x12, ybslab); // 1
 
          // points 2-3
          if (!bHasMSProfile)
          {
+            slab_shape->AddPoint(x12, ybslab); // 1
             slab_shape->AddPoint(x12, ybhaunch); // 2
             slab_shape->AddPoint(x34, ybhaunch); // 3
+            slab_shape->AddPoint(x34, ybslab); // 4
          }
          else
          {
             // points 2 and 3 and possibly points between 2 and 3
+            CComPtr<IPoint2d> msPoint;
+
+            // Point 1
+            matingSurfaceProfile->get_Item(0, &msPoint);
+            Float64 x, y;
+            msPoint->Location(&x, &y);
+            slab_shape->AddPoint(x,y+haunchDepth);
+            msPoint.Release();
+
             CComPtr<IEnumPoint2d> enum_points;
             matingSurfaceProfile->get__Enum(&enum_points);
-            CComPtr<IPoint2d> msPoint;
             while (enum_points->Next(1, &msPoint, nullptr) != S_FALSE)
             {
                // Tricky: The girder section and mating profile comes to us in bridge coordinates. 
@@ -1378,21 +1414,59 @@ HRESULT CSectionCutTool::CreateDeckShape(IGenericBridge* bridge, GirderIDType ss
                slab_shape->AddPoint(x, y);
                msPoint.Release();
             }
+
+            // Point 4
+            IndexType nPoints;
+            matingSurfaceProfile->get_Count(&nPoints);
+            matingSurfaceProfile->get_Item(nPoints-1, &msPoint);
+            msPoint->Location(&x, &y);
+            slab_shape->AddPoint(x, y + haunchDepth);
+            msPoint.Release();
          }
 
-         // Point 4
-         slab_shape->AddPoint(x34, ybslab); // 4
       }
 
       // Points 5-8
-      Float64 half_width = deck_width / 2.0;
-      Float64 x56 = xms_cl + half_width;
-      Float64 x78 = xms_cl - half_width;
+      CComQIPtr<IBulbTeeSection> bulbTeeSection(pGirderSection);
+      if (bulbTeeSection && bFollowMatingSurfaceProfile == TRUE)
+      {
+         // This is a hack for bulb tee sections... we should have a more general solution
+         // so it works for all asymmetric girders that have sloped top flanges
 
-      slab_shape->AddPoint( x56, ybslab); // 5
-      slab_shape->AddPoint( x56, ytslab); // 6
-      slab_shape->AddPoint( x78, ytslab); // 7
-      slab_shape->AddPoint( x78, ybslab); // 8
+         CComPtr<IPoint2dCollection> matingSurfaceProfile;
+         bool bHasMSProfile = (FAILED(pGirderSection->get_MatingSurfaceProfile(0, VARIANT_FALSE, &matingSurfaceProfile)) || matingSurfaceProfile == nullptr) ? false : true;
+         ATLASSERT(bHasMSProfile);
+         matingSurfaceProfile->Reverse();
+
+         CComPtr<IEnumPoint2d> enum_points;
+         matingSurfaceProfile->get__Enum(&enum_points);
+         CComPtr<IPoint2d> msPoint;
+         while (enum_points->Next(1, &msPoint, nullptr) != S_FALSE)
+         {
+            // Tricky: The girder section and mating profile comes to us in bridge coordinates. 
+            //         We must rotate and translate the points to our local slab coord system.
+            Float64 x, y;
+            if (!IsZero(orientation))
+            {
+               msPoint->RotateEx(pntTC, -orientation);
+            }
+            msPoint->Location(&x, &y);
+
+            slab_shape->AddPoint(x, y + haunchDepth + structural_depth);
+            msPoint.Release();
+         }
+      }
+      else
+      {
+         Float64 half_width = deck_width / 2.0;
+         Float64 x56 = xms_cl + half_width;
+         Float64 x78 = xms_cl - half_width;
+
+         slab_shape->AddPoint(x56, ybslab); // 5
+         slab_shape->AddPoint(x56, ytslab); // 6
+         slab_shape->AddPoint(x78, ytslab); // 7
+         slab_shape->AddPoint(x78, ybslab); // 8
+      }
 
       slab_shape.QueryInterface(&shape);
    }
@@ -1401,7 +1475,7 @@ HRESULT CSectionCutTool::CreateDeckShape(IGenericBridge* bridge, GirderIDType ss
 }
 
 HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,
-             StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,HaunchDepthMethod haunchMethod,IGirderSection* pGirderSection,ISection** section)
+             StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,HaunchDepthMethod haunchMethod,BOOL bFollowMatingSurfaceProfile,IGirderSection* pGirderSection,ISection** section)
 {
    CComPtr<ICompositeSectionEx> cmpSection;
    cmpSection.CoCreateInstance(CLSID_CompositeSectionEx);
@@ -1449,7 +1523,7 @@ HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType s
    // Build a slab shape and add it to the section
    CComPtr<IShape> shape;
 
-   HRESULT hr = CreateDeckShape(bridge, ssMbrID, segIdx, Xs, haunch_depth, pGirderSection, &shape);
+   HRESULT hr = CreateDeckShape(bridge, ssMbrID, segIdx, Xs, haunch_depth, bFollowMatingSurfaceProfile, pGirderSection, &shape);
    if (FAILED(hr))
    {
       return hr;
@@ -2185,7 +2259,7 @@ HRESULT CSectionCutTool::CreateBridgeDeckSection(IGenericBridge* bridge,Float64 
    return hr;
 }
 
-HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod,IShape** ppShape)
+HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod,BOOL bFollowMatingSurfaceProfile,IShape** ppShape)
 {
    // Xs is in segment coordinates
    CComPtr<ISuperstructureMember> ssmbr;
@@ -2288,7 +2362,7 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
       ATLASSERT(girder_section);
 
       CComPtr<IShape> slab_shape;
-      HRESULT hr = CreateDeckShape(bridge, ssMbrID, segIdx, Xs, haunch_depth, girder_section, &slab_shape);
+      HRESULT hr = CreateDeckShape(bridge, ssMbrID, segIdx, Xs, haunch_depth, bFollowMatingSurfaceProfile, girder_section, &slab_shape);
       if (FAILED(hr))
       {
          return hr;
