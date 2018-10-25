@@ -31,6 +31,13 @@
 #include <list>
 #import  <msxml6.dll> rename_namespace("MSXML")
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 /****************************************************************************
 Implementation CLASS
    sysStructuredSaveXmlPrs_Impl

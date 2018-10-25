@@ -27,8 +27,10 @@
 #include <EAF\EAFApp.h>
 #include <EAF\EAFPluginManagerBase.h>
 #include <EAF\EAFDocumentPlugin.h>
-#include <WBFLCore.h> // IStructuredSave, IStructuredLoad, et. al.
 #include <vector>
+
+interface IStructuredSave;
+interface IStructuredLoad;
 
 // Plugin manager for CEAFDocument plugins
 

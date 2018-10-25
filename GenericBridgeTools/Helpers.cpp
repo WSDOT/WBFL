@@ -34,7 +34,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-HRESULT GetGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,IGirderSection** ppSection)
+HRESULT GetGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionBias sectionBias,IGirderSection** ppSection)
 {
    HRESULT hr;
 
@@ -48,7 +48,7 @@ HRESULT GetGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,Se
    ATLASSERT(segment);
 
    CComPtr<IShape> shape;
-   hr = segment->get_PrimaryShape(distFromStartOfSegment,&shape);
+   hr = segment->get_PrimaryShape(Xs,sectionBias,&shape);
    if ( FAILED(hr) )
       return hr;
 
@@ -145,4 +145,31 @@ void GetPiers(IGenericBridge* bridge,Float64 station,PierIndexType* pPrevPier,Pi
    // after last pier
    *pPrevPier = nPiers-1;
    *pNextPier = INVALID_INDEX;
+}
+
+HRESULT GetCGFromPoints(IPoint2dCollection* points, IPoint2d** pCG)
+{
+   CComPtr<IPoint2d> pnt;
+   pnt.CoCreateInstance(CLSID_Point2d);
+
+   Float64 sumX = 0;
+   Float64 sumY = 0;
+   IndexType nPoints;
+   points->get_Count(&nPoints);
+   for (IndexType idx = 0; idx < nPoints; idx++)
+   {
+      CComPtr<IPoint2d> pnt;
+      points->get_Item(idx, &pnt);
+      Float64 x, y;
+      pnt->Location(&x, &y);
+      sumX += x;
+      sumY += y;
+   }
+
+   Float64 cgX = (nPoints == 0 ? 0 : sumX / nPoints);
+   Float64 cgY = (nPoints == 0 ? 0 : sumY / nPoints);
+   pnt->Move(cgX, cgY);
+   pnt.CopyTo(pCG);
+   
+   return S_OK;
 }

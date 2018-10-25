@@ -94,8 +94,8 @@ STDMETHODIMP CPlane3d::ThroughPoints(IPoint3d *p1, IPoint3d *p2, IPoint3d *p3)
 #if defined _DEBUG
    Float64 d2 = -1 * (m_A*x2 + m_B*y2 + m_C*z2);
    Float64 d3 = -1 * (m_A*x3 + m_B*y3 + m_C*z3);
-   ATLASSERT(IsEqual(m_D,d2));
-   ATLASSERT(IsEqual(m_D,d3));
+   ATLASSERT(IsEqual(m_D, d2, 0.001));
+   ATLASSERT(IsEqual(m_D, d3, 0.001));
 #endif
 
    return S_OK;

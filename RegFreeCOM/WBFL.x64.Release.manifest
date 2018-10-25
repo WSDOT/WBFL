@@ -756,7 +756,13 @@
                 progid="WBFLTools.StructuredSave2">
          <progid>WBFLTools.StructuredSave2.1</progid>
       </comClass>
-      <comClass clsid="{043B36E7-64EE-11D5-B017-00105A9AF985}"
+     <comClass clsid="{0131A8C3-26EB-11D2-8EB0-006097DF3C68}"
+               tlbid="{B9507D8C-7100-11D3-89BB-006097C68A9C}"
+               description="StructuredLoad Class"></comClass>
+     <comClass clsid="{0131A8C5-26EB-11D2-8EB0-006097DF3C68}"
+               tlbid="{B9507D8C-7100-11D3-89BB-006097C68A9C}"
+               description="StructuredSave Class"></comClass>
+     <comClass clsid="{043B36E7-64EE-11D5-B017-00105A9AF985}"
                 tlbid="{B9507D8C-7100-11D3-89BB-006097C68A9C}"
                 description="StructuredLoad2 Class"
                 threadingModel="Apartment"
@@ -1040,12 +1046,6 @@
       <comClass clsid="{D71212B0-2BEF-11D2-8EB3-006097DF3C68}"
                 tlbid="{D820A190-2BE4-11D2-8EB3-006097DF3C68}"
                 description="SysAgent Class"></comClass>
-      <comClass clsid="{0131A8C3-26EB-11D2-8EB0-006097DF3C68}"
-                tlbid="{D820A190-2BE4-11D2-8EB3-006097DF3C68}"
-                description="StructuredLoad Class"></comClass>
-      <comClass clsid="{0131A8C5-26EB-11D2-8EB0-006097DF3C68}"
-                tlbid="{D820A190-2BE4-11D2-8EB3-006097DF3C68}"
-                description="StructuredSave Class"></comClass>
       <typelib tlbid="{D820A190-2BE4-11D2-8EB3-006097DF3C68}"
                version="1.1"
                helpdir=""
@@ -1079,7 +1079,13 @@
       <comClass clsid="{A547E2F5-BE84-49F9-846E-2A5B2C2FD53F}"
                 tlbid="{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}"
                 description="StrandGrid Class"></comClass>
-      <typelib tlbid="{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}"
+      <comClass clsid="{F8541730-D6F9-4CB5-9921-411476988622}"
+                tlbid="{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}"
+                description="StrandGridModel Class"></comClass>
+     <comClass clsid="{C4B902B2-8EB1-44D1-A24E-8C2DDC7BC294}"
+               tlbid="{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}"
+               description="StrandPointModel Class"></comClass>
+     <typelib tlbid="{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}"
                version="1.0"
                helpdir=""
                flags="HASDISKIMAGE"></typelib>

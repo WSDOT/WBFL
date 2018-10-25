@@ -63,7 +63,6 @@ END_COM_MAP()
 private:
    Float64 m_kInitialStep;
    CComPtr<IMomentCapacitySolver>   m_CapacitySolver;
-   CComPtr<IMomentCapacitySolution> m_CapacitySolution;
 
    Float64 GetCurvatureIncrement(Uint32 nFail);
    HRESULT AnalyzeSection(Float64 Fz,Float64 angle,Float64 k,CMomentCurvatureSolution* solution);
@@ -78,6 +77,8 @@ public:
 	STDMETHOD(get_Section)(/*[out,retval]*/IGeneralSection** pSection) override;
    STDMETHOD(put_Slices)(/*[in]*/long nSlices) override;
 	STDMETHOD(get_Slices)(/*[out,retval]*/long* nSlices) override;
+   STDMETHOD(put_SliceGrowthFactor)(/*[in]*/Float64 sliceGrowthFactor) override;
+   STDMETHOD(get_SliceGrowthFactor)(/*[out,retval]*/Float64* sliceGrowthFactor) override;
    STDMETHOD(put_AxialTolerance)(/*[in]*/Float64 tolerance) override;
 	STDMETHOD(get_AxialTolerance)(/*[out,retval]*/Float64* tolerance) override;
 	STDMETHOD(put_MaxIterations)(/*[in]*/long maxIter) override;

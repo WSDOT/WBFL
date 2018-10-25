@@ -64,7 +64,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::InterfaceSupportsErrorInfo(R
 
 ////////////////////////////////////////////////////////////////////////
 // ISuperstructureMemberSegment implementation
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
 {
    CHECK_RETOBJ(ppSection);
 
@@ -85,27 +85,35 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType s
       ShapeData& shapeData = *iter;
 
       Float64 Efg = 0;
-      if ( shapeData.FGMaterial )
-         shapeData.FGMaterial->get_E(stageIdx,&Efg);
+      if (shapeData.FGMaterial)
+      {
+         shapeData.FGMaterial->get_E(stageIdx, &Efg);
+      }
 
       Float64 Ebg = 0;
-      if ( shapeData.BGMaterial )
-         shapeData.BGMaterial->get_E(stageIdx,&Ebg);
+      if (shapeData.BGMaterial)
+      {
+         shapeData.BGMaterial->get_E(stageIdx, &Ebg);
+      }
 
       Float64 Dfg = 0;
-      if ( shapeData.FGMaterial )
-         shapeData.FGMaterial->get_Density(stageIdx,&Dfg);
+      if (shapeData.FGMaterial)
+      {
+         shapeData.FGMaterial->get_Density(stageIdx, &Dfg);
+      }
 
       Float64 Dbg = 0;
-      if ( shapeData.BGMaterial )
-         shapeData.BGMaterial->get_Density(stageIdx,&Dbg);
+      if (shapeData.BGMaterial)
+      {
+         shapeData.BGMaterial->get_Density(stageIdx, &Dbg);
+      }
 
       CComPtr<IShape> shape;
       shapeData.Shape->Clone(&shape);
 
       // position the shape
       CComPtr<IPoint2d> pntTopCenter;
-      GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
+      GB_GetSectionLocation(this,Xs,&pntTopCenter);
 
       CComQIPtr<IXYPosition> position(shape);
       position->put_LocatorPoint(lpTopCenter,pntTopCenter);
@@ -119,7 +127,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType s
    return S_OK;
 }
 
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_PrimaryShape(Float64 distAlongSegment,IShape** ppShape)
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
    if ( m_Shapes.size() == 0 )
@@ -133,7 +141,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_PrimaryShape(Float64 dis
 
    // position the shape
    CComPtr<IPoint2d> pntTopCenter;
-   GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
+   GB_GetSectionLocation(this,Xs,&pntTopCenter);
 
    CComQIPtr<IXYPosition> position(*ppShape);
    position->put_LocatorPoint(lpTopCenter,pntTopCenter);
@@ -153,9 +161,12 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Profile(VARIANT_BOOL bIn
    Float64 h;
    rect->get_Height(&h);
 
+   CComPtr<ISegment> nextSegment;
+   get_NextSegment(&nextSegment);
+
    Float64 l;
    Float64 brgOffset, endDist;
-   if (bIncludeClosure == VARIANT_TRUE)
+   if (bIncludeClosure == VARIANT_TRUE && nextSegment)
    {
       m_Impl.m_pGirderLine->get_LayoutLength(&l);
       brgOffset = 0;
@@ -182,9 +193,13 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Profile(VARIANT_BOOL bIn
    {
       CComPtr<IPolyShape> profile;
       profile.CoCreateInstance(CLSID_PolyShape);
-      profile->AddPoint(0, 0); // top left corner
+      profile->AddPoint(0, 0); // bottom left corner
 
-      // work left to right along top of segment
+      CComPtr<ISegment> pPrevSegment, pNextSegment;
+      get_PrevSegment(&pPrevSegment);
+      get_NextSegment(&pNextSegment);
+
+      // work left to right along bottom of segment
       int nPoints = 11;
       int nSpaces = nPoints - 1;
 
@@ -194,20 +209,26 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Profile(VARIANT_BOOL bIn
       {
          Float64 x = i*Ls / nSpaces;
          Float64 y = m_Impl.ComputePrecamber(x,Ls);
-         if (bIncludeClosure == VARIANT_TRUE)
+         if (bIncludeClosure == VARIANT_TRUE && pPrevSegment != nullptr)
          {
             x += (brgOffset - endDist);
          }
          profile->AddPoint(x, y);
       }
 
-      profile->AddPoint(l, 0); // top right corner
+      profile->AddPoint(Ls, 0);
 
+      if (bIncludeClosure == VARIANT_TRUE && pNextSegment != nullptr)
+      {
+         profile->AddPoint(l, 0);
+      }
+
+      // work right to left along the top of the segment
       for (int i = 0; i < nPoints; i++)
       {
          Float64 x = Ls - i*Ls / nSpaces;
          Float64 y = m_Impl.ComputePrecamber(x, Ls) + h;
-         if (bIncludeClosure == VARIANT_TRUE)
+         if (bIncludeClosure == VARIANT_TRUE && pPrevSegment != nullptr)
          {
             x += (brgOffset - endDist);
          }

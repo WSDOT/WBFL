@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLGenericBridgeTools.StrandGridModel.1 = s 'StrandGridModel Class'
+	{
+		CLSID = s '{F8541730-D6F9-4CB5-9921-411476988622}'
+	}
+	WBFLGenericBridgeTools.StrandGridModel = s 'StrandGridModel Class'
+	{
+		CLSID = s '{F8541730-D6F9-4CB5-9921-411476988622}'
+		CurVer = s 'WBFLGenericBridgeTools.StrandGridModel.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {F8541730-D6F9-4CB5-9921-411476988622} = s 'StrandGridModel Class'
+		{
+			ProgID = s 'WBFLGenericBridgeTools.StrandGridModel.1'
+			VersionIndependentProgID = s 'WBFLGenericBridgeTools.StrandGridModel'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}'
+		}
+	}
+}

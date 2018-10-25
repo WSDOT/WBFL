@@ -21,12 +21,11 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_LOGDUMPCONTEXT_H_
-#define INCLUDED_SYSTEM_LOGDUMPCONTEXT_H_
+#ifndef INCLUDED_WBFLTOOLS_LOGDUMPCONTEXT_H_
+#define INCLUDED_WBFLTOOLS_LOGDUMPCONTEXT_H_
 #pragma once
 
-#include <WBFLCore.h>
-#include <System\DbgBuild.h>
+#include <WBFLTools\WBFLToolsExp.h>
 #include <System\DumpContext.h>
 
 // LOCAL INCLUDES
@@ -54,7 +53,7 @@ LOG
    rdp : 06.01.1998 : Created file
 *****************************************************************************/
 
-class SYSCLASS dbgLogDumpContext : public dbgDumpContext
+class WBFLTOOLSCLASS dbgLogDumpContext : public dbgDumpContext
 {
 public:
    // GROUP: LIFECYCLE
@@ -70,12 +69,8 @@ public:
 
    //------------------------------------------------------------------------
    // Inserters for various built-ins
-#if defined UNICODE
    virtual dbgDumpContext& operator<<(const std::_tstring& s) override;
-#else
-   virtual dbgDumpContext& operator<<(const std::_tstring& s) override;
-#endif
-   virtual dbgDumpContext& operator<<(LPCTSTR s);
+   virtual dbgDumpContext& operator<<(LPCTSTR s) override;
    dbgDumpContext& operator<<(TCHAR c);    
    dbgDumpContext& operator<<(bool n);
    dbgDumpContext& operator<<(Int16 n);
@@ -136,4 +131,4 @@ public:
 
 
 
-#endif // INCLUDED_SYSTEM_LOGDUMPCONTEXT_H_
+#endif // INCLUDED_WBFLTOOLS_LOGDUMPCONTEXT_H_

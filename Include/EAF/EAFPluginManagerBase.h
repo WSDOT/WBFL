@@ -31,6 +31,7 @@
 #include <EAF\EAFSplashScreen.h>
 #include <EAF\EAFAcceleratorTable.h>
 #include <EAF\EAFUtilities.h>
+#include <atlcomcli.h>
 
 #include <comcat.h>
 #include <map>
@@ -80,10 +81,12 @@ public:
 
    virtual BOOL AddPlugin(const CLSID& clsid,T* pPlugin)
    {
-      if ( pPlugin == nullptr )
+      if (pPlugin == nullptr)
+      {
          return FALSE;
+      }
 
-      std::pair<Plugins::iterator,bool> result = m_Plugins.insert(std::make_pair(clsid,pPlugin));
+      auto result = m_Plugins.insert(std::make_pair(clsid,pPlugin));
       if ( result.second == true )
       {
          // plugin added to container
@@ -181,17 +184,18 @@ public:
 
    virtual BOOL InitPlugins()
    {
-      Plugins::iterator iter;
-      for ( iter = m_Plugins.begin(); iter != m_Plugins.end(); iter++ )
+      for(auto& item : m_Plugins)
       {
-         CComPtr<T> plugin = iter->second;
+         auto plugin = item.second;
          CString str = plugin->GetName();
          CString strMsg;
          strMsg.Format(_T("Initializing %s"),str);
          CEAFSplashScreen::SetText(strMsg);
 
-         if ( !plugin->Init(m_pParent) )
+         if (!plugin->Init(m_pParent))
+         {
             return FALSE;
+         }
       }
 
       CEAFSplashScreen::SetText(_T(""));
@@ -201,11 +205,9 @@ public:
 
    virtual void UnloadPlugins()
    {
-      Plugins::iterator iter(m_Plugins.begin());
-      Plugins::iterator end(m_Plugins.end());
-      for ( ; iter != end; iter++ )
+      for(auto& item : m_Plugins)
       {
-         CComPtr<T> plugin = iter->second;
+         auto plugin = item.second;
          plugin->Terminate();
          plugin.Release();
       }
@@ -214,11 +216,11 @@ public:
 
    virtual void RemovePlugin(const CLSID& clsid)
    {
-      Plugins::iterator found = m_Plugins.find(clsid);
-      if ( found != m_Plugins.end() )
+      auto found = m_Plugins.find(clsid);
+      if ( found != std::end(m_Plugins) )
       {
          // plug-in was found
-         CComPtr<T> plugin = found->second; // hang on to it
+         auto plugin = found->second; // hang on to it
          m_Plugins.erase(found); // erase if from the container
 
          plugin->Terminate(); // terminate the plugin
@@ -233,7 +235,7 @@ public:
 
    HRESULT GetPlugin(const CLSID& clsid,T** ppPlugin)
    {
-      Plugins::iterator found = m_Plugins.find(clsid);
+      auto found = m_Plugins.find(clsid);
       if ( found != m_Plugins.end() )
       {
          // plug-in was found
@@ -247,12 +249,16 @@ public:
 
    HRESULT GetPlugin(CollectionIndexType idx,T** ppPlugin)
    {
-      if ( m_Plugins.size() <= idx )
+      if (m_Plugins.size() <= idx)
+      {
          return E_INVALIDARG;
+      }
 
-      Plugins::iterator iter = m_Plugins.begin();
-      for ( CollectionIndexType i = 0; i < idx; i++ )
+      auto iter = m_Plugins.begin();
+      for (CollectionIndexType i = 0; i < idx; i++)
+      {
          iter++;
+      }
 
       (*ppPlugin) = iter->second;
       (*ppPlugin)->AddRef();
@@ -261,11 +267,9 @@ public:
 
    bool FindPlugin(LPCTSTR lpszName,T** ppPlugin)
    {
-      Plugins::iterator iter(m_Plugins.begin());
-      Plugins::iterator end(m_Plugins.end());
-      for ( ; iter != end; iter++ )
+      for(auto& item : m_Plugins)
       {
-         CComPtr<T> plugin = iter->second;
+         auto plugin = item.second;
          if ( plugin->GetName().CompareNoCase(lpszName) == 0 )
          {
             plugin.CopyTo(ppPlugin);

@@ -52,6 +52,8 @@ public:
    STDMETHOD(ComputeHaunchDepth)(Float64 distAlongSegment,Float64* pVal);
    STDMETHOD(put_Fillet)(/*[in]*/Float64 Fillet);
    STDMETHOD(get_Fillet)(/*[out,retval]*/Float64* Fillet);
+   STDMETHOD(put_FilletShape)(/*[in]*/FilletShape FilletShape);
+   STDMETHOD(get_FilletShape)(/*[out,retval]*/FilletShape* FilletShape);
    STDMETHOD(put_Precamber)(/*[in]*/Float64 precamber);
    STDMETHOD(get_Precamber)(/*[out,retval]*/Float64* pPrecamber);
    STDMETHOD(ComputePrecamber)(/*[in]*/Float64 distAlongSegment, /*[out,retval]*/Float64* pPrecamber);
@@ -64,7 +66,10 @@ public:
 
    Float64 m_Orientation; // orientation of girder... plumb = 0... rotated CW is +... radians
    Float64 m_HaunchDepth[3];
+   // Can determine how to compute haunch depth at set time
+   enum HaunchMode { hmPrismatic, hmLinear, hmParabolic } m_HaunchMode;
    Float64 m_Fillet;
+   FilletShape m_FilletShape;
    Float64 m_Precamber;
 
    Float64 ComputePrecamber(Float64 Xs, Float64 Ls);

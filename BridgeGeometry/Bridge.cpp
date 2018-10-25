@@ -32,6 +32,13 @@
 #include "DiaphragmLine.h"
 #include "DeckBoundary.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 // CBridge
 
 STDMETHODIMP CBridge::putref_CogoModel(ICogoModel* pCogoModel)

@@ -37,7 +37,7 @@
 #include <algorithm>
 #include <UnitMgt\UnitMgt.h>
 #include <LRFD\ConcreteUtil.h>
-#include <LRFD\AlternativeTensileStressCalculator.h>
+#include <WBFLGenericBridgeTools\AlternativeTensileStressCalculator.h>
 #include <Math\CubicSolver.h>
 
 #include <WBFLGenericBridge.h>
@@ -354,7 +354,7 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
       if ( segment )
       {
          rebarLayout->CreateRebarSection(X,0,&rebarSection);
-         segment->get_PrimaryShape(X,&shape);
+         segment->get_PrimaryShape(X,sbLeft,&shape);
       }
 
       // eccentricity of horizontal load due to inclined cable at X
@@ -598,14 +598,14 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
             if ( segment )
             {
                CComPtr<IShape> shape;
-               segment->get_PrimaryShape(X,&shape);
+               segment->get_PrimaryShape(X,sbLeft,&shape);
 
                CComPtr<IRebarSection> rebarSection;
                rebarLayout->CreateRebarSection(X,INVALID_INDEX,&rebarSection);
 
                Float64 fy = pStabilityProblem->GetRebarYieldStrength();
                Float64 fsMax = ::ConvertToSysUnits(30.0,unitMeasure::KSI);
-               lrfdAlternativeTensileStressCalculator altCalc(concrete,fy,true,fsMax);
+               gbtAlternativeTensileStressCalculator altCalc(concrete,fy,true,fsMax);
 
                Float64 Yna, NAslope, AreaTension,T,AsProvided,AsRequired;
                bool bIsAdequateRebar;
@@ -1059,14 +1059,14 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                if ( segment )
                {
                   CComPtr<IShape> shape;
-                  segment->get_PrimaryShape(X,&shape);
+                  segment->get_PrimaryShape(X,sbLeft,&shape);
 
                   CComPtr<IRebarSection> rebarSection;
                   rebarLayout->CreateRebarSection(X,INVALID_INDEX,&rebarSection);
 
                   Float64 fy = pStabilityProblem->GetRebarYieldStrength();
                   Float64 fsMax = ::ConvertToSysUnits(30.0,unitMeasure::KSI);
-                  lrfdAlternativeTensileStressCalculator altCalc(concrete,fy,true,fsMax);
+                  gbtAlternativeTensileStressCalculator altCalc(concrete,fy,true,fsMax);
 
                   Float64 Yna, NAslope, AreaTension,T,AsProvided,AsRequired;
                   bool bIsAdequateRebar;

@@ -338,7 +338,13 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
          CComPtr<IPrecastGirder> girder;
          girder.CoCreateInstance(CLSID_PrecastGirder);
          girder->Initialize(segment);
-         girder->SetStrandMovers(strandMover,strandMover,strandMover,strandMover);
+
+         CComPtr<IStrandGridModel> strandModel;
+         strandModel.CoCreateInstance(CLSID_StrandGridModel);
+
+         girder->putref_StrandModel(strandModel);
+
+         strandModel->SetStrandMovers(strandMover,strandMover,strandMover,strandMover);
          item_data->AddItemData(CComBSTR("Precast Girder"),girder);
 
          TRY_TEST(ssmbr->AddSegment(segment),S_OK);
@@ -601,7 +607,12 @@ void CreateSplicedGirderBridge(IGenericBridge** ppBridge)
          CComPtr<IPrecastGirder> girder;
          girder.CoCreateInstance(CLSID_PrecastGirder);
          girder->Initialize(segment);
-         girder->SetStrandMovers(strandMover,strandMover,strandMover,strandMover);
+
+         CComPtr<IStrandGridModel> strandModel;
+         strandModel.CoCreateInstance(CLSID_StrandGridModel);
+         girder->putref_StrandModel(strandModel);
+
+         strandModel->SetStrandMovers(strandMover,strandMover,strandMover,strandMover);
          item_data->AddItemData(CComBSTR("Precast Girder"),girder);
 
          TRY_TEST(ssmbr->AddSegment(segment),S_OK);

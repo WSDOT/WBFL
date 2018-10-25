@@ -28,6 +28,7 @@
 #include "WBFLGenericBridge.h"
 #include "RebarRowFacePattern.h"
 #include <MathEx.h>
+#include <GenericBridge\Helpers.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -145,13 +146,14 @@ STDMETHODIMP CRebarRowFacePattern::get_Location(Float64 distFromStartOfPattern,C
    else
    {
       CComPtr<IShape> shape;
-      m_pSegment->get_PrimaryShape(start + distFromStartOfPattern,&shape);
+      m_pSegment->get_PrimaryShape(start + distFromStartOfPattern,sbRight,&shape);
       CComPtr<IRect2d> box;
       shape->get_BoundingBox(&box);
       Float64 h;
       box->get_Height(&h);
       ay = -h + m_Offset;
    }
+
 
    Float64 x,y;
    switch (m_Orientation)
@@ -229,7 +231,7 @@ STDMETHODIMP CRebarRowFacePattern::get_Profile(/*[in]*/IndexType barIdx,/*[out,r
          ssmbrSegment->get_Precamber(&precamber);
          Float64 Ls;
          m_pSegment->get_Length(&Ls);
-         Float64 precamber_offset = (4 * precamber / Ls)*X*(1 - X / Ls);
+         Float64 precamber_offset = ComputePrecamber(X,Ls,precamber);
          point->Offset(0, precamber_offset);
       }
 

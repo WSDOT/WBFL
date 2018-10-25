@@ -103,6 +103,8 @@ public:
    STDMETHOD(putref_StrandMover)(/*[in]*/StrandGridType gridType,/*[in]*/EndType endType,/*[in]*/IStrandMover* mover) override;
    STDMETHOD(GetStrandMover)(/*[out]*/StrandGridType* gridType,/*[out]*/EndType* endType,/*[out]*/IStrandMover** mover) override;
 
+   // Set/Get lateral and vertical offsets for the strand positions
+   // This is useful when the strands aren't centered on (0,0) as assumed
    STDMETHOD(GetStrandAdjustment)(Float64* pdx,Float64* pdy) override;
    STDMETHOD(SetStrandAdjustment)(Float64 dx,Float64 dy) override;
 
@@ -120,15 +122,20 @@ public:
    // Return CG of currently filled strands - adjusted for vertical offset
 	STDMETHOD(get_CG)(/*[out]*/Float64* cgx, /*[out]*/Float64* cgy) override;
 
-   // bounding box - adjusted for vertical offset
+   // bounding box of adjusted strand positions
 	STDMETHOD(get_StrandBoundingBox)(/*[out,retval]*/IRect2d** box) override;
 
-   // upper and lower bounds for filled strands -NOT adjusted for vertical offset
+   // upper and lower bounds for filled strands - position adjustments are NOT applied
 	STDMETHOD(get_FilledGridBounds)(/*[out]*/Float64* bottomElev, /*[out]*/Float64* topElev) override;
 
+   // returns the number of rows with strands
 	STDMETHOD(get_RowsWithStrand)(/*[out,retval]*/RowIndexType* nRows) override;
+
+   // returns the number of strands in a given row
 	STDMETHOD(get_NumStrandsInRow)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/StrandIndexType* nStrands) override;
-	STDMETHOD(get_StrandsInRow)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/IIndexArray** gridIndexes) override;
+
+   // returns the strand positions that are filled within a row
+	STDMETHOD(get_StrandsInRow)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/IIndexArray** ppStrandIndicies) override;
 
    // Ex methods are typically for testing a new fill.
    // they allow input of a temporary fill array. Internal fill array is not changed

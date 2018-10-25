@@ -32,7 +32,7 @@
 #include "WBFLComCollections.h"
 
 class CFlexRebarLayoutItem;
-typedef CComVectorCollection<IFlexRebarLayoutItem,IRebarPattern,IEnumRebarPatterns,&IID_IEnumRebarPatterns,CollectionIndexType> PtrnColl;
+typedef CComVectorCollection<IRebarLayoutItem,IRebarPattern,IEnumRebarPatterns,&IID_IEnumRebarPatterns,CollectionIndexType> PtrnColl;
 typedef CPersistentCollection<CFlexRebarLayoutItem,PtrnColl,CollectionIndexType> PersistentFlexRebarLayoutItem;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -42,6 +42,7 @@ class ATL_NO_VTABLE CFlexRebarLayoutItem :
 //   public CComRefCountTracer<CFlexRebarLayoutItem,CComObjectRootEx<CComSingleThreadModel> >,
 	public CComCoClass<CFlexRebarLayoutItem, &CLSID_FlexRebarLayoutItem>,
 	public ISupportErrorInfo,
+   public IFlexRebarLayoutItem,
    public PersistentFlexRebarLayoutItem,
    public IObjectSafetyImpl<CFlexRebarLayoutItem,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>
 {

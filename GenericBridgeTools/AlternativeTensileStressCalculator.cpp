@@ -22,24 +22,24 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Lrfd\LrfdLib.h>
+#include "StdAfx.h"
 
-#include <initguid.h>
-#include <WBFLGeometry_i.c>
+#include <WBFLGenericBridgeTools\AlternativeTensileStressCalculator.h>
 
-#include <Lrfd\AlternativeTensileStressCalculator.h>
 #include <Lrfd\Details.h>
 #include <Lrfd\RebarPool.h>
 #include <Lrfd\Rebar.h>
 
 #include <WBFLGenericBridge.h>
 
+#include <MathEx.h>
+
 /****************************************************************************
 CLASS
-   lrfdAlternativeTensileStressCalculator
+   gbtAlternativeTensileStressCalculator
 ****************************************************************************/
 
-lrfdAlternativeTensileStressCalculator::lrfdAlternativeTensileStressCalculator(const matConcrete& concrete,Float64 fy,bool bLimitBarStress,Float64 fsMax)
+gbtAlternativeTensileStressCalculator::gbtAlternativeTensileStressCalculator(const matConcrete& concrete,Float64 fy,bool bLimitBarStress,Float64 fsMax)
 {
    m_Concrete = concrete;
 
@@ -49,47 +49,47 @@ lrfdAlternativeTensileStressCalculator::lrfdAlternativeTensileStressCalculator(c
    m_fsMax = fsMax;
 }
 
-void lrfdAlternativeTensileStressCalculator::SetReinforcementYieldStrength(Float64 fy)
+void gbtAlternativeTensileStressCalculator::SetReinforcementYieldStrength(Float64 fy)
 {
    m_fy = fy;
 }
 
-Float64 lrfdAlternativeTensileStressCalculator::GetReinforcementYieldStrength() const
+Float64 gbtAlternativeTensileStressCalculator::GetReinforcementYieldStrength() const
 {
    return m_fy;
 }
 
-void lrfdAlternativeTensileStressCalculator::LimitBarStress(bool bLimit)
+void gbtAlternativeTensileStressCalculator::LimitBarStress(bool bLimit)
 {
    m_bLimitBarStress = bLimit;
 }
 
-bool lrfdAlternativeTensileStressCalculator::LimitBarStress() const
+bool gbtAlternativeTensileStressCalculator::LimitBarStress() const
 {
    return m_bLimitBarStress;
 }
 
-void lrfdAlternativeTensileStressCalculator::SetBarStressLimit(Float64 fsMax)
+void gbtAlternativeTensileStressCalculator::SetBarStressLimit(Float64 fsMax)
 {
    m_fsMax = fsMax;
 }
 
-Float64 lrfdAlternativeTensileStressCalculator::GetBarStressLimit() const
+Float64 gbtAlternativeTensileStressCalculator::GetBarStressLimit() const
 {
    return m_fsMax;
 }
 
-void lrfdAlternativeTensileStressCalculator::SetConcrete(const matConcrete& concrete)
+void gbtAlternativeTensileStressCalculator::SetConcrete(const matConcrete& concrete)
 {
    m_Concrete = concrete;
 }
 
-const matConcrete& lrfdAlternativeTensileStressCalculator::GetConcrete() const
+const matConcrete& gbtAlternativeTensileStressCalculator::GetConcrete() const
 {
    return m_Concrete;
 }
 
-void lrfdAlternativeTensileStressCalculator::ComputeAlternativeStressRequirements(IShape* pShape,IRebarSection* pRebarSection,
+void gbtAlternativeTensileStressCalculator::ComputeAlternativeStressRequirements(IShape* pShape,IRebarSection* pRebarSection,
                                         Float64 Wtop,Float64 Wbot,
                                         Float64 fTopLeft, Float64 fTopRight, Float64 fBotLeft, Float64 fBotRight,
                                         Float64 *pYna, Float64* pNAslope, Float64 *pAreaTens, Float64 *pT, 
@@ -416,7 +416,7 @@ void lrfdAlternativeTensileStressCalculator::ComputeAlternativeStressRequirement
 #endif // _DEBUG
 }
 
-void lrfdAlternativeTensileStressCalculator::ComputeReqdFcTens(Float64 lambda,Float64 ft, // stress demand
+void gbtAlternativeTensileStressCalculator::ComputeReqdFcTens(Float64 lambda,Float64 ft, // stress demand
                        Float64 rcsT, bool rcsBfmax, Float64 rcsFmax, Float64 rcsTalt, // allowable stress coeff's
                        Float64* pFcNo,Float64* pFcWithRebar)
 {

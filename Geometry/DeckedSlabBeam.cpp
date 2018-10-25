@@ -412,6 +412,13 @@ STDMETHODIMP CDeckedSlabBeam::put_VoidCount(CollectionIndexType newVal)
    return S_OK;
 }
 
+STDMETHODIMP CDeckedSlabBeam::get_Height(Float64* pVal)
+{
+   CHECK_RETVAL(pVal);
+   *pVal = m_Tt + m_C;
+   return S_OK;
+}
+
 STDMETHODIMP CDeckedSlabBeam::get_HookPoint(IPoint2d** hookPnt)
 {
    CHECK_RETOBJ(hookPnt);

@@ -107,14 +107,22 @@ STDMETHODIMP CStrainHardenedRebarModel::ComputeStress(Float64 strain,Float64* pV
    Float64 sign = BinarySign(strain);
    strain = fabs(strain);
 
-   if ( InRange(0.0,strain,ey) )
+   if (InRange(0.0, strain, ey))
+   {
       *pVal = m_Es*strain;
-   else if ( InRange(ey,strain,m_esh) )
+   }
+   else if (InRange(ey, strain, m_esh))
+   {
       *pVal = m_Fy; // plateau
-   else if ( InRange(m_esh,strain,m_efr) )
-      *pVal = m_Fu - (m_Fu - m_Fy)*pow((m_efr-strain),2)/pow((m_esh-m_efr),2); // strain hardening
-   else if (m_efr < strain )
+   }
+   else if (InRange(m_esh, strain, m_efr))
+   {
+      *pVal = m_Fu - (m_Fu - m_Fy)*pow((m_efr - strain), 2) / pow((m_esh - m_efr), 2); // strain hardening
+   }
+   else if (m_efr < strain)
+   {
       *pVal = m_Fu; // fractured, but just flatten out the line so that the solver doesn't have problems
+   }
 
    (*pVal) *= sign;
 

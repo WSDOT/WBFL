@@ -130,7 +130,7 @@ void CTestGenericBridge::TestSegments(IGenericBridge* bridge)
       TRY_TEST(IsEqual(length,100.0),true);
 
       CComPtr<ISection> section;
-      segment->get_Section(0,length/2,&section);
+      segment->get_Section(0,length/2,sbLeft,&section);
 
       CComPtr<IElasticProperties> elasticProps;
       section->get_ElasticProperties(&elasticProps);

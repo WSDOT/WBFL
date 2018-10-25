@@ -3426,8 +3426,11 @@ library WBFLGeometry
       [propget,helpstring("property RightBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_RightBlockOut)*/]
       HRESULT RightBlockOut([out,retval]VARIANT_BOOL* pbRightBlockOut);
 
-      [propget,helpstring("property Width")]
-      HRESULT Width([out,retval]Float64* pVal);
+      [propget, helpstring("property Width")]
+      HRESULT Width([out, retval]Float64* pVal);
+
+      [propget, helpstring("property Height")]
+      HRESULT Height([out, retval]Float64* pVal);
 
       [propput,helpstring("property UseOverallWidth")]
       HRESULT UseOverallWidth([in]VARIANT_BOOL bUseOverallWidth);
@@ -3506,6 +3509,9 @@ library WBFLGeometry
 
       [propget,helpstring("property VoidCount")/*,helpcontext(IDH_IDeckedSlabBeam_VoidCount)*/]
       HRESULT VoidCount([out,retval]CollectionIndexType* nv);
+
+      [propget,helpstring("property Height")]
+      HRESULT Height([out, retval]Float64* pVal);
 
       [propget,  helpstring("property HookPoint")/*,helpcontext(IDH_IDeckedSlabBeam_HookPoint)*/]
       HRESULT HookPoint([out,retval] IPoint2d** hookPnt);

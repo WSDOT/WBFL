@@ -46,7 +46,7 @@
 #include <System\XStructuredLoad.h>
 
 #if defined _DEBUG
-#include <System\LogDumpContext.h>
+#include <WBFLTools\LogDumpContext.h>
 #endif
 
 // FORWARD DECLARATIONS

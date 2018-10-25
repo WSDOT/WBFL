@@ -69,12 +69,14 @@ cpp_quote("")
 cpp_quote("#define STRLOAD_E_FILENOTFOUND       (STRLOAD_E_FIRST+3)")
 cpp_quote("// the specified file was not found")
 cpp_quote("")
-cpp_quote("#define STRLOAD_E_CLASS_NOT_REGISTERED (STRLOAD_E_FIRST+4)")
+cpp_quote("#define STRLOAD_E_USERDEFINED        (STRLOAD_E_FIRST+4)")
+cpp_quote("// a user defined error occured")
+cpp_quote("")
+cpp_quote("#define STRLOAD_E_CLASS_NOT_REGISTERED (STRLOAD_E_FIRST+5)")
 cpp_quote("// class was not registered and cannot be created")
 cpp_quote("")
-cpp_quote("#define STRLOAD_E_CLASS_ISTRUCTUREDSTORAGE2 (STRLOAD_E_FIRST+5)")
+cpp_quote("#define STRLOAD_E_CLASS_ISTRUCTUREDSTORAGE2 (STRLOAD_E_FIRST+6)")
 cpp_quote("// the class does not support the IStructuredStorage2 interface")
-cpp_quote("")
 
 
 cpp_quote("/////////////////////////////////////////////////////////////////////////////")
@@ -134,6 +136,59 @@ library WBFLTools
       atReject = 2
    } AcceptanceType;
 
+   [
+
+      uuid(0131A8C2-26EB-11D2-8EB0-006097DF3C68),
+
+      helpstring("IStructuredLoad Interface"),
+      pointer_default(unique)
+   ]
+   interface IStructuredLoad : IUnknown
+   {
+      [helpstring("method Open")] HRESULT Open([in] LPCTSTR name);
+      [helpstring("method BeginUnit")] HRESULT BeginUnit([in] LPCTSTR name);
+      [helpstring("method EndUnit")] HRESULT EndUnit();
+      [propget, helpstring("property Version")] HRESULT Version([out, retval] Float64 *pVal);
+      [propget, helpstring("property ParentVersion")] HRESULT ParentVersion([out, retval] Float64 *pVal);
+      [propget, helpstring("property TopVersion")] HRESULT TopVersion([out, retval] Float64 *pVal);
+      [propget, helpstring("property ParentUnit")] HRESULT ParentUnit([out, retval]BSTR* pParentUnit);
+      [propget, helpstring("property Property")] HRESULT Property([in] LPCTSTR name, [out, retval] VARIANT *pVal);
+      [helpstring("method EndOfStorage")] HRESULT EndOfStorage();
+      [helpstring("method Close")] HRESULT Close();
+      [helpstring("mehtod LoadRawUnit")] HRESULT LoadRawUnit([out] BSTR* pbstrUnit);
+   };
+   [
+
+      uuid(0131A8C4-26EB-11D2-8EB0-006097DF3C68),
+
+      helpstring("IStructuredSave Interface"),
+      pointer_default(unique)
+   ]
+   interface IStructuredSave : IUnknown
+   {
+      [helpstring("method Open")] HRESULT Open([in] LPCTSTR name);
+      [helpstring("method BeginUnit")] HRESULT BeginUnit([in] LPCTSTR name, [in] Float64 ver);
+      [helpstring("method EndUnit")] HRESULT EndUnit();
+      [propget, helpstring("property Version")] HRESULT Version([out, retval] Float64 *pVal);
+      [propget, helpstring("property ParentVersion")] HRESULT ParentVersion([out, retval] Float64 *pVal);
+      [propget, helpstring("property ParentUnit")] HRESULT ParentUnit([out, retval]BSTR* pParentUnit);
+      [propget, helpstring("property TopVersion")] HRESULT TopVersion([out, retval] Float64 *pVal);
+      [propput, helpstring("property Property")] HRESULT Property([in] LPCTSTR name, [in] VARIANT newVal);
+      [helpstring("method Close")] HRESULT Close();
+      [helpstring("mehtod SaveRawUnit")] HRESULT SaveRawUnit([in]LPCTSTR unitXML);
+   };
+
+   [
+      object,
+      uuid(5693D0F4-AC55-11d4-8B4B-006097C68A9C),
+      helpstring("IStructuredStorage Interface"),
+      pointer_default(unique)
+   ]
+   interface IStructuredStorage : IUnknown
+   {
+      [helpstring("method Load")] HRESULT Load([in] IStructuredLoad* load);
+      [helpstring("method Save")] HRESULT Save([in] IStructuredSave* save);
+   };
 
 	[
         object,	
@@ -183,6 +238,20 @@ library WBFLTools
       [helpstring("method Load"), helpcontext(IDH_ISS2_Load)] HRESULT Load([in] IStructuredLoad2* load);
       [helpstring("method Save"), helpcontext(IDH_ISS2_Save)] HRESULT Save([in] IStructuredSave2* save);
    }; 
+
+   [
+      uuid(0BC4B500-27FF-11d2-8EB2-006097DF3C68),
+      helpstring("ILogFile Interface"),
+      pointer_default(unique)
+   ]
+   interface ILogFile : IUnknown
+   {
+      [helpstring("method Open")] HRESULT Open([in] LPCTSTR name, [out] DWORD* pdwCookie);
+      [propput, helpstring("property EndLines")] HRESULT EndLines([in] BOOL bEndLines);
+      [propget, helpstring("property EndLines")] HRESULT EndLines([out, retval] BOOL* pbEndLines);
+      [helpstring("method LogMessage")] HRESULT LogMessage([in] DWORD dwCookie, [in] LPCTSTR msg);
+      [helpstring("method Close")] HRESULT Close([in] DWORD dwCookie);
+   };
 
    [
 		object,
@@ -700,7 +769,26 @@ library WBFLTools
 	{
 		[default] interface IARPNotice;
 	};
-	[
+
+   [
+      uuid(0131A8C3-26EB-11D2-8EB0-006097DF3C68),
+      helpstring("StructuredLoad Class")
+   ]
+   coclass StructuredLoad
+   {
+      [default] interface IStructuredLoad;
+   };
+
+   [
+      uuid(0131A8C5-26EB-11D2-8EB0-006097DF3C68),
+      helpstring("StructuredSave Class")
+   ]
+   coclass StructuredSave
+   {
+      [default] interface IStructuredSave;
+   };
+   
+   [
 		uuid(043B36E6-64EE-11d5-B017-00105A9AF985),
 		helpstring("StructuredSave2 Class")
 	]

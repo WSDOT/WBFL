@@ -93,7 +93,7 @@ STDMETHODIMP CStrandFillTool::ComputeHarpedStrandMaxFill(IStrandGridFiller* pEnd
       end_fill->get_Item(i,&end);
       hp = max(hp,end);
       array->Add(hp);
-      *pMaxStrandCount += StrandIndexType(hp);
+      *pMaxStrandCount += hp;
    }
 
    return array.CopyTo(ppStrandFill);

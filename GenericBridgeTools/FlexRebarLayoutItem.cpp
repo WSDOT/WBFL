@@ -44,6 +44,7 @@ STDMETHODIMP CFlexRebarLayoutItem::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
+      &IID_IRebarLayoutItem,
 		&IID_IFlexRebarLayoutItem,
       &IID_IStructuredStorage2,
 	};

@@ -292,6 +292,9 @@ HRESULT CBulbTee2::UpdateShape()
          pPosition->Rotate(0.00, 0.00, m_Rotation);
       }
 
+      // The hook point is at the bottom centerline of the web (which may not be at the bottom CL of the bounding box)
+      // The shape was built with bottom centerline of the web at (0,0)
+      // Move the shape so that point (0,0) moves to the hook point
       CComPtr<IPoint2d> origin;
       CreatePoint(0.00,0.00,nullptr,&origin);  // Hook Point at Bottom Center
       pPosition->MoveEx(origin,m_pHookPoint);
@@ -705,6 +708,7 @@ STDMETHODIMP CBulbTee2::get_MaxHeight(Float64 *pVal)
 
 STDMETHODIMP CBulbTee2::get_CLHeight(Float64 *pVal)
 {
+   // this is actually the height at the CL Web not the CL of the bounding box
    CHECK_RETVAL(pVal);
 
    Float64 Hl, Hc, Hr;

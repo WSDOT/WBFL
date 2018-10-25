@@ -69,7 +69,9 @@ public:
 	STDMETHOD(get_Section)(/*[out,retval]*/IGeneralSection** pSection) override;
 	STDMETHOD(put_Slices)(/*[in]*/long nSlices) override;
 	STDMETHOD(get_Slices)(/*[out,retval]*/long* nSlices) override;
-	STDMETHOD(put_AxialTolerance)(/*[in]*/Float64 tolerance) override;
+   STDMETHOD(put_SliceGrowthFactor)(/*[in]*/Float64 sliceGrowthFactor) override;
+   STDMETHOD(get_SliceGrowthFactor)(/*[out,retval]*/Float64* sliceGrowthFactor) override;
+   STDMETHOD(put_AxialTolerance)(/*[in]*/Float64 tolerance) override;
 	STDMETHOD(get_AxialTolerance)(/*[out,retval]*/Float64* tolerance) override;
 	STDMETHOD(put_MaxIterations)(/*[in]*/long maxIter) override;
 	STDMETHOD(get_MaxIterations)(/*[out,retval]*/long* maxIter) override;

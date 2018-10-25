@@ -74,7 +74,7 @@ STDMETHODIMP CSegment::get_Length(Float64 *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
+STDMETHODIMP CSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
 {
    CHECK_RETOBJ(ppSection);
 
@@ -121,14 +121,6 @@ STDMETHODIMP CSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegm
       CComPtr<IShape> shape;
       shapeData.Shape->Clone(&shape);
 
-      // position the shape
-#pragma Reminder("REVIEW - does this need to be fixed?")
-      //CComPtr<IPoint2d> pntTopCenter;
-      //GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
-
-      //CComQIPtr<IXYPosition> position(shape);
-      //position->put_LocatorPoint(lpTopCenter,pntTopCenter);
-
       section->AddSection(shape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
    }
 
@@ -138,7 +130,7 @@ STDMETHODIMP CSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegm
    return S_OK;
 }
 
-STDMETHODIMP CSegment::get_PrimaryShape(Float64 distAlongSegment,IShape** ppShape)
+STDMETHODIMP CSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
    if ( m_Shapes.size() == 0 )
@@ -147,7 +139,7 @@ STDMETHODIMP CSegment::get_PrimaryShape(Float64 distAlongSegment,IShape** ppShap
       return S_OK;
    }
 
-   // this is a prismatic shape, so distAlongSegment doesn't matter
+   // this is a prismatic shape, so Xs and sectionBias doesn't matter
    m_Shapes.front().Shape->Clone(ppShape);
 
    return S_OK;

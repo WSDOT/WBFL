@@ -26,8 +26,14 @@
 // FixedLengthRebarLayoutItem.cpp : Implementation of CFixedLengthRebarLayoutItem
 
 #include "stdafx.h"
-#include "WBFLGenericBridgeTools.h"
 #include "FixedLengthRebarLayoutItem.h"
+
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
 
 // CFixedLengthRebarLayoutItem

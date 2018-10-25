@@ -58,7 +58,7 @@ static Float64 gs_Fu100[3] = { -1, -1, ::ConvertToSysUnits(150,unitMeasure::KSI)
 static Float64 gs_Es100[3] = { -1, -1, ::ConvertToSysUnits(29000,unitMeasure::KSI) };
 
 static Float64 gs_Area[11] = {
-   ::ConvertToSysUnits(0.11,unitMeasure::Inch2),  // #3
+   ::ConvertToSysUnits(0.11,unitMeasure::Inch2),  // #3 
    ::ConvertToSysUnits(0.20,unitMeasure::Inch2),  // #4
    ::ConvertToSysUnits(0.31,unitMeasure::Inch2),  // #5
    ::ConvertToSysUnits(0.44,unitMeasure::Inch2),  // #6

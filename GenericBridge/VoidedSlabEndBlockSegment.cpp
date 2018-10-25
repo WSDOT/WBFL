@@ -27,5 +27,12 @@
 #include "stdafx.h"
 #include "VoidedSlabEndBlockSegment.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 // Instantiate template in our dll
 template class TEndBlockSegmentImpl<IVoidedSlabEndBlockSegment, IVoidedSlabSection2, IVoidedSlab2, &CLSID_VoidedSlabEndBlockSegment, IDR_VOIDEDSLABENDBLOCKSEGMENT, VoidedEndBlock<IVoidedSlab2>>;

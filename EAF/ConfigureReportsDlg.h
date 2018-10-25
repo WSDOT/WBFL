@@ -27,6 +27,8 @@
 #include "FavoriteReportsPage.h"
 #include "CustomReportsPage.h"
 
+interface IBroker;
+
 class CConfigureReportsDlg : public CPropertySheet
 {
 	DECLARE_DYNAMIC(CConfigureReportsDlg)

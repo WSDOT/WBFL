@@ -26,6 +26,13 @@
 #include <EAF\EAFPluginPersist.h>
 #include <EAF\EAFDocument.h>
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 CEAFDocPluginManager::CEAFDocPluginManager()
 {
    m_bSaveMissingPluginData = TRUE;

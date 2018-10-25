@@ -37,6 +37,9 @@
     <ClCompile Include="StrandGrid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AlternativeTensileStressCalculator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BridgeDeckRebarLayout.h">
@@ -73,6 +76,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StrandGrid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\WBFLGenericBridgeTools\AlternativeTensileStressCalculator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\WBFLGenericBridgeTools\AutoLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\WBFLGenericBridgeTools\WBFLGenericBridgeToolsExp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -36,21 +36,21 @@
 #include <WBFLGenericBridgeTools.h>
 
 #include <initguid.h>
-#include <WBFLGenericBridgeTools_i.c>
-
-//#include <WBFLGenericBridge.h>
-#include <WBFLGenericBridge_i.c>
 
 #include <WBFLCogo_i.c>
 #include <WBFLGeometry_i.c>
 #include <WBFLSections_i.c>
 #include <WBFLTools_i.c>
+#include <WBFLGenericBridge_i.c>
+#include <WBFLGenericBridgeTools_i.c>
 
 #include "EffectiveFlangeWidthTool.h"
 #include "EffectiveFlangeWidthDetails.h"
 #include "BridgeGeometryTool.h"
 #include "SectionCutTool.h"
 #include "PrecastGirder.h"
+#include "StrandGridModel.h"
+#include "StrandPointModel.h"
 #include "StrandGrid.h"
 
 #include "FlexRebarLayoutItem.h"
@@ -72,6 +72,8 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_BridgeGeometryTool,       CBridgeGeometryTool)
    OBJECT_ENTRY(CLSID_SectionCutTool,           CSectionCutTool)
    OBJECT_ENTRY(CLSID_PrecastGirder,            CPrecastGirder)
+   OBJECT_ENTRY(CLSID_StrandGridModel, CStrandGridModel)
+   OBJECT_ENTRY(CLSID_StrandPointModel, CStrandPointModel)
    OBJECT_ENTRY(CLSID_StrandGrid, CStrandGrid)
    OBJECT_ENTRY(CLSID_StrandFillTool, CStrandFillTool)
    OBJECT_ENTRY(CLSID_FlexRebarLayoutItem,CFlexRebarLayoutItem)

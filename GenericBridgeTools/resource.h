@@ -37,7 +37,9 @@
 #define IDR_FLEXREBARLAYOUTITEM         111
 #define IDR_STRANDGRID                  114
 #define IDR_BRIDGEDECKREBARLAYOUT       115
-#define IDR_STRANDFILLTOOL              115
+#define IDR_STRANDFILLTOOL              116
+#define IDR_STRANDGRIDMODEL             117
+#define IDR_STRANDPOINTMODEL            118
 
 #define IDS_E_UNKNOWNDECKTYPE           512
 #define IDS_E_GIRDERSECTION             513

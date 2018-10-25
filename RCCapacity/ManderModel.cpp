@@ -48,9 +48,6 @@ HRESULT CManderModel::FinalConstruct()
    m_eco = 0.002;
    m_R = 5;
 
-   m_MinStrain = -0.003;
-   m_MaxStrain = 10.0;
-
    return S_OK;
 }
 
@@ -132,6 +129,17 @@ STDMETHODIMP CManderModel::get_R(Float64* r)
    return S_OK;
 }
 
+STDMETHODIMP CManderModel::GetConcreteParameters(Float64* pfr, Float64* pfcc, Float64* pecc)
+{
+   CHECK_RETVAL(pfr);
+   CHECK_RETVAL(pfcc);
+   CHECK_RETVAL(pecc);
+
+   GetConcreteParameters(*pfr, *pfcc, *pecc);
+
+   return S_OK;
+}
+
 // IStressStrain
 STDMETHODIMP CManderModel::put_Name(BSTR name)
 {
@@ -150,13 +158,12 @@ STDMETHODIMP CManderModel::ComputeStress(Float64 strain,Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   *pVal = 0;
-
-   if ( 0 < strain )
+   if (0 < strain)
+   {
+      // for tension strain.... stress is 0.0
+      *pVal = 0;
       return S_OK;
-
-   CComPtr<IUnitConvert> convert;
-   m_UnitServer->get_UnitConvert(&convert);
+   }
 
    strain *= -1.0; // swap signs so we are working with positive strains
 
@@ -170,9 +177,6 @@ STDMETHODIMP CManderModel::ComputeStress(Float64 strain,Float64 *pVal)
    Float64 x = strain/ecc;
    Float64 fc = fcc*x*r/(r-1+pow(x,r));
 
-   // The stress is in PSI, convert it to base units because that is what the caller expects
-   convert->ConvertToBaseUnits(fc,CComBSTR("psi"),&fc);
-
    *pVal = -fc;
 
    return S_OK;
@@ -183,8 +187,19 @@ STDMETHODIMP CManderModel::StrainLimits(Float64* minStrain,Float64* maxStrain)
    CHECK_RETVAL(minStrain);
    CHECK_RETVAL(maxStrain);
 
-   *minStrain = m_MinStrain;
-   *maxStrain = m_MaxStrain;
+   Float64 fr, fcc, ecc;
+   GetConcreteParameters(fr, fcc, ecc);
+
+   Float64 ps, fyh, esu;
+   m_Section->get_TransvReinforcementRatio(&ps);
+   m_Section->get_TransvYieldStrength(&fyh);
+   m_Section->get_TransvReinforcementRuptureStrain(&esu);
+
+   // see "Seismic Design and Retrofit of Bridges", Priestley,  Pg 272, Eqn 5.14
+   Float64 ecu = 0.004 + 1.4*ps*fyh*esu / fcc; 
+
+   *minStrain = -ecu;
+   *maxStrain = DBL_MAX;
    return S_OK;
 }
 
@@ -193,7 +208,7 @@ STDMETHODIMP CManderModel::get_StrainAtPeakStress(Float64* strain)
    CHECK_RETVAL(strain);
    Float64 fr,fcc,ecc;
    GetConcreteParameters(fr,fcc,ecc);
-   (*strain) = ecc;
+   (*strain) = -ecc;
    return S_OK;
 }
 
@@ -201,21 +216,14 @@ STDMETHODIMP CManderModel::get_YieldStrain(Float64* pey)
 {
    CHECK_RETVAL(pey);
    Float64 Ec = GetEc();
-   *pey = m_Fco/Ec;
+   *pey = -m_Fco/Ec;
    return S_OK;
 }
 
 STDMETHODIMP CManderModel::get_ModulusOfElasticity(Float64* pE)
 {
    CHECK_RETVAL(pE);
-   Float64 Ec = GetEc();
-
-   // The stress is in PSI, convert it to base units because that is what the caller expects
-   CComPtr<IUnitConvert> convert;
-   m_UnitServer->get_UnitConvert(&convert);
-   convert->ConvertToBaseUnits(Ec,CComBSTR("psi"),&Ec);
-
-   *pE = Ec;
+   *pE = GetEc();
    return S_OK;
 }
 
@@ -239,7 +247,17 @@ STDMETHODIMP CManderModel::putref_UnitServer(IUnitServer* pNewVal )
 
 Float64 CManderModel::GetEc()
 {
-   return 60000.0*sqrt(m_Fco);
+   Float64 fco;
+
+   CComPtr<IUnitConvert> convert;
+   m_UnitServer->get_UnitConvert(&convert);
+   convert->ConvertFromBaseUnits(m_Fco, CComBSTR("psi"), &fco);
+
+   Float64 Es = 60000.0*sqrt(fco); // psi
+   convert->ConvertToBaseUnits(Es, CComBSTR("psi"), &Es);
+
+   return Es;
+
 }
 
 void CManderModel::GetConcreteParameters(Float64& fr,Float64& fcc,Float64& ecc)
@@ -249,12 +267,7 @@ void CManderModel::GetConcreteParameters(Float64& fr,Float64& fcc,Float64& ecc)
    m_Section->get_TransvReinforcementRatio(&ps);
    m_Section->get_TransvYieldStrength(&fyh);
 
-   // fyh is in base units, we need it in PSI, convert it
-   CComPtr<IUnitConvert> convert;
-   m_UnitServer->get_UnitConvert(&convert);
-   convert->ConvertFromBaseUnits(fyh,CComBSTR("psi"),&fyh);
-
    fr = 0.5*ke*ps*fyh;
-   fcc = m_Fco*(-1.254 + 2.254*sqrt(1+7.94*(fr/m_Fco)) - 2*(fr/m_Fco));
-   ecc = m_eco*(1+m_R*(fcc/m_Fco - 1));
+   fcc = m_Fco*(-1.254 + 2.254*sqrt(1+7.94*(fr/ m_Fco)) - 2*(fr/ m_Fco));
+   ecc = m_eco*(1+m_R*(fcc/ m_Fco - 1));
 }

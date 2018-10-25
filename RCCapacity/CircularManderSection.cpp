@@ -77,6 +77,19 @@ STDMETHODIMP CCircularManderSection::get_TransvYieldStrength(Float64* fyh)
    return S_OK;
 }
 
+STDMETHODIMP CCircularManderSection::put_TransvReinforcementRuptureStrain(Float64 esu)
+{
+   m_esu = esu;
+   return S_OK;
+}
+
+STDMETHODIMP CCircularManderSection::get_TransvReinforcementRuptureStrain(Float64* esu)
+{
+   CHECK_RETVAL(esu);
+   *esu = m_esu;
+   return S_OK;
+}
+
 STDMETHODIMP CCircularManderSection::get_TransvReinforcementRatio(Float64* ps)
 {
    CHECK_RETVAL(ps);

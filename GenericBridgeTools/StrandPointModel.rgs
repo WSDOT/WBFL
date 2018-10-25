@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLGenericBridgeTools.StrandPointModel.1 = s 'StrandPointModel Class'
+	{
+		CLSID = s '{C4B902B2-8EB1-44D1-A24E-8C2DDC7BC294}'
+	}
+	WBFLGenericBridgeTools.StrandPointModel = s 'StrandPointModel Class'
+	{
+		CLSID = s '{C4B902B2-8EB1-44D1-A24E-8C2DDC7BC294}'
+		CurVer = s 'WBFLGenericBridgeTools.StrandPointModel.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {C4B902B2-8EB1-44D1-A24E-8C2DDC7BC294} = s 'StrandPointModel Class'
+		{
+			ProgID = s 'WBFLGenericBridgeTools.StrandPointModel.1'
+			VersionIndependentProgID = s 'WBFLGenericBridgeTools.StrandPointModel'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}'
+		}
+	}
+}

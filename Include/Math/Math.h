@@ -46,5 +46,6 @@
 #include <Math\NumericIntegrator2d.h>
 #include <Math\TrapezoidalRuleIntegrator.h>
 #include <Math\CDRatio.h>
+#include <Math\MathUtils.h>
 
 #endif // INCLUDED_MATH_MATH_H_

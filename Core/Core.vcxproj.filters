@@ -22,12 +22,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StrLoad.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StrSave.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SysAgent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -57,12 +51,6 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="StrLoad.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="StrSave.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SysAgent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -76,12 +64,6 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Core.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="StrLoad.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="StrSave.rgs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="SysAgent.rgs">
@@ -112,5 +94,10 @@
     <ResourceCompile Include="Core.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="..\Include\WBFLCore.idl">
+      <Filter>Source Files</Filter>
+    </Midl>
   </ItemGroup>
 </Project>

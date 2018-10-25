@@ -30,6 +30,13 @@
 #include "DeckBoundary.h"
 
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 // CSimpleDeckBoundaryFactory
 STDMETHODIMP CSimpleDeckBoundaryFactory::put_TransverseEdgeID(EndType end,LineIDType ID)
 {

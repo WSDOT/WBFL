@@ -65,8 +65,6 @@ END_COM_MAP()
    Float64 m_eco;
    Float64 m_R;
    CComPtr<IManderModelSection> m_Section;
-   Float64 m_MinStrain;
-   Float64 m_MaxStrain;
    CComPtr<IUnitServer> m_UnitServer;
    CComBSTR m_bstrName;
 
@@ -87,6 +85,7 @@ public:
 	STDMETHOD(get_eco)(/*[out,retval]*/Float64* eco) override;
 	STDMETHOD(put_R)(/*[in]*/Float64 r) override;
 	STDMETHOD(get_R)(/*[out,retval]*/Float64* r) override;
+   STDMETHOD(GetConcreteParameters)(Float64* pfr, Float64* pfcc, Float64* pecc);
 
 // IStressStrain
 public:

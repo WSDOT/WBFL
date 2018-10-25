@@ -53,8 +53,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,2,0,0
- PRODUCTVERSION 4,2,0,0
+ FILEVERSION 4,2,1,0
+ PRODUCTVERSION 4,2,1,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -72,12 +72,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "WBFLTools Module"
-            VALUE "FileVersion", "4.2.0.0"
+            VALUE "FileVersion", "4.2.1.0"
             VALUE "InternalName", "WBFLTools"
             VALUE "LegalCopyright", "Copyright © 1999-2018, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "WBFLTools.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "4.2.0.0"
+            VALUE "ProductVersion", "4.2.1.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -103,6 +103,8 @@ IDR_DISCLAIMER          TEXT                    "Disclaimer.txt"
 
 IDR_ARPNOTICE           REGISTRY                "ARPNotice.rgs"
 IDR_MOHRCIRCLE          REGISTRY                "MohrCircle.rgs"
+IDR_STRLOAD             REGISTRY                "StrLoad.rgs"
+IDR_STRSAVE             REGISTRY                "StrSave.rgs"
 IDR_STRUCTUREDSAVE2     REGISTRY                "StructuredSave2.rgs"
 IDR_STRUCTUREDLOAD2     REGISTRY                "StructuredLoad2.rgs"
 IDR_ERRORLOG            REGISTRY                "ErrorLog.rgs"
@@ -180,6 +182,17 @@ BEGIN
                             "You must define at least one Unit before you can save properties."
     IDS_STRSAVE_E_ONLY_ONE_UNIT 
                             "You cannot define more than one Unit at the top level of a StructuredStorage file. You must have one, and only one, top-level unit. Units are defined when saving by calling BeginUnit/EndUnit."
+END
+
+STRINGTABLE
+BEGIN
+IDS_E_BADWRITE          "Error writing file"
+IDS_E_INVALIDFORMAT     "Invalid fail format"
+IDS_E_BADREAD           "Error reading from file"
+IDS_E_BADVERSION        "Incorrect file version encountered"
+IDS_E_OUTOFMEMORY       "Out of memory"
+IDS_E_FILENOTFOUND      "File not found"
+IDS_E_CANTOPEN          "Error opening file"
 END
 
 #endif    // English (U.S.) resources

@@ -27,5 +27,12 @@
 #include "stdafx.h"
 #include "BoxBeamEndBlockSegment.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 // Instantiate template in our dll
 template class TEndBlockSegmentImpl<IBoxBeamEndBlockSegment, IBoxBeamSection, IBoxBeam, &CLSID_BoxBeamEndBlockSegment, IDR_BOXBEAMENDBLOCKSEGMENT, VoidedEndBlock<IBoxBeam>>;

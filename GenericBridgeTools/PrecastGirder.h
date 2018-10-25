@@ -29,9 +29,6 @@
 #define __PRECASTGIRDER_H_
 
 #include "resource.h"       // main symbols
-#include <vector>
-#include <set>
-#include <MathEx.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CPrecastGirder
@@ -46,22 +43,6 @@ public:
 	CPrecastGirder()
 	{
       m_pSegment = nullptr;
-
-      // default harping point... fraction of girder length, measured from left end
-      m_HPMeasure = hpmFractionOfGirderLength;
-      m_EndHPMeasure = hpmFractionOfGirderLength;
-      m_HPReference = hprEndOfGirder;
-      m_EndHPReference = hprEndOfGirder;
-      m_HPStart = 0.0;
-      m_HP1 = 0.4;
-      m_HP2 = 0.4;
-      m_HPEnd = 0.0;
-      m_AllowOddNumberOfHarpedStrands=VARIANT_FALSE;
-      m_UseDifferentHarpedGirdAtEnds=VARIANT_TRUE;
-
-      m_bUseMinHpDistance = VARIANT_FALSE;
-      m_MinHpDist = 0;
-
       m_UpdateLengths = true;
 	}
 
@@ -80,61 +61,13 @@ END_COM_MAP()
 
 private:
    ISuperstructureMemberSegment* m_pSegment; // weak reference to the superstructure member segment for this girder
-   CComPtr<IStrandFillTool> m_StrandFillTool;
-
-   CComPtr<IPrestressingStrand> m_StraightStrandMaterial;
-   CComPtr<IPrestressingStrand> m_HarpedStrandMaterial;
-   CComPtr<IPrestressingStrand> m_TemporaryStrandMaterial;
 
    SpanIndexType m_SpanIdx;
    GirderIndexType m_GirderIdx;
 
-   // array index is EndType enum value
-   CComPtr<IStrandGridFiller> m_StraightGrid[2];
-   CComPtr<IStrandGridFiller> m_HarpGridEnd[2];
-   CComPtr<IStrandGridFiller> m_HarpGridHp[2];
-   CComPtr<IStrandGridFiller> m_TempGrid[2];
-
-   StrandProfileType m_StraightStrandProfileType;
-   StrandProfileType m_TemporaryStrandProfileType;
-
-   void GetHarpedStrandGrid(Float64 distFromStart,IStrandGridFiller** ppGrid);
-   
-   // this is a special fill array that represents the max between harped strands at the HP and at the Ends
-   CComPtr<IIndexArray> m_HarpedMaxStrandFill;
-   StrandIndexType m_MaxHarpedStrands;
-   bool m_UpdateHarpedMaxFill;
-
+   CComPtr<IStrandModel> m_StrandModel;
    CComPtr<IRebarLayout> m_RebarLayout;
    CComPtr<IRebarLayout> m_ClosureJointRebarLayout;
-
-   // If this is true, it is possible that the one-to-one relationship between strand grid fill locations
-   // at the girder ends and harping points is broken. i.e., different fills are are needed for each.
-   VARIANT_BOOL m_AllowOddNumberOfHarpedStrands;
-
-   // If this is true, different harped grids are used at the ends of the girder than at the
-   // harping point.
-   VARIANT_BOOL m_UseDifferentHarpedGirdAtEnds;
-
-   // data and functions required to compute harped grid if odd strands are allowed
-   CComPtr<IIndexArray> m_OddHpFill;
-   HRESULT ComputeHpFill(IIndexArray* endFill, IIndexArray** hpFill);
-
-   // HPStart and HP1 are measured from the left end of the girder
-   // HPEnd and HP2 are measured from the right end of the girder
-   Float64 m_HPStart, m_HPEnd; // location of the m_HarpGridEnd harp grids
-   Float64 m_HP1, m_HP2; // harping point location (location of the m_HarpGridHp harp grids)
-   HarpPointReference m_HPReference; // describes from where the harping point is measured
-   HarpPointMeasure m_HPMeasure;    // describes how the middle harping point is located
-
-   HarpPointReference m_EndHPReference; // describes from where the harping point is measured for the end harp points
-   HarpPointMeasure m_EndHPMeasure; // describes how the end harping point is located
-
-   VARIANT_BOOL m_bUseMinHpDistance;
-   Float64 m_MinHpDist;   
-
-   // geometry factory for performance
-   CComPtr<IPoint2dFactory> m_Point2dFactory;
 
    // caching of span and girder lengths
    bool m_UpdateLengths;
@@ -150,17 +83,6 @@ private:
       Float64 dbRightBearingOffset;   // cl-pier to cl-brg (right end of girder)
    } m_Lengths;
   
-   void GetHarpPointLocations(Float64& hp1,Float64& hp2);
-   void GetEndHarpPointLocations(Float64& hp1,Float64& hp2);
-   Float64 GetHarpPointLocation(Float64 hp, HarpPointReference hpRef, HarpPointMeasure hpMeasure, bool bRight,bool bLocatingEndHarpPoint);
-   Float64 GetHarpPatternFillAdjustment();
-   HRESULT UpdateMaxStrandFill();
-
-   Float64 GetGirderDepthAdjustment(Float64 Xs, Float64 distToStartGrid, Float64 distBetweenGrids, IStrandGridFiller* pStartGridFiller=nullptr, IStrandGridFiller* pEndGridFiller=nullptr);
-   Float64 GetGirderWidthAdjustment(Float64 Xs);
-   HRESULT GetStrandPositions(Float64 distFromStart, Float64 distToStartGrid, Float64 distBetweenGrids, Float64 Lg, Float64 startPrecamber, Float64 endPrecamber, IIndexArray* startFill, IStrandGridFiller* pStartGridFiller, IIndexArray* endFill, IStrandGridFiller* pEndGridFiller, IPoint2dCollection** points);
-   void RemoveStraightStrandDebondedStrandPositions(Float64 distFromStart, IPoint2dCollection* pPoints);
-
 // ISupportsErrorInfo
 public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
@@ -168,56 +90,6 @@ public:
 // IPrecastGirder
 public:
    STDMETHOD(Initialize)(ISuperstructureMemberSegment* segment) override;
-   STDMETHOD(SetStrandMovers)(IStrandMover* pStartStrandMover,IStrandMover* pHp1StrandMover,IStrandMover* pHp2StrandMover,IStrandMover* pEndStrandMover) override;
-
-	STDMETHOD(putref_StrandMover)(/*[in]*/StrandGridType sgType,/*[in]*/EndType endType,/*[in]*/IStrandMover* pStrandMover) override;
-	STDMETHOD(get_StrandMover)(/*[in]*/StrandGridType sgType,/*[in]*/EndType endType,/*[out,retval]*/IStrandMover** ppStrandMover) override;
-
-   STDMETHOD(putref_StraightStrandMaterial)(IPrestressingStrand* pMaterial) override;
-   STDMETHOD(get_StraightStrandMaterial)(IPrestressingStrand** ppMaterial) override;
-
-   STDMETHOD(putref_HarpedStrandMaterial)(IPrestressingStrand* pMaterial) override;
-   STDMETHOD(get_HarpedStrandMaterial)(IPrestressingStrand** ppMaterial) override;
-
-   STDMETHOD(putref_TemporaryStrandMaterial)(IPrestressingStrand* pMaterial) override;
-   STDMETHOD(get_TemporaryStrandMaterial)(IPrestressingStrand** ppMaterial) override;
-
-   STDMETHOD(get_StraightStrandGrid)(/*[in]*/EndType endType,/*[out,retval]*/IStrandGrid** grid) override;
-	STDMETHOD(get_TemporaryStrandGrid)(/*[in]*/EndType endType,/*[out,retval]*/IStrandGrid** grid) override;
-	STDMETHOD(get_HarpedStrandGridEnd)(/*[in]*/EndType endType,/*[out,retval]*/IStrandGrid** grid) override;
-	STDMETHOD(get_HarpedStrandGridHP)(/*[in]*/EndType endType,/*[out,retval]*/IStrandGrid** grid) override;
-
-	STDMETHOD(put_AllowOddNumberOfHarpedStrands)(/*[in]*/VARIANT_BOOL bUseMin) override;
-	STDMETHOD(get_AllowOddNumberOfHarpedStrands)(/*[out,retval]*/VARIANT_BOOL* bUseMin) override;
-
-	STDMETHOD(put_UseDifferentHarpedGridsAtEnds)(/*[in]*/VARIANT_BOOL bUseDifferent) override;
-	STDMETHOD(get_UseDifferentHarpedGridsAtEnds)(/*[out,retval]*/VARIANT_BOOL* bUseDifferent) override;
-
-	STDMETHOD(get_TopElevation)(/*[out,retval]*/Float64* top) override;
-
-	STDMETHOD(get_HarpedStrandAdjustmentEnd)(/*[in]*/EndType endType,/*[out,retval]*/Float64* offset) override;
-	STDMETHOD(put_HarpedStrandAdjustmentEnd)(/*[in]*/EndType endType,/*[in]*/Float64 offset) override;
-	STDMETHOD(get_HarpedStrandAdjustmentHP)(/*[in]*/EndType endType,/*[out,retval]*/Float64* offset) override;
-	STDMETHOD(put_HarpedStrandAdjustmentHP)(/*[in]*/EndType endType,/*[in]*/Float64 offset) override;
-
-	STDMETHOD(SetHarpingPoints)(/*[in]*/Float64 hp1,/*[in]*/Float64 hp2) override;
-	STDMETHOD(GetHarpingPoints)(/*[out]*/Float64* hp1,/*[out]*/Float64* hp2) override;
-	STDMETHOD(SetEndHarpingPoints)(/*[in]*/Float64 hp1,/*[in]*/Float64 hp2) override;
-	STDMETHOD(GetEndHarpingPoints)(/*[out]*/Float64* hp1,/*[out]*/Float64* hp2) override;
-	STDMETHOD(put_HarpingPointMeasure)(/*[in]*/ HarpPointMeasure measure) override;
-	STDMETHOD(get_HarpingPointMeasure)(/*[out,retval]*/ HarpPointMeasure* measure) override;
-	STDMETHOD(put_EndHarpingPointMeasure)(/*[in]*/ HarpPointMeasure measure) override;
-	STDMETHOD(get_EndHarpingPointMeasure)(/*[out,retval]*/ HarpPointMeasure* measure) override;
-	STDMETHOD(put_HarpingPointReference)(/*[in]*/ HarpPointReference hpRef) override;
-	STDMETHOD(get_HarpingPointReference)(/*[out,retval]*/ HarpPointReference* hpRef) override;
-	STDMETHOD(put_EndHarpingPointReference)(/*[in]*/ HarpPointReference hpRef) override;
-	STDMETHOD(get_EndHarpingPointReference)(/*[out,retval]*/ HarpPointReference* hpRef) override;
-   STDMETHOD(put_UseMinHarpPointDistance)(/*[in]*/VARIANT_BOOL bUseMin) override;
-	STDMETHOD(get_UseMinHarpPointDistance)(/*[out,retval]*/VARIANT_BOOL* bUseMin) override;
-   STDMETHOD(put_MinHarpPointDistance)(/*[in]*/Float64 minHpDist) override;
-	STDMETHOD(get_MinHarpPointDistance)(/*[out,retval]*/Float64* minHpDist) override;
-	STDMETHOD(GetHarpingPointLocations)(/*[out]*/Float64* hp1,/*[out]*/Float64* hp2) override;
-	STDMETHOD(GetEndHarpingPointLocations)(/*[out]*/Float64* hp1,/*[out]*/Float64* hp2) override;
 
    STDMETHOD(get_SpanLength)(/*[out,retval]*/ Float64* length) override;
    STDMETHOD(get_GirderLength)(/*[out,retval]*/ Float64* length) override;
@@ -227,132 +99,11 @@ public:
    STDMETHOD(get_RightBearingOffset)(/*[out,retval]*/ Float64* offset) override;
    STDMETHOD(GetEndPoints)(/*[out]*/IPoint2d** pntPier1,/*[out]*/IPoint2d** pntEnd1,/*[out]*/IPoint2d** pntBrg1,/*[out]*/IPoint2d** pntBrg2,/*[out]*/IPoint2d** pntEnd2,/*[out]*/IPoint2d** pntPier2) override;
 
-   STDMETHOD(get_HarpedMaxStrandFill)(/*[out,retval]*/IIndexArray** fill) override;
-   STDMETHOD(get_TemporaryMaxStrandFill)(/*[out,retval]*/IIndexArray** fill) override;
-   STDMETHOD(get_StraightMaxStrandFill)(/*[out,retval]*/IIndexArray** fill) override;
-
-   STDMETHOD(get_StraightStrandFill)(/*[out,retval]*/IIndexArray** fill) override;
-   STDMETHOD(putref_StraightStrandFill)(/*[in]*/IIndexArray* fill) override;
-   STDMETHOD(get_HarpedStrandFill)(/*[out,retval]*/IIndexArray** fill) override;
-   STDMETHOD(putref_HarpedStrandFill)(/*[in]*/IIndexArray* fill) override;
-   STDMETHOD(get_TemporaryStrandFill)(/*[out,retval]*/IIndexArray** fill) override;
-   STDMETHOD(putref_TemporaryStrandFill)(/*[in]*/IIndexArray* fill) override;
-
-   STDMETHOD(put_StraightStrandProfileType)(/*[in]*/StrandProfileType profileType) override;
-   STDMETHOD(get_StraightStrandProfileType)(/*[out, retval]*/StrandProfileType* pProfileType) override;
-   STDMETHOD(put_TemporaryStrandProfileType)(/*[in]*/StrandProfileType profileType) override;
-   STDMETHOD(get_TemporaryStrandProfileType)(/*[out, retval]*/StrandProfileType* pProfileType) override;
-
-   STDMETHOD(get_StraightStrandCG)(/*[in]*/Float64 distFromStart, /*[out,retval]*/IPoint2d** pntCG) override;
-   STDMETHOD(get_StraightStrandCGEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[out,retval]*/IPoint2d** pntCG) override;
-   STDMETHOD(get_HarpedStrandCG)(/*[in]*/Float64 distFromStart, /*[out,retval]*/IPoint2d** pntCG) override;
-   STDMETHOD(get_HarpedStrandCGEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[out,retval]*/IPoint2d** pntCG) override;
-   STDMETHOD(get_TemporaryStrandCG)(/*[in]*/Float64 distFromStart, /*[out,retval]*/IPoint2d** pntCG) override;
-   STDMETHOD(get_TemporaryStrandCGEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[out,retval]*/IPoint2d** pntCG) override;
-
-   STDMETHOD(get_StraightStrandPositions)(/*[in]*/Float64 distFromStart, /*[out,retval]*/IPoint2dCollection** points) override;
-   STDMETHOD(get_StraightStrandPositionsEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[out,retval]*/IPoint2dCollection** points) override;
-   STDMETHOD(get_HarpedStrandPositions)(/*[in]*/Float64 distFromStart, /*[out,retval]*/IPoint2dCollection** points) override;
-   STDMETHOD(get_HarpedStrandPositionsEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[out,retval]*/IPoint2dCollection** points) override;
-   STDMETHOD(get_TemporaryStrandPositions)(/*[in]*/Float64 distFromStart, /*[out,retval]*/IPoint2dCollection** points) override;
-   STDMETHOD(get_TemporaryStrandPositionsEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[out,retval]*/IPoint2dCollection** points) override;
-
-   STDMETHOD(StraightStrandIndexToGridIndex)(/*[in]*/StrandIndexType strandIndex, /*[out,retval]*/GridIndexType* gridIndex) override;
-   STDMETHOD(StraightStrandIndexToGridIndexEx)(/*[in]*/IIndexArray* fill, /*[in]*/StrandIndexType strandIndex, /*[out,retval]*/GridIndexType* gridIndex) override;
-   STDMETHOD(HarpedStrandIndexToGridIndex)(/*[in]*/StrandIndexType strandIndex, /*[out,retval]*/GridIndexType* gridIndex) override;
-   STDMETHOD(HarpedStrandIndexToGridIndexEx)(/*[in]*/IIndexArray* fill, /*[in]*/StrandIndexType strandIndex, /*[out,retval]*/GridIndexType* gridIndex) override;
-   STDMETHOD(TemporaryStrandIndexToGridIndex)(/*[in]*/StrandIndexType strandIndex, /*[out,retval]*/GridIndexType* gridIndex) override;
-   STDMETHOD(TemporaryStrandIndexToGridIndexEx)(/*[in]*/IIndexArray* fill, /*[in]*/StrandIndexType strandIndex, /*[out,retval]*/GridIndexType* gridIndex) override;
-
-   // Compute bounding boxes of harped and straight strands accounting for vertical offsets for harped strands
-   STDMETHOD(StraightStrandBoundingBox)(/*[in]*/EndType endType, /*[out,retval]*/IRect2d** box) override;
-   STDMETHOD(StraightStrandBoundingBoxEx)(/*[in]*/EndType endType, /*[in]*/ IIndexArray* fill, /*[out,retval]*/IRect2d** box) override;
-   STDMETHOD(HarpedEndStrandBoundingBox)(/*[in]*/EndType endType, /*[out,retval]*/IRect2d** box) override;
-   STDMETHOD(HarpedEndStrandBoundingBoxEx)(/*[in]*/EndType endType, /*[in]*/ IIndexArray* fill, /*[out,retval]*/IRect2d** box) override;
-   STDMETHOD(HarpedHpStrandBoundingBox)(/*[in]*/EndType endType, /*[out,retval]*/IRect2d** box) override;
-   STDMETHOD(HarpedHpStrandBoundingBoxEx)(/*[in]*/EndType endType, /*[in]*/ IIndexArray* fill, /*[out,retval]*/IRect2d** box) override;
-
-   STDMETHOD(GetHarpedEndFilledGridBoundsEx)(/*[in]*/EndType endType,/*[in]*/IIndexArray* fill, /*[out]*/Float64* bottomElev, /*[out]*/Float64* topElev) override;
-   STDMETHOD(GetHarpedHpFilledGridBoundsEx)(/*[in]*/EndType endType,/*[in]*/IIndexArray* fill, /*[out]*/Float64* bottomElev, /*[out]*/Float64* topElev) override;
-
-   // Compute offset adjustment required in order to put harped strands within proper bounds
-   // If zero, no adjustment is required. 
-   // If non-zero, add this number to current offset to move current harped strands just enough to fit within cross section boundary
-   STDMETHOD(HarpedEndStrandBoundaryCheck)(/*[in]*/EndType endType,/*[out,retval]*/Float64* adjustment) override;
-   STDMETHOD(HarpedHpStrandBoundaryCheck)(/*[in]*/EndType endType,/*[out,retval]*/Float64* adjustment) override;
-
-   STDMETHOD(ComputeMaxHarpedStrandSlope)(/*[in]*/Float64 distFromStart,/*[out,retval]*/Float64* slope) override;
-   STDMETHOD(ComputeMaxHarpedStrandSlopeEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[in]*/ Float64 startOffset,/*[in]*/ Float64 hp1Offset,/*[in]*/ Float64 hp2Offset,/*[in]*/ Float64 endOffset,/*[out,retval]*/Float64* slope) override;
-   STDMETHOD(ComputeAvgHarpedStrandSlope)(/*[in]*/Float64 distFromStart,/*[out,retval]*/Float64* slope) override;
-   STDMETHOD(ComputeAvgHarpedStrandSlopeEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[in]*/ Float64 startOffset,/*[in]*/ Float64 hp1Offset,/*[in]*/ Float64 hp2Offset,/*[in]*/ Float64 endOffset,/*[out,retval]*/Float64* slope) override;
-
-   STDMETHOD(GetHarpedEndAdjustmentBounds)(/*[in]*/EndType endType,/*[out]*/Float64* DownwardAdjustment, /*[out]*/Float64* UpwardAdjustment) override;
-   STDMETHOD(GetHarpedEndAdjustmentBoundsEx)(/*[in]*/EndType endType,/*[in]*/ IIndexArray* fill, /*[out]*/Float64* DownwardAdjustment, /*[out]*/Float64* UpwardAdjustment) override;
-   STDMETHOD(GetHarpedHpAdjustmentBounds)(/*[in]*/EndType endType,/*[out]*/Float64* DownwardAdjustment, /*[out]*/Float64* UpwardAdjustment) override;
-   STDMETHOD(GetHarpedHpAdjustmentBoundsEx)(/*[in]*/EndType endType,/*[in]*/ IIndexArray* fill, /*[out]*/Float64* DownwardAdjustment, /*[out]*/Float64* UpwardAdjustment) override;
-
-   STDMETHOD(get_HarpedEndAdjustmentIncrement)(/*[out,retval]*/Float64* increment) override;
-   STDMETHOD(get_HarpedHpAdjustmentIncrement)(/*[out,retval]*/Float64* increment) override;
-
-   STDMETHOD(get_MaxStraightStrands)(/*[out,retval]*/StrandIndexType* nStrands) override;
-   STDMETHOD(get_MaxHarpedStrands)(/*[out,retval]*/StrandIndexType* nStrands) override;
-   STDMETHOD(get_MaxTemporaryStrands)(/*[out,retval]*/StrandIndexType* nStrands) override;
-
-	STDMETHOD(GetStraightStrandCount)(/*[out,retval]*/ StrandIndexType* nStrands) override;
-	STDMETHOD(GetHarpedStrandCount)(/*[out,retval]*/ StrandIndexType* nStrands) override;
-	STDMETHOD(GetTemporaryStrandCount)(/*[out,retval]*/ StrandIndexType* nStrands) override;
-	STDMETHOD(GetStraightStrandCountEx)(/*[in]*/ IIndexArray* fill, /*[out,retval]*/ StrandIndexType* nStrands) override;
-	STDMETHOD(GetHarpedStrandCountEx)(/*[in]*/ IIndexArray* fill, /*[out,retval]*/ StrandIndexType* nStrands) override;
-	STDMETHOD(GetTemporaryStrandCountEx)(/*[in]*/ IIndexArray* fill, /*[out,retval]*/ StrandIndexType* nStrands) override;
-
-   STDMETHOD(GetStraightStrandProfile)(/*[in]*/StrandIndexType strandIdx,/*[out, retval]*/IPoint2dCollection** ppProfilePoints) override;
-   STDMETHOD(GetHarpedStrandProfile)(/*[in]*/StrandIndexType strandIdx,/*[out, retval]*/IPoint2dCollection** ppProfilePoints) override;
-   STDMETHOD(GetTemporaryStrandProfile)(/*[in]*/StrandIndexType strandIdx,/*[out, retval]*/IPoint2dCollection** ppProfilePoints) override;
-   STDMETHOD(GetStrandCGProfile)(/*[in]*/VARIANT_BOOL bIncludeTempStrands, /*[out, retval]*/IPoint2dCollection** ppProfilePoints) override;
-
-   // rough count of debonded strands for current fill
-   STDMETHOD(GetStraightStrandDebondCount)(/*[in]*/ WDebondLocationType loc, /*[out,retval]*/ StrandIndexType* count) override;
-
-   // Debond straight strands based on Grid index
-   STDMETHOD(ClearStraightStrandDebonding)() override;
-	STDMETHOD(DebondStraightStrandByGridIndex)(/*[in]*/GridIndexType grdIndex,/*[in]*/Float64 l1,/*[in]*/Float64 l2) override;
-	STDMETHOD(GetDebondedStraightStrandsByGridIndex)(/*[out,retval]*/IIndexArray** grdIndexes) override;
-	STDMETHOD(GetStraightStrandDebondLengthByGridIndex)(/*[in]*/EndType endType,/*[in]*/GridIndexType grdIndex,/*[out]*/Float64* XCoord, /*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2) override;
-
-   // Debonded straight strands based on Positions index (i.e., from get_StraightStrandPositions)
-	STDMETHOD(GetStraightStrandDebondLengthByPositionIndex)(/*[in]*/EndType endType,/*[in]*/StrandIndexType positionIndex,/*[out]*/Float64* XCoord,/*[out]*/Float64* YCoord,/*[out]*/Float64* l1,/*[out]*/Float64* l2) override;
-	STDMETHOD(GetStraightStrandsDebondedByPositionIndex)(/*[in]*/EndType endType,/*[in]*/Float64 distFromStart, /*[out,retval]*/IIndexArray** positionIndexes) override;
-
-	STDMETHOD(get_StraightStrandRowsWithStrand)(/*[out,retval]*/RowIndexType* nRows) override;
-	STDMETHOD(get_NumStraightStrandsInRow)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/StrandIndexType* nStrands) override;
-	STDMETHOD(get_StraightStrandsInRow)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/IIndexArray** grdIndexes) override;
-   STDMETHOD(get_StraightStrandDebondInRow)(/*[in]*/ RowIndexType rowIdx,/*[out,retval]*/StrandIndexType* nStrands) override;
-   STDMETHOD(IsExteriorStraightStrandDebondedInRow)(/*[in]*/ RowIndexType rowIndex,/*[out,retval]*/VARIANT_BOOL* bResult) override;
-
-   STDMETHOD(get_HarpedStrandRowsWithStrand)(/*[in]*/Float64 distFromStart,/*[out,retval]*/RowIndexType* nRows) override;
-   STDMETHOD(get_HarpedStrandsInRow)(/*[in]*/Float64 distFromStart,/*[in]*/RowIndexType rowIdx,/*[out,retval]*/IIndexArray** gridIndexes) override;
-   STDMETHOD(get_NumHarpedStrandsInRow)(/*[in]*/Float64 distFromStart,/*[in]*/RowIndexType rowIdx,/*[out,retval]*/StrandIndexType* nStrands) override;
-
-	STDMETHOD(GetStraightStrandDebondAtSections)(/*[out]*/IDblArray** arrLeft,/*[out]*/IDblArray** arrRight) override;
-	STDMETHOD(GetStraightStrandDebondAtLeftSection)(/*[in]*/SectionIndexType sectionIdx,/*[out,retval]*/IIndexArray** pstnIndexes) override;
-	STDMETHOD(GetStraightStrandDebondAtRightSection)(/*[in]*/SectionIndexType sectionIdx,/*[out,retval]*/IIndexArray** pstnIndexes) override;
-
-   STDMETHOD(GetStraightStrandBondedLengthByPositionIndex)(/*[in]*/StrandIndexType positionIndex, /*[in]*/Float64 distFromStart, 
-      /*[out]*/Float64* XCoord, /*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond);
-   STDMETHOD(GetStraightStrandBondedLengthByGridIndex)(/*[in]*/GridIndexType grdIndex, /*[in]*/Float64 distFromStart, 
-      /*[out]*/Float64* XCoord, /*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond);
-
-   STDMETHOD(GetStraightStrandDebondedRows)(/*[out]*/IIndexArray** ppRowIndexes);
-   STDMETHOD(GetStraightStrandDebondedConfigurationCountByRow)(/*[in]*/RowIndexType rowIdx, /*[out]*/IndexType* pConfigCount);
-   STDMETHOD(GetStraightStrandDebondConfigurationByRow)(/*[in]*/RowIndexType rowIdx, /*[in]*/IndexType configIdx, /*[out]*/Float64* pXstart, /*[out]*/Float64* pBondedLength, /*[out]*/IndexType* pnStrands);
-
    STDMETHOD(get_SuperstructureMemberSegment)(/*[out,retval]*/ISuperstructureMemberSegment** segment) override;
+   STDMETHOD(putref_StrandModel)(IStrandModel* pStrandModel);
+   STDMETHOD(get_StrandModel)(IStrandModel** ppStrandModel);
    STDMETHOD(get_RebarLayout)(/*[out,retval]*/IRebarLayout** rebarLayout) override;
    STDMETHOD(get_ClosureJointRebarLayout)(/*[out,retval]*/IRebarLayout** rebarLayout) override;
-
-private:
-   Float64 GetSectionHeight(Float64 distFromStart);
-   void GetCGFromPoints(IPoint2dCollection* points, IPoint2d** pCG);
 };
 
 #endif //__PRECASTGIRDER_H_

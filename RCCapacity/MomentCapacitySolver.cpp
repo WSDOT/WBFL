@@ -130,9 +130,7 @@ STDMETHODIMP CMomentCapacitySolver::get_SliceGrowthFactor(Float64* sliceGrowthFa
 
 STDMETHODIMP CMomentCapacitySolver::putref_Section(IGeneralSection* pSection)
 {
-   m_bUpdateTensionLimit     = true;
-   m_bUpdateCompressionLimit = true;
-
+   m_bUpdateLimits = true;
    return m_GeneralSolver->putref_Section(pSection);
 }
 
@@ -153,8 +151,10 @@ STDMETHODIMP CMomentCapacitySolver::Solve(Float64 Fz,Float64 angle,Float64 k_or_
    Float64 FzC, MxC, MyC, eoC;
    CompressionLimit(&FzC,&MxC,&MyC,&eoC);
 
-   if ( ( IsZero(FzT) && IsZero(MxT) && IsZero(MyT) ) || ( IsZero(FzC) && IsZero(MxC) && IsZero(MyC) ) )
+   if ((IsZero(FzT) && IsZero(MxT) && IsZero(MyT)) || (IsZero(FzC) && IsZero(MxC) && IsZero(MyC)))
+   {
       return ZeroCapacitySolution(solution);
+   }
 
    if ( IsEqual(Fz,FzC) || IsEqual(Fz,FzT) )
    {
@@ -211,129 +211,123 @@ STDMETHODIMP CMomentCapacitySolver::get_PlasticCentroid(IPoint2d** pcg)
    return S_OK;
 }
 
-STDMETHODIMP CMomentCapacitySolver::CompressionLimit(Float64* Fz,Float64* Mx,Float64* My,Float64* eo)
+HRESULT CMomentCapacitySolver::UpdateLimits()
 {
-   if ( !m_bUpdateCompressionLimit )
+   if (!m_bUpdateLimits)
    {
-      *Fz = m_FzCompressionLimit;
-      *Mx = m_MxCompressionLimit;
-      *My = m_MyCompressionLimit;
-      *eo = m_eoCompressionLimit;
-
       return S_OK;
    }
-
-   CHECK_RETVAL(eo);
 
    CComPtr<IGeneralSection> section;
    get_Section(&section);
 
-   Float64 minStrain = -10000;
+   Float64 compStrain =  10000;
+   Float64 tensStrain = -10000;
+   
    CollectionIndexType nShapes;
    section->get_ShapeCount(&nShapes);
-   for ( CollectionIndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++ )
+   for (CollectionIndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++)
    {
       CComPtr<IStressStrain> material;
-      section->get_ForegroundMaterial(shapeIdx,&material);
+      section->get_ForegroundMaterial(shapeIdx, &material);
 
-      if ( material == nullptr )
+      if (material == nullptr)
+      {
          continue; // shape is a void
+      }
 
       Float64 strain_at_peak_stress;
       material->get_StrainAtPeakStress(&strain_at_peak_stress);
+      compStrain = Min(strain_at_peak_stress, compStrain);
 
-      if ( strain_at_peak_stress <= 0 )
-         minStrain = Max(strain_at_peak_stress,minStrain);
+      Float64 e_yield;
+      material->get_YieldStrain(&e_yield);
+      tensStrain = Max(e_yield, tensStrain);
    }
 
-   m_StrainPlane->ThroughAltitude(minStrain);
-
-   m_eoCompressionLimit = minStrain;
-   *eo = m_eoCompressionLimit;
+   m_eoCompressionLimit = compStrain;
+   m_StrainPlane->ThroughAltitude(compStrain);
 
    long nSlices;
    get_Slices(&nSlices);
+
    put_Slices(1);
-   HRESULT hr = m_GeneralSolver->Solve(m_StrainPlane,&m_CompressionSolution.p);
+   HRESULT hr = m_GeneralSolver->Solve(m_StrainPlane, &m_CompressionSolution.p);
    put_Slices(nSlices);
 
-   if ( SUCCEEDED(hr) )
+   if (SUCCEEDED(hr))
    {
       m_CompressionSolution->get_Fz(&m_FzCompressionLimit);
       m_CompressionSolution->get_Mx(&m_MxCompressionLimit);
       m_CompressionSolution->get_My(&m_MyCompressionLimit);
-
-      *Fz = m_FzCompressionLimit;
-      *Mx = m_MxCompressionLimit;
-      *My = m_MyCompressionLimit;
-
-      m_bUpdateCompressionLimit = false;
    }
-
-   return hr;
-}
-
-STDMETHODIMP CMomentCapacitySolver::TensionLimit(Float64* Fz,Float64* Mx,Float64* My,Float64* eo)
-{
-   if ( !m_bUpdateTensionLimit )
+   else
    {
-      *Fz = m_FzTensionLimit;
-      *Mx = m_MxTensionLimit;
-      *My = m_MyTensionLimit;
-      *eo = m_eoTensionLimit;
-
-      return S_OK;
+      return hr;
    }
 
-   CHECK_RETVAL(eo);
+   m_eoTensionLimit = tensStrain;
+   m_StrainPlane->ThroughAltitude(tensStrain);
 
-   CComPtr<IGeneralSection> section;
-   get_Section(&section);
-
-   Float64 maxYieldStrain = -10000;
-   CollectionIndexType nShapes;
-   section->get_ShapeCount(&nShapes);
-   for ( CollectionIndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++ )
-   {
-      CComPtr<IStressStrain> material;
-      section->get_ForegroundMaterial(shapeIdx,&material);
-
-      if ( material == nullptr )
-         continue; // shape is a void
-
-      Float64 e_yield;
-      material->get_YieldStrain(&e_yield);
-
-      maxYieldStrain = Max(e_yield,maxYieldStrain);
-   }
-
-   m_StrainPlane->ThroughAltitude(maxYieldStrain);
-
-   m_eoTensionLimit = maxYieldStrain;
-   *eo = m_eoTensionLimit;
-
-   long nSlices;
-   get_Slices(&nSlices);
    put_Slices(1);
-
-   HRESULT hr = m_GeneralSolver->Solve(m_StrainPlane,&m_TensionSolution.p);
-
+   hr = m_GeneralSolver->Solve(m_StrainPlane, &m_TensionSolution.p);
    put_Slices(nSlices);
 
-   if ( SUCCEEDED(hr) )
+   if (SUCCEEDED(hr))
    {
       m_TensionSolution->get_Fz(&m_FzTensionLimit);
       m_TensionSolution->get_Mx(&m_MxTensionLimit);
       m_TensionSolution->get_My(&m_MyTensionLimit);
-
-      *Fz = m_FzTensionLimit;
-      *Mx = m_MxTensionLimit;
-      *My = m_MyTensionLimit;
-
-      m_bUpdateTensionLimit = false;
+   }
+   else
+   {
+      return hr;
    }
 
-   return hr;
+   m_bUpdateLimits = false;
+   return S_OK;
+}
+
+STDMETHODIMP CMomentCapacitySolver::CompressionLimit(Float64* Fz,Float64* Mx,Float64* My,Float64* eo)
+{
+   CHECK_RETVAL(Fz);
+   CHECK_RETVAL(Mx);
+   CHECK_RETVAL(My);
+   CHECK_RETVAL(eo);
+
+   HRESULT hr = UpdateLimits();
+   if (FAILED(hr))
+   {
+      return hr;
+   }
+
+   *Fz = m_FzCompressionLimit;
+   *Mx = m_MxCompressionLimit;
+   *My = m_MyCompressionLimit;
+   *eo = m_eoCompressionLimit;
+
+   return S_OK;
+}
+
+STDMETHODIMP CMomentCapacitySolver::TensionLimit(Float64* Fz,Float64* Mx,Float64* My,Float64* eo)
+{
+   CHECK_RETVAL(Fz);
+   CHECK_RETVAL(Mx);
+   CHECK_RETVAL(My);
+   CHECK_RETVAL(eo);
+
+   HRESULT hr = UpdateLimits();
+   if (FAILED(hr))
+   {
+      return hr;
+   }
+
+   *Fz = m_FzTensionLimit;
+   *Mx = m_MxTensionLimit;
+   *My = m_MyTensionLimit;
+   *eo = m_eoTensionLimit;
+
+   return S_OK;
 }
 
 void CMomentCapacitySolver::UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Float64 eo,SolutionMethod solutionMethod)
@@ -350,13 +344,16 @@ void CMomentCapacitySolver::UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Floa
       {
          Float64 d = 1000; // distance between P1 and P2. P1 and P2 are points on the neutral axis
 
-         m_P1->Move(-eo*sin(angle)/k - d*cos(angle),
-                     eo*cos(angle)/k - d*sin(angle),
+         Float64 sin_angle = sin(angle);
+         Float64 cos_angle = cos(angle);
+
+         m_P1->Move(-eo*sin_angle/k - d*cos_angle,
+                     eo*cos_angle/k - d*sin_angle,
                     0.0
                     );
 
-         m_P2->Move(-eo*sin(angle)/k + d*cos(angle),
-                     eo*cos(angle)/k + d*sin(angle),
+         m_P2->Move(-eo*sin_angle/k + d*cos_angle,
+                     eo*cos_angle/k + d*sin_angle,
                     0.0
                     );
 
@@ -379,8 +376,11 @@ void CMomentCapacitySolver::UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Floa
       else
       {
          Float64 d = 1000; // distance between P1 and P2. P1 and P2 are points on the X axis
-         m_P1->Move(-d*cos(angle),-d*sin(angle),eo);
-         m_P2->Move( d*cos(angle), d*sin(angle),eo);
+
+         Float64 sin_angle = sin(angle);
+         Float64 cos_angle = cos(angle);
+         m_P1->Move(-d*cos_angle,-d*sin_angle,eo);
+         m_P2->Move( d*cos_angle, d*sin_angle,eo);
 
          m_P3->Move(m_XFurthest,m_YFurthest,ec);
          m_StrainPlane->ThroughPoints(m_P1,m_P2,m_P3);
@@ -452,8 +452,10 @@ HRESULT CMomentCapacitySolver::GetNeutralAxisParameterRange(Float64 k_or_ec,Solu
    TensionLimit(&FzMax,&Mx,&My,peo_upper);
    CompressionLimit(&FzMin,&Mx,&My,peo_lower);
 
-   if ( !InRange(FzMin,Fz,FzMax) )
-      return Error(IDS_E_NEUTRALAXISNOTBOUNDED,IID_IMomentCapacitySolver,RC_E_NEUTRALAXISNOTBOUNDED);
+   if (!InRange(FzMin, Fz, FzMax))
+   {
+      return Error(IDS_E_NEUTRALAXISNOTBOUNDED, IID_IMomentCapacitySolver, RC_E_NEUTRALAXISNOTBOUNDED);
+   }
 
    Float64 eo_lower = (solutionMethod == smFixedCompressiveStrain ? k_or_ec : -0.0035);
    Float64 eo_upper =  0.11;
@@ -533,14 +535,18 @@ HRESULT CMomentCapacitySolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 k
    long iter = 0;
    for ( iter = 0; iter < m_MaxIter; iter++ )
    {
-      if ( IsZero(Fz_r,m_AxialTolerance) && IsZero(Fz_lower,m_AxialTolerance) && IsZero(Fz_upper,m_AxialTolerance) )
+      if (IsZero(Fz_r, m_AxialTolerance) && IsZero(Fz_lower, m_AxialTolerance) && IsZero(Fz_upper, m_AxialTolerance))
+      {
          break; // converged
+      }
 
       eo_r = (Fz_upper*eo_lower - Fz_lower*eo_upper) / ( Fz_upper - Fz_lower );
       UpdateStrainPlane(angle,k_or_ec,eo_r,solutionMethod);
       hr = m_GeneralSolver->Solve(m_StrainPlane,&m_GeneralSolution.p);
-      if ( FAILED(hr) )
+      if (FAILED(hr))
+      {
          return hr;
+      }
 
       m_GeneralSolution->get_Fz(&Fz_r);
       m_GeneralSolution->get_Mx(&Mx);
@@ -548,21 +554,25 @@ HRESULT CMomentCapacitySolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 k
 
       Fz_r -= Fz;
 
-      if ( Fz_r*Fz_upper > 0 )
+      if ( 0 < Fz_r*Fz_upper )
       {
          eo_upper = eo_r;
          Fz_upper = Fz_r;
-         if ( side == -1 )
+         if (side == -1)
+         {
             Fz_lower /= 2;
+         }
 
          side = -1;
       }
-      else if ( Fz_lower*Fz_r > 0 )
+      else if ( 0 < Fz_lower*Fz_r )
       {
          eo_lower = eo_r;
          Fz_lower = Fz_r;
-         if ( side == 1 )
+         if (side == 1)
+         {
             Fz_upper /= 2;
+         }
 
          side = 1;
       }
@@ -572,8 +582,10 @@ HRESULT CMomentCapacitySolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 k
       }
    }
 
-   if ( m_MaxIter <= iter )
-      return Error(IDS_E_SOLUTIONNOTFOUND,IID_IMomentCapacitySolver,RC_E_SOLUTIONNOTFOUND);
+   if (m_MaxIter <= iter)
+   {
+      return Error(IDS_E_SOLUTIONNOTFOUND, IID_IMomentCapacitySolver, RC_E_SOLUTIONNOTFOUND);
+   }
 
    if ( *solution == nullptr )
    {
@@ -584,9 +596,6 @@ HRESULT CMomentCapacitySolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 k
    }
 
    Float64 Pz = Fz_r + Fz;
-//   Pz = IsZero(Pz) ? 0 : Pz;
-//   Mx = IsZero(Mx) ? 0 : Mx;
-//   My = IsZero(My) ? 0 : My;
 
    Float64 C,T;
    m_GeneralSolution->get_CompressionResultant(&C);
@@ -606,8 +615,10 @@ HRESULT CMomentCapacitySolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 k
    (*solution)->InitSolution(Pz,Mx,My,strainPlane,neutralAxis,cgC,C,cgT,T,m_GeneralSolution);
    m_GeneralSolution = 0;
 
-   if ( hr == S_FALSE )
-      return Error(IDS_E_MATERIALFAILURE,IID_IMomentCapacitySolver,RC_E_MATERIALFAILURE);
+   if (hr == S_FALSE)
+   {
+      return Error(IDS_E_MATERIALFAILURE, IID_IMomentCapacitySolver, RC_E_MATERIALFAILURE);
+   }
 
    return S_OK;
 }

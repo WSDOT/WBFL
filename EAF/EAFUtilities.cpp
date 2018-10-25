@@ -32,6 +32,13 @@
 
 #include <AfxInet.h>
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
 EAFFUNC CEAFApp* EAFGetApp()
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
