@@ -94,6 +94,7 @@ END_MESSAGE_MAP()
 
 void CProgressThread::OnKillThread(WPARAM wParam,LPARAM lParam)
 {
+   AFX_MANAGE_STATE(AfxGetStaticModuleState());
    AfxPostQuitMessage(0);
 }
 
@@ -151,6 +152,7 @@ BOOL CProgressThread::Continue()
 
 void CProgressThread::DestroyProgressWindow()
 {
+   AFX_MANAGE_STATE(AfxGetStaticModuleState());
    m_ProgressDlg.KillTimer( g_ShowProgressWndTimerID );
    m_ProgressDlg.KillTimer( g_PumpProgressWndTimerID );
    g_pTimerWnd = 0;

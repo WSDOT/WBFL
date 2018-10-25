@@ -1171,6 +1171,23 @@ std::vector<Element>& CPath::GetPathElements()
    return m_PathElements;
 }
 
+bool CPath::FindElement(IUnknown* pUnk,Element* pElement)
+{
+   auto& vElements = GetPathElements();
+   for (auto& element : vElements)
+   {
+      CComPtr<IUnknown> pUnkValue;
+      element.pathElement->get_Value(&pUnkValue);
+      if (pUnkValue.IsEqualObject(pUnk))
+      {
+         *pElement = element;
+         return true;
+      }
+   }
+
+   return false;
+}
+
 std::vector<Element> CPath::FindElements(IPoint2d* point)
 {
    std::vector<Element> vFoundElements;
@@ -1589,12 +1606,38 @@ HRESULT CPath::DistanceAndOffset(IPoint2d* point,Float64* pDistance,Float64* pOf
 {
    // Find all of the Path elements that this point projects onto and their start distance
    std::vector<Element> vElements = FindElements(point);
-   ATLASSERT( vElements.size() != 0 );
+   if (vElements.size() == 0)
+   {
+      // this case happens when a there is an angle point in the path and the point
+      // is in the triangular wedge that doesn't project onto either tangent.
+      //
+      // The path is represented with the ---- and | lines
+      // The ... and : lines are the normals to the path
+      // The + is the intersection point of the two tangents
+      //
+      //                          :
+      //                          :
+      //              *1          :    *3
+      //                          :
+      //          ----------------+..................
+      //                          |
+      //                          |   *2
+      //                          |
+      //
+      // Point *1 projects onto the horizontal path line
+      // Point *2 projects onto the vertical path line
+      // Point *3 does not poject onto either path line... if we had a horizontal curve, *3 would project onto the curve 
+      // with a radial line... however, we only have an angle point so there is not a normal projection line
+      //
+      // In this case, we will look at projection onto each element individually and find the shortest distance
+      // projection onto an extended path element
+      vElements = GetPathElements();
+   }
 
    // With this, project the given point onto each element. Use the projected point and 
    // the input point to determine the offset and distance.
    //
-   // The distance we are looking for is the one that corrosponds to the shortest offset
+   // The distance we are looking for is the one that corresponds to the shortest offset
    Float64 minOffset = DBL_MAX;
    Float64 distAtOffset = -DBL_MAX;
    for (const auto& element : vElements)
@@ -2278,19 +2321,15 @@ void CPath::CreateParallelPoint(CollectionIndexType elementIdx,Float64 offset,IP
 HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ILineSegment2d* pLS,ILineSegment2d** ppLineSegment)
 {
    // get distance from the start of the path to the start and end of the line segment
-   CComPtr<IPoint2d> lsStartPoint, lsEndPoint;
-   pLS->get_StartPoint(&lsStartPoint);
-   pLS->get_EndPoint(&lsEndPoint);
-   
-   Float64 lsStart, lsEnd, offset;
-   DistanceAndOffset(lsStartPoint,&lsStart,&offset);
-   DistanceAndOffset(lsEndPoint,  &lsEnd,  &offset);
+   Element element;
 
-   Float64 xs,ys;
-   lsStartPoint->Location(&xs,&ys);
+   CComPtr<IUnknown> pUnk;
+   pLS->QueryInterface(&pUnk);
+   VERIFY(FindElement(pUnk, &element));
 
-   Float64 xe,ye;
-   lsEndPoint->Location(&xe,&ye);
+   Float64 lsStart = element.start;
+   Float64 lsEnd = element.end;
+
 
    CComQIPtr<ILocate2> locate(m_CogoEngine);
 
@@ -2310,6 +2349,16 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ILineSegment2d* pL
    else
    {
       // only a fraction of the line segment is part of the sub-path
+      CComPtr<IPoint2d> lsStartPoint, lsEndPoint;
+      pLS->get_StartPoint(&lsStartPoint);
+      pLS->get_EndPoint(&lsEndPoint);
+
+      Float64 xs,ys;
+      lsStartPoint->Location(&xs,&ys);
+
+      Float64 xe,ye;
+      lsEndPoint->Location(&xe,&ye);
+
       CComPtr<ILineSegment2d> clone;
       clone.CoCreateInstance(CLSID_LineSegment2d);
 
@@ -2380,16 +2429,16 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,IU
    (*ppResult2) = nullptr;
    (*ppResult3) = nullptr;
 
-   CollectionIndexType nSplinePoints = 7;
-
    // get distance from the start of the path to the start and end of the horz curve
-   CComPtr<IPoint2d> hcStartPoint, hcEndPoint;
-   pHC->get_TS(&hcStartPoint);
-   pHC->get_ST(&hcEndPoint);
+   Element element;
 
-   Float64 hcStart, hcEnd, offset;
-   DistanceAndOffset(hcStartPoint,&hcStart,&offset);
-   DistanceAndOffset(hcEndPoint,  &hcEnd,  &offset);
+   CComPtr<IUnknown> pUnk;
+   pHC->QueryInterface(&pUnk);
+   VERIFY(FindElement(pUnk, &element));
+
+   Float64 hcStart = element.start;
+   Float64 hcEnd = element.end;
+
 
    if ( (hcEnd < start) || // curve ends before start of sub-path range
         (end < hcStart)    // curve starts after end of sub-path range
@@ -2474,6 +2523,7 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,IU
       }
 
       // build the sub-path curve
+      CollectionIndexType nSplinePoints = 7;
       if ( (StartPoint == StartBeforeTS || StartPoint == StartInEntrySpiral) && EndPoint == EndInEntrySpiral )
       {
          CComPtr<ICubicSpline> spline;
@@ -2592,14 +2642,16 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,IU
 HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ICubicSpline* pSpline,IUnknown** ppResult)
 {
    // get distance from the start of the path to the start and end of the spline
-   CComPtr<IPoint2d> splineStartPoint, splineEndPoint;
-   pSpline->get_StartPoint(&splineStartPoint);
-   pSpline->get_EndPoint(&splineEndPoint);
+   Element element;
 
-   Float64 splineStart, splineEnd, offset;
-   DistanceAndOffset(splineStartPoint,&splineStart,&offset);
-   DistanceAndOffset(splineEndPoint,  &splineEnd,  &offset);
+   CComPtr<IUnknown> pUnk;
+   pSpline->QueryInterface(&pUnk);
+   VERIFY(FindElement(pUnk, &element));
 
+   Float64 splineStart = element.start;
+   Float64 splineEnd = element.end;
+
+   // determine where the subpath range is (start,end) relative to the spline
    if ( (splineEnd < start) || // spline ends before start of sub-path range
         (end < splineStart)    // spline starts after end of sub-path range
       )
@@ -2637,16 +2689,6 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ICubicSpline* pSpl
          // use the point on spline at start as the start point of the sub spline
          pSpline->PointOnSpline(start-splineStart,&pntStart);
          pSpline->Bearing(start-splineStart,&dirStart);
-
-#if defined _DEBUG
-         Float64 x1,y1;
-         pntStart->Location(&x1,&y1);
-         
-         Float64 y2;
-         pSpline->Evaluate(x1,VARIANT_FALSE,VARIANT_FALSE,&y2);
-         ATLASSERT(IsEqual(y1,y2));
-         // if this assert fires, it could be that the spline double-backs on itself
-#endif
       }
 
       // get end point of sub-spline
@@ -2665,17 +2707,6 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ICubicSpline* pSpl
          // use the point on spline at end as the end point of the sub spline
          pSpline->PointOnSpline(end-splineStart,&pntEnd);
          pSpline->Bearing(end-splineStart,&dirEnd);
-
-
-#if defined _DEBUG
-         Float64 x1,y1;
-         pntEnd->Location(&x1,&y1);
-         
-         Float64 y2;
-         pSpline->Evaluate(x1,VARIANT_FALSE,VARIANT_FALSE,&y2);
-         ATLASSERT(IsEqual(y1,y2));
-         // if this assert fires, it could be that the spline double-backs on itself
-#endif
       }
 
       // Start building up the sub-spline

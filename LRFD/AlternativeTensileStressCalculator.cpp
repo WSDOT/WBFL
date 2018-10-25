@@ -243,7 +243,7 @@ void lrfdAlternativeTensileStressCalculator::ComputeAlternativeStressRequirement
       Float64 Y = y1 + Offset*dy;
       Float64 Z;
       stressPlane->GetZ(X,Y,&Z);
-      if ( Z < 0 )
+      if ( 0 < Z )
       {
          // compression is on the left, we need tension on the left... reverse the clipping line
          line->Reverse();

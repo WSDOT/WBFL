@@ -78,9 +78,6 @@
     <ClInclude Include="TestCastSlab.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TestCogoInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TestColumn.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -117,22 +114,10 @@
     <ClInclude Include="TestSegment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TestSpan.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestSpanCollection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TestSuperstructureMember.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestSuperstructureMemberCollection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestTemporaryPierItem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestTemporaryPierItemCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestTransversePierDescription.h">

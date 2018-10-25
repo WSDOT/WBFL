@@ -264,12 +264,6 @@
     <ClInclude Include="GenericBarrier.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GenericBridge.hh">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GenericBridgeCP.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GenericBridgeHelpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -1013,16 +1013,13 @@ library WBFLCogo
       [propputref, helpstring("property PointFactory")] HRESULT PointFactory([in] IPoint2dFactory *factory);
       [helpstring("method Clone")] HRESULT Clone([out,retval] ICubicSpline* *clone);
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
-
-	  [helpstring("method Evaluate")] HRESULT Evaluate([in]Float64 x,[in]VARIANT_BOOL bProjectBack,[in]VARIANT_BOOL bProjectAhead,[out,retval]Float64* y);
-	  [helpstring("method Slope")] HRESULT Slope([in]Float64 x,[in]VARIANT_BOOL bProjectBack,[in]VARIANT_BOOL bProjectAhead,[out,retval]Float64* dy);
    };
    [
        object,
        uuid(7A853591-F2A0-4b22-AB22-4ECE47D28F7A),
        oleautomation,
 	   //helpcontext(IDH_CubicSpline),
-       helpstring("ICubicSplaneEvents Interface"),
+       helpstring("ICubicSplineEvents Interface"),
        pointer_default(unique)
    ]
    interface ICubicSplineEvents : IUnknown

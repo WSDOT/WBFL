@@ -54,9 +54,6 @@
     <ClInclude Include="FlexRebarLayoutItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GenericBridgeToolsCP.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Helpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>

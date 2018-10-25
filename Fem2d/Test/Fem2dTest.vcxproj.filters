@@ -170,9 +170,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="Header Files">
       <UniqueIdentifier>{af8ea467-b498-4e95-be82-7c6984636544}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>

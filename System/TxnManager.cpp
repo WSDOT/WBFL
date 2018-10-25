@@ -41,7 +41,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-txnTxnManager* txnTxnManager::ms_pInstance = 0;
+txnTxnManagerFactory* txnTxnManager::ms_pFactory = nullptr;
+txnTxnManager* txnTxnManager::ms_pInstance = nullptr;
 sysSingletonKillerT<txnTxnManager> txnTxnManager::ms_Killer;
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
@@ -260,11 +261,23 @@ void txnTxnManager::Clear()
 }
 
 //======================== ACCESS     =======================================
+void txnTxnManager::SetTransactionManagerFactory(txnTxnManagerFactory* pFactory)
+{
+   ms_pFactory = pFactory;
+}
+
 txnTxnManager* txnTxnManager::GetInstance()
 {
-   if ( ms_pInstance == 0 )
+   if ( ms_pInstance == nullptr )
    {
-      ms_pInstance = new txnTxnManager;
+      if (ms_pFactory == nullptr)
+      {
+         ms_pInstance = new txnTxnManager;
+      }
+      else
+      {
+         ms_pInstance = ms_pFactory->CreateTransactionManager();
+      }
       ms_Killer.SetDoomed( ms_pInstance );
    }
 

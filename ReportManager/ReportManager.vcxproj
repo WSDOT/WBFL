@@ -874,9 +874,6 @@
     <ClInclude Include="webbrowser.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Reporter\Reporter.vcxproj">
       <Project>{f8a98e8e-6f54-43e6-8142-c09402c0ead4}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

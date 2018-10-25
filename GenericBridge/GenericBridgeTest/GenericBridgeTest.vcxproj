@@ -818,7 +818,6 @@
     <ClInclude Include="TestAlignmentOffsetStrategy.h" />
     <ClInclude Include="TestBridgeDeck.h" />
     <ClInclude Include="TestCastSlab.h" />
-    <ClInclude Include="TestCogoInfo.h" />
     <ClInclude Include="TestColumn.h" />
     <ClInclude Include="TestColumnSpacing.h" />
     <ClInclude Include="TestCrossBeam.h" />
@@ -831,12 +830,8 @@
     <ClInclude Include="TestPierCollection.h" />
     <ClInclude Include="TestPrecastSlab.h" />
     <ClInclude Include="TestSegment.h" />
-    <ClInclude Include="TestSpan.h" />
-    <ClInclude Include="TestSpanCollection.h" />
     <ClInclude Include="TestSuperstructureMember.h" />
     <ClInclude Include="TestSuperstructureMemberCollection.h" />
-    <ClInclude Include="TestTemporaryPierItem.h" />
-    <ClInclude Include="TestTemporaryPierItemCollection.h" />
     <ClInclude Include="TestTransversePierDescription.h" />
   </ItemGroup>
   <ItemGroup>

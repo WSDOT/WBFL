@@ -879,7 +879,15 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(IIDArray* poiIDs, BS
             for ( ; poiIter != poiIterEnd; poiIter++ )
             {
                CComPtr<IInfluenceLine> leftIL, rightIL;
-               m_pInflStrategy->ComputeInfluenceLine(*poiIter, stage, effect, &leftIL, &rightIL);
+               // NOTE: We probably want to assign the return type to "hr". However, this causes problems with PGSuper/PGSplice.
+               // Because of the complexity of modeling piers that have simple span girders made continuous, we sometimes
+               // get a support ID down here that doesn't exist in the specified stage. This happens when there is a temporary
+               // support used to support the simple-span members and then gets removed when continuity is achieved. The total
+               // reaction is the sum of the reactions on the simple supports up to the point when they are removed plus
+               // the reaction at the main support. On the calling side, it is difficult to sort all this out. So, we
+               // sometimes get IDs for supports down here for supports that have been removed. We will let this error go
+               // because the resulting influece lines are NULL and don't contribute to the response (which is exactly what we want).
+               HRESULT _hr = m_pInflStrategy->ComputeInfluenceLine(*poiIter, stage, effect, &leftIL, &rightIL);
                if ( leftIL )
                {
                   leftFaceInfluenceLines.push_back(leftIL);

@@ -38,10 +38,16 @@
 
 // FORWARD DECLARATIONS
 //
+class txnTxnManager;
 
 // MISCELLANEOUS
 //
 
+class SYSCLASS txnTxnManagerFactory
+{
+public:
+   virtual txnTxnManager* CreateTransactionManager() = 0;
+};
 
 /*****************************************************************************
 CLASS 
@@ -65,86 +71,92 @@ KEYWORDS
 
 class SYSCLASS txnTxnManager
 {
-   enum Mode {RepeatMode,RedoMode};
-
 public:
    // GROUP: LIFECYCLE
+   txnTxnManager(const txnTxnManager& /*rOther*/) = delete;
+   txnTxnManager& operator = (const txnTxnManager& /*rOther*/) = delete;
+
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
    // Executes a transaction.
    // A copy of this transaction is made using CreateClone()
-   void Execute(txnTransaction& rTxn);
+   virtual void Execute(txnTransaction& rTxn);
 
    //------------------------------------------------------------------------
    // Executes a transaction.
    // The transaction manager assumes ownership of pTxn and will
    // delete it when it is no longer needed.
-   void Execute(txnTransaction* pTxn);
+   virtual void Execute(txnTransaction* pTxn);
 
    //------------------------------------------------------------------------
    // Undoes the last undoable transaction
-   void Undo();
+   virtual void Undo();
 
    //------------------------------------------------------------------------
    // Executes the last undone transaction
-   void Redo();
+   virtual void Redo();
 
    //------------------------------------------------------------------------
    // Repeats the last transaction
-   void Repeat();
+   virtual void Repeat();
 
    //------------------------------------------------------------------------
    // Returns true if there is a transaction to be undone
-   bool CanUndo() const;
+   virtual bool CanUndo() const;
 
    //------------------------------------------------------------------------
    // Returns true if there is a transaction to be redone
-   bool CanRedo() const;
+   virtual bool CanRedo() const;
 
    //------------------------------------------------------------------------
    // Returns true if there is a transaction to be repeated
-   bool CanRepeat() const;
+   virtual bool CanRepeat() const;
 
    //------------------------------------------------------------------------
    // Returns the name of the transaction to be undone
-   std::_tstring UndoName() const;
+   virtual std::_tstring UndoName() const;
 
    //------------------------------------------------------------------------
    // Returns the name of the transaction to be redone
-   std::_tstring RedoName() const;
+   virtual std::_tstring RedoName() const;
 
    //------------------------------------------------------------------------
    // Returns the name of the transaction to be repeated
-   std::_tstring RepeatName() const;
+   virtual std::_tstring RepeatName() const;
 
    //------------------------------------------------------------------------
    // Returns the number of executed transactions
-   CollectionIndexType GetTxnCount() const;
+   virtual CollectionIndexType GetTxnCount() const;
 
    //------------------------------------------------------------------------
    // Returns the number of transactions that have been undone.
-   CollectionIndexType GetUndoCount() const;
+   virtual CollectionIndexType GetUndoCount() const;
 
    //------------------------------------------------------------------------
    // Writes a log of all the transactions that have been done to a
    // standard ostream.
-   void WriteTransactionLog(std::_tostream& os) const;
+   virtual void WriteTransactionLog(std::_tostream& os) const;
 
    //------------------------------------------------------------------------
    // Clears the list of all transactions that have been done
-   void ClearTxnHistory();
+   virtual void ClearTxnHistory();
 
    //------------------------------------------------------------------------
    // Clears the list of all transactions that have been undone
-   void ClearUndoHistory();
+   virtual void ClearUndoHistory();
 
    //------------------------------------------------------------------------
    // Clears both the transaction and undo histories.
-   void Clear();
+   virtual void Clear();
 
    // GROUP: ACCESS
+
+   //------------------------------------------------------------------------
+   // Sets the transaction manager factory. Call this before any calls
+   // to GetInstance to create a custom transaction manager
+   static void SetTransactionManagerFactory(txnTxnManagerFactory* pFactory);
 
    //------------------------------------------------------------------------
    // Returns a pointer to the only instance of the transaction manager
@@ -156,17 +168,21 @@ public:
    // Returns true if the Transaction manager is in report mode.  It is
    // useful to know this mode so the Repeat/Redo item on the edit menu
    // can have the correct text.
-   bool IsRepeatMode() const {return m_Mode == RepeatMode;}
+   virtual bool IsRepeatMode() const {return m_Mode == RepeatMode;}
 
    //------------------------------------------------------------------------
    // Returns true if the Transaction manager is in redo mode.  It is
    // useful to know this mode so the Repeat/Redo item on the edit menu
    // can have the correct text.
-   bool IsRedoMode()   const {return m_Mode == RedoMode;  }
+   virtual bool IsRedoMode()   const {return m_Mode == RedoMode;  }
 
 protected:
+   enum Mode { RepeatMode, RedoMode };
+
    // GROUP: DATA MEMBERS
    // GROUP: LIFECYCLE
+   txnTxnManager();
+
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
 
@@ -185,7 +201,7 @@ protected:
    // GROUP: ACCESS
    // GROUP: INQUIRY
 
-private:
+protected:
    // GROUP: DATA MEMBERS
    typedef std::shared_ptr<txnTransaction> TxnItem;
    typedef std::list<TxnItem> TxnContainer;
@@ -198,21 +214,19 @@ private:
    TxnContainer m_UndoHistory;  // Txn that have been undone
    static sysSingletonKillerT<txnTxnManager> ms_Killer;
 
+   static txnTxnManagerFactory* ms_pFactory;
    static txnTxnManager* ms_pInstance;
    friend sysSingletonKillerT<txnTxnManager>;
 
    Mode m_Mode;
 
    // GROUP: LIFECYCLE
-   txnTxnManager();
-   txnTxnManager(const txnTxnManager& /*rOther*/);
 
    //------------------------------------------------------------------------
    // Destructor
    virtual ~txnTxnManager(); 
 
    // GROUP: OPERATORS
-   txnTxnManager& operator = (const txnTxnManager& /*rOther*/);
 
    TxnItem FindFirstUndoableTxn() const;
    TxnItem FindFirstUndoableTxn(bool bRemoveFromHistory);

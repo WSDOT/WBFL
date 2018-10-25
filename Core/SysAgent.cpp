@@ -100,11 +100,22 @@ STDMETHODIMP CSysAgent::RegInterfaces()
    return E_FAIL;
 }
 
+HRESULT CSysAgent::ValidateThread()
+{
+   if (m_pThread == nullptr)
+   {
+      AFX_MANAGE_STATE(AfxGetStaticModuleState());
+
+      // Run the progress window in a UI thread
+      m_pThread = (CProgressThread*)AfxBeginThread(RUNTIME_CLASS(CProgressThread));
+      ATLASSERT(m_pThread != nullptr);
+   }
+   return S_OK;
+}
+
 STDMETHODIMP CSysAgent::Init()
 {
-   // No special initialization
-
-   return S_OK;
+   return ValidateThread();
 }
 
 STDMETHODIMP CSysAgent::Init2()
@@ -123,7 +134,20 @@ STDMETHODIMP CSysAgent::Reset()
 
 STDMETHODIMP CSysAgent::ShutDown()
 {
-   // Nothing to do here
+   // we are done with the UI thread, kill it
+   AFX_MANAGE_STATE(AfxGetStaticModuleState());
+
+   if ( m_pThread != nullptr )
+   {
+      m_pThread->PostThreadMessage(WM_KILLTHREAD,0,0);
+      DWORD result = ::WaitForSingleObject(m_pThread->m_hThread,10000/*INFINITE*/); // wait for thread to terminate
+      if ( result == WAIT_TIMEOUT || result == WAIT_FAILED )
+      {
+         ATLASSERT(false); // for some reason, the WM_KILLTHREAD message never got to the message handler
+         m_pThread->OnKillThread(0,0);
+      }
+   }
+   m_pThread = nullptr;
 
    return S_OK;
 }
@@ -138,78 +162,102 @@ STDMETHODIMP CSysAgent::GetClassID(CLSID* pCLSID)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // IProgress
-//
-STDMETHODIMP CSysAgent::CreateProgressWindow(DWORD dwMask,UINT nDelay)
+// 
+STDMETHODIMP CSysAgent::CreateProgressWindow(DWORD dwMask, UINT nDelay)
 {
-//   AFX_MANAGE_STATE(AfxGetStaticModuleState());
-
-   m_cProgressRef++;
-
-   if ( 1 < m_cProgressRef )
+   // must have a valid thread before we can do anything else
+   if (FAILED(ValidateThread()))
    {
-      m_ProgressMsgMarker.push_back(m_Messages.size());
-      return S_OK;
-   }
-
-   // Run the progress window in a UI thread
-   m_pThread = (CProgressThread*)AfxBeginThread(RUNTIME_CLASS(CProgressThread));
-
-   CWnd* pMainWnd = nullptr;
-   {
-      AFX_MANAGE_STATE(AfxGetAppModuleState());
-      pMainWnd = AfxGetMainWnd();
-   }
-
-   HRESULT hr = m_pThread->CreateProgressWindow(pMainWnd,dwMask,nDelay);
-   ATLASSERT( SUCCEEDED(hr) );
-   if ( FAILED(hr) )
-   {
-      m_cProgressRef--;
-      m_pThread->PostThreadMessage(WM_KILLTHREAD,0,0);
-      m_pThread = nullptr;
       return PROGRESS_E_CREATE;
    }
 
-   m_ProgressMsgMarker.push_back(0);
-   UpdateMessage(_T("Working..."));
+   m_cProgressRef++;
+
+   if (1 == m_cProgressRef)
+   {
+      CWnd* pMainWnd = nullptr;
+      {
+         AFX_MANAGE_STATE(AfxGetAppModuleState());
+         pMainWnd = AfxGetMainWnd();
+      }
+
+      HRESULT hr = m_pThread->CreateProgressWindow(pMainWnd,dwMask,nDelay);
+      ATLASSERT( SUCCEEDED(hr) );
+      if ( FAILED(hr) )
+      {
+         m_cProgressRef--;
+         return PROGRESS_E_CREATE;
+      }
+   }
+
+   // Save last message that was issued by the previous window
+   if (0 < m_LastMessage.size())
+   {
+      m_MessageStack.push_back(m_LastMessage);
+   }
+   else
+   {
+      UpdateMessage(_T("Working..."));
+   }
 
    return S_OK;
 }
 
 STDMETHODIMP CSysAgent::Init(short begin, short end, short inc)
 {
+   // must have a valid thread before we can do anything else
+   if (FAILED(ValidateThread()))
+   {
+      return E_FAIL;
+   }
    m_pThread->Init(begin,end,inc);
    return S_OK;
 }
 
 STDMETHODIMP CSysAgent::Increment()
 {
+   // must have a valid thread before we can do anything else
+   if (FAILED(ValidateThread()))
+   {
+      return E_FAIL;
+   }
    m_pThread->Increment();
    return S_OK;
 }
 
 STDMETHODIMP CSysAgent::UpdateMessage( LPCTSTR msg)
 {
-   m_Messages.push_back(msg);
+   // must have a valid thread before we can do anything else
+   if (FAILED(ValidateThread()))
+   {
+      return E_FAIL;
+   }
 
-   if ( m_pThread )
-      m_pThread->UpdateMessage(msg);
+   m_LastMessage = msg;
+    m_pThread->UpdateMessage(msg);
 
    return S_OK;
 }
 
 STDMETHODIMP CSysAgent::Continue()
 {
-   HRESULT hr = S_OK;
+   // must have a valid thread before we can do anything else
+   if (FAILED(ValidateThread()))
+   {
+      return E_FAIL;
+   }
 
-   if ( m_pThread )
-      return m_pThread->Continue() ? S_OK : S_FALSE;
-
-   return hr;
+   return m_pThread->Continue() ? S_OK : S_FALSE;
 }
 
 STDMETHODIMP CSysAgent::DestroyProgressWindow()
 {
+   // must have a valid thread before we can do anything else
+   if (FAILED(ValidateThread()))
+   {
+      return E_FAIL;
+   }
+
 #if defined _DEBUG
    if ( 0 < m_cProgressRef )
    {
@@ -225,25 +273,15 @@ STDMETHODIMP CSysAgent::DestroyProgressWindow()
    if ( m_cProgressRef == 0 )
    {
       m_pThread->DestroyProgressWindow();
-      if ( m_pThread != nullptr )
-      {
-         m_pThread->PostThreadMessage(WM_KILLTHREAD,0,0);
-         DWORD result = ::WaitForSingleObject(m_pThread->m_hThread,10000/*INFINITE*/);
-         if ( result == WAIT_TIMEOUT || result == WAIT_FAILED )
-         {
-            ATLASSERT(false); // for some reason, the WM_KILLTHREAD message never got to the message handler
-            m_pThread->OnKillThread(0,0);
-         }
-      }
-      m_pThread = nullptr;
    }
    else
    {
-      m_Messages.erase(m_Messages.begin()+m_ProgressMsgMarker.back(),m_Messages.end());
-      m_ProgressMsgMarker.pop_back();
-      if (0 < m_Messages.size() )
+      // restore message from previous window in stack
+      if (!m_MessageStack.empty() )
       {
-         m_pThread->UpdateMessage(m_Messages.back().c_str());
+         m_LastMessage = m_MessageStack.back();
+         m_MessageStack.pop_back();
+         m_pThread->UpdateMessage(m_LastMessage.c_str());
       }
    }
 

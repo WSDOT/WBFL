@@ -154,6 +154,7 @@ private:
    // Don't access m_PathElements directly. Use GetPathElements because it
    // initializes m_PathElements on demand.
    std::vector<Element>& GetPathElements();
+   bool FindElement(IUnknown* pUnk, Element* pElement);
 
    Float64 m_PathLength;
 
