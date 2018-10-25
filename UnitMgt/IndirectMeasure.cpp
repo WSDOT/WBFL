@@ -69,7 +69,9 @@ unitmgtIndirectMeasure::unitmgtIndirectMeasure() :
    PerLength( unitMeasure::PerMillimeter ),
    Curvature( unitMeasure::PerMillimeter ),
    ForceLength2( unitMeasure::KilonewtonMeter2),
-   SqrtPressure( unitMeasure::SqrtMPa )
+   SqrtPressure( unitMeasure::SqrtMPa ),
+   WindPressure( unitMeasure::Pa ),
+   Velocity( unitMeasure::KilometerPerHour )
 {
       Scalar.Width = 8;
       Scalar.Precision = 3;
@@ -107,7 +109,9 @@ unitmgtIndirectMeasure::unitmgtIndirectMeasure(const unitmgtIndirectMeasure& rOt
    PerLength( unitMeasure::PerMillimeter ),
    Curvature( unitMeasure::PerMillimeter ),
    ForceLength2( unitMeasure::KilonewtonMeter2),
-   SqrtPressure( unitMeasure::SqrtMPa)
+   SqrtPressure( unitMeasure::SqrtMPa),
+   WindPressure( unitMeasure::Pa ),
+   Velocity( unitMeasure::KilometerPerHour )
 {
       Scalar.Width = 8;
       Scalar.Precision = 3;
@@ -171,6 +175,8 @@ bool unitmgtIndirectMeasure::AssertValid() const
    TEST_MEASURE( PerLength );
    TEST_MEASURE( ForceLength2 );
    TEST_MEASURE( SqrtPressure );
+   TEST_MEASURE( WindPressure );
+   TEST_MEASURE( Velocity );
 
    return true;
 }
@@ -216,7 +222,8 @@ void unitmgtIndirectMeasure::Dump(dbgDumpContext& os) const
    dump_it(os,_T("PerLength"),       PerLength    );
    dump_it(os,_T("ForceLength2"),    ForceLength2 );
    dump_it(os,_T("SqrtPressure"),    SqrtPressure );
-
+   dump_it(os,_T("WindPressure"),    WindPressure );
+   dump_it(os,_T("Velocity"),        Velocity     );
 }
 
 #endif // _DEBUG
@@ -265,6 +272,8 @@ void unitmgtIndirectMeasure::MakeCopy(const unitmgtIndirectMeasure& rOther)
    Curvature       = rOther.Curvature;
    ForceLength2    = rOther.ForceLength2;
    SqrtPressure    = rOther.SqrtPressure;
+   WindPressure    = rOther.WindPressure;
+   Velocity        = rOther.Velocity;
 }
 
 void unitmgtIndirectMeasure::MakeAssignment(const unitmgtIndirectMeasure& rOther)

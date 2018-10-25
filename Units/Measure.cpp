@@ -174,6 +174,11 @@ const unitForceLength2 unitMeasure::KipInch2         ( 0.0, 2.869815,    0.0, _T
 const unitForceLength2 unitMeasure::LbfInch2         ( 0.0, 2.869815e-03,0.0, _T("lbf-in^2") );
 const unitForceLength2 unitMeasure::LbfFoot2         ( 0.0, 0.413253,    0.0, _T("lbf-ft^2") );
 
+const unitVelocity unitMeasure::KilometerPerHour(0.0,0.2777777777777777,0.0,_T("Km/h"));
+const unitVelocity unitMeasure::MeterPerSecond(0.0,1.0,0.0,_T("m/s"));
+const unitVelocity unitMeasure::MilePerHour(0.0,0.44704,0.0,_T("MPH"));
+const unitVelocity unitMeasure::FeetPerSecond(0.0,0.3048,0.0,_T("ft/s"));
+
 //======================== LIFECYCLE  =======================================
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================

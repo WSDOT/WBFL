@@ -58,7 +58,7 @@ boost::shared_ptr<CReportSpecification> CReportSpecificationBuilder::CreateRepor
       CReportSpecDlg dlg(&rptDesc,pRptSpec);
       if ( dlg.DoModal() == IDOK )
       {
-         return DoCreateReportSpec(rptDesc,dlg.m_ChapterInfo);
+         return DoCreateReportSpec(rptDesc,dlg.m_ChapterList);
       }
       else
       {
@@ -80,6 +80,13 @@ boost::shared_ptr<CReportSpecification> CReportSpecificationBuilder::CreateDefau
 boost::shared_ptr<CReportSpecification> CReportSpecificationBuilder::DoCreateReportSpec(const CReportDescription& rptDesc,const std::vector<CChapterInfo>& vChInfo)
 {
    boost::shared_ptr<CReportSpecification> pRptSpec( new CReportSpecification(rptDesc.GetReportName()) );
-   rptDesc.ConfigureReportSpecification(pRptSpec);
+   rptDesc.ConfigureReportSpecification(vChInfo,pRptSpec);
+   return pRptSpec;
+}
+
+boost::shared_ptr<CReportSpecification> CReportSpecificationBuilder::DoCreateReportSpec(const CReportDescription& rptDesc,const std::vector<std::_tstring>& vChList)
+{
+   boost::shared_ptr<CReportSpecification> pRptSpec( new CReportSpecification(rptDesc.GetReportName()) );
+   rptDesc.ConfigureReportSpecification(vChList,pRptSpec);
    return pRptSpec;
 }

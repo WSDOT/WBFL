@@ -108,6 +108,11 @@ BOOL CStatusMessageDialog::OnInitDialog()
       GetDlgItem(IDOK)->MoveWindow(rClose);
    }
 
+   if ( m_Severity == eafTypes::statusError && !m_bRemoveableOnError )
+   {
+      GetDlgItem(IDOK)->SetWindowText(bHideClose ? _T("Close") : _T("OK"));
+   }
+
    // string for group box
    CString strGroupLabel;
    HICON hIcon;

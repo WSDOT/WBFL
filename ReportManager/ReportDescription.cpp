@@ -114,3 +114,11 @@ void CReportDescription::ConfigureReportSpecification(const std::vector<std::_ts
       pRptSpec->AddChapter(chInfo.Name.c_str(),chInfo.Key.c_str(),chInfo.MaxLevel);
    }
 }
+
+void CReportDescription::ConfigureReportSpecification(const std::vector<CChapterInfo>& vChInfo,boost::shared_ptr<CReportSpecification>& pRptSpec) const
+{
+   BOOST_FOREACH(const CChapterInfo& chInfo,vChInfo)
+   {
+      pRptSpec->AddChapter(chInfo.Name.c_str(),chInfo.Key.c_str(),chInfo.MaxLevel);
+   }
+}

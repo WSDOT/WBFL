@@ -64,6 +64,7 @@ public:
    IndexType GetChapterCount() const;
 
    void ConfigureReportSpecification(boost::shared_ptr<CReportSpecification>& pRptSpec) const;
+   void ConfigureReportSpecification(const std::vector<CChapterInfo>& vChInfo,boost::shared_ptr<CReportSpecification>& pRptSpec) const;
    void ConfigureReportSpecification(const std::vector<std::_tstring>& chList,boost::shared_ptr<CReportSpecification>& pRptSpec) const;
 
 private:

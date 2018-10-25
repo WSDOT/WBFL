@@ -531,6 +531,18 @@ const unitmgtPressureData& CEAFDocProxyAgent::GetOverlayWeightUnit()
    return pApp->GetDisplayUnits()->SmallStress;
 }
 
+const unitmgtPressureData& CEAFDocProxyAgent::GetWindPressureUnit()
+{
+   CEAFApp* pApp = EAFGetApp();
+   return pApp->GetDisplayUnits()->WindPressure;
+}
+
+const unitmgtVelocityData& CEAFDocProxyAgent::GetVelocityUnit()
+{
+   CEAFApp* pApp = EAFGetApp();
+   return pApp->GetDisplayUnits()->Velocity;
+}
+
 //////////////////////////////////////////////////////////////
 // IEAFStatusCenter
 StatusCallbackIDType CEAFDocProxyAgent::RegisterCallback(iStatusCallback* pCallback)

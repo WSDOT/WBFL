@@ -1078,6 +1078,10 @@
 			Filter="*.cpp"
 			>
 			<File
+				RelativePath=".\CDRatio.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Chapter.cpp"
 				>
 				<FileConfiguration
@@ -5603,6 +5607,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\StyleManger.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -5610,6 +5618,10 @@
 			>
 			<File
 				RelativePath="..\Include\Reporter\AutoLib.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\Reporter\CDRatio.h"
 				>
 			</File>
 			<File
@@ -5822,6 +5834,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\Reporter\StyleLibrary.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\Reporter\StyleManager.h"
 				>
 			</File>
 		</Filter>
