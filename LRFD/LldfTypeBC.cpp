@@ -1122,11 +1122,12 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetMomentDF_Int_2
 lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetMomentDF_Ext_1_Strength() const
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
-   Float64 w20 = ::ConvertToSysUnits(20.0, unitMeasure::Feet); // txdot doesn't care about metric
 
-   if (m_RoadwayWidth >= w20)
+   if (this->m_Nb < 3)
    {
-      g = GetMomentDF_Ext_2_Strength();
+      g.ControllingMethod = LANES_DIV_BEAMS;
+      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+      g.mg = g.LanesBeamsData.mg;
    }
    else
    {
@@ -1136,20 +1137,27 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetMomentDF_Ext_1
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = MomentSkewCorrectionFactor();
-      if ( m_bSkewMoment )
+      if (m_bSkewMoment)
       {
          g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
       }
       g.mg *= skew;
       g.SkewCorrectionFactor = skew;
-   }
 
-   // exterior cannot be less than interior
-   lrfdILiveLoadDistributionFactor::DFResult gint = GetMomentDF_Int_1_Strength();
-   if (g.mg < gint.mg)
-   {
-      g = gint;
-      g.ControllingMethod |= INTERIOR_OVERRIDE;
+      // exterior cannot be less than interior
+      lrfdILiveLoadDistributionFactor::DFResult gint = GetMomentDF_Int_1_Strength();
+      if (g.mg < gint.mg)
+      {
+         g = gint;
+         g.ControllingMethod |= INTERIOR_OVERRIDE;
+      }
+
+      // TxDOT will force multilane for decks wider than 20 feet
+      Float64 w20 = ::ConvertToSysUnits(20.0, unitMeasure::Feet); 
+      if (m_RoadwayWidth >= w20)
+      {
+         g.ControllingMethod |= OVERRIDE_USING_MULTILANE_FACTOR;
+      }
    }
 
    return g;
@@ -1159,38 +1167,47 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetMomentDF_Ext_2
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
-   // ROA for TxDOT moment is more like shear: all outside of equation goes to lever rule
-   // lever rule for any case of spacing over limit
-   bool do_lever = SpacingTriggersLeverRule(bSISpec);
-
-   if(!do_lever && ExteriorMomentEquationRule(bSISpec, false)) 
+   if (this->m_Nb < 3)
    {
-      g = lrfdLldfTypeBC::GetMomentDF_Ext_2_Strength();
-
-      assert(g.ControllingMethod & SPEC_EQN); // always should use equation
+      g.ControllingMethod = LANES_DIV_BEAMS;
+      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+      g.mg = g.LanesBeamsData.mg;
    }
    else
    {
-      g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
-      g.mg = g.LeverRuleData.mg;
+      bool bSISpec = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
+      // ROA for TxDOT moment is more like shear: all outside of equation goes to lever rule
+      // lever rule for any case of spacing over limit
+      bool do_lever = SpacingTriggersLeverRule(bSISpec);
 
-      Float64 skew = MomentSkewCorrectionFactor();
-      if ( m_bSkewMoment )
+      if (!do_lever && ExteriorMomentEquationRule(bSISpec, false))
       {
-         g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-      }
-      g.mg *= skew;
-      g.SkewCorrectionFactor = skew;
-   }
+         g = lrfdLldfTypeBC::GetMomentDF_Ext_2_Strength();
 
-   // exterior cannot be less than interior
-   lrfdILiveLoadDistributionFactor::DFResult gint = GetMomentDF_Int_2_Strength();
-   if (g.mg < gint.mg)
-   {
-      g = gint;
-      g.ControllingMethod |= INTERIOR_OVERRIDE;
+         assert(g.ControllingMethod & SPEC_EQN); // always should use equation
+      }
+      else
+      {
+         g.ControllingMethod = LEVER_RULE;
+         g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
+         g.mg = g.LeverRuleData.mg;
+
+         Float64 skew = MomentSkewCorrectionFactor();
+         if (m_bSkewMoment)
+         {
+            g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
+         }
+         g.mg *= skew;
+         g.SkewCorrectionFactor = skew;
+      }
+
+      // exterior cannot be less than interior
+      lrfdILiveLoadDistributionFactor::DFResult gint = GetMomentDF_Int_2_Strength();
+      if (g.mg < gint.mg)
+      {
+         g = gint;
+         g.ControllingMethod |= INTERIOR_OVERRIDE;
+      }
    }
 
    return g;
@@ -1217,11 +1234,12 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetShearDF_Int_2_
 lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetShearDF_Ext_1_Strength() const
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
-   Float64 w20 = ::ConvertToSysUnits(20.0, unitMeasure::Feet);
 
-   if (m_RoadwayWidth >= w20)
+   if (this->m_Nb < 3)
    {
-      g = GetShearDF_Ext_2_Strength();
+      g.ControllingMethod = LANES_DIV_BEAMS;
+      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+      g.mg = g.LanesBeamsData.mg;
    }
    else
    {
@@ -1231,20 +1249,27 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetShearDF_Ext_1_
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = ShearSkewCorrectionFactor();
-      if ( m_bSkewShear )
+      if (m_bSkewShear)
       {
          g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
       }
       g.mg *= skew;
       g.SkewCorrectionFactor = skew;
-   }
 
-   // exterior cannot be less than interior
-   lrfdILiveLoadDistributionFactor::DFResult gint = GetShearDF_Int_1_Strength();
-   if (g.mg < gint.mg)
-   {
-      g = gint;
-      g.ControllingMethod |= INTERIOR_OVERRIDE;
+      // exterior cannot be less than interior
+      lrfdILiveLoadDistributionFactor::DFResult gint = GetShearDF_Int_1_Strength();
+      if (g.mg < gint.mg)
+      {
+         g = gint;
+         g.ControllingMethod |= INTERIOR_OVERRIDE;
+      }
+
+      // TxDOT will force multilane for decks wider than 20 feet
+      Float64 w20 = ::ConvertToSysUnits(20.0, unitMeasure::Feet); 
+      if (m_RoadwayWidth >= w20)
+      {
+         g.ControllingMethod |= OVERRIDE_USING_MULTILANE_FACTOR;
+      }
    }
 
    return g;
@@ -1254,15 +1279,86 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetShearDF_Ext_2_
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
 
-   g = lrfdLldfTypeBC::GetShearDF_Ext_2_Strength();
-
-   // exterior cannot be less than interior
-   lrfdILiveLoadDistributionFactor::DFResult gint = GetShearDF_Int_2_Strength();
-   if (g.mg < gint.mg)
+   if (this->m_Nb < 3)
    {
-      g = gint;
-      g.ControllingMethod |= INTERIOR_OVERRIDE;
+      g.ControllingMethod = LANES_DIV_BEAMS;
+      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+      g.mg = g.LanesBeamsData.mg;
    }
+   else
+   {
+      g = lrfdLldfTypeBC::GetShearDF_Ext_2_Strength();
+
+      // exterior cannot be less than interior
+      lrfdILiveLoadDistributionFactor::DFResult gint = GetShearDF_Int_2_Strength();
+      if (g.mg < gint.mg)
+      {
+         g = gint;
+         g.ControllingMethod |= INTERIOR_OVERRIDE;
+      }
+   }
+
+   return g;
+}
+
+lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetReactionDF_Ext_Fatigue() const
+{
+   // use base to negate mp factor
+   lrfdILiveLoadDistributionFactor::DFResult g = lrfdLiveLoadDistributionFactorBase::GetReactionDF_Ext_Fatigue();
+
+   // multi lane factor override never applies to fatigue
+   g.ControllingMethod ^= OVERRIDE_USING_MULTILANE_FACTOR;
+
+   return g;
+}
+
+lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetReactionDF_Int_Fatigue() const
+{
+   // use base to negate mp factor
+   lrfdILiveLoadDistributionFactor::DFResult g = lrfdLiveLoadDistributionFactorBase::GetReactionDF_Int_Fatigue();
+
+   // multi lane factor override never applies to fatigue
+   g.ControllingMethod ^= OVERRIDE_USING_MULTILANE_FACTOR;
+
+   return g;
+}
+
+lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetMomentDF_Int_Fatigue() const
+{
+   lrfdILiveLoadDistributionFactor::DFResult g = lrfdLiveLoadDistributionFactorBase::GetMomentDF_Int_Fatigue();
+ 
+   // multi lane factor override does not apply to fatigue
+   g.ControllingMethod ^= OVERRIDE_USING_MULTILANE_FACTOR;
+
+   return g;
+}
+
+lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetMomentDF_Ext_Fatigue() const
+{
+   lrfdILiveLoadDistributionFactor::DFResult g = lrfdLiveLoadDistributionFactorBase::GetMomentDF_Ext_Fatigue();
+ 
+   // multi lane factor override does not apply to fatigue
+   g.ControllingMethod ^= OVERRIDE_USING_MULTILANE_FACTOR;
+
+   return g;
+}
+
+lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetShearDF_Int_Fatigue() const
+{
+   lrfdILiveLoadDistributionFactor::DFResult g = lrfdLiveLoadDistributionFactorBase::GetShearDF_Int_Fatigue();
+ 
+   // multi lane factor override does not apply to fatigue
+   g.ControllingMethod ^= OVERRIDE_USING_MULTILANE_FACTOR;
+
+   return g;
+}
+
+lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetShearDF_Ext_Fatigue() const
+{
+   lrfdILiveLoadDistributionFactor::DFResult g = lrfdLiveLoadDistributionFactorBase::GetShearDF_Ext_Fatigue();
+ 
+   // multi lane factor override does not apply to fatigue
+   g.ControllingMethod ^= OVERRIDE_USING_MULTILANE_FACTOR;
 
    return g;
 }

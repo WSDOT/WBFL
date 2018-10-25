@@ -89,16 +89,16 @@ Float64 GetSectionDepth(Float64 X, Float64 X1, Float64 H1, Float64 X2, Float64 H
    switch (transition)
    {
    case TransitionType::Linear:
-      H = ::LinInterp(DX, H1, H2, LX);
+      H = IsZero(LX) ? H1 : ::LinInterp(DX, H1, H2, LX);
       break;
 
    case TransitionType::RightParabola:
-      H = H1 + (H2 - H1)*DX*DX / (LX*LX);
+      H = IsZero(LX) ? H1 : H1 + (H2 - H1)*DX*DX / (LX*LX);
       break;
 
    case TransitionType::LeftParabola:
       DX = X2 - X;
-      H = H2 - (H2 - H1)*DX*DX / (LX*LX);
+      H = IsZero(LX) ? H2 : H2 - (H2 - H1)*DX*DX / (LX*LX);
       break;
 
    default:
@@ -152,7 +152,21 @@ ZoneType GetControlPoints(Float64 Xs, Float64 Ls, const std::array<Float64, 4>& 
       *pXl = X[ZoneBreakType::Start];
       *pYl = Y[ZoneBreakType::Start];
       *pXr = X[ZoneBreakType::LeftBreak];
-      *pYr = (Y[ZoneBreakType::LeftBreak] == 0 ? Y[ZoneBreakType::Start] : Y[ZoneBreakType::LeftBreak]);
+      if (Y[ZoneBreakType::LeftBreak] == 0)
+      {
+         if (Y[ZoneBreakType::RightBreak] == 0)
+         {
+            *pYr = Y[ZoneBreakType::End];
+         }
+         else
+         {
+            *pYr = Y[ZoneBreakType::Start];
+         }
+      }
+      else
+      {
+         *pYr = Y[ZoneBreakType::LeftBreak];
+      }
    }
    else if (X[ZoneBreakType::LeftBreak] < Xs && Xs < X[ZoneBreakType::RightBreak])
    {
@@ -166,7 +180,22 @@ ZoneType GetControlPoints(Float64 Xs, Float64 Ls, const std::array<Float64, 4>& 
    {
       zone = ZoneType::RightSlope;
       *pXl = X[ZoneBreakType::RightBreak];
-      *pYl = (Y[ZoneBreakType::RightBreak] == 0 ? Y[ZoneBreakType::End] : Y[ZoneBreakType::RightBreak]);
+      if (Y[ZoneBreakType::RightBreak] == 0)
+      {
+         if (Y[ZoneBreakType::LeftBreak] == 0)
+         {
+            *pYl = Y[ZoneBreakType::Start];
+         }
+         else
+         {
+            *pYl = Y[ZoneBreakType::End];
+         }
+      }
+      else
+      {
+         *pYl = Y[ZoneBreakType::RightBreak];
+      }
+
       *pXr = X[ZoneBreakType::End];
       *pYr = Y[ZoneBreakType::End];
    }

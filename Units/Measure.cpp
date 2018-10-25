@@ -161,10 +161,10 @@ const unitSqrtPressure unitMeasure::SqrtKSI( 0.0, 2625.78698679, 0.0, _T("KSI^0.
 const unitAcceleration unitMeasure::MeterPerSec2( 0.0, 1.0, 0.0, _T("m/s^2") );
 const unitAcceleration unitMeasure::FeetPerSec2( 0.0, 0.3048, 0.0, _T("ft/s^2") );
 
-const unitPerLength unitMeasure::PerMeter(0.0, 1.0, 0.0, _T("1/m"));
-const unitPerLength unitMeasure::PerMillimeter(0.0,1.0e3, 0.0, _T("1/mm"));
-const unitPerLength unitMeasure::PerInch(0.0, 39.3700787402, 0.0, _T("1/in"));
-const unitPerLength unitMeasure::PerFeet(0.0, 3.28083989501, 0.0, _T("1/ft"));;
+const unitPerLength unitMeasure::PerMeter(0.0, 1.0, 0.0, _T("m^-1"));
+const unitPerLength unitMeasure::PerMillimeter(0.0,1.0e3, 0.0, _T("mm^-1"));
+const unitPerLength unitMeasure::PerInch(0.0, 39.3700787402, 0.0, _T("in^-1"));
+const unitPerLength unitMeasure::PerFeet(0.0, 3.28083989501, 0.0, _T("ft^-1"));;
 
 const unitForceLength2 unitMeasure::NewtonMeter2     ( 0.0, 1.0,         0.0, _T("N-m^2")    );
 const unitForceLength2 unitMeasure::NewtonMillimeter2( 0.0, 1.0e09,      0.0, _T("N-mm^2")   );

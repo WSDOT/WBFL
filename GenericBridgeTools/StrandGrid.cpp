@@ -737,23 +737,6 @@ STDMETHODIMP CStrandGrid::GetStrandCountEx(/*[in]*/IIndexArray* fill, /*[out,ret
       ATLASSERT(0 <= nStrandsAtGridPoint && nStrandsAtGridPoint <= 2);
 
       nStrands += nStrandsAtGridPoint;
-      //if (nStrandsAtGridPoint == 1)
-      //{
-      //   nStrands++;
-      //}
-      //else if (nStrandsAtGridPoint == 2)
-      //{
-      //   if (0.0 < m_GridPoints[fillIdx].dPointX)
-      //   {
-      //      // mirror across Y axis = 2 strands
-      //      nStrands += 2;
-      //   }
-      //   else
-      //   {
-      //      // strand on Y axis
-      //      nStrands++;
-      //   }
-      //}
    }
 
 
@@ -1211,9 +1194,13 @@ STDMETHODIMP CStrandGrid::GetDebondLengthByPositionIndex(/*[in]*/StrandIndexType
    if (FAILED(hr))
       return hr;
 
+   // XCoord and YCoord are grid points... convert to strand positions
+   bool bEvenStrandsOnLeft = EvenStrandsOnLeft(grid_idx);
+
    GridPoint2d& gridPoint = m_GridPoints[grid_idx];
-   if (gridPoint.nStrandsAtGridPoint == 2 && positionIndex % 2 == 0)
+   if (IsLeftStrandPosition(gridPoint,positionIndex,bEvenStrandsOnLeft) )
    {
+      // even number strands are on the left ( X < 0 )
       *XCoord = -gridPoint.dPointX + m_Xadj;
    }
    else
@@ -1242,8 +1229,9 @@ STDMETHODIMP CStrandGrid::GetBondedLengthByPositionIndex(/*[in]*/StrandIndexType
       return hr;
 
 
+   bool bEvenStrandsOnLeft = EvenStrandsOnLeft(grid_idx);
    GridPoint2d& gridPoint = m_GridPoints[grid_idx];
-   if (gridPoint.nStrandsAtGridPoint == 2 && positionIndex % 2 == 0)
+   if (IsLeftStrandPosition(gridPoint, positionIndex, bEvenStrandsOnLeft))
    {
       *XCoord = -gridPoint.dPointX + m_Xadj;
    }
@@ -1583,6 +1571,8 @@ struct STRANDDEBONDRECORD
 {
    Float64 LdbStart;
    Float64 LdbEnd;
+   Float64 XSum;
+   Float64 YSum;
    StrandIndexType nStrands;
 };
 
@@ -1628,7 +1618,7 @@ STDMETHODIMP CStrandGrid::GetDebondedConfigurationCountByRow(/*[in]*/RowIndexTyp
    return S_OK;
 }
 
-STDMETHODIMP CStrandGrid::GetDebondConfigurationByRow(/*[in]*/RowIndexType rowIdx, /*[in]*/IndexType configIdx, /*[out]*/Float64* pLdbStart, /*[out]*/Float64* pLdbEnd, /*[out]*/IndexType* pnStrands)
+STDMETHODIMP CStrandGrid::GetDebondConfigurationByRow(/*[in]*/RowIndexType rowIdx, /*[in]*/IndexType configIdx, /*[out]*/Float64* pLdbStart, /*[out]*/Float64* pLdbEnd, /*[out]*/Float64* pCgX, /*[out]*/Float64* pCgY, /*[out]*/IndexType* pnStrands)
 {
    // returns a debonding configuration in this row
    std::vector<STRANDDEBONDRECORD> debondConfigs;
@@ -1649,6 +1639,8 @@ STDMETHODIMP CStrandGrid::GetDebondConfigurationByRow(/*[in]*/RowIndexType rowId
          STRANDDEBONDRECORD record;
          record.LdbStart = LdbStart;
          record.LdbEnd = LdbEnd;
+         record.XSum = Xcoord;
+         record.YSum = Ycoord;
          record.nStrands = 1;
 
          auto& found = std::find_if(debondConfigs.begin(), debondConfigs.end(), [record](const auto& config) {return IsEqual(record.LdbStart, config.LdbStart) && IsEqual(record.LdbEnd, config.LdbEnd);});
@@ -1658,6 +1650,8 @@ STDMETHODIMP CStrandGrid::GetDebondConfigurationByRow(/*[in]*/RowIndexType rowId
          }
          else
          {
+            found->XSum += Xcoord;
+            found->YSum += Ycoord;
             found->nStrands++;
          }
       }
@@ -1668,6 +1662,18 @@ STDMETHODIMP CStrandGrid::GetDebondConfigurationByRow(/*[in]*/RowIndexType rowId
    *pLdbStart = record.LdbStart;
    *pLdbEnd   = record.LdbEnd;
    *pnStrands = record.nStrands;
+
+   // CG's
+   if (record.nStrands > 0)
+   {
+      *pCgX = record.XSum / record.nStrands;
+      *pCgY = record.YSum / record.nStrands;
+   }
+   else
+   {
+      *pCgX = 0.0; // for lack of better value
+      *pCgY = 0.0;
+   }
 
    return S_OK;
 }
@@ -1950,4 +1956,31 @@ HRESULT CStrandGrid::GetDebondAtSection(DebondSection& rSection,/*[out,retval]*/
 
    return array.CopyTo(strandIndexes);
 
+}
+
+bool CStrandGrid::EvenStrandsOnLeft(IndexType gridIdx) const
+{
+   // generally, event number strands are on the left side of the Y axis
+   // however, every time there is a strand on the Y axis (X = 0), this reverses
+   //
+   // Grid Point 0 at (10,10) -> Strand Point 0 at (-10,10), Strand Point 1 at (10,10); *** NOTE *** Even number strands are on the left
+   // Grid Point 1 at (20,10) -> Strand Point 2 at (-20,10), Strand Point 3 at (20,10); *** NOTE *** Even number strands are on the left
+   // Grid Point 2 at (0,10)  -> Strand Point 4 at (0,10);
+   // Grid Point 3 at (30,10) -> Strand Point 5 at (-30,10), Strand Point 6 at (30,10); *** NOTE *** Odd number strands are now on the left
+   // Grid Point 4 at (0,20)  -> Strand Point 7 at (0,20);
+   // Grid Point 5 at (30,20) -> Strand Point 8 at (-30,20), Strand Point 9 at (30,20); *** NOTE *** Even number strands are back on the on the left
+
+   IndexType nStrandsOnYAxis = 0;
+   for (IndexType i = 0; i <= gridIdx; i++)
+   {
+      nStrandsOnYAxis += (m_GridPoints[i].nStrandsAtGridPoint == 1 ? 1 : 0);
+   }
+
+   bool bEvenStrandsOnLeft = (nStrandsOnYAxis % 2 == 0 ? true : false);
+   return bEvenStrandsOnLeft;
+}
+
+bool CStrandGrid::IsLeftStrandPosition(GridPoint2d& gridPoint, IndexType positionIndex, bool bEvenStrandsOnLeft) const
+{
+   return (gridPoint.nStrandsAtGridPoint == 2 && ((positionIndex % 2 == 0 && bEvenStrandsOnLeft) || (positionIndex % 2 != 0 && !bEvenStrandsOnLeft))) ? true : false;
 }

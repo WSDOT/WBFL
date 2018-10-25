@@ -45,18 +45,19 @@
 // MISCELLANEOUS
 //
 // possible methods for calculating df's
-#define SPEC_EQN             0x0001
-#define LEVER_RULE           0x0002
-#define RIGID_METHOD         0x0004
-#define LANES_DIV_BEAMS      0x0008 // number of lanes divided by number of beams
-#define SPECIAL_OVERRIDE     0x0010 // special override for method in question 
-#define INTERIOR_OVERRIDE    0x0020 // happens if interior factor is larger than exterior. this is always OR'ed
-#define MOMENT_OVERRIDE      0x0040 // happens if shear factor is overriden by moment. this is always OR'ed
-#define E_OVERRIDE           0x0080 // happens if e factor is used as multiplier with interior g for exterior
-#define S_OVER_D_METHOD      0x0100 // factor was computed using S/D. Always combines with SPEC_EQN.
-#define LANES_BEAMS_OVERRIDE 0x0200 // Lanes beams method was used because factor was smaller than lanes beams
-#define MOMENT_SKEW_CORRECTION_APPLIED 0x1000
-#define SHEAR_SKEW_CORRECTION_APPLIED  0x2000
+#define SPEC_EQN                          0x0001
+#define LEVER_RULE                        0x0002
+#define RIGID_METHOD                      0x0004
+#define LANES_DIV_BEAMS                   0x0008 // number of lanes divided by number of beams
+#define SPECIAL_OVERRIDE                  0x0010 // special override for method in question 
+#define INTERIOR_OVERRIDE                 0x0020 // happens if interior factor is larger than exterior. this is always OR'ed
+#define MOMENT_OVERRIDE                   0x0040 // happens if shear factor is overriden by moment. this is always OR'ed
+#define E_OVERRIDE                        0x0080 // happens if e factor is used as multiplier with interior g for exterior
+#define S_OVER_D_METHOD                   0x0100 // factor was computed using S/D. Always combines with SPEC_EQN.
+#define LANES_BEAMS_OVERRIDE              0x0200 // Lanes beams method was used because factor was smaller than lanes beams
+#define OVERRIDE_USING_MULTILANE_FACTOR   0x0400 // TxDOT has a case for U Beams where the multi-lane factor is always used (no enveloping required)
+#define MOMENT_SKEW_CORRECTION_APPLIED    0x1000
+#define SHEAR_SKEW_CORRECTION_APPLIED     0x2000
 
 // what to do with range of applicability:
 enum LldfRangeOfApplicabilityAction 

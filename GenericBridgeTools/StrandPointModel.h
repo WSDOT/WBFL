@@ -102,6 +102,8 @@ private:
    {
       Float64 LdbStart;
       Float64 LdbEnd;
+      Float64 XSum;
+      Float64 YSum;
       StrandIndexType nStrands;
    };
 
@@ -165,7 +167,7 @@ public:
    STDMETHOD(GetStraightStrandBondedLengthByPositionIndex)(StrandIndexType positionIndex, Float64 Xs, Float64* XCoord, Float64* YCoord, Float64* leftBond, Float64* rightBond);
    STDMETHOD(IsExteriorStraightStrandDebondedInRow)(Float64 Xs, RowIndexType rowIndex, VARIANT_BOOL* bResult) override;
    STDMETHOD(GetStraightStrandDebondedConfigurationCountByRow)(Float64 Xs, RowIndexType rowIdx, IndexType* pConfigCount) override;
-   STDMETHOD(GetStraightStrandDebondConfigurationByRow)(Float64 Xs, RowIndexType rowIdx, IndexType configIdx, Float64* pXstart, Float64* pBondedLength, IndexType* pnStrands) override;
+   STDMETHOD(GetStraightStrandDebondConfigurationByRow)(Float64 Xs, RowIndexType rowIdx, IndexType configIdx, Float64* pXstart, Float64* pBondedLength, Float64* pCgX, Float64* pCgY, IndexType* pnStrands) override;
    STDMETHOD(GetStraightStrandDebondedRows)(Float64 Xs, IIndexArray** ppRowIndexes) override;
 
 // IStrandPointModel

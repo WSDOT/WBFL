@@ -233,6 +233,22 @@ STDMETHODIMP CRebarRowFacePattern::get_Profile(/*[in]*/IndexType barIdx,/*[out,r
          m_pSegment->get_Length(&Ls);
          Float64 precamber_offset = ComputePrecamber(X,Ls,precamber);
          point->Offset(0, precamber_offset);
+
+         CComQIPtr<IThickenedFlangeSegment> thickenedFlangeSegment(ssmbrSegment);
+         if (thickenedFlangeSegment && m_Face == ftTopFace)
+         {
+            Float64 thickening = 0;
+            ThickeningType thickeningType;
+            thickenedFlangeSegment->get_FlangeThickeningType(&thickeningType);
+            if (thickeningType == ttEnds)
+            {
+               thickenedFlangeSegment->get_FlangeThickening(&thickening);
+            }
+
+            Float64 tft;
+            thickenedFlangeSegment->get_TopFlangeThickening(X, &tft);
+            point->Offset(0, tft - thickening);
+         }
       }
 
       points->Add(point);

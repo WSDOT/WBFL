@@ -30,8 +30,9 @@
 // StaticSplitter.h : header file
 //
 #include <MfcTools\MfcToolsExp.h>
+#include <afxsplitterwndex.h>
 
-class MFCTOOLSCLASS CUsefulSplitterWnd : public CSplitterWnd
+class MFCTOOLSCLASS CUsefulSplitterWnd : public CSplitterWndEx
 {
 // Construction
 	DECLARE_DYNCREATE(CUsefulSplitterWnd)

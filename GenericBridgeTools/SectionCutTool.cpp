@@ -1214,8 +1214,14 @@ HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDT
       // can't put a composite section inside of another composite section so
       // take each section item from the deck and put it into the main composite 
       // section object
-      CComQIPtr<ICompositeSectionEx> cmpDeckSection(deckSection);
+
+      // The slab is the next item in the container... get the item count,
+      // which is the next index. This is the slab index
       CollectionIndexType nItems;
+      cmpSection->get_Count(&nItems);
+      *pSlabIdx = nItems;
+
+      CComQIPtr<ICompositeSectionEx> cmpDeckSection(deckSection);
       cmpDeckSection->get_Count(&nItems);
       for ( CollectionIndexType idx = 0; idx < nItems; idx++ )
       {
@@ -1223,8 +1229,6 @@ HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDT
          cmpDeckSection->get_Item(idx,&sectionItem);
          cmpSection->AddSectionEx(sectionItem);
       }
-
-      *pSlabIdx = 1;
    }
 
    return S_OK;

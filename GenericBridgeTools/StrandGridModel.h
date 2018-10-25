@@ -155,7 +155,7 @@ public:
    STDMETHOD(get_StraightStrandDebondInRow)(Float64 Xs,RowIndexType rowIdx, StrandIndexType* nStrands) override;
    STDMETHOD(IsExteriorStraightStrandDebondedInRow)(Float64 Xs, RowIndexType rowIndex, VARIANT_BOOL* bResult) override;
    STDMETHOD(GetStraightStrandDebondedConfigurationCountByRow)(Float64 Xs, RowIndexType rowIdx, IndexType* pConfigCount) override;
-   STDMETHOD(GetStraightStrandDebondConfigurationByRow)(Float64 Xs, RowIndexType rowIdx, IndexType configIdx, Float64* pXstart, Float64* pBondedLength, IndexType* pnStrands) override;
+   STDMETHOD(GetStraightStrandDebondConfigurationByRow)(Float64 Xs, RowIndexType rowIdx, IndexType configIdx, Float64* pXstart, Float64* pBondedLength, Float64* pCgX, Float64* pCgY, IndexType* pnStrands) override;
    STDMETHOD(GetStraightStrandDebondedRows)(Float64 Xs,IIndexArray** ppRowIndexes) override;
 
 // IStrandGridModel

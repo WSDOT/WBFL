@@ -43,6 +43,9 @@ HRESULT CThickenedFlangeBulbTeeSegment::FinalConstruct()
    m_FlangeThickening = 0;
    m_FlangeThickeningType = ttEnds;
 
+   m_JointSectionType = jstConstantDepth;
+   m_LongitudinalJointThickness = 0;
+
    return S_OK;
 }
 
@@ -555,6 +558,37 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_TopFlangeThickening(Float64 Xs,
 
 ////////////////////////////////////////////////////////////////////
 // ILongitudinalJoints implementation
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::put_CrossSection(JointSectionType type)
+{
+   m_JointSectionType = type;
+   return S_OK;
+}
+
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_CrossSection(JointSectionType* pType)
+{
+   CHECK_RETVAL(pType);
+   *pType = m_JointSectionType;
+   return S_OK;
+}
+
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::put_JointThickness(Float64 thickness)
+{
+   if (thickness < 0)
+   {
+      return E_INVALIDARG;
+   }
+
+   m_LongitudinalJointThickness = thickness;
+   return S_OK;
+}
+
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_JointThickness(Float64 * pThickness)
+{
+   CHECK_RETVAL(pThickness);
+   *pThickness = m_LongitudinalJointThickness;
+   return S_OK;
+}
+
 STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_HasJoints(VARIANT_BOOL* pbHasJoints)
 {
    CHECK_RETVAL(pbHasJoints);
@@ -694,9 +728,7 @@ HRESULT CThickenedFlangeBulbTeeSegment::GetJointShapes(Float64 Xs, IBulbTeeSecti
    CComPtr<IPoint2d> leftTop, leftBottom, topCentral, rightTop, rightBottom;
    beam->GetTopFlangePoints(&leftTop, &leftBottom, &topCentral, &rightTop, &rightBottom);
 
-   Float64 Hl, Hc, Hr;
-   beam->GetTopFlangeThickness(&Hl, &Hc, &Hr);
-
+   // Get normal to our girderline
    CComPtr<IPath> path;
    m_Impl.m_pGirderLine->get_Path(&path);
 
@@ -712,6 +744,7 @@ HRESULT CThickenedFlangeBulbTeeSegment::GetJointShapes(Float64 Xs, IBulbTeeSecti
    v.CoCreateInstance(CLSID_Vector2d);
    v->put_Direction(normal);
 
+   // create a line normal to our girderline
    CComPtr<ILine2d> line;
    line.CoCreateInstance(CLSID_Line2d);
    line->SetExplicit(pntOnThisSegment, v);
@@ -739,6 +772,7 @@ HRESULT CThickenedFlangeBulbTeeSegment::GetJointShapes(Float64 Xs, IBulbTeeSecti
       CComPtr<IPath> leftPath;
       leftGirderLine->get_Path(&leftPath);
 
+      // intersect left girder's line with the normal to our line... this is where are going to get the left girder's information
       CComPtr<IPoint2d> pntOnLeftSegment;
       leftPath->Intersect(line, pntOnThisSegment, &pntOnLeftSegment);
 
@@ -767,25 +801,49 @@ HRESULT CThickenedFlangeBulbTeeSegment::GetJointShapes(Float64 Xs, IBulbTeeSecti
       Float64 jointWidth = spacing - (W5 + leftW6);
       if (!IsZero(jointWidth))
       {
-         Float64 leftHl, leftHc, leftHr;
-         leftBeam->GetTopFlangeThickness(&leftHl, &leftHc, &leftHr);
+         CComPtr<IPoint2d> leftBeam_leftTop, leftBeam_leftBottom, leftBeam_topCentral, leftBeam_rightTop, leftBeam_rightBottom;
+         leftBeam->GetTopFlangePoints(&leftBeam_leftTop, &leftBeam_leftBottom, &leftBeam_topCentral, &leftBeam_rightTop, &leftBeam_rightBottom);
 
-         CComPtr<IPoint2d> pnt1;
-         pnt1.CoCreateInstance(CLSID_Point2d);
-         pnt1->MoveEx(leftTop);
-         pnt1->Offset(-jointWidth / 2, 0);
+         // Edge of joint associated with this girder is half-way between this girder and the girder on the left
+         
+         // Top points
+         Float64 xl, yl, xr, yr;
+         leftBeam_rightTop->Location(&xl, &yl);
+         leftTop->Location(&xr, &yr);
 
-         CComPtr<IPoint2d> pnt2;
-         pnt2.CoCreateInstance(CLSID_Point2d);
-         pnt2->MoveEx(leftBottom);
-         pnt2->Offset(-jointWidth / 2, (Hl - leftHr) / 2);
+         CComPtr<IPoint2d> pntTopLeft;
+         pntTopLeft.CoCreateInstance(CLSID_Point2d);
+         pntTopLeft->Move(0.5*(xl + xr), 0.5*(yl + yr));
+
+         CComPtr<IPoint2d> pntTopRight(leftTop);
+         
+         CComPtr<IPoint2d> pntBottomLeft, pntBottomRight;
+         if (m_JointSectionType == jstConstantDepth)
+         {
+            pntTopLeft->Clone(&pntBottomLeft);
+            pntTopRight->Clone(&pntBottomRight);
+
+            pntBottomLeft->Offset(0, -m_LongitudinalJointThickness);
+            pntBottomRight->Offset(0, -m_LongitudinalJointThickness);
+         }
+         else
+         {
+            // Bottom point
+            leftBeam_rightBottom->Location(&xl, &yl);
+            leftBottom->Location(&xr, &yr);
+
+            pntBottomLeft.CoCreateInstance(CLSID_Point2d);
+            pntBottomLeft->Move(0.5*(xl + xr), 0.5*(yl + yr));
+
+            pntBottomRight = leftBottom;
+         }
 
          CComPtr<IPolyShape> joint;
          joint.CoCreateInstance(CLSID_PolyShape);
-         joint->AddPointEx(pnt1); // top right of joint
-         joint->AddPointEx(pnt2); // bottom right of joint
-         joint->AddPointEx(leftBottom); // bottom left of joint
-         joint->AddPointEx(leftTop); // top left of joint
+         joint->AddPointEx(pntTopLeft);
+         joint->AddPointEx(pntBottomLeft);
+         joint->AddPointEx(pntBottomRight);
+         joint->AddPointEx(pntTopRight);
 
          CComQIPtr<IShape> shape(joint);
          shape.CopyTo(ppLeftJoint);
@@ -841,25 +899,46 @@ HRESULT CThickenedFlangeBulbTeeSegment::GetJointShapes(Float64 Xs, IBulbTeeSecti
       Float64 jointWidth = spacing - (W6 + rightW5);
       if (!IsZero(jointWidth))
       {
-         Float64 rightHl, rightHc, rightHr;
-         rightBeam->GetTopFlangeThickness(&rightHl, &rightHc, &rightHr);
+         CComPtr<IPoint2d> rightBeam_leftTop, rightBeam_leftBottom, rightBeam_topCentral, rightBeam_rightTop, rightBeam_rightBottom;
+         rightBeam->GetTopFlangePoints(&rightBeam_leftTop, &rightBeam_leftBottom, &rightBeam_topCentral, &rightBeam_rightTop, &rightBeam_rightBottom);
 
-         CComPtr<IPoint2d> pnt1;
-         pnt1.CoCreateInstance(CLSID_Point2d);
-         pnt1->MoveEx(rightTop);
-         pnt1->Offset(jointWidth / 2, 0);
+         CComPtr<IPoint2d> pntTopLeft(rightTop);
 
-         CComPtr<IPoint2d> pnt2;
-         pnt2.CoCreateInstance(CLSID_Point2d);
-         pnt2->MoveEx(rightBottom);
-         pnt2->Offset(jointWidth / 2, (Hr - rightHl) / 2);
+         Float64 xl, yl, xr, yr;
+         rightTop->Location(&xl, &yl);
+         rightBeam_leftTop->Location(&xr, &yr);
+
+         CComPtr<IPoint2d> pntTopRight;
+         pntTopRight.CoCreateInstance(CLSID_Point2d);
+         pntTopRight->Move(0.5*(xl + xr), 0.5*(yl + yr));
+
+
+         CComPtr<IPoint2d> pntBottomLeft, pntBottomRight;
+         if (m_JointSectionType == jstConstantDepth)
+         {
+            pntTopLeft->Clone(&pntBottomLeft);
+            pntTopRight->Clone(&pntBottomRight);
+
+            pntBottomLeft->Offset(0, -m_LongitudinalJointThickness);
+            pntBottomRight->Offset(0, -m_LongitudinalJointThickness);
+         }
+         else
+         {
+            rightBottom->Location(&xl, &yl);
+            rightBeam_leftBottom->Location(&xr, &yr);
+
+            pntBottomRight.CoCreateInstance(CLSID_Point2d);
+            pntBottomRight->Move(0.5*(xl + xr), 0.5*(yl + yr));
+
+            pntBottomLeft = rightBottom;
+         }
 
          CComPtr<IPolyShape> joint;
          joint.CoCreateInstance(CLSID_PolyShape);
-         joint->AddPointEx(pnt1); // top right of joint
-         joint->AddPointEx(pnt2); // bottom right of joint
-         joint->AddPointEx(rightBottom); // bottom left of joint
-         joint->AddPointEx(rightTop); // top left of joint
+         joint->AddPointEx(pntTopLeft);
+         joint->AddPointEx(pntBottomLeft);
+         joint->AddPointEx(pntBottomRight);
+         joint->AddPointEx(pntTopRight);
 
          CComQIPtr<IShape> shape(joint);
          shape.CopyTo(ppRightJoint);

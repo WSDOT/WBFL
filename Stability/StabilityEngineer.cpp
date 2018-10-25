@@ -34,7 +34,9 @@
 #include <WBFLTools_i.c>
 #endif
 
+#include <array>
 #include <algorithm>
+
 #include <UnitMgt\UnitMgt.h>
 #include <LRFD\ConcreteUtil.h>
 #include <WBFLGenericBridgeTools\AlternativeTensileStressCalculator.h>
@@ -1304,6 +1306,34 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
    }
 
    ATLASSERT(leftSupportJntID != INVALID_ID && rightSupportJntID != INVALID_ID); // missing support. we will crash
+                                                                                 
+   // Create FEM members
+
+   const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
+   Float64 Ec = concrete.GetE();
+
+   // use middle of girder section properties for EA and EI
+   Float64 Ag, Ixx, Iyy, Ixy, Xleft, Ytop, Hg, Wtop, Wbot;
+   pGirder->GetSectionProperties(Lg / 2, &Ag, &Ixx, &Iyy, &Ixy, &Xleft, &Ytop, &Hg, &Wtop, &Wbot);
+   Float64 EA = Ec*Ag;
+   Float64 EI = Ec*(Ixx*Iyy - Ixy*Ixy) / Iyy;
+
+   CComPtr<IFem2dMemberCollection> members;
+   (*ppModel)->get_Members(&members);
+
+   jntID = 1;
+   MemberIDType mbrID = 0;
+   CComPtr<IFem2dMember> member;
+   auto prevIter(vX.begin());
+   auto iter = prevIter + 1;
+   auto end(vX.end());
+   for (; iter != end; iter++, jntID++, mbrID++)
+   {
+      member.Release();
+      members->Create(mbrID, jntID - 1, jntID, EA, EI, &member);
+   }
+
+   // Apply Loads
 
    CComPtr<IFem2dLoadingCollection> loadings;
    (*ppModel)->get_Loadings(&loadings);
@@ -1335,17 +1365,14 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
    CComPtr<IFem2dJointLoadCollection> liftJointLoads;
    liftLoading->get_JointLoads(&liftJointLoads);
 
-   MemberIDType mbrID = 0;
-   CComPtr<IFem2dMemberCollection> members;
-   (*ppModel)->get_Members(&members);
+   CComPtr<IFem2dDistributedLoad> distLoad;
+
+
 
    Float64 g = unitSysUnitsMgr::GetGravitationalAcceleration();
-
-   const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
    Float64 density = concrete.GetDensityForWeight();
    Float64 unitWeight = density*g;
 
-   Float64 Ec = concrete.GetE();
 
    stbTypes::WindType windLoadType;
    Float64 windLoad;
@@ -1372,73 +1399,64 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
       CFfactor = (V*V)/(g*R);
    }
 
-
-   jntID = 1;
-   std::vector<Float64>::iterator prevIter(vX.begin());
-   std::vector<Float64>::iterator iter = prevIter+1;
-   std::vector<Float64>::iterator end(vX.end());
-   Float64 prevA, Ixx, Iyy, Ixy, prevXcg, prevYcg, prevHg, Wtf, Wbf;
-   pGirder->GetSectionProperties(*prevIter,&prevA,&Ixx,&Iyy,&Ixy,&prevXcg,&prevYcg,&prevHg,&Wtf,&Wbf);
-   LoadIDType loadID = 0;
    Float64 Wg = 0;
    Float64 Wcf = 0;
    Float64 Wwind = 0;
    Float64 YwindWwind = 0;
    Float64 ycgwg = 0;
-   for ( ; iter != end; iter++, prevIter++, jntID++, mbrID++, loadID++ )
+   Float64 start = 0;
+   LoadIDType loadID = 0;
+   for (IndexType sectIdx = 0; sectIdx < nSections; sectIdx++)
    {
-      Float64 prevX = *prevIter;
-      Float64 currX = *iter;
-      
-      Float64 Ag,Xleft,Ytop,Hg;
-      pGirder->GetSectionProperties(currX,&Ag,&Ixx,&Iyy,&Ixy,&Xleft,&Ytop,&Hg,&Wtf,&Wbf);
+      Float64 Ls = pGirder->GetSectionLength(sectIdx);
+      Float64 end = start + Ls;
+      if (IsZero(Ls))
+      {
+         continue;
+      }
 
-      Float64 EA = Ec*Ag;
-      Float64 EI = Ec*(Ixx*Iyy - Ixy*Ixy)/Iyy;
+      std::array<Float64, 2> Ag, Ixx, Iyy, Ixy, Xleft, Ytop, Hg, Wtop, Wbot;
+      pGirder->GetSectionProperties(sectIdx, stbTypes::Start, &Ag[stbTypes::Start], &Ixx[stbTypes::Start], &Iyy[stbTypes::Start], &Ixy[stbTypes::Start], &Xleft[stbTypes::Start], &Ytop[stbTypes::Start], &Hg[stbTypes::Start], &Wtop[stbTypes::Start], &Wbot[stbTypes::Start]);
+      pGirder->GetSectionProperties(sectIdx, stbTypes::End, &Ag[stbTypes::End], &Ixx[stbTypes::End], &Iyy[stbTypes::End], &Ixy[stbTypes::End], &Xleft[stbTypes::End], &Ytop[stbTypes::End], &Hg[stbTypes::End], &Wtop[stbTypes::End], &Wbot[stbTypes::End]);
 
-      // create member
-      CComPtr<IFem2dMember> member;
-      members->Create(mbrID,jntID-1,jntID,EA,EI,&member);
+      MemberIDType mbrIDStart, mbrIDEnd;
+      Float64 xStart, xEnd;
+      FindMember(*ppModel, start, &mbrIDStart, &xStart);
+      FindMember(*ppModel, end, &mbrIDEnd, &xEnd);
 
-      // load member 
-      // Self-weight
-      Float64 wStart = prevA*unitWeight;
-      Float64 wEnd   =    Ag*unitWeight;
-      CComPtr<IFem2dDistributedLoad> swDistLoad;
-      swDistributedLoads->Create(loadID,mbrID,loadDirFy,0.0,-1.0,-wStart,-wEnd,lotMember,&swDistLoad);
+      if (mbrIDStart == mbrIDEnd && IsEqual(xStart, xEnd))
+      {
+         continue;
+      }
 
-      Float64 wg = (wStart + wEnd)*(currX - prevX);
-      Wg += wg;
-      ycgwg += (prevYcg + Ytop)*wg;
+      // Self-weight load
+      Float64 wStart = Ag[stbTypes::Start] * unitWeight;
+      Float64 wEnd = Ag[stbTypes::End] * unitWeight;
 
-      // NOTE: Wind and CF is applied in the same direction as gravity
-      // We have a 2D, plane frame model, not a 3D space frame. Our FEM engine does not support out of plane loading
-      // Techincally, this is incorrect, however the moments and shears are the same for loads applied transverse to the girder
-      // Deflections will be incorrect. Deflections from the FEM model will need to be scaled by Ix/Iy
-
-      // Centrifugal Force
-      wStart *= CFfactor;
-      wEnd   *= CFfactor;
-      CComPtr<IFem2dDistributedLoad> cfDistLoad;
-      cfDistributedLoads->Create(loadID,mbrID,loadDirFy,0.0,-1.0,-wStart,-wEnd,lotMember,&cfDistLoad);
-
-      // cummulate the total centrifugal force
-      // average force * distance = [(wStart+wEnd)/2]*(currX-prevX)
+      // weight = average force * distance = [(wStart+wEnd)/2]*(Ls)
       // to save on doing the divide by 2 operation, we'll skip it here
       // and do it once after the this loop.
-      Wcf += (wStart + wEnd)*(currX - prevX);
+      Float64 wg = (wStart + wEnd)*Ls;
+      Wg += wg;
+      ycgwg += (Ytop[stbTypes::Start] + Ytop[stbTypes::End])*wg;
+
+      // Centrifugal force
+      // cummulate the total centrifugal force
+      // average force * distance = [(wStart+wEnd)/2]*(Ls)
+      // to save on doing the divide by 2 operation, we'll skip it here
+      // and do it once after the this loop.
+      Float64 cfStart = wStart*CFfactor;
+      Float64 cfEnd = wEnd*CFfactor;
+      Wcf += (cfStart + cfEnd)*Ls;
 
       // Wind
-      CComPtr<IFem2dDistributedLoad> windDistLoad;
-      wStart = prevHg*WindPressure;
-      wEnd   =     Hg*WindPressure;
-      windDistributedLoads->Create(loadID,mbrID,loadDirFy,0.0,-1.0,-wStart,-wEnd,lotMember,&windDistLoad);
-
+      Float64 windStart = Hg[stbTypes::Start] * WindPressure;
+      Float64 windEnd = Hg[stbTypes::End] * WindPressure;
       // cummulate the total wind load
-      // average wind load * distance = [(wStart+wEnd)/2]*(currX-prevX)
+      // average wind load * distance = [(wStart+wEnd)/2]*(Ls)
       // to save on doing the divide by 2 operation, we'll skip it here
       // and do it once after the this loop.
-      Float64 w_wind = (wStart + wEnd)*(currX - prevX);
+      Float64 w_wind = (windStart + windEnd)*Ls;
       Wwind += w_wind;
 
       // the location of the resultant wind force is Sum(ExposedArea*WindPressure*DepthToCGofExposedArea)/(Total Wind Force)
@@ -1446,31 +1464,124 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
       // y = (a^2 + ab + b^2)/(3(a+b))
       // Where we are doing the summation. The negative is because we are measuring down from the top which is what we need for
       // girder section coordinates
-      Float64 a = prevHg;
-      Float64 b = Hg;
-      Float64 y_wind = (a*a + a*b + b*b)/(3*(a+b));
+      Float64 a = Hg[stbTypes::Start];
+      Float64 b = Hg[stbTypes::End];
+      Float64 y_wind = (a*a + a*b + b*b) / (3 * (a + b));
       YwindWwind += -y_wind*w_wind;
 
-      prevA = Ag;
-      prevXcg = Xleft;
-      prevYcg = Ytop;
-      prevHg = Hg;
+      // NOTE: Wind and CF is applied in the same direction as gravity
+      // We have a 2D, plane frame model, not a 3D space frame. Our FEM engine does not support out of plane loading
+      // Techincally, this is incorrect, however the moments and shears are the same for loads applied transverse to the girder
+      // Deflections will be incorrect. Deflections from the FEM model will need to be scaled by Ix/Iy
+
+      if (mbrIDStart == mbrIDEnd)
+      {
+         // load is contained on a single member
+         distLoad.Release();
+         swDistributedLoads->Create(loadID, mbrIDStart, loadDirFy, xStart, xEnd, -wStart, -wEnd, lotMember, &distLoad);
+
+         distLoad.Release();
+         cfDistributedLoads->Create(loadID, mbrIDStart, loadDirFy, xStart, xEnd, -cfStart, -cfEnd, lotMember, &distLoad);
+
+         distLoad.Release();
+         windDistributedLoads->Create(loadID, mbrIDStart, loadDirFy, xStart, xEnd, -windStart, -windEnd, lotMember, &distLoad);
+
+         loadID++;
+      }
+      else
+      {
+         // load straddles two or more members
+         CComPtr<IFem2dMember> mbr;
+         CComPtr<IFem2dJoint> jntStart, jntEnd;
+         for (MemberIDType mbrID = mbrIDStart; mbrID <= mbrIDEnd; mbrID++)
+         {
+            Float64 w1self, w2self; // start and end load intensity on this member
+            Float64 w1cf, w2cf;
+            Float64 w1wind, w2wind;
+            Float64 x1, x2; // start and end load location from the start of this member
+
+            Float64 Lmbr;
+            mbr.Release();
+            members->Find(mbrID, &mbr);
+            mbr->get_Length(&Lmbr);
+
+            JointIDType jntIDStart, jntIDEnd;
+            mbr->get_StartJoint(&jntIDStart);
+            mbr->get_EndJoint(&jntIDEnd);
+
+            jntStart.Release();
+            jntEnd.Release();
+            joints->Find(jntIDStart, &jntStart);
+            joints->Find(jntIDEnd, &jntEnd);
+
+            Float64 xMbrStart, xMbrEnd;
+            jntStart->get_X(&xMbrStart);
+            jntEnd->get_X(&xMbrEnd);
+
+            if (mbrID == mbrIDStart)
+            {
+               w1self = wStart;
+               w1cf = cfStart;
+               w1wind = windStart;
+               x1 = xStart;
+            }
+            else
+            {
+               w1self = ::LinInterp(xMbrStart - start, wStart, wEnd, end - start);
+               w1cf = ::LinInterp(xMbrStart - start, cfStart, cfEnd, end - start);
+               w1wind = ::LinInterp(xMbrStart - start, windStart, windEnd, end - start);
+               x1 = 0; // start of member
+            }
+
+            if (mbrID == mbrIDEnd)
+            {
+               w2self = wEnd;
+               w2cf = cfEnd;
+               w2wind = windEnd;
+               x2 = xEnd;
+            }
+            else
+            {
+               w2self = ::LinInterp(xMbrEnd - start, wStart, wEnd, end - start);
+               w2cf = ::LinInterp(xMbrEnd - start, cfStart, cfEnd, end - start);
+               w2wind = ::LinInterp(xMbrEnd - start, windStart, windEnd, end - start);
+               x2 = Lmbr; // end of member
+            }
+
+            if (!IsEqual(x1, x2))
+            {
+               // no need to add the load if its length is 0
+               distLoad.Release();
+               swDistributedLoads->Create(loadID, mbrID, loadDirFy, x1, x2, -w1self, -w2self, lotMember, &distLoad);
+
+               distLoad.Release();
+               cfDistributedLoads->Create(loadID, mbrID, loadDirFy, x1, x2, -w1cf, -w2cf, lotMember, &distLoad);
+
+               distLoad.Release();
+               windDistributedLoads->Create(loadID, mbrID, loadDirFy, x1, x2, -w1wind, -w2wind, lotMember, &distLoad);
+
+               loadID++;
+            }
+         }
+      }
+
+      start = end;
    }
 
-   results.Wg = Wg/2;
+   results.Wg = Wg / 2;
    ycgwg /= 2;
-   results.Ytop = ycgwg/Wg;
+   results.Ytop = ycgwg / Wg;
 
    // divide by 2 to get total wind load (see note above)
-   results.Wwind = Wwind/2;
+   results.Wwind = Wwind / 2;
    YwindWwind /= 2; // divide by 2 because the wind part should have been above, but we didn't
-   results.Ywind[stbTypes::NoImpact] = ::IsZero(results.Wwind) ? 0 : YwindWwind/results.Wwind; // this now holds the location of the resultant wind force measured from the top of the girder
+   results.Ywind[stbTypes::NoImpact] = ::IsZero(results.Wwind) ? 0 : YwindWwind / results.Wwind; // this now holds the location of the resultant wind force measured from the top of the girder
 
-   if ( pHaulingProblem )
+   if (pHaulingProblem)
    {
       stbHaulingResults* pHaulingResults = static_cast<stbHaulingResults*>(&results);
       ATLASSERT(pHaulingResults != nullptr);
-      pHaulingResults->Wcf = Wcf/2;
+      pHaulingResults->Wcf = Wcf / 2;
    }
 
    // Apply self weight point loads
@@ -1518,7 +1629,7 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
    results.Ytop = (results.Wg*results.Ytop + ycgwg)/(results.Wg + Wg);
    results.Wg += Wg;
 
-   // Apply point loads for due to lifting
+   // Apply point loads due to lifting
    const stbILiftingStabilityProblem* pLiftingProblem = dynamic_cast<const stbILiftingStabilityProblem*>(pStabilityProblem);
    if ( pLiftingProblem )
    {
@@ -1868,4 +1979,62 @@ Float64 stbStabilityEngineer::ComputePz(Float64 velocity,Float64 Cd) const
    Float64 Pz = (2.56e-6)*V*V*Cd;
    Pz = ::ConvertToSysUnits(Pz,unitMeasure::KSF);
    return Pz;
+}
+
+void stbStabilityEngineer::FindMember(IFem2dModel* pModel, Float64 distFromStartOfModel, MemberIDType* pMbrID, Float64* pDistFromStartOfMbr) const
+{
+   CComPtr<IFem2dMemberCollection> members;
+   pModel->get_Members(&members);
+
+   CollectionIndexType mbrcnt;
+   members->get_Count(&mbrcnt);
+
+   CComPtr<IFem2dJointCollection> joints;
+   pModel->get_Joints(&joints);
+
+   CComPtr<IFem2dEnumMember> enumMembers;
+   members->get__EnumElements(&enumMembers);
+
+   CollectionIndexType idx = 0;
+   CComPtr<IFem2dJoint> j1, j2;
+   CComPtr<IFem2dMember> mbr;
+   while (enumMembers->Next(1, &mbr, nullptr) != S_FALSE)
+   {
+      JointIDType jntID1, jntID2;
+      mbr->get_StartJoint(&jntID1);
+      mbr->get_EndJoint(&jntID2);
+
+      j1.Release();
+      j2.Release();
+      joints->Find(jntID1, &j1);
+      joints->Find(jntID2, &j2);
+
+      Float64 x1, x2;
+      j1->get_X(&x1);
+      j2->get_X(&x2);
+
+      if (InRange(x1, distFromStartOfModel, x2))
+      {
+         mbr->get_ID(pMbrID);
+         *pDistFromStartOfMbr = distFromStartOfModel - x1;
+         return;
+      }
+      else if (idx == 0 && distFromStartOfModel<x1) // next cases are for short cantilevers where fem model is not generated
+      {
+         mbr->get_ID(pMbrID);
+         *pDistFromStartOfMbr = 0.0;
+         return;
+      }
+      else if ((idx == mbrcnt - 1) && (x2 < distFromStartOfModel))
+      {
+         mbr->get_ID(pMbrID);
+         *pDistFromStartOfMbr = x2 - x1;
+         return;
+      }
+
+      mbr.Release();
+      idx++;
+   }
+
+   ATLASSERT(false); // didn't find a solution
 }

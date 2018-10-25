@@ -78,6 +78,9 @@ private:
       CComPtr<IStressStrain> FgMaterial;
       CComPtr<IStressStrain> BgMaterial;
       Float64 ei; // initial strain
+      Float64 Le; // elongation length (typically 1 unit, but can be different for unbonded reinforcement elements)
+      SHAPEINFO(IShape* pShape, IStressStrain* pFG, IStressStrain* pBG, Float64 ei,Float64 Le) : Shape(pShape), FgMaterial(pFG), BgMaterial(pBG), ei(ei), Le(Le)
+      {}
    } SHAPEINFO;
 
    typedef struct SLICEINFO
@@ -88,6 +91,7 @@ private:
       Float64 Xcg;
       Float64 Ycg;
       Float64 ei; // initial strain
+      Float64 Le; // elongation length (typically 1 unit, but can be different for unbonded reinforcement elements)
       CComPtr<IStressStrain> FgMaterial;
       CComPtr<IStressStrain> BgMaterial;
       CComPtr<IShape> SliceShape;

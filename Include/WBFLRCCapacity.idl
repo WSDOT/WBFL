@@ -592,7 +592,7 @@ library WBFLRCCapacity
 	]
 	interface IGeneralSection : IUnknown
 	{
-		[helpcontext(IDH_IGeneralSection_AddShape),helpstring("method AddShape")] HRESULT AddShape([in]IShape* pShape,[in]IStressStrain* pfgMaterial,[in]IStressStrain* pbgMaterial,[in]Float64 ei);
+		[helpcontext(IDH_IGeneralSection_AddShape),helpstring("method AddShape")] HRESULT AddShape([in]IShape* pShape,[in]IStressStrain* pfgMaterial,[in]IStressStrain* pbgMaterial,[in]Float64 ei,[in]Float64 Le);
 		[propget,helpcontext(IDH_IGeneralSection_ShapeCount),helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]CollectionIndexType* nShapes);
 		[propget,helpcontext(IDH_IGeneralSection_Shape),helpstring("property Shape")] HRESULT Shape([in]CollectionIndexType shapeIdx,[out,retval]IShape** pShape);
 		[propputref,helpcontext(IDH_IGeneralSection_Shape),helpstring("property Shape")] HRESULT Shape([in]CollectionIndexType shapeIdx,[in]IShape* pShape);
@@ -600,9 +600,11 @@ library WBFLRCCapacity
 		[propputref,helpcontext(IDH_IGeneralSection_ForegroundMaterial),helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]CollectionIndexType shapeIdx,[in]IStressStrain* pMaterial);
 		[propget,helpcontext(IDH_IGeneralSection_BackgroundMaterial),helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]CollectionIndexType shapeIdx,[out,retval]IStressStrain** pMaterial);
 		[propputref,helpcontext(IDH_IGeneralSection_BackgroundMaterial),helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]CollectionIndexType shapeIdx,[in]IStressStrain* pMaterial);
-		[propget,helpcontext(IDH_IGeneralSection_InitialStrain),helpstring("property InitialStrain")] HRESULT InitialStrain([in]CollectionIndexType shapeIdx,[out,retval]Float64* ei);
-		[propput,helpcontext(IDH_IGeneralSection_InitialStrain),helpstring("property InitialStrain")] HRESULT InitialStrain([in]CollectionIndexType shapeIdx,[in]Float64 ei);
-	};
+      [propget, helpcontext(IDH_IGeneralSection_InitialStrain), helpstring("property InitialStrain")] HRESULT InitialStrain([in]CollectionIndexType shapeIdx, [out, retval]Float64* ei);
+      [propput, helpcontext(IDH_IGeneralSection_InitialStrain), helpstring("property InitialStrain")] HRESULT InitialStrain([in]CollectionIndexType shapeIdx, [in]Float64 ei);
+      [propget, /*helpcontext(IDH_IGeneralSection_InitialStrain),*/ helpstring("property ElongationLength")] HRESULT ElongationLength([in]CollectionIndexType shapeIdx, [out, retval]Float64* Le);
+      [propput, /*helpcontext(IDH_IGeneralSection_InitialStrain),*/ helpstring("property ElonationLength")] HRESULT ElongationLength([in]CollectionIndexType shapeIdx, [in]Float64 Le);
+   };
 
 	[
 		object,

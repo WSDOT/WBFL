@@ -130,11 +130,11 @@ void CGeneralSectionSolverTest::Test()
    CComQIPtr<IStressStrain> material1(concrete);
    CComQIPtr<IStressStrain> material2(rebar);
 
-   section->AddShape(shape1,material1,nullptr,0);
-   section->AddShape(shape2,material2,material1,0);
-   section->AddShape(shape3,material2,material1,0);
-   section->AddShape(shape4,material2,material1,0);
-   section->AddShape(shape5,material2,material1,0);
+   section->AddShape(shape1,material1,nullptr,0,1.0);
+   section->AddShape(shape2,material2,material1,0, 1.0);
+   section->AddShape(shape3,material2,material1,0, 1.0);
+   section->AddShape(shape4,material2,material1,0, 1.0);
+   section->AddShape(shape5,material2,material1,0, 1.0);
 
 
    // setup the stress plan
