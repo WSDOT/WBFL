@@ -234,15 +234,24 @@ void lrfdRefinedLossesTxDOT2013::UpdateLongTermLosses() const
    {
       m_dfpSR = shrinkage_losses( m_H, m_Fci, m_Ep );
 
-      m_DeltaFcd1 = -1*(m_Madlg*m_eperm/m_Ig + m_Msidl*( m_Ybc - m_Ybg + m_eperm )/m_Ic);
+      m_Msd = m_Madlg + m_Msidl;
+
+      m_DeltaFcd1 = -1 * m_Msd * m_eperm/m_Ig;
 
       m_dfpCR = creep_losses( m_H, m_Fci, m_Eci, m_Ep, m_ElasticShortening.PermanentStrand_Fcgp(), m_DeltaFcd1 );
 
-      m_fpt = m_FpjPerm - m_dfpR0[1] - m_dfpES[1];
+      if (lrfdElasticShortening::fcgp07Fpu == m_ElasticShortening.GetFcgpComputationMethod())
+      {
+         m_fpt = 0.7 * this->m_Fpu;
+      }
+      else
+      {
+         m_fpt = m_FpjPerm - m_dfpR0[1] - m_dfpES[1];
+      }
 
       m_KL = (m_Type == matPsStrand::LowRelaxation ? 30 : 7);
 
-      m_dfpR1 = IsZero(m_fpt) ? 0 : (m_fpt/m_KL)*(m_fpt/m_Fpy - 0.55);
+      m_dfpR1 = (m_fpt <= 0.0) ? 0 : (m_fpt/m_KL)*(m_fpt/m_Fpy - 0.55);
       m_dfpR1 = (m_dfpR1 < 0 ? 0 : m_dfpR1); // Fpt can't be less than 0.55Fpy
 
       m_dfpR2 = m_dfpR1; // Relaxation loss at deck placement is 1/2 of total
@@ -296,6 +305,14 @@ Float64 lrfdRefinedLossesTxDOT2013::Getfpt() const
     return m_fpt;
 }
 
+Float64 lrfdRefinedLossesTxDOT2013::GetSdMoment() const
+{
+    if ( m_IsDirty )
+        UpdateLosses();
+
+    return m_Msd;
+}
+
 //======================== INQUIRY    =======================================
 //======================== DEBUG      =======================================
 
@@ -329,6 +346,7 @@ void lrfdRefinedLossesTxDOT2013::MakeCopy( const lrfdRefinedLossesTxDOT2013& rOt
 
    m_KL     = rOther.m_KL;
    m_fpt    = rOther.m_fpt;
+   m_Msd    = rOther.m_Msd;
 
    m_Shipping = rOther.m_Shipping;
    m_FcgpMethod = rOther.m_FcgpMethod;
@@ -341,6 +359,8 @@ void lrfdRefinedLossesTxDOT2013::Init() const
 
    m_KL = 0.0;
    m_fpt = 0.0;
+   m_Msd = 0.0;
+
    m_dfpR1 = 0.0;
    m_dfpR2 = 0.0;
    m_Shipping = 0.0;
@@ -374,8 +394,8 @@ Float64 creep_losses(Float64 H, Float64 fci, Float64 Eci, Float64 Ep, Float64 fc
    Ep    = ::ConvertFromSysUnits(Ep, unitMeasure::KSI );
    fcgp  = ::ConvertFromSysUnits(fcgp, unitMeasure::KSI );
    dfcdp = ::ConvertFromSysUnits(dfcdp, unitMeasure::KSI );
-                                                     // v - sign flip below
-   Float64 loss = 0.1*((195-H)/(4.8+fci))*(Ep/Eci)*(fcgp-0.6*dfcdp);
+                                                     
+   Float64 loss = 0.1*((195-H)/(4.8+fci))*(Ep/Eci)*(fcgp+0.6*dfcdp);
 
    loss = ::ConvertToSysUnits(loss, unitMeasure::KSI );
    loss = (loss < 0 ) ? 0 : loss;
