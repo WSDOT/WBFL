@@ -1,0 +1,88 @@
+///////////////////////////////////////////////////////////////////////
+// ReportManagerAgent - Provides report manager as an Agent
+// Copyright (C) 1999  Washington State Department of Transportation
+//                     Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// ReportManager.h : Declaration of the CReportManager
+
+#ifndef __REPORTMANAGER_H_
+#define __REPORTMANAGER_H_
+
+#include "resource.h"       // main symbols
+#include "IReportManager.h"
+#include <ReportManager\ReportBuilderManager.h>
+#include <ReportManager\ReportBuilder.h>
+
+/////////////////////////////////////////////////////////////////////////////
+// CReportManager
+class ATL_NO_VTABLE CReportManager : 
+	public CComObjectRootEx<CComSingleThreadModel>,
+	public CComCoClass<CReportManager, &CLSID_ReportManager>,
+   public IAgentEx,
+	public IReportManager
+{
+public:
+	CReportManager()
+	{
+	}
+
+DECLARE_REGISTRY_RESOURCEID(IDR_REPORTMANAGER)
+
+DECLARE_PROTECT_FINAL_CONSTRUCT()
+
+BEGIN_COM_MAP(CReportManager)
+	COM_INTERFACE_ENTRY(IAgent)
+	COM_INTERFACE_ENTRY(IAgentEx)
+	COM_INTERFACE_ENTRY(IReportManager)
+END_COM_MAP()
+
+private:
+   CReportBuilderManager m_RptMgr;
+   IBroker* m_pBroker; // weak reference
+
+// IAgentEx
+public:
+   STDMETHOD(SetBroker)(/*[in]*/ IBroker* pBroker);
+   STDMETHOD(RegInterfaces)();
+	STDMETHOD(Init)();
+	STDMETHOD(Init2)();
+	STDMETHOD(Reset)();
+	STDMETHOD(ShutDown)();
+   STDMETHOD(GetClassID)(CLSID* pCLSID);
+
+
+// IReportManager
+public:
+   virtual void AddReportBuilder(CReportBuilder* pReportBuilder);
+   virtual Uint32 GetReportBuilderCount(bool bIncludeHidden) const;
+   virtual boost::shared_ptr<CReportBuilder> GetReportBuilder(const char* strReportName);
+   virtual boost::shared_ptr<CReportBuilder> GetReportBuilder(const std::string& strReportName);
+   virtual std::vector<std::string> GetReportNames(bool bIncludeHidden) const;
+   virtual CReportDescription GetReportDescription(const char* strReportName);
+   virtual CReportDescription GetReportDescription(const std::string& strReportName);
+   virtual boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const char* strReportName);
+   virtual boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const std::string& strReportName);
+   virtual boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const CReportDescription& rptDesc);
+   virtual boost::shared_ptr<CReportBrowser> CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec);
+   virtual Int16 DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec);
+};
+
+#endif //__REPORTMANAGER_H_

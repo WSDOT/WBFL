@@ -1,0 +1,26 @@
+HKCR
+{
+	LBAMLiveLoader.VehicularAnalysisContext.1 = s 'VehicularAnalysisContext Class'
+	{
+		CLSID = s '{7FCDE23E-4655-4AF7-81B2-8E5C852831A4}'
+	}
+	LBAMLiveLoader.VehicularAnalysisContext = s 'VehicularAnalysisContext Class'
+	{
+		CLSID = s '{7FCDE23E-4655-4AF7-81B2-8E5C852831A4}'
+		CurVer = s 'LBAMLiveLoader.VehicularAnalysisContext.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {7FCDE23E-4655-4AF7-81B2-8E5C852831A4} = s 'VehicularAnalysisContext Class'
+		{
+			ProgID = s 'LBAMLiveLoader.VehicularAnalysisContext.1'
+			VersionIndependentProgID = s 'LBAMLiveLoader.VehicularAnalysisContext'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{5374CF63-57D4-4C08-9BD0-E29A9988662A}'
+		}
+	}
+}

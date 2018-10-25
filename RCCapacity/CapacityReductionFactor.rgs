@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.CapacityReductionFactor.1 = s 'CapacityReductionFactor Class'
+	{
+		CLSID = s '{A6C78DC5-0FD1-48b0-B393-D7241232AE11}'
+	}
+	WBFLRCCapacity.CapacityReductionFactor = s 'CapacityReductionFactor Class'
+	{
+		CLSID = s '{A6C78DC5-0FD1-48b0-B393-D7241232AE11}'
+		CurVer = s 'WBFLRCCapacity.CapacityReductionFactor.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {A6C78DC5-0FD1-48b0-B393-D7241232AE11} = s 'CapacityReductionFactor Class'
+		{
+			ProgID = s 'WBFLRCCapacity.CapacityReductionFactor.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.CapacityReductionFactor'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

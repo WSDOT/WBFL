@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.BulbTeeSection.1 = s 'BulbTeeSection Class'
+	{
+		CLSID = s '{90F25ADA-74B8-4171-80CA-A445519885AC}'
+	}
+	WBFLGenericBridge.BulbTeeSection = s 'BulbTeeSection Class'
+	{
+		CLSID = s '{90F25ADA-74B8-4171-80CA-A445519885AC}'
+		CurVer = s 'WBFLGenericBridge.BulbTeeSection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {90F25ADA-74B8-4171-80CA-A445519885AC} = s 'BulbTeeSection Class'
+		{
+			ProgID = s 'WBFLGenericBridge.BulbTeeSection.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.BulbTeeSection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

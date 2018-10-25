@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.GeomUtil.1 = s 'GeomUtil Class'
+	{
+		CLSID = s '{110FFB89-2B04-11D3-8952-006097C68A9C}'
+	}
+	WBFLGeometry.GeomUtil = s 'GeomUtil Class'
+	{
+		CLSID = s '{110FFB89-2B04-11D3-8952-006097C68A9C}'
+		CurVer = s 'WBFLGeometry.GeomUtil.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {110FFB89-2B04-11D3-8952-006097C68A9C} = s 'GeomUtil Class'
+		{
+			ProgID = s 'WBFLGeometry.GeomUtil.1'
+			VersionIndependentProgID = s 'WBFLGeometry.GeomUtil'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

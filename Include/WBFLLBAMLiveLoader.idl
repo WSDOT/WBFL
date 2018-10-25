@@ -1,0 +1,619 @@
+///////////////////////////////////////////////////////////////////////
+// LBAM Live Loader - Longitindal Bridge Analysis Model
+// Copyright (C) 2009  Washington State Department of Transportation
+//                     Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// LBAMLiveLoader.idl : IDL source for LBAMLiveLoader.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (LBAMLiveLoader.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "WBFLTypes.idl";
+import "WBFLTools.idl";
+import "WBFLLBAM.idl";
+import "WBFLLBAMAnalysis.idl";
+
+#include "LBAMLiveLoader.hh"
+cpp_quote("#include \"LBAMLiveLoaderErrors.h\"")
+
+[
+	uuid(5374CF63-57D4-4C08-9BD0-E29A9988662A),
+	version(1.0),
+	helpstring("WBFLLBAMLiveLoader Library"),
+   helpfile("WBFLLBam.chm"),
+   helpcontext(IDH_WBFLLBAMLiveLoader)
+]
+library WBFLLBAMLiveLoader
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+   typedef
+   [
+      public,
+      uuid(E5972CBF-5C95-4fc0-8BBC-045496AD3872),
+      helpstring("Designates target class of change. Not particularly useful to most clients except C++ DispInterface handlers"),
+   ] 
+   enum 
+   {
+      lctIVehicularAnalysisContextChanged   = 70001,
+	  lctLiveLoadChanged                     = 70002,
+	  lctStiffnessResponseChanged            = 70003,
+	  lctLiveLoadConfigurationChanged        = 70004
+   } LBAMLLChangeTargetType;
+
+	[
+		object,
+		uuid(D010B702-8E8B-44D0-84DB-8B50B32D79EE),
+		oleautomation,
+		helpstring("IVehicularAnalysisContext Interface"),
+      helpcontext(IDH_VehicularAnalysisContext),
+		pointer_default(unique)
+	]
+	interface IVehicularAnalysisContext : IUnknown
+	{
+		[helpstring("Intialize the context with the LBAM and the type of analysis to be performed"),helpcontext(IDH_VehicularAnalysisContext_Initialize)] 
+		HRESULT Initialize([in]ILBAMModel* model, [in]IInfluenceLineResponse* influence, [in]ILiveLoadNegativeMomentRegion* nllr, 
+                         [in]IAnalysisPOIs* pois, [in]IGetDistributionFactors* dfs, [in]IGetStressPoints* gcs);
+	};
+
+   [
+      object,
+      oleautomation,oleautomation,
+      uuid(C494C99B-016A-43bd-AA1D-0B7246221EA6),
+      pointer_default(unique),
+      helpcontext(IDH_VehicularAnalysisContext),
+      helpstring("IVehicularAnalysisContextEvents Interface")
+   ]
+	interface IVehicularAnalysisContextEvents : IUnknown
+	{
+		[helpstring("method OnLiveLoadChanged"),helpcontext(IDH_VehicularAnalysisContext_OnLiveLoadChanged)] 
+		HRESULT OnLiveLoadChanged([in] LiveLoadModelType lltype);
+		
+      [helpstring("method OnStiffnessResponseChanged - Something changed to invalidate the analysis model"),helpcontext(IDH_VehicularAnalysisContext_OnStiffnessResponseChanged)] 
+		HRESULT OnStiffnessResponseChanged([in]ChangeScopeType scope, [in]PoiIDType poiID);
+	};
+
+	[
+		object,
+		uuid(5640876E-1A20-417f-A7D7-E5CEDCF14543),
+		oleautomation,
+		helpstring("IDependOnVehicularAnalysisContext Interface"),
+      helpcontext(IDH_DependOnVehicularAnalysisContext),
+		pointer_default(unique)
+	]
+	interface IDependOnVehicularAnalysisContext : IUnknown
+	{
+		[helpstring("Intialize the dependent strategy/module with a context"),helpcontext(IDH_DependOnVehicularAnalysisContext_Initialize)] 
+		HRESULT Initialize([in]IUnknown* context);
+	};
+
+	[
+		object,
+		uuid(AF2ED39C-CBD8-460e-840F-0417D40BD2B5),
+		oleautomation,
+		helpstring("ISupportLocations - Identifies support locations for influence lines in this context"),
+      helpcontext(IDH_SupportLocations),
+		pointer_default(unique)
+	]
+	interface ISupportLocations : IUnknown
+	{
+		[propget, helpstring("property LeftOverhang - measured to first support"),helpcontext(IDH_SupportLocations_LeftOverhang)]  
+		HRESULT LeftOverhang([out, retval] Float64 *pVal);
+		
+      [propget, helpstring("property RightOverhang - measured from last support"),helpcontext(IDH_SupportLocations_RightOverhang)]  
+		HRESULT RightOverhang([out, retval] Float64 *pVal);
+		
+      [propget, helpstring("property SupportLocations"),helpcontext(IDH_SupportLocations_ISupportLocations)]  
+		HRESULT SupportLocations([out, retval] IDblArray* *suppLocs);
+		
+      [propget, helpstring("property TotalLength - end to end length of superstructure"),helpcontext(IDH_DependOnVehicularAnalysisContext)]  
+		HRESULT TotalLength([out, retval] Float64* Length);
+		
+      [helpstring("method IsInteriorSupport"),helpcontext(IDH_SupportLocations_IsInteriorSupport)] 
+      HRESULT IsInteriorSupport([in]SupportIDType supportID, [out,retval]VARIANT_BOOL* isInterior);
+	};
+
+	[
+		object,
+		uuid(75ECDDE4-5B36-4E36-9532-F5527F6D7131),
+		oleautomation,
+		helpstring("ILiveLoadConfiguration Interface"),
+      helpcontext(IDH_LiveLoadConfiguration),
+		pointer_default(unique)
+	]
+	interface ILiveLoadConfiguration : IUnknown
+	{
+		[propget, helpstring("property LiveLoadModel"),helpcontext(IDH_LiveLoadConfiguration_LiveLoadModel)] 
+      HRESULT LiveLoadModel([out, retval] LiveLoadModelType *pVal);
+		
+      [propput, helpstring("property LiveLoadModel"),helpcontext(IDH_LiveLoadConfiguration_LiveLoadModel)] 
+      HRESULT LiveLoadModel([in] LiveLoadModelType newVal);
+		
+      [propget, helpstring("property VehicleIndex"),helpcontext(IDH_LiveLoadConfiguration_VehicleIndex)] 
+      HRESULT VehicleIndex([out, retval] VehicleIndexType *pVal);
+		
+      [propput, helpstring("property VehicleIndex"),helpcontext(IDH_LiveLoadConfiguration_VehicleIndex)] 
+      HRESULT VehicleIndex([in] VehicleIndexType newVal);
+		
+      [propget, helpstring("property VehicularLoadConfiguration"),helpcontext(IDH_LiveLoadConfiguration_VehicularLoadConfiguration)] 
+      HRESULT VehicularLoadConfiguration([out, retval] VehicularLoadConfigurationType *pVal);
+		
+      [propput, helpstring("property VehicularLoadConfiguration"),helpcontext(IDH_LiveLoadConfiguration_VehicularLoadConfiguration)] 
+      HRESULT VehicularLoadConfiguration([in] VehicularLoadConfigurationType newVal);
+		
+      [propget, helpstring("property TruckPosition"),helpcontext(IDH_LiveLoadConfiguration_TruckPosition)] 
+      HRESULT TruckPosition([out, retval] Float64 *pVal);
+		
+      [propput, helpstring("property TruckPosition"),helpcontext(IDH_LiveLoadConfiguration_TruckPosition)] 
+      HRESULT TruckPosition([in] Float64 newVal);
+		
+      [propget, helpstring("property TruckDirection"),helpcontext(IDH_LiveLoadConfiguration_TruckDirection)] 
+      HRESULT TruckDirection([out, retval] TruckDirectionType *pVal);
+		
+      [propput, helpstring("property TruckDirection"),helpcontext(IDH_LiveLoadConfiguration_TruckDirection)] 
+      HRESULT TruckDirection([in] TruckDirectionType newVal);
+		
+      [propget, helpstring("property PivotAxleIndex"),helpcontext(IDH_LiveLoadConfiguration_PivotAxleIndex)] 
+      HRESULT PivotAxleIndex([out, retval] AxleIndexType *pVal);
+		
+      [propput, helpstring("property PivotAxleIndex"),helpcontext(IDH_LiveLoadConfiguration_PivotAxleIndex)] 
+      HRESULT PivotAxleIndex([in] AxleIndexType newVal);
+		
+      [propget, helpstring("property VariableSpacing"),helpcontext(IDH_LiveLoadConfiguration_VariableSpacing)] 
+      HRESULT VariableSpacing([out, retval] Float64 *pVal);
+		
+      [propput, helpstring("property VariableSpacing"),helpcontext(IDH_LiveLoadConfiguration_VariableSpacing)] 
+      HRESULT VariableSpacing([in] Float64 newVal);
+		
+      [propget, helpstring("property AxleConfig"),helpcontext(IDH_LiveLoadConfiguration_AxleConfig)] 
+      HRESULT AxleConfig([out, retval] ILongArray* *pVal);
+		
+      [propput, helpstring("property AxleConfig"),helpcontext(IDH_LiveLoadConfiguration_AxleConfig)] 
+      HRESULT AxleConfig([in] ILongArray* newVal);
+		
+      [propget, helpstring("property DoApplyImpact"),helpcontext(IDH_LiveLoadConfiguration_DoApplyImpact)] 
+      HRESULT DoApplyImpact([out, retval] VARIANT_BOOL *pVal);
+		
+      [propput, helpstring("property DoApplyImpact"),helpcontext(IDH_LiveLoadConfiguration_DoApplyImpact)] 
+      HRESULT DoApplyImpact([in] VARIANT_BOOL newVal);
+		
+      [propget, helpstring("property IsApplicable"),helpcontext(IDH_LiveLoadConfiguration_IsApplicable)] 
+      HRESULT IsApplicable([out, retval] VARIANT_BOOL *pVal);
+		
+      [propput, helpstring("property IsApplicable"),helpcontext(IDH_LiveLoadConfiguration_IsApplicable)] 
+      HRESULT IsApplicable([in] VARIANT_BOOL newVal);
+		
+      [propget, helpstring("property DistributionFactorType"),helpcontext(IDH_LiveLoadConfiguration_DistributionFactorType)] 
+      HRESULT DistributionFactorType([out, retval] DistributionFactorType *pVal);
+		
+      [propput, helpstring("property DistributionFactorType"),helpcontext(IDH_LiveLoadConfiguration_DistributionFactorType)] 
+      HRESULT DistributionFactorType([in] DistributionFactorType newVal);
+		
+      [propget, helpstring("property ForceEffectType"),helpcontext(IDH_LiveLoadConfiguration_ForceEffect)] 
+      HRESULT ForceEffect([out, retval] ForceEffectType *pVal);
+		
+      [propput, helpstring("property ForceEffectType"),helpcontext(IDH_LiveLoadConfiguration_ForceEffect)] 
+      HRESULT ForceEffect([in] ForceEffectType newVal);
+		
+      [propget, helpstring("property OptimizationType"),helpcontext(IDH_LiveLoadConfiguration_Optimization)] 
+      HRESULT Optimization([out, retval] OptimizationType *pVal);
+		
+      [propput, helpstring("property OptimizationType"),helpcontext(IDH_LiveLoadConfiguration_Optimization)] 
+      HRESULT Optimization([in] OptimizationType newVal);
+		
+      [helpstring("method Clone"),helpcontext(IDH_LiveLoadConfiguration_Clone)] 
+      HRESULT Clone([out,retval] ILiveLoadConfiguration* *clone);
+	};
+
+    [ 
+       object,
+       oleautomation,
+       uuid(301D2692-BFDD-4937-B454-7DF2A388D199),
+       pointer_default(unique),
+       helpcontext(IDH_LiveLoadConfiguration),
+       helpstring("ILiveLoadConfigurationEvents Interface")
+    ]
+	interface ILiveLoadConfigurationEvents : IUnknown
+	{
+		[helpstring("event OnLiveLoadConfigurationChanged"),helpcontext(IDH_LiveLoadConfiguration_OnLiveLoadConfigurationChanged)] 
+		HRESULT OnLiveLoadConfigurationChanged([in] ILiveLoadConfiguration* config);
+	};
+	[
+		object,
+		uuid(507DB6D8-E616-46E4-BCEE-AD3B9EA069EE),
+		oleautomation,
+		helpstring("ILiveLoadModelSectionResults Interface"),
+      helpcontext(IDH_LiveLoadModelSectionResults),
+		pointer_default(unique)
+	]
+	interface ILiveLoadModelSectionResults : IUnknown
+	{
+		[helpstring("method Clear"),helpcontext(IDH_LiveLoadModelSectionResults_Clear)] 
+      HRESULT Clear();
+
+      [helpstring("method Reserve"),helpcontext(IDH_LiveLoadModelSectionResults_Reserve)] 
+      HRESULT Reserve([in]CollectionIndexType size);
+
+      [propget, helpstring("property Count"),helpcontext(IDH_LiveLoadModelSectionResults_Count)] 
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+      [helpstring("method Add"),helpcontext(IDH_LiveLoadModelSectionResults_Add)] 
+      HRESULT Add([in]Float64 leftResult, [in]ILiveLoadConfiguration* leftConfig, [in]Float64 rightResult, [in]ILiveLoadConfiguration* rightConfig);
+
+      [helpstring("method SetResult"),helpcontext(IDH_LiveLoadModelSectionResults_SetResult)] 
+      HRESULT SetResult([in]CollectionIndexType index, [in]Float64 leftResult, [in]ILiveLoadConfiguration* leftConfig, [in]Float64 rightResult, [in]ILiveLoadConfiguration* rightConfig);
+
+      [helpstring("method GetResult"),helpcontext(IDH_LiveLoadModelSectionResults_GetResult)] 
+      HRESULT GetResult([in]CollectionIndexType index, [out]Float64* leftResult, [out]ILiveLoadConfiguration* *leftConfig, [out]Float64* rightResult, [out]ILiveLoadConfiguration* *rightConfig);
+	};
+
+	[
+		object,
+		uuid(6BC9DDBA-71C1-489b-A6C4-B7DF7811BE0C),
+		oleautomation,
+		helpstring("ILiveLoadModelResults Interface"),
+      helpcontext(IDH_LiveLoadModelResults),
+		pointer_default(unique)
+	]
+	interface ILiveLoadModelResults : IUnknown
+	{
+		[helpstring("method Clear"),helpcontext(IDH_LiveLoadModelResults_Clear)] 
+      HRESULT Clear();
+
+      [helpstring("method Reserve"),helpcontext(IDH_LiveLoadModelResults_Reserve)] 
+      HRESULT Reserve([in]CollectionIndexType size);
+
+      [propget, helpstring("property Count"),helpcontext(IDH_LiveLoadModelResults_Count)] 
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+      [helpstring("method Add"),helpcontext(IDH_LiveLoadModelResults_Add)] 
+      HRESULT Add([in]Float64 result, [in]ILiveLoadConfiguration* config);
+
+      [helpstring("method SetResult"),helpcontext(IDH_LiveLoadModelResults_SetResult)] 
+      HRESULT SetResult([in]CollectionIndexType index, [in]Float64 result, [in]ILiveLoadConfiguration* config);
+
+      [helpstring("method GetResult"),helpcontext(IDH_LiveLoadModelResults_GetResult)] 
+      HRESULT GetResult([in]CollectionIndexType index, [out]Float64* result, [out]ILiveLoadConfiguration* *config);
+	};
+
+	[
+		object,
+		uuid(6632DF91-1B2F-451D-99B8-6006F7AD1E52),
+		oleautomation,
+		helpstring("ILiveLoadModelStressResults Interface"),
+      helpcontext(IDH_LiveLoadModelStressResults),
+		pointer_default(unique)
+	]
+	interface ILiveLoadModelStressResults : IUnknown
+	{
+		[helpstring("method Clear"),helpcontext(IDH_LiveLoadModelStressResults_Clear)] 
+      HRESULT Clear();
+
+      [helpstring("method Reserve"),helpcontext(IDH_LiveLoadModelStressResults_Reserve)] 
+      HRESULT Reserve([in]CollectionIndexType size);
+
+      [propget, helpstring("property Count"),helpcontext(IDH_LiveLoadModelStressResults_Count)] 
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+      [helpstring("method Add"),helpcontext(IDH_LiveLoadModelStressResults_Add)] 
+      HRESULT Add([in]IStressResult* leftResult, [in]ILiveLoadConfiguration* leftConfig, [in]IStressResult* rightResult, [in]ILiveLoadConfiguration* rightConfig);
+
+      [helpstring("method SetResult"),helpcontext(IDH_LiveLoadModelStressResults_SetResult)] 
+      HRESULT SetResult([in]CollectionIndexType index, [in]IStressResult* leftResult, [in]ILiveLoadConfiguration* leftConfig, [in]IStressResult* rightResult, [in]ILiveLoadConfiguration* rightConfig);
+
+      [helpstring("method GetResult"),helpcontext(IDH_LiveLoadModelStressResults_GetResult)] 
+      HRESULT GetResult([in]CollectionIndexType index, [out]IStressResult* *leftResult, [out]ILiveLoadConfiguration* *leftConfig, [out]IStressResult* *rightResult, [out]ILiveLoadConfiguration* *rightConfig);
+	};
+
+	[
+		object,
+		uuid(5327AB6C-3122-430F-9F4F-76682BCC9B69),
+		oleautomation,
+		helpstring("IEnvelopedVehicularResponse Interface"),
+      helpcontext(IDH_EnvelopedVehicularResponse),
+		pointer_default(unique)
+	]
+	interface IEnvelopedVehicularResponse : IUnknown
+	{
+		[helpstring("method ComputeForces"),helpcontext(IDH_EnvelopedVehicularResponse_ComputeForces)] 
+		HRESULT ComputeForces([in]ILongArray* poiIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
+		                      [in]VehicleIndexType vehicleIndex, [in]ResultsOrientation orientation, 
+					             [in]ForceEffectType effect, [in]OptimizationType optimization, 
+					    	       [in]VehicularLoadConfigurationType vehConfiguration, 
+                            [in]VARIANT_BOOL applyImpact, [in]DistributionFactorType distributionType,
+							       [in]VARIANT_BOOL computePlacements, [out,retval]ILiveLoadModelSectionResults* *results);
+
+		[helpstring("method ComputeDeflections"),helpcontext(IDH_EnvelopedVehicularResponse_ComputeDeflections)] 
+		HRESULT ComputeDeflections( [in]ILongArray* poiIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
+		                            [in]VehicleIndexType vehicleIndex, [in]ForceEffectType effect, [in]OptimizationType optimization, 
+					    	             [in]VehicularLoadConfigurationType vehConfiguration, 
+                                  [in]VARIANT_BOOL applyImpact, [in]DistributionFactorType distributionType,
+							             [in]VARIANT_BOOL computePlacements, [out,retval]ILiveLoadModelSectionResults* *results);
+
+
+		[helpstring("method ComputeReactions"),helpcontext(IDH_EnvelopedVehicularResponse_ComputeReactions)] 
+		HRESULT ComputeReactions([in]ILongArray* supportIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
+		                         [in]VehicleIndexType vehicleIndex, [in]ForceEffectType effect, [in]OptimizationType optimization, 
+					    	          [in]VehicularLoadConfigurationType vehConfiguration, 
+                               [in]VARIANT_BOOL applyImpact, [in]DistributionFactorType distributionType,
+							          [in]VARIANT_BOOL computePlacements, [out,retval]ILiveLoadModelResults* *results);
+
+		[helpstring("method ComputeSupportDeflections"),helpcontext(IDH_EnvelopedVehicularResponse_ComputeSupportDeflections)] 
+		HRESULT ComputeSupportDeflections([in]ILongArray* supportIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
+		                                  [in]VehicleIndexType vehicleIndex, [in]ForceEffectType effect, [in]OptimizationType optimization, 
+					    	                   [in]VehicularLoadConfigurationType vehConfiguration, 
+                                        [in]VARIANT_BOOL applyImpact, [in]DistributionFactorType distributionType,
+							                   [in]VARIANT_BOOL computePlacements, [out,retval]ILiveLoadModelResults* *results);
+
+		[helpstring("method ComputeStresses"),helpcontext(IDH_EnvelopedVehicularResponse_ComputeStresses)] 
+		HRESULT ComputeStresses([in]ILongArray* poiIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
+		                        [in]VehicleIndexType vehicleIndex, 
+					               [in]ForceEffectType effect, [in]OptimizationType optimization, 
+					    	         [in]VehicularLoadConfigurationType vehConfiguration, 
+                              [in]VARIANT_BOOL applyImpact, [in]DistributionFactorType distributionType,
+							         [in]VARIANT_BOOL computePlacements, [out,retval]ILiveLoadModelStressResults* *results);
+	};
+
+   [
+		object,
+		uuid(B4E6F569-62C7-4932-AD45-0D973BA73A8A),
+		oleautomation,
+		helpstring("IBasicVehicularResponse Interface"),
+      helpcontext(IDH_BasicVehicularResponse),
+		pointer_default(unique)
+	]
+	interface IBasicVehicularResponse : IUnknown 
+	{
+		[helpstring("method ComputeForces"),helpcontext(IDH_BasicVehicularResponse_ComputeForces)] 
+		HRESULT ComputeForces([in]ILongArray* poiIDs, [in]BSTR stage, [in]ResultsOrientation orientation, 
+		                      [in]ILiveLoadConfiguration* config,
+                            [out,retval]ISectionResult3Ds* *results);
+
+		[helpstring("method ComputeDeflections"),helpcontext(IDH_BasicVehicularResponse_ComputeDeflections)] 
+		HRESULT ComputeDeflections([in]ILongArray* poiIDs, [in]BSTR stage, 
+	                              [in]ILiveLoadConfiguration* config,
+                                 [out,retval]ISectionResult3Ds* *results);
+
+		[helpstring("method ComputeReactions"),helpcontext(IDH_BasicVehicularResponse_ComputeReactions)] 
+		HRESULT ComputeReactions([in]ILongArray* supportIDs, [in]BSTR stage, 
+                               [in]ILiveLoadConfiguration* config,
+                               [out,retval]IResult3Ds* *results);
+
+		[helpstring("method ComputeSupportDeflections"),helpcontext(IDH_BasicVehicularResponse_ComputeSupportDeflections)] 
+		HRESULT ComputeSupportDeflections([in]ILongArray* supportIDs, [in]BSTR stage, 
+                                        [in]ILiveLoadConfiguration* config,
+                                        [out,retval]IResult3Ds* *results);
+
+		[helpstring("method ComputeStresses"),helpcontext(IDH_BasicVehicularResponse_ComputeStresses)] 
+		HRESULT ComputeStresses([in]ILongArray* poiIDs, [in]BSTR stage, 
+                              [in]ILiveLoadConfiguration* config,
+                              [out,retval]ISectionStressResults* *results);
+	};
+
+	[
+		object,
+		uuid(29E23348-A456-4a68-A3CD-1CE39020CAAE),
+		oleautomation,
+		helpstring("IEnvelopedVehicularResponseFactory Interface"),
+      helpcontext(IDH_EnvelopedVehicularResponseFactory),
+		pointer_default(unique)
+	]
+	interface IEnvelopedVehicularResponseFactory : IUnknown
+	{
+		[helpstring("method CreateEnvelopedVehicularResponse"),helpcontext(IDH_EnvelopedVehicularResponseFactory_CreateEnvelopedVehicularResponse)] 
+		HRESULT CreateEnvelopedVehicularResponse([out,retval]IEnvelopedVehicularResponse** pEVR);
+	};
+
+   [
+		object,
+		uuid(045494D0-86BA-445c-A42B-88F90B25E503),
+		oleautomation,
+		helpstring("ISupportEnvelopedVehicularResponseFactory Interface"),
+      helpcontext(IDH_SupportEnvelopedVehicularResponseFactory),
+		pointer_default(unique)
+	]
+	interface ISupportEnvelopedVehicularResponseFactory : IUnknown
+	{
+		[propputref] HRESULT EnvelopedVehicularRepsonseFactory([in] IEnvelopedVehicularResponseFactory* pFactory);
+		[propget] HRESULT EnvelopedVehicularRepsonseFactory([out,retval] IEnvelopedVehicularResponseFactory** pFactory);
+		[propputref] HRESULT EnvelopedVehicularRepsonse([in] IEnvelopedVehicularResponse* pResponse);
+	}
+		
+	[
+		object,
+		uuid(03CF6636-DC31-4F82-8B6C-6527D280F864),
+		oleautomation,
+		helpstring("ILiveLoadModelResponse Interface"),
+      helpcontext(IDH_LiveLoadModelResponse),
+		pointer_default(unique)
+	]
+	interface ILiveLoadModelResponse : IUnknown
+	{
+		[helpstring("method ComputeForces"),helpcontext(IDH_LiveLoadModelResponse_ComputeForces)] 
+      HRESULT ComputeForces( [in]ILongArray* poiIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
+                             [in]ResultsOrientation orientation, [in]ForceEffectType effect, 
+                             [in]OptimizationType optimization, 
+                             [in]VehicularLoadConfigurationType vehConfiguration, 
+                             [in]VARIANT_BOOL applyImpact, [in]VARIANT_BOOL applyDistribution,
+                             [in]VARIANT_BOOL computePlacement, [out,retval]ILiveLoadModelSectionResults** results);
+
+		[helpstring("method ComputeDeflections"),helpcontext(IDH_LiveLoadModelResponse_ComputeDeflections)] 
+      HRESULT ComputeDeflections( [in]ILongArray* poiIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
+                             [in]ForceEffectType effect, 
+                             [in]OptimizationType optimization, 
+                             [in]VehicularLoadConfigurationType vehConfiguration, 
+                             [in]VARIANT_BOOL applyImpact, [in]VARIANT_BOOL applyDistribution,
+                             [in]VARIANT_BOOL computePlacement, [out,retval]ILiveLoadModelSectionResults** results);
+
+		[helpstring("method ComputeReactions"),helpcontext(IDH_LiveLoadModelResponse_ComputeReactions)] 
+      HRESULT ComputeReactions( [in]ILongArray* supportIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
+                                [in]ForceEffectType effect, 
+                                [in]OptimizationType optimization, 
+                                [in]VehicularLoadConfigurationType vehConfiguration, 
+                                [in]VARIANT_BOOL applyImpact, [in]VARIANT_BOOL applyDistribution,
+                                [in]VARIANT_BOOL computePlacement, [out,retval]ILiveLoadModelResults** results);
+
+		[helpstring("method ComputeSupportDeflections"),helpcontext(IDH_LiveLoadModelResponse_ComputeSupportDeflections)] 
+      HRESULT ComputeSupportDeflections( [in]ILongArray* supportIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
+                                         [in]ForceEffectType effect, 
+                                         [in]OptimizationType optimization, 
+                                         [in]VehicularLoadConfigurationType vehConfiguration, 
+                                         [in]VARIANT_BOOL applyImpact, [in]VARIANT_BOOL applyDistribution,
+                                         [in]VARIANT_BOOL computePlacement, [out,retval]ILiveLoadModelResults** results);
+
+		[helpstring("method ComputeStresses"),helpcontext(IDH_LiveLoadModelResponse_ComputeStresses)] 
+      HRESULT ComputeStresses( [in]ILongArray* poiIDs , [in]BSTR stage, [in]LiveLoadModelType type, 
+                               [in]ForceEffectType effect, [in]OptimizationType optimization, 
+                               [in]VehicularLoadConfigurationType vehConfiguration, 
+                               [in]VARIANT_BOOL applyImpact, [in]VARIANT_BOOL applyDistribution,
+                               [in]VARIANT_BOOL computePlacement, [out,retval]ILiveLoadModelStressResults** results);
+	};
+
+	[
+		object,
+		uuid(2EF48A46-945E-4f87-B942-A76B39F2385A),
+		oleautomation,
+		helpstring("IEnvelopingStrategy Interface"),
+      helpcontext(IDH_EnvelopingStrategy),
+		pointer_default(unique)
+	]
+	interface IEnvelopingStrategy : IUnknown
+	{
+		[propget, helpstring("property Strategy"),helpcontext(IDH_EnvelopingStrategy_Strategy)] 
+      HRESULT Strategy([out, retval] IEnvelopedVehicularResponse* *pVal);
+		[propputref, helpstring("property Strategy"),helpcontext(IDH_EnvelopingStrategy_Strategy)] 
+      HRESULT Strategy([in] IEnvelopedVehicularResponse* newVal);
+	};
+
+	[
+		uuid(7FCDE23E-4655-4AF7-81B2-8E5C852831A4),
+		helpstring("VehicularAnalysisContext Class")
+	]
+	coclass VehicularAnalysisContext
+	{
+		[default] interface IVehicularAnalysisContext;
+		interface ISupportLocations;
+		interface IInfluenceLineResponse;
+		interface ILiveLoadNegativeMomentRegion;
+		interface ILiveLoad;
+      interface IAnalysisPOIs;
+      interface IGetDistributionFactors;
+      interface IGetStressPoints;
+		[default, source] interface IVehicularAnalysisContextEvents;
+	};
+
+	[
+		uuid(6743856D-388C-46EE-8517-02975B951790),
+		helpstring("BasicVehicularResponse Class")
+	]
+	coclass BasicVehicularResponse
+	{
+		[default] interface IBasicVehicularResponse;
+		interface IDependOnVehicularAnalysisContext;
+      interface ISupportProgressMonitor;
+
+	};
+
+	[
+		uuid(8CB030DC-CB84-47CF-8FAA-71AB8228447A),
+		helpstring("BruteForceVehicularResponse Class")
+	]
+	coclass BruteForceVehicularResponse
+	{
+		[default] interface IEnvelopedVehicularResponse;
+		interface IDependOnVehicularAnalysisContext;
+      interface ISupportProgressMonitor;
+	};
+
+	[
+		uuid(F957DB0F-730B-4b90-A2F8-A83212EDB0F5),
+		helpstring("BruteForceVehicularResponse2 Class")
+	]
+	coclass BruteForceVehicularResponse2
+	{
+		[default] interface IEnvelopedVehicularResponse;
+		interface IDependOnVehicularAnalysisContext;
+      interface ISupportProgressMonitor;
+	};
+
+	[
+		uuid(9AA4092D-749C-48A3-8822-D192C1D0063B),
+		helpstring("LiveLoadConfiguration Class")
+	]
+	coclass LiveLoadConfiguration
+	{
+		[default] interface ILiveLoadConfiguration;
+		[default, source] interface ILiveLoadConfigurationEvents;
+
+	};
+
+	[
+		uuid(17850599-F2D0-457D-BA13-69D8F6488E51),
+		helpstring("LiveLoadModelResponse Class")
+	]
+	coclass LiveLoadModelResponse
+	{
+		[default] interface ILiveLoadModelResponse;
+      interface IEnvelopingStrategy;
+		interface IDependOnVehicularAnalysisContext;
+      interface ISupportProgressMonitor;
+	};
+
+	[
+		uuid(2AECD198-BB29-4439-959C-A0F6B977C0BE),
+		helpstring("LiveLoadModelSectionResults Class")
+	]
+	coclass LiveLoadModelSectionResults
+	{
+		[default] interface ILiveLoadModelSectionResults;
+	};
+
+	[
+		uuid(D3440F19-F960-4580-A915-A1FF9466609C),
+		helpstring("LiveLoadModelResults Class")
+	]
+	coclass LiveLoadModelResults
+	{
+		[default] interface ILiveLoadModelResults;
+	};
+
+	[
+		uuid(CF37172B-654D-446B-B66D-9FFBBC1959FA),
+		helpstring("LiveLoadModelStressResults Class")
+	]
+	coclass LiveLoadModelStressResults
+	{
+		[default] interface ILiveLoadModelStressResults;
+	};
+
+	[
+		uuid(4799D84B-F57B-4519-910E-8949AEB33996),
+		helpstring("EnvelopedVehicularResponseFactory Class")
+	]
+	coclass EnvelopedVehicularResponseFactory
+	{ 
+		[default] interface IEnvelopedVehicularResponseFactory;
+	};
+};

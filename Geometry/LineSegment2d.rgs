@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.LineSegment2d.1 = s 'LineSegment2d Class'
+	{
+		CLSID = s '{546BBDC2-96C0-11D2-8D11-14830CC10000}'
+	}
+	WBFLGeometry.LineSegment2d = s 'LineSegment2d Class'
+	{
+		CLSID = s '{546BBDC2-96C0-11D2-8D11-14830CC10000}'
+		CurVer = s 'WBFLGeometry.LineSegment2d.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {546BBDC2-96C0-11D2-8D11-14830CC10000} = s 'LineSegment2d Class'
+		{
+			ProgID = s 'WBFLGeometry.LineSegment2d.1'
+			VersionIndependentProgID = s 'WBFLGeometry.LineSegment2d'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

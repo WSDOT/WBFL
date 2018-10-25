@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAMAnalysis.StressResults.1 = s 'StressResults Class'
+	{
+		CLSID = s '{7EFCAFCB-C862-47BB-8ADE-BA5AC43F8B5D}'
+	}
+	WBFLLBAMAnalysis.StressResults = s 'StressResults Class'
+	{
+		CLSID = s '{7EFCAFCB-C862-47BB-8ADE-BA5AC43F8B5D}'
+		CurVer = s 'WBFLLBAMAnalysis.StressResults.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {7EFCAFCB-C862-47BB-8ADE-BA5AC43F8B5D} = s 'StressResults Class'
+		{
+			ProgID = s 'WBFLLBAMAnalysis.StressResults.1'
+			VersionIndependentProgID = s 'WBFLLBAMAnalysis.StressResults'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{9EC1DB46-A140-11D5-B05C-00105A9AF985}'
+		}
+	}
+}

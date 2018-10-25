@@ -1,0 +1,296 @@
+///////////////////////////////////////////////////////////////////////
+// System - WBFL low level system services
+// Copyright (C) 1999  Washington State Department of Transportation
+//                     Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+#include <System\SysLib.h>
+
+/****************************************************************************
+CLASS
+   dbgLogDumpContext
+****************************************************************************/
+
+#include <System\LogDumpContext.h>
+#include <System\SectionValue.h>
+#include <TCHAR.h>
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+#define BUFSIZE 256
+
+////////////////////////// PUBLIC     ///////////////////////////////////////
+
+//======================== LIFECYCLE  =======================================
+dbgLogDumpContext::dbgLogDumpContext(ILogFile* pLog,DWORD dwCookie):
+dbgDumpContext(),
+m_pLog(pLog),
+m_dwCookie(dwCookie)
+{
+   if ( m_pLog )
+   {
+      m_pLog->AddRef();
+      m_pLog->put_EndLines( FALSE );
+   }
+}
+
+dbgLogDumpContext::~dbgLogDumpContext()
+{
+   if ( m_pLog )
+   {
+      m_pLog->Release();
+      m_pLog = 0;
+   }
+}
+
+//======================== OPERATORS  =======================================
+#if defined UNICODE
+dbgDumpContext& dbgLogDumpContext::operator<<(const std::wstring& s)
+#else
+dbgDumpContext& dbgLogDumpContext::operator<<(const std::string& s)
+#endif
+{
+   if ( m_pLog )
+      m_pLog->LogMessage(m_dwCookie,s.c_str());
+
+   return *this;
+}
+
+dbgDumpContext& dbgLogDumpContext::operator<<(LPCTSTR s)
+{
+   if ( m_pLog )
+      m_pLog->LogMessage(m_dwCookie,s);
+
+   return *this;
+}
+
+dbgDumpContext& dbgLogDumpContext::operator<<(TCHAR c)
+{
+   if ( m_pLog )
+   {
+      TCHAR buffer[BUFSIZE];
+      sprintf_s( buffer, TEXT("%c"), c );
+      m_pLog->LogMessage(m_dwCookie,buffer);
+   }
+
+   return *this;
+}
+
+dbgDumpContext& dbgLogDumpContext::operator<<(bool n)
+{
+   if ( m_pLog )
+      m_pLog->LogMessage(m_dwCookie,(n ? TEXT("True") : TEXT("False") ));
+
+   return *this;
+}
+
+dbgDumpContext& dbgLogDumpContext::operator<<(int n)
+{
+   if ( m_pLog )
+   {
+      TCHAR buffer[BUFSIZE];
+      sprintf_s( buffer, TEXT("%d"), n );
+      m_pLog->LogMessage(m_dwCookie,buffer);
+   }
+
+   return *this;
+}
+
+dbgDumpContext& dbgLogDumpContext::operator<<(unsigned int n)
+{
+   if ( m_pLog )
+   {
+      TCHAR buffer[BUFSIZE];
+      sprintf_s( buffer, TEXT("%u"), n );
+      m_pLog->LogMessage(m_dwCookie,buffer);
+   }
+
+   return *this;
+}
+
+dbgDumpContext& dbgLogDumpContext::operator<<(Int16 n)
+{
+   if ( m_pLog )
+   {
+      TCHAR buffer[BUFSIZE];
+      sprintf_s( buffer, TEXT("%d"), n );
+      m_pLog->LogMessage(m_dwCookie,buffer);
+   }
+
+   return *this;
+}
+
+dbgDumpContext& dbgLogDumpContext::operator<<(Uint16 n)
+{
+   if ( m_pLog )
+   {
+      TCHAR buffer[BUFSIZE];
+      sprintf_s( buffer, TEXT("%u"), n );
+      m_pLog->LogMessage(m_dwCookie,buffer);
+   }
+
+   return *this;
+}
+
+dbgDumpContext& dbgLogDumpContext::operator<<(Int32 n)
+{
+   if ( m_pLog )
+   {
+      TCHAR buffer[BUFSIZE];
+      sprintf_s( buffer, TEXT("%ld"), n );
+      m_pLog->LogMessage(m_dwCookie,buffer);
+   }
+
+   return *this;
+}
+
+dbgDumpContext& dbgLogDumpContext::operator<<(Uint32 n)
+{
+   if ( m_pLog )
+   {
+      TCHAR buffer[BUFSIZE];
+      sprintf_s( buffer, TEXT("%ld"), n );
+      m_pLog->LogMessage(m_dwCookie,buffer);
+   }
+
+   return *this;
+}
+
+dbgDumpContext& dbgLogDumpContext::operator<<(Float32 n)    
+{
+   if ( m_pLog )
+   {
+      std::ostringstream os;
+      os << n;
+      m_pLog->LogMessage(m_dwCookie,os.str().c_str());
+   }
+
+   return *this;
+}
+
+dbgDumpContext& dbgLogDumpContext::operator<<(Float64 n)
+{
+   if ( m_pLog )
+   {
+      std::ostringstream os;
+      os << n;
+      m_pLog->LogMessage(m_dwCookie,os.str().c_str());
+   }
+
+   return *this;
+}
+
+dbgDumpContext& dbgLogDumpContext::operator<<(Float80 n)
+{
+   if ( m_pLog )
+   {
+      std::ostringstream os;
+      os << n;
+      m_pLog->LogMessage(m_dwCookie,os.str().c_str());
+   }
+
+   return *this;
+}
+
+dbgDumpContext& dbgLogDumpContext::operator<<(void * n)
+{
+   if ( m_pLog )
+   {
+      TCHAR buffer[BUFSIZE];
+      sprintf_s( buffer, TEXT("%p"), n );
+      m_pLog->LogMessage(m_dwCookie,buffer);
+   }
+
+   return *this;
+}
+
+dbgDumpContext& dbgLogDumpContext::operator<<(const sysSectionValue& n)
+{
+   if ( m_pLog )
+   {
+      TCHAR buffer[BUFSIZE];
+      sprintf_s( buffer, TEXT("%s"), n.AsString() );
+      m_pLog->LogMessage(m_dwCookie,buffer);
+   }
+
+   return *this;
+}
+
+//======================== OPERATIONS =======================================
+void dbgLogDumpContext::SetLog(ILogFile* pLog,DWORD dwCookie)
+{
+   if ( m_pLog )
+   {
+      m_pLog->Release();
+      m_pLog = 0;
+   }
+
+   m_pLog = pLog;
+
+   if ( m_pLog )
+   {
+      m_pLog->AddRef();
+      m_pLog->put_EndLines( FALSE );
+   }
+
+   m_dwCookie = dwCookie;
+}
+
+void dbgLogDumpContext::GetLog(ILogFile** ppLog,DWORD* pdwCookie)
+{
+   *ppLog = m_pLog;
+   *pdwCookie = m_dwCookie;
+
+   if ( m_pLog )
+      m_pLog->AddRef();
+}
+
+dbgDumpContext& dbgLogDumpContext::EndLine()
+{
+   if ( m_pLog )
+      m_pLog->LogMessage(m_dwCookie,"\n");
+
+   return *this;
+}
+
+//======================== ACCESS     =======================================
+//======================== INQUIRY    =======================================
+
+////////////////////////// PROTECTED  ///////////////////////////////////////
+
+//======================== LIFECYCLE  =======================================
+//======================== OPERATORS  =======================================
+//======================== OPERATIONS =======================================
+//======================== ACCESS     =======================================
+//======================== INQUIRY    =======================================
+
+////////////////////////// PRIVATE    ///////////////////////////////////////
+
+//======================== LIFECYCLE  =======================================
+//======================== OPERATORS  =======================================
+//======================== OPERATIONS =======================================
+//======================== ACCESS     =======================================
+//======================== INQUERY    =======================================
+
+//======================== DEBUG      =======================================

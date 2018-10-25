@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAMAnalysisUtility.LBAMAnalysisEngine.1 = s 'LBAMAnalysisEngine Class'
+	{
+		CLSID = s '{3D1EF310-E132-4DF4-85CC-3A7467F948E6}'
+	}
+	WBFLLBAMAnalysisUtility.LBAMAnalysisEngine = s 'LBAMAnalysisEngine Class'
+	{
+		CLSID = s '{3D1EF310-E132-4DF4-85CC-3A7467F948E6}'
+		CurVer = s 'WBFLLBAMAnalysisUtility.LBAMAnalysisEngine.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {3D1EF310-E132-4DF4-85CC-3A7467F948E6} = s 'LBAMAnalysisEngine Class'
+		{
+			ProgID = s 'WBFLLBAMAnalysisUtility.LBAMAnalysisEngine.1'
+			VersionIndependentProgID = s 'WBFLLBAMAnalysisUtility.LBAMAnalysisEngine'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{8B25EF41-3951-4A46-9D1E-DFA4280CC874}'
+		}
+	}
+}

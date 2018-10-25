@@ -1,0 +1,182 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "1 TYPELIB ""WBFLGeometry.tlb""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 3,1,1,0
+ PRODUCTVERSION 3,1,1,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "A member of the Alternate Route Project\0"
+            VALUE "CompanyName", "Washington State Department of Transportation\0"
+            VALUE "FileDescription", "WBFL Geometry Module\0"
+            VALUE "FileVersion", "3.1.1.0\0"
+            VALUE "InternalName", "Geometry\0"
+            VALUE "LegalCopyright", "Copyright © 2000-2009\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OLESelfRegister", "\0"
+            VALUE "OriginalFilename", "Geometry.DLL\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "WBFL\0"
+            VALUE "ProductVersion", "3.1.1.0\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+
+IDR_POINT2D             REGISTRY DISCARDABLE    "Point2d.rgs"
+IDR_SIZE2D              REGISTRY DISCARDABLE    "Size2d.rgs"
+IDR_RECT2D              REGISTRY DISCARDABLE    "Rect2d.rgs"
+IDR_VECTOR2D            REGISTRY DISCARDABLE    "Vector2d.rgs"
+IDR_POINT2DCOLLECTION   REGISTRY DISCARDABLE    "Point2dCollection.rgs"
+IDR_LINESEGMENT2D       REGISTRY DISCARDABLE    "LineSegment2d.rgs"
+IDR_LINE2D              REGISTRY DISCARDABLE    "Line2d.rgs"
+IDR_SHAPEPROPERTIES     REGISTRY DISCARDABLE    "ShapeProperties.rgs"
+IDR_POLYSHAPE           REGISTRY DISCARDABLE    "PolyShape.rgs"
+IDR_CIRCLE              REGISTRY DISCARDABLE    "Circle.rgs"
+IDR_RECTANGLE           REGISTRY DISCARDABLE    "Rectangle.rgs"
+IDR_TRIANGLE            REGISTRY DISCARDABLE    "Triangle.rgs"
+IDR_PRECASTBEAM         REGISTRY DISCARDABLE    "PrecastBeam.rgs"
+IDR_TRAFFICBARRIER      REGISTRY DISCARDABLE    "TrafficBarrier.rgs"
+IDR_POINT3D             REGISTRY DISCARDABLE    "Point3d.rgs"
+IDR_SIZE3D              REGISTRY DISCARDABLE    "Size3d.rgs"
+IDR_VECTOR3D            REGISTRY DISCARDABLE    "Vector3d.rgs"
+IDR_PLANE3D             REGISTRY DISCARDABLE    "Plane3d.rgs"
+IDR_POINT3DCOLLECTION   REGISTRY DISCARDABLE    "Point3dCollection.rgs"
+IDR_GEOMUTIL            REGISTRY DISCARDABLE    "GeomUtil.rgs"
+IDR_COORDINATEXFORM3D   REGISTRY DISCARDABLE    "CoordinateXform3d.rgs"
+IDR_COORDINATEXFORM2D   REGISTRY DISCARDABLE    "CoordinateXform2d.rgs"
+IDR_PRIMITIVEFACTORY    REGISTRY DISCARDABLE    "PrimitiveFactory.rgs"
+IDR_CIRCULARSEGMENT     REGISTRY DISCARDABLE    "CircularSegment.rgs"
+IDR_SHAPECOLLECTION     REGISTRY DISCARDABLE    "ShapeCollection.rgs"
+IDR_PLATEGIRDER         REGISTRY DISCARDABLE    "PlateGirder.rgs"
+IDR_NUBEAM              REGISTRY DISCARDABLE    "NUBeam.rgs"
+IDR_UBEAM               REGISTRY DISCARDABLE    "UBeam.rgs"
+IDR_BULBTEE             REGISTRY DISCARDABLE    "BulbTee.rgs"
+IDR_MULTIWEB            REGISTRY DISCARDABLE    "MultiWeb.rgs"
+IDR_UBEAM2              REGISTRY DISCARDABLE    "UBeam2.rgs"
+IDR_COMPOSITESHAPEITEM  REGISTRY DISCARDABLE    "CompositeShapeItem.rgs"
+IDR_COMPOSITESHAPE      REGISTRY DISCARDABLE    "CompositeShape.rgs"
+IDR_VOIDEDSLAB          REGISTRY DISCARDABLE    "VoidedSlab.rgs"
+IDR_VOIDEDSLAB2         REGISTRY DISCARDABLE    "VoidedSlab2.rgs"
+IDR_BOXBEAM             REGISTRY DISCARDABLE    "BoxBeam.rgs"
+IDR_MULTIWEB2           REGISTRY DISCARDABLE    "MultiWeb2.rgs"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_E_NOTNORMALIZED     "Rectangle must be normalized"
+    IDS_E_ZEROMAGNITUDE     "Magnitude of vector(s) must be greater than zero"
+    IDS_E_MAGNITUDELESSTHANZERO "Magnitude is less than zero"
+    IDS_E_SAMEPOINTS        "Points cannot be the same"
+    IDS_E_INFINITESOLUTIONS "There are an infinite number of solutions for this point"
+    IDS_E_NOSOLUTIONS       "There are no solutions for this point"
+    IDS_E_RADIUS            "Radius cannot be less than zero"
+    IDS_E_DIMENSION         "An invalid dimension was given"
+    IDS_E_POINTONLINE       "Point cannot be on the line"
+    IDS_E_MIDORDINATE       "Mid-ordinate must be greater than zero and less than 2*Radius"
+    IDS_E_ANGLE             "Angle cannot be less than zero"
+    IDS_E_DISTANCE          "Distance must be greater than or equal to zero"
+    IDS_E_COINCIDENTPOINTS  "Points cannot be coincident"
+    IDS_E_COLINEAR          "Points cannot be colinear"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PROJNAME            "Geometry"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+1 TYPELIB "WBFLGeometry.tlb"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

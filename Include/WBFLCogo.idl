@@ -1,0 +1,2010 @@
+///////////////////////////////////////////////////////////////////////
+// COGO - Coordinate Geometry
+// Copyright © 2001  Washington State Department of Transportation
+//                   Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the Alternate Route Library Open Source License as 
+// published by the Washington State Department of Transportation,
+// Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful,
+// but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// PURPOSE.  See the Alternate Route Library Open Source License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License
+// along with this program; if not, write to the Washington State
+// Department of Transportation, Bridge and Structures Office,
+// P.O. Box 47340, Olympia, WA 98503, USA or e-mail
+// Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// COGO.idl : IDL source for COGO.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (COGO.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "WBFLTypes.idl";
+import "WBFLTools.idl";
+import "WBFLGeometry.idl";
+import "WBFLUnitServer.idl";
+
+#include "cogo.hh"
+#include "UnitServer.hh"
+
+cpp_quote("#include <WBFLUnitServer.h>")
+
+typedef Int32 CogoElementKey;
+
+cpp_quote("#define COGO_E_POINTNOTFOUND                MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,512)")
+cpp_quote("#define COGO_E_POINTALREADYDEFINED          MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,513)")
+cpp_quote("#define COGO_E_BADDIRECTIONSTRING           MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,514)")
+cpp_quote("#define COGO_E_BADAZIMUTH                   MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,515)")
+cpp_quote("#define COGO_E_BADDIRECTION                 MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,516)")
+cpp_quote("#define COGO_E_BADANGLE                     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,517)")
+cpp_quote("#define COGO_E_BADANGLESTRING               MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,518)")
+cpp_quote("#define COGO_E_ANGLE                        MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,519)")
+cpp_quote("#define COGO_E_AREA                         MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,520)")
+cpp_quote("#define COGO_E_THREEPNTSREQD                MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,521)")
+cpp_quote("#define COGO_E_RADIUS                       MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,522)")
+cpp_quote("#define COGO_E_LINESEGMENTNOTFOUND          MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,523)")
+cpp_quote("#define COGO_E_LINESEGMENTALREADYDEFINED    MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,524)")
+cpp_quote("#define COGO_E_PROFILEPOINTNOTFOUND         MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,525)")
+cpp_quote("#define COGO_E_PROFILEPOINTALREADYDEFINED   MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,526)")
+cpp_quote("#define COGO_E_VERTCURVEPOINTS              MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,527)")
+cpp_quote("#define COGO_E_VERTCURVENOTFOUND            MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,528)")
+cpp_quote("#define COGO_E_VERTCURVEALREADYDEFINED      MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,529)")
+cpp_quote("#define COGO_E_HORZCURVENOTFOUND            MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,530)")
+cpp_quote("#define COGO_E_HORZCURVEALREADYDEFINED      MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,531)")
+cpp_quote("#define COGO_E_PROFILEELEMENTTYPE           MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,532)")
+cpp_quote("#define COGO_E_PATHELEMENTTYPE              MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,533)")
+cpp_quote("#define COGO_E_PATHNOTFOUND                 MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,534)")
+cpp_quote("#define COGO_E_PATHALREADYDEFINED           MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,535)")
+cpp_quote("#define COGO_E_BADFORMATTAG                 MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,536)")
+cpp_quote("#define COGO_E_COINCIDENTPOINTS             MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,537)")
+cpp_quote("#define COGO_E_BADSTATIONSTRING             MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,538)")
+cpp_quote("#define COGO_E_SPIRALSOVERLAP               MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,539)")
+cpp_quote("#define COGO_E_POINTEVENTS                  MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,540)")
+cpp_quote("#define COGO_E_CUBICSPLINEPOINTS            MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,541)")
+cpp_quote("#define COGO_E_POINTINCIRCLE                MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,542)")
+
+[
+    uuid(1128D28F-55F7-11D5-8C29-006097C68A9C),
+    version(1.0),
+	helpcontext(IDH_WBFLCogo),
+    helpstring("WBFLCOGO Library")
+]
+library WBFLCogo
+{
+   importlib("stdole32.tlb");
+   importlib("stdole2.tlb");
+
+    typedef [public,helpstring("Indicates general north/south direction of a bearing"),helpcontext(IDH_NSDirectionType),uuid(AA76DB72-59E7-11d5-8C2D-006097C68A9C)] 
+    enum NSDirectionType
+    {
+       nsNorth = 1,
+       nsSouth = 2
+    } NSDirectionType;
+
+    typedef [public,helpstring("Indicates general east/west direction of a bearing"),helpcontext(IDH_EWDirectionType),uuid(AA76DB73-59E7-11d5-8C2D-006097C68A9C)] 
+    enum EWDirectionType
+    {
+       ewEast = 1,
+       ewWest = 2
+    } EWDirectionType;
+
+    typedef [public,helpstring("Indicates the entry or exit spiral of a horizontal curve"),helpcontext(IDH_SpiralType),uuid(66EB558D-4360-47d3-B3C0-0BC65E302333)] 
+    enum SpiralType
+    {
+       spEntry = 1,
+       spExit  = 2
+    } SpiralType;
+
+    typedef [public,helpstring("Indicates the direction of a horizontal curve"),helpcontext(IDH_CurveDirectionType),uuid(1620A21B-1D7E-437e-B7C8-FF71E6F44BED)] 
+    enum CurveDirectionType
+    {
+       cdLeft  = 1,
+       cdRight = 2
+    } CurveDirectionType;
+
+    typedef [public,helpstring("Indicates a profile element type"),helpcontext(IDH_ProfileElementType),uuid(667D49B0-8BE7-43e6-8CE6-5245309C128C)] 
+    enum ProfileElementType
+    {
+       pePoint     = 1,
+       peVertCurve = 2
+    } ProfileElementType;
+
+    typedef [public,helpstring("Indicates an alignment element type"),helpcontext(IDH_PathElementType),uuid(A5FC1519-B488-4943-94FC-ACBA59BCB733)] 
+    enum PathElementType
+    {
+       petPoint       = 1,
+       petLineSegment = 2,
+	   petHorzCurve   = 3,
+	   petCubicSpline = 4
+    } PathElementType;
+
+    typedef [public,helpstring("Indicates the direction of the angle formed by a circular tangent line and the line connecting the centers of the circles"),helpcontext(IDH_TangentSignType),uuid(ED58941C-11B9-484e-A9D6-D07ADB1FA0A3)] 
+    enum TangentSignType
+    {
+       tsCW       =  1,
+       tsCCW      = -1,
+    } TangentSignType;
+
+    typedef [public,helpstring("Indicates the method for computing the degree of curvature"),helpcontext(IDH_DegreeCurvatureType),uuid(26428AC0-AEE2-4bdb-8CC9-8C13F531A4B7)] 
+    enum DegreeCurvatureType
+    {
+       dcChord    =  1,
+       dcArc      =  2,
+       dcRailroad =  1,
+       dcHighway  =  2,
+    } DegreeCurvatureType;
+
+
+
+    [
+        object,
+        uuid(2C98A246-55F7-11D5-8C29-006097C68A9C),
+        oleautomation,
+		helpcontext(IDH_Angle),
+        helpstring("IAngle Interface"),
+        pointer_default(unique)
+    ]
+    interface IAngle : IUnknown
+    {
+        [propget, helpstring("property Value"),helpcontext(IDH_Angle_Value)] HRESULT Value([out, retval] Float64 *pVal);
+        [propput, helpstring("property Value"),helpcontext(IDH_Angle_Value)] HRESULT Value([in] Float64 newVal);
+        [propget, helpstring("property Degree"),helpcontext(IDH_Angle_Degree)] HRESULT Degree([out, retval] long *pVal);
+        [propget, helpstring("property Minute"),helpcontext(IDH_Angle_Minute)] HRESULT Minute([out, retval] long *pVal);
+        [propget, helpstring("property Second"),helpcontext(IDH_Angle_Second)] HRESULT Second([out, retval] Float64 *pVal);
+        [helpstring("method Normalize"),helpcontext(IDH_Angle_Normalize)] HRESULT Normalize();
+        [helpstring("method FromDMS"),helpcontext(IDH_Angle_FromDMS)] HRESULT FromDMS([in] long deg,[in] long min,[in] Float64 sec);
+        [helpstring("method FromString"),helpcontext(IDH_Angle_FromString)] HRESULT FromString([in] BSTR bstrAngle);
+        [helpstring("method Increment"),helpcontext(IDH_Angle_Increment)] HRESULT Increment([in] VARIANT varAngle,[out,retval] IAngle* *pVal);
+        [helpstring("method IncrementBy"),helpcontext(IDH_Angle_IncrementBy)] HRESULT IncrementBy([in] VARIANT varAngle);
+        [helpstring("method Clone"),helpcontext(IDH_Angle_Clone)] HRESULT Clone([out,retval] IAngle* *clone);
+
+        [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+    };
+    [
+        object,
+        uuid(2C98A251-55F7-11D5-8C29-006097C68A9C),
+        oleautomation,
+		helpcontext(IDH_Direction),
+        helpstring("IDirection Interface"),
+        pointer_default(unique)
+    ]
+    interface IDirection : IUnknown
+    {
+        [propget, helpstring("property Value"),helpcontext(IDH_Direction_Value)] HRESULT Value([out, retval] Float64 *pVal);
+        [propput, helpstring("property Value"),helpcontext(IDH_Direction_Value)] HRESULT Value([in] Float64 newVal);
+        [propget, helpstring("property NSDirection"),helpcontext(IDH_Direction_NSDirection)] HRESULT NSDirection([out, retval] NSDirectionType *pVal);
+        [propput, helpstring("property NSDirection"),helpcontext(IDH_Direction_NSDirection)] HRESULT NSDirection([in] NSDirectionType newVal);
+        [propget, helpstring("property EWDirection"),helpcontext(IDH_Direction_EWDirection)] HRESULT EWDirection([out, retval] EWDirectionType *pVal);
+        [propput, helpstring("property EWDirection"),helpcontext(IDH_Direction_EWDirection)] HRESULT EWDirection([in] EWDirectionType newVal);
+        [propget, helpstring("property Degree"),helpcontext(IDH_Direction_Degree)] HRESULT Degree([out, retval] long *pVal);
+        [propput, helpstring("property Degree"),helpcontext(IDH_Direction_Degree)] HRESULT Degree([in] long newVal);
+        [propget, helpstring("property Minute"),helpcontext(IDH_Direction_Minute)] HRESULT Minute([out, retval] long *pVal);
+        [propput, helpstring("property Minute"),helpcontext(IDH_Direction_Minute)] HRESULT Minute([in] long newVal);
+        [propget, helpstring("property Second"),helpcontext(IDH_Direction_Second)] HRESULT Second([out, retval] Float64 *pVal);
+        [propput, helpstring("property Second"),helpcontext(IDH_Direction_Second)] HRESULT Second([in] Float64 newVal);
+        [helpstring("method Increment"),helpcontext(IDH_Direction_Increment)] HRESULT Increment([in] VARIANT varAngle,[out,retval] IDirection* *pVal);
+        [helpstring("method IncrementBy"),helpcontext(IDH_Direction_IncrementBy)] HRESULT IncrementBy([in] VARIANT varAngle);
+        [helpstring("method FromString"),helpcontext(IDH_Direction_FromString)] HRESULT FromString([in] BSTR bstrDir);
+        [helpstring("method FromDMS"),helpcontext(IDH_Direction_FromDMS)] HRESULT FromDMS([in] NSDirectionType ns,[in] long Degree,[in] long Minute, [in] Float64 Second, [in] EWDirectionType ew);
+        [helpstring("method FromAzimuth"),helpcontext(IDH_Direction_FromAzimuth)] HRESULT FromAzimuth([in] long Degree, [in] long Minute, [in] Float64 Second);
+		  [helpstring("method AngleBetween"),helpcontext(IDH_Direction_AngleBetween)] HRESULT AngleBetween([in] IDirection* dir,[out,retval]IAngle** pVal);
+        [helpstring("method Clone"),helpcontext(IDH_Direction_Clone)] HRESULT Clone([out,retval] IDirection* *clone);
+
+        [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+    };
+
+	[
+		object,
+		uuid(739D2AB4-A3E9-4BCC-AC06-75E8293C08B7),
+		oleautomation,
+		helpcontext(IDH_AngleDisplayUnitFormatter),
+		helpstring("IAngleDisplayUnitFormatter Interface"),
+		pointer_default(unique)
+	]
+	interface IAngleDisplayUnitFormatter : IDisplayUnitFormatter
+	{
+		[propget, helpstring("property CondensedFormat"),helpcontext(IDH_AngleDisplayUnitFormatter_CondensedFormat)] HRESULT CondensedFormat([out, retval] VARIANT_BOOL *pVal);
+		[propput, helpstring("property CondensedFormat"),helpcontext(IDH_AngleDisplayUnitFormatter_CondensedFormat)] HRESULT CondensedFormat([in] VARIANT_BOOL newVal);
+		[propget, helpstring("property Signed"),helpcontext(IDH_AngleDisplayUnitFormatter_Signed)] HRESULT Signed([out, retval] VARIANT_BOOL *pVal);
+		[propput, helpstring("property Signed"),helpcontext(IDH_AngleDisplayUnitFormatter_Signed)] HRESULT Signed([in] VARIANT_BOOL newVal);
+   };
+
+	[
+		object,
+		uuid(FFA2F69D-8B5B-40ED-9802-35BEA09551B7),
+		oleautomation,
+		helpcontext(IDH_DirectionDisplayUnitFormatter),
+		helpstring("IDirectionDisplayUnitFormatter Interface"),
+		pointer_default(unique)
+	]
+	interface IDirectionDisplayUnitFormatter : IDisplayUnitFormatter
+	{
+		[propget, helpstring("property CondensedFormat"),helpcontext(IDH_DirectionDisplayUnitFormatter_CondensedFormat)] HRESULT CondensedFormat([out, retval] VARIANT_BOOL *pVal);
+		[propput, helpstring("property CondensedFormat"),helpcontext(IDH_DirectionDisplayUnitFormatter_CondensedFormat)] HRESULT CondensedFormat([in] VARIANT_BOOL newVal);
+		[propget, helpstring("property BearingFormat"),helpcontext(IDH_DirectionDisplayUnitFormatter_BearingFormat)] HRESULT BearingFormat([out, retval] VARIANT_BOOL *pVal);
+		[propput, helpstring("property BearingFormat"),helpcontext(IDH_DirectionDisplayUnitFormatter_BearingFormat)] HRESULT BearingFormat([in] VARIANT_BOOL newVal);
+   };
+
+    [
+       object,
+       oleautomation,
+       uuid(74B1E8A0-5EAC-11d5-8C32-006097C68A9C),
+	   helpcontext(IDH_Point),
+       helpstring("IPointEvents Interface"),
+       pointer_default(unique)
+    ]
+    interface IPointEvents : IUnknown
+    {
+       [helpstring("event OnPointChanged"),helpcontext(IDH_Point_OnPointChanged)] HRESULT OnPointChanged(IPoint2d* point);
+    };
+
+    [
+       object,
+       uuid(5C3C09D6-5E7F-11d5-8C32-006097C68A9C),
+       helpstring("IEnumKeys Interface"),
+       oleautomation,
+       hidden,restricted,
+       pointer_default(unique)
+    ]
+    interface IEnumKeys : IUnknown
+    {
+       [helpstring("Clone")]
+       HRESULT Clone([out] IEnumKeys** ppenum);
+
+       [helpstring("Next")]
+       HRESULT Next([in] ULONG celt, [out] CogoElementKey* rgelt, [in,out] ULONG* pceltFetched);
+
+       [helpstring("Reset")]
+       HRESULT Reset();
+       
+       [helpstring("Skip")]
+       HRESULT Skip([in] ULONG celt);
+    };
+
+    [
+        object,
+        uuid(5559C9A5-5C16-11D5-8C31-006097C68A9C),
+        oleautomation,
+		helpcontext(IDH_PointCollection),
+        helpstring("IPointCollection Interface"),
+        pointer_default(unique)
+    ]
+    interface IPointCollection : IUnknown
+    {
+        [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+        [propget, helpstring("property Item"),helpcontext(IDH_PointCollection_Item)] HRESULT Item([in] CogoElementKey key, [out, retval] IPoint2d* *pVal);
+        [propputref, helpstring("property Item"),helpcontext(IDH_PointCollection_Item)] HRESULT Item([in] CogoElementKey key, [in] IPoint2d* newVal);
+        [propget, helpstring("property Count"),helpcontext(IDH_PointCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
+        [helpstring("method Add"),helpcontext(IDH_PointCollection_Add)] HRESULT Add([in] CogoElementKey key,[in] Float64 x,[in] Float64 y,[out,retval] IPoint2d* *point);
+        [helpstring("method AddEx"),helpcontext(IDH_PointCollection_AddEx)] HRESULT AddEx([in] CogoElementKey key,[in] IPoint2d* newVal);
+        [helpstring("method Remove"),helpcontext(IDH_PointCollection_Remove)] HRESULT Remove([in] CogoElementKey key);
+        [helpstring("method Clear"),helpcontext(IDH_PointCollection_Clear)] HRESULT Clear();
+        [helpstring("method FindKey"),helpcontext(IDH_PointCollection_FindKey)] HRESULT FindKey([in] IPoint2d* point,[out,retval]CogoElementKey* key);
+        [propget,restricted,helpstring("property _EnumKeys"),helpcontext(IDH_PointCollection__EnumKeys)] HRESULT _EnumKeys([out,retval] IEnumKeys** ppenum);
+		[propget, helpstring("method Factory"),helpcontext(IDH_PointCollection_Factory)] HRESULT Factory([out,retval]IPoint2dFactory** factory);
+		[propputref, helpstring("method Factory"),helpcontext(IDH_PointCollection_Factory)] HRESULT Factory([in]IPoint2dFactory* factory);
+		[helpstring("method Key"),helpcontext(IDH_PointCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoElementKey* key);
+        [propget,restricted,helpstring("property _EnumPoints"),helpcontext(IDH_PointCollection__EnumPoints)] HRESULT _EnumPoints([out,retval] IEnumPoint2d** ppenum);
+        [helpstring("method Clone"), helpcontext(IDH_PointCollection_Clone)] HRESULT Clone([out,retval]IPointCollection* *clone);
+
+        [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+    };
+
+
+    [
+        object,
+        uuid(74B1E8A1-5EAC-11d5-8C32-006097C68A9C),
+        oleautomation,
+		helpcontext(IDH_PointCollection),
+        helpstring("IPointCollection Interface"),
+        pointer_default(unique)
+    ]
+    interface IPointCollectionEvents : IUnknown
+    {
+        [helpstring("event OnPointChanged"),helpcontext(IDH_PointCollection_OnPointChanged)] HRESULT OnPointChanged([in] CogoElementKey key,[in] IPoint2d* point);
+        [helpstring("event OnPointAdded"),helpcontext(IDH_PointCollection_OnPointAdded)] HRESULT OnPointAdded([in] CogoElementKey key,[in] IPoint2d* point);
+        [helpstring("event OnPointRemoved"),helpcontext(IDH_PointCollection_OnPointRemoved)] HRESULT OnPointRemoved([in] CogoElementKey key);
+        [helpstring("event OnPointsCleared"),helpcontext(IDH_PointCollection_OnPointsCleared)] HRESULT OnPointsCleared();
+    };
+
+   [
+       object,
+       uuid(7E56BBC9-AC81-4B6D-8366-319DEE51A0D8),
+       oleautomation,
+	   helpcontext(IDH_HorzCurve),
+       helpstring("IHorzCurve Interface"),
+       pointer_default(unique)
+   ]
+   interface IHorzCurve : IUnknown
+   {
+       [propget, helpstring("property PBT"), helpcontext(IDH_HorzCurve_PBT)] HRESULT PBT([out, retval] IPoint2d* *pVal);
+       [propputref, helpstring("property PBT"), helpcontext(IDH_HorzCurve_PBT)] HRESULT PBT([in] IPoint2d* newVal);
+       [propget, helpstring("property PI"), helpcontext(IDH_HorzCurve_PI)] HRESULT PI([out, retval] IPoint2d* *pVal);
+       [propputref, helpstring("property PI"), helpcontext(IDH_HorzCurve_PI)] HRESULT PI([in] IPoint2d* newVal);
+       [propget, helpstring("property PFT"), helpcontext(IDH_HorzCurve_PFT)] HRESULT PFT([out, retval] IPoint2d* *pVal);
+       [propputref, helpstring("property PFT"), helpcontext(IDH_HorzCurve_PFT)] HRESULT PFT([in] IPoint2d* newVal);
+       [propget, helpstring("property Radius"), helpcontext(IDH_HorzCurve_Radius)] HRESULT Radius([out, retval] Float64 *pVal);
+       [propput, helpstring("property Radius"), helpcontext(IDH_HorzCurve_Radius)] HRESULT Radius([in] Float64 newVal);
+       [propget, helpstring("property SpiralLength"), helpcontext(IDH_HorzCurve_SpiralLength)] HRESULT SpiralLength([in] SpiralType spType,[out, retval] Float64 *pVal);
+       [propput, helpstring("property SpiralLength"), helpcontext(IDH_HorzCurve_SpiralLength)] HRESULT SpiralLength([in] SpiralType spType,[in] Float64 newVal);
+       [propget, helpstring("property SpiralAngle"), helpcontext(IDH_HorzCurve_SpiralAngle)] HRESULT SpiralAngle([in] SpiralType spType,[out, retval] IAngle* *pVal);
+	   [propget, helpstring("property X"), helpcontext(IDH_HorzCurve_X)] HRESULT X([in]SpiralType spType,[out,retval]Float64* x);
+	   [propget, helpstring("property Y"), helpcontext(IDH_HorzCurve_Y)] HRESULT Y([in]SpiralType spType,[out,retval]Float64* y);
+	   [propget, helpstring("property Q"), helpcontext(IDH_HorzCurve_Q)] HRESULT Q([in]SpiralType spType,[out,retval]Float64* q);
+	   [propget, helpstring("property T"), helpcontext(IDH_HorzCurve_T)] HRESULT T([in]SpiralType spType,[out,retval]Float64* t);
+	   [propget, helpstring("property BkTangentBrg"), helpcontext(IDH_HorzCurve_BkTangentBrg)] HRESULT BkTangentBrg([out,retval]IDirection* *brg);
+	   [propget, helpstring("property FwdTangentBrg"), helpcontext(IDH_HorzCurve_FwdTangentBrg)] HRESULT FwdTangentBrg([out,retval]IDirection* *brg);
+       [propget, helpstring("property CurveAngle"), helpcontext(IDH_HorzCurve_CurveAngle)] HRESULT CurveAngle([out, retval] IAngle* *pVal);
+	   [propget, helpstring("property BkTangentLength"), helpcontext(IDH_HorzCurve_BkTangentLength)] HRESULT BkTangentLength([out,retval]Float64* t);
+	   [propget, helpstring("property FwdTangentLength"), helpcontext(IDH_HorzCurve_FwdTangentLength)] HRESULT FwdTangentLength([out,retval]Float64* t);
+       [propget, helpstring("property TS"), helpcontext(IDH_HorzCurve_TS)] HRESULT TS([out, retval] IPoint2d* *pVal);
+       [propget, helpstring("property ST"), helpcontext(IDH_HorzCurve_ST)] HRESULT ST([out, retval] IPoint2d* *pVal);
+       [propget, helpstring("property SC"), helpcontext(IDH_HorzCurve_SC)] HRESULT SC([out, retval] IPoint2d* *pVal);
+       [propget, helpstring("property CS"), helpcontext(IDH_HorzCurve_CS)] HRESULT CS([out, retval] IPoint2d* *pVal);
+	   [propget, helpstring("property Chord"), helpcontext(IDH_HorzCurve_Chord)] HRESULT Chord([out,retval]Float64* chord);
+       [propget, helpstring("property CircularCurveAngle"), helpcontext(IDH_HorzCurve_CircularCurveAngle)] HRESULT CircularCurveAngle([out, retval] IAngle* *pVal);
+	   [propget, helpstring("property Tangent"), helpcontext(IDH_HorzCurve_Tangent)] HRESULT Tangent([out,retval]Float64* tangent);
+	   [propget, helpstring("property MidOrdinate"), helpcontext(IDH_HorzCurve_MidOrdinate)] HRESULT MidOrdinate([out,retval]Float64* mo);
+	   [propget, helpstring("property External"), helpcontext(IDH_HorzCurve_External)] HRESULT External([out,retval]Float64* external);
+	   [propget, helpstring("property DE"), helpcontext(IDH_HorzCurve_DE)] HRESULT DE([in]SpiralType spType,[out,retval]IAngle* *pDE);
+	   [propget, helpstring("property LongTangent"), helpcontext(IDH_HorzCurve_LongTangent)] HRESULT LongTangent([in]SpiralType spType,[out,retval]Float64* u);
+	   [propget, helpstring("property ShortTangent"), helpcontext(IDH_HorzCurve_ShortTangent)] HRESULT ShortTangent([in]SpiralType spType,[out,retval]Float64* v);
+       [propget, helpstring("property CC"), helpcontext(IDH_HorzCurve_CC)] HRESULT CC([out, retval] IPoint2d* *pVal);
+       [propget, helpstring("property PCI"), helpcontext(IDH_HorzCurve_PCI)] HRESULT PCI([out, retval] IPoint2d* *pVal);
+	   [propget, helpstring("property SPI"), helpcontext(IDH_HorzCurve_SPI)] HRESULT SPI([in]SpiralType spType,[out,retval]IPoint2d** pSPI);
+	   [propget, helpstring("property CurveBkTangentBrg"), helpcontext(IDH_HorzCurve_CurveBkTangentBrg)] HRESULT CurveBkTangentBrg([out,retval]IDirection* *brg);
+	   [propget, helpstring("property CurveFwdTangentBrg"), helpcontext(IDH_HorzCurve_CurveFwdTangentBrg)] HRESULT CurveFwdTangentBrg([out,retval]IDirection* *brg);
+       [propget, helpstring("property CCC"), helpcontext(IDH_HorzCurve_CCC)] HRESULT CCC([out, retval] IPoint2d* *pVal);
+	   [propget, helpstring("property DF"), helpcontext(IDH_HorzCurve_DF)] HRESULT DF([in]SpiralType spType,[out,retval] IAngle** pDF);
+	   [propget, helpstring("property DH"), helpcontext(IDH_HorzCurve_DH)] HRESULT DH([in]SpiralType spType,[out,retval] IAngle** pDH);
+   	   [propget, helpstring("property SpiralChord"), helpcontext(IDH_HorzCurve_SpiralChord)] HRESULT SpiralChord([in]SpiralType spType,[out,retval] Float64* cs);
+   	   [propget, helpstring("property Direction"), helpcontext(IDH_HorzCurve_Direction)] HRESULT Direction([out,retval] CurveDirectionType* dir);
+	   [propget, helpstring("property CurveLength"), helpcontext(IDH_HorzCurve_CurveLength)] HRESULT CurveLength([out,retval] Float64* pVal);
+	   [propget, helpstring("property TotalLength"), helpcontext(IDH_HorzCurve_TotalLength)] HRESULT TotalLength([out,retval] Float64* pVal);
+	   [propget, helpstring("property DegreeCurvature"), helpcontext(IDH_HorzCurve_DegreeCurvature)] HRESULT DegreeCurvature([in] Float64 D,[in] DegreeCurvatureType dcMethod,[out,retval] IAngle** pDC);
+	   [helpstring("method Bearing"), helpcontext(IDH_HorzCurve_Bearing)] HRESULT Bearing([in] Float64 distance,[out,retval]IDirection* *pVal);
+	   [helpstring("method Normal"), helpcontext(IDH_HorzCurve_Normal)] HRESULT Normal([in] Float64 distance,[out,retval]IDirection* *pVal);
+	   [helpstring("method PointOnCurve"), helpcontext(IDH_HorzCurve_PointOnCurve)] HRESULT PointOnCurve([in] Float64 distance,[out,retval]IPoint2d* *pVal);
+      [helpstring("method ProjectPoint"), helpcontext(IDH_HorzCurve_ProjectPoint)] HRESULT ProjectPoint([in] IPoint2d* point,[out,retval] IPoint2d* *pNewPoint);
+      [helpstring("method DistanceFromStart"), helpcontext(IDH_HorzCurve_DistanceFromStart)] HRESULT DistanceFromStart([in] IPoint2d* point,[out,retval] Float64* dist);
+	  [helpstring("method Intersect"), helpcontext(IDH_HorzCurve_Intersect)] HRESULT Intersect([in]ILine2d* line,[in]VARIANT_BOOL bProjectBack,[in]VARIANT_BOOL bProjectAhead,[out] IPoint2d** p1,[out] IPoint2d** p2);
+	   [propget, helpstring("property PointFactory"), helpcontext(IDH_HorzCurve_PointFactory)] HRESULT PointFactory([out,retval] IPoint2dFactory* *factory);
+	   [propputref, helpstring("property PointFactory"), helpcontext(IDH_HorzCurve_PointFactory)] HRESULT PointFactory([in] IPoint2dFactory *factory);
+      [helpstring("method Clone"), helpcontext(IDH_HorzCurve_Clone)] HRESULT Clone([out,retval] IHorzCurve* *clone);
+
+        [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+   };
+
+   [
+       object,
+       uuid(4726E8C7-5B74-4cda-844B-4F7B1B5AB1ED),
+       oleautomation,
+	   helpcontext(IDH_HorzCurve),
+       helpstring("IHorzCurveEvents Interface"),
+       pointer_default(unique)
+   ]
+   interface IHorzCurveEvents : IUnknown
+   {
+       [helpstring("event OnHorzCurveChanged"), helpcontext(IDH_HorzCurve_OnHorzCurveChanged)] HRESULT OnHorzCurveChanged([in] IHorzCurve* hc);
+   };
+
+	
+	[
+	   object,
+	   uuid(B5850388-0046-4491-BE25-9EC1E6B66344),
+	   helpstring("IEnumLineSegments Interface"),
+	   //helpcontext(IDH_IEnumLineSegments),
+	   oleautomation,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumLineSegments : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumLineSegments** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] ILineSegment2d** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+   [
+       object,
+       uuid(43D1CADC-0D31-4C0D-868F-F890B3C09AD2),
+       oleautomation,
+	   helpcontext(IDH_LineSegmentCollection),
+       helpstring("ILineSegmentCollection Interface"),
+       pointer_default(unique)
+   ]
+   interface ILineSegmentCollection : IUnknown
+   {
+     [propget, restricted, helpstring("returns an enumerator for the collection.")]  HRESULT _NewEnum([out, retval] IUnknown** retval);  
+       [propget, helpstring("property Item"),helpcontext(IDH_LineSegmentCollection_Item)] HRESULT Item([in] CogoElementKey key, [out, retval] ILineSegment2d* *pVal);
+       [propputref, helpstring("property Item"),helpcontext(IDH_LineSegmentCollection_Item)] HRESULT Item([in] CogoElementKey key, [in] ILineSegment2d* newVal);
+       [propget, helpstring("property Count"),helpcontext(IDH_LineSegmentCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
+       [helpstring("method Add"),helpcontext(IDH_LineSegmentCollection_Add)] HRESULT Add([in] CogoElementKey key,[in] IPoint2d* start,[in] IPoint2d* end,[out,retval]ILineSegment2d* *ls);
+       [helpstring("method AddEx"),helpcontext(IDH_LineSegmentCollection_AddEx)] HRESULT AddEx([in] CogoElementKey key,[in] ILineSegment2d* newVal);
+       [helpstring("method Remove"),helpcontext(IDH_LineSegmentCollection_Remove)] HRESULT Remove([in] CogoElementKey key);
+       [helpstring("method Clear"),helpcontext(IDH_LineSegmentCollection_Clear)] HRESULT Clear();
+       [helpstring("method FindKey"),helpcontext(IDH_LineSegmentCollection_FindKey)] HRESULT FindKey([in] ILineSegment2d* ls,[out,retval]CogoElementKey* key);
+     [propget,restricted,helpstring("property _EnumKeys"),helpcontext(IDH_LineSegmentCollection__EnumKeys)] HRESULT _EnumKeys([out,retval] IEnumKeys** ppenum);
+	   [propget, helpstring("property Factory"),helpcontext(IDH_LineSegmentCollection_Factory)] HRESULT Factory([out,retval] ILineSegment2dFactory** factory);
+	   [propputref, helpstring("property Factory"),helpcontext(IDH_LineSegmentCollection_Factory)] HRESULT Factory([in] ILineSegment2dFactory* factory);
+		[helpstring("method Key"),helpcontext(IDH_LineSegmentCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoElementKey* key);
+        [propget,restricted,helpstring("property _EnumLineSegments"),helpcontext(IDH_LineSegmentCollection__EnumLineSegments)] HRESULT _EnumLineSegments([out,retval] IEnumLineSegments** ppenum);
+        [helpstring("method Clone"), helpcontext(IDH_LineSegmentCollection_Clone)] HRESULT Clone([out,retval] ILineSegmentCollection* *clone);
+
+        [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+   };
+
+
+   [
+       object,
+       uuid(99FA2E81-A3FB-4b10-A9A6-FB1F4F6CDE75),
+       oleautomation,
+	   helpcontext(IDH_LineSegmentCollection),
+       helpstring("ILineSegmentCollectionEvents Interface"),
+       pointer_default(unique)
+   ]
+   interface ILineSegmentCollectionEvents : IUnknown
+   {
+       [helpstring("event OnLineSegmentChanged"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentChanged)] HRESULT OnLineSegmentChanged([in] CogoElementKey key,[in] ILineSegment2d* lineSeg);
+       [helpstring("event OnLineSegmentAdded"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentAdded)] HRESULT OnLineSegmentAdded([in] CogoElementKey key,[in] ILineSegment2d* lineSeg);
+       [helpstring("event OnLineSegmentRemoved"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentRemoved)] HRESULT OnLineSegmentRemoved([in] CogoElementKey key);
+       [helpstring("event OnLineSegmentsCleared"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentsCleared)] HRESULT OnLineSegmentsCleared();
+   };
+	[
+		object,
+		uuid(337799AD-766C-4FB7-A238-9A4C61FFBE29),
+		oleautomation,
+      helpcontext(IDH_Station),
+		helpstring("IStation Interface"),
+		pointer_default(unique)
+	]
+	interface IStation : IUnknown
+	{
+		[propget, helpstring("property Value"), helpcontext(IDH_Station_Value)] HRESULT Value([out, retval] Float64 *pVal);
+		[propput, helpstring("property Value"), helpcontext(IDH_Station_Value)] HRESULT Value([in] Float64 newVal);
+      [helpstring("method FromString"), helpcontext(IDH_Station_FromString)] HRESULT FromString([in] BSTR station,[in] UnitModeType unitMode);
+      [helpstring("method AsString"), helpcontext(IDH_Station_AsString)] HRESULT AsString([in] UnitModeType unitMode, [out,retval] BSTR* station);
+      [helpstring("method Clone"), helpcontext(IDH_Station_Clone)] HRESULT Clone([out,retval] IStation* *clone);
+
+     [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+	};
+
+	[
+		object,
+		uuid(6FA473B2-94F8-4b46-9E28-1E05C17BFE79),
+		oleautomation,
+      helpcontext(IDH_Station),
+		helpstring("IStationEvents Interface"),
+		pointer_default(unique)
+	]
+	interface IStationEvents : IUnknown
+   {
+       [helpstring("event OnStationChanged"),helpcontext(IDH_Station_OnStationChanged)] HRESULT OnStationChanged(Float64 newVal);
+   };
+
+   [
+       object,
+       uuid(2D5F25CA-875B-484F-B4D0-AB02B0522EC2),
+       oleautomation,
+	   helpcontext(IDH_ProfilePoint),
+       helpstring("IProfilePoint Interface"),
+       pointer_default(unique)
+   ]
+   interface IProfilePoint : IUnknown
+   {
+       [propget, helpstring("property Station"),helpcontext(IDH_ProfilePoint_Station)] HRESULT Station([out, retval] IStation* *station);
+       [propput, helpstring("property Station"),helpcontext(IDH_ProfilePoint_Station)] HRESULT Station([in] VARIANT varStation);
+       [propget, helpstring("property Elevation"),helpcontext(IDH_ProfilePoint_Elevation)] HRESULT Elevation([out, retval] Float64 *pVal);
+       [propput, helpstring("property Elevation"),helpcontext(IDH_ProfilePoint_Elevation)] HRESULT Elevation([in] Float64 newVal);
+       [helpstring("method Clone"),helpcontext(IDH_ProfilePoint_Clone)] HRESULT Clone([out,retval] IProfilePoint* *clone);
+
+        [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+   };
+
+   [
+       object,
+       uuid(E4FDF7A1-F29D-4e44-812F-8401A67E5B09),
+       oleautomation,
+	   helpcontext(IDH_ProfilePoint),
+       helpstring("IProfilePointEvents Interface"),
+       pointer_default(unique)
+   ]
+   interface IProfilePointEvents : IUnknown
+   {
+     [helpstring("event OnProfilePointChanged"),helpcontext(IDH_ProfilePoint_OnProfilePointChanged)] HRESULT OnProfilePointChanged([in]IProfilePoint* pp);
+   };
+
+
+	[
+	   object,
+	   uuid(E669818B-B0E6-4fda-9255-49FDAF56114E),
+	   helpstring("IEnumProfilePoints Interface"),
+	   //helpcontext(IDH_IEnumProfilePoints),
+	   oleautomation,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumProfilePoints : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumProfilePoints** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] IProfilePoint** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+	[
+		object,
+		uuid(FAC877F3-A85A-4490-AC53-5F7BB80A1A6A),
+		oleautomation,
+		helpcontext(IDH_ProfilePointFactory),
+		helpstring("IProfilePointFactory Interface"),
+		pointer_default(unique)
+	]
+	interface IProfilePointFactory : IUnknown
+	{
+		[helpstring("method CreateProfilePoint"), helpcontext(IDH_ProfilePointFactory_CreateProfilePoint)] HRESULT CreateProfilePoint([out,retval]IProfilePoint* *pVal);
+
+     [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+	};
+   [
+       object,
+       uuid(11B1FEE8-8CC2-42BC-B9DE-940EE6B16BA1),
+       oleautomation,
+	   helpcontext(IDH_ProfilePointCollection),
+       helpstring("IProfilePointCollection Interface"),
+       pointer_default(unique)
+   ]
+   interface IProfilePointCollection : IUnknown
+   {
+     [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+       [propget, helpstring("property Item"),helpcontext(IDH_ProfilePointCollection_Item)] HRESULT Item([in] CogoElementKey key, [out, retval] IProfilePoint* *pVal);
+       [propputref, helpstring("property Item"),helpcontext(IDH_ProfilePointCollection_Item)] HRESULT Item([in] CogoElementKey key, [in] IProfilePoint* newVal);
+       [propget, helpstring("property Count"),helpcontext(IDH_ProfilePointCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
+       [helpstring("method Add"),helpcontext(IDH_ProfilePointCollection_Add)] HRESULT Add([in] CogoElementKey key,[in] VARIANT varStation,[in] Float64 elevation,[out,retval]IProfilePoint* *pp);
+       [helpstring("method AddEx"),helpcontext(IDH_ProfilePointCollection_AddEx)] HRESULT AddEx([in] CogoElementKey key,[in] IProfilePoint* newVal);
+       [helpstring("method Remove"),helpcontext(IDH_ProfilePointCollection_Remove)] HRESULT Remove([in] CogoElementKey key);
+       [helpstring("method Clear"),helpcontext(IDH_ProfilePointCollection_Clear)] HRESULT Clear();
+       [helpstring("method FindKey"),helpcontext(IDH_ProfilePointCollection_FindKey)] HRESULT FindKey([in] IProfilePoint* pp,[out,retval]CogoElementKey* key);
+     [propget,restricted,helpstring("property _EnumKeys"),helpcontext(IDH_ProfilePointCollection__EnumKeys)] HRESULT _EnumKeys([out,retval] IEnumKeys** ppenum);
+		[helpstring("method Key"),helpcontext(IDH_ProfilePointCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoElementKey* key);
+		[propget,helpstring("property Factory"),helpcontext(IDH_ProfilePointCollection_Factory)] HRESULT Factory([out,retval]IProfilePointFactory* *factory);
+		[propputref,helpstring("property Factory"),helpcontext(IDH_ProfilePointCollection_Factory)] HRESULT Factory([in]IProfilePointFactory* factory);
+     [propget,restricted,helpstring("property _EnumProfilePoints"),helpcontext(IDH_ProfilePointCollection__EnumProfilePoints)] HRESULT _EnumProfilePoints([out,retval] IEnumProfilePoints** ppenum);
+     [helpstring("method Clone"),helpcontext(IDH_ProfilePointCollection_Clone)] HRESULT Clone([out,retval] IProfilePointCollection* *clone);
+
+        [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+   };
+
+
+   [
+       object,
+       uuid(D871C5DE-78F4-487a-9EDD-6F465BF74043),
+       oleautomation,
+	   helpcontext(IDH_ProfilePointCollection),
+       helpstring("IProfilePointCollectionEvents Interface"),
+       pointer_default(unique)
+   ]
+   interface IProfilePointCollectionEvents : IUnknown
+   {
+       [helpstring("event OnPointChanged"),helpcontext(IDH_ProfilePointCollection_OnPointChanged)] HRESULT OnProfilePointChanged([in] CogoElementKey key,[in] IProfilePoint* pp);
+       [helpstring("event OnPointAdded"),helpcontext(IDH_ProfilePointCollection_OnPointAdded)] HRESULT OnProfilePointAdded([in] CogoElementKey key,[in] IProfilePoint* pp);
+       [helpstring("event OnPointRemoved"),helpcontext(IDH_ProfilePointCollection_OnPointRemoved)] HRESULT OnProfilePointRemoved([in] CogoElementKey key);
+       [helpstring("event OnPointsCleared"),helpcontext(IDH_ProfilePointCollection_OnPointsCleared)] HRESULT OnProfilePointsCleared();
+  };
+   [
+       object,
+       uuid(E003ECBB-BE61-4CB1-AB4B-819D98B3C45C),
+       oleautomation,
+	   helpcontext(IDH_VertCurve),
+       helpstring("IVertCurve Interface"),
+       pointer_default(unique)
+   ]
+   interface IVertCurve : IUnknown
+   {
+       [propget, helpstring("property PBG"), helpcontext(IDH_VertCurve_PBG)] HRESULT PBG([out, retval] IProfilePoint* *pVal);
+       [propputref, helpstring("property PBG"), helpcontext(IDH_VertCurve_PBG)] HRESULT PBG([in] IProfilePoint* newVal);
+       [propget, helpstring("property PVI"), helpcontext(IDH_VertCurve_PVI)] HRESULT PVI([out, retval] IProfilePoint* *pVal);
+       [propputref, helpstring("property PVI"), helpcontext(IDH_VertCurve_PVI)] HRESULT PVI([in] IProfilePoint* newVal);
+       [propget, helpstring("property PFG"), helpcontext(IDH_VertCurve_PFG)] HRESULT PFG([out, retval] IProfilePoint* *pVal);
+       [propputref, helpstring("property PFG"), helpcontext(IDH_VertCurve_PFG)] HRESULT PFG([in] IProfilePoint* newVal);
+	   [propget, helpstring("property L1"), helpcontext(IDH_VertCurve_L1)] HRESULT L1([out,retval] Float64* pVal);
+	   [propput, helpstring("property L1"), helpcontext(IDH_VertCurve_L1)] HRESULT L1([in] Float64 newVal);
+	   [propget, helpstring("property L2"), helpcontext(IDH_VertCurve_L2)] HRESULT L2([out,retval] Float64* pVal);
+	   [propput, helpstring("property L2"), helpcontext(IDH_VertCurve_L2)] HRESULT L2([in] Float64 newVal);
+       [propget, helpstring("property BVC"), helpcontext(IDH_VertCurve_BVC)] HRESULT BVC([out, retval] IProfilePoint* *pVal);
+       [propget, helpstring("property EVC"), helpcontext(IDH_VertCurve_EVC)] HRESULT EVC([out, retval] IProfilePoint* *pVal);
+       [propget, helpstring("property Length"), helpcontext(IDH_VertCurve_Length)] HRESULT Length([out, retval] Float64 *pVal);
+       [propget, helpstring("property EntryGrade"), helpcontext(IDH_VertCurve_EntryGrade)] HRESULT EntryGrade([out, retval] Float64 *pVal);
+       [propget, helpstring("property ExitGrade"), helpcontext(IDH_VertCurve_ExitGrade)] HRESULT ExitGrade([out, retval] Float64 *pVal);
+       [propget, helpstring("property LowPoint"), helpcontext(IDH_VertCurve_LowPoint)] HRESULT LowPoint([out, retval] IProfilePoint* *pVal);
+       [propget, helpstring("property HighPoint"), helpcontext(IDH_VertCurve_HighPoint)] HRESULT HighPoint([out, retval] IProfilePoint* *pVal);
+       [helpstring("method Elevation"), helpcontext(IDH_VertCurve_Elevation)] HRESULT Elevation([in] VARIANT varStation,[out,retval] Float64* elev);
+       [helpstring("method Grade"), helpcontext(IDH_VertCurve_Grade)] HRESULT Grade([in] VARIANT varStation,[out,retval]Float64* grade);
+	   [propget, helpstring("method ProfilePointFactory"), helpcontext(IDH_VertCurve_ProfilePointFactory)] HRESULT ProfilePointFactory([out,retval]IProfilePointFactory* *factory);
+	   [propputref, helpstring("method ProfilePointFactory"), helpcontext(IDH_VertCurve_ProfilePointFactory)] HRESULT ProfilePointFactory([in]IProfilePointFactory* factory);
+      [helpstring("method Clone"), helpcontext(IDH_VertCurve_Clone)] HRESULT Clone([out,retval] IVertCurve* *clone);
+	  [propget, helpstring("property A"), helpcontext(IDH_VertCurve_A)] HRESULT A([out,retval]Float64* a);
+	  [propget, helpstring("property K"), helpcontext(IDH_VertCurve_K)] HRESULT K([out,retval]Float64* k);
+	  [propget, helpstring("property H"), helpcontext(IDH_VertCurve_H)] HRESULT H([out,retval]Float64* h);
+	  [propget, helpstring("property E"), helpcontext(IDH_VertCurve_E)] HRESULT E([in]Float64 t,[out,retval]Float64* e);
+
+        [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+   };
+
+   [
+       object,
+       uuid(AD7A94E4-D030-42a0-8E6F-9CFEC582904C),
+       oleautomation,
+	   helpcontext(IDH_VertCurve),
+       helpstring("IVertCurveEvents Interface"),
+       pointer_default(unique)
+   ]
+   interface IVertCurveEvents : IUnknown
+   {
+     [helpstring("event OnVertCurveChanged"),helpcontext(IDH_VertCurve_OnVertCurveChanged)] HRESULT OnVertCurveChanged([in]IVertCurve* vc);
+  };
+   [
+      object,
+	  uuid(57A68B13-5FEA-4b47-8211-6E58B0FF7B4E),
+	  helpstring("IEnumVertCurves Interface"),
+	  oleautomation,
+      hidden,restricted,
+	  pointer_default(unique)
+   ]
+   interface IEnumVertCurves : IUnknown
+   {
+      HRESULT Next(ULONG celt, IVertCurve** rgelt, ULONG* pceltFetched);
+      HRESULT Skip(ULONG celt);
+	  HRESULT Reset();
+      HRESULT Clone(IEnumVertCurves** ppenum);
+   };
+	[
+		object,
+		uuid(3B173FA0-A475-4120-9FEB-2C1CE5FE2013),
+		oleautomation,
+		helpcontext(IDH_VertCurveFactory),
+		helpstring("IVertCurveFactory Interface"),
+		pointer_default(unique)
+	]
+	interface IVertCurveFactory : IUnknown
+	{
+		[helpstring("method CreateVertCurve"), helpcontext(IDH_VertCurveFactory_CreateVertCurve)] HRESULT CreateVertCurve([out,retval] IVertCurve* *pVal);
+
+     [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+	};
+   [
+       object,
+       uuid(A6B519EB-8B34-4F34-842C-FA1912132199),
+       oleautomation,
+	   helpcontext(IDH_VertCurveCollection),
+       helpstring("IVertCurveCollection Interface"),
+       pointer_default(unique)
+   ]
+   interface IVertCurveCollection : IUnknown
+   {
+     [propget, restricted,helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+       [propget, helpstring("property Item"), helpcontext(IDH_VertCurveCollection_Item)] HRESULT Item([in] CogoElementKey key, [out, retval] IVertCurve* *pVal);
+       [propputref, helpstring("property Item"), helpcontext(IDH_VertCurveCollection_Item)] HRESULT Item([in] CogoElementKey key, [in] IVertCurve* newVal);
+       [propget, helpstring("property Count"), helpcontext(IDH_VertCurveCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
+       [helpstring("method Add"), helpcontext(IDH_VertCurveCollection_Add)] HRESULT Add([in] CogoElementKey key,[in] IProfilePoint* pbg,[in] IProfilePoint* pvi, [in] IProfilePoint* pfg,[in]Float64 l1,[in] Float64 l2,[out,retval]IVertCurve* *vc);
+       [helpstring("method AddEx"), helpcontext(IDH_VertCurveCollection_AddEx)] HRESULT AddEx([in] CogoElementKey key,[in] IVertCurve* newVal);
+       [helpstring("method Remove"), helpcontext(IDH_VertCurveCollection_Remove)] HRESULT Remove([in] CogoElementKey key);
+       [helpstring("method Clear"), helpcontext(IDH_VertCurveCollection_Clear)] HRESULT Clear();
+       [helpstring("method FindKey"), helpcontext(IDH_VertCurveCollection_FindKey)] HRESULT FindKey([in] IVertCurve* vc,[out,retval]CogoElementKey* key);
+       [propget,restricted,helpstring("property _EnumKeys"), helpcontext(IDH_VertCurveCollection__EnumKeys)] HRESULT _EnumKeys([out,retval] IEnumKeys** ppenum);
+ 	   [propget,restricted,helpstring("property _EnumVertCurves"), helpcontext(IDH_VertCurveCollection__EnumVertCurves)] HRESULT _EnumVertCurves([out,retval] IEnumVertCurves** ppenum);
+	   [helpstring("method Key"), helpcontext(IDH_VertCurveCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoElementKey* key);
+	   [propputref,helpstring("property Factory"), helpcontext(IDH_VertCurveCollection_Factory)] HRESULT Factory([in]IVertCurveFactory* factory);
+	   [propget,helpstring("property Factory"), helpcontext(IDH_VertCurveCollection_Factory)] HRESULT Factory([out,retval]IVertCurveFactory* *factory);
+      [helpstring("method Clone"), helpcontext(IDH_VertCurveCollection_Clone)] HRESULT Clone([out,retval] IVertCurveCollection* *clone);
+
+     [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+   };
+
+   [
+       object,
+       uuid(EBD26472-9710-4c00-B1D4-88F5AE075B8D),
+       oleautomation,
+	   helpcontext(IDH_VertCurveCollection),
+       helpstring("IVertCurveCollection Interface"),
+       pointer_default(unique)
+   ]
+   interface IVertCurveCollectionEvents : IUnknown
+   {
+       [helpstring("event OnVertCurveChanged"), helpcontext(IDH_VertCurveCollection_OnVertCurveChanged)] HRESULT OnVertCurveChanged([in] CogoElementKey key,[in] IVertCurve* vc);
+       [helpstring("event OnVertCurveAdded"), helpcontext(IDH_VertCurveCollection_OnVertCurveAdded)] HRESULT OnVertCurveAdded([in] CogoElementKey key,[in] IVertCurve* vc);
+       [helpstring("event OnVertCurveRemoved"), helpcontext(IDH_VertCurveCollection_OnVertCurveRemoved)] HRESULT OnVertCurveRemoved([in] CogoElementKey key);
+       [helpstring("event OnVertCurvesCleared"), helpcontext(IDH_VertCurveCollection_OnVertCurvesCleared)] HRESULT OnVertCurvesCleared();
+   };
+	
+	[
+	   object,
+	   uuid(2317EF09-E0F5-49fe-B6BC-14A21A59EBAC),
+	   helpstring("IEnumHorzCurves Interface"),
+	   //helpcontext(IDH_IEnumHorzCurves),
+	   oleautomation,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumHorzCurves : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumHorzCurves** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] IHorzCurve** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+	[
+		object,
+		uuid(6C9AFFCA-DC58-4EA5-8FE6-A249CFED06BA),
+		oleautomation,
+		helpcontext(IDH_HorzCurveFactory),
+		helpstring("IHorzCurveFactory Interface"),
+		pointer_default(unique)
+	]
+	interface IHorzCurveFactory : IUnknown
+	{
+		[helpstring("method CreateHorzCurve"), helpcontext(IDH_HorzCurveFactory_CreateHorzCurve)] HRESULT CreateHorzCurve([out,retval] IHorzCurve* *pVal);
+
+     [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+	};
+	[
+		object,
+		uuid(2436697B-4DE1-40A1-B087-89AA074F1C2C),
+		oleautomation,
+		helpcontext(IDH_HorzCurveCollection),
+		helpstring("IHorzCurveCollection Interface"),
+		pointer_default(unique)
+	]
+	interface IHorzCurveCollection : IUnknown
+	{
+        [propget, restricted,helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+        [propget, helpstring("property Item"), helpcontext(IDH_HorzCurveCollection_Item)] HRESULT Item([in] CogoElementKey key, [out, retval] IHorzCurve* *pVal);
+        [propputref, helpstring("property Item"), helpcontext(IDH_HorzCurveCollection_Item)] HRESULT Item([in] CogoElementKey key, [in] IHorzCurve* newVal);
+        [propget, helpstring("property Count"), helpcontext(IDH_HorzCurveCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
+        [helpstring("method Add"), helpcontext(IDH_HorzCurveCollection_Add)] HRESULT Add([in] CogoElementKey key,[in] IPoint2d* pbt,[in] IPoint2d* pi,[in] IPoint2d* pft,[in] Float64 radius,[in] Float64 Ls1,[in] Float64 Ls2,[out,retval]IHorzCurve** hc);
+        [helpstring("method AddEx"), helpcontext(IDH_HorzCurveCollection_AddEx)] HRESULT AddEx([in] CogoElementKey key,[in] IHorzCurve* newVal);
+        [helpstring("method Remove"), helpcontext(IDH_HorzCurveCollection_Remove)] HRESULT Remove([in] CogoElementKey key);
+        [helpstring("method Clear"), helpcontext(IDH_HorzCurveCollection_Clear)] HRESULT Clear();
+        [helpstring("method FindKey"), helpcontext(IDH_HorzCurveCollection_FindKey)] HRESULT FindKey([in] IHorzCurve* hc,[out,retval]CogoElementKey* key);
+        [propget,restricted,helpstring("property _EnumKeys"), helpcontext(IDH_HorzCurveCollection__EnumKeys)] HRESULT _EnumKeys([out,retval] IEnumKeys** ppenum);
+		[propget, helpstring("method Factory"), helpcontext(IDH_HorzCurveCollection_Factory)] HRESULT Factory([out,retval]IHorzCurveFactory** factory);
+		[propputref, helpstring("method Factory"), helpcontext(IDH_HorzCurveCollection_Factory)] HRESULT Factory([in]IHorzCurveFactory* factory);
+		[helpstring("method Key"), helpcontext(IDH_HorzCurveCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoElementKey* key);
+        [propget,restricted,helpstring("property _EnumHorzCurves"), helpcontext(IDH_HorzCurveCollection__EnumHorzCurves)] HRESULT _EnumHorzCurves([out,retval] IEnumHorzCurves** ppenum);
+        [helpstring("method Clone"), helpcontext(IDH_HorzCurveCollection_Clone)] HRESULT Clone([out,retval] IHorzCurveCollection* *clone);
+
+     [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+	};
+
+	[
+		object,
+		uuid(7322B2AD-A63B-4348-854C-ED1130B7EB49),
+		oleautomation,
+		helpcontext(IDH_HorzCurveCollection),
+		helpstring("IHorzCurveCollectionEvents Interface"),
+		pointer_default(unique)
+	]
+	interface IHorzCurveCollectionEvents : IUnknown
+   {
+       [helpstring("event OnHorzCurveChanged"), helpcontext(IDH_HorzCurveCollection_OnHorzCurveChanged)] HRESULT OnHorzCurveChanged([in] CogoElementKey key,[in] IHorzCurve* vc);
+       [helpstring("event OnHorzCurveAdded"), helpcontext(IDH_HorzCurveCollection_OnHorzCurveAdded)] HRESULT OnHorzCurveAdded([in] CogoElementKey key,[in] IHorzCurve* vc);
+       [helpstring("event OnHorzCurveRemoved"), helpcontext(IDH_HorzCurveCollection_OnHorzCurveRemoved)] HRESULT OnHorzCurveRemoved([in] CogoElementKey key);
+       [helpstring("event OnHorzCurvesCleared"), helpcontext(IDH_HorzCurveCollection_OnHorzCurvesCleared)] HRESULT OnHorzCurvesCleared();
+   };
+
+   [
+		object,
+		uuid(EA2DD8A2-5B17-4b36-AE3D-38CB7CB059E5),
+		oleautomation,
+		//helpcontext(IDH_CubicSpline),
+		helpstring("ICubicSpline Interface"),
+		pointer_default(unique)
+   ]
+   interface ICubicSpline : IUnknown
+   {
+      [helpstring("method AddPoints")] HRESULT AddPoints([in]IPoint2dCollection* points);
+	  [helpstring("method AddPoint")] HRESULT AddPoint([in]Float64 x,[in]Float64 y);
+	  [helpstring("method AddPointEx")] HRESULT AddPointEx([in]IPoint2d* point);
+	  [propget,helpstring("property PointCount")] HRESULT PointCount([out,retval]CollectionIndexType* nPoints);
+	  [propget,helpstring("property Point")] HRESULT Point([in]CollectionIndexType idx,[out,retval]IPoint2d** point);
+	  [propget,helpstring("property Points")] HRESULT Points([out,retval]IPoint2dCollection** ppPoints);
+	  [propget,helpstring("property StartPoint")] HRESULT StartPoint([out,retval]IPoint2d** point);
+	  [propget,helpstring("property EndPoint")] HRESULT EndPoint([out,retval]IPoint2d** point);
+	  [helpstring("method Clear")] HRESULT Clear();
+	  [propput,helpstring("property StartDirection")] HRESULT StartDirection([in] VARIANT varDirection);
+	  [propget,helpstring("property StartDirection")] HRESULT StartDirection([out,retval]IDirection** dir);
+	  [propput,helpstring("property EndDirection")] HRESULT EndDirection([in] VARIANT varDirection);
+	  [propget,helpstring("property EndDirection")] HRESULT EndDirection([out,retval]IDirection** dir);
+      [helpstring("method Bearing")] HRESULT Bearing([in] Float64 distance,[out,retval]IDirection* *pVal);
+	  [helpstring("method BearingAtPoint")] HRESULT BearingAtPoint([in]CollectionIndexType idx,[out,retval]IDirection** pDir);
+	  [helpstring("method Normal")] HRESULT Normal([in] Float64 distance,[out,retval]IDirection* *pVal);
+	  [helpstring("method NormalAtPoint")] HRESULT NormalAtPoint([in]CollectionIndexType idx,[out,retval]IDirection** pDir);
+	  [helpstring("method PointOnSpline")] HRESULT PointOnSpline([in] Float64 distance,[out,retval]IPoint2d* *pVal);
+      [helpstring("method ProjectPoint")] HRESULT ProjectPoint([in] IPoint2d* point,[out,retval] IPoint2d* *pNewPoint);
+      [helpstring("method DistanceFromStart")] HRESULT DistanceFromStart([in] IPoint2d* point,[out,retval] Float64* dist);
+      [helpstring("method DistanceFromStartAtPoint")] HRESULT DistanceFromStartAtPoint([in] CollectionIndexType idx,[out,retval] Float64* dist);
+	  [helpstring("method Intersect")] HRESULT Intersect([in]ILine2d* line,[in]VARIANT_BOOL bProjectBack,[in]VARIANT_BOOL bProjectAhead,[out,retval]IPoint2dCollection** points);
+	  [propget,helpstring("property Length")] HRESULT Length([out,retval]Float64* pLength);
+
+      [propget, helpstring("property PointFactory")] HRESULT PointFactory([out,retval] IPoint2dFactory* *factory);
+      [propputref, helpstring("property PointFactory")] HRESULT PointFactory([in] IPoint2dFactory *factory);
+      [helpstring("method Clone")] HRESULT Clone([out,retval] ICubicSpline* *clone);
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+
+	  [helpstring("method Evaluate")] HRESULT Evaluate([in]Float64 x,[in]VARIANT_BOOL bProjectBack,[in]VARIANT_BOOL bProjectAhead,[out,retval]Float64* y);
+	  [helpstring("method Slope")] HRESULT Slope([in]Float64 x,[in]VARIANT_BOOL bProjectBack,[in]VARIANT_BOOL bProjectAhead,[out,retval]Float64* dy);
+   };
+   [
+       object,
+       uuid(7A853591-F2A0-4b22-AB22-4ECE47D28F7A),
+       oleautomation,
+	   //helpcontext(IDH_CubicSpline),
+       helpstring("ICubicSplaneEvents Interface"),
+       pointer_default(unique)
+   ]
+   interface ICubicSplineEvents : IUnknown
+   {
+       [helpstring("event OnSplineChanged")/*, helpcontext(IDH_CubicSpline_OnSplineChanged)*/] HRESULT OnSplineChanged([in] ICubicSpline* spline);
+   };
+
+	[
+		object,
+		uuid(68BB6E7C-E147-480E-AE0C-361078EC460A),
+		oleautomation,
+		helpcontext(IDH_CrossSection),
+		helpstring("ICrossSection Interface"),
+		pointer_default(unique)
+	]
+	interface ICrossSection : IUnknown
+	{
+		[propget, helpstring("property Station"), helpcontext(IDH_CrossSection_Station)] HRESULT Station([out, retval] IStation* *station);
+		[propput, helpstring("property Station"), helpcontext(IDH_CrossSection_Station)] HRESULT Station([in] VARIANT varStation);
+		[propget, helpstring("property CrownPointOffset"), helpcontext(IDH_CrossSection_CrownPointOffset)] HRESULT CrownPointOffset([out, retval] Float64 *pVal);
+		[propput, helpstring("property CrownPointOffset"), helpcontext(IDH_CrossSection_CrownPointOffset)] HRESULT CrownPointOffset([in] Float64 newVal);
+		[propget, helpstring("property LeftCrownSlope"), helpcontext(IDH_CrossSection_LeftCrownSlope)] HRESULT LeftCrownSlope([out, retval] Float64 *pVal);
+		[propput, helpstring("property LeftCrownSlope"), helpcontext(IDH_CrossSection_LeftCrownSlope)] HRESULT LeftCrownSlope([in] Float64 newVal);
+		[propget, helpstring("property RightCrownSlope"), helpcontext(IDH_CrossSection_RightCrownSlope)] HRESULT RightCrownSlope([out, retval] Float64 *pVal);
+		[propput, helpstring("property RightCrownSlope"), helpcontext(IDH_CrossSection_RightCrownSlope)] HRESULT RightCrownSlope([in] Float64 newVal);
+      [helpstring("method Clone"), helpcontext(IDH_CrossSection_Clone)] HRESULT Clone([out,retval] ICrossSection* *clone);
+
+        [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+	};
+
+	[
+		object,
+		uuid(7AF9C2A9-B90B-4ecb-AEEB-D527B9B1C93C),
+		oleautomation,
+		helpcontext(IDH_CrossSection),
+		helpstring("ICrossSectionEvents Interface"),
+		pointer_default(unique)
+	]
+	interface ICrossSectionEvents : IUnknown
+   {
+       [helpstring("event OnCrossSectionChanged"), helpcontext(IDH_CrossSection_OnCrossSectionChanged)] HRESULT OnCrossSectionChanged([in] ICrossSection* csect);
+       [helpstring("event OnCrossSectionMoved"), helpcontext(IDH_CrossSection_OnCrossSectionMoved)] HRESULT OnCrossSectionMoved([in] ICrossSection* csect);
+   };
+	[
+	   object,
+	   uuid(6E208BD8-856F-4386-B46D-B1D9A4938356),
+	   helpstring("IEnumCrossSections Interface"),
+	   //helpcontext(IDH_IEnumCrossSections),
+	   oleautomation,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumCrossSections : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumCrossSections** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] ICrossSection** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+	[
+		object,
+		uuid(230879D3-BCE1-412B-AE5F-BA5B67AB37C0),
+		oleautomation,
+		helpcontext(IDH_CrossSectionFactory),
+		helpstring("ICrossSectionFactory Interface"),
+		pointer_default(unique)
+	]
+	interface ICrossSectionFactory : IUnknown
+	{
+		[helpstring("method CreateCrossSection"), helpcontext(IDH_CrossSectionFactory_CreateCrossSection)] HRESULT CreateCrossSection([out,retval] ICrossSection* *pVal);
+
+     [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+	};
+	[
+		object,
+		uuid(9CCCFB5F-FEF9-458C-A9DF-A65A3469573A),
+		oleautomation,
+		helpcontext(IDH_CrossSectionCollection),
+		helpstring("ICrossSectionCollection Interface"),
+		pointer_default(unique)
+	]
+	interface ICrossSectionCollection : IUnknown
+	{
+        [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+		[propget, helpstring("property Item"), helpcontext(IDH_CrossSectionCollection_Item)] HRESULT Item([in] CollectionIndexType idx,[out, retval] ICrossSection* *pVal);
+		[propputref, helpstring("property Item"), helpcontext(IDH_CrossSectionCollection_Item)] HRESULT Item([in] CollectionIndexType idx,[in] ICrossSection* pVal);
+		[propget, helpstring("property Count"), helpcontext(IDH_CrossSectionCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
+		[helpstring("method Add"), helpcontext(IDH_CrossSectionCollection_Add)] HRESULT Add([in] VARIANT varStation,[in] Float64 cpo, [in] Float64 left,[in] Float64 right,[out,retval]ICrossSection* *cs);
+		[helpstring("method AddEx"), helpcontext(IDH_CrossSectionCollection_AddEx)] HRESULT AddEx([in] ICrossSection* csect);
+		[helpstring("method Remove"), helpcontext(IDH_CrossSectionCollection_Remove)] HRESULT Remove([in] CollectionIndexType idx);
+		[helpstring("method CrownSlope"), helpcontext(IDH_CrossSectionCollection_CrownSlope)] HRESULT CrownSlope([in] VARIANT varStation,[in] Float64 offset,[out,retval] Float64* slope);
+		[helpstring("method LeftCrownSlope"), helpcontext(IDH_CrossSectionCollection_LeftCrownSlope)] HRESULT LeftCrownSlope([in] VARIANT varStation,[out,retval] Float64* slope);
+		[helpstring("method RightCrownSlope"), helpcontext(IDH_CrossSectionCollection_RightCrownSlope)] HRESULT RightCrownSlope([in] VARIANT varStation,[out,retval] Float64* slope);
+		[helpstring("method CreateCrossSection"), helpcontext(IDH_CrossSectionCollection_CreateCrossSection)] HRESULT CreateCrossSection([in] VARIANT varStation,[out,retval] ICrossSection* *objCS);
+		[helpstring("method CrownPointOffset"),helpcontext(IDH_CrossSectionCollection_CrownPointOffset)] HRESULT CrownPointOffset([in] VARIANT varStation,[out,retval]Float64* cpoffset);
+		[helpstring("method Clear"), helpcontext(IDH_CrossSectionCollection_Clear)] HRESULT Clear();
+        [propget, restricted, helpstring("property _EnumCrossSections"), helpcontext(IDH_CrossSectionCollection__EnumCrossSections)] HRESULT _EnumCrossSections([out, retval] IEnumCrossSections** retval);  
+		[propget, helpstring("property Factory"), helpcontext(IDH_CrossSectionCollection_Factory)] HRESULT Factory([out,retval]ICrossSectionFactory* *factory);
+		[propputref, helpstring("property Factory"), helpcontext(IDH_CrossSectionCollection_Factory)] HRESULT Factory([in]ICrossSectionFactory* factory);
+      [helpstring("method Clone"),helpcontext(IDH_CrossSectionCollection_Clone)] HRESULT Clone([out,retval] ICrossSectionCollection* *clone);
+
+     [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+	};
+
+	[
+		object,
+		uuid(F2596D77-1890-4ea6-B661-717F50983378),
+		oleautomation,
+		helpcontext(IDH_CrossSectionCollection),
+		helpstring("ICrossSectionCollectionEvents Interface"),
+		pointer_default(unique)
+	]
+	interface ICrossSectionCollectionEvents : IUnknown
+   {
+       [helpstring("event OnCrossSectionChanged"), helpcontext(IDH_CrossSectionCollection_OnCrossSectionChanged)] HRESULT OnCrossSectionChanged([in] ICrossSection* csect);
+       [helpstring("event OnPointAdded"), helpcontext(IDH_CrossSectionCollection_OnPointAdded)] HRESULT OnCrossSectionAdded([in] ICrossSection* csect);
+       [helpstring("event OnPointRemoved"), helpcontext(IDH_CrossSectionCollection_OnPointRemoved)] HRESULT OnCrossSectionRemoved();
+       [helpstring("event OnPointsCleared"), helpcontext(IDH_CrossSectionCollection_OnPointsCleared)] HRESULT OnCrossSectionsCleared();
+   };
+
+	[
+		object,
+		uuid(885D3FAE-E15A-4BF0-AAD0-8622700D4250),
+		oleautomation,
+		helpcontext(IDH_ProfileElement),
+		helpstring("IProfileElement Interface"),
+		pointer_default(unique)
+	]
+	interface IProfileElement : IUnknown
+	{
+		[propget, helpstring("property Value"), helpcontext(IDH_ProfileElement_Value)] HRESULT Value([out, retval] IUnknown** dispVal);
+		[propputref, helpstring("property Value"), helpcontext(IDH_ProfileElement_Value)] HRESULT Value([in] IUnknown* dispVal);
+		[propget, helpstring("property Type"), helpcontext(IDH_ProfileElement_Type)] HRESULT Type([out, retval] ProfileElementType *pVal);
+      [helpstring("method Clone"), helpcontext(IDH_ProfileElement_Clone)] HRESULT Clone([out,retval] IProfileElement* *clone);
+
+        [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+	};
+
+	[
+		object,
+		uuid(EEB5D577-DAAE-4a84-9010-67820CF18AE7),
+		oleautomation,
+		helpcontext(IDH_ProfileElement),
+		helpstring("IProfileElementEvents Interface"),
+		pointer_default(unique)
+	]
+	interface IProfileElementEvents : IUnknown
+   {
+       [helpstring("event OnProfileElementChanged"), helpcontext(IDH_ProfileElement_OnProfileElementChanged)] HRESULT OnProfileElementChanged([in] IProfileElement* pe);
+   };
+	[
+	   object,
+	   uuid(E570BCE7-4608-4279-8F25-4222F5B304E4),
+	   helpstring("IEnumProfileElements Interface"),
+	   //helpcontext(IDH_IEnumProfileElements),
+	   oleautomation,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumProfileElements : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumProfileElements** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] IProfileElement** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+	[
+		object,
+		uuid(33CC0CE8-3BF5-4E27-A483-8EA6B4A2327B),
+		oleautomation,
+		helpcontext(IDH_Profile),
+		helpstring("IProfile Interface"),
+		pointer_default(unique)
+	]
+	interface IProfile : IUnknown
+	{
+        [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+		[propget, helpstring("property Item"), helpcontext(IDH_Profile_Item)] HRESULT Item([in] CollectionIndexType idx,[out, retval] IProfileElement* *pVal);
+		[propputref, helpstring("property Item"), helpcontext(IDH_Profile_Item)] HRESULT Item([in] CollectionIndexType idx,[in] IProfileElement* pVal);
+		[propget, helpstring("property Count"), helpcontext(IDH_Profile_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
+		[propget, helpstring("property CrossSections"), helpcontext(IDH_Profile_CrossSections)] HRESULT CrossSections([out, retval] ICrossSectionCollection* *pVal);
+		[propputref, helpstring("property CrossSections"), helpcontext(IDH_Profile_CrossSections)] HRESULT CrossSections([in] ICrossSectionCollection* pVal);
+		[helpstring("method Add"), helpcontext(IDH_Profile_Add)] HRESULT Add([in] IProfileElement* element);
+		[helpstring("method AddEx"), helpcontext(IDH_Profile_AddEx)] HRESULT AddEx([in] IUnknown* dispElement);
+		[helpstring("method Remove"), helpcontext(IDH_Profile_Remove)] HRESULT Remove([in] VARIANT varKey);
+		[helpstring("method Elevation"), helpcontext(IDH_Profile_Elevation)] HRESULT Elevation([in] VARIANT varStation,[in] Float64 offset,[out,retval] Float64* elev);
+		[helpstring("method Grade"), helpcontext(IDH_Profile_Grade)] HRESULT Grade([in] VARIANT varStation,[out,retval] Float64* grade);
+		[helpstring("method LeftCrownSlope"), helpcontext(IDH_Profile_LeftCrownSlope)] HRESULT LeftCrownSlope([in] VARIANT varStation,[out,retval] Float64* slope);
+		[helpstring("method RightCrownSlope"), helpcontext(IDH_Profile_RightCrownSlope)] HRESULT RightCrownSlope([in] VARIANT varStation,[out,retval] Float64* slope);
+		[helpstring("method CrownSlope"), helpcontext(IDH_Profile_CrownSlope)] HRESULT CrownSlope([in] VARIANT varStation,[in] Float64 offset,[out,retval] Float64* slope);
+		[helpstring("method CrownPointOffset"),helpcontext(IDH_Profile_CrownPointOffset)] HRESULT CrownPointOffset([in] VARIANT varStation,[out,retval]Float64* cpoffset);
+		[helpstring("method Clear"), helpcontext(IDH_Profile_Clear)] HRESULT Clear();
+        [propget, restricted,helpstring("property _EnumProfileElements"), helpcontext(IDH_Profile__EnumProfileElements)] HRESULT _EnumProfileElements([out, retval] IEnumProfileElements** retval);  
+      [helpstring("method Clone"), helpcontext(IDH_Profile_Clone)] HRESULT Clone([out,retval] IProfile* *clone);
+
+     [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+	};
+
+	[
+		object,
+		uuid(0185AF42-F10A-4b4d-AB0E-58275D72E131),
+		oleautomation,
+		helpcontext(IDH_Profile),
+		helpstring("IProfileEvents Interface"),
+		pointer_default(unique)
+	]
+	interface IProfileEvents : IUnknown
+	{
+	   [helpstring("event OnProifleChanged"), helpcontext(IDH_Profile_OnProifleChanged)] HRESULT OnProfileChanged([in] IProfile* profile);
+	};
+
+
+	[
+		object,
+		uuid(60F5D239-6851-41B6-AD37-7CBA6BB9D78A),
+		oleautomation,
+		helpcontext(IDH_PathElement),
+		helpstring("IPathElement Interface"),
+		pointer_default(unique)
+	]
+	interface IPathElement : IUnknown
+	{
+		[propget, helpstring("property Type"), helpcontext(IDH_PathElement_Type)] HRESULT Type([out, retval] PathElementType *pVal);
+		[propget, helpstring("property Value"), helpcontext(IDH_PathElement_Value)] HRESULT Value([out, retval] IUnknown* *pVal);
+		[propputref, helpstring("property Value"), helpcontext(IDH_PathElement_Value)] HRESULT Value([in] IUnknown* newVal);
+      [helpstring("method Clone"), helpcontext(IDH_PathElement_Clone)] HRESULT Clone([out,retval] IPathElement* *clone);
+		[helpstring("method Move")] HRESULT Move([in] Float64 dist,[in] IDirection* direction);
+
+     [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+	};
+	[
+		object,
+		uuid(6C8D62A8-6E1C-4c94-BD54-F3CDFA9E7B27),
+		oleautomation,
+		helpcontext(IDH_PathElement),
+		helpstring("IPathElementEvents Interface"),
+		pointer_default(unique)
+	]
+	interface IPathElementEvents : IUnknown
+	{
+	   [helpstring("event OnPathElementChanged"), helpcontext(IDH_PathElement_OnPathElementChanged)] HRESULT OnPathElementChanged([in] IPathElement* element);
+	};
+	[
+	   object,
+	   uuid(BD543403-0846-4502-841F-1904DC1F1144),
+	   helpstring("IEnumPathElements Interface"),
+	   //helpcontext(IDH_IEnumPathElements),
+	   oleautomation,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumPathElements : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumPathElements** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] IPathElement** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+////
+	[
+		object,
+		uuid(A43DACE9-956A-4421-9A3A-01D2453FCE03),
+		oleautomation,
+		helpcontext(IDH_Alignment),
+		helpstring("IAlignment Interface"),
+		pointer_default(unique)
+	]
+	interface IPath : IUnknown
+	{
+        [propget, restricted, helpstring("returns an enumerator for the collection.")]  HRESULT _NewEnum([out, retval] IUnknown** retval);  
+		[propget, helpstring("property Profile"), helpcontext(IDH_Alignment_Profile)] HRESULT Profile([out, retval] IProfile* *pVal);
+		[propputref, helpstring("property Profile"), helpcontext(IDH_Alignment_Profile)] HRESULT Profile([in] IProfile* pVal);
+		[propget, helpstring("property Item"), helpcontext(IDH_Alignment_Item)] HRESULT Item([in] CollectionIndexType idx,[out, retval] IPathElement* *pVal);
+		[propputref, helpstring("property Item"), helpcontext(IDH_Alignment_Item)] HRESULT Item([in] CollectionIndexType idx,[in] IPathElement *pVal);
+		[propget, helpstring("property Count"), helpcontext(IDH_Alignment_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
+		[helpstring("method Add"), helpcontext(IDH_Alignment_Add)] HRESULT Add([in] IPathElement* element);
+		[helpstring("method AddEx"), helpcontext(IDH_Alignment_AddEx)] HRESULT AddEx([in] IUnknown* dispElement);
+		[helpstring("method Insert"), helpcontext(IDH_Alignment_Insert)] HRESULT Insert([in] CollectionIndexType idx,[in] IPathElement* element);
+		[helpstring("method InsertEx"), helpcontext(IDH_Alignment_InsertEx)] HRESULT InsertEx([in] CollectionIndexType idx,[in] IUnknown* dispElement);
+		[helpstring("method Remove"), helpcontext(IDH_Alignment_Remove)] HRESULT Remove([in] VARIANT varKey);
+		[helpstring("method Clear"), helpcontext(IDH_Alignment_Clear)] HRESULT Clear();
+		[helpstring("method LocatePoint"), helpcontext(IDH_Alignment_LocatePoint)] HRESULT LocatePoint([in] Float64 distance, [in] Float64 offset, [in] VARIANT varDir,[out,retval] IPoint2d* *newPoint); 
+		[helpstring("method Bearing"), helpcontext(IDH_Alignment_Bearing)] HRESULT Bearing([in] Float64 distance,[out,retval] IDirection* *dir); 
+		[helpstring("method Normal"), helpcontext(IDH_Alignment_Normal)] HRESULT Normal([in] Float64 distance,[out,retval] IDirection* *dir); 
+		[helpstring("method ProjectPoint"), helpcontext(IDH_Alignment_ProjectPoint)] HRESULT ProjectPoint([in] IPoint2d* point,[out,retval] IPoint2d* *newPoint); 
+		[helpstring("method Offset"), helpcontext(IDH_Alignment_Offset)] HRESULT Offset([in] IPoint2d* point,[out] Float64* distance,[out] Float64* offset); 
+		[helpstring("method Intersect")] HRESULT Intersect([in] ILine2d* line,[in]IPoint2d* pNearest,[out,retval]IPoint2d** point);
+		[propget, helpstring("property PointFactory"), helpcontext(IDH_Alignment_PointFactory)] HRESULT PointFactory([out,retval]IPoint2dFactory* *factory); 
+		[propputref, helpstring("property PointFactory"), helpcontext(IDH_Alignment_PointFactory)] HRESULT PointFactory([in]IPoint2dFactory* factory); 
+        [propget, restricted, helpstring("property _EnumPathElements"), helpcontext(IDH_Alignment__EnumPathElements)] HRESULT _EnumPathElements([out, retval] IEnumPathElements** pVal);  
+        [helpstring("method Clone"), helpcontext(IDH_Alignment_Clone)] HRESULT Clone([out,retval] IPath* *clone);
+		[helpstring("method CreateParallelPath"),helpcontext(IDH_Alignment_CreateParallelPath)] HRESULT CreateParallelPath([in] Float64 offset,[out,retval]IPath** path);
+		[helpstring("method CreateSubPath"),/*helpcontext(IDH_Alignment_CreateSubPath)*/] HRESULT CreateSubPath([in]Float64 start,[in]Float64 end,[out,retval]IPath** path);
+		[helpstring("method CreateConnectedPath"),helpcontext(IDH_Alignment_CreateConnectedPath)] HRESULT CreateConnectedPath([out,retval]IPath** path);
+		[helpstring("method Move"),helpcontext(IDH_Alignment_Move)] HRESULT Move([in] Float64 dist,[in] IDirection* direction);
+ 
+        [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+	};
+	[
+		object,
+		uuid(BC341CD7-1B43-4f73-9975-93B02DD949F2),
+		oleautomation,
+		helpcontext(IDH_Alignment),
+		helpstring("IPathEvents Interface"),
+		pointer_default(unique)
+	]
+	interface IPathEvents : IUnknown
+	{
+	   [helpstring("event OnPathChanged"), helpcontext(IDH_Alignment_OnAlignmentChanged)] HRESULT OnPathChanged([in] IPath* path);
+	   [helpstring("event OnProfileChanged"), helpcontext(IDH_Alignment_OnProfileChanged)] HRESULT OnProfileChanged([in] IProfile* profile);
+	};
+	[
+	   object,
+	   uuid(D5BECD44-9730-4bf4-80B2-8B983C21E110),
+	   helpstring("IEnumPaths Interface"),
+	   //helpcontext(IDH_IEnumCrossSections),
+	   oleautomation,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumPaths : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumPaths** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] IPath** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+	[
+		object,
+		uuid(97990706-8447-459c-A05B-74540273CBE3),
+		oleautomation,
+		helpcontext(IDH_AlignmentFactory),
+		helpstring("IAlignmentFactory Interface"),
+		pointer_default(unique)
+	]
+	interface IPathFactory : IUnknown
+	{
+		[helpstring("method CreatePath"), helpcontext(IDH_PathFactory_CreatePath)] HRESULT CreatePath([out,retval]IPath* *pVal);
+		[helpstring("method IsValidType"), helpcontext(IDH_PathFactory_IsValidType)] HRESULT IsValidType([in]IPath* path,[out,retval]VARIANT_BOOL* bIsValid);
+ 
+        [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+	};
+
+	[
+		object,
+		uuid(DFDF1C35-39DB-4285-AA38-BE6C189E29E0),
+		oleautomation,
+		helpcontext(IDH_PathCollection),
+		helpstring("IPathCollection Interface"),
+		pointer_default(unique)
+	]
+	interface IPathCollection : IUnknown
+	{
+        [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+        [propget, helpstring("property Item"), helpcontext(IDH_PathCollection_Item)] HRESULT Item([in] CogoElementKey key, [out, retval] IPath* *pVal);
+        [propputref, helpstring("property Item"), helpcontext(IDH_PathCollection_Item)] HRESULT Item([in] CogoElementKey key, [in] IPath* pVal);
+        [propget, helpstring("property Count"), helpcontext(IDH_PathCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
+        [helpstring("method Add"), helpcontext(IDH_PathCollection_Add)] HRESULT Add([in] CogoElementKey key,[out,retval] IPath* *path);
+        [helpstring("method AddEx"), helpcontext(IDH_PathCollection_AddEx)] HRESULT AddEx([in] CogoElementKey key,[in] IPath* newVal);
+        [helpstring("method Remove"), helpcontext(IDH_PathCollection_Remove)] HRESULT Remove([in] CogoElementKey key);
+        [helpstring("method Clear"), helpcontext(IDH_PathCollection_Clear)] HRESULT Clear();
+        [helpstring("method FindKey"), helpcontext(IDH_PathCollection_FindKey)] HRESULT FindKey([in] IPath* path,[out,retval]CogoElementKey* key);
+        [propget,restricted,helpstring("property _EnumKeys"), helpcontext(IDH_PathCollection__EnumKeys)] HRESULT _EnumKeys([out,retval] IEnumKeys** ppenum);
+		[propget, helpstring("method Factory"), helpcontext(IDH_PathCollection_Factory)] HRESULT Factory([out,retval]IPathFactory** factory);
+		[propputref, helpstring("method Factory"), helpcontext(IDH_PathCollection_Factory)] HRESULT Factory([in]IPathFactory* factory);
+		[helpstring("method Key"), helpcontext(IDH_PathCollection_Key)] HRESULT Key([in] CollectionIndexType index,[out,retval] CogoElementKey* key);
+        [propget,restricted,helpstring("property _EnumPaths"), helpcontext(IDH_PathCollection__EnumPaths)] HRESULT _EnumPaths([out,retval] IEnumPaths** ppenum);
+        [helpstring("method Clone"), helpcontext(IDH_PathCollection_Clone)] HRESULT Clone([out,retval] IPathCollection* *clone);
+
+        [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+	};
+
+	[
+		object,
+		uuid(176DAD7B-1209-47ad-9AC7-8901C6AEC89A),
+		oleautomation,
+		helpcontext(IDH_PathCollection),
+		helpstring("IPathCollectionEvents Interface"),
+		pointer_default(unique)
+	]
+	interface IPathCollectionEvents : IUnknown
+	{
+	   [helpstring("event OnProfileChanged"), helpcontext(IDH_PathCollection_OnProfileChanged)] HRESULT OnProfileChanged([in]IPathCollection* coll,[in] IProfile* profile);
+	   [helpstring("event OnPathChanged"), helpcontext(IDH_PathCollection_OnAlignmentChanged)] HRESULT OnPathChanged([in]IPathCollection* coll,[in] CogoElementKey key,[in] IPath* path);
+       [helpstring("event OnPathAdded"), helpcontext(IDH_PathCollection_OnAlignmentAdded)] HRESULT OnPathAdded([in]IPathCollection* coll,[in] CogoElementKey key,[in] IPath* path);
+       [helpstring("event OnPathRemoved"), helpcontext(IDH_PathCollection_OnAlignmentRemoved)] HRESULT OnPathRemoved([in]IPathCollection* coll,[in] CogoElementKey key);
+       [helpstring("event OnPathsCleared"), helpcontext(IDH_PathCollection_OnAlignmentCleared)] HRESULT OnPathsCleared([in]IPathCollection* coll);
+	};
+////
+	[
+		object,
+		uuid(30638CFA-0F23-4784-8FC9-D1A2E4A50F02),
+		oleautomation,
+		helpcontext(IDH_Alignment),
+		helpstring("IAlignment Interface"),
+		pointer_default(unique)
+	]
+	interface IAlignment : IPath
+	{
+		[propget, helpstring("property RefStation"), helpcontext(IDH_Alignment_RefStation)] HRESULT RefStation([out, retval] IStation* *station);
+		[propput, helpstring("property RefStation"), helpcontext(IDH_Alignment_RefStation)] HRESULT RefStation([in] VARIANT varStation);
+		[helpstring("method LocatePoint"), helpcontext(IDH_Alignment_LocatePoint)] HRESULT LocatePoint([in] VARIANT varStation, [in] Float64 offset, [in] VARIANT varDir,[out,retval] IPoint2d* *newPoint); 
+		[helpstring("method Bearing"), helpcontext(IDH_Alignment_Bearing)] HRESULT Bearing([in] VARIANT varStation,[out,retval] IDirection* *dir); 
+		[helpstring("method Normal"), helpcontext(IDH_Alignment_Normal)] HRESULT Normal([in] VARIANT varStation,[out,retval] IDirection* *dir); 
+		[helpstring("method Offset"), helpcontext(IDH_Alignment_Offset)] HRESULT Offset([in] IPoint2d* point,[out] IStation* *station,[out] Float64* offset); 
+		[helpstring("method CreateSubPath"),/*helpcontext(IDH_Alignment_CreateSubPath)*/] HRESULT CreateSubPath([in]VARIANT varStartStation,[in]VARIANT varEndStation,[out,retval]IPath** path);
+	};
+
+   [
+        object,
+        uuid(C659E538-5EBE-11d5-8C32-006097C68A9C),
+        oleautomation,
+		helpcontext(IDH_IMeasure),
+        helpstring("IMeasure Interface"),
+        pointer_default(unique)
+    ]
+    interface IMeasure : IUnknown
+    {
+        [helpstring("method Angle"),helpcontext(IDH_IMeasure_Angle)] HRESULT Angle([in] CogoElementKey fromID,[in] CogoElementKey vertexID,[in] CogoElementKey toID,[out,retval] IAngle** angle);
+        [helpstring("method Area"),helpcontext(IDH_IMeasure_Area)] HRESULT Area([in] VARIANT keys,[out,retval] Float64* area);
+        [helpstring("method Distance"),helpcontext(IDH_IMeasure_Distance)] HRESULT Distance([in] CogoElementKey fromID,[in] CogoElementKey toID,[out,retval] Float64* dist);
+        [helpstring("method Direction"),helpcontext(IDH_IMeasure_Direction)] HRESULT Direction([in] CogoElementKey fromID,[in] CogoElementKey toID,[out,retval] IDirection** dir);
+        [helpstring("method Inverse"),helpcontext(IDH_IMeasure_Inverse)] HRESULT Inverse([in] CogoElementKey fromID,[in] CogoElementKey toID,[out] Float64* dist,[out] IDirection** dir);
+    };
+
+    [
+        object,
+        uuid(677836E0-0FC9-42b3-867E-F26D7DB5591D),
+        oleautomation,
+		helpcontext(IDH_IMeasure),
+        helpstring("IMeasure2 Interface"),
+        pointer_default(unique)
+    ]
+    interface IMeasure2 : IUnknown
+    {
+        [helpstring("method Angle"),helpcontext(IDH_IMeasure_Angle)] HRESULT Angle([in] IPoint2d* from,[in] IPoint2d* vertex,[in] IPoint2d* to,[out,retval] IAngle** angle);
+        [helpstring("method Area"),helpcontext(IDH_IMeasure_Area)] HRESULT Area([in] IPoint2dCollection* points,[out,retval] Float64* area);
+        [helpstring("method Distance"),helpcontext(IDH_IMeasure_Distance)] HRESULT Distance([in] IPoint2d* from,[in] IPoint2d* to,[out,retval] Float64* dist);
+        [helpstring("method Direction"),helpcontext(IDH_IMeasure_Direction)] HRESULT Direction([in] IPoint2d* from,[in] IPoint2d* to,[out,retval] IDirection** dir);
+        [helpstring("method Inverse"),helpcontext(IDH_IMeasure_Inverse)] HRESULT Inverse([in] IPoint2d* from,[in] IPoint2d* to,[out] Float64* dist,[out] IDirection** dir);
+    };
+
+    [
+        object,
+        uuid(26FFDDD8-5EB8-11d5-8C32-006097C68A9C),
+        oleautomation,
+		helpcontext(IDH_ILocate),
+        helpstring("ILocate Interface"),
+        pointer_default(unique)
+    ]
+    interface ILocate : IUnknown
+    {
+        [helpstring("method ByDistAngle"),helpcontext(IDH_ILocate_ByDistAngle)] HRESULT ByDistAngle([in] CogoElementKey newID,[in] CogoElementKey fromID,[in] CogoElementKey toID, [in] Float64 dist, [in] VARIANT varAngle, [in] Float64 offset);
+        [helpstring("method ByDistDefAngle"),helpcontext(IDH_ILocate_ByDistDefAngle)] HRESULT ByDistDefAngle([in] CogoElementKey newID,[in] CogoElementKey fromID,[in] CogoElementKey toID, [in] Float64 dist, [in] VARIANT varDefAngle, [in] Float64 offset);
+        [helpstring("method ByDistDir"),helpcontext(IDH_ILocate_ByDistDir)] HRESULT ByDistDir([in] CogoElementKey newID,[in] CogoElementKey fromID, [in] Float64 dist, [in] VARIANT varDir, [in] Float64 offset);
+        [helpstring("method PointOnLine"),helpcontext(IDH_ILocate_PointOnLine)] HRESULT PointOnLine([in] CogoElementKey newID,[in] CogoElementKey fromID, [in] CogoElementKey toID, [in] Float64 dist, [in] Float64 offset);
+        [helpstring("method ParallelLineByPoints"),helpcontext(IDH_ILocate_ParallelLineByPoints)] HRESULT ParallelLineByPoints([in] CogoElementKey newFromID,[in] CogoElementKey newToID,[in] CogoElementKey fromID,[in] CogoElementKey toID, [in] Float64 offset);
+        [helpstring("method ParallelLineSegment"),helpcontext(IDH_ILocate_ParallelLineSegment)] HRESULT ParallelLineSegment([in] CogoElementKey newLineID,[in] CogoElementKey newFromID,[in] CogoElementKey newToID,[in] CogoElementKey lineID,[in] Float64 offset);
+    };
+
+    [
+        object,
+        uuid(2F0AAEBF-F043-4d50-8E11-709CF6079F5F),
+        oleautomation,
+		helpcontext(IDH_ILocate),
+        helpstring("ILocate Interface"),
+        pointer_default(unique)
+    ]
+    interface ILocate2 : IUnknown
+    {
+        [helpstring("method ByDistAngle"),helpcontext(IDH_ILocate_ByDistAngle)] HRESULT ByDistAngle([in] IPoint2d* from,[in] IPoint2d* to, [in] Float64 dist, [in] VARIANT varAngle, [in] Float64 offset,[out,retval]IPoint2d** point);
+        [helpstring("method ByDistDefAngle"),helpcontext(IDH_ILocate_ByDistDefAngle)] HRESULT ByDistDefAngle([in] IPoint2d* from, [in] IPoint2d* to, [in] Float64 dist, [in] VARIANT varDefAngle, [in] Float64 offset, [out,retval]IPoint2d** point);
+        [helpstring("method ByDistDir"),helpcontext(IDH_ILocate_ByDistDir)] HRESULT ByDistDir([in] IPoint2d* from, [in] Float64 dist, [in] VARIANT varDir, [in] Float64 offset,[out,retval]IPoint2d** point);
+        [helpstring("method PointOnLine"),helpcontext(IDH_ILocate_PointOnLine)] HRESULT PointOnLine([in] IPoint2d* from, [in] IPoint2d* to, [in] Float64 dist, [in] Float64 offset,[out,retval]IPoint2d** point);
+        [helpstring("method ParallelLineByPoints"),helpcontext(IDH_ILocate_ParallelLineByPoints)] HRESULT ParallelLineByPoints([in] IPoint2d* from,[in] IPoint2d* to, [in] Float64 offset,[out]IPoint2d** p1,[out]IPoint2d** p2);
+        [helpstring("method ParallelLineSegment"),helpcontext(IDH_ILocate_ParallelLineSegment)] HRESULT ParallelLineSegment([in] ILineSegment2d* ls,[in] Float64 offset,[out,retval]ILineSegment2d** linesegment);
+    };
+
+    [
+        object,
+        uuid(26FFDDD6-5EB8-11d5-8C32-006097C68A9C),
+        oleautomation,
+		helpcontext(IDH_IIntersect),
+        helpstring("IIntersect Interface"),
+        pointer_default(unique)
+    ]
+    interface IIntersect : IUnknown
+    {
+      [helpstring("method Bearings"),helpcontext(IDH_IIntersect_Bearings)] HRESULT Bearings([in]CogoElementKey newID,[in] CogoElementKey id1, [in] VARIANT varDir1, [in] Float64 offset1,[in] CogoElementKey id2, [in] VARIANT varDir2, [in] Float64 offset2, [out,retval] VARIANT_BOOL* bFound);
+      [helpstring("method BearingCircle"),helpcontext(IDH_IIntersect_BearingCircle)] HRESULT BearingCircle([in]CogoElementKey newID,[in] CogoElementKey id1, [in] VARIANT varDir, [in] Float64 offset,[in] CogoElementKey idc, [in] Float64 radius, [in] CogoElementKey idNearest, [out,retval] VARIANT_BOOL* bFound);
+      [helpstring("method Circles"),helpcontext(IDH_IIntersect_Circles)] HRESULT Circles([in]CogoElementKey newID,[in] CogoElementKey id1, [in] Float64 r1, [in] CogoElementKey id2, [in] Float64 r2, [in] CogoElementKey idNearest, [out,retval] VARIANT_BOOL* bFound);
+      [helpstring("method LineByPointsCircle"),helpcontext(IDH_IIntersect_LineByPointsCircle)] HRESULT LineByPointsCircle([in]CogoElementKey newID,[in] CogoElementKey id1, [in] CogoElementKey id2, [in] Float64 offset,[in] CogoElementKey idc, [in] Float64 radius, [in] CogoElementKey idNearest, [out,retval] VARIANT_BOOL* bFound);
+      [helpstring("method LinesByPoints"),helpcontext(IDH_IIntersect_LinesByPoints)] HRESULT LinesByPoints([in]CogoElementKey newID,[in] CogoElementKey id11, [in] CogoElementKey id12, [in] Float64 offset1,[in] CogoElementKey id21, [in] CogoElementKey id22, [in] Float64 offset2, [out,retval] VARIANT_BOOL* bFound);
+      [helpstring("method Lines"),helpcontext(IDH_IIntersect_Lines)] HRESULT Lines([in]CogoElementKey newID,[in]CogoElementKey id1,[in]Float64 offset1,[in]CogoElementKey id2,[in]Float64 offset2,[out,retval]VARIANT_BOOL* bFound);
+      [helpstring("method LineSegmentCircle"),helpcontext(IDH_IIntersect_LineSegmentCircle)] HRESULT LineSegmentCircle([in]CogoElementKey newID,[in] CogoElementKey lineID, [in] Float64 offset,[in] CogoElementKey idc, [in] Float64 radius, [in] CogoElementKey idNearest, [out,retval] VARIANT_BOOL* bFound);
+    };
+
+    [
+        object,
+        uuid(5AFCF67A-4802-42cf-9C5C-AF5A61D4D0D4),
+        oleautomation,
+		helpcontext(IDH_IIntersect),
+        helpstring("IIntersect Interface"),
+        pointer_default(unique)
+    ]
+    interface IIntersect2 : IUnknown
+    {
+      [helpstring("method Bearings"),helpcontext(IDH_IIntersect_Bearings)] HRESULT Bearings([in] IPoint2d* p1, [in] VARIANT varDir1, [in] Float64 offset1,[in] IPoint2d* p2, [in] VARIANT varDir2, [in] Float64 offset2, [out,retval] IPoint2d** point);
+      [helpstring("method BearingCircle"),helpcontext(IDH_IIntersect_BearingCircle)] HRESULT BearingCircle([in] IPoint2d* p1, [in] VARIANT varDir, [in] Float64 offset,[in] IPoint2d* center, [in] Float64 radius, [in] IPoint2d* nearest, [out,retval] IPoint2d** point);
+      [helpstring("method Circles"),helpcontext(IDH_IIntersect_Circles)] HRESULT Circles([in] IPoint2d* p1, [in] Float64 r1, [in] IPoint2d* p2, [in] Float64 r2, [in] IPoint2d* nearest, [out,retval] IPoint2d** point);
+      [helpstring("method LineByPointsCircle"),helpcontext(IDH_IIntersect_LineByPointsCircle)] HRESULT LineByPointsCircle([in] IPoint2d* p1, [in] IPoint2d* p2, [in] Float64 offset,[in] IPoint2d* center, [in] Float64 radius, [in] IPoint2d* nearest, [out,retval] IPoint2d** point);
+      [helpstring("method LinesByPoints"),helpcontext(IDH_IIntersect_LinesByPoints)] HRESULT LinesByPoints([in] IPoint2d* p11, [in] IPoint2d* p12, [in] Float64 offset1,[in] IPoint2d* p21, [in] IPoint2d* p22, [in] Float64 offset2, [out,retval] IPoint2d** point);
+      [helpstring("method Lines"),helpcontext(IDH_IIntersect_Lines)] HRESULT Lines([in]ILineSegment2d* l1,[in]Float64 offset1,[in]ILineSegment2d* l2,[in]Float64 offset2,[out,retval] IPoint2d** point);
+      [helpstring("method LineSegmentCircle"),helpcontext(IDH_IIntersect_LineSegmentCircle)] HRESULT LineSegmentCircle([in] ILineSegment2d* pSeg, [in] Float64 offset,[in] IPoint2d* center, [in] Float64 radius, [in] IPoint2d* nearest, [out,retval] IPoint2d** point);
+    };
+
+    [
+        object,
+        uuid(6B161BA4-6582-11d5-8C3D-006097C68A9C),
+        oleautomation,
+		helpcontext(IDH_IProject),
+        helpstring("IProject Interface"),
+        pointer_default(unique)
+    ]
+    interface IProject : IUnknown
+    {
+      [helpstring("method PointOnLineByPoints"),helpcontext(IDH_IProject_PointOnLineByPoints)] HRESULT PointOnLineByPoints([in]CogoElementKey newID,[in] CogoElementKey fromID, [in] CogoElementKey startID, [in] CogoElementKey endID, [in] Float64 offset);
+      [helpstring("method PointOnLineSegment"),helpcontext(IDH_IProject_PointOnLineSegment)] HRESULT PointOnLineSegment([in]CogoElementKey newID,[in]CogoElementKey fromID,[in] CogoElementKey lineID, [in] Float64 offset);
+      [helpstring("method PointOnCurve"),helpcontext(IDH_IProject_PointOnCurve)] HRESULT PointOnCurve([in]CogoElementKey newID,[in] CogoElementKey fromID, [in]CogoElementKey curveID);
+    };
+
+    [
+        object,
+        uuid(FB5BBBA8-6CFD-4cfe-8A0B-DEAB8A7AF254),
+        oleautomation,
+		helpcontext(IDH_IProject),
+        helpstring("IProject Interface"),
+        pointer_default(unique)
+    ]
+    interface IProject2 : IUnknown
+    {
+      [helpstring("method PointOnLineByPoints"),helpcontext(IDH_IProject_PointOnLineByPoints)] HRESULT PointOnLineByPoints([in] IPoint2d* pnt, [in] IPoint2d* start, [in] IPoint2d* end, [in] Float64 offset,[out,retval]IPoint2d** point);
+      [helpstring("method PointOnLineSegment"),helpcontext(IDH_IProject_PointOnLineSegment)] HRESULT PointOnLineSegment([in] IPoint2d* from,[in] ILineSegment2d* seg, [in] Float64 offset, [out,retval]IPoint2d** point);
+      [helpstring("method PointOnCurve"),helpcontext(IDH_IProject_PointOnCurve)] HRESULT PointOnCurve([in] IPoint2d* pnt, [in] IHorzCurve* curve,[out,retval] IPoint2d** point);
+    };
+   [
+      object,
+      uuid(2754C92C-D653-40ef-875B-D4126671E5B5),
+      oleautomation,
+	  helpcontext(IDH_IDivide),
+      helpstring("IDivide Interface"),
+      pointer_default(unique)
+   ]
+   interface IDivide : IUnknown
+   {
+      [helpstring("method Arc"),helpcontext(IDH_IDivide_Arc)] HRESULT Arc([in]CogoElementKey firstID,[in] CogoElementKey idInc, [in] CogoElementKey fromID, [in] CogoElementKey vertexID, [in] CogoElementKey toID,[in] long nParts);
+      [helpstring("method BetweenPoints"),helpcontext(IDH_IDivide_BetweenPoints)] HRESULT BetweenPoints([in]CogoElementKey firstID,[in] CogoElementKey idInc, [in] CogoElementKey fromID, [in] CogoElementKey toID,[in] long nParts);
+      [helpstring("method LineSegment"),helpcontext(IDH_IDivide_LineSegment)] HRESULT LineSegment([in]CogoElementKey firstID,[in] CogoElementKey idInc, [in] CogoElementKey lineID,[in] long nParts);
+	   [helpstring("method HorzCurve"),helpcontext(IDH_IDivide_HorzCurve)] HRESULT HorzCurve([in] CogoElementKey firstID, [in] CogoElementKey idInc, [in] CogoElementKey curveID, [in] long nParts);
+   };
+   [
+      object,
+      uuid(BF909705-8DEE-4797-A497-4BEDB2156BB5),
+      oleautomation,
+	  helpcontext(IDH_IDivide),
+      helpstring("IDivide Interface"),
+      pointer_default(unique)
+   ]
+   interface IDivide2 : IUnknown
+   {
+      [helpstring("method Arc"),helpcontext(IDH_IDivide_Arc)] HRESULT Arc([in] IPoint2d* from, [in] IPoint2d* vertex, [in] IPoint2d* to,[in] long nParts,[out,retval] IPoint2dCollection** points);
+      [helpstring("method BetweenPoints"),helpcontext(IDH_IDivide_BetweenPoints)] HRESULT BetweenPoints([in] IPoint2d* from, [in] IPoint2d* to,[in] long nParts,[out,retval] IPoint2dCollection** points);
+      [helpstring("method LineSegment"),helpcontext(IDH_IDivide_LineSegment)] HRESULT LineSegment([in] ILineSegment2d* seg,[in] long nParts,[out,retval]IPoint2dCollection** points);
+	   [helpstring("method HorzCurve"),helpcontext(IDH_IDivide_HorzCurve)] HRESULT HorzCurve([in] IHorzCurve* curve, [in] long nParts, [out,retval] IPoint2dCollection** points);
+   };
+
+   [
+      object,
+      uuid(E2984C32-607E-4ca3-8424-F8041D5F49D1),
+      oleautomation,
+	  helpcontext(IDH_ITangent),
+      helpstring("ITangent Interface"),
+      pointer_default(unique)
+   ]
+   interface ITangent : IUnknown
+   {
+      [helpstring("method External"),helpcontext(IDH_ITangent_External)] HRESULT External([in] CogoElementKey newID1, [in] CogoElementKey idCenter1, [in] Float64 radius1,[in] CogoElementKey newID2,[in] CogoElementKey idCenter2, [in] Float64 radius2, [in] TangentSignType sign);
+      [helpstring("method Cross"),helpcontext(IDH_ITangent_Cross)] HRESULT Cross([in] CogoElementKey newID1, [in] CogoElementKey idCenter1, [in] Float64 radius1,[in] CogoElementKey newID2,[in] CogoElementKey idCenter2, [in] Float64 radius2, [in] TangentSignType sign);
+      [helpstring("method Point"),helpcontext(IDH_ITangent_Point)] HRESULT Point([in] CogoElementKey newID, [in] CogoElementKey idCenter, [in] Float64 radius,[in] CogoElementKey pointID,[in] TangentSignType sign);
+   };
+
+   [
+      object,
+      uuid(F51A43BB-85DD-41a1-9B32-B61D9005B0D0),
+      oleautomation,
+	  helpcontext(IDH_ITangent),
+      helpstring("ITangent Interface"),
+      pointer_default(unique)
+   ]
+   interface ITangent2 : IUnknown
+   {
+      [helpstring("method External"),helpcontext(IDH_ITangent_External)] HRESULT External([in] IPoint2d* center1, [in] Float64 radius1,[in] IPoint2d* center2, [in] Float64 radius2, [in] TangentSignType sign, [out] IPoint2d** t1,[out] IPoint2d** t2);
+      [helpstring("method Cross"),helpcontext(IDH_ITangent_Cross)] HRESULT Cross([in] IPoint2d* center1, [in] Float64 radius1,[in] IPoint2d* center2, [in] Float64 radius2, [in] TangentSignType sign, [out] IPoint2d** t1,[out] IPoint2d** t2);
+	  [helpstring("method Point"),helpcontext(IDH_ITangent_Point)] HRESULT Point([in] IPoint2d* center, [in] Float64 radius,[in] IPoint2d* point, [in] TangentSignType sign, [out] IPoint2d** tangent);
+   };
+   [
+       object,
+       uuid(B9E4933C-5E73-11D5-8C32-006097C68A9C),
+       oleautomation,
+	   helpcontext(IDH_CogoModel),
+       helpstring("ICogoModel Interface"),
+       pointer_default(unique)
+   ]
+   interface ICogoModel : IUnknown
+   {
+      [propget, helpstring("property Points"),helpcontext(IDH_CogoModel_Points)] HRESULT Points([out, retval] IPointCollection* *pVal);
+      [propget, helpstring("property LineSegments"),helpcontext(IDH_CogoModel_LineSegments)] HRESULT LineSegments([out, retval] ILineSegmentCollection* *pVal);
+      [propget, helpstring("property ProfilePoints"),helpcontext(IDH_CogoModel_ProfilePoints)] HRESULT ProfilePoints([out, retval] IProfilePointCollection* *pVal);
+      [propget, helpstring("property VertCurves"),helpcontext(IDH_CogoModel_VertCurves)] HRESULT VertCurves([out, retval] IVertCurveCollection* *pVal);
+      [propget, helpstring("property HorzCurves"),helpcontext(IDH_CogoModel_HorzCurves)] HRESULT HorzCurves([out, retval] IHorzCurveCollection* *pVal);
+      [propget, helpstring("property Alignments"),helpcontext(IDH_CogoModel_Alignments)] HRESULT Alignments([out,retval] IPathCollection* *pVal);
+      [propget, helpstring("property Paths"),helpcontext(IDH_CogoModel_Alignments)] HRESULT Paths([out,retval] IPathCollection* *pVal);
+      [helpstring("method Clear"),helpcontext(IDH_CogoModel_Clear)] HRESULT Clear();
+      [propget, helpstring("property Intersect"),helpcontext(IDH_CogoModel_Intersect)] HRESULT Intersect([out, retval] IIntersect* *pVal);
+      [propget, helpstring("property Locate"),helpcontext(IDH_CogoModel_Locate)] HRESULT Locate([out, retval] ILocate* *pVal);
+      [propget, helpstring("property Measure"),helpcontext(IDH_CogoModel_Measure)] HRESULT Measure([out, retval] IMeasure* *pVal);
+      [propget, helpstring("property Project"),helpcontext(IDH_CogoModel_Project)] HRESULT Project([out, retval] IProject* *pVal);
+      [propget, helpstring("property Divide"),helpcontext(IDH_CogoModel_Divide)] HRESULT Divide([out, retval] IDivide* *pVal);
+      [propget, helpstring("property Tangent"),helpcontext(IDH_CogoModel_Tangent)] HRESULT Tangent([out, retval] ITangent* *pVal);
+      [propputref, helpstring("property PointFactory"),helpcontext(IDH_CogoModel_PointFactory)] HRESULT PointFactory([in]IPoint2dFactory* factory);
+      [propget, helpstring("property PointFactory"),helpcontext(IDH_CogoModel_PointFactory)] HRESULT PointFactory([out,retval]IPoint2dFactory** factory);
+      [propputref, helpstring("property LineSegmentFactory"),helpcontext(IDH_CogoModel_LineSegmentFactory)] HRESULT LineSegmentFactory([in]ILineSegment2dFactory* factory);
+      [propget, helpstring("property LineSegmentFactory"),helpcontext(IDH_CogoModel_LineSegmentFactory)] HRESULT LineSegmentFactory([out,retval]ILineSegment2dFactory** factory);
+      [propputref, helpstring("property ProfilePointFactory"),helpcontext(IDH_CogoModel_ProfilePointFactory)] HRESULT ProfilePointFactory([in]IProfilePointFactory* factory);
+      [propget, helpstring("property ProfilePointFactory"),helpcontext(IDH_CogoModel_ProfilePointFactory)] HRESULT ProfilePointFactory([out,retval]IProfilePointFactory** factory);
+      [propputref, helpstring("property VertCurveFactory"),helpcontext(IDH_CogoModel_VertCurveFactory)] HRESULT VertCurveFactory([in]IVertCurveFactory* factory);
+      [propget, helpstring("property VertCurveFactory"),helpcontext(IDH_CogoModel_VertCurveFactory)] HRESULT VertCurveFactory([out,retval]IVertCurveFactory** factory);
+      [propputref, helpstring("property HorzCurveFactory"),helpcontext(IDH_CogoModel_HorzCurveFactory)] HRESULT HorzCurveFactory([in]IHorzCurveFactory* factory);
+      [propget, helpstring("property HorzCurveFactory"),helpcontext(IDH_CogoModel_HorzCurveFactory)] HRESULT HorzCurveFactory([out,retval]IHorzCurveFactory** factory);
+      [propputref, helpstring("property AlignmentFactory"),helpcontext(IDH_CogoModel_AlignmentFactory)] HRESULT AlignmentFactory([in]IPathFactory* factory);
+      [propget, helpstring("property AlignmentFactory"),helpcontext(IDH_CogoModel_AlignmentFactory)] HRESULT AlignmentFactory([out,retval]IPathFactory** factory);
+      [propputref, helpstring("property PathFactory"),helpcontext(IDH_CogoModel_PathFactory)] HRESULT PathFactory([in]IPathFactory* factory);
+      [propget, helpstring("property PathFactory"),helpcontext(IDH_CogoModel_PathFactory)] HRESULT PathFactory([out,retval]IPathFactory** factory);
+      [helpstring("property Clone"), helpcontext(IDH_CogoModel_Clone)] HRESULT Clone([out,retval] ICogoModel* *clone);
+
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
+   };
+	[
+		object,
+		uuid(AF7FCB40-3E8B-45BE-B8E9-AC8ADF4DDB81),
+	
+		helpstring("ICogoEngine Interface"),
+		pointer_default(unique)
+	]
+	interface ICogoEngine : IUnknown
+	{
+      [propget, helpstring("property Intersect"),helpcontext(IDH_CogoModel_Intersect)] HRESULT Intersect([out, retval] IIntersect2* *pVal);
+      [propget, helpstring("property Locate"),helpcontext(IDH_CogoModel_Locate)] HRESULT Locate([out, retval] ILocate2* *pVal);
+      [propget, helpstring("property Measure"),helpcontext(IDH_CogoModel_Measure)] HRESULT Measure([out, retval] IMeasure2* *pVal);
+      [propget, helpstring("property Project"),helpcontext(IDH_CogoModel_Project)] HRESULT Project([out, retval] IProject2* *pVal);
+      [propget, helpstring("property Divide"),helpcontext(IDH_CogoModel_Divide)] HRESULT Divide([out, retval] IDivide2* *pVal);
+      [propget, helpstring("property Tangent"),helpcontext(IDH_CogoModel_Tangent)] HRESULT Tangent([out, retval] ITangent2* *pVal);
+      [propputref, helpstring("property PointFactory"),helpcontext(IDH_CogoModel_PointFactory)] HRESULT PointFactory([in]IPoint2dFactory* factory);
+      [propget, helpstring("property PointFactory"),helpcontext(IDH_CogoModel_PointFactory)] HRESULT PointFactory([out,retval]IPoint2dFactory** factory);
+      [propputref, helpstring("property LineSegmentFactory"),helpcontext(IDH_CogoModel_LineSegmentFactory)] HRESULT LineSegmentFactory([in]ILineSegment2dFactory* factory);
+      [propget, helpstring("property LineSegmentFactory"),helpcontext(IDH_CogoModel_LineSegmentFactory)] HRESULT LineSegmentFactory([out,retval]ILineSegment2dFactory** factory);
+	};
+
+
+   [
+       object,
+       uuid(BBD4B66A-6102-11d5-8C3A-006097C68A9C),
+       oleautomation,
+	   helpcontext(IDH_CogoModel),
+       helpstring("ICogoModelEvents Interface"),
+       pointer_default(unique)
+   ]
+   interface ICogoModelEvents : IUnknown
+   {
+       [helpstring("event OnPointChanged"),helpcontext(IDH_CogoModel_OnPointChanged)] HRESULT OnPointChanged([in] ICogoModel* cm,[in] CogoElementKey key,[in] IPoint2d* point);
+       [helpstring("event OnPointAdded"),helpcontext(IDH_CogoModel_OnPointAdded)] HRESULT OnPointAdded([in] ICogoModel* cm,[in] CogoElementKey key,[in] IPoint2d* point);
+       [helpstring("event OnPointRemoved"),helpcontext(IDH_CogoModel_OnPointRemoved)] HRESULT OnPointRemoved([in] ICogoModel* cm,[in] CogoElementKey key);
+       [helpstring("event OnPointsCleared"),helpcontext(IDH_CogoModel_OnPointsCleared)] HRESULT OnPointsCleared([in] ICogoModel* cm);
+       [helpstring("event OnLineSegmentChanged"),helpcontext(IDH_CogoModel_OnLineSegmentChanged)] HRESULT OnLineSegmentChanged([in] ICogoModel* cm,[in] CogoElementKey key,[in] ILineSegment2d* lineSeg);
+       [helpstring("event OnLineSegmentAdded"),helpcontext(IDH_CogoModel_OnLineSegmentAdded)] HRESULT OnLineSegmentAdded([in] ICogoModel* cm,[in] CogoElementKey key,[in] ILineSegment2d* lineSeg);
+       [helpstring("event OnLineSegmentRemoved"),helpcontext(IDH_CogoModel_OnLineSegmentRemoved)] HRESULT OnLineSegmentRemoved([in] ICogoModel* cm,[in] CogoElementKey key);
+       [helpstring("event OnLineSegmentsCleared"),helpcontext(IDH_CogoModel_OnLineSegmentsCleared)] HRESULT OnLineSegmentsCleared([in] ICogoModel* cm);
+       [helpstring("event OnProfilePointChanged"),helpcontext(IDH_CogoModel_OnProfilePointChanged)] HRESULT OnProfilePointChanged([in] ICogoModel* cm,[in] CogoElementKey key,[in] IProfilePoint* pp);
+       [helpstring("event OnProfilePointAdded"),helpcontext(IDH_CogoModel_OnProfilePointAdded)] HRESULT OnProfilePointAdded([in] ICogoModel* cm,[in] CogoElementKey key,[in] IProfilePoint* pp);
+       [helpstring("event OnProfilePointRemoved"),helpcontext(IDH_CogoModel_OnProfilePointRemoved)] HRESULT OnProfilePointRemoved([in] ICogoModel* cm,[in] CogoElementKey key);
+       [helpstring("event OnProfilePointsCleared"),helpcontext(IDH_CogoModel_OnProfilePointsCleared)] HRESULT OnProfilePointsCleared([in] ICogoModel* cm);
+       [helpstring("event OnVertCurveChanged"),helpcontext(IDH_CogoModel_OnVertCurveChanged)] HRESULT OnVertCurveChanged([in] ICogoModel* cm,[in] CogoElementKey key,[in] IVertCurve* vc);
+       [helpstring("event OnVertCurveAdded"),helpcontext(IDH_CogoModel_OnVertCurveAdded)] HRESULT OnVertCurveAdded([in] ICogoModel* cm,[in] CogoElementKey key,[in] IVertCurve* vc);
+       [helpstring("event OnVertCurveRemoved"),helpcontext(IDH_CogoModel_OnVertCurveRemoved)] HRESULT OnVertCurveRemoved([in] ICogoModel* cm,[in] CogoElementKey key);
+       [helpstring("event OnVertCurvesCleared"),helpcontext(IDH_CogoModel_OnVertCurvesCleared)] HRESULT OnVertCurvesCleared([in] ICogoModel* cm);
+       [helpstring("event OnHorzCurveChanged"),helpcontext(IDH_CogoModel_OnHorzCurveChanged)] HRESULT OnHorzCurveChanged([in] ICogoModel* cm,[in] CogoElementKey key,[in] IHorzCurve* vc);
+       [helpstring("event OnHorzCurveAdded"),helpcontext(IDH_CogoModel_OnHorzCurveAdded)] HRESULT OnHorzCurveAdded([in] ICogoModel* cm,[in] CogoElementKey key,[in] IHorzCurve* vc);
+       [helpstring("event OnHorzCurveRemoved"),helpcontext(IDH_CogoModel_OnHorzCurveRemoved)] HRESULT OnHorzCurveRemoved([in] ICogoModel* cm,[in] CogoElementKey key);
+       [helpstring("event OnHorzCurvesCleared"),helpcontext(IDH_CogoModel_OnHorzCurvesCleared)] HRESULT OnHorzCurvesCleared([in] ICogoModel* cm);
+	    [helpstring("event OnProfileChanged"),helpcontext(IDH_CogoModel_OnProfileChanged)] HRESULT OnProfileChanged([in] ICogoModel* cm,[in] IProfile* profile);
+	    [helpstring("event OnAlignmentChanged"),helpcontext(IDH_CogoModel_OnAlignmentChanged)] HRESULT OnAlignmentChanged([in] ICogoModel* cm,[in] CogoElementKey key,[in] IAlignment* alignment);
+       [helpstring("event OnAlignmentAdded"),helpcontext(IDH_CogoModel_OnAlignmentAdded)] HRESULT OnAlignmentAdded([in] ICogoModel* cm,[in] CogoElementKey key,[in] IAlignment* alignment);
+       [helpstring("event OnAlignmentRemoved"),helpcontext(IDH_CogoModel_OnAlignmentRemoved)] HRESULT OnAlignmentRemoved([in] ICogoModel* cm,[in] CogoElementKey key);
+       [helpstring("event OnAlignmentCleared"),helpcontext(IDH_CogoModel_OnAlignmentCleared)] HRESULT OnAlignmentsCleared([in] ICogoModel* cm);
+	    [helpstring("event OnPathChanged"),helpcontext(IDH_CogoModel_OnPathChanged)] HRESULT OnPathChanged([in] ICogoModel* cm,[in] CogoElementKey key,[in] IPath* path);
+       [helpstring("event OnPathAdded"),helpcontext(IDH_CogoModel_OnPathAdded)] HRESULT OnPathAdded([in] ICogoModel* cm,[in] CogoElementKey key,[in] IPath* path);
+       [helpstring("event OnPathRemoved"),helpcontext(IDH_CogoModel_OnPathRemoved)] HRESULT OnPathRemoved([in] ICogoModel* cm,[in] CogoElementKey key);
+       [helpstring("event OnPathCleared"),helpcontext(IDH_CogoModel_OnPathCleared)] HRESULT OnPathsCleared([in] ICogoModel* cm);
+   };
+
+   /////////////////////////////////////////////////////////////
+
+   [
+        uuid(10F574FD-5735-11D3-898C-006097C68A9C),
+		helpcontext(IDH_Angle),
+        helpstring("Angle Class")
+    ]
+    coclass Angle
+    {
+        [default] interface IAngle;
+        interface IStructuredStorage2;
+        // interface IPersist;
+    };
+    [
+        uuid(10F574FB-5735-11D3-898C-006097C68A9C),
+		helpcontext(IDH_Direction),
+        helpstring("Direction Class")
+    ]
+    coclass Direction
+    {
+        [default] interface IDirection;
+        interface IStructuredStorage2;
+        // interface IPersist;
+    };
+
+   [
+       uuid(5559C9A6-5C16-11D5-8C31-006097C68A9C),
+	   helpcontext(IDH_PointCollection),
+       helpstring("PointCollection Class")
+   ]
+   coclass PointCollection
+   {
+       [default] interface IPointCollection;
+       [default, source] interface IPointCollectionEvents;
+      interface IStructuredStorage2;
+        // interface IPersist;
+   };
+
+   [
+       uuid(9E0F9B9E-99C9-40A8-9C08-47E6ACD762E9),
+	   helpcontext(IDH_LineSegmentCollection),
+       helpstring("LineSegmentCollection Class")
+   ]
+   coclass LineSegmentCollection
+   {
+       [default] interface ILineSegmentCollection;
+       [default, source] interface ILineSegmentCollectionEvents;
+      interface IStructuredStorage2;
+        // interface IPersist;
+   };
+   [
+       uuid(07E3C485-573F-11D3-8CDF-BAAC148B6002),
+	   helpcontext(IDH_CogoModel),
+       helpstring("CogoModel Class")
+   ]
+   coclass CogoModel
+   {
+       [default] interface ICogoModel;
+       interface IMeasure;
+       interface ILocate;
+       interface IIntersect;
+     interface IProject;
+     interface IDivide;
+     interface ITangent;
+       [default, source] interface ICogoModelEvents;
+      interface IStructuredStorage2;
+        // interface IPersist;
+   };
+
+   [
+       uuid(849FD333-4FC9-4093-93F6-FBEC311FF45A),
+	   helpcontext(IDH_ProfilePoint),
+       helpstring("ProfilePoint Class")
+   ]
+   coclass ProfilePoint
+   {
+       [default] interface IProfilePoint;
+       [default, source] interface IProfilePointEvents;
+       interface IStructuredStorage2;
+        // interface IPersist;
+   };
+
+   [
+       uuid(3B3D6F38-F5B7-4621-B276-5421717846E2),
+	   helpcontext(IDH_ProfilePointCollection),
+       helpstring("ProfilePointCollection Class")
+   ]
+   coclass ProfilePointCollection
+   {
+       [default] interface IProfilePointCollection;
+       [default, source] interface IProfilePointCollectionEvents;
+      interface IStructuredStorage2;
+        // interface IPersist;
+   };
+
+   [
+       uuid(7581BC4E-4E7C-4761-B59E-2D75EA2E1120),
+	   helpcontext(IDH_VertCurve),
+       helpstring("VertCurve Class")
+   ]
+   coclass VertCurve
+   {
+       [default] interface IVertCurve;
+       [default, source] interface IVertCurveEvents;
+       interface IStructuredStorage2;
+        // interface IPersist;
+   };
+   [
+       uuid(D6732CA5-6E4F-45FE-A4FC-B0E8A94667FA),
+	   helpcontext(IDH_VertCurveCollection),
+       helpstring("VertCurveCollection Class")
+   ]
+   coclass VertCurveCollection
+   {
+       [default] interface IVertCurveCollection;
+       [default, source] interface IVertCurveCollectionEvents;
+      interface IStructuredStorage2;
+        // interface IPersist;
+   };
+
+   [
+       uuid(61454EB9-8040-4B74-9429-B09D1FF1E0BB),
+	   helpcontext(IDH_HorzCurve),
+       helpstring("HorzCurve Class")
+   ]
+   coclass HorzCurve
+   {
+       [default] interface IHorzCurve;
+       [default, source] interface IHorzCurveEvents;
+       interface IStructuredStorage2;
+        // interface IPersist;
+   };
+
+	[
+		uuid(2C4945D1-9B56-430C-B395-B07209328C59),
+		helpcontext(IDH_HorzCurveCollection),
+		helpstring("HorzCurveCollection Class")
+	]
+	coclass HorzCurveCollection
+	{
+		[default] interface IHorzCurveCollection;
+		[default, source] interface IHorzCurveCollectionEvents;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+
+   [
+       uuid(69706DA8-D10D-4932-A566-69DE35CAF30F),
+	   //helpcontext(IDH_CubicSpline),
+       helpstring("CubicSpline Class")
+   ]
+   coclass CubicSpline
+   {
+       [default] interface ICubicSpline;
+		[default, source] interface ICubicSplineEvents;
+       interface IStructuredStorage2;
+        // interface IPersist;
+   };
+
+	[
+		uuid(80AC919F-D882-4C24-9E6D-721D90925FEE),
+		helpcontext(IDH_ProfileElement),
+		helpstring("ProfileElement Class")
+	]
+	coclass ProfileElement
+	{
+		[default] interface IProfileElement;
+		[default, source] interface IProfileElementEvents;
+      interface IStructuredStorage2;
+	   // interface IPersist;
+   };
+
+	[
+		uuid(7FD9C064-1A8C-4853-B1CC-24D9C877406F),
+		helpcontext(IDH_Profile),
+		helpstring("Profile Class")
+	]
+	coclass Profile
+	{
+		[default] interface IProfile;
+		[default, source] interface IProfileEvents;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(F9C121FB-B55C-4D1F-99C9-EC0671D299A2),
+		helpcontext(IDH_CrossSection),
+		helpstring("CrossSection Class")
+	]
+	coclass CrossSection
+	{
+		[default] interface ICrossSection;
+		[default, source] interface ICrossSectionEvents;
+      interface IStructuredStorage2;
+	   // interface IPersist;
+   };
+	[
+		uuid(AE736431-9805-49AB-A8A3-658A90E139C1),
+		helpcontext(IDH_CrossSectionCollection),
+		helpstring("CrossSectionCollection Class")
+	]
+	coclass CrossSectionCollection
+	{
+		[default] interface ICrossSectionCollection;
+		[default, source] interface ICrossSectionCollectionEvents;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+
+	[
+		uuid(B21FFF37-F9A2-4DA0-8226-C5C3604E8262),
+		helpcontext(IDH_PathElement),
+		helpstring("PathElement Class")
+	]
+	coclass PathElement
+	{
+		[default] interface IPathElement;
+		[default, source] interface IPathElementEvents;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(B46F91AB-53C2-4ECC-8E7F-55AFA0F67C2F),
+		helpcontext(IDH_Alignment),
+		helpstring("Alignment Class")
+	]
+	coclass Alignment
+	{
+		[default] interface IAlignment;
+		[default, source] interface IPathEvents;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(4A138368-CF5F-4a12-BC2D-224FC85E8B8D),
+		helpcontext(IDH_Alignment),
+		helpstring("Path Class")
+	]
+	coclass Path
+	{
+		[default] interface IPath;
+		[default, source] interface IPathEvents;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(BB37DF4F-8AD0-4778-9036-9A340F425A50),
+		helpcontext(IDH_PathCollection),
+		helpstring("PathCollection Class")
+	]
+	coclass PathCollection
+	{
+		[default] interface IPathCollection;
+		[default, source] interface IPathCollectionEvents;
+        interface IStructuredStorage2;
+        // interface IPersist;
+   };
+
+	[
+		uuid(B61E5354-A04C-439D-9661-309897677112),
+		helpcontext(IDH_VertCurveFactory),
+		helpstring("VertCurveFactory Class")
+	]
+	coclass VertCurveFactory
+	{
+		[default] interface IVertCurveFactory;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(43AB1FB8-3A38-40FE-99A1-8CA49982037D),
+		helpcontext(IDH_ProfilePointFactory),
+		helpstring("ProfilePointFactory Class")
+	]
+	coclass ProfilePointFactory
+	{
+		[default] interface IProfilePointFactory;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(FC1BF8D1-D732-4C86-B98C-4B08E3C9E61E),
+		helpcontext(IDH_HorzCurveFactory),
+		helpstring("HorzCurveFactory Class")
+	]
+	coclass HorzCurveFactory
+	{
+		[default] interface IHorzCurveFactory;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(0AFA71AC-3F98-4DD0-9BC2-E33D00725C67),
+		helpcontext(IDH_CrossSectionFactory),
+		helpstring("CrossSectionFactory Class")
+	]
+	coclass CrossSectionFactory
+	{
+		[default] interface ICrossSectionFactory;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(016F7CE4-7013-47db-88EA-BBF0EA82AA30),
+		helpcontext(IDH_AlignmentFactory),
+		helpstring("PathFactory Class")
+	]
+	coclass PathFactory
+	{
+		[default] interface IPathFactory;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(302F2E74-E561-4275-8C4E-3451EC5FD757),
+		helpcontext(IDH_AlignmentFactory),
+		helpstring("AlignmentFactory Class")
+	]
+	coclass AlignmentFactory
+	{
+		[default] interface IPathFactory;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+
+	[
+		uuid(0E8ADC7B-54A5-45FC-AA79-56BBE528FA47),
+		helpcontext(IDH_AngleDisplayUnitFormatter),
+		helpstring("AngleDisplayUnitFormatter Class")
+	]
+	coclass AngleDisplayUnitFormatter
+	{
+		[default] interface IAngleDisplayUnitFormatter;
+		[default, source] interface IDisplayUnitFormatterEvents;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+
+	[
+		uuid(50A4E50C-B7A8-4177-AB25-83D4E783B7A3),
+		helpcontext(IDH_DirectionDisplayUnitFormatter),
+		helpstring("DirectionDisplayUnitFormatter Class")
+	]
+	coclass DirectionDisplayUnitFormatter
+	{
+		[default] interface IDirectionDisplayUnitFormatter;
+		[default, source] interface IDisplayUnitFormatterEvents;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+
+   [
+      uuid(F0151EC9-C520-4ec7-9581-35FC1685FAAB),
+      helpstring("PointFactory Class")
+   ]
+   coclass PointFactory
+   {
+      [default] interface IPoint2dFactory;
+      interface IStructuredStorage2;
+        // interface IPersist;
+   };
+
+   [
+      uuid(B290D560-4DFC-404c-8CAF-CFBFE211234D),
+      helpstring("LineSegmentFactory Class")
+   ]
+   coclass LineSegmentFactory
+   {
+      [default] interface ILineSegment2dFactory;
+      interface IStructuredStorage2;
+        // interface IPersist;
+   };
+	[
+		uuid(4C22AA8F-6739-49DD-B6DF-FDCD352FF969),
+		helpstring("Station Class")
+	]
+	coclass Station
+	{
+		[default] interface IStation;
+      [default,source] interface IStationEvents;
+	};
+	[
+		uuid(C7E7D393-7C90-4AF5-88DF-A761FA3BCE19),
+		helpstring("CogoEngine Class")
+	]
+	coclass CogoEngine
+	{
+		[default] interface ICogoEngine;
+       interface IMeasure2;
+       interface ILocate2;
+       interface IIntersect2;
+     interface IProject2;
+     interface IDivide2;
+     interface ITangent2;
+	};
+};

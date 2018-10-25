@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.PSPowerFormula.1 = s 'PSPowerFormula Class'
+	{
+		CLSID = s '{75C05DC6-48F7-476B-B67A-ABD58180F9FB}'
+	}
+	WBFLRCCapacity.PSPowerFormula = s 'PSPowerFormula Class'
+	{
+		CLSID = s '{75C05DC6-48F7-476B-B67A-ABD58180F9FB}'
+		CurVer = s 'WBFLRCCapacity.PSPowerFormula.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {75C05DC6-48F7-476B-B67A-ABD58180F9FB} = s 'PSPowerFormula Class'
+		{
+			ProgID = s 'WBFLRCCapacity.PSPowerFormula.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.PSPowerFormula'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

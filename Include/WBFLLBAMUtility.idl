@@ -1,0 +1,150 @@
+///////////////////////////////////////////////////////////////////////
+// LBAM Utility - Longitindal Bridge Analysis Model
+// Copyright (C) 2009  Washington State Department of Transportation
+//                     Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// LBAMUtility.idl : IDL source for LBAMUtility.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (LBAMUtility.tlb) and marshalling code.
+#include "LBAMUtility.hh"
+
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "WBFLTypes.idl";
+import "WBFLTools.idl";
+import "WBFLLBAM.idl";
+import "WBFLUnitServer.idl";
+
+cpp_quote("#define LBAMU_E_MUST_HAVE_ONE_SPAN      				     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,1002)")
+cpp_quote("#define LBAMU_E_E_MUST_BE_GT_ZERO      				     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,1003)")
+cpp_quote("#define LBAMU_E_A_MUST_BE_GT_ZERO      				     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,1004)")
+cpp_quote("#define LBAMU_E_I_MUST_BE_GT_ZERO      				     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,1005)")
+cpp_quote("#define LBAMU_E_DEPTH_MUST_BE_GT_ZERO    			     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,1006)")
+cpp_quote("#define LBAMU_E_SPAN_LENGTH_MUST_BE_GT_ZERO 			     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,1007)")
+cpp_quote("#define LBAMU_E_POI_INCREMENT_MUST_BE_GT_ZERO		     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,1008)")
+cpp_quote("#define LBAMU_E_MUST_HAVE_ONE_SSM      		             MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,1009)")
+cpp_quote("#define LBAMU_E_INVALID_POI_MEMBER_TYPE  	             MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,1010)")
+cpp_quote("#define LBAMU_E_POI_BAD_LOCATION  	                     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,1011)")
+cpp_quote("#define LBAMU_E_POI_TEMP_SUPPORT_OOR                      MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,1012)")
+
+[
+	uuid(12D5CC49-BF21-11D5-B075-00105A9AF985),
+	version(1.0),
+	helpstring("WBFLLBAMUtility Library"),
+   helpfile("WBFLLBam.chm"),
+   helpcontext(IDH_WBFLLBAMUtility)
+]
+library WBFLLBAMUtility
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+   typedef
+   [
+      public,
+      uuid(B454245B-8E83-4378-8B46-8DE759EDA165),
+      helpstring("Designates ordering of LRFD Design Vehicular Live Loads after running ConfigureLRFDLiveLoad"),
+      helpcontext(IDH_DesignVehicularLoadOrder)
+   ]
+   enum 
+   {
+      dvoDesignTruck    = 0,
+	   dvoDesignTandem   = 1,
+      dvoDualTruckTrain = 2,
+      dvoOptionalLowBoy = 3
+   } DesignVehicularLoadOrder;
+
+	[
+		object,
+		uuid(12D5CC56-BF21-11D5-B075-00105A9AF985),
+		oleautomation, 
+		helpstring("ILBAMFactory Interface"),
+      helpcontext(IDH_LBAMFactory),
+		pointer_default(unique)
+	]
+	interface ILBAMFactory : IUnknown
+	{
+		[helpstring("method CreateSimpleModel - Simple factory method to create an LBAM model"), helpcontext(IDH_LBAMFactory_CreateSimpleModel)] 
+      HRESULT CreateSimpleModel([in]IDblArray* SpanLengths, [in]Float64 E, [in]Float64 A, [in]Float64 I, [in]Float64 Depth, [out,retval]ILBAMModel** newModel);
+		[helpstring("method GetSupportIDsForStage"), helpcontext(IDH_LBAMFactory_GetSupportIDsForStage)] 
+      HRESULT GetSupportIDsForStage([in]ILBAMModel* pModel, [in]BSTR stage, [out, retval]ILongArray* *supportIDs);
+      [helpstring("method MapLoadCaseToLoadGroup"), helpcontext(IDH_LBAMFactory_MapLoadGroupToLoadCase)] 
+      HRESULT MapLoadGroupToLoadCase([in]ILBAMModel* pModel,[in] BSTR lgName,[in] BSTR lgDesc,[in] BSTR lcName);
+      [helpstring("method CreateSelfWeightDeadLoad"),helpcontext(IDH_LBAMFactory_CreateSelfWeightDeadLoad)]
+      HRESULT CreateSelfWeightDeadLoad([in]ILBAMModel* pModel, [in]BSTR stage, [in]BSTR lgName, [in]Float64 unitWgt, [in]Float64 E);
+		[helpstring("method GeneratePOIsOnSuperstructure"), helpcontext(IDH_LBAMFactory_GeneratePOIsOnSuperstructure)] 
+      HRESULT GeneratePOIsOnSuperstructure([in]ILBAMModel* Model, [in]long startID, [in]long Increment, [out,retval]long* lastVal);
+		[helpstring("method GetSuperstructurePOIs - In sorted ordr"), helpcontext(IDH_LBAMFactory_GetSuperstructurePOIs)] 
+      HRESULT GetSuperstructurePOIs([in]ILBAMModel* Model, [out]ILongArray* *PoiIDs, [out]IDblArray* *PoiLocations);
+	};
+
+	[
+		object,
+		uuid(1ACF6808-3391-4902-8032-936958682174),
+		oleautomation, 
+		helpstring("ILBAMLRFDFactory Interface"),
+      helpcontext(IDH_LBAMLRFDFactory),
+		pointer_default(unique)
+	]
+	interface ILBAMLRFDFactory : ILBAMFactory
+	{
+		[helpstring("method ConfigureLiveLoad"), helpcontext(IDH_LBAMLRFDFactory_ConfigureLiveLoad)] 
+      HRESULT ConfigureLiveLoad([in]ILBAMModel* pModel,[in]VARIANT_BOOL includeLowBoy, [in]SpecUnitType units,[in]IUnitServer* pUnitServer);
+      [helpstring("method ConfigureLoadCombinations"), helpcontext(IDH_LBAMLRFDFactory_ConfigureLoadCombinations)] 
+      HRESULT ConfigureLoadCombinations([in]ILBAMModel* pModel);
+	};
+
+
+	[
+		object,
+		uuid(B62C903B-BDE8-4317-9945-267ED015EB69),
+		oleautomation, 
+		helpstring("ILBAMLRFDFactory2 Interface"),
+      helpcontext(IDH_LBAMLRFDFactory),
+		pointer_default(unique)
+	]
+	interface ILBAMLRFDFactory2 : ILBAMLRFDFactory
+	{
+ 	 [helpstring("method ConfigureDesignLiveLoad"), helpcontext(IDH_LBAMLRFDFactory_ConfigureDesignLiveLoad)] 
+      HRESULT ConfigureDesignLiveLoad([in]ILBAMModel* pModel, [in] LiveLoadModelType llmt,[in] Float64 imTruck,[in]Float64 imLane, [in]VARIANT_BOOL includeDualTrucks, [in]VARIANT_BOOL includeLowBoy, [in]SpecUnitType units,[in]IUnitServer* pUnitServer);
+
+ 	 [helpstring("method ConfigureFatigueLiveLoad"), helpcontext(IDH_LBAMLRFDFactory_ConfigureFatigueLiveLoad)] 
+      HRESULT ConfigureFatigueLiveLoad([in]ILBAMModel* pModel,[in] Float64 imTruck,[in]Float64 imLane, [in]SpecUnitType units,[in]IUnitServer* pUnitServer);
+
+ 	 [helpstring("method ConfigureDeflectionLiveLoad"), helpcontext(IDH_LBAMLRFDFactory_ConfigureDeflectionLiveLoad)] 
+      HRESULT ConfigureDeflectionLiveLoad([in]ILBAMModel* pModel,[in] Float64 imTruck,[in]Float64 imLane, [in]SpecUnitType units,[in]IUnitServer* pUnitServer);
+	};
+
+
+	[
+		uuid(12D5CC57-BF21-11D5-B075-00105A9AF985),
+		helpstring("LRFDFactory Class")
+	]
+	coclass LRFDFactory
+	{
+		[default] interface ILBAMLRFDFactory2;
+		interface ILBAMLRFDFactory;
+		interface ILBAMFactory;
+	};
+};

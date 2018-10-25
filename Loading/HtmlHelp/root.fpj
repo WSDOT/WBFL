@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rhpml majorversion="1" minorversion="0">
+	<folders>
+		<folder>
+			<name>Images</name>
+		</folder>
+		<folder>
+			<name>Interfaces</name>
+		</folder>
+		<folder>
+			<name>Constants</name>
+		</folder>
+		<folder>
+			<name>Objects</name>
+		</folder>
+		<folder>
+			<name>Errors</name>
+		</folder>
+	</folders>
+	<topics>
+		<topic>
+			<name>Getting_Started.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Load_Combination_Hierarchy.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>License.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Errors.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Document_Conventions.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+	</topics>
+</rhpml>

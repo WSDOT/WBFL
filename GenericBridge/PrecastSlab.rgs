@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.PrecastSlab.1 = s 'PrecastSlab Class'
+	{
+		CLSID = s '{1CDE4F4B-59FA-4326-8BA6-7F9410DB31E9}'
+	}
+	WBFLGenericBridge.PrecastSlab = s 'PrecastSlab Class'
+	{
+		CLSID = s '{1CDE4F4B-59FA-4326-8BA6-7F9410DB31E9}'
+		CurVer = s 'WBFLGenericBridge.PrecastSlab.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {1CDE4F4B-59FA-4326-8BA6-7F9410DB31E9} = s 'PrecastSlab Class'
+		{
+			ProgID = s 'WBFLGenericBridge.PrecastSlab.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.PrecastSlab'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.AngleDisplayUnitFormatter.1 = s 'AngleDisplayUnitFormatter Class'
+	{
+		CLSID = s '{0E8ADC7B-54A5-45FC-AA79-56BBE528FA47}'
+	}
+	WBFLCogo.AngleDisplayUnitFormatter = s 'AngleDisplayUnitFormatter Class'
+	{
+		CLSID = s '{0E8ADC7B-54A5-45FC-AA79-56BBE528FA47}'
+		CurVer = s 'WBFLCogo.AngleDisplayUnitFormatter.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {0E8ADC7B-54A5-45FC-AA79-56BBE528FA47} = s 'AngleDisplayUnitFormatter Class'
+		{
+			ProgID = s 'WBFLCogo.AngleDisplayUnitFormatter.1'
+			VersionIndependentProgID = s 'WBFLCogo.AngleDisplayUnitFormatter'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.Rectangle.1 = s 'Rectangle Class'
+	{
+		CLSID = s '{3E07BAA2-01A2-11D3-8CDF-D8B830C3A934}'
+	}
+	WBFLGeometry.Rectangle = s 'Rectangle Class'
+	{
+		CLSID = s '{3E07BAA2-01A2-11D3-8CDF-D8B830C3A934}'
+		CurVer = s 'WBFLGeometry.Rectangle.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {3E07BAA2-01A2-11D3-8CDF-D8B830C3A934} = s 'Rectangle Class'
+		{
+			ProgID = s 'WBFLGeometry.Rectangle.1'
+			VersionIndependentProgID = s 'WBFLGeometry.Rectangle'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

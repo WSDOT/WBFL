@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.ExtRectangleDrawLineStrategy.1 = s 'ExtRectangleDrawLineStrategy Class'
+	{
+		CLSID = s '{383B8C08-A236-44c7-BEE1-E41ADD831AC7}'
+	}
+	WBFLDManip.ExtRectangleDrawLineStrategy = s 'ExtRectangleDrawLineStrategy Class'
+	{
+		CLSID = s '{383B8C08-A236-44c7-BEE1-E41ADD831AC7}'
+		CurVer = s 'WBFLDManip.ExtRectangleDrawLineStrategy.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {383B8C08-A236-44c7-BEE1-E41ADD831AC7} = s 'ExtRectangleDrawLineStrategy Class'
+		{
+			ProgID = s 'WBFLDManip.ExtRectangleDrawLineStrategy.1'
+			VersionIndependentProgID = s 'WBFLDManip.ExtRectangleDrawLineStrategy'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLTools.ProgressMonitorWindow.1 = s 'ProgressMonitorWindow Class'
+	{
+		CLSID = s '{8C63C999-10B8-43B5-A7CC-72B6AC48283F}'
+	}
+	WBFLTools.ProgressMonitorWindow = s 'ProgressMonitorWindow Class'
+	{
+		CLSID = s '{8C63C999-10B8-43B5-A7CC-72B6AC48283F}'
+		CurVer = s 'WBFLTools.ProgressMonitorWindow.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {8C63C999-10B8-43B5-A7CC-72B6AC48283F} = s 'ProgressMonitorWindow Class'
+		{
+			ProgID = s 'WBFLTools.ProgressMonitorWindow.1'
+			VersionIndependentProgID = s 'WBFLTools.ProgressMonitorWindow'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B9507D8C-7100-11D3-89BB-006097C68A9C}'
+		}
+	}
+}

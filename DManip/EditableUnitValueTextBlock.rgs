@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.EditableUnitValueTextBlock.1 = s 'EditableUnitValueTextBlock Class'
+	{
+		CLSID = s '{C24E4B67-AAC1-4da4-A3F2-373C558333D6}'
+	}
+	WBFLDManip.EditableUnitValueTextBlock = s 'EditableUnitValueTextBlock Class'
+	{
+		CLSID = s '{C24E4B67-AAC1-4da4-A3F2-373C558333D6}'
+		CurVer = s 'WBFLDManip.EditableUnitValueTextBlock.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {C24E4B67-AAC1-4da4-A3F2-373C558333D6} = s 'EditableUnitValueTextBlock Class'
+		{
+			ProgID = s 'WBFLDManip.EditableUnitValueTextBlock.1'
+			VersionIndependentProgID = s 'WBFLDManip.EditableUnitValueTextBlock'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

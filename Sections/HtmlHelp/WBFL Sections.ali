@@ -1,0 +1,67 @@
+IDH_WBLFSections=Welcome.htm
+
+IDH_IElasticProperties                      =Objects\ElasticProperties\ElasticProperties.htm
+IDH_IElasticProperties_EA                   =Objects\ElasticProperties\EA_Property_(ElasticProperties_Object).htm
+IDH_IElasticProperties_Centroid             =Objects\ElasticProperties\Centroid_Property_(ElasticProperties_Object).htm
+IDH_IElasticProperties_EI11                 =Objects\ElasticProperties\EI11_Property_(ElasticProperties_Object).htm
+IDH_IElasticProperties_EI22                 =Objects\ElasticProperties\EI22_Property_(ElasticProperties_Object).htm
+IDH_IElasticProperties_EI12Max              =Objects\ElasticProperties\EI12Max_Property_(ElasticProperties_Object).htm
+IDH_IElasticProperties_EI12Min              =Objects\ElasticProperties\EI12Min_Property_(ElasticProperties_Object).htm
+IDH_IElasticProperties_EIxx                 =Objects\ElasticProperties\EIxx_Property_(ElasticProperties_Object).htm
+IDH_IElasticProperties_EIyy                 =Objects\ElasticProperties\EIyy_Property_(ElasticProperties_Object).htm
+IDH_IElasticProperties_EIxy                 =Objects\ElasticProperties\EIxy_Property_(ElasticProperties_Object).htm
+IDH_IElasticProperties_Xleft                =Objects\ElasticProperties\Xleft_Property_(ElasticProperties_Object).htm
+IDH_IElasticProperties_Xright               =Objects\ElasticProperties\Xright_Property_(ElasticProperties_Object).htm
+IDH_IElasticProperties_Ytop                 =Objects\ElasticProperties\Ytop_Property_(ElasticProperties_Object).htm
+IDH_IElasticProperties_Ybottom              =Objects\ElasticProperties\Ybottom_Property_(ElasticProperties_Object).htm
+IDH_IElasticProperties_Origin               =Objects\ElasticProperties\Origin_Property_(ElasticProperties_Object).htm
+IDH_IElasticProperties_Orientation          =Objects\ElasticProperties\Orientation_Property_(ElasticProperties_Object).htm
+IDH_IElasticProperties_CoordinateSystem     =Objects\ElasticProperties\CoordinateSystem_Property_(ElasticProperties_Object).htm
+IDH_IElasticProperties_PrincipleDirection   =Objects\ElasticProperties\PrincipleDirection_Property_(ElasticProperties_Object).htm
+IDH_IElasticProperties_AddProperties        =Objects\ElasticProperties\AddProperties_Method_(ElasticProperties_Object).htm
+IDH_IElasticProperties_TransformProperties  =Objects\ElasticProperties\TransformProperties_Method_(ElasticProperties_Object).htm
+
+IDH_IMassProperties                         =Objects\MassProperties\MassProperties.htm
+IDH_IMassProperties_MassPerLength           =Objects\MassProperties\MassPerLength_Property_(MassProperties_Object).htm
+IDH_IMassProperties_AddProperties           =Objects\MassProperties\AddProperties_Method_(MassProperties_Object).htm
+
+IDH_ISection                                =Interfaces\ISection\ISection.htm
+IDH_ISection_BoundingBox                    =Interfaces\ISection\BoundingBox_Property_(ISection_Interface).htm
+IDH_ISection_ElasticProperties              =Interfaces\ISection\ElasticProperties_Property_(ISection_Interface).htm
+IDH_ISection_MassProperties                 =Interfaces\ISection\MassProperties_Property_(ISection_Interface).htm
+IDH_ISection_ClipIn                         =Interfaces\ISection\ClipIn_Method_(ISection_Interface).htm
+IDH_ISection_ClipWithLine                   =Interfaces\ISection\ClipWithLine_Method_(ISection_Interface).htm
+IDH_ISection_Clone                          =Interfaces\ISection\Clone_Method_(ISection_Interface).htm
+
+IDH_ICompositeSectionItem                   =Objects\CompositeSectionItem\CompositeSectionItem.htm
+IDH_ICompositeSectionItem_Shape             =Objects\CompositeSectionItem\Shape_Property_(CompositeSectionItem_Object).htm
+IDH_ICompositeSectionItem_E                 =Objects\CompositeSectionItem\E_Property_(CompositeSectionItem_Object).htm
+IDH_ICompositeSectionItem_Density           =Objects\CompositeSectionItem\Density_Property_(CompositeSectionItem_Object).htm
+IDH_ICompositeSectionItem_Void              =Objects\CompositeSectionItem\Void_Property_(CompositeSectionItem_Object).htm
+IDH_ICompositeSectionItem_Structural        =Objects\CompositeSectionItem\Structural_Property_(CompositeSectionItem_Object).htm
+
+IDH_ICompositeSection                       =Objects\CompositeSection\CompositeSection.htm
+IDH_ICompositeSection_Item                  =Objects\CompositeSection\Item_Property_(CompositeSection_Object).htm
+IDH_ICompositeSection_AddSection            =Objects\CompositeSection\AddSection_Method_(CompositeSection_Object).htm
+IDH_ICompositeSection_AddSectionEx          =Objects\CompositeSection\AddSectionEx_Method_(CompositeSection_Object).htm
+IDH_ICompositeSection_Remove                =Objects\CompositeSection\Remove_Method_(CompositeSection_Object).htm
+IDH_ICompositeSection_Count                 =Objects\CompositeSection\Count_Property_(CompositeSection_Object).htm
+IDH_ICompositeSection_Section               =Objects\CompositeSection\Section_Property_(CompositeSection_Object).htm
+IDH_ICompositeSection_XYPosition            =Objects\CompositeSection\XYPosition_Property_(CompositeSection_Object).htm
+
+IDH_ICompositeBeam                          =Objects\CompositeBeam\CompositeBeam.htm
+IDH_ICompositeBeam_Beam                     =Objects\CompositeBeam\Beam_Property_(CompositeBeam_Object).htm
+IDH_ICompositeBeam_EffectiveSlabWidth       =Objects\CompositeBeam\EffectiveSlabWidth_Property_(CompositeBeam_Object).htm
+IDH_ICompositeBeam_TributarySlabWidth       =Objects\CompositeBeam\TributarySlabWidth_Property_(CompositeBeam_Object).htm
+IDH_ICompositeBeam_GrossSlabDepth           =Objects\CompositeBeam\GrossSlabDepth_Property_(CompositeBeam_Object).htm
+IDH_ICompositeBeam_SacrificialDepth         =Objects\CompositeBeam\SacrificialDepth_Property_(CompositeBeam_Object).htm
+IDH_ICompositeBeam_SlabE                    =Objects\CompositeBeam\SlabE_Property_(CompositeBeam_Object).htm
+IDH_ICompositeBeam_SlabDensity              =Objects\CompositeBeam\SlabDensity_Property_(CompositeBeam_Object).htm
+IDH_ICompositeBeam_HaunchWidth              =Objects\CompositeBeam\HaunchWidth_Property_(CompositeBeam_Object).htm
+IDH_ICompositeBeam_HaunchDepth              =Objects\CompositeBeam\HaunchDepth_Property_(CompositeBeam_Object).htm
+IDH_ICompositeBeam_Section                  =Objects\CompositeBeam\Section_Property_(CompositeBeam_Object).htm
+IDH_ICompositeBeam_XYPosition               =Objects\CompositeBeam\XYPosition_Property_(CompositeBeam_Object).htm
+IDH_ICompositeBeam_BeamE                    =Objects\CompositeBeam\BeamE_Property_(CompositeBeam_Object).htm
+IDH_ICompositeBeam_BeamDensity              =Objects\CompositeBeam\BeamDensity_Property_(CompositeBeam_Object).htm
+IDH_ICompositeBeam_QSlab                    =Objects\CompositeBeam\QSlab_Property_(CompositeBeam_Object).htm
+IDH_ICompositeBeam_Q                        =Objects\CompositeBeam\Q_Property_(CompositeBeam_Object).htm

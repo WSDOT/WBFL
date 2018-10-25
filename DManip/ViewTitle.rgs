@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.ViewTitle.1 = s 'ViewTitle Class'
+	{
+		CLSID = s '{6DBAF4E1-4291-4112-9687-9C8F9E0425B4}'
+	}
+	WBFLDManip.ViewTitle = s 'ViewTitle Class'
+	{
+		CLSID = s '{6DBAF4E1-4291-4112-9687-9C8F9E0425B4}'
+		CurVer = s 'WBFLDManip.ViewTitle.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {6DBAF4E1-4291-4112-9687-9C8F9E0425B4} = s 'ViewTitle Class'
+		{
+			ProgID = s 'WBFLDManip.ViewTitle.1'
+			VersionIndependentProgID = s 'WBFLDManip.ViewTitle'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

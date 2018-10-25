@@ -1,0 +1,87 @@
+///////////////////////////////////////////////////////////////////////
+// Reporter - Report Creation and Representation Library
+// Copyright (C) 1999  Washington State Department of Transportation
+//                     Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+#include <Reporter\ReporterLib.h>
+#include <Reporter\OutputReportVisitor.h>
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+/****************************************************************************
+CLASS
+   rptOutputReportVisitor
+****************************************************************************/
+
+
+
+////////////////////////// PUBLIC     ///////////////////////////////////////
+
+//======================== LIFECYCLE  =======================================
+rptOutputReportVisitor::rptOutputReportVisitor(std::ostream* pMyOstream/*, 
+                                             const rptUnitLibrary& MyUnitLibrary*/ )
+{
+   m_pOstream = pMyOstream;
+   //m_pUnitSnapShot = MyUnitLibrary.CreateUnitSnapShot();
+}
+
+
+rptOutputReportVisitor::~rptOutputReportVisitor()
+{
+   //delete m_pUnitSnapShot;
+}
+
+//======================== OPERATORS  =======================================
+
+
+
+//======================== OPERATIONS =======================================
+/*
+void rptOutputReportVisitor::SetNewUnits(rptUnitSnapShot* pMySnapShot)
+{
+   // delete the old units and assign the new
+   delete m_pUnitSnapShot;
+   m_pUnitSnapShot = pMySnapShot;
+}
+*/
+//======================== ACCESS     =======================================
+//======================== INQUIRY    =======================================
+
+////////////////////////// PROTECTED  ///////////////////////////////////////
+
+//======================== LIFECYCLE  =======================================
+//======================== OPERATORS  =======================================
+//======================== OPERATIONS =======================================
+//======================== ACCESS     =======================================
+//======================== INQUIRY    =======================================
+
+////////////////////////// PRIVATE    ///////////////////////////////////////
+
+//======================== LIFECYCLE  =======================================
+//======================== OPERATORS  =======================================
+//======================== OPERATIONS =======================================
+//======================== ACCESS     =======================================
+//======================== INQUERY    =======================================
+

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.RoundColumn.1 = s 'RoundColumn Class'
+	{
+		CLSID = s '{0778C329-BF14-42DD-BC00-596BFDF80F5C}'
+	}
+	WBFLRCCapacity.RoundColumn = s 'RoundColumn Class'
+	{
+		CLSID = s '{0778C329-BF14-42DD-BC00-596BFDF80F5C}'
+		CurVer = s 'WBFLRCCapacity.RoundColumn.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {0778C329-BF14-42DD-BC00-596BFDF80F5C} = s 'RoundColumn Class'
+		{
+			ProgID = s 'WBFLRCCapacity.RoundColumn.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.RoundColumn'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

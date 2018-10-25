@@ -1,0 +1,78 @@
+
+ /* $MVD$:fontset("Arial","Arial") */
+ BODY { background-color : white;}
+ .mvd-BODY { background-color : white;}
+ P { font-family : "Arial";
+     font-size : 12.0pt;
+     color : black;}
+ .mvd-P { font-family : "Arial";
+          font-size : 12.0pt;
+          color : black;}
+ H1 { font-family : "Arial";
+      font-weight : bold;
+      font-size : 16.0pt;
+      color : navy;}
+ .mvd-H1 { font-family : "Arial";
+           font-weight : bold;
+           font-size : 16.0pt;
+           color : navy;}
+ H2 { font-family : "Arial";
+      font-weight : bold;
+      font-size : 14.0pt;
+      color : navy;}
+ .mvd-H2 { font-family : "Arial";
+           font-weight : bold;
+           font-size : 14.0pt;
+           color : navy;}
+ H3 { font-family : "Arial";
+      font-weight : bold;
+      font-size : 12.0pt;}
+ .mvd-H3 { font-family : "Arial";
+           font-weight : bold;
+           font-size : 12.0pt;}
+ H4 { font-family : "Arial";
+      font-weight : bold;
+      font-size : 12.0pt;}
+ .mvd-H4 { font-family : "Arial";
+           font-weight : bold;
+           font-size : 12.0pt;}
+ H5 { font-family : "Arial";
+      font-weight : bold;
+      font-size : 12.0pt;}
+ .mvd-H5 { font-family : "Arial";
+           font-weight : bold;
+           font-size : 12.0pt;}
+ H6 { font-family : "Arial";
+      font-weight : bold;
+      font-size : 12.0pt;}
+ .mvd-H6 { font-family : "Arial";
+           font-weight : bold;
+           font-size : 12.0pt;}
+ A:link { text-decoration :underline;
+          color : green;}
+ A:visited { text-decoration :underline;
+             color : green;}
+   CITE.expandspot { font-style : normal;
+            color : green;
+            cursor: hand;}
+ .mvd-CITE-expandspot { font-style : normal;
+                 color : green;
+                 cursor: hand;}
+ DFN.collapsed { font-style : italic;
+                 font-weight : normal;
+                 display :      'none';
+                 color : red;}
+.mvd-DFN-collapsed { font-style : italic;
+                      font-weight : normal;
+                      display :      'none';
+                      color : red;}
+ DFN.expanded { font-style : italic;
+                 font-weight : normal;
+                color : red;}
+ .mvd-DFN-expanded { font-style : italic;
+                 font-weight : normal;
+                     color : red;}
+EM.dropspot	{ cursor : hand;
+ 		  color : green;}
+.mvd-EM-dropspot { cursor : hand;
+ 		  color : green;}

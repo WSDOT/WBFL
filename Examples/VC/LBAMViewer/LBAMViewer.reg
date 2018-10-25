@@ -1,0 +1,19 @@
+REGEDIT
+; This .REG file may be used by your SETUP program.
+;   If a SETUP program is not available, the entries below will be
+;   registered in your InitInstance automatically with a call to
+;   CWinApp::RegisterShellFileTypes and COleObjectFactory::UpdateRegistryAll.
+
+HKEY_CLASSES_ROOT\.xml = WBFLLBAMViewer.Document
+HKEY_CLASSES_ROOT\WBFLLBAMViewer.Document\shell\open\command = LBAMVIEWER.EXE %1
+HKEY_CLASSES_ROOT\WBFLLBAMViewer.Document\shell\open\ddeexec = [open("%1")]
+HKEY_CLASSES_ROOT\WBFLLBAMViewer.Document\shell\open\ddeexec\application = LBAMVIEWER
+    ; note: the application is optional
+    ;  (it defaults to the app name in "command")
+
+HKEY_CLASSES_ROOT\WBFLLBAMViewer.Document = LBAM Document
+HKEY_CLASSES_ROOT\WBFLLBAMViewer.Document\CLSID = {925F0BFD-188B-4C49-8A38-CC30D9DD66ED}
+
+HKEY_CLASSES_ROOT\CLSID\{925F0BFD-188B-4C49-8A38-CC30D9DD66ED} = LBAM Document
+HKEY_CLASSES_ROOT\CLSID\{925F0BFD-188B-4C49-8A38-CC30D9DD66ED}\ProgId = WBFLLBAMViewer.Document
+HKEY_CLASSES_ROOT\CLSID\{925F0BFD-188B-4C49-8A38-CC30D9DD66ED}\LocalServer32 = LBAMVIEWER.EXE

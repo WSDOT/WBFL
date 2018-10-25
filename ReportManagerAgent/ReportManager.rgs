@@ -1,0 +1,25 @@
+HKCR
+{
+	ReportManagerAgent.ReportManager.1 = s 'ReportManager Class'
+	{
+		CLSID = s '{809889B1-69F0-49FC-B8F5-50B0BC169EB0}'
+	}
+	ReportManagerAgent.ReportManager = s 'ReportManager Class'
+	{
+		CLSID = s '{809889B1-69F0-49FC-B8F5-50B0BC169EB0}'
+		CurVer = s 'ReportManagerAgent.ReportManager.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {809889B1-69F0-49FC-B8F5-50B0BC169EB0} = s 'ReportManager Class'
+		{
+			ProgID = s 'ReportManagerAgent.ReportManager.1'
+			VersionIndependentProgID = s 'ReportManagerAgent.ReportManager'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{8ACD75E4-653A-439A-8B4C-1083E1FB86E5}'
+		}
+	}
+}

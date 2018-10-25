@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAM.Axles.1 = s 'Axles Class'
+	{
+		CLSID = s '{33926EE8-E5AD-400E-B086-5A6B8BCAF850}'
+	}
+	WBFLLBAM.Axles = s 'Axles Class'
+	{
+		CLSID = s '{33926EE8-E5AD-400E-B086-5A6B8BCAF850}'
+		CurVer = s 'WBFLLBAM.Axles.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {33926EE8-E5AD-400E-B086-5A6B8BCAF850} = s 'Axles Class'
+		{
+			ProgID = s 'WBFLLBAM.Axles.1'
+			VersionIndependentProgID = s 'WBFLLBAM.Axles'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{A60E8518-3A65-11D5-AFE5-00105A9AF985}'
+		}
+	}
+}

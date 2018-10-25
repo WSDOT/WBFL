@@ -1,0 +1,363 @@
+///////////////////////////////////////////////////////////////////////
+// LBAM Analysis Utility - Longitindal Bridge Analysis Model
+// Copyright (C) 2009  Washington State Department of Transportation
+//                     Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// LBAMAnalysisUtility.idl : IDL source for LBAMAnalysisUtility.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (LBAMAnalysisUtility.tlb) and marshalling code.
+import "oaidl.idl";
+import "ocidl.idl";
+
+import "WBFLTools.idl";
+import "WBFLLBAM.idl";
+import "WBFLLBAMUtility.idl";
+import "WBFLLBAMAnalysis.idl";
+import "WBFLLBAMLoadCombiner.idl";
+import "WBFLLBAMLiveLoader.idl";
+
+#include "LBAMAnalysisUtility.hh"
+
+// just inline errors for this module since there aren't many
+cpp_quote("#define LBAMU_E_ENGINE_INIT_ONCE                      MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,1013)")
+cpp_quote("#define LBAMU_E_INVALID_CONTEXT                       MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,1014)")
+cpp_quote("#define LBAMU_E_ENGINE_INIT                           MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,1015)")
+cpp_quote("#define LBAMU_E_PROGRESS_INIT_SEQUENCE                MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,1016)")
+
+
+[
+	uuid(8B25EF41-3951-4A46-9D1E-DFA4280CC874),
+	version(1.0),
+	helpstring("WBFLLBAMAnalysisUtility Library"),
+   helpfile("WBFLLBam.chm"),
+   helpcontext(IDH_WbflLLBAMAnalysisUtility)
+]
+library WBFLLBAMAnalysisUtility
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		object,
+		uuid(A191EA1A-4FCA-470D-AF9A-242969F7F86F),
+		oleautomation,
+		helpstring("ILBAMAnalysisEngine Interface"),
+      helpcontext(IDH_LBAMAnalysisEngine),
+		pointer_default(unique)
+	]
+	interface ILBAMAnalysisEngine : IUnknown
+	{
+		[helpstring("method Initialize"),helpcontext(IDH_LBAMAnalysisEngine_Initialize)] 
+      HRESULT Initialize([in]ILBAMModel* model, [in]AnalysisType forceOrDeflection);
+
+	  HRESULT InitializeEx([in]ILBAMModel* model, [in]AnalysisType forceOrDeflection,
+		[in] ILoadGroupResponse* plgResponse,
+		[in] IInfluenceLineResponse* pilResponse,
+		[in] IAnalysisPOIs* pPois,
+		[in] IBasicVehicularResponse* pBVR,
+		[in] ILiveLoadModelResponse* pLLMR,
+		[in] IEnvelopedVehicularResponse* pEVR,
+		[in] ILoadCaseResponse* plcResponse,
+		[in] ILoadCombinationResponse* plcomboResponse,
+		[in] IConcurrentLoadCombinationResponse* pclcResponse,
+		[in] ILiveLoadNegativeMomentRegion* pllnmRegion,
+		[in] IContraflexureResponse* pcontraResponse );
+
+		[propget, helpstring("property LoadGroupResponse"),helpcontext(IDH_LBAMAnalysisEngine_LoadGroupResponse)] 
+      HRESULT LoadGroupResponse([out, retval] ILoadGroupResponse* *pVal);
+		[propget, helpstring("property InfluenceLineResponse"),helpcontext(IDH_LBAMAnalysisEngine_InfluenceLineResponse)] 
+      HRESULT InfluenceLineResponse([out, retval] IInfluenceLineResponse* *pVal);
+		[propget, helpstring("property AnalysisPOIs"),helpcontext(IDH_LBAMAnalysisEngine_AnalysisPOIs)] 
+      HRESULT AnalysisPOIs([out, retval] IAnalysisPOIs* *pVal);
+		[propget, helpstring("property BasicVehicularResponse"),helpcontext(IDH_LBAMAnalysisEngine_BasicVehicularResponse)] 
+      HRESULT BasicVehicularResponse([out, retval] IBasicVehicularResponse* *pVal);
+		[propget, helpstring("property LiveLoadModelResponse"),helpcontext(IDH_LBAMAnalysisEngine_LiveLoadModelResponse)] 
+      HRESULT LiveLoadModelResponse([out, retval] ILiveLoadModelResponse* *pVal);
+		[propget, helpstring("property IEnvelopedVehicularResponse"),helpcontext(IDH_LBAMAnalysisEngine_EnvelopedVehicularResponse)] 
+      HRESULT EnvelopedVehicularResponse([out, retval] IEnvelopedVehicularResponse* *pVal);
+		[propget, helpstring("property LoadCaseResponse"),helpcontext(IDH_LBAMAnalysisEngine_LoadCaseResponse)] 
+      HRESULT LoadCaseResponse([out, retval] ILoadCaseResponse* *pVal);
+		[propget, helpstring("property LoadCombinationResponse"),helpcontext(IDH_LBAMAnalysisEngine_LoadCombinationResponse)] 
+      HRESULT LoadCombinationResponse([out, retval] ILoadCombinationResponse* *pVal);
+		[propget, helpstring("property ConcurrentLoadCombinationResponse"),helpcontext(IDH_LBAMAnalysisEngine_ConcurrentLoadCombinationResponse)] 
+      HRESULT ConcurrentLoadCombinationResponse([out, retval] IConcurrentLoadCombinationResponse* *pVal);
+		[propget, helpstring("property Model"),helpcontext(IDH_LBAMAnalysisEngine_Model)] 
+      HRESULT Model([out, retval] ILBAMModel* *pVal);
+		[propget, helpstring("property AnalysisType"),helpcontext(IDH_LBAMAnalysisEngine_AnalysisType)] 
+      HRESULT AnalysisType([out, retval] AnalysisType *pVal);
+		[propget, helpstring("property LiveLoadNegativeMomentRegion"),helpcontext(IDH_LBAMAnalysisEngine_LiveLoadNegativeMomentRegion)] 
+      HRESULT LiveLoadNegativeMomentRegion([out, retval] ILiveLoadNegativeMomentRegion* *pVal);
+		[propget, helpstring("property ContraflexureResponse"),helpcontext(IDH_LBAMAnalysisEngine_ContraflexureResponse)] 
+      HRESULT ContraflexureResponse([out, retval] IContraflexureResponse* *pVal);
+	};
+
+	[
+		object,
+		uuid(6857CDD0-169F-4ba3-A73C-51B491EB7273),
+		oleautomation,
+		helpstring("ISupportProgressMonitorForEngine Interface"),
+      helpcontext(IDH_ISupportProgressMonitorForEngine),
+		pointer_default(unique)
+	]
+	interface ISupportProgressMonitorForEngine : IUnknown
+	{
+      [helpstring("InitializeProgressMonitor4E - Set up progress monitoring for Analysis Engine"),helpcontext(IDH_ISupportProgressMonitorForEngine_InitializeProgressMonitor4E)]
+      HRESULT InitializeProgressMonitor4E([in]IProgressMonitor * progMon, [in]LONG loadGroupCookie, [in]LONG liveLoadCookie, [in]LONG loadCombinationCookie);
+   };
+
+	[
+		object,
+		uuid(E04FBF3C-C12C-43CE-9DFF-C592F1328AEA),
+		oleautomation,
+		helpstring("ILBAMModelEnveloper Interface"),
+      helpcontext(IDH_LBAMModelEnveloper),
+		pointer_default(unique)
+	]
+	interface ILBAMModelEnveloper : IUnknown
+	{
+		[propget, helpcontext(IDH_LBAMModelEnveloper_Engines),helpstring("property Engines - Array of ILBAMAnalysisEngines in same order as models")] 
+      HRESULT Engines([out, retval] IUnkArray* *pVal);
+		[helpcontext(IDH_LBAMModelEnveloper_Initialize),helpstring("method Initialize - Set models to be enveloped and analysis type")] 
+      HRESULT Initialize([in] IUnkArray* newVal, [in]AnalysisType aType,[in]OptimizationType opType);
+		[propget, helpcontext(IDH_LBAMModelEnveloper_AnalysisType),helpstring("property AnalysisType")] 
+      HRESULT AnalysisType([out, retval] AnalysisType* pVal);
+		[propget, helpcontext(IDH_LBAMModelEnveloper_OptimizationType),helpstring("property OptimizationType")]
+	  HRESULT OptimizationType([out]OptimizationType* opType);
+		[propget, helpcontext(IDH_LBAMModelEnveloper_LoadCombinationResponse),helpstring("property LoadCombinationResponse")] 
+      HRESULT LoadCombinationResponse([out, retval] ILoadCombinationResponse* *pVal);
+		[propget, helpcontext(IDH_LBAMModelEnveloper_LiveLoadModelResponse),helpstring("property LiveLoadModelResponse")] 
+      HRESULT LiveLoadModelResponse([out, retval] ILiveLoadModelResponse* *pVal);
+		[propget, helpcontext(IDH_LBAMModelEnveloper_EnvelopedVehicularResponse),helpstring("property EnvelopedVehicularResponse")] 
+      HRESULT EnvelopedVehicularResponse([out, retval] IEnvelopedVehicularResponse* *pVal);
+
+		[helpcontext(IDH_LBAMModelEnveloper_AddModel),helpstring("property AddModel")] 
+	  HRESULT AddModel([in]ILBAMModel* pModel);
+	  HRESULT AddEngine([in]ILBAMAnalysisEngine* pEngine);
+
+	  [propget] HRESULT LoadGroupResponse([in] ForceEffectType forceEffect, [in] OptimizationType optimization, [out,retval] ILoadGroupResponse** pVal);
+	  [propget] HRESULT LoadCaseResponse([in] ForceEffectType forceEffect, [in] OptimizationType optimization, [out,retval] ILoadCaseResponse** pVal);
+	};
+
+
+ //  // declare ALL LBAM-related interfaces here to allow LBAM to be used with the #import directive
+ //  // The bogus coclass is used to insure that all interfaces are pre-declared properly
+	//[
+	//	uuid(B94BE2F7-038B-4c3a-BA15-8769223448F2),
+	//	helpstring("LBAMBogus Class"),
+ //     noncreatable, hidden
+	//]
+	//coclass LBAMBogus
+	//{
+
+ //  interface IStressPoint;
+ //  interface IStressPointEvents;
+ //  interface IEnumStressPoint;
+ //  interface IStressPoints; 
+ //  interface IStressPointsEvents;
+ //  interface ICrossSection;
+ //  interface ICrossSectionEvents;
+ //  interface ISegment;
+ //  interface ISegmentEvents;
+ //  interface ISegmentItem;
+ //  interface ISegmentItemEvents;
+ //  interface IEnumSegment;
+ //  interface IEnumSegmentItem;
+ //  interface IFilteredSegmentCollection;
+ //  interface ISuperstructureMember;
+ //  interface ISuperstructureMemberEvents;
+ //  interface ISuperstructureMembers;
+ //  interface IEnumSuperstructureMember;
+ //  interface ISuperstructureMembersEvents;
+ //  interface IAxle;
+ //  interface IAxleEvents;
+ //  interface IEnumAxle;
+ //  interface IAxles;
+ //  interface IAxlesEvents;
+ //  interface IVehicularLoad;
+ //  interface IVehicularLoadEvents;
+ //  interface IEnumVehicularLoad;
+ //  interface IVehicularLoads;
+ //  interface IVehicularLoadsEvents;
+ //  interface ILiveLoadModel;
+ //  interface ILiveLoadModelEvents;
+ //  interface ILiveLoad;
+ //  interface ILiveLoadEvents;
+ //  interface ILBAMModel;
+ //  interface ILBAMModelEvents;
+ //  interface ISupport;
+ //  interface IEnumSupport;
+ //  interface ISupports;
+ //  interface ISupportEvents;
+ //  interface ISupportsEvents;
+ //  interface ITemporarySupport;
+ //  interface ITemporarySupportEvents;
+ //  interface IEnumTemporarySupport;
+ //  interface ITemporarySupports;
+ //  interface ISpan;
+ //  interface ITemporarySupportsEvents;
+ //  interface ISpanEvents;
+ //  interface IEnumSpan;
+ //  interface ISpans;
+ //  interface ISpansEvents;
+ //  interface IPOIStressPointsItem;
+ //  interface IEnumPOIStressPoints;
+ //  interface IPOIStressPoints;
+ //  interface IPOIStressPointsEvents;
+ //  interface IPOI;
+ //  interface IPOIEvents;
+ //  interface IEnumPOI;
+ //  interface IPOIs;
+ //  interface IPOIsEvents;
+ //  interface IStage;
+ //  interface IStageEvents;
+ //  interface IEnumStage;
+ //  interface IStages;
+ //  interface IStagesEvents;
+ //  interface IPointLoad;
+ //  interface IPointLoadEvents;
+ //  interface IPointLoadItem;
+ //  interface IEnumPointLoad;
+ //  interface IPointLoads;
+ //  interface IPointLoadsEvents;
+ //  interface IDistributedLoad;
+ //  interface IDistributedLoadEvents;
+ //  interface IDistributedLoadItem;
+ //  interface IEnumDistributedLoad;
+ //  interface IDistributedLoads;
+ //  interface ISettlementLoad;
+ //  interface ISettlementLoadItem;
+ //  interface IEnumSettlementLoad;
+ //  interface IDistributedLoadsEvents;
+ //  interface ISettlementLoadEvents;
+ //  interface ISettlementLoads;
+ //  interface ISettlementLoadsEvents;
+ //  interface ITemperatureLoad;
+ //  interface ITemperatureLoadItem;
+ //  interface IEnumTemperatureLoad;
+ //  interface ITemperatureLoadEvents;
+ //  interface ITemperatureLoads;
+ //  interface ITemperatureLoadsEvents;
+ //  interface IStrainLoad;
+ //  interface IStrainLoadItem;
+ //  interface IEnumStrainLoad;
+ //  interface IStrainLoads;
+ //  interface IStrainLoadEvents;
+ //  interface IStrainLoadsEvents;
+ //  interface ILoadGroup;
+ //  interface ILoadGroupEvents;
+ //  interface IEnumLoadGroup;
+ //  interface ILoadGroups;
+ //  interface ILoadGroupsEvents;
+ //  interface ILoadCase;
+ //  interface ILoadCaseEvents;
+ //  interface IEnumLoadCase;
+ //  interface ILoadCases;
+ //  interface ILoadCasesEvents;
+ //  interface ILoadCombination;
+ //  interface ILoadCombinationEvents;
+ //  interface IEnumLoadCombination;
+ //  interface ILoadCombinations;
+ //  interface ILoadCombinationsEvents;
+ //  interface IDistributionFactor;
+ //  interface IDistributionFactorEvents;
+ //  interface IDistributionFactorSegment;
+ //  interface IDistributionFactorSegmentEvents;
+ //  interface IEnumDistributionFactorSegment;
+ //  interface IFilteredDfSegmentCollection;
+ //  interface IDistributionFactors;
+ //  interface IDistributionFactorsEvents;
+ //  interface IAnalysisPOIs;
+ //  interface ISectionResult3D;
+ //  interface IEnumSectionResult3D;
+ //  interface ISectionResult3Ds;
+ //  interface IResult3D;
+ //  interface IEnumResult3D;
+ //  interface IResult3Ds;
+ //  interface IStressResult;
+ //  interface IEnumStressResult;
+ //  interface IStressResults;
+ //  interface ISectionStressResult;
+ //  interface IEnumSectionStressResult;
+ //  interface ISectionStressResults;
+ //  interface IDependOnLBAM;
+ //  interface ILoadGroupResponse;
+ //  interface IInfluenceLine;
+ //  interface IInfluenceLineResponse;
+ //  interface ILiveLoadNegativeMomentRegion;
+ //  interface IContraflexureResponse;
+ //  interface IGetFemForLoadGroupResponse;
+ //  interface IGetActiveLoadGroups;
+ //  interface IGetDistributionFactors;
+ //  interface IGetCrossSection;
+ //  interface IGetStressPoints;
+ //  interface IVehicularAnalysisContextEvents;
+ //  interface IDependOnVehicularAnalysisContext;
+ //  interface ISupportLocations;
+ //  interface ILiveLoadConfiguration;
+ //  interface ILiveLoadConfigurationEvents;
+ //  interface ILiveLoadModelSectionResults;
+ //  interface ILiveLoadModelResults;
+ //  interface ILiveLoadModelStressResults;
+ //  interface IBasicVehicularResponse;
+ //  interface IEnvelopedVehicularResponse;
+ //  interface ILiveLoadModelResponse;
+ //  interface IEnvelopingStrategy;
+ //  interface ILoadCombinationAnalysisContext;
+ //  interface ILoadCombinationAnalysisContextEvents;
+ //  interface IGetCombinationFactors;
+ //  interface ILoadCaseResponse;
+ //  interface IDependOnLoadCombinationAnalysisContext;
+ //  interface ILoadCombinationResultConfiguration;
+ //  interface ILoadCombinationResults;
+ //  interface ILoadCombinationSectionResults;
+ //  interface ILoadCombinationStressResults;
+ //  interface ILoadCombinationResponse;
+ //  interface IConcurrentLoadCombinationResponse;
+ //  interface ILBAMFactory;
+ //  interface ILBAMLRFDFactory;
+ //  interface IVehicularAnalysisContext;
+ //  };
+
+	[
+		uuid(3D1EF310-E132-4DF4-85CC-3A7467F948E6),
+		helpstring("LBAMAnalysisEngine Class")
+	]
+	coclass LBAMAnalysisEngine
+	{
+		[default] interface ILBAMAnalysisEngine;
+      interface ISupportProgressMonitorForEngine;
+	};
+
+	[
+		uuid(48715D04-3187-4ECD-A7B4-3AC4F3F58CA7),
+		helpstring("LBAMModelEnveloper Class")
+	]
+	coclass LBAMModelEnveloper
+	{
+		[default] interface ILBAMModelEnveloper;
+      interface ILoadCombinationResponse;
+      interface ILiveLoadModelResponse;
+      interface IEnvelopedVehicularResponse;
+	};
+
+};

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.ForeignDragDropTask.1 = s 'ForeignDragDropTask Class'
+	{
+		CLSID = s '{011408CB-F865-11d4-8B9C-006097C68A9C}'
+	}
+	WBFLDManip.ForeignDragDropTask = s 'ForeignDragDropTask Class'
+	{
+		CLSID = s '{011408CB-F865-11d4-8B9C-006097C68A9C}'
+		CurVer = s 'WBFLDManip.ForeignDragDropTask.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {011408CB-F865-11d4-8B9C-006097C68A9C} = s 'ForeignDragDropTask Class'
+		{
+			ProgID = s 'WBFLDManip.ForeignDragDropTask.1'
+			VersionIndependentProgID = s 'WBFLDManip.ForeignDragDropTask'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

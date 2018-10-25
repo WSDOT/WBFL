@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.Plug.1 = s 'Plug Class'
+	{
+		CLSID = s '{011408D1-F865-11d4-8B9C-006097C68A9C}'
+	}
+	WBFLDManip.Plug = s 'Plug Class'
+	{
+		CLSID = s '{011408D1-F865-11d4-8B9C-006097C68A9C}'
+		CurVer = s 'WBFLDManip.Plug.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {011408D1-F865-11d4-8B9C-006097C68A9C} = s 'Plug Class'
+		{
+			ProgID = s 'WBFLDManip.Plug.1'
+			VersionIndependentProgID = s 'WBFLDManip.Plug'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

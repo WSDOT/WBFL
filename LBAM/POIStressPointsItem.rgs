@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAM.POIStressPointsItem.1 = s 'POIStressPointsItem Class'
+	{
+		CLSID = s '{67D7B53C-2A06-4823-B193-816611B45781}'
+	}
+	WBFLLBAM.POIStressPointsItem = s 'POIStressPointsItem Class'
+	{
+		CLSID = s '{67D7B53C-2A06-4823-B193-816611B45781}'
+		CurVer = s 'WBFLLBAM.POIStressPointsItem.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {67D7B53C-2A06-4823-B193-816611B45781} = s 'POIStressPointsItem Class'
+		{
+			ProgID = s 'WBFLLBAM.POIStressPointsItem.1'
+			VersionIndependentProgID = s 'WBFLLBAM.POIStressPointsItem'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{A60E8518-3A65-11D5-AFE5-00105A9AF985}'
+		}
+	}
+}

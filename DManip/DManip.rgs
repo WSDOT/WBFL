@@ -1,0 +1,11 @@
+HKCR
+{
+	NoRemove AppID
+	{
+		{11C8EE28-F856-11D4-8B9C-006097C68A9C} = s 'DManip'
+		'DManip.EXE'
+		{
+			val AppID = s {11C8EE28-F856-11D4-8B9C-006097C68A9C}
+		}
+	}
+}

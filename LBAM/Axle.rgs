@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAM.Axle.1 = s 'Axle Class'
+	{
+		CLSID = s '{FD146FE7-18DF-4218-9C40-EBC110433263}'
+	}
+	WBFLLBAM.Axle = s 'Axle Class'
+	{
+		CLSID = s '{FD146FE7-18DF-4218-9C40-EBC110433263}'
+		CurVer = s 'WBFLLBAM.Axle.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {FD146FE7-18DF-4218-9C40-EBC110433263} = s 'Axle Class'
+		{
+			ProgID = s 'WBFLLBAM.Axle.1'
+			VersionIndependentProgID = s 'WBFLLBAM.Axle'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{A60E8518-3A65-11D5-AFE5-00105A9AF985}'
+		}
+	}
+}

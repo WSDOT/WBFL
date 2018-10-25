@@ -1,0 +1,107 @@
+[OPTIONS]
+Compiled File=WBFL Sections.chm
+Title=WBFL Sections
+Contents File=WBFL Sections.hhc
+Index File=WBFL Sections.hhk
+Default topic=Welcome.htm
+Default Window=NewWindow
+Error log file=
+Display compile progress=No
+Display compile notes=No
+Full-text search=Yes
+Binary Index=No
+Auto Index=No
+Enhanced decompilation=No
+Binary TOC=No
+Flat=No
+
+[WINDOWS]
+NewWindow="WBFL Sections","WBFL Sections.hhc","WBFL Sections.hhk","","",,,,,0x420,0,0x200e,[0,0,1000,600],0x0,0x0,,0,0,0
+
+[FILES]
+Objects\ElasticProperties\EI11_Property_(ElasticProperties_Object).htm
+Objects\MassProperties\MassProperties.htm
+Objects\ElasticProperties\EI12Max_Property_(ElasticProperties_Object).htm
+Objects\ElasticProperties\EA_Property_(ElasticProperties_Object).htm
+Objects\ElasticProperties\Centroid_Property_(ElasticProperties_Object).htm
+Objects\ElasticProperties\CoordinateSystem_Property_(ElasticProperties_Object).htm
+Objects\MassProperties\AddProperties_Method_(MassProperties_Object).htm
+Objects\Objects.htm
+Objects\MassProperties\MassPerLength_Property_(MassProperties_Object).htm
+License_Agreement.htm
+Concepts\Computing_Transformed_Section_Properties.htm
+Concepts\Computing_Effective_Density.htm
+Concepts\Computing_the_First_Moment_of_Area.htm
+Objects\ElasticProperties\ElasticProperties.htm
+Welcome.htm
+Objects\ElasticProperties\EIxx_Property_(ElasticProperties_Object).htm
+Objects\ElasticProperties\EIyy_Property_(ElasticProperties_Object).htm
+Objects\ElasticProperties\EIxy_Property_(ElasticProperties_Object).htm
+Objects\ElasticProperties\EI12Min_Property_(ElasticProperties_Object).htm
+Objects\ElasticProperties\EI22_Property_(ElasticProperties_Object).htm
+Objects\ElasticProperties\Origin_Property_(ElasticProperties_Object).htm
+Objects\ElasticProperties\PrincipleDirection_Property_(ElasticProperties_Object).htm
+Objects\CompositeSectionItem\CompositeSectionItem.htm
+Objects\ElasticProperties\Orientation_Property_(ElasticProperties_Object).htm
+Objects\ElasticProperties\TransformProperties_Method_(ElasticProperties_Object).htm
+Objects\ElasticProperties\AddProperties_Method_(ElasticProperties_Object).htm
+Objects\ElasticProperties\Xleft_Property_(ElasticProperties_Object).htm
+Objects\ElasticProperties\Xright_Property_(ElasticProperties_Object).htm
+Objects\ElasticProperties\Ytop_Property_(ElasticProperties_Object).htm
+Objects\ElasticProperties\Ybottom_Property_(ElasticProperties_Object).htm
+Objects\CompositeSection\CompositeSection.htm
+Objects\CompositeSectionItem\Structural_Property_(CompositeSectionItem_Object).htm
+Objects\CompositeSectionItem\Void_Property_(CompositeSectionItem_Object).htm
+Objects\CompositeSectionItem\Density_Property_(CompositeSectionItem_Object).htm
+Objects\CompositeSectionItem\Shape_Property_(CompositeSectionItem_Object).htm
+Objects\CompositeSectionItem\E_Property_(CompositeSectionItem_Object).htm
+Objects\CompositeBeam\HaunchDepth_Property_(CompositeBeam_Object).htm
+Objects\CompositeSection\Item_Property_(CompositeSection_Object).htm
+Objects\CompositeBeam\GrossSlabDepth_Property_(CompositeBeam_Object).htm
+Objects\CompositeBeam\HaunchWidth_Property_(CompositeBeam_Object).htm
+Objects\CompositeBeam\SacrificialDepth_Property_(CompositeBeam_Object).htm
+Objects\CompositeBeam\BeamE_Property_(CompositeBeam_Object).htm
+Objects\CompositeBeam\Beam_Property_(CompositeBeam_Object).htm
+Objects\CompositeBeam\BeamDensity_Property_(CompositeBeam_Object).htm
+Objects\CompositeBeam\CompositeBeam.htm
+Objects\CompositeBeam\EffectiveSlabWidth_Property_(CompositeBeam_Object).htm
+Objects\CompositeSection\Section_Property_(CompositeSection_Object).htm
+Objects\CompositeSection\XYPosition_Property_(CompositeSection_Object).htm
+Objects\CompositeSection\AddSection_Method_(CompositeSection_Object).htm
+Objects\CompositeSection\Remove_Method_(CompositeSection_Object).htm
+Objects\CompositeSection\Count_Property_(CompositeSection_Object).htm
+Objects\CompositeSection\AddSectionEx_Method_(CompositeSection_Object).htm
+Objects\CompositeBeam\Q_Property_(CompositeBeam_Object).htm
+Objects\CompositeBeam\QSlab_Property_(CompositeBeam_Object).htm
+Examples.htm
+Interfaces\ISection\ISection.htm
+Interfaces\IXYPosition\IXYPosition.htm
+Interfaces\ISection\ClipWithLine_Method_(ISection_Interface).htm
+Interfaces\ISection\Clone_Method_(ISection_Interface).htm
+Interfaces\ISection\ClipIn_Method_(ISection_Interface).htm
+Interfaces\ISection\MassProperties_Property_(ISection_Interface).htm
+Interfaces\ISection\BoundingBox_Property_(ISection_Interface).htm
+Objects\CompositeBeam\TributarySlabWidth_Property_(CompositeBeam_Object).htm
+Objects\CompositeBeam\XYPosition_Property_(CompositeBeam_Object).htm
+Objects\CompositeBeam\SlabE_Property_(CompositeBeam_Object).htm
+Objects\CompositeBeam\Section_Property_(CompositeBeam_Object).htm
+Objects\CompositeBeam\SlabDensity_Property_(CompositeBeam_Object).htm
+Interfaces\ISection\ElasticProperties_Property_(ISection_Interface).htm
+Objects\StructuredStorage_Property.htm
+Interfaces\IStructuredStorage2\IStructuredStorage2_Interface.htm
+eHelp.xml
+RoboHHRE.lng
+
+WBFL Sections.brs
+[ALIAS]
+#include WBFL Sections.ali
+
+[MAP]
+#include BSSCDefault.h
+#include Sections.hh
+
+[TEXT POPUPS]
+BSSCDefault.h
+Sections.hh
+
+

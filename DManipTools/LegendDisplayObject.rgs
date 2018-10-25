@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManipTools.LegendDisplayObject.1 = s 'LegendDisplayObject Class'
+	{
+		CLSID = s '{C2EC59B5-BAA1-437d-89CB-19AD85ED9F04}'
+	}
+	WBFLDManipTools.LegendDisplayObject = s 'LegendDisplayObject Class'
+	{
+		CLSID = s '{C2EC59B5-BAA1-437d-89CB-19AD85ED9F04}'
+		CurVer = s 'WBFLDManipTools.LegendDisplayObject.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {C2EC59B5-BAA1-437d-89CB-19AD85ED9F04} = s 'LegendDisplayObject Class'
+		{
+			ProgID = s 'WBFLDManipTools.LegendDisplayObject.1'
+			VersionIndependentProgID = s 'WBFLDManipTools.LegendDisplayObject'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B7B9C36E-FEAF-43BB-8907-C98A0EF3224E}'
+		}
+	}
+}

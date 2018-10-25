@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAM.DistributionFactors.1 = s 'DistributionFactors Class'
+	{
+		CLSID = s '{396DE5CB-AE29-4C27-8BCC-47B52C5A6253}'
+	}
+	WBFLLBAM.DistributionFactors = s 'DistributionFactors Class'
+	{
+		CLSID = s '{396DE5CB-AE29-4C27-8BCC-47B52C5A6253}'
+		CurVer = s 'WBFLLBAM.DistributionFactors.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {396DE5CB-AE29-4C27-8BCC-47B52C5A6253} = s 'DistributionFactors Class'
+		{
+			ProgID = s 'WBFLLBAM.DistributionFactors.1'
+			VersionIndependentProgID = s 'WBFLLBAM.DistributionFactors'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{A60E8518-3A65-11D5-AFE5-00105A9AF985}'
+		}
+	}
+}

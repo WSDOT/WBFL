@@ -1,0 +1,60 @@
+[Target:WebHelp Pro]
+ResultFileName=!SSL!\WebHelp_Pro\RC_Capacity.htm
+SSLayoutType=32
+ServerProjectName=RC Capacity
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:WebHelp]
+ResultFileName=!SSL!\WebHelp\RC_Capacity.htm
+SSLayoutType=2
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:Microsoft HTML Help]
+ResultFileName=C:\ARP\lib\WBFLRCCapacity.chm
+SSLayoutType=1
+CreateProjectTime=15:25, February 09, 2009
+CreateProjectUser=BriceR
+SupportMas_MPJ=1
+ActionID For Generation=1002
+Remove Folder with prompt=1
+ViewFileName=C:\ARP\lib\WBFLRCCapacity.chm
+ResultStatus=0
+BuildTimeHi=29985549
+BuildTimeLow=-883041550
+[Target:FlashHelp]
+ResultFileName=!SSL!\FlashHelp\RC_Capacity.htm
+SSLayoutType=2
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:Printed Documentation]
+ResultFileName=!SSL!\Printed_Documentation\RC_Capacity.doc
+SSLayoutType=7
+[Target:XML Output]
+ResultFileName=!SSL!\XML_Output\RC_Capacity.xml
+SSLayoutType=8192
+[PreSingleSource]
+Html Help Project=C:\ARP\WBFL\RCCapacity\HTMLHelp\RC Capacity.hhp
+Table Of Content=C:\ARP\WBFL\RCCapacity\HTMLHelp\RC Capacity.hhc
+Index=C:\ARP\WBFL\RCCapacity\HTMLHelp\RC Capacity_merged$.hhk
+See Also Index=C:\ARP\WBFL\RCCapacity\HTMLHelp\RC Capacity.hha
+Browse Sequence=C:\ARP\WBFL\RCCapacity\HTMLHelp\RC Capacity.brs
+Topic Properties=C:\ARP\WBFL\RCCapacity\HTMLHelp\RC Capacity.trs
+Active Folders=C:\ARP\WBFL\RCCapacity\HTMLHelp\RC Capacity.trf
+Baggage Files=C:\ARP\WBFL\RCCapacity\HTMLHelp\RC Capacity.trb
+Skin List=C:\ARP\WBFL\RCCapacity\HTMLHelp\RC Capacity.trk
+OriginalHhk=C:\ARP\WBFL\RCCapacity\HTMLHelp\RC Capacity.hhk
+Active Layout Names=C:\ARP\WBFL\RCCapacity\HTMLHelp\RC Capacity.trl
+Default Topic=C:\ARP\WBFL\RCCapacity\HTMLHelp\Welcome.htm
+Build Tags0=18230;                  
+Build Tags=
+Build Expression=
+Language ID=1033
+Language Name=English
+Language=C:\ARP\WBFL\RCCapacity\HTMLHelp\RoboHHRE.lng
+Stop List=C:\ARP\WBFL\RCCapacity\HTMLHelp\RC Capacity.stp
+[Layout Settings]
+MRULayoutCount=1
+MRULayout0=Microsoft HTML Help]02/23/06]4

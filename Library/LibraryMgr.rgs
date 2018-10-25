@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLibrary.LibraryMgr.1 = s 'WBFL Library Manager'
+	{
+		CLSID = s '{0795E1D7-3F1B-4E6A-B010-7AE07A5EB70C}'
+	}
+	WBFLLibrary.LibraryMgr = s 'WBFL Library Manager'
+	{
+		CLSID = s '{0795E1D7-3F1B-4E6A-B010-7AE07A5EB70C}'
+		CurVer = s 'WBFLLibrary.LibraryMgr.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {0795E1D7-3F1B-4E6A-B010-7AE07A5EB70C} = s 'WBFL Library Manager'
+		{
+			ProgID = s 'WBFLLibrary.LibraryMgr.1'
+			VersionIndependentProgID = s 'WBFLLibrary.LibraryMgr'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{627C17C7-86D8-4966-8C1B-61F78403DD09}'
+		}
+	}
+}

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.PrecastBeam.1 = s 'PrecastBeam Class'
+	{
+		CLSID = s '{E7E272C2-032F-11D3-8CDF-861E1B8C3634}'
+	}
+	WBFLGeometry.PrecastBeam = s 'PrecastBeam Class'
+	{
+		CLSID = s '{E7E272C2-032F-11D3-8CDF-861E1B8C3634}'
+		CurVer = s 'WBFLGeometry.PrecastBeam.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {E7E272C2-032F-11D3-8CDF-861E1B8C3634} = s 'PrecastBeam Class'
+		{
+			ProgID = s 'WBFLGeometry.PrecastBeam.1'
+			VersionIndependentProgID = s 'WBFLGeometry.PrecastBeam'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.Tool.1 = s 'Tool Class'
+	{
+		CLSID = s '{44D1610A-A8FF-41b0-B94F-24B0A59C629A}'
+	}
+	WBFLDManip.Tool = s 'Tool Class'
+	{
+		CLSID = s '{44D1610A-A8FF-41b0-B94F-24B0A59C629A}'
+		CurVer = s 'WBFLDManip.Tool.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {44D1610A-A8FF-41b0-B94F-24B0A59C629A} = s 'Tool Class'
+		{
+			ProgID = s 'WBFLDManip.Tool.1'
+			VersionIndependentProgID = s 'WBFLDManip.Tool'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

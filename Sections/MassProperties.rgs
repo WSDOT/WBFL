@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLSections.MassProperties.1 = s 'MassProperties Class'
+	{
+		CLSID = s '{3925A3FA-34CD-4E06-AEDF-BCD1773E0810}'
+	}
+	WBFLSections.MassProperties = s 'MassProperties Class'
+	{
+		CLSID = s '{3925A3FA-34CD-4E06-AEDF-BCD1773E0810}'
+		CurVer = s 'WBFLSections.MassProperties.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {3925A3FA-34CD-4E06-AEDF-BCD1773E0810} = s 'MassProperties Class'
+		{
+			ProgID = s 'WBFLSections.MassProperties.1'
+			VersionIndependentProgID = s 'WBFLSections.MassProperties'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{8CFE60EA-6B58-4D72-B05A-E9F049C9C8CC}'
+		}
+	}
+}

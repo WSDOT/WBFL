@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.CogoEngine.1 = s 'CogoEngine Class'
+	{
+		CLSID = s '{C7E7D393-7C90-4AF5-88DF-A761FA3BCE19}'
+	}
+	WBFLCogo.CogoEngine = s 'CogoEngine Class'
+	{
+		CLSID = s '{C7E7D393-7C90-4AF5-88DF-A761FA3BCE19}'
+		CurVer = s 'WBFLCogo.CogoEngine.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {C7E7D393-7C90-4AF5-88DF-A761FA3BCE19} = s 'CogoEngine Class'
+		{
+			ProgID = s 'WBFLCogo.CogoEngine.1'
+			VersionIndependentProgID = s 'WBFLCogo.CogoEngine'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

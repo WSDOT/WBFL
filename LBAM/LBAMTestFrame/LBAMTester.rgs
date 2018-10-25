@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAMTestFrame.LBAMTester.1 = s 'LBAMTester Class'
+	{
+		CLSID = s '{0C731950-C970-11D5-B085-00105A9AF985}'
+	}
+	WBFLLBAMTestFrame.LBAMTester = s 'LBAMTester Class'
+	{
+		CLSID = s '{0C731950-C970-11D5-B085-00105A9AF985}'
+		CurVer = s 'WBFLLBAMTestFrame.LBAMTester.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {0C731950-C970-11D5-B085-00105A9AF985} = s 'LBAMTester Class'
+		{
+			ProgID = s 'WBFLLBAMTestFrame.LBAMTester.1'
+			VersionIndependentProgID = s 'WBFLLBAMTestFrame.LBAMTester'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{23497471-C954-11D5-B085-00105A9AF985}'
+		}
+	}
+}

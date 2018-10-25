@@ -1,0 +1,254 @@
+///////////////////////////////////////////////////////////////////////
+// Library - Framework for libraries
+// Copyright (C) 2009  Washington State Department of Transportation
+//                     Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// Library.idl : IDL source for Library.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (Library.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+#include "olectl.h"
+
+import "WBFLTypes.idl";
+import "WBFLTools.idl";
+
+
+cpp_quote("// {46C55423-2575-4252-8B28-7F779B7AD078}")
+cpp_quote("DEFINE_GUID(CATID_WBFLLibraryMgr, ")
+cpp_quote("0x46c55423, 0x2575, 0x4252, 0x8b, 0x28, 0x7f, 0x77, 0x9b, 0x7a, 0xd0, 0x78);")
+
+[
+	uuid(627C17C7-86D8-4966-8C1B-61F78403DD09),
+	version(1.0),
+	helpstring("WBFLLibrary Library")
+]
+library WBFLLibrary
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+   
+	[
+		object,
+		uuid(CD76D614-68E6-4b49-B8D4-4160B0FB7F33),
+		oleautomation,
+		helpstring("ILibraryEntry Interface"),
+		pointer_default(unique)
+	]
+	interface ILibraryEntry : IUnknown
+	{
+		[propput, helpstring("property Name")] HRESULT Name([in] BSTR newVal);
+		[propget, helpstring("property Name")] HRESULT Name([out, retval] BSTR *pVal);
+		[propget, helpstring("property InUse")] HRESULT InUse([out, retval] VARIANT_BOOL *pVal);
+		[propput, helpstring("property InUse")] HRESULT InUse([in] VARIANT_BOOL newVal);
+		[propget, helpstring("property Locked")] HRESULT Locked([out, retval] VARIANT_BOOL *pVal);
+		[propput, helpstring("property Locked")] HRESULT Locked([in] VARIANT_BOOL newVal);
+	};
+
+	[
+		object,
+		uuid(344D345E-987D-4f0c-9D41-9D408118C3B5),
+		oleautomation,
+		helpstring("ILibraryEntryEvents Interface"),
+		pointer_default(unique)
+	]
+	interface ILibraryEntryEvents : IUnknown
+	{
+      [] HRESULT OnNameChanged([in] BSTR oldName,[in] BSTR newName);
+      [] HRESULT OnEntryChanged([in] ILibraryEntry* entry);
+	};
+ 	[
+	   object,
+	   uuid(82556E2C-659C-481a-8B92-39EE77C46AFE),
+	   helpstring("IEnumLibraryEntry Interface"),
+	   oleautomation,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumLibraryEntry : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumLibraryEntry** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] ILibraryEntry** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+	[
+		object,
+		uuid(E15347B8-CB99-4D3D-9861-6B4954173AD6),
+		oleautomation,
+		helpstring("ILibrary Interface"),
+		pointer_default(unique)
+	]
+	interface ILibrary : IUnknown
+	{
+		[propget, helpstring("property Item")] HRESULT Item([in] BSTR name,[out, retval] ILibraryEntry* *pVal);
+		[propget, helpstring("property _NewEnum")] HRESULT _NewEnum([out, retval] IUnknown* *pVal);
+		[propget, helpstring("property Name")] HRESULT Name([out, retval] BSTR *pVal);
+		[propput, helpstring("property Name")] HRESULT Name([in] BSTR newVal);
+		[helpstring("method CreateEntry")] HRESULT CreateEntry([in]BSTR name,[out,retval]ILibraryEntry* *newEntry);
+		[helpstring("method RemoveEntry")] HRESULT RemoveEntry([in] BSTR name);
+		[propget, helpstring("property Count")] HRESULT Count([out, retval] CollectionIndexType *pVal);
+		[helpstring("method Clear")] HRESULT Clear();
+		[propget,restricted, helpstring("property _Enum")] HRESULT _Enum([out, retval] IEnumLibraryEntry* *pVal);
+	};
+
+ 	[
+	   object,
+	   uuid(18B051F5-D3B5-4228-BD8D-88533856905F),
+	   helpstring("IEnumLibrary Interface"),
+	   oleautomation,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumLibrary : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumLibrary** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] ILibrary** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+		object,
+		uuid(63BC88AF-2C7D-4224-90B7-5C078C0983CE),
+		oleautomation,
+		helpstring("ILibraryMgr Interface"),
+		pointer_default(unique)
+	]
+	interface ILibraryMgr : IUnknown
+	{
+		[propget, helpstring("property _NewEnum")] HRESULT _NewEnum([out, retval] IUnknown* *pVal);
+		[propget, helpstring("property Name")] HRESULT Name([out, retval] BSTR *pVal);
+		[propput, helpstring("property Name")] HRESULT Name([in] BSTR newVal);
+		[helpstring("method Add")] HRESULT Add([in] ILibrary* newLibrary);
+		[helpstring("method RemoveByIndex")] HRESULT Remove([in] CollectionIndexType index);
+		[propget, helpstring("property Count")] HRESULT Count([out, retval] CollectionIndexType *pVal);
+		[propget, helpstring("property Item")] HRESULT Item([in] BSTR name, [out, retval] ILibrary* *pVal);
+		[helpstring("method Clear")] HRESULT Clear();
+      [propget,restricted,helpstring("property _Enum")] HRESULT _Enum([out,retval] IEnumLibrary** ppenum);
+	};
+	[
+		object,
+		uuid(47D4D00D-1EFF-4a34-9F92-DD6777F19AF3),
+		oleautomation,
+		helpstring("ILibraryMgrEvents Interface"),
+		pointer_default(unique)
+	]
+	interface ILibraryMgrEvents : IUnknown
+	{
+      [] HRESULT OnNameChanged([in] BSTR oldName,[in] BSTR newName);
+      [] HRESULT OnChanged([in] ILibraryMgr* libMgr);
+      [] HRESULT OnLibraryNameChanged([in] BSTR oldName,[in] BSTR newName);
+      [] HRESULT OnLibraryChanged([in] ILibrary* lib);
+      [] HRESULT OnEntryNameChanged([in] ILibrary* lib,[in] BSTR oldName,[in] BSTR newName);
+      [] HRESULT OnEntryChanged([in] ILibrary* lib,[in] ILibraryEntry* entry);
+	};
+	[
+		object,
+		uuid(623332B2-B575-4b2e-88F3-8299650891DE),
+		oleautomation,
+		helpstring("ILibraryEvents Interface"),
+		pointer_default(unique)
+	]
+	interface ILibraryEvents : IUnknown
+	{
+      [] HRESULT OnNameChanged([in] BSTR oldName,[in] BSTR newName);
+      [] HRESULT OnLibraryChanged([in] ILibrary* lib);
+      [] HRESULT OnEntryNameChanged([in] ILibrary* lib,[in] BSTR oldName,[in] BSTR newName);
+      [] HRESULT OnEntryChanged([in] ILibrary* lib,[in] ILibraryEntry* entry);
+	};
+
+   [
+		object,
+		uuid(A6A3E5A8-C81D-46F1-8C58-848CB38B6D6A),
+		dual,
+		helpstring("ILibraryViewer Interface"),
+		pointer_default(unique)
+	]
+	interface ILibraryViewer : IDispatch
+	{
+		[propput, id(DISPID_AUTOSIZE)]
+		HRESULT AutoSize([in]VARIANT_BOOL vbool);
+		[propget, id(DISPID_AUTOSIZE)]
+		HRESULT AutoSize([out,retval]VARIANT_BOOL* pbool);
+		[propget, id(1), helpstring("property LibraryMgr")] HRESULT LibraryMgr([out, retval] ILibraryMgr* *pVal);
+		[propputref, id(1), helpstring("property LibraryMgr")] HRESULT LibraryMgr([in] ILibraryMgr* newVal);
+		[id(2), helpstring("method EditCurSel")] HRESULT EditCurSel();
+	};
+
+	[
+		uuid(0795E1D7-3F1B-4E6A-B010-7AE07A5EB70C),
+		helpstring("LibraryMgr Class")
+	]
+	coclass LibraryMgr
+	{
+		[default] interface ILibraryMgr;
+		[default, source] interface ILibraryMgrEvents;
+	};
+
+	[
+		uuid(21270B15-4445-4D09-ABF2-F38D712472EF),
+		helpstring("Library Class")
+	]
+	coclass Library
+	{
+		[default] interface ILibrary;
+		[default, source] interface ILibraryEvents;
+	};
+
+	[
+		object,
+		uuid(74C5DA97-57F1-4FE2-B6C0-929C48B5A8F2),
+      oleautomation,
+		helpstring("ILibraryViewerEvents Interface"),
+		pointer_default(unique)
+	]
+	interface ILibraryViewerEvents : IUnknown
+	{
+	};
+
+	[
+		uuid(14361D58-AF5B-11D4-8B4D-006097C68A9C),
+		helpstring("LibraryViewer Class")
+	]
+	coclass LibraryViewer
+	{
+		[default] interface ILibraryViewer;
+		[default, source] interface ILibraryViewerEvents;
+	};
+};

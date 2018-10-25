@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLUnitServer.AnnotatedDisplayUnitFormatter.1 = s 'AnnotatedDisplayUnitFormatter Class'
+	{
+		CLSID = s '{51F0A2BF-CAC1-11D3-8CE1-A85CC0A0E770}'
+	}
+	WBFLUnitServer.AnnotatedDisplayUnitFormatter = s 'AnnotatedDisplayUnitFormatter Class'
+	{
+		CLSID = s '{51F0A2BF-CAC1-11D3-8CE1-A85CC0A0E770}'
+		CurVer = s 'WBFLUnitServer.AnnotatedDisplayUnitFormatter.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {51F0A2BF-CAC1-11D3-8CE1-A85CC0A0E770} = s 'AnnotatedDisplayUnitFormatter Class'
+		{
+			ProgID = s 'WBFLUnitServer.AnnotatedDisplayUnitFormatter.1'
+			VersionIndependentProgID = s 'WBFLUnitServer.AnnotatedDisplayUnitFormatter'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{C65F03B4-16AB-11D2-8D11-94FA07C10000}'
+		}
+	}
+}

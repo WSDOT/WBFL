@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.EdgePathStrategy.1 = s 'EdgePathStrategy Class'
+	{
+		CLSID = s '{2EDDEA3E-D428-472f-AC4A-3BE464B74ED7}'
+	}
+	WBFLGenericBridge.EdgePathStrategy = s 'EdgePathStrategy Class'
+	{
+		CLSID = s '{2EDDEA3E-D428-472f-AC4A-3BE464B74ED7}'
+		CurVer = s 'WBFLGenericBridge.EdgePathStrategy.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {2EDDEA3E-D428-472f-AC4A-3BE464B74ED7} = s 'EdgePathStrategy Class'
+		{
+			ProgID = s 'WBFLGenericBridge.EdgePathStrategy.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.EdgePathStrategy'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

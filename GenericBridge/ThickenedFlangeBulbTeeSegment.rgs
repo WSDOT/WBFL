@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.ThickenedFlangeBulbTee.1 = s 'ThickenedFlangeBulbTee Class'
+	{
+		CLSID = s '{7F93F993-02C8-451b-95DE-F0122E95E06C}'
+	}
+	WBFLGenericBridge.ThickenedFlangeBulbTee = s 'ThickenedFlangeBulbTee Class'
+	{
+		CLSID = s '{7F93F993-02C8-451b-95DE-F0122E95E06C}'
+		CurVer = s 'WBFLGenericBridge.ThickenedFlangeBulbTee.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {7F93F993-02C8-451b-95DE-F0122E95E06C} = s 'ThickenedFlangeBulbTee Class'
+		{
+			ProgID = s 'WBFLGenericBridge.ThickenedFlangeBulbTee.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.ThickenedFlangeBulbTee'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

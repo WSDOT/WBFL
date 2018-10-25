@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.CoordinateXform3d.1 = s 'CoordinateXform3d Class'
+	{
+		CLSID = s '{D146B4A5-5103-11D3-8CDF-BFEA3D98042F}'
+	}
+	WBFLGeometry.CoordinateXform3d = s 'CoordinateXform3d Class'
+	{
+		CLSID = s '{D146B4A5-5103-11D3-8CDF-BFEA3D98042F}'
+		CurVer = s 'WBFLGeometry.CoordinateXform3d.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {D146B4A5-5103-11D3-8CDF-BFEA3D98042F} = s 'CoordinateXform3d Class'
+		{
+			ProgID = s 'WBFLGeometry.CoordinateXform3d.1'
+			VersionIndependentProgID = s 'WBFLGeometry.CoordinateXform3d'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

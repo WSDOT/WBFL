@@ -1,0 +1,9 @@
+; GenericBridgeTools.def : Declares the module parameters.
+
+LIBRARY      "WBFLGenericBridgeTools.DLL"
+
+EXPORTS
+	DllCanUnloadNow     PRIVATE
+	DllGetClassObject   PRIVATE
+	DllRegisterServer   PRIVATE
+	DllUnregisterServer	PRIVATE

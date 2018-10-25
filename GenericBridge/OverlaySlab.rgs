@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.OverlaySlab.1 = s 'OverlaySlab Class'
+	{
+		CLSID = s '{B7DDD2C1-B544-4bd0-91DA-40E7C3A2A9BC}'
+	}
+	WBFLGenericBridge.OverlaySlab = s 'OverlaySlab Class'
+	{
+		CLSID = s '{B7DDD2C1-B544-4bd0-91DA-40E7C3A2A9BC}'
+		CurVer = s 'WBFLGenericBridge.OverlaySlab.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {B7DDD2C1-B544-4bd0-91DA-40E7C3A2A9BC} = s 'OverlaySlab Class'
+		{
+			ProgID = s 'WBFLGenericBridge.OverlaySlab.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.OverlaySlab'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

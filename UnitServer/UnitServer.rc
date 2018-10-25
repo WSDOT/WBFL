@@ -1,0 +1,194 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "1 TYPELIB ""WbflUnitServer.tlb""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 3,1,1,0
+ PRODUCTVERSION 3,1,1,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "A member of the Alternate Route Project\0"
+            VALUE "CompanyName", "Washington State Department of Transportation\0"
+            VALUE "FileDescription", "WBFL Unit Server\0"
+            VALUE "FileVersion", "3.1.1.0\0"
+            VALUE "InternalName", "WBFL UnitServer\0"
+            VALUE "LegalCopyright", "Copyright © 2000-2009\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OLESelfRegister", "\0"
+            VALUE "OriginalFilename", "UnitServer.DLL\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "WBFL\0"
+            VALUE "ProductVersion", "3.1.1.0\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+
+IDR_UNITSERVER          REGISTRY DISCARDABLE    "UnitServer.rgs"
+IDR_UNITMODECONTROLLER  REGISTRY DISCARDABLE    "UnitModeController.rgs"
+IDR_DISPLAYUNITFORMATTER REGISTRY DISCARDABLE    "DisplayUnitFormatter.rgs"
+IDR_ANNOTATEDDISPLAYUNITFORMATTER REGISTRY DISCARDABLE    "AnnotatedDisplayUnitFormatter.rgs"
+IDR_UNITSYSTEM          REGISTRY DISCARDABLE    "UnitSystem.rgs"
+IDR_APPUNITSYSTEM       REGISTRY DISCARDABLE    "AppUnitSystem.rgs"
+IDR_DOCUNITSYSTEM       REGISTRY DISCARDABLE    "DocUnitSystem.rgs"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_UNITSDIALOG DIALOG DISCARDABLE  0, 0, 187, 60
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Units"
+FONT 8, "MS Sans Serif"
+BEGIN
+    GROUPBOX        "Select System of Units",IDC_STATIC,7,7,109,46,WS_GROUP
+    CONTROL         "&SI Units",IDC_SI,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP | WS_TABSTOP,15,20,39,10
+    CONTROL         "&Traditional U.S. Units",IDC_US,"Button",
+                    BS_AUTORADIOBUTTON,15,35,79,10
+    DEFPUSHBUTTON   "OK",IDOK,130,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,130,23,50,14
+    PUSHBUTTON      "Help",IDHELP,130,39,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_UNITSDIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 8
+        TOPMARGIN, 7
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PROJNAME            "UnitServer"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_E_UNITTYPEMISMATCH  "A unit type mismatch was encountered."
+    IDS_E_BADUNITTAG        "Unrecognized unit tag ""%s"""
+    IDS_E_BADUNITTYPE       "Unrecognized unit type ""%s"""
+    IDS_E_UNITTYPEALREADYDEFINED 
+                            "The unit type was not added because a unit type with the same label is already defined."
+    IDS_E_UNITALREADYDEFINED 
+                            "The unit was not added because a unit with the same tag is already defined for this unit type."
+    IDS_E_BASEUNITSSET      "Base units have already been set"
+    IDS_E_UNITSERVERSET     "Unit Server as already been set"
+    IDS_E_GROUPALREADYDEFINED 
+                            "The display unit group was not added because a group with the same name is already defined."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_E_BADDISPLAYUNITGROUP "Unrecognized display unit group ""%s"""
+    IDS_E_DEFAULTNOTFOUND   "The default display unit could not be found"
+    IDS_E_APPUNITSYSNOTSET  "Application Unit Server not set"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+1 TYPELIB "WbflUnitServer.tlb"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

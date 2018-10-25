@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.RebarModel.1 = s 'RebarModel Class'
+	{
+		CLSID = s '{9F2A88AB-C3AF-49AB-9685-47444F74C3DC}'
+	}
+	WBFLRCCapacity.RebarModel = s 'RebarModel Class'
+	{
+		CLSID = s '{9F2A88AB-C3AF-49AB-9685-47444F74C3DC}'
+		CurVer = s 'WBFLRCCapacity.RebarModel.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {9F2A88AB-C3AF-49AB-9685-47444F74C3DC} = s 'RebarModel Class'
+		{
+			ProgID = s 'WBFLRCCapacity.RebarModel.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.RebarModel'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

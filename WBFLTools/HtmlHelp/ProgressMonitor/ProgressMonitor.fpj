@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rhpml majorversion="1" minorversion="0">
+	<folders>
+		<folder>
+			<name>IProgressMonitor</name>
+		</folder>
+		<folder>
+			<name>ISupportProgressMonitor</name>
+		</folder>
+		<folder>
+			<name>ProgressMonitorWindow</name>
+		</folder>
+		<folder>
+			<name>ILogProgressToFile</name>
+		</folder>
+	</folders>
+	<topics>
+		<topic>
+			<name>Progress_Monitoring_Objects_and_Interfaces.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+	</topics>
+</rhpml>

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAMUtility.LRFDFactory.1 = s 'LRFDFactory Class'
+	{
+		CLSID = s '{12D5CC57-BF21-11D5-B075-00105A9AF985}'
+	}
+	WBFLLBAMUtility.LRFDFactory = s 'LRFDFactory Class'
+	{
+		CLSID = s '{12D5CC57-BF21-11D5-B075-00105A9AF985}'
+		CurVer = s 'WBFLLBAMUtility.LRFDFactory.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {12D5CC57-BF21-11D5-B075-00105A9AF985} = s 'LRFDFactory Class'
+		{
+			ProgID = s 'WBFLLBAMUtility.LRFDFactory.1'
+			VersionIndependentProgID = s 'WBFLLBAMUtility.LRFDFactory'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{12D5CC49-BF21-11D5-B075-00105A9AF985}'
+		}
+	}
+}

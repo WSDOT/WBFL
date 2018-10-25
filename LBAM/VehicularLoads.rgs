@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAM.VehicularLoads.1 = s 'VehicularLoads Class'
+	{
+		CLSID = s '{C4A25290-DA37-4D46-90C5-81A00A088D78}'
+	}
+	WBFLLBAM.VehicularLoads = s 'VehicularLoads Class'
+	{
+		CLSID = s '{C4A25290-DA37-4D46-90C5-81A00A088D78}'
+		CurVer = s 'WBFLLBAM.VehicularLoads.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {C4A25290-DA37-4D46-90C5-81A00A088D78} = s 'VehicularLoads Class'
+		{
+			ProgID = s 'WBFLLBAM.VehicularLoads.1'
+			VersionIndependentProgID = s 'WBFLLBAM.VehicularLoads'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{A60E8518-3A65-11D5-AFE5-00105A9AF985}'
+		}
+	}
+}

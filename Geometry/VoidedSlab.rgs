@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.VoidedSlab.1 = s 'VoidedSlab Class'
+	{
+		CLSID = s '{3B31027D-48F3-4a8e-A9F2-3887B74E3D96}'
+	}
+	WBFLGeometry.VoidedSlab = s 'VoidedSlab Class'
+	{
+		CLSID = s '{3B31027D-48F3-4a8e-A9F2-3887B74E3D96}'
+		CurVer = s 'WBFLGeometry.VoidedSlab.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {3B31027D-48F3-4a8e-A9F2-3887B74E3D96} = s 'VoidedSlab Class'
+		{
+			ProgID = s 'WBFLGeometry.VoidedSlab.1'
+			VersionIndependentProgID = s 'WBFLGeometry.VoidedSlab'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

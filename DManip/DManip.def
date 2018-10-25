@@ -1,0 +1,9 @@
+; DManip.def : Declares the module parameters for the DLL.
+
+LIBRARY      "WBFLDManip.dll"
+
+EXPORTS
+    DllCanUnloadNow                  PRIVATE
+    DllGetClassObject                PRIVATE
+    DllRegisterServer                PRIVATE
+    DllUnregisterServer              PRIVATE

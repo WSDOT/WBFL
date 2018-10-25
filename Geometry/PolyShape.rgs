@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.PolyShape.1 = s 'PolyShape Class'
+	{
+		CLSID = s '{94FD8E64-0013-11D3-8CDF-8BF0A4AD5B35}'
+	}
+	WBFLGeometry.PolyShape = s 'PolyShape Class'
+	{
+		CLSID = s '{94FD8E64-0013-11D3-8CDF-8BF0A4AD5B35}'
+		CurVer = s 'WBFLGeometry.PolyShape.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {94FD8E64-0013-11D3-8CDF-8BF0A4AD5B35} = s 'PolyShape Class'
+		{
+			ProgID = s 'WBFLGeometry.PolyShape.1'
+			VersionIndependentProgID = s 'WBFLGeometry.PolyShape'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

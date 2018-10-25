@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.SidewalkBarrier.1 = s 'SidewalkBarrier Class'
+	{
+		CLSID = s '{8B5D872B-21C3-41f4-BFFB-A79E58CB9AC8}'
+	}
+	WBFLGenericBridge.SidewalkBarrier = s 'SidewalkBarrier Class'
+	{
+		CLSID = s '{8B5D872B-21C3-41f4-BFFB-A79E58CB9AC8}'
+		CurVer = s 'WBFLGenericBridge.SidewalkBarrier.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {8B5D872B-21C3-41f4-BFFB-A79E58CB9AC8} = s 'SidewalkBarrier Class'
+		{
+			ProgID = s 'WBFLGenericBridge.SidewalkBarrier.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.SidewalkBarrier'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

@@ -1,0 +1,148 @@
+
+
+   =====================================================================
+  | WinBeam By CAST  TIME : 11/26/01 12:12:10                 Page:  1  |
+   =====================================================================
+
+
+
+     ************************************ 
+     * SUMMARY OF THE INPUT INFORMATION * 
+     ************************************ 
+
+     TYPE OF THE PROBLEM : CONTINUOUS BEAM CALCULATION 
+
+     * Types and the locations of the supports in Inch
+
+        Hinged support at X=      0.000 
+        Hinged support at X=    120.000 
+        Hinged support at X=    340.000 
+        Hinged support at X=    460.000 
+
+     * The locations of the intermediate hinges are:
+
+       X=    230.000 
+
+     * Total number of different materials    :     1 
+
+       From X=      0.000   to X=    460.000   E=   4500.000 ksi
+
+     * Total number of different sections     :     1 
+
+       From X=      0.000 to X=    460.000 IX=    576.000 Inch**4
+
+     * Total number of imposed displacements  :     1 
+       At X=    120.000 displacement=  -3.000000 Inch rotation(radan)=   0.000000
+
+
+     ************************** 
+     * SUMMARY OF THE RESULTS * 
+     ************************** 
+
+       * LENGTH UNIT Inch ; FORCE UNIT : Kip 
+
+     * MAXIMUM VALUES
+
+       * Max. displacement is    0.30682  at  X=    400.000 
+       * Min. displacement is   -3.19531  at  X=    175.000 
+
+
+
+
+   =====================================================================
+  | WinBeam By CAST  TIME : 11/26/01 12:12:10                 Page:  2  |
+   =====================================================================
+
+
+       * Max. shear force is    8.03306  at  X=    285.000 
+       * Min. shear force is   -7.36364  at  X=     90.000 
+
+       * Max. moment is  883.63636  at  X=    120.000 
+       * Min. moment is -883.63636  at  X=    340.000 
+
+     * TOTAL APPLIED LOADS
+
+       * Total applied concentrated load:      0.000 Kip
+       * Total applied concentrated moment:      0.000 Kip Inch
+       * Total applied distributed load:      0.000 Kip
+
+     * SUPPORT REACTIONS
+
+       * Reaction at X=      0.000 : Force=      7.364 Moment=      0.000
+       * Reaction at X=    120.000 : Force=    -15.397 Moment=      0.000
+       * Reaction at X=    340.000 : Force=     15.397 Moment=      0.000
+       * Reaction at X=    460.000 : Force=     -7.364 Moment=      0.000
+
+
+     **************************** 
+     * DETAILS OF THE ANALYSIS * 
+     **************************** 
+
+     * DISPLACEMENT AT OUTPUT POINTS :
+
+     At X=      0.000 Displacement=    0.00000 
+     At X=     30.000 Displacement=   -0.94176 
+     At X=     60.000 Displacement=   -1.80682 
+     At X=     90.000 Displacement=   -2.51847 
+     At X=    120.000 Displacement=   -3.00000 
+     At X=    175.000 Displacement=   -3.19531 
+     At X=    230.000 Displacement=   -2.87500 
+     At X=    285.000 Displacement=   -1.17969 
+     At X=    287.500 Displacement=   -1.11098 
+     At X=    340.000 Displacement=    0.00000 
+     At X=    345.000 Displacement=    0.06398 
+     At X=    370.000 Displacement=    0.26847 
+     At X=    400.000 Displacement=    0.30682 
+     At X=    402.500 Displacement=    0.30203 
+     At X=    430.000 Displacement=    0.19176 
+     At X=    460.000 Displacement=    0.00000 
+
+
+
+
+   =====================================================================
+  | WinBeam By CAST  TIME : 11/26/01 12:12:10                 Page:  3  |
+   =====================================================================
+
+
+     * SHEAR FORCES :
+
+       Coordinate     Shear (LT side)   Shear (RT side)
+
+     X=       0.0000                          -7.3636 
+     X=      30.0000          -7.3636         -7.3636 
+     X=      60.0000          -7.3636         -7.3636 
+     X=      90.0000          -7.3636         -7.3636 
+     X=     120.0000          -7.3636          8.0331 
+     X=     175.0000           8.0331          8.0331 
+     X=     230.0000           8.0331          8.0331 
+     X=     285.0000           8.0331          8.0331 
+     X=     287.5000           8.0331          8.0331 
+     X=     340.0000           8.0331         -7.3636 
+     X=     345.0000          -7.3636         -7.3636 
+     X=     370.0000          -7.3636         -7.3636 
+     X=     400.0000          -7.3636         -7.3636 
+     X=     402.5000          -7.3636         -7.3636 
+     X=     430.0000          -7.3636         -7.3636 
+     X=     460.0000          -7.3636 
+
+     * MOMENTS :
+
+       Coordinate     Moment (LT side)  Moment (RT side)
+
+     X=       0.0000                           0.0000 
+     X=      30.0000         220.9091        220.9091 
+     X=      60.0000         441.8182        441.8182 
+     X=      90.0000         662.7273        662.7273 
+     X=     120.0000         883.6364        883.6364 
+     X=     175.0000         441.8182        441.8182 
+     X=     230.0000           0.0000          0.0000 
+     X=     285.0000        -441.8182       -441.8182 
+     X=     287.5000        -461.9008       -461.9008 
+     X=     340.0000        -883.6364       -883.6364 
+     X=     345.0000        -846.8182       -846.8182 
+     X=     370.0000        -662.7273       -662.7273 
+     X=     400.0000        -441.8182       -441.8182 
+     X=     402.5000        -423.4091       -423.4091 
+     X=     430.0000        -220.9091       -220.9091 
+     X=     460.0000           0.0000 

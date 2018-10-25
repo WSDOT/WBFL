@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.PointDisplayObject.1 = s 'PointDisplayObject Class'
+	{
+		CLSID = s '{011408D4-F865-11d4-8B9C-006097C68A9C}'
+	}
+	WBFLDManip.PointDisplayObject = s 'PointDisplayObject Class'
+	{
+		CLSID = s '{011408D4-F865-11d4-8B9C-006097C68A9C}'
+		CurVer = s 'WBFLDManip.PointDisplayObject.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {011408D4-F865-11d4-8B9C-006097C68A9C} = s 'PointDisplayObject Class'
+		{
+			ProgID = s 'WBFLDManip.PointDisplayObject.1'
+			VersionIndependentProgID = s 'WBFLDManip.PointDisplayObject'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

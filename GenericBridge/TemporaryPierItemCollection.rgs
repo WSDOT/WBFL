@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.TemporaryPierItemCollection.1 = s 'TemporaryPierItemCollection Class'
+	{
+		CLSID = s '{685C9598-3F79-4f45-9EE8-7F44C147E26E}'
+	}
+	WBFLGenericBridge.TemporaryPierItemCollection = s 'TemporaryPierItemCollection Class'
+	{
+		CLSID = s '{685C9598-3F79-4f45-9EE8-7F44C147E26E}'
+		CurVer = s 'WBFLGenericBridge.TemporaryPierItemCollection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {685C9598-3F79-4f45-9EE8-7F44C147E26E} = s 'TemporaryPierItemCollection Class'
+		{
+			ProgID = s 'WBFLGenericBridge.TemporaryPierItemCollection.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.TemporaryPierItemCollection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

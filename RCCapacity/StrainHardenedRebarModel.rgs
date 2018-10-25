@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.StrainHardenedRebarModel.1 = s 'StrainHardenedRebarModel Class'
+	{
+		CLSID = s '{030BB55E-DCE1-4bc2-9036-2D9F74A8A814}'
+	}
+	WBFLRCCapacity.StrainHardenedRebarModel = s 'StrainHardenedRebarModel Class'
+	{
+		CLSID = s '{030BB55E-DCE1-4bc2-9036-2D9F74A8A814}'
+		CurVer = s 'WBFLRCCapacity.StrainHardenedRebarModel.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {030BB55E-DCE1-4bc2-9036-2D9F74A8A814} = s 'StrainHardenedRebarModel Class'
+		{
+			ProgID = s 'WBFLRCCapacity.StrainHardenedRebarModel.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.StrainHardenedRebarModel'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

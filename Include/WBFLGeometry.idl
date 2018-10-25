@@ -1,0 +1,3389 @@
+///////////////////////////////////////////////////////////////////////
+// Geometry - Geometric Modeling Library
+// Copyright © 2000  Washington State Department of Transportation
+//                     Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the Alternate Route Library Open Source License as 
+// published by the Washington State Department of Transportation,
+// Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful,
+// but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// PURPOSE.  See the Alternate Route Library Open Source License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License
+// along with this program; if not, write to the Washington State
+// Department of Transportation, Bridge and Structures Office,
+// P.O. Box 47340, Olympia, WA 98503, USA or e-mail
+// Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// Geometry.idl : IDL source for Geometry.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (Geometry.tlb) and marshalling code.
+
+// wingdi.h defines a fuction called Rectangle. We have to exclude wingdi.h or
+// this file won't compile because of a conflict between the GDI fuction and the
+// Rectangle object.
+
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "WBFLTypes.idl";
+import "WBFLTools.idl";
+
+// Context Help IDs
+#include <Geometry.hh>
+#include <Primitives.hh>
+
+cpp_quote("#define GEOMETRY_E_NOTNORMALIZED             MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,512)")
+cpp_quote("#define GEOMETRY_E_ZEROMAGNITUDE             MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,513)")
+cpp_quote("#define GEOMETRY_E_MAGNITUDELESSTHANZERO     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,514)")
+cpp_quote("#define GEOMETRY_E_SAMEPOINTS                MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,515)")
+cpp_quote("#define GEOMETRY_E_INFINITESOLUTIONS         MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,516)")
+cpp_quote("#define GEOMETRY_E_NOSOLUTIONS               MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,517)")
+cpp_quote("#define GEOMETRY_E_RADIUS                    MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,518)")
+cpp_quote("#define GEOMETRY_E_DIMENSION                 MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,519)")
+cpp_quote("#define GEOMETRY_E_POINTONLINE               MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,520)")
+cpp_quote("#define GEOMETRY_E_MIDORDINATE               MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,521)")
+cpp_quote("#define GEOMETRY_E_ANGLE                     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,522)")
+cpp_quote("#define GEOMETRY_E_DISTANCE                  MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,523)")
+cpp_quote("#define GEOMETRY_E_COINCIDENTPOINTS          MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,524)")
+cpp_quote("#define GEOMETRY_E_COLINEAR                  MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,525)")
+
+[
+	uuid(55B8EF8A-FADF-11D2-8CDF-9849C70CC734),
+	version(1.0),
+   helpfile("WBFLGeometry.chm"),
+   helpcontext(IDH_WbflGeometryLibrary),
+	helpstring("WBFLGeometry Library")
+]
+library WBFLGeometry
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+   typedef
+   [
+      public,
+      uuid(7615DFC0-0013-11d3-8CDF-8BF0A4AD5B35),
+      helpstring("enum LocatorPointType"),
+	  helpcontext(IDH_LocatorPointType)
+   ] 
+   enum 
+   {
+      lpHookPoint = 0,
+      lpTopLeft = 1,    lpTopCenter = 2,    lpTopRight = 3,
+      lpCenterLeft = 4, lpCenterCenter = 5, lpCenterRight = 6,
+      lpBottomLeft = 7, lpBottomCenter = 8, lpBottomRight = 9
+   } LocatorPointType;
+
+   typedef
+   [
+      public,
+      uuid(FABE04A0-FF96-11d2-8CDF-F43C3928A334),
+      helpstring("enum CoordinateSystemType"),
+	  helpcontext(IDH_CoordinateSystemType)
+   ] 
+   enum 
+   {
+ 	   csCentroidal = 0,
+ 	   csGlobal     = 1,
+ 	   csPrinciple  = 2,
+       csUser       = 3
+   } CoordinateSystemType;
+
+   typedef [public,helpstring("enum XformType"),helpcontext(IDH_XformType),uuid(D03C2CC0-5DD8-11d3-8CDF-A057587EDC05)] 
+   enum 
+   {
+      xfrmOldToNew = 1,
+      xfrmNewToOld = 2
+   } XformType;
+
+
+   typedef
+   [
+      public,
+      uuid(C64376A0-03CF-11d3-8CDF-EBFB6612CA35),
+      helpstring("enum TrafficBarrierOrientation"),
+	  helpcontext(IDH_TrafficBarrierOrientation)
+   ] 
+   enum 
+   {
+ 	   tboLeft,
+      tboRight
+   } TrafficBarrierOrientation;
+
+   // FORWARD DECLARATIONS
+   interface ISize2d;
+   interface ISize3d;
+   interface IVector3d;
+
+	[
+		object,
+		uuid(55B8EF96-FADF-11D2-8CDF-9849C70CC734),
+      oleautomation,
+      helpcontext(IDH_IPoint2d),
+		helpstring("IPoint2d Interface"),
+		pointer_default(unique)
+	]
+	interface IPoint2d : IUnknown
+	{
+		[propget, helpstring("property X"),helpcontext(IDH_IPoint2d_X)]
+      HRESULT X([out, retval] Float64 *x);
+
+		[propput, helpstring("property X"),helpcontext(IDH_IPoint2d_X)]
+      HRESULT X([in] Float64 x);
+
+		[propget, helpstring("property Y"),helpcontext(IDH_IPoint2d_Y)]
+      HRESULT Y([out, retval] Float64 *y);
+
+		[propput, helpstring("property Y"),helpcontext(IDH_IPoint2d_Y)]
+      HRESULT Y([in] Float64 y);
+
+		[helpstring("method Move"), helpcontext(IDH_IPoint2d_Move)]
+      HRESULT Move([in] Float64 x,[in] Float64 y);
+
+		[helpstring("method MoveEx"), helpcontext(IDH_IPoint2d_MoveEx)]
+      HRESULT MoveEx([in] IPoint2d* to);
+
+		[helpstring("method Offset"), helpcontext(IDH_IPoint2d_Offset)]
+      HRESULT Offset([in] Float64 dx,[in] Float64 dy);
+
+		[helpstring("method OffsetEx"), helpcontext(IDH_IPoint2d_OffsetEx)]
+      HRESULT OffsetEx([in] ISize2d* size);
+
+		[helpstring("method Rotate"), helpcontext(IDH_IPoint2d_Rotate)]
+      HRESULT Rotate([in] Float64 cx,[in] Float64 cy,[in] Float64 angle);
+
+		[helpstring("method RotateEx"), helpcontext(IDH_IPoint2d_RotateEx)]
+      HRESULT RotateEx([in] IPoint2d* center,[in] Float64 angle);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+
+   [
+    object,
+    oleautomation,
+    uuid(11B3531F-ACDA-4b32-AAAB-28F9693256B2),
+    helpcontext(IDH_IPoint2d),
+    helpstring("IPoint2dEvents Interface"),
+    pointer_default(unique)
+   ]
+   interface IPoint2dEvents : IUnknown
+   {
+    [helpstring("event OnPointChanged"),helpcontext(IDH_IPoint2d_OnChanged)] 
+    HRESULT OnPointChanged(IPoint2d* point);
+   };
+
+	[
+		object,
+		uuid(55B8EF97-FADF-11D2-8CDF-9849C70CC734),
+		oleautomation,
+		helpstring("ISize2d Interface"),
+      helpcontext(IDH_ISize2d),
+		pointer_default(unique)
+	]
+	interface ISize2d : IUnknown
+	{
+		[propget, helpstring("property Dx"), helpcontext(IDH_ISize2d_Dx)]
+      HRESULT Dx([out, retval] Float64 *dx);
+
+		[propput, helpstring("property Dx"), helpcontext(IDH_ISize2d_Dx)]
+      HRESULT Dx([in] Float64 dx);
+
+		[propget, helpstring("property Dy"), helpcontext(IDH_ISize2d_Dy)]
+      HRESULT Dy([out, retval] Float64 *dy);
+
+		[propput, helpstring("property Dy"), helpcontext(IDH_ISize2d_Dy)]
+      HRESULT Dy([in] Float64 dy);
+
+		[propget, helpstring("property Magnitude"),helpcontext(IDH_ISize2d_Magnitude)]
+      HRESULT Magnitude([out, retval] Float64 *mag);
+
+		[helpstring("method Scale"),helpcontext(IDH_ISize2d_Scale)]
+      HRESULT Scale([in] Float64 factor);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+
+
+	[
+		object,
+		uuid(55B8EF98-FADF-11D2-8CDF-9849C70CC734),
+		oleautomation,
+      helpcontext(IDH_IRect2d),
+		helpstring("IRect2d Interface"),
+		pointer_default(unique)
+	]
+	interface IRect2d : IUnknown
+	{
+		[propget, helpstring("property Left"), helpcontext(IDH_IRect2d_Left)]
+      HRESULT Left([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Left"), helpcontext(IDH_IRect2d_Left)]
+      HRESULT Left([in] Float64 newVal);
+
+		[propget, helpstring("property Right"), helpcontext(IDH_IRect2d_Right)]
+      HRESULT Right([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Right"), helpcontext(IDH_IRect2d_Right)]
+      HRESULT Right([in] Float64 newVal);
+
+		[propget, helpstring("property Top"), helpcontext(IDH_IRect2d_Top)]
+      HRESULT Top([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Top"), helpcontext(IDH_IRect2d_Top)]
+      HRESULT Top([in] Float64 newVal);
+
+		[propget, helpstring("property Bottom"), helpcontext(IDH_IRect2d_Bottom)]
+      HRESULT Bottom([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Bottom"), helpcontext(IDH_IRect2d_Bottom)]
+      HRESULT Bottom([in] Float64 newVal);
+
+		[propget, helpstring("property Area"), helpcontext(IDH_IRect2d_Area)]
+      HRESULT Area([out, retval] Float64 *pVal);
+
+		[propget, helpstring("property BottomLeft"), helpcontext(IDH_IRect2d_BottomLeft)]
+      HRESULT BottomLeft([out, retval] IPoint2d* *pVal);
+
+		[propget, helpstring("property BottomCenter"), helpcontext(IDH_IRect2d_BottomCenter)]
+      HRESULT BottomCenter([out, retval] IPoint2d* *pVal);
+
+		[propget, helpstring("property BottomRight"), helpcontext(IDH_IRect2d_BottomRight)]
+      HRESULT BottomRight([out, retval] IPoint2d* *pVal);
+
+		[propget, helpstring("property CenterCenter"), helpcontext(IDH_IRect2d_CenterCenter)]
+      HRESULT CenterCenter([out, retval] IPoint2d* *pVal);
+
+		[propget, helpstring("property CenterLeft"), helpcontext(IDH_IRect2d_CenterLeft)]
+      HRESULT CenterLeft([out, retval] IPoint2d* *pVal);
+
+      [propget, helpstring("property CenterRight"), helpcontext(IDH_IRect2d_CenterRight)]
+      HRESULT CenterRight([out, retval] IPoint2d* *pVal);
+
+		[propget, helpstring("property TopLeft"), helpcontext(IDH_IRect2d_TopLeft)]
+      HRESULT TopLeft([out, retval] IPoint2d* *pVal);
+
+		[propget, helpstring("property TopCenter"), helpcontext(IDH_IRect2d_TopCenter)]
+      HRESULT TopCenter([out, retval] IPoint2d* *pVal);
+
+		[propget, helpstring("property TopRight"), helpcontext(IDH_IRect2d_TopRight)]
+      HRESULT TopRight([out, retval] IPoint2d* *pVal);
+
+		[helpstring("method BoundPoint"), helpcontext(IDH_IRect2d_BoundPoint)]
+      HRESULT BoundPoint([in]Float64 x,[in] Float64 y);
+
+		[helpstring("method BoundPointEx"), helpcontext(IDH_IRect2d_BoundPointEx)]
+      HRESULT BoundPointEx([in]IPoint2d* pPoint);
+
+		[propget, helpstring("property Width"), helpcontext(IDH_IRect2d_Width)]
+      HRESULT Width([out, retval] Float64 *pVal);
+      
+		[propget, helpstring("property Height"), helpcontext(IDH_IRect2d_Height)]
+      HRESULT Height([out, retval] Float64 *pVal);
+
+		[helpstring("method Inflate"), helpcontext(IDH_IRect2d_Inflate)]
+      HRESULT Inflate([in] Float64 dx,[in] Float64 dy);
+
+		[helpstring("method InflateEx"), helpcontext(IDH_IRect2d_InflateEx)]
+      HRESULT InflateEx([in] ISize2d* pSize);
+
+		[helpstring("method Normalize"), helpcontext(IDH_IRect2d_Normalize)]
+      HRESULT Normalize();
+
+		[helpstring("method Offset"), helpcontext(IDH_IRect2d_Offset)]
+      HRESULT Offset([in] Float64 dx,[in] Float64 dy);
+
+		[helpstring("method OffsetEx"), helpcontext(IDH_IRect2d_OffsetEx)]
+      HRESULT OffsetEx([in] ISize2d* pSize);
+
+		[helpstring("method Intersect"), helpcontext(IDH_IRect2d_Intersect)]
+      HRESULT Intersect([in] IRect2d* pRect, [out,retval] IRect2d** ppIntersection);
+
+		[helpstring("method Union"), helpcontext(IDH_IRect2d_Union)]
+      HRESULT Union([in] IRect2d* pRect);
+
+		[helpstring("method UnionBy"), helpcontext(IDH_IRect2d_UnionBy)]
+      HRESULT UnionBy([in] IRect2d* pRect, [out,retval] IRect2d** ppUnion);
+
+		[helpstring("method Size"), helpcontext(IDH_IRect2d_Size)]
+      HRESULT Size([out,retval] ISize2d** ppSize);
+
+		[helpstring("method SetEmpty"), helpcontext(IDH_IRect2d_SetEmpty)]
+      HRESULT SetEmpty();
+
+		[helpstring("method SetNull"), helpcontext(IDH_IRect2d_SetNull)]
+      HRESULT SetNull();
+
+		[helpstring("method ContainsPoint"), helpcontext(IDH_IRect2d_ContainsPoint)]
+      HRESULT ContainsPoint([in] IPoint2d* pPoint,[out,retval] VARIANT_BOOL* pbResult);
+
+		[helpstring("method ContainsRect"), helpcontext(IDH_IRect2d_ContainsRect)]
+      HRESULT ContainsRect([in] IRect2d* pRect,[out,retval] VARIANT_BOOL* pbResult);
+
+		[helpstring("method Touches"), helpcontext(IDH_IRect2d_Touches)]
+      HRESULT Touches([in] IRect2d* pRect,[out,retval] VARIANT_BOOL* pbResult);
+
+		[helpstring("method IsNull"), helpcontext(IDH_IRect2d_IsNull)]
+      HRESULT IsNull([out,retval] VARIANT_BOOL* pbResult);
+
+		[helpstring("method IsNormalized"), helpcontext(IDH_IRect2d_IsNormalized)]
+      HRESULT IsNormalized([out,retval] VARIANT_BOOL* pbResult);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+
+	[
+		object,
+		uuid(55B8EF9A-FADF-11D2-8CDF-9849C70CC734),
+		oleautomation,
+		helpcontext(IDH_IVector2d),
+		helpstring("IVector2d Interface"),
+		pointer_default(unique)
+	]
+	interface IVector2d : IUnknown
+	{
+		[propget, helpstring("property X"), helpcontext(IDH_IVector2d_X)]
+		HRESULT X([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property X"), helpcontext(IDH_IVector2d_X)]
+		HRESULT X([in] Float64 newVal);
+
+		[propget, helpstring("property Y"), helpcontext(IDH_IVector2d_Y)]
+		HRESULT Y([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Y"), helpcontext(IDH_IVector2d_Y)]
+		HRESULT Y([in] Float64 newVal);
+
+		[propget, helpstring("property Direction"), helpcontext(IDH_IVector2d_Direction)]
+		HRESULT Direction([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Direction"), helpcontext(IDH_IVector2d_Direction)]
+		HRESULT Direction([in] Float64 newVal);
+
+		[propget, helpstring("property Magnitude"), helpcontext(IDH_IVector2d_Magnitude)]
+		HRESULT Magnitude([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Magnitude"), helpcontext(IDH_IVector2d_Magnitude)]
+		HRESULT Magnitude([in] Float64 newVal);
+
+		[propget, helpstring("property Size"),helpcontext(IDH_IVector2d_Size)]
+		HRESULT Size([out, retval] ISize2d* *pVal);
+
+		[helpstring("method IsZero"), helpcontext(IDH_IVector2d_IsZero)]
+		HRESULT IsZero([out,retval] VARIANT_BOOL* pbResult);
+
+		[helpstring("method Normal"), helpcontext(IDH_IVector2d_Normal)]
+		HRESULT Normal([out,retval] IVector2d** ppNormal);
+
+		[helpstring("method Normalize"), helpcontext(IDH_IVector2d_Normalize)]
+		HRESULT Normalize();
+
+		[helpstring("method Offset"), helpcontext(IDH_IVector2d_Offset)]
+		HRESULT Offset([in] Float64 dx,[in] Float64 dy);
+
+		[helpstring("method OffsetEx"), helpcontext(IDH_IVector2d_OffsetEx)]
+		HRESULT OffsetEx([in] ISize2d* pSize);
+
+		[helpstring("method Projection"), helpcontext(IDH_IVector2d_Projection)]
+		HRESULT Projection([in] IVector2d* pVector,[out,retval] Float64* pVal);
+
+		[helpstring("method Reflect"), helpcontext(IDH_IVector2d_Reflect)]
+		HRESULT Reflect();
+
+		[helpstring("method Rotate"), helpcontext(IDH_IVector2d_Rotate)]
+		HRESULT Rotate([in] Float64 angle);
+
+		[helpstring("method Scale"), helpcontext(IDH_IVector2d_Scale)]
+		HRESULT Scale([in] Float64 factor);
+
+		[helpstring("method Dot"), helpcontext(IDH_IVector2d_Dot)]
+		HRESULT Dot([in] IVector2d* v,[out,retval]Float64* val);
+
+		[helpstring("method AngleBetween"), helpcontext(IDH_IVector2d_AngleBetween)]
+		HRESULT AngleBetween([in] IVector2d* v,[out,retval]Float64* val);
+
+		[helpstring("method IncrementBy"), helpcontext(IDH_IVector2d_IncrementBy)]
+		HRESULT IncrementBy([in] IVector2d* v,[out,retval]IVector2d** val);
+
+		[helpstring("method Increment"), helpcontext(IDH_IVector2d_Increment)]
+		HRESULT Increment([in] IVector2d* v);
+
+		[helpstring("method DecrementBy"), helpcontext(IDH_IVector2d_DecrementBy)]
+		HRESULT DecrementBy([in] IVector2d* v,[out,retval]IVector2d** val);
+
+		[helpstring("method Decrement"), helpcontext(IDH_IVector2d_Decrement)]
+		HRESULT Decrement([in] IVector2d* v);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+	
+	[
+	   object,
+	   uuid(2DB720E8-B7F8-11d3-8A0B-006097C68A9C),
+	   helpstring("IEnumPoint2d Interface"),
+	   helpcontext(IDH_IEnumPoint2d),
+	   oleautomation,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumPoint2d : IUnknown
+	{
+       [helpstring("Clone"),helpcontext(IDH_IEnumPoint2d_Clone)]
+	   HRESULT Clone([out] IEnumPoint2d** ppenum);
+
+	   [helpstring("Next"),helpcontext(IDH_IEnumPoint2d_Next)]
+	   HRESULT Next([in] ULONG celt, [out] IPoint2d** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset"),helpcontext(IDH_IEnumPoint2d_Reset)]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip"),helpcontext(IDH_IEnumPoint2d_Skip)]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+   [
+       object,
+       uuid(B0D56FA3-C8D6-11d2-8CDF-C55C1CA84A34),
+       oleautomation,
+       helpstring("IPoint2dCollection Interface"),
+	   helpcontext(IDH_IPoint2dCollection),
+       pointer_default(unique)
+   ]
+   interface IPoint2dCollection : IUnknown
+   {
+      [propget, helpstring("Given an index, returns an item in the collection."),helpcontext(IDH_IPoint2dCollection_Item)]
+      HRESULT Item([in] CollectionIndexType Index, [out, retval] IPoint2d** pPoint);
+
+      [propget, restricted, helpstring("returns an enumerator for the collection.")]
+      HRESULT _NewEnum([out, retval] IUnknown** retval);  
+       
+      [helpstring("method Add"),helpcontext(IDH_IPoint2dCollection_Add)]
+	  HRESULT Add([in] IPoint2d* pPoint);
+
+      [propget, helpstring("property Count"),helpcontext(IDH_IPoint2dCollection_Count)]
+	  HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+      [helpstring("method Remove"),helpcontext(IDH_IPoint2dCollection_Remove)]
+	  HRESULT Remove([in] CollectionIndexType Index);
+
+	  [helpstring("method Clear"),helpcontext(IDH_IPoint2dCollection_Clear)]
+	  HRESULT Clear();
+
+	  [propget,restricted,helpstring("property _Enum"),helpcontext(IDH_IPoint2dCollection__Enum)]
+	  HRESULT _Enum([out,retval] IEnumPoint2d** ppenum);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+
+   [
+     object,
+     uuid(06927385-F7D8-4398-A34B-FE7CDF8D7E40),
+     oleautomation,
+     helpcontext(IDH_IPoint2dCollection),
+     helpstring("IPoint2dCollectionEvents Interface"),
+     pointer_default(unique)
+   ]
+   interface IPoint2dCollectionEvents : IUnknown
+   {
+     [helpstring("event OnPointChanged"),helpcontext(IDH_IPoint2dCollection_OnPoint2dsChanged)] 
+     HRESULT OnPointChanged([in] IPoint2d* Point2d);
+     [helpstring("event OnPointAdded"),helpcontext(IDH_IPoint2dCollection_OnPoint2dAdded)] 
+     HRESULT OnPointAdded([in] CollectionIndexType idx, [in] IPoint2d* Point2d);
+     [helpstring("event OnPointRemoved"),helpcontext(IDH_IPoint2dCollection_OnPoint2dRemoved)] 
+     HRESULT OnPointRemoved([in] CollectionIndexType idx);
+     [helpstring("event OnPointsCleared"),helpcontext(IDH_IPoint2dCollection_OnPoint2dsCleared)] 
+     HRESULT OnPointsCleared();
+   };
+
+
+	[
+		object,
+		uuid(DB32B4E0-FCD6-11D2-8CDF-F5BC1C124434),
+		oleautomation,
+      helpcontext(IDH_ILineSegment2d),
+		helpstring("ILineSegment2d Interface"),
+		pointer_default(unique)
+	]
+	interface ILineSegment2d : IUnknown
+	{
+		[propget, helpstring("property StartPoint"), helpcontext(IDH_ILineSegment2d_StartPoint)]
+      HRESULT StartPoint([out, retval] IPoint2d* *pVal);
+
+		[propputref, helpstring("property StartPoint"), helpcontext(IDH_ILineSegment2d_StartPoint)]
+      HRESULT StartPoint([in] IPoint2d* newVal);
+
+		[propget, helpstring("property EndPoint"), helpcontext(IDH_ILineSegment2d_EndPoint)]
+      HRESULT EndPoint([out, retval] IPoint2d* *pVal);
+
+		[propputref, helpstring("property EndPoint"), helpcontext(IDH_ILineSegment2d_EndPoint)]
+      HRESULT EndPoint([in] IPoint2d* newVal);
+
+		[propget, helpstring("property Length"), helpcontext(IDH_ILineSegment2d_Length)]
+      HRESULT Length([out, retval] Float64 *pVal);
+
+		[helpstring("method Rotate"), helpcontext(IDH_ILineSegment2d_Rotate)]
+      HRESULT Rotate([in] Float64 cx, [in] Float64 cy,[in] Float64 angle);
+
+		[helpstring("method RotateEx"), helpcontext(IDH_ILineSegment2d_RotateEx)]
+      HRESULT RotateEx([in] IPoint2d* pCenter,[in] Float64 angle);
+
+		[helpstring("method Offset"), helpcontext(IDH_ILineSegment2d_Offset)]
+      HRESULT Offset([in] Float64 dx,[in] Float64 dy);
+
+		[helpstring("method OffsetEx"), helpcontext(IDH_ILineSegment2d_OffsetEx)]
+      HRESULT OffsetEx([in] ISize2d* pSize);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+   [
+    object,
+    oleautomation,
+    uuid(EBECEDED-AF2B-4f51-8A8B-815EA425319F),
+    helpcontext(IDH_IPoint2d),
+    helpstring("ILineSegment2dEvents Interface"),
+    pointer_default(unique)
+   ]
+   interface ILineSegment2dEvents : IUnknown
+   {
+    [helpstring("event OnLineSegmentChanged"),helpcontext(IDH_ILineSegment2d_OnChanged)] 
+    HRESULT OnLineSegmentChanged(ILineSegment2d* lineSegment);
+   };
+
+	[
+		object,
+		uuid(54A873E0-FCE2-11D2-8CDF-B23210011634),
+		oleautomation,
+      helpcontext(IDH_ILine2d),
+		helpstring("ILine2d Interface"),
+		pointer_default(unique)
+	]
+	interface ILine2d : IUnknown
+	{
+		[helpstring("method SetExplicit"), helpcontext(IDH_ILine2d_SetExplicit)]
+      HRESULT SetExplicit([in] IPoint2d *p,[in] IVector2d* d);
+
+		[helpstring("method GetExplicit"), helpcontext(IDH_ILine2d_GetExplicit)]
+      HRESULT GetExplicit([out] IPoint2d** p,[out] IVector2d** d);
+		
+      [helpstring("method SetImplicit"), helpcontext(IDH_ILine2d_SetImplicit)]
+      HRESULT SetImplicit([in] Float64 c,[in] IVector2d* n);
+
+		[helpstring("method GetImplicit"), helpcontext(IDH_ILine2d_GetImplicit)]
+      HRESULT GetImplicit([out] Float64* c,[out] IVector2d** n);
+
+		[helpstring("method ThroughPoints"), helpcontext(IDH_ILine2d_ThroughPoints)]
+      HRESULT ThroughPoints([in] IPoint2d* p1, [in] IPoint2d* p2);
+
+		[helpstring("method Offset"), helpcontext(IDH_ILine2d_Offset)]
+      HRESULT Offset([in] Float64 offset);
+
+		[helpstring("method Rotate"), helpcontext(IDH_ILine2d_Rotate)]
+      HRESULT Rotate([in] Float64 cx,[in] Float64 cy,[in] Float64 angle);
+
+		[helpstring("method RotateEx"), helpcontext(IDH_ILine2d_RotateEx)]
+      HRESULT RotateEx([in] IPoint2d* pCenter,[in] Float64 angle);
+
+		[helpstring("method Reverse"), helpcontext(IDH_ILine2d_Reverse)]
+	  HRESULT Reverse();
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+
+	[
+		object,
+		uuid(4F37A660-03FE-11D3-8CDF-882D80988F34),
+		oleautomation,
+		helpstring("IPoint3d Interface"),
+        helpcontext(IDH_IPoint3d),
+		pointer_default(unique)
+	]
+	interface IPoint3d : IUnknown
+	{
+		[propget, helpstring("property X"),helpcontext(IDH_IPoint3d_X)]
+      HRESULT X([out, retval] Float64 *x);
+
+		[propput, helpstring("property X"),helpcontext(IDH_IPoint3d_X)]
+      HRESULT X([in] Float64 x);
+
+		[propget, helpstring("property Y"),helpcontext(IDH_IPoint3d_Y)]
+      HRESULT Y([out, retval] Float64 *y);
+
+		[propput, helpstring("property Y"),helpcontext(IDH_IPoint3d_Y)]
+      HRESULT Y([in] Float64 y);
+
+		[propget, helpstring("property Z"),helpcontext(IDH_IPoint3d_Z)]
+      HRESULT Z([out, retval] Float64 *z);
+
+		[propput, helpstring("property Z"),helpcontext(IDH_IPoint3d_Z)]
+      HRESULT Z([in] Float64 z);
+
+		[helpstring("method Move"),helpcontext(IDH_IPoint3d_Move)]
+      HRESULT Move([in] Float64 x,[in] Float64 y,[in] Float64 z);
+
+		[helpstring("method MoveEx"),helpcontext(IDH_IPoint3d_MoveEx)]
+      HRESULT MoveEx([in] IPoint3d* to);
+
+		[helpstring("method Offset"),helpcontext(IDH_IPoint3d_Offset)]
+      HRESULT Offset([in] Float64 dx,[in] Float64 dy,[in] Float64 dz);
+
+		[helpstring("method OffsetEx"),helpcontext(IDH_IPoint3d_OffsetEx)]
+      HRESULT OffsetEx([in] ISize3d* size);
+
+		[helpstring("method Rotate"), helpcontext(IDH_IPoint3d_Rotate)]
+      HRESULT Rotate([in] Float64 cx,[in] Float64 cy,[in] Float64 cz, [in] IVector3d* vector,[in] Float64 angle);
+
+		[helpstring("method RotateEx"), helpcontext(IDH_IPoint3d_RotateEx)]
+      HRESULT RotateEx([in] IPoint3d* center,[in] IVector3d* vector,[in] Float64 angle);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+
+   [
+    object,
+    oleautomation,
+    uuid(C001AE86-7A31-434e-8649-3096457FE412),
+    helpcontext(IDH_IPoint3d),
+    helpstring("IPoint3dEvents Interface"),
+    pointer_default(unique)
+   ]
+   interface IPoint3dEvents : IUnknown
+   {
+    [helpstring("event OnPointChanged"), helpcontext(IDH_IPoint3d_OnChanged)] 
+    HRESULT OnPointChanged(IPoint3d* point);
+   };
+
+	[
+		object,
+		uuid(75DB33E0-0449-11D3-8CDF-9E53F9A4BF35),
+		oleautomation,
+		helpstring("ISize3d Interface"),
+      helpcontext(IDH_ISize3d),
+		pointer_default(unique)
+	]
+	interface ISize3d : IUnknown
+	{
+		[propget, helpstring("property Dx"), helpcontext(IDH_ISize3d_Dx)]
+      HRESULT Dx([out, retval] Float64 *dx);
+		
+      [propput, helpstring("property Dx"), helpcontext(IDH_ISize3d_Dx)]
+      HRESULT Dx([in] Float64 dx);
+
+		[propget, helpstring("property Dy"), helpcontext(IDH_ISize3d_Dy)]
+      HRESULT Dy([out, retval] Float64 *dy);
+
+		[propput, helpstring("property Dy"), helpcontext(IDH_ISize3d_Dy)]
+      HRESULT Dy([in] Float64 dy);
+
+		[propget, helpstring("property Dz"), helpcontext(IDH_ISize3d_Dz)]
+      HRESULT Dz([out, retval] Float64 *dz);
+
+		[propput, helpstring("property Dz"), helpcontext(IDH_ISize3d_Dz)]
+      HRESULT Dz([in] Float64 dz);
+
+		[propget, helpstring("property Magnitude"), helpcontext(IDH_ISize3d_Magnitude)]
+      HRESULT Magnitude([out,retval] Float64* mag);
+
+      [helpstring("method Scale"), helpcontext(IDH_ISize3d_Scale)]
+      HRESULT Scale([in] Float64 factor);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+	[
+		object,
+		uuid(F97D8401-1871-11D3-8CDF-925649DD1F63),
+		oleautomation,
+		helpstring("IVector3d Interface"),
+		helpcontext(IDH_IVector3d),
+		pointer_default(unique)
+	]
+	interface IVector3d : IUnknown
+	{
+		[propget, helpstring("property X"),helpcontext(IDH_IVector3d_X)]
+		HRESULT X([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property X"),helpcontext(IDH_IVector3d_X)]
+		HRESULT X([in] Float64 newVal);
+
+		[propget, helpstring("property Y"),helpcontext(IDH_IVector3d_Y)]
+		HRESULT Y([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Y"),helpcontext(IDH_IVector3d_Y)]
+		HRESULT Y([in] Float64 newVal);
+
+		[propget, helpstring("property Z"),helpcontext(IDH_IVector3d_Z)]
+		HRESULT Z([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Z"),helpcontext(IDH_IVector3d_Z)]
+		HRESULT Z([in] Float64 newVal);
+
+		[helpstring("method IsZero"),helpcontext(IDH_IVector3d_IsZero)]
+		HRESULT IsZero([out,retval] VARIANT_BOOL* pbResult);
+
+		[propget, helpstring("property Magnitude"),helpcontext(IDH_IVector3d_Magnitude)]
+		HRESULT Magnitude([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Magnitude"),helpcontext(IDH_IVector3d_Magnitude)]
+		HRESULT Magnitude([in] Float64 newVal);
+
+		[helpstring("method Normalize"),helpcontext(IDH_IVector3d_Normalize)]
+		HRESULT Normalize();
+
+		[helpstring("method Offset"),helpcontext(IDH_IVector3d_Offset)]
+		HRESULT Offset([in] Float64 dx,[in] Float64 dy,[in] Float64 dz);
+
+		[helpstring("method OffsetEx"),helpcontext(IDH_IVector3d_OffsetEx)]
+		HRESULT OffsetEx([in] ISize3d* pSize);
+
+		[helpstring("method Projection"),helpcontext(IDH_IVector3d_Projection)]
+		HRESULT Projection([in] IVector3d* pVector,[out,retval] Float64* pDist);
+
+		[helpstring("method Reflect"),helpcontext(IDH_IVector3d_Reflect)]
+		HRESULT Reflect();
+
+		[helpstring("method Scale"),helpcontext(IDH_IVector3d_Scale)]
+		HRESULT Scale([in] Float64 factor);
+
+		[propget, helpstring("property Size"),helpcontext(IDH_IVector3d_Size)]
+		HRESULT Size([out, retval] ISize3d* *pVal);
+
+		[helpstring("method Cross"),helpcontext(IDH_IVector3d_Cross)]
+		HRESULT Cross([in] IVector3d* v,[out,retval] IVector3d** result);
+
+		[helpstring("method Dot"),helpcontext(IDH_IVector3d_Dot)]
+		HRESULT Dot([in] IVector3d* v,[out,retval]Float64* val);
+
+		[helpstring("method AngleBetween"),helpcontext(IDH_IVector3d_AngleBetween)]
+		HRESULT AngleBetween([in] IVector3d* v,[out,retval] Float64* angle);
+
+		[helpstring("method IncrementBy"), helpcontext(IDH_IVector3d_IncrementBy)]
+		HRESULT IncrementBy([in] IVector3d* v,[out,retval]IVector3d** val);
+
+		[helpstring("method Increment"), helpcontext(IDH_IVector3d_Increment)]
+		HRESULT Increment([in] IVector3d* v);
+
+		[helpstring("method DecrementBy"), helpcontext(IDH_IVector3d_DecrementBy)]
+		HRESULT DecrementBy([in] IVector3d* v,[out,retval]IVector3d** val);
+
+		[helpstring("method Decrement"), helpcontext(IDH_IVector3d_Decrement)]
+		HRESULT Decrement([in] IVector3d* v);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+
+	[
+		object,
+		uuid(F97D8403-1871-11D3-8CDF-925649DD1F63),
+		oleautomation,
+		helpstring("IPlane3d Interface"),
+		helpcontext(IDH_IPlane3d),
+		pointer_default(unique)
+	]
+	interface IPlane3d : IUnknown
+	{
+		[helpstring("method ThroughPoints"),helpcontext(IDH_IPlane3d_ThroughPoints)]
+		HRESULT ThroughPoints([in] IPoint3d* p1,[in] IPoint3d* p2,[in] IPoint3d* p3);
+
+		[helpstring("method ThroughLineEx"),helpcontext(IDH_IPlane3d_ThroughLineEx)]
+		HRESULT ThroughLineEx([in] ILine2d* pLine,[in] IPoint3d* pPnt);
+
+		[helpstring("method ThroughAltitude"),helpcontext(IDH_IPlane3d_ThroughAltitude)]
+		HRESULT ThroughAltitude([in] Float64 altitude);
+
+		[helpstring("method GetX"),helpcontext(IDH_IPlane3d_GetX)]
+		HRESULT GetX([in] Float64 y,[in] Float64 z, [out, retval] Float64 *pVal);
+
+		[helpstring("method GetY"),helpcontext(IDH_IPlane3d_GetY)]
+		HRESULT GetY([in] Float64 x,[in] Float64 z, [out, retval] Float64 *pVal);
+
+		[helpstring("method GetZ"),helpcontext(IDH_IPlane3d_GetZ)]
+		HRESULT GetZ([in] Float64 x,[in] Float64 y, [out, retval] Float64 *pVal);
+
+		[helpstring("method Clone"),helpcontext(IDH_IPlane3d_Clone)]
+		HRESULT Clone([out,retval]IPlane3d** clone);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+
+	[
+	   object,
+	   uuid(2DB720E9-B7F8-11d3-8A0B-006097C68A9C),
+	   helpstring("IEnumPoint3d Interface"),
+	   helpcontext(IDH_IEnumPoint3d),
+	   oleautomation,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumPoint3d : IUnknown
+	{
+	   [helpstring("Next"),helpcontext(IDH_IEnumPoint3d_Next)]
+	   HRESULT Next([in] ULONG celt, [out] IPoint3d** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Skip"),helpcontext(IDH_IEnumPoint3d_Skip)]
+	   HRESULT Skip([in] ULONG celt);
+
+	   [helpstring("Reset"),helpcontext(IDH_IEnumPoint3d_Reset)]
+	   HRESULT Reset();
+
+	   [helpstring("Clone"),helpcontext(IDH_IEnumPoint3d_Clone)]
+       HRESULT Clone([out] IEnumPoint3d** ppenum);
+	};
+
+	[
+		object,
+		uuid(818E5100-1942-11D3-8CDF-DCD8D8F12565),
+		oleautomation,
+		helpstring("IPoint3dCollection Interface"),
+		helpcontext(IDH_IPoint3dCollection),
+		pointer_default(unique)
+	]
+	interface IPoint3dCollection : IUnknown
+	{
+		[propget, helpstring("property Count"),helpcontext(IDH_IPoint3dCollection_Count)]
+		HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+		[helpstring("method Add"),helpcontext(IDH_IPoint3dCollection_Add)]
+		HRESULT Add([in] IPoint3d* pPoint);
+
+		[helpstring("method Remove"),helpcontext(IDH_IPoint3dCollection_Remove)]
+		HRESULT Remove([in] CollectionIndexType Index);
+
+	    [helpstring("method Clear"),helpcontext(IDH_IPoint3dCollection_Clear)]
+	    HRESULT Clear();
+
+ 	     [propget,restricted,helpstring("property _Enum"),helpcontext(IDH_IPoint3dCollection__Enum)]
+	     HRESULT _Enum([out,retval] IEnumPoint3d** ppenum);
+
+	    [propget, helpstring("property _NewEnum")]
+		HRESULT _NewEnum([out, retval] LPUNKNOWN *pVal);
+
+		[propget, helpstring("property Item"),helpcontext(IDH_IPoint3dCollection_Item)]
+		HRESULT Item([in] CollectionIndexType Index, [out, retval] IPoint3d* *pVal);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+
+   [
+     object,
+     uuid(C895D8CE-7D4D-417b-838D-C55379830D21),
+     oleautomation,
+     helpcontext(IDH_IPoint3dCollection),
+     helpstring("IPoint3dCollectionEvents Interface"),
+     pointer_default(unique)
+   ]
+   interface IPoint3dCollectionEvents : IUnknown
+   {
+     [helpstring("event OnPointChanged"),helpcontext(IDH_IPoint3dCollection_Item)] 
+     HRESULT OnPointChanged([in] IPoint3d* Point3d);
+     [helpstring("event OnPointAdded"),helpcontext(IDH_IPoint3dCollection_Item)] 
+     HRESULT OnPointAdded([in] CollectionIndexType idx, [in] IPoint3d* Point3d);
+     [helpstring("event OnPointRemoved"),helpcontext(IDH_IPoint3dCollection_Item)] 
+     HRESULT OnPointRemoved([in] CollectionIndexType idx);
+     [helpstring("event OnPointsCleared"),helpcontext(IDH_IPoint3dCollection_Item)] 
+     HRESULT OnPointsCleared();
+   };
+
+	[
+		object,
+		uuid(66172CA4-FF5A-11D2-8CDF-F43C3928A334),
+		oleautomation,
+		helpstring("IShapeProperties Interface"),
+		helpcontext(IDH_IShapeProperties),
+		pointer_default(unique)
+	]
+	interface IShapeProperties : IUnknown
+	{
+		[propget, helpstring("property Area"),helpcontext(IDH_IShapeProperties_Area)]
+		HRESULT Area([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Area"),helpcontext(IDH_IShapeProperties_Area)]
+		HRESULT Area([in] Float64 newVal);
+
+		[propget, helpstring("property Centroid"),helpcontext(IDH_IShapeProperties_Centroid)]
+		HRESULT Centroid([out, retval] IPoint2d* *pVal);
+
+		[propput, helpstring("property Centroid"),helpcontext(IDH_IShapeProperties_Centroid)]
+		HRESULT Centroid([in] IPoint2d* newVal);
+
+		[propget, helpstring("property I11"),helpcontext(IDH_IShapeProperties_I11)]
+		HRESULT I11([out, retval] Float64 *pVal);
+
+		[propget, helpstring("property I22"),helpcontext(IDH_IShapeProperties_I22)]
+		HRESULT I22([out, retval] Float64 *pVal);
+
+		[propget, helpstring("property I12Max"),helpcontext(IDH_IShapeProperties_I12Max)]
+		HRESULT I12Max([out, retval] Float64 *pVal);
+
+		[propget, helpstring("property I12Min"),helpcontext(IDH_IShapeProperties_I12Min)]
+		HRESULT I12Min([out, retval] Float64 *pVal);
+
+		[propget, helpstring("property Ixx"),helpcontext(IDH_IShapeProperties_Ixx)]
+		HRESULT Ixx([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Ixx"),helpcontext(IDH_IShapeProperties_Ixx)]
+		HRESULT Ixx([in] Float64 newVal);
+
+		[propget, helpstring("property Iyy"),helpcontext(IDH_IShapeProperties_Iyy)]
+		HRESULT Iyy([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Iyy"),helpcontext(IDH_IShapeProperties_Iyy)]
+		HRESULT Iyy([in] Float64 newVal);
+
+		[propget, helpstring("property Ixy"),helpcontext(IDH_IShapeProperties_Ixy)]
+		HRESULT Ixy([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Ixy"),helpcontext(IDH_IShapeProperties_Ixy)]
+		HRESULT Ixy([in] Float64 newVal);
+
+		[propget, helpstring("property Xleft"),helpcontext(IDH_IShapeProperties_Xleft)]
+		HRESULT Xleft([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Xleft"),helpcontext(IDH_IShapeProperties_Xleft)]
+		HRESULT Xleft([in] Float64 newVal);
+
+		[propget, helpstring("property Xright"),helpcontext(IDH_IShapeProperties_Xright)]
+		HRESULT Xright([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Xright"),helpcontext(IDH_IShapeProperties_Xright)]
+		HRESULT Xright([in] Float64 newVal);
+
+		[propget, helpstring("property Ytop"),helpcontext(IDH_IShapeProperties_Ytop)]
+		HRESULT Ytop([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Ytop"),helpcontext(IDH_IShapeProperties_Ytop)]
+		HRESULT Ytop([in] Float64 newVal);
+
+		[propget, helpstring("property Ybottom"),helpcontext(IDH_IShapeProperties_Ybottom)]
+		HRESULT Ybottom([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Ybottom"),helpcontext(IDH_IShapeProperties_Ybottom)]
+		HRESULT Ybottom([in] Float64 newVal);
+
+		[propget, helpstring("property Origin"),helpcontext(IDH_IShapeProperties_Origin)]
+		HRESULT Origin([out, retval] IPoint2d* *pVal);
+
+		[propput, helpstring("property Origin"),helpcontext(IDH_IShapeProperties_Origin)]
+		HRESULT Origin([in] IPoint2d* newVal);
+
+		[propget, helpstring("property Orientation"),helpcontext(IDH_IShapeProperties_Orientation)]
+		HRESULT Orientation([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Orientation"),helpcontext(IDH_IShapeProperties_Orientation)]
+		HRESULT Orientation([in] Float64 newVal);
+
+		[propget, helpstring("property CoordinateSystem"),helpcontext(IDH_IShapeProperties_CoordinateSystem)]
+		HRESULT CoordinateSystem([out, retval] CoordinateSystemType *pVal);
+
+		[propput, helpstring("property CoordinateSystem"),helpcontext(IDH_IShapeProperties_CoordinateSystem)]
+		HRESULT CoordinateSystem([in] CoordinateSystemType newVal);
+
+		[propget, helpstring("property PrincipleDirection"),helpcontext(IDH_IShapeProperties_PrincipleDirection)]
+		HRESULT PrincipleDirection([out, retval] Float64 *pVal);
+
+	   [helpstring("method AddProperties"),helpcontext(IDH_IShapePropertiesEx_AddProperties)]
+	   HRESULT AddProperties([in] IShapeProperties* props);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+	};
+
+	[
+		object,
+		uuid(8A8FF0A0-0002-11d3-8CDF-F43C3928A334),
+		oleautomation,
+		helpstring("IShape Interface"),
+		helpcontext(IDH_IShape),
+		pointer_default(unique)
+	]
+	interface IShape : IUnknown
+	{
+		[propget, helpstring("property ShapeProperties"),helpcontext(IDH_IShape_ShapeProperties)]
+		HRESULT ShapeProperties([out, retval] IShapeProperties* *pVal);
+
+		[propget, helpstring("property BoundingBox"),helpcontext(IDH_IShape_BoundingBox)]
+		HRESULT BoundingBox([out, retval] IRect2d* *pVal);
+
+		[propget, helpstring("method PolyPoints"),helpcontext(IDH_IShape_PolyPoints)]
+		HRESULT PolyPoints([out,retval] IPoint2dCollection** ppPolyPoints);
+
+		[helpstring("method PointInShape"),helpcontext(IDH_IShape_PointInShape)]
+		HRESULT PointInShape([in] IPoint2d* pPoint,[out,retval] VARIANT_BOOL* pbResult);
+
+		[helpstring("method Clone"),helpcontext(IDH_IShape_Clone)]
+		HRESULT Clone([out,retval] IShape** pClone);
+
+		[helpstring("method ClipWithLine"),helpcontext(IDH_IShape_ClipWithLine)]
+		HRESULT ClipWithLine([in] ILine2d* pLine,[out,retval] IShape** pShape);
+
+		[helpstring("method ClipIn"),helpcontext(IDH_IShape_ClipIn)]
+		HRESULT ClipIn([in] IRect2d* pRect,[out,retval] IShape** pShape);
+
+		[propget, helpstring("property Perimeter"),helpcontext(IDH_IShape_Perimeter)]
+		HRESULT	Perimeter([out, retval] Float64 *pVal);
+
+		[helpstring("method FurthestDistance"),helpcontext(IDH_IShape_FurthestDistance)]
+		HRESULT	FurthestDistance([in]ILine2d* line,[out, retval] Float64 *pVal);
+   };
+
+	[
+	   object,
+	   uuid(2A9E6E20-B982-11d4-8B56-006097C68A9C),
+	   helpstring("IEnumShape Interface"),
+	   helpcontext(IDH_IEnumShape),
+	   oleautomation,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumShape : IUnknown
+	{
+       [helpstring("Clone"),helpcontext(IDH_IEnumShape_Clone)]
+	   HRESULT Clone([out] IEnumShape** ppenum);
+
+	   [helpstring("Next"),helpcontext(IDH_IEnumShape_Next)]
+	   HRESULT Next([in] ULONG celt, [out] IShape** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset"),helpcontext(IDH_IEnumShape_Reset)]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip"),helpcontext(IDH_IEnumShape_Skip)]
+	   HRESULT Skip([in] ULONG celt);
+	};
+   [
+       object,
+       uuid(2A9E6E21-B982-11d4-8B56-006097C68A9C),
+       oleautomation,
+       helpstring("IShapeCollection Interface"),
+	   helpcontext(IDH_IShapeCollection),
+       pointer_default(unique)
+   ]
+   interface IShapeCollection : IUnknown
+   {
+      [propget, helpstring("Given an index, returns an item in the collection."),helpcontext(IDH_IPoint2dCollection_Item)]
+      HRESULT Item([in] CollectionIndexType Index, [out, retval] IShape** shape);
+
+      [propget, restricted, helpstring("returns an enumerator for the collection.")]
+      HRESULT _NewEnum([out, retval] IUnknown** retval);  
+       
+      [helpstring("method Add"),helpcontext(IDH_IShapeCollection_Add)]
+	  HRESULT Add([in] IShape* shape);
+
+      [propget, helpstring("property Count"),helpcontext(IDH_IShapeCollection_Count)]
+	  HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+      [helpstring("method Remove"),helpcontext(IDH_IShapeCollection_Remove)]
+	  HRESULT Remove([in] CollectionIndexType Index);
+
+	  [helpstring("method Clear"),helpcontext(IDH_IShapeCollection_Clear)]
+	  HRESULT Clear();
+
+	  [propget, helpstring("property ShapeProperties"),helpcontext(IDH_IShapeCollection_ShapeProperties)]
+      HRESULT ShapeProperties([out,retval]IShapeProperties** props);
+
+	  [propget,restricted,helpstring("property _Enum"),helpcontext(IDH_IShapeCollection__Enum)]
+	  HRESULT _Enum([out,retval] IEnumShape** ppenum);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+	};
+
+	[
+		object,
+		uuid(C2EBFAA0-0013-11d3-8CDF-8BF0A4AD5B35),
+		oleautomation,
+		helpstring("IXYPosition Interface"),
+	    helpcontext(IDH_IXYPosition),
+		pointer_default(unique)
+	]
+	interface IXYPosition : IUnknown
+	{
+		[helpstring("method Offset"),helpcontext(IDH_IXYPosition_Offset)]
+		HRESULT Offset([in] Float64 dx,[in] Float64 dy);
+
+		[helpstring("method OffsetEx"),helpcontext(IDH_IXYPosition_OffsetEx)]
+		HRESULT OffsetEx([in] ISize2d* pSize);
+
+		[propget, helpstring("property LocatorPoint"),helpcontext(IDH_IXYPosition_LocatorPoint)]
+		HRESULT LocatorPoint([in] LocatorPointType lp, [out,retval] IPoint2d** point);
+
+		[propput, helpstring("property LocatorPoint"),helpcontext(IDH_IXYPosition_LocatorPoint)]
+		HRESULT LocatorPoint([in] LocatorPointType lp, [in] IPoint2d* point);
+
+		[helpstring("method MoveEx"),helpcontext(IDH_IXYPosition_MoveEx)]
+		HRESULT MoveEx([in] IPoint2d* pFrom,[in] IPoint2d* pTo);
+
+		[helpstring("method RotateEx"),helpcontext(IDH_IXYPosition_RotateEx)]
+		HRESULT RotateEx([in] IPoint2d* pPoint,[in] Float64 angle);
+
+		[helpstring("method Rotate"),helpcontext(IDH_IXYPosition_Rotate)]
+		HRESULT Rotate([in] Float64 cx,[in] Float64 cy,[in] Float64 angle);
+	};
+
+   [
+		object,
+		uuid(94FD8E63-0013-11D3-8CDF-8BF0A4AD5B35),
+      oleautomation,
+		helpstring("IPolyShape Interface"),
+		helpcontext(IDH_IPolyShape),
+		pointer_default(unique)
+	]
+	interface IPolyShape : IUnknown
+	{
+		[helpstring("method AddPoint"),helpcontext(IDH_IPolyShape_AddPoint)]
+		HRESULT AddPoint([in] Float64 x,[in] Float64 y);
+
+		[helpstring("method AddPointEx"),helpcontext(IDH_IPolyShape_AddPointEx)]
+		HRESULT AddPointEx([in] IPoint2d* pPoint);
+
+		[helpstring("method AddPoints"),helpcontext(IDH_IPolyShape_AddPoints)]
+		HRESULT AddPoints([in] IPoint2dCollection* pPoints);
+
+		[helpstring("method RemovePoint"),helpcontext(IDH_IPolyShape_RemovePoint)]
+		HRESULT RemovePoint([in] CollectionIndexType index);
+
+		[propget, helpstring("property Shape"),helpcontext(IDH_IPolyShape_Shape)]
+		HRESULT Shape([out, retval] IShape* *pVal);
+
+		[propget, helpstring("property XYPosition"),helpcontext(IDH_IPolyShape_XYPosition)]
+		HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+		[propget, helpstring("property NumPoints"),helpcontext(IDH_IPolyShape_NumPoints)]
+		HRESULT NumPoints([out, retval] CollectionIndexType *pVal);
+
+		[propget, helpstring("property Point"),helpcontext(IDH_IPolyShape_Point)]
+		HRESULT Point([in] CollectionIndexType index, [out, retval] IPoint2d* *pVal);
+
+		[helpstring("method Clear"),helpcontext(IDH_IPolyShape_Clear)]
+		HRESULT Clear();
+
+		[propget, helpstring("property Points"),helpcontext(IDH_IPolyShape_Points)]
+		HRESULT Points([out,retval]IPoint2dCollection** coll);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+
+	[
+		object,
+		uuid(219B8FC1-0154-11D3-8CDF-CCA4ADEF4534),
+      oleautomation,
+		helpstring("ICircle Interface"),
+		helpcontext(IDH_ICircle),
+		pointer_default(unique)
+	]
+	interface ICircle : IUnknown
+	{
+		[propget, helpstring("property Radius"),helpcontext(IDH_ICircle_Radius)]
+		HRESULT Radius([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Radius"),helpcontext(IDH_ICircle_Radius)]
+		HRESULT Radius([in] Float64 newVal);
+
+		[propget, helpstring("property Center"),helpcontext(IDH_ICircle_Center)]
+		HRESULT Center([out, retval] IPoint2d* *pVal);
+
+		[propputref, helpstring("property Center"),helpcontext(IDH_ICircle_Center)]
+		HRESULT Center([in] IPoint2d* newVal);
+
+		[helpstring("method ThroughTwoPoints"),helpcontext(IDH_ICircle_ThroughTwoPoints)] 
+		HRESULT ThroughTwoPoints([in]IPoint2d* p1,[in] IPoint2d* p2);
+
+		[helpstring("method ThroughThreePoints"),helpcontext(IDH_ICircle_ThroughThreePoints)] 
+		HRESULT ThroughThreePoints([in]IPoint2d* p1,[in] IPoint2d* p2,[in] IPoint2d* p3);
+
+		[helpstring("method ContainsPoint"),helpcontext(IDH_ICircle_ContainsPoint)] 
+		HRESULT ContainsPoint([in]IPoint2d* p,[out,retval] VARIANT_BOOL* pResult);
+
+		[helpstring("method PointOnCircle"),helpcontext(IDH_ICircle_PointOnCircle)] 
+		HRESULT PointOnCircle([in]IPoint2d* p,[out,retval] VARIANT_BOOL* pResult);
+
+		[propget, helpstring("property XYPosition"),helpcontext(IDH_ICircle_XYPosition)]
+		HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+		[propget, helpstring("property Shape"),helpcontext(IDH_ICircle_Shape)]
+		HRESULT Shape([out, retval] IShape* *pVal);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+
+	[
+		object,
+		uuid(3E07BAA1-01A2-11D3-8CDF-D8B830C3A934),
+      oleautomation,
+		helpstring("IRectangle Interface"),
+		helpcontext(IDH_IRectangle),
+		pointer_default(unique)
+	]
+	interface IRectangle : IUnknown
+	{
+		[propget, helpstring("property Height"),helpcontext(IDH_IRectangle_Height)]
+		HRESULT Height([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Height"),helpcontext(IDH_IRectangle_Height)]
+		HRESULT Height([in] Float64 newVal);
+
+		[propget, helpstring("property Width"),helpcontext(IDH_IRectangle_Width)]
+		HRESULT Width([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Width"),helpcontext(IDH_IRectangle_Width)]
+		HRESULT Width([in] Float64 newVal);
+
+		[propget, helpstring("property HookPoint"),helpcontext(IDH_IRectangle_HookPoint)]
+		HRESULT HookPoint([out, retval] IPoint2d* *pVal);
+
+		[propputref, helpstring("property HookPoint"),helpcontext(IDH_IRectangle_HookPoint)]
+		HRESULT HookPoint([in] IPoint2d* newVal);
+
+		[propget, helpstring("property XYPosition"),helpcontext(IDH_IRectangle_XYPosition)]
+		HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+		[propget, helpstring("property Shape"),helpcontext(IDH_IRectangle_Shape)]
+		HRESULT Shape([out, retval] IShape* *pVal);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+	[
+		object,
+		uuid(0C89D3A1-02E2-11D3-8CDF-DDE6AA65DF35),
+		oleautomation,
+		helpstring("ITriangle Interface"),
+		helpcontext(IDH_ITriangle),
+		pointer_default(unique)
+	]
+	interface ITriangle : IUnknown
+	{
+		[propget, helpstring("property Width"),helpcontext(IDH_ITriangle_Width)]
+		HRESULT Width([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Width"),helpcontext(IDH_ITriangle_Width)]
+		HRESULT Width([in] Float64 newVal);
+
+		[propget, helpstring("property Height"),helpcontext(IDH_ITriangle_Height)]
+		HRESULT Height([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Height"),helpcontext(IDH_ITriangle_Height)]
+		HRESULT Height([in] Float64 newVal);
+
+		[propget, helpstring("property Offset"),helpcontext(IDH_ITriangle_Offset)]
+		HRESULT Offset([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Offset"),helpcontext(IDH_ITriangle_Offset)]
+		HRESULT Offset([in] Float64 newVal);
+
+		[propget, helpstring("property HookPoint"),helpcontext(IDH_ITriangle_HookPoint)]
+		HRESULT HookPoint([out,retval] IPoint2d** hookPnt);
+
+		[propputref, helpstring("property HookPoint"),helpcontext(IDH_ITriangle_HookPoint)]
+		HRESULT HookPoint([in] IPoint2d* hookPnt);
+
+		[propget, helpstring("property XYPosition"),helpcontext(IDH_ITriangle_XYPosition)]
+		HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+		[propget, helpstring("property Shape"),helpcontext(IDH_ITriangle_Shape)]
+		HRESULT Shape([out, retval] IShape* *pVal);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+	[
+		object,
+		uuid(E7E272C1-032F-11D3-8CDF-861E1B8C3634),
+		oleautomation,
+		helpstring("IPrecastBeam Interface"),
+		helpcontext(IDH_IPrecastBeam),
+		pointer_default(unique)
+	]
+	interface IPrecastBeam : IUnknown
+	{
+		[propget, helpstring("property W1"),helpcontext(IDH_IPrecastBeam_W1)]
+		HRESULT W1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W1"),helpcontext(IDH_IPrecastBeam_W1)]
+		HRESULT W1([in] Float64 newVal);
+
+		[propget, helpstring("property W2"),helpcontext(IDH_IPrecastBeam_W2)]
+		HRESULT W2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W2"),helpcontext(IDH_IPrecastBeam_W2)]
+		HRESULT W2([in] Float64 newVal);
+
+		[propget, helpstring("property W3"),helpcontext(IDH_IPrecastBeam_W3)]
+		HRESULT W3([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W3"),helpcontext(IDH_IPrecastBeam_W3)]
+		HRESULT W3([in] Float64 newVal);
+
+		[propget, helpstring("property W4"),helpcontext(IDH_IPrecastBeam_W4)]
+		HRESULT W4([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W4"),helpcontext(IDH_IPrecastBeam_W4)]
+		HRESULT W4([in] Float64 newVal);
+
+		[propget, helpstring("property D1"),helpcontext(IDH_IPrecastBeam_D1)]
+		HRESULT D1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D1"),helpcontext(IDH_IPrecastBeam_D1)]
+		HRESULT D1([in] Float64 newVal);
+
+		[propget, helpstring("property D2"),helpcontext(IDH_IPrecastBeam_D2)]
+		HRESULT D2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D2"),helpcontext(IDH_IPrecastBeam_D2)]
+		HRESULT D2([in] Float64 newVal);
+
+		[propget, helpstring("property D3"),helpcontext(IDH_IPrecastBeam_D3)]
+		HRESULT D3([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D3"),helpcontext(IDH_IPrecastBeam_D3)]
+		HRESULT D3([in] Float64 newVal);
+
+		[propget, helpstring("property D4"),helpcontext(IDH_IPrecastBeam_D4)]
+		HRESULT D4([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D4"),helpcontext(IDH_IPrecastBeam_D4)]
+		HRESULT D4([in] Float64 newVal);
+
+		[propget, helpstring("property D5"),helpcontext(IDH_IPrecastBeam_D5)]
+		HRESULT D5([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D5"),helpcontext(IDH_IPrecastBeam_D5)]
+		HRESULT D5([in] Float64 newVal);
+
+		[propget,  helpstring("property D6"),helpcontext(IDH_IPrecastBeam_D6)]
+		HRESULT D6([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property D6"),helpcontext(IDH_IPrecastBeam_D6)]
+		HRESULT D6([in] Float64 newVal);
+
+		[propget,  helpstring("property D7"),helpcontext(IDH_IPrecastBeam_D7)]
+		HRESULT D7([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property D7"),helpcontext(IDH_IPrecastBeam_D7)]
+		HRESULT D7([in] Float64 newVal);
+
+		[propget,  helpstring("property T1"),helpcontext(IDH_IPrecastBeam_T1)]
+		HRESULT T1([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property T1"),helpcontext(IDH_IPrecastBeam_T1)]
+		HRESULT T1([in] Float64 newVal);
+
+		[propget,  helpstring("property T2"),helpcontext(IDH_IPrecastBeam_T2)]
+		HRESULT T2([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property T2"),helpcontext(IDH_IPrecastBeam_T2)]
+		HRESULT T2([in] Float64 newVal);
+
+		[propget,  helpstring("property C1"),helpcontext(IDH_IPrecastBeam_C1)]
+		HRESULT C1([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property C1"),helpcontext(IDH_IPrecastBeam_C1)]
+		HRESULT C1([in] Float64 newVal);
+
+      [propget,  helpstring("property HookPoint"),helpcontext(IDH_IPrecastBeam_HookPoint)]
+		HRESULT HookPoint([out,retval] IPoint2d** hookPnt);
+
+      [propputref,  helpstring("property HookPoint"),helpcontext(IDH_IPrecastBeam_HookPoint)]
+		HRESULT HookPoint([in] IPoint2d* hookPnt);
+
+		[propget,  helpstring("property Height"),helpcontext(IDH_IPrecastBeam_Height)]
+		HRESULT Height([out, retval] Float64 *pVal);
+
+		[propget,  helpstring("property AvgWebWidth"),helpcontext(IDH_IPrecastBeam_AvgWebWidth)]
+		HRESULT AvgWebWidth([out, retval] Float64 *pVal);
+
+		[propget,  helpstring("property BottomFlangeWidth"),helpcontext(IDH_IPrecastBeam_BottomFlangeWidth)]
+		HRESULT BottomFlangeWidth([out, retval] Float64 *pVal);
+
+		[propget,  helpstring("property TopFlangeWidth"),helpcontext(IDH_IPrecastBeam_TopFlangeWidth)]
+		HRESULT TopFlangeWidth([out, retval] Float64 *pVal);
+
+		[propget,  helpstring("property XYPosition"),helpcontext(IDH_IPrecastBeam_XYPosition)]
+		HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+		[propget,  helpstring("property Shape"),helpcontext(IDH_IPrecastBeam_Shape)]
+		HRESULT Shape([out, retval] IShape* *pVal);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+
+
+	[
+		object,
+		uuid(AF453AD4-38FF-4493-B988-4E871CBE0F2E),
+		oleautomation,
+		helpstring("INUBeam Interface"),
+		helpcontext(IDH_INUBeam),
+		pointer_default(unique)
+	]
+	interface INUBeam : IUnknown
+	{
+		[propget, helpstring("property W1"),helpcontext(IDH_INUBeam_W1)]
+		HRESULT W1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W1"),helpcontext(IDH_INUBeam_W1)]
+		HRESULT W1([in] Float64 newVal);
+
+		[propget, helpstring("property W2"),helpcontext(IDH_INUBeam_W2)]
+		HRESULT W2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W2"),helpcontext(IDH_INUBeam_W2)]
+		HRESULT W2([in] Float64 newVal);
+
+		[propget, helpstring("property D1"),helpcontext(IDH_INUBeam_D1)]
+		HRESULT D1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D1"),helpcontext(IDH_INUBeam_D1)]
+		HRESULT D1([in] Float64 newVal);
+
+		[propget, helpstring("property D2"),helpcontext(IDH_INUBeam_D2)]
+		HRESULT D2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D2"),helpcontext(IDH_INUBeam_D2)]
+		HRESULT D2([in] Float64 newVal);
+
+		[propget, helpstring("property D3"),helpcontext(IDH_INUBeam_D3)]
+		HRESULT D3([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D3"),helpcontext(IDH_INUBeam_D3)]
+		HRESULT D3([in] Float64 newVal);
+
+		[propget, helpstring("property D4"),helpcontext(IDH_INUBeam_D4)]
+		HRESULT D4([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D4"),helpcontext(IDH_INUBeam_D4)]
+		HRESULT D4([in] Float64 newVal);
+
+		[propget, helpstring("property D5"),helpcontext(IDH_INUBeam_D5)]
+		HRESULT D5([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D5"),helpcontext(IDH_INUBeam_D5)]
+		HRESULT D5([in] Float64 newVal);
+
+		[propget, helpstring("property T"),helpcontext(IDH_INUBeam_T)]
+		HRESULT T([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property T"),helpcontext(IDH_INUBeam_T)]
+		HRESULT T([in] Float64 newVal);
+
+		[propget, helpstring("property R1"),helpcontext(IDH_INUBeam_R1)]
+		HRESULT R1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property R1"),helpcontext(IDH_INUBeam_R1)]
+		HRESULT R1([in] Float64 newVal);
+
+		[propget, helpstring("property R2"),helpcontext(IDH_INUBeam_R2)]
+		HRESULT R2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property R2"),helpcontext(IDH_INUBeam_R2)]
+		HRESULT R2([in] Float64 newVal);
+
+		[propget, helpstring("property R3"),helpcontext(IDH_INUBeam_R3)]
+		HRESULT R3([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property R3"),helpcontext(IDH_INUBeam_R3)]
+		HRESULT R3([in] Float64 newVal);
+
+		[propget, helpstring("property R4"),helpcontext(IDH_INUBeam_R4)]
+		HRESULT R4([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property R4"),helpcontext(IDH_INUBeam_R4)]
+		HRESULT R4([in] Float64 newVal);
+
+		[propget, helpstring("property C1"),helpcontext(IDH_INUBeam_C1)]
+		HRESULT C1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property C1"),helpcontext(IDH_INUBeam_C1)]
+		HRESULT C1([in] Float64 newVal);
+
+      [propget, helpstring("property HookPoint"),helpcontext(IDH_INUBeam_HookPoint)]
+		HRESULT HookPoint([out,retval] IPoint2d** hookPnt);
+
+      [propputref, helpstring("property HookPoint"),helpcontext(IDH_INUBeam_HookPoint)]
+		HRESULT HookPoint([in] IPoint2d* hookPnt);
+
+		[propget, helpstring("property Height"),helpcontext(IDH_INUBeam_Height)]
+		HRESULT Height([out, retval] Float64 *pVal);
+
+		[propget, helpstring("property AvgWebWidth"),helpcontext(IDH_INUBeam_AvgWebWidth)]
+		HRESULT AvgWebWidth([out, retval] Float64 *pVal);
+
+		[propget, helpstring("property BottomFlangeWidth"),helpcontext(IDH_INUBeam_BottomFlangeWidth)]
+		HRESULT BottomFlangeWidth([out, retval] Float64 *pVal);
+
+		[propget, helpstring("property TopFlangeWidth"),helpcontext(IDH_INUBeam_TopFlangeWidth)]
+		HRESULT TopFlangeWidth([out, retval] Float64 *pVal);
+
+		[propget, helpstring("property XYPosition"),helpcontext(IDH_INUBeam_XYPosition)]
+		HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+		[propget, helpstring("property Shape"),helpcontext(IDH_INUBeam_Shape)]
+		HRESULT Shape([out, retval] IShape* *pVal);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+	[
+		object,
+		uuid(84F1406D-0AF3-400b-92A4-1EE4804921AD),
+		oleautomation,
+		helpstring("IBulbTee Interface"),
+		helpcontext(IDH_IBulbTee),
+		pointer_default(unique)
+	]
+	interface IBulbTee : IUnknown
+	{
+		[propget, helpstring("property W1"),helpcontext(IDH_IBulbTee_W1)]
+		HRESULT W1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W1"),helpcontext(IDH_IBulbTee_W1)]
+		HRESULT W1([in] Float64 newVal);
+
+		[propget, helpstring("property W2"),helpcontext(IDH_IBulbTee_W2)]
+		HRESULT W2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W2"),helpcontext(IDH_IBulbTee_W2)]
+		HRESULT W2([in] Float64 newVal);
+
+		[propget, helpstring("property W3"),helpcontext(IDH_IBulbTee_W3)]
+		HRESULT W3([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W3"),helpcontext(IDH_IBulbTee_W3)]
+		HRESULT W3([in] Float64 newVal);
+
+		[propget, helpstring("property W4"),helpcontext(IDH_IBulbTee_W4)]
+		HRESULT W4([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W4"),helpcontext(IDH_IBulbTee_W4)]
+		HRESULT W4([in] Float64 newVal);
+
+		[propget, helpstring("property W5"),helpcontext(IDH_IBulbTee_W5)]
+		HRESULT W5([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W5"),helpcontext(IDH_IBulbTee_W5)]
+		HRESULT W5([in] Float64 newVal);
+
+		[propget, helpstring("property D1"),helpcontext(IDH_IBulbTee_D1)]
+		HRESULT D1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D1"),helpcontext(IDH_IBulbTee_D1)]
+		HRESULT D1([in] Float64 newVal);
+
+		[propget, helpstring("property D2"),helpcontext(IDH_IBulbTee_D2)]
+		HRESULT D2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D2"),helpcontext(IDH_IBulbTee_D2)]
+		HRESULT D2([in] Float64 newVal);
+
+		[propget, helpstring("property D3"),helpcontext(IDH_IBulbTee_D3)]
+		HRESULT D3([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D3"),helpcontext(IDH_IBulbTee_D3)]
+		HRESULT D3([in] Float64 newVal);
+
+		[propget, helpstring("property D4"),helpcontext(IDH_IBulbTee_D4)]
+		HRESULT D4([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D4"),helpcontext(IDH_IBulbTee_D4)]
+		HRESULT D4([in] Float64 newVal);
+
+		[propget, helpstring("property D5"),helpcontext(IDH_IBulbTee_D5)]
+		HRESULT D5([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D5"),helpcontext(IDH_IBulbTee_D5)]
+		HRESULT D5([in] Float64 newVal);
+
+		[propget,  helpstring("property D6"),helpcontext(IDH_IBulbTee_D6)]
+		HRESULT D6([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property D6"),helpcontext(IDH_IBulbTee_D6)]
+		HRESULT D6([in] Float64 newVal);
+
+		[propget,  helpstring("property D7"),helpcontext(IDH_IBulbTee_D7)]
+		HRESULT D7([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property D7"),helpcontext(IDH_IBulbTee_D7)]
+		HRESULT D7([in] Float64 newVal);
+
+		[propget,  helpstring("property T1"),helpcontext(IDH_IBulbTee_T1)]
+		HRESULT T1([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property T1"),helpcontext(IDH_IBulbTee_T1)]
+		HRESULT T1([in] Float64 newVal);
+
+		[propget,  helpstring("property T2"),helpcontext(IDH_IBulbTee_T2)]
+		HRESULT T2([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property T2"),helpcontext(IDH_IBulbTee_T2)]
+		HRESULT T2([in] Float64 newVal);
+
+      [propget,  helpstring("property HookPoint"),helpcontext(IDH_IBulbTee_HookPoint)]
+		HRESULT HookPoint([out,retval] IPoint2d** hookPnt);
+
+      [propputref,  helpstring("property HookPoint"),helpcontext(IDH_IBulbTee_HookPoint)]
+		HRESULT HookPoint([in] IPoint2d* hookPnt);
+
+		[propget,  helpstring("property Height"),helpcontext(IDH_IBulbTee_Height)]
+		HRESULT Height([out, retval] Float64 *pVal);
+
+		[propget,  helpstring("property AvgWebWidth"),helpcontext(IDH_IBulbTee_AvgWebWidth)]
+		HRESULT AvgWebWidth([out, retval] Float64 *pVal);
+
+		[propget,  helpstring("property BottomFlangeWidth"),helpcontext(IDH_IBulbTee_BottomFlangeWidth)]
+		HRESULT BottomFlangeWidth([out, retval] Float64 *pVal);
+
+		[propget,  helpstring("property TopFlangeWidth"),helpcontext(IDH_IBulbTee_TopFlangeWidth)]
+		HRESULT TopFlangeWidth([out, retval] Float64 *pVal);
+
+		[propget,  helpstring("property XYPosition"),helpcontext(IDH_IBulbTee_XYPosition)]
+		HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+		[propget,  helpstring("property Shape"),helpcontext(IDH_IBulbTee_Shape)]
+		HRESULT Shape([out, retval] IShape* *pVal);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+
+	[
+		object,
+		uuid(754A6B13-2256-41d9-8D48-B40E95C9A117),
+		oleautomation,
+		helpstring("IMultiWeb Interface"),
+		helpcontext(IDH_IMultiWeb),
+		pointer_default(unique)
+	]
+	interface IMultiWeb : IUnknown
+	{
+		[propget, helpstring("property W1"),helpcontext(IDH_IMultiWeb_W1)]
+		HRESULT W1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W1"),helpcontext(IDH_IMultiWeb_W1)]
+		HRESULT W1([in] Float64 newVal);
+
+		[propget, helpstring("property W2"),helpcontext(IDH_IMultiWeb_W2)]
+		HRESULT W2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W2"),helpcontext(IDH_IMultiWeb_W2)]
+		HRESULT W2([in] Float64 newVal);
+
+    	[propget, helpstring("property D1"),helpcontext(IDH_IMultiWeb_D1)]
+		HRESULT D1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D1"),helpcontext(IDH_IMultiWeb_D1)]
+		HRESULT D1([in] Float64 newVal);
+
+    	[propget, helpstring("property D2"),helpcontext(IDH_IMultiWeb_D2)]
+		HRESULT D2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D2"),helpcontext(IDH_IMultiWeb_D2)]
+		HRESULT D2([in] Float64 newVal);
+
+    	[propget, helpstring("property T1"),helpcontext(IDH_IMultiWeb_T1)]
+		HRESULT T1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property T1"),helpcontext(IDH_IMultiWeb_T1)]
+		HRESULT T1([in] Float64 newVal);
+
+    	[propget, helpstring("property T2"),helpcontext(IDH_IMultiWeb_T2)]
+		HRESULT T2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property T2"),helpcontext(IDH_IMultiWeb_T2)]
+		HRESULT T2([in] Float64 newVal);
+
+    	[propget, helpstring("property WebCount"),helpcontext(IDH_IMultiWeb_WebCount)]
+		HRESULT WebCount([out, retval] WebIndexType *pVal);
+
+		[propput, helpstring("property WebCount"),helpcontext(IDH_IMultiWeb_WebCount)]
+		HRESULT WebCount([in] WebIndexType newVal);
+
+		[propget, helpstring("property WebLocation"),helpcontext(IDH_IMultiWeb_WebLocation)]
+		HRESULT WebLocation([in]WebIndexType webIdx,[out,retval]Float64* location);
+
+      [propget,  helpstring("property HookPoint"),helpcontext(IDH_IMultiWeb_HookPoint)]
+		HRESULT HookPoint([out,retval] IPoint2d** hookPnt);
+
+      [propputref,  helpstring("property HookPoint"),helpcontext(IDH_IMultiWeb_HookPoint)]
+		HRESULT HookPoint([in] IPoint2d* hookPnt);
+
+		[propget,  helpstring("property Height"),helpcontext(IDH_IMultiWeb_Height)]
+		HRESULT Height([out, retval] Float64 *pVal);
+
+		[propget,  helpstring("property AvgWebWidth"),helpcontext(IDH_IMultiWeb_AvgWebWidth)]
+		HRESULT AvgWebWidth([out, retval] Float64 *pVal);
+
+		[propget,  helpstring("property TopFlangeWidth"),helpcontext(IDH_IMultiWeb_TopFlangeWidth)]
+		HRESULT TopFlangeWidth([out, retval] Float64 *pVal);
+
+		[propget,  helpstring("property XYPosition"),helpcontext(IDH_IMultiWeb_XYPosition)]
+		HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+		[propget,  helpstring("property Shape"),helpcontext(IDH_IMultiWeb_Shape)]
+		HRESULT Shape([out, retval] IShape* *pVal);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+
+   [
+      object,
+	  uuid(12CBCFA5-F5C9-4a3b-A071-D277F72FD730),
+	  oleautomation,
+	  helpstring("IMultiWeb2 Interface"),
+	  helpcontext(IDH_IMultiWeb2),
+	  pointer_default(unique)
+   ]
+   interface IMultiWeb2 : IUnknown
+   {
+		[propget, helpstring("property W1"),helpcontext(IDH_IMultiWeb2_W1)]
+		HRESULT W1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W1"),helpcontext(IDH_IMultiWeb2_W1)]
+		HRESULT W1([in] Float64 newVal);
+
+		[propget, helpstring("property W2"),helpcontext(IDH_IMultiWeb2_W2)]
+		HRESULT W2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W2"),helpcontext(IDH_IMultiWeb2_W2)]
+		HRESULT W2([in] Float64 newVal);
+
+		[propget, helpstring("property H1"),helpcontext(IDH_IMultiWeb2_H1)]
+		HRESULT H1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property H1"),helpcontext(IDH_IMultiWeb2_H1)]
+		HRESULT H1([in] Float64 newVal);
+
+		[propget, helpstring("property H2"),helpcontext(IDH_IMultiWeb2_H2)]
+		HRESULT H2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property H2"),helpcontext(IDH_IMultiWeb2_H2)]
+		HRESULT H2([in] Float64 newVal);
+
+		[propget, helpstring("property H3"),helpcontext(IDH_IMultiWeb2_H3)]
+		HRESULT H3([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property H3"),helpcontext(IDH_IMultiWeb2_H3)]
+		HRESULT H3([in] Float64 newVal);
+
+		[propget, helpstring("property T1"),helpcontext(IDH_IMultiWeb2_T1)]
+		HRESULT T1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property T1"),helpcontext(IDH_IMultiWeb2_T1)]
+		HRESULT T1([in] Float64 newVal);
+
+		[propget, helpstring("property T2"),helpcontext(IDH_IMultiWeb2_T2)]
+		HRESULT T2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property T2"),helpcontext(IDH_IMultiWeb2_T2)]
+		HRESULT T2([in] Float64 newVal);
+
+		[propget, helpstring("property T3"),helpcontext(IDH_IMultiWeb2_T3)]
+		HRESULT T3([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property T3"),helpcontext(IDH_IMultiWeb2_T3)]
+		HRESULT T3([in] Float64 newVal);
+
+		[propget, helpstring("property T4"),helpcontext(IDH_IMultiWeb2_T4)]
+		HRESULT T4([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property T4"),helpcontext(IDH_IMultiWeb2_T4)]
+		HRESULT T4([in] Float64 newVal);
+
+		[propget, helpstring("property T5"),helpcontext(IDH_IMultiWeb2_T5)]
+		HRESULT T5([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property T5"),helpcontext(IDH_IMultiWeb2_T5)]
+		HRESULT T5([in] Float64 newVal);
+
+		[propget, helpstring("property F1"),helpcontext(IDH_IMultiWeb2_F1)]
+		HRESULT F1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property F1"),helpcontext(IDH_IMultiWeb2_F1)]
+		HRESULT F1([in] Float64 newVal);
+
+		[propget, helpstring("property F2"),helpcontext(IDH_IMultiWeb2_F2)]
+		HRESULT F2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property F2"),helpcontext(IDH_IMultiWeb2_F2)]
+		HRESULT F2([in] Float64 newVal);
+
+		[propget, helpstring("property C1"),helpcontext(IDH_IMultiWeb2_C1)]
+		HRESULT C1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property C1"),helpcontext(IDH_IMultiWeb2_C1)]
+		HRESULT C1([in] Float64 newVal);
+
+		[propget, helpstring("property C2"),helpcontext(IDH_IMultiWeb2_C2)]
+		HRESULT C2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property C2"),helpcontext(IDH_IMultiWeb2_C2)]
+		HRESULT C2([in] Float64 newVal);
+
+    	[propget, helpstring("property WebCount"),helpcontext(IDH_IMultiWeb2_WebCount)]
+		HRESULT WebCount([out, retval] WebIndexType *pVal);
+
+		[propput, helpstring("property WebCount"),helpcontext(IDH_IMultiWeb2_WebCount)]
+		HRESULT WebCount([in] WebIndexType newVal);
+
+		[propget, helpstring("property WebLocation"),helpcontext(IDH_IMultiWeb2_WebLocation)]
+		HRESULT WebLocation([in]WebIndexType webIdx,[out,retval]Float64* location);
+
+        [propget,  helpstring("property HookPoint"),helpcontext(IDH_IMultiWeb2_HookPoint)]
+		HRESULT HookPoint([out,retval] IPoint2d** hookPnt);
+
+        [propputref,  helpstring("property HookPoint"),helpcontext(IDH_IMultiWeb2_HookPoint)]
+		HRESULT HookPoint([in] IPoint2d* hookPnt);
+
+		[propget,  helpstring("property Height"),helpcontext(IDH_IMultiWeb2_Height)]
+		HRESULT Height([out, retval] Float64 *pVal);
+
+		[propget,  helpstring("property TopFlangeWidth"),helpcontext(IDH_IMultiWeb2_TopFlangeWidth)]
+		HRESULT TopFlangeWidth([out, retval] Float64 *pVal);
+
+		[propget,  helpstring("property AvgWebWidth"),helpcontext(IDH_IMultiWeb2_AvgWebWidth)]
+		HRESULT AvgWebWidth([in] CollectionIndexType webIdx,[out, retval] Float64 *pVal);
+
+		[propget,  helpstring("property XYPosition"),helpcontext(IDH_IMultiWeb2_XYPosition)]
+		HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+		[propget,  helpstring("property Shape"),helpcontext(IDH_IMultiWeb2_Shape)]
+		HRESULT Shape([out, retval] IShape* *pVal);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+
+	[
+		object,
+		uuid(2558CFC1-03CE-11D3-8CDF-EBFB6612CA35),
+		oleautomation,
+		helpstring("ITrafficBarrier Interface"),
+		helpcontext(IDH_ITrafficBarrier),
+		pointer_default(unique)
+	]
+	interface ITrafficBarrier : IUnknown
+	{
+		[propget, helpstring("property X1"),helpcontext(IDH_ITrafficBarrier_X1)]
+		HRESULT X1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property X1"),helpcontext(IDH_ITrafficBarrier_X1)]
+		HRESULT X1([in] Float64 newVal);
+
+		[propget, helpstring("property X2"),helpcontext(IDH_ITrafficBarrier_X2)]
+		HRESULT X2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property X2"),helpcontext(IDH_ITrafficBarrier_X2)]
+		HRESULT X2([in] Float64 newVal);
+
+		[propget, helpstring("property X3"),helpcontext(IDH_ITrafficBarrier_X3)]
+		HRESULT X3([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property X3"),helpcontext(IDH_ITrafficBarrier_X3)]
+		HRESULT X3([in] Float64 newVal);
+
+		[propget, helpstring("property X4"),helpcontext(IDH_ITrafficBarrier_X4)]
+		HRESULT X4([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property X4"),helpcontext(IDH_ITrafficBarrier_X4)]
+		HRESULT X4([in] Float64 newVal);
+
+		[propget, helpstring("property X5"),helpcontext(IDH_ITrafficBarrier_X5)]
+		HRESULT X5([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property X5"),helpcontext(IDH_ITrafficBarrier_X5)]
+		HRESULT X5([in] Float64 newVal);
+
+		[propget, helpstring("property Y1"),helpcontext(IDH_ITrafficBarrier_Y1)]
+		HRESULT Y1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Y1"),helpcontext(IDH_ITrafficBarrier_Y1)]
+		HRESULT Y1([in] Float64 newVal);
+
+		[propget, helpstring("property Y2"),helpcontext(IDH_ITrafficBarrier_Y2)]
+		HRESULT Y2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Y2"),helpcontext(IDH_ITrafficBarrier_Y2)]
+		HRESULT Y2([in] Float64 newVal);
+
+		[propget, helpstring("property Y3"),helpcontext(IDH_ITrafficBarrier_Y3)]
+		HRESULT Y3([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Y3"),helpcontext(IDH_ITrafficBarrier_Y3)]
+		HRESULT Y3([in] Float64 newVal);
+
+		[propget, helpstring("property Y4"),helpcontext(IDH_ITrafficBarrier_Y4)]
+		HRESULT Y4([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Y4"),helpcontext(IDH_ITrafficBarrier_Y4)]
+		HRESULT Y4([in] Float64 newVal);
+
+		[propget, helpstring("property HookPoint"),helpcontext(IDH_ITrafficBarrier_HookPoint)]
+		HRESULT HookPoint([out, retval] IPoint2d* *pVal);
+
+		[propputref, helpstring("property HookPoint"),helpcontext(IDH_ITrafficBarrier_HookPoint)]
+		HRESULT HookPoint([in] IPoint2d* newVal);
+
+		[propget, helpstring("property Orientation"),helpcontext(IDH_ITrafficBarrier_Orientation)]
+		HRESULT Orientation([out, retval] TrafficBarrierOrientation *pVal);
+
+		[propput, helpstring("property Orientation"),helpcontext(IDH_ITrafficBarrier_Orientation)]
+		HRESULT Orientation([in] TrafficBarrierOrientation newVal);
+
+		[propget, helpstring("property XYPosition"),helpcontext(IDH_ITrafficBarrier_XYPosition)]
+		HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+		[propget, helpstring("property Shape"),helpcontext(IDH_ITrafficBarrier_Shape)]
+		HRESULT Shape([out, retval] IShape* *pVal);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+	[
+		object,
+		uuid(EC5AC145-5CD0-11D3-8CDF-A057587EDC05),
+	   oleautomation,
+		helpstring("IPoint2dFactory Interface"),
+		helpcontext(IDH_IPoint2dFactory),
+		pointer_default(unique)
+	]
+	interface IPoint2dFactory : IUnknown
+	{
+		[helpstring("method CreatePoint"),helpcontext(IDH_IPoint2dFactory_CreatePoint)]
+		HRESULT CreatePoint([out,retval]IPoint2d** ppPoint);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+	};
+	[
+		object,
+		uuid(E74E1AA0-5D87-11d3-8CDF-A057587EDC05),
+	   oleautomation,
+		helpstring("IPoint3dFactory Interface"),
+		helpcontext(IDH_IPoint3dFactory),
+		pointer_default(unique)
+	]
+	interface IPoint3dFactory : IUnknown
+	{
+		[helpstring("method CreatePoint"),helpcontext(IDH_IPoint3dFactory_CreatePoint)]
+		HRESULT CreatePoint([out,retval]IPoint3d** ppPoint);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+	};
+	[
+		object,
+		uuid(A2954980-5D17-11d3-8CDF-A057587EDC05),
+	   oleautomation,
+		helpstring("ILine2dFactory Interface"),
+		helpcontext(IDH_ILine2dFactory),
+		pointer_default(unique)
+	]
+	interface ILine2dFactory : IUnknown
+	{
+		[helpstring("method CreateLine"),helpcontext(IDH_ILine2dFactory_CreateLine)]
+		HRESULT CreateLine([out,retval]ILine2d** ppLine);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+	};
+	[
+		object,
+		uuid(C62D94E0-8AEB-11d3-8CDF-EFB6C2561C46),
+	   oleautomation,
+		helpstring("ILineSegment2dFactory Interface"),
+		helpcontext(IDH_ILineSegment2dFactory),
+		pointer_default(unique)
+	]
+	interface ILineSegment2dFactory : IUnknown
+	{
+		[helpstring("method CreateLineSegment"),helpcontext(IDH_ILineSegment2dFactory_CreateLineSegment)]
+		HRESULT CreateLineSegment([out,retval]ILineSegment2d** ppLineSeg);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+	};
+	[
+		object,
+		uuid(110FFB8A-2B04-11D3-8952-006097C68A9C),
+		oleautomation,
+		helpstring("IGeomUtil2d Interface"),
+		helpcontext(IDH_IGeomUtil2d),
+		pointer_default(unique)
+	]
+	interface IGeomUtil2d : IUnknown
+	{
+		[helpstring("method GenerateCircle"),helpcontext(IDH_IGeomUtil2d_GenerateCircle)]
+		HRESULT GenerateCircle([in] long nPoints,[in] IPoint2d* center,[in] Float64 radius, [in,defaultvalue(0.00)] Float64 initAngle,[out,retval] IPoint2dCollection** points);
+
+		[helpstring("method Distance"),helpcontext(IDH_IGeomUtil2d_Distance)]
+		HRESULT Distance([in] IPoint2d* p1,[in] IPoint2d* p2,[out,retval] Float64* dist);
+
+		[helpstring("method Magnitude"),helpcontext(IDH_IGeomUtil2d_Magnitude)]
+		HRESULT Magnitude([in] IPoint2d* pPoint,[out,retval] Float64* pMag);
+
+		[helpstring("method Angle"),helpcontext(IDH_IGeomUtil2d_Angle)]
+		HRESULT Angle([in] IPoint2d* pStart,[in] IPoint2d* pCenter,[in] IPoint2d* pEnd,[out,retval] Float64* angle);
+
+		[helpstring("method ShortestDistanceToPoint"),helpcontext(IDH_IGeomUtil2d_ShortestDistanceToPoint)]
+		HRESULT ShortestDistanceToPoint([in] ILine2d* pLine,[in] IPoint2d* pPoint,[out,retval] Float64* pDist);
+
+		[helpstring("method PointOnLineNearest"),helpcontext(IDH_IGeomUtil2d_PointOnLineNearest)]
+		HRESULT PointOnLineNearest([in] ILine2d* pLine,[in] IPoint2d* pPoint, [out,retval] IPoint2d** ppPOLN);
+
+		[helpstring("method CreateParallelLineThroughPoint"),helpcontext(IDH_IGeomUtil2d_CreateParallelLineThroughPoint)]
+		HRESULT CreateParallelLineThroughPoint([in] ILine2d* pLine,[in] IPoint2d* pPoint,[out,retval] ILine2d** ppLine);
+
+		[helpstring("method CreateParallelLine"),helpcontext(IDH_IGeomUtil2d_CreateParallelLine)]
+		HRESULT CreateParallelLine([in] ILine2d* pLine,[in] Float64 dist,[out,retval]ILine2d** ppLine);
+
+		[helpstring("method CreateNormalLineThroughPoint"),helpcontext(IDH_IGeomUtil2d_CreateNormalLineThroughPoint)]
+		HRESULT CreateNormalLineThroughPoint([in] ILine2d* pLine,[in] IPoint2d* pPoint,[out,retval] ILine2d** ppLine);
+
+		[helpstring("method AreLinesColinear"),helpcontext(IDH_IGeomUtil2d_AreLinesColinear)]
+		HRESULT AreLinesColinear([in] ILine2d* pLine1,[in] ILine2d* pLine2,[out,retval] VARIANT_BOOL* pbResult);
+
+		[helpstring("method DoesLineContainPoint"),helpcontext(IDH_IGeomUtil2d_DoesLineContainPoint)]
+		HRESULT DoesLineContainPoint([in] ILine2d* pLine,[in] IPoint2d* pPoint,[out,retval] VARIANT_BOOL* pbResult);
+
+		[helpstring("method DoesLineSegmentContainPoint"),helpcontext(IDH_IGeomUtil2d_DoesLineSegmentContainPoint)]
+		HRESULT DoesLineSegmentContainPoint([in] ILineSegment2d* pSeg,[in] IPoint2d* pPoint,[out,retval] VARIANT_BOOL* pbResult);
+
+		[helpstring("method DivideLineSegment"),helpcontext(IDH_IGeomUtil2d_DivideLineSegment)]
+		HRESULT DivideLineSegment([in] ILineSegment2d* pSeg,[in] long nSpaces,[out,retval] IPoint2dCollection** ppPoints);
+
+		[helpstring("method DivideArc"),helpcontext(IDH_IGeomUtil2d_DivideArc)]
+		HRESULT DivideArc([in] IPoint2d* pStart,[in] IPoint2d* pCenter,[in] IPoint2d* pEnd,[in] long nSpaces,[out,retval] IPoint2dCollection** ppPoints);
+
+		[helpstring("method LineLineIntersect"),helpcontext(IDH_IGeomUtil2d_LineLineIntersect)]
+		HRESULT LineLineIntersect([in] ILine2d* l1,[in] ILine2d* l2,[out,retval] IPoint2d** ppPoint);
+
+		[helpstring("method SegSegIntersect"),helpcontext(IDH_IGeomUtil2d_SegSegIntersect)]
+		HRESULT SegSegIntersect([in] ILineSegment2d* pSeg1,[in] ILineSegment2d* pSeg2,[out,retval] IPoint2d** ppPoint);
+
+		[helpstring("method IntersectLineWithLineSegment"),helpcontext(IDH_IGeomUtil2d_IntersectLineWithLineSegment)]
+		HRESULT IntersectLineWithLineSegment([in] ILine2d* pLine,[in] ILineSegment2d* pSeg,[out,retval] IPoint2d** ppPoint);
+
+		[helpstring("method LineCircleIntersect"),helpcontext(IDH_IGeomUtil2d_LineCircleIntersect)]
+		HRESULT LineCircleIntersect([in] ILine2d *line,[in] ICircle* circle,[out] IPoint2d** p1,[out] IPoint2d** p2,[out,retval] short* nIntersect);
+
+		[helpstring("method CircleCircleIntersect"),helpcontext(IDH_IGeomUtil2d_CircleCircleIntersect)]
+		HRESULT CircleCircleIntersect([in] ICircle *circle1,[in] ICircle* circle2,[out] IPoint2d** p1,[out] IPoint2d** p2,[out,retval] short* nIntersect);
+
+		[helpstring("method AreLinesParallel"),helpcontext(IDH_IGeomUtil2d_AreLinesParallel)]
+		HRESULT AreLinesParallel([in] ILine2d* pLine1,[in] ILine2d* pLine2,[out,retval] VARIANT_BOOL* pbResult);
+
+		[helpstring("method AreLineSegmentsParallel"),helpcontext(IDH_IGeomUtil2d_AreLineSegmentsParallel)]
+		HRESULT AreLineSegmentsParallel([in] ILineSegment2d* pSeg1,[in] ILineSegment2d* pSeg2,[out,retval] VARIANT_BOOL* pbResult);
+
+		[helpstring("method IsLineParallelToLineSegment"),helpcontext(IDH_IGeomUtil2d_IsLineParallelToLineSegment)]
+		HRESULT IsLineParallelToLineSegment([in] ILine2d* pLine,[in] ILineSegment2d* pSeg,[out,retval] VARIANT_BOOL* pbResult);
+
+     [helpstring("method CreateParallelLineSegment"),helpcontext(IDH_IGeomUtil2d_CreateParallelLineSegment)]
+		HRESULT CreateParallelLineSegment([in] ILineSegment2d* pSeg,[in] Float64 offset,[out,retval] ILineSegment2d** pNewSeg);
+	};
+	[
+		object,
+		uuid(A60E4EC0-5D87-11d3-8CDF-A057587EDC05),
+		oleautomation,
+		helpstring("IGeomUtil3d Interface"),
+		helpcontext(IDH_IGeomUtil3d),
+		pointer_default(unique)
+	]
+	interface IGeomUtil3d : IUnknown
+	{
+      [helpstring("method Distance"),helpcontext(IDH_IGeomUtil3d_Distance)]
+		HRESULT Distance([in] IPoint3d* p1,[in] IPoint3d* p2,[out,retval] Float64* pDist);
+
+		[helpstring("property Magnitude"),helpcontext(IDH_IGeomUtil3d_Magnitude)]
+		HRESULT Magnitude([in] IPoint3d* p,[out, retval] Float64 *pMag);
+   };
+	[
+	   object,
+	   uuid(1B9B8520-C46E-11d3-8A19-006097C68A9C),
+	   oleautomation,
+	   helpstring("IGeomUtil Interface"),
+	   helpcontext(IDH_IGeomUtil),
+	   pointer_default(unique)
+	]
+	interface IGeomUtil : IUnknown
+	{
+		[propget,helpstring("property Geom2d"),helpcontext(IDH_IGeomUtil_Geom2d)]
+		HRESULT Geom2d([out,retval] IGeomUtil2d** util);
+
+		[propget,helpstring("property Geom3d"),helpcontext(IDH_IGeomUtil_Geom3d)]
+		HRESULT Geom3d([out,retval] IGeomUtil3d** util);
+
+		[propget,helpstring("property Point2dFactory"),helpcontext(IDH_IGeomUtil_Point2dFactory)]
+		HRESULT Point2dFactory([out, retval] IPoint2dFactory* *pVal);
+
+		[propputref, helpstring("property Point2dFactory"),helpcontext(IDH_IGeomUtil_Point2dFactory)]
+		HRESULT Point2dFactory([in] IPoint2dFactory* newVal);
+
+		[propget, helpstring("property Point3dFactory"),helpcontext(IDH_IGeomUtil_Point3dFactory)]
+		HRESULT Point3dFactory([out, retval] IPoint3dFactory* *pVal);
+
+		[propputref, helpstring("property Point3dFactory"),helpcontext(IDH_IGeomUtil_Point3dFactory)]
+		HRESULT Point3dFactory([in] IPoint3dFactory* newVal);
+
+		[propget, helpstring("property Line2dFactory"),helpcontext(IDH_IGeomUtil_Line2dFactory)]
+		HRESULT Line2dFactory([out, retval] ILine2dFactory* *pVal);
+
+		[propputref, helpstring("property Line2dFactory"),helpcontext(IDH_IGeomUtil_Line2dFactory)]
+		HRESULT Line2dFactory([in] ILine2dFactory* newVal);
+
+		[propget, helpstring("property LineSegment2dFactory"),helpcontext(IDH_IGeomUtil_LineSegment2dFactory)]
+		HRESULT LineSegment2dFactory([out, retval] ILineSegment2dFactory* *pVal);
+
+		[propputref, helpstring("property LineSegment2dFactory"),helpcontext(IDH_IGeomUtil_LineSegment2dFactory)]
+		HRESULT LineSegment2dFactory([in] ILineSegment2dFactory* newVal);
+	};
+
+	[
+		object,
+		uuid(D146B4A4-5103-11D3-8CDF-BFEA3D98042F),
+		oleautomation,
+		helpstring("ICoordinateXform3d Interface"),
+		helpcontext(IDH_ICoordinateXform3d),
+		pointer_default(unique)
+	]
+	interface ICoordinateXform3d : IUnknown
+	{
+		[propget, helpstring("property NewOrigin"),helpcontext(IDH_ICoordinateXform3d_NewOrigin)]
+		HRESULT NewOrigin([out, retval] IPoint3d **pVal);
+
+		[propputref, helpstring("property NewOrigin"),helpcontext(IDH_ICoordinateXform3d_NewOrigin)]
+		HRESULT NewOrigin([in] IPoint3d *newVal);
+
+		[propget, helpstring("property RotationAngle"),helpcontext(IDH_ICoordinateXform3d_RotationAngle)]
+		HRESULT RotationAngle([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property RotationAngle"),helpcontext(IDH_ICoordinateXform3d_RotationAngle)]
+		HRESULT RotationAngle([in] Float64 newVal);
+
+		[propget, helpstring("property RotationVector"),helpcontext(IDH_ICoordinateXform3d_RotationVector)]
+		HRESULT RotationVector([out, retval] IVector3d **pVal);
+
+		[propputref, helpstring("property RotationVector"),helpcontext(IDH_ICoordinateXform3d_RotationVector)]
+		HRESULT RotationVector([in] IVector3d *newVal);
+
+      [helpstring("method Xform"),helpcontext(IDH_ICoordinateXform3d_Xform)]
+		HRESULT Xform([in,out] IPoint3d** point,[in] XformType type);
+
+      [helpstring("method XformEx"),helpcontext(IDH_ICoordinateXform3d_XformEx)]
+		HRESULT XformEx([in] IPoint3d* point,[in] XformType type,[out,retval] IPoint3d** result);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+	[
+		object,
+		uuid(1A1AD39B-5184-11D3-8985-006097C68A9C),
+		oleautomation,
+		helpstring("ICoordinateXform2d Interface"),
+		helpcontext(IDH_ICoordinateXform2d),
+		pointer_default(unique)
+	]
+	interface ICoordinateXform2d : IUnknown
+	{
+		[propget, helpstring("property NewOrigin"),helpcontext(IDH_ICoordinateXform2d_NewOrigin)]
+		HRESULT NewOrigin([out, retval] IPoint2d* *pVal);
+
+		[propputref, helpstring("property NewOrigin"),helpcontext(IDH_ICoordinateXform2d_NewOrigin)]
+		HRESULT NewOrigin([in] IPoint2d* newVal);
+
+		[propget, helpstring("property RotationAngle"),helpcontext(IDH_ICoordinateXform2d_RotationAngle)]
+		HRESULT RotationAngle([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property RotationAngle"),helpcontext(IDH_ICoordinateXform2d_RotationAngle)]
+		HRESULT RotationAngle([in] Float64 newVal);
+
+      [helpstring("method Xform"),helpcontext(IDH_ICoordinateXform2d_Xform)]
+		HRESULT Xform([in,out] IPoint2d** point,[in] XformType type);
+
+      [helpstring("method XformEx"),helpcontext(IDH_ICoordinateXform2d_XformEx)]
+		HRESULT XformEx([in] IPoint2d* point,[in] XformType type,[out,retval] IPoint2d** result);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+	[
+		object,
+		uuid(C6C2A640-6563-11D4-8CE4-0080C7380027),
+		oleautomation,
+		helpstring("ICircularSegment Interface"),
+		helpcontext(IDH_ICircularSegment),
+		pointer_default(unique)
+	]
+	interface ICircularSegment : IUnknown
+	{
+		[propget, helpstring("property Shape"),helpcontext(IDH_ICircularSegment_Shape)]
+		HRESULT Shape([out, retval] IShape* *pVal);
+
+		[propget, helpstring("property XYPosition"),helpcontext(IDH_ICircularSegment_XYPosition)]
+		HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+		[propget, helpstring("property HookPoint"),helpcontext(IDH_ICircularSegment_HookPoint)]
+		HRESULT HookPoint([out, retval] IPoint2d* *pVal);
+
+		[propputref, helpstring("property HookPoint"),helpcontext(IDH_ICircularSegment_HookPoint)]
+		HRESULT HookPoint([in] IPoint2d* newVal);
+
+		[propget, helpstring("property Radius"),helpcontext(IDH_ICircularSegment_Radius)]
+		HRESULT Radius([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Radius"),helpcontext(IDH_ICircularSegment_Radius)]
+		HRESULT Radius([in] Float64 newVal);
+
+		[propget, helpstring("property Center"),helpcontext(IDH_ICircularSegment_Center)]
+		HRESULT Center([out, retval] IPoint2d* *pVal);
+
+		[propputref, helpstring("property Center"),helpcontext(IDH_ICircularSegment_Center)]
+		HRESULT Center([in] IPoint2d* newVal);
+
+		[propget, helpstring("property MidOrdinate"),helpcontext(IDH_ICircularSegment_MidOrdinate)]
+		HRESULT MidOrdinate([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property MidOrdinate"),helpcontext(IDH_ICircularSegment_MidOrdinate)]
+		HRESULT MidOrdinate([in] Float64 newVal);
+
+		[propget, helpstring("property InteriorAngle"),helpcontext(IDH_ICircularSegment_InteriorAngle)]
+		HRESULT InteriorAngle([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property InteriorAngle"),helpcontext(IDH_ICircularSegment_InteriorAngle)]
+		HRESULT InteriorAngle([in] Float64 newVal);
+
+		[propget, helpstring("property Rotation"),helpcontext(IDH_ICircularSegment_Rotation)]
+		HRESULT Rotation([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Rotation"),helpcontext(IDH_ICircularSegment_Rotation)]
+		HRESULT Rotation([in] Float64 newVal);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+	[
+		object,
+		uuid(9F28211D-09D6-11D5-8BBF-006097C68A9C),
+		oleautomation,
+		helpstring("IPlateGirder Interface"),
+      helpcontext(IDH_IPlateGirder),
+		pointer_default(unique)
+	]
+	interface IPlateGirder : IUnknown
+	{
+		[propget, helpstring("property TopFlangeWidth"),helpcontext(IDH_IPlateGirder_TopFlangeWidth)]
+      HRESULT TopFlangeWidth([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property TopFlangeWidth"),helpcontext(IDH_IPlateGirder_TopFlangeWidth)]
+      HRESULT TopFlangeWidth([in] Float64 newVal);
+
+		[propget, helpstring("property TopFlangeThick"),helpcontext(IDH_IPlateGirder_TopFlangeThick)]
+      HRESULT TopFlangeThick([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property TopFlangeThick"),helpcontext(IDH_IPlateGirder_TopFlangeThick)]
+      HRESULT TopFlangeThick([in] Float64 newVal);
+
+		[propget, helpstring("property BottomFlangeWidth"),helpcontext(IDH_IPlateGirder_BottomFlangeWidth)]
+      HRESULT BottomFlangeWidth([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property BottomFlangeWidth"),helpcontext(IDH_IPlateGirder_BottomFlangeWidth)]
+      HRESULT BottomFlangeWidth([in] Float64 newVal);
+
+		[propget, helpstring("property BottomFlangeThick"),helpcontext(IDH_IPlateGirder_BottomFlangeThick)]
+      HRESULT BottomFlangeThick([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property BottomFlangeThick"),helpcontext(IDH_IPlateGirder_BottomFlangeThick)]
+      HRESULT BottomFlangeThick([in] Float64 newVal);
+
+		[propget, helpstring("property WebHeight"),helpcontext(IDH_IPlateGirder_WebHeight)]
+      HRESULT WebHeight([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property WebHeight"),helpcontext(IDH_IPlateGirder_WebHeight)]
+      HRESULT WebHeight([in] Float64 newVal);
+
+		[propget, helpstring("property WebThick"),helpcontext(IDH_IPlateGirder_WebThick)]
+      HRESULT WebThick([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property WebThick"),helpcontext(IDH_IPlateGirder_WebThick)]
+      HRESULT WebThick([in] Float64 newVal);
+
+		[propget, helpstring("property Height"),helpcontext(IDH_IPlateGirder_Height)]
+      HRESULT Height([out, retval] Float64 *pVal);
+
+		[propget, helpstring("property QTopFlange"),helpcontext(IDH_IPlateGirder_QTopFlange)]
+      HRESULT QTopFlange([out, retval] Float64 *pVal);
+
+		[propget, helpstring("property QBottomFlange"),helpcontext(IDH_IPlateGirder_QBottomFlange)]
+      HRESULT QBottomFlange([out, retval] Float64 *pVal);
+
+		[propget, helpstring("property Shape"),helpcontext(IDH_IPlateGirder_Shape)]
+      HRESULT Shape([out, retval] IShape* *pVal);
+
+		[propget, helpstring("property XYPosition"),helpcontext(IDH_IPlateGirder_XYPosition)]
+      HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+		[propget, helpstring("property HookPoint"),helpcontext(IDH_IPlateGirder_HookPoint)]
+      HRESULT HookPoint([out, retval] IPoint2d* *pVal);
+
+		[propputref, helpstring("property HookPoint"),helpcontext(IDH_IPlateGirder_HookPoint)]
+      HRESULT HookPoint([in] IPoint2d* newVal);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+	[
+		object,
+		uuid(231FB083-6FBE-417D-93E2-90C5FE345249),
+		oleautomation,
+      helpcontext(IDH_IUBeam),
+		helpstring("IUBeam Interface"),
+		pointer_default(unique)
+	]
+	interface IUBeam : IUnknown
+	{
+		[propget, helpstring("property W1"),helpcontext(IDH_IUBeam_W1)] 
+      HRESULT W1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W1"),helpcontext(IDH_IUBeam_W1)] 
+      HRESULT W1([in] Float64 newVal);
+
+		[propget, helpstring("property W2"),helpcontext(IDH_IUBeam_W2)] 
+      HRESULT W2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W2"),helpcontext(IDH_IUBeam_W2)] 
+      HRESULT W2([in] Float64 newVal);
+
+		[propget, helpstring("property W3"),helpcontext(IDH_IUBeam_W3)] 
+      HRESULT W3([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W3"),helpcontext(IDH_IUBeam_W3)] 
+      HRESULT W3([in] Float64 newVal);
+
+		[propget, helpstring("property W4"),helpcontext(IDH_IUBeam_W4)] 
+      HRESULT W4([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W4"),helpcontext(IDH_IUBeam_W4)] 
+      HRESULT W4([in] Float64 newVal);
+
+		[propget, helpstring("property W5"),helpcontext(IDH_IUBeam_W5)] 
+      HRESULT W5([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W5"),helpcontext(IDH_IUBeam_W5)] 
+      HRESULT W5([in] Float64 newVal);
+
+		[propget, helpstring("property D1"),helpcontext(IDH_IUBeam_D1)] 
+      HRESULT D1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D1"),helpcontext(IDH_IUBeam_D1)] 
+      HRESULT D1([in] Float64 newVal);
+
+		[propget, helpstring("property D2"),helpcontext(IDH_IUBeam_D2)] 
+      HRESULT D2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D2"),helpcontext(IDH_IUBeam_D2)] 
+      HRESULT D2([in] Float64 newVal);
+
+		[propget, helpstring("property D3"),helpcontext(IDH_IUBeam_D3)] 
+      HRESULT D3([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D3"),helpcontext(IDH_IUBeam_D3)] 
+      HRESULT D3([in] Float64 newVal);
+
+		[propget, helpstring("property D4"),helpcontext(IDH_IUBeam_D4)] 
+      HRESULT D4([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D4"),helpcontext(IDH_IUBeam_D4)] 
+      HRESULT D4([in] Float64 newVal);
+
+		[propget, helpstring("property D5"),helpcontext(IDH_IUBeam_D5)] 
+      HRESULT D5([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D5"),helpcontext(IDH_IUBeam_D5)] 
+      HRESULT D5([in] Float64 newVal);
+
+		[propget, helpstring("property D6"),helpcontext(IDH_IUBeam_D6)] 
+      HRESULT D6([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D6"),helpcontext(IDH_IUBeam_D6)] 
+      HRESULT D6([in] Float64 newVal);
+
+		[propget, helpstring("property D7"),helpcontext(IDH_IUBeam_D7)] 
+      HRESULT D7([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D7"),helpcontext(IDH_IUBeam_D7)] 
+      HRESULT D7([in] Float64 newVal);
+
+		[propget, helpstring("property T"),helpcontext(IDH_IUBeam_T)] 
+      HRESULT T([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property T"),helpcontext(IDH_IUBeam_T)] 
+      HRESULT T([in] Float64 newVal);
+
+		[propget, helpstring("property HookPoint"),helpcontext(IDH_IUBeam_HookPoint)] 
+      HRESULT HookPoint([out, retval] IPoint2d* *pVal);
+
+		[propputref, helpstring("property HookPoint"),helpcontext(IDH_IUBeam_HookPoint)] 
+      HRESULT HookPoint([in] IPoint2d* newVal);
+
+		[propget, helpstring("property Height"),helpcontext(IDH_IUBeam_Height)] 
+      HRESULT Height([out, retval] Float64 *pVal);
+
+		[propget, helpstring("property Shape"),helpcontext(IDH_IUBeam_Shape)] 
+      HRESULT Shape([out, retval] IShape* *pVal);
+
+		[propget, helpstring("property XYPosition"),helpcontext(IDH_IUBeam_XYPosition)] 
+      HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+
+      [propget, helpstring("property Slope"),helpcontext(IDH_IUBeam_Slope)] HRESULT Slope([in]long webIdx,[out,retval]Float64* slope);
+	  [propget, helpstring("property TopWidth"),helpcontext(IDH_IUBeam_TopWidth)] HRESULT TopWidth([out,retval]Float64* width);
+	  [propget, helpstring("property TopFlangeWidth"),helpcontext(IDH_IUBeam_TopFlangeWidth)] HRESULT TopFlangeWidth([out,retval]Float64* width);
+	  [propget, helpstring("property WebLocation"),helpcontext(IDH_IUBeam_WebLocation)] HRESULT WebLocation([in]long webIdx,[out,retval]Float64* location);
+	  [propget, helpstring("property WebSpacing"),helpcontext(IDH_IUBeam_WebSpacing)] HRESULT WebSpacing([out,retval]Float64* spacing);
+   };
+
+
+	[
+		object,
+		uuid(4A262C68-AE3A-405f-A7E9-7A7BA09B70ED),
+		oleautomation,
+      helpcontext(IDH_IUBeam2),
+		helpstring("IUBeam2 Interface"),
+		pointer_default(unique)
+	]
+	interface IUBeam2 : IUnknown
+	{
+		[propget, helpstring("property W1"),helpcontext(IDH_IUBeam2_W1)] 
+      HRESULT W1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W1"),helpcontext(IDH_IUBeam2_W1)] 
+      HRESULT W1([in] Float64 newVal);
+
+		[propget, helpstring("property W2"),helpcontext(IDH_IUBeam2_W2)] 
+      HRESULT W2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W2"),helpcontext(IDH_IUBeam2_W2)] 
+      HRESULT W2([in] Float64 newVal);
+
+		[propget, helpstring("property W3"),helpcontext(IDH_IUBeam2_W3)] 
+      HRESULT W3([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W3"),helpcontext(IDH_IUBeam2_W3)] 
+      HRESULT W3([in] Float64 newVal);
+
+		[propget, helpstring("property W4"),helpcontext(IDH_IUBeam2_W4)] 
+      HRESULT W4([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W4"),helpcontext(IDH_IUBeam2_W4)] 
+      HRESULT W4([in] Float64 newVal);
+
+		[propget, helpstring("property W5"),helpcontext(IDH_IUBeam2_W5)] 
+      HRESULT W5([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W5"),helpcontext(IDH_IUBeam2_W5)] 
+      HRESULT W5([in] Float64 newVal);
+
+		[propget, helpstring("property W6"),helpcontext(IDH_IUBeam2_W6)] 
+      HRESULT W6([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W6"),helpcontext(IDH_IUBeam2_W6)] 
+      HRESULT W6([in] Float64 newVal);
+
+		[propget, helpstring("property W7"),helpcontext(IDH_IUBeam2_W7)] 
+      HRESULT W7([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property W7"),helpcontext(IDH_IUBeam2_W7)] 
+      HRESULT W7([in] Float64 newVal);
+
+		[propget, helpstring("property D1"),helpcontext(IDH_IUBeam2_D1)] 
+      HRESULT D1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D1"),helpcontext(IDH_IUBeam2_D1)] 
+      HRESULT D1([in] Float64 newVal);
+
+		[propget, helpstring("property D2"),helpcontext(IDH_IUBeam2_D2)] 
+      HRESULT D2([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D2"),helpcontext(IDH_IUBeam2_D2)] 
+      HRESULT D2([in] Float64 newVal);
+
+		[propget, helpstring("property D3"),helpcontext(IDH_IUBeam2_D3)] 
+      HRESULT D3([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D3"),helpcontext(IDH_IUBeam2_D3)] 
+      HRESULT D3([in] Float64 newVal);
+
+		[propget, helpstring("property D4"),helpcontext(IDH_IUBeam2_D4)] 
+      HRESULT D4([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D4"),helpcontext(IDH_IUBeam2_D4)] 
+      HRESULT D4([in] Float64 newVal);
+
+		[propget, helpstring("property D5"),helpcontext(IDH_IUBeam2_D5)] 
+      HRESULT D5([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D5"),helpcontext(IDH_IUBeam2_D5)] 
+      HRESULT D5([in] Float64 newVal);
+
+		[propget, helpstring("property D6"),helpcontext(IDH_IUBeam2_D6)] 
+      HRESULT D6([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property D6"),helpcontext(IDH_IUBeam2_D6)] 
+      HRESULT D6([in] Float64 newVal);
+
+		[propget, helpstring("property C1"),helpcontext(IDH_IUBeam2_C1)] 
+      HRESULT C1([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property C1"),helpcontext(IDH_IUBeam2_C1)] 
+      HRESULT C1([in] Float64 newVal);
+
+		[propget, helpstring("property T"),helpcontext(IDH_IUBeam2_T)] 
+      HRESULT T([out, retval] Float64 *pVal);
+
+		[propget, helpstring("property HookPoint"),helpcontext(IDH_IUBeam2_HookPoint)] 
+      HRESULT HookPoint([out, retval] IPoint2d* *pVal);
+
+		[propputref, helpstring("property HookPoint"),helpcontext(IDH_IUBeam2_HookPoint)] 
+      HRESULT HookPoint([in] IPoint2d* newVal);
+
+		[propget, helpstring("property Height"),helpcontext(IDH_IUBeam2_Height)] 
+      HRESULT Height([out, retval] Float64 *pVal);
+
+		[propget, helpstring("property Shape"),helpcontext(IDH_IUBeam2_Shape)] 
+      HRESULT Shape([out, retval] IShape* *pVal);
+
+		[propget, helpstring("property XYPosition"),helpcontext(IDH_IUBeam2_XYPosition)] 
+      HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+      [propget, helpstring("property Slope"),helpcontext(IDH_IUBeam2_Slope)] HRESULT Slope([in]long webIdx,[out,retval]Float64* slope);
+	  [propget, helpstring("property TopWidth"),helpcontext(IDH_IUBeam2_TopWidth)] HRESULT TopWidth([out,retval]Float64* width);
+	  [propget, helpstring("property TopFlangeWidth"),helpcontext(IDH_IUBeam2_TopFlangeWidth)] HRESULT TopFlangeWidth([out,retval]Float64* width);
+	  [propget, helpstring("property WebLocation"),helpcontext(IDH_IUBeam2_WebLocation)] HRESULT WebLocation([in]long webIdx,[out,retval]Float64* location);
+	  [propget, helpstring("property WebSpacing"),helpcontext(IDH_IUBeam2_WebSpacing)] HRESULT WebSpacing([out,retval]Float64* spacing);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+
+
+[
+object,
+uuid(A76E22D6-6C41-49d8-94C2-10D10CF0DB04),
+oleautomation,
+helpstring("ICompositeShapeItem Interface"),
+//helpcontext(IDH_ICompositeShapeItem),
+pointer_default(unique)
+]
+interface ICompositeShapeItem : IUnknown
+{
+   [propget, helpstring("property Shape")/*,helpcontext(IDH_ICompositeShapeItem_Shape)*/]
+   HRESULT Shape([out, retval] IShape* *pVal);
+
+   [propputref, helpstring("property Shape")/*,helpcontext(IDH_ICompositeShapeItem_Shape)*/]
+   HRESULT Shape([in] IShape* newVal);
+
+   [propget, helpstring("property Void")/*,helpcontext(IDH_ICompositeShapeItem_Void)*/]
+   HRESULT Void([out, retval] VARIANT_BOOL *pVal);
+
+   [propput, helpstring("property Void")/*,helpcontext(IDH_ICompositeShapeItem_Void)*/]
+   HRESULT Void([in] VARIANT_BOOL newVal);
+
+   [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+   HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+};
+
+[
+object,
+uuid(0BAF0D09-6A8D-4818-AAA6-C5B72C3641FE),
+oleautomation,
+helpstring("ICompositeShape Interface"),
+//helpcontext(IDH_ICompositeShape),
+pointer_default(unique)
+]
+interface ICompositeShape : IUnknown
+{
+		[propget, helpstring("property _NewEnum")]
+      HRESULT _NewEnum([out, retval] IUnknown* *pVal);
+
+		[propget, helpstring("property Item")/*,helpcontext(IDH_ICompositeShape_Item)*/]
+      HRESULT Item([in] CollectionIndexType idx, [out, retval] ICompositeShapeItem* *pVal);
+
+		[helpstring("method AddShape")/*,helpcontext(IDH_ICompositeShape_AddShape)*/]
+      HRESULT AddShape([in] IShape* shape,[in] VARIANT_BOOL bVoid);
+
+		[helpstring("method AddSectionEx")/*,helpcontext(IDH_ICompositeSection_AddShapeEx)*/]
+      HRESULT AddShapeEx([in] ICompositeShapeItem* shapeItem);
+
+		[helpstring("method Remove")/*,helpcontext(IDH_ICompositeShape_Remove)*/]
+      HRESULT Remove([in] CollectionIndexType idx);
+
+		[helpstring("method Clear")/*,helpcontext(IDH_ICompositeShape_Clear)*/]
+      HRESULT Clear();
+
+		[propget, helpstring("property Count")/*,helpcontext(IDH_ICompositeShape_Count)*/]
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+		[propget, helpstring("property Shape")/*,helpcontext(IDH_ICompositeShape_Shape)*/]
+      HRESULT Shape([out, retval] IShape* *pVal);
+
+   [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+   HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+};
+
+[
+object,
+uuid(82ABF099-2BCB-4119-AAFC-C3E6B04624C7),
+oleautomation,
+helpstring("IVoidedSlab Interface"),
+//helpcontext(IDH_IVoidedSlab),
+pointer_default(unique)
+]
+interface IVoidedSlab : IUnknown
+{
+   [propput,helpstring("property Height")/*,helpcontext(IDH_IVoidedSlab_Height)*/]
+   HRESULT Height([in]Float64 h);
+
+   [propget,helpstring("property Height")/*,helpcontext(IDH_IVoidedSlab_Height)*/]
+   HRESULT Height([out,retval]Float64* h);
+
+   [propput,helpstring("property Width")/*,helpcontext(IDH_IVoidedSlab_Width)*/]
+   HRESULT Width([in]Float64 w);
+
+   [propget,helpstring("property Width")/*,helpcontext(IDH_IVoidedSlab_Width)*/]
+   HRESULT Width([out,retval]Float64* w);
+
+   [propput,helpstring("property VoidDiameter")/*,helpcontext(IDH_IVoidedSlab_VoidDiameter)*/]
+   HRESULT VoidDiameter([in]Float64 d);
+
+   [propget,helpstring("property VoidDiameter")/*,helpcontext(IDH_IVoidedSlab_VoidDiameter)*/]
+   HRESULT VoidDiameter([out,retval]Float64* d);
+
+   [propput,helpstring("property VoidSpacing")/*,helpcontext(IDH_IVoidedSlab_VoidSpacing)*/]
+   HRESULT VoidSpacing([in]Float64 s);
+
+   [propget,helpstring("property VoidSpacing")/*,helpcontext(IDH_IVoidedSlab_VoidSpacing)*/]
+   HRESULT VoidSpacing([out,retval]Float64* s);
+
+   [propput,helpstring("property VoidCount")/*,helpcontext(IDH_IVoidedSlab_VoidCount)*/]
+   HRESULT VoidCount([in]CollectionIndexType nv);
+
+   [propget,helpstring("property VoidCount")/*,helpcontext(IDH_IVoidedSlab_VoidCount)*/]
+   HRESULT VoidCount([out,retval]CollectionIndexType* nv);
+
+   [propget,  helpstring("property HookPoint")/*,helpcontext(IDH_IVoidedSlab_HookPoint)*/]
+   HRESULT HookPoint([out,retval] IPoint2d** hookPnt);
+
+   [propputref,  helpstring("property HookPoint")/*,helpcontext(IDH_IVoidedSlab_HookPoint)*/]
+   HRESULT HookPoint([in] IPoint2d* hookPnt);
+
+   [propget,  helpstring("property XYPosition")/*,helpcontext(IDH_IVoidedSlab_XYPosition)*/]
+   HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+   [propget,  helpstring("property Shape")/*,helpcontext(IDH_IVoidedSlab_Shape)*/]
+   HRESULT Shape([out, retval] IShape* *pVal);
+
+   [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+   HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+};
+
+
+[
+object,
+uuid(F8EC30FA-8C49-4b8d-AA93-B0D83A785142),
+oleautomation,
+helpstring("IVoidedSlab2 Interface"),
+//helpcontext(IDH_IVoidedSlab2),
+pointer_default(unique)
+]
+interface IVoidedSlab2 : IUnknown
+{
+   [propput,helpstring("property Height")/*,helpcontext(IDH_IVoidedSlab_Height)*/]
+   HRESULT Height([in]Float64 h);
+
+   [propget,helpstring("property Height")/*,helpcontext(IDH_IVoidedSlab_Height)*/]
+   HRESULT Height([out,retval]Float64* h);
+
+   [propput,helpstring("property Width")/*,helpcontext(IDH_IVoidedSlab_Width)*/]
+   HRESULT Width([in]Float64 w);
+
+   [propget,helpstring("property Width")/*,helpcontext(IDH_IVoidedSlab_Width)*/]
+   HRESULT Width([out,retval]Float64* w);
+
+   [propput,helpstring("property C1")/*,helpcontext(IDH_IVoidedSlab_C1)*/]
+   HRESULT C1([in]Float64 c1);
+
+   [propget,helpstring("property C1")/*,helpcontext(IDH_IVoidedSlab_C1)*/]
+   HRESULT C1([out,retval]Float64* c1);
+
+   [propput,helpstring("property C2")/*,helpcontext(IDH_IVoidedSlab_C2)*/]
+   HRESULT C2([in]Float64 c2);
+
+   [propget,helpstring("property C2")/*,helpcontext(IDH_IVoidedSlab_C2)*/]
+   HRESULT C2([out,retval]Float64* c2);
+
+   [propput,helpstring("property LeftBlockOut")/*,helpcontext(IDH_IVoidedSlab_LeftBlockOut)*/]
+   HRESULT LeftBlockOut([in]VARIANT_BOOL bLeftBlockOut);
+
+   [propget,helpstring("property LeftBlockOut")/*,helpcontext(IDH_IVoidedSlab_LeftBlockOut)*/]
+   HRESULT LeftBlockOut([out,retval]VARIANT_BOOL* pbLeftBlockOut);
+
+   [propput,helpstring("property RightBlockOut")/*,helpcontext(IDH_IVoidedSlab_RightBlockOut)*/]
+   HRESULT RightBlockOut([in]VARIANT_BOOL bRightBlockOut);
+
+   [propget,helpstring("property RightBlockOut")/*,helpcontext(IDH_IVoidedSlab_RightBlockOut)*/]
+   HRESULT RightBlockOut([out,retval]VARIANT_BOOL* pbRightBlockOut);
+
+   [propput,helpstring("property ExteriorVoidDiameter")/*,helpcontext(IDH_IVoidedSlab_ExteriorVoidDiameter)*/]
+   HRESULT ExteriorVoidDiameter([in]Float64 d);
+
+   [propget,helpstring("property ExteriorVoidDiameter")/*,helpcontext(IDH_IVoidedSlab_ExteriorVoidDiameter)*/]
+   HRESULT ExteriorVoidDiameter([out,retval]Float64* d);
+
+   [propput,helpstring("property InteriorVoidDiameter")/*,helpcontext(IDH_IVoidedSlab_InteriorVoidDiameter)*/]
+   HRESULT InteriorVoidDiameter([in]Float64 d);
+
+   [propget,helpstring("property InteriorVoidDiameter")/*,helpcontext(IDH_IVoidedSlab_InteriorVoidDiameter)*/]
+   HRESULT InteriorVoidDiameter([out,retval]Float64* d);
+
+   [propput,helpstring("property ExteriorVoidSpacing")/*,helpcontext(IDH_IVoidedSlab_ExteriorVoidSpacing)*/]
+   HRESULT ExteriorVoidSpacing([in]Float64 s);
+
+   [propget,helpstring("property ExteriorVoidSpacing")/*,helpcontext(IDH_IVoidedSlab_ExteriorVoidSpacing)*/]
+   HRESULT ExteriorVoidSpacing([out,retval]Float64* s);
+
+   [propput,helpstring("property InteriorVoidSpacing")/*,helpcontext(IDH_IVoidedSlab_InteriorVoidSpacing)*/]
+   HRESULT InteriorVoidSpacing([in]Float64 s);
+
+   [propget,helpstring("property InteriorVoidSpacing")/*,helpcontext(IDH_IVoidedSlab_InteriorVoidSpacing)*/]
+   HRESULT InteriorVoidSpacing([out,retval]Float64* s);
+
+   [propput,helpstring("property ExteriorVoidElevation")/*,helpcontext(IDH_IVoidedSlab_ExteriorVoidElevation)*/]
+   HRESULT ExteriorVoidElevation([in]Float64 h1);
+
+   [propget,helpstring("property ExteriorVoidElevation")/*,helpcontext(IDH_IVoidedSlab_ExteriorVoidElevation)*/]
+   HRESULT ExteriorVoidElevation([out,retval]Float64* h1);
+
+   [propput,helpstring("property InteriorVoidElevation")/*,helpcontext(IDH_IVoidedSlab_InteriorVoidElevation)*/]
+   HRESULT InteriorVoidElevation([in]Float64 h2);
+
+   [propget,helpstring("property InteriorVoidElevation")/*,helpcontext(IDH_IVoidedSlab_InteriorVoidElevation)*/]
+   HRESULT InteriorVoidElevation([out,retval]Float64* h2);
+
+   [propput,helpstring("property VoidCount")/*,helpcontext(IDH_IVoidedSlab_VoidCount)*/]
+   HRESULT VoidCount([in]CollectionIndexType nv);
+
+   [propget,helpstring("property VoidCount")/*,helpcontext(IDH_IVoidedSlab_VoidCount)*/]
+   HRESULT VoidCount([out,retval]CollectionIndexType* nv);
+
+   [propget,  helpstring("property HookPoint")/*,helpcontext(IDH_IVoidedSlab_HookPoint)*/]
+   HRESULT HookPoint([out,retval] IPoint2d** hookPnt);
+
+   [propputref,  helpstring("property HookPoint")/*,helpcontext(IDH_IVoidedSlab_HookPoint)*/]
+   HRESULT HookPoint([in] IPoint2d* hookPnt);
+
+   [propget,  helpstring("property XYPosition")/*,helpcontext(IDH_IVoidedSlab_XYPosition)*/]
+   HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+   [propget,  helpstring("property Shape")/*,helpcontext(IDH_IVoidedSlab_Shape)*/]
+   HRESULT Shape([out, retval] IShape* *pVal);
+
+   [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+   HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+};
+
+[
+object,
+uuid(DD2E8D6C-2EC0-4370-AC01-11EA0C01294C),
+oleautomation,
+helpstring("IBoxBeam Interface"),
+//helpcontext(IDH_IBoxBeam),
+pointer_default(unique)
+]
+interface IBoxBeam : IUnknown
+{
+		[propget,  helpstring("property W1")/*,helpcontext(IDH_IBoxBeam_W1)*/]
+		HRESULT W1([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property W1")/*,helpcontext(IDH_IBoxBeam_W1)*/]
+		HRESULT W1([in] Float64 newVal);
+
+		[propget,  helpstring("property W2")/*,helpcontext(IDH_IBoxBeam_W2)*/]
+		HRESULT W2([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property W2")/*,helpcontext(IDH_IBoxBeam_W2)*/]
+		HRESULT W2([in] Float64 newVal);
+
+		[propget,  helpstring("property W3")/*,helpcontext(IDH_IBoxBeam_W3)*/]
+		HRESULT W3([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property W3")/*,helpcontext(IDH_IBoxBeam_W3)*/]
+		HRESULT W3([in] Float64 newVal);
+
+		[propget,  helpstring("property W4")/*,helpcontext(IDH_IBoxBeam_W4)*/]
+		HRESULT W4([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property W4")/*,helpcontext(IDH_IBoxBeam_W4)*/]
+		HRESULT W4([in] Float64 newVal);
+
+		[propget,  helpstring("property H1")/*,helpcontext(IDH_IBoxBeam_H1)*/]
+		HRESULT H1([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property H1")/*,helpcontext(IDH_IBoxBeam_H1)*/]
+		HRESULT H1([in] Float64 newVal);
+
+		[propget,  helpstring("property H2")/*,helpcontext(IDH_IBoxBeam_H2)*/]
+		HRESULT H2([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property H2")/*,helpcontext(IDH_IBoxBeam_H2)*/]
+		HRESULT H2([in] Float64 newVal);
+
+		[propget,  helpstring("property H3")/*,helpcontext(IDH_IBoxBeam_H3)*/]
+		HRESULT H3([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property H3")/*,helpcontext(IDH_IBoxBeam_H3)*/]
+		HRESULT H3([in] Float64 newVal);
+
+		[propget,  helpstring("property H4")/*,helpcontext(IDH_IBoxBeam_H4)*/]
+		HRESULT H4([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property H4")/*,helpcontext(IDH_IBoxBeam_H4)*/]
+		HRESULT H4([in] Float64 newVal);
+
+		[propget,  helpstring("property H5")/*,helpcontext(IDH_IBoxBeam_H5)*/]
+		HRESULT H5([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property H5")/*,helpcontext(IDH_IBoxBeam_H5)*/]
+		HRESULT H5([in] Float64 newVal);
+
+		[propget,  helpstring("property H6")/*,helpcontext(IDH_IBoxBeam_H6)*/]
+		HRESULT H6([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property H6")/*,helpcontext(IDH_IBoxBeam_H6)*/]
+		HRESULT H6([in] Float64 newVal);
+
+		[propget,  helpstring("property H7")/*,helpcontext(IDH_IBoxBeam_H7)*/]
+		HRESULT H7([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property H7")/*,helpcontext(IDH_IBoxBeam_H7)*/]
+		HRESULT H7([in] Float64 newVal);
+
+		[propget,  helpstring("property F1")/*,helpcontext(IDH_IBoxBeam_F1)*/]
+		HRESULT F1([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property F1")/*,helpcontext(IDH_IBoxBeam_F1)*/]
+		HRESULT F1([in] Float64 newVal);
+
+		[propget,  helpstring("property F2")/*,helpcontext(IDH_IBoxBeam_F2)*/]
+		HRESULT F2([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property F2")/*,helpcontext(IDH_IBoxBeam_F2)*/]
+		HRESULT F2([in] Float64 newVal);
+
+		[propget,  helpstring("property C1"),/*helpcontext(IDH_IBoxBeam_C1)*/]
+		HRESULT C1([out, retval] Float64 *pVal);
+
+		[propput,  helpstring("property C1"),/*helpcontext(IDH_IBoxBeam_C1)*/]
+		HRESULT C1([in] Float64 newVal);
+
+        [propget,  helpstring("property HookPoint")/*,helpcontext(IDH_IBoxBeam_HookPoint)*/]
+		HRESULT HookPoint([out,retval] IPoint2d** hookPnt);
+
+        [propputref,  helpstring("property HookPoint")/*,helpcontext(IDH_IBoxBeam_HookPoint)*/]
+		HRESULT HookPoint([in] IPoint2d* hookPnt);
+
+		[propget,  helpstring("property WebWidth")/*,helpcontext(IDH_IBoxBeam_WebWidth)*/]
+		HRESULT WebWidth([out, retval] Float64 *pVal);
+
+		[propget,  helpstring("property BottomFlangeWidth")/*,helpcontext(IDH_IBoxBeam_BottomFlangeWidth)*/]
+		HRESULT BottomFlangeWidth([out, retval] Float64 *pVal);
+
+		[propget,  helpstring("property TopFlangeWidth")/*,helpcontext(IDH_IBoxBeam_TopFlangeWidth)*/]
+		HRESULT TopFlangeWidth([out, retval] Float64 *pVal);
+
+		[propget,  helpstring("property XYPosition")/*,helpcontext(IDH_IBoxBeam_XYPosition)*/]
+		HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+		[propget,  helpstring("property Shape")/*,helpcontext(IDH_IBoxBeam_Shape)*/]
+		HRESULT Shape([out, retval] IShape* *pVal);
+
+   [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+   HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+};
+
+
+	[
+		uuid(B0D56FA0-C8D6-11D2-8CDF-C55C1CA84A34),
+      helpcontext(IDH_IPoint2d),
+		helpstring("Point2d Class")
+	]
+	coclass Point2d
+	{
+		[default] interface IPoint2d;
+      [default, source] interface IPoint2dEvents;
+      interface IStructuredStorage2;
+      // interface IPersist;
+	};
+	[
+		uuid(B77D2444-96A0-11D2-88A7-006097C68A9C),
+      helpcontext(IDH_ISize2d),
+		helpstring("Size2d Class")
+	]
+	coclass Size2d
+	{
+		[default] interface ISize2d; 
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(B77D2446-96A0-11D2-88A7-006097C68A9C),
+      helpcontext(IDH_IRect2d),
+		helpstring("Rect2d Class")
+	]
+	coclass Rect2d
+	{
+		[default] interface IRect2d;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(55B8EF84-FADF-11D2-8CDF-9849C70CC734),
+		helpcontext(IDH_IVector2d),
+		helpstring("Vector2d Class")
+	]
+	coclass Vector2d
+	{
+		[default] interface IVector2d;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+   [
+       uuid(B77D2448-96A0-11D2-88A7-006097C68A9C),
+       helpstring("Point2dCollection Class"),
+	   helpcontext(IDH_IPoint2dCollection)
+   ]
+   coclass Point2dCollection
+   {
+       [default] interface IPoint2dCollection;
+       [default, source] interface IPoint2dCollectionEvents;
+       interface IStructuredStorage2;
+       // interface IPersist;
+   };
+	[
+		uuid(546BBDC2-96C0-11D2-8D11-14830CC10000),
+      helpcontext(IDH_ILineSegment2d),
+		helpstring("LineSegment2d Class")
+	]
+	coclass LineSegment2d
+	{
+		[default] interface ILineSegment2d;
+      [default, source] interface ILineSegment2dEvents;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(D72D7403-F9DB-11D2-8CDF-444553540000),
+		helpcontext(IDH_ILine2d),
+      helpstring("Line2d Class")
+	]
+	coclass Line2d
+	{
+		[default] interface ILine2d;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(66172CA5-FF5A-11D2-8CDF-F43C3928A334),
+		helpstring("ShapeProperties Class"),
+		helpcontext(IDH_IShapeProperties)
+	]
+	coclass ShapeProperties
+	{
+		[default] interface IShapeProperties;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(94FD8E64-0013-11D3-8CDF-8BF0A4AD5B35),
+		helpstring("PolyShape Class"),
+		helpcontext(IDH_IPolyShape)
+	]
+	coclass PolyShape
+	{
+		[default] interface IPolyShape;
+      interface IShape;
+      interface IXYPosition;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(219B8FC2-0154-11D3-8CDF-CCA4ADEF4534),
+		helpstring("Circle Class"),
+		helpcontext(IDH_ICircle)
+	]
+	coclass Circle
+	{
+		[default] interface ICircle;
+		interface IShape;
+		interface IXYPosition;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(3E07BAA2-01A2-11D3-8CDF-D8B830C3A934),
+		helpstring("Rectangle Class"),
+		helpcontext(IDH_IRectangle)
+	]
+	coclass Rect
+	{
+		[default] interface IRectangle;
+		interface IShape;
+		interface IXYPosition;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(0C89D3A2-02E2-11D3-8CDF-DDE6AA65DF35),
+		helpstring("Triangle Class"),
+		helpcontext(IDH_ITriangle)
+	]
+	coclass Triangle
+	{
+		[default] interface ITriangle;
+		interface IShape;
+		interface IXYPosition;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(E7E272C2-032F-11D3-8CDF-861E1B8C3634),
+		helpstring("PrecastBeam Class"),
+		helpcontext(IDH_IPrecastBeam)
+	]
+	coclass PrecastBeam
+	{
+		[default] interface IPrecastBeam;
+		interface IShape;
+		interface IXYPosition;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(411AA7A2-67F2-4bb6-86E2-09C2C0F5A096),
+		helpstring("NUBeam Class"),
+		helpcontext(IDH_INUBeam)
+	]
+	coclass NUBeam
+	{
+		[default] interface INUBeam;
+		interface IShape;
+		interface IXYPosition;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(83B73726-F71A-4400-BCD0-542E1332EE2A),
+		helpstring("BulbTee Class"),
+		helpcontext(IDH_IBulbTee)
+	]
+	coclass BulbTee
+	{
+		[default] interface IBulbTee;
+		interface IShape;
+		interface IXYPosition;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(2558CFC2-03CE-11D3-8CDF-EBFB6612CA35),
+		helpstring("TrafficBarrier Class"),
+		helpcontext(IDH_ITrafficBarrier)
+	]
+	coclass TrafficBarrier
+	{
+		[default] interface ITrafficBarrier;
+		interface IShape;
+		interface IXYPosition;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(4F37A661-03FE-11D3-8CDF-882D80988F34),
+      helpcontext(IDH_IPoint3d),
+		helpstring("Point3d Class")
+	]
+	coclass Point3d
+	{
+		[default] interface IPoint3d;
+      [default, source] interface IPoint3dEvents;
+      interface IStructuredStorage2;
+      // interface IPersist;
+	};
+	[
+		uuid(75DB33E1-0449-11D3-8CDF-9E53F9A4BF35),
+      helpcontext(IDH_ISize3d),
+		helpstring("Size3d Class")
+	]
+	coclass Size3d
+	{
+		[default] interface ISize3d;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(F97D8402-1871-11D3-8CDF-925649DD1F63),
+		helpstring("Vector3d Class"),
+		helpcontext(IDH_IVector3d)
+	]
+	coclass Vector3d
+	{
+		[default] interface IVector3d;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(F97D8404-1871-11D3-8CDF-925649DD1F63),
+		helpstring("Plane3d Class"),
+		helpcontext(IDH_IPlane3d)
+	]
+	coclass Plane3d
+	{
+		[default] interface IPlane3d;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(818E5101-1942-11D3-8CDF-DCD8D8F12565),
+		helpstring("Point3dCollection Class"),
+		helpcontext(IDH_IPoint3dCollection)
+	]
+	coclass Point3dCollection
+	{
+		[default] interface IPoint3dCollection;
+      [default, source] interface IPoint3dCollectionEvents;
+		interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(110FFB89-2B04-11D3-8952-006097C68A9C),
+		helpstring("GeomUtil Class"),
+		helpcontext(IDH_IGeomUtil)
+	]
+	coclass GeomUtil
+	{
+		[default] interface IGeomUtil;
+		interface IGeomUtil2d;
+		interface IGeomUtil3d;
+        // interface IPersist;
+	};
+	[
+		uuid(D146B4A5-5103-11D3-8CDF-BFEA3D98042F),
+		helpstring("CoordinateXform3d Class"),
+		helpcontext(IDH_ICoordinateXform3d)
+	]
+	coclass CoordinateXform3d
+	{
+		[default] interface ICoordinateXform3d;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(1A1AD39C-5184-11D3-8985-006097C68A9C),
+		helpstring("CoordinateXform2d Class"),
+		helpcontext(IDH_ICoordinateXform2d)
+	]
+	coclass CoordinateXform2d
+	{
+		[default] interface ICoordinateXform2d;
+		interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(EC5AC146-5CD0-11D3-8CDF-A057587EDC05),
+		helpstring("PrimitiveFactory Class"),
+		helpcontext(IDH_PrimitiveFactory)
+	]
+	coclass PrimitiveFactory
+	{
+		[default] interface IPoint2dFactory;
+		interface IPoint3dFactory;
+        interface ILine2dFactory;
+        interface ILineSegment2dFactory;
+
+        interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(C6C2A641-6563-11D4-8CE4-0080C7380027),
+		helpstring("CircularSegment Class"),
+		helpcontext(IDH_ICircularSegment)
+	]
+	coclass CircularSegment
+	{
+		[default] interface ICircularSegment;
+		interface IShape;
+		interface IXYPosition;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(2A9E6E22-B982-11d4-8B56-006097C68A9C),
+		helpstring("ShapeCollection Class"),
+		helpcontext(IDH_IShapeCollection)
+	]
+	coclass ShapeCollection
+	{
+		[default] interface IShapeCollection;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(9F28211E-09D6-11D5-8BBF-006097C68A9C),
+		helpstring("PlateGirder Class")
+	]
+	coclass PlateGirder
+	{
+		[default] interface IPlateGirder;
+		interface IShape;
+		interface IXYPosition;
+      interface IStructuredStorage2;
+        // interface IPersist;
+	};
+	[
+		uuid(F2921D46-E60C-41FC-84DD-FB4D198902C2),
+		helpstring("UBeam Class")
+	]
+	coclass UBeam 
+	{
+		[default] interface IUBeam;
+		interface IShape;
+		interface IXYPosition;
+      interface IStructuredStorage2;
+      // interface IPersist;
+	};
+
+	[
+		uuid(F75025D7-77F4-4581-A74D-4726755462D0),
+		helpstring("UBeam2 Class")
+	]
+	coclass UBeam2
+	{
+		[default] interface IUBeam2;
+		interface IShape;
+		interface IXYPosition;
+      interface IStructuredStorage2;
+      // interface IPersist;
+	};
+
+	[
+		uuid(3D4E4B7B-A78C-4419-8DCD-DAF644499AC1),
+		helpstring("MultiWeb Class")
+	]
+	coclass MultiWeb
+	{
+		[default] interface IMultiWeb;
+		interface IShape;
+		interface IXYPosition;
+	    interface IStructuredStorage2;
+		// interface IPersist;
+	};
+
+	[
+		uuid(E115FF80-E81C-4f3f-B275-D7799BFF82A5),
+		helpstring("MultiWeb2 Class")
+	]
+	coclass MultiWeb2
+	{
+		[default] interface IMultiWeb2;
+		interface IShape;
+		interface IXYPosition;
+	    interface IStructuredStorage2;
+		// interface IPersist;
+	};
+
+	[
+	   uuid(C0D62C37-8408-4fcb-8E9A-AA3D4498CEF4),
+	   helpstring("CompositeShapeItem Class")
+	]
+	coclass CompositeShapeItem
+	{
+		[default] interface ICompositeShapeItem;
+		interface IStructuredStorage2;
+		// interface IPersist;
+	};
+
+	[
+	   uuid(57B8E907-F0CD-4915-A7C6-2060C53D7E16),
+	   helpstring("CompositeShape Class")
+	]
+	coclass CompositeShape
+	{
+		[default] interface ICompositeShape;
+		interface IShape;
+		interface IXYPosition;
+		interface IStructuredStorage2;
+		// interface IPersist;
+	};
+
+	[
+		uuid(3B31027D-48F3-4a8e-A9F2-3887B74E3D96),
+		helpstring("VoidedSlab Class")
+	]
+	coclass VoidedSlab
+	{
+		[default] interface IVoidedSlab;
+		interface IShape;
+		interface IXYPosition;
+		interface IStructuredStorage2;
+		// interface IPersist;
+	};
+
+	[
+		uuid(16313108-22B1-4103-9D06-1934A1AF9C3D),
+		helpstring("VoidedSlab2 Class")
+	]
+	coclass VoidedSlab2
+	{
+		[default] interface IVoidedSlab2;
+		interface IShape;
+		interface IXYPosition;
+		interface IStructuredStorage2;
+		// interface IPersist;
+	};
+
+	[
+	   uuid(62292381-C515-4aba-871B-040D739F1BA2),
+	   helpstring("BoxBeam Class")
+	]
+	coclass BoxBeam
+	{
+	   [default] interface IBoxBeam;
+		interface IShape;
+		interface IXYPosition;
+		interface IStructuredStorage2;
+		// interface IPersist;
+	};
+};

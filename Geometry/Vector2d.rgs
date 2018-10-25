@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.Vector2d.1 = s 'Vector2d Class'
+	{
+		CLSID = s '{55B8EF84-FADF-11D2-8CDF-9849C70CC734}'
+	}
+	WBFLGeometry.Vector2d = s 'Vector2d Class'
+	{
+		CLSID = s '{55B8EF84-FADF-11D2-8CDF-9849C70CC734}'
+		CurVer = s 'WBFLGeometry.Vector2d.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {55B8EF84-FADF-11D2-8CDF-9849C70CC734} = s 'Vector2d Class'
+		{
+			ProgID = s 'WBFLGeometry.Vector2d.1'
+			VersionIndependentProgID = s 'WBFLGeometry.Vector2d'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

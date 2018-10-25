@@ -1,0 +1,26 @@
+HKCR
+{
+	StorageTest.PCircle.1 = s 'PCircle Class'
+	{
+		CLSID = s '{FEA8093A-88CA-44ff-B3F7-F17A3D69F0A2}'
+	}
+	StorageTest.PCircle = s 'PCircle Class'
+	{
+		CLSID = s '{FEA8093A-88CA-44ff-B3F7-F17A3D69F0A2}'
+		CurVer = s 'StorageTest.PCircle.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {FEA8093A-88CA-44ff-B3F7-F17A3D69F0A2} = s 'PCircle Class'
+		{
+			ProgID = s 'StorageTest.PCircle.1'
+			VersionIndependentProgID = s 'StorageTest.PCircle'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{71A9DDC8-55D1-11D5-B005-00105A9AF985}'
+		}
+	}
+}

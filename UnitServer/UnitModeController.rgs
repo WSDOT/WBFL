@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLUnitServer.UnitModeController.1 = s 'UnitModeController Class'
+	{
+		CLSID = s '{51F0A2A2-CAC1-11D3-8CE1-A85CC0A0E770}'
+	}
+	WBFLUnitServer.UnitModeController = s 'UnitModeController Class'
+	{
+		CLSID = s '{51F0A2A2-CAC1-11D3-8CE1-A85CC0A0E770}'
+		CurVer = s 'WBFLUnitServer.UnitModeController.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {51F0A2A2-CAC1-11D3-8CE1-A85CC0A0E770} = s 'UnitModeController Class'
+		{
+			ProgID = s 'WBFLUnitServer.UnitModeController.1'
+			VersionIndependentProgID = s 'WBFLUnitServer.UnitModeController'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{C65F03B4-16AB-11D2-8D11-94FA07C10000}'
+		}
+	}
+}

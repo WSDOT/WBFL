@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLTools.ARPNotice.1 = s 'ARPNotice Class'
+	{
+		CLSID = s '{27F9E280-7102-11D3-89BB-006097C68A9C}'
+	}
+	WBFLTools.ARPNotice = s 'ARPNotice Class'
+	{
+		CLSID = s '{27F9E280-7102-11D3-89BB-006097C68A9C}'
+		CurVer = s 'WBFLTools.ARPNotice.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {27F9E280-7102-11D3-89BB-006097C68A9C} = s 'ARPNotice Class'
+		{
+			ProgID = s 'WBFLTools.ARPNotice.1'
+			VersionIndependentProgID = s 'WBFLTools.ARPNotice'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B9507D8C-7100-11D3-89BB-006097C68A9C}'
+		}
+	}
+}

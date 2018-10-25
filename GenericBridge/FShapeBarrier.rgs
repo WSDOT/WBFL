@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.FShapeBarrier.1 = s 'FShapeBarrier Class'
+	{
+		CLSID = s '{0386B8E1-50E2-42bd-A93B-C2933F9BD1C0}'
+	}
+	WBFLGenericBridge.FShapeBarrier = s 'FShapeBarrier Class'
+	{
+		CLSID = s '{0386B8E1-50E2-42bd-A93B-C2933F9BD1C0}'
+		CurVer = s 'WBFLGenericBridge.FShapeBarrier.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {0386B8E1-50E2-42bd-A93B-C2933F9BD1C0} = s 'FShapeBarrier Class'
+		{
+			ProgID = s 'WBFLGenericBridge.FShapeBarrier.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.FShapeBarrier'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

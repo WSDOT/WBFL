@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.RCBeam.1 = s 'RCBeam Class'
+	{
+		CLSID = s '{3DB23ADB-A45F-4093-A7B4-DE198847A825}'
+	}
+	WBFLRCCapacity.RCBeam = s 'RCBeam Class'
+	{
+		CLSID = s '{3DB23ADB-A45F-4093-A7B4-DE198847A825}'
+		CurVer = s 'WBFLRCCapacity.RCBeam.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {3DB23ADB-A45F-4093-A7B4-DE198847A825} = s 'RCBeam Class'
+		{
+			ProgID = s 'WBFLRCCapacity.RCBeam.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.RCBeam'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

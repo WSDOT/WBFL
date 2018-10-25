@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.MixedSolver.1 = s 'MixedSolver Class'
+	{
+		CLSID = s '{29CA6786-FA0C-402C-9683-404C6275E378}'
+	}
+	WBFLRCCapacity.MixedSolver = s 'MixedSolver Class'
+	{
+		CLSID = s '{29CA6786-FA0C-402C-9683-404C6275E378}'
+		CurVer = s 'WBFLRCCapacity.MixedSolver.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {29CA6786-FA0C-402C-9683-404C6275E378} = s 'MixedSolver Class'
+		{
+			ProgID = s 'WBFLRCCapacity.MixedSolver.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.MixedSolver'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

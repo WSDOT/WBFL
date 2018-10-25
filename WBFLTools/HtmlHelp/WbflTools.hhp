@@ -1,0 +1,156 @@
+[OPTIONS]
+Compiled File=WbflTools.chm
+Title=WBFL Tools
+Contents File=WbflTools.hhc
+Index File=WbflTools.hhk
+Default topic=Welcome.htm
+Default Window=NewWindow
+Error log file=
+Display compile progress=Yes
+Display compile notes=Yes
+Full-text search=Yes
+Binary Index=No
+Auto Index=No
+Enhanced decompilation=No
+Binary TOC=No
+Flat=No
+
+[WINDOWS]
+NewWindow="WBFL Tools","WbflTools.hhc","WbflTools.hhk","","",,,,,0x420,0,0x200e,[0,0,800,600],0x0,0x0,,0,0,0
+
+[FILES]
+ARP_Notice.htm
+Mohr's_Circle.htm
+Sii_Property_(Mohr_Circle_Object).htm
+Sjj_Property_(Mohr_Circle_Object).htm
+Sij_Property_(Mohr_Circle_Object).htm
+Center_Property_(Mohr_Circle_Object).htm
+Radius_Property_(Mohr_Circle_Object).htm
+PrincipleDirection_Property_(Mohr_Cirlce_Object).htm
+Smax_Property_(Mohr_Circle_Object).htm
+Smin_Property_(Mohr_Circle_Object).htm
+Tmax_Property_(Mohr_Circle_Object).htm
+ComputeState_Method_(Mohr_Circle_Object).htm
+ShowAgain_Property_(ARP_Notice_Object).htm
+Show_Method_(ARP_Notice_Object).htm
+Welcome.htm
+StrStorage\Class_is_not_registered_on_this_computer..htm
+StrStorage\Close.htm
+ComputeSxx_Method_(Mohr_Circle_Object).htm
+ComputeSyy_Method_(Mohr_Circle_Object).htm
+ComputeSxy_Method_(Mohr_Circle_Object).htm
+AROSL.htm
+LicenseType.htm
+AcceptanceType.htm
+Examples.htm
+Mohr_Circle_Equations.htm
+Using_the_Alternate_Route_Project_notice_in_your_Applications.htm
+License_Agreement.htm
+Disclaimer.htm
+StrStorage\BeginUnitSave.htm
+StrStorage\You_must_define_at_least_one_Unit.htm
+StrStorage\Save2.htm
+StrStorage\CloseSave.htm
+StrStorage\Com_objects__must_support_the_IStructuredStorage2_interface.htm
+StrStorage\Com_objects_must_support_the_IPersist_interface.htm
+StrStorage\EndOfStorage2.htm
+StrStorage\EndUnit2.htm
+StrStorage\EndUnitSave.htm
+StrStorage\Error_initializing_the_XML_parser.htm
+StrStorage\Error_opening_file.htm
+StrStorage\File_not_open.htm
+StrStorage\Invalid_file_format.htm
+StrStorage\Load2.htm
+StrStorage\OpenSave.htm
+StrStorage\Problem_writing_to_file.htm
+StrStorage\Open2.htm
+StrStorage\Version.htm
+StrStorage\Property2.htm
+StrStorage\PropertySave.htm
+StrStorage\Special_Notes_For_Visual_Basic_Class_Authors.htm
+StrStorage\Structured_Storage_Basics.htm
+StrStorage\Structured_Storage_Classes_and_Interfaces.htm
+StrStorage\StructuredLoad2.htm
+StrStorage\TopVersion.htm
+StrStorage\StructuredSave2.htm
+LngArray\Reserve.htm
+LngArray\Clear.htm
+StrStorage\IStructuredStorage2.htm
+StrStorage\The_file_was_not_found.htm
+StrStorage\TopVersionSave.htm
+StrStorage\Variant_had_invalid_type.htm
+StrStorage\VersionSave.htm
+StrStorage\BeginUnit2.htm
+LngArray\Clone.htm
+LngArray\Find.htm
+LngArray\Insert.htm
+LngArray\LngArray.htm
+LngArray\Count.htm
+StrStorage\Only_One_Top_Level_Unit_Allowed.htm
+BStrArray\Reserve.htm
+DblArray\Reserve.htm
+DblArray\Clear.htm
+DblArray\Clone.htm
+DblArray\Count.htm
+DblArray\DblArray.htm
+DblArray\Insert.htm
+DblArray\Item.htm
+DblArray\ReDim.htm
+DblArray\Remove.htm
+DblArray\Add.htm
+LngArray\ReDim.htm
+LngArray\Remove.htm
+LngArray\Add.htm
+LngArray\Item.htm
+BStrArray\Find.htm
+BStrArray\Remove.htm
+BStrArray\ReDim.htm
+BStrArray\Add.htm
+UnkArray\UnkArray.htm
+UnkArray\Clear.htm
+UnkArray\Clone.htm
+UnkArray\Count.htm
+UnkArray\Item.htm
+UnkArray\Add.htm
+BStrArray\BstrArray.htm
+BStrArray\Clear.htm
+BStrArray\Clone.htm
+BStrArray\Count.htm
+BStrArray\Insert.htm
+BStrArray\Item.htm
+UnkArray\Reserve.htm
+ProgressMonitor\ProgressMonitorWindow\ProgressMonitorWindow.htm
+ProgressMonitor\Progress_Monitoring_Objects_and_Interfaces.htm
+ProgressMonitor\IProgressMonitor\WasCancelled.htm
+ProgressMonitor\IProgressMonitor\IProgressMonitor.htm
+ProgressMonitor\IProgressMonitor\Message.htm
+ProgressMonitor\IProgressMonitor\GaugeValue.htm
+ProgressMonitor\ISupportProgressMonitor\ISupportProgressMonitor.htm
+ProgressMonitor\ISupportProgressMonitor\InitializeProgressMonitor.htm
+UnkArray\Remove.htm
+UnkArray\Insert.htm
+ProgressMonitor\ProgressMonitorWindow\HasCancel.htm
+ProgressMonitor\ProgressMonitorWindow\HasGauge.htm
+ProgressMonitor\ProgressMonitorWindow\Show.htm
+ProgressMonitor\ProgressMonitorWindow\Hide.htm
+ProgressMonitor\ILogProgressToFile\ILogProgressToFile.htm
+ProgressMonitor\ILogProgressToFile\OpenLogFile.htm
+ProgressMonitor\ILogProgressToFile\CloseLogFile.htm
+eHelp.xml
+RoboHHRE.lng
+
+WbflTools.brs
+[ALIAS]
+#include WbflTools.ali
+
+[MAP]
+#include BSSCDefault.h
+#include StrStorage.hh
+#include WbflTools.hh
+
+[TEXT POPUPS]
+BSSCDefault.h
+StrStorage.hh
+WbflTools.hh
+
+

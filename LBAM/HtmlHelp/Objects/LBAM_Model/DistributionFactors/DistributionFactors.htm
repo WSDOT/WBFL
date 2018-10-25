@@ -1,0 +1,842 @@
+<!doctype HTML public "-//W3C//DTD HTML 4.0 Frameset//EN">
+
+<html>
+
+<!--(==============================================================)-->
+<!--(Document created with RoboEditor. )============================-->
+<!--(==============================================================)-->
+
+<head>
+
+<title>DistributionFactor</title>
+
+<!--(Meta)==========================================================-->
+
+<meta http-equiv=content-type content="text/html; charset=windows-1252">
+<meta name=topic-status content="In Progress">
+<meta name=topic-priority content=0>
+<meta name=topic-time-estimate content=0>
+<meta name=topic-comment content>
+<meta name=topic-id content>
+<meta name=generator content="RoboHELP by eHelp Corporation - www.ehelp.com">
+<meta name=generator-major-version content=0.1>
+<meta name=generator-minor-version content=1>
+<meta name=filetype content=kadov>
+<meta name=filetype-version content=1>
+<meta name=page-count content=0>
+<meta name=layout-height content=0>
+<meta name=layout-width content=0>
+
+
+<!--(Links)=========================================================-->
+
+<link REL=StyleSheet HREF="..\..\..\default.css">
+
+
+
+</head>
+
+<!--(Body)==========================================================-->
+
+
+<body>
+
+<h1>DistributionFactors</h1>
+
+<p>Collection describing the layout of distribution factors along the superstructure. 
+ The start of the layout is at the left support or the left end of the 
+ left overhang, if present.</p>
+
+<p>Distribution factors are laid out in prismatic segments (DistributionFactorSegment 
+ objects) along the entire length of the superstructure. The actual values 
+ of live load distribution factors are contained in the <a HREF="..\DistributionFactor\DistributionFactor.htm">DistributionFactor</a> 
+ objects that are contained in this collection.</p>
+
+<h2>Methods for Changing the Distribution Factor Layout</h2>
+
+<p>The DistributionFactions collection has several methods for ordering 
+ segments along the superstructure. The following figure demonstrates the 
+ outcome of some of the operations defined below:</p>
+
+<p><img src="..\..\..\Images\SegmentCollection.gif"
+		style="width: 774px;
+				height: 323px;
+				border-style: none;
+				margin-top: 0px;
+				margin-bottom: 0px;
+				margin-left: 0px;
+				margin-right: 0px;"
+		width=774
+		height=323
+		border=0></p>
+
+<p>&nbsp;</p>
+
+<h2>Tolerancing of Layout</h2>
+
+<p>In an ideal world, the total length of the DistributionFactorSegments 
+ would be exactly equal to the total length of the superstructure. However, 
+ this is the real world, and we are dealing with humans, computers, and 
+ imperfect floating point numbers. Hence, it is both impractical and inconvenient 
+ to try to enforce this restriction. This means that we must &quot;fudge&quot; 
+ the length of the collection of segmetns in order to make it always fit 
+ perfectly within the superstructure length. The following rules are used 
+ to resolve this:</p>
+
+<h3>Segments Are Shorter Than Superstructure Length (Nonsymmetrical Member)</h3>
+
+<p>If this is the case, the last Segment in the collection is extended 
+ to the end of the superstructure as shown in the Figure below.</p>
+
+<p style="text-align: center;"
+	align=center><img src="..\..\..\Images\DfsShorter.gif"
+						style="width: 407px;
+								height: 119px;
+								border-style: none;
+								margin-top: 0px;
+								margin-bottom: 0px;
+								margin-left: 0px;
+								margin-right: 0px;"
+						width=407
+						height=119
+						border=0></p>
+
+<h3>Segments Are Longer Than Member Length (Nonsymmetrical Member)</h3>
+
+<p>If this is the case, the collection is truncated until a Segment can 
+ be shortened to the end of the superstructure as shown in the Figure Below</p>
+
+<p style="text-align: center;"
+	align=center><img src="..\..\..\Images\DfsLonger.gif"
+						style="width: 370px;
+								height: 120px;
+								border-style: none;
+								margin-top: 0px;
+								margin-bottom: 0px;
+								margin-left: 0px;
+								margin-right: 0px;"
+						width=370
+						height=120
+						border=0></p>
+
+<h3>Superstructure is Symmetrical</h3>
+
+<p>If the <span style="font-weight: bold;">IsSymmetrical</span> property 
+ of the collection is true, then the layout of segments across the superstructure 
+ is forced to be symmetrical about the centerline (midpoint) of the superstructure. 
+ For this case, it would be ideal if the length of the collection was exactly 
+ equal to one-half of the length of the superstructure. Again, enforcing 
+ perfection is not practical, and misfits are resolved in the same manner 
+ as for nonsymmetrical members - except now segments are extended or truncated 
+ to the mid-point of the superstructure. The figure below demonstrates 
+ typical cases for symmetrical collections.</p>
+
+<p style="text-align: center;"
+	align=center><img src="..\..\..\Images\DfsSym.gif"
+						style="width: 477px;
+								height: 434px;
+								border-style: none;
+								margin-top: 0px;
+								margin-bottom: 0px;
+								margin-left: 0px;
+								margin-right: 0px;"
+						width=477
+						height=434
+						border=0></p>
+
+<h3>Determining the Actual Layout</h3>
+
+<p>As you can see from the above discussion, the actual layout of DistributionFactorSegments 
+ can be adjusted from the input data under certain conditions. The methods 
+ <span style="font-weight: bold;">GetSegmentForMemberLocation</span>, and 
+ <span style="font-weight: bold;">GetMemberSegments</span><span style="font-weight: normal;"> 
+ can be used to compute and retrieve the actual layout as computed by the 
+ LBAM.</span></p>
+
+<p>&nbsp;</p>
+
+<h2>Properties</h2>
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="width: 100%;
+				border-spacing: 0px;
+				margin-top: 14pt;"
+		cellspacing=0
+		width=100%>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\prop_ro.gif"
+									style="width: 20px;
+											height: 16px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=20
+									height=16
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 31%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=31%>
+<p style="margin-bottom: 0;"><a href="DistributionFactors.htm">_EnumElements</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Returns a fast enumerator (hidden,restricted)</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\prop_rw.gif"
+									style="width: 20px;
+											height: 18px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=20
+									height=18
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 31%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=31%>
+<p style="margin-bottom: 0;"><a HREF="Item.htm">Item</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Gets or puts a DistributionFactorSegment to 
+ a particular Stage/location</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\prop_ro.gif"
+									style="width: 20px;
+											height: 16px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=20
+									height=16
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 31%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=31%>
+<p style="margin-bottom: 0;"><a HREF="Length.htm">Length</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Gets the total length of all Segments</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\prop_ro.gif"
+									style="width: 20px;
+											height: 16px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=20
+									height=16
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 31%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=31%>
+<p style="margin-bottom: 0;"><a HREF="Count.htm">Count</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Gets the number of Segments</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\prop_rw.gif"
+									style="width: 20px;
+											height: 18px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=20
+									height=18
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 31%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=31%>
+<p style="margin-bottom: 0;"><a HREF="IsSymmetrical.htm">IsSymmetrical</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Flag that forces the segments in this DistributionFactors 
+ collection to be symmetrical about the total length of the superstructure.</td></tr>
+</table>
+
+<h2>Methods</h2>
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="width: 100%;
+				border-spacing: 0px;
+				margin-top: 14pt;"
+		cellspacing=0
+		width=100%>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\method.gif"
+									style="width: 17px;
+											height: 16px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=17
+									height=16
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p style="margin-bottom: 0;"><a HREF="Add.htm">Add</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Appends a Segment to the end</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\method.gif"
+									style="width: 17px;
+											height: 16px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=17
+									height=16
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p style="margin-bottom: 0;"><a HREF="Insert.htm">Insert</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Inserts a Segment at a specified location</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\method.gif"
+									style="width: 17px;
+											height: 16px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=17
+									height=16
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p style="margin-bottom: 0;"><a HREF="MoveTo.htm">MoveTo</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Moves a Segment from one location to another</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\method.gif"
+									style="width: 17px;
+											height: 16px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=17
+									height=16
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p style="margin-bottom: 0;"><a HREF="CopyTo.htm">CopyTo</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Copies a Segment from one location to another</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\method.gif"
+									style="width: 17px;
+											height: 16px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=17
+									height=16
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p style="margin-bottom: 0;"><a HREF="Remove.htm">Remove</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Removes a specific Segment</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\method.gif"
+									style="width: 17px;
+											height: 16px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=17
+									height=16
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p style="margin-bottom: 0;"><a HREF="Reverse.htm">Reverse</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Reverses the order of all Segments</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\method.gif"
+									style="width: 17px;
+											height: 16px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=17
+									height=16
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p style="margin-bottom: 0;"><a HREF="GetSegmentForLocation.htm">GetSegmentForLocation</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Gets a Segment at a specified distance along 
+ the superstructure</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p>&nbsp;</td>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p>&nbsp;</td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p>&nbsp;</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\method.gif"
+									style="width: 17px;
+											height: 16px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=17
+									height=16
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 33%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=33%>
+<p style="margin-bottom: 0;"><a HREF="Clone.htm">Clone</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Clones entire DistributionFactor and its Segments. 
+ Makes deep copy.</td></tr>
+</table>
+
+<h2>Events</h2>
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="width: 100%;
+				border-spacing: 0px;
+				margin-top: 14pt;"
+		cellspacing=0
+		width=100%>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\event.gif"
+									style="width: 16px;
+											height: 17px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=16
+									height=17
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 31%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=31%>
+<p style="margin-bottom: 0;"><a HREF="OnDistributionFactorsChanged.htm">OnDistributionFactorsChanged</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Fired whenever a change is made to the DistributionFactor</td></tr>
+</table>
+
+<h2>Interfaces</h2>
+
+<p>These interfaces are obtained via QueryInterface</p>
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="width: 100%;
+				border-spacing: 0px;
+				margin-top: 14pt;"
+		cellspacing=0
+		width=100%>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\..\Images\interface.gif"
+									style="width: 20px;
+											height: 18px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;"
+									width=20
+									height=18
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 31%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=31%>
+<p style="margin-bottom: 0;"><a HREF="..\..\..\Interfaces\IStructuredStorage2\IStructuredStorage2.htm">IStructuredStorage2</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 65%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=65%>
+<p style="margin-bottom: 0;">Persistence of LBAM data</td></tr>
+</table>
+
+
+<!--(HR)============================================================-->
+<hr style="height: 2px;
+			width: 100%;
+			float: aligncenter;"
+	size=2
+	width=100%
+	align=center>
+
+
+<p>Copyright © 2000-2003, Washington State Department of Transportation</p>
+
+<p style="margin-bottom: 0;">&nbsp; </p>
+
+</body>
+
+</html>

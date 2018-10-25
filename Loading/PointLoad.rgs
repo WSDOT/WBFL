@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLoading.PointLoad.1 = s 'PointLoad Class'
+	{
+		CLSID = s '{EEA0ACB5-8975-4a22-A767-3E99B403927C}'
+	}
+	WBFLLoading.PointLoad = s 'PointLoad Class'
+	{
+		CLSID = s '{EEA0ACB5-8975-4a22-A767-3E99B403927C}'
+		CurVer = s 'WBFLLoading.PointLoad.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {EEA0ACB5-8975-4a22-A767-3E99B403927C} = s 'PointLoad Class'
+		{
+			ProgID = s 'WBFLLoading.PointLoad.1'
+			VersionIndependentProgID = s 'WBFLLoading.PointLoad'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{81DDDDC6-EC00-4E8D-A000-08C10F134EDA}'
+		}
+	}
+}

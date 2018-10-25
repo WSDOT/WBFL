@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.BulbTee.1 = s 'BulbTee Class'
+	{
+		CLSID = s '{83B73726-F71A-4400-BCD0-542E1332EE2A}'
+	}
+	WBFLGeometry.BulbTee = s 'BulbTee Class'
+	{
+		CLSID = s '{83B73726-F71A-4400-BCD0-542E1332EE2A}'
+		CurVer = s 'WBFLGeometry.BulbTee.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {83B73726-F71A-4400-BCD0-542E1332EE2A} = s 'BulbTee Class'
+		{
+			ProgID = s 'WBFLGeometry.BulbTee.1'
+			VersionIndependentProgID = s 'WBFLGeometry.BulbTee'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAM.Supports.1 = s 'Supports Class'
+	{
+		CLSID = s '{80D1B10A-829D-11D5-B03C-00105A9AF985}'
+	}
+	WBFLLBAM.Supports = s 'Supports Class'
+	{
+		CLSID = s '{80D1B10A-829D-11D5-B03C-00105A9AF985}'
+		CurVer = s 'WBFLLBAM.Supports.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {80D1B10A-829D-11D5-B03C-00105A9AF985} = s 'Supports Class'
+		{
+			ProgID = s 'WBFLLBAM.Supports.1'
+			VersionIndependentProgID = s 'WBFLLBAM.Supports'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{A60E8518-3A65-11D5-AFE5-00105A9AF985}'
+		}
+	}
+}

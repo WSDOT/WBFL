@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.UBeam.1 = s 'UBeam Class'
+	{
+		CLSID = s '{F2921D46-E60C-41FC-84DD-FB4D198902C2}'
+	}
+	WBFLGeometry.UBeam = s 'UBeam Class'
+	{
+		CLSID = s '{F2921D46-E60C-41FC-84DD-FB4D198902C2}'
+		CurVer = s 'WBFLGeometry.UBeam.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {F2921D46-E60C-41FC-84DD-FB4D198902C2} = s 'UBeam Class'
+		{
+			ProgID = s 'WBFLGeometry.UBeam.1'
+			VersionIndependentProgID = s 'WBFLGeometry.UBeam'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

@@ -1,0 +1,9 @@
+#ifndef INCLUDED_LBAMTRUCKDRAWSTRATEGY_H_
+#define INCLUDED_LBAMTRUCKDRAWSTRATEGY_H_
+
+interface iLBAMTruckDrawStrategy : public IUnknown
+{
+   STDMETHOD_(void,SetColor)(COLORREF color) PURE;
+};
+
+#endif // INCLUDED_LBAMTRUCKDRAWSTRATEGY_H_

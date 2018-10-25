@@ -1,0 +1,183 @@
+<!doctype HTML public "-//W3C//DTD HTML 4.0 Frameset//EN">
+
+<html>
+
+<!--(==============================================================)-->
+<!--(Document created with RoboEditor. )============================-->
+<!--(==============================================================)-->
+
+<head>
+
+<title>Using Arrays In LBAM Interfaces</title>
+
+<!--(Meta)==========================================================-->
+
+<meta http-equiv=content-type content="text/html; charset=windows-1252">
+<meta name=topic-status content="In Progress">
+<meta name=topic-priority content=0>
+<meta name=topic-time-estimate content=0>
+<meta name=topic-comment content>
+<meta name=topic-id content>
+<meta name=generator content="RoboHELP by eHelp Corporation - www.ehelp.com">
+<meta name=generator-major-version content=0.1>
+<meta name=generator-minor-version content=1>
+<meta name=filetype content=kadov>
+<meta name=filetype-version content=1>
+<meta name=page-count content=0>
+<meta name=layout-height content=0>
+<meta name=layout-width content=0>
+
+
+<!--(Links)=========================================================-->
+
+<link REL=StyleSheet HREF="..\default.css">
+
+
+
+</head>
+
+<!--(Body)==========================================================-->
+
+
+<body>
+
+<h1>Using Arrays In LBAM Interfaces</h1>
+
+<p>Many of the interfaces in the LBAM use arrays of longs, doubles, or 
+ strings as input and output parameters. These arrays are defined by the 
+ ILngArray, IDblArray, and IBstrArray interfaces, respectively. These are 
+ not the same as the built-in arrays in your programming language - they 
+ are implemented by COM objects defined in the WBFLTools package. Refer 
+ to the <a HREF="WBFLTools.chm::/Welcome.htm">WBFLTools</a> help documentation 
+ for more information about these objects.</p>
+
+<h2>Visual Basic Users</h2>
+
+<p>Visual Basic, VBA and VBScript users would create an array of longs 
+ (ILngArray) using the following syntax:</p>
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="width: 100%;
+				border-spacing: 0px;
+				margin-top: 14pt;"
+		cellspacing=0
+		width=100%>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 20%;
+			padding-left: 0px;
+			padding-top: 0px;
+			padding-right: 0px;
+			padding-bottom: 0px;"
+	valign=top
+	width=20%>
+<p>&nbsp;</td>
+<td style="x-cell-content-align: TOP;
+			width: 100%;
+			padding-left: 0px;
+			padding-top: 0px;
+			padding-right: 0px;
+			padding-bottom: 0px;"
+	valign=top
+	width=100%>
+<p class=Listing
+	style="text-align: left;"
+	align=left>Dim poi_ids As New LngArray<br>
+poi_ids.Add 2<br>
+poi_ids.Add 5<br>
+poi_ids.Add 8</p>
+<p class=Listing
+	style="text-align: left; margin-bottom: 0;"
+	align=left>' assign to a local<br>
+Dim val as Long<br>
+val = poi_ids(1)</td></tr>
+</table>
+
+<p>Note that all of these arrays are zero-based.</p>
+
+<h2>C++ Users</h2>
+
+<p>C and C++ users create the arrays like any other COM object. It is best 
+ to use a tool like MFC or ATL to help you with this process. The following 
+ example shows how to use a LngArray using ATL.</p>
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="width: 100%;
+				border-spacing: 0px;
+				margin-top: 14pt;"
+		cellspacing=0
+		width=100%>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 20%;
+			padding-left: 0px;
+			padding-top: 0px;
+			padding-right: 0px;
+			padding-bottom: 0px;"
+	valign=top
+	width=20%>
+<p>&nbsp;</td>
+<td style="x-cell-content-align: TOP;
+			width: 100%;
+			padding-left: 0px;
+			padding-top: 0px;
+			padding-right: 0px;
+			padding-bottom: 0px;"
+	valign=top
+	width=100%>
+<p class=Listing
+	style="text-align: left;"
+	align=left>CComPtr&lt;ILngArray&gt; poi_ids;<br>
+poi_ids.CoCreateObject(CLSID_LngArray);</p>
+<p class=Listing
+	style="text-align: left;"
+	align=left>poi_ids-&gt;Add(2);<br>
+poi_ids-&gt;Add(5);<br>
+poi_ids-&gt;Add(8);</p>
+<p class=Listing
+	style="text-align: left;"
+	align=left>' assign to a local<br>
+long val;<br>
+poi_ids-&gt;get_Item(1,&amp;val);</p>
+<p class=Listing
+	style="text-align: left; margin-bottom: 0;"
+	align=left>&nbsp;</td></tr>
+</table>
+
+<p>&nbsp;</p>
+
+<h2 style="text-align: left;"
+	align=left>Other Languages</h2>
+
+<p style="text-align: left;"
+	align=left>Scripting languages, such as JScript and PERL, have methods 
+ for creating and using COM objects that make using the array objects possible.</p>
+
+<p style="text-align: left;"
+	align=left>If you are using another language, such as FORTRAN, Pascal, 
+ etc, you will need to consult the documentation for your compiler about 
+ how to create and use COM objects.</p>
+
+
+<!--(HR)============================================================-->
+<hr style="height: 2px;
+			width: 100%;
+			float: aligncenter;"
+	size=2
+	width=100%
+	align=center>
+
+
+<p style="text-align: left; margin-bottom: 0;"
+	align=left>Copyright © 2000-2002, Washington State Department of Transportation 
+ </p>
+
+</body>
+
+</html>

@@ -1,0 +1,116 @@
+///////////////////////////////////////////////////////////////////////
+// DManipTools - Direct Manipulation Framework
+// Copyright © 2001  Washington State Department of Transportation
+//                   Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the Alternate Route Library Open Source License as 
+// published by the Washington State Department of Transportation,
+// Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful,
+// but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// PURPOSE.  See the Alternate Route Library Open Source License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License
+// along with this program; if not, write to the Washington State
+// Department of Transportation, Bridge and Structures Office,
+// P.O. Box 47340, Olympia, WA 98503, USA or e-mail
+// Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// WBFLDManipTools.idl : IDL source for DManipTools.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (DManip.tlb) and marshalling code.
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+    uuid(B7B9C36E-FEAF-43BB-8907-C98A0EF3224E),
+    version(1.0),
+//	helpcontext(IDH_WBFLCogo),
+    helpstring("WBFLDManipTools Library")
+]
+library WBFLDManipTools
+{
+    importlib("stdole32.tlb");
+    importlib("stdole2.tlb");
+
+   [
+		uuid(341A682F-5B58-4f63-8190-88BF3970FB45),
+		helpstring("PolyLineDisplayObject Class")
+	]
+	coclass PolyLineDisplayObject
+	{
+		[default] interface IUnknown;
+	};
+
+   [
+		uuid(7DBA44AA-1542-4470-8719-21580A6822B5),
+		helpstring("HorzCurveDisplayObject Class")
+	]
+	coclass HorzCurveDisplayObject
+	{
+		[default] interface IUnknown;
+	};
+
+   [
+		uuid(06C90828-5269-4b98-97E6-AECDDF4B0764),
+		helpstring("GraphXyDisplayObject Class")
+	]
+	coclass GraphXyDisplayObject
+	{
+		[default] interface IUnknown;
+	};
+
+   [
+		uuid(4792CF33-B6FD-423F-90DE-314356A22848),
+		helpstring("DataSet2d Class")
+	]
+	coclass DataSet2d
+	{
+		[default] interface IUnknown;
+	};
+
+   [
+		uuid(C2EC59B5-BAA1-437d-89CB-19AD85ED9F04),
+		helpstring("LegendDisplayObject Class")
+	]
+	coclass LegendDisplayObject
+	{
+		[default] interface IUnknown;
+	};
+
+   [
+		uuid(951403BB-85F3-4443-8EE9-4FFDB338F3F5),
+		helpstring("LegendEntry Class")
+	]
+	coclass LegendEntry
+	{
+		[default] interface IUnknown;
+	};
+
+   [
+		uuid(D7C33DA2-EE8F-49a1-9A13-8653809262E9),
+		helpstring("DManipToolsDisplayObjectFactory Class")
+	]
+	coclass DManipToolsDisplayObjectFactory
+	{
+		[default] interface IUnknown;
+	};
+
+   [
+		uuid(0462D6DF-25DB-4fa0-B8B2-7B855A702A99),
+		helpstring("GraphXyDataProvider Class")
+	]
+	coclass GraphXyDataProvider
+	{
+		[default] interface IUnknown;
+	};
+};

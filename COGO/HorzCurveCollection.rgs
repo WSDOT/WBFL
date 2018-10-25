@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.HorzCurveCollection.1 = s 'HorzCurveCollection Class'
+	{
+		CLSID = s '{2C4945D1-9B56-430C-B395-B07209328C59}'
+	}
+	WBFLCogo.HorzCurveCollection = s 'HorzCurveCollection Class'
+	{
+		CLSID = s '{2C4945D1-9B56-430C-B395-B07209328C59}'
+		CurVer = s 'WBFLCogo.HorzCurveCollection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {2C4945D1-9B56-430C-B395-B07209328C59} = s 'HorzCurveCollection Class'
+		{
+			ProgID = s 'WBFLCogo.HorzCurveCollection.1'
+			VersionIndependentProgID = s 'WBFLCogo.HorzCurveCollection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

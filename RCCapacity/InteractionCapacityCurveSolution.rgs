@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.InteractionCapacityCurveSolution.1 = s 'InteractionCapacityCurveSolution Class'
+	{
+		CLSID = s '{90596D18-7307-49a8-8F7D-3FD9FB4AFF31}'
+	}
+	WBFLRCCapacity.InteractionCapacityCurveSolution = s 'InteractionCapacityCurveSolution Class'
+	{
+		CLSID = s '{90596D18-7307-49a8-8F7D-3FD9FB4AFF31}'
+		CurVer = s 'WBFLRCCapacity.InteractionCapacityCurveSolution.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {90596D18-7307-49a8-8F7D-3FD9FB4AFF31} = s 'InteractionCapacityCurveSolution Class'
+		{
+			ProgID = s 'WBFLRCCapacity.InteractionCapacityCurveSolution.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.InteractionCapacityCurveSolution'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

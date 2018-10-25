@@ -1,0 +1,102 @@
+<!doctype HTML public "-//W3C//DTD HTML 4.0 Frameset//EN">
+
+<html>
+
+<!--(==============================================================)-->
+<!--(Document created with RoboEditor. )============================-->
+<!--(==============================================================)-->
+
+<head>
+
+<title>Live Load Strategies</title>
+
+<!--(Meta)==========================================================-->
+
+<meta http-equiv=content-type content="text/html; charset=windows-1252">
+<meta name=topic-status content="In Progress">
+<meta name=topic-priority content=0>
+<meta name=topic-time-estimate content=0>
+<meta name=topic-comment content>
+<meta name=topic-id content>
+<meta name=generator content="RoboHELP by eHelp Corporation - www.ehelp.com">
+<meta name=generator-major-version content=0.1>
+<meta name=generator-minor-version content=1>
+<meta name=filetype content=kadov>
+<meta name=filetype-version content=1>
+<meta name=page-count content=0>
+<meta name=layout-height content=0>
+<meta name=layout-width content=0>
+
+
+<!--(Links)=========================================================-->
+
+<link REL=StyleSheet HREF="..\default.css">
+
+
+
+</head>
+
+<!--(Body)==========================================================-->
+
+
+<body>
+
+<h1>Live Load Strategies</h1>
+
+<p>The <a HREF="..\Objects\LBAM_LiveLoader\LiveLoadModelResponse\LiveLoadModelResponse.htm">LiveLoadModelResponse</a> 
+ object is dependent, by default, on the <a HREF="..\Objects\LBAM_LiveLoader\EnvelopedVehicularResponse\BruteForceVehicularResponse.htm">BruteForceVehicularResponse</a> 
+ object for computing the enveloped responses for each of the VehicularLoads 
+ in the model. This includes the job of moving the trucks along the superstructure 
+ in order to find the optimal solution. We understand that the logic used 
+ by the brute force object is simplistic and not very efficient, and that 
+ you are much smarter than we are, so we are giving you a chance to write 
+ a better one using your own strategy. Here are the steps:</p>
+
+<ol>
+	
+	<li class=kadov-P><p>The first thing that you need to do is create 
+ your own super-duper live loader object that supports the same interfaces 
+ as <a HREF="..\Objects\LBAM_LiveLoader\EnvelopedVehicularResponse\BruteForceVehicularResponse.htm">BruteForceVehicularResponse.</a></p></li>
+	
+	<li class=kadov-P><p>Next, intialize the object so that is uses same 
+ live load context as the <a HREF="..\Objects\LBAM_LiveLoader\LiveLoadModelResponse\LiveLoadModelResponse.htm">LiveLoadModelResponse 
+ </a>object.</p></li>
+	
+	<li class=kadov-P><p>Then identify your new object to the <a HREF="..\Objects\LBAM_LiveLoader\LiveLoadModelResponse\LiveLoadModelResponse.htm">LiveLoadModelResponse 
+ </a>object by setting the <a HREF="..\Objects\LBAM_LiveLoader\EnvelopingStrategy\Strategy.htm">Strategy</a> 
+ property via its <a HREF="..\Objects\LBAM_LiveLoader\EnvelopingStrategy\EnvelopingStrategy.htm">IEnvelopingStrategy</a> 
+ interface.</p></li>
+	
+	<li class=kadov-P><p>The live load system will now be ready to use 
+ with your new object.</p></li>
+</ol>
+
+<p>Unfortunately, at present you cannot use the <a HREF="..\Objects\LBAM_Analysis_Utility\LBAMAnalysisEngine\LBAMAnalysisEngine.htm">LBAMAnalysisEngine</a> 
+ along with your own live load strategy. This is because the <a HREF="..\Objects\LBAM_Analysis_Utility\LBAMAnalysisEngine\LBAMAnalysisEngine.htm">LBAMAnalysisEngine</a> 
+ object performs all of the intializations in its Initialize function, 
+ and it does not allow alternate live load strategies to be introduced 
+ after it has performed its initialization. This means that you will need 
+ to perform all LBAM engine initializations manually. Refer the the source 
+ code for the Initialize method of the <a HREF="..\Objects\LBAM_Analysis_Utility\LBAMAnalysisEngine\LBAMAnalysisEngine.htm">LBAMAnalysisEngine</a> 
+ for the details of how to do this in C++.</p>
+
+
+<!--(HR)============================================================-->
+<hr style="height: 2px;
+			width: 100%;
+			float: alignleft;"
+	size=2
+	width=100%
+	align=left>
+
+
+<p style="text-align: left;"
+	align=left>Copyright © 2000-2003, Washington State Department of Transportation</p>
+
+<p>&nbsp;</p>
+
+<p style="margin-bottom: 0;">&nbsp; </p>
+
+</body>
+
+</html>

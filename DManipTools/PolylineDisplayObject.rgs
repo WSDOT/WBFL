@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManipTools.PolylineDisplayObject.1 = s 'PolylineDisplayObject Class'
+	{
+		CLSID = s '{341A682F-5B58-4f63-8190-88BF3970FB45}'
+	}
+	WBFLDManipTools.PolylineDisplayObject = s 'PolylineDisplayObject Class'
+	{
+		CLSID = s '{341A682F-5B58-4f63-8190-88BF3970FB45}'
+		CurVer = s 'WBFLDManipTools.PolylineDisplayObject.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {341A682F-5B58-4f63-8190-88BF3970FB45} = s 'PolylineDisplayObject Class'
+		{
+			ProgID = s 'WBFLDManipTools.PolylineDisplayObject.1'
+			VersionIndependentProgID = s 'WBFLDManipTools.PolylineDisplayObject'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B7B9C36E-FEAF-43BB-8907-C98A0EF3224E}'
+		}
+	}
+}

@@ -1,0 +1,27 @@
+HKCR
+{
+	WBFLLBAMLiveLoader.LiveLoadStressResults.1 = s 'LiveLoadModelStressResults Class'
+	{
+		CLSID = s '{CF37172B-654D-446B-B66D-9FFBBC1959FA}'
+	}
+	WBFLLBAMLiveLoader.LiveLoadStressResults = s 'LiveLoadModelStressResults Class'
+	{
+		CLSID = s '{CF37172B-654D-446B-B66D-9FFBBC1959FA}'
+		CurVer = s 'WBFLLBAMLiveLoader.LiveLoadStressResults.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {CF37172B-654D-446B-B66D-9FFBBC1959FA} = s 'LiveLoadModelStressResults Class'
+		{
+			ProgID = s 'WBFLLBAMLiveLoader.LiveLoadStressResults.1'
+			VersionIndependentProgID = s 'WBFLLBAMLiveLoader.LiveLoadStressResults'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{5374CF63-57D4-4C08-9BD0-E29A9988662A}'
+		}
+	}
+}
+ 

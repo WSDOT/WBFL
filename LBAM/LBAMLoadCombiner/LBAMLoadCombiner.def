@@ -1,0 +1,9 @@
+; LBAMLoadCombiner.def : Declares the module parameters.
+
+LIBRARY      "WBFLLBAMLoadCombiner.DLL"
+
+EXPORTS
+	DllCanUnloadNow     PRIVATE
+	DllGetClassObject   PRIVATE
+	DllRegisterServer   PRIVATE
+	DllUnregisterServer	PRIVATE

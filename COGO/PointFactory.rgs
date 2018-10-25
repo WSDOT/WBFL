@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.PointFactory.1 = s 'PointFactory Class'
+	{
+		CLSID = s '{F0151EC9-C520-4ec7-9581-35FC1685FAAB}'
+	}
+	WBFLCogo.PointFactory = s 'PointFactory Class'
+	{
+		CLSID = s '{F0151EC9-C520-4ec7-9581-35FC1685FAAB}'
+		CurVer = s 'WBFLCogo.PointFactory.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {F0151EC9-C520-4ec7-9581-35FC1685FAAB} = s 'PointFactory Class'
+		{
+			ProgID = s 'WBFLCogo.PointFactory.1'
+			VersionIndependentProgID = s 'WBFLCogo.PointFactory'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.Profile.1 = s 'Profile Class'
+	{
+		CLSID = s '{7FD9C064-1A8C-4853-B1CC-24D9C877406F}'
+	}
+	WBFLCogo.Profile = s 'Profile Class'
+	{
+		CLSID = s '{7FD9C064-1A8C-4853-B1CC-24D9C877406F}'
+		CurVer = s 'WBFLCogo.Profile.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {7FD9C064-1A8C-4853-B1CC-24D9C877406F} = s 'Profile Class'
+		{
+			ProgID = s 'WBFLCogo.Profile.1'
+			VersionIndependentProgID = s 'WBFLCogo.Profile'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

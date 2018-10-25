@@ -1,0 +1,7 @@
+!MS$FREEFORM
+! Microsoft Developer Studio generated include file.
+! Used by Transactions.rc
+!
+      integer, parameter :: IDS_PROJNAME                    = 100
+      integer, parameter :: IDR_TRANSACTIONMGR              = 101
+      integer, parameter :: IDR_MACROTRANSACTION            = 102

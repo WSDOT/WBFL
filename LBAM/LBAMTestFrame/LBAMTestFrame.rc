@@ -1,0 +1,142 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "1 TYPELIB ""LBAMTestFrame.tlb""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "LBAMTestFrame Module\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "LBAMTestFrame\0"
+            VALUE "LegalCopyright", "Copyright 2001\0"
+            VALUE "OriginalFilename", "LBAMTestFrame.DLL\0"
+            VALUE "ProductName", "LBAMTestFrame Module\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+            VALUE "OLESelfRegister", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+
+IDR_SECTIONRESULTREQUEST REGISTRY DISCARDABLE    "SectionResultRequest.rgs"
+IDR_SECTIONRESULTREQUESTS REGISTRY DISCARDABLE    "SectionResultRequests.rgs"
+IDR_LBAMTESTER          REGISTRY DISCARDABLE    "LBAMTester.rgs"
+IDR_FILETESTLOGGER      REGISTRY DISCARDABLE    "FileTestLogger.rgs"
+IDR_INFLUENCERESULTREQUEST REGISTRY DISCARDABLE    "InfluenceResultRequest.rgs"
+IDR_INFLUENCERESULTREQUESTS REGISTRY DISCARDABLE    "InfluenceResultRequests.rgs"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PROJNAME            "WBFLLBAMTestFrame"
+    IDS_E_INVALID_LOADING_TYPE "Invalid LoadingType"
+    IDS_E_INVALID_RESULTS_ORIENTATION "Invalid ResultsOrientation"
+    IDS_E_INVALID_RESULTS_SUMMATION "Invalid ResultsSummation type"
+    IDS_E_NO_MODEL          "There is no model associated with this Tester. You must have a model."
+    IDS_E_NO_LOADGROUP_RESPONSE 
+                            "The ILoadGroupResponse object is NULL. You must first set an ILoadGroupResponse object before you can validate or create results."
+    IDS_E_NO_BENCHMARK      "A validation attempt was made, but a benchmark result was missing. The description of the request was: %S"
+    IDS_E_FILE_NOT_OPEN     "Log File Not Open. You must first open a file before you can start logging."
+    IDS_E_INVALID_FORCE_EFFECT "Invalid ForceEffect type"
+    IDS_E_INVALID_RESPONSE_TYPE "Invalid ResponseType"
+    IDS_E_NO_INFLUENCE_RESPONSE 
+                            "The IInfluenceLineResponse object is NULL. You must first set an ILoadGroupResponse object before you can validate or create results."
+    IDS_E_INVALID_PROCESSINGTYPE "Invalid Influence Processing Type"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+1 TYPELIB "LBAMTestFrame.tlb"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

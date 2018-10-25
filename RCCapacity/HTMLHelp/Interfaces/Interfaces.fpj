@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rhpml majorversion="1" minorversion="0">
+	<folders>
+		<folder>
+			<name>IRCSolver</name>
+		</folder>
+		<folder>
+			<name>IRCSolver2</name>
+		</folder>
+		<folder>
+			<name>IStressStrain</name>
+		</folder>
+		<folder>
+			<name>IRCSolver2Ex</name>
+		</folder>
+		<folder>
+			<name>IManderModelSection</name>
+		</folder>
+	</folders>
+	<topics/>
+</rhpml>

@@ -1,0 +1,649 @@
+///////////////////////////////////////////////////////////////////////
+// WBFLTools - Utility Tools for the WBFL
+// Copyright (C) 1999  Washington State Department of Transportation
+//                     Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the Alternate Route Library Open Source License as 
+// published by the Washington State Department of Transportation,
+// Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful,
+// but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// PURPOSE.  See the Alternate Route Library Open Source License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License
+// along with this program; if not, write to the Washington State
+// Department of Transportation, Bridge and Structures Office,
+// P.O. Box 47340, Olympia, WA 98503, USA or e-mail
+// Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// WBFLTools.idl : IDL source for WBFLTools.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (WBFLTools.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "WBFLTypes.idl";
+
+
+#include <WbflTools.hh>
+#include "StrStorage2.hh"
+
+cpp_quote("/////////////////////////////////////////////////////////////////////////////")
+cpp_quote("// ILogFile status codes")
+cpp_quote("#define LOGFILE_E_FIRST    MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0200)")
+cpp_quote("#define LOGFILE_E_LAST     MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x020F)")
+cpp_quote("")
+cpp_quote("#define LOGFILE_E_CANTOPEN           (LOGFILE_E_FIRST+0)")
+cpp_quote("// unable to open the log file")
+cpp_quote("")
+cpp_quote("#define LOGFILE_E_BADWRITE           (LOGFILE_E_FIRST+1)")
+cpp_quote("// error occured while logging message")
+cpp_quote("")
+cpp_quote("#define LOGFILE_E_NOLOGFILE          (LOGFILE_E_FIRST+2)")
+cpp_quote("// invalid cookie was used")
+
+
+cpp_quote("/////////////////////////////////////////////////////////////////////////////")
+cpp_quote("// IStructuredLoad status codes")
+cpp_quote("#define STRLOAD_E_FIRST    MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0200)")
+cpp_quote("#define STRLOAD_E_LAST     MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x020F)")
+cpp_quote("")
+cpp_quote("#define STRLOAD_E_CANTOPEN           (STRLOAD_E_FIRST+0)")
+cpp_quote("// unable to open the structured storage")
+cpp_quote("")
+cpp_quote("#define STRLOAD_E_INVALIDFORMAT      (STRLOAD_E_FIRST+1)")
+cpp_quote("// invalid structured storage format")
+cpp_quote("")
+cpp_quote("#define STRLOAD_E_BADVERSION         (STRLOAD_E_FIRST+2)")
+cpp_quote("// invalid version number encountered")
+cpp_quote("")
+cpp_quote("#define STRLOAD_E_FILENOTFOUND       (STRLOAD_E_FIRST+3)")
+cpp_quote("// the specified file was not found")
+cpp_quote("")
+cpp_quote("#define STRLOAD_E_CLASS_NOT_REGISTERED (STRLOAD_E_FIRST+4)")
+cpp_quote("// class was not registered and cannot be created")
+cpp_quote("")
+cpp_quote("#define STRLOAD_E_CLASS_ISTRUCTUREDSTORAGE2 (STRLOAD_E_FIRST+5)")
+cpp_quote("// the class does not support the IStructuredStorage2 interface")
+cpp_quote("")
+
+
+cpp_quote("/////////////////////////////////////////////////////////////////////////////")
+cpp_quote("// IStructuredSave status codes")
+cpp_quote("#define STRSAVE_E_FIRST    MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0200)")
+cpp_quote("#define STRSAVE_E_LAST     MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x020F)")
+cpp_quote("")
+cpp_quote("#define STRSAVE_E_CANTOPEN                (STRSAVE_E_FIRST+0)")
+cpp_quote("// unable to open the structured storage")
+cpp_quote("")
+cpp_quote("#define STRSAVE_E_BADWRITE                (STRSAVE_E_FIRST+1)")
+cpp_quote("// could not write to stream")
+cpp_quote("")
+cpp_quote("#define STRSAVE_E_INITIALIZING_THE_PARSER (STRSAVE_E_FIRST+2)")
+cpp_quote("// problem firing up the parser")
+cpp_quote("")
+cpp_quote("#define STRSAVE_E_INVALID_VARIANT_TYPE    (STRSAVE_E_FIRST+3)")
+cpp_quote("// Invalid variant type passed in by client or in xml file")
+cpp_quote("")
+cpp_quote("#define STRSAVE_E_FILE_NOT_OPEN           (STRSAVE_E_FIRST+4)")
+cpp_quote("// tried to write to file that's not open")
+cpp_quote("")
+cpp_quote("#define STRSAVE_E_IPERSIST                (STRSAVE_E_FIRST+5)")
+cpp_quote("// classes saved must support IPersist")
+cpp_quote("")
+cpp_quote("#define STRSAVE_E_CLASS_ISTRUCTUREDSTORAGE2 (STRSAVE_E_FIRST+6)")
+cpp_quote("// the class does not support the IStructuredStorage2 interface")
+cpp_quote("")
+cpp_quote("#define STRSAVE_E_MUST_HAVE_ONE_UNIT        (STRSAVE_E_FIRST+7)")
+cpp_quote("// all structured storage documents must have at least on unit ")
+cpp_quote("")
+cpp_quote("#define STRSAVE_E_ONLY_ONE_UNIT             (STRSAVE_E_FIRST+8)")
+   
+[
+	uuid(B9507D8C-7100-11D3-89BB-006097C68A9C),
+	version(1.00),
+    helpfile("WBFLTools.chm"),
+    helpcontext(IDH_WbflTools),
+	helpstring("WBFLTools Library")
+]
+library WBFLTools
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+   typedef [public,helpstring("enum LicenseType"),helpcontext(IDH_LicenseType),uuid(AB6DF408-C7B1-11D3-8A1D-006097C68A9C)] 
+   enum 
+   {
+      ltAROSL = 1,
+      ltARLOSL = 2
+   } LicenseType;
+
+   typedef [public,helpstring("enum AcceptanceType"),helpcontext(IDH_AcceptanceType),uuid(AB6DF409-C7B1-11D3-8A1D-006097C68A9C)] 
+   enum 
+   {
+      atAccept = 1,
+      atReject = 2
+   } AcceptanceType;
+
+
+	[
+        object,	
+		uuid(88110BF6-AC46-11d4-8B4B-006097C68A9C),
+	   oleautomation,
+		helpstring("IStructuredLoad2 Interface"),
+		pointer_default(unique)
+	]
+	interface IStructuredLoad2 : IUnknown
+	{
+		[helpstring("method Open"), helpcontext(IDH_Load_Open)] HRESULT Open([in] BSTR bstrFile);
+		[helpstring("method BeginUnit"), helpcontext(IDH_Load_Begin_Unit)] HRESULT BeginUnit([in] BSTR bstrUnit);
+		[helpstring("method EndUnit"), helpcontext(IDH_Load_End_Unit)] HRESULT EndUnit([out,retval]VARIANT_BOOL* bEnd);
+		[propget,helpstring("property Version"), helpcontext(IDH_Load_Version)] HRESULT Version([out, retval] Float64 *pVal);
+		[propget,helpstring("property TopVersion"), helpcontext(IDH_Load_TopVersion)] HRESULT TopVersion([out, retval] Float64 *pVal);
+		[propget,helpstring("property Property"), helpcontext(IDH_Load_Property)] HRESULT Property([in] BSTR bstrPropName, [out, retval] VARIANT *pVal);
+		[helpstring("method EndOfStorage"), helpcontext(IDH_Load_End_Of_Storage2)] HRESULT EndOfStorage([out,retval]VARIANT_BOOL* bEnd);
+		[helpstring("method Close"), helpcontext(IDH_Load_Close)] HRESULT Close();
+	};
+	[
+        object,	
+		uuid(88110BF7-AC46-11d4-8B4B-006097C68A9C),
+	   oleautomation,
+		helpstring("IStructuredSave2 Interface"),
+		pointer_default(unique)
+	]
+	interface IStructuredSave2 : IUnknown
+	{
+		[helpstring("method Open"), helpcontext(IDH_Save_Open)] HRESULT Open([in] BSTR bstrFileName);
+		[helpstring("method BeginUnit"), helpcontext(IDH_Save_Begin_Unit)] HRESULT BeginUnit([in] BSTR bstrUnit,[in] Float64 ver);
+		[helpstring("method EndUnit"), helpcontext(IDH_Save_End_Unit)] HRESULT EndUnit();
+		[propget, helpstring("property Version"), helpcontext(IDH_Save_Version)] HRESULT Version([out, retval] Float64 *pVal);
+		[propget, helpstring("property TopVersion"), helpcontext(IDH_Save_TopVersion)] HRESULT TopVersion([out, retval] Float64 *pVal);
+		[propput, helpstring("property Property"), helpcontext(IDH_Save_Property)] HRESULT Property([in] BSTR bstrPropName, [in] VARIANT newVal);
+		[helpstring("method Close"), helpcontext(IDH_Save_Close)] HRESULT Close();
+	};
+
+   [
+   object,
+   oleautomation,
+   uuid(5693D0F5-AC55-11d4-8B4B-006097C68A9C),
+   helpstring("IStructuredStorage2 Interface"),
+   pointer_default(unique)
+   ]
+   interface IStructuredStorage2 : IUnknown
+   {
+      [helpstring("method Load"), helpcontext(IDH_ISS2_Load)] HRESULT Load([in] IStructuredLoad2* load);
+      [helpstring("method Save"), helpcontext(IDH_ISS2_Save)] HRESULT Save([in] IStructuredSave2* save);
+   }; 
+
+   [
+		object,
+		uuid(E590D200-FF47-11D2-8CDF-F43C3928A334),
+		oleautomation,
+		helpstring("IMohrCircle Interface"),
+		pointer_default(unique)
+	]
+	interface IMohrCircle : IUnknown
+	{
+		[propget, helpcontext(IDH_MohrCircle_Sii),helpstring("property Sii")] HRESULT Sii([out, retval] Float64 *sii);
+		[propput, helpcontext(IDH_MohrCircle_Sii),helpstring("property Sii")] HRESULT Sii([in] Float64 sii);
+		[propget, helpcontext(IDH_MohrCircle_Sjj),helpstring("property Sjj")] HRESULT Sjj([out, retval] Float64 *sjj);
+		[propput, helpcontext(IDH_MohrCircle_Sjj),helpstring("property Sjj")] HRESULT Sjj([in] Float64 sjj);
+		[propget, helpcontext(IDH_MohrCircle_Sij),helpstring("property Sij")] HRESULT Sij([out, retval] Float64 *sij);
+		[propput, helpcontext(IDH_MohrCircle_Sij),helpstring("property Sij")] HRESULT Sij([in] Float64 sij);
+		[propget, helpcontext(IDH_MohrCircle_Center),helpstring("property Center")] HRESULT Center([out, retval] Float64 *center);
+		[propget, helpcontext(IDH_MohrCircle_Radius),helpstring("property Radius")] HRESULT Radius([out, retval] Float64 *radius);
+		[propget, helpcontext(IDH_MohrCircle_PrincipleDirection),helpstring("property PrincipleDirection")] HRESULT PrincipleDirection([out, retval] Float64 *dir);
+		[propget, helpcontext(IDH_MohrCircle_Smax),helpstring("property Smax")] HRESULT Smax([out, retval] Float64 *Smax);
+		[propget, helpcontext(IDH_MohrCircle_Smin),helpstring("property Smin")] HRESULT Smin([out, retval] Float64 *Smin);
+		[propget, helpcontext(IDH_MohrCircle_Tmax),helpstring("property Tmax")] HRESULT Tmax([out, retval] Float64 *Tmax);
+		[helpcontext(IDH_MohrCircle_ComputeState),helpstring("method ComputeState")] HRESULT ComputeState([in] Float64 angle,[out] Float64* S11,[out] Float64* S22, [out] Float64* S12);
+		[helpcontext(IDH_MohrCircle_ComputeSxx),helpstring("method ComputeSxx")] HRESULT ComputeSxx([in] Float64 angle,[out,retval]Float64* sxx);
+		[helpcontext(IDH_MohrCircle_ComputeSxy),helpstring("method ComputeSxy")] HRESULT ComputeSxy([in] Float64 angle,[out,retval]Float64* sxy);
+		[helpcontext(IDH_MohrCircle_ComputeSyy),helpstring("method ComputeSyy")] HRESULT ComputeSyy([in] Float64 angle,[out,retval]Float64* syy);
+	};
+
+   [
+		object,
+		uuid(27F9E27F-7102-11D3-89BB-006097C68A9C),
+		oleautomation,
+		helpstring("IARPNotice Interface"),
+		pointer_default(unique)
+	]
+	interface IARPNotice : IUnknown
+	{
+		[helpcontext(IDH_ArpNotice_Show),helpstring("method Show")] HRESULT Show([in] VARIANT_BOOL bGiveChoice,[in] LicenseType lt,[out,retval] AcceptanceType* lResult);
+		[propget, helpcontext(IDH_ArpNotice_ShowAgain),helpstring("property ShowAgain")] HRESULT ShowAgain([out, retval] VARIANT_BOOL *pVal);
+		[propput, helpcontext(IDH_ArpNotice_ShowAgain),helpstring("property ShowAgain")] HRESULT ShowAgain([in] VARIANT_BOOL newVal);
+	};
+
+   [
+      object,
+      uuid(FF5644CF-0E91-4b71-9AD6-3B50162AEA01),
+      oleautomation,
+      helpstring("IWBFLErrorLog Interface"),
+      pointer_default(unique)
+   ]
+   interface IWBFLErrorLog : IUnknown
+   {
+      [helpstring("method Open")] HRESULT Open([in] BSTR fileName,[out,retval] DWORD* dwCookie);
+      [helpstring("method LogMessage")] HRESULT LogMessage([in]DWORD dwCookie,[in] BSTR msg);
+      [helpstring("method Close")] HRESULT Close([in] DWORD dwCookie);
+   };
+	[
+		object,
+		uuid(0A64ECCB-ABA8-4F70-98CC-5C5D69A25505),
+		oleautomation,
+		helpstring("IProgressMonitorWindow Interface"),
+      helpcontext(IDH_ProgressMonitorWindow),
+		pointer_default(unique)
+	]
+	interface IProgressMonitorWindow : IUnknown
+	{
+		[propget, helpcontext(IDH_ProgressMonitorWindow_HasCancel), helpstring("property HasCancel")] 
+      HRESULT HasCancel([out, retval] VARIANT_BOOL *pVal);
+		[propput, helpcontext(IDH_ProgressMonitorWindow_HasCancel), helpstring("property HasCancel")] 
+      HRESULT HasCancel([in] VARIANT_BOOL newVal);
+		[helpcontext(IDH_ProgressMonitorWindow_Show), helpstring("method Show")] 
+      HRESULT Show([in]BSTR initialMessage);
+		[helpcontext(IDH_ProgressMonitorWindow_Hide), helpstring("method Hide")] 
+      HRESULT Hide();
+		[helpcontext(IDH_ProgressMonitorWindow_Close), helpstring("method Close")] 
+      HRESULT Close();
+		[propget, helpcontext(IDH_ProgressMonitorWindow_HasGauge), helpstring("property HasGauge")] 
+      HRESULT HasGauge([out, retval] VARIANT_BOOL *pVal);
+		[propput, helpcontext(IDH_ProgressMonitorWindow_HasGauge), helpstring("property HasGauge")] 
+      HRESULT HasGauge([in] VARIANT_BOOL newVal);
+	};
+
+	[
+		object,
+		uuid(D530ADC7-94D0-43a6-901E-BDEEAD53AE79),
+		oleautomation,
+		helpstring("ILogProgressToFile Interface"),
+      helpcontext(IDH_ILogProgressToFile),
+		pointer_default(unique)
+	]
+	interface ILogProgressToFile : IUnknown
+	{
+		[helpcontext(IDH_ILogProgressToFile_OpenLogFile), helpstring("method OpenLogFile")] 
+      HRESULT OpenLogFile(BSTR FileName);
+		[ helpcontext(IDH_ILogProgressToFile_CloseLogFile),helpstring("method CloseLogFile")] 
+      HRESULT CloseLogFile();
+	};
+
+	[
+	   object,
+	   uuid(79E6350B-7E91-475a-A54E-05D8AA65605B),
+	   helpstring("IEnumLongArray Interface"),
+	   oleautomation,nonextensible,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumLongArray : IUnknown
+	{
+       [helpstring("Clone"),]
+	   HRESULT Clone([out] IEnumLongArray** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] long* rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+		object,
+		uuid(B0BF1679-929A-466C-8F95-A7D6FA825307),
+		oleautomation,
+		helpstring("ILongArray Interface - An array of longs"),
+      helpcontext(IDH_LongArray),
+		pointer_default(unique)
+	]
+	interface ILongArray : IUnknown
+	{
+		[propget, helpcontext(IDH_LongArray_Item), helpstring("property Item")] 
+      HRESULT Item([in]CollectionIndexType relPosition, [out, retval] long *pVal);
+		[propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")] 
+      HRESULT Item([in]CollectionIndexType relPosition, [in] long newVal);
+		[propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
+		HRESULT _NewEnum([out, retval] IUnknown** retval);  
+		[propget, helpcontext(IDH_LongArray), helpstring("property _EnumElements")] 
+		HRESULT _EnumElements([out, retval] IEnumLongArray* *pVal);
+		[helpcontext(IDH_LongArray_Clear), helpstring("method Clear")] 
+      HRESULT Clear();
+		[propget, helpcontext(IDH_LongArray_Count), helpstring("property Count")] 
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+		[helpcontext(IDH_LongArray_Clone), helpstring("method Clone")] 
+      HRESULT Clone([out,retval]ILongArray* *clone);
+		[helpcontext(IDH_LongArray_ReDim), helpstring("method ReDim")] 
+      HRESULT ReDim([in]CollectionIndexType size);
+		[helpcontext(IDH_LongArray_Find), helpstring("method Find")] 
+      HRESULT Find([in]long value, [out,retval]CollectionIndexType* fndIndex);
+		[helpcontext(IDH_LongArray_Add), helpstring("method Add")] 
+      HRESULT Add([in]long item);
+		[helpcontext(IDH_LongArray_Remove), helpstring("method Remove")] 
+      HRESULT Remove([in]CollectionIndexType relPosition);
+		[helpcontext(IDH_LongArray_Insert), helpstring("method Insert")] 
+      HRESULT Insert([in]CollectionIndexType relPosition, [in]long item);
+		[helpcontext(IDH_LongArray_Reserve), helpstring("method Reserve")] 
+      HRESULT Reserve([in]CollectionIndexType count);
+	};
+
+
+	[
+	   object,
+	   uuid(EB880B96-ACFF-4d1c-BFFD-FC032A3E1D00),
+	   helpstring("IEnumDblArray Interface"),
+	   oleautomation,nonextensible,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumDblArray : IUnknown
+	{
+       [helpstring("Clone"),]
+	   HRESULT Clone([out] IEnumDblArray** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] Float64* rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+
+	[
+		object,
+		uuid(CABA1F9A-CEE0-40E6-91CA-18D3F4FC0718),
+		oleautomation,
+		helpstring("IDblArray Interface"),
+      helpcontext(IDH_DblArray),
+		pointer_default(unique)
+	]
+	interface IDblArray : IUnknown
+	{
+		[propget, helpcontext(IDH_DblArray_Item), helpstring("property Item")] 
+      HRESULT Item([in]CollectionIndexType relPosition, [out, retval] Float64 *pVal);
+		[propput, helpcontext(IDH_DblArray_Item), helpstring("property Item")] 
+      HRESULT Item([in]CollectionIndexType relPosition, [in] Float64 newVal);
+		[propget, helpcontext(IDH_DblArray), helpstring("returns an standard COM enumerator for the collection.")]
+		HRESULT _NewEnum([out, retval] IUnknown** retval);  
+		[propget, helpcontext(IDH_DblArray), helpstring("property _EnumElements")] 
+		HRESULT _EnumElements([out, retval] IEnumDblArray* *pVal);
+		[helpcontext(IDH_DblArray_Clear), helpstring("method Clear")] 
+      HRESULT Clear();
+		[propget, helpcontext(IDH_DblArray_Count), helpstring("property Count")] 
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+		[helpcontext(IDH_DblArray_Clone), helpstring("method Clone")] 
+      HRESULT Clone([out,retval]IDblArray* *clone);
+		[helpcontext(IDH_DblArray_ReDim), helpstring("method ReDim")] 
+      HRESULT ReDim([in]CollectionIndexType size);
+		[helpcontext(IDH_DblArray_Add), helpstring("method Add")] 
+      HRESULT Add([in]Float64 item);
+		[helpcontext(IDH_DblArray_Remove), helpstring("method Remove")] 
+      HRESULT Remove([in]CollectionIndexType relPosition);
+		[helpcontext(IDH_DblArray_Insert), helpstring("method Insert")] 
+      HRESULT Insert([in]CollectionIndexType relPosition, [in]Float64 item);
+		[helpcontext(IDH_DblArray_Reserve), helpstring("method Reserve")] 
+      HRESULT Reserve([in]CollectionIndexType count);
+	};
+
+	[
+	   object,
+	   uuid(68F75050-236A-4a73-B1D1-25A48221CFEF),
+	   helpstring("IEnumBstrArray Interface"),
+	   oleautomation,nonextensible,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumBstrArray : IUnknown
+	{
+       [helpstring("Clone"),]
+	   HRESULT Clone([out] IEnumBstrArray** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] BSTR* rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+		object,
+		uuid(505C846A-96F9-42FD-8202-C06170538E65),
+		oleautomation,
+		helpstring("IBstrArray Interface"),
+      helpcontext(IDH_BStrArray),
+		pointer_default(unique)
+	]
+	interface IBstrArray : IUnknown
+	{
+		[propget, helpcontext(IDH_BStrArray_Item), helpstring("property Item")] 
+      HRESULT Item([in]CollectionIndexType relPosition, [out, retval] BSTR *pVal);
+		[propput, helpcontext(IDH_BStrArray_Item), helpstring("property Item")] 
+      HRESULT Item([in]CollectionIndexType relPosition, [in] BSTR newVal);
+		[propget, helpcontext(IDH_BStrArray), helpstring("returns an standard COM enumerator for the collection.")]
+		HRESULT _NewEnum([out, retval] IUnknown** retval);  
+		[propget, helpcontext(IDH_BStrArray),helpstring("property _EnumElements")] 
+		HRESULT _EnumElements([out, retval] IEnumBstrArray* *pVal);
+		[helpcontext(IDH_BStrArray_Clear), helpstring("method Clear")] 
+      HRESULT Clear();
+		[propget, helpcontext(IDH_BStrArray_Count), helpstring("property Count")] 
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+		[helpcontext(IDH_BStrArray_Clone), helpstring("method Clone")] 
+      HRESULT Clone([out,retval]IBstrArray* *clone);
+		[helpcontext(IDH_BStrArray_ReDim), helpstring("method ReDim")] 
+      HRESULT ReDim([in]CollectionIndexType size);
+		[helpcontext(IDH_BStrArray_Find), helpstring("method Find")] 
+      HRESULT Find([in]BSTR value, [out,retval]CollectionIndexType* fndIndex);
+		[helpcontext(IDH_BStrArray_Add), helpstring("method Add")] 
+      HRESULT Add([in]BSTR item);
+		[helpcontext(IDH_BStrArray_Remove), helpstring("method Remove")] 
+      HRESULT Remove([in]CollectionIndexType relPosition);
+		[helpcontext(IDH_BStrArray_Insert), helpstring("method Insert")] 
+      HRESULT Insert([in]CollectionIndexType relPosition, [in]BSTR item);
+		[helpcontext(IDH_BStrArray_Reserve), helpstring("method Reserve")] 
+      HRESULT Reserve([in]CollectionIndexType count);
+	};
+
+	[
+	   object,
+	   uuid(ADD1A335-0A98-4ae5-9C7C-7DAEB7718DE3),
+	   helpstring("IEnumUnkArray Interface"),
+	   oleautomation,nonextensible,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumUnkArray : IUnknown
+	{
+       [helpstring("Clone"),]
+	   HRESULT Clone([out] IEnumUnkArray** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] IUnknown** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+
+	[
+		object,
+		uuid(F7E15329-3F3B-4161-9C9C-43ED3F9B689C),
+		oleautomation,
+		helpstring("IUnkArray Interface"),
+      helpcontext(IDH_UnkArray),
+		pointer_default(unique)
+	]
+	interface IUnkArray : IUnknown
+	{
+		[propget, helpcontext(IDH_UnkArray), helpstring("property Item")] 
+      HRESULT Item([in]CollectionIndexType relPosition, [out, retval] IUnknown* *pVal);
+		[propput, helpcontext(IDH_UnkArray), helpstring("property Item")] 
+      HRESULT Item([in]CollectionIndexType relPosition, [in] IUnknown* newVal);
+		[propget, helpcontext(IDH_UnkArray), helpstring("returns an standard COM enumerator for the collection.")]
+		HRESULT _NewEnum([out, retval] IUnknown** retval);  
+		[propget, helpcontext(IDH_UnkArray), helpstring("property _EnumElements")] 
+		HRESULT _EnumElements([out, retval] IEnumUnkArray* *pVal);
+		[helpcontext(IDH_UnkArray), helpstring("method Clear")] 
+      HRESULT Clear();
+		[propget, helpcontext(IDH_UnkArray), helpstring("property Count")] 
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+		[helpcontext(IDH_UnkArray), helpstring("method Clone")] 
+      HRESULT Clone([out,retval]IUnkArray* *clone);
+		[helpcontext(IDH_UnkArray), helpstring("method Add")] 
+      HRESULT Add([in]IUnknown* item);
+		[helpcontext(IDH_UnkArray), helpstring("method Remove")] 
+      HRESULT Remove([in]CollectionIndexType relPosition);
+		[helpcontext(IDH_UnkArray), helpstring("method Insert")] 
+      HRESULT Insert([in]CollectionIndexType relPosition, [in]IUnknown* item);
+		[helpcontext(IDH_UnkArray), helpstring("method Reserve")] 
+      HRESULT Reserve([in]CollectionIndexType count);
+	};
+
+
+
+/////////////////////
+
+	[
+        object,	
+		uuid(B9CDE114-D5D8-4acc-A764-DF0C2863E028),
+	    oleautomation,
+		helpstring("IProgressMonitor Interface"),
+		pointer_default(unique)
+	]
+	interface IProgressMonitor : IUnknown
+	{
+		[propput, helpstring("Value of gauge from 0-100")] 
+      HRESULT GaugeValue([in]long cookie, [in] long newVal);
+		[propput, helpstring("Message to be displayed")] 
+      HRESULT Message([in]long cookie, [in] BSTR newVal);
+		[propget, helpstring("Check this value to see if process was cancelled")] 
+      HRESULT WasCancelled([out, retval] VARIANT_BOOL *pVal);
+	};
+
+	[
+        object,	
+		uuid(A6F2C304-53CF-4033-BC49-193B50077F3E),
+      oleautomation,
+		helpstring("ISupportProgressMonitor Interface"),
+		pointer_default(unique)
+	]
+	interface ISupportProgressMonitor : IUnknown
+	{
+		[helpstring("Initialize the ProgressMonitor")] HRESULT InitializeProgressMonitor([in]IProgressMonitor* newVal, [in]long cookie);
+	};
+
+   [
+		uuid(E590D201-FF47-11D2-8CDF-F43C3928A334),
+      helpcontext(IDH_MohrCircle),
+		helpstring("MohrCircle Class")
+	]
+	coclass MohrCircle
+	{
+		[default] interface IMohrCircle;
+	};
+	[
+		uuid(27F9E280-7102-11D3-89BB-006097C68A9C),
+		helpcontext(IDH_ArpNotice),
+		helpstring("ARPNotice Class")
+	]
+	coclass ARPNotice
+	{
+		[default] interface IARPNotice;
+	};
+	[
+		uuid(043B36E6-64EE-11d5-B017-00105A9AF985),
+		helpstring("StructuredSave2 Class")
+	]
+	coclass StructuredSave2
+	{
+		[default] interface IStructuredSave2;
+	};
+	[
+		uuid(043B36E7-64EE-11d5-B017-00105A9AF985),
+		helpstring("StructuredLoad2 Class")
+	]
+	coclass StructuredLoad2
+	{
+		[default] interface IStructuredLoad2;
+	};
+   [
+      uuid(49E8A61D-E83B-4b60-B0D7-96B0D1A96CC3),
+      helpstring("ErrorLog Class")
+   ]
+   coclass WBFLErrorLog
+   {
+      [default] interface IWBFLErrorLog;
+   };
+	[
+		uuid(28706F21-DA7C-45C8-866C-3285BCAF3434),
+		helpstring("ProgressMonitor Class")
+	]
+	coclass ProgressMonitor
+	{
+		[default] interface IProgressMonitor;
+	};
+	[
+		uuid(8C63C999-10B8-43B5-A7CC-72B6AC48283F),
+		helpstring("ProgressMonitorWindow Class")
+	]
+	coclass ProgressMonitorWindow
+	{
+		[default] interface IProgressMonitorWindow;
+      interface IProgressMonitor;
+      interface ILogProgressToFile;
+	};
+	[
+		uuid(51EAE330-F430-492C-95A1-A755D76A8C4F),
+		helpstring("ILongArray Class")
+	]
+	coclass LongArray
+	{
+		[default] interface ILongArray;
+	};
+	[
+		uuid(851D2378-0F8C-4040-8E84-B26C5E7F9528),
+		helpstring("DblArray Class")
+	]
+	coclass DblArray
+	{
+		[default] interface IDblArray;
+	};
+	[
+		uuid(FA223DB0-69C7-4FB6-90CC-0C20BE566982),
+		helpstring("BstrArray Class")
+	]
+	coclass BstrArray
+	{
+		[default] interface IBstrArray;
+	};
+	[
+		uuid(88D26763-7BD5-4F92-A064-7497A72E7D81),
+		helpstring("UnkArray Class")
+	]
+	coclass UnkArray
+	{
+		[default] interface IUnkArray;
+	};
+};

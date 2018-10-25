@@ -1,0 +1,131 @@
+<!doctype HTML public "-//W3C//DTD HTML 4.0 Frameset//EN">
+
+<html>
+
+<!--(==============================================================)-->
+<!--(Document created with RoboEditor. )============================-->
+<!--(==============================================================)-->
+
+<head>
+
+<title>Member Loads</title>
+
+<!--(Meta)==========================================================-->
+
+<meta http-equiv=content-type content="text/html; charset=windows-1252">
+<meta name=topic-status content="In Progress">
+<meta name=topic-priority content=0>
+<meta name=topic-time-estimate content=0>
+<meta name=topic-comment content>
+<meta name=topic-id content>
+<meta name=generator content="RoboHELP by eHelp Corporation - www.ehelp.com">
+<meta name=generator-major-version content=0.1>
+<meta name=generator-minor-version content=1>
+<meta name=filetype content=kadov>
+<meta name=filetype-version content=1>
+<meta name=page-count content=0>
+<meta name=layout-height content=0>
+<meta name=layout-width content=0>
+
+
+<!--(Links)=========================================================-->
+
+<link REL=StyleSheet HREF="..\default.css">
+
+
+
+</head>
+
+<!--(Body)==========================================================-->
+
+
+<body>
+
+<h1>Member Loads</h1>
+
+<p>Member Loads are loads that are applied directly to parts of the LBAM 
+ model. Every Member Load must be assigned to a LoadGroup. The following 
+ paragraphs give a brief discussion of each type of member load that is 
+ available. More detailed descriptions of each load type are provided in 
+ the API documentation.</p>
+
+<h2>DistributedLoad</h2>
+
+<p style="text-align: center;"
+	align=center><img src="..\Images\DistributedLoad.gif"
+						style="width: 512px;
+								height: 218px;
+								border-style: none;
+								margin-top: 0px;
+								margin-bottom: 0px;
+								margin-left: 0px;
+								margin-right: 0px;"
+						width=512
+						height=218
+						border=0></p>
+
+<p>A <a HREF="..\Objects\LBAM_Model\DistributedLoad\DistributedLoad.htm">DistributedLoad</a> 
+ can be applied along a Span, SuperStructureMember, Support, or TemporarySupport. 
+ A DistributedLoad has a linear load distribution and can be applied anywhere 
+ along the length of a member. A DistrubutedLoad may not be applied to 
+ zero-length members. A DistributedLoad can be applied in member local, 
+ or global coordinates.</p>
+
+<h2>PointLoad</h2>
+
+<p style="text-align: center;"
+	align=center><img src="..\Images\PointLoad.gif"
+						style="width: 376px;
+								height: 217px;
+								border-style: none;
+								margin-top: 0px;
+								margin-bottom: 0px;
+								margin-left: 0px;
+								margin-right: 0px;"
+						width=376
+						height=217
+						border=0></p>
+
+<p>A <a HREF="..\Objects\LBAM_Model\PointLoad\PointLoad.htm">PointLoad</a> 
+ is a discrete force/moment that can be applied along a Span, SuperStructureMember, 
+ Support, or TemporarySupport. A PointLoad can be applied in member local, 
+ or global coordinates.</p>
+
+<h2>SettlementLoad</h2>
+
+<p>A <a HREF="..\Objects\LBAM_Model\SettlementLoad\SettlementLoad.htm">SettlementLoad</a> 
+ is a specified translation at the foundation end of a Support or TemporarySupport.</p>
+
+<h2>StrainLoad</h2>
+
+<p>A <a HREF="..\Objects\LBAM_Model\StrainLoad\StrainLoad.htm">StrainLoad</a> 
+ allows the specification of a pre-existing, uniform axial or curvature 
+ strain along the entire length of a member. A StrainLoad can be applied 
+ along a Span, SuperStructureMember, Support, or TemporarySupport. Pre-existing 
+ strains are used to model fabrication errors or material shrinkage.</p>
+
+<h2>TemperatureLoad</h2>
+
+<p>A <a HREF="..\Objects\LBAM_Model\TemperatureLoad\TemperatureLoad.htm">TemperatureLoad</a> 
+ provides a way to specify a strain due to a uniform temperature change 
+ along a member. The temperature change can be full-depth, or a linear 
+ gradient. Strains due to a TemperatureLoad are computed using the ThermalCoeff, 
+ and Depth properties of the cross section at the load location. A TemperatureLoad 
+ can be applied along a Span, SuperStructureMember, Support, or TemporarySupport.</p>
+
+
+<!--(HR)============================================================-->
+<hr style="height: 2px;
+			width: 100%;
+			float: aligncenter;"
+	size=2
+	width=100%
+	align=center>
+
+
+<p style="margin-bottom: 0;">Copyright © 2000-2002, Washington State Department 
+ of Transportation </p>
+
+</body>
+
+</html>

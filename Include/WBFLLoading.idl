@@ -1,0 +1,1925 @@
+///////////////////////////////////////////////////////////////////////
+// Loading - Generic library to describe bridge loadings
+// Copyright (C) 2009  Washington State Department of Transportation
+//                     Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// Loading.idl : IDL source for Loading.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (Loading.tlb) and marshalling code.
+
+#include <Loading.hh>
+cpp_quote("#include <LoadingErrors.h>")
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "WBFLTypes.idl";
+import "WBFLTools.idl";
+
+
+[
+	uuid(81DDDDC6-EC00-4E8D-A000-08C10F134EDA),
+	version(1.0),
+   helpcontext(IDH_WBFLLOADING),
+	helpstring("WBFLLoading Library")
+]
+library WBFLLoading
+{
+
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+   typedef
+   [
+      public,
+      uuid(B43D3508-5101-42d1-BCF0-037F79B20C98),
+      helpstring("Dispatch IDs for connection point callbacks/events. "),
+   ] 
+   enum 
+   {
+      ldctPointLoad                     = 34001,
+      ldctPointLoadsChanged             = 34002,
+      ldctPointLoadsAdded               = 34003,
+      ldctPointLoadsBeforeRemove        = 34004,
+      ldctDistributedLoad               = 34005,
+      ldctDistributedLoadsChanged       = 34006,
+      ldctDistributedLoadsAdded         = 34007,
+      ldctDistributedLoadsBeforeRemove  = 34008,
+      ldctSettlementLoad                = 34009,
+		ldctSettlementLoadsChanged        = 34010,
+		ldctSettlementLoadsAdded          = 34011,
+		ldctSettlementLoadsBeforeRemove   = 34012,
+      ldctTemperatureLoad               = 34013,
+      ldctTemperatureLoadsChanged       = 34014,
+      ldctTemperatureLoadsAdded         = 34015,
+      ldctTemperatureLoadsBeforeRemove  = 34016,
+      ldctStrainLoad                    = 34017,
+		ldctStrainLoadsChanged            = 34018,
+		ldctStrainLoadsAdded              = 34019,
+		ldctStrainLoadsBeforeRemove       = 34020,
+      ldctAxle                          = 34021,
+      ldctAxlesChanged                  = 34022,
+      ldctAxlesAdded                    = 34023,
+      ldctAxlesBeforeRemove             = 34024,
+      ldctAxlesMoveTo                   = 34025,
+      ldctAxlesCopyTo                   = 34026,
+      ldctAxlesReverse                  = 34027,
+      ldctVehicularLoad                 = 34028,
+      ldctVehicularLoadsChanged         = 34029,
+      ldctVehicularLoadsRenamed         = 34030,
+      ldctVehicularLoadsAdded           = 34031,
+      ldctVehicularLoadsBeforeRemove    = 34032,
+      ldctLoadGroupChanged              = 34033,
+      ldctLoadGroupRenamed              = 34034,
+      ldctLoadCase                      = 34035,
+      ldctLoadCaseRenamed               = 34036,
+      ldctLoadCasesChanged              = 34037,
+      ldctLoadCasesRenamed              = 34038,
+      ldctLoadCasesAdded                = 34039,
+      ldctLoadCasesBeforeRemove         = 34040,
+      ldctLoadGroupsChanged             = 34041,
+      ldctLoadGroupsRenamed             = 34042,
+      ldctLoadGroupsAdded               = 34043,
+      ldctLoadGroupsBeforeRemove        = 34044,
+      ldctLoadCombination               = 34045,
+      ldctLoadCombinationRenamed        = 34046,
+      ldctLoadCombinationsChanged       = 34047,
+      ldctLoadCombinationsRenamed       = 34048,
+      ldctLoadCombinationsAdded         = 34049,
+      ldctLoadCombinationsBeforeRemove  = 34050,
+   } ldEventDispatchIds;
+
+
+   typedef
+   [
+      public,
+      uuid(BC4341CB-02DF-4cb8-8D4A-8C25CC2A7D6F),
+      helpstring("Designates member load orientation/coordinate system"),
+      helpcontext(IDH_LoadOrientation)
+   ] 
+   enum 
+   {
+      ldloGlobal = 0,
+      ldloMember = 1,
+      ldloGlobalProjected = 2
+   } ldLoadOrientation;
+
+   typedef
+   [
+      public,
+      uuid(52E08C79-A82A-43a8-9DA1-8563A0374EFC),
+      helpstring("Designates member load direction"),
+      helpcontext(IDH_LoadDirection)
+   ]
+   enum 
+   {
+      ldldFx = 0,
+      ldldFy = 1
+   } ldLoadDirection;
+
+   typedef
+   [
+      public,
+      uuid(9948B8FA-0931-4cbc-B918-FFF0A43663B4),
+      helpstring("Designates how truck and lane load are combined for this VehicularLoad"),
+      helpcontext(IDH_VehicularLoadConfigurationType)
+   ]
+   enum 
+   {
+		ldvcDefault                   = 0,
+		ldvcTruckOnly                 = 1,
+		ldvcLaneOnly                  = 2,
+		ldvcTruckPlusLane             = 3,
+		ldvcTruckLaneEnvelope         = 4,
+		ldvcSidewalkOnly              = 5
+   } ldVehicularLoadConfigurationType;
+
+   typedef
+   [
+      public,
+      uuid(4ACEBE9C-2DAD-423c-9FE1-3A9FD8D38F00),
+      helpstring("Designates where on the structure the result for this VehicularLoad are applicable"),
+      helpcontext(IDH_LiveLoadApplicabilityType)
+   ]
+   enum 
+   {
+		ldlaEntireStructure = 1,
+		ldlaContraflexure   = 2
+   } ldLiveLoadApplicabilityType;
+
+   typedef
+   [
+      public,
+      uuid(0074DD4A-3668-402b-B879-844E69DEA66C),
+      helpstring("Designates type of LiveLoadModel"),
+      helpcontext(IDH_LiveLoadModelType)
+   ]
+   enum 
+   {
+      ldltNone            =-1,
+		ldltDeflection      = 0,
+		ldltDesign          = 1,
+		ldltPedestrian      = 2,
+		ldltFatigue         = 3,
+		ldltPermit          = 4,
+		ldltSpecial         = 5    
+   } ldLiveLoadModelType;
+
+   typedef
+   [
+      public,
+      uuid(0E139A77-FBEF-4219-A251-178E3B51C9D4),
+      helpstring("Indicates category of a load combination"),
+      helpcontext(IDH_LoadCombinationType)
+   ]
+   enum 
+   {
+		ldctService      = 0,
+		ldctStrength     = 1,
+      ldctExtremeEvent = 2,
+      ldctFatigue      = 3,
+      ldctPermit       = 4,
+      ldctUserDefined  = 5
+   } ldLoadCombinationType;
+
+   typedef
+   [
+      public,
+      uuid(04951897-BE2B-4417-9276-98850171F68F),
+      helpstring("Designates type of change that was made an element of loading"),
+	   helpcontext(IDH_ChangeType)
+   ] 
+   enum 
+   {
+       ldcgDescription         = 1,   // a textual description changed
+	    ldcgLiveLoad            = 2,   // the actual vehicle change
+       ldcgUserItemData        = 3,   // user data item changed
+       ldcgLoading             = 4,   // something to do with load group or cases
+       ldcgCombination         = 5,   // load combination changed
+   } ldLoadingChangeType;
+
+////////////////////////////////////////////////////////////
+
+   [
+      object,
+      uuid(A120D9E2-F773-42eb-B850-B2A0CB3BEB68),
+      oleautomation,
+      helpstring("IPointLoad Interface"),
+      helpcontext(IDH_PointLoad),
+      pointer_default(unique)
+   ]
+   interface ldIPointLoad : IUnknown
+   {
+//      [propget, helpstring("property MemberType"),helpcontext(IDH_PointLoad_MemberType)] 
+//      HRESULT MemberType([out, retval] MemberType *pVal);
+//      [propput, helpstring("property MemberType"),helpcontext(IDH_PointLoad_MemberType)] 
+//      HRESULT MemberType([in] MemberType newVal);
+      [propget, helpstring("property MemberID"),helpcontext(IDH_PointLoad_MemberID)] 
+      HRESULT MemberID([out, retval] long *pVal);
+      [propput, helpstring("property MemberID"),helpcontext(IDH_PointLoad_MemberID)] 
+      HRESULT MemberID([in] long newVal);
+      [propget, helpstring("property Location"),helpcontext(IDH_PointLoad_Location)] 
+      HRESULT Location([out, retval] Float64 *pVal);
+      [propput, helpstring("property Location"),helpcontext(IDH_PointLoad_Location)] 
+      HRESULT Location([in] Float64 newVal);
+      [propget, helpstring("property Fx"),helpcontext(IDH_PointLoad_Fx)] 
+      HRESULT Fx([out, retval] Float64 *pVal);
+      [propput, helpstring("property Fx"),helpcontext(IDH_PointLoad_Fx)] 
+      HRESULT Fx([in] Float64 newVal);
+      [propget, helpstring("property Fy"),helpcontext(IDH_PointLoad_Fy)] 
+      HRESULT Fy([out, retval] Float64 *pVal);
+      [propput, helpstring("property Fy"),helpcontext(IDH_PointLoad_Fy)] 
+      HRESULT Fy([in] Float64 newVal);
+      [propget, helpstring("property Mz"),helpcontext(IDH_PointLoad_Mz)] 
+      HRESULT Mz([out, retval] Float64 *pVal);
+      [propput, helpstring("property Mz"),helpcontext(IDH_PointLoad_Mz)] 
+      HRESULT Mz([in] Float64 newVal);
+      [helpstring("method SetForce"),helpcontext(IDH_PointLoad_SetForce)] 
+      HRESULT SetForce([in]Float64 Fx, [in]Float64 Fy, [in]Float64 Mz);
+      [helpstring("method GetForce"),helpcontext(IDH_PointLoad_GetForce)] 
+      HRESULT GetForce([out]Float64* Fx, [out]Float64* Fy, [out]Float64* Mz);
+      [helpstring("method Clone"),helpcontext(IDH_PointLoad_Clone)] 
+      HRESULT Clone([out,retval]ldIPointLoad** clone);
+   };
+
+   [
+      object,
+      oleautomation,
+      uuid(FAC83784-2660-4959-A071-118006D19A3C),
+      pointer_default(unique),
+      helpcontext(IDH_PointLoad),
+      helpstring("IPointLoadEvents Interface")
+   ]
+   interface ldIPointLoadEvents : IUnknown
+   {
+      [helpstring("method OnPointLoadChanged"),helpcontext(IDH_PointLoad_OnPointLoadChanged)] 
+      HRESULT OnPointLoadChanged([in]ldIPointLoad* me);
+   };
+
+
+   [
+      object,
+      uuid(005CD59D-421D-4a6b-AE08-F0E9F5EBBAA4),
+      oleautomation,
+      helpstring("IPointLoadItem Interface"),
+      helpcontext(IDH_LoadItem),
+      pointer_default(unique)
+   ]
+   interface ldIPointLoadItem : IUnknown
+   {
+      [propget, helpstring("property ID"),helpcontext(IDH_LoadItem_ID)] 
+      HRESULT ID([out, retval] long *pVal);
+      [propget, helpstring("property Stage"),helpcontext(IDH_LoadItem_Stage)] 
+      HRESULT Stage([out, retval] BSTR *pVal);
+      [propget, helpstring("property LoadGroup"),helpcontext(IDH_LoadItem_LoadGroup)]
+      HRESULT LoadGroup([out, retval] BSTR *pVal);
+      [propget, helpstring("property Load"),helpcontext(IDH_LoadItem_Load)]
+      HRESULT Load([out, retval] ldIPointLoad* *pVal);
+   };
+
+   [
+      object,
+      uuid(465E3AEB-5331-42c5-9025-3F461CA9A588),
+      helpstring("IEnumPointLoad Interface"),
+      helpcontext(IDH_FastEnumerators),
+      oleautomation,nonextensible,
+      hidden,restricted,
+      pointer_default(unique)
+   ]
+   interface ldIEnumPointLoad : IUnknown
+   {
+      [helpstring("Clone"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Clone([out] ldIEnumPointLoad** ppenum);
+
+      [helpstring("Next"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Next([in] ULONG celt, [out] ldIPointLoadItem** rgelt, [in,out] ULONG* pceltFetched);
+
+      [helpstring("Reset"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Reset();
+
+      [helpstring("Skip"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Skip([in] ULONG celt);
+   };
+
+   [
+      object,
+      uuid(7A1E2A58-167A-4e42-ADC5-B33BE28BBE1F),
+      oleautomation,
+      helpstring("IPointLoads Interface"),
+      helpcontext(IDH_PointLoads),
+      pointer_default(unique)
+   ]
+   interface ldIPointLoads : IUnknown
+   {
+      [propget, helpstring("property Count"),helpcontext(IDH_Load_Collections_Count)] 
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      [propget, helpstring("property Item"),helpcontext(IDH_Load_Collections_Item)] 
+      HRESULT Item([in]CollectionIndexType index, [out, retval] ldIPointLoadItem* *pVal);
+      [propget, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
+      HRESULT Load([in]long ID, [out, retval] ldIPointLoad* *pVal);
+      [propputref, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
+      HRESULT Load([in]long ID, [in] ldIPointLoad* newVal);
+      [propget, helpstring("property _EnumElements"),helpcontext(IDH_Load_Collections__EnumElements)] 
+      HRESULT _EnumElements([out, retval] ldIEnumPointLoad* *pVal);
+      [helpstring("method Add"),helpcontext(IDH_Load_Collections_Add)] 
+      HRESULT Add([in]BSTR Stage, [in]BSTR LoadGroup, [in] ldIPointLoad* Load);
+      [helpstring("method Find"),helpcontext(IDH_Load_Collections_Find)] 
+      HRESULT Find([in]long ID, [out,retval] ldIPointLoadItem**);
+      [helpstring("method RemoveByID"),helpcontext(IDH_Load_Collections_RemoveByID)] 
+      HRESULT RemoveByID([in]long ID);
+      [helpstring("method RemoveByIndex"),helpcontext(IDH_Load_Collections_RemoveByIndex)] 
+      HRESULT RemoveByIndex([in]CollectionIndexType index);
+      [helpstring("method FilterByStageGroup"),helpcontext(IDH_Load_Collections_FilterByStageGroup)] 
+      HRESULT FilterByStageGroup([in]BSTR stage, [in]BSTR loadgroup, [out,retval] ldIPointLoads** filteredcoll);
+      [helpstring("method Clone"),helpcontext(IDH_Load_Collections_Clone)] 
+      HRESULT Clone([out,retval] ldIPointLoads* *clone);
+      [helpstring("method Clear"),helpcontext(IDH_Load_Collections_Clear)] 
+      HRESULT Clear();
+      [helpstring("method RemoveStage"),helpcontext(IDH_Load_Collections_RemoveStage)] 
+      HRESULT RemoveStage([in]BSTR stage);
+      [propget, helpstring("returns an enumerator for the collection.")]
+      HRESULT _NewEnum([out, retval] IUnknown** retval);  
+   };
+
+   [
+      object,
+      oleautomation,
+      uuid(407BD607-CD35-4f1e-9B84-706252D2CE55),
+      pointer_default(unique),
+      helpcontext(IDH_PointLoads),
+      helpstring("IPointLoadsEvents Interface")
+   ]
+   interface ldIPointLoadsEvents : IUnknown
+   {
+      [helpstring("method OnPointLoadChanged"),helpcontext(IDH_Load_Collections_OnLoadsChanged)] 
+      HRESULT OnPointLoadChanged([in] ldIPointLoadItem* load);
+      [helpstring("method OnPointLoadAdded"),helpcontext(IDH_Load_Collections_OnLoadsAdded)] 
+      HRESULT OnPointLoadAdded([in] ldIPointLoadItem* load);
+      [helpstring("method OnPointLoadRemoved"),helpcontext(IDH_Load_Collections_OnLoadsBeforeRemove)] 
+      HRESULT OnPointLoadRemoved();
+   };
+
+   [
+      object,
+      uuid(DB64F919-CF8F-4d9b-89DC-48F5E7A524DA),
+      oleautomation,
+      helpstring("ldIDistributedLoad Interface"),
+      helpcontext(IDH_DistributedLoad),
+      pointer_default(unique)
+   ]
+   interface ldIDistributedLoad : IUnknown
+   {
+      [helpstring("method Clone"),helpcontext(IDH_DistributedLoad_Clone)] 
+      HRESULT Clone([out,retval] ldIDistributedLoad** clone);
+      [propget, helpstring("property Orientation"),helpcontext(IDH_DistributedLoad_Orientation)] 
+      HRESULT Orientation([out, retval] ldLoadOrientation *pVal);
+      [propput, helpstring("property Orientation"),helpcontext(IDH_DistributedLoad_Orientation)] 
+      HRESULT Orientation([in] ldLoadOrientation newVal);
+      [propget, helpstring("property Direction"),helpcontext(IDH_DistributedLoad_Direction)] 
+      HRESULT Direction([out, retval] ldLoadDirection *pVal);
+      [propput, helpstring("property Direction"),helpcontext(IDH_DistributedLoad_Direction)] 
+      HRESULT Direction([in] ldLoadDirection newVal);
+      [propget, helpstring("property WStart"),helpcontext(IDH_DistributedLoad_WStart)] 
+      HRESULT WStart([out, retval] Float64 *pVal);
+      [propput, helpstring("property WStart"),helpcontext(IDH_DistributedLoad_WStart)] 
+      HRESULT WStart([in] Float64 newVal);
+      [propget, helpstring("property WEnd"),helpcontext(IDH_DistributedLoad_WEnd)] 
+      HRESULT WEnd([out, retval] Float64 *pVal);
+      [propput, helpstring("property WEnd"),helpcontext(IDH_DistributedLoad_WEnd)] 
+      HRESULT WEnd([in] Float64 newVal);
+//      [propget, helpstring("property MemberType"),helpcontext(IDH_DistributedLoad_MemberType)] 
+//      HRESULT MemberType([out, retval] MemberType *pVal);
+//      [propput, helpstring("property MemberType"),helpcontext(IDH_DistributedLoad_MemberType)] 
+//      HRESULT MemberType([in] MemberType newVal);
+      [propget, helpstring("property MemberID"),helpcontext(IDH_DistributedLoad_MemberID)] 
+      HRESULT MemberID([out, retval] long *pVal);
+      [propput, helpstring("property MemberID"),helpcontext(IDH_DistributedLoad_MemberID)] 
+      HRESULT MemberID([in] long newVal);
+      [propget, helpstring("property StartLocation"),helpcontext(IDH_DistributedLoad_StartLocation)] 
+      HRESULT StartLocation([out, retval] Float64 *pVal);
+      [propput, helpstring("property StartLocation"),helpcontext(IDH_DistributedLoad_StartLocation)] 
+      HRESULT StartLocation([in] Float64 newVal);
+      [propget, helpstring("property EndLocation"),helpcontext(IDH_DistributedLoad_EndLocation)] 
+      HRESULT EndLocation([out, retval] Float64 *pVal);
+      [propput, helpstring("property EndLocation"),helpcontext(IDH_DistributedLoad_EndLocation)] 
+      HRESULT EndLocation([in] Float64 newVal);
+   };
+
+   [
+      object,
+      oleautomation,
+      uuid(9C015F31-4A82-46a9-80BB-CE93838869D8),
+      pointer_default(unique),
+      helpcontext(IDH_DistributedLoad),
+      helpstring("IDistributedLoadEvents Interface")
+   ]
+	interface ldIDistributedLoadEvents : IUnknown
+	{
+		[helpstring("method OnDistributedLoadChanged"),helpcontext(IDH_DistributedLoad_OnDistributedLoadChanged)] 
+		HRESULT OnDistributedLoadChanged([in] ldIDistributedLoad* me);
+	};
+
+	[
+		object,
+		uuid(A1570438-0F78-4892-8EA8-523C0120F37E),
+		oleautomation,
+		helpcontext(IDH_LoadItem),
+		helpstring("ldIDistributedLoadItem Interface"),
+		pointer_default(unique)
+	]
+	interface ldIDistributedLoadItem : IUnknown
+	{
+		[propget, helpstring("property ID"),helpcontext(IDH_LoadItem_ID)] 
+		HRESULT ID([out, retval] long *pVal);
+		[propget, helpstring("property Stage"),helpcontext(IDH_LoadItem_Stage)] 
+		HRESULT Stage([out, retval] BSTR *pVal);
+		[propget, helpstring("property LoadGroup"),helpcontext(IDH_LoadItem_LoadGroup)]
+		HRESULT LoadGroup([out, retval] BSTR *pVal);
+		[propget, helpstring("property Load"),helpcontext(IDH_LoadItem_Load)]
+		HRESULT Load([out, retval] ldIDistributedLoad* *pVal);
+	};
+
+	[
+      object,
+      uuid(CD719FBA-9CFD-4e9f-B2A3-5EB77AB39DE7),
+      helpstring("IEnumDistributedLoad Interface"),
+      helpcontext(IDH_FastEnumerators),
+      oleautomation,nonextensible,
+      hidden,restricted,
+      pointer_default(unique)
+	]
+	interface ldIEnumDistributedLoad : IUnknown
+	{
+      [helpstring("Clone"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Clone([out] ldIEnumDistributedLoad** ppenum);
+
+      [helpstring("Next"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Next([in] ULONG celt, [out] ldIDistributedLoadItem** rgelt, [in,out] ULONG* pceltFetched);
+
+      [helpstring("Reset"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Reset();
+
+      [helpstring("Skip"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+		object,
+		uuid(223EE82D-8372-4012-8F71-481F8A8ADA56),
+		oleautomation,
+		helpstring("IDistributedLoads Interface"),
+		helpcontext(IDH_DistributedLoads),
+		pointer_default(unique)
+	]
+	interface ldIDistributedLoads : IUnknown
+	{
+		[propget, helpstring("property Item"),helpcontext(IDH_Load_Collections_Item)] 
+		HRESULT Item([in]CollectionIndexType index, [out, retval] ldIDistributedLoadItem* *pVal);
+		[propget, helpstring("returns an enumerator for the collection.")]
+		HRESULT _NewEnum([out, retval] IUnknown** retval);  
+		[propget, helpstring("property Count"),helpcontext(IDH_Load_Collections_Count)] 
+		HRESULT Count([out, retval] CollectionIndexType *pVal);
+		[propget, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
+		HRESULT Load([in]long ID, [out, retval] ldIDistributedLoad* *pVal);
+		[propputref, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
+		HRESULT Load([in]long ID, [in] ldIDistributedLoad* newVal);
+		[propget, helpstring("property _EnumElements"),helpcontext(IDH_Load_Collections__EnumElements)] 
+		HRESULT _EnumElements([out, retval] ldIEnumDistributedLoad* *pVal);
+		[helpstring("method Add"),helpcontext(IDH_Load_Collections_Add)] 
+		HRESULT Add([in]BSTR Stage, [in]BSTR LoadGroup, [in] ldIDistributedLoad* Load);
+		[helpstring("method Find"),helpcontext(IDH_Load_Collections_Find)] 
+		HRESULT Find([in]long ID, [out,retval] ldIDistributedLoadItem**);
+		[helpstring("method RemoveByID"),helpcontext(IDH_Load_Collections_RemoveByID)] 
+		HRESULT RemoveByID([in]long ID);
+		[helpstring("method RemoveByIndex"),helpcontext(IDH_Load_Collections_RemoveByIndex)] 
+		HRESULT RemoveByIndex([in]CollectionIndexType index);
+		[helpstring("method FilterByStageGroup"),helpcontext(IDH_Load_Collections_FilterByStageGroup)] 
+		HRESULT FilterByStageGroup([in]BSTR stage, [in]BSTR loadgroup, [out,retval] ldIDistributedLoads** filteredcoll);
+		[helpstring("method Clone"),helpcontext(IDH_Load_Collections_Clone)] 
+		HRESULT Clone([out,retval] ldIDistributedLoads* *clone);
+		[helpstring("method Clear"),helpcontext(IDH_Load_Collections_Clear)] 
+		HRESULT Clear();
+		[helpstring("method RemoveStage"),helpcontext(IDH_Load_Collections_RemoveStage)] 
+		HRESULT RemoveStage([in]BSTR stage);
+	};
+
+   [
+      object,
+      oleautomation,
+      uuid(B19B5D2C-E84D-4168-9B76-F3A83B23A8B3),
+      pointer_default(unique),
+      helpstring("IDistributedLoadsEvents Interface"),
+      helpcontext(IDH_DistributedLoads)
+   ]
+   interface ldIDistributedLoadsEvents : IUnknown
+   {
+      [helpstring("method OnDistributedLoadsChanged"),helpcontext(IDH_Load_Collections_OnLoadsChanged)] 
+      HRESULT OnDistributedLoadsChanged([in] ldIDistributedLoadItem* load);
+      [helpstring("method OnDistributedLoadsAdded"),helpcontext(IDH_Load_Collections_OnLoadsAdded)] 
+      HRESULT OnDistributedLoadsAdded([in] ldIDistributedLoadItem* load);
+      [helpstring("method OnDistributedLoadsBeforeRemove"),helpcontext(IDH_Load_Collections_OnLoadsBeforeRemove)] 
+      HRESULT OnDistributedLoadsBeforeRemove([in] ldIDistributedLoadItem* load);
+   };
+
+	[
+		object,
+		uuid(DFE327FD-146E-4552-9A18-440C65A47A31),
+		oleautomation,
+		helpcontext(IDH_SettlementLoad),
+		helpstring("ISettlementLoad Interface"),
+		pointer_default(unique)
+	]
+	interface ldISettlementLoad : IUnknown
+	{
+		[propget, helpstring("property MemberID"),helpcontext(IDH_SettlementLoad_MemberID)] 
+		HRESULT MemberID([out, retval] long *pVal);
+		[propput, helpstring("property MemberID"),helpcontext(IDH_SettlementLoad_MemberID)] 
+		HRESULT MemberID([in] long newVal);
+		[propget, helpstring("property Dx"),helpcontext(IDH_SettlementLoad_Dx)] 
+		HRESULT Dx([out, retval] Float64 *pVal);
+		[propput, helpstring("property Dx"),helpcontext(IDH_SettlementLoad_Dx)] 
+		HRESULT Dx([in] Float64 newVal);
+		[propget, helpstring("property Dy"),helpcontext(IDH_SettlementLoad_Dy)] 
+		HRESULT Dy([out, retval] Float64 *pVal);
+		[propput, helpstring("property Dy"),helpcontext(IDH_SettlementLoad_Dy)] 
+		HRESULT Dy([in] Float64 newVal);
+		[propget, helpstring("property Rz"),helpcontext(IDH_SettlementLoad_Rz)] 
+		HRESULT Rz([out, retval] Float64 *pVal);
+		[propput, helpstring("property Rz"),helpcontext(IDH_SettlementLoad_Rz)] 
+		HRESULT Rz([in] Float64 newVal);
+		[helpstring("method Clone"),helpcontext(IDH_SettlementLoad_Clone)] 
+		HRESULT Clone([out,retval] ldISettlementLoad** clone);
+	};
+
+   [
+      object,
+      oleautomation,
+      uuid(BF88B56C-66D8-4d9f-82FB-3B8C3C3435A3),
+      pointer_default(unique),
+      helpcontext(IDH_SettlementLoad),
+      helpstring("ISettlementLoadEvents Interface")
+   ]
+   interface ldISettlementLoadEvents : IUnknown
+   {
+      [helpstring("method OnSettlementLoadChanged"),helpcontext(IDH_SettlementLoad_OnSettlementLoadChanged)] 
+      HRESULT OnSettlementLoadChanged([in] ldISettlementLoad* me);
+   };
+
+	[
+		object,
+		uuid(00AAF5BE-CF2E-40a1-9804-68BA189F85FA),
+		oleautomation,
+		helpcontext(IDH_LoadItem),
+		helpstring("ldISettlementLoadItem Interface"),
+		pointer_default(unique)
+	]
+	interface ldISettlementLoadItem : IUnknown
+	{
+		[propget, helpstring("property ID"),helpcontext(IDH_LoadItem_ID)] 
+		HRESULT ID([out, retval] long *pVal);
+		[propget, helpstring("property Stage"),helpcontext(IDH_LoadItem_Stage)] 
+		HRESULT Stage([out, retval] BSTR *pVal);
+		[propget, helpstring("property LoadGroup"),helpcontext(IDH_LoadItem_LoadGroup)]
+		HRESULT LoadGroup([out, retval] BSTR *pVal);
+		[propget, helpstring("property Load"),helpcontext(IDH_LoadItem_Load)]
+		HRESULT Load([out, retval] ldISettlementLoad* *pVal);
+	};
+
+	[
+      object,
+      uuid(6C19D1F3-AA0F-4d54-9B35-59F67EBFBA86),
+      helpstring("IEnumSettlementLoad Interface"),
+      helpcontext(IDH_FastEnumerators),
+      oleautomation,nonextensible,
+      hidden,restricted,
+      pointer_default(unique)
+	]
+	interface ldIEnumSettlementLoad : IUnknown
+	{
+      [helpstring("Clone"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Clone([out] ldIEnumSettlementLoad** ppenum);
+
+      [helpstring("Next"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Next([in] ULONG celt, [out] ldISettlementLoadItem** rgelt, [in,out] ULONG* pceltFetched);
+
+      [helpstring("Reset"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Reset();
+
+      [helpstring("Skip"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Skip([in] ULONG celt);
+	};
+	[
+		object,
+		uuid(988D8ACE-37DB-4857-A1B1-3178F84B24DA),
+		oleautomation,
+		helpstring("ISettlementLoads Interface"),
+		pointer_default(unique)
+	]
+	interface ldISettlementLoads : IUnknown
+	{
+		[propget, helpstring("property Count"),helpcontext(IDH_Load_Collections_Count)] 
+		HRESULT Count([out, retval] CollectionIndexType *pVal);
+		[propget, helpstring("property Item"),helpcontext(IDH_Load_Collections_Item)] 
+		HRESULT Item([in]CollectionIndexType index, [out, retval] ldISettlementLoadItem* *pVal);
+		[propget, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
+		HRESULT Load([in]long ID, [out, retval] ldISettlementLoad* *pVal);
+		[propputref, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
+		HRESULT Load([in]long ID, [in] ldISettlementLoad* newVal);
+		[propget, helpstring("property _EnumElements"),helpcontext(IDH_Load_Collections__EnumElements)] 
+		HRESULT _EnumElements([out, retval] ldIEnumSettlementLoad* *pVal);
+		[helpstring("method Add"),helpcontext(IDH_Load_Collections_Add)] 
+		HRESULT Add([in]BSTR Stage, [in]BSTR LoadGroup, [in] ldISettlementLoad* Load);
+		[helpstring("method Find"),helpcontext(IDH_Load_Collections_Find)] 
+		HRESULT Find([in]long ID, [out,retval] ldISettlementLoadItem**);
+		[helpstring("method RemoveByID"),helpcontext(IDH_Load_Collections_RemoveByID)] 
+		HRESULT RemoveByID([in]long ID);
+		[helpstring("method RemoveByIndex"),helpcontext(IDH_Load_Collections_RemoveByIndex)] 
+		HRESULT RemoveByIndex([in]CollectionIndexType index);
+		[helpstring("method FilterByStageGroup"),helpcontext(IDH_Load_Collections_FilterByStageGroup)] 
+		HRESULT FilterByStageGroup([in]BSTR stage, [in]BSTR loadgroup, [out,retval] ldISettlementLoads** filteredcoll);
+		[helpstring("method Clone"),helpcontext(IDH_Load_Collections_Clone)] 
+		HRESULT Clone([out,retval] ldISettlementLoads* *clone);
+		[helpstring("method Clear"),helpcontext(IDH_Load_Collections_Clear)] 
+		HRESULT Clear();
+		[helpstring("method RemoveStage"),helpcontext(IDH_Load_Collections_RemoveStage)] 
+		HRESULT RemoveStage([in]BSTR stage);
+		[propget, helpstring("returns an enumerator for the collection.")]
+		HRESULT _NewEnum([out, retval] IUnknown** retval);  
+	};
+
+   [
+      object,
+      oleautomation,
+      uuid(5B0A356B-D586-44bb-9805-7747F3FED248),
+      pointer_default(unique),
+      helpstring("ISettlementLoadsEvents Interface")
+   ]
+	interface ldISettlementLoadsEvents : IUnknown
+	{
+		[helpstring("method OnSettlementLoadsChanged"),helpcontext(IDH_Load_Collections_OnLoadsChanged)] 
+		HRESULT OnSettlementLoadsChanged([in] ldISettlementLoadItem* load);
+		[helpstring("method OnSettlementLoadsAdded"),helpcontext(IDH_Load_Collections_OnLoadsAdded)] 
+		HRESULT OnSettlementLoadsAdded([in] ldISettlementLoadItem* load);
+		[helpstring("method OnSettlementLoadsBeforeRemove"),helpcontext(IDH_Load_Collections_OnLoadsBeforeRemove)] 
+		HRESULT OnSettlementLoadsBeforeRemove([in] ldISettlementLoadItem* load);
+	};
+
+
+	[
+		object,
+		uuid(ED6DC322-3F7A-44ec-80A8-95511454AB87),
+		oleautomation,
+		helpstring("ITemperatureLoad Interface"),
+		helpcontext(IDH_TemperatureLoad),
+		pointer_default(unique)
+	]
+	interface ldITemperatureLoad : IUnknown
+	{
+//		[propget, helpstring("property MemberType"),helpcontext(IDH_TemperatureLoad_MemberType)] 
+//		HRESULT MemberType([out, retval] MemberType *pVal);
+//		[propput, helpstring("property MemberType"),helpcontext(IDH_TemperatureLoad_MemberType)] 
+//		HRESULT MemberType([in] MemberType newVal);
+		[propget, helpstring("property MemberID"),helpcontext(IDH_TemperatureLoad_MemberID)] 
+		HRESULT MemberID([out, retval] long *pVal);
+		[propput, helpstring("property MemberID"),helpcontext(IDH_TemperatureLoad_MemberID)] 
+		HRESULT MemberID([in] long newVal);
+		[propget, helpstring("property TTop"),helpcontext(IDH_TemperatureLoad_TTop)] 
+		HRESULT TTop([out, retval] Float64 *pVal);
+		[propput, helpstring("property TTop"),helpcontext(IDH_TemperatureLoad_TTop)] 
+		HRESULT TTop([in] Float64 newVal);
+		[propget, helpstring("property TBottom"),helpcontext(IDH_TemperatureLoad_TBottom)] 
+		HRESULT TBottom([out, retval] Float64 *pVal);
+		[propput, helpstring("property TBottom"),helpcontext(IDH_TemperatureLoad_TBottom)] 
+		HRESULT TBottom([in] Float64 newVal);
+		[helpstring("method Clone"),helpcontext(IDH_TemperatureLoad_Clone)] 
+		HRESULT Clone([out,retval] ldITemperatureLoad** clone);
+	};
+
+   [
+      object,
+      oleautomation,
+      uuid(0E25FA1F-2E3F-402f-8763-597B22154FC0),
+      pointer_default(unique),
+      helpcontext(IDH_TemperatureLoad),
+      helpstring("ITemperatureLoadEvents Interface")
+   ]
+   interface ldITemperatureLoadEvents : IUnknown
+   {
+      [helpstring("method OnTemperatureLoadChanged"),helpcontext(IDH_TemperatureLoad_OnTemperatureLoadChanged)] 
+      HRESULT OnTemperatureLoadChanged([in] ldITemperatureLoad* me);
+   };
+
+	[
+		object,
+		uuid(1BBBDCA6-C8E6-45fb-B918-87313D854D5C),
+		oleautomation,
+		helpcontext(IDH_LoadItem),
+		helpstring("ITemperatureLoadItem Interface"),
+		pointer_default(unique)
+	]
+	interface ldITemperatureLoadItem : IUnknown
+	{
+		[propget, helpstring("property ID"),helpcontext(IDH_LoadItem_ID)] 
+		HRESULT ID([out, retval] long *pVal);
+		[propget, helpstring("property Stage"),helpcontext(IDH_LoadItem_Stage)] 
+		HRESULT Stage([out, retval] BSTR *pVal);
+		[propget, helpstring("property LoadGroup"),helpcontext(IDH_LoadItem_LoadGroup)]
+		HRESULT LoadGroup([out, retval] BSTR *pVal);
+		[propget, helpstring("property Load"),helpcontext(IDH_LoadItem_Load)]
+		HRESULT Load([out, retval] ldITemperatureLoad* *pVal);
+	};
+
+	[
+      object,
+      uuid(01D84B2D-7BBE-4d10-88AE-9E433FE2C90E),
+      helpstring("IEnumTemperatureLoad Interface"),
+      helpcontext(IDH_FastEnumerators),
+      oleautomation,nonextensible,
+      hidden,restricted,
+      pointer_default(unique)
+	]
+	interface ldIEnumTemperatureLoad : IUnknown
+	{
+      [helpstring("Clone"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Clone([out] ldIEnumTemperatureLoad** ppenum);
+
+      [helpstring("Next"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Next([in] ULONG celt, [out] ldITemperatureLoadItem** rgelt, [in,out] ULONG* pceltFetched);
+
+      [helpstring("Reset"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Reset();
+
+      [helpstring("Skip"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+		object,
+		uuid(BD2129C3-8B72-4316-9AE5-C04B79A0B946),
+		oleautomation,
+		helpstring("ITemperatureLoads Interface"),
+		pointer_default(unique)
+	]
+	interface ldITemperatureLoads : IUnknown
+	{
+		[propget, helpstring("property Count"),helpcontext(IDH_Load_Collections_Count)] 
+		HRESULT Count([out, retval] CollectionIndexType *pVal);
+		[propget, helpstring("property Item"),helpcontext(IDH_Load_Collections_Item)] 
+		HRESULT Item([in]CollectionIndexType index, [out, retval] ldITemperatureLoadItem* *pVal);
+		[propget, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
+		HRESULT Load([in]long ID, [out, retval] ldITemperatureLoad* *pVal);
+		[propputref, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
+		HRESULT Load([in]long ID, [in] ldITemperatureLoad* newVal);
+		[propget, helpstring("property _EnumElements"),helpcontext(IDH_Load_Collections__EnumElements)] 
+		HRESULT _EnumElements([out, retval] ldIEnumTemperatureLoad* *pVal);
+		[helpstring("method Add"),helpcontext(IDH_Load_Collections_Add)] 
+		HRESULT Add([in]BSTR Stage, [in]BSTR LoadGroup, [in] ldITemperatureLoad* Load);
+		[helpstring("method Find"),helpcontext(IDH_Load_Collections_Find)] 
+		HRESULT Find([in]long ID, [out,retval] ldITemperatureLoadItem**);
+		[helpstring("method RemoveByID"),helpcontext(IDH_Load_Collections_RemoveByID)] 
+		HRESULT RemoveByID([in]long ID);
+		[helpstring("method RemoveByIndex"),helpcontext(IDH_Load_Collections_RemoveByIndex)] 
+		HRESULT RemoveByIndex([in]CollectionIndexType index);
+		[helpstring("method FilterByStageGroup"),helpcontext(IDH_Load_Collections_FilterByStageGroup)] 
+		HRESULT FilterByStageGroup([in]BSTR stage, [in]BSTR loadgroup, [out,retval] ldITemperatureLoads** filteredcoll);
+		[helpstring("method Clone"),helpcontext(IDH_Load_Collections_Clone)] 
+		HRESULT Clone([out,retval] ldITemperatureLoads* *clone);
+		[helpstring("method Clear"),helpcontext(IDH_Load_Collections_Clear)] 
+		HRESULT Clear();
+		[helpstring("method RemoveStage"),helpcontext(IDH_Load_Collections_RemoveStage)] 
+		HRESULT RemoveStage([in]BSTR stage);
+		[propget, helpstring("returns an enumerator for the collection.")]
+		HRESULT _NewEnum([out, retval] IUnknown** retval);  
+	};
+
+   [
+      object,
+      oleautomation,
+      uuid(2BB974FC-B438-4cb2-939D-E3ED7BBAD2C2),
+      pointer_default(unique),
+      helpcontext(IDH_TemperatureLoads),
+      helpstring("ITemperatureLoadsEvents Interface")
+   ]
+   interface ldITemperatureLoadsEvents : IUnknown
+   {
+      [helpstring("method OnTemperatureLoadsChanged"),helpcontext(IDH_Load_Collections_OnLoadsChanged)] 
+      HRESULT OnTemperatureLoadsChanged([in] ldITemperatureLoadItem* load);
+      [helpstring("method OnTemperatureLoadsAdded"),helpcontext(IDH_Load_Collections_OnLoadsAdded)] 
+      HRESULT OnTemperatureLoadsAdded([in] ldITemperatureLoadItem* load);
+      [helpstring("method OnTemperatureLoadsBeforeRemove"),helpcontext(IDH_Load_Collections_OnLoadsBeforeRemove)] 
+      HRESULT OnTemperatureLoadsBeforeRemove([in] ldITemperatureLoadItem* load);
+   };
+
+	[
+		object,
+		uuid(1F8ABAFE-0226-442d-85DC-4C0B2A7F214C),
+		oleautomation,
+		helpstring("IStrainLoad Interface"),
+		helpcontext(IDH_StrainLoad),
+		pointer_default(unique)
+	]
+	interface ldIStrainLoad : IUnknown
+	{
+//		[propget, helpstring("property MemberType"),helpcontext(IDH_StrainLoad_MemberType)] 
+//		HRESULT MemberType([out, retval] MemberType *pVal);
+//		[propput, helpstring("property MemberType"),helpcontext(IDH_StrainLoad_MemberType)] 
+//		HRESULT MemberType([in] MemberType newVal);
+		[propget, helpstring("property MemberID"),helpcontext(IDH_StrainLoad_MemberID)] 
+		HRESULT MemberID([out, retval] long *pVal);
+		[propput, helpstring("property MemberID"),helpcontext(IDH_StrainLoad_MemberID)] 
+		HRESULT MemberID([in] long newVal);
+		[propget, helpstring("property AxialStrain"),helpcontext(IDH_StrainLoad_AxialStrain)] 
+		HRESULT AxialStrain([out, retval] Float64 *pVal);
+		[propput, helpstring("property AxialStrain"),helpcontext(IDH_StrainLoad_AxialStrain)] 
+		HRESULT AxialStrain([in] Float64 newVal);
+		[propget, helpstring("property CurvatureStrain"),helpcontext(IDH_StrainLoad_CurvatureStrain)] 
+		HRESULT CurvatureStrain([out, retval] Float64 *pVal);
+		[propput, helpstring("property CurvatureStrain"),helpcontext(IDH_StrainLoad_CurvatureStrain)] 
+		HRESULT CurvatureStrain([in] Float64 newVal);
+		[helpstring("method Clone"),helpcontext(IDH_StrainLoad_Clone)] 
+		HRESULT Clone([out,retval] ldIStrainLoad** clone);
+	};
+
+   [
+      object,
+      oleautomation,
+      uuid(ADA08034-632D-46e1-B448-F4BF4050DCAF),
+      helpcontext(IDH_StrainLoad),
+      pointer_default(unique),
+      helpstring("IStrainLoadEvents Interface")
+   ]
+   interface ldIStrainLoadEvents : IUnknown
+   {
+      [helpstring("method OnStrainLoadChanged"),helpcontext(IDH_StrainLoad_OnStrainLoadChanged)] 
+      HRESULT OnStrainLoadChanged([in] ldIStrainLoad* me);
+   };
+
+	[
+		object,
+		uuid(A8AF11BB-B98F-4076-91C9-B8A8547574F9),
+		oleautomation,
+		helpcontext(IDH_LoadItem),
+		helpstring("IStrainLoadItem Interface"),
+		pointer_default(unique)
+	]
+	interface ldIStrainLoadItem : IUnknown
+	{
+		[propget, helpstring("property ID"),helpcontext(IDH_LoadItem_ID)] 
+		HRESULT ID([out, retval] long *pVal);
+		[propget, helpstring("property Stage"),helpcontext(IDH_LoadItem_Stage)] 
+		HRESULT Stage([out, retval] BSTR *pVal);
+		[propget, helpstring("property LoadGroup"),helpcontext(IDH_LoadItem_LoadGroup)]
+		HRESULT LoadGroup([out, retval] BSTR *pVal);
+		[propget, helpstring("property Load"),helpcontext(IDH_LoadItem_Load)]
+		HRESULT Load([out, retval] ldIStrainLoad* *pVal);
+	};
+
+	[
+      object,
+      uuid(35425A18-0CA0-416f-98B3-AAA075BA5293),
+      helpstring("IEnumStrainLoad Interface"),
+      helpcontext(IDH_FastEnumerators),
+      oleautomation,nonextensible,
+      hidden,restricted,
+      pointer_default(unique)
+	]
+	interface ldIEnumStrainLoad : IUnknown
+	{
+       [helpstring("Clone"),helpcontext(IDH_FastEnumerators)]
+	   HRESULT Clone([out] ldIEnumStrainLoad** ppenum);
+
+	   [helpstring("Next"),helpcontext(IDH_FastEnumerators)]
+	   HRESULT Next([in] ULONG celt, [out] ldIStrainLoadItem** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset"),helpcontext(IDH_FastEnumerators)]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip"),helpcontext(IDH_FastEnumerators)]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+		object,
+		uuid(9CF883D0-394D-4f16-A688-FE12596CFF66),
+		oleautomation,
+		helpstring("IStrainLoads Interface"),
+		helpcontext(IDH_StrainLoads),
+		pointer_default(unique)
+	]
+	interface ldIStrainLoads : IUnknown
+	{
+		[propget, helpstring("property Count"),helpcontext(IDH_Load_Collections_Count)] 
+		HRESULT Count([out, retval] CollectionIndexType *pVal);
+		[propget, helpstring("property Item"),helpcontext(IDH_Load_Collections_Item)] 
+		HRESULT Item([in]CollectionIndexType index, [out, retval] ldIStrainLoadItem* *pVal);
+		[propget, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
+		HRESULT Load([in]long ID, [out, retval] ldIStrainLoad* *pVal);
+		[propputref, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
+		HRESULT Load([in]long ID, [in] ldIStrainLoad* newVal);
+		[propget, helpstring("property _EnumElements"),helpcontext(IDH_Load_Collections__EnumElements)] 
+		HRESULT _EnumElements([out, retval] ldIEnumStrainLoad* *pVal);
+		[helpstring("method Add"),helpcontext(IDH_Load_Collections_Add)] 
+		HRESULT Add([in]BSTR Stage, [in]BSTR LoadGroup, [in] ldIStrainLoad* Load);
+		[helpstring("method Find"),helpcontext(IDH_Load_Collections_Find)] 
+		HRESULT Find([in]long ID, [out,retval] ldIStrainLoadItem**);
+		[helpstring("method RemoveByID"),helpcontext(IDH_Load_Collections_RemoveByID)] 
+		HRESULT RemoveByID([in]long ID);
+		[helpstring("method RemoveByIndex"),helpcontext(IDH_Load_Collections_RemoveByIndex)] 
+		HRESULT RemoveByIndex([in]CollectionIndexType index);
+		[helpstring("method FilterByStageGroup"),helpcontext(IDH_Load_Collections_FilterByStageGroup)] 
+		HRESULT FilterByStageGroup([in]BSTR stage, [in]BSTR loadgroup, [out,retval] ldIStrainLoads** filteredcoll);
+		[helpstring("method Clone"),helpcontext(IDH_Load_Collections_Clone)] 
+		HRESULT Clone([out,retval] ldIStrainLoads* *clone);
+		[helpstring("method Clear"),helpcontext(IDH_Load_Collections_Clear)] 
+		HRESULT Clear();
+		[helpstring("method RemoveStage"),helpcontext(IDH_Load_Collections_RemoveStage)] 
+		HRESULT RemoveStage([in]BSTR stage);
+		[propget, helpstring("returns an enumerator for the collection.")]
+		HRESULT _NewEnum([out, retval] IUnknown** retval);  
+	};
+
+
+   [
+      object,
+      oleautomation,
+      uuid(A3836DBE-BD64-47f8-930C-702B265059B3),
+      pointer_default(unique),
+      helpstring("IStrainLoadsEvents Interface")
+   ]
+	interface ldIStrainLoadsEvents : IUnknown
+	{
+		[helpstring("method OnStrainLoadsChanged"),helpcontext(IDH_Load_Collections_OnLoadsChanged)] 
+		HRESULT OnStrainLoadsChanged([in] ldIStrainLoadItem* load);
+		[helpstring("method OnStrainLoadsAdded"),helpcontext(IDH_Load_Collections_OnLoadsAdded)] 
+		HRESULT OnStrainLoadsAdded([in] ldIStrainLoadItem* load);
+		[helpstring("method OnStrainLoadsBeforeRemove"),helpcontext(IDH_Load_Collections_OnLoadsBeforeRemove)] 
+		HRESULT OnStrainLoadsBeforeRemove([in] ldIStrainLoadItem* load);
+	};
+
+	[
+		object,
+		uuid(A14A53DD-588E-4701-905D-8B981698D545),
+		oleautomation,
+		helpstring("IAxle Interface"),
+	   helpcontext(IDH_Axle),
+      pointer_default(unique)
+	]
+	interface ldIAxle : IUnknown
+	{
+		[propget, helpstring("property Weight"),helpcontext(IDH_Axle_Weight)] 
+      HRESULT Weight([out, retval] Float64 *pVal);
+		[propput, helpstring("property Weight"),helpcontext(IDH_Axle_Weight)] 
+      HRESULT Weight([in] Float64 newVal);
+		[propget, helpstring("property Spacing"),helpcontext(IDH_Axle_Spacing)] 
+      HRESULT Spacing([out, retval] Float64 *pVal);
+		[propput, helpstring("property Spacing"),helpcontext(IDH_Axle_Spacing)] 
+      HRESULT Spacing([in] Float64 newVal);
+		[helpstring("method Clone"),helpcontext(IDH_Axle_Clone)] 
+      HRESULT Clone([out,retval] ldIAxle** clone);
+	};
+
+   [
+      object,
+      oleautomation,
+      uuid(4C4FCC10-49BB-409e-BE31-1BCFAE9A2EA9),
+      pointer_default(unique),
+      helpcontext(IDH_Axle),
+      helpstring("IAxleEvents Interface")
+   ]
+	interface ldIAxleEvents : IUnknown
+	{
+		[helpstring("method OnAxleChanged"),helpcontext(IDH_Axle_OnAxleChanged)] 
+		HRESULT OnAxleChanged([in] ldIAxle* me);
+	};
+
+	[
+	   object,
+	   uuid(B947B76C-F720-4408-B45E-7D2225A45BE1),
+	   helpstring("IEnumAxle Interface"),
+      helpcontext(IDH_FastEnumerators),
+	   oleautomation,nonextensible,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface ldIEnumAxle : IUnknown
+	{
+      [helpstring("Clone"),helpcontext(IDH_FastEnumerators)]
+	   HRESULT Clone([out] ldIEnumAxle** ppenum);
+
+	   [helpstring("Next"),helpcontext(IDH_FastEnumerators)]
+	   HRESULT Next([in] ULONG celt, [out] ldIAxle** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset"),helpcontext(IDH_FastEnumerators)]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip"),helpcontext(IDH_FastEnumerators)]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+		object,
+		uuid(3202C18D-C33B-40e5-A706-A5E7A91EE8BE),
+		oleautomation,
+		helpstring("IAxles Interface"),
+      helpcontext(IDH_Axles),
+		pointer_default(unique)
+	]
+	interface ldIAxles : IUnknown
+	{
+      [propget, helpstring("property Item"),helpcontext(IDH_Axles_Item)] 
+      HRESULT Item([in] AxleIndexType position, [out, retval] ldIAxle* *pVal);
+      [propget, helpstring("returns an enumerator for the collection.")]
+      HRESULT _NewEnum([out, retval] IUnknown** retval);  
+      [propget, helpstring("property Count"),helpcontext(IDH_Axles_Count)] 
+      HRESULT Count([out, retval] AxleIndexType *pVal);
+      [helpstring("method Add"),helpcontext(IDH_Axles_Add)] 
+      HRESULT Add([in] ldIAxle*);
+      [helpstring("method Insert"),helpcontext(IDH_Axles_Insert)] 
+      HRESULT Insert([in]AxleIndexType relPosition, [in] ldIAxle* member);
+      [helpstring("method MoveTo"),helpcontext(IDH_Axles_MoveTo)] 
+      HRESULT MoveTo([in] AxleIndexType fromPosition, [in] AxleIndexType toPosition);
+      [helpstring("method CopyTo"),helpcontext(IDH_Axles_CopyTo)] 
+      HRESULT CopyTo([in]AxleIndexType fromPosition, [in]AxleIndexType toPosition);
+      [helpstring("method Remove"),helpcontext(IDH_Axles_Remove)] 
+      HRESULT Remove([in]AxleIndexType position);
+      [helpstring("method Reverse"),helpcontext(IDH_Axles_Reverse)] 
+      HRESULT Reverse();
+      [propget, helpstring("property _EnumElements"),helpcontext(IDH_Axles__EnumElements)] 
+      HRESULT _EnumElements([out, retval] ldIEnumAxle* *pVal);
+      [helpstring("method Clone"),helpcontext(IDH_Axles_Clone)] 
+      HRESULT Clone([out,retval] ldIAxles** clone);
+      [helpstring("method Clear - Remove all"),helpcontext(IDH_Axles_Clear)] 
+      HRESULT Clear();
+	};
+
+   [
+      object,
+      oleautomation,
+      uuid(59D31E9E-D8D6-49f5-897B-90499F15E6B7),
+      pointer_default(unique),
+      helpcontext(IDH_Axles),
+      helpstring("IAxlesEvents Interface")
+   ]
+   interface ldIAxlesEvents : IUnknown
+   {
+      [helpstring("method OnAxlesChanged"),helpcontext(IDH_Axles_OnAxlesChanged)] 
+      HRESULT OnAxlesChanged([in] ldIAxle* Axle);
+      [helpstring("method OnAxlesAdded"),helpcontext(IDH_Axles_OnAxlesAdded)] 
+      HRESULT OnAxlesAdded([in] ldIAxle* Axle, [in]AxleIndexType position);
+      [helpstring("method OnAxlesBeforeRemove"),helpcontext(IDH_Axles_OnAxlesBeforeRemove)] 
+      HRESULT OnAxlesBeforeRemove([in] ldIAxle* Axle, [in]AxleIndexType position);
+      [helpstring("method OnAxlesMoveTo"),helpcontext(IDH_Axles_OnAxlesMoveTo)] 
+      HRESULT OnAxlesMoveTo([in]AxleIndexType from, [in]AxleIndexType to);
+      [helpstring("method OnAxlesCopyTo"),helpcontext(IDH_Axles_OnAxlesCopyTo)] 
+      HRESULT OnAxlesCopyTo([in]AxleIndexType from, [in]AxleIndexType to);
+      [helpstring("method OnAxlesReverse"),helpcontext(IDH_Axles_OnAxlesReverse)] 
+      HRESULT OnAxlesReverse();
+   };
+
+	[
+		object,
+		uuid(27BF270B-9FA9-4946-A20A-C78C424FB18C),
+		oleautomation,
+		helpstring("IVehicularLoad Interface"),
+      helpcontext(IDH_VehicularLoad),
+		pointer_default(unique)
+	]
+	interface ldIVehicularLoad : IUnknown
+	{
+		[propget, helpstring("property Name"),helpcontext(IDH_VehicularLoad_Name)] 
+      HRESULT Name([out, retval] BSTR *pVal);
+		[propput, helpstring("property Name"),helpcontext(IDH_VehicularLoad_Name)] 
+      HRESULT Name([in] BSTR newVal);
+		[propget, helpstring("property Configuration"),helpcontext(IDH_VehicularLoad_Configuration)] 
+      HRESULT Configuration([out, retval] ldVehicularLoadConfigurationType *pVal);
+		[propput, helpstring("property Configuration"),helpcontext(IDH_VehicularLoad_Configuration)] 
+      HRESULT Configuration([in] ldVehicularLoadConfigurationType newVal);
+		[propget, helpstring("property UseNotional"),helpcontext(IDH_VehicularLoad_UseNotional)] 
+      HRESULT UseNotional([out, retval] VARIANT_BOOL *pVal);
+		[propput, helpstring("property UseNotional"),helpcontext(IDH_VehicularLoad_UseNotional)] 
+      HRESULT UseNotional([in] VARIANT_BOOL newVal);
+		[propget, helpstring("property Applicability"),helpcontext(IDH_VehicularLoad_Applicability)] 
+      HRESULT Applicability([out, retval] ldLiveLoadApplicabilityType *pVal);
+		[propput, helpstring("property Applicability"),helpcontext(IDH_VehicularLoad_Applicability)] 
+      HRESULT Applicability([in] ldLiveLoadApplicabilityType newVal);
+		[propget, helpstring("property Axles"),helpcontext(IDH_VehicularLoad_Axles)] 
+      HRESULT Axles([out, retval] ldIAxles* *pVal);
+		[propputref, helpstring("property Axles"),helpcontext(IDH_VehicularLoad_Axles)] 
+      HRESULT Axles([in] ldIAxles* newVal);
+		[propget, helpstring("property VariableAxle"),helpcontext(IDH_VehicularLoad_VariableAxle)] 
+      HRESULT VariableAxle([out, retval] AxleIndexType *pVal);
+		[propput, helpstring("property VariableAxle"),helpcontext(IDH_VehicularLoad_VariableAxle)] 
+      HRESULT VariableAxle([in] AxleIndexType newVal);
+		[propget, helpstring("property VariableMaxSpacing"),helpcontext(IDH_Axles_OnAxlesReverse)] 
+      HRESULT VariableMaxSpacing([out, retval] Float64 *pVal);
+		[propput, helpstring("property VariableMaxSpacing"),helpcontext(IDH_Axles_OnAxlesReverse)] 
+      HRESULT VariableMaxSpacing([in] Float64 newVal);
+		[propget, helpstring("property LaneLoad"),helpcontext(IDH_VehicularLoad_VariableMaxSpacing)] 
+      HRESULT LaneLoad([out, retval] Float64 *pVal);
+		[propput, helpstring("property LaneLoad"),helpcontext(IDH_VehicularLoad_VariableMaxSpacing)] 
+      HRESULT LaneLoad([in] Float64 newVal);
+		[propget, helpstring("property SidewalkLoad"),helpcontext(IDH_VehicularLoad_SidewalkLoad)] 
+      HRESULT SidewalkLoad([out, retval] Float64 *pVal);
+		[propput, helpstring("property SidewalkLoad"),helpcontext(IDH_VehicularLoad_SidewalkLoad)] 
+      HRESULT SidewalkLoad([in] Float64 newVal);
+		[propget, helpstring("property TruckFactor"),helpcontext(IDH_VehicularLoad_TruckFactor)] 
+      HRESULT TruckFactor([out, retval] Float64 *pVal);
+		[propput, helpstring("property TruckFactor"),helpcontext(IDH_VehicularLoad_TruckFactor)] 
+      HRESULT TruckFactor([in] Float64 newVal);
+		[propget, helpstring("property LaneFactor"),helpcontext(IDH_VehicularLoad_LaneFactor)] 
+      HRESULT LaneFactor([out, retval] Float64 *pVal);
+		[propput, helpstring("property LaneFactor"),helpcontext(IDH_VehicularLoad_LaneFactor)] 
+      HRESULT LaneFactor([in] Float64 newVal);
+		[propget, helpstring("property IMTruck"),helpcontext(IDH_VehicularLoad_IMTruck)] 
+      HRESULT IMTruck([out, retval] Float64 *pVal);
+		[propput, helpstring("property IMTruck"),helpcontext(IDH_VehicularLoad_IMTruck)] 
+      HRESULT IMTruck([in] Float64 newVal);
+		[propget, helpstring("property IMLane"),helpcontext(IDH_VehicularLoad_IMLane)] 
+      HRESULT IMLane([out, retval] Float64 *pVal);
+		[propput, helpstring("property IMLane"),helpcontext(IDH_VehicularLoad_IMLane)] 
+      HRESULT IMLane([in] Float64 newVal);
+		[helpstring("method Clone"),helpcontext(IDH_VehicularLoad_Clone)] 
+      HRESULT Clone([out,retval] ldIVehicularLoad** clone);
+	};
+
+   [
+      object,
+      oleautomation,
+      uuid(3E8C23A9-A40F-475b-B241-C0064ADCD874),
+      pointer_default(unique),
+      helpcontext(IDH_VehicularLoad),
+      helpstring("IVehicularLoadEvents Interface")
+   ]
+   interface ldIVehicularLoadEvents : IUnknown
+   {
+      [helpstring("method OnVehicularLoadChanged"),helpcontext(IDH_VehicularLoad_OnVehicularLoadChanged)] 
+      HRESULT OnVehicularLoadChanged([in] ldIVehicularLoad* me,ldLoadingChangeType changed);
+   };
+
+   [
+      object,
+      uuid(130BE712-D57F-4329-9B8B-0E76EF6A6D66),
+      helpstring("IEnumVehicularLoad Interface"),
+      helpcontext(IDH_FastEnumerators),
+      oleautomation,nonextensible,
+      hidden,restricted,
+      pointer_default(unique)
+   ]
+   interface ldIEnumVehicularLoad : IUnknown
+   {
+      [helpstring("Clone"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Clone([out] ldIEnumVehicularLoad** ppenum);
+
+      [helpstring("Next"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Next([in] ULONG celt, [out] ldIVehicularLoad** rgelt, [in,out] ULONG* pceltFetched);
+
+      [helpstring("Reset"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Reset();
+
+      [helpstring("Skip"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Skip([in] ULONG celt);
+   };
+
+	[
+		object,
+		uuid(C2C7CE61-BD50-48e5-A53A-49E280AA414E),
+		oleautomation,
+		helpstring("IVehicularLoads Interface"),
+      helpcontext(IDH_VehicularLoads_Item),
+		pointer_default(unique)
+	]
+	interface ldIVehicularLoads : IUnknown
+	{
+		[propget, helpstring("property Item"),helpcontext(IDH_VehicularLoads_Item)] 
+      HRESULT Item([in]VehicleIndexType index, [out, retval] ldIVehicularLoad* *pVal);
+		[propget, helpstring("returns an enumerator for the collection.")]
+		HRESULT _NewEnum([out, retval] IUnknown** retval);  
+		[propget, helpstring("property Count"),helpcontext(IDH_VehicularLoads_Count)] 
+      HRESULT Count([out, retval] VehicleIndexType *pVal);
+		[propget, helpstring("property _EnumElements"),helpcontext(IDH_VehicularLoads__EnumElements)] 
+      HRESULT _EnumElements([out, retval] ldIEnumVehicularLoad* *pVal);
+		[helpstring("Insert a new VehicularLoad to the model"),helpcontext(IDH_VehicularLoads_Insert)] 
+		HRESULT Insert([in] VehicleIndexType index, [in] ldIVehicularLoad *pVal);
+		[helpstring("method Add"),helpcontext(IDH_VehicularLoads_Add)] 
+      HRESULT Add([in] ldIVehicularLoad*);
+		[helpstring("method Remove"),helpcontext(IDH_VehicularLoads_Remove)] 
+      HRESULT Remove([in]VehicleIndexType index);
+		[helpstring("method Clone"),helpcontext(IDH_VehicularLoads_Clone)] 
+		HRESULT Clone([out,retval] ldIVehicularLoads**);
+		[helpstring("method Clear"),helpcontext(IDH_VehicularLoads_Clear)] 
+		HRESULT Clear();
+	};
+
+   [
+      object,
+      oleautomation,
+      uuid(36EE5876-C9A7-404d-8EB1-4C5D7D72BB7F),
+      pointer_default(unique),
+      helpcontext(IDH_VehicularLoads),
+      helpstring("IVehicularLoadsEvents Interface")
+   ]
+   interface ldIVehicularLoadsEvents : IUnknown
+   {
+      [helpstring("method OnVehicularLoadsChanged"),helpcontext(IDH_VehicularLoads_OnVehicularLoadsChanged)] 
+      HRESULT OnVehicularLoadsChanged([in] ldIVehicularLoad* load,ldLoadingChangeType changed);
+      [helpstring("method OnVehicularLoadsRenamed"),helpcontext(IDH_VehicularLoads_OnVehicularLoadsRenamed)] 
+      HRESULT OnVehicularLoadsRenamed([in]BSTR oldName, [in]BSTR newName);
+      [helpstring("method OnVehicularLoadsAdded"),helpcontext(IDH_VehicularLoads_OnVehicularLoadsAdded)] 
+      HRESULT OnVehicularLoadsAdded([in] ldIVehicularLoad* load);
+      [helpstring("method OnVehicularLoadsBeforeRemove"),helpcontext(IDH_VehicularLoads_OnVehicularLoadsBeforeRemove)] 
+      HRESULT OnVehicularLoadsBeforeRemove([in] ldIVehicularLoad* load);
+   };
+
+	[
+		object,
+		uuid(167D825F-5AD5-459d-845A-9B7993B236F6),
+		oleautomation,
+		helpstring("ILoadGroup Interface"),
+		helpcontext(IDH_LoadGroup),
+		pointer_default(unique)
+	]
+	interface ldILoadGroup : IUnknown
+	{
+		[propget, helpstring("property Name"),helpcontext(IDH_LoadGroup_Name)] 
+		HRESULT Name([out, retval] BSTR *pVal);
+		[propput, helpstring("property Name"),helpcontext(IDH_LoadGroup_Name)] 
+		HRESULT Name([in] BSTR newVal);
+		[propget, helpstring("property Description"),helpcontext(IDH_LoadGroup_Description)] 
+		HRESULT Description([out, retval] BSTR *pVal);
+		[propput, helpstring("property Description"),helpcontext(IDH_LoadGroup_Description)] 
+		HRESULT Description([in] BSTR newVal);
+		[helpstring("method Clone"),helpcontext(IDH_LoadGroup_Clone)] 
+		HRESULT Clone([out,retval] ldILoadGroup** clone);
+		[propget, helpstring("property Transient"),helpcontext(IDH_LoadGroup_Transient)] 
+		HRESULT Transient([out, retval] VARIANT_BOOL *pVal);
+		[propput, helpstring("property Transient"),helpcontext(IDH_LoadGroup_Transient)] 
+		HRESULT Transient([in] VARIANT_BOOL newVal);
+	};
+
+   [
+      object,
+      oleautomation,
+      uuid(8B461584-5AB1-410b-B2B0-3FA27A57396A),
+      pointer_default(unique),
+      helpcontext(IDH_LoadGroup),
+      helpstring("ILoadGroupEvents Interface")
+   ]
+   interface ldILoadGroupEvents : IUnknown
+   {
+      [helpstring("method OnLoadGroupChanged"),helpcontext(IDH_LoadGroup_OnLoadGroupChanged)] 
+      HRESULT OnLoadGroupChanged([in] ldILoadGroup* me, [in]ldLoadingChangeType type);
+      [helpstring("method OnLoadGroupRenamed"),helpcontext(IDH_LoadGroup_OnLoadGroupRenamed)] 
+      HRESULT OnLoadGroupRenamed([in]BSTR oldName, [in]BSTR newName);
+   };
+
+	[
+      object,
+      uuid(3E01D87F-8080-4b83-A656-F2A531B51061),
+      helpstring("IEnumLoadGroup Interface"),
+      helpcontext(IDH_FastEnumerators),
+      oleautomation,nonextensible,
+      hidden,restricted,
+      pointer_default(unique)
+	]
+	interface ldIEnumLoadGroup : IUnknown
+	{
+      [helpstring("Clone"),helpcontext(IDH_FastEnumerators)]
+	   HRESULT Clone([out] ldIEnumLoadGroup** ppenum);
+
+	   [helpstring("Next"),helpcontext(IDH_FastEnumerators)]
+	   HRESULT Next([in] ULONG celt, [out] ldILoadGroup** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset"),helpcontext(IDH_FastEnumerators)]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip"),helpcontext(IDH_FastEnumerators)]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+		object,
+		uuid(B952CBA6-84C4-4303-85F8-AF319D3B5A82),
+		oleautomation,
+		helpstring("ILoadGroups Interface"),
+		helpcontext(IDH_LoadGroups),
+		pointer_default(unique)
+	]
+	interface ldILoadGroups : IUnknown
+	{
+      [propget, helpstring("property Item"),helpcontext(IDH_LoadGroups_Item)] 
+      HRESULT Item([in]CollectionIndexType index, [out, retval] ldILoadGroup* *pVal);
+      [propget, helpstring("returns an enumerator for the collection.")]
+      HRESULT _NewEnum([out, retval] IUnknown** retval);  
+      [propget, helpstring("property Count"),helpcontext(IDH_LoadGroups_Count)] 
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      [propget, helpstring("property _EnumElements"),helpcontext(IDH_LoadGroups__EnumElements)] 
+      HRESULT _EnumElements([out, retval] ldIEnumLoadGroup* *pVal);
+      [helpstring("method Find"),helpcontext(IDH_LoadGroups_Find)] 
+      HRESULT Find([in]BSTR name, [out,retval] ldILoadGroup**);
+      [helpstring("method Add"),helpcontext(IDH_LoadGroups_Add)] 
+      HRESULT Add([in] ldILoadGroup*);
+      [helpstring("method RemoveByName"),helpcontext(IDH_LoadGroups_RemoveByName)] 
+      HRESULT RemoveByName([in]BSTR name);
+      [helpstring("method RemoveByIndex"),helpcontext(IDH_LoadGroups_RemoveByIndex)] 
+      HRESULT RemoveByIndex([in]CollectionIndexType index, [out,retval]BSTR* name);
+      [helpstring("method Clone"),helpcontext(IDH_LoadGroups_Clone)] 
+      HRESULT Clone([out,retval] ldILoadGroups**);
+      [helpstring("method Clear"),helpcontext(IDH_LoadGroups_Clear)] 
+      HRESULT Clear();
+	};
+
+   [
+      object,
+      oleautomation,
+      uuid(D46C46B3-ECB0-4451-B8DF-29CBF26D53BF),
+      pointer_default(unique),
+      helpcontext(IDH_LoadGroups),
+      helpstring("ILoadGroupsEvents Interface")
+   ]
+   interface ldILoadGroupsEvents : IUnknown
+   {
+      [helpstring("method OnLoadGroupsChanged"),helpcontext(IDH_LoadGroups_OnLoadGroupsChanged)] 
+      HRESULT OnLoadGroupsChanged([in] ldILoadGroup* load,[in]ldLoadingChangeType change);
+      [helpstring("method OnLoadGroupsRenamed"),helpcontext(IDH_LoadGroups_OnLoadGroupsRenamed)] 
+      HRESULT OnLoadGroupsRenamed([in]BSTR oldName, [in]BSTR newName);
+      [helpstring("method OnLoadGroupsAdded"),helpcontext(IDH_LoadGroups_OnLoadGroupsAdded)] 
+      HRESULT OnLoadGroupsAdded([in] ldILoadGroup* load);
+      [helpstring("method OnLoadGroupsBeforeRemove"),helpcontext(IDH_LoadGroups_OnLoadGroupsBeforeRemove)] 
+      HRESULT OnLoadGroupsBeforeRemove([in] ldILoadGroup* load);
+   };
+
+	[
+		object,
+		uuid(FC9429CE-F553-4fbb-9436-32027A50294C),
+		oleautomation,
+		helpstring("ILoadCase Interface"),
+      helpcontext(IDH_LoadCase),
+		pointer_default(unique)
+	]
+	interface ldILoadCase : IUnknown
+	{
+		[propget, helpstring("property Name"),helpcontext(IDH_LoadCase_Name)] 
+      HRESULT Name([out, retval] BSTR *pVal);
+		[propput, helpstring("property Name"),helpcontext(IDH_LoadCase_Name)] 
+      HRESULT Name([in] BSTR newVal);
+		[propget, helpstring("property Description"),helpcontext(IDH_LoadCase_Description)] 
+      HRESULT Description([out, retval] BSTR *pVal);
+		[propput, helpstring("property Description"),helpcontext(IDH_LoadCase_Description)] 
+      HRESULT Description([in] BSTR newVal);
+		[propget, helpstring("property ItemData"),helpcontext(IDH_LoadCase_ItemData)] 
+      HRESULT ItemData([out, retval] VARIANT *pVal);
+		[propput, helpstring("property ItemData"),helpcontext(IDH_LoadCase_ItemData)] 
+      HRESULT ItemData([in] VARIANT newVal);
+		[helpstring("method Clear"),helpcontext(IDH_LoadCases_Clear)] 
+      HRESULT Clear();
+		[helpstring("method AddLoadGroup"),helpcontext(IDH_LoadCase_AddLoadGroup)] 
+      HRESULT AddLoadGroup([in]BSTR loadGroupName);
+		[helpstring("method GetLoadGroup"),helpcontext(IDH_LoadCase_GetLoadGroup)] 
+      HRESULT GetLoadGroup([in]long index, [out]BSTR* loadGroupName);
+		[helpstring("method SetLoadGroup"),helpcontext(IDH_LoadCase_SetLoadGroup)] 
+      HRESULT SetLoadGroup([in]long index, [in]BSTR newName);
+		[helpstring("method RemoveLoadGroup"),helpcontext(IDH_LoadCase_RemoveLoadGroup)] 
+      HRESULT RemoveLoadGroup([in]BSTR loadGroupName);
+		[helpstring("method RemoveLoadGroupByIndex"),helpcontext(IDH_LoadCase_RemoveLoadGroupByIndex)] 
+      HRESULT RemoveLoadGroupByIndex([in]long index);
+		[helpstring("method Clone"),helpcontext(IDH_LoadCase_Clone)] 
+      HRESULT Clone([out,retval] ldILoadCase** clone);
+		[propget, helpstring("property LoadGroupCount"),helpcontext(IDH_LoadCase_LoadGroupCount)] 
+      HRESULT LoadGroupCount([out, retval] long *pVal);
+	};
+
+   [
+      object,
+      oleautomation,
+      uuid(C2DCA8D9-CA41-4a04-B7F9-4825A4940491),
+      pointer_default(unique),
+      helpcontext(IDH_LoadCase),
+      helpstring("ILoadCaseEvents Interface")
+   ]
+   interface ldILoadCaseEvents : IUnknown
+   {
+      [helpstring("method OnLoadCaseChanged"),helpcontext(IDH_LoadCase_OnLoadCaseChanged)] 
+      HRESULT OnLoadCaseChanged([in] ldILoadCase* me, [in]ldLoadingChangeType type);
+      [helpstring("method OnLoadCaseRenamed"),helpcontext(IDH_LoadCase_OnLoadCaseRenamed)] 
+      HRESULT OnLoadCaseRenamed([in]BSTR oldName, [in]BSTR newName);
+   };
+
+	[
+	   object,
+	   uuid(329AF1B2-38E0-4d3b-BC44-895D62132E08),
+	   helpstring("IEnumLoadCase Interface"),
+      helpcontext(IDH_FastEnumerators),
+	   oleautomation,nonextensible,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface ldIEnumLoadCase : IUnknown
+	{
+      [helpstring("Clone"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Clone([out] ldIEnumLoadCase** ppenum);
+
+      [helpstring("Next"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Next([in] ULONG celt, [out] ldILoadCase** rgelt, [in,out] ULONG* pceltFetched);
+
+      [helpstring("Reset"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Reset();
+
+      [helpstring("Skip"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+		object,
+		uuid(120C2E56-3AC8-4428-965C-22E68524FFCA),
+		oleautomation,
+		helpstring("ILoadCases Interface"),
+		helpcontext(IDH_LoadCases),
+		pointer_default(unique)
+	]
+	interface ldILoadCases : IUnknown
+	{
+      [propget, helpstring("property Item"),helpcontext(IDH_LoadCases_Item)] 
+      HRESULT Item([in]CollectionIndexType index, [out, retval] ldILoadCase* *pVal);
+      [propget, helpstring("returns an enumerator for the collection.")]
+      HRESULT _NewEnum([out, retval] IUnknown** retval);  
+      [propget, helpstring("property Count"),helpcontext(IDH_LoadCases_Count)] 
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      [propget, helpstring("property _EnumElements"),helpcontext(IDH_LoadCases__EnumElements)] 
+      HRESULT _EnumElements([out, retval] ldIEnumLoadCase* *pVal);
+      [helpstring("method Find"),helpcontext(IDH_LoadCases_Find)] 
+      HRESULT Find([in]BSTR name, [out,retval] ldILoadCase** loadCase);
+      [helpstring("method Add"),helpcontext(IDH_LoadCases_Add)] 
+      HRESULT Add([in] ldILoadCase* loadCase);
+      [helpstring("method RemoveByName"),helpcontext(IDH_LoadCases_RemoveByName)] 
+      HRESULT RemoveByName([in]BSTR name);
+      [helpstring("method RemoveByIndex"),helpcontext(IDH_LoadCases_RemoveByIndex)] 
+      HRESULT RemoveByIndex([in]CollectionIndexType index, [out,retval]BSTR* name);
+      [helpstring("method Clone"),helpcontext(IDH_LoadCases_Clone)] 
+      HRESULT Clone([out,retval] ldILoadCases** clone);
+      [helpstring("method Clear"),helpcontext(IDH_LoadCases_Clear)] 
+      HRESULT Clear();
+	};
+
+   [
+      object,
+      oleautomation,
+      uuid(A07D1640-37BD-4095-B814-C736E34E00FD),
+      pointer_default(unique),
+      helpcontext(IDH_LoadCases),
+      helpstring("ILoadCasesEvents Interface")
+   ]
+   interface ldILoadCasesEvents : IUnknown
+   {
+      [helpstring("method OnLoadCasesChanged"),helpcontext(IDH_LoadCases_OnLoadCasesChanged)] 
+      HRESULT OnLoadCasesChanged([in] ldILoadCase* load,[in]ldLoadingChangeType change);
+      [helpstring("method OnLoadCasesRenamed"),helpcontext(IDH_LoadCases_OnLoadCasesRenamed)] 
+      HRESULT OnLoadCasesRenamed([in]BSTR oldName, [in]BSTR newName);
+      [helpstring("method OnLoadCasesAdded"),helpcontext(IDH_LoadCases_OnLoadCasesAdded)] 
+      HRESULT OnLoadCasesAdded([in] ldILoadCase* load);
+      [helpstring("method OnLoadCasesBeforeRemove"),helpcontext(IDH_LoadCases_OnLoadCasesBeforeRemove)] 
+      HRESULT OnLoadCasesBeforeRemove([in] ldILoadCase* load);
+   };
+
+	[
+		object,
+		uuid(4E129557-9D47-4246-BF2A-C2E963D2B676),
+		oleautomation,
+		helpstring("ILoadCombination Interface"),
+      helpcontext(IDH_LoadCombination),
+		pointer_default(unique)
+	]
+	interface ldILoadCombination : IUnknown
+	{
+		[propget, helpstring("property Name"),helpcontext(IDH_LoadCombination_Name)] 
+      HRESULT Name([out, retval] BSTR *pVal);
+		[propput, helpstring("property Name"),helpcontext(IDH_LoadCombination_Name)] 
+      HRESULT Name([in] BSTR newVal);
+		[propget, helpstring("property Description"),helpcontext(IDH_LoadCombination_Description)] 
+      HRESULT Description([out, retval] BSTR *pVal);
+		[propput, helpstring("property Description"),helpcontext(IDH_LoadCombination_Description)] 
+      HRESULT Description([in] BSTR newVal);
+		[propget, helpstring("property LiveLoadModel"),helpcontext(IDH_LoadCombination_LiveLoadModel)] 
+      HRESULT LiveLoadModel([out, retval] ldLiveLoadModelType *pVal);
+		[propput, helpstring("property LiveLoadModel"),helpcontext(IDH_LoadCombination_LiveLoadModel)] 
+      HRESULT LiveLoadModel([in] ldLiveLoadModelType newVal);
+		[propget, helpstring("property LiveLoadFactor"),helpcontext(IDH_LoadCombination_LiveLoadFactor)] 
+      HRESULT LiveLoadFactor([out, retval] Float64 *pVal);
+		[propput, helpstring("property LiveLoadFactor"),helpcontext(IDH_LoadCombination_LiveLoadFactor)] 
+      HRESULT LiveLoadFactor([in] Float64 newVal);
+		[propget, helpstring("property LoadCaseFactorCount"),helpcontext(IDH_LoadCombination_LoadCaseFactorCount)] 
+      HRESULT LoadCaseFactorCount([out, retval] long *pVal);
+		[helpstring("method SetLoadCaseFactor"),helpcontext(IDH_LoadCombination_SetLoadCaseFactor)] 
+      HRESULT SetLoadCaseFactor([in]long index, [in]BSTR loadCaseName, [in]Float64 minFactor, [in]Float64 maxFactor);
+		[helpstring("method AddLoadCaseFactor"),helpcontext(IDH_LoadCombination_AddLoadCaseFactor)] 
+      HRESULT AddLoadCaseFactor( [in]BSTR loadCaseName, [in]Float64 minFactor, [in]Float64 maxFactor);
+		[helpstring("method GetLoadCaseFactor"),helpcontext(IDH_LoadCombination_GetLoadCaseFactor)] 
+      HRESULT GetLoadCaseFactor([in]long index,  [out]BSTR* loadCaseName, [out]Float64* minFactor, [out]Float64* maxFactor);
+		[helpstring("method Clear"),helpcontext(IDH_LoadCombination_Clear)] 
+      HRESULT Clear();
+		[helpstring("method RemoveLoadCaseFactor"),helpcontext(IDH_LoadCombination_RemoveLoadCaseFactor)] 
+      HRESULT RemoveLoadCaseFactor([in]long index);
+		[helpstring("method Clone"),helpcontext(IDH_LoadCombination_Clone)] 
+      HRESULT Clone([out,retval] ldILoadCombination* *lone);
+		[propget, helpstring("property ItemData"),helpcontext(IDH_LoadCases_OnLoadCasesAdded)] 
+      HRESULT ItemData([out, retval] VARIANT *pVal);
+		[propput, helpstring("property ItemData"),helpcontext(IDH_LoadCombination_ItemData)] 
+      HRESULT ItemData([in] VARIANT newVal);
+		[propget, helpstring("property ldLoadCombinationType"),helpcontext(IDH_LoadCombination_LoadCombinationType)] 
+      HRESULT LoadCombinationType([out, retval] ldLoadCombinationType *pVal);
+		[propput, helpstring("property ldLoadCombinationType"),helpcontext(IDH_LoadCombination_LoadCombinationType)] 
+      HRESULT LoadCombinationType([in] ldLoadCombinationType newVal);
+	};
+
+   [
+      object,
+      oleautomation,
+      uuid(C8427522-7A09-40fb-8CBD-18A6A3573418),
+      pointer_default(unique),
+      helpcontext(IDH_LoadCombination),
+      helpstring("ILoadCombinationEvents Interface")
+   ]
+   interface ldILoadCombinationEvents : IUnknown
+   {
+      [helpstring("method OnLoadCombinationChanged"),helpcontext(IDH_LoadCombination_OnLoadCombinationChanged)] 
+      HRESULT OnLoadCombinationChanged([in] ldILoadCombination* me, [in]ldLoadingChangeType type);
+      [helpstring("method OnLoadCombinationRenamed"),helpcontext(IDH_LoadCombination_OnLoadCombinationRenamed)] 
+      HRESULT OnLoadCombinationRenamed([in]BSTR oldName, [in]BSTR newName);
+   };
+
+	[
+      object,
+      uuid(1E07C7C3-8ABB-4338-BEA7-456884792E07),
+      helpstring("IEnumLoadCombination Interface"),
+      helpcontext(IDH_FastEnumerators),
+      oleautomation,nonextensible,
+      hidden,restricted,
+      pointer_default(unique)
+	]
+	interface ldIEnumLoadCombination : IUnknown
+	{
+      [helpstring("Clone"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Clone([out] ldIEnumLoadCombination** ppenum);
+
+      [helpstring("Next"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Next([in] ULONG celt, [out] ldILoadCombination** rgelt, [in,out] ULONG* pceltFetched);
+
+      [helpstring("Reset"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Reset();
+
+      [helpstring("Skip"),helpcontext(IDH_FastEnumerators)]
+      HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+		object,
+		uuid(EC9E987A-69F8-4f96-A825-F7583A491113),
+		oleautomation,
+		helpstring("ldILoadCombinations Interface"),
+		helpcontext(IDH_LoadCombinations),
+		pointer_default(unique)
+	]
+	interface ldILoadCombinations : IUnknown
+	{
+      [propget, helpstring("property Item"),helpcontext(IDH_LoadCombinations_Item)] 
+      HRESULT Item([in]CollectionIndexType index, [out, retval] ldILoadCombination* *pVal);
+      [propget, helpstring("returns an enumerator for the collection.")]
+      HRESULT _NewEnum([out, retval] IUnknown** retval);  
+      [propget, helpstring("property Count"),helpcontext(IDH_LoadCombinations_Count)] 
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      [propget, helpstring("property _EnumElements"),helpcontext(IDH_LoadCombinations__EnumElements)] 
+      HRESULT _EnumElements([out, retval] ldIEnumLoadCombination* *pVal);
+      [helpstring("method Find"),helpcontext(IDH_LoadCombinations_Find)] 
+      HRESULT Find([in]BSTR name, [out,retval] ldILoadCombination**);
+      [helpstring("method Add"),helpcontext(IDH_LoadCombinations_Add)] 
+      HRESULT Add([in] ldILoadCombination*);
+      [helpstring("method RemoveByName"),helpcontext(IDH_LoadCombinations_RemoveByName)] 
+      HRESULT RemoveByName([in]BSTR name);
+      [helpstring("method RemoveByIndex"),helpcontext(IDH_LoadCombinations_RemoveByIndex)] 
+      HRESULT RemoveByIndex([in]CollectionIndexType index, [out,retval]BSTR* name);
+      [helpstring("method Clone"),helpcontext(IDH_LoadCombinations_Clone)] 
+      HRESULT Clone([out,retval] ldILoadCombinations**);
+      [helpstring("method Clear"),helpcontext(IDH_LoadCombinations_Clear)] 
+      HRESULT Clear();
+	};
+
+   [
+      object,
+      oleautomation,
+      uuid(CC9529DC-0265-4c9e-B3F8-DADBC0C0BAEA),
+      pointer_default(unique),
+      helpcontext(IDH_LoadCombinations),
+      helpstring("ILoadCombinationsEvents Interface")
+   ]
+   interface ldILoadCombinationsEvents : IUnknown
+   {
+      [helpstring("method OnLoadCombinationsChanged"),helpcontext(IDH_LoadCombinations_OnLoadCombinationsChanged)] 
+      HRESULT OnLoadCombinationsChanged([in] ldILoadCombination* load,[in]ldLoadingChangeType change);
+      [helpstring("method OnLoadCombinationsRenamed"),helpcontext(IDH_LoadCombinations_OnLoadCombinationsRenamed)] 
+      HRESULT OnLoadCombinationsRenamed([in]BSTR oldName, [in]BSTR newName);
+      [helpstring("method OnLoadCombinationsAdded"),helpcontext(IDH_LoadCombinations_OnLoadCombinationsAdded)] 
+      HRESULT OnLoadCombinationsAdded([in] ldILoadCombination* load);
+      [helpstring("method OnLoadCombinationsBeforeRemove"),helpcontext(IDH_LoadCombinations_OnLoadCombinationsBeforeRemove)] 
+      HRESULT OnLoadCombinationsBeforeRemove([in] ldILoadCombination* load);
+   };
+
+	[
+		uuid(EEA0ACB5-8975-4a22-A767-3E99B403927C),
+		helpstring("PointLoad Class")
+	]
+	coclass ldPointLoad
+	{
+		[default] interface ldIPointLoad;
+		[default, source] interface ldIPointLoadEvents;
+      // interface IPersist;
+      interface IStructuredStorage2;
+	};
+	[
+      uuid(CFEF06F9-4670-46f1-8886-6A240F368CAB),
+      noncreatable,
+      helpstring("PointLoadItem Class")
+	]
+	coclass ldPointLoadItem
+	{
+      [default] interface ldIPointLoadItem;
+      // interface IPersist;
+      interface IStructuredStorage2;
+	};
+	[
+		uuid(5C044453-8A7B-4bd9-B6D8-071717C2CF30),
+		helpstring("PointLoads Class")
+	]
+	coclass ldPointLoads
+	{
+      [default] interface ldIPointLoads;
+      [default, source] interface ldIPointLoadsEvents;
+      // interface IPersist;
+      interface IStructuredStorage2;
+	};
+   [
+      uuid(3D861436-D4EE-48d6-919B-2C9092C84437),
+      helpstring("DistributedLoad Class")
+   ]
+   coclass ldDistributedLoad
+   {
+      [default] interface ldIDistributedLoad;
+      [default, source] interface ldIDistributedLoadEvents;
+      // interface IPersist;
+      interface IStructuredStorage2;
+   };
+
+	[
+      uuid(728C9541-A81D-4021-9021-E56159407B39),
+      noncreatable,
+      helpstring("DistributedLoadItem Class")
+	]
+	coclass ldDistributedLoadItem
+	{
+      [default] interface ldIDistributedLoadItem;
+      // interface IPersist;
+      interface IStructuredStorage2;
+	};
+
+   [
+      uuid(37F5CCA8-1487-46ee-9799-B6F19667992C),
+      helpstring("DistributedLoads Class")
+   ]
+   coclass ldDistributedLoads
+   {
+      [default] interface ldIDistributedLoads;
+      [default, source] interface ldIDistributedLoadsEvents;
+      // interface IPersist;
+      interface IStructuredStorage2;
+   };
+	[
+      uuid(D789E133-AD3A-4716-A8FB-2CE053D16F54),
+      helpstring("SettlementLoad Class")
+	]
+	coclass ldSettlementLoad
+	{
+      [default] interface ldISettlementLoad;
+      [default, source] interface ldISettlementLoadEvents;
+      // interface IPersist;
+      interface IStructuredStorage2;
+	};
+
+	[
+      uuid(E45903B2-349C-4400-84F1-5F57BD63B84B),
+      noncreatable,
+      helpstring("SettlementLoadItem Class")
+	]
+	coclass ldSettlementLoadItem
+	{
+      [default] interface ldISettlementLoadItem;
+      // interface IPersist;
+      interface IStructuredStorage2;
+	};
+
+	[
+		uuid(7AA2979B-5D9B-43f6-86F0-D3E2432C0460),
+		helpstring("SettlementLoads Class")
+	]
+	coclass ldSettlementLoads
+	{
+      [default] interface ldISettlementLoads;
+      [default, source] interface ldISettlementLoadsEvents;
+      // interface IPersist;
+      interface IStructuredStorage2;
+	};
+
+	[
+		uuid(B4D529B3-8751-4e31-9374-EE536BC4E181),
+		helpstring("TemperatureLoad Class")
+	]
+	coclass ldTemperatureLoad
+	{
+      [default] interface ldITemperatureLoad;
+      [default, source] interface ldITemperatureLoadEvents;
+      // interface IPersist;
+      interface IStructuredStorage2;
+	};
+	[
+      uuid(E29B1273-A987-4ca9-8E22-525F679AC2BC),
+      noncreatable,
+      helpstring("TemperatureLoadItem Class")
+	]
+	coclass ldTemperatureLoadItem
+	{
+      [default] interface ldITemperatureLoadItem;
+      // interface IPersist;
+      interface IStructuredStorage2;
+	};
+	[
+		uuid(F7416351-EA9D-4e11-AACE-52A5ADA81166),
+		helpstring("TemperatureLoads Class")
+	]
+	coclass ldTemperatureLoads
+	{
+      [default] interface ldITemperatureLoads;
+      [default, source] interface ldITemperatureLoadsEvents;
+      // interface IPersist;
+      interface IStructuredStorage2;
+	};
+
+	[
+		uuid(D492704F-167D-4ef6-A42D-E71A00202D55),
+		helpstring("StrainLoad Class")
+	]
+	coclass ldStrainLoad
+	{
+      [default] interface ldIStrainLoad;
+      [default, source] interface ldIStrainLoadEvents;
+      // interface IPersist;
+      interface IStructuredStorage2;
+	};
+	[
+      uuid(C91BF36A-2CE9-450c-A6CC-186DE33D1EF6),
+      noncreatable,
+      helpstring("StrainLoadItem Class")
+	]
+	coclass ldStrainLoadItem
+	{
+      [default] interface ldIStrainLoadItem;
+      // interface IPersist;
+      interface IStructuredStorage2;
+	};
+	[
+		uuid(E94C40B2-A06F-425f-86BD-0614C7949A40),
+		helpstring("StrainLoads Class")
+	]
+	coclass ldStrainLoads
+	{
+      [default] interface ldIStrainLoads;
+      [default, source] interface ldIStrainLoadsEvents;
+      // interface IPersist;
+      interface IStructuredStorage2;
+	};
+
+	[
+		uuid(6C8C9861-27F5-4453-8B5C-3D64BF6CA67E),
+		helpstring("Axle Class")
+	]
+	coclass ldAxle
+	{
+      [default] interface ldIAxle;
+      [default, source] interface ldIAxleEvents;
+      // interface IPersist;
+      interface IStructuredStorage2;
+	};
+	[
+		uuid(CB15EE10-4EE5-4c45-9DFE-4CE55278660C),
+		helpstring("Axles Class")
+	]
+	coclass ldAxles
+	{
+      [default] interface ldIAxles;
+      [default, source] interface ldIAxlesEvents;
+      // interface IPersist;
+      interface IStructuredStorage2;
+	};
+	[
+		uuid(3BCDD419-7FAB-4fbf-9C49-BBFC2DCA7560),
+		helpstring("VehicularLoad Class")
+	]
+	coclass ldVehicularLoad
+	{
+      [default] interface ldIVehicularLoad;
+      [default, source] interface ldIVehicularLoadEvents;
+      // interface IPersist;
+      interface IStructuredStorage2;
+	};
+	[
+		uuid(DA308252-6092-4249-A15F-29145E216DDA),
+		helpstring("VehicularLoads Class")
+	]
+	coclass ldVehicularLoads
+	{
+      [default] interface ldIVehicularLoads;
+      [default, source] interface ldIVehicularLoadsEvents;
+      // interface IPersist;
+      interface IStructuredStorage2;
+	};
+
+
+	[
+		uuid(0531B51D-4A03-4adf-A0F5-F03AB8A7B319),
+		helpstring("LoadGroup Class")
+	]
+	coclass ldLoadGroup
+	{
+      [default] interface ldILoadGroup;
+      [default, source] interface ldILoadGroupEvents;
+      // interface IPersist;
+      interface IStructuredStorage2;
+	};
+
+	[
+		uuid(7A25B5EA-2193-4693-9773-4FF6BB87542C),
+		helpstring("LoadGroups Class")
+	]
+	coclass ldLoadGroups
+	{
+      [default] interface ldILoadGroups;
+      [default, source] interface ldILoadGroupsEvents;
+      // interface IPersist;
+      interface IStructuredStorage2;
+	};
+
+	[
+		uuid(EBCC806B-3E7C-4fe9-B4BA-E35C7A4B9D37),
+		helpstring("LoadCase Class")
+	]
+	coclass ldLoadCase
+	{
+		[default] interface ldILoadCase;
+		[default, source] interface ldILoadCaseEvents;
+	};
+
+	[
+		uuid(A7B27015-3520-4599-862D-5F7B7BB9E951),
+		helpstring("LoadCases Class")
+	]
+	coclass ldLoadCases
+	{
+		[default] interface ldILoadCases;
+		[default, source] interface ldILoadCasesEvents;
+	};
+
+	[
+		uuid(FE736496-80C1-40a2-8E08-37D250580692),
+		helpstring("LoadCombination Class")
+	]
+	coclass ldLoadCombination
+	{
+		[default] interface ldILoadCombination;
+		[default, source] interface ldILoadCombinationEvents;
+	};
+
+	[
+		uuid(71218489-4944-4304-AAEF-B97361A750F1),
+		helpstring("LoadCombinations Class")
+	]
+	coclass ldLoadCombinations
+	{
+		[default] interface ldILoadCombinations;
+		[default, source] interface ldILoadCombinationsEvents;
+	};
+};

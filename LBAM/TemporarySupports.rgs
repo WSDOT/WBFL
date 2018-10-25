@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAM.TemporarySupports.1 = s 'TemporarySupports Class'
+	{
+		CLSID = s '{BA6F5313-85BD-11D5-B040-00105A9AF985}'
+	}
+	WBFLLBAM.TemporarySupports = s 'TemporarySupports Class'
+	{
+		CLSID = s '{BA6F5313-85BD-11D5-B040-00105A9AF985}'
+		CurVer = s 'WBFLLBAM.TemporarySupports.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {BA6F5313-85BD-11D5-B040-00105A9AF985} = s 'TemporarySupports Class'
+		{
+			ProgID = s 'WBFLLBAM.TemporarySupports.1'
+			VersionIndependentProgID = s 'WBFLLBAM.TemporarySupports'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{A60E8518-3A65-11D5-AFE5-00105A9AF985}'
+		}
+	}
+}

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.NorthArrow.1 = s 'NorthArrow Class'
+	{
+		CLSID = s '{DC3F42E8-7A6A-48be-8E0C-5D86E9D5EEBE}'
+	}
+	WBFLDManip.NorthArrow = s 'NorthArrow Class'
+	{
+		CLSID = s '{DC3F42E8-7A6A-48be-8E0C-5D86E9D5EEBE}'
+		CurVer = s 'WBFLDManip.NorthArrow.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {DC3F42E8-7A6A-48be-8E0C-5D86E9D5EEBE} = s 'NorthArrow Class'
+		{
+			ProgID = s 'WBFLDManip.NorthArrow.1'
+			VersionIndependentProgID = s 'WBFLDManip.NorthArrow'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

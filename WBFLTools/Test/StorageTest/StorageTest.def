@@ -1,0 +1,9 @@
+; StorageTest.def : Declares the module parameters.
+
+LIBRARY      "ToolsStorage.DLL"
+
+EXPORTS
+	DllCanUnloadNow     PRIVATE
+	DllGetClassObject   PRIVATE
+	DllRegisterServer   PRIVATE
+	DllUnregisterServer	PRIVATE

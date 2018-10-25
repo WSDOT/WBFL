@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.MomentCurvatureSolution.1 = s 'MomentCurvatureSolution Class'
+	{
+		CLSID = s '{2048EC33-ACCC-4f35-A2AC-DEFB64126D45}'
+	}
+	WBFLRCCapacity.MomentCurvatureSolution = s 'MomentCurvatureSolution Class'
+	{
+		CLSID = s '{2048EC33-ACCC-4f35-A2AC-DEFB64126D45}'
+		CurVer = s 'WBFLRCCapacity.MomentCurvatureSolution.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {2048EC33-ACCC-4f35-A2AC-DEFB64126D45} = s 'MomentCurvatureSolution Class'
+		{
+			ProgID = s 'WBFLRCCapacity.MomentCurvatureSolution.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.MomentCurvatureSolution'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

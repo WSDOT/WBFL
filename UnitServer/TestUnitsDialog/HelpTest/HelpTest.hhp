@@ -1,0 +1,26 @@
+[OPTIONS]
+Compiled File=HelpTest.chm-temp
+Title=UnitServerHelpTest
+Contents File=HelpTest.hhc
+Index File=HelpTest.hhk
+Default topic=Welcome.htm
+Error log file=
+Display compile progress=No
+Display compile notes=No
+Full-text search=No
+Binary Index=No
+
+[WINDOWS]
+
+[FILES]
+Welcome.htm
+#BSSC
+[ALIAS]
+#include HelpTest.ali
+
+[MAP]
+#include G:\AutoWBFL\UnitServer\TestUnitsDialog\HelpTest\HelpID.h
+
+[TEXT POPUPS]
+G:\AutoWBFL\UnitServer\TestUnitsDialog\HelpTest\HelpID.h
+

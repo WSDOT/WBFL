@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.CubicSpline.1 = s 'CubicSpline Class'
+	{
+		CLSID = s '{69706DA8-D10D-4932-A566-69DE35CAF30F}'
+	}
+	WBFLCogo.CubicSpline = s 'CubicSpline Class'
+	{
+		CLSID = s '{69706DA8-D10D-4932-A566-69DE35CAF30F}'
+		CurVer = s 'WBFLCogo.CubicSpline.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {69706DA8-D10D-4932-A566-69DE35CAF30F} = s 'CubicSpline Class'
+		{
+			ProgID = s 'WBFLCogo.CubicSpline.1'
+			VersionIndependentProgID = s 'WBFLCogo.CubicSpline'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

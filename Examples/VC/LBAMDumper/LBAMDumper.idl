@@ -1,0 +1,60 @@
+// LBAMDumper.idl : IDL source for LBAMDumper.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (LBAMDumper.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+import "WBFLLBAMAnalysisUtility.idl";
+
+
+[
+	uuid(F10318E7-0E1C-4C5C-B320-4360286E5E59),
+	version(1.0),
+	helpstring("WBFL LBAM Dump Utility 1.0 Type Library")
+]
+library WBFLLBAMDumper
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+   //importlib("WBFLLBAMAnalysisUtility.tlb");
+
+	[
+		object,
+		uuid(2596FCA6-D3A3-49CC-AB8D-79522FC0D360),
+		dual,
+		helpstring("ILBAMResponseDumper Interface"),
+		pointer_default(unique)
+	]
+	interface ILBAMResponseDumper : IDispatch
+	{
+		[id(1), helpstring("method Dump")] HRESULT Dump([in]ILBAMAnalysisEngine* engine, [in]BSTR dumpFileName, [in]BSTR detailsFileName);
+		[propget, id(2), helpstring("property DumpModel")] HRESULT DumpModel([out, retval] VARIANT_BOOL *pVal);
+		[propput, id(2), helpstring("property DumpModel")] HRESULT DumpModel([in] VARIANT_BOOL newVal);
+		[propget, id(3), helpstring("property DumpLoadGroupResponse")] HRESULT DumpLoadGroupResponse([out, retval] VARIANT_BOOL *pVal);
+		[propput, id(3), helpstring("property DumpLoadGroupResponse")] HRESULT DumpLoadGroupResponse([in] VARIANT_BOOL newVal);
+		[propget, id(4), helpstring("property DumpInfluenceLines")] HRESULT DumpInfluenceLines([out, retval] VARIANT_BOOL *pVal);
+		[propput, id(4), helpstring("property DumpInfluenceLines")] HRESULT DumpInfluenceLines([in] VARIANT_BOOL newVal);
+		[propget, id(5), helpstring("property DumpContraflexure")] HRESULT DumpContraflexure([out, retval] VARIANT_BOOL *pVal);
+		[propput, id(5), helpstring("property DumpContraflexure")] HRESULT DumpContraflexure([in] VARIANT_BOOL newVal);
+		[propget, id(6), helpstring("property DumpEnvelopedVehicularResponse")] HRESULT DumpEnvelopedVehicularResponse([out, retval] VARIANT_BOOL *pVal);
+		[propput, id(6), helpstring("property DumpEnvelopedVehicularResponse")] HRESULT DumpEnvelopedVehicularResponse([in] VARIANT_BOOL newVal);
+		[propget, id(7), helpstring("property DumpLiveLoadModelResponse")] HRESULT DumpLiveLoadModelResponse([out, retval] VARIANT_BOOL *pVal);
+		[propput, id(7), helpstring("property DumpLiveLoadModelResponse")] HRESULT DumpLiveLoadModelResponse([in] VARIANT_BOOL newVal);
+		[propget, id(8), helpstring("property DumpLoadCaseResponse")] HRESULT DumpLoadCaseResponse([out, retval] VARIANT_BOOL *pVal);
+		[propput, id(8), helpstring("property DumpLoadCaseResponse")] HRESULT DumpLoadCaseResponse([in] VARIANT_BOOL newVal);
+		[propget, id(9), helpstring("property DumpLoadCombinationResponse")] HRESULT DumpLoadCombinationResponse([out, retval] VARIANT_BOOL *pVal);
+		[propput, id(9), helpstring("property DumpLoadCombinationResponse")] HRESULT DumpLoadCombinationResponse([in] VARIANT_BOOL newVal);
+	};
+
+	[
+		uuid(0F4EB9EE-1F5C-4460-BE11-53C71F8645FE),
+		helpstring("LBAMResponseDumper Class")
+	]
+	coclass LBAMResponseDumper
+	{
+		[default] interface ILBAMResponseDumper;
+	};
+};

@@ -1,0 +1,488 @@
+///////////////////////////////////////////////////////////////////////
+// MfcTools - Extension library for MFC
+// Copyright (C) 1999  Washington State Department of Transportation
+//                     Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+#ifndef INCLUDED_MFCTOOLS_CUSTOMDDX_H_
+#define INCLUDED_MFCTOOLS_CUSTOMDDX_H_
+#pragma once
+
+#include <MfcTools\MfcToolsExp.h>
+#include <Units\SysUnits.h>
+
+void MFCTOOLSFUNC DDX_String(CDataExchange* pDX,int nIDC, std::string& str);
+void MFCTOOLSFUNC DDX_LBString(CDataExchange* pDX, int nIDC, std::string& value);
+void MFCTOOLSFUNC DDX_LBStringExact(CDataExchange* pDX, int nIDC, std::string& value);
+void MFCTOOLSFUNC DDX_CBString(CDataExchange* pDX,int nIDC, std::string& str);
+void MFCTOOLSFUNC DDX_CBStringExact(CDataExchange* pDX, int nIDC, std::string& str);
+void MFCTOOLSFUNC DDX_CBStringExactCase(CDataExchange* pDX, int nIDC, std::string& str);
+void MFCTOOLSFUNC DDX_CBStringExactCase(CDataExchange* pDX, int nIDC, CString& str);
+
+void MFCTOOLSFUNC DDV_NonNegativeDouble(CDataExchange* pDX, Float64 value);
+void MFCTOOLSFUNC DDV_GreaterThanZero(CDataExchange* pDX, Float64 value);
+void MFCTOOLSFUNC DDV_LimitOrMore(CDataExchange* pDX,Float64 value,Float64 min);
+
+void MFCTOOLSFUNC DDX_Check_Bool(CDataExchange* pDX, int nIDC, bool& value);
+void MFCTOOLSFUNC DDX_Text(CDataExchange* pDX, int nIDC, Uint16& value);
+
+void MFCTOOLSFUNC DDX_Percentage(CDataExchange* pDX,int nIDC,Float64& value);
+
+class MFCTOOLSCLASS mfcDDV
+{
+public:
+   enum LowerBound { LE, LT };
+   enum UpperBound { GT, GE };
+};
+
+void MFCTOOLSFUNC DDV_Range(CDataExchange* pDX, mfcDDV::LowerBound lower,mfcDDV::UpperBound upper,Float64 value,Float64 min,Float64 max);
+
+
+template <class T,class U>
+void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, T& value, T limit, bool bUnitModeSI, const U& usDisplayUnit, const U& siDisplayUnit )
+{
+   const U& displayUnit = (bUnitModeSI ? siDisplayUnit : usDisplayUnit);
+	if (!pDX->m_bSaveAndValidate)
+	{
+		return;
+	}
+
+   if( !(limit < value) )
+   {
+      CString msg;
+      msg.Format("Please enter a number that is greater than %f %s", 
+                 ::ConvertFromSysUnits( limit, displayUnit ), 
+                 displayUnit.UnitTag().c_str() );
+
+	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
+	   pDX->Fail();
+   }
+}
+
+template <class T,class U>
+void DDV_UnitValueLimitOrMore(CDataExchange* pDX, T& value, T limit, bool bUnitModeSI, const U& usDisplayUnit, const U& siDisplayUnit )
+{
+   const U& displayUnit = (bUnitModeSI ? siDisplayUnit : usDisplayUnit);
+	if (!pDX->m_bSaveAndValidate)
+	{
+		return;
+	}
+
+   if( !IsEqual(value,limit) && value < limit )
+   {
+      CString msg;
+      msg.Format("Please enter a number that is at least %f %s", 
+                 ::ConvertFromSysUnits( limit, displayUnit ), 
+                 displayUnit.UnitTag().c_str() );
+
+	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
+	   pDX->Fail();
+   }
+}
+
+template <class T,class U>
+void DDV_UnitValueLessThanLimit(CDataExchange* pDX, T& value, T limit, bool bUnitModeSI, const U& usDisplayUnit, const U& siDisplayUnit )
+{
+   const U& displayUnit = (bUnitModeSI ? siDisplayUnit : usDisplayUnit);
+	if (!pDX->m_bSaveAndValidate)
+	{
+		return;
+	}
+
+   if( !(value < limit) )
+   {
+      CString msg;
+      msg.Format("Please enter a number that is less than %f %s", 
+                 ::ConvertFromSysUnits( limit, displayUnit ), 
+                 displayUnit.UnitTag().c_str() );
+
+	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
+	   pDX->Fail();
+   }
+}
+
+template <class T,class U>
+void DDV_UnitValueLimitOrLess(CDataExchange* pDX, T& value, T limit, bool bUnitModeSI, const U& usDisplayUnit, const U& siDisplayUnit )
+{
+   const U& displayUnit = (bUnitModeSI ? siDisplayUnit : usDisplayUnit);
+	if (!pDX->m_bSaveAndValidate)
+	{
+		return;
+	}
+
+   if( !IsEqual(limit,value) && limit < value )
+   {
+      CString msg;
+      msg.Format("Please enter a number that is not more than %f %s", 
+                 ::ConvertFromSysUnits( limit, displayUnit ), 
+                 displayUnit.UnitTag().c_str() );
+
+	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
+	   pDX->Fail();
+   }
+}
+
+template <class T,class U>
+void DDV_UnitValueRange(CDataExchange* pDX, T& value, T min, T max, bool bUnitModeSI, const U& usDisplayUnit, const U& siDisplayUnit )
+{
+   const U& displayUnit = (bUnitModeSI ? siDisplayUnit : usDisplayUnit);
+	if (!pDX->m_bSaveAndValidate)
+	{
+		return;
+	}
+
+   if(  value < min || max < value )
+   {
+      CString msg;
+      msg.Format("Please enter a number in the range %f to %f %s", 
+                 ::ConvertFromSysUnits( min, displayUnit ), 
+                 ::ConvertFromSysUnits( max, displayUnit ), 
+                 displayUnit.UnitTag().c_str() );
+	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
+	   pDX->Fail();
+   }
+}
+
+template <class T,class U>
+void DDV_UnitValueGreaterThanZero(CDataExchange* pDX, T& value, bool bUnitModeSI, const U& usDisplayUnit, const U& siDisplayUnit )
+{
+   T zero = 0;
+   DDV_UnitValueGreaterThanLimit( pDX, value, zero, bUnitModeSI, usDisplayUnit, siDisplayUnit );
+}
+
+template <class T,class U>
+void DDV_UnitValueLessThanZero(CDataExchange* pDX, T& value, bool bUnitModeSI, const U& usDisplayUnit, const U& siDisplayUnit )
+{
+   T zero = 0;
+   DDV_UnitValueLessThanLimit( pDX, value, zero, bUnitModeSI, usDisplayUnit, siDisplayUnit );
+}
+
+template <class T,class U>
+void DDV_UnitValueZeroOrMore(CDataExchange* pDX, T& value, bool bUnitModeSI, const U& usDisplayUnit, const U& siDisplayUnit )
+{
+   T zero = 0;
+   DDV_UnitValueLimitOrMore( pDX, value, zero, bUnitModeSI, usDisplayUnit, siDisplayUnit );
+}
+
+template <class T,class U>
+void DDV_UnitValueZeroOrLess(CDataExchange* pDX, T& value, bool bUnitModeSI, const U& usDisplayUnit, const U& siDisplayUnit )
+{
+   T zero = 0;
+   DDV_UnitValueLimitOrLess( pDX, value, zero, bUnitModeSI, usDisplayUnit, siDisplayUnit );
+}
+
+template <class T,class U>
+void DDX_UnitValue( CDataExchange* pDX, int nIDC, T& data, bool bUnitModeSI, const U& usDisplayUnit, const U& siDisplayUnit )
+{
+   const U& displayUnit = (bUnitModeSI ? siDisplayUnit : usDisplayUnit);
+	if ( pDX->m_bSaveAndValidate )
+	{
+      Float64 f;
+      DDX_Text( pDX, nIDC, f);
+      data = ::ConvertToSysUnits( f, displayUnit );
+	}
+	else
+	{
+      Float64 f = ::ConvertFromSysUnits( data, displayUnit );
+      DDX_Text( pDX, nIDC, f );
+	}
+}
+
+template <class T,class U>
+void DDX_UnitValueAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, T& data, bool bUnitModeSI, const U& usDisplayUnit, const U& siDisplayUnit )
+{
+   const U& displayUnit = (bUnitModeSI ? siDisplayUnit : usDisplayUnit);
+	if ( pDX->m_bSaveAndValidate )
+	{
+      Float64 f;
+      DDX_Text( pDX, nIDC, f);
+      data = ::ConvertToSysUnits( f, displayUnit );
+	}
+	else
+	{
+      Float64 f = ::ConvertFromSysUnits( data, displayUnit );
+      DDX_Text( pDX, nIDC, f );
+
+      std::string tag = displayUnit.UnitTag();
+      DDX_String( pDX, nIDCTag, tag );
+	}
+}
+
+template <class U>
+void DDX_Tag(CDataExchange* pDX, int nIDCTag, bool bUnitModeSI, const U& usDisplayUnit, const U& siDisplayUnit )
+{
+   const U& displayUnit = (bUnitModeSI ? siDisplayUnit : usDisplayUnit);
+	if ( pDX->m_bSaveAndValidate )
+	{
+	}
+	else
+	{
+      std::string tag = displayUnit.UnitTag();
+      DDX_String( pDX, nIDCTag, tag );
+	}
+}
+
+template <class T>
+void DDX_CBItemData( CDataExchange* pDX, int nIDC, T& itemdata )
+{
+   HWND hWnd = pDX->PrepareCtrl( nIDC );
+   CComboBox* pCB = (CComboBox*)pDX->m_pDlgWnd->GetDlgItem(nIDC);
+
+   if ( pDX->m_bSaveAndValidate )
+   {
+      int selidx = pCB->GetCurSel();
+      if ( selidx != CB_ERR )
+         itemdata = (T)pCB->GetItemData(selidx);
+   }
+   else
+   {
+      int count = pCB->GetCount();
+      for ( int i = 0; i < count; i++ )
+      {
+         if ( ((T)pCB->GetItemData(i)) == itemdata )
+         {
+            pCB->SetCurSel(i);
+            return;
+         }
+      }
+      ASSERT(0 == count || !::IsWindowEnabled(hWnd) ); // nothing was selected (doesn't assert if count == 0 or window is disabled)
+   }
+}
+
+template <class T>
+void DDX_CBEnum(CDataExchange* pDX, int nIDC, T& value)
+{
+   if ( pDX->m_bSaveAndValidate )
+   {
+      int item;
+      DDX_CBIndex(pDX, nIDC, item );
+      value = (T)item;
+   }
+   else
+   {
+      int item = (int)value;
+      DDX_CBIndex(pDX, nIDC, item );
+   }
+}
+
+///////////////////////////////////////////////
+
+template <class U>
+void DDX_Tag(CDataExchange* pDX, int nIDCTag, const U& umIndirectMeasure )
+{
+	if ( pDX->m_bSaveAndValidate )
+	{
+	}
+	else
+	{
+      std::string tag = umIndirectMeasure.UnitOfMeasure.UnitTag();
+      DDX_String( pDX, nIDCTag, tag );
+	}
+}
+
+
+template <class T,class U>
+void DDX_UnitValue( CDataExchange* pDX, int nIDC, T& data, const U& umIndirectMeasure )
+{
+	if ( pDX->m_bSaveAndValidate )
+	{
+      Float64 f;
+      DDX_Text( pDX, nIDC, f);
+      data = ::ConvertToSysUnits( f, umIndirectMeasure.UnitOfMeasure );
+	}
+	else
+	{
+      CString strValue;
+      strValue.Format("%*.*f",umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( data, umIndirectMeasure.UnitOfMeasure ) );
+      strValue.TrimLeft();
+      DDX_Text( pDX, nIDC, strValue );
+	}
+}
+
+template <class T,class U>
+void DDX_UnitValueAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, T& data, const U& umIndirectMeasure )
+{
+	if ( pDX->m_bSaveAndValidate )
+	{
+      Float64 f;
+      DDX_Text( pDX, nIDC, f);
+      data = ::ConvertToSysUnits( f, umIndirectMeasure.UnitOfMeasure );
+	}
+	else
+	{
+      CString strValue;
+      strValue.Format("%*.*f",umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( data, umIndirectMeasure.UnitOfMeasure ) );
+      strValue.TrimLeft();
+      DDX_Text( pDX, nIDC, strValue );
+
+      CString strTag = umIndirectMeasure.UnitOfMeasure.UnitTag().c_str();
+      DDX_Text( pDX, nIDCTag, strTag );
+	}
+}
+
+template <class U>
+void DDX_OffsetAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, Float64& data, const U& umIndirectMeasure )
+{
+	if ( pDX->m_bSaveAndValidate )
+	{
+      CString strOffset;
+      DDX_Text( pDX, nIDC, strOffset);
+      strOffset.MakeUpper();
+      strOffset.TrimLeft();
+      strOffset.TrimRight();
+      char cDir = (strOffset.GetLength() == 0 ? 'R' : strOffset.GetAt(strOffset.GetLength()-1));
+      Float64 sign = 1;
+      if ( cDir == 'L')
+         sign = -1;
+      
+      data = atof(strOffset);
+      data = ::ConvertToSysUnits( data, umIndirectMeasure.UnitOfMeasure);
+      data *= sign;
+	}
+	else
+	{
+      CString strOffset;
+      if ( data < 0 )
+         strOffset.Format("%*.*f L",umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( fabs(data), umIndirectMeasure.UnitOfMeasure ) );
+      else if ( 0 < data )
+         strOffset.Format("%*.*f R",umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( fabs(data), umIndirectMeasure.UnitOfMeasure ) );
+      else
+         strOffset.Format("%*.*f",umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( fabs(data), umIndirectMeasure.UnitOfMeasure ) );
+
+      strOffset.TrimLeft();
+
+      DDX_Text( pDX, nIDC, strOffset );
+
+      std::string tag = umIndirectMeasure.UnitOfMeasure.UnitTag();
+      DDX_String( pDX, nIDCTag, tag );
+	}
+}
+
+template <class T,class U>
+void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, T& value, T limit, const U& umIndirectMeasure )
+{
+	if (!pDX->m_bSaveAndValidate)
+	{
+		return;
+	}
+
+   if( !(limit < value) )
+   {
+      CString msg;
+      msg.Format("Please enter a number that is greater than %f %s", 
+                 ::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure ), 
+                 umIndirectMeasure.UnitOfMeasure.UnitTag().c_str() );
+
+	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
+	   pDX->Fail();
+   }
+}
+
+template <class T,class U>
+void DDV_UnitValueLimitOrMore(CDataExchange* pDX, T& value, T limit, const U& umIndirectMeasure )
+{
+	if (!pDX->m_bSaveAndValidate)
+	{
+		return;
+	}
+
+   if( !IsEqual(value,limit) && value < limit )
+   {
+      CString msg;
+      msg.Format("Please enter a number that is at least %f %s", 
+                 ::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure ), 
+                 umIndirectMeasure.UnitOfMeasure.UnitTag().c_str() );
+
+	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
+	   pDX->Fail();
+   }
+}
+
+template <class T,class U>
+void DDV_UnitValueLessThanLimit(CDataExchange* pDX, T& value, T limit, const U& umIndirectMeasure )
+{
+	if (!pDX->m_bSaveAndValidate)
+	{
+		TRACE0("Warning: initial dialog data is out of range.\n");
+		return;         // don't stop now
+	}
+
+   if( !(value < limit) )
+   {
+      CString msg;
+      msg.Format("Please enter a number that is less than %f %s", 
+                 ::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure  ), 
+                 umIndirectMeasure.UnitOfMeasure.UnitTag().c_str() );
+
+	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
+	   pDX->Fail();
+   }
+}
+
+template <class T,class U>
+void DDV_UnitValueLimitOrLess(CDataExchange* pDX, T& value, T limit, const U& umIndirectMeasure )
+{
+	if (!pDX->m_bSaveAndValidate)
+	{
+		TRACE0("Warning: initial dialog data is out of range.\n");
+		return;         // don't stop now
+	}
+
+   if( !IsEqual(limit,value) && limit < value )
+   {
+      CString msg;
+      msg.Format("Please enter a number that is not more than %f %s", 
+                 ::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure ), 
+                 umIndirectMeasure.UnitOfMeasure.UnitTag().c_str() );
+
+	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
+	   pDX->Fail();
+   }
+}
+
+template <class T,class U>
+void DDV_UnitValueGreaterThanZero(CDataExchange* pDX, T& value, const U& umIndirectMeasure )
+{
+   T zero = 0;
+   DDV_UnitValueGreaterThanLimit( pDX, value, zero, umIndirectMeasure );
+}
+
+template <class T,class U>
+void DDV_UnitValueLessThanZero(CDataExchange* pDX, T& value, const U& umIndirectMeasure )
+{
+   T zero = 0;
+   DDV_UnitValueLessThanLimit( pDX, value, zero, umIndirectMeasure );
+}
+
+template <class T,class U>
+void DDV_UnitValueZeroOrMore(CDataExchange* pDX, T& value, const U& umIndirectMeasure )
+{
+   T zero = 0;
+   DDV_UnitValueLimitOrMore( pDX, value, zero, umIndirectMeasure );
+}
+
+template <class T,class U>
+void DDV_UnitValueZeroOrLess(CDataExchange* pDX, T& value, const U& umIndirectMeasure )
+{
+   T zero = 0;
+   DDV_UnitValueLimitOrLess( pDX, value, zero, umIndirectMeasure );
+}
+
+#endif // INCLUDED_MFCTOOLS_CUSTOMDDX_H_

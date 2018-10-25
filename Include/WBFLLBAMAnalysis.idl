@@ -1,0 +1,951 @@
+///////////////////////////////////////////////////////////////////////
+// LBAM Analysis - Longitindal Bridge Analysis Model
+// Copyright (C) 2009  Washington State Department of Transportation
+//                     Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// LBAMAnalysis.idl : IDL source for LBAMAnalysis.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (LBAMAnalysis.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "WBFLTypes.idl";
+import "WBFLLBAM.idl";
+
+#include "LBAMAnalysis.hh"
+cpp_quote("#include \"LBAMAnalysisErrors.h\"")
+
+
+[
+	uuid(9EC1DB46-A140-11D5-B05C-00105A9AF985),
+	version(1.0),
+	helpstring("WBFLLBAMAnalysis Library"),
+   helpfile("WBFLLBam.chm"),
+   helpcontext(IDH_WBFLLBAMAnalysis)
+]
+library WBFLLBAMAnalysis
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+   typedef 
+   [
+      public,
+      uuid(4D9C6339-8154-4128-B92A-DA58D190196E),
+      helpstring("Designates type of analysis"),
+      helpcontext(IDH_AnalysisType)
+   ]
+   enum 
+   {
+        atForce = 0,
+        atDeflection  = 1
+   } AnalysisType;
+
+   typedef
+   [
+      public,
+      uuid(2E6C3B26-9740-11d5-B052-00105A9AF985),
+      helpstring("Designates desired orientation of member results"),
+      helpcontext(IDH_ResultsOrientation)
+   ]
+   enum 
+   {
+        roGlobal = 0,
+        roMember = 1
+   } ResultsOrientation;
+
+   typedef
+   [
+      public,
+      uuid(2EC2238D-A218-11d5-B05D-00105A9AF985),
+      helpstring("Designates desired SummationType of member results"),
+      helpcontext(IDH_ResultsSummationType)
+   ]
+   enum 
+   {
+        rsCumulative = 0, // summed through stages
+        rsIncremental = 1  // incremental results for single stage
+   } ResultsSummationType;
+
+   typedef
+   [
+      public,
+      uuid(464E27B3-3BE0-437f-BB8B-43D8F8BD9CE7),
+      helpstring("Designates whether influence load location is single, or dual (left,right) value"),
+      helpcontext(IDH_InfluenceLocationType)
+   ]
+   enum 
+   {
+        iflSingle    = 0,   // load applied only at location
+        iflDualLeft  = 1,   // load applied to left of location
+		iflDualRight = 2    // load applied to left of location
+   } InfluenceLocationType;
+
+   typedef
+   [
+      public,
+      uuid(BABE8D4A-689E-4a0f-9382-7D53E7F384C4),
+      helpstring("ForceEffectType - designates type of force Effect desired"),
+      helpcontext(IDH_ForceEffectType)
+   ]
+   enum 
+   {
+        fetFx = 0, // axial
+        fetFy = 1, // shear
+        fetMz = 2, // moment
+
+        fetDx = 0, // axial
+        fetDy = 1, // transverse
+        fetRz = 2, // rotation
+   } ForceEffectType;
+
+   typedef
+   [
+      public,
+      uuid(EE6936C5-F7C8-46a9-849C-9143D694A5B5),
+      helpstring("OptimizationType - determine whether we are maximizing or minimizing the effect in question"),
+      helpcontext(IDH_OptimizationType)
+   ]
+   enum 
+   {
+        optMaximize = 0, 
+        optMinimize = 1
+   } OptimizationType;
+
+   typedef
+   [
+      public,
+      uuid(CC040323-E031-437b-A3D7-501836996806),
+      helpstring("InfluenceSideType - Designates positive, negative, or both sides of the influence line"),
+      helpcontext(IDH_InfluenceSideType)
+   ]
+   enum 
+   {
+		ilsBoth     = 0,
+        ilsPositive = 1, 
+        ilsNegative = 2
+   } InfluenceSideType;
+
+
+	[
+		object,
+		uuid(80A2C1BF-DA1D-482e-A138-8A92DFC3016E),
+		oleautomation,
+		helpstring("IAnalysisPOIs - Settings and methods for accessing all POIs in the analysis model"),
+		pointer_default(unique)
+	]
+	interface IAnalysisPOIs : IUnknown
+	{
+      // Performance settings for internally generated POIs
+      // Defaults for span increment would be 10, and cantilever would be 2
+		[propget, helpstring("SpanPoiIncrement - Minimum number of spaces between POIs in all Spans"),helpcontext(IDH_AnalysisPOIs)]  
+      HRESULT SpanPoiIncrement([out, retval] long *pVal);
+		[propput, helpstring("SpanPoiIncrement - Minimum number of spaces between POIs in all Spans"),helpcontext(IDH_AnalysisPOIs_SpanPOIIncrement)]  
+      HRESULT SpanPoiIncrement([in] long newVal);
+		[propget, helpstring("CantileverPoiIncrement - Minimum number of spaces between POIs in Cantilevers"),helpcontext(IDH_AnalysisPOIs_CantileverPOIIncrement)]  
+      HRESULT CantileverPoiIncrement([out, retval] long *pVal);
+		[propput, helpstring("CantileverPoiIncrement - Minimum number of spaces between POIs in Cantilevers"),helpcontext(IDH_AnalysisPOIs_CantileverPOIIncrement)]  
+      HRESULT CantileverPoiIncrement([in] long newVal);
+
+      // Access methods for poi information
+      // Get all pois (user and internal) along superstructure in sorted order
+      // results are in SafeArrays of longs and Float64s, respectively
+      [helpstring("method GetSuperstructurePois"),helpcontext(IDH_AnalysisPOIs_GetSuperstructurePois)] 
+      HRESULT GetSuperstructurePois([in]BSTR stage, [out]ILongArray* *poiIDs, [out]IDblArray* *poiLocations);
+      // method for reporting about where internal and external pois are
+      [helpstring("method GetPoiInfo"),helpcontext(IDH_AnalysisPOIs_GetPoiInfo)]
+      HRESULT GetPoiInfo([in]BSTR stage, [in]PoiIDType poiID, [out]MemberType* lbamMemberType, [out]MemberIDType* memberID, [out]Float64* memberLocation);
+	};
+
+	[
+		object,
+		uuid(57CCF24A-970B-11D5-B052-00105A9AF985),
+		oleautomation,
+		helpstring("ISectionResult3D - Deals with generic, dual-value results in X, Y, Z"),
+      helpcontext(IDH_SectionResult3D),
+		pointer_default(unique)
+	]
+	interface ISectionResult3D : IUnknown
+	{
+		[propget, helpstring("property XLeft"),helpcontext(IDH_SectionResult3D_XLeft)] 
+       HRESULT XLeft([out, retval] Float64 *pVal);
+		[propput, helpstring("property XLeft"),helpcontext(IDH_SectionResult3D_XLeft)] 
+       HRESULT XLeft([in] Float64 newVal);
+		[propget, helpstring("property XRight"),helpcontext(IDH_SectionResult3D_XRight)] 
+      HRESULT XRight([out, retval] Float64 *pVal);
+		[propput, helpstring("property XRight"),helpcontext(IDH_SectionResult3D_XRight)] 
+      HRESULT XRight([in] Float64 newVal);
+		[propget, helpstring("property YLeft"),helpcontext(IDH_SectionResult3D_YLeft)] 
+       HRESULT YLeft([out, retval] Float64 *pVal);
+		[propput, helpstring("property YLeft"),helpcontext(IDH_SectionResult3D_YLeft)] 
+       HRESULT YLeft([in] Float64 newVal);
+		[propget, helpstring("property YRight"),helpcontext(IDH_SectionResult3D_YRight)] 
+      HRESULT YRight([out, retval] Float64 *pVal);
+		[propput, helpstring("property YRight"),helpcontext(IDH_SectionResult3D_YRight)] 
+      HRESULT YRight([in] Float64 newVal);
+		[propget, helpstring("property ZLeft"),helpcontext(IDH_SectionResult3D_ZLeft)] 
+       HRESULT ZLeft([out, retval] Float64 *pVal);
+		[propput, helpstring("property ZLeft"),helpcontext(IDH_SectionResult3D_ZLeft)] 
+       HRESULT ZLeft([in] Float64 newVal);
+		[propget, helpstring("property ZRight"),helpcontext(IDH_SectionResult3D_ZRight)] 
+      HRESULT ZRight([out, retval] Float64 *pVal);
+		[propput, helpstring("property ZRight"),helpcontext(IDH_SectionResult3D_ZRight)] 
+      HRESULT ZRight([in] Float64 newVal);
+		[helpstring("method SetResult"),helpcontext(IDH_SectionResult3D_SetResult)] 
+      HRESULT SetResult([in]Float64 XLeft, [in]Float64 YLeft, [in]Float64 ZLeft, [in]Float64 XRight, [in]Float64 YRight, [in]Float64 ZRight);
+		[helpstring("method GetResult"),helpcontext(IDH_SectionResult3D_GetResult)] 
+      HRESULT GetResult([out]Float64* XLeft, [out]Float64* YLeft, [out]Float64* ZLeft, [out]Float64* XRight, [out]Float64* YRight, [out]Float64* ZRight);
+		[helpstring("method Clone"),helpcontext(IDH_SectionResult3D_Clone)] 
+      HRESULT Clone([out,retval]ISectionResult3D** clone);
+		[helpstring("method Sum"),helpcontext(IDH_SectionResult3D_Sum)] 
+      HRESULT Sum([in]Float64 XLeft, [in]Float64 YLeft, [in]Float64 ZLeft, [in]Float64 XRight, [in]Float64 YRight, [in]Float64 ZRight);
+		[helpstring("method FactorAndSum"),helpcontext(IDH_SectionResult3D_FactorAndSum)] 
+      HRESULT FactorAndSum([in]ISectionResult3D* res, [in]Float64 leftFactor, [in]Float64 rightFactor);
+		[helpstring("method Zero"),helpcontext(IDH_SectionResult3D_Zero)] 
+      HRESULT Zero();
+		[helpstring("property GetSingleResult"),helpcontext(IDH_SectionResult3D_GetSingleResult)] 
+      HRESULT GetSingleResult([in]ForceEffectType effect, [out] Float64 *leftVal, [out] Float64 *rightVal);
+		[helpstring("property SetSingleResult"),helpcontext(IDH_SectionResult3D_SetSingleResult)] 
+      HRESULT SetSingleResult([in]ForceEffectType effect, [in] Float64 leftVal, [in] Float64 rightVal);
+	};
+
+	[
+	   object,
+	   uuid(2E6C3B27-9740-11d5-B052-00105A9AF985),
+	   helpstring("IEnumSectionResult3D Interface"),
+	   oleautomation,nonextensible,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumSectionResult3D : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumSectionResult3D** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] ISectionResult3D** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+		object,
+		uuid(57CCF24E-970B-11D5-B052-00105A9AF985),
+		oleautomation,
+		helpstring("ISectionResult3Ds Interface"),
+      helpcontext(IDH_SectionResult3Ds),
+		pointer_default(unique)
+	]
+	interface ISectionResult3Ds : IUnknown
+	{
+		[propget, helpstring("property Item"),helpcontext(IDH_SectionResult3Ds_Item)] 
+		HRESULT Item([in]CollectionIndexType idx, [out, retval] ISectionResult3D** pVal);
+
+		[propget, helpstring("returns an enumerator for the collection."),helpcontext(IDH_SectionResult3Ds__EnumElements)]
+		HRESULT _NewEnum([out, retval] IUnknown** retval);  
+
+		[propget, helpstring("property Count - Number of SectionResult3Ds in collection"),helpcontext(IDH_SectionResult3Ds_Count)] 
+		HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+		[propget, helpstring("property _EnumElements"),helpcontext(IDH_SectionResult3Ds__EnumElements)] 
+		HRESULT _EnumElements([out, retval] IEnumSectionResult3D* *pVal);
+
+		[helpstring("Add a new SectionResult3D to the model"),helpcontext(IDH_SectionResult3Ds_Add)] 
+		HRESULT Add([in] ISectionResult3D *pVal);
+
+		[helpstring("Insert a new SectionResult3D to the model"),helpcontext(IDH_SectionResult3Ds_Insert)]  
+		HRESULT Insert([in] CollectionIndexType index, [in] ISectionResult3D *pVal);
+
+		[helpstring("method Remove Remove a SectionResult3D using sequential index."),helpcontext(IDH_SectionResult3Ds_Remove)] 
+		HRESULT Remove([in]CollectionIndexType index);
+
+		[helpstring("method Clear - Remove all SectionResult3Ds"),helpcontext(IDH_SectionResult3Ds_Clear)] 
+        HRESULT Clear();
+
+		[helpstring("method Clone"),helpcontext(IDH_SectionResult3Ds_Clone)] 
+		HRESULT Clone(ISectionResult3Ds** clone);
+
+		[helpstring("method Reserve some space to optimize memory allocations"),helpcontext(IDH_SectionResult3Ds_Reserve)] 
+		HRESULT Reserve(CollectionIndexType size);
+	};
+
+	[
+		object,
+		uuid(57CCF24C-970B-11D5-B052-00105A9AF985),
+		oleautomation,
+		helpstring("IResult3D Interface"),
+      helpcontext(IDH_Result3D),
+		pointer_default(unique)
+	]
+	interface IResult3D : IUnknown
+	{
+		[propget, helpstring("property X"),helpcontext(IDH_Result3D_X)] 
+      HRESULT X([out, retval] Float64 *pVal);
+		[propput, helpstring("property X"),helpcontext(IDH_Result3D_X)] 
+      HRESULT X([in] Float64 newVal);
+		[propget, helpstring("property Y"),helpcontext(IDH_Result3D_Y)] 
+      HRESULT Y([out, retval] Float64 *pVal);
+		[propput, helpstring("property Y"),helpcontext(IDH_Result3D_Y)] 
+      HRESULT Y([in] Float64 newVal);
+		[propget, helpstring("property Z"),helpcontext(IDH_Result3D_Z)] 
+      HRESULT Z([out, retval] Float64 *pVal);
+		[propput, helpstring("property Z"),helpcontext(IDH_Result3D_Z)] 
+      HRESULT Z([in] Float64 newVal);
+		[helpstring("method Clone"),helpcontext(IDH_Result3D_Clone)] 
+      HRESULT Clone([out,retval]IResult3D** clone);
+		[helpstring("method Sum"),helpcontext(IDH_Result3D_Sum)] 
+      HRESULT Sum([in]Float64 X, [in]Float64 Y, [in]Float64 Z);
+		[helpstring("method FactorAndSum"),helpcontext(IDH_Result3D_FactorAndSum)] 
+      HRESULT FactorAndSum([in]IResult3D* combinedRes, [in]Float64 Factor);
+		[helpstring("method Zero"),helpcontext(IDH_Result3D_Zero)] 
+      HRESULT Zero();
+		[helpstring("method SetResult"),helpcontext(IDH_Result3D_SetResult)] 
+      HRESULT SetResult([in]Float64 X, [in]Float64 Y, [in]Float64 Z);
+		[helpstring("method GetResult"),helpcontext(IDH_Result3D_GetResult)] 
+      HRESULT GetResult([out]Float64* X, [out]Float64* Y, [out]Float64* Z);
+		[helpstring("method GetSingleResult"),helpcontext(IDH_Result3D_GetSingleResult)] 
+      HRESULT GetSingleResult([in]ForceEffectType fet, [out,retval]Float64* val);
+		[helpstring("method SetSingleResult"),helpcontext(IDH_Result3D_SetSingleResult)] 
+      HRESULT SetSingleResult([in]ForceEffectType fet, [in]Float64 val);
+	};
+
+	[
+	   object,
+	   uuid(B7303806-EA7A-40dc-BF2F-50BFB6ACF749),
+	   helpstring("IEnumResult3D Interface"),
+	   oleautomation,nonextensible,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumResult3D : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumResult3D** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] IResult3D** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+		object,
+		uuid(46ECFAEB-0BE5-47CA-B516-D6FD928ADDE9),
+		oleautomation,
+		helpstring("IResult3Ds Interface"),
+      helpcontext(IDH_Result3Ds),
+		pointer_default(unique)
+	]
+	interface IResult3Ds : IUnknown
+	{
+		[propget, helpstring("property Item"),helpcontext(IDH_Result3Ds)] 
+		HRESULT Item([in]CollectionIndexType idx, [out, retval] IResult3D** pVal);
+
+		[propget, helpstring("returns an enumerator for the collection."),helpcontext(IDH_Result3Ds__EnumElements)]
+		HRESULT _NewEnum([out, retval] IUnknown** retval);  
+
+		[propget, helpstring("property Count - Number of Result3Ds in collection"),helpcontext(IDH_Result3Ds_Count)] 
+		HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+		[propget, helpstring("property _EnumElements"),helpcontext(IDH_Result3Ds__EnumElements)] 
+		HRESULT _EnumElements([out, retval] IEnumResult3D* *pVal);
+
+		[helpstring("Add a new Result3D to the model"),helpcontext(IDH_Result3Ds_Add)] 
+		HRESULT Add([in] IResult3D *pVal);
+
+		[helpstring("Insert a new Result3D to the model"),helpcontext(IDH_Result3Ds_Insert)] 
+		HRESULT Insert([in] CollectionIndexType index, [in] IResult3D *pVal);
+
+		[helpstring("method Remove Remove a Result3D using sequential index."),helpcontext(IDH_Result3Ds_Remove)] 
+		HRESULT Remove([in]CollectionIndexType index);
+
+		[helpstring("method Clear - Remove all Result3Ds"),helpcontext(IDH_Result3Ds_Clear)] 
+        HRESULT Clear();
+
+		[helpstring("method Clone"),helpcontext(IDH_Result3Ds_Clone)] 
+		HRESULT Clone(IResult3Ds** clone);
+
+		[helpstring("method Reserve some space to optimize memory allocations"),helpcontext(IDH_Result3Ds_Reserve)] 
+		HRESULT Reserve(CollectionIndexType size);
+	};
+
+	[
+		object,
+		uuid(F362D7BF-0940-49A0-B19C-0ACA2437C03C),
+		oleautomation,
+		helpstring("IStressResult Interface"),
+      helpcontext(IDH_StressResult),
+		pointer_default(unique)
+	]
+	interface IStressResult : IUnknown
+	{
+		[propget, helpstring("property Count"),helpcontext(IDH_StressResult_Count)] 
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+		[helpstring("method AddResult - Adds a new stress"),helpcontext(IDH_StressResult_AddResult)] 
+      HRESULT AddResult([in] Float64 newVal);
+		[helpstring("method SetResult - Set stress at stress point"),helpcontext(IDH_StressResult_SetResult)] 
+      HRESULT SetResult([in]CollectionIndexType index, [in] Float64 newVal);
+		[helpstring("method GetResult - Returns stress using index"),helpcontext(IDH_StressResult_GetResult)] 
+      HRESULT GetResult([in]CollectionIndexType index, [out,retval] Float64 *pVal);
+		[helpstring("method Clone"),helpcontext(IDH_StressResult_Clone)] 
+      HRESULT Clone([out,retval] IStressResult* *pClone);
+		[helpstring("method FactorAndSum"),helpcontext(IDH_StressResult_FactorAndSum)] 
+      HRESULT FactorAndSum([in]IStressResult* incRes,[in]Float64 factor);
+	};
+
+	[
+	   object,
+	   uuid(4646A2AE-17EC-4c67-A2ED-DE65A226EECD),
+	   helpstring("IEnumStressResult Interface"),
+	   oleautomation,nonextensible,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumStressResult : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumStressResult** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] IStressResult** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+		object,
+		uuid(1547A6FD-F035-494D-9709-0CBE39658B0B),
+		oleautomation,
+		helpstring("IStressResults Interface"),
+      helpcontext(IDH_StressResults),
+		pointer_default(unique)
+	]
+	interface IStressResults : IUnknown
+	{
+		[propget, helpstring("property Item"),helpcontext(IDH_StressResults_Item)] 
+		HRESULT Item([in]CollectionIndexType idx, [out, retval] IStressResult** pVal);
+
+		[propget, helpstring("returns an enumerator for the collection."),helpcontext(IDH_StressResults__EnumElements)]
+		HRESULT _NewEnum([out, retval] IUnknown** retval);  
+
+		[propget, helpstring("property Count - Number of StressResults in collection"),helpcontext(IDH_StressResults_Count)] 
+		HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+		[propget, helpstring("property _EnumElements"),helpcontext(IDH_StressResults__EnumElements)] 
+		HRESULT _EnumElements([out, retval] IEnumStressResult* *pVal);
+
+		[helpstring("Add a new StressResult to the model"),helpcontext(IDH_StressResults_Add)] 
+		HRESULT Add([in] IStressResult *pVal);
+
+		[helpstring("Insert a new StressResult to the model"),helpcontext(IDH_StressResults_Insert)] 
+		HRESULT Insert([in] CollectionIndexType index, [in] IStressResult *pVal);
+
+		[helpstring("method Remove Remove a StressResult using sequential index."),helpcontext(IDH_StressResults_Remove)] 
+		HRESULT Remove([in]CollectionIndexType index);
+
+		[helpstring("method Clear - Remove all StressResults"),helpcontext(IDH_StressResults_Clear)] 
+        HRESULT Clear();
+
+		[helpstring("method Clone"),helpcontext(IDH_StressResults_Clone)] 
+		HRESULT Clone(IStressResults** clone);
+
+		[helpstring("method Reserve some space to optimize memory allocations"),helpcontext(IDH_StressResults_Reserve)] 
+		HRESULT Reserve(CollectionIndexType size);
+	};
+
+	[
+		object,
+		uuid(E4ED7062-B14A-4A44-BB90-CB64B6CE8571),
+		oleautomation,
+		helpstring("ISectionStressResult Interface"),
+      helpcontext(IDH_SectionStressResult),
+		pointer_default(unique)
+	]
+	interface ISectionStressResult : IUnknown
+	{
+		[propget, helpstring("property LeftCount"),helpcontext(IDH_SectionStressResult_LeftCount)] 
+      HRESULT LeftCount([out, retval] CollectionIndexType *pVal);
+		[helpstring("method AddLeftResult - Adds a new stress"),helpcontext(IDH_SectionStressResult_AddLeftResult)] 
+      HRESULT AddLeftResult([in] Float64 newVal);
+		[helpstring("method SetLeftResult - Set stress at stress point"),helpcontext(IDH_SectionStressResult_SetLeftResult)] 
+      HRESULT SetLeftResult([in]CollectionIndexType index, [in] Float64 newVal);
+		[helpstring("method GetLeftResult - Returns stress using index"),helpcontext(IDH_SectionStressResult_GetLeftResult)] 
+      HRESULT GetLeftResult([in]CollectionIndexType index, [out,retval] Float64 *pVal);
+		[propget, helpstring("property RightCount"),helpcontext(IDH_SectionStressResult_RightCount)] 
+      HRESULT RightCount([out, retval] CollectionIndexType *pVal);
+		[helpstring("method AddRightResult - Adds a new stress"),helpcontext(IDH_SectionStressResult_AddRightResult)] 
+      HRESULT AddRightResult([in] Float64 newVal);
+		[helpstring("method SetRightResult - Set stress at stress point"),helpcontext(IDH_SectionStressResult_SetRightResult)] 
+      HRESULT SetRightResult([in]CollectionIndexType index, [in] Float64 newVal);
+		[helpstring("method GetRightResult - Returns stress using index"),helpcontext(IDH_SectionStressResult_GetRightResult)] 
+      HRESULT GetRightResult([in]CollectionIndexType index, [out,retval] Float64 *pVal);
+		[helpstring("method Clone"),helpcontext(IDH_SectionStressResult_Clone)] 
+      HRESULT Clone([out,retval] ISectionStressResult* *pClone);
+		[helpstring("method FactorAndSum"),helpcontext(IDH_SectionStressResult_FactorAndSum)] 
+      HRESULT FactorAndSum([in]ISectionStressResult* incRes, [in]Float64 leftFactor, [in]Float64 rightFactor);
+		[helpstring("method CreateLeftStressResult"),helpcontext(IDH_SectionStressResult_CreateLeftStressResult)] 
+      HRESULT CreateLeftStressResult([out,retval]IStressResult* *result);
+		[helpstring("method CreateRightStressResult"),helpcontext(IDH_SectionStressResult_CreateRightStressResult)] 
+      HRESULT CreateRightStressResult([out,retval]IStressResult* *result);
+	};
+
+	[
+	   object,
+	   uuid(3C16525E-3DAA-40dd-829F-BA5837234733),
+	   helpstring("IEnumSectionStressResult Interface"),
+	   oleautomation,nonextensible,
+	   hidden,restricted,
+	   pointer_default(unique)
+	]
+	interface IEnumSectionStressResult : IUnknown
+	{
+       [helpstring("Clone")]
+	   HRESULT Clone([out] IEnumSectionStressResult** ppenum);
+
+	   [helpstring("Next")]
+	   HRESULT Next([in] ULONG celt, [out] ISectionStressResult** rgelt, [in,out] ULONG* pceltFetched);
+
+	   [helpstring("Reset")]
+	   HRESULT Reset();
+	   
+	   [helpstring("Skip")]
+	   HRESULT Skip([in] ULONG celt);
+	};
+
+	[
+		object,
+		uuid(83096266-F98A-45AA-AF25-F1676057A360),
+		oleautomation,
+		helpstring("ISectionStressResults Interface"),
+      helpcontext(IDH_SectionStressResults),
+		pointer_default(unique)
+	]
+	interface ISectionStressResults : IUnknown
+	{
+		[propget, helpstring("property Item"),helpcontext(IDH_SectionStressResults_Item)] 
+		HRESULT Item([in]CollectionIndexType idx, [out, retval] ISectionStressResult** pVal);
+
+		[propget, helpstring("returns an enumerator for the collection."),helpcontext(IDH_SectionStressResults__EnumElements)]
+		HRESULT _NewEnum([out, retval] IUnknown** retval);  
+
+		[propget, helpstring("property Count - Number of SectionStressResults in collection"),helpcontext(IDH_SectionStressResults_Count)] 
+		HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+		[propget, helpstring("property _EnumElements"),helpcontext(IDH_SectionStressResults__EnumElements)] 
+		HRESULT _EnumElements([out, retval] IEnumSectionStressResult* *pVal);
+
+		[helpstring("Add a new SectionStressResult to the model"),helpcontext(IDH_SectionStressResults_Add)] 
+		HRESULT Add([in] ISectionStressResult *pVal);
+
+		[helpstring("Insert a new SectionStressResult to the model"),helpcontext(IDH_SectionStressResults_Insert)] 
+		HRESULT Insert([in] CollectionIndexType index, [in] ISectionStressResult *pVal);
+
+		[helpstring("method Remove Remove a SectionStressResult using sequential index."),helpcontext(IDH_SectionStressResults_Remove)] 
+		HRESULT Remove([in]CollectionIndexType index);
+
+		[helpstring("method Clear - Remove all SectionStressResults"),helpcontext(IDH_SectionStressResults_Clear)] 
+        HRESULT Clear();
+
+		[helpstring("method Clone"),helpcontext(IDH_SectionStressResults_Clone)] 
+		HRESULT Clone(ISectionStressResults** clone);
+
+		[helpstring("method Reserve some space to optimize memory allocations"),helpcontext(IDH_SectionStressResults_Reserve)] 
+		HRESULT Reserve(CollectionIndexType size);
+	};
+
+
+	[
+		object,
+		uuid(75D6F903-7594-4ba3-BEAD-423050E0F23A),
+		oleautomation,
+		helpstring("IDependOnLBAM Interface"),
+      helpcontext(IDH_DependOnLBAM),
+		pointer_default(unique)
+	]
+	interface IDependOnLBAM : IUnknown
+	{
+		[propget, helpstring("property Model"),helpcontext(IDH_DependOnLBAM_Model)] 
+        HRESULT Model([out, retval] ILBAMModel* *pVal);
+		[propputref, helpstring("property Model"),helpcontext(IDH_DependOnLBAM_Model)] 
+        HRESULT Model([in] ILBAMModel* newVal);
+   };
+
+	[
+		object,
+		uuid(ECEBE280-A182-11d5-B05C-00105A9AF985),
+		oleautomation,
+		helpstring("ILoadGroupResponse Interface"),
+      helpcontext(IDH_LoadGroupResponse),
+		pointer_default(unique)
+	]
+	interface ILoadGroupResponse : IUnknown
+	{
+		[helpstring("method ComputeForces"),helpcontext(IDH_LoadGroupResponse_ComputeForces)] 
+        HRESULT ComputeForces([in]BSTR LoadGroup, [in]ILongArray* poiIDs, [in]BSTR Stage, 
+                          [in]ResultsOrientation orientation, [in]ResultsSummationType summ, 
+                          [out,retval]ISectionResult3Ds** results);
+		[helpstring("method ComputeDeflections"),helpcontext(IDH_LoadGroupResponse_ComputeDeflections)] 
+        HRESULT ComputeDeflections([in]BSTR LoadGroup, [in]ILongArray* poiIDs, [in]BSTR Stage, 
+                                   [in]ResultsSummationType summ, [out,retval]ISectionResult3Ds** results);
+		[helpstring("method ComputeReactions"),helpcontext(IDH_LoadGroupResponse_ComputeReactions)] 
+		HRESULT ComputeReactions([in]BSTR LoadGroup, [in]ILongArray* supportIDs, [in]BSTR Stage,
+		                         [in]ResultsSummationType summ, [out,retval]IResult3Ds** results);
+		[helpstring("method ComputeSupportDeflections"),helpcontext(IDH_LoadGroupResponse_ComputeSupportDeflections)] 
+        HRESULT ComputeSupportDeflections([in]BSTR LoadGroup, [in]ILongArray* supportIDs, [in]BSTR Stage, 
+                                   [in]ResultsSummationType summ, [out,retval]IResult3Ds** results);
+		[helpstring("method ComputeStresses"),helpcontext(IDH_LoadGroupResponse_ComputeStresses)] 
+		HRESULT ComputeStresses([in]BSTR LoadGroup, [in]ILongArray* poiIDs, [in]BSTR Stage, 
+		                        [in]ResultsSummationType summ, 
+								[out,retval]ISectionStressResults **results);
+	};
+
+
+	[
+		object,
+		uuid(66BB77DB-C509-450F-B9ED-F3EA598E052B),
+		oleautomation,
+		helpstring("IInfluenceLine Interface"),
+      helpcontext(IDH_InfluenceLine),
+		pointer_default(unique)
+	]
+	interface IInfluenceLine : IUnknown
+	{
+		[propget,helpstring("property Location")]
+		HRESULT Location([out,retval]Float64* location);
+		
+      [propget,helpstring("property POI")]
+		HRESULT POI([out,retval]PoiIDType* poi);
+
+		[helpstring("Item - sequential access (sorted) to influence points"),helpcontext(IDH_InfluenceLine_Item)] 
+		HRESULT Item([in]CollectionIndexType idx, [in]InfluenceSideType side, [out] Float64* value, [out]InfluenceLocationType* locationType, [out]Float64* location);
+		
+      [propget, helpstring("property Count - Number of InfluencePoints in collection"),helpcontext(IDH_InfluenceLine_Count)] 
+		HRESULT Count([in]InfluenceSideType side, [out, retval] CollectionIndexType *pVal);
+		
+      [helpstring("Add a new influence point to the model - don't need to sort if points are added sequentially"),helpcontext(IDH_InfluenceLine_Add)] 
+		HRESULT Add([in]InfluenceLocationType locationType, [in]Float64 location, [in]Float64 value);
+		
+      [helpstring("method Remove - Remove a InfluencePoint using sequential index"),helpcontext(IDH_InfluenceLine_Remove)] 
+		HRESULT Remove([in]CollectionIndexType index);
+		
+      [helpstring("method Clear - Remove all InfluencePoints"),helpcontext(IDH_InfluenceLine_Clear)] 
+      HRESULT Clear();
+		
+      [helpstring("method Clone"),helpcontext(IDH_InfluenceLine_Clone)] 
+		HRESULT Clone([out,retval]IInfluenceLine** clone);
+		
+      [helpstring("method Bounds - gets location of start and end of influence line"),helpcontext(IDH_InfluenceLine_Bounds)] 
+		HRESULT Bounds([out]Float64* start, Float64* end);
+		
+      [helpstring("method Evaluate - Compute influence ordinate at the given location"),helpcontext(IDH_InfluenceLine_Evaluate)] 
+		HRESULT Evaluate([in]Float64 location, [in]InfluenceSideType side, [out]VARIANT_BOOL* isDualValue, [out]Float64* left_value, [out]Float64* right_value);
+		
+      [helpstring("method ComputeArea on requested side of influence line"),helpcontext(IDH_InfluenceLine_ComputeArea)] 
+		HRESULT ComputeArea([in]InfluenceSideType side,[out,retval]Float64* area);
+		
+      [helpstring("method ComputeNonZeroRegions - Returns array of Float64s defining boundaries of non-zero regions"),helpcontext(IDH_InfluenceLine_ComputeNonZeroRegions)] 
+		HRESULT ComputeNonZeroRegions([in]InfluenceSideType side, [out,retval]IDblArray* *locations);
+		
+      [helpstring("method ComputeAreaInRegions - Compute area only in given regions"),helpcontext(IDH_InfluenceLine_ComputeAreaInRegions)] 
+		HRESULT ComputeAreaInRegions([in]IDblArray* locations, [out,retval]Float64* area);
+		
+      [helpstring("method IsZero - Is entire response zero"),helpcontext(IDH_InfluenceLine_IsZero)] 
+		HRESULT IsZero([in]InfluenceSideType side, [out,retval]VARIANT_BOOL* isZero);
+
+		[helpstring("method FindMaxValue")]
+		HRESULT FindMaxValue([in]Float64 start,[in] Float64 end,[out]Float64* pLocation,[out]Float64* pValue);
+		
+      [helpstring("method FindMinValue")]
+		HRESULT FindMinValue([in]Float64 start,[in] Float64 end,[out]Float64* pLocation,[out]Float64* pValue);
+	};
+
+	[ 
+		object,
+		uuid(2F280ADF-C4CE-4012-B9E5-802ADECF3972),
+		oleautomation,
+		helpstring("IInfluenceLineResponse Interface"),
+      helpcontext(IDH_InfluenceLineResponse),
+		pointer_default(unique)
+	]
+	interface IInfluenceLineResponse : IUnknown
+	{
+		[helpstring("ComputeForceInfluenceLine - Returns influence line at given POI for given force effect"), helpcontext(IDH_InfluenceLineResponse_ComputeForceInfluenceLine)] 
+      HRESULT ComputeForceInfluenceLine([in]PoiIDType poiID, [in]BSTR stage, [in]ForceEffectType forceEffect, [in]ResultsOrientation orientation, [out]IInfluenceLine** leftInfl, [out]IInfluenceLine** rightInfl);
+		
+      [helpstring("ComputeDeflectionInfluenceLine - Returns influence line at given POI for given Deflection effect"), helpcontext(IDH_InfluenceLineResponse_ComputeDeflectionInfluenceLine)] 
+      HRESULT ComputeDeflectionInfluenceLine([in]PoiIDType poiID, [in]BSTR stage, [in]ForceEffectType deflectionEffect, [out]IInfluenceLine** leftInfl, [out]IInfluenceLine** rightInfl);
+		
+      [helpstring("ComputeReactionInfluenceLine - Returns influence line at given support for given Reaction effect"), helpcontext(IDH_InfluenceLineResponse_ComputeReactionInfluenceLine)] 
+      HRESULT ComputeReactionInfluenceLine([in]SupportIDType supportID, [in]BSTR stage, [in]ForceEffectType ReactionEffect, [out,retval] IInfluenceLine** newVal);
+		
+      [helpstring("ComputeSupportDeflectionInfluenceLine - Returns influence line at given support for given support deflection effect"), helpcontext(IDH_InfluenceLineResponse_ComputeSupportDeflectionInfluenceLine)] 
+      HRESULT ComputeSupportDeflectionInfluenceLine([in]SupportIDType supportID, [in]BSTR stage, [in]ForceEffectType ReactionEffect, [out,retval] IInfluenceLine** newVal);
+		
+      [helpstring("Get Zero Tolerance for force and deflection influence lines."), helpcontext(IDH_InfluenceLineResponse_GetZeroTolerance)] 
+      HRESULT GetZeroTolerance([out] Float64* forceTolerance, [out]Float64* deflectionTolerance);
+		
+      [helpstring("Set Zero Tolerance for force and deflection influence lines."), helpcontext(IDH_InfluenceLineResponse_SetZeroTolerance)] 
+      HRESULT SetZeroTolerance([in] Float64 forceTolerance, [in]Float64 deflectionTolerance);
+    };
+
+
+	[
+		object,
+		uuid(6A2227E3-29F2-4b5d-B7A9-9105D5651619),
+		oleautomation,
+		helpstring("ILiveLoadNegativeMomentRegion Interface"),
+      helpcontext(IDH_LiveLoadNegativeMomentRegion),
+		pointer_default(unique)
+	]
+	interface ILiveLoadNegativeMomentRegion : IUnknown
+	{ 
+		[propget, helpstring("IsPOIInNegativeLiveLoadMomentZone - Returns true if the given POI is in the live load negative moment zone"), helpcontext(IDH_LiveLoadNegativeMomentRegion_IsPOIInNegativeLiveLoadMomentZone)]
+		HRESULT IsPOIInNegativeLiveLoadMomentZone([in]PoiIDType poiID, [in]BSTR stage, [out,retval]InZoneType* isInZone);
+		[helpstring("method ComputeNegativeMomentRegions"), helpcontext(IDH_LiveLoadNegativeMomentRegion_ComputeNegativeMomentRegions)] 
+		HRESULT ComputeNegativeMomentRegions([in]BSTR stage, [out,retval]IDblArray* *locations);
+	};
+
+	[
+		object,
+		uuid(FEC87963-9461-4125-9159-C8F12C90085D),
+		oleautomation,
+		helpstring("IContraflexureResponse Interface"),
+      helpcontext(IDH_ContraflexureResponse),
+		pointer_default(unique)
+	]
+	interface IContraflexureResponse : IUnknown
+	{ 
+		[helpstring("method ComputeContraflexureLocations"), helpcontext(IDH_ContraflexureResponse_ComputeContraflexureLocations)] 
+		HRESULT ComputeContraflexureLocations([in]BSTR stage, [out,retval]IDblArray* *locations);
+		[helpstring("ComputeContraflexureResponse - Computes response due to a uniform load on superstructure - additional reponse locations are generated if needed for smooth curve"), helpcontext(IDH_ContraflexureResponse_ComputeContraflexureResponse)]
+		HRESULT ComputeContraflexureResponse([in]BSTR stage, [in]ForceEffectType forceEffect, [out,retval]IInfluenceLine** results);
+		[propget, helpstring("IsPOIInContraflexureZone - Returns true if the given POI is in zone of negative moment due to uniform load across superstructure"), helpcontext(IDH_ContraflexureResponse_IsPoiInContraflexureZone)]
+		HRESULT IsPOIInContraflexureZone([in]PoiIDType poiID, [in]BSTR stage, [out,retval]InZoneType* isInZone);
+	};
+
+	[
+		object,
+		uuid(6A6A5408-B4FE-11d5-B070-00105A9AF985),
+		oleautomation,
+		helpstring("IGetFemForLoadGroupResponse Interface - Save the fem model directly to storage"),
+      helpcontext(IDH_GetFemForLoadGroupResponse),
+		pointer_default(unique)
+	]
+	interface IGetFemForLoadGroupResponse : IUnknown
+	{
+		[helpstring("property SaveFem2D"), helpcontext(IDH_GetFemForLoadGroupResponse_SaveFem2D)] 
+       HRESULT SaveFem2D([in]BSTR Stage, [in] IStructuredSave2* Save);
+	};
+
+	[
+		object,
+		uuid(7273349A-6D91-4a18-8226-8F2DED231B84),
+		oleautomation,
+		helpstring("IGetActiveLoadGroups Interface - Returns a list of names of LoadGroups that actually have loads"),
+      helpcontext(IDH_GetActiveLoadGroups),
+		pointer_default(unique)
+	]
+	interface IGetActiveLoadGroups : IUnknown
+	{
+		[helpstring("property GetActiveLoadGroups"),helpcontext(IDH_GetActiveLoadGroups_IGetActiveLoadGroups)] 
+      HRESULT GetActiveLoadGroups([out,retval]IBstrArray* *loadGroups);
+	};
+
+	[
+		object,
+		uuid(9255C966-ED91-4449-80CC-9DC187DBAF3C),
+		oleautomation,
+		helpstring("IGetDistributionFactors Interface"),
+      helpcontext(IDH_GetDistributionFactors),
+		pointer_default(unique)
+	]
+	interface IGetDistributionFactors : IUnknown
+	{
+		[helpstring("Get the distribution factor at the given POI"),helpcontext(IDH_GetDistributionFactors_GetPOIDistributionFactor)] 
+		HRESULT GetPOIDistributionFactor([in]PoiIDType POI, [in]BSTR Stage, [out]IDistributionFactor* *leftFactor, [out]IDistributionFactor* *rightFactor);
+		
+      [helpstring("method GetSupportDistributionFactor"),helpcontext(IDH_GetDistributionFactors_GetSupportDistributionFactor)] 
+      HRESULT GetSupportDistributionFactor([in]SupportIDType supportID, [in]BSTR Stage, [out,retval]IDistributionFactor* *Factor);
+	};
+
+	[
+		object,
+		uuid(D999E50F-69F2-479b-9547-201F544EAA20),
+		oleautomation,
+		helpstring("IGetSegmentCrossSection Interface - Returns cross section at a given location"),
+      helpcontext(IDH_GetSegmentCrossSection),
+		pointer_default(unique)
+	]
+	interface IGetSegmentCrossSection : IUnknown
+	{
+		[helpstring("method GetSegmentCrossSectionAtPOI"), helpcontext(IDH_GetSegmentCrossSection_GetSegmentCrossSectionAtPOI)] 
+       HRESULT GetSegmentCrossSectionAtPOI([in]PoiIDType poiID, [in]BSTR stage, [out]ISegmentCrossSection* *leftSegmentCrossSection, [out]ISegmentCrossSection* *rightSegmentCrossSection);
+	};
+
+	[
+		object,
+		uuid(D17AC799-78B0-4936-9948-C367CDAB8793),
+		oleautomation,
+		helpstring("IGetStressPoints Interface - Returns stress point collection at a given location"),
+      helpcontext(IDH_GetStressPoints),
+		pointer_default(unique)
+	]
+	interface IGetStressPoints : IUnknown
+	{
+		[helpstring("method GetStressPoints"), helpcontext(IDH_GetStressPoints_GetStressPointsAtPOI)] 
+       HRESULT GetStressPointsAtPOI([in]PoiIDType poiID, [in]BSTR stage, [out]IStressPoints* *leftStressPoints, [out]IStressPoints* *rightStressPoints);
+	};
+
+
+	[
+		uuid(57CCF24B-970B-11D5-B052-00105A9AF985),
+		helpstring("SectionResult3D Class")
+	]
+	coclass SectionResult3D
+	{
+		[default] interface ISectionResult3D;
+        // interface IPersist;
+        interface IStructuredStorage2;
+	};
+
+	[
+		uuid(57CCF24D-970B-11D5-B052-00105A9AF985),
+		helpstring("Result3D Class")
+	]
+	coclass Result3D
+	{
+		[default] interface IResult3D;
+        // interface IPersist;
+        interface IStructuredStorage2;
+	}; 
+	[
+		uuid(57CCF24F-970B-11D5-B052-00105A9AF985),
+		helpstring("SectionResult3Ds Class")
+	]
+	coclass SectionResult3Ds
+	{
+		[default] interface ISectionResult3Ds;
+        // interface IPersist;
+        interface IStructuredStorage2;
+	};
+	[
+		uuid(280ED0C7-4BA2-49D0-84A9-84E175844DDF),
+		helpstring("Result3Ds Class")
+	]
+	coclass Result3Ds
+	{
+		[default] interface IResult3Ds;
+        // interface IPersist;
+        interface IStructuredStorage2;
+	};
+	[
+		uuid(A36770D3-0378-4240-B4F9-51CA31AF5603),
+      helpcontext(IDH_LoadGroupDeflectionResponse),
+		helpstring("LoadGroupDeflectionResponse Class")
+	]
+	coclass LoadGroupDeflectionResponse
+	{
+		[default] interface ILoadGroupResponse;
+		interface IInfluenceLineResponse;
+		interface IContraflexureResponse;
+		interface IGetFemForLoadGroupResponse;
+      interface IAnalysisPOIs;
+      interface IGetActiveLoadGroups;
+      interface IGetDistributionFactors;
+      interface IGetSegmentCrossSection;
+      interface IGetStressPoints;
+      interface IDependOnLBAM;
+	};
+	[
+		uuid(BDADAB05-D5C5-4E82-8F06-92BB839502C7),
+      helpcontext(IDH_LoadGroupForceResponse),
+		helpstring("LoadGroupForceResponse Class")
+	]
+	coclass LoadGroupForceResponse
+	{
+		[default] interface ILoadGroupResponse;
+		interface IInfluenceLineResponse;
+		interface IContraflexureResponse;
+		interface IGetFemForLoadGroupResponse;
+      interface IAnalysisPOIs;
+      interface IGetActiveLoadGroups;
+      interface IGetDistributionFactors;
+      interface IGetSegmentCrossSection;
+      interface IGetStressPoints;
+      interface IDependOnLBAM;
+	};
+	[
+		uuid(262B8AF3-4DA9-4639-8681-31A96233FAB5),
+		helpstring("InfluenceLine Class")
+	]
+	coclass InfluenceLine
+	{
+		[default] interface IInfluenceLine;
+        // interface IPersist;
+        interface IStructuredStorage2;
+	};
+	[
+		uuid(836C5B66-4F11-4B61-8F8F-844BBA6F48B7),
+		helpstring("StressResult Class")
+	]
+	coclass StressResult
+	{
+		[default] interface IStressResult;
+	};
+	[
+		uuid(7EFCAFCB-C862-47BB-8ADE-BA5AC43F8B5D),
+		helpstring("StressResults Class")
+	]
+	coclass StressResults
+	{
+		[default] interface IStressResults;
+	};
+	[
+		uuid(49EFC321-5773-42DB-91E7-9DD40D5095A1),
+		helpstring("SectionStressResult Class")
+	]
+	coclass SectionStressResult
+	{
+		[default] interface ISectionStressResult;
+	};
+	[
+		uuid(07E09A3B-C097-4A25-9E3F-A1D1340F0C5C),
+		helpstring("SectionStressResults Class")
+	]
+	coclass SectionStressResults
+	{
+		[default] interface ISectionStressResults;
+	};
+};

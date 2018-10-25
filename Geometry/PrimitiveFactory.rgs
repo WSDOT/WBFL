@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLGeometry.PrimitiveFactory.1 = s 'PrimitiveFactory Class'
+	{
+		CLSID = s '{EC5AC146-5CD0-11D3-8CDF-A057587EDC05}'
+	}
+	WBFLGeometry.PrimitiveFactory = s 'PrimitiveFactory Class'
+	{
+		CLSID = s '{EC5AC146-5CD0-11D3-8CDF-A057587EDC05}'
+		CurVer = s 'WBFLGeometry.PrimitiveFactory.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {EC5AC146-5CD0-11D3-8CDF-A057587EDC05} = s 'PrimitiveFactory Class'
+		{
+			ProgID = s 'WBFLGeometry.PrimitiveFactory.1'
+			VersionIndependentProgID = s 'WBFLGeometry.PrimitiveFactory'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

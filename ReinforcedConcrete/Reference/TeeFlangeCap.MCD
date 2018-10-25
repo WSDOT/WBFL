@@ -1,0 +1,197 @@
+.MCAD 304020000 1 74 217 0
+.CMD FORMAT  rd=d ct=10 im=i et=3 zt=15 pr=9 mass length time charge temperature tr=0 vm=0
+.CMD SET ORIGIN 0
+.CMD SET TOL 0.001000000000000
+.CMD SET PRNCOLWIDTH 8
+.CMD SET PRNPRECISION 4
+.CMD PRINT_SETUP 1.200000 1.218750 1.200000 1.200000 0
+.CMD HEADER_FOOTER 1 1 *empty* *empty* *empty* 0 1 *empty* *empty* *empty*
+.CMD HEADER_FOOTER_FONT fontID=14 family=Arial points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD HEADER_FOOTER_FONT fontID=15 family=Arial points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFAULT_TEXT_PARPROPS 0 0 0
+.CMD DEFINE_FONTSTYLE_NAME fontID=0 name=Variables
+.CMD DEFINE_FONTSTYLE_NAME fontID=1 name=Constants
+.CMD DEFINE_FONTSTYLE_NAME fontID=2 name=Text
+.CMD DEFINE_FONTSTYLE_NAME fontID=4 name=User^1
+.CMD DEFINE_FONTSTYLE_NAME fontID=5 name=User^2
+.CMD DEFINE_FONTSTYLE_NAME fontID=6 name=User^3
+.CMD DEFINE_FONTSTYLE_NAME fontID=7 name=User^4
+.CMD DEFINE_FONTSTYLE_NAME fontID=8 name=User^5
+.CMD DEFINE_FONTSTYLE_NAME fontID=9 name=User^6
+.CMD DEFINE_FONTSTYLE_NAME fontID=10 name=User^7
+.CMD DEFINE_FONTSTYLE fontID=0 family=Times^New^Roman points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=1 family=Times^New^Roman points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=2 family=Arial points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=4 family=Arial points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=5 family=Courier^New points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=6 family=System points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=7 family=Script points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=8 family=Roman points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=9 family=Modern points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=10 family=Times^New^Roman points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD UNITS U=1
+.CMD DIMENSIONS_ANALYSIS 0 0
+.CMD COLORTAB_ENTRY 0 0 0
+.CMD COLORTAB_ENTRY 128 0 0
+.CMD COLORTAB_ENTRY 0 128 0
+.CMD COLORTAB_ENTRY 128 128 0
+.CMD COLORTAB_ENTRY 0 0 128
+.CMD COLORTAB_ENTRY 128 0 128
+.CMD COLORTAB_ENTRY 0 128 128
+.CMD COLORTAB_ENTRY 128 128 128
+.CMD COLORTAB_ENTRY 192 192 192
+.CMD COLORTAB_ENTRY 255 0 0
+.CMD COLORTAB_ENTRY 0 255 0
+.CMD COLORTAB_ENTRY 255 255 0
+.CMD COLORTAB_ENTRY 0 0 255
+.CMD COLORTAB_ENTRY 255 0 255
+.CMD COLORTAB_ENTRY 0 255 255
+.CMD COLORTAB_ENTRY 255 255 255
+.TXT 2 2 1 0 0
+Cg a69.000000,69.000000,142
+{\rtf\ansi \deff0{\colortbl;\red0\green0\blue128;}{\fonttbl{\f0
+\fcharset0\fnil Arial;}}\plain\cf1\fs20 \pard Ultimate Capacity for a 
+singly-reinforced concrete Tee section with compression region 
+restricted to the flange using the Whitney block method}
+.EQN 2 82 2 0 0
+{0:Beta}NAME({0:x}NAME):(((0.85){73}({0:x}NAME<28*(10)^(6)*({0:newton}NAME)/(({0:m}NAME)^(2)))){71}((0.65){73}({0:x}NAME>56*(10)^(6)*({0:newton}NAME)/(({0:m}NAME)^(2))))){71}({78}(.85-.05*({0:x}NAME-28*(10)^(6)*({0:newton}NAME)/(({0:m}NAME)^(2)))/(7*
+(10)^(6)*({0:newton}NAME)/(({0:m}NAME)^(2)))))
+.TXT 4 -81 103 0 0
+Cg a67.000000,67.000000,20
+{\rtf\ansi \deff0{\colortbl;\red0\green0\blue128;}{\fonttbl{\f0
+\fcharset0\fnil Arial;}}\plain\cf1\fs20 \pard English Input Values}
+.EQN 3 0 94 0 0
+{0:bf}NAME:78*{0:in}NAME
+.EQN 0 17 95 0 0
+{0:Fc}NAME:3000*{0:psi}NAME
+.EQN 3 -17 96 0 0
+{0:bw}NAME:13*{0:in}NAME
+.EQN 1 17 97 0 0
+{0:Fy}NAME:50000*{0:psi}NAME
+.EQN 2 -17 105 0 0
+{0:d}NAME:25*{0:in}NAME
+.EQN 2 17 99 0 0
+{0:Es}NAME:29000000*{0:psi}NAME
+.EQN 1 -17 106 0 0
+{0:As}NAME:6.28*({0:in}NAME)^(2)
+.EQN 3 0 107 0 0
+{0:Dslab}NAME:4.5*{0:in}NAME
+.EQN 3 0 108 0 0
+{0:Dtotal}NAME:28*{0:in}NAME
+.TXT 5 0 104 0 0
+Cg a68.000000,68.000000,12
+{\rtf\ansi \deff0{\colortbl;\red0\green0\blue128;}{\fonttbl{\f0
+\fcharset0\fnil Arial;}}\plain\cf1\fs20 \pard Metric Units}
+.EQN 4 -1 109 0 0
+{0:bf}NAME={0}?_n_u_l_l_
+.EQN 0 19 110 0 0
+{0:Fc}NAME={0}?{0:Pa}NAME
+.EQN 3 -19 119 0 0
+{0:bw}NAME={19001}?_n_u_l_l_
+.EQN 1 19 112 0 0
+{0:Fy}NAME={0}?{0:Pa}NAME
+.EQN 3 -19 116 0 0
+{0:d}NAME={0}?_n_u_l_l_
+.EQN 1 19 114 0 0
+{0:Es}NAME={0}?{0:Pa}NAME
+.EQN 3 -19 117 0 0
+{0:As}NAME={0}?_n_u_l_l_
+.EQN 3 0 118 0 0
+{0:Dslab}NAME={0}?_n_u_l_l_
+.EQN 3 0 120 0 0
+{0:Dtotal}NAME={0}?_n_u_l_l_
+.TXT 5 1 54 0 0
+Cg a68.000000,68.000000,37
+{\rtf\ansi \deff0{\colortbl;\red0\green0\blue128;}{\fonttbl{\f0
+\fcharset0\fnil Arial;}}\plain\cf1\fs20 \pard Calculate Assuming Steel 
+has yielded:}
+.EQN 4 -1 123 0 0
+{0:\b1}NAME:{0:Beta}NAME({0:Fc}NAME)
+.EQN 0 20 124 0 0
+{0:\b1}NAME={0}?_n_u_l_l_
+.EQN 5 -20 125 0 0
+{0:T}NAME:{0:As}NAME*{0:Fy}NAME
+.EQN 0 13 151 0 0
+{0:T}NAME={0}?{0:newton}NAME
+.EQN 0 25 159 0 0
+{0:T}NAME={0}?{0:lbf}NAME
+.EQN 4 -38 152 0 0
+{0:C}NAME:0.85*{0:Fc}NAME*{0:bf}NAME
+.EQN 0 13 153 0 0
+{0:C}NAME={0}?_n_u_l_l_
+.EQN 5 -13 154 0 0
+{0:a}NAME:({0:T}NAME)/({0:C}NAME)
+.EQN 0 13 157 0 0
+{0:a}NAME={0}?_n_u_l_l_
+.EQN 0 20 158 0 0
+{0:a}NAME={0}?{0:in}NAME
+.EQN 8 -33 161 0 0
+{0:Mn}NAME:{0:T}NAME*({0:d}NAME-({0:a}NAME)/(2))
+.EQN 6 0 162 0 0
+{0:Mn}NAME={0}?_n_u_l_l_
+.TXT 4 1 163 0 0
+Cg a70.000000,70.000000,36
+{\rtf\ansi \deff0{\colortbl;\red0\green0\blue128;}{\fonttbl{\f0
+\fcharset0\fnil Arial;}}\plain\cf1\fs20 \pard Check to make sure steel 
+has yielded}
+.EQN 5 -1 165 0 0
+{0:Xna}NAME:({0:a}NAME)/({0:\b1}NAME)
+.EQN 0 11 166 0 0
+{0:Xna}NAME={0}?_n_u_l_l_
+.EQN 0 18 167 0 0
+{0:Xna}NAME={0}?{0:in}NAME
+.EQN 6 -30 169 0 0
+{0:\es}NAME:({0:d}NAME-({0:Xna}NAME))/({0:Xna}NAME)*0.03
+.EQN 0 17 170 0 0
+{0:\es}NAME={0}?_n_u_l_l_
+.EQN 6 -17 172 0 0
+{0:\eyield}NAME:({0:Fy}NAME)/({0:Es}NAME)
+.EQN 0 17 173 0 0
+{0:\eyield}NAME={0}?_n_u_l_l_
+.TXT 6 -16 181 0 0
+Cg a72.000000,72.000000,45
+{\rtf\ansi \deff0{\colortbl;\red0\green0\blue128;}{\fonttbl{\f0
+\fcharset0\fnil Arial;}}\plain\cf1\fs20 \pard Dimensions for C++ - put 
+origin at top center}
+.EQN 4 0 188 0 0
+{0:Wflange}NAME:{0:bf}NAME
+.EQN 0 20 196 0 0
+{0:bf}NAME={0}?_n_u_l_l_
+.EQN 0 20 210 0 0
+{0:bf}NAME={0}?{0:in}NAME
+.EQN 3 -40 190 0 0
+{0:Dflange}NAME:{0:Dslab}NAME
+.EQN 0 20 197 0 0
+{0:Dflange}NAME={0}?_n_u_l_l_
+.EQN 0 20 211 0 0
+{0:Dflange}NAME={0}?{0:in}NAME
+.EQN 3 -40 195 0 0
+{0:TrFlange}NAME:-(({0:Dflange}NAME)/(2))
+.EQN 0 20 198 0 0
+{0:TrFlange}NAME={0}?_n_u_l_l_
+.EQN 0 20 212 0 0
+{0:TrFlange}NAME={0}?{0:in}NAME
+.EQN 6 -39 199 0 0
+{0:Wweb}NAME:{0:bw}NAME
+.EQN 0 18 203 0 0
+{0:Wweb}NAME={0}?_n_u_l_l_
+.EQN 0 22 214 0 0
+{0:Wweb}NAME={0}?{0:in}NAME
+.EQN 3 -40 201 0 0
+{0:Dweb}NAME:{0:Dtotal}NAME-{0:Dslab}NAME
+.EQN 0 18 202 0 0
+{0:Dweb}NAME={0}?_n_u_l_l_
+.EQN 0 22 216 0 0
+{0:Dweb}NAME={0}?{0:in}NAME
+.EQN 3 -40 204 0 0
+{0:TrWeb}NAME:-(({0:Dweb}NAME)/(2))-{0:Dflange}NAME
+.EQN 0 21 205 0 0
+{0:TrWeb}NAME={0}?_n_u_l_l_
+.EQN 0 19 217 0 0
+{0:TrWeb}NAME={0}?{0:in}NAME
+.EQN 5 -40 207 0 0
+{0:As}NAME={0}?_n_u_l_l_
+.EQN 3 0 208 0 0
+{0:Trs}NAME:-{0:d}NAME
+.EQN 0 22 209 0 0
+{0:Trs}NAME={0}?_n_u_l_l_

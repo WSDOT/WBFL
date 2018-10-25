@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLGenericBridgeTools.StrandPattern.1 = s 'StrandPattern Class'
+	{
+		CLSID = s '{679F3B34-5762-4908-9F79-AE8F0A5FA126}'
+	}
+	WBFLGenericBridgeTools.StrandPattern = s 'StrandPattern Class'
+	{
+		CLSID = s '{679F3B34-5762-4908-9F79-AE8F0A5FA126}'
+		CurVer = s 'WBFLGenericBridgeTools.StrandPattern.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {679F3B34-5762-4908-9F79-AE8F0A5FA126} = s 'StrandPattern Class'
+		{
+			ProgID = s 'WBFLGenericBridgeTools.StrandPattern.1'
+			VersionIndependentProgID = s 'WBFLGenericBridgeTools.StrandPattern'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}'
+		}
+	}
+}

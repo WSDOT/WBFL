@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rhpml majorversion="1" minorversion="0">
+	<folders>
+		<folder>
+			<name>Objects</name>
+		</folder>
+		<folder>
+			<name>Constants</name>
+		</folder>
+		<folder>
+			<name>Run Time Errors</name>
+		</folder>
+		<folder>
+			<name>Default Unit Types</name>
+		</folder>
+		<folder>
+			<name>Interfaces</name>
+		</folder>
+		<folder>
+			<name>Concepts</name>
+		</folder>
+		<folder>
+			<name>Examples</name>
+		</folder>
+	</folders>
+	<topics>
+		<topic>
+			<name>Welcome.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>License_Agreement.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+	</topics>
+</rhpml>

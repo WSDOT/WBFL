@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLTools.UnkArray.1 = s 'UnkArray Class'
+	{
+		CLSID = s '{88D26763-7BD5-4F92-A064-7497A72E7D81}'
+	}
+	WBFLTools.UnkArray = s 'UnkArray Class'
+	{
+		CLSID = s '{88D26763-7BD5-4F92-A064-7497A72E7D81}'
+		CurVer = s 'WBFLTools.UnkArray.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {88D26763-7BD5-4F92-A064-7497A72E7D81} = s 'UnkArray Class'
+		{
+			ProgID = s 'WBFLTools.UnkArray.1'
+			VersionIndependentProgID = s 'WBFLTools.UnkArray'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B9507D8C-7100-11D3-89BB-006097C68A9C}'
+		}
+	}
+}

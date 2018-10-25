@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.PrestressingStrand.1 = s 'PrestressingStrand Class'
+	{
+		CLSID = s '{9AC4752D-388F-4536-ABB6-B13933322915}'
+	}
+	WBFLGenericBridge.PrestressingStrand = s 'PrestressingStrand Class'
+	{
+		CLSID = s '{9AC4752D-388F-4536-ABB6-B13933322915}'
+		CurVer = s 'WBFLGenericBridge.PrestressingStrand.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {9AC4752D-388F-4536-ABB6-B13933322915} = s 'PrestressingStrand Class'
+		{
+			ProgID = s 'WBFLGenericBridge.PrestressingStrand.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.PrestressingStrand'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

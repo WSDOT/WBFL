@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.TransversePierDescription.1 = s 'TransversePierDescription Class'
+	{
+		CLSID = s '{6AF46A10-C19E-438F-B69D-8AB743748CED}'
+	}
+	WBFLGenericBridge.TransversePierDescription = s 'TransversePierDescription Class'
+	{
+		CLSID = s '{6AF46A10-C19E-438F-B69D-8AB743748CED}'
+		CurVer = s 'WBFLGenericBridge.TransversePierDescription.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {6AF46A10-C19E-438F-B69D-8AB743748CED} = s 'TransversePierDescription Class'
+		{
+			ProgID = s 'WBFLGenericBridge.TransversePierDescription.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.TransversePierDescription'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

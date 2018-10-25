@@ -1,0 +1,279 @@
+[OPTIONS]
+Compiled File=WBFLUnitServer.chm
+Title=WBFL UnitServer
+Contents File=WBFLUnitServer.hhc
+Index File=WBFLUnitServer.hhk
+Default topic=Welcome.htm
+Default Window=NewWindow
+Error log file=
+Display compile progress=Yes
+Display compile notes=Yes
+Full-text search=Yes
+Binary Index=No
+Auto Index=No
+Enhanced decompilation=No
+Binary TOC=No
+Flat=No
+
+[WINDOWS]
+NewWindow="WBFL UnitServer","WBFLUnitServer.hhc","WBFLUnitServer.hhk","","",,,,,0x420,0,0x200e,[0,0,1000,600],0x0,0x0,,0,0,0
+
+[FILES]
+License_Agreement.htm
+Run Time Errors\Bad_Unit_Tag.htm
+Run Time Errors\Unit_Type_Already_Defined.htm
+Run Time Errors\Run_Time_Errors.htm
+Run Time Errors\Bad_Unit_Type.htm
+Run Time Errors\Unit_Type_Mismatch.htm
+Welcome.htm
+Objects\Units\Units.htm
+Objects\AnnotatedDisplayUnitFormatter\AnnotatedDisplayUnitFormatter.htm
+Objects\DisplayUnitGroup\DisplayUnitGroup.htm
+Objects\UnitTypes\UnitTypes.htm
+Objects\UnitType\UnitType.htm
+Objects\UnitSystem\UnitSystem.htm
+Objects\UnitServer\UnitServer.htm
+Objects\UnitModeController\UnitModeController.htm
+Objects\Unit\Unit.htm
+Objects\DocUnitSystem\DocUnitSystem.htm
+Objects\DisplayUnitMgr\DisplayUnitMgr.htm
+Objects\DisplayUnitFormatter\DisplayUnitFormatter.htm
+Objects\DisplayUnit\DisplayUnit.htm
+Objects\AppUnitSystem\AppUnitSystem.htm
+Objects\DisplayUnitMgr2\DisplayUnitMgr2.htm
+Run Time Errors\Default_Not_Found.htm
+Run Time Errors\Bad_Display_Unit_Group.htm
+Run Time Errors\Group_Already_Defined.htm
+Run Time Errors\Base_Units_Set.htm
+Objects\Objects.htm
+Default Unit Types\Default_UnitTypes.htm
+Run Time Errors\App_Units_System_Not_Set.htm
+Default Unit Types\Default_Units_for_MassPerLength.htm
+Default Unit Types\Default_Units_for_Mass.htm
+Default Unit Types\Default_Units_for_Length4.htm
+Default Unit Types\Default_Units_for_Length3.htm
+Default Unit Types\Default_Units_for_Length2.htm
+Default Unit Types\Default_Units_for_Length.htm
+Default Unit Types\Default_Units_for_ForcePerLength.htm
+Default Unit Types\Default_Units_for_Force.htm
+Default Unit Types\Default_Units_for_Density.htm
+Default Unit Types\Default_Units_for_Angle.htm
+Default Unit Types\Default_Units_for_UnitWeight.htm
+Default Unit Types\Default_Units_for_Time.htm
+Default Unit Types\Default_Units_for_Temperature.htm
+Default Unit Types\Default_Units_for_Pressure.htm
+Default Unit Types\Default_Units_for_Moment.htm
+Constants\TextJustificationType.htm
+Constants\NumericFormatType.htm
+Constants\UnitModeType.htm
+Constants\UnitSystemType.htm
+Concepts\Unit_Modes.htm
+Concepts\Unit_Conversions.htm
+Objects\AnnotatedDisplayUnitFormatter\Precision_Property_(AnnotatedDisplayUnitFormatter_Object).htm
+Objects\AnnotatedDisplayUnitFormatter\Format_Method_(AnnotatedDisplayUnitFormatter_Object).htm
+Objects\AnnotatedDisplayUnitFormatter\UsesTag_Property_(AnnotatedDisplayUnitFormatter_Object).htm
+Objects\AnnotatedDisplayUnitFormatter\ZeroTolerance_Property_(AnnotatedDisplayUnitFormatter_Object).htm
+Objects\AnnotatedDisplayUnitFormatter\Notation_Property_(AnnotatedDisplayUnitFormatter_Object).htm
+Objects\AnnotatedDisplayUnitFormatter\Width_Property_(AnnotatedDisplayUnitFormatter_Object).htm
+Objects\AnnotatedDisplayUnitFormatter\OffsetDigits_Property_(AnnotatedDisplayUnitFormatter_Object).htm
+Objects\AnnotatedDisplayUnitFormatter\Multiplier_Property_(AnnotatedDisplayUnitFormatter_Object).htm
+Objects\AnnotatedDisplayUnitFormatter\Annotation_Property_(AnnotatedDisplayUnitFormatter_Object).htm
+Objects\AnnotatedDisplayUnitFormatter\Justification_Property_(AnnotatedDisplayUnitFormatter_Object).htm
+Objects\AnnotatedDisplayUnitFormatter\FormatSpecifiers_Method_(AnnotatedDisplayUnitFormatter_Object).htm
+Concepts\Display_Units.htm
+Constants\Constants.htm
+Examples\Examples.htm
+Objects\AppUnitSystem\UnitServer_Property_(AppUnitSystem_Object).htm
+Objects\AnnotatedDisplayUnitFormatter\OnFormatChanged_Event_(AnnotatedDisplayUnitFormatter_Object).htm
+Objects\AppUnitSystem\DisplayUnitMgr_Property_(AppUnitSystem_Object).htm
+Objects\AppUnitSystem\ConvertToBaseUnits_Method_(AppUnitSystem_Object).htm
+Objects\AppUnitSystem\ConvertFromBaseUnits_Method_(AppUnitSystem_Object).htm
+Objects\AppUnitSystem\OnUpdateDisplay_Event_(AppUnitSystem_Object).htm
+Objects\AppUnitSystem\OnUnitServerChanged_Event_(AppUnitSystem_Object).htm
+Objects\DisplayUnit\Formatter_Property_(DisplayUnit_Object).htm
+Objects\DisplayUnit\Unit_Property_(DisplayUnit_Object).htm
+Objects\DisplayUnit\UnitSystem_Property_(DisplayUnit_Object).htm
+Objects\DisplayUnit\UnitTag_Property_(DisplayUnit_Object).htm
+Objects\DisplayUnit\Format_Method_(DisplayUnit_Object).htm
+Objects\DisplayUnit\IsDefault_Method_(DisplayUnit_Object).htm
+Objects\DisplayUnit\OnFormatChanged_Event_(DisplayUnit_Object).htm
+Objects\DisplayUnitFormatter\Justification_Property_(DisplayUnitFormatter_Object).htm
+Objects\DisplayUnitFormatter\Notation_Property_(DisplayUnitFormatter_Object).htm
+Objects\DisplayUnitFormatter\Width_Property_(DisplayUnitFormatter_Object).htm
+Objects\DisplayUnitFormatter\Precision_Property_(DisplayUnitFormatter_Object).htm
+Objects\DisplayUnitFormatter\UsesTag_Property_(DisplayUnitFormatter_Object).htm
+Objects\DisplayUnitFormatter\ZeroTolerance_Property_(DisplayUnitFormatter_Object).htm
+Objects\DisplayUnitFormatter\Format_Method_(DisplayUnitFormatter_Object).htm
+Objects\DisplayUnitFormatter\FormatSpecifiers_(DisplayUnitFormatter_Object).htm
+Objects\DisplayUnitFormatter\OnFormatChanged_Event_(DisplayUnitFormatter_Object).htm
+Objects\DisplayUnitGroup\_EnumDisplay_Property_(DisplayUnitGroup_Object).htm
+Objects\DisplayUnitGroup\Count_Property_(DisplayUnitGroup_Object).htm
+Objects\DisplayUnitGroup\Default_Property_(DisplayUnitGroup_Object).htm
+Objects\DisplayUnitGroup\Item_Property_(DisplayUnitGroup_Object).htm
+Objects\DisplayUnitGroup\Name_Property_(DisplayUnitGroup_Object).htm
+Objects\DisplayUnitGroup\UnitType_Property_(DisplayUnitGroup_Object).htm
+Objects\DisplayUnitGroup\Add_Method_(DisplayUnitGroup_Object).htm
+Objects\DisplayUnitMgr\Remove_Method_(DisplayUnitMgr_Object).htm
+Objects\DisplayUnitGroup\OnFormatChanged_Event_(DisplayUnitGroup_Object).htm
+Objects\DisplayUnitMgr\Count_Property_(DisplayUnitMgr_Object).htm
+Objects\DisplayUnitMgr\Item_Property_(DisplayUnitMgr_Object).htm
+Objects\DisplayUnitMgr\Tag_Property_(DisplayUnitMgr_Object).htm
+Objects\DisplayUnitMgr\Add_Method_(DisplayUnitMgr_Object).htm
+Objects\DisplayUnitMgr\ConvertFromDisplayUnits_Method_(DisplayUnitMgr_Object).htm
+Objects\DisplayUnitMgr\Clear_Method_(DisplayUnitMgr_Object).htm
+Objects\DisplayUnitMgr\ConvertToDisplayUnits_Method_(DisplayUnitMgr_Object).htm
+Objects\DisplayUnitMgr\OnDisplayUnitCreated_Event_(DisplayUnitMgr_Object).htm
+Objects\DisplayUnitMgr\Format_Method_(DisplayUnitMgr_Object).htm
+Objects\DisplayUnitGroup\OnDisplayUnitGroupCleared_Event_(DisplayUnitGroup_Object).htm
+Objects\DisplayUnitGroup\OnDisplayUnitCreated_Event_(DisplayUnitGroup_Object).htm
+Objects\DisplayUnitGroup\OnDisplayUnitRemoved_Event_(DisplayUnitGroup_Object).htm
+Objects\DisplayUnitGroup\Clear_Method_(DisplayUnitGroup_Object).htm
+Objects\DisplayUnitGroup\Remove_Method_(DisplayUnitGroup_Object).htm
+Objects\DisplayUnitMgr\OnDisplayUnitGroupCleared_Event_(DisplayUnitMgr_Object).htm
+Objects\DisplayUnitMgr\OnFormatChanged_Event_(DisplayUnitMgr_Object).htm
+Objects\DisplayUnitMgr\_EnumDisplayUnitGroup_Property_(DisplayUnitMgr_Object).htm
+Objects\DisplayUnitMgr\OnDisplayUnitGroupCreated_Event_(DisplayUnitMgr_Object).htm
+Objects\DisplayUnitMgr\OnDisplayUnitGroupRemoved_Event_(DisplayUnitMgr_Object).htm
+Objects\DisplayUnitMgr\OnDisplayUnitGroupsCleared_Event_(DisplayUnitMgr_Object).htm
+Objects\DisplayUnitMgr\OnDisplayUnitRemoved_Event_(DisplayUnitMgr_Object).htm
+Objects\DisplayUnitMgr2\OnDisplayUnitRemoved_Event_(DisplayUnitMgr2_Object).htm
+Objects\DisplayUnitMgr2\OnDisplayUnitGroupsCleared_Event_(DisplayUnitMgr2_Object).htm
+Objects\DisplayUnitMgr2\OnDisplayUnitGroupRemoved_Event_(DisplayUnitMgr2_Object).htm
+Objects\DisplayUnitMgr2\OnDisplayUnitGroupCreated_Event_(DisplayUnitMgr2_Object).htm
+Objects\DisplayUnitMgr2\OnDisplayUnitGroupCleared_Event_(DisplayUnitMgr2_Object).htm
+Objects\DisplayUnitMgr2\OnFormatChanged_Event_(DisplayUnitMgr2_Object).htm
+Objects\DisplayUnitMgr2\_EnumDisplayUnitGroup_Property_(DisplayUnitMgr2_Object).htm
+Objects\DisplayUnitMgr2\Count_Property_(DisplayUnitMgr2_Object).htm
+Objects\DisplayUnitMgr2\Item_Property_(DisplayUnitMgr2_Object).htm
+Objects\DisplayUnitMgr2\Clear_Method_(DisplayUnitMgr2_Object).htm
+Objects\DisplayUnitMgr2\Remove_Method_(DisplayUnitMgr2_Object).htm
+Objects\DisplayUnitMgr2\OnDisplayUnitCreated_Event_(DisplayUnitMgr2_Object).htm
+Objects\DisplayUnitMgr2\Add_Method_(DisplayUnitMgr2_Object).htm
+Objects\DocUnitSystem\AppUnitSystem_Property_(DocUnitSystem_Object).htm
+Objects\DocUnitSystem\Tag_Property_(DocUnitSystem_Object).htm
+Objects\DocUnitSystem\UnitModeController_Property_(DocUnitSystem_Object).htm
+Objects\DocUnitSystem\UnitMode_Property_(DocUnitSystem_Object).htm
+Objects\DocUnitSystem\ConvertFromDisplayUnits_Method_(DocUnitSystem_Object).htm
+Objects\DocUnitSystem\ConvertToDisplayUnits_Method_(DocUnitSystem_Object).htm
+Objects\DocUnitSystem\Format_Method_(DocUnitSystem_Object).htm
+Objects\DocUnitSystem\OnUpdateDisplay_Event_(DocUnitSystem_Object).htm
+Objects\Unit\PreTerm_Property_(Unit_Object).htm
+Objects\Unit\PostTerm_Property_(Unit_Object).htm
+Objects\Unit\ConvFactor_Property_(Unit_Object).htm
+Objects\Unit\Tag_Property_(Unit_Object).htm
+Objects\Unit\UnitServer_Property_(Unit_Object).htm
+Objects\Unit\UnitSystem_Property_(Unit_Object).htm
+Objects\Unit\UnitType_Property_(Unit_Object).htm
+Objects\UnitModeController\ShowSelectionDialog_Method_(UnitModeController_Object).htm
+Objects\UnitModeController\UnitMode_Property_(UnitModeController_Object).htm
+Objects\Units\Remove_Method_(Units_Object).htm
+Objects\UnitModeController\ShowSelectionDialogEx_Method_(UnitModeController_Object).htm
+Objects\UnitModeController\OnUnitModeChanged_Event_(UnitModeController_Object).htm
+Objects\Units\Item_Property_(Units_Object).htm
+Objects\Units\Count_Property_(Units_Object).htm
+Objects\Units\Clear_Method_(Units_Object).htm
+Objects\Units\OnUnitAdded_Event_(Units_Object).htm
+Objects\Units\OnUnitRemoved_Event_(Units_Object).htm
+Objects\Units\OnUnitsCleared_Event_(Units_Object).htm
+Objects\Units\Add_Method_(Units_Object).htm
+Objects\Units\_EnumUnits_Property_(Units_Object).htm
+Objects\UnitServer\Angle_Property_(UnitServer_Object).htm
+Objects\UnitServer\Length_Property_(UnitServer_Object).htm
+Objects\UnitServer\Mass_Property_(UnitServer_Object).htm
+Objects\UnitServer\Temperature_Property_(UnitServer_Object).htm
+Objects\UnitServer\Time_Property_(UnitServer_Object).htm
+Objects\UnitServer\UnitConvert_Property_(UnitServer_Object).htm
+Objects\UnitServer\OnUnitRemoved_Event_(UnitServer_Object).htm
+Objects\UnitServer\OnUnitsCleared_Event_(UnitServer_Object).htm
+Objects\UnitServer\OnUnitTypeAdded_Event_(UnitServer_Object).htm
+Objects\UnitServer\OnUnitTypeRemoved_Event_(UnitServer_Object).htm
+Objects\UnitServer\OnUnitTypesCleared_Event_(UnitServer_Object).htm
+Objects\UnitSystem\DisplayUnitMgr_Property_(UnitSystem_Object).htm
+Objects\UnitSystem\UnitServer_Property_(UnitSystem_Object).htm
+Objects\UnitSystem\UnitModeController_Property_(UnitSystem_Object).htm
+Objects\UnitType\Temperature_Property_(UnitType_Object).htm
+Objects\UnitType\Mass_Property_(UnitType_Object).htm
+Objects\UnitType\Length_Property_(UnitType_Object).htm
+Objects\UnitType\Angle_Property_(UnitType_Object).htm
+Objects\UnitServer\UnitTypes_Property_(UnitServer_Object).htm
+Objects\UnitServer\OnUnitAdded_Event_(UnitServer_Object).htm
+Objects\UnitServer\UnitConvert2_Property_(UnitServer_Object).htm
+Objects\UnitServer\SetBaseUnits_Method_(UnitServer_Object).htm
+Objects\UnitTypes\Add_Method_(UnitTypes_Object).htm
+Objects\UnitType\OnUnitAdded_Event_(UnitType_Object).htm
+Objects\UnitTypes\OnUnitTypeAdded_Event_(UnitTypes_Object).htm
+Objects\UnitTypes\OnUnitAdded_Event_(UnitTypes_Object).htm
+Objects\UnitTypes\OnUnitsCleared_Event_(UnitTypes_Object).htm
+Objects\UnitTypes\Clear_Method_(UnitTypes_Object).htm
+Objects\UnitTypes\Remove_Method_(UnitTypes_Object).htm
+Objects\UnitTypes\Count_Property_(UnitTypes_Object).htm
+Objects\UnitTypes\Item_Property_(UnitTypes_Object).htm
+Objects\UnitTypes\OnUnitRemoved_Event_(UnitTypes_Object).htm
+Objects\UnitType\OnUnitRemoved_Event_(UnitType_Object).htm
+Objects\UnitType\OnUnitsCleared_Event_(UnitType_Object).htm
+Objects\UnitType\Time_Property_(UnitType_Object).htm
+Objects\UnitType\UnitServer_Property_(UnitType_Object).htm
+Objects\UnitType\Units_Property_(UnitType_Object).htm
+Objects\UnitType\Label_Property_(UnitType_Object).htm
+Objects\UnitTypes\_EnumUnitTypes_Property_(UnitTypes_Object).htm
+Objects\UnitTypes\OnUnitTypeRemoved_Event_(UnitTypes_Object).htm
+Objects\UnitTypes\OnUnitTypesCleared_Event_(UnitTypes_Object).htm
+Interfaces\IEnumDisplayUnitGroups\IEnumDisplayUnitGroups.htm
+Interfaces\IEnumDisplayUnitGroups\Next_Method_(IEnumDisplayUnitGroups_Interface).htm
+Interfaces\IEnumDisplayUnitGroups\Reset_Method_(IEnumDisplayUnitGroups_Interface).htm
+Interfaces\IEnumDisplayUnitGroups\Skip_Method_(IEnumDisplayUnitGroups_Interface).htm
+Interfaces\IEnumDisplayUnits\Clone_Method_(IEnumDisplayUnits_Interface).htm
+Interfaces\IEnumDisplayUnits\Reset_Method_(IEnumDisplayUnits_Interface).htm
+Interfaces\IEnumDisplayUnits\Next_Method_(IEnumDisplayUnits_Interface).htm
+Interfaces\IEnumDisplayUnits\IEnumDisplayUnits.htm
+Interfaces\IEnumDisplayUnits\Skip_Method_(IEnumDisplayUnits_Interface).htm
+Interfaces\IEnumDisplayUnitGroups\Clone_Method_(IEnumDisplayUnitGroups_Interface).htm
+Interfaces\IEnumUnitTypes\Next_Method_(IEnumUnitTypes_Interface).htm
+Interfaces\IEnumUnits\Skip_Method_(IEnumUnits_Interface).htm
+Interfaces\IEnumUnits\Reset_Method_(IEnumUnits_Interface).htm
+Interfaces\IEnumUnits\Next_Method_(IEnumUnits_Interface).htm
+Interfaces\IEnumUnits\IEnumUnits.htm
+Interfaces\IEnumUnits\Clone_Method_(IEnumUnits_Interface).htm
+Interfaces\IEnumUnitTypes\IEnumUnitTypes.htm
+Interfaces\IEnumUnitTypes\Reset_Method_(IEnumUnitTypes_Interface).htm
+Interfaces\IEnumUnitTypes\Skip_Method_(IEnumUnitTypes_Interface).htm
+Interfaces\IEnumUnitTypes\Clone_Method_(IEnumUnitTypes_Interface).htm
+Interfaces\ISupportDisplayUnits\DisplayUnitMgr_Property_(ISupportDisplayUnits_Interface).htm
+Interfaces\ISupportDisplayUnits\ISupportDisplayUnits.htm
+Interfaces\ISupportDocUnitSystem\UnitSystem_Property_(ISupportDocUnitSystem_Interface).htm
+Interfaces\ISupportDocUnitSystem\ISupportDocUnitSystem.htm
+Interfaces\ISupportUnitSystem\UnitSystem_Property_(ISupportUnitSystem_Interface).htm
+Interfaces\ISupportUnitSystem\ISupportUnitSystem.htm
+Interfaces\ISupportUnitServer\UnitServer_Property_(ISupportUnitServer_Interface).htm
+Interfaces\ISupportUnitServer\ISupportUnitServer.htm
+Concepts\Unit_Server.htm
+Examples\Convert_Example.htm
+Concepts\Unit_Systems.htm
+Interfaces\IUnitConvert\ConvertFromBaseUnits_(IUnitConvert_Interface).htm
+Interfaces\IUnitConvert\Convert_(IUnitConvert_Interface).htm
+Interfaces\IUnitConvert\IUnitConvert.htm
+Examples\UnitSystemDemo.htm
+Interfaces\IUnitConvert\ConvertToBaseUnits_(IUnitConvert_Interface).htm
+Interfaces\IUnitConvert2\Convert_(IUnitConvert2_Interface).htm
+Interfaces\IUnitConvert2\IUnitConvert2.htm
+Interfaces\IUnitConvert2\ConvertToBaseUnits_(IUnitConvert2_Interface).htm
+Interfaces\IUnitConvert2\ConvertFromBaseUnits_(IUnitConvert2_Interface).htm
+Default Unit Types\Default_Units_for_ThermalCoefficient.htm
+Examples\Custom_Base_Units.htm
+Interfaces\Interfaces.htm
+eHelp.xml
+RoboHHRE.lng
+
+WBFLUnitServer.brs
+[ALIAS]
+#include WBFLUnitServer.ali
+
+[MAP]
+#include BSSCDefault.h
+#include UnitServer.hh
+
+[TEXT POPUPS]
+BSSCDefault.h
+UnitServer.hh
+
+

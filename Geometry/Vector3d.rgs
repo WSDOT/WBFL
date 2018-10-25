@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.Vector3d.1 = s 'Vector3d Class'
+	{
+		CLSID = s '{F97D8402-1871-11D3-8CDF-925649DD1F63}'
+	}
+	WBFLGeometry.Vector3d = s 'Vector3d Class'
+	{
+		CLSID = s '{F97D8402-1871-11D3-8CDF-925649DD1F63}'
+		CurVer = s 'WBFLGeometry.Vector3d.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {F97D8402-1871-11D3-8CDF-925649DD1F63} = s 'Vector3d Class'
+		{
+			ProgID = s 'WBFLGeometry.Vector3d.1'
+			VersionIndependentProgID = s 'WBFLGeometry.Vector3d'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

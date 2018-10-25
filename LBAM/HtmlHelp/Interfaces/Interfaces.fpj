@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rhpml majorversion="1" minorversion="0">
+	<folders>
+		<folder>
+			<name>IStructuredStorage2</name>
+		</folder>
+		<folder>
+			<name>ISupportProgressMonitor</name>
+		</folder>
+		<folder>
+			<name>IProgressMonitor</name>
+		</folder>
+		<folder>
+			<name>IDblArray</name>
+		</folder>
+		<folder>
+			<name>ILngArray</name>
+		</folder>
+		<folder>
+			<name>IBstrArray</name>
+		</folder>
+		<folder>
+			<name>IUnkArray</name>
+		</folder>
+	</folders>
+	<topics>
+		<topic>
+			<name>Interfaces.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+	</topics>
+</rhpml>

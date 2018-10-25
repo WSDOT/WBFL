@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.Plane3d.1 = s 'Plane3d Class'
+	{
+		CLSID = s '{F97D8404-1871-11D3-8CDF-925649DD1F63}'
+	}
+	WBFLGeometry.Plane3d = s 'Plane3d Class'
+	{
+		CLSID = s '{F97D8404-1871-11D3-8CDF-925649DD1F63}'
+		CurVer = s 'WBFLGeometry.Plane3d.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {F97D8404-1871-11D3-8CDF-925649DD1F63} = s 'Plane3d Class'
+		{
+			ProgID = s 'WBFLGeometry.Plane3d.1'
+			VersionIndependentProgID = s 'WBFLGeometry.Plane3d'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

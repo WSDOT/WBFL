@@ -1,0 +1,26 @@
+HKCR
+{
+	StorageTest.PCompositeShape.1 = s 'PCompositeShape Class'
+	{
+		CLSID = s '{EDC65DDC-ED4C-41d3-BC4B-5C6515EFB795}'
+	}
+	StorageTest.PCompositeShape = s 'PCompositeShape Class'
+	{
+		CLSID = s '{EDC65DDC-ED4C-41d3-BC4B-5C6515EFB795}'
+		CurVer = s 'StorageTest.PCompositeShape.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {EDC65DDC-ED4C-41d3-BC4B-5C6515EFB795} = s 'PCompositeShape Class'
+		{
+			ProgID = s 'StorageTest.PCompositeShape.1'
+			VersionIndependentProgID = s 'StorageTest.PCompositeShape'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{71A9DDC8-55D1-11D5-B005-00105A9AF985}'
+		}
+	}
+}

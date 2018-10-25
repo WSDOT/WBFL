@@ -1,0 +1,9 @@
+; LBAMAnalysis.def : Declares the module parameters.
+
+LIBRARY      "WBFLLBAMAnalysis.DLL"
+
+EXPORTS
+	DllCanUnloadNow     PRIVATE
+	DllGetClassObject   PRIVATE
+	DllRegisterServer   PRIVATE
+	DllUnregisterServer	PRIVATE

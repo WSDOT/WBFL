@@ -1,0 +1,100 @@
+<!doctype HTML public "-//W3C//DTD HTML 4.0 Frameset//EN">
+
+<html>
+
+<!--(==============================================================)-->
+<!--(Document created with RoboEditor. )============================-->
+<!--(==============================================================)-->
+
+<head>
+
+<title>Basic Flow Of Using The LBAM</title>
+
+<!--(Meta)==========================================================-->
+
+<meta http-equiv=content-type content="text/html; charset=windows-1252">
+<meta name=topic-status content="In Progress">
+<meta name=topic-priority content=0>
+<meta name=topic-time-estimate content=0>
+<meta name=topic-comment content>
+<meta name=topic-id content>
+<meta name=generator content="RoboHELP by eHelp Corporation - www.ehelp.com">
+<meta name=generator-major-version content=0.1>
+<meta name=generator-minor-version content=1>
+<meta name=filetype content=kadov>
+<meta name=filetype-version content=1>
+<meta name=page-count content=0>
+<meta name=layout-height content=0>
+<meta name=layout-width content=0>
+
+
+<!--(Links)=========================================================-->
+
+<link REL=StyleSheet HREF="..\default.css">
+
+
+
+</head>
+
+<!--(Body)==========================================================-->
+
+
+<body>
+
+<h1>Basic Flow Of Using The LBAM</h1>
+
+<p>The LBAM system was designed to be as simple to use as possible, and 
+ there are few restrictions as to the order of operations involved in using 
+ it. However, there are some practical constraints (e.g., You must have 
+ a model before you can analyze it). A rough layout of the basic flow for 
+ using the LBAM is shown in the Figure below.</p>
+
+<p style="text-align: center;"
+	align=center><img src="..\Images\BasicFlow.gif"
+						style="width: 525px;
+								height: 351px;
+								border-style: none;
+								margin-top: 0px;
+								margin-bottom: 0px;
+								margin-left: 0px;
+								margin-right: 0px;"
+						width=525
+						height=351
+						border=0></p>
+
+<p>In general, you build a model, then ask for results. You can then edit 
+ the model and request more results as needed. There is no need to call 
+ methods to analyze, discretize, solve, or otherwise deal with the gory 
+ details of model solution.</p>
+
+<p CLASS=Tip>Note that this ease of use does not come without performance 
+ implications. If you want optimal performance out of the analysis engines, 
+ it is best to fully describe the model and all loads/loadings before you 
+ request any results. Many of the engines cache results to improve performance, 
+ but they cannot cache results for changes that have not occurred yet. 
+ In fact, some changes in data may cause the engines to clear their caches 
+ and recompute results for all loads and stages. This can result in significant 
+ performance penalties.</p>
+
+<p CLASS=Tip>Also note that the figure above shows the model being built 
+ before the loads are described. This is not truly necessary. If desired, 
+ you can create all of the loads first and create the Spans and Supports 
+ later.</p>
+
+
+<!--(HR)============================================================-->
+<hr style="height: 2px;
+			width: 100%;
+			float: aligncenter;"
+	size=2
+	width=100%
+	align=center>
+
+
+<p>Copyright © 2000-2002, Washington State Department of Transportation</p>
+
+<p style="margin-bottom: 0;">&nbsp; </p>
+
+</body>
+
+</html>

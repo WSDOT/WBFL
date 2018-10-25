@@ -1,0 +1,87 @@
+///////////////////////////////////////////////////////////////////////
+// BogusCombinationContext - Test driver for LBAM load combinations
+// Copyright © 2001  Washington State Department of Transportation
+//                   Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the Alternate Route Open Source License as 
+// published by the Washington State Department of Transportation,
+// Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful,
+// but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// PURPOSE.  See the Alternate Route Library Open Source License for more details.
+//
+// You should have received a copy of the Alternate Route Open Source License
+// along with this program; if not, write to the Washington State
+// Department of Transportation, Bridge and Structures Office,
+// P.O. Box 47340, Olympia, WA 98503, USA or e-mail
+// Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+// BogusCombinationContext.idl : IDL source for BogusCombinationContext.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (BogusCombinationContext.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+import "WBFLLBAMAnalysis.idl";
+import "WBFLLBAMLoadCombiner.idl";
+
+[
+	uuid(921601A7-0DA7-4B50-8DCE-D1852B6EB557),
+	version(1.0),
+	helpstring("BogusCombinationContext 1.0 Type Library")
+]
+library BOGUSCOMBINATIONCONTEXTLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+   //importlib("WBFLLBAMAnalysis.tlb");
+   //importlib("WBFLLBAMLoadCombiner.tlb");
+
+	[
+	   object,
+	   uuid(34E2A256-ADE1-435e-9D39-4A3FA1E0085C),
+	   oleautomation,
+	   pointer_default(unique)
+	]
+	interface ICompareBogusResults : IUnknown
+	{
+	   HRESULT CompareLoadCaseSectionResults([in]BSTR loadCase, [in]BSTR stage, [in]ResultsSummationType summ, [in]VARIANT_BOOL doFlip, [in]ISectionResult3Ds* results);
+	   HRESULT CompareLoadCaseResults([in]BSTR loadCase, [in]BSTR stage, [in]ResultsSummationType summ, [in]IResult3Ds* results);
+      HRESULT CompareLoadCaseStressResults([in]BSTR loadCase, [in]BSTR stage, [in]ResultsSummationType summ, [in]ISectionStressResults* results);
+      HRESULT CompareLoadCombinationSectionResults([in]BSTR loadCombo, [in]BSTR stage, [in]ResultsSummationType summ, 
+                                                   [in]ForceEffectType fet, [in]OptimizationType opt, [in]VARIANT_BOOL doFlip,
+                                                   [in]ILoadCombinationSectionResults* results);
+      HRESULT CompareLoadCombinationSectionRes([in]BSTR loadCombo, [in]BSTR stage, [in]ResultsSummationType summ, 
+                                               [in]OptimizationType opt, [in]VARIANT_BOOL doFlip, [in]ISectionResult3Ds* results);
+      HRESULT CompareLoadCombinationResults([in]BSTR loadCombo, [in]BSTR stage, [in]ResultsSummationType summ, 
+                                            [in]ForceEffectType fet, [in]OptimizationType opt,
+                                            [in]ILoadCombinationResults* results);
+      HRESULT CompareLoadCombinationRes([in]BSTR loadCombo, [in]BSTR stage, [in]ResultsSummationType summ,
+                                        [in]OptimizationType opt, [in]IResult3Ds* results);
+      HRESULT CompareLoadCombinationStressResults([in]BSTR loadCombo, [in]BSTR stage, [in]ResultsSummationType summ, 
+                                                  [in]ForceEffectType fet, [in]OptimizationType opt,
+                                                  [in]ILoadCombinationStressResults* results);
+      HRESULT CompareLoadCombinationStressRes([in]BSTR loadCombo, [in]BSTR stage, [in]ResultsSummationType summ,
+                                              [in]OptimizationType opt, [in]ISectionStressResults* results);
+	};
+
+
+	[
+		uuid(1010712A-C54D-4071-922F-97B0C2738D31),
+		helpstring("BogusComboContext Class")
+	]
+	coclass BogusComboContext
+	{
+		[default] interface ILoadCombinationAnalysisContext;
+	};
+};

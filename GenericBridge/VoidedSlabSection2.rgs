@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.VoidedSlabSection2.1 = s 'VoidedSlabSection2 Class'
+	{
+		CLSID = s '{23E0A018-EB42-46d0-82EB-28811AF57C5B}'
+	}
+	WBFLGenericBridge.VoidedSlabSection2 = s 'VoidedSlabSection2 Class'
+	{
+		CLSID = s '{23E0A018-EB42-46d0-82EB-28811AF57C5B}'
+		CurVer = s 'WBFLGenericBridge.VoidedSlabSection2.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {23E0A018-EB42-46d0-82EB-28811AF57C5B} = s 'VoidedSlabSection2 Class'
+		{
+			ProgID = s 'WBFLGenericBridge.VoidedSlabSection2.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.VoidedSlabSection2'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

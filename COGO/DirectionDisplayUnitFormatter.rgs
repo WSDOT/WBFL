@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.DirectionDisplayUnitFormatter.1 = s 'DirectionDisplayUnitFormatter Class'
+	{
+		CLSID = s '{50A4E50C-B7A8-4177-AB25-83D4E783B7A3}'
+	}
+	WBFLCogo.DirectionDisplayUnitFormatter = s 'DirectionDisplayUnitFormatter Class'
+	{
+		CLSID = s '{50A4E50C-B7A8-4177-AB25-83D4E783B7A3}'
+		CurVer = s 'WBFLCogo.DirectionDisplayUnitFormatter.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {50A4E50C-B7A8-4177-AB25-83D4E783B7A3} = s 'DirectionDisplayUnitFormatter Class'
+		{
+			ProgID = s 'WBFLCogo.DirectionDisplayUnitFormatter.1'
+			VersionIndependentProgID = s 'WBFLCogo.DirectionDisplayUnitFormatter'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

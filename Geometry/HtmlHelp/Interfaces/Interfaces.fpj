@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rhpml majorversion="1" minorversion="0">
+	<folders>
+		<folder>
+			<name>IShape</name>
+		</folder>
+		<folder>
+			<name>IXYPosition</name>
+		</folder>
+		<folder>
+			<name>IEnumPoint3d</name>
+		</folder>
+		<folder>
+			<name>IEnumPoint2d</name>
+		</folder>
+		<folder>
+			<name>ILine2dFactory</name>
+		</folder>
+		<folder>
+			<name>IPoint3dFactory</name>
+		</folder>
+		<folder>
+			<name>ILineSegment2dFactory</name>
+		</folder>
+		<folder>
+			<name>IPoint2dFactory</name>
+		</folder>
+		<folder>
+			<name>IGeomUtil2d</name>
+		</folder>
+		<folder>
+			<name>IGeomUtil3d</name>
+		</folder>
+		<folder>
+			<name>IEnumShape</name>
+		</folder>
+		<folder>
+			<name>IStructuredStorage2</name>
+		</folder>
+	</folders>
+	<topics/>
+</rhpml>

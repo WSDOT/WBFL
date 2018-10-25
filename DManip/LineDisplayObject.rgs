@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.LineDisplayObject.1 = s 'LineDisplayObject Class'
+	{
+		CLSID = s '{531F5C30-FFC3-4a22-ADE5-D640C8CBE284}'
+	}
+	WBFLDManip.LineDisplayObject = s 'LineDisplayObject Class'
+	{
+		CLSID = s '{531F5C30-FFC3-4a22-ADE5-D640C8CBE284}'
+		CurVer = s 'WBFLDManip.LineDisplayObject.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {531F5C30-FFC3-4a22-ADE5-D640C8CBE284} = s 'LineDisplayObject Class'
+		{
+			ProgID = s 'WBFLDManip.LineDisplayObject.1'
+			VersionIndependentProgID = s 'WBFLDManip.LineDisplayObject'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLTools.StructuredLoad2.1 = s 'StructuredLoad2 Class'
+	{
+		CLSID = s '{043B36E7-64EE-11d5-B017-00105A9AF985}'
+	}
+	WBFLTools.StructuredLoad2 = s 'StructuredLoad2 Class'
+	{
+		CLSID = s '{043B36E7-64EE-11d5-B017-00105A9AF985}'
+		CurVer = s 'WBFLTools.StructuredLoad2.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {043B36E7-64EE-11d5-B017-00105A9AF985} = s 'StructuredLoad2 Class'
+		{
+			ProgID = s 'WBFLTools.StructuredLoad2.1'
+			VersionIndependentProgID = s 'WBFLTools.StructuredLoad2'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B9507D8C-7100-11D3-89BB-006097C68A9C}'
+		}
+	}
+}

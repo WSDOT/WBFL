@@ -1,0 +1,43 @@
+// LBAMViewer.odl : type library source for LBAMViewer.exe
+import "oaidl.idl";
+// This file will be processed by the MIDL compiler to produce the
+// type library (LBAMViewer.tlb).
+
+[ uuid(F132B5F1-2F5F-4350-96FC-B3C824476DB4), version(1.0) ]
+library LBAMViewer
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+
+	//  Primary dispatch interface for CLBAMViewerDoc
+	
+	[ uuid(66FA1CB3-2031-49DA-B8BC-A316342E33DC) ]
+	dispinterface ILBAMViewer
+	{
+		properties:
+			// NOTE - ClassWizard will maintain property information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_PROP(CLBAMViewerDoc)
+			//}}AFX_ODL_PROP
+			
+		methods:
+			// NOTE - ClassWizard will maintain method information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_METHOD(CLBAMViewerDoc)
+			//}}AFX_ODL_METHOD
+
+	};
+
+	//  Class information for CLBAMViewerDoc
+	
+	[ uuid(925F0BFD-188B-4C49-8A38-CC30D9DD66ED) ]
+	coclass Document
+	{
+		[default] dispinterface ILBAMViewer;
+	};
+
+
+	//{{AFX_APPEND_ODL}}
+	//}}AFX_APPEND_ODL}}
+};

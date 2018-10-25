@@ -1,0 +1,49 @@
+
+	// TestProgress.idl : IDL source for TestProgress.exe
+//
+// This file will be processed by the MIDL tool to
+// produce the type library (TestProgress.tlb) and marshalling code.
+import "oaidl.idl";
+import "ocidl.idl";
+#include "olectl.h"
+
+import "ProgressMonitor.idl";
+
+
+
+[
+	uuid(58D8936C-CF1B-4802-BC9B-7C869ED93915),
+	version(1.0),
+	helpstring("TestProgress 1.0 Type Library")
+]
+library TestProgressLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+        object,	
+		uuid(0C934C62-E1E7-49cc-947F-D6312C245177),
+	    dual,oleautomation,
+		helpstring("IBogusProgressTester Interface"),
+		pointer_default(unique)
+	]
+	interface IBogusProgressTester : IDispatch
+	{
+		[id(1), helpstring("Run Test")] 
+      HRESULT RunTest();
+	};
+
+
+	[
+		uuid(305D0164-FB5A-4D2A-AA2D-77B118F5D543),
+		helpstring("BogusProgressTester Class")
+	]
+	coclass BogusProgressTester
+	{
+		[default] interface IBogusProgressTester;
+		interface ISupportProgressMonitor;
+	};
+};
+
+	

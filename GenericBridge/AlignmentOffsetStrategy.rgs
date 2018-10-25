@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.AlignmentOffsetStrategy.1 = s 'AlignmentOffsetStrategy Class'
+	{
+		CLSID = s '{DE317A5D-4C21-4216-BB98-45A1AFAFD8DF}'
+	}
+	WBFLGenericBridge.AlignmentOffsetStrategy = s 'AlignmentOffsetStrategy Class'
+	{
+		CLSID = s '{DE317A5D-4C21-4216-BB98-45A1AFAFD8DF}'
+		CurVer = s 'WBFLGenericBridge.AlignmentOffsetStrategy.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {DE317A5D-4C21-4216-BB98-45A1AFAFD8DF} = s 'AlignmentOffsetStrategy Class'
+		{
+			ProgID = s 'WBFLGenericBridge.AlignmentOffsetStrategy.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.AlignmentOffsetStrategy'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

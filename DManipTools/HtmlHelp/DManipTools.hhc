@@ -1,0 +1,53 @@
+<html>
+<!-- Sitemap 1.0 -->
+<object type="text/site properties">
+  <param name="WindowName" value="DManipTools Help">
+  <param name="SiteType" value="toc">
+  <param name="Image Width" value="16">
+  <param name="Window Styles" value="0x800427">
+  <param name="ExWindow Styles" value="0x100">
+</object>
+<ul>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Introduction">
+    <param name="Local" value="Introduction.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Interfaces">
+  </object>
+  <ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="iDataPointDrawStrategy">
+      <param name="Local" value="Interfaces\iDataPointDrawStrategy.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="iDataPointFactory">
+      <param name="Local" value="Interfaces\iDataPointFactory.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="iDataSet2d">
+      <param name="Local" value="Interfaces\iDataSet2d.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="iGraphXyDataProvider">
+      <param name="Local" value="Interfaces\iGraphXyDataProvider.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="iGraphXyDisplayObject">
+      <param name="Local" value="Interfaces\iGraphXyDisplayObject.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="iLegendDisplayObject">
+      <param name="Local" value="Interfaces\iLegendDisplayObject.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="iLegendEntry">
+      <param name="Local" value="Interfaces\iLegendEntry.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="iSymbolLegendEntry">
+      <param name="Local" value="Interfaces\iSymbolLegendEntry.htm">
+    </object>
+    </ul>
+</ul>
+</html>

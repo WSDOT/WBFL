@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLTransactions.MacroAdapter.1 = s 'MacroAdapter Class'
+	{
+		CLSID = s '{125EC02E-C6FD-4385-931D-E9C44BEFB956}'
+	}
+	WBFLTransactions.MacroAdapter = s 'MacroAdapter Class'
+	{
+		CLSID = s '{125EC02E-C6FD-4385-931D-E9C44BEFB956}'
+		CurVer = s 'WBFLTransactions.MacroAdapter.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {125EC02E-C6FD-4385-931D-E9C44BEFB956} = s 'MacroAdapter Class'
+		{
+			ProgID = s 'WBFLTransactions.MacroAdapter.1'
+			VersionIndependentProgID = s 'WBFLTransactions.MacroAdapter'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{081C49DE-FBE8-4C8D-BEEC-F13ECFF2B56C}'
+		}
+	}
+}

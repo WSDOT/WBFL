@@ -1,0 +1,154 @@
+///////////////////////////////////////////////////////////////////////
+// System - WBFL low level system services
+// Copyright (C) 2009  Washington State Department of Transportation
+//                     Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+cpp_quote("#include <limits.h>")
+cpp_quote("#include <float.h>")
+
+cpp_quote("typedef        char    Int8;") // MIDL makes this an unsigned char
+cpp_quote("typedef long double Float80;") // long double isn't an MIDL type
+
+cpp_quote("#define Int8_Max      SCHAR_MAX")
+cpp_quote("#define Int8_Min      SCHAR_MIN")
+cpp_quote("#define Int16_Max     SHRT_MAX")
+cpp_quote("#define Int16_Min     SHRT_MIN")
+cpp_quote("#define Int32_Max     LONG_MAX")
+cpp_quote("#define Int32_Min     LONG_MIN")
+cpp_quote("#define Uint8_Max     UCHAR_MAX")
+cpp_quote("#define Uint16_Max    USHRT_MAX")
+cpp_quote("#define Uint32_Max    ULONG_MAX")
+cpp_quote("#define Float32_Max   FLT_MAX")
+cpp_quote("#define Float32_Min   FLT_MIN")
+cpp_quote("#define Float32_Inf   std::numeric_limits<Float32>::infinity()")
+cpp_quote("#define Float64_Max   DBL_MAX")
+cpp_quote("#define Float64_Inf   std::numeric_limits<Float64>::infinity()")
+cpp_quote("#define Float64_Min   DBL_MIN")
+cpp_quote("#define Float80_Max   LDBL_MAX")
+cpp_quote("#define Float80_Min   LDBL_MIN")
+
+cpp_quote("#define FIXED_AXLE_TRUCK -1")
+cpp_quote("#define ALL_SPANS        -1")
+cpp_quote("#define ALL_PIERS        -1")
+cpp_quote("#define ALL_GIRDERS      -1")
+cpp_quote("#define INVALID_BAR_SIZE -1")
+cpp_quote("#define INVALID_INDEX    -1")
+
+typedef signed short   Int16;
+typedef signed long    Int32;
+
+typedef unsigned char  Uint8;
+typedef unsigned short Uint16;
+typedef unsigned long  Uint32;
+
+cpp_quote("#if 1200 < _MSC_VER")
+typedef signed long long Int64;
+typedef unsigned long long Uint64;
+cpp_quote("#endif")
+
+typedef float  Float32;
+typedef double Float64;
+
+
+typedef Int32  JointIDType;
+typedef Int32  MemberIDType;
+typedef Int32  SupportIDType;
+typedef Int32  LoadIDType;
+typedef Int32  PoiIDType;
+typedef Int32  LoadCaseIDType;
+typedef Int32  LoadGroupIDType;
+typedef Int32  LoadCombinationIDType;
+
+typedef Int32 BarSizeType;
+
+typedef Int32 StageIndexType;
+typedef Int32 SupportIndexType;
+typedef Int32 StrandIndexType;
+typedef Int32 SpanIndexType;
+typedef Int32 GirderIndexType;
+typedef Int32 PierIndexType;
+typedef Int32 ColumnIndexType;
+typedef Int32 GroupIndexType;
+typedef Int32 SpacingIndexType;
+typedef Int32 VehicleIndexType;
+typedef Int32 AxleIndexType;
+typedef Int32 GridIndexType;
+typedef Int32 SectionIndexType;
+typedef Int32 RowIndexType;
+typedef Int32 SegmentIndexType;
+typedef Int32 MatingSurfaceIndexType;
+typedef Int32 WebIndexType;
+typedef Int32 FlangeIndexType;
+typedef Int32 SplittingPlaneIndexType;
+typedef Int32 ZoneIndexType;
+typedef Int32 CollectionIndexType;
+
+cpp_quote("#if 1200 < _MSC_VER")
+cpp_quote("typedef Int64 SpanGirderHashType;")
+cpp_quote("typedef Int64 PierGirderHashType;")
+cpp_quote("#else")
+cpp_quote("typedef Int32 SpanGirderHashType;")
+cpp_quote("typedef Int32 PierGirderHashType;")
+cpp_quote("#endif")
+
+cpp_quote("inline Uint16 make_Uint16(Uint8  lo, Uint8  hi) {return Uint16(lo | (Uint16(hi) << 8));}")
+cpp_quote("inline Int16  make_Int16 (Int8   lo, Int8   hi) {return Int16(lo  | (Int16(hi)  << 8));}")
+cpp_quote("inline Uint32 make_Uint32(Uint16 lo, Uint16 hi) {return Uint32(lo | (Uint32(hi) << 16));}")
+cpp_quote("inline Int32  make_Int32 (Int16  lo, Int16  hi) {return Int32( lo | (Int32(hi)  << 16));}")
+
+cpp_quote("inline Uint16 low_Uint16(Uint32 u32) {return Uint16(u32);}")
+cpp_quote("inline Int16  low_Int16(Int32 u32) {  return Int16(u32);}")
+
+cpp_quote("inline Uint16 high_Uint16(Uint32 u32) {  return Uint16(u32 >> 16);}")
+cpp_quote("inline Int16 high_Int16(Uint32 u32) {  return Int16(u32 >> 16);}")
+
+cpp_quote("inline Uint8 low_Uint8(Uint16 u16) {  return Uint8(u16);}")
+cpp_quote("inline Int8 low_Int8(Uint16 u16) {  return Int8(u16);}")
+
+cpp_quote("inline Uint8 high_Uint8(Uint16 u16) {  return Uint8(u16 >> 8);}")
+cpp_quote("inline Int8 high_Int8(Uint16 u16) {  return Int8(u16 >> 8);}")
+
+
+cpp_quote("#if 1200 < _MSC_VER")
+cpp_quote("inline Uint64 make_Uint64(Uint32 lo, Uint32 hi) {return Uint64(lo | (Uint64(hi) << 32));}")
+cpp_quote("inline Int64  make_Int64 (Int32  lo, Int32  hi) {return Int64( lo | (Int64(hi)  << 32));}")
+
+cpp_quote("inline Uint32 low_Uint32(Uint64 u64) {return Uint32(u64);}")
+cpp_quote("inline Uint32 low_Int32(Int64 u64) {return Int32(u64);}")
+
+cpp_quote("inline Uint32 high_Uint32(Uint64 u64) {  return Uint32(u64 >> 32);}")
+cpp_quote("inline Uint32 high_Int32(Int64 u64) {  return Int32(u64 >> 32);}")
+cpp_quote("#endif")
+
+cpp_quote("#if 1200 < _MSC_VER")
+cpp_quote("inline SpanGirderHashType HashSpanGirder(SpanIndexType span,GirderIndexType girder) { return make_Int64(span,girder); }")
+cpp_quote("inline void UnhashSpanGirder(SpanGirderHashType hash,SpanIndexType* span,GirderIndexType* girder) { *span =  low_Int32(hash); *girder = high_Int32(hash); }")
+cpp_quote("inline PierGirderHashType HashPierGirder(PierIndexType pier,GirderIndexType girder) { return make_Int64(pier,girder); }")
+cpp_quote("inline void UnhashPierGirder(PierGirderHashType hash,PierIndexType* pier,GirderIndexType* girder) { *pier =  low_Int32(hash); *girder = high_Int32(hash); }")
+cpp_quote("#else")
+cpp_quote("inline SpanGirderHashType HashSpanGirder(SpanIndexType span,GirderIndexType girder) { return make_Int32(span,girder); }")
+cpp_quote("inline void UnhashSpanGirder(SpanGirderHashType hash,SpanIndexType* span,GirderIndexType* girder) { *span =  low_Int16(hash); *girder = high_Int16(hash); }")
+cpp_quote("inline PierGirderHashType HashPierGirder(PierIndexType pier,GirderIndexType girder) { return make_Int32(pier,girder); }")
+cpp_quote("inline void UnhashPierGirder(PierGirderHashType hash,PierIndexType* pier,GirderIndexType* girder) { *pier =  low_Int16(hash); *girder = high_Int16(hash); }")
+cpp_quote("#endif")

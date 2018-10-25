@@ -1,0 +1,149 @@
+.MCAD 304020000 1 74 400 0
+.CMD FORMAT  rd=d ct=10 im=i et=3 zt=15 pr=6 mass length time charge temperature tr=0 vm=0
+.CMD SET ORIGIN 0
+.CMD SET TOL 0.001000000000000
+.CMD SET PRNCOLWIDTH 8
+.CMD SET PRNPRECISION 4
+.CMD PRINT_SETUP 1.200000 1.218750 1.200000 1.200000 0
+.CMD HEADER_FOOTER 1 1 *empty* *empty* *empty* 0 1 *empty* *empty* *empty*
+.CMD HEADER_FOOTER_FONT fontID=14 family=Arial points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD HEADER_FOOTER_FONT fontID=15 family=Arial points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFAULT_TEXT_PARPROPS 0 0 0
+.CMD DEFINE_FONTSTYLE_NAME fontID=0 name=Variables
+.CMD DEFINE_FONTSTYLE_NAME fontID=1 name=Constants
+.CMD DEFINE_FONTSTYLE_NAME fontID=2 name=Text
+.CMD DEFINE_FONTSTYLE_NAME fontID=4 name=User^1
+.CMD DEFINE_FONTSTYLE_NAME fontID=5 name=User^2
+.CMD DEFINE_FONTSTYLE_NAME fontID=6 name=User^3
+.CMD DEFINE_FONTSTYLE_NAME fontID=7 name=User^4
+.CMD DEFINE_FONTSTYLE_NAME fontID=8 name=User^5
+.CMD DEFINE_FONTSTYLE_NAME fontID=9 name=User^6
+.CMD DEFINE_FONTSTYLE_NAME fontID=10 name=User^7
+.CMD DEFINE_FONTSTYLE fontID=0 family=Times^New^Roman points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=1 family=Times^New^Roman points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=2 family=Arial points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=4 family=Arial points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=5 family=Courier^New points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=6 family=System points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=7 family=Script points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=8 family=Roman points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=9 family=Modern points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD DEFINE_FONTSTYLE fontID=10 family=Times^New^Roman points=10 bold=0 italic=0 underline=0 colrid=-1
+.CMD UNITS U=1
+.CMD DIMENSIONS_ANALYSIS 0 0
+.CMD COLORTAB_ENTRY 0 0 0
+.CMD COLORTAB_ENTRY 128 0 0
+.CMD COLORTAB_ENTRY 0 128 0
+.CMD COLORTAB_ENTRY 128 128 0
+.CMD COLORTAB_ENTRY 0 0 128
+.CMD COLORTAB_ENTRY 128 0 128
+.CMD COLORTAB_ENTRY 0 128 128
+.CMD COLORTAB_ENTRY 128 128 128
+.CMD COLORTAB_ENTRY 192 192 192
+.CMD COLORTAB_ENTRY 255 0 0
+.CMD COLORTAB_ENTRY 0 255 0
+.CMD COLORTAB_ENTRY 255 255 0
+.CMD COLORTAB_ENTRY 0 0 255
+.CMD COLORTAB_ENTRY 255 0 255
+.CMD COLORTAB_ENTRY 0 255 255
+.CMD COLORTAB_ENTRY 255 255 255
+.TXT 2 5 1 0 0
+Cg a69.000000,69.000000,188
+{\rtf\ansi \deff0{\colortbl;\red0\green0\blue128;}{\fonttbl{\f0
+\fcharset0\fnil Arial;}}\plain\cf1\fs20 \pard Ultimate Capacity for a 
+single-prestressed rectangular concrete section using the \par Whitney 
+block method. Example is taken from J.R. Libby "Modern Prestressed 
+Concrete\par 4th Edition, Page 191}
+.EQN 2 82 208 0 0
+{0:Beta}NAME({0:x}NAME):(((0.85){73}({0:x}NAME<28*(10)^(6)*({0:newton}NAME)/(({0:m}NAME)^(2)))){71}((0.65){73}({0:x}NAME>56*(10)^(6)*({0:newton}NAME)/(({0:m}NAME)^(2))))){71}({78}(.85-.05*({0:x}NAME-28*(10)^(6)*({0:newton}NAME)/(({0:m}NAME)^(2)))/(7*
+(10)^(6)*({0:newton}NAME)/(({0:m}NAME)^(2)))))
+.TXT 7 -82 329 0 0
+Cg a67.000000,67.000000,20
+{\rtf\ansi \deff0{\colortbl;\red0\green0\blue128;}{\fonttbl{\f0
+\fcharset0\fnil Arial;}}\plain\cf1\fs20 \pard English Input Values}
+.EQN 3 -1 330 0 0
+{0:b}NAME:24*{0:in}NAME
+.EQN 0 17 331 0 0
+{0:Fc}NAME:7500*{0:psi}NAME
+.EQN 0 21 332 0 0
+{0:Pse}NAME:440000*{0:lbf}NAME
+.EQN 4 -38 333 0 0
+{0:d}NAME:24.8*{0:in}NAME
+.EQN 0 17 334 0 0
+{0:Fy}NAME:1632550325.2385*{0:Pa}NAME
+.EQN 4 -17 335 0 0
+{0:As}NAME:2.75*({0:in}NAME)^(2)
+.EQN 0 17 336 0 0
+{0:Es}NAME:28000000*{0:psi}NAME
+.EQN 0 20 337 0 0
+{0:\ss}NAME:({0:Pse}NAME)/({0:As}NAME)
+.EQN 0 10 338 0 0
+{0:\ss}NAME={0}?{0:psi}NAME
+.EQN 4 -47 339 0 0
+{0:Depth}NAME:30*{0:in}NAME
+.TXT 3 -1 340 0 0
+Cg a68.000000,68.000000,12
+{\rtf\ansi \deff0{\colortbl;\red0\green0\blue128;}{\fonttbl{\f0
+\fcharset0\fnil Arial;}}\plain\cf1\fs20 \pard Metric Units}
+.EQN 3 -2 341 0 0
+{0:b}NAME={0}?_n_u_l_l_
+.EQN 0 19 342 0 0
+{0:Fc}NAME={0}?{0:Pa}NAME
+.EQN 0 22 343 0 0
+{0:Pse}NAME={0}?{0:newton}NAME
+.EQN 4 -41 344 0 0
+{0:d}NAME={0}?_n_u_l_l_
+.EQN 0 19 345 0 0
+{0:Fy}NAME={0}?{0:Pa}NAME
+.EQN 3 22 346 0 0
+{0:\ss}NAME={0}?{0:Pa}NAME
+.EQN 1 -41 347 0 0
+{0:As}NAME={0}?_n_u_l_l_
+.EQN 0 19 348 0 0
+{0:Es}NAME={0}?{0:Pa}NAME
+.EQN 3 -19 349 0 0
+{0:Depth}NAME={0}?_n_u_l_l_
+.EQN 4 41 350 0 0
+{0:rs}NAME:((({0:As}NAME)/({0:\p}NAME)))^((1)/(2))
+.EQN 0 13 351 0 0
+{0:rs}NAME={0}?{0:m}NAME
+.TXT 4 -52 352 0 0
+Cg a69.000000,69.000000,39
+{\rtf\ansi \deff0{\colortbl;\red0\green0\blue128;}{\fonttbl{\f0
+\fcharset0\fnil Arial;}}\plain\cf1\fs20 \pard Be lazy - just convert 
+answer from book}
+.EQN 5 36 389 0 0
+{0:\b1}NAME:0.675
+.EQN 1 -38 353 0 0
+{0:mt}NAME:1321000*{0:lbf}NAME*{0:ft}NAME
+.EQN 3 0 354 0 0
+{0:mt}NAME={0}?_n_u_l_l_
+.EQN 1 37 387 0 0
+{0:c}NAME:(4.8*{0:in}NAME)/({0:\b1}NAME)
+.EQN 5 0 388 0 0
+{0:c}NAME={0}?_n_u_l_l_
+.TXT 32 -37 390 0 0
+Cg a71.000000,71.000000,54
+{\rtf\ansi \deff0{\colortbl;\red0\green0\blue128;}{\fonttbl{\f0
+\fcharset0\fnil Arial;}}\plain\cf1\fs20 \pard Get values for doubly - 
+reinforced problem of page 195}
+.EQN 5 3 391 0 0
+{0:Aps}NAME:2.0*({0:in}NAME)^(2)
+.EQN 0 17 392 0 0
+{0:dc}NAME:4.5*{0:in}NAME
+.EQN 3 -17 393 0 0
+{0:Acs}NAME:3.0*({0:in}NAME)^(2)
+.EQN 0 17 394 0 0
+{0:Mnc}NAME:1316000*{0:lbf}NAME*{0:ft}NAME
+.EQN 10 -17 395 0 0
+{0:Aps}NAME={0}?_n_u_l_l_
+.EQN 0 17 396 0 0
+{0:dc}NAME={0}?_n_u_l_l_
+.EQN 3 -17 397 0 0
+{0:Acs}NAME={0}?_n_u_l_l_
+.EQN 4 17 398 0 0
+{0:Mnc}NAME={0}?{0:newton}NAME*{0:m}NAME
+.EQN 6 -15 399 0 0
+{0:rps}NAME:((({0:Aps}NAME)/({0:\p}NAME)))^((1)/(2))
+.EQN 0 13 400 0 0
+{0:rps}NAME={0}?{0:m}NAME

@@ -1,0 +1,215 @@
+IDH_E_BADDISPLAYUNITGROUP=Run Time Errors\Bad_Display_Unit_Group.htm
+IDH_E_UNITTYPEALREADYDEFINED=Run Time Errors\Unit_Type_Already_Defined.htm
+IDH_E_DEFAULTNOTFOUND=Run Time Errors\Default_Not_Found.htm
+IDH_E_BADUNITTAG=Run Time Errors\Bad_Unit_Tag.htm
+IDH_E_UNITTYPEMISMATCH=Run Time Errors\Unit_Type_Mismatch.htm
+IDH_E_BASEUNITSSET=Run Time Errors\Base_Units_Set.htm
+IDH_E_GROUPALREADYDEFINED=Run Time Errors\Group_Already_Defined.htm
+IDH_E_BADUNITTYPE=Run Time Errors\Bad_Unit_Type.htm
+IDH_E_APPUNITSYSNOTSET=Run Time Errors\App_Units_System_Not_Set.htm
+IDH_WbflUnitServer=Welcome.htm
+
+IDH_TextJustificationType               =Constants\TextJustificationType.htm
+IDH_NumericFormatType                   =Constants\NumericFormatType.htm
+IDH_UnitModeType=Constants\UnitModeType.htm
+IDH_UnitSystemType=Constants\UnitSystemType.htm
+
+IDH_AnnotatedDisplayUnitFormatter       =Objects\AnnotatedDisplayUnitFormatter\AnnotatedDisplayUnitFormatter.htm
+IDH_IAnnotatedDisplayUnitFormatter_Annotation   =Objects\AnnotatedDisplayUnitFormatter\Annotation_Property_(AnnotatedDisplayUnitFormatter_Object).htm
+IDH_IAnnotatedDisplayUnitFormatter_Multiplier   =Objects\AnnotatedDisplayUnitFormatter\Multiplier_Property_(AnnotatedDisplayUnitFormatter_Object).htm
+IDH_IAnnotatedDisplayUnitFormatter_OffsetDigits =Objects\AnnotatedDisplayUnitFormatter\OffsetDigits_Property_(AnnotatedDisplayUnitFormatter_Object).htm
+IDH_IAnnotatedDisplayUnitFormatter_Width              =Objects\AnnotatedDisplayUnitFormatter\Width_Property_(AnnotatedDisplayUnitFormatter_Object).htm
+IDH_IAnnotatedDisplayUnitFormatter_Precision          =Objects\AnnotatedDisplayUnitFormatter\Precision_Property_(AnnotatedDisplayUnitFormatter_Object).htm
+IDH_IAnnotatedDisplayUnitFormatter_Notation           =Objects\AnnotatedDisplayUnitFormatter\Notation_Property_(AnnotatedDisplayUnitFormatter_Object).htm
+IDH_IAnnotatedDisplayUnitFormatter_Justification      =Objects\AnnotatedDisplayUnitFormatter\Justification_Property_(AnnotatedDisplayUnitFormatter_Object).htm
+IDH_IAnnotatedDisplayUnitFormatter_ZeroTolerance      =Objects\AnnotatedDisplayUnitFormatter\ZeroTolerance_Property_(AnnotatedDisplayUnitFormatter_Object).htm
+IDH_IAnnotatedDisplayUnitFormatter_UsesTag            =Objects\AnnotatedDisplayUnitFormatter\UsesTag_Property_(AnnotatedDisplayUnitFormatter_Object).htm
+IDH_IAnnotatedDisplayUnitFormatter_Format             =Objects\AnnotatedDisplayUnitFormatter\Format_Method_(AnnotatedDisplayUnitFormatter_Object).htm
+IDH_IAnnotatedDisplayUnitFormatter_FormatSpecifiers   =Objects\AnnotatedDisplayUnitFormatter\FormatSpecifiers_Method_(AnnotatedDisplayUnitFormatter_Object).htm
+IDH_IDisplayUnitFormatterEvents_OnFormatChanged =Objects\AnnotatedDisplayUnitFormatter\OnFormatChanged_Event_(AnnotatedDisplayUnitFormatter_Object).htm
+
+IDH_AppUnitSystem                       =Objects\AppUnitSystem\AppUnitSystem.htm
+IDH_IAppUnitSystem_UnitServer             =Objects\AppUnitSystem\UnitServer_Property_(AppUnitSystem_Object).htm
+IDH_IAppUnitSystem_DisplayUnitMgr         =Objects\AppUnitSystem\DisplayUnitMgr_Property_(AppUnitSystem_Object).htm
+IDH_IAppUnitSystem_ConvertToBaseUnits     =Objects\AppUnitSystem\ConvertToBaseUnits_Method_(AppUnitSystem_Object).htm
+IDH_IAppUnitSystem_ConvertFromBaseUnits   =Objects\AppUnitSystem\ConvertFromBaseUnits_Method_(AppUnitSystem_Object).htm
+IDH_IUnitSystemEvents_OnUpdateDisplay     =Objects\AppUnitSystem\OnUpdateDisplay_Event_(AppUnitSystem_Object).htm
+IDH_IUnitSystemEvents_OnUnitServerChanged =Objects\AppUnitSystem\OnUnitServerChanged_Event_(AppUnitSystem_Object).htm
+
+IDH_DisplayUnit                         =Objects\DisplayUnit\DisplayUnit.htm
+IDH_IDisplayUnit_Formatter              =Objects\DisplayUnit\Formatter_Property_(DisplayUnit_Object).htm
+IDH_IDisplayUnit_Unit                   =Objects\DisplayUnit\Unit_Property_(DisplayUnit_Object).htm
+IDH_IDisplayUnit_UnitSystem             =Objects\DisplayUnit\UnitSystem_Property_(DisplayUnit_Object).htm
+IDH_IDisplayUnit_UnitTag                =Objects\DisplayUnit\UnitTag_Property_(DisplayUnit_Object).htm
+IDH_IDisplayUnit_Format                 =Objects\DisplayUnit\Format_Method_(DisplayUnit_Object).htm
+IDH_IDisplayUnit_IsDefault              =Objects\DisplayUnit\IsDefault_Method_(DisplayUnit_Object).htm
+IDH_IDisplayUnitEvents_OnFormatChanged  =Objects\DisplayUnit\OnFormatChanged_Event_(DisplayUnit_Object).htm
+
+IDH_DisplayUnitFormatter                =Objects\DisplayUnitFormatter\DisplayUnitFormatter.htm
+IDH_IDisplayUnitFormatterEvents_OnFormatChanged =Objects\DisplayUnitFormatter\OnFormatChanged_Event_(DisplayUnitFormatter_Object).htm
+IDH_IDisplayUnitFormatter_ZeroTolerance      =Objects\DisplayUnitFormatter\ZeroTolerance_Property_(DisplayUnitFormatter_Object).htm
+IDH_IDisplayUnitFormatter_FormatSpecifiers   =Objects\DisplayUnitFormatter\FormatSpecifiers_(DisplayUnitFormatter_Object).htm
+IDH_IDisplayUnitFormatter_Format             =Objects\DisplayUnitFormatter\Format_Method_(DisplayUnitFormatter_Object).htm
+IDH_IDisplayUnitFormatter_Justification      =Objects\DisplayUnitFormatter\Justification_Property_(DisplayUnitFormatter_Object).htm
+IDH_IDisplayUnitFormatter_Notation           =Objects\DisplayUnitFormatter\Notation_Property_(DisplayUnitFormatter_Object).htm
+IDH_IDisplayUnitFormatter_Width              =Objects\DisplayUnitFormatter\Width_Property_(DisplayUnitFormatter_Object).htm
+IDH_IDisplayUnitFormatter_Precision          =Objects\DisplayUnitFormatter\Precision_Property_(DisplayUnitFormatter_Object).htm
+IDH_IDisplayUnitFormatter_UsesTag            =Objects\DisplayUnitFormatter\UsesTag_Property_(DisplayUnitFormatter_Object).htm
+
+IDH_IDisplayUnitGroup                =Objects\DisplayUnitGroup\DisplayUnitGroup.htm
+IDH_IDisplayUnitGroup__EnumDisplayUnits =Objects\DisplayUnitGroup\_EnumDisplay_Property_(DisplayUnitGroup_Object).htm
+IDH_IDisplayUnitGroup_Count          =Objects\DisplayUnitGroup\Count_Property_(DisplayUnitGroup_Object).htm
+IDH_IDisplayUnitGroup_Default        =Objects\DisplayUnitGroup\Default_Property_(DisplayUnitGroup_Object).htm
+IDH_IDisplayUnitGroup_Item           =Objects\DisplayUnitGroup\Item_Property_(DisplayUnitGroup_Object).htm
+IDH_IDisplayUnitGroup_Name           =Objects\DisplayUnitGroup\Name_Property_(DisplayUnitGroup_Object).htm
+IDH_IDisplayUnitGroup_UnitType       =Objects\DisplayUnitGroup\UnitType_Property_(DisplayUnitGroup_Object).htm
+IDH_IDisplayUnitGroup_Add            =Objects\DisplayUnitGroup\Add_Method_(DisplayUnitGroup_Object).htm
+IDH_IDisplayUnitGroupEvents_OnFormatChanged             =Objects\DisplayUnitGroup\OnFormatChanged_Event_(DisplayUnitGroup_Object).htm
+IDH_IDisplayUnitGroupEvents_OnDisplayUnitGroupCreated   =Objects\DisplayUnitGroup\OnDisplayUnitGroupCleared_Event_(DisplayUnitGroup_Object).htm
+IDH_IDisplayUnitGroupEvents_OnDisplayUnitRemoved        =Objects\DisplayUnitGroup\OnDisplayUnitRemoved_Event_(DisplayUnitGroup_Object).htm
+IDH_IDisplayUnitGroup_Clear          =Objects\DisplayUnitGroup\Clear_Method_(DisplayUnitGroup_Object).htm
+IDH_IDisplayUnitGroupEvents_OnDisplayUnitCreated        =Objects\DisplayUnitGroup\OnDisplayUnitCreated_Event_(DisplayUnitGroup_Object).htm
+IDH_IDisplayUnitGroup_Remove         =Objects\DisplayUnitGroup\Remove_Method_(DisplayUnitGroup_Object).htm
+
+IDH_DisplayUnitMgr                      =Objects\DisplayUnitMgr\DisplayUnitMgr.htm
+IDH_IDisplayUnitMgr_Tag                        =Objects\DisplayUnitMgr\Tag_Property_(DisplayUnitMgr_Object).htm
+IDH_IDisplayUnitMgr_Item                       =Objects\DisplayUnitMgr\Item_Property_(DisplayUnitMgr_Object).htm
+IDH_IDisplayUnitMgr_Add                        =Objects\DisplayUnitMgr\Add_Method_(DisplayUnitMgr_Object).htm
+IDH_IDisplayUnitMgr_ConvertFromDisplayUnits    =Objects\DisplayUnitMgr\ConvertFromDisplayUnits_Method_(DisplayUnitMgr_Object).htm
+IDH_IDisplayUnitMgr_Clear                      =Objects\DisplayUnitMgr\Clear_Method_(DisplayUnitMgr_Object).htm
+IDH_IDisplayUnitMgr_Format                     =Objects\DisplayUnitMgr\Format_Method_(DisplayUnitMgr_Object).htm
+IDH_IDisplayUnitMgr_ConvertToDisplayUnits      =Objects\DisplayUnitMgr\ConvertToDisplayUnits_Method_(DisplayUnitMgr_Object).htm
+IDH_IDisplayUnitMgr_Remove                     =Objects\DisplayUnitMgr\Remove_Method_(DisplayUnitMgr_Object).htm
+IDH_IDisplayUnitMgrEvents_OnDisplayUnitCreated         =Objects\DisplayUnitMgr\OnDisplayUnitCreated_Event_(DisplayUnitMgr_Object).htm
+IDH_IDisplayUnitMgr_Count                      =Objects\DisplayUnitMgr\Count_Property_(DisplayUnitMgr_Object).htm
+IDH_IDisplayUnitMgrEvents_OnDisplayUnitGroupCleared    =Objects\DisplayUnitMgr\OnDisplayUnitGroupCleared_Event_(DisplayUnitMgr_Object).htm
+IDH_IDisplayUnitMgr__EnumDisplayUnitGroup      =Objects\DisplayUnitMgr\_EnumDisplayUnitGroup_Property_(DisplayUnitMgr_Object).htm
+IDH_IDisplayUnitMgrEvents_OnDisplayUnitGroupCreated    =Objects\DisplayUnitMgr\OnDisplayUnitGroupCreated_Event_(DisplayUnitMgr_Object).htm
+IDH_IDisplayUnitMgrEvents_OnDisplayUnitRemoved         =Objects\DisplayUnitMgr\OnDisplayUnitGroupRemoved_Event_(DisplayUnitMgr_Object).htm
+IDH_IDisplayUnitMgrEvents_OnDisplayUnitGroupsCleared   =Objects\DisplayUnitMgr\OnDisplayUnitGroupsCleared_Event_(DisplayUnitMgr_Object).htm
+IDH_IDisplayUnitMgrEvents_OnDisplayUnitGroupRemoved    =Objects\DisplayUnitMgr\OnDisplayUnitRemoved_Event_(DisplayUnitMgr_Object).htm
+IDH_IDisplayUnitMgrEvents_OnFormatChanged              =Objects\DisplayUnitMgr\OnFormatChanged_Event_(DisplayUnitMgr_Object).htm
+
+IDH_DisplayUnitMgr2                     =Objects\DisplayUnitMgr2\DisplayUnitMgr2.htm
+IDH_IDisplayUnitMgrEvents_OnDisplayUnitGroupsCleared   =Objects\DisplayUnitMgr2\OnDisplayUnitGroupsCleared_Event_(DisplayUnitMgr2_Object).htm
+IDH_IDisplayUnitMgrEvents_OnDisplayUnitGroupRemoved    =Objects\DisplayUnitMgr2\OnDisplayUnitGroupRemoved_Event_(DisplayUnitMgr2_Object).htm
+IDH_IDisplayUnitMgrEvents_OnDisplayUnitGroupCreated    =Objects\DisplayUnitMgr2\OnDisplayUnitGroupCreated_Event_(DisplayUnitMgr2_Object).htm
+IDH_IDisplayUnitMgrEvents_OnDisplayUnitGroupCleared    =Objects\DisplayUnitMgr2\OnDisplayUnitGroupCleared_Event_(DisplayUnitMgr2_Object).htm
+IDH_IDisplayUnitMgrEvents_OnFormatChanged              =Objects\DisplayUnitMgr2\OnFormatChanged_Event_(DisplayUnitMgr2_Object).htm
+IDH_IDisplayUnitMgr2__EnumDisplayUnitGroup =Objects\DisplayUnitMgr2\_EnumDisplayUnitGroup_Property_(DisplayUnitMgr2_Object).htm
+IDH_IDisplayUnitMgr2_Count             =Objects\DisplayUnitMgr2\Count_Property_(DisplayUnitMgr2_Object).htm
+IDH_IDisplayUnitMgr2_Item              =Objects\DisplayUnitMgr2\Item_Property_(DisplayUnitMgr2_Object).htm
+IDH_IDisplayUnitMgr2_Clear             =Objects\DisplayUnitMgr2\Clear_Method_(DisplayUnitMgr2_Object).htm
+IDH_IDisplayUnitMgr2_Remove            =Objects\DisplayUnitMgr2\Remove_Method_(DisplayUnitMgr2_Object).htm
+IDH_IDisplayUnitMgrEvents_OnDisplayUnitRemoved         =Objects\DisplayUnitMgr2\OnDisplayUnitRemoved_Event_(DisplayUnitMgr2_Object).htm
+IDH_IDisplayUnitMgrEvents_OnDisplayUnitCreated         =Objects\DisplayUnitMgr2\OnDisplayUnitCreated_Event_(DisplayUnitMgr2_Object).htm
+IDH_IDisplayUnitMgr2_Add               =Objects\DisplayUnitMgr2\Add_Method_(DisplayUnitMgr2_Object).htm
+
+IDH_DocUnitSystem                       =Objects\DocUnitSystem\DocUnitSystem.htm
+IDH_IDocUnitSystem_AppUnitSystem              =Objects\DocUnitSystem\AppUnitSystem_Property_(DocUnitSystem_Object).htm
+IDH_IDocUnitSystem_Tag                        =Objects\DocUnitSystem\Tag_Property_(DocUnitSystem_Object).htm
+IDH_IDocUnitSystem_UnitModeController         =Objects\DocUnitSystem\UnitModeController_Property_(DocUnitSystem_Object).htm
+IDH_IDocUnitSystem_UnitMode                   =Objects\DocUnitSystem\UnitMode_Property_(DocUnitSystem_Object).htm
+IDH_IDocUnitSystem_ConvertFromDisplayUnits    =Objects\DocUnitSystem\ConvertFromDisplayUnits_Method_(DocUnitSystem_Object).htm
+IDH_IDocUnitSystem_ConvertToDisplayUnits      =Objects\DocUnitSystem\ConvertToDisplayUnits_Method_(DocUnitSystem_Object).htm
+IDH_IDocUnitSystem_Format                     =Objects\DocUnitSystem\Format_Method_(DocUnitSystem_Object).htm
+IDH_IDocUnitSystemEvents_OnUpdateDisplay      =Objects\DocUnitSystem\OnUpdateDisplay_Event_(DocUnitSystem_Object).htm
+
+IDH_Unit                                =Objects\Unit\Unit.htm
+IDH_IUnit_PreTerm                       =Objects\Unit\PreTerm_Property_(Unit_Object).htm
+IDH_IUnit_PostTerm                      =Objects\Unit\PostTerm_Property_(Unit_Object).htm
+IDH_IUnit_ConvFactor                    =Objects\Unit\ConvFactor_Property_(Unit_Object).htm
+IDH_IUnit_Tag                           =Objects\Unit\Tag_Property_(Unit_Object).htm
+IDH_IUnit_UnitServer                    =Objects\Unit\UnitServer_Property_(Unit_Object).htm
+IDH_IUnit_UnitSystem                    =Objects\Unit\UnitSystem_Property_(Unit_Object).htm
+IDH_IUnit_UnitType                      =Objects\Unit\UnitType_Property_(Unit_Object).htm
+
+IDH_UnitModeController                  =Objects\UnitModeController\UnitModeController.htm
+IDH_IUnitModeController_ShowSelectionDialog     =Objects\UnitModeController\ShowSelectionDialog_Method_(UnitModeController_Object).htm
+IDH_IUnitModeController_UnitMode                =Objects\UnitModeController\UnitMode_Property_(UnitModeController_Object).htm
+IDH_IUnitModeControllerEvents_OnUnitModeChanged   =Objects\UnitModeController\OnUnitModeChanged_Event_(UnitModeController_Object).htm
+IDH_IUnitModeController_ShowSelectionDialogEx   =Objects\UnitModeController\ShowSelectionDialogEx_Method_(UnitModeController_Object).htm
+
+IDH_Units                               =Objects\Units\Units.htm
+IDH_IUnits_Item                         =Objects\Units\Item_Property_(Units_Object).htm
+IDH_IUnits_Count                        =Objects\Units\Count_Property_(Units_Object).htm
+IDH_IUnits_Add                          =Objects\Units\Add_Method_(Units_Object).htm
+IDH_IUnits_Clear                        =Objects\Units\Clear_Method_(Units_Object).htm
+IDH_IUnits_Remove                       =Objects\Units\Remove_Method_(Units_Object).htm
+IDH_IUnitsEventSink_OnUnitAdded          =Objects\Units\OnUnitAdded_Event_(Units_Object).htm
+IDH_IUnitsEventSink_OnUnitRemoved        =Objects\Units\OnUnitRemoved_Event_(Units_Object).htm
+IDH_IUnitsEventSink_OnUnitCleared        =Objects\Units\OnUnitsCleared_Event_(Units_Object).htm
+IDH_IUnits__EnumUnits                   =Objects\Units\_EnumUnits_Property_(Units_Object).htm
+
+IDH_UnitServer                          =Objects\UnitServer\UnitServer.htm
+IDH_IUnitServer_UnitConvert             =Objects\UnitServer\UnitConvert_Property_(UnitServer_Object).htm
+IDH_IUnitServer_Mass                    =Objects\UnitServer\Mass_Property_(UnitServer_Object).htm
+IDH_IUnitServer_Time                    =Objects\UnitServer\Time_Property_(UnitServer_Object).htm
+IDH_IUnitServer_Angle                   =Objects\UnitServer\Angle_Property_(UnitServer_Object).htm
+IDH_IUnitServer_Length                  =Objects\UnitServer\Length_Property_(UnitServer_Object).htm
+IDH_IUnitServer_Temperature             =Objects\UnitServer\Temperature_Property_(UnitServer_Object).htm
+IDH_IUnitServer_UnitConvert2            =Objects\UnitServer\UnitConvert2_Property_(UnitServer_Object).htm
+IDH_IUnitServer_UnitTypes               =Objects\UnitServer\UnitTypes_Property_(UnitServer_Object).htm
+IDH_IUnitServer_SetBaseUnits            =Objects\UnitServer\SetBaseUnits_Method_(UnitServer_Object).htm
+IDH_IUnitServerEventSink_OnUnitAdded          =Objects\UnitServer\OnUnitAdded_Event_(UnitServer_Object).htm
+IDH_IUnitServerEventSink_OnUnitRemoved        =Objects\UnitServer\OnUnitRemoved_Event_(UnitServer_Object).htm
+IDH_IUnitServerEventSink_OnUnitsCleared       =Objects\UnitServer\OnUnitsCleared_Event_(UnitServer_Object).htm
+IDH_IUnitServerEventSink_OnUnitTypeAdded      =Objects\UnitServer\OnUnitTypeAdded_Event_(UnitServer_Object).htm
+IDH_IUnitServerEventSink_OnUnitTypeRemoved    =Objects\UnitServer\OnUnitTypeRemoved_Event_(UnitServer_Object).htm
+IDH_IUnitServerEventSink_OnUnitTypesCleared   =Objects\UnitServer\OnUnitTypesCleared_Event_(UnitServer_Object).htm
+
+IDH_UnitSystem                          =Objects\UnitSystem\UnitSystem.htm
+IDH_IUnitSystem_DisplayUnitMgr                  =Objects\UnitSystem\DisplayUnitMgr_Property_(UnitSystem_Object).htm
+IDH_IUnitSystem_UnitServer                      =Objects\UnitSystem\UnitServer_Property_(UnitSystem_Object).htm
+IDH_IUnitSystem_UnitModeController              =Objects\UnitSystem\UnitModeController_Property_(UnitSystem_Object).htm
+
+IDH_UnitType                            =Objects\UnitType\UnitType.htm
+IDH_IUnitType_Mass                      =Objects\UnitType\Mass_Property_(UnitType_Object).htm
+IDH_IUnitType_Angle                     =Objects\UnitType\Angle_Property_(UnitType_Object).htm
+IDH_IUnitType_Length                    =Objects\UnitType\Length_Property_(UnitType_Object).htm
+IDH_IUnitType_Temperature               =Objects\UnitType\Temperature_Property_(UnitType_Object).htm
+IDH_IUnitTypeEventSink_OnUnitAdded       =Objects\UnitType\OnUnitAdded_Event_(UnitType_Object).htm
+IDH_IUnitType_Time                      =Objects\UnitType\Time_Property_(UnitType_Object).htm
+IDH_IUnitType_UnitServer                =Objects\UnitType\UnitServer_Property_(UnitType_Object).htm
+IDH_IUnitType_Units                     =Objects\UnitType\Units_Property_(UnitType_Object).htm
+IDH_IUnitType_Label                     =Objects\UnitType\Label_Property_(UnitType_Object).htm
+IDH_IUnitTypeEventSink_OnUnitRemoved     =Objects\UnitType\OnUnitRemoved_Event_(UnitType_Object).htm
+IDH_IUnitTypeEventSink_OnUnitsCleared    =Objects\UnitType\OnUnitsCleared_Event_(UnitType_Object).htm
+
+IDH_UnitTypes                           =Objects\UnitTypes\UnitTypes.htm
+IDH_IUnitTypes_Item                     =Objects\UnitTypes\Item_Property_(UnitTypes_Object).htm
+IDH_IUnitTypes_Count                    =Objects\UnitTypes\Count_Property_(UnitTypes_Object).htm
+IDH_IUnitTypes_Remove                   =Objects\UnitTypes\Remove_Method_(UnitTypes_Object).htm
+IDH_IUnitTypes_Clear                    =Objects\UnitTypes\Clear_Method_(UnitTypes_Object).htm
+IDH_IUnitTypes_Add                      =Objects\UnitTypes\Add_Method_(UnitTypes_Object).htm
+IDH_IUnitTypesEventSink_OnUnitAdded          =Objects\UnitTypes\OnUnitAdded_Event_(UnitTypes_Object).htm
+IDH_IUnitTypesEventSink_OnUnitRemoved        =Objects\UnitTypes\OnUnitRemoved_Event_(UnitTypes_Object).htm
+IDH_IUnitTypesEventSink_OnUnitTypeAdded      =Objects\UnitTypes\OnUnitTypeAdded_Event_(UnitTypes_Object).htm
+IDH_IUnitTypesEventSink_OnUnitsCleared       =Objects\UnitTypes\OnUnitsCleared_Event_(UnitTypes_Object).htm
+IDH_IUnitTypesEventSink_OnUnitTypesCleared   =Objects\UnitTypes\OnUnitTypesCleared_Event_(UnitTypes_Object).htm
+IDH_IUnitTypesEventSink_OnUnitTypeRemoved    =Objects\UnitTypes\OnUnitTypeRemoved_Event_(UnitTypes_Object).htm
+IDH_IUnitTypes__EnumUnitTypes           =Objects\UnitTypes\_EnumUnitTypes_Property_(UnitTypes_Object).htm
+
+IDH_ISupportUnitSystem                =Interfaces\ISupportUnitSystem\UnitSystem_Property_(ISupportUnitSystem_Interface).htm
+IDH_ISupportUnitSystem_UnitSystem     =Interfaces\ISupportUnitSystem\ISupportUnitSystem.htm
+
+IDH_ISupportDisplayUnits                =Interfaces\ISupportDisplayUnits\ISupportDisplayUnits.htm
+IDH_ISupportDisplayUnits_DisplayUnitMgr =Interfaces\ISupportDisplayUnits\DisplayUnitMgr_Property_(ISupportDisplayUnits_Interface).htm
+
+IDH_ISupportDocUnitSystem               =Interfaces\ISupportDocUnitSystem\ISupportDocUnitSystem.htm
+IDH_ISupportDocUnitSystem_UnitSystem    =Interfaces\ISupportDocUnitSystem\UnitSystem_Property_(ISupportDocUnitSystem_Interface).htm
+
+IDH_ISupportUnitServer                =Interfaces\ISupportUnitServer\ISupportUnitServer.htm
+IDH_ISupportUnitServer_UnitServer     =Interfaces\ISupportUnitServer\UnitServer_Property_(ISupportUnitServer_Interface).htm
+
+
+
+IDH_IUnitConvert                        = Interfaces\IUnitConvert\IUnitConvert.htm
+IDH_IUnitConvert_Convert        = Interfaces\IUnitConvert\Convert_(IUnitConvert_Interface).htm
+IDH_IUnitConvert_ConvertFromBaseUnits   = Interfaces\IUnitConvert\ConvertFromBaseUnits_(IUnitConvert_Interface).htm
+IDH_IUnitConvert_ConvertToBaseUnits     = Interfaces\IUnitConvert\ConvertToBaseUnits_(IUnitConvert_Interface).htm
+
+IDH_IUnitConvert2                       =Interfaces\IUnitConvert2\IUnitConvert2.htm
+IDH_IUnitConvert2_Convert              =Interfaces\IUnitConvert2\Convert_(IUnitConvert2_Interface).htm
+IDH_IUnitConvert2_ConvertFromBaseUnits =Interfaces\IUnitConvert2\ConvertFromBaseUnits_(IUnitConvert2_Interface).htm
+IDH_IUnitConvert2_ConvertToBaseUnits   =Interfaces\IUnitConvert2\ConvertToBaseUnits_(IUnitConvert2_Interface).htm

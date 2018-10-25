@@ -1,0 +1,26 @@
+HKCR
+{
+	Geometry.MohrCircle.1 = s 'MohrCircle Class'
+	{
+		CLSID = s '{E590D201-FF47-11D2-8CDF-F43C3928A334}'
+	}
+	Geometry.MohrCircle = s 'MohrCircle Class'
+	{
+		CLSID = s '{E590D201-FF47-11D2-8CDF-F43C3928A334}'
+		CurVer = s 'Geometry.MohrCircle.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {E590D201-FF47-11D2-8CDF-F43C3928A334} = s 'MohrCircle Class'
+		{
+			ProgID = s 'Geometry.MohrCircle.1'
+			VersionIndependentProgID = s 'Geometry.MohrCircle'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

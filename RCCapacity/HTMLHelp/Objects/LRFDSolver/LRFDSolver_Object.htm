@@ -1,0 +1,203 @@
+<!doctype HTML public "-//W3C//DTD HTML 4.0 Frameset//EN">
+
+<html>
+
+ <meta name=template content="footer.htt"><!--(==============================================================)-->
+<!--(Document created with RoboEditor. )============================-->
+<!--(==============================================================)-->
+
+<head>
+
+<title>LRFDSolver Object</title>
+
+<!--(Meta)==========================================================-->
+
+<meta http-equiv=content-type content="text/html; charset=windows-1252">
+<meta name=topic-status content="In Progress">
+<meta name=topic-priority content=0>
+<meta name=topic-time-estimate content=0>
+<meta name=topic-comment content>
+<meta name=topic-id content>
+<meta name=generator content="RoboHELP by eHelp Corporation - www.ehelp.com">
+<meta name=generator-major-version content=0.1>
+<meta name=generator-minor-version content=1>
+<meta name=filetype content=kadov>
+<meta name=filetype-version content=1>
+<meta name=page-count content=1>
+<meta name=layout-height content=685>
+<meta name=layout-width content=920>
+
+
+<!--(Links)=========================================================-->
+
+<link REL="StyleSheet" HREF="..\..\default.css">
+
+
+
+</head>
+
+<!--(Body)==========================================================-->
+
+
+<body>
+
+<h1>LRFDSolver Object</h1>
+
+<p>This object implements the <a HREF="..\..\Interfaces\IRCSolver\IRCSolver_Interface.htm">IRCSolver</a> 
+ interface to solve reinforced concrete moment capacity problems. The method 
+ of solution is based on the equations published in Article 5.7.3 of the 
+ AASHTO LRFD Bridge Design Specifications, 2nd Edition, 1998 with interim 
+ revisions through 2002.</p>
+
+<p><span style="font-weight: bold;">T-Section Behavior</span></p>
+
+<p><span style="font-weight: bold;"><img src="c.gif"
+										style="width: 278px;
+												height: 76px;
+												border-style: none;
+												margin-top: 0px;
+												margin-bottom: 0px;
+												margin-left: 0px;
+												margin-right: 0px;
+												border-style: none;"
+										width=278
+										height=76
+										border=0></span></p>
+
+<p><span style="font-weight: bold;"><img src="Mn.gif"
+										style="width: 477px;
+												height: 47px;
+												border-style: none;
+												margin-top: 0px;
+												margin-bottom: 0px;
+												margin-left: 0px;
+												margin-right: 0px;
+												border-style: none;"
+										width=477
+										height=47
+										border=0></span></p>
+
+<p><span style="font-weight: bold;"><img src="fps.gif"
+										style="width: 114px;
+												height: 43px;
+												border-style: none;
+												margin-top: 0px;
+												margin-bottom: 0px;
+												margin-left: 0px;
+												margin-right: 0px;
+												border-style: none;"
+										width=114
+										height=43
+										border=0></span></p>
+
+<p><span style="font-weight: bold;"><img src="k.gif"
+										style="width: 100px;
+												height: 43px;
+												border-style: none;
+												margin-top: 0px;
+												margin-bottom: 0px;
+												margin-left: 0px;
+												margin-right: 0px;
+												border-style: none;"
+										width=100
+										height=43
+										border=0></span></p>
+
+<p><span style="font-weight: bold;">Properties</span></p>
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="width: 100%;
+				border-spacing: 0px;
+				margin-top: 14pt;
+				border-spacing: 0px;"
+		cellspacing=0
+		width=100%>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\prop_rw.gif"
+									style="width: 20px;
+											height: 18px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;
+											border-style: none;"
+									width=20
+									height=18
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 24%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=24%>
+<p style="margin-bottom: 0;"><a HREF="IsCflangeOverhangOnly_Property_(LRFDSolver_Object).htm">IsCflangeOverhangOnly</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 72%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=72%>
+<p style="margin-bottom: 0;">Indicates the solution parameter Cflange is 
+ to be for the overhang portion of the flange only</td></tr>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			width: 4%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=4%>
+<p style="margin-bottom: 0;"><img src="..\..\prop_rw.gif"
+									style="width: 20px;
+											height: 18px;
+											border-style: none;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;
+											border-style: none;"
+									width=20
+									height=18
+									border=0></td>
+<td style="x-cell-content-align: TOP;
+			width: 24%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=24%>
+<p style="margin-bottom: 0;"><a HREF="UnitMode_Property_(LRFDServer_Object).htm">UnitMode</a></td>
+<td style="x-cell-content-align: TOP;
+			width: 72%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=72%>
+<p style="margin-bottom: 0;">Gets/Sets the specification unit mode</td></tr>
+</table>
+
+<!--kadov_tag{{<placeholder id="footer">}}-->
+</body>
+
+</html>

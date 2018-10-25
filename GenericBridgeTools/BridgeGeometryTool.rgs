@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLGenericBridgeTools.BridgeGeometryTool.1 = s 'BridgeGeometryTool Class'
+	{
+		CLSID = s '{77B0384B-5C9D-46ac-A8B6-AA8ADA58B37D}'
+	}
+	WBFLGenericBridgeTools.BridgeGeometryTool = s 'BridgeGeometryTool Class'
+	{
+		CLSID = s '{77B0384B-5C9D-46ac-A8B6-AA8ADA58B37D}'
+		CurVer = s 'WBFLGenericBridgeTools.BridgeGeometryTool.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {77B0384B-5C9D-46ac-A8B6-AA8ADA58B37D} = s 'BridgeGeometryTool Class'
+		{
+			ProgID = s 'WBFLGenericBridgeTools.BridgeGeometryTool.1'
+			VersionIndependentProgID = s 'WBFLGenericBridgeTools.BridgeGeometryTool'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}'
+		}
+	}
+}

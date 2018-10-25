@@ -1,0 +1,61 @@
+[Target:WebHelp Pro]
+ResultFileName=!SSL!\WebHelp_Pro\WbflGeometry.htm
+SSLayoutType=32
+ServerProjectName=WbflGeometry
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:WebHelp]
+ResultFileName=!SSL!\WebHelp\WbflGeometry.htm
+SSLayoutType=2
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:Microsoft HTML Help]
+ResultFileName=C:\ARP\lib\WBFLGeometry.chm
+SSLayoutType=1
+CreateProjectTime=11:22, August 07, 2009
+CreateProjectUser=bricer
+SupportMas_MPJ=1
+ActionID For Generation=1002
+Remove Folder with prompt=1
+ViewFileName=C:\ARP\lib\WBFLGeometry.chm
+ResultStatus=0
+BuildTimeHi=30021518
+BuildTimeLow=312986179
+Enable Result Dialog=1
+[Target:FlashHelp]
+ResultFileName=!SSL!\FlashHelp\WbflGeometry.htm
+SSLayoutType=2
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:Printed Documentation]
+ResultFileName=!SSL!\Printed_Documentation\WbflGeometry.doc
+SSLayoutType=7
+[Target:XML Output]
+ResultFileName=!SSL!\XML_Output\WbflGeometry.xml
+SSLayoutType=8192
+[PreSingleSource]
+Html Help Project=C:\ARP\WBFL\Geometry\HtmlHelp\WbflGeometry.hhp
+Table Of Content=C:\ARP\WBFL\Geometry\HtmlHelp\WbflGeometry.hhc
+Index=C:\ARP\WBFL\Geometry\HtmlHelp\WbflGeometry_merged$.hhk
+See Also Index=C:\ARP\WBFL\Geometry\HtmlHelp\WbflGeometry.hha
+Browse Sequence=C:\ARP\WBFL\Geometry\HtmlHelp\WbflGeometry.brs
+Topic Properties=C:\ARP\WBFL\Geometry\HtmlHelp\WbflGeometry.trs
+Active Folders=C:\ARP\WBFL\Geometry\HtmlHelp\WbflGeometry.trf
+Baggage Files=C:\ARP\WBFL\Geometry\HtmlHelp\WbflGeometry.trb
+Skin List=C:\ARP\WBFL\Geometry\HtmlHelp\WbflGeometry.trk
+OriginalHhk=C:\ARP\WBFL\Geometry\HtmlHelp\WbflGeometry.hhk
+Active Layout Names=C:\ARP\WBFL\Geometry\HtmlHelp\WbflGeometry.trl
+Default Topic=C:\ARP\WBFL\Geometry\HtmlHelp\Welcome.htm
+Build Tags0=287;                         
+Build Tags=
+Build Expression=
+Language ID=1033
+Language Name=English
+Language=C:\ARP\WBFL\Geometry\HtmlHelp\RoboHHRE.lng
+Stop List=C:\ARP\WBFL\Geometry\HtmlHelp\WbflGeometry.stp
+[Layout Settings]
+MRULayoutCount=1
+MRULayout0=Microsoft HTML Help]04/04/06]4

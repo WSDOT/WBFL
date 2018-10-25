@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLGenericBridgeTools.EffectiveFlangeWidthDetails.1 = s 'EffectiveFlangeWidthDetails Class'
+	{
+		CLSID = s '{7DDC7A24-05FA-4565-92AC-4FFD54D5063D}'
+	}
+	WBFLGenericBridgeTools.EffectiveFlangeWidthDetails = s 'EffectiveFlangeWidthDetails Class'
+	{
+		CLSID = s '{7DDC7A24-05FA-4565-92AC-4FFD54D5063D}'
+		CurVer = s 'WBFLGenericBridgeTools.EffectiveFlangeWidthDetails.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {7DDC7A24-05FA-4565-92AC-4FFD54D5063D} = s 'EffectiveFlangeWidthDetails Class'
+		{
+			ProgID = s 'WBFLGenericBridgeTools.EffectiveFlangeWidthDetails.1'
+			VersionIndependentProgID = s 'WBFLGenericBridgeTools.EffectiveFlangeWidthDetails'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}'
+		}
+	}
+}

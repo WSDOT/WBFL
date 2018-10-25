@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.BoxBeamSection.1 = s 'BoxBeamSection Class'
+	{
+		CLSID = s '{D6CB0FE7-AD6E-449f-91C7-6A4CDEEA5F70}'
+	}
+	WBFLGenericBridge.BoxBeamSection = s 'BoxBeamSection Class'
+	{
+		CLSID = s '{D6CB0FE7-AD6E-449f-91C7-6A4CDEEA5F70}'
+		CurVer = s 'WBFLGenericBridge.BoxBeamSection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {D6CB0FE7-AD6E-449f-91C7-6A4CDEEA5F70} = s 'BoxBeamSection Class'
+		{
+			ProgID = s 'WBFLGenericBridge.BoxBeamSection.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.BoxBeamSection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

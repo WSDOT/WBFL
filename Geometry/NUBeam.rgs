@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.NUBeam.1 = s 'NUBeam Class'
+	{
+		CLSID = s '{411AA7A2-67F2-4bb6-86E2-09C2C0F5A096}'
+	}
+	WBFLGeometry.NUBeam = s 'NUBeam Class'
+	{
+		CLSID = s '{411AA7A2-67F2-4bb6-86E2-09C2C0F5A096}'
+		CurVer = s 'WBFLGeometry.NUBeam.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {411AA7A2-67F2-4bb6-86E2-09C2C0F5A096} = s 'NUBeam Class'
+		{
+			ProgID = s 'WBFLGeometry.NUBeam.1'
+			VersionIndependentProgID = s 'WBFLGeometry.NUBeam'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

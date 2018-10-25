@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.LineSegmentCollection.1 = s 'LineSegmentCollection Class'
+	{
+		CLSID = s '{9E0F9B9E-99C9-40A8-9C08-47E6ACD762E9}'
+	}
+	WBFLCogo.LineSegmentCollection = s 'LineSegmentCollection Class'
+	{
+		CLSID = s '{9E0F9B9E-99C9-40A8-9C08-47E6ACD762E9}'
+		CurVer = s 'WBFLCogo.LineSegmentCollection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {9E0F9B9E-99C9-40A8-9C08-47E6ACD762E9} = s 'LineSegmentCollection Class'
+		{
+			ProgID = s 'WBFLCogo.LineSegmentCollection.1'
+			VersionIndependentProgID = s 'WBFLCogo.LineSegmentCollection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

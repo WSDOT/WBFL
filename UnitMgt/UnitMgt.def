@@ -1,0 +1,2 @@
+LIBRARY        WBFLUnitMgt.DLL
+EXPORTS  UnitTest @1

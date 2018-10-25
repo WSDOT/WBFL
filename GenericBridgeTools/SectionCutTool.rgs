@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLGenericBridgeTools.SectionCutTool.1 = s 'SectionCutTool Class'
+	{
+		CLSID = s '{88738282-9CE8-4553-BC7E-4DB1DF3D8809}'
+	}
+	WBFLGenericBridgeTools.SectionCutTool = s 'SectionCutTool Class'
+	{
+		CLSID = s '{88738282-9CE8-4553-BC7E-4DB1DF3D8809}'
+		CurVer = s 'WBFLGenericBridgeTools.SectionCutTool.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {88738282-9CE8-4553-BC7E-4DB1DF3D8809} = s 'SectionCutTool Class'
+		{
+			ProgID = s 'WBFLGenericBridgeTools.SectionCutTool.1'
+			VersionIndependentProgID = s 'WBFLGenericBridgeTools.SectionCutTool'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}'
+		}
+	}
+}

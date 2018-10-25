@@ -1,0 +1,57 @@
+[OPTIONS]
+Compiled File=GenericBridgeTools.chm
+Title=GenericBridgeTools
+Index File=GenericBridgeTools.hhk
+Default topic=Welcome.htm
+Default Window=NewWindow
+Error log file=
+Display compile progress=No
+Display compile notes=No
+Full-text search=Yes
+Binary Index=Yes
+Auto Index=No
+Enhanced decompilation=No
+Binary TOC=No
+Flat=No
+
+[WINDOWS]
+NewWindow="GenericBridgeTools","GenericBridgeTools.hhc","GenericBridgeTools.hhk","","",,,,,0x40080420,0,0x3006,[5,5,512,384],0x0,0x0,,0,0,0
+
+[FILES]
+Welcome.htm
+Objects\StrandPattern\PatternPoints_Property_(StrandPattern_Object).htm
+Objects\StrandPattern\RemovePatternPoint_Method_(StrandPattern_Object).htm
+Objects\StrandPattern\ClearPatternPoints_Method_(StrandPattern_Object).htm
+Objects\StrandPattern\EnablePointReflection_Method_(StrandPattern_Object).htm
+Objects\StrandPattern\IsPointReflectionEnabled_Method_(StrandPattern_Object).htm
+Objects\StrandPattern\StrandPoint_Property_(StrandPattern_Object).htm
+Objects\StrandPattern\StrandPattern_Object.htm
+Objects\StrandPattern\PatternPointCount_Property_(StrandPattern_Object).htm
+Objects\StrandPattern\AddPatternPoint_Method_(StrandPattern_Object).htm
+Objects\StrandPattern\AddPatternPoints_Method_(StrandPattern_Object).htm
+Objects\StrandPattern\PatternPoint_Property_(StrandPattern_Object).htm
+Objects\StrandPattern\MaxStrandCount_Property_(StrandPattern_Object).htm
+Objects\StrandPattern\RemoveStrand_Method_(StrandPattern_Object).htm
+Objects\StrandPattern\RemoveAllStrands_Method_(StrandPattern_Object).htm
+TestStrandCount_Method_(StrandPattern_Object).htm
+Objects\StrandPattern\AddStrand_Method_(StrandPattern_Object).htm
+StrandCount_Method_(StrandPattern_Object).htm
+Objects\StrandPattern\GetStrandCount_Method_(StrandPattern_Object).htm
+SetStrandCount_Method_(StrandPattern_Object).htm
+RowsWithStrand_Property_(StrandPattern_Object).htm
+StrandsInRow_Property_(StrandPattern_Object).htm
+eHelp.xml
+RoboHHRE.lng
+
+GenericBridgeTools.glo
+GenericBridgeTools.brs
+[ALIAS]
+#include GenericBridgeTools.ali
+
+[MAP]
+#include BSSCDefault.h
+
+[TEXT POPUPS]
+BSSCDefault.h
+
+

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAMAnalysis.LoadGroupDeflectionResponse.1 = s 'LoadGroupDeflectionResponse Class'
+	{
+		CLSID = s '{A36770D3-0378-4240-B4F9-51CA31AF5603}'
+	}
+	WBFLLBAMAnalysis.LoadGroupDeflectionResponse = s 'LoadGroupDeflectionResponse Class'
+	{
+		CLSID = s '{A36770D3-0378-4240-B4F9-51CA31AF5603}'
+		CurVer = s 'WBFLLBAMAnalysis.LoadGroupDeflectionResponse.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {A36770D3-0378-4240-B4F9-51CA31AF5603} = s 'LoadGroupDeflectionResponse Class'
+		{
+			ProgID = s 'WBFLLBAMAnalysis.LoadGroupDeflectionResponse.1'
+			VersionIndependentProgID = s 'WBFLLBAMAnalysis.LoadGroupDeflectionResponse'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{9EC1DB46-A140-11D5-B05C-00105A9AF985}'
+		}
+	}
+}

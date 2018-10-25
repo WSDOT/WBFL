@@ -1,0 +1,179 @@
+<!doctype HTML public "-//W3C//DTD HTML 4.0 Frameset//EN">
+
+<html>
+
+<!--(==============================================================)-->
+<!--(Document created with RoboEditor. )============================-->
+<!--(==============================================================)-->
+
+<head>
+
+<title>ShowAgain Property (ARP Notice Object)</title>
+
+<!--(Meta)==========================================================-->
+
+<meta http-equiv=content-type content="text/html; charset=windows-1252">
+<meta name=topic-status content="Ready for Review">
+<meta name=topic-priority content=0>
+<meta name=topic-time-estimate content=0>
+<meta name=topic-comment content>
+<meta name=topic-id content>
+<meta name=generator content="RoboHELP by eHelp Corporation - www.ehelp.com">
+<meta name=generator-major-version content=0.1>
+<meta name=generator-minor-version content=1>
+<meta name=filetype content=kadov>
+<meta name=filetype-version content=1>
+<meta name=page-count content=0>
+<meta name=layout-height content=0>
+<meta name=layout-width content=0>
+
+
+<!--(Links)=========================================================-->
+
+<link REL=StyleSheet HREF=default.css>
+
+
+
+</head>
+
+<!--(Body)==========================================================-->
+
+
+<body>
+
+<h1>ShowAgain Property (ARP Notice Object)</h1>
+
+<p>Set/Get the state of the &quot;Don't show me this again&quot; check 
+ box on the Disclaimer step.</p>
+
+<h2>C++</h2>
+
+<h3>Syntax</h3>
+
+<p CLASS=Preformatted-Syntax>HRESULT put_ShowAgain(VARIANT_BOOL bShowAgain);</p>
+
+<p CLASS=Preformatted-Syntax>HRESULT get_ShowAgain(VARIANT_BOOL* bShowAgain);</p>
+
+<h3>Parameters</h3>
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="border-spacing: 0px; margin-top: 14pt;"
+		cellspacing=0>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			padding-left: 5px;
+			padding-top: 5px;
+			padding-right: 5px;
+			padding-bottom: 5px;"
+	valign=top>
+<p style="margin-bottom: 0;">bShowAgain</td>
+<td style="x-cell-content-align: TOP;
+			padding-left: 5px;
+			padding-top: 5px;
+			padding-right: 5px;
+			padding-bottom: 5px;"
+	valign=top>
+<p style="margin-bottom: 0;">State of the &quot;Dont' show me this again&quot; 
+ check box. If VARIANT_TRUE the check box is checked, otherwise it is unchecked</td></tr>
+</table>
+
+<h3>Return Value</h3>
+
+<p>S_OK if successful.</p>
+
+<h3>Remarks</h3>
+
+<p>It is your responsibility to save the state of the &quot;Don't show 
+ me this again&quot; check box between uses of this object. This includes 
+ saving the state between application runs. The system registry is a good 
+ place to save this information.</p>
+
+<h3>Example</h3>
+
+<p CLASS=Preformatted-Code>VARIANT_BOOL bShowAgain = VARIANT_TRUE;<br>
+long lResult;<br>
+pARPNotice-&gt;put_ShowAgain( bShowAgain );<br>
+pARPNotice-&gt;Show( VARIANT_TRUE, &amp;lResult );<br>
+pARPNotice-&gt;get_ShowAgain( &amp;bShowAgain );</p>
+
+<h2>Visual Basic</h2>
+
+<h3>Syntax</h3>
+
+<p CLASS=Preformatted-Syntax>ShowAgain(bShowAgain As Boolean)</p>
+
+<p style="line-height: normal;
+			margin-bottom: 14pt;
+			margin-top: 14pt;
+			x-text-tab-stops: repeat 1in;
+			white-space: nowrap;
+			font-size: smaller;
+			font-family: monospace;">ShowAgain() As Boolean</p>
+
+<h3>Parameters</h3>
+
+<!--(Table)=========================================================-->
+<table x-use-null-cells
+		wrapperparagraphselector=P
+		style="border-spacing: 0px; margin-top: 14pt;"
+		cellspacing=0>
+
+<tr>
+<td style="x-cell-content-align: TOP;
+			padding-left: 5px;
+			padding-top: 5px;
+			padding-right: 5px;
+			padding-bottom: 5px;"
+	valign=top>
+<p style="margin-bottom: 0;">bShowAgain</td>
+<td style="x-cell-content-align: TOP;
+			padding-left: 5px;
+			padding-top: 5px;
+			padding-right: 5px;
+			padding-bottom: 5px;"
+	valign=top>
+<p style="margin-bottom: 0;">State of the &quot;Dont' show me this again&quot; 
+ check box. If True the check box is checked, otherwise it is unchecked</td></tr>
+</table>
+
+<h3>Return Value</h3>
+
+<p>The get property returns the current state of the &quot;Don't show me 
+ this again&quot; check box.</p>
+
+<h3>Remarks</h3>
+
+<p>It is your responsibility to save the state of the &quot;Don't show 
+ me this again&quot; check box between uses of this object. This includes 
+ saving the state between application runs. The system registry is a good 
+ place to save this information.</p>
+
+<h3>Example</h3>
+
+<p CLASS=Preformatted-Code>Dim bShowAgain As Boolean<br>
+Dim lResult As Long<br>
+bShowAgain = True<br>
+arpNotice.ShowAgain = bShowAgain<br>
+lResult = arpNotice.Show(True)<br>
+bShowAgain = arpNotice.ShowAgain</p>
+
+
+<!--(HR)============================================================-->
+<hr style="height: 2px;
+			width: 100%;
+			float: aligncenter;"
+	size=2
+	width=100%
+	align=center>
+
+
+<p>Copyright © 2000-2001, Washington State Department of Transportation</p>
+
+<p style="margin-bottom: 0;">&nbsp; </p>
+
+</body>
+
+</html>

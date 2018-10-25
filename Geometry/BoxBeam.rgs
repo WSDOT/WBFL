@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.BoxBeam.1 = s 'BoxBeam Class'
+	{
+		CLSID = s '{62292381-C515-4aba-871B-040D739F1BA2}'
+	}
+	WBFLGeometry.BoxBeam = s 'BoxBeam Class'
+	{
+		CLSID = s '{62292381-C515-4aba-871B-040D739F1BA2}'
+		CurVer = s 'WBFLGeometry.BoxBeam.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {62292381-C515-4aba-871B-040D739F1BA2} = s 'BoxBeam Class'
+		{
+			ProgID = s 'WBFLGeometry.BoxBeam.1'
+			VersionIndependentProgID = s 'WBFLGeometry.BoxBeam'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

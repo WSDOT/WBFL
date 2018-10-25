@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.ZoomRectTask.1 = s 'ZoomRectTask Class'
+	{
+		CLSID = s '{011408CD-F865-11d4-8B9C-006097C68A9C}'
+	}
+	WBFLDManip.ZoomRectTask = s 'ZoomRectTask Class'
+	{
+		CLSID = s '{011408CD-F865-11d4-8B9C-006097C68A9C}'
+		CurVer = s 'WBFLDManip.ZoomRectTask.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {011408CD-F865-11d4-8B9C-006097C68A9C} = s 'ZoomRectTask Class'
+		{
+			ProgID = s 'WBFLDManip.ZoomRectTask.1'
+			VersionIndependentProgID = s 'WBFLDManip.ZoomRectTask'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

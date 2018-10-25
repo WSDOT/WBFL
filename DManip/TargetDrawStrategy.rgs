@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.TargetDrawStrategy.1 = s 'TargetDrawStrategy Class'
+	{
+		CLSID = s '{E9E341BF-F158-46ae-8DB2-3E709E02AD8A}'
+	}
+	WBFLDManip.TargetDrawStrategy = s 'TargetDrawStrategy Class'
+	{
+		CLSID = s '{E9E341BF-F158-46ae-8DB2-3E709E02AD8A}'
+		CurVer = s 'WBFLDManip.TargetDrawStrategy.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {E9E341BF-F158-46ae-8DB2-3E709E02AD8A} = s 'TargetDrawStrategy Class'
+		{
+			ProgID = s 'WBFLDManip.TargetDrawStrategy.1'
+			VersionIndependentProgID = s 'WBFLDManip.TargetDrawStrategy'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

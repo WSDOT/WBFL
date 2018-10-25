@@ -1,0 +1,57 @@
+[Target:WebHelp Pro]
+ResultFileName=!SSL!\WebHelp_Pro\GenericBridge.htm
+SSLayoutType=32
+ServerProjectName=GenericBridge
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:WebHelp]
+ResultFileName=!SSL!\WebHelp\GenericBridge.htm
+SSLayoutType=2
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:Microsoft HTML Help]
+ResultFileName=C:\ARP\lib\WBFLGenericBridge.chm
+SSLayoutType=1
+CreateProjectTime=15:09, February 09, 2009
+CreateProjectUser=BriceR
+SupportMas_MPJ=1
+ActionID For Generation=1002
+Remove Folder with prompt=1
+ViewFileName=C:\ARP\lib\WBFLGenericBridge.chm
+ResultStatus=0
+BuildTimeHi=29985547
+BuildTimeLow=-1101544458
+[Target:FlashHelp]
+ResultFileName=!SSL!\FlashHelp\GenericBridge.htm
+SSLayoutType=2
+CreateProjectTime=
+CreateProjectUser=
+SupportMas_MPJ=1
+[Target:Printed Documentation]
+ResultFileName=!SSL!\Printed_Documentation\GenericBridge.doc
+SSLayoutType=7
+[Target:XML Output]
+ResultFileName=!SSL!\XML_Output\GenericBridge.xml
+SSLayoutType=8192
+[PreSingleSource]
+Html Help Project=C:\ARP\WBFL\GenericBridge\HTMLHelp\GenericBridge.hhp
+Table Of Content=C:\ARP\WBFL\GenericBridge\HTMLHelp\GenericBridge.hhc
+Index=C:\ARP\WBFL\GenericBridge\HTMLHelp\GenericBridge_merged$.hhk
+See Also Index=C:\ARP\WBFL\GenericBridge\HTMLHelp\GenericBridge.hha
+Browse Sequence=C:\ARP\WBFL\GenericBridge\HTMLHelp\GenericBridge.brs
+Topic Properties=C:\ARP\WBFL\GenericBridge\HTMLHelp\GenericBridge.trs
+Active Folders=C:\ARP\WBFL\GenericBridge\HTMLHelp\GenericBridge.trf
+Baggage Files=C:\ARP\WBFL\GenericBridge\HTMLHelp\GenericBridge.trb
+Skin List=C:\ARP\WBFL\GenericBridge\HTMLHelp\GenericBridge.trk
+OriginalHhk=C:\ARP\WBFL\GenericBridge\HTMLHelp\GenericBridge.hhk
+Active Layout Names=C:\ARP\WBFL\GenericBridge\HTMLHelp\GenericBridge.trl
+Default Topic=C:\ARP\WBFL\GenericBridge\HTMLHelp\Welcome.htm
+Build Tags0=15255;       
+Build Tags=
+Build Expression=
+Language ID=1033
+Language Name=English
+Language=C:\ARP\WBFL\GenericBridge\HTMLHelp\RoboHHRE.lng
+Stop List=C:\ARP\WBFL\GenericBridge\HTMLHelp\GenericBridge.stp

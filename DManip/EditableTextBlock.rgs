@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.EditableTextBlock.1 = s 'EditableTextBlock Class'
+	{
+		CLSID = s '{D66088C8-7E4A-49d7-A306-28BF10B53A88}'
+	}
+	WBFLDManip.EditableTextBlock = s 'EditableTextBlock Class'
+	{
+		CLSID = s '{D66088C8-7E4A-49d7-A306-28BF10B53A88}'
+		CurVer = s 'WBFLDManip.EditableTextBlock.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {D66088C8-7E4A-49d7-A306-28BF10B53A88} = s 'EditableTextBlock Class'
+		{
+			ProgID = s 'WBFLDManip.EditableTextBlock.1'
+			VersionIndependentProgID = s 'WBFLDManip.EditableTextBlock'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

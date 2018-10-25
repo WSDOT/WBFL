@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAMLiveLoader.BasicVehicularResponse.1 = s 'BasicVehicularResponse Class'
+	{
+		CLSID = s '{6743856D-388C-46EE-8517-02975B951790}'
+	}
+	WBFLLBAMLiveLoader.BasicVehicularResponse = s 'BasicVehicularResponse Class'
+	{
+		CLSID = s '{6743856D-388C-46EE-8517-02975B951790}'
+		CurVer = s 'WBFLLBAMLiveLoader.BasicVehicularResponse.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {6743856D-388C-46EE-8517-02975B951790} = s 'BasicVehicularResponse Class'
+		{
+			ProgID = s 'WBFLLBAMLiveLoader.BasicVehicularResponse.1'
+			VersionIndependentProgID = s 'WBFLLBAMLiveLoader.BasicVehicularResponse'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{5374CF63-57D4-4C08-9BD0-E29A9988662A}'
+		}
+	}
+}

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLLBAMLiveLoader.EnvelopedVehicularResponseFactory.1 = s 'EnvelopedVehicularResponseFactory Class'
+	{
+		CLSID = s '{4799D84B-F57B-4519-910E-8949AEB33996}'
+	}
+	WBFLLBAMLiveLoader.EnvelopedVehicularResponseFactory = s 'EnvelopedVehicularResponseFactory Class'
+	{
+		CLSID = s '{4799D84B-F57B-4519-910E-8949AEB33996}'
+		CurVer = s 'WBFLLBAMLiveLoader.EnvelopedVehicularResponseFactory.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {4799D84B-F57B-4519-910E-8949AEB33996} = s 'EnvelopedVehicularResponseFactory Class'
+		{
+			ProgID = s 'WBFLLBAMLiveLoader.EnvelopedVehicularResponseFactory.1'
+			VersionIndependentProgID = s 'WBFLLBAMLiveLoader.EnvelopedVehicularResponseFactory'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{5374CF63-57D4-4C08-9BD0-E29A9988662A}'
+		}
+	}
+}

@@ -1,0 +1,630 @@
+<html>
+<!-- Sitemap 1.0 -->
+<object type="text/site properties">
+  <param name="SiteType" value="toc">
+  <param name="Window Styles" value="0x800007">
+  <param name="ExWindow Styles" value="0x100">
+</object>
+<ul>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Welcome">
+    <param name="Local" value="Welcome.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="License Agreement">
+    <param name="Local" value="AROSL.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Examples">
+    <param name="Local" value="Examples.htm">
+  </object>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Objects">
+  </object>
+  <ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="BstrArray">
+      <param name="Local" value="BStrArray\BstrArray.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="BStrArray\Count.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="BStrArray\Item.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Add">
+          <param name="Local" value="BStrArray\Add.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="BStrArray\Clear.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="BStrArray\Clone.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Find">
+          <param name="Local" value="BStrArray\Find.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Insert">
+          <param name="Local" value="BStrArray\Insert.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ReDim">
+          <param name="Local" value="BStrArray\ReDim.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Remove">
+          <param name="Local" value="BStrArray\Remove.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Reserve">
+          <param name="Local" value="BStrArray\Reserve.htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="DblArray">
+      <param name="Local" value="DblArray\DblArray.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="DblArray\Count.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="DblArray\Item.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Add">
+          <param name="Local" value="DblArray\Add.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="DblArray\Clear.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="DblArray\Clone.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Insert">
+          <param name="Local" value="DblArray\Insert.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ReDim">
+          <param name="Local" value="DblArray\ReDim.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Remove">
+          <param name="Local" value="DblArray\Remove.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Reserve">
+          <param name="Local" value="DblArray\Reserve.htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="LngArray">
+      <param name="Local" value="LngArray\LngArray.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="LngArray\Count.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="LngArray\Item.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Add">
+          <param name="Local" value="LngArray\Add.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="LngArray\Clear.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="LngArray\Clone.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Find">
+          <param name="Local" value="LngArray\Find.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Insert">
+          <param name="Local" value="LngArray\Insert.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ReDim">
+          <param name="Local" value="LngArray\ReDim.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Remove">
+          <param name="Local" value="LngArray\Remove.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Reserve">
+          <param name="Local" value="LngArray\Reserve.htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="UnkArray">
+      <param name="Local" value="UnkArray\UnkArray.htm">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Count">
+          <param name="Local" value="UnkArray\Count.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Item">
+          <param name="Local" value="UnkArray\Item.htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Add">
+          <param name="Local" value="UnkArray\Add.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clear">
+          <param name="Local" value="UnkArray\Clear.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Clone">
+          <param name="Local" value="UnkArray\Clone.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Insert">
+          <param name="Local" value="UnkArray\Insert.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Remove">
+          <param name="Local" value="UnkArray\Remove.htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Reserve">
+          <param name="Local" value="UnkArray\Reserve.htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Mohr's Circle">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Mohr's Circle">
+        <param name="Local" value="Mohr's_Circle.htm">
+      </object>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Sii">
+          <param name="Local" value="Sii_Property_(Mohr_Circle_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Sjj">
+          <param name="Local" value="Sjj_Property_(Mohr_Circle_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Sij">
+          <param name="Local" value="Sij_Property_(Mohr_Circle_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Center">
+          <param name="Local" value="Center_Property_(Mohr_Circle_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Radius">
+          <param name="Local" value="Radius_Property_(Mohr_Circle_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="PrincipleDirection">
+          <param name="Local" value="PrincipleDirection_Property_(Mohr_Cirlce_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Smax">
+          <param name="Local" value="Smax_Property_(Mohr_Circle_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Smin">
+          <param name="Local" value="Smin_Property_(Mohr_Circle_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Tmax">
+          <param name="Local" value="Tmax_Property_(Mohr_Circle_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ComputeState">
+          <param name="Local" value="ComputeState_Method_(Mohr_Circle_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ComputeSxx">
+          <param name="Local" value="ComputeSxx_Method_(Mohr_Circle_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ComputeSxy">
+          <param name="Local" value="ComputeSxy_Method_(Mohr_Circle_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ComputeSyy">
+          <param name="Local" value="ComputeSyy_Method_(Mohr_Circle_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="ARP Notice">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="ARP Notice">
+        <param name="Local" value="ARP_Notice.htm">
+      </object>
+      <li><object type="text/sitemap">
+        <param name="Name" value="License Agreement">
+        <param name="Local" value="License_Agreement.htm">
+      </object>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Disclaimer">
+        <param name="Local" value="Disclaimer.htm">
+      </object>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Using the Alternate Route Project notice in your Applications">
+        <param name="Local" value="Using_the_Alternate_Route_Project_notice_in_your_Applications.htm">
+      </object>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Properties">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="ShowAgain">
+          <param name="Local" value="ShowAgain_Property_(ARP_Notice_Object).htm">
+        </object>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Methods">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Show">
+          <param name="Local" value="Show_Method_(ARP_Notice_Object).htm">
+        </object>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Constants">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="AcceptanceType">
+        <param name="Local" value="AcceptanceType.htm">
+      </object>
+      <li><object type="text/sitemap">
+        <param name="Name" value="LicenseType">
+        <param name="Local" value="LicenseType.htm">
+      </object>
+      </ul>
+    </ul>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Progress Monitoring Objects and Interfaces">
+    <param name="Local" value="ProgressMonitor\Progress_Monitoring_Objects_and_Interfaces.htm">
+  </object>
+  <ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Objects">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="ProgressMonitorWindow">
+        <param name="Local" value="ProgressMonitor\ProgressMonitorWindow\ProgressMonitorWindow.htm">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Properties">
+        </object>
+        <ul>
+          <li><object type="text/sitemap">
+            <param name="Name" value="HasGauge">
+            <param name="Local" value="ProgressMonitor\ProgressMonitorWindow\HasGauge.htm">
+          </object>
+          <li><object type="text/sitemap">
+            <param name="Name" value="HasCancel">
+            <param name="Local" value="ProgressMonitor\ProgressMonitorWindow\HasCancel.htm">
+          </object>
+          </ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Methods">
+        </object>
+        <ul>
+          <li><object type="text/sitemap">
+            <param name="Name" value="Hide">
+            <param name="Local" value="ProgressMonitor\ProgressMonitorWindow\Hide.htm">
+          </object>
+          <li><object type="text/sitemap">
+            <param name="Name" value="Show">
+            <param name="Local" value="ProgressMonitor\ProgressMonitorWindow\Show.htm">
+          </object>
+          </ul>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Interfaces">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="ILogProgressToFile">
+        <param name="Local" value="ProgressMonitor\ILogProgressToFile\ILogProgressToFile.htm">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Methods">
+        </object>
+        <ul>
+          <li><object type="text/sitemap">
+            <param name="Name" value="CloseLogFile">
+            <param name="Local" value="ProgressMonitor\ILogProgressToFile\CloseLogFile.htm">
+          </object>
+          <li><object type="text/sitemap">
+            <param name="Name" value="OpenLogFile">
+            <param name="Local" value="ProgressMonitor\ILogProgressToFile\OpenLogFile.htm">
+          </object>
+          </ul>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="IProgressMonitor">
+        <param name="Local" value="ProgressMonitor\IProgressMonitor\IProgressMonitor.htm">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Properties">
+        </object>
+        <ul>
+          <li><object type="text/sitemap">
+            <param name="Name" value="GaugeValue">
+            <param name="Local" value="ProgressMonitor\IProgressMonitor\GaugeValue.htm">
+          </object>
+          <li><object type="text/sitemap">
+            <param name="Name" value="Message">
+            <param name="Local" value="ProgressMonitor\IProgressMonitor\Message.htm">
+          </object>
+          <li><object type="text/sitemap">
+            <param name="Name" value="WasCancelled">
+            <param name="Local" value="ProgressMonitor\IProgressMonitor\WasCancelled.htm">
+          </object>
+          </ul>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="ISupportProgressMonitor">
+        <param name="Local" value="ProgressMonitor\ISupportProgressMonitor\ISupportProgressMonitor.htm">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Methods">
+        </object>
+        <ul>
+          <li><object type="text/sitemap">
+            <param name="Name" value="InitializeProgressMonitor">
+            <param name="Local" value="ProgressMonitor\ISupportProgressMonitor\InitializeProgressMonitor.htm">
+          </object>
+          </ul>
+        </ul>
+      </ul>
+    </ul>
+  <li><object type="text/sitemap">
+    <param name="Name" value="Structured Storage Objects and Interfaces">
+    <param name="Local" value="StrStorage\Structured_Storage_Classes_and_Interfaces.htm">
+  </object>
+  <ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Structured Storage Basics">
+      <param name="Local" value="StrStorage\Structured_Storage_Basics.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Special Notes For Visual Basic Class Authors">
+      <param name="Local" value="StrStorage\Special_Notes_For_Visual_Basic_Class_Authors.htm">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Objects">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="StructuredSave2">
+        <param name="Local" value="StrStorage\StructuredSave2.htm">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Properties">
+        </object>
+        <ul>
+          <li><object type="text/sitemap">
+            <param name="Name" value="Version">
+            <param name="Local" value="StrStorage\VersionSave.htm">
+          </object>
+          <li><object type="text/sitemap">
+            <param name="Name" value="TopVersion">
+            <param name="Local" value="StrStorage\TopVersionSave.htm">
+          </object>
+          <li><object type="text/sitemap">
+            <param name="Name" value="Property">
+            <param name="Local" value="StrStorage\PropertySave.htm">
+          </object>
+          </ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Methods">
+        </object>
+        <ul>
+          <li><object type="text/sitemap">
+            <param name="Name" value="Open">
+            <param name="Local" value="StrStorage\OpenSave.htm">
+          </object>
+          <li><object type="text/sitemap">
+            <param name="Name" value="BeginUnit">
+            <param name="Local" value="StrStorage\BeginUnitSave.htm">
+          </object>
+          <li><object type="text/sitemap">
+            <param name="Name" value="EndUnit">
+            <param name="Local" value="StrStorage\EndUnitSave.htm">
+          </object>
+          <li><object type="text/sitemap">
+            <param name="Name" value="Close">
+            <param name="Local" value="StrStorage\CloseSave.htm">
+          </object>
+          </ul>
+        </ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="StructuredLoad2">
+        <param name="Local" value="StrStorage\StructuredLoad2.htm">
+      </object>
+      <ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Properties">
+        </object>
+        <ul>
+          <li><object type="text/sitemap">
+            <param name="Name" value="Version">
+            <param name="Local" value="StrStorage\Version.htm">
+          </object>
+          <li><object type="text/sitemap">
+            <param name="Name" value="TopVersion">
+            <param name="Local" value="StrStorage\TopVersion.htm">
+          </object>
+          <li><object type="text/sitemap">
+            <param name="Name" value="Property">
+            <param name="Local" value="StrStorage\Property2.htm">
+          </object>
+          </ul>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Methods">
+        </object>
+        <ul>
+          <li><object type="text/sitemap">
+            <param name="Name" value="Open">
+            <param name="Local" value="StrStorage\Open2.htm">
+          </object>
+          <li><object type="text/sitemap">
+            <param name="Name" value="BeginUnit">
+            <param name="Local" value="StrStorage\BeginUnit2.htm">
+          </object>
+          <li><object type="text/sitemap">
+            <param name="Name" value="EndUnit">
+            <param name="Local" value="StrStorage\EndUnit2.htm">
+          </object>
+          <li><object type="text/sitemap">
+            <param name="Name" value="Close">
+            <param name="Local" value="StrStorage\Close.htm">
+          </object>
+          <li><object type="text/sitemap">
+            <param name="Name" value="EndOfStorage">
+            <param name="Local" value="StrStorage\EndOfStorage2.htm">
+          </object>
+          </ul>
+        </ul>
+      </ul>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Interfaces">
+    </object>
+    <li><object type="text/sitemap">
+      <param name="Name" value="Run-Time Errors">
+    </object>
+    <ul>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Com objects must support the IStructuredStorage2 interface">
+        <param name="Local" value="StrStorage\Com_objects__must_support_the_IStructuredStorage2_interface.htm">
+      </object>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Com objects must support the IPersist interface">
+        <param name="Local" value="StrStorage\Com_objects_must_support_the_IPersist_interface.htm">
+      </object>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Error initializing the XML parser">
+        <param name="Local" value="StrStorage\Error_initializing_the_XML_parser.htm">
+      </object>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Error opening file">
+        <param name="Local" value="StrStorage\Error_opening_file.htm">
+      </object>
+      <li><object type="text/sitemap">
+        <param name="Name" value="File not open">
+        <param name="Local" value="StrStorage\File_not_open.htm">
+      </object>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Invalid file format">
+        <param name="Local" value="StrStorage\Invalid_file_format.htm">
+      </object>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Problem writing to file">
+        <param name="Local" value="StrStorage\Problem_writing_to_file.htm">
+      </object>
+      <li><object type="text/sitemap">
+        <param name="Name" value="The file was not found">
+        <param name="Local" value="StrStorage\The_file_was_not_found.htm">
+      </object>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Variant had invalid type">
+        <param name="Local" value="StrStorage\Variant_had_invalid_type.htm">
+      </object>
+      <li><object type="text/sitemap">
+        <param name="Name" value="You must define at least one Unit">
+        <param name="Local" value="StrStorage\You_must_define_at_least_one_Unit.htm">
+      </object>
+      <li><object type="text/sitemap">
+        <param name="Name" value="Only One Top Level Unit Allowed">
+        <param name="Local" value="StrStorage\Only_One_Top_Level_Unit_Allowed.htm">
+      </object>
+      </ul>
+    </ul>
+</ul>
+</html>

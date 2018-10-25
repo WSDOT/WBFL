@@ -1,0 +1,451 @@
+#ifndef INCLUDED_COGO_HH_
+#define INCLUDED_COGO_HH_
+
+#define IDH_WBFLCogo                                           1
+#define IDH_NSDirectionType                                    10
+#define IDH_EWDirectionType                                    11
+#define IDH_SpiralType                                         12
+#define IDH_CurveDirectionType                                 13
+#define IDH_ProfileElementType                                 14
+#define IDH_PathElementType                                    15
+#define IDH_TangentSignType                                    16
+#define IDH_DegreeCurvatureType                                17
+
+#define IDH_Point                                              20
+#define IDH_LineSegment                                        21
+
+#define IDH_Angle                                              100
+#define IDH_Angle_Value                                        101
+#define IDH_Angle_Degree                                       102
+#define IDH_Angle_Minute                                       103
+#define IDH_Angle_Second                                       104
+#define IDH_Angle_Normalize                                    105
+#define IDH_Angle_FromDMS                                      106
+#define IDH_Angle_FromString                                   107
+#define IDH_Angle_Increment                                    108
+#define IDH_Angle_IncrementBy                                  109
+#define IDH_Angle_Clone                                        110
+
+
+#define IDH_Direction                                          200
+#define IDH_Direction_Value                                    201
+#define IDH_Direction_NSDirection                              202
+#define IDH_Direction_EWDirection                              203
+#define IDH_Direction_Degree                                   204
+#define IDH_Direction_Minute                                   205
+#define IDH_Direction_Second                                   206
+#define IDH_Direction_Increment                                207
+#define IDH_Direction_IncrementBy                              208
+#define IDH_Direction_FromString                               209
+#define IDH_Direction_FromDMS                                  210
+#define IDH_Direction_FromAzimuth                              211
+#define IDH_Direction_AngleBetween                             212
+#define IDH_Direction_Clone                                    213
+
+#define IDH_Point_OnPointChanged                         10001
+#define IDH_PointCollection_OnPointChanged               10002
+#define IDH_PointCollection_OnPointAdded                 10003
+#define IDH_PointCollection_OnPointRemoved               10004
+#define IDH_PointCollection_OnPointsCleared              10005
+#define IDH_LineSegment_OnLineSegmentChanged             10006
+#define IDH_LineSegmentCollection_OnLineSegmentChanged   10007
+#define IDH_LineSegmentCollection_OnLineSegmentAdded     10008
+#define IDH_LineSegmentCollection_OnLineSegmentRemoved   10009
+#define IDH_LineSegmentCollection_OnLineSegmentsCleared  10010
+#define IDH_CogoModel_OnPointChanged                     10011
+#define IDH_CogoModel_OnPointAdded                       10012
+#define IDH_CogoModel_OnPointRemoved                     10013
+#define IDH_CogoModel_OnPointsCleared                    10014
+#define IDH_CogoModel_OnLineSegmentChanged               10015
+#define IDH_CogoModel_OnLineSegmentAdded                 10016
+#define IDH_CogoModel_OnLineSegmentRemoved               10017
+#define IDH_CogoModel_OnLineSegmentsCleared              10018
+#define IDH_CogoModel_OnProfilePointChanged              10019
+#define IDH_CogoModel_OnProfilePointAdded                10020
+#define IDH_CogoModel_OnProfilePointRemoved              10021
+#define IDH_CogoModel_OnProfilePointsCleared             10022 
+#define IDH_CogoModel_OnVertCurveChanged                 10023
+#define IDH_CogoModel_OnVertCurveAdded                   10024
+#define IDH_CogoModel_OnVertCurveRemoved                 10025
+#define IDH_CogoModel_OnVertCurvesCleared                10026
+#define IDH_CogoModel_OnHorzCurveChanged                 10027
+#define IDH_CogoModel_OnHorzCurveAdded                   10028
+#define IDH_CogoModel_OnHorzCurveRemoved                 10029
+#define IDH_CogoModel_OnHorzCurvesCleared                10030
+#define IDH_CogoModel_OnAlignmentChanged                 10031
+#define IDH_CogoModel_OnProfileChanged                   10032
+#define IDH_CogoModel_OnAlignmentAdded                   10033
+#define IDH_CogoModel_OnAlignmentRemoved                 10034
+#define IDH_CogoModel_OnAlignmentCleared                 10035
+
+#define IDH_CogoModel_OnPathChanged                      11031
+#define IDH_CogoModel_OnPathAdded                        11033
+#define IDH_CogoModel_OnPathRemoved                      11034
+#define IDH_CogoModel_OnPathCleared                      11035
+
+#define IDH_ProfilePoint_OnProfilePointChanged           10036
+#define IDH_ProfilePointCollection_OnPointChanged        10037
+#define IDH_ProfilePointCollection_OnPointAdded          10038
+#define IDH_ProfilePointCollection_OnPointRemoved        10039
+#define IDH_ProfilePointCollection_OnPointsCleared       10040
+#define IDH_VertCurve_OnVertCurveChanged                 10041
+#define IDH_VertCurveCollection_OnVertCurveChanged       10042
+#define IDH_VertCurveCollection_OnVertCurveAdded         10043
+#define IDH_VertCurveCollection_OnVertCurveRemoved       10044
+#define IDH_VertCurveCollection_OnVertCurvesCleared      10045
+#define IDH_HorzCurve_OnHorzCurveChanged                 10046
+#define IDH_HorzCurveCollection_OnHorzCurveChanged       10047
+#define IDH_HorzCurveCollection_OnHorzCurveAdded         10048
+#define IDH_HorzCurveCollection_OnHorzCurveRemoved       10049
+#define IDH_HorzCurveCollection_OnHorzCurvesCleared      10050
+#define IDH_ProfileElement_OnProfileElementChanged       10051
+#define IDH_Profile_OnProifleChanged                     10052
+#define IDH_CrossSection_OnCrossSectionChanged           10053
+#define IDH_CrossSection_OnCrossSectionMoved             10054
+#define IDH_CrossSectionCollection_OnCrossSectionChanged 10055
+#define IDH_CrossSectionCollection_OnPointAdded          10056
+#define IDH_CrossSectionCollection_OnPointRemoved        10057
+#define IDH_CrossSectionCollection_OnPointsCleared       10058
+#define IDH_PathElement_OnPathElementChanged   10059
+#define IDH_Alignment_OnAlignmentChanged                 10060
+#define IDH_Alignment_OnProfileChanged                   10061
+#define IDH_PathCollection_OnAlignmentChanged       10062
+#define IDH_PathCollection_OnProfileChanged         10063
+#define IDH_PathCollection_OnAlignmentAdded         10064
+#define IDH_PathCollection_OnAlignmentRemoved       10065
+#define IDH_PathCollection_OnAlignmentCleared       10066
+
+#define IDH_AngleDisplayUnitFormatter                          300
+#define IDH_AngleDisplayUnitFormatter_CondensedFormat          301
+#define IDH_AngleDisplayUnitFormatter_Signed                   302
+
+#define IDH_DirectionDisplayUnitFormatter                      400
+#define IDH_DirectionDisplayUnitFormatter_CondensedFormat      401
+#define IDH_DirectionDisplayUnitFormatter_BearingFormat        402
+
+
+#define IDH_PointCollection                                    600
+#define IDH_PointCollection_Item                               601
+#define IDH_PointCollection_Count                              602
+#define IDH_PointCollection_Add                                603
+#define IDH_PointCollection_AddEx                              604
+#define IDH_PointCollection_Remove                             605
+#define IDH_PointCollection_Clear                              606
+#define IDH_PointCollection_FindKey                            607
+#define IDH_PointCollection__EnumKeys                          608
+#define IDH_PointCollection_Factory                            609
+#define IDH_PointCollection_Key                                610
+#define IDH_PointCollection__EnumPoints                        611
+#define IDH_PointCollection_Clone                              612
+ 
+#define IDH_IMeasure                                           700
+#define IDH_IMeasure_Angle                                     701
+#define IDH_IMeasure_Area                                      702
+#define IDH_IMeasure_Distance                                  703
+#define IDH_IMeasure_Direction                                 704
+#define IDH_IMeasure_Inverse                                   705
+
+#define IDH_ILocate                                            800
+#define IDH_ILocate_ByDistAngle                                801
+#define IDH_ILocate_ByDistDefAngle                             802
+#define IDH_ILocate_ByDistDir                                  803
+#define IDH_ILocate_PointOnLine                                804
+#define IDH_ILocate_ParallelLineByPoints                       805
+#define IDH_ILocate_ParallelLineSegment                        806
+
+#define IDH_IIntersect                                         900
+#define IDH_IIntersect_Bearings                                901
+#define IDH_IIntersect_BearingCircle                           902
+#define IDH_IIntersect_Circles                                 903
+#define IDH_IIntersect_LineByPointsCircle                      904
+#define IDH_IIntersect_LinesByPoints                           905
+#define IDH_IIntersect_Lines                                   906
+#define IDH_IIntersect_LineSegmentCircle                       907
+
+#define IDH_IProject                                          1000
+#define IDH_IProject_PointOnLineByPoints                      1001
+#define IDH_IProject_PointOnLineSegment                       1002
+#define IDH_IProject_PointOnCurve                             1003
+
+#define IDH_IDivide                                           1100
+#define IDH_IDivide_Arc                                       1101
+#define IDH_IDivide_BetweenPoints                             1102
+#define IDH_IDivide_LineSegment                               1103
+#define IDH_IDivide_HorzCurve                                 1104
+
+#define IDH_ITangent                                          1150
+#define IDH_ITangent_External                                 1151
+#define IDH_ITangent_Cross                                    1152
+#define IDH_ITangent_Point                                    1153
+
+#define IDH_CogoModel                                         1200
+#define IDH_CogoModel_Points                                  1201
+#define IDH_CogoModel_LineSegments                            1202
+#define IDH_CogoModel_ProfilePoints                           1203
+#define IDH_CogoModel_VertCurves                              1204
+#define IDH_CogoModel_HorzCurves                              1205
+#define IDH_CogoModel_Alignments                              1206
+#define IDH_CogoModel_Clear                                   1207
+#define IDH_CogoModel_Intersect                               1208
+#define IDH_CogoModel_Locate                                  1209
+#define IDH_CogoModel_Measure                                 1210
+#define IDH_CogoModel_Project                                 1211
+#define IDH_CogoModel_Divide                                  1212
+#define IDH_CogoModel_PointFactory                            1213
+#define IDH_CogoModel_LineSegmentFactory                      1214
+#define IDH_CogoModel_ProfilePointFactory                     1215
+#define IDH_CogoModel_VertCurveFactory                        1216
+#define IDH_CogoModel_HorzCurveFactory                        1217
+#define IDH_CogoModel_AlignmentFactory                        1218
+#define IDH_CogoModel_PathFactory                             1219
+#define IDH_CogoModel_Tangent                                 1220
+#define IDH_CogoModel_Clone                                   1221
+
+#define IDH_LineSegmentCollection                             1300
+#define IDH_LineSegmentCollection_Item                        1301
+#define IDH_LineSegmentCollection_Count                       1302
+#define IDH_LineSegmentCollection_Add                         1303
+#define IDH_LineSegmentCollection_AddEx                       1304
+#define IDH_LineSegmentCollection_Remove                      1305
+#define IDH_LineSegmentCollection_Clear                       1306
+#define IDH_LineSegmentCollection_FindKey                     1307
+#define IDH_LineSegmentCollection__EnumKeys                   1308
+#define IDH_LineSegmentCollection_Factory                     1309
+#define IDH_LineSegmentCollection_Key                         1310
+#define IDH_LineSegmentCollection__EnumLineSegments           1311
+#define IDH_LineSegmentCollection_Clone                       1312
+
+#define IDH_ProfilePoint                                      1400
+#define IDH_ProfilePoint_Station                              1401
+#define IDH_ProfilePoint_Elevation                            1402
+#define IDH_ProfilePoint_Clone                                1403
+
+#define IDH_ProfilePointCollection                            1500
+#define IDH_ProfilePointCollection_Item                       1501
+#define IDH_ProfilePointCollection_Count                      1502
+#define IDH_ProfilePointCollection_Add                        1503
+#define IDH_ProfilePointCollection_AddEx                      1504
+#define IDH_ProfilePointCollection_Remove                     1505
+#define IDH_ProfilePointCollection_Clear                      1506
+#define IDH_ProfilePointCollection_FindKey                    1507
+#define IDH_ProfilePointCollection__EnumKeys                  1508
+#define IDH_ProfilePointCollection_Key                        1509
+#define IDH_ProfilePointCollection_Factory                    1510
+#define IDH_ProfilePointCollection__EnumProfilePoints         1511
+#define IDH_ProfilePointCollection_Clone                      1512
+
+#define IDH_VertCurve                                         1600
+#define IDH_VertCurve_PBG                                     1601
+#define IDH_VertCurve_PVI                                     1602
+#define IDH_VertCurve_PFG                                     1603
+#define IDH_VertCurve_L1                                      1604
+#define IDH_VertCurve_L2                                      1605
+#define IDH_VertCurve_BVC                                     1606
+#define IDH_VertCurve_EVC                                     1607
+#define IDH_VertCurve_Length                                  1608
+#define IDH_VertCurve_EntryGrade                              1609
+#define IDH_VertCurve_ExitGrade                               1610
+#define IDH_VertCurve_LowPoint                                1611
+#define IDH_VertCurve_HighPoint                               1612
+#define IDH_VertCurve_Elevation                               1613
+#define IDH_VertCurve_Grade                                   1614
+#define IDH_VertCurve_ProfilePointFactory                     1615
+#define IDH_VertCurve_Clone                                   1616
+#define IDH_VertCurve_A									      1617
+#define IDH_VertCurve_K									      1618
+#define IDH_VertCurve_H										  1619
+#define IDH_VertCurve_E										  1620
+
+#define IDH_VertCurveCollection                               1700
+#define IDH_VertCurveCollection_Item                          1701
+#define IDH_VertCurveCollection_Count                         1702
+#define IDH_VertCurveCollection_Add                           1703
+#define IDH_VertCurveCollection_AddEx                         1704
+#define IDH_VertCurveCollection_Remove                        1705
+#define IDH_VertCurveCollection_Clear                         1706
+#define IDH_VertCurveCollection_FindKey                       1707
+#define IDH_VertCurveCollection__EnumKeys                     1708
+#define IDH_VertCurveCollection__EnumVertCurves               1709
+#define IDH_VertCurveCollection_Key                           1710
+#define IDH_VertCurveCollection_Factory                       1711
+#define IDH_VertCurveCollection_Clone                         1712
+
+#define IDH_HorzCurve                                         1800
+#define IDH_HorzCurve_PBT                                     1801
+#define IDH_HorzCurve_PI                                      1802
+#define IDH_HorzCurve_PFT                                     1803
+#define IDH_HorzCurve_Radius                                  1804
+#define IDH_HorzCurve_SpiralLength                            1805
+#define IDH_HorzCurve_SpiralAngle                             1806
+#define IDH_HorzCurve_X                                       1807
+#define IDH_HorzCurve_Y                                       1800
+#define IDH_HorzCurve_Q                                       1808
+#define IDH_HorzCurve_T                                       1809
+#define IDH_HorzCurve_BkTangentBrg                            1810
+#define IDH_HorzCurve_FwdTangentBrg                           1811
+#define IDH_HorzCurve_CurveAngle                              1812
+#define IDH_HorzCurve_BkTangentLength                         1813
+#define IDH_HorzCurve_FwdTangentLength                        1814
+#define IDH_HorzCurve_TS                                      1815
+#define IDH_HorzCurve_ST                                      1816
+#define IDH_HorzCurve_SC                                      1817
+#define IDH_HorzCurve_CS                                      1818
+#define IDH_HorzCurve_Chord                                   1819
+#define IDH_HorzCurve_CircularCurveAngle                      1820
+#define IDH_HorzCurve_Tangent                                 1821
+#define IDH_HorzCurve_MidOrdinate                             1822
+#define IDH_HorzCurve_DE                                      1823
+#define IDH_HorzCurve_LongTangent                             1824
+#define IDH_HorzCurve_ShortTangent                            1825
+#define IDH_HorzCurve_CC                                      1826
+#define IDH_HorzCurve_PCI                                     1827
+#define IDH_HorzCurve_SPI                                     1828
+#define IDH_HorzCurve_CurveBkTangentBrg                       1829
+#define IDH_HorzCurve_CurveFwdTangentBrg                      1830
+#define IDH_HorzCurve_CCC                                     1831
+#define IDH_HorzCurve_DF                                      1832
+#define IDH_HorzCurve_DH                                      1833
+#define IDH_HorzCurve_SpiralChord                             1834
+#define IDH_HorzCurve_Direction                               1835
+#define IDH_HorzCurve_CurveLength                             1836
+#define IDH_HorzCurve_TotalLength                             1837
+#define IDH_HorzCurve_Bearing                                 1838
+#define IDH_HorzCurve_Normal                                  1839
+#define IDH_HorzCurve_PointOnCurve                            1840
+#define IDH_HorzCurve_ProjectPoint                            1841
+#define IDH_HorzCurve_DistanceFromStart                       1842
+#define IDH_HorzCurve_PointFactory                            1843
+#define IDH_HorzCurve_Clone                                   1844
+#define IDH_HorzCurve_External                                1845
+#define IDH_HorzCurve_Intersect                               1846
+#define IDH_HorzCurve_DegreeCurvature					      1847
+
+
+#define IDH_HorzCurveCollection                               1900
+#define IDH_HorzCurveCollection_Item                          1901
+#define IDH_HorzCurveCollection_Count                         1902
+#define IDH_HorzCurveCollection_Add                           1903
+#define IDH_HorzCurveCollection_AddEx                         1904
+#define IDH_HorzCurveCollection_Remove                        1905
+#define IDH_HorzCurveCollection_Clear                         1906
+#define IDH_HorzCurveCollection_FindKey                       1907
+#define IDH_HorzCurveCollection__EnumKeys                     1908
+#define IDH_HorzCurveCollection_Factory                       1909
+#define IDH_HorzCurveCollection_Key                           1910
+#define IDH_HorzCurveCollection__EnumHorzCurves               1911
+#define IDH_HorzCurveCollection_Clone                         1912
+
+#define IDH_ProfileElement                                    2000
+#define IDH_ProfileElement_Value                              2001
+#define IDH_ProfileElement_Type                               2002
+#define IDH_ProfileElement_Clone                              2003
+
+#define IDH_Profile                                           2100
+#define IDH_Profile_Item                                      2101
+#define IDH_Profile_Count                                     2102
+#define IDH_Profile_CrossSections                             2103
+#define IDH_Profile_Add                                       2104
+#define IDH_Profile_AddEx                                     2105
+#define IDH_Profile_Remove                                    2106
+#define IDH_Profile_Elevation                                 2107
+#define IDH_Profile_Grade                                     2108
+#define IDH_Profile_LeftCrownSlope                            2109
+#define IDH_Profile_RightCrownSlope                           2110
+#define IDH_Profile_Clear                                     2111
+#define IDH_Profile__EnumProfileElements                      2112
+#define IDH_Profile_Clone                                     2113
+#define IDH_Profile_CrownSlope                                2114
+#define IDH_Profile_CrownPointOffset                          2115
+
+#define IDH_CrossSection                                      2200
+#define IDH_CrossSection_Station                              2201
+#define IDH_CrossSection_CrownPointOffset                     2202
+#define IDH_CrossSection_LeftCrownSlope                       2203
+#define IDH_CrossSection_RightCrownSlope                      2204
+#define IDH_CrossSection_Clone                                2205
+
+#define IDH_CrossSectionCollection                            2300
+#define IDH_CrossSectionCollection_Item                       2301
+#define IDH_CrossSectionCollection_Count                      2302
+#define IDH_CrossSectionCollection_Add                        2303
+#define IDH_CrossSectionCollection_AddEx                      2304
+#define IDH_CrossSectionCollection_Remove                     2305
+#define IDH_CrossSectionCollection_CrownSlope                 2306
+#define IDH_CrossSectionCollection_LeftCrownSlope             2307
+#define IDH_CrossSectionCollection_RightCrownSlope            2308
+#define IDH_CrossSectionCollection_CreateCrossSection         2309
+#define IDH_CrossSectionCollection_Clear                      2310
+#define IDH_CrossSectionCollection__EnumCrossSections         2311
+#define IDH_CrossSectionCollection_Factory                    2312
+#define IDH_CrossSectionCollection_Clone                      2313
+#define IDH_CrossSectionCollection_CrownPointOffset           2314
+
+#define IDH_PathElement                                        2400
+#define IDH_PathElement_Type                                   2401
+#define IDH_PathElement_Value                                  2402
+#define IDH_PathElement_Clone                                  2403
+
+#define IDH_Alignment                                          2500
+#define IDH_Alignment_RefStation                               2501
+#define IDH_Alignment_Profile                                  2502
+#define IDH_Alignment_Item                                     2503
+#define IDH_Alignment_Count                                    2504
+#define IDH_Alignment_Add                                      2505
+#define IDH_Alignment_AddEx                                    2506
+#define IDH_Alignment_Insert                                   2507
+#define IDH_Alignment_InsertEx                                 2508
+#define IDH_Alignment_Remove                                   2509
+#define IDH_Alignment_Clear                                    2510
+#define IDH_Alignment_LocatePoint                              2511
+#define IDH_Alignment_Bearing                                  2512
+#define IDH_Alignment_Normal                                   2513
+#define IDH_Alignment_ProjectPoint                             2514
+#define IDH_Alignment_Station                                  2515
+#define IDH_Alignment_Offset                                   2516
+#define IDH_Alignment_PointFactory                             2517
+#define IDH_Alignment__EnumPathElements                        2518
+#define IDH_Alignment_Clone                                    2519
+#define IDH_Alignment_CreateParallelPath                       2520
+#define IDH_Alignment_CreateConnectedPath					   2521
+#define IDH_Alignment_Move                                     2522
+
+#define IDH_PathCollection                               2600
+#define IDH_PathCollection_Item                          2601
+#define IDH_PathCollection_Count                         2602
+#define IDH_PathCollection_Add                           2603
+#define IDH_PathCollection_AddEx                         2604
+#define IDH_PathCollection_Remove                        2605
+#define IDH_PathCollection_Clear                         2606
+#define IDH_PathCollection_FindKey                       2607
+#define IDH_PathCollection__EnumKeys                     2608
+#define IDH_PathCollection_Factory                       2609
+#define IDH_PathCollection_Key                           2610
+#define IDH_PathCollection__EnumPaths                    2611
+#define IDH_PathCollection_Clone                         2612
+
+#define IDH_VertCurveFactory                                  2700
+#define IDH_VertCurveFactory_CreateVertCurve                  2701
+
+#define IDH_ProfilePointFactory                               2800
+#define IDH_ProfilePointFactory_CreateProfilePoint            2801
+
+#define IDH_HorzCurveFactory                                  2900
+#define IDH_HorzCurveFactory_CreateHorzCurve                  2901
+
+#define IDH_CrossSectionFactory                               3000
+#define IDH_CrossSectionFactory_CreateCrossSection            3001
+
+#define IDH_AlignmentFactory                                  3099
+#define IDH_PathFactory                                       3100
+#define IDH_PathFactory_CreatePath                            3101
+#define IDH_PathFactory_IsValidType                           3102
+
+#define IDH_Station                                           3200
+#define IDH_Station_Value                                     3201
+#define IDH_Station_FromString                                3202
+#define IDH_Station_AsString                                  3203
+#define IDH_Station_OnStationChanged                          3204
+#define IDH_Station_Clone                                     3205
+
+
+#endif // INCLUDED_COGO_HH_

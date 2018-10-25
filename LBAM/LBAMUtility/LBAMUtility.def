@@ -1,0 +1,9 @@
+; LBAMUtility.def : Declares the module parameters.
+
+LIBRARY      "WBFLLBAMUtility.DLL"
+
+EXPORTS
+	DllCanUnloadNow     PRIVATE
+	DllGetClassObject   PRIVATE
+	DllRegisterServer   PRIVATE
+	DllUnregisterServer	PRIVATE
