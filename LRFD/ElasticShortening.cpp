@@ -244,6 +244,7 @@ void lrfdElasticShortening::Update() const
        
       if ( m_bGrossProperties )
       {
+         Int32 iter(0);
          do
          {
             dfESPerm = m_dfESPerm;
@@ -251,6 +252,9 @@ void lrfdElasticShortening::Update() const
 
             m_P = m_ApsPerm*(m_FpjPerm - m_dFpR1Perm - dfESPerm) + m_ApsTemp*(m_FpjTemp - m_dFpR1Temp - dfESTemp);
             m_P *= -1;
+
+            ATLASSERT(!IsZero(m_Ag));
+            ATLASSERT(!IsZero(m_Ig));
 
             m_FcgpTemp = m_P/m_Ag + m_P*eps*m_eTemp/m_Ig + m_Mdlg*m_eTemp/m_Ig;
             m_FcgpPerm = m_P/m_Ag + m_P*eps*m_ePerm/m_Ig + m_Mdlg*m_ePerm/m_Ig;
@@ -270,6 +274,9 @@ void lrfdElasticShortening::Update() const
 
             m_dfESTemp = m_K * (m_Ep/m_Eci) * m_FcgpTemp;
             m_dfESPerm = m_K * (m_Ep/m_Eci) * m_FcgpPerm;
+
+            iter++;
+            ATLASSERT(iter<100);// if we are taking this long, there is a problem
 
          } while (!IsZero(dfESTemp-m_dfESTemp,0.01) || !IsZero(dfESPerm-m_dfESPerm,0.01));
       }

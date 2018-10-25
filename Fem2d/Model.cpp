@@ -1496,10 +1496,14 @@ void CModel::ComputeLoadings()
       CheckEquilibrium();
       StoreJntResults(lid);
       StoreMbrResults(lid);
-      StorePoiResults(lid); // compute results for existing poi's
+
+#pragma Reminder("Caching and data storage scheme for POI results is inefficient")
+      // comment this out because the caching scheme is not
+      // helping with performance, it't hurting.
+      //StorePoiResults(lid); // compute results for existing poi's
       }
 #if defined _DEBUG
-      catch(CComException& e)
+      catch(CComException& /*e*/)
       {
          throw;
       }
@@ -1938,6 +1942,11 @@ void CModel::StorePoiResults(LoadCaseIDType lcase)
 #if defined ENABLE_LOGGING
    logfile << "StorePoiResults::Loading = " << lcase << std::endl;
 #endif
+
+   // Don't store results for load cases with negative values. These are load cases that probably
+   // only will be used once (e.g., influence line loads)
+   if (lcase < 0)
+      return;
 
    // loop over all pois and calc and store results
    POIIterator i (m_pPOIs->begin() );

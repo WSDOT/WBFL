@@ -73,8 +73,8 @@ END_CONNECTION_POINT_MAP()
 private:
    CComPtr<IPoint3d> m_Start;
    CComPtr<IPoint3d> m_End;
-   CComPtr<ITendonSegment> m_PrevSegment;
-   CComPtr<ITendonSegment> m_NextSegment;
+   ITendonSegment* m_pPrevSegment; // weak reference
+   ITendonSegment* m_pNextSegment; // weak reference
    CComPtr<IGeomUtil3d> m_GeomUtil;
 
    ITendon* m_pTendon; // weak reference
