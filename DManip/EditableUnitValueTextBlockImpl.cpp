@@ -63,6 +63,9 @@ HRESULT CEditableUnitValueTextBlockImpl::FinalConstruct()
 
    m_EditableTextBlock = pTextBlock;
    m_EditableTextBlock->RegisterEventSink(this);
+
+   InternalRelease(); // break circular reference with m_EditableTextBlock
+
    m_EditableTextBlock->SetFormat(etbfNumeric);
    CString str;
    str.Format(_T("%f"),m_Value);
@@ -75,6 +78,9 @@ HRESULT CEditableUnitValueTextBlockImpl::FinalConstruct()
 
 void CEditableUnitValueTextBlockImpl::FinalRelease()
 {
+   InternalAddRef(); // counter-act InternalRelease() above
+   m_EditableTextBlock->UnregisterEventSink();
+
    delete m_pctlUnitTag;
    m_pctlUnitTag = NULL;
 

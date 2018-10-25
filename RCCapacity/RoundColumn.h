@@ -84,6 +84,10 @@ public:
    STDMETHOD(put_Es)(/*[in]*/Float64 es);
    STDMETHOD(get_Es)(/*[out,retval]*/Float64* es);
    STDMETHOD(ComputeInteraction)(/*[in]*/ long nSteps,/*[out,retval]*/IPoint2dCollection* *points);
+   STDMETHOD(ComputeInteractionEx)(/*[in]*/long nSteps,/*[in]*/Float64 ecl,/*[in]*/Float64 etl,/*[out]*/IPoint2dCollection** ppUnfactored,/*[out]*/IPoint2dCollection** ppFactored);
+
+private:
+   HRESULT ComputeInteractionCurve(long nSteps,bool bFactor,Float64 ecl,Float64 etl,IPoint2dCollection** ppUnfactored,IPoint2dCollection** ppFactored);
 };
 
 #endif //__RoundColumn_H_
