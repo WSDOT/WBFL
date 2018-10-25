@@ -90,6 +90,7 @@ public:
    // Current list of favorite reports
    std::vector<std::_tstring> GetFavoriteReports() const;
    void SetFavoriteReports( std::vector<std::_tstring> reports);
+   bool IsFavoriteReport(const std::_tstring& rptName);
 
    // Custom, user-defined reports
    CEAFCustomReports GetCustomReports() const;
@@ -170,8 +171,8 @@ protected:
    void OnReport(UINT nID);
    void OnQuickReport(UINT nID);
 
-   // Fire when changed from favorite reports to all reports
-   virtual void OnChangedFavoriteReports(bool isFavorites);
+   // Fire when changed from favorite reports to all reports. Let know if from a menu or other source
+   virtual void OnChangedFavoriteReports(bool isFavorites, bool fromMenu);
 
    // Virtual error handling when custom or favorite report data has gone wrong in some way
    enum custReportErrorType {

@@ -441,7 +441,7 @@ STDMETHODIMP CVehicularLoad::Load(IStructuredLoad2 * pload)
       if (FAILED(hr))
          return hr;
 
-      m_VariableAxle = var;
+      m_VariableAxle = VARIANT2INDEX(var);
 
       var.Clear();
       hr = pload->get_Property(_bstr_t("VariableMaxSpacing"),&var);

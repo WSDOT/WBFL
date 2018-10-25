@@ -29,7 +29,7 @@ public:
       {;}
 
 
-      std::string AsString(bool isForce) const;
+      std::_tstring AsString(bool isForce) const;
      
 
       ForceEffectType  ForceEffect;
@@ -96,7 +96,7 @@ public:
       {;}
 
 
-      std::string AsString(bool isForce) const;
+      std::_tstring AsString(bool isForce) const;
      
 
       ForceEffectType  ForceEffect;
@@ -155,22 +155,22 @@ public:
 	CLiveLoadDumper(ILBAMAnalysisEngine* engine, CDumperUtil* util);
 	virtual ~CLiveLoadDumper();
 
-   void DumpEnvelopedVehicularResponse(std::ostream& os, std::ostream& cos);
-   void DumpLiveLoadModelResponse(std::ostream& os, std::ostream& cos);
+   void DumpEnvelopedVehicularResponse(std::_tostream& os, std::_tostream& cos);
+   void DumpLiveLoadModelResponse(std::_tostream& os, std::_tostream& cos);
 
 private:
 	CLiveLoadDumper();
-   void DumpEvrForces(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
-   void DumpEvrDeflections(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
-   void DumpEvrStresses(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
-   void DumpEvrReactions(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
-   void DumpEvrSupportDeflections(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
+   void DumpEvrForces(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
+   void DumpEvrDeflections(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
+   void DumpEvrStresses(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
+   void DumpEvrReactions(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
+   void DumpEvrSupportDeflections(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
 
-   void DumpLlmForces(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
-   void DumpLlmDeflections(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
-   void DumpLlmStresses(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
-   void DumpLlmReactions(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
-   void DumpLlmSupportDeflections(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
+   void DumpLlmForces(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
+   void DumpLlmDeflections(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
+   void DumpLlmStresses(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
+   void DumpLlmReactions(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
+   void DumpLlmSupportDeflections(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName);
    
    CComPtr<ILBAMAnalysisEngine> m_Engine;
    CComPtr<ILiveLoadModelResponse> m_LLM;
@@ -178,7 +178,7 @@ private:
    CComPtr<IBasicVehicularResponse>     m_BVR;
    CDumperUtil*                 m_Util;
    CComBSTR                     m_Stage;
-   long                         m_StageId;
+   CollectionIndexType          m_StageId;
 
    CLlmParameterStack            m_LlmParams; // stack of max/min live load parameters
    CEvrParameterStack            m_EvrParams; // stack of max/min live load parameters

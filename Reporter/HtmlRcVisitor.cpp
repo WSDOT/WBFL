@@ -102,6 +102,11 @@ void rptHtmlRcVisitor::VisitRcString(rptRcString* pString)
       str.replace(pos,1,_T("&gt;"));
    }
 
+   while( (pos = str.find(_T("—"))) != std::_tstring::npos )
+   {
+      str.replace(pos,1,_T("&mdash;"));
+   }
+
    if ( 0 < str.size() )
    {
       if ( pString->NoWrap() )

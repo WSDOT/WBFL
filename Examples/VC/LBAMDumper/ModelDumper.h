@@ -21,16 +21,16 @@ public:
 	virtual ~CModelDumper();
    CDumperUtil*                 m_Util;
 
-   void DumpModel(std::ostream& os, ILBAMModel* model);
+   void DumpModel(std::_tostream& os, ILBAMModel* model);
 
 private:
 	CModelDumper();
-   void DumpSegmentData(std::ostream& os, IFilteredSegmentCollection* segments);
-   void DumpSSMData(std::ostream& os, ILBAMModel* model);
-   void DumpPOIData(std::ostream& os, ILBAMModel* model);
-   void DumpPointLoadData(std::ostream& os, ILBAMModel* model);
-   void DumpTempSupportData(std::ostream& os, ILBAMModel* model);
-   void DumpSupportData(std::ostream& os, ILBAMModel* model);
+   void DumpSegmentData(std::_tostream& os, IFilteredSegmentCollection* segments);
+   void DumpSSMData(std::_tostream& os, ILBAMModel* model);
+   void DumpPOIData(std::_tostream& os, ILBAMModel* model);
+   void DumpPointLoadData(std::_tostream& os, ILBAMModel* model);
+   void DumpTempSupportData(std::_tostream& os, ILBAMModel* model);
+   void DumpSupportData(std::_tostream& os, ILBAMModel* model);
 
 };
 
