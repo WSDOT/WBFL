@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.BearingLayout.1 = s 'BearingLayout Class'
+	{
+		CLSID = s '{C86CAC8A-4986-4234-8E44-7C77561BCD6B}'
+	}
+	WBFLGenericBridge.BearingLayout = s 'BearingLayout Class'
+	{
+		CLSID = s '{C86CAC8A-4986-4234-8E44-7C77561BCD6B}'
+		CurVer = s 'WBFLGenericBridge.BearingLayout.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {C86CAC8A-4986-4234-8E44-7C77561BCD6B} = s 'BearingLayout Class'
+		{
+			ProgID = s 'WBFLGenericBridge.BearingLayout.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.BearingLayout'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

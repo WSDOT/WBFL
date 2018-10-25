@@ -2,16 +2,16 @@ HKCR
 {
 	WBFLGenericBridge.Pier.1 = s 'Pier Class'
 	{
-		CLSID = s '{72098BAA-D991-4ac1-94AD-B3B932E7EB54}'
+		CLSID = s '{6AF46A10-C19E-438F-B69D-8AB743748CED}'
 	}
 	WBFLGenericBridge.Pier = s 'Pier Class'
 	{
-		CLSID = s '{72098BAA-D991-4ac1-94AD-B3B932E7EB54}'
+		CLSID = s '{6AF46A10-C19E-438F-B69D-8AB743748CED}'
 		CurVer = s 'WBFLGenericBridge.Pier.1'
 	}
 	NoRemove CLSID
 	{
-		ForceRemove {72098BAA-D991-4ac1-94AD-B3B932E7EB54} = s 'Pier Class'
+		ForceRemove {6AF46A10-C19E-438F-B69D-8AB743748CED} = s 'Pier Class'
 		{
 			ProgID = s 'WBFLGenericBridge.Pier.1'
 			VersionIndependentProgID = s 'WBFLGenericBridge.Pier'

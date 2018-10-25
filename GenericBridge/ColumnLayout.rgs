@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.ColumnLayout.1 = s 'ColumnLayout Class'
+	{
+		CLSID = s '{7AE3C6CE-8DB2-467E-8F5A-395B39582325}'
+	}
+	WBFLGenericBridge.ColumnLayout = s 'ColumnLayout Class'
+	{
+		CLSID = s '{7AE3C6CE-8DB2-467E-8F5A-395B39582325}'
+		CurVer = s 'WBFLGenericBridge.ColumnLayout.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {7AE3C6CE-8DB2-467E-8F5A-395B39582325} = s 'ColumnLayout Class'
+		{
+			ProgID = s 'WBFLGenericBridge.ColumnLayout.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.ColumnLayout'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

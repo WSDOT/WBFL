@@ -28,7 +28,7 @@
 #include "WBFLGenericBridge.h"
 #include "GenericBridgeImpl.h"
 #include "PierCollection.h"
-#include "Pier.h"
+#include "BridgePier.h"
 #include "SuperstructureMember.h"
 #include <MathEx.h>
 
@@ -113,7 +113,10 @@ STDMETHODIMP CGenericBridge::get_Deck(IBridgeDeck** deck)
 STDMETHODIMP CGenericBridge::putref_Deck(IBridgeDeck* deck)
 {
    m_Deck = deck;
-   m_Deck->putref_Bridge(this);
+   if ( m_Deck )
+   {
+      m_Deck->putref_Bridge(this);
+   }
    return S_OK;
 }
 
@@ -132,7 +135,7 @@ STDMETHODIMP CGenericBridge::get_Length(Float64* length)
    CHECK_RETVAL(length);
    PierIndexType nPiers;
    m_Piers->get_Count(&nPiers);
-   CComPtr<IPier> objFirstPier, objLastPier;
+   CComPtr<IBridgePier> objFirstPier, objLastPier;
 
    m_Piers->get_Item(0,&objFirstPier);
    m_Piers->get_Item(nPiers-1,&objLastPier);
@@ -158,7 +161,7 @@ STDMETHODIMP CGenericBridge::get_SpanLength(SpanIndexType spanIdx,Float64* lengt
    PierIndexType startPierIdx = (PierIndexType)spanIdx;
    PierIndexType endPierIdx = startPierIdx + 1;
 
-   CComPtr<IPier> startPier, endPier;
+   CComPtr<IBridgePier> startPier, endPier;
    HRESULT hr = m_Piers->get_Item(startPierIdx,&startPier);
    if ( FAILED(hr) )
       return hr;
@@ -359,7 +362,7 @@ STDMETHODIMP CGenericBridge::get_SuperstructureMembersAtStation(Float64 station,
 
    PierIndexType nPiers;
    m_Piers->get_Count(&nPiers);
-   CComPtr<IPier> firstPier, lastPier;
+   CComPtr<IBridgePier> firstPier, lastPier;
    m_Piers->get_Item(0,&firstPier);
    m_Piers->get_Item(nPiers-1,&lastPier);
 
@@ -544,7 +547,7 @@ STDMETHODIMP CGenericBridge::Save(IStructuredSave2* save)
 //   m_Piers->get_Count(&nPiers);
 //   for ( i = 0; i < nPiers; i++ )
 //   {
-//      CComPtr<IPier> pier;
+//      CComPtr<IBridgePier> pier;
 //      m_Piers->get_Item(i,&pier);
 //      CPier* pPier = dynamic_cast<CPier*>(pier.p);
 //
@@ -583,12 +586,12 @@ void CGenericBridge::DoUpdateBridgeModel()
       CComPtr<IPierLine> pierLine;
       m_BridgeGeometry->GetPierLine(pierIdx,&pierLine);
 
-      CComObject<CPier>* pPier;
-      CComObject<CPier>::CreateInstance(&pPier);
+      CComObject<CBridgePier>* pPier;
+      CComObject<CBridgePier>::CreateInstance(&pPier);
 
       pPier->Init(this,pierLine);
 
-      CComPtr<IPier> pier;
+      CComPtr<IBridgePier> pier;
       pier = pPier;
       pPiers->Add(pier);
    }

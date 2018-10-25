@@ -51,8 +51,14 @@ LOG
 #include <MfcTools\MfcToolsExp.h>
 
 class CMetaFileStatic;
-void MFCTOOLSFUNC DDX_MetaFileStatic( CDataExchange* pDX, int nIDC, CMetaFileStatic& rControl,LPCTSTR lpName, LPCTSTR lpType);
-void MFCTOOLSFUNC DDX_MetaFileStatic( CDataExchange* pDX, int nIDC, CMetaFileStatic& rControl,HINSTANCE hInstance,LPCTSTR lpName, LPCTSTR lpType);
+#define EMF_FIT     0 // fits the EMF into the control, may cause distortion
+#define EMF_HRATIO  1 // fits the EMF into the control, adjusting the control height to maintain the aspect ratio of the image
+#define EMF_VRATIO  2 // fits the EMF into the control, adjusting the control width to maintain the aspect ratio of the image
+#define EMF_RATIO   3 // fits the EMP into the control, adjusting the either the control width or height to maintain the aspect ratio of the image
+#define EMF_RESIZE  3 // resizes the control to fit the EMF
+
+void MFCTOOLSFUNC DDX_MetaFileStatic( CDataExchange* pDX, int nIDC, CMetaFileStatic& rControl,LPCTSTR lpName, LPCTSTR lpType, UINT flag=EMF_RATIO);
+void MFCTOOLSFUNC DDX_MetaFileStatic( CDataExchange* pDX, int nIDC, CMetaFileStatic& rControl,HINSTANCE hInstance,LPCTSTR lpName, LPCTSTR lpType, UINT flag=EMF_RATIO);
 
 /////////////////////////////////////////////////////////////////////////////
 // CMetaFileStatic window
@@ -78,8 +84,8 @@ public:
 public:
 	virtual ~CMetaFileStatic();
 
-   void SetImage( LPCTSTR lpName, LPCTSTR lpType);
-   void SetImage( HINSTANCE hInstance,LPCTSTR lpName, LPCTSTR lpType);
+   void SetImage( LPCTSTR lpName, LPCTSTR lpType, UINT flag=EMF_RATIO);
+   void SetImage( HINSTANCE hInstance,LPCTSTR lpName, LPCTSTR lpType, UINT flag=EMF_RATIO);
 
 	// Generated message map functions
 protected:

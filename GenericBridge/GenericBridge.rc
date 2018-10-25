@@ -55,8 +55,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,0,0,33
- PRODUCTVERSION 4,0,0,33
+ FILEVERSION 4,0,0,34
+ PRODUCTVERSION 4,0,0,34
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -74,7 +74,7 @@ BEGIN
             VALUE "Comments", "A member of Alternate Route Project\0"
             VALUE "CompanyName", "Washington State Department of Transportation\0"
             VALUE "FileDescription", "GenericBridge Module\0"
-            VALUE "FileVersion", "4.0.0.33\0"
+            VALUE "FileVersion", "4.0.0.34\0"
             VALUE "InternalName", "GenericBridge\0"
             VALUE "LegalCopyright", "Copyright © 1999-2015, Washington State Department of Transportation, All Rights Reserved"
             VALUE "LegalTrademarks", "\0"
@@ -82,7 +82,7 @@ BEGIN
             VALUE "OriginalFilename", "GenericBridge.DLL\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "WBFL\0"
-            VALUE "ProductVersion", "4.0.0.33\0"
+            VALUE "ProductVersion", "4.0.0.34\0"
             VALUE "SpecialBuild", "\0"
         END
     END
@@ -101,18 +101,18 @@ END
 //
 
 IDR_GENERICBRIDGE       REGISTRY DISCARDABLE    "GenericBridge.rgs"
+IDR_BRIDGEPIER                REGISTRY DISCARDABLE    "BridgePier.rgs"
 IDR_PIER                REGISTRY DISCARDABLE    "Pier.rgs"
 IDR_PIERCOLLECTION      REGISTRY DISCARDABLE    "PierCollection.rgs"
-IDR_LONGITUDINALPIERDESCRIPTION REGISTRY DISCARDABLE    "LongitudinalPierDescription.rgs"
 IDR_SUPERSTRUCTUREMEMBER REGISTRY DISCARDABLE    "SuperstructureMember.rgs"
 IDR_SEGMENT             REGISTRY DISCARDABLE    "Segment.rgs"
 IDR_PRISMATICSUPERSTRUCTUREMEMBERSEGMENT REGISTRY DISCARDABLE "PrismaticSuperstructureMemberSegment.rgs"
 IDR_SEGMENTITEM         REGISTRY DISCARDABLE    "SegmentItem.rgs"
 IDR_FILTEREDSEGMENTCOLLECTION REGISTRY DISCARDABLE    "FilteredSegmentCollection.rgs"
 IDR_COLUMN              REGISTRY DISCARDABLE    "Column.rgs"
-IDR_COLUMNSPACING       REGISTRY DISCARDABLE    "ColumnSpacing.rgs"
-IDR_CROSSBEAM           REGISTRY DISCARDABLE    "CrossBeam.rgs"
-IDR_TRANSVERSEPIERDESCRIPTION REGISTRY DISCARDABLE    "TransversePierDescription.rgs"
+IDR_COLUMNLAYOUT       REGISTRY DISCARDABLE    "ColumnLayout.rgs"
+IDR_BEARINGLAYOUT       REGISTRY DISCARDABLE    "BearingLayout.rgs"
+IDR_LINEARCROSSBEAM           REGISTRY DISCARDABLE    "LinearCrossBeam.rgs"
 IDR_MATERIAL            REGISTRY DISCARDABLE    "Material.rgs"
 IDR_CASTSLAB            REGISTRY DISCARDABLE    "CastSlab.rgs"
 IDR_ALIGNMENTOFFSETSTRATEGY REGISTRY DISCARDABLE    "AlignmentOffsetStrategy.rgs"
@@ -154,6 +154,7 @@ IDR_REBAR               REGISTRY DISCARDABLE    "Rebar.rgs"
 IDR_REBARSECTIONITEM    REGISTRY DISCARDABLE    "RebarSectionItem.rgs"
 IDR_REBARSECTION        REGISTRY DISCARDABLE    "RebarSection.rgs"
 IDR_REBARROWPATTERN     REGISTRY DISCARDABLE    "RebarRowPattern.rgs"
+IDR_CROSSBEAMREBARPATTERN     REGISTRY DISCARDABLE    "CrossBeamRebarPattern.rgs"
 IDR_REBARLAYOUT         REGISTRY DISCARDABLE    "RebarLayout.rgs"
 IDR_REBARFACTORY        REGISTRY DISCARDABLE    "RebarFactory.rgs"
 IDR_BRIDGEDECKREBARLAYOUTITEM REGISTRY DISCARDABLE "BridgeDeckRebarLayoutItem.rgs"

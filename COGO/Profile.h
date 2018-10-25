@@ -152,6 +152,10 @@ private:
    CComPtr<ISurfaceCollection> m_Surfaces;
    DWORD m_dwSurfaceCollectionCookie;
 
+   // objects used for searching the collection
+   CComPtr<IProfileElement> m_TestElement;
+   CComPtr<IProfilePoint> m_TestPoint;
+
    HRESULT GetStation(VARIANT varStation,IStation** station);
 
    HRESULT GradeAndElevation(CComPtr<IStation>& station,Float64 offset,Float64* grade,Float64* elev,Float64* pSlope);

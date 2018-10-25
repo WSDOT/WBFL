@@ -24,58 +24,49 @@
 ///////////////////////////////////////////////////////////////////////
 
 // Pier.h : Declaration of the CPier
-
-#ifndef __PIER_H_
-#define __PIER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
-#include <vector>
-
-class CSpan;
+#include "PierImpl.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPier
-// This can be any kind of pier object... pier, bent, temporary support, etc
 class ATL_NO_VTABLE CPier : 
 	public CComObjectRootEx<CComSingleThreadModel>,
-//   public CComRefCountTracer<CPier,CComObjectRootEx<CComSingleThreadModel> >,
 	public CComCoClass<CPier, &CLSID_Pier>,
 	public ISupportErrorInfo,
-   public IObjectSafetyImpl<CPier,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IPier,
-   public IStructuredStorage2
+	public IPierEx,
+   public IStructuredStorage2,
+   public IObjectSafetyImpl<CPier,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>
 {
 public:
-   CPier()
+	CPier()
 	{
 	}
 
    HRESULT FinalConstruct();
    void FinalRelease();
 
-   void Init(IGenericBridge* pBridge,IPierLine* pPierLine);
-
-   static HRESULT ValidateOrientation(BSTR bstrOrientation);
-   void SetLongitudinalPierDescription(ILongitudinalPierDescription* cloneLPD); // replaces the default LPD with a clone
-   void SetTransversePierDescription(ITransversePierDescription* cloneTPD); // replaces the default TPD with a clone
-
 DECLARE_REGISTRY_RESOURCEID(IDR_PIER)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CPier)
+   COM_INTERFACE_ENTRY(IPierEx)
 	COM_INTERFACE_ENTRY(IPier)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
-	COM_INTERFACE_ENTRY(ISupportErrorInfo)
+   COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
 END_COM_MAP()
 
 private:
-   IPierLine* m_pPierLine; // weak reference
-   IGenericBridge* m_pBridge; // weak reference to parent
+   CPierImpl m_PierImpl;
 
-   CComPtr<ILongitudinalPierDescription> m_LongPierDesc;
-   CComPtr<ITransversePierDescription> m_TransPierDesc;
+   Float64 m_DeckElevation;
+   Float64 m_tDeck;
+   Float64 m_CrownPointOffset;
+   Float64 m_Slope[2];
+   Float64 m_CurbLineOffset[2];
 
 // ISupportsErrorInfo
 public:
@@ -83,14 +74,38 @@ public:
 
 // IPier
 public:
-   STDMETHOD(get_Station)(/*[out,retval]*/IStation* *station);
-	STDMETHOD(get_LongitudinalPierDescription)(/*[out, retval]*/ ILongitudinalPierDescription* *pVal);
-   STDMETHOD(get_Direction)(/*[out,retval]*/ IDirection* *direction);
-   STDMETHOD(get_SkewAngle)(/*[out,retval]*/ IAngle* *skewAngle);
-	STDMETHOD(CreateTransversePierDescription)();
-	STDMETHOD(get_TransversePierDescription)(/*[out, retval]*/ ITransversePierDescription* *pVal);
-   STDMETHOD(get_Index)(/*[out,retval]*/PierIndexType* pIndex);
-   STDMETHOD(get_ID)(/*[out,retval]*/PierIDType* pID);
+   STDMETHOD(put_Type)(/*[in]*/PierType type) { return m_PierImpl.put_Type(type); }
+   STDMETHOD(get_Type)(/*[out,retval]*/PierType* type) { return m_PierImpl.get_Type(type); }
+   STDMETHOD(get_DeckElevation)(/*[out,retval]*/Float64* pElev);
+   STDMETHOD(get_DeckThickness)(/*[out,retval]*/Float64* pTDeck);
+   STDMETHOD(get_CrownPointOffset)(/*[out,retval]*/Float64* pCPO);
+   STDMETHOD(get_CrownSlope)(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pSlope);
+   STDMETHOD(get_CurbLineOffset)(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pCLO);
+   STDMETHOD(putref_SkewAngle)(/*[in]*/IAngle* pSkew) { return m_PierImpl.putref_SkewAngle(pSkew); }
+   STDMETHOD(get_SkewAngle)(/*[out,retval]*/IAngle** ppSkew) { return m_PierImpl.get_SkewAngle(ppSkew); }
+   STDMETHOD(putref_CrossBeam)(/*[in]*/ICrossBeam* pCrossBeam) { return m_PierImpl.putref_CrossBeam(pCrossBeam); }
+   STDMETHOD(get_CrossBeam)(/*[out,retval]*/ICrossBeam** ppCrossBeam) { return m_PierImpl.get_CrossBeam(ppCrossBeam); }
+   STDMETHOD(putref_ColumnLayout)(/*[in]*/IColumnLayout* pColumnLayout) { return m_PierImpl.putref_ColumnLayout(pColumnLayout); }
+   STDMETHOD(putref_BearingLayout)(/*[in]*/IBearingLayout* pBearingLayout) { return m_PierImpl.putref_BearingLayout(pBearingLayout); }
+   STDMETHOD(get_BearingLayout)(/*[out,retval]*/IBearingLayout** ppBearingLayout) { return m_PierImpl.get_BearingLayout(ppBearingLayout); }
+   STDMETHOD(get_ColumnLayout)(/*[out,retval]*/IColumnLayout** ppColumnLayout) { return m_PierImpl.get_ColumnLayout(ppColumnLayout); }
+   STDMETHOD(get_Column)(/*[in]*/ ColumnIndexType columnIdx,/*[out,retval]*/IColumn* *column) { return m_PierImpl.get_Column(columnIdx,column); }
+   STDMETHOD(ConvertCrossBeamToCurbLineCoordinate)(/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pXcl) { return m_PierImpl.ConvertCrossBeamToCurbLineCoordinate(Xxb,pXcl); }
+   STDMETHOD(ConvertCurbLineToCrossBeamCoordinate)(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pXxb) { return m_PierImpl.ConvertCurbLineToCrossBeamCoordinate(Xcl,pXxb); }
+   STDMETHOD(ConvertPierToCrossBeamCoordinate)(/*[in]*/Float64 Xp,/*[out,retval]*/Float64* pXxb) { return m_PierImpl.ConvertPierToCrossBeamCoordinate(Xp,pXxb); }
+   STDMETHOD(ConvertCrossBeamToPierCoordinate)(/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pXp) { return m_PierImpl.ConvertCrossBeamToPierCoordinate(Xxb,pXp); }
+   STDMETHOD(get_Elevation)(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pElev) { return m_PierImpl.get_Elevation(Xcl,pElev); }
+   STDMETHOD(get_CrownPointLocation)(/*[out,retval]*/Float64* pXcl) { return m_PierImpl.get_CrownPointLocation(pXcl); }
+   STDMETHOD(get_CrownPointElevation)(/*[out,retval]*/Float64* pElev) { return m_PierImpl.get_CrownPointElevation(pElev); }
+   STDMETHOD(get_CurbLineElevation)(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pElev) { return m_PierImpl.get_CurbLineElevation(side,pElev); }
+
+// IPierEx
+public:
+   STDMETHOD(put_DeckElevation)(/*[in]*/Float64 elev);
+   STDMETHOD(put_DeckThickness)(/*[in]*/Float64 tDeck);
+   STDMETHOD(put_CrownPointOffset)(/*[in]*/Float64 cpo);
+   STDMETHOD(put_CrownSlope)(/*[in]*/DirectionType side,/*[in]*/Float64 slope);
+   STDMETHOD(put_CurbLineOffset)(/*[in]*/DirectionType side,/*[in]*/Float64 clo);
 
 // IStructuredStorage2
 public:
@@ -98,4 +113,3 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
 };
 
-#endif //__PIER_H_

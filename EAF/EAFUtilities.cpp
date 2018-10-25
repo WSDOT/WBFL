@@ -24,8 +24,10 @@
 #include "stdafx.h"
 #include <EAF\EAFUtilities.h>
 #include <EAF\EAFBrokerDocument.h>
+#include <EAF\EAFStatusItem.h>
 
 #include "ManagePluginsDlg.h"
+#include "StatusMessageDialog.h"
 
 EAFFUNC CEAFApp* EAFGetApp()
 {
@@ -116,6 +118,23 @@ CView* EAFGetActiveView()
    }
 
    return NULL;
+}
+
+void EAFShowStatusMessage(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityType severity,BOOL bRemoveableOnError,UINT helpID)
+{
+   CStatusMessageDialog dlg(pStatusItem,severity,bRemoveableOnError,helpID);
+
+   if (dlg.DoModal() == IDOK)
+   {
+      if ( bRemoveableOnError || severity != eafTypes::statusError )
+      {
+         pStatusItem->RemoveAfterEdit(TRUE);
+      }
+      else
+      {
+         pStatusItem->RemoveAfterEdit(FALSE);
+      }
+   }
 }
 
 bool operator<(REFIID a,REFIID b)

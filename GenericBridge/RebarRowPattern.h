@@ -69,19 +69,27 @@ private:
    Float64 m_Spacing;
    RebarRowOrientation m_Orientation;
 
+   HookType m_HookType[2];
+
    IRebarLayoutItem* m_pRebarLayoutItem; // weak reference
 
 // ISupportsErrorInfo
 public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
 
-// IRebarRowPattern
+// IRebarPattern
 public:
 	STDMETHOD(putref_Rebar)(/*[in]*/IRebar* rebar);
 	STDMETHOD(get_Rebar)(/*[out,retval]*/IRebar** rebar);
    STDMETHOD(putref_RebarLayoutItem)(/*[in]*/IRebarLayoutItem* rebarLayoutItem);
+   STDMETHOD(put_Hook)(/*[in]*/DirectionType side,/*[in]*/HookType hook);
+   STDMETHOD(get_Hook)(/*[in]*/DirectionType side,/*[out,retval]*/HookType* hook);
 	STDMETHOD(get_Count)(/*[out,retval]*/CollectionIndexType* count);
 	STDMETHOD(get_Location)(/*[in]*/Float64 distFromStartOfPattern,/*[in]*/CollectionIndexType barIdx,/*[out,retval]*/IPoint2d** location);
+   STDMETHOD(get_Profile)(/*[in]*/IndexType barIdx,/*[out,retval]*/IPoint2dCollection** ppProfile);
+
+// IRebarRowPattern
+public:
 	STDMETHOD(put_AnchorPoint)(/*[in]*/ EndType endType,/*[in]*/IPoint2d* anchorPt);
 	STDMETHOD(get_AnchorPoint)(/*[in]*/ EndType endType,/*[out,retval]*/IPoint2d** anchorPt);
 	STDMETHOD(put_Count)(/*[in]*/RowIndexType count);

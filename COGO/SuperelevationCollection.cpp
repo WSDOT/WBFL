@@ -28,7 +28,7 @@
 #include "WBFLCOGO.h"
 #include "SuperelevationCollection.h"
 #include "Superelevation.h"
-#include "CogoHelpers.h"
+#include <WBFLCogo\CogoHelpers.h>
 
 #include <algorithm>
 

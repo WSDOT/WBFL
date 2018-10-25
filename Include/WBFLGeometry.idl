@@ -530,6 +530,12 @@ library WBFLGeometry
 
       [helpstring("method Clone")/*,helpcontext(IDH_IPoint2dCollection_Clone)*/]
       HRESULT Clone([out,retval]IPoint2dCollection** clone);
+
+		[helpstring("method Offset"), helpcontext(IDH_IPoint2d_Offset)]
+      HRESULT Offset([in] Float64 dx,[in] Float64 dy);
+
+		[helpstring("method OffsetEx"), helpcontext(IDH_IPoint2d_OffsetEx)]
+      HRESULT OffsetEx([in] ISize2d* size);
    };
 
    [
@@ -1031,6 +1037,12 @@ library WBFLGeometry
 
       [helpstring("method Clone")/*,helpcontext(IDH_IPoint3dCollection_Clone)*/]
       HRESULT Clone([out,retval]IPoint3dCollection** clone);
+
+		[helpstring("method Offset"), helpcontext(IDH_IPoint2d_Offset)]
+      HRESULT Offset([in] Float64 dx,[in] Float64 dy,[in] Float64 dz);
+
+		[helpstring("method OffsetEx"), helpcontext(IDH_IPoint2d_OffsetEx)]
+      HRESULT OffsetEx([in] ISize3d* size);
    };
 
    [

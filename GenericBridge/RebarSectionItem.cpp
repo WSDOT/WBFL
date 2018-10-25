@@ -55,11 +55,13 @@ STDMETHODIMP CRebarSectionItem::InterfaceSupportsErrorInfo(REFIID riid)
 /////////////////////////////////////////////////////
 // IRebarSectionItem implementation
 
-HRESULT CRebarSectionItem::Init(IPoint2d* pLocation,Float64 start,Float64 end,IRebar* pRebar)
+HRESULT CRebarSectionItem::Init(IPoint2d* pLocation,Float64 start,Float64 end,HookType hkLeft,HookType hkRight,IRebar* pRebar)
 {
    m_Location = pLocation;
    m_LeftExtension = start;
    m_RightExtension = end;
+   m_LeftHookType = hkLeft;
+   m_RightHookType = hkRight;
    m_Rebar = pRebar;
 
    return S_OK;
@@ -84,6 +86,20 @@ STDMETHODIMP CRebarSectionItem::get_RightExtension(Float64* dist)
 {
    CHECK_RETVAL(dist);
    *dist = m_RightExtension;
+   return S_OK;
+}
+
+STDMETHODIMP CRebarSectionItem::get_LeftHook(/*[out,retval]*/HookType* hook)
+{
+   CHECK_RETVAL(hook);
+   *hook = m_LeftHookType;
+   return S_OK;
+}
+
+STDMETHODIMP CRebarSectionItem::get_RightHook(/*[out,retval]*/HookType* hook)
+{
+   CHECK_RETVAL(hook);
+   *hook = m_RightHookType;
    return S_OK;
 }
 

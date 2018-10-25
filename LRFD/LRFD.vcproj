@@ -4638,6 +4638,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Include\LRFD\Details.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\LRFD\ElasticShortening.h"
 				>
 			</File>

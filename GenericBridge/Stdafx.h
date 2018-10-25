@@ -55,6 +55,8 @@ extern CComModule _Module;
 #include <WBFLCogo.h>
 #include <MathEx.h>
 
+#include <Units\Units.h>
+
 #include "GenericBridgeHelpers.h"
 
 inline LPCOLESTR GetHelpFile()

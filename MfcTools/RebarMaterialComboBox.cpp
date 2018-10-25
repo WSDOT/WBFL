@@ -34,54 +34,14 @@ void DDX_RebarMaterial(CDataExchange* pDX,UINT nIDC,matRebar::Type& type,matReba
 {
    HWND hWndCtrl = pDX->PrepareCtrl(nIDC);
 
+   CRebarMaterialComboBox* pCB = (CRebarMaterialComboBox*)pDX->m_pDlgWnd->GetDlgItem(nIDC);
    if ( pDX->m_bSaveAndValidate )
    {
-      int curSel = (int)::SendMessage(hWndCtrl,CB_GETCURSEL,0,0L);
-      switch(curSel)
-      {
-      case 0:  type = matRebar::A615;  grade = matRebar::Grade40;  break;
-      case 1:  type = matRebar::A615;  grade = matRebar::Grade60;  break;
-      case 2:  type = matRebar::A615;  grade = matRebar::Grade75;  break;
-      case 3:  type = matRebar::A615;  grade = matRebar::Grade80;  break;
-      case 4:  type = matRebar::A706;  grade = matRebar::Grade60;  break;
-      case 5:  type = matRebar::A706;  grade = matRebar::Grade80;  break;
-      case 6:  type = matRebar::A1035; grade = matRebar::Grade100; break;
-      default:
-         ATLASSERT(false); // should never get here
-      }
+      pCB->GetMaterial(&type,&grade);
    }
    else
    {
-      int curSel;
-      if ( type == matRebar::A615 )
-      {
-         if ( grade == matRebar::Grade40 )
-            curSel = 0;
-         else if ( grade == matRebar::Grade60 )
-            curSel = 1;
-         else if ( grade == matRebar::Grade75 )
-            curSel = 2;
-         else if ( grade == matRebar::Grade80 )
-            curSel = 3;
-      }
-      else if ( type == matRebar::A706 )
-      {
-         if ( grade == matRebar::Grade60 )
-            curSel = 4;
-         else if ( grade == matRebar::Grade80 )
-            curSel = 5;
-      }
-      else if ( type == matRebar::A1035 )
-      {
-         if ( grade == matRebar::Grade100 )
-            curSel = 6;
-      }
-      else
-      {
-         ATLASSERT(false); // should never get here
-         curSel = CB_ERR;
-      }
-      ::SendMessage(hWndCtrl, CB_SETCURSEL, (WPARAM)curSel, (LPARAM)0);
+      pCB->SetMaterial(type,grade);
    }
 }
 
@@ -123,6 +83,60 @@ void CRebarMaterialComboBox::Initialize(bool bFilterBySpec)
       }
    }
 }
+
+void CRebarMaterialComboBox::GetMaterial(matRebar::Type* pType,matRebar::Grade* pGrade)
+{
+   int curSel = GetCurSel();
+      switch(curSel)
+      {
+      case 0:  *pType = matRebar::A615;  *pGrade = matRebar::Grade40;  break;
+      case 1:  *pType = matRebar::A615;  *pGrade = matRebar::Grade60;  break;
+      case 2:  *pType = matRebar::A615;  *pGrade = matRebar::Grade75;  break;
+      case 3:  *pType = matRebar::A615;  *pGrade = matRebar::Grade80;  break;
+      case 4:  *pType = matRebar::A706;  *pGrade = matRebar::Grade60;  break;
+      case 5:  *pType = matRebar::A706;  *pGrade = matRebar::Grade80;  break;
+      case 6:  *pType = matRebar::A1035; *pGrade = matRebar::Grade100; break;
+      default:
+         ATLASSERT(false); // should never get here
+      }
+}
+
+void CRebarMaterialComboBox::SetMaterial(matRebar::Type type,matRebar::Grade grade)
+{
+   int curSel;
+   if ( type == matRebar::A615 )
+   {
+      if ( grade == matRebar::Grade40 )
+         curSel = 0;
+      else if ( grade == matRebar::Grade60 )
+         curSel = 1;
+      else if ( grade == matRebar::Grade75 )
+         curSel = 2;
+      else if ( grade == matRebar::Grade80 )
+         curSel = 3;
+   }
+   else if ( type == matRebar::A706 )
+   {
+      if ( grade == matRebar::Grade60 )
+         curSel = 4;
+      else if ( grade == matRebar::Grade80 )
+         curSel = 5;
+   }
+   else if ( type == matRebar::A1035 )
+   {
+      if ( grade == matRebar::Grade100 )
+         curSel = 6;
+   }
+   else
+   {
+      ATLASSERT(false); // should never get here
+      curSel = CB_ERR;
+   }
+
+   SetCurSel(curSel);
+}
+
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CRebarMaterialComboBox message handlers

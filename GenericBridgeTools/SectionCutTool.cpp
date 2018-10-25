@@ -323,7 +323,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
 
    CComPtr<IPierCollection> piers;
    bridge->get_Piers(&piers);
-   CComPtr<IPier> pier;
+   CComPtr<IBridgePier> pier;
    piers->get_Item(0,&pier);
 
    CComPtr<IStation> pier_station;
@@ -345,26 +345,8 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    CComPtr<IProfile> profile;
    alignment->get_Profile(&profile);
 
-   // Walk down the bridge and find the two piers that bound the
-   // station where the cut is being made.
-#pragma Reminder("INEFFICIENCY") // piers are sorted by station so this could be faster with a binary search
-   CComPtr<IPier> prev_pier;
-   for ( PierIndexType pierIdx = 0; pierIdx < nPiers-1; pierIdx++ )
-   {
-      prev_pier.Release();
-      piers->get_Item(pierIdx,&prev_pier);
-
-      CComPtr<IStation> objPrevPierStation;
-      prev_pier->get_Station(&objPrevPierStation);
-
-      Float64 prev_pier_station;
-      objPrevPierStation->get_Value(&prev_pier_station);
-
-      if ( prev_pier_station < station )
-      {
-         break; // previous pier found
-      }
-   }
+   CComPtr<IBridgePier> prev_pier;
+   piers->FindPier(station,&prev_pier);
    pier_station.Release();
    prev_pier->get_Station(&pier_station);
    Float64 prev_pier_station;
@@ -715,6 +697,105 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    return S_OK;
 }
 
+STDMETHODIMP CSectionCutTool::GetDeckProperties(IGenericBridge* bridge,IndexType nSectionsPerSpan,Float64* pSurfaceArea,Float64* pVolume)
+{
+   CHECK_IN(bridge);
+   CHECK_RETVAL(pSurfaceArea);
+   CHECK_RETVAL(pVolume);
+
+   if ( nSectionsPerSpan < 1 )
+   {
+      return E_INVALIDARG;
+   }
+
+   CComPtr<IBridgeDeck> deck;
+   bridge->get_Deck(&deck);
+
+   // No deck, no surface area or volume
+   if ( deck == NULL )
+   {
+      *pSurfaceArea = 0;
+      *pVolume = 0;
+      return S_OK;
+   }
+
+   CComPtr<IAlignment> alignment;
+   bridge->get_Alignment(&alignment);
+
+   CComPtr<IPierCollection> piers;
+   bridge->get_Piers(&piers);
+   PierIndexType nPiers;
+   piers->get_Count(&nPiers);
+
+   SpanIndexType nSpans = nPiers-1;
+
+   Float64 V = 0;
+   Float64 S = 0;
+
+   CComPtr<IBridgePier> startPier;
+   piers->get_Item(0,&startPier);
+   CComPtr<IStation> objStartStation;
+   startPier->get_Station(&objStartStation);
+   Float64 startStation;
+   objStartStation->get_NormalizedValue(alignment,&startStation);
+
+   Float64 station = startStation;
+   CComPtr<IShape> prevDeckShape;
+   CreateSlabShape(bridge,startStation,&prevDeckShape);
+
+   Float64 prevPerimeter;
+   prevDeckShape->get_Perimeter(&prevPerimeter);
+
+   CComPtr<IShapeProperties> shapeProps;
+   prevDeckShape->get_ShapeProperties(&shapeProps);
+   Float64 prevArea;
+   shapeProps->get_Area(&prevArea);
+
+   for ( SpanIndexType spanIdx = 0; spanIdx < nSpans; spanIdx++ )
+   {
+      PierIndexType endPierIdx = (spanIdx+1);
+      CComPtr<IBridgePier> endPier;
+      piers->get_Item(endPierIdx,&endPier);
+      CComPtr<IStation> objEndStation;
+      endPier->get_Station(&objEndStation);
+      Float64 endStation;
+      objEndStation->get_NormalizedValue(alignment,&endStation);
+
+      Float64 increment = (endStation - startStation)/nSectionsPerSpan;
+
+      for ( IndexType i = 1; i < nSectionsPerSpan; i++ )
+      {
+         station += increment;
+
+         CComPtr<IShape> deckShape;
+         CreateSlabShape(bridge,station,&deckShape);
+
+         Float64 perimeter;
+         deckShape->get_Perimeter(&perimeter);
+         Float64 dS = increment*(prevPerimeter + perimeter)/2;
+         S += dS;
+
+         shapeProps.Release();
+         deckShape->get_ShapeProperties(&shapeProps);
+
+         Float64 area;
+         shapeProps->get_Area(&area);
+         Float64 dV = increment*(prevArea + area)/2;
+         V += dV;
+
+         // The end for this loop is the previoius values in the next loop
+         prevPerimeter = perimeter;
+         prevArea = area;
+      } // next section
+
+      startStation = endStation;
+   } // next span
+
+   *pSurfaceArea = S;
+   *pVolume = V;
+
+   return S_OK;
+}
 
 STDMETHODIMP CSectionCutTool::putref_EffectiveFlangeWidthTool(IEffectiveFlangeWidthTool* pTool)
 {
@@ -772,7 +853,7 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
    CComPtr<IPierCollection> piers;
    bridge->get_Piers(&piers);
 
-   CComPtr<IPier> first_pier;
+   CComPtr<IBridgePier> first_pier;
    piers->get_Item(0,&first_pier);
 
    CComPtr<IStation> station;
@@ -1497,7 +1578,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
          girder->get_RebarLayout(&rebarLayout);
 
          CComPtr<IRebarSection> rebarSection;
-         rebarLayout->CreateRebarSection(Xs,&rebarSection);
+         rebarLayout->CreateRebarSection(Xs,stageIdx,&rebarSection);
 
          LayoutRebar(compositeSection,Econc,Dconc,rebarSection,xTop,yTop,stageIdx,sectionPropMethod);
 
@@ -1510,7 +1591,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
          girder->get_ClosureJointRebarLayout(&rebarLayout);
 
          CComPtr<IRebarSection> rebarSection;
-         rebarLayout->CreateRebarSection(Xs,&rebarSection);
+         rebarLayout->CreateRebarSection(Xs,stageIdx,&rebarSection);
 
          LayoutRebar(compositeSection,Econc,Dconc,rebarSection,xTop,yTop,stageIdx,sectionPropMethod);
       } // is point on precast girder
@@ -1895,11 +1976,12 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
          CComPtr<IPoint3d> pntCG;
          tendon->get_CG(Xg,tmPath,&pntCG); // Xg is in Girder Coordinates
 
+         ATLASSERT(pntCG != NULL);
+
          if ( pntCG == NULL )
          {
-#pragma Reminder("UPDATE: review this code")
             // this code was put here to deal with the case that tendon->get_CG() fails
-            // and allows testing to continue
+            // and allows processing to continue
             continue;
          }
 

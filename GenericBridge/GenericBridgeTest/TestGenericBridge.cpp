@@ -90,7 +90,7 @@ void CTestGenericBridge::TestPiers(IGenericBridge* bridge)
 
    for ( PierIndexType pierIdx = 0; pierIdx < nPiers; pierIdx++ )
    {
-      CComPtr<IPier> pier;
+      CComPtr<IBridgePier> pier;
       piers->get_Item(pierIdx,&pier);
 
       CComPtr<IStation> station;

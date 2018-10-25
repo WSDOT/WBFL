@@ -109,6 +109,8 @@ public:
    // creates a shape for the bridge deck
    STDMETHOD(CreateSlabShape)(/*[in]*/IGenericBridge* bridge,/*[in]*/Float64 station,/*[out,retval]*/IShape** shape);
 
+   STDMETHOD(GetDeckProperties)(/*[in]*/IGenericBridge* bridge,/*[in]*/IndexType nSectionsPerSpan,/*[out]*/Float64* pSurfaceArea,/*[out]*/Float64* pVolume);
+
 private:
    HRESULT CreateCompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section);
    HRESULT CreateDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section);

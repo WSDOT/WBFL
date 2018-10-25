@@ -87,6 +87,11 @@ void txnTxnManager::Redo()
 {
    PRECONDITION(m_Mode == RedoMode);
 
+   if ( m_UndoHistory.empty() )
+   {
+      return;
+   }
+
    TxnItem apTxn = m_UndoHistory.back();
    m_UndoHistory.pop_back();
 
@@ -101,6 +106,11 @@ void txnTxnManager::Redo()
 void txnTxnManager::Repeat()
 {
    PRECONDITION(m_Mode == RepeatMode);
+
+   if ( m_TxnHistory.empty() )
+   {
+      return;
+   }
 
    TxnItem apTxn = m_TxnHistory.back();
    

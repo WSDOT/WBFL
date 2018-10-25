@@ -208,6 +208,36 @@ std::_tstring lrfdRebarPool::GetBarSize(matRebar::Size size)
    return str;
 }
 
+matRebar::Size lrfdRebarPool::GetBarSize(LPCTSTR strSize)
+{
+   std::_tstring size(strSize);
+   if ( size == _T("#3") )
+      return matRebar::bs3;
+   else if ( size == _T("#4") )
+      return matRebar::bs4;
+   else if ( size == _T("#5") )
+      return matRebar::bs5;
+   else if ( size == _T("#6") )
+      return matRebar::bs6;
+   else if ( size == _T("#7") )
+      return matRebar::bs7;
+   else if ( size == _T("#8") )
+      return matRebar::bs8;
+   else if ( size == _T("#9") )
+      return matRebar::bs9;
+   else if ( size == _T("#10") )
+      return matRebar::bs10;
+   else if ( size == _T("#11") )
+      return matRebar::bs11;
+   else if ( size == _T("#14") )
+      return matRebar::bs14;
+   else if ( size == _T("#18") )
+      return matRebar::bs18;
+
+   ATLASSERT(false); // should never get here
+   return matRebar::bsNone;
+}
+
 void lrfdRebarPool::GetBarSizeRange(matRebar::Type type,matRebar::Grade grade,matRebar::Size& minSize,matRebar::Size& maxSize)
 {
    minSize = matRebar::bs3;
@@ -226,7 +256,9 @@ const matRebar* lrfdRebarPool::GetRebar(Int32 key)
 
    found = ms_Rebar.find( key );
    if ( found == ms_Rebar.end() )
+   {
       return 0;
+   }
 
    return (*found).second.get();
 } 
@@ -374,10 +406,10 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-lrfdRebarIter::lrfdRebarIter(matRebar::Grade grade,matRebar::Type type,bool bTransverseBarsOnly)
+lrfdRebarIter::lrfdRebarIter(matRebar::Type type,matRebar::Grade grade,bool bTransverseBarsOnly)
 {
-   m_Grade = grade;
    m_Type  = type;
+   m_Grade = grade;
    m_bTransverseBarsOnly = bTransverseBarsOnly;
 
    // Make sure the rebarpool is up and running
@@ -399,7 +431,9 @@ lrfdRebarIter::~lrfdRebarIter()
 lrfdRebarIter& lrfdRebarIter::operator=(const lrfdRebarIter& rOther)
 {
    if ( this != &rOther )
+   {
       MakeAssignment( rOther );
+   }
 
    return *this;
 }
@@ -464,39 +498,55 @@ void lrfdRebarIter::End()
 void lrfdRebarIter::Next()
 {
    if ( m_Current != m_End )
+   {
       m_Current++;
+   }
 }
 
 void lrfdRebarIter::Move(Int32 pos)
 {
    m_Current = m_Begin;
-   if ( m_Begin + pos > m_End )
+   if ( m_End < m_Begin + pos )
+   {
       m_Current = m_End;
+   }
    else
+   {
       m_Current = m_Begin + pos;
+   }
 }
 
 void lrfdRebarIter::MoveBy(Int32 dPos)
 {
    m_Current += dPos;
-   if ( m_Current > m_End )
+   if ( m_End < m_Current )
+   {
       m_Current = m_End;
+   }
 }
 
 lrfdRebarIter::operator void*() const
 {
    if ( m_Current != m_End )
+   {
       return (void*)1;
+   }
    else
+   {
       return 0;
+   }
 }
 
 const matRebar* lrfdRebarIter::GetCurrentRebar() const
 {
    if ( *this )
+   {
       return (*m_Current);
+   }
    else
+   {
       return 0;
+   }
 }
 void lrfdRebarIter::SetGrade(matRebar::Grade grade)
 {

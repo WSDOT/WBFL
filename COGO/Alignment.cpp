@@ -29,7 +29,7 @@
 #include "Alignment.h"
 #include "Path.h"
 #include "Profile.h"
-#include "CogoHelpers.h"
+#include <WBFLCogo\CogoHelpers.h>
 #include "PointFactory.h"
 #include "Station.h"
 #include "StationEquationCollection.h"

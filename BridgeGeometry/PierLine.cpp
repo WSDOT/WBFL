@@ -288,8 +288,8 @@ HRESULT CPierLine::UpdateGeometry()
    CComPtr<ILocate2> locate;
    engine->get_Locate(&locate);
 
-   locate->ByDistDir(m_pntAlignment,m_Offset,CComVariant(m_Direction),0.0,&m_pntLeft);
-   locate->PointOnLine(m_pntLeft,m_pntAlignment, ::BinarySign(m_Offset)*m_Width,0.0,&m_pntRight);
+   locate->ByDistDir(m_pntAlignment,-m_Offset,CComVariant(m_Direction),0.0,&m_pntLeft);
+   locate->ByDistDir(m_pntLeft,-m_Width,CComVariant(m_Direction),0.0,&m_pntRight);
 
    // create normal to the pier
    m_Normal.Release(); 

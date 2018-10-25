@@ -159,6 +159,25 @@ STDMETHODIMP CPoint2dCollection::Clear()
 	return S_OK;
 }
 
+STDMETHODIMP CPoint2dCollection::Offset(Float64 dx,Float64 dy)
+{
+   for (iterator it= begin(); it != end(); it++)
+   {
+      CComPtr<IPoint2d> p = it->second;
+      p->Offset(dx,dy);
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP CPoint2dCollection::OffsetEx(ISize2d* size)
+{
+   CHECK_IN(size);
+   Float64 dx,dy;
+   size->Dimensions(&dx,&dy);
+   return Offset(dx,dy);
+}
+
 STDMETHODIMP CPoint2dCollection::OnPointChanged(IPoint2d* point)
 {
    if ( m_bEventsEnabled )

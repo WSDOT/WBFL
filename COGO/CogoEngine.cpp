@@ -30,7 +30,7 @@
 #include "PointFactory.h"
 #include "LineSegmentFactory.h"
 #include "Angle.h"
-#include "CogoHelpers.h"
+#include <WBFLCogo\CogoHelpers.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

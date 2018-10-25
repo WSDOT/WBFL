@@ -179,7 +179,7 @@ STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIn
    // station of first pier in the bridge
    CComPtr<IPierCollection> piers;
    m_Bridge->get_Piers(&piers);
-   CComPtr<IPier> pier;
+   CComPtr<IBridgePier> pier;
    piers->get_Item(0,&pier);
    CComPtr<IStation> firstStation;
    pier->get_Station(&firstStation);
@@ -271,7 +271,7 @@ STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIn
 
                CComPtr<IRebarSectionItem> sectionItem;
                sectionItem.CoCreateInstance(CLSID_RebarSectionItem);
-               sectionItem->Init(point,cutLocation-start,start+length-cutLocation,rebar);
+               sectionItem->Init(point,cutLocation-start,start+length-cutLocation,htNone,htNone,rebar);
 
                (*section)->Add(sectionItem);
 

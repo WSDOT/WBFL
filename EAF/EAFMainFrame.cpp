@@ -87,7 +87,7 @@ CEAFMainFrame::CEAFMainFrame()
    m_pStatusBar = NULL;
    m_pMainFrameToolBar = NULL;
    m_pMainMenu = NULL;
-   m_pBackgroundWnd = NULL;
+   m_pStartPageWnd = NULL;
 
    m_bShowToolTips = TRUE;
 
@@ -112,11 +112,6 @@ CEAFMainFrame::~CEAFMainFrame()
    }
 
    m_wndMDIClient.Detach();
-
-   //if ( m_pBackgroundWnd )
-   //{
-   //   delete m_pBackgroundWnd;
-   //}
 }
 
 CEAFStatusBar* CEAFMainFrame::CreateStatusBar()
@@ -160,7 +155,7 @@ CToolBar* CEAFMainFrame::CreateMainFrameToolBar()
    return pToolBar;
 }
 
-CEAFBackgroundWnd* CEAFMainFrame::CreateBackgroundWindow()
+CEAFStartPageWnd* CEAFMainFrame::CreateStartPage()
 {
    return NULL;
 }
@@ -168,7 +163,7 @@ CEAFBackgroundWnd* CEAFMainFrame::CreateBackgroundWindow()
 void CEAFMainFrame::OnSize(UINT nType, int cx, int cy)
 {
    CMDIFrameWnd::OnSize(nType,cx,cy);
-   if ( m_pBackgroundWnd )
+   if ( m_pStartPageWnd )
    {
       // get the range of control bar IDs
       UINT minID = UINT_MAX;
@@ -184,9 +179,9 @@ void CEAFMainFrame::OnSize(UINT nType, int cx, int cy)
 	   }
 
       CRect rect;
-      UINT bkID = m_pBackgroundWnd->GetDlgCtrlID();
+      UINT bkID = m_pStartPageWnd->GetDlgCtrlID();
       RepositionBars(minID,maxID,bkID,CWnd::reposQuery,&rect);
-      m_pBackgroundWnd->SetWindowPos(NULL,0/*rect.left*/,0/*rect.top*/,rect.Size().cx,rect.Size().cy,SWP_NOZORDER);
+      m_pStartPageWnd->SetWindowPos(NULL,0/*rect.left*/,0/*rect.top*/,rect.Size().cx,rect.Size().cy,SWP_NOZORDER);
    }
 }
 
@@ -250,11 +245,11 @@ int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
    // Main Menu
    m_pMainMenu = CreateMainMenu();
 
-   // Background Window
-   m_pBackgroundWnd = CreateBackgroundWindow();
-   if ( m_pBackgroundWnd )
+   // Start Page Window
+   m_pStartPageWnd = CreateStartPage();
+   if ( m_pStartPageWnd )
    {
-      m_pBackgroundWnd->Create(NULL,_T("Background"),WS_CHILD | WS_VISIBLE,rectDefault,this);
+      m_pStartPageWnd->Create(NULL,_T("Start Page"),WS_CHILD | WS_VISIBLE,rectDefault,this);
    }
 
 	return 0;
@@ -859,19 +854,19 @@ void CEAFMainFrame::ShowMainFrameToolBar()
    ShowControlBar(m_pMainFrameToolBar,TRUE,FALSE);
 }
 
-void CEAFMainFrame::HideMainFrameBackground()
+void CEAFMainFrame::HideStartPage()
 {
-   if ( m_pBackgroundWnd )
+   if ( m_pStartPageWnd )
    {
-      m_pBackgroundWnd->ShowWindow(SW_HIDE);
+      m_pStartPageWnd->ShowWindow(SW_HIDE);
    }
 }
 
-void CEAFMainFrame::ShowMainFrameBackGround()
+void CEAFMainFrame::ShowStartPage()
 {
-   if ( m_pBackgroundWnd )
+   if ( m_pStartPageWnd )
    {
-      m_pBackgroundWnd->ShowWindow(SW_SHOW);
+      m_pStartPageWnd->ShowWindow(SW_SHOW);
    }
 }
 

@@ -47,10 +47,12 @@ CShapeDrawStrategyImpl::CShapeDrawStrategyImpl()
    m_SolidLineStyle = lsSolid;
    m_SolidLineColor = RGB(0,0,0); // black
    m_SolidFillColor = RGB(0,0,0); // black
+   m_SolidLineWidth = 1;
 
    m_VoidLineStyle = lsSolid;
    m_VoidLineColor  = RGB(255,255,255); // white
    m_VoidFillColor  = RGB(255,255,255); // white
+   m_VoidLineWidth = 1;
 
    m_bFill = false;
    m_bHasBoundingShape = true;
@@ -107,6 +109,16 @@ STDMETHODIMP_(COLORREF) CShapeDrawStrategyImpl::GetSolidFillColor()
    return m_SolidFillColor;
 }
 
+STDMETHODIMP_(void) CShapeDrawStrategyImpl::SetSolidLineWidth(UINT nPixels)
+{
+   m_SolidLineWidth = nPixels;
+}
+
+STDMETHODIMP_(UINT) CShapeDrawStrategyImpl::GetSolidLineWidth()
+{
+   return m_SolidLineWidth;
+}
+
 STDMETHODIMP_(void) CShapeDrawStrategyImpl::SetVoidLineStyle(LineStyleType lineStyle)
 {
    m_VoidLineStyle = lineStyle;
@@ -135,6 +147,16 @@ STDMETHODIMP_(void) CShapeDrawStrategyImpl::SetVoidFillColor(COLORREF crColor)
 STDMETHODIMP_(COLORREF) CShapeDrawStrategyImpl::GetVoidFillColor()
 {
    return m_VoidFillColor;
+}
+
+STDMETHODIMP_(void) CShapeDrawStrategyImpl::SetVoidLineWidth(UINT nPixels)
+{
+   m_VoidLineWidth = nPixels;
+}
+
+STDMETHODIMP_(UINT) CShapeDrawStrategyImpl::GetVoidLineWidth()
+{
+   return m_VoidLineWidth;
 }
 
 STDMETHODIMP_(void) CShapeDrawStrategyImpl::DoFill(bool doFill)
@@ -292,7 +314,7 @@ void CShapeDrawStrategyImpl::DrawMe(iPointDisplayObject* pDO,CDC* pDC,BOOL bHigh
    }
 
    CPen solid_pen;
-   CreatePen(m_SolidLineStyle,1,line_color,solid_pen);
+   CreatePen(m_SolidLineStyle,m_SolidLineWidth,line_color,solid_pen);
 
    CBrush solid_brush;
    if ( bIsSelected )
@@ -305,7 +327,7 @@ void CShapeDrawStrategyImpl::DrawMe(iPointDisplayObject* pDO,CDC* pDC,BOOL bHigh
    }
 
    CPen void_pen;
-   CreatePen(m_VoidLineStyle,1,m_VoidLineColor,void_pen);
+   CreatePen(m_VoidLineStyle,m_VoidLineWidth,m_VoidLineColor,void_pen);
 
    CBrush void_brush(m_VoidFillColor);
 

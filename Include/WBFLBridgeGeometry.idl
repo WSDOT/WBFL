@@ -71,8 +71,8 @@ enum
 typedef [public,helpstring("enum MeasurementType"),uuid(A8F6552D-A5A9-40DB-9562-B33623CC9C31)] 
 enum 
 {
-    mtNormal = 0,
-    mtAlongItem = 1
+    mtAlongItem = 0,
+    mtNormal = 1
 } MeasurementType;
 
 typedef [public,helpstring("enum MeasurementLocation"),uuid(A884BF5A-0C8F-4D89-BDA7-114E6944A9D0)] 

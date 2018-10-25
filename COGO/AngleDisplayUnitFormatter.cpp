@@ -27,7 +27,7 @@
 #include "stdafx.h"
 #include "WBFLCOGO.h"
 #include "AngleDisplayUnitFormatter.h"
-#include "CogoHelpers.h"
+#include <WBFLCogo\CogoHelpers.h>
 #include <sstream>
 #include <iomanip>
 

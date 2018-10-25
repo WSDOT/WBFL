@@ -33,6 +33,7 @@
 #endif
 
 #include <Lrfd\AutoVersion.h>
+#include <Lrfd\Details.h>
 #include <Lrfd\ConcreteUtil.h>
 #include <Lrfd\ILiveLoadDistributionFactor.h>
 #include <Lrfd\LimitStateCalculator.h>
@@ -55,6 +56,7 @@
 #include <Lrfd\ElasticShortening.h>
 #include <Lrfd\PsStrand.h>
 #include <Lrfd\RebarPool.h>
+#include <Lrfd\Rebar.h>
 #include <Lrfd\Shear.h>
 #include <Lrfd\StrandPool.h>
 #include <Lrfd\Utility.h>

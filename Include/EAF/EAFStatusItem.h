@@ -65,10 +65,10 @@ public:
    StatusGroupIDType GetStatusGroupID() const;
 
    // framework will remove status item after edit if true
-   bool RemoveAfterEdit();
-   void RemoveAfterEdit(bool bRemoveAfterEdit);
+   BOOL RemoveAfterEdit();
+   void RemoveAfterEdit(BOOL bRemoveAfterEdit);
 
-   const std::_tstring& GetDescription() const;
+   LPCTSTR GetDescription() const;
    StatusCallbackIDType GetCallbackID() const;
 
    virtual bool IsEqual(CEAFStatusItem* pOther) = 0;
@@ -77,6 +77,6 @@ private:
    StatusItemIDType m_ID;
    StatusGroupIDType m_StatusGroupID;
    StatusCallbackIDType m_CallbackID;
-   bool m_bRemoveAfterEdit;
-   std::_tstring m_Description;
+   BOOL m_bRemoveAfterEdit;
+   CString m_strDescription;
 };

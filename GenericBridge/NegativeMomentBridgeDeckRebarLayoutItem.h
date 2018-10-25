@@ -77,7 +77,7 @@ protected:
    Float64 m_LeftCutoff;
    Float64 m_RightCutoff;
 
-   CComPtr<IPier> m_Pier;
+   CComPtr<IBridgePier> m_Pier;
    Float64 m_PierLocation; // location of the pier measured as distance from start of bridge
 
    Float64 GetStart(Float64 offset);

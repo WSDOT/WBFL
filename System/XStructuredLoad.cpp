@@ -88,7 +88,9 @@ sysXStructuredLoad::Reason sysXStructuredLoad::GetExplicitReason() const
 
 void sysXStructuredLoad::GetErrorMessage(std::_tstring* pMsg) const
 {
+#if defined _DEBUG
    sysXBase::GetErrorMessage(pMsg);
+#endif
 
    switch (m_Reason)
    {

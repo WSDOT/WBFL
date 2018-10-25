@@ -27,7 +27,7 @@
 #include "stdafx.h"
 #include "WBFLCOGO.h"
 #include "ProfilePoint.h"
-#include "CogoHelpers.h"
+#include <WBFLCogo\CogoHelpers.h>
 #include "Station.h"
 
 #ifdef _DEBUG

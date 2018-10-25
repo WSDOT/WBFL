@@ -28,7 +28,7 @@
 #include "WBFLCOGO.h"
 #include "WideningCollection.h"
 #include "Widening.h"
-#include "CogoHelpers.h"
+#include <WBFLCogo\CogoHelpers.h>
 
 #include <algorithm>
 

@@ -21,11 +21,11 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// EAFBackgroundWnd.cpp : implementation file
+// EAFStartPageWnd.cpp : implementation file
 //
 
 #include "stdafx.h"
-#include <EAF\EAFBackgroundWnd.h>
+#include <EAF\EAFStartPageWnd.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -34,19 +34,19 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
-// CEAFBackgroundWnd
+// CEAFStartPageWnd
 
-IMPLEMENT_DYNCREATE(CEAFBackgroundWnd, CMDIChildWnd)
+IMPLEMENT_DYNCREATE(CEAFStartPageWnd, CMDIChildWnd)
 
-CEAFBackgroundWnd::CEAFBackgroundWnd()
+CEAFStartPageWnd::CEAFStartPageWnd()
 {
 }
 
-CEAFBackgroundWnd::~CEAFBackgroundWnd()
+CEAFStartPageWnd::~CEAFStartPageWnd()
 {
 }
 #ifdef _DEBUG
-void CEAFBackgroundWnd::AssertValid() const
+void CEAFStartPageWnd::AssertValid() const
 {
    // Make sure the module state is that for the CWinApp class
    // before diving down into MFC (if the module state isn't
@@ -55,29 +55,29 @@ void CEAFBackgroundWnd::AssertValid() const
    CMDIChildWnd::AssertValid();
 }
 
-void CEAFBackgroundWnd::Dump(CDumpContext& dc) const
+void CEAFStartPageWnd::Dump(CDumpContext& dc) const
 {
    CMDIChildWnd::Dump(dc);
 }
 #endif
 
 
-BEGIN_MESSAGE_MAP(CEAFBackgroundWnd, CMDIChildWnd)
-	//{{AFX_MSG_MAP(CEAFBackgroundWnd)
+BEGIN_MESSAGE_MAP(CEAFStartPageWnd, CMDIChildWnd)
+	//{{AFX_MSG_MAP(CEAFStartPageWnd)
 	//}}AFX_MSG_MAP
    ON_WM_CREATE()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CEAFBackgroundWnd message handlers
+// CEAFStartPageWnd message handlers
 
-BOOL CEAFBackgroundWnd::PreCreateWindow(CREATESTRUCT& cs) 
+BOOL CEAFStartPageWnd::PreCreateWindow(CREATESTRUCT& cs) 
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 	return CMDIChildWnd::PreCreateWindow(cs);
 }
 
-BOOL CEAFBackgroundWnd::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CMDIFrameWnd* pParentWnd, CCreateContext* pContext) 
+BOOL CEAFStartPageWnd::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CMDIFrameWnd* pParentWnd, CCreateContext* pContext) 
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 	return CMDIChildWnd::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, pContext);

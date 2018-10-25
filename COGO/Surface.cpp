@@ -31,7 +31,7 @@
 #include "SurfaceTemplateCollection.h"
 #include "SuperelevationCollection.h"
 #include "WideningCollection.h"
-#include "CogoHelpers.h"
+#include <WBFLCogo\CogoHelpers.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -333,7 +333,7 @@ STDMETHODIMP CSurface::CreateSurfaceTemplate(VARIANT varStation,VARIANT_BOOL bAp
       // Interpolate slope
       Float64 slope = 0;
       TemplateSlopeType slopeType = tsHorizontal;
-      if ( slopeType1 != tsHorizontal || slopeType2 != tsHorizontal && slopeType1 != slopeType2 )
+      if ( (slopeType1 != tsHorizontal || slopeType2 != tsHorizontal) && slopeType1 != slopeType2 )
       {
          // interpolation is a little bit tricky because one slope is fixed horizontal and one is fixed vertical
          // Convert slopes so that they are both horizontal.

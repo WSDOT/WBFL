@@ -23,22 +23,22 @@
 
 #pragma once
 
-// EAFBackgroundWnd.h : header file
+// EAFStartPageWnd.h : header file
 //
 #include <EAF\EAFExp.h>
 
 /////////////////////////////////////////////////////////////////////////////
-// CEAFBackgroundWnd frame
+// CEAFStartPageWnd frame
 //
-// Base class for the main frame background. Derive your background window
+// Base class for the main frame start page. Derive your start page window
 // class from this base and create it in your override of 
-// CEAFMainFrame::CreateBackgroundWindow
+// CEAFMainFrame::CreateStartPage
 
-class EAFCLASS CEAFBackgroundWnd : public CMDIChildWnd
+class EAFCLASS CEAFStartPageWnd : public CMDIChildWnd
 {
-	DECLARE_DYNCREATE(CEAFBackgroundWnd)
+	DECLARE_DYNCREATE(CEAFStartPageWnd)
 protected:
-	CEAFBackgroundWnd();           // protected constructor used by dynamic creation
+	CEAFStartPageWnd();           // protected constructor used by dynamic creation
 
 // Attributes
 public:
@@ -48,7 +48,7 @@ public:
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CEAFBackgroundWnd)
+	//{{AFX_VIRTUAL(CEAFStartPageWnd)
 	public:
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle = WS_CHILD | WS_VISIBLE, const RECT& rect = rectDefault, CMDIFrameWnd* pParentWnd = NULL, CCreateContext* pContext = NULL);
 	protected:
@@ -57,14 +57,14 @@ public:
 
 // Implementation
 protected:
-	virtual ~CEAFBackgroundWnd();
+	virtual ~CEAFStartPageWnd();
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
 	// Generated message map functions
-	//{{AFX_MSG(CEAFBackgroundWnd)
+	//{{AFX_MSG(CEAFStartPageWnd)
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

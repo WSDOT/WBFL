@@ -96,6 +96,8 @@ public:
 //	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType Index, /*[out, retval]*/ IPoint3d* *pVal);
 //	STDMETHOD(get__NewEnum)(/*[out, retval]*/ LPUNKNOWN *pVal);
 //	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
+   STDMETHOD(Offset)(Float64 dx,Float64 dy,Float64 dz);
+   STDMETHOD(OffsetEx)(ISize3d* size);
 
 // IPoint3dEvents
 public:

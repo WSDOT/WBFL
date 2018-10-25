@@ -28,7 +28,7 @@
 #include "WBFLCOGO.h"
 #include "Station.h"
 #include <stdio.h>
-#include "CogoHelpers.h"
+#include <WBFLCogo\CogoHelpers.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

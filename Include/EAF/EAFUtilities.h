@@ -28,9 +28,13 @@ class CEAFApp;
 #include <EAF\EAFExp.h>
 #include <EAF\EAFMainFrame.h>
 #include <EAF\EAFPluginState.h>
+#include <EAF\EAFTypes.h>
 #include <vector>
 #include <WBFLCore.h> // IBroker
 
+class CEAFStatusItem;
+
+// Returns the main application object
 EAFFUNC CEAFApp* EAFGetApp();
 
 // Returns a pointer to the broker. Only call this method if you are using a document
@@ -41,8 +45,17 @@ EAFFUNC HRESULT EAFGetBroker(IBroker** ppBroker);
 // category ID of the type of plugin to be managed.
 EAFFUNC std::vector<CEAFPluginState> EAFManageApplicationPlugins(LPCTSTR lpszTitle,const CATID& catid,CWnd* pParent = NULL);
 
+// Returns the main frame window
 EAFFUNC CEAFMainFrame* EAFGetMainFrame();
+
+// Returns the document object
 EAFFUNC CEAFDocument* EAFGetDocument();
+
+// Returns the currently active view
 EAFFUNC CView* EAFGetActiveView();
 
+// Displays the common status center item message dialog box
+EAFFUNC void EAFShowStatusMessage(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityType severity,BOOL bRemoveableOnError,UINT helpID);
+
+// Compares IIDs
 EAFFUNC bool operator<(REFIID a,REFIID b);

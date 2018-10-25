@@ -74,7 +74,7 @@ public:
 
 // IRebarLayout
 public:
-   STDMETHOD(CreateRebarSection)(/*[in]*/ Float64 cutLocation,/*[out,retval]*/IRebarSection** section);
+   STDMETHOD(CreateRebarSection)(/*[in]*/ Float64 cutLocation,/*[in]*/StageIndexType stageIdx,/*[out,retval]*/IRebarSection** section);
 //   STDMETHOD(get_Item)(/*[in]*/long idx,/*[out,retval]*/IRebarLayoutItem** rli);
 //	STDMETHOD(get_Count)(/*[out,retval]*/ long* count);
 //	STDMETHOD(Add)(/*[in]*/IRebarLayoutItem* rli);

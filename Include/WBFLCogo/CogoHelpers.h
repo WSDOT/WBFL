@@ -26,6 +26,8 @@
 #define INCLUDED_COGO_COGOHELPERS_H_
 #pragma once
 
+#include <WBFLCogo\COGOExp.h>
+
 #include <string>
 
 /*****************************************************************************
@@ -47,7 +49,7 @@ LOG
    rab : 06.19.1997 : Created file
 *****************************************************************************/
 
-class cogoUtil
+class COGOCLASS cogoUtil
 {
 public:
    // GROUP: LIFECYCLE

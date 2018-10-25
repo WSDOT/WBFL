@@ -38,7 +38,7 @@
 #include <EAF\EAFToolBar.h>
 #include <EAF\EAFStatusBar.h>
 #include <EAF\EAFAcceleratorTable.h>
-#include <EAF\EAFBackgroundWnd.h>
+#include <EAF\EAFStartPageWnd.h>
 #include <vector>
 
 // The following control bar id's are reserved by MFC. (see AFXRES.h)
@@ -86,8 +86,8 @@ public:
    void HideMainFrameToolBar();
    void ShowMainFrameToolBar();
 
-   void HideMainFrameBackground();
-   void ShowMainFrameBackGround();
+   void HideStartPage();
+   void ShowStartPage();
 
    UINT CreateToolBar(LPCTSTR lpszName,CEAFPluginCommandManager* pCmdMgr);
    CEAFToolBar* GetToolBar(UINT toolbarID);
@@ -164,8 +164,8 @@ protected:
    virtual CEAFStatusBar* CreateStatusBar();
    virtual CToolBar* CreateMainFrameToolBar();
 
-   virtual CEAFBackgroundWnd* CreateBackgroundWindow();
-   CEAFBackgroundWnd* m_pBackgroundWnd;
+   virtual CEAFStartPageWnd* CreateStartPage();
+   CEAFStartPageWnd* m_pStartPageWnd;
 
 
 // Generated message map functions

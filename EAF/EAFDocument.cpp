@@ -242,7 +242,7 @@ void CEAFDocument::ResetApplicationIcon()
    // put the main frame toolbar back the way it was
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    pMainFrame->ShowMainFrameToolBar();
-   pMainFrame->ShowMainFrameBackGround();
+   pMainFrame->ShowStartPage();
 
    // Put the main frame icon back the way it was
    pMainFrame->SetIcon(m_hMainFrameBigIcon,TRUE);
@@ -440,6 +440,12 @@ void CEAFDocument::UpdateRegisteredView(long key,CView* pSender,LPARAM lHint,COb
 
    CEAFDocTemplateRegistrar* pRegistrar = pApp->GetDocTemplateRegistrar();
    CEAFDocTemplate*          pTemplate  = pRegistrar->GetDocTemplate(key);
+   if ( pTemplate == NULL )
+   {
+      // the template was not found.... probably a bad key
+      return;
+   }
+
    CRuntimeClass* pViewClass = pTemplate->GetViewClass();
 
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
@@ -1149,7 +1155,7 @@ void CEAFDocument::OnCloseDocument()
    // put the main frame toolbar back the way it was
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    pMainFrame->ShowMainFrameToolBar();
-   pMainFrame->ShowMainFrameBackGround();
+   pMainFrame->ShowStartPage();
 
    ResetApplicationIcon();
 
