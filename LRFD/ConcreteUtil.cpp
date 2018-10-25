@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -50,7 +50,6 @@ static const Float64 g_p075_KSI  = ::ConvertToSysUnits(0.075,unitMeasure::KSI);
 static const Float64 g_p8_KSI    = ::ConvertToSysUnits(0.8,unitMeasure::KSI);
 static const Float64 g_1p3_KSI   = ::ConvertToSysUnits(1.3,unitMeasure::KSI);
 static const Float64 g_1p8_KSI   = ::ConvertToSysUnits(1.8,unitMeasure::KSI);
-static const Float64 g_60_KSI    = ::ConvertToSysUnits(60.0,unitMeasure::KSI);
 
 static const Float64 g_0p6_M = ::ConvertToSysUnits(0.6, unitMeasure::Meter);
 static const Float64 g_0p9_M = ::ConvertToSysUnits(0.9, unitMeasure::Meter);
@@ -406,9 +405,6 @@ void lrfdConcreteUtil::HorizontalShearResistances(Float64 c, Float64 u, Float64 
                                                   Float64* penqn1, Float64* penqn2, Float64* penqn3)
 {
    // nominal shear capacity 5.8.4.1-1,2
-   if ( lrfdVersionMgr::GetVersion() <= lrfdVersionMgr::SixthEditionWith2013Interims )
-      fy = min(fy,g_60_KSI);
-
    Float64 Vn1 = c*Acv + u*(Avf * fy + Pc);
    Float64 Vn2 = K1 * fc * Acv;
 

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -1338,22 +1338,18 @@ library WBFLLBAM
 		HRESULT GRMul([out, retval] Float64 *pVal);
 		[propput, helpstring("property GRMul - Distribution factor for reactions - multiple lanes loaded"),helpcontext(IDH_DistributionFactor_GRMul)] 
 		HRESULT GRMul([in] Float64 newVal);
-		[helpstring("GetGFat - Distribution factors for fatigue loads, moment and shear"),helpcontext(IDH_DistributionFactor_GFat)] 
-		HRESULT GetGFat([out] Float64 *pMom, [out] Float64 *pShear);
-		[helpstring("SetGFat - Distribution factor for fatigue loads, moment and shear"),helpcontext(IDH_DistributionFactor_GFat)] 
-		HRESULT SetGFat([in] Float64 gMom,[in] Float64 gShear);
+		[propget, helpstring("property GFat - Distribution factor for fatigue loads - used to calculate stresses"),helpcontext(IDH_DistributionFactor_GFat)] 
+		HRESULT GFat([out, retval] Float64 *pVal);
+		[propput, helpstring("property GFat - Distribution factor for fatigue loads - used to calculate stresses"),helpcontext(IDH_DistributionFactor_GFat)] 
+		HRESULT GFat([in] Float64 newVal);
 		[propget, helpstring("property GPedestrian - Distribution factor for pedestrian live loads - used for all cases"),helpcontext(IDH_DistributionFactor_GPedestrian)] 
 		HRESULT GPedestrian([out, retval] Float64 *pVal);
 		[propput, helpstring("property GPedestrian - Distribution factor for pedestrian live loads - used for all cases"),helpcontext(IDH_DistributionFactor_GPedestrian)] 
 		HRESULT GPedestrian([in] Float64 newVal);
 		[helpstring("method SetG"),helpcontext(IDH_DistributionFactor_SetG)] 
-		HRESULT SetG([in] Float64 PMSgl, [in] Float64 PMMul, [in] Float64 NMSgl, [in] Float64 NMMul, [in] Float64 VSgl, [in] Float64 VMul, [in] Float64 DSgl, [in] Float64 DMul, 
-                   [in] Float64 RSgl, [in] Float64 RMul, [in]Float64 TSgl, [in]Float64 TMul, 
-                   [in] Float64 FatM, [in] Float64 FatV, [in]Float64 Pedes);
+		HRESULT SetG([in] Float64 PMSgl, [in] Float64 PMMul, [in] Float64 NMSgl, [in] Float64 NMMul, [in] Float64 VSgl, [in] Float64 VMul, [in] Float64 DSgl, [in] Float64 DMul, [in] Float64 RSgl, [in] Float64 RMul, [in]Float64 TSgl, [in]Float64 TMul, [in] Float64 Fat, [in]Float64 Pedes);
 		[helpstring("method GetG"),helpcontext(IDH_DistributionFactor_GetG)] 
-		HRESULT GetG([out] Float64* PMSgl, [out] Float64* PMMul, [out] Float64* NMSgl, [out] Float64* NMMul, [out] Float64* VSgl, [out] Float64* VMul, [out] Float64* DSgl, [out] Float64* DMul, 
-                   [out] Float64* RSgl, [out] Float64* RMul, [out]Float64* TSgl, [out]Float64* TMul, 
-                   [out] Float64* FatM, [out] Float64* FatV, [out]Float64* Pedes);
+		HRESULT GetG([out] Float64* PMSgl, [out] Float64* PMMul, [out] Float64* NMSgl, [out] Float64* NMMul, [out] Float64* VSgl, [out] Float64* VMul, [out] Float64* DSgl, [out] Float64* DMul, [out] Float64* RSgl, [out] Float64* RMul, [out]Float64* TSgl, [out]Float64* TMul, [out] Float64* Fat, [out]Float64* Pedes);
 		[helpstring("method Clone"),helpcontext(IDH_DistributionFactor_Clone)] 
 		HRESULT Clone([out, retval]IDistributionFactor**);
 		[propget, helpstring("property GTMul"),helpcontext(IDH_DistributionFactor_GTMul)] 

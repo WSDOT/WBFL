@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,7 +34,7 @@ class CNewProjectDlg : public CDialog
 {
 	DECLARE_DYNAMIC(CNewProjectDlg)
 protected:
-   CEAFTemplateGroup* m_pRootTemplateGroup; // root template group
+	CPtrList*   m_pList;        // actually a list of doc templates
 
 public:
 	CEAFDocTemplate*  m_pSelectedTemplate;
@@ -43,7 +43,7 @@ public:
    int m_ViewMode;
 
 public:
-   CNewProjectDlg(CEAFTemplateGroup* pRootTemplateGroup,CWnd* pParent = NULL);
+	CNewProjectDlg(CPtrList* pList,CWnd* pParent = NULL);   // standard constructor
 	virtual ~CNewProjectDlg();
 
 // Dialog Data
@@ -58,23 +58,17 @@ protected:
    int m_cxMin;
    int m_cyMin;
 
-   HICON m_hDefaultIcon;
-   HICON m_hDefaultSelectedIcon;
-   int m_DefaultIconIdx;
-   int m_DefaultSelectedIconIdx;
-
-   void AddProjectGroup(HTREEITEM hParent,HTREEITEM hAfter,const CEAFTemplateGroup* pGroup,const CString& strLastSelection,HTREEITEM* pDefaultItem);
+   void AddProjectGroup(HTREEITEM hParent,HTREEITEM hAfter,const CEAFTemplateGroup* pGroup);
    
    void ExpandProjectTypes();
 
 	DECLARE_MESSAGE_MAP()
 public:
    virtual BOOL OnInitDialog();
-   CTreeCtrl m_ctrlProjectTypes;
-   CListCtrl m_ctrlTemplates;
+   CTreeCtrl m_ProjectTypes;
+   CListCtrl m_Templates;
    CImageList m_TemplateLargeImageList;
    CImageList m_TemplateSmallImageList;
-   CImageList m_ProjectTypeImageList;
 
    afx_msg void OnProjectTypeSelectionChanged(NMHDR *pNMHDR, LRESULT *pResult);
    afx_msg void OnTemplatesItemChanged(NMHDR *pNMHDR, LRESULT *pResult);

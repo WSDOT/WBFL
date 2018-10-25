@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -289,7 +289,7 @@ CString CEAFDocProxyAgent::GetFileRoot()
 
 void CEAFDocProxyAgent::UpdateAllViews(CView* pSender,LPARAM lHint,CObject* pHint)
 {
-   m_pDoc->OnUpdateAllViews(pSender,lHint,pHint);
+   m_pDoc->UpdateAllViews(pSender,lHint,pHint);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -479,12 +479,6 @@ const unitmgtPerLengthData& CEAFDocProxyAgent::GetPerLengthUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->PerLength;
-}
-
-const unitmgtPerLengthData& CEAFDocProxyAgent::GetCurvatureUnit()
-{
-   CEAFApp* pApp = EAFGetApp();
-   return pApp->GetDisplayUnits()->Curvature;
 }
 
 const unitmgtPressureData& CEAFDocProxyAgent::GetSidewalkPressureUnit()

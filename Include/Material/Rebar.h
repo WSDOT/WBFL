@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -84,17 +84,14 @@ public:
    }; 
 
    //------------------------------------------------------------------------
-   enum Type { A615  = 0x1000,  // ASTM A615
-               A706  = 0x2000,  // ASTM A706
-               A1035 = 0x4000   // ASTM A1035
-   };
+   enum Type { A615   = 0x1000,  // A615
+               A706 = 0x2000}; // A706
 
    //------------------------------------------------------------------------
-   enum Grade { Grade40  = 0x00010000, 
-                Grade60  = 0x00020000,
-                Grade75  = 0x00040000,
-                Grade80  = 0x00080000,
-                Grade100 = 0x00100000,
+   enum Grade { Grade40 = 0x00010000, 
+                Grade60 = 0x00020000,
+                Grade75 = 0x00040000,
+                Grade80 = 0x00080000,
    };
 
    // GROUP: LIFECYCLE

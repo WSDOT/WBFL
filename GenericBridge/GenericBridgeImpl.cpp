@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -538,7 +538,7 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
    {
       // bearing offset is measured along the girder. With the general geometry
       // there are multiple bearing lines. We cannot have a single bearing station
-      ATLASSERT( mlStart == mlCenterlinePier ); // spacing must be measured relative to CL pier
+      ATLASSERT( mlStart == mlPierLine ); // spacing must be measured relative to pier datum line
    }
 
    // create a line to represent the CL of end pier
@@ -609,7 +609,7 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
    {
       // bearing offset is measured along the girder. With the general geometry
       // there are multiple bearing lines. We cannot have a single bearing station
-      ATLASSERT( mlEnd == mlCenterlinePier ); // spacing must be measured relative to CL pier
+      ATLASSERT( mlEnd == mlPierLine ); // spacing must be measured relative to pier datum line
    }
 
    // get intersection point of bearing and alignment (if bearing is uniquely located)
@@ -627,7 +627,7 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
 
    // start of span
    Float64 startStation, startDir;
-   if ( mlStart == mlCenterlinePier )
+   if ( mlStart == mlPierLine )
    {
       startStation = prevPierStation;
    }
@@ -652,7 +652,7 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
 
    // end of line
    Float64 endStation, endDir;
-   if ( mlEnd == mlCenterlinePier )
+   if ( mlEnd == mlPierLine )
    {
       endStation = nextPierStation;
    }
@@ -779,7 +779,7 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
          ATLASSERT(SUCCEEDED(hr));
 
          // intersection with CL pier/brg line
-         if ( mlStart == mlCenterlinePier )
+         if ( mlStart == mlPierLine )
          {
 #if defined _DEBUG
             VARIANT_BOOL bContainsPoint;
@@ -826,7 +826,7 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
          ATLASSERT(SUCCEEDED(hr));
 
          // intersection with item line
-         if ( mlEnd == mlCenterlinePier )
+         if ( mlEnd == mlPierLine )
             hr = parallel_path->Intersect(objEndPierNormalLine,pntEndPier,&pntEndGirder);
          else
             hr = parallel_path->Intersect(objEndBrgNormalLine,pntEndBrg,&pntEndGirder);
@@ -993,7 +993,7 @@ void CGenericBridge::GetEndDistance(EndType end,CogoElementKey brgPntID,CogoElem
       {
          ;// do nothing - input is same as internal
       }
-      else if ( measure_loc == mlCenterlinePier )
+      else if ( measure_loc == mlPierLine )
       {
          // subtract end dist from bearing offset
          Float64 bearing_offset;
@@ -1002,7 +1002,9 @@ void CGenericBridge::GetEndDistance(EndType end,CogoElementKey brgPntID,CogoElem
          end_dist = bearing_offset - end_dist;
       }
       else
+      {
          ATLASSERT(0);
+      }
    }
    else if ( measure_type == mtNormal )
    {
@@ -1057,7 +1059,7 @@ void CGenericBridge::GetEndDistance(EndType end,CogoElementKey brgPntID,CogoElem
          // measured from centerline bearing
          offset_dist = bearing_to_pier_dist - end_dist;
       }
-      else if ( measure_loc == mlCenterlinePier )
+      else if ( measure_loc == mlPierLine )
       {
          offset_dist = end_dist;
 

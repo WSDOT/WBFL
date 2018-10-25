@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -260,8 +260,8 @@ public:
 
    //------------------------------------------------------------------------
    // border styles
-   enum BorderStyle   { NOBORDER, HAIR_THICK, SINGLE_THICK, DOUBLE_THICK,
-   DOUBLE_LINE, DASHED, DOTTED, BRDRSIZE}; // BRDSIZE to be used as sizing info only.
+   enum BorderStyle   { NOBORDER, HAIR_THICK, SINGLE_THICK, Float64_THICK,
+   Float64_LINE, DASHED, DOTTED, BRDRSIZE}; // BRDSIZE to be used as sizing info only.
 
    //------------------------------------------------------------------------
    // media type

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -98,40 +98,18 @@ std::_tstring lrfrVersionMgr::GetCodeString()
 
 std::_tstring lrfrVersionMgr::GetVersionString()
 {
-   return GetVersionString(ms_Version);
-}
-
-std::_tstring lrfrVersionMgr::GetVersionString(lrfrVersionMgr::Version version)
-{
-   std::_tstring strVersion;
-   switch( version )
+   std::_tstring version;
+   switch( ms_Version )
    {
    case FirstEdition2008:
-      strVersion = _T("First Edition 2008");
-      break;
-
-   case FirstEditionWith2010Interims:
-      strVersion = _T("First Edition 2008, with 2010 interim provisions");
-      break;
-
-   case SecondEdition2011:
-      strVersion = _T("Second Edition 2011");
-      break;
-      
-   case SecondEditionWith2011Interims:
-      strVersion = _T("Second Edition 2011, with 2011 interim provisions");
-      break;
-
-   case SecondEditionWith2013Interims:
-      strVersion = _T("Second Edition 2011, with 2011-2013 interim provisions");
+      version = _T("First Edition 2008");
       break;
 
    default:
-      strVersion = _T("Unknown");
-      ASSERT(false);
+      CHECK(false);
    }
 
-   return strVersion;
+   return version;
 }
 
 void lrfrVersionMgr::RegisterListener(lrfrVersionMgrListener* pListener)

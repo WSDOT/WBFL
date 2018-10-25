@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Live Load Test - Test driver for LBAM analysis library
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -96,10 +96,9 @@ void TestDistributionFactorStrategy::Test()
    const Float64 lftRMul  = 10;
    const Float64 lftTSgl  = 11;
    const Float64 lftTMul  = 12;
-   const Float64 lftFatM  = 13;
-   const Float64 lftFatV  = 14;
-   const Float64 lftPed   = 15;
-   df_left->SetG(lftPMSgl, lftPMMul, lftNMSgl, lftNMMul, lftVSgl, lftVMul, lftDSgl, lftDMul, lftRSgl, lftRMul, lftTSgl, lftTMul, lftFatM, lftFatV, lftPed);
+   const Float64 lftFat   = 13;
+   const Float64 lftPed   = 14;
+   df_left->SetG(lftPMSgl, lftPMMul, lftNMSgl, lftNMMul, lftVSgl, lftVMul, lftDSgl, lftDMul, lftRSgl, lftRMul, lftTSgl, lftTMul, lftFat, lftPed);
 
    const Float64 rgtPMSgl = 101;
    const Float64 rgtPMMul = 102;
@@ -113,10 +112,9 @@ void TestDistributionFactorStrategy::Test()
    const Float64 rgtRMul  = 110;
    const Float64 rgtTSgl  = 111;
    const Float64 rgtTMul  = 112;
-   const Float64 rgtFatM  = 113;
-   const Float64 rgtFatV  = 114;
-   const Float64 rgtPed   = 115;
-   df_right->SetG(rgtPMSgl, rgtPMMul, rgtNMSgl, rgtNMMul, rgtVSgl, rgtVMul, rgtDSgl, rgtDMul, rgtRSgl, rgtRMul, rgtTSgl, rgtTMul, rgtFatM, rgtFatV, rgtPed);
+   const Float64 rgtFat   = 113;
+   const Float64 rgtPed   = 114;
+   df_right->SetG(rgtPMSgl, rgtPMMul, rgtNMSgl, rgtNMMul, rgtVSgl, rgtVMul, rgtDSgl, rgtDMul, rgtRSgl, rgtRMul, rgtTSgl, rgtTMul, rgtFat, rgtPed);
 
    LameIdf my_idf;
    my_idf.m_LeftFactor  = df_left;
@@ -152,8 +150,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       f_max_strategy.GetOptimalDfs(0, stage, fetFx, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatV);
-      TRY_TEST(right_factor, rgtFatV);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, rgtFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       f_max_strategy.GetOptimalDfs(0, stage, fetFx, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -178,8 +176,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       f_max_strategy.GetOptimalDfs(0, stage, fetFy, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatV);
-      TRY_TEST(right_factor, rgtFatV);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, rgtFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       f_max_strategy.GetOptimalDfs(0, stage, fetFy, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -204,8 +202,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       f_max_strategy.GetOptimalDfs(0, stage, fetMz, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatM);
-      TRY_TEST(right_factor, rgtFatM);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, rgtFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       f_max_strategy.GetOptimalDfs(0, stage, fetMz, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -239,12 +237,12 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(rgt_mz_fac,  rgtPMMul);
 
       f_max_strategy.GetConcurrentDfs(0, stage, dftFatigue, &lft_fx_fac, &lft_fy_fac, &lft_mz_fac, &rgt_fx_fac, &rgt_fy_fac, &rgt_mz_fac);
-      TRY_TEST(lft_fx_fac,  lftFatV);
-      TRY_TEST(lft_fy_fac,  lftFatV);
-      TRY_TEST(lft_mz_fac,  lftFatM);
-      TRY_TEST(rgt_fx_fac,  rgtFatV);
-      TRY_TEST(rgt_fy_fac,  rgtFatV);
-      TRY_TEST(rgt_mz_fac,  rgtFatM);
+      TRY_TEST(lft_fx_fac,  lftFat);
+      TRY_TEST(lft_fy_fac,  lftFat);
+      TRY_TEST(lft_mz_fac,  lftFat);
+      TRY_TEST(rgt_fx_fac,  rgtFat);
+      TRY_TEST(rgt_fy_fac,  rgtFat);
+      TRY_TEST(rgt_mz_fac,  rgtFat);
 
       f_max_strategy.GetConcurrentDfs(0, stage, dftPedestrian, &lft_fx_fac, &lft_fy_fac, &lft_mz_fac, &rgt_fx_fac, &rgt_fy_fac, &rgt_mz_fac);
       TRY_TEST(lft_fx_fac,  lftPed);
@@ -273,8 +271,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       f_min_strategy.GetOptimalDfs(0, stage, fetFx, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatV);
-      TRY_TEST(right_factor, rgtFatV);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, rgtFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       f_min_strategy.GetOptimalDfs(0, stage, fetFx, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -299,8 +297,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       f_min_strategy.GetOptimalDfs(0, stage, fetFy, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatV);
-      TRY_TEST(right_factor, rgtFatV);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, rgtFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       f_min_strategy.GetOptimalDfs(0, stage, fetFy, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -325,8 +323,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       f_min_strategy.GetOptimalDfs(0, stage, fetMz, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatM);
-      TRY_TEST(right_factor, rgtFatM);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, rgtFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       f_min_strategy.GetOptimalDfs(0, stage, fetMz, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -360,12 +358,12 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(rgt_mz_fac,  rgtNMMul);
 
       f_min_strategy.GetConcurrentDfs(0, stage, dftFatigue, &lft_fx_fac, &lft_fy_fac, &lft_mz_fac, &rgt_fx_fac, &rgt_fy_fac, &rgt_mz_fac);
-      TRY_TEST(lft_fx_fac,  lftFatV);
-      TRY_TEST(lft_fy_fac,  lftFatV);
-      TRY_TEST(lft_mz_fac,  lftFatM);
-      TRY_TEST(rgt_fx_fac,  rgtFatV);
-      TRY_TEST(rgt_fy_fac,  rgtFatV);
-      TRY_TEST(rgt_mz_fac,  rgtFatM);
+      TRY_TEST(lft_fx_fac,  lftFat);
+      TRY_TEST(lft_fy_fac,  lftFat);
+      TRY_TEST(lft_mz_fac,  lftFat);
+      TRY_TEST(rgt_fx_fac,  rgtFat);
+      TRY_TEST(rgt_fy_fac,  rgtFat);
+      TRY_TEST(rgt_mz_fac,  rgtFat);
 
       f_min_strategy.GetConcurrentDfs(0, stage, dftPedestrian, &lft_fx_fac, &lft_fy_fac, &lft_mz_fac, &rgt_fx_fac, &rgt_fy_fac, &rgt_mz_fac);
       TRY_TEST(lft_fx_fac,  lftPed);
@@ -403,8 +401,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       d_max_strategy.GetOptimalDfs(0, stage, fetFx, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatV);
-      TRY_TEST(right_factor, rgtFatV);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, rgtFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       d_max_strategy.GetOptimalDfs(0, stage, fetFx, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -429,8 +427,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       d_max_strategy.GetOptimalDfs(0, stage, fetFy, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatV);
-      TRY_TEST(right_factor, rgtFatV);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, rgtFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       d_max_strategy.GetOptimalDfs(0, stage, fetFy, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -455,8 +453,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       d_max_strategy.GetOptimalDfs(0, stage, fetMz, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatM);
-      TRY_TEST(right_factor, rgtFatM);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, rgtFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       d_max_strategy.GetOptimalDfs(0, stage, fetMz, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -490,12 +488,12 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(rgt_mz_fac,  rgtTMul);
 
       d_max_strategy.GetConcurrentDfs(0, stage, dftFatigue, &lft_fx_fac, &lft_fy_fac, &lft_mz_fac, &rgt_fx_fac, &rgt_fy_fac, &rgt_mz_fac);
-      TRY_TEST(lft_fx_fac,  lftFatV);
-      TRY_TEST(lft_fy_fac,  lftFatV);
-      TRY_TEST(lft_mz_fac,  lftFatM);
-      TRY_TEST(rgt_fx_fac,  rgtFatV);
-      TRY_TEST(rgt_fy_fac,  rgtFatV);
-      TRY_TEST(rgt_mz_fac,  rgtFatM);
+      TRY_TEST(lft_fx_fac,  lftFat);
+      TRY_TEST(lft_fy_fac,  lftFat);
+      TRY_TEST(lft_mz_fac,  lftFat);
+      TRY_TEST(rgt_fx_fac,  rgtFat);
+      TRY_TEST(rgt_fy_fac,  rgtFat);
+      TRY_TEST(rgt_mz_fac,  rgtFat);
 
       d_max_strategy.GetConcurrentDfs(0, stage, dftPedestrian, &lft_fx_fac, &lft_fy_fac, &lft_mz_fac, &rgt_fx_fac, &rgt_fy_fac, &rgt_mz_fac);
       TRY_TEST(lft_fx_fac,  lftPed);
@@ -524,8 +522,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       d_min_strategy.GetOptimalDfs(0, stage, fetFx, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatV);
-      TRY_TEST(right_factor, rgtFatV);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, rgtFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       d_min_strategy.GetOptimalDfs(0, stage, fetFx, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -550,8 +548,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       d_min_strategy.GetOptimalDfs(0, stage, fetFy, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatV);
-      TRY_TEST(right_factor, rgtFatV);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, rgtFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       d_min_strategy.GetOptimalDfs(0, stage, fetFy, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -576,8 +574,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       d_min_strategy.GetOptimalDfs(0, stage, fetMz, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatM);
-      TRY_TEST(right_factor, rgtFatM);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, rgtFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       d_min_strategy.GetOptimalDfs(0, stage, fetMz, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -611,12 +609,12 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(rgt_mz_fac,  rgtTMul);
 
       d_min_strategy.GetConcurrentDfs(0, stage, dftFatigue, &lft_fx_fac, &lft_fy_fac, &lft_mz_fac, &rgt_fx_fac, &rgt_fy_fac, &rgt_mz_fac);
-      TRY_TEST(lft_fx_fac,  lftFatV);
-      TRY_TEST(lft_fy_fac,  lftFatV);
-      TRY_TEST(lft_mz_fac,  lftFatM);
-      TRY_TEST(rgt_fx_fac,  rgtFatV);
-      TRY_TEST(rgt_fy_fac,  rgtFatV);
-      TRY_TEST(rgt_mz_fac,  rgtFatM);
+      TRY_TEST(lft_fx_fac,  lftFat);
+      TRY_TEST(lft_fy_fac,  lftFat);
+      TRY_TEST(lft_mz_fac,  lftFat);
+      TRY_TEST(rgt_fx_fac,  rgtFat);
+      TRY_TEST(rgt_fy_fac,  rgtFat);
+      TRY_TEST(rgt_mz_fac,  rgtFat);
 
       d_min_strategy.GetConcurrentDfs(0, stage, dftPedestrian, &lft_fx_fac, &lft_fy_fac, &lft_mz_fac, &rgt_fx_fac, &rgt_fy_fac, &rgt_mz_fac);
       TRY_TEST(lft_fx_fac,  lftPed);
@@ -654,8 +652,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       t_max_strategy.GetOptimalDfs(0, stage, fetFx, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatV);
-      TRY_TEST(right_factor, lftFatV);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, lftFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       t_max_strategy.GetOptimalDfs(0, stage, fetFx, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -680,8 +678,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       t_max_strategy.GetOptimalDfs(0, stage, fetFy, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatV);
-      TRY_TEST(right_factor, lftFatV);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, lftFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       t_max_strategy.GetOptimalDfs(0, stage, fetFy, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -706,8 +704,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       t_max_strategy.GetOptimalDfs(0, stage, fetMz, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatM);
-      TRY_TEST(right_factor, lftFatM);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, lftFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       t_max_strategy.GetOptimalDfs(0, stage, fetMz, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -741,12 +739,12 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(rgt_mz_fac,  lftRMul);
 
       t_max_strategy.GetConcurrentDfs(0, stage, dftFatigue, &lft_fx_fac, &lft_fy_fac, &lft_mz_fac, &rgt_fx_fac, &rgt_fy_fac, &rgt_mz_fac);
-      TRY_TEST(lft_fx_fac,  lftFatV);
-      TRY_TEST(lft_fy_fac,  lftFatV);
-      TRY_TEST(lft_mz_fac,  lftFatM);
-      TRY_TEST(rgt_fx_fac,  lftFatV);
-      TRY_TEST(rgt_fy_fac,  lftFatV);
-      TRY_TEST(rgt_mz_fac,  lftFatM);
+      TRY_TEST(lft_fx_fac,  lftFat);
+      TRY_TEST(lft_fy_fac,  lftFat);
+      TRY_TEST(lft_mz_fac,  lftFat);
+      TRY_TEST(rgt_fx_fac,  lftFat);
+      TRY_TEST(rgt_fy_fac,  lftFat);
+      TRY_TEST(rgt_mz_fac,  lftFat);
 
       t_max_strategy.GetConcurrentDfs(0, stage, dftPedestrian, &lft_fx_fac, &lft_fy_fac, &lft_mz_fac, &rgt_fx_fac, &rgt_fy_fac, &rgt_mz_fac);
       TRY_TEST(lft_fx_fac,  lftPed);
@@ -775,8 +773,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       t_min_strategy.GetOptimalDfs(0, stage, fetFx, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatV);
-      TRY_TEST(right_factor, lftFatV);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, lftFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       t_min_strategy.GetOptimalDfs(0, stage, fetFx, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -801,8 +799,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       t_min_strategy.GetOptimalDfs(0, stage, fetFy, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatV);
-      TRY_TEST(right_factor, lftFatV);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, lftFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       t_min_strategy.GetOptimalDfs(0, stage, fetFy, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -827,8 +825,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       t_min_strategy.GetOptimalDfs(0, stage, fetMz, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatM);
-      TRY_TEST(right_factor, lftFatM);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, lftFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       t_min_strategy.GetOptimalDfs(0, stage, fetMz, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -862,12 +860,12 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(rgt_mz_fac,  lftRMul);
 
       t_min_strategy.GetConcurrentDfs(0, stage, dftFatigue, &lft_fx_fac, &lft_fy_fac, &lft_mz_fac, &rgt_fx_fac, &rgt_fy_fac, &rgt_mz_fac);
-      TRY_TEST(lft_fx_fac,  lftFatV);
-      TRY_TEST(lft_fy_fac,  lftFatV);
-      TRY_TEST(lft_mz_fac,  lftFatM);
-      TRY_TEST(rgt_fx_fac,  lftFatV);
-      TRY_TEST(rgt_fy_fac,  lftFatV);
-      TRY_TEST(rgt_mz_fac,  lftFatM);
+      TRY_TEST(lft_fx_fac,  lftFat);
+      TRY_TEST(lft_fy_fac,  lftFat);
+      TRY_TEST(lft_mz_fac,  lftFat);
+      TRY_TEST(rgt_fx_fac,  lftFat);
+      TRY_TEST(rgt_fy_fac,  lftFat);
+      TRY_TEST(rgt_mz_fac,  lftFat);
 
       t_min_strategy.GetConcurrentDfs(0, stage, dftPedestrian, &lft_fx_fac, &lft_fy_fac, &lft_mz_fac, &rgt_fx_fac, &rgt_fy_fac, &rgt_mz_fac);
       TRY_TEST(lft_fx_fac,  lftPed);
@@ -906,8 +904,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       d_max_strategy.GetOptimalDfs(0, stage, fetFx, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatV);
-      TRY_TEST(right_factor, lftFatV);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, lftFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       d_max_strategy.GetOptimalDfs(0, stage, fetFx, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -932,8 +930,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       d_max_strategy.GetOptimalDfs(0, stage, fetFy, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatV);
-      TRY_TEST(right_factor, lftFatV);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, lftFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       d_max_strategy.GetOptimalDfs(0, stage, fetFy, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -958,8 +956,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       d_max_strategy.GetOptimalDfs(0, stage, fetMz, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatM);
-      TRY_TEST(right_factor, lftFatM);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, lftFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       d_max_strategy.GetOptimalDfs(0, stage, fetMz, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -993,12 +991,12 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(rgt_mz_fac,  lftTMul);
 
       d_max_strategy.GetConcurrentDfs(0, stage, dftFatigue, &lft_fx_fac, &lft_fy_fac, &lft_mz_fac, &rgt_fx_fac, &rgt_fy_fac, &rgt_mz_fac);
-      TRY_TEST(lft_fx_fac,  lftFatV);
-      TRY_TEST(lft_fy_fac,  lftFatV);
-      TRY_TEST(lft_mz_fac,  lftFatM);
-      TRY_TEST(rgt_fx_fac,  lftFatV);
-      TRY_TEST(rgt_fy_fac,  lftFatV);
-      TRY_TEST(rgt_mz_fac,  lftFatM);
+      TRY_TEST(lft_fx_fac,  lftFat);
+      TRY_TEST(lft_fy_fac,  lftFat);
+      TRY_TEST(lft_mz_fac,  lftFat);
+      TRY_TEST(rgt_fx_fac,  lftFat);
+      TRY_TEST(rgt_fy_fac,  lftFat);
+      TRY_TEST(rgt_mz_fac,  lftFat);
 
       d_max_strategy.GetConcurrentDfs(0, stage, dftPedestrian, &lft_fx_fac, &lft_fy_fac, &lft_mz_fac, &rgt_fx_fac, &rgt_fy_fac, &rgt_mz_fac);
       TRY_TEST(lft_fx_fac,  lftPed);
@@ -1027,8 +1025,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       d_min_strategy.GetOptimalDfs(0, stage, fetFx, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatV);
-      TRY_TEST(right_factor, lftFatV);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, lftFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       d_min_strategy.GetOptimalDfs(0, stage, fetFx, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -1053,8 +1051,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       d_min_strategy.GetOptimalDfs(0, stage, fetFy, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatV);
-      TRY_TEST(right_factor, lftFatV);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, lftFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       d_min_strategy.GetOptimalDfs(0, stage, fetFy, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -1079,8 +1077,8 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(left_dftype,  dftMultipleLane);
       TRY_TEST(right_dftype, dftMultipleLane);
       d_min_strategy.GetOptimalDfs(0, stage, fetMz, dftFatigue, &left_factor, &left_dftype, &right_factor, &right_dftype);
-      TRY_TEST(left_factor,  lftFatM);
-      TRY_TEST(right_factor, lftFatM);
+      TRY_TEST(left_factor,  lftFat);
+      TRY_TEST(right_factor, lftFat);
       TRY_TEST(left_dftype,  dftFatigue);
       TRY_TEST(right_dftype, dftFatigue);
       d_min_strategy.GetOptimalDfs(0, stage, fetMz, dftPedestrian, &left_factor, &left_dftype, &right_factor, &right_dftype);
@@ -1114,12 +1112,12 @@ void TestDistributionFactorStrategy::Test()
       TRY_TEST(rgt_mz_fac,  lftTMul);
 
       d_min_strategy.GetConcurrentDfs(0, stage, dftFatigue, &lft_fx_fac, &lft_fy_fac, &lft_mz_fac, &rgt_fx_fac, &rgt_fy_fac, &rgt_mz_fac);
-      TRY_TEST(lft_fx_fac,  lftFatV);
-      TRY_TEST(lft_fy_fac,  lftFatV);
-      TRY_TEST(lft_mz_fac,  lftFatM);
-      TRY_TEST(rgt_fx_fac,  lftFatV);
-      TRY_TEST(rgt_fy_fac,  lftFatV);
-      TRY_TEST(rgt_mz_fac,  lftFatM);
+      TRY_TEST(lft_fx_fac,  lftFat);
+      TRY_TEST(lft_fy_fac,  lftFat);
+      TRY_TEST(lft_mz_fac,  lftFat);
+      TRY_TEST(rgt_fx_fac,  lftFat);
+      TRY_TEST(rgt_fy_fac,  lftFat);
+      TRY_TEST(rgt_mz_fac,  lftFat);
 
       d_min_strategy.GetConcurrentDfs(0, stage, dftPedestrian, &lft_fx_fac, &lft_fy_fac, &lft_mz_fac, &rgt_fx_fac, &rgt_fy_fac, &rgt_mz_fac);
       TRY_TEST(lft_fx_fac,  lftPed);

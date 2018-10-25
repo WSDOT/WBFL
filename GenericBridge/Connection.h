@@ -29,7 +29,7 @@ public:
       m_SupportWidth         = 0;
       m_BearingOffsetMeasurementType   = mtNormal;
       m_EndDistanceMeasurementType     = mtNormal;
-      m_EndDistanceMeasurementLocation = mlCenterlinePier;
+      m_EndDistanceMeasurementLocation = mlPierLine;
 	}
 
    HRESULT FinalConstruct();

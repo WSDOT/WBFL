@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -1250,28 +1250,14 @@ Float64 compute_strain(lrfdShearData* pData,Float64 theta)
    Float64 ex;
 
    theta = ::Convert(theta, unitMeasure::Degree, unitMeasure::Radian);
-   if ( IsZero(Es*As + Ep*Aps) )
-   {
-      ex = 0;
-   }
-   else
-   {
-      ex = Mu/dv + 0.5*Nu + 0.5*Vu/tan(theta) - Aps*fpo;
-      ex /= Es*As + Ep*Aps;
-   }
+   ex = Mu/dv + 0.5*Nu + 0.5*Vu/tan(theta) - Aps*fpo;
+   ex /= Es*As + Ep*Aps;
 
    if ( ex < 0.0 )
    {
       Float64 Fe;
-      if ( IsZero(Ec*Ac + Es*As + Ep*Aps) )
-      {
-         Fe = 0;
-      }
-      else
-      {
-         Fe = Es*As + Ep*Aps;
-         Fe /= Ec*Ac + Es*As + Ep*Aps;
-      }
+      Fe = Es*As + Ep*Aps;
+      Fe /= Ec*Ac + Es*As + Ep*Aps;
 
       ex *= Fe; // See "Design of Highway Bridges", Barker and Puckett, pg 641
    }

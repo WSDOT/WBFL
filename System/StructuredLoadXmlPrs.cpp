@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -910,16 +910,9 @@ void ThrowParseError(MSXML::IXMLDOMParseErrorPtr pXMLError, LPCTSTR file, int li
       pBReason = pXMLError->reason;
 
       if (line > 0)
-      {
-        os << _T("Error in xml file on line ")<< line<<_T(", position ")<<linePos;
-        if ( (LPTSTR)pBURL )
-           os <<_T(" in \"")<<(LPTSTR)pBURL;
-        os <<_T("\" Reason was ")<<(LPTSTR)pBReason; 
-      }
+        os<< _T("Error in xml file on line ")<< line<<_T(", position ")<<linePos<<_T(" in \"")<<(LPTSTR)pBURL<<_T("\" Reason was ")<<(LPTSTR)pBReason; 
       else
-      {
          os<<_T("Error in xml file - location unknown");
-      }
    }
    catch(...)
    {

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // WBFLTools - Utility Tools for the WBFL
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -165,11 +165,6 @@ STDMETHODIMP CProgressMonitorWindow::Hide()
       m_FileStream << ">>Hide called"<<std::endl;
    }
 
-   if ( m_wndParent.GetSafeHwnd() )
-   {
-      m_wndParent.SetWindowPos(&CWnd::wndTop,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
-   }
-
    m_wndParent.Detach();
 
 	return S_OK;
@@ -195,11 +190,6 @@ STDMETHODIMP CProgressMonitorWindow::Close()
    if (m_IsFileOpen)
    {
       m_FileStream << ">>Close called"<<std::endl;
-   }
-
-   if ( m_wndParent.GetSafeHwnd() )
-   {
-      m_wndParent.SetWindowPos(&CWnd::wndTop,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
    }
 
    m_wndParent.Detach();

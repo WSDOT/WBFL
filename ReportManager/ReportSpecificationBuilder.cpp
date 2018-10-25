@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManager - Manages report definitions
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -70,6 +70,13 @@ boost::shared_ptr<CReportSpecification> CReportSpecificationBuilder::CreateDefau
 boost::shared_ptr<CReportSpecification> CReportSpecificationBuilder::DoCreateReportSpec(const CReportDescription& rptDesc,const std::vector<CChapterInfo>& vChInfo)
 {
    boost::shared_ptr<CReportSpecification> pRptSpec( new CReportSpecification(rptDesc.GetReportName()) );
-   rptDesc.ConfigureReportSpecification(pRptSpec);
+
+   std::vector<CChapterInfo>::const_iterator iter;
+   for ( iter = vChInfo.begin(); iter != vChInfo.end(); iter++ )
+   {
+      CChapterInfo chInfo = *iter;
+      pRptSpec->AddChapter(chInfo.Name.c_str(),chInfo.Key.c_str(),chInfo.MaxLevel);
+   }
+
    return pRptSpec;
 }

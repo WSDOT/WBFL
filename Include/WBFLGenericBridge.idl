@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -137,7 +137,7 @@ library WBFLGenericBridge
    typedef [public,helpstring("enum MeasurementLocation"),uuid(A884BF5A-0C8F-4d89-BDA7-114E6944A9D0)] 
    enum 
    {
-       mlCenterlinePier = 0,
+       mlPierLine = 0,
        mlCenterlineBearing = 1
    } MeasurementLocation;
 

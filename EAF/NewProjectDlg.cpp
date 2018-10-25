@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -37,33 +37,40 @@ static CString strNewDialogSection("NewProjectDialog");
 
 IMPLEMENT_DYNAMIC(CNewProjectDlg, CDialog)
 
-CNewProjectDlg::CNewProjectDlg(CEAFTemplateGroup* pRootTemplateGroup,CWnd* pParent) :
-CDialog(CNewProjectDlg::IDD,pParent)
+CNewProjectDlg::CNewProjectDlg(CPtrList* pList,CWnd* pParent /*=NULL*/)
+	: CDialog(CNewProjectDlg::IDD, pParent)
 {
-   m_pRootTemplateGroup = pRootTemplateGroup;
+	m_pList = pList;
 	m_pSelectedTemplate = NULL;
    m_pTemplateItem = NULL;
 }
 
 CNewProjectDlg::~CNewProjectDlg()
 {
-   ::DestroyIcon(m_hDefaultIcon);
-   ::DestroyIcon(m_hDefaultSelectedIcon);
 }
 
 void CNewProjectDlg::DoDataExchange(CDataExchange* pDX)
 {
    CDialog::DoDataExchange(pDX);
-   DDX_Control(pDX, IDC_PROJECTTYPES, m_ctrlProjectTypes);
-   DDX_Control(pDX, IDC_TEMPLATES, m_ctrlTemplates);
+   DDX_Control(pDX, IDC_PROJECTTYPES, m_ProjectTypes);
+   DDX_Control(pDX, IDC_TEMPLATES, m_Templates);
 
    if ( pDX->m_bSaveAndValidate )
    {
-      ATLASSERT(m_ctrlTemplates.GetSelectedCount() == 1 );
-      POSITION pos = m_ctrlTemplates.GetFirstSelectedItemPosition();
-      int selIdx = m_ctrlTemplates.GetNextSelectedItem(pos);
-      m_pTemplateItem = (const CEAFTemplateItem*)m_ctrlTemplates.GetItemData(selIdx);
-      m_pSelectedTemplate = m_pTemplateItem->GetDocTemplate();
+      CEAFTemplateGroup* pGroup = NULL;
+      m_pTemplateItem = NULL;
+
+      HTREEITEM hTreeItem = m_ProjectTypes.GetSelectedItem();
+      if ( hTreeItem != NULL )
+      {
+         pGroup = (CEAFTemplateGroup*)m_ProjectTypes.GetItemData(hTreeItem);
+      }
+      m_pSelectedTemplate = pGroup->GetDocTemplate();
+
+      ATLASSERT(m_Templates.GetSelectedCount() == 1 );
+      POSITION pos = m_Templates.GetFirstSelectedItemPosition();
+      int selIdx = m_Templates.GetNextSelectedItem(pos);
+      m_pTemplateItem = (const CEAFTemplateItem*)m_Templates.GetItemData(selIdx);
    }
 
 	DDX_Radio(pDX, IDC_LARGE, m_ViewMode);
@@ -72,7 +79,7 @@ void CNewProjectDlg::DoDataExchange(CDataExchange* pDX)
 void CNewProjectDlg::SetOKButtonState()
 {
    // OK button is only enabled if something in the list control is selected
-   GetDlgItem(IDOK)->EnableWindow( (0 == m_ctrlTemplates.GetSelectedCount() ? FALSE : TRUE) );
+   GetDlgItem(IDOK)->EnableWindow( (0 == m_Templates.GetSelectedCount() ? FALSE : TRUE) );
    if ( !GetDlgItem(IDOK)->IsWindowEnabled() )
    {
       GetDlgItem(IDC_DESCRIPTION)->SetWindowText(_T("Select a project template"));
@@ -92,22 +99,14 @@ END_MESSAGE_MAP()
 
 
 // CNewProjectDlg message handlers
-void CNewProjectDlg::AddProjectGroup(HTREEITEM hParent,HTREEITEM hAfter,const CEAFTemplateGroup* pGroup,const CString& strLastSelection,HTREEITEM* pDefaultItem)
+void CNewProjectDlg::AddProjectGroup(HTREEITEM hParent,HTREEITEM hAfter,const CEAFTemplateGroup* pGroup)
 {
-   HICON hIcon = pGroup->GetIcon();
-   int imageIdx        = (hIcon == NULL ? m_DefaultIconIdx         : m_ProjectTypeImageList.Add(hIcon));
-   int seletedImageIdx = (hIcon == NULL ? m_DefaultSelectedIconIdx : imageIdx);
-
-   HTREEITEM hGroup = m_ctrlProjectTypes.InsertItem(TVIF_TEXT | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE,pGroup->GetGroupName(),imageIdx,seletedImageIdx,0,0,(LPARAM)(pGroup),hParent,hAfter);
-
-   if ( pGroup->GetGroupName() == strLastSelection )
-      *pDefaultItem = hGroup;
-
+   HTREEITEM hGroup = m_ProjectTypes.InsertItem(TVIF_TEXT | TVIF_PARAM,pGroup->GetGroupName(),0,0,0,0,(LPARAM)(pGroup),hParent,hAfter);
    CollectionIndexType nGroups = pGroup->GetGroupCount();
    for ( CollectionIndexType grpIdx = 0; grpIdx < nGroups; grpIdx++ )
    {
       const CEAFTemplateGroup* p = pGroup->GetGroup(grpIdx);
-      AddProjectGroup(hGroup,hGroup,p,strLastSelection,pDefaultItem);
+      AddProjectGroup(hGroup,hGroup,p);
    }
 }
 
@@ -139,69 +138,49 @@ BOOL CNewProjectDlg::OnInitDialog()
    pBtn = (CButton*)GetDlgItem(IDC_SMALL);
    pBtn->SetIcon( ::LoadIcon(GetInstanceHandle(),MAKEINTRESOURCE(IDI_SMALLICON)) );
 
-   m_TemplateLargeImageList.Create(32, 32, ILC_COLOR16, 2, 2);
-   m_TemplateLargeImageList.SetBkColor(m_ctrlTemplates.GetBkColor());
+   m_TemplateLargeImageList.Create(32, 32, ILC_COLOR, 2, 2);
+   m_TemplateLargeImageList.SetBkColor(m_Templates.GetBkColor());
 
-   m_TemplateSmallImageList.Create(16, 16, ILC_COLOR16, 2, 2);
-   m_TemplateSmallImageList.SetBkColor(m_ctrlTemplates.GetBkColor());
+   m_TemplateSmallImageList.Create(16, 16, ILC_COLOR, 2, 2);
+   m_TemplateSmallImageList.SetBkColor(m_Templates.GetBkColor());
 
-   m_ctrlTemplates.SetImageList(&m_TemplateLargeImageList,LVSIL_NORMAL);
-   m_ctrlTemplates.SetImageList(&m_TemplateSmallImageList,LVSIL_SMALL);
-   m_ctrlTemplates.SetExtendedStyle(LVS_EX_LABELTIP);
+   m_Templates.SetImageList(&m_TemplateLargeImageList,LVSIL_NORMAL);
+   m_Templates.SetImageList(&m_TemplateSmallImageList,LVSIL_SMALL);
+   m_Templates.SetExtendedStyle(LVS_EX_LABELTIP);
 
-
-   m_ProjectTypeImageList.Create(16, 16, ILC_COLOR16, 2, 2);
-   m_ProjectTypeImageList.SetBkColor(m_ctrlProjectTypes.GetBkColor());
-   m_ctrlProjectTypes.SetImageList(&m_ProjectTypeImageList,LVSIL_NORMAL);
-
-   SHFILEINFO sfi;
-   SecureZeroMemory(&sfi,sizeof sfi);
-   ::SHGetFileInfo(_T("Doesn't Matter"),FILE_ATTRIBUTE_DIRECTORY,&sfi, sizeof sfi, SHGFI_ICON | SHGFI_USEFILEATTRIBUTES);
-   m_hDefaultIcon = sfi.hIcon;
-   
-   SecureZeroMemory(&sfi,sizeof sfi);
-   ::SHGetFileInfo(_T("Doesn't Matter"),FILE_ATTRIBUTE_DIRECTORY,&sfi, sizeof sfi, SHGFI_ICON | SHGFI_USEFILEATTRIBUTES | SHGFI_OPENICON);
-   m_hDefaultSelectedIcon = sfi.hIcon;
-   
-   m_DefaultIconIdx         = m_ProjectTypeImageList.Add(m_hDefaultIcon);
-   m_DefaultSelectedIconIdx = m_ProjectTypeImageList.Add(m_hDefaultSelectedIcon);
-
-   CString strLastSelection = pApp->GetProfileString(strNewDialogSection,_T("LastSelection"));
-   HTREEITEM hSelectedItem = TVI_ROOT;
-
+   POSITION pos = m_pList->GetHeadPosition();
 	// add all the CDocTemplates in the project tree by name
-   GroupIndexType nGroups = m_pRootTemplateGroup->GetGroupCount();
-   for ( GroupIndexType grpIdx = 0; grpIdx < nGroups; grpIdx++ )
-   {
-      const CEAFTemplateGroup* pTemplateGroup = m_pRootTemplateGroup->GetGroup(grpIdx);
-
-      CString strTypeName(pTemplateGroup->GetGroupName());
-
-      HICON hIcon = pTemplateGroup->GetIcon();
-      int imageIdx        = (hIcon == NULL ? m_DefaultIconIdx         : m_ProjectTypeImageList.Add(hIcon));
-      int seletedImageIdx = (hIcon == NULL ? m_DefaultSelectedIconIdx : imageIdx);
+   int idx = 0;
+	while (pos != NULL)
+	{
+		CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)m_pList->GetNext(pos);
+		ASSERT_KINDOF(CEAFDocTemplate, pTemplate);
 
       HTREEITEM hPrevItem = TVI_ROOT;
-      hPrevItem = m_ctrlProjectTypes.InsertItem(TVIF_TEXT | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE,strTypeName,imageIdx,seletedImageIdx,0,0,(LPARAM)(pTemplateGroup),TVI_ROOT,hPrevItem);
 
-      if ( strTypeName == strLastSelection )
-         hSelectedItem = hPrevItem;
+		CString strTypeName;
+		if (pTemplate->GetDocString(strTypeName, CDocTemplate::fileNewName) && !strTypeName.IsEmpty())
+		{
+         const CEAFTemplateGroup* pTemplateGroup = pTemplate->GetTemplateGroup();
+         hPrevItem = m_ProjectTypes.InsertItem(TVIF_TEXT | TVIF_PARAM,strTypeName,0,0,0,0,(LPARAM)(pTemplateGroup),TVI_ROOT,hPrevItem);
 
-      CollectionIndexType nGroups = pTemplateGroup->GetGroupCount();
-      for ( CollectionIndexType grpIdx = 0; grpIdx < nGroups; grpIdx++ )
-      {
-         const CEAFTemplateGroup* pGroup = pTemplateGroup->GetGroup(grpIdx);
-         AddProjectGroup(hPrevItem,hPrevItem,pGroup,strLastSelection,&hSelectedItem);
+         CollectionIndexType nGroups = pTemplateGroup->GetGroupCount();
+         for ( CollectionIndexType grpIdx = 0; grpIdx < nGroups; grpIdx++ )
+         {
+            const CEAFTemplateGroup* pGroup = pTemplateGroup->GetGroup(grpIdx);
+            AddProjectGroup(hPrevItem,hPrevItem,pGroup);
+         }
       }
-   }
+
+      idx++;
+	}
 
    // sort alphabetically
-   m_ctrlProjectTypes.SortChildren(TVI_ROOT);
+   m_ProjectTypes.SortChildren(TVI_ROOT);
 
    // Select one of the tree nodes... the list box will be updated when the selection event fires
-   if ( hSelectedItem == TVI_ROOT )
-      hSelectedItem = m_ctrlProjectTypes.GetNextItem(TVI_ROOT, TVGN_ROOT);
-   VERIFY(m_ctrlProjectTypes.SelectItem(hSelectedItem));
+   HTREEITEM hItem = m_ProjectTypes.GetNextItem(TVI_ROOT, TVGN_ROOT);
+   m_ProjectTypes.SelectItem(hItem);
 
 
    // Expand the entire tree 
@@ -217,11 +196,11 @@ BOOL CNewProjectDlg::OnInitDialog()
 
 void CNewProjectDlg::ExpandProjectTypes()
 {
-   HTREEITEM hItem = m_ctrlProjectTypes.GetFirstVisibleItem();
+   HTREEITEM hItem = m_ProjectTypes.GetFirstVisibleItem();
    while (hItem )
    {
-      m_ctrlProjectTypes.Expand(hItem,TVE_EXPAND);
-      hItem = m_ctrlProjectTypes.GetNextVisibleItem(hItem);
+      m_ProjectTypes.Expand(hItem,TVE_EXPAND);
+      hItem = m_ProjectTypes.GetNextVisibleItem(hItem);
    }
 }
 
@@ -233,7 +212,7 @@ void CNewProjectDlg::OnProjectTypeSelectionChanged(NMHDR *pNMHDR, LRESULT *pResu
 
    if ( pNMTreeView->itemNew.mask & TVIF_PARAM )
    {
-      m_ctrlTemplates.DeleteAllItems();
+      m_Templates.DeleteAllItems();
 
       m_TemplateLargeImageList.SetImageCount(0);
       m_TemplateSmallImageList.SetImageCount(0);
@@ -250,7 +229,7 @@ void CNewProjectDlg::OnProjectTypeSelectionChanged(NMHDR *pNMHDR, LRESULT *pResu
          m_TemplateSmallImageList.Add(hIcon);
 
          CString itemName = pItem->GetName();
-         m_ctrlTemplates.InsertItem(LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE,(int)itemIdx,itemName,0,0,(int)itemIdx,(LPARAM)pItem);
+         m_Templates.InsertItem(LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE,(int)itemIdx,itemName,0,0,(int)itemIdx,(LPARAM)pItem);
       }
    }
 
@@ -265,8 +244,11 @@ void CNewProjectDlg::OnTemplatesItemChanged(NMHDR *pNMHDR, LRESULT *pResult)
    if ( pNMLV->uNewState & LVIS_SELECTED )
    {
       int itemIdx = pNMLV->iItem;
-      const CEAFTemplateItem* pItem = (const CEAFTemplateItem*)m_ctrlTemplates.GetItemData(itemIdx);
-      CString strDescription = pItem->GetDocTemplate()->GetTemplateGroupItemDescription(pItem);
+      const CEAFTemplateItem* pItem = (const CEAFTemplateItem*)m_Templates.GetItemData(itemIdx);
+
+      HTREEITEM hTreeItem = m_ProjectTypes.GetSelectedItem();
+      CEAFTemplateGroup* pGroup = (CEAFTemplateGroup*)m_ProjectTypes.GetItemData(hTreeItem);
+      CString strDescription = pGroup->GetDocTemplate()->GetTemplateGroupItemDescription(pItem);
 
       GetDlgItem(IDC_DESCRIPTION)->SetWindowText(strDescription);
    }
@@ -289,11 +271,11 @@ void CNewProjectDlg::OnViewModeClicked(UINT i)
    }
 
 	DWORD old_style;
-	old_style = GetWindowLong(m_ctrlTemplates.m_hWnd, GWL_STYLE);
+	old_style = GetWindowLong(m_Templates.m_hWnd, GWL_STYLE);
 					
 	if ((old_style & LVS_TYPEMASK) != dwStyle)
    {
-		SetWindowLong(m_ctrlTemplates.m_hWnd, GWL_STYLE,(old_style & ~LVS_TYPEMASK) | dwStyle);
+		SetWindowLong(m_Templates.m_hWnd, GWL_STYLE,(old_style & ~LVS_TYPEMASK) | dwStyle);
    }
 }
 
@@ -394,8 +376,8 @@ void CNewProjectDlg::OnSize(UINT nType, int cx, int cy)
    pDesc->GetWindowRect(&rDesc);
    pLarge->GetWindowRect(&rLarge);
    pSmall->GetWindowRect(&rSmall);
-   m_ctrlProjectTypes.GetWindowRect(&rProjects);
-   m_ctrlTemplates.GetWindowRect(&rTemplates);
+   m_ProjectTypes.GetWindowRect(&rProjects);
+   m_Templates.GetWindowRect(&rTemplates);
 
    ScreenToClient(&rCancel);
    ScreenToClient(&rOK);
@@ -446,8 +428,8 @@ void CNewProjectDlg::OnSize(UINT nType, int cx, int cy)
    pLarge->SetWindowPos(NULL,rLarge.left,rLarge.top,rLarge.Width(),rLarge.Height(),SWP_NOZORDER);
    pSmall->SetWindowPos(NULL,rSmall.left,rSmall.top,rSmall.Width(),rSmall.Height(),SWP_NOZORDER);
 
-   m_ctrlProjectTypes.SetWindowPos(NULL,rProjects.left,rProjects.top,rProjects.Width(),rProjects.Height(),SWP_NOZORDER);
-   m_ctrlTemplates.SetWindowPos(NULL,rTemplates.left,rTemplates.top,rTemplates.Width(),rTemplates.Height(),SWP_NOZORDER);
+   m_ProjectTypes.SetWindowPos(NULL,rProjects.left,rProjects.top,rProjects.Width(),rProjects.Height(),SWP_NOZORDER);
+   m_Templates.SetWindowPos(NULL,rTemplates.left,rTemplates.top,rTemplates.Width(),rTemplates.Height(),SWP_NOZORDER);
 
    Invalidate();
 }
@@ -462,10 +444,6 @@ void CNewProjectDlg::OnDestroy()
    GetClientRect(&rect);
    pApp->WriteProfileInt(strNewDialogSection,_T("cx"),rect.Width());
    pApp->WriteProfileInt(strNewDialogSection,_T("cy"),rect.Height());
-
-   HTREEITEM hItem = m_ctrlProjectTypes.GetSelectedItem();
-   CString strSelection = m_ctrlProjectTypes.GetItemText(hItem);
-   pApp->WriteProfileString(strNewDialogSection,_T("LastSelection"),strSelection);
 
    CDialog::OnDestroy();
 }

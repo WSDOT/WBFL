@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -44,11 +44,20 @@
 #endif // _AFX_NO_OLE_SUPPORT
 
 
-//
-////#include <afxdtctl.h>		// MFC support for Internet Explorer 4 Common Controls
+#ifndef _AFX_NO_DB_SUPPORT
+#include <afxdb.h>			// MFC ODBC database classes
+#endif // _AFX_NO_DB_SUPPORT
+
+#ifndef _AFX_NO_DAO_SUPPORT
+#include <afxdao.h>			// MFC DAO database classes
+#endif // _AFX_NO_DAO_SUPPORT
+
+#include <afxdtctl.h>		// MFC support for Internet Explorer 4 Common Controls
 #ifndef _AFX_NO_AFXCMN_SUPPORT
 #include <afxcmn.h>			// MFC support for Windows Common Controls
 #endif // _AFX_NO_AFXCMN_SUPPORT
+
+#include <afxwin.h>
 
 #include <atlbase.h>
 //You may derive a class from CComModule and use it if you want to override
@@ -59,12 +68,6 @@ extern CComModule _Module;
 #include <WBFLAtlExt.h>
 
 #include <EAF\EAFTypes.h>
-
-#include <comcat.h>
-
-#include <WBFLTools.h>
-
-#include <UnitMgt\UnitMgt.h>
 
 
 //{{AFX_INSERT_LOCATION}}

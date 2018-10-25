@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitMgt - Service for managing display units indirectly
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -66,7 +66,6 @@ unitmgtIndirectMeasure::unitmgtIndirectMeasure() :
    Time( unitMeasure::Hour ),
    Time2( unitMeasure::Day ),
    PerLength( unitMeasure::PerMillimeter ),
-   Curvature( unitMeasure::PerMillimeter ),
    ForceLength2( unitMeasure::KilonewtonMeter2),
    SqrtPressure( unitMeasure::SqrtMPa )
 {
@@ -103,7 +102,6 @@ unitmgtIndirectMeasure::unitmgtIndirectMeasure(const unitmgtIndirectMeasure& rOt
    Time( unitMeasure::Hour ),
    Time2( unitMeasure::Day ),
    PerLength( unitMeasure::PerMillimeter ),
-   Curvature( unitMeasure::PerMillimeter ),
    ForceLength2( unitMeasure::KilonewtonMeter2),
    SqrtPressure( unitMeasure::SqrtMPa)
 {
@@ -257,7 +255,6 @@ void unitmgtIndirectMeasure::MakeCopy(const unitmgtIndirectMeasure& rOther)
    Time            = rOther.Time;
    Time2           = rOther.Time2;
    PerLength       = rOther.PerLength;
-   Curvature       = rOther.Curvature;
    ForceLength2    = rOther.ForceLength2;
    SqrtPressure    = rOther.SqrtPressure;
 }
