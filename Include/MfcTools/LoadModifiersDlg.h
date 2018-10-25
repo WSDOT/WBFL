@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,6 +30,7 @@
 // LoadModifiersDlg.h : header file
 //
 #include <MfcTools\MfcToolsExp.h>
+#include <MFCTools\HelpHandler.h>
 
 class CLoadModifierPage;
 
@@ -45,7 +46,7 @@ public:
 	CLoadModifiersDlg(UINT nIDCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
 	CLoadModifiersDlg(LPCTSTR pszCaption = _T("Load Modifiers"), CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
 
-   void SetHelpData(LPCTSTR pszHelpFile,DWORD nd,DWORD nr,DWORD ni);
+   void SetHelpData(CHelpHandler* pHelpHandlerND,CHelpHandler* pHelpHandlerNR,CHelpHandler* pHelpHandlerNI);
 
    // levels on modifers are as follows:
    //  0 == High
@@ -73,9 +74,7 @@ public:
 
 	// Generated message map functions
 protected:
-   CString m_HelpFile;
-   DWORD m_HelpID[3];
-   BOOL m_bHelpInit; // TRUE if help data was set
+   CHelpHandler* m_pHelpHandler[3];
 
    void Init();
 

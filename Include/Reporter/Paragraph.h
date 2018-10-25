@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -133,6 +133,9 @@ public:
    rptParagraph& operator<< (Float32 value);
    //------------------------------------------------------------------------
    rptParagraph& operator<< (Float64 value);
+
+   // inserts content at the specified location
+   rptParagraph& InsertContent(IndexType location,rptReportContent* pContent);
 
    // GROUP: OPERATIONS
    //

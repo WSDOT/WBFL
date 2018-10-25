@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -199,6 +199,19 @@ rptParagraph& rptParagraph::operator<< (Float64 value)
    boost::shared_ptr<rptReportContent> rcp(new rptRcScalar( (Float64)value ));
    rcp->SetParent(this);
    m_ContentVec.push_back( rcp );
+   return *this;
+}
+
+rptParagraph& rptParagraph::InsertContent(IndexType location,rptReportContent* pContent)
+{
+   if ( m_ContentVec.size() <= location )
+   {
+      location = m_ContentVec.size()-1;
+   }
+
+   boost::shared_ptr<rptReportContent> pc(pContent);
+   pc->SetParent(this);
+   m_ContentVec.insert(m_ContentVec.begin()+location,pc);
    return *this;
 }
 

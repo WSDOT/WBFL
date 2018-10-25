@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -21,6 +21,8 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 #pragma once
+
+#include <MFCTools\HelpHandler.h>
 
 // CChoiceListDlg dialog
 class CMultiChoiceValidator;
@@ -45,8 +47,7 @@ public:
 
    CMultiChoiceValidator* m_pValidator;
 
-   CString m_HelpFile;
-   UINT m_HelpID;
+   CHelpHandler* m_pHelpHandler;
 
 protected:
    CStatic m_Icon;

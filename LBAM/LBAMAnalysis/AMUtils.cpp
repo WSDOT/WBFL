@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -20,7 +20,6 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-
 
 #include "stdafx.h"
 #include "AMUtils.h"
@@ -549,28 +548,39 @@ void PoiMapToFemPoi::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& i
 
       // get force
       Float64 left[6], right[6];
-      GetForce(     influenceLoadLocation.m_FemLoadCaseID, pFemMdl, forceOrientation, &left[FX], &left[FY], &left[MZ], &right[FX], &right[FY], &right[MZ]);
-      GetDeflection(influenceLoadLocation.m_FemLoadCaseID, pFemMdl,                   &left[DX], &left[DY], &left[RZ], &right[DX], &right[DY], &right[RZ]);
-     
-      for ( int i = 0; i < 6; i++ )
+      if ( IsZero(influenceLoadLocation.m_P) )
       {
-         const Float64 tol = 1.0e-09;
-         Float64 sign = (i < 3 ? -1 : 1);
-         if ( !IsEqual(left[i], sign*right[i], tol ) )
+         for ( int i = 0; i < 6; i++ )
          {
-            // there is a jump in the influence line (probably due to a concentrated load)
-            pLeftInflLines[i]->Add(iflDualLeft,influenceLoadLocation.m_GlobalX,sign*right[i]);
-            pLeftInflLines[i]->Add(iflDualRight,influenceLoadLocation.m_GlobalX,left[i]);
+            pLeftInflLines[i]->Add(iflSingle,influenceLoadLocation.m_GlobalX,0.0);
+            pRightInflLines[i]->Add(iflSingle,influenceLoadLocation.m_GlobalX,0.0);
+         }
+      }
+      else
+      {
+         GetForce(     influenceLoadLocation.m_FemLoadCaseID, pFemMdl, forceOrientation, &left[FX], &left[FY], &left[MZ], &right[FX], &right[FY], &right[MZ]);
+         GetDeflection(influenceLoadLocation.m_FemLoadCaseID, pFemMdl,                   &left[DX], &left[DY], &left[RZ], &right[DX], &right[DY], &right[RZ]);
+     
+         for ( int i = 0; i < 6; i++ )
+         {
+            const Float64 tol = 1.0e-09;
+            Float64 sign = (i < 3 ? -1 : 1);
+            if ( !IsEqual(left[i], sign*right[i], tol) /*&& (m_MemberLocationType != mltRightEnd && m_MemberLocationType != mltLeftEnd)*/ )
+            {
+               // there is a jump in the influence line (probably due to a concentrated load)
+               pLeftInflLines[i]->Add(iflDualLeft,influenceLoadLocation.m_GlobalX,sign*right[i]);
+               pLeftInflLines[i]->Add(iflDualRight,influenceLoadLocation.m_GlobalX,left[i]);
 
-            pRightInflLines[i]->Add(iflDualLeft,influenceLoadLocation.m_GlobalX,right[i]);
-            pRightInflLines[i]->Add(iflDualRight,influenceLoadLocation.m_GlobalX,sign*left[i]);
-         }
-         else
-         {
-            pLeftInflLines[i]->Add(iflSingle,influenceLoadLocation.m_GlobalX,left[i]);
-            pRightInflLines[i]->Add(iflSingle,influenceLoadLocation.m_GlobalX,right[i]);
-         }
-      } // loop on i
+               pRightInflLines[i]->Add(iflDualLeft,influenceLoadLocation.m_GlobalX,right[i]);
+               pRightInflLines[i]->Add(iflDualRight,influenceLoadLocation.m_GlobalX,sign*left[i]);
+            }
+            else
+            {
+               pLeftInflLines[i]->Add(iflSingle,influenceLoadLocation.m_GlobalX,left[i]);
+               pRightInflLines[i]->Add(iflSingle,influenceLoadLocation.m_GlobalX,right[i]);
+            }
+         } // loop on i
+      }
    } // next influence load set
 
    (*pLeftAxialInfl)  = pLeftInflLines[FX]; (*pLeftAxialInfl)->AddRef();
@@ -782,6 +792,20 @@ void PoiMapToFemMbr::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& i
       joints->Find(jointID,&joint);
 
       joint->IsSupport(&vbIsSupport);
+
+      if ( vbIsSupport == VARIANT_FALSE )
+      {
+         CComPtr<IIDArray> memberIDs;
+         joint->get_Members(&memberIDs);
+         IndexType nMembersAtJoint;
+         memberIDs->get_Count(&nMembersAtJoint);
+         if ( 2 < nMembersAtJoint )
+         {
+            // there is 3 or more members at the joint... we have a column
+            // so treat this joint as a support
+            vbIsSupport = VARIANT_TRUE;
+         }
+      }
    }
    else
    {
@@ -802,6 +826,20 @@ void PoiMapToFemMbr::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& i
       joints->Find(jointID,&joint);
 
       joint->IsSupport(&vbIsSupport);
+
+      if ( vbIsSupport == VARIANT_FALSE )
+      {
+         CComPtr<IIDArray> memberIDs;
+         joint->get_Members(&memberIDs);
+         IndexType nMembersAtJoint;
+         memberIDs->get_Count(&nMembersAtJoint);
+         if ( 2 < nMembersAtJoint )
+         {
+            // there is 3 or more members at the joint... we have a column
+            // so treat this joint as a support
+            vbIsSupport = VARIANT_TRUE;
+         }
+      }
    }
 
    InfluenceLoadSetIterator it( influenceLoadSet.begin() );
@@ -811,14 +849,25 @@ void PoiMapToFemMbr::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& i
       const InfluenceLoadLocation& ifll = *it;
 
       Float64 left[6], right[6];
-      GetForce(     ifll.m_FemLoadCaseID, pFemMdl, forceOrientation, &left[FX], &left[FY], &left[MZ], &right[FX], &right[FY], &right[MZ]);
-      GetDeflection(ifll.m_FemLoadCaseID, pFemMdl,                   &left[DX], &left[DY], &left[RZ], &right[DX], &right[DY], &right[RZ]);
+      if (IsZero(ifll.m_P) )
+      {
+         for ( int i = 0; i < 6; i++ )
+         {
+            left[i] = 0;
+            right[i] = 0;
+         }
+      }
+      else
+      {
+         GetForce(     ifll.m_FemLoadCaseID, pFemMdl, forceOrientation, &left[FX], &left[FY], &left[MZ], &right[FX], &right[FY], &right[MZ]);
+         GetDeflection(ifll.m_FemLoadCaseID, pFemMdl,                   &left[DX], &left[DY], &left[RZ], &right[DX], &right[DY], &right[RZ]);
+      }
 
       if ( vbIsSupport == VARIANT_TRUE )
       {
          for ( int i = 0; i < 6; i++ )
          {
-            pInflLines[leftFace][i]->Add(iflSingle,ifll.m_GlobalX,left[i]);
+            pInflLines[leftFace ][i]->Add(iflSingle,ifll.m_GlobalX,left[i]);
             pInflLines[rightFace][i]->Add(iflSingle,ifll.m_GlobalX,right[i]);
          }
       }
@@ -846,19 +895,25 @@ void PoiMapToFemMbr::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& i
       }
    }
 
+   if ( GetLeftPoiID() != INVALID_ID )
+   {
    (*pLeftAxialInfl)  = pInflLines[leftFace][FX]; (*pLeftAxialInfl)->AddRef();
    (*pLeftShearInfl)  = pInflLines[leftFace][FY]; (*pLeftShearInfl)->AddRef();
    (*pLeftMomentInfl) = pInflLines[leftFace][MZ]; (*pLeftMomentInfl)->AddRef();
    (*pLeftDxInfl)     = pInflLines[leftFace][DX]; (*pLeftDxInfl)->AddRef();
    (*pLeftDyInfl)     = pInflLines[leftFace][DY]; (*pLeftDyInfl)->AddRef();
    (*pLeftRzInfl)     = pInflLines[leftFace][RZ]; (*pLeftRzInfl)->AddRef();
+   }
 
+   if ( GetRightPoiID() != INVALID_ID )
+   {
    (*pRightAxialInfl)  = pInflLines[rightFace][FX]; (*pRightAxialInfl)->AddRef();
    (*pRightShearInfl)  = pInflLines[rightFace][FY]; (*pRightShearInfl)->AddRef();
    (*pRightMomentInfl) = pInflLines[rightFace][MZ]; (*pRightMomentInfl)->AddRef();
    (*pRightDxInfl)     = pInflLines[rightFace][DX]; (*pRightDxInfl)->AddRef();
    (*pRightDyInfl)     = pInflLines[rightFace][DY]; (*pRightDyInfl)->AddRef();
    (*pRightRzInfl)     = pInflLines[rightFace][RZ]; (*pRightRzInfl)->AddRef();
+   }
 }
 
 

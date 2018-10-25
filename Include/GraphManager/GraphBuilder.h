@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphManager - Manages graph definitions
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -42,6 +42,12 @@ public:
    virtual void SetName(LPCTSTR strName);
    virtual LPCTSTR GetName() const;
 
+   void InitDocumentation(LPCTSTR lpszDocSetName,UINT nHID);
+   void SetDocumentationSetName(LPCTSTR lpszDocSetName);
+   const CString& GetDocumentationSetName() const;
+   void SetHelpID(UINT nID);
+   UINT GetHelpID() const;
+
    void SetMenuBitmap(const CBitmap* pBmp);
    const CBitmap* GetMenuBitmap();
 
@@ -68,4 +74,7 @@ public:
 protected:
    CString m_strName;
    const CBitmap* m_pBitmap;
+
+   CString m_strDocSetName;
+   UINT m_nHelpID;
 };
