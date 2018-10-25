@@ -69,7 +69,7 @@ STDMETHODIMP CLiveLoadResponseAgg::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 // ILiveLoadResponse
-STDMETHODIMP CLiveLoadResponseAgg::ComputeForces(ILongArray* pois, BSTR stage, LiveLoadModelType type, 
+STDMETHODIMP CLiveLoadResponseAgg::ComputeForces(IIDArray* pois, BSTR stage, LiveLoadModelType type, 
                                                  ResultsOrientation orientation, ForceEffectType effect, 
                                                  OptimizationType optimization, 
                                                  VehicularLoadConfigurationType vehConfiguration, 
@@ -138,7 +138,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeForces(ILongArray* pois, BSTR stage, L
 }
 
 
-STDMETHODIMP CLiveLoadResponseAgg::ComputeDeflections(ILongArray* pois, BSTR stage, LiveLoadModelType type, 
+STDMETHODIMP CLiveLoadResponseAgg::ComputeDeflections(IIDArray* pois, BSTR stage, LiveLoadModelType type, 
                                                       ForceEffectType effect, 
                                                       OptimizationType optimization, 
                                                       VehicularLoadConfigurationType vehConfiguration, 
@@ -206,7 +206,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeDeflections(ILongArray* pois, BSTR sta
    return S_OK;
 }
 
-STDMETHODIMP CLiveLoadResponseAgg::ComputeReactions(ILongArray* supports, BSTR stage, LiveLoadModelType type, 
+STDMETHODIMP CLiveLoadResponseAgg::ComputeReactions(IIDArray* supports, BSTR stage, LiveLoadModelType type, 
                                                     ForceEffectType effect, 
                                                     OptimizationType optimization, 
                                                     VehicularLoadConfigurationType vehConfiguration, 
@@ -265,7 +265,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeReactions(ILongArray* supports, BSTR s
    return S_OK;
 }
 
-STDMETHODIMP CLiveLoadResponseAgg::ComputeSupportDeflections(ILongArray* supports, BSTR stage, LiveLoadModelType type, 
+STDMETHODIMP CLiveLoadResponseAgg::ComputeSupportDeflections(IIDArray* supports, BSTR stage, LiveLoadModelType type, 
                                                              ForceEffectType effect, 
                                                              OptimizationType optimization, 
                                                              VehicularLoadConfigurationType vehConfiguration, 
@@ -324,7 +324,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeSupportDeflections(ILongArray* support
    return S_OK;
 }
 
-STDMETHODIMP CLiveLoadResponseAgg::ComputeStresses(ILongArray* pois, BSTR stage, LiveLoadModelType type, 
+STDMETHODIMP CLiveLoadResponseAgg::ComputeStresses(IIDArray* pois, BSTR stage, LiveLoadModelType type, 
                                                    ForceEffectType effect, OptimizationType optimization, 
                                                    VehicularLoadConfigurationType vehConfiguration, 
                                                    VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution,
@@ -350,8 +350,8 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeStresses(ILongArray* pois, BSTR stage,
       hr = force_res->get_Count(&num_pois);
       hr = results->Reserve(num_pois);
 
-      CComPtr<ILongArray> single_poi;
-      hr = single_poi.CoCreateInstance(CLSID_LongArray);
+      CComPtr<IIDArray> single_poi;
+      hr = single_poi.CoCreateInstance(CLSID_IDArray);
 
       hr = single_poi->ReDim(1);
 

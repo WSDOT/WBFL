@@ -52,7 +52,7 @@ void CTestPointLoad::Test()
    Float64 d;
    TRY_TEST( pPointLoad->get_Location(&d), S_OK );
    TRY_TEST( d, 0.0 );
-   long i;
+   MemberIDType i;
    TRY_TEST( pPointLoad->get_MemberID(&i), S_OK );
    TRY_TEST( i, -1 );
    TRY_TEST( pPointLoad->get_Fx(&d), S_OK );
@@ -79,7 +79,7 @@ void CTestPointLoad::Test()
    TRY_TEST( d, 2.0 );
    TRY_TEST( pPointLoad->put_MemberID(3), S_OK );
    TEST_LOAD_FIRED();
-   long l;
+   MemberIDType l;
    TRY_TEST( pPointLoad->get_MemberID(&l), S_OK );
    TRY_TEST( l, 3 );
 

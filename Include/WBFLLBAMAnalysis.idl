@@ -171,7 +171,7 @@ library WBFLLBAMAnalysis
       // Get all pois (user and internal) along superstructure in sorted order
       // results are in SafeArrays of longs and Float64s, respectively
       [helpstring("method GetSuperstructurePois"),helpcontext(IDH_AnalysisPOIs_GetSuperstructurePois)] 
-      HRESULT GetSuperstructurePois([in]BSTR stage, [out]ILongArray* *poiIDs, [out]IDblArray* *poiLocations);
+      HRESULT GetSuperstructurePois([in]BSTR stage, [out]IIDArray* *poiIDs, [out]IDblArray* *poiLocations);
       // method for reporting about where internal and external pois are
       [helpstring("method GetPoiInfo"),helpcontext(IDH_AnalysisPOIs_GetPoiInfo)]
       HRESULT GetPoiInfo([in]BSTR stage, [in]PoiIDType poiID, [out]MemberType* lbamMemberType, [out]MemberIDType* memberID, [out]Float64* memberLocation);
@@ -613,20 +613,20 @@ library WBFLLBAMAnalysis
 	interface ILoadGroupResponse : IUnknown
 	{
 		[helpstring("method ComputeForces"),helpcontext(IDH_LoadGroupResponse_ComputeForces)] 
-        HRESULT ComputeForces([in]BSTR LoadGroup, [in]ILongArray* poiIDs, [in]BSTR Stage, 
+        HRESULT ComputeForces([in]BSTR LoadGroup, [in]IIDArray* poiIDs, [in]BSTR Stage, 
                           [in]ResultsOrientation orientation, [in]ResultsSummationType summ, 
                           [out,retval]ISectionResult3Ds** results);
 		[helpstring("method ComputeDeflections"),helpcontext(IDH_LoadGroupResponse_ComputeDeflections)] 
-        HRESULT ComputeDeflections([in]BSTR LoadGroup, [in]ILongArray* poiIDs, [in]BSTR Stage, 
+        HRESULT ComputeDeflections([in]BSTR LoadGroup, [in]IIDArray* poiIDs, [in]BSTR Stage, 
                                    [in]ResultsSummationType summ, [out,retval]ISectionResult3Ds** results);
 		[helpstring("method ComputeReactions"),helpcontext(IDH_LoadGroupResponse_ComputeReactions)] 
-		HRESULT ComputeReactions([in]BSTR LoadGroup, [in]ILongArray* supportIDs, [in]BSTR Stage,
+		HRESULT ComputeReactions([in]BSTR LoadGroup, [in]IIDArray* supportIDs, [in]BSTR Stage,
 		                         [in]ResultsSummationType summ, [out,retval]IResult3Ds** results);
 		[helpstring("method ComputeSupportDeflections"),helpcontext(IDH_LoadGroupResponse_ComputeSupportDeflections)] 
-        HRESULT ComputeSupportDeflections([in]BSTR LoadGroup, [in]ILongArray* supportIDs, [in]BSTR Stage, 
+        HRESULT ComputeSupportDeflections([in]BSTR LoadGroup, [in]IIDArray* supportIDs, [in]BSTR Stage, 
                                    [in]ResultsSummationType summ, [out,retval]IResult3Ds** results);
 		[helpstring("method ComputeStresses"),helpcontext(IDH_LoadGroupResponse_ComputeStresses)] 
-		HRESULT ComputeStresses([in]BSTR LoadGroup, [in]ILongArray* poiIDs, [in]BSTR Stage, 
+		HRESULT ComputeStresses([in]BSTR LoadGroup, [in]IIDArray* poiIDs, [in]BSTR Stage, 
 		                        [in]ResultsSummationType summ, 
 								[out,retval]ISectionStressResults **results);
 	};

@@ -40,6 +40,7 @@ library WBFLReportManagerAgent
 {
 	importlib("stdole32.tlb");
 	importlib("stdole2.tlb");
+   importlib("WBFLCore.tlb");
 
 	[
 		uuid(809889B1-69F0-49FC-B8F5-50B0BC169EB0),

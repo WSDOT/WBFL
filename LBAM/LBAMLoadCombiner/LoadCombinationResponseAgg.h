@@ -63,27 +63,27 @@ END_CONNECTION_POINT_MAP()
 
 // ILoadCombinationResponse
 public:
-   STDMETHOD(ComputeForces)(/*[in]*/BSTR LoadCombination, /*[in]*/ILongArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsOrientation orientation, 
+   STDMETHOD(ComputeForces)(/*[in]*/BSTR LoadCombination, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsOrientation orientation, 
                             /*[in]*/ResultsSummationType summ, /*[in]*/ForceEffectType effect, /*[in]*/OptimizationType optimization, 
                             /*[in]*/VARIANT_BOOL includeLiveLoad, /*[in]*/VARIANT_BOOL includeImpact, /*[in]*/VARIANT_BOOL computeConfig,
                             /*[out,retval]*/ILoadCombinationSectionResults** results);
 
-   STDMETHOD(ComputeDeflections)(/*[in]*/BSTR LoadCombination, /*[in]*/ILongArray* POIs, /*[in]*/BSTR Stage,
+   STDMETHOD(ComputeDeflections)(/*[in]*/BSTR LoadCombination, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage,
                                  /*[in]*/ResultsSummationType summ, /*[in]*/ForceEffectType effect, /*[in]*/OptimizationType optimization, 
                                  /*[in]*/VARIANT_BOOL includeLiveLoad, /*[in]*/VARIANT_BOOL includeImpact, /*[in]*/VARIANT_BOOL computeConfig,
                                  /*[out,retval]*/ILoadCombinationSectionResults** results);
 
-   STDMETHOD(ComputeReactions)(/*[in]*/BSTR LoadCombination, /*[in]*/ILongArray* POIs, /*[in]*/BSTR Stage,
+   STDMETHOD(ComputeReactions)(/*[in]*/BSTR LoadCombination, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage,
                                /*[in]*/ResultsSummationType summ, /*[in]*/ForceEffectType effect, /*[in]*/OptimizationType optimization, 
                                /*[in]*/VARIANT_BOOL includeLiveLoad, /*[in]*/VARIANT_BOOL includeImpact, /*[in]*/VARIANT_BOOL computeConfig,
                                /*[out,retval]*/ILoadCombinationResults** results);
 
-   STDMETHOD(ComputeSupportDeflections)(/*[in]*/BSTR LoadCombination, /*[in]*/ILongArray* POIs, /*[in]*/BSTR Stage,
+   STDMETHOD(ComputeSupportDeflections)(/*[in]*/BSTR LoadCombination, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage,
                                         /*[in]*/ResultsSummationType summ, /*[in]*/ForceEffectType effect, /*[in]*/OptimizationType optimization, 
                                         /*[in]*/VARIANT_BOOL includeLiveLoad, /*[in]*/VARIANT_BOOL includeImpact, /*[in]*/VARIANT_BOOL computeConfig,
                                         /*[out,retval]*/ILoadCombinationResults** results);
 
-   STDMETHOD(ComputeStresses)(/*[in]*/BSTR LoadCombination, /*[in]*/ILongArray* POIs, /*[in]*/BSTR Stage,
+   STDMETHOD(ComputeStresses)(/*[in]*/BSTR LoadCombination, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage,
                               /*[in]*/ResultsSummationType summ, /*[in]*/ForceEffectType effect, /*[in]*/OptimizationType optimization, 
                               /*[in]*/VARIANT_BOOL includeLiveLoad, /*[in]*/VARIANT_BOOL includeImpact, /*[in]*/VARIANT_BOOL computeConfig,
                               /*[out,retval]*/ILoadCombinationStressResults** results);

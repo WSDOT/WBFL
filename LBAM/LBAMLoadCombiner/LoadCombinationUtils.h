@@ -27,7 +27,7 @@
 #include "WBFLLBamAnalysis.h"
 
 
-inline HRESULT CombSectionToStressResults(ILongArray* POIs, BSTR stage, ILoadCombinationSectionResults* forceRes, 
+inline HRESULT CombSectionToStressResults(IIDArray* POIs, BSTR stage, ILoadCombinationSectionResults* forceRes, 
                                           IConcurrentLoadCombinationResponse* basicResponse,
                                           ILoadCombinationStressResults**pResults)
 {
@@ -47,8 +47,8 @@ inline HRESULT CombSectionToStressResults(ILongArray* POIs, BSTR stage, ILoadCom
    if (FAILED(hr))
       return hr;
 
-   CComPtr<ILongArray> single_poi;
-   hr = single_poi.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIDArray> single_poi;
+   hr = single_poi.CoCreateInstance(CLSID_IDArray);
    if (FAILED(hr))
       return hr;
 

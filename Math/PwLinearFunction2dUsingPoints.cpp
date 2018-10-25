@@ -23,12 +23,15 @@
 
 #include <Math\MathLib.h>
 #include <Math\PwLinearFunction2dUsingPoints.h>
+#include <algorithm>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
+static const Float64 FLT_TOLER=1.0e-06; // close enough
 
 /****************************************************************************
 CLASS
@@ -132,10 +135,15 @@ Float64 mathPwLinearFunction2dUsingPoints::Evaluate(Float64 x) const
       // x not in function range - throw
       THROW(mathXEvalError, Undefined);
    }
+   else if (x==m_Points[0].X())
+   {
+      // Edge case - no need for interpolation
+      return m_Points[0].Y();
+   }
    else if (m_LastSegment==0)
    {
       // no last seek. just start at the left end and work right
-      if (x>=m_Points[0].X())
+      if (x>m_Points[0].X())
       {
          m_LastSegment=1;
          seek_right(m_Points, x, &m_LastSegment);
@@ -291,6 +299,114 @@ Int16 mathPwLinearFunction2dUsingPoints::Intersect(const mathPwLinearFunction2dU
    return 0;
 }
 
+void mathPwLinearFunction2dUsingPoints::GetMaximumsInRange(const math1dRange& range, Float64* pMin, Float64* pMax)
+{
+   Float64 left_bnd = range.GetLeftBoundLocation();
+   Float64 right_bnd = range.GetRightBoundLocation();
+
+   // Call Evaluate function to get left end of range.
+   // This will also set m_LastSegment to the point location just right of the left range bound
+   Float64 left_y = Evaluate( left_bnd );
+
+   Float64 min_y(left_y);
+   Float64 max_y(left_y);
+
+   // Loop over remaining values to find max's
+   Float64 last_x(left_bnd);
+   Float64 last_y(left_y);
+   Uint32 idx(m_LastSegment); // m_LastSegment set by Evaluate
+   Uint32 size(m_Points.size());
+
+   while(true)
+   {
+      if (idx>=size)
+      {
+         // We have hit end of bounds without finding a value. Throw
+         THROW(mathXEvalError, Undefined);
+      }
+
+      Float64 x = m_Points[idx].X();
+      Float64 y = m_Points[idx].Y();
+      if (x <= right_bnd)
+      {
+         // point is within right bound, just take max's
+         min_y = min(min_y, y);
+         max_y = max(max_y, y);
+
+         if (right_bnd-x < FLT_TOLER)
+         {
+            break; // x is at end of range, we are done
+         }
+      }
+      else
+      {
+         // Point is beyond end of range and last point is before. Interpolate
+         Float64 a     = right_bnd - last_x;
+         Float64 l     = last_y;
+         Float64 h     = y;
+         Float64 delta = x - last_x;
+         Float64 int_y =  LinInterp( a, l, h, delta);
+
+         min_y = min(min_y, int_y);
+         max_y = max(max_y, int_y);
+         break; // done
+      }
+
+      last_x = x;
+      last_y = y;
+      idx++;
+   }
+
+   *pMin = min_y;
+   *pMax = max_y;
+}
+
+void mathPwLinearFunction2dUsingPoints::MirrorAboutY(Float64 xLocation)
+{
+   // Mirror all points around xLocation. This is done with two operations:
+   // 1) reverse order of points
+   // 2) New x values = 2*xLocation - x
+   std::reverse(m_Points.begin(), m_Points.end());
+
+   for( std::vector<gpPoint2d>::iterator it=m_Points.begin(); it!=m_Points.end(); it++)
+   {
+      gpPoint2d& rpoint = *it;
+      Float64 x = rpoint.X();
+      rpoint.X() = 2*xLocation - x;
+   }
+}
+
+void mathPwLinearFunction2dUsingPoints::GetYValues(std::vector<Float64>& Yvec)
+{
+   for( std::vector<gpPoint2d>::const_iterator it=m_Points.begin(); it!=m_Points.end(); it++)
+   {
+      const gpPoint2d& rpoint = *it;
+      Float64 y = rpoint.Y();
+      Yvec.push_back(y);
+   }
+}
+
+void mathPwLinearFunction2dUsingPoints::ResetOuterRange( const math1dRange& range)
+{
+   Float64 xleft = range.GetLeftBoundLocation();
+   Float64 xright = range.GetRightBoundLocation();
+
+   std::vector<gpPoint2d>::size_type siz = m_Points.size();
+
+   // New range must fit at outer edges of function
+   if (siz < 2 || xleft>=m_Points[1].X() || xright<=m_Points[siz-2].X())
+   {
+      ATLASSERT(0);
+      THROW(mathXEvalError, Undefined);
+   }
+   else
+   { 
+      // Set the new range
+      m_Points[0].X() = xleft;
+      m_Points.back().X() = xright;
+   }
+}
+
 
 //======================== ACCESS     =======================================
 //======================== INQUIRY    =======================================
@@ -431,6 +547,38 @@ bool mathPwLinearFunction2dUsingPoints::TestMe(dbgLog& rlog)
    r.SetRightBoundLocation(250);
    TRY_TESTME(fun1.Intersect(fun2,r,&ip1)==0);
    TRY_TESTME(fun2.Intersect(fun1,r,&ip1)==0);
+
+   // GetMaximumsInRange
+   Float64 fmin, fmax;
+   r.SetLeftBoundLocation(-3.5);
+   r.SetRightBoundLocation(1.0);
+   fun1.GetMaximumsInRange(r, &fmin, &fmax);
+   TRY_TESTME(fmin==-1.5);
+   TRY_TESTME(fmax==2.0);
+
+   r.SetLeftBoundLocation(-4.0);
+   r.SetRightBoundLocation(3.0);
+   fun1.GetMaximumsInRange(r, &fmin, &fmax);
+   TRY_TESTME(fmin==-3.0);
+   TRY_TESTME(fmax==2.0);
+
+   r.SetLeftBoundLocation(2.0);
+   r.SetRightBoundLocation(2.5);
+   fun1.GetMaximumsInRange(r, &fmin, &fmax);
+   TRY_TESTME(fmin==-0.25);
+   TRY_TESTME(fmax==0.5);
+
+   try
+   {
+      r.SetLeftBoundLocation(2.0);
+      r.SetRightBoundLocation(5.0);
+      fun1.GetMaximumsInRange(r, &fmin, &fmax);
+   }
+   catch (mathXEvalError& e)
+   {
+      TRY_TESTME(e.GetReasonCode()==mathXEvalError::Undefined);
+   }
+ 
 
 #ifdef _DEBUG
    fun2.Dump(rlog.GetDumpCtx());

@@ -46,7 +46,7 @@ static char THIS_FILE[] = __FILE__;
 
 static HRESULT CreateSimpleLBAM(ILBAMModel** model);
 
-inline HRESULT CreateDistributedLoad(IDistributedLoads* dls, BSTR stage, BSTR loadGroup, long mbrId, MemberType mType, Float64 ldVal)
+inline HRESULT CreateDistributedLoad(IDistributedLoads* dls, BSTR stage, BSTR loadGroup, MemberIDType mbrId, MemberType mType, Float64 ldVal)
 {
    CComPtr<IDistributedLoad> dl;
    TRY_TEST( dl.CoCreateInstance(CLSID_DistributedLoad), S_OK);
@@ -155,8 +155,8 @@ void TestLoadCombiner::Test()
    TRY_TEST(depctx->Initialize(plclc), S_OK);
 
    // we can now go after some load case results
-   CComPtr<ILongArray> poi_ids;
-   poi_ids.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIDArray> poi_ids;
+   poi_ids.CoCreateInstance(CLSID_IDArray);
    poi_ids->Add(2);  // middle of each span
    poi_ids->Add(7);
 
@@ -273,8 +273,8 @@ void TestLoadCombiner::Test()
 
    {
       // Reactions
-      CComPtr<ILongArray> spt_ids;
-      spt_ids.CoCreateInstance(CLSID_LongArray);
+      CComPtr<IIDArray> spt_ids;
+      spt_ids.CoCreateInstance(CLSID_IDArray);
       spt_ids->Add(0);  // middle of each span
       spt_ids->Add(1);
       spt_ids->Add(2);
@@ -375,7 +375,7 @@ HRESULT CreateSimpleLBAM(ILBAMModel** model)
    TRY_TEST(hr, S_OK);
 
    // add some pois
-   long last_val;
+   PoiIDType last_val;
    TRY_TEST(factory->GeneratePOIsOnSuperstructure(*model, 0, 4, &last_val), S_OK);
 
    // create some load groups with loads (or not)

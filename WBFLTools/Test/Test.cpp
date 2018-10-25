@@ -35,32 +35,16 @@
 #include <WBFLTools_i.c>
 
 #if defined _DEBUG
-#if defined VBA_BUILD
-#if defined _WIN64
-#include "StorageTest\x64\VBA_Debug\StorageTest_i.c"
-#else
-#include "StorageTest\Win32\VBA_Debug\StorageTest_i.c"
-#endif
-#else
 #if defined _WIN64
 #include "StorageTest\x64\Debug\StorageTest_i.c"
 #else
 #include "StorageTest\Win32\Debug\StorageTest_i.c"
-#endif
-#endif
-#else
-#if defined VBA_BUILD
-#if defined _WIN64
-#include "StorageTest\x64\VBA_Release\StorageTest_i.c"
-#else
-#include "StorageTest\Win32\VBA_Release\StorageTest_i.c"
 #endif
 #else
 #if defined _WIN64
 #include "StorageTest\x64\Release\StorageTest_i.c"
 #else
 #include "StorageTest\Win32\Release\StorageTest_i.c"
-#endif
 #endif
 #endif
 

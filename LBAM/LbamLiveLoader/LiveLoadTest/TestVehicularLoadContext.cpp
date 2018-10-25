@@ -262,7 +262,7 @@ HRESULT CreateSimpleLBAM(ILBAMModel** model)
    TRY_TEST(dfs->Add(dfs2), S_OK);
 
    // add some pois
-   long last_val;
+   PoiIDType last_val;
    TRY_TEST(factory->GeneratePOIsOnSuperstructure(*model, 0, 4, &last_val), S_OK);
 
    ConfigureLrfdLiveLoadModelInKipFeet(*model);

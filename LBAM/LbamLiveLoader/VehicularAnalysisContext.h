@@ -118,7 +118,7 @@ public:
    STDMETHOD(put_SpanPoiIncrement)( PoiIDType newVal);
    STDMETHOD(get_CantileverPoiIncrement)(PoiIDType *pVal);
    STDMETHOD(put_CantileverPoiIncrement)( PoiIDType newVal);
-   STDMETHOD(GetSuperstructurePois)(BSTR stage, ILongArray* *poiIDs, IDblArray* *poiLocations);
+   STDMETHOD(GetSuperstructurePois)(BSTR stage, IIDArray* *poiIDs, IDblArray* *poiLocations);
    STDMETHOD(GetPoiInfo)(BSTR stage, PoiIDType poiID, MemberType* lbamMemberType, MemberIDType* memberID, Float64* memberLocation);
 
 // IGetDistributionFactors

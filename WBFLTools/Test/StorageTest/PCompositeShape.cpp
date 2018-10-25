@@ -26,25 +26,10 @@
 // PCompositeShape.cpp : Implementation of CPCompositeShape
 #include "stdafx.h"
 #if defined _DEBUG
-#if defined VBA_BUILD
-#if defined _WIN64
-#include "x64\VBA_Debug\StorageTest.h"
-#else
-#include "Win32\VBA_Debug\StorageTest.h"
-#endif
-#else
 #if defined _WIN64
 #include "x64\Debug\StorageTest.h"
 #else
 #include "Win32\Debug\StorageTest.h"
-#endif
-#endif
-#else
-#if defined VBA_BUILD
-#if defined _WIN64
-#include "x64\VBA_Release\StorageTest.h"
-#else
-#include "Win32\VBA_Release\StorageTest.h"
 #endif
 #else
 #if defined _WIN64
@@ -53,8 +38,6 @@
 #include "Win32\Release\StorageTest.h"
 #endif
 #endif
-#endif
-
 #include "PCompositeShape.h"
 
 #ifdef _DEBUG

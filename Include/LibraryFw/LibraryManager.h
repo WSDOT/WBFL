@@ -143,7 +143,7 @@ public:
    //------------------------------------------------------------------------
    // Get the index of a library based on its display name
    // Returns -1 if no library exists.
-   Uint32 GetIndex(LPCTSTR displayName) const;
+   CollectionIndexType GetIndex(LPCTSTR displayName) const;
 
    //------------------------------------------------------------------------
    // Clears all entries from all contained libraries. This function can

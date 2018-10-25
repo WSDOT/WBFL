@@ -281,14 +281,14 @@ library WBFLGenericBridgeTools
 
       // Returns a vector of integers GridPointCount long indicating the max number of strands
       // that normally can be placed at each Grid point (1 - if X==0.0, or 2 - if X>0.0)
-      [helpstring("method GetMaxStrandFill")] HRESULT GetMaxStrandFill([out,retval]ILongArray** maxFill);
+      [helpstring("method GetMaxStrandFill")] HRESULT GetMaxStrandFill([out,retval]IIndexArray** maxFill);
 
       // Set or get vector of integers indicated number of strands filled at each Grid point
       // Possible values are 0, 1, or 2. Length of vector is GridPointCount
       // If Grid point has positive X value and 1 is input, the strand is placed at X=0.0
       // If Grid point has zero X value and 2 is input, two strands are placed at X=0.0
-      [propget, helpstring("property StrandFill")] HRESULT StrandFill([out,retval]ILongArray** fill);
-      [propput, helpstring("property StrandFill")] HRESULT StrandFill([in]ILongArray* fill);
+      [propget, helpstring("property StrandFill")] HRESULT StrandFill([out,retval]IIndexArray** fill);
+      [propput, helpstring("property StrandFill")] HRESULT StrandFill([in]IIndexArray* fill);
 
 	   [helpstring("method RemoveAllStrands")] HRESULT RemoveAllStrands();
 
@@ -318,17 +318,17 @@ library WBFLGenericBridgeTools
 	   [propget,helpstring("property FilledGridBounds")] HRESULT FilledGridBounds([out]Float64* bottomElev, [out]Float64* topElev);
 
 	   [propget,helpstring("property RowsWithStrand")] HRESULT RowsWithStrand([out,retval]RowIndexType* nRows);
-	   [propget,helpstring("property StrandsInRow")] HRESULT StrandsInRow([in]RowIndexType rowIdx,[out,retval]ILongArray** gridIndexes);
+	   [propget,helpstring("property StrandsInRow")] HRESULT StrandsInRow([in]RowIndexType rowIdx,[out,retval]IIndexArray** gridIndexes);
 	   [propget,helpstring("property NumStrandsInRow")] HRESULT NumStrandsInRow([in]RowIndexType rowIdx,[out,retval]StrandIndexType* nStrands);
 
       // Ex methods are typically for testing a new fill.
       // they allow input of a temporary fill array. Internal fill array is not changed
-	   [helpstring("method GetStrandCountEx")] HRESULT GetStrandCountEx([in]ILongArray* fill, [out,retval] StrandIndexType* count);
-	   [helpstring("method GetStrandPositionsEx")] HRESULT GetStrandPositionsEx([in]ILongArray* fill, [out,retval]IPoint2dCollection** points);
-	   [propget,helpstring("property CGEx")] HRESULT CGEx([in]ILongArray* fill, [out]Float64* cgx, [out]Float64* cgy);
-	   [propget,helpstring("property StrandBoundingBoxEx")] HRESULT StrandBoundingBoxEx([in]ILongArray* fill, [out,retval]IRect2d** box);
-      [helpstring("method StrandIndexToGridIndexEx")] HRESULT StrandIndexToGridIndexEx([in]ILongArray* fill, [in] StrandIndexType strandIndex, [out,retval] GridIndexType* gridIndex);
-	   [propget,helpstring("property FilledGridBoundsEx")] HRESULT FilledGridBoundsEx([in]ILongArray* fill, [out]Float64* bottomElev, [out]Float64* topElev);
+	   [helpstring("method GetStrandCountEx")] HRESULT GetStrandCountEx([in]IIndexArray* fill, [out,retval] StrandIndexType* count);
+	   [helpstring("method GetStrandPositionsEx")] HRESULT GetStrandPositionsEx([in]IIndexArray* fill, [out,retval]IPoint2dCollection** points);
+	   [propget,helpstring("property CGEx")] HRESULT CGEx([in]IIndexArray* fill, [out]Float64* cgx, [out]Float64* cgy);
+	   [propget,helpstring("property StrandBoundingBoxEx")] HRESULT StrandBoundingBoxEx([in]IIndexArray* fill, [out,retval]IRect2d** box);
+      [helpstring("method StrandIndexToGridIndexEx")] HRESULT StrandIndexToGridIndexEx([in]IIndexArray* fill, [in] StrandIndexType strandIndex, [out,retval] GridIndexType* gridIndex);
+	   [propget,helpstring("property FilledGridBoundsEx")] HRESULT FilledGridBoundsEx([in]IIndexArray* fill, [out]Float64* bottomElev, [out]Float64* topElev);
 
       // Debonding - could go into another interface, but it's handy to have it here
       // rough count of debonded strands at current fill
@@ -336,12 +336,12 @@ library WBFLGenericBridgeTools
 
       // Debond  strands based on Grid index
       [helpstring("method DebondStrandByGridIndex")] HRESULT DebondStrandByGridIndex([in]GridIndexType grdIndex,[in]Float64 l1,[in]Float64 l2);
-      [helpstring("method GetDebondedStrandsByGridIndex")] HRESULT GetDebondedStrandsByGridIndex([out,retval]ILongArray** grdIndexes);
+      [helpstring("method GetDebondedStrandsByGridIndex")] HRESULT GetDebondedStrandsByGridIndex([out,retval]IIndexArray** grdIndexes);
       [helpstring("method GetDebondLengthByGridIndex")] HRESULT GetDebondLengthByGridIndex([in]GridIndexType grdIndex, [out]Float64* YCoord, [out]Float64* l1,[out]Float64* l2);
 
       // Debonded  strands based on Positions index (i.e., from GetStrandPositions)
       [helpstring("method GetDebondLengthByPositionIndex")] HRESULT GetDebondLengthByPositionIndex([in]StrandIndexType positionIndex,[out]Float64* YCoord, [out]Float64* l1,[out]Float64* l2);
-      [helpstring("method GetStrandsDebondedByPositionIndex")] HRESULT GetStrandsDebondedByPositionIndex([in]Float64 distFromStart, [in]Float64 girderLength, [out,retval]ILongArray** positionIndexes);
+      [helpstring("method GetStrandsDebondedByPositionIndex")] HRESULT GetStrandsDebondedByPositionIndex([in]Float64 distFromStart, [in]Float64 girderLength, [out,retval]IIndexArray** positionIndexes);
 
       // Distance that a strand is bonded (left and right) for a given location. Also returns strand's Y coordinate
       // Note that versions are for position and grid indexing
@@ -355,8 +355,8 @@ library WBFLGenericBridgeTools
       [helpstring("method IsExteriorStrandDebondedInRow")] HRESULT IsExteriorStrandDebondedInRow([in] RowIndexType rowIndex,[out,retval]VARIANT_BOOL* bResult);
 
       [helpstring("method GetDebondSections")] HRESULT GetDebondSections([out]IDblArray** arrLeft,[out]IDblArray** arrRight);
-      [helpstring("method GetDebondAtLeftSection")] HRESULT GetDebondAtLeftSection([in]SectionIndexType sectionIdx,[out,retval]ILongArray** strandIndexes);
-      [helpstring("method GetDebondAtRightSection")] HRESULT GetDebondAtRightSection([in]SectionIndexType sectionIdx,[out,retval]ILongArray** strandIndexes);
+      [helpstring("method GetDebondAtLeftSection")] HRESULT GetDebondAtLeftSection([in]SectionIndexType sectionIdx,[out,retval]IIndexArray** strandIndexes);
+      [helpstring("method GetDebondAtRightSection")] HRESULT GetDebondAtRightSection([in]SectionIndexType sectionIdx,[out,retval]IIndexArray** strandIndexes);
 
 	  [helpstring("method ClearDebonding")] HRESULT ClearDebonding();
    }
@@ -416,42 +416,42 @@ library WBFLGenericBridgeTools
       [propget,helpstring("property RightBearingOffset")] HRESULT RightBearingOffset([out,retval] Float64* offset);
       [helpstring("method GetEndPoints")] HRESULT GetEndPoints([out]IPoint2d** pntPier1,[out]IPoint2d** pntEnd1,[out]IPoint2d** pntBrg1,[out]IPoint2d** pntBrg2,[out]IPoint2d** pntEnd2,[out]IPoint2d** pntPier2);
 
-      [propget,helpstring("property StraightMaxStrandFill")] HRESULT StraightMaxStrandFill([out,retval]ILongArray** fill);
-      [propget,helpstring("property HarpedMaxStrandFill")] HRESULT HarpedMaxStrandFill([out,retval]ILongArray** fill);
-      [propget,helpstring("property TemporaryMaxStrandFill")] HRESULT TemporaryMaxStrandFill([out,retval]ILongArray** fill);
+      [propget,helpstring("property StraightMaxStrandFill")] HRESULT StraightMaxStrandFill([out,retval]IIndexArray** fill);
+      [propget,helpstring("property HarpedMaxStrandFill")] HRESULT HarpedMaxStrandFill([out,retval]IIndexArray** fill);
+      [propget,helpstring("property TemporaryMaxStrandFill")] HRESULT TemporaryMaxStrandFill([out,retval]IIndexArray** fill);
 
-      [propget,helpstring("property StraightStrandFill")] HRESULT StraightStrandFill([out,retval]ILongArray** fill);
-      [propput,helpstring("property StraightStrandFill")] HRESULT StraightStrandFill([in]ILongArray* fill);
-      [propget,helpstring("property HarpedStrandFill")] HRESULT HarpedStrandFill([out,retval]ILongArray** fill);
-      [propput,helpstring("property HarpedStrandFill")] HRESULT HarpedStrandFill([in]ILongArray* fill);
-      [propget,helpstring("property TemporaryStrandFill")] HRESULT TemporaryStrandFill([out,retval]ILongArray** fill);
-      [propput,helpstring("property TemporaryStrandFill")] HRESULT TemporaryStrandFill([in]ILongArray* fill);
+      [propget,helpstring("property StraightStrandFill")] HRESULT StraightStrandFill([out,retval]IIndexArray** fill);
+      [propput,helpstring("property StraightStrandFill")] HRESULT StraightStrandFill([in]IIndexArray* fill);
+      [propget,helpstring("property HarpedStrandFill")] HRESULT HarpedStrandFill([out,retval]IIndexArray** fill);
+      [propput,helpstring("property HarpedStrandFill")] HRESULT HarpedStrandFill([in]IIndexArray* fill);
+      [propget,helpstring("property TemporaryStrandFill")] HRESULT TemporaryStrandFill([out,retval]IIndexArray** fill);
+      [propput,helpstring("property TemporaryStrandFill")] HRESULT TemporaryStrandFill([in]IIndexArray* fill);
 
       // Get all strand locations based on current fill, or input fill. 
       // Debonded strands are not removed
       // Locations are adjusted by offset
       [propget,helpstring("property StraightStrandPositions")] HRESULT StraightStrandPositions([in] Float64 distFromStart, [out,retval]IPoint2dCollection** points);
-      [propget,helpstring("property StraightStrandPositionsEx")] HRESULT StraightStrandPositionsEx([in] Float64 distFromStart, [in]ILongArray* fill, [out,retval]IPoint2dCollection** points);
+      [propget,helpstring("property StraightStrandPositionsEx")] HRESULT StraightStrandPositionsEx([in] Float64 distFromStart, [in]IIndexArray* fill, [out,retval]IPoint2dCollection** points);
       [propget,helpstring("property HarpedStrandPositions")] HRESULT HarpedStrandPositions([in] Float64 distFromStart, [out,retval]IPoint2dCollection** points);
-      [propget,helpstring("property HarpedStrandPositionsEx")] HRESULT HarpedStrandPositionsEx([in] Float64 distFromStart, [in]ILongArray* fill, [out,retval]IPoint2dCollection** points);
+      [propget,helpstring("property HarpedStrandPositionsEx")] HRESULT HarpedStrandPositionsEx([in] Float64 distFromStart, [in]IIndexArray* fill, [out,retval]IPoint2dCollection** points);
       [propget,helpstring("property TempStrandPositions")] HRESULT TempStrandPositions([in] Float64 distFromStart, [out,retval]IPoint2dCollection** points);
-      [propget,helpstring("property TempStrandPositionsEx")] HRESULT TempStrandPositionsEx([in] Float64 distFromStart, [in]ILongArray* fill, [out,retval]IPoint2dCollection** points);
+      [propget,helpstring("property TempStrandPositionsEx")] HRESULT TempStrandPositionsEx([in] Float64 distFromStart, [in]IIndexArray* fill, [out,retval]IPoint2dCollection** points);
 
       // Convert strand index (defined in IPoint2dCollection's above) to Grid index
       [helpstring("method StraightStrandIndexToGridIndex")] HRESULT StraightStrandIndexToGridIndex([in] StrandIndexType strandIndex, [out,retval] GridIndexType* gridIndex);
-      [helpstring("method StraightStrandIndexToGridIndexEx")] HRESULT StraightStrandIndexToGridIndexEx([in]ILongArray* fill, [in] StrandIndexType strandIndex, [out,retval] GridIndexType* gridIndex);
+      [helpstring("method StraightStrandIndexToGridIndexEx")] HRESULT StraightStrandIndexToGridIndexEx([in]IIndexArray* fill, [in] StrandIndexType strandIndex, [out,retval] GridIndexType* gridIndex);
       [helpstring("method HarpedStrandIndexToGridIndex")] HRESULT HarpedStrandIndexToGridIndex([in] StrandIndexType strandIndex, [out,retval] GridIndexType* gridIndex);
-      [helpstring("method HarpedStrandIndexToGridIndexEx")] HRESULT HarpedStrandIndexToGridIndexEx([in]ILongArray* fill, [in] StrandIndexType strandIndex, [out,retval] GridIndexType* gridIndex);
+      [helpstring("method HarpedStrandIndexToGridIndexEx")] HRESULT HarpedStrandIndexToGridIndexEx([in]IIndexArray* fill, [in] StrandIndexType strandIndex, [out,retval] GridIndexType* gridIndex);
       [helpstring("method TemporaryStrandIndexToGridIndex")] HRESULT TemporaryStrandIndexToGridIndex([in] StrandIndexType strandIndex, [out,retval] GridIndexType* gridIndex);
-      [helpstring("method TemporaryStrandIndexToGridIndexEx")] HRESULT TemporaryStrandIndexToGridIndexEx([in]ILongArray* fill, [in] StrandIndexType strandIndex, [out,retval] GridIndexType* gridIndex);
+      [helpstring("method TemporaryStrandIndexToGridIndexEx")] HRESULT TemporaryStrandIndexToGridIndexEx([in]IIndexArray* fill, [in] StrandIndexType strandIndex, [out,retval] GridIndexType* gridIndex);
 
       // Compute bounding boxes of harped and straight strands accounting for vertical offsets for harped strands
 	   [helpstring("method StraightStrandBoundingBox")] HRESULT StraightStrandBoundingBox([in]EndType endType, [out,retval]IRect2d** box);
-	   [helpstring("method StraightStrandBoundingBoxEx")] HRESULT StraightStrandBoundingBoxEx([in]EndType endType, [in] ILongArray* fill, [out,retval]IRect2d** box);
+	   [helpstring("method StraightStrandBoundingBoxEx")] HRESULT StraightStrandBoundingBoxEx([in]EndType endType, [in] IIndexArray* fill, [out,retval]IRect2d** box);
 	   [helpstring("method HarpedEndStrandBoundingBox")] HRESULT HarpedEndStrandBoundingBox([in]EndType endType, [out,retval]IRect2d** box);
-	   [helpstring("method HarpedEndStrandBoundingBoxEx")] HRESULT HarpedEndStrandBoundingBoxEx([in]EndType endType, [in] ILongArray* fill, [out,retval]IRect2d** box);
+	   [helpstring("method HarpedEndStrandBoundingBoxEx")] HRESULT HarpedEndStrandBoundingBoxEx([in]EndType endType, [in] IIndexArray* fill, [out,retval]IRect2d** box);
 	   [helpstring("method HarpedHpStrandBoundingBox")] HRESULT HarpedHpStrandBoundingBox([in]EndType endType, [out,retval]IRect2d** box);
-	   [helpstring("method HarpedHpStrandBoundingBoxEx")] HRESULT HarpedHpStrandBoundingBoxEx([in]EndType endType, [in] ILongArray* fill, [out,retval]IRect2d** box);
+	   [helpstring("method HarpedHpStrandBoundingBoxEx")] HRESULT HarpedHpStrandBoundingBoxEx([in]EndType endType, [in] IIndexArray* fill, [out,retval]IRect2d** box);
 
       // Compute offset adjustment required in order to put harped strands within proper bounds
       // If zero, no adjustment is required. 
@@ -461,17 +461,17 @@ library WBFLGenericBridgeTools
 
       // Max allowable up or down strand adjustment to keep strands in bounds
 	   [helpstring("method GetHarpedEndAdjustmentBounds")] HRESULT GetHarpedEndAdjustmentBounds([out]Float64* DownwardAdjustment, [out]Float64* UpwardAdjustment);
-	   [helpstring("method GetHarpedEndAdjustmentBoundsEx")] HRESULT GetHarpedEndAdjustmentBoundsEx([in] ILongArray* fill, [out]Float64* DownwardAdjustment, [out]Float64* UpwardAdjustment);
+	   [helpstring("method GetHarpedEndAdjustmentBoundsEx")] HRESULT GetHarpedEndAdjustmentBoundsEx([in] IIndexArray* fill, [out]Float64* DownwardAdjustment, [out]Float64* UpwardAdjustment);
 	   [helpstring("method GetHarpedHpAdjustmentBounds")] HRESULT GetHarpedHpAdjustmentBounds([out]Float64* DownwardAdjustment, [out]Float64* UpwardAdjustment);
-	   [helpstring("method GetHarpedHpAdjustmentBoundsEx")] HRESULT GetHarpedHpAdjustmentBoundsEx([in] ILongArray* fill, [out]Float64* DownwardAdjustment, [out]Float64* UpwardAdjustment);
+	   [helpstring("method GetHarpedHpAdjustmentBoundsEx")] HRESULT GetHarpedHpAdjustmentBoundsEx([in] IIndexArray* fill, [out]Float64* DownwardAdjustment, [out]Float64* UpwardAdjustment);
 
-	   [helpstring("property GetHarpedEndFilledGridBoundsEx")] HRESULT GetHarpedEndFilledGridBoundsEx([in]ILongArray* fill, [out]Float64* bottomElev, [out]Float64* topElev);
-	   [helpstring("property GetHarpedHpFilledGridBoundsEx")] HRESULT GetHarpedHpFilledGridBoundsEx([in]ILongArray* fill, [out]Float64* bottomElev, [out]Float64* topElev);
+	   [helpstring("property GetHarpedEndFilledGridBoundsEx")] HRESULT GetHarpedEndFilledGridBoundsEx([in]IIndexArray* fill, [out]Float64* bottomElev, [out]Float64* topElev);
+	   [helpstring("property GetHarpedHpFilledGridBoundsEx")] HRESULT GetHarpedHpFilledGridBoundsEx([in]IIndexArray* fill, [out]Float64* bottomElev, [out]Float64* topElev);
 
       [helpstring("property ComputeMaxHarpedStrandSlope")] HRESULT ComputeMaxHarpedStrandSlope([in]Float64 distFromStart,[out,retval]Float64* slope);
-      [helpstring("property ComputeMaxHarpedStrandSlopeEx")] HRESULT ComputeMaxHarpedStrandSlopeEx([in]Float64 distFromStart, [in]ILongArray* fill, [in] Float64 endOffset,[in] Float64 hpOffset,[out,retval]Float64* slope);
+      [helpstring("property ComputeMaxHarpedStrandSlopeEx")] HRESULT ComputeMaxHarpedStrandSlopeEx([in]Float64 distFromStart, [in]IIndexArray* fill, [in] Float64 endOffset,[in] Float64 hpOffset,[out,retval]Float64* slope);
       [helpstring("property ComputeAvgHarpedStrandSlope")] HRESULT ComputeAvgHarpedStrandSlope([in]Float64 distFromStart,[out,retval]Float64* slope);
-      [helpstring("property ComputeAvgHarpedStrandSlopeEx")] HRESULT ComputeAvgHarpedStrandSlopeEx([in]Float64 distFromStart, [in]ILongArray* fill, [in] Float64 endOffset,[in] Float64 hpOffset,[out,retval]Float64* slope);
+      [helpstring("property ComputeAvgHarpedStrandSlopeEx")] HRESULT ComputeAvgHarpedStrandSlopeEx([in]Float64 distFromStart, [in]IIndexArray* fill, [in] Float64 endOffset,[in] Float64 hpOffset,[out,retval]Float64* slope);
 
       [propget,helpstring("property MaxStraightStrands")] HRESULT MaxStraightStrands([out,retval]StrandIndexType* nStrands);
       [propget,helpstring("property MaxHarpedStrands")] HRESULT MaxHarpedStrands([out,retval]StrandIndexType* nStrands);
@@ -481,9 +481,9 @@ library WBFLGenericBridgeTools
       [helpstring("method GetHarpedStrandCount")] HRESULT GetHarpedStrandCount([out,retval] StrandIndexType* nStrands);
       [helpstring("method GetTemporaryStrandCount")] HRESULT GetTemporaryStrandCount([out,retval] StrandIndexType* nStrands);
 
-      [helpstring("method GetStraightStrandCountEx")] HRESULT GetStraightStrandCountEx([in]ILongArray* fill, [out,retval] StrandIndexType* nStrands);
-      [helpstring("method GetHarpedStrandCountEx")] HRESULT GetHarpedStrandCountEx([in]ILongArray* fill, [out,retval] StrandIndexType* nStrands);
-      [helpstring("method GetTemporaryStrandCountEx")] HRESULT GetTemporaryStrandCountEx([in]ILongArray* fill, [out,retval] StrandIndexType* nStrands);
+      [helpstring("method GetStraightStrandCountEx")] HRESULT GetStraightStrandCountEx([in]IIndexArray* fill, [out,retval] StrandIndexType* nStrands);
+      [helpstring("method GetHarpedStrandCountEx")] HRESULT GetHarpedStrandCountEx([in]IIndexArray* fill, [out,retval] StrandIndexType* nStrands);
+      [helpstring("method GetTemporaryStrandCountEx")] HRESULT GetTemporaryStrandCountEx([in]IIndexArray* fill, [out,retval] StrandIndexType* nStrands);
 
       // rough count of debonded strands at current fill
       [helpstring("method GetStraightStrandDebondCount")] HRESULT GetStraightStrandDebondCount([out,retval] StrandIndexType* count);
@@ -491,26 +491,26 @@ library WBFLGenericBridgeTools
       // Debond straight strands based on Grid index
 	   [helpstring("method ClearStraightStrandDebonding")] HRESULT ClearStraightStrandDebonding();
       [helpstring("method DebondStraightStrandByGridIndex")] HRESULT DebondStraightStrandByGridIndex([in]GridIndexType grdIndex,[in]Float64 l1,[in]Float64 l2);
-      [helpstring("method GetDebondedStraightStrandsByGridIndex")] HRESULT GetDebondedStraightStrandsByGridIndex([out,retval]ILongArray** grdIndexes);
+      [helpstring("method GetDebondedStraightStrandsByGridIndex")] HRESULT GetDebondedStraightStrandsByGridIndex([out,retval]IIndexArray** grdIndexes);
       [helpstring("method GetStraightStrandDebondLengthByGridIndex")] HRESULT GetStraightStrandDebondLengthByGridIndex([in]GridIndexType grdIndex,[out]Float64* YCoord,[out]Float64* l1,[out]Float64* l2);
 
       // Debonded straight strands based on Positions index (i.e., from get_StraightStrandPositions)
       [helpstring("method GetStraightStrandDebondLengthByPositionIndex")] HRESULT GetStraightStrandDebondLengthByPositionIndex([in]StrandIndexType positionIndex,[out]Float64* YCoord, [out]Float64* l1,[out]Float64* l2);
-      [helpstring("method GetStraightStrandsDebondedByPositionIndex")] HRESULT GetStraightStrandsDebondedByPositionIndex([in]Float64 distFromStart, [out,retval]ILongArray** positionIndexes);
+      [helpstring("method GetStraightStrandsDebondedByPositionIndex")] HRESULT GetStraightStrandsDebondedByPositionIndex([in]Float64 distFromStart, [out,retval]IIndexArray** positionIndexes);
 
       [propget,helpstring("property StraightStrandRowsWithStrand")] HRESULT StraightStrandRowsWithStrand([out,retval]RowIndexType* nRows);
-      [propget,helpstring("property StraightStrandsInRow")] HRESULT StraightStrandsInRow([in]RowIndexType rowIdx,[out,retval]ILongArray** gridIndexes);
+      [propget,helpstring("property StraightStrandsInRow")] HRESULT StraightStrandsInRow([in]RowIndexType rowIdx,[out,retval]IIndexArray** gridIndexes);
       [propget,helpstring("property NumStraightStrandsInRow")] HRESULT NumStraightStrandsInRow([in]RowIndexType rowIdx,[out,retval]StrandIndexType* nStrands);
       [propget,helpstring("property StraightStrandDebondInRow")] HRESULT StraightStrandDebondInRow([in] RowIndexType rowIdx,[out,retval]StrandIndexType* nStrands);
       [helpstring("method IsExteriorStraightStrandDebondedInRow")] HRESULT IsExteriorStraightStrandDebondedInRow([in] RowIndexType rowIndex,[out,retval]VARIANT_BOOL* bResult);
 
       [propget,helpstring("property HarpedStrandRowsWithStrand")] HRESULT HarpedStrandRowsWithStrand([out,retval]RowIndexType* nRows);
-      [propget,helpstring("property HarpedStrandsInRow")] HRESULT HarpedStrandsInRow([in]RowIndexType rowIdx,[out,retval]ILongArray** gridIndexes);
+      [propget,helpstring("property HarpedStrandsInRow")] HRESULT HarpedStrandsInRow([in]RowIndexType rowIdx,[out,retval]IIndexArray** gridIndexes);
       [propget,helpstring("property NumHarpedStrandsInRow")] HRESULT NumHarpedStrandsInRow([in]RowIndexType rowIdx,[out,retval]StrandIndexType* nStrands);
 
       [helpstring("method GetStraightStrandDebondAtSections")] HRESULT GetStraightStrandDebondAtSections([out]IDblArray** arrLeft,[out]IDblArray** arrRight);
-      [helpstring("method GetStraightStrandDebondAtLeftSection")] HRESULT GetStraightStrandDebondAtLeftSection([in]SectionIndexType sectionIdx,[out,retval]ILongArray** pstnIndexes);
-      [helpstring("method GetStraightStrandDebondAtRightSection")] HRESULT GetStraightStrandDebondAtRightSection([in]SectionIndexType sectionIdx,[out,retval]ILongArray** pstnIndexes);
+      [helpstring("method GetStraightStrandDebondAtLeftSection")] HRESULT GetStraightStrandDebondAtLeftSection([in]SectionIndexType sectionIdx,[out,retval]IIndexArray** pstnIndexes);
+      [helpstring("method GetStraightStrandDebondAtRightSection")] HRESULT GetStraightStrandDebondAtRightSection([in]SectionIndexType sectionIdx,[out,retval]IIndexArray** pstnIndexes);
 
       // Distance that a strand is bonded (left and right) for a given location. Also returns strand's Y coordinate
       [helpstring("method GetStraightStrandBondedLengthByPositionIndex")] HRESULT GetStraightStrandBondedLengthByPositionIndex([in]StrandIndexType positionIndex, [in]Float64 distFromStart,

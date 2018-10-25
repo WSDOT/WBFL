@@ -87,11 +87,11 @@ public:
 	STDMETHOD(put_Dy)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_Dx)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_Dx)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_MemberID)(/*[out, retval]*/ long *pVal);
-	STDMETHOD(put_MemberID)(/*[in]*/ long newVal);
+	STDMETHOD(get_MemberID)(/*[out, retval]*/ MemberIDType *pVal);
+	STDMETHOD(put_MemberID)(/*[in]*/ MemberIDType newVal);
 
 protected:
-   long         m_MemberID;
+   MemberIDType  m_MemberID;
    Float64       m_Dx;
    Float64       m_Dy;
    Float64       m_Rz;

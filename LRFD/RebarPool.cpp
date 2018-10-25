@@ -552,9 +552,9 @@ bool lrfdRebarPool::TestMe(dbgLog& rlog)
    }
 
    // Test to see pool correctly rejects a rebar not in the pool
-   //boost::shared_ptr<matRebar> pDummyRebar( new matRebar );
-   //Int32 key = pPool->GetRebarKey( pDummyRebar.get() );
-   //TRY_TESTME( key == INVALID_INDEX );
+   boost::shared_ptr<matRebar> pDummyRebar( new matRebar );
+   Int32 key = pPool->GetRebarKey( pDummyRebar.get() );
+   TRY_TESTME( key == INVALID_INDEX );
 
    TESTME_EPILOG("lrfdRebarPool");
 }

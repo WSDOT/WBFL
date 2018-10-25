@@ -964,7 +964,7 @@ STDMETHODIMP CFasterPolyShape::ClipIn(IRect2d* pRect,IShape** pShape)
 
    if ( pClipBottom == 0 ) // Resulting Shape is Nothing
    {
-      ATLASSERT(0); // should not happen because we have checked clip box above
+//      ATLASSERT(0); // should not happen because we have checked clip box above. actually does happen when shapes just touch
       return S_OK;
    }
 

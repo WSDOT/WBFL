@@ -129,7 +129,7 @@ public:
    m_SupportLocations(supportlocs)
    {;}
 
-   virtual ApplicabilityLoc GetApplicability(PoiIDType supportId, BSTR stage,  
+   virtual ApplicabilityLoc GetApplicability(SupportIDType supportId, BSTR stage,  
                                           VARIANT_BOOL isApplicable, LiveLoadApplicabilityType llapplicability, 
                                           ForceEffectType optimizedEffect, OptimizationType optimization)
    {
