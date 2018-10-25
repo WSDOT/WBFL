@@ -39,14 +39,30 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CTitlePageBuilder::CTitlePageBuilder()
+CTitlePageBuilder::CTitlePageBuilder(LPCTSTR title) :
+m_Title(title)
 {
 
+}
+
+CTitlePageBuilder::CTitlePageBuilder(const CTitlePageBuilder& other) :
+m_Title(other.m_Title)
+{
 }
 
 CTitlePageBuilder::~CTitlePageBuilder()
 {
 
+}
+
+const std::_tstring& CTitlePageBuilder::GetReportTitle() const
+{
+   return m_Title;
+}
+
+void CTitlePageBuilder::SetReportTitle(LPCTSTR title)
+{
+   m_Title = title;
 }
 
 bool CTitlePageBuilder::NeedsUpdate(CReportHint* pHint,boost::shared_ptr<CReportSpecification>& pRptSpec)

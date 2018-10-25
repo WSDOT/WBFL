@@ -20,6 +20,7 @@
 #define IDD_EXPORT_CUSTOM_REPORTS       141
 #define IDD_CUSTOM_REPORT_CONFLICT      142
 #define IDD_RENAME_REPORT_DLG           143
+#define IDB_CREPORT_BMP                 145
 #define IDI_LARGEICON                   150
 #define IDI_SMALLICON                   151
 #define IDB_LPFRAME                     154
@@ -63,7 +64,9 @@
 #define IDC_MOVE_DOWN_BUTTON            1026
 #define IDC_EXPORT                      1026
 #define IDC_IMPORT                      1027
+#define IDC_ADD_ALL_BUTTON              1027
 #define ID_SKIP                         1028
+#define IDC_REMOVE_ALL_BUTTON           1028
 #define ID_RENAME                       1029
 #define IDC_REPORT_NAME_STATIC          1030
 #define IDC_NAME_STATIC                 1031
@@ -95,7 +98,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        144
+#define _APS_NEXT_RESOURCE_VALUE        146
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1033
 #define _APS_NEXT_SYMED_VALUE           1015

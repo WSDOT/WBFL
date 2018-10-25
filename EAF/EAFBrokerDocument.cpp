@@ -95,6 +95,8 @@ void CEAFBrokerDocument::OnCreateFinalize()
 
    // At this point we have loaded all hard-coded reports and read custom
    // report data from the registry, and broker is loaded. Create custom reports
+   m_bmpCustomReports.LoadBitmap(IDB_CREPORT_BMP);
+
    IntegrateCustomReports(true);
 }
 
@@ -682,7 +684,7 @@ void CEAFBrokerDocument::OnConfigureReports()
    GET_IFACE(IReportManager,pReportMgr);
    std::vector<std::_tstring> rptNames = pReportMgr->GetReportNames();
 
-   CConfigureReportsDlg dlg(_T("Configure Reports)"));
+   CConfigureReportsDlg dlg(_T("Configure Reports"));
 
    dlg.m_pBroker = m_pBroker;
    dlg.SetFavorites(m_FavoriteReports);
@@ -761,7 +763,18 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
             // found parent. Now we can create new builder for custom
             boost::shared_ptr<CReportBuilder> newBuilder( new CReportBuilder(rCustom.m_ReportName.c_str()));
             newBuilder->SetReportSpecificationBuilder( pParentBuilder->GetReportSpecificationBuilder() );
-            newBuilder->SetMenuBitmap( pParentBuilder->GetMenuBitmap() );
+
+            // Title page
+            boost::shared_ptr<CTitlePageBuilder> ptp = pParentBuilder->GetTitlePageBuilder();
+            if (ptp)
+            {
+               boost::shared_ptr<CTitlePageBuilder> pntp( ptp->Clone() );
+               pntp->SetReportTitle( rCustom.m_ReportName.c_str() );
+               newBuilder->AddTitlePageBuilder(pntp);
+            }
+
+            // Use custom menu bitmap
+            newBuilder->SetMenuBitmap(&m_bmpCustomReports);
 
             // Add chapter builders
             bool didAddChapter(false);

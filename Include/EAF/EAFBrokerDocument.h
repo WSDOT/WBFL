@@ -105,6 +105,9 @@ protected:
    CEAFCustomReports m_CustomReports;
    std::vector<std::_tstring> m_BuiltInReportNames;
 
+   // Bitmap shown on the menus for custom reports
+   CBitmap m_bmpCustomReports;
+
    // returns the CATID for the agents to be used with this document
    // All agents registred with this category ID will be loaded when
    // LoadAgents() is called
