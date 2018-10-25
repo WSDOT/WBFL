@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -52,12 +52,6 @@ CLASS
 
 DESCRIPTION
    Computes the creep coefficient per Article 5.4.2.3.2
-
-
-COPYRIGHT
-   Copyright © 1997-1999
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 03.16.1999 : Created file

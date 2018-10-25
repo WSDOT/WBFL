@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GeomModel - Geometric Modeling of shapes and sections
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -54,12 +54,6 @@ CLASS
 DESCRIPTION
    In addition to the interface specified below,  this class implements the
    standard broadcaster interface.
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 12.17.1997 : Created file
@@ -303,12 +297,6 @@ DESCRIPTION
    Begin(), End(), Next(),  and operator void *().  The
    standard GetCurrent() iterator method for this class is described below.
 
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
-
 LOG
    rdp : 12.17.1997 : Created file
 *****************************************************************************/
@@ -459,12 +447,6 @@ DESCRIPTION
    The gmConstShapeIter class will implement the standard iterator methods
    Begin(), End(), Next(),  and operator void *().  The
    standard GetCurrent() iterator method for this class is described below.
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 12.17.1997 : Created file

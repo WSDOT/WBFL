@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -52,11 +52,6 @@ CLASS
 DESCRIPTION
    This class is an abstract base class representing the low-level 'matter' that
    makes up a report (e.g., strings, paragraphs, font control, numbers...)
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 *****************************************************************************/
 
 class REPORTERCLASS rptReportContent : public rptReportItem

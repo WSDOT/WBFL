@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -103,7 +103,7 @@ void CRebarMaterialComboBox::GetMaterial(matRebar::Type* pType,matRebar::Grade* 
 
 void CRebarMaterialComboBox::SetMaterial(matRebar::Type type,matRebar::Grade grade)
 {
-   int curSel;
+   int curSel = CB_ERR;
    if ( type == matRebar::A615 )
    {
       if ( grade == matRebar::Grade40 )
@@ -114,6 +114,10 @@ void CRebarMaterialComboBox::SetMaterial(matRebar::Type type,matRebar::Grade gra
          curSel = 2;
       else if ( grade == matRebar::Grade80 )
          curSel = 3;
+#if defined _DEBUG
+      else
+         ATLASSERT(false); // should never get here
+#endif
    }
    else if ( type == matRebar::A706 )
    {
@@ -121,11 +125,19 @@ void CRebarMaterialComboBox::SetMaterial(matRebar::Type type,matRebar::Grade gra
          curSel = 4;
       else if ( grade == matRebar::Grade80 )
          curSel = 5;
+#if defined _DEBUG
+      else
+         ATLASSERT(false); // should never get here
+#endif
    }
    else if ( type == matRebar::A1035 )
    {
       if ( grade == matRebar::Grade100 )
          curSel = 6;
+#if defined _DEBUG
+      else
+         ATLASSERT(false); // should never get here
+#endif
    }
    else
    {
@@ -143,5 +155,6 @@ void CRebarMaterialComboBox::SetMaterial(matRebar::Type type,matRebar::Grade gra
 void CRebarMaterialComboBox::PreSubclassWindow()
 {
    CComboBox::PreSubclassWindow();
+   ATLASSERT( !(GetStyle() & CBS_SORT) ); // make sure sort style is turned off
    Initialize();
 }

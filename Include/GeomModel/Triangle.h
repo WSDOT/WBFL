@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GeomModel - Geometric Modeling of shapes and sections
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -57,11 +57,6 @@ DESCRIPTION
  positive x-axis counter-clockwise.  The rotation angle defines the orientation
  of the base of the triangle (edge W). Rotation takes place about the hook point.
  The hook point of a triangle is at the lower left vertex.
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 12.22.1997 : Created file

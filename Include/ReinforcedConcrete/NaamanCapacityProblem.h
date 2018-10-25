@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RC - Reinforced Concrete Section Capacity Analysis Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -55,12 +55,6 @@ DESCRIPTION
    Overrides the DoCaluclateCompressionBlock method to create a compression
    block offset so that the block's area is equal to Beta1*c times the
    compression area above the n.a.
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 01.22.1998 : Created file

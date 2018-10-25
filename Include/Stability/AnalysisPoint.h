@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,12 +31,6 @@ CLASS
 
 DESCRIPTION
    Abstract interface for an analysis point
-
-
-COPYRIGHT
-   Copyright © 1997-2016
-   Washington State Department Of Transportation
-   All Rights Reserved
 *****************************************************************************/
 
 class STABILITYCLASS stbIAnalysisPoint

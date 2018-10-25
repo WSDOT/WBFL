@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -70,6 +70,11 @@ protected:
 
    CStatusItemListCtrl m_ctrlList;
 
+   IndexType m_nInfo;
+   IndexType m_nWarn;
+   IndexType m_nError;
+   void UpdateStatusItemCounts();
+
    bool m_bSortAscending;
    void Sort(bool bReverse=true);
 
@@ -78,6 +83,7 @@ protected:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnClose();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+   afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

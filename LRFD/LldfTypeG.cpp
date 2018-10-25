@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -1131,8 +1131,32 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotVoidedSlab::GetMomentDF_Int_2
 lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotVoidedSlab::GetMomentDF_Ext_1_Strength() const
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
+   bool bSISpec = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
 
-   g = lrfdLldfTypeG::GetMomentDF_Int_1_Strength();
+   // Lever rule must be applied at this level if ROA exceeded
+   bool brule = ExteriorMomentEquationRule(bSISpec, false);
+
+   if(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule && !brule)
+   {
+      // lever rule
+      assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
+      g.ControllingMethod = LEVER_RULE;
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+      g.mg = g.LeverRuleData.mg;
+
+      Float64 skew = MomentSkewCorrectionFactor();
+      if ( m_bSkewMoment )
+      {
+         g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
+      }
+      g.SkewCorrectionFactor = skew;
+      g.mg *= skew;
+   }
+   else
+   {
+      // Use interior rule if within
+      g = lrfdLldfTypeG::GetMomentDF_Int_1_Strength();
+   }
 
    return g;
 }
@@ -1141,7 +1165,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotVoidedSlab::GetMomentDF_Ext_2
 {
 
    // Txdot uses single lane exterior moment for all 
-   lrfdILiveLoadDistributionFactor::DFResult g = GetMomentDF_Int_1_Strength();
+   lrfdILiveLoadDistributionFactor::DFResult g = GetMomentDF_Ext_1_Strength();
    return g;
 }
 
@@ -1162,14 +1186,14 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotVoidedSlab::GetShearDF_Int_2_
 lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotVoidedSlab::GetShearDF_Ext_1_Strength() const
 {
    // Txdot uses single lane exterior moment for all 
-   lrfdILiveLoadDistributionFactor::DFResult g = GetMomentDF_Int_1_Strength();
+   lrfdILiveLoadDistributionFactor::DFResult g = GetMomentDF_Ext_1_Strength();
    return g;
 }
 
 lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotVoidedSlab::GetShearDF_Ext_2_Strength() const
 {
    // Txdot uses single lane exterior moment for all 
-   lrfdILiveLoadDistributionFactor::DFResult g = GetMomentDF_Int_1_Strength();
+   lrfdILiveLoadDistributionFactor::DFResult g = GetMomentDF_Ext_1_Strength();
    return g;
 }
 
@@ -1188,6 +1212,38 @@ bool lrfdTxdotVoidedSlab::TestRangeOfApplicability(Location loc) const
 
    return lrfdLldfTypeG::TestRangeOfApplicability(loc);
 }
+
+bool lrfdTxdotVoidedSlab::InteriorMomentEquationRule(bool bSISpec, bool doThrow) const
+{
+   if (!lrfdLldfTypeG::InteriorMomentEquationRule(bSISpec, doThrow))
+      return false;
+
+   Float64 w2 = m_b/2.0; // half of girder width
+   if (LeftSide == m_Side && m_LeftCurbOverhang-w2 >  TOLERANCE ||
+       RightSide== m_Side && m_RightCurbOverhang-w2 > TOLERANCE)
+   {
+      THROW_DF(lrfdXRangeOfApplicability, CurbLineOffset, _T("The TxDOT live load distribution factor method does not allow for deck overhangs on slab beams. To fix this you can input factors manually or change settings to ignore the range of applicability requirements."));
+   }
+
+   return true;
+}
+
+bool lrfdTxdotVoidedSlab::ExteriorMomentEquationRule(bool bSISpec, bool doThrow) const
+{
+   if (!lrfdLldfTypeG::ExteriorMomentEquationRule(bSISpec, doThrow))
+      return false;
+
+   Float64 w2 = m_b/2.0; // half of girder width
+   if (LeftSide == m_Side && m_LeftCurbOverhang-w2 >  TOLERANCE ||
+       RightSide== m_Side && m_RightCurbOverhang-w2 > TOLERANCE)
+   {
+      THROW_DF(lrfdXRangeOfApplicability, CurbLineOffset, _T("The TxDOT live load distribution factor method does not allow for deck overhangs on slab beams. To fix this you can input factors manually or change settings to ignore the range of applicability requirements."));
+   }
+
+   return true;
+}
+
+
 
 
 void lrfdTxdotVoidedSlab::MakeCopy(const lrfdTxdotVoidedSlab& rOther)

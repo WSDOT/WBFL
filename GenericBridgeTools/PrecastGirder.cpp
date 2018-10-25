@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -2100,10 +2100,56 @@ void CPrecastGirder::DoUpdateLengths()
 
       pntEnd1->DistanceEx(pntEnd2,&m_Lengths.dbGirderLength);
       pntBrg1->DistanceEx(pntBrg2,&m_Lengths.dbSpanLength);
+
       pntPier1->DistanceEx(pntBrg1,&m_Lengths.dbLeftBearingOffset);
       pntPier2->DistanceEx(pntBrg2,&m_Lengths.dbRightBearingOffset);
+
       pntEnd1->DistanceEx(pntBrg1,&m_Lengths.dbLeftEndDistance);
       pntEnd2->DistanceEx(pntBrg2,&m_Lengths.dbRightEndDistance);
+
+      CComPtr<ICogoEngine> cogoEngine;
+      cogoEngine.CoCreateInstance(CLSID_CogoEngine);
+      CComPtr<IMeasure2> measure;
+      cogoEngine->get_Measure(&measure);
+
+      CComPtr<IDirection> direction; // direction from end to pier point
+      Float64 offset; // this is always a positive value because it is a distance
+      measure->Inverse(pntPier1,pntBrg1,&offset,&direction);
+      if ( !IsZero(offset) )
+      {
+         // need to determine if the intersection with the pier line is before or after the
+         // start CL Brg. we do this by comparing directions
+         CComPtr<IDirection> dirSegment;
+         measure->Direction(pntEnd1,pntEnd2,&dirSegment); // direction of segment
+
+         Float64 d1,d2;
+         direction->get_Value(&d1);
+         dirSegment->get_Value(&d2);
+
+         if ( !IsEqual(d1,d2) )
+         {
+            m_Lengths.dbLeftBearingOffset *= -1;
+         }
+      }
+
+      direction.Release();
+      measure->Inverse(pntBrg2,pntPier2,&offset,&direction);
+      if ( !IsZero(offset) )
+      {
+         // need to determine if the intersection with the pier line is before or after the
+         // start CL Brg. we do this by comparing directions
+         CComPtr<IDirection> dirSegment;
+         measure->Direction(pntEnd1,pntEnd2,&dirSegment); // direction of segment
+
+         Float64 d1,d2;
+         direction->get_Value(&d1);
+         dirSegment->get_Value(&d2);
+
+         if ( !IsEqual(d1,d2) )
+         {
+            m_Lengths.dbRightBearingOffset *= -1;
+         }
+      }
 
       m_UpdateLengths = false;
    }

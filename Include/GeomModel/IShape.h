@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GeomModel - Geometric Modeling of shapes and sections
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -63,11 +63,6 @@ DESCRIPTION
    gmIShape and provides a framework that gmShapeImp derived shapes can use to 
    easily implement the entire gmIShape interface. Most new shape classes should
    be derived from gmShapeImp and not directly from gmIshape.
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 12.11.1997 : Created file
@@ -396,11 +391,6 @@ CLASS
 DESCRIPTION
    Adds limited capability to gmIShape to make working with r/c section capacity 
    computations more efficient.
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 11.11.2001 : Created file

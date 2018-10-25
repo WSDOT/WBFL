@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -228,7 +228,7 @@ InfluenceLoadLocation::InfluenceLoadLocation(PoiIDType poiID,Float64 globalX, Me
 // for container life
 bool InfluenceLoadLocation::operator< (const InfluenceLoadLocation& other) const
 {
-   if (IsEqual(m_GlobalX, other.m_GlobalX, 1.0e-06))
+   if (m_GlobalX == other.m_GlobalX)
    {
       // locations are the same - must use tie breaker
       return m_FemMemberID < other.m_FemMemberID;

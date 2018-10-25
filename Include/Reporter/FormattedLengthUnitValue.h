@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -33,12 +33,6 @@ CLASS
 
    Unit value formating class that reports length values as feet, inches and fractions
    e.g. 125.27083333 ft = 125'-3 1/4".
-
-
-COPYRIGHT
-   Copyright (c) 2009
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 06.09.2009 : Created file

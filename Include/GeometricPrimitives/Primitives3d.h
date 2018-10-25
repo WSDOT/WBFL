@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Modeling of geometric primitives
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -56,12 +56,6 @@ DESCRIPTION
    Encapsulates the notion of a 3-dimensional quantity that usually 
    represents a displacement or the height, width, and depth of a rectangular
    prisim.
-
-
-COPYRIGHT
-   Copyright (c) 1999
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    Richard Brice : 04.21.1999 : Created file
@@ -249,12 +243,6 @@ CLASS
 DESCRIPTION
    Encapsulates the notion of a 3-dimensional point that represents a
    position in a Cartesian coordinate system.
-
-
-COPYRIGHT
-   Copyright (c) 1999
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    Richard Brice : 04.21.1999 : Created file

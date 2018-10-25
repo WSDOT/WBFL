@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // BridgeGeometry
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -396,11 +396,44 @@ HRESULT CGirderLine::LocatePoints()
    m_BearingPoint[etEnd]->DistanceEx(m_BearingPoint[etStart],&m_SpanLength);
    m_EndPoint[etEnd]->DistanceEx(m_EndPoint[etStart],&m_GirderLength);
 
+   m_BearingPoint[etStart]->DistanceEx(m_EndPoint[etStart],&m_EndDistance[etStart]);
+   m_BearingPoint[etEnd]->DistanceEx(  m_EndPoint[etEnd],  &m_EndDistance[etEnd]);
+
    m_PierPoint[etStart]->DistanceEx(m_BearingPoint[etStart],&m_BearingOffset[etStart]);
    m_PierPoint[etEnd]->DistanceEx(  m_BearingPoint[etEnd],  &m_BearingOffset[etEnd]);
 
-   m_BearingPoint[etStart]->DistanceEx(m_EndPoint[etStart],&m_EndDistance[etStart]);
-   m_BearingPoint[etEnd]->DistanceEx(  m_EndPoint[etEnd],  &m_EndDistance[etEnd]);
+
+   CComPtr<IDirection> direction; // direction from end to pier point
+   Float64 offset; // this is always a positive value because it is a distance
+   measure->Inverse(m_PierPoint[etStart],m_BearingPoint[etStart],&offset,&direction);
+   if ( !IsZero(offset) )
+   {
+      Float64 d1,d2;
+      direction->get_Value(&d1);
+      m_Direction->get_Value(&d2);
+
+      if ( !IsEqual(d1,d2) )
+      {
+         m_BearingOffset[etStart] *= -1;
+      }
+   }
+
+   direction.Release();
+   measure->Inverse(m_BearingPoint[etEnd],m_PierPoint[etEnd],&offset,&direction);
+   if ( !IsZero(offset) )
+   {
+      Float64 d1,d2;
+      direction->get_Value(&d1);
+      m_Direction->get_Value(&d2);
+
+      if ( !IsEqual(d1,d2) )
+      {
+         m_BearingOffset[etEnd] *= -1;
+      }
+   }
+
+   ATLASSERT(::BinarySign(m_BearingOffset[etStart]) == ::BinarySign(brgOffset[etStart]));
+   ATLASSERT(::BinarySign(m_BearingOffset[etEnd])   == ::BinarySign(brgOffset[etEnd]));
 
    return S_OK;
 }

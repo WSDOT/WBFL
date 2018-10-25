@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EngTools - Library of miscellaneous engineering tools
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -54,12 +54,6 @@ DESCRIPTION
 REFERENCES
    Advanced Strength and Applied Elasticity
    A.C. Ugural & S. K. Fenster
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 11.16.1997 : Created file

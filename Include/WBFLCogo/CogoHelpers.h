@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Modeling Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -39,11 +39,6 @@ CLASS
 DESCRIPTION
    Utility class for cogo related operations.  This classes handles things like
    converting to and from DMS format and stationing format.
-
-COPYRIGHT
-   Copyright (c) 2001
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 06.19.1997 : Created file

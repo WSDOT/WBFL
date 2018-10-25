@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -57,8 +57,8 @@ HRESULT EAFGetBroker(IBroker** ppBroker)
       CDocument* pDocument = NULL;
       bool bDone = false;
       POSITION doc_template_pos = pApp->GetFirstDocTemplatePosition();
-
-      while ( doc_template_pos != NULL || !bDone )
+      
+      while ( doc_template_pos != NULL && !bDone )
       {
          CDocTemplate* pTemplate = pApp->GetNextDocTemplate(doc_template_pos);
 
@@ -74,12 +74,14 @@ HRESULT EAFGetBroker(IBroker** ppBroker)
          }
       }
 
-      if ( pDocument->IsKindOf(RUNTIME_CLASS(CEAFBrokerDocument)) )
+      if ( pDocument && pDocument->IsKindOf(RUNTIME_CLASS(CEAFBrokerDocument)) )
       {
          CEAFBrokerDocument* pBrokerDoc = (CEAFBrokerDocument*)pDocument;
          return pBrokerDoc->GetBroker(ppBroker);
       }
    }
+
+   (*ppBroker) = NULL;
 
    return E_FAIL;
 }

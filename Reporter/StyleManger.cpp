@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -23,9 +23,6 @@
 
 #include <Reporter\ReporterLib.h>
 #include <Reporter\StyleManager.h>
-
-#include <EAF\EAFUtilities.h>
-#include <EAF\EAFApp.h>
 
 #include <WBFLSTL.h>
 
@@ -413,7 +410,8 @@ LPCTSTR rptStyleManager::GetImagePath()
       std::_tstring filename(szBuff);
       make_upper( filename.begin(), filename.end() );
 
-      CEAFApp* pApp = EAFGetApp();
+      AFX_MANAGE_STATE(AfxGetAppModuleState());
+      CWinApp* pApp = AfxGetApp();
       // find first Occurrence of the application name
       std::_tstring strAppName(pApp->m_pszAppName);
       make_upper( strAppName.begin(), strAppName.end() );

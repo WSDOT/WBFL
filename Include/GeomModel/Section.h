@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GeomModel - Geometric Modeling of shapes and sections
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -65,12 +65,6 @@ DESCRIPTION
    properties,  and tructural-ness of a component in a section.
 
    This class is both a listener (to its shapes) and a broadcaster (to section)
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 12.31.1997 : Created file
@@ -240,12 +234,6 @@ DESCRIPTION
    properties then become equivalent to the elastic properties. "Equivalent
    density" can then be easily calculated by dividing the mass per unit
    length by the transformed area. 
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 12.31.1997 : Created file
@@ -575,12 +563,6 @@ DESCRIPTION
    Begin(), End(), Next(),  and operator void *().  The
    standard GetCurrent() iterator method for this class is described below.
 
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
-
 LOG
    rdp : 12.17.1997 : Created file
 *****************************************************************************/
@@ -730,12 +712,6 @@ DESCRIPTION
    The gmConstSectionComponentIter class will implement the standard iterator methods
    Begin(), End(), Next(),  and operator void *().  The
    standard GetCurrent() iterator method for this class is described below.
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 12.17.1997 : Created file

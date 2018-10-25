@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -54,12 +54,6 @@ CLASS
 DESCRIPTION
    Live load distribution factor calculator for cross section types A, E, K 
    when cross frames or diaphragms are present.
-
-
-COPYRIGHT
-   Copyright © 1997-1998
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 11.12.1998 : Created file
@@ -180,12 +174,6 @@ DESCRIPTION
       effectiveness of diaphragms on the laterial distribution of truck loads
       is investigated.
    4. Do not use rigid method
-
-
-COPYRIGHT
-   Copyright © 1997-1998
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 11.12.1998 : Created file

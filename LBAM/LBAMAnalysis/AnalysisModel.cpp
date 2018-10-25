@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -5023,6 +5023,8 @@ void CAnalysisModel::GenerateInfluenceLoadLocations()
             ComputeInfluenceLoadLocation(poiID,lbamMemberType, lbamMemberID, lbamPoiLocation);
          }
       }
+
+      std::sort(m_InfluenceLoadSet.begin(),m_InfluenceLoadSet.end());
    }
    catch(CComException& re)
    {
@@ -5136,7 +5138,6 @@ void CAnalysisModel::ComputeInfluenceLoadLocation(PoiIDType poiID,MemberType lbm
    }
 
    m_InfluenceLoadSet.push_back( InfluenceLoadLocation( poiID, xloc, fem_id, fem_loc, P) );
-   std::sort(m_InfluenceLoadSet.begin(),m_InfluenceLoadSet.end());
 }
 
 void CAnalysisModel::GenerateContraflexureLoads()

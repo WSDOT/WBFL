@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GeomModel - Geometric Modeling of shapes and sections
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -65,13 +65,6 @@ DESCRIPTION
    then call AddPoint().  After calling AddPoint(),  the rectangle is no
    longer a rectangle.  It is better to subclass gmShapeImp and use gmPolygon as
    an implementation helper then it is to subclass gmPolygon itself.
-
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 12.13.1997 : Created file
@@ -303,12 +296,6 @@ DESCRIPTION
    The gmPolyPointIter class will implement the standard iterator methods
    Begin(), End(), Next(),  and operator void *().  The
    standard GetCurrent() iterator method for this class is described below.
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 12.17.1997 : Created file

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RC - Reinforced Concrete Section Capacity Analysis Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -106,12 +106,6 @@ CLASS
 
 DESCRIPTION
    Exception class for solver errors. Derived from sysXBase.
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 01.20.1998 : Created file
@@ -239,12 +233,6 @@ DESCRIPTION
    Abstract base class for concrete section capacity problems using a uniform
    stress block approach.  This class is subclassed for the Whitney and
    Naaman analysis methods. 
-
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 01.19.1998 : Created file

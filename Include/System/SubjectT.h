@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -43,12 +43,6 @@ DESCRIPTION
    About the only tricky thing here is that the TSubject parameter is the type
    of the subject class. This may seem strange when you think about it at first
    (conjures up thoughts of chickens and eggs...), but it works.
-
-
-COPYRIGHT
-   Copyright © 1997-1998
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rdp : 10.06.1998 : Created file

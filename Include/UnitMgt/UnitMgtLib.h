@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitMgt - Service for managing display units indirectly
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -33,11 +33,6 @@ LIBRARY
 
 DESCRIPTION
    Support library that provides units management services.
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 *****************************************************************************/
 
 #include <Private\WBFLPackage.h>

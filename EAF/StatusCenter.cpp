@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -239,7 +239,7 @@ CollectionIndexType CEAFStatusCenter::Count()
 
 eafTypes::StatusSeverityType CEAFStatusCenter::GetSeverity()
 {
-   eafTypes::StatusSeverityType severity = eafTypes::statusOK;
+   eafTypes::StatusSeverityType severity = eafTypes::statusInformation;
 
    Container::iterator itemIter(m_Items.begin());
    Container::iterator itemIterEnd(m_Items.end());
@@ -303,7 +303,7 @@ eafTypes::StatusSeverityType CEAFStatusCenter::GetSeverity(StatusCallbackIDType 
 {
    iStatusCallback* pCallback = GetCallback(callbackID);
    if ( !pCallback )
-      return eafTypes::statusOK;
+      return eafTypes::statusInformation;
 
    return pCallback->GetSeverity();
 }

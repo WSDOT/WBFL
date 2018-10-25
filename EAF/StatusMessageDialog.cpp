@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -118,7 +118,7 @@ BOOL CStatusMessageDialog::OnInitDialog()
    HICON hIcon;
    switch(m_Severity)
    {
-   case eafTypes::statusOK:
+   case eafTypes::statusInformation:
       strGroupLabel = _T("Information");
       hIcon = ::LoadIcon(NULL,IDI_INFORMATION);
       break;

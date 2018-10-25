@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -53,11 +53,6 @@ CLASS
 
 DESCRIPTION
    Utility class to represent lump sum losses.
-
-COPYRIGHT
-   Copyright (c) 2007
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 10.02.2007 : Created file

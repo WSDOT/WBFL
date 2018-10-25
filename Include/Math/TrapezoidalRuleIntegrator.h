@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Math - Utility library of mathematical services
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2017  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -51,12 +51,6 @@ CLASS
 
 DESCRIPTION
    Utility class to integrate functions using the trapezoidal rule
-
-
-COPYRIGHT
-   Copyright © 1997-2008
-   Washington State Department Of Transportation
-   All Rights Reserved
 
 LOG
    rab : 06.24.2008 : Created file
