@@ -1,5 +1,5 @@
-Build started at  October 20, 2011  15:40:57
-Output Package: C:\ARP_INSTALLER\Install_WBFL_Source_3.4.2.0.exe
+Build started at  January 23, 2012  11:44:28
+Output Package: F:\ARP_INSTALLER\Install_WBFL_Source_3.4.3.0.exe
 Creating Package
      File 'ArpMacros.vsmacros' in package.
      File 'AnalysisResultsManager.cpp' in package.
@@ -4987,6 +4987,7 @@ Creating Package
      File 'WbflTools.hh' in package.
      File 'WBFLTools.idl' in package.
      File 'WBFLTransactions.idl' in package.
+     File 'WBFLTypes.h' in package.
      File 'WBFLTypes.idl' in package.
      File 'WbflUnitServer.idl' in package.
      File 'WBFLVersion.h' in package.
@@ -8211,9 +8212,13 @@ Creating Package
      File 'WBFL.Win32.Debug.manifest' in package.
      File 'WBFL.Win32.Profile.manifest' in package.
      File 'WBFL.Win32.Release.manifest' in package.
+     File 'WBFL.Win32.VBA_Debug.manifest' in package.
+     File 'WBFL.Win32.VBA_Release.manifest' in package.
      File 'WBFL.x64.Debug.manifest' in package.
      File 'WBFL.x64.Profile.manifest' in package.
      File 'WBFL.x64.Release.manifest' in package.
+     File 'WBFL.x64.VBA_Debug.manifest' in package.
+     File 'WBFL.x64.VBA_Release.manifest' in package.
      File 'CapacityProblem.cpp' in package.
      File 'CapacitySolution.cpp' in package.
      File 'CapacitySolver.cpp' in package.
@@ -9564,4 +9569,4 @@ Creating EXE
      Creating data section...
      Appending Data Section
      Appending File Groups
-Build completed at  October 20, 2011  15:41:29
+Build completed at  January 23, 2012  11:45:33

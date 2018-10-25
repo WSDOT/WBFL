@@ -110,11 +110,7 @@ const CMenu* CEAFMenu::GetMenu() const
 
 UINT CEAFMenu::GetMenuItemCount() const
 {
-   const CMenu* pMenu = GetMenu();
-   if ( pMenu )
-      return pMenu->GetMenuItemCount();
-
-   return 0;
+   return (UINT)m_Popups.size();
 }
 
 CEAFMenu* CEAFMenu::GetSubMenu(INT pos)
@@ -145,6 +141,8 @@ CEAFMenu* CEAFMenu::CreatePopupMenu(INT pos,LPCTSTR lpszName)
 
    CMenu* pMenu = GetMenu();
 
+   INT offset = GetMenuItemOffset();
+
    if ( pos < 0 )
    {
       m_Popups.push_back(pNewMenu);
@@ -153,7 +151,7 @@ CEAFMenu* CEAFMenu::CreatePopupMenu(INT pos,LPCTSTR lpszName)
    else
    {
       m_Popups.insert( m_Popups.begin() + pos, pNewMenu );
-      pMenu->InsertMenu(pos,MF_BYPOSITION | MF_POPUP, (UINT)pNewMenu->m_Menu.m_hMenu, lpszName );
+      pMenu->InsertMenu(pos+offset,MF_BYPOSITION | MF_POPUP, (UINT)pNewMenu->m_Menu.m_hMenu, lpszName );
    }
 
    if ( m_pWnd )
@@ -392,15 +390,7 @@ UINT CEAFMenu::FindMenuItem(LPCTSTR strTargetMenu)
 {
    CMenu* pMenu = GetMenu();
 
-   // if the active frame is maximized, the window menu for that frame is added to the
-   // the menu bar. This offsets all the menu items by one.
-   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
-   CFrameWnd* pActiveFrame = pMainFrame->GetActiveFrame();
-   int offset = 0;
-   if ( pActiveFrame && pActiveFrame->IsZoomed() )
-   {
-      offset = 1;
-   }
+   INT offset = GetMenuItemOffset();
 
    UINT nItems = pMenu->GetMenuItemCount();
    for ( UINT menuPos = 0; menuPos < nItems; menuPos++ )
@@ -447,21 +437,54 @@ void CEAFMenu::CreateSubMenus()
       CString strName;
       pMenu->GetMenuString(menuIdx,strName,MF_BYPOSITION);
 
+      // Attempting to detect the System/Window menu. We want to skip this menu
+      // Using m_pWnd->GetSystemMenu(TRUE) and m_pWnd->GetSystemMenu(FALSE) and comparing
+      // the menu handle to the handle of the current menu and sub menu doesn't work
+      //
+      // The system menu does not have a name so it returns an empty string... but so
+      // do separators.... need to let separators through, but not unnamed menus (hopefully the system menu)
+      // pMenu->GetMenuItemID(menuIdx) returns 0 if the menu item is a SEPARATOR
+      if ( strName.IsEmpty() && pMenu->GetMenuItemID(menuIdx) != 0)
+         continue; 
+
       CMenu* pSubMenu = pMenu->GetSubMenu(menuIdx);
-      if ( pSubMenu && pSubMenu->GetSafeHmenu() != NULL )
+      if ( pSubMenu )
       {
-         CEAFMenu* pEAFSubMenu = new CEAFMenu();
-         pEAFSubMenu->m_strMenu = strName;
 
-         pEAFSubMenu->m_bOwnsMenuHandle = false;
-         pEAFSubMenu->m_Menu.Attach(pSubMenu->GetSafeHmenu());
+         if ( pSubMenu->GetSafeHmenu() != NULL )
+         {
+            CEAFMenu* pEAFSubMenu = new CEAFMenu();
+            pEAFSubMenu->m_strMenu = strName;
 
-         pEAFSubMenu->Init(NULL,m_pCmdMgr);
-         m_Popups.push_back(pEAFSubMenu);
+            pEAFSubMenu->m_bOwnsMenuHandle = false;
+            pEAFSubMenu->m_Menu.Attach(pSubMenu->GetSafeHmenu());
+
+            pEAFSubMenu->Init(NULL,m_pCmdMgr);
+            m_Popups.push_back(pEAFSubMenu);
+         }
+         else
+         {
+            m_Popups.push_back(NULL); // place holder for basic menu item
+         }
       }
       else
       {
          m_Popups.push_back(NULL); // place holder for basic menu item
       }
    }
+}
+
+INT CEAFMenu::GetMenuItemOffset()
+{
+   // if the active frame is maximized, the window/system menu for that frame is added to the
+   // the menu bar. This offsets all the menu items by one.
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
+   CFrameWnd* pActiveFrame = pMainFrame->GetActiveFrame();
+   INT offset = 0;
+   if ( pActiveFrame && m_pWnd && pActiveFrame->IsZoomed() )
+   {
+      offset = 1;
+   }
+
+   return offset;
 }

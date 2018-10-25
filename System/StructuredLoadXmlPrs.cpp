@@ -57,6 +57,8 @@ public:
    virtual bool Property(LPCTSTR name, Uint32* pvalue);
    virtual bool Property(LPCTSTR name, Int64* pvalue);
    virtual bool Property(LPCTSTR name, Uint64* pvalue);
+   virtual bool Property(LPCTSTR name, LONG* pvalue);
+   virtual bool Property(LPCTSTR name, ULONG* pvalue);
    virtual bool Property(LPCTSTR name, bool* pvalue);
    virtual bool Eof() const;
    virtual std::_tstring GetStateDump() const;
@@ -199,6 +201,16 @@ bool sysStructuredLoadXmlPrs::Property(LPCTSTR name, Int64* pvalue)
 }
 
 bool sysStructuredLoadXmlPrs::Property(LPCTSTR name, Uint64* pvalue)
+{
+   return m_pImp->Property(name, pvalue);
+}
+
+bool sysStructuredLoadXmlPrs::Property(LPCTSTR name, LONG* pvalue)
+{
+   return m_pImp->Property(name, pvalue);
+}
+
+bool sysStructuredLoadXmlPrs::Property(LPCTSTR name, ULONG* pvalue)
 {
    return m_pImp->Property(name, pvalue);
 }
@@ -393,6 +405,15 @@ void sysStructuredLoadXmlPrs_Impl::EndLoad()
    PRECONDITION( m_pIStream );
    dbgDiagBase::EnableWarnPopup(false);
    WARN(m_Level!=0,"Error: BeginUnit-EndUnit mismatch in structured load");
+#if defined _DEBUG
+   UnitListConstIterator iter(m_UnitList.begin());
+   UnitListConstIterator end(m_UnitList.end());
+   for ( ; iter != end; iter++ )
+   {
+      const ListItem& item = *iter;
+      WATCH("Open Unit: " << item.Name);
+   }
+#endif
    dbgDiagBase::EnableWarnPopup(true);
 
    // free up com resources
@@ -469,6 +490,8 @@ bool sysStructuredLoadXmlPrs_Impl::BeginUnit(LPCTSTR name)
       THROW_LOAD(InvalidFileFormat,this);
    }
 
+   WATCH("BeginUnit: " << m_UnitList.back().Name);
+
    return retval;
 }
 
@@ -481,6 +504,8 @@ bool sysStructuredLoadXmlPrs_Impl::EndUnit()
       // can't go negative here.
       if (m_Level<=0)
          THROW_LOAD(InvalidFileFormat,this);
+
+      WATCH("EndUnit: " << m_UnitList.back().Name);
 
       // climb back up the tree
       m_UnitList.pop_back();
@@ -635,7 +660,7 @@ bool sysStructuredLoadXmlPrs_Impl::Property(LPCTSTR name, Uint32* pvalue)
          // variant couldn't parse, so try brute force
          _bstr_t bval(val);
          LPTSTR sv = (LPTSTR)bval;
-         LPTSTR* ev = &sv + sizeof(LPTSTR)*bval.length();
+         LPTSTR* ev = &sv + bval.length();
          Uint32 uval = _tcstoul(sv,ev,10);
          if (uval==0 && *sv != '0')
             THROW_LOAD(InvalidFileFormat,this);
@@ -675,9 +700,49 @@ bool sysStructuredLoadXmlPrs_Impl::Property(LPCTSTR name, Uint64* pvalue)
       {
          // variant couldn't parse, so try brute force
          _bstr_t bval(val);
+         TCHAR* sv = (TCHAR*)bval;
+         Uint64 uval = _tcstoui64(sv,NULL,10);
+         if ( uval == 0 && *sv != _T('0'))
+            THROW_LOAD(InvalidFileFormat,this);
+
+         *pvalue = uval;
+      }
+      retval = true; // got our work done
+   }
+   return retval;
+}
+
+bool sysStructuredLoadXmlPrs_Impl::Property(LPCTSTR name, LONG* pvalue)
+{
+   bool retval = false;
+   _variant_t val;
+   if (GetProperty(name, &val))
+   {
+      *pvalue = (LONG)val;
+      retval = true;
+   }
+
+   return retval;
+}
+
+bool sysStructuredLoadXmlPrs_Impl::Property(LPCTSTR name, ULONG* pvalue)
+{
+   bool retval = false;
+   _variant_t val;
+   if (GetProperty(name, &val))
+   {
+      // variant does not handle large unsigned values well
+      try
+      {
+         *pvalue = (ULONG)val;
+      }
+      catch(...) 
+      {
+         // variant couldn't parse, so try brute force
+         _bstr_t bval(val);
          LPTSTR sv = (LPTSTR)bval;
-         LPTSTR* ev = &sv + sizeof(LPTSTR)*bval.length();
-         Uint64 uval = _tcstoui64(sv,ev,10);
+         LPTSTR* ev = &sv + bval.length();
+         ULONG uval = _tcstoul(sv,ev,10);
          if (uval==0 && *sv != '0')
             THROW_LOAD(InvalidFileFormat,this);
 

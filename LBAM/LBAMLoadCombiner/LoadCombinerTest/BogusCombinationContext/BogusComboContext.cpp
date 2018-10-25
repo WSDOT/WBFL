@@ -27,16 +27,32 @@
 #include "stdafx.h"
 
 #if defined _DEBUG
+#if defined VBA_BUILD
+#if defined _WIN64
+#include "x64\VBA_Debug\BogusCombinationContext.h"
+#else
+#include "Win32\VBA_Debug\BogusCombinationContext.h"
+#endif
+#else
 #if defined _WIN64
 #include "x64\Debug\BogusCombinationContext.h"
 #else
 #include "Win32\Debug\BogusCombinationContext.h"
+#endif
+#endif
+#else
+#if defined VBA_BUILD
+#if defined _WIN64
+#include "x64\VBA_Release\BogusCombinationContext.h"
+#else
+#include "Win32\VBA_Release\BogusCombinationContext.h"
 #endif
 #else
 #if defined _WIN64
 #include "x64\Release\BogusCombinationContext.h"
 #else
 #include "Win32\Release\BogusCombinationContext.h"
+#endif
 #endif
 #endif
 

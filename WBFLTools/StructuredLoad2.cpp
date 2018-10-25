@@ -423,7 +423,7 @@ HRESULT CStructuredLoad2::get_Property( BSTR name,  VARIANT *pVal)
             unsigned long long ull;
             try
             {
-               long lul = (long)vval;
+               long long lul = (long long)vval;
                if (lul<0)
                   throw;
                else
@@ -435,7 +435,7 @@ HRESULT CStructuredLoad2::get_Property( BSTR name,  VARIANT *pVal)
                _bstr_t bval(vval);
                TCHAR* sv = (TCHAR*)bval; 
                //TCHAR** ev = &sv + bval.length();
-               unsigned long long uval = _tcstoul(sv,NULL,10);
+               unsigned long long uval = _tcstoui64(sv,NULL,10);
                if (uval==0 && *sv != _T('0') )
                   THROW_IDS(IDS_STRLOAD_E_INVALIDFORMAT,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
 
