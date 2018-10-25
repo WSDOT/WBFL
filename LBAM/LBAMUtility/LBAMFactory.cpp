@@ -368,9 +368,9 @@ STDMETHODIMP CLBAMFactory::ConfigureLiveLoad(ILBAMModel* pModel, VARIANT_BOOL in
 
    try
    {
-      hr = ConfigureDesignLiveLoad(     pModel, lltDesign, 1.33, 1.00, VARIANT_TRUE, includeLowBoy, units, pUnitServer);
-      hr = ConfigureFatigueLiveLoad(    pModel,            1.15, 1.00,                              units, pUnitServer);
-      hr = ConfigureDeflectionLiveLoad( pModel,            1.33, 1.00,                              units, pUnitServer);
+      hr = ConfigureDesignLiveLoad(     pModel, lltDesign,     1.33, 1.00, VARIANT_TRUE, includeLowBoy, units, pUnitServer);
+      hr = ConfigureFatigueLiveLoad(    pModel, lltFatigue,    1.15, 1.00,                              units, pUnitServer);
+      hr = ConfigureDeflectionLiveLoad( pModel, lltDeflection, 1.33, 1.00,                              units, pUnitServer);
    }
    catch(...)
    {
@@ -594,64 +594,12 @@ STDMETHODIMP CLBAMFactory::ConfigureDesignLiveLoad(ILBAMModel* pModel, LiveLoadM
 
    try
    {
-      CComPtr<ILiveLoad> liveload;
-      hr = pModel->get_LiveLoad(&liveload);
-
       CComPtr<IUnitConvert> convert;
       hr = pUnitServer->get_UnitConvert(&convert);
 
       // set up ll model
       CComPtr<ILiveLoadModel> liveloadmodel;
-      switch(llmt)
-      {
-      case lltNone:
-         return E_INVALIDARG;
-
-      case lltDeflection:
-         hr = liveload->get_Deflection(&liveloadmodel);
-         break;
-
-      case lltDesign:
-         hr = liveload->get_Design(&liveloadmodel);
-         break;
-
-      case lltPedestrian:
-         hr = liveload->get_Pedestrian(&liveloadmodel);
-         break;
-
-      case lltFatigue:
-         hr = liveload->get_Fatigue(&liveloadmodel);
-         break;
-
-      case lltPermit:
-         hr = liveload->get_Permit(&liveloadmodel);
-         break;
-
-      case lltSpecial:
-         hr = liveload->get_Special(&liveloadmodel);
-         break;
-
-      case lltLegalRoutineRating:
-         hr = liveload->get_LegalRoutineRating(&liveloadmodel);
-         break;
-
-      case lltLegalSpecialRating:
-         hr = liveload->get_LegalSpecialRating(&liveloadmodel);
-         break;
-      
-      case lltPermitRoutineRating:
-         hr = liveload->get_PermitRoutineRating(&liveloadmodel);
-         break;
-      
-      case lltPermitSpecialRating:
-         hr = liveload->get_PermitSpecialRating(&liveloadmodel);
-         break;
-
-      default:
-         ATLASSERT(false); // is there a new live load type???
-         hr = liveload->get_Design(&liveloadmodel);
-         break;
-      }
+      hr = GetLiveLoadModel(pModel,llmt,&liveloadmodel);
 
       hr = liveloadmodel->put_Name(CComBSTR("LRFD Design Vehicular Live Load"));
       hr = liveloadmodel->put_DistributionFactorType(dftEnvelope);
@@ -876,7 +824,7 @@ STDMETHODIMP CLBAMFactory::ConfigureDesignLiveLoad(ILBAMModel* pModel, LiveLoadM
    return S_OK;
 }
 
-STDMETHODIMP CLBAMFactory::ConfigureFatigueLiveLoad(ILBAMModel* pModel, Float64 imTruck,Float64 imLane,SpecUnitType units,IUnitServer* pUnitServer)
+STDMETHODIMP CLBAMFactory::ConfigureFatigueLiveLoad(ILBAMModel* pModel, LiveLoadModelType llmt,Float64 imTruck,Float64 imLane,SpecUnitType units,IUnitServer* pUnitServer)
 {
    CHECK_IN(pModel);
    CHECK_IN(pUnitServer);
@@ -884,19 +832,17 @@ STDMETHODIMP CLBAMFactory::ConfigureFatigueLiveLoad(ILBAMModel* pModel, Float64 
 
    try
    {
-      CComPtr<ILiveLoad> liveload;
-      hr = pModel->get_LiveLoad(&liveload);
-
       CComPtr<IUnitConvert> convert;
       hr = pUnitServer->get_UnitConvert(&convert);
 
-      CComPtr<ILiveLoadModel> fatigue;
-      hr = liveload->get_Fatigue(&fatigue);
-      hr = fatigue->put_Name(CComBSTR("LRFD Fatigue Vehicular Live Load"));
-      hr = fatigue->put_DistributionFactorType(dftFatigue);
+      CComPtr<ILiveLoadModel> liveloadmodel;
+      hr = GetLiveLoadModel(pModel,llmt,&liveloadmodel);
+
+      hr = liveloadmodel->put_Name(CComBSTR("LRFD Fatigue Vehicular Live Load"));
+      hr = liveloadmodel->put_DistributionFactorType(dftFatigue);
 
       CComPtr<IVehicularLoads> vehicles;
-      hr = fatigue->get_VehicularLoads(&vehicles);
+      hr = liveloadmodel->get_VehicularLoads(&vehicles);
 
       // get the loads and axle spacing in base units
       Float64 fatigue_truck_weight[3];
@@ -956,7 +902,7 @@ STDMETHODIMP CLBAMFactory::ConfigureFatigueLiveLoad(ILBAMModel* pModel, Float64 
    return S_OK;
 }
 
-STDMETHODIMP CLBAMFactory::ConfigureDeflectionLiveLoad(ILBAMModel* pModel, Float64 imTruck,Float64 imLane,SpecUnitType units,IUnitServer* pUnitServer)
+STDMETHODIMP CLBAMFactory::ConfigureDeflectionLiveLoad(ILBAMModel* pModel, LiveLoadModelType llmt,Float64 imTruck,Float64 imLane,SpecUnitType units,IUnitServer* pUnitServer)
 {
    CHECK_IN(pModel);
    CHECK_IN(pUnitServer);
@@ -964,19 +910,17 @@ STDMETHODIMP CLBAMFactory::ConfigureDeflectionLiveLoad(ILBAMModel* pModel, Float
 
    try
    {
-      CComPtr<ILiveLoad> liveload;
-      hr = pModel->get_LiveLoad(&liveload);
-
       CComPtr<IUnitConvert> convert;
       hr = pUnitServer->get_UnitConvert(&convert);
 
-      CComPtr<ILiveLoadModel> deflection;
-      hr = liveload->get_Deflection(&deflection);
-      hr = deflection->put_Name(CComBSTR("LRFD Optional Vehicular Live Load For Deflection"));
-      hr = deflection->put_DistributionFactorType(dftSingleLane);
+      CComPtr<ILiveLoadModel> liveloadmodel;
+      hr = GetLiveLoadModel(pModel,llmt,&liveloadmodel);
+
+      hr = liveloadmodel->put_Name(CComBSTR("LRFD Optional Vehicular Live Load For Deflection"));
+      hr = liveloadmodel->put_DistributionFactorType(dftSingleLane);
 
       CComPtr<IVehicularLoads> vehicles;
-      hr = deflection->get_VehicularLoads(&vehicles);
+      hr = liveloadmodel->get_VehicularLoads(&vehicles);
 
       Float64 deflection_lane_load = (units == suUS ? 0.64 : 9.3);
       hr = convert->ConvertToBaseUnits(deflection_lane_load,units==suUS?CComBSTR("kip/ft"):CComBSTR("kN-m"),&deflection_lane_load);
@@ -2447,3 +2391,64 @@ STDMETHODIMP CLBAMFactory::CreatePOI(PoiIDType ID, MemberType Type, MemberIDType
    return ppoi.CopyTo(newPOI);
 }
 
+
+STDMETHODIMP CLBAMFactory::GetLiveLoadModel(ILBAMModel* pModel,LiveLoadModelType llmt,ILiveLoadModel** ppLiveLoadModel)
+{
+   CComPtr<ILiveLoad> liveload;
+   HRESULT hr = pModel->get_LiveLoad(&liveload);
+   if ( FAILED(hr) )
+      return hr;
+
+   switch(llmt)
+   {
+   case lltNone:
+      return E_INVALIDARG;
+
+   case lltDeflection:
+      hr = liveload->get_Deflection(ppLiveLoadModel);
+      break;
+
+   case lltDesign:
+      hr = liveload->get_Design(ppLiveLoadModel);
+      break;
+
+   case lltPedestrian:
+      hr = liveload->get_Pedestrian(ppLiveLoadModel);
+      break;
+
+   case lltFatigue:
+      hr = liveload->get_Fatigue(ppLiveLoadModel);
+      break;
+
+   case lltPermit:
+      hr = liveload->get_Permit(ppLiveLoadModel);
+      break;
+
+   case lltSpecial:
+      hr = liveload->get_Special(ppLiveLoadModel);
+      break;
+
+   case lltLegalRoutineRating:
+      hr = liveload->get_LegalRoutineRating(ppLiveLoadModel);
+      break;
+
+   case lltLegalSpecialRating:
+      hr = liveload->get_LegalSpecialRating(ppLiveLoadModel);
+      break;
+   
+   case lltPermitRoutineRating:
+      hr = liveload->get_PermitRoutineRating(ppLiveLoadModel);
+      break;
+   
+   case lltPermitSpecialRating:
+      hr = liveload->get_PermitSpecialRating(ppLiveLoadModel);
+      break;
+
+   default:
+      ATLASSERT(false); // is there a new live load type???
+      hr = liveload->get_Design(ppLiveLoadModel);
+      break;
+   }
+
+   return hr;
+}

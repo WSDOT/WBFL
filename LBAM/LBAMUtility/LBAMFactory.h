@@ -75,8 +75,8 @@ public:
 // ILBAMLRFDFactory2
 public:
    STDMETHOD(ConfigureDesignLiveLoad)(/*[in]*/ILBAMModel* pModel, /*[in]*/ LiveLoadModelType llmt, /*[in]*/ Float64 imTruck,/*[in]*/Float64 imLane, /*[in]*/VARIANT_BOOL includeDualTrucks, /*[in]*/VARIANT_BOOL includeLowBoy, /*[in]*/SpecUnitType units,/*[in]*/IUnitServer* pUnitServer);
-   STDMETHOD(ConfigureFatigueLiveLoad)(/*[in]*/ILBAMModel* pModel, /*[in]*/ Float64 imTruck,/*[in]*/Float64 imLane,/*[in]*/SpecUnitType units,/*[in]*/IUnitServer* pUnitServer);
-   STDMETHOD(ConfigureDeflectionLiveLoad)(/*[in]*/ILBAMModel* pModel, /*[in]*/ Float64 imTruck,/*[in]*/Float64 imLane,/*[in]*/SpecUnitType units,/*[in]*/IUnitServer* pUnitServer);
+   STDMETHOD(ConfigureFatigueLiveLoad)(/*[in]*/ILBAMModel* pModel, /*[in]*/ LiveLoadModelType llmt,/*[in]*/ Float64 imTruck,/*[in]*/Float64 imLane,/*[in]*/SpecUnitType units,/*[in]*/IUnitServer* pUnitServer);
+   STDMETHOD(ConfigureDeflectionLiveLoad)(/*[in]*/ILBAMModel* pModel, /*[in]*/ LiveLoadModelType llmt,/*[in]*/Float64 imTruck,/*[in]*/Float64 imLane,/*[in]*/SpecUnitType units,/*[in]*/IUnitServer* pUnitServer);
 
 // ILBAMLRFDFactory3
 public:
@@ -100,6 +100,7 @@ public:
 
 private:
 	STDMETHOD(CreatePOI)(/*[in]*/PoiIDType ID, /*[in]*/MemberType Type, /*[in]*/MemberIDType memberID, /*[in]*/Float64 Location,/*[out,retval]*/IPOI** newPOI);
+   STDMETHOD(GetLiveLoadModel)(ILBAMModel* pModel,LiveLoadModelType llmt,ILiveLoadModel** ppLiveLoadModel);
 
    void AddLoadCase(ILoadCases* loadCases, BSTR name, BSTR description);
    void ApplyTypicalLoadFactors(ILoadCombination* loadCombo, bool Strength4);

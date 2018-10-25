@@ -60,25 +60,12 @@ std::_tstring filename_to_URL(const std::_tstring& fname)
    return filename;
 }
 
-class TweakIESettings
-{
-public:
-   TweakIESettings();
-   ~TweakIESettings();
-private:
-   CString m_strPrint, m_strFooter, m_strHeader;
-   bool m_bDeletePrint;
-   bool m_bDeleteFooter;
-   bool m_bDeleteHeader;
-};
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
 CReportBrowser::CReportBrowser()
 {
-   m_pTweakIESettings = new TweakIESettings;
    m_pWebBrowser = new CWebBrowser;
 }
 
@@ -87,9 +74,6 @@ CReportBrowser::~CReportBrowser()
    // We are done with our HTML file... Delete it
    if (!m_Filename.empty())
       ::DeleteFile( m_Filename.c_str() );
-
-   if ( m_pTweakIESettings )
-      delete m_pTweakIESettings;
 
    AFX_MANAGE_STATE(AfxGetAppModuleState());
    if ( m_pWebBrowser )
@@ -115,7 +99,7 @@ void CReportBrowser::UpdateReport(boost::shared_ptr<rptReport>& pReport,bool bRe
       m_pWebBrowser->Refresh();
 }
 
-bool CReportBrowser::Initialize(HWND hwnd,CReportBuilderManager* pRptMgr,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<rptReport>& pReport)
+bool CReportBrowser::Initialize(HWND hwnd,CReportBuilderManager* pRptMgr,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder,boost::shared_ptr<rptReport>& pReport)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
@@ -124,6 +108,7 @@ bool CReportBrowser::Initialize(HWND hwnd,CReportBuilderManager* pRptMgr,boost::
 
    m_pRptMgr = pRptMgr;
    m_pRptSpec = pRptSpec;
+   m_pRptSpecBuilder = pRptSpecBuilder;
 
    // The window associated with hwnd does not exist!
    ATLASSERT( ::IsWindow(hwnd) );
@@ -136,8 +121,7 @@ bool CReportBrowser::Initialize(HWND hwnd,CReportBuilderManager* pRptMgr,boost::
 
       CRect rect(0,0,0,0);
       CWnd* pParent = CWnd::FromHandle( hwnd );
-      BOOL bCreated = m_pWebBrowser->Create(TEXT("Microsoft Web Browser Control"),
-                                            TEXT("Browser Control"),
+      BOOL bCreated = m_pWebBrowser->Create(TEXT("Browser Control"),
                                             WS_CHILD | WS_VISIBLE, rect, pParent, 100);
       if ( !bCreated )
       {
@@ -149,7 +133,7 @@ bool CReportBrowser::Initialize(HWND hwnd,CReportBuilderManager* pRptMgr,boost::
    UpdateReport(pReport,false);
 
    if (new_file)
-      m_pWebBrowser->Navigate( m_Filename.c_str(), 0,0,0,0);
+      m_pWebBrowser->Navigate( m_Filename.c_str());
    else
       m_pWebBrowser->Refresh();
 
@@ -181,15 +165,27 @@ void CReportBrowser::Size(SIZE size)
    m_pWebBrowser->SetWindowPos(NULL,0,0,size.cx,size.cy,SWP_NOZORDER | SWP_NOMOVE);
 }
 
+CWnd* CReportBrowser::GetBrowserWnd()
+{
+   return m_pWebBrowser;
+}
+
 void CReportBrowser::Print(bool bPrompt)
 {
-   LPDISPATCH lpDispatch = m_pWebBrowser->GetDocument();
-   IOleCommandTarget* pIOleCmdTarget;
-   if ( S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget ) )
-   {
-      pIOleCmdTarget->Exec(NULL,OLECMDID_PRINT, bPrompt ? OLECMDEXECOPT_PROMPTUSER : OLECMDEXECOPT_DONTPROMPTUSER, NULL,NULL);
-      pIOleCmdTarget->Release();
-   }
+   // Build footer string
+   std::_tstring lftFoot = m_pRptSpec->GetLeftFooter();
+   std::_tstring ctrFoot = m_pRptSpec->GetCenterFooter();
+   CString footer;
+   footer.Format(_T("%s&b%s&b&d"), lftFoot.c_str(), ctrFoot.c_str());
+
+   // Build Header string
+   std::_tstring lftHead = m_pRptSpec->GetLeftHeader();
+   std::_tstring ctrHead = m_pRptSpec->GetCenterHeader();
+   CString header;
+   header.Format(_T("%s&b%s&bPage &p of &P"), lftHead.c_str(), ctrHead.c_str());
+
+   // Print from browser
+   m_pWebBrowser->Print(header, footer);
 }
 
 bool CReportBrowser::Edit(bool bUpdate)
@@ -197,8 +193,11 @@ bool CReportBrowser::Edit(bool bUpdate)
    boost::shared_ptr<CReportBuilder> pRptBuilder = m_pRptMgr->GetReportBuilder(m_pRptSpec->GetReportName());
    CReportDescription rptDesc = pRptBuilder->GetReportDescription();
 
-   boost::shared_ptr<CReportSpecificationBuilder> pReportSpecBuilder = pRptBuilder->GetReportSpecificationBuilder();
-   boost::shared_ptr<CReportSpecification>        pReportSpec        = pReportSpecBuilder->CreateReportSpec(rptDesc,m_pRptSpec);
+   boost::shared_ptr<CReportSpecificationBuilder> pReportSpecBuilder(m_pRptSpecBuilder);
+   if ( m_pRptSpecBuilder == NULL )
+      pReportSpecBuilder = pRptBuilder->GetReportSpecificationBuilder();
+
+   boost::shared_ptr<CReportSpecification> pReportSpec = pReportSpecBuilder->CreateReportSpec(rptDesc,m_pRptSpec);
    
    // user cancelled.
    if( pReportSpec == NULL )
@@ -269,7 +268,7 @@ void CReportBrowser::NavigateAnchor(long id)
    std::_tstring filename = filename_to_URL(m_Filename);
    CString anc;
    anc.Format(_T("%s#_%d"),filename.c_str(),id);
-   m_pWebBrowser->Navigate(anc,0,0,0,0);
+   m_pWebBrowser->Navigate(anc);
 }
 
 void CReportBrowser::MakeFilename()
@@ -317,96 +316,4 @@ void CReportBrowser::MakeFilename()
       ::DeleteFile( temp_file );
 
    to_upper( m_Filename.begin(), m_Filename.end() );
-}
-
-
-TweakIESettings::TweakIESettings()
-{
-   CRegKey hkSoftware, hkMicrosoft, hkIE, hkMain, hkPageSetup;
-   LONG result = hkSoftware.Open(HKEY_CURRENT_USER,_T("Software"));
-   ATLASSERT(result == ERROR_SUCCESS);
-
-   result = hkMicrosoft.Open(hkSoftware,_T("Microsoft"));
-   ATLASSERT(result == ERROR_SUCCESS);
-
-   result = hkIE.Open(hkMicrosoft,_T("Internet Explorer"));
-   ATLASSERT(result == ERROR_SUCCESS);
-
-   result = hkMain.Open(hkIE,_T("Main"));
-   ATLASSERT(result == ERROR_SUCCESS);
-
-   result = hkPageSetup.Open(hkIE,_T("PageSetup"));
-   ATLASSERT(result == ERROR_SUCCESS);
-
-   TCHAR strPrint[10];
-   DWORD dwCount = 10;
-   result = hkMain.QueryStringValue(_T("Print_Background"),strPrint,&dwCount);
-   bool bDeletePrint = (result != ERROR_SUCCESS);
-
-   TCHAR strFooter[256];
-   dwCount = 256;
-   result = hkPageSetup.QueryStringValue(_T("footer"),strFooter,&dwCount);
-   bool bDeleteFooter = (result != ERROR_SUCCESS);
-
-   TCHAR strHeader[256];
-   dwCount = 256;
-   result = hkPageSetup.QueryStringValue(_T("header"),strHeader,&dwCount);
-   bool bDeleteHeader = (result != ERROR_SUCCESS);
-
-   result = hkMain.SetStringValue(_T("Print_Background"),_T("yes"));
-   ATLASSERT(result == ERROR_SUCCESS);
-
-   result = hkPageSetup.SetStringValue(_T("footer"),_T("&b&b&d"));
-   ATLASSERT(result == ERROR_SUCCESS);
-
-   result = hkPageSetup.SetStringValue(_T("header"),_T("&w&bPage &p of &P"));
-   ATLASSERT(result == ERROR_SUCCESS);
-
-   m_bDeletePrint  = bDeletePrint;
-   m_bDeleteFooter = bDeleteFooter;
-   m_bDeleteHeader = bDeleteHeader;
-
-   m_strPrint  = strPrint;
-   m_strFooter = strFooter;
-   m_strHeader = strHeader;
-}
-
-TweakIESettings::~TweakIESettings()
-{
-   CRegKey hkSoftware, hkMicrosoft, hkIE, hkMain, hkPageSetup;
-   LONG result = hkSoftware.Open(HKEY_CURRENT_USER,_T("Software"));
-   ATLASSERT(result == ERROR_SUCCESS);
-
-   result = hkMicrosoft.Open(hkSoftware,_T("Microsoft"));
-   ATLASSERT(result == ERROR_SUCCESS);
-
-   result = hkIE.Open(hkMicrosoft,_T("Internet Explorer"));
-   ATLASSERT(result == ERROR_SUCCESS);
-
-   result = hkMain.Open(hkIE,_T("Main"));
-   ATLASSERT(result == ERROR_SUCCESS);
-
-   result = hkPageSetup.Open(hkIE,_T("PageSetup"));
-   ATLASSERT(result == ERROR_SUCCESS);
-
-   if ( m_bDeletePrint )
-      result = hkMain.DeleteValue(_T("Print_Background"));
-   else
-      result = hkMain.SetStringValue(_T("Print_Background"),m_strPrint);
-
-   ATLASSERT(result == ERROR_SUCCESS);
-
-   if ( m_bDeleteFooter )
-      result = hkPageSetup.DeleteValue(_T("footer"));
-   else
-      result = hkPageSetup.SetStringValue(_T("footer"),m_strFooter);
-
-   ATLASSERT(result == ERROR_SUCCESS);
-
-   if ( m_bDeleteHeader )
-      result = hkPageSetup.DeleteValue(_T("header"));
-   else
-      result = hkPageSetup.SetStringValue(_T("header"),m_strHeader);
-
-   ATLASSERT(result == ERROR_SUCCESS);
 }

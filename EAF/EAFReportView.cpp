@@ -42,6 +42,7 @@
 
 #include <MfcTools\XUnwind.h>
 #include <MfcTools\Text.h>
+#include "ReportButton.h"
 
 
 #ifdef _DEBUG
@@ -66,10 +67,16 @@ CEAFReportView::CEAFReportView()
 
    m_pReportBuilderMgr = NULL;
    m_pRptMgr = NULL;
+
+   // Create report edit button and register to listen to messages
+   m_pBtnEdit = new CReportButton();
+   m_pBtnEdit->Register(this);
+
 }
 
 CEAFReportView::~CEAFReportView()
 {
+   delete(m_pBtnEdit);
 }
 
 BEGIN_MESSAGE_MAP(CEAFReportView, CView)
@@ -82,7 +89,6 @@ BEGIN_MESSAGE_MAP(CEAFReportView, CView)
 	ON_UPDATE_COMMAND_UI(ID_FILE_PRINT_DIRECT, OnUpdateFilePrint)
 	//}}AFX_MSG_MAP
     ON_COMMAND_RANGE(CCS_CMENU_BASE, CCS_CMENU_MAX, OnCmenuSelected)
-    ON_BN_CLICKED(IDC_EDIT,OnEdit)
     ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
@@ -146,16 +152,22 @@ int CEAFReportView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CView::OnCreate(lpCreateStruct) == -1)
 		return -1;
 	
-   CreateEditButton();
-
    return 0;
 }
 
 bool CEAFReportView::CreateReport(CollectionIndexType rptIdx,bool bPromptForSpec)
 {
    CreateReportSpecification(rptIdx,bPromptForSpec);
+   return CreateReport(rptIdx,m_pReportSpec,m_pRptSpecBuilder);
+}
+
+bool CEAFReportView::CreateReport(CollectionIndexType rptIdx,boost::shared_ptr<CReportSpecification>& pSpec,boost::shared_ptr<CReportSpecificationBuilder>& pSpecBuilder)
+{
+   m_pReportSpec = pSpec;
    if ( !m_pReportSpec )
       return false;
+
+   m_pRptSpecBuilder = pSpecBuilder;
 
    UpdateViewTitle();
 
@@ -195,6 +207,7 @@ void CEAFReportView::CreateReportSpecification(CollectionIndexType rptIdx,bool b
             CEAFMainFrame* pFrame = EAFGetMainFrame();
             pFrame->DisableFailCreateMessage();
             m_pReportSpec = boost::shared_ptr<CReportSpecification>();
+            m_pRptSpecBuilder = boost::shared_ptr<CReportSpecificationBuilder>();
             return;
          }
       }
@@ -208,14 +221,14 @@ void CEAFReportView::CreateReportSpecification(CollectionIndexType rptIdx,bool b
    boost::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(rptName);
    CReportDescription rptDesc = pRptBuilder->GetReportDescription();
 
-   boost::shared_ptr<CReportSpecificationBuilder> pRptSpecBuilder = pRptBuilder->GetReportSpecificationBuilder();
+   m_pRptSpecBuilder = pRptBuilder->GetReportSpecificationBuilder();
    if ( bPromptForSpec )
    {
-      m_pReportSpec = pRptSpecBuilder->CreateReportSpec(rptDesc,m_pReportSpec);
+      m_pReportSpec = m_pRptSpecBuilder->CreateReportSpec(rptDesc,m_pReportSpec);
    }
    else
    {
-      m_pReportSpec = pRptSpecBuilder->CreateDefaultReportSpec(rptDesc);
+      m_pReportSpec = m_pRptSpecBuilder->CreateDefaultReportSpec(rptDesc);
    }
 
    if ( m_pReportSpec == NULL )
@@ -261,8 +274,8 @@ HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
          {
             boost::shared_ptr<rptReport> pReport = pBuilder->CreateReport( m_pReportSpec );
 
-            if ( m_btnEdit.GetSafeHwnd() )
-               m_btnEdit.ShowWindow(SW_SHOW);
+            if ( m_pBtnEdit->GetSafeHwnd() )
+               m_pBtnEdit->ShowWindow(SW_SHOW);
 
             m_pReportBrowser->UpdateReport( pReport, true );
          }
@@ -270,7 +283,9 @@ HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
       else
       {
          // create the report and browser
-         m_pReportBrowser = CreateReportBrowser(GetSafeHwnd(),m_pReportSpec);
+         m_pReportBrowser = CreateReportBrowser(GetSafeHwnd(),m_pReportSpec,m_pRptSpecBuilder);
+
+        CreateEditButton();
       }
    }
    catch(...)
@@ -292,8 +307,8 @@ HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
    {
       Invalidate();
 
-      if ( m_btnEdit.GetSafeHwnd() )
-         m_btnEdit.ShowWindow(SW_SHOW);
+      if ( m_pBtnEdit->GetSafeHwnd() )
+         m_pBtnEdit->ShowWindow(SW_SHOW);
 
       // size the browser window to fill the view
       CRect rect;
@@ -302,19 +317,14 @@ HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
    }
    else
    {
-      if ( m_btnEdit.GetSafeHwnd() ) 
-         m_btnEdit.ShowWindow(SW_HIDE);
+      if ( m_pBtnEdit->GetSafeHwnd() ) 
+         m_pBtnEdit->ShowWindow(SW_HIDE);
 
       m_bNoBrowser = true;
    }
 
 
    return S_OK;
-}
-
-void CEAFReportView::OnEdit()
-{
-   EditReport();
 }
 
 void CEAFReportView::EditReport()
@@ -347,8 +357,8 @@ void CEAFReportView::OnSize(UINT nType, int cx, int cy)
       m_pReportBrowser->Size( CSize(cx,cy) );
    }
 
-   if ( m_btnEdit.GetSafeHwnd() )
-      m_btnEdit.SetWindowPos(&CWnd::wndTop,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
+   if ( m_pBtnEdit->GetSafeHwnd() )
+      m_pBtnEdit->SetWindowPos(&CWnd::wndTop,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
 }
 
 void CEAFReportView::OnFilePrint() 
@@ -381,8 +391,8 @@ void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
       m_ErrorMsg = *pmsg;
       m_bUpdateError = true;
 
-      if ( m_btnEdit.GetSafeHwnd() )
-         m_btnEdit.ShowWindow(SW_HIDE);
+      if ( m_pBtnEdit->GetSafeHwnd() )
+         m_pBtnEdit->ShowWindow(SW_HIDE);
 
       // delete the report browser because what ever it is displaying is totally invalid
       // also need to elimintate it so that we can draw the error message on the view window itself
@@ -401,8 +411,8 @@ void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
       m_bUpdateError = true;
       m_ErrorMsg = _T("Errors exist that prevent analysis. Review the errors posted in the status center for more information");
 
-      if ( m_btnEdit.GetSafeHwnd() )
-         m_btnEdit.ShowWindow(SW_HIDE);
+      if ( m_pBtnEdit->GetSafeHwnd() )
+         m_pBtnEdit->ShowWindow(SW_HIDE);
 
       // delete the report browser because what ever it is displaying is totally invalid
       // also need to elimintate it so that we can draw the error message on the view window itself
@@ -481,8 +491,15 @@ void CEAFReportView::OnInitialUpdate()
       ATLASSERT(m_pReportBuilderMgr != NULL || m_pRptMgr != NULL); // one of these should not be NULL
 
       CollectionIndexType rptIdx = pCreateData->m_RptIdx;
-      bool bPromptForSpec = pCreateData->m_bPromptForSpec;
-      CreateReport(rptIdx,bPromptForSpec);
+      if ( pCreateData->m_pRptSpecification )
+      {
+         CreateReport(rptIdx,pCreateData->m_pRptSpecification,pCreateData->m_pRptSpecificationBuilder);
+      }
+      else
+      {
+         bool bPromptForSpec = pCreateData->m_bPromptForSpec;
+         CreateReport(rptIdx,bPromptForSpec);
+      }
 
       CView::OnInitialUpdate();
    }
@@ -523,7 +540,7 @@ void CEAFReportView::OnCmenuSelected(UINT id)
   switch(cmd)
   {
   case CCS_RB_EDIT:
-     OnEdit();
+     EditReport();
      break;
 
   case CCS_RB_FIND:
@@ -609,10 +626,12 @@ BOOL CEAFReportView::PreCreateWindow(CREATESTRUCT& cs)
 
 void CEAFReportView::CreateEditButton()
 {
+   CWnd* pWeb = m_pReportBrowser->GetBrowserWnd();
+
    CRect rect(0,0,50,21);
-   m_btnEdit.Create(_T("Edit"),WS_CHILD | WS_TABSTOP | BS_PUSHBUTTON | BS_TEXT, rect, this, IDC_EDIT);
+   m_pBtnEdit->Create(_T("Edit"),WS_CHILD | WS_TABSTOP | BS_PUSHBUTTON | BS_TEXT, rect, pWeb, IDC_EDIT);
    m_btnFont.Attach( GetStockObject(DEFAULT_GUI_FONT) );
-   m_btnEdit.SetFont(&m_btnFont);
+   m_pBtnEdit->SetFont(&m_btnFont);
 }
 
 std::vector<std::_tstring> CEAFReportView::GetReportNames()
@@ -631,10 +650,15 @@ boost::shared_ptr<CReportBuilder> CEAFReportView::GetReportBuilder(const std::_t
       return m_pRptMgr->GetReportBuilder(strRptName);
 }
 
-boost::shared_ptr<CReportBrowser> CEAFReportView::CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec)
+boost::shared_ptr<CReportBrowser> CEAFReportView::CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder)
 {
    if ( m_pReportBuilderMgr )
-      return m_pReportBuilderMgr->CreateReportBrowser(hwndParent,pRptSpec);
+      return m_pReportBuilderMgr->CreateReportBrowser(hwndParent,pRptSpec,pRptSpecBuilder);
    else
-      return m_pRptMgr->CreateReportBrowser(hwndParent,pRptSpec);
+      return m_pRptMgr->CreateReportBrowser(hwndParent,pRptSpec,pRptSpecBuilder);
+}
+
+void CEAFReportView::NotifyReportButtonWasClicked()
+{
+   EditReport();
 }

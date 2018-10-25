@@ -510,9 +510,14 @@ void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,bool bQuickReport)
    GET_IFACE(IReportManager,pReportMgr);
    std::vector<std::_tstring> rptNames = pReportMgr->GetReportNames();
 
+   // if this assert fires, there are more reports than can be put into the menus
+   // EAF only reserves enough room for EAF_REPORT_MENU_COUNT reports
+   ATLASSERT(rptNames.size() < EAF_REPORT_MENU_BASE+EAF_REPORT_MENU_COUNT);
+
    UINT i = 0;
-   std::vector<std::_tstring>::iterator iter;
-   for ( iter = rptNames.begin(); iter != rptNames.end(); iter++ )
+   std::vector<std::_tstring>::iterator iter(rptNames.begin());
+   std::vector<std::_tstring>::iterator end(rptNames.end());
+   for ( ; iter != end; iter++ )
    {
       std::_tstring rptName = *iter;
       UINT nCmd = GetReportCommand(i,bQuickReport);
@@ -539,13 +544,13 @@ UINT CEAFBrokerDocument::GetReportCommand(CollectionIndexType rptIdx,bool bQuick
       baseID += nReports + 1;
    }
 
-   ASSERT(rptIdx + baseID <= EAF_REPORT_MENU_BASE+EAF_REPORT_MENU_COUNT);
+   ASSERT(rptIdx + baseID <= EAF_REPORT_MENU_BASE+2*EAF_REPORT_MENU_COUNT);
    return (UINT)(rptIdx + baseID);
 }
 
 CollectionIndexType CEAFBrokerDocument::GetReportIndex(UINT nID,bool bQuickReport)
 {
-   if ( nID < EAF_REPORT_MENU_BASE || EAF_REPORT_MENU_BASE+EAF_REPORT_MENU_COUNT < nID )
+   if ( nID < EAF_REPORT_MENU_BASE || EAF_REPORT_MENU_BASE+2*EAF_REPORT_MENU_COUNT < nID )
       return INVALID_INDEX;
 
    CollectionIndexType baseID = EAF_REPORT_MENU_BASE;

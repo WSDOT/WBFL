@@ -30,13 +30,23 @@
 #include <EAF\EAFExp.h>
 #include <IReportManager.h>
 
+class CReportButton;
+
 // Creation data that is needed by the report view to create the proper report
 struct EAFCLASS CEAFReportViewCreationData
 {
-   CollectionIndexType m_RptIdx;
-   bool m_bPromptForSpec;
-   CReportBuilderManager* m_pReportBuilderMgr;
-   IReportManager* m_pRptMgr;
+   CollectionIndexType m_RptIdx; // Index of the report to be created (index into the report manager)
+
+   // Option 1 - Provide Report Specification
+   boost::shared_ptr<CReportSpecification> m_pRptSpecification; // the report specification
+   boost::shared_ptr<CReportSpecificationBuilder> m_pRptSpecificationBuilder; // and the corresponding builder
+
+   // Option 2 - Report view creates specification
+   bool m_bPromptForSpec; // true = prompt user to configure spec through UI, otherwise use default
+   
+   // The report manager
+   CReportBuilderManager* m_pReportBuilderMgr; // Use this when using regular Doc/View
+   IReportManager* m_pRptMgr; // Use this when using the Agent/Broker architecture
 
    CEAFReportViewCreationData()
    {
@@ -60,7 +70,7 @@ public:
 
    // one of these is NULL, the other is not
    CReportBuilderManager* m_pReportBuilderMgr;
-   IReportManager* m_pRptMgr;
+   IReportManager* m_pRptMgr; // for use with Agent/Broker
 
 // Operations
 public:
@@ -88,7 +98,14 @@ protected:
 #endif
 
 public:
+   // Creates a report. The report specification is created by the user through the UI
    virtual bool CreateReport(CollectionIndexType rptIdx,bool bPromptForSpec=true);
+
+   // Creates a report. The report specification was created elsewhere and is supplied here
+   virtual bool CreateReport(CollectionIndexType rptIdx,boost::shared_ptr<CReportSpecification>& pSpec,boost::shared_ptr<CReportSpecificationBuilder>& pSpecBuilder);
+
+   // listen if our button was clicked
+   void NotifyReportButtonWasClicked();
 
    // Generated message map functions
 protected:
@@ -98,7 +115,6 @@ protected:
 	afx_msg void OnFilePrint();
 	afx_msg void OnToolbarPrint();
 	afx_msg void OnUpdateFilePrint(CCmdUI* pCmdUI);
-   afx_msg void OnEdit();
    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 
 	//}}AFX_MSG
@@ -118,6 +134,7 @@ protected:
 protected:
    boost::shared_ptr<CReportBrowser> m_pReportBrowser;
    boost::shared_ptr<CReportSpecification> m_pReportSpec;
+   boost::shared_ptr<CReportSpecificationBuilder> m_pRptSpecBuilder;
 
    bool m_bInvalidReport; // true if an update event is received and the contents of the report are not invalid
    bool m_bNoBrowser;     // true if the browser window couldn't be created
@@ -129,7 +146,7 @@ protected:
 
    static bool ms_bIsUpdatingReport; // true while the report content is being updated
 
-   CButton m_btnEdit;
+   CReportButton* m_pBtnEdit;
    CFont   m_btnFont;
  
    void UpdateViewTitle();
@@ -139,5 +156,5 @@ protected:
 private:
    std::vector<std::_tstring> GetReportNames();
    boost::shared_ptr<CReportBuilder> GetReportBuilder(const std::_tstring& strRptName);
-   boost::shared_ptr<CReportBrowser> CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec);
+   boost::shared_ptr<CReportBrowser> CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder);
 };

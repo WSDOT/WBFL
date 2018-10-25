@@ -44,10 +44,26 @@
 class EAFCLASS CEAFPluginCommandManager  
 {
 public:
+   // Reserves the total range of command IDs that may be used for plug-in commands.
+   // This also defines the maximum number of plug-in commands that an application can support
+   // Each plug-in manager must call ReserveCommandIDRange(nCommands) to reserve command IDs for
+   // its plug-ins
+   static void ReserveTotalCommandIDRange(UINT nMinID,UINT nMaxID);
+   static UINT GetCommandTotal();
+
 	CEAFPluginCommandManager();
 	virtual ~CEAFPluginCommandManager();
 
-   void SetBaseCommandID(UINT nBaseID);
+   // Reserves a range of commands for this command manager
+   // Returns the actual size of the range created or -1 if the range could not be reserved.
+   // This method clears all callbacks previously added
+   UINT ReserveCommandIDRange(UINT nCommands);
+
+   // returns the number of reserved commands
+   UINT GetReservedCommandIDCount() const;
+
+   // returns the first and last command command
+   void GetReservedCommandIDRange(UINT* pFirst,UINT* pLast) const;
 
    // Adds a new commnad and the object to call when it is executed. Returns a unique
    // command id to be assigned to menu items, toolbar buttons, etc through the pMappedID
@@ -71,7 +87,13 @@ public:
    void Clear();
 
 private:
+   static UINT ms_MinID; // minimum command ID
+   static UINT ms_MaxID; // maximum command ID
+   static UINT ms_NextID; // start of the next available command ID
+
    UINT m_nBaseID; // ID of first unique mapped id
+   UINT m_nCommands; // number of commands reserved for this command manager
+   UINT m_nNextID;
 
    struct CCallbackItem 
    {
