@@ -638,7 +638,7 @@ void lrfdRefinedLosses2005::GetDeckShrinkageEffects(Float64* pA,Float64* pM) con
    if ( m_IsDirty )
       UpdateLosses();
 
-   *pA = m_Ksh*m_eddf*m_Ad*m_Ecd/(1 + 0.7*m_CreepDeck.GetCreepCoefficient());
+   *pA = m_eddf*m_Ad*m_Ecd/(1 + 0.7*m_CreepDeck.GetCreepCoefficient());
    *pM = (*pA)*(m_ed);
 }
 
@@ -735,7 +735,9 @@ void lrfdRefinedLosses2005::ValidateParameters() const
 {
    // need to make sure spec version is ok
    if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
+   {
       throw lrfdXPsLosses(lrfdXPsLosses::Specification,_T(__FILE__),__LINE__);
+   }
 
    bool is_si = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI);
    // Use a values that are just out of spec to avoid throwing for boundry values
@@ -745,7 +747,9 @@ void lrfdRefinedLosses2005::ValidateParameters() const
    Float64 fcMin = (is_si ? g_27p95_MPA : g_3p95_KSI );
    Float64 fcMax = (is_si ? g_105p05_MPA : g_15p05_KSI );
    if ( m_Fc < fcMin || fcMax < m_Fc )
+   {
       THROW(lrfdXPsLosses,fcOutOfRange);
+   }
 
    // strand type must be low relaxation if lump sum relaxation loss is used
    if ( m_RelaxationMethod == LumpSum && m_Type != matPsStrand::LowRelaxation )
@@ -974,9 +978,13 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
 {
    // Losses: Time of Transfer to Time of Lifting [5.9.5.4.2]
    if ( m_RelaxationMethod == Simplified )
+   {
       m_KL = (m_Type == matPsStrand::LowRelaxation ? 30 : 7);
+   }
    else
+   {
       m_KL = (m_Type == matPsStrand::LowRelaxation ? 45 : 10);
+   }
 
    m_khs = 2.0 - 0.014*m_H;
 

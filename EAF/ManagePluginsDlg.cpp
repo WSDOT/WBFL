@@ -111,7 +111,8 @@ BOOL CManagePluginsDlg::InitList()
       {
          LPOLESTR pszUserType;
          OleRegGetUserType(clsid[i],USERCLASSTYPE_SHORT,&pszUserType);
-         int idx = m_PluginList.AddString(OLE2T(pszUserType));
+         CString strPluginName(OLE2T(pszUserType));
+         int idx = m_PluginList.AddString(strPluginName);
 
          LPOLESTR pszCLSID;
          ::StringFromCLSID(clsid[i],&pszCLSID);
@@ -123,8 +124,9 @@ BOOL CManagePluginsDlg::InitList()
          bool bInitiallyEnabled = (strState.CompareNoCase(_T("Enabled")) == 0 ? true : false);
          m_PluginList.SetCheck(idx,bInitiallyEnabled);
 
-         CEAFPluginState state(clsid[i],strCLSID,bInitiallyEnabled);
+         CEAFPluginState state(strPluginName,clsid[i],strCLSID,bInitiallyEnabled);
          m_PluginStates.push_back(state);
+         std::sort(m_PluginStates.begin(),m_PluginStates.end()); // the check list box is sorted, so we have to sort this to match
 
          ::CoTaskMemFree((void*)pszCLSID);
       }

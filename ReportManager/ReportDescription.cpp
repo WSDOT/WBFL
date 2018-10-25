@@ -62,6 +62,11 @@ void CReportDescription::AddChapter(const CChapterBuilder* pChapterBuilder)
    m_ChapterBuilders.push_back(pChapterBuilder);
 }
 
+IndexType CReportDescription::GetChapterCount() const
+{
+   return m_ChapterBuilders.size();
+}
+
 std::vector<CChapterInfo> CReportDescription::GetChapterInfo() const
 {
    std::vector<CChapterInfo> v;

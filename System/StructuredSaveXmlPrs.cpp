@@ -397,7 +397,7 @@ void sysStructuredSaveXmlPrs_Impl::BeginSave(IStream* pis)
       m_pOStream->AddRef();
 
       // create our document
-      MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument));
+      MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument60));
       if (!(bool)pDoc)
       {
          THROW(sysXStructuredSave,CantInitializeTheParser);
@@ -761,7 +761,7 @@ void sysStructuredSaveXmlPrs_Impl::Property(LPCTSTR name, bool value)
 
 void sysStructuredSaveXmlPrs_Impl::PutUnit(LPCTSTR xml)
 {
-   MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument));
+   MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument60));
    pDoc->loadXML(_bstr_t(xml));
 
    MSXML::IXMLDOMNodePtr pNewNode = pDoc->firstChild;

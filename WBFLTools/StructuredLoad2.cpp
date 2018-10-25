@@ -118,7 +118,7 @@ void CStructuredLoad2::BeginLoad(IStream* pis)
    try
    {
       // create our document
-      MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument));
+      MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument60));
       if (!(bool)pDoc)
       {
          CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_CANTOPEN, OLESTR("XML Parser"));
