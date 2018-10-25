@@ -72,46 +72,84 @@ static const Float64 gs_ex[] = {-0.2e-3,-0.15e-3,-0.1e-3,0.0e-3,0.125e-3,0.25e-3
 static const Int16 gs_vfc_count = sizeof(gs_vfc)/sizeof(Float64);
 static const Int16 gs_ex_count = sizeof(gs_ex)/sizeof(Float64);
 
-// constants from 2000 interims and later
+// constants from 2000 interims to 2002 interims
 static const Float64 gs_vfc_2000[] = {0.075,0.1,0.125,0.150,0.175,0.2,0.225,0.25};
 static const Float64 gs_ex_2000[] = {-0.2e-3,-0.1e-3,-0.5e-4,0.0e-3,0.125e-3,0.25e-3,0.50e-3,0.75e-3,1.00e-3,1.50e-3,2.00e-3};
 static const Int16 gs_vfc_count_2000 = sizeof(gs_vfc_2000)/sizeof(Float64);
 static const Int16 gs_ex_count_2000 = sizeof(gs_ex_2000)/sizeof(Float64);
 
+// constants from 2003 interims and later
+static const Float64 gs_vfc_2003[] = {0.075,0.1,0.125,0.150,0.175,0.2,0.225,0.25};
+static const Float64 gs_ex_2003[] = {-0.2e-3,-0.1e-3,-0.5e-4,0.0e-3,0.125e-3,0.25e-3,0.50e-3,0.75e-3,1.00e-3};
+static const Int16 gs_vfc_count_2003 = sizeof(gs_vfc_2003)/sizeof(Float64);
+static const Int16 gs_ex_count_2003 = sizeof(gs_ex_2003)/sizeof(Float64);
+
 Float64 get_vfc(Int16 row)
 {
    lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
    if ( version < lrfdVersionMgr::SecondEditionWith2000Interims )
+   {
       return gs_vfc[row];  // 1994 to 1999
-   else // 2000 - Present
-      return gs_vfc_2000[row];
+   }
+   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
+   {
+      return gs_vfc_2000[row]; // 2000-2002
+   }
+   else // 2003 - Present
+   {
+      return gs_vfc_2003[row];
+   }
 }
 
 Int16 get_vfc_count()
 {
    lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
    if ( version < lrfdVersionMgr::SecondEditionWith2000Interims )
+   {
       return gs_vfc_count;  // 1994 to 1999
-   else // 2000 - Present
-      return gs_vfc_count_2000;
+   }
+   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
+   {
+      return gs_vfc_count_2000; // 2000-2002
+   }
+   else // 2003 - Present
+   {
+      return gs_vfc_count_2003;
+   }
 }
 
 Float64 get_ex(Int16 col)
 {
    lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
    if ( version < lrfdVersionMgr::SecondEditionWith2000Interims )
+   {
       return gs_ex[col];  // 1994 to 1999
-   else // 2000 - Present
-      return gs_ex_2000[col];
+   }
+   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
+   {
+      return gs_ex_2000[col]; // 2000-2002
+   }
+   else // 2003 - Present
+   {
+      return gs_ex_2003[col];
+   }
 }
 
 Int16 get_ex_count()
 {
    lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
    if ( version < lrfdVersionMgr::SecondEditionWith2000Interims )
+   {
       return gs_ex_count;  // 1994 to 1999
-   else // 2000 - Present
-      return gs_ex_count_2000;
+   }
+   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
+   {
+      return gs_ex_count_2000; // 2000-2002
+   }
+   else // 2003 - Present
+   {
+      return gs_ex_count_2003;
+   }
 }
 
 struct BT
@@ -147,7 +185,7 @@ static const BT gs_Data_97_interims[gs_vfc_count][gs_ex_count] =
 };
 
 static const BT gs_Data_2000_interims[gs_vfc_count_2000][gs_ex_count_2000] = 
-{            // -0,20       -0.10         -0.05        0.0         0.125         0.25        0.50        0.75          1.00          1.50          2.00
+{            // -0.20       -0.10         -0.05        0.0         0.125         0.25        0.50        0.75          1.00          1.50          2.00
 /* 0.075 */ {{22.3,6.32}, {20.4,4.75}, {21.0,4.10}, {21.8,3.75}, {24.3,3.24}, {26.6,2.94}, {30.5,2.59}, {33.7,2.38}, {36.4,2.23}, {40.8,1.95}, {43.9,1.67}},
 /* 0.100 */ {{18.1,3.79}, {20.4,3.38}, {21.4,3.24}, {22.5,3.14}, {24.9,2.91}, {27.1,2.75}, {30.8,2.50}, {34.0,2.32}, {36.7,2.18}, {40.8,1.93}, {43.1,1.69}},
 /* 0.125 */ {{19.9,3.18}, {21.9,2.99}, {22.8,2.94}, {23.7,2.87}, {25.9,2.74}, {27.9,2.62}, {31.4,2.42}, {34.4,2.26}, {37.0,2.13}, {41.0,1.90}, {43.2,1.67}},
@@ -158,16 +196,38 @@ static const BT gs_Data_2000_interims[gs_vfc_count_2000][gs_ex_count_2000] =
 /* 0.250 */ {{27.5,2.39}, {28.6,2.39}, {29.1,2.33}, {29.7,2.33}, {30.6,2.12}, {31.3,1.93}, {32.8,1.70}, {34.3,1.58}, {35.8,1.50}, {38.6,1.38}, {41.2,1.29}}
 };
 
+static const BT gs_Data_2003_interims[gs_vfc_count_2003][gs_ex_count_2003] = 
+{            // -0.20       -0.10         -0.05        0.0         0.125         0.25        0.50        0.75          1.00
+/* 0.075 */ {{22.3,6.32}, {20.4,4.75}, {21.0,4.10}, {21.8,3.75}, {24.3,3.24}, {26.6,2.94}, {30.5,2.59}, {33.7,2.38}, {36.4,2.23}},
+/* 0.100 */ {{18.1,3.79}, {20.4,3.38}, {21.4,3.24}, {22.5,3.14}, {24.9,2.91}, {27.1,2.75}, {30.8,2.50}, {34.0,2.32}, {36.7,2.18}},
+/* 0.125 */ {{19.9,3.18}, {21.9,2.99}, {22.8,2.94}, {23.7,2.87}, {25.9,2.74}, {27.9,2.62}, {31.4,2.42}, {34.4,2.26}, {37.0,2.13}},
+/* 0.150 */ {{21.6,2.88}, {23.3,2.79}, {24.2,2.78}, {25.0,2.72}, {26.9,2.60}, {28.8,2.52}, {32.1,2.36}, {34.9,2.21}, {37.3,2.08}},
+/* 0.175 */ {{23.2,2.73}, {24.7,2.66}, {25.5,2.65}, {26.2,2.60}, {28.0,2.52}, {29.7,2.44}, {32.7,2.28}, {35.2,2.14}, {36.8,1.96}},
+/* 0.200 */ {{24.7,2.63}, {26.1,2.59}, {26.7,2.52}, {27.4,2.51}, {29.0,2.43}, {30.6,2.37}, {32.8,2.14}, {34.5,1.94}, {36.1,1.79}},
+/* 0.225 */ {{26.1,2.53}, {27.3,2.45}, {27.9,2.42}, {28.5,2.40}, {30.0,2.34}, {30.8,2.14}, {32.2,1.86}, {34.0,1.73}, {35.7,1.64}},
+/* 0.250 */ {{27.5,2.39}, {28.6,2.39}, {29.1,2.33}, {29.7,2.33}, {30.6,2.12}, {31.3,1.93}, {32.8,1.70}, {34.3,1.58}, {35.8,1.50}}
+};
+
 BT get_beta_theta(Int16 row,Int16 col)
 {
    lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
    if ( version < lrfdVersionMgr::FirstEditionWith1997Interims )
+   {
       return gs_Data_pre_97_interims[row][col];  // 1994 to 1996
+   }
    else if ( lrfdVersionMgr::FirstEditionWith1997Interims <= version && // 1997 - 1999
              version < lrfdVersionMgr::SecondEditionWith2000Interims )
+   {
       return gs_Data_97_interims[row][col];
-   else // 2000 - Present
-      return gs_Data_2000_interims[row][col];
+   }
+   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
+   {
+      return gs_Data_2000_interims[row][col]; // 2000-2002
+   }
+   else // 2003 - Present
+   {
+      return gs_Data_2003_interims[row][col];
+   }
 }
 
 // Functions, constants and data for Sections with Less than Minimum Transverse Reinforcement.
@@ -334,13 +394,21 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
 
    Float64 sqrt_fc;
    if ( pData->ConcreteType == matConcrete::Normal )
+   {
       sqrt_fc = sqrt(fc);
+   }
    else if ( (pData->ConcreteType == matConcrete::AllLightweight || pData->ConcreteType == matConcrete::SandLightweight) && pData->bHasfct )
+   {
       sqrt_fc = min(Kfct*fct,sqrt(fc));
+   }
    else if ( pData->ConcreteType == matConcrete::AllLightweight && !pData->bHasfct )
+   {
       sqrt_fc = 0.75*sqrt(fc);
+   }
    else if ( pData->ConcreteType == matConcrete::SandLightweight && !pData->bHasfct )
+   {
       sqrt_fc = 0.85*sqrt(fc);
+   }
 
 
 
@@ -401,9 +469,13 @@ lrfdWsdotShear::~lrfdWsdotShear()
 void lrfdWsdotShear::ComputeThetaAndBeta(lrfdShearData* pData,bool bEndRegion)
 {
    if ( lrfdVersionMgr::GetVersion() <= lrfdVersionMgr::SecondEditionWith1999Interims )
+   {
       lrfdShear::ComputeThetaAndBeta(pData);
+   }
    else
+   {
       compute_theta_and_beta4( pData );
+   }
 }
 
 //======================== ACCESS     =======================================
@@ -478,7 +550,9 @@ void compute_theta_and_beta1(lrfdShearData* pData)
    }
 
    if ( vfc < get_vfc(0) )
+   {
       vfc = get_vfc(0);
+   }
 
    Float64 theta;
    Float64 theta_guess = 20.000;
@@ -507,7 +581,9 @@ void compute_theta_and_beta1(lrfdShearData* pData)
       //WATCH( _T("theta       = ") << theta );
 
       if ( IsEqual( theta, theta_guess, theta_tol) )
+      {
          done = true;
+      }
       else
       {
          // On even iterations, check the deja vu angle 
@@ -529,8 +605,10 @@ void compute_theta_and_beta1(lrfdShearData* pData)
       }
    };
 
-   if ( cIter >= max_iter )
+   if ( max_iter <= cIter )
+   {
       THROW(lrfdXShear,MaxIterExceeded);
+   }
 
    CHECK( IsEqual( theta, theta_guess, theta_tol ) );
 
@@ -579,7 +657,9 @@ void compute_theta_and_beta2(lrfdShearData* pData)
    }
 
    if ( vfc < get_vfc(0) )
+   {
       vfc = get_vfc(0);
+   }
 
    // Find out which rows we are spanning
    Int16 row1, row2;
@@ -647,7 +727,9 @@ void compute_theta_and_beta2(lrfdShearData* pData)
 
 
    if ( !bFoundSolution )
+   {
       THROW(lrfdXShear,MaxIterExceeded);
+   }
    
 
    // Compute beta
@@ -738,14 +820,16 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
    pData->vfc = vfc;
 
    // Bound vc
-   if ( vfc > get_vfc(get_vfc_count()-1) )
+   if ( get_vfc(get_vfc_count()-1) < vfc )
    {
       vfc = get_vfc(get_vfc_count()-1);  // used to THROW(lrfdXShear,vfcOutOfRange);
       WARN(true,"v/fc > 0.25 - Setting to 0.25 in lrfdShear");
    }
 
    if ( vfc < get_vfc(0) )
+   {
       vfc = get_vfc(0);
+   }
 
    // Find out which rows we are spanning
    Int16 row1, row2;
@@ -756,11 +840,11 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
    // we come to a column where ex_calc < ex_table. The column we are looking for is
    // the one to the right of the current column.
    bool bFoundSolution = false;
-   Int16 col = get_ex_count()-1;
+   Int16 col = get_ex_count()-1; 
    Float64 ex_calc;
    Float64 ex_last;
    Int16 eq_last;
-   while ( col >= 0 && !bFoundSolution )
+   while ( 0 <= col && !bFoundSolution )
    {
       BT bt = get_beta_theta(row,col);
 
@@ -782,15 +866,23 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
          else
          {
             if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+            {
                ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/(2*(Es*As + Eps*Aps + Ept*Apt));
+            }
             else
+            {
                ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/(2*(Es*As + Eps*Aps + Ept*Apt));
+            }
          }
 
          if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SecondEditionWith2003Interims )
+         {
             ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
+         }
          else
+         {
             ex_calc = (ex_calc > 0.001) ? 0.001 : ex_calc;
+         }
 
          pData->Eqn = 1;
       }
@@ -804,9 +896,13 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
          else
          {
             if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+            {
                ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpopt - Aps*fpopt)/((Es*As + Eps*Aps + Ept*Apt));
+            }
             else
+            {
                ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/((Es*As + Eps*Aps + Ept*Apt));
+            }
          }
 
          ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
@@ -819,20 +915,25 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
          pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
 
          if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+         {
             ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/(2*(Ec*Ac + Es*As + Eps*Aps + Ept*Apt));
+         }
          else
+         {
             ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/(2*(Ec*Ac + Es*As + Eps*Aps + Ept*Apt));
+         }
       }
-
-      Float64 ex_table = get_ex(col);
 
       if ( col == get_ex_count()-1 )
       {
+         // first time through loop, initiliaze with current values
          ex_last = ex_calc;
          eq_last = pData->Eqn;
       }
 
-      if ( ex_calc > ex_table )
+      Float64 ex_table = get_ex(col);
+
+      if ( ex_table < ex_calc )
       {
          col++;
          bFoundSolution = true;
@@ -842,14 +943,16 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
       else
       {
          col--;
+         ex_last = ex_calc;
+         eq_last = pData->Eqn;
       }
-      ex_last = ex_calc;
-      eq_last = pData->Eqn;
    }
 
    // The computed strain is less than the strain limit in the left most column. The solution is column 0
    if ( col < 0 )
+   {
       col = 0; 
+   }
 
    assert(0 <= col && col < get_ex_count());
 
@@ -866,7 +969,6 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
    pData->Beta = bt.Beta;
    pData->Theta = ::ConvertToSysUnits(bt.Theta,unitMeasure::Degree);
    pData->Fe = -1; // Not appicable
-   pData->ex = ex_last;
 }
 
 void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
@@ -919,7 +1021,7 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
    Float64 ex_calc;
    Float64 ex_last;
    Int16 eq_last;
-   while ( col >= 0 && !bFoundSolution )
+   while ( 0 <= col && !bFoundSolution )
    {
       BT bt = get_beta_theta_mtr(row,col);
 
@@ -941,15 +1043,23 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
          else
          {
             if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+            {
                ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/(2*(Es*As + Eps*Aps + Ept*Apt));
+            }
             else
+            {
                ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/(2*(Es*As + Eps*Aps + Ept*Apt));
+            }
          }
 
          if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SecondEditionWith2003Interims )
+         {
             ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
+         }
          else
+         {
             ex_calc = (ex_calc > 0.001) ? 0.001 : ex_calc;
+         }
 
          pData->Eqn = 1;
       }
@@ -963,9 +1073,13 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
          else
          {
             if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+            {
                ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/((Es*As + Eps*Aps + Ept*Apt));
+            }
             else
+            {
                ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/((Es*As + Eps*Aps + Ept*Apt));
+            }
          }
 
          ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
@@ -978,20 +1092,25 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
          pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
 
          if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+         {
             ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/(2*(Ec*Ac + Es*As + Eps*Aps + Ept*Apt));
+         }
          else
+         {
             ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpops - Apt*fpopt)/(2*(Ec*Ac + Es*As + Eps*Aps + Ept*Apt));
+         }
       }
 
       Float64 ex_table = get_ex_mtr(col);
 
       if ( col == get_ex_count_mtr()-1 )
       {
+         // first time through the loop, initialize with current values
          ex_last = ex_calc;
          eq_last = pData->Eqn;
       }
 
-      if ( ex_calc > ex_table )
+      if ( ex_table < ex_calc )
       {
          col++;
          bFoundSolution = true;
@@ -1001,14 +1120,16 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
       else
       {
          col--;
+         ex_last = ex_calc;
+         eq_last = pData->Eqn;
       }
-      ex_last = ex_calc;
-      eq_last = pData->Eqn;
    }
 
    // The computed strain is less than the strain limit in the left most column. The solution is column 0
    if ( col < 0 )
+   {
       col = 0; 
+   }
 
    assert(0 <= col && col < get_ex_count_mtr());
 
@@ -1025,7 +1146,6 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
    pData->Beta = bt.Beta;
    pData->Theta = ::ConvertToSysUnits(bt.Theta,unitMeasure::Degree);
    pData->Fe = -1; // Not appicable
-   pData->ex = ex_last;
 }
 
 
@@ -1086,14 +1206,16 @@ void compute_theta_and_beta4(lrfdShearData* pData)
    pData->vfc = vfc;
 
    // Bound vc
-   if ( vfc > get_vfc(get_vfc_count()-1) )
+   if ( get_vfc(get_vfc_count()-1) < vfc )
    {
       vfc = get_vfc(get_vfc_count()-1);  // used to THROW(lrfdXShear,vfcOutOfRange);
       WARN(true,"v/fc > 0.25 - Setting to 0.25 in lrfdShear");
    }
 
    if ( vfc < get_vfc(0) )
+   {
       vfc = get_vfc(0);
+   }
 
    // Find out which rows we are spanning
    Int16 row1, row2;
@@ -1105,14 +1227,22 @@ void compute_theta_and_beta4(lrfdShearData* pData)
    if ( eqn == 1 )
    {
       if ( IsZero(Es*As + Eps*Aps + Ept*Apt) )
+      {
          ex_calc = 0.0;
+      }
       else
+      {
          ex_calc = (Mu/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpops - Apt*fpopt)/(2*(Es*As + Eps*Aps + Ept*Apt));
+      }
 
       if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SecondEditionWith2003Interims )
+      {
          ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
+      }
       else
+      {
          ex_calc = (ex_calc > 0.001) ? 0.001 : ex_calc;
+      }
 
       pData->Eqn = 1;
    }
@@ -1120,9 +1250,13 @@ void compute_theta_and_beta4(lrfdShearData* pData)
    {
       // Eqn 5.8.3.4.2-2
       if ( IsZero(Es*As + Eps*Aps + Ept*Apt) )
+      {
          ex_calc = 0.0;
+      }
       else
+      {
          ex_calc = (Mu/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpops - Apt*fpopt)/((Es*As + Eps*Aps + Ept*Apt));
+      }
 
       ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
       pData->Eqn = 2;
@@ -1321,7 +1455,7 @@ Float64 get_theta(Float64 vfc,Float64 ex)
    Int16 col1, col2;
    
    get_row_and_col_index(vfc,ex,&row1,&row2,&col1,&col2);
-   CHECK( row1 >= 0 && row2 >= 0 && col1 >= 0 && col2 >= 0 );
+   ASSERT( 0 <= row1 && 0 <= row2 && 0 <= col1 && 0 <= col2 );
 
    Float64 theta11;  // Theta on row 1, col 1
    Float64 theta12;  // Theta on row 1, col 2
@@ -1367,7 +1501,7 @@ Float64 get_beta(Float64 vfc,Float64 ex)
    Int16 col1, col2;
    
    get_row_and_col_index(vfc,ex,&row1,&row2,&col1,&col2);
-   CHECK( row1 >= 0 && row2 >= 0 && col1 >= 0 && col2 >= 0 );
+   ASSERT( 0 <= row1 && 0 <= row2 && 0 <= col1 && 0 <= col2 );
 
    Float64 beta11;  // beta on row 1, col 1
    Float64 beta12;  // beta on row 1, col 2
@@ -1497,7 +1631,9 @@ void get_col_index(Int16 row,Float64 theta,Int16* pc1,Int16* pc2)
    // At runtime we could get bad column indexes
    // There are no lrfd provisions describing what to do when ex < -0.002
    if ( *pc1 < 0 || *pc2 < 0 )
+   {
       THROW(lrfdXShear,StrainOutOfRange);
+   }
 }
 
 void get_col_index(Float64 ex,Int16* pc1,Int16* pc2)
@@ -1534,7 +1670,9 @@ void get_col_index(Float64 ex,Int16* pc1,Int16* pc2)
    // At runtime we could get bad column indexes
    // There are no lrfd provisions describing what to do when ex < -0.002
    if ( *pc1 < 0 || *pc2 < 0 )
+   {
       THROW(lrfdXShear,StrainOutOfRange);
+   }
 }
 
 void get_row_and_col_index(Float64 vfc,Float64 ex,

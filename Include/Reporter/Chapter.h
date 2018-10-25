@@ -116,6 +116,11 @@ public:
 
 
    // GROUP: ACCESS
+   // Set or get whether a new page will be ejected before this chapter.
+   // No page break is created by default
+   bool GetEjectPageBreakBefore() const;
+   void SetEjectPageBreakBefore(bool doBreak);
+
    //------------------------------------------------------------------------
    // Return STL iterator to const Paragraph contained inside of Chapter
    // pointing to beginning.
@@ -171,6 +176,10 @@ private:
    //------------------------------------------------------------------------
    // Name of the chapter
    std::_tstring m_Name;
+
+   //------------------------------------------------------------------------
+   // page ejection
+   bool m_DoEjectPageBefore;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS

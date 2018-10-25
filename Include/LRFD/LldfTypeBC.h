@@ -334,11 +334,6 @@ DESCRIPTION
    3) The live load used to design the exterior beam must never be less than the live
       load used to design an interior beam.
 
-   4) For bridges with less than three girders in the cross section, assume the live load distribution
-      factors for flexural moment and shear are equal to the number of lanes divided by the number
-      of girders. Determine the number of lanes as required by AASHTO LRFD Bridge Design Specifications,
-      Article 3.6.1.1.1.
-
 COPYRIGHT
    Copyright © 1997-2001
    Washington State Department Of Transportation

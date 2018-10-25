@@ -86,7 +86,7 @@ STDMETHODIMP CJointDeflectionCollection::Create(/*[in]*/LoadIDType id,  /*[in]*/
 
       // insert new joint
       std::pair<ContainerIteratorType,bool> st;
-      st = m_coll.insert(ContainerValueType(id, CComVariant(*ppJointDeflection)));
+      st = m_coll.insert(ContainerValueType(id, *ppJointDeflection));
       if (!st.second)
       {
          ATLASSERT(false); // insert failed - better check why

@@ -55,7 +55,8 @@ rptRiStyle::rptRiStyle(FontType fontType,
                        bool bLineThrough,
                        FontColor fontColor,
                        AlignmentType alignType,
-                       VerticalAlignmentType valignType)
+                       VerticalAlignmentType valignType,
+                       bool isHeading)
 {
    Init();
 
@@ -70,6 +71,7 @@ rptRiStyle::rptRiStyle(FontType fontType,
    SetBGColor( White );
    SetAlignment( alignType );
    SetVerticalAlignment(valignType);
+   m_IsHeading = isHeading;
 }
 
 
@@ -161,6 +163,16 @@ bool rptRiStyle::IsBorder() const
             m_BorderStyles[BBOTTOM] || 
             m_BorderStyles[BLEFT]   ||
             m_BorderStyles[BRIGHT]);
+}
+
+bool rptRiStyle::IsHeading() const
+{
+    return m_IsHeading;
+}
+
+void rptRiStyle::SetIsHeading(bool isHead)
+{
+   m_IsHeading = isHead;
 }
 
 //======================== INQUIRY    =======================================
@@ -265,6 +277,8 @@ void rptRiStyle::Init()
    m_BorderStyles[BBOTTOM] = NOBORDER;
    m_BorderStyles[BLEFT]   = NOBORDER;
    m_BorderStyles[BRIGHT]  = NOBORDER;
+
+   m_IsHeading = false;
 }
 //======================== OPERATIONS =======================================
 
@@ -279,6 +293,7 @@ void rptRiStyle::MakeCopy(const rptRiStyle& rIStyle)
    m_BgColor       = rIStyle.m_BgColor;
    m_FontModifiers = rIStyle.m_FontModifiers;
    m_MediaType     = rIStyle.m_MediaType;
+   m_IsHeading     = rIStyle.m_IsHeading;
 
    for (int i=0; i<NUMBORDERS; i++)
    {

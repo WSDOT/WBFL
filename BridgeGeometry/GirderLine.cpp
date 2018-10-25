@@ -54,7 +54,13 @@ STDMETHODIMP CGirderLine::get_Direction(IDirection** ppDirection)
 STDMETHODIMP CGirderLine::get_Path(IPath** pVal)
 {
    CHECK_RETOBJ(pVal);
-   return m_Path->Clone(pVal);
+#pragma Reminder("BUG: this is a bug")
+   // should be calling m_Path->Clone(pVal);
+   // but this is kind of slow.
+   // The bug is that we need "by value" semantics here and we are returning
+   // by reference. This means any outside actor can mess up our girder line path
+   // and we will never know about it.
+   return m_Path.CopyTo(pVal);
 }
 
 STDMETHODIMP CGirderLine::GetEndPoints(IPoint2d** pntPier1,IPoint2d** pntEnd1,IPoint2d** pntBrg1,IPoint2d** pntBrg2,IPoint2d** pntEnd2,IPoint2d** pntPier2)

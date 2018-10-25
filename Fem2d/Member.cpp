@@ -61,9 +61,9 @@ CMember::CMember():
    m_TransMatrix(TotalDOF,TotalDOF),
    m_Kglobal(TotalDOF,TotalDOF),
    m_Klocal(TotalDOF,TotalDOF),
-   m_Fglobal(TotalDOF),
-   m_Dlocal(TotalDOF),
-   m_Rlocal(TotalDOF),
+   m_Fglobal(),
+   m_Dlocal(),
+   m_Rlocal(),
    m_JointKeeper(this)
 {
 }
@@ -754,7 +754,7 @@ void CMember::ComputeClassicResults()
 void CMember::ComputeDeflections()
 {
    Float64 Dglobal[6];
-   Vector Disp(TotalDOF);
+   Vector6 Disp;
    CJoint *StartJnt, *EndJnt;
    m_JointKeeper.GetJoints(&StartJnt, &EndJnt);
 
@@ -800,8 +800,8 @@ void CMember::ComputeDeflections()
 void CMember::ComputeForces()
 {
    Float64 Dglobal[6];
-   Vector Disp(6);
-   Vector Rglobal(6);
+   Vector6 Disp;
+   Vector6 Rglobal;
    CJoint *StartJnt, *EndJnt;
    m_JointKeeper.GetJoints(&StartJnt, &EndJnt);
 
@@ -819,10 +819,10 @@ void CMember::ComputeForces()
    m_TransMatrix.Multiply(&Rglobal,&m_Rlocal);
 }
 
-void CMember::ComputeJointDeflectionForce(Vector* pdf)
+void CMember::ComputeJointDeflectionForce(iActLikeMatrix* pdf)
 {
    // compute element forces due to a joint Deflection
-   Vector Disp(6);
+   Vector6 Disp;
    Disp.Zero();
    CJoint *StartJnt, *EndJnt;
    m_JointKeeper.GetJoints(&StartJnt, &EndJnt);
@@ -846,7 +846,7 @@ void CMember::ComputeJointDeflectionForce(Vector* pdf)
 void CMember::GetGlobalJntForces(JointIDType jntId,Float64 *force)
 {
    LONG i,count,start,end;
-   Vector Rglobal(6);
+   Vector6 Rglobal;
 
    m_TransMatrix.Multiply(&m_Rlocal,&Rglobal,ATB);
 
@@ -1127,7 +1127,7 @@ void CMember::AssembleF()
 {
    // Assembles the local and global force vectors for the applied loads.
    // Loads should have been applied from TFemModel for the active load case.
-   Vector Flocal(TotalDOF);
+   Vector6 Flocal;
 
    // Initialize the local force vector
    Flocal(0) = 0;
@@ -1213,7 +1213,7 @@ void CMember::GetFglobal(Float64 *f)
 {
    // first compute member forces due to joint Deflections
    // forces are transient since they are not needed later
-   Vector dforce(6);
+   Vector6 dforce;
    ComputeJointDeflectionForce(&dforce);
 
    for (long i = 0; i < TotalDOF; i++)

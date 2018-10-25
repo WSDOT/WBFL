@@ -284,7 +284,8 @@ public:
               bool bLineThrough       = false,
               FontColor fontColor     = Black,
               AlignmentType alignType = LEFT,
-              VerticalAlignmentType valignType = MIDDLE);
+              VerticalAlignmentType valignType = BASELINE,
+              bool isHeading=false);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -395,6 +396,11 @@ public:
    FontColor  GetColor() const;
    FontColor GetBGColor() const;
 
+   //------------------------------------------------------------------------
+   // Is this a heading style? If so, we want to put a margin at top
+   void SetIsHeading(bool isHead);
+   bool IsHeading() const;
+
    // Border Properties
    //------------------------------------------------------------------------
    // Is there a border around the paragraph?
@@ -487,6 +493,11 @@ private:
    BulletType    m_BulletType;
 
    MediaType m_MediaType;
+
+   //------------------------------------------------------------------------
+   // Is this a heading
+   bool m_IsHeading;
+
 
    //------------------------------------------------------------------------
    // border styles for all four sides of paragraph

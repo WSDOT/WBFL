@@ -161,7 +161,7 @@ protected:
 
    void ComputeDeflections();
    void ComputeForces();
-   void ComputeJointDeflectionForce(Vector* pdf);
+   void ComputeJointDeflectionForce(iActLikeMatrix* pdf);
 
    void GetResults(MbrResult* pres);
    void SetResults(const MbrResult& res);
@@ -202,7 +202,7 @@ private:
 
    Matrix m_Kglobal;
    Matrix m_Klocal;
-   Vector m_Fglobal;
+   Vector6 m_Fglobal;
    Matrix m_TransMatrix;
 
    typedef std::list<MbrLoad*> MbrLoadPointerContainer;
@@ -210,8 +210,8 @@ private:
 
    MbrLoadPointerContainer m_Loads;
 
-   Vector m_Dlocal; // local Deflections
-   Vector m_Rlocal; // local resultant forces
+   Vector6 m_Dlocal; // local Deflections
+   Vector6 m_Rlocal; // local resultant forces
 
 friend CJoint;
 friend CLoading;

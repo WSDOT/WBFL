@@ -68,7 +68,9 @@ STDMETHODIMP CVoidedSlabSection2::InterfaceSupportsErrorInfo(REFIID riid)
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
+      {
 			return S_OK;
+      }
 	}
 	return S_FALSE;
 }
@@ -177,7 +179,9 @@ STDMETHODIMP CVoidedSlabSection2::get_WebCount(WebIndexType* nWebs)
 STDMETHODIMP CVoidedSlabSection2::get_WebLocation(WebIndexType idx,Float64* location)
 {
    if ( !ValidateWebIndex(idx) )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(location);
 
@@ -254,21 +258,29 @@ STDMETHODIMP CVoidedSlabSection2::get_WebLocation(WebIndexType idx,Float64* loca
 STDMETHODIMP CVoidedSlabSection2::get_WebSpacing(WebIndexType idx,Float64* spacing)
 {
    if ( !ValidateWebIndex(idx) )
+   {
       return E_INVALIDARG;
+   }
 
    CollectionIndexType N;
    m_Beam->get_VoidCount(&N);
 
    if ( idx == 0 || idx == 1 || idx == N || idx == N-1 )
+   {
       return m_Beam->get_ExteriorVoidSpacing(spacing);
+   }
    else
+   {
       return m_Beam->get_InteriorVoidSpacing(spacing);
+   }
 }
 
 STDMETHODIMP CVoidedSlabSection2::get_WebThickness(WebIndexType idx,Float64* tWeb)
 {
    if ( !ValidateWebIndex(idx) )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(tWeb);
 
@@ -285,9 +297,13 @@ STDMETHODIMP CVoidedSlabSection2::get_WebThickness(WebIndexType idx,Float64* tWe
       GetWebs(&int_webs,&end_webs);
 
       if ( idx == 0 || idx == nVoids)
+      {
          *tWeb = end_webs;
+      }
       else
+      {
          *tWeb = int_webs;
+      }
    }
 
    return S_OK;
@@ -327,7 +343,9 @@ STDMETHODIMP CVoidedSlabSection2::get_WebPlane(WebIndexType idx,IPlane3d** ppPla
    Float64 x;
    HRESULT hr = get_WebLocation(idx,&x);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    CComPtr<IPoint3d> p1;
    p1.CoCreateInstance(CLSID_Point3d);
@@ -358,7 +376,9 @@ STDMETHODIMP CVoidedSlabSection2::get_MatingSurfaceCount(MatingSurfaceIndexType*
 STDMETHODIMP CVoidedSlabSection2::get_MatingSurfaceLocation(MatingSurfaceIndexType idx,Float64* location)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    *location = 0;
    return S_OK;
@@ -367,7 +387,9 @@ STDMETHODIMP CVoidedSlabSection2::get_MatingSurfaceLocation(MatingSurfaceIndexTy
 STDMETHODIMP CVoidedSlabSection2::get_MatingSurfaceWidth(MatingSurfaceIndexType idx,Float64* wMatingSurface)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    return get_TopWidth(wMatingSurface);
 }
@@ -383,53 +405,24 @@ STDMETHODIMP CVoidedSlabSection2::get_TopFlangeLocation(FlangeIndexType idx,Floa
 {
    ATLASSERT(false); // there is no top flange!!!
    return E_INVALIDARG;
-   //if ( idx != 0 )
-   //   return E_INVALIDARG;
-
-   //*location = 0;
-   //return S_OK;
 }
 
 STDMETHODIMP CVoidedSlabSection2::get_TopFlangeWidth(FlangeIndexType idx,Float64* width)
 {
    ATLASSERT(false); // there is no top flange!!!
    return E_INVALIDARG;
-   //if ( idx != 0 )
-   //   return E_INVALIDARG;
-
-   //return get_TopWidth(width);
 }
 
 STDMETHODIMP CVoidedSlabSection2::get_TopFlangeThickness(FlangeIndexType idx,Float64* tFlange)
 {
    ATLASSERT(false); // there is no top flange!!!
    return E_INVALIDARG;
-   //if ( idx != 0 )
-   //   return E_INVALIDARG;
-
-   //*tFlange = 0.0;
-   //return S_OK;
-
-   //Float64 H, D;
-   //m_Beam->get_Height(&H);
-   //m_Beam->get_VoidDiameter(&D);
-   //*tFlange = (H-D)/2;
-
-   //return S_OK;
 }
 
 STDMETHODIMP CVoidedSlabSection2::get_TopFlangeSpacing(FlangeIndexType idx,Float64* spacing)
 {
    ATLASSERT(false); // there is no top flange!!!
    return E_INVALIDARG;
-   //if ( idx != 0 )
-   //   return E_INVALIDARG;
-
-   //CHECK_RETVAL(spacing);
-
-   //(*spacing) = 0;
-   //
-   //return S_OK;
 }
 
 STDMETHODIMP CVoidedSlabSection2::get_BottomFlangeCount(FlangeIndexType* nBottomFlanges)
@@ -546,7 +539,9 @@ STDMETHODIMP CVoidedSlabSection2::get_CL2ExteriorWebDistance( DirectionType side
    WebIndexType nVoids;
    hr = m_Beam->get_VoidCount(&nVoids);
    if (FAILED(hr))
+   {
       return hr;
+   }
 
    nWebs = nVoids + 1;
 
@@ -566,7 +561,9 @@ STDMETHODIMP CVoidedSlabSection2::get_CL2ExteriorWebDistance( DirectionType side
 
          hr = get_WebSpacing(is, &spacing);
          if (FAILED(hr))
+         {
             return hr;
+         }
 
          webwid += spacing;
       }
@@ -638,6 +635,27 @@ STDMETHODIMP CVoidedSlabSection2::Clone(IShape** pClone)
 
    CComPtr<IVoidedSlabSection2> voided_slab_section = clone;
    voided_slab_section->put_Beam(m_Beam);
+
+   IndexType nShapes;
+   m_CompositeShape->get_Count(&nShapes);
+
+   CComQIPtr<ICompositeShape> compShape(voided_slab_section);
+   for ( IndexType shapeIdx = 1; shapeIdx < nShapes; shapeIdx++ )
+   {
+      CComPtr<ICompositeShapeItem> compShapeItem;
+      m_CompositeShape->get_Item(shapeIdx,&compShapeItem);
+
+      CComPtr<IShape> shapeItem;
+      compShapeItem->get_Shape(&shapeItem);
+
+      VARIANT_BOOL bVoid;
+      compShapeItem->get_Void(&bVoid);
+
+      CComPtr<IShape> shapeItemClone;
+      shapeItem->Clone(&shapeItemClone);
+
+      compShape->AddShape(shapeItemClone,bVoid);
+   }
 
    CComQIPtr<IShape> shape(voided_slab_section);
 

@@ -107,7 +107,15 @@ bool CReportBuilder::InsertChapterBuilder(boost::shared_ptr<CChapterBuilder>& pN
       boost::shared_ptr<CChapterBuilder>& pChapterBuilder(*iter);
       if ( std::_tstring(pChapterBuilder->GetName()) == tstrAfterChapter )
       {
-         m_ChapterBuilders.insert(++iter,pNewChapterBuilder);
+         iter++;
+         boost::shared_ptr<CChapterBuilder>& pChBldr(*iter);
+         if ( std::_tstring(pChBldr->GetName()) == std::_tstring(pNewChapterBuilder->GetName()) )
+         {
+            // a chapter with that name already exists
+            return false;
+         }
+
+         m_ChapterBuilders.insert(iter,pNewChapterBuilder);
          return true;
       }
    }

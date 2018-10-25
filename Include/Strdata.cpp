@@ -186,7 +186,9 @@ HRESULT StrStorageDataMap<T>::Save( IStructuredSave* pSave, StrStorageData<T>* p
 
       hr = pSave->BeginUnit( pData->m_Name.c_str(), pData->m_Version );
       if ( FAILED(hr) )
+      {
          return hr;
+      }
 
       std::vector<StrStorageData<T> >::iterator i;
       for ( i = pData->m_Children.begin(); i != pData->m_Children.end(); i++ )
@@ -194,12 +196,16 @@ HRESULT StrStorageDataMap<T>::Save( IStructuredSave* pSave, StrStorageData<T>* p
          StrStorageData<T>& child_data = *i;
          hr = Save( pSave, &child_data, pProgress );
          if ( FAILED(hr) )
+         {
             return hr;
+         }
       }
 
       hr = pSave->EndUnit();
       if ( FAILED(hr) )
+      {
          return hr;
+      }
    }
 
    return hr;
@@ -306,7 +312,9 @@ HRESULT StrStorageDataMap<T>::Load( IStructuredLoad* pLoad, StrStorageData<T>* p
    {
       hr = (*pData->m_pfn)(0,pLoad,pProgress,pData->m_pObj);
       if ( FAILED(hr) )
+      {
          return hr;
+      }
    }
    else
    {
@@ -319,14 +327,18 @@ HRESULT StrStorageDataMap<T>::Load( IStructuredLoad* pLoad, StrStorageData<T>* p
 
       hr = pLoad->BeginUnit( pData->m_Name.c_str() );
       if ( FAILED(hr) )
+      {
          return hr;
+      }
 
       // check version
       double file_ver;
       pLoad->get_Version(&file_ver);
       double prog_ver = pData->m_Version;
       if (prog_ver < file_ver)
+      {
          return STRLOAD_E_BADVERSION;
+      }
 
       std::vector<StrStorageData<T> >::iterator i;
       for ( i = pData->m_Children.begin(); i != pData->m_Children.end(); i++ )
@@ -334,11 +346,15 @@ HRESULT StrStorageDataMap<T>::Load( IStructuredLoad* pLoad, StrStorageData<T>* p
          StrStorageData<T>& child_data = *i;
          hr = Load( pLoad, &child_data, pProgress );
          if ( FAILED(hr) )
+         {
             return hr;
+         }
       }
       hr = pLoad->EndUnit();
       if ( FAILED(hr) )
+      {
          return hr;
+      }
    }
 
    return hr;

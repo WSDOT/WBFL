@@ -122,7 +122,9 @@ public:
    bool NewEntry(LPCTSTR key)
    {
       if ( IsReservedName(key) )
+      {
          return false;
+      }
 
       // check if key exists already
       const T* pentry = LookupEntryPrv(key);
@@ -137,7 +139,9 @@ public:
          return true;
       }
       else
+      {
          return false;
+      }
    } // NewEntry
 
    //------------------------------------------------------------------------
@@ -146,7 +150,9 @@ public:
    bool AddEntry( const T& rNewValue, LPCTSTR key, bool bAddRef = false )
    {
       if ( IsReservedName(key) )
+      {
          return false;
+      }
 
       // check if key exists already
       const T* pentry = LookupEntryPrv(key);
@@ -156,7 +162,9 @@ public:
          // doesn't exist - add it
          LibItem apentry( new T(rNewValue) );
          if ( bAddRef )
+         {
             apentry->AddRef();
+         }
 
          apentry->SetName(key);
          apentry->SetLibrary(this);
@@ -176,7 +184,9 @@ public:
    bool CloneEntry(LPCTSTR key, LPCTSTR newkey)
    {
       if ( IsReservedName(newkey) )
+      {
          return false;
+      }
 
       T* pentry = LookupEntryPrv(key);
       T* pnewentry = LookupEntryPrv(newkey);
@@ -271,7 +281,9 @@ public:
          return (*tmp).second.get();
       }
       else
+      {
          return 0;
+      }
    }
 
    //------------------------------------------------------------------------
@@ -306,7 +318,9 @@ public:
          *pentry = rNewValue;
          std::_tstring onam = pentry->GetName();
          if (onam != key)
+         {
             pentry->SetName(key);
+         }
 
          pentry->Notify(LibraryHints::EntryEdited);
 
@@ -323,8 +337,10 @@ public:
 
       T* pentry = LookupEntryPrv(newKey);
       if (pentry)
+      {
          // new already exists
          return false;
+      }
       else
       {
 
@@ -346,8 +362,10 @@ public:
             return suc;
          }
          else
+         {
             // not found
             return false;
+         }
       }
    }
 
@@ -369,7 +387,9 @@ public:
          }
       }
       else
+      {
          return libILibrary::RemNotFound;
+      }
    }
 
 
@@ -423,7 +443,9 @@ public:
                         LibItem itm(new T);
                         itm->SetLibrary(this);
                         if (itm.get()==0)
+                        {
                            THROW_LOAD(MemoryError,pLoad);
+                        }
 
                         if (itm->LoadMe(pLoad))
                         {
@@ -433,33 +455,49 @@ public:
                               m_EntryList.insert(EntryList::value_type(key,LibItem(itm)));
                            }
                            else
+                           {
                               THROW_LOAD(InvalidFileFormat,pLoad);  // key doesn't match name
+                           }
                         }
                         else
+                        {
                            THROW_LOAD(BadRead,pLoad);
+                        }
 
                         if(!pLoad->EndUnit())
                            THROW_LOAD(InvalidFileFormat,pLoad);
                      }
                      else
+                     {
                         THROW_LOAD(InvalidFileFormat,pLoad);
+                     }
                   } // while
                }
                else
+               {
                   THROW_LOAD(InvalidFileFormat,pLoad);
+               }
             }
             else
+            {
                THROW_LOAD(InvalidFileFormat,pLoad);
+            }
          }
          else
+         {
             // File is wrong version - need to puke
             THROW_LOAD(BadVersion,pLoad);
+         }
       }
       else
+      {
          return false;
+      }
 
       if(!pLoad->EndUnit())
+      {
          THROW_LOAD(InvalidFileFormat,pLoad);
+      }
 
       return true;
    }
@@ -531,7 +569,9 @@ public:
    {
       const libLibraryEntry* pent = LookupEntry(key);
       if (pent!=0)
+      {
          pent->Release();
+      }
       
       return pent;
    }
@@ -542,7 +582,9 @@ public:
    {
       const T* pent = LookupEntry(key);
       if (pent!=0)
+      {
          pent->Release();
+      }
       return (pent!=0);
    }
 
@@ -567,9 +609,13 @@ public:
    {
       T* pent = LookupEntryPrv(key);
       if (pent!=0)
+      {
          pent->EnableCopying(enable);
+      }
       else
+      {
          CHECK(0); // bad key
+      }
    }
 
    virtual bool IsCopyingEnabled(LPCTSTR key) const
@@ -610,9 +656,13 @@ public:
    {
       T* pent = LookupEntryPrv(key);
       if (pent!=0)
+      {
          pent->EnableEditing(enable);
+      }
       else
+      {
          CHECK(0); // bad key
+      }
    }
 
    //------------------------------------------------------------------------
@@ -638,9 +688,13 @@ public:
          sstr << _T("New Entry-") <<i;
          const T* pent = LookupEntry(sstr.str().c_str());
          if (pent==0)
+         {
             return sstr.str();
+         }
          else
+         {
             pent->Release();
+         }
       }
       return _T("Error"); // power failure will happen before we ever get here.
    }
@@ -679,7 +733,9 @@ public:
          return newEntry;
       }
       else
+      {
          return 0;
+      }
    }
 
    std::set<std::_tstring> GetReservedNamesList() const
@@ -746,13 +802,19 @@ protected:
    {
       // if the name is on the reserved list, get outta here
       if ( IsReservedName(key) )
+      {
          return 0;
+      }
 
       EntryListIterator tmp = m_EntryList.find(key);
       if (tmp != m_EntryList.end() )
+      {
          return (*tmp).second.get();
+      }
       else
+      {
          return 0;
+      }
    }
 
    // GROUP: ACCESS

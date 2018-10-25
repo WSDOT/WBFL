@@ -125,7 +125,9 @@ STDMETHODIMP CBoxBeamSection::get_WebCount(WebIndexType* nWebs)
 STDMETHODIMP CBoxBeamSection::get_WebLocation(WebIndexType idx,Float64* location)
 {
    if ( !ValidateWebIndex(idx) )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(location);
 
@@ -136,9 +138,13 @@ STDMETHODIMP CBoxBeamSection::get_WebLocation(WebIndexType idx,Float64* location
    m_Beam->get_W3(&w3);
 
    if ( idx == 0 )
+   {
       *location = -(w3+tWeb)/2;
+   }
    else
+   {
       *location =  (w3+tWeb)/2;
+   }
 
    return S_OK;
 }
@@ -146,7 +152,9 @@ STDMETHODIMP CBoxBeamSection::get_WebLocation(WebIndexType idx,Float64* location
 STDMETHODIMP CBoxBeamSection::get_WebSpacing(WebIndexType idx,Float64* spacing)
 {
    if ( !ValidateWebIndex(idx) )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(spacing);
 
@@ -164,7 +172,9 @@ STDMETHODIMP CBoxBeamSection::get_WebSpacing(WebIndexType idx,Float64* spacing)
 STDMETHODIMP CBoxBeamSection::get_WebThickness(WebIndexType idx,Float64* tWeb)
 {
    if ( !ValidateWebIndex(idx) )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(tWeb);
 
@@ -185,11 +195,17 @@ STDMETHODIMP CBoxBeamSection::get_WebThickness(WebIndexType idx,Float64* tWeb)
    bool bShearKeyAtBottom = (H7 < H3 && H1+H2-F2 < H4) ? true : false;
 
    if ( bSmallShearKey && bShearKeyAtTop )
+   {
       *tWeb = W2 + W4;
+   }
    else if ( bSmallShearKey && bShearKeyAtBottom )
+   {
       *tWeb = W1 + W2;
+   }
    else
+   {
       *tWeb = W2;
+   }
 
    return S_OK;
 }
@@ -207,7 +223,9 @@ STDMETHODIMP CBoxBeamSection::get_WebPlane(WebIndexType idx,IPlane3d** ppPlane)
    Float64 x;
    HRESULT hr = get_WebLocation(idx,&x);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    CComPtr<IPoint3d> p1;
    p1.CoCreateInstance(CLSID_Point3d);
@@ -269,7 +287,9 @@ STDMETHODIMP CBoxBeamSection::get_TopFlangeCount(FlangeIndexType* nTopFlanges)
 STDMETHODIMP CBoxBeamSection::get_TopFlangeLocation(FlangeIndexType idx,Float64* location)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    *location = 0;
    return S_OK;
@@ -278,7 +298,9 @@ STDMETHODIMP CBoxBeamSection::get_TopFlangeLocation(FlangeIndexType idx,Float64*
 STDMETHODIMP CBoxBeamSection::get_TopFlangeWidth(FlangeIndexType idx,Float64* width)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    return get_TopWidth(width);
 }
@@ -286,7 +308,9 @@ STDMETHODIMP CBoxBeamSection::get_TopFlangeWidth(FlangeIndexType idx,Float64* wi
 STDMETHODIMP CBoxBeamSection::get_TopFlangeThickness(FlangeIndexType idx,Float64* tFlange)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    return m_Beam->get_H1(tFlange);
 }
@@ -294,7 +318,9 @@ STDMETHODIMP CBoxBeamSection::get_TopFlangeThickness(FlangeIndexType idx,Float64
 STDMETHODIMP CBoxBeamSection::get_TopFlangeSpacing(FlangeIndexType idx,Float64* spacing)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(spacing);
 
@@ -313,7 +339,9 @@ STDMETHODIMP CBoxBeamSection::get_BottomFlangeCount(FlangeIndexType* nBottomFlan
 STDMETHODIMP CBoxBeamSection::get_BottomFlangeLocation(FlangeIndexType idx,Float64* location)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    *location = 0;
    return S_OK;
@@ -322,7 +350,9 @@ STDMETHODIMP CBoxBeamSection::get_BottomFlangeLocation(FlangeIndexType idx,Float
 STDMETHODIMP CBoxBeamSection::get_BottomFlangeWidth(FlangeIndexType idx,Float64* width)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    return get_BottomWidth(width);
 }
@@ -330,7 +360,9 @@ STDMETHODIMP CBoxBeamSection::get_BottomFlangeWidth(FlangeIndexType idx,Float64*
 STDMETHODIMP CBoxBeamSection::get_BottomFlangeThickness(FlangeIndexType idx,Float64* tFlange)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    return m_Beam->get_H3(tFlange);
 }
@@ -338,7 +370,9 @@ STDMETHODIMP CBoxBeamSection::get_BottomFlangeThickness(FlangeIndexType idx,Floa
 STDMETHODIMP CBoxBeamSection::get_BottomFlangeSpacing(FlangeIndexType idx,Float64* spacing)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(spacing);
 
@@ -453,10 +487,31 @@ STDMETHODIMP CBoxBeamSection::Clone(IShape** pClone)
    CComObject<CBoxBeamSection>::CreateInstance(&clone);
 
    CComPtr<IBoxBeamSection> section = clone;
+
    section->put_Beam(m_Beam);
 
-   CComQIPtr<IShape> shape(section);
+   IndexType nShapes;
+   m_CompositeShape->get_Count(&nShapes);
 
+   CComQIPtr<ICompositeShape> compShape(section);
+   for ( IndexType shapeIdx = 1; shapeIdx < nShapes; shapeIdx++ )
+   {
+      CComPtr<ICompositeShapeItem> compShapeItem;
+      m_CompositeShape->get_Item(shapeIdx,&compShapeItem);
+
+      CComPtr<IShape> shapeItem;
+      compShapeItem->get_Shape(&shapeItem);
+
+      VARIANT_BOOL bVoid;
+      compShapeItem->get_Void(&bVoid);
+
+      CComPtr<IShape> shapeItemClone;
+      shapeItem->Clone(&shapeItemClone);
+
+      compShape->AddShape(shapeItemClone,bVoid);
+   }
+
+   CComQIPtr<IShape> shape(section);
    (*pClone) = shape;
    (*pClone)->AddRef();
 

@@ -71,7 +71,9 @@ STDMETHODIMP CUGirderSection::InterfaceSupportsErrorInfo(REFIID riid)
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
+      {
 			return S_OK;
+      }
 	}
 	return S_FALSE;
 }
@@ -116,11 +118,9 @@ STDMETHODIMP CUGirderSection::put_Beam(IUBeam* beam)
 
    m_Beam.Release();
    clone.QueryInterface(&m_Beam);
-
    m_Shape = clone;
 
-   m_Position.Release();
-   m_Shape.QueryInterface(&m_Position);
+   m_CompositeShape->Replace(0,m_Shape);
 
    return S_OK;
 }
@@ -146,7 +146,9 @@ STDMETHODIMP CUGirderSection::get_WebCount(WebIndexType* nWebs)
 STDMETHODIMP CUGirderSection::get_WebLocation(WebIndexType idx,Float64* location)
 {
    if ( idx < 0 || NWEBS <= idx )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(location);
 
@@ -156,7 +158,9 @@ STDMETHODIMP CUGirderSection::get_WebLocation(WebIndexType idx,Float64* location
 STDMETHODIMP CUGirderSection::get_WebSpacing(WebIndexType idx,Float64* spacing)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(spacing);
 
@@ -166,7 +170,9 @@ STDMETHODIMP CUGirderSection::get_WebSpacing(WebIndexType idx,Float64* spacing)
 STDMETHODIMP CUGirderSection::get_WebThickness(WebIndexType idx,Float64* tWeb)
 {
    if ( idx < 0 || NWEBS <= idx )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(tWeb);
 
@@ -196,7 +202,9 @@ STDMETHODIMP CUGirderSection::get_WebPlane(WebIndexType idx,IPlane3d** ppPlane)
    Float64 slope;
    hr = m_Beam->get_Slope(idx,&slope);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    Float64 sign = (idx == 0 ? -1.0 : 1.0);
 
@@ -261,7 +269,9 @@ STDMETHODIMP CUGirderSection::get_TopFlangeCount(FlangeIndexType* nTopFlanges)
 STDMETHODIMP CUGirderSection::get_TopFlangeLocation(FlangeIndexType idx,Float64* location)
 {
    if ( idx < 0 || NWEBS < idx )
+   {
       return E_INVALIDARG;
+   }
 
    Float64 W2;
    m_Beam->get_W2(&W2);
@@ -272,7 +282,9 @@ STDMETHODIMP CUGirderSection::get_TopFlangeLocation(FlangeIndexType idx,Float64*
    *location = (W2 - top_flange_width)/2;
 
    if ( idx == 0 )
+   {
       (*location) *= -1;  // left of CL beam so make it negative
+   }
 
    return S_OK;
 }
@@ -280,7 +292,9 @@ STDMETHODIMP CUGirderSection::get_TopFlangeLocation(FlangeIndexType idx,Float64*
 STDMETHODIMP CUGirderSection::get_TopFlangeWidth(FlangeIndexType idx,Float64* wFlange)
 {
    if ( idx < 0 || NWEBS < idx )
+   {
       return E_INVALIDARG;
+   }
 
    return m_Beam->get_TopFlangeWidth(wFlange);
 }
@@ -288,7 +302,9 @@ STDMETHODIMP CUGirderSection::get_TopFlangeWidth(FlangeIndexType idx,Float64* wF
 STDMETHODIMP CUGirderSection::get_TopFlangeThickness(FlangeIndexType idx,Float64* tFlange)
 {
    if ( idx < 0 || NWEBS < idx )
+   {
       return E_INVALIDARG;
+   }
 
    Float64 D4, D6;
    m_Beam->get_D4(&D4);
@@ -301,7 +317,9 @@ STDMETHODIMP CUGirderSection::get_TopFlangeThickness(FlangeIndexType idx,Float64
 STDMETHODIMP CUGirderSection::get_TopFlangeSpacing(FlangeIndexType idx,Float64* spacing)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(spacing);
 
@@ -318,7 +336,9 @@ STDMETHODIMP CUGirderSection::get_BottomFlangeCount(FlangeIndexType* nBottomFlan
 STDMETHODIMP CUGirderSection::get_BottomFlangeLocation(FlangeIndexType idx,Float64* location)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    *location = 0;
    return S_OK;
@@ -327,7 +347,9 @@ STDMETHODIMP CUGirderSection::get_BottomFlangeLocation(FlangeIndexType idx,Float
 STDMETHODIMP CUGirderSection::get_BottomFlangeWidth(FlangeIndexType idx,Float64* wFlange)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    return m_Beam->get_W1(wFlange);
 }
@@ -335,7 +357,9 @@ STDMETHODIMP CUGirderSection::get_BottomFlangeWidth(FlangeIndexType idx,Float64*
 STDMETHODIMP CUGirderSection::get_BottomFlangeThickness(FlangeIndexType idx,Float64* tFlange)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    return m_Beam->get_D2(tFlange);
 }
@@ -343,7 +367,9 @@ STDMETHODIMP CUGirderSection::get_BottomFlangeThickness(FlangeIndexType idx,Floa
 STDMETHODIMP CUGirderSection::get_BottomFlangeSpacing(FlangeIndexType idx,Float64* spacing)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(spacing);
 
@@ -464,27 +490,34 @@ STDMETHODIMP CUGirderSection::Clone(IShape** pClone)
 
    CComObject<CUGirderSection>* clone;
    CComObject<CUGirderSection>::CreateInstance(&clone);
-   clone->m_CompositeShape.Release();
-   clone->m_Shape.Release();
-   clone->m_Position.Release();
-   clone->m_Beam.Release();
 
-   m_Shape->Clone(&clone->m_Shape);
-   clone->m_Shape->QueryInterface(&clone->m_CompositeShape);
-   clone->m_Shape->QueryInterface(&clone->m_Position);
+   CComPtr<IUGirderSection> section = clone;
 
-   // first item is the beam
-   CComPtr<ICompositeShapeItem> item;
-   clone->m_CompositeShape->get_Item(0,&item);
+   section->put_Beam(m_Beam);
 
-   CComPtr<IShape> s;
-   item->get_Shape(&s);
+   IndexType nShapes;
+   m_CompositeShape->get_Count(&nShapes);
 
-   CComQIPtr<IUBeam> beam(s);
-   clone->m_Beam = beam;
+   CComQIPtr<ICompositeShape> compShape(section);
+   for ( IndexType shapeIdx = 1; shapeIdx < nShapes; shapeIdx++ )
+   {
+      CComPtr<ICompositeShapeItem> compShapeItem;
+      m_CompositeShape->get_Item(shapeIdx,&compShapeItem);
 
+      CComPtr<IShape> shapeItem;
+      compShapeItem->get_Shape(&shapeItem);
 
-   (*pClone) = clone;
+      VARIANT_BOOL bVoid;
+      compShapeItem->get_Void(&bVoid);
+
+      CComPtr<IShape> shapeItemClone;
+      shapeItem->Clone(&shapeItemClone);
+
+      compShape->AddShape(shapeItemClone,bVoid);
+   }
+
+   CComQIPtr<IShape> shape(section);
+   (*pClone) = shape;
    (*pClone)->AddRef();
 
    return S_OK;

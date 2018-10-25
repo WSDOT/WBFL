@@ -68,7 +68,9 @@ STDMETHODIMP CDeckedSlabBeamSection::InterfaceSupportsErrorInfo(REFIID riid)
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
+      {
 			return S_OK;
+      }
 	}
 	return S_FALSE;
 }
@@ -183,7 +185,9 @@ STDMETHODIMP CDeckedSlabBeamSection::get_WebPlane(WebIndexType idx,IPlane3d** pp
    Float64 x;
    HRESULT hr = get_WebLocation(idx,&x);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    CComPtr<IPoint3d> p1;
    p1.CoCreateInstance(CLSID_Point3d);
@@ -226,7 +230,9 @@ STDMETHODIMP CDeckedSlabBeamSection::get_MatingSurfaceCount(MatingSurfaceIndexTy
 STDMETHODIMP CDeckedSlabBeamSection::get_MatingSurfaceLocation(MatingSurfaceIndexType idx,Float64* location)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    *location = 0;
    return S_OK;
@@ -235,7 +241,9 @@ STDMETHODIMP CDeckedSlabBeamSection::get_MatingSurfaceLocation(MatingSurfaceInde
 STDMETHODIMP CDeckedSlabBeamSection::get_MatingSurfaceWidth(MatingSurfaceIndexType idx,Float64* wMatingSurface)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    return get_TopWidth(wMatingSurface);
 }
@@ -250,7 +258,9 @@ STDMETHODIMP CDeckedSlabBeamSection::get_TopFlangeCount(FlangeIndexType* nTopFla
 STDMETHODIMP CDeckedSlabBeamSection::get_TopFlangeLocation(FlangeIndexType idx,Float64* location)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    *location = 0;
    return S_OK;
@@ -259,7 +269,9 @@ STDMETHODIMP CDeckedSlabBeamSection::get_TopFlangeLocation(FlangeIndexType idx,F
 STDMETHODIMP CDeckedSlabBeamSection::get_TopFlangeWidth(FlangeIndexType idx,Float64* width)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    return get_TopWidth(width);
 }
@@ -267,7 +279,9 @@ STDMETHODIMP CDeckedSlabBeamSection::get_TopFlangeWidth(FlangeIndexType idx,Floa
 STDMETHODIMP CDeckedSlabBeamSection::get_TopFlangeThickness(FlangeIndexType idx,Float64* tFlange)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    return m_Beam->get_Tt(tFlange);
 }
@@ -275,7 +289,9 @@ STDMETHODIMP CDeckedSlabBeamSection::get_TopFlangeThickness(FlangeIndexType idx,
 STDMETHODIMP CDeckedSlabBeamSection::get_TopFlangeSpacing(FlangeIndexType idx,Float64* spacing)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(spacing);
 
@@ -294,7 +310,9 @@ STDMETHODIMP CDeckedSlabBeamSection::get_BottomFlangeCount(FlangeIndexType* nBot
 STDMETHODIMP CDeckedSlabBeamSection::get_BottomFlangeLocation(FlangeIndexType idx,Float64* location)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    *location = 0;
    return S_OK;
@@ -303,7 +321,9 @@ STDMETHODIMP CDeckedSlabBeamSection::get_BottomFlangeLocation(FlangeIndexType id
 STDMETHODIMP CDeckedSlabBeamSection::get_BottomFlangeWidth(FlangeIndexType idx,Float64* width)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    return get_BottomWidth(width);
 }
@@ -311,7 +331,9 @@ STDMETHODIMP CDeckedSlabBeamSection::get_BottomFlangeWidth(FlangeIndexType idx,F
 STDMETHODIMP CDeckedSlabBeamSection::get_BottomFlangeThickness(FlangeIndexType idx,Float64* tFlange)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    return m_Beam->get_Tb(tFlange);
 }
@@ -319,7 +341,9 @@ STDMETHODIMP CDeckedSlabBeamSection::get_BottomFlangeThickness(FlangeIndexType i
 STDMETHODIMP CDeckedSlabBeamSection::get_BottomFlangeSpacing(FlangeIndexType idx,Float64* spacing)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(spacing);
 
@@ -453,6 +477,27 @@ STDMETHODIMP CDeckedSlabBeamSection::Clone(IShape** pClone)
 
    CComPtr<IDeckedSlabBeamSection> section = clone;
    section->put_Beam(m_Beam);
+
+   IndexType nShapes;
+   m_CompositeShape->get_Count(&nShapes);
+
+   CComQIPtr<ICompositeShape> compShape(section);
+   for ( IndexType shapeIdx = 1; shapeIdx < nShapes; shapeIdx++ )
+   {
+      CComPtr<ICompositeShapeItem> compShapeItem;
+      m_CompositeShape->get_Item(shapeIdx,&compShapeItem);
+
+      CComPtr<IShape> shapeItem;
+      compShapeItem->get_Shape(&shapeItem);
+
+      VARIANT_BOOL bVoid;
+      compShapeItem->get_Void(&bVoid);
+
+      CComPtr<IShape> shapeItemClone;
+      shapeItem->Clone(&shapeItemClone);
+
+      compShape->AddShape(shapeItemClone,bVoid);
+   }
 
    CComQIPtr<IShape> shape(section);
 

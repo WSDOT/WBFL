@@ -95,10 +95,14 @@ sysTime libLibraryManager::GetTimeStamp() const
 std::_tstring libLibraryManager::GetLibraryIdName(CollectionIndexType index) const
 {
    const libILibrary* plib;
-   if (index>=0 && index<m_Libraries.size())
+   if (0 <= index && index < m_Libraries.size())
+   {
        plib = m_Libraries[index].get();
+   }
    else
+   {
       PRECONDITION(0);
+   }
 
    return plib->GetIdName();
 }
@@ -106,28 +110,40 @@ std::_tstring libLibraryManager::GetLibraryIdName(CollectionIndexType index) con
 std::_tstring libLibraryManager::GetLibraryDisplayName(CollectionIndexType index) const
 {
    const libILibrary* plib;
-   if (index>=0 && index<m_Libraries.size())
+   if (0 <= index && index < m_Libraries.size())
+   {
        plib = m_Libraries[index].get();
+   }
    else
+   {
       PRECONDITION(0);
+   }
 
    return plib->GetDisplayName();
 }
 
 libILibrary* libLibraryManager::GetLibrary(CollectionIndexType index)
 {
-   if (index>=0 && index<m_Libraries.size())
+   if (0 <= index && index < m_Libraries.size())
+   {
       return m_Libraries[index].get();
+   }
    else
+   {
       return 0;
+   }
 }
 
 const libILibrary* libLibraryManager::GetLibrary(CollectionIndexType index) const
 {
-   if (index>=0 && index<m_Libraries.size())
+   if (0 <= index && index < m_Libraries.size())
+   {
       return m_Libraries[index].get();
+   }
    else
+   {
       return 0;
+   }
 }
 
 libILibrary* libLibraryManager::GetLibrary(LPCTSTR displayName)
@@ -136,7 +152,9 @@ libILibrary* libLibraryManager::GetLibrary(LPCTSTR displayName)
    for(LibraryIterator it=m_Libraries.begin(); it!=m_Libraries.end(); it++)
    {
       if ((*it)->GetDisplayName()==name)
+      {
          return (*it).get();
+      }
    }
    return 0;
 }
@@ -148,7 +166,9 @@ const libILibrary* libLibraryManager::GetLibrary(LPCTSTR displayName) const
    for(ConstLibraryIterator it=m_Libraries.begin(); it!=m_Libraries.end(); it++)
    {
       if ((*it)->GetDisplayName()==name)
+      {
          return (*it).get();
+      }
    }
    return 0;
 }
@@ -160,7 +180,9 @@ CollectionIndexType libLibraryManager::GetIndex(LPCTSTR displayName) const
    for(ConstLibraryIterator it=m_Libraries.begin(); it!=m_Libraries.end(); it++)
    {
       if ((*it)->GetDisplayName()==name)
+      {
          return idx;
+      }
       idx++;
    }
    return INVALID_INDEX;
@@ -308,23 +330,33 @@ bool libLibraryManager::LoadMe(sysIStructuredLoad* pLoad)
                   //ASSERT(key==pLib->GetIdName());
 
                   if (!pLib->LoadMe(pLoad))    // load library
+                  {
                         THROW_LOAD(BadRead,pLoad);
+                  }
                }
 
                if(!pLoad->EndUnit())
+               {
                   THROW_LOAD(InvalidFileFormat,pLoad);
+               }
             } 
          } // for
       }
       else
+      {
          // File is wrong version - need to puke
          THROW_LOAD(BadVersion,pLoad);
+      }
    }
    else
+   {
       THROW_LOAD(InvalidFileFormat,pLoad);
+   }
 
    if(!pLoad->EndUnit())
+   {
       THROW_LOAD(InvalidFileFormat,pLoad);
+   }
 
    return true;
 }

@@ -675,6 +675,7 @@
 				DataExecutionPrevention="0"
 				TargetMachine="17"
 				AllowIsolation="true"
+				Profile="true"
 			/>
 			<Tool
 				Name="VCALinkTool"

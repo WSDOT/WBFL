@@ -427,6 +427,11 @@ void CEAFReportView::OnUpdateFilePrint(CCmdUI* pCmdUI)
 
 void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint) 
 {
+   if ( lHint == EAF_HINT_FAVORITE_REPORTS_CHANGED )
+   {
+      return;
+   }
+
    if ( m_bIsNewReport )
    {
       return; // this the OnUpdate that comes from OnInitialUpdate() ... nothing to do here
