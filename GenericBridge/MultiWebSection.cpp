@@ -328,7 +328,12 @@ STDMETHODIMP CMultiWebSection::get_BottomFlangeSpacing(FlangeIndexType idx,Float
    return S_OK;
 }
 
-STDMETHODIMP CMultiWebSection::get_GirderHeight(Float64* height)
+STDMETHODIMP CMultiWebSection::get_OverallHeight(Float64* height)
+{
+   return get_NominalHeight(height);
+}
+
+STDMETHODIMP CMultiWebSection::get_NominalHeight(Float64* height)
 {
    return m_Beam->get_Height(height);
 }

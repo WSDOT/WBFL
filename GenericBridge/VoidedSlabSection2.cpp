@@ -461,7 +461,12 @@ STDMETHODIMP CVoidedSlabSection2::get_BottomFlangeSpacing(FlangeIndexType idx,Fl
    return E_INVALIDARG;
 }
 
-STDMETHODIMP CVoidedSlabSection2::get_GirderHeight(Float64* height)
+STDMETHODIMP CVoidedSlabSection2::get_OverallHeight(Float64* height)
+{
+   return get_NominalHeight(height);
+}
+
+STDMETHODIMP CVoidedSlabSection2::get_NominalHeight(Float64* height)
 {
    return m_Beam->get_Height(height);
 }

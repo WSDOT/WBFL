@@ -123,6 +123,19 @@ public:
       m_Beam->get_W6(pRight);
       return S_OK;
    }
+
+   STDMETHODIMP GetHeight(Float64* pHmin, Float64* pHcl, Float64* pHmax) override
+   {
+      CHECK_RETVAL(pHmin);
+      CHECK_RETVAL(pHcl);
+      CHECK_RETVAL(pHmax);
+
+      m_Beam->get_MinHeight(pHmin);
+      m_Beam->get_CLHeight(pHcl);
+      m_Beam->get_MaxHeight(pHmax);
+
+      return S_OK;
+   }
    
    STDMETHODIMP GetStressPoints(StressPointType spType, IPoint2dCollection** ppPoints) override
    {
@@ -208,6 +221,17 @@ public:
       }
 
       return S_OK;
+   }
+
+   STDMETHODIMP get_OverallHeight(Float64* height) override
+   {
+      return m_Beam->get_MaxHeight(height);
+   }
+
+   STDMETHODIMP get_NominalHeight(Float64* height) override
+   {
+      // for bulb-tee girders, use the CL Web height as the nomainl girder height
+      return m_Beam->get_CLHeight(height);
    }
 
    STDMETHODIMP get_MinWebThickness(Float64* tWeb) override

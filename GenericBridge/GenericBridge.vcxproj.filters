@@ -199,6 +199,9 @@
     <ClCompile Include="SuperstructureMemberSegmentImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Helpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlignmentOffsetStrategy.h">
@@ -412,6 +415,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SuperstructureMemberSegmentImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\GenericBridge\AutoLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\GenericBridge\GenericBridgeExp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\GenericBridge\Helpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

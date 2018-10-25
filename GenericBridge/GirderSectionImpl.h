@@ -295,7 +295,12 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP get_GirderHeight(Float64* height) override
+   STDMETHODIMP get_OverallHeight(Float64* height) override
+   {
+      return get_NominalHeight(height);
+   }
+
+   STDMETHODIMP get_NominalHeight(Float64* height) override
    {
       return m_Beam->get_Height(height);
    }
@@ -396,12 +401,73 @@ public:
 
    STDMETHODIMP ClipWithLine(ILine2d* pLine,IShape** pShape) override
    {
-      return m_Shape->ClipWithLine(pLine,pShape);
+      CHECK_IN(pLine);
+      CHECK_RETOBJ(pShape);
+
+      CComObject<C>* clippedSection;
+      CComObject<C>::CreateInstance(&clippedSection);
+
+      CComPtr<_ISECTION_> section = clippedSection;
+      section->put_Beam(m_Beam);
+
+      CComQIPtr<ICompositeShape> compShape(section);
+      IndexType nShapes;
+      compShape->get_Count(&nShapes);
+      for (IndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++)
+      {
+         CComPtr<ICompositeShapeItem> compShapeItem;
+         compShape->get_Item(shapeIdx, &compShapeItem);
+
+         CComPtr<IShape> shapeItem;
+         compShapeItem->get_Shape(&shapeItem);
+
+         CComPtr<IShape> clippedShapeItem;
+         shapeItem->ClipWithLine(pLine, &clippedShapeItem);
+
+         compShape->Replace(shapeIdx,clippedShapeItem);
+      }
+
+      CComQIPtr<IShape> shape(section);
+
+      (*pShape) = shape;
+      (*pShape)->AddRef();
+
+      return S_OK;
    }
 
    STDMETHODIMP ClipIn(IRect2d* pRect,IShape** pShape) override
    {
-      return m_Shape->ClipIn(pRect,pShape);
+      CHECK_IN(pRect);
+      CHECK_RETOBJ(pShape);
+      CComObject<C>* clippedSection;
+      CComObject<C>::CreateInstance(&clippedSection);
+
+      CComPtr<_ISECTION_> section = clippedSection;
+      section->put_Beam(m_Beam);
+
+      CComQIPtr<ICompositeShape> compShape(section);
+      IndexType nShapes;
+      compShape->get_Count(&nShapes);
+      for (IndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++)
+      {
+         CComPtr<ICompositeShapeItem> compShapeItem;
+         compShape->get_Item(shapeIdx, &compShapeItem);
+
+         CComPtr<IShape> shapeItem;
+         compShapeItem->get_Shape(&shapeItem);
+
+         CComPtr<IShape> clippedShapeItem;
+         shapeItem->ClipIn(pRect, &clippedShapeItem);
+
+         compShape->Replace(shapeIdx,clippedShapeItem);
+      }
+
+      CComQIPtr<IShape> shape(section);
+
+      (*pShape) = shape;
+      (*pShape)->AddRef();
+
+      return S_OK;
    }
 
    STDMETHODIMP Offset(Float64 dx,Float64 dy) override

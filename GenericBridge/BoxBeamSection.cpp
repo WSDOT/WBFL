@@ -386,7 +386,12 @@ STDMETHODIMP CBoxBeamSection::get_BottomFlangeSpacing(FlangeIndexType idx,Float6
    return S_OK;
 }
 
-STDMETHODIMP CBoxBeamSection::get_GirderHeight(Float64* height)
+STDMETHODIMP CBoxBeamSection::get_OverallHeight(Float64* height)
+{
+   return get_NominalHeight(height);
+}
+
+STDMETHODIMP CBoxBeamSection::get_NominalHeight(Float64* height)
 {
    Float64 h1,h2,h3;
    m_Beam->get_H1(&h1);

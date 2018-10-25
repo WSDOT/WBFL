@@ -40,6 +40,15 @@
     <ClCompile Include="AlternativeTensileStressCalculator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="StrandGridModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StrandModelBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StrandPointModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BridgeDeckRebarLayout.h">
@@ -87,6 +96,15 @@
     <ClInclude Include="..\Include\WBFLGenericBridgeTools\WBFLGenericBridgeToolsExp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="StrandGridModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StrandModelBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StrandPointModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\Include\WBFLGenericBridgeTools.idl" />
@@ -121,6 +139,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="StrandPattern.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="StrandGridModel.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="StrandPointModel.rgs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

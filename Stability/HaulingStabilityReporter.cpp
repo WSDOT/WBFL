@@ -615,6 +615,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
    rptParagraph* pPara = new rptParagraph(rptStyleManager::GetHeadingStyle());
    *pChapter << pPara;
+   pPara->SetName(_T("Hauling Analysis Details"));
    *pPara << _T("Hauling Analysis Details") << rptNewLine;
    *pPara << _T("Hauling to Bridge Site [5.5.4.3]") << rptNewLine;
 

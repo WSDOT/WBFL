@@ -305,6 +305,9 @@ date/T &gt; $(IntDir)mt2.dep
     <PostBuildEvent>
       <Command />
     </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PreBuildEvent>
@@ -368,6 +371,9 @@ date/T &gt; $(IntDir)mt2.dep
     <PostBuildEvent>
       <Command />
     </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PreBuildEvent>
@@ -430,6 +436,9 @@ date/T &gt; $(IntDir)mt2.dep
     <PostBuildEvent>
       <Command />
     </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PreBuildEvent>
@@ -493,6 +502,9 @@ date/T &gt; $(IntDir)mt2.dep
     <PostBuildEvent>
       <Command />
     </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
     <PreBuildEvent>
@@ -562,6 +574,9 @@ date/T &gt; $(IntDir)mt2.dep
     <PostBuildEvent>
       <Command />
     </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
     <PreBuildEvent>
@@ -633,6 +648,9 @@ date/T &gt; $(IntDir)mt2.dep
     <PostBuildEvent>
       <Command />
     </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|Win32'">
     <PreBuildEvent>
@@ -696,6 +714,9 @@ date/T &gt; $(IntDir)mt2.dep
     <PostBuildEvent>
       <Command />
     </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|x64'">
     <PreBuildEvent>
@@ -760,6 +781,9 @@ date/T &gt; $(IntDir)mt2.dep
     <PostBuildEvent>
       <Command />
     </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'">
     <PreBuildEvent>
@@ -828,6 +852,9 @@ date/T &gt; $(IntDir)mt2.dep
     <PostBuildEvent>
       <Command />
     </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">
     <PreBuildEvent>
@@ -897,6 +924,9 @@ date/T &gt; $(IntDir)mt2.dep
     <PostBuildEvent>
       <Command />
     </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BasicVehicularResponse.cpp" />

@@ -671,17 +671,14 @@ STDMETHODIMP CStrandGrid::get_FilledGridBoundsEx(/*[in]*/IIndexArray* fill, /*[o
 
    ValidateGrid(); // only need to validate grid since fill is external
 
-   Float64 the_min=  Float64_Max;
-   Float64 the_max= -Float64_Max;
-
    GridIndexType nGridPoints = m_GridPoints.size();
    CollectionIndexType nFillPoints;
    fill->get_Count(&nFillPoints);
 
    GridIndexType nPoints = min((GridIndexType)nFillPoints, nGridPoints);
-   Uint32 counter = 0; // counter to keep track of how many elevations get evaluated
-   GridIndexType fillIdx;
-   for(fillIdx = 0; fillIdx < nPoints; fillIdx++)
+   Float64 yMin = (nPoints == 0 ? 0 : Float64_Max);
+   Float64 yMax = (nPoints == 0 ? 0 : -Float64_Max);
+   for(GridIndexType fillIdx = 0; fillIdx < nPoints; fillIdx++)
    {
       StrandIndexType nStrandsAtGridPoint;
       fill->get_Item(fillIdx, &nStrandsAtGridPoint);
@@ -689,27 +686,15 @@ STDMETHODIMP CStrandGrid::get_FilledGridBoundsEx(/*[in]*/IIndexArray* fill, /*[o
      
       if (0 < nStrandsAtGridPoint)
       {
-         Float64 yv = m_GridPoints[fillIdx].dPointY + m_Yadj;
+         Float64 y = m_GridPoints[fillIdx].dPointY + m_Yadj;
 
-         the_max = Max(the_max,yv);
-         the_min = Min(the_min,yv);
-
-         counter++;
+         yMax = Max(yMax,y);
+         yMin = Min(yMin,y);
       }
    }
 
-   if (0 < counter)
-   {
-      *bottomElev = the_min;
-      *topElev = the_max;
-   }
-   else
-   {
-      // no elevations were evaluated so use values of 0.0 instead of the out of bounds values
-      // the loop started with
-      *bottomElev = 0.0;
-      *topElev    = 0.0;
-   }
+   *bottomElev = yMin;
+   *topElev = yMax;
 
    return S_OK;
 }

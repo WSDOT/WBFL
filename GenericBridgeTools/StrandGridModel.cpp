@@ -126,16 +126,19 @@ HRESULT CStrandGridModel::OnInitialize()
       CComQIPtr<IAsymmetricSection> asymmetric(shape);
       if (asymmetric)
       {
+         // lateral adjustment
          Float64 wLeft, wRight;
          asymmetric->GetTopWidth(&wLeft, &wRight);
          Float64 Xadj = 0.5*(wLeft - wRight);
 
+         Float64 Yadj = 0;
+
          for (int i = 0; i < 2; i++)
          {
-            m_StraightGrid[i]->SetStrandAdjustment(Xadj, 0.0);
-            m_HarpGridEnd[i]->SetStrandAdjustment(Xadj, 0.0);
-            m_HarpGridHp[i]->SetStrandAdjustment(Xadj, 0.0);
-            m_TempGrid[i]->SetStrandAdjustment(Xadj, 0.0);
+            m_StraightGrid[i]->SetStrandAdjustment(Xadj, Yadj);
+            m_HarpGridEnd[i]->SetStrandAdjustment(Xadj, Yadj);
+            m_HarpGridHp[i]->SetStrandAdjustment(Xadj, Yadj);
+            m_TempGrid[i]->SetStrandAdjustment(Xadj, Yadj);
          }
       }
    }
