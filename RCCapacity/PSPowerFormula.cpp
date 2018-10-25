@@ -255,3 +255,54 @@ STDMETHODIMP CPSPowerFormula::putref_UnitServer(IUnitServer* pNewVal )
 
    return S_OK;
 }
+
+///////////////////////////////////////////////////////////////////
+// IStructuredStorage2
+STDMETHODIMP CPSPowerFormula::Save(IStructuredSave2* pSave)
+{
+   CHECK_IN(pSave);
+
+   pSave->BeginUnit(CComBSTR("PSPowerFormula"),1.0);
+
+   pSave->put_Property(CComBSTR("ProductionMethod"),CComVariant(m_ProductionMethod));
+   pSave->put_Property(CComBSTR("Grade"),CComVariant(m_StrandGrade));
+
+   pSave->EndUnit();
+
+   return S_OK;
+}
+
+STDMETHODIMP CPSPowerFormula::Load(IStructuredLoad2* pLoad)
+{
+   CHECK_IN(pLoad);
+
+   CComVariant var;
+   pLoad->BeginUnit(CComBSTR("PSPowerFormula"));
+
+   ProductionMethodType m_ProductionMethod;
+   StrandGradeType m_StrandGrade;
+
+   if ( FAILED(pLoad->get_Property(CComBSTR("ProductionMethod"), &var) ) )
+      return STRLOAD_E_INVALIDFORMAT;
+   m_ProductionMethod = (ProductionMethodType)var.lVal;
+
+   if ( FAILED(pLoad->get_Property(CComBSTR("Grade"), &var) ) )
+      return STRLOAD_E_INVALIDFORMAT;
+   m_StrandGrade = (StrandGradeType)var.lVal;
+
+   VARIANT_BOOL bEnd;
+   pLoad->EndUnit(&bEnd);
+
+   ATLASSERT(bEnd == VARIANT_TRUE);
+
+   return S_OK;
+}
+
+// IPersist
+STDMETHODIMP CPSPowerFormula::GetClassID(CLSID* pClassID)
+{
+   CHECK_IN(pClassID);
+
+   *pClassID = GetObjectCLSID();
+   return S_OK;
+}

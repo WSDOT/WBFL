@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// CORE - Core elements of the Agent-Broker Architecture
+// EAF - Extensible Application Framework
 // Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -21,38 +21,43 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// stdafx.h : include file for standard system include files,
-// or project specific include files that are used frequently,
-// but are changed infrequently
+#include "stdafx.h"
+#include <EAF\EAFBrokerReportSpecification.h>
 
-#pragma once
-
-#ifndef STRICT
-#define STRICT
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
-#include <WBFLVersion.h>
+CEAFBrokerReportSpecification::CEAFBrokerReportSpecification(LPCTSTR strReportName,IBroker* pBroker) :
+CReportSpecification(strReportName)
+{
+   SetBroker(pBroker);
+}
 
-#define _ATL_APARTMENT_THREADED
-#define _ATL_NO_AUTOMATIC_NAMESPACE
+CEAFBrokerReportSpecification::~CEAFBrokerReportSpecification(void)
+{
+}
 
-#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS	// some CString constructors will be explicit
+void CEAFBrokerReportSpecification::SetBroker(IBroker* pBroker)
+{
+   m_pBroker = pBroker;
+}
 
-#include <afxwin.h>
-#ifndef _AFX_NO_OLE_SUPPORT
-#include <afxdisp.h>        // MFC Automation classes
-#endif // _AFX_NO_OLE_SUPPORT
+HRESULT CEAFBrokerReportSpecification::GetBroker(IBroker** ppBroker)
+{
+   ATLASSERT( m_pBroker ); // did you forget to set the broker???
+   //return m_Broker.CopyTo(ppBroker);
+   (*ppBroker) = m_pBroker;
+   (*ppBroker)->AddRef();
+   return S_OK;
+}
 
-#include "resource.h"
-#include <atlbase.h>
-#include <atlcom.h>
-#include <atlctl.h>
+HRESULT CEAFBrokerReportSpecification::Validate() const
+{
+   if ( !m_pBroker )
+      return E_FAIL;
 
-#include <afxcmn.h> // for Animation control
-
-#include <Private\WBFLPackage.h>
-
-
-bool operator<(REFIID a,REFIID b);
-
-using namespace ATL;
+   return CReportSpecification::Validate();
+}

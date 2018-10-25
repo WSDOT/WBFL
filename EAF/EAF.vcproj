@@ -1558,6 +1558,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\EAFBrokerReportSpecification.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFBrokerReportSpecificationBuilder.cpp"
+				>
+			</File>
+			<File
 				RelativePath="EAFChildFrame.cpp"
 				>
 				<FileConfiguration
@@ -2628,6 +2636,14 @@
 			</File>
 			<File
 				RelativePath="..\Include\EAF\EAFBrokerDocument.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFBrokerReportSpecification.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFBrokerReportSpecificationBuilder.h"
 				>
 			</File>
 			<File

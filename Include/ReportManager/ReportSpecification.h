@@ -53,6 +53,7 @@ public:
    void AddChapter(LPCTSTR strName,LPCTSTR strKey,Uint16 level);
    void SetChapterInfo(const std::vector<CChapterInfo>& chInfo);
    std::vector<CChapterInfo> GetChapterInfo() const;
+   IndexType GetChapterCount() const;
 
    // Text for printed report headers and footers
    // The right header is always the Date, and the right footer is always Page # of #

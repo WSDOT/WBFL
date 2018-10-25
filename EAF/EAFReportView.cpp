@@ -323,7 +323,10 @@ HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
          // create the report and browser
          m_pReportBrowser = CreateReportBrowser(GetSafeHwnd(),m_pReportSpec,m_pRptSpecBuilder);
 
-        CreateEditButton();
+         if ( 0 < m_pReportSpec->GetChapterCount() )
+         {
+            CreateEditButton();
+         }
       }
    }
    catch(...)

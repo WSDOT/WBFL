@@ -76,7 +76,7 @@ public:
 
 // IBridgeDeckRebarLayoutItem
 public:
-   STDMETHOD(ContainsLocation)(/*[in]*/ Float64 distFromStart,/*[out,retval]*/ VARIANT_BOOL* bResult);
+   STDMETHOD(ContainsLocation)(/*[in]*/ Float64 distFromStart,/*[in]*/ Float64 offset,/*[out,retval]*/ VARIANT_BOOL* bResult);
 	STDMETHOD(get_Start)(/*[out,retval]*/Float64* start);
 	STDMETHOD(get_Length)(/*[out,retval]*/Float64* length);
 //	STDMETHOD(get_Item)(/*[in]*/ long idx,/*[out,retval]*/IRebarPattern** pattern);

@@ -96,7 +96,7 @@ public:
    //------------------------------------------------------------------------
    // Computes the load modifier. The type parameter is ignored if the current 
    // specification is lrfdVersionMgr::FirstEdition.
-   Float64 LoadModifier(lrfdTypes::LimitState ls,lrfdTypes::Optimization opt = lrfdTypes::Max);
+   Float64 LoadModifier(lrfdTypes::LimitState ls,lrfdTypes::Optimization opt = lrfdTypes::Max) const;
 
    // GROUP: ACCESS
 

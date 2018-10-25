@@ -232,3 +232,12 @@ STDMETHODIMP CRebarModel::Load(IStructuredLoad2* pLoad)
 
    return S_OK;
 }
+
+// IPersist
+STDMETHODIMP CRebarModel::GetClassID(CLSID* pClassID)
+{
+   CHECK_IN(pClassID);
+
+   *pClassID = GetObjectCLSID();
+   return S_OK;
+}

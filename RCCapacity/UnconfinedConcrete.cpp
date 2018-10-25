@@ -259,3 +259,12 @@ STDMETHODIMP CUnconfinedConcrete::Load(IStructuredLoad2* pLoad)
 
    return S_OK;
 }
+
+// IPersist
+STDMETHODIMP CUnconfinedConcrete::GetClassID(CLSID* pClassID)
+{
+   CHECK_IN(pClassID);
+
+   *pClassID = GetObjectCLSID();
+   return S_OK;
+}

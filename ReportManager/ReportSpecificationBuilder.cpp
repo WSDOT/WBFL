@@ -52,13 +52,23 @@ CReportSpecificationBuilder::~CReportSpecificationBuilder()
 
 boost::shared_ptr<CReportSpecification> CReportSpecificationBuilder::CreateReportSpec(const CReportDescription& rptDesc,boost::shared_ptr<CReportSpecification>& pRptSpec)
 {
-   AFX_MANAGE_STATE(AfxGetStaticModuleState());
-   CReportSpecDlg dlg(&rptDesc,pRptSpec);
-   if ( dlg.DoModal() == IDOK )
+   if ( 0 < rptDesc.GetChapterCount() )
    {
-      return DoCreateReportSpec(rptDesc,dlg.m_ChapterInfo);
+      AFX_MANAGE_STATE(AfxGetStaticModuleState());
+      CReportSpecDlg dlg(&rptDesc,pRptSpec);
+      if ( dlg.DoModal() == IDOK )
+      {
+         return DoCreateReportSpec(rptDesc,dlg.m_ChapterInfo);
+      }
+      else
+      {
+         return boost::shared_ptr<CReportSpecification>();
+      }
    }
-   return boost::shared_ptr<CReportSpecification>();
+   else
+   {
+      return DoCreateReportSpec(rptDesc,rptDesc.GetChapterInfo());
+   }
 }
 
 boost::shared_ptr<CReportSpecification> CReportSpecificationBuilder::CreateDefaultReportSpec(const CReportDescription& rptDesc)

@@ -91,15 +91,16 @@ HRESULT CBridgeDeckRebarLayoutItem::DoLoadItem(IStructuredLoad2* load,IRebarPatt
    return E_FAIL;
 }
 
-STDMETHODIMP CBridgeDeckRebarLayoutItem::ContainsLocation(Float64 distFromStart,VARIANT_BOOL* bResult)
+STDMETHODIMP CBridgeDeckRebarLayoutItem::ContainsLocation(Float64 distFromStart,Float64 offset,VARIANT_BOOL* bResult)
 {
    CHECK_RETVAL(bResult);
 
    Float64 start, length;
    get_Start(&start);
    get_Length(&length);
+   Float64 end = start + length;
 
-   *bResult = (distFromStart < start || (start+length) < distFromStart ) ? VARIANT_FALSE : VARIANT_TRUE;
+   *bResult = (distFromStart < start || end < distFromStart ) ? VARIANT_FALSE : VARIANT_TRUE;
 
    return S_OK;
 }

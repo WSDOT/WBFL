@@ -74,14 +74,17 @@ void CCacheEdit::EnableWindow(BOOL bEnable)
    }
    else
    {
-      if ( m_bShowDefault )
+      if ( IsWindowEnabled() )
       {
-         SetWindowText(m_strDefault);
-      }
-      else
-      {
-         GetWindowText(m_strCache);
-         SetWindowText( _T("") );
+         if ( m_bShowDefault )
+         {
+            SetWindowText(m_strDefault);
+         }
+         else
+         {
+            GetWindowText(m_strCache);
+            SetWindowText( _T("") );
+         }
       }
       CEdit::EnableWindow(bEnable);
    }

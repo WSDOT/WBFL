@@ -48,7 +48,7 @@ public:
    CNegativeMomentBridgeDeckRebarLayoutItem()
 	{
       m_pBridge = 0;
-      m_PierIdx = INVALID_INDEX;
+      m_PierID = INVALID_ID;
       m_LeftCutoff = 0;
       m_RightCutoff = 0;
 	}
@@ -73,12 +73,14 @@ protected:
    virtual HRESULT DoLoadItem(IStructuredLoad2* load,IRebarPattern* *ppItem);
 
    IGenericBridge* m_pBridge;
-   PierIndexType m_PierIdx;
+   PierIDType m_PierID;
    Float64 m_LeftCutoff;
    Float64 m_RightCutoff;
 
    CComPtr<IPier> m_Pier;
    Float64 m_PierLocation; // location of the pier measured as distance from start of bridge
+
+   Float64 GetStart(Float64 offset);
 
 // ISupportsErrorInfo
 public:
@@ -86,7 +88,7 @@ public:
 
 // INegativeMomentBridgeDeckRebarLayoutItem
 public:
-   STDMETHOD(ContainsLocation)(/*[in]*/ Float64 distFromStart,/*[out,retval]*/ VARIANT_BOOL* bResult);
+   STDMETHOD(ContainsLocation)(/*[in]*/ Float64 distFromStart,/*[in]*/ Float64 offset,/*[out,retval]*/ VARIANT_BOOL* bResult);
 	STDMETHOD(get_Start)(/*[out,retval]*/Float64* start);
 	STDMETHOD(get_Length)(/*[out,retval]*/Float64* length);
 //	STDMETHOD(get_Item)(/*[in]*/ long idx,/*[out,retval]*/IRebarPattern** pattern);
@@ -94,8 +96,8 @@ public:
 //   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
    STDMETHOD(get__EnumRebarPatterns)(/*[out,retval]*/IEnumBridgeDeckRebarPatterns** enumRebarPatterns);
 	STDMETHOD(putref_Bridge)(/*[in]*/IGenericBridge* pBridge);
-   STDMETHOD(put_Pier)(PierIndexType pierIdx);
-   STDMETHOD(get_Pier)(PierIndexType* pPierIdx);
+   STDMETHOD(put_PierID)(PierIDType pierID);
+   STDMETHOD(get_PierID)(PierIDType* pPierID);
    STDMETHOD(put_LeftCutoff)(Float64 coLeft);
    STDMETHOD(get_LeftCutoff)(Float64* pcoLeft);
    STDMETHOD(put_RightCutoff)(Float64 coRight);

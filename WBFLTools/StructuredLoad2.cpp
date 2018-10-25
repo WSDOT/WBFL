@@ -484,7 +484,6 @@ HRESULT CStructuredLoad2::get_Property( BSTR name,  VARIANT *pVal)
             {
                pVal->punkVal = piu;
                pVal->vt = VT_UNKNOWN;
-               pVal->punkVal->AddRef(); // for our client
             }
             else
             {

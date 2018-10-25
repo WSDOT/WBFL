@@ -91,15 +91,38 @@ HRESULT CNegativeMomentBridgeDeckRebarLayoutItem::DoLoadItem(IStructuredLoad2* l
    return E_FAIL;
 }
 
-STDMETHODIMP CNegativeMomentBridgeDeckRebarLayoutItem::ContainsLocation(Float64 distFromStart,VARIANT_BOOL* bResult)
+Float64 CNegativeMomentBridgeDeckRebarLayoutItem::GetStart(Float64 offset)
+{
+   Float64 start;
+   get_Start(&start); // start point of bar measured relative to the intersection of the pier line and the alignment
+
+   CComPtr<IAngle> objSkewAngle;
+   m_Pier->get_SkewAngle(&objSkewAngle);
+   Float64 skewAngle;
+   objSkewAngle->get_Value(&skewAngle);
+   start += offset*tan(skewAngle);
+   return start;
+}
+
+STDMETHODIMP CNegativeMomentBridgeDeckRebarLayoutItem::ContainsLocation(Float64 distFromStart,Float64 offset,VARIANT_BOOL* bResult)
 {
    CHECK_RETVAL(bResult);
 
-   Float64 start, length;
-   get_Start(&start);
+   Float64 start = GetStart(offset);
+   Float64 length;
    get_Length(&length);
+   Float64 end = start+length;
 
-   *bResult = (distFromStart < start || (start+length) < distFromStart ) ? VARIANT_FALSE : VARIANT_TRUE;
+   if ( IsEqual(start,distFromStart) || IsEqual(end,distFromStart) )
+   {
+      // deal with the case of the cut being at the ends of the bar
+      // within tolerance
+      *bResult = VARIANT_TRUE;
+   }
+   else
+   {
+      *bResult = (distFromStart < start || end < distFromStart ) ? VARIANT_FALSE : VARIANT_TRUE;
+   }
 
    return S_OK;
 }
@@ -131,18 +154,31 @@ STDMETHODIMP CNegativeMomentBridgeDeckRebarLayoutItem::putref_Bridge(IGenericBri
    return S_OK;
 }
 
-STDMETHODIMP CNegativeMomentBridgeDeckRebarLayoutItem::put_Pier(PierIndexType pierIdx)
+STDMETHODIMP CNegativeMomentBridgeDeckRebarLayoutItem::put_PierID(PierIDType pierID)
 {
-   m_PierIdx = pierIdx;
    ATLASSERT(m_pBridge != NULL); // call putref_Bridge before setting the pier
    CComPtr<IPierCollection> piers;
    m_pBridge->get_Piers(&piers);
 
-   m_Pier.Release();
-   piers->get_Item(m_PierIdx,&m_Pier);
-
    CComPtr<IPier> firstPier;
    piers->get_Item(0,&firstPier);
+
+   m_PierID = pierID;
+   IndexType nPiers;
+   piers->get_Count(&nPiers);
+   for ( PierIndexType pierIdx = 0; pierIdx < nPiers; pierIdx++ )
+   {
+      m_Pier.Release();
+      piers->get_Item(pierIdx,&m_Pier);
+
+      PierIDType id;
+      m_Pier->get_ID(&id);
+      if ( id == pierID )
+      {
+         break;
+      }
+   }
+
 
    CComPtr<IStation> firstStation, pierStation;
    firstPier->get_Station(&firstStation);
@@ -151,15 +187,16 @@ STDMETHODIMP CNegativeMomentBridgeDeckRebarLayoutItem::put_Pier(PierIndexType pi
    CComPtr<IAlignment> alignment;
    m_pBridge->get_Alignment(&alignment);
 
-   alignment->DistanceBetweenStations(CComVariant(pierStation),CComVariant(firstStation),&m_PierLocation);
+   alignment->DistanceBetweenStations(CComVariant(firstStation),CComVariant(pierStation),&m_PierLocation);
+   ATLASSERT(0 <= m_PierLocation);
 
    return S_OK;
 }
 
-STDMETHODIMP CNegativeMomentBridgeDeckRebarLayoutItem::get_Pier(PierIndexType* pPierIdx)
+STDMETHODIMP CNegativeMomentBridgeDeckRebarLayoutItem::get_PierID(PierIDType* pPierID)
 {
-   CHECK_RETVAL(pPierIdx);
-   *pPierIdx = m_PierIdx;
+   CHECK_RETVAL(pPierID);
+   *pPierID = m_PierID;
    return S_OK;
 }
 

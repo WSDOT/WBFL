@@ -43,6 +43,10 @@
 #include <System\IStructuredLoad.h>
 #include <System\XStructuredLoad.h>
 
+#if defined _DEBUG
+#include <System\LogDumpContext.h>
+#endif
+
 // FORWARD DECLARATIONS
 //
 class LIBRARYFWCLASS libLibraryManager;

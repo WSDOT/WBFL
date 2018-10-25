@@ -158,11 +158,23 @@ STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIn
    m_EffFlangeTool->EffectiveFlangeWidthBySegment(m_Bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,&effectiveFlangeWidth);
 
    // Get the distance from the start of the bridge to the point under consideration
+   // What we really want is the distance projected onto the alignment because
+   // this is how rebar is layed out.
+
+   // Consider negative moment deck rebar... The layout out is located based on the pier location
+   // from the start of the bridge, measured along the alignment. Then the cutoff lengths are
+   // measured from this reference point. However, we are asking for information based on the
+   // distance along a segment in a superstructure member. We need to convert the (ssMbrID,segIdx,Xs)
+   // into a point on the alignment. We want to project this point along a line that is parallel
+   // to the closest pier.
 
    // station and offset of point under consideration
    CComPtr<IStation> station;
    Float64 offset;
    m_BridgeGeometryTool->StationAndOffsetBySegment(m_Bridge,ssMbrID,segIdx,Xs,&station,&offset);
+
+   CComPtr<IAlignment> alignment;
+   m_Bridge->get_Alignment(&alignment);
 
    // station of first pier in the bridge
    CComPtr<IPierCollection> piers;
@@ -173,8 +185,6 @@ STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIn
    pier->get_Station(&firstStation);
 
    // location is distance between stations
-   CComPtr<IAlignment> alignment;
-   m_Bridge->get_Alignment(&alignment);
    Float64 cutLocation; // location of where we cutting through the deck to get the rebar. This is measured 
                         // as a distance along the bridge measured from the first pier.
    alignment->DistanceBetweenStations(CComVariant(firstStation),CComVariant(station),&cutLocation);
@@ -206,7 +216,7 @@ STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIn
       rebarLayoutItem->get__EnumRebarPatterns(&enumPatterns);
 
       VARIANT_BOOL bContainsLocation;
-      rebarLayoutItem->ContainsLocation(cutLocation,&bContainsLocation);
+      rebarLayoutItem->ContainsLocation(cutLocation,offset,&bContainsLocation);
       if ( bContainsLocation == VARIANT_TRUE )
       {
          Float64 start,length;

@@ -563,7 +563,7 @@ library WBFLGenericBridge
 	]
 	interface IBridgeDeckRebarLayoutItem : IUnknown
 	{
-	   [helpstring("method ContainsLocation")] HRESULT ContainsLocation([in] Float64 distFromStart,[out,retval] VARIANT_BOOL* bResult);
+	   [helpstring("method ContainsLocation")] HRESULT ContainsLocation([in] Float64 distFromStart,[in]Float64 offset,[out,retval] VARIANT_BOOL* bResult);
 	   [propget,helpstring("property Start")] HRESULT Start([out,retval]Float64* start);
 	   [propget,helpstring("property Length")] HRESULT Length([out,retval]Float64* length);
 	   [propget,helpstring("property Item")] HRESULT Item([in] CollectionIndexType idx,[out,retval]IBridgeDeckRebarPattern** pattern);
@@ -584,8 +584,8 @@ library WBFLGenericBridge
 	]
 	interface INegativeMomentBridgeDeckRebarLayoutItem : IBridgeDeckRebarLayoutItem
 	{
-      [propput,helpstring("property Pier")] HRESULT Pier([in]PierIndexType pierIdx);
-      [propget,helpstring("property Pier")] HRESULT Pier([out,retval]PierIndexType* pPierIdx);
+      [propput,helpstring("property PierID")] HRESULT PierID([in]PierIDType pierID);
+      [propget,helpstring("property PierID")] HRESULT PierID([out,retval]PierIDType* pPierID);
       [propput,helpstring("property LeftCutoff")] HRESULT LeftCutoff([in]Float64 coLeft);
       [propget,helpstring("property LeftCutoff")] HRESULT LeftCutoff([out,retval]Float64* pcoLeft);
       [propput,helpstring("property RightCutoff")] HRESULT RightCutoff([in]Float64 coRight);
@@ -1395,6 +1395,7 @@ library WBFLGenericBridge
 		[helpstring("property CreateTransversePierDescription")] HRESULT CreateTransversePierDescription();
 		[propget,helpstring("property TransversePierDescription")] HRESULT TransversePierDescription([out, retval] ITransversePierDescription* *pVal);
 		[propget,helpstring("property Index")] HRESULT Index([out,retval]PierIndexType* pIndex);
+      [propget,helpstring("property ID")] HRESULT ID([out,retval]PierIDType* pID);
    };
 
    [

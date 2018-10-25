@@ -46,7 +46,7 @@ static char THIS_FILE[] = __FILE__;
 // CModel
 CModel::CModel()
 {  
-#if defined LOGGING_ENABLED
+#if defined ENABLE_LOGGING
    logfile.open("fem.log");
    logfile << "Dump for Fem2d Model"<<std::endl;
 #endif
@@ -72,7 +72,7 @@ CModel::~CModel()
 {  
    ClearAnalysis();
 
-#if defined LOGGING_ENABLED
+#if defined ENABLE_LOGGING
    logfile.close();
 #endif
 
@@ -1398,7 +1398,7 @@ void CModel::FemAnalysis()
 
    AssembleGlobalStiffnessMatrix();
 
-#if defined LOGGING_ENABLED
+#if defined ENABLE_LOGGING
    logfile << "Condensed Global Stiffness Matrix: Size =" << m_K.NumRows()<<"  Bandwidth = "<<m_K.BandWidth() << std::endl;
    logfile << m_K << std::endl;
 #endif
@@ -1423,7 +1423,7 @@ void CModel::FemAnalysis()
       throw;
    }
 
-#if defined LOGGING_ENABLED
+#if defined ENABLE_LOGGING
    logfile <<std::endl<<"Factored Condensed Global Stiffness Matrix: Size =" << m_K.NumRows()<<"  Bandwidth = "<<m_K.BandWidth() << std::endl;
    logfile << m_K << std::endl;
 #endif
@@ -1449,7 +1449,7 @@ void CModel::ComputeLoadings()
       {
          AssembleGlobalForceVector();
 
-#if defined LOGGING_ENABLED
+#if defined ENABLE_LOGGING
          logfile << "Global Force Vector: Loading =" << lid << std::endl;
          for (LONG fi=0; fi<m_NumCondensedDOF; fi++)
             logfile << m_pF[fi] << std::endl;
@@ -1472,7 +1472,7 @@ void CModel::ComputeLoadings()
             ATLASSERT(false); // something getting thrown that shouldn't be
             throw;
          }
-#if defined LOGGING_ENABLED
+#if defined ENABLE_LOGGING
          logfile << "Solution: Loading =" << lid << std::endl;
          for (LONG fi=0; fi<m_NumCondensedDOF; fi++)
             logfile << m_pF[fi] << std::endl;
@@ -1833,7 +1833,7 @@ void CModel::StoreJntResults(LoadCaseIDType lcase)
    Float64 force[3];
    Float64 disp[3];
 
-#if defined LOGGING_ENABLED
+#if defined ENABLE_LOGGING
    logfile << "Loading " << lcase << std::endl;
 #endif
 
@@ -1849,7 +1849,7 @@ void CModel::StoreJntResults(LoadCaseIDType lcase)
       JointIDType id;
       jnt->get_ID(&id);
 
-#if defined LOGGING_ENABLED
+#if defined ENABLE_LOGGING
       logfile << "Joint " << id << std::endl;
       logfile << "Fx = " << force[0] << " Fy = " << force[1] << " Mz = " << force[2] << std::endl;
       logfile << "Dx = " <<  disp[0] << " Dy = " <<  disp[1] << " Dz = " <<  disp[2] << std::endl;
@@ -1883,7 +1883,7 @@ void CModel::StoreJntResults(LoadCaseIDType lcase)
 void CModel::StoreMbrResults(LoadCaseIDType lcase)
 {
 
-#if defined LOGGING_ENABLED
+#if defined ENABLE_LOGGING
    logfile << "StoreMbrResults::Loading = " << lcase << std::endl;
 #endif
 
@@ -1906,7 +1906,7 @@ void CModel::StoreMbrResults(LoadCaseIDType lcase)
       CMember::MbrResult result(lcase);
       mbr->GetResults(&result);
 
-#if defined LOGGING_ENABLED
+#if defined ENABLE_LOGGING
       logfile << "Member " << mid << " Start End" << std::endl;
       logfile << "Fx = " << result.GetForce(0) << " Fy = " << result.GetForce(1) << " Mz = " << result.GetForce(2) << std::endl;
       logfile << "Dx = " <<  result.GetDeflection(0) << " Dy = " <<  result.GetDeflection(1) << " Dz = " <<  result.GetDeflection(2) << std::endl;
@@ -1929,7 +1929,7 @@ void CModel::StoreMbrResults(LoadCaseIDType lcase)
 
 void CModel::StorePoiResults(LoadCaseIDType lcase)
 {
-#if defined LOGGING_ENABLED
+#if defined ENABLE_LOGGING
    logfile << "StorePoiResults::Loading = " << lcase << std::endl;
 #endif
 
@@ -1984,7 +1984,7 @@ void CModel::StorePoiResults(LoadCaseIDType lcase)
 
       mbr->GetDeflection(poiloc,disp);
 
-#if defined LOGGING_ENABLED
+#if defined ENABLE_LOGGING
       logfile << "poi " << poiid << " Left Face" << std::endl;
       logfile << "Fx = " << force[0] << " Fy = " << force[1] << " Mz = " << force[2] << std::endl;
       logfile << "poi " << poiid << " Right Face" << std::endl;
@@ -2096,7 +2096,7 @@ const CModel::PoiResult* CModel::StorePoiResults(LoadCaseIDType lcase, PoiIDType
       force[i] = -1.0 * force[i];
 
 
-#if defined LOGGING_ENABLED
+#if defined ENABLE_LOGGING
    logfile << "poi " << poiid << " Left Face" << std::endl;
    logfile << "Fx = " << force[0] << " Fy = " << force[1] << " Mz = " << force[2] << std::endl;
    logfile << "poi " << poiid << " Right Face" << std::endl;

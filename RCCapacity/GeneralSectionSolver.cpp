@@ -156,7 +156,7 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
    HRESULT hr;
 
    if ( m_Section == NULL )
-      return E_FAIL;
+      return Error(IDS_E_SECTION,IID_IGeneralSectionSolver,RC_E_SECTION);
 
    CComPtr<IUnkArray> slices;
    slices.CoCreateInstance(CLSID_UnkArray);
@@ -606,7 +606,7 @@ HRESULT CGeneralSectionSolver::AnalyzeSlice(CGeneralSectionSolver::SLICEINFO& sl
    {
       hr = slice.FgMaterial->ComputeStress(strain,&fg_stress);
       if ( FAILED(hr) )
-         return E_FAIL;
+         return Error(IDS_E_FGMATERIAL,IID_IGeneralSectionSolver,RC_E_FGMATERIAL);
 
       slice.FgMaterial->StrainLimits(&minStrain,&maxStrain);
       if ( !InRange(minStrain,strain,maxStrain) )
@@ -618,7 +618,7 @@ HRESULT CGeneralSectionSolver::AnalyzeSlice(CGeneralSectionSolver::SLICEINFO& sl
    {
       hr = slice.BgMaterial->ComputeStress(strain,&bg_stress);
       if ( FAILED(hr) )
-         return E_FAIL;
+         return Error(IDS_E_BGMATERIAL,IID_IGeneralSectionSolver,RC_E_BGMATERIAL);
 
 // it doesn't matter if you exceed the strain limit of the back ground material because it doesn't really exist
 //      slice.BgMaterial->StrainLimits(&minStrain,&maxStrain);

@@ -95,6 +95,11 @@ std::vector<CChapterInfo> CReportSpecification::GetChapterInfo() const
    return m_Chapters;
 }
 
+IndexType CReportSpecification::GetChapterCount() const
+{
+   return m_Chapters.size();
+}
+
 HRESULT CReportSpecification::Validate() const
 {
    return S_OK;

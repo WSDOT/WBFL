@@ -40,7 +40,8 @@ class ATL_NO_VTABLE CUnconfinedConcrete :
 	public IUnconfinedConcrete,
 	public IStressStrain,
 	public ISupportUnitServer,
-   public IStructuredStorage2
+   public IStructuredStorage2,
+   public IPersist
 {
 public:
    CUnconfinedConcrete() :
@@ -61,6 +62,7 @@ BEGIN_COM_MAP(CUnconfinedConcrete)
    COM_INTERFACE_ENTRY(ISupportUnitServer)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
+   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
    Float64 m_Fc; // in KSI units
@@ -99,6 +101,10 @@ public:
 public:
    STDMETHOD(Save)(IStructuredSave2* pSave);
    STDMETHOD(Load)(IStructuredLoad2* pLoad);
+
+// IPersist
+public:
+   STDMETHOD(GetClassID)(CLSID* pClassID);
 };
 
 #endif //__UNCONFINEDCONCRETE_H_
