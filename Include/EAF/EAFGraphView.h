@@ -29,6 +29,7 @@
 
 #include <EAF\EAFExp.h>
 #include <IGraphManager.h>
+#include <EAF\EAFView.h>
 
 class CEAFGraphChildFrame;
 
@@ -51,7 +52,7 @@ struct EAFCLASS CEAFGraphViewCreationData
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFGraphView view
-class EAFCLASS CEAFGraphView : public CView
+class EAFCLASS CEAFGraphView : public CEAFView
 {
 public:
 protected:

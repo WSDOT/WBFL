@@ -44,10 +44,14 @@ static char THIS_FILE[]=__FILE__;
 
 CShapeDrawStrategyImpl::CShapeDrawStrategyImpl()
 {
+   m_SolidLineStyle = lsSolid;
    m_SolidLineColor = RGB(0,0,0); // black
    m_SolidFillColor = RGB(0,0,0); // black
+
+   m_VoidLineStyle = lsSolid;
    m_VoidLineColor  = RGB(255,255,255); // white
    m_VoidFillColor  = RGB(255,255,255); // white
+
    m_bFill = false;
    m_bHasBoundingShape = true;
 }
@@ -73,6 +77,16 @@ STDMETHODIMP_(void) CShapeDrawStrategyImpl::GetShape(IShape** ppShape)
       (*ppShape)->AddRef();
 }
 
+STDMETHODIMP_(void) CShapeDrawStrategyImpl::SetSolidLineStyle(LineStyleType lineStyle)
+{
+   m_SolidLineStyle = lineStyle;
+}
+
+STDMETHODIMP_(LineStyleType) CShapeDrawStrategyImpl::GetSolidLineStyle()
+{
+   return m_SolidLineStyle;
+}
+
 STDMETHODIMP_(void) CShapeDrawStrategyImpl::SetSolidLineColor(COLORREF crColor)
 {
    m_SolidLineColor = crColor;
@@ -91,6 +105,16 @@ STDMETHODIMP_(void) CShapeDrawStrategyImpl::SetSolidFillColor(COLORREF crColor)
 STDMETHODIMP_(COLORREF) CShapeDrawStrategyImpl::GetSolidFillColor()
 {
    return m_SolidFillColor;
+}
+
+STDMETHODIMP_(void) CShapeDrawStrategyImpl::SetVoidLineStyle(LineStyleType lineStyle)
+{
+   m_VoidLineStyle = lineStyle;
+}
+
+STDMETHODIMP_(LineStyleType) CShapeDrawStrategyImpl::GetVoidLineStyle()
+{
+   return m_VoidLineStyle;
 }
 
 STDMETHODIMP_(void) CShapeDrawStrategyImpl::SetVoidLineColor(COLORREF crColor)
@@ -267,14 +291,22 @@ void CShapeDrawStrategyImpl::DrawMe(iPointDisplayObject* pDO,CDC* pDC,BOOL bHigh
       fill_color = m_SolidFillColor;
    }
 
-   CPen solid_pen(PS_SOLID,1,line_color);
+   CPen solid_pen;
+   CreatePen(m_SolidLineStyle,1,line_color,solid_pen);
+
    CBrush solid_brush;
    if ( bIsSelected )
+   {
       solid_brush.CreateHatchBrush(HS_DIAGCROSS,fill_color);
+   }
    else
+   {
       solid_brush.CreateSolidBrush(fill_color);
+   }
 
-   CPen void_pen(PS_SOLID,1,m_VoidLineColor);
+   CPen void_pen;
+   CreatePen(m_VoidLineStyle,1,m_VoidLineColor,void_pen);
+
    CBrush void_brush(m_VoidFillColor);
 
    CPen* pOldPen = pDC->SelectObject(&solid_pen);
@@ -288,48 +320,19 @@ void CShapeDrawStrategyImpl::DrawMe(iPointDisplayObject* pDO,CDC* pDC,BOOL bHigh
    else
    {
       if ( m_bFill )
+      {
          pOldBrush = pDC->SelectObject(&solid_brush);
+      }
       else
+      {
          pOldBrush = (CBrush*)pDC->SelectStockObject(NULL_BRUSH);
+      }
    }
 
 
    if ( m_CompositeShape )
    {
-      CollectionIndexType nShapes;
-      m_CompositeShape->get_Count(&nShapes);
-      for ( CollectionIndexType idx = 0; idx < nShapes; idx++ )
-      {
-         CComPtr<ICompositeShapeItem> item;
-         m_CompositeShape->get_Item(idx,&item);
-
-         CComPtr<IShape> shape;
-         item->get_Shape(&shape);
-
-         VARIANT_BOOL bVoid;
-         item->get_Void(&bVoid);
-
-         if ( bVoid == VARIANT_TRUE )
-         {
-            pDC->SelectObject(&void_pen);
-
-            if ( m_bFill )
-               pDC->SelectObject(&void_brush);
-            else
-               pDC->SelectStockObject(NULL_BRUSH);
-         }
-         else
-         {
-            pDC->SelectObject(&solid_pen);
-
-            if ( m_bFill )
-               pDC->SelectObject(&solid_brush);
-            else
-               pDC->SelectStockObject(NULL_BRUSH);
-         }
-
-         DrawShape(pDO,pDC,shape);
-      }
+      DrawShape(pDO,pDC,m_CompositeShape,solid_pen,solid_brush,void_pen,void_brush);
    }
    else
    {
@@ -339,6 +342,52 @@ void CShapeDrawStrategyImpl::DrawMe(iPointDisplayObject* pDO,CDC* pDC,BOOL bHigh
 
    pDC->SelectObject(pOldPen);
    pDC->SelectObject(pOldBrush);
+}
+
+void CShapeDrawStrategyImpl::DrawShape(iDisplayObject* pDO,CDC* pDC,ICompositeShape* pCompositeShape,CPen& solidPen,CBrush& solidBrush,CPen& voidPen,CBrush& voidBrush)
+{
+   CollectionIndexType nShapes;
+   pCompositeShape->get_Count(&nShapes);
+   for ( CollectionIndexType idx = 0; idx < nShapes; idx++ )
+   {
+      CComPtr<ICompositeShapeItem> item;
+      pCompositeShape->get_Item(idx,&item);
+
+      CComPtr<IShape> shape;
+      item->get_Shape(&shape);
+
+      VARIANT_BOOL bVoid;
+      item->get_Void(&bVoid);
+
+      if ( bVoid == VARIANT_TRUE )
+      {
+         pDC->SelectObject(&voidPen);
+
+         if ( m_bFill )
+            pDC->SelectObject(&voidBrush);
+         else
+            pDC->SelectStockObject(NULL_BRUSH);
+      }
+      else
+      {
+         pDC->SelectObject(&solidPen);
+
+         if ( m_bFill )
+            pDC->SelectObject(&solidBrush);
+         else
+            pDC->SelectStockObject(NULL_BRUSH);
+      }
+
+      CComQIPtr<ICompositeShape> composite(shape);
+      if ( composite )
+      {
+         DrawShape(pDO,pDC,composite,solidPen,solidBrush,voidPen,voidBrush);
+      }
+      else
+      {
+         DrawShape(pDO,pDC,shape);
+      }
+   }
 }
 
 void CShapeDrawStrategyImpl::DrawShape(iDisplayObject* pDO,CDC* pDC,IShape* pShape)
@@ -405,4 +454,31 @@ void CShapeDrawStrategyImpl::GetPointsInWorldSpace(iDisplayObject* pDO,IShape* p
 
    (*pPoints) = points;
    (*pPoints)->AddRef();
+}
+
+void CShapeDrawStrategyImpl::CreatePen(LineStyleType lineStyle,UINT width,COLORREF color,CPen& pen)
+{
+   DWORD centerStyle[] = { 20, 2, 3, 2 };
+   LOGBRUSH lb;
+   lb.lbStyle = BS_SOLID;
+   lb.lbColor = color;
+   lb.lbHatch = 0;
+   switch(lineStyle)
+   {
+   case lsSolid:
+      pen.CreatePen(PS_GEOMETRIC | PS_ENDCAP_FLAT | PS_JOIN_BEVEL, width, &lb);
+      break;
+      
+   case lsDot:
+      pen.CreatePen(PS_DOT,width,color);
+      break;
+
+   case lsDash:
+      pen.CreatePen(PS_DASH,width,color);
+      break;
+
+   case lsCenterline:
+      pen.CreatePen(PS_USERSTYLE | PS_GEOMETRIC,width,&lb,sizeof(centerStyle)/sizeof(DWORD),centerStyle);
+      break;
+   }
 }

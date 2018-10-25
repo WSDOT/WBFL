@@ -21,10 +21,10 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_WBFLALL_H_
-#define INCLUDED_WBFLALL_H_
 #pragma once
 
+
+#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 // Make sure compiler settings are correct.
 #if !defined(_DLL)
@@ -48,5 +48,3 @@
 // Common BOOST stuff that we use all the time
 // Boost Libraries from http://www.boost.org
 #include <boost\foreach.hpp>
-
-#endif // INCLUDED_WBFLALL_H_

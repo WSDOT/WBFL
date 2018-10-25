@@ -40,9 +40,13 @@ static char THIS_FILE[] = __FILE__;
 // CVoidedSlabSection
 HRESULT CVoidedSlabSection::FinalConstruct()
 {
+   m_CompositeShape.CoCreateInstance(CLSID_CompositeShape);
+   m_CompositeShape.QueryInterface(&m_Shape);
+   m_CompositeShape.QueryInterface(&m_Position);
+
    m_Beam.CoCreateInstance(CLSID_VoidedSlab);
-   m_Beam.QueryInterface(&m_Shape);
-   m_Beam.QueryInterface(&m_Position);
+   CComQIPtr<IShape> shape(m_Beam);
+   m_CompositeShape->AddShape(shape,VARIANT_FALSE);
 
    return S_OK;
 }
@@ -58,6 +62,7 @@ STDMETHODIMP CVoidedSlabSection::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IVoidedSlabSection,
       &IID_IGirderSection,
       &IID_IShape,
+      &IID_ICompositeShape,
       &IID_IXYPosition,
 	};
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
@@ -106,11 +111,9 @@ STDMETHODIMP CVoidedSlabSection::put_Beam(IVoidedSlab* beam)
 
    m_Beam.Release();
    clone.QueryInterface(&m_Beam);
-
    m_Shape = clone;
 
-   m_Position.Release();
-   m_Shape.QueryInterface(&m_Position);
+   m_CompositeShape->Replace(0,m_Shape);
 
    return S_OK;
 }
@@ -535,11 +538,11 @@ STDMETHODIMP CVoidedSlabSection::Clone(IShape** pClone)
    CComObject<CVoidedSlabSection>* clone;
    CComObject<CVoidedSlabSection>::CreateInstance(&clone);
 
-   CComPtr<IVoidedSlabSection> flanged_beam = clone;
+   CComPtr<IVoidedSlabSection> voided_slab_section = clone;
+   voided_slab_section->put_Beam(m_Beam);
 
-   flanged_beam->put_Beam(m_Beam);
+   CComQIPtr<IShape> shape(voided_slab_section);
 
-   CComQIPtr<IShape> shape(flanged_beam);
    (*pClone) = shape;
    (*pClone)->AddRef();
 
@@ -561,68 +564,57 @@ STDMETHODIMP CVoidedSlabSection::ClipIn(IRect2d* pRect,IShape** pShape)
 /////////////////////////////////////////////////////////////////////////////
 STDMETHODIMP CVoidedSlabSection::get_StructuredStorage(IStructuredStorage2* *pStg)
 {
-   CComQIPtr<ICompositeShape> compshape(m_Shape);
-   return compshape->get_StructuredStorage(pStg);
+   return m_CompositeShape->get_StructuredStorage(pStg);
 }
 
 STDMETHODIMP CVoidedSlabSection::get_Shape(IShape* *pVal)
 {
-   CComQIPtr<ICompositeShape> compshape(m_Shape);
-   return compshape->get_Shape(pVal);
+   return m_CompositeShape->get_Shape(pVal);
 }
 
 STDMETHODIMP CVoidedSlabSection::get_Item(CollectionIndexType idx,ICompositeShapeItem* *pVal)
 {
-   CComQIPtr<ICompositeShape> compshape(m_Shape);
-   return compshape->get_Item(idx,pVal);
+   return m_CompositeShape->get_Item(idx,pVal);
 }
 
 STDMETHODIMP CVoidedSlabSection::get__NewEnum(IUnknown* *pVal)
 {
-   CComQIPtr<ICompositeShape> compshape(m_Shape);
-   return compshape->get__NewEnum(pVal);
+   return m_CompositeShape->get__NewEnum(pVal);
 }
 
 STDMETHODIMP CVoidedSlabSection::get_Count(CollectionIndexType *pVal)
 {
-   CComQIPtr<ICompositeShape> compshape(m_Shape);
-   return compshape->get_Count(pVal);
+   return m_CompositeShape->get_Count(pVal);
 }
 
 STDMETHODIMP CVoidedSlabSection::Remove(CollectionIndexType idx)
 {
-   CComQIPtr<ICompositeShape> compshape(m_Shape);
-   return compshape->Remove(idx);
+   return m_CompositeShape->Remove(idx);
 }
 
 STDMETHODIMP CVoidedSlabSection::Clear()
 {
-   CComQIPtr<ICompositeShape> compshape(m_Shape);
-   return compshape->Clear();
+   return m_CompositeShape->Clear();
 }
 
 STDMETHODIMP CVoidedSlabSection::ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
 {
-   CComQIPtr<ICompositeShape> compshape(m_Shape);
-   return compshape->ReplaceEx(idx,pShapeItem);
+   return m_CompositeShape->ReplaceEx(idx,pShapeItem);
 }
 
 STDMETHODIMP CVoidedSlabSection::Replace(CollectionIndexType idx,IShape* pShape)
 {
-   CComQIPtr<ICompositeShape> compshape(m_Shape);
-   return compshape->Replace(idx,pShape);
+   return m_CompositeShape->Replace(idx,pShape);
 }
 
 STDMETHODIMP CVoidedSlabSection::AddShapeEx(ICompositeShapeItem* ShapeItem)
 {
-   CComQIPtr<ICompositeShape> compshape(m_Shape);
-   return compshape->AddShapeEx(ShapeItem);
+   return m_CompositeShape->AddShapeEx(ShapeItem);
 }
 
 STDMETHODIMP CVoidedSlabSection::AddShape(IShape* shape,VARIANT_BOOL bVoid)
 {
-   CComQIPtr<ICompositeShape> compshape(m_Shape);
-   return compshape->AddShape(shape,bVoid);
+   return m_CompositeShape->AddShape(shape,bVoid);
 }
 
 // XYPosition

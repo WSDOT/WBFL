@@ -159,6 +159,10 @@ public:
    Float64 GetYieldStrength() const;
    Float64 GetE() const;
 
+   static Float64 GetUltimateStrength(Type type,Grade grade);
+   static Float64 GetYieldStrength(Type type,Grade grade);
+   static Float64 GetE(Type type,Grade grade);
+
    // GROUP: INQUIRY
    // GROUP: DEBUG
 
@@ -267,17 +271,17 @@ inline Float64 matRebar::GetNominalArea() const
 
 inline Float64 matRebar::GetUltimateStrength() const
 {
-   return m_Fu;
+   return matRebar::GetUltimateStrength(m_Type,m_Grade);
 }
 
 inline Float64 matRebar::GetYieldStrength() const
 {
-   return m_Fy;
+   return matRebar::GetYieldStrength(m_Type,m_Grade);
 }
 
 inline Float64 matRebar::GetE() const
 {
-   return m_Es;
+   return matRebar::GetE(m_Type,m_Grade);
 }
 
 // EXTERNAL REFERENCES

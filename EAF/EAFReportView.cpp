@@ -55,7 +55,7 @@ static char THIS_FILE[] = __FILE__;
 // CEAFReportView
 
 
-IMPLEMENT_DYNCREATE(CEAFReportView, CView)
+IMPLEMENT_DYNCREATE(CEAFReportView, CEAFView)
 bool CEAFReportView::ms_bIsUpdatingReport = false;
 
 CEAFReportView::CEAFReportView()
@@ -80,7 +80,7 @@ CEAFReportView::~CEAFReportView()
    delete(m_pBtnEdit);
 }
 
-BEGIN_MESSAGE_MAP(CEAFReportView, CView)
+BEGIN_MESSAGE_MAP(CEAFReportView, CEAFView)
 	//{{AFX_MSG_MAP(CEAFReportView)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
@@ -136,12 +136,12 @@ void CEAFReportView::OnDraw(CDC* pDC)
 void CEAFReportView::AssertValid() const
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
-	CView::AssertValid();
+	CEAFView::AssertValid();
 }
 
 void CEAFReportView::Dump(CDumpContext& dc) const
 {
-	CView::Dump(dc);
+	CEAFView::Dump(dc);
 }
 #endif //_DEBUG
 
@@ -150,7 +150,7 @@ void CEAFReportView::Dump(CDumpContext& dc) const
 
 int CEAFReportView::OnCreate(LPCREATESTRUCT lpCreateStruct) 
 {
-	if (CView::OnCreate(lpCreateStruct) == -1)
+	if (CEAFView::OnCreate(lpCreateStruct) == -1)
 		return -1;
 	
    return 0;
@@ -395,7 +395,7 @@ void CEAFReportView::RefreshReport()
 
 void CEAFReportView::OnSize(UINT nType, int cx, int cy) 
 {
-	CView::OnSize(nType, cx, cy);
+	CEAFView::OnSize(nType, cx, cy);
 
    if ( m_pReportBrowser )
    {
@@ -432,7 +432,7 @@ void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
       return; // this the OnUpdate that comes from OnInitialUpdate() ... nothing to do here
    }
 
-   CView::OnUpdate( pSender, lHint, pHint ); // base class
+   CEAFView::OnUpdate( pSender, lHint, pHint ); // base class
 
    if ( lHint == EAF_HINT_UPDATEERROR )
    {
@@ -563,7 +563,7 @@ void CEAFReportView::OnInitialUpdate()
          CreateReport(rptIdx,bPromptForSpec);
       }
 
-      CView::OnInitialUpdate();
+      CEAFView::OnInitialUpdate();
    }
    catch(...)
    {
@@ -652,7 +652,7 @@ BOOL CEAFReportView::PreTranslateMessage(MSG* pMsg)
       }
    }
 
-	return CView::PreTranslateMessage(pMsg);
+	return CEAFView::PreTranslateMessage(pMsg);
 }
 
 BOOL CEAFReportView::OnEraseBkgnd(CDC* pDC)
@@ -680,7 +680,7 @@ BOOL CEAFReportView::PreCreateWindow(CREATESTRUCT& cs)
 {
    cs.style |= WS_CLIPCHILDREN;
 
-   return CView::PreCreateWindow(cs);
+   return CEAFView::PreCreateWindow(cs);
 }
 
 void CEAFReportView::CreateEditButton()

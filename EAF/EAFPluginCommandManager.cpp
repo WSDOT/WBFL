@@ -220,5 +220,7 @@ bool CEAFPluginCommandManager::IsInStandardRange(UINT nPluginCmdID)
 {
    // Command IDs in this range are handled by MFC with standard
    // command processors.
-   return (0xE000 <= nPluginCmdID &&  nPluginCmdID <= 0xEFFF);
+   return (0xE000 <= nPluginCmdID && nPluginCmdID <= 0xEFFF) // command ID from plugin is in the range of standard command processed by MFC
+          ||
+          (nPluginCmdID < EAF_FIRST_USER_COMMAND); // command ID from plugin is in the range of standard commands processed by EAF
 }

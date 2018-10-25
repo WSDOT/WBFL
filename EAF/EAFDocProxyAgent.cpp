@@ -164,6 +164,11 @@ CView* CEAFDocProxyAgent::CreateView(long key,LPVOID pData)
    return m_pDoc->CreateView(key,pData);
 }
 
+void CEAFDocProxyAgent::UpdateRegisteredView(long key,CView* pSender,LPARAM lHint,CObject* pHint)
+{
+   m_pDoc->UpdateRegisteredView(key,pSender,lHint,pHint);
+}
+
 ///////////////////////////////////////////////////////
 // IEAFMainMenu
 CEAFMenu* CEAFDocProxyAgent::GetMainMenu()

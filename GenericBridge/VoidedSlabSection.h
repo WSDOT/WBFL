@@ -67,6 +67,7 @@ BEGIN_COM_MAP(CVoidedSlabSection)
 END_COM_MAP()
 
 private:
+   CComPtr<ICompositeShape> m_CompositeShape;
    CComPtr<IVoidedSlab> m_Beam;
    CComPtr<IShape> m_Shape;
    CComPtr<IXYPosition> m_Position;

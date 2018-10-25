@@ -2418,6 +2418,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EAFView.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\EditCustomReportDlg.cpp"
 				>
 			</File>
@@ -2816,6 +2820,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\EAF\EAFUtilities.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFView.h"
 				>
 			</File>
 			<File

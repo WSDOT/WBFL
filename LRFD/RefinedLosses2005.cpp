@@ -347,18 +347,13 @@ Float64 lrfdRefinedLosses2005::TimeDependentLossesAfterDeck() const
       UpdateLosses();
    }
 
-   Float64 loss = m_dfpSD + m_dfpCD + m_dfpR2;
+   Float64 loss = m_dfpSD + m_dfpCD + m_dfpR2 - m_dfpSS;
    return loss;
 }
 
 Float64 lrfdRefinedLosses2005::TimeDependentLosses() const
 {
-   if ( m_IsDirty )
-   {
-      UpdateLosses();
-   }
-
-   return m_dfpLT;
+   return TimeDependentLossesBeforeDeck() + TimeDependentLossesAfterDeck();
 }
 
 const lrfdCreepCoefficient2005& lrfdRefinedLosses2005::GetCreepInitialToFinal() const
@@ -809,7 +804,6 @@ void lrfdRefinedLosses2005::MakeCopy( const lrfdRefinedLosses2005& rOther )
    m_dfpSD                 = rOther.m_dfpSD;
    m_dfpCD                 = rOther.m_dfpCD;
    m_dfpR2                 = rOther.m_dfpR2;
-   m_dfpLT                 = rOther.m_dfpLT;
 
    m_dfpSRH[TEMPORARY_STRAND] = rOther.m_dfpSRH[TEMPORARY_STRAND];
    m_dfpCRH[TEMPORARY_STRAND] = rOther.m_dfpCRH[TEMPORARY_STRAND];
@@ -1072,13 +1066,6 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
 
    // if there aren't any strands, then there can't be gain due to deck shrinkage
    m_dfpSS = IsZero(m_ApsPerm) ? 0.0 : (m_Ep/m_Ec)*m_DeltaFcdf*m_Kdf*(1 + 0.7*m_CreepDeckToFinal.GetCreepCoefficient());
-
-
-   m_dfpLT = m_dfpSR + m_dfpCR + m_dfpR1 + m_dfpSD + m_dfpCD + m_dfpR2;
-   if ( m_SectionProperties == sptGross )
-   {
-      m_dfpLT -= m_dfpSS;
-   }
 }
 
 

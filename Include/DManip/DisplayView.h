@@ -175,10 +175,6 @@ protected:
 	virtual void HandleMouseWheel(UINT nFlags, short zDelta, CPoint logPoint);
 	virtual void HandleKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	virtual void HandleContextMenu(CWnd* pWnd,CPoint logPoint);
-
-private:
-
-   int m_nMapMode;   // Mapping mode
 };
 
 /////////////////////////////////////////////////////////////////////////////

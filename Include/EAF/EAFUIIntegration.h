@@ -49,6 +49,9 @@ interface IEAFViewRegistrar : IUnknown
    // Creates a view. pData is a pointer to user defined view creation data. During view creation
    // the view class can get access to the creation data from the active document template
    virtual CView* CreateView(long key,LPVOID pData=0) = 0;
+
+   // Calls OnUpdate for a registered view
+   virtual void UpdateRegisteredView(long key,CView* pSender,LPARAM lHint,CObject* pHint) = 0;
 };
 
 ///////////////////////////////////////////////////////////////

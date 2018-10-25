@@ -26,6 +26,7 @@
 #pragma once
 
 #include <MfcTools\MfcToolsExp.h>
+#include "afxcmn.h"
 
 
 class CGetFolderControl;

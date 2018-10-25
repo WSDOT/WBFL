@@ -217,7 +217,7 @@ void lrfdRebarPool::GetBarSizeRange(matRebar::Type type,matRebar::Grade grade,ma
 void lrfdRebarPool::GetTransverseBarSizeRange(matRebar::Type type,matRebar::Grade grade,matRebar::Size& minSize,matRebar::Size& maxSize)
 {
    minSize = matRebar::bs3;
-   maxSize = matRebar::bs6;
+   maxSize = matRebar::bs8; // LRFD 5.10.2.1
 }
 
 const matRebar* lrfdRebarPool::GetRebar(Int32 key)
@@ -374,11 +374,11 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-lrfdRebarIter::lrfdRebarIter(matRebar::Grade grade,matRebar::Type type,matRebar::Size maxSize)
+lrfdRebarIter::lrfdRebarIter(matRebar::Grade grade,matRebar::Type type,bool bTransverseBarsOnly)
 {
    m_Grade = grade;
    m_Type  = type;
-   m_MaxBarSize = maxSize;
+   m_bTransverseBarsOnly = bTransverseBarsOnly;
 
    // Make sure the rebarpool is up and running
    lrfdRebarPool* pPool = lrfdRebarPool::GetInstance();
@@ -423,6 +423,15 @@ public:
 
 void lrfdRebarIter::Begin()
 {
+   matRebar::Size minBarSize, maxBarSize;
+   if ( m_bTransverseBarsOnly )
+   {
+      lrfdRebarPool::GetTransverseBarSizeRange(m_Type,m_Grade,minBarSize,maxBarSize);
+   }
+   else
+   {
+      lrfdRebarPool::GetBarSizeRange(m_Type,m_Grade,minBarSize,maxBarSize);
+   }
    m_Bars.clear();
    CHECK(m_Bars.size() == 0);
    CHECK(m_Bars.empty() == true);
@@ -432,7 +441,8 @@ void lrfdRebarIter::Begin()
    {
       const boost::shared_ptr<matRebar>& AutoPtr = iter->second;
       const matRebar* pRebar = AutoPtr.get();
-      if ( pRebar->GetGrade() == m_Grade && pRebar->GetType() == m_Type && pRebar->GetSize() <= m_MaxBarSize )
+      matRebar::Size size = pRebar->GetSize();
+      if ( minBarSize <= size && size <= maxBarSize && pRebar->GetGrade() == m_Grade && pRebar->GetType() == m_Type )
       {
          m_Bars.push_back( pRebar );
       }
@@ -552,7 +562,7 @@ void lrfdRebarIter::MakeCopy(const lrfdRebarIter& rOther)
    m_End     = rOther.m_End;
    m_Grade   = rOther.m_Grade;
    m_Type    = rOther.m_Type;
-   m_MaxBarSize = rOther.m_MaxBarSize;
+   m_bTransverseBarsOnly = rOther.m_bTransverseBarsOnly;
 }
 
 //======================== ACCESS     =======================================

@@ -122,7 +122,9 @@ STDMETHODIMP_(void) CDisplayMgrImpl::PrepareDragData(iDragDataSink* pSink)
 STDMETHODIMP_(void) CDisplayMgrImpl::SetView(CDisplayView* pView)
 {
    if ( m_pView )
+   {
       m_DropTarget.Revoke();
+   }
 
    m_pView = pView;
 

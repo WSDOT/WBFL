@@ -140,6 +140,7 @@ rptParagraph& rptRcTable::operator()( RowIndexType RowNo, ColumnIndexType ColNo)
 
    if ( m_NumColumns <= ColNo )
    {
+#if !defined _DEBUG
       // Report class name if no label
       std::_tstring tname;
       if (m_Label.GetName() == 0)
@@ -153,6 +154,7 @@ rptParagraph& rptRcTable::operator()( RowIndexType RowNo, ColumnIndexType ColNo)
       }
 
       ::MessageBox(NULL,tname.c_str(),_T("Table Error"),MB_OK | MB_ICONEXCLAMATION);
+#endif
       ColNo = m_NumColumns-1;
    }
 
@@ -186,6 +188,7 @@ const rptParagraph& rptRcTable::operator()(RowIndexType RowNo, ColumnIndexType C
 
    if ( m_NumColumns <= ColNo )
    {
+#if !defined _DEBUG
       // Report class name if no label
       std::_tstring tname = this->m_Label.GetName();
       if (tname.size()==0)
@@ -195,6 +198,7 @@ const rptParagraph& rptRcTable::operator()(RowIndexType RowNo, ColumnIndexType C
       }
 
       ::MessageBox(NULL,tname.c_str(),_T("Table Error"),MB_OK | MB_ICONEXCLAMATION);
+#endif
       ColNo = m_NumColumns-1;
    }
 

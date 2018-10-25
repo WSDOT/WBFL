@@ -26,6 +26,7 @@
 
 #include "stdafx.h"
 #include "resource.h"
+#include "BackDoor.h"
 #include <EAF\EAFResources.h>
 #include <EAF\EAFDocument.h>
 #include <EAF\EAFApp.h>
@@ -33,6 +34,7 @@
 #include <EAF\EAFAppPlugin.h>
 #include <EAF\EAFDocTemplateRegistrar.h>
 #include <EAF\EAFHints.h>
+#include <EAF\EAFView.h>
 
 // Logging
 #include <iostream>
@@ -216,6 +218,37 @@ CEAFAcceleratorTable* CEAFDocument::GetAcceleratorTable()
    return pMainFrame->GetAcceleratorTable();
 }
 
+HINSTANCE CEAFDocument::GetResourceInstance()
+{
+   return GetInstanceHandle();
+}
+
+void CEAFDocument::UpdateApplicationIcon()
+{
+   CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)GetDocTemplate();
+   CEAFMainFrame* pFrame = EAFGetMainFrame();
+   m_hMainFrameBigIcon = pFrame->GetIcon(TRUE);
+   m_hMainFrameSmallIcon = pFrame->GetIcon(FALSE);
+   HICON hIcon = ::LoadIcon(GetResourceInstance(),MAKEINTRESOURCE(pTemplate->GetResourceID()));
+   if ( hIcon )
+   {
+      pFrame->SetIcon(hIcon,TRUE);
+      pFrame->SetIcon(hIcon,FALSE);
+   }
+}
+
+void CEAFDocument::ResetApplicationIcon()
+{
+   // put the main frame toolbar back the way it was
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
+   pMainFrame->ShowMainFrameToolBar();
+   pMainFrame->ShowMainFrameBackGround();
+
+   // Put the main frame icon back the way it was
+   pMainFrame->SetIcon(m_hMainFrameBigIcon,TRUE);
+   pMainFrame->SetIcon(m_hMainFrameSmallIcon,FALSE);
+}
+
 CEAFMenu* CEAFDocument::CreateMainMenu()
 {
    return new CEAFMenu(EAFGetMainFrame(),GetPluginCommandManager());
@@ -396,6 +429,45 @@ CView* CEAFDocument::CreateView(long key,LPVOID pData)
    return pView;
 }
 
+void CEAFDocument::UpdateRegisteredView(long key,CView* pSender,LPARAM lHint,CObject* pHint)
+{
+   CEAFApp* pApp = EAFGetApp();
+
+   // if this assert fires, you probably added AFX_MANAGE_STATE(AfxGetStaticModuleState())
+   // in the scope of calling this method
+   // Try removing AFX_MANAGE_STATE or re-scoping it
+   ASSERT(pApp->IsKindOf(RUNTIME_CLASS(CEAFApp)));
+
+   CEAFDocTemplateRegistrar* pRegistrar = pApp->GetDocTemplateRegistrar();
+   CEAFDocTemplate*          pTemplate  = pRegistrar->GetDocTemplate(key);
+   CRuntimeClass* pViewClass = pTemplate->GetViewClass();
+
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
+
+   POSITION pos = GetFirstViewPosition();
+   while (pos != NULL)
+   {
+      CView* pView = GetNextView(pos);
+      if (pView->IsKindOf(pViewClass))
+      {
+         if ( pView != pSender )
+         {
+            if ( pView->IsKindOf(RUNTIME_CLASS(CEAFView)) )
+            {
+               // EAFDocuments can only call OnUpdate on CEAFViews
+               // OnUpdate is a protected method so access is restricted
+               ((CEAFView*)pView)->OnUpdate(pSender,lHint,pHint);
+            }
+            else
+            {
+               // OnInitialUpdate calls OnUpdate, however, the hint parameters can't be sent
+               pView->OnInitialUpdate();
+            }
+         }
+      }
+   }
+}
+
 void CEAFDocument::FailSafeLogMessage(LPCTSTR msg)
 {
    CEAFApp* pApp = EAFGetApp();
@@ -499,6 +571,8 @@ BOOL CEAFDocument::Init()
    }
 
    LoadDocumentSettings();
+
+   UpdateApplicationIcon();
 
    return TRUE;
 }
@@ -1076,6 +1150,8 @@ void CEAFDocument::OnCloseDocument()
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    pMainFrame->ShowMainFrameToolBar();
    pMainFrame->ShowMainFrameBackGround();
+
+   ResetApplicationIcon();
 
    // this has to come last as the document deletes itself
    CDocument::OnCloseDocument();

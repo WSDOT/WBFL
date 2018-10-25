@@ -179,11 +179,13 @@ public:
    // registers a view with the doc/view model. returns a key value that is used to identify the view
    virtual long RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=NULL,int maxViewCount=-1);
 
-   // removes a previously created view
+   // removes a previously registered view
    virtual void RemoveView(long key);
 
    // creates a view. pass optional creation data to the view through pData
    virtual CView* CreateView(long key,LPVOID pData=0);
+
+   virtual void UpdateRegisteredView(long key,CView* pSender,LPARAM lHint,CObject* pHint);
 
    //////////////////////////////////////////////////////////////
    // Document Initialization
@@ -259,7 +261,9 @@ protected:
 	afx_msg void OnUpdateRedo(CCmdUI* pCmdUI);
    //}}AFX_MSG
 
-   
+   virtual HINSTANCE GetResourceInstance();
+   virtual void UpdateApplicationIcon();
+   virtual void ResetApplicationIcon();
 
    /// called by the framework to create the main menu object
    virtual CEAFMenu* CreateMainMenu();
@@ -292,6 +296,9 @@ private:
    CEAFMenu* m_pMainMenu;
    CEAFPluginCommandManager* m_pPluginCommandMgr;
    CEAFDocPluginManager m_DocPluginMgr;
+
+   HICON m_hMainFrameBigIcon;
+   HICON m_hMainFrameSmallIcon;
 
    CEAFStatusCenter*    m_pStatusCenter;
    CStatusCenterDlg* m_pStatusCenterDlg;

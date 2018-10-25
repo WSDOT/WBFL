@@ -77,6 +77,8 @@ END_MESSAGE_MAP()
 
 CEAFMainFrame::CEAFMainFrame()
 {
+   m_pWndCurrentChild = NULL;
+
    m_bDisableFailCreateMsg = FALSE;
    m_bCreateCanceled = FALSE;
 
@@ -108,6 +110,8 @@ CEAFMainFrame::~CEAFMainFrame()
    {
       delete m_pMainMenu;
    }
+
+   m_wndMDIClient.Detach();
 
    //if ( m_pBackgroundWnd )
    //{
@@ -191,6 +195,12 @@ int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CMDIFrameWnd::OnCreate(lpCreateStruct) == -1)
    {
 		return -1;
+   }
+
+   if ( m_wndMDIClient.Attach(m_hWndMDIClient) == 0 )
+   {
+      TRACE0("Failed to attach to MDIClient.\n");
+      return -1;
    }
 	
    // Restore tool tips mode
@@ -776,6 +786,7 @@ CView* CEAFMainFrame::CreateOrActivateFrame(CEAFDocTemplate* pTemplate)
 
       pNewFrame->ActivateFrame();
       pTemplate->InitialUpdateFrame(pNewFrame, pDoc);
+      pNewFrame->RecalcLayout();
       pNewView = pNewFrame->GetActiveView();
    }
 
@@ -1247,3 +1258,81 @@ CEAFMenu* CEAFMainFrame::CreateMainMenu()
    CEAFApp* pApp = EAFGetApp();
    return new CEAFMenu(this,pApp->GetPluginCommandManager());
 }
+
+//----------------------------------------------------------------
+// This function finds the CMDIChildWnd in the list of windows
+// maintained by the application's MDIClient window following the
+// one pointed to by the member variable m_pWndCurrentChild. If no
+// further CMDIChildWnds are in the list, NULL is returned.
+//----------------------------------------------------------------
+void CEAFMainFrame::InitMDIChildWndEnum()
+{
+   m_pWndCurrentChild = NULL;
+}
+
+CMDIChildWnd* CEAFMainFrame::GetNextMDIChildWnd()
+{
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
+   if (!m_pWndCurrentChild)
+     {
+      // Get the first child window.
+      m_pWndCurrentChild = m_wndMDIClient.GetWindow(GW_CHILD);
+     }
+   else
+     {
+      // Get the next child window in the list.
+        m_pWndCurrentChild=
+           (CMDIChildWnd*)m_pWndCurrentChild->GetWindow(GW_HWNDNEXT);
+     }
+
+   if (!m_pWndCurrentChild)
+     {
+      // No child windows exist in the MDIClient,
+      // or you are at the end of the list. This check
+      // will terminate any recursion.
+      return NULL;
+     }
+
+  // Check the kind of window
+    if (!m_pWndCurrentChild->GetWindow(GW_OWNER))
+      {
+        if (m_pWndCurrentChild->
+                           IsKindOf(RUNTIME_CLASS(CMDIChildWnd)))
+          {
+                 // CMDIChildWnd or a derived class.
+                 return (CMDIChildWnd*)m_pWndCurrentChild;
+          }
+        else
+          {
+                 // Window is foreign to the MFC framework.
+                 // Check the next window in the list recursively.
+                 return GetNextMDIChildWnd();
+          }
+      }
+    else
+      {
+          // Title window associated with an iconized child window.
+          // Recurse over the window manager's list of windows.
+          return GetNextMDIChildWnd();
+      }
+}
+
+//-----------------------------------------------------------------
+// This function counts the number of CMDIChildWnd objects
+// currently maintained by the MDIClient.
+//-----------------------------------------------------------------
+
+int CEAFMainFrame::GetCountMDIChildWnds()
+{
+ int count = 0;
+
+ CMDIChildWnd* pChild = GetNextMDIChildWnd();
+ while (pChild)
+  {
+    count++;
+    pChild = GetNextMDIChildWnd();
+  }
+ return count;
+}
+				
