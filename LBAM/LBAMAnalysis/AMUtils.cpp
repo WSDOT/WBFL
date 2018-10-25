@@ -300,6 +300,16 @@ PoiIDType PoiMap::GetLBAMPoiID() const
    return m_LBAMPoiID;
 }
 
+void PoiMap::AddAlternateLBAMPoiID(PoiIDType id)
+{
+   m_AlternateLBAMPoiIDs.push_back(id);
+}
+
+const std::vector<PoiIDType>& PoiMap::GetAlternateLBAMPoiIDs() const
+{
+   return m_AlternateLBAMPoiIDs;
+}
+
 void PoiMap::SetIsInternallyGenerated(bool is)
 {
    m_InternallyGenerated=is;
@@ -944,9 +954,10 @@ bool SortedPoiMapTracker::IsPoiAtNextLocation(Float64 nextX, Float64* foundX)
    }
 }
 
-SortedPoiMapTracker::PoiCoveredRes SortedPoiMapTracker::IsPoiCovered(Float64 globalX, IFem2dPOICollection* pFemPois, Float64 tolerance)
+SortedPoiMapTracker::PoiCoveredRes SortedPoiMapTracker::IsPoiCovered(Float64 globalX, IFem2dPOICollection* pFemPois, Float64 tolerance,IDType* pCoveringID)
 {
    // loop until we get to (or pass) the location
+   *pCoveringID = INVALID_ID;
    while(true)
    {
       if ( m_Cursor==end() )
@@ -987,6 +998,10 @@ SortedPoiMapTracker::PoiCoveredRes SortedPoiMapTracker::IsPoiCovered(Float64 glo
             }
             else
             {
+               if ( intres == None )
+               {
+                  *pCoveringID = curinf.GetLBAMPoiID();
+               }
                return (PoiCoveredRes)intres;;
             }
 

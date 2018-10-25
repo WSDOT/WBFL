@@ -382,7 +382,7 @@ STDMETHODIMP CSurfaceTemplate::GetRidgePointOffset(IndexType ridgePointIdx,Index
    IndexType startSegmentIdx = min(refPointIdx,ridgePointIdx);
    IndexType endSegmentIdx   = max(refPointIdx,ridgePointIdx)-1;
    *pOffset = 0;
-   for ( IndexType idx = startSegmentIdx; idx < endSegmentIdx; idx++ )
+   for ( IndexType idx = startSegmentIdx; idx <= endSegmentIdx; idx++ )
    {
       CComPtr<ITemplateSegment> segment;
       HRESULT hr = get_Item(idx,&segment);

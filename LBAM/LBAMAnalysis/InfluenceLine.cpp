@@ -395,7 +395,7 @@ STDMETHODIMP CInfluenceLine::Evaluate(Float64 location, InfluenceSideType side, 
                   {
                      ATLASSERT(i!=num_pts-1);
                      const InflPoint& rgt = container[i+1];
-                     ATLASSERT(rgt.m_LocationType==iflDualRight);
+                     //ATLASSERT(rgt.m_LocationType==iflDualRight);
                      ATLASSERT(IsEqual(rgt.m_Location,location));
                      *isDualValue = VARIANT_TRUE;
                      *rightValue= rgt.m_Value;
@@ -427,7 +427,7 @@ STDMETHODIMP CInfluenceLine::Evaluate(Float64 location, InfluenceSideType side, 
          {
             // go to next value
             const InflPoint& rgt = container[m_LastFound[side]+1];
-            ATLASSERT(rgt.m_LocationType==iflDualRight);
+            //ATLASSERT(rgt.m_LocationType==iflDualRight);
             ATLASSERT(IsEqual(rgt.m_Location,location,m_ZeroTolerance));
             *isDualValue = VARIANT_TRUE;
             *leftValue = first_gs.m_Value;

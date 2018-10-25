@@ -685,6 +685,19 @@ BOOL CWebBrowser::PreTranslateMessage(MSG *pMsg)
 {
 	BOOL result = FALSE;
 
+   // IE is a tabbed browser and it gobbles up the Ctrl-Tab/Shift-Ctrl-Tab message to
+   // swap between tabs with the keyboard. We are using IE as a single window control so
+   // we need Ctrl-Tab/Shift-Ctrl-Tab to swap between the windows of our application.
+   // Pretranslate the message. If it is a KeyDown message and Ctrl-Tab or Shift-Ctrl-Tab
+   // are pressed, just pass the message along to the regular MFC command processing.
+   if ( pMsg->message == WM_KEYDOWN )
+   {
+      BOOL bIsCtrlTab      = ::GetKeyState(VK_CONTROL) && ::GetKeyState(VK_TAB);
+      BOOL bIsShiftCtrlTab = ::GetKeyState(VK_SHIFT) && ::GetKeyState(VK_CONTROL) && ::GetKeyState(VK_TAB);
+      if( bIsCtrlTab || bIsShiftCtrlTab )
+         return CWnd::PreTranslateMessage(pMsg);
+   }
+
 	// translate keys correctly, especially Tab, Del, (Enter?)
 	
 	if (_Browser != NULL) {

@@ -205,6 +205,8 @@ public:
                                   IInfluenceLine** pLeftRzInfl,     IInfluenceLine** pRightRzInfl);
    virtual std::_tstring GetDescription() const;
    PoiIDType GetLBAMPoiID() const;
+   void AddAlternateLBAMPoiID(PoiIDType id);
+   const std::vector<PoiIDType>& GetAlternateLBAMPoiIDs() const;
    void SetIsInternallyGenerated(bool is);
    bool GetIsInternallyGenerated() const;
    MemberType GetLBAMMemberType() const;
@@ -227,6 +229,7 @@ protected:
    PoiMap();
 
    PoiIDType    m_LBAMPoiID;
+   std::vector<PoiIDType> m_AlternateLBAMPoiIDs;
    MemberType   m_LBAMMemberType;
    MemberIDType m_LBAMMemberID;
    Float64      m_LBAMPoiLocation;
@@ -319,7 +322,19 @@ struct PoiMapIdMatch: public std::unary_function<PoiMap*,bool>
 
    bool operator ()(PoiMap* val) const
    {
-      return m_ID == val->GetLBAMPoiID();
+      if ( m_ID == val->GetLBAMPoiID() )
+         return true;
+
+      const std::vector<PoiIDType>& vAlternates(val->GetAlternateLBAMPoiIDs());
+      std::vector<PoiIDType>::const_iterator iter(vAlternates.begin());
+      std::vector<PoiIDType>::const_iterator end(vAlternates.end());
+      for ( ; iter != end; iter++ )
+      {
+         if ( m_ID == *iter )
+            return true;
+      }
+
+      return false;
    }
 
 private:
@@ -353,7 +368,9 @@ public:
    // Returns what pois are needed to 'cover' this location.
    enum PoiCoveredRes {Both=0, Left=1, Right=2, None=3};
 
-   PoiCoveredRes IsPoiCovered(Float64 globalX, IFem2dPOICollection* pFemPois, Float64 tolerance);
+   // Tests to see if there is already a POI at the specified location. If the result type is None
+   // there is a POI there and pCoveredID holds the LBAMPoiID for that POI.
+   PoiCoveredRes IsPoiCovered(Float64 globalX, IFem2dPOICollection* pFemPois, Float64 tolerance,PoiIDType* pCoveredID);
 
 private:
    SortedPoiMapTracker();
