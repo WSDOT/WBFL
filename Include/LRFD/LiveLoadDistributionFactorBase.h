@@ -116,7 +116,8 @@ public:
    // GROUP: LIFECYCLE
    lrfdLiveLoadDistributionFactorBase(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,
                                       Float64 leftOverhang,Float64 rightOverhang,
-                                      CollectionIndexType Nl, Float64 wLane);
+                                      CollectionIndexType Nl, Float64 wLane,
+                                      bool bSkewMoment, bool bSkewShear);
 private:
    //------------------------------------------------------------------------
    // no default
@@ -149,6 +150,10 @@ public:
    virtual DFResult ReactionDFEx(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const;
 
    //------------------------------------------------------------------------
+   virtual Float64 MomentSkewCorrectionFactor() const = 0;
+   virtual Float64 ShearSkewCorrectionFactor() const = 0;
+
+   //------------------------------------------------------------------------
    virtual lrfdILiveLoadDistributionFactor::DFResult DistributeMomentByLeverRule(Location loc,NumLoadedLanes numLanes) const;
    virtual lrfdILiveLoadDistributionFactor::DFResult DistributeShearByLeverRule(Location loc,NumLoadedLanes numLanes) const;
    virtual lrfdILiveLoadDistributionFactor::DFResult DistributeReactionByLeverRule(Location loc,NumLoadedLanes numLanes) const;
@@ -175,6 +180,9 @@ protected:
    Float64 m_RightCurbOverhang;
    CollectionIndexType m_Nl;
    Float64 m_wLane;
+
+   bool m_bSkewMoment;
+   bool m_bSkewShear;
 
    DfSide  m_Side; // beam is nearest to this side
 
@@ -247,10 +255,6 @@ protected:
    virtual DFResult GetReactionDF_Ext_Fatigue() const;
    //------------------------------------------------------------------------
    virtual DFResult GetReactionDF_Int_Fatigue() const;
-
-   //------------------------------------------------------------------------
-   virtual Float64 MomentSkewCorrectionFactor() const = 0;
-   virtual Float64 ShearSkewCorrectionFactor() const = 0;
 
 private:
    // GROUP: DATA MEMBERS

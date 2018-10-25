@@ -53,6 +53,18 @@
    proto.SetWidth( im.Width ); \
    proto.SetPrecision( im.Precision )
 
+#define DECLARE_SCALAR_PROTOTYPE( type, proto ) type proto
+#define DEFINE_SCALAR_PROTOTYPE( proto, im )\
+   proto.SetFormat( im.Format );\
+   proto.SetWidth( im.Width );\
+   proto.SetPrecision( im.Precision )
+
+#define INIT_SCALAR_PROTOTYPE( type, proto, im ) \
+   type proto; \
+   proto.SetFormat( im.Format );\
+   proto.SetWidth( im.Width );\
+   proto.SetPrecision( im.Precision )
+
 #define COLHDR(hdr,ut,u) hdr << rptNewLine << _T("(") << ut(&u.UnitOfMeasure) << _T(")")
 
 #define RPT_EC  Sub2(_T("E"),_T("c"))

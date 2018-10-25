@@ -2690,8 +2690,10 @@ void CAnalysisModel::GetPOIDistributionFactor(PoiIDType POI, IDistributionFactor
 {
    CHRException hr;
 
-   *leftFactor = NULL;
-   *rightFactor= NULL;
+   (*leftFactor)  = NULL;
+   (*rightFactor) = NULL;
+
+   CComPtr<IDistributionFactor> leftLLDF, rightLLDF;
 
    // Perform model look up for each call.
    // Could cache distribution factors here for more performance if lookups become too expensive
@@ -2712,24 +2714,23 @@ void CAnalysisModel::GetPOIDistributionFactor(PoiIDType POI, IDistributionFactor
 
       x += m_LeftOverhang; // put into coord's starting at begining of superstructure
 
-      CComPtr<IDistributionFactorSegment> left_seg, right_seg;
-      hr = factors->GetSegmentForLocation(x, m_TotalLength, &left_seg, &right_seg);
+      hr = factors->GetFactorForLocation(x, m_TotalLength, &leftLLDF, &rightLLDF);
 
       // We typically don't want lldf's to change right at the ends of a member.
       // But this is what can happen if things get slightly out of tolerance.
       // The code in the block below prevents changes at the very ends of a member.
-      if (left_seg!=NULL && right_seg!=NULL && left_seg!=right_seg)
+      if ( leftLLDF != NULL && rightLLDF != NULL && leftLLDF != rightLLDF )
       {
-         if (member_location<m_LayoutTolerance)
+         if (member_location < m_LayoutTolerance)
          {
             // We are at left end of member. Use right factor at both locations
-            left_seg = right_seg;
+            leftLLDF = rightLLDF;
          }
          else
          {
             // Need member length to see if we are at right end
             Float64 member_length(0.0);
-            if (member_type==mtSpan)
+            if (member_type == mtSpan)
             {
                CComPtr<ISpans> pspans;
                hr = m_pLBAMModel->get_Spans(&pspans);
@@ -2737,7 +2738,7 @@ void CAnalysisModel::GetPOIDistributionFactor(PoiIDType POI, IDistributionFactor
                hr = pspans->get_Item(member_id, &pspan);
                pspan->get_Length(&member_length);
             }
-            else if (member_type==mtSuperstructureMember)
+            else if (member_type == mtSuperstructureMember)
             {
                CComPtr<ISuperstructureMembers> psups;
                hr = m_pLBAMModel->get_SuperstructureMembers(&psups);
@@ -2746,24 +2747,12 @@ void CAnalysisModel::GetPOIDistributionFactor(PoiIDType POI, IDistributionFactor
                psup->get_Length(&member_length);
             }
 
-            if (member_location+m_LayoutTolerance > member_length)
+            if (member_length < member_location+m_LayoutTolerance)
             {
                // We are at right end of member. Use left factor for both
-               right_seg = left_seg;
+               rightLLDF = leftLLDF;
             }
          }
-      }
-
-      if (left_seg!=NULL)
-      {
-         hr = left_seg->get_DistributionFactor(leftFactor);
-      }
-      else
-         ATLASSERT(0);
-
-      if (right_seg!=NULL)
-      {
-         hr = right_seg->get_DistributionFactor(rightFactor);
       }
    }
    else if (member_type==mtSupport)
@@ -2775,7 +2764,7 @@ void CAnalysisModel::GetPOIDistributionFactor(PoiIDType POI, IDistributionFactor
       CComPtr<ISupport> support;
       hr = supports->get_Item(member_id, &support);
 
-      hr = support->get_DistributionFactor(leftFactor);
+      hr = support->get_DistributionFactor(&leftLLDF);
    }
    else if (member_type==mtTemporarySupport)
    {
@@ -2785,7 +2774,7 @@ void CAnalysisModel::GetPOIDistributionFactor(PoiIDType POI, IDistributionFactor
 
       if (temp_support!=NULL)
       {
-         hr = temp_support->get_DistributionFactor(leftFactor);
+         hr = temp_support->get_DistributionFactor(&leftLLDF);
       }
       else
       {
@@ -2794,7 +2783,12 @@ void CAnalysisModel::GetPOIDistributionFactor(PoiIDType POI, IDistributionFactor
       }
    }
    else
+   {
       ATLASSERT(0);
+   }
+
+   leftLLDF.CopyTo(leftFactor);
+   rightLLDF.CopyTo(rightFactor);
 }
 
 void CAnalysisModel::GetSupportDistributionFactor(SupportIndexType supportIdx, IDistributionFactor **Factor)

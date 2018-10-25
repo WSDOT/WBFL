@@ -76,8 +76,9 @@ public:
                  Uint32 Nl, Float64 wLane,
                  Float64 L,Float64 W,Float64 I,Float64 J,Float64 b,Float64 d,
                  Float64 leftDe,Float64 rightDe,
-                 Float64 PossionRatio, bool ignoreSkew,
-                 Float64 skewAngle1, Float64 skewAngle2);
+                 Float64 PossionRatio,
+                 Float64 skewAngle1, Float64 skewAngle2,
+                 bool bMomentSkew, bool bShearSkew);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -116,7 +117,6 @@ protected:
    Float64 m_PoissonRatio;
    Float64 m_SkewAngle1;
    Float64 m_SkewAngle2;
-   bool    m_IgnoreSkew;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS
@@ -218,8 +218,9 @@ public:
                  Uint32 Nl, Float64 wLane,
                  Float64 L,Float64 W,Float64 I,Float64 J,Float64 b,Float64 d,
                  Float64 leftDe,Float64 rightDe,
-                 Float64 PossionRatio, bool ignoreSkew,
-                 Float64 skewAngle1, Float64 skewAngle2);
+                 Float64 PossionRatio,
+                 Float64 skewAngle1, Float64 skewAngle2,
+                 bool bMomentSkew, bool bShearSkew);
 
    //------------------------------------------------------------------------
    // Copy constructor
