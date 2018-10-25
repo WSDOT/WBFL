@@ -135,6 +135,8 @@ private:
 //   HRESULT SegmentLocationToAbsolute(long gdrLineIdx,long ssmbrIdx,long segIdx,Float64 loc,Float64* dist);
 
    void UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,ISpan* pSpan);
+   void UpdateGirderEndPoints(SpanIndexType spanIdx,GirderIndexType gdrIdx);
+   void GetEndDistance(EndType end,long brgPntID,long pierPntID,long girderLineID,IConnection* connection,IPier* pier,Float64* endDist);
 
 // ISupportsErrorInfo
 public:

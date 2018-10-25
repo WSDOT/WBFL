@@ -47,6 +47,7 @@
 extern const long g_AlignmentKey;
 extern const long g_CLBridgeKey;
 
+HRESULT GB_GetGirderEndPointId(SpanIndexType spanIdx,GirderIndexType gdrIdx,EndType endType,long* pVal);
 HRESULT GB_GetPierGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,long* pVal);
 HRESULT GB_GetBearingGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,long* pVal);
 HRESULT GB_GetGirderLineId(SpanIndexType spanIdx,GirderIndexType gdrIdx,long* pVal);

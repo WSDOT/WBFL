@@ -325,40 +325,152 @@ STDMETHODIMP CGirderSpacing::put_Spacings(IDblArray* spaces)
 STDMETHODIMP CGirderSpacing::get_GirderSpacing(SpacingIndexType spaceIdx,MeasurementLocation ml,MeasurementType mt,Float64* spacing)
 {
    CHECK_RETVAL(spacing);
-   long leftPointID, rightPointID; // girder/line intersection point on left and right side of this space
+
+   long leftPointID[2], rightPointID[2]; // girder/line intersection point on left and right side of this space
 
    PierIndexType pierIdx;
    m_pPier->get_Index(&pierIdx);
+
+   PierIndexType startPierIdx = ( m_SpanEnd == etStart ? pierIdx     : pierIdx-1 );
+   PierIndexType endPierIdx   = ( m_SpanEnd == etStart ? pierIdx + 1 : pierIdx   );
    if ( ml == mlCenterlinePier )
    {
-      ::GB_GetPierGirderPointId(pierIdx,spaceIdx,  m_SpanEnd == etStart ? qcbAfter : qcbBefore,&leftPointID);
-      ::GB_GetPierGirderPointId(pierIdx,spaceIdx+1,m_SpanEnd == etStart ? qcbAfter : qcbBefore,&rightPointID);
+      ::GB_GetPierGirderPointId(startPierIdx, spaceIdx,   qcbAfter,  &leftPointID[etStart]);
+      ::GB_GetPierGirderPointId(endPierIdx,   spaceIdx,   qcbBefore, &leftPointID[etEnd]);
+      ::GB_GetPierGirderPointId(startPierIdx, spaceIdx+1, qcbAfter,  &rightPointID[etStart]);
+      ::GB_GetPierGirderPointId(endPierIdx,   spaceIdx+1, qcbBefore, &rightPointID[etEnd]);
    }
    else
    {
-      ::GB_GetBearingGirderPointId(pierIdx,spaceIdx,  m_SpanEnd == etStart ? qcbAfter : qcbBefore,&leftPointID);
-      ::GB_GetBearingGirderPointId(pierIdx,spaceIdx+1,m_SpanEnd == etStart ? qcbAfter : qcbBefore,&rightPointID);
+      ::GB_GetBearingGirderPointId(startPierIdx, spaceIdx,   qcbAfter,  &leftPointID[etStart]);
+      ::GB_GetBearingGirderPointId(endPierIdx,   spaceIdx,   qcbBefore, &leftPointID[etEnd]);
+      ::GB_GetBearingGirderPointId(startPierIdx, spaceIdx+1, qcbAfter,  &rightPointID[etStart]);
+      ::GB_GetBearingGirderPointId(endPierIdx,   spaceIdx+1, qcbBefore, &rightPointID[etEnd]);
    }
 
-   CComPtr<ICogoModel> cogomodel;
-   m_pBridge->get_CogoModel(&cogomodel);
+   CComPtr<ICogoModel> cogoModel;
+   m_pBridge->get_CogoModel(&cogoModel);
 
-   CComQIPtr<IMeasure> measure(cogomodel);
+   CComPtr<IAlignment> alignment;
+   m_pBridge->get_Alignment(&alignment);
 
-   Float64 dist;
-   measure->Distance(leftPointID,rightPointID,&dist);
-
-   if ( mt == mtNormal )
+   if ( mt == mtAlongItem )
    {
-      CComPtr<IAngle> objSkewAngle;
-      m_pPier->get_SkewAngle(&objSkewAngle);
-      Float64 skewAngle;
-      objSkewAngle->get_Value(&skewAngle);
+      // requesting spacing measured along CL Pier or CL Bearing
+      // simply measure the distance between the points
 
-      dist *= cos(skewAngle);
+      CComQIPtr<IMeasure> measure(cogoModel);
+      measure->Distance(leftPointID[m_SpanEnd],rightPointID[m_SpanEnd],spacing);
+   }
+   else
+   {
+      // requesting spacing measured along a normal to the alignment
+      // intersect the girder lines with the normal line and measure between the intersection points
+
+      // Get the normal to the alignment at the pier
+      CComPtr<IStation> objStation;
+      if ( ml == mlCenterlinePier )
+      {
+         // want the normal where the CL Pier intersects the alignment
+         m_pPier->get_Station(&objStation);
+      }
+      else
+      {
+         // want the normal where the CL Bearing intersects the alignment
+
+         // get the bearing offset from the connection object
+         CComPtr<IConnection> connection;
+         m_pPier->get_Connection(m_SpanEnd == etStart ? qcbAfter : qcbBefore,&connection);
+         Float64 brgOffset;
+         connection->get_BearingOffset(&brgOffset);
+
+         // determine how the bearing offset is measured
+         MeasurementType measureType;
+         connection->get_BearingOffsetMeasurementType(&measureType);
+
+         if ( measureType == mtNormal )
+         {
+            // bearing offset is measured normal to the CL Pier
+
+            // create a line that is parallel to the CL Pier.
+            // This will be the CL Bearing line
+
+            // Get ends points of the pier
+            CComPtr<IPoint2d> pntPierLeft, pntPierRight;
+            ::GB_GetPierEndPoints(m_pBridge,pierIdx,&pntPierLeft,&pntPierRight);
+
+            // create a line for the CL Pier
+            CComPtr<ILine2d> line;
+            line.CoCreateInstance(CLSID_Line2d);
+            line->ThroughPoints(pntPierLeft,pntPierRight);
+
+            // offset the line to make it the CL Bearing line
+            line->Offset(m_SpanEnd == etStart ? brgOffset : -brgOffset);
+
+            // get the point where the CL Bearing intersects the alignment
+            CComPtr<IPoint2d> pntBrg;
+            alignment->Intersect(line,pntPierLeft,&pntBrg);
+
+            // get the station where the CL Bearing intersects the alignment
+            Float64 offset;
+            alignment->Offset(pntBrg,&objStation,&offset);
+            ATLASSERT(IsZero(offset));
+         }
+         else
+         {
+            ATLASSERT(false);
+            // bearing offset is measured along the CL girder so there isn't a single
+            // unique bearing line (unless all girders are parallel)
+
+            // do something here so we don't have a total mess up in release builds
+            m_pPier->get_Station(&objStation);
+            objStation->Increment(m_SpanEnd == etStart ? brgOffset : -brgOffset);
+         }
+      }
+
+      // get the normal to the alignment at the station where the measurement line
+      // intersects the alignment
+      CComPtr<IDirection> normal;
+      alignment->Normal(CComVariant(objStation),&normal);
+
+      Float64 direction;
+      normal->get_Value(&direction);
+
+      // get the point where the measurement line intersects the alignment
+      CComPtr<IPoint2d> pntAlignment;
+      alignment->LocatePoint(CComVariant(objStation),omtNormal,0.0,CComVariant(normal),&pntAlignment);
+
+      // get the end points of the girder
+      CComPtr<IPointCollection> points;
+      cogoModel->get_Points(&points);
+      CComPtr<IPoint2d> pntLeftGdr[2], pntRightGdr[2];
+      points->get_Item(leftPointID[etStart], &pntLeftGdr[etStart]);
+      points->get_Item(leftPointID[etEnd],   &pntLeftGdr[etEnd]);
+      points->get_Item(rightPointID[etStart],&pntRightGdr[etStart]);
+      points->get_Item(rightPointID[etEnd],  &pntRightGdr[etEnd]);
+
+      // get the bearing (direction) of the girders
+      CComQIPtr<IMeasure> measure(cogoModel);
+      CComPtr<IDirection> dirLeftGdr, dirRightGdr;
+      measure->Direction(leftPointID[etStart],leftPointID[etEnd],&dirLeftGdr);
+      measure->Direction(rightPointID[etStart],rightPointID[etEnd],&dirRightGdr);
+
+      // get some COGO interfaces
+      CComPtr<ICogoEngine> cogoEngine;
+      cogoModel->get_Engine(&cogoEngine);
+
+      CComPtr<IIntersect2> intersect;
+      cogoEngine->get_Intersect(&intersect);
+
+      // intersect the measurement line with the girder lines
+      CComPtr<IPoint2d> pntLeft, pntRight;
+      intersect->Bearings(pntAlignment,CComVariant(normal),0.0,pntLeftGdr[etStart], CComVariant(dirLeftGdr), 0.0,&pntLeft);
+      intersect->Bearings(pntAlignment,CComVariant(normal),0.0,pntRightGdr[etStart],CComVariant(dirRightGdr),0.0,&pntRight);
+
+      // spacing is the distance between the intersection points
+      pntLeft->DistanceEx(pntRight,spacing);
    }
 
-   *spacing = dist;
    return S_OK;
 }
 

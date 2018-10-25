@@ -63,8 +63,8 @@ public:
 
    BOOL AppendMenu(UINT nID,LPCTSTR lpszNewItem,IEAFCommandCallback* pCallback);
    BOOL InsertMenu(UINT nPosition, UINT nID, LPCTSTR lpszNewItem, IEAFCommandCallback* pCallback);
-   void AppendSeparator();
-   void InsertSeparator(UINT nPosition,UINT nFlags);
+   BOOL AppendSeparator();
+   BOOL InsertSeparator(UINT nPosition,UINT nFlags);
 
    // if nFlags is MF_BYCOMMAND, nIDItem is a plug-in command ID
    int GetMenuString(UINT nIDItem,LPTSTR lpString,int nMaxCount,UINT nFlags, IEAFCommandCallback* pCallback) const;
@@ -73,6 +73,9 @@ public:
    // if nFlags is MF_BYCOMMAND, nIDItem is an application unique command ID
    int GetMenuString(UINT nIDItem,LPTSTR lpString,int nMaxCount,UINT nFlags) const;
    int GetMenuString(UINT nIDItem,CString& rString,UINT nFlags) const;
+   
+   BOOL SetMenuString(UINT nIDItem,LPTSTR lpString,UINT nFlags);
+   BOOL SetMenuString(UINT nIDItem,CString& rString,UINT nFlags);
 
    BOOL SetMenuItemBitmaps(UINT nPosition,UINT nFlags,const CBitmap* pBmpUnchecked,const CBitmap* pBmpChecked, IEAFCommandCallback* pCallback);
 
@@ -97,8 +100,8 @@ private:
    void LoadMenu(CMenu* pMenu,IEAFCommandCallback* pCallback);
    void CreateSubMenus(); // called by SetWindow to fill up m_Popups with the pop up menus for the main menu
 
-   void AppendSeparator(CMenu* pMenu);
-   void InsertSeparator(CMenu* pMenu,UINT nPosition,UINT nFlags);
+   BOOL AppendSeparator(CMenu* pMenu);
+   BOOL InsertSeparator(CMenu* pMenu,UINT nPosition,UINT nFlags);
 
    CWnd* m_pWnd; // pointer to window that owns main menu
                  // Call GetMenu() to get the main menu

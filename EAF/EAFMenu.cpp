@@ -244,31 +244,32 @@ BOOL CEAFMenu::InsertMenu(UINT nPosition, UINT nID, LPCTSTR lpszNewItem, IEAFCom
       return FALSE;
    }
    
+   ASSERT(nPosition < m_Popups.size());
    m_Popups.insert(m_Popups.begin()+nPosition,NULL);
 
    return TRUE;
 }
 
-void CEAFMenu::AppendSeparator(CMenu* pMenu)
+BOOL CEAFMenu::AppendSeparator(CMenu* pMenu)
 {
-   VERIFY(pMenu->AppendMenu(MF_SEPARATOR));
+   return pMenu->AppendMenu(MF_SEPARATOR);
 }
 
-void CEAFMenu::AppendSeparator()
+BOOL CEAFMenu::AppendSeparator()
 {
    CMenu* pMenu = GetMenu();
-   AppendSeparator(pMenu);
+   return AppendSeparator(pMenu);
 }
 
-void CEAFMenu::InsertSeparator(CMenu* pMenu,UINT nPosition,UINT nFlags)
+BOOL CEAFMenu::InsertSeparator(CMenu* pMenu,UINT nPosition,UINT nFlags)
 {
-   pMenu->InsertMenu(nPosition,nFlags,MF_SEPARATOR);
+   return pMenu->InsertMenu(nPosition,nFlags,MF_SEPARATOR);
 }
 
-void CEAFMenu::InsertSeparator(UINT nPosition,UINT nFlags)
+BOOL CEAFMenu::InsertSeparator(UINT nPosition,UINT nFlags)
 {
    CMenu* pMenu = GetMenu();
-   InsertSeparator(pMenu,nPosition,nFlags);
+   return InsertSeparator(pMenu,nPosition,nFlags);
 }
 
 BOOL CEAFMenu::RemoveMenu(UINT nPosition,UINT nFlags, IEAFCommandCallback* pCallback)
@@ -329,6 +330,27 @@ int CEAFMenu::GetMenuString(UINT nIDItem,CString& rString,UINT nFlags) const
 {
    const CMenu* pMenu = GetMenu();
    return pMenu->GetMenuString(nIDItem,rString,nFlags);
+}
+
+BOOL CEAFMenu::SetMenuString(UINT nIDItem,LPTSTR lpString,UINT nFlags)
+{
+   return SetMenuString(nIDItem,CString(lpString),nFlags);
+}
+
+BOOL CEAFMenu::SetMenuString(UINT nIDItem,CString& rString,UINT nFlags)
+{
+   CMenu* pMenu = GetMenu();
+   if ( pMenu )
+   {
+      MENUITEMINFO menuInfo;
+      memset((void*)&menuInfo,0,sizeof(MENUITEMINFO));
+      menuInfo.cbSize = sizeof(MENUITEMINFO);
+      menuInfo.fMask = MIIM_STRING;
+      menuInfo.dwTypeData = rString.GetBuffer();
+      menuInfo.cch = rString.GetLength();
+      return pMenu->SetMenuItemInfo(nIDItem,&menuInfo,nFlags & MF_BYPOSITION ? TRUE : FALSE);
+   }
+   return FALSE;
 }
 
 BOOL CEAFMenu::SetMenuItemBitmaps(UINT nPosition,UINT nFlags,const CBitmap* pBmpUnchecked,const CBitmap* pBmpChecked, IEAFCommandCallback* pCallback)

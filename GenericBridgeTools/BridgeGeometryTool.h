@@ -69,8 +69,8 @@ public:
 
 // IBridgeGeometryTool
 public:
-	STDMETHOD(Point)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx, /*[in]*/ Float64 distFromStartOfSpan,/*[out]*/ IPoint2d** point);
-	STDMETHOD(StationAndOffset)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx, /*[in]*/ Float64 distFromStartOfSpan,/*[out]*/ IStation** station, /*[out]*/ Float64* offset);
+	STDMETHOD(Point)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx, /*[in]*/ Float64 distFromStartOfGirder,/*[out]*/ IPoint2d** point);
+	STDMETHOD(StationAndOffset)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx, /*[in]*/ Float64 distFromStartOfGirder,/*[out]*/ IStation** station, /*[out]*/ Float64* offset);
 	STDMETHOD(GirderPathOffset)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx, /*[in]*/ VARIANT varStation, /*[out,retval]*/ Float64* offset);
    STDMETHOD(GirderLineBearing)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx, /*[out,retval]*/ IDirection** direction);
 	STDMETHOD(GirderLinePoint)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 distFromStartOfBridge,/*[in]*/ GirderIndexType gdrIdx, /*[out]*/ SpanIndexType* spanIdx, /*[out]*/ Float64* distFromStartOfSpan);
@@ -79,6 +79,7 @@ public:
    STDMETHOD(DeckOffset)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ IDirection* direction,/*[in]*/ DirectionType side,/*[out,retval]*/ Float64* pOffset);
    STDMETHOD(CurbOffset)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ IDirection* direction,/*[in]*/ DirectionType side,/*[out,retval]*/ Float64* pOffset);
 	STDMETHOD(DeckOverhang)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ IDirection* direction,/*[in]*/ DirectionType side,/*[out,retval]*/ Float64* pOverhang);
+	STDMETHOD(DeckOverhangFromGirder)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx, /*[in]*/ Float64 distFromStartOfGirder,/*[in]*/ DirectionType side,/*[out]*/ Float64* pOverhang);
 };
 
 #endif //__BridgeGeometryTool_H_

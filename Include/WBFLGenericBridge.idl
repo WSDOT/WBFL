@@ -1067,6 +1067,7 @@ library WBFLGenericBridge
 	]
 	interface ICogoInfo : IUnknown
 	{
+      [propget, helpstring("property GirderEndPointID")] HRESULT GirderEndPointID([in]SpanIndexType spanIdx,[in] GirderIndexType gdrIdx,[in]EndType endType,[out,retval]long* pVal);
 		[propget, helpstring("property PierGirderIntersectionPointID")] HRESULT PierGirderIntersectionPointID([in] PierIndexType pierIdx,[in] GirderIndexType gdrIdx,[in] PositionType posType, [out, retval] long *pVal);
 		[propget, helpstring("property BearingGirderIntersectionPointID")] HRESULT BearingGirderIntersectionPointID([in] PierIndexType pierIdx,[in] GirderIndexType gdrIdx,[in] PositionType posType, [out, retval] long *pVal);
 		[propget, helpstring("property GirderLineID")] HRESULT GirderLineID([in] SpanIndexType spanIdx,[in] GirderIndexType gdrIdx,[out, retval] long *pVal);

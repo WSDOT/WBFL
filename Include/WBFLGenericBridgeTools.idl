@@ -530,8 +530,8 @@ library WBFLGenericBridgeTools
 	]
 	interface IBridgeGeometryTool : IUnknown
 	{
-	   [helpstring("method Point")] HRESULT Point([in] IGenericBridge* bridge,[in] SpanIndexType spanIdx,[in] GirderIndexType gdrIdx, [in] Float64 distFromStartOfSpan,[out] IPoint2d** point);
-	   [helpstring("method StationAndOffset")] HRESULT StationAndOffset([in] IGenericBridge* bridge,[in] SpanIndexType spanIdx,[in] GirderIndexType gdrIdx, [in] Float64 distFromStartOfSpan,[out] IStation** station, [out] Float64* offset);
+	   [helpstring("method Point")] HRESULT Point([in] IGenericBridge* bridge,[in] SpanIndexType spanIdx,[in] GirderIndexType gdrIdx, [in] Float64 distFromStartOfGirder,[out] IPoint2d** point);
+	   [helpstring("method StationAndOffset")] HRESULT StationAndOffset([in] IGenericBridge* bridge,[in] SpanIndexType spanIdx,[in] GirderIndexType gdrIdx, [in] Float64 distFromStartOfGirder,[out] IStation** station, [out] Float64* offset);
 	   [helpstring("method GirderPathOffset")] HRESULT GirderPathOffset([in] IGenericBridge* bridge,[in] SpanIndexType spanIdx,[in] GirderIndexType gdrIdx, [in] VARIANT varStation, [out,retval] Float64* offset);
 	   [helpstring("method GirderLineBearing")] HRESULT GirderLineBearing([in] IGenericBridge* bridge,[in] SpanIndexType spanIdx,[in] GirderIndexType gdrIdx, [out,retval] IDirection** direction);
 	   [helpstring("method GirderLinePoint")] HRESULT GirderLinePoint([in] IGenericBridge* bridge,[in] Float64 distFromStartOfBridge,[in] GirderIndexType gdrIdx, [out] SpanIndexType* spanIdx, [out] Float64* distFromStartOfSpan);
@@ -540,6 +540,7 @@ library WBFLGenericBridgeTools
 	   [helpstring("method CurbOffset")] HRESULT CurbOffset([in] IGenericBridge* bridge,[in] Float64 station,[in] IDirection* direction,[in] DirectionType side,[out,retval] Float64* pOffset);
 	   [helpstring("method DeckOffset")] HRESULT DeckOffset([in] IGenericBridge* bridge,[in] Float64 station,[in] IDirection* direction,[in] DirectionType side,[out,retval] Float64* pOffset);
 	   [helpstring("method DeckOverhang")] HRESULT DeckOverhang([in] IGenericBridge* bridge,[in] Float64 station,[in] IDirection* direction,[in] DirectionType side,[out,retval] Float64* pOverhang);
+      [helpstring("method DeckOverhangFromGirder")] HRESULT DeckOverhangFromGirder([in] IGenericBridge* bridge,[in] SpanIndexType spanIdx,[in] GirderIndexType gdrIdx,[in] Float64 distFromStartOfGirder,[in] DirectionType side,[out] Float64* pOverhang);
 	};
 
 	[

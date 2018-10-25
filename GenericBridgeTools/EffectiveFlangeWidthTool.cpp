@@ -102,8 +102,8 @@ STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthEx(IGenericBridge* b
       // we have a single girder structure
       ATLASSERT(gdrIdx == 0);
       Float64 ol,or;
-      m_BridgeGeometryTool->DeckOverhang(bridge,station,NULL,qcbLeft ,&ol);
-      m_BridgeGeometryTool->DeckOverhang(bridge,station,NULL,qcbRight,&or);
+      m_BridgeGeometryTool->DeckOverhangFromGirder(bridge,spanIdx,gdrIdx,location,qcbLeft ,&ol);
+      m_BridgeGeometryTool->DeckOverhangFromGirder(bridge,spanIdx,gdrIdx,location,qcbRight,&or);
 
       *twLeft  = ol;
       *twRight = or;
@@ -114,7 +114,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthEx(IGenericBridge* b
       Float64 sl,sr;
       spacing->get_SpacingAlongGirder(gdrIdx,location,qcbRight,&sr);
 
-      m_BridgeGeometryTool->DeckOverhang(bridge,station,NULL,qcbLeft,&sl);
+      m_BridgeGeometryTool->DeckOverhangFromGirder(bridge,spanIdx,gdrIdx,location,qcbLeft,&sl);
 
       *twLeft  = sl;
       *twRight = sr/2.0;
@@ -125,7 +125,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthEx(IGenericBridge* b
       Float64 sl,sr;
       spacing->get_SpacingAlongGirder(gdrIdx,location,qcbLeft,&sl);
 
-      m_BridgeGeometryTool->DeckOverhang(bridge,station,NULL,qcbRight,&sr);
+      m_BridgeGeometryTool->DeckOverhangFromGirder(bridge,spanIdx,gdrIdx,location,qcbRight,&sr);
 
       *twLeft  = sl/2.0;
       *twRight = sr;
