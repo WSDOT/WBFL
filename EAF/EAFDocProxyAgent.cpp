@@ -452,10 +452,16 @@ const unitmgtTimeData& CEAFDocProxyAgent::GetShortTimeUnit()
    return pApp->GetDisplayUnits()->Time;
 }
 
-const unitmgtTimeData& CEAFDocProxyAgent::GetLongTimeUnit()
+const unitmgtTimeData& CEAFDocProxyAgent::GetWholeDaysUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Time2;
+}
+
+const unitmgtTimeData& CEAFDocProxyAgent::GetFractionalDaysUnit()
+{
+   CEAFApp* pApp = EAFGetApp();
+   return pApp->GetDisplayUnits()->Time3;
 }
 
 const unitmgtAreaPerLengthData& CEAFDocProxyAgent::GetAvOverSUnit()

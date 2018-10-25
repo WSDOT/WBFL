@@ -2099,6 +2099,16 @@ library WBFLGenericBridge
       [default] interface IUSplicedGirderSegment;
       interface ISplicedGirderSegment;
    };
+   
+   [
+      uuid(464D04E4-0A0D-4295-A8B3-F276EB49CBE3),
+		helpstring("NUSplicedGirderSegment Class")
+   ]
+   coclass NUSplicedGirderSegment
+   {
+      [default] interface IFlangedSplicedGirderSegment;
+      interface ISplicedGirderSegment;
+   };
 
    [
       uuid(A81D7FA1-41CF-4980-AC98-F0CC555AA181),

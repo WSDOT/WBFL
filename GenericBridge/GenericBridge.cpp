@@ -88,6 +88,7 @@
 
 #include "FlangedSplicedGirderSegment.h"
 #include "USplicedGirderSegment.h"
+#include "NUSplicedGirderSegment.h"
 
 #include "ParabolicTendonSegment.h"
 #include "LinearTendonSegment.h"
@@ -128,6 +129,7 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_ThickenedFlangeBulbTeeSegment, CThickenedFlangeBulbTeeSegment)
    OBJECT_ENTRY(CLSID_FlangedSplicedGirderSegment, CFlangedSplicedGirderSegment)
    OBJECT_ENTRY(CLSID_USplicedGirderSegment, CUSplicedGirderSegment)
+   OBJECT_ENTRY(CLSID_NUSplicedGirderSegment, CNUSplicedGirderSegment)
    OBJECT_ENTRY(CLSID_Material, CMaterial)
    OBJECT_ENTRY(CLSID_CastSlab, CCastSlab)
    OBJECT_ENTRY(CLSID_PrecastSlab, CPrecastSlab)

@@ -501,7 +501,9 @@ library WBFLGenericBridgeTools
 
       [helpstring("method GetStraightStrandBondedLengthByGridIndex")] HRESULT GetStraightStrandBondedLengthByGridIndex([in]GridIndexType grdIndex, [in]Float64 distFromStart,
                                                                              [out]Float64* YCoord, [out]Float64* leftBond, [out]Float64* rightBond);
+
       [propget,helpstring("property RebarLayout")] HRESULT RebarLayout([out,retval]IRebarLayout** rebarLayout);
+      [propget,helpstring("property ClosureJointRebarLayout")] HRESULT ClosureJointRebarLayout([out,retval]IRebarLayout** rebarLayout);
 	};
 
 
