@@ -955,7 +955,6 @@ void compute_theta_and_beta5(lrfdShearData* pData)
    Float64 Avs = pData->AvS;
 
    // Setup problem
-   pData->vfc = -999999; // not used
 
    // Compute strain 
    Float64 ex_calc;
@@ -974,6 +973,8 @@ void compute_theta_and_beta5(lrfdShearData* pData)
 
    // Get Beta/Theta;
    pData->ex = ex_calc;
+   Float64 v = fabs(Vu - phi*Vp)/(phi*bv*dv);
+   pData->vfc = v/fc;
    pData->vfc_tbl = -1; // Not applicable
    pData->Beta = 4.8/(1 + 750*ex_calc);
    pData->Theta = ::ConvertToSysUnits(29+3500*ex_calc,unitMeasure::Degree);

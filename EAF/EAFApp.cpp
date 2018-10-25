@@ -406,7 +406,7 @@ END_MESSAGE_MAP()
 // CEAFApp message handlers
 BOOL CEAFApp::RegisterDocTemplates()
 {
-   if ( !GetComponentInfoManager()->LoadPlugins() )
+   if ( !GetComponentInfoManager()->LoadPlugins(TRUE) ) // always attempt to load
       return FALSE;
 
    if ( !GetComponentInfoManager()->InitPlugins() )

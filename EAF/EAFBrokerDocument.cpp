@@ -314,7 +314,10 @@ BOOL CEAFBrokerDocument::LoadAgents(IBrokerInitEx2* pBrokerInit, CLSID* pClsid, 
 
          if ( !bRequiredAgent )
          {
+            // there was an error and this agent isn't required, prompt user
+            // to disable it so it doesn't get loaded next time
             USES_CONVERSION;
+
             LPOLESTR pszUserType;
             OleRegGetUserType(pClsid[agentIdx],USERCLASSTYPE_SHORT,&pszUserType);
 
@@ -323,7 +326,7 @@ BOOL CEAFBrokerDocument::LoadAgents(IBrokerInitEx2* pBrokerInit, CLSID* pClsid, 
             if ( AfxMessageBox(strMsg,MB_YESNO | MB_ICONQUESTION) == IDYES )
             {
                CEAFApp* pApp = EAFGetApp();
-               pApp->WriteProfileString(_T("Extensions"),OLE2A(pszCLSID),_T("Disabled"));
+               pApp->WriteProfileString(_T("Extensions"),strCLSID,_T("Disabled"));
             }
          }
 

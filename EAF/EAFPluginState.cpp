@@ -49,7 +49,10 @@ bool CEAFPluginState::StateChanged()
 
 bool CEAFPluginState::IsEnabled()
 {
-   return (InitiallyEnabled() && StateChanged() ? false : true);
+   if ( (InitiallyEnabled() && !StateChanged()) || (!InitiallyEnabled() && StateChanged()) )
+      return true;
+
+   return false;
 }
 
 CLSID CEAFPluginState::GetCLSID()

@@ -832,7 +832,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(ILongArray* poiIDs, 
                   bogus_config->put_IsApplicable(VARIANT_FALSE);
                }
                ComputeInflResponse(poi_id,type, vehicleIndex, effect, m_RealOptimization, vehConfiguration, doApplyImpact, vbComputePlacements, 
-                                   lft_infl_line, &left_result, &bogus_result, left_config, bogus_config);
+                                   lft_infl_line, ssLeft, &left_result, &bogus_result, left_config, bogus_config);
             }
 
 
@@ -857,7 +857,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(ILongArray* poiIDs, 
                }
 
                ComputeInflResponse(poi_id,type, vehicleIndex, effect, loc_optimization, vehConfiguration, doApplyImpact, vbComputePlacements, 
-                                   rgt_infl_line, &bogus_result, &right_result, bogus_config, right_config);
+                                   rgt_infl_line, ssRight, &bogus_result, &right_result, bogus_config, right_config);
 
                if (computePlacements)
                {
@@ -934,7 +934,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(ILongArray* poiIDs, 
 
 void CBruteForceVehicularResponse2::ComputeInflResponse(PoiIDType poiID,LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect, OptimizationType optimization, 
                                                         VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL doApplyImpact,
-                                                        VARIANT_BOOL computePlacements, IInfluenceLine* inflLine, 
+                                                        VARIANT_BOOL computePlacements, IInfluenceLine* inflLine, Side side,
                                                         Float64* leftResult, Float64 *rightResult, 
                                                         ILiveLoadConfiguration* leftConfig, ILiveLoadConfiguration* rightConfig)
 {
@@ -1018,8 +1018,8 @@ void CBruteForceVehicularResponse2::ComputeInflResponse(PoiIDType poiID,LiveLoad
    else if (m_CachedVehConfiguration == vlcTruckPlusLane)
    {
       // sum truck plus lane (LRFD)
-      *leftResult  =  left_truck_result  + lane_result;
-      *rightResult =  right_truck_result + lane_result;
+      *leftResult  =  left_truck_result  + (side == ssRight ? -1 : 1)*lane_result;
+      *rightResult =  right_truck_result + (side == ssRight ? -1 : 1)*lane_result;
    }
    else if (m_CachedVehConfiguration == vlcTruckLaneEnvelope)
    {

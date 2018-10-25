@@ -97,7 +97,6 @@ private:
    IBroker* m_pBroker;
    CProgressThread* m_pThread;
    Int16 m_cProgressRef;
-   HWND m_hwndFocus;
 
    BOOL m_bEndLines;
    std::vector<boost::shared_ptr<std::ofstream> > m_LogFiles;

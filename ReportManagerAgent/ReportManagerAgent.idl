@@ -29,7 +29,7 @@
 
 import "oaidl.idl";
 import "ocidl.idl";
-//import "WBFLCore.idl";
+import "WBFLCore.idl";
 
 [
 	uuid(8ACD75E4-653A-439A-8B4C-1083E1FB86E5),
