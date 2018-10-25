@@ -44,13 +44,16 @@ class rptReport;
 class REPORTMANAGERCLASS CReportBuilder  
 {
 public:
-	CReportBuilder(LPCTSTR strName,bool bHidden = false);
+	CReportBuilder(LPCTSTR strName,bool bHidden = false,bool bIncludeTimingChapter=false);
 	virtual ~CReportBuilder();
 
    // report builders may be hidden so that they don't show up in
    // lists of available reports
    void Hidden(bool bHide);
    bool Hidden() const;
+
+   void IncludeTimingChapter(bool bInclude=true);
+   bool IncludeTimingChapter() const;
 
    LPCTSTR GetName() const;
    void AddTitlePageBuilder(boost::shared_ptr<CTitlePageBuilder>& pTitlePageBuilder);
@@ -72,6 +75,7 @@ public:
 private:
    std::_tstring m_Name;
    bool m_bHidden;
+   bool m_bIncludeTimingChapter;
    const CBitmap* m_pBitmap;
 
    boost::shared_ptr<CTitlePageBuilder> m_pTitlePageBuilder;

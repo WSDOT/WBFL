@@ -74,11 +74,11 @@ void CTestVertCurve::Test()
    TRY_TEST( vc->putref_PFG(pfg), S_OK );
 
    TRY_TEST( vc->put_L1(-1),E_INVALIDARG);
-   TRY_TEST( vc->put_L1(0),E_INVALIDARG);
+   TRY_TEST( vc->put_L1(0),S_OK);
    TRY_TEST( vc->put_L1(100),S_OK);
 
    TRY_TEST( vc->put_L2(-1),E_INVALIDARG);
-   TRY_TEST( vc->put_L2(0),E_INVALIDARG);
+   TRY_TEST( vc->put_L2(0),S_OK);
    TRY_TEST( vc->put_L2(200),S_OK);
 
    Float64 g1, g2;

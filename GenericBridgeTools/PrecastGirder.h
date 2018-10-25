@@ -97,6 +97,8 @@ private:
    CComPtr<IStrandGridFiller> m_HarpGridHp[2];
    CComPtr<IStrandGridFiller> m_TempGrid[2];
    
+   void GetHarpedStrandGrid(Float64 distFromStart,IStrandGridFiller** ppGrid);
+
    // this is a special fill array that represents the max between harped strands at the HP and at the Ends
    CComPtr<IIndexArray> m_HarpedMaxStrandFill;
    StrandIndexType m_MaxHarpedStrands;
@@ -290,9 +292,9 @@ public:
    STDMETHOD(get_StraightStrandDebondInRow)(/*[in]*/ RowIndexType rowIdx,/*[out,retval]*/StrandIndexType* nStrands);
    STDMETHOD(IsExteriorStraightStrandDebondedInRow)(/*[in]*/ RowIndexType rowIndex,/*[out,retval]*/VARIANT_BOOL* bResult);
 
-   STDMETHOD(get_HarpedStrandRowsWithStrand)(/*[out,retval]*/RowIndexType* nRows);
-   STDMETHOD(get_HarpedStrandsInRow)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/IIndexArray** gridIndexes);
-   STDMETHOD(get_NumHarpedStrandsInRow)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/StrandIndexType* nStrands);
+   STDMETHOD(get_HarpedStrandRowsWithStrand)(/*[in]*/Float64 distFromStart,/*[out,retval]*/RowIndexType* nRows);
+   STDMETHOD(get_HarpedStrandsInRow)(/*[in]*/Float64 distFromStart,/*[in]*/RowIndexType rowIdx,/*[out,retval]*/IIndexArray** gridIndexes);
+   STDMETHOD(get_NumHarpedStrandsInRow)(/*[in]*/Float64 distFromStart,/*[in]*/RowIndexType rowIdx,/*[out,retval]*/StrandIndexType* nStrands);
 
 	STDMETHOD(GetStraightStrandDebondAtSections)(/*[out]*/IDblArray** arrLeft,/*[out]*/IDblArray** arrRight);
 	STDMETHOD(GetStraightStrandDebondAtLeftSection)(/*[in]*/SectionIndexType sectionIdx,/*[out,retval]*/IIndexArray** pstnIndexes);

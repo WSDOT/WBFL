@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// DManipTools - Direct Manipulation Tools
+// ReportManager - Manages report definitions
 // Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -21,31 +21,26 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// stdafx.h : include file for standard system include files,
-//      or project specific include files that are used frequently,
-//      but are changed infrequently
+// TimeChapterBuilder.h
+//
+//////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_STDAFX_H__B70ECABA_CC38_486C_876E_DB09B619DE58__INCLUDED_)
-#define AFX_STDAFX_H__B70ECABA_CC38_486C_876E_DB09B619DE58__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
-#include <Private\WbflPackage.h>
+#include <ReportManager\ReportManagerExp.h>
+#include <ReportManager\ChapterBuilder.h>
+#include <System\Time.h>
 
-#include <atlbase.h>
-//You may derive a class from CComModule and use it if you want to override
-//something, but do not change the name of _Module
-extern CComModule _Module;
-#include <atlcom.h>
+class REPORTMANAGERCLASS CTimeChapterBuilder : public CChapterBuilder
+{
+public:
+	CTimeChapterBuilder();
+	virtual ~CTimeChapterBuilder();
 
-#include <DManip\DManip.h>
-#include <WbflAtlExt.h> // WBFL ATL Extensions and helpers
-
-#include <WBFLDManip.h>
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_STDAFX_H__B70ECABA_CC38_486C_876E_DB09B619DE58__INCLUDED)
+   virtual LPCTSTR GetName() const;
+   virtual Uint16 GetMaxLevel() const;
+   virtual bool Select() const; // return true if this chapter is to be selected by default
+   virtual rptChapter* Build(CReportSpecification* pRptSpec,Uint16 level) const;
+   virtual rptChapter* Build(sysTime& start,sysTime& end) const;
+   virtual CChapterBuilder* Clone() const;
+};

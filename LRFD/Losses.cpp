@@ -545,27 +545,7 @@ Float64 lrfdLosses::TemporaryStrand_BeforeTemporaryStrandRemoval() const
    if ( m_IsDirty )
       UpdateLosses();
 
-   Float64 loss = 0;
-   switch ( m_TempStrandUsage )
-   {
-   case lrfdLosses::tsPretensioned:
-      loss = TemporaryStrand_AtShipping();
-      break;
-
-   case lrfdLosses::tsPTBeforeLifting:
-   case lrfdLosses::tsPTAfterLifting:
-      loss = TemporaryStrand_AtLifting() + TimeDependentLossesBeforeDeck();
-      break;
-
-   case lrfdLosses::tsPTBeforeShipping:
-      loss = TemporaryStrand_AtShipping();
-      break;
-
-   default:
-      CHECK(false);
-      break;
-   }
-
+   Float64 loss = TemporaryStrand_AtShipping();
    return loss;
 }
 
