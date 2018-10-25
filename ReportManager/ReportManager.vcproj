@@ -156,7 +156,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\Include;&quot;..\Include\$(ConfigurationName)&quot;"
-				PreprocessorDefinitions="_DEBUG;BUILDREPORTMANAGERLIB;WIN32;_WINDOWS;_USRDLL;_HAS_ITERATOR_DEBUGGING=0;_SECURE_SCL=0"
+				PreprocessorDefinitions="_DEBUG;BUILDREPORTMANAGERLIB;WIN32;_WINDOWS;_USRDLL;WBFL_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"

@@ -150,7 +150,7 @@ int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
    // Restore the layout of the application window
    WINDOWPLACEMENT wp;
-   if ( EAFGetApp()->ReadWindowPlacement(CString((LPCSTR)IDS_REG_WNDPOS),&wp) )
+   if ( EAFGetApp()->ReadWindowPlacement(CString((LPCSTR)IDS_REG_SETTINGS),CString((LPCSTR)IDS_REG_WNDPOS),&wp) )
    {
       if ( sysFlags<LONG>::IsSet(lpCreateStruct->style,WS_VISIBLE) )
          wp.showCmd = SW_SHOW;
@@ -199,7 +199,7 @@ void CEAFMainFrame::OnClose()
    {
       wp.flags = 0;
       wp.showCmd = SW_SHOWNORMAL;
-      pApp->WriteWindowPlacement(CString((LPCSTR)IDS_REG_WNDPOS),&wp);
+      pApp->WriteWindowPlacement(CString((LPCSTR)IDS_REG_SETTINGS),CString((LPCSTR)IDS_REG_WNDPOS),&wp);
    }
 
    // Save the ToolTips state
@@ -307,11 +307,14 @@ void CEAFMainFrame::GetMessageString(UINT nID, CString& rMessage) const
       CEAFDocument* pDoc = (CEAFDocument*)pActiveDoc;
       UINT nPluginCmdID;
       IEAFCommandCallback* pCallback;
-      if ( pDoc->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
+      if ( pDoc->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) )
       {
          // this command belogs to one of the plug-ins
          bHandledByPlugin = TRUE;
-         pCallback->GetStatusBarMessageString(nPluginCmdID,rMessage);
+         if ( pCallback )
+            pCallback->GetStatusBarMessageString(nPluginCmdID,rMessage);
+         else
+            pDoc->GetStatusBarMessageString(nID,rMessage);
       }
    }
 
@@ -362,10 +365,13 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
    {
       UINT nPluginCmdID;
       IEAFCommandCallback* pCallback;
-      if ( pDoc->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
+      if ( pDoc->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) )
       {
          // this command belogs to one of the plug-ins
-         bHandledByPlugin = pCallback->GetToolTipMessageString(nPluginCmdID,strTipText);
+         if ( pCallback )
+            bHandledByPlugin = pCallback->GetToolTipMessageString(nPluginCmdID,strTipText);
+         else
+            bHandledByPlugin = pDoc->GetToolTipMessageString(nID,strTipText);
       }
    }
 

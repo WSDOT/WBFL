@@ -56,7 +56,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\;..\..\Include;&quot;..\..\Include\$(ConfigurationName)&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXDLL;_HAS_ITERATOR_DEBUGGING=0;_SECURE_SCL=0"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXDLL;WBFL_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -240,9 +240,11 @@
 	<References>
 		<ProjectReference
 			ReferencedProjectIdentifier="{3C66A5DB-A451-4912-A984-DDBF2E890495}"
+			RelativePathToProject=".\WBFLTools\WBFLTools.vcproj"
 		/>
 		<ProjectReference
 			ReferencedProjectIdentifier="{48A7A169-16D3-48D8-88EE-5609AA917712}"
+			RelativePathToProject=".\UnitServer\UnitServer.vcproj"
 		/>
 	</References>
 	<Files>

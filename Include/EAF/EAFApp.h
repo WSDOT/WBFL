@@ -85,8 +85,8 @@ public:
    CEAFPluginCommandManager* GetPluginCommandManager();
    CEAFComponentInfoManager* GetComponentInfoManager();
 
-   BOOL ReadWindowPlacement(const CString& strKey,LPWINDOWPLACEMENT pwp);
-   void WriteWindowPlacement(const CString& strKey,LPWINDOWPLACEMENT pwp);
+   BOOL ReadWindowPlacement(const CString& strSection,const CString& strKey,LPWINDOWPLACEMENT pwp);
+   void WriteWindowPlacement(const CString& strSection,const CString& strKey,LPWINDOWPLACEMENT pwp);
 
    // Registery helper functions
    UINT GetLocalMachineInt(LPCTSTR lpszSection, LPCTSTR lpszEntry,int nDefault);

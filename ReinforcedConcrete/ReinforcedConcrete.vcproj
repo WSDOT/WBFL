@@ -50,7 +50,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\Include;&quot;..\Include\$(ConfigurationName)&quot;"
-				PreprocessorDefinitions="BUILDREINFCONCLIB;_WINDOWS;_DEBUG;_AFXDLL;_HAS_ITERATOR_DEBUGGING=0;_SECURE_SCL=0"
+				PreprocessorDefinitions="BUILDREINFCONCLIB;_WINDOWS;_DEBUG;_AFXDLL;WBFL_DEBUG"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"

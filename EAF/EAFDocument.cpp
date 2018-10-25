@@ -670,6 +670,57 @@ void CEAFDocument::OnErrorRenamingSaveBackup(LPCTSTR lpszPathName,LPCTSTR lpszBa
    AfxMessageBox(msg);
 }
 
+BOOL CEAFDocument::GetStatusBarMessageString(UINT nID,CString& rMessage) const
+{
+	// load appropriate string
+   BOOL bHandled = FALSE;
+
+	LPTSTR lpsz = rMessage.GetBuffer(255);
+	if (AfxLoadString(nID, lpsz) != 0)
+	{
+		// first newline terminates actual string
+		lpsz = _tcschr(lpsz, '\n');
+		if (lpsz != NULL)
+			*lpsz = '\0';
+
+      bHandled = TRUE;
+	}
+	else
+	{
+		// not found
+		TRACE(traceAppMsg, 0, "Warning (CEAFDocument): no message line prompt for ID %d.\n", nID);
+      bHandled = FALSE;
+	}
+	rMessage.ReleaseBuffer();
+
+   return bHandled;
+}
+
+BOOL CEAFDocument::GetToolTipMessageString(UINT nID, CString& rMessage) const
+{
+   CString string;
+   // load appropriate string
+   BOOL bHandled = FALSE;
+
+   if ( string.LoadString(nID) )
+	{
+		// tip is after first newline 
+      int pos = string.Find('\n');
+      if ( 0 < pos )
+         rMessage = string.Mid(pos+1);
+
+      bHandled = TRUE;
+	}
+	else
+	{
+		// not found
+		TRACE1("Warning (CEAFDocument): no tool tip for ID %d.\n", nID);
+      bHandled = FALSE;
+	}
+
+   return bHandled;
+}
+
 void CEAFDocument::OnCloseDocument()
 {
    SetModifiedFlag(FALSE);

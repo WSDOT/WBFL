@@ -113,11 +113,12 @@ BOOL CEAFAboutDlg::OnInitDialog()
    UINT nPlugins = pComponentInfoMgr->GetPluginCount();
    
    // for each plugin
-   for ( UINT idx = 0; idx < nPlugins; idx++ )
+   for ( UINT pluginIdx = 0; pluginIdx < nPlugins; pluginIdx++ )
    {
       CComPtr<IEAFComponentInfo> plugin;
-      pComponentInfoMgr->GetPlugin(idx,&plugin);
-      m_AppList.AddString(plugin->GetName());
+      pComponentInfoMgr->GetPlugin(pluginIdx,&plugin);
+      UINT idx = m_AppList.AddString(plugin->GetName());
+      m_AppList.SetItemData(idx,pluginIdx);
    }
 
    m_AppList.SetCurSel(0);
@@ -135,7 +136,8 @@ void CEAFAboutDlg::OnAppListSelChanged()
       CEAFApp* pApp = EAFGetApp();
       CEAFComponentInfoManager* pComponentInfoMgr = pApp->GetComponentInfoManager();
       CComPtr<IEAFComponentInfo> component;
-      pComponentInfoMgr->GetPlugin(idx,&component);
+      UINT pluginIdx = m_AppList.GetItemData(idx);
+      pComponentInfoMgr->GetPlugin(pluginIdx,&component);
       m_Description.SetWindowText(component->GetDescription());
       if ( component->HasMoreInfo() )
          GetDlgItem(IDC_MOREINFO)->EnableWindow(TRUE);

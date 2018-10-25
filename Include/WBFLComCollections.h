@@ -394,6 +394,12 @@ public:
 		return S_OK;
 	}
 
+   STDMETHOD(Reverse)()
+   {
+      std::reverse(m_coll.begin(),m_coll.end());
+      return S_OK;
+   }
+
    // add a new element
 	STDMETHOD(Add)(ItemType* pVal)
 	{

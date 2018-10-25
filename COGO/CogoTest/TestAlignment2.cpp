@@ -82,7 +82,7 @@ void CTestAlignment2::Test1()
    TRY_TEST(IsEqual(dirVal,3*PI_OVER_2),true);
    pnt.Release();
 
-   TRY_TEST(alignment->LocatePoint(CComVariant(0),10,CComVariant(dirVal),&pnt),S_OK);
+   TRY_TEST(alignment->LocatePoint(CComVariant(0),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,-100.0),true);
@@ -106,7 +106,7 @@ void CTestAlignment2::Test1()
    TRY_TEST(IsEqual(dirVal,3*PI_OVER_2),true);
    pnt.Release();
 
-   TRY_TEST(alignment->LocatePoint(CComVariant(200),10,CComVariant(dirVal),&pnt),S_OK);
+   TRY_TEST(alignment->LocatePoint(CComVariant(200),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x, 100.0),true);
@@ -152,7 +152,7 @@ void CTestAlignment2::Test2()
    TRY_TEST(IsEqual(dirVal,3*PI_OVER_2),true);
    pnt.Release();
 
-   TRY_TEST(alignment->LocatePoint(CComVariant(0),10,CComVariant(dirVal),&pnt),S_OK);
+   TRY_TEST(alignment->LocatePoint(CComVariant(0),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,-50.0),true);
@@ -176,7 +176,7 @@ void CTestAlignment2::Test2()
    TRY_TEST(IsEqual(dirVal,3*PI_OVER_2),true);
 
    pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(200),10,CComVariant(dirVal),&pnt),S_OK);
+   TRY_TEST(alignment->LocatePoint(CComVariant(200),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,150.0),true);
@@ -231,7 +231,7 @@ void CTestAlignment2::Test3()
    TRY_TEST(IsEqual(dirVal,M_PI/4 + 3*PI_OVER_2),true);
    pnt.Release();
 
-   TRY_TEST(alignment->LocatePoint(CComVariant(0),10,CComVariant(dirVal),&pnt),S_OK);
+   TRY_TEST(alignment->LocatePoint(CComVariant(0),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,-13.6396,0.001),true);
@@ -255,7 +255,7 @@ void CTestAlignment2::Test3()
    TRY_TEST(IsEqual(dirVal,M_PI/4 + 3*PI_OVER_2),true);
    pnt.Release();
 
-   TRY_TEST(alignment->LocatePoint(CComVariant(150),10,CComVariant(dirVal),&pnt),S_OK);
+   TRY_TEST(alignment->LocatePoint(CComVariant(150),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x, 92.4264,0.001),true);
@@ -279,7 +279,7 @@ void CTestAlignment2::Test3()
    TRY_TEST(IsEqual(dirVal,M_PI/4 + 3*PI_OVER_2),true);
    pnt.Release();
 
-   TRY_TEST(alignment->LocatePoint(CComVariant(500),10,CComVariant(dirVal),&pnt),S_OK);
+   TRY_TEST(alignment->LocatePoint(CComVariant(500),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x, 339.91378),true);
@@ -342,7 +342,7 @@ void CTestAlignment2::Test4()
    TRY_TEST(IsEqual(dirVal,3*PI_OVER_2),true);
    pnt.Release();
 
-   TRY_TEST(alignment->LocatePoint(CComVariant(0),10,CComVariant(dirVal),&pnt),S_OK);
+   TRY_TEST(alignment->LocatePoint(CComVariant(0),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x, 339.0356,0.001),true);
@@ -366,7 +366,7 @@ void CTestAlignment2::Test4()
    TRY_TEST(IsEqual(dirVal,6.2581853 - PI_OVER_2),true);
 
    pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(150),10,CComVariant(dirVal),&pnt),S_OK);
+   TRY_TEST(alignment->LocatePoint(CComVariant(150),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,488.7825,0.001),true);
@@ -390,7 +390,7 @@ void CTestAlignment2::Test4()
    TRY_TEST(IsEqual(dirVal,6.083185 - PI_OVER_2),true);
 
    pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(250),10,CComVariant(dirVal),&pnt),S_OK);
+   TRY_TEST(alignment->LocatePoint(CComVariant(250),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,586.3669,0.001),true);
@@ -414,7 +414,7 @@ void CTestAlignment2::Test4()
    TRY_TEST(IsEqual(dirVal,5.68345 - PI_OVER_2),true);
 
    pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(450),10,CComVariant(dirVal),&pnt),S_OK);
+   TRY_TEST(alignment->LocatePoint(CComVariant(450),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,765.6963,0.001),true);
@@ -438,7 +438,7 @@ void CTestAlignment2::Test4()
    TRY_TEST(IsEqual(dirVal,5.497787 - PI_OVER_2),true);
 
    pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(650),10,CComVariant(dirVal),&pnt),S_OK);
+   TRY_TEST(alignment->LocatePoint(CComVariant(650),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,913.6339,0.001),true);
@@ -502,7 +502,7 @@ void CTestAlignment2::Test5()
    TRY_TEST(IsEqual(dirVal,0.0),true);
    pnt.Release();
 
-   TRY_TEST(alignment->LocatePoint(CComVariant(115),3,CComVariant(dirVal),&pnt),S_OK);
+   TRY_TEST(alignment->LocatePoint(CComVariant(115),omtAlongDirection, 3,CComVariant(dirVal),&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x, 13.0),true);

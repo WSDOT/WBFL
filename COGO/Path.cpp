@@ -55,6 +55,8 @@ HRESULT CPath::FinalConstruct()
    ATLASSERT(SUCCEEDED(hr));
    InternalRelease();
 
+   m_Profile->putref_Path(this);
+
    hr = m_GeomUtil.CoCreateInstance(CLSID_GeomUtil);
    if ( FAILED(hr) )
       return hr;
@@ -297,7 +299,7 @@ STDMETHODIMP CPath::Clear()
    return S_OK;
 }
 
-STDMETHODIMP CPath::LocatePoint( Float64 distance, Float64 offset, VARIANT varDir, IPoint2d* *newPoint)
+STDMETHODIMP CPath::LocatePoint( Float64 distance, OffsetMeasureType offsetMeasure, Float64 offset, VARIANT varDir, IPoint2d* *newPoint)
 {
    CHECK_RETOBJ(newPoint);
 
@@ -308,6 +310,21 @@ STDMETHODIMP CPath::LocatePoint( Float64 distance, Float64 offset, VARIANT varDi
       hr = cogoUtil::DirectionFromVariant(varDir,&dir);
       if ( FAILED(hr) )
          return hr;
+   }
+
+   if ( offsetMeasure == omtNormal && !IsZero(offset) && dir != NULL)
+   {
+      // add offset so that it is along direction
+      CComPtr<IDirection> normal;
+      this->Normal(distance,&normal);
+
+      CComPtr<IAngle> objAngle;
+      dir->AngleBetween(normal,&objAngle); // dir - normal
+
+      Float64 angle;
+      objAngle->get_Value(&angle);
+
+      offset *= cos(angle);
    }
 
    // Find the path element that encompasses the input distance.

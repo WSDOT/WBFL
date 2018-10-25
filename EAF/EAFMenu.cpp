@@ -28,6 +28,7 @@
 #include "stdafx.h"
 #include <EAF\EAFMenu.h>
 #include <EAF\EAFPluginCommandManager.h>
+#include <EAF\EAFUtilities.h>
 
 #include <algorithm> // for std::find()
 
@@ -266,7 +267,7 @@ void CEAFMenu::InsertSeparator(UINT nPosition,UINT nFlags)
    InsertSeparator(pMenu,nPosition,nFlags);
 }
 
-void CEAFMenu::RemoveMenu(UINT nPosition,UINT nFlags, IEAFCommandCallback* pCallback)
+BOOL CEAFMenu::RemoveMenu(UINT nPosition,UINT nFlags, IEAFCommandCallback* pCallback)
 {
    CMenu* pMenu = GetMenu();
 
@@ -284,7 +285,7 @@ void CEAFMenu::RemoveMenu(UINT nPosition,UINT nFlags, IEAFCommandCallback* pCall
       m_pCmdMgr->RemoveCommandCallback(menuID);
    }
 
-   pMenu->RemoveMenu(nPosition,nFlags);
+   return pMenu->RemoveMenu(nPosition,nFlags);
 }
 
 int CEAFMenu::GetMenuString(UINT nIDItem,LPTSTR lpString,int nMaxCount,UINT nFlags) const
@@ -337,13 +338,26 @@ void CEAFMenu::DestroyMenu(CEAFMenu* pPopupMenu)
 UINT CEAFMenu::FindMenuItem(const char* strTargetMenu)
 {
    CMenu* pMenu = GetMenu();
+
+   // if the active frame is maximized, the window menu for that frame is added to the
+   // the menu bar. This offsets all the menu items by one.
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
+   CFrameWnd* pActiveFrame = pMainFrame->GetActiveFrame();
+   int offset = 0;
+   if ( pActiveFrame && pActiveFrame->IsZoomed() )
+   {
+      offset = 1;
+   }
+
    UINT nItems = pMenu->GetMenuItemCount();
    for ( UINT menuPos = 0; menuPos < nItems; menuPos++ )
    {
       CString strMenu;
       pMenu->GetMenuString(menuPos,strMenu,MF_BYPOSITION);
       if ( strMenu.Compare(strTargetMenu) == 0 )
-         return menuPos;
+      {
+         return menuPos - offset;
+      }
    }
 
    return -1;

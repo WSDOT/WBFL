@@ -75,6 +75,9 @@ cpp_quote("#define COGO_E_POINTEVENTS                  MAKE_HRESULT(SEVERITY_ERR
 cpp_quote("#define COGO_E_CUBICSPLINEPOINTS            MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,541)")
 cpp_quote("#define COGO_E_POINTINCIRCLE                MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,542)")
 
+interface IProfile;
+interface IPath;
+
 [
     uuid(1128D28F-55F7-11D5-8C29-006097C68A9C),
     version(1.0),
@@ -146,6 +149,13 @@ library WBFLCogo
        dcHighway  =  2,
     } DegreeCurvatureType;
 
+
+    typedef [public,helpstring("Indicates how an offset is measured")/*,helpcontext(IDH_TangentSignType)*/,uuid(50A94F9E-EACB-4b60-936F-23E5F4F24C86)] 
+    enum OffsetMeasureType
+    {
+       omtAlongDirection =  1,
+       omtNormal         =  2,
+    } OffsetMeasureType;
 
 
     [
@@ -982,6 +992,8 @@ library WBFLCogo
 		[propputref, helpstring("property Factory"), helpcontext(IDH_CrossSectionCollection_Factory)] HRESULT Factory([in]ICrossSectionFactory* factory);
       [helpstring("method Clone"),helpcontext(IDH_CrossSectionCollection_Clone)] HRESULT Clone([out,retval] ICrossSectionCollection* *clone);
 
+      [propget,helpstring("property Profile")] HRESULT Profile([out,retval]IProfile** ppProfile);
+      [propget,helpstring("property CrownPointPath")] HRESULT CrownPointPath([out,retval]IPath** ppPath);
      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
 	};
 
@@ -1083,6 +1095,9 @@ library WBFLCogo
         [propget, restricted,helpstring("property _EnumProfileElements"), helpcontext(IDH_Profile__EnumProfileElements)] HRESULT _EnumProfileElements([out, retval] IEnumProfileElements** retval);  
       [helpstring("method Clone"), helpcontext(IDH_Profile_Clone)] HRESULT Clone([out,retval] IProfile* *clone);
 
+      [propget,helpstring("property Path")] HRESULT Path([out,retval]IPath** ppPath);
+      [propputref,helpstring("property Path")] HRESULT Path([in]IPath* pPath);
+
      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
 	};
 
@@ -1177,7 +1192,7 @@ library WBFLCogo
 		[helpstring("method InsertEx"), helpcontext(IDH_Alignment_InsertEx)] HRESULT InsertEx([in] CollectionIndexType idx,[in] IUnknown* dispElement);
 		[helpstring("method Remove"), helpcontext(IDH_Alignment_Remove)] HRESULT Remove([in] VARIANT varKey);
 		[helpstring("method Clear"), helpcontext(IDH_Alignment_Clear)] HRESULT Clear();
-		[helpstring("method LocatePoint"), helpcontext(IDH_Alignment_LocatePoint)] HRESULT LocatePoint([in] Float64 distance, [in] Float64 offset, [in] VARIANT varDir,[out,retval] IPoint2d* *newPoint); 
+		[helpstring("method LocatePoint"), helpcontext(IDH_Alignment_LocatePoint)] HRESULT LocatePoint([in] Float64 distance, [in] OffsetMeasureType offsetMeasure,[in] Float64 offset, [in] VARIANT varDir,[out,retval] IPoint2d* *newPoint); 
 		[helpstring("method Bearing"), helpcontext(IDH_Alignment_Bearing)] HRESULT Bearing([in] Float64 distance,[out,retval] IDirection* *dir); 
 		[helpstring("method Normal"), helpcontext(IDH_Alignment_Normal)] HRESULT Normal([in] Float64 distance,[out,retval] IDirection* *dir); 
 		[helpstring("method ProjectPoint"), helpcontext(IDH_Alignment_ProjectPoint)] HRESULT ProjectPoint([in] IPoint2d* point,[out,retval] IPoint2d* *newPoint); 
@@ -1304,7 +1319,9 @@ library WBFLCogo
 	{
 		[propget, helpstring("property RefStation"), helpcontext(IDH_Alignment_RefStation)] HRESULT RefStation([out, retval] IStation* *station);
 		[propput, helpstring("property RefStation"), helpcontext(IDH_Alignment_RefStation)] HRESULT RefStation([in] VARIANT varStation);
-		[helpstring("method LocatePoint"), helpcontext(IDH_Alignment_LocatePoint)] HRESULT LocatePoint([in] VARIANT varStation, [in] Float64 offset, [in] VARIANT varDir,[out,retval] IPoint2d* *newPoint); 
+		[helpstring("method LocatePoint"), helpcontext(IDH_Alignment_LocatePoint)] HRESULT LocatePoint([in] VARIANT varStation, [in] OffsetMeasureType offsetMeasure, [in] Float64 offset, [in] VARIANT varDir,[out,retval] IPoint2d* *newPoint); 
+		[helpstring("method LocateCrownPoint2D")/*, helpcontext(IDH_Alignment_LocateCrownPoint)*/] HRESULT LocateCrownPoint2D([in] VARIANT varStation, [in] VARIANT varDir,[out,retval] IPoint2d* *newPoint); 
+		[helpstring("method LocateCrownPoint3D")/*, helpcontext(IDH_Alignment_LocateCrownPoint)*/] HRESULT LocateCrownPoint3D([in] VARIANT varStation, [in] VARIANT varDir,[out,retval] IPoint3d* *newPoint); 
 		[helpstring("method Bearing"), helpcontext(IDH_Alignment_Bearing)] HRESULT Bearing([in] VARIANT varStation,[out,retval] IDirection* *dir); 
 		[helpstring("method Normal"), helpcontext(IDH_Alignment_Normal)] HRESULT Normal([in] VARIANT varStation,[out,retval] IDirection* *dir); 
 		[helpstring("method Offset"), helpcontext(IDH_Alignment_Offset)] HRESULT Offset([in] IPoint2d* point,[out] IStation* *station,[out] Float64* offset); 

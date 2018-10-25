@@ -178,7 +178,7 @@ void bmfSlab::PlanView(HDC hDC, const grlibPointMapper& mapper) const
       offset2 = offset / fabs(cos(skew_value));
       
       CComPtr<IPoint2d> pnt;
-      alignment->LocatePoint(CComVariant(station),-offset2,CComVariant(skew_dir),&pnt);
+      alignment->LocatePoint(CComVariant(station),omtAlongDirection, -offset2,CComVariant(skew_dir),&pnt);
 
       mapper.WPtoDP(pnt,&dx,&dy);
       ::LineTo(hDC,dx,dy);
@@ -214,7 +214,7 @@ void bmfSlab::PlanView(HDC hDC, const grlibPointMapper& mapper) const
       offset2 = offset / fabs(cos(skew_value));
 
       CComPtr<IPoint2d> pnt;
-      alignment->LocatePoint(CComVariant(station), offset2,CComVariant(skew_dir),&pnt);      
+      alignment->LocatePoint(CComVariant(station), omtAlongDirection, offset2,CComVariant(skew_dir),&pnt);      
       mapper.WPtoDP(pnt,&dx,&dy);
       ::LineTo(hDC,dx,dy);
 
@@ -489,11 +489,11 @@ void bmfSlab::UpdateGeometry() const
       pStartPier->GetBearing(&pier_direction);
 
       CComPtr<IPoint2d> temp_pnt;
-      alignment->LocatePoint( CComVariant(first_pier_station), offset_to_edge_of_slab, CComVariant(pier_direction), &temp_pnt);
+      alignment->LocatePoint( CComVariant(first_pier_station), omtAlongDirection, offset_to_edge_of_slab, CComVariant(pier_direction), &temp_pnt);
       points->AddEx(m_StartLeftId,temp_pnt);
 
       temp_pnt.Release();
-      alignment->LocatePoint( CComVariant(first_pier_station), -offset_to_edge_of_slab, CComVariant(pier_direction), &temp_pnt);
+      alignment->LocatePoint( CComVariant(first_pier_station), omtAlongDirection, -offset_to_edge_of_slab, CComVariant(pier_direction), &temp_pnt);
       points->AddEx(m_StartRightId,temp_pnt);
 
       offset_to_edge_of_slab = GetOverhang() + frame_width / 2;
@@ -507,11 +507,11 @@ void bmfSlab::UpdateGeometry() const
       pEndPier->GetBearing(&pier_direction);
 
       temp_pnt.Release();
-      alignment->LocatePoint( CComVariant(last_pier_station), offset_to_edge_of_slab, CComVariant(pier_direction), &temp_pnt);
+      alignment->LocatePoint( CComVariant(last_pier_station), omtAlongDirection, offset_to_edge_of_slab, CComVariant(pier_direction), &temp_pnt);
       points->AddEx(m_EndLeftId,temp_pnt);
 
       temp_pnt.Release();
-      alignment->LocatePoint( CComVariant(last_pier_station), -offset_to_edge_of_slab, CComVariant(pier_direction), &temp_pnt);
+      alignment->LocatePoint( CComVariant(last_pier_station), omtAlongDirection, -offset_to_edge_of_slab, CComVariant(pier_direction), &temp_pnt);
       points->AddEx(m_EndRightId,temp_pnt);
    }
 

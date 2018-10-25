@@ -103,8 +103,8 @@ public:
    STDMETHOD(InsertEx)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IUnknown* dispElement) { return m_Path->InsertEx(idx,dispElement); }
    STDMETHOD(Remove)(/*[in]*/ VARIANT varKey) { return m_Path->Remove(varKey); }
    STDMETHOD(Clear)() { return m_Path->Clear(); }
-	STDMETHOD(LocatePoint)(/*[in]*/ Float64 distance, /*[in]*/ Float64 offset, /*[in]*/ VARIANT varDir,/*[out,retval]*/ IPoint2d* *newPoint)
-   { return m_Path->LocatePoint(distance,offset,varDir,newPoint); }
+	STDMETHOD(LocatePoint)(/*[in]*/ Float64 distance,/*[in]*/ OffsetMeasureType offsetMeasure,  /*[in]*/ Float64 offset, /*[in]*/ VARIANT varDir,/*[out,retval]*/ IPoint2d* *newPoint)
+   { return m_Path->LocatePoint(distance,offsetMeasure,offset,varDir,newPoint); }
    STDMETHOD(Bearing)(/*[in]*/ Float64 distance,/*[out,retval]*/ IDirection* *dir)
    { return m_Path->Bearing(distance,dir); }
 	STDMETHOD(Normal)(/*[in]*/ Float64 distance,/*[out,retval]*/ IDirection* *dir)
@@ -136,7 +136,9 @@ public:
 public:
 	STDMETHOD(get_RefStation)(/*[out, retval]*/ IStation* *station);
 	STDMETHOD(put_RefStation)(/*[in]*/ VARIANT varStation);
-	STDMETHOD(LocatePoint)(/*[in]*/ VARIANT varStation, /*[in]*/ Float64 offset, /*[in]*/ VARIANT varDir,/*[out,retval]*/ IPoint2d* *newPoint); 
+	STDMETHOD(LocatePoint)(/*[in]*/ VARIANT varStation, /*[in]*/ OffsetMeasureType offsetMeasure, /*[in]*/ Float64 offset, /*[in]*/ VARIANT varDir,/*[out,retval]*/ IPoint2d* *newPoint); 
+   STDMETHOD(LocateCrownPoint2D)(/*[in]*/ VARIANT varStation, /*[in]*/ VARIANT varDir,/*[out,retval]*/ IPoint2d* *newPoint); 
+   STDMETHOD(LocateCrownPoint3D)(/*[in]*/ VARIANT varStation, /*[in]*/ VARIANT varDir,/*[out,retval]*/ IPoint3d* *newPoint); 
    STDMETHOD(Bearing)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ IDirection* *dir); 
 	STDMETHOD(Normal)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ IDirection* *dir); 
 	STDMETHOD(Offset)(/*[in]*/ IPoint2d* point,/*[out]*/ IStation* *station,/*[out]*/ Float64* offset); 

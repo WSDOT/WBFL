@@ -105,8 +105,12 @@ HRESULT CProfile::FinalConstruct()
    CComObject<CCrossSectionCollection>* pColl;
    CComObject<CCrossSectionCollection>::CreateInstance(&pColl);
 
+   pColl->PutProfile(this);
+
    m_CrossSections = pColl;
    AdviseCrossSections();
+
+   m_pPath = NULL;
 
    return S_OK;
 }
@@ -370,6 +374,22 @@ STDMETHODIMP CProfile::get__EnumProfileElements(IEnumProfileElements** retval)
 
    pEnum->QueryInterface( retval );
 
+   return S_OK;
+}
+
+STDMETHODIMP CProfile::get_Path(IPath** ppPath)
+{
+   CHECK_RETVAL(ppPath);
+   (*ppPath) = m_pPath;
+   if ( m_pPath )
+      (*ppPath)->AddRef();
+
+   return S_OK;
+}
+
+STDMETHODIMP CProfile::putref_Path(IPath* pPath)
+{
+   m_pPath = pPath;
    return S_OK;
 }
 

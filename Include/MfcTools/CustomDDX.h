@@ -107,9 +107,14 @@ void DDX_KeywordUnitValueAndTag(CDataExchange* pDX,int nIDC,int nIDCTag,LPCTSTR 
    else
    {
       if ( value < 0 )
+      {
          DDX_Text(pDX,nIDC,CString(lpszKeyword));
+         DDX_Tag(pDX,nIDCTag,umIndirectMeasure);
+      }
       else
+      {
          DDX_UnitValueAndTag(pDX,nIDC,nIDCTag,value, umIndirectMeasure );
+      }
    }
 }
 

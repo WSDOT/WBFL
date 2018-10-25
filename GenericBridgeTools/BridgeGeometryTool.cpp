@@ -114,7 +114,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderPathOffset(IGenericBridge* bridge,SpanIn
 
    // get point on alignment at station
    CComPtr<IPoint2d> a_point;
-   alignment->LocatePoint(varStation,0.00,CComVariant(0.00),&a_point);
+   alignment->LocatePoint(varStation,omtAlongDirection, 0.00,CComVariant(0.00),&a_point);
 
    // Create a line that represents the girder path
    CComPtr<ICogoInfo> cogoinfo;
@@ -275,7 +275,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderLinePoint(IGenericBridge* bridge,Float64
    GetAlignment(bridge,&alignment);
 
    CComPtr<IPoint2d> cut_point;
-   alignment->LocatePoint(CComVariant(cut_station),0.00,CComVariant(0.00),&cut_point);
+   alignment->LocatePoint(CComVariant(cut_station),omtAlongDirection, 0.00,CComVariant(0.00),&cut_point);
 
    // Intersect the normal at the cut point with the girder line
    CComPtr<IDirection> normal;
@@ -400,7 +400,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckEdgePoint(IGenericBridge* bridge, Float64 
 
    // locate a point on the alignment at the given station
    CComPtr<IPoint2d> point_on_alignment;
-   alignment->LocatePoint(CComVariant(station),0.00,CComVariant(0.00),&point_on_alignment);
+   alignment->LocatePoint(CComVariant(station),omtAlongDirection, 0.00,CComVariant(0.00),&point_on_alignment);
 
    // Create a line to intersection with the path
    Float64 angle;
@@ -578,7 +578,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
    // Get point on alignment at station
 
    CComPtr<IPoint2d> alignment_point;
-   alignment->LocatePoint(CComVariant(station),0.00,CComVariant(0.00),&alignment_point);
+   alignment->LocatePoint(CComVariant(station),omtAlongDirection, 0.00,CComVariant(0.00),&alignment_point);
 
    // Create a line through the alignment point in the direction of "direction"
    Float64 angle;

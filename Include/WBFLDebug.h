@@ -57,14 +57,18 @@
 #undef _UNITTEST
 #define _UNITTEST
 
-// turns off STL iterator checking and debugging
+// STL iterator checking and debugging must be enabled
+#if defined _HAS_ITERATOR_DEBUGGING
 #if _HAS_ITERATOR_DEBUGGING == 0
-#pragma message(" WBFL: Iterator debugging is disabled (See WBFLDebug.h)")
+#error STL iterator debugging must be enabled, set _HAS_ITERATOR_DEBUGGING = 1
 #endif 
+#endif
 
+#if defined _SECURE_SCL
 #if _SECURE_SCL == 0
-#pragma message(" WBFL: Iterators are not bounds checked (See WBFLDebug.h)")
+#error STL iterator debugging must be enabled, set _SECURE_SCL = 1
 #endif 
+#endif
 
 #else  // _DEBUG
 

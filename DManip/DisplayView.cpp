@@ -34,6 +34,8 @@
 #include "TaskFactoryImpl.h"
 #include "MappingImpl.h"
 
+#include "DManipDebug.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE

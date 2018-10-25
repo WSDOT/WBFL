@@ -284,6 +284,8 @@ STDMETHODIMP CCrossSectionCollection::Clone(ICrossSectionCollection* *clone)
    (*clone) = pClone;
    (*clone)->AddRef();
 
+   pClone->PutProfile(m_pProfile);
+
    CComPtr<IEnumCrossSections> enumSections;
    get__EnumCrossSections(&enumSections);
 
@@ -313,6 +315,7 @@ STDMETHODIMP CCrossSectionCollection::get_StructuredStorage(IStructuredStorage2*
 // ICrossSectionEvents
 STDMETHODIMP CCrossSectionCollection::OnCrossSectionChanged(ICrossSection * csect)
 {
+   m_CrownPointPath.Release();
    Fire_OnCrossSectionChanged(csect);
    return S_OK;
 }
@@ -320,6 +323,7 @@ STDMETHODIMP CCrossSectionCollection::OnCrossSectionChanged(ICrossSection * csec
 STDMETHODIMP CCrossSectionCollection::OnCrossSectionMoved(ICrossSection * csect)
 {
    // Re-sort the collection
+   m_CrownPointPath.Release();
    std::sort(m_coll.begin(),m_coll.end(),SortCrossSections());
    Fire_OnCrossSectionChanged(csect);
    return S_OK;
@@ -345,6 +349,29 @@ STDMETHODIMP CCrossSectionCollection::get__EnumCrossSections(IEnumCrossSections*
       return hr;
 
    pEnum->QueryInterface( retval );
+
+   return S_OK;
+}
+
+STDMETHODIMP CCrossSectionCollection::get_Profile(IProfile** ppProfile)
+{
+   CHECK_RETOBJ(ppProfile);
+   (*ppProfile) = m_pProfile;
+   (*ppProfile)->AddRef();
+   return S_OK;
+}
+
+STDMETHODIMP CCrossSectionCollection::get_CrownPointPath(IPath** ppPath)
+{
+   if (m_CrownPointPath == NULL )
+   {
+      HRESULT hr = UpdateCrownPointPath();
+      if ( FAILED(hr) )
+         return hr;
+   }
+
+   (*ppPath) = m_CrownPointPath;
+   (*ppPath)->AddRef();
 
    return S_OK;
 }
@@ -544,5 +571,48 @@ HRESULT CCrossSectionCollection::OnBeforeLoad(IStructuredLoad2* pLoad)
    pLoad->get_Property(CComBSTR("CrossSectionFactory"),&var);
    m_Factory.Release();
    _CopyVariantToInterface<ICrossSectionFactory>::copy(&m_Factory,&var);
+   return S_OK;
+}
+
+HRESULT CCrossSectionCollection::UpdateCrownPointPath()
+{
+   ATLASSERT(m_CrownPointPath == NULL);
+
+   CComPtr<IPath> alignment_path;
+   m_pProfile->get_Path(&alignment_path);
+   CComQIPtr<IAlignment> alignment(alignment_path);
+   if ( alignment == NULL )
+      return E_FAIL; // need to be conncted to an alignment
+
+   CComPtr<IStation> objRefStation;
+   alignment->get_RefStation(&objRefStation);
+
+   Float64 ref_station;
+   objRefStation->get_Value(&ref_station);
+
+   m_CrownPointPath.CoCreateInstance(CLSID_Path);
+
+   CrossSections::iterator iter;
+   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
+   {
+      CComPtr<IStation> station;
+      CComPtr<ICrossSection> cross_section;
+
+      CSType& type = *iter++;
+      CComVariant& var = type.second;
+      var.pdispVal->QueryInterface(&cross_section);
+
+      Float64 cpo;
+      cross_section->get_CrownPointOffset(&cpo);
+      cross_section->get_Station(&station);
+
+      CComPtr<IDirection> normal;
+      alignment->Normal(CComVariant(station),&normal);
+
+      CComPtr<IPoint2d> point;
+      alignment->LocatePoint(CComVariant(station),omtAlongDirection,cpo,CComVariant(normal),&point);
+      m_CrownPointPath->AddEx(point);
+   }
+
    return S_OK;
 }

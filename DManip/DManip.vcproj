@@ -57,7 +57,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\Include;&quot;..\Include\$(ConfigurationName)&quot;"
-				PreprocessorDefinitions="_DEBUG;_WINDOWS;_AFXEXT;BUILDDMANIPLIB;WIN32;_ATL_NO_UUIDOF;_HAS_ITERATOR_DEBUGGING=0;_SECURE_SCL=0"
+				PreprocessorDefinitions="_DEBUG;_WINDOWS;_AFXEXT;BUILDDMANIPLIB;WIN32;_ATL_NO_UUIDOF;WBFL_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -201,6 +201,7 @@
 				GenerateManifest="true"
 				EnableUAC="true"
 				ModuleDefinitionFile=".\DManip.def"
+				GenerateDebugInformation="true"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -1531,6 +1532,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\DManip\DManip.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DManipDebug.h"
 				>
 			</File>
 			<File

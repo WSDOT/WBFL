@@ -997,9 +997,9 @@ void CTestGenericBridge::TestSegmentLayout()
 //   TRY_TEST(bridge->GetSuperstructureMemberSegment(1,1,105.0,&seg),S_OK);
 //   TRY_TEST(seg.IsEqualObject(segment6),true);
 
-   Uint32 ssmbrIdx;
-   Uint32 segmentIdx;
-   Float64 dist;
+   //Uint32 ssmbrIdx;
+   //Uint32 segmentIdx;
+   //Float64 dist;
 
 #pragma Reminder("Revisit this testing")
 //   TRY_TEST(bridge->SpanGirderToSegment( -1,  1, -2.0,&ssmbrIdx,&segmentIdx,&dist),E_INVALIDARG);

@@ -274,7 +274,7 @@ void CGenericBridge::DoUpdateBridgeModel()
 
       // Locate the Alignment-Pier intersection point
       CComPtr<IPoint2d> point;
-      alignment->LocatePoint(CComVariant(objStation),0.00,CComVariant(0.00),&point);
+      alignment->LocatePoint(CComVariant(objStation),omtAlongDirection, 0.00,CComVariant(0.00),&point);
 
       long pointID;
       ::GB_GetPierAlignmentPointId(pierIdx,&pointID);
@@ -546,10 +546,10 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
    // get intersection point of bearing and alignment (if bearing is uniquely located)
    CComPtr<IPoint2d> pntStartBrg, pntEndBrg;
    if ( start_brg_offset_measure == mtNormal )
-      alignment->LocatePoint(CComVariant(objStartBrgStation),0.00,CComVariant(objPrevPierDirection),&pntStartBrg);
+      alignment->LocatePoint(CComVariant(objStartBrgStation),omtAlongDirection, 0.00,CComVariant(objPrevPierDirection),&pntStartBrg);
 
    if ( end_brg_offset_measure == mtNormal )
-      alignment->LocatePoint(CComVariant(objEndBrgStation),  0.00,CComVariant(objNextPierDirection),&pntEndBrg);
+      alignment->LocatePoint(CComVariant(objEndBrgStation),  omtAlongDirection, 0.00,CComVariant(objNextPierDirection),&pntEndBrg);
 
    //
    // get station and direction of the lines along which the
@@ -695,7 +695,7 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
       CComPtr<IPoint2d> pntStartGirder;
       if ( mtStart == mtAlongItem )
       {
-         alignment->LocatePoint(CComVariant(startStation),-start_offset,CComVariant(startDir),&pntStartGirder);
+         alignment->LocatePoint(CComVariant(startStation),omtAlongDirection, -start_offset,CComVariant(startDir),&pntStartGirder);
       }
       else
       {
@@ -742,7 +742,7 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
       CComPtr<IPoint2d> pntEndGirder;
       if ( mtEnd == mtAlongItem )
       {
-         alignment->LocatePoint(CComVariant(endStation),-end_offset,CComVariant(endDir),&pntEndGirder);
+         alignment->LocatePoint(CComVariant(endStation),omtAlongDirection, -end_offset,CComVariant(endDir),&pntEndGirder);
       }
       else
       {

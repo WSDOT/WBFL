@@ -88,6 +88,8 @@ public:
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
    STDMETHOD(get__Enum)(/*[out,retval]*/ IEnumPoint3d** ppenum);
    STDMETHOD(Clear)();
+// STDMETHOD(Insert)([in]CollectionIndexType index,[in]IPoint3d* pPoint);
+// STDMETHOD(Reverse)();
 //	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType Index);
 //	STDMETHOD(Add)(/*[in]*/ IPoint3d* pPoint);
 //	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType Index, /*[out, retval]*/ IPoint3d* *pVal);

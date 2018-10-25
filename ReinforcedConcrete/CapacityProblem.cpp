@@ -231,7 +231,7 @@ Int32 rcaCapacityProblem::AddConcrete(const matConcrete& concrete)
 
 const matConcrete& rcaCapacityProblem::GetConcrete(Int32 key) const
 {
-   CHECK(0 <= key && key < m_ConcreteContainer.size());
+   CHECK(0 <= key && key < (Int32)m_ConcreteContainer.size());
    return *(m_ConcreteContainer[key]);
 }
 
@@ -242,7 +242,7 @@ Int32 rcaCapacityProblem::GetNumConcretes() const
 
 void rcaCapacityProblem::SetBaseConcreteMaterial(Int32 concreteIdx)
 {
-   CHECK(0 <= concreteIdx && concreteIdx < m_ConcreteContainer.size());
+   CHECK(0 <= concreteIdx && concreteIdx < (Int32)m_ConcreteContainer.size());
    m_BaseConcrete = concreteIdx;
 }
 
@@ -997,7 +997,7 @@ Float64 rcaCapacityProblem::GetClippedConcreteArea(const gpLine2d& clipLine, gpL
 
 Float64 rcaCapacityProblem::GetClippedConcreteArea(Int32 concreteIdx, const gpLine2d& clipLine, gpLine2d::Side side) const
 {
-   CHECK(0 <= concreteIdx && concreteIdx < m_ConcreteContainer.size());
+   CHECK(0 <= concreteIdx && concreteIdx < (Int32)m_ConcreteContainer.size());
 
    Float64 area=0;
    for (ConstConcElementIterator citer = m_ConcElementContainer.begin(); 

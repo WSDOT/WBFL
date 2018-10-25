@@ -214,7 +214,7 @@ bool unitMeasure::TestMe(dbgLog& rlog)
    TRY_TESTME( TEST( 1.0, KgPerMeter,  0.6719689, LbfPerFeet ));
    TRY_TESTME( TEST( 1.0, LbfPerFeet,  1.4881639, KgPerMeter ));
    TRY_TESTME( TEST( 1.0, LbfPerFeet3, 16.018463, KgPerMeter3 ));
-   TRY_TESTME( TEST( 1.0, KipPerFeet3, 16018.463, KgPerMeter3 ));
+   TRY_TESTME( TEST( 1.0, KipPerFeet3, 16018.46337, KgPerMeter3 ));
    TRY_TESTME( TEST( 0.0948, SqrtKSI,  0.2489246, SqrtMPa));
 
    TRY_TESTME( TEST( 1.0, NewtonMeter2,  2.419823, LbfFoot2));
