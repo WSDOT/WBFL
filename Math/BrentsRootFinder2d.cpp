@@ -66,6 +66,10 @@ Float64 mathBrentsRootFinder2d::FindRootInRange(const mathFunction2d& eval,
       Float64 fb = eval.Evaluate(b);
       Float64 c = b; 
       Float64 fc = fb;
+
+      fa = (IsZero(fa,tol) ? 0 : fa);
+      fb = (IsZero(fb,tol) ? 0 : fb);
+
       // ensure that the root is bracketed
       if (fa*fb > 0.0) 
       {

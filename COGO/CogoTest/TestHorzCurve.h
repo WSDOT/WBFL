@@ -65,7 +65,14 @@ private:
    static void Test5(); // Left curve
    static void Test6(); 
    static void Test7(); // Error conditions
-   static void Test8(); // Line Curve intersection
+   static void Test8a(); // Line Curve intersection
+   static void Test8b(); // Line Curve intersection
+   static void Test9a(); // Line Curve intersection
+   static void Test9b(); // Line Curve intersection
+   static void Test10a(); // Line Curve intersection
+   static void Test10b(); // Line Curve intersection
+   static void Test11a(); // Line Curve intersection
+   static void Test11b(); // Line Curve intersection
    static void TestEvents();
 };
 

@@ -53,7 +53,14 @@ void CTestHorzCurve::Test()
    Test5();
    Test6();
    Test7();
-   Test8();
+   Test8a();
+   Test8b();
+   Test9a();
+   Test9b();
+   Test10a();
+   Test10b();
+   Test11a();
+   Test11b();
    TestEvents();
 
    // Test curve direction

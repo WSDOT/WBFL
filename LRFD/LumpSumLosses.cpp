@@ -144,7 +144,7 @@ Float64 lrfdLumpSumLosses::PermanentStrand_Final() const
    return (m_ApsPerm != 0 && m_FpjPerm != 0) ? m_Final : 0;
 }
 
-Float64 lrfdLumpSumLosses::PermanentStrand_FinalWithLiveLoad() const
+Float64 lrfdLumpSumLosses::PermanentStrand_FinalWithLiveLoad(Float64 gLL) const
 {
    return PermanentStrand_Final();
 }

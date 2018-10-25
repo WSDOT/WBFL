@@ -487,11 +487,13 @@ Uint16 lrfdConcreteUtil::MinLegsForBv(Float64 bv)
       return 1;
 }
 
-Float64 lrfdConcreteUtil::AvfOverSMin(Float64 bv, Float64 fy,const sysSectionValue& Vuh,Float64 phi,Float64 c,Float64 u,Float64 pc)
+lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Float64 fy,const sysSectionValue& Vuh,Float64 phi,Float64 c,Float64 u,Float64 pc)
 {
    CHECK(fy>0.0);
 
-   Float64 avf_min;
+   HsAvfOverSMinType hsAvfOverSMin;
+
+   // All spec versions evalulate 5.8.4.4-1
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
       Float64 bv_used = ::ConvertFromSysUnits(bv, unitMeasure::Millimeter);
@@ -501,7 +503,10 @@ Float64 lrfdConcreteUtil::AvfOverSMin(Float64 bv, Float64 fy,const sysSectionVal
 
       Float64 avf = 0.35 * bv_used / fy_used;
 
-      avf_min = ::ConvertToSysUnits(avf, unitMeasure::Millimeter);
+      Float64 avf_min = ::ConvertToSysUnits(avf, unitMeasure::Millimeter);
+
+      hsAvfOverSMin.res5_8_4_4_1 = avf_min;
+      hsAvfOverSMin.AvfOverSMin  = avf_min;
    }
    else
    {
@@ -512,29 +517,35 @@ Float64 lrfdConcreteUtil::AvfOverSMin(Float64 bv, Float64 fy,const sysSectionVal
 
       Float64 avf = 0.05 * bv_used / fy_used;
 
-      avf_min = ::ConvertToSysUnits(avf, unitMeasure::Inch);
+      Float64 avf_min = ::ConvertToSysUnits(avf, unitMeasure::Inch);
+
+      hsAvfOverSMin.res5_8_4_4_1 = avf_min;
+      hsAvfOverSMin.AvfOverSMin  = avf_min;
    }
 
    if ( lrfdVersionMgr::FourthEdition2007 <= lrfdVersionMgr::GetVersion() )
    {
-      // addition requirements added in 4th edition
-
-      Float64 avf_min_max; // maximum value of avf_min
+      // Addition requirements added in 4th edition
+      hsAvfOverSMin.ValidEqns = HsAvfOverSMinType::eqBoth;
 
       Float64 vuh = max(Vuh.Left(),Vuh.Right());
 
+      // Equation 5.8.4.1-3
       // this is a unit consistent equation... no unit conversions needed
-      avf_min_max = (1.33*vuh - phi*(c*bv + u*pc))/(phi*u*fy);
+      Float64 avf_min = (1.33*vuh - phi*(c*bv + u*pc))/(phi*u*fy);
 
-      // less than zero means the reinforcement isn't needed to satify strength
-      // requirements
-      if ( avf_min_max < 0 )
-         avf_min_max = 0;
+      hsAvfOverSMin.res5_8_4_1_3 = avf_min;
 
-      avf_min = min(avf_min, avf_min_max);
+      // Final is min of two equations
+      hsAvfOverSMin.AvfOverSMin = min(hsAvfOverSMin.res5_8_4_1_3, hsAvfOverSMin.res5_8_4_4_1);
+
+      // But, less than zero means the reinforcement isn't needed to satify strength
+      // requirements. Set to zero if so
+      if ( hsAvfOverSMin.AvfOverSMin  < 0.0 )
+         hsAvfOverSMin.AvfOverSMin  = 0.0;
    }
 
-   return avf_min;
+   return hsAvfOverSMin;
 }
 
 Float64 lrfdConcreteUtil::MaxStirrupSpacingForHoriz()

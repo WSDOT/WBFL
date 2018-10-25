@@ -64,6 +64,7 @@ CEAFReportView::CEAFReportView()
    m_bUpdateError = false;
    m_bIsNewReport = true;
    m_bUpdateInProgress = false;
+   m_bInvalidReport = true;
 
    m_pReportBuilderMgr = NULL;
    m_pRptMgr = NULL;
@@ -155,13 +156,7 @@ int CEAFReportView::OnCreate(LPCREATESTRUCT lpCreateStruct)
    return 0;
 }
 
-bool CEAFReportView::CreateReport(CollectionIndexType rptIdx,bool bPromptForSpec)
-{
-   CreateReportSpecification(rptIdx,bPromptForSpec);
-   return CreateReport(rptIdx,m_pReportSpec,m_pRptSpecBuilder);
-}
-
-bool CEAFReportView::CreateReport(CollectionIndexType rptIdx,boost::shared_ptr<CReportSpecification>& pSpec,boost::shared_ptr<CReportSpecificationBuilder>& pSpecBuilder)
+bool CEAFReportView::InitReport(boost::shared_ptr<CReportSpecification>& pSpec,boost::shared_ptr<CReportSpecificationBuilder>& pSpecBuilder)
 {
    m_pReportSpec = pSpec;
    if ( !m_pReportSpec )
@@ -170,6 +165,19 @@ bool CEAFReportView::CreateReport(CollectionIndexType rptIdx,boost::shared_ptr<C
    m_pRptSpecBuilder = pSpecBuilder;
 
    UpdateViewTitle();
+   return true;
+}
+
+bool CEAFReportView::CreateReport(CollectionIndexType rptIdx,bool bPromptForSpec)
+{
+   CreateReportSpecification(rptIdx,bPromptForSpec);
+   return CreateReport(rptIdx,m_pReportSpec,m_pRptSpecBuilder);
+}
+
+bool CEAFReportView::CreateReport(CollectionIndexType rptIdx,boost::shared_ptr<CReportSpecification>& pSpec,boost::shared_ptr<CReportSpecificationBuilder>& pSpecBuilder)
+{
+   if ( !InitReport(pSpec,pSpecBuilder) )
+      return false;
 
    if ( SUCCEEDED(UpdateReportBrowser(NULL)) )
       return true;
@@ -493,7 +501,10 @@ void CEAFReportView::OnInitialUpdate()
       CollectionIndexType rptIdx = pCreateData->m_RptIdx;
       if ( pCreateData->m_pRptSpecification )
       {
-         CreateReport(rptIdx,pCreateData->m_pRptSpecification,pCreateData->m_pRptSpecificationBuilder);
+         if ( pCreateData->m_bInitializeOnly )
+            InitReport(pCreateData->m_pRptSpecification,pCreateData->m_pRptSpecificationBuilder);
+         else
+            CreateReport(rptIdx,pCreateData->m_pRptSpecification,pCreateData->m_pRptSpecificationBuilder);
       }
       else
       {

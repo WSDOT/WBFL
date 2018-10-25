@@ -150,6 +150,7 @@ STDMETHODIMP CAnnotatedDisplayUnitFormatter::get_Multiplier(Float64 *multiplier)
 
 STDMETHODIMP CAnnotatedDisplayUnitFormatter::put_Annotation(BSTR bstrAnnotation)
 {
+   USES_CONVERSION;
    CHECK_IN(bstrAnnotation);
 
    // Check if the annotation string is really going to change. If not,
@@ -159,21 +160,21 @@ STDMETHODIMP CAnnotatedDisplayUnitFormatter::put_Annotation(BSTR bstrAnnotation)
 
    m_bstrAnnotation = bstrAnnotation;
 
-   m_bstrSeperator = L"";
-   m_bstrSuffix    = L"";
+   m_bstrSeperator = _T("");
+   m_bstrSuffix    = _T("");
 
    // Parse the annotation string into the seperator and suffix tokens
 
-   OLECHAR* next_token;
-   OLECHAR* token = _tcstok_s(CComBSTR(bstrAnnotation),CComBSTR(","),&next_token);
+   TCHAR* next_token = NULL;
+   TCHAR* token = _tcstok_s(OLE2T(bstrAnnotation),_T(","),&next_token);
    if ( token )
    {
       // Check if the string leads with a delimeter
       // If so, token is the suffix
 
-      if ( bstrAnnotation[0] == L',' )
+      if ( bstrAnnotation[0] == _T(',') )
       {
-         m_bstrSeperator = L"";
+         m_bstrSeperator = _T("");
          m_bstrSuffix = token;
       }
       else
@@ -181,7 +182,7 @@ STDMETHODIMP CAnnotatedDisplayUnitFormatter::put_Annotation(BSTR bstrAnnotation)
          m_bstrSeperator = token;
       }
 
-      token = _tcstok_s(NULL,L",",&next_token);
+      token = _tcstok_s(NULL,_T(","),&next_token);
 
       if ( token )
          m_bstrSuffix = token;

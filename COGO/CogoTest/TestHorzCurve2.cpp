@@ -621,8 +621,7 @@ void CTestHorzCurve::Test7()
    TRY_TEST( hc->get_CircularCurveAngle(&angle), COGO_E_SPIRALSOVERLAP );
 }
 
-
-void CTestHorzCurve::Test8()
+void CTestHorzCurve::Test8a()
 {
    CComPtr<IHorzCurve> hc;
    TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
@@ -692,8 +691,8 @@ void CTestHorzCurve::Test8()
    
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px, 818.84459114930144),true);
-   TRY_TEST(IsEqual(py, 1124.3794128881639),true);
+   TRY_TEST(IsEqual(px, 818.84457984632149),true);
+   TRY_TEST(IsEqual(py, 1124.3794034250211),true);
 
    // make line intersect circular curve
    line->ThroughPoints(cc,pi);
@@ -723,8 +722,8 @@ void CTestHorzCurve::Test8()
    
    p2->get_X(&px);
    p2->get_Y(&py);
-   TRY_TEST(IsEqual(px, 809.35181084554131),true);
-   TRY_TEST(IsEqual(py, 1116.5668872531492),true);
+   TRY_TEST(IsEqual(px, 809.35182374575743),true);
+   TRY_TEST(IsEqual(py, 1116.5668976835791),true);
 
    // intersect circular curve in two places
    // first locate two points on the curve
@@ -749,32 +748,32 @@ void CTestHorzCurve::Test8()
    TRY_TEST(IsEqual(px, 578.53372538212068),true);
    TRY_TEST(IsEqual(py, 1008.9111895010718),true);
 
-   //// intersect circular curve in two places 
-   //// (again, but make the intersection points really close)
-   //// first locate two points on the curve
-   //cp1.Release();
-   //cp2.Release();
-   //hc->PointOnCurve(150,&cp1);
-   //hc->PointOnCurve(151,&cp2);
+   // intersect circular curve in two places 
+   // (again, but make the intersection points really close)
+   // first locate two points on the curve
+   cp1.Release();
+   cp2.Release();
+   hc->PointOnCurve(150,&cp1);
+   hc->PointOnCurve(151,&cp2);
 
-   //line->ThroughPoints(cp1,cp2);
-   //p1.Release();
-   //p2.Release();
-   //TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   //TRY_TEST(p1 != NULL,true);
-   //TRY_TEST(p2 != NULL,true);
-   //
-   //p1->get_X(&px);
-   //p1->get_Y(&py);
-   //TRY_TEST(IsEqual(px, 588.35360,0.001),true);
-   //TRY_TEST(IsEqual(py, 1010.79974,0.001),true);
-   //
-   //p2->get_X(&px);
-   //p2->get_Y(&py);
-   //TRY_TEST(IsEqual(px, 589.33345,0.001),true);
-   //TRY_TEST(IsEqual(py, 1010.99939,0.001),true);
+   line->ThroughPoints(cp1,cp2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 588.35360,0.001),true);
+   TRY_TEST(IsEqual(py, 1010.79974,0.001),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 589.33345,0.001),true);
+   TRY_TEST(IsEqual(py, 1010.99939,0.001),true);
 
-   // line tangent to entry spiral
+   //// line tangent to entry spiral
    CComPtr<IPoint2d> POC;
    hc->PointOnCurve(50,&POC);
    CComPtr<IDirection> dir;
@@ -792,6 +791,29 @@ void CTestHorzCurve::Test8()
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 489.03247,0.001),true);
    TRY_TEST(IsEqual(py, 1000.41664,0.001),true);
+
+   // intersect entry spiral in 2 locations
+   p1.Release();
+   p2.Release();
+   hc->PointOnCurve(35,&p1);
+   hc->PointOnCurve(45,&p2);
+   line->ThroughPoints(p1,p2);
+   
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 474.03507484100646),true);
+   TRY_TEST(IsEqual(py, 1000.1429151347374),true);
+
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 484.03375483745350),true);
+   TRY_TEST(IsEqual(py, 1000.3037411037024),true);
 
    // line tangent to exit spiral
    Float64 length;
@@ -811,8 +833,32 @@ void CTestHorzCurve::Test8()
    
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px, 880.04037,0.001),true);
-   TRY_TEST(IsEqual(py, 1180.33499,0.001),true);
+   TRY_TEST(IsEqual(px, 880.04038989655419),true);
+   TRY_TEST(IsEqual(py, 1180.3350144338078),true);
+
+   // intersect exit spiral in 2 locations
+   p1.Release();
+   p2.Release();
+   hc->PointOnCurve(length-45,&p1);
+   hc->PointOnCurve(length-35,&p2);
+   line->ThroughPoints(p1,p2);
+   
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 883.61560958489838),true);
+   TRY_TEST(IsEqual(py, 1183.8303918815288),true);
+
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 890.74331577219289),true);
+   TRY_TEST(IsEqual(py, 1190.8443728455015),true);
+
 
    // line tangent to circular curve
    POC.Release();
@@ -929,11 +975,11 @@ void CTestHorzCurve::Test8()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
    
-   p2->get_X(&px);
-   p2->get_Y(&py);
+   p1->get_X(&px);
+   p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 1200.00),true);
    TRY_TEST(IsEqual(py, 1500.00),true);
 
@@ -1043,11 +1089,11 @@ void CTestHorzCurve::Test8()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
    
-   p2->get_X(&px);
-   p2->get_Y(&py);
+   p1->get_X(&px);
+   p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 1000.00),true);
    TRY_TEST(IsEqual(py, 1300.00),true);
 
@@ -1061,10 +1107,3432 @@ void CTestHorzCurve::Test8()
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
    TRY_TEST(p1 == NULL,true);
    TRY_TEST(p2 == NULL,true);
+}
 
-   // line parallel to entry tangent
+void CTestHorzCurve::Test8b()
+{
+   // same as Test8a except the direction of the curve is reverse
+   CComPtr<IHorzCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+
+   /////////////////////////////////////////////////////
+   // Test a non-symmetrical spiral-curve-spiral to the left
+   // Spiral lengths overlap
+   // PBT = (1000,1300)
+   // PI  = (700,1000)
+   // PFT = (0,1000)
+   // R   = 500
+   // Entry Spiral Length = 200
+   // Exit Spiral Length = 100
+   CComPtr<IPoint2d> pbt, pi, pft;
+   pbt.CoCreateInstance(CLSID_Point2d);
+   pi.CoCreateInstance(CLSID_Point2d);
+   pft.CoCreateInstance(CLSID_Point2d);
+
+   pbt->Move(1000,1300);
+   pi->Move(700,1000);
+   pft->Move(0,1000);
+
+   hc->putref_PBT(pbt);
+   hc->putref_PI(pi);
+   hc->putref_PFT(pft);
+
+   hc->put_Radius(500);
+   hc->put_SpiralLength(spEntry,200);
+   hc->put_SpiralLength(spExit,100);
+
+   // get some useful curve points
+   CComPtr<IPoint2d> cc, spi1, spi2;
+   hc->get_CC(&cc);
+   hc->get_SPI(spEntry,&spi1);
+   hc->get_SPI(spExit, &spi2);
+
+   // create the line
+   CComPtr<ILine2d> line;
+   line.CoCreateInstance(CLSID_Line2d);
+
+   // A couple of points to be used for results
+   CComPtr<IPoint2d> p1, p2;
+
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,NULL),E_POINTER);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,NULL,&p2),E_POINTER);
+   TRY_TEST(hc->Intersect(NULL,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+
+   // make line intersect exit spiral
+   line->ThroughPoints(cc,spi2);
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   Float64 px,py;
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 505.64223947528126),true);
+   TRY_TEST(IsEqual(py, 1000.9854324189444),true);
+
+   // make line intersect entry spiral
+   line->ThroughPoints(cc,spi1);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 818.84457984632149),true);
+   TRY_TEST(IsEqual(py, 1124.3794034250211),true);
+
+   // make line intersect circular curve
+   line->ThroughPoints(cc,pi);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 684.65428056880842),true);
+   TRY_TEST(IsEqual(py, 1040.6952164811710),true);
+
+   // intersect both spirals at once
+   line->ThroughPoints(spi1,spi2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 809.35182374575743),true);
+   TRY_TEST(IsEqual(py, 1116.5668976835791),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 508.67040313139313),true);
+   TRY_TEST(IsEqual(py, 1001.1261375196194),true);
+
+   // intersect circular curve in two places
+   // first locate two points on the curve
+   Float64 length;
+   hc->get_TotalLength(&length);
+   CComPtr<IPoint2d> cp1, cp2;
+   hc->PointOnCurve(length-140,&cp1);
+   hc->PointOnCurve(length-110,&cp2);
+
+   line->ThroughPoints(cp1,cp2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 578.53372538212068),true);
+   TRY_TEST(IsEqual(py, 1008.9111895010718),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 548.87503670886008),true);
+   TRY_TEST(IsEqual(py, 1004.4287172526595),true);
+
+   // intersect circular curve in two places 
+   // (again, but make the intersection points really close)
+   // first locate two points on the curve
+   cp1.Release();
+   cp2.Release();
+   hc->PointOnCurve(length-151,&cp1);
+   hc->PointOnCurve(length-150,&cp2);
+
+   line->ThroughPoints(cp1,cp2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 589.33345,0.001),true);
+   TRY_TEST(IsEqual(py, 1010.99939,0.001),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 588.35360,0.001),true);
+   TRY_TEST(IsEqual(py, 1010.79974,0.001),true);
+
+   //// line tangent to exit spiral
+   CComPtr<IPoint2d> POC;
+   hc->PointOnCurve(length-50,&POC);
+   CComPtr<IDirection> dir;
+   hc->Bearing(length-50,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 489.03247,0.001),true);
+   TRY_TEST(IsEqual(py, 1000.41664,0.001),true);
+
+   // intersect entry spiral in 2 locations
+   p1.Release();
+   p2.Release();
+   hc->PointOnCurve(length-45,&p1);
+   hc->PointOnCurve(length-35,&p2);
+   line->ThroughPoints(p1,p2);
+   
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 484.03375483745350),true);
+   TRY_TEST(IsEqual(py, 1000.3037411037024),true);
+
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 474.03507484100646),true);
+   TRY_TEST(IsEqual(py, 1000.1429151347374),true);
+
+   // line tangent to exit spiral
+   POC.Release();
+   hc->PointOnCurve(50,&POC);
+   dir.Release();
+   hc->Bearing(50,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 880.04038989655419),true);
+   TRY_TEST(IsEqual(py, 1180.3350144338078),true);
+
+   // intersect exit spiral in 2 locations
+   p1.Release();
+   p2.Release();
+   hc->PointOnCurve(35,&p1);
+   hc->PointOnCurve(45,&p2);
+   line->ThroughPoints(p1,p2);
+   
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 890.74331577219289),true);
+   TRY_TEST(IsEqual(py, 1190.8443728455015),true);
+
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 883.61560958489838),true);
+   TRY_TEST(IsEqual(py, 1183.8303918815288),true);
+
+
+   // line tangent to circular curve
+   POC.Release();
+   hc->PointOnCurve(length/2,&POC);
+   dir.Release();
+   hc->Bearing(length/2,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 703.20889,0.0011),true);
+   TRY_TEST(IsEqual(py, 1049.03367,0.001),true);
+
+   // line intersect back tangent and exit spiral
+   line->ThroughPoints(pft,spi1);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 813.50118,0.001),true);
+   TRY_TEST(IsEqual(py, 1119.94828,0.001),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py, 1000.00),true);
+
+   // again, but don't project back
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 813.5011,0.001),true);
+   TRY_TEST(IsEqual(py, 1119.9482,0.001),true);
+
+   // line intersect fwd tangent and entry spiral
+   line->ThroughPoints(spi2,pbt);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 1000.00),true);
+   TRY_TEST(IsEqual(py, 1300.00),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 507.5005,0.001),true);
+   TRY_TEST(IsEqual(py, 1001.07029,0.001),true);
+
+   // again, but don't project ahead
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 507.5005,0.001),true);
+   TRY_TEST(IsEqual(py, 1001.0702,0.001),true);
+
+   // no intersection with line parallel to entry tangent
+   // outside of curve
    cp1->Move(0,900);
    cp2->Move(700,900);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // again, but on inside of curve (intersect with curve)
+   cp1->Move(0,1100);
+   cp2->Move(700,1100);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 787.9642,0.001),true);
+   TRY_TEST(IsEqual(py, 1099.9999,0.001),true);
+
+   // again, but on inside of curve (intersect with ahead tangent projected)
+   cp1->Move(0,1500);
+   cp2->Move(700,1500);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 1200.00),true);
+   TRY_TEST(IsEqual(py, 1500.00),true);
+
+   // again, but don't project curve
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // no intersection with line parallel to exit tangent
+   // outside of curve
+   cp1->Move(800,1000);
+   cp2->Move(1100,1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // again, but on inside of curve (intersect with curve)
+   cp1->Move(600,1000);
+   cp2->Move(900,1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 617.6666,0.001),true);
+   TRY_TEST(IsEqual(py, 1017.6666,0.001),true);
+
+   // again, but on inside of curve (intersect with projected tangent)
+   cp1->Move(200,1000);
+   cp2->Move(500,1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,  200.00),true);
+   TRY_TEST(IsEqual(py, 1000.00),true);
+
+   // again, but don't project curve
+   cp1->Move(200,1000);
+   cp2->Move(500,1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // no intersection with line that cross both entry/entry tangent (inside of curve)
+   cp1->Move(0,1000);
+   cp2->Move(1000,1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 1000.00),true);
+   TRY_TEST(IsEqual(py, 1300.00),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py, 1000.),true);
+
+   // again, but project only back
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py, 1000.),true);
+
+   // again, but project only ahead
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 1000.00),true);
+   TRY_TEST(IsEqual(py, 1300.00),true);
+
+   // no intersection with line that cross both entry/entry tangent (outside of curve)
+   cp1->Move(690,1000);
+   cp2->Move(710,1010);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+}
+
+
+void CTestHorzCurve::Test9a()
+{
+   // This is the same as Test8a except the curve has been mirrored about the Y axis
+   CComPtr<IHorzCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+
+   /////////////////////////////////////////////////////
+   // Test a non-symmetrical spiral-curve-spiral to the left
+   // Spiral lengths overlap
+   // PBT = (0,1000)
+   // PI  = (-700,1000)
+   // PFT = (-1000,1300)
+   // R   = 500
+   // Entry Spiral Length = 100
+   // Exit Spiral Length = 200
+   CComPtr<IPoint2d> pbt, pi, pft;
+   pbt.CoCreateInstance(CLSID_Point2d);
+   pi.CoCreateInstance(CLSID_Point2d);
+   pft.CoCreateInstance(CLSID_Point2d);
+
+   pbt->Move(0,1000);
+   pi->Move(-700,1000);
+   pft->Move(-1000,1300);
+
+   hc->putref_PBT(pbt);
+   hc->putref_PI(pi);
+   hc->putref_PFT(pft);
+
+   hc->put_Radius(500);
+   hc->put_SpiralLength(spEntry,100);
+   hc->put_SpiralLength(spExit,200);
+
+   // get some useful curve points
+   CComPtr<IPoint2d> cc, spi1, spi2;
+   hc->get_CC(&cc);
+   hc->get_SPI(spEntry,&spi1);
+   hc->get_SPI(spExit, &spi2);
+
+   // create the line
+   CComPtr<ILine2d> line;
+   line.CoCreateInstance(CLSID_Line2d);
+
+   // A couple of points to be used for results
+   CComPtr<IPoint2d> p1, p2;
+
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,NULL),E_POINTER);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,NULL,&p2),E_POINTER);
+   TRY_TEST(hc->Intersect(NULL,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+
+   // make line intersect entry spiral
+   line->ThroughPoints(cc,spi1);
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   Float64 px,py;
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-505.64223947528126),true);
+   TRY_TEST(IsEqual(py, 1000.9854324189444),true);
+
+   // make line intersect exit spiral
+   line->ThroughPoints(cc,spi2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-818.84457984632149),true);
+   TRY_TEST(IsEqual(py, 1124.3794034250211),true);
+
+   // make line intersect circular curve
+   line->ThroughPoints(cc,pi);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-684.65428056880842),true);
+   TRY_TEST(IsEqual(py, 1040.6952164811710),true);
+
+   // intersect both spirals at once
+   line->ThroughPoints(spi1,spi2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-508.67040313139313),true);
+   TRY_TEST(IsEqual(py, 1001.1261375196194),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-809.35182374575743),true);
+   TRY_TEST(IsEqual(py, 1116.5668976835791),true);
+
+   // intersect circular curve in two places
+   // first locate two points on the curve
+   CComPtr<IPoint2d> cp1, cp2;
+   hc->PointOnCurve(110,&cp1);
+   hc->PointOnCurve(140,&cp2);
+
+   line->ThroughPoints(cp1,cp2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-548.87503670886008),true);
+   TRY_TEST(IsEqual(py, 1004.4287172526595),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-578.53372538212068),true);
+   TRY_TEST(IsEqual(py, 1008.9111895010718),true);
+
+   // intersect circular curve in two places 
+   // (again, but make the intersection points really close)
+   // first locate two points on the curve
+   cp1.Release();
+   cp2.Release();
+   hc->PointOnCurve(150,&cp1);
+   hc->PointOnCurve(151,&cp2);
+
+   line->ThroughPoints(cp1,cp2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-588.35360,0.001),true);
+   TRY_TEST(IsEqual(py, 1010.79974,0.001),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-589.33345,0.001),true);
+   TRY_TEST(IsEqual(py, 1010.99939,0.001),true);
+
+   //// line tangent to entry spiral
+   CComPtr<IPoint2d> POC;
+   hc->PointOnCurve(50,&POC);
+   CComPtr<IDirection> dir;
+   hc->Bearing(50,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-489.03247,0.001),true);
+   TRY_TEST(IsEqual(py, 1000.41664,0.001),true);
+
+   // intersect entry spiral in 2 locations
+   p1.Release();
+   p2.Release();
+   hc->PointOnCurve(35,&p1);
+   hc->PointOnCurve(45,&p2);
+   line->ThroughPoints(p1,p2);
+   
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-474.03507484100646),true);
+   TRY_TEST(IsEqual(py, 1000.1429151347374),true);
+
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-484.03375483745350),true);
+   TRY_TEST(IsEqual(py, 1000.3037411037024),true);
+
+   // line tangent to exit spiral
+   Float64 length;
+   hc->get_TotalLength(&length);
+   POC.Release();
+   hc->PointOnCurve(length-50,&POC);
+   dir.Release();
+   hc->Bearing(length-50,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-880.04038989655419),true);
+   TRY_TEST(IsEqual(py, 1180.3350144338078),true);
+
+   // intersect exit spiral in 2 locations
+   p1.Release();
+   p2.Release();
+   hc->PointOnCurve(length-45,&p1);
+   hc->PointOnCurve(length-35,&p2);
+   line->ThroughPoints(p1,p2);
+   
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-883.61560958489838),true);
+   TRY_TEST(IsEqual(py, 1183.8303918815288),true);
+
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-890.74331577219289),true);
+   TRY_TEST(IsEqual(py, 1190.8443728455015),true);
+
+
+   // line tangent to circular curve
+   POC.Release();
+   hc->PointOnCurve(length/2,&POC);
+   dir.Release();
+   hc->Bearing(length/2,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-703.20889,0.0011),true);
+   TRY_TEST(IsEqual(py, 1049.03367,0.001),true);
+
+   // line intersect back tangent and exit spiral
+   line->ThroughPoints(pbt,spi2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py, 1000.00),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-813.50118,0.001),true);
+   TRY_TEST(IsEqual(py, 1119.94828,0.001),true);
+
+   // again, but don't project back
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-813.5011,0.001),true);
+   TRY_TEST(IsEqual(py, 1119.9482,0.001),true);
+
+   // line intersect fwd tangent and entry spiral
+   line->ThroughPoints(spi1,pft);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-507.5005,0.001),true);
+   TRY_TEST(IsEqual(py, 1001.07029,0.001),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-1000.00),true);
+   TRY_TEST(IsEqual(py, 1300.00),true);
+
+   // again, but don't project ahead
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-507.5005,0.001),true);
+   TRY_TEST(IsEqual(py, 1001.0702,0.001),true);
+
+   // no intersection with line parallel to entry tangent
+   // outside of curve
+   cp1->Move(0,900);
+   cp2->Move(-700,900);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // again, but on inside of curve (intersect with curve)
+   cp1->Move(0,1100);
+   cp2->Move(-700,1100);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-787.9642,0.001),true);
+   TRY_TEST(IsEqual(py, 1099.9999,0.001),true);
+
+   // again, but on inside of curve (intersect with ahead tangent projected)
+   cp1->Move(0,1500);
+   cp2->Move(-700,1500);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-1200.00),true);
+   TRY_TEST(IsEqual(py, 1500.00),true);
+
+   // again, but don't project curve
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // no intersection with line parallel to exit tangent
+   // outside of curve
+   cp1->Move(-800,1000);
+   cp2->Move(-1100,1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // again, but on inside of curve (intersect with curve)
+   cp1->Move(-600,1000);
+   cp2->Move(-900,1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-617.6666,0.001),true);
+   TRY_TEST(IsEqual(py, 1017.6666,0.001),true);
+
+   // again, but on inside of curve (intersect with projected tangent)
+   cp1->Move(-200,1000);
+   cp2->Move(-500,1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, -200.00),true);
+   TRY_TEST(IsEqual(py, 1000.00),true);
+
+   // again, but don't project curve
+   cp1->Move(-200,1000);
+   cp2->Move(-500,1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // no intersection with line that cross both entry/entry tangent (inside of curve)
+   cp1->Move(0,1000);
+   cp2->Move(-1000,1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py, 1000.),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-1000.00),true);
+   TRY_TEST(IsEqual(py, 1300.00),true);
+
+   // again, but project only back
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py, 1000.),true);
+
+   // again, but project only ahead
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-1000.00),true);
+   TRY_TEST(IsEqual(py, 1300.00),true);
+
+   // no intersection with line that cross both entry/entry tangent (outside of curve)
+   cp1->Move(-690,1000);
+   cp2->Move(-710,1010);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+}
+
+void CTestHorzCurve::Test9b()
+{
+   // same as Test9a except the direction of the curve is reverse
+   CComPtr<IHorzCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+
+   /////////////////////////////////////////////////////
+   // Test a non-symmetrical spiral-curve-spiral to the left
+   // Spiral lengths overlap
+   // PBT = (-1000,1300)
+   // PI  = (-700,1000)
+   // PFT = (0,1000)
+   // R   = 500
+   // Entry Spiral Length = 200
+   // Exit Spiral Length = 100
+   CComPtr<IPoint2d> pbt, pi, pft;
+   pbt.CoCreateInstance(CLSID_Point2d);
+   pi.CoCreateInstance(CLSID_Point2d);
+   pft.CoCreateInstance(CLSID_Point2d);
+
+   pbt->Move(-1000,1300);
+   pi->Move(-700,1000);
+   pft->Move(0,1000);
+
+   hc->putref_PBT(pbt);
+   hc->putref_PI(pi);
+   hc->putref_PFT(pft);
+
+   hc->put_Radius(500);
+   hc->put_SpiralLength(spEntry,200);
+   hc->put_SpiralLength(spExit,100);
+
+   // get some useful curve points
+   CComPtr<IPoint2d> cc, spi1, spi2;
+   hc->get_CC(&cc);
+   hc->get_SPI(spEntry,&spi1);
+   hc->get_SPI(spExit, &spi2);
+
+   // create the line
+   CComPtr<ILine2d> line;
+   line.CoCreateInstance(CLSID_Line2d);
+
+   // A couple of points to be used for results
+   CComPtr<IPoint2d> p1, p2;
+
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,NULL),E_POINTER);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,NULL,&p2),E_POINTER);
+   TRY_TEST(hc->Intersect(NULL,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+
+   // make line intersect exit spiral
+   line->ThroughPoints(cc,spi2);
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   Float64 px,py;
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-505.64223947528126),true);
+   TRY_TEST(IsEqual(py, 1000.9854324189444),true);
+
+   // make line intersect entry spiral
+   line->ThroughPoints(cc,spi1);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-818.84457984632149),true);
+   TRY_TEST(IsEqual(py, 1124.3794034250211),true);
+
+   // make line intersect circular curve
+   line->ThroughPoints(cc,pi);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-684.65428056880842),true);
+   TRY_TEST(IsEqual(py, 1040.6952164811710),true);
+
+   // intersect both spirals at once
+   line->ThroughPoints(spi1,spi2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-809.35182374575743),true);
+   TRY_TEST(IsEqual(py, 1116.5668976835791),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-508.67040313139313),true);
+   TRY_TEST(IsEqual(py, 1001.1261375196194),true);
+
+   // intersect circular curve in two places
+   // first locate two points on the curve
+   Float64 length;
+   hc->get_TotalLength(&length);
+   CComPtr<IPoint2d> cp1, cp2;
+   hc->PointOnCurve(length-140,&cp1);
+   hc->PointOnCurve(length-110,&cp2);
+
+   line->ThroughPoints(cp1,cp2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-578.53372538212068),true);
+   TRY_TEST(IsEqual(py, 1008.9111895010718),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-548.87503670886008),true);
+   TRY_TEST(IsEqual(py, 1004.4287172526595),true);
+
+   // intersect circular curve in two places 
+   // (again, but make the intersection points really close)
+   // first locate two points on the curve
+   cp1.Release();
+   cp2.Release();
+   hc->PointOnCurve(length-151,&cp1);
+   hc->PointOnCurve(length-150,&cp2);
+
+   line->ThroughPoints(cp1,cp2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-589.33345,0.001),true);
+   TRY_TEST(IsEqual(py, 1010.99939,0.001),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-588.35360,0.001),true);
+   TRY_TEST(IsEqual(py, 1010.79974,0.001),true);
+
+   //// line tangent to exit spiral
+   CComPtr<IPoint2d> POC;
+   hc->PointOnCurve(length-50,&POC);
+   CComPtr<IDirection> dir;
+   hc->Bearing(length-50,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-489.03247,0.001),true);
+   TRY_TEST(IsEqual(py, 1000.41664,0.001),true);
+
+   // intersect entry spiral in 2 locations
+   p1.Release();
+   p2.Release();
+   hc->PointOnCurve(length-45,&p1);
+   hc->PointOnCurve(length-35,&p2);
+   line->ThroughPoints(p1,p2);
+   
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-484.03375483745350),true);
+   TRY_TEST(IsEqual(py, 1000.3037411037024),true);
+
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-474.03507484100646),true);
+   TRY_TEST(IsEqual(py, 1000.1429151347374),true);
+
+   // line tangent to exit spiral
+   POC.Release();
+   hc->PointOnCurve(50,&POC);
+   dir.Release();
+   hc->Bearing(50,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-880.04038989655419),true);
+   TRY_TEST(IsEqual(py, 1180.3350144338078),true);
+
+   // intersect exit spiral in 2 locations
+   p1.Release();
+   p2.Release();
+   hc->PointOnCurve(35,&p1);
+   hc->PointOnCurve(45,&p2);
+   line->ThroughPoints(p1,p2);
+   
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-890.74331577219289),true);
+   TRY_TEST(IsEqual(py, 1190.8443728455015),true);
+
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-883.61560958489838),true);
+   TRY_TEST(IsEqual(py, 1183.8303918815288),true);
+
+
+   // line tangent to circular curve
+   POC.Release();
+   hc->PointOnCurve(length/2,&POC);
+   dir.Release();
+   hc->Bearing(length/2,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-703.20889,0.0011),true);
+   TRY_TEST(IsEqual(py, 1049.03367,0.001),true);
+
+   // line intersect back tangent and exit spiral
+   line->ThroughPoints(pft,spi1);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-813.50118,0.001),true);
+   TRY_TEST(IsEqual(py, 1119.94828,0.001),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py, 1000.00),true);
+
+   // again, but don't project back
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-813.5011,0.001),true);
+   TRY_TEST(IsEqual(py, 1119.9482,0.001),true);
+
+   // line intersect fwd tangent and entry spiral
+   line->ThroughPoints(spi2,pbt);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-1000.00),true);
+   TRY_TEST(IsEqual(py, 1300.00),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-507.5005,0.001),true);
+   TRY_TEST(IsEqual(py, 1001.07029,0.001),true);
+
+   // again, but don't project ahead
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-507.5005,0.001),true);
+   TRY_TEST(IsEqual(py, 1001.0702,0.001),true);
+
+   // no intersection with line parallel to entry tangent
+   // outside of curve
+   cp1->Move(0,900);
+   cp2->Move(-700,900);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // again, but on inside of curve (intersect with curve)
+   cp1->Move(0,1100);
+   cp2->Move(-700,1100);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-787.9642,0.001),true);
+   TRY_TEST(IsEqual(py, 1099.9999,0.001),true);
+
+   // again, but on inside of curve (intersect with ahead tangent projected)
+   cp1->Move(0,1500);
+   cp2->Move(-700,1500);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-1200.00),true);
+   TRY_TEST(IsEqual(py, 1500.00),true);
+
+   // again, but don't project curve
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // no intersection with line parallel to exit tangent
+   // outside of curve
+   cp1->Move(-800,1000);
+   cp2->Move(-1100,1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // again, but on inside of curve (intersect with curve)
+   cp1->Move(-600,1000);
+   cp2->Move(-900,1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-617.6666,0.001),true);
+   TRY_TEST(IsEqual(py, 1017.6666,0.001),true);
+
+   // again, but on inside of curve (intersect with projected tangent)
+   cp1->Move(-200,1000);
+   cp2->Move(-500,1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, -200.00),true);
+   TRY_TEST(IsEqual(py, 1000.00),true);
+
+   // again, but don't project curve
+   cp1->Move(-200,1000);
+   cp2->Move(-500,1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // no intersection with line that cross both entry/entry tangent (inside of curve)
+   cp1->Move(0,1000);
+   cp2->Move(-1000,1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-1000.00),true);
+   TRY_TEST(IsEqual(py, 1300.00),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py, 1000.),true);
+
+   // again, but project only back
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py, 1000.),true);
+
+   // again, but project only ahead
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-1000.00),true);
+   TRY_TEST(IsEqual(py, 1300.00),true);
+
+   // no intersection with line that cross both entry/entry tangent (outside of curve)
+   cp1->Move(-690,1000);
+   cp2->Move(-710,1010);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+}
+
+
+void CTestHorzCurve::Test10a()
+{
+   // same as Test8a except curve has been mirrored about the X axis
+   CComPtr<IHorzCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+
+   /////////////////////////////////////////////////////
+   // Test a non-symmetrical spiral-curve-spiral to the left
+   // Spiral lengths overlap
+   // PBT = (0,-1000)
+   // PI  = (700,-1000)
+   // PFT = (1000,-1300)
+   // R   = 500
+   // Entry Spiral Length = 100
+   // Exit Spiral Length = 200
+   CComPtr<IPoint2d> pbt, pi, pft;
+   pbt.CoCreateInstance(CLSID_Point2d);
+   pi.CoCreateInstance(CLSID_Point2d);
+   pft.CoCreateInstance(CLSID_Point2d);
+
+   pbt->Move(0,-1000);
+   pi->Move(700,-1000);
+   pft->Move(1000,-1300);
+
+   hc->putref_PBT(pbt);
+   hc->putref_PI(pi);
+   hc->putref_PFT(pft);
+
+   hc->put_Radius(500);
+   hc->put_SpiralLength(spEntry,100);
+   hc->put_SpiralLength(spExit,200);
+
+   // get some useful curve points
+   CComPtr<IPoint2d> cc, spi1, spi2;
+   hc->get_CC(&cc);
+   hc->get_SPI(spEntry,&spi1);
+   hc->get_SPI(spExit, &spi2);
+
+   // create the line
+   CComPtr<ILine2d> line;
+   line.CoCreateInstance(CLSID_Line2d);
+
+   // A couple of points to be used for results
+   CComPtr<IPoint2d> p1, p2;
+
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,NULL),E_POINTER);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,NULL,&p2),E_POINTER);
+   TRY_TEST(hc->Intersect(NULL,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+
+   // make line intersect entry spiral
+   line->ThroughPoints(cc,spi1);
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   Float64 px,py;
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 505.64223947528126),true);
+   TRY_TEST(IsEqual(py,-1000.9854324189444),true);
+
+   // make line intersect exit spiral
+   line->ThroughPoints(cc,spi2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 818.84457984632149),true);
+   TRY_TEST(IsEqual(py,-1124.3794034250211),true);
+
+   // make line intersect circular curve
+   line->ThroughPoints(cc,pi);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 684.65428056880842),true);
+   TRY_TEST(IsEqual(py,-1040.6952164811710),true);
+
+   // intersect both spirals at once
+   line->ThroughPoints(spi1,spi2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 508.67040313139313),true);
+   TRY_TEST(IsEqual(py,-1001.1261375196194),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 809.35182374575743),true);
+   TRY_TEST(IsEqual(py,-1116.5668976835791),true);
+
+   // intersect circular curve in two places
+   // first locate two points on the curve
+   CComPtr<IPoint2d> cp1, cp2;
+   hc->PointOnCurve(110,&cp1);
+   hc->PointOnCurve(140,&cp2);
+
+   line->ThroughPoints(cp1,cp2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 548.87503670886008),true);
+   TRY_TEST(IsEqual(py,-1004.4287172526595),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 578.53372538212068),true);
+   TRY_TEST(IsEqual(py,-1008.9111895010718),true);
+
+   // intersect circular curve in two places 
+   // (again, but make the intersection points really close)
+   // first locate two points on the curve
+   cp1.Release();
+   cp2.Release();
+   hc->PointOnCurve(150,&cp1);
+   hc->PointOnCurve(151,&cp2);
+
+   line->ThroughPoints(cp1,cp2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 588.35360,0.001),true);
+   TRY_TEST(IsEqual(py,-1010.79974,0.001),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 589.33345,0.001),true);
+   TRY_TEST(IsEqual(py,-1010.99939,0.001),true);
+
+   //// line tangent to entry spiral
+   CComPtr<IPoint2d> POC;
+   hc->PointOnCurve(50,&POC);
+   CComPtr<IDirection> dir;
+   hc->Bearing(50,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 489.03247,0.001),true);
+   TRY_TEST(IsEqual(py,-1000.41664,0.001),true);
+
+   // intersect entry spiral in 2 locations
+   p1.Release();
+   p2.Release();
+   hc->PointOnCurve(35,&p1);
+   hc->PointOnCurve(45,&p2);
+   line->ThroughPoints(p1,p2);
+   
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 474.03507484100646),true);
+   TRY_TEST(IsEqual(py,-1000.1429151347374),true);
+
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 484.03375483745350),true);
+   TRY_TEST(IsEqual(py,-1000.3037411037024),true);
+
+   // line tangent to exit spiral
+   Float64 length;
+   hc->get_TotalLength(&length);
+   POC.Release();
+   hc->PointOnCurve(length-50,&POC);
+   dir.Release();
+   hc->Bearing(length-50,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 880.04038989655419),true);
+   TRY_TEST(IsEqual(py,-1180.3350144338078),true);
+
+   // intersect exit spiral in 2 locations
+   p1.Release();
+   p2.Release();
+   hc->PointOnCurve(length-45,&p1);
+   hc->PointOnCurve(length-35,&p2);
+   line->ThroughPoints(p1,p2);
+   
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 883.61560958489838),true);
+   TRY_TEST(IsEqual(py,-1183.8303918815288),true);
+
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 890.74331577219289),true);
+   TRY_TEST(IsEqual(py,-1190.8443728455015),true);
+
+
+   // line tangent to circular curve
+   POC.Release();
+   hc->PointOnCurve(length/2,&POC);
+   dir.Release();
+   hc->Bearing(length/2,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 703.20889,0.0011),true);
+   TRY_TEST(IsEqual(py,-1049.03367,0.001),true);
+
+   // line intersect back tangent and exit spiral
+   line->ThroughPoints(pbt,spi2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py,-1000.00),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 813.50118,0.001),true);
+   TRY_TEST(IsEqual(py,-1119.94828,0.001),true);
+
+   // again, but don't project back
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 813.5011,0.001),true);
+   TRY_TEST(IsEqual(py,-1119.9482,0.001),true);
+
+   // line intersect fwd tangent and entry spiral
+   line->ThroughPoints(spi1,pft);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 507.5005,0.001),true);
+   TRY_TEST(IsEqual(py,-1001.07029,0.001),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 1000.00),true);
+   TRY_TEST(IsEqual(py,-1300.00),true);
+
+   // again, but don't project ahead
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 507.5005,0.001),true);
+   TRY_TEST(IsEqual(py,-1001.0702,0.001),true);
+
+   // no intersection with line parallel to entry tangent
+   // outside of curve
+   cp1->Move(0,-900);
+   cp2->Move(700,-900);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // again, but on inside of curve (intersect with curve)
+   cp1->Move(0,-1100);
+   cp2->Move(700,-1100);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 787.9642,0.001),true);
+   TRY_TEST(IsEqual(py,-1099.9999,0.001),true);
+
+   // again, but on inside of curve (intersect with ahead tangent projected)
+   cp1->Move(0,-1500);
+   cp2->Move(700,-1500);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 1200.00),true);
+   TRY_TEST(IsEqual(py,-1500.00),true);
+
+   // again, but don't project curve
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // no intersection with line parallel to exit tangent
+   // outside of curve
+   cp1->Move(800,-1000);
+   cp2->Move(1100,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // again, but on inside of curve (intersect with curve)
+   cp1->Move(600,-1000);
+   cp2->Move(900,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 617.6666,0.001),true);
+   TRY_TEST(IsEqual(py,-1017.6666,0.001),true);
+
+   // again, but on inside of curve (intersect with projected tangent)
+   cp1->Move(200,-1000);
+   cp2->Move(500,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,  200.00),true);
+   TRY_TEST(IsEqual(py,-1000.00),true);
+
+   // again, but don't project curve
+   cp1->Move(200,-1000);
+   cp2->Move(500,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // no intersection with line that cross both entry/entry tangent (inside of curve)
+   cp1->Move(0,-1000);
+   cp2->Move(1000,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py,-1000.),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 1000.00),true);
+   TRY_TEST(IsEqual(py,-1300.00),true);
+
+   // again, but project only back
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py,-1000.),true);
+
+   // again, but project only ahead
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 1000.00),true);
+   TRY_TEST(IsEqual(py,-1300.00),true);
+
+   // no intersection with line that cross both entry/entry tangent (outside of curve)
+   cp1->Move(690,-1000);
+   cp2->Move(710,-1010);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+}
+
+
+void CTestHorzCurve::Test10b()
+{
+   // same as Test10a except the direction of the curve is reverse
+   CComPtr<IHorzCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+
+   /////////////////////////////////////////////////////
+   // Test a non-symmetrical spiral-curve-spiral to the left
+   // Spiral lengths overlap
+   // PBT = (1000,-1300)
+   // PI  = (700,-1000)
+   // PFT = (0,-1000)
+   // R   = 500
+   // Entry Spiral Length = 200
+   // Exit Spiral Length = 100
+   CComPtr<IPoint2d> pbt, pi, pft;
+   pbt.CoCreateInstance(CLSID_Point2d);
+   pi.CoCreateInstance(CLSID_Point2d);
+   pft.CoCreateInstance(CLSID_Point2d);
+
+   pbt->Move(1000,-1300);
+   pi->Move(700,-1000);
+   pft->Move(0,-1000);
+
+   hc->putref_PBT(pbt);
+   hc->putref_PI(pi);
+   hc->putref_PFT(pft);
+
+   hc->put_Radius(500);
+   hc->put_SpiralLength(spEntry,200);
+   hc->put_SpiralLength(spExit,100);
+
+   // get some useful curve points
+   CComPtr<IPoint2d> cc, spi1, spi2;
+   hc->get_CC(&cc);
+   hc->get_SPI(spEntry,&spi1);
+   hc->get_SPI(spExit, &spi2);
+
+   // create the line
+   CComPtr<ILine2d> line;
+   line.CoCreateInstance(CLSID_Line2d);
+
+   // A couple of points to be used for results
+   CComPtr<IPoint2d> p1, p2;
+
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,NULL),E_POINTER);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,NULL,&p2),E_POINTER);
+   TRY_TEST(hc->Intersect(NULL,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+
+   // make line intersect exit spiral
+   line->ThroughPoints(cc,spi2);
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   Float64 px,py;
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 505.64223947528126),true);
+   TRY_TEST(IsEqual(py,-1000.9854324189444),true);
+
+   // make line intersect entry spiral
+   line->ThroughPoints(cc,spi1);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 818.84457984632149),true);
+   TRY_TEST(IsEqual(py,-1124.3794034250211),true);
+
+   // make line intersect circular curve
+   line->ThroughPoints(cc,pi);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 684.65428056880842),true);
+   TRY_TEST(IsEqual(py,-1040.6952164811710),true);
+
+   // intersect both spirals at once
+   line->ThroughPoints(spi1,spi2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 809.35182374575743),true);
+   TRY_TEST(IsEqual(py,-1116.5668976835791),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 508.67040313139313),true);
+   TRY_TEST(IsEqual(py,-1001.1261375196194),true);
+
+   // intersect circular curve in two places
+   // first locate two points on the curve
+   Float64 length;
+   hc->get_TotalLength(&length);
+   CComPtr<IPoint2d> cp1, cp2;
+   hc->PointOnCurve(length-140,&cp1);
+   hc->PointOnCurve(length-110,&cp2);
+
+   line->ThroughPoints(cp1,cp2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 578.53372538212068),true);
+   TRY_TEST(IsEqual(py,-1008.9111895010718),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 548.87503670886008),true);
+   TRY_TEST(IsEqual(py,-1004.4287172526595),true);
+
+   // intersect circular curve in two places 
+   // (again, but make the intersection points really close)
+   // first locate two points on the curve
+   cp1.Release();
+   cp2.Release();
+   hc->PointOnCurve(length-151,&cp1);
+   hc->PointOnCurve(length-150,&cp2);
+
+   line->ThroughPoints(cp1,cp2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 589.33345,0.001),true);
+   TRY_TEST(IsEqual(py,-1010.99939,0.001),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 588.35360,0.001),true);
+   TRY_TEST(IsEqual(py,-1010.79974,0.001),true);
+
+   //// line tangent to exit spiral
+   CComPtr<IPoint2d> POC;
+   hc->PointOnCurve(length-50,&POC);
+   CComPtr<IDirection> dir;
+   hc->Bearing(length-50,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 489.03247,0.001),true);
+   TRY_TEST(IsEqual(py,-1000.41664,0.001),true);
+
+   // intersect entry spiral in 2 locations
+   p1.Release();
+   p2.Release();
+   hc->PointOnCurve(length-45,&p1);
+   hc->PointOnCurve(length-35,&p2);
+   line->ThroughPoints(p1,p2);
+   
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 484.03375483745350),true);
+   TRY_TEST(IsEqual(py,-1000.3037411037024),true);
+
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 474.03507484100646),true);
+   TRY_TEST(IsEqual(py,-1000.1429151347374),true);
+
+   // line tangent to exit spiral
+   POC.Release();
+   hc->PointOnCurve(50,&POC);
+   dir.Release();
+   hc->Bearing(50,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 880.04038989655419),true);
+   TRY_TEST(IsEqual(py,-1180.3350144338078),true);
+
+   // intersect exit spiral in 2 locations
+   p1.Release();
+   p2.Release();
+   hc->PointOnCurve(35,&p1);
+   hc->PointOnCurve(45,&p2);
+   line->ThroughPoints(p1,p2);
+   
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 890.74331577219289),true);
+   TRY_TEST(IsEqual(py,-1190.8443728455015),true);
+
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 883.61560958489838),true);
+   TRY_TEST(IsEqual(py,-1183.8303918815288),true);
+
+
+   // line tangent to circular curve
+   POC.Release();
+   hc->PointOnCurve(length/2,&POC);
+   dir.Release();
+   hc->Bearing(length/2,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 703.20889,0.0011),true);
+   TRY_TEST(IsEqual(py,-1049.03367,0.001),true);
+
+   // line intersect back tangent and exit spiral
+   line->ThroughPoints(pft,spi1);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 813.50118,0.001),true);
+   TRY_TEST(IsEqual(py,-1119.94828,0.001),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py,-1000.00),true);
+
+   // again, but don't project back
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 813.5011,0.001),true);
+   TRY_TEST(IsEqual(py,-1119.9482,0.001),true);
+
+   // line intersect fwd tangent and entry spiral
+   line->ThroughPoints(spi2,pbt);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 1000.00),true);
+   TRY_TEST(IsEqual(py,-1300.00),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 507.5005,0.001),true);
+   TRY_TEST(IsEqual(py,-1001.07029,0.001),true);
+
+   // again, but don't project ahead
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 507.5005,0.001),true);
+   TRY_TEST(IsEqual(py,-1001.0702,0.001),true);
+
+   // no intersection with line parallel to entry tangent
+   // outside of curve
+   cp1->Move(0,-900);
+   cp2->Move(700,-900);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // again, but on inside of curve (intersect with curve)
+   cp1->Move(0,-1100);
+   cp2->Move(700,-1100);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 787.9642,0.001),true);
+   TRY_TEST(IsEqual(py,-1099.9999,0.001),true);
+
+   // again, but on inside of curve (intersect with ahead tangent projected)
+   cp1->Move(0,-1500);
+   cp2->Move(700,-1500);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 1200.00),true);
+   TRY_TEST(IsEqual(py,-1500.00),true);
+
+   // again, but don't project curve
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // no intersection with line parallel to exit tangent
+   // outside of curve
+   cp1->Move(800,-1000);
+   cp2->Move(1100,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // again, but on inside of curve (intersect with curve)
+   cp1->Move(600,-1000);
+   cp2->Move(900,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 617.6666,0.001),true);
+   TRY_TEST(IsEqual(py,-1017.6666,0.001),true);
+
+   // again, but on inside of curve (intersect with projected tangent)
+   cp1->Move(200,-1000);
+   cp2->Move(500,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,  200.00),true);
+   TRY_TEST(IsEqual(py,-1000.00),true);
+
+   // again, but don't project curve
+   cp1->Move(200,-1000);
+   cp2->Move(500,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // no intersection with line that cross both entry/entry tangent (inside of curve)
+   cp1->Move(0,-1000);
+   cp2->Move(1000,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 1000.00),true);
+   TRY_TEST(IsEqual(py,-1300.00),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py,-1000.),true);
+
+   // again, but project only back
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py,-1000.),true);
+
+   // again, but project only ahead
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 1000.00),true);
+   TRY_TEST(IsEqual(py,-1300.00),true);
+
+   // no intersection with line that cross both entry/entry tangent (outside of curve)
+   cp1->Move(690,-1000);
+   cp2->Move(710,-1010);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+}
+
+void CTestHorzCurve::Test11a()
+{
+   // same as Test8 except curve has been mirrored about the X axis and the Y axis
+   CComPtr<IHorzCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+
+   /////////////////////////////////////////////////////
+   // Test a non-symmetrical spiral-curve-spiral to the left
+   // Spiral lengths overlap
+   // PBT = (0,-1000)
+   // PI  = (-700,-1000)
+   // PFT = (-1000,-1300)
+   // R   = 500
+   // Entry Spiral Length = 100
+   // Exit Spiral Length = 200
+   CComPtr<IPoint2d> pbt, pi, pft;
+   pbt.CoCreateInstance(CLSID_Point2d);
+   pi.CoCreateInstance(CLSID_Point2d);
+   pft.CoCreateInstance(CLSID_Point2d);
+
+   pbt->Move(0,-1000);
+   pi->Move(-700,-1000);
+   pft->Move(-1000,-1300);
+
+   hc->putref_PBT(pbt);
+   hc->putref_PI(pi);
+   hc->putref_PFT(pft);
+
+   hc->put_Radius(500);
+   hc->put_SpiralLength(spEntry,100);
+   hc->put_SpiralLength(spExit,200);
+
+   // get some useful curve points
+   CComPtr<IPoint2d> cc, spi1, spi2;
+   hc->get_CC(&cc);
+   hc->get_SPI(spEntry,&spi1);
+   hc->get_SPI(spExit, &spi2);
+
+   // create the line
+   CComPtr<ILine2d> line;
+   line.CoCreateInstance(CLSID_Line2d);
+
+   // A couple of points to be used for results
+   CComPtr<IPoint2d> p1, p2;
+
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,NULL),E_POINTER);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,NULL,&p2),E_POINTER);
+   TRY_TEST(hc->Intersect(NULL,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+
+   // make line intersect entry spiral
+   line->ThroughPoints(cc,spi1);
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   Float64 px,py;
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-505.64223947528126),true);
+   TRY_TEST(IsEqual(py,-1000.9854324189444),true);
+
+   // make line intersect exit spiral
+   line->ThroughPoints(cc,spi2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-818.84457984632149),true);
+   TRY_TEST(IsEqual(py,-1124.3794034250211),true);
+
+   // make line intersect circular curve
+   line->ThroughPoints(cc,pi);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-684.65428056880842),true);
+   TRY_TEST(IsEqual(py,-1040.6952164811710),true);
+
+   // intersect both spirals at once
+   line->ThroughPoints(spi1,spi2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-508.67040313139313),true);
+   TRY_TEST(IsEqual(py,-1001.1261375196194),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-809.35182374575743),true);
+   TRY_TEST(IsEqual(py,-1116.5668976835791),true);
+
+   // intersect circular curve in two places
+   // first locate two points on the curve
+   CComPtr<IPoint2d> cp1, cp2;
+   hc->PointOnCurve(110,&cp1);
+   hc->PointOnCurve(140,&cp2);
+
+   line->ThroughPoints(cp1,cp2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-548.87503670886008),true);
+   TRY_TEST(IsEqual(py,-1004.4287172526595),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-578.53372538212068),true);
+   TRY_TEST(IsEqual(py,-1008.9111895010718),true);
+
+   // intersect circular curve in two places 
+   // (again, but make the intersection points really close)
+   // first locate two points on the curve
+   cp1.Release();
+   cp2.Release();
+   hc->PointOnCurve(150,&cp1);
+   hc->PointOnCurve(151,&cp2);
+
+   line->ThroughPoints(cp1,cp2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-588.35360,0.001),true);
+   TRY_TEST(IsEqual(py,-1010.79974,0.001),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-589.33345,0.001),true);
+   TRY_TEST(IsEqual(py,-1010.99939,0.001),true);
+
+   //// line tangent to entry spiral
+   CComPtr<IPoint2d> POC;
+   hc->PointOnCurve(50,&POC);
+   CComPtr<IDirection> dir;
+   hc->Bearing(50,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-489.03247,0.001),true);
+   TRY_TEST(IsEqual(py,-1000.41664,0.001),true);
+
+   // intersect entry spiral in 2 locations
+   p1.Release();
+   p2.Release();
+   hc->PointOnCurve(35,&p1);
+   hc->PointOnCurve(45,&p2);
+   line->ThroughPoints(p1,p2);
+   
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-474.03507484100646),true);
+   TRY_TEST(IsEqual(py,-1000.1429151347374),true);
+
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-484.03375483745350),true);
+   TRY_TEST(IsEqual(py,-1000.3037411037024),true);
+
+   // line tangent to exit spiral
+   Float64 length;
+   hc->get_TotalLength(&length);
+   POC.Release();
+   hc->PointOnCurve(length-50,&POC);
+   dir.Release();
+   hc->Bearing(length-50,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-880.04038989655419),true);
+   TRY_TEST(IsEqual(py,-1180.3350144338078),true);
+
+   // intersect exit spiral in 2 locations
+   p1.Release();
+   p2.Release();
+   hc->PointOnCurve(length-45,&p1);
+   hc->PointOnCurve(length-35,&p2);
+   line->ThroughPoints(p1,p2);
+   
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-883.61560958489838),true);
+   TRY_TEST(IsEqual(py,-1183.8303918815288),true);
+
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-890.74331577219289),true);
+   TRY_TEST(IsEqual(py,-1190.8443728455015),true);
+
+
+   // line tangent to circular curve
+   POC.Release();
+   hc->PointOnCurve(length/2,&POC);
+   dir.Release();
+   hc->Bearing(length/2,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-703.20889,0.0011),true);
+   TRY_TEST(IsEqual(py,-1049.03367,0.001),true);
+
+   // line intersect back tangent and exit spiral
+   line->ThroughPoints(pbt,spi2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py,-1000.00),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-813.50118,0.001),true);
+   TRY_TEST(IsEqual(py,-1119.94828,0.001),true);
+
+   // again, but don't project back
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-813.5011,0.001),true);
+   TRY_TEST(IsEqual(py,-1119.9482,0.001),true);
+
+   // line intersect fwd tangent and entry spiral
+   line->ThroughPoints(spi1,pft);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-507.5005,0.001),true);
+   TRY_TEST(IsEqual(py,-1001.07029,0.001),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-1000.00),true);
+   TRY_TEST(IsEqual(py,-1300.00),true);
+
+   // again, but don't project ahead
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-507.5005,0.001),true);
+   TRY_TEST(IsEqual(py,-1001.0702,0.001),true);
+
+   // no intersection with line parallel to entry tangent
+   // outside of curve
+   cp1->Move(0,-900);
+   cp2->Move(-700,-900);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // again, but on inside of curve (intersect with curve)
+   cp1->Move(0,-1100);
+   cp2->Move(-700,-1100);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-787.9642,0.001),true);
+   TRY_TEST(IsEqual(py,-1099.9999,0.001),true);
+
+   // again, but on inside of curve (intersect with ahead tangent projected)
+   cp1->Move(0,-1500);
+   cp2->Move(-700,-1500);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-1200.00),true);
+   TRY_TEST(IsEqual(py,-1500.00),true);
+
+   // again, but don't project curve
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // no intersection with line parallel to exit tangent
+   // outside of curve
+   cp1->Move(-800,-1000);
+   cp2->Move(-1100,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // again, but on inside of curve (intersect with curve)
+   cp1->Move(-600,-1000);
+   cp2->Move(-900,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-617.6666,0.001),true);
+   TRY_TEST(IsEqual(py,-1017.6666,0.001),true);
+
+   // again, but on inside of curve (intersect with projected tangent)
+   cp1->Move(-200,-1000);
+   cp2->Move(-500,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, -200.00),true);
+   TRY_TEST(IsEqual(py,-1000.00),true);
+
+   // again, but don't project curve
+   cp1->Move(-200,-1000);
+   cp2->Move(-500,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // no intersection with line that cross both entry/entry tangent (inside of curve)
+   cp1->Move(0,-1000);
+   cp2->Move(-1000,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py,-1000.),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-1000.00),true);
+   TRY_TEST(IsEqual(py,-1300.00),true);
+
+   // again, but project only back
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py,-1000.),true);
+
+   // again, but project only ahead
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-1000.00),true);
+   TRY_TEST(IsEqual(py,-1300.00),true);
+
+   // no intersection with line that cross both entry/entry tangent (outside of curve)
+   cp1->Move(-690,-1000);
+   cp2->Move(-710,-1010);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+}
+
+void CTestHorzCurve::Test11b()
+{
+   // same as Test10b except the direction of the curve is reverse
+   CComPtr<IHorzCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+
+   /////////////////////////////////////////////////////
+   // Test a non-symmetrical spiral-curve-spiral to the left
+   // Spiral lengths overlap
+   // PBT = (-1000,-1300)
+   // PI  = (-700,-1000)
+   // PFT = (0,-1000)
+   // R   = 500
+   // Entry Spiral Length = 200
+   // Exit Spiral Length = 100
+   CComPtr<IPoint2d> pbt, pi, pft;
+   pbt.CoCreateInstance(CLSID_Point2d);
+   pi.CoCreateInstance(CLSID_Point2d);
+   pft.CoCreateInstance(CLSID_Point2d);
+
+   pbt->Move(-1000,-1300);
+   pi->Move(-700,-1000);
+   pft->Move(0,-1000);
+
+   hc->putref_PBT(pbt);
+   hc->putref_PI(pi);
+   hc->putref_PFT(pft);
+
+   hc->put_Radius(500);
+   hc->put_SpiralLength(spEntry,200);
+   hc->put_SpiralLength(spExit,100);
+
+   // get some useful curve points
+   CComPtr<IPoint2d> cc, spi1, spi2;
+   hc->get_CC(&cc);
+   hc->get_SPI(spEntry,&spi1);
+   hc->get_SPI(spExit, &spi2);
+
+   // create the line
+   CComPtr<ILine2d> line;
+   line.CoCreateInstance(CLSID_Line2d);
+
+   // A couple of points to be used for results
+   CComPtr<IPoint2d> p1, p2;
+
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,NULL),E_POINTER);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,NULL,&p2),E_POINTER);
+   TRY_TEST(hc->Intersect(NULL,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+
+   // make line intersect exit spiral
+   line->ThroughPoints(cc,spi2);
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   Float64 px,py;
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-505.64223947528126),true);
+   TRY_TEST(IsEqual(py,-1000.9854324189444),true);
+
+   // make line intersect entry spiral
+   line->ThroughPoints(cc,spi1);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-818.84457984632149),true);
+   TRY_TEST(IsEqual(py,-1124.3794034250211),true);
+
+   // make line intersect circular curve
+   line->ThroughPoints(cc,pi);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-684.65428056880842),true);
+   TRY_TEST(IsEqual(py,-1040.6952164811710),true);
+
+   // intersect both spirals at once
+   line->ThroughPoints(spi1,spi2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-809.35182374575743),true);
+   TRY_TEST(IsEqual(py,-1116.5668976835791),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-508.67040313139313),true);
+   TRY_TEST(IsEqual(py,-1001.1261375196194),true);
+
+   // intersect circular curve in two places
+   // first locate two points on the curve
+   Float64 length;
+   hc->get_TotalLength(&length);
+   CComPtr<IPoint2d> cp1, cp2;
+   hc->PointOnCurve(length-140,&cp1);
+   hc->PointOnCurve(length-110,&cp2);
+
+   line->ThroughPoints(cp1,cp2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-578.53372538212068),true);
+   TRY_TEST(IsEqual(py,-1008.9111895010718),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-548.87503670886008),true);
+   TRY_TEST(IsEqual(py,-1004.4287172526595),true);
+
+   // intersect circular curve in two places 
+   // (again, but make the intersection points really close)
+   // first locate two points on the curve
+   cp1.Release();
+   cp2.Release();
+   hc->PointOnCurve(length-151,&cp1);
+   hc->PointOnCurve(length-150,&cp2);
+
+   line->ThroughPoints(cp1,cp2);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-589.33345,0.001),true);
+   TRY_TEST(IsEqual(py,-1010.99939,0.001),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-588.35360,0.001),true);
+   TRY_TEST(IsEqual(py,-1010.79974,0.001),true);
+
+   //// line tangent to exit spiral
+   CComPtr<IPoint2d> POC;
+   hc->PointOnCurve(length-50,&POC);
+   CComPtr<IDirection> dir;
+   hc->Bearing(length-50,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-489.03247,0.001),true);
+   TRY_TEST(IsEqual(py,-1000.41664,0.001),true);
+
+   // intersect entry spiral in 2 locations
+   p1.Release();
+   p2.Release();
+   hc->PointOnCurve(length-45,&p1);
+   hc->PointOnCurve(length-35,&p2);
+   line->ThroughPoints(p1,p2);
+   
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-484.03375483745350),true);
+   TRY_TEST(IsEqual(py,-1000.3037411037024),true);
+
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-474.03507484100646),true);
+   TRY_TEST(IsEqual(py,-1000.1429151347374),true);
+
+   // line tangent to exit spiral
+   POC.Release();
+   hc->PointOnCurve(50,&POC);
+   dir.Release();
+   hc->Bearing(50,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-880.04038989655419),true);
+   TRY_TEST(IsEqual(py,-1180.3350144338078),true);
+
+   // intersect exit spiral in 2 locations
+   p1.Release();
+   p2.Release();
+   hc->PointOnCurve(35,&p1);
+   hc->PointOnCurve(45,&p2);
+   line->ThroughPoints(p1,p2);
+   
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-890.74331577219289),true);
+   TRY_TEST(IsEqual(py,-1190.8443728455015),true);
+
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-883.61560958489838),true);
+   TRY_TEST(IsEqual(py,-1183.8303918815288),true);
+
+
+   // line tangent to circular curve
+   POC.Release();
+   hc->PointOnCurve(length/2,&POC);
+   dir.Release();
+   hc->Bearing(length/2,&dir);
+   line.Release();
+   MakeLine(POC,dir,&line);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-703.20889,0.0011),true);
+   TRY_TEST(IsEqual(py,-1049.03367,0.001),true);
+
+   // line intersect back tangent and exit spiral
+   line->ThroughPoints(pft,spi1);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-813.50118,0.001),true);
+   TRY_TEST(IsEqual(py,-1119.94828,0.001),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py,-1000.00),true);
+
+   // again, but don't project back
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-813.5011,0.001),true);
+   TRY_TEST(IsEqual(py,-1119.9482,0.001),true);
+
+   // line intersect fwd tangent and entry spiral
+   line->ThroughPoints(spi2,pbt);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-1000.00),true);
+   TRY_TEST(IsEqual(py,-1300.00),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px,-507.5005,0.001),true);
+   TRY_TEST(IsEqual(py,-1001.07029,0.001),true);
+
+   // again, but don't project ahead
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-507.5005,0.001),true);
+   TRY_TEST(IsEqual(py,-1001.0702,0.001),true);
+
+   // no intersection with line parallel to entry tangent
+   // outside of curve
+   cp1->Move(0,-900);
+   cp2->Move(-700,-900);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // again, but on inside of curve (intersect with curve)
+   cp1->Move(0,-1100);
+   cp2->Move(-700,-1100);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-787.9642,0.001),true);
+   TRY_TEST(IsEqual(py,-1099.9999,0.001),true);
+
+   // again, but on inside of curve (intersect with ahead tangent projected)
+   cp1->Move(0,-1500);
+   cp2->Move(-700,-1500);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-1200.00),true);
+   TRY_TEST(IsEqual(py,-1500.00),true);
+
+   // again, but don't project curve
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // no intersection with line parallel to exit tangent
+   // outside of curve
+   cp1->Move(-800,-1000);
+   cp2->Move(-1100,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // again, but on inside of curve (intersect with curve)
+   cp1->Move(-600,-1000);
+   cp2->Move(-900,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-617.6666,0.001),true);
+   TRY_TEST(IsEqual(py,-1017.6666,0.001),true);
+
+   // again, but on inside of curve (intersect with projected tangent)
+   cp1->Move(-200,-1000);
+   cp2->Move(-500,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, -200.00),true);
+   TRY_TEST(IsEqual(py,-1000.00),true);
+
+   // again, but don't project curve
+   cp1->Move(-200,-1000);
+   cp2->Move(-500,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // no intersection with line that cross both entry/entry tangent (inside of curve)
+   cp1->Move(0,-1000);
+   cp2->Move(-1000,-1300);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
+
+   // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 != NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-1000.00),true);
+   TRY_TEST(IsEqual(py,-1300.00),true);
+   
+   p2->get_X(&px);
+   p2->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py,-1000.),true);
+
+   // again, but project only back
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 0.00),true);
+   TRY_TEST(IsEqual(py,-1000.),true);
+
+   // again, but project only ahead
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
+   TRY_TEST(p1 != NULL,true);
+   TRY_TEST(p2 == NULL,true);
+   
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px,-1000.00),true);
+   TRY_TEST(IsEqual(py,-1300.00),true);
+
+   // no intersection with line that cross both entry/entry tangent (outside of curve)
+   cp1->Move(-690,-1000);
+   cp2->Move(-710,-1010);
+   line->ThroughPoints(cp1,cp2);
+
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
+   TRY_TEST(p1 == NULL,true);
+   TRY_TEST(p2 == NULL,true);
 }
 
 void CTestHorzCurve::TestEvents()

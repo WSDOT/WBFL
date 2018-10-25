@@ -468,12 +468,12 @@ Float64 lrfdLosses::PermanentStrand_Final() const
    return loss;
 }
 
-Float64 lrfdLosses::PermanentStrand_FinalWithLiveLoad() const
+Float64 lrfdLosses::PermanentStrand_FinalWithLiveLoad(Float64 gLL) const
 {
    if ( m_IsDirty )
       UpdateLosses();
 
-   Float64 loss = PermanentStrand_Final() - ElasticGainDueToLiveLoad();
+   Float64 loss = PermanentStrand_Final() - gLL*ElasticGainDueToLiveLoad();
    return loss;
 }
 
