@@ -86,7 +86,7 @@ STDMETHODIMP CDistributedLoadCollection::Create(/*[in]*/LoadIDType id, /*[in]*/M
       pdl->Init(m_pModel, m_pEvents, m_pLoading, id, memberID, direction, startLocation, endLocation, Wstart, Wend, orientation);
 
       // insert new 
-      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, CComVariant(*ppDistributedLoad))) );
+      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, *ppDistributedLoad)) );
       if (!st.second)
       {
          ATLASSERT(0); // insert failed - better check why

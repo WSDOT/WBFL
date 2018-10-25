@@ -45,13 +45,33 @@ This really should be part of a matrix math library
 #define ABT       2
 #define ATBT      3
 
-class  Matrix
+class iActLikeVector
+{
+public:
+   virtual Float64 operator()(LONG i) const =0;
+   virtual Float64 &operator()(LONG i) =0;
+   virtual LONG    NumRows() const =0;
+};
+
+class iActLikeMatrix
+{
+public:
+   virtual Float64 operator()(LONG i,LONG j) const =0;
+   virtual Float64 &operator()(LONG i,LONG j) =0;
+   virtual LONG    NumRows() const =0;
+   virtual LONG    NumColumns() const =0;
+};
+
+
+class  Matrix: public iActLikeMatrix
 {
 // Data Members
 protected:
    LONG m_NRows;
    LONG m_NCols;
-   Float64 **m_ppMatrix;
+   Float64* m_pMatrix;
+
+   LONG Index( LONG r, LONG c ) const { return r + m_NCols * c; }
 
 // Constructors/Destructor
 public:
@@ -62,7 +82,6 @@ public:
    void Resize(LONG nr,LONG nc);
    friend std::_tostream& operator<< ( std::_tostream& os, const Matrix& m );
 
-
 // Member Functions
 private:
    void Clear();
@@ -71,7 +90,7 @@ public:
    void    GetSize(LONG &nr,LONG &nc) const;
    void    SetElement(LONG r,LONG c,Float64 val);
    Float64  GetElement(LONG r,LONG c) const;
-   void    Multiply(const Matrix *b,Matrix *c,LONG mode = AB);
+   void    Multiply(const iActLikeMatrix *b,iActLikeMatrix *c,LONG mode = AB);
    LONG    NumRows() const;
    LONG    NumColumns() const;
    void Zero();
@@ -83,12 +102,73 @@ public:
    Float64 &operator()(LONG i,LONG j);
 };
 
-class  Vector : public Matrix
+// Vector of length 6. Would be very easy to make this a fixed size vector
+// template class, but let's give the optimizer all the chances possible
+class  Vector6 : public  iActLikeVector, public  iActLikeMatrix
 {
+private:
+   Float64 m_Vec[6];
 public:
-   Vector(long nr) : Matrix(nr,1) {};
-   Float64 operator()(LONG i) const;
-   Float64 &operator()(LONG i);
+
+   virtual Float64 operator()(LONG i) const
+   {
+      ATLASSERT(i<6);
+      return m_Vec[i];
+   }
+
+   virtual Float64 &operator() (LONG i)
+   {
+      ATLASSERT(i<6);
+      return m_Vec[i];
+   }
+
+   virtual Float64 operator()(LONG i,LONG j) const
+   {
+      ATLASSERT(i<6);
+      ATLASSERT(j==0);
+      return m_Vec[i];
+   }
+
+   virtual Float64& operator()(LONG i,LONG j)
+   {
+      ATLASSERT(i<6);
+      ATLASSERT(j==0);
+      return m_Vec[i];
+   }
+
+   virtual LONG NumRows() const
+   {
+      return 6;
+   }
+
+   virtual LONG NumColumns() const
+   {
+      return 1;
+   }
+
+   void operator += (const Vector6 &m)
+   {
+      for (int i = 0; i < 6; i++)
+      {
+         m_Vec[i] += m.m_Vec[i];
+      }
+   }
+
+   void operator -= (const Vector6 &m)
+   {
+      for (int i = 0; i < 6; i++)
+      {
+         m_Vec[i] -= m.m_Vec[i];
+      }
+   }
+
+   void Zero()
+   {
+      for (int i = 0; i < 6; i++)
+      {
+         m_Vec[i] = 0.0;
+      }
+   }
 };
 
 

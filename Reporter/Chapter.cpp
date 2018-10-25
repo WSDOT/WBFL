@@ -43,18 +43,21 @@ CLASS
 
 
 rptChapter::rptChapter() :
-m_Name( _T("") )
+m_Name( _T("") ),
+m_DoEjectPageBefore(false)
 {}
 
 rptChapter::rptChapter(const std::_tstring& name) :
-m_Name( name )
+m_Name( name ),
+m_DoEjectPageBefore(false)
 {}
 
 
 rptChapter::rptChapter(const std::_tstring& name,const rptStyleName& rStyleName, 
                        const rptPageLayout& rLayout):
 rptReportLayoutItem(rStyleName, rLayout),
-m_Name( name )
+m_Name( name ),
+m_DoEjectPageBefore(false)
 {
 }
 
@@ -100,6 +103,16 @@ void rptChapter::Accept( rptChapterVisitor& MyVisitor )
 }
 
 //======================== ACCESS     =======================================
+
+bool rptChapter::GetEjectPageBreakBefore() const
+{
+   return m_DoEjectPageBefore;
+}
+
+void rptChapter::SetEjectPageBreakBefore(bool doBreak)
+{
+   m_DoEjectPageBefore = doBreak;
+}
 
 rptChapter::ConstChapterParagraphIterator rptChapter::ConstBegin()
 {

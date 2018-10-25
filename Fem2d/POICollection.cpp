@@ -86,7 +86,7 @@ STDMETHODIMP CPOICollection::Create(PoiIDType id, MemberIDType memberID, Float64
          return hr;
 
       // insert new poi
-      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, CComVariant(*ppPOI) )) );
+      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, *ppPOI )) );
       if (!st.second)
       {
          ATLASSERT(0); // insert failed - better check why

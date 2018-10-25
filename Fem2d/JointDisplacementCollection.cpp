@@ -86,7 +86,7 @@ STDMETHODIMP CJointDisplacementCollection::Create(/*[in]*/LoadIDType id,  /*[in]
 
       // insert new joint
       std::pair<ContainerIteratorType,bool> st;
-      st = m_coll.insert(ContainerValueType(id, CComVariant(*ppJointDisplacement)));
+      st = m_coll.insert(ContainerValueType(id, *ppJointDisplacement));
       if (!st.second)
       {
          ATLASSERT(0); // insert failed - better check why

@@ -75,7 +75,9 @@ std::_tstring rptHtmlHelper::GetStyleString(const rptRiStyle& MyStyle)
 {
    std::_tostringstream ms;
 
-   ms << "font-size: "<<MyStyle.GetFontSize()<<"pt; ";
+   Uint16 fs = MyStyle.GetFontSize();
+
+   ms << "font-size: "<<fs<<"pt; ";
 
    // alignment
    rptRiStyle::AlignmentType my_align = MyStyle.GetAlignment();
@@ -99,7 +101,7 @@ std::_tstring rptHtmlHelper::GetStyleString(const rptRiStyle& MyStyle)
    if (MyStyle.GetBold())
       ms << "font-weight: bold; ";
    else
-      ms << "font-weight: medium; ";
+      ms << "font-weight: normal; ";
 
    // italics
    if (MyStyle.GetItalic())
@@ -111,6 +113,14 @@ std::_tstring rptHtmlHelper::GetStyleString(const rptRiStyle& MyStyle)
    if (MyStyle.GetUnderlined())
       ms << "text-decoration: underline; ";
 
+   // overline
+   if (MyStyle.GetOverlined())
+      ms << "text-decoration: overline; ";
+
+   // line-through
+   if (MyStyle.GetLineThrough())
+      ms << "text-decoration: line-through; ";
+
    // color
    rptRiStyle::FontColor mc = MyStyle.GetColor();
    ms << "color: " << rptRiStyle::GetColorCode(mc) << "; ";
@@ -118,6 +128,13 @@ std::_tstring rptHtmlHelper::GetStyleString(const rptRiStyle& MyStyle)
    // background color
    mc = MyStyle.GetBGColor();
    ms << "background-color: " << rptRiStyle::GetColorCode(mc) << "; ";
+
+   // Make margin space above if style is a heading
+   if (MyStyle.IsHeading())
+   {
+      Uint16 marg = fs/3;
+      ms << "margin-top: +" << marg <<"pt; ";
+   }
 
    // family is last in list because of a 'feature' in IE
    ms << "font-family: " << HtmlFontList[MyStyle.GetFontType()] << "; ";
@@ -186,11 +203,10 @@ void rptHtmlHelper::VisitFontLibrary(std::_tostream& os)
       m_StyleElementMap.insert( std::pair<std::_tstring, std::_tstring> (mystr, ms.str()));
       if (i==0) // body text
       {
-         os << _T("   ") << _T("BODY") << _T(" {  background: white; ") << ss << 
-            _T(" display: block; }") << std::endl;
+         os << _T("   ") << _T("BODY") << _T(" {  background: white; }") << std::endl;
 
-         os << _T("   ") << _T("P") << _T(" {  background: white; ") << ss << 
-            _T(" display: block}") << std::endl;
+         os << _T("   ") << _T("P") << _T(" { background: white; margin: 0pt 0pt 0pt 0pt; ") << ss << 
+            _T(" }") << std::endl;
       }
       else
       {
@@ -198,20 +214,16 @@ void rptHtmlHelper::VisitFontLibrary(std::_tostream& os)
          {
             // style only applies to print
             osPrint << _T("/* ") << mystr << _T(" */") << std::endl;
-            osPrint << _T("   ") << _T("P.") << ms.str() << _T(" {") << ss << 
-               _T(" display: block") <<
-               _T(" margin-top: -1; margin-bottom: -2}") << std::endl;
+            osPrint << _T("   ") << _T("P.") << ms.str() << _T(" {") << ss << _T(" }") << std::endl;
 
             osScreen << _T("/* ") << mystr << _T(" */") << std::endl;
-            osScreen << _T("   ") << _T("P.") << ms.str() << _T(" {display: none}; ") << std::endl;
+            osScreen << _T("   ") << _T("P.") << ms.str() << _T(" {display: none;}; ") << std::endl;
          }
          else if ( style.GetMediaType() == rptRiStyle::Screen )
          {
             // style only applies to screen
             osScreen << _T("/* ") << mystr << _T(" */") << std::endl;
-            osScreen << _T("   ") << _T("P.") << ms.str() << _T(" {") << ss << 
-               _T(" display: block") <<
-               _T(" margin-top: -1; margin-bottom: -2}") << std::endl;
+            osScreen << _T("   ") << _T("P.") << ms.str() << _T(" {") << ss << _T(" }") << std::endl;
 
             osPrint << _T("/* ") << mystr << _T(" */") << std::endl;
             osPrint << _T("   ") << _T("P.") << ms.str() << _T(" {display: none}; ") << std::endl;
@@ -220,9 +232,7 @@ void rptHtmlHelper::VisitFontLibrary(std::_tostream& os)
          {
             // style applies to both
             osBoth << _T("/* ") << mystr << _T(" */") << std::endl;
-            osBoth << _T("   ") << _T("P.") << ms.str() << _T(" {") << ss << 
-               _T(" display: block") <<
-               _T(" margin-top: -1; margin-bottom: -2}") << std::endl;
+            osBoth << _T("   ") << _T("P.") << ms.str() << _T(" {") << ss << _T(" }") << std::endl;
          }
       }
    }

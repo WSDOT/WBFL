@@ -72,6 +72,7 @@ END_COM_MAP()
 public:
 	STDMETHOD(Create)(/*[in]*/LoadCaseIDType ID,/*[out,retval]*/IFem2dLoading* *ppLoading);
 	STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/LoadCaseIDType* pid);
+	STDMETHOD(RemoveIDLessThan)(/*[in]*/LoadCaseIDType id);
 	STDMETHOD(Clear)();
 };
 

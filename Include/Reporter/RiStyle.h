@@ -243,7 +243,7 @@ public:
 
    //------------------------------------------------------------------------
    // types for changing font characteristics
-   enum FontModifier  { BOLD, ITALIC, UNDERLINE, SUBSCRIPT, SUPERSCRIPT,
+   enum FontModifier  { BOLD, ITALIC, UNDERLINE, OVERLINE, LINETHROUGH, SUBSCRIPT, SUPERSCRIPT,
                         FMSIZE}; // FMSIZE is used for sizing info only
 
    //------------------------------------------------------------------------
@@ -279,10 +279,13 @@ public:
               Uint16 fontSize,
               bool bBold              = false, 
               bool bItalic            = false,
-              bool bUnderlined        = false,
+              bool bUnderline         = false,
+              bool bOverline          = false,
+              bool bLineThrough       = false,
               FontColor fontColor     = Black,
               AlignmentType alignType = LEFT,
-              VerticalAlignmentType valignType = MIDDLE);
+              VerticalAlignmentType valignType = BASELINE,
+              bool isHeading=false);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -324,6 +327,14 @@ public:
    void SetUnderlined( bool bUnderline = true);
 
    //------------------------------------------------------------------------
+   // Set the overline attribute
+   void SetOverlined( bool bOverline = true);
+
+   //------------------------------------------------------------------------
+   // Set the line-through attribute
+   void SetLineThrough( bool bLineThrough = true);
+
+   //------------------------------------------------------------------------
    // Set the Bold attribute
    void SetBold ( bool bBold = true);
 
@@ -361,6 +372,14 @@ public:
    bool GetUnderlined() const;
 
    //------------------------------------------------------------------------
+   // Determine if report item is overlined
+   bool GetOverlined() const;
+
+   //------------------------------------------------------------------------
+   // Determine if report item is line-through
+   bool GetLineThrough() const;
+
+   //------------------------------------------------------------------------
    // Determine if report item is bold
    bool GetBold () const;
 
@@ -376,6 +395,11 @@ public:
    // Get the color of the item
    FontColor  GetColor() const;
    FontColor GetBGColor() const;
+
+   //------------------------------------------------------------------------
+   // Is this a heading style? If so, we want to put a margin at top
+   void SetIsHeading(bool isHead);
+   bool IsHeading() const;
 
    // Border Properties
    //------------------------------------------------------------------------
@@ -471,6 +495,11 @@ private:
    MediaType m_MediaType;
 
    //------------------------------------------------------------------------
+   // Is this a heading
+   bool m_IsHeading;
+
+
+   //------------------------------------------------------------------------
    // border styles for all four sides of paragraph
    // styles are stored in the order given in BorderLoc
    // refer to the enum BorderStyle for available styles
@@ -490,7 +519,7 @@ private:
    void Init();
 
    void MakeCopy(const rptRiStyle& rOther);
-   void MakeAssignment(const rptRiStyle& rOther);
+   virtual void MakeAssignment(const rptRiStyle& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

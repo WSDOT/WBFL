@@ -93,7 +93,7 @@ STDMETHODIMP CMemberCollection::Create(MemberIDType id, JointIDType startJoint, 
       pmbr->OnCreate(m_pModel,m_pEvents,id,startJoint,endJoint,EA,EI);
 
       // insert new member
-      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, CComVariant(*ppMember))) );
+      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, *ppMember)) );
       if (!st.second)
       {
          ATLASSERT(0); // insert failed - better check why
