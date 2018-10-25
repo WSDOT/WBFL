@@ -85,7 +85,7 @@ STDMETHODIMP CLoadingCollection::Create(/*[in]*/LoadCaseIDType id,IFem2dLoading*
          return hr;
 
       // insert new joint
-      std::pair<ContainerIteratorType,bool> st ( m_coll.insert(ContainerValueType(id, CComVariant(*ppLoading))) );
+      std::pair<ContainerIteratorType,bool> st ( m_coll.insert(ContainerValueType(id, *ppLoading)) );
       if (!st.second)
       {
          ATLASSERT(0); // insert failed - better check why
@@ -109,6 +109,33 @@ STDMETHODIMP CLoadingCollection::Remove(CollectionIndexType IDorIndex, Fem2dAcce
 
    return hr;
 }
+
+STDMETHODIMP CLoadingCollection::RemoveIDLessThan(LoadCaseIDType idMax)
+{
+   // erase if id < idMax
+   ContainerType::iterator it(m_coll.begin());
+   ContainerType::iterator itend(m_coll.end());
+   while(it!=itend)
+   {
+      LoadCaseIDType id = it->first;
+      if (id < idMax)
+      {
+         // Release element before erasing it
+         it->second.Release();
+         it = m_coll.erase(it);
+
+         // send event up the pipe
+         m_pEvents->OnLoadingRemoved(id);
+      }
+      else
+      {
+         it++;
+      }
+   }
+
+   return S_OK;
+}
+
 
 STDMETHODIMP CLoadingCollection::Clear()
 {

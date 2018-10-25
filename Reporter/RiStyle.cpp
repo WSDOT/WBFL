@@ -51,9 +51,12 @@ rptRiStyle::rptRiStyle(FontType fontType,
                        bool bBold,
                        bool bItalic, 
                        bool bUnderlined,
+                       bool bOverline,
+                       bool bLineThrough,
                        FontColor fontColor,
                        AlignmentType alignType,
-                       VerticalAlignmentType valignType)
+                       VerticalAlignmentType valignType,
+                       bool isHeading)
 {
    Init();
 
@@ -62,10 +65,13 @@ rptRiStyle::rptRiStyle(FontType fontType,
    SetBold( bBold );
    SetItalic( bItalic );
    SetUnderlined( bUnderlined );
+   SetOverlined(bOverline);
+   SetLineThrough(bLineThrough);
    SetColor( fontColor );
    SetBGColor( White );
    SetAlignment( alignType );
    SetVerticalAlignment(valignType);
+   m_IsHeading = isHeading;
 }
 
 
@@ -116,6 +122,16 @@ void rptRiStyle::SetUnderlined( bool bUnderline )
    m_FontModifiers.set(UNDERLINE, bUnderline);
 }
 
+void rptRiStyle::SetOverlined( bool bOverline )
+{
+   m_FontModifiers.set(OVERLINE, bOverline);
+}
+
+void rptRiStyle::SetLineThrough( bool bLineThrough )
+{
+   m_FontModifiers.set(LINETHROUGH, bLineThrough);
+}
+
 void rptRiStyle::SetBold ( bool bBold )
 {
    m_FontModifiers.set(BOLD, bBold);
@@ -149,6 +165,16 @@ bool rptRiStyle::IsBorder() const
             m_BorderStyles[BRIGHT]);
 }
 
+bool rptRiStyle::IsHeading() const
+{
+    return m_IsHeading;
+}
+
+void rptRiStyle::SetIsHeading(bool isHead)
+{
+   m_IsHeading = isHead;
+}
+
 //======================== INQUIRY    =======================================
 rptRiStyle::FontType rptRiStyle::GetFontType() const
 {
@@ -173,6 +199,16 @@ rptRiStyle::VerticalAlignmentType rptRiStyle::GetVerticalAlignment() const
 bool rptRiStyle::GetUnderlined() const
 {
    return m_FontModifiers[UNDERLINE];
+}
+
+bool rptRiStyle::GetOverlined() const
+{
+   return m_FontModifiers[OVERLINE];
+}
+
+bool rptRiStyle::GetLineThrough() const
+{
+   return m_FontModifiers[LINETHROUGH];
 }
 
 bool rptRiStyle::GetBold () const
@@ -241,6 +277,8 @@ void rptRiStyle::Init()
    m_BorderStyles[BBOTTOM] = NOBORDER;
    m_BorderStyles[BLEFT]   = NOBORDER;
    m_BorderStyles[BRIGHT]  = NOBORDER;
+
+   m_IsHeading = false;
 }
 //======================== OPERATIONS =======================================
 
@@ -255,6 +293,7 @@ void rptRiStyle::MakeCopy(const rptRiStyle& rIStyle)
    m_BgColor       = rIStyle.m_BgColor;
    m_FontModifiers = rIStyle.m_FontModifiers;
    m_MediaType     = rIStyle.m_MediaType;
+   m_IsHeading     = rIStyle.m_IsHeading;
 
    for (int i=0; i<NUMBORDERS; i++)
    {

@@ -84,7 +84,7 @@ STDMETHODIMP CJointCollection::Create(JointIDType id, Float64 fltX, Float64 fltY
       pjnt->OnCreate(m_pModel, m_pEvents, id, fltX, fltY);
 
       // insert new joint
-      std::pair<ContainerIteratorType, bool> st( m_coll.insert(ContainerValueType(id, CComVariant(*ppJoint))) );
+      std::pair<ContainerIteratorType, bool> st( m_coll.insert(ContainerValueType(id, *ppJoint)) );
       if (!st.second)
       {
          ATLASSERT(0); // insert failed - better check why

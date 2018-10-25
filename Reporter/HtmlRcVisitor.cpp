@@ -322,7 +322,7 @@ void rptHtmlRcVisitor::VisitRcFlowModifier(rptRcFlowModifier* pMyFlow)
    for (Uint16 i=0; i<nt; i++)
    {
       if(pMyFlow->GetModifierType()==rptRcFlowModifier::NEW_LINE)
-         *m_pOstream << _T("<BR>")<<std::endl;
+         *m_pOstream << _T("<BR/>")<<std::endl;
       else if(pMyFlow->GetModifierType()==rptRcFlowModifier::NEW_PAGE)
          *m_pOstream << _T("<DIV STYLE=\"page-break-after: always\"><BR></DIV>")<<std::endl;
       else if(pMyFlow->GetModifierType()==rptRcFlowModifier::TAB)

@@ -85,7 +85,7 @@ STDMETHODIMP CPointLoadCollection::Create(/*[in]*/LoadIDType id, /*[in]*/MemberI
       ppl->Init(m_pModel, m_pEvents, m_pLoading, id, memberID, location, Fx, Fy, Mz, orientation);
 
       // insert new Point
-      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, CComVariant(*ppPointLoad) )) );
+      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, *ppPointLoad )) );
       if (!st.second)
       {
          ATLASSERT(0); // insert failed - better check why

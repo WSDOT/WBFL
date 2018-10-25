@@ -929,6 +929,10 @@ library WBFLFem2d
 	   [helpcontext(IDH_IFem2dLoadingCollection_Remove), helpstring("method Remove")] 
 	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadCaseIDType* pid);
 
+      // Remove if ID is less than given
+	   [helpcontext(IDH_IFem2dLoadingCollection_Remove), helpstring("method Remove")] 
+	   HRESULT RemoveIDLessThan([in]LoadCaseIDType id);
+
 	   [helpcontext(IDH_IFem2dLoadingCollection_Clear), helpstring("method Clear")] HRESULT Clear();
    };
 

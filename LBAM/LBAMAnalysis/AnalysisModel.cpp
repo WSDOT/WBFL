@@ -4596,33 +4596,7 @@ void CAnalysisModel::ClearInfluenceLoads()
    CComPtr<IFem2dLoadingCollection> fem_loadings;
    m_pFem2d->get_Loadings(&fem_loadings);
 
-   CollectionIndexType nLoadings;
-   fem_loadings->get_Count(&nLoadings);
-
-   for (CollectionIndexType loadingIdx = 0; loadingIdx < nLoadings; loadingIdx++)
-   {
-      CComPtr<IFem2dLoading> fem_loading;
-      fem_loadings->get_Item(loadingIdx,&fem_loading);
-
-      LoadCaseIDType femLoadCaseID;
-      fem_loading->get_ID(&femLoadCaseID);
-
-      if (femLoadCaseID <= INFLUENCE_LC)
-      {
-         remove_list.push_back(femLoadCaseID);
-      }
-   }
-
-   // then do removal
-   std::vector<LoadCaseIDType>::iterator iter( remove_list.begin() );
-   std::vector<LoadCaseIDType>::iterator iterend( remove_list.end() );
-   for (; iter != iterend; iter++)
-   {
-      LoadCaseIDType femLoadCaseID = *iter;
-      LoadCaseIDType id;
-      fem_loadings->Remove(femLoadCaseID, atID,&id);
-      ATLASSERT(id == femLoadCaseID);
-   }
+   fem_loadings->RemoveIDLessThan(INFLUENCE_LC+1);
 }
 
 void CAnalysisModel::GenerateInfluenceLoads()

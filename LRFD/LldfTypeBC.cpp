@@ -1099,15 +1099,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetMomentDF_Int_1
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
 
-   GirderIndexType nb = GetNb();
-   if (nb >= 3)
-   {
-      g = lrfdLldfTypeBC::GetMomentDF_Int_1_Strength();
-   }
-   else
-   {
-      g = GetLanesBeamsMethod(1,nb);
-   }
+   g = lrfdLldfTypeBC::GetMomentDF_Int_1_Strength();
 
    return g;
 }
@@ -1116,15 +1108,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetMomentDF_Int_2
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
 
-   GirderIndexType nb = GetNb();
-   if (nb>=3)
-   {
-      g = lrfdLldfTypeBC::GetMomentDF_Int_2_Strength();
-   }
-   else
-   {
-      g = GetLanesBeamsMethod(m_Nl,nb);
-   }
+   g = lrfdLldfTypeBC::GetMomentDF_Int_2_Strength();
 
    return g;
 }
@@ -1134,12 +1118,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetMomentDF_Ext_1
    lrfdILiveLoadDistributionFactor::DFResult g;
    Float64 w20 = ::ConvertToSysUnits(20.0, unitMeasure::Feet); // txdot doesn't care about metric
 
-   GirderIndexType nb = GetNb();
-   if ( nb<3 )
-   {
-      g = GetLanesBeamsMethod(1,nb);
-   }
-   else if (m_RoadwayWidth >= w20)
+   if (m_RoadwayWidth >= w20)
    {
       g = GetMomentDF_Ext_2_Strength();
    }
@@ -1160,14 +1139,11 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetMomentDF_Ext_1
    }
 
    // exterior cannot be less than interior
-   if (nb>2) // no use computing twice for nb<3 case
+   lrfdILiveLoadDistributionFactor::DFResult gint = GetMomentDF_Int_1_Strength();
+   if (g.mg < gint.mg)
    {
-      lrfdILiveLoadDistributionFactor::DFResult gint = GetMomentDF_Int_1_Strength();
-      if (g.mg < gint.mg)
-      {
-         g = gint;
-         g.ControllingMethod |= INTERIOR_OVERRIDE;
-      }
+      g = gint;
+      g.ControllingMethod |= INTERIOR_OVERRIDE;
    }
 
    return g;
@@ -1177,49 +1153,38 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetMomentDF_Ext_2
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
 
-   GirderIndexType nb = GetNb();
-   if ( nb < 3 )
+   bool bSISpec = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
+   // ROA for TxDOT moment is more like shear: all outside of equation goes to lever rule
+   // lever rule for any case of spacing over limit
+   bool do_lever = SpacingTriggersLeverRule(bSISpec);
+
+   if(!do_lever && ExteriorMomentEquationRule(bSISpec, false)) 
    {
-      g = GetLanesBeamsMethod(m_Nl,nb);
+      g = lrfdLldfTypeBC::GetMomentDF_Ext_2_Strength();
+
+      assert(g.ControllingMethod & SPEC_EQN); // always should use equation
    }
-   else 
+   else
    {
-      bool bSISpec = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
-      // ROA for TxDOT moment is more like shear: all outside of equation goes to lever rule
-      // lever rule for any case of spacing over limit
-      bool do_lever = SpacingTriggersLeverRule(bSISpec);
+      g.ControllingMethod = LEVER_RULE;
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
+      g.mg = g.LeverRuleData.mg;
 
-      if(!do_lever && ExteriorMomentEquationRule(bSISpec, false)) 
+      Float64 skew = MomentSkewCorrectionFactor();
+      if ( m_bSkewMoment )
       {
-         g = lrfdLldfTypeBC::GetMomentDF_Ext_2_Strength();
-
-         assert(g.ControllingMethod & SPEC_EQN); // always should use equation
+         g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
       }
-      else
-      {
-         g.ControllingMethod = LEVER_RULE;
-         g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
-         g.mg = g.LeverRuleData.mg;
-
-         Float64 skew = MomentSkewCorrectionFactor();
-         if ( m_bSkewMoment )
-         {
-            g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-         }
-         g.mg *= skew;
-         g.SkewCorrectionFactor = skew;
-      }
+      g.mg *= skew;
+      g.SkewCorrectionFactor = skew;
    }
 
    // exterior cannot be less than interior
-   if (nb>2)
+   lrfdILiveLoadDistributionFactor::DFResult gint = GetMomentDF_Int_2_Strength();
+   if (g.mg < gint.mg)
    {
-      lrfdILiveLoadDistributionFactor::DFResult gint = GetMomentDF_Int_2_Strength();
-      if (g.mg < gint.mg)
-      {
-         g = gint;
-         g.ControllingMethod |= INTERIOR_OVERRIDE;
-      }
+      g = gint;
+      g.ControllingMethod |= INTERIOR_OVERRIDE;
    }
 
    return g;
@@ -1229,15 +1194,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetShearDF_Int_1_
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
 
-   GirderIndexType nb = GetNb();
-   if (nb>=3)
-   {
-      g = lrfdLldfTypeBC::GetShearDF_Int_1_Strength();
-   }
-   else
-   {
-      g = GetLanesBeamsMethod(1,nb);
-   }
+   g = lrfdLldfTypeBC::GetShearDF_Int_1_Strength();
 
    return g;
 }
@@ -1246,15 +1203,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetShearDF_Int_2_
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
 
-   GirderIndexType nb = GetNb();
-   if (nb>=3)
-   {
-      g = lrfdLldfTypeBC::GetShearDF_Int_2_Strength();
-   }
-   else
-   {
-      g = GetLanesBeamsMethod(m_Nl,nb);
-   }
+   g = lrfdLldfTypeBC::GetShearDF_Int_2_Strength();
 
    return g;
 }
@@ -1264,12 +1213,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetShearDF_Ext_1_
    lrfdILiveLoadDistributionFactor::DFResult g;
    Float64 w20 = ::ConvertToSysUnits(20.0, unitMeasure::Feet);
 
-   GirderIndexType nb = GetNb();
-   if ( nb<3 )
-   {
-      g = GetLanesBeamsMethod(1,nb);
-   }
-   else if (m_RoadwayWidth >= w20)
+   if (m_RoadwayWidth >= w20)
    {
       g = GetShearDF_Ext_2_Strength();
    }
@@ -1290,14 +1234,11 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetShearDF_Ext_1_
    }
 
    // exterior cannot be less than interior
-   if (nb>2)
+   lrfdILiveLoadDistributionFactor::DFResult gint = GetShearDF_Int_1_Strength();
+   if (g.mg < gint.mg)
    {
-      lrfdILiveLoadDistributionFactor::DFResult gint = GetShearDF_Int_1_Strength();
-      if (g.mg < gint.mg)
-      {
-         g = gint;
-         g.ControllingMethod |= INTERIOR_OVERRIDE;
-      }
+      g = gint;
+      g.ControllingMethod |= INTERIOR_OVERRIDE;
    }
 
    return g;
@@ -1307,25 +1248,14 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetShearDF_Ext_2_
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
 
-   GirderIndexType nb = GetNb();
-   if ( nb<3 )
-   {
-      g = GetLanesBeamsMethod(m_Nl,nb);
-   }
-   else 
-   {
-      g = lrfdLldfTypeBC::GetShearDF_Ext_2_Strength();
-   }
+   g = lrfdLldfTypeBC::GetShearDF_Ext_2_Strength();
 
    // exterior cannot be less than interior
-   if (nb>2)
+   lrfdILiveLoadDistributionFactor::DFResult gint = GetShearDF_Int_2_Strength();
+   if (g.mg < gint.mg)
    {
-      lrfdILiveLoadDistributionFactor::DFResult gint = GetShearDF_Int_2_Strength();
-      if (g.mg < gint.mg)
-      {
-         g = gint;
-         g.ControllingMethod |= INTERIOR_OVERRIDE;
-      }
+      g = gint;
+      g.ControllingMethod |= INTERIOR_OVERRIDE;
    }
 
    return g;
@@ -1342,23 +1272,12 @@ void lrfdTxDotLldfTypeBC::MakeAssignment(const lrfdTxDotLldfTypeBC& rOther)
    MakeCopy( rOther );
 }
 
-// only difference between txdot and aashto is txdot allows Nb<3
 bool lrfdTxDotLldfTypeBC::TestRangeOfApplicability(Location loc) const
 {
    if (!DoCheckApplicablity())
       return true;
 
-   GirderIndexType nb = GetNb();
-   if ( nb<3)
-   {
-      return true;
-   }
-   else
-   {
-      return lrfdLldfTypeBC::TestRangeOfApplicability(loc);
-   }
-
-   return true;
+   return lrfdLldfTypeBC::TestRangeOfApplicability(loc);
 }
 
 //======================== ACCESS     =======================================
@@ -1373,15 +1292,7 @@ bool lrfdTxDotLldfTypeBC::TestRangeOfApplicability(Location loc) const
 //======================== INQUERY    =======================================
 bool lrfdTxDotLldfTypeBC::DoApplySkew() const
 {
-   GirderIndexType nb = GetNb();
-   if (nb>=3)
-   {
-      return lrfdLldfTypeBC::DoApplySkew();
-   }
-   else
-   {
-      return false;
-   }
+   return lrfdLldfTypeBC::DoApplySkew();
 }
 
 //======================== DEBUG      =======================================

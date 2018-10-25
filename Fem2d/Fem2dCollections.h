@@ -91,7 +91,7 @@ public:
 
          // insert new joint
          std::pair<ContainerIteratorType, bool> st;
-         st = m_coll.insert(ContainerValueType(id, CComVariant(item)));
+         st = m_coll.insert(ContainerValueType(id, item));
          if (!st.second)
          {
             ATLASSERT(0); // insert failed - better check why
@@ -126,7 +126,7 @@ public:
       // cycle though collection and save members
       for (ContainerIteratorType it= m_coll.begin(); it != m_coll.end(); it++)
       {
-         CComQIPtr<ItemType> item (it->second.punkVal);
+         CComQIPtr<ItemType> item (it->second);
          StoredType* pItem = dynamic_cast<StoredType*>(item.p);
          hr = pItem->Save(save);
          //hr = it->second->Save(save);
