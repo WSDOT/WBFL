@@ -77,6 +77,18 @@ public:
    matConcrete(const std::_tstring& name,Float64 fc,Float64 density,Float64 modE);
 
    //------------------------------------------------------------------------
+   // Copy constructor
+   matConcrete(const matConcrete& rOther);
+
+   // GROUP: OPERATORS
+   //------------------------------------------------------------------------
+   // Assignment operator
+   matConcrete& operator = (const matConcrete& rOther);
+
+   bool operator==(const matConcrete& rOther) const;
+   bool operator!=(const matConcrete& rOther) const;
+
+   //------------------------------------------------------------------------
    // Destructor
    virtual ~matConcrete();
 
@@ -190,15 +202,6 @@ public:
 protected:
    // GROUP: DATA MEMBERS
    // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Copy constructor
-   matConcrete(const matConcrete& rOther);
-
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   matConcrete& operator = (const matConcrete& rOther);
 
    // GROUP: OPERATIONS
    //------------------------------------------------------------------------

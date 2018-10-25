@@ -31,11 +31,34 @@
 #define RPT_BEARING(_value_) rptRcString(_value_,true)
 #define RPT_ANGLE(_value_) rptRcString(_value_,true)
 
-#define CB_NONE    0x0001
-#define CB_THIN    0x0002
-#define CJ_LEFT    0x0004
-#define CJ_RIGHT   0x0008
-#define CJ_CENTER  0x0010
+#undef CB_NONE
+#undef CB_THIN
+#undef CJ_LEFT
+#undef CJ_RIGHT
+#undef CJ_CENTER
+#undef CA_TOP
+#undef CA_MIDDLE
+#undef CA_BOTTOM
+#undef CA_BASELINE
+#undef BORDER_MASK
+#undef JUSTIFY_MASK
+#undef VALIGN_MASK
+
+#define CB_NONE     0x0001
+#define CB_THIN     0x0002
+
+#define CJ_LEFT     0x0010
+#define CJ_RIGHT    0x0020
+#define CJ_CENTER   0x0040
+
+#define CA_TOP      0x0100
+#define CA_MIDDLE   0x0200
+#define CA_BOTTOM   0x0400
+#define CA_BASELINE 0x0800
+
+#define BORDER_MASK 0x0003
+#define JUSTIFY_MASK 0x0070
+#define VALIGN_MASK 0x0F00
 
 /*****************************************************************************
 CLASS 

@@ -1615,9 +1615,9 @@ STDMETHODIMP CPrecastGirder::GetTemporaryStrandCountEx(/*[in]*/ IIndexArray* fil
    return m_TempGrid[etStart]->GetStrandCountEx(fill, nStrands);
 }
 
-STDMETHODIMP CPrecastGirder::GetStraightStrandDebondCount(/*[out,retval]*/ StrandIndexType* count)
+STDMETHODIMP CPrecastGirder::GetStraightStrandDebondCount(/*[in]*/ WDebondLocationType loc, /*[out,retval]*/ StrandIndexType* count)
 {
-   return m_StraightGrid[etStart]->GetStrandDebondCount(count);
+   return m_StraightGrid[etStart]->GetStrandDebondCount(loc, count);
 }
 
 STDMETHODIMP CPrecastGirder::ClearStraightStrandDebonding()

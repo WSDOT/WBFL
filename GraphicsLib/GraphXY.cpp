@@ -719,7 +719,7 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
    {
       if (GetYAxisNiceRange())
       {
-         m_YAxis.SetNiceAxisRange(m_WorldRect.Bottom(), m_WorldRect.Top(),true);
+         m_YAxis.SetNiceAxisRange(m_WorldRect.Bottom(), m_WorldRect.Top(),false);
          m_YAxis.GetAxisRange(client_bottom, client_top, inc);
       }
       else

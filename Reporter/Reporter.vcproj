@@ -3446,6 +3446,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\RcPercentage.cpp"
+				>
+			</File>
+			<File
 				RelativePath="RcScalar.cpp"
 				>
 				<FileConfiguration
@@ -4008,6 +4012,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\RcStringLiteral.cpp"
+				>
 			</File>
 			<File
 				RelativePath="RcSymbol.cpp"
@@ -5729,6 +5737,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Include\Reporter\RcPercentage.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\Reporter\RcScalar.h"
 				>
 			</File>
@@ -5750,6 +5762,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\Reporter\RcString.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\Reporter\RcStringLiteral.h"
 				>
 			</File>
 			<File

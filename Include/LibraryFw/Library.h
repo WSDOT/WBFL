@@ -677,15 +677,15 @@ public:
 
    //------------------------------------------------------------------------
    // Generate a name that's guaranteed not to be in the library
-   std::_tstring GetUniqueEntryName() const 
+   std::_tstring GetUniqueEntryName(LPCTSTR lpszBaseName=_T("New Entry-")) const 
    {
-      // name will be in the form on "Unnamednn" where nn is some number.
+      // name will be in the form on lpszBaseNamenn where nn is some number.
       bool unique=false;
       std::_tostringstream sstr;
       for (int i=0; true; i++)
       {
          std::_tostringstream sstr;
-         sstr << _T("New Entry-") <<i;
+         sstr << lpszBaseName << i;
          const T* pent = LookupEntry(sstr.str().c_str());
          if (pent==0)
          {

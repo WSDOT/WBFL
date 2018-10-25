@@ -89,6 +89,8 @@ void CReportDescription::ConfigureReportSpecification(boost::shared_ptr<CReportS
 {
    std::vector<CChapterInfo> vChInfo = GetChapterInfo();
 
+   pRptSpec->ClearChapters();
+
    BOOST_FOREACH(const CChapterInfo& chInfo,vChInfo)
    {
       if (chInfo.Select)
@@ -101,6 +103,8 @@ void CReportDescription::ConfigureReportSpecification(boost::shared_ptr<CReportS
 void CReportDescription::ConfigureReportSpecification(const std::vector<std::_tstring>& chList,boost::shared_ptr<CReportSpecification>& pRptSpec) const
 {
    std::vector<CChapterInfo> vChInfo = GetChapterInfo();
+
+   pRptSpec->ClearChapters();
 
    BOOST_FOREACH(const std::_tstring& strChName,chList)
    {
@@ -117,6 +121,8 @@ void CReportDescription::ConfigureReportSpecification(const std::vector<std::_ts
 
 void CReportDescription::ConfigureReportSpecification(const std::vector<CChapterInfo>& vChInfo,boost::shared_ptr<CReportSpecification>& pRptSpec) const
 {
+   pRptSpec->ClearChapters();
+
    BOOST_FOREACH(const CChapterInfo& chInfo,vChInfo)
    {
       pRptSpec->AddChapter(chInfo.Name.c_str(),chInfo.Key.c_str(),chInfo.MaxLevel);

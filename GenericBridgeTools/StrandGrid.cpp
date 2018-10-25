@@ -162,9 +162,12 @@ STDMETHODIMP CStrandGrid::get_GridPoints(/*[out,retval]*/IPoint2dCollection** po
    CComPtr<IPoint2dCollection> new_points;
    new_points.CoCreateInstance(CLSID_Point2dCollection);
 
-   for (GridCollectionIterator it=m_GridPoints.begin(); it!=m_GridPoints.end(); it++)
+   GridCollectionIterator begin(m_GridPoints.begin());
+   GridCollectionIterator iter(begin);
+   GridCollectionIterator end(m_GridPoints.end());
+   for ( ; iter != end; iter++ )
    {
-      const GridPoint2d& pnt = *it;
+      const GridPoint2d& pnt = *iter;
 
       CComPtr<IPoint2d> point;
       HRESULT hr = m_Point2dFactory->CreatePoint(&point);
@@ -256,7 +259,10 @@ STDMETHODIMP CStrandGrid::putref_StrandFill(/*[in]*/IIndexArray* fill)
    fill->get_Count(&nGridPoints);
 
    GridIndexType gridPointIdx = 0;
-   for (GridCollectionIterator it=m_GridPoints.begin(); it!=m_GridPoints.end(); it++)
+   GridCollectionIterator begin(m_GridPoints.begin());
+   GridCollectionIterator iter(begin);
+   GridCollectionIterator end(m_GridPoints.end());
+   for ( ; iter != end; iter++ )
    {
       if (gridPointIdx < (GridIndexType)nGridPoints)
       {
@@ -265,17 +271,17 @@ STDMETHODIMP CStrandGrid::putref_StrandFill(/*[in]*/IIndexArray* fill)
 
          if ( 0 <= nStrandsAtGridPoint && nStrandsAtGridPoint <= 2 )
          {
-            it->nStrandsAtGridPoint = StrandIndexType(nStrandsAtGridPoint);
+            iter->nStrandsAtGridPoint = StrandIndexType(nStrandsAtGridPoint);
          }
          else
          {
             ATLASSERT(FALSE); // invalid fill number -> there is something wrong with the grid definition
-            it->nStrandsAtGridPoint = 0;
+            iter->nStrandsAtGridPoint = 0;
          }
       }
       else
       {
-         it->nStrandsAtGridPoint = 0;
+         iter->nStrandsAtGridPoint = 0;
       }
 
       gridPointIdx++;
@@ -341,9 +347,12 @@ STDMETHODIMP CStrandGrid::RemoveAllStrands()
 {
    InvalidateFill();
 
-   for (GridCollectionIterator it=m_GridPoints.begin(); it!=m_GridPoints.end(); it++)
+   GridCollectionIterator begin(m_GridPoints.begin());
+   GridCollectionIterator iter(begin);
+   GridCollectionIterator end(m_GridPoints.end());
+   for ( ; iter != end; iter++ )
    {
-      it->nStrandsAtGridPoint = 0;
+      iter->nStrandsAtGridPoint = 0;
    }
 
    return S_OK;
@@ -537,9 +546,12 @@ STDMETHODIMP CStrandGrid::get_CG( /*[out]*/Float64* cgx, /*[out]*/Float64* cgy)
 
    Float64 sumY = 0.0;
    StrandIndexType nStrandsUsed = 0;
-   for (GridCollectionIterator it=m_GridPoints.begin(); it!=m_GridPoints.end(); it++)
+   GridCollectionIterator begin(m_GridPoints.begin());
+   GridCollectionIterator iter(begin);
+   GridCollectionIterator end(m_GridPoints.end());
+   for ( ; iter != end; iter++ )
    {
-      const GridPoint2d& gridPoint = *it;
+      const GridPoint2d& gridPoint = *iter;
       StrandIndexType nStrandsAtGridPoint = gridPoint.nStrandsAtGridPoint;
 
       if ( 0 < nStrandsAtGridPoint)
@@ -590,9 +602,12 @@ STDMETHODIMP CStrandGrid::get_StrandBoundingBox(/*[out,retval]*/IRect2d** box)
       Float64 left(DBL_MAX),   bottom(DBL_MAX);
       Float64 right(-DBL_MAX), top(-DBL_MAX);
 
-      for (GridCollectionIterator it=m_GridPoints.begin(); it!=m_GridPoints.end(); it++)
+      GridCollectionIterator begin(m_GridPoints.begin());
+      GridCollectionIterator iter(begin);
+      GridCollectionIterator end(m_GridPoints.end());
+      for ( ; iter != end; iter++ )
       {
-         const GridPoint2d& gridPoint = *it;
+         const GridPoint2d& gridPoint = *iter;
          StrandIndexType nStrandsAtGridPoint = gridPoint.nStrandsAtGridPoint;
 
          if ( 0 < nStrandsAtGridPoint )
@@ -1029,7 +1044,7 @@ STDMETHODIMP CStrandGrid::get_StrandsInRow(/*[in]*/RowIndexType rowIdx,/*[out,re
    return strandIndicies.CopyTo(gridIndex);
 }
 
-STDMETHODIMP CStrandGrid::GetStrandDebondCount(/*[out,retval]*/ StrandIndexType* count)
+STDMETHODIMP CStrandGrid::GetStrandDebondCount(/*[in]*/ WDebondLocationType loc, /*[out,retval]*/ StrandIndexType* count)
 {
    CHECK_RETVAL(count);
 
@@ -1038,11 +1053,56 @@ STDMETHODIMP CStrandGrid::GetStrandDebondCount(/*[out,retval]*/ StrandIndexType*
       return hr;
 
    StrandIndexType nDebondedStrands = 0;
-   for (GridCollectionIterator iter = m_GridPoints.begin(); iter != m_GridPoints.end(); iter++)
+
+   GridCollectionIterator begin(m_GridPoints.begin());
+   GridCollectionIterator iter(begin);
+   GridCollectionIterator end(m_GridPoints.end());
+
+   if (wdblEither==loc)
    {
-      GridPoint2d& gridPoint = *iter;
-      if ( 0 < gridPoint.nStrandsAtGridPoint && gridPoint.bIsDebonded )
-         nDebondedStrands += gridPoint.nStrandsAtGridPoint;
+      // Either means max of debonding at both ends
+      StrandIndexType ndbleft(0), ndbright(0);
+      for ( ; iter != end; iter++ )
+      {
+         GridPoint2d& gridPoint = *iter;
+         if ( 0 < gridPoint.nStrandsAtGridPoint && gridPoint.bIsDebonded )
+         {
+            if (gridPoint.DebondLength[0] > 0.0 )
+            {
+               ndbleft += gridPoint.nStrandsAtGridPoint;
+            }
+
+            if (gridPoint.DebondLength[1] > 0.0 )
+            {
+               ndbright += gridPoint.nStrandsAtGridPoint;
+            }
+         }
+      }
+
+      nDebondedStrands = max(ndbleft, ndbright);
+
+   }
+   else if (wdblLeft==loc)
+   {
+      for ( ; iter != end; iter++ )
+      {
+         GridPoint2d& gridPoint = *iter;
+         if ( 0 < gridPoint.nStrandsAtGridPoint && gridPoint.bIsDebonded && gridPoint.DebondLength[0] > 0.0 )
+            nDebondedStrands += gridPoint.nStrandsAtGridPoint;
+      }
+   }
+   else if (wdblRight==loc)
+   {
+      for ( ; iter != end; iter++ )
+      {
+         GridPoint2d& gridPoint = *iter;
+         if ( 0 < gridPoint.nStrandsAtGridPoint && gridPoint.bIsDebonded && gridPoint.DebondLength[1] > 0.0 )
+            nDebondedStrands += gridPoint.nStrandsAtGridPoint;
+      }
+   }
+   else
+   {
+      ATLASSERT(0);
    }
 
    *count = nDebondedStrands;
@@ -1078,7 +1138,10 @@ STDMETHODIMP CStrandGrid::GetDebondedStrandsByGridIndex(/*[out,retval]*/IIndexAr
    gridPointIndiciesForDebondedStrands.CoCreateInstance(CLSID_IndexArray);
 
    GridIndexType gridPointIndex = 0;
-   for (GridCollectionIterator iter = m_GridPoints.begin(); iter != m_GridPoints.end(); iter++)
+   GridCollectionIterator begin(m_GridPoints.begin());
+   GridCollectionIterator iter(begin);
+   GridCollectionIterator end(m_GridPoints.end());
+   for ( ; iter != end; iter++ )
    {
       const GridPoint2d& gridPoint = *iter;
       if (gridPoint.bIsDebonded)
@@ -1223,7 +1286,10 @@ STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 Xs,/
    if (Xs < gl2)
    {
       // at left end of girder
-      for (GridCollectionIterator iter = m_GridPoints.begin(); iter != m_GridPoints.end(); iter++)
+      GridCollectionIterator begin(m_GridPoints.begin());
+      GridCollectionIterator iter(begin);
+      GridCollectionIterator end(m_GridPoints.end());
+      for ( ; iter != end; iter++ )
       {
          // first validate fill data and clean up if needed
          const GridPoint2d& gp = *iter;
@@ -1235,7 +1301,7 @@ STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 Xs,/
 
             ATLASSERT(debond_length < gl2); // should be blocked in UI
 
-            if ( Xs <= debond_length )
+            if ( debond_length > 0.0 && Xs <= debond_length )
             {
                array->Add(gp.StrandPositionIndex[0]);
 
@@ -1252,7 +1318,10 @@ STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 Xs,/
       // at right end of girder
       Float64 Xe = girderLength - Xs;
 
-      for (GridCollectionIterator iter = m_GridPoints.begin(); iter != m_GridPoints.end(); iter++)
+      GridCollectionIterator begin(m_GridPoints.begin());
+      GridCollectionIterator iter(begin);
+      GridCollectionIterator end(m_GridPoints.end());
+      for ( ; iter != end; iter++ )
       {
          // first validate fill data and clean up if needed
          const GridPoint2d& gp = *iter;
@@ -1264,7 +1333,7 @@ STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 Xs,/
 
             ATLASSERT(debond_length < gl2); // should be blocked in UI
 
-            if ( ::IsLE(Xe,debond_length) )
+            if (debond_length > 0.0 &&  ::IsLE(Xe,debond_length) )
             {
                array->Add(gp.StrandPositionIndex[0]);
 
@@ -1279,7 +1348,6 @@ STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 Xs,/
 
    return array.CopyTo(positionIndexes);
 }
-
 
 STDMETHODIMP CStrandGrid::get_StrandDebondInRow(/*[in]*/ RowIndexType rowIdx,/*[out,retval]*/StrandIndexType* nStrands)
 {
@@ -1298,7 +1366,9 @@ STDMETHODIMP CStrandGrid::get_StrandDebondInRow(/*[in]*/ RowIndexType rowIdx,/*[
       iter++;
 
    const Row& row = *iter;
-   *nStrands = 0;
+
+   // What is wanted here is max debonded strands at each end
+   StrandIndexType ndbleft(0), ndbright(0);
 
    Row::GridPointsType::const_iterator gridPointInRowIter;
    for ( gridPointInRowIter = row.GridPoints.begin(); gridPointInRowIter != row.GridPoints.end(); gridPointInRowIter++ )
@@ -1307,8 +1377,20 @@ STDMETHODIMP CStrandGrid::get_StrandDebondInRow(/*[in]*/ RowIndexType rowIdx,/*[
       const GridPoint2d& gridPoint = m_GridPoints[gridPointInRowIndex];
 
       if ( 0 < gridPoint.nStrandsAtGridPoint && gridPoint.bIsDebonded )
-         (*nStrands)+= gridPoint.nStrandsAtGridPoint;
+      {
+         if (gridPoint.DebondLength[0] > 0.0 )
+         {
+            ndbleft += gridPoint.nStrandsAtGridPoint;
+         }
+
+         if (gridPoint.DebondLength[1] > 0.0 )
+         {
+            ndbright += gridPoint.nStrandsAtGridPoint;
+         }
+      }
    }
+
+   *nStrands = max(ndbleft, ndbright);
 
    return S_OK;
 }
@@ -1437,8 +1519,10 @@ STDMETHODIMP CStrandGrid::ClearDebonding()
    m_RightSections.clear();
 
    typedef std::vector<GridPoint2d> GridCollection;
-   GridCollectionIterator iter;
-   for ( iter = m_GridPoints.begin(); iter != m_GridPoints.end(); iter++ )
+   GridCollectionIterator begin(m_GridPoints.begin());
+   GridCollectionIterator iter(begin);
+   GridCollectionIterator end(m_GridPoints.end());
+   for ( ; iter != end; iter++ )
    {
       GridPoint2d& gp = *iter;
       gp.bIsDebonded = false;
@@ -1455,36 +1539,44 @@ void CStrandGrid::AddDebondSection(GridIndexType gridIdx,Float64 left,Float64 ri
 {
   // Place this debond point in a section
    DebondSection target;
-   target.Location = left;
-   std::set<DebondSection>::iterator found = m_LeftSections.find(target);
-   if ( found != m_LeftSections.end() )
+
+   // only add debonding if debond length is greater than zero
+   if (left > 0.0)
    {
-      DebondSection& section = *found;
-      section.GridPoints.insert(gridIdx);
-   }
-   else
-   {
-      DebondSection section;
-      section.Location = target.Location;
-      section.GridPoints.insert( gridIdx );
-      std::pair<std::set<DebondSection>::iterator,bool> result = m_LeftSections.insert(section);
-      ATLASSERT(result.second == true);
+      target.Location = left;
+      std::set<DebondSection>::iterator found = m_LeftSections.find(target);
+      if ( found != m_LeftSections.end() )
+      {
+         DebondSection& section = *found;
+         section.GridPoints.insert(gridIdx);
+      }
+      else
+      {
+         DebondSection section;
+         section.Location = target.Location;
+         section.GridPoints.insert( gridIdx );
+         std::pair<std::set<DebondSection>::iterator,bool> result = m_LeftSections.insert(section);
+         ATLASSERT(result.second == true);
+      }
    }
 
-   target.Location = right;
-   found = m_RightSections.find(target);
-   if ( found != m_RightSections.end() )
+   if (right > 0.0)
    {
-      DebondSection& section = *found;
-      section.GridPoints.insert(gridIdx);
-   }
-   else
-   {
-      DebondSection section;
-      section.Location = target.Location;
-      section.GridPoints.insert( gridIdx );
-      std::pair<std::set<DebondSection>::iterator,bool> result = m_RightSections.insert(section);
-      ATLASSERT(result.second == true);
+      target.Location = right;
+      std::set<DebondSection>::iterator found = m_RightSections.find(target);
+      if ( found != m_RightSections.end() )
+      {
+         DebondSection& section = *found;
+         section.GridPoints.insert(gridIdx);
+      }
+      else
+      {
+         DebondSection section;
+         section.Location = target.Location;
+         section.GridPoints.insert( gridIdx );
+         std::pair<std::set<DebondSection>::iterator,bool> result = m_RightSections.insert(section);
+         ATLASSERT(result.second == true);
+      }
    }
 }
 
@@ -1502,10 +1594,10 @@ void CStrandGrid::ValidateGrid()
       m_MaxFill->Clear();
       m_MaxFill->Reserve(m_GridPoints.size());
       m_MaxCount=0;
+
       GridCollectionIterator begin(m_GridPoints.begin());
       GridCollectionIterator iter(begin);
       GridCollectionIterator end(m_GridPoints.end());
-
       for ( ; iter != end; iter++ )
       {
          const GridPoint2d& pnt = *iter;
@@ -1545,7 +1637,11 @@ HRESULT CStrandGrid::ValidateFill()
       m_CurrentFill->ReDim(m_GridPoints.size());
       GridIndexType gridPointIdx = 0;
       GridIndexType positionIdx = 0;
-      for (GridCollectionIterator iter = m_GridPoints.begin(); iter != m_GridPoints.end(); iter++)
+
+      GridCollectionIterator begin(m_GridPoints.begin());
+      GridCollectionIterator iter(begin);
+      GridCollectionIterator end(m_GridPoints.end());
+      for ( ; iter != end; iter++ )
       {
          GridPoint2d& gridPoint = *iter;
 
@@ -1592,7 +1688,11 @@ HRESULT CStrandGrid::ValidateFill()
       if (0 < nStrands)
       {
          GridIndexType gridPointIdx = 0;
-         for (GridCollectionIterator iter = m_GridPoints.begin(); iter != m_GridPoints.end(); iter++)
+
+         GridCollectionIterator begin(m_GridPoints.begin());
+         GridCollectionIterator iter(begin);
+         GridCollectionIterator end(m_GridPoints.end());
+         for ( ; iter != end; iter++ )
          {
             const GridPoint2d& gridPoint = *iter;
             StrandIndexType nStrandsAtGridPoint = gridPoint.nStrandsAtGridPoint;

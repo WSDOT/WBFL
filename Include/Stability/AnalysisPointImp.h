@@ -21,28 +21,43 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Stability\StabilityLib.h>
-#include <Stability\Criteria.h>
+#pragma once
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+#include <Stability\StabilityExp.h>
+#include <Stability\AnalysisPoint.h>
 
-stbCriteria::stbCriteria()
+/*****************************************************************************
+CLASS 
+   stbIAnalysispoint
+
+DESCRIPTION
+   Abstract interface for an analysis point
+
+
+COPYRIGHT
+   Copyright © 1997-2016
+   Washington State Department Of Transportation
+   All Rights Reserved
+*****************************************************************************/
+
+class STABILITYCLASS stbAnalysisPoint : public stbIAnalysisPoint
 {
-   CompressionCoefficient = 0;
-   TensionCoefficient = 0;
-   bMaxTension = false;
-   MaxTension = 0;
-   TensionCoefficientWithRebar = 0;
+public:
+   stbAnalysisPoint();
+   stbAnalysisPoint(Float64 X);
+   stbAnalysisPoint(const stbAnalysisPoint& other);
 
-   MinFScr = DBL_MAX;
-   MinFSf  = DBL_MAX;
+   void SetLocation(Float64 X);
 
-   AllowableCompression      = 0;
-   AllowableTension          = 0;
-   AllowableTensionWithRebar = 0;
-   AllowableTensionTiltedGirder = 0;
-}
+   // Returns the location of the analysis point relative to the left end of the girder
+   virtual Float64 GetLocation() const;
+
+   // Returns a reporting string for the analysis point.
+   // if pLengthUnit is not NULL, the string should contain the unit of measure
+   virtual std::_tstring AsString(const unitmgtLengthData& lengthUnit,Float64 offset,bool bShowUnit) const;
+
+   virtual stbIAnalysisPoint* Clone() const;
+
+protected:
+   Float64 m_X;
+};

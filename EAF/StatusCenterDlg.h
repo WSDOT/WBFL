@@ -26,9 +26,14 @@
 
 // StatusCenterDlg.h : header file
 //
-
 #include "Resource.h"
 #include <EAF\StatusCenter.h>
+
+class CStatusItemListCtrl : public CMFCListCtrl
+{
+public:
+   virtual COLORREF OnGetCellBkColor(int nRow,int nColumn);
+};
 
 /////////////////////////////////////////////////////////////////////////////
 // CStatusCenterDlg dialog
@@ -57,10 +62,16 @@ public:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
    afx_msg void OnDoubleClick(NMHDR* pNotifyStruct,LRESULT* pResult);
+   afx_msg void OnHeaderClicked(NMHDR* pNMHDR, LRESULT* pResult);
 
 // Implementation
 protected:
    CEAFStatusCenter& m_StatusCenter;
+
+   CStatusItemListCtrl m_ctrlList;
+
+   bool m_bSortAscending;
+   void Sort(bool bReverse=true);
 
 	// Generated message map functions
 	//{{AFX_MSG(CStatusCenterDlg)

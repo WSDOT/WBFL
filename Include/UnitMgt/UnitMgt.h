@@ -34,6 +34,7 @@
 #include <UnitMgt\IndirectMeasure.h>
 #include <UnitMgt\Library.h>
 #include <UnitMgt\LibraryT.h>
+#include <UnitMgt\UnitValueNumericalFormatTools.h>
 
 
 #endif // INCLUDED_UNITMGT_UNITMGT_H_

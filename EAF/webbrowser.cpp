@@ -41,6 +41,7 @@
 #include "exdispid.h"
 
 #include "WebBrowser.h"
+#include "WBCmdGroup.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1316,4 +1317,37 @@ void CWebBrowser::_ContentWrite()
 		}
 
 	}
+}
+
+void CWebBrowser::Find()
+{
+   LPDISPATCH lpDispatch = GetDocument();
+   IOleCommandTarget* pIOleCmdTarget;
+   if ( S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget ) )
+   {
+      pIOleCmdTarget->Exec(&CGID_IWebBrowserPriv, CWBCmdGroup::HTMLID_FIND, 0, NULL,NULL);
+      pIOleCmdTarget->Release();
+   }
+}
+
+void CWebBrowser::SelectAll()
+{
+   LPDISPATCH lpDispatch = GetDocument();
+   IOleCommandTarget* pIOleCmdTarget;
+   if ( S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget ) )
+   {
+      pIOleCmdTarget->Exec(NULL,OLECMDID_SELECTALL, OLECMDEXECOPT_DODEFAULT, NULL,NULL);
+      pIOleCmdTarget->Release();
+   }
+}
+
+void CWebBrowser::ViewSource()
+{
+   LPDISPATCH lpDispatch = GetDocument();
+   IOleCommandTarget* pIOleCmdTarget;
+   if ( S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget ) )
+   {
+      pIOleCmdTarget->Exec(&CGID_IWebBrowserPriv, CWBCmdGroup::HTMLID_VIEWSOURCE, 0, NULL,NULL);
+      pIOleCmdTarget->Release();
+   }
 }

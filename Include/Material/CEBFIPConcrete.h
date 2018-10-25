@@ -26,6 +26,33 @@
 #include <Material\MaterialExp.h>
 #include <Material\ConcreteBase.h>
 
+
+struct MATCLASS matCEBFIPConcreteShrinkageDetails : public matConcreteBaseShrinkageDetails
+{
+   matCEBFIPConcreteShrinkageDetails() : matConcreteBaseShrinkageDetails(), 
+      h(0),BetaSC(0),BetaSRH(0),BetaRH(0),BetaS(0), es(0), ecso(0) {}
+   Float64 h;
+   Float64 BetaSC;
+   Float64 BetaSRH;
+   Float64 BetaRH;
+   Float64 BetaS;
+   Float64 es;
+   Float64 ecso;
+};
+
+struct MATCLASS matCEBFIPConcreteCreepDetails : public matConcreteBaseCreepDetails
+{
+   matCEBFIPConcreteCreepDetails() : matConcreteBaseCreepDetails(),
+      Yo(0), Bc(0), Yrh(0), Bfc(0), Bt(0), Bh(0), h(0) {}
+   Float64 Yo;
+   Float64 Bc;
+   Float64 Yrh;
+   Float64 Bfc;
+   Float64 Bt;
+   Float64 Bh;
+   Float64 h;
+};
+
 /*****************************************************************************
 CLASS 
    matCEBFIPConcrete
@@ -113,13 +140,16 @@ public:
    // Returns the total free shrinkage that has occured from time at casting
    // to the time specified
    virtual Float64 GetFreeShrinkageStrain(Float64 t) const;
+   virtual boost::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const;
 
    // Returns the creep coefficient at time t for a loading applied at time tla
    virtual Float64 GetCreepCoefficient(Float64 t,Float64 tla) const;
+   virtual boost::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientDetails(Float64 t,Float64 tla) const;
 
    Float64 GetH() const;
 
    // Shrinkage Parameters
+   Float64 GetBetaSRH() const; // if return value is < 0, this parameter is not applicable to the computations
    Float64 GetBetaRH() const;
    Float64 GetEpsilonS() const;
    Float64 GetNotionalShrinkageCoefficient() const;

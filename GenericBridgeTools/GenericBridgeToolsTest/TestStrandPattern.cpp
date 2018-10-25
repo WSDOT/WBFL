@@ -304,7 +304,7 @@ void CTestStrandPattern::Test()
    TRY_TEST(gridCount == 4, true);
    TRY_TEST(strand_filler->StrandIndexToGridIndexEx(new_array,11, &gridCount),E_INVALIDARG);
 
-   TRY_TEST(strand_filler->GetStrandDebondCount(&nStrands),S_OK);
+   TRY_TEST(strand_filler->GetStrandDebondCount(wdblEither,&nStrands),S_OK);
    TRY_TEST(nStrands == 0, true);
 
    fill_array.Release();
@@ -374,7 +374,7 @@ void CTestStrandPattern::Test()
    TRY_TEST(strand_filler->DebondStrandByGridIndex(5,3.0,4.0),S_OK);
    TRY_TEST(strand_filler->DebondStrandByGridIndex(8,5.0,6.0),S_OK);
 
-   TRY_TEST(strand_filler->GetStrandDebondCount(&nStrands),S_OK);
+   TRY_TEST(strand_filler->GetStrandDebondCount(wdblEither,&nStrands),S_OK);
    TRY_TEST(nStrands , 5);
 
    Float64 l1, l2;

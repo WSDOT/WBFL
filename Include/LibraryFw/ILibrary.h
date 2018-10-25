@@ -193,7 +193,7 @@ public:
 
    //------------------------------------------------------------------------
    // Generate a name that's guaranteed not to be in the library
-   virtual std::_tstring GetUniqueEntryName() const=0; 
+   virtual std::_tstring GetUniqueEntryName(LPCTSTR lpszBaseName=_T("New Entry-")) const=0; 
 
    // ACCESS
    //------------------------------------------------------------------------

@@ -42,11 +42,13 @@
 #include <Reporter\RcHyperTarget.h>
 #include <Reporter\RcInt.h>
 #include <Reporter\RcScalar.h>
+#include <Reporter\RcPercentage.h>
 #include <Reporter\RcSectionScalar.h>
 #include <Reporter\RcSectionValue.h>
 #include <Reporter\RcSectionValueT.h>
 #include <Reporter\RcStation.h>
 #include <Reporter\RcString.h>
+#include <Reporter\RcStringLiteral.h>
 #include <Reporter\RcSymbol.h>
 #include <Reporter\RcTable.h>
 #include <Reporter\RcUnitTag.h>
@@ -62,6 +64,7 @@
 #include <Reporter\ReportingUtils.h>
 #include <Reporter\RiStyle.h>
 #include <Reporter\StyleManager.h>
+#include <Reporter\StyleLibrary.h>
 #include <Reporter\CDRatio.h>
 
 #endif // INCLUDED_REPORTER_REPORTER_H_

@@ -25,7 +25,7 @@
 
 #include <Stability\StabilityExp.h>
 #include <Stability\HaulingResults.h>
-#include <Stability\Criteria.h>
+#include <Stability\HaulingCriteria.h>
 
 
 /*****************************************************************************
@@ -46,23 +46,35 @@ class STABILITYCLASS stbHaulingCheckArtifact
 {
 public:
    stbHaulingCheckArtifact();
-   stbHaulingCheckArtifact(const stbHaulingResults& results,const stbCriteria& criteria);
-   void Init(const stbHaulingResults& results,const stbCriteria& criteria);
+   stbHaulingCheckArtifact(const stbHaulingResults& results,const stbHaulingCriteria& criteria);
+   void Init(const stbHaulingResults& results,const stbHaulingCriteria& criteria);
 
    const stbHaulingResults& GetHaulingResults() const;
-   const stbCriteria& GetCriteria() const;
+   const stbHaulingCriteria& GetCriteria() const;
+
+   void GetControllingTensionCase(stbTypes::HaulingSlope slope,const stbHaulingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const;
+   void GetControllingCompressionCase(stbTypes::HaulingSlope slope,const stbHaulingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const;
 
    bool Passed() const;
-   bool PassedCrackingCheck() const;
-   bool PassedFailureCheck() const;
-   bool PassedDirectStressCheck() const;
-   bool PassedDirectCompressionCheck() const;
-   bool PassedDirectTensionCheck() const;
-   bool PassedStressCheck() const;
-   bool PassedCompressionCheck() const;
-   bool PassedTensionCheck() const;
+   bool Passed(stbTypes::HaulingSlope slope) const;
+   bool PassedCrackingCheck(stbTypes::HaulingSlope slope) const;
+   bool PassedFailureCheck(stbTypes::HaulingSlope slope) const;
+   bool PassedRolloverCheck(stbTypes::HaulingSlope slope) const;
+   bool PassedStressCheck(stbTypes::HaulingSlope slope) const;
+   bool PassedCompressionCheck(stbTypes::HaulingSlope slope) const;
+   bool PassedTensionCheck(stbTypes::HaulingSlope slope) const;
+
+   bool PassedClearSpan() const;
+   bool PassedLeadingOverhang() const;
+   bool PassedMaxWeight() const;
+
+   Float64 GetAllowableTension(stbTypes::HaulingSlope slope,const stbHaulingSectionResult& sectionResult,stbTypes::ImpactDirection impact,stbTypes::WindDirection wind) const;
+
+   Float64 RequiredFcCompression(stbTypes::HaulingSlope slope) const;
+   Float64 RequiredFcTension(stbTypes::HaulingSlope slope) const;
+   Float64 RequiredFcTensionWithRebar(stbTypes::HaulingSlope slope) const;
 
 protected:
    stbHaulingResults m_Results;
-   stbCriteria m_Criteria;
+   stbHaulingCriteria m_Criteria;
 };

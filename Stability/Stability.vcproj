@@ -1091,7 +1091,7 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 			>
 			<File
-				RelativePath=".\Criteria.cpp"
+				RelativePath=".\AnalysisPointImp.cpp"
 				>
 			</File>
 			<File
@@ -1099,11 +1099,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\HaulingCriteria.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\HaulingResults.cpp"
 				>
 			</File>
 			<File
+				RelativePath=".\HaulingStabilityReporter.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\LiftingCheckArtifact.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LiftingCriteria.cpp"
 				>
 			</File>
 			<File
@@ -1330,11 +1342,15 @@
 			Filter="h;hpp;hxx;hm;inl;fi;fd"
 			>
 			<File
-				RelativePath="..\Include\Stability\AutoLib.h"
+				RelativePath="..\Include\Stability\AnalysisPoint.h"
 				>
 			</File>
 			<File
-				RelativePath="..\Include\Stability\Criteria.h"
+				RelativePath="..\Include\Stability\AnalysisPointImp.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\Stability\AutoLib.h"
 				>
 			</File>
 			<File
@@ -1342,11 +1358,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Include\Stability\HaulingCriteria.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\Stability\HaulingResults.h"
 				>
 			</File>
 			<File
+				RelativePath="..\Include\Stability\HaulingStabilityReporter.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\Stability\LiftingCheckArtifact.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\Stability\LiftingCriteria.h"
 				>
 			</File>
 			<File
@@ -1387,6 +1415,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\Stability\StabilityProblemImp.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\Stability\StabilityTypes.h"
 				>
 			</File>
 			<File

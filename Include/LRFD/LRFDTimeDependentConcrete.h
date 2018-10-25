@@ -26,6 +26,28 @@
 #include <Lrfd\LrfdExp.h>
 #include <Material\ConcreteBase.h>
 
+
+struct LRFDCLASS lrfdLRFDTimeDependentConcreteShrinkageDetails : public matConcreteBaseShrinkageDetails
+{
+   lrfdLRFDTimeDependentConcreteShrinkageDetails() : matConcreteBaseShrinkageDetails(), 
+      kvs(0),khs(0),kf(0),ktd(0) {}
+   Float64 kvs;
+   Float64 khs;
+   Float64 kf;
+   Float64 ktd;
+};
+
+struct LRFDCLASS lrfdLRFDTimeDependentConcreteCreepDetails : public matConcreteBaseCreepDetails
+{
+   lrfdLRFDTimeDependentConcreteCreepDetails() : matConcreteBaseCreepDetails() ,
+      kf(0), kc(0), kvs(0), khc(0), ktd(0) {}
+   Float64 kf;
+   Float64 kc;
+   Float64 kvs;
+   Float64 khc;
+   Float64 ktd;
+};
+
 /*****************************************************************************
 CLASS 
    lrfdLRFDTimeDependentConcrete
@@ -116,9 +138,11 @@ public:
    // Returns the total free shrinkage that has occured from time at casting
    // to the time specified
    virtual Float64 GetFreeShrinkageStrain(Float64 t) const;
+   virtual boost::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const;
 
    // Returns the creep coefficient at time t for a loading applied at time tla
    virtual Float64 GetCreepCoefficient(Float64 t,Float64 tla) const;
+   virtual boost::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientDetails(Float64 t,Float64 tla) const;
 
    // Creates a clone of this object
    virtual matConcreteBase* CreateClone() const;
@@ -184,10 +208,11 @@ private:
 
    Float64 ModE(Float64 fc,Float64 density) const;
 
-   Float64 GetFreeShrinkageStrainBefore2005(Float64 t) const;
-   Float64 GetFreeShrinkageStrain2005(Float64 t) const;
-   Float64 GetFreeShrinkageStrain2015(Float64 t) const;
-   Float64 GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const;
-   Float64 GetCreepCoefficient2005(Float64 t,Float64 tla) const;
-   Float64 GetCreepCoefficient2015(Float64 t,Float64 tla) const;
+   void InitializeShrinkageDetails(Float64 t,lrfdLRFDTimeDependentConcreteShrinkageDetails* pDetails) const;
+   boost::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainBefore2005(Float64 t) const;
+   boost::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2005(Float64 t) const;
+   boost::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2015(Float64 t) const;
+   boost::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const;
+   boost::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficient2005(Float64 t,Float64 tla) const;
+   boost::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficient2015(Float64 t,Float64 tla) const;
 };

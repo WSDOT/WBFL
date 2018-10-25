@@ -155,6 +155,7 @@ public:
    unitStationFormat         StationFormat; 
 
    unitmgtScalar             Scalar;
+   unitmgtScalar             Percentage;
 
    unitmgtLengthData         ComponentDim;
    unitmgtLengthData         XSectionDim;

@@ -25,6 +25,7 @@
 #define __CUSTOMSITEH__
 
 #include <mshtmhst.h>
+#include <EAF\EAFReportView.h>
 
 // 
 // NOTE: 
@@ -37,9 +38,11 @@
 class CCustomControlSite:public COleControlSite
 {
 public:
-	CCustomControlSite(COleControlContainer *pCnt):COleControlSite(pCnt){}
+	CCustomControlSite(COleControlContainer *pCnt);
+   void HasEditCommand(BOOL bHasEdit);
 
 protected:
+   BOOL m_bHasEdit;
 
 	DECLARE_INTERFACE_MAP();
 BEGIN_INTERFACE_PART(DocHostUIHandler, IDocHostUIHandler)
@@ -93,7 +96,26 @@ public:
 	CCustomOccManager(){}
 	COleControlSite* CreateSite(COleControlContainer* pCtrlCont)
 	{
+      int ID = pCtrlCont->m_pWnd->GetDlgCtrlID();
 		CCustomControlSite *pSite = new CCustomControlSite(pCtrlCont);
+      if ( ID == IDC_HELP_WEB_BROWSER )
+      {
+         pSite->HasEditCommand(FALSE);
+      }
+      else if ( ID == IDC_REPORT_WEB_BROWSER )
+      {
+         CWnd* pParent = pCtrlCont->m_pWnd->GetParent();
+         if ( pParent->IsKindOf(RUNTIME_CLASS(CEAFReportView)) )
+         {
+            CEAFReportView* pReportView = (CEAFReportView*)pParent;
+            pSite->HasEditCommand(pReportView->CanEditReport());
+         }
+         else
+         {
+            pSite->HasEditCommand(FALSE);
+         }
+      }
+
 		return pSite;
 	}
 };

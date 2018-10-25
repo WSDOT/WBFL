@@ -73,15 +73,9 @@ STDMETHODIMP CPlane3d::ThroughPoints(IPoint3d *p1, IPoint3d *p2, IPoint3d *p3)
    Float64 x1,x2,x3;
    Float64 y1,y2,y3;
    Float64 z1,z2,z3;
-   p1->get_X(&x1);
-   p1->get_Y(&y1);
-   p1->get_Z(&z1);
-   p2->get_X(&x2);
-   p2->get_Y(&y2);
-   p2->get_Z(&z2);
-   p3->get_X(&x3);
-   p3->get_Y(&y3);
-   p3->get_Z(&z3);
+   p1->Location(&x1,&y1,&z1);
+   p2->Location(&x2,&y2,&z2);
+   p3->Location(&x3,&y3,&z3);
 
    v1[x] = x2 - x1;
    v1[y] = y2 - y1;
@@ -96,6 +90,8 @@ STDMETHODIMP CPlane3d::ThroughPoints(IPoint3d *p1, IPoint3d *p2, IPoint3d *p3)
    m_C = v1[x]*v2[y] - v1[y]*v2[x];
 
    m_D = -1*(m_A*x1 + m_B*y1 + m_C*z1);
+   ATLASSERT(IsEqual(m_D,-1*(m_A*x2 + m_B*y2 + m_C*z2)));
+   ATLASSERT(IsEqual(m_D,-1*(m_A*x3 + m_B*y3 + m_C*z3)));
 
    return S_OK;
 }

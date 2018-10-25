@@ -162,7 +162,7 @@ CEAFStartPageWnd* CEAFMainFrame::CreateStartPage()
 void CEAFMainFrame::OnSize(UINT nType, int cx, int cy)
 {
    CMDIFrameWnd::OnSize(nType,cx,cy);
-   if ( m_pStartPageWnd )
+   if ( m_pStartPageWnd && !m_pStartPageWnd->IsZoomed() )
    {
       // get the range of control bar IDs
       UINT minID = UINT_MAX;
@@ -865,6 +865,7 @@ void CEAFMainFrame::HideStartPage()
 {
    if ( m_pStartPageWnd )
    {
+      m_pStartPageWnd->EnableWindow(FALSE);
       m_pStartPageWnd->ShowWindow(SW_HIDE);
    }
 }
@@ -874,6 +875,7 @@ void CEAFMainFrame::ShowStartPage()
    if ( m_pStartPageWnd )
    {
       m_pStartPageWnd->ShowWindow(SW_SHOW);
+      m_pStartPageWnd->EnableWindow(TRUE);
    }
 }
 

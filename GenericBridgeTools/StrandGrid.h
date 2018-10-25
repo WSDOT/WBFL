@@ -145,7 +145,7 @@ public:
 	STDMETHOD(GetDebondLengthByGridIndex)(/*[in]*/GridIndexType grdIndex,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2);
 
    // rough count of debonded strands for current fill
-   STDMETHOD(GetStrandDebondCount)(/*[out,retval]*/ StrandIndexType* count);
+   STDMETHOD(GetStrandDebondCount)(/*[in]*/ WDebondLocationType loc, /*[out,retval]*/ StrandIndexType* count);
 
    // Debonded  strands based on Positions index (i.e., from get_StrandPositions)
 	STDMETHOD(GetDebondLengthByPositionIndex)(/*[in]*/StrandIndexType positionIndex,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2);

@@ -26,6 +26,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#include "resource.h"
 #include "ReportManager.h"
 #include <ReportManager\ReportBrowser.h>
 #include <ReportManager\ReportBuilder.h>
@@ -128,7 +129,7 @@ bool CReportBrowser::Initialize(HWND hwnd,CReportBuilderManager* pRptMgr,boost::
       CRect rect(0,0,0,0);
       CWnd* pParent = CWnd::FromHandle( hwnd );
       BOOL bCreated = m_pWebBrowser->Create(TEXT("Browser Control"),
-                                            WS_CHILD | WS_VISIBLE, rect, pParent, 100);
+                                            WS_CHILD | WS_VISIBLE, rect, pParent, IDC_REPORT_WEB_BROWSER);
       if ( !bCreated )
       {
          TRACE( TEXT("Failed to create browser") );

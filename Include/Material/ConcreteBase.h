@@ -24,7 +24,10 @@
 #pragma once
 
 #include <Material\MaterialExp.h>
+#include <boost\shared_ptr.hpp>
 
+struct matConcreteBaseShrinkageDetails;
+struct matConcreteBaseCreepDetails;
 
 /*****************************************************************************
 CLASS 
@@ -122,9 +125,11 @@ public:
    // Returns the total free shrinkage that has occured from time at casting
    // to the time specified
    virtual Float64 GetFreeShrinkageStrain(Float64 t) const = 0;
+   virtual boost::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const = 0;
 
    // Returns the creep coefficient at time t for a loading applied at time tla
    virtual Float64 GetCreepCoefficient(Float64 t,Float64 tla) const = 0;
+   virtual boost::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientDetails(Float64 t,Float64 tla) const = 0;
 
    // Creates a clone of this object
    virtual matConcreteBase* CreateClone() const = 0;
@@ -135,6 +140,9 @@ protected:
    matConcreteBase& operator = (const matConcreteBase& rOther);
 
    virtual void OnChanged();
+
+   void InitializeShrinkageDetails(Float64 t,matConcreteBaseShrinkageDetails* pDetails) const;
+   void InitializeCreepDetails(Float64 t,Float64 tla,matConcreteBaseCreepDetails* pDetails) const;
 
 protected:
    Type        m_Type;
@@ -150,4 +158,22 @@ protected:
    Float64     m_AgeAtInitialLoading; // days
    Float64     m_CureTime; // duration of time that the concrete is cured
    CureMethod  m_CureMethod;
+};
+
+
+struct MATCLASS matConcreteBaseShrinkageDetails
+{
+   matConcreteBaseShrinkageDetails() : shrinkage_duration(0), cureMethod(matConcreteBase::Moist), esh(0) {}
+   Float64 shrinkage_duration; // duration of time overwhich shrinkage occurs
+   matConcreteBase::CureMethod cureMethod;
+   Float64 esh;
+};
+
+struct MATCLASS matConcreteBaseCreepDetails
+{
+   matConcreteBaseCreepDetails() : age(0), age_at_loading(0), fci(0), Ct(0) {}
+   Float64 age;
+   Float64 age_at_loading;
+   Float64 fci;
+   Float64 Ct;
 };

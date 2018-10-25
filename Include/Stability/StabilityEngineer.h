@@ -25,13 +25,17 @@
 
 #include <Stability\StabilityExp.h>
 #include <Stability\StabilityProblem.h>
-#include <Stability\Criteria.h>
+#include <Stability\LiftingCriteria.h>
 #include <Stability\LiftingResults.h>
+#include <Stability\HaulingCriteria.h>
 #include <Stability\HaulingResults.h>
 #include <Stability\LiftingCheckArtifact.h>
 #include <Stability\HaulingCheckArtifact.h>
 
 #include <WBFLFem2d.h>
+#include <WBFLUnitServer.h>
+
+#include <WBFLGenericBridge.h>
 
 /*****************************************************************************
 CLASS 
@@ -50,7 +54,7 @@ COPYRIGHT
 class STABILITYCLASS stbStabilityEngineer
 {
 public:
-   stbStabilityEngineer();
+   stbStabilityEngineer(IUnitConvert* pUnitConvert);
 
    // Performs a lifting stress and stability analysis
    stbLiftingResults AnalyzeLifting(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem) const;
@@ -59,12 +63,18 @@ public:
    stbHaulingResults AnalyzeHauling(const stbIGirder* pGirder,const stbIHaulingStabilityProblem* pStabilityProblem) const;
 
    // Performs a lifting stress and stability analysis and compares the results to a set of criteria
-   stbLiftingCheckArtifact CheckLifting(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem,const stbCriteria& criteria) const;
+   stbLiftingCheckArtifact CheckLifting(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem,const stbLiftingCriteria& criteria) const;
 
    // Performs a hauling stress and stability analysis and compares the results to a set of criteria
-   stbHaulingCheckArtifact CheckHauling(const stbIGirder* pGirder,const stbIHaulingStabilityProblem* pStabilityProblem,const stbCriteria& criteria) const;
+   stbHaulingCheckArtifact CheckHauling(const stbIGirder* pGirder,const stbIHaulingStabilityProblem* pStabilityProblem,const stbHaulingCriteria& criteria) const;
 
 private:
+   IUnitConvert* m_pUnitConvert; // weak reference
+
+   CComPtr<IRebarFactory> m_RebarFactory;
+
+   mutable PoiIDType m_StartPoi, m_MidSpanPoi; // poi at start of girder and mid-span. used for computing deflection relative to the ends of a girder
+
    mutable PoiIDType m_FirstPoi, m_LastPoi; // first and last poiIDs used for computing Zo
    mutable std::vector<Float64> m_vPoi; // location of POIs used for computing Zo
 
@@ -72,10 +82,10 @@ private:
    void PrepareResults(const stbIGirder* pGirder,const stbIStabilityProblem* pStabilityProblem,stbResults& results) const;
 
    // builds the FEM model
-   void BuildModel(const stbIGirder* pGirder,const stbIStabilityProblem* pStabilityProblem,stbResults& results,IFem2dModel** ppModel,PoiIDType* pMidSpanPoiID) const;
+   void BuildModel(const stbIGirder* pGirder,const stbIStabilityProblem* pStabilityProblem,stbResults& results,IFem2dModel** ppModel) const;
 
    // Common analysis code
-   void Analyze(const stbIGirder* pGirder,const stbIStabilityProblem* pStabilityProblem,stbResults& results,IFem2dModel** ppModel,PoiIDType* pMidSpanPoiID) const;
+   void Analyze(const stbIGirder* pGirder,const stbIStabilityProblem* pStabilityProblem,stbResults& results,IFem2dModel** ppModel) const;
 
    // analyze for lifting
    void AnalyzeLifting(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem,stbLiftingResults& results) const;
@@ -83,6 +93,14 @@ private:
    // analyze for hauling
    void AnalyzeHauling(const stbIGirder* pGirder,const stbIHaulingStabilityProblem* pStabilityProblem,stbHaulingResults& results) const;
 
-   // performs a numerical integration to compute Zo
-   Float64 ComputeZo(const stbIGirder* pGirder,IFem2dModel* pModel) const;
+   // Deterimes how to compute Zo
+   void GetZoComputationMethod(const stbIGirder* pGirder,const stbIStabilityProblem* pStabilityProblem,IFem2dModel* pModel,stbResults& results) const;
+
+   // Computes Zo by either a closed form exact solution or by numerical integration
+   Float64 ComputeZo(const stbIGirder* pGirder,const stbIStabilityProblem* pStabilityProblem,IFem2dModel* pModel,stbResults& results) const;
+
+   // Get a rebar layout model
+   void GetRebarLayout(const stbIGirder* pGirder,IRebarLayout** ppRebarLayout) const;
+
+   Float64 ComputePz(Float64 velocity,Float64 Cd) const;
 };

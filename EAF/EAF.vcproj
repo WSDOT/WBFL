@@ -2938,6 +2938,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\WBCmdGroup.h"
+				>
+			</File>
+			<File
 				RelativePath=".\webbrowser.h"
 				>
 			</File>
@@ -2952,6 +2956,14 @@
 			</File>
 			<File
 				RelativePath="res\EAF.rc2"
+				>
+			</File>
+			<File
+				RelativePath=".\res\Help.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\Help.ico"
 				>
 			</File>
 			<File

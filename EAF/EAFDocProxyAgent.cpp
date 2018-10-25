@@ -345,6 +345,12 @@ const unitmgtScalar& CEAFDocProxyAgent::GetScalarFormat()
    return pApp->GetDisplayUnits()->Scalar;
 }
 
+const unitmgtScalar& CEAFDocProxyAgent::GetPercentageFormat()
+{
+   CEAFApp* pApp = EAFGetApp();
+   return pApp->GetDisplayUnits()->Percentage;
+}
+
 const unitmgtLengthData& CEAFDocProxyAgent::GetComponentDimUnit()
 {
    CEAFApp* pApp = EAFGetApp();

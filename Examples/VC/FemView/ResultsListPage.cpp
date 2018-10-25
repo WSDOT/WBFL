@@ -40,13 +40,16 @@ BOOL CResultsListPage::OnInitDialog()
    CPropertyPage::OnInitDialog();
 
    // Prepare the column headers
-   m_ctrlList.InsertColumn(0,_T("POI"));
-   m_ctrlList.InsertColumn(1,_T("Fx"));
-   m_ctrlList.InsertColumn(2,_T("Fy"));
-   m_ctrlList.InsertColumn(3,_T("Mz"));
-   m_ctrlList.InsertColumn(4,_T("Dx"));
-   m_ctrlList.InsertColumn(5,_T("Dy"));
-   m_ctrlList.InsertColumn(6,_T("Rz"));
+   int col = 0;
+   m_ctrlList.InsertColumn(col++,_T("Mbr"));
+   m_ctrlList.InsertColumn(col++,_T("Fx"));
+   m_ctrlList.InsertColumn(col++,_T("Fy"));
+   m_ctrlList.InsertColumn(col++,_T("Mz"));
+   m_ctrlList.InsertColumn(col++,_T("Fx"));
+   m_ctrlList.InsertColumn(col++,_T("Fy"));
+   m_ctrlList.InsertColumn(col++,_T("Mz"));
+   m_ctrlList.InsertColumn(col++,_T("DyS"));
+   m_ctrlList.InsertColumn(col++,_T("DyE"));
 
    CModelPropertiesDlg* pParent = (CModelPropertiesDlg*)GetParent();
 
@@ -82,55 +85,58 @@ void CResultsListPage::OnLoadingChanged()
    CModelPropertiesDlg* pParent = (CModelPropertiesDlg*)GetParent();
    CComQIPtr<IFem2dModelResults> results(pParent->m_pFem2d);
 
-   CComPtr<IFem2dPOICollection> POIs;
-   pParent->m_pFem2d->get_POIs(&POIs);
+   CComPtr<IFem2dMemberCollection> members;
+   pParent->m_pFem2d->get_Members(&members);
 
-   CollectionIndexType nPoi;
-   POIs->get_Count(&nPoi);
-   for ( CollectionIndexType poiIdx = 0; poiIdx < nPoi; poiIdx++ )
+   IndexType nMembers;
+   members->get_Count(&nMembers);
+   for ( IndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
    {
-      CComPtr<IFem2dPOI> poi;
-      POIs->get_Item(poiIdx,&poi);
+      CComPtr<IFem2dMember> member;
+      members->get_Item(mbrIdx,&member);
+      MemberIDType mbrID;
+      member->get_ID(&mbrID);
 
-      PoiIDType poiID;
-      poi->get_ID(&poiID);
+      Float64 FxStart,FyStart,MzStart;
+      Float64 FxEnd,  FyEnd,  MzEnd;
+      results->ComputeMemberForces(lcid,mbrID,&FxStart,&FyStart,&MzStart,&FxEnd,&FyEnd,&MzEnd);
 
-      Float64 Fx,Fy,Mz;
-      results->ComputePOIForces(lcid,poiID, mftRight,lotMember,&Fx,&Fy,&Mz);
+      int col = 0;
 
-      Float64 Dx,Dy,Rz;
-      results->ComputePOIDeflections(lcid,poiID,lotMember,&Dx,&Dy,&Rz);
-
-      m_ctrlList.InsertItem((int)poiIdx,_T("POI"));
+      m_ctrlList.InsertItem((int)mbrIdx,_T("Member"));
       CString str;
-      str.Format(_T("%d"),poiID);
-      m_ctrlList.SetItemText((int)poiIdx,0,str);
+      str.Format(_T("%d"),mbrID);
+      m_ctrlList.SetItemText((int)mbrIdx,col++,str);
       
-      str.Format(_T("%f"),Fx);
-      m_ctrlList.SetItemText((int)poiIdx,1,str);
+      str.Format(_T("%f"),FxStart);
+      m_ctrlList.SetItemText((int)mbrIdx,col++,str);
       
-      str.Format(_T("%f"),Fy);
-      m_ctrlList.SetItemText((int)poiIdx,2,str);
+      str.Format(_T("%f"),FyStart);
+      m_ctrlList.SetItemText((int)mbrIdx,col++,str);
       
-      str.Format(_T("%f"),Mz);
-      m_ctrlList.SetItemText((int)poiIdx,3,str);
+      str.Format(_T("%f"),MzStart);
+      m_ctrlList.SetItemText((int)mbrIdx,col++,str);
       
-      str.Format(_T("%f"),Dx);
-      m_ctrlList.SetItemText((int)poiIdx,4,str);
+      str.Format(_T("%f"),FxEnd);
+      m_ctrlList.SetItemText((int)mbrIdx,col++,str);
       
-      str.Format(_T("%f"),Dy);
-      m_ctrlList.SetItemText((int)poiIdx,5,str);
+      str.Format(_T("%f"),FyEnd);
+      m_ctrlList.SetItemText((int)mbrIdx,col++,str);
       
-      str.Format(_T("%f"),Rz);
-      m_ctrlList.SetItemText((int)poiIdx,6,str);
+      str.Format(_T("%f"),MzEnd);
+      m_ctrlList.SetItemText((int)mbrIdx,col++,str);
+
+      results->ComputeMemberDeflections(lcid,mbrID,&FxStart,&FyStart,&MzStart,&FxEnd,&FyEnd,&MzEnd);
+      str.Format(_T("%f"),FyStart);
+      m_ctrlList.SetItemText((int)mbrIdx,col++,str);
+      str.Format(_T("%f"),FyEnd);
+      m_ctrlList.SetItemText((int)mbrIdx,col++,str);
+
    }
 
-
-   m_ctrlList.SetColumnWidth(0,LVSCW_AUTOSIZE);
-   m_ctrlList.SetColumnWidth(1,LVSCW_AUTOSIZE);
-   m_ctrlList.SetColumnWidth(2,LVSCW_AUTOSIZE);
-   m_ctrlList.SetColumnWidth(3,LVSCW_AUTOSIZE);
-   m_ctrlList.SetColumnWidth(4,LVSCW_AUTOSIZE);
-   m_ctrlList.SetColumnWidth(5,LVSCW_AUTOSIZE);
-   m_ctrlList.SetColumnWidth(6,LVSCW_AUTOSIZE);
+   int nColumns = m_ctrlList.GetHeaderCtrl()->GetItemCount();
+   for ( int col = 0; col < nColumns; col++ )
+   {
+      m_ctrlList.SetColumnWidth(col,LVSCW_AUTOSIZE);
+   }
 }

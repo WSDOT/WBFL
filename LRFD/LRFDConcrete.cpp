@@ -237,7 +237,14 @@ Float64 lrfdLRFDConcrete::GetFlexureFr(Float64 t) const
    }
 }
 
+
 Float64 lrfdLRFDConcrete::GetFreeShrinkageStrain(Float64 t) const
+{
+   boost::shared_ptr<matConcreteBaseShrinkageDetails> pDetails = GetFreeShrinkageStrainDetails(t);
+   return pDetails->esh;
+}
+
+boost::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrinkageStrainDetails(Float64 t) const
 {
    if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
    {
@@ -254,6 +261,12 @@ Float64 lrfdLRFDConcrete::GetFreeShrinkageStrain(Float64 t) const
 }
 
 Float64 lrfdLRFDConcrete::GetCreepCoefficient(Float64 t,Float64 tla) const
+{
+   boost::shared_ptr<matConcreteBaseCreepDetails> pDetails = GetCreepCoefficientDetails(t,tla);
+   return pDetails->Ct;
+}
+
+boost::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficientDetails(Float64 t,Float64 tla) const
 {
    if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
    {
@@ -274,13 +287,27 @@ matConcreteBase* lrfdLRFDConcrete::CreateClone() const
    return new lrfdLRFDConcrete(*this);
 }
 
-Float64 lrfdLRFDConcrete::GetFreeShrinkageStrainBefore2005(Float64 t) const
+
+void lrfdLRFDConcrete::InitializeShrinkageDetails(Float64 t,lrfdLRFDConcreteShrinkageDetails* pDetails) const
 {
+   matConcreteBase::InitializeShrinkageDetails(t,pDetails);
+}
+
+void lrfdLRFDConcrete::InitializeCreepDetails(Float64 t,Float64 tla,lrfdLRFDConcreteCreepDetails* pDetails) const
+{
+   matConcreteBase::InitializeCreepDetails(t,tla,pDetails);
+}
+
+boost::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrinkageStrainBefore2005(Float64 t) const
+{
+   lrfdLRFDConcreteShrinkageDetails* pDetails = new lrfdLRFDConcreteShrinkageDetails;
+   InitializeShrinkageDetails(t,pDetails);
+
    // age of the concrete at time t (duration of time after casting)
    Float64 concrete_age = GetAge(t);
    if ( concrete_age < 0 )
    {
-      return 0;
+      return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
    }
 
    // duration of time after initial curing (time since curing stopped, this is when shrinkage begins)
@@ -288,7 +315,7 @@ Float64 lrfdLRFDConcrete::GetFreeShrinkageStrainBefore2005(Float64 t) const
    if ( shrinkage_time < 0 )
    {
       // if this occurs, t is in the curing period so no shrinkage occurs
-      return 0;
+      return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
    }
 
    Float64 ks = 1.0;
@@ -326,16 +353,23 @@ Float64 lrfdLRFDConcrete::GetFreeShrinkageStrainBefore2005(Float64 t) const
    Float64 K = (GetCureMethod() == matConcreteBase::Moist ? 35.0 : 55.0);
    Float64 eshu = (GetCureMethod() == matConcreteBase::Moist ? 0.51e-3 : 0.56e-3);
    Float64 esh = -ks*kh*eshu*(shrinkage_time)/(K + shrinkage_time);
-   return esh;
+
+   pDetails->kvs = ks;
+   pDetails->khs = kh;
+   pDetails->esh = esh;
+   return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
 }
 
-Float64 lrfdLRFDConcrete::GetFreeShrinkageStrain2005(Float64 t) const
+boost::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrinkageStrain2005(Float64 t) const
 {
+   lrfdLRFDConcreteShrinkageDetails* pDetails = new lrfdLRFDConcreteShrinkageDetails;
+   InitializeShrinkageDetails(t,pDetails);
+
    // age of the concrete at time t (duration of time after casting)
    Float64 concrete_age = GetAge(t);
    if ( concrete_age < 0 )
    {
-      return 0;
+      return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
    }
 
    // duration of time after initial curing (time since curing stopped, this is when shrinkage begins)
@@ -343,7 +377,7 @@ Float64 lrfdLRFDConcrete::GetFreeShrinkageStrain2005(Float64 t) const
    if ( shrinkage_time < 0 )
    {
       // if this occurs, t is in the curing period so no shrinkage occurs
-      return 0;
+      return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
    }
 
    Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
@@ -357,16 +391,25 @@ Float64 lrfdLRFDConcrete::GetFreeShrinkageStrain2005(Float64 t) const
    Float64 ktd = (shrinkage_time)/(61.0 - 4.0*fc + shrinkage_time);
 
    Float64 esh = -m_ShrinkageK1*m_ShrinkageK2*ks*khs*kf*ktd*0.48E-3;
-   return esh;
+
+   pDetails->kvs = ks;
+   pDetails->khs = khs;
+   pDetails->kf = kf;
+   pDetails->ktd = ktd;
+   pDetails->esh = esh;
+   return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
 }
 
-Float64 lrfdLRFDConcrete::GetFreeShrinkageStrain2015(Float64 t) const
+boost::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrinkageStrain2015(Float64 t) const
 {
+   lrfdLRFDConcreteShrinkageDetails* pDetails = new lrfdLRFDConcreteShrinkageDetails;
+   InitializeShrinkageDetails(t,pDetails);
+
    // age of the concrete at time t (duration of time after casting)
    Float64 concrete_age = GetAge(t);
    if ( concrete_age < 0 )
    {
-      return 0;
+      return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
    }
 
    // duration of time after initial curing (time since curing stopped, this is when shrinkage begins)
@@ -374,7 +417,7 @@ Float64 lrfdLRFDConcrete::GetFreeShrinkageStrain2015(Float64 t) const
    if ( shrinkage_time < 0 )
    {
       // if this occurs, t is in the curing period so no shrinkage occurs
-      return 0;
+      return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
    }
 
    Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
@@ -388,23 +431,26 @@ Float64 lrfdLRFDConcrete::GetFreeShrinkageStrain2015(Float64 t) const
    Float64 ktd = (shrinkage_time)/(12*(100.0 - 4.0*fc)/(fc + 20) + shrinkage_time);
 
    Float64 esh = -m_ShrinkageK1*m_ShrinkageK2*ks*khs*kf*ktd*0.48E-3;
-   return esh;
+
+   pDetails->kvs = ks;
+   pDetails->khs = khs;
+   pDetails->kf = kf;
+   pDetails->ktd = ktd;
+   pDetails->esh = esh;
+   return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
 }
 
-Float64 lrfdLRFDConcrete::GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const
+boost::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const
 {
-   // age of the concrete at time t (duration of time after casting)
-   Float64 concrete_age = GetAge(t);
-   if ( concrete_age <= 0 )
-   {
-      return 0;
-   }
+   lrfdLRFDConcreteCreepDetails* pDetails = new lrfdLRFDConcreteCreepDetails;
+   InitializeCreepDetails(t,tla,pDetails);
 
-   // age of concrete at time when the load is applied
-   Float64 age_at_loading = GetAge(tla);
-   if ( age_at_loading <= 0 )
+   Float64 age = pDetails->age;
+   Float64 age_at_loading = pDetails->age_at_loading;
+   Float64 maturity = age - age_at_loading;
+   if ( ::IsLE(age,0.0) || ::IsLE(age_at_loading,0.0) || ::IsLE(maturity,0.0) )
    {
-      return 0;
+      return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
    }
 
    bool bSI = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
@@ -449,38 +495,33 @@ Float64 lrfdLRFDConcrete::GetCreepCoefficientBefore2005(Float64 t,Float64 tla) c
       x2 = -0.54;
    }
 
-   a = concrete_age/(26.0*pow(e,x1*vs)+concrete_age);
-   b = concrete_age/(45.0 + concrete_age);
+   a = maturity/(26.0*pow(e,x1*vs)+maturity);
+   b = maturity/(45.0 + maturity);
    c = 1.80 + 1.77*pow(e,x2*vs);
 
    Float64 kc = (a/b)*(c/2.587);
 
-   Float64 Y = 3.5*kc*kf*(1.58 - m_RelativeHumidity/120.)*pow(age_at_loading,-0.118) * (  pow(concrete_age - age_at_loading,0.6)/(10.0 + pow(concrete_age - age_at_loading,0.6) ) );
-   return Y;
+   Float64 Y = 3.5*kc*kf*(1.58 - m_RelativeHumidity/120.)*pow(age_at_loading,-0.118) * (  pow(maturity,0.6)/(10.0 + pow(maturity,0.6) ) );
+
+   pDetails->fci = fc;
+   pDetails->kc = kc;
+   pDetails->kf = kf;
+   pDetails->Ct = Y;
+
+   return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
 }
 
-Float64 lrfdLRFDConcrete::GetCreepCoefficient2005(Float64 t,Float64 tla) const
+boost::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficient2005(Float64 t,Float64 tla) const
 {
-   // age of the concrete at time t (duration of time after casting)
-   Float64 concrete_age = GetAge(t);
-   if ( concrete_age <= 0 )
-   {
-      return 0;
-   }
+   lrfdLRFDConcreteCreepDetails* pDetails = new lrfdLRFDConcreteCreepDetails;
+   InitializeCreepDetails(t,tla,pDetails);
 
-   // age of concrete at time when the load is applied
-   Float64 age_at_loading = GetAge(tla);
-   if ( age_at_loading <= 0 )
+   Float64 age = pDetails->age;
+   Float64 age_at_loading = pDetails->age_at_loading;
+   Float64 maturity = age - age_at_loading;
+   if ( ::IsLE(age,0.0) || ::IsLE(age_at_loading,0.0) || ::IsLT(maturity,0.0) )
    {
-      return 0;
-   }
-
-   // maturity of concrete = age of concrete between time of loading and time being considered
-   Float64 maturity = concrete_age - age_at_loading;
-   ATLASSERT( 0 <= maturity );
-   if ( maturity < 0 )
-   {
-      return 0;
+      return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
    }
 
    Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
@@ -495,31 +536,28 @@ Float64 lrfdLRFDConcrete::GetCreepCoefficient2005(Float64 t,Float64 tla) const
 
    Float64 ti = age_at_loading;
    Float64 Y = 1.9*m_CreepK1*m_CreepK2*ks*khc*kf*ktd*pow(ti,-0.118);
-   return Y;
+
+   pDetails->fci = m_InitialConcrete.GetFc();
+   pDetails->kvs = ks;
+   pDetails->khc = khc;
+   pDetails->kf = kf;
+   pDetails->ktd = ktd;
+   pDetails->Ct = Y;
+
+   return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
 }
 
-Float64 lrfdLRFDConcrete::GetCreepCoefficient2015(Float64 t,Float64 tla) const
+boost::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficient2015(Float64 t,Float64 tla) const
 {
-   // age of the concrete at time t (duration of time after casting)
-   Float64 concrete_age = GetAge(t);
-   if ( concrete_age <= 0 )
-   {
-      return 0;
-   }
+   lrfdLRFDConcreteCreepDetails* pDetails = new lrfdLRFDConcreteCreepDetails;
+   InitializeCreepDetails(t,tla,pDetails);
 
-   // age of concrete at time when the load is applied
-   Float64 age_at_loading = GetAge(tla);
-   if ( age_at_loading <= 0 )
+   Float64 age = pDetails->age;
+   Float64 age_at_loading = pDetails->age_at_loading;
+   Float64 maturity = age - age_at_loading;
+   if ( ::IsLE(age,0.0) || ::IsLE(age_at_loading,0.0) || ::IsLT(maturity,0.0) )
    {
-      return 0;
-   }
-
-   // maturity of concrete = age of concrete between time of loading and time being considered
-   Float64 maturity = concrete_age - age_at_loading;
-   ATLASSERT( 0 <= maturity );
-   if ( maturity < 0 )
-   {
-      return 0;
+      return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
    }
 
    Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
@@ -534,5 +572,13 @@ Float64 lrfdLRFDConcrete::GetCreepCoefficient2015(Float64 t,Float64 tla) const
 
    Float64 ti = age_at_loading;
    Float64 Y = 1.9*m_CreepK1*m_CreepK2*ks*khc*kf*ktd*pow(ti,-0.118);
-   return Y;
+
+   pDetails->fci = fc;
+   pDetails->kvs = ks;
+   pDetails->khc = khc;
+   pDetails->kf = kf;
+   pDetails->ktd = ktd;
+   pDetails->Ct = Y;
+
+   return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
 }

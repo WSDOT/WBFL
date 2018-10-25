@@ -87,6 +87,9 @@ public:
    // Visit a String
    void VisitRcString(rptRcString*);
    //------------------------------------------------------------------------
+   // Visit a String
+   void VisitRcStringLiteral(rptRcStringLiteral*);
+   //------------------------------------------------------------------------
    // Visit an Int
    void VisitRcInt(rptRcInt*);
    //------------------------------------------------------------------------
@@ -114,6 +117,7 @@ public:
    void VisitRcSymbol(rptRcSymbol*);
 
    void VisitRcScalar(rptRcScalar*);
+   void VisitRcPercentage(rptRcPercentage*);
    void VisitRcUnitTag(rptRcUnitTag*);
    void VisitRcUnitValue(rptRcUnitValue*);
    void VisitRcSectionValue(rptRcSectionValue*);

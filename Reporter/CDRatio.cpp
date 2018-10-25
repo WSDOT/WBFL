@@ -122,7 +122,7 @@ rptReportContent& rptCDRatio::SetValue(Float64 capacity, Float64 demand, bool pa
    }
    else
    {
-      return rptRcString::SetValue(this->AsString().c_str());
+      return rptRcString::SetValue(AsString().c_str());
    }
 }
 
@@ -146,7 +146,7 @@ std::_tstring rptCDRatio::AsString() const
    {
       Float64 cd = m_Capacity/m_Demand;
 
-      if (10.0 < cd)
+      if (CDR_LARGE < cd)
       {
          return std::_tstring(_T("10+"));
       }

@@ -172,6 +172,8 @@ protected:
    bool IsTipOfTheDayEnabled();
 	virtual void ShowTipOfTheDay(void);
 
+   virtual void OnFirstRun();
+
    virtual CATID GetComponentInfoCategoryID() = 0;
 
 	// Generated message map functions

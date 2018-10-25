@@ -186,7 +186,7 @@ private:
    static std::_tstring ms_TableDataStyleLeftJustify;
    static std::_tstring ms_TableDataStyleRightJustify;
    static std::_tstring ms_FootnoteStyle;
-   static std::_tstring ms_TableCellStyle[4];
+   static std::_tstring ms_TableCellStyle[6];
 
    static std::_tstring ms_ImagePath;
    static Float64 ms_MaxTableWidth;

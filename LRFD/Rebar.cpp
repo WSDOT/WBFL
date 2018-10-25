@@ -380,6 +380,11 @@ Float64 lrfdRebar::GetTensionControlledStrainLimit(matRebar::Grade grade)
    return etl;
 }
 
+REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size size, Float64 Ab, Float64 db, Float64 fy, const matConcrete& concrete)
+{
+   return lrfdRebar::GetRebarDevelopmentLengthDetails(size,Ab,db,fy,concrete.GetType(),concrete.GetFc(),concrete.HasAggSplittingStrength(),concrete.GetAggSplittingStrength(),concrete.GetDensity());
+}
+
 REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size size, Float64 Ab, Float64 db, Float64 fy, matConcrete::Type type, Float64 fc, bool isFct, Float64 Fct,Float64 density)
 {
    REBARDEVLENGTHDETAILS details;

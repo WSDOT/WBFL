@@ -116,6 +116,8 @@ public:
 
    boost::shared_ptr<CReportSpecification> GetReportSpecification();
 
+   virtual BOOL CanEditReport();
+
    // Generated message map functions
 protected:
 	//{{AFX_MSG(CEAFReportView)
@@ -160,7 +162,7 @@ protected:
  
    void UpdateViewTitle();
    virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-   virtual void CreateEditButton();
+   void CreateEditButton();
 
 private:
    std::vector<std::_tstring> GetReportNames();

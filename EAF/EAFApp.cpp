@@ -212,7 +212,7 @@ BOOL CEAFApp::InitInstance()
    m_pMainWnd->SetWindowPos(&CWnd::wndTop,0,0,0,0,SWP_NOSIZE | SWP_NOMOVE | SWP_NOREDRAW);
 	m_pMainWnd->UpdateWindow();
 
-   if ( IsTipOfTheDayEnabled() && !cmdInfo.m_bCommandLineMode )
+   if ( !IsFirstRun() && (IsTipOfTheDayEnabled() && !cmdInfo.m_bCommandLineMode) )
    {
       ShowTipOfTheDay();
    }
@@ -226,6 +226,11 @@ BOOL CEAFApp::InitInstance()
 
    // Start the help window thread
    m_pHelpWindowThread = (CEAFHelpWindowThread*)AfxBeginThread(RUNTIME_CLASS(CEAFHelpWindowThread));
+
+   if ( IsFirstRun() && !cmdInfo.m_bCommandLineMode )
+   {
+      OnFirstRun();
+   }
 
 	return TRUE;
 }
@@ -524,6 +529,11 @@ void CEAFApp::ShowTipOfTheDay(void)
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 	CTipDlg dlg(m_TipFiles,EAFGetMainFrame());
 	dlg.DoModal();
+}
+
+void CEAFApp::OnFirstRun()
+{
+   // Do nothing be default
 }
 
 BOOL CEAFApp::IsDocLoaded()
@@ -1583,6 +1593,10 @@ unitmgtIndirectMeasure init_si_units()
    im.Scalar.Precision = 3;
    im.Scalar.Format = sysNumericFormatTool::Fixed;
 
+   im.Percentage.Width = 6;
+   im.Percentage.Precision = 2;
+   im.Percentage.Format = sysNumericFormatTool::Fixed;
+
    im.ComponentDim.Update(    unitMeasure::Millimeter,                0.001, 8, 0, sysNumericFormatTool::Fixed );
    im.XSectionDim.Update(     unitMeasure::Meter,                     0.001, 7, 3, sysNumericFormatTool::Fixed );
    im.SpanLength.Update(      unitMeasure::Meter,                     0.001, 9, 3, sysNumericFormatTool::Fixed );
@@ -1630,6 +1644,10 @@ unitmgtIndirectMeasure init_english_units()
    im.Scalar.Width = 8;
    im.Scalar.Precision = 3;
    im.Scalar.Format = sysNumericFormatTool::Fixed;
+
+   im.Percentage.Width = 6;
+   im.Percentage.Precision = 2;
+   im.Percentage.Format = sysNumericFormatTool::Fixed;
 
    im.ComponentDim.Update(    unitMeasure::Inch,            0.001, 9, 3, sysNumericFormatTool::Fixed );
    im.XSectionDim.Update(     unitMeasure::Feet,            0.001, 9, 3, sysNumericFormatTool::Fixed );
