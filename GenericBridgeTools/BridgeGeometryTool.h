@@ -63,6 +63,9 @@ END_COM_MAP()
 private:
    CComPtr<ICogoEngine> m_CogoEngine;
 
+   HRESULT GetDeckEdgePath(IGenericBridge* bridge,DirectionType side,IPath** ppPath);
+   HRESULT GetPierLine(IGenericBridge* bridge,PierIndexType pierIdx,ILine2d** ppLine);
+
 // ISupportsErrorInfo
 public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);

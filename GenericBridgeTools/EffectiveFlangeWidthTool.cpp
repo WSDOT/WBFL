@@ -261,8 +261,6 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthEx(IGenericBridge* b
 
    // Get slab parameters
    Float64 tSlab;
-   Float64 left_overhang;
-   Float64 right_overhang;
    if ( cip )
    {
       Float64 gross, sacrificial;
@@ -287,10 +285,19 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthEx(IGenericBridge* b
       tSlab = gross - sacrificial;
    }
 
-   m_BridgeGeometryTool->DeckOverhang(bridge,station,NULL,qcbLeft,&left_overhang);
-   m_BridgeGeometryTool->DeckOverhang(bridge,station,NULL,qcbRight,&right_overhang);
-
    pDetails->put_SlabThickness(tSlab);
+
+   Float64 left_overhang = 0;
+   if ( gdrIdx == 0 )
+   {
+      m_BridgeGeometryTool->DeckOverhang(bridge,station,NULL,qcbLeft,&left_overhang);
+   }
+
+   Float64 right_overhang = 0;
+   if ( gdrIdx == nGirders-1 )
+   {
+      m_BridgeGeometryTool->DeckOverhang(bridge,station,NULL,qcbRight,&right_overhang);
+   }
 
    // Get parameters for each top flange on the girder
    CollectionIndexType nFlanges;
