@@ -35,6 +35,8 @@ static char THIS_FILE[] = __FILE__;
 
 CString AfxQuestion(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszDefault)
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
    CQuestionDlg dlg;
    dlg.m_Title = lpszTitle;
    dlg.m_Question = lpszQuestion;
@@ -46,6 +48,8 @@ CString AfxQuestion(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszDefault)
 
 int AfxChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int defChoice)
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
    CChoiceDlg dlg;
    dlg.m_Title = lpszTitle;
    dlg.m_Question = lpszQuestion;

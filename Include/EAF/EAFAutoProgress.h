@@ -27,7 +27,7 @@ class EAFCLASS CEAFAutoProgress
 public:
    //------------------------------------------------------------------------
    // Default constructor
-   CEAFAutoProgress(IProgress* pProgress,UINT nDelay = 100,DWORD dwMask = PW_ALL | PW_NOGAUGE | PW_NOCANCEL);
+   CEAFAutoProgress(IProgress* pProgress,UINT nDelay = 500,DWORD dwMask = PW_ALL | PW_NOGAUGE | PW_NOCANCEL);
 
    //------------------------------------------------------------------------
    // Destructor

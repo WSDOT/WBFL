@@ -434,16 +434,16 @@ bool lrfdStrandPool::TestMe(dbgLog& rlog)
    const matPsStrand* pStrand;
    matPsStrand::Grade grade;
    matPsStrand::Type type;
-   matPsStrand::Size size[] =  { matPsStrand::D635,
-                                 matPsStrand::D794,
-                                 matPsStrand::D953,
-                                 matPsStrand::D1111,
-                                 matPsStrand::D1270,
-                                 matPsStrand::D1524,
-                                 matPsStrand::D1778,
-                                 matPsStrand::D1320,
-                                 matPsStrand::D1575,
-                                 matPsStrand::D1778};
+   matPsStrand::Size size[] = { matPsStrand::D635,// 1/4"
+                                matPsStrand::D794,// 5/16"
+                                matPsStrand::D953,// 3/8"
+                                matPsStrand::D1111,// 7/16"
+                                matPsStrand::D1270,// 1/2"
+                                matPsStrand::D1524,// 0.6"
+                                matPsStrand::D1778,// 0.7"
+                                matPsStrand::D1320,// 1/2 HBS (Special)
+                                matPsStrand::D1575// 0.62"
+   }; 
 
    Int32 hashval;
    Int16 cGrade, cType, cSize;
