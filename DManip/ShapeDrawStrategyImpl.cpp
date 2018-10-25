@@ -358,7 +358,7 @@ void CShapeDrawStrategyImpl::DrawShape(iDisplayObject* pDO,CDC* pDC,IShape* pSha
       map->WPtoLP(point,&points[i].x,&points[i].y);
    }
 
-   pDC->Polygon(points,nPoints);
+   pDC->Polygon(points,(int)nPoints);
 
    delete[] points;
 }

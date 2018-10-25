@@ -42,7 +42,7 @@ bamSectionStressKey::bamSectionStressKey()
 {
 }
 
-bamSectionStressKey::bamSectionStressKey(Int32 poi,Int32 idx,Int32 loadingId) :
+bamSectionStressKey::bamSectionStressKey(PoiIDType poi,CollectionIndexType idx,IDType loadingId) :
 m_LoadingId( loadingId ),
 m_StressPointIdx( idx ),
 m_Poi( poi )
@@ -96,32 +96,32 @@ bool bamSectionStressKey::operator==(const bamSectionStressKey& rOther) const
 
 //======================== OPERATIONS =======================================
 //======================== ACCESS     =======================================
-void bamSectionStressKey::LoadingId(Int32 loadingId)
+void bamSectionStressKey::LoadingId(IDType loadingId)
 {
    m_LoadingId = loadingId;
 }
 
-Int32 bamSectionStressKey::LoadingId() const
+IDType bamSectionStressKey::LoadingId() const
 {
    return m_LoadingId;
 }
 
-void bamSectionStressKey::StressPointIdx(Int32 idx)
+void bamSectionStressKey::StressPointIdx(IndexType idx)
 {
    m_StressPointIdx = idx;
 }
 
-Int32 bamSectionStressKey::StressPointIdx() const
+IndexType bamSectionStressKey::StressPointIdx() const
 {
    return m_StressPointIdx;
 }
 
-void bamSectionStressKey::PointOfInterest(Int32 poi)
+void bamSectionStressKey::PointOfInterest(IDType poi)
 {
    m_Poi = poi;
 }
 
-Int32 bamSectionStressKey::PointOfInterest() const
+IDType bamSectionStressKey::PointOfInterest() const
 {
    return m_Poi;
 }

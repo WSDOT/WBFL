@@ -44,7 +44,7 @@ public:
 
    void AddReportBuilder(CReportBuilder* pRptBuilder);
    void AddReportBuilder(boost::shared_ptr<CReportBuilder>& pRptBuilder);
-   Uint32 GetReportBuilderCount(bool bIncludeHidden = false) const;
+   CollectionIndexType GetReportBuilderCount(bool bIncludeHidden = false) const;
    boost::shared_ptr<CReportBuilder> GetReportBuilder(LPCTSTR strReportName);
    boost::shared_ptr<CReportBuilder> GetReportBuilder(const std::_tstring& strReportName);
    boost::shared_ptr<CReportBuilder> RemoveReportBuilder(LPCTSTR strReportName);
@@ -58,7 +58,7 @@ public:
    boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const std::_tstring& strReportName);
    boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const CReportDescription& rptDesc);
    boost::shared_ptr<CReportBrowser> CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec);
-   Int16 DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec);
+   INT_PTR DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec);
 
 private:
    typedef std::map<std::_tstring, boost::shared_ptr<CReportBuilder> > RptBuilderContainer;

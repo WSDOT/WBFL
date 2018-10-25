@@ -60,7 +60,7 @@ public:
 
    virtual ~CLoading();
 
-   HRESULT OnCreate(IFem2dModel* pModel, ModelEvents* pEvents, long id);
+   HRESULT OnCreate(IFem2dModel* pModel, ModelEvents* pEvents, LoadCaseIDType id);
 
    // IStructuredStorage - sort of
    STDMETHOD(Load)(/*[in]*/ IStructuredLoad2 *load);

@@ -5,8 +5,11 @@ REM - Binary Files for basic development
 
 set BINTARGET=bin
 
-COPY "RegFreeCOM\Release\WBFL*.dll"	"%BINTARGET%\Libraries\"
-COPY "RegFreeCOM\Release\WBFL*.lib"	"%BINTARGET%\Lib\"
+COPY "RegFreeCOM\Win32\Release\WBFL*.dll"	"%BINTARGET%\Libraries\Win32\"
+COPY "RegFreeCOM\Win32\Release\WBFL*.lib"	"%BINTARGET%\Lib\Win32\"
+
+COPY "RegFreeCOM\x64\Release\WBFL*.dll"	"%BINTARGET%\Libraries\x64\"
+COPY "RegFreeCOM\x64\Release\WBFL*.lib"	"%BINTARGET%\Lib\x64\"
 
 COPY License.rtf 			"%BINTARGET%"
 

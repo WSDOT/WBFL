@@ -55,8 +55,8 @@ BEGIN_COM_MAP(CSocketImpl)
 END_COM_MAP()
 
    // iSocket
-   STDMETHOD_(void,SetID)(long id);
-   STDMETHOD_(long,GetID)();
+   STDMETHOD_(void,SetID)(IDType id);
+   STDMETHOD_(IDType,GetID)();
    STDMETHOD_(void,SetPosition)(IPoint2d* pos);
    STDMETHOD_(void,GetPosition)(IPoint2d* *pos);
    STDMETHOD_(void,Move)(ISize2d* offset);
@@ -71,7 +71,7 @@ END_COM_MAP()
    STDMETHOD_(void,GetConnectable)(iConnectable** connectable);
 
 private:
-   long m_ID;
+   IDType m_ID;
    CComPtr<IPoint2d> m_Position;
    static DWORD ms_dwCookies;
    typedef std::map<DWORD,CComPtr<iPlug> > PlugContainer;

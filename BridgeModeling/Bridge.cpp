@@ -77,7 +77,7 @@ CComModule _Module;
 
 //======================== LIFECYCLE  =======================================
 
-bmfBridge::bmfBridge(ICogoModel* pCogoModel,long alignmentID):
+bmfBridge::bmfBridge(ICogoModel* pCogoModel,IDType alignmentID):
 m_HasShapeBeenBuilt(false),
 m_CogoModel(pCogoModel)
 {
@@ -119,7 +119,7 @@ bmfBridge::~bmfBridge()
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
 
-bmfSpan* bmfBridge::CreateSpan(Int32 id,Int32 startPierId, Int32 endPierId)
+bmfSpan* bmfBridge::CreateSpan(SpanIDType id,PierIDType startPierId, PierIDType endPierId)
 {
    bmfSpan* pSpan = m_pSpanFactory->CreateSpan();
    if ( !AddSpan( pSpan, id, startPierId, endPierId ) )
@@ -128,7 +128,7 @@ bmfSpan* bmfBridge::CreateSpan(Int32 id,Int32 startPierId, Int32 endPierId)
    return pSpan;
 }
 
-bool bmfBridge::AddSpan(bmfSpan* pSpan,Int32 id,Int32 startPierId,Int32 endPierId)
+bool bmfBridge::AddSpan(bmfSpan* pSpan,SpanIDType id,PierIDType startPierId,PierIDType endPierId)
 {
    bmfPier* pstart_pier;
    bmfPier* pend_pier;
@@ -163,7 +163,7 @@ bool bmfBridge::AddSpan(bmfSpan* pSpan,Int32 id,Int32 startPierId,Int32 endPierI
    return true;
 }
 
-const bmfSpan* bmfBridge::GetSpan(Int32 spanId) const
+const bmfSpan* bmfBridge::GetSpan(SpanIDType spanId) const
 {
    SpanContainer::const_iterator iter = m_Spans.find( spanId );
 
@@ -172,7 +172,7 @@ const bmfSpan* bmfBridge::GetSpan(Int32 spanId) const
    return (*iter).second.get();
 } // GetSpan
 
-bmfSpan* bmfBridge::GetSpan(Int32 spanId)
+bmfSpan* bmfBridge::GetSpan(SpanIDType spanId)
 {
    SpanContainer::const_iterator iter = m_Spans.find( spanId );
 
@@ -226,7 +226,7 @@ void bmfBridge::GetSpans(std::vector<const bmfSpan*>& vSpans) const
    }
 }
 
-void bmfBridge::RemoveSpan(Int32 spanId)
+void bmfBridge::RemoveSpan(SpanIDType spanId)
 {
    bmfSpan* pSpan = GetSpan(spanId);
 
@@ -244,12 +244,12 @@ void bmfBridge::RemoveSpan(Int32 spanId)
 //   Notify();
 }
 
-Int32 bmfBridge::GetSpanCount() const
+SpanIndexType bmfBridge::GetSpanCount() const
 {
    return m_Spans.size();
 }
 
-bmfPier* bmfBridge::CreatePier(Int32 id,Float64 station,const bmfPierLayout& pl,const bmfConnection* pConnection)
+bmfPier* bmfBridge::CreatePier(PierIDType id,Float64 station,const bmfPierLayout& pl,const bmfConnection* pConnection)
 {
    bmfPier* pPier = m_pPierFactory->CreatePier();
    pPier->Layout( pl );
@@ -258,7 +258,7 @@ bmfPier* bmfBridge::CreatePier(Int32 id,Float64 station,const bmfPierLayout& pl,
    return pPier;
 }
 
-void bmfBridge::AddPier(bmfPier* pPier,Int32 id,Float64 station)
+void bmfBridge::AddPier(bmfPier* pPier,PierIDType id,Float64 station)
 {
    pPier->SetBridge(this);
    pPier->SetID( id );
@@ -272,7 +272,7 @@ void bmfBridge::AddPier(bmfPier* pPier,Int32 id,Float64 station)
 //   Notify();
 }
 
-void bmfBridge::AddPier(Int32 id, bmfPier* pPier)
+void bmfBridge::AddPier(PierIDType id, bmfPier* pPier)
 {
    pPier->SetBridge(this);
    pPier->SetID( id );
@@ -285,7 +285,7 @@ void bmfBridge::AddPier(Int32 id, bmfPier* pPier)
 }
 
 
-bmfPier* bmfBridge::GetPier(Int32 pierId) const
+bmfPier* bmfBridge::GetPier(PierIDType pierId) const
 {
    PierContainer::const_iterator iter = m_Piers.find( pierId );
 
@@ -308,7 +308,7 @@ void bmfBridge::GetPiers(std::vector<const bmfPier*>& vPiers) const
       vPiers.push_back( (*iter).second.get() );
 }
 
-void bmfBridge::RemovePier(Int32 pierId)
+void bmfBridge::RemovePier(PierIDType pierId)
 {
    bmfPier* pPier = GetPier(pierId);
 
@@ -332,7 +332,7 @@ void bmfBridge::RemovePier(Int32 pierId)
    m_Piers.erase( pierId );
 } // RemovePier
 
-Int32 bmfBridge::GetPierCount() const
+PierIndexType bmfBridge::GetPierCount() const
 {
    return m_Piers.size();
 }
@@ -412,7 +412,7 @@ Float64 bmfBridge::GetRoadwayWidth(Float64 station) const
 void bmfBridge::PlanView(HDC hDC,RECT& rect,UINT settings) const
 {
    grlibPointMapper mapper;
-   Int32 center_x,center_y;
+   LONG center_x,center_y;
 
    // state settings
    bool bIsotropic      = (settings & BMF_PV_DRAW_ISOTROPIC)!=0;
@@ -473,7 +473,7 @@ bool bmfBridge::DrawSection(HDC hDC, RECT& rect, Float64 station, UINT settings,
 
    // Set up point mapper for device.
    grlibPointMapper mapper;
-   Int32 center_x,center_y;
+   LONG center_x,center_y;
    grlibPointMapper::MapMode mapmode;
    mapmode = ( bIsotropic ? grlibPointMapper::Isotropic : grlibPointMapper::Anisotropic );
    grlibPointMapper::MapModeModifier modifier;
@@ -497,7 +497,7 @@ bool bmfBridge::DrawSection(HDC hDC, RECT& rect, Float64 station, UINT settings,
    right_overhang_dimension.SetPointSize(8);
    roadway_dimension.SetPointSize(8);
 
-   int siz = m_GirderBottoms.size();
+   CollectionIndexType siz = m_GirderBottoms.size();
    if (bShowDimensions)
    {
       if (siz>1)
@@ -598,7 +598,9 @@ bool bmfBridge::DrawSection(HDC hDC, RECT& rect, Float64 station, UINT settings,
          box.Union(dim_box);
       }
       else
+      {
          bShowDimensions = false;
+      }
    }
 
    // labels need extra room if no dimensions
@@ -633,19 +635,19 @@ bool bmfBridge::DrawSection(HDC hDC, RECT& rect, Float64 station, UINT settings,
    HFONT font = grGraphTool::CreateRotatedFont(hDC, 0, 8);
    HGDIOBJ old_font = ::SelectObject(hDC, font);
    int old_bk = ::SetBkMode(hDC,TRANSPARENT);
-   long dvx, dvy;
+   LONG dvx, dvy;
    if (bDrawLabels)
    {
-      for(int i=0; i<siz; i++)
+      for(CollectionIndexType i=0; i<siz; i++)
       {
          CHECK(_CrtCheckMemory());
 
          std::_tstring message;
          message.erase();
-         message = (TCHAR)(i) + 'A';
+         message = (TCHAR)(i) + _T('A');
          mapper.WPtoDP(m_GirderBottoms[i].X(),m_GirderBottoms[i].Y(), &dvx, &dvy);
          dvy+=1;
-         ::TextOut( hDC, dvx, dvy, message.c_str(), message.size() );
+         ::TextOut( hDC, dvx, dvy, message.c_str(), (int)message.size() );
       }
    }
 
@@ -657,27 +659,27 @@ bool bmfBridge::DrawSection(HDC hDC, RECT& rect, Float64 station, UINT settings,
    return true;
 }
 
-Float64 bmfBridge::GetPierStation(Int32 pierId) const
+Float64 bmfBridge::GetPierStation(IDType pierId) const
 {
    bmfPier* pPier = GetPier(pierId);
    return pPier->GetStation();
 } // GetPierStation
 
 
-void bmfBridge::GetPierBearing(Int32 pierId,IDirection** ppBearing) const
+void bmfBridge::GetPierBearing(PierIDType pierId,IDirection** ppBearing) const
 {
    bmfPier* pPier = GetPier(pierId);
    pPier->GetBearing(ppBearing);
 }
 
-void bmfBridge::MovePier(Int32 pier,Float64 station)
+void bmfBridge::MovePier(PierIDType pier,Float64 station)
 {
    bmfPier* pPier = GetPier(pier);
    pPier->Move(station);
 } // MovePier
 
-void bmfBridge::LayoutGirderPaths(Int32 spanId,
-                               Int32 nGirders,
+void bmfBridge::LayoutGirderPaths(SpanIDType spanId,
+                               GirderIndexType nGirders,
                                Float64 spacing,
                                bmfMeasuredWhere where,
                                bmfMeasuredHow how)
@@ -686,19 +688,19 @@ void bmfBridge::LayoutGirderPaths(Int32 spanId,
    pSpan->LayoutGirderPaths(nGirders, spacing, where, how);
 } // LayoutGirderLines
 
-void bmfBridge::CreateGirder(Int32 spanId, bmfGirderTemplate* pTpl,Int32 gdrPathIdx)
+void bmfBridge::CreateGirder(SpanIDType spanId, bmfGirderTemplate* pTpl,GirderIndexType gdrPathIdx)
 {
    bmfSpan* pSpan = GetSpan(spanId);
    pSpan->CreateGirder( pTpl, gdrPathIdx );
 }
 
-bmfGirder* bmfBridge::GetGirder(Int32 spanId,Int32 gdrPathIdx)
+bmfGirder* bmfBridge::GetGirder(SpanIDType spanId,GirderIndexType gdrPathIdx)
 {
    bmfSpan* pSpan = GetSpan( spanId );
    return pSpan->GetGirder( gdrPathIdx );
 }
 
-const bmfGirder* bmfBridge::GetGirder(Int32 spanId,Int32 gdrPathIdx) const
+const bmfGirder* bmfBridge::GetGirder(SpanIDType spanId,GirderIndexType gdrPathIdx) const
 {
    const bmfSpan* pSpan = GetSpan( spanId );
    return pSpan->GetGirder( gdrPathIdx );
@@ -730,7 +732,7 @@ Float64 bmfBridge::GetLength()
 {
    Float64 length = 0;
    
-   for (Int32 span = 0; span < GetSpanCount(); span++)
+   for (SpanIndexType span = 0; span < GetSpanCount(); span++)
    {
       bmfSpan* pSpan = GetSpan(span);
       length += pSpan->GetLength();
@@ -739,7 +741,7 @@ Float64 bmfBridge::GetLength()
    return length;
 } // GetLength
 
-Float64 bmfBridge::GetSpanLength(Int32 spanId)
+Float64 bmfBridge::GetSpanLength(SpanIDType spanId)
 {
    PRECONDITION(spanId == 0); // only single span bridges currently supported
 
@@ -747,32 +749,32 @@ Float64 bmfBridge::GetSpanLength(Int32 spanId)
    return pSpan->GetLength();
 } // GetSpanLength
 
-bmfPierLayout bmfBridge::GetPierLayout(Int32 pier) const
+bmfPierLayout bmfBridge::GetPierLayout(PierIDType pier) const
 {
    bmfPier* pPier = GetPier(pier);
    return pPier->GetLayout();
 } // GetPierLocation
 
-void bmfBridge::LayoutPier(Int32 pierId,const bmfPierLayout& pl)
+void bmfBridge::LayoutPier(PierIDType pierId,const bmfPierLayout& pl)
 {
    bmfPier* pPier = GetPier(pierId);
    pPier->Layout(pl);
 } // SetPierLayout
 
-void bmfBridge::SetPierConnection(Int32 pierId,const bmfConnection* pConnection)
+void bmfBridge::SetPierConnection(PierIDType pierId,const bmfConnection* pConnection)
 {
    bmfPier* pPier = GetPier(pierId);
    pPier->SetConnection(pConnection);
 } // SetPierConnection
 
-Int32 bmfBridge::GetGirderPathCount(Int32 spanId) const
+GirderIndexType bmfBridge::GetGirderPathCount(SpanIDType spanId) const
 {
    const bmfSpan* pSpan = GetSpan(spanId);
    return pSpan->GetGirderPathCount();
 } // GetGirderLineCount
 
-void bmfBridge::GetGirderPathLayout(Int32 spanId,
-                                    Int32& nGirders,
+void bmfBridge::GetGirderPathLayout(SpanIDType spanId,
+                                    GirderIndexType& nGirders,
                                     Float64& spacing,
                                     bmfMeasuredWhere& where,
                                     bmfMeasuredHow& how) const
@@ -798,7 +800,7 @@ bmfPierFactory* bmfBridge::SetPierFactory(bmfPierFactory* pFactory)
 //======================== INQUIRY    =======================================
 
 #if defined _DEBUG
-void bmfBridge::DumpGirder(Int32 spanId,Int32 gdrPathIdx,LPCTSTR fname)
+void bmfBridge::DumpGirder(SpanIDType spanId,GirderIndexType gdrPathIdx,LPCTSTR fname)
 {
    std::_tofstream ofile( fname );
 
@@ -951,12 +953,12 @@ void bmfBridge::OnAlignmentChanged()
 //======================== LIFECYCLE  =======================================
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
-void bmfBridge::StoreSpan(Int32 spanId,bmfSpan* pSpan)
+void bmfBridge::StoreSpan(SpanIDType spanId,bmfSpan* pSpan)
 {
    m_Spans.insert( SpanEntry(spanId,boost::shared_ptr<bmfSpan>(pSpan)) );
 } // StoreSpan
 
-void bmfBridge::StorePier(Int32 pierId,bmfPier* pPier)
+void bmfBridge::StorePier(PierIDType pierId,bmfPier* pPier)
 {
 	m_Piers.insert( PierEntry(pierId,boost::shared_ptr<bmfPier>(pPier)) );
 } // StoreSpan
@@ -1011,7 +1013,7 @@ bool bmfBridge::BuildSectionShape(Float64 station) const
    // place girder shapes into composite.
    Float64 max_girder_loc = -Float64_Max;
    Float64 min_girder_loc = Float64_Max;
-   Int32 num_girds = pspan->GetGirderPathCount();
+   GirderIndexType num_girds = pspan->GetGirderPathCount();
 
    // store girder top flange widths, girder location, in pairs
    // (top flange widths are adjusted for skew. On curved bridges
@@ -1021,7 +1023,7 @@ bool bmfBridge::BuildSectionShape(Float64 station) const
    WidthLocVector  gird_locs;
 
    // ==== build and add girder shapes
-   for (Int32 i = 0; i<num_girds; i++)
+   for (GirderIndexType i = 0; i<num_girds; i++)
    {
       // offsets from alignment.
       Float64 girder_offset = pspan->GetGirderPathOffset(i, station); // this is normal to alignment
@@ -1169,8 +1171,8 @@ bool bmfBridge::BuildSectionShape(Float64 station) const
             std::auto_ptr<gmIShape> pshape( pprofile->CreateShape(end_dist,girder_length) );
             const gmIPrecastBeam* pBeam = dynamic_cast<const gmIPrecastBeam*>(pshape.get());
 
-            Int32 nMatingSurfaces = pBeam->GetNumberOfMatingSurfaces();
-            for ( Int32 j = 0; j < nMatingSurfaces; j++ )
+            CollectionIndexType nMatingSurfaces = pBeam->GetNumberOfMatingSurfaces();
+            for ( CollectionIndexType j = 0; j < nMatingSurfaces; j++ )
             {
                Float64 loc = pBeam->GetMatingSurfaceLocation(j); // location relative to center of beam
                Float64 width = pBeam->GetMatingSurfaceWidth(j);

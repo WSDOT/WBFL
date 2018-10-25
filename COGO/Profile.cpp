@@ -136,12 +136,18 @@ STDMETHODIMP CProfile::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
+STDMETHODIMP CProfile::get_Count(CollectionIndexType* pVal)
+{
+   CHECK_RETVAL(pVal);
+   *pVal = m_coll.size();
+   return S_OK;
+}
 
-STDMETHODIMP CProfile::get_Item(long idx,IProfileElement **pVal)
+STDMETHODIMP CProfile::get_Item(CollectionIndexType idx,IProfileElement **pVal)
 {
    CHECK_RETOBJ(pVal);
 
-   if ( idx < 0 || (long)m_coll.size() <= idx )
+   if ( idx < 0 || m_coll.size() <= idx )
       return E_INVALIDARG;
 
    ProfileType& type = m_coll[idx];
@@ -151,24 +157,24 @@ STDMETHODIMP CProfile::get_Item(long idx,IProfileElement **pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CProfile::putref_Item( long idx, IProfileElement* pVal)
+STDMETHODIMP CProfile::putref_Item( CollectionIndexType idx, IProfileElement* pVal)
 {
    CHECK_IN(pVal);
 
-   if ( idx < 0 || (long)m_coll.size() <= idx )
+   if ( idx < 0 || m_coll.size() <= idx )
       return E_INVALIDARG;
 
    // Get the item
    ProfileType& pt = m_coll[idx];
    CComVariant& var = pt.second; // Variant holding IUnknown to ProfileElement
 
-   Unadvise(idx); // Unadvise from the current element
+   UnadviseElement(idx); // Unadvise from the current element
 
    var = pVal; // Associate new ProfileElement with this variant
 
    // Advise
    DWORD dwCookie;
-   Advise(pVal,&dwCookie);
+   AdviseElement(pVal,&dwCookie);
 
    // Update the cookie
    pt.first = dwCookie;
@@ -215,7 +221,7 @@ STDMETHODIMP CProfile::Add(IProfileElement *element)
 {
    CHECK_IN(element);
    DWORD dwCookie;
-   Advise(element,&dwCookie);
+   AdviseElement(element,&dwCookie);
    m_coll.push_back( std::make_pair(dwCookie,CComVariant(element)) );
    std::sort(m_coll.begin(),m_coll.end(),SortProfileElements());
 
@@ -258,7 +264,7 @@ STDMETHODIMP CProfile::Remove(VARIANT varKey)
       if ( index < 0 || (long)m_coll.size() <= index )
          return E_INVALIDARG;
 
-      Unadvise(index);
+      UnadviseElement(index);
       m_coll.erase(m_coll.begin() + index);
    }
    else if ( varKey.vt == VT_UNKNOWN || varKey.vt == VT_DISPATCH )
@@ -289,7 +295,7 @@ STDMETHODIMP CProfile::Remove(VARIANT varKey)
               point   != NULL && point.IsEqualObject(dispVal)              ||
               vc      != NULL && vc.IsEqualObject(dispVal) )
          {
-            Unadvise(iter - m_coll.begin());
+            UnadviseElement(iter - m_coll.begin());
             m_coll.erase(iter);
             bRemoved = true;
             break; // exit the loop
@@ -438,9 +444,9 @@ STDMETHODIMP CProfile::Save(IStructuredSave2* pSave)
    pSave->BeginUnit(CComBSTR("Profile"),1.0);
 
    pSave->BeginUnit(CComBSTR("ProfileElements"),1.0);
-   long count = m_coll.size();
+   CollectionIndexType count = m_coll.size();
    pSave->put_Property(CComBSTR("Count"),CComVariant(count));
-   for ( long i = 0; i < count; i++ )
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       pSave->put_Property(CComBSTR("ProfileElement"),m_coll[i].second);
    }
@@ -948,7 +954,7 @@ Float64 CProfile::AdjustForOffset(CComPtr<IStation>& station,Float64 offset,Floa
    return elev;
 }
 
-void CProfile::Advise(IProfileElement* element,DWORD* pdwCookie)
+void CProfile::AdviseElement(IProfileElement* element,DWORD* pdwCookie)
 {
    HRESULT hr = AtlAdvise(element,GetUnknown(),IID_IProfileElementEvents,pdwCookie);
    if ( FAILED(hr) )
@@ -961,7 +967,7 @@ void CProfile::Advise(IProfileElement* element,DWORD* pdwCookie)
    InternalRelease(); // Break circular reference
 }
 
-void CProfile::Unadvise(long idx)
+void CProfile::UnadviseElement(CollectionIndexType idx)
 {
    //
    // Disconnection from connection CrossSection
@@ -970,13 +976,13 @@ void CProfile::Unadvise(long idx)
    if ( p.first == 0 )
       return;
 
-   CogoElementKey dwCookie = p.first;
+   DWORD dwCookie = (DWORD)p.first;
    CComVariant& var = p.second;
 
    InternalAddRef(); // Counteract InternalRelease() in Advise
 
    // Find the connection point and disconnection
-   HRESULT hr = AtlUnadvise( var.pdispVal, IID_IProfileElementEvents, (DWORD)dwCookie );
+   HRESULT hr = AtlUnadvise( var.pdispVal, IID_IProfileElementEvents, dwCookie );
    ATLASSERT(SUCCEEDED(hr));
 
    p.first = 0;
@@ -984,9 +990,9 @@ void CProfile::Unadvise(long idx)
 
 void CProfile::UnadviseAll()
 {
-   for ( long i = 0; i < (long)m_coll.size(); i++ )
+   for ( CollectionIndexType i = 0; i < m_coll.size(); i++ )
    {
-      Unadvise(i);
+      UnadviseElement(i);
    }
 }
 

@@ -572,7 +572,7 @@ void CTestStrandPattern::Test()
    TRY_TEST(l1, 3.0);
 
    fill_array.Release();
-   Int32 item;
+   IDType item;
    TRY_TEST(strand_filler->GetDebondAtLeftSection(0, &fill_array),S_OK);
    TRY_TEST(fill_array->get_Count(&count),S_OK);
    TRY_TEST(count,1);

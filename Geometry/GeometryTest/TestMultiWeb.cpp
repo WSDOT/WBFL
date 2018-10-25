@@ -311,7 +311,7 @@ void CTestMultiWeb::TestIShape()
    coll->get__Enum(&Enum);
    CComPtr<IPoint2d> points[16];
    ULONG fetched;
-   Enum->Next(cPoints,&points[0],&fetched);
+   Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
 
    Float64 x,y;
@@ -474,7 +474,7 @@ void CTestMultiWeb::TestIShape()
    TRY_TEST( cPoints, 16 );
 
    coll->get__Enum(&Enum);
-   Enum->Next(cPoints,&points[0],&fetched);
+   Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
 
    points[0]->get_X(&x);
@@ -579,7 +579,7 @@ void CTestMultiWeb::TestIShape()
    TRY_TEST( cPoints, 5);
 
    coll->get__Enum(&Enum);
-   Enum->Next(cPoints,&points[0],&fetched);
+   Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
 
    points[0]->get_X(&x);
@@ -649,7 +649,7 @@ void CTestMultiWeb::TestIShape()
 
 
    coll->get__Enum(&Enum);
-   Enum->Next(cPoints,&points[0],&fetched);
+   Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
 
    points[0]->get_X(&x);
@@ -727,7 +727,7 @@ void CTestMultiWeb::TestIXYPosition()
    coll->get__Enum(&Enum);
    CComPtr<IPoint2d> points[16];
    ULONG fetched;
-   Enum->Next(cPoints,&points[0],&fetched);
+   Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
 
    Float64 x,y;
@@ -835,7 +835,7 @@ void CTestMultiWeb::TestIXYPosition()
    TRY_TEST( cPoints,16);
 
    coll->get__Enum(&Enum);
-   Enum->Next(cPoints,&points[0],&fetched);
+   Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
 
    points[0]->get_X(&x);
@@ -1098,7 +1098,7 @@ void CTestMultiWeb::TestIXYPosition()
    TRY_TEST( cPoints,16);
 
    coll->get__Enum(&Enum);
-   Enum->Next(cPoints,&points[0],&fetched);
+   Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
 
    points[0]->get_X(&x);

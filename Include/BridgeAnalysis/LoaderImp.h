@@ -39,7 +39,7 @@ public:
 
    void RemoveLoad();
    void AddBeam(rkRoarkBeam* pBeam);
-   void AddReaction(Float64 P,Int32 supportId);
+   void AddReaction(Float64 P,PierIDType supportId);
 
 protected:
    bamBridgeModelImp* GetBridgeModel();

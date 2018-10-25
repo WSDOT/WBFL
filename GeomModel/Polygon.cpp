@@ -116,7 +116,7 @@ const gpPoint2d* gmPolygon::GetPoint(Uint32 key) const
    return  m_PolygonImp.GetPoint(key);
 }
 
-Uint32 gmPolygon::GetNumPoints() const
+CollectionIndexType gmPolygon::GetNumPoints() const
 {
    return m_PolygonImp.GetNumPoints();
 }
@@ -262,7 +262,7 @@ Float64 gmPolygon::GetFurthestDistance(const gpLine2d& line, gpLine2d::Side side
 
 void gmPolygon::Draw(HDC hDC, const grlibPointMapper& mapper) const
 {
-   const unsigned num_points = m_PolygonImp.GetNumPoints();
+   CollectionIndexType num_points = m_PolygonImp.GetNumPoints();
    if (num_points==0) return;
 
    POINT* device_points;
@@ -278,11 +278,11 @@ void gmPolygon::Draw(HDC hDC, const grlibPointMapper& mapper) const
 
    device_points = new POINT[num_points+1];  // add one for closure point
 
-   Uint32 point=0;
+   LONG point=0;
    gpPolyPointIter2d it(&(this->m_PolygonImp));
    for (it.Begin(); it; it.Next())
    {
-      long   dx,dy;
+      LONG dx,dy;
 
       const gpPoint2d* wp = it.CurrentPoint();
       mapper.WPtoDP(wp->X(),wp->Y(),&dx,&dy);
@@ -298,11 +298,11 @@ void gmPolygon::Draw(HDC hDC, const grlibPointMapper& mapper) const
       // ALTERNATE is the Windows default, I will set it here
       // anyway just incase someone decides to change the default.
       ::SetPolyFillMode(hDC,ALTERNATE);
-      ::Polygon(hDC,device_points,num_points+1);
+      ::Polygon(hDC,device_points,(int)num_points+1);
    }
    else
    {
-      ::Polyline(hDC,device_points,num_points+1);
+      ::Polyline(hDC,device_points,(int)num_points+1);
    }
 
    delete[] device_points;

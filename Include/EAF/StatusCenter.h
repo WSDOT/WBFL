@@ -64,7 +64,7 @@ public:
    StatusCallbackIDType RegisterCallbackItem(iStatusCallback* pCallback);
    eafTypes::StatusSeverityType GetSeverity(StatusCallbackIDType callbackID);
 
-   void EditItem(CollectionIndexType index);
+   void EditItem(StatusItemIDType id);
 
    void SinkEvents(IEAFStatusCenterEventSink* pSink);
    void UnSinkEvents(IEAFStatusCenterEventSink* pSink);

@@ -63,8 +63,8 @@ public:
    // Method:      CreateConcForceY
    // Description: Creates a concentrated force in the Y direction
    // Return:      Id of the load
-   Int32 CreateConcForceY(Int32 loadCaseId,                  // load case id to which to add this load
-                         Int32 elementId,                   // element id where this load will be applied
+   CollectionIndexType CreateConcForceY(IDType loadCaseId,                  // load case id to which to add this load
+                         IDType elementId,                   // element id where this load will be applied
                          bamElementType type,               // the element type
                          Float64 location,                  // location of the load measured from the start of the element
                          Float64 p,                         // magnitude of the load 
@@ -75,8 +75,8 @@ public:
    // Method:      CreateUnifForceY
    // Description: Creates a uniform force in the Y direction
    // Return:      Id of the load
-   Int32 CreateUnifForceY(Int32 loadCaseId,
-                         Int32 elementId,
+   CollectionIndexType CreateUnifForceY(IDType loadCaseId,
+                         IDType elementId,
                          bamElementType type,
                          Float64 start,
                          Float64 end,
@@ -88,8 +88,8 @@ public:
    // Method:      CreateConcMomentZ
    // Description: Creates a concentrated moment about the Z axis
    // Return:      Id of the load
-   Int32 CreateConcMomentZ(Int32 loadCaseId,                  // load case id to which to add this load
-                           Int32 elementId,                   // element id where this load will be applied
+   CollectionIndexType CreateConcMomentZ(IDType loadCaseId,                  // load case id to which to add this load
+                           IDType elementId,                   // element id where this load will be applied
                            bamElementType type,               // the element type
                            Float64 location,                  // location of the load measured from the start of the element
                            Float64 m,                         // magnitude of the load 
@@ -103,20 +103,20 @@ protected:
    // LIFECYCLE
    // OPERATORS
    // OPERATIONS
-   virtual bamLoad* DoCreateConcForceY(Int32 elementId,
+   virtual bamLoad* DoCreateConcForceY(IDType elementId,
                                       bamElementType type,
                                       Float64 location,
                                       Float64 p,
                                       bool isFractional = false,
                                       bamLoadDirection direction = Local) = 0;
-   virtual bamLoad* DoCreateUnifForceY(Int32 elementId,
+   virtual bamLoad* DoCreateUnifForceY(IDType elementId,
                                       bamElementType type,
                                       Float64 start,
                                       Float64 end,
                                       Float64 w,
                                       bool isFractional = false,
                                       bamLoadDirection direction = Local) = 0;
-   virtual bamLoad* DoCreateConcMomentZ(Int32 elementId,
+   virtual bamLoad* DoCreateConcMomentZ(IDType elementId,
                                         bamElementType type,
                                         Float64 location,
                                         Float64 m,

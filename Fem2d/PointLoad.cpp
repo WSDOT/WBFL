@@ -58,7 +58,7 @@ STDMETHODIMP CPointLoad::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-void CPointLoad::Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, long ID, long memberID, Float64 location, Float64 Fx, Float64 Fy, Float64 Mz,Fem2dLoadOrientation orientation)
+void CPointLoad::Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, LoadIDType ID, MemberIDType memberID, Float64 location, Float64 Fx, Float64 Fy, Float64 Mz,Fem2dLoadOrientation orientation)
 {
    ATLASSERT(pLoading!=0);
    CheckLoadOrientation(orientation);

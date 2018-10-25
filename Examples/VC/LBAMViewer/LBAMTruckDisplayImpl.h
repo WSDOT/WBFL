@@ -17,7 +17,7 @@ public:
    END_INTERFACE_PART(Strategy)
 
    BEGIN_INTERFACE_PART(Events,iLBAMTruckEvents)
-      STDMETHOD_(void,Init)(iPointDisplayObject* pDO,ILBAMModel* model, LiveLoadModelType modelType, long vehicleIndex, ILiveLoadConfiguration* placement);
+      STDMETHOD_(void,Init)(iPointDisplayObject* pDO,ILBAMModel* model, LiveLoadModelType modelType, VehicleIndexType vehicleIndex, ILiveLoadConfiguration* placement);
       STDMETHOD_(void,GetLiveLoadConfiguration)(ILiveLoadConfiguration** dispObj);
 		STDMETHOD_(void,GetRoadwayElevation)(double *pVal);
 		STDMETHOD_(void,SetRoadwayElevation)(iPointDisplayObject* pDO, double newVal);

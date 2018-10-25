@@ -42,7 +42,7 @@ static char THIS_FILE[] = __FILE__;
 
 //======================== LIFECYCLE  =======================================
 
-bamDeadLoadCase::bamDeadLoadCase(Int32 loadCaseIdx) :
+bamDeadLoadCase::bamDeadLoadCase(IDType loadCaseIdx) :
 bamLoadCase(loadCaseIdx)
 {
 } // bamDeadLoadCase
@@ -56,14 +56,14 @@ bamDeadLoadCase::~bamDeadLoadCase()
 void bamDeadLoadCase::Apply()
 {
    bamLoadCase::Apply();
-   Int32 element_count;
-   Int32* element_list;
+   CollectionIndexType element_count;
+   IDType* element_list;
 
    element_count = GetBridgeModel().GetSpanElementCount();
-   element_list = new Int32[element_count];
+   element_list = new IDType[element_count];
    GetBridgeModel().EnumSpanElements( &element_list, element_count );
 
-   for (Int32 spanIdx = 0; spanIdx < element_count; spanIdx++)
+   for (SpanIndexType spanIdx = 0; spanIdx < element_count; spanIdx++)
    {
       // Skip this span if its id is in the exclusion list
       if ( std::find(m_ExcludedSpans.begin(),
@@ -87,10 +87,10 @@ void bamDeadLoadCase::Apply()
    delete[] element_list;
 
    element_count = GetBridgeModel().GetSupportElementCount();
-   element_list = new Int32[element_count];
+   element_list = new IDType[element_count];
    GetBridgeModel().EnumSupportElements( &element_list, element_count );
 
-   for (Int32 supportIdx = 0; supportIdx < element_count; supportIdx++)
+   for (SupportIndexType supportIdx = 0; supportIdx < element_count; supportIdx++)
    {
       bamLoad* pLoad;
       bamSupportElement* pSupportElement;
@@ -129,27 +129,27 @@ void bamDeadLoadCase::Remove()
 
 } // Remove
 
-void bamDeadLoadCase::ExcludeSpan(Int32 spanElementId)
+void bamDeadLoadCase::ExcludeSpan(SpanIDType spanElementId)
 {
    m_ExcludedSpans.push_back( spanElementId );
 }
 
-void bamDeadLoadCase::ExcludeSupport(Int32 supportElementId)
+void bamDeadLoadCase::ExcludeSupport(SupportIDType supportElementId)
 {
    m_ExcludedSupports.push_back( supportElementId );
 }
 
-void bamDeadLoadCase::ExcludeSpans(Int32** ppSpans,Int32 count)
+void bamDeadLoadCase::ExcludeSpans(SpanIDType** ppSpans,SpanIndexType count)
 {
-   for (Int32 idx = 0; idx < count; idx++)
+   for (SpanIndexType idx = 0; idx < count; idx++)
    {
       m_ExcludedSpans.push_back( (*ppSpans)[idx] );
    }
 } // ExcludeSpans
 
-void bamDeadLoadCase::ExcludeSupports(Int32** ppSupports,Int32 count)
+void bamDeadLoadCase::ExcludeSupports(SupportIDType** ppSupports,SupportIndexType count)
 {
-   for (Int32 idx = 0; idx < count; idx++)
+   for (SupportIndexType idx = 0; idx < count; idx++)
    {
       m_ExcludedSupports.push_back( (*ppSupports)[idx] );
    }
@@ -186,7 +186,7 @@ void bamDeadLoadCase::Dump(dbgDumpContext& os) const
    os << "Dump for bamDeadLoadCase" << endl;
    bamLoadCase::Dump( os );
 
-   std::vector<Int32>::const_iterator i;
+   std::vector<SpanIDType>::const_iterator i;
    os << "Excluded Spans" << endl;
    for ( i = m_ExcludedSpans.begin(); i < m_ExcludedSpans.end(); i++ )
    {

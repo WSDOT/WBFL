@@ -136,7 +136,7 @@ private:
 
    void UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,ISpan* pSpan);
    void UpdateGirderEndPoints(SpanIndexType spanIdx,GirderIndexType gdrIdx);
-   void GetEndDistance(EndType end,long brgPntID,long pierPntID,long girderLineID,IConnection* connection,IPier* pier,Float64* endDist);
+   void GetEndDistance(EndType end,CogoElementKey brgPntID,CogoElementKey pierPntID,CogoElementKey girderLineID,IConnection* connection,IPier* pier,Float64* endDist);
 
 // ISupportsErrorInfo
 public:

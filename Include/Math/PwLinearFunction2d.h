@@ -91,12 +91,12 @@ public:
    //------------------------------------------------------------------------
    // GetNumPoints
    // Returns the number of points which define the segments of the function.
-   virtual Uint32 GetNumPoints() const=0;
+   virtual CollectionIndexType GetNumPoints() const=0;
 
    //------------------------------------------------------------------------
    // GetPoint
    // Returns the ith point. (zero-based)
-   virtual gpPoint2d GetPoint(Uint32 pnum) const=0;
+   virtual gpPoint2d GetPoint(CollectionIndexType pnum) const=0;
 
    //------------------------------------------------------------------------
    // GetPoints

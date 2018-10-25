@@ -11,7 +11,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-static DWORD CALLBACK StreamInCtrl(DWORD dwCookie, LPBYTE pbBuff, LONG cb, LONG* pcb )
+static DWORD CALLBACK StreamInCtrl(DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG* pcb )
 {
    CString* pstr = (CString*)dwCookie;
 
@@ -19,13 +19,13 @@ static DWORD CALLBACK StreamInCtrl(DWORD dwCookie, LPBYTE pbBuff, LONG cb, LONG*
    if ( leng < cb )
    {
       *pcb = leng;
-      memcpy( pbBuff, (LPCSTR)*pstr, *pcb );
+      memcpy( pbBuff, (LPCTSTR)*pstr, *pcb );
       pstr->Empty();
    }
    else
    {
       *pcb = cb;
-      memcpy( pbBuff, (LPCSTR)*pstr, *pcb );
+      memcpy( pbBuff, (LPCTSTR)*pstr, *pcb );
       *pstr = pstr->Right( leng - cb );
    }
 

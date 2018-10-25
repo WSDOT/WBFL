@@ -1392,7 +1392,7 @@ void CBruteForceVehicularResponse2::EvaluateForMinMoment(LiveLoadModelType type,
    CHRException hr;
 
    ATLASSERT( m_Truck.IsVariableAxle() );
-   long variableAxleIndex = m_Truck.GetVariableAxleIndex();
+   AxleIndexType variableAxleIndex = m_Truck.GetVariableAxleIndex();
 
    Float64 minVariableAxleSpacing = m_Truck.GetMinVariableAxleSpacing();
    Float64 maxVariableAxleSpacing = m_Truck.GetMaxVariableAxleSpacing();
@@ -1636,7 +1636,7 @@ void CBruteForceVehicularResponse2::EvaluateForMinMoment(LiveLoadModelType type,
                prevMinLocation = temp;
             }
 
-            for ( long frontAxleIndex = 0; frontAxleIndex <= variableAxleIndex; frontAxleIndex++ )
+            for ( AxleIndexType frontAxleIndex = 0; frontAxleIndex <= variableAxleIndex; frontAxleIndex++ )
             {
                // compute a variable axle spacing such that each axle after the variable axle is at the
                // min influence value in the previous span
@@ -1647,6 +1647,10 @@ void CBruteForceVehicularResponse2::EvaluateForMinMoment(LiveLoadModelType type,
                {
                   Float64 truck_location       = (bPivotOnRearAxle ? prevMinLocation : nextMinLocation);
                   AxleIndexType pivotAxleIndex = (bPivotOnRearAxle ? rearAxleIndex   : frontAxleIndex);
+
+                  ATLASSERT(rearAxleIndex     != INVALID_INDEX && rearAxleIndex     < nAxles);
+                  ATLASSERT(frontAxleIndex    != INVALID_INDEX && frontAxleIndex    < nAxles);
+                  ATLASSERT(variableAxleIndex != INVALID_INDEX && variableAxleIndex < nAxles);
 
                   m_Truck.SetTruckDirection(direction,pivotAxleIndex); 
 

@@ -543,7 +543,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeStresses(ILongArray* POIs, BSTR sta
 
       for (CollectionIndexType i=0; i<num_res; i++)
       {
-         long poi_id;
+         PoiIDType poi_id;
          hr = POIs->get_Item(i,&poi_id);
 
          CComPtr<ISectionStressResult> stress_res;
@@ -737,7 +737,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeResponse(ILongArray* POIs, BSTR sta
          {
             HANDLE_CANCEL_PROGRESS();
 
-            long poi_id;
+            PoiIDType poi_id;
             hr = POIs->get_Item(ipoi, &poi_id);
 
             // our result
@@ -966,7 +966,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeResponse(ILongArray* POIs, BSTR sta
          // results are not applicable - just add empty results and return
          for (CollectionIndexType ipoi=0; ipoi<poi_cnt; ipoi++)
          {
-            long poi_id;
+            PoiIDType poi_id;
             hr = POIs->get_Item(ipoi, &poi_id);
 
             // our result
@@ -1002,7 +1002,7 @@ void CBasicVehicularResponse::AssertValid()
 
 
 
-void CBasicVehicularResponse::GetStressPoints(long poiID, BSTR stage, IStressPoints* *leftSps, IStressPoints* *rightSps)
+void CBasicVehicularResponse::GetStressPoints(PoiIDType poiID, BSTR stage, IStressPoints* *leftSps, IStressPoints* *rightSps)
 {
    CHRException hr;
 

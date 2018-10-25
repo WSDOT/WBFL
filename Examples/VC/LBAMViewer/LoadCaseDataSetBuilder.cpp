@@ -51,7 +51,7 @@ void LoadCaseDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArray* locLi
       CollectionIndexType new_size=0;
       for (CollectionIndexType ip=0; ip<size; ip++)
       {
-         long id;
+         IDType id;
          poiList->get_Item(ip, &id);
          if (id>=0)
          {
@@ -166,7 +166,7 @@ void LoadCaseDataSetBuilder::BuildStressDataSets(ILongArray* arr, IDblArray* loc
          CComQIPtr<iSymbolLegendEntry> entry(fac);
 
          entry->put_Color(color);
-         entry->put_SymbolCharacterCode(49+isp);
+         entry->put_SymbolCharacterCode(DWORD(49+isp));
          entry->put_DoDrawLine(TRUE);
 
          entry->put_Name(m_LoadCase);
@@ -244,7 +244,7 @@ void LoadCaseDataSetBuilder::BuildStressDataSets(ILongArray* arr, IDblArray* loc
 
 void LoadCaseDataSetBuilder::BuildReactionReport(ILongArray* supportlist, BSTR currStg,
                              CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                             std::ostream& os)
+                             std::_tostream& os)
 {
    HRESULT hr;
    bool is_force; // force or deflection
@@ -267,7 +267,7 @@ void LoadCaseDataSetBuilder::BuildReactionReport(ILongArray* supportlist, BSTR c
 
    os<<C_R<<"------------------------------------------"<<C_R;
    
-   os<<(is_force?"Reactions":"Support Deflections")<<" for Load Case "<<(const char*)CString(m_LoadCase)<<C_R;
+   os<<(is_force?"Reactions":"Support Deflections")<<" for Load Case "<<(const TCHAR*)CString(m_LoadCase)<<C_R;
 
    CString st;
    if (summType==rsCumulative)
@@ -275,7 +275,7 @@ void LoadCaseDataSetBuilder::BuildReactionReport(ILongArray* supportlist, BSTR c
    else
       st = " Incremental";
 
-   os<<(const char*)st<<" results for Stage: "<<(const char*)CString(currStg)<<C_R<<C_R;
+   os<<(const TCHAR*)st<<" results for Stage: "<<(const TCHAR*)CString(currStg)<<C_R<<C_R;
 
    if (is_force)
       os<<"Support        Rx         Ry           Mz"<<C_R;
@@ -307,7 +307,7 @@ void LoadCaseDataSetBuilder::BuildReactionReport(ILongArray* supportlist, BSTR c
       hr = sr->GetResult(&fx, &fy, &fz);
       PROCESS_HR(hr);
 
-      long sup;
+      IDType sup;
       supportlist->get_Item(i,&sup);
       os<<std::setw(7)<<sup<<std::fixed<<std::setprecision(2)<<std::setw(13)<<fx<<std::setw(13)<<fy<<std::setw(13)<<fz<<C_R;
 

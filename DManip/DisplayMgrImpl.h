@@ -70,30 +70,30 @@ public:
 
    // Display List Management
    STDMETHOD_(void,AddDisplayList)(iDisplayList* pDL);
-   STDMETHOD_(void,GetDisplayList)(long idx,iDisplayList** list);
-   STDMETHOD_(void,FindDisplayList)(long id,iDisplayList** list);
-   STDMETHOD_(long,GetDisplayListCount)();
-   STDMETHOD_(void,RemoveDisplayList)(long key,AccessType access);
+   STDMETHOD_(void,GetDisplayList)(CollectionIndexType idx,iDisplayList** list);
+   STDMETHOD_(void,FindDisplayList)(IDType id,iDisplayList** list);
+   STDMETHOD_(CollectionIndexType,GetDisplayListCount)();
+   STDMETHOD_(void,RemoveDisplayList)(IDType key,AccessType access);
    STDMETHOD_(void,ClearDisplayLists)();
 
    // Display Object Management
-   STDMETHOD_(void,AddDisplayObject)(iDisplayObject* pDO,long key,AccessType access);
-   STDMETHOD_(void,FindDisplayObject)(long id,long listKey,AccessType access,iDisplayObject** dispObj);
+   STDMETHOD_(void,AddDisplayObject)(iDisplayObject* pDO,IDType key,AccessType access);
+   STDMETHOD_(void,FindDisplayObject)(IDType id,IDType listKey,AccessType access,iDisplayObject** dispObj);
    STDMETHOD_(void,FindDisplayObjects)(CPoint point,DisplayObjectContainer* dispObjs);
    STDMETHOD_(void,FindDisplayObjects)(IPoint2d* point,DisplayObjectContainer* dispObjs);
    STDMETHOD_(void,FindDisplayObjects)(CRect rect,DisplayObjectContainer* dispObjs);
-   STDMETHOD_(void,RemoveDisplayObject)(long doKey,AccessType doAccess,long dlKey,AccessType dlAccess);
+   STDMETHOD_(void,RemoveDisplayObject)(IDType doKey,AccessType doAccess,IDType dlKey,AccessType dlAccess);
    STDMETHOD_(void,ClearDisplayObjects)();
-   STDMETHOD_(void,ClearDisplayObjects)(long key,AccessType access);
-   STDMETHOD_(long,GetDisplayObjectCount)();
-   STDMETHOD_(long,GetDisplayObjectFactoryCount)();
+   STDMETHOD_(void,ClearDisplayObjects)(IDType key,AccessType access);
+   STDMETHOD_(CollectionIndexType,GetDisplayObjectCount)();
+   STDMETHOD_(CollectionIndexType,GetDisplayObjectFactoryCount)();
    STDMETHOD_(void,AddDisplayObjectFactory)(iDisplayObjectFactory* factory);
-   STDMETHOD_(void,GetDisplayObjectFactory)(long idx, iDisplayObjectFactory** factory);
+   STDMETHOD_(void,GetDisplayObjectFactory)(CollectionIndexType idx, iDisplayObjectFactory** factory);
 
    STDMETHOD_(void,SelectObject)(iDisplayObject* pDO,BOOL bClearSelection);
    STDMETHOD_(void,SelectObjects)(CRect r);
    STDMETHOD_(void,ClearSelectedObjects)();
-   STDMETHOD_(void,ClearSelectedObjectsByList)(long key,AccessType access,BOOL bInclusive);
+   STDMETHOD_(void,ClearSelectedObjectsByList)(IDType key,AccessType access,BOOL bInclusive);
    STDMETHOD_(void,GetSelectedObjects)(DisplayObjectContainer* selObjs);
    STDMETHOD_(void,SelectAll)(BOOL bSelect);
 
@@ -131,7 +131,7 @@ public:
    STDMETHOD_(bool,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags);
    STDMETHOD_(bool,OnContextMenu)(CWnd* pWnd,CPoint point);
    STDMETHOD_(BOOL,OnNeedToolTipText)(UINT id,NMHDR* pNMHDR,LRESULT* pResult);
-   STDMETHOD_(int,OnToolHitTest)(CPoint point,TOOLINFO* pTI);
+   STDMETHOD_(INT_PTR,OnToolHitTest)(CPoint point,TOOLINFO* pTI);
 
   	STDMETHOD_(DROPEFFECT,OnDragEnter)(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point);
 	STDMETHOD_(void,OnDragLeave)();
@@ -154,9 +154,9 @@ public:
    STDMETHOD_(void,SetTask)(iTask* pTask);
 
    // iDisplayListEvents
-   STDMETHOD_(void,OnDisplayObjectAdded)(long listID,iDisplayObject* pDO);
-   STDMETHOD_(void,OnDisplayObjectRemoved)(long listID,long doID);
-   STDMETHOD_(void,OnDisplayObjectsCleared)(long listID);
+   STDMETHOD_(void,OnDisplayObjectAdded)(IDType listID,iDisplayObject* pDO);
+   STDMETHOD_(void,OnDisplayObjectRemoved)(IDType listID,SIZE_T doID);
+   STDMETHOD_(void,OnDisplayObjectsCleared)(IDType listID);
 
    // Event Sink - This gives the canvas a pluggable event handling strategy for events 
    //              that are not handled by display objects

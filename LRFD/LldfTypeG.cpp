@@ -857,7 +857,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeF::GetMomentDF_Int_1_Stren
 
       Float64 K = (bSISpec ? 2.8 : 33.3);
 
-      Float64 k = 2.5*pow(GetNb(), -0.2);
+      Float64 k = 2.5*pow((Float64)GetNb(), -0.2);
       if ( k < 1.5 )
          k = 1.5;
 
@@ -901,7 +901,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeF::GetMomentDF_Int_2_Stren
       Float64 K1 = (bSISpec ? 7600 : 305);
       Float64 K2 = (bSISpec ?    1 :  12);
 
-      Float64 k = 2.5*pow(GetNb(),-0.2);
+      Float64 k = 2.5*pow((Float64)GetNb(),-0.2);
       if ( k < 1.5 )
          k = 1.5;
 

@@ -133,6 +133,14 @@ public:
    virtual void Property(LPCTSTR name, Uint32 value);
 
    //------------------------------------------------------------------------
+   // Write an integral property
+   virtual void Property(LPCTSTR name, Int64 value);
+
+   //------------------------------------------------------------------------
+   // Write an unsigned integral property
+   virtual void Property(LPCTSTR name, Uint64 value);
+
+   //------------------------------------------------------------------------
    // Write a bool property
    virtual void Property(LPCTSTR name, bool value);
 

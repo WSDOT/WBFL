@@ -39,7 +39,7 @@ static const int CMENU_BASE = 100;
 static const long BOX_WIDTH  = 2;
 static const long BOX_HEIGHT = 1;
 
-static long GetNumCols(long numRows, long Size)
+static ColumnIndexType GetNumCols(RowIndexType numRows, RowIndexType Size)
 {
    ATLASSERT(numRows>0);
 
@@ -208,7 +208,7 @@ STDMETHODIMP_(void) CLegendDisplayObject::get_Font(LOGFONT* pFont)
    *pFont = m_Font;
 }
 
-STDMETHODIMP_(void) CLegendDisplayObject::get_NumEntries(long* count)
+STDMETHODIMP_(void) CLegendDisplayObject::get_NumEntries(CollectionIndexType* count)
 {
    *count = m_Container.size();
 }
@@ -218,9 +218,9 @@ STDMETHODIMP_(void) CLegendDisplayObject::AddEntry(iLegendEntry* entry)
    m_Container.push_back(ContainerItem( entry ));
 }
 
-STDMETHODIMP_(HRESULT) CLegendDisplayObject::InsertEntry(long index, iLegendEntry* entry)
+STDMETHODIMP_(HRESULT) CLegendDisplayObject::InsertEntry(CollectionIndexType index, iLegendEntry* entry)
 {
-   if (index<0 || index>(long)m_Container.size()+1)
+   if (index<0 || index>m_Container.size()+1)
       return E_INVALIDARG;
 
    if (index==m_Container.size())
@@ -236,19 +236,19 @@ STDMETHODIMP_(HRESULT) CLegendDisplayObject::InsertEntry(long index, iLegendEntr
    return S_OK;
 }
 
-STDMETHODIMP_(HRESULT) CLegendDisplayObject::get_Entry(long index, iLegendEntry* *entry)
+STDMETHODIMP_(HRESULT) CLegendDisplayObject::get_Entry(CollectionIndexType index, iLegendEntry* *entry)
 {
    (*entry) = 0;
-   if ( index < 0 || (long)m_Container.size() <= index )
+   if ( index < 0 || m_Container.size() <= index )
       return E_FAIL;
 
    ContainerItem ppt = m_Container[index];
    return ppt.m_T.CopyTo(entry);
 }
 
-STDMETHODIMP_(HRESULT) CLegendDisplayObject::RemoveEntry(long index)
+STDMETHODIMP_(HRESULT) CLegendDisplayObject::RemoveEntry(CollectionIndexType index)
 {
-   if (index<0 || index>(long)m_Container.size()-1)
+   if (index<0 || index>m_Container.size()-1)
       return E_INVALIDARG;
 
       ContainerIterator it = m_Container.begin();
@@ -263,12 +263,12 @@ STDMETHODIMP_(void) CLegendDisplayObject::ClearEntries()
    m_Container.clear();
 }
 
-STDMETHODIMP_(void) CLegendDisplayObject::get_NumRows(long* count)
+STDMETHODIMP_(void) CLegendDisplayObject::get_NumRows(CollectionIndexType* count)
 {
    *count = m_NumRows;
 }
 
-STDMETHODIMP_(void) CLegendDisplayObject::put_NumRows(long count)
+STDMETHODIMP_(void) CLegendDisplayObject::put_NumRows(CollectionIndexType count)
 {
    if (count>0 && m_NumRows!=count)
    {
@@ -459,15 +459,15 @@ void CLegendDisplayObject::Draw(CDC* pDC, iCoordinateMap* pMap, const CPoint& lo
    CSize csize_twips;
    get_CellSize(&csize_twips);
 
-   long lcwidth  = long(csize_twips.cx * lx_per_twip);
-   long lcheight = long(csize_twips.cy * ly_per_twip);
+   LONG lcwidth  = LONG(csize_twips.cx * lx_per_twip);
+   LONG lcheight = LONG(csize_twips.cy * ly_per_twip);
 
    // total width and height of legend box in logical coords
-   long num_entries = m_Container.size();
-   long num_cols = GetNumCols(m_NumRows, num_entries);
+   CollectionIndexType num_entries = m_Container.size();
+   ColumnIndexType num_cols = GetNumCols(m_NumRows, num_entries);
 
-   long lwidth  = num_cols  * lcwidth;
-   long lheight = m_NumRows * lcheight;
+   LONG lwidth  = (LONG)(num_cols  * lcwidth);
+   LONG lheight = (LONG)(m_NumRows * lcheight);
 
    // fill backgrgound if asked
    COLORREF old_col = pDC->GetBkColor();
@@ -497,16 +497,16 @@ void CLegendDisplayObject::Draw(CDC* pDC, iCoordinateMap* pMap, const CPoint& lo
    if (m_Title.Length() >0 && !beingDragged) // dont' draw text if we are being dragged
    {
       // make title font darker and bigger
-      long old_wt = m_Font.lfWeight;
+      LONG old_wt = m_Font.lfWeight;
       m_Font.lfWeight = old_wt>700 ? FW_BLACK : old_wt+200;
-      long old_ht = m_Font.lfHeight;
+      LONG old_ht = m_Font.lfHeight;
       m_Font.lfHeight += 10; 
 
       CString str(m_Title);
       CSize str_size = pMap->GetTextExtent(m_Font, str);
 
-      long tx = location.x + lwidth/2 - str_size.cx/2;
-      long ty = location.y  + lcheight/8;
+      LONG tx = location.x + lwidth/2 - str_size.cx/2;
+      LONG ty = location.y  + lcheight/8;
 
       CFont tfont;
       tfont.CreatePointFontIndirect(&m_Font, pDC);
@@ -530,27 +530,27 @@ void CLegendDisplayObject::Draw(CDC* pDC, iCoordinateMap* pMap, const CPoint& lo
    }
 
    // legend item draw rect is factor of font size
-   long font_twips = m_Font.lfHeight * 2; // height is in 10th points
+   LONG font_twips = m_Font.lfHeight * 2; // height is in 10th points
 
-   long ldraw_box_width  = long(BOX_WIDTH*font_twips * lx_per_twip);
-   long ldraw_box_height = long(BOX_HEIGHT*font_twips * ly_per_twip);
+   LONG ldraw_box_width  = LONG(BOX_WIDTH*font_twips * lx_per_twip);
+   LONG ldraw_box_height = LONG(BOX_HEIGHT*font_twips * ly_per_twip);
 
    // get minimum cell size so we can center our entries in the existing cells
    CSize min_size_twips;
    this->GetMinCellSize(&min_size_twips);
 
-   long min_cwidth  = long(min_size_twips.cx * lx_per_twip);
-   long min_cheight = long(min_size_twips.cy * ly_per_twip);
+   LONG min_cwidth  = LONG(min_size_twips.cx * lx_per_twip);
+   LONG min_cheight = LONG(min_size_twips.cy * ly_per_twip);
 
    // horizontal alignment depends if we can be centered without overlap
-   long lx_datum;
+   LONG lx_datum;
    if (lcwidth > min_cwidth)
    {
       lx_datum = (lcwidth - min_cwidth)/2;
    }
    else
    {
-      lx_datum = long(font_twips * lx_per_twip);
+      lx_datum = LONG(font_twips * lx_per_twip);
    }
 
    // draw legend items - fill row-wise
@@ -560,18 +560,18 @@ void CLegendDisplayObject::Draw(CDC* pDC, iCoordinateMap* pMap, const CPoint& lo
    pDC->SetBkColor(m_FillColor);
 
    CRect draw_box;
-   long ientry = 0;
-   for (long icol=0; icol<num_cols; icol++)
+   ColumnIndexType ientry = 0;
+   for (ColumnIndexType icol=0; icol<num_cols; icol++)
    {
-      draw_box.left = location.x + lx_datum + lcwidth*icol;
+      draw_box.left = location.x + lx_datum + lcwidth*(LONG)icol;
       draw_box.right = draw_box.left + ldraw_box_width;
 
       draw_box.top    = LONG(location.y - (lcheight-min_cheight)/2 - font_twips*ly_per_twip/2);
       draw_box.bottom = draw_box.top - ldraw_box_height;
 
-      for (long irow=0; irow<m_NumRows; irow++)
+      for (RowIndexType irow=0; irow<m_NumRows; irow++)
       {
-         if (ientry>num_entries-1)
+         if (num_entries <= ientry)
          {
             // hit last entry
             break;
@@ -632,8 +632,8 @@ void CLegendDisplayObject::GetBoundingBoxEx(IRect2d** rect, bool includeTitle)
    Float64 wcwidth  = wex-wox;
    Float64 wcheight = wey-woy;
 
-   long num_cols = GetNumCols(m_NumRows, m_Container.size());
-   long is_title = ( includeTitle && m_Title.Length()!=0 ) ? 1 : 0;
+   ColumnIndexType num_cols = GetNumCols(m_NumRows, m_Container.size());
+   bool is_title = ( includeTitle && m_Title.Length()!=0 ) ? true : false;
 
    CComPtr<IPoint2d> pos;
    this->get_Position(&pos);
@@ -644,7 +644,7 @@ void CLegendDisplayObject::GetBoundingBoxEx(IRect2d** rect, bool includeTitle)
    Float64 bottom = py - wcheight*m_NumRows;
 
    // adjust top for title
-   if (is_title!=0)
+   if (is_title)
    {
       py += wcheight*2/3;
    }
@@ -690,16 +690,16 @@ STDMETHODIMP_(void) CLegendDisplayObject::PrepareDrag(iDragDataSink* pSink)
    pSink->Write(ms_cfFormat,&y,sizeof(Float64));
 
    // Title. Strings are tricky
-   long len = m_Title.Length();
-   pSink->Write(ms_cfFormat,&len,sizeof(long));
+   CollectionIndexType len = m_Title.Length();
+   pSink->Write(ms_cfFormat,&len,sizeof(CollectionIndexType));
    if (len>0)
    {
       BSTR tstr = m_Title.m_str;
-      pSink->Write(ms_cfFormat,tstr,len*sizeof(wchar_t)); // next comes string data
+      pSink->Write(ms_cfFormat,tstr,(UINT)len*sizeof(BSTR)); // next comes string data
    }
 
    pSink->Write(ms_cfFormat,&m_Font,sizeof(LOGFONT));
-   pSink->Write(ms_cfFormat,&m_NumRows,sizeof(long));
+   pSink->Write(ms_cfFormat,&m_NumRows,sizeof(RowIndexType));
    pSink->Write(ms_cfFormat,&m_DoDrawBorder,sizeof(BOOL));
    pSink->Write(ms_cfFormat,&m_DoFill,sizeof(BOOL));
    pSink->Write(ms_cfFormat,&m_FillColor,sizeof(COLORREF));
@@ -707,7 +707,7 @@ STDMETHODIMP_(void) CLegendDisplayObject::PrepareDrag(iDragDataSink* pSink)
 
    // legend items are polymorphic
    len = m_Container.size();
-   pSink->Write(ms_cfFormat,&len,sizeof(long));
+   pSink->Write(ms_cfFormat,&len,sizeof(CollectionIndexType));
    for (ContainerIterator it = m_Container.begin(); it!=m_Container.end(); it++)
    {
       ContainerItem item = *it;
@@ -903,13 +903,13 @@ bool CLegendDisplayObject::OnRButtonDown(UINT nFlags,CPoint point)
       CDisplayView* view = dispMgr->GetView();
       view->ClientToScreen(&point);
 
-      long nrows = max((long)m_Container.size(), m_NumRows);
+      RowIndexType nrows = max(m_Container.size(), m_NumRows);
 
       CMenu menu;
       menu.CreatePopupMenu();
       menu.AppendMenu(MF_STRING|MF_DISABLED, 0, _T("Select Number of Rows"));
 
-      for (long it=1; it<=nrows; it++)
+      for (RowIndexType it=1; it<=nrows; it++)
       {
          CString str;
          str.Format(_T("%d"), it);

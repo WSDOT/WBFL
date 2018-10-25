@@ -303,7 +303,7 @@ void gmShapeImp::UnregisterListener(const gmShapeListener* pListener)
 
 }
 
-Int32 gmShapeImp::ListenerCount() const
+CollectionIndexType gmShapeImp::ListenerCount() const
 {
    ASSERTVALID;
    return m_ListenerList.size();

@@ -333,7 +333,7 @@ void gmSection::UnregisterListener(const gmSectionListener* pListener)
    pListener->OnUnregistered(this);
 }
 
-Int32 gmSection::ListenerCount() const
+CollectionIndexType gmSection::ListenerCount() const
 {
    ASSERTVALID;
    return m_ListenerList.size();

@@ -30,7 +30,7 @@
 
 struct BAMCLASS bamStressPoint
 {
-   Int32 m_ID;
+   CollectionIndexType m_ID;
    Float64 m_S;
 
    bool operator<(const bamStressPoint& rOther) const
@@ -46,14 +46,14 @@ struct BAMCLASS bamPointOfInterest
    bamPointOfInterest(const bamPointOfInterest& poi);
    bamPointOfInterest& operator = (const bamPointOfInterest& poi);
 
-   Int32 m_ID;
-   Int32 m_SpanId;
+   PoiIDType m_ID;
+   SpanIDType m_SpanId;
    Float64 m_Offset;
    Float64 m_AbsLocation;
 
    std::set<bamStressPoint> m_StressPoints;
 
-   void AddStressPoint(Int32 idx,Float64 S)
+   void AddStressPoint(CollectionIndexType idx,Float64 S)
    {
       bamStressPoint sp;
       sp.m_ID = idx;
@@ -61,7 +61,7 @@ struct BAMCLASS bamPointOfInterest
       m_StressPoints.insert( sp );
    }
 
-   void RemoveStressPoint(Int16 idx)
+   void RemoveStressPoint(CollectionIndexType idx)
    {
       bamStressPoint sp;
       sp.m_ID = idx;

@@ -39,6 +39,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+static Float64 ms_Tolerance = 1.0e-6;
+
 /////////////////////////////////////////////////////////////////////////////
 // CGeomUtil
 
@@ -180,7 +182,7 @@ STDMETHODIMP CGeomUtil::get_Geom3d(IGeomUtil3d** util)
 /////////////////////////////////////////////////////////////////////
 // IGeomUtil2d
 //
-STDMETHODIMP CGeomUtil::GenerateCircle(long numPoints, IPoint2d *center, Float64 radius, Float64 initAngle, IPoint2dCollection **points)
+STDMETHODIMP CGeomUtil::GenerateCircle(IndexType numPoints, IPoint2d *center, Float64 radius, Float64 initAngle, IPoint2dCollection **points)
 {
    if ( numPoints < 0 || center == 0 || radius < 0 )
       return E_INVALIDARG;
@@ -195,7 +197,7 @@ STDMETHODIMP CGeomUtil::GenerateCircle(long numPoints, IPoint2d *center, Float64
    Float64 cx, cy;
    GetCoordinates( center, &cx, &cy );
 
-   short cPoints = 0;
+   IndexType cPoints = 0;
    (*points)->Clear();
    Float64 cum_angle = 0;
    while ( cPoints++ < numPoints )
@@ -293,7 +295,7 @@ STDMETHODIMP CGeomUtil::Angle(IPoint2d* pStart,IPoint2d* pCenter,IPoint2d* pEnd,
    return S_OK;
 }
 
-STDMETHODIMP CGeomUtil::DoesLineSegmentContainPoint(ILineSegment2d* pSeg,IPoint2d* pPoint,VARIANT_BOOL* pbResult)
+STDMETHODIMP CGeomUtil::DoesLineSegmentContainPoint(ILineSegment2d* pSeg,IPoint2d* pPoint,Float64 tolerance,VARIANT_BOOL* pbResult)
 {
    CHECK_IN(pSeg);
    CHECK_IN(pPoint);
@@ -312,16 +314,16 @@ STDMETHODIMP CGeomUtil::DoesLineSegmentContainPoint(ILineSegment2d* pSeg,IPoint2
 
    Float64 x,y;
    GetCoordinates( pPoint, &x, &y );
+
    
-   const Float64 tol = 1.0e-4;
-	if ((x >= _cpp_min(x1, x2)-tol) && 
-       (x <= _cpp_max(x1, x2)+tol) &&
-	    (y >= _cpp_min(y1, y2)-tol) && 
-       (y <= _cpp_max(y1, y2)+tol))
+	if ((x >= _cpp_min(x1, x2)-tolerance) && 
+       (x <= _cpp_max(x1, x2)+tolerance) &&
+	    (y >= _cpp_min(y1, y2)-tolerance) && 
+       (y <= _cpp_max(y1, y2)+tolerance))
    {
       Float64 prod = (y - y1)*(x2 - x1) - (y2 - y1)*(x - x1);
 
-      *pbResult = MakeBool(IsZero(prod,tol));
+      *pbResult = MakeBool(IsZero(prod,tolerance));
    }
    else
    {
@@ -331,7 +333,7 @@ STDMETHODIMP CGeomUtil::DoesLineSegmentContainPoint(ILineSegment2d* pSeg,IPoint2
    return S_OK;
 }
 
-STDMETHODIMP CGeomUtil::DivideLineSegment(ILineSegment2d* pSeg,long nSpaces,IPoint2dCollection** ppPoints)
+STDMETHODIMP CGeomUtil::DivideLineSegment(ILineSegment2d* pSeg,IndexType nSpaces,IPoint2dCollection** ppPoints)
 {
    CHECK_IN(pSeg);
    CHECK_RETOBJ(ppPoints);
@@ -356,7 +358,7 @@ STDMETHODIMP CGeomUtil::DivideLineSegment(ILineSegment2d* pSeg,long nSpaces,IPoi
    CreatePoint(pStart,m_pPointFactory2d,&newStart);
    (*ppPoints)->Add(newStart);
    
-   for ( long i = 0; i < nSpaces - 1; i++ )
+   for ( IndexType i = 0; i < nSpaces - 1; i++ )
    {
       Float64 x,y;
       x = x1 + (i+1)*dx;
@@ -457,7 +459,7 @@ STDMETHODIMP CGeomUtil::SegSegIntersect(ILineSegment2d* pSeg1,ILineSegment2d* pS
       VARIANT_BOOL bContains;
       CComPtr<IPoint2d> pStart;
       pSeg1->get_StartPoint(&pStart);
-      DoesLineSegmentContainPoint(pSeg2,pStart,&bContains);
+      DoesLineSegmentContainPoint(pSeg2,pStart,ms_Tolerance,&bContains);
       if ( bContains == VARIANT_TRUE )
       {
          CreatePoint( pStart, m_pPointFactory2d, ppPoint );
@@ -478,7 +480,7 @@ STDMETHODIMP CGeomUtil::SegSegIntersect(ILineSegment2d* pSeg1,ILineSegment2d* pS
       VARIANT_BOOL bContains;
       CComPtr<IPoint2d> pStart;
       pSeg2->get_StartPoint(&pStart);
-      DoesLineSegmentContainPoint(pSeg1,pStart,&bContains);
+      DoesLineSegmentContainPoint(pSeg1,pStart,ms_Tolerance,&bContains);
       if ( bContains == VARIANT_TRUE )
       {
          CreatePoint( pStart, m_pPointFactory2d, ppPoint );
@@ -537,8 +539,8 @@ STDMETHODIMP CGeomUtil::SegSegIntersect(ILineSegment2d* pSeg1,ILineSegment2d* pS
    {
       // If the line segments intersect, both segments must contain the intersection point
       VARIANT_BOOL bContains1, bContains2;
-      DoesLineSegmentContainPoint( pSeg1, pIntersect, &bContains1 );
-      DoesLineSegmentContainPoint( pSeg2, pIntersect, &bContains2 );
+      DoesLineSegmentContainPoint( pSeg1, pIntersect, ms_Tolerance, &bContains1 );
+      DoesLineSegmentContainPoint( pSeg2, pIntersect, ms_Tolerance, &bContains2 );
       if ( bContains1 == VARIANT_TRUE && bContains2 == VARIANT_TRUE)
       {
          pIntersect->QueryInterface( ppPoint );
@@ -622,7 +624,7 @@ STDMETHODIMP CGeomUtil::IntersectLineWithLineSegment(ILine2d* pLine,ILineSegment
       CComPtr<IPoint2d> pStart;
       pSeg->get_StartPoint(&pStart);
       VARIANT_BOOL bContains;
-      DoesLineContainPoint(pLine,pStart,&bContains);
+      DoesLineContainPoint(pLine,pStart,ms_Tolerance,&bContains);
       if ( bContains == VARIANT_TRUE )
       {
          CreatePoint(pStart,m_pPointFactory2d,ppPoint);
@@ -648,7 +650,7 @@ STDMETHODIMP CGeomUtil::IntersectLineWithLineSegment(ILine2d* pLine,ILineSegment
    {
       // Lines intersect, does the line segment contain it?
       VARIANT_BOOL bContains;
-      DoesLineSegmentContainPoint(pSeg,pIntersect,&bContains);
+      DoesLineSegmentContainPoint(pSeg,pIntersect,ms_Tolerance,&bContains);
       if( bContains == VARIANT_TRUE )
       {
          pIntersect->QueryInterface(ppPoint);
@@ -847,7 +849,7 @@ STDMETHODIMP CGeomUtil::CreateNormalLineThroughPoint(ILine2d* pLine, IPoint2d* p
    return S_OK;
 }
 
-STDMETHODIMP CGeomUtil::DoesLineContainPoint(ILine2d* pLine, IPoint2d* pPoint, VARIANT_BOOL* pbResult)
+STDMETHODIMP CGeomUtil::DoesLineContainPoint(ILine2d* pLine, IPoint2d* pPoint, Float64 tolerance, VARIANT_BOOL* pbResult)
 {
    CHECK_IN(pLine);
    CHECK_IN(pPoint);
@@ -863,7 +865,7 @@ STDMETHODIMP CGeomUtil::DoesLineContainPoint(ILine2d* pLine, IPoint2d* pPoint, V
    Float64 dot;
    pN->Dot(pV,&dot);
 
-   *pbResult = MakeBool(IsZero(dot-C));
+   *pbResult = MakeBool(IsZero(dot-C,tolerance));
 
    return S_OK;
 }

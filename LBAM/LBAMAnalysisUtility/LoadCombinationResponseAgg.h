@@ -100,10 +100,10 @@ public:
 private:
    // internal implementation
    void EnvelopeLoadCombinationResults(ILoadCombinationResults* res1, ILoadCombinationResults* res2,
-                                       VARIANT_BOOL computeConfig, OptimizationType optimization,long engineID);
+                                       VARIANT_BOOL computeConfig, OptimizationType optimization,CollectionIndexType engineIdx);
 
 void EnvelopeLoadCombinationSectionResults(ILoadCombinationSectionResults* res1, ILoadCombinationSectionResults* res2,
-                                           VARIANT_BOOL computeConfig, OptimizationType optimization, bool doFlip, long EngineNo);
+                                           VARIANT_BOOL computeConfig, OptimizationType optimization, bool doFlip, CollectionIndexType engineIdx);
 
 
    CLBAMModelEnveloper*  m_pEnveloper;
@@ -113,8 +113,8 @@ void EnvelopeLoadCombinationSectionResults(ILoadCombinationSectionResults* res1,
    // and concurrent section results
    struct LRPair
    {
-      long Left;
-      long Right;
+      CollectionIndexType Left;
+      CollectionIndexType Right;
 
       LRPair():
       Left(0),
@@ -125,7 +125,7 @@ void EnvelopeLoadCombinationSectionResults(ILoadCombinationSectionResults* res1,
    std::vector<LRPair> m_ControllingEngine;
 
    // engine id for controlling engine for reactions
-   std::vector<long> m_ControllingEngineReactions;
+   std::vector<CollectionIndexType> m_ControllingEngineReactions;
 
 };
 

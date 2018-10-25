@@ -48,7 +48,7 @@ END_COM_MAP()
 
 // ITemporaryPierItemEvents
 public:
-   STDMETHOD(OnTemporaryPierChanged)(long id);
+   STDMETHOD(OnTemporaryPierChanged)(PoiIDType id);
 
 private:
    bool m_bTestState;

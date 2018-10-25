@@ -144,7 +144,7 @@ CDragDataSourceImpl::DataSource::DataSource(HGLOBAL hMem)
 {
    m_hGlobal = hMem;
    m_pMemFile = new CMemFile((BYTE*)::GlobalLock(m_hGlobal),
-                             ::GlobalSize(m_hGlobal));
+                             (UINT)::GlobalSize(m_hGlobal));
    m_pArchive = new CArchive(m_pMemFile,CArchive::load);
 }
 

@@ -82,13 +82,13 @@ public:
    // necessary storage.
    //
    // Does nothing by default
-   virtual void CreateStorage(Int32 loadingId) = 0;
+   virtual void CreateStorage(IDType loadingId) = 0;
 
    //------------------------------------------------------------------------
    // Called by the framework went storage for <i>loadingId</i> is not longer
    // needed.  If storage isn't currently allocated, this method should do
    // nothing.
-   virtual void DestroyStorage(Int32 loadingId) = 0;
+   virtual void DestroyStorage(IDType loadingId) = 0;
 
    //------------------------------------------------------------------------
    virtual bamSectionResults ReadSectionResults(const bamSectionResultsKey& key) const = 0;

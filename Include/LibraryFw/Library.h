@@ -69,7 +69,7 @@ COPYRIGHT
 LOG
    rdp : 07.09.1998 : Created file
 *****************************************************************************/
-template<class T,int MIN_COUNT>
+template<class T,CollectionIndexType MIN_COUNT>
 class libLibrary : public libILibrary
 {
 public:
@@ -327,7 +327,7 @@ public:
             // must continue to use same pointer
             boost::shared_ptr<T> apentry = (*tmp).second;
             // erase old entry
-            int st = m_EntryList.erase(oldKey);
+            CollectionIndexType st = m_EntryList.erase(oldKey);
             CHECK(st==1);
             // reinsert pointer with new name
             apentry->SetName(newKey);
@@ -493,12 +493,12 @@ public:
    // INQUIRY
    //------------------------------------------------------------------------
    // Get the number of entries in the library
-   int GetCount( ) const
+   CollectionIndexType GetCount( ) const
    {
       return m_EntryList.size();
    }
 
-   int GetMinCount() const
+   CollectionIndexType GetMinCount() const
    {
       return MIN_COUNT;
    }

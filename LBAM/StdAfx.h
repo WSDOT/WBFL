@@ -33,6 +33,7 @@
 #endif // _MSC_VER > 1000
 
 
+#include <WBFLAll.h>
 #include <Private\WBFLPackage.h>
 
 #include <atlbase.h>

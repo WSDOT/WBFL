@@ -180,7 +180,7 @@ Float64 bmfPrecastGirder::GetHarpedStrandEccentricity( Float64 distFromStart ) c
    return GetHarpedStrandEccentricity( GetNumHarpedStrands(), distFromStart, m_EndShift, m_HpShift );
 }
 
-Float64 bmfPrecastGirder::GetHarpedStrandEccentricity( Uint32 nStrands, Float64 distFromStart, const gpSize2d& endShift, const gpSize2d& hpShift ) const
+Float64 bmfPrecastGirder::GetHarpedStrandEccentricity( StrandIndexType nStrands, Float64 distFromStart, const gpSize2d& endShift, const gpSize2d& hpShift ) const
 {
    if ( nStrands == 0 )
       return 0;
@@ -243,7 +243,7 @@ Float64 bmfPrecastGirder::GetStraightStrandEccentricity( Float64 distFromStart )
    return GetStraightStrandEccentricity( GetNumStraightStrands(), distFromStart );
 }
 
-Float64 bmfPrecastGirder::GetStraightStrandEccentricity( Uint32 nStrands, Float64 distFromStart ) const
+Float64 bmfPrecastGirder::GetStraightStrandEccentricity( StrandIndexType nStrands, Float64 distFromStart ) const
 {
    // Get the CG of the straight strand pattern for nStrands.
    // The CG is measured up from the bottom of the girder.
@@ -270,7 +270,7 @@ Float64 bmfPrecastGirder::GetTemporaryStrandEccentricity( Float64 distFromStart 
    return GetTemporaryStrandEccentricity( GetNumTemporaryStrands(), distFromStart );
 }
 
-Float64 bmfPrecastGirder::GetTemporaryStrandEccentricity( Uint32 nStrands, Float64 distFromStart ) const
+Float64 bmfPrecastGirder::GetTemporaryStrandEccentricity( StrandIndexType nStrands, Float64 distFromStart ) const
 {
    // Get the CG of the straight strand pattern for nStrands.
    // The CG is measured up from the bottom of the girder.
@@ -294,13 +294,13 @@ Float64 bmfPrecastGirder::GetTemporaryStrandEccentricity( Uint32 nStrands, Float
 
 Float64 bmfPrecastGirder::GetStrandEccentricity( Float64 distFromStart, bool bIncTemp ) const
 {
-   Uint32 nStraight = GetNumStraightStrands();
-   Uint32 nHarped   = GetNumHarpedStrands();
-   Uint32 nTemp     = bIncTemp ? GetNumTemporaryStrands() : 0;
+   StrandIndexType nStraight = GetNumStraightStrands();
+   StrandIndexType nHarped   = GetNumHarpedStrands();
+   StrandIndexType nTemp     = bIncTemp ? GetNumTemporaryStrands() : 0;
    return GetStrandEccentricity( nStraight, nHarped, nTemp, distFromStart, m_EndShift, m_HpShift );
 }
 
-Float64 bmfPrecastGirder::GetStrandEccentricity( Uint32 nStraight, Uint32 nHarped, Uint32 nTemp, Float64 distFromStart, const gpSize2d& endShift, const gpSize2d& hpShift  ) const
+Float64 bmfPrecastGirder::GetStrandEccentricity( StrandIndexType nStraight, StrandIndexType nHarped, StrandIndexType nTemp, Float64 distFromStart, const gpSize2d& endShift, const gpSize2d& hpShift  ) const
 {
    if ( nStraight == 0 && nHarped == 0 && nTemp == 0)
       return 0.0;
@@ -319,52 +319,52 @@ Float64 bmfPrecastGirder::GetStrandEccentricity( Uint32 nStraight, Uint32 nHarpe
    return ttl_ecc;
 }
 
-gpPoint2d bmfPrecastGirder::GetStraightStrandPosition(Float64 distFromStart, Uint32 strIdx) const
+gpPoint2d bmfPrecastGirder::GetStraightStrandPosition(Float64 distFromStart, StrandIndexType strIdx) const
 {
    return m_SsPtrn.GetStrandPoint( strIdx );
 }
 
-gpPoint2d bmfPrecastGirder::GetStraightStrandPoint(Float64 distFromStart, Uint32 strIdx) const
+gpPoint2d bmfPrecastGirder::GetStraightStrandPoint(Float64 distFromStart, StrandIndexType strIdx) const
 {
    return m_SsPtrn.GetStrandPatternPoint( strIdx );
 }
 
-gpPoint2d bmfPrecastGirder::GetTemporaryStrandPosition(Float64 distFromStart, Uint32 strIdx) const
+gpPoint2d bmfPrecastGirder::GetTemporaryStrandPosition(Float64 distFromStart, StrandIndexType strIdx) const
 {
    return m_TmpPtrn.GetStrandPoint( strIdx );
 }
 
-gpPoint2d bmfPrecastGirder::GetTemporaryStrandPoint(Float64 distFromStart, Uint32 strIdx) const
+gpPoint2d bmfPrecastGirder::GetTemporaryStrandPoint(Float64 distFromStart, StrandIndexType strIdx) const
 {
    return m_TmpPtrn.GetStrandPatternPoint( strIdx );
 }
 
-gpPoint2d bmfPrecastGirder::GetHarpedStrandPosition(Float64 distFromStart, Uint32 strIdx) const
+gpPoint2d bmfPrecastGirder::GetHarpedStrandPosition(Float64 distFromStart, StrandIndexType strIdx) const
 {
    return GetHarpedStrandPosition(distFromStart,strIdx,m_EndShift,m_HpShift);
 }
 
-gpPoint2d bmfPrecastGirder::GetHarpedStrandPoint(Float64 distFromStart, Uint32 strIdx) const
+gpPoint2d bmfPrecastGirder::GetHarpedStrandPoint(Float64 distFromStart, StrandIndexType strIdx) const
 {
    return GetHarpedStrandPoint(distFromStart,strIdx,m_EndShift,m_HpShift);
 }
 
-gpPoint2d bmfPrecastGirder::GetHarpedStrandPoint(Float64 distFromStart, Uint32 strIdx,Uint32 numHarpedStrands) const
+gpPoint2d bmfPrecastGirder::GetHarpedStrandPoint(Float64 distFromStart, StrandIndexType strIdx,StrandIndexType numHarpedStrands) const
 {
    return GetHarpedStrandPoint(distFromStart,strIdx,m_EndShift,m_HpShift,numHarpedStrands);
 }
 
-gpPoint2d bmfPrecastGirder::GetHarpedStrandPosition(Float64 distFromStart, Uint32 strIdx,const gpSize2d& endShift,const gpSize2d& hpShift) const
+gpPoint2d bmfPrecastGirder::GetHarpedStrandPosition(Float64 distFromStart, StrandIndexType strIdx,const gpSize2d& endShift,const gpSize2d& hpShift) const
 {
    return GetHarpedStrandPoint(distFromStart, strIdx, endShift, hpShift);
 } 
 
-gpPoint2d bmfPrecastGirder::GetHarpedStrandPoint(Float64 distFromStart, Uint32 strIdx,const gpSize2d& endShift,const gpSize2d& hpShift) const
+gpPoint2d bmfPrecastGirder::GetHarpedStrandPoint(Float64 distFromStart, StrandIndexType strIdx,const gpSize2d& endShift,const gpSize2d& hpShift) const
 {
    return GetHarpedStrandPoint(distFromStart, strIdx, endShift, hpShift, GetNumHarpedStrands());
 }
 
-gpPoint2d bmfPrecastGirder::GetHarpedStrandPoint(Float64 distFromStart, Uint32 strIdx,const gpSize2d& endShift,const gpSize2d& hpShift,Uint32 numHarpedStrands) const
+gpPoint2d bmfPrecastGirder::GetHarpedStrandPoint(Float64 distFromStart, StrandIndexType strIdx,const gpSize2d& endShift,const gpSize2d& hpShift,StrandIndexType numHarpedStrands) const
 {
 
    gpPoint2d pnt;
@@ -464,7 +464,7 @@ Float64 bmfPrecastGirder::GetHarpedStrandSlope( Float64 distFromStart ) const
    return GetHarpedStrandSlope( GetNumHarpedStrands(), distFromStart, m_EndShift, m_HpShift );
 }
 
-Float64 bmfPrecastGirder::GetHarpedStrandSlope( Uint32 nStrands, Float64 distFromStart,const gpSize2d& endShift,const gpSize2d& hpShift  ) const
+Float64 bmfPrecastGirder::GetHarpedStrandSlope( StrandIndexType nStrands, Float64 distFromStart,const gpSize2d& endShift,const gpSize2d& hpShift  ) const
 {
    if ( nStrands == 0 )
       return Float64_Max;
@@ -504,24 +504,24 @@ Float64 bmfPrecastGirder::GetHarpedStrandSlope( Uint32 nStrands, Float64 distFro
    return slope;
 }
 
-Uint32 bmfPrecastGirder::GetMaxStraightStrands() const
+StrandIndexType bmfPrecastGirder::GetMaxStraightStrands() const
 {
    return m_SsPtrn.GetMaxStrandCount();
 }
 
-Uint32 bmfPrecastGirder::GetMaxTemporaryStrands() const
+StrandIndexType bmfPrecastGirder::GetMaxTemporaryStrands() const
 {
    return m_TmpPtrn.GetMaxStrandCount();
 }
 
-Uint32 bmfPrecastGirder::GetMaxHarpedStrands() const
+StrandIndexType bmfPrecastGirder::GetMaxHarpedStrands() const
 {
    return m_EndPtrn.GetMaxStrandCount();
 }
 
-Uint32 bmfPrecastGirder::GetMaxStrands(bool bIncTemp) const
+StrandIndexType bmfPrecastGirder::GetMaxStrands(bool bIncTemp) const
 {
-   Uint32 nMax = GetMaxStraightStrands() + GetMaxHarpedStrands();
+   StrandIndexType nMax = GetMaxStraightStrands() + GetMaxHarpedStrands();
    if ( bIncTemp )
       nMax += GetMaxTemporaryStrands();
 
@@ -577,38 +577,38 @@ bool bmfPrecastGirder::RemoveTemporaryStrand()
    return true;
 }
 
-Uint32 bmfPrecastGirder::SetNumHarpedStrands( Uint32 nStrands )
+StrandIndexType bmfPrecastGirder::SetNumHarpedStrands( StrandIndexType nStrands )
 {
-   Uint32 outcome = m_EndPtrn.SetStrandCount( nStrands );
-   Uint32 outcome2 = m_HPPtrn.SetStrandCount( nStrands );
+   StrandIndexType outcome = m_EndPtrn.SetStrandCount( nStrands );
+   StrandIndexType outcome2 = m_HPPtrn.SetStrandCount( nStrands );
    CHECK(outcome == outcome2);
    return outcome;
 }
 
-Uint32 bmfPrecastGirder::SetNumStraightStrands( Uint32 nStrands )
+StrandIndexType bmfPrecastGirder::SetNumStraightStrands( StrandIndexType nStrands )
 {
-   Uint32 outcome = m_SsPtrn.SetStrandCount( nStrands );
+   StrandIndexType outcome = m_SsPtrn.SetStrandCount( nStrands );
    return outcome;
 }
 
-Uint32 bmfPrecastGirder::SetNumTemporaryStrands( Uint32 nStrands )
+StrandIndexType bmfPrecastGirder::SetNumTemporaryStrands( StrandIndexType nStrands )
 {
-   Uint32 outcome = m_TmpPtrn.SetStrandCount( nStrands );
+   StrandIndexType outcome = m_TmpPtrn.SetStrandCount( nStrands );
    return outcome;
 }
 
-Uint32 bmfPrecastGirder::GetNumStraightStrands() const
+StrandIndexType bmfPrecastGirder::GetNumStraightStrands() const
 {
    return m_SsPtrn.GetStrandCount();
 }
 
-Uint32 bmfPrecastGirder::GetNumHarpedStrands() const
+StrandIndexType bmfPrecastGirder::GetNumHarpedStrands() const
 {
    CHECK(m_EndPtrn.GetStrandCount() == m_HPPtrn.GetStrandCount());
    return m_EndPtrn.GetStrandCount();
 }
 
-Uint32 bmfPrecastGirder::GetNumTemporaryStrands() const
+StrandIndexType bmfPrecastGirder::GetNumTemporaryStrands() const
 {
    return m_TmpPtrn.GetStrandCount();
 }

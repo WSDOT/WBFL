@@ -72,11 +72,11 @@ END_COM_MAP()
    STDMETHOD_(void,GetWorldOrg)(Float64* wx,Float64* wy);
    STDMETHOD_(void,GetWorldOrg)(IPoint2d* *wOrg);
 
-   STDMETHOD_(void,SetLogicalOrg)(long lx,long ly);
-   STDMETHOD_(void,GetLogicalOrg)(long* lx,long* ly);
-   STDMETHOD_(void,SetLogicalExt)(long lx,long ly);
-   STDMETHOD_(void,GetLogicalExt)(long* lx,long* ly);
-   STDMETHOD_(void,GetAdjustedLogicalExt)(long* lx,long* ly);
+   STDMETHOD_(void,SetLogicalOrg)(LONG lx,LONG ly);
+   STDMETHOD_(void,GetLogicalOrg)(LONG* lx,LONG* ly);
+   STDMETHOD_(void,SetLogicalExt)(LONG lx,LONG ly);
+   STDMETHOD_(void,GetLogicalExt)(LONG* lx,LONG* ly);
+   STDMETHOD_(void,GetAdjustedLogicalExt)(LONG* lx,LONG* ly);
    STDMETHOD_(void,GetAdjustedWorldExt)(Float64* dx,Float64* dy);
 
    STDMETHOD_(void,SetMappingMode)(DManip::MapMode mm);
@@ -93,17 +93,17 @@ END_COM_MAP()
    STDMETHOD_(void,WPtoMP)(Float64 wx,Float64 wy,Float64* mx,Float64* my);
    STDMETHOD_(void,WPtoMP)(IPoint2d* wp,Float64* mx,Float64* my);
 
-   STDMETHOD_(void,WPtoLP)(Float64 wx,Float64 wy,long* lx,long* ly);
-   STDMETHOD_(void,WPtoLP)(IPoint2d* wp,long* lx,long* ly);
+   STDMETHOD_(void,WPtoLP)(Float64 wx,Float64 wy,LONG* lx,LONG* ly);
+   STDMETHOD_(void,WPtoLP)(IPoint2d* wp,LONG* lx,LONG* ly);
 
-   STDMETHOD_(void,LPtoWP)(long lx,long ly,Float64* wx,Float64* wy);
-   STDMETHOD_(void,LPtoWP)(long lx,long ly,IPoint2d** wp);
+   STDMETHOD_(void,LPtoWP)(LONG lx,LONG ly,Float64* wx,Float64* wy);
+   STDMETHOD_(void,LPtoWP)(LONG lx,LONG ly,IPoint2d** wp);
 
-   STDMETHOD_(void,WPtoTP)(Float64 wx,Float64 wy,long* tx,long* ty);
-   STDMETHOD_(void,TPtoWP)(long tx,long ty,Float64* wx,Float64* wy);
+   STDMETHOD_(void,WPtoTP)(Float64 wx,Float64 wy,LONG* tx,LONG* ty);
+   STDMETHOD_(void,TPtoWP)(LONG tx,LONG ty,Float64* wx,Float64* wy);
 
-   STDMETHOD_(void,LPtoTP)(long lx,long ly,long* tx,long* ty);
-   STDMETHOD_(void,TPtoLP)(long tx,long ty,long* lx,long* ly);
+   STDMETHOD_(void,LPtoTP)(LONG lx,LONG ly,LONG* tx,LONG* ty);
+   STDMETHOD_(void,TPtoLP)(LONG tx,LONG ty,LONG* lx,LONG* ly);
 
    STDMETHOD_(CSize,GetTextWindowExtent)();
 
@@ -118,12 +118,12 @@ private:
    Float64 m_WorldExtentY;
    Float64 m_WorldOriginX;
    Float64 m_WorldOriginY;
-   long   m_LogicalExtentX;
-   long   m_LogicalExtentY;
-   long   m_OriginalLogicalExtentX;
-   long   m_OriginalLogicalExtentY;
-   long   m_LogicalOriginX;
-   long   m_LogicalOriginY;
+   LONG   m_LogicalExtentX;
+   LONG   m_LogicalExtentY;
+   LONG   m_OriginalLogicalExtentX;
+   LONG   m_OriginalLogicalExtentY;
+   LONG   m_LogicalOriginX;
+   LONG   m_LogicalOriginY;
 
    // do these divisions once and store the result
    // otherwise they would have to happen thousands for times

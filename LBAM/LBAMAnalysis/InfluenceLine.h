@@ -64,7 +64,7 @@ public:
      m_IsComputed[2] = false;
 	}
 
-   void Initialize(Float64 globalX,long poiID)
+   void Initialize(Float64 globalX,PoiIDType poiID)
    {
       m_GlobalX = globalX;
       m_idPOI   = poiID;
@@ -233,12 +233,12 @@ protected:
    ProcessingType m_ProcessingType;
 
    // cached values
-   long m_LastFound[3];
+   CollectionIndexType m_LastFound[3];
    Float64 m_StartBound;
    Float64 m_EndBound;
 
    Float64 m_GlobalX;
-   long m_idPOI;
+   PoiIDType m_idPOI;
 
 private:
    void Compute(InfluenceSideType side);

@@ -12,7 +12,7 @@ public:
    DECLARE_INTERFACE_MAP()
 
    BEGIN_INTERFACE_PART(Strategy,iTemporarySupportDrawStrategy)
-      STDMETHOD_(void,SetTemporarySupport)(ITemporarySupport* jnt, long supportID);
+      STDMETHOD_(void,SetTemporarySupport)(ITemporarySupport* jnt, IDType supportID);
    END_INTERFACE_PART(Strategy)
 
    BEGIN_INTERFACE_PART(DrawPointStrategy,iDrawPointStrategy)
@@ -25,7 +25,7 @@ public:
 private:
    CLBAMViewerDoc* m_pDoc;
    CComPtr<ITemporarySupport> m_Support;
-   long                       m_SupportID;
+   IDType                       m_SupportID;
 
    virtual void Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF color,IPoint2d* loc);
 

@@ -212,8 +212,8 @@ CEAFStatusItem* CEAFStatusCenter::GetByID(StatusItemIDType id)
 
 CEAFStatusItem* CEAFStatusCenter::GetByIndex(CollectionIndexType index)
 {
-   if ( index < 0 || (CollectionIndexType)m_Items.size() <= index )
-      return 0;
+   if ( m_Items.size() <= index )
+      return NULL;
 
    Container::iterator iter = m_Items.begin();
    for ( CollectionIndexType i = 0; i < index; i++ )

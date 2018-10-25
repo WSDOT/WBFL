@@ -86,7 +86,7 @@ void CTestTemporaryPierItem::Test()
    TRY_TEST(tempPierItem->get_Pier(&pier), S_OK);
    TRY_TEST(pier != NULL, true);
 
-   long id;
+   IDType id;
    TRY_TEST(tempPierItem->get_ID(NULL),E_POINTER);
    TRY_TEST(tempPierItem->get_ID(&id), S_OK);
    TRY_TEST(id,11);
@@ -183,7 +183,7 @@ void CTestTemporaryPierItem::Test()
    TRY_TEST( TestIObjectSafety(tempPierItem,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
-STDMETHODIMP CTestTemporaryPierItem::OnTemporaryPierChanged(long id)
+STDMETHODIMP CTestTemporaryPierItem::OnTemporaryPierChanged(PoiIDType id)
 {
    Pass();
    return S_OK;

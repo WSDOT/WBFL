@@ -2018,7 +2018,7 @@ library WBFLGeometry
 		HRESULT TopFlangeWidth([out, retval] Float64 *pVal);
 
 		[propget,  helpstring("property AvgWebWidth"),helpcontext(IDH_IMultiWeb2_AvgWebWidth)]
-		HRESULT AvgWebWidth([in] CollectionIndexType webIdx,[out, retval] Float64 *pVal);
+		HRESULT AvgWebWidth([in] WebIndexType webIdx,[out, retval] Float64 *pVal);
 
 		[propget,  helpstring("property XYPosition"),helpcontext(IDH_IMultiWeb2_XYPosition)]
 		HRESULT XYPosition([out, retval] IXYPosition* *pVal);
@@ -2202,7 +2202,7 @@ library WBFLGeometry
 	interface IGeomUtil2d : IUnknown
 	{
 		[helpstring("method GenerateCircle"),helpcontext(IDH_IGeomUtil2d_GenerateCircle)]
-		HRESULT GenerateCircle([in] long nPoints,[in] IPoint2d* center,[in] Float64 radius, [in,defaultvalue(0.00)] Float64 initAngle,[out,retval] IPoint2dCollection** points);
+		HRESULT GenerateCircle([in] IndexType nPoints,[in] IPoint2d* center,[in] Float64 radius, [in,defaultvalue(0.00)] Float64 initAngle,[out,retval] IPoint2dCollection** points);
 
 		[helpstring("method Distance"),helpcontext(IDH_IGeomUtil2d_Distance)]
 		HRESULT Distance([in] IPoint2d* p1,[in] IPoint2d* p2,[out,retval] Float64* dist);
@@ -2232,13 +2232,13 @@ library WBFLGeometry
 		HRESULT AreLinesColinear([in] ILine2d* pLine1,[in] ILine2d* pLine2,[out,retval] VARIANT_BOOL* pbResult);
 
 		[helpstring("method DoesLineContainPoint"),helpcontext(IDH_IGeomUtil2d_DoesLineContainPoint)]
-		HRESULT DoesLineContainPoint([in] ILine2d* pLine,[in] IPoint2d* pPoint,[out,retval] VARIANT_BOOL* pbResult);
+		HRESULT DoesLineContainPoint([in] ILine2d* pLine,[in] IPoint2d* pPoint,[in]Float64 tolerance,[out,retval] VARIANT_BOOL* pbResult);
 
 		[helpstring("method DoesLineSegmentContainPoint"),helpcontext(IDH_IGeomUtil2d_DoesLineSegmentContainPoint)]
-		HRESULT DoesLineSegmentContainPoint([in] ILineSegment2d* pSeg,[in] IPoint2d* pPoint,[out,retval] VARIANT_BOOL* pbResult);
+		HRESULT DoesLineSegmentContainPoint([in] ILineSegment2d* pSeg,[in] IPoint2d* pPoint,[in]Float64 tolerance,[out,retval] VARIANT_BOOL* pbResult);
 
 		[helpstring("method DivideLineSegment"),helpcontext(IDH_IGeomUtil2d_DivideLineSegment)]
-		HRESULT DivideLineSegment([in] ILineSegment2d* pSeg,[in] long nSpaces,[out,retval] IPoint2dCollection** ppPoints);
+		HRESULT DivideLineSegment([in] ILineSegment2d* pSeg,[in] IndexType nSpaces,[out,retval] IPoint2dCollection** ppPoints);
 
 		[helpstring("method DivideArc"),helpcontext(IDH_IGeomUtil2d_DivideArc)]
 		HRESULT DivideArc([in] IPoint2d* pStart,[in] IPoint2d* pCenter,[in] IPoint2d* pEnd,[in] long nSpaces,[out,retval] IPoint2dCollection** ppPoints);
@@ -2626,10 +2626,10 @@ library WBFLGeometry
 		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
 
-      [propget, helpstring("property Slope"),helpcontext(IDH_IUBeam_Slope)] HRESULT Slope([in]long webIdx,[out,retval]Float64* slope);
+      [propget, helpstring("property Slope"),helpcontext(IDH_IUBeam_Slope)] HRESULT Slope([in]WebIndexType webIdx,[out,retval]Float64* slope);
 	  [propget, helpstring("property TopWidth"),helpcontext(IDH_IUBeam_TopWidth)] HRESULT TopWidth([out,retval]Float64* width);
 	  [propget, helpstring("property TopFlangeWidth"),helpcontext(IDH_IUBeam_TopFlangeWidth)] HRESULT TopFlangeWidth([out,retval]Float64* width);
-	  [propget, helpstring("property WebLocation"),helpcontext(IDH_IUBeam_WebLocation)] HRESULT WebLocation([in]long webIdx,[out,retval]Float64* location);
+	  [propget, helpstring("property WebLocation"),helpcontext(IDH_IUBeam_WebLocation)] HRESULT WebLocation([in]WebIndexType webIdx,[out,retval]Float64* location);
 	  [propget, helpstring("property WebSpacing"),helpcontext(IDH_IUBeam_WebSpacing)] HRESULT WebSpacing([out,retval]Float64* spacing);
    };
 
@@ -2746,10 +2746,10 @@ library WBFLGeometry
 		[propget, helpstring("property XYPosition"),helpcontext(IDH_IUBeam2_XYPosition)] 
       HRESULT XYPosition([out, retval] IXYPosition* *pVal);
 
-      [propget, helpstring("property Slope"),helpcontext(IDH_IUBeam2_Slope)] HRESULT Slope([in]long webIdx,[out,retval]Float64* slope);
+      [propget, helpstring("property Slope"),helpcontext(IDH_IUBeam2_Slope)] HRESULT Slope([in]WebIndexType webIdx,[out,retval]Float64* slope);
 	  [propget, helpstring("property TopWidth"),helpcontext(IDH_IUBeam2_TopWidth)] HRESULT TopWidth([out,retval]Float64* width);
 	  [propget, helpstring("property TopFlangeWidth"),helpcontext(IDH_IUBeam2_TopFlangeWidth)] HRESULT TopFlangeWidth([out,retval]Float64* width);
-	  [propget, helpstring("property WebLocation"),helpcontext(IDH_IUBeam2_WebLocation)] HRESULT WebLocation([in]long webIdx,[out,retval]Float64* location);
+	  [propget, helpstring("property WebLocation"),helpcontext(IDH_IUBeam2_WebLocation)] HRESULT WebLocation([in]WebIndexType webIdx,[out,retval]Float64* location);
 	  [propget, helpstring("property WebSpacing"),helpcontext(IDH_IUBeam2_WebSpacing)] HRESULT WebSpacing([out,retval]Float64* spacing);
 
 		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]

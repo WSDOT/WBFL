@@ -53,8 +53,8 @@ BEGIN_COM_MAP(CTargetDrawStrategyImpl)
 END_COM_MAP()
 
    // iTargetDrawStrategy Implementation
-   STDMETHOD_(void,SetRadius)(long radius);
-   STDMETHOD_(long,GetRadius)();
+   STDMETHOD_(void,SetRadius)(LONG radius);
+   STDMETHOD_(LONG,GetRadius)();
    STDMETHOD_(void,SetFgColor)(COLORREF crColor);
    STDMETHOD_(COLORREF,GetFgColor)();
    STDMETHOD_(void,SetBgColor)(COLORREF crColor);
@@ -72,7 +72,7 @@ private:
    COLORREF m_FgColor;
    COLORREF m_BgColor;
    COLORREF m_Color; // color used for drawing foreground (changes based on object's state)
-   long m_Radius;
+   LONG m_Radius;
 
    CComPtr<IPoint2d> m_CachePoint;
 };

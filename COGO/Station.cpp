@@ -212,7 +212,7 @@ HRESULT CStation::StringToStation(BSTR strString,int nDigOffset,int nDec)
    Float64 d;
 
    // Look for the +
-   int nChar = bstrStation.Length()+1;
+   CollectionIndexType nChar = bstrStation.Length()+1;
    pBuffer = new TCHAR[nChar];
    _tcscpy_s( pBuffer, bstrStation.Length()+1, OLE2T(bstrStation) );
    LPTSTR pChar = pBuffer;
@@ -230,8 +230,8 @@ HRESULT CStation::StringToStation(BSTR strString,int nDigOffset,int nDec)
 		// and the decimal point or the end of the string
 
       // first, the string must be long enough to hold the correct number of digits
-      int pos = (pChar - pBuffer);
-      int min_length = pos + nDigOffset + 2;
+      CollectionIndexType pos = (pChar - pBuffer);
+      CollectionIndexType min_length = pos + nDigOffset + 2;
       if ( nChar < min_length )
       {
          hr = E_BADSTATIONSTRING;

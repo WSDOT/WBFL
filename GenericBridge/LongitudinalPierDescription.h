@@ -122,7 +122,7 @@ public:
    struct REMOVESEGMENT
    {
       CComBSTR bstrStage;
-      long idx;
+      SegmentIndexType idx;
       CComPtr<ISegment> segment;
    };
 
@@ -207,17 +207,17 @@ public:
    STDMETHOD(put_ContinuityStage)(/*[in]*/ BSTR stage);
 
    STDMETHOD(AddSegment)(/*[in]*/ISegment* segment);
-   STDMETHOD(InsertSegment)(/*[in]*/ CollectionIndexType idx,/*[in]*/ISegment* segment);
-	STDMETHOD(MoveSegmentTo)(/*[in]*/ CollectionIndexType fromIdx,/*[in]*/ CollectionIndexType toIdx);
-	STDMETHOD(CopySegmentTo)(/*[in]*/ CollectionIndexType fromIdx, /*[in]*/ CollectionIndexType toIdx);
-	STDMETHOD(RemoveSegment)(/*[in]*/ CollectionIndexType idx);
+   STDMETHOD(InsertSegment)(/*[in]*/ SegmentIndexType idx,/*[in]*/ISegment* segment);
+	STDMETHOD(MoveSegmentTo)(/*[in]*/ SegmentIndexType fromIdx,/*[in]*/ SegmentIndexType toIdx);
+	STDMETHOD(CopySegmentTo)(/*[in]*/ SegmentIndexType fromIdx, /*[in]*/ SegmentIndexType toIdx);
+	STDMETHOD(RemoveSegment)(/*[in]*/ SegmentIndexType idx);
 	STDMETHOD(RemoveSegments)();
 	STDMETHOD(GetMemberSegments)(/*[out,retval]*/ IFilteredSegmentCollection **ppSeg);
 	STDMETHOD(GetSegmentForMemberLocation)(/*[in]*/ Float64 Location,/*[out]*/Float64* dist,/*[out]*/ ISegmentItem **ppSeg);
 	STDMETHOD(ReverseSegments)();
-   STDMETHOD(get_SegmentCount)(/*[out,retval]*/ CollectionIndexType* count);
+   STDMETHOD(get_SegmentCount)(/*[out,retval]*/ SegmentIndexType* count);
    STDMETHOD(get_SegmentLength)(/*[out,retval]*/ Float64* value);
-   STDMETHOD(get_Segment)(/*[in]*/ CollectionIndexType idx,/*[out,retval]*/ ISegment* *segment);
+   STDMETHOD(get_Segment)(/*[in]*/ SegmentIndexType idx,/*[out,retval]*/ ISegment* *segment);
 
 // IStructuredStorage2
 public:

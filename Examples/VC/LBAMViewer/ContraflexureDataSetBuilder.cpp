@@ -60,12 +60,12 @@ void ContraflexureDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArray* 
       fet = fetMz;
    else if (currRt==CLBAMViewerDoc::rtDx || currRt==CLBAMViewerDoc::rtDy|| currRt==CLBAMViewerDoc::rtRz)
    {
-      AfxMessageBox("Deflection data not available for Contraflexure response");
+      AfxMessageBox(_T("Deflection data not available for Contraflexure response"));
       return;
    }
    else if (currRt==CLBAMViewerDoc::rtStress)
    {
-      AfxMessageBox("Stress data not available for Contraflexure response");
+      AfxMessageBox(_T("Stress data not available for Contraflexure response"));
       return;
    }
    else

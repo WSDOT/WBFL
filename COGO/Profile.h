@@ -107,9 +107,9 @@ public:
 	STDMETHOD(AddEx)(/*[in]*/ IUnknown* dispElement);
    STDMETHOD(get_CrossSections)(/*[out, retval]*/ ICrossSectionCollection* *pVal);
 	STDMETHOD(putref_CrossSections)(/*[in]*/ ICrossSectionCollection* pVal);
-//	STDMETHOD(get_Count)(/*[out, retval]*/ long *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ long idx,/*[out, retval]*/ IProfileElement* *pVal);
-   STDMETHOD(putref_Item)(/*[in]*/ long idx,/*[in]*/ IProfileElement* pVal);
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
+	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx,/*[out, retval]*/ IProfileElement* *pVal);
+   STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IProfileElement* pVal);
    STDMETHOD(get__EnumProfileElements)(/*[out, retval]*/ IEnumProfileElements** retval);  
 
 // IStructuredStorage2
@@ -157,8 +157,8 @@ private:
    void AfterProfileGradeAndElevation(CComPtr<IStation>& station,Float64*grade, Float64* elev);
    Float64 AdjustForOffset(CComPtr<IStation>& station,Float64 offset,Float64 elev);
 
-   void Advise(IProfileElement* element,DWORD* pdwCookie);
-   void Unadvise(long idx);
+   void AdviseElement(IProfileElement* element,DWORD* pdwCookie);
+   void UnadviseElement(CollectionIndexType idx);
    void UnadviseAll();
 
    void AdviseCrossSections();

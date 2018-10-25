@@ -166,7 +166,7 @@ public:
       // crashes out.  I don't know what's going on, but if this line
       // (or presumably any other code that calls a m_Map member function)
       // does not exist, the Release builds don't work.
-      int size = m_Map.size();
+      CollectionIndexType size = m_Map.size();
    }
 
    //------------------------------------------------------------------------

@@ -17,7 +17,7 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSupportEvents
-UINT CSupportEvents::ms_Format = ::RegisterClipboardFormat("Supports");
+UINT CSupportEvents::ms_Format = ::RegisterClipboardFormat(_T("Supports"));
 
 CSupportEvents::CSupportEvents(CLBAMViewerDoc* pDoc)
 {
@@ -45,7 +45,7 @@ STDMETHODIMP_(void) CSupportEvents::XDisplayObjectEvents::OnDragMoved(iDisplayOb
    METHOD_PROLOGUE(CSupportEvents,DisplayObjectEvents);
 
    // Move the support and the display object
-   long id = pDO->GetID();
+   IDType id = pDO->GetID();
 /*
    WBFLFem2d::IModelPtr model = pThis->m_pDoc->m_Model;
    WBFLFem2d::ISupportPtr jnt = model->Supports->Find(id);
@@ -82,7 +82,7 @@ STDMETHODIMP_(bool) CSupportEvents::XDisplayObjectEvents::OnLButtonDblClk(iDispl
    METHOD_PROLOGUE(CSupportEvents,DisplayObjectEvents);
 
    // Support got double clicked on... Display its editing dialog
-   long id = pDO->GetID();
+   IDType id = pDO->GetID();
    pThis->EditSupport(id);
 
    return true;
@@ -161,7 +161,7 @@ STDMETHODIMP_(bool) CSupportEvents::XDisplayObjectEvents::OnMouseWheel(iDisplayO
 STDMETHODIMP_(bool) CSupportEvents::XDisplayObjectEvents::OnKeyDown(iDisplayObject* pDO,UINT nChar, UINT nRepCnt, UINT nFlags)
 {
    METHOD_PROLOGUE(CSupportEvents,DisplayObjectEvents);
-   long id = pDO->GetID();
+   IDType id = pDO->GetID();
 
    switch(nChar)
    {
@@ -200,14 +200,14 @@ STDMETHODIMP_(BOOL) CSupportEvents::XDragData::PrepareForDrag(iDisplayObject* pD
 {
    pSink->CreateFormat(ms_Format);
 
-   long id = pDO->GetID();
+   IDType id = pDO->GetID();
    pSink->Write(ms_Format,&id,sizeof(id));
    return TRUE;
 }
 
 STDMETHODIMP_(void) CSupportEvents::XDragData::OnDrop(iDisplayObject* pDO,iDragDataSource* pSource)
 {
-   long id;
+   IDType id;
    pSource->PrepareFormat(ms_Format);
    pSource->Read(ms_Format,&id,sizeof(id));
    pDO->SetID(id);
@@ -215,7 +215,7 @@ STDMETHODIMP_(void) CSupportEvents::XDragData::OnDrop(iDisplayObject* pDO,iDragD
 
 
 
-void CSupportEvents::EditSupport(long jntID)
+void CSupportEvents::EditSupport(IDType jntID)
 {
 /*
    WBFLFem2d::IModelPtr model = m_pDoc->m_Model;
@@ -255,7 +255,7 @@ void CSupportEvents::EditSupport(long jntID)
    }
 }
 
-void CSupportEvents::DeleteSupport(long jntID)
+void CSupportEvents::DeleteSupport(IDType jntID)
 {
 /*
    WBFLFem2d::IModelPtr model = m_pDoc->m_Model;
@@ -268,6 +268,6 @@ void CSupportEvents::DeleteSupport(long jntID)
    else
    {
 */
-      AfxMessageBox("The support can't be deleted because it has members connected to it");
+      AfxMessageBox(_T("The support can't be deleted because it has members connected to it"));
   
 }

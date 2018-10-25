@@ -42,7 +42,7 @@ bamReactionKey::bamReactionKey()
    m_LoadingId = -1;
 }
 
-bamReactionKey::bamReactionKey(Int32 supportId,Int32 loadingId) :
+bamReactionKey::bamReactionKey(SupportIDType supportId,IDType loadingId) :
 m_SupportId(supportId),m_LoadingId(loadingId)
 {
 }
@@ -88,22 +88,22 @@ bool bamReactionKey::operator==(const bamReactionKey& rOther) const
 
 //======================== OPERATIONS =======================================
 //======================== ACCESS     =======================================
-void bamReactionKey::SupportId(Int32 supportId)
+void bamReactionKey::SupportId(SupportIDType supportId)
 {
    m_SupportId = supportId;
 }
 
-Int32 bamReactionKey::SupportId() const
+SupportIDType bamReactionKey::SupportId() const
 {
    return m_SupportId;
 }
 
-void bamReactionKey::LoadingId(Int32 loadingId)
+void bamReactionKey::LoadingId(IDType loadingId)
 {
    m_LoadingId = loadingId;
 }
 
-Int32 bamReactionKey::LoadingId() const
+IDType bamReactionKey::LoadingId() const
 {
    return m_LoadingId;
 }

@@ -483,7 +483,7 @@ void CTestPolyShape::TestIShapeOpen()
    pnts[1].Release();
    pnts[2].Release();
    pnts[3].Release();
-   Enum->Next(nPoints,&pnts[0],&fetched);
+   Enum->Next((ULONG)nPoints,&pnts[0],&fetched);
    TRY_TEST(fetched,nPoints);
 
    pnts[0]->get_X(&x);
@@ -580,7 +580,7 @@ void CTestPolyShape::TestIShapeOpen()
    pnts[2].Release();
    pnts[3].Release();
    pnts[4].Release();
-   Enum->Next(nPoints,&pnts[0],&fetched);
+   Enum->Next((ULONG)nPoints,&pnts[0],&fetched);
    TRY_TEST(fetched,nPoints);
 
    pnts[0]->get_X(&x);

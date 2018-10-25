@@ -73,7 +73,7 @@ void CTestCogoInfo::Test()
 //   girderSpacing->Add(4);
 //
 //   // now, get access to the points in the cogo model
-   long pointID;
+   CogoElementKey pointID;
 //   TRY_TEST(cogoInfo->get_GirderPointID(0,0,NULL),E_POINTER);
 //   TRY_TEST(cogoInfo->get_GirderPointID(-1,0,&pointID),E_INVALIDARG);
 //   TRY_TEST(cogoInfo->get_GirderPointID(100,0,&pointID),E_INVALIDARG);

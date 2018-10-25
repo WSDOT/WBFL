@@ -231,12 +231,12 @@ void CDisplayObjectDefaultImpl::Fire_OnUnselect()
       m_EventSink->OnUnselect(m_pParent);
 }
 
-void CDisplayObjectDefaultImpl::Do_SetID(long id)
+void CDisplayObjectDefaultImpl::Do_SetID(IDType id)
 {
    m_ID = id;
 }
 
-long CDisplayObjectDefaultImpl::Do_GetID()
+IDType CDisplayObjectDefaultImpl::Do_GetID()
 {
    return m_ID;
 }
@@ -383,7 +383,7 @@ CRect CDisplayObjectDefaultImpl::Do_GetBoundingBox()
    CComPtr<iCoordinateMap> map;
    pDispMgr->GetCoordinateMap(&map);
 
-   long l,r,t,b;
+   LONG l,r,t,b;
    map->WPtoLP(wl, wt, &l, &t);
    map->WPtoLP(wr, wb, &r, &b);
 
@@ -506,22 +506,22 @@ CString CDisplayObjectDefaultImpl::Do_GetToolTipText()
    return m_strToolTipText;
 }
 
-void CDisplayObjectDefaultImpl::Do_SetMaxTipWidth(long maxWidth)
+void CDisplayObjectDefaultImpl::Do_SetMaxTipWidth(INT maxWidth)
 {
    m_MaxToolTipWidth = maxWidth;
 }
 
-long CDisplayObjectDefaultImpl::Do_GetMaxTipWidth()
+INT CDisplayObjectDefaultImpl::Do_GetMaxTipWidth()
 {
    return m_MaxToolTipWidth;
 }
 
-void CDisplayObjectDefaultImpl::Do_SetTipDisplayTime(long iTime)
+void CDisplayObjectDefaultImpl::Do_SetTipDisplayTime(INT iTime)
 {
    m_ToolTipDisplayTime = iTime;
 }
 
-long CDisplayObjectDefaultImpl::Do_GetTipDisplayTime()
+INT CDisplayObjectDefaultImpl::Do_GetTipDisplayTime()
 {
    return m_ToolTipDisplayTime;
 }

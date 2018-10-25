@@ -73,8 +73,8 @@ END_COM_MAP()
    STDMETHOD_(void,OnDataChanged)();
 
    // iDisplayObject overrides
-   STDMETHOD_(void,SetID)(long id);
-   STDMETHOD_(long,GetID)();
+   STDMETHOD_(void,SetID)(IDType id);
+   STDMETHOD_(IDType,GetID)();
 
    STDMETHOD_(void,SetItemData)(void* pItemData,bool bDelete);
    STDMETHOD_(void,GetItemData)(void** ppItemData);
@@ -110,10 +110,10 @@ END_COM_MAP()
 //   virtual BOOL ToolTipHitTest(CPoint point) = 0;
    STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText);
    STDMETHOD_(CString,GetToolTipText)();
-   STDMETHOD_(void,SetMaxTipWidth)(long maxWidth);
-   STDMETHOD_(long,GetMaxTipWidth)();
-   STDMETHOD_(void,SetTipDisplayTime)(long iTime);
-   STDMETHOD_(long,GetTipDisplayTime)();
+   STDMETHOD_(void,SetMaxTipWidth)(INT maxWidth);
+   STDMETHOD_(INT,GetMaxTipWidth)();
+   STDMETHOD_(void,SetTipDisplayTime)(INT iTime);
+   STDMETHOD_(INT,GetTipDisplayTime)();
 
    // Interface Events
    STDMETHOD_(bool,OnLButtonDown)(UINT nFlags,CPoint point);
@@ -144,8 +144,8 @@ END_COM_MAP()
    STDMETHOD_(void,SetTextAlign)(UINT nFlags);
    STDMETHOD_(UINT,GetTextAlign)();
 
-   STDMETHOD_(void,SetAngle)(long angle);
-   STDMETHOD_(long,GetAngle)();
+   STDMETHOD_(void,SetAngle)(LONG angle);
+   STDMETHOD_(LONG,GetAngle)();
 
    STDMETHOD_(void,SetText)(LPCTSTR lpszText);
    STDMETHOD_(CString,GetText)();

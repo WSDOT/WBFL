@@ -39,8 +39,8 @@ interface iTextBlock : public iDisplayObject
    STDMETHOD_(void,SetTextAlign)(UINT nFlags) PURE;
    STDMETHOD_(UINT,GetTextAlign)() PURE;
 
-   STDMETHOD_(void,SetAngle)(long angle) PURE;
-   STDMETHOD_(long,GetAngle)() PURE;
+   STDMETHOD_(void,SetAngle)(LONG angle) PURE;
+   STDMETHOD_(LONG,GetAngle)() PURE;
 
    STDMETHOD_(void,SetText)(LPCTSTR lpszText) PURE;
    STDMETHOD_(CString,GetText)() PURE;

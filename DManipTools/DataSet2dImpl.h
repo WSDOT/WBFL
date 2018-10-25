@@ -62,11 +62,11 @@ END_CONNECTION_POINT_MAP()
 
 // IDataSet2d
 public:
-   STDMETHOD_(HRESULT,get_Item)(long idx, IPoint2d** pVal);
-   STDMETHOD_(void,get_Count)(long *pVal);
+   STDMETHOD_(HRESULT,get_Item)(CollectionIndexType idx, IPoint2d** pVal);
+   STDMETHOD_(void,get_Count)(CollectionIndexType *pVal);
    STDMETHOD_(void,Add)(IPoint2d *pVal);
-   STDMETHOD_(HRESULT,Insert)(long index, IPoint2d *pVal);
-   STDMETHOD_(HRESULT,Remove)(long index);
+   STDMETHOD_(HRESULT,Insert)(CollectionIndexType index, IPoint2d *pVal);
+   STDMETHOD_(HRESULT,Remove)(CollectionIndexType index);
    STDMETHOD_(void,Clear)();
 	STDMETHOD(Clone)(/*[out, retval]*/ iDataSet2d** clone);
 

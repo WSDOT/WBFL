@@ -21,6 +21,8 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
+import "basetsd.h";
+
 cpp_quote("#if defined UNICODE || defined _UNICODE")
 cpp_quote("#define _tstring wstring")
 cpp_quote("#define _tostringstream wostringstream ")
@@ -53,9 +55,12 @@ cpp_quote("#define Int16_Max     SHRT_MAX")
 cpp_quote("#define Int16_Min     SHRT_MIN")
 cpp_quote("#define Int32_Max     LONG_MAX")
 cpp_quote("#define Int32_Min     LONG_MIN")
+cpp_quote("#define Int64_Max     LLONG_MAX")
+cpp_quote("#define Int64_Min     LLONG_MIN")
 cpp_quote("#define Uint8_Max     UCHAR_MAX")
 cpp_quote("#define Uint16_Max    USHRT_MAX")
 cpp_quote("#define Uint32_Max    ULONG_MAX")
+cpp_quote("#define Uint64_Max    ULLONG_MAX")
 cpp_quote("#define Float32_Max   FLT_MAX")
 cpp_quote("#define Float32_Min   FLT_MIN")
 cpp_quote("#define Float32_Inf   std::numeric_limits<Float32>::infinity()")
@@ -65,72 +70,77 @@ cpp_quote("#define Float64_Min   DBL_MIN")
 cpp_quote("#define Float80_Max   LDBL_MAX")
 cpp_quote("#define Float80_Min   LDBL_MIN")
 
-cpp_quote("#define FIXED_AXLE_TRUCK -1")
-cpp_quote("#define ALL_SPANS        -1")
-cpp_quote("#define ALL_PIERS        -1")
-cpp_quote("#define ALL_GIRDERS      -1")
-cpp_quote("#define INVALID_BAR_SIZE -1")
-cpp_quote("#define INVALID_INDEX    -1")
-
 typedef signed short   Int16;
-typedef signed long    Int32;
+typedef INT32 Int32;
 
 typedef unsigned char  Uint8;
 typedef unsigned short Uint16;
-typedef unsigned long  Uint32;
+typedef UINT32 Uint32;
 
-cpp_quote("#if 1200 < _MSC_VER")
-typedef signed long long Int64;
-typedef unsigned long long Uint64;
-cpp_quote("#endif")
+typedef INT64 Int64;
+typedef UINT64 Uint64;
 
 typedef float  Float32;
 typedef double Float64;
 
+cpp_quote("#define INVALID_ID SIZE_MAX")
 
-typedef Int32  JointIDType;
-typedef Int32  MemberIDType;
-typedef Int32  SupportIDType;
-typedef Int32  LoadIDType;
-typedef Int32  PoiIDType;
-typedef Int32  LoadCaseIDType;
-typedef Int32  LoadGroupIDType;
-typedef Int32  LoadCombinationIDType;
+#if defined _WIN64
+typedef INT64   IDType;
+#else
+typedef INT32   IDType;
+#endif
+typedef IDType  SpanIDType;
+typedef IDType  PierIDType;
+typedef IDType  JointIDType;
+typedef IDType  MemberIDType;
+typedef IDType  SupportIDType;
+typedef IDType  LoadIDType;
+typedef IDType  PoiIDType;
+typedef IDType  LoadCaseIDType;
+typedef IDType  LoadGroupIDType;
+typedef IDType  LoadCombinationIDType;
 
 typedef Int32 BarSizeType;
 
-typedef Int32 IndexType;
-typedef Int32 StageIndexType;
-typedef Int32 SupportIndexType;
-typedef Int32 StrandIndexType;
-typedef Int32 SpanIndexType;
-typedef Int32 GirderIndexType;
-typedef Int32 PierIndexType;
-typedef Int32 ColumnIndexType;
-typedef Int32 GroupIndexType;
-typedef Int32 SpacingIndexType;
-typedef Int32 VehicleIndexType;
-typedef Int32 AxleIndexType;
-typedef Int32 GridIndexType;
-typedef Int32 SectionIndexType;
-typedef Int32 RowIndexType;
-typedef Int32 SegmentIndexType;
-typedef Int32 MatingSurfaceIndexType;
-typedef Int32 WebIndexType;
-typedef Int32 FlangeIndexType;
-typedef Int32 SplittingPlaneIndexType;
-typedef Int32 ZoneIndexType;
-typedef Int32 CollectionIndexType;
 
-cpp_quote("#if 1200 < _MSC_VER")
+cpp_quote("#define INVALID_INDEX    SIZE_MAX")
+cpp_quote("#define FIXED_AXLE_TRUCK INVALID_INDEX")
+cpp_quote("#define ALL_SPANS        INVALID_INDEX")
+cpp_quote("#define ALL_PIERS        INVALID_INDEX")
+cpp_quote("#define ALL_GIRDERS      INVALID_INDEX")
+cpp_quote("#define INVALID_BAR_SIZE INVALID_INDEX")
+
+#if defined _WIN64
+typedef UINT64 IndexType;
+#else
+typedef UINT32 IndexType;
+#endif
+typedef IndexType CollectionIndexType;
+typedef IndexType StageIndexType;
+typedef IndexType SupportIndexType;
+typedef IndexType StrandIndexType;
+typedef IndexType SpanIndexType;
+typedef IndexType GirderIndexType;
+typedef IndexType PierIndexType;
+typedef IndexType ColumnIndexType;
+typedef IndexType GroupIndexType;
+typedef IndexType SpacingIndexType;
+typedef IndexType VehicleIndexType;
+typedef IndexType AxleIndexType;
+typedef IndexType GridIndexType;
+typedef IndexType SectionIndexType;
+typedef IndexType RowIndexType;
+typedef IndexType SegmentIndexType;
+typedef IndexType MatingSurfaceIndexType;
+typedef IndexType WebIndexType;
+typedef IndexType FlangeIndexType;
+typedef IndexType SplittingPlaneIndexType;
+typedef IndexType ZoneIndexType;
+typedef IndexType DuctIndexType;
+
 cpp_quote("typedef Int64 SpanGirderHashType;")
 cpp_quote("typedef Int64 PierGirderHashType;")
-cpp_quote("#else")
-cpp_quote("typedef Int32 SpanGirderHashType;")
-cpp_quote("typedef Int32 PierGirderHashType;")
-cpp_quote("#endif")
-
-
 
 cpp_quote("inline Uint16 make_Uint16(Uint8  lo, Uint8  hi) {return (Uint16)(lo & 0xFF)  | (Uint16)(hi & 0xFF) << 8;}")
 cpp_quote("inline Int16  make_Int16 (Int8   lo, Int8   hi) {return (Int16)(lo  & 0xFF) | (Int16) (hi & 0xFF)  << 8;}")
@@ -149,7 +159,6 @@ cpp_quote("inline Int8  low_Int8(Uint16 u16) { return u16 & 0xFF;}")
 cpp_quote("inline Uint8 high_Uint8(Uint16 u16) { return u16 >> 8;}")
 cpp_quote("inline Int8  high_Int8(Uint16 u16)  { return u16 >> 8;}")
 
-cpp_quote("#if 1200 < _MSC_VER")
 cpp_quote("inline Uint64 make_Uint64(Uint32  lo, Uint32  hi) {return (Uint64)(lo &  0xFFFFFFFF) | (Uint64)( hi &  0xFFFFFFFF) << 32;}")
 cpp_quote("inline Uint32 low_Uint32(Uint64 u64) {return u64 & 0xFFFFFFFF;}")
 cpp_quote("inline Uint32 high_Uint32(Uint64 u64) {return u64 >> 32;}")
@@ -157,16 +166,8 @@ cpp_quote("inline Uint32 high_Uint32(Uint64 u64) {return u64 >> 32;}")
 cpp_quote("inline Int64 make_Int64 (Int32  lo, Int32  hi) {return (Int64)(lo &  0xFFFFFFFF) | (Int64)( hi &  0xFFFFFFFF) << 32;}")
 cpp_quote("inline Int32 low_Int32(Int64 u64) {return u64 & 0xFFFFFFFF;}")
 cpp_quote("inline Int32 high_Int32(Int64 u64) {return u64 >> 32;}")
-cpp_quote("#endif")
 
-cpp_quote("#if 1200 < _MSC_VER")
-cpp_quote("inline SpanGirderHashType HashSpanGirder(SpanIndexType span,GirderIndexType girder) { return make_Int64(span,girder); }")
+cpp_quote("inline SpanGirderHashType HashSpanGirder(SpanIndexType span,GirderIndexType girder) { return make_Int64((Int32)span,(Int32)girder); }")
 cpp_quote("inline void UnhashSpanGirder(SpanGirderHashType hash,SpanIndexType* span,GirderIndexType* girder) { *span =  low_Int32(hash); *girder = high_Int32(hash); }")
-cpp_quote("inline PierGirderHashType HashPierGirder(PierIndexType pier,GirderIndexType girder) { return make_Int64(pier,girder); }")
+cpp_quote("inline PierGirderHashType HashPierGirder(PierIndexType pier,GirderIndexType girder) { return make_Int64((Int32)pier,(Int32)girder); }")
 cpp_quote("inline void UnhashPierGirder(PierGirderHashType hash,PierIndexType* pier,GirderIndexType* girder) { *pier =  low_Int32(hash); *girder = high_Int32(hash); }")
-cpp_quote("#else")
-cpp_quote("inline SpanGirderHashType HashSpanGirder(SpanIndexType span,GirderIndexType girder) { return make_Int32(span,girder); }")
-cpp_quote("inline void UnhashSpanGirder(SpanGirderHashType hash,SpanIndexType* span,GirderIndexType* girder) { *span =  low_Int16(hash); *girder = high_Int16(hash); }")
-cpp_quote("inline PierGirderHashType HashPierGirder(PierIndexType pier,GirderIndexType girder) { return make_Int32(pier,girder); }")
-cpp_quote("inline void UnhashPierGirder(PierGirderHashType hash,PierIndexType* pier,GirderIndexType* girder) { *pier =  low_Int16(hash); *girder = high_Int16(hash); }")
-cpp_quote("#endif")

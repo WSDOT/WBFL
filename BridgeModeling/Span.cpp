@@ -67,13 +67,13 @@ bmfSpan::~bmfSpan()
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
 
-void bmfSpan::CreateGirder(bmfGirderTemplate* pTpl,Int32 gdrPathIdx)
+void bmfSpan::CreateGirder(bmfGirderTemplate* pTpl,GirderIndexType gdrPathIdx)
 {
-   Int32 first_idx, last_idx;
+   GirderIndexType first_idx, last_idx;
  
    if ( gdrPathIdx < 0 )
    {
-      Int32 nGirders;
+      GirderIndexType nGirders;
       Float64 spacing;
       bmfMeasuredWhere where;
       bmfMeasuredHow how;
@@ -91,7 +91,7 @@ void bmfSpan::CreateGirder(bmfGirderTemplate* pTpl,Int32 gdrPathIdx)
       last_idx = first_idx + 1;
    }
 
-   for ( Int32 idx = first_idx; idx < last_idx; idx++ )
+   for ( GirderIndexType idx = first_idx; idx < last_idx; idx++ )
    {
       bmfGirderPath* pGirderPath = GetGirderPath( idx );
       CHECKX( pGirderPath != 0, _T("Error finding girder path") );
@@ -101,7 +101,7 @@ void bmfSpan::CreateGirder(bmfGirderTemplate* pTpl,Int32 gdrPathIdx)
   }
 }
 
-bmfGirder* bmfSpan::GetGirder(Int32 gdrPathIdx)
+bmfGirder* bmfSpan::GetGirder(GirderIndexType gdrPathIdx)
 {
    bmfGirderPath* pGirderPath = GetGirderPath( gdrPathIdx );
    CHECKX( pGirderPath != 0, _T("Error getting girder path"));
@@ -109,7 +109,7 @@ bmfGirder* bmfSpan::GetGirder(Int32 gdrPathIdx)
    return pGirderPath->GetGirder();
 }
 
-const bmfGirder* bmfSpan::GetGirder(Int32 gdrPathIdx) const
+const bmfGirder* bmfSpan::GetGirder(GirderIndexType gdrPathIdx) const
 {
    bmfGirderPath* pGirderPath = GetGirderPath( gdrPathIdx );
    CHECKX( pGirderPath != 0, _T("Error getting girder path"));
@@ -141,7 +141,7 @@ void bmfSpan::GetGirders(std::vector<const bmfGirder*>& vGirders) const
    }
 }
 
-void bmfSpan::SetID(Int32 id)
+void bmfSpan::SetID(SpanIDType id)
 {
    m_ID = id;
 } // SetID
@@ -166,7 +166,7 @@ void bmfSpan::OnAlignmentChanged()
    UpdateGirderPaths();
 } // OnAlignmentChanged
 
-void bmfSpan::LayoutGirderPaths(Int32 nGirders,
+void bmfSpan::LayoutGirderPaths(GirderIndexType nGirders,
                                Float64 spacing,
                                bmfMeasuredWhere where,
                                bmfMeasuredHow how)
@@ -182,7 +182,7 @@ void bmfSpan::LayoutGirderPaths(Int32 nGirders,
    Float64 offset;
    offset = (m_GirderCount - 1) * m_GirderLineSpacing / 2.0;
 
-   for (Int32 gdrPathIdx = 0; gdrPathIdx < m_GirderCount; gdrPathIdx++)
+   for (GirderIndexType gdrPathIdx = 0; gdrPathIdx < m_GirderCount; gdrPathIdx++)
    {
       bmfGirderPath* pPath = new bmfGirderPath(this, 
                                                gdrPathIdx,
@@ -200,7 +200,7 @@ void bmfSpan::LayoutGirderPaths(Int32 nGirders,
    }
 }
 
-void bmfSpan::GetGirderPathLayout(Int32& nGirders,
+void bmfSpan::GetGirderPathLayout(GirderIndexType& nGirders,
                                  Float64& spacing,
                                  bmfMeasuredWhere& where,
                                  bmfMeasuredHow& how) const
@@ -220,7 +220,7 @@ gpRect2d bmfSpan::GetBoundingBox() const
 {
    gpRect2d box;
 
-   for (Int32 girderIdx = 0; girderIdx < GetGirderPathCount(); girderIdx++)
+   for (GirderIndexType girderIdx = 0; girderIdx < GetGirderPathCount(); girderIdx++)
    {
       // Draw the girder path
       const bmfGirder* p_girder = GetGirder( girderIdx );
@@ -336,7 +336,7 @@ void bmfSpan::PlanView(HDC hDC,const grlibPointMapper& mapper,
 //   } // bLabelAlignment
 
    // Draw Girder Lines
-   for (Int32 girderIdx = 0; girderIdx < GetGirderPathCount(); girderIdx++)
+   for (GirderIndexType girderIdx = 0; girderIdx < GetGirderPathCount(); girderIdx++)
    {
       // Draw the girder path
       bmfGirderPath* p_path = GetGirderPath( girderIdx );
@@ -374,7 +374,7 @@ void bmfSpan::PlanView(HDC hDC,const grlibPointMapper& mapper,
 
          Int32 intang = Int32(ccw_angle_from_east * (float)(180./M_PI)*10);
          UINT old_align = ::SetTextAlign( hDC, TA_BOTTOM | TA_CENTER );
-         grGraphTool::TextOutRotated(hDC, dx, dy, intang, message.c_str(), message.size(), 8);
+         grGraphTool::TextOutRotated(hDC, dx, dy, intang, message.c_str(), (LONG)message.size(), 8);
 
          ::SetTextAlign( hDC, old_align );
       }
@@ -402,7 +402,7 @@ Float64 bmfSpan::GetLength() const
    return (m_pEndPier->GetBackBearingStation() - m_pStartPier->GetAheadBearingStation());
 } // GetLength
 
-Float64 bmfSpan::GetGirderPathSpacing(Int32 gdrPathIdx,
+Float64 bmfSpan::GetGirderPathSpacing(GirderIndexType gdrPathIdx,
                                     Side side,
                                     Float64 distFromStart)
 {
@@ -434,7 +434,7 @@ Float64 bmfSpan::GetGirderPathSpacing(Int32 gdrPathIdx,
    return spacing;
 }
 
-Float64 bmfSpan::GetGirderPathOffset(Int32 gdrPathIdx, Float64 station) const
+Float64 bmfSpan::GetGirderPathOffset(GirderIndexType gdrPathIdx, Float64 station) const
 {
    bmfGirderPath* ppath = GetGirderPath(gdrPathIdx);
    CHECK(ppath);
@@ -445,7 +445,7 @@ Float64 bmfSpan::GetGirderPathOffset(Int32 gdrPathIdx, Float64 station) const
 }
 
 
-Float64 bmfSpan::GetTributaryWidth(Int32 gdrPathIdx, Float64 distFromStart)
+Float64 bmfSpan::GetTributaryWidth(GirderIndexType gdrPathIdx, Float64 distFromStart)
 {
    Float64 spacing_left;
    Float64 spacing_right;
@@ -516,7 +516,7 @@ bmfPier* bmfSpan::GetEndPier() const
 } 
 
 //======================== INQUIRY    =======================================
-Int32 bmfSpan::GetID() const
+SpanIDType bmfSpan::GetID() const
 {
    return m_ID;
 } // GetID
@@ -566,17 +566,17 @@ void bmfSpan::DoInitGirder( bmfGirder* pGirder )
 
 //======================== ACCESS     =======================================
 
-void bmfSpan::StoreGirderPath(Int32 gdrPathIdx, bmfGirderPath* pGirderPath)
+void bmfSpan::StoreGirderPath(GirderIndexType gdrPathIdx, bmfGirderPath* pGirderPath)
 {
    m_GirderPaths.insert(m_GirderPaths.begin() + gdrPathIdx, boost::shared_ptr<bmfGirderPath>(pGirderPath) );
 } // StoreGirderPan
 
-bmfGirderPath* bmfSpan::GetGirderPath(Int32 gdrPathIdx) const
+bmfGirderPath* bmfSpan::GetGirderPath(GirderIndexType gdrPathIdx) const
 {
-   WARN( gdrPathIdx > (Int32)m_GirderPaths.size()-1,
+   WARN( gdrPathIdx > m_GirderPaths.size()-1,
         "Girder Path " << gdrPathIdx << " does not exist" );
 
-   if ( gdrPathIdx > (Int32)m_GirderPaths.size()-1 )
+   if ( gdrPathIdx > m_GirderPaths.size()-1 )
       return 0;
 
    return m_GirderPaths[gdrPathIdx].get();
@@ -584,22 +584,22 @@ bmfGirderPath* bmfSpan::GetGirderPath(Int32 gdrPathIdx) const
 
 //======================== INQUIRY    =======================================
 
-bool bmfSpan::IsInteriorGirderPath(Int32 gdrPathIdx) const
+bool bmfSpan::IsInteriorGirderPath(GirderIndexType gdrPathIdx) const
 {
    return !IsExteriorGirderPath(gdrPathIdx);
 } // IsInteriorGirderPath
 
-bool bmfSpan::IsExteriorGirderPath(Int32 gdrPathIdx) const
+bool bmfSpan::IsExteriorGirderPath(GirderIndexType gdrPathIdx) const
 {
    return ( (gdrPathIdx == 0 || gdrPathIdx == (GetGirderPathCount() - 1)) ? true : false);
 } // IsExteriorGirderPath
 
-bool bmfSpan::IsFirstGirderPath(Int32 gdrPathIdx) const
+bool bmfSpan::IsFirstGirderPath(GirderIndexType gdrPathIdx) const
 {
    return (gdrPathIdx == 0 ? true : false);
 } // IsFirstGirderPath
 
-bool bmfSpan::IsLastGirderPath(Int32 gdrPathIdx) const
+bool bmfSpan::IsLastGirderPath(GirderIndexType gdrPathIdx) const
 {
    return (gdrPathIdx == (GetGirderPathCount() - 1) ? true : false);
 } // IsLastGirderPath

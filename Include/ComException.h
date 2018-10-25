@@ -302,7 +302,7 @@ inline CComBSTR CreateErrorMsg2S(UINT nid, BSTR bmsg1, BSTR bmsg2)
    return CComBSTR(msg);
 }
 
-inline CComBSTR CreateErrorMsg1L(UINT nid, long someInt)
+inline CComBSTR CreateErrorMsg1L(UINT nid, SIZE_T someInt)
 {
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nid, str, 256);
@@ -312,7 +312,7 @@ inline CComBSTR CreateErrorMsg1L(UINT nid, long someInt)
    return CComBSTR(msg);
 }
 
-inline CComBSTR CreateErrorMsg2L(UINT nid, long someInt1, long someInt2)
+inline CComBSTR CreateErrorMsg2L(UINT nid, SIZE_T someInt1, SIZE_T someInt2)
 {
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nid, str, 256);
@@ -322,7 +322,7 @@ inline CComBSTR CreateErrorMsg2L(UINT nid, long someInt1, long someInt2)
    return CComBSTR(msg);
 }
 
-inline CComBSTR CreateErrorMsg1D(UINT nid, double someDouble)
+inline CComBSTR CreateErrorMsg1D(UINT nid, Float64 someDouble)
 {
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nid, str, 256);

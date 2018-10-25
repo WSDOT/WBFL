@@ -65,7 +65,7 @@ std::_tstring libLibraryManager::GetName() const
    return m_Name;
 }
 
-Uint32 libLibraryManager::AddLibrary(libILibrary* pLibrary)
+CollectionIndexType libLibraryManager::AddLibrary(libILibrary* pLibrary)
 {
    PRECONDITION(pLibrary);
    libILibrary* plib = GetLibrary(pLibrary->GetIdName().c_str());
@@ -76,12 +76,12 @@ Uint32 libLibraryManager::AddLibrary(libILibrary* pLibrary)
    return m_Libraries.size()-1;
 }
 
-Uint32 libLibraryManager::GetLibraryCount() const
+CollectionIndexType libLibraryManager::GetLibraryCount() const
 {
    return m_Libraries.size();
 }
 
-bool libLibraryManager::IsDepreciated(Uint32 idx) const
+bool libLibraryManager::IsDepreciated(CollectionIndexType idx) const
 {
    const libILibrary* pLib = GetLibrary(idx);
    return pLib->IsDepreciated();
@@ -92,7 +92,7 @@ sysTime libLibraryManager::GetTimeStamp() const
    return m_LastSavedTime;
 }
 
-std::_tstring libLibraryManager::GetLibraryIdName(Uint32 index) const
+std::_tstring libLibraryManager::GetLibraryIdName(CollectionIndexType index) const
 {
    const libILibrary* plib;
    if (index>=0 && index<m_Libraries.size())
@@ -103,7 +103,7 @@ std::_tstring libLibraryManager::GetLibraryIdName(Uint32 index) const
    return plib->GetIdName();
 }
 
-std::_tstring libLibraryManager::GetLibraryDisplayName(Uint32 index) const
+std::_tstring libLibraryManager::GetLibraryDisplayName(CollectionIndexType index) const
 {
    const libILibrary* plib;
    if (index>=0 && index<m_Libraries.size())
@@ -114,7 +114,7 @@ std::_tstring libLibraryManager::GetLibraryDisplayName(Uint32 index) const
    return plib->GetDisplayName();
 }
 
-libILibrary* libLibraryManager::GetLibrary(Uint32 index)
+libILibrary* libLibraryManager::GetLibrary(CollectionIndexType index)
 {
    if (index>=0 && index<m_Libraries.size())
       return m_Libraries[index].get();
@@ -122,7 +122,7 @@ libILibrary* libLibraryManager::GetLibrary(Uint32 index)
       return 0;
 }
 
-const libILibrary* libLibraryManager::GetLibrary(Uint32 index) const
+const libILibrary* libLibraryManager::GetLibrary(CollectionIndexType index) const
 {
    if (index>=0 && index<m_Libraries.size())
       return m_Libraries[index].get();
@@ -360,7 +360,11 @@ bool libLibraryManager::AssertValid() const
       libILibrary* pLib = libType.get();
       const type_info& ti = typeid( pLib );
       std::string name( ti.name() );
+#if defined _WIN64
+      std::string lib_type( "class libILibrary * __ptr64" );
+#else
       std::string lib_type( "class libILibrary *" );
+#endif
       if ( name != lib_type )
       {
          WATCH(_T("######## Bad library type"));

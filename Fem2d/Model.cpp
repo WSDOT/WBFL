@@ -33,6 +33,8 @@
 #include "stlTools.h"
 #include "MathEx.h"
 
+#include <stdlib.h> 
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1181,7 +1183,7 @@ void CModel::OnLoadingsCleared()
 
 void CModel::OnPOIChanged(IFem2dPOI* pp)
 {
-   long id;
+   PoiIDType id;
    pp->get_ID(&id);
    RemovePoiResults(id);
 }
@@ -1273,17 +1275,17 @@ void CModel::AllocateFGlobal()
 // This function could be improved by allowing CModel to re-order or
 // re-index the joints to produce a smaller bandwidth. A smaller bandwidth
 // would reduce memory requirements and allow for faster solutions.
-long CModel::ComputeBandWidth()
+LONG CModel::ComputeBandWidth()
 {
-   long bw = 1;
-   long j,k;
-   long dof1, dof2;
+   LONG bw = 1;
+   LONG j,k;
+   LONG dof1, dof2;
 
    MemberIterator i( m_pMembers->begin() );
    MemberIterator iend( m_pMembers->end() );
    while(i != iend)
    {
-      long nDOF;
+      LONG nDOF;
       CMember* mbr = *(i++);
 
       nDOF = mbr->GetNumDOF();
@@ -1294,7 +1296,7 @@ long CModel::ComputeBandWidth()
             dof1 = mbr->GetCondensedDOF(j);
             dof2 = mbr->GetCondensedDOF(k);
             if (dof1 >= 0 && dof2 >= 0)
-               bw = _cpp_max(bw,(long)(abs(dof1-dof2) + 1));
+               bw = _cpp_max(bw,(LONG)(_abs64(dof1-dof2) + 1));
          }
       }
    }
@@ -1383,9 +1385,9 @@ void CModel::FemAnalysis()
    }
    catch(SymBandedMatrix::SymBandedSolverException& e)
    {
-      long dof = e.m_OffendingDof;
+      LONG dof = e.m_OffendingDof;
       JointIDType joint;
-      long jdof;
+      LONG jdof;
       GetJointFromDof(dof, &joint, &jdof);
       CComBSTR msg = CreateErrorMsg2(IDS_E_MATRIX_FACTORING, joint, jdof+1);
       THROW_MSG(msg, FEM2D_E_MATRIX_FACTORING, IDH_E_MATRIX_FACTORING);
@@ -1412,7 +1414,7 @@ void CModel::ComputeLoadings()
    {
       ClearLoads(); // clear any previously applied loadings
 
-      long lid = *(ldIter++);
+      LoadCaseIDType lid = *(ldIter++);
       CLoading *loading = m_pLoadings->Find(lid);
       ATLASSERT(loading!=0);
 
@@ -1424,7 +1426,7 @@ void CModel::ComputeLoadings()
 
 #if defined DUMP_KMATRIX
          logfile << "Global Force Vector: Loading =" << lid << std::endl;
-         for (long fi=0; fi<m_NumCondensedDOF; fi++)
+         for (LONG fi=0; fi<m_NumCondensedDOF; fi++)
             logfile << m_pF[fi] << std::endl;
 #endif
          try
@@ -1433,9 +1435,9 @@ void CModel::ComputeLoadings()
          }
          catch(SymBandedMatrix::SymBandedSolverException& e)
          {
-            long dof = e.m_OffendingDof;
+            LONG dof = e.m_OffendingDof;
             JointIDType joint;
-            long jdof;
+            LONG jdof;
             GetJointFromDof(dof, &joint, &jdof);
             CComBSTR msg = CreateErrorMsg2(IDS_E_MATRIX_BACK_SUBSTITUTION, joint, jdof+1);
             THROW_MSG(msg, FEM2D_E_MATRIX_BACK_SUBSTITUTION, IDH_E_MATRIX_BACK_SUBSTITUTION);
@@ -1447,7 +1449,7 @@ void CModel::ComputeLoadings()
          }
 #if defined DUMP_KMATRIX
          logfile << "Solution: Loading =" << lid << std::endl;
-         for (long fi=0; fi<m_NumCondensedDOF; fi++)
+         for (LONG fi=0; fi<m_NumCondensedDOF; fi++)
             logfile << m_pF[fi] << std::endl;
 #endif
 
@@ -1499,7 +1501,7 @@ void CModel::AssembleGlobalForceVector()
 void CModel::AssembleJointLoads()
 {
    Float64 f[CJoint::NumDof];
-   long ndof = CJoint::NumDof;
+   LONG ndof = CJoint::NumDof;
 
    JointIterator j( m_pJoints->begin() );
    JointIterator jend( m_pJoints->end() );
@@ -1510,9 +1512,9 @@ void CModel::AssembleJointLoads()
 
       jnt->GetFglobal(f);
 
-      for (long i = 0; i < ndof; i++)
+      for (LONG i = 0; i < ndof; i++)
       {
-         long dof;
+         LONG dof;
          dof = jnt->GetCondensedDOF(i);
          if (dof >= 0)
          {
@@ -1540,7 +1542,7 @@ void CModel::AssembleElementLoads()
    while(e != eend)
    {
       CMember *mbr = *(e++);
-      long ndof = mbr->GetNumDOF();
+      LONG ndof = mbr->GetNumDOF();
 
       ATLASSERT(ndof<=MAX_ELEMENT_DOF); // added a new element type?
 
@@ -1548,7 +1550,7 @@ void CModel::AssembleElementLoads()
       // before it can be integrated into the global force vector.
       mbr->AssembleF();
 
-      long dof, cdof;
+      LONG dof, cdof;
       mbr->GetFglobal(f);
       for (dof = 0; dof < ndof; dof++)
       {
@@ -1577,8 +1579,8 @@ void CModel::AssembleGlobalStiffnessMatrix()
 
    while(iter != iterend)
    {
-      long i,j;
-      long dof;
+      LONG i,j;
+      LONG dof;
       CMember *mbr = *(iter++);
 
       dof = mbr->GetNumDOF();
@@ -1587,8 +1589,8 @@ void CModel::AssembleGlobalStiffnessMatrix()
       {
          for (j = 0; j < dof; j++)
          {
-            long CDOFi,CDOFj;
-            long I,J;
+            LONG CDOFi,CDOFj;
+            LONG I,J;
             Float64 k;
 
             CDOFi = mbr->GetCondensedDOF(i);
@@ -1623,7 +1625,7 @@ void CModel::InitModel()
    JointIterator jend( m_pJoints->end() );
    while(j!=jend)
    {
-      long nGDOFused,nCDOFused;
+      LONG nGDOFused,nCDOFused;
       CJoint *jnt = *(j++);
       jnt->InitModel(m_NumGlobalDOF,m_NumCondensedDOF,nGDOFused,nCDOFused);
       m_NumGlobalDOF    += nGDOFused;
@@ -1665,13 +1667,13 @@ void CModel::ClearLoads()
 void CModel::ApplyJntDisplacements()
 {
    Float64 disp[CJoint::NumDof];
-   long ndof = CJoint::NumDof;
+   LONG ndof = CJoint::NumDof;
 
    JointIterator j( m_pJoints->begin() );
    JointIterator jend( m_pJoints->end() );
    while(j != jend)
    {
-      long cdof, dof;
+      LONG cdof, dof;
       CJoint *jnt = *(j++);
 
       for (dof = 0; dof < ndof; dof++)
@@ -2112,7 +2114,7 @@ void CModel::RemoveResults(LoadCaseIDType lcase)
 {
    // remove all results for a given load case
    // ignore return code since we don't know (care) if loading results exist
-   int st;
+   CollectionIndexType st;
 
    JntResultIterator ji( m_JntResults.begin() );
    JntResultIterator jiend( m_JntResults.end() );
@@ -2153,7 +2155,7 @@ void CModel::RemoveAllPoiResults()
    m_PoiResults.clear();
 }
 
-void CModel::GetJointFromDof(long dof, JointIDType* joint, long* jdof)
+void CModel::GetJointFromDof(LONG dof, JointIDType* joint, LONG* jdof)
 {
    *joint = -1; // assume the worst
    *jdof = -1;
@@ -2164,10 +2166,10 @@ void CModel::GetJointFromDof(long dof, JointIDType* joint, long* jdof)
    {
       CJoint *jnt = *(j++);
 
-      long ndof = CJoint::NumDof;
-      for (long idof = 0; idof < ndof; idof++)
+      LONG ndof = CJoint::NumDof;
+      for (LONG idof = 0; idof < ndof; idof++)
       {
-         long cdof = jnt->GetCondensedDOF(idof);
+         LONG cdof = jnt->GetCondensedDOF(idof);
          if (cdof == dof)
          {
             jnt->get_ID(joint);

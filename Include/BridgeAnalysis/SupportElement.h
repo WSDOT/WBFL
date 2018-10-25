@@ -37,7 +37,7 @@ class bamSpanElement;
 
 struct bamSupportElementInfo
 {
-   Int32 m_SupportElementId;
+   SupportIDType m_SupportElementId;
    Float64 m_Location;
    bamSupportFixity m_SupportFixity;
 };
@@ -47,13 +47,13 @@ typedef bamSupportElementInfo bamSupportElementInfo;
 class bamSupportElement
 {
 public:
-   bamSupportElement(Int32 id,Float64 location,bamSupportFixity fixity);
+   bamSupportElement(SupportIDType id,Float64 location,bamSupportFixity fixity);
    bamSupportElement(const bamSupportElementInfo& rSupportElementInfo);
    virtual ~bamSupportElement();
 
    void GetSupportElementInfo(bamSupportElementInfo& rSupportElementInfo) const;
 
-   Int32 GetID() const;
+   SupportIDType GetID() const;
 
    Float64 GetLocation() const;
    bamSupportFixity GetFixity() const;
@@ -85,13 +85,13 @@ protected:
    Int16 GetSupportSize() const;
 
 private:
-   Int32 m_ID;
+   SupportIDType m_ID;
    Float64 m_Location;
    Int16 m_SupportSize;
    bamSupportFixity m_Fixity;
    bamBridgeModel* m_pModel;
 
-   typedef std::map<Int32, bamSpanElement*, std::less<Int32>, std::allocator<bamSpanElement*> > SpanElementContainer;
+   typedef std::map<SpanIDType, bamSpanElement*, std::less<SpanIDType>, std::allocator<bamSpanElement*> > SpanElementContainer;
    typedef SpanElementContainer::iterator SpanElementIterator;
    SpanElementContainer m_SpanElements;
 
@@ -121,7 +121,7 @@ public:
 };
 
 // inline
-inline Int32 bamSupportElement::GetID() const { return m_ID; }
+inline SupportIDType bamSupportElement::GetID() const { return m_ID; }
 inline void bamSupportElement::SetSupportSize(Int16 size) {m_SupportSize = size;}
 inline Int16  bamSupportElement::GetSupportSize() const {return m_SupportSize;}
 

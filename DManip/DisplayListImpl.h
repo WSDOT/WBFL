@@ -100,15 +100,15 @@ END_COM_MAP()
    STDMETHOD_(void,SetDisplayMgr)(iDisplayMgr* pDispMgr);
    STDMETHOD_(void,GetDisplayMgr)(iDisplayMgr** dispMgr);
 
-   STDMETHOD_(void,SetID)(long id);
-   STDMETHOD_(long,GetID)();
+   STDMETHOD_(void,SetID)(IDType id);
+   STDMETHOD_(IDType,GetID)();
 
    STDMETHOD_(void,AddDisplayObject)(iDisplayObject* pDO);
-   STDMETHOD_(void,GetDisplayObject)(long index,iDisplayObject** dispObj);
-   STDMETHOD_(void,FindDisplayObject)(long id,iDisplayObject** dispObj);
-   STDMETHOD_(void,RemoveDisplayObject)(long key,AccessType access);
+   STDMETHOD_(void,GetDisplayObject)(CollectionIndexType index,iDisplayObject** dispObj);
+   STDMETHOD_(void,FindDisplayObject)(IDType id,iDisplayObject** dispObj);
+   STDMETHOD_(void,RemoveDisplayObject)(IDType key,AccessType access);
    STDMETHOD_(void,Clear)();
-   STDMETHOD_(long,GetDisplayObjectCount)();
+   STDMETHOD_(CollectionIndexType,GetDisplayObjectCount)();
 
    STDMETHOD_(void,FindDisplayObjects)(CRect rect,     DisplayObjectContainer* dispObjs);
    STDMETHOD_(void,FindDisplayObjects)(CPoint point,   DisplayObjectContainer* dispObjs);
@@ -147,14 +147,14 @@ protected:
 
 private:
    iDisplayMgr* m_pDispMgr;
-   long m_ID;
+   IDType m_ID;
 
    CComPtr<iDisplayListEvents> m_EventSink;
 
    DisplayObjectContainer m_DisplayObjects;
 
    void Fire_OnDisplayObjectAdded(iDisplayObject* pDO);
-   void Fire_OnDisplayObjectRemoved(long doID);
+   void Fire_OnDisplayObjectRemoved(IDType doID);
    void Fire_OnDisplayObjectsCleared();
 };
 

@@ -14,7 +14,7 @@
 class ReactionInfluenceDataSetBuilder : public iDataSetBuilder  
 {
 public:
-	ReactionInfluenceDataSetBuilder(long supportId, IInfluenceLineResponse* response);
+	ReactionInfluenceDataSetBuilder(SupportIDType supportId, IInfluenceLineResponse* response);
 	virtual ~ReactionInfluenceDataSetBuilder();
 
    // iDataSetBuilder
@@ -30,7 +30,7 @@ public:
    virtual CString GetDescription()
    {
       CString dsc;
-      dsc.Format("Reaction Influence for Support %d", m_SupportId);
+      dsc.Format(_T("Reaction Influence for Support %d"), m_SupportId);
       return dsc;
    }
 
@@ -38,7 +38,7 @@ public:
 private:
 	ReactionInfluenceDataSetBuilder();
 
-   long m_SupportId;
+   SupportIDType m_SupportId;
    CComQIPtr<IInfluenceLineResponse> m_pInfluenceLineResponse;
 
 };

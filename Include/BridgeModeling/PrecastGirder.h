@@ -120,7 +120,7 @@ public:
    //------------------------------------------------------------------------
    // Returns the eccentricity of the harped strands at distFromStart 
    // from the start of the girder for nStrands strands.
-   Float64 GetHarpedStrandEccentricity( Uint32 nStrands, Float64 distFromStart,const gpSize2d& endShift,const gpSize2d& hpShift ) const;
+   Float64 GetHarpedStrandEccentricity( StrandIndexType nStrands, Float64 distFromStart,const gpSize2d& endShift,const gpSize2d& hpShift ) const;
 
    //------------------------------------------------------------------------
    // Returns the eccentricity of the straight strands at distFromStart 
@@ -130,7 +130,7 @@ public:
    //------------------------------------------------------------------------
    // Returns the eccentricity of the straight strands at distFromStart 
    // from the start of the girder for nStrands strands.
-   Float64 GetStraightStrandEccentricity( Uint32 nStrands, Float64 distFromStart ) const;
+   Float64 GetStraightStrandEccentricity( StrandIndexType nStrands, Float64 distFromStart ) const;
 
    //------------------------------------------------------------------------
    // Returns the eccentricity of the temporary strands at distFromStart 
@@ -140,7 +140,7 @@ public:
    //------------------------------------------------------------------------
    // Returns the eccentricity of the temporary strands at distFromStart 
    // from the start of the girder for nStrands strands.
-   Float64 GetTemporaryStrandEccentricity( Uint32 nStrands, Float64 distFromStart ) const;
+   Float64 GetTemporaryStrandEccentricity( StrandIndexType nStrands, Float64 distFromStart ) const;
 
    //------------------------------------------------------------------------
    // Returns the eccentricity of the prestressing strands at distFromStart
@@ -151,39 +151,39 @@ public:
    //------------------------------------------------------------------------
    // Returns the eccentricity of the prestressing strands at distFromStart
    // from the start of the girder for nStrands strands.
-   Float64 GetStrandEccentricity( Uint32 nStraight, Uint32 nHarped, Uint32 nTemp,Float64 distFromStart, const gpSize2d& endShift, const gpSize2d& hpShift  ) const;
+   Float64 GetStrandEccentricity( StrandIndexType nStraight, StrandIndexType nHarped, StrandIndexType nTemp,Float64 distFromStart, const gpSize2d& endShift, const gpSize2d& hpShift  ) const;
 
    //------------------------------------------------------------------------
    // Returns the coordinate in the cross section where the specified straight
    // strand is.
-   gpPoint2d GetStraightStrandPosition(Float64 distFromStart, Uint32 strIdx) const;
+   gpPoint2d GetStraightStrandPosition(Float64 distFromStart, StrandIndexType strIdx) const;
 
    //------------------------------------------------------------------------
    // Returns the coordinate in the cross section where a strand might
    // be positioned. This is the coordinate in the strand pattern whereas
    // GetStraightStrandPosition returns the coordinate of a strand.
-   gpPoint2d GetStraightStrandPoint(Float64 distFromStart, Uint32 strIdx) const;
+   gpPoint2d GetStraightStrandPoint(Float64 distFromStart, StrandIndexType strIdx) const;
 
    //------------------------------------------------------------------------
    // Returns the coordinate in the cross section where the specified temporary
    // strand is.
-   gpPoint2d GetTemporaryStrandPosition(Float64 distFromStart, Uint32 strIdx) const;
+   gpPoint2d GetTemporaryStrandPosition(Float64 distFromStart, StrandIndexType strIdx) const;
 
    //------------------------------------------------------------------------
    // Returns the coordinate in the cross section where a strand might
    // be positioned. This is the coordinate in the strand pattern whereas
    // GetTemporaryStrandPosition returns the coordinate of a strand.
-   gpPoint2d GetTemporaryStrandPoint(Float64 distFromStart, Uint32 strIdx) const;
+   gpPoint2d GetTemporaryStrandPoint(Float64 distFromStart, StrandIndexType strIdx) const;
 
    //------------------------------------------------------------------------
    // Returns the coordinate in the cross section where the specified harped
    // strand is.
-   gpPoint2d GetHarpedStrandPosition(Float64 distFromStart, Uint32 strIdx) const;
-   gpPoint2d GetHarpedStrandPosition(Float64 distFromStart, Uint32 strIdx,const gpSize2d& endShift,const gpSize2d& hpShift) const;
-   gpPoint2d GetHarpedStrandPoint(Float64 distFromStart, Uint32 strIdx) const;
-   gpPoint2d GetHarpedStrandPoint(Float64 distFromStart, Uint32 strIdx,Uint32 numHarpedStrands) const;
-   gpPoint2d GetHarpedStrandPoint(Float64 distFromStart, Uint32 strIdx,const gpSize2d& endShift,const gpSize2d& hpShift) const;
-   gpPoint2d GetHarpedStrandPoint(Float64 distFromStart, Uint32 strIdx,const gpSize2d& endShift,const gpSize2d& hpShift,Uint32 numHarpedStrands) const;
+   gpPoint2d GetHarpedStrandPosition(Float64 distFromStart, StrandIndexType strIdx) const;
+   gpPoint2d GetHarpedStrandPosition(Float64 distFromStart, StrandIndexType strIdx,const gpSize2d& endShift,const gpSize2d& hpShift) const;
+   gpPoint2d GetHarpedStrandPoint(Float64 distFromStart, StrandIndexType strIdx) const;
+   gpPoint2d GetHarpedStrandPoint(Float64 distFromStart, StrandIndexType strIdx,StrandIndexType numHarpedStrands) const;
+   gpPoint2d GetHarpedStrandPoint(Float64 distFromStart, StrandIndexType strIdx,const gpSize2d& endShift,const gpSize2d& hpShift) const;
+   gpPoint2d GetHarpedStrandPoint(Float64 distFromStart, StrandIndexType strIdx,const gpSize2d& endShift,const gpSize2d& hpShift,StrandIndexType numHarpedStrands) const;
 
    //------------------------------------------------------------------------
    // Returns the slope of the harped strand in the form 1:n. If the
@@ -193,19 +193,19 @@ public:
    //------------------------------------------------------------------------
    // Returns the slope of the specified number harped strand in the form 1:n. 
    // If the strands are horizontal, n = DBL_MAX.
-   Float64 GetHarpedStrandSlope( Uint32 nStrands, Float64 distFromStart,const gpSize2d& endShift,const gpSize2d& hpShift ) const;
+   Float64 GetHarpedStrandSlope( StrandIndexType nStrands, Float64 distFromStart,const gpSize2d& endShift,const gpSize2d& hpShift ) const;
 
    //------------------------------------------------------------------------
-   Uint32 GetMaxStraightStrands() const;
+   StrandIndexType GetMaxStraightStrands() const;
 
    //------------------------------------------------------------------------
-   Uint32 GetMaxHarpedStrands() const;
+   StrandIndexType GetMaxHarpedStrands() const;
 
    //------------------------------------------------------------------------
-   Uint32 GetMaxTemporaryStrands() const;
+   StrandIndexType GetMaxTemporaryStrands() const;
 
    //------------------------------------------------------------------------
-   Uint32 GetMaxStrands(bool bIncTemp = false) const;
+   StrandIndexType GetMaxStrands(bool bIncTemp = false) const;
 
    //------------------------------------------------------------------------
    // Adds a harped strand in accordance with the strand pattern. Returns true
@@ -243,7 +243,7 @@ public:
    // changed and the next highest number of strands is returned, or the max
    // number of strands if nStrands is greater than the max.  Zero is returned
    // if the strand cound is modified successfully.
-   Uint32 SetNumHarpedStrands( Uint32 nStrands );
+   StrandIndexType SetNumHarpedStrands( StrandIndexType nStrands );
 
    //------------------------------------------------------------------------
    // Sets the number of straight strands.  If nStrands does not fit correctly
@@ -251,7 +251,7 @@ public:
    // changed and the next highest number of strands is returned, or the max
    // number of strands if nStrands is greater than the max.  Zero is returned
    // if the strand cound is modified successfully.
-   Uint32 SetNumStraightStrands( Uint32 nStrands );
+   StrandIndexType SetNumStraightStrands( StrandIndexType nStrands );
 
    //------------------------------------------------------------------------
    // Sets the number of temporary strands.  If nStrands does not fit correctly
@@ -259,19 +259,19 @@ public:
    // changed and the next highest number of strands is returned, or the max
    // number of strands if nStrands is greater than the max.  Zero is returned
    // if the strand cound is modified successfully.
-   Uint32 SetNumTemporaryStrands( Uint32 nStrands );
+   StrandIndexType SetNumTemporaryStrands( StrandIndexType nStrands );
 
    //------------------------------------------------------------------------
    // Returns the number of straight strands in the girder.
-   Uint32 GetNumStraightStrands() const;
+   StrandIndexType GetNumStraightStrands() const;
 
    //------------------------------------------------------------------------
    // Returns the number of harped strands in the girder.
-   Uint32 GetNumHarpedStrands() const;
+   StrandIndexType GetNumHarpedStrands() const;
 
    //------------------------------------------------------------------------
    // Returns the number of temporary strands in the girder.
-   Uint32 GetNumTemporaryStrands() const;
+   StrandIndexType GetNumTemporaryStrands() const;
 
    // GROUP: ACCESS
 

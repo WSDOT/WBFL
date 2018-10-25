@@ -169,14 +169,14 @@ void grAxisXY::Draw(HDC hDC)
 
             if (m_Orientation == X_AXIS)
             {
-               UINT old_a;
+               LONG old_a;
                if ( m_ValueAngle == 0 )
                   old_a = ::SetTextAlign(hDC, TA_CENTER | TA_TOP);
                else
                   old_a = ::SetTextAlign(hDC, TA_RIGHT  | TA_TOP);
 
                grGraphTool::TextOutRotated(hDC, tic_l, m_AxisMetrics.ValueTextLoc, m_ValueAngle,
-                                  value_text.c_str(), value_text.size(),
+                                  value_text.c_str(), (LONG)value_text.size(),
                                   m_AxisValueSize);
                ::SetTextAlign(hDC, old_a);            
             }
@@ -184,7 +184,7 @@ void grAxisXY::Draw(HDC hDC)
             {
                UINT old_a = SetTextAlign(hDC, TA_RIGHT | TA_BASELINE);
                grGraphTool::TextOutRotated(hDC, m_AxisMetrics.ValueTextLoc, tic_l,  m_ValueAngle,
-                                  value_text.c_str(), value_text.size(),
+                                  value_text.c_str(), (LONG)value_text.size(),
                                   m_AxisValueSize);
                ::SetTextAlign(hDC, old_a);            
             }
@@ -232,11 +232,11 @@ void grAxisXY::Draw(HDC hDC)
       {
          ::SetTextAlign(hDC, TA_CENTER | TA_TOP);
          grGraphTool::TextOutRotated(hDC, tit_hl, m_AxisMetrics.TitleTextLoc, 0,
-                            m_AxisTitle.c_str(), m_AxisTitle.size(),
+                            m_AxisTitle.c_str(), (LONG)m_AxisTitle.size(),
                             m_AxisTitleSize);
 
          grGraphTool::TextOutRotated(hDC, tit_hl, m_AxisMetrics.SubtitleTextLoc, 0,
-                            m_AxisSubtitle.c_str(), m_AxisSubtitle.size(),
+                            m_AxisSubtitle.c_str(), (LONG)m_AxisSubtitle.size(),
                             m_AxisSubtitleSize);
 
       }
@@ -245,12 +245,12 @@ void grAxisXY::Draw(HDC hDC)
          ::SetTextAlign(hDC, TA_CENTER | TA_BASELINE);
          grGraphTool::TextOutRotated(hDC, 
                                      m_AxisMetrics.TitleTextLoc , tit_hl, 900,
-                                     m_AxisTitle.c_str(), m_AxisTitle.size(),
+                                     m_AxisTitle.c_str(), (LONG)m_AxisTitle.size(),
                                      m_AxisTitleSize);
 
          grGraphTool::TextOutRotated(hDC,
                                      m_AxisMetrics.SubtitleTextLoc ,tit_hl, 900,
-                                     m_AxisSubtitle.c_str(), m_AxisSubtitle.size(),
+                                     m_AxisSubtitle.c_str(), (LONG)m_AxisSubtitle.size(),
                                      m_AxisSubtitleSize);
       }
    }
@@ -265,7 +265,7 @@ void grAxisXY::SetNiceAxisRange(Float64 leftVal, Float64 rightVal)
    // set metrics dirty
    m_MetricsDirtyFlag = true;
 
-   Int32 num_tic = m_NumberOfMajorTics;
+   CollectionIndexType num_tic = m_NumberOfMajorTics;
    grGraphTool::CalculateNiceRange(leftVal, rightVal, num_tic, m_LeftAxisValue, 
                                    m_RightAxisValue, m_AxisIncrement);
 }
@@ -539,13 +539,13 @@ void grAxisXY::UpdateAxisMetrics(HDC hDC)
    SIZE siz;
    ::GetTextExtentPoint32(hDC,_T("AA"),2,&siz);
 
-   Int32 title_size = labs(siz.cy);
+   LONG title_size = labs(siz.cy);
 
    HFONT subtitfont = grGraphTool::CreateRotatedFont(hDC, 0, m_AxisSubtitleSize);
    ::SelectObject(hDC, subtitfont);
    ::GetTextExtentPoint32(hDC,_T("AA"),2,&siz);
 
-   Int32 subtitle_size = labs(siz.cy);
+   LONG subtitle_size = labs(siz.cy);
 
    // determine tic size based on title font size
    m_AxisMetrics.TicSize = title_size/2;
@@ -553,16 +553,16 @@ void grAxisXY::UpdateAxisMetrics(HDC hDC)
    // ugly code here
    // in order to get things to space nicely
    // need to adjust text extends for rotated text box
-   Int32 max_value_width = 0;
-   Int32 max_value_height = 0;
+   LONG max_value_width = 0;
+   LONG max_value_height = 0;
    Float64 curr_value = m_LeftAxisValue;
    HFONT valuefont = grGraphTool::CreateRotatedFont(hDC, m_ValueAngle, m_AxisValueSize);
    ::SelectObject(hDC, valuefont);
-   Int32 num_incrs = (Int32)ceil( (m_RightAxisValue-m_LeftAxisValue)/m_AxisIncrement);
-   for (Int32 i=0; i<=num_incrs; i++)
+   LONG num_incrs = (LONG)ceil( (m_RightAxisValue-m_LeftAxisValue)/m_AxisIncrement);
+   for (LONG i=0; i<=num_incrs; i++)
    {
       std::_tstring value_text(m_pValueFormat->AsString(curr_value));
-      ::GetTextExtentPoint32(hDC,value_text.c_str(),value_text.size(),&siz);
+      ::GetTextExtentPoint32(hDC,value_text.c_str(),(int)value_text.size(),&siz);
       Float64 angle = ::ToRadians(m_ValueAngle/10.);
       Float64 width  = siz.cx*cos(angle) + siz.cy*sin(angle);
       Float64 height = siz.cx*sin(angle) + siz.cy*cos(angle);

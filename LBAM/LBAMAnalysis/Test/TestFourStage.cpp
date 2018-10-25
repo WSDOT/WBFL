@@ -212,7 +212,7 @@ HRESULT CTestFourStage::Test()
 
       TIArrayHelper<Float64, IDblArray,CollectionIndexType> locs(alocs);
 
-      long size = locs.Size();
+      CollectionIndexType size = locs.Size();
       TRY_TEST(size,4);
 
       TRY_TEST( IsEqual(locs[0], 37.58181, 1.0e-4), true);

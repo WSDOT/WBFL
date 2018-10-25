@@ -761,7 +761,7 @@ STDMETHODIMP CLongitudinalPierDescription::CopySegmentTo(CollectionIndexType fro
    return E_FAIL;
 }
 
-STDMETHODIMP CLongitudinalPierDescription::RemoveSegment(CollectionIndexType idx)
+STDMETHODIMP CLongitudinalPierDescription::RemoveSegment(SegmentIndexType idx)
 {
    REMOVESEGMENT data;
    data.idx = idx;

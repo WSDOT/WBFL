@@ -84,12 +84,12 @@ public:
    virtual dbgDumpContext& operator<<(LPCTSTR s);
    dbgDumpContext& operator<<(TCHAR c);    
    dbgDumpContext& operator<<(bool n);
-   dbgDumpContext& operator<<(int n);
-   dbgDumpContext& operator<<(unsigned int n);
    dbgDumpContext& operator<<(Int16 n);
    dbgDumpContext& operator<<(Uint16 n);
    dbgDumpContext& operator<<(Int32 n);
    dbgDumpContext& operator<<(Uint32 n);
+   dbgDumpContext& operator<<(Int64 n);
+   dbgDumpContext& operator<<(Uint64 n);
    dbgDumpContext& operator<<(Float32 n);    
    dbgDumpContext& operator<<(Float64 n);
    dbgDumpContext& operator<<(Float80 n);

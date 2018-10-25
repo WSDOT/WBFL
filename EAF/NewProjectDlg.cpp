@@ -229,7 +229,7 @@ void CNewProjectDlg::OnProjectTypeSelectionChanged(NMHDR *pNMHDR, LRESULT *pResu
          m_TemplateSmallImageList.Add(hIcon);
 
          CString itemName = pItem->GetName();
-         m_Templates.InsertItem(LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE,itemIdx,itemName,0,0,itemIdx,(LPARAM)pItem);
+         m_Templates.InsertItem(LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE,(int)itemIdx,itemName,0,0,(int)itemIdx,(LPARAM)pItem);
       }
    }
 

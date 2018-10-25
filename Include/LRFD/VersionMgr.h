@@ -113,7 +113,7 @@ public:
    static void UnregisterListener(lrfdVersionMgrListener* pListener);
 
    //------------------------------------------------------------------------
-   static Int32 ListenerCount();
+   static CollectionIndexType ListenerCount();
 
    // GROUP: ACCESS
 

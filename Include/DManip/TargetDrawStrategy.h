@@ -29,8 +29,8 @@
 
 interface iTargetDrawStrategy : public iDrawPointStrategy
 {
-   STDMETHOD_(void,SetRadius)(long radius) PURE;
-   STDMETHOD_(long,GetRadius)() PURE;
+   STDMETHOD_(void,SetRadius)(LONG radius) PURE;
+   STDMETHOD_(LONG,GetRadius)() PURE;
    STDMETHOD_(void,SetFgColor)(COLORREF crColor) PURE;
    STDMETHOD_(COLORREF,GetFgColor)() PURE;
    STDMETHOD_(void,SetBgColor)(COLORREF crColor) PURE;

@@ -93,20 +93,20 @@ public:
    void SetTruckLoadImpact(Float64 impact);
    void SetLaneLoadImpact(Float64 impact);
 
-   void SetID(Int32 id);
-   Int32 GetID() const;
+   void SetID(IDType id);
+   IDType GetID() const;
    Float64 GetLaneLoad() const;
    Float64 GetLaneLoadImpact() const;
    Float64 GetTruckLoadImpact() const;
 
-   Int32 GetMinLoadingId() const;
-   Int32 GetMaxLoadingId() const;
-   void SetMinLoadingId(Int32 loadingId);
-   void SetMaxLoadingId(Int32 loadingId);
+   IDType GetMinLoadingId() const;
+   IDType GetMaxLoadingId() const;
+   void SetMinLoadingId(IDType loadingId);
+   void SetMaxLoadingId(IDType loadingId);
 
    // Interface to allow the truck train to be accessed as one giant truck
-   Int32 GetNumAxles();
-   void GetAxle(Int32 axleIndex,Float64& offset,Float64& weight);
+   AxleIndexType GetNumAxles();
+   void GetAxle(AxleIndexType axleIndex,Float64& offset,Float64& weight);
 
    Float64 GetMinLength() const;
    Float64 GetMaxLength() const;
@@ -115,7 +115,7 @@ public:
 
 protected:
    // DATA MEMBERS
-   Int32 m_ID;
+   IDType m_ID;
    Float64 m_LaneLoad;
    Float64 m_LaneLoadImpact;
    Float64 m_TruckLoadImpact;
@@ -130,8 +130,8 @@ protected:
    #pragma warning (disable : 4251)
    TruckContainer m_Trucks;
 
-   Int32 m_MinId; // id for the min envelope
-   Int32 m_MaxId; // id for the max envelope
+   IDType m_MinId; // id for the min envelope
+   IDType m_MaxId; // id for the max envelope
 
    // LIFECYCLE
    // OPERATORS
@@ -140,7 +140,7 @@ protected:
    void MakeAssignment( const bamLiveLoad& rOther );
 
    // ACCESS
-   bamTruck* GetTruck(Int32 axleIndex);
+   bamTruck* GetTruck(AxleIndexType axleIndex);
 
    // INQUIRY
 
@@ -174,8 +174,8 @@ public:
 
 // INLINE METHODS
 //
-inline void bamLiveLoad::SetID(Int32 id) { m_ID = id; }
-inline Int32 bamLiveLoad::GetID() const {return m_ID;}
+inline void bamLiveLoad::SetID(IDType id) { m_ID = id; }
+inline IDType bamLiveLoad::GetID() const {return m_ID;}
 inline Float64 bamLiveLoad::GetLaneLoad() const {return m_LaneLoad;}
 inline Float64 bamLiveLoad::GetLaneLoadImpact() const {return m_LaneLoadImpact;}
 inline Float64 bamLiveLoad::GetTruckLoadImpact() const {return m_TruckLoadImpact;}

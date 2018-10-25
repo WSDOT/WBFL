@@ -215,7 +215,7 @@ HRESULT TestVehicularLoadContext::OnLiveLoadChanged( LiveLoadModelType type)
    return S_OK;
 }
 
-HRESULT TestVehicularLoadContext::OnStiffnessResponseChanged(ChangeScopeType scope, long poiID)
+HRESULT TestVehicularLoadContext::OnStiffnessResponseChanged(ChangeScopeType scope, PoiIDType poiID)
 {
    m_csModelHosedFired = true;
 

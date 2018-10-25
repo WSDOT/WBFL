@@ -80,8 +80,8 @@ BEGIN_COM_MAP(CTextBlockImpl)
 END_COM_MAP()
 
    // iDisplayObject Implementation
-   STDMETHOD_(void,SetID)(long id) { Do_SetID(id); }
-   STDMETHOD_(long,GetID)() { return Do_GetID(); }
+   STDMETHOD_(void,SetID)(IDType id) { Do_SetID(id); }
+   STDMETHOD_(IDType,GetID)() { return Do_GetID(); }
 
    STDMETHOD_(void,SetItemData)(void* pItemData,bool bDelete) { Do_SetItemData(pItemData,bDelete); }
    STDMETHOD_(void,GetItemData)(void** ppItemData) { Do_GetItemData(ppItemData); }
@@ -117,10 +117,10 @@ END_COM_MAP()
    // Tool Tips
    STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText) {Do_SetToolTipText(lpszToolTipText);}
    STDMETHOD_(CString,GetToolTipText)() {return Do_GetToolTipText();}
-   STDMETHOD_(void,SetMaxTipWidth)(long maxWidth) { Do_SetMaxTipWidth(maxWidth); }
-   STDMETHOD_(long,GetMaxTipWidth)() { return Do_GetMaxTipWidth(); }
-   STDMETHOD_(void,SetTipDisplayTime)(long iTime) { Do_SetTipDisplayTime(iTime); }
-   STDMETHOD_(long,GetTipDisplayTime)() { return Do_GetTipDisplayTime(); }
+   STDMETHOD_(void,SetMaxTipWidth)(INT maxWidth) { Do_SetMaxTipWidth(maxWidth); }
+   STDMETHOD_(INT,GetMaxTipWidth)() { return Do_GetMaxTipWidth(); }
+   STDMETHOD_(void,SetTipDisplayTime)(INT iTime) { Do_SetTipDisplayTime(iTime); }
+   STDMETHOD_(INT,GetTipDisplayTime)() { return Do_GetTipDisplayTime(); }
 
    // Interface Events
    STDMETHOD_(bool,OnLButtonDown)(UINT nFlags,CPoint point)
@@ -163,8 +163,8 @@ END_COM_MAP()
    STDMETHOD_(void,SetTextAlign)(UINT nFlags);
    STDMETHOD_(UINT,GetTextAlign)();
 
-   STDMETHOD_(void,SetAngle)(long angle);
-   STDMETHOD_(long,GetAngle)();
+   STDMETHOD_(void,SetAngle)(LONG angle);
+   STDMETHOD_(LONG,GetAngle)();
 
    STDMETHOD_(void,SetText)(LPCTSTR lpszText);
    STDMETHOD_(CString,GetText)();
@@ -192,7 +192,7 @@ private:
 
    void GetTextLines(CStringArray& strings);
    void GetPositionInWorldSpace(Float64* wx,Float64* wy);
-   void GetPositionInLogicalSpace(long* lx,long* ly);
+   void GetPositionInLogicalSpace(LONG* lx,LONG* ly);
    void CreateFont(CFont& font,CDC* pDC);
 };
 

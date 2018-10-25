@@ -105,7 +105,7 @@ public:
    STDMETHOD(get_UnitType)(/*[out,retval]*/BSTR* unitType);
    STDMETHOD(get_Item)(/*[in]*/ BSTR unitTag, /*[out, retval]*/ IDisplayUnit** retval);
 //   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);
-   STDMETHOD(get_Count)(/*[out, retval]*/ Uint32* retval);
+   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType* retval);
    STDMETHOD(Add)(/*[in]*/BSTR unitTag,/*[in]*/UnitSystemType unitSystem,/*[in]*/ IDisplayUnitFormatter* formatter,/*[in,defaultvalue(VARIANT_FALSE)]*/ VARIANT_BOOL bDefault,/*[out,retval]*/ IDisplayUnit** dispUnit);
    STDMETHOD(Clear)();
    STDMETHOD(Remove)(/*[in]*/BSTR unitTag);

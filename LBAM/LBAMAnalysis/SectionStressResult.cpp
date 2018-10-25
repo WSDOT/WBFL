@@ -371,12 +371,12 @@ STDMETHODIMP CSectionStressResult::Save(IStructuredSave2 * psave)
       return hr;
 
    {
-      long cnt = m_LeftResults.size();
+      CollectionIndexType cnt = m_LeftResults.size();
       hr = psave->put_Property(CComBSTR("LeftCount"),_variant_t(cnt));
       if (FAILED(hr))
          return hr;
 
-      for (long i=0; i<cnt; i++)
+      for (CollectionIndexType i=0; i<cnt; i++)
       {
          hr = psave->put_Property(CComBSTR("LeftVal"),_variant_t(m_LeftResults[i]));
          if (FAILED(hr))
@@ -388,7 +388,7 @@ STDMETHODIMP CSectionStressResult::Save(IStructuredSave2 * psave)
       if (FAILED(hr))
          return hr;
 
-      for (long i=0; i<cnt; i++)
+      for (CollectionIndexType i=0; i<cnt; i++)
       {
          hr = psave->put_Property(CComBSTR("RightVal"),_variant_t(m_RightResults[i]));
          if (FAILED(hr))

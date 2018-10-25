@@ -84,15 +84,15 @@ public:
    //------------------------------------------------------------------------
    // Place text at the desired location that is rotated at an arbitrary
    // Rotation in tenth degrees
-   static bool TextOutRotated(HDC hDC, Int32 x, Int32 y, Int32 rotation, 
-                               LPCTSTR lpszText, Int32 textlen, 
-                               Int32 nPointSize, LPCTSTR lpszFacename=_T("Arial"));
+   static bool TextOutRotated(HDC hDC, LONG x, LONG y, LONG rotation, 
+                               LPCTSTR lpszText, LONG textlen, 
+                               LONG nPointSize, LPCTSTR lpszFacename=_T("Arial"));
 
    //------------------------------------------------------------------------
    // Create a ready to go font. Must be deleted with DeleteObject() after use.
    // Rotation in tenth degrees
-   static HFONT CreateRotatedFont(HDC hDC, Int32 rotation,  
-                                  Int32 nPointSize, LPCTSTR lpszFaceName=_T("Arial"));
+   static HFONT CreateRotatedFont(HDC hDC, LONG rotation,  
+                                  LONG nPointSize, LPCTSTR lpszFaceName=_T("Arial"));
 
    //------------------------------------------------------------------------
    // A 'nice' range calculation function. You input an original Min and Max
@@ -103,7 +103,7 @@ public:
    // It will also try to shrink the bounds of the interval if the original max or
    // min only slightly intrude into the outer bands.
    static void CalculateNiceRange(const Float64 originalMin, const Float64 originalMax, 
-                                  Int32& numberOfSegments, 
+                                  CollectionIndexType& numberOfSegments, 
                                   Float64& niceMin, Float64& niceMax, 
                                   Float64& niceIncrement);
 

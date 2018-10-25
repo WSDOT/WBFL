@@ -168,7 +168,7 @@ mfcDocTemplateFinder::GetTemplateFileResult mfcDocTemplateFinder::GetTemplateFil
    m_pDocTemplateDialog->SetDefaultFile(m_DefaultName);
 
    m_pDocTemplateDialog->SetListMode( m_Mode );
-   int st = m_pDocTemplateDialog->DoModal();
+   INT_PTR st = m_pDocTemplateDialog->DoModal();
    m_Mode = m_pDocTemplateDialog->GetListMode();
 
    if (st==IDOK)
@@ -318,7 +318,7 @@ void TerminateDirList(std::vector<std::_tstring>* list)
    for (std::vector<std::_tstring>::iterator it=list->begin(); 
         it!=list->end(); it++)
    {
-      int siz = it->size();
+      std::vector<std::_tstring>::size_type siz = it->size();
       ASSERT(siz);  // null name in directory - no no
       // this is about the ugliest looking piece of code i've written
       if((*it)[siz-1] != _T('\\')) 

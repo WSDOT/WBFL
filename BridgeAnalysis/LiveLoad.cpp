@@ -80,29 +80,29 @@ void bamLiveLoad::SetLaneLoadImpact(Float64 impact)
    m_LaneLoadImpact = impact;
 }
 
-Int32 bamLiveLoad::GetMinLoadingId() const
+IDType bamLiveLoad::GetMinLoadingId() const
 {
    return m_MinId;
 }
 
-Int32 bamLiveLoad::GetMaxLoadingId() const
+IDType bamLiveLoad::GetMaxLoadingId() const
 {
    return m_MaxId;
 }
 
-void bamLiveLoad::SetMinLoadingId(Int32 loadingId)
+void bamLiveLoad::SetMinLoadingId(IDType loadingId)
 {
    m_MinId = loadingId;
 }
 
-void bamLiveLoad::SetMaxLoadingId(Int32 loadingId)
+void bamLiveLoad::SetMaxLoadingId(IDType loadingId)
 {
    m_MaxId = loadingId;
 }
 
-Int32 bamLiveLoad::GetNumAxles()
+AxleIndexType bamLiveLoad::GetNumAxles()
 {
-   Int32 numAxles = 0;
+   AxleIndexType numAxles = 0;
    TruckIterator begin = m_Trucks.begin();
    TruckIterator end   = m_Trucks.end();
    while ( begin != end )
@@ -114,18 +114,18 @@ Int32 bamLiveLoad::GetNumAxles()
    return numAxles;
 }
 
-void bamLiveLoad::GetAxle(Int32 axleIndex,Float64& offset,Float64& weight)
+void bamLiveLoad::GetAxle(AxleIndexType axleIndex,Float64& offset,Float64& weight)
 {
 	Float64 cumAxleDistance = 0;
-	Int32 cumAxleCount = 0;
+	AxleIndexType cumAxleCount = 0;
 
    TruckIterator begin = m_Trucks.begin();
    TruckIterator end   = m_Trucks.end();
    while ( begin != end )
    {
       bamTruck truck = *begin++;
-		Int32 numAxles = truck.GetNumAxles();
-		for(Int32 axle = 0; axle < numAxles; axle++)
+		AxleIndexType numAxles = truck.GetNumAxles();
+		for(AxleIndexType axle = 0; axle < numAxles; axle++)
 		{
 		cumAxleDistance += truck.GetAxleSpacing(axle);
       if (cumAxleCount == axleIndex)
@@ -139,9 +139,9 @@ void bamLiveLoad::GetAxle(Int32 axleIndex,Float64& offset,Float64& weight)
 	}
 }
 
-bamTruck* bamLiveLoad::GetTruck(Int32 axleIndex) 
+bamTruck* bamLiveLoad::GetTruck(AxleIndexType axleIndex) 
 {
-	Int32 cumAxleCount = 0;
+	AxleIndexType cumAxleCount = 0;
 
    bamTruck* pTruck;
 

@@ -81,7 +81,7 @@ BOOL CEAFAcceleratorTable::AddAccelTable(HACCEL hAccelTable,IEAFCommandCallback*
       if ( !m_pCmdMgr->AddCommandCallback(lpAccelNew[i].cmd,pCallback,&nCmdID) )
          return FALSE;
 
-      lpAccel[nAccelerators+i].cmd = nCmdID;
+      lpAccel[nAccelerators+i].cmd = (WORD)nCmdID;
       lpAccel[nAccelerators+i].fVirt = lpAccelNew[i].fVirt;
       lpAccel[nAccelerators+i].key   = lpAccelNew[i].key;
    }
@@ -107,7 +107,7 @@ BOOL CEAFAcceleratorTable::AddAccelKey(BYTE fVirt,WORD key,WORD cmd,IEAFCommandC
 
    lpAccelNew[nAccelerators].fVirt = fVirt;
    lpAccelNew[nAccelerators].key = key;
-   lpAccelNew[nAccelerators].cmd = nCmdID;
+   lpAccelNew[nAccelerators].cmd = (WORD)nCmdID;
 
    DestroyAcceleratorTable(m_hAccelTable);
    m_hAccelTable = CreateAcceleratorTable(lpAccelNew,nAccelerators+1);

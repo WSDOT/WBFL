@@ -516,7 +516,7 @@ STDMETHODIMP CUBeam::put_T(Float64 newVal)
    return S_OK;
 }
 
-STDMETHODIMP CUBeam::get_Slope(long webIdx,Float64* slope)
+STDMETHODIMP CUBeam::get_Slope(WebIndexType webIdx,Float64* slope)
 {
    CHECK_RETVAL(slope);
    if ( webIdx < 0 || 2 <= webIdx )
@@ -555,7 +555,7 @@ STDMETHODIMP CUBeam::get_TopFlangeWidth(Float64* width)
    return S_OK;
 }
 
-STDMETHODIMP CUBeam::get_WebLocation(long webIdx,Float64* location)
+STDMETHODIMP CUBeam::get_WebLocation(WebIndexType webIdx,Float64* location)
 {
    CHECK_RETVAL(location);
    if ( webIdx < 0 || 2 <= webIdx )

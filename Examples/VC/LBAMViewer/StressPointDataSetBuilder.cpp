@@ -67,11 +67,11 @@ void StressPointDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArray* lo
          CString str;
          if (m_Type == stSa)
          {
-            str.Format("Sa at Sp %d", isp);
+            str.Format(_T("Sa at Sp %d"), isp);
          }
          else if (m_Type==stSm)
          {
-            str.Format("Sm at Sp %d", isp);
+            str.Format(_T("Sm at Sp %d"), isp);
          }
 
          CComBSTR btmp(str);

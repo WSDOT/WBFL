@@ -105,30 +105,6 @@ dbgDumpContext& dbgLogDumpContext::operator<<(bool n)
    return *this;
 }
 
-dbgDumpContext& dbgLogDumpContext::operator<<(int n)
-{
-   if ( m_pLog )
-   {
-      TCHAR buffer[BUFSIZE];
-      _stprintf_s( buffer, TEXT("%d"), n );
-      m_pLog->LogMessage(m_dwCookie,buffer);
-   }
-
-   return *this;
-}
-
-dbgDumpContext& dbgLogDumpContext::operator<<(unsigned int n)
-{
-   if ( m_pLog )
-   {
-      TCHAR buffer[BUFSIZE];
-      _stprintf_s( buffer, TEXT("%u"), n );
-      m_pLog->LogMessage(m_dwCookie,buffer);
-   }
-
-   return *this;
-}
-
 dbgDumpContext& dbgLogDumpContext::operator<<(Int16 n)
 {
    if ( m_pLog )
@@ -158,7 +134,7 @@ dbgDumpContext& dbgLogDumpContext::operator<<(Int32 n)
    if ( m_pLog )
    {
       TCHAR buffer[BUFSIZE];
-      _stprintf_s( buffer, TEXT("%ld"), n );
+      _stprintf_s( buffer, TEXT("%I32d"), n );
       m_pLog->LogMessage(m_dwCookie,buffer);
    }
 
@@ -170,7 +146,31 @@ dbgDumpContext& dbgLogDumpContext::operator<<(Uint32 n)
    if ( m_pLog )
    {
       TCHAR buffer[BUFSIZE];
-      _stprintf_s( buffer, TEXT("%ld"), n );
+      _stprintf_s( buffer, TEXT("%I32u"), n );
+      m_pLog->LogMessage(m_dwCookie,buffer);
+   }
+
+   return *this;
+}
+
+dbgDumpContext& dbgLogDumpContext::operator<<(Int64 n)
+{
+   if ( m_pLog )
+   {
+      TCHAR buffer[BUFSIZE];
+      _stprintf_s( buffer, TEXT("%I64d"), n );
+      m_pLog->LogMessage(m_dwCookie,buffer);
+   }
+
+   return *this;
+}
+
+dbgDumpContext& dbgLogDumpContext::operator<<(Uint64 n)
+{
+   if ( m_pLog )
+   {
+      TCHAR buffer[BUFSIZE];
+      _stprintf_s( buffer, TEXT("%I64u"), n );
       m_pLog->LogMessage(m_dwCookie,buffer);
    }
 

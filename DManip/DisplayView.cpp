@@ -167,9 +167,9 @@ void CDisplayView::OnInitialUpdate()
    SetLogicalViewRect(MM_TEXT, rect);
 }
 
-int CDisplayView::OnToolHitTest(CPoint point,TOOLINFO* pTI) const
+INT_PTR CDisplayView::OnToolHitTest(CPoint point,TOOLINFO* pTI) const
 {
-   int retval = CView::OnToolHitTest(point,pTI);
+   INT_PTR retval = CView::OnToolHitTest(point,pTI);
    if ( retval < 0 )
    {
       // NOTE: MFC defines this as a const method. There is nothing we
@@ -233,8 +233,8 @@ void CDisplayView::OnDraw(CDC* pDC)
 //   Float64 ymin = -1000;
 //   Float64 ymax =  1000;
 //
-//   long lx1,ly1;
-//   long lx2,ly2;
+//   LONG lx1,ly1;
+//   LONG lx2,ly2;
 //   m_pCoordinateMap->WPtoLP(0,ymin,&lx1,&ly1);
 //   m_pCoordinateMap->WPtoLP(0,ymax,&lx2,&ly2);
 //   pDC->MoveTo(lx1,ly1);
@@ -595,7 +595,7 @@ void CDisplayView::ScaleToFit(bool reDraw)
    // bounding box computation is iterative. Iterate until box size on consecutive iterations
    // is within 2 percent
    Float64 pd_tolerance = 0.002;
-   long max_iter = 10;
+   CollectionIndexType max_iter = 10;
 
    // Tricky: Things get weird if the windows is shrunken to far.
    // we can run into numerical problems with the mapper if the extents become too large. Modify
@@ -606,7 +606,7 @@ void CDisplayView::ScaleToFit(bool reDraw)
    Float64 orig_width = 0.0;
    Float64 orig_height = 0.0;
 
-   for (long it=0; it<max_iter; it++)
+   for (CollectionIndexType it=0; it<max_iter; it++)
    {
       CComPtr<IRect2d> rect;
       m_pDispMgr->GetBoundingBox(m_pCoordinateMap, false, &rect);
@@ -675,9 +675,10 @@ void CDisplayView::CenterOnPoint(CPoint center, bool reDraw)
 
 CRect CDisplayView::GetAdjustedLogicalViewRect()
 {
-   long lex, ley;
+   LONG lex, ley;
    m_pMapping->GetAdjustedLogicalExt(&lex, &ley);
-   long lox, loy;
+   
+   LONG lox, loy;
    m_pMapping->GetLogicalOrg(&lox, &loy);
 
    CRect rect(lox, loy, lox+lex, loy+ley);
@@ -729,7 +730,7 @@ RECT CDisplayView::GetLogicalViewRect()
 {
    RECT rect;
    m_pMapping->GetLogicalOrg(&rect.left, &rect.bottom);
-   long lex, ley;
+   LONG lex, ley;
    m_pMapping->GetLogicalExt(&lex, &ley);
    rect.right = rect.left + lex;
    rect.top   = rect.bottom + ley;
@@ -804,10 +805,10 @@ void CDisplayView::OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo)
    {
       // no clip box or drawing rect has been specified
       // draw to the full extents of the printer
-      long dex = pDC->GetDeviceCaps(PHYSICALWIDTH);
-      long dey = pDC->GetDeviceCaps(PHYSICALHEIGHT);
-      long dox = pDC->GetDeviceCaps(PHYSICALOFFSETX);
-      long doy = pDC->GetDeviceCaps(PHYSICALOFFSETY);
+      LONG dex = pDC->GetDeviceCaps(PHYSICALWIDTH);
+      LONG dey = pDC->GetDeviceCaps(PHYSICALHEIGHT);
+      LONG dox = pDC->GetDeviceCaps(PHYSICALOFFSETX);
+      LONG doy = pDC->GetDeviceCaps(PHYSICALOFFSETY);
 
       box.left   = dox;
       box.top    = doy;

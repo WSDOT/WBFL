@@ -76,16 +76,16 @@ void StreamEngNotation(std::ios_base& os,sysEngNotationData data)
 
    buffer[shift] = '.';
 
-   endOfBuf = (data.sigDigits) ? strlen(buffer) : shift + data.nDigits + 1;
+   endOfBuf = (data.sigDigits) ? (int)strlen(buffer) : shift + data.nDigits + 1;
 
    buffer[endOfBuf++] = 'e';
 
    buffer[endOfBuf++] = (exponent < 0) ? '-' : '+';
 
-   if (abs(exponent) < 10)
+   if (_abs64(exponent) < 10)
       buffer[endOfBuf++] = '0';
 
-   _itoa_s(abs(exponent),&buffer[endOfBuf],50-endOfBuf,10);
+   _i64toa_s(_abs64(exponent),&buffer[endOfBuf],50-endOfBuf,10);
 
    if (negative)
       buffer--;
@@ -94,7 +94,7 @@ void StreamEngNotation(std::ios_base& os,sysEngNotationData data)
    dynamic_cast<std::_tostream&>(os) << A2T(buffer);
 }
 
-eng_notation_manip eng_notation(Float64 value,Int16 nDigits,Int16 sigDigits)
+eng_notation_manip eng_notation(Float64 value,int nDigits,int sigDigits)
 {
    sysEngNotationData data;
    data.value = value;

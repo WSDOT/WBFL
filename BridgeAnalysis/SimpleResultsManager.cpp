@@ -52,12 +52,12 @@ bamSimpleResultsManager::~bamSimpleResultsManager()
 
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
-void bamSimpleResultsManager::CreateStorage(Int32 loadingId)
+void bamSimpleResultsManager::CreateStorage(IDType loadingId)
 {
    // Does nothing by default
 }
 
-void bamSimpleResultsManager::DestroyStorage(Int32 loadingId)
+void bamSimpleResultsManager::DestroyStorage(IDType loadingId)
 {
    // Does nothing by default
 }

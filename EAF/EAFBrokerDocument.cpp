@@ -290,11 +290,11 @@ BOOL CEAFBrokerDocument::LoadAgents(IBrokerInitEx2* pBrokerInit, CLSID* pClsid, 
 
    if ( FAILED(hr) )
    {
-      long nErrors;
+      CollectionIndexType nErrors;
       lErrArray->get_Count(&nErrors);
-      for ( long errIdx = 0; errIdx < nErrors; errIdx++ )
+      for ( CollectionIndexType errIdx = 0; errIdx < nErrors; errIdx++ )
       {
-         long agentIdx;
+         IDType agentIdx; // should be index, but can't be because of long array
          lErrArray->get_Item(errIdx,&agentIdx);
          LPOLESTR pszCLSID;
          StringFromCLSID( pClsid[agentIdx], &pszCLSID );
@@ -515,7 +515,7 @@ void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,bool bQuickReport)
    for ( iter = rptNames.begin(); iter != rptNames.end(); iter++ )
    {
       std::_tstring rptName = *iter;
-      UINT_PTR nCmd = GetReportCommand(i,bQuickReport);
+      UINT nCmd = GetReportCommand(i,bQuickReport);
       pMenu->AppendMenu(nCmd,rptName.c_str(),NULL);
 
       const CBitmap* pBmp = pReportMgr->GetMenuBitmap(rptName);
@@ -527,20 +527,20 @@ void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,bool bQuickReport)
    }
 }
 
-UINT_PTR CEAFBrokerDocument::GetReportCommand(CollectionIndexType rptIdx,bool bQuickReport)
+UINT CEAFBrokerDocument::GetReportCommand(CollectionIndexType rptIdx,bool bQuickReport)
 {
-   UINT baseID = EAF_REPORT_MENU_BASE;
+   CollectionIndexType baseID = EAF_REPORT_MENU_BASE;
 
    if ( !bQuickReport )
    {
       GET_IFACE(IReportManager,pReportMgr);
-      Uint32 nReports = pReportMgr->GetReportBuilderCount();
+      CollectionIndexType nReports = pReportMgr->GetReportBuilderCount();
 
       baseID += nReports + 1;
    }
 
    ASSERT(rptIdx + baseID <= EAF_REPORT_MENU_BASE+EAF_REPORT_MENU_COUNT);
-   return (UINT_PTR)(rptIdx + baseID);
+   return (UINT)(rptIdx + baseID);
 }
 
 CollectionIndexType CEAFBrokerDocument::GetReportIndex(UINT nID,bool bQuickReport)
@@ -548,11 +548,11 @@ CollectionIndexType CEAFBrokerDocument::GetReportIndex(UINT nID,bool bQuickRepor
    if ( nID < EAF_REPORT_MENU_BASE || EAF_REPORT_MENU_BASE+EAF_REPORT_MENU_COUNT < nID )
       return INVALID_INDEX;
 
-   UINT baseID = EAF_REPORT_MENU_BASE;
+   CollectionIndexType baseID = EAF_REPORT_MENU_BASE;
    if ( !bQuickReport )
    {
       GET_IFACE(IReportManager,pReportMgr);
-      Uint32 nReports = pReportMgr->GetReportBuilderCount();
+      CollectionIndexType nReports = pReportMgr->GetReportBuilderCount();
 
       baseID += nReports + 1;
    }

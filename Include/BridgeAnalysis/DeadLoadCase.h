@@ -47,7 +47,7 @@ class bamDeadLoadCase : public bamLoadCase
 {
 public:
    // LIFECYCLE
-   bamDeadLoadCase(Int32 loadCaseIdx);
+   bamDeadLoadCase(IDType loadCaseIdx);
    virtual ~bamDeadLoadCase(); 
 
    // OPERATORS
@@ -55,10 +55,10 @@ public:
    void Apply();
    void Remove();
 
-   void ExcludeSpan(Int32 spanElementId);
-   void ExcludeSupport(Int32 supportElementId);
-   void ExcludeSpans(Int32** ppSpans,Int32 count);
-   void ExcludeSupports(Int32** ppSupports,Int32 count);
+   void ExcludeSpan(SpanIDType spanElementId);
+   void ExcludeSupport(SupportIDType supportElementId);
+   void ExcludeSpans(SpanIDType** ppSpans,SpanIndexType count);
+   void ExcludeSupports(SupportIDType** ppSupports,SupportIndexType count);
 
    // ACCESS
    // INQUIRY
@@ -73,8 +73,8 @@ protected:
 
 private:
    // DATA MEMBERS
-   std::vector<Int32> m_ExcludedSpans;
-   std::vector<Int32> m_ExcludedSupports;
+   std::vector<SpanIDType> m_ExcludedSpans;
+   std::vector<SupportIDType> m_ExcludedSupports;
 
    // :COMPILER: rab 11.17.96 : Supressed warning
    // :FILE: DeadLoadCase.h

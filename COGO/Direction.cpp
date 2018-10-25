@@ -280,7 +280,7 @@ STDMETHODIMP CDirection::FromString(BSTR bstrDir)
    // nParts = 3 ->  N dd E
    // nParts = 4 ->  N dd mm E
    // nParts = 5 ->  N dd mm ss.s E
-   short nParts = std::count( strDir.begin(), strDir.end(), _T(' ') ) + 1;
+   CollectionIndexType nParts = std::count( strDir.begin(), strDir.end(), _T(' ') ) + 1;
    ATLASSERT( nParts > 0 );
    if ( nParts < 3 || 5 < nParts )
       return BadDirectionString();

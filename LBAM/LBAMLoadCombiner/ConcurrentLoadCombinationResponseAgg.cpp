@@ -34,10 +34,10 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
-static void FactorAndSumStressResults(ISectionStressResults* results, ISectionStressResults* lc_results, long numPOIs, Float64 Factor)
+static void FactorAndSumStressResults(ISectionStressResults* results, ISectionStressResults* lc_results, CollectionIndexType numPOIs, Float64 Factor)
 {
    CHRException hr;
-   for (long ip=0; ip<numPOIs; ip++)
+   for (CollectionIndexType ip=0; ip<numPOIs; ip++)
    {
       CComPtr<ISectionStressResult> sumres, newres;
       hr = results->get_Item(ip, &sumres);
@@ -48,10 +48,10 @@ static void FactorAndSumStressResults(ISectionStressResults* results, ISectionSt
    }
 }
 
-static void FactorAndSumSectionResults(ISectionResult3Ds* results, ISectionResult3Ds* lc_results, long numPOIs, Float64 Factor)
+static void FactorAndSumSectionResults(ISectionResult3Ds* results, ISectionResult3Ds* lc_results, CollectionIndexType numPOIs, Float64 Factor)
 {
    CHRException hr;
-   for (long ip=0; ip<numPOIs; ip++)
+   for (CollectionIndexType ip=0; ip<numPOIs; ip++)
    {
       CComPtr<ISectionResult3D> sumres, newres;
       hr = results->get_Item(ip, &sumres);
@@ -62,10 +62,10 @@ static void FactorAndSumSectionResults(ISectionResult3Ds* results, ISectionResul
    }
 }
 
-static void FactorAndSumResults(IResult3Ds* results, IResult3Ds* lc_results, long numPOIs, Float64 Factor)
+static void FactorAndSumResults(IResult3Ds* results, IResult3Ds* lc_results, CollectionIndexType numPOIs, Float64 Factor)
 {
    CHRException hr;
-   for (long ip=0; ip<numPOIs; ip++)
+   for (CollectionIndexType ip=0; ip<numPOIs; ip++)
    {
       CComPtr<IResult3D> sumres, newres;
       hr = results->get_Item(ip, &sumres);
@@ -498,7 +498,7 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeStresses(ILongArray* 
       // Create results of zeros
       for (CollectionIndexType ipoi=0; ipoi<num_pois; ipoi++)
       {
-         long poi_id;
+         PoiIDType poi_id;
          hr = POIs->get_Item(ipoi, &poi_id);
 
          CComPtr<ISectionStressResult> pres;

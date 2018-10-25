@@ -33,7 +33,7 @@ interface IReportManager : IUnknown
 {
    virtual void AddReportBuilder(CReportBuilder* pRptBuilder) = 0;
    virtual void AddReportBuilder(boost::shared_ptr<CReportBuilder>& pReportBuilder) = 0;
-   virtual Uint32 GetReportBuilderCount(bool bIncludeHidden = false) const = 0;
+   virtual CollectionIndexType GetReportBuilderCount(bool bIncludeHidden = false) const = 0;
    virtual boost::shared_ptr<CReportBuilder> GetReportBuilder(LPCTSTR strReportName) = 0;
    virtual boost::shared_ptr<CReportBuilder> GetReportBuilder(const std::_tstring& strReportName) = 0;
    virtual boost::shared_ptr<CReportBuilder> RemoveReportBuilder(LPCTSTR strReportName) = 0;
@@ -47,5 +47,5 @@ interface IReportManager : IUnknown
    virtual boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const std::_tstring& strReportName) = 0;
    virtual boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const CReportDescription& rptDesc) = 0;
    virtual boost::shared_ptr<CReportBrowser> CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec) = 0;
-   virtual Int16 DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec) = 0;
+   virtual INT_PTR DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec) = 0;
 };

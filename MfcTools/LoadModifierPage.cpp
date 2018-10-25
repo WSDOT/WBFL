@@ -35,7 +35,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-static DWORD CALLBACK StreamInCtrl(DWORD dwCookie, LPBYTE pbBuff, LONG cb, LONG* pcb )
+static DWORD CALLBACK StreamInCtrl(DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG* pcb )
 {
    CString* pstr = (CString*)dwCookie;
 

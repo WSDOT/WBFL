@@ -267,13 +267,13 @@ STDMETHODIMP CLoadCombinationStressResults::Save(IStructuredSave2 * psave)
       return hr;
 
    {
-      long cnt = m_ComboResults.size();
+      CollectionIndexType cnt = m_ComboResults.size();
 
       hr = psave->put_Property(CComBSTR("Count"),_variant_t(cnt));
       if (FAILED(hr))
          return hr;
 
-      for (long ic=0; ic<cnt; ic++)
+      for (CollectionIndexType ic=0; ic<cnt; ic++)
       {
          const ComboRes& llres = m_ComboResults[ic];
 

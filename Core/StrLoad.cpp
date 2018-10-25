@@ -133,10 +133,13 @@ STDMETHODIMP CStrLoad::get_Property(LPCTSTR name, VARIANT *pVal)
    {
       std::_tstring str;
       Float64 d;
-      long l;
-      unsigned long ul;
+      Int32 l;
+      Uint32 ul;
+      Int64 ll;
+      Uint64 ull;
       short i;
       unsigned short ui;
+      UINT uint;
       bool b;
       switch (pVal->vt)
       {
@@ -174,6 +177,24 @@ STDMETHODIMP CStrLoad::get_Property(LPCTSTR name, VARIANT *pVal)
          bRetVal = m_StrLoad.Property( name, &ul );
          if ( bRetVal )
             pVal->ulVal = ul;
+         break;
+
+      case VT_I8:
+         bRetVal = m_StrLoad.Property( name, &ll );
+         if ( bRetVal )
+            pVal->llVal = ll;
+         break;
+
+      case VT_UI8:
+         bRetVal = m_StrLoad.Property( name, &ull );
+         if ( bRetVal )
+            pVal->ullVal = ull;
+         break;
+
+      case VT_UINT:
+         bRetVal = m_StrLoad.Property( name, &uint );
+         if ( bRetVal )
+            pVal->uintVal = uint;
          break;
 
       case VT_BOOL:

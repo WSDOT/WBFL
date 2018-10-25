@@ -52,7 +52,7 @@ BEGIN_COM_MAP(CSocketFactoryImpl)
 END_COM_MAP()
 
    // iSocketFactory
-   STDMETHOD_(void,CreateSocket)(long id,IPoint2d* pos,iSocket** socket);
+   STDMETHOD_(void,CreateSocket)(IDType id,IPoint2d* pos,iSocket** socket);
 };
 
 

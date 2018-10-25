@@ -39,6 +39,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+static Float64 tolerance = 0.1;
+
 /////////////////////////////////////////////////////////////////////////////
 // CHorzCurve
 HRESULT CHorzCurve::FinalConstruct()
@@ -1475,13 +1477,15 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
    lsFwdTangent->putref_StartPoint(PI);
    lsFwdTangent->putref_EndPoint(ST);
 
+   Float64 tol = 0.1;
+
    // determine if bkTangentPoint is in the line segment
    VARIANT_BOOL bPointOnBkTangentSegment = VARIANT_FALSE;
-   m_GeomUtil->DoesLineSegmentContainPoint(lsBkTangent,bkTangentPoint,&bPointOnBkTangentSegment);
+   m_GeomUtil->DoesLineSegmentContainPoint(lsBkTangent,bkTangentPoint,tol,&bPointOnBkTangentSegment);
 
    // determine if fwdTangentPoint is in the line segment
    VARIANT_BOOL bPointOnFwdTangentSegment = VARIANT_FALSE;
-   m_GeomUtil->DoesLineSegmentContainPoint(lsFwdTangent,fwdTangentPoint,&bPointOnFwdTangentSegment);
+   m_GeomUtil->DoesLineSegmentContainPoint(lsFwdTangent,fwdTangentPoint,tol,&bPointOnFwdTangentSegment);
 
    // if neither point is on the segments, then there is no possibility of an intersection
    // (except for the case of projecting the tangents, but we took care of that above)
@@ -1505,14 +1509,14 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
    lsPI_POFT->putref_EndPoint(POFT);
 
    // determine if the tangent points are in the line segments
-   m_GeomUtil->DoesLineSegmentContainPoint(lsPOBT_PI,bkTangentPoint,&bPointOnBkTangentSegment);
-   m_GeomUtil->DoesLineSegmentContainPoint(lsPI_POFT,fwdTangentPoint,&bPointOnFwdTangentSegment);
+   m_GeomUtil->DoesLineSegmentContainPoint(lsPOBT_PI,bkTangentPoint,tol,&bPointOnBkTangentSegment);
+   m_GeomUtil->DoesLineSegmentContainPoint(lsPI_POFT,fwdTangentPoint,tol,&bPointOnFwdTangentSegment);
 
    // special case... line go directly through the PI
    VARIANT_BOOL bLineHitsPI,bLineHitsPOBT,bLineHitsPOFT;
-   m_GeomUtil->DoesLineContainPoint(line,PI,&bLineHitsPI);
-   m_GeomUtil->DoesLineContainPoint(line,POBT,&bLineHitsPOBT);
-   m_GeomUtil->DoesLineContainPoint(line,POFT,&bLineHitsPOFT);
+   m_GeomUtil->DoesLineContainPoint(line,PI,tol,&bLineHitsPI);
+   m_GeomUtil->DoesLineContainPoint(line,POBT,tol,&bLineHitsPOBT);
+   m_GeomUtil->DoesLineContainPoint(line,POFT,tol,&bLineHitsPOFT);
 
    // if both points are in the segments, then there is no possibility of an intersection
    // unless the line hits the PI, POBT, or POFT
@@ -1535,7 +1539,7 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
    // evaluate function at start and end of curve. if signs are opposite, there is only one intersection
    Float64 y1,y2;
    y1 = function.Evaluate(0);
-   if ( IsZero(y1) )
+   if ( IsZero(y1,tolerance) )
    {
       // found the intersection by dumb luck
       if ( *p1 == NULL )
@@ -1553,7 +1557,7 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
    }
 
    y2 = function.Evaluate(length);
-   if ( IsZero(y2) )
+   if ( IsZero(y2,tolerance) )
    {
       // found the intersection by dumb luck
       if ( *p1 == NULL )
@@ -1595,7 +1599,7 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
       {
          ATLASSERT(false);
       }
-      ATLASSERT( IsZero(dist-dist2,0.001) );
+      ATLASSERT( IsZero(dist-dist2,tolerance) );
 #endif
 
       if ( *p1 == NULL )
@@ -1641,14 +1645,14 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
    {
       ATLASSERT(false);
    }
-   ATLASSERT( IsEqual(limit,limit2,0.0001) );
+   ATLASSERT( IsEqual(limit,limit2,tolerance) );
 #endif // _DEBUG
 
    // check to see if the line is tangent to the curve
    CComPtr<IPoint2d> POC;
    PointOnCurve(limit,&POC);
    VARIANT_BOOL bContainsPoint;
-   m_GeomUtil->DoesLineContainPoint(line,POC,&bContainsPoint);
+   m_GeomUtil->DoesLineContainPoint(line,POC,tol,&bContainsPoint);
    if ( bContainsPoint == VARIANT_TRUE )
    {
       // Line is tangent
@@ -2421,14 +2425,14 @@ bool CHorzCurve::IsPointOnCurve(IPoint2d* pPoint)
    ATLASSERT( SUCCEEDED(hr) );
 
    m_GeomUtil->Distance(pPoint,pntOnCurve,&dist);
-   return IsZero(dist,0.001);
+   return IsZero(dist,tolerance);
 }
 
 bool CHorzCurve::IsPointOnLine(ILine2d* pLine,IPoint2d* pPoint)
 {
    Float64 dist;
    m_GeomUtil->ShortestDistanceToPoint(pLine,pPoint,&dist);
-   return IsZero(dist,0.001);
+   return IsZero(dist,tolerance);
 }
 
 bool CHorzCurve::TestIntersection(ILine2d* pLine,IPoint2d* pPoint)

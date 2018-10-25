@@ -129,7 +129,7 @@ public:
    //------------------------------------------------------------------------
    // GetNumPoints
    // Returns the number of points in the polygon
-   Uint32 GetNumPoints() const;
+   CollectionIndexType GetNumPoints() const;
 
    //------------------------------------------------------------------------
    // ReplacePoint

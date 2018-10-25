@@ -116,7 +116,7 @@ STDMETHODIMP_(void) CEditableTextBlockImpl::CreateEditControl()
 
    CComPtr<IPoint2d> position;
    GetPosition(&position);
-   long lx,ly;
+   LONG lx,ly;
    Float64 wx,wy;
    pMap->MPtoWP(position,&wx,&wy);
    pMap->WPtoLP(wx,wy,&lx,&ly);
@@ -204,13 +204,13 @@ STDMETHODIMP_(void) CEditableTextBlockImpl::OnDataChanged()
 
 //////////////////////////////////
 // iDisplayObject Implementation
-STDMETHODIMP_(void) CEditableTextBlockImpl::SetID(long id)
+STDMETHODIMP_(void) CEditableTextBlockImpl::SetID(IDType id)
 {
    CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_TextBlock);
    dispObj->SetID(id);
 }
 
-STDMETHODIMP_(long) CEditableTextBlockImpl::GetID()
+STDMETHODIMP_(IDType) CEditableTextBlockImpl::GetID()
 {
    CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_TextBlock);
    return dispObj->GetID();
@@ -354,25 +354,25 @@ STDMETHODIMP_(CString) CEditableTextBlockImpl::GetToolTipText()
    return dispObj->GetToolTipText();
 }
 
-STDMETHODIMP_(void) CEditableTextBlockImpl::SetMaxTipWidth(long maxWidth)
+STDMETHODIMP_(void) CEditableTextBlockImpl::SetMaxTipWidth(INT maxWidth)
 {
    CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_TextBlock);
    dispObj->SetMaxTipWidth(maxWidth);
 }
 
-STDMETHODIMP_(long) CEditableTextBlockImpl::GetMaxTipWidth()
+STDMETHODIMP_(INT) CEditableTextBlockImpl::GetMaxTipWidth()
 {
    CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_TextBlock);
    return dispObj->GetMaxTipWidth();
 }
 
-STDMETHODIMP_(void) CEditableTextBlockImpl::SetTipDisplayTime(long iTime)
+STDMETHODIMP_(void) CEditableTextBlockImpl::SetTipDisplayTime(INT iTime)
 {
    CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_TextBlock);
    return dispObj->SetTipDisplayTime(iTime);
 }
 
-STDMETHODIMP_(long) CEditableTextBlockImpl::GetTipDisplayTime()
+STDMETHODIMP_(INT) CEditableTextBlockImpl::GetTipDisplayTime()
 {
    CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_TextBlock);
    return dispObj->GetTipDisplayTime();
@@ -538,12 +538,12 @@ STDMETHODIMP_(UINT) CEditableTextBlockImpl::GetTextAlign()
    return m_TextBlock->GetTextAlign();
 }
 
-STDMETHODIMP_(void) CEditableTextBlockImpl::SetAngle(long angle)
+STDMETHODIMP_(void) CEditableTextBlockImpl::SetAngle(LONG angle)
 {
    m_TextBlock->SetAngle(angle);
 }
 
-STDMETHODIMP_(long) CEditableTextBlockImpl::GetAngle()
+STDMETHODIMP_(LONG) CEditableTextBlockImpl::GetAngle()
 {
    return m_TextBlock->GetAngle();
 }

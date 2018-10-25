@@ -33,7 +33,7 @@ public:
    // iReactionReportBuilder
    void BuildReactionReport(ILongArray* supportlist, BSTR currStg,
                             CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
-                            std::ostream& pos);
+                            std::_tostream& pos);
 
 private:
    void BuildForceDataSets(ILongArray* poilist, IDblArray* loclist, BSTR currStg,

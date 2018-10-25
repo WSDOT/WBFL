@@ -67,7 +67,7 @@ static void InsertSubSegmentNode(SubNodeLocs* node_locs, Float64 xloc, Float64 y
 static void CondenseSupportNodeSections(SubNodeLocs* node_locs, Float64 layoutTolerance);
 static void LayoutSupportSegments(BSTR stage, IFilteredSegmentCollection* pFilteredSegs, const XyLoc& bottom, const XyLoc& top, Float64 supportLength, Float64 lTolerance, SubNodeLocs* pNodeLocs);
 static void SetNodeNumbering(SuperNodeLocs* pNodeLocs);
-static void SetNodeNumberForSupport(SubNodeLocs* psnls, long* pcurrNode);
+static void SetNodeNumberForSupport(SubNodeLocs* psnls, JointIDType* pcurrNode);
 
 enum XSRes {xsAefNeg, xsAifNeg, xsAedNeg, xsAidNeg, xsDepthNeg, xsThermalNeg};
 static void CheckSegmentCrossSection(ISegmentCrossSection* pCs);
@@ -93,7 +93,7 @@ inline void delete_pointer(PoiMap* pinfo)
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 CAnalysisModel::CAnalysisModel(ILBAMModel* pModel, BSTR stage, IStageOrder* pStageOrder, ILoadGroupOrder* pLoadGroupOrder, 
-                               long minSpanPoiIncr, long minCantileverPoiIncr, bool forForce):
+                               PoiIDType minSpanPoiIncr, PoiIDType minCantileverPoiIncr, bool forForce):
 m_pLBAMModel(pModel),
 m_Stage(stage),
 m_pStageOrder(pStageOrder),
@@ -1025,7 +1025,7 @@ void CAnalysisModel::ClearLoads()
    // clear all loadgroup loads from our fe model
    // know that all loadgroup loads have positive ids.
    // first build list of loads to be removed
-   std::vector<Int32> remove_list;
+   std::vector<LoadCaseIDType> remove_list;
    CComPtr<IFem2dLoadingCollection> fem_loadings;
    m_pFem2d->get_Loadings(&fem_loadings);
 
@@ -1037,7 +1037,7 @@ void CAnalysisModel::ClearLoads()
       CComPtr<IFem2dLoading> fem_loading;
       fem_loadings->get_Item(ild,&fem_loading);
 
-      Int32 fem_lc_id;
+      LoadCaseIDType fem_lc_id;
       fem_loading->get_ID(&fem_lc_id);
       if (0 <= fem_lc_id)
       {
@@ -1046,12 +1046,12 @@ void CAnalysisModel::ClearLoads()
    }
 
    // then do removal
-   std::vector<Int32>::iterator iid(remove_list.begin());
-   std::vector<Int32>::iterator iidend(remove_list.end());
+   std::vector<LoadCaseIDType>::iterator iid(remove_list.begin());
+   std::vector<LoadCaseIDType>::iterator iidend(remove_list.end());
    for (; iid!= iidend; iid++)
    {
-      Int32 rem_id = *iid;
-      Int32 id;
+      LoadCaseIDType rem_id = *iid;
+      LoadCaseIDType id;
       fem_loadings->Remove(rem_id, atID,&id);
       ATLASSERT(id==rem_id);
    }
@@ -1290,7 +1290,7 @@ void CAnalysisModel::GenerateDistributedLoadsForLoadGroup(BSTR loadGroup, IFem2d
          CComPtr<IFem2dDistributedLoadCollection> fem_distr_loads;
          pFemLoading->get_DistributedLoads(&fem_distr_loads);
 
-         long last_load_id = 1;
+         LoadIDType last_load_id = 1;
 
          for (CollectionIndexType il=0; il<cnt; il++)
          {
@@ -1377,7 +1377,7 @@ void CAnalysisModel::GenDistributedLoadAlongElements(IFem2dDistributedLoadCollec
                                                      LoadOrientation orientation, LoadDirection direction,
                                                      Float64 startLocation, Float64 endLocation, 
                                                      Float64 mbrLength, Float64 wStart, Float64 wEnd, 
-                                                     const ElementLayoutVec* pfemMbrList, long* lastLoadID)
+                                                     const ElementLayoutVec* pfemMbrList, LoadIDType* lastLoadID)
 {
    // generic routine to generate a distributed load that is described along a vector of Fem2d members
    // next need to find element that this location lies along
@@ -1421,7 +1421,7 @@ void CAnalysisModel::GenDistributedLoadAlongElements(IFem2dDistributedLoadCollec
    }
 
    // create list of element locations along member
-   long num_elements = pfemMbrList->size();
+   CollectionIndexType num_elements = pfemMbrList->size();
    std::vector<Float64> locations;
    locations.reserve(num_elements+1);
    locations.push_back(0.0);
@@ -1447,7 +1447,7 @@ void CAnalysisModel::GenDistributedLoadAlongElements(IFem2dDistributedLoadCollec
 
    // loop through elements and apply loads
    bool did_end=false;
-   for (long ie=0; ie<num_elements; ie++)
+   for (CollectionIndexType ie=0; ie<num_elements; ie++)
    {
       MemberIDType mbr_id = pfemMbrList->at(ie).m_FemMemberID;
       Float64 mbr_start = locations[ie];
@@ -1919,15 +1919,15 @@ void CAnalysisModel::GenerateInternalPOIsAtCantilevers()
       for (long is=0; is<=m_MinCantileverPoiIncrement; is++)
       {
          Float64 xloc = -m_LeftOverhang + is*min_spacing;
-         long ssm_id;
+         CollectionIndexType ssm_idx;
          Float64 ssm_loc;
-         if (GetSuperstructureMemberForGlobalX(xloc, &ssm_id, &ssm_loc))
+         if (GetSuperstructureMemberForGlobalX(xloc, &ssm_idx, &ssm_loc))
          {
-            if ( !poi_tracker.IsPoiAtLocation(mtSuperstructureMember, ssm_id, xloc) )
+            if ( !poi_tracker.IsPoiAtLocation(mtSuperstructureMember, ssm_idx, xloc) )
             {
                // Need to create an internally-generated poi on the cantilever
                m_LastInternalPoiID--;
-               CreateSsmPOI(m_LastInternalPoiID, ssm_id, ssm_loc);
+               CreateSsmPOI(m_LastInternalPoiID, ssm_idx, ssm_loc);
             }
          }
          else
@@ -1948,15 +1948,15 @@ void CAnalysisModel::GenerateInternalPOIsAtCantilevers()
       for (long is=0; is<=m_MinCantileverPoiIncrement; is++)
       {
          Float64 xloc = start_loc + is*min_spacing;
-         long ssm_id;
+         CollectionIndexType ssm_idx;
          Float64 ssm_loc;
-         if (GetSuperstructureMemberForGlobalX(xloc, &ssm_id, &ssm_loc))
+         if (GetSuperstructureMemberForGlobalX(xloc, &ssm_idx, &ssm_loc))
          {
-            if ( !poi_tracker.IsPoiAtLocation(mtSuperstructureMember, ssm_id, xloc) )
+            if ( !poi_tracker.IsPoiAtLocation(mtSuperstructureMember, ssm_idx, xloc) )
             {
                // Need to create an internally-generated poi on the cantilever
                m_LastInternalPoiID--;
-               CreateSsmPOI(m_LastInternalPoiID, ssm_id, ssm_loc);
+               CreateSsmPOI(m_LastInternalPoiID, ssm_idx, ssm_loc);
             }
          }
          else
@@ -2655,7 +2655,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtPOI(PoiIDType poiId, ISegmentCrossS
    }
 }
 
-void CAnalysisModel::GetStressPointsAtPOI(long poiId, IStressPoints* *leftSps, IStressPoints* *rightSps)
+void CAnalysisModel::GetStressPointsAtPOI(PoiIDType poiId, IStressPoints* *leftSps, IStressPoints* *rightSps)
 {
    *leftSps = NULL;
    *rightSps = NULL;
@@ -2686,7 +2686,7 @@ void CAnalysisModel::GetStressPointsAtPOI(long poiId, IStressPoints* *leftSps, I
 }
 
 
-void CAnalysisModel::GetPOIDistributionFactor(long POI, IDistributionFactor* *leftFactor, IDistributionFactor* *rightFactor)
+void CAnalysisModel::GetPOIDistributionFactor(PoiIDType POI, IDistributionFactor* *leftFactor, IDistributionFactor* *rightFactor)
 {
    CHRException hr;
 
@@ -2977,7 +2977,7 @@ void CAnalysisModel::ConfigurePoiMap(MemberType mbrType, MemberIDType lbamMbrID,
 }
 
 
-bool CAnalysisModel::IsTempSupportInModel(long tmpSupportID)
+bool CAnalysisModel::IsTempSupportInModel(SupportIDType tmpSupportID)
 {
    // this tests if it exists in the lbam at all
    IdSetIterator idsi( m_TemporarySupportIDs.find(tmpSupportID) );
@@ -2999,7 +2999,7 @@ bool CAnalysisModel::IsTempSupportInModel(long tmpSupportID)
    return false;
 }
 
-bool CAnalysisModel::GetSuperstructureMemberForGlobalX(Float64 xLoc, long* ssmId, Float64* ssmXLoc)
+bool CAnalysisModel::GetSuperstructureMemberForGlobalX(Float64 xLoc, CollectionIndexType* ssmIdx, Float64* ssmXLoc)
 {
    CHRException hr;
 
@@ -3042,7 +3042,7 @@ bool CAnalysisModel::GetSuperstructureMemberForGlobalX(Float64 xLoc, long* ssmId
       if (xLoc <= end_loc)
       {
          Float64 ssm_loc = xLoc - start_loc;
-         *ssmId = i_ssm;
+         *ssmIdx = i_ssm;
          *ssmXLoc = ssm_loc;
          return true;
       }
@@ -3052,7 +3052,7 @@ bool CAnalysisModel::GetSuperstructureMemberForGlobalX(Float64 xLoc, long* ssmId
          // we hit the end and did not find our location - let's see if we're within tolerance
          if (xLoc-end_loc<LOC_TOL)
          {
-            *ssmId = i_ssm;
+            *ssmIdx = i_ssm;
             *ssmXLoc = ssm_length;
             return true;
          }
@@ -3099,7 +3099,7 @@ void GetMemberEnd(MemberIDType mbrID, IFem2dMemberCollection* pMembers, IFem2dJo
 void SetNodeNumbering(SuperNodeLocs* pNodeLocs)
 {
    // cycle through model from left to right and number nodes
-   long curr_node=0;
+   JointIDType curr_node=0;
 
    SuperNodeLocIterator isn(pNodeLocs->begin());
    SuperNodeLocIterator isnend(pNodeLocs->end());
@@ -3176,7 +3176,7 @@ void CAnalysisModel::GenerateFemModel(SuperNodeLocs* pNodeLocs)
 
 }
 
-void CAnalysisModel::GenerateSuperstructureFemModel(SuperNodeLocs* pNodeLocs,  IFem2dJointCollection* pJoints, IFem2dMemberCollection* pMembers, long* pNextFemMemberID)
+void CAnalysisModel::GenerateSuperstructureFemModel(SuperNodeLocs* pNodeLocs,  IFem2dJointCollection* pJoints, IFem2dMemberCollection* pMembers, MemberIDType* pNextFemMemberID)
 {
    CHRException hr;
    // gather some statistics and pre allocate some space for element numbers
@@ -3507,7 +3507,7 @@ void CAnalysisModel::GenerateSupportFemModel(SubNodeLocs* pSnls,
    CHRException hr;
    try
    {  
-      Uint32 nSubstructureNodeLocations = pSnls->size();
+      CollectionIndexType nSubstructureNodeLocations = pSnls->size();
 
       if (nSubstructureNodeLocations == 1)
       {
@@ -4809,7 +4809,7 @@ void CAnalysisModel::ClearContraflexureLoads()
 
    if (fem_loading != NULL)
    {
-      long id;
+      LoadCaseIDType id;
       fem_loadings->Remove(CONTRAFLEXURE_LC, atID, &id);
    }
 
@@ -4839,16 +4839,16 @@ void CAnalysisModel::GenerateContraflexurePOIs()
       {
          Float64 xloc;
          hr = m_ContraflexureLocations->get_Item(icf, &xloc);
-         long ssm_id;
+         CollectionIndexType ssm_idx;
          Float64 ssm_loc;
-         if (GetSuperstructureMemberForGlobalX(xloc, &ssm_id, &ssm_loc))
+         if (GetSuperstructureMemberForGlobalX(xloc, &ssm_idx, &ssm_loc))
          {
-            long id_at_loc;
-            if ( !poi_tracker.IsPoiAtLocation(mtSuperstructureMember, ssm_id, xloc, &id_at_loc) )
+            PoiIDType id_at_loc;
+            if ( !poi_tracker.IsPoiAtLocation(mtSuperstructureMember, ssm_idx, xloc, &id_at_loc) )
             {
                // Need to create an internally-generated poi on the cantilever
                m_LastInternalPoiID--;
-               CreateSsmPOI(m_LastInternalPoiID, ssm_id, ssm_loc);
+               CreateSsmPOI(m_LastInternalPoiID, ssm_idx, ssm_loc);
 
                m_ContraflexurePOIs.push_back(m_LastInternalPoiID);
             }
@@ -4876,16 +4876,16 @@ void CAnalysisModel::GetContraflexureLocations(IDblArray* *locations)
 }
 
 
-void CAnalysisModel::IsPOIInContraflexureZone(long poiID, InZoneType* isInZone)
+void CAnalysisModel::IsPOIInContraflexureZone(PoiIDType poiID, InZoneType* isInZone)
 {
    CHRException hr;
 
    // first check to see if this poi is on an edge of a cf zone
-   long cfp_size = m_ContraflexurePOIs.size();
+   CollectionIndexType cfp_size = m_ContraflexurePOIs.size();
    ATLASSERT(cfp_size%2==0);
-   for (long icf=0; icf<cfp_size; icf++)
+   for (CollectionIndexType icf=0; icf<cfp_size; icf++)
    {
-      long id = m_ContraflexurePOIs[icf];
+      PoiIDType id = m_ContraflexurePOIs[icf];
       if (id==poiID)
       {
          // our poi is on the border now figure out which side of the zone it's on
@@ -4974,7 +4974,7 @@ void CAnalysisModel::GetContraflexureForce( ForceEffectType effect, CInfluenceLi
    // Sort all pois (including internally generated ones) in superstructure by their global X location
    SortedPoiMapTracker poi_tracker(m_PoiMap, true);
 
-   long size = poi_tracker.size();
+   CollectionIndexType size = poi_tracker.size();
    results->Reserve(size*12/10);    // assume 20% are dual-valued
 
    // set processing type for influence line so it retains raw values
@@ -5018,7 +5018,7 @@ void CAnalysisModel::GetContraflexureForce( ForceEffectType effect, CInfluenceLi
 }
 
 
-void CAnalysisModel::IsPOIInNegativeLiveLoadMomentZone(long poiID, InZoneType* isInZone)
+void CAnalysisModel::IsPOIInNegativeLiveLoadMomentZone(PoiIDType poiID, InZoneType* isInZone)
 {
    // first check if we are in normal contraflexure zone
    InZoneType lzone;
@@ -5200,7 +5200,7 @@ void CAnalysisModel::ComputeContraflexureLocations()
 }
 
 
-void CAnalysisModel::GetInfluenceLines(long poiID,
+void CAnalysisModel::GetInfluenceLines(PoiIDType poiID,
                                        ResultsOrientation forceOrientation,  Float64 forceZeroTolerance, Float64 deflZeroTolerance, 
                                        IInfluenceLine** pLeftAxialInfl,  IInfluenceLine** pRightAxialInfl,
                                        IInfluenceLine** pLeftShearInfl,  IInfluenceLine** pRightShearInfl,
@@ -5344,7 +5344,7 @@ void CAnalysisModel::GetSupportDeflectionInfluenceLine(SupportIDType supportID, 
    ATLASSERT(m_pFem2d!=NULL);
    CHRException hr;
 
-   long num_pts = m_InfluenceLoadSet.size();
+   CollectionIndexType num_pts = m_InfluenceLoadSet.size();
    if (num_pts==0)
    {
       ATLASSERT(0);

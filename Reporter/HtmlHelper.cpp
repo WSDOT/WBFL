@@ -170,12 +170,12 @@ void rptHtmlHelper::VisitFontLibrary(std::_tostream& os)
    std::vector<rptStyleName> svec;
    plib->GetStyleNames(svec);
 
-   int numels = svec.size();
+   CollectionIndexType numels = svec.size();
 
    std::_tstring ss;
 
    // cycle over all styles add to style-element map and write out style-element mapping
-   for (int i=0; i<numels; i++)
+   for (CollectionIndexType i=0; i<numels; i++)
    {
       const rptRiStyle& style = plib->GetNamedStyle( svec[i] );
 

@@ -74,7 +74,7 @@ public:
    // rcaConcreteElement
    // Creates a concrete element with the shape rShape.
    // This version allows the n factor to be defined explicitely.
-   rcaConcreteElement(const gmIShape& rShape, Int32 concreteIdx, Float64 nFactor,
+   rcaConcreteElement(const gmIShape& rShape, CollectionIndexType concreteIdx, Float64 nFactor,
                       const rcaCapacityProblem& rProblem);
 
    //------------------------------------------------------------------------
@@ -82,7 +82,7 @@ public:
    // Creates a concrete element with the shape rShape.  
    // For this version, the n factor is calculated based on the material defined
    // by concreteKey for the given rcaCapacityProblem.
-   rcaConcreteElement(const gmIShape& rShape, Int32 concreteIdx, 
+   rcaConcreteElement(const gmIShape& rShape, CollectionIndexType concreteIdx, 
                       const rcaCapacityProblem& rProblem);
 
    //------------------------------------------------------------------------
@@ -137,7 +137,7 @@ public:
    //------------------------------------------------------------------------
    // GetConcreteIdx
    // Returns the index of the concrete associated with this element
-   Int32 GetConcreteIdx() const;
+   CollectionIndexType GetConcreteIdx() const;
 
    //------------------------------------------------------------------------
    // GetFc
@@ -198,7 +198,7 @@ protected:
 private:
    // GROUP: DATA MEMBERS
    std::auto_ptr<gmIShape> m_pShape;
-   Int32     m_ConcreteKey;
+   CollectionIndexType     m_ConcreteKey;
    mutable bool      m_IsNSpecified;
    mutable Float64   m_N;
    const rcaCapacityProblem* m_pProblem;

@@ -37,11 +37,11 @@ class bamBridgeModel;
 struct bamSpanElementInfo
 {
    bamSpanElementInfo();
-   Int32 m_Id;
+   SpanIDType m_Id;
    Int32 m_SegmentCount;
    bamSegmentInfo* m_pSegmentInfo;
-   Int32 m_StartSupportId;
-   Int32 m_EndSupportId;
+   SupportIDType m_StartSupportId;
+   SupportIDType m_EndSupportId;
 };
 
 inline bamSpanElementInfo::bamSpanElementInfo()
@@ -59,10 +59,10 @@ class bamSpanElement
 {
 public:
    bamSpanElement(const bamSpanElementInfo& rSpanElementInfo);
-   bamSpanElement(Int32 id,Float64 ax,Float64 iz,Float64 mode,Float64 density);
+   bamSpanElement(SpanIDType id,Float64 ax,Float64 iz,Float64 mode,Float64 density);
    virtual ~bamSpanElement();
 
-   Int32 GetID() const;
+   SpanIDType GetID() const;
    Float64 GetAx() const;
    Float64 GetIz() const;
    Float64 GetModE() const;
@@ -90,7 +90,7 @@ public:
    COLORREF m_Color;
 
 private:
-   Int32 m_ID;
+   SpanIDType m_ID;
    Float64 m_Ax;
    Float64 m_Iz;
    Float64 m_ModE;

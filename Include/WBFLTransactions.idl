@@ -31,6 +31,7 @@
 
 import "oaidl.idl";
 import "ocidl.idl";
+import "WBFLTypes.idl";
 
 [
 	uuid(081C49DE-FBE8-4C8D-BEEC-F13ECFF2B56C),
@@ -82,7 +83,7 @@ library WBFLTransactions
 		[helpstring("method AddTransaction")] HRESULT AddTransaction([in] ITransaction* txn);
 		[propget, helpstring("property IsUndoable")] HRESULT IsUndoable([out, retval] VARIANT_BOOL *pVal);
 		[propget, helpstring("property IsRepeatable")] HRESULT IsRepeatable([out, retval] VARIANT_BOOL *pVal);
-		[propget, helpstring("property Count")] HRESULT Count([out, retval] long *pVal);
+		[propget, helpstring("property Count")] HRESULT Count([out, retval] CollectionIndexType *pVal);
 	};
 
 	[
@@ -117,10 +118,10 @@ library WBFLTransactions
 		[propget, helpstring("property UndoName")] HRESULT UndoName([out, retval] BSTR *pVal);
 		[propget, helpstring("property RedoName")] HRESULT RedoName([out, retval] BSTR *pVal);
 		[propget, helpstring("property RepeatName")] HRESULT RepeatName([out, retval] BSTR *pVal);
-		[propget, helpstring("property TransactionCount")] HRESULT TransactionCount([out, retval] long *pVal);
-		[propget, helpstring("property UndoCount")] HRESULT UndoCount([out, retval] long *pVal);
-      [helpstring("method PeekTransaction")] HRESULT PeekTransaction([in] long idx,[out,retval] ITransaction* *txn);
-      [helpstring("method PeekUndo")] HRESULT PeekUndo([in] long idx,[out,retval] ITransaction* *txn);
+		[propget, helpstring("property TransactionCount")] HRESULT TransactionCount([out, retval] CollectionIndexType *pVal);
+		[propget, helpstring("property UndoCount")] HRESULT UndoCount([out, retval] CollectionIndexType *pVal);
+      [helpstring("method PeekTransaction")] HRESULT PeekTransaction([in] CollectionIndexType idx,[out,retval] ITransaction* *txn);
+      [helpstring("method PeekUndo")] HRESULT PeekUndo([in] CollectionIndexType idx,[out,retval] ITransaction* *txn);
 		[helpstring("method ClearTransactionHistory")] HRESULT ClearTransactionHistory();
 		[helpstring("method ClearUndoHistory")] HRESULT ClearUndoHistory();
 		[helpstring("method Clear")] HRESULT Clear();

@@ -362,7 +362,7 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
 	TOOLTIPTEXTA* pTTTA = (TOOLTIPTEXTA*)pTTTStruct;
 	TOOLTIPTEXTW* pTTTW = (TOOLTIPTEXTW*)pTTTStruct;
 
-	UINT nID = pTTTStruct->idFrom;
+	UINT_PTR nID = pTTTStruct->idFrom;
 	if (pTTTStruct->code == TTN_NEEDTEXTA && (pTTTA->uFlags & TTF_IDISHWND) ||
 	 	 pTTTStruct->code == TTN_NEEDTEXTW && (pTTTW->uFlags & TTF_IDISHWND))
 	{
@@ -378,13 +378,13 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
    {
       UINT nPluginCmdID;
       IEAFCommandCallback* pCallback;
-      if ( pDoc->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) )
+      if ( pDoc->GetPluginCommandManager()->GetCommandCallback((UINT)nID,&nPluginCmdID,&pCallback) )
       {
          // this command belogs to one of the plug-ins
          if ( pCallback )
             bHandledByPlugin = pCallback->GetToolTipMessageString(nPluginCmdID,strTipText);
          else
-            bHandledByPlugin = pDoc->GetToolTipMessageString(nID,strTipText);
+            bHandledByPlugin = pDoc->GetToolTipMessageString((UINT)nID,strTipText);
       }
    }
 
@@ -393,7 +393,7 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
       CEAFApp* pApp = EAFGetApp();
       UINT nPluginCmdID;
       IEAFCommandCallback* pCallback;
-      if ( pApp->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
+      if ( pApp->GetPluginCommandManager()->GetCommandCallback((UINT)nID,&nPluginCmdID,&pCallback) && pCallback )
       {
          // this command belogs to one of the application plug-ins
          bHandledByPlugin = pCallback->GetToolTipMessageString(nPluginCmdID,strTipText);
@@ -405,11 +405,11 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
       CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)pDoc->GetDocTemplate();
       if ( pTemplate->GetCommandCallback() )
       {
-         bHandledByPlugin = pTemplate->GetCommandCallback()->GetToolTipMessageString(nID,strTipText);
+         bHandledByPlugin = pTemplate->GetCommandCallback()->GetToolTipMessageString((UINT)nID,strTipText);
       }
       else
       {
-         bHandledByPlugin = pDoc->GetToolTipMessageString(nID,strTipText);
+         bHandledByPlugin = pDoc->GetToolTipMessageString((UINT)nID,strTipText);
       }
    }
 

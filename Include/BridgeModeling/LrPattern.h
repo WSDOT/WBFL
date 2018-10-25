@@ -92,11 +92,11 @@ public:
 
    //------------------------------------------------------------------------
    // Get number of bars in pattern
-   virtual Uint32 GetNumBars() const = 0;
+   virtual CollectionIndexType GetNumBars() const = 0;
 
    //------------------------------------------------------------------------
    // Get the ith bar location. zero-based
-   virtual gpPoint2d GetBarLocation(Uint32 barNum) const=0;
+   virtual gpPoint2d GetBarLocation(CollectionIndexType barNum) const=0;
 
    //------------------------------------------------------------------------
    // Get the rebar material for all bars used in pattern

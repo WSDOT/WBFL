@@ -192,7 +192,7 @@ DROPEFFECT CLBAMViewerView::CanDrop(COleDataObject* pDataObject,DWORD dwKeyState
 
 void CLBAMViewerView::OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect,IPoint2d* point)
 {
-   AfxMessageBox("OnDropped");
+   AfxMessageBox(_T("OnDropped"));
 }
 
 
@@ -397,7 +397,7 @@ void CLBAMViewerView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
       if (hr==S_FALSE)
       {
          // analysis was cancelled
-         ::AfxMessageBox("Analysis Cancelled - Select another load to restart");
+         ::AfxMessageBox(_T("Analysis Cancelled - Select another load to restart"));
       }
       else
       {
@@ -475,7 +475,7 @@ bool CLBAMViewerView::BuildSupportDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayM
          double x, y;
          point->get_X(&x);
          point->get_Y(&y);
-         strToolTipText.Format("Support %d (%f,%f)",nsprt, x, y);
+         strToolTipText.Format(_T("Support %d (%f,%f)"),nsprt, x, y);
          supportRep->SetToolTipText(strToolTipText);
 
          CComQIPtr<iConnectable,&IID_iConnectable> connectable(supportRep);
@@ -570,7 +570,7 @@ bool CLBAMViewerView::BuildTempSupportDisplayObjects(CLBAMViewerDoc* pDoc, iDisp
             double x, y;
             point->get_X(&x);
             point->get_Y(&y);
-            strToolTipText.Format("TemporarySupport %d (%f,%f)",id, x, y);
+            strToolTipText.Format(_T("TemporarySupport %d (%f,%f)"),id, x, y);
             supportRep->SetToolTipText(strToolTipText);
 
             CComQIPtr<iConnectable,&IID_iConnectable> connectable(supportRep);
@@ -646,7 +646,7 @@ void CLBAMViewerView::BuildSpanDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr*
       socket->Connect(endPlug,&dwCookie);
 
       CString strToolTip;
-      strToolTip.Format("Span %d", nspan);
+      strToolTip.Format(_T("Span %d"), nspan);
       span_rep->SetToolTipText(strToolTip);
 /*
       CMemberDropSite* pDropSite = new CMemberDropSite(pDoc);
@@ -685,7 +685,7 @@ void CLBAMViewerView::BuildSSMDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* 
    hr = ssms->get_Length(&total_length);
 
    // deal with colors
-   CColorIterator colors( RGB(255, 255, 20), RGB( 255, 75, 20), nssms);
+   CColorIterator colors( RGB(255, 255, 20), RGB( 255, 75, 20), (int)nssms);
 
    // make starting point
    double loc = -offset;
@@ -738,7 +738,7 @@ void CLBAMViewerView::BuildSSMDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* 
       draw_ssm->SetLineWidth(3);
       draw_ssm->SetWidth(5);
       m_RoadwayElevation = 3; // same as rectangle width
-      draw_ssm->SetColor( colors.Item(nssm) );
+      draw_ssm->SetColor( colors.Item((int)nssm) );
       ssm_rep->SetDrawLineStrategy(draw_ssm);
 /*
       // see if ends are released
@@ -789,7 +789,7 @@ void CLBAMViewerView::BuildSSMDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* 
       socket->Connect(endPlug,&dwCookie);
 
       CString strToolTip;
-      strToolTip.Format("SuperstructureMember %d", nssm);
+      strToolTip.Format(_T("SuperstructureMember %d"), nssm);
       ssm_rep->SetToolTipText(strToolTip);
 
       pDL->AddDisplayObject(ssm_rep);
@@ -812,7 +812,7 @@ void BuildSegmentDisplayObjects(CString& Stage, double xStart, double yStart, do
    SegmentIndexType nsegs;
    hr = segs->get_Count(&nsegs);
 
-   CColorIterator colors( RGB(255, 20, 20), RGB( 20,  20, 255), nsegs);
+   CColorIterator colors( RGB(255, 20, 20), RGB( 20,  20, 255), (int)nsegs);
 
    // make starting point
    CComPtr<IPoint2d> point;
@@ -867,7 +867,7 @@ void BuildSegmentDisplayObjects(CString& Stage, double xStart, double yStart, do
       hr = ds->QueryInterface(IID_iSimpleDrawLineStrategy,(void**)&sds);
       ATLASSERT(SUCCEEDED(hr));
 
-      sds->SetColor( colors.Item(iseg) );
+      sds->SetColor( colors.Item((int)iseg) );
       sds->SetWidth(5);
 
       // plug in
@@ -891,7 +891,7 @@ void BuildSegmentDisplayObjects(CString& Stage, double xStart, double yStart, do
       socket->Connect(endPlug,&dwCookie);
 
       CString strToolTip;
-      strToolTip.Format("Segment %d", iseg);
+      strToolTip.Format(_T("Segment %d"), iseg);
       seg_rep->SetToolTipText(strToolTip);
 
       pDL->AddDisplayObject(seg_rep);
@@ -1007,7 +1007,7 @@ void CLBAMViewerView::BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr
 
       if (poi_cnt==0)
       {
-         ::AfxMessageBox("No POIs in LBAM model. Results cannot be displayed");
+         ::AfxMessageBox(_T("No POIs in LBAM model. Results cannot be displayed"));
          return;
       }
 
@@ -1015,43 +1015,43 @@ void CLBAMViewerView::BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr
       CChildFrame* pframe = (CChildFrame*)GetParentFrame( );
 
       // get color demand
-      long num_dsb = pframe->GetNumDataSetBuilders();
-      long num_colors=0;
-      for (long i=0; i<num_dsb; i++)
+      IndexType num_dsb = pframe->GetNumDataSetBuilders();
+      IndexType num_colors=0;
+      for (IndexType i=0; i<num_dsb; i++)
       {
          iDataSetBuilder* pbld = pframe->GetDataSetBuilder(i);
          num_colors += pbld->ColorDemand(curr_stg, curr_rt);
       }
 
       // our range of color
-      CColorIterator graph_colors(RGB(220,110,0), RGB(0,0,220), num_colors);
+      CColorIterator graph_colors(RGB(220,110,0), RGB(0,0,220), (int)num_colors);
 
       // percent increments for progress monitor
       CComQIPtr<IProgressMonitor> prog_mon(pDoc->m_pProgressMonitorWindow);
-      long inc = 100 / (num_dsb!=0? num_dsb:1);
-      long curr_inc = 0;
-      for (long i=0; i<num_dsb; i++)
+      IndexType inc = 100 / (num_dsb!=0? num_dsb:1);
+      IndexType curr_inc = 0;
+      for (IndexType i=0; i<num_dsb; i++)
       {
-         COLORREF color = graph_colors.Item(i);
+         COLORREF color = graph_colors.Item((int)i);
 
          iDataSetBuilder* pbld = pframe->GetDataSetBuilder(i);
          std::vector<iGraphXyDataProvider*> data_sets;
 
          CString cmsg(pbld->GetDescription());
-         cmsg = CString("Computing ") + cmsg;
-         CComBSTR bmsg((const char*)cmsg);
+         cmsg = CString(_T("Computing ")) + cmsg;
+         CComBSTR bmsg((const TCHAR*)cmsg);
          prog_mon->put_Message(pDoc->m_LoadCombinationCookie, bmsg); // cookie is arbitrary
 
          if (i!=0)
          {
             curr_inc += inc;
-            prog_mon->put_GaugeValue(pDoc->m_LoadCombinationCookie,curr_inc);
+            prog_mon->put_GaugeValue(pDoc->m_LoadCombinationCookie,(long)curr_inc);
          }
 
          pbld->BuildDataSets(poilist, loclist, curr_stg, curr_rt, summ_type, color, &data_sets);
 
-         long num_ds = data_sets.size();
-         for (long ids=0; ids<num_ds; ids++)
+         IndexType num_ds = data_sets.size();
+         for (IndexType ids=0; ids<num_ds; ids++)
          {
             iGraphXyDataProvider* pds = data_sets[ids];
             m_Graph->AddData(pds);
@@ -1086,7 +1086,7 @@ void CLBAMViewerView::BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr
             CComQIPtr<iLBAMTruckEvents,&IID_iLBAMTruckEvents> truck_events(sink);
 
             LiveLoadModelType model_type;
-            long vehicle_index;
+            VehicleIndexType vehicle_index;
             CComPtr<ILiveLoadConfiguration> placement;
             pbld->GetTruckInfo(&model_type, &vehicle_index, &placement);
 
@@ -1153,15 +1153,15 @@ void CLBAMViewerView::DealWithExceptions()
       // clear out display lists and display a message
       CComPtr<iDisplayMgr> dispMgr;
       GetDisplayMgr(&dispMgr);
-      long cnt = dispMgr->GetDisplayListCount();
-      for (long i=0; i<cnt; i++)
+      CollectionIndexType cnt = dispMgr->GetDisplayListCount();
+      for (CollectionIndexType i=0; i<cnt; i++)
       {
          CComPtr<iDisplayList> pDL;
          dispMgr->GetDisplayList(i,&pDL);
          pDL->Clear();
       }
 
-      MessageBox(rstring, "Error", MB_OK | MB_ICONERROR);
+      MessageBox(rstring, _T("Error"), MB_OK | MB_ICONERROR);
 
    }
    catch (HRESULT /*hr*/)
@@ -1174,18 +1174,18 @@ void CLBAMViewerView::DealWithExceptions()
          BSTR msg;
          errinf->GetDescription(&msg);
          _bstr_t bmsg(msg);
-         AfxMessageBox((const char*)bmsg, MB_OK | MB_ICONERROR);
+         AfxMessageBox((const TCHAR*)bmsg, MB_OK | MB_ICONERROR);
       }
       else
       {
          ATLASSERT(0);
-         AfxMessageBox("An unknown error occurred", MB_OK | MB_ICONERROR);
+         AfxMessageBox(_T("An unknown error occurred"), MB_OK | MB_ICONERROR);
       }
    }
    catch(...)
    {
       ATLASSERT(0);
-      AfxMessageBox("An unknown error occurred", MB_OK | MB_ICONERROR);
+      AfxMessageBox(_T("An unknown error occurred"), MB_OK | MB_ICONERROR);
    }
 }
 

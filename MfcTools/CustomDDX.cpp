@@ -185,7 +185,7 @@ void DDX_CBStringExactCase(CDataExchange* pDX, int nIDC, std::_tstring& str)
 		   }
 		   else
 		   {
-            int len = ::SendMessage(hWndCtrl,CB_GETLBTEXTLEN,(WPARAM)i,(LPARAM)0);
+            LRESULT len = ::SendMessage(hWndCtrl,CB_GETLBTEXTLEN,(WPARAM)i,(LPARAM)0);
             if ( len < 0 )
                len = 255;
 
@@ -232,7 +232,7 @@ void DDX_CBStringExactCase(CDataExchange* pDX, int nIDC, CString& str)
 		   }
 		   else
 		   {
-            int len = ::SendMessage(hWndCtrl,CB_GETLBTEXTLEN,(WPARAM)i,(LPARAM)0);
+            LRESULT len = ::SendMessage(hWndCtrl,CB_GETLBTEXTLEN,(WPARAM)i,(LPARAM)0);
             if ( len < 0 )
                len = 255;
 

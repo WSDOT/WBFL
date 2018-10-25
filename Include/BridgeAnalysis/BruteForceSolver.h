@@ -36,8 +36,8 @@ public:
    virtual ~bamBruteForceSolver();
 
    virtual void Solve(bamLiveLoad& ll);
-   virtual void Solve(bamLiveLoad& ll,Int32 poi);
-   virtual void SolveStress(bamLiveLoad& ll,Int32 poi,Int32 spid);
+   virtual void Solve(bamLiveLoad& ll,PoiIDType poi);
+   virtual void SolveStress(bamLiveLoad& ll,PoiIDType poi,CollectionIndexType spid);
 
 private:
    void SolveReactions(bamLiveLoad& ll);

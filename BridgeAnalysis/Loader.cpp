@@ -76,12 +76,12 @@ void bamLoader::ApplyLoad()
 //======================== LIFECYCLE  =======================================
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
-bamSpanElement* bamLoader::GetSpanElement(Int32 spanElementId)
+bamSpanElement* bamLoader::GetSpanElement(SpanIDType spanElementId)
 {
    return m_pModel->GetSpanElement(spanElementId);
 } // GetSpanElement
 
-bamSupportElement* bamLoader::GetSupportElement(Int32 supportElementId)
+bamSupportElement* bamLoader::GetSupportElement(SupportIDType supportElementId)
 {
    return m_pModel->GetSupportElement(supportElementId);
 } // GetSupportElement

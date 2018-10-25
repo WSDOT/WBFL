@@ -115,6 +115,8 @@ public:
    bool GetValue(Uint16* value);
    bool GetValue(Int32* value);
    bool GetValue(Uint32* value);
+   bool GetValue(Int64* value);
+   bool GetValue(Uint64* value);
    bool GetValue(bool* value);
    // GROUP: INQUIRY
 

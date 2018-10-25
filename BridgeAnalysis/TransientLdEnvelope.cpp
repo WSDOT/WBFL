@@ -38,7 +38,7 @@ static char THIS_FILE[] = __FILE__;
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-bamTransientLdEnvelope::bamTransientLdEnvelope(Int32 id) :
+bamTransientLdEnvelope::bamTransientLdEnvelope(IDType id) :
 bamEnvelope(id)
 {
 }

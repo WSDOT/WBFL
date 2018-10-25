@@ -192,7 +192,7 @@ void bamBridgeModel::CreateSpanElement(const bamSpanElementInfo& rSpanElementInf
                       rSpanElementInfo.m_EndSupportId);
 }
 
-void bamBridgeModel::CreateSpanElement(Int32 spanElementId,Float64 area,Float64 izz,Float64 e,Float64 density)
+void bamBridgeModel::CreateSpanElement(SpanIDType spanElementId,Float64 area,Float64 izz,Float64 e,Float64 density)
 {
    bamSpanElement* pSpanElement = new bamSpanElement(spanElementId,area,izz,e,density);
    pSpanElement->SetModel(this);
@@ -201,7 +201,7 @@ void bamBridgeModel::CreateSpanElement(Int32 spanElementId,Float64 area,Float64 
    SetModifiedFlag();
 } // CreateSpanElement
 
-void bamBridgeModel::ConnectSpanElement(Int32 spanElementId,Int32 startPierId,Int32 endPierId)
+void bamBridgeModel::ConnectSpanElement(SpanIDType spanElementId,SupportIDType startPierId,SupportIDType endPierId)
 {
    bamSpanElement*    pSpanElement  = GetSpanElement( spanElementId );
    bamSupportElement* pStartSupport = GetSupportElement( startPierId );
@@ -213,7 +213,7 @@ void bamBridgeModel::ConnectSpanElement(Int32 spanElementId,Int32 startPierId,In
    SetModifiedFlag();
 } // ConnectSpanElement
 
-void bamBridgeModel::RemoveSpanElement(Int32 spanElementId)
+void bamBridgeModel::RemoveSpanElement(SpanIDType spanElementId)
 {
    bamSpanElement* pSpanElement = GetSpanElement(spanElementId);
    pSpanElement->OnRemove();
@@ -222,16 +222,16 @@ void bamBridgeModel::RemoveSpanElement(Int32 spanElementId)
    SetModifiedFlag();
 } // RemoveSpanElement
 
-Int32 bamBridgeModel::GetSpanElementCount() const
+CollectionIndexType bamBridgeModel::GetSpanElementCount() const
 {
    return m_SpanElements.size();
 } // GetSpanElementCount
 
-void bamBridgeModel::EnumSpanElements(Int32** ppSpanElementId,Int32 count) const
+void bamBridgeModel::EnumSpanElements(SpanIDType** ppSpanElementId,SpanIndexType count) const
 {
    ConstSpanElementIterator begin = m_SpanElements.begin();
    ConstSpanElementIterator end   = m_SpanElements.end();
-   Int32 i = 0;
+   SpanIndexType i = 0;
 
    while( begin != end && (count == 0 || i < count) )
    {
@@ -242,7 +242,7 @@ void bamBridgeModel::EnumSpanElements(Int32** ppSpanElementId,Int32 count) const
 
 void bamBridgeModel::GetSpanElementInfo(bamSpanElementInfo& rSpanElementInfo) const
 {
-   Int32 num_segments;
+   SpanIndexType num_segments;
 
    const bamSpanElement* pSpanElement = GetSpanElement( rSpanElementInfo.m_Id );
 
@@ -280,7 +280,7 @@ void bamBridgeModel::GetSpanElementInfo(bamSpanElementInfo& rSpanElementInfo) co
    rSpanElementInfo.m_EndSupportId = (pSupportElement) ? pSupportElement->GetID() : -1;
 }
 
-void bamBridgeModel::CreateSupportElement(Int32 supportElementId,
+void bamBridgeModel::CreateSupportElement(SupportIDType supportElementId,
                                                    Float64 location,
                                                    bamSupportFixity fixity)
 {
@@ -300,7 +300,7 @@ void bamBridgeModel::CreateSupportElement(const bamSupportElementInfo& rSupportE
    SetModifiedFlag();
 }
 
-void bamBridgeModel::RemoveSupportElement(Int32 supportElementId)
+void bamBridgeModel::RemoveSupportElement(SupportIDType supportElementId)
 {
    bamSupportElement* pSupportElement = GetSupportElement(supportElementId);
    pSupportElement->OnRemove();
@@ -309,11 +309,11 @@ void bamBridgeModel::RemoveSupportElement(Int32 supportElementId)
    SetModifiedFlag();
 } // RemoveSupportElement
 
-void bamBridgeModel::EnumSupportElements(Int32** ppSupportElementId,Int32 count) const
+void bamBridgeModel::EnumSupportElements(SupportIDType** ppSupportElementId,CollectionIndexType count) const
 {
    ConstSupportElementIterator begin = m_SupportElements.begin();
    ConstSupportElementIterator end   = m_SupportElements.end();
-   Int32 i = 0;
+   CollectionIndexType i = 0;
 
    while( begin != end && (count == 0 || i < count) )
    {
@@ -322,7 +322,7 @@ void bamBridgeModel::EnumSupportElements(Int32** ppSupportElementId,Int32 count)
    }
 }
 
-void bamBridgeModel::CreateLoadCase(Int32 lcid)
+void bamBridgeModel::CreateLoadCase(IDType lcid)
 {
    bamLoadCase* pLoadCase = new bamLoadCase(lcid);
    pLoadCase->SetBridgeModel(this);
@@ -331,9 +331,9 @@ void bamBridgeModel::CreateLoadCase(Int32 lcid)
    SetModifiedFlag();
 } // CreateLoadCase
 
-void bamBridgeModel::CreateDeadLoadCase( Int32 lcid, 
+void bamBridgeModel::CreateDeadLoadCase( IDType lcid, 
                                          bamElementExcludeInfo* pExcludeList,
-                                         Int32 excludeCount )
+                                         CollectionIndexType excludeCount )
 {
    // Create the new load
    bamDeadLoadCase* pLoadCase = new bamDeadLoadCase(lcid);
@@ -342,7 +342,7 @@ void bamBridgeModel::CreateDeadLoadCase( Int32 lcid,
    pLoadCase->SetBridgeModel(this);
 
    // Process exclusion list
-   for (Int32 idx = 0; idx < excludeCount; idx++)
+   for (CollectionIndexType idx = 0; idx < excludeCount; idx++)
    {
       switch( pExcludeList[idx].m_ElementType )
       {
@@ -360,7 +360,7 @@ void bamBridgeModel::CreateDeadLoadCase( Int32 lcid,
    SetModifiedFlag();
 } // CreateDeadLoadCase
 
-void bamBridgeModel::RemoveLoadCase(Int32 loadCaseId)
+void bamBridgeModel::RemoveLoadCase(IDType loadCaseId)
 {
    bamLoadCase* pLoadCase = GetLoadCase( loadCaseId );
    m_LoadCases.erase( loadCaseId );
@@ -368,7 +368,7 @@ void bamBridgeModel::RemoveLoadCase(Int32 loadCaseId)
    SetModifiedFlag();
 } // RemoveLoadCase
 
-Int32 bamBridgeModel::AddLoad(Int32 loadCaseId,bamLoad* pLoad)
+CollectionIndexType bamBridgeModel::AddLoad(IDType loadCaseId,bamLoad* pLoad)
 {
    bamLoadCase* pLoadCase = GetLoadCase(loadCaseId);
 
@@ -377,7 +377,7 @@ Int32 bamBridgeModel::AddLoad(Int32 loadCaseId,bamLoad* pLoad)
    return pLoadCase->AddLoad(pLoad);
 } // AddLoad
 
-void bamBridgeModel::RemoveLoad(Int32 loadCaseId, Int32 loadIdx)
+void bamBridgeModel::RemoveLoad(IDType loadCaseId, CollectionIndexType loadIdx)
 {
    bamLoadCase* pLoadCase = GetLoadCase(loadCaseId);
    pLoadCase->RemoveLoad(loadIdx);
@@ -385,16 +385,16 @@ void bamBridgeModel::RemoveLoad(Int32 loadCaseId, Int32 loadIdx)
    SetModifiedFlag();
 }
 
-Int32 bamBridgeModel::GetLoadCaseCount() const
+CollectionIndexType bamBridgeModel::GetLoadCaseCount() const
 {
    return m_LoadCases.size();
 }
 
-void bamBridgeModel::EnumLoadCases(Int32** ppLoadCaseId,Int32 count) const
+void bamBridgeModel::EnumLoadCases(IDType** ppLoadCaseId,CollectionIndexType count) const
 {
    ConstLoadCaseIterator begin = m_LoadCases.begin();
    ConstLoadCaseIterator end   = m_LoadCases.end();
-   Int32 i = 0;
+   CollectionIndexType i = 0;
 
    while( begin != end && (count == 0 || i < count) )
    {
@@ -403,25 +403,25 @@ void bamBridgeModel::EnumLoadCases(Int32** ppLoadCaseId,Int32 count) const
    }
 }
 
-Int32 bamBridgeModel::GetLoadCount(Int32 loadCaseId) const
+CollectionIndexType bamBridgeModel::GetLoadCount(IDType loadCaseId) const
 {
    const bamLoadCase* pLoadCase = GetLoadCase(loadCaseId);
    return pLoadCase->GetLoadCount();
 }
 
-void bamBridgeModel::EnableLoadCase(Int32 loadCaseId)
+void bamBridgeModel::EnableLoadCase(IDType loadCaseId)
 {
    bamLoadCase* pLoadCase = GetLoadCase( loadCaseId );
    pLoadCase->Enable();
 }
 
-void bamBridgeModel::DisableLoadCase(Int32 loadCaseId)
+void bamBridgeModel::DisableLoadCase(IDType loadCaseId)
 {
    bamLoadCase* pLoadCase = GetLoadCase( loadCaseId );
    pLoadCase->Disable();
 }
 
-bool bamBridgeModel::IsLoadCaseEnabled(Int32 loadCaseId) const
+bool bamBridgeModel::IsLoadCaseEnabled(IDType loadCaseId) const
 {
    const bamLoadCase* pLoadCase = GetLoadCase( loadCaseId );
    return pLoadCase->IsEnabled();
@@ -441,13 +441,13 @@ void bamBridgeModel::AddLoadCombination(const bamLoadCombination& rLoadCombinati
       DoLoadCombination( *pClone );
 }
 
-void bamBridgeModel::RemoveLoadCombination(Int32 id)
+void bamBridgeModel::RemoveLoadCombination(IDType id)
 {
    bamLoadCombination* pLoadCombination = GetLoadCombination( id );
    m_LoadCombinations.erase( id );
 }
 
-const bamLoadCombination* bamBridgeModel::GetLoadCombination(Int32 id) const
+const bamLoadCombination* bamBridgeModel::GetLoadCombination(IDType id) const
 {
    PRECONDITION( IsValidLoadCombinationId(id) );
 
@@ -478,12 +478,12 @@ void bamBridgeModel::AddEnvelope(const bamEnvelope& rEnvelope)
       pEnvelope->DoEnvelope();
 }
 
-void bamBridgeModel::RemoveEnvelope(Int32 id)
+void bamBridgeModel::RemoveEnvelope(IDType id)
 {
    m_Envelopes.erase( id );
 }
 
-const bamEnvelope* bamBridgeModel::GetEnvelope(Int32 id) const
+const bamEnvelope* bamBridgeModel::GetEnvelope(IDType id) const
 {
    ConstEnvelopeIterator found = m_Envelopes.find(id);
    WARN( found == m_Envelopes.end(), "Envelope not found" );
@@ -498,12 +498,12 @@ void bamBridgeModel::AddLiveLoad(const bamLiveLoad& ll)
    StoreLiveLoad( ll );
 }
 
-void bamBridgeModel::RemoveLiveLoad(Int32 id)
+void bamBridgeModel::RemoveLiveLoad(IDType id)
 {
    m_LiveLoads.erase(id);
 }
 
-const bamLiveLoad* bamBridgeModel::GetLiveLoad(Int32 id) const
+const bamLiveLoad* bamBridgeModel::GetLiveLoad(IDType id) const
 {
    ConstLiveLoadIterator found = m_LiveLoads.find( id );
    WARN( found == m_LiveLoads.end(), "Live Load Not Found" );
@@ -513,9 +513,9 @@ const bamLiveLoad* bamBridgeModel::GetLiveLoad(Int32 id) const
    return &(*found).second;
 }
 
-Int32 bamBridgeModel::GetLoadingCount() const
+CollectionIndexType bamBridgeModel::GetLoadingCount() const
 {
-   Int32 count;
+   CollectionIndexType count;
 
    count = m_LoadCases.size();
    count += m_LoadCombinations.size();
@@ -530,9 +530,9 @@ Int32 bamBridgeModel::GetLoadingCount() const
    return count;
 }
 
-void bamBridgeModel::EnumLoadings(Int32** ppLoadingId,Int32 count) const
+void bamBridgeModel::EnumLoadings(IDType** ppLoadingId,CollectionIndexType count) const
 {
-   Int32 i = 0;
+   CollectionIndexType i = 0;
    ConstLoadCaseIterator loadcase_begin = m_LoadCases.begin();
    ConstLoadCaseIterator loadcase_end   = m_LoadCases.end();
 
@@ -555,7 +555,7 @@ void bamBridgeModel::EnumLoadings(Int32** ppLoadingId,Int32 count) const
    while ( liveload_begin != liveload_end && ( count == 0 || i < count ) )
    {
       const bamLiveLoad& env = (*liveload_begin++).second;
-      Int32 loadingId;
+      IDType loadingId;
       loadingId = env.GetMinLoadingId();
       (*ppLoadingId)[i++] = loadingId;
       loadingId = env.GetMaxLoadingId();
@@ -567,7 +567,7 @@ void bamBridgeModel::EnumLoadings(Int32** ppLoadingId,Int32 count) const
    while ( env_begin != env_end && ( count == 0 || i < count ) )
    {
       const boost::shared_ptr<bamEnvelope>& penv = (*env_begin++).second;
-      Int32 loadingId;
+      IDType loadingId;
       loadingId = penv->GetLoadingId( bamEnvelope::Min );
       (*ppLoadingId)[i++] = loadingId;
       loadingId = penv->GetLoadingId( bamEnvelope::Max );
@@ -575,16 +575,16 @@ void bamBridgeModel::EnumLoadings(Int32** ppLoadingId,Int32 count) const
    }
 }
 
-void bamBridgeModel::AddPointOfInterest(Int32 poiId,Float64 absLoc)
+void bamBridgeModel::AddPointOfInterest(PoiIDType poiId,Float64 absLoc)
 {
-   Int32 spanId;
+   SpanIDType spanId;
    Float64 distFromStart;
 
    AbsLocationToRelLocation( absLoc, spanId, distFromStart );
    AddPointOfInterest( poiId, spanId, distFromStart, absLoc );
 }
 
-void bamBridgeModel::AddPointOfInterest(Int32 poiId,Int32 spanId,Float64 distFromStart)
+void bamBridgeModel::AddPointOfInterest(PoiIDType poiId,SpanIDType spanId,Float64 distFromStart)
 {
    Float64 absLoc;
 
@@ -592,14 +592,14 @@ void bamBridgeModel::AddPointOfInterest(Int32 poiId,Int32 spanId,Float64 distFro
    AddPointOfInterest( poiId, spanId, distFromStart, absLoc );
 }
 
-void bamBridgeModel::GeneratePointsOfInterest(Int32 startPoi,Int32 nPoi,Int32 spanId,Int32 poiInc)
+void bamBridgeModel::GeneratePointsOfInterest(PoiIDType startPoi,CollectionIndexType nPoi,SpanIDType spanId,PoiIDType poiInc)
 {
    bamSpanElement* spanElement = GetSpanElement(spanId);
    Float64 span_length = spanElement->Length();
    Float64 offset = 0;
    Float64 delta = span_length / (nPoi - 1);
 
-   for (Int32 i = 0; i < nPoi; i++)
+   for (CollectionIndexType i = 0; i < nPoi; i++)
    {
       AddPointOfInterest(startPoi,
                          spanId,
@@ -613,16 +613,16 @@ void bamBridgeModel::GeneratePointsOfInterest(Int32 startPoi,Int32 nPoi,Int32 sp
 }
 
 
-Int32 bamBridgeModel::GetPointOfInterestCount() const
+CollectionIndexType bamBridgeModel::GetPointOfInterestCount() const
 {
    return m_PointsOfInterest.size();
 }
 
-void bamBridgeModel::EnumPointsOfInterest(Int32** ppPoi,Int32 count) const
+void bamBridgeModel::EnumPointsOfInterest(PoiIDType** ppPoi,CollectionIndexType count) const
 {
    ConstPoiIterator begin = m_PointsOfInterest.begin();
    ConstPoiIterator end   = m_PointsOfInterest.end();
-   Int32 poi = 0;
+   CollectionIndexType poi = 0;
 
    while ( begin != end && poi < count )
    {
@@ -631,7 +631,7 @@ void bamBridgeModel::EnumPointsOfInterest(Int32** ppPoi,Int32 count) const
    }
 }
 
-const bamPointOfInterest* bamBridgeModel::GetPointOfInterest(Int32 id) const
+const bamPointOfInterest* bamBridgeModel::GetPointOfInterest(PoiIDType id) const
 {
    ConstPoiIterator begin = m_PointsOfInterest.begin();
    ConstPoiIterator end   = m_PointsOfInterest.end();
@@ -645,7 +645,7 @@ const bamPointOfInterest* bamBridgeModel::GetPointOfInterest(Int32 id) const
    return 0;
 }
 
-bamPointOfInterest* bamBridgeModel::GetPointOfInterest(Int32 id)
+bamPointOfInterest* bamBridgeModel::GetPointOfInterest(PoiIDType id)
 {
    PoiIterator begin = m_PointsOfInterest.begin();
    PoiIterator end   = m_PointsOfInterest.end();
@@ -659,7 +659,7 @@ bamPointOfInterest* bamBridgeModel::GetPointOfInterest(Int32 id)
    return 0;
 }
 
-void bamBridgeModel::GetPointOfInterest(Int32 poi,Int32& spanId,Float64& offset,Float64& absLoc) const
+void bamBridgeModel::GetPointOfInterest(PoiIDType poi,SpanIDType& spanId,Float64& offset,Float64& absLoc) const
 {
    bamPointOfInterest pnt_of_interest;
    ConstPoiIterator begin = m_PointsOfInterest.begin();
@@ -679,14 +679,14 @@ void bamBridgeModel::GetPointOfInterest(Int32 poi,Int32& spanId,Float64& offset,
    }
 }
 
-void bamBridgeModel::AddStressPoint(Int32 poi,Int32 idx,Float64 S)
+void bamBridgeModel::AddStressPoint(PoiIDType poi,CollectionIndexType idx,Float64 S)
 {
    bamPointOfInterest* pPoi = GetPointOfInterest( poi );
    pPoi->AddStressPoint( idx, S );
    OnNewStressPoint( *pPoi, idx );
 }
 
-void bamBridgeModel::RemoveStressPoint(Int32 poi,Int32 idx)
+void bamBridgeModel::RemoveStressPoint(PoiIDType poi,CollectionIndexType idx)
 {
    CHECKX(false,_T("Not implemented"));
 }
@@ -716,7 +716,7 @@ bamReaction bamBridgeModel::ReadReaction(const bamReactionKey& key) const
    return m_pAnalysisResultsManager->ReadReaction(key);
 }
 
-Int32 bamBridgeModel::GetSupportElementCount() const
+CollectionIndexType bamBridgeModel::GetSupportElementCount() const
 {
    return m_SupportElements.size();
 } // GetSupportElementCount
@@ -731,21 +731,21 @@ void bamBridgeModel::DeepCopy(bamBridgeModel* pModel) const
    // Only copy the model geometry, not the loads
 
    // Copy support stuff
-   Int32 support_count = GetSupportElementCount();
-   Int32* support_id = new Int32[support_count];
+   CollectionIndexType support_count = GetSupportElementCount();
+   SupportIDType* support_id = new SupportIDType[support_count];
    EnumSupportElements( &support_id, support_count );
-   for ( Int16 support = 0; support < support_count; support++ )
+   for ( SupportIndexType supportIdx = 0; supportIdx < support_count; supportIdx++ )
    {
-      const bamSupportElement* p_support_element = GetSupportElement( support_id[support] );
+      const bamSupportElement* p_support_element = GetSupportElement( support_id[supportIdx] );
       pModel->StoreSupportElement( p_support_element->Clone() );
    }
    delete[] support_id;
    
    // Copy span stuff
-   Int32 span_count = GetSpanElementCount();
-   Int32* span_id = new Int32[span_count];
+   SpanIndexType span_count = GetSpanElementCount();
+   SpanIDType* span_id = new SpanIDType[span_count];
    EnumSpanElements( &span_id, span_count );
-   for ( Int16 span = 0; span < span_count; span++ )
+   for ( SpanIndexType span = 0; span < span_count; span++ )
    {
       const bamSpanElement* p_span_element = GetSpanElement( span_id[span] );
       pModel->StoreSpanElement( p_span_element->Clone() );
@@ -753,7 +753,7 @@ void bamBridgeModel::DeepCopy(bamBridgeModel* pModel) const
    // delete[] span_id; // defered to below
 
    // Now, link up the spans and supports in the clone.
-   for ( Int16 span = 0; span < span_count; span++ )
+   for ( SpanIndexType span = 0; span < span_count; span++ )
    {
       const bamSpanElement* p_span_element = GetSpanElement( span_id[span] );
       pModel->ConnectSpanElement( p_span_element->GetID(),
@@ -778,7 +778,7 @@ void bamBridgeModel::DeepCopy(bamBridgeModel* pModel) const
 
 //======================== ACCESS     =======================================
 
-const bamSpanElement* bamBridgeModel::GetSpanElement(Int32 spanElementId) const
+const bamSpanElement* bamBridgeModel::GetSpanElement(SpanIDType spanElementId) const
 {
    PRECONDITION( IsValidSpanId(spanElementId) );
 
@@ -794,7 +794,7 @@ const bamSpanElement* bamBridgeModel::GetSpanElement(Int32 spanElementId) const
    return pSpanElement;
 } // GetSpanElement
 
-bamSpanElement* bamBridgeModel::GetSpanElement(Int32 spanElementId)
+bamSpanElement* bamBridgeModel::GetSpanElement(SpanIDType spanElementId)
 {
    PRECONDITION( IsValidSpanId(spanElementId) );
 
@@ -810,7 +810,7 @@ bamSpanElement* bamBridgeModel::GetSpanElement(Int32 spanElementId)
    return pSpanElement;
 } // GetSpanElement
 
-const bamSupportElement* bamBridgeModel::GetSupportElement(Int32 supportElementId) const
+const bamSupportElement* bamBridgeModel::GetSupportElement(SupportIDType supportElementId) const
 {
    PRECONDITION( IsValidSupportId(supportElementId) );
 
@@ -825,7 +825,7 @@ const bamSupportElement* bamBridgeModel::GetSupportElement(Int32 supportElementI
    return pSupportElement;
 } // GetSupportElement
 
-bamSupportElement* bamBridgeModel::GetSupportElement(Int32 supportElementId)
+bamSupportElement* bamBridgeModel::GetSupportElement(SupportIDType supportElementId)
 {
    PRECONDITION( IsValidSupportId(supportElementId) );
 
@@ -840,7 +840,7 @@ bamSupportElement* bamBridgeModel::GetSupportElement(Int32 supportElementId)
    return pSupportElement;
 } // GetSupportElement
 
-bamLoadCase* bamBridgeModel::GetLoadCase(Int32 loadCaseId)
+bamLoadCase* bamBridgeModel::GetLoadCase(IDType loadCaseId)
 {
    LoadCaseIterator begin = m_LoadCases.begin();
    LoadCaseIterator end   = m_LoadCases.end();
@@ -854,7 +854,7 @@ bamLoadCase* bamBridgeModel::GetLoadCase(Int32 loadCaseId)
    return 0;
 } // GetLoadCase
 
-const bamLoadCase* bamBridgeModel::GetLoadCase(Int32 loadCaseId) const
+const bamLoadCase* bamBridgeModel::GetLoadCase(IDType loadCaseId) const
 {
    ConstLoadCaseIterator begin = m_LoadCases.begin();
    ConstLoadCaseIterator end   = m_LoadCases.end();
@@ -868,7 +868,7 @@ const bamLoadCase* bamBridgeModel::GetLoadCase(Int32 loadCaseId) const
    return 0;
 } // GetLoadCase
 
-bamLoadCombination* bamBridgeModel::GetLoadCombination(Int32 id)
+bamLoadCombination* bamBridgeModel::GetLoadCombination(IDType id)
 {
    PRECONDITION( IsValidLoadCombinationId(id) );
 
@@ -933,7 +933,7 @@ void bamBridgeModel::StoreLoadCombination(bamLoadCombination* pLoadCombination)
 void bamBridgeModel::StoreLiveLoad(const bamLiveLoad& ll)
 {
    // Automatically replaces the entry if a dupiclate key was found
-   m_LiveLoads.insert( std::pair<Int32,bamLiveLoad>( ll.GetID(), ll ) );
+   m_LiveLoads.insert( std::pair<IDType,bamLiveLoad>( ll.GetID(), ll ) );
 }
 
 //======================== ACCESS     =======================================
@@ -1026,7 +1026,7 @@ Float64 bamBridgeModel::GetBridgeLength() const
    return length;
 } // GetBridgeLength
 
-Float64 bamBridgeModel::GetSpanLength(Int32 spanId) const
+Float64 bamBridgeModel::GetSpanLength(SpanIDType spanId) const
 {
    return GetSpanElement(spanId)->Length();
 }
@@ -1112,7 +1112,7 @@ Float64 bamBridgeModel::GetGravitionalAcceleration() const
    return m_Gravity;
 } // GetGravationalAcceleration
 
-void bamBridgeModel::AbsLocationToRelLocation(Float64 absLoc,Int32& spanId,Float64& offset) const
+void bamBridgeModel::AbsLocationToRelLocation(Float64 absLoc,SpanIDType& spanId,Float64& offset) const
 {
    Float64 start_loc, end_loc;
    ConstSpanElementIterator begin = m_SpanElements.begin();
@@ -1137,7 +1137,7 @@ void bamBridgeModel::AbsLocationToRelLocation(Float64 absLoc,Int32& spanId,Float
 
 }
 
-void bamBridgeModel::RelLocationToAbsLocation(Int32 spanId,Float64 offset,Float64& absLoc) const
+void bamBridgeModel::RelLocationToAbsLocation(SpanIDType spanId,Float64 offset,Float64& absLoc) const
 {
    const bamSpanElement* pSpanElement = GetSpanElement(spanId);
 
@@ -1154,27 +1154,27 @@ void bamBridgeModel::RelLocationToAbsLocation(Int32 spanId,Float64 offset,Float6
    }
 }
 
-bool bamBridgeModel::IsValidSpanId(Int32 spanId) const
+bool bamBridgeModel::IsValidSpanId(SpanIDType spanId) const
 {
    return m_SpanElements.find(spanId) == m_SpanElements.end() ? false : true;
 }
 
-bool bamBridgeModel::IsValidSupportId(Int32 supportId) const
+bool bamBridgeModel::IsValidSupportId(PierIDType supportId) const
 {
    return m_SupportElements.find(supportId) == m_SupportElements.end() ? false : true;
 }
 
-bool bamBridgeModel::IsValidLoadCaseId(Int32 id) const
+bool bamBridgeModel::IsValidLoadCaseId(IDType id) const
 {
    return m_LoadCases.find(id) == m_LoadCases.end() ? false : true;
 }
 
-bool bamBridgeModel::IsValidLoadCombinationId(Int32 id) const
+bool bamBridgeModel::IsValidLoadCombinationId(IDType id) const
 {
    return m_LoadCombinations.find(id) == m_LoadCombinations.end() ? false : true;
 }
 
-bool bamBridgeModel::IsValidLiveLoadId(Int32 id) const
+bool bamBridgeModel::IsValidLiveLoadId(IDType id) const
 {
    // Check the associated loading id's for every live load
    // until a match is found
@@ -1193,7 +1193,7 @@ bool bamBridgeModel::IsValidLiveLoadId(Int32 id) const
    return false;
 }
 
-bool bamBridgeModel::IsValidEnvelopeId(Int32 id) const
+bool bamBridgeModel::IsValidEnvelopeId(IDType id) const
 {
    // Check the associated loading id's for every envelope
    // until a match is found
@@ -1212,7 +1212,7 @@ bool bamBridgeModel::IsValidEnvelopeId(Int32 id) const
    return false;
 }
 
-bool bamBridgeModel::IsLoadingIdUsed(Int32 id) const
+bool bamBridgeModel::IsLoadingIdUsed(IDType id) const
 {
    // If it is a valid id for any of the loadings
    // then the subject id has already been used.
@@ -1273,13 +1273,13 @@ void bamBridgeModel::DoLoadCombinationStress(bamLoadCombination& rCombo, const b
    WriteSectionStress( ss_key, ss );
 }
 
-void bamBridgeModel::AddPointOfInterest(Int32 poiId,Int32 spanId,Float64 distFromStart,Float64 absLoc)
+void bamBridgeModel::AddPointOfInterest(PoiIDType poiId,SpanIDType spanId,Float64 distFromStart,Float64 absLoc)
 {
    const bamPointOfInterest& poi = StorePointOfInterest( poiId, spanId, distFromStart, absLoc );
    OnNewPointOfInterest(poi);
 }
 
-const bamPointOfInterest& bamBridgeModel::StorePointOfInterest(Int32 poi,Int32 spanId,Float64 offset,Float64 absLoc)
+const bamPointOfInterest& bamBridgeModel::StorePointOfInterest(PoiIDType poi,SpanIDType spanId,Float64 offset,Float64 absLoc)
 {
    bamPointOfInterest pnt_of_interest;
 
@@ -1344,7 +1344,7 @@ void bamBridgeModel::OnNewPointOfInterest(const bamPointOfInterest& poi)
    }
 }
 
-void bamBridgeModel::OnNewStressPoint(const bamPointOfInterest& poi,Int32 spid)
+void bamBridgeModel::OnNewStressPoint(const bamPointOfInterest& poi,CollectionIndexType spid)
 {
    if ( !IsModified() && IsAnalyzed() )
    {

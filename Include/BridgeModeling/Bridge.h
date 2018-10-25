@@ -116,7 +116,7 @@ public:
    // GROUP: LIFECYCLE
    //------------------------------------------------------------------------
    // Default constructor
-   bmfBridge(ICogoModel* pCogoModel,long alignmentID);
+   bmfBridge(ICogoModel* pCogoModel,IDType alignmentID);
 
    //------------------------------------------------------------------------
    bmfBridge(const bmfBridge& rOther);
@@ -138,25 +138,25 @@ public:
    //------------------------------------------------------------------------
    // Creates a span in the bridge,  connecting the specified piers.
    // Returns a pointer to the span.  Returns NULL if an error occurs.
-   bmfSpan* CreateSpan(Int32 id,Int32 startPierId,Int32 endPierId);
+   bmfSpan* CreateSpan(SpanIDType id,PierIDType startPierId,PierIDType endPierId);
 
    //------------------------------------------------------------------------
    // Adds a span to the bridge model, connecting it to the specified piers.
    // The model assumes ownership of the span.  Returns true on success,
    // otherwise false.
-   bool AddSpan(bmfSpan* pSpan,Int32 id,Int32 startPierId,Int32 endPierId);
+   bool AddSpan(bmfSpan* pSpan,SpanIDType id,PierIDType startPierId,PierIDType endPierId);
 
    //------------------------------------------------------------------------
    // Removes a span from the model. All components associated with the
    // span are destroyed as well (such as girders).
-   void RemoveSpan(Int32 spanId);
+   void RemoveSpan(SpanIDType spanId);
 
    //------------------------------------------------------------------------
    // Returns a pointer to the span object.
-   const bmfSpan* GetSpan(Int32 spanId) const;
+   const bmfSpan* GetSpan(SpanIDType spanId) const;
 
    //------------------------------------------------------------------------
-   bmfSpan* GetSpan(Int32 spanId);
+   bmfSpan* GetSpan(SpanIDType spanId);
 
    //------------------------------------------------------------------------
    // Returns the span contained at the given station. Returns zero if none
@@ -169,10 +169,10 @@ public:
    void GetSpans(std::vector<const bmfSpan*>& vSpans) const;
 
    //------------------------------------------------------------------------
-   Int32 GetSpanCount() const;
+   SpanIndexType GetSpanCount() const;
 
    //------------------------------------------------------------------------
-   bmfPier* CreatePier(Int32 id,Float64 station,const bmfPierLayout& pl,const bmfConnection* pConnection);
+   bmfPier* CreatePier(PierIDType id,Float64 station,const bmfPierLayout& pl,const bmfConnection* pConnection);
 
    //------------------------------------------------------------------------
    // Adds a pier to the bridge.
@@ -180,20 +180,20 @@ public:
    // Returns the identifier of the pier. This is a key that you will use
    // later to gain access to the pier.
    void AddPier(bmfPier* pPier,
-                Int32 id,
+                PierIDType id,
                 Float64 station); // Location of the pier
 
    //------------------------------------------------------------------------
-   void AddPier(Int32 id, bmfPier* pPier);
+   void AddPier(PierIDType id, bmfPier* pPier);
 
    //------------------------------------------------------------------------
    // Removes a pier. All components associated with the
    // pier are destroyed as well.
-   void RemovePier(Int32 pierId); 
+   void RemovePier(PierIDType pierId); 
 
    //------------------------------------------------------------------------
    // Returns a pointer to the pier object.
-   bmfPier* GetPier(Int32 pierId) const;
+   bmfPier* GetPier(PierIDType pierId) const;
 
    //------------------------------------------------------------------------
    void GetPiers(std::vector<bmfPier*>& vPiers);
@@ -202,7 +202,7 @@ public:
    void GetPiers(std::vector<const bmfPier*>& vPiers) const;
 
    //------------------------------------------------------------------------
-   Int32 GetPierCount() const;
+   PierIndexType GetPierCount() const;
 
    //------------------------------------------------------------------------
    // Sets the slab for the bridge.
@@ -280,24 +280,24 @@ public:
    // 
    //------------------------------------------------------------------------
    // Moves a pier to a new station
-   void MovePier(Int32 pierId,     // Id of the pier
+   void MovePier(PierIDType pierId,     // Id of the pier
                  Float64 station); // New station for the pier
 
    //------------------------------------------------------------------------
    // Gets the location of a pier
-   Float64 GetPierStation(Int32 pierId) const;
+   Float64 GetPierStation(PierIDType pierId) const;
 
    //------------------------------------------------------------------------
    // Gets the orientation of a pier. The bearing is measured
    // counter clockwise from due East in radians.
-   void GetPierBearing(Int32 pierId,IDirection** ppBearing) const;
+   void GetPierBearing(PierIDType pierId,IDirection** ppBearing) const;
 
    //------------------------------------------------------------------------
    // Creates equally spaced, parallel girder paths within
    // a span.  The girder paths are positioned symetrically
    // with respect to the alignment at the start of the span.
-   void LayoutGirderPaths(Int32 spanId,         // Id of the span
-                          Int32 nGirdersPaths,  // Number of girder paths to create
+   void LayoutGirderPaths(SpanIDType spanId,         // Id of the span
+                          GirderIndexType nGirdersPaths,  // Number of girder paths to create
                           Float64 spacing,      // Girder path spacing
                           bmfMeasuredWhere where, // Where the spacing is measured
                           bmfMeasuredHow how);    // How the spacing is measured
@@ -305,13 +305,13 @@ public:
    //------------------------------------------------------------------------
    // Creates a new girder in span spanId on gdrPathIdx conforming to template.
    // If a girder currently assigned to the subject path, it is deleted.
-   void CreateGirder(Int32 spanId,bmfGirderTemplate* pTpl,Int32 gdrPathIdx);
+   void CreateGirder(SpanIDType spanId,bmfGirderTemplate* pTpl,GirderIndexType gdrPathIdx);
 
    //------------------------------------------------------------------------
-   bmfGirder* GetGirder(Int32 spanId,Int32 gdrPathIdx);
+   bmfGirder* GetGirder(SpanIDType spanId,GirderIndexType gdrPathIdx);
 
    //------------------------------------------------------------------------
-   const bmfGirder* GetGirder(Int32 spanId,Int32 gdrPathIdx) const;
+   const bmfGirder* GetGirder(SpanIDType spanId,GirderIndexType gdrPathIdx) const;
 
    //------------------------------------------------------------------------
    // Destroys all piers and piers
@@ -323,7 +323,7 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the length of a span, measured aInt32 the alignment
-   Float64 GetSpanLength(Int32 spanId);
+   Float64 GetSpanLength(SpanIDType spanId);
 
    // GROUP: ACCESS
 
@@ -335,28 +335,28 @@ public:
 
    //------------------------------------------------------------------------
    // Assigns a connection to a pier
-   void SetPierConnection(Int32 pierId,
+   void SetPierConnection(PierIDType pierId,
                           const bmfConnection* pConnection);
 
    //------------------------------------------------------------------------
    // Orients a pier with respect to the alignment
-   void LayoutPier(Int32 pierId,
+   void LayoutPier(PierIDType pierId,
                    const bmfPierLayout& pl);
 
    //------------------------------------------------------------------------
    // Returns a copy of a pier's layout information
-   bmfPierLayout GetPierLayout(Int32 pierId) const;
+   bmfPierLayout GetPierLayout(PierIDType pierId) const;
 
    //------------------------------------------------------------------------
    // Returns the number of girder paths in a span
-   Int32 GetGirderPathCount(Int32 spanId) const;
+   GirderIndexType GetGirderPathCount(SpanIDType spanId) const;
 
    //------------------------------------------------------------------------
    // This method is only applicable for equally spaced,
    // parallel girder paths, as described with 
    // LayoutGirderPaths() above.
-   void GetGirderPathLayout(Int32 spanId,
-                            Int32& nGirders,
+   void GetGirderPathLayout(SpanIDType spanId,
+                            GirderIndexType& nGirders,
                             Float64& spacing,
                             bmfMeasuredWhere& where,
                             bmfMeasuredHow& how) const;
@@ -379,7 +379,7 @@ public:
    // GROUP: INQUIRY
 
 #if defined _DEBUG
-   void DumpGirder(Int32 spanId,Int32 gdrPathIdx,LPCTSTR fname);
+   void DumpGirder(SpanIDType spanId,GirderIndexType gdrPathIdx,LPCTSTR fname);
 #endif // _DEBUG
 
 protected:
@@ -430,11 +430,11 @@ private:
    // :FILE: Bridge.h
    // Warning C4251 has been suppressed. No need to export private data
    #pragma warning (disable : 4251)
-   typedef std::map<Int32,boost::shared_ptr<bmfPier> > PierContainer;
-   typedef std::pair<Int32,boost::shared_ptr<bmfPier> > PierEntry;
+   typedef std::map<PierIDType,boost::shared_ptr<bmfPier> > PierContainer;
+   typedef std::pair<PierIDType,boost::shared_ptr<bmfPier> > PierEntry;
 
-   typedef std::map<Int32,boost::shared_ptr<bmfSpan> > SpanContainer;
-   typedef std::pair<Int32,boost::shared_ptr<bmfSpan> > SpanEntry;
+   typedef std::map<SpanIDType,boost::shared_ptr<bmfSpan> > SpanContainer;
+   typedef std::pair<SpanIDType,boost::shared_ptr<bmfSpan> > SpanEntry;
 
    PierContainer m_Piers;
    SpanContainer m_Spans;
@@ -451,8 +451,8 @@ private:
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
-   void StoreSpan(Int32 spanId,bmfSpan* pSpan);
-   void StorePier(Int32 pierId,bmfPier* pPier);
+   void StoreSpan(SpanIDType spanId,bmfSpan* pSpan);
+   void StorePier(PierIDType pierId,bmfPier* pPier);
 
    bool BuildSectionShape(Float64 station) const;
 

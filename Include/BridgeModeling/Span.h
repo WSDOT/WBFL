@@ -97,16 +97,16 @@ public:
    //------------------------------------------------------------------------
    // Creates a new girder on <i>gdrPathIdx</i> conforming to template <i>name</i>.
    // If a girder currently assigned to the subject path, it is deleted.
-   void CreateGirder(bmfGirderTemplate* pTpl,Int32 gdrPathIdx = -1);
+   void CreateGirder(bmfGirderTemplate* pTpl,GirderIndexType gdrPathIdx = -1);
 
    //------------------------------------------------------------------------
    // Returns a pointer to the girder associated with the girder path
    // defined by <i>gdrPathIdx</i>. Returns 0 if a girder does not exist
    // on the specified path.
-   bmfGirder* GetGirder(Int32 gdrPathIdx);
+   bmfGirder* GetGirder(GirderIndexType gdrPathIdx);
 
    //------------------------------------------------------------------------
-   const bmfGirder* GetGirder(Int32 gdrPathIdx) const;
+   const bmfGirder* GetGirder(GirderIndexType gdrPathIdx) const;
 
    //------------------------------------------------------------------------
    void GetGirders(std::vector<bmfGirder*>& vGirders);
@@ -135,14 +135,14 @@ public:
 
    //------------------------------------------------------------------------
    // Generates girder parallel girder lines
-   void LayoutGirderPaths(Int32 nGirders,
+   void LayoutGirderPaths(GirderIndexType nGirders,
                           Float64 spacing,
                           bmfMeasuredWhere where,
                           bmfMeasuredHow how);
 
    //------------------------------------------------------------------------
    // Retreives the girder line layout information
-   void GetGirderPathLayout(Int32& nGirders,
+   void GetGirderPathLayout(GirderIndexType& nGirders,
                             Float64& spacing,
                             bmfMeasuredWhere& where,
                             bmfMeasuredHow& how) const;
@@ -163,11 +163,11 @@ public:
    
    //------------------------------------------------------------------------
    // Sets the span identifier
-   void SetID(Int32 id);
+   void SetID(SpanIDType id);
 
    //------------------------------------------------------------------------
    // Returns the span identifier
-   Int32 GetID() const;
+   SpanIDType GetID() const;
    
    //------------------------------------------------------------------------
    // Returns the span length measured aInt32 the alignment
@@ -179,19 +179,19 @@ public:
    // and <i>side</i> represent the exterior side of an exterior girder path,
    // the distance to the edge of the slab is returned. If there is not a
    // slab, zero is returned.
-   Float64 GetGirderPathSpacing(Int32 gdrPathIdx,
+   Float64 GetGirderPathSpacing(GirderIndexType gdrPathIdx,
                                Side side,
                                Float64 distFromStart);
 
    //------------------------------------------------------------------------
    // Returns the horizontal normal offset distance from the roadway alighment
    // to the girder path at a station
-   Float64 GetGirderPathOffset(Int32 gdrPathIdx, Float64 station) const;
+   Float64 GetGirderPathOffset(GirderIndexType gdrPathIdx, Float64 station) const;
 
    //------------------------------------------------------------------------
    // Returns the tributary slab width, measured normal to the
    // referenced girder path.
-   Float64 GetTributaryWidth(Int32 gdrPathIdx, Float64 distFromStart);
+   Float64 GetTributaryWidth(GirderIndexType gdrPathIdx, Float64 distFromStart);
 
    //------------------------------------------------------------------------
    // Returns the number of girder paths in this span
@@ -267,34 +267,34 @@ protected:
    // GROUP: ACCESS
 
    //------------------------------------------------------------------------
-   void StoreGirderPath(Int32 gdrPathIdx, bmfGirderPath* pGirderPath);
+   void StoreGirderPath(GirderIndexType gdrPathIdx, bmfGirderPath* pGirderPath);
 
    //------------------------------------------------------------------------
-   bmfGirderPath* GetGirderPath(Int32 gdrPathIdx) const;
+   bmfGirderPath* GetGirderPath(GirderIndexType gdrPathIdx) const;
 
    // GROUP: INQUIRY
 
    //------------------------------------------------------------------------
-   bool IsInteriorGirderPath(Int32 gdrPathIdx) const;
+   bool IsInteriorGirderPath(GirderIndexType gdrPathIdx) const;
 
    //------------------------------------------------------------------------
-   bool IsExteriorGirderPath(Int32 gdrPathIdx) const;
+   bool IsExteriorGirderPath(GirderIndexType gdrPathIdx) const;
 
    //------------------------------------------------------------------------
-   bool IsFirstGirderPath(Int32 gdrPathIdx) const;
+   bool IsFirstGirderPath(GirderIndexType gdrPathIdx) const;
 
    //------------------------------------------------------------------------
-   bool IsLastGirderPath(Int32 gdrPathIdx) const;
+   bool IsLastGirderPath(GirderIndexType gdrPathIdx) const;
 
 private:
    // GROUP: DATA MEMBERS
-   unsigned m_ID;
+   SpanIDType m_ID;
    bmfBridge* m_pBridge;
    bmfPier* m_pStartPier;
    bmfPier* m_pEndPier;
 
    // These will change when variable girder spacing is used
-   Int32 m_GirderCount;
+   GirderIndexType m_GirderCount;
    Float64 m_GirderLineSpacing;
    bmfMeasuredWhere m_Where;
    bmfMeasuredHow m_How;
@@ -323,7 +323,7 @@ private:
 
 // INLINE METHODS
 //
-inline Int32 bmfSpan::GetGirderPathCount() const { return m_GirderPaths.size(); }
+inline CollectionIndexType bmfSpan::GetGirderPathCount() const { return m_GirderPaths.size(); }
 
 // EXTERNAL REFERENCES
 //

@@ -187,12 +187,12 @@ STDMETHODIMP CDisplayUnitGroup::get_Item(BSTR bstrUnitTag,IDisplayUnit** retval)
    return S_OK;
 }
 
-STDMETHODIMP CDisplayUnitGroup::get_Count(Uint32* retval)
+STDMETHODIMP CDisplayUnitGroup::get_Count(CollectionIndexType* retval)
 {
    CHECK_RETVAL(retval);
    long count;
    IDisplayUnitCollection::get_Count(&count);
-   *retval = (Uint32)count;
+   *retval = count;
    return S_OK;
 }
 

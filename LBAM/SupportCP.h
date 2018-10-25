@@ -95,7 +95,7 @@ public:
             events->OnTemporarySupportsChanged(Support,Stage,change);
 		}
 	}
-	VOID Fire_OnTemporarySupportsAdded(ITemporarySupport * Support, LONG id)
+	VOID Fire_OnTemporarySupportsAdded(ITemporarySupport * Support, SupportIndexType id)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -111,7 +111,7 @@ public:
             events->OnTemporarySupportsAdded(Support,id);
 		}
 	}
-	VOID Fire_OnTemporarySupportsBeforeRemove(ITemporarySupport * Support, LONG id)
+	VOID Fire_OnTemporarySupportsBeforeRemove(ITemporarySupport * Support, SupportIndexType id)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;

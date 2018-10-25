@@ -219,7 +219,7 @@ public:
       }
    }
 
-   UINT GetPluginCount() const
+   CollectionIndexType GetPluginCount() const
    {
       return m_Plugins.size();
    }
@@ -238,13 +238,13 @@ public:
       return E_FAIL;
    }
 
-   HRESULT GetPlugin(UINT idx,T** ppPlugin)
+   HRESULT GetPlugin(CollectionIndexType idx,T** ppPlugin)
    {
       if ( m_Plugins.size() <= idx )
          return E_INVALIDARG;
 
       Plugins::iterator iter = m_Plugins.begin();
-      for ( UINT i = 0; i < idx; i++ )
+      for ( CollectionIndexType i = 0; i < idx; i++ )
          iter++;
 
       (*ppPlugin) = iter->second;

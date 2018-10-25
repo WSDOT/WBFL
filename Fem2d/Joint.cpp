@@ -56,7 +56,7 @@ CJoint::~CJoint()
 {
 }
 
-void CJoint::OnCreate(IFem2dModel* pParent, ModelEvents* pEvents, long ID, Float64 x, Float64 y)
+void CJoint::OnCreate(IFem2dModel* pParent, ModelEvents* pEvents, JointIDType ID, Float64 x, Float64 y)
 {
    InitParent(pParent); // CCircularChild implementation
 
@@ -382,7 +382,7 @@ void CJoint::Setup()
 // Init
 //
 // Initialize joint for analysis
-void CJoint::InitModel(long nGDOF,long nCDOF,long &nGDOFused,long &nCDOFused)
+void CJoint::InitModel(LONG nGDOF,LONG nCDOF,LONG &nGDOFused,LONG &nCDOFused)
 {
    // Not attached to any elements yet
    m_AttachedMembers.clear();
@@ -390,12 +390,12 @@ void CJoint::InitModel(long nGDOF,long nCDOF,long &nGDOFused,long &nCDOFused)
    // no results yet
    ClearLoads();
 
-   long count = 0;
-   for (long i = 0; i < 3; i++)
+   LONG count = 0;
+   for (LONG i = 0; i < 3; i++)
    {
       m_GlobalDOF[i] = nGDOF + i;
 
-      long n = 1<<i;
+      LONG n = 1<<i;
       if ( (n & m_Releases) == n ) // This dof is free
       {
          m_CondensedDOF[i] = nCDOF;
@@ -416,7 +416,7 @@ void CJoint::InitModel(long nGDOF,long nCDOF,long &nGDOFused,long &nCDOFused)
 //
 // Retreives the condensed dof number corrosponding to one of the
 // joints local dof's. 0 = dx, 1 = dy, and 2 = rz.
-long CJoint::GetCondensedDOF(long dof) const
+LONG CJoint::GetCondensedDOF(LONG dof) const
 {
    // Update for 3d
    if (dof < 0 || dof > 2)
@@ -433,7 +433,7 @@ long CJoint::GetCondensedDOF(long dof) const
 //
 // Retreives the global dof number corrosponding to one of the
 // joints local dof's. 0 = dx, 1 = dy, and 2 = rz.
-long CJoint::GetGlobalDOF(long dof) const
+LONG CJoint::GetGlobalDOF(LONG dof) const
 {
    // Update for 3d
    if (dof < 0 || dof > 2)

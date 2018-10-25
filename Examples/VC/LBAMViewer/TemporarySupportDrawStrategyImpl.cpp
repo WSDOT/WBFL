@@ -26,7 +26,7 @@ END_INTERFACE_MAP()
 DELEGATE_CUSTOM_INTERFACE(CTemporarySupportDrawStrategyImpl,DrawPointStrategy);
 DELEGATE_CUSTOM_INTERFACE(CTemporarySupportDrawStrategyImpl,Strategy);
 
-STDMETHODIMP_(void) CTemporarySupportDrawStrategyImpl::XStrategy::SetTemporarySupport(ITemporarySupport* support, long supportID)
+STDMETHODIMP_(void) CTemporarySupportDrawStrategyImpl::XStrategy::SetTemporarySupport(ITemporarySupport* support, IDType supportID)
 {
    METHOD_PROLOGUE(CTemporarySupportDrawStrategyImpl,Strategy)
 
@@ -122,17 +122,17 @@ void CTemporarySupportDrawStrategyImpl::Draw(iPointDisplayObject* pDO,CDC* pDC,C
    CComPtr<iCoordinateMap> pMap;
    pDispMgr->GetCoordinateMap(&pMap);
 
-   long topx,topy; // location of top
+   LONG topx,topy; // location of top
    pMap->WPtoLP(loc,&topx,&topy);
 
    // height/width
-   long xo,yo;
+   LONG xo,yo;
    pMap->TPtoLP(0,0,&xo,&yo);
-   long x2,y2;
+   LONG x2,y2;
    pMap->TPtoLP(SUPSIZE,SUPSIZE,&x2,&y2);
 
-   long wid  = x2-xo;
-   long hgt = abs(y2-yo);
+   LONG wid  = x2-xo;
+   LONG hgt = abs(y2-yo);
 
    CPen pen(PS_SOLID,1,color);
    CPen* pOldPen = pDC->SelectObject(&pen);
@@ -154,7 +154,7 @@ void CTemporarySupportDrawStrategyImpl::Draw(iPointDisplayObject* pDO,CDC* pDC,C
       // support has length - need to draw 
       double dbotx, dboty;
       m_pDoc->m_pModel->ComputeLocation(m_SupportID, mtTemporarySupport, 0.0, &dbotx, &dboty);
-      long botx,boty; // location of bottom
+      LONG botx,boty; // location of bottom
       pMap->WPtoLP(dbotx,dboty,&botx,&boty);
       pDC->MoveTo(topx, topy);
       pDC->LineTo(botx, boty);

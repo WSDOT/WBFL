@@ -142,7 +142,7 @@ private:
 
    void GetLeftConnection(IConnection** connnection);
    void GetRightConnection(IConnection** connnection);
-   void GetEndDistance(EndType end, long brgPntID,long pierPntID,long girderLineID,IConnection* connection,IPier* pier,ICogoModel* cogoModel,Float64* endDist);
+   void GetEndDistance(EndType end, CogoElementKey brgPntID,CogoElementKey pierPntID,CogoElementKey girderLineID,IConnection* connection,IPier* pier,ICogoModel* cogoModel,Float64* endDist);
    void GetHarpPointLocations(Float64& hp1,Float64& hp2);
    Float64 GetHarpPointLocation(Float64 hp,bool bRight);
    Float64 GetHarpPatternFillAdjustment();

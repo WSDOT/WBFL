@@ -72,7 +72,7 @@ public:
 
 // IMacroTransaction
 public:
-	STDMETHOD(get_Count)(/*[out, retval]*/ long *pVal);
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
 	STDMETHOD(get_IsRepeatable)(/*[out, retval]*/ VARIANT_BOOL *pVal);
 	STDMETHOD(get_IsUndoable)(/*[out, retval]*/ VARIANT_BOOL *pVal);
 	STDMETHOD(AddTransaction)(/*[in]*/ ITransaction* txn);

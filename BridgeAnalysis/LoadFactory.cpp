@@ -52,8 +52,8 @@ bamLoadFactory::~bamLoadFactory()
 
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
-Int32 bamLoadFactory::CreateConcForceY(Int32 loadCaseId,
-                                     Int32 elementId,
+CollectionIndexType bamLoadFactory::CreateConcForceY(IDType loadCaseId,
+                                     IDType elementId,
                                      bamElementType type,
                                      Float64 location,
                                      Float64 p,
@@ -73,8 +73,8 @@ Int32 bamLoadFactory::CreateConcForceY(Int32 loadCaseId,
                             );
 } // CreateConcForceY
 
-Int32 bamLoadFactory::CreateUnifForceY(Int32 loadCaseId,
-                                     Int32 elementId,
+CollectionIndexType bamLoadFactory::CreateUnifForceY(IDType loadCaseId,
+                                     IDType elementId,
                                      bamElementType type,
                                      Float64 start,
                                      Float64 end,
@@ -99,8 +99,8 @@ Int32 bamLoadFactory::CreateUnifForceY(Int32 loadCaseId,
                             );
 } // CreateUnifForceY
 
-Int32 bamLoadFactory::CreateConcMomentZ(Int32 loadCaseId,
-                                        Int32 elementId,
+CollectionIndexType bamLoadFactory::CreateConcMomentZ(IDType loadCaseId,
+                                        IDType elementId,
                                         bamElementType type,
                                         Float64 location,
                                         Float64 m,

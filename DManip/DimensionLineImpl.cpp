@@ -204,7 +204,7 @@ STDMETHODIMP_(CString) CDimensionLineImpl::GetToolTipText()
       return strMyTip;
 }
 
-STDMETHODIMP_(void) CDimensionLineImpl::SetMaxTipWidth(long maxWidth)
+STDMETHODIMP_(void) CDimensionLineImpl::SetMaxTipWidth(INT maxWidth)
 { 
    if ( m_pTextBlock )
       m_pTextBlock->SetMaxTipWidth(maxWidth);
@@ -212,16 +212,16 @@ STDMETHODIMP_(void) CDimensionLineImpl::SetMaxTipWidth(long maxWidth)
       Do_SetMaxTipWidth(maxWidth); 
 }
 
-STDMETHODIMP_(long) CDimensionLineImpl::GetMaxTipWidth()
+STDMETHODIMP_(INT) CDimensionLineImpl::GetMaxTipWidth()
 {
-   long width = Do_GetMaxTipWidth();
+   INT width = Do_GetMaxTipWidth();
    if ( m_pTextBlock )
       return m_pTextBlock->GetMaxTipWidth();
    else
       return width;
 }
 
-STDMETHODIMP_(void) CDimensionLineImpl::SetTipDisplayTime(long iTime)
+STDMETHODIMP_(void) CDimensionLineImpl::SetTipDisplayTime(INT iTime)
 {
    if ( m_pTextBlock )
       m_pTextBlock->SetTipDisplayTime(iTime);
@@ -229,7 +229,7 @@ STDMETHODIMP_(void) CDimensionLineImpl::SetTipDisplayTime(long iTime)
       Do_SetTipDisplayTime(iTime); 
 }
 
-STDMETHODIMP_(long) CDimensionLineImpl::GetTipDisplayTime()
+STDMETHODIMP_(INT) CDimensionLineImpl::GetTipDisplayTime()
 {
    if ( m_pTextBlock )
       return m_pTextBlock->GetTipDisplayTime();
@@ -382,22 +382,22 @@ STDMETHODIMP_(Float64) CDimensionLineImpl::GetAngle()
    return m_Angle;
 }
 
-STDMETHODIMP_(void) CDimensionLineImpl::SetWitnessLength(long l)
+STDMETHODIMP_(void) CDimensionLineImpl::SetWitnessLength(LONG l)
 {
    m_LenWitness = l;
 }
 
-STDMETHODIMP_(long) CDimensionLineImpl::GetWitnessLength()
+STDMETHODIMP_(LONG) CDimensionLineImpl::GetWitnessLength()
 {
    return m_LenWitness;
 }
 
-STDMETHODIMP_(void) CDimensionLineImpl::SetWitnessOffset(long wOffset)
+STDMETHODIMP_(void) CDimensionLineImpl::SetWitnessOffset(LONG wOffset)
 {
    m_WitnessOffset = wOffset;
 }
 
-STDMETHODIMP_(long) CDimensionLineImpl::GetWitnessOffset()
+STDMETHODIMP_(LONG) CDimensionLineImpl::GetWitnessOffset()
 {
    return m_WitnessOffset;
 }
@@ -585,7 +585,7 @@ void CDimensionLineImpl::UpdateWorkPoints()
    pDispMgr->GetCoordinateMap(&pMap);
 
    // determine number of logial units/twip in x and y
-   long dotx, doty, dptx, dpty;
+   LONG dotx, doty, dptx, dpty;
    pMap->TPtoLP(0,0,&dotx, &doty);
    pMap->TPtoLP(14400,14400,&dptx, &dpty);
    Float64 stx = fabs(Float64(dotx-dptx))/14400.;  // scale factor
@@ -739,7 +739,7 @@ void CDimensionLineImpl::UpdateTextBlock()
    CSize delta = m_ptF - m_ptC;
    Float64 angle = atan(-(Float64)delta.cy/(Float64)delta.cx);
 
-   long lAngle = (long)(1800.0*angle/M_PI); // tenth of a degree
+   LONG lAngle = (LONG)(1800.0*angle/M_PI); // tenth of a degree
    m_pTextBlock->SetAngle(lAngle);
 
    if ( m_bAutoText )

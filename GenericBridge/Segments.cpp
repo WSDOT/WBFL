@@ -637,7 +637,7 @@ HRESULT CSegments::GetMemberSegments(Float64 length, VARIANT_BOOL isSymmetrical,
          return hr;
 
       // now let's fill in the rest by copying from the left side to the right
-      for (long lfcnt = count-2; lfcnt>=0; lfcnt--)
+      for (CollectionIndexType lfcnt = count-2; lfcnt>=0; lfcnt--)
       {
          CComPtr<ISegment> plft;
          hr = pifcol->get_Item(lfcnt, &plft);

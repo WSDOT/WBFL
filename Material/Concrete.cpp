@@ -303,7 +303,7 @@ Float64 matConcrete::GetMaxAggregateSize() const
 }
 
 //======================== INQUIRY    =======================================
-Int32 matConcrete::ListenerCount() const
+CollectionIndexType matConcrete::ListenerCount() const
 {
    return m_Listeners.size();
 }

@@ -61,22 +61,22 @@ END_COM_MAP()
 
 // ILngArray
 public:
-	STDMETHOD(Find)(/*[in]*/Int32 value, /*[out,retval]*/CollectionIndexType* fndIndex);
+	STDMETHOD(Find)(/*[in]*/IDType value, /*[out,retval]*/CollectionIndexType* fndIndex);
 	STDMETHOD(ReDim)(/*[in]*/CollectionIndexType size);
 	STDMETHOD(Clone)(/*[out,retval]*/ILongArray* *clone);
 	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
 	STDMETHOD(Clear)();
 	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType count);
-	STDMETHOD(Insert)(/*[in]*/CollectionIndexType relPosition, /*[in]*/Int32 item);
+	STDMETHOD(Insert)(/*[in]*/CollectionIndexType relPosition, /*[in]*/IDType item);
 	STDMETHOD(Remove)(/*[in]*/CollectionIndexType relPosition);
-	STDMETHOD(Add)(/*[in]*/Int32 item);
-	STDMETHOD(get_Item)(/*[in]*/CollectionIndexType relPosition, /*[out, retval]*/ Int32 *pVal);
-	STDMETHOD(put_Item)(/*[in]*/CollectionIndexType relPosition, /*[in]*/ Int32 newVal);
+	STDMETHOD(Add)(/*[in]*/IDType item);
+	STDMETHOD(get_Item)(/*[in]*/CollectionIndexType relPosition, /*[out, retval]*/ IDType *pVal);
+	STDMETHOD(put_Item)(/*[in]*/CollectionIndexType relPosition, /*[in]*/ IDType newVal);
 	STDMETHOD(get__NewEnum)(struct IUnknown ** );
 	STDMETHOD(get__EnumElements)(struct IEnumLongArray ** );
 
 protected:
-   typedef std::vector<Int32>       ContainerType;
+   typedef std::vector<IDType>       ContainerType;
    typedef ContainerType::iterator ContainerIterator;
    ContainerType m_Values;
 };

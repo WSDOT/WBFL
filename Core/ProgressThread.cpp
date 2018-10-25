@@ -8,7 +8,7 @@
 
 const UINT g_TimerID = 1;
 CWnd* g_pTimerWnd = 0;
-void CALLBACK EXPORT TimerProc(HWND hWnd,UINT nMsg,UINT nIDEvent,DWORD dwTime)
+void CALLBACK EXPORT TimerProc(HWND hWnd,UINT nMsg,UINT_PTR nIDEvent,DWORD dwTime)
 {
    CHECK( g_pTimerWnd != 0 );
    CHECK( g_pTimerWnd->GetSafeHwnd() == hWnd );

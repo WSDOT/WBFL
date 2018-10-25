@@ -31,7 +31,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-bamLoadCombination::bamLoadCombination(Int32 id)
+bamLoadCombination::bamLoadCombination(IDType id)
 {
    m_ID = id;
 }
@@ -50,12 +50,12 @@ void bamLoadCombination::SetBridgeModel(bamBridgeModel* pModel)
    m_pBridgeModel = pModel;
 }
 
-Int32 bamLoadCombination::GetID() const
+IDType bamLoadCombination::GetID() const
 {
    return m_ID;
 }
 
-void bamLoadCombination::SetID(Int32 id)
+void bamLoadCombination::SetID(IDType id)
 {
    m_ID = id;
 }

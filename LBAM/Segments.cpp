@@ -381,7 +381,7 @@ HRESULT CSegments::Remove(BSTR bstage, SegmentIndexType index)
       // get vector for this stage
       VectorType& rvec = it->second;
 
-      if (index < 0 || (SegmentIndexType)rvec.size() <= index)
+      if (index < 0 || rvec.size() <= index)
          return E_INVALIDARG;
 
       // erase by index

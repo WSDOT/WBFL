@@ -60,17 +60,17 @@ public:
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CDisplayView)
-	public:
+public:
 	virtual DROPEFFECT OnDragEnter(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point);
 	virtual void OnDragLeave();
 	virtual DROPEFFECT OnDragOver(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point);
 	virtual BOOL OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point);
    virtual DROPEFFECT OnDragScroll( DWORD dwKeyState, CPoint point );
 	virtual void OnPrepareDC(CDC* pDC, CPrintInfo* pInfo = NULL);
-	protected:
+	virtual INT_PTR OnToolHitTest(CPoint point, TOOLINFO* pTI) const;
+protected:
 	virtual void OnDraw(CDC* pDC);      // overridden to draw this view
 	virtual void OnInitialUpdate();     // first time after construct
-   virtual int OnToolHitTest(CPoint point,TOOLINFO* pTI) const;
 	virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
 	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
 	//}}AFX_VIRTUAL

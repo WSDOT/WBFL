@@ -355,7 +355,7 @@ HRESULT CStructuredSave2::put_Property(/*[in]*/ BSTR strPropName, /*[in]*/ VARIA
       case VT_UI2:
       case VT_UINT:
          {
-            unsigned int ul = newVal.uiVal;
+            unsigned int ul = newVal.uintVal;
             std::_tostringstream os;
             os<<ul;
             std::_tstring msg(os.str());
@@ -369,6 +369,16 @@ HRESULT CStructuredSave2::put_Property(/*[in]*/ BSTR strPropName, /*[in]*/ VARIA
             unsigned long ul = newVal.ulVal;
             std::_tostringstream os;
             os<<ul;
+            _bstr_t bval(os.str().c_str());
+            pchild->text = bval;
+         }
+         break;
+
+      case VT_UI8:
+         {
+            unsigned long long ull = newVal.ullVal;
+            std::_tostringstream os;
+            os<<ull;
             _bstr_t bval(os.str().c_str());
             pchild->text = bval;
          }

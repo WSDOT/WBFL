@@ -72,7 +72,7 @@ public:
    bamReactionKey();
 
    //------------------------------------------------------------------------
-   bamReactionKey(Int32 supportId,Int32 loadingId);
+   bamReactionKey(SupportIDType supportId,IDType loadingId);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -93,10 +93,10 @@ public:
 
    // GROUP: OPERATIONS
    // GROUP: ACCESS
-   void SupportId(Int32 supportId);
-   Int32 SupportId() const;
-   void LoadingId(Int32 loadingId);
-   Int32 LoadingId() const;
+   void SupportId(SupportIDType supportId);
+   SupportIDType SupportId() const;
+   void LoadingId(IDType loadingId);
+   IDType LoadingId() const;
 
    // GROUP: INQUIRY
 
@@ -113,8 +113,8 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   Int32 m_SupportId;
-   Int32 m_LoadingId;
+   SupportIDType m_SupportId;
+   IDType m_LoadingId;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS

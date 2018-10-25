@@ -100,9 +100,9 @@ public:
    void AddAxle(Float64 wgt,bamAxleSpacing& space);
    
    // ACCESS
-   Float64 GetAxleWeight(Int32 axleIndex);
-   Float64 GetAxleSpacing(Int32 axleIndex);
-   Int32 GetNumAxles();
+   Float64 GetAxleWeight(AxleIndexType axleIndex);
+   Float64 GetAxleSpacing(AxleIndexType axleIndex);
+   AxleIndexType GetNumAxles();
    Float64 GetMinLength() const;
    Float64 GetMaxLength() const;
 

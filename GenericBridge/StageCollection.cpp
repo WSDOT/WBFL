@@ -282,7 +282,7 @@ STDMETHODIMP CStageCollection::Compare(BSTR name1,BSTR name2,long* cmp)
 
 }
 
-HRESULT CStageCollection::OnAfterAdd( StoredType* pVal, CollectionIndexType index)
+HRESULT CStageCollection::OnAfterAdd( StoredType* pVal, StageIndexType index)
 {
    Advise(pVal->second.m_T,&(pVal->first));
 
@@ -294,7 +294,7 @@ HRESULT CStageCollection::OnAfterAdd( StoredType* pVal, CollectionIndexType inde
    return S_OK;
 }
 
-HRESULT CStageCollection::OnBeforeRemove( StoredType* pVal, CollectionIndexType index)
+HRESULT CStageCollection::OnBeforeRemove( StoredType* pVal, StageIndexType index)
 {
    Unadvise(pVal->second.m_T,pVal->first);
 
@@ -309,7 +309,7 @@ HRESULT CStageCollection::OnBeforeRemove( StoredType* pVal, CollectionIndexType 
    return S_OK;
 }
 
-HRESULT CStageCollection::OnAfterRemove( CollectionIndexType index)
+HRESULT CStageCollection::OnAfterRemove( StageIndexType index)
 {
    Fire_OnStageRemoved(index,m_bstrLastStageRemoved);
 
@@ -318,7 +318,7 @@ HRESULT CStageCollection::OnAfterRemove( CollectionIndexType index)
    return S_OK;
 }
 
-HRESULT CStageCollection::OnAfterMoveTo( CollectionIndexType from, CollectionIndexType to)
+HRESULT CStageCollection::OnAfterMoveTo( StageIndexType from, StageIndexType to)
 {
    CComPtr<IStage> stage;
    get_Item(to,&stage);
@@ -330,7 +330,7 @@ HRESULT CStageCollection::OnAfterMoveTo( CollectionIndexType from, CollectionInd
    return S_OK;
 }
 
-HRESULT CStageCollection::OnAfterCopyTo( CollectionIndexType from, CollectionIndexType to)
+HRESULT CStageCollection::OnAfterCopyTo( StageIndexType from, StageIndexType to)
 {
    ATLASSERT(FALSE); // Should never get here CopyTo not offered on the container interface
    return S_OK;

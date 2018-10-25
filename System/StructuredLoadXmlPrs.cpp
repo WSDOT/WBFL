@@ -55,6 +55,8 @@ public:
    virtual bool Property(LPCTSTR name, Uint16* pvalue);
    virtual bool Property(LPCTSTR name, Int32* pvalue);
    virtual bool Property(LPCTSTR name, Uint32* pvalue);
+   virtual bool Property(LPCTSTR name, Int64* pvalue);
+   virtual bool Property(LPCTSTR name, Uint64* pvalue);
    virtual bool Property(LPCTSTR name, bool* pvalue);
    virtual bool Eof() const;
    virtual std::_tstring GetStateDump() const;
@@ -187,6 +189,16 @@ bool sysStructuredLoadXmlPrs::Property(LPCTSTR name, Int32* pvalue)
 }
 
 bool sysStructuredLoadXmlPrs::Property(LPCTSTR name, Uint32* pvalue)
+{
+   return m_pImp->Property(name, pvalue);
+}
+
+bool sysStructuredLoadXmlPrs::Property(LPCTSTR name, Int64* pvalue)
+{
+   return m_pImp->Property(name, pvalue);
+}
+
+bool sysStructuredLoadXmlPrs::Property(LPCTSTR name, Uint64* pvalue)
 {
    return m_pImp->Property(name, pvalue);
 }
@@ -623,8 +635,49 @@ bool sysStructuredLoadXmlPrs_Impl::Property(LPCTSTR name, Uint32* pvalue)
          // variant couldn't parse, so try brute force
          _bstr_t bval(val);
          LPTSTR sv = (LPTSTR)bval;
-         LPTSTR* ev = &sv + bval.length();
+         LPTSTR* ev = &sv + sizeof(LPTSTR)*bval.length();
          Uint32 uval = _tcstoul(sv,ev,10);
+         if (uval==0 && *sv != '0')
+            THROW_LOAD(InvalidFileFormat,this);
+
+         *pvalue = uval;
+      }
+      retval = true; // got our work done
+   }
+   return retval;
+}
+
+bool sysStructuredLoadXmlPrs_Impl::Property(LPCTSTR name, Int64* pvalue)
+{
+   bool retval = false;
+   _variant_t val;
+   if (GetProperty(name, &val))
+   {
+      *pvalue = (Int64)val;
+      retval = true;
+   }
+
+   return retval;
+}
+
+bool sysStructuredLoadXmlPrs_Impl::Property(LPCTSTR name, Uint64* pvalue)
+{
+   bool retval = false;
+   _variant_t val;
+   if (GetProperty(name, &val))
+   {
+      // variant does not handle large unsigned values well
+      try
+      {
+         *pvalue = (Uint64)val;
+      }
+      catch(...) 
+      {
+         // variant couldn't parse, so try brute force
+         _bstr_t bval(val);
+         LPTSTR sv = (LPTSTR)bval;
+         LPTSTR* ev = &sv + sizeof(LPTSTR)*bval.length();
+         Uint64 uval = _tcstoui64(sv,ev,10);
          if (uval==0 && *sv != '0')
             THROW_LOAD(InvalidFileFormat,this);
 

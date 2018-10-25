@@ -205,12 +205,12 @@ std::_tstring txnTxnManager::RepeatName() const
    return name;
 }
 
-Int16 txnTxnManager::GetTxnCount() const
+CollectionIndexType txnTxnManager::GetTxnCount() const
 {
    return m_TxnHistory.size();
 }
 
-Int16 txnTxnManager::GetUndoCount() const
+CollectionIndexType txnTxnManager::GetUndoCount() const
 {
    return m_UndoHistory.size();
 }

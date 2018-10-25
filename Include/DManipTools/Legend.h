@@ -99,18 +99,18 @@ interface iLegendDisplayObject : public iDisplayObject
    STDMETHOD_(void,put_Font)(const LOGFONT& Font) PURE;
    STDMETHOD_(void,get_Font)(LOGFONT* pFont) PURE;
 
-   STDMETHOD_(void,get_NumEntries)(long* count) PURE;
+   STDMETHOD_(void,get_NumEntries)(CollectionIndexType* count) PURE;
    STDMETHOD_(void,AddEntry)(iLegendEntry* entry) PURE;
-   STDMETHOD_(HRESULT,InsertEntry)(long index, iLegendEntry* entry) PURE;
-   STDMETHOD_(HRESULT,get_Entry)(long index, iLegendEntry* *entry) PURE;
-   STDMETHOD_(HRESULT,RemoveEntry)(long index) PURE;
+   STDMETHOD_(HRESULT,InsertEntry)(CollectionIndexType index, iLegendEntry* entry) PURE;
+   STDMETHOD_(HRESULT,get_Entry)(CollectionIndexType index, iLegendEntry* *entry) PURE;
+   STDMETHOD_(HRESULT,RemoveEntry)(CollectionIndexType index) PURE;
    STDMETHOD_(void,ClearEntries)() PURE;
 
    // Number of rows displayed in legend "grid". Number of columns is
    // determined by the number of entries to be displayed. Grid is filled
    // column-wise
-   STDMETHOD_(void,get_NumRows)(long* count) PURE;
-   STDMETHOD_(void,put_NumRows)(long count) PURE;
+   STDMETHOD_(void,get_NumRows)(CollectionIndexType* count) PURE;
+   STDMETHOD_(void,put_NumRows)(CollectionIndexType count) PURE;
 
    // size of each legend grid in twips. The minimum allowable size is
    // 10x wide and 4x high of the Font size.

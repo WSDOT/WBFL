@@ -39,15 +39,15 @@ interface iDisplayList : public IUnknown
    STDMETHOD_(void,SetDisplayMgr)(iDisplayMgr* pDispMgr) PURE;
    STDMETHOD_(void,GetDisplayMgr)(iDisplayMgr** dispMgr) PURE;
 
-   STDMETHOD_(void,SetID)(long id) PURE;
-   STDMETHOD_(long,GetID)() PURE;
+   STDMETHOD_(void,SetID)(IDType id) PURE;
+   STDMETHOD_(IDType,GetID)() PURE;
 
    STDMETHOD_(void,AddDisplayObject)(iDisplayObject* pDO) PURE;
-   STDMETHOD_(void,GetDisplayObject)(long index,iDisplayObject** dispObj) PURE;
-   STDMETHOD_(void,FindDisplayObject)(long id,iDisplayObject** dispObj) PURE;
-   STDMETHOD_(void,RemoveDisplayObject)(long key,AccessType access) PURE;
+   STDMETHOD_(void,GetDisplayObject)(CollectionIndexType index,iDisplayObject** dispObj) PURE;
+   STDMETHOD_(void,FindDisplayObject)(IDType id,iDisplayObject** dispObj) PURE;
+   STDMETHOD_(void,RemoveDisplayObject)(IDType key,AccessType access) PURE;
    STDMETHOD_(void,Clear)() PURE;
-   STDMETHOD_(long,GetDisplayObjectCount)() PURE;
+   STDMETHOD_(CollectionIndexType,GetDisplayObjectCount)() PURE;
 
    STDMETHOD_(void,FindDisplayObjects)(CRect rect,      DisplayObjectContainer* dispObjs) PURE;
    STDMETHOD_(void,FindDisplayObjects)(CPoint point,    DisplayObjectContainer* dispObjs) PURE;

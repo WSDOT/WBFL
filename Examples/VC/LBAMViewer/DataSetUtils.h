@@ -5,7 +5,7 @@
 #include "LBAMViewerDoc.h"
 
 // carriage return for reports
-#define C_R "\\par "
+#define C_R _T("\\par ")
 
 enum  llResponseType{llrTruckLaneCombo, llrTruckEnvelope, llrTruckOnly, llrLaneOnly, llrSidewalkOnly};
 
@@ -88,31 +88,31 @@ inline void FillDataSet(IDblArray* locList, iDataSet2d* dataSet, ISectionResult3
    }
 }
 
-inline VehicularLoadConfigurationType GetConfigType(llResponseType respType, std::string& strvlc)
+inline VehicularLoadConfigurationType GetConfigType(llResponseType respType, std::_tstring& strvlc)
 {
    switch (respType)
    {
    case llrTruckLaneCombo:
-      strvlc = "Default";
+      strvlc = _T("Default");
       return vlcDefault;
       break;
    case llrTruckOnly:
-      strvlc = "Truck Only";
+      strvlc = _T("Truck Only");
       return vlcTruckOnly;
       break;
    case llrLaneOnly:
-      strvlc = "Lane Only Only";
+      strvlc = _T("Lane Only Only");
       return vlcLaneOnly;
       break;
    case llrSidewalkOnly:
-      strvlc = "Sidewalk Only";
+      strvlc = _T("Sidewalk Only");
       return vlcSidewalkOnly;
       break;
    default:
       ATLASSERT(0);
    }
 
-   strvlc = "Unknown VehicularLoadConfigurationType";
+   strvlc = _T("Unknown VehicularLoadConfigurationType");
    return vlcDefault;
 }
 

@@ -314,7 +314,7 @@ void CFasterPolyShape::UpdateShapeProperties()
       Float64 area_local =0;
 
       // loop over all points - make sure of closure
-      long idx0, idx1;
+      CollectionIndexType idx0, idx1;
       idx0 = 0;
       idx1 = 1;
 
@@ -525,7 +525,7 @@ STDMETHODIMP CFasterPolyShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbRes
 
    UpdateBoundingBox();
 
-   long cPoints = m_Points.size();
+   CollectionIndexType cPoints = m_Points.size();
    if ( cPoints < 3 )
    {
       // Points and lines can't contain anything
@@ -561,8 +561,8 @@ STDMETHODIMP CFasterPolyShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbRes
 
    Float64 sum = 0;
 
-   long idx0 = 0;
-   long idx1 = 1;
+   CollectionIndexType idx0 = 0;
+   CollectionIndexType idx1 = 1;
    bool loop       = true;
    bool last_round = false;
    while (loop)
@@ -722,7 +722,7 @@ STDMETHODIMP CFasterPolyShape::ClipWithgpLine(gpLine2d& theLine,IShape** pShape)
 
    // Sanity check
    // If this polygon isn't at least a triangle, just get the heck outta here.
-   long cPoints = m_Points.size();
+   CollectionIndexType cPoints = m_Points.size();
    if ( cPoints < 3 )
    {
       ATLTRACE("*** WARNING: FasterPolyShapes must have at least 3 points\n");
@@ -852,7 +852,7 @@ STDMETHODIMP CFasterPolyShape::ClipWithgpLine(gpLine2d& theLine,IShape** pShape)
    // If there are less than 3 points, it isn't a shape.
    // If there are exactly 3 points, and the first and last points are the same
    // it isn't a shape either (area is zero)
-   long nPoints = pClipShape->m_Points.size();
+   CollectionIndexType nPoints = pClipShape->m_Points.size();
    bool bIsLine = false;
    if ( nPoints == 3 )
    {
@@ -1058,7 +1058,7 @@ STDMETHODIMP CFasterPolyShape::get_Perimeter(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   long cPoints = m_Points.size();
+   CollectionIndexType cPoints = m_Points.size();
    if (cPoints<=1)
    {
       *pVal = 0.0;

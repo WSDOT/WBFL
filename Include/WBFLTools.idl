@@ -294,7 +294,7 @@ library WBFLTools
 	   HRESULT Clone([out] IEnumLongArray** ppenum);
 
 	   [helpstring("Next")]
-	   HRESULT Next([in] ULONG celt, [out] long* rgelt, [in,out] ULONG* pceltFetched);
+	   HRESULT Next([in] ULONG celt, [out] IDType* rgelt, [in,out] ULONG* pceltFetched);
 
 	   [helpstring("Reset")]
 	   HRESULT Reset();
@@ -314,9 +314,11 @@ library WBFLTools
 	interface ILongArray : IUnknown
 	{
 		[propget, helpcontext(IDH_LongArray_Item), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [out, retval] long *pVal);
+      HRESULT Item([in]CollectionIndexType relPosition, [out, retval] IDType *pVal);
+
 		[propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [in] long newVal);
+      HRESULT Item([in]CollectionIndexType relPosition, [in] IDType newVal);
+
 		[propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
 		HRESULT _NewEnum([out, retval] IUnknown** retval);  
 		[propget, helpcontext(IDH_LongArray), helpstring("property _EnumElements")] 
@@ -330,13 +332,13 @@ library WBFLTools
 		[helpcontext(IDH_LongArray_ReDim), helpstring("method ReDim")] 
       HRESULT ReDim([in]CollectionIndexType size);
 		[helpcontext(IDH_LongArray_Find), helpstring("method Find")] 
-      HRESULT Find([in]long value, [out,retval]CollectionIndexType* fndIndex);
+      HRESULT Find([in]IDType value, [out,retval]CollectionIndexType* fndIndex);
 		[helpcontext(IDH_LongArray_Add), helpstring("method Add")] 
-      HRESULT Add([in]long item);
+      HRESULT Add([in]IDType item);
 		[helpcontext(IDH_LongArray_Remove), helpstring("method Remove")] 
       HRESULT Remove([in]CollectionIndexType relPosition);
 		[helpcontext(IDH_LongArray_Insert), helpstring("method Insert")] 
-      HRESULT Insert([in]CollectionIndexType relPosition, [in]long item);
+      HRESULT Insert([in]CollectionIndexType relPosition, [in]IDType item);
 		[helpcontext(IDH_LongArray_Reserve), helpstring("method Reserve")] 
       HRESULT Reserve([in]CollectionIndexType count);
 	};
@@ -378,8 +380,10 @@ library WBFLTools
 	{
 		[propget, helpcontext(IDH_DblArray_Item), helpstring("property Item")] 
       HRESULT Item([in]CollectionIndexType relPosition, [out, retval] Float64 *pVal);
+
 		[propput, helpcontext(IDH_DblArray_Item), helpstring("property Item")] 
       HRESULT Item([in]CollectionIndexType relPosition, [in] Float64 newVal);
+
 		[propget, helpcontext(IDH_DblArray), helpstring("returns an standard COM enumerator for the collection.")]
 		HRESULT _NewEnum([out, retval] IUnknown** retval);  
 		[propget, helpcontext(IDH_DblArray), helpstring("property _EnumElements")] 

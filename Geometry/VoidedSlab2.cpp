@@ -249,7 +249,7 @@ HRESULT CVoidedSlab2::UpdateShape()
       else
       {
          // center the two exterior voids
-         Uint32 nIntVoids;
+         CollectionIndexType nIntVoids;
          if ( m_VoidCount == 0 || m_VoidCount == 1 )
             nIntVoids = 0;
          else

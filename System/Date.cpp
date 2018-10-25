@@ -62,8 +62,8 @@ static LPCTSTR UCWeekDayNames[7] =
     { _T("MONDAY"),_T("TUESDAY"),_T("WEDNESDAY"),
       _T("THURSDAY"),_T("FRIDAY"),_T("SATURDAY"),_T("SUNDAY") };
 
-static Int16 
-FindMatch( LPCTSTR str, LPCTSTR* candidates, Int16 icand );
+static size_t 
+FindMatch( LPCTSTR str, LPCTSTR* candidates, size_t icand );
 
 /***************************************************************************/
 
@@ -223,9 +223,9 @@ LPCTSTR sysDate::MonthName( MonthTy monthNumber )
 //
 // Return index of case-insensitive match; -1 if no match.
 //
-static Int16  FindMatch( LPCTSTR str, LPCTSTR* candidates, Int16 icand )
+static size_t FindMatch( LPCTSTR str, LPCTSTR* candidates, size_t icand )
 {
-    Uint16 len = _tcslen(str);
+    size_t len = _tcslen(str);
 
     while(icand--)
         {

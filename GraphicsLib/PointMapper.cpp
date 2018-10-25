@@ -41,17 +41,17 @@ CLASS
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
-Int32 round_to_nearest_whole_number(Float64 x)
+LONG round_to_nearest_whole_number(Float64 x)
 {
    // :WARNING: rab 11.15.96 : Possible loss of data
    // :METHOD: round_to_nearest_whole_number()
    //
    // ceil and floor return Float64. These return values must
-   // be cast to Int32. Float64s are 8 byte and Int32s are 4 byte
+   // be cast to LONG. Float64s are 8 byte and LONGs are 4 byte
    // this could result in a possible loss of data. (Though I've
    // never experienced it)
 
-   return  Int32((x - Int32(x)) > 0.5) ? (Int32)ceil(x) : (Int32)floor(x);
+   return  LONG((x - LONG(x)) > 0.5) ? (LONG)ceil(x) : (LONG)floor(x);
 } // round_to_nearest_whole_number
 
 //======================== LIFECYCLE  =======================================
@@ -98,7 +98,7 @@ grlibPointMapper& grlibPointMapper::operator = (const grlibPointMapper& mapper)
 
 //======================== OPERATIONS =======================================
 
-void grlibPointMapper::WPtoDP(Float64 wx,Float64 wy,Int32* dx,Int32* dy) const
+void grlibPointMapper::WPtoDP(Float64 wx,Float64 wy,LONG* dx,LONG* dy) const
 {
    // :NOTE: rab 11.14.96 : Assumed direction of axes
    // :METHOD: grlibPointMapper::WPtoDP()
@@ -134,12 +134,12 @@ void grlibPointMapper::WPtoDP(Float64 wx,Float64 wy,Int32* dx,Int32* dy) const
    }
 } // WPtoDP
 
-void grlibPointMapper::WPtoDP(const gpPoint2d& p,Int32* dx,Int32* dy) const
+void grlibPointMapper::WPtoDP(const gpPoint2d& p,LONG* dx,LONG* dy) const
 {
    WPtoDP( p.X(), p.Y(), dx, dy );
 }
 
-void grlibPointMapper::WPtoDP(IPoint2d* pPoint,Int32* dx,Int32* dy) const
+void grlibPointMapper::WPtoDP(IPoint2d* pPoint,LONG* dx,LONG* dy) const
 {
    Float64 x,y;
    pPoint->get_X(&x);
@@ -147,7 +147,7 @@ void grlibPointMapper::WPtoDP(IPoint2d* pPoint,Int32* dx,Int32* dy) const
    WPtoDP(x,y,dx,dy);
 }
 
-void grlibPointMapper::DPtoWP(Int32 dx,Int32 dy,Float64* wx,Float64* wy) const
+void grlibPointMapper::DPtoWP(LONG dx,LONG dy,Float64* wx,Float64* wy) const
 {
    // :NOTE: rab 11.14.96 : Assumed direction of axes
    // :METHOD: grlibPointMapper::DPtoWP()
@@ -176,14 +176,14 @@ void grlibPointMapper::DPtoWP(Int32 dx,Int32 dy,Float64* wx,Float64* wy) const
    }
 } // DPtoWP
 
-gpPoint2d grlibPointMapper::DPtoWP(Int32 dx,Int32 dy) const
+gpPoint2d grlibPointMapper::DPtoWP(LONG dx,LONG dy) const
 {
    Float64 wx,wy;
    DPtoWP(dx,dy,&wx,&wy);
    return gpPoint2d(wx,wy);
 }
 
-void grlibPointMapper::DPtoWP(Int32 dx,Int32 dy,IPoint2d** ppPoint) const
+void grlibPointMapper::DPtoWP(LONG dx,LONG dy,IPoint2d** ppPoint) const
 {
    Float64 wx,wy;
    DPtoWP(dx,dy,&wx,&wy);
@@ -264,7 +264,7 @@ gpPoint2d grlibPointMapper::GetWorldOrg() const
    return gpPoint2d( m_WorldOriginX, m_WorldOriginY );
 }
 
-void grlibPointMapper::SetDeviceExt(Int32 dx,Int32 dy)
+void grlibPointMapper::SetDeviceExt(LONG dx,LONG dy)
 {
    m_OriginalDeviceExtentX = dx;
    m_OriginalDeviceExtentY = dy;
@@ -272,25 +272,25 @@ void grlibPointMapper::SetDeviceExt(Int32 dx,Int32 dy)
    UpdateDeviceExtents();
 } // SetDeviceExt
 
-void grlibPointMapper::GetDeviceExt(Int32* dx,Int32* dy) const
+void grlibPointMapper::GetDeviceExt(LONG* dx,LONG* dy) const
 {
    *dx = m_OriginalDeviceExtentX;
    *dy = m_OriginalDeviceExtentY;
 } // GetDeviceExt
 
-void grlibPointMapper::GetAdjustedDeviceExt(Int32* dx,Int32* dy) const
+void grlibPointMapper::GetAdjustedDeviceExt(LONG* dx,LONG* dy) const
 {
    *dx = m_DeviceExtentX;
    *dy = m_DeviceExtentY;
 } // GetAdjustedDeviceExt
 
-void grlibPointMapper::SetDeviceOrg(Int32 dx,Int32 dy)
+void grlibPointMapper::SetDeviceOrg(LONG dx,LONG dy)
 {
    m_DeviceOriginX = dx;
    m_DeviceOriginY = dy;
 } // SetDeviceOrg
 
-void grlibPointMapper::GetDeviceOrg(Int32* dx,Int32* dy) const
+void grlibPointMapper::GetDeviceOrg(LONG* dx,LONG* dy) const
 {
    *dx = m_DeviceOriginX;
    *dy = m_DeviceOriginY;
@@ -401,8 +401,8 @@ void grlibPointMapper::UpdateDeviceExtents()
 {
    Float64 ns_world_ext_x;  // no-sign world extents
    Float64 ns_world_ext_y;
-   Int32   ns_device_ext_x; // no-sign device extents
-   Int32   ns_device_ext_y;
+   LONG   ns_device_ext_x; // no-sign device extents
+   LONG   ns_device_ext_y;
    Float64 scale;
 
    //

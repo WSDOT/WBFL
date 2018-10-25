@@ -267,12 +267,12 @@ void LoadCombinationDataSetBuilder::BuildStressDataSets(ILongArray* arr, IDblArr
          CComQIPtr<iSymbolLegendEntry> entry(fac);
 
          entry->put_Color(color);
-         entry->put_SymbolFontFace("Wingdings2");
-         entry->put_SymbolCharacterCode(116+isp);
+         entry->put_SymbolFontFace(_T("Wingdings2"));
+         entry->put_SymbolCharacterCode(DWORD(116+isp));
          entry->put_DoDrawLine(TRUE);
 
          CString str;
-         str.Format("%s SP %d", m_LoadCombination ,isp);
+         str.Format(_T("%s SP %d"), m_LoadCombination ,isp);
          CComBSTR btmp(str);
          entry->put_Name(btmp);
 
@@ -347,10 +347,10 @@ void LoadCombinationDataSetBuilder::BuildStressDataSets(ILongArray* arr, IDblArr
 
 void LoadCombinationDataSetBuilder::BuildReactionReport(ILongArray* supportlist, BSTR currStg,
                              CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                             std::ostream& os)
+                             std::_tostream& os)
 {
    HRESULT hr;
-   os<<C_R<<"------------------------------------------"<<C_R;
+   os<<C_R<<_T("------------------------------------------")<<C_R;
 
    bool is_force; // force or deflection
    switch(currRt)
@@ -369,21 +369,21 @@ void LoadCombinationDataSetBuilder::BuildReactionReport(ILongArray* supportlist,
          ATLASSERT(0);
    }
    
-   os<<(is_force?"Reactions":"Support Deflections")<<" for Load Combination "<<(const char*)CString(m_LoadCombination)<<C_R;
+   os<<(is_force?_T("Reactions"):_T("Support Deflections"))<<_T(" for Load Combination ")<<(const TCHAR*)CString(m_LoadCombination)<<C_R;
 
    CString st;
    if (summType==rsCumulative)
-      st = " Cumulative";
+      st = _T(" Cumulative");
    else
-      st = " Incremental";
+      st = _T(" Incremental");
 
-   os<<(const char*)st<<" results for Stage: "<<(const char*)CString(currStg)<<C_R<<C_R;
+   os<<(const TCHAR*)st<<_T(" results for Stage: ")<<(const TCHAR*)CString(currStg)<<C_R<<C_R;
 
    if (is_force)
-      os<<"Support        Rx         Ry           Mz"<<C_R;
+      os<<_T("Support        Rx         Ry           Mz")<<C_R;
    else
-      os<<"Support        Dx         Dy           Rz"<<C_R;
-   os<<"------- ------------ ------------ ------------"<<C_R;
+      os<<_T("Support        Dx         Dy           Rz")<<C_R;
+   os<<_T("------- ------------ ------------ ------------")<<C_R;
 
    // get results
    // Min
@@ -427,9 +427,9 @@ void LoadCombinationDataSetBuilder::BuildReactionReport(ILongArray* supportlist,
       hr = fz_min->GetResult(i, &rz, &null_config);
       PROCESS_HR(hr);
 
-      long spt;
+      IDType spt;
       supportlist->get_Item(i,&spt);
-      os<<(i==0?"Min":"   ")<<std::setw(4)<<spt<<std::fixed<<std::setprecision(2)<<std::setw(13)<<rx<<std::setw(13)<<ry<<std::setw(13)<<rz<<C_R;
+      os<<(i==0?_T("Min"):_T("   "))<<std::setw(4)<<spt<<std::fixed<<std::setprecision(2)<<std::setw(13)<<rx<<std::setw(13)<<ry<<std::setw(13)<<rz<<C_R;
    }
 
    // Max
@@ -470,9 +470,9 @@ void LoadCombinationDataSetBuilder::BuildReactionReport(ILongArray* supportlist,
       hr = fz_max->GetResult(i, &rz, &null_config);
       PROCESS_HR(hr);
 
-      long spt;
+      IDType spt;
       supportlist->get_Item(i,&spt);
-      os<<(i==0?"Max":"   ")<<std::setw(4)<<spt<<std::fixed<<std::setprecision(2)<<std::setw(13)<<rx<<std::setw(13)<<ry<<std::setw(13)<<rz<<C_R;
+      os<<(i==0?_T("Max"):_T("   "))<<std::setw(4)<<spt<<std::fixed<<std::setprecision(2)<<std::setw(13)<<rx<<std::setw(13)<<ry<<std::setw(13)<<rz<<C_R;
    }
 }
 

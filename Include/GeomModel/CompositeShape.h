@@ -198,7 +198,7 @@ public:
    //------------------------------------------------------------------------
    // GetNumShapes
    // Returns the number of shapes currently in the composite
-   Uint32 GetNumShapes() const;
+   CollectionIndexType GetNumShapes() const;
 
    //------------------------------------------------------------------------
    // GetFurthestDistance

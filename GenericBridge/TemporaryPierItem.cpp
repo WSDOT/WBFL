@@ -54,14 +54,14 @@ void CTemporaryPierItem::FinalRelease()
 }
 
 
-void CTemporaryPierItem::Init(long id,Float64 location,BSTR bstrRemovalStage)
+void CTemporaryPierItem::Init(IDType id,Float64 location,BSTR bstrRemovalStage)
 {
    m_ID = id;
    m_Location = location;
    m_bstrRemovalStage = bstrRemovalStage;
 }
 
-void CTemporaryPierItem::Init(long id,Float64 location,BSTR bstrRemovalStage,IPier* pier)
+void CTemporaryPierItem::Init(IDType id,Float64 location,BSTR bstrRemovalStage,IPier* pier)
 {
    Init(id,location,bstrRemovalStage);
    UnadvisePier();
@@ -103,7 +103,7 @@ STDMETHODIMP CTemporaryPierItem::Clone(ITemporaryPierItem* *clone)
 
 ///////////////////////////////////////////////////////////////////////
 // ITemporaryPierItem Interface
-STDMETHODIMP CTemporaryPierItem::get_ID(long* id)
+STDMETHODIMP CTemporaryPierItem::get_ID(IDType* id)
 {
    CHECK_RETVAL(id);
    (*id) = m_ID;

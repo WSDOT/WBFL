@@ -97,11 +97,11 @@ public:
    Float64 GetMaxTendonEccentricity() const;
    void SetMaxTendonEccentricity(Float64 ecc);
 
-   Uint32 GetMaxStrands() const;
-   void SetMaxStrands(Uint32 max);
+   StrandIndexType GetMaxStrands() const;
+   void SetMaxStrands(StrandIndexType max);
 
-   Uint32 GetNumStrands() const;
-   void SetNumStrands(Uint32 nStrands);
+   StrandIndexType GetNumStrands() const;
+   void SetNumStrands(StrandIndexType nStrands);
 
    void GetDuctPosition(Float64* px1,Float64* py1,Float64* px2,Float64* py2) const;
    void SetDuctPosition(Float64 x1,Float64 y1, Float64 x2,Float64 y2);
@@ -134,8 +134,8 @@ private:
    Float64 m_DuctDiameter; // duct diameter
    Float64 m_StrandDiameter; // diameter of 1 strand
    Float64 m_Ecc; // eccentricity of tendon when max number of strands are used
-   Uint32 m_MaxStrands; // maximum number of strands that can be placed in the duct
-   Uint32 m_nStrands; // number of strands in this duct
+   StrandIndexType m_MaxStrands; // maximum number of strands that can be placed in the duct
+   StrandIndexType m_nStrands; // number of strands in this duct
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS

@@ -39,10 +39,10 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CSegmentItem
 // add up a collection of ISectionResult3D's
-inline void SumSectionResult3Ds(ISectionResult3Ds* Summ, ISectionResult3Ds* Tmp, long Cnt)
+inline void SumSectionResult3Ds(ISectionResult3Ds* Summ, ISectionResult3Ds* Tmp, CollectionIndexType Cnt)
 {
    CHRException hr;
-   for (long i=0; i<Cnt; i++)
+   for (CollectionIndexType i=0; i<Cnt; i++)
    {
       CComPtr<ISectionResult3D> sm, tp;
       hr = Summ->get_Item(i, &sm);
@@ -51,10 +51,10 @@ inline void SumSectionResult3Ds(ISectionResult3Ds* Summ, ISectionResult3Ds* Tmp,
    }
 }
 
-inline void SumResult3Ds(IResult3Ds* Summ, IResult3Ds* Tmp, long Cnt)
+inline void SumResult3Ds(IResult3Ds* Summ, IResult3Ds* Tmp, CollectionIndexType Cnt)
 {
    CHRException hr;
-   for (long i=0; i<Cnt; i++)
+   for (CollectionIndexType i=0; i<Cnt; i++)
    {
       CComPtr<IResult3D> sm, tp;
       hr = Summ->get_Item(i, &sm);
@@ -63,10 +63,10 @@ inline void SumResult3Ds(IResult3Ds* Summ, IResult3Ds* Tmp, long Cnt)
    }
 }
 
-inline void SumSectionStressResults(ISectionStressResults* results, ISectionStressResults* incRes, long numPois)
+inline void SumSectionStressResults(ISectionStressResults* results, ISectionStressResults* incRes, CollectionIndexType numPois)
 {
    CHRException hr;
-   for (long i=0; i<numPois; i++)
+   for (CollectionIndexType i=0; i<numPois; i++)
    {
       CComPtr<ISectionStressResult> res, inc_res;
       hr = results->get_Item(i, &res);
@@ -140,8 +140,8 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeForces(BSTR LoadCase, ILongArray* POIs
       }
 
       // cycle through load groups and sum
-      long lg_cnt = rloadgroups.size();
-      for (long ilg=0; ilg<lg_cnt; ilg++)
+      CollectionIndexType lg_cnt = rloadgroups.size();
+      for (CollectionIndexType ilg=0; ilg<lg_cnt; ilg++)
       {
          CMB_HANDLE_CANCEL_PROGRESS();
 
@@ -223,8 +223,8 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeDeflections(BSTR LoadCase, ILongArray*
       }
 
       // cycle through load groups and sum
-      long lg_cnt = rloadgroups.size();
-      for (long ilg=0; ilg<lg_cnt; ilg++)
+      CollectionIndexType lg_cnt = rloadgroups.size();
+      for (CollectionIndexType ilg=0; ilg<lg_cnt; ilg++)
       {
          CMB_HANDLE_CANCEL_PROGRESS();
 
@@ -466,7 +466,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeStresses(BSTR LoadCase, ILongArray* PO
       // Create results of zeros
       for (CollectionIndexType ipoi=0; ipoi<num_pois; ipoi++)
       {
-         long poi_id;
+         PoiIDType poi_id;
          hr = POIs->get_Item(ipoi, &poi_id);
 
          CComPtr<ISectionStressResult> pres;
@@ -495,8 +495,8 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeStresses(BSTR LoadCase, ILongArray* PO
       }
 
       // cycle through load groups - we'll let server create our first results object and return it
-      long lg_cnt = rloadgroups.size();
-      for (long ilg=0; ilg<lg_cnt; ilg++)
+      CollectionIndexType lg_cnt = rloadgroups.size();
+      for (CollectionIndexType ilg=0; ilg<lg_cnt; ilg++)
       {
          CMB_HANDLE_CANCEL_PROGRESS();
 

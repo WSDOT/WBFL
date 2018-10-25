@@ -304,8 +304,8 @@ private:
    Float64 m_LeftAxisValue;
    Float64 m_RightAxisValue;
    Float64 m_AxisIncrement;
-   Int32    m_NumberOfMajorTics;
-   Int32    m_NumberOfMinorTics;
+   LONG    m_NumberOfMajorTics;
+   LONG    m_NumberOfMinorTics;
    grAxisXY::TicLocation m_TicLocation;
    bool   m_DoShowTics;
    bool   m_DoShowText;
@@ -314,9 +314,9 @@ private:
    std::_tstring m_AxisTitle;
    std::_tstring m_AxisSubtitle;
 
-   Int32   m_AxisTitleSize;
-   Int32   m_AxisSubtitleSize;
-   Int32   m_AxisValueSize;
+   LONG   m_AxisTitleSize;
+   LONG   m_AxisSubtitleSize;
+   LONG   m_AxisValueSize;
    const sysINumericFormatToolBase* m_pValueFormat;
 
    // struct to hold private axis metrics
@@ -324,16 +324,16 @@ private:
    bool   m_MetricsDirtyFlag;
    struct AxisMetrics 
    {
-      Int32   TicSize;
-      Int32   MajorTicBottom;
-      Int32   MajorTicTop;
-      Int32   MinorTicBottom;
-      Int32   MinorTicTop;
-      Int32   ValueTextLoc;
-      Int32   TitleTextLoc;
-      Int32   SubtitleTextLoc;
-      Int32   UpperLimit;
-      Int32   LowerLimit;
+      LONG   TicSize;
+      LONG   MajorTicBottom;
+      LONG   MajorTicTop;
+      LONG   MinorTicBottom;
+      LONG   MinorTicTop;
+      LONG   ValueTextLoc;
+      LONG   TitleTextLoc;
+      LONG   SubtitleTextLoc;
+      LONG   UpperLimit;
+      LONG   LowerLimit;
       AxisMetrics();
       ~AxisMetrics();
 

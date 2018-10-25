@@ -105,7 +105,7 @@ public:
    // Contains
    // Returns true if point is contained between the end points of this line 
    // segment,  otherwise returns false.
-   bool Contains(const gpPoint2d& point,Float64 tol = 1.0e-8) const;
+   bool Contains(const gpPoint2d& point,Float64 tol = 1.0e-5) const;
 
    //------------------------------------------------------------------------
    // Length

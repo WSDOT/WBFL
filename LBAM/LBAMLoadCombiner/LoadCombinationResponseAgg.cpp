@@ -110,11 +110,11 @@ class LoadCombinationEngine: protected LoadCombinationEngineBase
                          IGetCombinationFactors* ifactors, bool createConfig, bool isPOIs ):
    LoadCombinationEngineBase(POIs, Stage,  summ, lmType, ifactors, createConfig, isPOIs )
    {
-      long numres = m_ComboFactors.size();
+      CollectionIndexType numres = m_ComboFactors.size();
       CreateResults(numres, summ);
    }
 
-   void CreateResults(long numRes, ResultsSummationType summ)
+   void CreateResults(CollectionIndexType numRes, ResultsSummationType summ)
    {
       CHRException hr;
       CComObject<CLoadCombinationResults>* results;
@@ -131,8 +131,8 @@ class LoadCombinationEngine: protected LoadCombinationEngineBase
    {
       CHRException hr;
       // loop over all pois
-      long size = m_ComboFactors.size();
-      for (long i=0; i<size; i++)
+      CollectionIndexType size = m_ComboFactors.size();
+      for (CollectionIndexType i=0; i<size; i++)
       {
          CComPtr<IResult3D> res3d;
          hr = loadCaseResults->get_Item(i, &res3d);
@@ -186,8 +186,8 @@ class LoadCombinationEngine: protected LoadCombinationEngineBase
    {
       CHRException hr;
       // loop over all pois
-      long size = m_ComboFactors.size();
-      for (long i=0; i<size; i++)
+      CollectionIndexType size = m_ComboFactors.size();
+      for (CollectionIndexType i=0; i<size; i++)
       {
          Float64 llresult;
          CComPtr<ILiveLoadConfiguration> llconfig;
@@ -231,11 +231,11 @@ class SectionLoadCombinationEngine: protected LoadCombinationEngineBase
    {
       m_Flip = doFlip ? -1 : 1;
 
-      long numres = m_ComboFactors.size();
+      CollectionIndexType numres = m_ComboFactors.size();
       CreateResults(numres, summ);
    }
 
-   void CreateResults(long numRes, ResultsSummationType summ)
+   void CreateResults(CollectionIndexType numRes, ResultsSummationType summ)
    {
       CHRException hr;
       CComObject<CLoadCombinationSectionResults>* results;
@@ -252,8 +252,8 @@ class SectionLoadCombinationEngine: protected LoadCombinationEngineBase
    {
       CHRException hr;
       // loop over all pois
-      long size = m_ComboFactors.size();
-      for (long i=0; i<size; i++)
+      CollectionIndexType size = m_ComboFactors.size();
+      for (CollectionIndexType i=0; i<size; i++)
       {
          CComPtr<ISectionResult3D> res3d;
          hr = loadCaseResults->get_Item(i, &res3d);
@@ -331,8 +331,8 @@ class SectionLoadCombinationEngine: protected LoadCombinationEngineBase
    {
       CHRException hr;
       // loop over all pois
-      long size = m_ComboFactors.size();
-      for (long i=0; i<size; i++)
+      CollectionIndexType size = m_ComboFactors.size();
+      for (CollectionIndexType i=0; i<size; i++)
       {
          Float64 left_llresult, right_llresult;
          CComPtr<ILiveLoadConfiguration> left_llconfig, right_llconfig;
@@ -422,8 +422,8 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, IL
       CMB_HANDLE_CANCEL_PROGRESS();
 
       // loop over load case results and apply them to combination
-      long num_combos = rcombo_data.m_LoadCaseFactors.size();
-      for (long i_combo=0; i_combo<num_combos; i_combo++)
+      CollectionIndexType num_combos = rcombo_data.m_LoadCaseFactors.size();
+      for (CollectionIndexType i_combo=0; i_combo<num_combos; i_combo++)
       {
          CLoadCombiner::ComboData::LoadCaseFactors& rfactors = rcombo_data.m_LoadCaseFactors[i_combo];
 
@@ -516,8 +516,8 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(BSTR loadCombinatio
       CMB_HANDLE_CANCEL_PROGRESS();
 
       // loop over load case results and apply them to combination
-      long num_combos = rcombo_data.m_LoadCaseFactors.size();
-      for (long i_combo=0; i_combo<num_combos; i_combo++)
+      CollectionIndexType num_combos = rcombo_data.m_LoadCaseFactors.size();
+      for (CollectionIndexType i_combo=0; i_combo<num_combos; i_combo++)
       {
          CLoadCombiner::ComboData::LoadCaseFactors& rfactors = rcombo_data.m_LoadCaseFactors[i_combo];
 
@@ -601,8 +601,8 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(BSTR loadCombination,
       CMB_HANDLE_CANCEL_PROGRESS();
 
       // loop over load case results and apply them to combination
-      long num_combos = rcombo_data.m_LoadCaseFactors.size();
-      for (long i_combo=0; i_combo<num_combos; i_combo++)
+      CollectionIndexType num_combos = rcombo_data.m_LoadCaseFactors.size();
+      for (CollectionIndexType i_combo=0; i_combo<num_combos; i_combo++)
       {
          CLoadCombiner::ComboData::LoadCaseFactors& rfactors = rcombo_data.m_LoadCaseFactors[i_combo];
 
@@ -686,8 +686,8 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(BSTR loadCom
       CMB_HANDLE_CANCEL_PROGRESS();
 
       // loop over load case results and apply them to combination
-      long num_combos = rcombo_data.m_LoadCaseFactors.size();
-      for (long i_combo=0; i_combo<num_combos; i_combo++)
+      CollectionIndexType num_combos = rcombo_data.m_LoadCaseFactors.size();
+      for (CollectionIndexType i_combo=0; i_combo<num_combos; i_combo++)
       {
          CLoadCombiner::ComboData::LoadCaseFactors& rfactors = rcombo_data.m_LoadCaseFactors[i_combo];
 

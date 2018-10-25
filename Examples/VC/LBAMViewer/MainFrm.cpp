@@ -329,8 +329,8 @@ void CMainFrame::OnReactionReport()
    }
 
    // see how many data builders we have and loop over them to create report;
-   long num_ds = pChild->GetNumDataSetBuilders();
-   for (long ids=0; ids<num_ds; ids++)
+   IndexType num_ds = pChild->GetNumDataSetBuilders();
+   for (IndexType ids=0; ids<num_ds; ids++)
    {
       iDataSetBuilder* pbld = pChild->GetDataSetBuilder(ids);
 

@@ -28,9 +28,9 @@
 interface iCompositeDisplayObject : public iDisplayObject
 {
    STDMETHOD_(void,AddDisplayObject)(iDisplayObject* pDO) PURE;
-   STDMETHOD_(void,RemoveDisplayObject)(long key,AccessType access) PURE;
-   STDMETHOD_(long,GetDisplayObjectCount)() PURE;
-   STDMETHOD_(void,GetDisplayObject)(long key,AccessType access,iDisplayObject* *ppDO) PURE;
+   STDMETHOD_(void,RemoveDisplayObject)(IDType key,AccessType access) PURE;
+   STDMETHOD_(CollectionIndexType,GetDisplayObjectCount)() PURE;
+   STDMETHOD_(void,GetDisplayObject)(IDType key,AccessType access,iDisplayObject* *ppDO) PURE;
    STDMETHOD_(void,ClearDisplayObjects)() PURE;
    STDMETHOD_(void,GetDisplayObjects)(iDisplayList** dispList) PURE;
 };

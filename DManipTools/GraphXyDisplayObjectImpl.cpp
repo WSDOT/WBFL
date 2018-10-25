@@ -45,14 +45,14 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CGraphXyDisplayObject
 static void CalculateNiceRange(const Float64 originalMin, const Float64 originalMax,
-                               Int32& numberOfSegments,
+                               CollectionIndexType& numberOfSegments,
                                Float64& niceMin, Float64& niceMax,
                                Float64& niceIncrement)
 {
    // this is a butt-ugly routine that was converted from fortran - excuse
    // the mess, but it works
    Float64 exponent, factor, scale_fac, test_scale, adjusted_min, adjusted_max; 
-   Int32  nmin, nmax, need;
+   IndexType  nmin, nmax, need;
    bool  is_defseg;
 
    const Float64  tol = 1.0e-09;
@@ -105,11 +105,11 @@ static void CalculateNiceRange(const Float64 originalMin, const Float64 original
 
 //     test each scale and keep the largest one that works
 
-   for (Int32 i=0; i<nscale; i++)
+   for (CollectionIndexType i=0; i<nscale; i++)
    {
        test_scale = factor*supply[i];
-       nmin = (Int32)floor(niceMin/test_scale);
-       nmax = (Int32)ceil(niceMax/test_scale);
+       nmin = (CollectionIndexType)floor(niceMin/test_scale);
+       nmax = (CollectionIndexType)ceil(niceMax/test_scale);
        need = nmax - nmin;
 
        if (need <= numberOfSegments)
@@ -301,7 +301,7 @@ STDMETHODIMP_(void) CGraphXyDisplayObject::put_Title(BSTR newVal)
 	m_Title = newVal;
 }
 
-STDMETHODIMP_(void) CGraphXyDisplayObject::DataCount(long *pVal)
+STDMETHODIMP_(void) CGraphXyDisplayObject::DataCount(CollectionIndexType *pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -315,11 +315,11 @@ STDMETHODIMP_(void) CGraphXyDisplayObject::AddData(iGraphXyDataProvider *dataSet
 	m_DataSets.push_back( dataSet );
 }
 
-STDMETHODIMP CGraphXyDisplayObject::GetData(long idx, iGraphXyDataProvider **dataSet)
+STDMETHODIMP CGraphXyDisplayObject::GetData(CollectionIndexType idx, iGraphXyDataProvider **dataSet)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
-	if (0 <= idx && idx < (long)m_DataSets.size())
+	if (0 <= idx && idx < m_DataSets.size())
    {
       return m_DataSets[idx].CopyTo(dataSet);
    }
@@ -491,11 +491,11 @@ HRESULT CGraphXyDisplayObject::DrawGraph(Float64 worldTop, Float64 worldLeft, Fl
    if (m_DoDisplayAxisValues==VARIANT_TRUE || m_DoDisplayGrid==VARIANT_TRUE && m_NumberOfMajorIncrements>1)
    {
       // compute nice number spacing - x  and y directions
-      long num_xsegs = m_NumberOfMajorIncrements;
+      CollectionIndexType num_xsegs = m_NumberOfMajorIncrements;
       Float64 nice_xmin, nice_xmax, nice_xincrement;
       CalculateNiceRange( gr_left, gr_right, num_xsegs, nice_xmin, nice_xmax, nice_xincrement);
 
-      long num_ysegs = m_NumberOfMajorIncrements;
+      CollectionIndexType num_ysegs = m_NumberOfMajorIncrements;
       Float64 nice_ymin, nice_ymax, nice_yincrement;
       CalculateNiceRange( gr_bottom, gr_top, num_ysegs, nice_ymin, nice_ymax, nice_yincrement);
 
@@ -527,7 +527,7 @@ HRESULT CGraphXyDisplayObject::DrawGraph(Float64 worldTop, Float64 worldLeft, Fl
       }
 
       // verticals
-      for (long ig=0; ig<=num_xsegs; ig++)
+      for (CollectionIndexType ig=0; ig<=num_xsegs; ig++)
       {
          Float64 grx = nice_xmin + ig*nice_xincrement;
          if (grx >= gr_left && grx<=gr_right)
@@ -540,7 +540,7 @@ HRESULT CGraphXyDisplayObject::DrawGraph(Float64 worldTop, Float64 worldLeft, Fl
       }
 
       // horizontals
-      for (long ig=0; ig<=num_ysegs; ig++)
+      for (CollectionIndexType ig=0; ig<=num_ysegs; ig++)
       {
          Float64 gry = nice_ymin + ig*nice_yincrement;
          if (gry >=gr_bottom && gry<=gr_top)
@@ -562,7 +562,7 @@ HRESULT CGraphXyDisplayObject::DrawGraph(Float64 worldTop, Float64 worldLeft, Fl
          UINT locator = TA_CENTER | TA_TOP;
          Float64 tl_y = worldBottom-tic_size/2;
 
-         for (long ig=0; ig<=num_xsegs; ig++)
+         for (CollectionIndexType ig=0; ig<=num_xsegs; ig++)
          {
             Float64 grx = nice_xmin + ig*nice_xincrement;
             if (grx >= gr_left && grx<=gr_right)
@@ -577,7 +577,7 @@ HRESULT CGraphXyDisplayObject::DrawGraph(Float64 worldTop, Float64 worldLeft, Fl
          // vertical axis labels
          locator = TA_LEFT | TA_BASELINE;
          Float64 tl_x = worldLeft+tic_size/2;
-         for (long ig=0; ig<=num_ysegs; ig++)
+         for (CollectionIndexType ig=0; ig<=num_ysegs; ig++)
          {
             Float64 gry = nice_ymin + ig*nice_yincrement;
             if (gry >=gr_bottom && gry<=gr_top)
@@ -648,12 +648,12 @@ HRESULT CGraphXyDisplayObject::DrawCurves(GraphMapper& mapper)
 
       COLORREF graph_color = pfactory->get_Color();
 
-      long cnt;
+      CollectionIndexType cnt;
       pds->get_Count(&cnt);
 
       bool first = true;
       CComPtr<iSocket> start_socket, end_socket;
-      for (long i=0; i<cnt; i++)
+      for (CollectionIndexType i=0; i<cnt; i++)
       {
          CComPtr<IPoint2d> pnt;
          hr = pds->get_Item(i, &pnt);
@@ -732,10 +732,10 @@ HRESULT CGraphXyDisplayObject::GetCurveBoundary(Float64* t, Float64* l, Float64*
       CComPtr<iDataSet2d> pds;
       pdsp->get_DataSet(&pds);
 
-      long cnt;
+      CollectionIndexType cnt;
       pds->get_Count(&cnt);
 
-      for (long i=0; i<cnt; i++)
+      for (CollectionIndexType i=0; i<cnt; i++)
       {
          num_dp++;
          CComPtr<IPoint2d> pnt;
@@ -815,8 +815,8 @@ void CGraphXyDisplayObject::ClearDisplayObjects()
       ATLASSERT(SUCCEEDED(hr));
 
       // first go through all connectable display objects and disconnect sockets
-      long cnt =  pcdo->GetDisplayObjectCount();
-      for (long ic=0; ic<cnt; ic++)
+      CollectionIndexType cnt =  pcdo->GetDisplayObjectCount();
+      for (CollectionIndexType ic=0; ic<cnt; ic++)
       {
          CComPtr<iDisplayObject> pdo;
          pcdo->GetDisplayObject(ic,atByIndex,&pdo);
@@ -852,14 +852,14 @@ STDMETHODIMP CGraphXyDisplayObject::ClearData()
 	return S_OK;
 }
 
-STDMETHODIMP_(void) CGraphXyDisplayObject::get_NumberOfMajorIncrements(long *pVal)
+STDMETHODIMP_(void) CGraphXyDisplayObject::get_NumberOfMajorIncrements(CollectionIndexType *pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
 	*pVal = m_NumberOfMajorIncrements;
 }
 
-STDMETHODIMP CGraphXyDisplayObject::put_NumberOfMajorIncrements(long newVal)
+STDMETHODIMP CGraphXyDisplayObject::put_NumberOfMajorIncrements(CollectionIndexType newVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 

@@ -35,15 +35,31 @@
 #include <initguid.h>
 
 #if defined _DEBUG
-#include "Debug\StorageTest.h"
+#if defined _WIN64
+#include "x64\Debug\StorageTest.h"
 #else
-#include "Release\StorageTest.h"
+#include "Win32\Debug\StorageTest.h"
+#endif
+#else
+#if defined _WIN64
+#include "x64\Release\StorageTest.h"
+#else
+#include "Win32\Release\StorageTest.h"
+#endif
 #endif
 
 #if defined _DEBUG
-#include "Debug\StorageTest_i.c"
+#if defined _WIN64
+#include "x64\Debug\StorageTest_i.c"
 #else
-#include "Release\StorageTest_i.c"
+#include "Win32\Debug\StorageTest_i.c"
+#endif
+#else
+#if defined _WIN64
+#include "x64\Release\StorageTest_i.c"
+#else
+#include "Win32\Release\StorageTest_i.c"
+#endif
 #endif
 
 #include "PCircle.h"

@@ -51,7 +51,7 @@ STDMETHODIMP CLongArray::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CLongArray::get_Item(CollectionIndexType relPosition, Int32 *pVal)
+STDMETHODIMP CLongArray::get_Item(CollectionIndexType relPosition, IDType *pVal)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -68,7 +68,7 @@ STDMETHODIMP CLongArray::get_Item(CollectionIndexType relPosition, Int32 *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CLongArray::put_Item(CollectionIndexType relPosition, Int32 newVal)
+STDMETHODIMP CLongArray::put_Item(CollectionIndexType relPosition, IDType newVal)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -85,7 +85,7 @@ STDMETHODIMP CLongArray::put_Item(CollectionIndexType relPosition, Int32 newVal)
 	return S_OK;
 }
 
-STDMETHODIMP CLongArray::Add(Int32 item)
+STDMETHODIMP CLongArray::Add(IDType item)
 {
    try
    {
@@ -120,7 +120,7 @@ STDMETHODIMP CLongArray::Remove(CollectionIndexType relPosition)
 	return S_OK;
 }
 
-STDMETHODIMP CLongArray::Insert(CollectionIndexType relPosition, Int32 item)
+STDMETHODIMP CLongArray::Insert(CollectionIndexType relPosition, IDType item)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -177,10 +177,15 @@ STDMETHODIMP CLongArray::Clear()
 class _CopyLong
 {
 public:
-	static HRESULT copy(VARIANT* p1, const Int32* p2)
+	static HRESULT copy(VARIANT* p1, const IDType* p2)
 	{
+#if defined _WIN64
+      p1->vt = VT_I8;
+      p1->llVal = *p2;
+#else
       p1->vt = VT_I4;
 		p1->lVal = *p2;
+#endif
 		return S_OK;
 	}
 	static void init(VARIANT* ) {}
@@ -190,13 +195,13 @@ public:
 class _CopyLongC
 {
 public:
-	static HRESULT copy(Int32* p1, const Int32* p2)
+	static HRESULT copy(IDType* p1, const IDType* p2)
 	{
 		*p1 = *p2;
 		return S_OK;
 	}
 	static void init(VARIANT* ) {}
-	static void destroy(Int32* p) {}
+	static void destroy(IDType* p) {}
 };
 
 
@@ -226,7 +231,7 @@ STDMETHODIMP CLongArray::get__EnumElements(/*[out, retval]*/ IEnumLongArray* *pp
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumLongArray, &IID_IEnumLongArray, Int32, _CopyLongC, ContainerType> MyEnumType;
+   typedef CComEnumOnSTL<IEnumLongArray, &IID_IEnumLongArray, IDType, _CopyLongC, ContainerType> MyEnumType;
    CComObject<MyEnumType>* pEnum;
    HRESULT hr = CComObject<MyEnumType>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -290,7 +295,7 @@ STDMETHODIMP CLongArray::ReDim(CollectionIndexType size)
 	return S_OK;
 }
 
-STDMETHODIMP CLongArray::Find(Int32 value, CollectionIndexType *fndIndex)
+STDMETHODIMP CLongArray::Find(IDType value, CollectionIndexType *fndIndex)
 {
    HRESULT hr = E_FAIL;
 

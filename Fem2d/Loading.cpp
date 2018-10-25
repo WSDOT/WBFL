@@ -59,7 +59,7 @@ CLoading::~CLoading()
     m_pMemberStrains->Release();
 }
 
-HRESULT CLoading::OnCreate(IFem2dModel* pParent, ModelEvents* pEvents, long id)
+HRESULT CLoading::OnCreate(IFem2dModel* pParent, ModelEvents* pEvents, LoadCaseIDType id)
 {
    InitParent(pParent); // CCircularChild implementation
    m_pModel = pEvents;

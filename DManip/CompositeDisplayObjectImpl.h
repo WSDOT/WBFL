@@ -85,16 +85,16 @@ private:
 // iCompositeDisplayObject
 public:
    STDMETHOD_(void,AddDisplayObject)(iDisplayObject* pDO);
-   STDMETHOD_(void,RemoveDisplayObject)(long key,AccessType access);
-   STDMETHOD_(long,GetDisplayObjectCount)();
-   STDMETHOD_(void,GetDisplayObject)(long key,AccessType access,iDisplayObject* *ppDO);
+   STDMETHOD_(void,RemoveDisplayObject)(IDType key,AccessType access);
+   STDMETHOD_(CollectionIndexType,GetDisplayObjectCount)();
+   STDMETHOD_(void,GetDisplayObject)(IDType key,AccessType access,iDisplayObject* *ppDO);
    STDMETHOD_(void,ClearDisplayObjects)();
    STDMETHOD_(void,GetDisplayObjects)(iDisplayList** dispList);
 
 // iDisplayObject Implementation
 public:
-   STDMETHOD_(void,SetID)(long id) { Do_SetID(id); }
-   STDMETHOD_(long,GetID)() { return Do_GetID(); }
+   STDMETHOD_(void,SetID)(IDType id) { Do_SetID(id); }
+   STDMETHOD_(IDType,GetID)() { return Do_GetID(); }
 
    STDMETHOD_(void,SetItemData)(void* pItemData,bool bDelete) { Do_SetItemData(pItemData,bDelete); }
    STDMETHOD_(void,GetItemData)(void** ppItemData) { Do_GetItemData(ppItemData); }
@@ -129,10 +129,10 @@ public:
    // Tool Tips
    STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText) {Do_SetToolTipText(lpszToolTipText); }
    STDMETHOD_(CString,GetToolTipText)() {return Do_GetToolTipText(); }
-   STDMETHOD_(void,SetMaxTipWidth)(long maxWidth) { Do_SetMaxTipWidth(maxWidth); }
-   STDMETHOD_(long,GetMaxTipWidth)() { return Do_GetMaxTipWidth(); }
-   STDMETHOD_(void,SetTipDisplayTime)(long iTime) { Do_SetTipDisplayTime(iTime); }
-   STDMETHOD_(long,GetTipDisplayTime)() { return Do_GetTipDisplayTime(); }
+   STDMETHOD_(void,SetMaxTipWidth)(INT maxWidth) { Do_SetMaxTipWidth(maxWidth); }
+   STDMETHOD_(INT,GetMaxTipWidth)() { return Do_GetMaxTipWidth(); }
+   STDMETHOD_(void,SetTipDisplayTime)(INT iTime) { Do_SetTipDisplayTime(iTime); }
+   STDMETHOD_(INT,GetTipDisplayTime)() { return Do_GetTipDisplayTime(); }
 
    // Interface Events
    STDMETHOD_(bool,OnLButtonDown)(UINT nFlags,CPoint point)

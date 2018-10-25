@@ -82,7 +82,7 @@ void CGirderSpacing::SetGirderCount(GirderIndexType nGirders)
       AddGirders( m_Spacing.size() - nGirders );
 }
 
-long CGirderSpacing::GetGirderCount()
+GirderIndexType CGirderSpacing::GetGirderCount()
 {
    return m_Spacing.size();
 }
@@ -326,7 +326,7 @@ STDMETHODIMP CGirderSpacing::get_GirderSpacing(SpacingIndexType spaceIdx,Measure
 {
    CHECK_RETVAL(spacing);
 
-   long leftPointID[2], rightPointID[2]; // girder/line intersection point on left and right side of this space
+   CogoElementKey leftPointID[2], rightPointID[2]; // girder/line intersection point on left and right side of this space
 
    PierIndexType pierIdx;
    m_pPier->get_Index(&pierIdx);
@@ -519,7 +519,7 @@ STDMETHODIMP CGirderSpacing::get_Width(Float64 distFromStartOfSpan,MeasurementTy
    CComPtr<IPoint2d> pntLeft, pntRight;
 
    // left girder line
-   long startPointID, endPointID;
+   CogoElementKey startPointID, endPointID;
    cogoinfo->get_PierGirderIntersectionPointID(spanIdx,  0, qcbAfter,  &startPointID);
    cogoinfo->get_PierGirderIntersectionPointID(spanIdx+1,0, qcbBefore, &endPointID);
 
@@ -607,7 +607,7 @@ STDMETHODIMP CGirderSpacing::get_SpacingAlongGirder(GirderIndexType gdrIdx, Floa
    SpanIndexType spanIdx;
    span->get_Index(&spanIdx);
 
-   long girder_line_id;
+   CogoElementKey girder_line_id;
    cogoInfo->get_GirderLineID(spanIdx,gdrIdx,&girder_line_id);
 
    CComPtr<ICogoEngine> cogoEngine;
@@ -617,8 +617,8 @@ STDMETHODIMP CGirderSpacing::get_SpacingAlongGirder(GirderIndexType gdrIdx, Floa
    cogoModel->get_Points(&points);
 
    // Get start and end points of girder line
-   long girder_line_start_point_id;
-   long girder_line_end_point_id;
+   CogoElementKey girder_line_start_point_id;
+   CogoElementKey girder_line_end_point_id;
    cogoInfo->get_PierGirderIntersectionPointID(PierIndexType(spanIdx),   gdrIdx, qcbAfter,  &girder_line_start_point_id);
    cogoInfo->get_PierGirderIntersectionPointID(PierIndexType(spanIdx+1), gdrIdx, qcbBefore, &girder_line_end_point_id);
 
@@ -643,8 +643,8 @@ STDMETHODIMP CGirderSpacing::get_SpacingAlongGirder(GirderIndexType gdrIdx, Floa
    GirderIndexType adjGdrIdx = gdrIdx + (side == qcbLeft ? -1 : +1);
 
    // Get start and end points of the adjacent girder line
-   long adj_girder_line_start_point_id;
-   long adj_girder_line_end_point_id;
+   CogoElementKey adj_girder_line_start_point_id;
+   CogoElementKey adj_girder_line_end_point_id;
    cogoInfo->get_PierGirderIntersectionPointID(PierIndexType(spanIdx),   adjGdrIdx, qcbAfter,  &adj_girder_line_start_point_id);
    cogoInfo->get_PierGirderIntersectionPointID(PierIndexType(spanIdx+1), adjGdrIdx, qcbBefore, &adj_girder_line_end_point_id);
 
@@ -741,7 +741,7 @@ STDMETHODIMP CGirderSpacing::get_SpaceWidth(SpacingIndexType spaceIdx,Float64 di
    m_pBridge->get_CogoModel(&cogomodel);
 
    // get the line ID for each girder line
-   long gdrID1, gdrID2;
+   CogoElementKey gdrID1, gdrID2;
    ::GB_GetGirderLineId(spanIdx,gdrIdx1,&gdrID1);
    ::GB_GetGirderLineId(spanIdx,gdrIdx2,&gdrID2);
 
@@ -753,7 +753,7 @@ STDMETHODIMP CGirderSpacing::get_SpaceWidth(SpacingIndexType spaceIdx,Float64 di
    lineSegments->get_Item(gdrID2,&lsGirder2);
 
    // get the direction of the normal to the alignment at the station
-   long alignmentKey;
+   CogoElementKey alignmentKey;
    cogoinfo->get_AlignmentKey(&alignmentKey);
 
    CComPtr<IPathCollection> paths;
@@ -1015,7 +1015,7 @@ HRESULT CGirderSpacing::GetPierWidth(MeasurementLocation measureLocation,Measure
    GirderIndexType nGirders;
    span->get_GirderCount(&nGirders);
 
-   long startPointID, endPointID;
+   CogoElementKey startPointID, endPointID;
    if ( measureLocation == mlCenterlinePier )
    {
       ::GB_GetPierGirderPointId(pierIdx,          0, m_SpanEnd == etStart ? qcbAfter : qcbBefore,  &startPointID);

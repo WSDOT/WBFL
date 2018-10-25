@@ -60,14 +60,14 @@ protected:
    // LIFECYCLE
    // OPERATORS
    // OPERATIONS
-   virtual bamLoad* DoCreateConcForceY(Int32 elementId,
+   virtual bamLoad* DoCreateConcForceY(IDType elementId,
                                        bamElementType type,
                                        Float64 location,
                                        Float64 p,
                                        bool isFractional = false,
                                        bamLoadDirection direction = Local);
 
-   virtual bamLoad* DoCreateUnifForceY(Int32 elementId,
+   virtual bamLoad* DoCreateUnifForceY(IDType elementId,
                                        bamElementType type,
                                        Float64 start,
                                        Float64 end,
@@ -75,7 +75,7 @@ protected:
                                        bool isFractional = false,
                                        bamLoadDirection direction = Local);
 
-   virtual bamLoad* DoCreateConcMomentZ(Int32 elementId,
+   virtual bamLoad* DoCreateConcMomentZ(IDType elementId,
                                         bamElementType type,
                                         Float64 location,
                                         Float64 m,

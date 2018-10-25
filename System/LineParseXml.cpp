@@ -242,6 +242,42 @@ bool sysLineParseXml::GetValue(Uint32* value)
    return false;
 }
 
+bool sysLineParseXml::GetValue(Int64* value)
+{
+   CHECK(m_Type!=sysLineParseXml::Unknown);
+   if (m_Value.empty())
+      return false;
+
+   Int64 l;
+   std::_tistringstream is(m_Value);
+
+   is >> l;
+   if (is)
+   {
+      *value = l;
+      return true;
+   }
+   return false;
+}
+
+bool sysLineParseXml::GetValue(Uint64* value)
+{
+   CHECK(m_Type!=sysLineParseXml::Unknown);
+   if (m_Value.empty())
+      return false;
+
+   Uint64 l;
+   std::_tistringstream is(m_Value);
+
+   is >> l;
+   if (is)
+   {
+      *value = l;
+      return true;
+   }
+   return false;
+}
+
 bool sysLineParseXml::GetValue(bool* value)
 {
    CHECK(m_Type!=sysLineParseXml::Unknown);

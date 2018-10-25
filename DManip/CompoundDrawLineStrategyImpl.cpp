@@ -131,12 +131,12 @@ STDMETHODIMP_(void) CCompoundDrawLineStrategyImpl::AddStrategy(iDrawLineStrategy
    m_Strategies.push_back(CComPtr<iDrawLineStrategy>(pStrategy));
 }
 
-STDMETHODIMP_(void) CCompoundDrawLineStrategyImpl::RemoveStrategy(long index)
+STDMETHODIMP_(void) CCompoundDrawLineStrategyImpl::RemoveStrategy(CollectionIndexType index)
 {
    m_Strategies.erase(m_Strategies.begin() + index);
 }
 
-STDMETHODIMP_(long) CCompoundDrawLineStrategyImpl::Count()
+STDMETHODIMP_(CollectionIndexType) CCompoundDrawLineStrategyImpl::Count()
 {
    return m_Strategies.size();
 }

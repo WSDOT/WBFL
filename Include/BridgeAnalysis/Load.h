@@ -36,7 +36,7 @@ class bamSpanElement;
 class bamLoad
 {
 public:
-   bamLoad(Int32 elementId,bamElementType type,bamLoadDirection direction);
+   bamLoad(IDType elementId,bamElementType type,bamLoadDirection direction);
    virtual ~bamLoad();
 
    virtual void Apply();
@@ -45,7 +45,7 @@ public:
    bamLoadCase& GetLoadCase();
    bamLoadDirection GetDirection();
 
-   Int32   GetElementId() const;
+   IDType   GetElementId() const;
    bamElementType GetElementType() const;
 
 
@@ -58,7 +58,7 @@ public:
    bool operator==(const bamLoad& other) const;
 
 protected:
-   Int32 m_ElementId;
+   IDType m_ElementId;
    bamElementType m_ElementType;
 
    bamLoadDirection m_Direction;
@@ -95,7 +95,7 @@ public:
 class bamConcForceY : public bamLoad
 {
 public:
-   bamConcForceY(Int32 elementId,
+   bamConcForceY(IDType elementId,
                 bamElementType type,
                 Float64 location,
                 Float64 p,
@@ -135,7 +135,7 @@ public:
 class bamUnifForceY : public bamLoad
 {
 public:
-   bamUnifForceY(Int32 elementId,
+   bamUnifForceY(IDType elementId,
                 bamElementType type,
                 Float64 start,
                 Float64 end,
@@ -178,7 +178,7 @@ public:
 class bamConcMomentZ : public bamLoad
 {
 public:
-   bamConcMomentZ(Int32 elementId,
+   bamConcMomentZ(IDType elementId,
                   bamElementType type,
                   Float64 location,
                   Float64 p,

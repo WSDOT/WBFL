@@ -50,12 +50,12 @@ STDMETHODIMP CDataSet2dImpl::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CDataSet2dImpl::get_Item(long index, IPoint2d** pVal)
+STDMETHODIMP CDataSet2dImpl::get_Item(CollectionIndexType index, IPoint2d** pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
    (*pVal) = 0;
-   if ( index < 0 || (long)m_Container.size() <= index )
+   if ( index < 0 || m_Container.size() <= index )
       return E_FAIL;
 
    ContainerItem ppt = m_Container[index];
@@ -63,7 +63,7 @@ STDMETHODIMP CDataSet2dImpl::get_Item(long index, IPoint2d** pVal)
 
 }
 
-STDMETHODIMP_(void) CDataSet2dImpl::get_Count(long *pVal)
+STDMETHODIMP_(void) CDataSet2dImpl::get_Count(CollectionIndexType *pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -77,11 +77,11 @@ STDMETHODIMP_(void) CDataSet2dImpl::Add(IPoint2d *pVal)
    m_Container.push_back(ContainerItem(pVal));
 }
 
-STDMETHODIMP CDataSet2dImpl::Insert(long index, IPoint2d *pVal)
+STDMETHODIMP CDataSet2dImpl::Insert(CollectionIndexType index, IPoint2d *pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
-   if (index < 0 || index > (long)m_Container.size()+1)
+   if (index < 0 || index > m_Container.size()+1)
       return E_INVALIDARG;
 
    if (index==m_Container.size())
@@ -97,11 +97,11 @@ STDMETHODIMP CDataSet2dImpl::Insert(long index, IPoint2d *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CDataSet2dImpl::Remove(long index)
+STDMETHODIMP CDataSet2dImpl::Remove(CollectionIndexType index)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
-   if ( index < 0 || index > (long)m_Container.size()-1)
+   if ( index < 0 || index > m_Container.size()-1)
       return E_INVALIDARG;
 
       ContainerIterator it = m_Container.begin();

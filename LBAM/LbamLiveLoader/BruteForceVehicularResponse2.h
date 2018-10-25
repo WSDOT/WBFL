@@ -116,7 +116,7 @@ public:
       llConfig->put_DoApplyImpact(doApplyImpact);
 
       // count number of falses and create array of inactive axles
-      Int32 count = std::count(m_AppliedAxles.begin(), m_AppliedAxles.end(), AxleOff);
+      AxleIndexType count = std::count(m_AppliedAxles.begin(), m_AppliedAxles.end(), AxleOff);
 
       CComPtr<ILongArray> inactive_axles;
       inactive_axles.CoCreateInstance(CLSID_LongArray);
@@ -401,10 +401,10 @@ private:
    // locations of the pois (where we place our axles)
    struct PoiLocation
    {
-      long   ID;
+      PoiIDType   ID;
       Float64 Location;
 
-      PoiLocation(long id, Float64 location):
+      PoiLocation(PoiIDType id, Float64 location):
       ID(id),
       Location(location)
       {;}
@@ -443,11 +443,11 @@ private:
    typedef std::set<InflResponseRecord>::iterator InflResponseIterator;
    typedef std::set<InflResponseRecord>::const_iterator ConstInflResponseIterator;
 
-   bool GetInflResponse(long poiID,LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect,
+   bool GetInflResponse(PoiIDType poiID,LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect,
                         VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL doApplyImpact,
                         iLLCompare** ppLeftCompare, iLLCompare** ppRightCompare);
 
-   void SaveInflResponse(long poiID,LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect, 
+   void SaveInflResponse(PoiIDType poiID,LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect, 
                          VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL doApplyImpact,
                          iLLCompare* pLeftCompare, iLLCompare* pRightCompare);
 };

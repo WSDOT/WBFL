@@ -94,18 +94,6 @@ dbgLog& dbgLog::operator<<(Uint16 n)
    return *this;
 }
 
-dbgLog& dbgLog::operator<<(int n)
-{
-   *m_pDumpCtx << n;
-   return *this;
-}
-
-dbgLog& dbgLog::operator<<(unsigned int n)
-{
-   *m_pDumpCtx << n;
-   return *this;
-}
-
 dbgLog& dbgLog::operator<<(Int32 n)
 {
    *m_pDumpCtx << n;
@@ -113,6 +101,18 @@ dbgLog& dbgLog::operator<<(Int32 n)
 }
 
 dbgLog& dbgLog::operator<<(Uint32 n)
+{
+   *m_pDumpCtx << n;
+   return *this;
+}
+
+dbgLog& dbgLog::operator<<(Int64 n)
+{
+   *m_pDumpCtx << n;
+   return *this;
+}
+
+dbgLog& dbgLog::operator<<(Uint64 n)
 {
    *m_pDumpCtx << n;
    return *this;
@@ -162,19 +162,19 @@ void dbgLog::AddEntryToLog(std::_tstring& msg,  dbgLog::EntryType type)
    m_ErrorLog.push_back(ent);
 }
 
-Int32 dbgLog::GetNumEntries() const
+size_t dbgLog::GetNumEntries() const
 {
    return m_ErrorLog.size();
 }
 
-Int32 dbgLog::GetNumErrors() const
+size_t dbgLog::GetNumErrors() const
 {
    return m_NumErrors;
 }
 
-Int32 dbgLog::GetTestCount(EntryType type) const
+size_t dbgLog::GetTestCount(EntryType type) const
 {
-   Int32 cTests = 0;
+   size_t cTests = 0;
    for ( ConstEntryVecIterator i = m_ErrorLog.begin(); i != m_ErrorLog.end(); i++ )
    {
       if ( (*i).Type == type )

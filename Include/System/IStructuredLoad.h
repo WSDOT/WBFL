@@ -128,6 +128,14 @@ public:
    virtual bool Property(LPCTSTR name, Uint32* pvalue)=0;
 
    //------------------------------------------------------------------------
+   // Read an integral property
+   virtual bool Property(LPCTSTR name, Int64* pvalue)=0;
+
+   //------------------------------------------------------------------------
+   // Read an unsigned integral property
+   virtual bool Property(LPCTSTR name, Uint64* pvalue)=0;
+
+   //------------------------------------------------------------------------
    // Read a bool property
    virtual bool Property(LPCTSTR name, bool* pvalue)=0;
 

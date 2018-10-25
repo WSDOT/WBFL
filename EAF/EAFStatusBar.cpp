@@ -195,7 +195,7 @@ void CEAFStatusBar::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
    COLORREF color;
 
-   long status_count = 0;
+   CollectionIndexType status_count = 0;
 
    CEAFDocument* pEAFDoc = GetDocument();
    if ( pEAFDoc )

@@ -56,20 +56,20 @@ static char THIS_FILE[] = __FILE__;
 class ModelStats
 {
 public:
-   long NumSpans;
-   long NumSuperstructureMembers;
-   long NumSupports;
+   SpanIndexType NumSpans;
+   CollectionIndexType NumSuperstructureMembers;
+   SupportIndexType NumSupports;
    Float64 SpanLengths;
    Float64 MemberLengths;
-   long NumStages;
-   long NumLoadGroups;
-   long NumLoadCases;
-   long NumLoadCombinations;
-   long NumPointLoads;
-   long NumDistributedLoads;
-   long NumTemperatureLoads;
-   long NumStrainLoads;
-   long NumSettlementLoads;
+   StageIndexType NumStages;
+   CollectionIndexType NumLoadGroups;
+   CollectionIndexType NumLoadCases;
+   CollectionIndexType NumLoadCombinations;
+   CollectionIndexType NumPointLoads;
+   CollectionIndexType NumDistributedLoads;
+   CollectionIndexType NumTemperatureLoads;
+   CollectionIndexType NumStrainLoads;
+   CollectionIndexType NumSettlementLoads;
 
    bool operator==(const ModelStats& rother)
    {

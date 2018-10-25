@@ -104,12 +104,12 @@ void CStatusCenterDlg::OnStatusItemAdded(CEAFStatusItem* pNewItem)
    CString strSeverityType[] = { _T("Info"), _T("Warn"), _T("Error") };
    CString strSeverity;
    strSeverity.Format(_T("%s"),strSeverityType[severity]);
-   int idx = pListCtrl->InsertItem(pNewItem->GetID(),strSeverity);
+   int idx = pListCtrl->InsertItem((int)pNewItem->GetID(),strSeverity);
    VERIFY( pListCtrl->SetItemText(idx,1,pNewItem->GetDescription().c_str()) );
    VERIFY( pListCtrl->SetItemData(idx,pNewItem->GetID()) );
 }
 
-void CStatusCenterDlg::OnStatusItemRemoved(long id)
+void CStatusCenterDlg::OnStatusItemRemoved(StatusItemIDType id)
 {
    LVFINDINFO info;
    info.flags = LVFI_PARAM;
@@ -134,8 +134,8 @@ void CStatusCenterDlg::OnDoubleClick(NMHDR* pNotifyStruct,LRESULT* pResult)
    if ( 0 <= idx )
    {
       CListCtrl* pListCtrl = (CListCtrl*)GetDlgItem(IDC_STATUSLIST);
-      long id = pListCtrl->GetItemData(idx);
-      m_StatusCenter.EditItem(id);
+      DWORD_PTR id = pListCtrl->GetItemData(idx);
+      m_StatusCenter.EditItem((StatusItemIDType)id);
    }
 }
 

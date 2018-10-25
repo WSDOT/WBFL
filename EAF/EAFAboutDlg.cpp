@@ -102,18 +102,23 @@ BOOL CEAFAboutDlg::OnInitDialog()
    CString strVersion = verInfo.GetFileVersionAsString();
    CString strCopyright = verInfo.GetLegalCopyright();
 
+#if defined _WIN64
+   CString strPlatform(_T("x64"));
+#else
+   CString strPlatform(_T("x86"));
+#endif
    CString str;
-   str.Format(_T("Version %s"),strVersion);
+   str.Format(_T("Version %s (%s)"),strVersion,strPlatform);
    GetDlgItem(IDC_VERSION)->SetWindowText(str);
    GetDlgItem(IDC_COPYRIGHT)->SetWindowText(strCopyright);
 
    // Fill the list control with plugin names
    CEAFApp* pApp = EAFGetApp();
    CEAFComponentInfoManager* pComponentInfoMgr = pApp->GetComponentInfoManager();
-   UINT nPlugins = pComponentInfoMgr->GetPluginCount();
+   CollectionIndexType nPlugins = pComponentInfoMgr->GetPluginCount();
    
    // for each plugin
-   for ( UINT pluginIdx = 0; pluginIdx < nPlugins; pluginIdx++ )
+   for ( CollectionIndexType pluginIdx = 0; pluginIdx < nPlugins; pluginIdx++ )
    {
       CComPtr<IEAFComponentInfo> plugin;
       pComponentInfoMgr->GetPlugin(pluginIdx,&plugin);
@@ -136,7 +141,7 @@ void CEAFAboutDlg::OnAppListSelChanged()
       CEAFApp* pApp = EAFGetApp();
       CEAFComponentInfoManager* pComponentInfoMgr = pApp->GetComponentInfoManager();
       CComPtr<IEAFComponentInfo> component;
-      UINT pluginIdx = m_AppList.GetItemData(idx);
+      DWORD_PTR pluginIdx = m_AppList.GetItemData(idx);
       pComponentInfoMgr->GetPlugin(pluginIdx,&component);
       m_Description.SetWindowText(component->GetDescription());
       if ( component->HasMoreInfo() )
@@ -159,7 +164,7 @@ void CEAFAboutDlg::OnMoreInfo()
       CEAFApp* pApp = EAFGetApp();
       CEAFComponentInfoManager* pComponentInfoMgr = pApp->GetComponentInfoManager();
 
-      UINT pluginIdx = m_AppList.GetItemData(idx);
+      DWORD_PTR pluginIdx = m_AppList.GetItemData(idx);
       CComPtr<IEAFComponentInfo> component;
       pComponentInfoMgr->GetPlugin(pluginIdx,&component);
 

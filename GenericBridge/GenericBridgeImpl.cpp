@@ -276,7 +276,7 @@ void CGenericBridge::DoUpdateBridgeModel()
       CComPtr<IPoint2d> point;
       alignment->LocatePoint(CComVariant(objStation),omtAlongDirection, 0.00,CComVariant(0.00),&point);
 
-      long pointID;
+      CogoElementKey pointID;
       ::GB_GetPierAlignmentPointId(pierIdx,&pointID);
       points->AddEx(pointID,point);
    }
@@ -298,13 +298,13 @@ void CGenericBridge::DoUpdateBridgeModel()
       {
          CComPtr<ILineSegment2d> objLS;
          CComPtr<IPoint2d> objA, objB;
-         long ptA, ptB;
+         CogoElementKey ptA, ptB;
          ::GB_GetPierGirderPointId(spanIdx,  gdrIdx, qcbAfter,  &ptA);
          ::GB_GetPierGirderPointId(spanIdx+1,gdrIdx, qcbBefore, &ptB);
          points->get_Item(ptA,&objA);
          points->get_Item(ptB,&objB);
          
-         long lineID;
+         CogoElementKey lineID;
          ::GB_GetGirderLineId(spanIdx,gdrIdx,&lineID);
          lineSegments->Add(lineID,objA,objB,&objLS);
 
@@ -454,11 +454,11 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
 
    // get intersection point of pier and alignment
    CComPtr<IPoint2d> pntStartPier, pntEndPier;
-   long startPierPointID;
+   CogoElementKey startPierPointID;
    ::GB_GetPierAlignmentPointId(prevPierIdx,&startPierPointID);
    points->get_Item(startPierPointID,&pntStartPier);
 
-   long endPierPointID;
+   CogoElementKey endPierPointID;
    ::GB_GetPierAlignmentPointId(nextPierIdx,&endPierPointID);
    points->get_Item(endPierPointID,&pntEndPier);
 
@@ -491,7 +491,7 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
    //
    CComPtr<IPoint2d> pntStartPierBridge;
    clBridge->Intersect(objStartPierLine,pntStartPier,&pntStartPierBridge);
-   long pointID;
+   CogoElementKey pointID;
    ::GB_GetPierCLBridgePointId(prevPierIdx,&pointID);
    points->AddEx(pointID,pntStartPierBridge);
 
@@ -783,7 +783,7 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
          {
 #if defined _DEBUG
             VARIANT_BOOL bContainsPoint;
-            m_GeomUtil->DoesLineContainPoint(objStartPierNormalLine,pntStartPier,&bContainsPoint);
+            m_GeomUtil->DoesLineContainPoint(objStartPierNormalLine,pntStartPier,1e-6,&bContainsPoint);
             ATLASSERT( bContainsPoint == VARIANT_TRUE);
 #endif
             hr = parallel_path->Intersect(objStartPierNormalLine,pntStartPier,&pntStartGirder);
@@ -792,7 +792,7 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
          {
 #if defined _DEBUG
             VARIANT_BOOL bContainsPoint;
-            m_GeomUtil->DoesLineContainPoint(objStartBrgNormalLine,pntStartBrg,&bContainsPoint);
+            m_GeomUtil->DoesLineContainPoint(objStartBrgNormalLine,pntStartBrg,1e-6,&bContainsPoint);
             ATLASSERT( bContainsPoint == VARIANT_TRUE);
 #endif
             hr = parallel_path->Intersect(objStartBrgNormalLine,pntStartBrg,&pntStartGirder);
@@ -866,7 +866,7 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
       m_GeomUtil->LineLineIntersect(objStartPierLine,objGirderLine,&pntStartPierGirder);
 
       // save the point
-      long startPointID;
+      CogoElementKey startPointID;
       ::GB_GetPierGirderPointId(prev_pier_idx,gdrIdx,qcbAfter,&startPointID);
       points->AddEx(startPointID,pntStartPierGirder);
 
@@ -877,7 +877,7 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
       m_GeomUtil->LineLineIntersect(objEndPierLine,objGirderLine,&pntEndPierGirder);
 
       // save the point
-      long endPointID;
+      CogoElementKey endPointID;
       ::GB_GetPierGirderPointId(next_pier_idx,gdrIdx,qcbBefore,&endPointID);
       points->AddEx(endPointID,pntEndPierGirder);
 
@@ -934,7 +934,7 @@ void CGenericBridge::UpdateGirderEndPoints(SpanIndexType spanIdx,GirderIndexType
    // locate points at the ends of the girder
 
    // get the girder line ID
-   long girderlineID;
+   CogoElementKey girderlineID;
    ::GB_GetGirderLineId(spanIdx,gdrIdx,&girderlineID);
 
    // get the connections at each end of the girder
@@ -954,8 +954,8 @@ void CGenericBridge::UpdateGirderEndPoints(SpanIndexType spanIdx,GirderIndexType
 
    // get the COGO point IDs for the intersection of CL Girder/CL Brg, CL Girder/CL Pier
    // and the girder end points
-   long startBrgPointID, startPierPointID, startEndPointID;
-   long endBrgPointID,   endPierPointID,   endEndPointID;
+   CogoElementKey startBrgPointID, startPierPointID, startEndPointID;
+   CogoElementKey endBrgPointID,   endPierPointID,   endEndPointID;
    ::GB_GetBearingGirderPointId(prevPierIdx,gdrIdx,qcbAfter,&startBrgPointID);
    ::GB_GetPierGirderPointId(prevPierIdx,gdrIdx,qcbAfter,&startPierPointID);
    ::GB_GetGirderEndPointId(spanIdx,gdrIdx,etStart,&startEndPointID);
@@ -975,7 +975,7 @@ void CGenericBridge::UpdateGirderEndPoints(SpanIndexType spanIdx,GirderIndexType
    locate->PointOnLine(endEndPointID,  endBrgPointID,  endPierPointID,  end_end_distance,  0.0);
 }
 
-void CGenericBridge::GetEndDistance(EndType end,long brgPntID,long pierPntID,long girderLineID,IConnection* connection,IPier* pier,Float64* endDist)
+void CGenericBridge::GetEndDistance(EndType end,CogoElementKey brgPntID,CogoElementKey pierPntID,CogoElementKey girderLineID,IConnection* connection,IPier* pier,Float64* endDist)
 {
    Float64 end_dist;
    connection->get_EndDistance(&end_dist);

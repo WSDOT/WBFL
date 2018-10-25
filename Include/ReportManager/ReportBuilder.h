@@ -55,8 +55,8 @@ public:
    LPCTSTR GetName() const;
    void AddTitlePageBuilder(boost::shared_ptr<CTitlePageBuilder>& pTitlePageBuilder);
    void AddChapterBuilder(boost::shared_ptr<CChapterBuilder>& pChapterBuilder);
-   Uint16 GetChapterBuilderCount() const;
-   boost::shared_ptr<CChapterBuilder> GetChapterBuilder(Uint16 idx);
+   CollectionIndexType GetChapterBuilderCount() const;
+   boost::shared_ptr<CChapterBuilder> GetChapterBuilder(CollectionIndexType idx);
    boost::shared_ptr<CChapterBuilder> GetChapterBuilder(LPCTSTR strKey);
    CReportDescription GetReportDescription();
    void SetReportSpecificationBuilder(boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder);

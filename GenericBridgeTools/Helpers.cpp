@@ -88,7 +88,7 @@ HRESULT GetAlignment(IGenericBridge* bridge,IAlignment** alignment)
    CComPtr<IPathCollection> alignments;
    cogomodel->get_Alignments(&alignments);
 
-   long key;
+   CogoElementKey key;
    cogoinfo->get_AlignmentKey(&key);
    CComPtr<IPath> alignpath;
    alignments->get_Item(key,&alignpath);

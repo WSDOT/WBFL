@@ -79,12 +79,12 @@ void CReportBuilder::AddChapterBuilder(boost::shared_ptr<CChapterBuilder>& pChap
    m_ChapterBuilders.push_back( pChapterBuilder );
 }
 
-Uint16 CReportBuilder::GetChapterBuilderCount() const
+CollectionIndexType CReportBuilder::GetChapterBuilderCount() const
 {
    return m_ChapterBuilders.size();
 }
 
-boost::shared_ptr<CChapterBuilder> CReportBuilder::GetChapterBuilder(Uint16 idx)
+boost::shared_ptr<CChapterBuilder> CReportBuilder::GetChapterBuilder(CollectionIndexType idx)
 {
    return m_ChapterBuilders[idx];
 }

@@ -103,10 +103,10 @@ public:
 	STDMETHOD(put_W2)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_W1)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_W1)(/*[in]*/ Float64 newVal);
-   STDMETHOD(get_Slope)(/*[in]*/long webIdx,/*[out,retval]*/Float64* slope);
+   STDMETHOD(get_Slope)(/*[in]*/WebIndexType webIdx,/*[out,retval]*/Float64* slope);
 	STDMETHOD(get_TopWidth)(/*[out,retval]*/Float64* width);
 	STDMETHOD(get_TopFlangeWidth)(/*[out,retval]*/Float64* width);
-	STDMETHOD(get_WebLocation)(/*[in]*/long webIdx,/*[out,retval]*/Float64* location);
+	STDMETHOD(get_WebLocation)(/*[in]*/WebIndexType webIdx,/*[out,retval]*/Float64* location);
 	STDMETHOD(get_WebSpacing)(/*[out,retval]*/Float64* spacing);
 
 // IShape

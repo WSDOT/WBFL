@@ -118,7 +118,7 @@ public:
          return hr;
 
       // save out count
-      long count = m_coll.size();
+      CollectionIndexType count = m_coll.size();
       hr = save->put_Property(CComBSTR("Count"),CComVariant(count));
       if (FAILED(hr))
          return hr;

@@ -75,7 +75,7 @@ public:
 private:
    // internal implementation
    void EnvelopeLoadCaseResults(IResult3Ds* res1, IResult3Ds* res2);
-   void EnvelopeLoadCaseSectionResults(ISectionResult3Ds* res1, ISectionResult3Ds* res2,bool doFlip,long EngineNo);
+   void EnvelopeLoadCaseSectionResults(ISectionResult3Ds* res1, ISectionResult3Ds* res2,bool doFlip,CollectionIndexType engineIdx);
    void EnvelopeLoadCaseSectionStressResults(ISectionStressResults* res1, ISectionStressResults* res2);
 
 
@@ -88,8 +88,8 @@ private:
    // this is used in order to determine the controlling model when computing stresses
    struct LRPair
    {
-      long Left;
-      long Right;
+      CollectionIndexType Left;
+      CollectionIndexType Right;
 
       LRPair():
       Left(0),

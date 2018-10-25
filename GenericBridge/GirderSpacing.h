@@ -84,7 +84,7 @@ public:
    void SetBridge(IGenericBridge* pBridge);
    void SetPier(CPier* pPier,EndType end);
    void SetGirderCount(GirderIndexType nGirders);
-   long GetGirderCount();
+   GirderIndexType GetGirderCount();
    void AddGirders(GirderIndexType nGirders);
    void RemoveGirders(GirderIndexType nGirders);
 

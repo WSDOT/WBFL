@@ -174,7 +174,7 @@ void CEAFSplashScreen::OnPaint()
    m_ImageList.Draw(&dc,0,pt,ILD_NORMAL);
 }
 
-void CEAFSplashScreen::OnTimer(UINT nIDEvent)
+void CEAFSplashScreen::OnTimer(UINT_PTR nIDEvent)
 {
 	// Destroy the splash screen window.
    if ( m_bShowUntilClosed && !m_bCloseOnNextTimeout )

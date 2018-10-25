@@ -104,16 +104,16 @@ SegmentIndexType bmfSplicedGirder::GetNumSegments() const
    return GetTemplate()->GetNumSegments();
 }
 
-Uint16 bmfSplicedGirder::GetNumSplices() const
+CollectionIndexType bmfSplicedGirder::GetNumSplices() const
 {
    return GetTemplate()->GetNumSplices();
 }
 
-Float64 bmfSplicedGirder::GetSpliceLocation(Uint16 splice) const
+Float64 bmfSplicedGirder::GetSpliceLocation(CollectionIndexType splice) const
 {
    const bmfSplicedGirderTemplate* pTemplate = GetTemplate();
 
-   Uint16 nSplices = pTemplate->GetNumSplices();
+   CollectionIndexType nSplices = pTemplate->GetNumSplices();
    CHECK( splice < nSplices );
 
    Float64 total_length = GetLength();
@@ -201,9 +201,9 @@ bmfIGirderSection* bmfSplicedGirder::CreateGirderSection(Float64 distFromStart) 
    if ( !m_bGrouted )
    {
       // Deduct holes for all ducts
-      Uint32 nDucts = m_Ducts.GetDuctCount();
+      DuctIndexType nDucts = m_Ducts.GetDuctCount();
 
-      for ( Uint32 i = 0; i < nDucts; i++ )
+      for ( DuctIndexType i = 0; i < nDucts; i++ )
       {
          bmfSplicedGirderSection::Duct duct;
          duct.location = m_Ducts.GetDuctLocation(i,distFromStart);
@@ -522,13 +522,13 @@ StrandIndexType bmfSplicedGirder::GetMaxPTStrands() const
 //   return m_Ducts.RemoveStrand();
 //}
 
-StrandIndexType bmfSplicedGirder::SetNumPTStrands( Uint32 ductIndex, StrandIndexType nStrands )
+StrandIndexType bmfSplicedGirder::SetNumPTStrands( DuctIndexType ductIndex, StrandIndexType nStrands )
 {
    m_Ducts.SetNumStrands(ductIndex,nStrands);
    return 0;
 }
 
-StrandIndexType bmfSplicedGirder::GetNumPTStrands(Uint32 ductIndex) const
+StrandIndexType bmfSplicedGirder::GetNumPTStrands(DuctIndexType ductIndex) const
 {
    return m_Ducts.GetNumStrands(ductIndex);
 }
@@ -538,22 +538,22 @@ StrandIndexType bmfSplicedGirder::GetNumPTStrands() const
    return m_Ducts.GetNumStrands();
 }
 
-Uint32 bmfSplicedGirder::GetNumDucts() const
+DuctIndexType bmfSplicedGirder::GetNumDucts() const
 {
    return m_Ducts.GetDuctCount();
 }
 
-Float64 bmfSplicedGirder::GetDuctSlope(Float64 x,Uint32 ductIndex) const
+Float64 bmfSplicedGirder::GetDuctSlope(Float64 x,DuctIndexType ductIndex) const
 {
    return m_Ducts.GetDuctSlope(x,ductIndex);
 }
 
-void bmfSplicedGirder::GetDuctControlPoints(Uint32 ductIndex,gpPoint2d* pe1,gpPoint2d* pe2)
+void bmfSplicedGirder::GetDuctControlPoints(DuctIndexType ductIndex,gpPoint2d* pe1,gpPoint2d* pe2)
 {
    m_Ducts.GetDuctControlPoints(ductIndex,pe1,pe2);
 }
 
-Float64 bmfSplicedGirder::GetDuctDiameter(Uint32 ductIndex) const
+Float64 bmfSplicedGirder::GetDuctDiameter(DuctIndexType ductIndex) const
 {
    return m_Ducts.GetDuctDiameter(ductIndex);
 }
@@ -647,7 +647,7 @@ Float64 bmfSplicedGirder::GetSegmentLength(SegmentIndexType segment) const
       return right_length;
 }
 
-Float64 bmfSplicedGirder::GetClosurePourSize(Uint16 splice) const
+Float64 bmfSplicedGirder::GetClosurePourSize(CollectionIndexType splice) const
 {
    const bmfSplicedGirderTemplate* pTemplate = GetTemplate();
 

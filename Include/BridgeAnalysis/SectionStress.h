@@ -74,7 +74,7 @@ public:
    bamSectionStressKey();
 
    //------------------------------------------------------------------------
-   bamSectionStressKey(Int32 poi,Int32 idx,Int32 loading);
+   bamSectionStressKey(PoiIDType poi,CollectionIndexType idx,IDType loading);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -95,12 +95,12 @@ public:
 
    // GROUP: OPERATIONS
    // GROUP: ACCESS
-   void LoadingId(Int32 loadingId);
-   Int32 LoadingId() const;
-   void StressPointIdx(Int32 idx);
-   Int32 StressPointIdx() const;
-   void PointOfInterest(Int32 poi);
-   Int32 PointOfInterest() const;
+   void LoadingId(IDType loadingId);
+   IDType LoadingId() const;
+   void StressPointIdx(IndexType idx);
+   IndexType StressPointIdx() const;
+   void PointOfInterest(IDType poi);
+   IDType PointOfInterest() const;
 
    // GROUP: INQUIRY
 
@@ -117,9 +117,9 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   Int32 m_LoadingId;
-   Int32 m_StressPointIdx;
-   Int32 m_Poi;
+   IDType m_LoadingId;
+   CollectionIndexType m_StressPointIdx;
+   PoiIDType m_Poi;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS

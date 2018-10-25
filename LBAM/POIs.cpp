@@ -109,7 +109,7 @@ HRESULT CPOIs::OnBeforeRemove ( StoredType* pVal)
    return S_OK;
 }
 
-HRESULT CPOIs::OnAfterRemove( PoiIDType id)
+HRESULT CPOIs::OnAfterRemove( PoiIDType key)
 {
    return S_OK;
 }
@@ -123,6 +123,11 @@ void CPOIs::FinalRelease()
    {
       this->OnBeforeRemove(*it);
    }
+}
+
+STDMETHODIMP CPOIs::RemoveByID(PoiIDType ID)
+{
+   return RemoveByKey(ID);
 }
 
 STDMETHODIMP CPOIs::Clone(IPOIs* *pColl)

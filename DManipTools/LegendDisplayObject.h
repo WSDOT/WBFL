@@ -67,8 +67,8 @@ END_CONNECTION_POINT_MAP()
    static UINT ms_cfFormat;
 
    // iDisplayObject Implementation
-   STDMETHOD_(void,SetID)(long id) { Do_SetID(id); }
-   STDMETHOD_(long,GetID)() { return Do_GetID(); }
+   STDMETHOD_(void,SetID)(IDType id) { Do_SetID(id); }
+   STDMETHOD_(IDType,GetID)() { return Do_GetID(); }
 
    STDMETHOD_(void,SetItemData)(void* pItemData,bool bDelete) { Do_SetItemData(pItemData,bDelete); }
    STDMETHOD_(void,GetItemData)(void** ppItemData) { Do_GetItemData(ppItemData); }
@@ -115,10 +115,10 @@ END_CONNECTION_POINT_MAP()
    // Tool Tips
    STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText) {Do_SetToolTipText(lpszToolTipText);}
    STDMETHOD_(CString,GetToolTipText)();
-   STDMETHOD_(void,SetMaxTipWidth)(long maxWidth) { Do_SetMaxTipWidth(maxWidth); }
-   STDMETHOD_(long,GetMaxTipWidth)() { return Do_GetMaxTipWidth(); }
-   STDMETHOD_(void,SetTipDisplayTime)(long iTime) { Do_SetTipDisplayTime(iTime); }
-   STDMETHOD_(long,GetTipDisplayTime)() { return Do_GetTipDisplayTime(); }
+   STDMETHOD_(void,SetMaxTipWidth)(INT maxWidth) { Do_SetMaxTipWidth(maxWidth); }
+   STDMETHOD_(INT,GetMaxTipWidth)() { return Do_GetMaxTipWidth(); }
+   STDMETHOD_(void,SetTipDisplayTime)(INT iTime) { Do_SetTipDisplayTime(iTime); }
+   STDMETHOD_(INT,GetTipDisplayTime)() { return Do_GetTipDisplayTime(); }
 
    // Event Sink
    STDMETHOD_(void,RegisterEventSink)(iDisplayObjectEvents* pEventSink)
@@ -153,14 +153,14 @@ END_CONNECTION_POINT_MAP()
    STDMETHOD_(void,put_Title)(BSTR newVal);
    STDMETHOD_(void,put_Font)(const LOGFONT& Font);
    STDMETHOD_(void,get_Font)(LOGFONT* pFont);
-   STDMETHOD_(void,get_NumEntries)(long* count);
+   STDMETHOD_(void,get_NumEntries)(CollectionIndexType* count);
    STDMETHOD_(void,AddEntry)(iLegendEntry* entry);
-   STDMETHOD_(HRESULT,InsertEntry)(long index, iLegendEntry* entry);
-   STDMETHOD_(HRESULT,get_Entry)(long index, iLegendEntry* *entry);
-   STDMETHOD_(HRESULT,RemoveEntry)(long index);
+   STDMETHOD_(HRESULT,InsertEntry)(CollectionIndexType index, iLegendEntry* entry);
+   STDMETHOD_(HRESULT,get_Entry)(CollectionIndexType index, iLegendEntry* *entry);
+   STDMETHOD_(HRESULT,RemoveEntry)(CollectionIndexType index);
    STDMETHOD_(void,ClearEntries)();
-   STDMETHOD_(void,get_NumRows)(long* count);
-   STDMETHOD_(void,put_NumRows)(long count);
+   STDMETHOD_(void,get_NumRows)(CollectionIndexType* count);
+   STDMETHOD_(void,put_NumRows)(CollectionIndexType count);
    STDMETHOD_(void,get_CellSize)(CSize* size);
    STDMETHOD_(void,put_CellSize)(CSize size);
    STDMETHOD_(void,GetMinCellSize)(CSize* size);
@@ -187,7 +187,7 @@ private:
    CComPtr<IPoint2d> m_Position;
    CComBSTR m_Title;
    LOGFONT  m_Font;
-   long     m_NumRows;
+   RowIndexType m_NumRows;
    BOOL     m_DoDrawBorder;
    BOOL     m_DoFill;
    COLORREF m_FillColor;

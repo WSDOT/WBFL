@@ -1,5 +1,5 @@
-Build started at  August 17, 2011  10:29:00
-Output Package: C:\ARP_INSTALLER\Install_WBFL_Source_3.4.1.0.exe
+Build started at  October 20, 2011  15:40:57
+Output Package: C:\ARP_INSTALLER\Install_WBFL_Source_3.4.2.0.exe
 Creating Package
      File 'ArpMacros.vsmacros' in package.
      File 'AnalysisResultsManager.cpp' in package.
@@ -8208,13 +8208,12 @@ Creating Package
      File 'UnconfinedConcrete.h' in package.
      File 'UnconfinedConcrete.rgs' in package.
      File 'ReadMe.txt' in package.
-     File 'BuildWBFLManifest.bat' in package.
-     File 'Test.bat' in package.
-     File 'WBFL.manifest' in package.
-     File 'WBFL.manifest' in package.
-     File 'BuildWBFLManifest.bat' in package.
-     File 'Test.bat' in package.
-     File 'WBFL.manifest' in package.
+     File 'WBFL.Win32.Debug.manifest' in package.
+     File 'WBFL.Win32.Profile.manifest' in package.
+     File 'WBFL.Win32.Release.manifest' in package.
+     File 'WBFL.x64.Debug.manifest' in package.
+     File 'WBFL.x64.Profile.manifest' in package.
+     File 'WBFL.x64.Release.manifest' in package.
      File 'CapacityProblem.cpp' in package.
      File 'CapacitySolution.cpp' in package.
      File 'CapacitySolver.cpp' in package.
@@ -9565,4 +9564,4 @@ Creating EXE
      Creating data section...
      Appending Data Section
      Appending File Groups
-Build completed at  August 17, 2011  10:29:35
+Build completed at  October 20, 2011  15:41:29

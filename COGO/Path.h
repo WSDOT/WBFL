@@ -149,8 +149,8 @@ private:
    CComPtr<ICogoEngine> m_CogoEngine;
    CComPtr<ICoordinateXform2d> m_Xform;
 
-   void Advise(IPathElement* element,DWORD* pdwCookie);
-   void Unadvise(long idx);
+   void AdviseElement(IPathElement* element,DWORD* pdwCookie);
+   void UnadviseElement(CollectionIndexType idx);
    void UnadviseAll();
 
    typedef CAdapt<CComPtr<IPathElement> > AdaptElement;

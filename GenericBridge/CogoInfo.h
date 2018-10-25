@@ -68,13 +68,13 @@ public:
 
 // ICogoInfo
 public:
-   STDMETHOD(get_CLBridgeKey)(/*[out,retval]*/ long* clBridgeKey);
-   STDMETHOD(get_AlignmentKey)(/*[out,retval]*/ long* alignmentKey);
-	STDMETHOD(get_PierPointID)(/*[in]*/ PierIndexType pierIdx,/*[in]*/ PierPointType pointType, /*[out, retval]*/ long *pVal);
-   STDMETHOD(get_GirderLineID)(/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx,/*[out, retval]*/ long *pVal);
-   STDMETHOD(get_PierGirderIntersectionPointID)(/*[in]*/ PierIndexType pierIdx,/*[in]*/ GirderIndexType gdrIdx,/*[in]*/ PositionType posType, /*[out, retval]*/ long *pVal);
-	STDMETHOD(get_BearingGirderIntersectionPointID)(/*[in]*/ PierIndexType pierIdx,/*[in]*/ GirderIndexType gdrIdx,/*[in]*/ PositionType posType, /*[out, retval]*/ long *pVal);
-   STDMETHOD(get_GirderEndPointID)(/*[in]*/SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx,/*[in]*/EndType endType,/*[out,retval]*/long* pVal);
+   STDMETHOD(get_CLBridgeKey)(/*[out,retval]*/ CogoElementKey* clBridgeKey);
+   STDMETHOD(get_AlignmentKey)(/*[out,retval]*/ CogoElementKey* alignmentKey);
+	STDMETHOD(get_PierPointID)(/*[in]*/ PierIndexType pierIdx,/*[in]*/ PierPointType pointType, /*[out, retval]*/ CogoElementKey *pVal);
+   STDMETHOD(get_GirderLineID)(/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx,/*[out, retval]*/ CogoElementKey *pVal);
+   STDMETHOD(get_PierGirderIntersectionPointID)(/*[in]*/ PierIndexType pierIdx,/*[in]*/ GirderIndexType gdrIdx,/*[in]*/ PositionType posType, /*[out, retval]*/ CogoElementKey *pVal);
+	STDMETHOD(get_BearingGirderIntersectionPointID)(/*[in]*/ PierIndexType pierIdx,/*[in]*/ GirderIndexType gdrIdx,/*[in]*/ PositionType posType, /*[out, retval]*/ CogoElementKey *pVal);
+   STDMETHOD(get_GirderEndPointID)(/*[in]*/SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx,/*[in]*/EndType endType,/*[out,retval]*/CogoElementKey* pVal);
 };
 
 #endif //__COGOINFO_H_

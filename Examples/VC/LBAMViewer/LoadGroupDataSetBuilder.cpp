@@ -165,7 +165,7 @@ void LoadGroupDataSetBuilder::BuildStressDataSets(ILongArray* arr, IDblArray* lo
          CComQIPtr<iSymbolLegendEntry> entry(fac);
 
          entry->put_Color(color);
-         entry->put_SymbolCharacterCode(49+isp);
+         entry->put_SymbolCharacterCode(DWORD(49+isp));
          entry->put_DoDrawLine(TRUE);
 
          entry->put_Name(m_LoadGroup);
@@ -242,7 +242,7 @@ void LoadGroupDataSetBuilder::BuildStressDataSets(ILongArray* arr, IDblArray* lo
 
 void LoadGroupDataSetBuilder::BuildReactionReport(ILongArray* supportlist, BSTR currStg,
                              CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                             std::ostream& os)
+                             std::_tostream& os)
 {
    HRESULT hr;
    os<<C_R<<"------------------------------------------"<<C_R;
@@ -265,7 +265,7 @@ void LoadGroupDataSetBuilder::BuildReactionReport(ILongArray* supportlist, BSTR 
          ATLASSERT(0);
    }
 
-   os<<(is_force?"Reactions":"Support Deflections")<<" for Load Group "<<(const char*)CString(m_LoadGroup)<<C_R;
+   os<<(is_force?"Reactions":"Support Deflections")<<" for Load Group "<<(const TCHAR*)CString(m_LoadGroup)<<C_R;
 
    CString st;
    if (summType==rsCumulative)
@@ -273,7 +273,7 @@ void LoadGroupDataSetBuilder::BuildReactionReport(ILongArray* supportlist, BSTR 
    else
       st = " Incremental";
 
-   os<<(const char*)st<<" results for Stage: "<<(const char*)CString(currStg)<<C_R<<C_R;
+   os<<(const TCHAR*)st<<" results for Stage: "<<(const TCHAR*)CString(currStg)<<C_R<<C_R;
 
    if (is_force)
       os<<"Support        Rx         Ry           Mz"<<C_R;
@@ -306,7 +306,7 @@ void LoadGroupDataSetBuilder::BuildReactionReport(ILongArray* supportlist, BSTR 
       hr = sr->GetResult(&fx, &fy, &fz);
       PROCESS_HR(hr);
 
-      long sup;
+      IDType sup;
       supportlist->get_Item(i,&sup);
       os<<std::setw(7)<<sup<<std::fixed<<std::setprecision(2)<<std::setw(13)<<fx<<std::setw(13)<<fy<<std::setw(13)<<fz<<C_R;
 

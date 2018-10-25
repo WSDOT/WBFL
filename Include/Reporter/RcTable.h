@@ -43,6 +43,8 @@
 // MISCELLANEOUS
 //
 
+#define SKIP_CELL INVALID_INDEX
+
 /*****************************************************************************
 CLASS 
    rptRcTable
@@ -229,14 +231,14 @@ public:
    // Set number of Columns to right that a given cell will span
    // span==1 is the default
    // span==0 will case it to span all following columns
-   // span<0 will cause the cell at this location not to be generated
+   // span==SKIP_CELL will cause the cell at this location not to be generated
    void SetColumnSpan(RowIndexType RowNo, ColumnIndexType ColNo, ColumnIndexType span);
 
    //------------------------------------------------------------------------
    // Set number of Columns to right that a given cell will span 
    // span==1 is the default
    // span==0 will case it to span all following rows
-   // span<0 will cause the cell at this location not to be generated
+   // span == SKIP_CELL will cause the cell at this location not to be generated
    void SetRowSpan(RowIndexType RowNo, ColumnIndexType ColNo, RowIndexType span);
 
    //------------------------------------------------------------------------

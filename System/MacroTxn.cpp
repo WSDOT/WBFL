@@ -199,7 +199,7 @@ bool txnMacroTxn::IsRepeatable()
    return is_repeatable;
 } // IsRepeatable
 
-int txnMacroTxn::GetTxnCount()
+CollectionIndexType txnMacroTxn::GetTxnCount()
 {
    return m_Transactions.size();
 } // GetTxnCount

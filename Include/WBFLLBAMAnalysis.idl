@@ -159,13 +159,13 @@ library WBFLLBAMAnalysis
       // Performance settings for internally generated POIs
       // Defaults for span increment would be 10, and cantilever would be 2
 		[propget, helpstring("SpanPoiIncrement - Minimum number of spaces between POIs in all Spans"),helpcontext(IDH_AnalysisPOIs)]  
-      HRESULT SpanPoiIncrement([out, retval] long *pVal);
+      HRESULT SpanPoiIncrement([out, retval] PoiIDType *pVal);
 		[propput, helpstring("SpanPoiIncrement - Minimum number of spaces between POIs in all Spans"),helpcontext(IDH_AnalysisPOIs_SpanPOIIncrement)]  
-      HRESULT SpanPoiIncrement([in] long newVal);
+      HRESULT SpanPoiIncrement([in] PoiIDType newVal);
 		[propget, helpstring("CantileverPoiIncrement - Minimum number of spaces between POIs in Cantilevers"),helpcontext(IDH_AnalysisPOIs_CantileverPOIIncrement)]  
-      HRESULT CantileverPoiIncrement([out, retval] long *pVal);
+      HRESULT CantileverPoiIncrement([out, retval] PoiIDType *pVal);
 		[propput, helpstring("CantileverPoiIncrement - Minimum number of spaces between POIs in Cantilevers"),helpcontext(IDH_AnalysisPOIs_CantileverPOIIncrement)]  
-      HRESULT CantileverPoiIncrement([in] long newVal);
+      HRESULT CantileverPoiIncrement([in] PoiIDType newVal);
 
       // Access methods for poi information
       // Get all pois (user and internal) along superstructure in sorted order

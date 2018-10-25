@@ -103,7 +103,7 @@ void COnMouseOverCursor::ResetCursor()
    ::SetCursor(m_hOriginalCursor);
 }
 
-VOID CALLBACK COnMouseOverCursor::TimerProc(HWND hwnd,UINT uMsg,UINT idEvent,DWORD dwTime)
+VOID CALLBACK COnMouseOverCursor::TimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
 {
    // The timer went off...
    ATLTRACE("OnMouseOverCursor - Timer Event\n");

@@ -85,8 +85,8 @@ BEGIN_COM_MAP(CDimensionLineImpl)
 END_COM_MAP()
 
    // iDisplayObject Implementation
-   STDMETHOD_(void,SetID)(long id) { Do_SetID(id); }
-   STDMETHOD_(long,GetID)() { return Do_GetID(); }
+   STDMETHOD_(void,SetID)(IDType id) { Do_SetID(id); }
+   STDMETHOD_(IDType,GetID)() { return Do_GetID(); }
 
    STDMETHOD_(void,SetItemData)(void* pItemData,bool bDelete) { Do_SetItemData(pItemData,bDelete); }
    STDMETHOD_(void,GetItemData)(void** ppItemData) { Do_GetItemData(ppItemData); }
@@ -133,10 +133,10 @@ END_COM_MAP()
    // Tool Tips
    STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText) {Do_SetToolTipText(lpszToolTipText);}
    STDMETHOD_(CString,GetToolTipText)();
-   STDMETHOD_(void,SetMaxTipWidth)(long maxWidth);
-   STDMETHOD_(long,GetMaxTipWidth)();
-   STDMETHOD_(void,SetTipDisplayTime)(long iTime);
-   STDMETHOD_(long,GetTipDisplayTime)();
+   STDMETHOD_(void,SetMaxTipWidth)(INT maxWidth);
+   STDMETHOD_(INT,GetMaxTipWidth)();
+   STDMETHOD_(void,SetTipDisplayTime)(INT iTime);
+   STDMETHOD_(INT,GetTipDisplayTime)();
 
    // Event Sink
    STDMETHOD_(void,RegisterEventSink)(iDisplayObjectEvents* pEventSink)
@@ -153,10 +153,10 @@ END_COM_MAP()
    // IDimensionLine Implementation
    STDMETHOD_(void,SetAngle)(Float64 angle);
    STDMETHOD_(Float64,GetAngle)();
-   STDMETHOD_(void,SetWitnessLength)(long l);
-   STDMETHOD_(long,GetWitnessLength)();
-   STDMETHOD_(void,SetWitnessOffset)(long wOffset);
-   STDMETHOD_(long,GetWitnessOffset)();
+   STDMETHOD_(void,SetWitnessLength)(LONG l);
+   STDMETHOD_(LONG,GetWitnessLength)();
+   STDMETHOD_(void,SetWitnessOffset)(LONG wOffset);
+   STDMETHOD_(LONG,GetWitnessOffset)();
    STDMETHOD_(void,SetArrowHeadSize)(CSize size);
    STDMETHOD_(CSize,GetArrowHeadSize)();
    STDMETHOD_(void,SetArrowHeadStyle)(DManip::ArrowHeadStyleType style);
@@ -189,11 +189,11 @@ private:
 
    Float64 m_Angle;
    BOOL   m_bAlignWithPlugs;
-   long   m_LenWitness;
-   long   m_DimOffset;
-   long   m_WitnessOffset;
-   long   m_ArrowHeight;
-   long   m_ArrowWidth;
+   LONG   m_LenWitness;
+   LONG   m_DimOffset;
+   LONG   m_WitnessOffset;
+   int   m_ArrowHeight;
+   int   m_ArrowWidth;
 
    struct ARROWHEAD
    {

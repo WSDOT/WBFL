@@ -940,7 +940,7 @@ HRESULT CCubicSpline::UpdateSpline()
    if ( FAILED(hr) )
       return hr;
 
-   long nPoints = m_SplineSegments.size() + 1;
+   CollectionIndexType nPoints = m_SplineSegments.size() + 1;
 
    // spline coefficients y = a + bx + cx^2 + dx^3
    Float64* an = new Float64[nPoints];
@@ -950,7 +950,7 @@ HRESULT CCubicSpline::UpdateSpline()
 
    // set an[i] = f(xi)
    std::vector<CSplineSegment>::iterator iter;
-   int i = 0;
+   CollectionIndexType i = 0;
    for ( iter = m_SplineSegments.begin(); iter != m_SplineSegments.end(); iter++, i++ )
    {
       CSplineSegment& splineSegment = *iter;
@@ -1033,11 +1033,17 @@ HRESULT CCubicSpline::UpdateSpline()
    //     ci=zi-[ui*c(i+1)]
    //     bi=[a(i+1)-ai]/hi-{hi*{c(i+1)+[2*ci]}/3
    //     di=[c(i+1)-ci]/[3*hi]
-   for( i = nPoints-2; i >= 0; i--)
+   //for( i = nPoints-2; i >= 0; i--)
+   //{
+   //   cn[i]=(zi[i]-(ui[i]*cn[(i+1)]));
+	  // bn[i]=(((an[(i+1)]-an[i])/hi[i])-((hi[i]*(cn[(i+1)]+(2*cn[i])))/3));
+   //   dn[i]=((cn[(i+1)]-cn[i])/(3*hi[i]));
+   //}
+   for( i = nPoints-1; i >= 1; i--)
    {
-      cn[i]=(zi[i]-(ui[i]*cn[(i+1)]));
-	   bn[i]=(((an[(i+1)]-an[i])/hi[i])-((hi[i]*(cn[(i+1)]+(2*cn[i])))/3));
-      dn[i]=((cn[(i+1)]-cn[i])/(3*hi[i]));
+      cn[i-1]=(zi[i-1]-(ui[i-1]*cn[(i)]));
+	   bn[i-1]=(((an[i]-an[i-1])/hi[i-1])-((hi[i-1]*(cn[i]+(2*cn[i-1])))/3));
+      dn[i-1]=((cn[i]-cn[i-1])/(3*hi[i-1]));
    }
 
    for ( i = 0, iter = m_SplineSegments.begin(); iter != m_SplineSegments.end(); i++, iter++ )

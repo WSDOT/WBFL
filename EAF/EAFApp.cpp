@@ -281,8 +281,8 @@ void CEAFApp::ShowUsageMessage()
    CString strUsage;
    strUsage.Format(_T("%s"),cmdInfo.GetUsageMessage());
    
-   UINT nPlugins = GetAppPluginManager()->GetPluginCount();
-   for ( UINT idx = 0; idx < nPlugins; idx++ )
+   CollectionIndexType nPlugins = GetAppPluginManager()->GetPluginCount();
+   for ( CollectionIndexType idx = 0; idx < nPlugins; idx++ )
    {
       CComPtr<IEAFAppPlugin> appPlugin;
       GetAppPluginManager()->GetPlugin(idx,&appPlugin);
@@ -637,7 +637,7 @@ BOOL CEAFApp::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pH
    if ( m_PluginCommandMgr.GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
    {
       // process the callback command
-      bResult = pCallback->OnCommandMessage(nPluginCmdID,nCode,pExtra,pHandlerInfo);
+      bResult = pCallback->OnCommandMessage((UINT)nPluginCmdID,nCode,pExtra,pHandlerInfo);
       if ( bResult )
          return bResult;
    }
@@ -816,8 +816,8 @@ void CEAFApp::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
       {
          // otherwise, if no document, try to figure out which app plugin deals with it.
          BOOL bHandled = false;
-         UINT nPlugins = GetAppPluginManager()->GetPluginCount();
-         for ( UINT idx = 0; idx < nPlugins; idx++ )
+         CollectionIndexType nPlugins = GetAppPluginManager()->GetPluginCount();
+         for ( CollectionIndexType idx = 0; idx < nPlugins; idx++ )
          {
             CComPtr<IEAFAppPlugin> appPlugin;
             GetAppPluginManager()->GetPlugin(idx,&appPlugin);

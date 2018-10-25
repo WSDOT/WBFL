@@ -68,18 +68,18 @@ bmfLrZone& bmfLrZone::operator= (const bmfLrZone& rOther)
 
 //======================== OPERATIONS =======================================
 
-Uint32 bmfLrZone::GetNumPatterns() const
+CollectionIndexType bmfLrZone::GetNumPatterns() const
 {
    return m_PatternVec.size();
 }
 
-bmfLrPattern* bmfLrZone::GetPattern(Uint32 idx)
+bmfLrPattern* bmfLrZone::GetPattern(CollectionIndexType idx)
 {
    PRECONDITION(idx < GetNumPatterns());
    return m_PatternVec[idx].get();
 }
 
-Uint32 bmfLrZone::AddPattern(bmfLrPattern* pPattern)
+CollectionIndexType bmfLrZone::AddPattern(bmfLrPattern* pPattern)
 {
    PRECONDITION(pPattern!=0);
    PatternPtr ptr(pPattern);

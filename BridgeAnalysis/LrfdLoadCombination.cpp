@@ -40,7 +40,7 @@ static char THIS_FILE[] = __FILE__;
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-bamLrfdLoadCombination::bamLrfdLoadCombination(Int32 id,
+bamLrfdLoadCombination::bamLrfdLoadCombination(IDType id,
                                                lrfdTypes::LimitState ls,
                                                bamOptimumType type,
                                                bamOptimumVariable variable) :
@@ -89,7 +89,7 @@ bamLrfdLoadCombination::~bamLrfdLoadCombination()
 
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
-bamSectionResults bamLrfdLoadCombination::CombineSectionResults( Int32 poiId )
+bamSectionResults bamLrfdLoadCombination::CombineSectionResults( PoiIDType poiId )
 {
    bamBridgeModel* pBridge = &GetBridgeModel();
    bamAnalysisResultsManager* pArm = pBridge->GetAnalysisResultsManager();
@@ -150,7 +150,7 @@ bamSectionResults bamLrfdLoadCombination::CombineSectionResults( Int32 poiId )
    return results;
 }
 
-bamSectionStress bamLrfdLoadCombination::CombineSectionStress( Int32 poiId, Int32 spIdx )
+bamSectionStress bamLrfdLoadCombination::CombineSectionStress( PoiIDType poiId, CollectionIndexType spIdx )
 {
    bamBridgeModel* pBridge = &GetBridgeModel();
    bamAnalysisResultsManager* pArm = pBridge->GetAnalysisResultsManager();
@@ -217,7 +217,7 @@ bamSectionStress bamLrfdLoadCombination::CombineSectionStress( Int32 poiId, Int3
    return fresults;
 }
 
-bamReaction bamLrfdLoadCombination::CombineReactions( Int32 supportId )
+bamReaction bamLrfdLoadCombination::CombineReactions( SupportIDType supportId )
 {
    bamBridgeModel* pBridge = &GetBridgeModel();
    bamAnalysisResultsManager* pArm = pBridge->GetAnalysisResultsManager();
@@ -306,32 +306,32 @@ bamReaction bamLrfdLoadCombination::CombineReactions( Int32 supportId )
    return reaction;
 }
 
-void bamLrfdLoadCombination::SetDCLoading(Int32 lcid)
+void bamLrfdLoadCombination::SetDCLoading(IDType lcid)
 {
    m_lcidDC = lcid;
 }
 
-Int32 bamLrfdLoadCombination::GetDCLoading() const
+IDType bamLrfdLoadCombination::GetDCLoading() const
 {
    return m_lcidDC;
 }
 
-void bamLrfdLoadCombination::SetDWLoading(Int32 lcid)
+void bamLrfdLoadCombination::SetDWLoading(IDType lcid)
 {
    m_lcidDW = lcid;
 }
 
-Int32 bamLrfdLoadCombination::GetDWLoading() const
+IDType bamLrfdLoadCombination::GetDWLoading() const
 {
    return m_lcidDW;
 }
 
-void bamLrfdLoadCombination::SetLLIMLoading(Int32 lcid)
+void bamLrfdLoadCombination::SetLLIMLoading(IDType lcid)
 {
    m_lcidLLIM = lcid;
 }
 
-Int32 bamLrfdLoadCombination::GetLLIMLoading() const
+IDType bamLrfdLoadCombination::GetLLIMLoading() const
 {
    return m_lcidLLIM;
 }
@@ -395,7 +395,7 @@ bamOptimumVariable bamLrfdLoadCombination::GetOptimizationVariable() const
 }
 
 //======================== ACCESS     =======================================
-void bamLrfdLoadCombination::GetLoadings(std::vector<Int32>& loadingIds) const
+void bamLrfdLoadCombination::GetLoadings(std::vector<IDType>& loadingIds) const
 {
    loadingIds.clear();
    loadingIds.push_back( m_lcidDC );

@@ -52,7 +52,7 @@ END_COM_MAP()
 
 public:
    STDMETHOD(OnLiveLoadChanged)( LiveLoadModelType type);
-   STDMETHOD(OnStiffnessResponseChanged)(ChangeScopeType scope, long poiID);
+   STDMETHOD(OnStiffnessResponseChanged)(ChangeScopeType scope, PoiIDType poiID);
 
    bool m_csModelHosedFired;
    bool m_csLiveLoadChangedFired;

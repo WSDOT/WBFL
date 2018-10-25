@@ -210,12 +210,12 @@ STDMETHODIMP CStressResult::Save(IStructuredSave2 * psave)
       return hr;
 
    {
-      long cnt = m_Results.size();
+      CollectionIndexType cnt = m_Results.size();
       hr = psave->put_Property(CComBSTR("Count"),_variant_t(cnt));
       if (FAILED(hr))
          return hr;
 
-      for (long i=0; i<cnt; i++)
+      for (CollectionIndexType i=0; i<cnt; i++)
       {
          hr = psave->put_Property(CComBSTR("Val"),_variant_t(m_Results[i]));
          if (FAILED(hr))

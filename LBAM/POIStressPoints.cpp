@@ -424,7 +424,7 @@ STDMETHODIMP CPOIStressPoints::Save(IStructuredSave2 * psave)
    {
       hr = psave->BeginUnit(CComBSTR("POIStressPoints"), MY_VER);
 
-      long cnt = m_Container.size();
+      CollectionIndexType cnt = m_Container.size();
       hr = psave->put_Property(CComBSTR("Count"),_variant_t(cnt));
 
       IteratorType it( m_Container.begin() );

@@ -113,7 +113,7 @@ public:
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
 	STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal);
 	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal);
-	STDMETHOD(get_AvgWebWidth)(/*[in]*/ CollectionIndexType webIdx,/*[out, retval]*/ Float64 *pVal);
+	STDMETHOD(get_AvgWebWidth)(/*[in]*/ WebIndexType webIdx,/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(get_TopFlangeWidth)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(get_Height)(/*[out, retval]*/ Float64 *pVal);
    STDMETHOD(get_HookPoint)(/*[out,retval]*/ IPoint2d** hookPnt);

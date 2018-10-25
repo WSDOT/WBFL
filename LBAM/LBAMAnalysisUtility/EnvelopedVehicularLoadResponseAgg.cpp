@@ -218,7 +218,7 @@ STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeReactions(ILongArray* su
    try
    {
       // loop over all of our engines and get results from each
-      int eng_cnt = m_pEnveloper->EngineCount();
+      CollectionIndexType eng_cnt = m_pEnveloper->EngineCount();
       if (eng_cnt==0)
       {
          THROW_LBAMAU(ENGINE_INIT);
@@ -227,7 +227,7 @@ STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeReactions(ILongArray* su
       std::vector< CAdapt< CComPtr<ILiveLoadModelResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (long ieng=0;  ieng<eng_cnt; ieng++)
+      for (CollectionIndexType ieng=0;  ieng<eng_cnt; ieng++)
       {
          CComPtr<ILBAMAnalysisEngine> engine;
          m_pEnveloper->GetEngine(ieng, &engine);
@@ -248,7 +248,7 @@ STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeReactions(ILongArray* su
 
       // now that we have all results from all engines, envelope them
       // max results are place in the first member of the vector
-      for (long ieng=1; ieng<eng_cnt; ieng++)
+      for (CollectionIndexType ieng=1; ieng<eng_cnt; ieng++)
       {
          EnvelopeLiveLoadResults(result_vec[0].m_T, result_vec[ieng].m_T,computePlacements, optimization);
       }
@@ -278,7 +278,7 @@ STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeSupportDeflections(ILong
    try
    {
       // loop over all of our engines and get results from each
-      int eng_cnt = m_pEnveloper->EngineCount();
+      CollectionIndexType eng_cnt = m_pEnveloper->EngineCount();
       if (eng_cnt==0)
       {
          THROW_LBAMAU(ENGINE_INIT);
@@ -287,7 +287,7 @@ STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeSupportDeflections(ILong
       std::vector< CAdapt< CComPtr<ILiveLoadModelResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (long ieng=0;  ieng<eng_cnt; ieng++)
+      for (CollectionIndexType ieng=0;  ieng<eng_cnt; ieng++)
       {
          CComPtr<ILBAMAnalysisEngine> engine;
          m_pEnveloper->GetEngine(ieng, &engine);
@@ -308,7 +308,7 @@ STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeSupportDeflections(ILong
 
       // now that we have all results from all engines, envelope them
       // max results are place in the first member of the vector
-      for (long ieng=1; ieng<eng_cnt; ieng++)
+      for (CollectionIndexType ieng=1; ieng<eng_cnt; ieng++)
       {
          EnvelopeLiveLoadResults(result_vec[0].m_T, result_vec[ieng].m_T,computePlacements, optimization);
       }
@@ -368,19 +368,19 @@ STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeStresses(ILongArray* poi
          hr = force_res->GetResult(ipoi, &left_force, &left_config, &right_force, &right_config);
 
          // determine which engine (model) was the optimal, and get the appropriate response interfaces
-         long left_engine_id  = m_ControllingEngine[ipoi].Left;
-         long right_engine_id = m_ControllingEngine[ipoi].Right;
+         CollectionIndexType left_engine_idx  = m_ControllingEngine[ipoi].Left;
+         CollectionIndexType right_engine_idx = m_ControllingEngine[ipoi].Right;
 
          CComPtr<ILBAMAnalysisEngine> left_engine, right_engine;
-         m_pEnveloper->GetEngine(left_engine_id,  &left_engine);
-         m_pEnveloper->GetEngine(right_engine_id, &right_engine);
+         m_pEnveloper->GetEngine(left_engine_idx,  &left_engine);
+         m_pEnveloper->GetEngine(right_engine_idx, &right_engine);
 
          CComPtr<IBasicVehicularResponse> left_response, right_response;
          hr = left_engine->get_BasicVehicularResponse(&left_response);
          hr = right_engine->get_BasicVehicularResponse(&right_response);
 
          // compute results one poi at a time
-         long poi_id;
+         PoiIDType poi_id;
          pois->get_Item(ipoi, &poi_id);
          single_poi->put_Item(0, poi_id);
 
@@ -415,7 +415,7 @@ STDMETHODIMP CEnvelopedVehicularLoadResponseAgg::ComputeStresses(ILongArray* poi
 
 // Make sure maximum value is in res1
 void CEnvelopedVehicularLoadResponseAgg::EnvelopeLiveLoadSectionResults(ILiveLoadModelSectionResults* res1, ILiveLoadModelSectionResults* res2,
-                                           VARIANT_BOOL computeConfig, OptimizationType optimization, bool doFlip, long engineID)
+                                           VARIANT_BOOL computeConfig, OptimizationType optimization, bool doFlip, CollectionIndexType engineIdx)
 {
    // res1 contains the current controlling value
 
@@ -462,11 +462,11 @@ void CEnvelopedVehicularLoadResponseAgg::EnvelopeLiveLoadSectionResults(ILiveLoa
 
       if (ldo)
       {
-         m_ControllingEngine[ipoi].Left = engineID;
+         m_ControllingEngine[ipoi].Left = engineIdx;
 
          if (rdo)
          {
-            m_ControllingEngine[ipoi].Right = engineID;
+            m_ControllingEngine[ipoi].Right = engineIdx;
 
             // replace res1's right and left
             hr = res1->SetResult(ipoi, lval2, lconf2, rval2, rconf2);
@@ -480,7 +480,7 @@ void CEnvelopedVehicularLoadResponseAgg::EnvelopeLiveLoadSectionResults(ILiveLoa
       else if (rdo)
       {
          // right only
-         m_ControllingEngine[ipoi].Right = engineID;
+         m_ControllingEngine[ipoi].Right = engineIdx;
          hr = res1->SetResult(ipoi, lval1, lconf1, rval2, rconf2);
       }
    }

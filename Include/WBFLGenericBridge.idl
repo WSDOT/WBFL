@@ -1067,13 +1067,13 @@ library WBFLGenericBridge
 	]
 	interface ICogoInfo : IUnknown
 	{
-      [propget, helpstring("property GirderEndPointID")] HRESULT GirderEndPointID([in]SpanIndexType spanIdx,[in] GirderIndexType gdrIdx,[in]EndType endType,[out,retval]long* pVal);
-		[propget, helpstring("property PierGirderIntersectionPointID")] HRESULT PierGirderIntersectionPointID([in] PierIndexType pierIdx,[in] GirderIndexType gdrIdx,[in] PositionType posType, [out, retval] long *pVal);
-		[propget, helpstring("property BearingGirderIntersectionPointID")] HRESULT BearingGirderIntersectionPointID([in] PierIndexType pierIdx,[in] GirderIndexType gdrIdx,[in] PositionType posType, [out, retval] long *pVal);
-		[propget, helpstring("property GirderLineID")] HRESULT GirderLineID([in] SpanIndexType spanIdx,[in] GirderIndexType gdrIdx,[out, retval] long *pVal);
-		[propget, helpstring("property PierPointID")] HRESULT PierPointID([in] PierIndexType pierIdx,[in] PierPointType pointType, [out, retval] long *pVal);
-		[propget, helpstring("property AlignmentID")] HRESULT AlignmentKey([out,retval] long* alignmentKey);
-		[propget, helpstring("property CLBridgeID")] HRESULT CLBridgeKey([out,retval] long* clBridgeKey);
+      [propget, helpstring("property GirderEndPointID")] HRESULT GirderEndPointID([in]SpanIndexType spanIdx,[in] GirderIndexType gdrIdx,[in]EndType endType,[out,retval]CogoElementKey* pVal);
+		[propget, helpstring("property PierGirderIntersectionPointID")] HRESULT PierGirderIntersectionPointID([in] PierIndexType pierIdx,[in] GirderIndexType gdrIdx,[in] PositionType posType, [out, retval] CogoElementKey *pVal);
+		[propget, helpstring("property BearingGirderIntersectionPointID")] HRESULT BearingGirderIntersectionPointID([in] PierIndexType pierIdx,[in] GirderIndexType gdrIdx,[in] PositionType posType, [out, retval] CogoElementKey *pVal);
+		[propget, helpstring("property GirderLineID")] HRESULT GirderLineID([in] SpanIndexType spanIdx,[in] GirderIndexType gdrIdx,[out, retval] CogoElementKey *pVal);
+		[propget, helpstring("property PierPointID")] HRESULT PierPointID([in] PierIndexType pierIdx,[in] PierPointType pointType, [out, retval] CogoElementKey *pVal);
+		[propget, helpstring("property AlignmentID")] HRESULT AlignmentKey([out,retval] CogoElementKey* alignmentKey);
+		[propget, helpstring("property CLBridgeID")] HRESULT CLBridgeKey([out,retval] CogoElementKey* clBridgeKey);
 	};
 	[
 		object,
@@ -1562,17 +1562,17 @@ library WBFLGenericBridge
 		[propput, helpstring("property Symmetrical")] HRESULT Symmetrical([in] VARIANT_BOOL newVal);
 
       [helpstring("method AddSegment")] HRESULT AddSegment([in]ISegment* segment);
-		[helpstring("method InsertSegment")] HRESULT InsertSegment([in] CollectionIndexType idx,[in]ISegment* segment);
-		[helpstring("method MoveSegmentTo")] HRESULT MoveSegmentTo([in] CollectionIndexType fromIdx,[in] CollectionIndexType toIdx);
-		[helpstring("method CopySegmentTo")] HRESULT CopySegmentTo([in] CollectionIndexType fromIdx, [in] CollectionIndexType toIdx);
-		[helpstring("method RemoveSegment")] HRESULT RemoveSegment([in] CollectionIndexType idx);
+		[helpstring("method InsertSegment")] HRESULT InsertSegment([in] SegmentIndexType idx,[in]ISegment* segment);
+		[helpstring("method MoveSegmentTo")] HRESULT MoveSegmentTo([in] SegmentIndexType fromIdx,[in] SegmentIndexType toIdx);
+		[helpstring("method CopySegmentTo")] HRESULT CopySegmentTo([in] SegmentIndexType fromIdx, [in] SegmentIndexType toIdx);
+		[helpstring("method RemoveSegment")] HRESULT RemoveSegment([in] SegmentIndexType idx);
 		[helpstring("method RemoveSegments")] HRESULT RemoveSegments();
 		[helpstring("method GetMemberSegments")] HRESULT GetMemberSegments([out,retval] IFilteredSegmentCollection **ppSeg);
 		[helpstring("method GetSegmentForMemberLocation")] HRESULT GetSegmentForMemberLocation([in] Float64 Location,[out] Float64* dist,[out] ISegmentItem **ppSeg);
 		[helpstring("method ReverseSegments")] HRESULT ReverseSegments();
-      [propget, helpstring("property SegmentCount")] HRESULT SegmentCount([out,retval] CollectionIndexType* count);
+      [propget, helpstring("property SegmentCount")] HRESULT SegmentCount([out,retval] SegmentIndexType* count);
       [propget, helpstring("property SegmentLength")] HRESULT SegmentLength([out,retval] Float64* value);
-      [propget, helpstring("property Segment")] HRESULT Segment([in] CollectionIndexType idx,[out,retval] ISegment* *segment);
+      [propget, helpstring("property Segment")] HRESULT Segment([in] SegmentIndexType idx,[out,retval] ISegment* *segment);
       [propget,helpstring("property Pier")] HRESULT Pier([out,retval]IPier* *pier);
 	};
    [
@@ -1596,7 +1596,7 @@ library WBFLGenericBridge
 	]
 	interface ITemporaryPierItem : IUnknown
 	{
-		[propget, helpstring("property ID")] HRESULT ID([out, retval] long* id);
+		[propget, helpstring("property ID")] HRESULT ID([out, retval] IDType* id);
 		[propget, helpstring("property Location")] HRESULT Location([out, retval] Float64* location);
 		[propput, helpstring("property Location")] HRESULT Location([in] Float64 location);
 		[propget, helpstring("property RemovalStage")] HRESULT RemovalStage([out, retval] BSTR* bstrRemovalStage);
@@ -1612,7 +1612,7 @@ library WBFLGenericBridge
 	]
 	interface ITemporaryPierItemEvents : IUnknown
 	{
-		[helpstring("event OnTemporaryPierChanged")] HRESULT OnTemporaryPierChanged([in] long id);
+		[helpstring("event OnTemporaryPierChanged")] HRESULT OnTemporaryPierChanged([in] IDType id);
 	};
 	[
 	   object,
@@ -1652,19 +1652,19 @@ library WBFLGenericBridge
 		HRESULT _EnumTemporaryPierItems([out, retval] IEnumTemporaryPierItems* *pVal);
 
 		[helpstring("Add a new PointOfInterest to the model")] 
-		HRESULT Add([in] long id,[in] Float64 location,[in] BSTR bstrRemovalStage);
+		HRESULT Add([in] IDType id,[in] Float64 location,[in] BSTR bstrRemovalStage);
 
 		[helpstring("method RemoveByIndex")] 
 		HRESULT RemoveByIndex([in]CollectionIndexType index);
 
 		[helpstring("method RemoveByID")] 
-		HRESULT RemoveByID([in]long id);
+		HRESULT RemoveByID([in]IDType id);
 
 		[helpstring("method Clear")] 
       HRESULT Clear();
 
 		[helpstring("method Find")] 
-      HRESULT Find([in] long id,[out,retval] ITemporaryPierItem** pVal);
+      HRESULT Find([in] IDType id,[out,retval] ITemporaryPierItem** pVal);
 	};
 
    [
@@ -1677,8 +1677,8 @@ library WBFLGenericBridge
    interface ITemporaryPierItemCollectionEvents : IUnknown
    {
       [helpstring("event OnTemporaryPierItemChanged")] HRESULT OnTemporaryPierItemChanged([in] ITemporaryPierItem* tpi);
-      [helpstring("event OnTemporaryPierItemAdded")] HRESULT OnTemporaryPierItemAdded([in] long id);
-      [helpstring("event OnTemporaryPierItemRemoved")] HRESULT OnTemporaryPierItemRemoved([in] long id);
+      [helpstring("event OnTemporaryPierItemAdded")] HRESULT OnTemporaryPierItemAdded([in] IDType id);
+      [helpstring("event OnTemporaryPierItemRemoved")] HRESULT OnTemporaryPierItemRemoved([in] IDType id);
    };
 
    [

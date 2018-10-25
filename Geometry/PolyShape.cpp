@@ -581,7 +581,7 @@ STDMETHODIMP CPolyShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult)
             VARIANT_BOOL bContains;
             CComPtr<IGeomUtil2d> util;
             CreateGeomUtil(&util);
-            util->DoesLineSegmentContainPoint(seg,pPoint,&bContains);
+            util->DoesLineSegmentContainPoint(seg,pPoint,1e-6,&bContains);
 
             if ( bContains == VARIANT_TRUE )
             {

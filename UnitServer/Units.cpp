@@ -149,7 +149,7 @@ STDMETHODIMP CUnits::Clear()
 STDMETHODIMP CUnits::get_Count(CollectionIndexType* retval)
 {
    CHECK_RETVAL(retval);
-   CollectionIndexType count;
+   long count;
    IUnitCollection::get_Count(&count);
    *retval = count;
    return S_OK;

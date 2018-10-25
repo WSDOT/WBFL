@@ -137,7 +137,7 @@ void CChildFrame::ClearDataSetBuilders(bool doUpdate)
    }
 }
 
-void CChildFrame::AddDataSetBuilder(long key, iDataSetBuilder* bldr, bool doUpdate)
+void CChildFrame::AddDataSetBuilder(IndexType key, iDataSetBuilder* bldr, bool doUpdate)
 {
    m_DataSetBuilders.insert(DataSetBuilderValueType(key,bldr));
 
@@ -145,7 +145,7 @@ void CChildFrame::AddDataSetBuilder(long key, iDataSetBuilder* bldr, bool doUpda
    if (bldr->HasTruckPlacement())
    {
       LiveLoadModelType model_type;
-      long vehicle_index;
+      VehicleIndexType vehicle_index;
       CComPtr<ILiveLoadConfiguration> placement;
       bldr->GetTruckInfo(&model_type, &vehicle_index, &placement);
 
@@ -158,7 +158,7 @@ void CChildFrame::AddDataSetBuilder(long key, iDataSetBuilder* bldr, bool doUpda
          ATLASSERT(0);
       }
 
-      m_PlacementCookies.insert(std::map<long,long>::value_type(key,cookie));
+      m_PlacementCookies.insert(std::map<IndexType,DWORD>::value_type(key,cookie));
    }
 
    if (doUpdate)
@@ -169,7 +169,7 @@ void CChildFrame::AddDataSetBuilder(long key, iDataSetBuilder* bldr, bool doUpda
    }
 }
 
-void CChildFrame::RemoveDataSetBuilder(long key, bool doUpdate)
+void CChildFrame::RemoveDataSetBuilder(IndexType key, bool doUpdate)
 {
    try
    {
@@ -181,7 +181,7 @@ void CChildFrame::RemoveDataSetBuilder(long key, bool doUpdate)
          DWORD cookie = m_PlacementCookies[key];
 
          LiveLoadModelType model_type;
-         long vehicle_index;
+         VehicleIndexType vehicle_index;
          CComPtr<ILiveLoadConfiguration> placement;
          pbld->GetTruckInfo(&model_type, &vehicle_index, &placement);
 
@@ -208,17 +208,17 @@ void CChildFrame::RemoveDataSetBuilder(long key, bool doUpdate)
    }
 }
 
-long CChildFrame::GetNumDataSetBuilders()
+IndexType CChildFrame::GetNumDataSetBuilders()
 {
    return m_DataSetBuilders.size();
 }
 
-iDataSetBuilder* CChildFrame::GetDataSetBuilder(long idx)
+iDataSetBuilder* CChildFrame::GetDataSetBuilder(IndexType idx)
 {
    ATLASSERT(idx>=0 && idx<GetNumDataSetBuilders());
 
    DataSetBuilderIterator it =  m_DataSetBuilders.begin();
-   for (long i=0; i<idx; i++)
+   for (IndexType i=0; i<idx; i++)
       it++;
 
    ATLASSERT(it!=m_DataSetBuilders.end());

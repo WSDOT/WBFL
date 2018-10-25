@@ -69,7 +69,7 @@ void CXShutDown::GetErrorMessage(std::_tstring* pMsg) const
 
 BOOL CXShutDown::GetErrorMessage( LPTSTR lpszError,INT nChar, UINT nMaxError, PUINT pnHelpContext)
 {
-   UINT max = min(nMaxError, m_Message.size());
+   CollectionIndexType max = min(nMaxError, m_Message.size());
    _tcsncpy_s(lpszError,nChar,m_Message.c_str(),max);
    return TRUE;
 }

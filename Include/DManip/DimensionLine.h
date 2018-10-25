@@ -35,10 +35,10 @@ interface iDimensionLine : public iDisplayObject
 {
    STDMETHOD_(void,SetAngle)(Float64 angle) PURE;
    STDMETHOD_(Float64,GetAngle)() PURE;
-   STDMETHOD_(void,SetWitnessLength)(long l) PURE;
-   STDMETHOD_(long,GetWitnessLength)() PURE;
-   STDMETHOD_(void,SetWitnessOffset)(long wOffset) PURE;
-   STDMETHOD_(long,GetWitnessOffset)() PURE;
+   STDMETHOD_(void,SetWitnessLength)(LONG l) PURE;
+   STDMETHOD_(LONG,GetWitnessLength)() PURE;
+   STDMETHOD_(void,SetWitnessOffset)(LONG wOffset) PURE;
+   STDMETHOD_(LONG,GetWitnessOffset)() PURE;
    STDMETHOD_(void,SetArrowHeadSize)(CSize size) PURE;
    STDMETHOD_(CSize,GetArrowHeadSize)() PURE;
    STDMETHOD_(void,SetArrowHeadStyle)(DManip::ArrowHeadStyleType style) PURE;

@@ -120,7 +120,7 @@ public:
    //------------------------------------------------------------------------
    // GetNumPoints
    // Returns the number of vertex points on the polygon.
-   Uint32 GetNumPoints() const;
+   CollectionIndexType GetNumPoints() const;
 
    //------------------------------------------------------------------------
    // Clear
@@ -207,7 +207,7 @@ public:
    // For optimization only. Reserves memory for polygon points. Calling this 
    // prior to adding points will reduce the number of calls made to the allocator
    // if you know the number of points in the polygon beforehand.
-   void Reserve(Uint32 size);
+   void Reserve(CollectionIndexType size);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

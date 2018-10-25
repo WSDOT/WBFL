@@ -72,13 +72,14 @@ public:
    virtual dbgDumpContext& operator<<(const std::_tstring& s);
    virtual dbgDumpContext& operator<<(LPCTSTR s);
    virtual dbgDumpContext& operator<<(TCHAR ch);    
+   virtual dbgDumpContext& operator<<(DWORD n);    
    virtual dbgDumpContext& operator<<(bool n);
-   virtual dbgDumpContext& operator<<(int n);
-   virtual dbgDumpContext& operator<<(unsigned int n);
    virtual dbgDumpContext& operator<<(Int16 n);
    virtual dbgDumpContext& operator<<(Uint16 n);
    virtual dbgDumpContext& operator<<(Int32 n);
    virtual dbgDumpContext& operator<<(Uint32 n);
+   virtual dbgDumpContext& operator<<(Int64 n);
+   virtual dbgDumpContext& operator<<(Uint64 n);
    virtual dbgDumpContext& operator<<(Float32 n);    
    virtual dbgDumpContext& operator<<(Float64 n);
    virtual dbgDumpContext& operator<<(Float80 n);

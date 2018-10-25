@@ -133,7 +133,7 @@ STDMETHODIMP CPrecastGirder::Initialize(IGenericBridge* bridge,IStrandMover* str
    CHECK_IN(bridge);
    CHECK_IN(strandMover);
 
-   if ( spanIdx < 0 || gdrIdx < 0 )
+   if ( spanIdx == INVALID_INDEX || gdrIdx == INVALID_INDEX )
       return E_INVALIDARG;
 
    m_pBridge = bridge;
@@ -425,7 +425,7 @@ STDMETHODIMP CPrecastGirder::GetEndPoints(IPoint2d** pntPier1,IPoint2d** pntEnd1
 
    CComPtr<ICogoInfo> cogoInfo;
    m_pBridge->get_CogoInfo(&cogoInfo);
-   long id1,id2;
+   CogoElementKey id1,id2;
 
    cogoInfo->get_PierGirderIntersectionPointID(m_SpanIdx,  m_GirderIdx,qcbAfter,&id1);
    cogoInfo->get_PierGirderIntersectionPointID(m_SpanIdx+1,m_GirderIdx,qcbBefore,&id2);
@@ -502,7 +502,7 @@ HRESULT CPrecastGirder::UpdateMaxStrandFill()
       m_HarpedMaxStrandFill->Reserve(num_hp);
       for (CollectionIndexType i=0; i<num_hp; i++)
    {
-         Int32 hp, end;
+         IDType hp, end; // should be index type, but must be ID type because of LongArray
          hp_fill->get_Item(i, &hp);
          end_fill->get_Item(i, &end);
 
@@ -1674,7 +1674,7 @@ void CPrecastGirder::GetRightConnection(IConnection** connection)
    punk.QueryInterface(connection);
 }
 
-void CPrecastGirder::GetEndDistance(EndType end,long brgPntID,long pierPntID,long girderLineID,IConnection* connection,IPier* pier,ICogoModel* cogoModel,Float64* endDist)
+void CPrecastGirder::GetEndDistance(EndType end,CogoElementKey brgPntID,CogoElementKey pierPntID,CogoElementKey girderLineID,IConnection* connection,IPier* pier,ICogoModel* cogoModel,Float64* endDist)
 {
    Float64 end_dist;
    connection->get_EndDistance(&end_dist);
@@ -1890,7 +1890,7 @@ HRESULT CPrecastGirder::GetStrandPositions(Float64 distFromStart, Float64 distBe
       Float64 y = ::LinInterp(distFromStart,sy,ey,distBetweenGrids);
 
       CComPtr<IPoint2d> pnt;
-      pnt.CoCreateInstance(CLSID_Point2d);
+      m_Point2dFactory->CreatePoint(&pnt);
       pnt->Move(x,y);
       pnts->Add(pnt);
    }
@@ -1927,7 +1927,7 @@ HRESULT CPrecastGirder::ComputeHpFill(ILongArray* endFill, ILongArray** hpFill)
 
          // put two strands in the first hp location
 #if defined _DEBUG
-         Int32 first_row;
+         IDType first_row;
          endFill->get_Item(0,&first_row);
          ASSERT(first_row == 1); // only one strand at the bottom... but we need it to be 2 for odd fill at top
 #endif
@@ -1941,7 +1941,7 @@ HRESULT CPrecastGirder::ComputeHpFill(ILongArray* endFill, ILongArray** hpFill)
             {
                // there are still strands to fill
 
-               Int32 fill_val;
+               IDType fill_val;
                endFill->get_Item(is, &fill_val);
                
                running_cnt += fill_val;
@@ -1994,17 +1994,17 @@ void CPrecastGirder::DoUpdateLengths()
       PierIndexType endPierIdx = PierIndexType(startPierIdx+1);
 
       // get ID of intersection CL Pier and CL Girder
-      long startPierPntID, endPierPntID;
+      CogoElementKey startPierPntID, endPierPntID;
       cogoInfo->get_PierGirderIntersectionPointID(startPierIdx, m_GirderIdx, qcbAfter,  &startPierPntID);
       cogoInfo->get_PierGirderIntersectionPointID(endPierIdx,   m_GirderIdx, qcbBefore, &endPierPntID);
 
       // get ID of intersection CL bearing and CL girder
-      long startBrgPntID, endBrgPntID;
+      CogoElementKey startBrgPntID, endBrgPntID;
       cogoInfo->get_BearingGirderIntersectionPointID(startPierIdx, m_GirderIdx, qcbAfter,  &startBrgPntID);
       cogoInfo->get_BearingGirderIntersectionPointID(endPierIdx,   m_GirderIdx, qcbBefore, &endBrgPntID);
 
       // get girder line ID
-      long girderLineID;
+      CogoElementKey girderLineID;
       cogoInfo->get_GirderLineID(startPierIdx, m_GirderIdx, &girderLineID);
 
       // compute bearing offsets

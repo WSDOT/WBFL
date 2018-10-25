@@ -97,8 +97,8 @@ private:
    IBroker* m_pBroker;
    CProgressThread* m_pThread;
    Int16 m_cProgressRef; // progress thread ref count
-   std::vector<int> m_ProgressMsgMarker; // index into m_Messages where the first message for
-                                         // a progress window instance begins
+   std::vector<CollectionIndexType> m_ProgressMsgMarker; // index into m_Messages where the first message for
+                                            // a progress window instance begins
    std::vector<std::_tstring> m_Messages;
 
    BOOL m_bEndLines;

@@ -148,7 +148,7 @@ STDMETHODIMP CStages::FindIndex(/*[in]*/ BSTR name, /*[out,retval]*/StageIndexTy
    CComBSTR cnam(name);
    StageIndexType i=0;
    iterator it( begin() );
-   iterator itend( begin() );
+   iterator itend( end() );
    for (; it != itend; it++)
    {
       CComBSTR bnam;

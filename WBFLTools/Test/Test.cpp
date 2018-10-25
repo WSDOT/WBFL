@@ -33,10 +33,19 @@
 
 #include <initguid.h>
 #include <WBFLTools_i.c>
+
 #if defined _DEBUG
-#include "StorageTest\Debug\StorageTest_i.c"
+#if defined _WIN64
+#include "StorageTest\x64\Debug\StorageTest_i.c"
 #else
-#include "StorageTest\Release\StorageTest_i.c"
+#include "StorageTest\Win32\Debug\StorageTest_i.c"
+#endif
+#else
+#if defined _WIN64
+#include "StorageTest\x64\Release\StorageTest_i.c"
+#else
+#include "StorageTest\Win32\Release\StorageTest_i.c"
+#endif
 #endif
 
 #ifdef _DEBUG

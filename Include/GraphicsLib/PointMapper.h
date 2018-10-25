@@ -137,22 +137,22 @@ public:
    // GROUP: OPERATIONS
    
    //------------------------------------------------------------------------
-   void WPtoDP(Float64 wx,Float64 wy,Int32* dx,Int32* dy) const;
+   void WPtoDP(Float64 wx,Float64 wy,LONG* dx,LONG* dy) const;
    
    //------------------------------------------------------------------------
-   void WPtoDP(const gpPoint2d& p,Int32* dx,Int32* dy) const;
+   void WPtoDP(const gpPoint2d& p,LONG* dx,LONG* dy) const;
 
    //------------------------------------------------------------------------
-   void WPtoDP(IPoint2d* pPoint,Int32* dx,Int32* dy) const;
+   void WPtoDP(IPoint2d* pPoint,LONG* dx,LONG* dy) const;
 
    //------------------------------------------------------------------------
-   void DPtoWP(Int32 dx,Int32 dy,Float64* wx,Float64* wy) const;
+   void DPtoWP(LONG dx,LONG dy,Float64* wx,Float64* wy) const;
 
    //------------------------------------------------------------------------
-   gpPoint2d DPtoWP(Int32 dx,Int32 dy) const;
+   gpPoint2d DPtoWP(LONG dx,LONG dy) const;
    
    //------------------------------------------------------------------------
-   void DPtoWP(Int32 dx,Int32 dy,IPoint2d** ppPoint) const;
+   void DPtoWP(LONG dx,LONG dy,IPoint2d** ppPoint) const;
 
    //------------------------------------------------------------------------
    void AddScale(Float64 scale);
@@ -187,19 +187,19 @@ public:
    gpPoint2d GetWorldOrg() const;
    
    //------------------------------------------------------------------------
-   void SetDeviceExt(Int32 dx,Int32 dy);
+   void SetDeviceExt(LONG dx,LONG dy);
    
    //------------------------------------------------------------------------
-   void GetDeviceExt(Int32* dx,Int32* dy) const;
+   void GetDeviceExt(LONG* dx,LONG* dy) const;
    
    //------------------------------------------------------------------------
-   void GetAdjustedDeviceExt(Int32* dx,Int32* dy) const;
+   void GetAdjustedDeviceExt(LONG* dx,LONG* dy) const;
    
    //------------------------------------------------------------------------
-   void SetDeviceOrg(Int32 dx,Int32 dy);
+   void SetDeviceOrg(LONG dx,LONG dy);
    
    //------------------------------------------------------------------------
-   void GetDeviceOrg(Int32* dx,Int32* dy) const;
+   void GetDeviceOrg(LONG* dx,LONG* dy) const;
    
    //------------------------------------------------------------------------
    void SetMappingMode(grlibPointMapper::MapMode mm);
@@ -248,12 +248,12 @@ private:
    Float64 m_WorldExtentY;
    Float64 m_WorldOriginX;
    Float64 m_WorldOriginY;
-   Int32   m_DeviceExtentX;
-   Int32   m_DeviceExtentY;
-   Int32   m_OriginalDeviceExtentX;
-   Int32   m_OriginalDeviceExtentY;
-   Int32   m_DeviceOriginX;
-   Int32   m_DeviceOriginY;
+   LONG   m_DeviceExtentX;
+   LONG   m_DeviceExtentY;
+   LONG   m_OriginalDeviceExtentX;
+   LONG   m_OriginalDeviceExtentY;
+   LONG   m_DeviceOriginX;
+   LONG   m_DeviceOriginY;
    Float64 m_PixelDensityX;
    Float64 m_PixelDensityY;
 

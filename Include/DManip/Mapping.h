@@ -46,11 +46,11 @@ interface iMapping : public IUnknown
    STDMETHOD_(void,GetWorldOrg)(Float64* wx,Float64* wy) PURE;
    STDMETHOD_(void,GetWorldOrg)(IPoint2d* *wOrg) PURE;
 
-   STDMETHOD_(void,SetLogicalOrg)(long lx,long ly) PURE;
-   STDMETHOD_(void,GetLogicalOrg)(long* lx,long* ly) PURE;
-   STDMETHOD_(void,SetLogicalExt)(long lx,long ly) PURE;
-   STDMETHOD_(void,GetLogicalExt)(long* lx,long* ly) PURE;
-   STDMETHOD_(void,GetAdjustedLogicalExt)(long* lx,long* ly) PURE;
+   STDMETHOD_(void,SetLogicalOrg)(LONG lx,LONG ly) PURE;
+   STDMETHOD_(void,GetLogicalOrg)(LONG* lx,LONG* ly) PURE;
+   STDMETHOD_(void,SetLogicalExt)(LONG lx,LONG ly) PURE;
+   STDMETHOD_(void,GetLogicalExt)(LONG* lx,LONG* ly) PURE;
+   STDMETHOD_(void,GetAdjustedLogicalExt)(LONG* lx,LONG* ly) PURE;
    STDMETHOD_(void,GetAdjustedWorldExt)(Float64* dx,Float64* dy) PURE;
 
    STDMETHOD_(void,SetMappingMode)(DManip::MapMode mm) PURE;

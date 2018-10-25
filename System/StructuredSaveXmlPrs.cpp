@@ -111,6 +111,14 @@ public:
    virtual void Property(LPCTSTR name, Uint32 value);
 
    //------------------------------------------------------------------------
+   // Write an integral property
+   virtual void Property(LPCTSTR name, Int64 value);
+
+   //------------------------------------------------------------------------
+   // Write an unsigned integral property
+   virtual void Property(LPCTSTR name, Uint64 value);
+
+   //------------------------------------------------------------------------
    // Write a bool property
    virtual void Property(LPCTSTR name, bool value);
 
@@ -258,6 +266,16 @@ void sysStructuredSaveXmlPrs::Property(LPCTSTR name, Int32 value)
 }
 
 void sysStructuredSaveXmlPrs::Property(LPCTSTR name, Uint32 value)
+{
+   m_pImp->Property(name,value);
+}
+
+void sysStructuredSaveXmlPrs::Property(LPCTSTR name, Int64 value)
+{
+   m_pImp->Property(name,value);
+}
+
+void sysStructuredSaveXmlPrs::Property(LPCTSTR name, Uint64 value)
 {
    m_pImp->Property(name,value);
 }
@@ -604,6 +622,46 @@ void sysStructuredSaveXmlPrs_Impl::Property(LPCTSTR name, Int32 value)
 }
 
 void sysStructuredSaveXmlPrs_Impl::Property(LPCTSTR name, Uint32 value)
+{
+   ASSERTVALID;
+   try
+   {
+      MSXML::IXMLDOMNodePtr pchild = MakeChildNode(name);
+      if (!(bool)pchild)
+        THROW(sysXStructuredSave,BadWrite);
+
+      // made node, now do data conversion
+      std::_tostringstream os;
+      os<<value;
+      _variant_t val(os.str().c_str());
+      pchild->text = (_bstr_t)val;
+   }
+   catch(...)
+   {
+      THROW(sysXStructuredSave,BadWrite);
+   }
+}
+
+void sysStructuredSaveXmlPrs_Impl::Property(LPCTSTR name, Int64 value)
+{
+   ASSERTVALID;
+   try
+   {
+      MSXML::IXMLDOMNodePtr pchild = MakeChildNode(name);
+      if (!(bool)pchild)
+        THROW(sysXStructuredSave,BadWrite);
+
+      // made node, now do data conversion
+      _variant_t val(value);
+      pchild->text = (_bstr_t)val;
+   }
+   catch(...)
+   {
+      THROW(sysXStructuredSave,BadWrite);
+   }
+}
+
+void sysStructuredSaveXmlPrs_Impl::Property(LPCTSTR name, Uint64 value)
 {
    ASSERTVALID;
    try

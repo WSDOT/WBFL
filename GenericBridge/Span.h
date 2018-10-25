@@ -165,12 +165,12 @@ public:
       Fire_OnSpanChanged(this);
       return S_OK;
 	}
-	STDMETHOD(OnTemporaryPierItemAdded)(long id)
+	STDMETHOD(OnTemporaryPierItemAdded)(IDType id)
 	{
       Fire_OnSpanChanged(this);
       return S_OK;
 	}
-	STDMETHOD(OnTemporaryPierItemRemoved)(long id)
+	STDMETHOD(OnTemporaryPierItemRemoved)(IDType id)
 	{
       Fire_OnSpanChanged(this);
       return S_OK;

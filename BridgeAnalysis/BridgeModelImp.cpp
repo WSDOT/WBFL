@@ -63,7 +63,7 @@ void bamBridgeModelImp::AddBeam(rkRoarkBeam* beam)
 	m_Beams.push_back( boost::shared_ptr<rkRoarkBeam>(beam));
 }
 
-void bamBridgeModelImp::AddReaction(Float64 P,Int32 supportId)
+void bamBridgeModelImp::AddReaction(Float64 P,PierIDType supportId)
 {
    m_Reactions.push_back( std::make_pair(supportId,P) );
 }
@@ -78,7 +78,7 @@ void bamBridgeModelImp::FlushReactions()
    m_Reactions.clear();
 }
 
-void bamBridgeModelImp::DoCollectResults(Int32 poiId,bamSectionResults& results)
+void bamBridgeModelImp::DoCollectResults(PoiIDType poiId,bamSectionResults& results)
 {
    // Extracts results from the analysis model that is actually implemented.
 
@@ -91,7 +91,7 @@ void bamBridgeModelImp::DoCollectResults(Int32 poiId,bamSectionResults& results)
    {
       sysSectionValue dx, dy, rz, fx, fy, mz;
       boost::shared_ptr<rkRoarkBeam>& beam = *begin++;
-      Int32 spanId;
+      SpanIDType spanId;
       Float64 distFromStart;
       Float64 location;
 
@@ -114,13 +114,13 @@ void bamBridgeModelImp::DoCollectResults(Int32 poiId,bamSectionResults& results)
    }
 }
 
-void bamBridgeModelImp::DoCollectReactions(Int32 supportId,bamReaction& reaction)
+void bamBridgeModelImp::DoCollectReactions(PierIDType supportId,bamReaction& reaction)
 {
    // Get the one and only span and determine if this support
    // is at the start or end end of the span element.
    bool is_at_start;
-   Int32 span_element_id;
-   Int32* ptr = &span_element_id;
+   SpanIDType span_element_id;
+   SpanIDType* ptr = &span_element_id;
 
    EnumSpanElements(&ptr);
 
@@ -153,7 +153,7 @@ void bamBridgeModelImp::DoCollectReactions(Int32 supportId,bamReaction& reaction
    ReactionContainer::iterator i;
    for ( i = m_Reactions.begin(); i != m_Reactions.end(); i++ )
    {
-      std::pair<Int32,Float64> r = *i;
+      std::pair<SupportIDType,Float64> r = *i;
       if ( (r.first == pSpanElement->StartSupport().GetID() && is_at_start ) ||
            (r.first == pSpanElement->EndSupport().GetID() && !is_at_start) )
       {

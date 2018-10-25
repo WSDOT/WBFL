@@ -1394,17 +1394,17 @@ library WBFLLoading
 		[helpstring("method AddLoadGroup"),helpcontext(IDH_LoadCase_AddLoadGroup)] 
       HRESULT AddLoadGroup([in]BSTR loadGroupName);
 		[helpstring("method GetLoadGroup"),helpcontext(IDH_LoadCase_GetLoadGroup)] 
-      HRESULT GetLoadGroup([in]long index, [out]BSTR* loadGroupName);
+      HRESULT GetLoadGroup([in]CollectionIndexType index, [out]BSTR* loadGroupName);
 		[helpstring("method SetLoadGroup"),helpcontext(IDH_LoadCase_SetLoadGroup)] 
-      HRESULT SetLoadGroup([in]long index, [in]BSTR newName);
+      HRESULT SetLoadGroup([in]CollectionIndexType index, [in]BSTR newName);
 		[helpstring("method RemoveLoadGroup"),helpcontext(IDH_LoadCase_RemoveLoadGroup)] 
       HRESULT RemoveLoadGroup([in]BSTR loadGroupName);
 		[helpstring("method RemoveLoadGroupByIndex"),helpcontext(IDH_LoadCase_RemoveLoadGroupByIndex)] 
-      HRESULT RemoveLoadGroupByIndex([in]long index);
+      HRESULT RemoveLoadGroupByIndex([in]CollectionIndexType index);
 		[helpstring("method Clone"),helpcontext(IDH_LoadCase_Clone)] 
       HRESULT Clone([out,retval] ldILoadCase** clone);
 		[propget, helpstring("property LoadGroupCount"),helpcontext(IDH_LoadCase_LoadGroupCount)] 
-      HRESULT LoadGroupCount([out, retval] long *pVal);
+      HRESULT LoadGroupCount([out, retval] CollectionIndexType *pVal);
 	};
 
    [
@@ -1526,17 +1526,17 @@ library WBFLLoading
 		[propput, helpstring("property LiveLoadFactor"),helpcontext(IDH_LoadCombination_LiveLoadFactor)] 
       HRESULT LiveLoadFactor([in] Float64 newVal);
 		[propget, helpstring("property LoadCaseFactorCount"),helpcontext(IDH_LoadCombination_LoadCaseFactorCount)] 
-      HRESULT LoadCaseFactorCount([out, retval] long *pVal);
+      HRESULT LoadCaseFactorCount([out, retval] IndexType *pVal);
 		[helpstring("method SetLoadCaseFactor"),helpcontext(IDH_LoadCombination_SetLoadCaseFactor)] 
-      HRESULT SetLoadCaseFactor([in]long index, [in]BSTR loadCaseName, [in]Float64 minFactor, [in]Float64 maxFactor);
+      HRESULT SetLoadCaseFactor([in]IndexType index, [in]BSTR loadCaseName, [in]Float64 minFactor, [in]Float64 maxFactor);
 		[helpstring("method AddLoadCaseFactor"),helpcontext(IDH_LoadCombination_AddLoadCaseFactor)] 
       HRESULT AddLoadCaseFactor( [in]BSTR loadCaseName, [in]Float64 minFactor, [in]Float64 maxFactor);
 		[helpstring("method GetLoadCaseFactor"),helpcontext(IDH_LoadCombination_GetLoadCaseFactor)] 
-      HRESULT GetLoadCaseFactor([in]long index,  [out]BSTR* loadCaseName, [out]Float64* minFactor, [out]Float64* maxFactor);
+      HRESULT GetLoadCaseFactor([in]IndexType index,  [out]BSTR* loadCaseName, [out]Float64* minFactor, [out]Float64* maxFactor);
 		[helpstring("method Clear"),helpcontext(IDH_LoadCombination_Clear)] 
       HRESULT Clear();
 		[helpstring("method RemoveLoadCaseFactor"),helpcontext(IDH_LoadCombination_RemoveLoadCaseFactor)] 
-      HRESULT RemoveLoadCaseFactor([in]long index);
+      HRESULT RemoveLoadCaseFactor([in]IndexType index);
 		[helpstring("method Clone"),helpcontext(IDH_LoadCombination_Clone)] 
       HRESULT Clone([out,retval] ldILoadCombination* *lone);
 		[propget, helpstring("property ItemData"),helpcontext(IDH_LoadCases_OnLoadCasesAdded)] 

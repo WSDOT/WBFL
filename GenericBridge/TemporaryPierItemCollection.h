@@ -33,8 +33,8 @@
 #include "GenericBridgeCP.h"
 
 class CTemporaryPierItemCollection;
-typedef CComLongKeyedCollection<ITemporaryPierItemCollection, ITemporaryPierItem, IEnumTemporaryPierItems, &IID_IEnumTemporaryPierItems,CollectionIndexType> TPICollImpl;
-typedef CPersistentCollection<CTemporaryPierItemCollection, TPICollImpl,CollectionIndexType> PersistentTPICollImpl;
+typedef CComLongKeyedCollection<ITemporaryPierItemCollection, ITemporaryPierItem, IEnumTemporaryPierItems, &IID_IEnumTemporaryPierItems,IDType> TPICollImpl;
+typedef CPersistentCollection<CTemporaryPierItemCollection, TPICollImpl,IndexType> PersistentTPICollImpl;
 
 /////////////////////////////////////////////////////////////////////////////
 // CTemporaryPierItemCollection
@@ -81,7 +81,7 @@ protected:
    // Container overrides
    virtual HRESULT OnAfterAdd(StoredType* pVal);
    virtual HRESULT OnBeforeRemove(StoredType* pVal);
-   virtual HRESULT OnAfterRemove(long id);
+   virtual HRESULT OnAfterRemove(IDType id);
 
    virtual CComBSTR GetCollectionName() { return CComBSTR("TemporaryPiers"); }
    virtual CComBSTR GetStoredName() { return CComBSTR("TemporaryPier"); }
@@ -104,29 +104,29 @@ public:
 //   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval); 
 //   STDMETHOD(get_Count)(/*[out, retval]*/ PierIndexType *pVal);
    STDMETHOD(get__EnumTemporaryPierItems)(/*[out, retval]*/ IEnumTemporaryPierItems* *pVal);
-   STDMETHOD(Add)(/*[in]*/ long id,/*[in]*/ Float64 location,/*[in]*/ BSTR bstrRemovalStage);
+   STDMETHOD(Add)(/*[in]*/ IDType id,/*[in]*/ Float64 location,/*[in]*/ BSTR bstrRemovalStage);
    STDMETHOD(RemoveByIndex)(/*[in]*/CollectionIndexType index);
-   STDMETHOD(RemoveByID)(/*[in]*/long id);
+   STDMETHOD(RemoveByID)(/*[in]*/IDType id);
    STDMETHOD(Clear)();
-//   STDMETHOD(Find)(/*[in]*/ long id,/*[out,retval]*/ ITemporaryPierItem** pVal);
+   STDMETHOD(Find)(/*[in]*/ IDType id,/*[out,retval]*/ ITemporaryPierItem** pVal);
 
 // ITemporaryPierItemEvents
 public:
-	STDMETHOD(OnTemporaryPierChanged)(long id)
+	STDMETHOD(OnTemporaryPierChanged)(IDType id)
 	{
       CComPtr<ITemporaryPierItem> item;
       Find(id,&item);
       Fire_OnTemporaryPierItemChanged(item);
 		return S_OK;
 	}
-	STDMETHOD(OnTemporaryPierAdded)(PierIndexType index)
+	STDMETHOD(OnTemporaryPierAdded)(IDType id)
 	{
-      Fire_OnTemporaryPierItemAdded(index);
+      Fire_OnTemporaryPierItemAdded(id);
       return S_OK;
 	}
-	STDMETHOD(OnTemporaryPierRemoved)(PierIndexType index)
+	STDMETHOD(OnTemporaryPierRemoved)(IDType id)
 	{
-      Fire_OnTemporaryPierItemRemoved(index);
+      Fire_OnTemporaryPierItemRemoved(id);
       return S_OK;
 	}
 };

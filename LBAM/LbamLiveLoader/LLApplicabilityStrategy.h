@@ -31,7 +31,7 @@ enum ApplicabilityLoc {appNone=0, appRight=1, appLeft=2, appBoth=3}; // meant to
 class iLLApplicabilityStrategy
 {
 public:
-   virtual ApplicabilityLoc GetApplicability(long poiId, BSTR stage,  
+   virtual ApplicabilityLoc GetApplicability(PoiIDType poiId, BSTR stage,  
                                           VARIANT_BOOL isApplicable, LiveLoadApplicabilityType llapplicability, 
                                           ForceEffectType optimizedEffect, OptimizationType optimization)=0;
 };
@@ -46,7 +46,7 @@ public:
    m_LiveLoadNegativeMomentRegion(llnmr)
    {;}
 
-   virtual ApplicabilityLoc GetApplicability(long poiId, BSTR stage,  
+   virtual ApplicabilityLoc GetApplicability(PoiIDType poiId, BSTR stage,  
                                           VARIANT_BOOL isApplicable, LiveLoadApplicabilityType llapplicability, 
                                           ForceEffectType optimizedEffect, OptimizationType optimization)
    {
@@ -99,7 +99,7 @@ public:
    DeflectionLLApplicabilityStrategy()
    {;}
 
-   virtual ApplicabilityLoc GetApplicability(long poiId, BSTR stage,  
+   virtual ApplicabilityLoc GetApplicability(PoiIDType poiId, BSTR stage,  
                                           VARIANT_BOOL isApplicable, LiveLoadApplicabilityType llapplicability, 
                                           ForceEffectType optimizedEffect, OptimizationType optimization)
    {
@@ -129,7 +129,7 @@ public:
    m_SupportLocations(supportlocs)
    {;}
 
-   virtual ApplicabilityLoc GetApplicability(long supportId, BSTR stage,  
+   virtual ApplicabilityLoc GetApplicability(PoiIDType supportId, BSTR stage,  
                                           VARIANT_BOOL isApplicable, LiveLoadApplicabilityType llapplicability, 
                                           ForceEffectType optimizedEffect, OptimizationType optimization)
    {

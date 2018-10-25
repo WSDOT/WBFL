@@ -69,12 +69,12 @@ bool IsZeroCapacityProblem(rcaCapacityProblem& problem)
    // If the number of concrete elements or reinforcing elements is zero, 
    // there is no capacity.  If the concrete strength is zero, then there is
    // no capacity either.
-   Int32 nc = problem.GetNumConcretes();
+   CollectionIndexType nc = problem.GetNumConcretes();
    if (nc==0)
       return true;
 
    Float64 fc=0.0;
-   for (Int32 i=0; i<nc; i++)
+   for (CollectionIndexType i=0; i<nc; i++)
        fc = max(fc, problem.GetConcrete(i).GetFc());
 
    if ( IsZero(fc) )

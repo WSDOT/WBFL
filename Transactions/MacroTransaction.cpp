@@ -121,7 +121,7 @@ STDMETHODIMP CMacroTransaction::get_IsRepeatable(VARIANT_BOOL *pVal)
 }
 
 
-STDMETHODIMP CMacroTransaction::get_Count(long *pVal)
+STDMETHODIMP CMacroTransaction::get_Count(CollectionIndexType *pVal)
 {
    *pVal = m_Transactions.size();
 	return S_OK;

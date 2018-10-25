@@ -56,7 +56,7 @@ public:
 
       //if ( pT->m_bHoldingEvents )
       //{
-      //   sysFlags<Uint32>::Set(&pT->m_PendingEvents,EVT_UNITS);
+      //   sysFlags<UINT32>::Set(&pT->m_PendingEvents,EVT_UNITS);
       //   return S_OK;
       //}
 

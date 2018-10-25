@@ -51,7 +51,7 @@ CSocketFactoryImpl::~CSocketFactoryImpl()
 
 }
 
-STDMETHODIMP_(void) CSocketFactoryImpl::CreateSocket(long id,IPoint2d* pos,iSocket** socket)
+STDMETHODIMP_(void) CSocketFactoryImpl::CreateSocket(IDType id,IPoint2d* pos,iSocket** socket)
 {
    CComObject<CSocketImpl>* pSocket;
    CComObject<CSocketImpl>::CreateInstance(&pSocket);

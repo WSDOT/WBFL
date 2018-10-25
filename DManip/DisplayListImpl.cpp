@@ -76,12 +76,12 @@ STDMETHODIMP_(void) CDisplayListImpl::GetDisplayMgr(iDisplayMgr** dispMgr)
    (*dispMgr)->AddRef();
 }
 
-STDMETHODIMP_(void) CDisplayListImpl::SetID(long id)
+STDMETHODIMP_(void) CDisplayListImpl::SetID(IDType id)
 {
    m_ID = id;
 }
 
-STDMETHODIMP_(long) CDisplayListImpl::GetID()
+STDMETHODIMP_(IDType) CDisplayListImpl::GetID()
 {
    return m_ID;
 }
@@ -93,10 +93,10 @@ STDMETHODIMP_(void) CDisplayListImpl::AddDisplayObject(iDisplayObject* pDO)
    Fire_OnDisplayObjectAdded(pDO);
 }
 
-STDMETHODIMP_(void) CDisplayListImpl::GetDisplayObject(long index,iDisplayObject** dispObj)
+STDMETHODIMP_(void) CDisplayListImpl::GetDisplayObject(CollectionIndexType index,iDisplayObject** dispObj)
 {
    (*dispObj) = 0;
-   if ( index < 0 || (long)m_DisplayObjects.size() <= index )
+   if ( index < 0 || m_DisplayObjects.size() <= index )
       return;
 
    CComPtr<iDisplayObject> pDO = m_DisplayObjects[index];
@@ -104,7 +104,7 @@ STDMETHODIMP_(void) CDisplayListImpl::GetDisplayObject(long index,iDisplayObject
    (*dispObj)->AddRef();
 }
 
-STDMETHODIMP_(void) CDisplayListImpl::FindDisplayObject(long id,iDisplayObject** dispObj)
+STDMETHODIMP_(void) CDisplayListImpl::FindDisplayObject(IDType id,iDisplayObject** dispObj)
 {
    (*dispObj) = 0;
 
@@ -123,16 +123,17 @@ STDMETHODIMP_(void) CDisplayListImpl::FindDisplayObject(long id,iDisplayObject**
    return;
 }
 
-STDMETHODIMP_(void) CDisplayListImpl::RemoveDisplayObject(long key,AccessType access)
+STDMETHODIMP_(void) CDisplayListImpl::RemoveDisplayObject(IDType key,AccessType access)
 {
-   long doID;
+   IDType doID;
    if ( access = atByIndex )
    {
+      IndexType index = (IndexType)key;
       // Remove display object by index
-      if ( key < 0 || (long)m_DisplayObjects.size() <= key )
+      if ( index < 0 || m_DisplayObjects.size() <= index )
          return;
 
-      DisplayObjectContainer::iterator iter = m_DisplayObjects.begin() + key;
+      DisplayObjectContainer::iterator iter = m_DisplayObjects.begin() + index;
       
       CComPtr<iDisplayObject> pDO = *iter;
       doID = pDO->GetID();
@@ -167,7 +168,7 @@ STDMETHODIMP_(void) CDisplayListImpl::Clear()
    }
 }
 
-STDMETHODIMP_(long) CDisplayListImpl::GetDisplayObjectCount()
+STDMETHODIMP_(CollectionIndexType) CDisplayListImpl::GetDisplayObjectCount()
 {
    return m_DisplayObjects.size();
 }
@@ -255,8 +256,8 @@ STDMETHODIMP_(void) CDisplayListImpl::GetWorldExtents(ISize2d* *ext)
    CComPtr<IRect2d> worldRect;
    worldRect.CoCreateInstance(CLSID_Rect2d);
 
-   long nDisplayObjects = GetDisplayObjectCount();
-   for ( long i = 0; i < nDisplayObjects; i++ )
+   CollectionIndexType nDisplayObjects = GetDisplayObjectCount();
+   for ( CollectionIndexType i = 0; i < nDisplayObjects; i++ )
    {
       CComPtr<iDisplayObject> pDO;
       GetDisplayObject(i,&pDO);
@@ -331,7 +332,7 @@ void CDisplayListImpl::Fire_OnDisplayObjectAdded(iDisplayObject* pDO)
       m_EventSink->OnDisplayObjectAdded(m_ID,pDO);
 }
 
-void CDisplayListImpl::Fire_OnDisplayObjectRemoved(long doID)
+void CDisplayListImpl::Fire_OnDisplayObjectRemoved(IDType doID)
 {
    if ( m_EventSink )
       m_EventSink->OnDisplayObjectRemoved(m_ID,doID);

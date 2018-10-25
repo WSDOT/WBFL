@@ -114,7 +114,7 @@ std::_tstring mfcTemplateTabHelper::GetFilePath(const std::_tstring& fileName)
 void mfcTemplateTabHelper::AddSubDirectory(const std::_tstring& dirName) 
 {
    // make sure directory is '\' terminated
-   int siz = dirName.size();
+   std::_tstring::size_type siz = dirName.size();
    ASSERT(siz);  // null name in directory - no no
    if(dirName[siz-1] != _T('\\') )
    {

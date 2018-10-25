@@ -49,7 +49,7 @@ static char THIS_FILE[]=__FILE__;
 class RemoveByListID
 {
 public:
-   RemoveByListID(long listID,BOOL bInclusive) : m_ListID(listID),m_bInclusive(bInclusive) {}
+   RemoveByListID(IDType listID,BOOL bInclusive) : m_ListID(listID),m_bInclusive(bInclusive) {}
    bool operator()(DisplayObjectItem dispObj)
    {
       CComPtr<iDisplayList> list;
@@ -65,7 +65,7 @@ public:
    }
 
 private:
-   long m_ListID;
+   IDType m_ListID;
    BOOL m_bInclusive;
 };
 
@@ -144,7 +144,7 @@ STDMETHODIMP_(void) CDisplayMgrImpl::GetCoordinateMap(iCoordinateMap** map)
 
 STDMETHODIMP_(void) CDisplayMgrImpl::AddDisplayList(iDisplayList* pDL)
 {
-   long id = pDL->GetID();
+   IDType id = pDL->GetID();
    CComPtr<iDisplayList> pDLExists;
    FindDisplayList(id,&pDLExists);
    if ( pDLExists )
@@ -157,9 +157,9 @@ STDMETHODIMP_(void) CDisplayMgrImpl::AddDisplayList(iDisplayList* pDL)
    InternalRelease();
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::GetDisplayList(long idx,iDisplayList** list)
+STDMETHODIMP_(void) CDisplayMgrImpl::GetDisplayList(CollectionIndexType idx,iDisplayList** list)
 {
-   if ( idx < 0 || (long)m_DisplayLists.size() <= idx )
+   if ( idx < 0 || m_DisplayLists.size() <= idx )
       return; // Index is out of range
 
    CComPtr<iDisplayList> pDL = m_DisplayLists[idx];
@@ -167,7 +167,7 @@ STDMETHODIMP_(void) CDisplayMgrImpl::GetDisplayList(long idx,iDisplayList** list
    (*list)->AddRef();
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::FindDisplayList(long id,iDisplayList** list)
+STDMETHODIMP_(void) CDisplayMgrImpl::FindDisplayList(IDType id,iDisplayList** list)
 {
    (*list) = 0;
    DisplayListContainer::iterator iter;
@@ -185,22 +185,23 @@ STDMETHODIMP_(void) CDisplayMgrImpl::FindDisplayList(long id,iDisplayList** list
    return;
 }
 
-STDMETHODIMP_(long) CDisplayMgrImpl::GetDisplayListCount()
+STDMETHODIMP_(CollectionIndexType) CDisplayMgrImpl::GetDisplayListCount()
 {
    return m_DisplayLists.size();
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::RemoveDisplayList(long key,AccessType access)
+STDMETHODIMP_(void) CDisplayMgrImpl::RemoveDisplayList(IDType key,AccessType access)
 {
    CComPtr<iDisplayList> pDL;
 
    if ( access == atByIndex )
    {
       // Remove by index
-      if ( key < 0 || (long)m_DisplayLists.size() <= key )
+      IndexType index = (IndexType)key;
+      if ( index < 0 || m_DisplayLists.size() <= index )
          return; // index out of bounds
 
-      DisplayListContainer::iterator iter = m_DisplayLists.begin() + key;
+      DisplayListContainer::iterator iter = m_DisplayLists.begin() + index;
 
       pDL = *iter;
 
@@ -239,7 +240,7 @@ STDMETHODIMP_(void) CDisplayMgrImpl::ClearDisplayLists()
    m_DisplayLists.clear();
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::AddDisplayObject(iDisplayObject* pDO,long key,AccessType access)
+STDMETHODIMP_(void) CDisplayMgrImpl::AddDisplayObject(iDisplayObject* pDO,IDType key,AccessType access)
 {
    CComPtr<iDisplayList> pDL;
    if ( access == atByIndex )
@@ -291,7 +292,7 @@ STDMETHODIMP_(void) CDisplayMgrImpl::SelectObjects(CRect rect)
    }
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::RemoveDisplayObject(long doKey,AccessType doAccess,long dlKey,AccessType dlAccess)
+STDMETHODIMP_(void) CDisplayMgrImpl::RemoveDisplayObject(IDType doKey,AccessType doAccess,IDType dlKey,AccessType dlAccess)
 {
    CComPtr<iDisplayList> pDL;
 
@@ -319,7 +320,7 @@ STDMETHODIMP_(void) CDisplayMgrImpl::ClearDisplayObjects()
    }
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::ClearDisplayObjects(long key,AccessType access)
+STDMETHODIMP_(void) CDisplayMgrImpl::ClearDisplayObjects(IDType key,AccessType access)
 {
    // Clear the display objects from the specified display list;
    CComPtr<iDisplayList> pDL;
@@ -353,8 +354,8 @@ STDMETHODIMP_(void) CDisplayMgrImpl::SelectAll(BOOL bSelect)
    for ( iter = m_DisplayLists.begin(); iter != m_DisplayLists.end(); iter++ )
    {
       CComPtr<iDisplayList> pDL = *iter;
-      long nDO = pDL->GetDisplayObjectCount();
-      for ( long i = 0; i < nDO; i++ )
+      CollectionIndexType nDO = pDL->GetDisplayObjectCount();
+      for ( CollectionIndexType i = 0; i < nDO; i++ )
       {
          CComPtr<iDisplayObject> pDO;
          pDL->GetDisplayObject(i,&pDO);
@@ -375,10 +376,10 @@ STDMETHODIMP_(void) CDisplayMgrImpl::ClearSelectedObjects()
    m_SelectedObjects.clear();
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::ClearSelectedObjectsByList(long key,AccessType access,BOOL bInclusive)
+STDMETHODIMP_(void) CDisplayMgrImpl::ClearSelectedObjectsByList(IDType key,AccessType access,BOOL bInclusive)
 {
    // Clears all selection objects that belong to the specified display list
-   long listID;
+   IDType listID;
 
    if ( access == atByIndex )
    {
@@ -1024,10 +1025,10 @@ STDMETHODIMP_(BOOL) CDisplayMgrImpl::OnNeedToolTipText(UINT id,NMHDR* pNMHDR,LRE
    BOOL bRetVal = FALSE;
    if ( m_ToolTipObject /*&& id == 9999*/ )
    {
-      long maxTipWidth = m_ToolTipObject->GetMaxTipWidth();
+      INT maxTipWidth = m_ToolTipObject->GetMaxTipWidth();
       SendMessage(pNMHDR->hwndFrom,TTM_SETMAXTIPWIDTH,0,maxTipWidth);
 
-      long iDuration = m_ToolTipObject->GetTipDisplayTime();
+      INT iDuration = m_ToolTipObject->GetTipDisplayTime();
       SendMessage(pNMHDR->hwndFrom,TTM_SETDELAYTIME,TTDT_AUTOPOP,iDuration);
 
       TOOLTIPTEXT* pTTT = (TOOLTIPTEXT*)pNMHDR;
@@ -1052,7 +1053,7 @@ STDMETHODIMP_(BOOL) CDisplayMgrImpl::OnNeedToolTipText(UINT id,NMHDR* pNMHDR,LRE
    return bRetVal;
 }
 
-STDMETHODIMP_(int) CDisplayMgrImpl::OnToolHitTest(CPoint point,TOOLINFO* pTI)
+STDMETHODIMP_(INT_PTR) CDisplayMgrImpl::OnToolHitTest(CPoint point,TOOLINFO* pTI)
 {
    m_ToolTipObject.Release();
 
@@ -1211,8 +1212,8 @@ STDMETHODIMP_(void) CDisplayMgrImpl::DrawDragObjects(const CPoint& dragStart, co
    CComPtr<iCoordinateMap> pMap;
    m_pView->GetCoordinateMap(&pMap);
 
-   long count = m_DragList.size();
-   for ( long i = 0; i < count; i++ )
+   CollectionIndexType count = m_DragList.size();
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       CComPtr<iDisplayObject> pDO;
       m_DragList[i].m_T->DrawDragImage(&dc, pMap, dragStart, dragPoint);
@@ -1264,7 +1265,7 @@ STDMETHODIMP_(void) CDisplayMgrImpl::OnDragFinished(DROPEFFECT de)
    }
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::FindDisplayObject(long id,long listKey,AccessType access,iDisplayObject** dispObj)
+STDMETHODIMP_(void) CDisplayMgrImpl::FindDisplayObject(IDType id,IDType listKey,AccessType access,iDisplayObject** dispObj)
 {
    CComPtr<iDisplayList> pDL;
    if ( access == atByIndex )
@@ -1308,9 +1309,9 @@ STDMETHODIMP_(void) CDisplayMgrImpl::FindDisplayObjects(CRect rect,DisplayObject
    }
 }
 
-STDMETHODIMP_(long) CDisplayMgrImpl::GetDisplayObjectCount()
+STDMETHODIMP_(CollectionIndexType) CDisplayMgrImpl::GetDisplayObjectCount()
 {
-   long count = 0;
+   SIZE_T count = 0;
    DisplayListContainer::iterator iter;
    for ( iter = m_DisplayLists.begin(); iter != m_DisplayLists.end(); iter++ )
    {
@@ -1320,7 +1321,7 @@ STDMETHODIMP_(long) CDisplayMgrImpl::GetDisplayObjectCount()
    return count;
 }
 
-STDMETHODIMP_(long) CDisplayMgrImpl::GetDisplayObjectFactoryCount()
+STDMETHODIMP_(CollectionIndexType) CDisplayMgrImpl::GetDisplayObjectFactoryCount()
 {
    return m_pDisplayObjectFactories.size();
 }
@@ -1330,7 +1331,7 @@ STDMETHODIMP_(void) CDisplayMgrImpl::AddDisplayObjectFactory(iDisplayObjectFacto
    m_pDisplayObjectFactories.push_back( DisplayObjectFactoriesItem(factory) );
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::GetDisplayObjectFactory(long idx, iDisplayObjectFactory** factory)
+STDMETHODIMP_(void) CDisplayMgrImpl::GetDisplayObjectFactory(CollectionIndexType idx, iDisplayObjectFactory** factory)
 {
    if (idx>=0 && idx<GetDisplayObjectFactoryCount())
    {
@@ -1386,8 +1387,8 @@ void CDisplayMgrImpl::GetBoundingBox(iCoordinateMap* pMap, bool boundOrigin, IRe
       {
          CComPtr<iDisplayList> pDL = *iter;
 
-         long nDisplayObjects = pDL->GetDisplayObjectCount();
-         for ( long i = 0; i < nDisplayObjects; i++ )
+         CollectionIndexType nDisplayObjects = pDL->GetDisplayObjectCount();
+         for ( CollectionIndexType i = 0; i < nDisplayObjects; i++ )
          {
             CComPtr<iDisplayObject> pDO;
             pDL->GetDisplayObject(i,&pDO);
@@ -1437,8 +1438,8 @@ std::vector<CComPtr<iDisplayObject> > CDisplayMgrImpl::FindAllDisplayObjects(CPo
       CComPtr<iDisplayList> pDL = *iter;
 
       CComPtr<iDisplayObject> dispObj;
-      long doCount = pDL->GetDisplayObjectCount();
-      for ( long i = 0; i < doCount; i++ )
+      CollectionIndexType doCount = pDL->GetDisplayObjectCount();
+      for ( CollectionIndexType i = 0; i < doCount; i++ )
       {
          dispObj.Release();
          pDL->GetDisplayObject(i,&dispObj);
@@ -1460,8 +1461,8 @@ std::vector<CComPtr<iDisplayObject> > CDisplayMgrImpl::FindAllSelectableDisplayO
       CComPtr<iDisplayList> pDL = *iter;
 
       CComPtr<iDisplayObject> dispObj;
-      long doCount = pDL->GetDisplayObjectCount();
-      for ( long i = 0; i < doCount; i++ )
+      CollectionIndexType doCount = pDL->GetDisplayObjectCount();
+      for ( CollectionIndexType i = 0; i < doCount; i++ )
       {
          dispObj.Release();
          pDL->GetDisplayObject(i,&dispObj);
@@ -1515,18 +1516,18 @@ void CDisplayMgrImpl::FindNextSelectableDisplayObject(CPoint point,iDisplayObjec
 }
 
 // iDisplayListEvents
-STDMETHODIMP_(void) CDisplayMgrImpl::OnDisplayObjectAdded(long listID,iDisplayObject* pDO)
+STDMETHODIMP_(void) CDisplayMgrImpl::OnDisplayObjectAdded(IDType listID,iDisplayObject* pDO)
 {
    CRect box = pDO->GetBoundingBox();
    m_pView->InvalidateRect(box);
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::OnDisplayObjectRemoved(long listID,long doID)
+STDMETHODIMP_(void) CDisplayMgrImpl::OnDisplayObjectRemoved(IDType listID,SIZE_T doID)
 {
    m_pView->Invalidate();
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::OnDisplayObjectsCleared(long listID)
+STDMETHODIMP_(void) CDisplayMgrImpl::OnDisplayObjectsCleared(IDType listID)
 {
    m_pView->Invalidate();
 }

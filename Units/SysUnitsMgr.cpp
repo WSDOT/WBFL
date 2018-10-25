@@ -101,7 +101,7 @@ void unitSysUnitsMgr::UnregisterListener(unitSysUnitsMgrListener* pListener)
    }
 }
 
-Int32 unitSysUnitsMgr::ListenerCount()
+CollectionIndexType unitSysUnitsMgr::ListenerCount()
 {
    return ms_Listeners.size();
 }

@@ -221,7 +221,7 @@ rcaCapacityProblem& rcaCapacityProblem::operator= (const rcaCapacityProblem& rOt
 
 //======================== OPERATIONS =======================================
 
-Int32 rcaCapacityProblem::AddConcrete(const matConcrete& concrete)
+CollectionIndexType rcaCapacityProblem::AddConcrete(const matConcrete& concrete)
 {
    // clone and own concrete material
    ConcretePtr pconc(concrete.CreateClone());
@@ -229,48 +229,48 @@ Int32 rcaCapacityProblem::AddConcrete(const matConcrete& concrete)
    return m_ConcreteContainer.size()-1;
 }
 
-const matConcrete& rcaCapacityProblem::GetConcrete(Int32 key) const
+const matConcrete& rcaCapacityProblem::GetConcrete(CollectionIndexType key) const
 {
-   CHECK(0 <= key && key < (Int32)m_ConcreteContainer.size());
+   CHECK(0 <= key && key < m_ConcreteContainer.size());
    return *(m_ConcreteContainer[key]);
 }
 
-Int32 rcaCapacityProblem::GetNumConcretes() const
+CollectionIndexType rcaCapacityProblem::GetNumConcretes() const
 {
    return m_ConcreteContainer.size();
 }
 
-void rcaCapacityProblem::SetBaseConcreteMaterial(Int32 concreteIdx)
+void rcaCapacityProblem::SetBaseConcreteMaterial(CollectionIndexType concreteIdx)
 {
-   CHECK(0 <= concreteIdx && concreteIdx < (Int32)m_ConcreteContainer.size());
+   CHECK(0 <= concreteIdx && concreteIdx < m_ConcreteContainer.size());
    m_BaseConcrete = concreteIdx;
 }
 
-Int32 rcaCapacityProblem::GetBaseConcreteMaterial() const
+CollectionIndexType rcaCapacityProblem::GetBaseConcreteMaterial() const
 {
    return m_BaseConcrete;
 }
 
-Int32 rcaCapacityProblem::AddMildSteel(const matMetal& steel)
+CollectionIndexType rcaCapacityProblem::AddMildSteel(const matMetal& steel)
 {
    matYieldStressStrainCurve* pcurv = DoCreateMildSteelMaterialModel(steel);
-   Int32 key = GetNextAvailableKey();
+   CollectionIndexType key = GetNextAvailableKey();
    m_MsCurveContainer.insert(MatCurveEntry(key,boost::shared_ptr<matYieldStressStrainCurve>(pcurv)));
 
    return key;
 }
 
-Int32 rcaCapacityProblem::AddStrand(const matPsStrand& strand)
+StrandIndexType rcaCapacityProblem::AddStrand(const matPsStrand& strand)
 {
    matYieldStressStrainCurve* pcurv = DoCreateStrandMaterialModel(strand);
-   Int32 key = GetNextAvailableKey();
+   StrandIndexType key = GetNextAvailableKey();
    m_PsCurveContainer.insert(MatCurveEntry(key,boost::shared_ptr<matYieldStressStrainCurve>(pcurv)));
 
    return key;
 }
 
 
-bool rcaCapacityProblem::RemoveMaterial(Int32 key)
+bool rcaCapacityProblem::RemoveMaterial(StrandIndexType key)
 {
    // go through all of the material containers 
    // mild steel
@@ -293,44 +293,44 @@ bool rcaCapacityProblem::RemoveMaterial(Int32 key)
    return false;
 }
 
-Int32 rcaCapacityProblem::MildSteelMaterialCount() const
+CollectionIndexType rcaCapacityProblem::MildSteelMaterialCount() const
 {
    return m_MsCurveContainer.size();
 }
 
-Int32 rcaCapacityProblem::StrandMaterialCount() const
+CollectionIndexType rcaCapacityProblem::StrandMaterialCount() const
 {
    return m_PsCurveContainer.size();
 }
 
-Int32 rcaCapacityProblem::MaterialCount() const
+CollectionIndexType rcaCapacityProblem::MaterialCount() const
 {
    return MildSteelMaterialCount() + StrandMaterialCount();
 }
 
-Int32 rcaCapacityProblem::AddConcreteElement(const gmIShape& shape, Int32 concreteKey, Float64 nFactor)
+CollectionIndexType rcaCapacityProblem::AddConcreteElement(const gmIShape& shape, CollectionIndexType concreteKey, Float64 nFactor)
 {
    OnGeometryChange();
 
    ConcElementPtr pelm(new rcaConcreteElement(shape, concreteKey, nFactor, *this));
-   Int32 key = GetNextAvailableKey();
+   CollectionIndexType key = GetNextAvailableKey();
    ConcElementEntry entry(key,pelm);
    std::pair<ConcElementContainer::iterator,bool> retval = m_ConcElementContainer.insert( entry );
    return key;
 }
 
-Int32 rcaCapacityProblem::AddConcreteElement(const gmIShape& shape, Int32 concreteKey)
+CollectionIndexType rcaCapacityProblem::AddConcreteElement(const gmIShape& shape, CollectionIndexType concreteKey)
 {
    OnGeometryChange();
 
    ConcElementPtr pelm(new rcaConcreteElement(shape, concreteKey, *this));
-   Int32 key = GetNextAvailableKey();
+   CollectionIndexType key = GetNextAvailableKey();
    ConcElementEntry entry(key,pelm);
    std::pair<ConcElementContainer::iterator,bool> retval = m_ConcElementContainer.insert( entry );
    return key;
 }
 
-Int32 rcaCapacityProblem::AddReinforcementElement(const gmIShape& shape, Int32 matId, 
+CollectionIndexType rcaCapacityProblem::AddReinforcementElement(const gmIShape& shape, CollectionIndexType matId, 
                                                     Float64 initStrain)
 {
    OnGeometryChange();
@@ -343,7 +343,7 @@ Int32 rcaCapacityProblem::AddReinforcementElement(const gmIShape& shape, Int32 m
 
       // found the material - add the element
       ReinfElementPtr pelm(new rcaReinforcementElement(shape, *pCurve, *this, initStrain));
-      Int32 key = GetNextAvailableKey();
+      CollectionIndexType key = GetNextAvailableKey();
       m_ReinfElementContainer.insert(ReinfElementEntry(key,pelm));
       return key;
    }
@@ -356,7 +356,7 @@ Int32 rcaCapacityProblem::AddReinforcementElement(const gmIShape& shape, Int32 m
 
       // found the material - add the element
       ReinfElementPtr pelm(new rcaReinforcementElement(shape, *pCurve, *this, initStrain));
-      Int32 key = GetNextAvailableKey();
+      CollectionIndexType key = GetNextAvailableKey();
       m_ReinfElementContainer.insert(ReinfElementEntry(key,pelm));
       return key;
    }
@@ -367,7 +367,7 @@ Int32 rcaCapacityProblem::AddReinforcementElement(const gmIShape& shape, Int32 m
    return 0;  // should never get here, but compiler needs it
 }
 
-bool rcaCapacityProblem::DestroyElement(Int32 id)
+bool rcaCapacityProblem::DestroyElement(CollectionIndexType id)
 {
    OnGeometryChange();
 
@@ -389,17 +389,17 @@ bool rcaCapacityProblem::DestroyElement(Int32 id)
    return false;
 }
 
-Int32 rcaCapacityProblem::ConcreteElementCount() const
+CollectionIndexType rcaCapacityProblem::ConcreteElementCount() const
 {
    return m_ConcElementContainer.size();
 }
 
-Int32 rcaCapacityProblem::ReinforcementElementCount() const
+CollectionIndexType rcaCapacityProblem::ReinforcementElementCount() const
 {
    return m_ReinfElementContainer.size();
 }
 
-Int32 rcaCapacityProblem::ElementCount() const
+CollectionIndexType rcaCapacityProblem::ElementCount() const
 {
    return ConcreteElementCount() + ReinforcementElementCount();
 }
@@ -446,7 +446,7 @@ Float64 rcaCapacityProblem::GetStrain( Float64 x, Float64 y) const
    return m_BeamStrain.GetAxialStrain(x,y);
 }
 
-Float64 rcaCapacityProblem::GetStrain( Int32 id ) const
+Float64 rcaCapacityProblem::GetStrain( CollectionIndexType id ) const
 {
    gmProperties props;
    bool found = false;
@@ -960,7 +960,7 @@ Float64 rcaCapacityProblem::DoCalculateFurthestDistance()
 }
 
 
-Int32 rcaCapacityProblem::GetNextAvailableKey()
+CollectionIndexType rcaCapacityProblem::GetNextAvailableKey()
 {
    return ++m_LastKey;
 }
@@ -995,9 +995,9 @@ Float64 rcaCapacityProblem::GetClippedConcreteArea(const gpLine2d& clipLine, gpL
    return area;
 }
 
-Float64 rcaCapacityProblem::GetClippedConcreteArea(Int32 concreteIdx, const gpLine2d& clipLine, gpLine2d::Side side) const
+Float64 rcaCapacityProblem::GetClippedConcreteArea(CollectionIndexType concreteIdx, const gpLine2d& clipLine, gpLine2d::Side side) const
 {
-   CHECK(0 <= concreteIdx && concreteIdx < (Int32)m_ConcreteContainer.size());
+   CHECK(0 <= concreteIdx && concreteIdx < m_ConcreteContainer.size());
 
    Float64 area=0;
    for (ConstConcElementIterator citer = m_ConcElementContainer.begin(); 
@@ -1051,7 +1051,7 @@ void rcaCapacityProblem::MakeCopy(const rcaCapacityProblem& rOther)
          dynamic_cast<matYieldStressStrainCurve*>(mcpt->CreateClone());
       CHECK(pt);
 	  boost::shared_ptr<matYieldStressStrainCurve> tmp(pt);
-      Int32 key = msiter->first;
+      CollectionIndexType key = msiter->first;
       m_MsCurveContainer.insert(MatCurveEntry(key,tmp));
    }
 
@@ -1066,7 +1066,7 @@ void rcaCapacityProblem::MakeCopy(const rcaCapacityProblem& rOther)
          dynamic_cast<matYieldStressStrainCurve*>(mcpt->CreateClone());
       CHECK(pt);
 	  boost::shared_ptr<matYieldStressStrainCurve> tmp(pt);
-      Int32 key = (*psiter).first;
+      CollectionIndexType key = (*psiter).first;
       m_MsCurveContainer.insert(MatCurveEntry(key,tmp));
    }
 
@@ -1076,7 +1076,7 @@ void rcaCapacityProblem::MakeCopy(const rcaCapacityProblem& rOther)
    {
       // if concrete element has siblings, will need to add a createclone here.
 	   boost::shared_ptr<rcaConcreteElement> tmp(new rcaConcreteElement(*((*ceiter).second)));
-      Int32 key = (*ceiter).first;
+      CollectionIndexType key = (*ceiter).first;
       m_ConcElementContainer.insert(ConcElementEntry(key,tmp));
    }
 
@@ -1086,7 +1086,7 @@ void rcaCapacityProblem::MakeCopy(const rcaCapacityProblem& rOther)
    {
       // if reinf element has siblings, will need to add a createclone here.
 	  boost::shared_ptr<rcaReinforcementElement> tmp(new rcaReinforcementElement(*((*riter).second)));
-      Int32 key = (*riter).first;
+      CollectionIndexType key = (*riter).first;
       m_ReinfElementContainer.insert(ReinfElementEntry(key,tmp));
    }
 

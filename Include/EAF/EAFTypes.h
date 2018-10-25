@@ -48,6 +48,6 @@ struct eafTypes
    };
 };
 
-typedef Int32 StatusGroupIDType;
-typedef Int32 StatusCallbackIDType;
-typedef Int32 StatusItemIDType;
+typedef IDType StatusGroupIDType;
+typedef IDType StatusCallbackIDType;
+typedef IDType StatusItemIDType;

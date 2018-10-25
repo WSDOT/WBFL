@@ -67,7 +67,7 @@ bamStagedLoadCombination& bamStagedLoadCombination::operator= (const bamStagedLo
 }
 
 //======================== OPERATIONS =======================================
-void bamStagedLoadCombination::AddLoading(Int32 loadingId)
+void bamStagedLoadCombination::AddLoading(IDType loadingId)
 {
    m_Loads.push_back( loadingId );
 }
@@ -77,17 +77,17 @@ void bamStagedLoadCombination::AddModel(bamBridgeModel* pModel)
    m_Models.push_back( pModel );
 }
 
-bamSectionResults bamStagedLoadCombination::CombineSectionResults( Int32 poiId )
+bamSectionResults bamStagedLoadCombination::CombineSectionResults( PoiIDType poiId )
 {
    bamBridgeModel* pMyModel = &GetBridgeModel();
    bamAnalysisResultsManager* pMyArm = pMyModel->GetAnalysisResultsManager();
 
    bamSectionResults results;
 
-   std::vector<Int32>::iterator iter;
+   std::vector<IDType>::iterator iter;
    for ( iter = m_Loads.begin(); iter < m_Loads.end(); iter++ )
    {
-      Int32 loadingId = *iter;
+      IDType loadingId = *iter;
       results += pMyArm->ReadSectionResults( bamSectionResultsKey(poiId,loadingId) );
 
       std::vector<bamBridgeModel*>::iterator model_iter;
@@ -102,17 +102,17 @@ bamSectionResults bamStagedLoadCombination::CombineSectionResults( Int32 poiId )
    return results;
 }
 
-bamSectionStress bamStagedLoadCombination::CombineSectionStress( Int32 poiId, Int32 spIdx )
+bamSectionStress bamStagedLoadCombination::CombineSectionStress( PoiIDType poiId, CollectionIndexType spIdx )
 {
    bamBridgeModel* pMyModel = &GetBridgeModel();
    bamAnalysisResultsManager* pMyArm = pMyModel->GetAnalysisResultsManager();
 
    bamSectionStress results;
 
-   std::vector<Int32>::iterator iter;
+   std::vector<IDType>::iterator iter;
    for ( iter = m_Loads.begin(); iter < m_Loads.end(); iter++ )
    {
-      Int32 loadingId = *iter;
+      IDType loadingId = *iter;
       results += pMyArm->ReadSectionStress( bamSectionStressKey(poiId,spIdx,loadingId) );
 
       std::vector<bamBridgeModel*>::iterator model_iter;
@@ -127,17 +127,17 @@ bamSectionStress bamStagedLoadCombination::CombineSectionStress( Int32 poiId, In
    return results;
 }
 
-bamReaction bamStagedLoadCombination::CombineReactions( Int32 supportId )
+bamReaction bamStagedLoadCombination::CombineReactions( PierIDType supportId )
 {
    bamBridgeModel* pMyModel = &GetBridgeModel();
    bamAnalysisResultsManager* pMyArm = pMyModel->GetAnalysisResultsManager();
 
    bamReaction results;
 
-   std::vector<Int32>::iterator iter;
+   std::vector<IDType>::iterator iter;
    for ( iter = m_Loads.begin(); iter < m_Loads.end(); iter++ )
    {
-      Int32 loadingId = *iter;
+      IDType loadingId = *iter;
       results += pMyArm->ReadReaction( bamReactionKey(supportId,loadingId) );
 
       std::vector<bamBridgeModel*>::iterator model_iter;
@@ -159,7 +159,7 @@ bamLoadCombination* bamStagedLoadCombination::Clone() const
 
 //======================== ACCESS     =======================================
 
-void bamStagedLoadCombination::GetLoadings(std::vector<Int32>& loadingIds) const
+void bamStagedLoadCombination::GetLoadings(std::vector<IDType>& loadingIds) const
 {
    loadingIds = m_Loads;
 }

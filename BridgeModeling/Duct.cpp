@@ -119,22 +119,22 @@ void bmfDuct::SetDuctPosition(Float64 x1,Float64 y1, Float64 x2,Float64 y2)
    m_Y2 = y2;
 }
 
-Uint32 bmfDuct::GetMaxStrands() const
+StrandIndexType bmfDuct::GetMaxStrands() const
 {
    return m_MaxStrands;
 }
 
-void bmfDuct::SetMaxStrands(Uint32 max)
+void bmfDuct::SetMaxStrands(StrandIndexType max)
 {
    m_MaxStrands = max;
 }
 
-Uint32 bmfDuct::GetNumStrands() const
+StrandIndexType bmfDuct::GetNumStrands() const
 {
    return m_nStrands;
 }
 
-void bmfDuct::SetNumStrands(Uint32 nStrands)
+void bmfDuct::SetNumStrands(StrandIndexType nStrands)
 {
    if ( nStrands <= m_MaxStrands )
       m_nStrands = nStrands;
@@ -171,8 +171,8 @@ void bmfDuct::GetTendonCG(Float64 z,Float64 L,Float64 *pX,Float64 *pY) const
    Float64 Emin = m_Ecc;
 
    // Eccentricity at centerline of the span
-   Float64 n = m_nStrands;
-   Float64 N = m_MaxStrands;
+   Float64 n = (Float64)m_nStrands;
+   Float64 N = (Float64)m_MaxStrands;
    Float64 Ecl = (n - 1)*Emin/(N - 1) + (N - n)*Emax/(N - 1);
 
    // Adjust for position along girder

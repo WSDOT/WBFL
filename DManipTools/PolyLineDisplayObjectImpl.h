@@ -63,8 +63,8 @@ END_CONNECTION_POINT_MAP()
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
 
 // iDisplayObject Implementation
-   STDMETHOD_(void,SetID)(long id) { m_pDisplayObject->SetID(id); }
-   STDMETHOD_(long,GetID)() { return m_pDisplayObject->GetID(); }
+   STDMETHOD_(void,SetID)(IDType id) { m_pDisplayObject->SetID(id); }
+   STDMETHOD_(IDType,GetID)() { return m_pDisplayObject->GetID(); }
 
    STDMETHOD_(void,SetItemData)(void* pItemData,bool bDelete) { m_pDisplayObject->SetItemData(pItemData,bDelete); }
    STDMETHOD_(void,GetItemData)(void** ppItemData) { m_pDisplayObject->GetItemData(ppItemData); }
@@ -111,10 +111,10 @@ END_CONNECTION_POINT_MAP()
    // Tool Tips
    STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText) {m_pDisplayObject->SetToolTipText(lpszToolTipText);}
    STDMETHOD_(CString,GetToolTipText)() { return m_pDisplayObject->GetToolTipText(); }
-   STDMETHOD_(void,SetMaxTipWidth)(long maxWidth) { m_pDisplayObject->SetMaxTipWidth(maxWidth); }
-   STDMETHOD_(long,GetMaxTipWidth)() { return m_pDisplayObject->GetMaxTipWidth(); }
-   STDMETHOD_(void,SetTipDisplayTime)(long iTime) { m_pDisplayObject->SetTipDisplayTime(iTime); }
-   STDMETHOD_(long,GetTipDisplayTime)() { return m_pDisplayObject->GetTipDisplayTime(); }
+   STDMETHOD_(void,SetMaxTipWidth)(INT maxWidth) { m_pDisplayObject->SetMaxTipWidth(maxWidth); }
+   STDMETHOD_(INT,GetMaxTipWidth)() { return m_pDisplayObject->GetMaxTipWidth(); }
+   STDMETHOD_(void,SetTipDisplayTime)(INT iTime) { m_pDisplayObject->SetTipDisplayTime(iTime); }
+   STDMETHOD_(INT,GetTipDisplayTime)() { return m_pDisplayObject->GetTipDisplayTime(); }
 
    // Event Sink
    STDMETHOD_(void,RegisterEventSink)(iDisplayObjectEvents* pEventSink)
@@ -131,11 +131,11 @@ END_CONNECTION_POINT_MAP()
 // IPolyLineDisplayObject
 public:
    STDMETHOD_(void,Commit)();
-   STDMETHOD_(long,get_NumberOfPoints)();
+   STDMETHOD_(CollectionIndexType,get_NumberOfPoints)();
    STDMETHOD_(void,AddPoint)(IPoint2d* point);
-   STDMETHOD_(HRESULT,InsertPoint)(long idx, IPoint2d* point);
-   STDMETHOD_(HRESULT,GetPoint)(long idx, IPoint2d* *point);
-   STDMETHOD_(HRESULT,RemovePoint)(long idx);
+   STDMETHOD_(HRESULT,InsertPoint)(CollectionIndexType idx, IPoint2d* point);
+   STDMETHOD_(HRESULT,GetPoint)(CollectionIndexType idx, IPoint2d* *point);
+   STDMETHOD_(HRESULT,RemovePoint)(CollectionIndexType idx);
    STDMETHOD_(void,ClearPoints)();
    STDMETHOD_(void,put_Color)(COLORREF color);
    STDMETHOD_(void,get_Color)(COLORREF* color);

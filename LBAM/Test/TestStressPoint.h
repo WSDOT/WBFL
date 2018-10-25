@@ -59,7 +59,7 @@ public:
    STDMETHOD(OnStressPointsRemoved)(/*[in]*/CollectionIndexType idx);
 
    bool m_spFired;
-   long m_spCollFired;
+   CollectionIndexType m_spCollFired;
 
    DWORD m_SpCookie;   // cookies for connection points
    DWORD m_CollCookie;

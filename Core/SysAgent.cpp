@@ -314,7 +314,7 @@ STDMETHODIMP CSysAgent::Open(LPCTSTR name,DWORD* pdwCookie)
    return S_OK;
 }
 
-bool is_valid_cookie( DWORD dwCookie, int size )
+bool is_valid_cookie( DWORD dwCookie, size_t size )
 {
    return ( dwCookie > (DWORD)size ) ? false : true;
 }

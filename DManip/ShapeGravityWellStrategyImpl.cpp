@@ -91,7 +91,7 @@ STDMETHODIMP_(void) CShapeGravityWellStrategyImpl::GetGravityWell(iDisplayObject
       CComPtr<IEnumPoint2d> enum_points;
       points->get__Enum(&enum_points);
       CComPtr<IPoint2d> point;
-      long i = 0;
+      CollectionIndexType i = 0;
       while( enum_points->Next(1,&point,NULL) != S_FALSE )
       {
          POINT p;
@@ -103,7 +103,7 @@ STDMETHODIMP_(void) CShapeGravityWellStrategyImpl::GetGravityWell(iDisplayObject
          
          point.Release();
       }
-      pRgn->CreatePolygonRgn(logical_points,nPoints,ALTERNATE);
+      pRgn->CreatePolygonRgn(logical_points,(int)nPoints,ALTERNATE);
 
       delete [] logical_points;
    }

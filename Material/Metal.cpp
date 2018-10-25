@@ -281,7 +281,7 @@ Float64 matMetal::GetRuptureStress() const
 }
 
 //======================== INQUIRY    =======================================
-Int32 matMetal::ListenerCount() const
+CollectionIndexType matMetal::ListenerCount() const
 {
    return m_Listeners.size();
 }

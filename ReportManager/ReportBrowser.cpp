@@ -52,7 +52,7 @@ std::_tstring filename_to_URL(const std::_tstring& fname)
 {
    //turn into an internet-looking url
    std::_tstring filename(fname);
-   int pos;
+   CollectionIndexType pos;
    while((pos=filename.find( _T("\\") )) != std::_tstring::npos)
       filename.replace(pos,1,_T("/"));
 

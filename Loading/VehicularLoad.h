@@ -142,7 +142,7 @@ protected:
    Float64                          m_SidewalkLoad;
    Float64                          m_LaneLoad;
    Float64                          m_VariableMaxSpacing;
-   Int32                            m_VariableAxle;
+   AxleIndexType                    m_VariableAxle;
    ldLiveLoadApplicabilityType      m_LiveLoadApplicability;
    VARIANT_BOOL                     m_UseNotional;
    ldVehicularLoadConfigurationType m_VehicularLoadConfiguration;

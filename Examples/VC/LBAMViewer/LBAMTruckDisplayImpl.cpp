@@ -12,7 +12,7 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-UINT CLBAMTruckDisplayImpl::ms_Format = ::RegisterClipboardFormat("LBAMTruckData");
+UINT CLBAMTruckDisplayImpl::ms_Format = ::RegisterClipboardFormat(_T("LBAMTruckData"));
 
 CLBAMTruckDisplayImpl::CLBAMTruckDisplayImpl():
 m_RoadwayElevation(0.0),
@@ -67,7 +67,7 @@ DELEGATE_CUSTOM_INTERFACE(CLBAMTruckDisplayImpl,LiveLoadEvents);
  END_DISPATCH_MAP()
  
 
-STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XEvents::Init(iPointDisplayObject* pDO, ILBAMModel* model, LiveLoadModelType llType, long vehicleIndex, ILiveLoadConfiguration* placement)
+STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XEvents::Init(iPointDisplayObject* pDO, ILBAMModel* model, LiveLoadModelType llType, VehicleIndexType vehicleIndex, ILiveLoadConfiguration* placement)
 {
    METHOD_PROLOGUE(CLBAMTruckDisplayImpl,Events);
 
@@ -303,10 +303,9 @@ void CLBAMTruckDisplayImpl::Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF colo
    pDispMgr->GetCoordinateMap(&pMap);
 
    // set up some constants
-   long num_wheels = m_AxleLocations.size();
+   AxleIndexType num_wheels = m_AxleLocations.size();
    if (1 < num_wheels)
    {
-
       AxleIndexType pivotAxleIndex;
       m_Placement->get_PivotAxleIndex(&pivotAxleIndex);
 
@@ -394,7 +393,7 @@ void CLBAMTruckDisplayImpl::Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF colo
       t = b + m_WheelDiameter;
 
 
-      for(int iw = 0; iw < num_wheels; iw++)
+      for(AxleIndexType iw = 0; iw < num_wheels; iw++)
       {
          double xloc = fwx + m_AxleLocations[iw] - pivot_axle_offset;
          l = xloc - m_WheelDiameter/2;
@@ -588,14 +587,14 @@ STDMETHODIMP_(BOOL) CLBAMTruckDisplayImpl::XDragData::PrepareForDrag(iDisplayObj
    pSink->Write(ms_Format,&pThis->m_RoadwayElevation,sizeof(double));
 
    // write cached truck drawing information
-   long size = pThis->m_AxleLocations.size();
-   pSink->Write(ms_Format,&size,sizeof(long));
-   for ( long i=0; i<size; i++)
+   AxleIndexType size = pThis->m_AxleLocations.size();
+   pSink->Write(ms_Format,&size,sizeof(AxleIndexType));
+   for ( AxleIndexType i=0; i<size; i++)
    {
       pSink->Write(ms_Format,&pThis->m_AxleLocations[i],sizeof(double));
    }
 
-   for ( long i=0; i<size; i++)
+   for ( AxleIndexType i=0; i<size; i++)
    {
       pSink->Write(ms_Format,&pThis->m_ActiveAxles[i],sizeof(bool));
    }
@@ -834,7 +833,7 @@ void CLBAMTruckDisplayImpl::EditTruckPosition()
 
    CEditTruckPosition dlg;
    dlg.Init( position, direction, is_var, varspcg, min_varspcg, max_varspcg, apply_impact, nAxles, pivotAxleIndex);
-   int st = dlg.DoModal();
+   INT_PTR st = dlg.DoModal();
    if (st==IDOK)
    {
       if (dlg.m_TruckPosition != position)

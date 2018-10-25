@@ -37,7 +37,7 @@ CLASS
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 // free functions
-void seek_right (const std::vector<gpPoint2d>& points, Float64 x, Uint32* segment)
+void seek_right (const std::vector<gpPoint2d>& points, Float64 x, CollectionIndexType* segment)
 {
    PRECONDITION(segment!=0);
    std::vector<gpPoint2d>::size_type siz = points.size();
@@ -58,7 +58,7 @@ void seek_right (const std::vector<gpPoint2d>& points, Float64 x, Uint32* segmen
    // x not in function range - throw
    THROW(mathXEvalError, Undefined);
 }
-void seek_left(const std::vector<gpPoint2d>& points, Float64 x, Uint32* segment)
+void seek_left(const std::vector<gpPoint2d>& points, Float64 x, CollectionIndexType* segment)
 {
    // assume that x is left of the right end of this segment.
    PRECONDITION(segment!=0);
@@ -171,12 +171,12 @@ math1dRange mathPwLinearFunction2dUsingPoints::GetRange() const
       return math1dRange();
 }
 
-Uint32 mathPwLinearFunction2dUsingPoints::GetNumPoints() const
+CollectionIndexType mathPwLinearFunction2dUsingPoints::GetNumPoints() const
 {
    return m_Points.size();
 }
 
-gpPoint2d mathPwLinearFunction2dUsingPoints::GetPoint(Uint32 pnum) const
+gpPoint2d mathPwLinearFunction2dUsingPoints::GetPoint(CollectionIndexType pnum) const
 {
    ASSERTVALID;
    PRECONDITION(pnum<GetNumPoints());
@@ -194,13 +194,13 @@ void mathPwLinearFunction2dUsingPoints::SetPoints(const std::vector<gpPoint2d>& 
    ASSERTVALID;
    m_Points = points;
 
-   Uint32 siz = GetNumPoints();
+   CollectionIndexType siz = GetNumPoints();
    if (m_LastSegment>siz)
       m_LastSegment=siz;
    ASSERTVALID;
 }
 
-Uint32 mathPwLinearFunction2dUsingPoints::AddPoint(const gpPoint2d& point)
+CollectionIndexType mathPwLinearFunction2dUsingPoints::AddPoint(const gpPoint2d& point)
 {
    ASSERTVALID;
    PRECONDITION( m_Points.size()>0 ? point.X()>m_Points.back().X() : true);
@@ -226,8 +226,8 @@ Int16 mathPwLinearFunction2dUsingPoints::Intersect(const mathPwLinearFunction2dU
       return 0;
 
    // next determine the ranges of segments that we may have an intersection on
-   Uint32 this_first=1,  this_last;
-   Uint32 other_first=1, other_last;
+   CollectionIndexType this_first=1,  this_last;
+   CollectionIndexType other_first=1, other_last;
    try
    {
       seek_right(m_Points, r.GetLeftBoundLocation(), &this_first);
@@ -245,8 +245,8 @@ Int16 mathPwLinearFunction2dUsingPoints::Intersect(const mathPwLinearFunction2dU
    }
 
    // walk over ranges and try to find intersection point
-   Uint32 this_curr =this_first;
-   Uint32 other_curr=other_first;
+   CollectionIndexType this_curr =this_first;
+   CollectionIndexType other_curr=other_first;
    bool loop=true;
    gpPoint2d intersection_point;
    while(loop)
@@ -319,11 +319,11 @@ bool mathPwLinearFunction2dUsingPoints::AssertValid() const
       return false;
 
    // values of x must increase
-   Uint32 siz = GetNumPoints();
+   CollectionIndexType siz = GetNumPoints();
    if (siz>0)
    {
       Float64 cval = m_Points[0].X();
-      for(Uint32 i=1; i<siz; i++)
+      for(CollectionIndexType i=1; i<siz; i++)
       {
          if (cval >m_Points[i].X())
             return false;
@@ -348,9 +348,9 @@ void mathPwLinearFunction2dUsingPoints::Dump(dbgDumpContext& os) const
 {
    os << _T("Start Dump for mathPwLinearFunction2dUsingPoints") <<endl;
    mathPwLinearFunction2d::Dump( os );
-   Uint32 siz = GetNumPoints();
+   CollectionIndexType siz = GetNumPoints();
    os << _T("Number of Points = ") <<siz<<endl;
-   for (Uint32 i=0; i<siz; i++)
+   for (CollectionIndexType i=0; i<siz; i++)
    {
       os <<i<<_T("  (")<< m_Points[i].X()<<_T(", ")<<m_Points[i].Y()<<_T(")")<<endl;
    }

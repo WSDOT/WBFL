@@ -43,7 +43,7 @@ DIAG_DEFINE_GROUP( bamEnvelope, DIAG_GROUP_DISABLE, MAX_DIAG_GROUP_LEVEL );
 #define ENV_TRACE 50
 
 //======================== LIFECYCLE  =======================================
-bamEnvelope::bamEnvelope(Int32 id)
+bamEnvelope::bamEnvelope(IDType id)
 {
    m_Id = id;
    m_pBridgeModel = 0;
@@ -76,12 +76,12 @@ bamEnvelope* bamEnvelope::CreateClone() const
    return new bamEnvelope( *this );
 }
 
-void bamEnvelope::AddLoading(Int32 loadingId)
+void bamEnvelope::AddLoading(IDType loadingId)
 {
    m_Loadings.push_back(loadingId);
 }
 
-void bamEnvelope::AddLoading(std::vector<Int32>& loadingIds)
+void bamEnvelope::AddLoading(std::vector<IDType>& loadingIds)
 {
    m_Loadings.insert( m_Loadings.end(), loadingIds.begin(), loadingIds.end() );
 }
@@ -100,13 +100,13 @@ void bamEnvelope::DoEnvelope() const
    DoEnvelopeReactions();
 }
 
-void bamEnvelope::DoEnvelope(Int32 poi) const
+void bamEnvelope::DoEnvelope(PoiIDType poi) const
 {
    DoEnvelopeSectionResults(poi);
    DoEnvelopeSectionStress(poi);
 }
 
-void bamEnvelope::DoEnvelopeSectionStress(Int32 poi,Int32 srid) const
+void bamEnvelope::DoEnvelopeSectionStress(PoiIDType poi,CollectionIndexType srid) const
 {
    // Read the enveloped moment and compute the stress using it.
    bamSectionResultsKey min_key( poi, m_MinId );
@@ -129,23 +129,23 @@ void bamEnvelope::DoEnvelopeSectionStress(Int32 poi,Int32 srid) const
 }
 
 //======================== ACCESS     =======================================
-Int32 bamEnvelope::GetID() const
+IDType bamEnvelope::GetID() const
 {
    return m_Id;
 }
 
-void bamEnvelope::SetID(Int32 id)
+void bamEnvelope::SetID(IDType id)
 {
    m_Id = id;
 }
 
-void bamEnvelope::SetLoadingIds(Int32 minId,Int32 maxId)
+void bamEnvelope::SetLoadingIds(IDType minId,IDType maxId)
 {
    m_MinId = minId;
    m_MaxId = maxId;
 }
 
-Int32 bamEnvelope::GetLoadingId(bamEnvelope::ExtremeValueType ev) const
+IDType bamEnvelope::GetLoadingId(bamEnvelope::ExtremeValueType ev) const
 {
    return ev == Min ? m_MinId : m_MaxId;
 }
@@ -227,13 +227,13 @@ void bamEnvelope::DoEnvelopeSectionResults() const
    WATCHX( bamEnvelope, ENV_TRACE, "Beginning DoEnvelopeSectionResults()" );
 
    // bamEnvelope results at Points of interest
-   Int32 poi_count;
-   Int32* poi_list;
+   CollectionIndexType poi_count;
+   PoiIDType* poi_list;
    poi_count = m_pBridgeModel->GetPointOfInterestCount();
-   poi_list = new Int32[poi_count];
+   poi_list = new PoiIDType[poi_count];
    m_pBridgeModel->EnumPointsOfInterest(&poi_list,poi_count);
 
-   for (Int32 poiIdx = 0; poiIdx < poi_count; poiIdx++)
+   for (CollectionIndexType poiIdx = 0; poiIdx < poi_count; poiIdx++)
    {
       DoEnvelope( poi_list[poiIdx] );
    } // end of poi loop
@@ -242,7 +242,7 @@ void bamEnvelope::DoEnvelopeSectionResults() const
    WATCHX( bamEnvelope, ENV_TRACE, "Ending DoEnvelopeSectionResults()" );
 }
 
-void bamEnvelope::DoEnvelopeSectionResults(Int32 poi) const
+void bamEnvelope::DoEnvelopeSectionResults(PoiIDType poi) const
 {
    bamSectionResults min_results, max_results;
 
@@ -254,7 +254,7 @@ void bamEnvelope::DoEnvelopeSectionResults(Int32 poi) const
    ConstLoadingIterator end   = m_Loadings.end();
    while ( begin != end )
    {
-      Int32 loadingId = *begin++;
+      IDType loadingId = *begin++;
 
       WATCHX( bamEnvelope, ENV_TRACE, "**** Section Results ****" );
       WATCHX( bamEnvelope, ENV_TRACE, "Poi " << poi << " Loading " << loadingId);
@@ -320,13 +320,13 @@ void bamEnvelope::DoEnvelopeSectionStress() const
    WATCHX( bamEnvelope, ENV_TRACE, "Beginning DoEnvelopeSectionStress()" );
 
    // bamEnvelope results at Points of interest
-   Int32 poi_count;
-   Int32* poi_list;
+   CollectionIndexType poi_count;
+   PoiIDType* poi_list;
    poi_count = m_pBridgeModel->GetPointOfInterestCount();
-   poi_list = new Int32[poi_count];
+   poi_list = new PoiIDType[poi_count];
    m_pBridgeModel->EnumPointsOfInterest(&poi_list,poi_count);
 
-   for (Int32 poiIdx = 0; poiIdx < poi_count; poiIdx++)
+   for (CollectionIndexType poiIdx = 0; poiIdx < poi_count; poiIdx++)
    {
       DoEnvelopeSectionStress(poi_list[poiIdx]);
    } // end of poi loop
@@ -335,7 +335,7 @@ void bamEnvelope::DoEnvelopeSectionStress() const
    WATCHX( bamEnvelope, ENV_TRACE, "Ending DoEnvelopeSectionResults()" );
 }
 
-void bamEnvelope::DoEnvelopeSectionStress(Int32 poi) const
+void bamEnvelope::DoEnvelopeSectionStress(PoiIDType poi) const
 {
    const bamPointOfInterest* pPoi = m_pBridgeModel->GetPointOfInterest(poi);
    std::set<bamStressPoint>::const_iterator sp_iter;
@@ -361,12 +361,12 @@ void bamEnvelope::DoEnvelopeSectionStress(const bamPointOfInterest& poi,const ba
 void bamEnvelope::DoEnvelopeReactions() const
 {
    // bamEnvelope reactions at each support
-   Int32 support_count;
-   Int32* support_list;
+   CollectionIndexType support_count;
+   IDType* support_list;
    support_count = m_pBridgeModel->GetSupportElementCount();
-   support_list = new Int32[support_count];
+   support_list = new IDType[support_count];
    m_pBridgeModel->EnumSupportElements(&support_list,support_count);
-   for (Int32 supportIdx = 0; supportIdx < support_count; supportIdx++)
+   for (CollectionIndexType supportIdx = 0; supportIdx < support_count; supportIdx++)
    {
       bamReaction min_reaction;
       bamReaction max_reaction;
@@ -378,7 +378,7 @@ void bamEnvelope::DoEnvelopeReactions() const
       while ( begin != end )
       {
          bamReaction reaction;
-         Int32 loadingId = *begin++;
+         IDType loadingId = *begin++;
          reaction = m_pBridgeModel->ReadReaction( bamReactionKey(support_list[supportIdx],loadingId) );
 
          if ( reaction.Fx() < min_reaction.Fx() )  min_reaction.Fx() = reaction.Fx();

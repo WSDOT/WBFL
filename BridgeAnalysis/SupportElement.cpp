@@ -44,7 +44,7 @@ bamSupportElement::bamSupportElement(const bamSupportElementInfo& rSupportElemen
    m_SupportSize = 125; // 1/8"
 }
 
-bamSupportElement::bamSupportElement(Int32 id,Float64 location,bamSupportFixity fixity)
+bamSupportElement::bamSupportElement(SupportIDType id,Float64 location,bamSupportFixity fixity)
 {
    m_pModel = 0;
 
@@ -90,13 +90,13 @@ bamLoad* bamSupportElement::GetSelfWeightLoad()
 void bamSupportElement::Draw(HDC hDC,const grlibPointMapper& mapper) const
 {
    Float64 wx,wy;
-   Int32 dx,dy;
+   LONG dx,dy;
 
    wy = 0;
    wx = GetLocation();
    mapper.WPtoDP(wx,wy,&dx,&dy);
 
-   Int16 map_mode;
+   int map_mode;
    HPEN hOldPen, hPen;
    HBRUSH hOldBrush,  hBrush;
 
@@ -149,7 +149,7 @@ void bamSupportElement::Draw(HDC hDC,const grlibPointMapper& mapper) const
 
 void bamSupportElement::AddSpanElement(bamSpanElement* pSpanElement)
 {
-   m_SpanElements.insert( std::pair<Int32,bamSpanElement*>(pSpanElement->GetID(),
+   m_SpanElements.insert( std::pair<SpanIDType,bamSpanElement*>(pSpanElement->GetID(),
                                                   pSpanElement) );
 }
 

@@ -125,7 +125,7 @@ void CTestSimpleBeamWithJointLoad::Test()
    Float64 dx, dy, rz;
    TRY_TEST(presults->ComputeJointDisplacements(0, 0, &dx, &dy, &rz),FEM2D_E_POI_REFERENCES_MEMBER_NOT_EXISTS);
 
-   long id;
+   PoiIDType id;
    TRY_TEST_HR(pPOIs->Remove(13, atID, &id));
    TRY_TEST( id, 13 );
 

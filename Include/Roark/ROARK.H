@@ -115,8 +115,8 @@ public:
 // Member Functions
 public:
    void AddBeam(const rkRoarkBeam& beam);
-   long GetBeamCount() const;
-   const rkRoarkBeam* GetBeam(long index) const;
+   CollectionIndexType GetBeamCount() const;
+   const rkRoarkBeam* GetBeam(CollectionIndexType index) const;
 
    void RemoveAllBeams();
    virtual rkRoarkBeam* CreateClone() const;
