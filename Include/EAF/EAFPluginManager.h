@@ -136,7 +136,7 @@ public:
             if ( bAlwaysAttemptToLoad || strState.CompareNoCase(_T("Enabled")) == 0 )
             {
                CComPtr<T> plugin;
-               plugin.CoCreateInstance(clsid[i]);
+               HRESULT hr = plugin.CoCreateInstance(clsid[i]);
 
                if ( plugin == NULL )
                {
@@ -149,7 +149,7 @@ public:
                      LPOLESTR pszUserType;
                      OleRegGetUserType(clsid[i],USERCLASSTYPE_SHORT,&pszUserType);
                      CString strMsg;
-                     strMsg.Format(_T("Failed to load %s plug in\n\nWould you like to disable this plug in?"),OLE2T(pszUserType));
+                     strMsg.Format(_T("Failed to load %s plug in (%s).\nError code %d\n\nWould you like to disable this plug in?"),OLE2T(pszUserType),OLE2T(pszCLSID),hr);
                      if ( AfxMessageBox(strMsg,MB_YESNO | MB_ICONQUESTION) == IDYES )
                      {
                         pApp->WriteProfileString(_T("Plugins"),OLE2T(pszCLSID),_T("Disabled"));

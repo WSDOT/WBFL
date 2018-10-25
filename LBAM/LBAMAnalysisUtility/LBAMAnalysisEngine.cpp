@@ -51,11 +51,12 @@ STDMETHODIMP CLBAMAnalysisEngine::InterfaceSupportsErrorInfo(REFIID riid)
 
 STDMETHODIMP CLBAMAnalysisEngine::Initialize(ILBAMModel *model, AnalysisType forceOrDeflection)
 {
-   return InitializeEx(model,forceOrDeflection,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+   return InitializeEx(model,forceOrDeflection,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 }
 
 STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType forceOrDeflection,
 		                                         ILoadGroupResponse* plgResponse,
+                                               IUnitLoadResponse* pUnitLoadResponse,
 		                                         IInfluenceLineResponse* pilResponse,
 		                                         IAnalysisPOIs* pPois,
 		                                         IBasicVehicularResponse* pBVR,
@@ -117,6 +118,24 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType fo
 
       hr = lgctx->putref_Model(m_pModel);
 
+
+
+      // get unit load interfaces
+      if ( pUnitLoadResponse )
+      {
+         m_pUnitLoadResponse = pUnitLoadResponse;
+      }
+      else
+      {
+         CComQIPtr<IUnitLoadResponse> unitLoadResponse(m_pLoadGroupResponse);
+         if(unitLoadResponse==NULL)
+         {
+            CComBSTR msg = CreateErrorMsg1S(IDS_E_INVALID_CONTEXT, CComBSTR("Unable to QI unit load response component"));
+            THROW_LBAMAU_MSG(INVALID_CONTEXT, msg);
+         }
+
+         m_pUnitLoadResponse = unitLoadResponse;
+      }
 
 
       // get influence interfaces
@@ -376,6 +395,27 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType fo
 
          m_pConcurrentLoadCombinationResponse = clcr_response;
       }
+   }
+   catch(...)
+   {
+      return DealWithExceptions(this,IID_ILBAMAnalysisEngine);
+   }
+
+	return S_OK;
+}
+
+STDMETHODIMP CLBAMAnalysisEngine::get_UnitLoadResponse(IUnitLoadResponse* *pVal)
+{
+   CHECK_RETOBJ(pVal);
+
+   try
+   {
+	   if (m_pModel==NULL)
+         THROW_LBAMAU(ENGINE_INIT);
+
+      ATLASSERT(m_pUnitLoadResponse!=NULL);
+
+      return m_pUnitLoadResponse.CopyTo(pVal);
    }
    catch(...)
    {

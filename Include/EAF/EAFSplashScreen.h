@@ -25,36 +25,61 @@
 #include <EAF\EAFExp.h>
 #include <Colors.h>
 
+// Splash Screen Styles
+#define CSS_SHADOW		   0x0001  // Apply a drop shadow
+#define CSS_CENTERSCREEN	0x0002  // Center on screen
+#define CSS_CENTERAPP		0x0004  // Center on application main window
+#define CSS_HIDEONCLICK		0x0008  // Hide the splash screen if it is clicked
+
+// Splash Screen Text Styles
+#define CSS_TEXT_NORMAL		0x0000
+#define CSS_TEXT_BOLD		0x0001
+#define CSS_TEXT_ITALIC		0x0002
+#define CSS_TEXT_UNDERLINE	0x0004
+
+
 // CEAFSplashScreenInfo
 // Information for a splash screen
 struct EAFCLASS CEAFSplashScreenInfo
 {
 public:
-   BOOL    m_bShow;       // show the splash screen if TRUE
-   HBITMAP m_hBitmap;     // handle to the splash screen bitman
+   UINT m_Style;          // one of the styles above
+   UINT m_Duration;       // duration to display splash screen in milliseconds. Use a value of 0 to show until it is closed.
+   HBITMAP m_hBitmap;     // handle to the splash screen bitmap
    COLORREF m_TextColor;  // color of the text to be written on the splash screen
-   COLORREF m_BgColor;    // text background color
+   CRect m_TextRect;      // rectangle into which text is written
+   UINT m_TextFormat;     // text format (use the DrawText parameters)
+   LPCTSTR m_FontName;    // Name of font face
+   int m_FontSize;        // Point size
+   int m_FontStyle;       // One of the text styles above
    COLORREF m_TransparencyColor; // color for transparancy
-   CRect m_Rect;          // rectangle into which text is written
 
    CEAFSplashScreenInfo()
    {
-      m_bShow = FALSE;
+      m_Style = CSS_SHADOW | CSS_CENTERSCREEN | CSS_HIDEONCLICK;
+      m_Duration = 0; // // show until closed
       m_hBitmap = 0;
+      m_FontName = 0; // use default
+      m_FontSize = 0; // use default
+      m_FontStyle = 0; // use default
       m_TextColor = BLACK;
-      m_BgColor   = WHITE;
+      m_TextRect  = CRect(0,0,20,200);
+      m_TextFormat = DT_CENTER | DT_VCENTER | DT_WORDBREAK;
       m_TransparencyColor = HOTPINK;
-      m_Rect      = CRect(0,0,20,200);
    }
 
    CEAFSplashScreenInfo& operator=(const CEAFSplashScreenInfo& other)
    {
-      m_bShow     = other.m_bShow;
+      m_Style     = other.m_Style;
+      m_Duration  = other.m_Duration;
       m_hBitmap   = other.m_hBitmap;
+      m_FontName  = other.m_FontName;
+      m_FontSize  = other.m_FontSize;
+      m_FontStyle = other.m_FontStyle;
       m_TextColor = other.m_TextColor;
-      m_BgColor   = other.m_BgColor;
+      m_TextRect  = other.m_TextRect;
+      m_TextFormat = other.m_TextFormat;
       m_TransparencyColor = other.m_TransparencyColor;
-      m_Rect      = other.m_Rect;
 
       return *this;
    }
@@ -70,47 +95,60 @@ public:
 	CEAFSplashScreen();
 	virtual ~CEAFSplashScreen();
 
-   // Set the splash screen informatin. Must be done before ShowSplashScreen is called
+   // Set the splash screen information. Must be done before ShowSplashScreen is called
    static void SetSplashScreenInfo(const CEAFSplashScreenInfo& info);
 
    // Shows the splash screen
-   static void ShowSplashScreen(CWnd* pParent,BOOL bShowUntilClosed);
+   static void Show(CWnd* pParent);
+
+   // close the splash screen
+   static void Hide();
 
    // Sets the text in the rectangle defined in the splash screen information
    static void SetText(LPCTSTR strText);
 
-   // close the splash screen next time the timer times out
-   static void CloseOnNextTimeout();
-
-   // close the splash screen now
-   static void Close();
-
-   // Set the timeout duration
-   static void SetTimeout(UINT duration);
-
    static BOOL PreTranslateAppMessage(MSG* pMsg);
 
-protected:
-	BOOL Create(CWnd* pParentWnd = NULL);
-	void HideSplashScreen();
-	virtual void PostNcDestroy();
-	static CEAFSplashScreenInfo m_Info;
-	static CEAFSplashScreen* c_pSplashWnd;
-   static BOOL m_bShowUntilClosed;
-   static BOOL m_bCloseOnNextTimeout;
-   static UINT m_Duration;
-   static CImageList m_ImageList;
-   static CBitmap m_Bitmap;
 
-// Generated message map functions
 protected:
-	//{{AFX_MSG(CSplashWnd)
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	BOOL Create(CWnd *pWndParent);
+   BOOL SetBitmap();
+
+	void ShowSplashScreen();
+   void HideSplashScreen();
+
+	void SetText_(LPCTSTR szText);
+	void SetTextFont(LPCTSTR szFont,int nSize,int nStyle);
+	void SetTextDefaultFont();
+
+protected:	
+	CWnd *m_pWndParent;
+	CFont m_myFont;
+	HRGN m_hRegion;
+	
+	CString m_strText;
+
+	int m_nBitmapWidth;
+	int m_nBitmapHeight;
+	int m_nxPos;
+	int m_nyPos;
+		
+	HRGN CreateRgnFromBitmap(HBITMAP hBmp, COLORREF color);
+	void DrawWindow(CDC *pDC);
+
+protected:
+	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnPaint();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
-	//}}AFX_MSG
+	LRESULT OnPrintClient(WPARAM wParam, LPARAM lParam);
+protected:
+	virtual void PostNcDestroy();
 
-	DECLARE_MESSAGE_MAP()
+   static CEAFSplashScreenInfo m_Info;
+	static CEAFSplashScreen* c_pSplashWnd;
+   static CBitmap m_Bitmap;
 };
 
 

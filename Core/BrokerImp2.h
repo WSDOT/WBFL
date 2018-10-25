@@ -57,6 +57,7 @@ class ATL_NO_VTABLE CBrokerImp2 :
    public IBroker,
    public IBrokerInitEx3,
    public IBrokerPersist2,
+   public ICLSIDMap,
    public IManageAgents
 {
 public:
@@ -82,6 +83,7 @@ BEGIN_COM_MAP(CBrokerImp2)
 	COM_INTERFACE_ENTRY(IBrokerInitEx3)
 	COM_INTERFACE_ENTRY(IBrokerPersist)
 	COM_INTERFACE_ENTRY(IBrokerPersist2)
+   COM_INTERFACE_ENTRY(ICLSIDMap)
    COM_INTERFACE_ENTRY(IManageAgents)
 END_COM_MAP()
 
@@ -110,6 +112,10 @@ public:
    STDMETHOD(SetSaveMissingAgentDataFlag)(/*[in]*/VARIANT_BOOL bSetFlag);
    STDMETHOD(GetSaveMissingAgentDataFlag)(/*[out]*/VARIANT_BOOL* bFlag);
 
+// ICLSIDMap
+public:
+   STDMETHOD(AddCLSID)(BSTR bstrOldCLSID,BSTR bstrNewCLSID);
+
 // IManageAgents
 public:
    STDMETHOD(get_AgentCount)(/*[out,retval]*/CollectionIndexType* nAgents);
@@ -122,6 +128,8 @@ private:
    Interfaces m_Interfaces; // collection of all interface records
    boost::circular_buffer<InterfaceItem> m_MostFrequentlyUsed; // collection of most frequently used interfaces
                                              // this collection will be searched first
+
+   std::map<CComBSTR,CComBSTR> m_CLSIDMap;
 
    typedef std::map<CLSID,CComPtr<IAgentEx>> Agents; // interface pointers are referenced counted
    Agents m_Agents;
@@ -146,6 +154,8 @@ private:
    HRESULT IntegrateWithUI(BOOL bIntegrate,Agents::iterator begin,Agents::iterator end);
    HRESULT SaveAgentData(IStructuredSave* pStrSave,Agents::iterator begin,Agents::iterator end);
    HRESULT FindAgent(const CLSID& clsid,IAgentEx** ppAgent);
+
+   CComBSTR TranslateCLSID(const CComBSTR bstrCLSID);
 
 
 #if defined _DEBUG

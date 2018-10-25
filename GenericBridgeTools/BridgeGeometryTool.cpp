@@ -154,7 +154,8 @@ STDMETHODIMP CBridgeGeometryTool::StationAndOffsetBySSMbr(IGenericBridge* bridge
    CComPtr<ISegment> segment;
    Float64 distFromStartOfSegment;
    SegmentIndexType segIdx;
-   ssmbr->GetDistanceFromStartOfSegment(distFromStartOfSSMbr,&distFromStartOfSegment,&segIdx,&segment);
+   HRESULT hr = ssmbr->GetDistanceFromStartOfSegment(distFromStartOfSSMbr,&distFromStartOfSegment,&segIdx,&segment);
+   ATLASSERT(SUCCEEDED(hr));
    ATLASSERT(segment);
 
    return StationAndOffsetBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,station,offset);

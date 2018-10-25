@@ -50,6 +50,9 @@ public:
    void SetGraphBuilder(CEAFGraphBuilderBase* pBuilder);
    CEAFGraphBuilderBase* GetGraphBuilder();
 
+   // called by the framework when the view's OnUpdate method is called
+   virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
+
 protected:
    CCmdTarget* m_pCmdTarget; // pointer to the command target
    CEAFGraphBuilderBase* m_pGraphBuilder;

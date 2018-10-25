@@ -1314,6 +1314,30 @@ library WBFLGeometry
 		[propputref, helpstring("property Centroid"),helpcontext(IDH_IGenericShape_Centroid)]
 		HRESULT Centroid([in] IPoint2d* newVal);
 
+		[propget, helpstring("property Xleft"),helpcontext(IDH_IShapeProperties_Xleft)]
+		HRESULT Xleft([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Xleft"),helpcontext(IDH_IShapeProperties_Xleft)]
+		HRESULT Xleft([in] Float64 newVal);
+
+		[propget, helpstring("property Xright"),helpcontext(IDH_IShapeProperties_Xright)]
+		HRESULT Xright([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Xright"),helpcontext(IDH_IShapeProperties_Xright)]
+		HRESULT Xright([in] Float64 newVal);
+
+		[propget, helpstring("property Ytop"),helpcontext(IDH_IShapeProperties_Ytop)]
+		HRESULT Ytop([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Ytop"),helpcontext(IDH_IShapeProperties_Ytop)]
+		HRESULT Ytop([in] Float64 newVal);
+
+		[propget, helpstring("property Ybottom"),helpcontext(IDH_IShapeProperties_Ybottom)]
+		HRESULT Ybottom([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property Ybottom"),helpcontext(IDH_IShapeProperties_Ybottom)]
+		HRESULT Ybottom([in] Float64 newVal);
+
 		[propget, helpstring("property Ixx"),helpcontext(IDH_IGenericShape_Ixx)]
 		HRESULT Ixx([out, retval] Float64 *pVal);
 

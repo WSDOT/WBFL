@@ -774,7 +774,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeBC::GetMomentDF_Ext_1
 
    Float64 soh_raw = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
 
-   if ( IsGT(soh_raw, m_Savg/2) )
+   if ( IsGT(m_Savg/2,soh_raw) )
    {
       // apply lever rule with mpf=1
       lrfdILiveLoadDistributionFactor::DFResult gext;
@@ -809,7 +809,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeBC::GetMomentDF_Ext_2
 
    Float64 soh_raw = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
 
-   if ( IsGT(soh_raw, m_Savg/2) )
+   if ( IsGT(m_Savg/2,soh_raw) )
    {
       lrfdILiveLoadDistributionFactor::DFResult gext;
       gext = lrfdLldfTypeBC::GetMomentDF_Ext_2_Strength();
@@ -836,7 +836,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeBC::GetShearDF_Ext_1_
 
    Float64 soh_raw = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
 
-   if ( IsGT(soh_raw, m_Savg/2) )
+   if ( IsGT(m_Savg/2,soh_raw) )
    {
       // apply lever rule with mpf=1
       lrfdILiveLoadDistributionFactor::DFResult gext;
@@ -869,7 +869,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeBC::GetShearDF_Ext_2_
 
    Float64 soh_raw = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
 
-   if ( IsGT(soh_raw, m_Savg/2) )
+   if ( IsGT(m_Savg/2,soh_raw) )
    {
       lrfdILiveLoadDistributionFactor::DFResult gext =  lrfdLldfTypeBC::GetShearDF_Ext_2_Strength();
 

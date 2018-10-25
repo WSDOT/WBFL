@@ -59,7 +59,16 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 
+   // Provide an over-ride implementation if you want to use your own
+   // status indicators. If you provide an over-ride, don't call this
+   // version of the function.
    virtual void GetStatusIndicators(const UINT** lppIDArray,int* pnIDCount);
+
+   // If you are using your own status indicators, the status item text
+   // strings are in your string table. Over-ride this method to
+   // set the module state to for your resources.
+   virtual BOOL SetStatusIndicators(const UINT* lpIDArray, int nIDCount);
+
 
    // Returns the pane index for the "Modified" flag
    int GetPaneCount();

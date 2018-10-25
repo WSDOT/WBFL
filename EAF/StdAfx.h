@@ -60,6 +60,12 @@ extern CComModule _Module;
 
 #include <EAF\EAFTypes.h>
 
+#include <comcat.h>
+
+#include <WBFLTools.h>
+
+#include <UnitMgt\UnitMgt.h>
+
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

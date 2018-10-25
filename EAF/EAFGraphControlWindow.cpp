@@ -59,6 +59,11 @@ CEAFGraphBuilderBase* CEAFGraphControlWindow::GetGraphBuilder()
    return  m_pGraphBuilder;
 }
 
+void CEAFGraphControlWindow::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
+{
+   // do nothing by default
+}
+
 BEGIN_MESSAGE_MAP(CEAFGraphControlWindow, CDialogBar)
 	//{{AFX_MSG_MAP(CTestDialogBar)
 	//}}AFX_MSG_MAP

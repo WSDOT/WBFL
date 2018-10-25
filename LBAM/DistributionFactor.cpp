@@ -206,17 +206,33 @@ STDMETHODIMP CDistributionFactor::put_GRMul(Float64 newVal)
    return PutVal(newVal, m_GRMul);
 }
 
-STDMETHODIMP CDistributionFactor::get_GFat(Float64 *pVal)
+STDMETHODIMP CDistributionFactor::GetGFat(Float64 *pMom, Float64 *pShear)
 {
-   CHECK_RETVAL(pVal);
-	*pVal = m_GFat;
+   CHECK_RETVAL(pMom);
+   CHECK_RETVAL(pShear);
+
+	*pMom   = m_GFatM;
+	*pShear = m_GFatV;
 
 	return S_OK;
 }
 
-STDMETHODIMP CDistributionFactor::put_GFat(Float64 newVal)
+STDMETHODIMP CDistributionFactor::SetGFat(Float64 gMom, Float64 gShear)
 {
-	return PutVal(newVal, m_GFat);
+   bool dofire = false;
+	HRESULT hr;
+   hr = PutVal2(gMom, m_GFatM, dofire);
+   if (FAILED(hr))
+      return hr;
+
+   hr = PutVal2(gShear, m_GFatV, dofire);
+   if (FAILED(hr))
+      return hr;
+
+   if (dofire)
+      Fire_OnDistributionFactorChanged(this);
+
+	return hr;
 }
 
 STDMETHODIMP CDistributionFactor::get_GPedestrian(Float64 *pVal)
@@ -235,7 +251,7 @@ STDMETHODIMP CDistributionFactor::put_GPedestrian(Float64 newVal)
 STDMETHODIMP CDistributionFactor::SetG(Float64 PMSgl, Float64 PMMul, Float64 NMSgl, Float64 NMMul, 
                                        Float64 VSgl, Float64 VMul, Float64 DSgl, Float64 DMul, 
                                        Float64 RSgl, Float64 RMul, Float64 TSgl, Float64 TMul,
-                                       Float64 Fat, Float64 Pedestrian)
+                                       Float64 FatM, Float64 FatV, Float64 Pedestrian)
 {
    bool dofire = false;
 	HRESULT hr;
@@ -287,7 +303,11 @@ STDMETHODIMP CDistributionFactor::SetG(Float64 PMSgl, Float64 PMMul, Float64 NMS
    if (FAILED(hr))
       return hr;
 
-   hr = PutVal2(Fat, m_GFat, dofire);
+   hr = PutVal2(FatM, m_GFatM, dofire);
+   if (FAILED(hr))
+      return hr;
+
+   hr = PutVal2(FatV, m_GFatV, dofire);
    if (FAILED(hr))
       return hr;
 
@@ -298,14 +318,13 @@ STDMETHODIMP CDistributionFactor::SetG(Float64 PMSgl, Float64 PMMul, Float64 NMS
    if (dofire)
       Fire_OnDistributionFactorChanged(this);
 
-
 	return S_OK;
 }
 
 STDMETHODIMP CDistributionFactor::GetG(Float64* PMSgl, Float64* PMMul, Float64* NMSgl, Float64* NMMul, 
                                        Float64* VSgl, Float64* VMul, Float64* DSgl, Float64* DMul, 
                                        Float64* RSgl, Float64* RMul, Float64* TSgl, Float64* TMul,
-                                       Float64* Fat, Float64* Pedestrian)
+                                       Float64* FatM, Float64* FatV, Float64* Pedestrian)
 {
 	CHECK_IN(PMSgl);
 	CHECK_IN(PMMul);
@@ -319,7 +338,8 @@ STDMETHODIMP CDistributionFactor::GetG(Float64* PMSgl, Float64* PMMul, Float64* 
 	CHECK_IN(RMul);
 	CHECK_IN(TSgl);
 	CHECK_IN(TMul);
-	CHECK_IN(Fat);
+	CHECK_IN(FatM);
+	CHECK_IN(FatV);
 	CHECK_IN(Pedestrian);
    
    *PMSgl = m_GPMSgl;
@@ -334,7 +354,8 @@ STDMETHODIMP CDistributionFactor::GetG(Float64* PMSgl, Float64* PMMul, Float64* 
 	*RMul  = m_GRMul;
 	*TSgl  = m_GTSgl;
 	*TMul  = m_GTMul;
-	*Fat   = m_GFat;
+	*FatM   = m_GFatM;
+	*FatV   = m_GFatV;
 	*Pedestrian = m_GPedestrian;
 
 	return S_OK;
@@ -361,7 +382,8 @@ STDMETHODIMP CDistributionFactor::Clone(IDistributionFactor ** pVal)
    pclone->m_GRMul  = m_GRMul;
    pclone->m_GTSgl  = m_GTSgl;
    pclone->m_GTMul  = m_GTMul;
-   pclone->m_GFat   = m_GFat;
+   pclone->m_GFatM  = m_GFatM;
+   pclone->m_GFatV  = m_GFatV;
    pclone->m_GPedestrian   = m_GPedestrian;
 
    *pVal = pclone;
@@ -397,7 +419,8 @@ HRESULT CDistributionFactor::PutVal2(Float64 newVal, Float64& G, bool& dofire)
 
 // Version
 // 2.0 - added distribution factor for pedestrian loads
-static const Float64 MY_VER=2.0; 
+// 3.0 - added M, V, R for fatigue. Previously was just one factor
+static const Float64 MY_VER=3.0; 
 
 STDMETHODIMP CDistributionFactor::Load(IStructuredLoad2 * pload)
 {
@@ -424,9 +447,24 @@ STDMETHODIMP CDistributionFactor::Load(IStructuredLoad2 * pload)
             return hr;
       }
 
-      hr = GetProp(pload, _bstr_t("GFat"), m_GFat);
+      if (ver < 3)
+      {
+         hr = GetProp(pload, _bstr_t("GFat"), m_GFatM);
+         if (FAILED(hr))
+            return hr;
+
+         m_GFatV = m_GFatM;
+      }
+      else
+      {
+         hr = GetProp(pload, _bstr_t("GFatM"), m_GFatM);
+         if (FAILED(hr))
+            return hr;
+
+         hr = GetProp(pload, _bstr_t("GFatV"), m_GFatV);
       if (FAILED(hr))
          return hr;
+      }
 
       hr = GetProp(pload, _bstr_t("GRMul"), m_GRMul);
       if (FAILED(hr))
@@ -501,7 +539,11 @@ STDMETHODIMP CDistributionFactor::Save(IStructuredSave2 * psave)
          if (FAILED(hr))
             return hr;
 
-         hr = psave->put_Property(CComBSTR("GFat"), _variant_t(m_GFat));
+         hr = psave->put_Property(CComBSTR("GFatM"), _variant_t(m_GFatM));
+         if (FAILED(hr))
+            return hr;
+
+         hr = psave->put_Property(CComBSTR("GFatV"), _variant_t(m_GFatV));
          if (FAILED(hr))
             return hr;
 

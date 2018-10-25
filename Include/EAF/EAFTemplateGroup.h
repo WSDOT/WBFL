@@ -24,6 +24,7 @@
 #pragma once
 
 #include <EAF\EAFExp.h>
+#include <vector>
 
 class CEAFDocTemplate;
 

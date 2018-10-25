@@ -159,7 +159,7 @@ CRect WsdotCalculationSheet::Print(CDC* pDC, Uint32 sheetNumber, bool doPrint)
       // bridge id
       pDC->SelectObject(&m_BoldFont);
       pDC->MoveTo(m_BridgeIdLoc);
-      pDC->TextOut(0,0,_T("BridgeId: "));
+      pDC->TextOut(0,0,_T("Bridge ID: "));
       if(!m_BridgeId.IsEmpty())
       {
          pDC->SelectObject(m_RegFont);

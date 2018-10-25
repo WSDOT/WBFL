@@ -98,18 +98,40 @@ std::_tstring lrfrVersionMgr::GetCodeString()
 
 std::_tstring lrfrVersionMgr::GetVersionString()
 {
-   std::_tstring version;
-   switch( ms_Version )
+   return GetVersionString(ms_Version);
+}
+
+std::_tstring lrfrVersionMgr::GetVersionString(lrfrVersionMgr::Version version)
+{
+   std::_tstring strVersion;
+   switch( version )
    {
    case FirstEdition2008:
-      version = _T("First Edition 2008");
+      strVersion = _T("First Edition 2008");
+      break;
+
+   case FirstEditionWith2010Interims:
+      strVersion = _T("First Edition 2008, with 2010 interim provisions");
+      break;
+
+   case SecondEdition2011:
+      strVersion = _T("Second Edition 2011");
+      break;
+      
+   case SecondEditionWith2011Interims:
+      strVersion = _T("Second Edition 2011, with 2011 interim provisions");
+      break;
+
+   case SecondEditionWith2013Interims:
+      strVersion = _T("Second Edition 2011, with 2011-2013 interim provisions");
       break;
 
    default:
-      CHECK(false);
+      strVersion = _T("Unknown");
+      ASSERT(false);
    }
 
-   return version;
+   return strVersion;
 }
 
 void lrfrVersionMgr::RegisterListener(lrfrVersionMgrListener* pListener)

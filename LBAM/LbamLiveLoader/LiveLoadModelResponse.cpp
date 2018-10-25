@@ -65,12 +65,12 @@ STDMETHODIMP CLiveLoadModelResponse::InterfaceSupportsErrorInfo(REFIID riid)
 
 bool CompareMax(Float64 newv, Float64 oldv)
 {
-   return newv>oldv;
+   return ::IsGT(oldv,newv); //newv>oldv;
 }
 
 bool CompareMin(Float64 newv, Float64 oldv)
 {
-   return newv<oldv;
+   return ::IsLT(newv,oldv); //newv<oldv;
 }
 
 

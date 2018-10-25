@@ -59,5 +59,6 @@
 #include <Reporter\PageLayout.h>
 #include <Reporter\HtmlReportVisitor.h>
 #include <Reporter\FormattedLengthUnitValue.h>
+#include <Reporter\ReportingUtils.h>
 
 #endif // INCLUDED_REPORTER_REPORTER_H_

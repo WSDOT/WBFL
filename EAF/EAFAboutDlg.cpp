@@ -69,7 +69,6 @@ END_MESSAGE_MAP()
 
 BOOL CEAFAboutDlg::OnInitDialog()
 {
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CDialog::OnInitDialog();
 
    // put the icon in the dialog

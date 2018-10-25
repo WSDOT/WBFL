@@ -903,6 +903,9 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(IIDArray* poiIDs, BS
          // add our result to the collection
          if ( bIsAtSupport )
          {
+            if ( effect == fetMz )
+               right_result *= flip_factor;
+
             hr = results->Add(left_result, left_config, right_result, right_config);
          }
          else
