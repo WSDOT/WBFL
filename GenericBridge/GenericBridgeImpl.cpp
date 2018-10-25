@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -970,9 +970,44 @@ void CGenericBridge::UpdateGirderEndPoints(SpanIndexType spanIdx,GirderIndexType
    GetEndDistance(etEnd,  endBrgPointID,  endPierPointID,  girderlineID,endConnection,  nextPier,&end_end_distance);
 
    // locate the girder end points in the cogo model (points are saved into the cogo model)
+
+   // the CL Brg and CL Pier points can be coincident. ILocate::PointOnLine requires that
+   // they are unique points. To ensure that we have unique points locate the start end of the
+   // girder from the CL Bearing point at the end of the girder with the line passing
+   // through the CL Pier point at the start of the girder. The distance along the line,
+   // from the start point, is the distance between the CL Brg points at each end of the
+   // girder and the start end distance. The end of the girder is located using a similar
+   // procedure, measuring from the CL Brg point at the start of the girder.
+
+   //   + CL Pier                                     CL Pier +
+   //   |    + End of girder               End of girder +    |
+   //   |    |  + CL Brg                       CL Brg +  |    |
+   //   |    |  |                                     |  |    |
+   //        +-------------------------------------------+
+   //   *    |  *                                     *  |    *
+   //        +-------------------------------------------+
+   //           |<---          Distance           --->|
+   //        |--| Start end distance End end distance |--|
+   //
+   //  Locate start end of girder meeasuring from here, in the direction indicated
+   //           start_end_dist + distance
+   //        |<<<-------------------------------------|
+   //
+   //  Locate end end of girder meeasuring from here, in the direction indicated
+   //                 end_end_distance + distance
+   //           |------------------------------------->>>|
    CComQIPtr<ILocate> locate(m_CogoModel);
-   locate->PointOnLine(startEndPointID,startBrgPointID,startPierPointID,start_end_distance,0.0);
-   locate->PointOnLine(endEndPointID,  endBrgPointID,  endPierPointID,  end_end_distance,  0.0);
+   CComPtr<IPointCollection> points;
+   m_CogoModel->get_Points(&points);
+   CComPtr<IPoint2d> pntStartBrg, pntEndBrg;
+   points->get_Item(startBrgPointID,&pntStartBrg);
+   points->get_Item(endBrgPointID,&pntEndBrg);
+
+   Float64 distance;
+   pntStartBrg->DistanceEx(pntEndBrg,&distance);
+
+   locate->PointOnLine(startEndPointID,endBrgPointID,    startPierPointID,distance+start_end_distance,0.0);
+   locate->PointOnLine(endEndPointID,  startBrgPointID,  endPierPointID,  distance+end_end_distance,  0.0);
 }
 
 void CGenericBridge::GetEndDistance(EndType end,CogoElementKey brgPntID,CogoElementKey pierPntID,CogoElementKey girderLineID,IConnection* connection,IPier* pier,Float64* endDist)
