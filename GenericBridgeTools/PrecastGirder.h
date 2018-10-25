@@ -80,7 +80,6 @@ END_COM_MAP()
 
 private:
    ISuperstructureMemberSegment* m_pSegment; // weak reference to the superstructure member segment for this girder
-   CComPtr<IStrandMover> m_pStrandMover;
    CComPtr<IStrandFillTool> m_StrandFillTool;
 
    CComPtr<IPrestressingStrand> m_StraightStrandMaterial;
@@ -154,7 +153,7 @@ private:
    Float64 GetHarpPatternFillAdjustment();
    HRESULT UpdateMaxStrandFill();
 
-   HRESULT GetStrandPositions(Float64 distFromStart, Float64 distBetweenGrids, IIndexArray* startFill, IStrandGridFiller* pStartGrid, IIndexArray* endFill, IStrandGridFiller* pEndGrid, IPoint2dCollection** points);
+   HRESULT GetStrandPositions(Float64 distFromStart, Float64 distToStartGrid, Float64 distBetweenGrids, IIndexArray* startFill, IStrandGridFiller* pStartGrid, IIndexArray* endFill, IStrandGridFiller* pEndGrid, IPoint2dCollection** points);
 
 // ISupportsErrorInfo
 public:
@@ -162,10 +161,11 @@ public:
 
 // IPrecastGirder
 public:
-	STDMETHOD(Initialize)(ISuperstructureMemberSegment* segment,IStrandMover* strandMover);
+   STDMETHOD(Initialize)(ISuperstructureMemberSegment* segment);
+   STDMETHOD(SetStrandMovers)(IStrandMover* pStartStrandMover,IStrandMover* pHp1StrandMover,IStrandMover* pHp2StrandMover,IStrandMover* pEndStrandMover);
 
-	STDMETHOD(putref_StrandMover)(/*[in]*/IStrandMover* pStrandMover);
-	STDMETHOD(get_StrandMover)(/*[out,retval]*/IStrandMover** ppStrandMover);
+	STDMETHOD(putref_StrandMover)(/*[in]*/StrandGridType sgType,/*[in]*/EndType endType,/*[in]*/IStrandMover* pStrandMover);
+	STDMETHOD(get_StrandMover)(/*[in]*/StrandGridType sgType,/*[in]*/EndType endType,/*[out,retval]*/IStrandMover** ppStrandMover);
 
    STDMETHOD(putref_StraightStrandMaterial)(IPrestressingStrand* pMaterial);
    STDMETHOD(get_StraightStrandMaterial)(IPrestressingStrand** ppMaterial);
@@ -189,10 +189,10 @@ public:
 
 	STDMETHOD(get_TopElevation)(/*[out,retval]*/Float64* top);
 
-	STDMETHOD(get_HarpedStrandAdjustmentEnd)(/*[out,retval]*/Float64* offset);
-	STDMETHOD(put_HarpedStrandAdjustmentEnd)(/*[in]*/Float64 offset);
-	STDMETHOD(get_HarpedStrandAdjustmentHP)(/*[out,retval]*/Float64* offset);
-	STDMETHOD(put_HarpedStrandAdjustmentHP)(/*[in]*/Float64 offset);
+	STDMETHOD(get_HarpedStrandAdjustmentEnd)(/*[in]*/EndType endType,/*[out,retval]*/Float64* offset);
+	STDMETHOD(put_HarpedStrandAdjustmentEnd)(/*[in]*/EndType endType,/*[in]*/Float64 offset);
+	STDMETHOD(get_HarpedStrandAdjustmentHP)(/*[in]*/EndType endType,/*[out,retval]*/Float64* offset);
+	STDMETHOD(put_HarpedStrandAdjustmentHP)(/*[in]*/EndType endType,/*[in]*/Float64 offset);
 
 	STDMETHOD(SetHarpingPoints)(/*[in]*/Float64 hp1,/*[in]*/Float64 hp2);
 	STDMETHOD(GetHarpingPoints)(/*[out]*/Float64* hp1,/*[out]*/Float64* hp2);
@@ -254,24 +254,24 @@ public:
    STDMETHOD(HarpedHpStrandBoundingBox)(/*[in]*/EndType endType, /*[out,retval]*/IRect2d** box);
    STDMETHOD(HarpedHpStrandBoundingBoxEx)(/*[in]*/EndType endType, /*[in]*/ IIndexArray* fill, /*[out,retval]*/IRect2d** box);
 
-   STDMETHOD(GetHarpedEndFilledGridBoundsEx)(/*[in]*/IIndexArray* fill, /*[out]*/Float64* bottomElev, /*[out]*/Float64* topElev);
-   STDMETHOD(GetHarpedHpFilledGridBoundsEx)(/*[in]*/IIndexArray* fill, /*[out]*/Float64* bottomElev, /*[out]*/Float64* topElev);
+   STDMETHOD(GetHarpedEndFilledGridBoundsEx)(/*[in]*/EndType endType,/*[in]*/IIndexArray* fill, /*[out]*/Float64* bottomElev, /*[out]*/Float64* topElev);
+   STDMETHOD(GetHarpedHpFilledGridBoundsEx)(/*[in]*/EndType endType,/*[in]*/IIndexArray* fill, /*[out]*/Float64* bottomElev, /*[out]*/Float64* topElev);
 
    // Compute offset adjustment required in order to put harped strands within proper bounds
    // If zero, no adjustment is required. 
    // If non-zero, add this number to current offset to move current harped strands just enough to fit within cross section boundary
-   STDMETHOD(HarpedEndStrandBoundaryCheck)(/*[out,retval]*/Float64* adjustment);
-   STDMETHOD(HarpedHpStrandBoundaryCheck)(/*[out,retval]*/Float64* adjustment);
+   STDMETHOD(HarpedEndStrandBoundaryCheck)(/*[in]*/EndType endType,/*[out,retval]*/Float64* adjustment);
+   STDMETHOD(HarpedHpStrandBoundaryCheck)(/*[in]*/EndType endType,/*[out,retval]*/Float64* adjustment);
 
    STDMETHOD(ComputeMaxHarpedStrandSlope)(/*[in]*/Float64 distFromStart,/*[out,retval]*/Float64* slope);
-   STDMETHOD(ComputeMaxHarpedStrandSlopeEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[in]*/ Float64 endOffset,/*[in]*/ Float64 hpOffset,/*[out,retval]*/Float64* slope);
+   STDMETHOD(ComputeMaxHarpedStrandSlopeEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[in]*/ Float64 startOffset,/*[in]*/ Float64 hp1Offset,/*[in]*/ Float64 hp2Offset,/*[in]*/ Float64 endOffset,/*[out,retval]*/Float64* slope);
    STDMETHOD(ComputeAvgHarpedStrandSlope)(/*[in]*/Float64 distFromStart,/*[out,retval]*/Float64* slope);
-   STDMETHOD(ComputeAvgHarpedStrandSlopeEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[in]*/ Float64 endOffset,/*[in]*/ Float64 hpOffset,/*[out,retval]*/Float64* slope);
+   STDMETHOD(ComputeAvgHarpedStrandSlopeEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[in]*/ Float64 startOffset,/*[in]*/ Float64 hp1Offset,/*[in]*/ Float64 hp2Offset,/*[in]*/ Float64 endOffset,/*[out,retval]*/Float64* slope);
 
-   STDMETHOD(GetHarpedEndAdjustmentBounds)(/*[out]*/Float64* DownwardAdjustment, /*[out]*/Float64* UpwardAdjustment);
-   STDMETHOD(GetHarpedEndAdjustmentBoundsEx)(/*[in]*/ IIndexArray* fill, /*[out]*/Float64* DownwardAdjustment, /*[out]*/Float64* UpwardAdjustment);
-   STDMETHOD(GetHarpedHpAdjustmentBounds)(/*[out]*/Float64* DownwardAdjustment, /*[out]*/Float64* UpwardAdjustment);
-   STDMETHOD(GetHarpedHpAdjustmentBoundsEx)(/*[in]*/ IIndexArray* fill, /*[out]*/Float64* DownwardAdjustment, /*[out]*/Float64* UpwardAdjustment);
+   STDMETHOD(GetHarpedEndAdjustmentBounds)(/*[in]*/EndType endType,/*[out]*/Float64* DownwardAdjustment, /*[out]*/Float64* UpwardAdjustment);
+   STDMETHOD(GetHarpedEndAdjustmentBoundsEx)(/*[in]*/EndType endType,/*[in]*/ IIndexArray* fill, /*[out]*/Float64* DownwardAdjustment, /*[out]*/Float64* UpwardAdjustment);
+   STDMETHOD(GetHarpedHpAdjustmentBounds)(/*[in]*/EndType endType,/*[out]*/Float64* DownwardAdjustment, /*[out]*/Float64* UpwardAdjustment);
+   STDMETHOD(GetHarpedHpAdjustmentBoundsEx)(/*[in]*/EndType endType,/*[in]*/ IIndexArray* fill, /*[out]*/Float64* DownwardAdjustment, /*[out]*/Float64* UpwardAdjustment);
 
    STDMETHOD(get_HarpedEndAdjustmentIncrement)(/*[out,retval]*/Float64* increment);
    STDMETHOD(get_HarpedHpAdjustmentIncrement)(/*[out,retval]*/Float64* increment);
@@ -321,6 +321,9 @@ public:
 
    STDMETHOD(get_RebarLayout)(/*[out,retval]*/IRebarLayout** rebarLayout);
    STDMETHOD(get_ClosureJointRebarLayout)(/*[out,retval]*/IRebarLayout** rebarLayout);
+
+private:
+   Float64 GetSectionHeight(Float64 distFromStart);
 };
 
 #endif //__PRECASTGIRDER_H_

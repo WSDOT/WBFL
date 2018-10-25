@@ -144,7 +144,7 @@ public:
 
    //------------------------------------------------------------------------
    // Retuns rebar development length
-   static REBARDEVLENGTHDETAILS GetRebarDevelopmentLengthDetails(matRebar::Size size, Float64 Ab, Float64 db, Float64 fy, matConcrete::Type type, Float64 fc, bool isFct, Float64 Fct);
+   static REBARDEVLENGTHDETAILS GetRebarDevelopmentLengthDetails(matRebar::Size size, Float64 Ab, Float64 db, Float64 fy, matConcrete::Type type, Float64 fc, bool isFct, Float64 Fct,Float64 density);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

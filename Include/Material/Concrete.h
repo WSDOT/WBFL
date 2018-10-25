@@ -155,6 +155,9 @@ public:
    //------------------------------------------------------------------------
    Float64 GetMaxAggregateSize() const;
 
+   void SetLambda(Float64 lambda);
+   Float64 GetLambda() const;
+
    // GROUP: INQUIRY
 
    //------------------------------------------------------------------------
@@ -225,6 +228,7 @@ private:
    Float64     m_Density;
    Float64     m_ModE;
    Float64     m_MaxAggregateSize;
+   Float64     m_Lambda;
 
    bool m_bIsDamaged;
    std::set<matConcreteListener*,std::less<matConcreteListener*>, std::allocator<matConcreteListener*> > m_Listeners;

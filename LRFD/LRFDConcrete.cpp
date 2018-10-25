@@ -41,7 +41,8 @@ m_EcK2(1.0),
 m_CreepK1(1.0),
 m_CreepK2(1.0),
 m_ShrinkageK1(1.0),
-m_ShrinkageK2(1.0)
+m_ShrinkageK2(1.0),
+m_Lambda(1.0)
 {
 }
 
@@ -56,7 +57,8 @@ m_CreepK2(rOther.m_CreepK2),
 m_ShrinkageK1(rOther.m_ShrinkageK1),
 m_ShrinkageK2(rOther.m_ShrinkageK2),
 m_InitialConcrete(rOther.m_InitialConcrete),
-m_FinalConcrete(rOther.m_FinalConcrete)
+m_FinalConcrete(rOther.m_FinalConcrete),
+m_Lambda(rOther.m_Lambda)
 {
 }
 
@@ -69,12 +71,15 @@ void lrfdLRFDConcrete::SetConcreteModels(const matConcreteEx& initial,const matC
    m_InitialConcrete = initial;
    m_FinalConcrete   = final;
 
+   ATLASSERT(IsEqual(m_InitialConcrete.GetLambda(),m_FinalConcrete.GetLambda()));
+
    SetType((matConcreteBase::Type)m_FinalConcrete.GetType());
    SetStrengthDensity(m_FinalConcrete.GetDensity());
    SetWeightDensity(m_FinalConcrete.GetDensityForWeight());
    HasAggSplittingStrength(m_FinalConcrete.HasAggSplittingStrength());
    SetAggSplittingStrength(m_FinalConcrete.GetAggSplittingStrength());
    SetMaxAggregateSize(m_FinalConcrete.GetMaxAggregateSize());
+   SetLambda(m_FinalConcrete.GetLambda());
 }
 
 const matConcreteEx& lrfdLRFDConcrete::GetInitialConcreteModel() const
@@ -121,6 +126,19 @@ void lrfdLRFDConcrete::GetShrinkageCorrectionFactors(Float64* pK1,Float64* pK2) 
 {
    *pK1 = m_ShrinkageK1;
    *pK2 = m_ShrinkageK2;
+}
+
+void lrfdLRFDConcrete::SetLambda(Float64 lambda)
+{
+   m_Lambda = lambda;
+   m_InitialConcrete.SetLambda(lambda);
+   m_FinalConcrete.SetLambda(lambda);
+}
+
+Float64 lrfdLRFDConcrete::GetLambda() const
+{
+   ATLASSERT(IsEqual(m_InitialConcrete.GetLambda(),m_FinalConcrete.GetLambda()));
+   return m_Lambda;
 }
 
 void lrfdLRFDConcrete::SetStartTime(Float64 t)

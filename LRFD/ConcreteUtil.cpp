@@ -86,13 +86,20 @@ Float64 lrfdConcreteUtil::GetNWCDensityLimit()
 Float64 lrfdConcreteUtil::GetLWCDensityLimit()
 {
    Float64 limit;
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US )
+   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2016Interims )
    {
-      limit = ::ConvertToSysUnits(120.0,unitMeasure::LbfPerFeet3);
+      if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US )
+      {
+         limit = ::ConvertToSysUnits(120.0,unitMeasure::LbfPerFeet3);
+      }
+      else
+      {
+         limit = ::ConvertToSysUnits(1925.0,unitMeasure::KgPerMeter3);
+      }
    }
    else
    {
-      limit = ::ConvertToSysUnits(1925.0,unitMeasure::KgPerMeter3);
+      limit = lrfdConcreteUtil::GetNWCDensityLimit();
    }
 
    return limit;
@@ -690,7 +697,108 @@ Float64 lrfdConcreteUtil::AvfRequiredForHoriz(const sysSectionValue& Vuh, Float6
    }
 }
 
+Float64 lrfdConcreteUtil::ComputeConcreteDensityModificationFactor(matConcrete::Type type,Float64 density,bool bHasFct,Float64 fct,Float64 fc)
+{
+   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2016Interims || type == matConcrete::Normal )
+   {
+      return 1.0;
+   }
 
+   Float64 lambda;
+   if ( bHasFct )
+   {
+      fct = ::ConvertFromSysUnits(fct,unitMeasure::KSI);
+      fc  = ::ConvertFromSysUnits(fc,unitMeasure::KSI);
+      lambda = 4.7*fct/sqrt(fc);
+      lambda = ::ForceIntoRange(0.0,lambda,1.0);
+   }
+   else
+   {
+      density = ::ConvertFromSysUnits(density,unitMeasure::KipPerFeet3);
+      lambda = 7.5*density;
+      lambda = ::ForceIntoRange(0.75,lambda,1.0);
+   }
+   return lambda;
+}
+
+
+std::_tstring lrfdConcreteUtil::GetTypeName(matConcrete::Type type,bool bFull)
+{
+   switch(type)
+   {
+   case matConcrete::Normal:
+      return bFull ? _T("Normal Weight Concrete") : _T("Normal");
+
+   case matConcrete::AllLightweight:
+      if ( bFull )
+      {
+         if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2016Interims )
+         {
+            return _T("All Lightweight Concrete");
+         }
+         else
+         {
+            return _T("Lightweight Concrete");
+         }
+      }
+      else
+      {
+         return _T("AllLightweight");
+      }
+
+   case matConcrete::SandLightweight:
+      if ( bFull )
+      {
+         if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2016Interims )
+         {
+            return _T("Sand Lightweight Concrete");
+         }
+         else
+         {
+            return _T("Lightweight Concrete");
+         }
+      }
+      else
+      {
+         return _T("SandLightweight");
+      }
+
+   default:
+      ATLASSERT(false); // is there a new type?
+      return bFull ? _T("Normal Weight Concrete") : _T("Normal");
+   }
+}
+
+matConcrete::Type lrfdConcreteUtil::GetTypeFromName(LPCTSTR strName)
+{
+   matConcrete::Type type;
+   if ( std::_tstring(strName) == _T("Normal") )
+   {
+      type = matConcrete::Normal;
+   }
+   else if ( std::_tstring(strName) == _T("AllLightweight") )
+   {
+      type = matConcrete::AllLightweight;
+   }
+   else if ( std::_tstring(strName) == _T("SandLightweight") )
+   {
+      type = matConcrete::SandLightweight;
+   }
+   else
+   {
+      ATLASSERT(false); // invalid name
+      type = matConcrete::Normal;
+   }
+
+   if ( lrfdVersionMgr::SeventhEditionWith2016Interims <= lrfdVersionMgr::GetVersion() && type == matConcrete::AllLightweight )
+   {
+      // LRFD 2016 removed the distinction between Sand and All lightweight concrete. For a consistent application of the
+      // concrete type, we will use SandLightweight to mean "Lightweight" for all lightweight cases
+      type = matConcrete::SandLightweight;
+   }
+
+   return type;
+}
 
 //======================== ACCESS     =======================================
 //======================== INQUIRY    =======================================

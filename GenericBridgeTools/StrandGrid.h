@@ -100,7 +100,8 @@ public:
    STDMETHOD(get_StrandFill)(/*[out,retval]*/IIndexArray** fill);
    STDMETHOD(putref_StrandFill)(/*[in]*/IIndexArray* fill);
 
-   STDMETHOD(putref_StrandMover)(/*[in]*/IStrandMover* mover);
+   STDMETHOD(putref_StrandMover)(/*[in]*/StrandGridType gridType,/*[in]*/EndType endType,/*[in]*/IStrandMover* mover);
+   STDMETHOD(GetStrandMover)(/*[out]*/StrandGridType* gridType,/*[out]*/EndType* endType,/*[out]*/IStrandMover** mover);
 
    STDMETHOD(get_VerticalStrandAdjustment)(/*[out,retval]*/Float64* adjustment);
    STDMETHOD(put_VerticalStrandAdjustment)(/*[in]*/Float64 adjustment);
@@ -250,6 +251,8 @@ private:
    HRESULT GetDebondAtSection(DebondSection& rSection,/*[out,retval]*/IIndexArray** strandIndexes);
 
    CComPtr<IStrandMover> m_pStrandMover;
+   StrandGridType m_StrandGridType;
+   EndType m_EndType;
 
    // geometry factory for performance
    CComPtr<IPoint2dFactory> m_Point2dFactory;

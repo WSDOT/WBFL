@@ -104,6 +104,13 @@ library WBFLGenericBridgeTools
 	  bscAll // enclude all components of the barrier
    } BarrierSectionCut;
 
+   typedef [public,helpstring("enum StrandGridType"),uuid(F35F63C1-32EA-4de6-B6D8-1F3A5E9863A4)]
+   enum
+   {
+      sgtEnd, // strand grid is at end of girder
+      sgtHarpPoint // strand grid is at harp point
+   } StrandGridType;
+
 
 	[
 		object,
@@ -168,20 +175,24 @@ library WBFLGenericBridgeTools
       // Top elevation of girder in strand coords (note that cover is below this).
 	   [propget, helpstring("property TopElevation")] HRESULT TopElevation([out, retval]Float64* topElev);
 
+      // overall height of the girder section at the location of this strand mover
+      [propget, helpstring("property SectionHeight")] HRESULT SectionHeight([out,retval] Float64* pHeight);
+
       // Max/min Y locations for harped prestressing strands within section at harping points and ends
-	   [propget, helpstring("property HpStrandElevationBoundaries")] HRESULT HpStrandElevationBoundaries([out]Float64* bottomMin,[out]Float64* topMax);
-	   [propget, helpstring("property EndStrandElevationBoundaries")] HRESULT EndStrandElevationBoundaries([out]Float64* bottomMin,[out]Float64* topMax);
+	   [propget, helpstring("property Hp2StrandElevationBoundaries")] HRESULT HpStrandElevationBoundaries([in]EndType endType,[out]Float64* bottomMin,[out]Float64* topMax);
+	   [propget, helpstring("property EndStrandElevationBoundaries")] HRESULT EndStrandElevationBoundaries([in]EndType endType,[out]Float64* bottomMin,[out]Float64* topMax);
 
       // default increments for moving strands
 	   [propget, helpstring("property StrandIncrements")] HRESULT StrandIncrements([out]Float64* endIncrement,[out]Float64* hpIncrement);
 
       // Test if a strand location is within valid bounds 
-	   [helpstring("method TestHpStrandLocation")] HRESULT TestHpStrandLocation([in]Float64 originalX, [in]Float64 originalY, [in]Float64 Yoffset, [out]VARIANT_BOOL* isWithin);
-	   [helpstring("method TestEndStrandLocation")] HRESULT TestEndStrandLocation([in]Float64 originalX, [in]Float64 originalY, [in]Float64 Yoffset, [out]VARIANT_BOOL* isWithin);
+	   [helpstring("method TestHp2StrandLocation")] HRESULT TestHpStrandLocation([in]EndType endType,[in]Float64 Hg,[in]Float64 originalX, [in]Float64 originalY, [in]Float64 Yoffset, [out]VARIANT_BOOL* isWithin);
+	   [helpstring("method TestEndStrandLocation")] HRESULT TestEndStrandLocation([in]EndType endType,[in]Float64 Hg,[in]Float64 originalX, [in]Float64 originalY, [in]Float64 Yoffset, [out]VARIANT_BOOL* isWithin);
 
       // Based on an original location and a Y offset, compute the new strand location
-	   [helpstring("method TranslateStrand")] HRESULT TranslateStrand([in]Float64 originalX, [in]Float64 originalY, [in]Float64 Yoffset, [out]Float64* newX, [out]Float64* newY );
-   }
+	   [helpstring("method TranslateHpStrand")] HRESULT TranslateHpStrand([in]EndType endType,[in]Float64 originalX, [in]Float64 originalY, [in]Float64 Yoffset, [out]Float64* newX, [out]Float64* newY );
+	   [helpstring("method TranslateEndStrand")] HRESULT TranslateEndStrand([in]EndType endType,[in]Float64 originalX, [in]Float64 originalY, [in]Float64 Yoffset, [out]Float64* newX, [out]Float64* newY );
+   };
 
    // Definitions:
    // Strand Grid: A condensed grid of potential strand locations. All x values are 0.0 or more.
@@ -220,7 +231,7 @@ library WBFLGenericBridgeTools
 	   [helpstring("method ClearGridPoints")] HRESULT ClearGridPoints();
 
 	   [helpstring("method GridBoundingBox")] HRESULT GridBoundingBox([out,retval]IRect2d** box);
-    }
+    };
 
 
 	[
@@ -252,7 +263,8 @@ library WBFLGenericBridgeTools
 	   [helpstring("method RemoveAllStrands")] HRESULT RemoveAllStrands();
 
       // Set the strand mover. By default strands just move up or down
-      [propputref, helpstring("property StrandMover")] HRESULT StrandMover([in]IStrandMover* mover);
+      [propputref, helpstring("property StrandMover")] HRESULT StrandMover([in]StrandGridType gridType,[in]EndType endType,[in]IStrandMover* mover);
+      [helpstring("method StrandMover")] HRESULT GetStrandMover([out]StrandGridType* gridType,[out]EndType* endType,[out]IStrandMover** mover);
 
       // adjust strands upward or downward (up is positive)
       [propget, helpstring("property VerticalStrandAdjustment")] HRESULT VerticalStrandAdjustment([out,retval]Float64* adjust);
@@ -320,7 +332,7 @@ library WBFLGenericBridgeTools
       [helpstring("method GetDebondAtRightSection")] HRESULT GetDebondAtRightSection([in]SectionIndexType sectionIdx,[out,retval]IIndexArray** strandIndexes);
 
 	  [helpstring("method ClearDebonding")] HRESULT ClearDebonding();
-   }
+   };
 
    [
       object,
@@ -343,10 +355,11 @@ library WBFLGenericBridgeTools
 	]
 	interface IPrecastGirder : IUnknown
 	{
-      [helpstring("method Initialize")] HRESULT Initialize([in]ISuperstructureMemberSegment* segment, [in]IStrandMover* strandMover);
+      [helpstring("method Initialize")] HRESULT Initialize([in]ISuperstructureMemberSegment* segment);
+      [helpstring("method SetStrandMovers")] HRESULT SetStrandMovers([in]IStrandMover* pStartStrandMover,[in]IStrandMover* pHp1StrandMover,[in]IStrandMover* pHp2StrandMover,[in]IStrandMover* pEndStrandMover);
 
-	   [propputref,helpstring("property StrandMover")] HRESULT StrandMover([in]IStrandMover* pStrandMover);
-	   [propget,helpstring("property StrandMover")] HRESULT StrandMover([out,retval]IStrandMover** ppStrandMover);
+	   [propputref,helpstring("property StrandMover")] HRESULT StrandMover([in]StrandGridType sgType,[in]EndType endType,[in]IStrandMover* pStrandMover);
+	   [propget,helpstring("property StrandMover")] HRESULT StrandMover([in]StrandGridType sgType,[in]EndType endType,[out,retval]IStrandMover** ppStrandMover);
 
       [propputref,helpstring("property StraightStrandMaterial")] HRESULT StraightStrandMaterial([in]IPrestressingStrand* pMaterial);
       [propget,helpstring("property StraightStrandMaterial")] HRESULT StraightStrandMaterial([out,retval]IPrestressingStrand** ppMaterial);
@@ -378,10 +391,10 @@ library WBFLGenericBridgeTools
 
       // Vertical adjustments of harped strands
       // Cannot be set to a non-zero value if Increment (above) is negative.
-      [propget,helpstring("property HarpedStrandAdjustmentEnd")] HRESULT HarpedStrandAdjustmentEnd([out,retval]Float64* offset);
-      [propput,helpstring("property HarpedStrandAdjustmentEnd")] HRESULT HarpedStrandAdjustmentEnd([in]Float64 offset);
-      [propget,helpstring("property HarpedStrandAdjustmentHP")] HRESULT HarpedStrandAdjustmentHP([out,retval]Float64* offset);
-      [propput,helpstring("property HarpedStrandAdjustmentHP")] HRESULT HarpedStrandAdjustmentHP([in]Float64 offset);
+      [propget,helpstring("property HarpedStrandAdjustmentEnd")] HRESULT HarpedStrandAdjustmentEnd([in]EndType endType,[out,retval]Float64* offset);
+      [propput,helpstring("property HarpedStrandAdjustmentEnd")] HRESULT HarpedStrandAdjustmentEnd([in]EndType endType,[in]Float64 offset);
+      [propget,helpstring("property HarpedStrandAdjustmentHP")] HRESULT HarpedStrandAdjustmentHP([in]EndType endType,[out,retval]Float64* offset);
+      [propput,helpstring("property HarpedStrandAdjustmentHP")] HRESULT HarpedStrandAdjustmentHP([in]EndType endType,[in]Float64 offset);
 
 	   [helpstring("method SetHarpingPoints")] HRESULT SetHarpingPoints([in]Float64 hp1,[in]Float64 hp2);
 	   [helpstring("method GetHarpingPoints")] HRESULT GetHarpingPoints([out]Float64* hp1,[out]Float64* hp2);
@@ -450,22 +463,22 @@ library WBFLGenericBridgeTools
       // Compute offset adjustment required in order to put harped strands within proper bounds
       // If zero, no adjustment is required. 
       // If non-zero, add this number to current offset to move current harped strands just enough to fit within cross section boundary
-	   [helpstring("method HarpedEndStrandBoundaryCheck")] HRESULT HarpedEndStrandBoundaryCheck([out,retval]Float64* adjustment);
-	   [helpstring("method HarpedHpStrandBoundaryCheck")] HRESULT HarpedHpStrandBoundaryCheck([out,retval]Float64* adjustment);
+	   [helpstring("method HarpedEndStrandBoundaryCheck")] HRESULT HarpedEndStrandBoundaryCheck([in]EndType endType,[out,retval]Float64* adjustment);
+	   [helpstring("method HarpedHpStrandBoundaryCheck")] HRESULT HarpedHpStrandBoundaryCheck([in]EndType endType,[out,retval]Float64* adjustment);
 
       // Max allowable up or down strand adjustment to keep strands in bounds
-	   [helpstring("method GetHarpedEndAdjustmentBounds")] HRESULT GetHarpedEndAdjustmentBounds([out]Float64* DownwardAdjustment, [out]Float64* UpwardAdjustment);
-	   [helpstring("method GetHarpedEndAdjustmentBoundsEx")] HRESULT GetHarpedEndAdjustmentBoundsEx([in] IIndexArray* fill, [out]Float64* DownwardAdjustment, [out]Float64* UpwardAdjustment);
-	   [helpstring("method GetHarpedHpAdjustmentBounds")] HRESULT GetHarpedHpAdjustmentBounds([out]Float64* DownwardAdjustment, [out]Float64* UpwardAdjustment);
-	   [helpstring("method GetHarpedHpAdjustmentBoundsEx")] HRESULT GetHarpedHpAdjustmentBoundsEx([in] IIndexArray* fill, [out]Float64* DownwardAdjustment, [out]Float64* UpwardAdjustment);
+	   [helpstring("method GetHarpedEndAdjustmentBounds")] HRESULT GetHarpedEndAdjustmentBounds([in]EndType endType,[out]Float64* DownwardAdjustment, [out]Float64* UpwardAdjustment);
+	   [helpstring("method GetHarpedEndAdjustmentBoundsEx")] HRESULT GetHarpedEndAdjustmentBoundsEx([in]EndType endType,[in] IIndexArray* fill, [out]Float64* DownwardAdjustment, [out]Float64* UpwardAdjustment);
+	   [helpstring("method GetHarpedHpAdjustmentBounds")] HRESULT GetHarpedHpAdjustmentBounds([in]EndType endType,[out]Float64* DownwardAdjustment, [out]Float64* UpwardAdjustment);
+	   [helpstring("method GetHarpedHpAdjustmentBoundsEx")] HRESULT GetHarpedHpAdjustmentBoundsEx([in]EndType endType,[in] IIndexArray* fill, [out]Float64* DownwardAdjustment, [out]Float64* UpwardAdjustment);
 
-	   [helpstring("property GetHarpedEndFilledGridBoundsEx")] HRESULT GetHarpedEndFilledGridBoundsEx([in]IIndexArray* fill, [out]Float64* bottomElev, [out]Float64* topElev);
-	   [helpstring("property GetHarpedHpFilledGridBoundsEx")] HRESULT GetHarpedHpFilledGridBoundsEx([in]IIndexArray* fill, [out]Float64* bottomElev, [out]Float64* topElev);
+	   [helpstring("property GetHarpedEndFilledGridBoundsEx")] HRESULT GetHarpedEndFilledGridBoundsEx([in]EndType endType,[in]IIndexArray* fill, [out]Float64* bottomElev, [out]Float64* topElev);
+	   [helpstring("property GetHarpedHpFilledGridBoundsEx")] HRESULT GetHarpedHpFilledGridBoundsEx([in]EndType endType,[in]IIndexArray* fill, [out]Float64* bottomElev, [out]Float64* topElev);
 
       [helpstring("property ComputeMaxHarpedStrandSlope")] HRESULT ComputeMaxHarpedStrandSlope([in]Float64 distFromStart,[out,retval]Float64* slope);
-      [helpstring("property ComputeMaxHarpedStrandSlopeEx")] HRESULT ComputeMaxHarpedStrandSlopeEx([in]Float64 distFromStart, [in]IIndexArray* fill, [in] Float64 endOffset,[in] Float64 hpOffset,[out,retval]Float64* slope);
+      [helpstring("property ComputeMaxHarpedStrandSlopeEx")] HRESULT ComputeMaxHarpedStrandSlopeEx([in]Float64 distFromStart, [in]IIndexArray* fill, [in] Float64 startOffset,[in] Float64 hp1Offset,[in] Float64 hp2Offset,[in] Float64 endOffset,[out,retval]Float64* slope);
       [helpstring("property ComputeAvgHarpedStrandSlope")] HRESULT ComputeAvgHarpedStrandSlope([in]Float64 distFromStart,[out,retval]Float64* slope);
-      [helpstring("property ComputeAvgHarpedStrandSlopeEx")] HRESULT ComputeAvgHarpedStrandSlopeEx([in]Float64 distFromStart, [in]IIndexArray* fill, [in] Float64 endOffset,[in] Float64 hpOffset,[out,retval]Float64* slope);
+      [helpstring("property ComputeAvgHarpedStrandSlopeEx")] HRESULT ComputeAvgHarpedStrandSlopeEx([in]Float64 distFromStart, [in]IIndexArray* fill, [in] Float64 startOffset,[in] Float64 hp1Offset,[in] Float64 hp2Offset,[in] Float64 endOffset,[out,retval]Float64* slope);
 
       [propget,helpstring("property MaxStraightStrands")] HRESULT MaxStraightStrands([out,retval]StrandIndexType* nStrands);
       [propget,helpstring("property MaxHarpedStrands")] HRESULT MaxHarpedStrands([out,retval]StrandIndexType* nStrands);

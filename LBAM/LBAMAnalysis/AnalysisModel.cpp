@@ -4992,8 +4992,11 @@ void CAnalysisModel::GenerateInfluenceLoads()
          CComPtr<IFem2dPointLoadCollection> fem_influence_loads;
          fem_influence_loading->get_PointLoads(&fem_influence_loads);
 
-         CComPtr<IFem2dPointLoad> influenceLoad;
-         fem_influence_loads->Create(infl_locn.m_FemLoadCaseID, infl_locn.m_FemMemberID, infl_locn.m_FemMemberLoc, 0.0, P, 0.0, lotGlobal, &influenceLoad);
+         if ( !IsZero(P) )
+         {
+            CComPtr<IFem2dPointLoad> influenceLoad;
+            fem_influence_loads->Create(infl_locn.m_FemLoadCaseID, infl_locn.m_FemMemberID, infl_locn.m_FemMemberLoc, 0.0, P, 0.0, lotGlobal, &influenceLoad);
+         }
 
          CComPtr<IFem2dPointLoadCollection> fem_point_loads;
          fem_point_loading->get_PointLoads(&fem_point_loads);

@@ -28,6 +28,7 @@
 #include <Lrfd\XCodeVersion.h>
 #include <Lrfd\RebarPool.h>
 #include <Units\SysUnits.h>
+#include <Lrfd\ConcreteUtil.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -377,7 +378,7 @@ Float64 lrfdRebar::GetTensionControlledStrainLimit(matRebar::Grade grade)
    return etl;
 }
 
-REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size size, Float64 Ab, Float64 db, Float64 fy, matConcrete::Type type, Float64 fc, bool isFct, Float64 Fct)
+REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size size, Float64 Ab, Float64 db, Float64 fy, matConcrete::Type type, Float64 fc, bool isFct, Float64 Fct,Float64 density)
 {
    REBARDEVLENGTHDETAILS details;
    details.Ab = Ab;
@@ -417,21 +418,31 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size
       }
 
       // lightweight concrete factor
-      if (type==matConcrete::Normal)
+      if ( lrfdVersionMgr::SeventhEditionWith2016Interims <= lrfdVersionMgr::GetVersion())
       {
-         details.lambdaLw = 1.0;
-      }
-      else if (type==matConcrete::AllLightweight || type==matConcrete::SandLightweight)
-      {
-         details.lambdaLw = 1.3;
+         details.lambdaLw = lrfdConcreteUtil::ComputeConcreteDensityModificationFactor((matConcrete::Type)type,density,isFct,Fct,fc);
+
+         details.factor = details.lambdaRl / details.lambdaLw;// Eqn 5.11.2.1.1-1 was modified in LRFD 2016... using lambdaLw for lambda in the equation
       }
       else
       {
-         ATLASSERT(0); // new type?
-         details.lambdaLw = 1.0;
+         if (type==matConcrete::Normal)
+         {
+            details.lambdaLw = 1.0;
+         }
+         else if (type==matConcrete::AllLightweight || type==matConcrete::SandLightweight)
+         {
+            details.lambdaLw = 1.3;
+         }
+         else
+         {
+            ATLASSERT(0); // new type?
+            details.lambdaLw = 1.0;
+         }
+
+         details.factor = details.lambdaRl * details.lambdaLw;
       }
 
-      details.factor = details.lambdaRl * details.lambdaLw;
    }
    else
    {

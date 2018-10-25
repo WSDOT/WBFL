@@ -60,6 +60,7 @@ public:
                   SecondEditionWith2013Interims = 5,
                   SecondEditionWith2014Interims = 6,
                   SecondEditionWith2015Interims = 7,
+                  SecondEditionWith2016Interims = 8,
                   LastVersion
 };
 

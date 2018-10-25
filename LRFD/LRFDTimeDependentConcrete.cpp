@@ -67,7 +67,8 @@ m_EcK2(1.0),
 m_CreepK1(1.0),
 m_CreepK2(1.0),
 m_ShrinkageK1(1.0),
-m_ShrinkageK2(1.0)
+m_ShrinkageK2(1.0),
+m_Lambda(1.0)
 {
 }
 
@@ -80,7 +81,8 @@ m_EcK2(rOther.m_EcK2),
 m_CreepK1(rOther.m_CreepK1),
 m_CreepK2(rOther.m_CreepK2),
 m_ShrinkageK1(rOther.m_ShrinkageK1),
-m_ShrinkageK2(rOther.m_ShrinkageK2)
+m_ShrinkageK2(rOther.m_ShrinkageK2),
+m_Lambda(1.0)
 {
    m_bIsValid = false;
    m_Fc28     = rOther.m_Fc28;
@@ -186,6 +188,16 @@ void lrfdLRFDTimeDependentConcrete::GetShrinkageCorrectionFactors(Float64* pK1,F
    *pK2 = m_ShrinkageK2;
 }
 
+void lrfdLRFDTimeDependentConcrete::SetLambda(Float64 lambda)
+{
+   m_Lambda = lambda;
+}
+
+Float64 lrfdLRFDTimeDependentConcrete::GetLambda() const
+{
+   return m_Lambda;
+}
+
 void lrfdLRFDTimeDependentConcrete::SetFc28(Float64 fc,Float64 t)
 {
    Float64 age = GetAge(t);
@@ -275,6 +287,7 @@ Float64 lrfdLRFDTimeDependentConcrete::GetFlexureFr(Float64 t) const
 {
    Float64 fc = GetFc(t);
    Float64 fr = lrfdConcreteUtil::ModRupture(fc,m_FlexureFrCoefficient);
+   fr *= m_Lambda;
    return fr;
 }
 
@@ -282,6 +295,7 @@ Float64 lrfdLRFDTimeDependentConcrete::GetShearFr(Float64 t) const
 {
    Float64 fc = GetFc(t);
    Float64 fr = lrfdConcreteUtil::ModRupture(fc,m_ShearFrCoefficient);
+   fr *= m_Lambda;
    return fr;
 }
 
