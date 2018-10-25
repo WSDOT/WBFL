@@ -45,7 +45,7 @@
 
 #undef THROW_LOAD
 #define THROW_LOAD(code,pload) {sysXStructuredLoad alzxb_(sysXStructuredLoad::code, _T(__FILE__), __LINE__ ); \
-                                alzxb_.SetExtendedMessage(pload->GetStateDump().c_str()); \
+                                /*alzxb_.SetExtendedMessage(pload->GetStateDump().c_str()); */\
                                 _ASSERT(false); \
                                 alzxb_.Throw();}
 

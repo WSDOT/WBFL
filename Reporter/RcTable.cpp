@@ -723,7 +723,10 @@ void rptRcTable::MakeCopy(const rptRcTable& rOther)
       for (ColumnIndexType j=1; j<clsize; j++)
       {
          m_TableData[i][j].ClearParent(); 
-         m_TableData[i][j].SetParent(m_pColumnStyles+i);
+         if ( IsStripedRow(j) )
+            m_TableData[i][j].SetParent(m_pStripeRowColumnStyles+i);
+         else
+            m_TableData[i][j].SetParent(m_pColumnStyles+i);
       }
    }
 
@@ -746,3 +749,92 @@ void rptRcTable::MakeAssignment(const rptRcTable& rOther)
 //======================== ACCESS     =======================================
 //======================== INQUERY    =======================================
 
+void rptRcTable::SetNumberOfColumns(ColumnIndexType nColumns)
+{
+   CHECK(nColumns>0);
+
+   // hang onto old points
+   rptStyleHolder* pColumnStyles = m_pColumnStyles;
+   rptStyleHolder* pStripeRowColumnStyles = m_pStripeRowColumnStyles;
+
+   // create new style objects and copy the old styles into the new styles
+   m_pColumnStyles = new rptStyleHolder[nColumns];
+   m_pStripeRowColumnStyles = new rptStyleHolder[nColumns];
+   for ( ColumnIndexType i = 0; i < nColumns; i++ )
+   {
+      if ( i < m_NumColumns )
+      {
+         *(m_pColumnStyles+i) = *(pColumnStyles+i);
+         (m_pColumnStyles+i)->ClearParent();
+         (m_pColumnStyles+i)->SetParent(this);
+
+         *(m_pStripeRowColumnStyles+i) = *(pStripeRowColumnStyles+i);
+         (m_pStripeRowColumnStyles+i)->ClearParent();
+         (m_pStripeRowColumnStyles+i)->SetParent(this);
+      }
+      else
+      {
+         *(m_pColumnStyles+i) = *(m_pColumnStyles+i-1);
+         (m_pColumnStyles+i)->ClearParent();
+         (m_pColumnStyles+i)->SetParent(this);
+
+         *(m_pStripeRowColumnStyles+i) = *(m_pStripeRowColumnStyles+i-1);
+         (m_pStripeRowColumnStyles+i)->ClearParent();
+         (m_pStripeRowColumnStyles+i)->SetParent(this);
+      }
+   }
+
+   // loop over all cells in table and set up new parents
+   for ( ColumnIndexType i = 0; i < m_NumColumns; i++)
+   {
+      ColumnIndexType clsize = m_TableData[i].size();
+      CHECK(clsize);
+
+      // first row in column is header - it's parent for styles is
+      // the table itself
+      m_TableData[i][0].ClearParent();
+      m_TableData[i][0].SetParent(this);
+
+      // the rest of the rows look to thier ColumnStyles for style info.
+      for (ColumnIndexType j=1; j<clsize; j++)
+      {
+         m_TableData[i][j].ClearParent(); 
+         if ( IsStripedRow(j) )
+            m_TableData[i][j].SetParent(m_pStripeRowColumnStyles+i);
+         else
+            m_TableData[i][j].SetParent(m_pColumnStyles+i);
+      }
+   }
+
+   // resize the column and tables
+   m_ColumnWidths.resize(nColumns,m_ColumnWidths.back());
+   m_TableData.resize(nColumns,ColumnVector());
+
+   // add default data to all new columns
+   for ( ColumnIndexType i = m_NumColumns; i < nColumns; i++ )
+   {
+      RowIndexType nHeaderRows = GetNumberOfHeaderRows();
+      for ( RowIndexType j = 0; j < nHeaderRows; j++ )
+      {
+         m_TableData[i].push_back( rptTableCellParagraph() );
+         m_TableData[i][j].SetStyleName( m_TableData[0][j].GetStyleName() );
+      }
+
+      RowIndexType nRows = GetNumberOfRows();
+      for ( RowIndexType j = nHeaderRows; j < nRows; j++ )
+      {
+         m_TableData[i].push_back( rptTableCellParagraph() );
+         if ( IsStripedRow(j) )
+            m_TableData[i][j].SetParent(m_pStripeRowColumnStyles+i);
+         else
+            m_TableData[i][j].SetParent(m_pColumnStyles+i);
+      }
+   }
+
+   // done with the old styles
+   delete[] pColumnStyles;
+   delete[] pStripeRowColumnStyles;
+
+   // set the new number of columns
+   m_NumColumns = nColumns;
+}

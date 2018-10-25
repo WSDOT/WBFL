@@ -827,7 +827,12 @@ void grGraphXY::DrawCurve(HDC hDC)
    {
       GraphData& gd = (*map_iter).second;
 
-      HPEN hPen = ::CreatePen(gd.Pen.Style, gd.Pen.Width, gd.Pen.Color );
+      LOGBRUSH logBrush;
+      logBrush.lbColor = gd.Pen.Color;
+      logBrush.lbStyle = BS_SOLID;
+      logBrush.lbHatch = 0; // not used because lbStyle is BS_SOLID
+
+      HPEN hPen = ::ExtCreatePen(PS_GEOMETRIC | gd.Pen.Style, gd.Pen.Width, &logBrush, 0, NULL);
       HGDIOBJ hOldPen = ::SelectObject(hDC,hPen);
 
       DataSeries& ds = gd.Series;
@@ -990,15 +995,20 @@ void grGraphXY::DrawLegend(HDC hDC)
       }
 
       // draw the line symbol
-      HPEN pen = ::CreatePen(gd.Pen.Style,gd.Pen.Width,gd.Pen.Color);
-      HGDIOBJ old_pen = ::SelectObject(hDC,pen);
+      LOGBRUSH logBrush;
+      logBrush.lbColor = gd.Pen.Color;
+      logBrush.lbStyle = BS_SOLID;
+      logBrush.lbHatch = 0; // not used because lbStyle is BS_SOLID
+
+      HPEN hPen = ::ExtCreatePen(PS_GEOMETRIC | gd.Pen.Style, gd.Pen.Width, &logBrush, 0, NULL);
+      HGDIOBJ old_pen = ::SelectObject(hDC,hPen);
 
       POINT last_point;
       ::MoveToEx(hDC,x+m_LegendBorder,y+m_LegendItemSize.cy/2,&last_point);
       ::LineTo(hDC,x+m_LegendBorder+m_LegendSymbolLength,y+m_LegendItemSize.cy/2);
 
       ::SelectObject(hDC,old_pen);
-      ::DeleteObject(pen);
+      ::DeleteObject(hPen);
 
       SIZE text_size;
       ::GetTextExtentPoint32(hDC,gd.Label.c_str(),(LONG)gd.Label.length(),&text_size);
