@@ -111,6 +111,8 @@ private:
    CMenu m_Menu; // this is the MFC CMenu for this popup menu
    std::vector<CEAFMenu*> m_Popups; // these are the popup menus that hang off this menu
 
+   INT GetMenuItemOffset();
+
    CString m_strMenu;
 
    friend CEAFDocument;

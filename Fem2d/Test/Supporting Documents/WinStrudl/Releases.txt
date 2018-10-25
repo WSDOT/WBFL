@@ -1,0 +1,504 @@
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/07/01 16:53:03    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE     1  |
+      =======================================================================
+
+
+      ************************************************************************
+      *                                                                      *
+      * TYPE OF THE STRUCTURE                  : PLANE FRAME                 *
+      * RESTART STATUS                         :    NONE GIVEN               *
+      * DESIGNATED UNITS                       : KIPS     INCHES RADIANS     *
+      * NO. OF JOINTS DEFINED                  :     8                       *
+      * NO. OF MEMBERS DEFINED                 :     7                       *
+      * NO. OF PLATE ELEMENTS DEFINED          :     0                       *
+      * NO. OF DIFF. MATERIAL DEFINED          :     1                       *
+      * NO. OF DIFF. SECTION PROPERTIES DEFINED:     1                       *
+      * NO. OF DIFF. TYPES OF SPRINGS DEFINED  :     0                       *
+      *                                                                      *
+      ************************************************************************
+
+
+      *****************************
+      * LISTING OF THE INPUT FILE *
+      *****************************
+
+        1) $$$ WinFrame FILE D:\ARP\AutoWBFL\Fem2d\Test\WinStrudl\Releases._
+           FR
+        2) TYPE PLANE FRAME
+        3) UNIT Inch
+        4) SAVE ON
+        5) JOINT COORDINATE
+        6) 1    0    0
+        7) 2    0   10
+        8) 201  2.5 12.5
+        9) 202  5   15
+       10) 203  7.5 17.5
+       11) 3   10   20
+       12) 4   10   10
+       13) 5   10   0
+       14) JOINT RELEASE
+       15) 1 AS SUPPORT
+       16) 5 AS SUPPORT
+       17) MEMBER INCIDENCE
+       18)   1   1   2
+       19) 200   2 201
+       20) 201 201 202
+       21) 202 202 203
+       22) 203 203   3
+       23)   4   3   4
+       24)   5   4   5
+       25) MEMBER RELEASE
+       26) $$ 200 START MOMENT Y Z
+       27) 203 END MOMENT Y Z
+       28) Member Property
+
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/07/01 16:53:03    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE     2  |
+      =======================================================================
+
+
+      *****************************
+      * LISTING OF THE INPUT FILE *
+      *****************************
+
+       29) test AX 100 IZ 10000 SZ 10 YD 1 ZD 1 UNIT Inch
+       30) SECTION PROPERTY
+       31) TEST 1 200 201 202 203 4 5 
+       32) MATERIAL PROPERY
+       33) bogus E 1 DEN 0 CT 1 G 1  MEMBER  UNIT Inch Kip
+       34) MATERIAL PROPERTY
+       35) bogus 1 200 201 202 203 4 5 
+       36) $$$ END OF GEOMETRY FROM D:\ARP\AutoWBFL\Fem2d\Test\WinStrudl\Rel
+           eases._FR
+       37) $
+       38) MERGE ON
+       39) $
+       40) STIFFNESS ANALYSIS
+       41) LOAD POINT
+       42) JOINT LOAD
+       43) UNIT Kip Inch
+       44) 2 FORCE X 10 
+       45) 202 FORCE Y -10
+       46) LOAD DISTRIBUTED
+       47) JOINT LOAD
+       48) 2 FORCE X 10 
+       49) MEMBER LOAD
+       50) 200,201,202,203 UNIFORM FORCE Y W -1
+       51) LOAD TSTRAIN
+       52) JOINT LOAD
+       53) 2 FORCE X 10 
+       54) MEMBER TEMPERATURE
+       55) 200,201,202,203 Axial 2
+       56) MEMBER TEMPERATURE
+       57) 200,201,202,203 BENDING Y -1
+       58) LIST
+       59) UNIT Inch Kip rad
+       60) PRINT ALL
+       61) LIST ALL
+       62) FINISH
+
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/07/01 16:53:03    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE     3  |
+      =======================================================================
+
+
+      * ACTIVE UNIT :  KIPS     INCHES RADIANS  
+      * NO. OF JOINTS DEFINED                  :     8
+        LEGENDS ( EXAMPLES AND EXPLANATIONS ) :
+        DX - GLOBAL X DIRECTION DISPLACEMENT DEGREE OF FREEDOM.
+        RZ - GLOBAL Z DIRECTION ROTATION DEGREE OF FREEDOM.
+        R - RESTRAINED.     S2 - TYPE 2 SPRING ATTACHED.
+
+       JOINT       X            Y     BOUNDARY CODE
+         NO.   COORDINATE   COORDINATE  RZ  DY  DX
+
+           1      0.00000      0.00000   R   R   R 
+           2      0.00000     10.00000 
+           3     10.00000     20.00000 
+           4     10.00000     10.00000 
+           5     10.00000      0.00000   R   R   R 
+         201      2.50000     12.50000 
+         202      5.00000     15.00000 
+         203      7.50000     17.50000 
+
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/07/01 16:53:03    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE     4  |
+      =======================================================================
+
+
+      * NO. OF MEMBERS DEFINED                 :     7
+        LEGENDS ( EXAMPLES AND EXPLANATIONS ) :
+        R:ZYX - ROTATION DEGREE OF FREEDOM ALONG MEMBER AXIS.
+        D:ZYX - DISPLACEMENT DEGREE OF FREEDOM ALONG MEMBER AXIS.
+        F : FREED (RELEASED).   - : RESTRAINED.
+
+      MEM  #     I      J   MAT.    SECTION     I END REL. J END REL.    BETA   I END   J END
+              JOINT  JOINT  TAG.  PROPERTY TAG.  R:Z  D:YX  R:Z  D:YX    ANGLE   SIZE    SIZE  LENGTH
+
+          1      1      2 BOGUS            TEST    -    --    -    --    0.00    0.00    0.00   10.00
+          4      3      4 BOGUS            TEST    -    --    -    --    0.00    0.00    0.00   10.00
+          5      4      5 BOGUS            TEST    -    --    -    --    0.00    0.00    0.00   10.00
+        200      2    201 BOGUS            TEST    -    --    -    --    0.00    0.00    0.00    3.54
+        201    201    202 BOGUS            TEST    -    --    -    --    0.00    0.00    0.00    3.54
+        202    202    203 BOGUS            TEST    -    --    -    --    0.00    0.00    0.00    3.54
+        203    203      3 BOGUS            TEST    -    --    F    --    0.00    0.00    0.00    3.54
+
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/07/01 16:53:03    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE     5  |
+      =======================================================================
+
+
+      * ACTIVE UNIT :  KIPS     INCHES RADIANS  
+      * NO. OF DIFF. SECTION PROPERTIES DEFINED:     1
+
+   INDEX  SECTION TAG       TOT LENGTH   TOT WEIGHT
+  AREA AX  BEND'G IZ BEND'G IY     IX         AY        AZ        SY        SZ
+
+       1  TEST                   44.14         0.00
+  100.0000 10000.0000    0.0000    0.0000    0.0000    0.0000    0.0000   10.0000
+
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/07/01 16:53:03    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE     6  |
+      =======================================================================
+
+
+      * ACTIVE UNIT :  KIPS     INCHES RADIANS  
+      * NO. OF DIFF. MATERIAL DEFINED          :     1
+
+     MAT MATERIAL  MODULUS OF  MATERIAL    THERMAL            G         POI
+     IND PROP TAG  ELASTICITY  WT DENSITY  EXPAN COEF
+
+     1    BOGUS    1.000000    0.000000    1.000000    1.000000    0.000000 
+
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/07/01 16:53:03    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE     7  |
+      =======================================================================
+
+
+
+      ***********************
+      * RESULTS OF ANALYSIS *
+      ***********************
+
+   TYPE OF PROBLEM :  PLANE FRAME         RESTART STATUS :     NONE GIVEN           
+   ACTIVE UNITS :  KIPS     INCHES RADIANS 
+
+
+
+     ***  LOAD INDEX :    1  LOAD TAG :       POINT  ***
+
+
+      RESULTANT JOINT DISPLACEMENTS -----
+
+     JOINT  /--- GLOBAL DISPLACEMENTS ---/-- ROTATION --/
+      NO.      X DIRECTION    Y DIRECTION    Z DIRECTION
+
+         1      0.0000000     -0.0000000     -0.0000000 
+         2      0.2489863     -0.5489501     -0.0353070 
+         3      0.3482321     -0.9020997     -0.0261174 
+         4      0.1088226     -0.4510499     -0.0195881 
+         5      0.0000000     -0.0000000     -0.0000000 
+       201      0.2119788     -0.7521953     -0.0305718 
+       202      0.1585110     -0.9389802     -0.0221387 
+       203      0.2597978     -0.9269662     -0.0144272 
+
+
+     ***  LOAD INDEX :    1  LOAD TAG :       POINT  ***
+
+
+      RESULTANT MEMBER FORCES -----
+
+    MEMBER        SECTION   JOINT /--- AXIAL ---/--- LOCAL Y --/-- LOCAL Z --/
+      NO.             TAG.    NO.      FORCE      SHEAR FORCE      MOMENT
+
+         1            TEST     1         5.4895         8.6941        78.7776 
+                               2        -5.4895        -8.6941         8.1637 
+         4            TEST     3         4.5105         1.3059        -0.0000 
+                               4        -4.5105        -1.3059        13.0587 
+         5            TEST     4         4.5105         1.3059       -13.0587 
+                               5        -4.5105        -1.3059        26.1174 
+       200            TEST     2         4.8051         2.9583        -8.1637 
+                             201        -4.8051        -2.9583        18.6228 
+       201            TEST   201         4.8051         2.9583       -18.6228 
+                             202        -4.8051        -2.9583        29.0818 
+       202            TEST   202        -2.2660        -4.1128       -29.0818 
+                             203         2.2660         4.1128        14.5409 
+
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/07/01 16:53:03    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE     8  |
+      =======================================================================
+
+
+
+      RESULTANT MEMBER FORCES -----
+
+    MEMBER        SECTION   JOINT /--- AXIAL ---/--- LOCAL Y --/-- LOCAL Z --/
+      NO.             TAG.    NO.      FORCE      SHEAR FORCE      MOMENT
+
+       203            TEST   203        -2.2660        -4.1128       -14.5409 
+                               3         2.2660         4.1128         0.0000 
+
+      RESULTANT MEMBER STRESS -----
+
+    MEMBER        SECTION   JOINT /--- AXIAL ---/--- LOCAL Y --/-- LOCAL Z --/
+      NO.                             STRESS     SHEAR STRESS  BENDING STRESS
+
+         1            TEST     1         0.0549            N/A         7.8778 
+                               2        -0.0549            N/A         0.8164 
+         4            TEST     3         0.0451            N/A        -0.0000 
+                               4        -0.0451            N/A         1.3059 
+         5            TEST     4         0.0451            N/A        -1.3059 
+                               5        -0.0451            N/A         2.6117 
+       200            TEST     2         0.0481            N/A        -0.8164 
+                             201        -0.0481            N/A         1.8623 
+       201            TEST   201         0.0481            N/A        -1.8623 
+                             202        -0.0481            N/A         2.9082 
+       202            TEST   202        -0.0227            N/A        -2.9082 
+                             203         0.0227            N/A         1.4541 
+       203            TEST   203        -0.0227            N/A        -1.4541 
+                               3         0.0227            N/A         0.0000 
+
+
+     ***  LOAD INDEX :    1  LOAD TAG :       POINT  ***
+
+
+      JOINT REACTIONS AT SUPPORTS -----
+
+     JOINT  LD      /------------ GLOBAL REACTIONS ------------/
+      NO.                  X FORCE        Y FORCE       Z MOMENT
+
+         1                -8.6941         5.4895        78.7776 
+         5                -1.3059         4.5105        26.1174 
+
+     TOTAL               -10.0000        10.0000 
+
+
+     ***  LOAD INDEX :    2  LOAD TAG :    DISTRIBU  ***
+
+
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/07/01 16:53:03    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE     9  |
+      =======================================================================
+
+
+
+      RESULTANT JOINT DISPLACEMENTS -----
+
+     JOINT  /--- GLOBAL DISPLACEMENTS ---/-- ROTATION --/
+      NO.      X DIRECTION    Y DIRECTION    Z DIRECTION
+
+         1      0.0000000     -0.0000000     -0.0000001 
+         2      0.5155286     -0.4647714     -0.0774428 
+         3      1.2272791     -1.0704571     -0.0920459 
+         4      0.3835249     -0.5352286     -0.0690344 
+         5      0.0000000     -0.0000000     -0.0000000 
+       201      0.7193552     -0.6420819     -0.0739005 
+       202      0.9078309     -0.8040413     -0.0658986 
+       203      1.0753309     -0.9450251     -0.0578565 
+
+
+     ***  LOAD INDEX :    2  LOAD TAG :    DISTRIBU  ***
+
+
+      RESULTANT MEMBER FORCES -----
+
+    MEMBER        SECTION   JOINT /--- AXIAL ---/--- LOCAL Y --/-- LOCAL Z --/
+      NO.             TAG.    NO.      FORCE      SHEAR FORCE      MOMENT
+
+         1            TEST     1         4.6477        15.3977       154.4313 
+                               2        -4.6477       -15.3977        -0.4542 
+         4            TEST     3         5.3523         4.6023        -0.0000 
+                               4        -5.3523        -4.6023        46.0229 
+         5            TEST     4         5.3523         4.6023       -46.0229 
+                               5        -5.3523        -4.6023        92.0459 
+       200            TEST     2        -0.5303         7.1032         0.4542 
+                             201         0.5303        -3.5677        18.4093 
+       201            TEST   201        -0.5303         3.5677       -18.4093 
+                             202         0.5303        -0.0321        24.7729 
+       202            TEST   202        -0.5303         0.0321       -24.7729 
+                             203         0.5303         3.5034        18.6364 
+       203            TEST   203        -0.5303        -3.5034       -18.6364 
+                               3         0.5303         7.0390         0.0000 
+
+      RESULTANT MEMBER STRESS -----
+
+    MEMBER        SECTION   JOINT /--- AXIAL ---/--- LOCAL Y --/-- LOCAL Z --/
+      NO.                             STRESS     SHEAR STRESS  BENDING STRESS
+
+         1            TEST     1         0.0465            N/A        15.4431 
+                               2        -0.0465            N/A        -0.0454 
+         4            TEST     3         0.0535            N/A        -0.0000 
+                               4        -0.0535            N/A         4.6023 
+
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/07/01 16:53:03    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE    10  |
+      =======================================================================
+
+
+
+      RESULTANT MEMBER STRESS -----
+
+    MEMBER        SECTION   JOINT /--- AXIAL ---/--- LOCAL Y --/-- LOCAL Z --/
+      NO.                             STRESS     SHEAR STRESS  BENDING STRESS
+
+         5            TEST     4         0.0535            N/A        -4.6023 
+                               5        -0.0535            N/A         9.2046 
+       200            TEST     2        -0.0053            N/A         0.0454 
+                             201         0.0053            N/A         1.8409 
+       201            TEST   201        -0.0053            N/A        -1.8409 
+                             202         0.0053            N/A         2.4773 
+       202            TEST   202        -0.0053            N/A        -2.4773 
+                             203         0.0053            N/A         1.8636 
+       203            TEST   203        -0.0053            N/A        -1.8636 
+                               3         0.0053            N/A         0.0000 
+
+
+     ***  LOAD INDEX :    2  LOAD TAG :    DISTRIBU  ***
+
+
+      JOINT REACTIONS AT SUPPORTS -----
+
+     JOINT  LD      /------------ GLOBAL REACTIONS ------------/
+      NO.                  X FORCE        Y FORCE       Z MOMENT
+
+         1               -15.3977         4.6477       154.4313 
+         5                -4.6023         5.3523        92.0459 
+
+     TOTAL               -20.0000        10.0000 
+
+
+     ***  LOAD INDEX :    3  LOAD TAG :     TSTRAIN  ***
+
+
+      RESULTANT JOINT DISPLACEMENTS -----
+
+     JOINT  /--- GLOBAL DISPLACEMENTS ---/-- ROTATION --/
+      NO.      X DIRECTION    Y DIRECTION    Z DIRECTION
+
+         1      0.0000000     -0.0000001     -0.0000012 
+         2     12.4184519    -16.2617090     -2.3879375 
+         3    -12.6536157     32.5234179      0.9490210 
+         4     -3.9542565     16.2617090      0.7117658 
+         5     -0.0000000      0.0000001      0.0000004 
+       201     17.7840245    -15.6990167      0.4977313 
+       202     15.7033303     -7.6900577      3.5690759 
+       203      5.7121800      8.2293574      6.8260962 
+
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/07/01 16:53:03    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE    11  |
+      =======================================================================
+
+
+
+
+     ***  LOAD INDEX :    3  LOAD TAG :     TSTRAIN  ***
+
+
+      RESULTANT MEMBER FORCES -----
+
+    MEMBER        SECTION   JOINT /--- AXIAL ---/--- LOCAL Y --/-- LOCAL Z --/
+      NO.             TAG.    NO.      FORCE      SHEAR FORCE      MOMENT
+
+         1            TEST     1       162.6171        57.4510      2675.1914 
+                               2      -162.6171       -57.4510     -2100.6812 
+         4            TEST     3      -162.6171       -47.4510        -0.0000 
+                               4       162.6171        47.4510      -474.5103 
+         5            TEST     4      -162.6171       -47.4510       474.5103 
+                               5       162.6171        47.4510      -949.0206 
+       200            TEST     2        81.4347       148.5406      2100.6812 
+                             201       -81.4347      -148.5406     -1575.5109 
+       201            TEST   201        81.4347       148.5406      1575.5109 
+                             202       -81.4347      -148.5406     -1050.3406 
+       202            TEST   202        81.4347       148.5406      1050.3406 
+                             203       -81.4347      -148.5406      -525.1703 
+       203            TEST   203        81.4347       148.5405       525.1703 
+                               3       -81.4347      -148.5405         0.0000 
+
+      RESULTANT MEMBER STRESS -----
+
+    MEMBER        SECTION   JOINT /--- AXIAL ---/--- LOCAL Y --/-- LOCAL Z --/
+      NO.                             STRESS     SHEAR STRESS  BENDING STRESS
+
+         1            TEST     1         1.6262            N/A       267.5191 
+                               2        -1.6262            N/A      -210.0681 
+         4            TEST     3        -1.6262            N/A        -0.0000 
+                               4         1.6262            N/A       -47.4510 
+         5            TEST     4        -1.6262            N/A        47.4510 
+                               5         1.6262            N/A       -94.9021 
+       200            TEST     2         0.8143            N/A       210.0681 
+                             201        -0.8143            N/A      -157.5511 
+       201            TEST   201         0.8143            N/A       157.5511 
+                             202        -0.8143            N/A      -105.0341 
+       202            TEST   202         0.8143            N/A       105.0341 
+                             203        -0.8143            N/A       -52.5170 
+       203            TEST   203         0.8143            N/A        52.5170 
+                               3        -0.8143            N/A         0.0000 
+
+
+     ***  LOAD INDEX :    3  LOAD TAG :     TSTRAIN  ***
+
+
+
+
+      =======================================================================
+     | WinSTRUDL BY CAST/REV. 3.0    SER :   bb8 TIME : 12/07/01 16:53:03    |
+     | L I C E N S E E : CAST                                                |
+     | TITLE:                                                    PAGE    12  |
+      =======================================================================
+
+
+
+      JOINT REACTIONS AT SUPPORTS -----
+
+     JOINT  LD      /------------ GLOBAL REACTIONS ------------/
+      NO.                  X FORCE        Y FORCE       Z MOMENT
+
+         1               -57.4510       162.6171      2675.1914 
+         5                47.4510      -162.6171      -949.0205 
+
+     TOTAL               -10.0000         0.0000 
+
