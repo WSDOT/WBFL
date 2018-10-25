@@ -77,7 +77,13 @@ STDMETHODIMP CPrecastSlab::InterfaceSupportsErrorInfo(REFIID riid)
 STDMETHODIMP CPrecastSlab::get_StructuralDepth(Float64* depth)
 {
    CHECK_RETVAL(depth);
-   *depth = m_PanelDepth + m_CastDepth - m_SacrificialDepth;
+
+   Float64 sacDepth = 0;
+   if ( m_pBridge )
+      m_pBridge->get_SacrificialDepth(&sacDepth);
+
+   *depth = m_PanelDepth + m_CastDepth - sacDepth;
+
    return S_OK;
 }
 
@@ -166,26 +172,6 @@ STDMETHODIMP CPrecastSlab::put_OverhangDepth(Float64 depth)
       return S_OK;
 
    m_OverhangDepth = depth;
-   Fire_OnBridgeDeckChanged(this);
-   return S_OK;
-}
-
-STDMETHODIMP CPrecastSlab::get_SacrificialDepth(Float64* depth)
-{
-   CHECK_RETVAL(depth);
-   *depth = m_SacrificialDepth;
-   return S_OK;
-}
-
-STDMETHODIMP CPrecastSlab::put_SacrificialDepth(Float64 depth)
-{
-   if ( depth < 0 )
-      return E_INVALIDARG;
-
-   if ( IsEqual(m_SacrificialDepth,depth) )
-      return S_OK;
-
-   m_SacrificialDepth = depth;
    Fire_OnBridgeDeckChanged(this);
    return S_OK;
 }
@@ -368,7 +354,6 @@ STDMETHODIMP CPrecastSlab::Clone(IBridgeDeck** clone)
    slab->put_Fillet(m_Fillet);
    slab->put_CastDepth(m_CastDepth);
    slab->put_PanelDepth(m_PanelDepth);
-   slab->put_SacrificialDepth(m_SacrificialDepth);
    slab->put_OverhangTaper(m_Taper);
    slab->put_OverhangDepth(m_OverhangDepth);
    slab->putref_LeftOverhangPathStrategy(m_LeftPathStrategy);
@@ -410,9 +395,6 @@ STDMETHODIMP CPrecastSlab::Load(IStructuredLoad2* load)
    load->get_Property(CComBSTR("OverhangDepth"),&var);
    m_OverhangDepth = var.dblVal;
 
-   load->get_Property(CComBSTR("SacrificialDepth"),&var);
-   m_SacrificialDepth = var.dblVal;
-
    load->get_Property(CComBSTR("Taper"),&var);
    m_Taper = (DeckOverhangTaper)var.lVal;
 
@@ -436,7 +418,6 @@ STDMETHODIMP CPrecastSlab::Save(IStructuredSave2* save)
    save->put_Property(CComBSTR("PanelDepth"),CComVariant(m_PanelDepth));
    save->put_Property(CComBSTR("CastDepth"),CComVariant(m_CastDepth));
    save->put_Property(CComBSTR("OverhangDepth"),CComVariant(m_OverhangDepth));
-   save->put_Property(CComBSTR("SacrificalDepth"),CComVariant(m_SacrificialDepth));
    save->put_Property(CComBSTR("Taper"),CComVariant(m_Taper));
    save->put_Property(CComBSTR("CastingStage"),CComVariant(m_bstrCastingStage));
    

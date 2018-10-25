@@ -296,30 +296,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthEx(IGenericBridge* b
 
    // Get slab parameters
    Float64 tSlab;
-   if ( cip )
-   {
-      Float64 gross, sacrificial;
-      cip->get_GrossDepth(&gross);
-      cip->get_SacrificialDepth(&sacrificial);
-      tSlab = gross - sacrificial;
-
-   }
-   else if ( sip )
-   {
-      Float64 panel, cast, sacrificial;
-      sip->get_PanelDepth(&panel);
-      sip->get_CastDepth(&cast);
-      sip->get_SacrificialDepth(&sacrificial);
-      tSlab = panel + cast - sacrificial;
-   }
-   else if (overlay)
-   {
-      Float64 gross, sacrificial;
-      overlay->get_GrossDepth(&gross);
-      overlay->get_SacrificialDepth(&sacrificial);
-      tSlab = gross - sacrificial;
-   }
-
+   deck->get_StructuralDepth(&tSlab);
    pDetails->put_SlabThickness(tSlab);
 
    Float64 left_overhang = 0;

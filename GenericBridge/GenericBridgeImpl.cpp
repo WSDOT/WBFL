@@ -1269,6 +1269,7 @@ STDMETHODIMP CGenericBridge::putref_Deck(IBridgeDeck* deck)
    }
 
    m_Deck = deck;
+   m_Deck->putref_Bridge(this);
 
    if ( m_Deck )
    {
@@ -1764,6 +1765,11 @@ STDMETHODIMP CGenericBridge::Clone(IGenericBridge* *clone)
    CComPtr<IPierCollection> piers;
    pPiers->Clone(&piers);
 
+   // Clone wearing surface information
+   pClone->put_WearingSurfaceDepth(m_WearingSurfaceDepth);
+   pClone->put_WearingSurfaceDensity(m_WearingSurfaceDensity);
+   pClone->put_SacrificialDepth(m_SacrificialDepth);
+
    // Wire up all the collections
    pClone->SetCollections(stages,spans,piers);
 
@@ -1902,6 +1908,68 @@ STDMETHODIMP CGenericBridge::putref_RightBarrier(ISidewalkBarrier* barrier)
    return S_OK;
 }
 
+
+STDMETHODIMP CGenericBridge::get_WearingSurfaceDepth(/*[out,retval]*/Float64* d)
+{
+   CHECK_RETVAL(d);
+   *d = m_WearingSurfaceDepth;
+   return S_OK;
+}
+
+STDMETHODIMP CGenericBridge::put_WearingSurfaceDepth(/*[in]*/Float64 depth)
+{
+   if ( depth < 0 )
+      return E_INVALIDARG;
+
+   if ( IsEqual(m_WearingSurfaceDepth,depth) )
+      return S_OK;
+
+   m_WearingSurfaceDepth = depth;
+   Fire_OnBridgeChanged(this);
+
+   return S_OK;
+}
+
+STDMETHODIMP CGenericBridge::get_WearingSurfaceDensity(/*[out,retval]*/Float64* d)
+{
+   CHECK_RETVAL(d);
+   *d = m_WearingSurfaceDensity;
+   return S_OK;
+}
+
+STDMETHODIMP CGenericBridge::put_WearingSurfaceDensity(/*[in]*/Float64 density)
+{
+   if ( density < 0 )
+      return E_INVALIDARG;
+
+   if ( IsEqual(m_WearingSurfaceDensity,density) )
+      return S_OK;
+
+   m_WearingSurfaceDensity = density;
+   Fire_OnBridgeChanged(this);
+
+   return S_OK;
+}
+
+STDMETHODIMP CGenericBridge::get_SacrificialDepth(Float64* depth)
+{
+   CHECK_RETVAL(depth);
+   *depth = m_SacrificialDepth;
+   return S_OK;
+}
+
+STDMETHODIMP CGenericBridge::put_SacrificialDepth(Float64 depth)
+{
+   if ( depth < 0 )
+      return E_INVALIDARG;
+
+   if ( IsEqual(m_SacrificialDepth,depth) )
+      return S_OK;
+
+   m_SacrificialDepth = depth;
+   Fire_OnBridgeChanged(this);
+   return S_OK;
+}
 
 //STDMETHODIMP CGenericBridge::SegmentToSpanGirder(long gdrLineIdx,long ssmbrIdx,long segmentIdx,Float64 dist,long* spanIdx,Float64* location)
 //{

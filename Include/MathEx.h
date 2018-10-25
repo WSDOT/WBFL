@@ -85,14 +85,29 @@ inline bool IsNearby(Float64 val1, Float64 val2, Float64 tolerance = TOLERANCE)
 template <class T>
 inline T Round(const T& a)
 {
-   return (T)( a > 0 ? (int)(a+0.5) : -(int)(0.5-a) );
+   Float64 i;
+   if (0.5 <= modf(a,&i))
+      return 0 <= a ? ceil(a) : floor(a);
+   else
+      return a < 0 ? ceil(a) : floor(a);
 }
 
 // Round a to the specified accurarcy.
 inline Float64 RoundOff(const Float64& a,Float64 accuracy)
 {
    assert(0.0 < accuracy);
-   return (Float64)( a > 0 ? ((long)(a/accuracy+0.5))*accuracy : -((long)(0.5-a/accuracy))*accuracy );
+   Float64 i;
+   if ( 0 <= a )
+   {
+      modf(a/accuracy+0.5,&i);
+      return i*accuracy;
+   }
+   else
+   {
+      modf(0.5-a/accuracy,&i);
+      i *= -accuracy;
+      return IsZero(i) ? 0 : i;
+   }
 }
 
 // Floor a to the specified accurarcy.

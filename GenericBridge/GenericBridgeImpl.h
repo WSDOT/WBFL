@@ -64,6 +64,10 @@ public:
       m_dwDeckCookie = 0;
       m_AlignmentOffset = 0;
 
+      m_WearingSurfaceDepth = 0;
+      m_WearingSurfaceDensity = 0;
+      m_SacrificialDepth = 0;
+
       m_bHoldUpdate = true;
    }
 
@@ -115,6 +119,10 @@ private:
    CComPtr<IAlignment> m_Alignment;
    DWORD m_dwAlignmentCookie;
    Float64 m_AlignmentOffset;
+
+   Float64 m_WearingSurfaceDepth;
+   Float64 m_WearingSurfaceDensity;
+   Float64 m_SacrificialDepth;
 
    CComPtr<IBridgeDeck> m_Deck;
    DWORD m_dwDeckCookie;
@@ -172,6 +180,12 @@ public:
 	STDMETHOD(putref_LeftBarrier)(/*[in]*/ ISidewalkBarrier* barrier);
 	STDMETHOD(get_RightBarrier)(/*[out,retval]*/ ISidewalkBarrier** barrier);
 	STDMETHOD(putref_RightBarrier)(/*[in]*/ ISidewalkBarrier* barrier);
+	STDMETHOD(get_WearingSurfaceDepth)(/*[out,retval]*/Float64* d);
+	STDMETHOD(put_WearingSurfaceDepth)(/*[in]*/Float64 d);
+	STDMETHOD(get_WearingSurfaceDensity)(/*[out,retval]*/Float64* d);
+	STDMETHOD(put_WearingSurfaceDensity)(/*[in]*/Float64 d);
+	STDMETHOD(get_SacrificialDepth)(/*[out,retval]*/Float64* depth);
+	STDMETHOD(put_SacrificialDepth)(/*[in]*/Float64 depth);
 
    STDMETHOD(UpdateBridgeModel)();
 

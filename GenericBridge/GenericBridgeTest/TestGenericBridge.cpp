@@ -69,6 +69,7 @@ void CTestGenericBridge::Test()
    TestAlignment();
    TestCogoInfo();
    TestCogoModel();
+   TestWearingSurface();
    TestPiers();
    TestSpans();
    TestStageCollection();
@@ -308,6 +309,25 @@ void CTestGenericBridge::TestCogoModel()
    // Users are free to manipulate the cogo model, however there can be dire concequences.
    // No events or transactions... It could goof up the internal state of the generic bridge
    // model
+}
+
+void CTestGenericBridge::TestWearingSurface()
+{
+   CComPtr<IGenericBridge> bridge;
+   bridge.CoCreateInstance(CLSID_GenericBridge);
+
+   Float64 value;
+   TRY_TEST(bridge->get_WearingSurfaceDensity(NULL),E_POINTER);
+   TRY_TEST(bridge->get_WearingSurfaceDensity(&value),S_OK);
+   TRY_TEST(value,0.0);
+
+   TRY_TEST(bridge->get_WearingSurfaceDepth(NULL),E_POINTER);
+   TRY_TEST(bridge->get_WearingSurfaceDepth(&value),S_OK);
+   TRY_TEST(value,0.0);
+
+   TRY_TEST(bridge->get_SacrificialDepth(NULL),E_POINTER);
+   TRY_TEST(bridge->get_SacrificialDepth(&value),S_OK);
+   TRY_TEST(IsZero(value),true);
 }
 
 void CTestGenericBridge::TestPiers()

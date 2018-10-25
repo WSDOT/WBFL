@@ -832,33 +832,7 @@ HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,SpanIndex
 
    // get structural thickness of deck
    Float64 structural_depth = 0;
-   if ( cip != NULL )
-   {
-      Float64 gross,wearing;
-      cip->get_GrossDepth(&gross);
-      cip->get_SacrificialDepth(&wearing);
-      structural_depth = gross - wearing;
-   }
-   else if ( sip != NULL )
-   {
-      Float64 panel, cast, wearing;
-      sip->get_PanelDepth(&panel);
-      sip->get_CastDepth(&cast);
-      sip->get_SacrificialDepth(&wearing);
-
-      structural_depth = panel + cast - wearing;
-   }
-   else if ( overlay != NULL )
-   {
-      Float64 gross,wearing;
-      overlay->get_GrossDepth(&gross);
-      overlay->get_SacrificialDepth(&wearing);
-      structural_depth = gross - wearing;
-   }
-   else
-   {
-      ATLASSERT(false); // should never get here
-   }
+   deck->get_StructuralDepth(&structural_depth);
 
    Float64 E;
    Float64 density;
@@ -909,6 +883,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,SpanIn
    if ( shape == NULL )
       return Error(IDS_E_SHAPE,IID_ISectionCutTool,GBMT_E_SHAPE);
 
+
    //
    // Position the shape so that its centerline is on the centerline of its girder path
    //
@@ -929,10 +904,11 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,SpanIn
    profile->Elevation(CComVariant(station),offset,&elevation);
 
    // get the deck thickness and haunch depth at that point
-   CComPtr<IBridgeDeck> deck;
-   bridge->get_Deck(&deck);
    Float64 gross_slab_depth = 0;
    Float64 haunch = 0;
+
+   CComPtr<IBridgeDeck> deck;
+   bridge->get_Deck(&deck);
 
    if ( deck )
    {
@@ -942,10 +918,59 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,SpanIn
 
    // move the top center point of the girder
    CComQIPtr<IXYPosition> xypos(gdrSection);
-   CComPtr<IPoint2d> point;
-   xypos->get_LocatorPoint(lpTopCenter,&point);
-   point->Move(offset,elevation - gross_slab_depth - haunch);
-   xypos->put_LocatorPoint(lpTopCenter,point);
+   CComPtr<IPoint2d> pntTopCenter;
+   xypos->get_LocatorPoint(lpTopCenter,&pntTopCenter);
+   pntTopCenter->Move(offset,elevation - gross_slab_depth - haunch);
+   xypos->put_LocatorPoint(lpTopCenter,pntTopCenter);
+
+
+   // If this is the last stage and the bridge does not have a deck and there is a sacrifical depth wearing surface
+   // then slice the sacrifical depth off the girder section.
+   CComPtr<IStageCollection> stages;
+   bridge->get_Stages(&stages);
+   CollectionIndexType nStages;
+   stages->get_Count(&nStages);
+   CComPtr<IStage> objStage;
+   stages->get_Item(nStages-1,&objStage);
+   CComBSTR bstrStageName;
+   objStage->get_Name(&bstrStageName);
+
+   Float64 sacDepth;
+   bridge->get_SacrificialDepth(&sacDepth);
+
+   if ( bstrStageName == CComBSTR(stage) && deck == NULL && !IsZero(sacDepth) )
+   {
+      // this is the last stage and there isn't a deck and there is a sacrifical depth
+      // that will wear away a portion of the girder's section... remove the sacrifical
+      // depth from the girder
+
+      pntTopCenter->Offset(0,-sacDepth);
+
+      CComPtr<IPoint2d> pntBottomCenter;
+      xypos->get_LocatorPoint(lpBottomCenter,&pntBottomCenter);
+
+      // create clipping line... 
+      // line passing throug a point sacDepth below the top center of the girder
+      // line is towards the right because the clip method keeps what is on the right 
+      // of the clipping line.
+      CComPtr<IVector2d> v;
+      v.CoCreateInstance(CLSID_Vector2d);
+      v->put_X(1.0);
+      v->put_Y(0.0);
+
+      CComPtr<ILine2d> line;
+      line.CoCreateInstance(CLSID_Line2d);
+      line->SetExplicit(pntTopCenter,v);
+
+      CComPtr<IShape> newShape;
+      shape->ClipWithLine(line,&newShape);
+
+      CComQIPtr<IXYPosition> xypos_new(newShape);
+      xypos_new->put_LocatorPoint(lpBottomCenter,pntBottomCenter);
+
+      shape.Release();
+      shape = newShape;
+   }
 
    //
    // Make the shape into a section
@@ -1037,11 +1062,8 @@ HRESULT CSectionCutTool::CreateCIPBridgeDeckSection(IGenericBridge* bridge,Float
    m_BridgeGeometryTool->DeckOverhang(bridge,station,NULL,qcbLeft,&left_overhang);
    m_BridgeGeometryTool->DeckOverhang(bridge,station,NULL,qcbRight,&right_overhang);
 
-   Float64 gross_depth, sac_depth;
-   cip->get_GrossDepth(&gross_depth);
-   cip->get_SacrificialDepth(&sac_depth);
-
-   Float64 depth = gross_depth - sac_depth;
+   Float64 depth;
+   deck->get_StructuralDepth(&depth);
 
    CComPtr<ISpan> span;
    bridge->SpanFromStation(station,&span);
@@ -1110,12 +1132,8 @@ HRESULT CSectionCutTool::CreateSIPBridgeDeckSection(IGenericBridge* bridge,Float
    m_BridgeGeometryTool->DeckOverhang(bridge,station,NULL,qcbLeft,&left_overhang);
    m_BridgeGeometryTool->DeckOverhang(bridge,station,NULL,qcbRight,&right_overhang);
 
-   Float64 panel_depth, cast_depth, sac_depth;
-   sip->get_PanelDepth(&panel_depth);
-   sip->get_CastDepth(&cast_depth);
-   sip->get_SacrificialDepth(&sac_depth);
-
-   Float64 depth = panel_depth + cast_depth - sac_depth;
+   Float64 depth;
+   deck->get_StructuralDepth(&depth);
 
    CComPtr<IGirderSpacing> spacing;
    span->get_GirderSpacing(etStart,&spacing);
@@ -1181,11 +1199,8 @@ HRESULT CSectionCutTool::CreateOverlayBridgeDeckSection(IGenericBridge* bridge,F
    m_BridgeGeometryTool->DeckOverhang(bridge,station,NULL,qcbLeft,&left_overhang);
    m_BridgeGeometryTool->DeckOverhang(bridge,station,NULL,qcbRight,&right_overhang);
 
-   Float64 gross_depth, sac_depth;
-   overlay->get_GrossDepth(&gross_depth);
-   overlay->get_SacrificialDepth(&sac_depth);
-
-   Float64 depth = gross_depth - sac_depth;
+   Float64 depth;
+   deck->get_StructuralDepth(&depth);
 
    CComPtr<IGirderSpacing> spacing;
    span->get_GirderSpacing(etStart,&spacing);

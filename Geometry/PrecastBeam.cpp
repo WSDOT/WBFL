@@ -219,49 +219,49 @@ HRESULT CPrecastBeam::UpdateShape()
       else
       {
          // no chamfer
-      // start at top center and go around counter-clockwise
-      // there are 19 points total. point 1 is top center. point 10 is bottom
-      // center. 
-      Float64 p1_x =  0.;
-      Float64 p1_y =  0.;
-      Float64 p2_x = -m_T1/2-m_W2-m_W1;
-      Float64 p2_y =  0.;
-      Float64 p3_x =  p2_x;
-      Float64 p3_y = -m_D1;
-      Float64 p4_x = -m_T1/2-m_W2;
-      Float64 p4_y = -m_D1-m_D2;
-      Float64 p5_x = -m_T1/2;
-      Float64 p5_y = -m_D1-m_D2-m_D3;
-      Float64 p6_x = -m_T2/2;
-      Float64 p6_y = -m_D1-m_D2-m_D3-m_D7;
-      Float64 p7_x = -m_T2/2-m_W4;
-      Float64 p7_y = -m_D1-m_D2-m_D3-m_D7-m_D6;
-      Float64 p8_x = -m_T2/2-m_W4-m_W3;
-      Float64 p8_y = -m_D1-m_D2-m_D3-m_D7-m_D6-m_D5;
-      Float64 p9_x =  p8_x;
-      Float64 p9_y =  -m_D1-m_D2-m_D3-m_D7-m_D6-m_D5-m_D4;
+         // start at top center and go around counter-clockwise
+         // there are 19 points total. point 1 is top center. point 10 is bottom
+         // center. 
+         Float64 p1_x =  0.;
+         Float64 p1_y =  0.;
+         Float64 p2_x = -m_T1/2-m_W2-m_W1;
+         Float64 p2_y =  0.;
+         Float64 p3_x =  p2_x;
+         Float64 p3_y = -m_D1;
+         Float64 p4_x = -m_T1/2-m_W2;
+         Float64 p4_y = -m_D1-m_D2;
+         Float64 p5_x = -m_T1/2;
+         Float64 p5_y = -m_D1-m_D2-m_D3;
+         Float64 p6_x = -m_T2/2;
+         Float64 p6_y = -m_D1-m_D2-m_D3-m_D7;
+         Float64 p7_x = -m_T2/2-m_W4;
+         Float64 p7_y = -m_D1-m_D2-m_D3-m_D7-m_D6;
+         Float64 p8_x = -m_T2/2-m_W4-m_W3;
+         Float64 p8_y = -m_D1-m_D2-m_D3-m_D7-m_D6-m_D5;
+         Float64 p9_x =  p8_x;
+         Float64 p9_y =  -m_D1-m_D2-m_D3-m_D7-m_D6-m_D5-m_D4;
 
          yoffset = p9_y;
 
-      m_pShape->AddPoint( p1_x, p1_y);  // 1
-      m_pShape->AddPoint( p2_x, p2_y);
-      m_pShape->AddPoint( p3_x, p3_y);
-      m_pShape->AddPoint( p4_x, p4_y);
-      m_pShape->AddPoint( p5_x, p5_y);  // 5
-      m_pShape->AddPoint( p6_x, p6_y);
-      m_pShape->AddPoint( p7_x, p7_y);
-      m_pShape->AddPoint( p8_x, p8_y);
-      m_pShape->AddPoint( p9_x, p9_y);
-      m_pShape->AddPoint(    0, p9_y);  // 10
-      m_pShape->AddPoint(-p9_x, p9_y);
-      m_pShape->AddPoint(-p8_x, p8_y);
-      m_pShape->AddPoint(-p7_x, p7_y);
-      m_pShape->AddPoint(-p6_x, p6_y);
-      m_pShape->AddPoint(-p5_x, p5_y);  // 15
-      m_pShape->AddPoint(-p4_x, p4_y);
-      m_pShape->AddPoint(-p3_x, p3_y);
-      m_pShape->AddPoint(-p2_x, p2_y);
-      m_pShape->AddPoint(-p1_x, p1_y);  // 19
+         m_pShape->AddPoint( p1_x, p1_y);  // 1
+         m_pShape->AddPoint( p2_x, p2_y);
+         m_pShape->AddPoint( p3_x, p3_y);
+         m_pShape->AddPoint( p4_x, p4_y);
+         m_pShape->AddPoint( p5_x, p5_y);  // 5
+         m_pShape->AddPoint( p6_x, p6_y);
+         m_pShape->AddPoint( p7_x, p7_y);
+         m_pShape->AddPoint( p8_x, p8_y);
+         m_pShape->AddPoint( p9_x, p9_y);
+         m_pShape->AddPoint(    0, p9_y);  // 10
+         m_pShape->AddPoint(-p9_x, p9_y);
+         m_pShape->AddPoint(-p8_x, p8_y);
+         m_pShape->AddPoint(-p7_x, p7_y);
+         m_pShape->AddPoint(-p6_x, p6_y);
+         m_pShape->AddPoint(-p5_x, p5_y);  // 15
+         m_pShape->AddPoint(-p4_x, p4_y);
+         m_pShape->AddPoint(-p3_x, p3_y);
+         m_pShape->AddPoint(-p2_x, p2_y);
+         m_pShape->AddPoint(-p1_x, p1_y);  // 19
       }
 
       CComQIPtr<IXYPosition> pPosition(m_pShape);

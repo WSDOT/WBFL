@@ -49,7 +49,6 @@ public:
    COverlaySlab()
 	{
       m_GrossDepth = 0;
-      m_SacrificialDepth = 0;
 	}
 
    HRESULT FinalConstruct();
@@ -57,7 +56,6 @@ public:
 
 private:
    Float64 m_GrossDepth;
-   Float64 m_SacrificialDepth;
 
    CComPtr<IOverhangPathStrategy> m_LeftPathStrategy;
    CComPtr<IOverhangPathStrategy> m_RightPathStrategy;
@@ -96,8 +94,6 @@ public:
 // IOverlaySlab
 public:
 	STDMETHOD(put_GrossDepth)(/*[in]*/Float64 depth);
-	STDMETHOD(get_SacrificialDepth)(/*[out,retval]*/Float64* depth);
-	STDMETHOD(put_SacrificialDepth)(/*[in]*/Float64 depth);
 
 	STDMETHOD(get_LeftOverhangPathStrategy)(/*[out,retval]*/IOverhangPathStrategy** strategy);
 	STDMETHOD(putref_LeftOverhangPathStrategy)(/*[in]*/IOverhangPathStrategy* strategy);

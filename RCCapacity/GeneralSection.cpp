@@ -90,8 +90,7 @@ STDMETHODIMP CGeneralSection::get_ShapeCount(CollectionIndexType* nShapes)
 STDMETHODIMP CGeneralSection::get_Shape(CollectionIndexType shapeIdx,IShape** pShape)
 {
    CHECK_RETOBJ(pShape);
-   CollectionIndexType count = m_SectionItems.size();
-   if ( shapeIdx < 0 || count <= shapeIdx )
+   if ( m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX )
       return E_INVALIDARG;
 
    (*pShape) = m_SectionItems[shapeIdx].shape;
@@ -100,11 +99,23 @@ STDMETHODIMP CGeneralSection::get_Shape(CollectionIndexType shapeIdx,IShape** pS
    return S_OK;
 }
 
+STDMETHODIMP CGeneralSection::putref_Shape(CollectionIndexType shapeIdx,IShape* pShape)
+{
+   if ( m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX )
+      return E_INVALIDARG;
+
+   CHECK_IN(pShape);
+
+   m_SectionItems[shapeIdx].shape.Release();
+   m_SectionItems[shapeIdx].shape = pShape;
+   
+   return S_OK;
+}
+
 STDMETHODIMP CGeneralSection::get_ForegroundMaterial(CollectionIndexType shapeIdx,IStressStrain** pMaterial)
 {
    CHECK_RETOBJ(pMaterial);
-   CollectionIndexType count = m_SectionItems.size();
-   if ( shapeIdx < 0 || count <= shapeIdx )
+   if ( m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX )
       return E_INVALIDARG;
 
    (*pMaterial) = m_SectionItems[shapeIdx].fgMaterial;
@@ -115,11 +126,22 @@ STDMETHODIMP CGeneralSection::get_ForegroundMaterial(CollectionIndexType shapeId
    return S_OK;
 }
 
+STDMETHODIMP CGeneralSection::putref_ForegroundMaterial(CollectionIndexType shapeIdx,IStressStrain* pMaterial)
+{
+   CHECK_IN(pMaterial);
+   if ( m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX )
+      return E_INVALIDARG;
+
+   m_SectionItems[shapeIdx].fgMaterial.Release();
+   m_SectionItems[shapeIdx].fgMaterial = pMaterial;
+
+   return S_OK;
+}
+
 STDMETHODIMP CGeneralSection::get_BackgroundMaterial(CollectionIndexType shapeIdx,IStressStrain** pMaterial)
 {
    CHECK_RETOBJ(pMaterial);
-   CollectionIndexType count = m_SectionItems.size();
-   if ( shapeIdx < 0 || count <= shapeIdx )
+   if ( m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX )
       return E_INVALIDARG;
 
    (*pMaterial) = m_SectionItems[shapeIdx].bgMaterial;
@@ -130,14 +152,35 @@ STDMETHODIMP CGeneralSection::get_BackgroundMaterial(CollectionIndexType shapeId
    return S_OK;
 }
 
+STDMETHODIMP CGeneralSection::putref_BackgroundMaterial(CollectionIndexType shapeIdx,IStressStrain* pMaterial)
+{
+   CHECK_IN(pMaterial);
+   if ( m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX )
+      return E_INVALIDARG;
+
+   m_SectionItems[shapeIdx].bgMaterial.Release();
+   m_SectionItems[shapeIdx].bgMaterial = pMaterial;
+
+   return S_OK;
+}
+
 STDMETHODIMP CGeneralSection::get_InitialStrain(CollectionIndexType shapeIdx,Float64* ei)
 {
    CHECK_RETVAL(ei);
-   CollectionIndexType count = m_SectionItems.size();
-   if ( shapeIdx < 0 || count <= shapeIdx )
+   if ( m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX )
       return E_INVALIDARG;
 
    *ei = m_SectionItems[shapeIdx].ei;
+
+   return S_OK;
+}
+
+STDMETHODIMP CGeneralSection::put_InitialStrain(CollectionIndexType shapeIdx,Float64 ei)
+{
+   if ( m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX )
+      return E_INVALIDARG;
+
+   m_SectionItems[shapeIdx].ei = ei;
 
    return S_OK;
 }
