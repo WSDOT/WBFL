@@ -68,7 +68,7 @@ STDMETHODIMP CFixedLengthRebarLayoutItem::ContainsLocation(Float64 distFromGdrSt
 {
    CHECK_RETVAL(bResult);
 
-   *bResult = ::InRange(m_Start,distFromGdrStart,m_End) ? VARIANT_TRUE : VARIANT_FALSE;
+   *bResult = (::IsGT(m_Start,distFromGdrStart) && ::IsLT(distFromGdrStart,m_End) ? VARIANT_TRUE : VARIANT_FALSE);
 
    return S_OK;
 }

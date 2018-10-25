@@ -25,7 +25,7 @@
 
 #include <Stability\StabilityExp.h>
 #include <Stability\LiftingResults.h>
-#include <Stability\Criteria.h>
+#include <Stability\LiftingCriteria.h>
 
 
 /*****************************************************************************
@@ -46,20 +46,28 @@ class STABILITYCLASS stbLiftingCheckArtifact
 {
 public:
    stbLiftingCheckArtifact();
-   stbLiftingCheckArtifact(const stbLiftingResults& results,const stbCriteria& criteria);
-   void Init(const stbLiftingResults& results,const stbCriteria& criteria);
+   stbLiftingCheckArtifact(const stbLiftingResults& results,const stbLiftingCriteria& criteria,bool bPlumbGirderStresses);
+   void Init(const stbLiftingResults& results,const stbLiftingCriteria& criteria,bool bPlumbGirderStresses);
 
    const stbLiftingResults& GetLiftingResults() const;
-   const stbCriteria& GetCriteria() const;
+   const stbLiftingCriteria& GetCriteria() const;
+
+   bool PlumbGirderStressesEvaluated() const;
+
+   void GetControllingTensionCase(const stbLiftingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const;
+   void GetControllingCompressionCase(const stbLiftingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const;
 
    bool Passed() const;
    bool PassedCrackingCheck() const;
    bool PassedFailureCheck() const;
+   bool PassedDirectStressCheck() const;
+   bool PassedDirectCompressionCheck() const;
+   bool PassedDirectTensionCheck() const;
    bool PassedStressCheck() const;
    bool PassedCompressionCheck() const;
    bool PassedTensionCheck() const;
 
-   Float64 GetAllowableTension(const stbLiftingSectionResult& sectionResult,int face) const;
+   Float64 GetAllowableTension(const stbLiftingSectionResult& sectionResult,stbTypes::ImpactDirection impact,stbTypes::WindDirection wind) const;
 
    Float64 RequiredFcCompression() const;
    Float64 RequiredFcTension() const;
@@ -67,5 +75,6 @@ public:
 
 protected:
    stbLiftingResults m_Results;
-   stbCriteria m_Criteria;
+   stbLiftingCriteria m_Criteria;
+   bool m_bPlumbGirderStresses;
 };

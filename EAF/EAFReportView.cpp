@@ -323,7 +323,7 @@ HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
          // create the report and browser
          m_pReportBrowser = CreateReportBrowser(GetSafeHwnd(),m_pReportSpec,m_pRptSpecBuilder);
 
-         if ( 0 < m_pReportSpec->GetChapterCount() )
+         if ( 0 < m_pReportSpec->GetChapterCount() && CanEditReport() )
          {
             CreateEditButton();
          }
@@ -686,6 +686,11 @@ BOOL CEAFReportView::PreCreateWindow(CREATESTRUCT& cs)
    cs.style |= WS_CLIPCHILDREN;
 
    return CEAFView::PreCreateWindow(cs);
+}
+
+BOOL CEAFReportView::CanEditReport()
+{
+   return TRUE;
 }
 
 void CEAFReportView::CreateEditButton()

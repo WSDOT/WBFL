@@ -90,6 +90,9 @@ public:
    // Assignment operator
    matConcreteEx& operator = (const matConcreteEx& rOther);
 
+   bool operator==(const matConcreteEx& rOther) const;
+   bool operator!=(const matConcreteEx& rOther) const;
+
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------

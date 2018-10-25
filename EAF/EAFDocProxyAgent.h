@@ -217,6 +217,7 @@ public:
 	virtual eafTypes::UnitMode              GetUnitMode();
  	virtual const unitStationFormat&        GetStationFormat();
    virtual const unitmgtScalar&            GetScalarFormat();
+   virtual const unitmgtScalar&            GetPercentageFormat();
    virtual const unitmgtLengthData&        GetComponentDimUnit();
    virtual const unitmgtLengthData&        GetXSectionDimUnit();
    virtual const unitmgtLengthData&        GetSpanLengthUnit();

@@ -217,7 +217,12 @@ STDMETHODIMP CSysAgent::DestroyProgressWindow()
    {
       m_pThread->DestroyProgressWindow();
       m_pThread->PostThreadMessage(WM_KILLTHREAD,0,0);
-      ::WaitForSingleObject(m_pThread->m_hThread,INFINITE);
+      DWORD result = ::WaitForSingleObject(m_pThread->m_hThread,10000/*INFINITE*/);
+      if ( result == WAIT_TIMEOUT || result == WAIT_FAILED )
+      {
+         ATLASSERT(false); // for some reason, the WM_KILLTHREAD message never got to the message handler
+         m_pThread->OnKillThread(0,0);
+      }
       m_pThread = NULL;
    }
    else

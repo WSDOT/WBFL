@@ -33,46 +33,74 @@ static char THIS_FILE[] = __FILE__;
 stbLiftingSectionResult::stbLiftingSectionResult()
 {
    memset((void*)this,0,sizeof(stbLiftingSectionResult));
-   bSectionHasRebar[TOP]    = false;
-   bSectionHasRebar[BOTTOM] = false;
+   memset((void*)bSectionHasRebar,false,sizeof(bSectionHasRebar));
+
+   MaxStressImpactDirection[stbTypes::Top]    = stbTypes::NoImpact;
+   MaxStressWindDirection[stbTypes::Top]      = stbTypes::Left;
+   MaxStressCorner[stbTypes::Top]             = stbTypes::TopLeft;
+
+   MinStressImpactDirection[stbTypes::Top]    = stbTypes::NoImpact;
+   MinStressWindDirection[stbTypes::Top]      = stbTypes::Left;
+   MinStressCorner[stbTypes::Top]             = stbTypes::TopLeft;
+
+
+   MaxStressImpactDirection[stbTypes::Bottom]    = stbTypes::NoImpact;
+   MaxStressWindDirection[stbTypes::Bottom]      = stbTypes::Left;
+   MaxStressCorner[stbTypes::Bottom]             = stbTypes::BottomRight;
+
+   MinStressImpactDirection[stbTypes::Bottom]    = stbTypes::NoImpact;
+   MinStressWindDirection[stbTypes::Bottom]      = stbTypes::Left;
+   MinStressCorner[stbTypes::Bottom]             = stbTypes::BottomRight;
 }
 
 /////////////////////////////////////
 
 stbLiftingResults::stbLiftingResults()
 {
-   bIsStable[IMPACT_NONE] = true;
-   bIsStable[IMPACT_UP]   = true;
-   bIsStable[IMPACT_DOWN] = true;
+   bIsStable[stbTypes::NoImpact] = true;
+   bIsStable[stbTypes::ImpactUp]   = true;
+   bIsStable[stbTypes::ImpactDown] = true;
 
    Pcrit = 0;
    Plift = 0;
    memset((void*)emag,0,sizeof(emag));
    dLift = 0;
 
+   MaxDirectStress = 0;
+   MaxDirectStressAnalysisPointIndex = INVALID_INDEX;
+   MaxDirectStressImpactDirection    = stbTypes::NoImpact;
+   MaxDirectStressWindDirection      = stbTypes::Left;
+   MaxDirectStressCorner             = stbTypes::TopLeft;
+
+   MinDirectStress = 0;
+   MinDirectStressAnalysisPointIndex = INVALID_INDEX;
+   MinDirectStressImpactDirection    = stbTypes::NoImpact;
+   MinDirectStressWindDirection      = stbTypes::Left;
+   MinDirectStressCorner             = stbTypes::TopLeft;
+
    MaxStress = 0;
    MaxStressAnalysisPointIndex = INVALID_INDEX;
-   MaxStressImpactDirection    = INVALID_INDEX;
-   MaxStressWindDirection      = INVALID_INDEX;
-   MaxStressCorner             = INVALID_INDEX;
+   MaxStressImpactDirection    = stbTypes::NoImpact;
+   MaxStressWindDirection      = stbTypes::Left;
+   MaxStressCorner             = stbTypes::TopLeft;
 
    MinStress = 0;
    MinStressAnalysisPointIndex = INVALID_INDEX;
-   MinStressImpactDirection    = INVALID_INDEX;
-   MinStressWindDirection      = INVALID_INDEX;
-   MinStressCorner             = INVALID_INDEX;
+   MinStressImpactDirection    = stbTypes::NoImpact;
+   MinStressWindDirection      = stbTypes::Left;
+   MinStressCorner             = stbTypes::TopLeft;
 
    MinFScr = 0;
    FScrAnalysisPointIndex = INVALID_INDEX;
-   FScrImpactDirection    = INVALID_INDEX;
-   FScrWindDirection      = INVALID_INDEX;
+   FScrImpactDirection    = stbTypes::NoImpact;
+   FScrWindDirection      = stbTypes::Left;
 
    memset((void*)(ThetaMax),0,sizeof(ThetaMax));
    memset((void*)(FsFailure),0,sizeof(FsFailure));
    memset((void*)(AdjFsFailure),0,sizeof(AdjFsFailure));
 
-   FSfImpactDirection = INVALID_INDEX;
-   FSfWindDirection   = INVALID_INDEX;
+   FSfImpactDirection = stbTypes::NoImpact;
+   FSfWindDirection   = stbTypes::Left;
    MinFsFailure    = 0;
    MinAdjFsFailure = 0;
 }

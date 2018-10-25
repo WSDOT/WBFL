@@ -45,6 +45,7 @@ interface IEAFDisplayUnits : IUnknown
 	virtual eafTypes::UnitMode               GetUnitMode() = 0;
 	virtual const unitStationFormat&         GetStationFormat() = 0;
    virtual const unitmgtScalar&             GetScalarFormat() = 0;
+   virtual const unitmgtScalar&             GetPercentageFormat() = 0;
    virtual const unitmgtLengthData&         GetComponentDimUnit() = 0;
    virtual const unitmgtLengthData&         GetXSectionDimUnit() = 0;
    virtual const unitmgtLengthData&         GetSpanLengthUnit() = 0;

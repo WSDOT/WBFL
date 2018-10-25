@@ -30,6 +30,7 @@
 #include "WebBrowser.h"
 
 #include <EAF\EAFApp.h>
+#include <EAF\EAFCustSiteVars.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -69,6 +70,7 @@ BEGIN_MESSAGE_MAP(CEAFHelpWindow, CFrameWnd)
    ON_COMMAND(EAFID_HELPWND_BACK,OnBack)
    ON_COMMAND(EAFID_HELPWND_FORWARD,OnForward)
    ON_NOTIFY(CWebBrowser::BeforeNavigate2,AFX_IDW_PANE_FIRST,OnNavigate)
+   ON_COMMAND_RANGE(CCS_CMENU_BASE, CCS_CMENU_MAX, OnCmenuSelected)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -116,7 +118,7 @@ int CEAFHelpWindow::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	
    CRect rect(0,0,0,0);
    BOOL bCreated = m_WebBrowser.Create(TEXT("Browser Control"),
-                                         WS_CHILD | WS_VISIBLE, rect, this, AFX_IDW_PANE_FIRST);
+                                         WS_CHILD | WS_VISIBLE, rect, this, IDC_HELP_WEB_BROWSER);
    if ( !bCreated )
    {
       TRACE( TEXT("Failed to create browser") );
@@ -186,6 +188,7 @@ void CEAFHelpWindow::Navigate(LPCTSTR lpszURL)
    CWaitCursor wait;
    ShowWindow(SW_SHOW);
    m_WebBrowser.Navigate(lpszURL);
+   SetWindowPos(&wndTop,0,0,0,0,SWP_NOSIZE);
 }
 
 void CEAFHelpWindow::OnBack()
@@ -202,4 +205,44 @@ void CEAFHelpWindow::OnNavigate(NMHDR* pNotifyStruct,LRESULT* result)
 {
    CWebBrowser::Notification* pNotification = (CWebBrowser::Notification*)(pNotifyStruct);
    m_StatusBar.SetPaneText(0,pNotification->URL);
+}
+
+void CEAFHelpWindow::OnCmenuSelected(UINT id)
+{
+   UINT cmd = id-CCS_CMENU_BASE;
+
+   switch(cmd)
+   {
+   //case CCS_RB_EDIT:
+   //  //EditReport();
+   //  break;
+
+   case CCS_RB_FIND:
+     m_WebBrowser.Find();
+     break;
+
+   case CCS_RB_SELECT_ALL:
+     m_WebBrowser.SelectAll();
+     break;
+
+   case CCS_RB_PRINT:
+      m_WebBrowser.Print();
+     break;
+
+   case CCS_RB_REFRESH:
+     m_WebBrowser.Refresh();
+     break;
+
+   case CCS_RB_VIEW_SOURCE:
+      m_WebBrowser.ViewSource();
+     break;
+
+   case CCS_RB_VIEW_BACK:
+      m_WebBrowser.GoBack();
+     break;
+
+   case CCS_RB_VIEW_FORWARD:
+      m_WebBrowser.GoForward();
+     break;
+   }
 }

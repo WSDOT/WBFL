@@ -26,6 +26,28 @@
 #include <Material\MaterialExp.h>
 #include <Material\ConcreteBase.h>
 
+struct MATCLASS matACI209ConcreteShrinkageDetails : public matConcreteBaseShrinkageDetails
+{
+   matACI209ConcreteShrinkageDetails() : matConcreteBaseShrinkageDetails(), 
+      f(0),time_factor(0),curing_factor(0),humidity_factor(0),vs_factor(0) {}
+   Float64 f;
+   Float64 time_factor;
+   Float64 curing_factor;
+   Float64 humidity_factor;
+   Float64 vs_factor;
+};
+
+struct MATCLASS matACI209ConcreteCreepDetails : public matConcreteBaseCreepDetails
+{
+   matACI209ConcreteCreepDetails() : matConcreteBaseCreepDetails(),
+      time_factor(0), loading_age_factor(0), humidity_factor(0), vs_factor(0) {}
+
+   Float64 time_factor;
+   Float64 loading_age_factor;
+   Float64 humidity_factor;
+   Float64 vs_factor;
+};
+
 /*****************************************************************************
 CLASS 
    matACI209Concrete
@@ -101,9 +123,11 @@ public:
    // Returns the total free shrinkage that has occured from time at casting
    // to the time specified
    virtual Float64 GetFreeShrinkageStrain(Float64 t) const;
+   virtual boost::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const;
 
    // Returns the creep coefficient at time t for a loading applied at time tla
    virtual Float64 GetCreepCoefficient(Float64 t,Float64 tla) const;
+   virtual boost::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientDetails(Float64 t,Float64 tla) const;
 
    // Creates a clone of this object
    virtual matConcreteBase* CreateClone() const;

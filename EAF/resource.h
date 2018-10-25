@@ -2,7 +2,6 @@
 // Microsoft Visual C++ generated include file.
 // Used by EAF.rc
 //
-#define IDCANCEL2                       3
 #define IDS_UPDATE_IN_PROGRESS          102
 #define IDB_LIGHTBULB                   103
 #define IDD_TIP                         104
@@ -22,7 +21,6 @@
 #define IDD_CUSTOM_REPORT_CONFLICT      142
 #define IDD_RENAME_REPORT_DLG           143
 #define IDB_CREPORT_BMP                 145
-#define IDD_DIALOG1                     146
 #define IDD_STATUS_DIALOG               146
 #define IDR_HELP                        147
 #define IDI_LARGEICON                   150
@@ -44,7 +42,6 @@
 #define IDC_LIST1                       1008
 #define IDC_TEMPLATES                   1008
 #define IDC_TIPSTRING                   1008
-#define IDC_PLUGIN_LIST                 1008
 #define IDC_FAVORITE_LIST               1008
 #define IDC_AVAILABLE_LIST              1008
 #define IDC_US_UNITS                    1009
@@ -53,9 +50,7 @@
 #define IDC_SI_UNITS                    1010
 #define IDC_LARGE                       1010
 #define IDC_SMALL                       1011
-#define IDC_DETAILS                     1013
 #define IDC_MOREINFO                    1013
-#define IDR_HTML_EAFCUSTOMREPORTCONFLICTDIALOG 1014
 #define IDC_CHECK1                      1015
 #define IDC_CUSTOM_REPORT_LIST          1017
 #define IDC_ADDNEW                      1018
@@ -77,6 +72,7 @@
 #define IDC_NAME_STATIC                 1031
 #define IDC_EDIT1                       1032
 #define IDC_REPORT_NAME_EDIT            1032
+#define IDC_PLUGIN_LIST                 1108
 #define IDD_UIHINTS                     1135
 #define IDC_TOOLTIPS                    1156
 #define IDC_TEXT                        1225
@@ -104,6 +100,8 @@
 #define IDS_E_BADINSTALL                61449
 #define IDS_E_PROBPERSISTS              61450
 #define IDS_E_UNSAFESAVE                61451
+#define IDC_HELP_WEB_BROWSER            AFX_IDW_PANE_FIRST
+#define IDC_REPORT_WEB_BROWSER          5001
 
 // Next default values for new objects
 // 

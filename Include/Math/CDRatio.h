@@ -39,6 +39,11 @@ public:
    // This is necessary because both capacities being compared could be zero.
    enum cdSense {cdPositive, cdNegative};
 
+   static Float64 CDRatio(Float64 capacity,Float64 demand);
+
    // Returns true if C/D 1 is less than C/D 2
-   static bool IsCDRatioLess(cdSense, Float64 capacity1, Float64 demand1, Float64 capacity2, Float64 demand2);
+   static bool IsCDRatioLess(cdSense sense, Float64 capacity1, Float64 demand1, Float64 capacity2, Float64 demand2);
+
+   // returns the index of the minimum CD ratio
+   static int MinCDRatio(cdSense sense, Float64 capacity1, Float64 demand1, Float64 capacity2, Float64 demand2, Float64 capacity3, Float64 demand3, Float64 capacity4, Float64 demand4,Float64* pCD);
 };

@@ -53,10 +53,14 @@ public:
 
    std::_tstring AsString(Float64 val) const
    {
-      if (fabs(val) > m_rT.Tol/10.)
+      if ( m_rT.Tol/10. < fabs(val) )
+      {
          return arvPhysicalConverter::AsString(val);
+      }
       else
+      {
          return arvPhysicalConverter::AsString(0.0);
+      }
    }
 
    Float64 Convert(Float64 value) const
@@ -121,3 +125,4 @@ typedef UnitValueNumericalFormatToolT<unitmgtLength2Data>   AreaTool;
 typedef UnitValueNumericalFormatToolT<unitmgtLength3Data>   SectionModulusTool;
 typedef UnitValueNumericalFormatToolT<unitmgtLength4Data>   MomentOfInertiaTool;
 typedef UnitValueNumericalFormatToolT<unitmgtPerLengthData> CurvatureTool;
+typedef UnitValueNumericalFormatToolT<unitmgtForceData>   AxialTool;

@@ -42,5 +42,6 @@ COPYRIGHT
 *****************************************************************************/
 
 #include <Private\WBFLPackage.h>
+#include <MathEx.h>
 
 #endif // INCLUDED_LRFD_LRFDLIB_H_

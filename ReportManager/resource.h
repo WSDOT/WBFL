@@ -32,6 +32,7 @@
 #define IDD_REPORTSPEC                  2000
 #define IDC_NAME                        2000
 #define IDC_CHAPTER_LIST                2001
+#define IDC_REPORT_WEB_BROWSER          5001
 
 // Next default values for new objects
 // 

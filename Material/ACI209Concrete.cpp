@@ -225,21 +225,22 @@ Float64 matACI209Concrete::GetShearFr(Float64 t) const
 
 Float64 matACI209Concrete::GetFreeShrinkageStrain(Float64 t) const
 {
+   boost::shared_ptr<matConcreteBaseShrinkageDetails> pDetails = GetFreeShrinkageStrainDetails(t);
+   return pDetails->esh;
+}
+
+boost::shared_ptr<matConcreteBaseShrinkageDetails> matACI209Concrete::GetFreeShrinkageStrainDetails(Float64 t) const
+{
+   matACI209ConcreteShrinkageDetails* pDetails = new matACI209ConcreteShrinkageDetails;
+
+   matConcreteBase::InitializeShrinkageDetails(t,pDetails);
+
    ValidateCorrectionFactors();
 
-   // age of the concrete at time t (duration of time after casting)
-   Float64 concrete_age = GetAge(t);
-   if ( concrete_age < 0 )
-   {
-      return 0;
-   }
-
-   // duration of time after initial curing
-   Float64 shrinkage_time = concrete_age - m_CureTime;
+   Float64 shrinkage_time = pDetails->shrinkage_duration;
    if ( shrinkage_time < 0 )
    {
-      // if this occurs, t is in the curing period so no shrinkage occurs
-      return 0;
+      return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
    }
 
    Float64 f = (m_CureMethod == matConcreteBase::Moist ? 35 : 55); // Eqn 2-1, 2-9, 2-10
@@ -263,25 +264,36 @@ Float64 matACI209Concrete::GetFreeShrinkageStrain(Float64 t) const
    // Shrinakge strain
    Float64 sh = time_factor * correction_factor * m_Eshu;
 
-   return sh;
+   pDetails->f = f;
+   pDetails->time_factor = time_factor;
+   pDetails->curing_factor = m_CP;
+   pDetails->humidity_factor = m_RHS;
+   pDetails->vs_factor = m_VSS;
+   pDetails->esh = sh;
+   return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
 }
 
 Float64 matACI209Concrete::GetCreepCoefficient(Float64 t,Float64 tla) const
 {
+   return GetCreepCoefficientDetails(t,tla)->Ct;
+}
+
+boost::shared_ptr<matConcreteBaseCreepDetails> matACI209Concrete::GetCreepCoefficientDetails(Float64 t,Float64 tla) const
+{
+   matACI209ConcreteCreepDetails* pDetails = new matACI209ConcreteCreepDetails;
+   InitializeCreepDetails(t,tla,pDetails);
+
    ValidateCorrectionFactors();
 
-   Float64 age_at_time_under_consideration = GetAge(t);
-   Float64 age_at_loading = GetAge(tla);
-
-   if ( age_at_time_under_consideration <= 0 || age_at_loading <= 0 || age_at_time_under_consideration - age_at_loading < 0 )
+   Float64 age = pDetails->age;
+   Float64 age_at_loading = pDetails->age_at_loading;
+   Float64 maturity = age - age_at_loading;
+   if ( ::IsLE(age,0.0) || ::IsLE(age_at_loading,0.0) || ::IsLE(maturity,0.0) )
    {
-      return 0;
+      return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
    }
 
-   Float64 time_after_loading = age_at_time_under_consideration - age_at_loading;
-   ATLASSERT( 0 <= time_after_loading ); // loading can't occur before concrete is cast
-
-   Float64 tx = pow(time_after_loading,0.6);
+   Float64 tx = pow(maturity,0.6);
    Float64 time_factor = tx/(10+tx);
 
    // Adjustments
@@ -314,7 +326,13 @@ Float64 matACI209Concrete::GetCreepCoefficient(Float64 t,Float64 tla) const
    // Creep coefficent
    Float64 c = time_factor * correction_factor * m_Cu;
 
-   return c;
+   pDetails->time_factor = time_factor;
+   pDetails->loading_age_factor = LA;
+   pDetails->humidity_factor = m_RHC;
+   pDetails->vs_factor = m_VSC;
+   pDetails->Ct = c;
+   
+   return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
 }
 
 matConcreteBase* matACI209Concrete::CreateClone() const

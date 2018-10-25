@@ -1088,6 +1088,10 @@
 			Filter="cpp"
 			>
 			<File
+				RelativePath=".\AlternativeTensileStressCalculator.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ApproximateLosses.cpp"
 				>
 				<FileConfiguration
@@ -4600,6 +4604,10 @@
 			Name="Header Files"
 			Filter="h"
 			>
+			<File
+				RelativePath="..\Include\LRFD\AlternativeTensileStressCalculator.h"
+				>
+			</File>
 			<File
 				RelativePath="..\Include\LRFD\ApproximateLosses.h"
 				>

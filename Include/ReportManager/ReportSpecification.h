@@ -54,6 +54,7 @@ public:
    void SetChapterInfo(const std::vector<CChapterInfo>& chInfo);
    std::vector<CChapterInfo> GetChapterInfo() const;
    IndexType GetChapterCount() const;
+   void ClearChapters();
 
    // Text for printed report headers and footers
    // The right header is always the Date, and the right footer is always Page # of #

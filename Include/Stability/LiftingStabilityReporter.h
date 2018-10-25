@@ -27,6 +27,7 @@
 #include <Stability\StabilityProblem.h>
 #include <Stability\LiftingResults.h>
 #include <Stability\LiftingCheckArtifact.h>
+#include <Reporter\Chapter.h>
 
 /*****************************************************************************
 CLASS 
@@ -47,6 +48,6 @@ class STABILITYCLASS stbLiftingStabilityReporter
 public:
    stbLiftingStabilityReporter();
 
-   void BuildSpecCheckChapter(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem,const stbLiftingCheckArtifact* pArtifact,rptChapter* pChapter);
-   void BuildDetailsChapter(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem,const stbLiftingResults* pResults,rptChapter* pChapter);
+   void BuildSpecCheckChapter(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem,const stbLiftingCheckArtifact* pArtifact,rptChapter* pChapter,LPCTSTR lpszLocColumnLabel = NULL,Float64 offset = 0);
+   void BuildDetailsChapter(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem,const stbLiftingResults* pResults,rptChapter* pChapter,LPCTSTR lpszLocColumnLabel = NULL,Float64 offset = 0);
 };

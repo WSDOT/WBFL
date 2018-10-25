@@ -100,6 +100,12 @@ IndexType CReportSpecification::GetChapterCount() const
    return m_Chapters.size();
 }
 
+void CReportSpecification::ClearChapters()
+{
+   m_Chapters.clear();
+}
+
+
 HRESULT CReportSpecification::Validate() const
 {
    return S_OK;

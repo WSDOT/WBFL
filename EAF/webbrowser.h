@@ -231,6 +231,10 @@ public:
 	virtual void PostNcDestroy();
 	//}}AFX_VIRTUAL
 
+   void Find();
+   void SelectAll();
+   void ViewSource();
+
 protected:
 
     //{{AFX_MSG(CWebBrowser)

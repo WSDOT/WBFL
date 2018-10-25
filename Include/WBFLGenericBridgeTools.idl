@@ -99,7 +99,7 @@ library WBFLGenericBridgeTools
    typedef [public,helpstring("enum BarrierSectionCut"),uuid(B87307A0-81D1-41e5-A115-E1CAB0E39A43)]
    enum 
    {
-      bscNone,  // don't include barrier in section cut
+     bscNone,  // don't include barrier in section cut
 	  bscStructurallyContinuousOnly, // include only the structurally continuous portion of the barrier
 	  bscAll // enclude all components of the barrier
    } BarrierSectionCut;
@@ -110,6 +110,15 @@ library WBFLGenericBridgeTools
       sgtEnd, // strand grid is at end of girder
       sgtHarpPoint // strand grid is at harp point
    } StrandGridType;
+
+
+   typedef [public,helpstring("enum WDebondLocationType"),uuid(56213312-6399-4417-A8F0-1B933056D00E)]
+   enum
+   {
+      wdblEither,  // check debonding at either end
+      wdblLeft,    // debonding is at left end
+      wdblRight    // debonding is at right end
+   } WDebondLocationType;
 
 
 	[
@@ -304,8 +313,8 @@ library WBFLGenericBridgeTools
 	   [propget,helpstring("property FilledGridBoundsEx")] HRESULT FilledGridBoundsEx([in]IIndexArray* fill, [out]Float64* bottomElev, [out]Float64* topElev);
 
       // Debonding - could go into another interface, but it's handy to have it here
-      // rough count of debonded strands at current fill
-      [helpstring("method GetStrandDebondCount")] HRESULT GetStrandDebondCount([out,retval] StrandIndexType* count);
+      // count of debonded strands at current fill
+      [helpstring("method GetStrandDebondCount")] HRESULT GetStrandDebondCount([in]WDebondLocationType loc, [out,retval] StrandIndexType* count);
 
       // Debond  strands based on Grid index
       [helpstring("method DebondStrandByGridIndex")] HRESULT DebondStrandByGridIndex([in]GridIndexType grdIndex,[in]Float64 l1,[in]Float64 l2);
@@ -493,7 +502,7 @@ library WBFLGenericBridgeTools
       [helpstring("method GetTemporaryStrandCountEx")] HRESULT GetTemporaryStrandCountEx([in]IIndexArray* fill, [out,retval] StrandIndexType* nStrands);
 
       // rough count of debonded strands at current fill
-      [helpstring("method GetStraightStrandDebondCount")] HRESULT GetStraightStrandDebondCount([out,retval] StrandIndexType* count);
+      [helpstring("method GetStraightStrandDebondCount")] HRESULT GetStraightStrandDebondCount([in]WDebondLocationType loc, [out,retval] StrandIndexType* count);
 
       // Debond straight strands based on Grid index
 	   [helpstring("method ClearStraightStrandDebonding")] HRESULT ClearStraightStrandDebonding();

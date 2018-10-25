@@ -273,6 +273,7 @@ DECLARE_RC_UNIT_VALUE( unitMomentPerAngle, rptMomentPerAngleUnitValue );
 DECLARE_RC_UNIT_VALUE( unitMoment,         rptMomentUnitValue         );
 DECLARE_RC_UNIT_VALUE( unitPerLength,      rptPerLengthUnitValue      );
 DECLARE_RC_UNIT_VALUE( unitForceLength2,   rptForceLength2UnitValue   );
+DECLARE_RC_UNIT_VALUE( unitVelocity,       rptVelocityUnitValue       );
 
 typedef rptPressureUnitValue rptStressUnitValue;
 typedef rptLength2UnitValue  rptAreaUnitValue;

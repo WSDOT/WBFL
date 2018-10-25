@@ -34,6 +34,13 @@ static char THIS_FILE[] = __FILE__;
 CLASS
    mathCDRatio
 ****************************************************************************/
+Float64 mathCDRatio::CDRatio(Float64 capacity,Float64 demand)
+{
+   if ( IsZero(demand) )
+      return DBL_MAX;
+   else
+      return capacity/demand;
+}
 
 bool mathCDRatio::IsCDRatioLess(cdSense sense, Float64 capacity1, Float64 demand1, Float64 capacity2, Float64 demand2)
 {
@@ -55,13 +62,13 @@ bool mathCDRatio::IsCDRatioLess(cdSense sense, Float64 capacity1, Float64 demand
    if (icz1 && icz2)
    {
       // Both capacities are zero. Largest demand wins
-      if (sense==cdPositive)
+      if (sense == cdPositive)
       {
-         return demand1 > demand2;
+         return demand1 <= demand2;
       }
       else
       {
-         return demand1 < demand2;
+         return demand2 < demand1;
       }
    }
    else if (icz1)
@@ -85,11 +92,11 @@ bool mathCDRatio::IsCDRatioLess(cdSense sense, Float64 capacity1, Float64 demand
          // Both demands are zero. smallest capacity wins
          if (sense==cdPositive)
          {
-            return capacity1 < capacity2;
+            return capacity1 <= capacity2;
          }
          else
          {
-            return capacity1 > capacity2;
+            return capacity2 < capacity1;
          }
       }
       else if (idz1)
@@ -109,7 +116,7 @@ bool mathCDRatio::IsCDRatioLess(cdSense sense, Float64 capacity1, Float64 demand
          // But, have to deal with negative c/d's
          if (cd2 < 0.0)
          {
-            if(cd1>0.0)
+            if(0.0 < cd1)
             {
                return true;
             }
@@ -133,4 +140,44 @@ bool mathCDRatio::IsCDRatioLess(cdSense sense, Float64 capacity1, Float64 demand
          }
       }
    }
+}
+
+int mathCDRatio::MinCDRatio(cdSense sense, Float64 capacity1, Float64 demand1, Float64 capacity2, Float64 demand2, Float64 capacity3, Float64 demand3, Float64 capacity4, Float64 demand4,Float64* pCD)
+{
+   bool b1LessThan2 = mathCDRatio::IsCDRatioLess(sense,capacity1,demand1,capacity2,demand2);
+   bool b3LessThan4 = mathCDRatio::IsCDRatioLess(sense,capacity3,demand3,capacity4,demand4);
+   // we now have it narrowed down to two cases
+
+   int corner;
+   Float64 cd;
+   bool bLess = mathCDRatio::IsCDRatioLess(sense,b1LessThan2 ? capacity1 : capacity2, b1LessThan2 ? demand1 : demand2,b3LessThan4 ? capacity3 : capacity4,b3LessThan4 ? demand3 : demand4);
+   if ( bLess )
+   {
+      if ( b1LessThan2 )
+      {
+         corner = 0; // c/d 1 is smallest
+         cd = CDRatio(capacity1,demand1);
+      }
+      else
+      {
+         corner = 1; // c/d 2 is smallest
+         cd = CDRatio(capacity2,demand2);
+      }
+   }
+   else
+   {
+      if ( b3LessThan4 )
+      {
+         corner = 2; // c/d 3 is smallest
+         cd = CDRatio(capacity3,demand3);
+      }
+      else
+      {
+         corner = 3; // c/d 4 is smallest
+         cd = CDRatio(capacity4,demand4);
+      }
+   }
+
+   *pCD = cd;
+   return corner;
 }

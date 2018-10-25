@@ -157,7 +157,7 @@ protected:
    // GROUP: ACCESS
    // GROUP: INQUIRY
 
-private:
+protected:
    // GROUP: DATA MEMBERS
    Float64 m_Value;
    sysNumericFormatTool::Format m_Format;

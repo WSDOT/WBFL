@@ -385,6 +385,43 @@ matConcrete& matConcrete::operator= (const matConcrete& rOther)
    return *this;
 }
 
+bool matConcrete::operator==(const matConcrete& rOther) const
+{
+   if ( m_Name != rOther.m_Name )
+      return false;
+
+   if ( !::IsEqual(m_Fc,rOther.m_Fc) )
+      return false;
+
+   if ( !::IsEqual(m_Density,rOther.m_Density) )
+      return false;
+
+   if ( !::IsEqual(m_ModE,rOther.m_ModE) )
+      return false;
+
+   if ( !::IsEqual(m_MaxAggregateSize,rOther.m_MaxAggregateSize) )
+      return false;
+
+   if ( m_Type != rOther.m_Type )
+      return false;
+
+   if ( !::IsEqual(m_Fct,rOther.m_Fct) )
+      return false;
+
+   if ( m_bHasFct != rOther.m_bHasFct )
+      return false;
+
+   if ( !::IsEqual(m_Lambda,rOther.m_Lambda) )
+      return false;
+
+   return true;
+}
+
+bool matConcrete::operator!=(const matConcrete& rOther) const
+{
+   return !operator==(rOther);
+}
+
 //======================== OPERATIONS =======================================
 void matConcrete::MakeCopy(const matConcrete& rOther)
 {

@@ -212,12 +212,12 @@ library WBFLGenericBridge
        ctHingedIntegral = 4 // Used for fixed height pier (hinged to a given stage, then integral)
    } ConnectivityType;
 
-   typedef [public,helpstring("enum OffsetType"),uuid(5C89BEE6-F3D8-4b53-BE40-ED22204221EA)] 
+   typedef [public,helpstring("enum OffsetDatumType"),uuid(5C89BEE6-F3D8-4b53-BE40-ED22204221EA)] 
    enum 
    {
        otAlignment = 0,
        otBridge = 1
-   } OffsetType;
+   } OffsetDatumType;
 
    typedef [public,helpstring("enum ReleaseType"),uuid(692EA3D4-3C08-4890-BBAC-702E7734E5B0)] 
    enum 

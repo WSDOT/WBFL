@@ -25,7 +25,7 @@ std::_tstring rptStyleLibrary::ms_TableColumnHeadingStyle    = _T("TableColumnHe
 std::_tstring rptStyleLibrary::ms_TableDataStyleLeftJustify  = _T("TableDataStyle-LJ");
 std::_tstring rptStyleLibrary::ms_TableDataStyleRightJustify = _T("TableDataStyle-RJ");
 std::_tstring rptStyleLibrary::ms_FootnoteStyle              = _T("Footnote");
-std::_tstring rptStyleLibrary::ms_TableCellStyle[4]          = {_T("NB-LJ"),_T("TB-LJ"),_T("NB-RJ"),_T("TB-RJ")};
+std::_tstring rptStyleLibrary::ms_TableCellStyle[6]          = {   _T("NB-LJ"),   _T("TB-LJ"),   _T("NB-RJ"),   _T("TB-RJ"),   _T("NB-CJ"),   _T("TB-CJ")};
 
 std::_tstring rptStyleLibrary::ms_ImagePath= _T("");
 
@@ -129,6 +129,7 @@ void rptStyleLibrary::InitStyles(const std::_tstring& imagePath)
 
    // Style for No Border, Left Justified
    cell.SetAlignment(rptRiStyle::LEFT);
+   cell.SetVerticalAlignment( rptRiStyle::TOP );
    cell.SetTopBorder(rptRiStyle::NOBORDER);
    cell.SetBottomBorder(rptRiStyle::NOBORDER);
    cell.SetLeftBorder(rptRiStyle::NOBORDER);
@@ -157,6 +158,21 @@ void rptStyleLibrary::InitStyles(const std::_tstring& imagePath)
    cell.SetLeftBorder(rptRiStyle::HAIR_THICK);
    cell.SetRightBorder(rptRiStyle::HAIR_THICK);
    psl->AddNamedStyle(ms_TableCellStyle[3],cell);
+
+   // Style for No Border, Center Justified
+   cell.SetAlignment(rptRiStyle::CENTER);
+   cell.SetTopBorder(rptRiStyle::NOBORDER);
+   cell.SetBottomBorder(rptRiStyle::NOBORDER);
+   cell.SetLeftBorder(rptRiStyle::NOBORDER);
+   cell.SetRightBorder(rptRiStyle::NOBORDER);
+   psl->AddNamedStyle(ms_TableCellStyle[4],cell);
+
+   // Style for Thin Border, Right Justified
+   cell.SetTopBorder(rptRiStyle::HAIR_THICK);
+   cell.SetBottomBorder(rptRiStyle::HAIR_THICK);
+   cell.SetLeftBorder(rptRiStyle::HAIR_THICK);
+   cell.SetRightBorder(rptRiStyle::HAIR_THICK);
+   psl->AddNamedStyle(ms_TableCellStyle[5],cell);
 
    // Footnote style
    rptRiStyle footnote;
@@ -211,20 +227,34 @@ const std::_tstring& rptStyleLibrary::GetTableCellStyle(Uint32 style)
    // 1 = Thin Border, Left Justified
    // 2 = No Border, Right Justified
    // 3 = Thin Border, Right Justified
+   // 4 = No Border, Center Justified
+   // 5 = Thin Border, Center Justified
 
    Int16 index = 0;
 
    if ( style & CB_NONE )
+   {
       index |= 0x0000;
+   }
    else if ( style & CB_THIN )
+   {
       index |= 0x0001;
+   }
    
    if ( style & CJ_LEFT )
+   {
       index |= 0x0000;
+   }
    else if ( style & CJ_RIGHT )
+   {
       index |= 0x0002;
+   }
+   else if ( style & CJ_CENTER )
+   {
+      index |= 0x0004;
+   }
 
-   CHECK( 0 <= index && index <= 3 );
+   ATLASSERT( 0 <= index && index <= 5 );
 
    return ms_TableCellStyle[index];
 }

@@ -288,7 +288,7 @@ public:
 	STDMETHOD(GetTemporaryStrandCountEx)(/*[in]*/ IIndexArray* fill, /*[out,retval]*/ StrandIndexType* nStrands);
 
    // rough count of debonded strands for current fill
-   STDMETHOD(GetStraightStrandDebondCount)(/*[out,retval]*/ StrandIndexType* count);
+   STDMETHOD(GetStraightStrandDebondCount)(/*[in]*/ WDebondLocationType loc, /*[out,retval]*/ StrandIndexType* count);
 
    // Debond straight strands based on Grid index
    STDMETHOD(ClearStraightStrandDebonding)();

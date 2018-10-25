@@ -76,6 +76,10 @@ unitmgtIndirectMeasure::unitmgtIndirectMeasure() :
       Scalar.Width = 8;
       Scalar.Precision = 3;
       Scalar.Format = sysNumericFormatTool::Fixed;
+
+      Percentage.Width = 6;
+      Percentage.Precision = 2;
+      Percentage.Format = sysNumericFormatTool::Fixed;
 }
 
 unitmgtIndirectMeasure::unitmgtIndirectMeasure(const unitmgtIndirectMeasure& rOther) :
@@ -116,6 +120,10 @@ unitmgtIndirectMeasure::unitmgtIndirectMeasure(const unitmgtIndirectMeasure& rOt
       Scalar.Width = 8;
       Scalar.Precision = 3;
       Scalar.Format = sysNumericFormatTool::Fixed;
+
+      Percentage.Width = 6;
+      Percentage.Precision = 2;
+      Percentage.Format = sysNumericFormatTool::Fixed;
 
       MakeCopy( rOther );
 }
@@ -241,6 +249,7 @@ void unitmgtIndirectMeasure::MakeCopy(const unitmgtIndirectMeasure& rOther)
    StationFormat = rOther.StationFormat;
 
    Scalar = rOther.Scalar;
+   Percentage = rOther.Percentage;
 
    ComponentDim    = rOther.ComponentDim;
    XSectionDim     = rOther.XSectionDim;

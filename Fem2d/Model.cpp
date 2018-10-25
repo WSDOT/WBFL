@@ -1495,7 +1495,14 @@ void CModel::ComputeLoadings()
 
 
 #if defined _DEBUG
-         CheckSolution();
+         try
+         {
+            CheckSolution();
+         }
+         catch(...)
+         {
+         }
+
 #endif
          ApplyJntDeflections();
       }

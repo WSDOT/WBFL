@@ -28,6 +28,7 @@
 #include <Reporter\RcInt.h>
 #include <Reporter\RcUnsigned.h>
 #include <Reporter\RcString.h>
+#include <Reporter\RcStringLiteral.h>
 #include <Reporter\RcFontModifier.h>
 #include <Reporter\RcFlowModifier.h>
 #include <Reporter\RcColor.h>
@@ -38,6 +39,7 @@
 #include <Reporter\RcImage.h>
 #include <Reporter\RcSymbol.h>
 #include <Reporter\RcScalar.h>
+#include <Reporter\RcPercentage.h>
 #include <Reporter\RcUnitTag.h>
 #include <Reporter\RcUnitValue.h>
 #include <Reporter\RcSectionValue.h>
@@ -126,6 +128,31 @@ void rptHtmlRcVisitor::VisitRcString(rptRcString* pString)
    HyperEnd(pString);
 }
 
+
+void rptHtmlRcVisitor::VisitRcStringLiteral(rptRcStringLiteral* pString)
+{
+   HyperStart(pString); // deal with hyperlinks
+
+   std::_tstring str = pString->GetString();
+
+   if ( 0 < str.size() )
+   {
+      if ( pString->NoWrap() )
+      {
+         *m_pOstream<< _T("<span style=\"white-space: nowrap\">") << str << _T("</span>");
+      }
+      else
+      {
+         *m_pOstream << str;
+      }
+   }
+   else
+   {
+      *m_pOstream << _T("&nbsp;");
+   }
+
+   HyperEnd(pString);
+}
 
 // Visit a Table (Big Job)
 
@@ -603,6 +630,23 @@ void rptHtmlRcVisitor::VisitRcUnsigned(rptRcUnsigned* pUs)
 }
 
 void rptHtmlRcVisitor::VisitRcScalar(rptRcScalar* pRC)
+{
+   HyperStart(pRC); // deal with hyperlinks
+
+   //
+   // set up an ostream to toss value into
+   //
+   std::_tostringstream my_stm;
+
+   my_stm << _T("<span style=\"white-space: nowrap\">") << pRC->AsString() << _T("</span>");
+
+   // send the finished string up the pipe
+   *m_pOstream << my_stm.str().c_str();
+
+   HyperEnd(pRC); // deal with hyperlinks
+}
+
+void rptHtmlRcVisitor::VisitRcPercentage(rptRcPercentage* pRC)
 {
    HyperStart(pRC); // deal with hyperlinks
 

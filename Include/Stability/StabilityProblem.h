@@ -24,16 +24,9 @@
 #pragma once
 
 #include <Stability\StabilityExp.h>
-
-#define LEFT  0
-#define RIGHT 1
-
-#define STRAIGHT  0
-#define HARPED    1
-#define TEMPORARY 2
-
-#define SECTION_START 0
-#define SECTION_END   1
+#include <WBFLGenericBridge.h> // for ISegment
+#include <Material\ConcreteEx.h>
+#include <Stability\AnalysisPoint.h>
 
 /*****************************************************************************
 CLASS 
@@ -55,11 +48,10 @@ public:
    // returns the overall length of the girder
    virtual Float64 GetGirderLength() const = 0;
 
-   // returns the total dead weight of the girder
-   virtual Float64 GetGirderWeight() const = 0;
-
-   // returns the location of a strand in girder section coordinates
-   virtual Float64 GetStrandLocation(int strandType,Float64 X) const = 0;
+   // Assigns an ISegment object to ppSegment
+   // if a value is not assigned, then the girder is modeled with basic properties only.
+   // This section must be assigned to do the analysis for the alternative tensile stress limits (with rebar tension limit)
+   virtual void GetSegment(ISegment** ppSegment) const = 0;
 
    // returns the number of sections used to define the girder
    virtual IndexType GetSectionCount() const = 0;
@@ -68,18 +60,18 @@ public:
    virtual Float64 GetSectionLength(IndexType sectIdx) const = 0;
 
    // gets the properties associated with a girder section
-   virtual void GetSectionProperties(IndexType sectIdx,int face,Float64* pAg,Float64* pIx,Float64* pIy,Float64* pYt,Float64* pHg,Float64* pWtop,Float64* pWbot) const = 0;
+   virtual void GetSectionProperties(IndexType sectIdx,stbTypes::Section section,Float64* pAg,Float64* pIx,Float64* pIy,Float64* pYt,Float64* pHg,Float64* pWtop,Float64* pWbot) const = 0;
 
    // gets the properties of the girder at a specified location
    virtual void GetSectionProperties(Float64 X,Float64* pAg,Float64* pIx,Float64* pIy,Float64* pYt,Float64* pHg,Float64* pWtop,Float64* pWbot) const = 0;
-
-   // returns the density of the girder used for computing self-weight dead load
-   virtual Float64 GetDensity() const = 0;
 
    // returns additional loads applied to the girder. The first parameters is the location of the load measured from
    // the left end of the girder and the section is the magintude of the load. Positive values are in the direction of gravity.
    // These loads can be used to model cast-in-place elements such as end diaphraphms in U-Beam girders
    virtual std::vector<std::pair<Float64,Float64>> GetAdditionalLoads() const = 0;
+
+   // drag coefficient for wind loads
+   virtual Float64 GetDragCoefficient() const = 0;
 };
 
 
@@ -99,17 +91,14 @@ COPYRIGHT
 class STABILITYCLASS stbIStabilityProblem
 {
 public:
-   // returns the effective prestress force at a location along the girder
-   virtual Float64 GetFpe(int strandType,Float64 X) const = 0;
+   // returns the effective prestress force and its vertical location from the top of teh girder at a location along the girder
+   virtual void GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pYps) const = 0;
 
-   // returns the concrete strength of the girder concrete
-   virtual Float64 GetFc() const = 0;
+   // returns the concrete model
+   virtual const matConcreteEx& GetConcrete() const = 0;
 
-   // returns the modulus of elasticity of the girder concrete
-   virtual Float64 GetEc() const = 0;
-
-   // returns the modulus of rupture of the girder concrete
-   virtual Float64 GetFr() const = 0;
+   // Returns the yield strength of rebar. Only used if the girder is modeled with an ISection object
+   virtual Float64 GetRebarYieldStrength() const = 0;
 
    // returns the support locations. support locations are measured from left/right ends of girder
    virtual void GetSupportLocations(Float64* pLeft,Float64* pRight) const = 0;
@@ -133,15 +122,14 @@ public:
    // returns the impact up and down (fractional value, both positive)
    virtual void GetImpact(Float64* pIMup,Float64* pIMdown) const = 0;
 
-   // returns true if impact is to be applied to the girder in a tilted configuration
-   virtual bool ApplyImpactToTiltedGirder() const = 0;
-
-   // returns the wind pressure applied laterally to the girder
-   // this is a positive value and represents wind applied in both the left and right direction
-   virtual Float64 GetWindPressure() const = 0;
+   // returns the method that wind loading is defined and the wind load parameter
+   virtual void GetWindLoading(stbTypes::WindType* pType,Float64* pLoad) const = 0;
 
    // returns a vector of points where stress and cracking analysis is performed
-   virtual std::vector<Float64> GetAnalysisPoints() const = 0;
+   virtual std::vector<stbIAnalysisPoint*> GetAnalysisPoints() const = 0;
+
+   // returns an analysis point
+   virtual const stbIAnalysisPoint* GetAnalysisPoint(IndexType idx) const = 0;
 };
 
 
@@ -161,6 +149,10 @@ COPYRIGHT
 class STABILITYCLASS stbILiftingStabilityProblem : public stbIStabilityProblem
 {
 public:
+   // returns true if stresses are to be evaluted for a plumb girder
+   // otherwise stresses are evaluted in the tilted equilibrium condition
+   virtual bool EvaluateStressesForPlumbGirder() const = 0;
+
    // returns the angle of lift cables, measured from the horizontal
    // will return PI_OVER_2 for a vertical lift
    virtual Float64 GetLiftAngle() const = 0; 
@@ -184,6 +176,9 @@ COPYRIGHT
 class STABILITYCLASS stbIHaulingStabilityProblem :  public stbIStabilityProblem
 {
 public:
+   // returns how impact is used
+   virtual stbTypes::HaulingImpact GetImpactUsage() const = 0;
+
    // returns the truck rotational stiffness (Ktheta)
    virtual Float64 GetTruckRotationalStiffness() const = 0;
 
@@ -192,6 +187,9 @@ public:
 
    // returns the height of the roll axis above the roadway
    virtual Float64 GetHeightOfRollAxisAboveRoadway() const = 0;
+
+   // returns the normal crown slope (always a positive value)
+   virtual Float64 GetCrownSlope() const = 0;
 
    // returns the superelevation rate (always a postive value)
    virtual Float64 GetSuperelevation() const = 0;
@@ -203,4 +201,7 @@ public:
    // returns the turning radius
    // used for computing centrifugal force
    virtual Float64 GetTurningRadius() const = 0;
+
+   // returns the type of centrifugal force
+   virtual stbTypes::CFType GetCentrifugalForceType() const = 0;
 };

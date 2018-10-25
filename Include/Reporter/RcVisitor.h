@@ -40,6 +40,7 @@
 //
 class REPORTERCLASS rptRcTable;
 class REPORTERCLASS rptRcString;
+class REPORTERCLASS rptRcStringLiteral;
 class REPORTERCLASS rptRcFlowModifier;
 class REPORTERCLASS rptRcInt;
 class REPORTERCLASS rptRcUnsigned;
@@ -51,6 +52,7 @@ class REPORTERCLASS rptRcHyperTarget;
 class REPORTERCLASS rptRcImage;
 class REPORTERCLASS rptRcSymbol;
 class REPORTERCLASS rptRcScalar;
+class REPORTERCLASS rptRcPercentage;
 class REPORTERCLASS rptRcUnitTag;
 class REPORTERCLASS rptRcUnitValue;
 class REPORTERCLASS rptRcSectionValue;
@@ -102,6 +104,7 @@ public:
    // GROUP: OPERATIONS
    virtual void VisitRcTable(rptRcTable*)=0;
    virtual void VisitRcString(rptRcString*)=0;
+   virtual void VisitRcStringLiteral(rptRcStringLiteral*)=0;
    virtual void VisitRcInt(rptRcInt*)=0;
    virtual void VisitRcUnsigned(rptRcUnsigned*)=0;
    virtual void VisitRcFlowModifier(rptRcFlowModifier*)=0;
@@ -112,6 +115,7 @@ public:
    virtual void VisitRcImage(rptRcImage*)=0;
    virtual void VisitRcSymbol(rptRcSymbol*)=0;
    virtual void VisitRcScalar(rptRcScalar*) = 0;
+   virtual void VisitRcPercentage(rptRcPercentage*) = 0;
    virtual void VisitRcUnitTag(rptRcUnitTag*) = 0;
    virtual void VisitRcUnitValue(rptRcUnitValue*) = 0;
    virtual void VisitRcSectionValue(rptRcSectionValue*) = 0;

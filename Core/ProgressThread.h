@@ -50,10 +50,10 @@ public:
    BOOL Continue();
    void DestroyProgressWindow();
 
+   afx_msg void OnKillThread(WPARAM wParam,LPARAM lParam);
+
 protected:
    CProgressDlg m_ProgressDlg;
-
-   afx_msg void OnKillThread(WPARAM wParam,LPARAM lParam);
 
 
 	DECLARE_MESSAGE_MAP()

@@ -39,22 +39,27 @@ COPYRIGHT
    All Rights Reserved
 *****************************************************************************/
 
-class STABILITYCLASS stbCriteria
+class STABILITYCLASS stbHaulingCriteria
 {
 public:
-   stbCriteria();
+   stbHaulingCriteria();
+
+   Float64 Lambda;
 
    Float64 CompressionCoefficient;
-   Float64 TensionCoefficient;
-   bool bMaxTension;
-   Float64 MaxTension;
-   Float64 TensionCoefficientWithRebar;
+   Float64 TensionCoefficient[2];
+   bool bMaxTension[2];
+   Float64 MaxTension[2];
+   Float64 TensionCoefficientWithRebar[2];
 
    Float64 MinFScr; // minimum factor of safety against cracking
    Float64 MinFSf;  // minimum factor of safety against failure
 
    Float64 AllowableCompression; // allowable compression stress
-   Float64 AllowableTension; // allowable tension stress
-   Float64 AllowableTensionWithRebar;
-   Float64 AllowableTensionTiltedGirder;
+   Float64 AllowableTension[2]; // allowable tension stress (array index is stbTypes::HaulingSlope)
+   Float64 AllowableTensionWithRebar[2]; // allowable tension stress if there is adequate rebar (array index is stbTypes::HaulingSlope)
+
+   Float64 MaxClearSpan;
+   Float64 MaxLeadingOverhang;
+   Float64 MaxGirderWeight;
 };

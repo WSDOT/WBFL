@@ -75,6 +75,28 @@ matConcreteEx& matConcreteEx::operator= (const matConcreteEx& rOther)
    return *this;
 }
 
+bool matConcreteEx::operator==(const matConcreteEx& rOther) const
+{
+   if ( !matConcrete::operator==(rOther) )
+      return false;
+
+   if ( !::IsEqual(m_WeightDensity,rOther.m_WeightDensity) )
+      return false;
+   
+   if ( !::IsEqual(m_FrShear,rOther.m_FrShear) )
+      return false;
+   
+   if ( !::IsEqual(m_FrFlexure,rOther.m_FrFlexure) )
+      return false;
+
+   return true;
+}
+
+bool matConcreteEx::operator!=(const matConcreteEx& rOther) const
+{
+   return !operator==(rOther);
+}
+
 //======================== OPERATIONS =======================================
 matConcrete* matConcreteEx::CreateClone(bool bRegisterListeners) const
 {

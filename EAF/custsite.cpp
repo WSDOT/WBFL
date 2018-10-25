@@ -68,6 +68,16 @@ BEGIN_INTERFACE_MAP(CCustomControlSite, COleControlSite)
 	INTERFACE_PART(CCustomControlSite, IID_IDocHostUIHandler, DocHostUIHandler)
 END_INTERFACE_MAP()
 
+CCustomControlSite::CCustomControlSite(COleControlContainer *pCnt) :
+COleControlSite(pCnt)
+{ 
+   m_bHasEdit = TRUE;
+}
+void CCustomControlSite::HasEditCommand(BOOL bHasEdit)
+{
+   m_bHasEdit = bHasEdit;
+}
+
 ULONG FAR EXPORT  CCustomControlSite::XDocHostUIHandler::AddRef()
 {
 	METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
@@ -246,12 +256,15 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::ShowContextMenu(
 	               {
                      ::AfxMessageBox(_T("Could not create CMenu"));
 	               }
-                  menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_EDIT, _T("&Edit") );
+                  if ( pThis->m_bHasEdit )
+                  {
+                     menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_EDIT, _T("&Edit") );
+                  }
                   menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_FIND, _T("&Find") );
                   menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_PRINT, _T("&Print") );
                   menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_SELECT_ALL, _T("&Select All") );
                   menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_REFRESH, _T("&Refresh") );
-#ifdef DEBUG
+#ifdef _DEBUG
                   menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_VIEW_SOURCE, _T("&View Source") );
 #endif
 

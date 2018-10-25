@@ -282,19 +282,20 @@ Float64 matCEBFIPConcrete::GetShearFr(Float64 t) const
 
 Float64 matCEBFIPConcrete::GetFreeShrinkageStrain(Float64 t) const
 {
-   // age of the concrete at time t (duration of time after casting)
-   Float64 concrete_age = GetAge(t);
-   if ( concrete_age < 0 )
-   {
-      return 0;
-   }
+   boost::shared_ptr<matConcreteBaseShrinkageDetails> pDetails = GetFreeShrinkageStrainDetails(t);
+   return pDetails->esh;
+}
 
-   // duration of time after initial curing
-   Float64 shrinkage_time = concrete_age - m_CureTime;
+boost::shared_ptr<matConcreteBaseShrinkageDetails> matCEBFIPConcrete::GetFreeShrinkageStrainDetails(Float64 t) const
+{
+   matCEBFIPConcreteShrinkageDetails* pDetails = new matCEBFIPConcreteShrinkageDetails;
+
+   matConcreteBase::InitializeShrinkageDetails(t,pDetails);
+
+   Float64 shrinkage_time = pDetails->shrinkage_duration;
    if ( shrinkage_time < 0 )
    {
-      // if this occurs, t is in the curing period so no shrinkage occurs
-      return 0;
+      return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
    }
 
    // Notional shrinkage coefficient... CEB-FIP Eqn. 2.1-75
@@ -306,18 +307,35 @@ Float64 matCEBFIPConcrete::GetFreeShrinkageStrain(Float64 t) const
    Float64 ho = 100; // 100 millimieter
    Float64 betaS = sqrt( shrinkage_time/(350*pow(h/ho,2) + shrinkage_time) );
 
-   Float64 e = ecso * betaS;
-   return e;
+   Float64 esh = ecso * betaS;
+
+   pDetails->h = GetH();
+   pDetails->BetaSC = m_BetaSc;
+   pDetails->BetaSRH = GetBetaSRH();
+   pDetails->BetaRH = GetBetaRH();
+   pDetails->BetaS = betaS;
+   pDetails->es = GetEpsilonS();
+   pDetails->ecso = ecso;
+   pDetails->esh = esh;
+   return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
 }
 
 Float64 matCEBFIPConcrete::GetCreepCoefficient(Float64 t,Float64 tla) const
 {
-   Float64 age_at_time_under_consideration = GetAge(t);
-   Float64 age_at_loading = GetAge(tla);
+   return GetCreepCoefficientDetails(t,tla)->Ct;
+}
 
-   if ( age_at_time_under_consideration <= 0 || age_at_loading <= 0 || age_at_time_under_consideration - age_at_loading < 0 )
+boost::shared_ptr<matConcreteBaseCreepDetails> matCEBFIPConcrete::GetCreepCoefficientDetails(Float64 t,Float64 tla) const
+{
+   matCEBFIPConcreteCreepDetails* pDetails = new matCEBFIPConcreteCreepDetails;
+   InitializeCreepDetails(t,tla,pDetails);
+
+   Float64 age = pDetails->age;
+   Float64 age_at_loading = pDetails->age_at_loading;
+   Float64 maturity = age - age_at_loading;
+   if ( ::IsLE(age,0.0) || ::IsLE(age_at_loading,0.0) || ::IsLE(maturity,0.0) )
    {
-      return 0;
+      return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
    }
 
    Float64 phiRH = GetPhiRH();
@@ -331,17 +349,42 @@ Float64 matCEBFIPConcrete::GetCreepCoefficient(Float64 t,Float64 tla) const
    // Time Development
    Float64 beta_H = GetBetaH();
 
-   Float64 T = age_at_time_under_consideration - age_at_loading;
-   Float64 beta_c = pow(T/(beta_H + T),0.3); // CEB-FIP Eqn. 2.1-70
+   Float64 beta_c = pow(maturity/(beta_H + maturity),0.3); // CEB-FIP Eqn. 2.1-70
 
    Float64 c = co * beta_c; // CEB-FIP Eqn. 2.1-64
-   return c;
+
+   pDetails->Yo = co;
+   pDetails->Bc = beta_c;
+   pDetails->Yrh = phiRH;
+   pDetails->Bfc = beta_fcm;
+   pDetails->Bt = beta_to;
+   pDetails->Bh = beta_H;
+   pDetails->h = GetH();
+   pDetails->Ct = c;
+
+   return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
 }
 
 Float64 matCEBFIPConcrete::GetH() const
 {
    Float64 h = 2*m_VS; // Eqn 2.1-69. Note that V/S ratio = Area/Perimeter
    return h;
+}
+
+Float64 matCEBFIPConcrete::GetBetaSRH() const
+{
+   if ( m_RelativeHumidity < 40 )
+   {
+      return -1; // not applicable
+   }
+   else if ( 40 <= m_RelativeHumidity && m_RelativeHumidity < 99 )
+   {
+      return 1 - pow(m_RelativeHumidity/100,3); // CEB-FIP Eqn. 2.1-78
+   }
+   else
+   {
+      return -1; // not applicable
+   }
 }
 
 Float64 matCEBFIPConcrete::GetBetaRH() const
@@ -354,7 +397,8 @@ Float64 matCEBFIPConcrete::GetBetaRH() const
    }
    else if ( 40 <= m_RelativeHumidity && m_RelativeHumidity < 99 )
    {
-      Float64 beta_sRH = 1 - pow(m_RelativeHumidity/100,3); // CEB-FIP Eqn. 2.1-78
+      Float64 beta_sRH = GetBetaSRH();
+      ATLASSERT(0 < beta_sRH);
       beta = -1.55*beta_sRH; // CEB-FIP Eqn. 2.1-77
    }
    else
@@ -386,7 +430,7 @@ Float64 matCEBFIPConcrete::GetPhiRH() const
    h = ::ConvertFromSysUnits(h,unitMeasure::Millimeter); // need h in millimeter
    Float64 ho = 100; // 100 millimieter
 
-   Float64 phiRH = 1 + (1-m_RelativeHumidity/100)/(0.46*(pow(h/ho,1/3))); // CEB-FIP Eqn. 2.1-66
+   Float64 phiRH = 1 + (1-m_RelativeHumidity/100)/(0.46*(pow(h/ho,1./3.))); // CEB-FIP Eqn. 2.1-66
    return phiRH;
 }
 
