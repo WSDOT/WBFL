@@ -196,7 +196,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_LayoutLength(Float64 *pVal)
    return m_pGirderLine->get_LayoutLength(pVal);
 }
 
-STDMETHODIMP CFlangedGirderEndBlockSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
+STDMETHODIMP CFlangedGirderEndBlockSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
 {
    CHECK_RETOBJ(ppSection);
 
@@ -207,7 +207,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_Section(StageIndexType stageIdx,
    }
 
    CComPtr<IShape> primaryShape;
-   HRESULT hr = get_PrimaryShape(distAlongSegment,&primaryShape);
+   HRESULT hr = get_PrimaryShape(Xs,sectionBias,&primaryShape);
    ATLASSERT(SUCCEEDED(hr));
    if ( FAILED(hr) )
       return hr;
@@ -225,15 +225,19 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_Section(StageIndexType stageIdx,
    m_Shapes.front().FGMaterial->get_E(stageIdx,&Efg);
    
    Float64 Ebg = 0;
-   if ( m_Shapes.front().BGMaterial )
-      m_Shapes.front().BGMaterial->get_E(stageIdx,&Ebg);
+   if (m_Shapes.front().BGMaterial)
+   {
+      m_Shapes.front().BGMaterial->get_E(stageIdx, &Ebg);
+   }
 
    Float64 Dfg = 0;
    m_Shapes.front().FGMaterial->get_Density(stageIdx,&Dfg);
    
    Float64 Dbg = 0;
-   if ( m_Shapes.front().BGMaterial )
-      m_Shapes.front().BGMaterial->get_Density(stageIdx,&Dbg);
+   if (m_Shapes.front().BGMaterial)
+   {
+      m_Shapes.front().BGMaterial->get_Density(stageIdx, &Dbg);
+   }
 
    section->AddSection(primaryShape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
 
@@ -247,20 +251,28 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_Section(StageIndexType stageIdx,
       ShapeData& shapeData = *iter;
 
       Float64 Efg = 0;
-      if ( shapeData.FGMaterial )
-         shapeData.FGMaterial->get_E(stageIdx,&Efg);
+      if (shapeData.FGMaterial)
+      {
+         shapeData.FGMaterial->get_E(stageIdx, &Efg);
+      }
 
       Float64 Ebg;
-      if ( shapeData.BGMaterial )
-         shapeData.BGMaterial->get_E(stageIdx,&Ebg);
+      if (shapeData.BGMaterial)
+      {
+         shapeData.BGMaterial->get_E(stageIdx, &Ebg);
+      }
 
       Float64 Dfg = 0;
-      if ( shapeData.FGMaterial )
-         shapeData.FGMaterial->get_Density(stageIdx,&Dfg);
+      if (shapeData.FGMaterial)
+      {
+         shapeData.FGMaterial->get_Density(stageIdx, &Dfg);
+      }
 
       Float64 Dbg = 0;
-      if ( shapeData.BGMaterial )
-         shapeData.BGMaterial->get_Density(stageIdx,&Dbg);
+      if (shapeData.BGMaterial)
+      {
+         shapeData.BGMaterial->get_Density(stageIdx, &Dbg);
+      }
 
       CComPtr<IShape> shape;
       shapeData.Shape->Clone(&shape);
@@ -272,7 +284,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_Section(StageIndexType stageIdx,
 }
 
 
-STDMETHODIMP CFlangedGirderEndBlockSegment::get_PrimaryShape(Float64 distAlongSegment,IShape** ppShape)
+STDMETHODIMP CFlangedGirderEndBlockSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
@@ -292,7 +304,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_PrimaryShape(Float64 distAlongSe
 
    // Adsut the shape for the end blocks
    Float64 Wt, Wb;
-   GetEndBlockWidth(distAlongSegment,&Wt,&Wb);
+   GetEndBlockWidth(Xs,sectionBias,&Wt,&Wb);
 
    Float64 W1, W2, W3, W4;
    Float64 D1, D2, D3, D4, D5, D6, D7;
@@ -427,7 +439,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_PrimaryShape(Float64 distAlongSe
 
    // position the shape
    CComPtr<IPoint2d> pntTopCenter;
-   GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
+   GB_GetSectionLocation(this,Xs,&pntTopCenter);
 
    CComQIPtr<IXYPosition> position(newFlangedBeam);
    position->put_LocatorPoint(lpTopCenter,pntTopCenter);
@@ -704,7 +716,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::Save(IStructuredSave2* save)
    //return S_OK;
 }
 
-void CFlangedGirderEndBlockSegment::GetEndBlockWidth(Float64 distAlongSegment,Float64* pWtop,Float64* pWbot)
+void CFlangedGirderEndBlockSegment::GetEndBlockWidth(Float64 Xs, SectionBias sectionBias,Float64* pWtop,Float64* pWbot)
 {
    Float64 segLength;
    get_Length(&segLength);
@@ -715,8 +727,11 @@ void CFlangedGirderEndBlockSegment::GetEndBlockWidth(Float64 distAlongSegment,Fl
    CComPtr<IPrecastBeam> pcBeam;
    beam->get_Beam(&pcBeam);
 
+   // the end blocks for this girder type of a smooth transitions
+   // so sectionBias doesn't have any impact
+
    EndType endType;
-   if ( distAlongSegment < segLength/2 )
+   if ( Xs < segLength/2 )
    {
       // at the start end...
       endType = etStart;
@@ -724,27 +739,27 @@ void CFlangedGirderEndBlockSegment::GetEndBlockWidth(Float64 distAlongSegment,Fl
    else
    {
       endType = etEnd;
-      distAlongSegment = segLength - distAlongSegment; // distAlongSegment is now measured from the left end
+      Xs = segLength - Xs; // Xs is now measured from the left end
    }
 
    Float64 ebWidth       = m_EndBlockWidth[endType];
    Float64 ebLength      = m_EndBlockLength[endType];
    Float64 ebTransLength = m_EndBlockTransitionLength[endType];
 
-   if ( distAlongSegment < ebLength )
+   if ( Xs < ebLength )
    {
       // in the end block
       *pWtop = ebWidth;
       *pWbot = ebWidth;
    }
-   else if ( ::InRange(ebLength,distAlongSegment,ebLength+ebTransLength) )
+   else if ( ::InRange(ebLength,Xs,ebLength+ebTransLength) )
    {
       // in the end block transition
       Float64 t1, t2;
       pcBeam->get_T1(&t1);
       pcBeam->get_T2(&t2);
-      *pWtop = ::LinInterp(distAlongSegment-ebLength,ebWidth,t1,ebTransLength);
-      *pWbot = ::LinInterp(distAlongSegment-ebLength,ebWidth,t2,ebTransLength);
+      *pWtop = ::LinInterp(Xs-ebLength,ebWidth,t1,ebTransLength);
+      *pWbot = ::LinInterp(Xs-ebLength,ebWidth,t2,ebTransLength);
    }
    else
    {

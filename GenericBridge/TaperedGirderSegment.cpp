@@ -185,7 +185,7 @@ STDMETHODIMP CTaperedGirderSegment::get_LayoutLength(Float64 *pVal)
    return m_pGirderLine->get_LayoutLength(pVal);
 }
 
-STDMETHODIMP CTaperedGirderSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
+STDMETHODIMP CTaperedGirderSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
 {
    CHECK_RETOBJ(ppSection);
 
@@ -198,7 +198,7 @@ STDMETHODIMP CTaperedGirderSegment::get_Section(StageIndexType stageIdx,Float64 
    }
 
    CComPtr<IShape> primaryShape;
-   HRESULT hr = get_PrimaryShape(distAlongSegment,&primaryShape);
+   HRESULT hr = get_PrimaryShape(Xs,sectionBias,&primaryShape);
    ATLASSERT(SUCCEEDED(hr));
    if ( FAILED(hr) )
    {
@@ -304,7 +304,7 @@ STDMETHODIMP CTaperedGirderSegment::get_Section(StageIndexType stageIdx,Float64 
    return S_OK;
 }
 
-STDMETHODIMP CTaperedGirderSegment::get_PrimaryShape(Float64 distAlongSegment,IShape** ppShape)
+STDMETHODIMP CTaperedGirderSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
@@ -361,23 +361,23 @@ STDMETHODIMP CTaperedGirderSegment::get_PrimaryShape(Float64 distAlongSegment,IS
    }
 
    // linear interpolate dimensions
-   Float64 w1 = ::LinInterp(distAlongSegment,W1[etStart],W1[etEnd],segLength);
-   Float64 w2 = ::LinInterp(distAlongSegment,W2[etStart],W2[etEnd],segLength);
-   Float64 w3 = ::LinInterp(distAlongSegment,W3[etStart],W3[etEnd],segLength);
-   Float64 w4 = ::LinInterp(distAlongSegment,W4[etStart],W4[etEnd],segLength);
+   Float64 w1 = ::LinInterp(Xs,W1[etStart],W1[etEnd],segLength);
+   Float64 w2 = ::LinInterp(Xs,W2[etStart],W2[etEnd],segLength);
+   Float64 w3 = ::LinInterp(Xs,W3[etStart],W3[etEnd],segLength);
+   Float64 w4 = ::LinInterp(Xs,W4[etStart],W4[etEnd],segLength);
 
-   Float64 d1 = ::LinInterp(distAlongSegment,D1[etStart],D1[etEnd],segLength);
-   Float64 d2 = ::LinInterp(distAlongSegment,D2[etStart],D2[etEnd],segLength);
-   Float64 d3 = ::LinInterp(distAlongSegment,D3[etStart],D3[etEnd],segLength);
-   Float64 d4 = ::LinInterp(distAlongSegment,D4[etStart],D4[etEnd],segLength);
-   Float64 d5 = ::LinInterp(distAlongSegment,D5[etStart],D5[etEnd],segLength);
-   Float64 d6 = ::LinInterp(distAlongSegment,D6[etStart],D6[etEnd],segLength);
-   Float64 d7 = ::LinInterp(distAlongSegment,D7[etStart],D7[etEnd],segLength);
+   Float64 d1 = ::LinInterp(Xs,D1[etStart],D1[etEnd],segLength);
+   Float64 d2 = ::LinInterp(Xs,D2[etStart],D2[etEnd],segLength);
+   Float64 d3 = ::LinInterp(Xs,D3[etStart],D3[etEnd],segLength);
+   Float64 d4 = ::LinInterp(Xs,D4[etStart],D4[etEnd],segLength);
+   Float64 d5 = ::LinInterp(Xs,D5[etStart],D5[etEnd],segLength);
+   Float64 d6 = ::LinInterp(Xs,D6[etStart],D6[etEnd],segLength);
+   Float64 d7 = ::LinInterp(Xs,D7[etStart],D7[etEnd],segLength);
 
-   Float64 t1 = ::LinInterp(distAlongSegment,T1[etStart],T1[etEnd],segLength);
-   Float64 t2 = ::LinInterp(distAlongSegment,T2[etStart],T2[etEnd],segLength);
+   Float64 t1 = ::LinInterp(Xs,T1[etStart],T1[etEnd],segLength);
+   Float64 t2 = ::LinInterp(Xs,T2[etStart],T2[etEnd],segLength);
 
-   Float64 c1 = ::LinInterp(distAlongSegment,C1[etStart],C1[etEnd],segLength);
+   Float64 c1 = ::LinInterp(Xs,C1[etStart],C1[etEnd],segLength);
 
    // create a new shape that is a clone of the original
    CComQIPtr<IShape> shape(beam[etStart]);
@@ -405,7 +405,7 @@ STDMETHODIMP CTaperedGirderSegment::get_PrimaryShape(Float64 distAlongSegment,IS
 
    // position the shape
    CComPtr<IPoint2d> pntTopCenter;
-   GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
+   GB_GetSectionLocation(this,Xs,&pntTopCenter);
 
    CComQIPtr<IXYPosition> position(newFlangedBeam);
    position->put_LocatorPoint(lpTopCenter,pntTopCenter);

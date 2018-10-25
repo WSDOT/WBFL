@@ -267,7 +267,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegmentEx(IGeneric
 
    // Get the girder section at the desired location
    CComPtr<IGirderSection> section;
-   hr = GetGirderSectionBySegment(bridge,ssMbrID,segIdx,Xs,&section);
+   hr = GetGirderSectionBySegment(bridge,ssMbrID,segIdx,Xs,sbLeft,&section);
    if ( FAILED(hr) )
       return Error(IDS_E_GIRDERSECTION,IID_IEffectiveFlangeWidthTool,GBMT_E_GIRDERSECTION);
 
@@ -373,7 +373,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegmentEx(IGeneric
                //if ( gdr_length < location )
                //   x = gdr_length;
 
-               hr = GetGirderSectionBySegment(bridge,leftSSMbrID,segIdx,x,&prev_section);
+               hr = GetGirderSectionBySegment(bridge,leftSSMbrID,segIdx,x,sbLeft,&prev_section);
                if ( FAILED(hr) )
                   return Error(IDS_E_GIRDERSECTION,IID_IEffectiveFlangeWidthTool,GBMT_E_GIRDERSECTION);
 
@@ -432,7 +432,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegmentEx(IGeneric
                //if ( gdr_length < location )
                //   x = gdr_length;
 
-               hr = GetGirderSectionBySegment(bridge,rightSSMbrID,segIdx,x,&next_section);
+               hr = GetGirderSectionBySegment(bridge,rightSSMbrID,segIdx,x,sbLeft,&next_section);
                if ( FAILED(hr) )
                   return Error(IDS_E_GIRDERSECTION,IID_IEffectiveFlangeWidthTool,GBMT_E_GIRDERSECTION);
 

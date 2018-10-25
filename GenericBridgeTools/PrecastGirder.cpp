@@ -2178,7 +2178,7 @@ Float64 CPrecastGirder::GetSectionHeight(Float64 Xs)
 {
    Float64 Hg;
    CComPtr<IShape> shape;
-   m_pSegment->get_PrimaryShape(Xs,&shape);
+   m_pSegment->get_PrimaryShape(Xs,sbLeft,&shape);
    CComPtr<IRect2d> bbox;
    shape->get_BoundingBox(&bbox);
    bbox->get_Height(&Hg);

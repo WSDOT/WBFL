@@ -34,7 +34,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-HRESULT GetGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,IGirderSection** ppSection)
+HRESULT GetGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionBias sectionBias,IGirderSection** ppSection)
 {
    HRESULT hr;
 
@@ -48,7 +48,7 @@ HRESULT GetGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,Se
    ATLASSERT(segment);
 
    CComPtr<IShape> shape;
-   hr = segment->get_PrimaryShape(distFromStartOfSegment,&shape);
+   hr = segment->get_PrimaryShape(Xs,sectionBias,&shape);
    if ( FAILED(hr) )
       return hr;
 

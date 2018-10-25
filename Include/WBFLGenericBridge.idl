@@ -350,6 +350,16 @@ library WBFLGenericBridge
       xblBottomXBeam
    } XBeamLocation;
 
+   // defines the bias at a section cut... defines whether a cut is for the left or right face
+   // this is important at abrupt section changes like end block boundaries
+   typedef [public, helpstring("enum SectionBias"), uuid(6F41E721-5589-4C0A-9453-A47F37CE8C3F)]
+   enum
+   {
+      sbLeft,
+      sbRight
+   } SectionBias;
+
+
 // Interface definitions
 
    [
@@ -1046,8 +1056,8 @@ library WBFLGenericBridge
    interface ISegment : IUnknown
    {
       [propget, helpstring("property Length")] HRESULT Length([out, retval] Float64 *pVal);
-      [propget, helpstring("property PrimaryShape")] HRESULT PrimaryShape([in]Float64 distAlongSegment,[out,retval]IShape** ppShape);
-		[propget, helpstring("property Section")] HRESULT Section([in]StageIndexType stageIdx,[in] Float64 distAlongSegment,[out,retval]ISection** ppSection);
+      [propget, helpstring("property PrimaryShape")] HRESULT PrimaryShape([in]Float64 Xs,[in]SectionBias sectionBias,[out,retval]IShape** ppShape);
+		[propget, helpstring("property Section")] HRESULT Section([in]StageIndexType stageIdx,[in] Float64 Xs,[in]SectionBias sectionBias,[out,retval]ISection** ppSection);
       [propget, helpstring("property PrevSegment")] HRESULT PrevSegment([out,retval]ISegment** segment);
       [propget, helpstring("property NextSegment")] HRESULT NextSegment([out,retval]ISegment** segment);
 

@@ -84,7 +84,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_LayoutLength(Float64 *pV
    return m_pGirderLine->get_LayoutLength(pVal);
 }
 
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
 {
    CHECK_RETOBJ(ppSection);
 
@@ -105,27 +105,35 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType s
       ShapeData& shapeData = *iter;
 
       Float64 Efg = 0;
-      if ( shapeData.FGMaterial )
-         shapeData.FGMaterial->get_E(stageIdx,&Efg);
+      if (shapeData.FGMaterial)
+      {
+         shapeData.FGMaterial->get_E(stageIdx, &Efg);
+      }
 
       Float64 Ebg = 0;
-      if ( shapeData.BGMaterial )
-         shapeData.BGMaterial->get_E(stageIdx,&Ebg);
+      if (shapeData.BGMaterial)
+      {
+         shapeData.BGMaterial->get_E(stageIdx, &Ebg);
+      }
 
       Float64 Dfg = 0;
-      if ( shapeData.FGMaterial )
-         shapeData.FGMaterial->get_Density(stageIdx,&Dfg);
+      if (shapeData.FGMaterial)
+      {
+         shapeData.FGMaterial->get_Density(stageIdx, &Dfg);
+      }
 
       Float64 Dbg = 0;
-      if ( shapeData.BGMaterial )
-         shapeData.BGMaterial->get_Density(stageIdx,&Dbg);
+      if (shapeData.BGMaterial)
+      {
+         shapeData.BGMaterial->get_Density(stageIdx, &Dbg);
+      }
 
       CComPtr<IShape> shape;
       shapeData.Shape->Clone(&shape);
 
       // position the shape
       CComPtr<IPoint2d> pntTopCenter;
-      GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
+      GB_GetSectionLocation(this,Xs,&pntTopCenter);
 
       CComQIPtr<IXYPosition> position(shape);
       position->put_LocatorPoint(lpTopCenter,pntTopCenter);
@@ -139,7 +147,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType s
    return S_OK;
 }
 
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_PrimaryShape(Float64 distAlongSegment,IShape** ppShape)
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
    if ( m_Shapes.size() == 0 )
@@ -153,7 +161,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_PrimaryShape(Float64 dis
 
    // position the shape
    CComPtr<IPoint2d> pntTopCenter;
-   GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
+   GB_GetSectionLocation(this,Xs,&pntTopCenter);
 
    CComQIPtr<IXYPosition> position(*ppShape);
    position->put_LocatorPoint(lpTopCenter,pntTopCenter);

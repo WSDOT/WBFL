@@ -32,6 +32,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLGeometricPrimitives", "GeometricPrimitives\GeometricPrimitives.vcxproj", "{E82A689C-BC85-44B8-8D89-670E7DC03E79}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLGeometry", "Geometry\Geometry.vcxproj", "{16E889A9-E3B0-4541-85B2-3A4D98FCCB59}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2D18C0C9-358D-455D-B56A-D4A247FCE7B9} = {2D18C0C9-358D-455D-B56A-D4A247FCE7B9}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GeometryTest", "Geometry\GeometryTest\GeometryTest.vcxproj", "{A54AA48F-7013-4F2F-936A-D01BB4352B9A}"
 EndProject
