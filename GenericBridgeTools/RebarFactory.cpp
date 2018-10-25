@@ -76,6 +76,7 @@ STDMETHODIMP CRebarFactory::CreateRebar(MaterialSpec spec,RebarGrade grade,BarSi
    case Grade40:
       fu = 60;
       fy = 40;
+      ATLASSERT( spec != msA1035); // there is no A1035 Grade 40
       break;
 
    case Grade60:
@@ -84,17 +85,22 @@ STDMETHODIMP CRebarFactory::CreateRebar(MaterialSpec spec,RebarGrade grade,BarSi
          fu = 90;
          fy = 60;
       }
-      else
+      else if ( spec == msA706 )
       {
          // A706
          fu = 80;
          fy = 60;
+      }
+      else
+      {
+         ATLASSERT(false); // there is no A1035 Grade 60
       }
       break;
 
    case Grade75:
       fu = 100;
       fy = 75;
+      ATLASSERT( spec != msA1035); // there is no A1035 Grade 75
       break;
 
    case Grade80:
@@ -103,13 +109,28 @@ STDMETHODIMP CRebarFactory::CreateRebar(MaterialSpec spec,RebarGrade grade,BarSi
          fu = 105;
          fy = 80;
       }
-      else
+      else if ( spec == msA706 )
       {
          // A706
          fu = 100;
          fy = 80;
       }
+      else
+      {
+         ATLASSERT(false); // there is no A1035 Grade 80
+      }
       break;
+   
+   case Grade100:
+      if ( spec == msA1035 )
+      {
+         fu = 150;
+         fy = 100;
+      }
+      else
+      {
+         ATLASSERT(false);
+      }
    }
 
    pConvert->ConvertToBaseUnits(fu,CComBSTR("ksi"),&fu);

@@ -135,10 +135,13 @@ void CEAFSplashScreen::HideSplashScreen()
    m_Bitmap.Detach();
    m_ImageList.DeleteImageList();
 
-	DestroyWindow();
+   DestroyWindow();
    CEAFMainFrame* pFrame = EAFGetMainFrame();
    if ( pFrame )
-	   pFrame->UpdateWindow();
+   {
+      pFrame->SetWindowPos(&CWnd::wndTop,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
+	  pFrame->UpdateWindow();
+   }
 }
 
 void CEAFSplashScreen::PostNcDestroy()

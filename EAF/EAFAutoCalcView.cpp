@@ -74,6 +74,13 @@ void CEAFAutoCalcViewMixin::EnableLpFrame(bool bEnable)
    }
 }
 
+CEAFAutoCalcDocMixin* CEAFAutoCalcViewMixin::GetAutoCalcDocument()
+{
+   CDocument* pDoc = m_pView->GetDocument();
+   CEAFAutoCalcDocMixin* pMixin = dynamic_cast<CEAFAutoCalcDocMixin*>(pDoc);
+   return pMixin;
+}
+
 CEAFLicensePlateChildFrame* CEAFAutoCalcViewMixin::GetLpFrame()
 {
    CEAFLicensePlateChildFrame* plp = 0;

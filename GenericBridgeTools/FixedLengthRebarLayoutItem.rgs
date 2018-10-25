@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLGenericBridgeTools.FixedLengthReb.1 = s 'FixedLengthRebarLayoutItem Class'
+	{
+		CLSID = s '{BBAE8AB6-5822-47CA-8ECD-0C2AFF18FC0B}'
+	}
+	WBFLGenericBridgeTools.FixedLengthRebar = s 'FixedLengthRebarLayoutItem Class'
+	{
+		CLSID = s '{BBAE8AB6-5822-47CA-8ECD-0C2AFF18FC0B}'
+		CurVer = s 'WBFLGenericBridgeTools.FixedLengthReb.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {BBAE8AB6-5822-47CA-8ECD-0C2AFF18FC0B} = s 'FixedLengthRebarLayoutItem Class'
+		{
+			ProgID = s 'WBFLGenericBridgeTools.FixedLengthReb.1'
+			VersionIndependentProgID = s 'WBFLGenericBridgeTools.FixedLengthRebar'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+			}
+			'TypeLib' = s '{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}'
+		}
+	}
+}

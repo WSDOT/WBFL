@@ -84,26 +84,29 @@ std::_tstring rptFormattedLengthUnitValue::AsString() const
       in = 0;
    }
 
-   ft *= sign; // put the sign back
-
    std::_tostringstream os;
    if ( m_bFractionOnly )
    {
       if ( numerator == 0 ) // whole number of inches
       {
          if ( ft == 0 ) // 1"
-            os << in << _T("\"");
+            os << sign*in << _T("\"");
          else // 1'-3"
-            os << ft << _T("'-") << in << _T("\"");
+            os << sign*ft << _T("'-") << in << _T("\"");
       }
       else // fractional number of inches
       {
          if ( ft == 0 && in == 0 )  // 1/2"
+         {
+            if ( sign < 0 )
+               os << __T("-");
+
             os << _T("^") << numerator << _T("_/_") << denominator << _T("^") << _T("\"");
+         }
          else if ( ft == 0 ) // 1 1/2"
-            os << in << _T("^") << numerator << _T("_/_") << denominator << _T("^") << _T("\"");
+            os << sign*in << _T("^") << numerator << _T("_/_") << denominator << _T("^") << _T("\"");
          else // 3'-1 1/2"
-            os << ft << _T("'-") << in << _T("^") << numerator << _T("_/_") << denominator << _T("^") << _T("\"");
+            os << sign*ft << _T("'-") << in << _T("^") << numerator << _T("_/_") << denominator << _T("^") << _T("\"");
       }
    }
    else
@@ -111,18 +114,23 @@ std::_tstring rptFormattedLengthUnitValue::AsString() const
       if ( numerator == 0 ) // whole number of inches
       {
          if ( ft == 0 ) // 1"
-            os << strBase << _T(" (") << in << _T("\")");
+            os << strBase << _T(" (") << sign*in << _T("\")");
          else // 1'-3"
-            os << strBase << _T(" (") << ft << _T("'-") << in << _T("\")");
+            os << strBase << _T(" (") << sign*ft << _T("'-") << in << _T("\")");
       }
       else // fractional number of inches
       {
          if ( ft == 0 && in == 0 )  // 1/2"
-            os << strBase << _T(" (") << _T("^") << numerator << _T("_/_") << denominator << _T("^") << _T("\")");
+         {
+            if ( sign < 0 )
+               os << strBase << _T(" (") << _T("-^") << numerator << _T("_/_") << denominator << _T("^") << _T("\")");
+            else
+               os << strBase << _T(" (") << _T("^") << numerator << _T("_/_") << denominator << _T("^") << _T("\")");
+         }
          else if ( ft == 0 ) // 1 1/2"
-            os << strBase << _T(" (") << in << _T("^") << numerator << _T("_/_") << denominator << _T("^") << _T("\")");
+            os << strBase << _T(" (") << sign*in << _T("^") << numerator << _T("_/_") << denominator << _T("^") << _T("\")");
          else // 3'-1 1/2"
-            os << strBase << _T(" (") << ft << _T("'-") << in << _T("^") << numerator << _T("_/_") << denominator << _T("^") << _T("\")");
+            os << strBase << _T(" (") << sign*ft << _T("'-") << in << _T("^") << numerator << _T("_/_") << denominator << _T("^") << _T("\")");
       }
    }
 

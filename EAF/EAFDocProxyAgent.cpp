@@ -289,7 +289,7 @@ CString CEAFDocProxyAgent::GetFileRoot()
 
 void CEAFDocProxyAgent::UpdateAllViews(CView* pSender,LPARAM lHint,CObject* pHint)
 {
-   m_pDoc->UpdateAllViews(pSender,lHint,pHint);
+   m_pDoc->OnUpdateAllViews(pSender,lHint,pHint);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -479,6 +479,12 @@ const unitmgtPerLengthData& CEAFDocProxyAgent::GetPerLengthUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->PerLength;
+}
+
+const unitmgtPerLengthData& CEAFDocProxyAgent::GetCurvatureUnit()
+{
+   CEAFApp* pApp = EAFGetApp();
+   return pApp->GetDisplayUnits()->Curvature;
 }
 
 const unitmgtPressureData& CEAFDocProxyAgent::GetSidewalkPressureUnit()

@@ -300,7 +300,7 @@ std::_tstring rptRiStyle::GetColorCode(FontColor color)
       case rptRiStyle::Tomato:     strColor = _T("#ff6347"); break;
       case rptRiStyle::OrangeRed:  strColor = _T("#ff4500"); break;
       case rptRiStyle::DarkOrange: strColor = _T("#ff8c00"); break;
-      case rptRiStyle::Orange:     strColor = _T("#ff1500"); break;
+      case rptRiStyle::Orange:     strColor = _T("#ffa500"); break;
      
       // Yellow colors
       case rptRiStyle::Gold:                 strColor = _T("#ffd700"); break;

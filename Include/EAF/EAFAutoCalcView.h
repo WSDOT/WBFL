@@ -45,9 +45,11 @@ public:
    bool IsLpFrameEnabled() const;
    void OnUpdateNow();
 
-   virtual bool DoResultsExist() const = 0;
+   virtual bool DoResultsExist() = 0;
 
 	void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
+
+   CEAFAutoCalcDocMixin* GetAutoCalcDocument();
 
 // Implementation
 protected:

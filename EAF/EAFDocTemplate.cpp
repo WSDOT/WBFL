@@ -43,8 +43,7 @@ CEAFDocTemplate::CEAFDocTemplate(UINT nIDResource,
                                  CRuntimeClass* pViewClass,
                                  HMENU hSharedMenu,
                                  int maxViewCount) :
-CMultiDocTemplate(nIDResource,pDocClass,pFrameClass,pViewClass),
-m_TemplateGroup(this)
+CMultiDocTemplate(nIDResource,pDocClass,pFrameClass,pViewClass)
 {
    m_pPlugin = NULL;
    m_pCommandCallback = pCallback;
@@ -60,6 +59,10 @@ m_TemplateGroup(this)
    m_MaxViewCount = maxViewCount;
 
    m_pTemplateItem = NULL;
+
+   CString strFileNewName;
+   GetDocString(strFileNewName,CDocTemplate::fileNewName);
+   m_TemplateGroup.SetGroupName(strFileNewName);
 }
 
 CEAFDocTemplate::~CEAFDocTemplate()
@@ -99,7 +102,7 @@ void CEAFDocTemplate::CreateDefaultItem(HICON hIcon)
    else
       strItemName = strFileName;
  
-   m_TemplateGroup.AddItem( new CEAFTemplateItem(strItemName,NULL,hIcon) );
+   m_TemplateGroup.AddItem( new CEAFTemplateItem(this,strItemName,NULL,hIcon) );
 }
 
 CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisible)

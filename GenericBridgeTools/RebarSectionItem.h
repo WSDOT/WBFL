@@ -68,8 +68,8 @@ public:
 // IRebarSectionItem
 public:
    STDMETHOD(get_Location)(/*[out,retval]*/IPoint2d** location);
-	STDMETHOD(get_DistFromStart)(/*[out,retval]*/ Float64* dist);
-	STDMETHOD(get_DistFromEnd)(/*[out,retval]*/ Float64* dist);
+	STDMETHOD(get_LeftExtension)(/*[out,retval]*/ Float64* dist);
+	STDMETHOD(get_RightExtension)(/*[out,retval]*/ Float64* dist);
    STDMETHOD(get_Rebar)(/*[out,retval]*/ IRebar** rebar);
 
 // IStructuredStorage2
@@ -79,8 +79,8 @@ public:
 
 private:
    CComPtr<IPoint2d> m_Location;
-   Float64 m_DistFromStart;
-   Float64 m_DistFromEnd;
+   Float64 m_LeftExtension;
+   Float64 m_RightExtension;
    CComPtr<IRebar> m_Rebar;
 };
 

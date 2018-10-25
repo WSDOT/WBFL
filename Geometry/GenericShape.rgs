@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.GenericShape.1 = s 'GenericShape Class'
+	{
+		CLSID = s '{15C754B8-415F-4bf0-89C2-D5E991D51D7C}'
+	}
+	WBFLGeometry.GenericShape = s 'GenericShape Class'
+	{
+		CLSID = s '{15C754B8-415F-4bf0-89C2-D5E991D51D7C}'
+		CurVer = s 'WBFLGeometry.GenericShape.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {15C754B8-415F-4bf0-89C2-D5E991D51D7C} = s 'GenericShape Class'
+		{
+			ProgID = s 'WBFLGeometry.GenericShape.1'
+			VersionIndependentProgID = s 'WBFLGeometry.GenericShape'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

@@ -910,9 +910,16 @@ void ThrowParseError(MSXML::IXMLDOMParseErrorPtr pXMLError, LPCTSTR file, int li
       pBReason = pXMLError->reason;
 
       if (line > 0)
-        os<< _T("Error in xml file on line ")<< line<<_T(", position ")<<linePos<<_T(" in \"")<<(LPTSTR)pBURL<<_T("\" Reason was ")<<(LPTSTR)pBReason; 
+      {
+        os << _T("Error in xml file on line ")<< line<<_T(", position ")<<linePos;
+        if ( (LPTSTR)pBURL )
+           os <<_T(" in \"")<<(LPTSTR)pBURL;
+        os <<_T("\" Reason was ")<<(LPTSTR)pBReason; 
+      }
       else
+      {
          os<<_T("Error in xml file - location unknown");
+      }
    }
    catch(...)
    {

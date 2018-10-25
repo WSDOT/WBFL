@@ -1463,6 +1463,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\FixedLengthRebarLayoutItem.cpp"
+				>
+			</File>
+			<File
 				RelativePath="FlexRebarLayoutItem.cpp"
 				>
 				<FileConfiguration
@@ -2818,6 +2822,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FixedLengthRebarLayoutItem.h"
+				>
+			</File>
+			<File
 				RelativePath="FlexRebarLayoutItem.h"
 				>
 			</File>
@@ -2892,6 +2900,10 @@
 			</File>
 			<File
 				RelativePath="EffectiveFlangeWidthTool.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\FixedLengthRebarLayoutItem.rgs"
 				>
 			</File>
 			<File

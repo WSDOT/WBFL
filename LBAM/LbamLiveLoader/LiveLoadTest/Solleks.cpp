@@ -627,8 +627,8 @@ HRESULT CreateASimpleLBAM(ILBAMModel** model)
    CComPtr<IDistributionFactor> end_df, mid_df;
    TRY_TEST(end_df.CoCreateInstance(CLSID_DistributionFactor), S_OK);
    TRY_TEST(mid_df.CoCreateInstance(CLSID_DistributionFactor), S_OK);
-   end_df->SetG(1,2,3,4,5,6,7,8,9,10,11,12,13,14);
-   mid_df->SetG(21,22,23,24,25,26,27,28,29,30,31,32,33,34);
+   end_df->SetG(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+   mid_df->SetG(21,22,23,24,25,26,27,28,29,30,31,32,33,34,35);
 
    CComPtr<IDistributionFactorSegment> end_seg, mid_seg;
    TRY_TEST( end_seg.CoCreateInstance( CLSID_DistributionFactorSegment ) , S_OK );

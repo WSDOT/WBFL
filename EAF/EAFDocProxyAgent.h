@@ -211,6 +211,7 @@ public:
    virtual const unitmgtForceLength2Data&  GetStiffnessUnit();
    virtual const unitmgtSqrtPressureData&   GetTensionCoefficientUnit();
    virtual const unitmgtPerLengthData&      GetPerLengthUnit();
+   virtual const unitmgtPerLengthData&      GetCurvatureUnit();
    virtual const unitmgtPressureData&       GetSidewalkPressureUnit();
    virtual const unitmgtPressureData&       GetOverlayWeightUnit();
 

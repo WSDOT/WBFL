@@ -32,7 +32,7 @@
 #include <EAF\StatusCenter.h>
 #include <Colors.h>
 
-#define STATUS_OK_COLOR    GREEN
+#define STATUS_OK_COLOR    LIME
 #define STATUS_WARN_COLOR  YELLOW
 #define STATUS_ERROR_COLOR RED
 

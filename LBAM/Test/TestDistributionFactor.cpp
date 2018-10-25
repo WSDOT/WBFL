@@ -589,8 +589,10 @@ void CTestDistributionFactor::TestDfOnly()
    Float64 g;
    TRY_TEST( pg0->get_GPedestrian(&g), S_OK );
    TRY_TEST( g, 1.0 );
-   TRY_TEST( pg0->get_GFat(&g), S_OK );
-   TRY_TEST( g, 1.0 );
+   Float64 gm, gv;
+   TRY_TEST( pg0->GetGFat(&gm,&gv), S_OK );
+   TRY_TEST( gm, 1.0 );
+   TRY_TEST( gv, 1.0 );
    TRY_TEST( pg0->get_GRMul(&g), S_OK );
    TRY_TEST( g, 1.0 );
    TRY_TEST( pg0->get_GRSgl(&g), S_OK );
@@ -623,7 +625,7 @@ void CTestDistributionFactor::TestDfOnly()
 
    TRY_TEST( pg0->put_GPedestrian(1.111), S_OK );
    TEST_FIRED();
-   TRY_TEST( pg0->put_GFat(1.1), S_OK );
+   TRY_TEST( pg0->SetGFat(1.1,1.14), S_OK );
    TEST_FIRED();
    TRY_TEST( pg0->put_GRMul(1.2), S_OK );
    TEST_FIRED();
@@ -652,8 +654,9 @@ void CTestDistributionFactor::TestDfOnly()
 
    TRY_TEST( pg0->get_GPedestrian(&g), S_OK );
    TRY_TEST( g, 1.111 );
-   TRY_TEST( pg0->get_GFat(&g), S_OK );
-   TRY_TEST( g, 1.1 );
+   TRY_TEST( pg0->GetGFat(&gm,&gv), S_OK );
+   TRY_TEST( gm, 1.1 );
+   TRY_TEST( gv, 1.14 );
    TRY_TEST( pg0->get_GRMul(&g), S_OK );
    TRY_TEST( g, 1.2 );
    TRY_TEST( pg0->get_GRSgl(&g), S_OK );
@@ -680,7 +683,7 @@ void CTestDistributionFactor::TestDfOnly()
    TRY_TEST( g, 1.13);
 
    TRY_TEST( pg0->put_GPedestrian(-1.111), E_INVALIDARG );
-   TRY_TEST( pg0->put_GFat(-1.1), E_INVALIDARG );
+   TRY_TEST( pg0->SetGFat(-1.1,-1.21), E_INVALIDARG );
    TRY_TEST( pg0->put_GRMul(-1.2), E_INVALIDARG );
    TRY_TEST( pg0->put_GRSgl(-1.3), E_INVALIDARG );
    TRY_TEST( pg0->put_GTSgl(-1.4), E_INVALIDARG );
@@ -696,13 +699,13 @@ void CTestDistributionFactor::TestDfOnly()
    TRY_TEST(pMe->m_Fired, false);
 
    Float64 g1=2, g2=g1+.1,g3=g2+.1,g4=g3+.1,g5=g4+.1,g6=g5+.1,g7=g6+.1;
-   Float64       g8=g7+.1,g9=g8+.1,g10=g9+.1,g11=g10+.1,g12=g11+.1,g13=g12+.1,g14=g13+.1;
+   Float64       g8=g7+.1,g9=g8+.1,g10=g9+.1,g11=g10+.1,g12=g11+.1,g13=g12+.1,g14=g13+.1,g15=g14+.1;
    
-   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14), S_OK);
+   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14, g15), S_OK);
    TEST_FIRED();
 
-   Float64 g1c, g2c,g3c,g4c,g5c,g6c,g7c,g8c,g9c,g10c,g11c,g12c, g13c, g14c;
-   TRY_TEST( pg0->GetG(&g1c, &g2c, &g3c, &g4c, &g5c, &g6c, &g7c, &g8c, &g9c, &g10c, &g11c, &g12c, &g13c, &g14c), S_OK);
+   Float64 g1c, g2c,g3c,g4c,g5c,g6c,g7c,g8c,g9c,g10c,g11c,g12c, g13c, g14c, g15c;
+   TRY_TEST( pg0->GetG(&g1c, &g2c, &g3c, &g4c, &g5c, &g6c, &g7c, &g8c, &g9c, &g10c, &g11c, &g12c, &g13c, &g14c, &g15c), S_OK);
    TRY_TEST(g1, g1c);
    TRY_TEST(g2, g2c);
    TRY_TEST(g3, g3c);
@@ -717,11 +720,13 @@ void CTestDistributionFactor::TestDfOnly()
    TRY_TEST(g12, g12c);
    TRY_TEST(g13, g13c);
    TRY_TEST(g14, g14c);
+   TRY_TEST(g15, g15c);
 
    TRY_TEST( pg0->get_GPedestrian(&g), S_OK );
-   TRY_TEST( g, g14 );
-   TRY_TEST( pg0->get_GFat(&g), S_OK );
-   TRY_TEST( g, g13 );
+   TRY_TEST( g, g15 );
+   TRY_TEST( pg0->GetGFat(&gm,&gv), S_OK );
+   TRY_TEST( gm, g13 );
+   TRY_TEST( gv, g14 );
    TRY_TEST( pg0->get_GTMul(&g), S_OK );
    TRY_TEST( g, g12 );
    TRY_TEST( pg0->get_GTSgl(&g), S_OK );
@@ -747,26 +752,27 @@ void CTestDistributionFactor::TestDfOnly()
    TRY_TEST( pg0->get_GPMSgl(&g), S_OK );
    TRY_TEST( g, g1 );
 
-   TRY_TEST( pg0->SetG(-1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14), E_INVALIDARG);
-   TRY_TEST( pg0->SetG(g1, -2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14), E_INVALIDARG);
-   TRY_TEST( pg0->SetG(g1, g2, -3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14), E_INVALIDARG);
-   TRY_TEST( pg0->SetG(g1, g2, g3, -4, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14), E_INVALIDARG);
-   TRY_TEST( pg0->SetG(g1, g2, g3, g4, -5, g6, g7, g8, g9, g10, g11, g12, g13, g14), E_INVALIDARG);
-   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, -6, g7, g8, g9, g10, g11, g12, g13, g14), E_INVALIDARG);
-   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, -7, g8, g9, g10, g11, g12, g13, g14), E_INVALIDARG);
-   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, g7, -8, g9, g10, g11, g12, g13, g14), E_INVALIDARG);
-   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, g7, g8, -9, g10, g11, g12, g13, g14), E_INVALIDARG);
-   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, g7, g8, g9, -10, g11, g12, g13, g14), E_INVALIDARG);
-   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, -11, g12, g13, g14), E_INVALIDARG);
-   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, -12, g13, g14), E_INVALIDARG);
-   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, -13, g14), E_INVALIDARG);
-   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13, -14), E_INVALIDARG);
+   TRY_TEST( pg0->SetG(-1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14, g15), E_INVALIDARG);
+   TRY_TEST( pg0->SetG(g1, -2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14, g15), E_INVALIDARG);
+   TRY_TEST( pg0->SetG(g1, g2, -3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14, g15), E_INVALIDARG);
+   TRY_TEST( pg0->SetG(g1, g2, g3, -4, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14, g15), E_INVALIDARG);
+   TRY_TEST( pg0->SetG(g1, g2, g3, g4, -5, g6, g7, g8, g9, g10, g11, g12, g13, g14, g15), E_INVALIDARG);
+   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, -6, g7, g8, g9, g10, g11, g12, g13, g14, g15), E_INVALIDARG);
+   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, -7, g8, g9, g10, g11, g12, g13, g14, g15), E_INVALIDARG);
+   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, g7, -8, g9, g10, g11, g12, g13, g14, g15), E_INVALIDARG);
+   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, g7, g8, -9, g10, g11, g12, g13, g14, g15), E_INVALIDARG);
+   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, g7, g8, g9, -10, g11, g12, g13, g14, g15), E_INVALIDARG);
+   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, -11, g12, g13, g14, g15), E_INVALIDARG);
+   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, -12, g13, g14, g15), E_INVALIDARG);
+   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, -13, g14, g15), E_INVALIDARG);
+   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13, -14, g15), E_INVALIDARG);
+   TRY_TEST( pg0->SetG(g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14, -15), E_INVALIDARG);
    TRY_TEST(pMe->m_Fired, false);
 
    // clone
    CComPtr<IDistributionFactor> pgc;
    TRY_TEST( pg0->Clone(&pgc), S_OK);
-   TRY_TEST( pgc->GetG(&g1c, &g2c, &g3c, &g4c, &g5c, &g6c, &g7c, &g8c, &g9c, &g10c, &g11c, &g12c,&g13c,&g14c), S_OK);
+   TRY_TEST( pgc->GetG(&g1c, &g2c, &g3c, &g4c, &g5c, &g6c, &g7c, &g8c, &g9c, &g10c, &g11c, &g12c,&g13c,&g14c,&g15c), S_OK);
    TRY_TEST(g1, g1c);
    TRY_TEST(g2, g2c);
    TRY_TEST(g3, g3c);
@@ -781,6 +787,7 @@ void CTestDistributionFactor::TestDfOnly()
    TRY_TEST(g12, g12c);
    TRY_TEST(g13, g13c);
    TRY_TEST(g14, g14c);
+   TRY_TEST(g15, g15c);
    
    // persistence
    {
@@ -827,7 +834,7 @@ void CTestDistributionFactor::TestDfOnly()
          TRY_TEST( psl->Close(), S_OK );
 
          // now compare values
-         TRY_TEST( psm2->GetG(&g1c, &g2c, &g3c, &g4c, &g5c, &g6c, &g7c, &g8c, &g9c, &g10c, &g11c, &g12c, &g13c, &g14c), S_OK);
+         TRY_TEST( psm2->GetG(&g1c, &g2c, &g3c, &g4c, &g5c, &g6c, &g7c, &g8c, &g9c, &g10c, &g11c, &g12c, &g13c, &g14c, &g15c), S_OK);
          TRY_TEST( IsEqual(g1, g1c), true);
          TRY_TEST( IsEqual(g2, g2c), true);
          TRY_TEST( IsEqual(g3, g3c), true);
@@ -842,6 +849,7 @@ void CTestDistributionFactor::TestDfOnly()
          TRY_TEST( IsEqual(g12, g12c), true);
          TRY_TEST( IsEqual(g13, g13c), true);
          TRY_TEST( IsEqual(g14, g14c), true);
+         TRY_TEST( IsEqual(g15, g15c), true);
       }
    }
 
