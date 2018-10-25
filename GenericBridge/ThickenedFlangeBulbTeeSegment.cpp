@@ -185,7 +185,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_LayoutLength(Float64 *pVal)
    return m_pGirderLine->get_LayoutLength(pVal);
 }
 
-STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
 {
    CHECK_RETOBJ(ppSection);
 
@@ -197,7 +197,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx
 
    HRESULT hr;
    CComPtr<IShape> primaryShape;
-   hr = get_PrimaryShape(distAlongSegment,&primaryShape);
+   hr = get_PrimaryShape(Xs,sectionBias,&primaryShape);
    ATLASSERT(SUCCEEDED(hr));
    if ( FAILED(hr) )
    {
@@ -274,7 +274,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx
    return S_OK;
 }
 
-STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_PrimaryShape(Float64 distAlongSegment,IShape** ppShape)
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
@@ -317,7 +317,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_PrimaryShape(Float64 distAlongS
 
    // parabolic interpolation of the depth of the top flange thickening
 
-   Float64 D8 = GetFlangeThickening(distAlongSegment);
+   Float64 D8 = GetFlangeThickening(Xs);
 
    // create a new shape that is a clone of the original
    CComQIPtr<IShape> shape(beam);
@@ -344,7 +344,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_PrimaryShape(Float64 distAlongS
 
    // position the shape
    CComPtr<IPoint2d> pntTopCenter;
-   GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
+   GB_GetSectionLocation(this,Xs,&pntTopCenter);
 
    CComQIPtr<IXYPosition> position(newFlangedBeam);
    position->put_LocatorPoint(lpTopCenter,pntTopCenter);

@@ -276,14 +276,14 @@ public:
       return m_pGirderLine->get_LayoutLength(pVal);
    }
 
-	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs,ISection** ppSection)
+	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs,SectionBias sectionBias,ISection** ppSection)
    {
-      return GetSection(stageIdx,Xs,ppSection);
+      return GetSection(stageIdx,Xs,sectionBias,ppSection);
    }
 
-	STDMETHOD(get_PrimaryShape)(Float64 Xs,IShape** ppShape)
+	STDMETHOD(get_PrimaryShape)(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
    {
-      return GetPrimaryShape(Xs,ppShape);
+      return GetPrimaryShape(Xs,sectionBias,ppShape);
    }
 
    STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure,IShape** ppShape)
@@ -740,9 +740,9 @@ public:
    }
 
 protected:
-   virtual HRESULT GetPrimaryShape(Float64 distAlongSegment,IShape** ppShape) = 0;
+   virtual HRESULT GetPrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape) = 0;
 
-   virtual HRESULT GetSection(StageIndexType stageIdx,Float64 Xs,ISection** ppSection)
+   virtual HRESULT GetSection(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
    {
       CHECK_RETOBJ(ppSection);
 
@@ -754,7 +754,7 @@ protected:
 
       HRESULT hr;
       CComPtr<IShape> primaryShape;
-      hr = GetPrimaryShape(Xs,&primaryShape);
+      hr = GetPrimaryShape(Xs,sectionBias,&primaryShape);
       ATLASSERT(SUCCEEDED(hr));
       if ( FAILED(hr) )
          return hr;

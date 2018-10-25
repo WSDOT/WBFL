@@ -491,7 +491,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
             segment->get_Orientation(&orientation); // section view orientation
 
             CComPtr<IShape> girder_shape;
-            segment->get_PrimaryShape(girderPoint.Xs,&girder_shape);
+            segment->get_PrimaryShape(girderPoint.Xs,sbLeft,&girder_shape);
 
             CComQIPtr<IGirderSection> girder_section(girder_shape);
 
@@ -800,7 +800,7 @@ STDMETHODIMP CSectionCutTool::get_EffectiveFlangeWidthTool(IEffectiveFlangeWidth
    return S_OK;
 }
 
-STDMETHODIMP CSectionCutTool::CreateGirderSectionBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section)
+STDMETHODIMP CSectionCutTool::CreateGirderSectionBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg, SectionBias sectionBias, GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section)
 {
    CComPtr<ISuperstructureMember> ssMbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssMbr);
@@ -810,16 +810,16 @@ STDMETHODIMP CSectionCutTool::CreateGirderSectionBySSMbr(IGenericBridge* bridge,
    CComPtr<ISuperstructureMemberSegment> segment;
    ssMbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
 
-   return CreateGirderSectionBySegment(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,stageIdx,sectionPropMethod,section);
+   return CreateGirderSectionBySegment(bridge,ssMbrID,segIdx,Xs,sectionBias,leftSSMbrID,rightSSMbrID,stageIdx,sectionPropMethod,section);
 }
 
-STDMETHODIMP CSectionCutTool::CreateGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section)
+STDMETHODIMP CSectionCutTool::CreateGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionBias sectionBias, GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section)
 {
    // Validate input
    CHECK_RETOBJ(section);
    CHECK_IN(bridge);
 
-   return CreateCompositeSection(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,stageIdx,sectionPropMethod,section);
+   return CreateCompositeSection(bridge,ssMbrID,segIdx,Xs,sectionBias,leftSSMbrID,rightSSMbrID,stageIdx,sectionPropMethod,section);
 }
 
 STDMETHODIMP CSectionCutTool::CreateNetDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,ISection** section)
@@ -909,7 +909,7 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
 
             // Create a noncomposite section for the segment that is being cut
             CComPtr<ISection> girder_section;
-            CreateNoncompositeSection(bridge,ssMbrID,segIdx,dist_from_start_of_segment,stageIdx,spmGross,&girder_section);
+            CreateNoncompositeSection(bridge,ssMbrID,segIdx,dist_from_start_of_segment,sbRight,stageIdx,spmGross,&girder_section);
 
             if ( girder_section == nullptr )
             {
@@ -1006,7 +1006,7 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
    return S_OK;
 }
 
-STDMETHODIMP CSectionCutTool::CreateGirderShapeBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,IShape** ppShape)
+STDMETHODIMP CSectionCutTool::CreateGirderShapeBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg, SectionBias sectionBias, GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,IShape** ppShape)
 {
    CComPtr<ISuperstructureMember> ssMbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssMbr);
@@ -1016,22 +1016,22 @@ STDMETHODIMP CSectionCutTool::CreateGirderShapeBySSMbr(IGenericBridge* bridge,Gi
    CComPtr<ISuperstructureMemberSegment> segment;
    ssMbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
 
-   return CreateGirderShapeBySegment(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,stageIdx,ppShape);
+   return CreateGirderShapeBySegment(bridge,ssMbrID,segIdx,Xs,sectionBias,leftSSMbrID,rightSSMbrID,stageIdx,ppShape);
 }
 
-STDMETHODIMP CSectionCutTool::CreateGirderShapeBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx, IShape** ppShape)
+STDMETHODIMP CSectionCutTool::CreateGirderShapeBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionBias sectionBias, GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx, IShape** ppShape)
 {
    // Validate input
    CHECK_RETOBJ(ppShape);
    CHECK_IN(bridge);
 
-   return CreateGirderShape(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,stageIdx,ppShape);
+   return CreateGirderShape(bridge,ssMbrID,segIdx,Xs,sectionBias,leftSSMbrID,rightSSMbrID,stageIdx,ppShape);
 }
 
-HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section)
+HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionBias sectionBias, GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section)
 {
    CComPtr<ISection> ncsection;
-   HRESULT hr = CreateNoncompositeSection(bridge,ssMbrID,segIdx,Xs,stageIdx,sectionPropMethod,&ncsection);
+   HRESULT hr = CreateNoncompositeSection(bridge,ssMbrID,segIdx,Xs,sectionBias,stageIdx,sectionPropMethod,&ncsection);
    if ( FAILED(hr) )
    {
       return hr;
@@ -1256,7 +1256,7 @@ HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType s
    return S_OK;
 }
 
-HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** ppSection)
+HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionBias sectionBias, StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** ppSection)
 {
    CComPtr<ISuperstructureMember> ssmbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
@@ -1272,7 +1272,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
 
    // this is the primary section (the girder)
    CComPtr<ISection> section;
-   HRESULT hr = segment->get_Section(stageIdx,Xs,&section);
+   HRESULT hr = segment->get_Section(stageIdx,Xs,sectionBias,&section);
    ATLASSERT(SUCCEEDED(hr));
    if ( FAILED(hr) )
    {
@@ -1862,9 +1862,9 @@ HRESULT CSectionCutTool::CreateBridgeDeckSection(IGenericBridge* bridge,Float64 
    return hr;
 }
 
-HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,IShape** ppShape)
+HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,IShape** ppShape)
 {
-   // distFromStartOfSegment is in segment coordinates
+   // Xs is in segment coordinates
    CComPtr<ISuperstructureMember> ssmbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
 
@@ -1872,7 +1872,7 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
    ssmbr->get_Segment(segIdx,&segment);
 
    CComPtr<IShape> primary_shape;
-   segment->get_PrimaryShape(Xs,&primary_shape);
+   segment->get_PrimaryShape(Xs,sectionBias,&primary_shape);
 
    CComQIPtr<ICompositeShape> compositeShape(primary_shape);
    ATLASSERT(compositeShape); // primary_shape must be a composite so we can put holes in it

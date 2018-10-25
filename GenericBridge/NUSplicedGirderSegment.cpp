@@ -52,7 +52,7 @@ void CNUSplicedGirderSegment::FinalRelease()
 // ISplicedGirderSegment implementation
 //
 
-HRESULT CNUSplicedGirderSegment::GetPrimaryShape(Float64 Xs,IShape** ppShape)
+HRESULT CNUSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
@@ -111,7 +111,7 @@ HRESULT CNUSplicedGirderSegment::GetPrimaryShape(Float64 Xs,IShape** ppShape)
 
    // Get the end block dimensions
    Float64 Web;
-   GetEndBlockWidth(Xs,&Web);
+   GetEndBlockWidth(Xs,sectionBias,&Web);
 
    //
    // Adjust D5 based on the bottom flange height
@@ -172,7 +172,7 @@ HRESULT CNUSplicedGirderSegment::GetPrimaryShape(Float64 Xs,IShape** ppShape)
    return S_OK;
 }
 
-void CNUSplicedGirderSegment::GetEndBlockWidth(Float64 distAlongSegment,Float64* pWendBlock)
+void CNUSplicedGirderSegment::GetEndBlockWidth(Float64 Xs, SectionBias sectionBias,Float64* pWendBlock)
 {
    Float64 segLength;
    get_Length(&segLength);
@@ -184,7 +184,7 @@ void CNUSplicedGirderSegment::GetEndBlockWidth(Float64 distAlongSegment,Float64*
    beam->get_Beam(&pcBeam);
 
    EndType endType;
-   if ( distAlongSegment < segLength/2 )
+   if ( Xs < segLength/2 )
    {
       // at the start end...
       endType = etStart;
@@ -192,24 +192,24 @@ void CNUSplicedGirderSegment::GetEndBlockWidth(Float64 distAlongSegment,Float64*
    else
    {
       endType = etEnd;
-      distAlongSegment = segLength - distAlongSegment; // distAlongSegment is now measured from the left end
+      Xs = segLength - Xs; // distAlongSegment is now measured from the left end
    }
 
    Float64 ebWidth       = m_EndBlockWidth[endType];
    Float64 ebLength      = m_EndBlockLength[endType];
    Float64 ebTransLength = m_EndBlockTransitionLength[endType];
 
-   if ( distAlongSegment < ebLength )
+   if ( Xs < ebLength )
    {
       // in the end block
       *pWendBlock = ebWidth;
    }
-   else if ( ::InRange(ebLength,distAlongSegment,ebLength+ebTransLength) )
+   else if ( ::InRange(ebLength,Xs,ebLength+ebTransLength) )
    {
       // in the end block transition
       Float64 t;
       pcBeam->get_T(&t);
-      *pWendBlock = ::LinInterp(distAlongSegment-ebLength,ebWidth,t,ebTransLength);
+      *pWendBlock = ::LinInterp(Xs-ebLength,ebWidth,t,ebTransLength);
    }
    else
    {

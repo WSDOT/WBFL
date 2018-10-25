@@ -240,6 +240,9 @@
     <ClInclude Include="..\Include\System\IStructuredSave.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\System\AutoVariable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="System.def" />

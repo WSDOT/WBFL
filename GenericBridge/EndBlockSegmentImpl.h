@@ -252,7 +252,26 @@ public:
       return m_pGirderLine->get_LayoutLength(pVal);
    }
 
-   STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs,ISection** ppSection)
+   bool IsInEndBlock(Float64 Xs, SectionBias sectionBias)
+   {
+      Float64 length;
+      get_Length(&length);
+
+
+      if (
+         (0.0 < m_EndBlockLength[etStart] && (sectionBias == sbLeft ? IsLE(Xs, m_EndBlockLength[etStart]) : IsLT(Xs, m_EndBlockLength[etStart]))) ||
+         (0.0 < m_EndBlockLength[etEnd] && (sectionBias == sbLeft ? IsLT(length - Xs, m_EndBlockLength[etEnd]) : IsLE(length - Xs, m_EndBlockLength[etEnd])))
+         )
+      {
+         return true;
+      }
+      else
+      {
+         return false;
+      }
+   }
+
+   STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
    {
       CHECK_RETOBJ(ppSection);
 
@@ -282,8 +301,7 @@ public:
       get_Length(&length);
 
       // Section is in the end block so use the outline of the shape only
-      if ( (0.0 < m_EndBlockLength[etStart] && IsLE(Xs,m_EndBlockLength[etStart])) || 
-           (0.0 < m_EndBlockLength[etEnd]   && IsLE(length - Xs,m_EndBlockLength[etEnd])) )
+      if ( IsInEndBlock(Xs,sectionBias) )
       {
          T_ENDBLOCK::InEndBlock(newBeam);;
       }
@@ -364,7 +382,7 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(get_PrimaryShape)(Float64 Xs,IShape** ppShape)
+   STDMETHOD(get_PrimaryShape)(Float64 Xs,SectionBias sectionBias,IShape** ppShape)
    {
       CHECK_RETOBJ(ppShape);
 
@@ -394,8 +412,7 @@ public:
       get_Length(&length);
 
       // Section is in the end block so use the outline of the shape only
-      if ( (0.0 < m_EndBlockLength[etStart] && IsLE(Xs,m_EndBlockLength[etStart])) || 
-           (0.0 < m_EndBlockLength[etEnd]   && IsLE(length - Xs,m_EndBlockLength[etEnd])) )
+      if (IsInEndBlock(Xs, sectionBias))
       {
          T_ENDBLOCK::InEndBlock(newBeam);;
       }
