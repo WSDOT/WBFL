@@ -165,7 +165,7 @@ public:
 
    //------------------------------------------------------------------------
    // Get the current axis range and major tic increment.
-   void GetAxisRange(Float64& leftVal, Float64& rightVal, Float64& increment);
+   void GetAxisRange(Float64& leftVal, Float64& rightVal, Float64& increment) const;
 
 
    // GROUP: ACCESS
@@ -176,7 +176,7 @@ public:
 
    //------------------------------------------------------------------------
    // Get Axis font size for axis title
-   Int32 GetTitleFontSize();
+   Int32 GetTitleFontSize() const;
 
    //------------------------------------------------------------------------
    // Set Axis font size for axis subtitle
@@ -184,7 +184,7 @@ public:
 
    //------------------------------------------------------------------------
    // Get Axis font size for axis subtitle
-   Int32 GetSubtitleFontSize();
+   Int32 GetSubtitleFontSize() const;
 
    //------------------------------------------------------------------------
    // Set Axis font size for axis values
@@ -192,7 +192,7 @@ public:
 
    //------------------------------------------------------------------------
    // Get Axis font size for axis values
-   Int32 GetValueFontSize();
+   Int32 GetValueFontSize() const;
 
    void SetValueAngle(LONG angle);
    LONG GetValueAngle() const;
@@ -214,7 +214,7 @@ public:
 
    //------------------------------------------------------------------------
    // Get the current tic location
-   grAxisXY::TicLocation GetTicLocation();
+   grAxisXY::TicLocation GetTicLocation() const;
 
    //------------------------------------------------------------------------
    // Set the location of the Text wrt the axis. Text can either
@@ -224,7 +224,7 @@ public:
 
    //------------------------------------------------------------------------
    // Get the current Text location
-   grAxisXY::TextLocation GetTextLocation();
+   grAxisXY::TextLocation GetTextLocation() const;
 
    //------------------------------------------------------------------------
    // Set the desired number of major tic spaces along the axis. Note that this 
@@ -233,7 +233,7 @@ public:
    void SetNumberOfMajorTics(Int32 numTics);
 
    //------------------------------------------------------------------------
-   Int32 GetNumberOfMajorTics();
+   Int32 GetNumberOfMajorTics() const;
 
    //------------------------------------------------------------------------
    // Set the desired number of minor tic spaces between major tics. Values
@@ -241,7 +241,7 @@ public:
    void SetNumberOfMinorTics(Int32 numTics);
 
    //------------------------------------------------------------------------
-   Int32 GetNumberOfMinorTics();
+   Int32 GetNumberOfMinorTics() const;
 
    //------------------------------------------------------------------------
    // Set whether to show tic marks or not
@@ -249,23 +249,23 @@ public:
 
    //------------------------------------------------------------------------
    // Get whether to show tic marks or not
-   bool GetShowTics();
+   bool GetShowTics() const;
 
    //------------------------------------------------------------------------
    // Set the title text
-   void SetTitleText(const std::_tstring& text);
+   void SetTitleText(LPCTSTR text);
 
    //------------------------------------------------------------------------
    // Get the title text
-   std::_tstring GetTitleText();
+   LPCTSTR GetTitleText() const;
 
    //------------------------------------------------------------------------
    // Set the subtitle text
-   void SetSubtitleText(const std::_tstring& text);
+   void SetSubtitleText(LPCTSTR text);
 
    //------------------------------------------------------------------------
    // Get the subtitle text
-   std::_tstring GetSubtitleText();
+   LPCTSTR GetSubtitleText() const;
 
    //------------------------------------------------------------------------
    // Set whether to show text or not
@@ -273,7 +273,7 @@ public:
 
    //------------------------------------------------------------------------
    // Get whether to show text or not
-   bool GetShowText();
+   bool GetShowText() const;
 
    void SetScale(grAxisXY::AxisScale scale);
    grAxisXY::AxisScale GetScale() const;

@@ -259,17 +259,17 @@ void grGraphXY::DrawDataSeries(HDC hDC)
 
 //======================== ACCESS     =======================================
 
-std::_tstring grGraphXY::GetTitle()
+LPCTSTR grGraphXY::GetTitle() const
 {
-   return m_GraphTitle;
+   return m_GraphTitle.c_str();
 }
 
-void grGraphXY::SetTitle(const std::_tstring& title)
+void grGraphXY::SetTitle(LPCTSTR strTitle)
 {
-   m_GraphTitle = title.c_str();
+   m_GraphTitle = strTitle;
 }
 
-LONG grGraphXY::GetTitleSize()
+LONG grGraphXY::GetTitleSize() const
 {
    return m_GraphTitleSize;
 }
@@ -279,17 +279,17 @@ void grGraphXY::SetTitleSize(LONG size)
    m_GraphTitleSize = size;
 }
 
-std::_tstring grGraphXY::GetSubtitle()
+LPCTSTR grGraphXY::GetSubtitle() const
 {
-   return m_GraphSubtitle;
+   return m_GraphSubtitle.c_str();
 }
 
-void grGraphXY::SetSubtitle(const std::_tstring& subtitle)
+void grGraphXY::SetSubtitle(LPCTSTR strSubtitle)
 {
-    m_GraphSubtitle = subtitle.c_str();
+    m_GraphSubtitle = strSubtitle;
 }
 
-LONG grGraphXY::GetSubtitleSize()
+LONG grGraphXY::GetSubtitleSize() const
 {
    return m_GraphSubtitleSize;
 }
@@ -305,7 +305,7 @@ void grGraphXY::SetAxisTitleSize(LONG size)
    m_YAxis.SetTitleFontSize(size);
 }
 
-LONG grGraphXY::GetAxisTitleSize()
+LONG grGraphXY::GetAxisTitleSize() const
 {
    return m_XAxis.GetTitleFontSize();
 }
@@ -316,7 +316,7 @@ void grGraphXY::SetAxisSubtitleSize(LONG size)
    m_YAxis.SetSubtitleFontSize(size);
 }
 
-LONG grGraphXY::GetAxisSubtitleSize()
+LONG grGraphXY::GetAxisSubtitleSize() const
 {
    return m_XAxis.GetSubtitleFontSize();
 }
@@ -341,48 +341,48 @@ void grGraphXY::SetYAxisLabelAngle(LONG angle)
    m_YAxis.SetValueAngle(angle);
 }
 
-void grGraphXY::SetXAxisTitle(const std::_tstring& title)
+void grGraphXY::SetXAxisTitle(LPCTSTR strTitle)
 {
-   m_XAxis.SetTitleText(title);
+   m_XAxis.SetTitleText(strTitle);
 }
 
-std::_tstring grGraphXY::GetXAxisTitle()
+LPCTSTR grGraphXY::GetXAxisTitle() const
 {
    return m_XAxis.GetTitleText();
 }
 
-void grGraphXY::SetXAxisSubtitle(const std::_tstring& subtitle)
+void grGraphXY::SetXAxisSubtitle(LPCTSTR strSubtitle)
 {
-   m_XAxis.SetSubtitleText(subtitle);
+   m_XAxis.SetSubtitleText(strSubtitle);
 }
 
-std::_tstring grGraphXY::GetXAxisSubtitle()
+LPCTSTR grGraphXY::GetXAxisSubtitle() const
 {
    return m_XAxis.GetSubtitleText();
 }
 
-void grGraphXY::SetYAxisTitle(const std::_tstring& title)
+void grGraphXY::SetYAxisTitle(LPCTSTR strTitle)
 {
-   m_YAxis.SetTitleText(title);
+   m_YAxis.SetTitleText(strTitle);
 }
 
-std::_tstring grGraphXY::GetYAxisTitle()
+LPCTSTR grGraphXY::GetYAxisTitle() const
 {
    return m_YAxis.GetTitleText();
 }
 
-void grGraphXY::SetYAxisSubtitle(const std::_tstring& subtitle)
+void grGraphXY::SetYAxisSubtitle(LPCTSTR strSubtitle)
 {
-   m_YAxis.SetSubtitleText(subtitle);
+   m_YAxis.SetSubtitleText(strSubtitle);
 
 }
 
-std::_tstring grGraphXY::GetYAxisSubtitle()
+LPCTSTR grGraphXY::GetYAxisSubtitle() const
 {
    return m_YAxis.GetSubtitleText();
 }
 
-LONG grGraphXY::GetXAxisNumberOfMinorTics()
+LONG grGraphXY::GetXAxisNumberOfMinorTics() const
 {
    return m_XAxis.GetNumberOfMinorTics();
 }
@@ -392,7 +392,7 @@ void grGraphXY::SetXAxisNumberOfMinorTics(LONG num)
    m_XAxis.SetNumberOfMinorTics(num);
 }
 
-LONG grGraphXY::GetYAxisNumberOfMinorTics()
+LONG grGraphXY::GetYAxisNumberOfMinorTics() const
 {
    return m_YAxis.GetNumberOfMinorTics();
 }
@@ -479,7 +479,7 @@ void grGraphXY::SetDataLabel(IndexType cookie,LPCTSTR lpszLabel)
    }
 }
 
-void grGraphXY::GetMinimumZoomBounds(Float64* pHeight, Float64* pWidth)
+void grGraphXY::GetMinimumZoomBounds(Float64* pHeight, Float64* pWidth) const
 {
    *pHeight = m_MinZoomHeight;
    *pWidth  = m_MinZoomWidth;
@@ -502,7 +502,7 @@ void grGraphXY::SetMinimumSize(Float64 Xmin,Float64 Xmax,Float64 Ymin,Float64 Ym
    m_Ymax = Ymax;
 }
 
-void grGraphXY::GetMinimumSize(Float64* pXmin,Float64* pXmax,Float64* pYmin,Float64* pYmax)
+void grGraphXY::GetMinimumSize(Float64* pXmin,Float64* pXmax,Float64* pYmin,Float64* pYmax) const
 {
    *pXmin = m_Xmin;
    *pXmax = m_Xmax;
@@ -1110,7 +1110,7 @@ void grGraphXY::SetFixed()
 
 //======================== ACCESS     =======================================
 
-LONG grGraphXY::GetXAxisNumberOfMajorTics()
+LONG grGraphXY::GetXAxisNumberOfMajorTics() const
 {
    return m_XAxis.GetNumberOfMajorTics();
 }
@@ -1120,7 +1120,7 @@ void grGraphXY::SetXAxisNumberOfMajorTics(LONG num)
    m_XAxis.SetNumberOfMajorTics(num);
 }
 
-LONG grGraphXY::GetYAxisNumberOfMajorTics()
+LONG grGraphXY::GetYAxisNumberOfMajorTics() const
 {
    return m_YAxis.GetNumberOfMajorTics();
 }
@@ -1130,7 +1130,7 @@ void grGraphXY::SetYAxisNumberOfMajorTics(LONG num)
    m_YAxis.SetNumberOfMajorTics(num);
 }
 
-bool grGraphXY::GetXAxisNiceRange()
+bool grGraphXY::GetXAxisNiceRange() const
 {
    return m_XAxisNiceRange;
 }
@@ -1145,7 +1145,7 @@ void grGraphXY::SetXAxisNiceRange(bool nice)
    }
 }
 
-bool grGraphXY::GetYAxisNiceRange()
+bool grGraphXY::GetYAxisNiceRange() const
 {
    return m_YAxisNiceRange;
 }
@@ -1160,7 +1160,7 @@ void grGraphXY::SetYAxisNiceRange(bool nice)
    }
 }
 
-bool grGraphXY::GetPinYAxisAtZero()
+bool grGraphXY::GetPinYAxisAtZero() const
 {
    return m_PinYAxisAtZero;
 }
