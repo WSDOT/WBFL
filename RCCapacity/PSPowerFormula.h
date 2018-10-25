@@ -39,7 +39,9 @@ class ATL_NO_VTABLE CPSPowerFormula :
 	public ISupportErrorInfo,
    public IPowerFormula,
 	public IStressStrain,
-	public ISupportUnitServer
+	public ISupportUnitServer,
+   public IStructuredStorage2,
+   public IPersist
 {
 public:
    CPSPowerFormula() :
@@ -64,6 +66,8 @@ BEGIN_COM_MAP(CPSPowerFormula)
 	COM_INTERFACE_ENTRY(IStressStrain)
 	COM_INTERFACE_ENTRY(ISupportUnitServer)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
+	COM_INTERFACE_ENTRY(IStructuredStorage2)
+   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
    void ClearUnits();
@@ -107,8 +111,17 @@ public:
 
 // ISupportUnitServer
 public:
-		STDMETHOD(get_UnitServer)(/*[out,retval]*/ IUnitServer** ppVal );
-		STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal );
+   STDMETHOD(get_UnitServer)(/*[out,retval]*/ IUnitServer** ppVal );
+	STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal );
+
+// IStructuredStorage2
+public:
+   STDMETHOD(Save)(IStructuredSave2* pSave);
+   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+
+// IPersist
+public:
+   STDMETHOD(GetClassID)(CLSID* pClassID);
 };
 
 #endif //__PSPOWERFORMULA_H_

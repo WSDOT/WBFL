@@ -53,6 +53,7 @@ CEAFBrokerDocument::CEAFBrokerDocument()
 {
    m_pBroker = NULL;
    m_pDocProxyAgent =  NULL;
+   m_DisplayFavoriteReports = FALSE;
    m_bIsGraphMenuPopulated = false;
 
    // The base class registers as a unit mode listener
@@ -181,7 +182,7 @@ BOOL CEAFBrokerDocument::CreateBroker()
 
    // get the IBrokerInitEx2 interface
    // the broker we want to be using implements this interface so
-   // generate an error if it doesn't
+   // generate an error if it doesn't have it
    CComQIPtr<IBrokerInitEx2> pBrokerInit(m_pBroker);
    if ( pBrokerInit == NULL )
    {
@@ -198,6 +199,11 @@ BOOL CEAFBrokerDocument::CreateBroker()
 
 void CEAFBrokerDocument::BrokerShutDown()
 {
+   // if we are done with the broker, we must also be done with
+   // all of our cached interfaces
+   m_pReportManager.Release();
+   m_pGraphManager.Release();
+
    if ( m_pBroker )
    {
       m_pBroker->ShutDown();
@@ -392,6 +398,13 @@ BOOL CEAFBrokerDocument::LoadSpecialAgents(IBrokerInitEx2* pBrokerInit)
    
    HRESULT hr = pBrokerInit->AddAgent( pAgent );
 
+   // Since we use the ILogFile and IProgress interfaces, we required the SysAgent
+   CLSID clsid[] = {CLSID_SysAgent};
+   if ( !CEAFBrokerDocument::LoadAgents(pBrokerInit, clsid, sizeof(clsid)/sizeof(CLSID) ) )
+   {
+      return FALSE;
+   }
+
    return SUCCEEDED(hr);
 }
 
@@ -407,13 +420,18 @@ void CEAFBrokerDocument::DoIntegrateWithUI(BOOL bIntegrate)
    CEAFDocument::DoIntegrateWithUI(bIntegrate);
 
    CComQIPtr<IBrokerInitEx3> pBrokerInit(m_pBroker);
-   pBrokerInit->IntegrateWithUI(bIntegrate);
 
    if ( bIntegrate )
    {
       // OnCmdMsg uses these interfaces tens of thousands of time. Get them once
       m_pBroker->GetInterface(IID_IReportManager,(IUnknown**)&m_pReportManager);
       m_pBroker->GetInterface(IID_IGraphManager, (IUnknown**)&m_pGraphManager);
+
+      pBrokerInit->Integrate(TRUE,m_pReportManager == NULL ? FALSE : TRUE,m_pGraphManager == NULL ? FALSE : TRUE);
+   }
+   else
+   {
+      pBrokerInit->RemoveIntegration();
    }
 }
 
@@ -688,6 +706,7 @@ void CEAFBrokerDocument::OnQuickReport(UINT nID)
 void CEAFBrokerDocument::CreateReportView(CollectionIndexType rptIdx,bool bPrompt)
 {
    // User must override this method to display the report
+   AfxMessageBox(_T("Override CEAFBrokerDocument::CreateReportView to create the specific report view you want"));
 }
 
 void CEAFBrokerDocument::PopulateGraphMenu(CEAFMenu* pGraphMenu)
@@ -765,6 +784,7 @@ void CEAFBrokerDocument::OnGraph(UINT nID)
 void CEAFBrokerDocument::CreateGraphView(CollectionIndexType graphIdx)
 { 
    // does nothing by default
+   AfxMessageBox(_T("Override CEAFBrokerDocument::CreateGraphView to create the specific graph view you want"));
 }
 
 void CEAFBrokerDocument::OnUpdateAllViews(CView* pSender, LPARAM lHint,CObject* pHint)

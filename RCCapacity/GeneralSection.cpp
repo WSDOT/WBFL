@@ -200,8 +200,8 @@ STDMETHODIMP CGeneralSection::Save(IStructuredSave2* pSave)
    {
       SectionItem& item = *iter;
       pSave->put_Property(CComBSTR("Shape"),CComVariant(item.shape));
-      pSave->put_Property(CComBSTR("FGMaterial"),CComVariant(item.fgMaterial));
-      pSave->put_Property(CComBSTR("BGMaterial"),CComVariant(item.bgMaterial));
+      pSave->put_Property(CComBSTR("FGMaterial"),item.fgMaterial ? CComVariant(item.fgMaterial) : 0);
+      pSave->put_Property(CComBSTR("BGMaterial"),item.bgMaterial ? CComVariant(item.bgMaterial) : 0);
       pSave->put_Property(CComBSTR("InitialStrain"),CComVariant(item.ei));
    }
 
@@ -234,11 +234,19 @@ STDMETHODIMP CGeneralSection::Load(IStructuredLoad2* pLoad)
 
       if ( FAILED(pLoad->get_Property(CComBSTR("FGMaterial"),  &var) ) )
          return STRLOAD_E_INVALIDFORMAT;
-      var.punkVal->QueryInterface(&item.fgMaterial);
+
+      if ( var.punkVal )
+      {
+         var.punkVal->QueryInterface(&item.fgMaterial);
+      }
 
       if ( FAILED(pLoad->get_Property(CComBSTR("BGMaterial"),  &var) ) )
          return STRLOAD_E_INVALIDFORMAT;
-      var.punkVal->QueryInterface(&item.bgMaterial);
+
+      if ( var.punkVal )
+      {
+         var.punkVal->QueryInterface(&item.bgMaterial);
+      }
 
       if ( FAILED(pLoad->get_Property(CComBSTR("InitialStrain"),  &var) ) )
          return STRLOAD_E_INVALIDFORMAT;

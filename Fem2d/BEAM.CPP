@@ -2896,8 +2896,8 @@ void MemberStrainBeam::ComputeDeflections()
    ATLASSERT(!(sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
    if ( sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
    {
-      m_Fxl = m_Qx*(m_L - m_A);
-      m_Fxr = 0;
+      m_Dxl = m_Qx*(m_L - m_A);
+      m_Dxr = 0;
    }
    else if ( sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
    {
@@ -2917,19 +2917,19 @@ void MemberStrainBeam::ComputeDeflections()
 
    if ( bPinnedLeft && bPinnedRight )
    {
-      ComputePPReactions();
+      ComputePPDeflections();
    }
    else if ( bPinnedLeft && bFixedRight )
    {
-      ComputePFReactions();
+      ComputePFDeflections();
    }
    else if ( bFixedLeft && bPinnedRight )
    {
-      ComputeFPReactions();
+      ComputeFPDeflections();
    }
    else if ( bFixedLeft && bFixedRight )
    {
-      ComputeFFReactions();
+      ComputeFFDeflections();
    }
    else
    {

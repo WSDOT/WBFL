@@ -148,20 +148,17 @@ STDMETHODIMP CBridgeGeometryTool::PointBySegment(IGenericBridge* bridge,GirderID
    CComPtr<IGirderLine> girderLine;
    segment->get_GirderLine(&girderLine);
 
+   // Xs is measured from the end of the superstructure member segment so
+   // use the girder line points as the reference
    CComPtr<IPoint2d> p1, p2;
    girderLine->get_EndPoint(etStart,&p1);
    girderLine->get_EndPoint(etEnd,  &p2);
-   
-   Float64 brgOffset,endDist;
-   girderLine->get_BearingOffset(etStart,&brgOffset);
-   girderLine->get_EndDistance(etStart,&endDist);
 
    CComPtr<ILocate2> locate;
    m_CogoEngine->get_Locate(&locate);
 
-   Float64 Xsp = Xs - (brgOffset-endDist);
-
-   locate->PointOnLine(p1,p2,Xsp,0.00,point);
+   // Xs is measured from p1
+   locate->PointOnLine(p1,p2,Xs,0.00,point);
 
    return S_OK;
 }

@@ -263,6 +263,26 @@ library WBFLCore
       [helpstring("method IntegrateWithUI")] HRESULT IntegrateWithUI(BOOL bIntegrate);
    }
 
+   [
+      uuid(B03A0005-11F8-40c3-8D18-D94032886129),
+      helpstring("IAgentReportingIntegration"),
+      pointer_default(unique)
+   ]
+   interface IAgentReportingIntegration : IUnknown
+   {
+      [helpstring("method IntegrateWithReporting")] HRESULT IntegrateWithReporting(BOOL bIntegrate);
+   }
+
+   [
+      uuid(9AF52AB6-BECA-4aa4-8242-C7910B11AA08),
+      helpstring("IAgentGraphingIntegration"),
+      pointer_default(unique)
+   ]
+   interface IAgentGraphingIntegration : IUnknown
+   {
+      [helpstring("method IntegrateWithGraphing")] HRESULT IntegrateWithGraphing(BOOL bIntegrate);
+   }
+
 	[
 		uuid(53CAB1E0-262E-11d2-8EB0-006097DF3C68),
 		helpstring("IBrokerInit Interface"),
@@ -320,7 +340,8 @@ library WBFLCore
 	]
 	interface IBrokerInitEx3 : IBrokerInitEx2
 	{
-		[helpstring("method IntegrateWithUI")] HRESULT IntegrateWithUI(BOOL bIntegrate);
+		[helpstring("method Integrate")] HRESULT Integrate(BOOL bIntegrateWithUI,BOOL bIntegrateWithReporting,BOOL bIntegrateWithGraphing);
+		[helpstring("method RemoveIntegration")] HRESULT RemoveIntegration();
 	};
 
    [

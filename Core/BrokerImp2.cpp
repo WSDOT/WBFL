@@ -63,6 +63,9 @@ CBrokerImp2::CBrokerImp2() :
    m_DelayInit = false;
    m_bAgentsInitialized = false;
    m_bSaveMissingAgentData = VARIANT_TRUE;
+   m_bIntegrateWithUI = FALSE;
+   m_bIntegrateWithReporting = FALSE;
+   m_bIntegrateWithGraphing = FALSE;
 }
 
 CBrokerImp2::~CBrokerImp2()
@@ -593,33 +596,55 @@ HRESULT CBrokerImp2::InitAgents(Agents::iterator begin,Agents::iterator end)
    return S_OK;
 }
 
-STDMETHODIMP CBrokerImp2::IntegrateWithUI(BOOL bIntegrate)
+STDMETHODIMP CBrokerImp2::Integrate(BOOL bIntegrateWithUI,BOOL bIntegrateWithReporting,BOOL bIntegrateWithGraphing)
 {
-   if ( bIntegrate )
-   {
-      // when integrating, do the main agents first, then the extensions
-      IntegrateWithUI(true,m_Agents.begin(),m_Agents.end());
-      IntegrateWithUI(true,m_ExtensionAgents.begin(),m_ExtensionAgents.end());
-   }
-   else
-   {
-      // when removing, let the extensions go first
-      IntegrateWithUI(false,m_ExtensionAgents.begin(),m_ExtensionAgents.end());
-      IntegrateWithUI(false,m_Agents.begin(),m_Agents.end());
-   }
+   m_bIntegrateWithUI        = bIntegrateWithUI;
+   m_bIntegrateWithReporting = bIntegrateWithReporting;
+   m_bIntegrateWithGraphing  = bIntegrateWithGraphing;
+
+   Integrate(TRUE,m_Agents.begin(),m_Agents.end());
+   Integrate(TRUE,m_ExtensionAgents.begin(),m_ExtensionAgents.end());
 
    return S_OK;
 }
 
-HRESULT CBrokerImp2::IntegrateWithUI(BOOL bIntegrate,Agents::iterator begin,Agents::iterator end)
+STDMETHODIMP CBrokerImp2::RemoveIntegration()
+{
+   Integrate(FALSE,m_ExtensionAgents.begin(),m_ExtensionAgents.end());
+   Integrate(FALSE,m_Agents.begin(),m_Agents.end());
+   return S_OK;
+}
+
+HRESULT CBrokerImp2::Integrate(BOOL bIntegrating,Agents::iterator begin,Agents::iterator end)
 {
    while ( begin != end )
    {
       IAgentEx* pAgent = (*begin).second;
-      CComQIPtr<IAgentUIIntegration> pUI(pAgent);
-      if ( pUI )
+      if ( m_bIntegrateWithUI )
       {
-         pUI->IntegrateWithUI(bIntegrate);
+         CComQIPtr<IAgentUIIntegration> pUI(pAgent);
+         if ( pUI )
+         {
+            pUI->IntegrateWithUI(bIntegrating);
+         }
+      }
+
+      if ( m_bIntegrateWithReporting )
+      {
+         CComQIPtr<IAgentReportingIntegration> pUI(pAgent);
+         if ( pUI )
+         {
+            pUI->IntegrateWithReporting(bIntegrating);
+         }
+      }
+
+      if ( m_bIntegrateWithGraphing )
+      {
+         CComQIPtr<IAgentGraphingIntegration> pUI(pAgent);
+         if ( pUI )
+         {
+            pUI->IntegrateWithGraphing(bIntegrating);
+         }
       }
 
       begin++;
@@ -643,7 +668,7 @@ STDMETHODIMP CBrokerImp2::Load(IStructuredLoad* pStrLoad)
       return LoadOldFormat(pStrLoad); 
    }
 
-   // until we run out of "Agent"units
+   // until we run out of "Agent" units
    while ( SUCCEEDED(pStrLoad->BeginUnit(_T("Agent"))) )
    {
       // get CLSID of the agent

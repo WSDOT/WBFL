@@ -99,7 +99,8 @@ public:
 	STDMETHOD(RegInterface)(/*[in]*/ REFIID riid,/*[in]*/ IAgentEx* pAgent);
    STDMETHOD(DelayInit)();
 	STDMETHOD(InitAgents)();
-   STDMETHOD(IntegrateWithUI)(BOOL bIntegrate);
+   STDMETHOD(Integrate)(BOOL bIntegrateWithUI,BOOL bIntegrateWithReporting,BOOL bIntegrateWithGraphing);
+   STDMETHOD(RemoveIntegration)();
 
 // IBrokerPersist2
 public:
@@ -147,9 +148,13 @@ private:
    HRESULT AddAgent(IAgentEx* pAgent,Agents& agents);
    HRESULT FindConnectionPoint( REFIID riid, Agents::iterator begin,Agents::iterator end,IConnectionPoint** ppCP);
    HRESULT InitAgents(Agents::iterator begin,Agents::iterator end);
-   HRESULT IntegrateWithUI(BOOL bIntegrate,Agents::iterator begin,Agents::iterator end);
+   HRESULT Integrate(BOOL bIntegrating,Agents::iterator begin,Agents::iterator end);
    HRESULT SaveAgentData(IStructuredSave* pStrSave,Agents::iterator begin,Agents::iterator end);
    HRESULT FindAgent(const CLSID& clsid,IAgentEx** ppAgent);
+
+   BOOL m_bIntegrateWithUI;
+   BOOL m_bIntegrateWithReporting;
+   BOOL m_bIntegrateWithGraphing;
 
    CComBSTR TranslateCLSID(const CComBSTR bstrCLSID);
 

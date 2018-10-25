@@ -219,6 +219,11 @@ STDMETHODIMP CPier::get_Index(PierIndexType* pIndex)
    return m_pPierLine->get_Index(pIndex);
 }
 
+STDMETHODIMP CPier::get_ID(PierIDType* pID)
+{
+   return m_pPierLine->get_ID(pID);
+}
+
 /////////////////////////////////////////////////////
 // IStructuredStorage2 implementation
 STDMETHODIMP CPier::Load(IStructuredLoad2* load)

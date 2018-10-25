@@ -31,6 +31,7 @@
 #include <GraphManager\GraphBuilder.h>
 #include <boost\shared_ptr.hpp>
 #include <map>
+#include <vector>
 
 class GRAPHMANAGERCLASS CGraphManager
 {

@@ -71,6 +71,10 @@
 #define IDS_E_SOLUTIONNOTFOUND          513
 #define IDS_E_BEAMNOTSYMMETRIC          514
 #define IDS_E_MATERIALFAILURE           515
+#define IDS_E_NEUTRALAXISNOTBOUNDED     516
+#define IDS_E_SECTION                   517
+#define IDS_E_FGMATERIAL                518
+#define IDS_E_BGMATERIAL                519
 
 // Next default values for new objects
 // 

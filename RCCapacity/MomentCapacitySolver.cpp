@@ -56,6 +56,14 @@ HRESULT CMomentCapacitySolver::FinalConstruct()
 
 void CMomentCapacitySolver::FinalRelease()
 {
+   m_GeneralSolver.Release();
+   m_GeneralSolution.Release();
+   m_TensionSolution.Release();
+   m_CompressionSolution.Release();
+   m_StrainPlane.Release();
+   m_P1.Release();
+   m_P2.Release();
+   m_P3.Release();
 }
 
 
@@ -445,7 +453,7 @@ HRESULT CMomentCapacitySolver::GetNeutralAxisParameterRange(Float64 k_or_ec,Solu
    CompressionLimit(&FzMin,&Mx,&My,peo_lower);
 
    if ( !InRange(FzMin,Fz,FzMax) )
-      return E_FAIL;
+      return Error(IDS_E_NEUTRALAXISNOTBOUNDED,IID_IMomentCapacitySolver,RC_E_NEUTRALAXISNOTBOUNDED);
 
    Float64 eo_lower = (solutionMethod == smFixedCompressiveStrain ? k_or_ec : -0.0035);
    Float64 eo_upper =  0.11;

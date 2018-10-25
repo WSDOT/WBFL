@@ -1606,6 +1606,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\UnitValueNumericalFormatTools.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -1641,6 +1645,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\UnitMgt\UnitTest.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\UnitMgt\UnitValueNumericalFormatTools.h"
 				>
 			</File>
 		</Filter>

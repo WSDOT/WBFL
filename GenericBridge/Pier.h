@@ -90,6 +90,7 @@ public:
 	STDMETHOD(CreateTransversePierDescription)();
 	STDMETHOD(get_TransversePierDescription)(/*[out, retval]*/ ITransversePierDescription* *pVal);
    STDMETHOD(get_Index)(/*[out,retval]*/PierIndexType* pIndex);
+   STDMETHOD(get_ID)(/*[out,retval]*/PierIDType* pID);
 
 // IStructuredStorage2
 public:

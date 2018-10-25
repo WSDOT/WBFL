@@ -48,6 +48,9 @@ template <class T>
 inline bool IsEqual(const T& val1, const T& val2, T tolerance = TOLERANCE)
 {   return IsZero(val1-val2,tolerance); }
 
+inline bool IsEqual(IndexType v1,IndexType v2)
+{ return v1 == v2; }
+
 // Returns true if value is within the range [minVal,maxVal]
 template <class T>
 inline bool InRange(const T& minVal, const T& value, const T& maxVal, T tolerance = TOLERANCE)

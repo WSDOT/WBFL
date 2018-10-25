@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// CORE - Core elements of the Agent-Broker Architecture
+// EAF - Extensible Application Framework
 // Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -21,38 +21,22 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// stdafx.h : include file for standard system include files,
-// or project specific include files that are used frequently,
-// but are changed infrequently
-
 #pragma once
 
-#ifndef STRICT
-#define STRICT
-#endif
+#include <EAF\EAFExp.h>
+#include <ReportManager\ReportManager.h>
+#include <WBFLCore.h>
 
-#include <WBFLVersion.h>
+class EAFCLASS CEAFBrokerReportSpecificationBuilder :
+   public CReportSpecificationBuilder
+{
+public:
+   CEAFBrokerReportSpecificationBuilder(IBroker* pBroker);
+   ~CEAFBrokerReportSpecificationBuilder(void);
 
-#define _ATL_APARTMENT_THREADED
-#define _ATL_NO_AUTOMATIC_NAMESPACE
+   virtual boost::shared_ptr<CReportSpecification> CreateReportSpec(const CReportDescription& rptDesc,boost::shared_ptr<CReportSpecification>& pRptSpec);
+   virtual boost::shared_ptr<CReportSpecification> CreateDefaultReportSpec(const CReportDescription& rptDesc);
 
-#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS	// some CString constructors will be explicit
-
-#include <afxwin.h>
-#ifndef _AFX_NO_OLE_SUPPORT
-#include <afxdisp.h>        // MFC Automation classes
-#endif // _AFX_NO_OLE_SUPPORT
-
-#include "resource.h"
-#include <atlbase.h>
-#include <atlcom.h>
-#include <atlctl.h>
-
-#include <afxcmn.h> // for Animation control
-
-#include <Private\WBFLPackage.h>
-
-
-bool operator<(REFIID a,REFIID b);
-
-using namespace ATL;
+protected:
+   CComPtr<IBroker> m_pBroker;
+};

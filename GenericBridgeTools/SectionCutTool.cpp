@@ -34,6 +34,10 @@
 #include <MathEx.h>
 #include <float.h> // for DBL_MAX
 
+#if defined _DEBUG
+#include <map>
+#endif
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -1071,6 +1075,9 @@ HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType s
    CComQIPtr<IShape> shape(slab);
    cmpSection->AddSection(shape,Econc,0.0,Dconc,0.0,IsZero(Econc) ? VARIANT_FALSE : VARIANT_TRUE );
 
+#if defined _DEBUG
+   std::map<Float64,Float64> rebarLog;
+#endif
    if ( sectionPropMethod == spmTransformed || sectionPropMethod == spmNet )
    {
       // Add Longitudinal Reinforcement Bars
@@ -1120,7 +1127,20 @@ HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType s
          CComPtr<IPoint2d> centroid;
          rebarShape->get_Centroid(&centroid);
 
-         centroid->Move(x,yBottom + y);
+         y += yBottom;
+         centroid->Move(x,y);
+
+#if defined _DEBUG
+         std::map<Float64,Float64>::iterator found = rebarLog.find(y);
+         if ( found == rebarLog.end() )
+         {
+            rebarLog.insert(std::make_pair(y,Abar));
+         }
+         else
+         {
+            found->second += Abar;
+         }
+#endif
 
          CComQIPtr<IMaterial> material(rebar);
          ATLASSERT(material);

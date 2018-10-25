@@ -73,7 +73,7 @@ lrfdLoadModifier& lrfdLoadModifier::operator= (const lrfdLoadModifier& rOther)
 }
 
 //======================== OPERATIONS =======================================
-Float64 lrfdLoadModifier::LoadModifier(lrfdTypes::LimitState ls,lrfdTypes::Optimization opt)
+Float64 lrfdLoadModifier::LoadModifier(lrfdTypes::LimitState ls,lrfdTypes::Optimization opt) const
 {
    Float64 n;
    if ( ls == lrfdTypes::StrengthI   ||

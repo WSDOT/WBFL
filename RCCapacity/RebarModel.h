@@ -38,7 +38,8 @@ class ATL_NO_VTABLE CRebarModel :
 	public ISupportErrorInfo,
 	public IRebarModel,
 	public IStressStrain,
-   public IStructuredStorage2
+   public IStructuredStorage2,
+   public IPersist
 {
 public:
    CRebarModel() :
@@ -58,6 +59,7 @@ BEGIN_COM_MAP(CRebarModel)
 	COM_INTERFACE_ENTRY(IRebarModel)
 	COM_INTERFACE_ENTRY(IStressStrain)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
+   COM_INTERFACE_ENTRY(IPersist)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 END_COM_MAP()
 
@@ -94,6 +96,10 @@ public:
 public:
    STDMETHOD(Save)(IStructuredSave2* pSave);
    STDMETHOD(Load)(IStructuredLoad2* pLoad);
+
+// IPersist
+public:
+   STDMETHOD(GetClassID)(CLSID* pClassID);
 };
 
 #endif //__REBARMODEL_H_

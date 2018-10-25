@@ -296,7 +296,7 @@ STDMETHODIMP CMember::get_EA(Float64 *pVal)
 
 STDMETHODIMP CMember::put_EA(Float64 newVal)
 {
-   if (newVal<0.0)
+   if (newVal<=0.0)
       return CComCoClass<CMember, &CLSID_Fem2dMember>::Error(IDS_E_STIFFNESS_MUST_BE_POSITIVE, IDH_E_STIFFNESS_MUST_BE_POSITIVE, GetHelpFile(), IID_IFem2dMember, FEM2D_E_STIFFNESS_MUST_BE_POSITIVE);
       
    if (m_EA != newVal)
@@ -317,7 +317,7 @@ STDMETHODIMP CMember::get_EI(Float64 *pVal)
 
 STDMETHODIMP CMember::put_EI(Float64 newVal)
 {
-   if (newVal<0.0)
+   if (newVal<=0.0)
       return CComCoClass<CMember, &CLSID_Fem2dMember>::Error(IDS_E_STIFFNESS_MUST_BE_POSITIVE, IDH_E_STIFFNESS_MUST_BE_POSITIVE, GetHelpFile(), IID_IFem2dMember, FEM2D_E_STIFFNESS_MUST_BE_POSITIVE);
 
    if (m_EI != newVal)
