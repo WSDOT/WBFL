@@ -229,6 +229,10 @@ std::_tstring lrfdVersionMgr::GetVersionString(lrfdVersionMgr::Version version)
       strVersion = _T("Seventh Edition 2014 with 2015 interim provisions");
       break;
 
+   case SeventhEditionWith2016Interims:
+      strVersion = _T("Seventh Edition 2014 with 2015-2016 interim provisions");
+      break;
+
    default:
       strVersion = _T("Unknown");
       ASSERT(false);

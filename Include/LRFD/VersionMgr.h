@@ -91,6 +91,7 @@ public:
                   SixthEditionWith2013Interims  = 18,
                   SeventhEdition2014            = 19,
                   SeventhEditionWith2015Interims = 20,
+                  SeventhEditionWith2016Interims = 21,
                   LastVersion
    };
 

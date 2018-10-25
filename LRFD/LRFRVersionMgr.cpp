@@ -126,6 +126,18 @@ std::_tstring lrfrVersionMgr::GetVersionString(lrfrVersionMgr::Version version)
       strVersion = _T("Second Edition 2011, with 2011-2013 interim provisions");
       break;
 
+   case SecondEditionWith2014Interims:
+      strVersion = _T("Second Edition 2011, with 2011-2014 interim provisions");
+      break;
+
+   case SecondEditionWith2015Interims:
+      strVersion = _T("Second Edition 2011, with 2011-2015 interim provisions");
+      break;
+
+   case SecondEditionWith2016Interims:
+      strVersion = _T("Second Edition 2011, with 2011-2016 interim provisions");
+      break;
+
    default:
       strVersion = _T("Unknown");
       ASSERT(false);
