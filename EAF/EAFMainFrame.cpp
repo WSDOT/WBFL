@@ -61,9 +61,6 @@ BEGIN_MESSAGE_MAP(CEAFMainFrame, CMDIFrameWnd)
    ON_NOTIFY_EX_RANGE(TBN_DROPDOWN, 0, 0xFFFF, OnToolbarDropDown)
 
 	ON_COMMAND(ID_CONTEXT_HELP, CMDIFrameWnd::OnContextHelp)
-   //ON_COMMAND(ID_HELP_FINDER, OnHelpFinder)
-   //ON_COMMAND(ID_HELP, OnHelp)
-   //ON_COMMAND(ID_DEFAULT_HELP, OnHelp)
 	ON_WM_DROPFILES()
 
    ON_COMMAND(ID_VIEW_TOOLBAR, OnViewToolBar)
@@ -1075,16 +1072,6 @@ void CEAFMainFrame::OnStatusChanged()
       m_pStatusBar->OnStatusChanged();
    }
 }
-
-//void CEAFMainFrame::OnHelp()
-//{
-//   ::HtmlHelp( *this, EAFGetApp()->m_pszHelpFilePath, HH_DISPLAY_TOPIC, 0 );
-//}
-//
-//void CEAFMainFrame::OnHelpFinder()
-//{
-//   ::HtmlHelp( *this, EAFGetApp()->m_pszHelpFilePath, HH_HELP_FINDER, 0 );
-//}
 
 void CEAFMainFrame::OnDropFiles(HDROP hDropInfo) 
 {

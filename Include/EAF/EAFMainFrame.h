@@ -181,8 +181,6 @@ protected:
 		//    DO NOT EDIT what you see in these blocks of generated code!
    afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
    afx_msg void OnDropFiles(HDROP hDropInfo);
-   afx_msg void OnHelpFinder();
-   afx_msg void OnHelp();
    afx_msg void OnViewToolBar();
    afx_msg void OnUpdateViewToolBar(CCmdUI* pCmdUI);
    afx_msg void OnToolbarMenuSelected(UINT id);
@@ -202,7 +200,6 @@ private:
    void DockControlBarLeftOf(CToolBar* Bar,CToolBar* LeftOf);
    std::vector<BOOL> GetToolBarStates();
    std::vector<CString> GetToolBarNames();
-   int GetToolBarIndex(UINT nID);
    void SetToolBarStates(const std::vector<BOOL>& vStates);
    void ToggleToolBarState(UINT idx);
 	void LoadBarState(LPCTSTR lpszProfileName);
