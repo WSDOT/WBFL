@@ -27,8 +27,20 @@
 
 #include <sdkddkver.h>
 
+// Version plan...
+// Targeting 4.2.9.1 as a hot fix for BridgeLink 4.0 production using WBFL 4.2.9.0
+// The next version of WBFL for a minor (patches/bug fix) release will be 4.3.0.0
+// The next major release will be 5.0.0.0 to sync with BridgeLink 5.0.0.0
+//
+// Version Number Scheme... major.minor.fix.build
+// major = major version number (increment for major releases of WBFL and/or BridgeLink) 
+// minor = minor version number (increment for minor, bug fix releases)
+// fix = increment for hot fixes (don't increment major.minor for hot fixes)
+// build = the build or release candidate number
+//
+// hot fixes - sometimes there are bugs that need to be fixed and deployed now. That is a hot fix.
 #ifndef _WBFL_VERSION
-#define _WBFL_VERSION 429 // version 4.2.9
+#define _WBFL_VERSION 429 // version 4.2.9.1
 #endif 
 
 

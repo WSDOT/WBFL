@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -13,13 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -27,18 +25,18 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""winres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "1 TYPELIB ""WbflUnitServer.tlb""\r\n"
     "\0"
@@ -47,15 +45,14 @@ END
 #endif    // APSTUDIO_INVOKED
 
 
-#ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,2,9,0
- PRODUCTVERSION 4,2,9,0
+ FILEVERSION 4,2,9,1
+ PRODUCTVERSION 4,2,9,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -70,19 +67,15 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "A member of the Alternate Route Project\0"
-            VALUE "CompanyName", "Washington State Department of Transportation\0"
-            VALUE "FileDescription", "WBFL Unit Server\0"
-            VALUE "FileVersion", "4.2.9.0\0"
-            VALUE "InternalName", "WBFL UnitServer\0"
+            VALUE "Comments", "A member of the Alternate Route Project"
+            VALUE "CompanyName", "Washington State Department of Transportation"
+            VALUE "FileDescription", "WBFL Unit Server"
+            VALUE "FileVersion", "4.2.9.1"
+            VALUE "InternalName", "WBFL UnitServer"
             VALUE "LegalCopyright", "Copyright © 1999-2018, Washington State Department of Transportation, All Rights Reserved"
-            VALUE "LegalTrademarks", "\0"
-            VALUE "OLESelfRegister", "\0"
-            VALUE "OriginalFilename", "UnitServer.DLL\0"
-            VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "WBFL\0"
-            VALUE "ProductVersion", "4.2.9.0\0"
-            VALUE "SpecialBuild", "\0"
+            VALUE "OriginalFilename", "UnitServer.DLL"
+            VALUE "ProductName", "WBFL"
+            VALUE "ProductVersion", "4.2.9.1"
         END
     END
     BLOCK "VarFileInfo"
@@ -91,40 +84,42 @@ BEGIN
     END
 END
 
-#endif    // !_MAC
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // REGISTRY
 //
 
-IDR_UNITSERVER          REGISTRY DISCARDABLE    "UnitServer.rgs"
-IDR_UNITMODECONTROLLER  REGISTRY DISCARDABLE    "UnitModeController.rgs"
-IDR_DISPLAYUNITFORMATTER REGISTRY DISCARDABLE    "DisplayUnitFormatter.rgs"
-IDR_ANNOTATEDDISPLAYUNITFORMATTER REGISTRY DISCARDABLE    "AnnotatedDisplayUnitFormatter.rgs"
-IDR_UNITSYSTEM          REGISTRY DISCARDABLE    "UnitSystem.rgs"
-IDR_APPUNITSYSTEM       REGISTRY DISCARDABLE    "AppUnitSystem.rgs"
-IDR_DOCUNITSYSTEM       REGISTRY DISCARDABLE    "DocUnitSystem.rgs"
+IDR_UNITSERVER          REGISTRY                "UnitServer.rgs"
+
+IDR_UNITMODECONTROLLER  REGISTRY                "UnitModeController.rgs"
+
+IDR_DISPLAYUNITFORMATTER REGISTRY                "DisplayUnitFormatter.rgs"
+
+IDR_ANNOTATEDDISPLAYUNITFORMATTER REGISTRY                "AnnotatedDisplayUnitFormatter.rgs"
+
+IDR_UNITSYSTEM          REGISTRY                "UnitSystem.rgs"
+
+IDR_APPUNITSYSTEM       REGISTRY                "AppUnitSystem.rgs"
+
+IDR_DOCUNITSYSTEM       REGISTRY                "DocUnitSystem.rgs"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Dialog
 //
 
-IDD_UNITSDIALOG DIALOG DISCARDABLE  0, 0, 187, 60
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_UNITSDIALOG DIALOGEX 0, 0, 187, 60
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Units"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     GROUPBOX        "Select System of Units",IDC_STATIC,7,7,109,46,WS_GROUP
-    CONTROL         "&SI Units",IDC_SI,"Button",BS_AUTORADIOBUTTON | 
-                    WS_GROUP | WS_TABSTOP,15,20,39,10
-    CONTROL         "&Traditional U.S. Units",IDC_US,"Button",
-                    BS_AUTORADIOBUTTON,15,35,79,10
+    CONTROL         "&SI Units",IDC_SI,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,15,20,39,10
+    CONTROL         "&Traditional U.S. Units",IDC_US,"Button",BS_AUTORADIOBUTTON,15,35,79,10
     DEFPUSHBUTTON   "OK",IDOK,130,7,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,130,23,50,14
-    PUSHBUTTON      "Help",IDHELP,130,39,50,14
 END
 
 
@@ -134,7 +129,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_UNITSDIALOG, DIALOG
     BEGIN
@@ -147,15 +142,26 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_UNITSDIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // String Table
 //
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_PROJNAME            "UnitServer"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_E_UNITTYPEMISMATCH  "A unit type mismatch was encountered."
     IDS_E_BADUNITTAG        "Unrecognized unit tag ""%s"""
@@ -170,14 +176,14 @@ BEGIN
                             "The display unit group was not added because a group with the same name is already defined."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_E_BADDISPLAYUNITGROUP "Unrecognized display unit group ""%s"""
     IDS_E_DEFAULTNOTFOUND   "The default display unit could not be found"
     IDS_E_APPUNITSYSNOTSET  "Application Unit Server not set"
 END
 
-#endif    // English (U.S.) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
