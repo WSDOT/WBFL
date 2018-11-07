@@ -27,6 +27,7 @@
 #include "stdafx.h"
 #include "WBFLGenericBridgeTools.h"
 #include "StrandModelBase.h"
+#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -298,38 +299,27 @@ Float64 CStrandModelBase::GetHarpPointLocation(Float64 hp, HarpPointReference hp
    // from the point of reference. 
 
    // convert the hp from it's point of reference to the left end of the girder
-   Float64 result;
+   Float64 hp_location;
    switch (hpRef)
    {
    case hprEndOfGirder:
-      result = (bRight ? gdr_length - hp : hp);
-      if ((bRight && result < gdr_length / 2) || (!bRight && gdr_length / 2 < result))
-      {
-         result = gdr_length / 2;
-      }
+      hp_location = (bRight ? gdr_length - hp : hp);
       break;
 
    case hprCenterOfGirder:
-      result = (bRight ? gdr_length / 2 + hp : gdr_length / 2 - hp);
-      if ((bRight && gdr_length < result) || (!bRight && result < 0))
-      {
-         result = gdr_length / 2;
-      }
+      hp_location = (bRight ? gdr_length / 2 + hp : gdr_length / 2 - hp);
       break;
 
    case hprBearing:
       m_pGirder->get_LeftEndDistance(&left_end_distance);
       m_pGirder->get_RightEndDistance(&right_end_distance);
-      result = (bRight ? gdr_length - right_end_distance - hp : left_end_distance + hp);
-      if ((bRight && result < gdr_length / 2) || (!bRight && gdr_length / 2 < result))
-      {
-         result = gdr_length / 2;
-      }
+      hp_location = (bRight ? gdr_length - right_end_distance - hp : left_end_distance + hp);
       break;
    }
 
-   ATLASSERT(0 <= result && result <= gdr_length);
-   return result;
+   hp_location = ::ForceIntoRange(0.0, hp_location, gdr_length);
+
+   return hp_location;
 }
 
 Float64 CStrandModelBase::GetGirderWidthAdjustment(Float64 Xs) const
