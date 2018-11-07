@@ -78,11 +78,15 @@ CString CEAFAppPluginDocumentationImpl::GetDocumentationURL()
    verInfo.Load(strAppName);
 
    CString strVersion = verInfo.GetProductVersionAsString();
+   std::_tstring v(strVersion);
+   auto count = std::count(std::begin(v), std::end(v), _T('.'));
+
    // remove the build and release number
-   int pos = strVersion.ReverseFind(_T('.')); // find the last '.'
-   strVersion = strVersion.Left(pos);
-   pos = strVersion.ReverseFind(_T('.')); // find the last '.'
-   strVersion = strVersion.Left(pos);
+   for (auto i = 0; i < count-1; i++)
+   {
+      int pos = strVersion.ReverseFind(_T('.')); // find the last '.'
+      strVersion = strVersion.Left(pos);
+   }
 
    CString strURL;
    strURL.Format(_T("%s%s/"),strBaseURL,strVersion);
