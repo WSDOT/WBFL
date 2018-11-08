@@ -944,11 +944,13 @@ library WBFLGenericBridge
 	{
 	   [propget, helpstring("property GrossDepth")] HRESULT GrossDepth([out,retval]Float64* depth);
 	   [propput, helpstring("property GrossDepth")] HRESULT GrossDepth([in]Float64 depth);
-	   [propget, helpstring("property OverhangDepth")] HRESULT OverhangDepth([out,retval]Float64* depth);
-	   [propput, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]Float64 depth);
-	   [propget, helpstring("property OverhangTaper")] HRESULT OverhangTaper([out,retval]DeckOverhangTaper* taper);
-	   [propput, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DeckOverhangTaper taper);
-	};
+	   [propget, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]DirectionType side,[out,retval]Float64* depth);
+	   [propput, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]DirectionType side, [in]Float64 depth);
+	   [propget, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DirectionType side, [out,retval]DeckOverhangTaper* taper);
+	   [propput, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DirectionType side, [in]DeckOverhangTaper taper);
+      [helpstring("method GetOverhang")] HRESULT GetOverhang([out]Float64* leftDepth, [out]DeckOverhangTaper* leftTaper, [out]Float64* rightDepth, [out]DeckOverhangTaper* rightTaper);
+      [helpstring("method SetOverhang")] HRESULT SetOverhang([in]Float64 leftDepth, [in]DeckOverhangTaper leftTaper, [in]Float64 rightDepth, [in]DeckOverhangTaper rightTaper);
+   };
 
 	[
 	   object,
@@ -963,11 +965,13 @@ library WBFLGenericBridge
 	   [propput, helpstring("property CastDepth")] HRESULT CastDepth([in]Float64 depth);
 	   [propget, helpstring("property PanelDepth")] HRESULT PanelDepth([out,retval]Float64* depth);
 	   [propput, helpstring("property PanelDepth")] HRESULT PanelDepth([in]Float64 depth);
-	   [propget, helpstring("property OverhangDepth")] HRESULT OverhangDepth([out,retval]Float64* depth);
-	   [propput, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]Float64 depth);
-	   [propget, helpstring("property OverhangTaper")] HRESULT OverhangTaper([out,retval]DeckOverhangTaper* taper);
-	   [propput, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DeckOverhangTaper taper);
-	};
+      [propget, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]DirectionType side, [out, retval]Float64* depth);
+      [propput, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]DirectionType side, [in]Float64 depth);
+      [propget, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DirectionType side, [out, retval]DeckOverhangTaper* taper);
+      [propput, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DirectionType side, [in]DeckOverhangTaper taper);
+      [helpstring("method GetOverhang")] HRESULT GetOverhang([out]Float64* leftDepth, [out]DeckOverhangTaper* leftTaper, [out]Float64* rightDepth, [out]DeckOverhangTaper* rightTaper);
+      [helpstring("method SetOverhang")] HRESULT SetOverhang([in]Float64 leftDepth, [in]DeckOverhangTaper leftTaper, [in]Float64 rightDepth, [in]DeckOverhangTaper rightTaper);
+   };
 
 	[
 	   object,
