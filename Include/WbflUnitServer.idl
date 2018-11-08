@@ -178,7 +178,6 @@ library WBFLUnitServer
    //interface IDisplayUnit;
    //interface IDisplayUnitMgr;
    //interface IDisplayUnitMgrEx;
-   //interface IUnitModeController;
    //interface ISupportDisplayUnits;
    //interface ISupportDocUnitSystem;
    //interface ISupportUnitServer;
@@ -605,9 +604,6 @@ library WBFLUnitServer
 
        [helpcontext(IDH_IUnitModeController_ShowSelectionDialog),helpstring("method ShowSelectionDialog")]
        HRESULT ShowSelectionDialog();
-
-       [helpcontext(IDH_IUnitModeController_ShowSelectionDialogEx),helpstring("method ShowSelectionDialogEx")]
-       HRESULT ShowSelectionDialogEx([in] BSTR helpFile,[in] long nID);
 	};
 
 	[

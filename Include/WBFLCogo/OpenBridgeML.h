@@ -22,13 +22,15 @@
 
 #pragma once
 
+#if defined USING_OPENBRIDGEML
+
 #include <WBFLCogo\CogoExp.h>
 #include <OpenBridgeML_Alignments.hxx>
 #include <WBFLCogo.h>
 #include <WBFLUnitServer.h>
 
- 
-
 BOOL COGOFUNC CreateAlignment(IUnitServer* obmlUnitServer,IUnitServer* pOurUnitServer,OpenBridgeML::Alignments::Alignment& obmlAlignment,IAlignment** ppAlignment);
 BOOL COGOFUNC CreateAlignmentsCollection(IUnitServer* obmlUnitServer,IUnitServer* pOurUnitServer,OpenBridgeML::Alignments::AlignmentsType& obmlAlignments,IAlignmentCollection** ppAlignments);
 BOOL COGOFUNC GetAlignments(IUnitServer* obmlUnitServer,IUnitServer* pOurUnitServer,OpenBridgeML::Alignments::AlignmentsType& obmlAlignments,IAlignmentCollection* pAlignments);
+
+#endif USING_OPENBRIDGEML

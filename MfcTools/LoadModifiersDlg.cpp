@@ -26,7 +26,6 @@
 
 #include "stdafx.h"
 #include "Resource.h"
-#include <HtmlHelp.h>
 #include <MFCTools\LoadModifiersDlg.h>
 #include <MFCTools\LoadModifierPage.h>
 

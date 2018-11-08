@@ -1,0 +1,368 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.wsdot.wa.gov/WBFL/Units"
+           xmlns:bxu="http://www.wsdot.wa.gov/WBFL/Units">
+  <xs:annotation>
+    <xs:documentation>
+      This schema defines the WBFL UnitServer protocol for units.
+    </xs:documentation>
+  </xs:annotation>
+
+  <!-- 
+Data Types for units of measure. These will generally be used as attributes such as
+
+<xs:complexType name="LengthValueType">
+   <xs:simpleContent>
+      <xs:extension base="xs:double">
+         <xs:attribute name="UnitOfMeasure" type="lengthUnitType" use="optional"/> 
+      </xs:extension>
+   </xs:simpleContent>
+</xs:complexType>
+
+<xs:element name="SpanLength" type="LengthValueType" />
+
+<SpanLength UnitOfMeasure="ft">100.0</SpanLength>
+-->
+
+  <xs:simpleType name="MassUnitType">
+    <xs:restriction base="xs:string">
+      <!-- restrict the possible values to one of the Standard or Extended Unit of Measure for mass -->
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="LengthUnitType">
+    <xs:restriction base="xs:string" />
+  </xs:simpleType>
+
+  <xs:simpleType name="TimeUnitType">
+    <xs:restriction base="xs:string" />
+  </xs:simpleType>
+
+  <xs:simpleType name="TemperatureUnitType">
+    <xs:restriction base="xs:string" />
+  </xs:simpleType>
+
+  <xs:simpleType name="AngleUnitType">
+    <xs:restriction base="xs:string" />
+  </xs:simpleType>
+
+  <xs:simpleType name="MassPerLengthUnitType">
+    <xs:restriction base="xs:string" />
+  </xs:simpleType>
+
+  <xs:simpleType name="Length2UnitType">
+    <xs:restriction base="xs:string" />
+  </xs:simpleType>
+
+  <xs:simpleType name="Length3UnitType">
+    <xs:restriction base="xs:string" />
+  </xs:simpleType>
+
+  <xs:simpleType name="Length4UnitType">
+    <xs:restriction base="xs:string" />
+  </xs:simpleType>
+
+  <xs:simpleType name="PressureUnitType">
+    <xs:restriction base="xs:string" />
+  </xs:simpleType>
+
+  <xs:simpleType name="UnitWeightUnitType">
+    <xs:restriction base="xs:string" />
+  </xs:simpleType>
+
+  <xs:simpleType name="DensityUnitType">
+    <xs:restriction base="xs:string" />
+  </xs:simpleType>
+
+  <xs:simpleType name="ForceUnitType">
+    <xs:restriction base="xs:string" />
+  </xs:simpleType>
+
+  <xs:simpleType name="ForcePerLengthUnitType">
+    <xs:restriction base="xs:string" />
+  </xs:simpleType>
+
+  <xs:simpleType name="MomentUnitType">
+    <xs:restriction base="xs:string" />
+  </xs:simpleType>
+
+  <xs:simpleType name="ThermalExpansionUnitType">
+    <xs:restriction base="xs:string" />
+  </xs:simpleType>
+
+  <!-- Data Types for values having a unit of measure -->
+  <xs:complexType name="MassValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:double">
+        <xs:attribute name="unit" type="bxu:MassUnitType" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+   <xs:complexType name="LengthValueType">
+      <xs:simpleContent>
+         <xs:extension base="xs:double">
+            <xs:attribute name="unit" type="bxu:LengthUnitType" use="optional"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+
+   <xs:complexType name="PositiveLengthValueType">
+      <xs:annotation>
+         <xs:documentation>
+            A length value that must have a value that is zero or more.
+         </xs:documentation>
+      </xs:annotation>
+      <xs:simpleContent>
+         <xs:restriction base="bxu:LengthValueType">
+            <xs:minInclusive value="0.0" />
+         </xs:restriction>
+      </xs:simpleContent>
+   </xs:complexType>
+
+   <xs:complexType name="TimeValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:double">
+        <xs:attribute name="unit" type="bxu:TimeUnitType" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="TemperatureValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:double">
+        <xs:attribute name="unit" type="bxu:TemperatureUnitType" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="AngleValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:double">
+        <xs:attribute name="unit" type="bxu:AngleUnitType" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="MassPerLengthValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:double">
+        <xs:attribute name="unit" type="bxu:MassPerLengthUnitType" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Length2ValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:double">
+        <xs:attribute name="unit" type="bxu:Length2UnitType" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Length3ValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:double">
+        <xs:attribute name="unit" type="bxu:Length3UnitType" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Length4ValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:double">
+        <xs:attribute name="unit" type="bxu:Length4UnitType" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="PressureValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:double">
+        <xs:attribute name="unit" type="bxu:PressureUnitType" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="UnitWeightValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:double">
+        <xs:attribute name="unit" type="bxu:UnitWeightUnitType" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="DensityValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:double">
+        <xs:attribute name="unit" type="bxu:DensityUnitType" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="ForceValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:double">
+        <xs:attribute name="unit" type="bxu:ForceUnitType" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="ForcePerLengthValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:double">
+        <xs:attribute name="unit" type="bxu:ForcePerLengthUnitType" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="MomentValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:double">
+        <xs:attribute name="unit" type="bxu:MomentUnitType" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="ThermalExpansionValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:double">
+        <xs:attribute name="unit" type="bxu:ThermalExpansionUnitType" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- Element Type Definitions -->
+  <xs:complexType name="ConsistentUnitsType">
+    <xs:annotation>
+      <xs:documentation>
+        Defines the default units of measure for all of the data in an OpenBridgeML document
+        The attribute values must be one of UnitOfMeasure values defined in the UnitLibrary element
+      </xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="mass"         type="bxu:MassUnitType" use="required"/>
+    <!-- must be a UnitOfMeasure that belongs to a UnitType with dimensionality of mass=1.0 and 0.0 for all other-->
+    <xs:attribute name="length"       type="bxu:LengthUnitType" use="required"/>
+    <!-- similar to mass, but length must = 1.0 -->
+    <xs:attribute name="time"         type="bxu:TimeUnitType" use="required"/>
+    <!-- similar to mass, but time must = 1.0 -->
+    <xs:attribute name="temperature"  type="bxu:TemperatureUnitType" use="required"/>
+    <!-- similar to mass, but temperature must = 1.0 -->
+    <xs:attribute name="angle"        type="bxu:AngleUnitType" use="required"/>
+    <!-- similar to mass, but angle must = 1.0 -->
+  </xs:complexType>
+
+  <xs:complexType name="UnitTypeType">
+    <xs:annotation>
+      <xs:documentation>
+        Defines a type of unit with its dimensionality. For example, a type of unit Volume has a dimensionality of cubic (3) length
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence maxOccurs="unbounded">
+      <xs:element name="UnitOfMeasure" type="bxu:UnitOfMeasureType"/>
+    </xs:sequence>
+    <xs:attribute name="name"        type="xs:string" use="required"/>
+    <xs:attribute name="mass"        type="xs:double" use="required"/>
+    <xs:attribute name="length"      type="xs:double" use="required"/>
+    <xs:attribute name="time"        type="xs:double" use="required"/>
+    <xs:attribute name="temperature" type="xs:double" use="required"/>
+    <xs:attribute name="angle"       type="xs:double" use="required"/>
+  </xs:complexType>
+
+  <xs:simpleType name="UnitSystemEnum">
+    <xs:annotation>
+      <xs:documentation>
+        Defines a unit system type. Typically used to associate a unit of measure with a unit system.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="unitsAll"/>
+      <xs:enumeration value="unitsSI" />
+      <xs:enumeration value="unitsUS"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="UnitOfMeasureType">
+    <xs:annotation>
+      <xs:documentation>
+        Defines a specific unit of measure such as feet, kg, kip-in. The PreConvertTerm, ConversionFactor, and PostConvertTerm
+        are used to convert a value having this unit of measure into fundamental units. The unit conversion function is
+        V2 = (PreConvertTerm+V1)ConversionFactor + PostConvertTerm where V1 is the value in this unit of measure and V2 is the
+        value in fundamental units
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="PreConvertTerm" type="xs:double" default="0.0" minOccurs="0" maxOccurs="1" />
+      <xs:element name="ConversionFactor" type="xs:double" minOccurs="1" maxOccurs="1" />
+      <xs:element name="PostConvertTerm" type="xs:double" default="0.0" minOccurs="0" maxOccurs="1" />
+      <xs:element name="UnitSystem" type="bxu:UnitSystemEnum" minOccurs="1" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="name"             type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="UnitOfMeasureExType">
+    <xs:annotation>
+      <xs:documentation>
+        Defines a specific unit of measure as an extension to a previously defined unit type
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="bxu:UnitOfMeasureType">
+        <xs:attribute name="UnitType" type="xs:string" use="required"/>
+        <!-- must match name of standard or extended unit type -->
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ExtendedUnitTypeType">
+    <xs:annotation>
+      <xs:documentation>
+        Extendes the OpenBridgeML standard unit types
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="UnitType" maxOccurs="unbounded" type="bxu:UnitTypeType"/>
+      <!-- cannot have a previously defined dimensionality -->
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ExtendedUnitsType">
+    <xs:annotation>
+      <xs:documentation>
+        Defines unit types and units of measure that extend the OpenBridgeML standard unit types and units of measure
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="UnitOfMeasure" type="bxu:UnitOfMeasureExType" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="UnitTypes" type="bxu:ExtendedUnitTypeType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="UnitsDeclarationType">
+    <xs:annotation>
+      <xs:documentation>
+        Declares the units of measure used in an OpenBridgeML instance document.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="ExtendedUnits"   type="bxu:ExtendedUnitsType"   minOccurs="0" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>
+            Extends the OpenBridgeML standard unit types and units of measure
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ConsistentUnits"     type="bxu:ConsistentUnitsType"     minOccurs="0" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>
+            Declares the base units for the instance document.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="UnitsDeclaration" type="bxu:UnitsDeclarationType" />
+
+</xs:schema>

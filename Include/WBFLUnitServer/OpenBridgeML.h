@@ -25,10 +25,17 @@
 #include <WBFLUnitServer\UnitServerExp.h>
 #include <WBFLUnitServer.h>
 
-// Initializes a WBFLUnitServer with OpenBridgeML Units declaration
-BOOL UNITSERVERFUNC InitializeWBFLUnitServer(OpenBridgeML::Units::UnitsDeclarationType* pDeclaration,IUnitServer* pUnitServer);
 
-#define DECLARE_BASE_UNIT_CONVERTER(V) void UNITSERVERFUNC ConvertBetweenBaseUnits(OpenBridgeML::Units::##V& unitValueType,IUnitServer* pFromUnitServer,IUnitServer* pToUnitServer)
+#if defined USING_OPENBRIDGEML
+#define PACKAGE OpenBridgeML
+#else
+#define PACKAGE WBFL
+#endif
+
+// Initializes a WBFLUnitServer with OpenBridgeML Units declaration
+BOOL UNITSERVERFUNC InitializeWBFLUnitServer(PACKAGE::Units::UnitsDeclarationType* pDeclaration,IUnitServer* pUnitServer);
+
+#define DECLARE_BASE_UNIT_CONVERTER(V) void UNITSERVERFUNC ConvertBetweenBaseUnits(PACKAGE::Units::##V& unitValueType,IUnitServer* pFromUnitServer,IUnitServer* pToUnitServer)
 DECLARE_BASE_UNIT_CONVERTER(MassValueType);
 DECLARE_BASE_UNIT_CONVERTER(LengthValueType);
 DECLARE_BASE_UNIT_CONVERTER(TimeValueType);

@@ -23,6 +23,9 @@
 #pragma once
 
 #include "stdafx.h"
+
+#if defined USING_OPENBRIDGEML
+
 #include <WBFLCogo\OpenBridgeML.h>
 #include <WBFLUnitServer\OpenBridgeML.h>
 
@@ -341,3 +344,5 @@ void ConvertToOurUnits(IUnitServer* obmlUnitServer,IUnitServer* pOurUnitServer,O
 {
 #pragma Reminder("IMPLEMENT")
 }
+
+#endif USING_OPENBRIDGEML

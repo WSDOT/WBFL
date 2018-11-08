@@ -127,66 +127,67 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(XSDDIR)\etc\vc-10.0\xsd-cxx-tree.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
-    <Import Project="..\..\BridgeLink\XSD.props" />
+    <Import Project="..\XSD.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
-    <Import Project="..\..\BridgeLink\XSD.props" />
+    <Import Project="..\XSD.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
-    <Import Project="..\..\BridgeLink\XSD.props" />
+    <Import Project="..\XSD.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
-    <Import Project="..\..\BridgeLink\XSD.props" />
+    <Import Project="..\XSD.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
-    <Import Project="..\..\BridgeLink\XSD.props" />
+    <Import Project="..\XSD.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
-    <Import Project="..\..\BridgeLink\XSD.props" />
+    <Import Project="..\XSD.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
-    <Import Project="..\..\BridgeLink\XSD.props" />
+    <Import Project="..\XSD.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
-    <Import Project="..\..\BridgeLink\XSD.props" />
+    <Import Project="..\XSD.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
-    <Import Project="..\..\BridgeLink\XSD.props" />
+    <Import Project="..\XSD.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
-    <Import Project="..\..\BridgeLink\XSD.props" />
+    <Import Project="..\XSD.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -267,7 +268,7 @@ date/T &gt; $(IntDir)mt2.dep
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);\ARP\OpenBridgeML\Include;\ARP\OpenBridgeML\Schema;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Schema;..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BUILDUNITSERVERLIB;WIN32;_DEBUG;_WINDOWS;_AFXDLL;WBFL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -298,21 +299,40 @@ date/T &gt; $(IntDir)mt2.dep
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>htmlhelp.lib</AdditionalDependencies>
+      <AdditionalDependencies>xerces-c_3D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Debug/UnitServer.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Message>Copying OpenBridgeML</Message>
-      <Command>xcopy /y/d \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\OpenBridgeML.dll $(OutDir)</Command>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
+    <CXX_Tree_Mapping_Rule>
+      <AdditionalOptions> --hxx-prologue "#include &lt;WBFLUnitServer\UnitServerExp.h&gt;" --hxx-prologue "#include &lt;WBFLUnitServer\AutoLib.h&gt;" --cxx-prologue "#include \"stdafx.h\""</AdditionalOptions>
+      <GenSerialization>true</GenSerialization>
+      <GenDoxygen>false</GenDoxygen>
+      <GenIntellisense>true</GenIntellisense>
+      <ExportSymbol>UNITSERVERCLASS</ExportSymbol>
+      <OutDir>.\Schema</OutDir>
+    </CXX_Tree_Mapping_Rule>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <CXX_Tree_Mapping_Rule>
+      <AdditionalOptions> --hxx-prologue "#include &lt;WBFLUnitServer\UnitServerExp.h&gt;" --hxx-prologue "#include &lt;WBFLUnitServer\AutoLib.h&gt;" --cxx-prologue "#include \"stdafx.h\""</AdditionalOptions>
+      <OutDir>.\Schema</OutDir>
+      <CharType>1</CharType>
+      <GenSerialization>true</GenSerialization>
+      <GenDoxygen>false</GenDoxygen>
+      <GenIntellisense>true</GenIntellisense>
+      <ExportSymbol>UNITSERVERCLASS</ExportSymbol>
+    </CXX_Tree_Mapping_Rule>
     <PreBuildEvent>
       <Command />
     </PreBuildEvent>
@@ -334,7 +354,7 @@ date/T &gt; $(IntDir)mt2.dep
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);\ARP\OpenBridgeML\Include;\ARP\OpenBridgeML\Schema;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Schema;..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BUILDUNITSERVERLIB;WIN32;_DEBUG;_WINDOWS;_AFXDLL;WBFL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -365,15 +385,17 @@ date/T &gt; $(IntDir)mt2.dep
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
-      <AdditionalDependencies>htmlhelp.lib</AdditionalDependencies>
+      <AdditionalDependencies>xerces-c_3D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Debug/UnitServer.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Message>Copying OpenBridgeML</Message>
-      <Command>xcopy /y/d \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\OpenBridgeML.dll $(OutDir)</Command>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <Manifest>
       <OutputManifestFile>$(TargetPath).manifest</OutputManifestFile>
@@ -408,7 +430,7 @@ date/T &gt; $(IntDir)mt2.dep
       <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);\ARP\OpenBridgeML\Include;\ARP\OpenBridgeML\Schema;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Schema;..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BUILDUNITSERVERLIB;WIN32;NDEBUG;_WINDOWS;_AFXDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -441,21 +463,40 @@ date/T &gt; $(IntDir)mt2.dep
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
-      <AdditionalDependencies>htmlhelp.lib</AdditionalDependencies>
+      <AdditionalDependencies>xerces-c_3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Release/UnitServer.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Message>Copying OpenBridgeML</Message>
-      <Command>xcopy /y/d \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\OpenBridgeML.dll $(OutDir)</Command>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
+    <CXX_Tree_Mapping_Rule>
+      <AdditionalOptions> --hxx-prologue "#include &lt;WBFLUnitServer\UnitServerExp.h&gt;" --hxx-prologue "#include &lt;WBFLUnitServer\AutoLib.h&gt;" --cxx-prologue "#include \"stdafx.h\""</AdditionalOptions>
+      <GenSerialization>true</GenSerialization>
+      <GenDoxygen>false</GenDoxygen>
+      <GenIntellisense>true</GenIntellisense>
+      <ExportSymbol>UNITSERVERCLASS</ExportSymbol>
+      <OutDir>.\Schema</OutDir>
+    </CXX_Tree_Mapping_Rule>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <CXX_Tree_Mapping_Rule>
+      <AdditionalOptions> --hxx-prologue "#include &lt;WBFLUnitServer\UnitServerExp.h&gt;" --cxx-prologue "#include \"stdafx.h\""</AdditionalOptions>
+      <OutDir>.\Schema</OutDir>
+      <CharType>1</CharType>
+      <GenSerialization>true</GenSerialization>
+      <GenDoxygen>false</GenDoxygen>
+      <GenIntellisense>true</GenIntellisense>
+      <ExportSymbol>UNITSERVERCLASS</ExportSymbol>
+    </CXX_Tree_Mapping_Rule>
     <PreBuildEvent>
       <Command />
     </PreBuildEvent>
@@ -476,7 +517,7 @@ date/T &gt; $(IntDir)mt2.dep
       <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);\ARP\OpenBridgeML\Include;\ARP\OpenBridgeML\Schema;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Schema;..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BUILDUNITSERVERLIB;WIN32;NDEBUG;_WINDOWS;_AFXDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -509,15 +550,17 @@ date/T &gt; $(IntDir)mt2.dep
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
-      <AdditionalDependencies>htmlhelp.lib</AdditionalDependencies>
+      <AdditionalDependencies>xerces-c_3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Release/UnitServer.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Message>Copying OpenBridgeML</Message>
-      <Command>xcopy /y/d \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\OpenBridgeML.dll $(OutDir)</Command>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -549,7 +592,7 @@ date/T &gt; $(IntDir)mt2.dep
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);\ARP\OpenBridgeML\Include;\ARP\OpenBridgeML\Schema;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Schema;..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BUILDUNITSERVERLIB;WIN32;NDEBUG;_WINDOWS;_AFXDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -584,19 +627,29 @@ date/T &gt; $(IntDir)mt2.dep
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
-      <AdditionalDependencies>htmlhelp.lib</AdditionalDependencies>
+      <AdditionalDependencies>xerces-c_3D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Release/UnitServer.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>xcopy /y/d \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\OpenBridgeML.dll $(OutDir)</Command>
-      <Message>Copying OpenBridgeML</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
+    <CXX_Tree_Mapping_Rule>
+      <AdditionalOptions> --hxx-prologue "#include &lt;WBFLUnitServer\UnitServerExp.h&gt;" --hxx-prologue "#include &lt;WBFLUnitServer\AutoLib.h&gt;" --cxx-prologue "#include \"stdafx.h\""</AdditionalOptions>
+      <GenSerialization>true</GenSerialization>
+      <GenDoxygen>false</GenDoxygen>
+      <GenIntellisense>true</GenIntellisense>
+      <ExportSymbol>UNITSERVERCLASS</ExportSymbol>
+      <OutDir>.\Schema</OutDir>
+    </CXX_Tree_Mapping_Rule>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
     <PreBuildEvent>
@@ -624,7 +677,7 @@ date/T &gt; $(IntDir)mt2.dep
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);\ARP\OpenBridgeML\Include;\ARP\OpenBridgeML\Schema;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Schema;..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BUILDUNITSERVERLIB;WIN32;NDEBUG;_WINDOWS;_AFXDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -660,19 +713,29 @@ date/T &gt; $(IntDir)mt2.dep
       <TargetMachine>MachineX64</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
       <Profile>true</Profile>
-      <AdditionalDependencies>htmlhelp.lib</AdditionalDependencies>
+      <AdditionalDependencies>xerces-c_3D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Release/UnitServer.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>xcopy /y/d \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\OpenBridgeML.dll $(OutDir)</Command>
-      <Message>Copying OpenBridgeML</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
+    <CXX_Tree_Mapping_Rule>
+      <AdditionalOptions> --hxx-prologue "#include &lt;WBFLUnitServer\UnitServerExp.h&gt;" --hxx-prologue "#include &lt;WBFLUnitServer\AutoLib.h&gt;" --cxx-prologue "#include \"stdafx.h\""</AdditionalOptions>
+      <GenSerialization>true</GenSerialization>
+      <GenDoxygen>false</GenDoxygen>
+      <GenIntellisense>true</GenIntellisense>
+      <ExportSymbol>UNITSERVERCLASS</ExportSymbol>
+      <OutDir>.\Schema</OutDir>
+    </CXX_Tree_Mapping_Rule>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|Win32'">
     <PreBuildEvent>
@@ -697,7 +760,7 @@ date/T &gt; $(IntDir)mt2.dep
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);\ARP\OpenBridgeML\Include;\ARP\OpenBridgeML\Schema;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Schema;..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BUILDUNITSERVERLIB;WIN32;_DEBUG;_WINDOWS;_AFXDLL;WBFL_DEBUG;VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -728,19 +791,29 @@ date/T &gt; $(IntDir)mt2.dep
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>htmlhelp.lib</AdditionalDependencies>
+      <AdditionalDependencies>xerces-c_3D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Debug/UnitServer.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>xcopy /y/d \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\OpenBridgeML.dll $(OutDir)</Command>
-      <Message>Copying OpenBridgeML</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
+    <CXX_Tree_Mapping_Rule>
+      <AdditionalOptions> --hxx-prologue "#include &lt;WBFLUnitServer\UnitServerExp.h&gt;" --hxx-prologue "#include &lt;WBFLUnitServer\AutoLib.h&gt;" --cxx-prologue "#include \"stdafx.h\""</AdditionalOptions>
+      <GenSerialization>true</GenSerialization>
+      <GenDoxygen>false</GenDoxygen>
+      <GenIntellisense>true</GenIntellisense>
+      <ExportSymbol>UNITSERVERCLASS</ExportSymbol>
+      <OutDir>.\Schema</OutDir>
+    </CXX_Tree_Mapping_Rule>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|x64'">
     <PreBuildEvent>
@@ -765,7 +838,7 @@ date/T &gt; $(IntDir)mt2.dep
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);\ARP\OpenBridgeML\Include;\ARP\OpenBridgeML\Schema;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Schema;..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BUILDUNITSERVERLIB;WIN32;_DEBUG;_WINDOWS;_AFXDLL;WBFL_DEBUG;VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -796,19 +869,29 @@ date/T &gt; $(IntDir)mt2.dep
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
-      <AdditionalDependencies>htmlhelp.lib</AdditionalDependencies>
+      <AdditionalDependencies>xerces-c_3D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Debug/UnitServer.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>xcopy /y/d \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\OpenBridgeML.dll $(OutDir)</Command>
-      <Message>Copying OpenBridgeML</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
+    <CXX_Tree_Mapping_Rule>
+      <AdditionalOptions> --hxx-prologue "#include &lt;WBFLUnitServer\UnitServerExp.h&gt;" --hxx-prologue "#include &lt;WBFLUnitServer\AutoLib.h&gt;" --cxx-prologue "#include \"stdafx.h\""</AdditionalOptions>
+      <GenSerialization>true</GenSerialization>
+      <GenDoxygen>false</GenDoxygen>
+      <GenIntellisense>true</GenIntellisense>
+      <ExportSymbol>UNITSERVERCLASS</ExportSymbol>
+      <OutDir>.\Schema</OutDir>
+    </CXX_Tree_Mapping_Rule>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'">
     <PreBuildEvent>
@@ -837,7 +920,7 @@ date/T &gt; $(IntDir)mt2.dep
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);\ARP\OpenBridgeML\Include;\ARP\OpenBridgeML\Schema;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Schema;..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BUILDUNITSERVERLIB;WIN32;NDEBUG;_WINDOWS;_AFXDLL;VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -870,19 +953,29 @@ date/T &gt; $(IntDir)mt2.dep
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
-      <AdditionalDependencies>htmlhelp.lib</AdditionalDependencies>
+      <AdditionalDependencies>xerces-c_3D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Release/UnitServer.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>xcopy /y/d \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\OpenBridgeML.dll $(OutDir)</Command>
-      <Message>Copying OpenBridgeML</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
+    <CXX_Tree_Mapping_Rule>
+      <AdditionalOptions> --hxx-prologue "#include &lt;WBFLUnitServer\UnitServerExp.h&gt;" --hxx-prologue "#include &lt;WBFLUnitServer\AutoLib.h&gt;" --cxx-prologue "#include \"stdafx.h\""</AdditionalOptions>
+      <GenSerialization>true</GenSerialization>
+      <GenDoxygen>false</GenDoxygen>
+      <GenIntellisense>true</GenIntellisense>
+      <ExportSymbol>UNITSERVERCLASS</ExportSymbol>
+      <OutDir>.\Schema</OutDir>
+    </CXX_Tree_Mapping_Rule>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">
     <PreBuildEvent>
@@ -911,7 +1004,7 @@ date/T &gt; $(IntDir)mt2.dep
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);\ARP\OpenBridgeML\Include;\ARP\OpenBridgeML\Schema;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Schema;..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BUILDUNITSERVERLIB;WIN32;NDEBUG;_WINDOWS;_AFXDLL;VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -944,19 +1037,29 @@ date/T &gt; $(IntDir)mt2.dep
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
-      <AdditionalDependencies>htmlhelp.lib</AdditionalDependencies>
+      <AdditionalDependencies>xerces-c_3D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Release/UnitServer.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>xcopy /y/d \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\OpenBridgeML.dll $(OutDir)</Command>
-      <Message>Copying OpenBridgeML</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
+    <CXX_Tree_Mapping_Rule>
+      <AdditionalOptions> --hxx-prologue "#include &lt;WBFLUnitServer\UnitServerExp.h&gt;" --hxx-prologue "#include &lt;WBFLUnitServer\AutoLib.h&gt;" --cxx-prologue "#include \"stdafx.h\""</AdditionalOptions>
+      <GenSerialization>true</GenSerialization>
+      <GenDoxygen>false</GenDoxygen>
+      <GenIntellisense>true</GenIntellisense>
+      <ExportSymbol>UNITSERVERCLASS</ExportSymbol>
+      <OutDir>.\Schema</OutDir>
+    </CXX_Tree_Mapping_Rule>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ProjectReference Include="..\System\System.vcxproj">
@@ -976,6 +1079,18 @@ date/T &gt; $(IntDir)mt2.dep
     <ClCompile Include="DocUnitSystem.cpp" />
     <ClCompile Include="EngNotation.cpp" />
     <ClCompile Include="OpenBridgeML.cpp" />
+    <ClCompile Include="Schema\WBFLUnitServer.cxx">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|Win32'">.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'">.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|x64'">.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
     <ClCompile Include="StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -1057,6 +1172,7 @@ date/T &gt; $(IntDir)mt2.dep
     <ClInclude Include="EngNotation.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Schema\WBFLUnitServer.hxx" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="Unit.h" />
     <ClInclude Include="UnitModeController.h" />
@@ -1066,9 +1182,16 @@ date/T &gt; $(IntDir)mt2.dep
     <ClInclude Include="UnitSystem.h" />
     <ClInclude Include="UnitType.h" />
     <ClInclude Include="UnitTypes.h" />
+    <ClInclude Include="WBFLUnitServer.h">
+      <DependentUpon>Schema\WBFLUnitServer.xsd</DependentUpon>
+    </ClInclude>
     <ClInclude Include="WbflUnitServerCP.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CXX_Tree_Mapping_Rule Include="Schema\WBFLUnitServer.xsd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(XSDDIR)\etc\vc-10.0\xsd-cxx-tree.targets" />
   </ImportGroup>
 </Project>

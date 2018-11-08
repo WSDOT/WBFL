@@ -113,7 +113,7 @@ BOOL CLoadModifierPage::OnInitDialog()
    pLabel->SetBackgroundColor(FALSE, GetSysColor(COLOR_3DFACE) );
    label1.Format(_T("{\\rtf1\\ansi\\deff0\\deftab720{\\fonttbl{\\f0\\fswiss MS Sans Serif;}{\\f1\\froman\\fcharset2 Symbol;}{\\f2\\froman\\fprq2\\fcharset2 Symbol;}{\\f3\\froman Times New Roman;}}{\\colortbl\\red0\\green0\\blue0;}\\deflang1033\\pard\\plain\\f2\\fs20 h\\plain\\f3\\fs20 \\sub %lc\\nosupersub\\par }"),m_Subscript);
    EDITSTREAM es;
-   es.dwCookie = (DWORD)(&label1);
+   es.dwCookie = (DWORD_PTR)(&label1);
    es.dwError = 0;
    es.pfnCallback = StreamInCtrl;
    pLabel->StreamIn( SF_RTF, es );
@@ -122,7 +122,7 @@ BOOL CLoadModifierPage::OnInitDialog()
    ASSERT( pLabel );
    pLabel->SetBackgroundColor(FALSE, GetSysColor(COLOR_3DFACE) );
    label2.Format(_T("{\\rtf1\\ansi\\deff0\\deftab720{\\fonttbl{\\f0\\fswiss MS Sans Serif;}{\\f1\\froman\\fcharset2 Symbol;}{\\f2\\froman\\fprq2\\fcharset2 Symbol;}{\\f3\\froman Times New Roman;}}{\\colortbl\\red0\\green0\\blue0;}\\deflang1033\\pard\\plain\\f2\\fs20 h\\plain\\f3\\fs20 \\sub %lc\\nosupersub = 1.0 for all other limit states.\\par }"),m_Subscript);
-   es.dwCookie = (DWORD)(&label2);
+   es.dwCookie = (DWORD_PTR)(&label2);
    pLabel->StreamIn( SF_RTF, es );
 
    CButton* pButton;

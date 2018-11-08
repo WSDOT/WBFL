@@ -69,7 +69,6 @@ private:
 
 // IUnitModeController
 public:
-	STDMETHOD(ShowSelectionDialogEx)(/*[in]*/ BSTR helpFile,/*[in]*/ long nID) override;
 	STDMETHOD(ShowSelectionDialog)() override;
 	STDMETHOD(get_UnitMode)(/*[out, retval]*/ UnitModeType *pVal) override;
 	STDMETHOD(put_UnitMode)(/*[in]*/ UnitModeType newVal) override;
