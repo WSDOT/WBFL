@@ -6,12 +6,12 @@
   <PropertyGroup>
     <SourcePath>$(SourcePath)</SourcePath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
-    <IncludePath>$(BOOSTDIR);\ARP\WBFL\Include;\ARP\WBFL\Include\$(Configuration);\ARP\WBFL\Include\$(Platform);$(IncludePath)</IncludePath>
+    <IncludePath>$(BOOSTDIR);$(WBFLDIR)\Include;$(WBFLDIR)\Include\$(Platform);$(IncludePath)</IncludePath>
     <LibraryPath>$(BOOSTDIR)\stage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
-      <AdditionalLibraryDirectories>\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(WBFLDIR)\RegFreeCOM\$(PlatformName)\$(ConfigurationName)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup />

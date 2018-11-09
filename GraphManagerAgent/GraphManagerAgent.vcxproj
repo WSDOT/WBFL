@@ -183,53 +183,53 @@
     <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
@@ -247,7 +247,7 @@ date/T &gt; $(IntDir)mt2.dep
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
       <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
@@ -310,7 +310,7 @@ date/T &gt; $(IntDir)mt2.dep
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
@@ -374,7 +374,7 @@ date/T &gt; $(IntDir)mt2.dep
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
       <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
@@ -440,7 +440,7 @@ date/T &gt; $(IntDir)mt2.dep
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
@@ -507,7 +507,7 @@ date/T &gt; $(IntDir)mt2.dep
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
       <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
@@ -580,7 +580,7 @@ date/T &gt; $(IntDir)mt2.dep
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
@@ -655,7 +655,7 @@ date/T &gt; $(IntDir)mt2.dep
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
       <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
@@ -719,7 +719,7 @@ date/T &gt; $(IntDir)mt2.dep
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
@@ -784,7 +784,7 @@ date/T &gt; $(IntDir)mt2.dep
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
       <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
@@ -856,7 +856,7 @@ date/T &gt; $(IntDir)mt2.dep
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
