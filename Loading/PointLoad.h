@@ -28,7 +28,6 @@
 
 #include "resource.h"       // main symbols
 #include "LoadingCP.h"
-#include "TxnMgrImpl.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPointLoad
@@ -40,7 +39,6 @@ class ATL_NO_VTABLE CPointLoad :
 	public IConnectionPointContainerImpl<CPointLoad>,
 	public ldIPointLoad,
    public IPersistImpl<CPointLoad>,
-   public IWBFLSupportTransactionsImpl,
    public IStructuredStorage2,
    public IObjectSafetyImpl<CPointLoad,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
 	public CProxyIPointLoadEvents< CPointLoad >
