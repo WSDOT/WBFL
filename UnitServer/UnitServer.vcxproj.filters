@@ -61,6 +61,9 @@
     <ClCompile Include="UnitTypes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Schema\WBFLUnitServer.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnnotatedDisplayUnitFormatter.h">
@@ -135,6 +138,12 @@
     <ClInclude Include="WbflUnitServerCP.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Schema\WBFLUnitServer.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WBFLUnitServer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\Include\WbflUnitServer.idl" />
@@ -181,5 +190,8 @@
     <ResourceCompile Include="UnitServer.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CXX_Tree_Mapping_Rule Include="Schema\WBFLUnitServer.xsd" />
   </ItemGroup>
 </Project>

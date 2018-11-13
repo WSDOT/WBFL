@@ -172,64 +172,67 @@
     <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TypeLibraryName>.\Debug/Unittest.tlb</TypeLibraryName>
@@ -272,16 +275,19 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
@@ -325,16 +331,19 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TypeLibraryName>.\Release/Unittest.tlb</TypeLibraryName>
@@ -379,16 +388,19 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
@@ -434,16 +446,19 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TypeLibraryName>.\Release/Unittest.tlb</TypeLibraryName>
@@ -495,16 +510,19 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
@@ -557,16 +575,19 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|Win32'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TypeLibraryName>.\Debug/Unittest.tlb</TypeLibraryName>
@@ -609,16 +630,19 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|x64'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
@@ -662,16 +686,19 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TypeLibraryName>.\Release/Unittest.tlb</TypeLibraryName>
@@ -721,16 +748,19 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
@@ -781,7 +811,7 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>

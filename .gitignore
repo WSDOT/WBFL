@@ -335,3 +335,4 @@ bin/
 *.cxx
 *.hxx
 *.hh
+Include/WBFLCore.h
