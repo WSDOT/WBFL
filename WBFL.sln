@@ -107,6 +107,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLTransactions", "Transactions\Transactions.vcxproj", "{9314D00F-73E2-4DBC-9F5D-85E8F8FBBE3B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLUnitMgt", "UnitMgt\UnitMgt.vcxproj", "{D6C0C0F7-A1F1-403A-BE8F-F30CAE1E85CF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3C66A5DB-A451-4912-A984-DDBF2E890495} = {3C66A5DB-A451-4912-A984-DDBF2E890495}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLUnitServer", "UnitServer\UnitServer.vcxproj", "{48A7A169-16D3-48D8-88EE-5609AA917712}"
 EndProject
