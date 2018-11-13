@@ -57,7 +57,6 @@ extern CComModule _Module;
 #include <WBFLGeometry.h>
 #include <WBFLCogo.h>
 #include <WBFLGenericBridge.h>
-#include <WBFLTransactions.h>
 #include <MathEx.h>
 
 #include "GenericBridgeTest.h"

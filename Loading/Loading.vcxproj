@@ -929,11 +929,6 @@ date/T &gt; $(IntDir)mt2.dep
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Transactions\Transactions.vcxproj">
-      <Project>{9314d00f-73e2-4dbc-9f5d-85e8f8fbbe3b}</Project>
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\WBFLTools\WBFLTools.vcxproj">
       <Project>{3c66a5db-a451-4912-a984-ddbf2e890495}</Project>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>

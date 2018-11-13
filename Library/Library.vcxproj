@@ -969,10 +969,6 @@ date/T &gt; $(IntDir)mt2.dep
     <Image Include="folderopen.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Transactions\Transactions.vcxproj">
-      <Project>{9314d00f-73e2-4dbc-9f5d-85e8f8fbbe3b}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\UnitServer\UnitServer.vcxproj">
       <Project>{48a7a169-16d3-48d8-88ee-5609aa917712}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

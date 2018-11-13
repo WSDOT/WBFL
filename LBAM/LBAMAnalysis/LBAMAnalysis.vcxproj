@@ -1021,10 +1021,6 @@ copy %(FullPath) $(ProjectDir)..\htmlhelp\LbamAnalysis.hh
       <Project>{16e889a9-e3b0-4541-85b2-3a4d98fccb59}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\Loading\Loading.vcxproj">
-      <Project>{a5617ced-e680-4882-8d42-075ebc75dab4}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\LBAM.vcxproj">
       <Project>{ccfcc8d4-0c8d-425d-bc11-615f7cc0fbb0}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
