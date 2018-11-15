@@ -1,23 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
-	<!--<dependency>
-		<dependentAssembly>
-			<assemblyIdentity type="win32" name="Microsoft.VC90.DebugCRT" version="9.0.21022.8" processorArchitecture="x86"
-				 publicKeyToken="1fc8b3b9a1e18e3b"/>
-		</dependentAssembly>
-	</dependency>
-	<dependency>
-		<dependentAssembly>
-			<assemblyIdentity type="win32" name="Microsoft.VC90.DebugMFC" version="9.0.21022.8" processorArchitecture="x86"
-				 publicKeyToken="1fc8b3b9a1e18e3b"/>
-		</dependentAssembly>
-	</dependency>
-	<dependency>
-		<dependentAssembly>
-			<assemblyIdentity type="win32" name="Microsoft.VC90.ATL" version="9.0.21022.8" processorArchitecture="x86"
-				 publicKeyToken="1fc8b3b9a1e18e3b"/>
-		</dependentAssembly>
-	</dependency>-->
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1"
+          manifestVersion="1.0">
+
    <file name="WBFLBridgeGeometry.dll" hashalg="SHA1">
       <comClass clsid="{24D75303-8425-4590-913E-FF2908F65BD1}" tlbid="{3887C38E-D11E-4740-896B-D1DBA8F74BD7}"
 			 description="Bridge Class"/>
@@ -165,14 +149,14 @@
                 progid="WBFLGeometry.BulbTee">
          <progid>WBFLGeometry.BulbTee.1</progid>
       </comClass>
-      <comClass clsid="{05EB3E1B-4844-43F3-A104-D85B204DEFE2}"
-                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
-                description="BulbTee2 Class"
-                threadingModel="Apartment"
-                progid="WBFLGeometry.BulbTee2">
-         <progid>WBFLGeometry.BulbTee2.1</progid>
-      </comClass>
-      <comClass clsid="{2558CFC2-03CE-11D3-8CDF-EBFB6612CA35}"
+     <comClass clsid="{05EB3E1B-4844-43F3-A104-D85B204DEFE2}"
+               tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+               description="BulbTee2 Class"
+               threadingModel="Apartment"
+               progid="WBFLGeometry.BulbTee2">
+       <progid>WBFLGeometry.BulbTee2.1</progid>
+     </comClass>
+     <comClass clsid="{2558CFC2-03CE-11D3-8CDF-EBFB6612CA35}"
                 tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
                 description="TrafficBarrier Class"
                 threadingModel="Apartment"
@@ -751,7 +735,13 @@
                 progid="WBFLTools.StructuredSave2">
          <progid>WBFLTools.StructuredSave2.1</progid>
       </comClass>
-      <comClass clsid="{043B36E7-64EE-11D5-B017-00105A9AF985}"
+     <comClass clsid="{0131A8C3-26EB-11D2-8EB0-006097DF3C68}"
+               tlbid="{B9507D8C-7100-11D3-89BB-006097C68A9C}"
+               description="StructuredLoad Class"></comClass>
+     <comClass clsid="{0131A8C5-26EB-11D2-8EB0-006097DF3C68}"
+               tlbid="{B9507D8C-7100-11D3-89BB-006097C68A9C}"
+               description="StructuredSave Class"></comClass>
+     <comClass clsid="{043B36E7-64EE-11D5-B017-00105A9AF985}"
                 tlbid="{B9507D8C-7100-11D3-89BB-006097C68A9C}"
                 description="StructuredLoad2 Class"
                 threadingModel="Apartment"
@@ -1035,12 +1025,6 @@
       <comClass clsid="{D71212B0-2BEF-11D2-8EB3-006097DF3C68}"
                 tlbid="{D820A190-2BE4-11D2-8EB3-006097DF3C68}"
                 description="SysAgent Class"></comClass>
-      <comClass clsid="{0131A8C3-26EB-11D2-8EB0-006097DF3C68}"
-                tlbid="{D820A190-2BE4-11D2-8EB3-006097DF3C68}"
-                description="StructuredLoad Class"></comClass>
-      <comClass clsid="{0131A8C5-26EB-11D2-8EB0-006097DF3C68}"
-                tlbid="{D820A190-2BE4-11D2-8EB3-006097DF3C68}"
-                description="StructuredSave Class"></comClass>
       <typelib tlbid="{D820A190-2BE4-11D2-8EB3-006097DF3C68}"
                version="1.1"
                helpdir=""
@@ -1074,7 +1058,13 @@
       <comClass clsid="{A547E2F5-BE84-49F9-846E-2A5B2C2FD53F}"
                 tlbid="{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}"
                 description="StrandGrid Class"></comClass>
-      <typelib tlbid="{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}"
+      <comClass clsid="{F8541730-D6F9-4CB5-9921-411476988622}"
+                tlbid="{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}"
+                description="StrandGridModel Class"></comClass>
+     <comClass clsid="{C4B902B2-8EB1-44D1-A24E-8C2DDC7BC294}"
+               tlbid="{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}"
+               description="StrandPointModel Class"></comClass>
+     <typelib tlbid="{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}"
                version="1.0"
                helpdir=""
                flags="HASDISKIMAGE"></typelib>
@@ -1192,8 +1182,8 @@
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                 description="USplicedGirderSegment"></comClass>
       <comClass clsid="{464D04E4-0A0D-4295-A8B3-F276EB49CBE3}"
-    tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
-    description="NUSplicedGirderSegment"></comClass>
+          tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
+          description="NUSplicedGirderSegment"></comClass>
       <comClass clsid="{D3DF465C-E03B-4192-A17E-2DF7BE63CAFB}"
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                 description="FlangedSplicedGirderSegment"></comClass>
