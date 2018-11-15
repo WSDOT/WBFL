@@ -239,11 +239,9 @@
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
@@ -304,11 +302,9 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
@@ -370,11 +366,9 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
@@ -435,11 +429,9 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
@@ -501,11 +493,9 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
@@ -573,11 +563,9 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
@@ -647,11 +635,9 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
@@ -713,11 +699,9 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
@@ -780,11 +764,9 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
@@ -851,11 +833,9 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>

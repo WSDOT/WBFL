@@ -275,7 +275,7 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -331,7 +331,7 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -388,7 +388,7 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -446,7 +446,7 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
@@ -510,7 +510,7 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
@@ -575,7 +575,7 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|Win32'">
@@ -630,7 +630,7 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|x64'">
@@ -686,7 +686,7 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'">
@@ -748,7 +748,7 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">
@@ -811,7 +811,7 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
