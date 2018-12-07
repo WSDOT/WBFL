@@ -461,6 +461,9 @@ STDMETHODIMP CStrandPointModel::GetStrandCGProfile(VARIANT_BOOL bIncludeTempStra
       // get all points where strand can change slope. these are the control points of the profile
       std::set<Float64> Z; // locations where strands are defined
 
+      Z.insert(0.0);
+      Z.insert(Ls);
+
       if (0 < Nh)
       {
          std::array<Float64, 4> Xhp;
@@ -890,7 +893,7 @@ STDMETHODIMP CStrandPointModel::GetStraightStrandDebondConfigurationByRow(Float6
    *pnStrands = record.nStrands;
 
    // CG's
-   if (record.nStrands > 0)
+   if (0 < record.nStrands)
    {
       *pCgX = record.XSum / record.nStrands;
       *pCgY = record.YSum / record.nStrands;
