@@ -352,6 +352,9 @@ public:
       // id of ith temporary support
       SupportIDType GetTemporarySupportID(SupportIndexType tempSupportIdx);
 
+      // sequence # of erection stage for ith ts
+      StageIndexType TemporarySupportErectionStageIdx(SupportIndexType tempSupportIdx);
+
       // sequence # of removal stage for ith ts
       StageIndexType TemporarySupportRemovalStageIndex( SupportIndexType tempSupportIdx);
 
@@ -409,9 +412,11 @@ public:
       struct TemporarySupportInfo
       {
          SupportIDType m_ID; // id of temporary support
+         StageIndexType m_ErectionStageIdx; // index of erection stage
          StageIndexType m_RemovalStageIdx; // index of removal stage
-         TemporarySupportInfo(SupportIDType tsId, StageIndexType removalStageIdx): 
+         TemporarySupportInfo(SupportIDType tsId, StageIndexType erectionStageIdx, StageIndexType removalStageIdx): 
             m_ID(tsId),
+            m_ErectionStageIdx(erectionStageIdx),
             m_RemovalStageIdx(removalStageIdx)
             {;}
        };

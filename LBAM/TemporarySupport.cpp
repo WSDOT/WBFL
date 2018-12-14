@@ -59,7 +59,9 @@ m_ID(0),
 m_IsSymmetrical(VARIANT_FALSE),
 m_BoundaryCondition(bcFixed),
 m_TopRelease(VARIANT_FALSE),
-m_bOmitReaction(VARIANT_FALSE)
+m_bOmitReaction(VARIANT_FALSE),
+m_StageErected(_T("")),
+m_StageRemoved(_T(""))
 {
 }
 
@@ -86,6 +88,25 @@ STDMETHODIMP CTemporarySupport::put_Location(Float64 newVal)
 	return S_OK;
 }
 
+STDMETHODIMP CTemporarySupport::get_StageErected(BSTR *pVal)
+{
+   CHECK_RETVAL(pVal);
+   *pVal = m_StageErected.Copy();
+   return S_OK;
+}
+
+STDMETHODIMP CTemporarySupport::put_StageErected(BSTR newVal)
+{
+   CHECK_IN(newVal);
+   if (newVal != m_StageErected)
+   {
+      m_StageErected = newVal;
+      Fire_OnTemporarySupportChanged(this, CComBSTR("*"), cgtStiffness);
+   }
+
+   return S_OK;
+}
+
 STDMETHODIMP CTemporarySupport::get_StageRemoved(BSTR *pVal)
 {
    CHECK_RETVAL(pVal);
@@ -95,6 +116,7 @@ STDMETHODIMP CTemporarySupport::get_StageRemoved(BSTR *pVal)
 
 STDMETHODIMP CTemporarySupport::put_StageRemoved(BSTR newVal)
 {
+   CHECK_IN(newVal);
    if (newVal!=m_StageRemoved)
    {
       m_StageRemoved = newVal;
@@ -484,7 +506,7 @@ STDMETHODIMP CTemporarySupport::OnSegmentItemChanged(/*[in]*/ISegmentItem* Segme
 }
 
 // IStructuredStorage2
-static const Float64 MY_VER=2.0;
+static const Float64 MY_VER=3.0;
 STDMETHODIMP CTemporarySupport::Load(IStructuredLoad2 * pload)
 {
    CHECK_IN(pload);
@@ -495,13 +517,15 @@ STDMETHODIMP CTemporarySupport::Load(IStructuredLoad2 * pload)
    if (FAILED(hr))
       return hr;
 
-   Float64 ver;
-   hr = pload->get_Version(&ver);
+   Float64 version;
+   hr = pload->get_Version(&version);
    if (FAILED(hr))
       return hr;
 
-   if (ver!=MY_VER)
+   if (MY_VER < version)
+   {
       return STRLOAD_E_BADVERSION;
+   }
 
    {        
       _variant_t var;
@@ -525,6 +549,16 @@ STDMETHODIMP CTemporarySupport::Load(IStructuredLoad2 * pload)
 
       m_ID = var;
       var.Clear();
+
+      if (2 < version)
+      {
+         hr = pload->get_Property(CComBSTR("StageErected"), &var);
+         if (FAILED(hr))
+            return hr;
+
+         m_StageErected = var.bstrVal;
+         var.Clear();
+      }
 
       hr = pload->get_Property(CComBSTR("StageRemoved"),&var);
       if (FAILED(hr))
@@ -571,7 +605,9 @@ STDMETHODIMP CTemporarySupport::Load(IStructuredLoad2 * pload)
          m_BoundaryCondition=bcRoller;
       }
       else
+      {
          return STRLOAD_E_INVALIDFORMAT;
+      }
    
 
       var.Clear();
@@ -581,7 +617,7 @@ STDMETHODIMP CTemporarySupport::Load(IStructuredLoad2 * pload)
 
       m_TopRelease = var.boolVal;
 
-      if ( ver < 2.0 )
+      if ( version < 2.0 )
       {
          var.Clear();
          hr = pload->get_Property(CComBSTR("OmitReaction"),&var);
@@ -642,7 +678,8 @@ STDMETHODIMP CTemporarySupport::Save(IStructuredSave2 * psave)
 
       hr = psave->put_Property(CComBSTR("ID"),_variant_t(m_ID));
 
-      hr = psave->put_Property(CComBSTR("StageRemoved"),_variant_t(m_StageRemoved));
+      hr = psave->put_Property(CComBSTR("StageErected"), _variant_t(m_StageErected));
+      hr = psave->put_Property(CComBSTR("StageRemoved"), _variant_t(m_StageRemoved));
 
       hr = psave->put_Property(CComBSTR("BottomOffset"),_variant_t(m_BottomOffset));
 
@@ -724,6 +761,7 @@ STDMETHODIMP CTemporarySupport::Clone(ITemporarySupport **clone)
    pnew->m_IsSymmetrical = m_IsSymmetrical;
    pnew->m_BottomOffset  = m_BottomOffset;
    pnew->m_BoundaryCondition  = m_BoundaryCondition;
+   pnew->m_StageErected = m_StageErected;
    pnew->m_StageRemoved  = m_StageRemoved;
    pnew->m_TopRelease    = m_TopRelease;
    pnew->m_bOmitReaction = m_bOmitReaction;
