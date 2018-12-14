@@ -2710,7 +2710,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
                // We are at the junction of two ssm's (or at the begining or end)
                // Left section will be at right end of current ssm
                CComPtr<ISegmentItem> left_segi, right_segi;
-               hr = ssm-> GetSegmentForMemberLocation(m_Stage, -1.0, &left_segi, &right_segi);
+               hr = ssm->GetSegmentForMemberLocation(m_Stage, -1.0, &left_segi, &right_segi);
 
                // if left segment is zero - there are no segments for this ssm - just return;
                if (left_segi==nullptr)
@@ -2738,7 +2738,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
                      CComPtr<ISuperstructureMember> ssmr; // ssm to right of xloc
                      hr = ssms->get_Item(i_ssm+1, &ssmr);
 
-                     hr = ssmr-> GetSegmentForMemberLocation(m_Stage, 0.0, &left_segi, &right_segi);
+                     hr = ssmr->GetSegmentForMemberLocation(m_Stage, 0.0, &left_segi, &right_segi);
 
                      if (left_segi==nullptr)
                      {
@@ -2766,7 +2766,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
                Float64 ssm_loc = xloc - ssm_start;
 
                CComPtr<ISegmentItem> left_segi, right_segi;
-               hr = ssm-> GetSegmentForMemberLocation(m_Stage, ssm_loc, &left_segi, &right_segi);
+               hr = ssm->GetSegmentForMemberLocation(m_Stage, ssm_loc, &left_segi, &right_segi);
 
                // if left segment is zero - there are no segments for this ssm - just return;
                if (left_segi==nullptr)
@@ -2820,7 +2820,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
 
       // we have our ssm
       CComPtr<ISegmentItem> left_segi, right_segi;
-      hr = ssm-> GetSegmentForMemberLocation(m_Stage, mbrLoc, &left_segi, &right_segi);
+      hr = ssm->GetSegmentForMemberLocation(m_Stage, mbrLoc, &left_segi, &right_segi);
 
       // if left segment is zero - there are no segments for this ssm - just return;
       if (left_segi!=nullptr)
@@ -2858,7 +2858,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
       hr = supports->get_Item(mbrID, &support);
 
       CComPtr<ISegmentItem> left_segi, right_segi;
-      hr = support-> GetSegmentForMemberLocation(m_Stage, mbrLoc, &left_segi, &right_segi);
+      hr = support->GetSegmentForMemberLocation(m_Stage, mbrLoc, &left_segi, &right_segi);
 
       // if left segment is zero - there are no segments for this support - just return;
       if (left_segi!=nullptr)
@@ -4237,7 +4237,7 @@ void CAnalysisModel::LayoutSuperstructureMemberNodes(ISuperstructureMembers* pMe
       if (nSegments <= 0)
       {
          USES_CONVERSION;
-         LPTSTR bstg = W2T(m_Stage);
+         LPTSTR bstg = OLE2T(m_Stage);
          TCHAR str[256];
          ::LoadString( _Module.GetModuleInstance(), IDS_E_NO_SEGMENT_FOR_MEMBER, str, 256);
          TCHAR msg[256];
@@ -4663,35 +4663,58 @@ void CondenseSupportNodeSections(SubNodeLocs* nodeLocs, Float64 layoutTolerance)
 bool CAnalysisModel::IsTempSupportInStage(ITemporarySupport* pTempSupport)
 {
    CHRException hr;
+
+   CComBSTR bstrTempSupportErectionStage;
    CComBSTR bstrTempSupportRemovalStage;
 
+   hr = pTempSupport->get_StageErected(&bstrTempSupportErectionStage);
    hr = pTempSupport->get_StageRemoved(&bstrTempSupportRemovalStage);
 
-   if (bstrTempSupportRemovalStage.Length() == 0)
+   StageIndexType stageIdx;
+   if (!m_pStageOrder->GetStageIndex(m_Stage, &stageIdx))
    {
+      THROW_HR(E_FAIL); // this should never happen since stage should already be identified
+   }
+
+   StageIndexType erectionStageIdx;
+   if (!m_pStageOrder->GetStageIndex(bstrTempSupportErectionStage, &erectionStageIdx))
+   {
+      if (0 < bstrTempSupportErectionStage.Length())
+      {
+         CComBSTR msg(::CreateErrorMsg1S(IDS_E_NO_REM_STAGE_FOR_TS, bstrTempSupportErectionStage));
+         THROW_LBAMA_MSG(NO_REM_STAGE_FOR_TS, msg);
+      }
+   }
+
+   StageIndexType removalStageIdx;
+   if (!m_pStageOrder->GetStageIndex(bstrTempSupportRemovalStage, &removalStageIdx))
+   {
+      if (0 < bstrTempSupportRemovalStage.Length())
+      {
+         CComBSTR msg(::CreateErrorMsg1S(IDS_E_NO_REM_STAGE_FOR_TS, bstrTempSupportErectionStage));
+         THROW_LBAMA_MSG(NO_REM_STAGE_FOR_TS, msg);
+      }
+   }
+
+   if (erectionStageIdx == INVALID_INDEX && removalStageIdx == INVALID_INDEX)
+   {
+      // neither stage is defined so assume temporary support is in this stage
       return true;
+   }
+   else if (erectionStageIdx == INVALID_INDEX && removalStageIdx != INVALID_INDEX)
+   {
+      // erection stage not defined so just look at the removal stage
+      return (stageIdx < removalStageIdx) ? true : false;
+   }
+   else if (erectionStageIdx != INVALID_INDEX && removalStageIdx == INVALID_INDEX)
+   {
+      // removal stage is not defined so once erected, the temporary support is in the model
+      return (erectionStageIdx <= stageIdx) ? true : false;
    }
    else
    {
-      // get orders of this stage and stage where support is removed
-      StageIndexType tempSupportRemovalStageIdx;
-      if (!m_pStageOrder->GetStageIndex(bstrTempSupportRemovalStage,&tempSupportRemovalStageIdx))
-      {
-         CComBSTR msg(::CreateErrorMsg1S(IDS_E_NO_REM_STAGE_FOR_TS, bstrTempSupportRemovalStage));
-         THROW_LBAMA_MSG(NO_REM_STAGE_FOR_TS,msg);
-      }
-
-      StageIndexType stageIdx;
-      if ( !m_pStageOrder->GetStageIndex(m_Stage,&stageIdx) )
-      {
-         THROW_HR(E_FAIL); // this should never happen since stage should already be identified
-      }
-
-      // can finally make determination
-      if (stageIdx < tempSupportRemovalStageIdx)
-         return true;
-      else
-         return false;
+      // both stages defined... include temporary support of this stage is between erection and removal
+      return (erectionStageIdx <= stageIdx && stageIdx < removalStageIdx) ? true : false;
    }
 }
 
