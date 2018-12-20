@@ -845,6 +845,7 @@
     <ClCompile Include="LimitStateCalculator.cpp" />
     <ClCompile Include="LiveLoadDistributionFactorBase.cpp" />
     <ClCompile Include="LldfTxdotMultiWeb.cpp" />
+    <ClCompile Include="LldfTxdotSpreadSlab.cpp" />
     <ClCompile Include="LldfTypeAEK.cpp" />
     <ClCompile Include="LldfTypeAEKIJ.cpp" />
     <ClCompile Include="LldfTypeBC.cpp" />
@@ -902,6 +903,7 @@
     <ClInclude Include="..\Include\LRFD\LimitStateCalculator.h" />
     <ClInclude Include="..\Include\LRFD\LiveLoadDistributionFactorBase.h" />
     <ClInclude Include="..\Include\LRFD\LldfTxdotMultiWeb.h" />
+    <ClInclude Include="..\Include\LRFD\LldfTxdotSpreadSlab.h" />
     <ClInclude Include="..\Include\LRFD\LldfTypeAEK.h" />
     <ClInclude Include="..\Include\LRFD\LldfTypeAEKIJ.h" />
     <ClInclude Include="..\Include\LRFD\LldfTypeBC.h" />

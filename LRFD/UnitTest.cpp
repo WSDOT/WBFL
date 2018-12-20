@@ -45,6 +45,7 @@
 #include <Lrfd\LldfTypeHIJ.h>
 #include <Lrfd\LldfTypeG.h>
 #include <Lrfd\LldfTxdotMultiWeb.h>
+#include <Lrfd\LldfTxdotSpreadSlab.h>
 #include <Lrfd\CreepCoefficient.h>
 #include <Lrfd\CreepCoefficient2005.h>
 
@@ -100,6 +101,7 @@ bool lrfdUnitTest::TestMe(dbgLog& rlog)
    tst &= lrfdLldfTypeG::TestMe(rlog);
    tst &= lrfdTxdotVoidedSlab::TestMe(rlog);
    tst &= lrfdLldfTypeF::TestMe(rlog);
+   tst &= lrfdTxdotLldfSpreadSlab::TestMe(rlog);
 
 #endif
 
