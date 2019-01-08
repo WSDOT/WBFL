@@ -180,7 +180,7 @@
       <OutputFile>.\Release/FEA2D.bsc</OutputFile>
     </Bscmake>
     <Manifest>
-      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -276,7 +276,7 @@
       <OutputFile>.\Debug/FEA2D.bsc</OutputFile>
     </Bscmake>
     <Manifest>
-      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
