@@ -458,7 +458,7 @@ STDMETHODIMP CInfluenceLine::Evaluate(Float64 location, InfluenceSideType side, 
    return S_OK;
 }
 
-STDMETHODIMP CInfluenceLine::Reserve(CollectionIndexType n)
+HRESULT CInfluenceLine::Reserve(CollectionIndexType n)
 {
    if (n<0)
    {
@@ -479,14 +479,14 @@ STDMETHODIMP CInfluenceLine::Reserve(CollectionIndexType n)
    return S_OK;
 }
 
-STDMETHODIMP CInfluenceLine::GetZeroTolerance(Float64 *pVal)
+HRESULT CInfluenceLine::GetZeroTolerance(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
    *pVal = m_ZeroTolerance;
    return S_OK;
 }
 
-STDMETHODIMP CInfluenceLine::SetZeroTolerance(Float64 val)
+HRESULT CInfluenceLine::SetZeroTolerance(Float64 val)
 {
    ATLASSERT(!m_IsComputed[ilsBoth]); // this should be called just after creation and before any accessors are called
 

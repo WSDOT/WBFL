@@ -51,7 +51,7 @@ STDMETHODIMP CVehicularLoad::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CVehicularLoad::FinalConstruct( )
+HRESULT CVehicularLoad::FinalConstruct( )
 {
    HRESULT hr;
    // create a default, empty collection of stress points and set

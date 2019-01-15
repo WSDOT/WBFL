@@ -99,7 +99,7 @@ bool CompareCLSID(InterfaceItem& item1,InterfaceItem& item2)
 #endif
 
 InterfaceItem::InterfaceItem() : 
-pUsageCount(new Uint64) 
+pUsageCount(new IndexType) 
 { 
    *pUsageCount = 0; 
 }
@@ -184,7 +184,7 @@ void CBrokerImp2::ListInterfaceUsage()
       item.pAgent->Release();
 
       // every agent gets two more Release calls... decrement by 2 so that we can compare with
-      // the agent ref count that gets dump in ClearArents()
+      // the agent ref count that gets dump in ClearAgents()
       cRef -= 2;
 
       OLECHAR szGUID[39];

@@ -110,8 +110,8 @@ public:
    void Clear();
 
    // IStructuredStorage2
-	HRESULT Load(IStructuredLoad2 * Load);
-	HRESULT Save(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load);
+	STDMETHOD(Save)(IStructuredSave2 * Save);
 
 
    typedef  ISegmentItem* ItemType;

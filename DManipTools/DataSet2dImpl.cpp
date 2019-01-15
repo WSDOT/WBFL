@@ -120,7 +120,7 @@ STDMETHODIMP_(void) CDataSet2dImpl::Clear()
 
 
 
-STDMETHODIMP CDataSet2dImpl::Clone(/*[out]*/iDataSet2d* *pColl)
+HRESULT CDataSet2dImpl::Clone(/*[out]*/iDataSet2d* *pColl)
 {
    CHECK_RETOBJ(pColl);
 

@@ -71,8 +71,8 @@ public:
    void OnCreate(IFem2dModel* pModel, ModelEvents* pEvents, MemberIDType ID, JointIDType startJoint=-1, JointIDType endJoint=-1, Float64 EA=0.0, Float64 EI=0.0);
 
    // IStructuredStorage - sort of
-   HRESULT Load(IStructuredLoad2 *load);
-   HRESULT Save(IStructuredSave2 *save);
+   STDMETHOD(Load)(IStructuredLoad2 *load);
+   STDMETHOD(Save)(IStructuredSave2 *save);
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 

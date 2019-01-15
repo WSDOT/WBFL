@@ -85,7 +85,7 @@ BEGIN_CONNECTION_POINT_MAP(CProfile)
 CONNECTION_POINT_ENTRY(IID_IProfileEvents)
 END_CONNECTION_POINT_MAP()
 
-   HRESULT putref_Alignment(IAlignment* pAlignment);
+   STDMETHOD(putref_Alignment)(IAlignment* pAlignment);
 
 
 // ISupportsErrorInfo

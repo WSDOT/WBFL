@@ -278,7 +278,7 @@
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
@@ -296,7 +296,8 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>..\libs\xerces-c_3D.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\Apache\XERCESCPKG-31-X86-VC100\lib\xerces-c_3D.lib</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers>true</ImageHasSafeExceptionHandlers>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -379,7 +380,9 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
-      <AdditionalDependencies>..\libs\xerces-c_3D.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\Apache\XERCESCPKG-31-X64-VC100\lib\xerces-c_3D.lib</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers>
+      </ImageHasSafeExceptionHandlers>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -454,7 +457,7 @@
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
-      <AdditionalDependencies>..\libs\xerces-c_3.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\Apache\XERCESCPKG-31-X86-VC100\lib\xerces-c_3.lib</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -538,7 +541,7 @@
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
-      <AdditionalDependencies>..\libs\xerces-c_3.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\Apache\XERCESCPKG-31-X64-VC100\lib\xerces-c_3.lib</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>

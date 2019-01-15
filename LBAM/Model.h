@@ -150,21 +150,21 @@ public:
    // removed because they present a nightmare for event handling.
    // They are kept here though to facilitate initialization of this object
 protected:
-	HRESULT putref_DistributionFactors(/*[in]*/ IDistributionFactors* newVal);
-	HRESULT putref_LiveLoad(/*[in]*/ ILiveLoad* newVal);
-	HRESULT putref_LoadGroups(/*[in]*/ ILoadGroups* newVal);
-	HRESULT putref_LoadCases(/*[in]*/ ILoadCases* newVal);
-	HRESULT putref_LoadCombinations(/*[in]*/ ILoadCombinations* newVal);
-	HRESULT putref_StrainLoads(/*[in]*/ IStrainLoads* newVal);
-	HRESULT putref_TemperatureLoads(/*[in]*/ ITemperatureLoads* newVal);
-	HRESULT putref_SettlementLoads(/*[in]*/ ISettlementLoads* newVal);
-	HRESULT putref_DistributedLoads(/*[in]*/ IDistributedLoads* newVal);
-	HRESULT putref_PointLoads(/*[in]*/ IPointLoads* newVal);
-	HRESULT putref_Stages(/*[in]*/ IStages* newVal);
-	HRESULT putref_POIs(/*[in]*/ IPOIs* newVal);
-	HRESULT putref_Spans(/*[in]*/ ISpans* newVal);
-	HRESULT putref_Supports(/*[in]*/ ISupports* newVal);
-	HRESULT putref_SuperstructureMembers(/*[in]*/ ISuperstructureMembers* newVal);
+	STDMETHOD(putref_DistributionFactors)(/*[in]*/ IDistributionFactors* newVal);
+	STDMETHOD(putref_LiveLoad)(/*[in]*/ ILiveLoad* newVal);
+	STDMETHOD(putref_LoadGroups)(/*[in]*/ ILoadGroups* newVal);
+	STDMETHOD(putref_LoadCases)(/*[in]*/ ILoadCases* newVal);
+	STDMETHOD(putref_LoadCombinations)(/*[in]*/ ILoadCombinations* newVal);
+	STDMETHOD(putref_StrainLoads)(/*[in]*/ IStrainLoads* newVal);
+	STDMETHOD(putref_TemperatureLoads)(/*[in]*/ ITemperatureLoads* newVal);
+	STDMETHOD(putref_SettlementLoads)(/*[in]*/ ISettlementLoads* newVal);
+	STDMETHOD(putref_DistributedLoads)(/*[in]*/ IDistributedLoads* newVal);
+	STDMETHOD(putref_PointLoads)(/*[in]*/ IPointLoads* newVal);
+	STDMETHOD(putref_Stages)(/*[in]*/ IStages* newVal);
+	STDMETHOD(putref_POIs)(/*[in]*/ IPOIs* newVal);
+	STDMETHOD(putref_Spans)(/*[in]*/ ISpans* newVal);
+	STDMETHOD(putref_Supports)(/*[in]*/ ISupports* newVal);
+	STDMETHOD(putref_SuperstructureMembers)(/*[in]*/ ISuperstructureMembers* newVal);
 
 public:
    // IStructuredStorage2
