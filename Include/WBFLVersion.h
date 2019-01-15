@@ -40,7 +40,7 @@
 //
 // hot fixes - sometimes there are bugs that need to be fixed and deployed now. That is a hot fix.
 #ifndef _WBFL_VERSION
-#define _WBFL_VERSION 429 // version 4.2.9.1
+#define _WBFL_VERSION 429 // version 4.2.9
 #endif 
 
 

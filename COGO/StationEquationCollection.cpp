@@ -73,7 +73,7 @@ STDMETHODIMP CStationEquationCollection::get_Alignment(IAlignment** ppAlignment)
    return S_OK;
 }
 
-STDMETHODIMP CStationEquationCollection::putref_Alignment(IAlignment* pAlignment)
+HRESULT CStationEquationCollection::putref_Alignment(IAlignment* pAlignment)
 {
    m_pAlignment = pAlignment;
    return S_OK;

@@ -67,8 +67,8 @@ public:
 
    void PutPath(IPath* pPath); // used by Clone
 
-   HRESULT putref_Profile(IProfile* pVal);
-	HRESULT putref_StationEquations(IStationEquationCollection* pVal);
+   STDMETHOD(putref_Profile)(IProfile* pVal);
+	STDMETHOD(putref_StationEquations)(IStationEquationCollection* pVal);
 
 DECLARE_REGISTRY_RESOURCEID(IDR_ALIGNMENT)
 

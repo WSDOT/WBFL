@@ -60,7 +60,7 @@ void CDistributionFactorSegment::FinalRelease()
    }
 }
 
-STDMETHODIMP CDistributionFactorSegment::FinalConstruct( )
+HRESULT CDistributionFactorSegment::FinalConstruct( )
 {
    HRESULT hr;
    // create a default, empty df and set up connection point
