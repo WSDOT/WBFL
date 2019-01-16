@@ -2572,7 +2572,7 @@ void CLBAMFactory::CreatePoiAlongSuperstructure(Float64 xloc, PoiIDType id, ISup
    }
 }
 
-STDMETHODIMP CLBAMFactory::CreatePOI(PoiIDType ID, MemberType Type, MemberIDType memberID, Float64 Location, IPOI** newPOI)
+HRESULT CLBAMFactory::CreatePOI(PoiIDType ID, MemberType Type, MemberIDType memberID, Float64 Location, IPOI** newPOI)
 {
    CHECK_RETOBJ(newPOI);
 
@@ -2589,7 +2589,7 @@ STDMETHODIMP CLBAMFactory::CreatePOI(PoiIDType ID, MemberType Type, MemberIDType
 }
 
 
-STDMETHODIMP CLBAMFactory::GetLiveLoadModel(ILBAMModel* pModel,LiveLoadModelType llmt,ILiveLoadModel** ppLiveLoadModel)
+HRESULT CLBAMFactory::GetLiveLoadModel(ILBAMModel* pModel,LiveLoadModelType llmt,ILiveLoadModel** ppLiveLoadModel)
 {
    CComPtr<ILiveLoad> liveload;
    HRESULT hr = pModel->get_LiveLoad(&liveload);

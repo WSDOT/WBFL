@@ -90,6 +90,7 @@ BOOL CEAFToolBar::LoadToolBar(UINT nIDResource,IEAFCommandCallback* pCallback)
 {
    if ( !m_pToolBar->LoadToolBar(nIDResource) )
    {
+      ATLASSERT(false); // did you forget to call AFX_MANAGE_STATE(AfxGetStaticModuleState()); ????
       return FALSE;
    }
 

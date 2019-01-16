@@ -386,7 +386,7 @@ STDMETHODIMP CDistributionFactors::GetMemberSegments(Float64 superstructureLengt
 
 }
 
-STDMETHODIMP CDistributionFactors::GetMemberSegments(Float64 Length, VARIANT_BOOL isSymmetrical, IFilteredDfSegmentCollection **pColl)
+HRESULT CDistributionFactors::GetMemberSegments(Float64 Length, VARIANT_BOOL isSymmetrical, IFilteredDfSegmentCollection **pColl)
 {
 	CHECK_RETOBJ(pColl);
 

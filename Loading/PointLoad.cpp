@@ -82,21 +82,7 @@ STDMETHODIMP CPointLoad::get_MemberID(MemberIDType *pVal)
 
 STDMETHODIMP CPointLoad::put_MemberID(MemberIDType id)
 {
-   HRESULT hr;
-   if ( m_TxnMgr )
-   {
-      typedef CEditValueTransaction<CPointLoad,MemberIDType,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
-      CComObject<CEditTxn>* pTxn;
-      CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,_T("Point Load Member ID"),&PutMemberID,m_MemberID,id);
-
-      return m_TxnMgr->Execute(pTxn);
-   }
-   else
-   {
-      hr = PutMemberID(this,id);
-   }
-
+   HRESULT hr = PutMemberID(this,id);
 	return hr;
 }
 
@@ -111,21 +97,7 @@ STDMETHODIMP CPointLoad::get_Location(Float64 *pVal)
 
 STDMETHODIMP CPointLoad::put_Location(Float64 location)
 {
-   HRESULT hr;
-   if ( m_TxnMgr )
-   {
-      typedef CEditValueTransaction<CPointLoad,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
-      CComObject<CEditTxn>* pTxn;
-      CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,_T("Point Load Location"),&PutLocation,m_Location,location);
-
-      return m_TxnMgr->Execute(pTxn);
-   }
-   else
-   {
-      hr = PutLocation(this,location);
-   }
-
+   HRESULT hr = PutLocation(this,location);
 	return hr;
 }
 
@@ -140,21 +112,7 @@ STDMETHODIMP CPointLoad::get_Fx(Float64 *pVal)
 
 STDMETHODIMP CPointLoad::put_Fx(Float64 fx)
 {
-   HRESULT hr;
-   if ( m_TxnMgr )
-   {
-      typedef CEditValueTransaction<CPointLoad,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
-      CComObject<CEditTxn>* pTxn;
-      CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,_T("Point Load Fx"),&PutFx,m_Fx, fx);
-
-      return m_TxnMgr->Execute(pTxn);
-   }
-   else
-   {
-      hr = PutFx(this,fx);
-   }
-
+   HRESULT hr = PutFx(this,fx);
 	return hr;
 }
 
@@ -169,21 +127,7 @@ STDMETHODIMP CPointLoad::get_Fy(Float64 *pVal)
 
 STDMETHODIMP CPointLoad::put_Fy(Float64 fy)
 {
-   HRESULT hr;
-   if ( m_TxnMgr )
-   {
-      typedef CEditValueTransaction<CPointLoad,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
-      CComObject<CEditTxn>* pTxn;
-      CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,_T("Point Load Fy"),&PutFy,m_Fy, fy);
-
-      return m_TxnMgr->Execute(pTxn);
-   }
-   else
-   {
-      hr = PutFy(this,fy);
-   }
-
+   HRESULT hr = PutFy(this,fy);
 	return hr;
 }
 
@@ -198,21 +142,7 @@ STDMETHODIMP CPointLoad::get_Mz(Float64 *pVal)
 
 STDMETHODIMP CPointLoad::put_Mz(Float64 mz)
 {
-   HRESULT hr;
-   if ( m_TxnMgr )
-   {
-      typedef CEditValueTransaction<CPointLoad,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
-      CComObject<CEditTxn>* pTxn;
-      CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,_T("Point Load Mz"),&PutMz,m_Mz, mz);
-
-      return m_TxnMgr->Execute(pTxn);
-   }
-   else
-   {
-      hr = PutMz(this,mz);
-   }
-
+   HRESULT hr = PutMz(this,mz);
 	return hr;
 }
 

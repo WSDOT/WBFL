@@ -23,7 +23,6 @@
 
 #include "ComCollections.h"
 #include "resource.h"       // main symbols
-#include "TxnMgrImpl.h"
 
 #ifndef __CLoadCollection_H_
 #define __CLoadCollection_H_
@@ -211,41 +210,6 @@ public:
 };
 
 
-///////////////////////////////////////////
-// Custom transactions
-template <class T,class ItemType,class LoadType>
-class ATL_NO_VTABLE CSwapLoadTxn:
-public CTransactionImpl<T,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading>
-{
-public:
-   typedef HRESULT (*PutPropFunc)(T* pThis,ItemType* item,LoadType* newLoad);
-
-void Init(T* pTarget,LPCTSTR strName,PutPropFunc putFunc,ItemType* item,LoadType* newLoad)
-   {
-      CTransactionImpl<T,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading>::Init(pTarget,strName);
-      m_PutFunc = putFunc;
-      m_Item    = item;
-      m_NewLoad = newLoad;
-      m_Item->get_Load(&m_OldLoad);
-   }
-
-   STDMETHOD(Execute)()
-   {
-      return m_PutFunc(m_pTarget,m_Item,m_NewLoad);
-   }
-
-	STDMETHOD(Undo)()
-   {
-      return m_PutFunc(m_pTarget,m_Item,m_OldLoad);
-   }
-
-protected:
-   PutPropFunc m_PutFunc;
-   CComPtr<LoadType> m_NewLoad;
-   CComPtr<LoadType> m_OldLoad;
-   CComPtr<ItemType> m_Item;
-};
-
 ///////////////////////////////////////
 // The collection class
 template <class T, const IID* piidT, class TDerived, class LoadType, class IItemType, class CItemType,
@@ -253,7 +217,6 @@ template <class T, const IID* piidT, class TDerived, class LoadType, class IItem
 class  CLoadCollection :
    public T,
    public IStructuredStorage2,
-   public IWBFLSupportTransactionsImpl,
    public IPersistImpl<TDerived>
 {
 public:
@@ -362,22 +325,9 @@ public:
 
       CComPtr<IItemType> pItem = (*it).second;
 
-      HRESULT hr;
-      if ( m_TxnMgr )
-      {
-         typedef CSwapLoadTxn<_ThisClass,IItemType,LoadType> CPutLoadTxn;
-         CComObject<CPutLoadTxn>* pTxn;
-         CComObject<CPutLoadTxn>::CreateInstance(&pTxn);
-         pTxn->Init(this,_T("Put Load"),&DoPutLoad,pItem,newLoad);
+      HRESULT hr = DoPutLoad(this,pItem,newLoad);
 
-         return m_TxnMgr->Execute(pTxn);
-      }
-      else
-      {
-         hr = DoPutLoad(this,pItem,newLoad);
-      }
-
-	return hr;
+   	return hr;
    }
 
    STDMETHOD(get__EnumElements)(EnumType **ppenum)
@@ -438,19 +388,7 @@ public:
       typedef AddLoadParams Parameters;
       Parameters parameters(ID,Stage,LoadGroup,pLoad);
 
-      HRESULT hr;
-      if ( m_TxnMgr )
-      {
-         typedef CActionTransaction1<_ThisClass,Parameters,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CAddLoadTxn;
-         CComObject<CAddLoadTxn>* pTxn;
-         CComObject<CAddLoadTxn>::CreateInstance(&pTxn);
-         pTxn->Init(this,_T("Add Load"),DoAddLoad,UndoAddLoad,parameters);
-         hr = m_TxnMgr->Execute(pTxn);
-      }
-      else
-      {
-         hr = DoAddLoad(this,parameters);
-      }
+      HRESULT hr = DoAddLoad(this,parameters);
       return hr;
 
    }
@@ -482,19 +420,7 @@ public:
 
       StoredType item = iter->second;
 
-      HRESULT hr;
-      if ( m_TxnMgr )
-      {
-         typedef CActionTransaction1<_ThisClass,StoredType,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CRemoveByIDTxn;
-         CComObject<CRemoveByIDTxn>* pTxn;
-         CComObject<CRemoveByIDTxn>::CreateInstance(&pTxn);
-         pTxn->Init(this,_T("Remove Load"),DoRemoveByID,UndoRemoveLoad,item);
-         hr = m_TxnMgr->Execute(pTxn);
-      }
-      else
-      {
-         hr = DoRemoveByID(this,item);
-      }
+      HRESULT hr = DoRemoveByID(this,item);
       return hr;
    }
 
@@ -621,29 +547,12 @@ public:
       *pColl = pnew;
       (*pColl)->AddRef();
 
-      // Set the transaction manager
-      CComQIPtr<IWBFLSupportTransactions> supTxns(*pColl);
-      if ( supTxns )
-         supTxns->putref_TransactionMgr(m_TxnMgr);
-
       return S_OK;
    }
 
    STDMETHOD(Clear)()
    {
-      HRESULT hr;
-      if ( m_TxnMgr )
-      {
-         typedef CActionTransaction1<_ThisClass,ContainerType,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CClearTxn;
-         CComObject<CClearTxn>* pTxn;
-         CComObject<CClearTxn>::CreateInstance(&pTxn);
-         pTxn->Init(this,_T("Clear Loads"),DoClear,UndoClear,m_Container);
-         hr = m_TxnMgr->Execute(pTxn);
-      }
-      else
-      {
-         hr = DoClear(this,m_Container);
-      }
+      HRESULT hr = DoClear(this,m_Container);
       return hr;
    }
  
@@ -684,19 +593,7 @@ public:
    {
       CHECK_IN(stage);
       RemoveStageParams parameters(stage);
-      HRESULT hr;
-      if ( m_TxnMgr )
-      {
-         typedef CActionTransaction1<_ThisClass,RemoveStageParams,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CRemoveStageTxn;
-         CComObject<CRemoveStageTxn>* pTxn;
-         CComObject<CRemoveStageTxn>::CreateInstance(&pTxn);
-         pTxn->Init(this,_T("Remove Stage"),DoRemoveStage,UndoRemoveStage,parameters);
-         hr = m_TxnMgr->Execute(pTxn);
-      }
-      else
-      {
-         hr = DoRemoveStage(this,parameters);
-      }
+      HRESULT hr = DoRemoveStage(this,parameters);
       return hr;
    }
 
@@ -880,32 +777,6 @@ public:
       hr = save->EndUnit();
       if (FAILED(hr))
          return hr;
-
-      return S_OK;
-   }
-
-   //////////////////////////////////////////////
-   // IWBFLSupportTransactions 
-   STDMETHOD(putref_TransactionMgr)(IWBFLTransactionMgr* txnMgr)
-   {
-      HRESULT hr = IWBFLSupportTransactionsImpl::putref_TransactionMgr(txnMgr);
-      if ( FAILED(hr) )
-         return hr;
-
-      // Set the transaction mgr on all the loads
-      ContainerIteratorType iter;
-      for ( iter = m_Container.begin(); iter != m_Container.end(); iter++ )
-      {
-         ContainerValueType& value = *iter;
-         CComPtr<IItemType> item = value.second;
-         CComPtr<LoadType> load;
-         item->get_Load(&load);
-
-         CComQIPtr<IWBFLSupportTransactions> supTxns(load);
-         ATLASSERT(supTxns); // should be supporting Tranactions
-         if ( supTxns )
-            supTxns->putref_TransactionMgr(m_TxnMgr);
-      }
 
       return S_OK;
    }

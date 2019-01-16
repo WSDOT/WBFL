@@ -24,6 +24,7 @@
 #pragma once
 
 #include <MfcTools\MfcToolsExp.h>
+#include <vector>
 
 class CHelpHandler;
 

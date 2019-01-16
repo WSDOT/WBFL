@@ -549,7 +549,7 @@ STDMETHODIMP CBruteForceVehicularResponse::ComputeStresses(IIDArray* poiIDs, BST
    return hr;
 }
 
-STDMETHODIMP CBruteForceVehicularResponse::ComputeResponse(IIDArray* poiIDs, BSTR stage, LiveLoadModelType type, 
+HRESULT CBruteForceVehicularResponse::ComputeResponse(IIDArray* poiIDs, BSTR stage, LiveLoadModelType type, 
                                                            VehicleIndexType vehicleIndex, 
                                                            ForceEffectType effect, OptimizationType optimization, 
                                                            VehicularLoadConfigurationType vehConfiguration,

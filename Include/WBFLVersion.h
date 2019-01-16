@@ -29,7 +29,7 @@
 
 // Version plan...
 // Targeting 4.2.9.1 as a hot fix for BridgeLink 4.0 production using WBFL 4.2.9.0
-// The next version of WBFL for a minor (patches/bug fix) release will be 4.3.0.0
+// The next version of WBFL for a minor (patches/bug fix) release will be 4.2.10.0
 // The next major release will be 5.0.0.0 to sync with BridgeLink 5.0.0.0
 //
 // Version Number Scheme... major.minor.fix.build

@@ -20,7 +20,7 @@
 x64/
 x86/
 bld/
-[Bb]in/
+#[Bb]in/ #don't exclude all bin folders, see bottom of file for Apache stuff
 [Oo]bj/
 [Ll]og/
 
@@ -330,9 +330,14 @@ ASALocalRun/
 .mfractor/
 
 # Custom
-bin/
 *.bak
 *.cxx
 *.hxx
 *.hh
-/Include/WBFLCore.h
+Include/WBFLCore.h
+Win32/
+!/Apache/**/lib #don't exclude Apache lib folders
+!/Apache/**/bin #don't exclude Apache bin folders
+/bin/App
+/bin/License.rtf
+/[Bb]in # exclude all other bin folders

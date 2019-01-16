@@ -28,7 +28,6 @@
 
 #include "resource.h"       // main symbols
 #include "LoadingCP.h"
-#include "TxnMgrImpl.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CDistributedLoad
@@ -38,7 +37,6 @@ class ATL_NO_VTABLE CDistributedLoad :
 	public CComCoClass<CDistributedLoad, &CLSID_ldDistributedLoad>,
 	public ISupportErrorInfo,
 	public IConnectionPointContainerImpl<CDistributedLoad>,
-   public IWBFLSupportTransactionsImpl,
    public IPersistImpl<CDistributedLoad>,
 	public IStructuredStorage2,
 	public ldIDistributedLoad,

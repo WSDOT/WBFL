@@ -59,8 +59,8 @@ public:
    HRESULT OnCreate(IFem2dModel* pModel, ModelEvents* pEvents, PoiIDType ID, MemberIDType memberID=-1, Float64 location=0.0);
 
    // IStructuredStorage - sort of
-   HRESULT Load(IStructuredLoad2 *load);
-   HRESULT Save(IStructuredSave2 *save);
+   STDMETHOD(Load)(IStructuredLoad2 *load);
+   STDMETHOD(Save)(IStructuredSave2 *save);
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 

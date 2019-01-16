@@ -627,7 +627,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeStresses(IIDArray* POIs, BSTR stage
    return hr;
 }
 
-STDMETHODIMP CBasicVehicularResponse::ComputeResponse(IIDArray* POIs, BSTR stage,
+HRESULT CBasicVehicularResponse::ComputeResponse(IIDArray* POIs, BSTR stage,
                                                       ILiveLoadConfiguration* config, ISectionResult3Ds* *results)
 {
    CHECK_IN(POIs);

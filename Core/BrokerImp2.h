@@ -41,7 +41,7 @@ struct InterfaceItem
 {
    IID iid; // IID of the interface
    CComPtr<IUnknown> m_pUnk; // the interface pointer
-   std::shared_ptr<Uint64> pUsageCount; // count of the number of times the interface has been requested
+   std::shared_ptr<IndexType> pUsageCount; // count of the number of times the interface has been requested
    IAgentEx* pAgent; // weak reference.. agent that implements the interface
 
    InterfaceItem();

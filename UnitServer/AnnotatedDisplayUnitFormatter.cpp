@@ -166,13 +166,13 @@ STDMETHODIMP CAnnotatedDisplayUnitFormatter::put_Annotation(BSTR bstrAnnotation)
    // Parse the annotation string into the seperator and suffix tokens
 
    TCHAR* next_token = nullptr;
-   TCHAR* token = _tcstok_s(OLE2T(bstrAnnotation),_T(","),&next_token);
+   TCHAR* token = _tcstok_s(OLE2T(m_bstrAnnotation),_T(","),&next_token);
    if ( token )
    {
       // Check if the string leads with a delimeter
       // If so, token is the suffix
 
-      if ( bstrAnnotation[0] == _T(',') )
+      if (m_bstrAnnotation[0] == _T(',') )
       {
          m_bstrSeperator = _T("");
          m_bstrSuffix = token;
