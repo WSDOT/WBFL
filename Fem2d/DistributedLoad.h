@@ -55,8 +55,8 @@ public:
    void Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, LoadIDType ID, MemberIDType memberID=-1, Fem2dLoadDirection direction=loadDirFy, Float64 startLocation=0.0, Float64 endLocation=0.0, Float64 WStart=0.0, Float64 WEnd=0.0, Fem2dLoadOrientation orientation=lotMember);
 
    // IStructuredStorage - sort of
-   HRESULT Load(IStructuredLoad2 *load);
-   HRESULT Save(IStructuredSave2 *save);
+   STDMETHOD(Load)(IStructuredLoad2 *load);
+   STDMETHOD(Save)(IStructuredSave2 *save);
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 

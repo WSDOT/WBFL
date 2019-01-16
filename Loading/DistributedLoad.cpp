@@ -107,21 +107,7 @@ STDMETHODIMP CDistributedLoad::get_MemberID(MemberIDType *pVal)
 
 STDMETHODIMP CDistributedLoad::put_MemberID(MemberIDType id)
 {
-   HRESULT hr;
-   if ( m_TxnMgr )
-   {
-      typedef CEditValueTransaction<CDistributedLoad,MemberIDType,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
-      CComObject<CEditTxn>* pTxn;
-      CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,_T("Distributed Load Member ID"),&PutMemberID,m_MemberID, id);
-
-      return m_TxnMgr->Execute(pTxn);
-   }
-   else
-   {
-      hr = PutMemberID(this,id);
-   }
-
+   HRESULT hr = PutMemberID(this,id);
 	return hr;
 }
 
@@ -136,21 +122,7 @@ STDMETHODIMP CDistributedLoad::get_StartLocation(Float64 *pVal)
 
 STDMETHODIMP CDistributedLoad::put_StartLocation(Float64 start)
 {
-   HRESULT hr;
-   if ( m_TxnMgr )
-   {
-      typedef CEditValueTransaction<CDistributedLoad,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
-      CComObject<CEditTxn>* pTxn;
-      CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,_T("Distributed Load Start Location"),&PutStartLocation,m_StartLocation, start);
-
-      return m_TxnMgr->Execute(pTxn);
-   }
-   else
-   {
-      hr = PutStartLocation(this,start);
-   }
-
+   HRESULT hr = PutStartLocation(this,start);
 	return hr;
 }
 
@@ -165,21 +137,7 @@ STDMETHODIMP CDistributedLoad::get_EndLocation(Float64 *pVal)
 
 STDMETHODIMP CDistributedLoad::put_EndLocation(Float64 end)
 {
-   HRESULT hr;
-   if ( m_TxnMgr )
-   {
-      typedef CEditValueTransaction<CDistributedLoad,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
-      CComObject<CEditTxn>* pTxn;
-      CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,_T("Distributed Load End Location"),&PutEndLocation,m_EndLocation, end);
-
-      return m_TxnMgr->Execute(pTxn);
-   }
-   else
-   {
-      hr = PutEndLocation(this,end);
-   }
-
+   HRESULT hr = PutEndLocation(this,end);
 	return hr;
 }
 
@@ -194,21 +152,7 @@ STDMETHODIMP CDistributedLoad::get_Orientation(ldLoadOrientation *pVal)
 
 STDMETHODIMP CDistributedLoad::put_Orientation(ldLoadOrientation orientation)
 {
-   HRESULT hr;
-   if ( m_TxnMgr )
-   {
-      typedef CEditValueTransaction<CDistributedLoad,ldLoadOrientation,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
-      CComObject<CEditTxn>* pTxn;
-      CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,_T("Distributed Load Orientation"),&PutOrientation,m_Orientation, orientation);
-
-      return m_TxnMgr->Execute(pTxn);
-   }
-   else
-   {
-      hr = PutOrientation(this,orientation);
-   }
-
+   HRESULT hr = PutOrientation(this,orientation);
 	return hr;
 }
 
@@ -223,21 +167,7 @@ STDMETHODIMP CDistributedLoad::get_Direction(ldLoadDirection *pVal)
 
 STDMETHODIMP CDistributedLoad::put_Direction(ldLoadDirection direction)
 {
-   HRESULT hr;
-   if ( m_TxnMgr )
-   {
-      typedef CEditValueTransaction<CDistributedLoad,ldLoadDirection,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
-      CComObject<CEditTxn>* pTxn;
-      CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,_T("Distributed Load Direction"),&PutDirection,m_Direction, direction);
-
-      return m_TxnMgr->Execute(pTxn);
-   }
-   else
-   {
-      hr = PutDirection(this,direction);
-   }
-
+   HRESULT hr = PutDirection(this,direction);
 	return hr;
 }
 
@@ -252,21 +182,7 @@ STDMETHODIMP CDistributedLoad::get_WStart(Float64 *pVal)
 
 STDMETHODIMP CDistributedLoad::put_WStart(Float64 wStart)
 {
-   HRESULT hr;
-   if ( m_TxnMgr )
-   {
-      typedef CEditValueTransaction<CDistributedLoad,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
-      CComObject<CEditTxn>* pTxn;
-      CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,_T("Distributed Load Start Load"),&PutWStart,m_WStart, wStart);
-
-      return m_TxnMgr->Execute(pTxn);
-   }
-   else
-   {
-      hr = PutWStart(this,wStart);
-   }
-
+   HRESULT hr = PutWStart(this,wStart);
 	return hr;
 }
 
@@ -281,21 +197,7 @@ STDMETHODIMP CDistributedLoad::get_WEnd(Float64 *pVal)
 
 STDMETHODIMP CDistributedLoad::put_WEnd(Float64 wEnd)
 {
-   HRESULT hr;
-   if ( m_TxnMgr )
-   {
-      typedef CEditValueTransaction<CDistributedLoad,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
-      CComObject<CEditTxn>* pTxn;
-      CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,_T("Distributed Load End Load"),&PutWEnd,m_WEnd, wEnd);
-
-      return m_TxnMgr->Execute(pTxn);
-   }
-   else
-   {
-      hr = PutWEnd(this,wEnd);
-   }
-
+   HRESULT hr = PutWEnd(this,wEnd);
 	return hr;
 }
 

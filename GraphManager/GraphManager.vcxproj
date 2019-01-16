@@ -160,63 +160,53 @@
     <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X64-VC90\include;F:\Apache\xalan-builds\XERCESCPKG-31-X64-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X64-VC90\include;F:\Apache\xalan-builds\XERCESCPKG-31-X64-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X64-VC90\include;F:\Apache\xalan-builds\XERCESCPKG-31-X64-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X64-VC90\include;F:\Apache\xalan-builds\XERCESCPKG-31-X64-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
     <OutDir>$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X64-VC90\include;F:\Apache\xalan-builds\XERCESCPKG-31-X64-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -229,13 +219,15 @@
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>true</ImageHasSafeExceptionHandlers>
+      <GenerateMapFile>true</GenerateMapFile>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -262,6 +254,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
+      <ImageHasSafeExceptionHandlers>
+      </ImageHasSafeExceptionHandlers>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -286,6 +280,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>true</ImageHasSafeExceptionHandlers>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -329,6 +324,7 @@
     <Link>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
       <ImportLibrary>$(TargetDir)$(TargetName).lib</ImportLibrary>
+      <ImageHasSafeExceptionHandlers />
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -381,6 +377,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers />
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -433,6 +430,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers />
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>

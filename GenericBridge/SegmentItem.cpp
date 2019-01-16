@@ -57,7 +57,7 @@ void CSegmentItem::FinalRelease()
 {
 }
 
-STDMETHODIMP CSegmentItem::PutRefSegment(ISegment *newVal)
+HRESULT CSegmentItem::PutRefSegment(ISegment *newVal)
 {
 	CHECK_IN(newVal);
    m_Segment = newVal;

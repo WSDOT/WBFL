@@ -183,58 +183,53 @@
     <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
@@ -244,15 +239,13 @@
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
       <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
@@ -272,7 +265,7 @@ date/T &gt; $(IntDir)mt2.dep
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
@@ -290,6 +283,8 @@ date/T &gt; $(IntDir)mt2.dep
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>true</ImageHasSafeExceptionHandlers>
+      <GenerateMapFile>true</GenerateMapFile>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -307,15 +302,13 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
@@ -354,6 +347,8 @@ date/T &gt; $(IntDir)mt2.dep
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
+      <ImageHasSafeExceptionHandlers>
+      </ImageHasSafeExceptionHandlers>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -371,15 +366,13 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
       <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
@@ -420,6 +413,7 @@ date/T &gt; $(IntDir)mt2.dep
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
+      <ImageHasSafeExceptionHandlers>true</ImageHasSafeExceptionHandlers>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -437,15 +431,13 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
@@ -504,15 +496,13 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
       <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
@@ -560,6 +550,7 @@ date/T &gt; $(IntDir)mt2.dep
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
+      <ImageHasSafeExceptionHandlers />
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -577,15 +568,13 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
@@ -652,16 +641,14 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
       <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
@@ -699,6 +686,7 @@ date/T &gt; $(IntDir)mt2.dep
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers />
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -716,16 +704,14 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
@@ -781,16 +767,14 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
       <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
@@ -836,6 +820,7 @@ date/T &gt; $(IntDir)mt2.dep
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
+      <ImageHasSafeExceptionHandlers />
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -853,16 +838,14 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.$(Platform).$(Configuration).manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(Platform).$(Configuration).manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.$(Platform).$(Configuration).manifest;%(Inputs)</Inputs>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Include;\ARP\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(WBFLDIR)\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>

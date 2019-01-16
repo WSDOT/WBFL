@@ -172,74 +172,67 @@
     <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X64-VC90\include;F:\Apache\xalan-builds\XERCESCPKG-31-X64-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X64-VC90\include;F:\Apache\xalan-builds\XERCESCPKG-31-X64-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X64-VC90\include;F:\Apache\xalan-builds\XERCESCPKG-31-X64-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X64-VC90\include;F:\Apache\xalan-builds\XERCESCPKG-31-X64-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X64-VC90\include;F:\Apache\xalan-builds\XERCESCPKG-31-X64-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TypeLibraryName>.\Debug/Unittest.tlb</TypeLibraryName>
@@ -273,6 +266,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>true</ImageHasSafeExceptionHandlers>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -282,16 +276,19 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
@@ -326,6 +323,8 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
+      <ImageHasSafeExceptionHandlers>
+      </ImageHasSafeExceptionHandlers>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -335,16 +334,19 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TypeLibraryName>.\Release/Unittest.tlb</TypeLibraryName>
@@ -371,7 +373,7 @@
       <RegisterOutput>false</RegisterOutput>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <EnableUAC>true</EnableUAC>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -380,6 +382,7 @@
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
+      <ImageHasSafeExceptionHandlers>true</ImageHasSafeExceptionHandlers>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -389,16 +392,19 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
@@ -444,16 +450,19 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TypeLibraryName>.\Release/Unittest.tlb</TypeLibraryName>
@@ -496,6 +505,7 @@
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
+      <ImageHasSafeExceptionHandlers />
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -505,16 +515,19 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
@@ -567,16 +580,19 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|Win32'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TypeLibraryName>.\Debug/Unittest.tlb</TypeLibraryName>
@@ -610,6 +626,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers />
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -619,16 +636,19 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|x64'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
@@ -672,16 +692,19 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TypeLibraryName>.\Release/Unittest.tlb</TypeLibraryName>
@@ -722,6 +745,7 @@
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
+      <ImageHasSafeExceptionHandlers />
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -731,16 +755,19 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">
     <CustomBuildStep>
-      <Message>Installing WBFL for use with BridgeLink</Message>
-      <Command>xcopy /y/d \ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll \ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\
-</Command>
-      <Inputs>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Inputs)</Inputs>
-      <Outputs>\ARP\BridgeLink\RegFreeCOM\$(Platform)\$(Configuration)\WBFL*.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
@@ -791,7 +818,7 @@
       <Command />
     </PostBuildEvent>
     <Manifest>
-      <AdditionalManifestFiles>\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(WBFLDIR)\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -934,14 +961,6 @@
       <Project>{ee915d82-304f-48ed-97a9-d5d2acf33b4c}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\Library\Library.vcxproj">
-      <Project>{de5cf329-936b-4bdd-918d-60cac7e0ea34}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\Loading\Loading.vcxproj">
-      <Project>{a5617ced-e680-4882-8d42-075ebc75dab4}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\Loading\LoadingTest\LoadingTest.vcxproj">
       <Project>{af231895-fb20-4c28-be78-3d1267b27847}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
@@ -1004,10 +1023,6 @@
     </ProjectReference>
     <ProjectReference Include="..\System\System.vcxproj">
       <Project>{2d18c0c9-358d-455d-b56a-d4a247fce7b9}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\Transactions\Transactions.vcxproj">
-      <Project>{9314d00f-73e2-4dbc-9f5d-85e8f8fbbe3b}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\UnitMgt\UnitMgt.vcxproj">
