@@ -118,28 +118,25 @@ HRESULT CStrandGridModel::OnInitialize()
    // If we have an asymmetric section, the strands aren't lined up
    // under top center (0,0) of girder. Apply an adjustment
    // to position the strand grid correctly
-   CComQIPtr<IThickenedFlangeSegment> thickenedSegment(m_pSegment);
-   if (thickenedSegment)
+   CComPtr<IShape> shape;
+   m_pSegment->get_PrimaryShape(0.0, sbRight, &shape);
+
+   CComQIPtr<IAsymmetricSection> asymmetric(shape);
+   if (asymmetric)
    {
-      CComPtr<IShape> shape;
-      thickenedSegment->get_GirderShape(0.0, &shape);
-      CComQIPtr<IAsymmetricSection> asymmetric(shape);
-      if (asymmetric)
+      // lateral adjustment
+      Float64 wLeft, wRight;
+      asymmetric->GetTopWidth(&wLeft, &wRight);
+      Float64 Xadj = 0.5*(wLeft - wRight);
+
+      Float64 Yadj = 0;
+
+      for (int i = 0; i < 2; i++)
       {
-         // lateral adjustment
-         Float64 wLeft, wRight;
-         asymmetric->GetTopWidth(&wLeft, &wRight);
-         Float64 Xadj = 0.5*(wLeft - wRight);
-
-         Float64 Yadj = 0;
-
-         for (int i = 0; i < 2; i++)
-         {
-            m_StraightGrid[i]->SetStrandAdjustment(Xadj, Yadj);
-            m_HarpGridEnd[i]->SetStrandAdjustment(Xadj, Yadj);
-            m_HarpGridHp[i]->SetStrandAdjustment(Xadj, Yadj);
-            m_TempGrid[i]->SetStrandAdjustment(Xadj, Yadj);
-         }
+         m_StraightGrid[i]->SetStrandAdjustment(Xadj, Yadj);
+         m_HarpGridEnd[i]->SetStrandAdjustment(Xadj, Yadj);
+         m_HarpGridHp[i]->SetStrandAdjustment(Xadj, Yadj);
+         m_TempGrid[i]->SetStrandAdjustment(Xadj, Yadj);
       }
    }
 
