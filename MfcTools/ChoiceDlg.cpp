@@ -85,6 +85,58 @@ BOOL CChoiceDlg::OnInitDialog()
 
    CDialog::OnInitDialog();
 
+   // resize dialog to fit the question text
+   CWnd* pwndQuestion = GetDlgItem(IDC_QUESTION);
+   CClientDC dc(this);
+   CFont* pOldFont = dc.SelectObject(pwndQuestion->GetFont());
+   CRect rect;
+   pwndQuestion->GetClientRect(&rect);
+   CRect rWnd = rect;
+   dc.DrawText(m_Question, &rect, DT_CALCRECT | DT_NOPREFIX | DT_EDITCONTROL | DT_WORDBREAK); // get the required size of the question static control
+   pwndQuestion->SetWindowPos(nullptr, 0, 0, rect.Width(), rect.Height(), SWP_NOMOVE); // resize the question static control
+   auto diff = rect.Height() - rWnd.Height();
+   if (0 < diff)
+   {
+      // the height of the static control grew, so resize the dialog and move the buttons down
+      CRect rDlg;
+      GetWindowRect(&rDlg);
+      rDlg.bottom += diff;
+      MoveWindow(rDlg);
+
+      CRect rResponses;
+      pcbResponses->GetWindowRect(&rResponses);
+      rResponses.top += diff;
+      rResponses.bottom += diff;
+      ScreenToClient(&rResponses);
+      pcbResponses->MoveWindow(rResponses);
+
+      CWnd* pOK = GetDlgItem(IDOK);
+      CWnd* pCancel = GetDlgItem(IDCANCEL);
+      CWnd* pHelp = GetDlgItem(IDHELP);
+
+      CRect rOK;
+      pOK->GetWindowRect(&rOK);
+      rOK.top += diff;
+      rOK.bottom += diff;
+      ScreenToClient(&rOK);
+      pOK->MoveWindow(rOK);
+
+      CRect rCancel;
+      pCancel->GetWindowRect(&rCancel);
+      rCancel.top += diff;
+      rCancel.bottom += diff;
+      ScreenToClient(&rCancel);
+      pCancel->MoveWindow(rCancel);
+
+      CRect rHelp;
+      pHelp->GetWindowRect(&rHelp);
+      rHelp.top += diff;
+      rHelp.bottom += diff;
+      ScreenToClient(&rHelp);
+      pHelp->MoveWindow(rHelp);
+   }
+   dc.SelectObject(pOldFont);
+
    m_Icon.SetIcon(::LoadIcon(nullptr,IDI_QUESTION));
 
    if ( m_bCancel && m_pHelpHandler == nullptr )
