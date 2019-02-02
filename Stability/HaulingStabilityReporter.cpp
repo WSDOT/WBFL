@@ -2223,6 +2223,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                      *pPara << _T(" ") << strOppCFSign.c_str() << _T(" ") << W_CF << _T("(") << H_RC << _T(" + ") << Z_MAX << symbol(alpha) << _T(")");
                   }
                   *pPara << _T("]") << _T("/") << K_THETA << _T(" + ") << symbol(alpha) << rptNewLine;
+                  *pPara << THETA_ROLLOVER << _T(" = ") << tiltAngle.SetValue(pResults->ThetaRollover[slope][impactDir[impactCase]][wind]) << rptNewLine;
                }
                else
                {
