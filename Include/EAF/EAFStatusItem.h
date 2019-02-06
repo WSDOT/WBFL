@@ -68,6 +68,13 @@ public:
 
    virtual bool IsEqual(CEAFStatusItem* pOther) = 0;
 
+   // More efficient way to compare descriptions than casting results from GetDescription
+   // returns -1 (less than), 0 (equal), 1 (greater than)
+   int CompareDescriptions(CEAFStatusItem* pOther)
+   {
+      return m_strDescription.Compare(pOther->m_strDescription);
+   }
+
 private:
    StatusItemIDType m_ID;
    StatusGroupIDType m_StatusGroupID;
