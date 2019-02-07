@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManipTools - Direct Manipulation Tools
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries

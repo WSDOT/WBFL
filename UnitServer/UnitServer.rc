@@ -72,7 +72,7 @@ BEGIN
             VALUE "FileDescription", "WBFL Unit Server"
             VALUE "FileVersion", "4.2.10.0"
             VALUE "InternalName", "WBFL UnitServer"
-            VALUE "LegalCopyright", "Copyright © 1999-2018, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2019, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "UnitServer.DLL"
             VALUE "ProductName", "WBFL"
             VALUE "ProductVersion", "4.2.10.0"
