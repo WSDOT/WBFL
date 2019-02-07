@@ -387,6 +387,9 @@
       <HeaderFileName Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">..\Include\$(Platform)\$(Configuration)\_%(Filename).h</HeaderFileName>
     </Midl>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Include\WBFLVersion.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
