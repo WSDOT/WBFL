@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManipTools - Direct Manipulation Tools
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -98,7 +98,7 @@ BEGIN
             VALUE "FileDescription", "DManipTools Module\0"
             VALUE "FileVersion", "4.3.0.0\0"
             VALUE "InternalName", "DManipTools\0"
-            VALUE "LegalCopyright", "Copyright © 1999-2018, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2019, Washington State Department of Transportation, All Rights Reserved"
             VALUE "LegalTrademarks", "\0"
             VALUE "OLESelfRegister", "\0"
             VALUE "OriginalFilename", "DManipTools.DLL\0"

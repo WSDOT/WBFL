@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library was developed as part of the Alternate Route Project

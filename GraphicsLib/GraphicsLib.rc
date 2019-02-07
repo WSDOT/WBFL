@@ -49,7 +49,7 @@ BEGIN
             VALUE "FileDescription", "Graphics Lib\0"
             VALUE "FileVersion", "4.3.0.0\0"
             VALUE "InternalName", "Graphics Lib\0"
-            VALUE "LegalCopyright", "Copyright © 1999-2018, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2019, Washington State Department of Transportation, All Rights Reserved"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "grlib30.dll\0"
             VALUE "PrivateBuild", "\0"
