@@ -133,8 +133,11 @@ STDMETHODIMP_(void) CToolImpl::OnCopied()
 
 STDMETHODIMP_(void) CToolImpl::DrawDragImage(CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint)
 {
-   CSize offset(-16,-32);
+#pragma Reminder("Deal with icons properly when we get to high dpi settings")
+   const int SZ(42); // The icon size is 32, but windows 10 can stretch it and cause the BitBlt calls not to fully mask the icon 
+                     // leaving trails per mantis 784. Soon we will need to deal with High DPI monitors but not yet.
 
+   CSize offset(-SZ/2,-SZ);
 
    if (m_Icon != nullptr)
    {
@@ -146,21 +149,21 @@ STDMETHODIMP_(void) CToolImpl::DrawDragImage(CDC* pDC, iCoordinateMap* map, cons
       {
          // first time through - create memory dc/bitmap and save off portion of screen under our icon
          m_MemDC.CreateCompatibleDC(pDC);
-         m_Bitmap.CreateCompatibleBitmap(pDC, 32, 32);
+         m_Bitmap.CreateCompatibleBitmap(pDC, SZ, SZ);
          m_MemDC.SelectObject(m_Bitmap);
 
-         BOOL st = m_MemDC.BitBlt(0,0,32,32,pDC,newPoint.x, newPoint.y,SRCCOPY);
+         BOOL st = m_MemDC.BitBlt(0,0,SZ,SZ,pDC,newPoint.x, newPoint.y,SRCCOPY);
          ATLASSERT(st);
          m_First = false;
       }
       else
       {
          // draw saved location
-         BOOL st =pDC->BitBlt(m_OldPoint.x, m_OldPoint.y, 32, 32, &m_MemDC, 0,0, SRCCOPY);
+         BOOL st =pDC->BitBlt(m_OldPoint.x, m_OldPoint.y, SZ, SZ, &m_MemDC, 0,0, SRCCOPY);
          ATLASSERT(st);
 
          // save new location
-         st = m_MemDC.BitBlt(0,0,32,32,pDC,newPoint.x, newPoint.y,SRCCOPY);
+         st = m_MemDC.BitBlt(0,0,SZ,SZ,pDC,newPoint.x, newPoint.y,SRCCOPY);
          ATLASSERT(st);
       }
 
@@ -175,8 +178,6 @@ STDMETHODIMP_(void) CToolImpl::DrawDragImage(CDC* pDC, iCoordinateMap* map, cons
       {
          m_bDrawIcon = true;
       }
-
-
    }
 }
 
