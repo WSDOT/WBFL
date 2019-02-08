@@ -442,7 +442,15 @@ void CNewProjectDlg::OnShowWindow(BOOL bShow, UINT nStatus)
       WINDOWPLACEMENT wp;
       if (EAFGetApp()->ReadWindowPlacement(CString((LPCTSTR)IDS_WINDOW_POSITIONS), _T("NewProject"), &wp))
       {
-         SetWindowPos(NULL, wp.rcNormalPosition.left, wp.rcNormalPosition.top, wp.rcNormalPosition.right - wp.rcNormalPosition.left, wp.rcNormalPosition.bottom - wp.rcNormalPosition.top, 0);
+         CWnd* pDesktop = GetDesktopWindow();
+         CRect rDesktop;
+         pDesktop->GetWindowRect(&rDesktop);
+         CRect rDlg(wp.rcNormalPosition);
+         if(rDesktop.PtInRect(rDlg.TopLeft()) && rDesktop.PtInRect(rDlg.BottomRight()))
+         {
+            // if dialog is within the desktop area, set its position... otherwise the default position will be sued
+            SetWindowPos(NULL, wp.rcNormalPosition.left, wp.rcNormalPosition.top, wp.rcNormalPosition.right - wp.rcNormalPosition.left, wp.rcNormalPosition.bottom - wp.rcNormalPosition.top, 0);
+         }
       }
    }
 }
