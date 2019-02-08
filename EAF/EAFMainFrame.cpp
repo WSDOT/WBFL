@@ -247,10 +247,18 @@ void CEAFMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
    WINDOWPLACEMENT wp;
    if (EAFGetApp()->ReadWindowPlacement(CString((LPCTSTR)IDS_WINDOW_POSITIONS), AfxGetAppName(), &wp))
    {
-      SetWindowPos(NULL, wp.rcNormalPosition.left, wp.rcNormalPosition.top, wp.rcNormalPosition.right - wp.rcNormalPosition.left, wp.rcNormalPosition.bottom - wp.rcNormalPosition.top, 0);
-      if (wp.flags == WPF_RESTORETOMAXIMIZED)
+      CWnd* pDesktop = GetDesktopWindow();
+      CRect rDesktop;
+      pDesktop->GetWindowRect(&rDesktop);
+      CRect rThisWnd(wp.rcNormalPosition);
+      if (rDesktop.PtInRect(rThisWnd.TopLeft()) && rDesktop.PtInRect(rThisWnd.BottomRight()))
       {
-         ShowWindow(SW_MAXIMIZE);
+         // if window is within the desktop area, set its position... otherwise the default position will be sued
+         SetWindowPos(NULL, wp.rcNormalPosition.left, wp.rcNormalPosition.top, wp.rcNormalPosition.right - wp.rcNormalPosition.left, wp.rcNormalPosition.bottom - wp.rcNormalPosition.top, 0);
+         if (wp.flags == WPF_RESTORETOMAXIMIZED)
+         {
+            ShowWindow(SW_MAXIMIZE);
+         }
       }
    }
 }
