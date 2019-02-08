@@ -58,6 +58,11 @@ LOG
 *****************************************************************************/
 struct LRFDCLASS lrfdShearData
 {
+   lrfdShearData()
+   {
+      memset((void*)this, 0, sizeof(lrfdShearData));
+   };
+
    // Input Parameters
    Float64 Mu;
    Float64 Nu;
