@@ -443,8 +443,9 @@ void CNewProjectDlg::OnShowWindow(BOOL bShow, UINT nStatus)
       if (EAFGetApp()->ReadWindowPlacement(CString((LPCTSTR)IDS_WINDOW_POSITIONS), _T("NewProject"), &wp))
       {
          CWnd* pDesktop = GetDesktopWindow();
-         CRect rDesktop;
-         pDesktop->GetWindowRect(&rDesktop);
+         //CRect rDesktop;
+         //pDesktop->GetWindowRect(&rDesktop); // this is the size of one monitor.... use GetSystemMetrics to get the entire desktop
+         CRect rDesktop(0, 0, GetSystemMetrics(SM_CXVIRTUALSCREEN), GetSystemMetrics(SM_CYVIRTUALSCREEN));
          CRect rDlg(wp.rcNormalPosition);
          if(rDesktop.PtInRect(rDlg.TopLeft()) && rDesktop.PtInRect(rDlg.BottomRight()))
          {
