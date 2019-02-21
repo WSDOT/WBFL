@@ -65,7 +65,7 @@ public:
    virtual rptReportContent* CreateClone() const override;
 
    //------------------------------------------------------------------------
-   virtual rptReportContent& SetValue(Float64 cdr);
+   virtual rptReportContent& SetValue(Float64 cdr,bool passed);
    virtual rptReportContent& SetValue(Float64 capacity, Float64 demand, bool passed);
 
    //------------------------------------------------------------------------
@@ -92,5 +92,5 @@ private:
 #define RF_PASS(_cd_,_rf_) _cd_.SetValue(_rf_,1.0,true)
 #define RF_FAIL(_cd_,_rf_) color(Red) << _cd_.SetValue(_rf_ < 0 ? 0 : _rf_,0 < _rf_ ? 1 : 0,false) << color(Black)
 
-#define CD_PASS(_cdr_,_cd_) RPT_PASS << rptNewLine << _T("(") << _cdr_.SetValue(_cd_ < 0 ? CDR_SKIP : _cd_) << _T(")")
-#define CD_FAIL(_cdr_,_cd_) RPT_FAIL << rptNewLine << _T("(") << _cdr_.SetValue(_cd_ < 0 ? CDR_SKIP : _cd_) << _T(")")
+#define CD_PASS(_cdr_,_cd_) RPT_PASS << rptNewLine << _T("(") << _cdr_.SetValue(_cd_ < 0 ? CDR_SKIP : _cd_,true) << _T(")")
+#define CD_FAIL(_cdr_,_cd_) RPT_FAIL << rptNewLine << _T("(") << _cdr_.SetValue(_cd_ < 0 ? CDR_SKIP : _cd_,false) << _T(")")
