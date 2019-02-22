@@ -48,3 +48,6 @@
 #define FS_CR Sub2(_T("FS"), _T("cr"))
 #define FS_F Sub2(_T("FS"),_T("f"))
 #define FS_R Sub2(_T("FS"), _T("ro"))
+
+#define CD_PASS_SINGLE_LINE(_cdr_,_cd_) RPT_PASS << _T(" (") << _cdr_.SetValue(_cd_ < 0 ? CDR_SKIP : _cd_,true) << _T(")")
+#define CD_FAIL_SINGLE_LINE(_cdr_,_cd_) RPT_FAIL << _T(" (") << _cdr_.SetValue(_cd_ < 0 ? CDR_SKIP : _cd_,false) << _T(")")

@@ -40,16 +40,15 @@ class STABILITYCLASS stbLiftingCheckArtifact
 {
 public:
    stbLiftingCheckArtifact();
-   stbLiftingCheckArtifact(const stbLiftingResults& results,const stbLiftingCriteria& criteria,bool bComputeStressesAtEquilibriumAngle);
-   void Init(const stbLiftingResults& results,const stbLiftingCriteria& criteria,bool bComputeStressesAtEquilibriumAngle);
+   stbLiftingCheckArtifact(const stbLiftingResults& results,const stbLiftingCriteria& criteria);
+   void Init(const stbLiftingResults& results,const stbLiftingCriteria& criteria);
 
    const stbLiftingResults& GetLiftingResults() const;
    const stbLiftingCriteria& GetCriteria() const;
 
-   bool EvaluateStressesAtEquilibriumAngle() const;
-
    void GetControllingTensionCase(const stbLiftingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const;
-   void GetControllingCompressionCase(const stbLiftingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const;
+   void GetControllingGlobalCompressionCase(const stbLiftingSectionResult& sectionResult, stbTypes::ImpactDirection* pImpact, stbTypes::Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
+   void GetControllingPeakCompressionCase(const stbLiftingSectionResult& sectionResult, stbTypes::ImpactDirection* pImpact, stbTypes::WindDirection* pWind, stbTypes::Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
 
    bool Passed() const;
    bool PassedCrackingCheck() const;
@@ -61,7 +60,11 @@ public:
    bool PassedCompressionCheck() const;
    bool PassedTensionCheck() const;
 
-   Float64 GetAllowableTension(const stbLiftingSectionResult& sectionResult,stbTypes::ImpactDirection impact,stbTypes::WindDirection wind) const;
+#if defined REBAR_FOR_DIRECT_TENSION
+   Float64 GetAllowableTension(const stbLiftingSectionResult& sectionResult, stbTypes::ImpactDirection impact) const;
+#else
+   Float64 GetAllowableTension(const stbLiftingSectionResult& sectionResult, stbTypes::ImpactDirection impact, stbTypes::WindDirection wind) const;
+#endif
 
    Float64 RequiredFcCompression() const;
    Float64 RequiredFcTension() const;
@@ -70,5 +73,4 @@ public:
 protected:
    stbLiftingResults m_Results;
    stbLiftingCriteria m_Criteria;
-   bool m_bComputeStressesAtEquilibriumAngle;
 };

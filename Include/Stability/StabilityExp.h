@@ -44,3 +44,6 @@
 
 #include <WbflAll.h>
 #include <Stability\AutoLib.h>
+
+#define SHOW_FULL_CRACKING_TABLE
+#define REBAR_FOR_DIRECT_TENSION

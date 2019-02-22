@@ -107,3 +107,8 @@ typedef struct stbTypes
    } HaulingSlope;
 
 } stbTypes;
+
+inline stbTypes::Face GetFace(stbTypes::Corner corner)
+{
+   return (corner == stbTypes::TopLeft || corner == stbTypes::TopRight ? stbTypes::Top : stbTypes::Bottom);
+}

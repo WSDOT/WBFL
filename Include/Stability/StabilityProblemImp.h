@@ -282,7 +282,7 @@ public:
    void SetXferLength(Float64 xferLength,Float64 Lg);
    Float64 GetXferLength() const;
 
-   void SetCamber(bool bDirectCamber,Float64 camber);
+   void SetCamber(Float64 camber);
    void SetLateralCamber(Float64 camber);
    void IncludeLateralRollAxisOffset(bool bInclude);
 
@@ -301,7 +301,7 @@ public:
 
    void GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const;
 
-   void GetCamber(bool* pbDirectCamber,Float64* pCamber) const;
+   Float64 GetCamber() const;
    void SetCamberMultiplier(Float64 m);
    Float64 GetCamberMultiplier() const;
 
@@ -340,8 +340,7 @@ protected:
 
    std::set<stbFpe> m_vFpe;
    
-   bool m_bDirectCamber; // if true, a camber value has been input, otherwise, camber is estimated by increasing the height from the CG to the roll center by a percentage
-   Float64 m_Camber; // direct camber value if bDirectCamber is true, otherwise camber estimate parameter
+   Float64 m_Camber;
    Float64 m_CamberMultiplier;
 
    bool m_bIncludeRollAxisLateralOffset;
@@ -388,7 +387,7 @@ public:
    void SetXferLength(Float64 xferLength, Float64 Lg) { m_Imp.SetXferLength(xferLength, Lg); }
    Float64 GetXferLength() const { return m_Imp.GetXferLength(); }
 
-   void SetCamber(bool bDirectCamber, Float64 camber) { m_Imp.SetCamber(bDirectCamber, camber); }
+   void SetCamber(Float64 camber) { m_Imp.SetCamber(camber); }
    void SetCamberMultiplier(Float64 m) { m_Imp.SetCamberMultiplier(m); }
    Float64 GetCamberMultiplier() const { return m_Imp.GetCamberMultiplier(); }
 
@@ -408,7 +407,7 @@ public:
    void SetSupportPlacementTolerance(Float64 spt)  {  m_Imp.SetSupportPlacementTolerance(spt); }
    void SetImpact(Float64 up,Float64 down)  { m_Imp.SetImpact(up,down);   }
    virtual void GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const  override { m_Imp.GetFpe(strandType,X,pFpe,pXps,pYps); }
-   virtual void GetCamber(bool* pbDirectCamber,Float64* pCamber) const  override {  return m_Imp.GetCamber(pbDirectCamber,pCamber);   }
+   virtual Float64 GetCamber() const  override {  return m_Imp.GetCamber();   }
    virtual Float64 GetLateralCamber() const override { return m_Imp.GetLateralCamber(); }
    virtual bool IncludeLateralRollAxisOffset() const override { return m_Imp.IncludeLateralRollAxisOffset(); }
    virtual void GetSupportLocations(Float64* pLeft,Float64* pRight) const  override { m_Imp.GetSupportLocations(pLeft,pRight); }
@@ -428,17 +427,12 @@ public:
    virtual std::vector<stbIAnalysisPoint*> GetAnalysisPoints() const  override { return m_Imp.GetAnalysisPoints(); }
    virtual const stbIAnalysisPoint* GetAnalysisPoint(IndexType idx) const  override { return m_Imp.GetAnalysisPoint(idx); }
 
-   void EvaluateStressesAtEquilibriumAngle(bool bStressesAtEquilibrium) { m_bComputeStressesAtEquilibriumAngle = bStressesAtEquilibrium; }
-   virtual bool EvaluateStressesAtEquilibriumAngle() const override { return m_bComputeStressesAtEquilibriumAngle; }
-
 protected:
    void MakeCopy(const stbLiftingStabilityProblem& other);
    void MakeAssignment(const stbLiftingStabilityProblem& other);
 
    stbStabilityProblemImp m_Imp;
    Float64 m_LiftAngle;
-
-   bool m_bComputeStressesAtEquilibriumAngle;
 };
 
 class STABILITYCLASS stbHaulingStabilityProblem :  public stbIHaulingStabilityProblem
@@ -463,7 +457,7 @@ public:
    void SetXferLength(Float64 xferLength,Float64 Lg) { m_Imp.SetXferLength(xferLength,Lg); }
    Float64 GetXferLength() const { return m_Imp.GetXferLength(); }
 
-   void SetCamber(bool bDirectCamber,Float64 camber) { m_Imp.SetCamber(bDirectCamber,camber); }
+   void SetCamber(Float64 camber) { m_Imp.SetCamber(camber); }
    void SetCamberMultiplier(Float64 m) { m_Imp.SetCamberMultiplier(m); }
    Float64 GetCamberMultiplier() const { return m_Imp.GetCamberMultiplier(); }
 
@@ -483,7 +477,7 @@ public:
    void SetSupportPlacementTolerance(Float64 spt)  {  m_Imp.SetSupportPlacementTolerance(spt); }
    void SetImpact(Float64 up,Float64 down)  { m_Imp.SetImpact(up,down);   }
    virtual void GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const  override { m_Imp.GetFpe(strandType,X,pFpe,pXps,pYps); }
-   virtual void GetCamber(bool* pbDirectCamber,Float64* pCamber) const  override {   return m_Imp.GetCamber(pbDirectCamber,pCamber);   }
+   virtual Float64 GetCamber() const override { return m_Imp.GetCamber();   }
    virtual Float64 GetLateralCamber() const override { return m_Imp.GetLateralCamber(); }
    virtual bool IncludeLateralRollAxisOffset() const override { return m_Imp.IncludeLateralRollAxisOffset(); }
    virtual void GetSupportLocations(Float64* pLeft,Float64* pRight) const override { m_Imp.GetSupportLocations(pLeft,pRight); }
@@ -528,9 +522,6 @@ public:
    virtual std::vector<stbIAnalysisPoint*> GetAnalysisPoints() const  { return m_Imp.GetAnalysisPoints(); }
    virtual const stbIAnalysisPoint* GetAnalysisPoint(IndexType idx) const override { return m_Imp.GetAnalysisPoint(idx); }
 
-   void EvaluateStressesAtEquilibriumAngle(stbTypes::HaulingSlope slope,bool bStressesAtEquilibrium) { m_bComputeStressesAtEquilibriumAngle[slope] = bStressesAtEquilibrium; }
-   virtual bool EvaluateStressesAtEquilibriumAngle(stbTypes::HaulingSlope slope) const override { return m_bComputeStressesAtEquilibriumAngle[slope]; }
-
 protected:
    void MakeCopy(const stbHaulingStabilityProblem& other);
    void MakeAssignment(const stbHaulingStabilityProblem& other);
@@ -548,6 +539,4 @@ protected:
    Float64 m_Velocity;
    Float64 m_Radius;
    stbTypes::CFType m_CFType;
-
-   bool m_bComputeStressesAtEquilibriumAngle[2];
 };

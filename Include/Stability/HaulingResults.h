@@ -51,20 +51,20 @@ public:
    Float64 fw[4];    // corner stresses due to wind towards the left
    Float64 fcf[4];   // corner stresses due to CF towards the left
 
+   // Array indicies are [HaulingSlope enum][ImpactDirection enum][Corner enum]
+   Float64 fDirect[2][3][4]; // stress due to direct loads (girder self weight and ps)
+                                
    // Array indicies are [HaulingSlope enum][ImpactDirection enum][Direction enum (Wind)][Corner enum]
-   Float64 fDirect[2][3][2][4]; // stress due to direct loads (girder self weight, wind, CF, and ps)
    Float64 fTilt[2][3][2][4];   // stress due to equilibrium rotation of girder caused by girder self weight
-   Float64 f[2][3][2][4];       // stress at a corner (fDirect + fTilt)
+   Float64 f[2][3][2][4];       // stress at a corner (fDirect + fTilt + fWind + fCF)
 
    // Array indicies are [HaulingSlope enum][Face enum]
-   Float64 fMinDirect[2][2];    // min stress
+   Float64 fMinDirect[2][2];    // min direct stress
    stbTypes::ImpactDirection MinDirectStressImpactDirection[2][2];    // impact direction associated with the minimum girder stress
-   stbTypes::WindDirection MinDirectStressWindDirection[2][2];      // wind direction associated with the minimum girder stress
    stbTypes::Corner MinDirectStressCorner[2][2];             // corner where the minimum girder stress occurs
 
-   Float64 fMaxDirect[2][2];    // max stress
+   Float64 fMaxDirect[2][2];    // max direction stress
    stbTypes::ImpactDirection MaxDirectStressImpactDirection[2][2];    // impact direction associated with the maximum girder stress
-   stbTypes::WindDirection MaxDirectStressWindDirection[2][2];      // wind direction associated with the maximum girder stress
    stbTypes::Corner MaxDirectStressCorner[2][2];             // corner where the maximum girder stress occurs
 
    Float64 fMin[2][2];    // min stress
@@ -88,7 +88,11 @@ public:
    stbTypes::Corner FScrCorner[2]; // corner for FScrMin
 
    // Array indicies are [HaulingSlope enum][Impact][Wind Direction]
-   gbtAlternativeTensileStressRequirements altTensionRequirements[2][3][2];
+#if defined REBAR_FOR_DIRECT_TENSION
+   gbtAlternativeTensileStressRequirements altTensionRequirements[2][3];
+#else
+   gbtAlternativeTensileStressRequirements altTensionRequirements[2][3][2]; // use if lateral loads are considered
+#endif
 };
 
 
@@ -127,13 +131,11 @@ public:
    Float64 MaxDirectStress[2];                     // maximum stress in plumb girder(most tensile value)
    IndexType MaxDirectStressAnalysisPointIndex[2]; // analysis poiint index associated with the maximum girder stress
    stbTypes::ImpactDirection MaxDirectStressImpactDirection[2];    // impact direction associated with the maximum girder stress
-   stbTypes::WindDirection MaxDirectStressWindDirection[2];      // wind direction associated with the maximum girder stress
    stbTypes::Corner MaxDirectStressCorner[2];             // corner where the maximum girder stress occurs
 
    Float64 MinDirectStress[2];                     // minimum stress in plumb girder (most compressive value)
    IndexType MinDirectStressAnalysisPointIndex[2]; // analysis poiint index associated with the minimum girder stress
    stbTypes::ImpactDirection MinDirectStressImpactDirection[2];    // impact direction associated with the minimum girder stress
-   stbTypes::WindDirection MinDirectStressWindDirection[2];      // wind direction associated with the minimum girder stress
    stbTypes::Corner MinDirectStressCorner[2];             // corner where the minimum girder stress occurs
 
    Float64 MaxStress[2];                     // maximum stress (most tensile value)
