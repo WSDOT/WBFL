@@ -99,7 +99,7 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
    Float64 fpe = ::ConvertToSysUnits(1232.0,unitMeasure::Kip);
    stabilityProblem.AddFpe(0,0,0,0,fpe,Xleft,-Hg + ::ConvertToSysUnits(5.0,unitMeasure::Inch),0,0,0);
 
-   stabilityProblem.SetCamber(true,::ConvertToSysUnits(2.92,unitMeasure::Inch));
+   stabilityProblem.SetCamber(::ConvertToSysUnits(2.92,unitMeasure::Inch));
 
    stabilityProblem.SetSupportLocations(::ConvertToSysUnits(9,unitMeasure::Feet), ::ConvertToSysUnits(9,unitMeasure::Feet));
    stabilityProblem.SetSweepTolerance( 0.000520833333 );
@@ -108,7 +108,6 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
    stabilityProblem.SetYRollAxis(::ConvertToSysUnits(0.0,unitMeasure::Inch));
 
    stabilityProblem.SetImpact( 0.0, 0.0 );
-   stabilityProblem.EvaluateStressesAtEquilibriumAngle(true);
 
    stbStabilityEngineer engineer;
 
@@ -229,7 +228,7 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
    Float64 fpe = ::ConvertToSysUnits(1251.5,unitMeasure::Kip);
    stabilityProblem.AddFpe(0,0,0,0,fpe,Xleft,-Hg + ::ConvertToSysUnits(7.91,unitMeasure::Inch),0,0,0);
 
-   stabilityProblem.SetCamber(true,::ConvertToSysUnits(2.92,unitMeasure::Inch));
+   stabilityProblem.SetCamber(::ConvertToSysUnits(2.92,unitMeasure::Inch));
 
 
    stabilityProblem.SetSupportLocations(::ConvertToSysUnits(10,unitMeasure::Feet), ::ConvertToSysUnits(10,unitMeasure::Feet));

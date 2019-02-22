@@ -113,10 +113,8 @@ public:
    // Lateral offset from CL Girder and Roll Axis to account for accidiental mis-alignment
    virtual Float64 GetSupportPlacementTolerance() const = 0;
 
-   // returns the camber or camber parameter
-   // bDirectCamber - if true, pCamber is a direct value, otherwise pCamber is a fraction (percentage)
-   // by which to increasing the height from the CG to the roll center to estimate the effect of camber
-   virtual void GetCamber(bool* pbDirectCamber,Float64* pCamber) const = 0;
+   // returns the camber
+   virtual Float64 GetCamber() const = 0;
 
    // returns the camber multiplier used to modify direct camber
    virtual Float64 GetCamberMultiplier() const = 0;
@@ -157,9 +155,6 @@ public:
    // returns the angle of lift cables, measured from the horizontal
    // will return PI_OVER_2 for a vertical lift
    virtual Float64 GetLiftAngle() const = 0; 
-
-   // returns true if stresses are to be evaluted in the tilted equilibrium condition
-   virtual bool EvaluateStressesAtEquilibriumAngle() const = 0;
 };
 
 
@@ -202,7 +197,4 @@ public:
 
    // returns the type of centrifugal force
    virtual stbTypes::CFType GetCentrifugalForceType() const = 0;
-
-   // returns true if stresses are to be evaluted in the tilted equilibrium condition
-   virtual bool EvaluateStressesAtEquilibriumAngle(stbTypes::HaulingSlope slope) const = 0;
 };

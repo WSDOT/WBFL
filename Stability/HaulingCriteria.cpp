@@ -34,8 +34,10 @@ stbHaulingCriteria::stbHaulingCriteria()
 {
    Lambda = 0.0;
 
-   CompressionCoefficient = 0;
-   AllowableCompression      = 0;
+   CompressionCoefficient_GlobalStress = 0;
+   CompressionCoefficient_PeakStress = 0;
+   AllowableCompression_GlobalStress = 0;
+   AllowableCompression_PeakStress = 0;
 
    MinFScr = DBL_MAX;
    MinFSf  = DBL_MAX;

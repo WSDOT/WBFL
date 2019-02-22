@@ -40,7 +40,9 @@ public:
 
    Float64 Lambda;
 
-   Float64 CompressionCoefficient;
+   Float64 CompressionCoefficient_GlobalStress;
+   Float64 CompressionCoefficient_PeakStress;
+
    Float64 TensionCoefficient;
    bool bMaxTension;
    Float64 MaxTension;
@@ -49,7 +51,8 @@ public:
    Float64 MinFScr; // minimum factor of safety against cracking
    Float64 MinFSf;  // minimum factor of safety against failure
 
-   Float64 AllowableCompression; // allowable compression stress
+   Float64 AllowableCompression_GlobalStress; // allowable compression stress
+   Float64 AllowableCompression_PeakStress;
    Float64 AllowableTension; // allowable tension stress
    Float64 AllowableTensionWithRebar; // allowable tension stress if there is adequate rebar
 };

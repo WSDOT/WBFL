@@ -34,7 +34,8 @@ stbLiftingCriteria::stbLiftingCriteria()
 {
    Lambda = 0.0;
 
-   CompressionCoefficient = 0;
+   CompressionCoefficient_GlobalStress = 0;
+   CompressionCoefficient_PeakStress = 0;
    TensionCoefficient = 0;
    bMaxTension = false;
    MaxTension = 0;
@@ -42,7 +43,8 @@ stbLiftingCriteria::stbLiftingCriteria()
    MinFScr = DBL_MAX;
    MinFSf  = DBL_MAX;
 
-   AllowableCompression      = 0;
+   AllowableCompression_GlobalStress = 0;
+   AllowableCompression_PeakStress = 0;
    AllowableTension          = 0;
    AllowableTensionWithRebar = 0;
 }
