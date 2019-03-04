@@ -427,6 +427,14 @@ void stbLiftingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
    row = pTable->GetNumberOfHeaderRows();
    (*pTable)(row,0) << _T("Factor of Safety Against Failure (") << FS_F << _T(")");
    (*pTable)(row,1) << scalar.SetValue(results.MinAdjFsFailure);
+   if (bLabelImpact)
+   {
+      (*pTable)(row, 1) << rptNewLine << strImpact[impactIndex[results.FSfImpactDirection]];
+   }
+   if (bLabelWind)
+   {
+      (*pTable)(row, 1) << rptNewLine << _T("Wind ") << strWindDir[results.FSfWindDirection];
+   }
    row++;
 
    (*pTable)(row,0) << _T("Minimum Factor of Safety Against Failure");

@@ -479,6 +479,14 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       row = pTable->GetNumberOfHeaderRows();
       (*pTable)(row,0) << _T("Factor of Safety Against Failure (") << Sub2(_T("FS"),_T("f")) << _T(")");
       (*pTable)(row,1) << scalar.SetValue(results.MinAdjFsFailure[slope]);
+      if (bLabelImpact)
+      {
+         (*pTable)(row, 1) << rptNewLine << strImpact[impactIndex[results.FSfImpactDirection[slope]]];
+      }
+      if (bLabelWind)
+      {
+         (*pTable)(row, 1) << rptNewLine << _T("Wind ") << strWindDir[results.FSfWindDirection[slope]];
+      }
       row++;
 
       (*pTable)(row,0) << _T("Allowable Factor of Safety Against Failure");
@@ -504,6 +512,14 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       row = pTable->GetNumberOfHeaderRows();
       (*pTable)(row, 0) << _T("Factor of Safety against Rollover (") << FS_R << _T(")");
       (*pTable)(row,1) << scalar.SetValue(results.MinFsRollover[slope]);
+      if (bLabelImpact)
+      {
+         (*pTable)(row, 1) << rptNewLine << strImpact[impactIndex[results.FSroImpactDirection[slope]]];
+      }
+      if (bLabelWind)
+      {
+         (*pTable)(row, 1) << rptNewLine << _T("Wind ") << strWindDir[results.FSroWindDirection[slope]];
+      }
       row++;
 
       (*pTable)(row,0) << _T("Minimum Factor of Safety against Rollover");

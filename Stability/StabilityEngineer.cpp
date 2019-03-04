@@ -719,7 +719,7 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
             // if FSf < FScr then FSf = FScr (if the girder doesn't crack, it doesn't fail)
             results.AdjFsFailure[impact][wind] = Max(results.FsFailure[impact][wind],results.MinFScr[impact][wind]);
 
-            if ( ::IsLT(results.FsFailure[impact][wind],results.MinFsFailure) )
+            if ( ::IsLT(results.AdjFsFailure[impact][wind],results.MinAdjFsFailure) )
             {
                results.MinFsFailure = results.FsFailure[impact][wind];
                results.MinAdjFsFailure = results.AdjFsFailure[impact][wind];
@@ -1240,7 +1240,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                // if FSf < FScr then FSf = FScr (if the girder doesn't crack, it doesn't fail)
                results.AdjFsFailure[slope][impact][wind] = Max(results.FsFailure[slope][impact][wind], results.MinFScr[slope]);
 
-               if (::IsLT(results.FsFailure[slope][impact][wind], results.MinFsFailure[slope]))
+               if (::IsLT(results.AdjFsFailure[slope][impact][wind], results.MinAdjFsFailure[slope]))
                {
                   results.MinFsFailure[slope] = results.FsFailure[slope][impact][wind];
                   results.MinAdjFsFailure[slope] = results.AdjFsFailure[slope][impact][wind];
