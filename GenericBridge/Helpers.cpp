@@ -347,13 +347,13 @@ void GetEndBlockWidth(Float64 Xs, Float64 Ls, SectionBias sectionBias, IPrecastB
       Xs = Ls - Xs; // Xs is now measured from the right end
    }
 
-   if (Xs < ebLength[endType])
+   if ( Xs < ebLength[endType] || (IsEqual(Xs,ebLength[endType]) && sectionBias == (endType == etStart ? sbLeft : sbRight)))
    {
       // in the end block
       *pWtop = ebWidth[endType];
       *pWbot = ebWidth[endType];
    }
-   else if (::InRange(ebLength[endType], Xs, ebLength[endType] + ebTransLength[endType]))
+   else if (!::IsZero(ebTransLength[endType]) && ::InRange(ebLength[endType], Xs, ebLength[endType] + ebTransLength[endType]))
    {
       // in the end block transition
       Float64 t1, t2;
