@@ -2320,7 +2320,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                   }
                   *pPara << Z_WIND;
                }
-               *pPara << _T(")") << _T("(1 + 2.5") << THETA_ROLLOVER << _T(") ") << YR << THETA_ROLLOVER;
+               *pPara << _T(")") << _T("(1 + 2.5") << THETA_ROLLOVER << _T(") ") << _T(" + ") << YR << THETA_ROLLOVER;
                if (pResults->ThetaRollover[slope][impactDir[impactCase]][wind] < 0)
                {
                   *pPara << _T(" - ");
