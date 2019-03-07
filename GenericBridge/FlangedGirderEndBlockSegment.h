@@ -146,6 +146,5 @@ public:
 
 private:
    void GetEndBlockWidth(Float64 Xs, SectionBias sectionBias,Float64* pWtop,Float64* pWbot);
-   Float64 GetSuperstructureMemberLength();
 };
 
