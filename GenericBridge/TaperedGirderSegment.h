@@ -130,8 +130,5 @@ public:
 public:
 	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
-
-private:
-   Float64 GetSuperstructureMemberLength();
 };
 
