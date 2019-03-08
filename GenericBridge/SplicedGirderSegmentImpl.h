@@ -162,13 +162,13 @@ public:
       polyShape.CoCreateInstance(CLSID_PolyShape);
 
       std::vector<Float64> xValues;
-      GetProfilePointLocations(bIncludeClosure, VARIANT_FALSE, &xValues); // want girder path coordinates
+      GetProfilePointLocations(bIncludeClosure, VARIANT_FALSE, &xValues); // get xValues in Girder Path Coordinates
 
       for ( const auto Xgp: xValues)
       {
-         Float64 Xs = ConvertToSegmentCoordinate(Xgp);
+         Float64 Xs = ConvertToSegmentCoordinate(Xgp); // need location in Segment Coordinates to get section depth
          Float64 H = GetSectionDepth(Xs);
-         polyShape->AddPoint(Xgp,-H);
+         polyShape->AddPoint(Xgp,-H); // create profile shape using Girder Path Coordinate and section depth
       }
 
       // points across the top of the segment
@@ -748,6 +748,7 @@ protected:
    {
       if (m_bSegmentRange)
       {
+         // these values have been previous computed
          *pXgpStart = m_XgpStart;
          *pXgpEnd = m_XgpEnd;
          return;
@@ -757,12 +758,13 @@ protected:
       // This is the start/end of the segment path coordinate system in
       // girder path coordinates
 
-      *pXgpStart = 0; // start at zero
+      *pXgpStart = 0; // start at zero (this is the normal case)
 
       // sum the layout length of all the previous segments
       CComPtr<ISegment> segment;
       get_PrevSegment(&segment);
       CComQIPtr<ISuperstructureMemberSegment> prevSegment(segment);
+      CComPtr<ISuperstructureMemberSegment> firstSegment = (prevSegment == nullptr ? this : nullptr);
       while ( prevSegment )
       {
          CComPtr<IGirderLine> girderLine;
@@ -779,16 +781,53 @@ protected:
          prevSegment = s;
       }
 
-      // locate end of range
+      // locate end of range using our layout length
       CComPtr<IGirderLine> girderLine;
       get_GirderLine(&girderLine);
-
       Float64 layout_length;
       girderLine->get_LayoutLength(&layout_length);
       *pXgpEnd = *pXgpStart + layout_length;
 
+      // adjust start location based on the boundary conditions of the first segment (this must come after setting the end location)
+      if (firstSegment)
+      {
+         CComPtr<IGirderLine> firstGirderLine;
+         firstSegment->get_GirderLine(&firstGirderLine);
+         Float64 brgOffset, endDist;
+         firstGirderLine->get_BearingOffset(etStart, &brgOffset);
+         firstGirderLine->get_EndDistance(etStart, &endDist);
+         Float64 offset = brgOffset - endDist;
+         if (offset < 0)
+         {
+            // first segment starts before the pier line... need to make an adjustment to the start point
+            *pXgpStart += offset;
+         }
+      }
+
+      segment.Release();
+      get_NextSegment(&segment);
+      CComQIPtr<ISuperstructureMemberSegment> nextSegment(segment);
+      CComPtr<ISuperstructureMemberSegment> lastSegment = (nextSegment == nullptr ? this : nullptr);
+      if (lastSegment)
+      {
+         CComPtr<IGirderLine> lastGirderLine;
+         lastSegment->get_GirderLine(&lastGirderLine);
+         Float64 brgOffset, endDist;
+         lastGirderLine->get_BearingOffset(etEnd, &brgOffset);
+         lastGirderLine->get_EndDistance(etEnd, &endDist);
+         Float64 offset = brgOffset - endDist;
+         if (offset < 0)
+         {
+            // last segment ends after the pier line... need to make an adjustment to the end point
+            *pXgpEnd -= offset;
+         }
+      }
+
+
       m_XgpStart = *pXgpStart;
       m_XgpEnd = *pXgpEnd;
+
+      m_bSegmentRange = true;
    }
 
 
@@ -822,11 +861,11 @@ protected:
       Float64 brgOffset, endDist;
       girderLine->get_BearingOffset(etStart, &brgOffset);
       girderLine->get_EndDistance(etStart, &endDist);
-      leftClosureAdj = (brgOffset - endDist);
+      leftClosureAdj = Max(0.0,(brgOffset - endDist));
 
       girderLine->get_BearingOffset(etEnd, &brgOffset);
       girderLine->get_EndDistance(etEnd, &endDist);
-      rightClosureAdj = (brgOffset - endDist);
+      rightClosureAdj = Max(0.0,(brgOffset - endDist));
 
       if (bIncludeClosure == VARIANT_FALSE && bSegmentCoordinates == VARIANT_FALSE)
       {
