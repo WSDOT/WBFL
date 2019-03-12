@@ -765,12 +765,18 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    {
       Float64 sweepTolerance = pStabilityProblem->GetSweepTolerance();
       INT x = (INT)::RoundOff((1.0/(sweepTolerance*120.0)),1.0);
-      *pPara << _T("Sweep Tolerance, ") << Sub2(_T("t"),_T("sweep")) << _T(" = ") << Super(_T("1")) << _T("/") << Sub(x) << _T(" in per 10 ft") << rptNewLine;
+      *pPara << _T("Sweep Tolerance, ") << Sub2(_T("t"),_T("sweep")) << _T(" = ") << Super(_T("1")) << _T("/") << Sub(x) << _T(" in per 10 ft");
    }
    else
    {
-      *pPara << _T("Sweep Tolerance, ") << Sub2(_T("t"),_T("sweep")) << _T(" = ") << 1000*pStabilityProblem->GetSweepTolerance() << _T("mm/m") << rptNewLine;
+      *pPara << _T("Sweep Tolerance, ") << Sub2(_T("t"),_T("sweep")) << _T(" = ") << 1000*pStabilityProblem->GetSweepTolerance() << _T("mm/m");
    }
+   Float64 sweepGrowth = pStabilityProblem->GetSweepGrowth();
+   if (!IsZero(sweepGrowth))
+   {
+      *pPara << _T(" + ") << shortLength.SetValue(sweepGrowth);
+   }
+   *pPara << rptNewLine; // finishes sweep tolerance line
    *pPara << _T("Bunking Tolerance, ") << E_BUNK << _T(" = ") << shortLength.SetValue(pStabilityProblem->GetSupportPlacementTolerance()) << rptNewLine;
 
    const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
@@ -1071,7 +1077,12 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
          *pPara << _T("Eccentricity of CG from roll axis, ") << Sub2(_T("e"), _T("cg")) << _T(" = ") << symbol(SUM) << _T("(0.5(") << Sub2(_T("A"), _T("g i")) << Super2(Sub2(_T("X"), _T("left")), _T("i")) << _T(" + ") << Sub2(_T("A"), _T("g i+1")) << Super2(Sub2(_T("X"), _T("left")), _T("i+1")) << _T("))") << Sub2(_T("w"), _T("c")) << _T(")(Section Length)") << _T(")/") << Sub2(_T("W"), _T("g")) << _T(" = ") << shortLength.SetValue(pResults->Xleft) << rptNewLine;
       }
    }
-   *pPara << _T("Lateral Sweep, ") << E_SWEEP << _T(" = ") << Sub2(_T("L"),_T("g")) << Sub2(_T("t"),_T("sweep")) << _T(" = ") << shortLength.SetValue(pResults->LateralSweep) << rptNewLine;
+   *pPara << _T("Lateral Sweep, ") << E_SWEEP << _T(" = ") << Sub2(_T("L"), _T("g")) << Sub2(_T("t"), _T("sweep"));
+   if (!IsZero(sweepGrowth))
+   {
+      *pPara << _T(" + ") << shortLength.SetValue(sweepGrowth);
+   }
+   *pPara << _T(" = ") << shortLength.SetValue(pResults->LateralSweep) << rptNewLine;
 
    *pPara << _T("Initial lateral eccentricity of center of gravity of girder due to lateral sweep and eccentricity of bunking devices from centerline of girder, ") << rptNewLine;
    if (pStabilityProblem->IncludeLateralRollAxisOffset())

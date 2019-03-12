@@ -113,7 +113,7 @@ void stbStabilityEngineer::PrepareResults(const stbIGirder* pGirder,const stbISt
    results.OffsetFactor = (span_ratio)*(span_ratio) - 1./3.;
    results.OffsetFactor = IsZero(results.OffsetFactor) ? 0 : results.OffsetFactor;
 
-   results.LateralSweep = pStabilityProblem->GetSweepTolerance()*Lg;
+   results.LateralSweep = pStabilityProblem->GetSweepTolerance()*Lg + pStabilityProblem->GetSweepGrowth();
 
    ComputeXcg(pGirder, pStabilityProblem, results);
 
