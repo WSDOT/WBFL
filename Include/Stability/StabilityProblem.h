@@ -110,6 +110,10 @@ public:
    // returns the manufacturing sweep tolerance
    virtual Float64 GetSweepTolerance() const = 0;
 
+   // returns the sweep growth (for hauling PCI has total sweep as (1/8 in per 10 ft + 1").
+   // the 1" is the sweep growth
+   virtual Float64 GetSweepGrowth() const = 0;
+
    // Lateral offset from CL Girder and Roll Axis to account for accidiental mis-alignment
    virtual Float64 GetSupportPlacementTolerance() const = 0;
 

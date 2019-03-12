@@ -296,6 +296,7 @@ public:
    void SetSupportLocations(Float64 Ll,Float64 Lr);
    void SetYRollAxis(Float64 Yra);
    void SetSweepTolerance(Float64 sweepTolerance);
+   void SetSweepGrowth(Float64 sweepGrowth);
    void SetSupportPlacementTolerance(Float64 spt);
    void SetImpact(Float64 up,Float64 down);
 
@@ -315,6 +316,7 @@ public:
    Float64 GetYRollAxis() const;
    
    Float64 GetSweepTolerance() const;
+   Float64 GetSweepGrowth() const;
    Float64 GetSupportPlacementTolerance() const;
 
    void GetImpact(Float64* pIMup,Float64* pIMdown) const;
@@ -354,6 +356,7 @@ protected:
    Float64 m_Lr; // location of right support, measured from the right end of the girder
 
    Float64 m_SweepTolerance;
+   Float64 m_SweepGrowth;
    Float64 m_SupportPlacementTolerance;
 
    Float64 m_Yra; // location of the roll axis, measured from the top of the girder
@@ -422,6 +425,10 @@ public:
    void SetLiftAngle(Float64 liftAngle);
    virtual Float64 GetLiftAngle() const override;
 
+   void SetSweepGrowth(Float64 sweepGrowth) { m_Imp.SetSweepGrowth(sweepGrowth); }
+   virtual Float64 GetSweepGrowth() const override { return m_Imp.GetSweepGrowth(); }
+
+
    void ClearAnalysisPoints() { m_Imp.ClearAnalysisPoints(); }
    void AddAnalysisPoint(stbIAnalysisPoint* pAnalysisPoint) { m_Imp.AddAnalysisPoint(pAnalysisPoint); }
    virtual std::vector<stbIAnalysisPoint*> GetAnalysisPoints() const  override { return m_Imp.GetAnalysisPoints(); }
@@ -485,6 +492,9 @@ public:
    virtual Float64 GetSweepTolerance() const override { return m_Imp.GetSweepTolerance(); }
    virtual Float64 GetSupportPlacementTolerance() const override { return m_Imp.GetSupportPlacementTolerance(); }
 
+   void SetSweepGrowth(Float64 sweepGrowth) { m_Imp.SetSweepGrowth(sweepGrowth); }
+   virtual Float64 GetSweepGrowth() const override { return m_Imp.GetSweepGrowth(); }
+
    virtual void GetImpact(Float64* pIMup,Float64* pIMdown) const override { m_Imp.GetImpact(pIMup,pIMdown); }
 
    void SetImpactUsage(stbTypes::HaulingImpact impactUsage);
@@ -516,6 +526,7 @@ public:
 
    void SetCentrifugalForceType(stbTypes::CFType cfType);
    virtual stbTypes::CFType GetCentrifugalForceType() const override;
+
 
    void ClearAnalysisPoints() { m_Imp.ClearAnalysisPoints(); }
    void AddAnalysisPoint(stbIAnalysisPoint* pAnalysisPoint) { m_Imp.AddAnalysisPoint(pAnalysisPoint); }

@@ -381,6 +381,7 @@ stbStabilityProblemImp::stbStabilityProblemImp()
    m_Lr = 0;
 
    m_SweepTolerance = 0;
+   m_SweepGrowth = 0.0;
    m_SupportPlacementTolerance = 0;
 
    m_Yra = 0;
@@ -451,6 +452,9 @@ bool stbStabilityProblemImp::operator==(const stbStabilityProblemImp& other) con
       return false;
 
    if ( !IsEqual(m_SweepTolerance,other.m_SweepTolerance) )
+      return false;
+
+   if (!IsEqual(m_SweepGrowth, other.m_SweepGrowth))
       return false;
 
    if ( !IsEqual(m_SupportPlacementTolerance,other.m_SupportPlacementTolerance) )
@@ -670,6 +674,11 @@ void stbStabilityProblemImp::SetSweepTolerance(Float64 sweepTolerance)
    m_SweepTolerance = sweepTolerance;
 }
 
+void stbStabilityProblemImp::SetSweepGrowth(Float64 sweepGrowth)
+{
+   m_SweepGrowth = sweepGrowth;
+}
+
 void stbStabilityProblemImp::SetSupportPlacementTolerance(Float64 spt)
 {
    m_SupportPlacementTolerance = spt;
@@ -839,6 +848,11 @@ Float64 stbStabilityProblemImp::GetSweepTolerance() const
    return m_SweepTolerance;
 }
 
+Float64 stbStabilityProblemImp::GetSweepGrowth() const
+{
+   return m_SweepGrowth;
+}
+
 Float64 stbStabilityProblemImp::GetSupportPlacementTolerance() const
 {
    return m_SupportPlacementTolerance;
@@ -942,6 +956,7 @@ void stbStabilityProblemImp::MakeCopy(const stbStabilityProblemImp& other)
    m_Lr = other.m_Lr;
 
    m_SweepTolerance = other.m_SweepTolerance;
+   m_SweepGrowth = other.m_SweepGrowth;
    m_SupportPlacementTolerance = other.m_SupportPlacementTolerance;
 
    m_Yra = other.m_Yra;

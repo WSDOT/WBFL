@@ -569,12 +569,18 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    {
       Float64 sweepTolerance = pStabilityProblem->GetSweepTolerance();
       INT x = (INT)::RoundOff((1.0 / (sweepTolerance*120.0)), 1.0);
-      *pPara << _T("Sweep Tolerance, ") << Sub2(_T("t"), _T("sweep")) << _T(" = ") << Super(_T("1")) << _T("/") << Sub(x) << _T(" in per 10 ft") << rptNewLine;
+      *pPara << _T("Sweep Tolerance, ") << Sub2(_T("t"), _T("sweep")) << _T(" = ") << Super(_T("1")) << _T("/") << Sub(x) << _T(" in per 10 ft");
    }
    else
    {
-      *pPara << _T("Sweep Tolerance, ") << Sub2(_T("t"), _T("sweep")) << _T(" = ") << 1000 * pStabilityProblem->GetSweepTolerance() << _T("mm/m") << rptNewLine;
+      *pPara << _T("Sweep Tolerance, ") << Sub2(_T("t"), _T("sweep")) << _T(" = ") << 1000 * pStabilityProblem->GetSweepTolerance() << _T("mm/m");
    }
+   Float64 sweepGrowth = pStabilityProblem->GetSweepGrowth();
+   if (!IsZero(sweepGrowth))
+   {
+      *pPara << _T(" + ") << shortLength.SetValue(sweepGrowth);
+   }
+   *pPara << rptNewLine; // finishes sweep tolerance line
    *pPara << _T("Lifting Device Placement Tolerance, ") << Sub2(_T("e"), _T("lift")) << _T(" = ") << shortLength.SetValue(pStabilityProblem->GetSupportPlacementTolerance()) << rptNewLine;
 
    const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
@@ -921,7 +927,12 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
    pPara = new rptParagraph;
    *pChapter << pPara;
-   *pPara << _T("Lateral Sweep, ") << E_SWEEP << _T(" = ") << Sub2(_T("L"), _T("g")) << Sub2(_T("t"), _T("sweep")) << _T(" = ") << shortLength.SetValue(pResults->LateralSweep) << rptNewLine;
+   *pPara << _T("Lateral Sweep, ") << E_SWEEP << _T(" = ") << Sub2(_T("L"), _T("g")) << Sub2(_T("t"), _T("sweep"));
+   if (!IsZero(sweepGrowth))
+   {
+      *pPara << _T(" + ") << shortLength.SetValue(sweepGrowth);
+   }
+   *pPara << _T(" = ") << shortLength.SetValue(pResults->LateralSweep) << rptNewLine;
 
 
    *pPara << _T("Initial lateral eccentricity of center of gravity of girder due to lateral sweep and eccentricity of lifting devices from centerline of girder, ") << rptNewLine;
