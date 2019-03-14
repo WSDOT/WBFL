@@ -160,6 +160,9 @@
     <ClCompile Include="AnchoredTextBlockImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CompoundDrawPointStrategyImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\DManip\AutoLib.h">
@@ -471,6 +474,12 @@
     <ClInclude Include="AnchoredTextBlockImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CompoundDrawPointStrategyImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\DManip\CompoundDrawPointStrategy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\Include\WBFLDManip.idl" />
@@ -598,6 +607,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="AnchoredTextBlock.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CompoundDrawPointStrategy.rgs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

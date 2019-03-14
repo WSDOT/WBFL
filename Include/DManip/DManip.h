@@ -98,6 +98,7 @@
 #include <DManip\ShapeDrawStrategy.h>
 #include <DManip\TargetDrawStrategy.h>
 #include <DManip\CompoundDrawLineStrategy.h>
+#include <DManip\CompoundDrawPointStrategy.h>
 
 
 #endif // INCLUDED_DMANIP_H_

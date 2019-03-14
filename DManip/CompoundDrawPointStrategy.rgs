@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.CompoundDrawPointStrategy.1 = s 'CompoundDrawPointStrategy Class'
+	{
+		CLSID = s '{54F9696A-CE87-456D-81D8-0FB088D97139}'
+	}
+	WBFLDManip.CompoundDrawPointStrategy = s 'CompoundDrawPointStrategy Class'
+	{
+		CLSID = s '{54F9696A-CE87-456D-81D8-0FB088D97139}'
+		CurVer = s 'WBFLDManip.CompoundDrawPointStrategy.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {54F9696A-CE87-456D-81D8-0FB088D97139} = s 'CompoundDrawPointStrategy Class'
+		{
+			ProgID = s 'WBFLDManip.CompoundDrawPointStrategy.1'
+			VersionIndependentProgID = s 'WBFLDManip.CompoundDrawPointStrategy'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

@@ -74,19 +74,19 @@ STDMETHODIMP_(PointType) CSimpleDrawPointStrategyImpl::GetPointType()
    return m_Type;
 }
 
-STDMETHODIMP_(void) CSimpleDrawPointStrategyImpl::SetPointSize(Float64 size)
+STDMETHODIMP_(void) CSimpleDrawPointStrategyImpl::SetPointSize(int size)
 {
    m_Size = size;
 }
 
-STDMETHODIMP_(Float64) CSimpleDrawPointStrategyImpl::GetPointSize()
+STDMETHODIMP_(int) CSimpleDrawPointStrategyImpl::GetPointSize()
 {
    return m_Size;
 }
 
 STDMETHODIMP_(void) CSimpleDrawPointStrategyImpl::Draw(iPointDisplayObject* pDO,CDC* pDC)
 {
-   CRect r = pDO->GetBoundingBox();
+   CRect r = GetPointBox(pDO);
 
    CComPtr<iDisplayList> pDL;
    pDO->GetDisplayList(&pDL);
@@ -119,7 +119,7 @@ STDMETHODIMP_(void) CSimpleDrawPointStrategyImpl::Draw(iPointDisplayObject* pDO,
 
 STDMETHODIMP_(void) CSimpleDrawPointStrategyImpl::DrawHighlite(iPointDisplayObject* pDO,CDC* pDC,BOOL bHighlite)
 {
-   CRect r = pDO->GetBoundingBox();
+   CRect r = GetPointBox(pDO);
 
    COLORREF color;
    color = RGB(0,255,0);
@@ -135,7 +135,7 @@ STDMETHODIMP_(void) CSimpleDrawPointStrategyImpl::DrawDragImage(iPointDisplayObj
 {
    map->LPtoWP(dragPoint.x, dragPoint.y, &m_CachePoint);
 
-   CRect r = pDO->GetBoundingBox();
+   CRect r = GetPointBox(pDO);
 
    COLORREF color;
    color = RGB(0,0,255);
@@ -250,4 +250,28 @@ void CSimpleDrawPointStrategyImpl::GetPointInWorldSpace(iPointDisplayObject* pDO
 
    // map the point to world space
    pMap->MPtoWP(point,wx,wy);
+}
+
+CRect CSimpleDrawPointStrategyImpl::GetPointBox(iPointDisplayObject* pDO)
+{
+   Float64 px, py;
+   GetPointInWorldSpace(pDO, &px, &py);
+
+   CComPtr<iDisplayList> pDL;
+   pDO->GetDisplayList(&pDL);
+   CComPtr<iDisplayMgr> pDispMgr;
+   pDL->GetDisplayMgr(&pDispMgr);
+   CComPtr<iCoordinateMap> pMap;
+   pDispMgr->GetCoordinateMap(&pMap);
+
+   LONG x, y;
+   pMap->WPtoLP(px,py,&x,&y);
+
+   CRect rect;
+   rect.left = x - m_Size / 2;
+   rect.right = rect.left + m_Size;
+   rect.top = y - m_Size / 2;
+   rect.bottom = rect.top + m_Size;
+
+   return rect;
 }

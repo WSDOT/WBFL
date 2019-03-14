@@ -21,32 +21,18 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SIMPLEDRAWPOINTSTRATEGY_H_
-#define INCLUDED_SIMPLEDRAWPOINTSTRATEGY_H_
+#ifndef INCLUDED_COMPOUNDDRAWPOINTSTRATEGY_H_
+#define INCLUDED_COMPOUNDDRAWPOINTSTRATEGY_H_
 #pragma once
 
 #include <DManip\DrawPointStrategy.h>
-#include <DManip\LineStyles.h>
 
-typedef enum PointType
+interface iCompoundDrawPointStrategy : public iDrawPointStrategy
 {
-   ptNone   = 0,
-   ptCircle = 1,
-   ptSquare = 2
-   // ptTriangle
-   // ptPentagon
-   // ptHexagon
-   // ptStar???
-} PointType;
-
-interface iSimpleDrawPointStrategy : public iDrawPointStrategy
-{
-   STDMETHOD_(void,SetColor)(COLORREF crColor) PURE;
-   STDMETHOD_(COLORREF,GetColor)() PURE;
-   STDMETHOD_(void,SetPointType)(PointType type) PURE;
-   STDMETHOD_(PointType,GetPointType)() PURE;
-   STDMETHOD_(void,SetPointSize)(int size) PURE;
-   STDMETHOD_(int,GetPointSize)() PURE;
+   STDMETHOD_(void,AddStrategy)(iDrawPointStrategy* pStrategy) PURE;
+   STDMETHOD_(void, RemoveStrategy)(CollectionIndexType index) PURE;
+   STDMETHOD_(void, GetStrategy)(CollectionIndexType index,iDrawPointStrategy** ppStrategy) PURE;
+   STDMETHOD_(CollectionIndexType,Count)() PURE;
 };
 
-#endif // INCLUDED_SIMPLEDRAWPOINTSTRATEGY_H_
+#endif // INCLUDED_COMPOUNDDRAWPOINTSTRATEGY_H_
