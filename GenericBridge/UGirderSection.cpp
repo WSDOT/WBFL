@@ -135,6 +135,12 @@ STDMETHODIMP CUGirderSection::get_Beam(IUBeam** beam)
 
 ////////////////////////////////////////////////////////////////////////
 // IPrecastGirderSection implementation
+STDMETHODIMP CUGirderSection::get_WorkPoint(IPoint2d** ppWorkPoint)
+{
+   return get_LocatorPoint(lpTopCenter, ppWorkPoint);
+}
+
+
 #define NWEBS 2
 STDMETHODIMP CUGirderSection::get_WebCount(WebIndexType* nWebs)
 {

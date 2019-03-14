@@ -1799,6 +1799,8 @@ library WBFLGenericBridge
 	]
 	interface IGirderSection : IUnknown
 	{
+      [propget, helpstring("property WorkPoint")] HRESULT WorkPoint([out, retval]IPoint2d** ppWorkPoint);
+
 	   [propget,helpstring("property WebCount")] HRESULT WebCount([out,retval]WebIndexType* nWebs);
 	   [propget,helpstring("property WebLocation")] HRESULT WebLocation([in]WebIndexType idx,[out,retval]Float64* location);
 	   [propget,helpstring("property WebSpacing")] HRESULT WebSpacing([in]WebIndexType idx,[out,retval]Float64* spacing);

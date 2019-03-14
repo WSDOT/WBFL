@@ -83,7 +83,8 @@ public:
 
 // IGirderSection
 public:
-	STDMETHOD(get_WebCount)(/*[out,retval]*/WebIndexType* nWebs) override;
+   STDMETHOD(get_WorkPoint)(/*[out, retval]*/IPoint2d** ppWorkPoint) override;
+   STDMETHOD(get_WebCount)(/*[out,retval]*/WebIndexType* nWebs) override;
 	STDMETHOD(get_WebLocation)(/*[in]*/WebIndexType idx,/*[out,retval]*/Float64* location) override;
 	STDMETHOD(get_WebSpacing)(/*[in]*/WebIndexType idx,/*[out,retval]*/Float64* spacing) override;
 	STDMETHOD(get_WebThickness)(/*[in]*/WebIndexType idx,/*[out,retval]*/Float64* tWeb) override;

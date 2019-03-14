@@ -159,6 +159,11 @@ STDMETHODIMP CVoidedSlabSection2::get_Beam(IVoidedSlab2** beam)
 
 ////////////////////////////////////////////////////////////////////////
 // IPrecastGirderSection implementation
+STDMETHODIMP CVoidedSlabSection2::get_WorkPoint(IPoint2d** ppWorkPoint)
+{
+   return get_LocatorPoint(lpTopCenter, ppWorkPoint);
+}
+
 STDMETHODIMP CVoidedSlabSection2::get_WebCount(WebIndexType* nWebs)
 {
    CHECK_RETVAL(nWebs);
