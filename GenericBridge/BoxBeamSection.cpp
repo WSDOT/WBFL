@@ -114,6 +114,11 @@ STDMETHODIMP CBoxBeamSection::get_Beam(IBoxBeam** beam)
 
 ////////////////////////////////////////////////////////////////////////
 // IPrecastGirderSection implementation
+STDMETHODIMP CBoxBeamSection::get_WorkPoint(IPoint2d** ppWorkPoint)
+{
+   return get_LocatorPoint(lpTopCenter, ppWorkPoint);
+}
+
 STDMETHODIMP CBoxBeamSection::get_WebCount(WebIndexType* nWebs)
 {
    CHECK_RETVAL(nWebs);

@@ -135,6 +135,11 @@ public:
 
    ////////////////////////////////////////////////////////////////////////
    // IGirderSection implementation
+   STDMETHODIMP get_WorkPoint(IPoint2d** ppWorkPoint) override
+   {
+      return get_LocatorPoint(lpTopCenter, ppWorkPoint);
+   }
+
    STDMETHODIMP get_WebCount(WebIndexType* nWebs) override
    {
       CHECK_RETVAL(nWebs);

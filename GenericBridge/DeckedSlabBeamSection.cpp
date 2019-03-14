@@ -108,6 +108,11 @@ STDMETHODIMP CDeckedSlabBeamSection::get_Beam(IDeckedSlabBeam** beam)
 
 ////////////////////////////////////////////////////////////////////////
 // IPrecastGirderSection implementation
+STDMETHODIMP CDeckedSlabBeamSection::get_WorkPoint(IPoint2d** ppWorkPoint)
+{
+   return get_LocatorPoint(lpTopCenter, ppWorkPoint);
+}
+
 STDMETHODIMP CDeckedSlabBeamSection::get_WebCount(WebIndexType* nWebs)
 {
    CHECK_RETVAL(nWebs);

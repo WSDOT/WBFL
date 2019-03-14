@@ -116,6 +116,11 @@ STDMETHODIMP CMultiWebSection::get_Beam(IMultiWeb** beam)
 
 ////////////////////////////////////////////////////////////////////////
 // IPrecastGirderSection implementation
+STDMETHODIMP CMultiWebSection::get_WorkPoint(IPoint2d** ppWorkPoint)
+{
+   return get_LocatorPoint(lpTopCenter, ppWorkPoint);
+}
+
 STDMETHODIMP CMultiWebSection::get_WebCount(WebIndexType* nWebs)
 {
    return m_Beam->get_WebCount(nWebs);
