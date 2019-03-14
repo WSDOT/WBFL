@@ -21,9 +21,9 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_COMPOUNDDRAWELINESTRATEGYIMPL_H_
-#define INCLUDED_COMPOUNDDRAWELINESTRATEGYIMPL_H_
-// CompoundDrawLineStrategyImpl.h: interface for the CCompoundDrawLineStrategyImpl class.
+#ifndef INCLUDED_COMPOUNDDRAWEPOINTSTRATEGYIMPL_H_
+#define INCLUDED_COMPOUNDDRAWEPOINTSTRATEGYIMPL_H_
+// CompoundDrawPointStrategyImpl.h: interface for the CCompoundDrawPointStrategyImpl class.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -33,42 +33,42 @@
 
 #include "resource.h"
 
-class ATL_NO_VTABLE CCompoundDrawLineStrategyImpl : 
+class ATL_NO_VTABLE CCompoundDrawPointStrategyImpl : 
 	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CCompoundDrawLineStrategyImpl, &CLSID_CompoundDrawLineStrategy>,
-   public iCompoundDrawLineStrategy
+	public CComCoClass<CCompoundDrawPointStrategyImpl, &CLSID_CompoundDrawPointStrategy>,
+   public iCompoundDrawPointStrategy
 {
 public:
-	CCompoundDrawLineStrategyImpl();
-	virtual ~CCompoundDrawLineStrategyImpl();
+	CCompoundDrawPointStrategyImpl();
+	virtual ~CCompoundDrawPointStrategyImpl();
    HRESULT FinalConstruct();
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
-DECLARE_REGISTRY_RESOURCEID(IDR_COMPOUNDDRAWLINESTRATEGY)
+DECLARE_REGISTRY_RESOURCEID(IDR_COMPOUNDDRAWPOINTSTRATEGY)
 
-BEGIN_COM_MAP(CCompoundDrawLineStrategyImpl)
-   COM_INTERFACE_ENTRY(iDrawLineStrategy)
-   COM_INTERFACE_ENTRY(iCompoundDrawLineStrategy)
+BEGIN_COM_MAP(CCompoundDrawPointStrategyImpl)
+   COM_INTERFACE_ENTRY(iDrawPointStrategy)
+   COM_INTERFACE_ENTRY(iCompoundDrawPointStrategy)
 END_COM_MAP()
 
-// iLineDrawStrategy
+// iPointDrawStrategy
 public:
-   STDMETHOD_(void,Draw)(iLineDisplayObject* pDO,CDC* pDC) override;
-   STDMETHOD_(void,DrawDragImage)(iLineDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint) override;
-   STDMETHOD_(void,DrawHighlite)(iLineDisplayObject* pDO,CDC* pDC,BOOL bHighlite) override;
-   STDMETHOD_(void,GetBoundingBox)(iLineDisplayObject* pDO,IRect2d** box) override;
+   STDMETHOD_(void,Draw)(iPointDisplayObject* pDO,CDC* pDC) override;
+   STDMETHOD_(void,DrawDragImage)(iPointDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint) override;
+   STDMETHOD_(void,DrawHighlite)(iPointDisplayObject* pDO,CDC* pDC,BOOL bHighlite) override;
+   STDMETHOD_(void,GetBoundingBox)(iPointDisplayObject* pDO,IRect2d** box) override;
 
-// iCompoundLineDrawStrategy
+// iCompoundPointDrawStrategy
 public:
-   STDMETHOD_(void,AddStrategy)(iDrawLineStrategy* pStrategy) override;
+   STDMETHOD_(void,AddStrategy)(iDrawPointStrategy* pStrategy) override;
    STDMETHOD_(void,RemoveStrategy)(CollectionIndexType index) override;
-   STDMETHOD_(void, GetStrategy)(CollectionIndexType index, iDrawLineStrategy** ppStrategy) override;
+   STDMETHOD_(void, GetStrategy)(CollectionIndexType index, iDrawPointStrategy** ppStrategy) override;
    STDMETHOD_(CollectionIndexType,Count)() override;
 
 private:
-   typedef std::vector<CComPtr<iDrawLineStrategy> > Strategies;
+   typedef std::vector<CComPtr<iDrawPointStrategy> > Strategies;
    Strategies m_Strategies;
 };
 
-#endif // INCLUDED_COMPOUNDDRAWELINESTRATEGYIMPL_H_
+#endif // INCLUDED_COMPOUNDDRAWPOINTSTRATEGYIMPL_H_

@@ -21,14 +21,14 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// CompoundDrawLineStrategyImpl.cpp: implementation of the CCompoundDrawLineStrategyImpl class.
+// CompoundDrawPointStrategyImpl.cpp: implementation of the CCompoundDrawPointStrategyImpl class.
 //
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
 #include <WBFLDManip.h>
 #include <DManip\DManip.h>
-#include "CompoundDrawLineStrategyImpl.h"
+#include "CompoundDrawPointStrategyImpl.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -40,53 +40,53 @@ static char THIS_FILE[] = __FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CCompoundDrawLineStrategyImpl::CCompoundDrawLineStrategyImpl()
+CCompoundDrawPointStrategyImpl::CCompoundDrawPointStrategyImpl()
 {
 }
 
-CCompoundDrawLineStrategyImpl::~CCompoundDrawLineStrategyImpl()
+CCompoundDrawPointStrategyImpl::~CCompoundDrawPointStrategyImpl()
 {
 }
 
-HRESULT CCompoundDrawLineStrategyImpl::FinalConstruct()
+HRESULT CCompoundDrawPointStrategyImpl::FinalConstruct()
 {
    return S_OK;
 }
 
 /////////////////////////////////////////////////////////
-// iLineDrawStrategy Implementation
+// iPointDrawStrategy Implementation
 
-STDMETHODIMP_(void) CCompoundDrawLineStrategyImpl::Draw(iLineDisplayObject* pDO,CDC* pDC)
+STDMETHODIMP_(void) CCompoundDrawPointStrategyImpl::Draw(iPointDisplayObject* pDO,CDC* pDC)
 {
    Strategies::iterator iter;
    for ( iter = m_Strategies.begin(); iter != m_Strategies.end(); iter++ )
    {
-      CComPtr<iDrawLineStrategy> strategy(*iter);
+      CComPtr<iDrawPointStrategy> strategy(*iter);
       strategy->Draw(pDO,pDC);
    }
 }
 
-STDMETHODIMP_(void) CCompoundDrawLineStrategyImpl::DrawDragImage(iLineDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint)
+STDMETHODIMP_(void) CCompoundDrawPointStrategyImpl::DrawDragImage(iPointDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint)
 {
    Strategies::iterator iter;
    for ( iter = m_Strategies.begin(); iter != m_Strategies.end(); iter++ )
    {
-      CComPtr<iDrawLineStrategy> strategy(*iter);
+      CComPtr<iDrawPointStrategy> strategy(*iter);
       strategy->DrawDragImage(pDO,pDC,map,dragStart,dragPoint);
    }
 }
 
-STDMETHODIMP_(void) CCompoundDrawLineStrategyImpl::DrawHighlite(iLineDisplayObject* pDO,CDC* pDC,BOOL bHighlite)
+STDMETHODIMP_(void) CCompoundDrawPointStrategyImpl::DrawHighlite(iPointDisplayObject* pDO,CDC* pDC,BOOL bHighlite)
 {
    Strategies::iterator iter;
    for ( iter = m_Strategies.begin(); iter != m_Strategies.end(); iter++ )
    {
-      CComPtr<iDrawLineStrategy> strategy(*iter);
+      CComPtr<iDrawPointStrategy> strategy(*iter);
       strategy->DrawHighlite(pDO,pDC,bHighlite);
    }
 }
 
-STDMETHODIMP_(void) CCompoundDrawLineStrategyImpl::GetBoundingBox(iLineDisplayObject* pDO,IRect2d** box)
+STDMETHODIMP_(void) CCompoundDrawPointStrategyImpl::GetBoundingBox(iPointDisplayObject* pDO,IRect2d** box)
 {
    CComPtr<IRect2d> bounding_box;
    bounding_box.CoCreateInstance(CLSID_Rect2d);
@@ -95,7 +95,7 @@ STDMETHODIMP_(void) CCompoundDrawLineStrategyImpl::GetBoundingBox(iLineDisplayOb
    for ( iter = m_Strategies.begin(); iter != m_Strategies.end(); iter++ )
    {
       CComPtr<IRect2d> rect;
-      CComPtr<iDrawLineStrategy> strategy(*iter);
+      CComPtr<iDrawPointStrategy> strategy(*iter);
 
       if ( iter - m_Strategies.begin() == 0 )
       {
@@ -125,23 +125,23 @@ STDMETHODIMP_(void) CCompoundDrawLineStrategyImpl::GetBoundingBox(iLineDisplayOb
 }
 
 /////////////////////////////////////////////////////////
-// iSimpleLineDrawStrategy Implementation
-STDMETHODIMP_(void) CCompoundDrawLineStrategyImpl::AddStrategy(iDrawLineStrategy* pStrategy)
+// iSimplePointDrawStrategy Implementation
+STDMETHODIMP_(void) CCompoundDrawPointStrategyImpl::AddStrategy(iDrawPointStrategy* pStrategy)
 {
-   m_Strategies.push_back(CComPtr<iDrawLineStrategy>(pStrategy));
+   m_Strategies.push_back(CComPtr<iDrawPointStrategy>(pStrategy));
 }
 
-STDMETHODIMP_(void) CCompoundDrawLineStrategyImpl::RemoveStrategy(CollectionIndexType index)
+STDMETHODIMP_(void) CCompoundDrawPointStrategyImpl::RemoveStrategy(CollectionIndexType index)
 {
    m_Strategies.erase(m_Strategies.begin() + index);
 }
 
-STDMETHODIMP_(void) CCompoundDrawLineStrategyImpl::GetStrategy(CollectionIndexType index, iDrawLineStrategy** ppStrategy)
+STDMETHODIMP_(void) CCompoundDrawPointStrategyImpl::GetStrategy(CollectionIndexType index, iDrawPointStrategy** ppStrategy)
 {
    m_Strategies[index].CopyTo(ppStrategy);
 }
 
-STDMETHODIMP_(CollectionIndexType) CCompoundDrawLineStrategyImpl::Count()
+STDMETHODIMP_(CollectionIndexType) CCompoundDrawPointStrategyImpl::Count()
 {
    return m_Strategies.size();
 }

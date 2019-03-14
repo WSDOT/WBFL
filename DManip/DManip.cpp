@@ -77,6 +77,7 @@
 #include "ShapeDrawStrategyImpl.h"
 #include "TargetDrawStrategyImpl.h"
 #include "CompoundDrawLineStrategyImpl.h"
+#include "CompoundDrawPointStrategyImpl.h"
 
 #include "ShapeGravityWellStrategyImpl.h"
 
@@ -132,6 +133,7 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_ShapeDrawStrategy, CShapeDrawStrategyImpl)
    OBJECT_ENTRY(CLSID_TargetDrawStrategy, CTargetDrawStrategyImpl)
    OBJECT_ENTRY(CLSID_CompoundDrawLineStrategy, CCompoundDrawLineStrategyImpl)
+   OBJECT_ENTRY(CLSID_CompoundDrawPointStrategy, CCompoundDrawPointStrategyImpl)
 
    OBJECT_ENTRY(CLSID_ShapeGravityWellStrategy,CShapeGravityWellStrategyImpl)
 

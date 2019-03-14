@@ -57,8 +57,8 @@ END_COM_MAP()
    STDMETHOD_(COLORREF,GetColor)();
    STDMETHOD_(void,SetPointType)(PointType type);
    STDMETHOD_(PointType,GetPointType)();
-   STDMETHOD_(void,SetPointSize)(Float64 size);
-   STDMETHOD_(Float64,GetPointSize)();
+   STDMETHOD_(void,SetPointSize)(int size);
+   STDMETHOD_(int,GetPointSize)();
 
    // iDrawPointStrategy Implementation
    STDMETHOD_(void,Draw)(iPointDisplayObject* pDO,CDC* pDC);
@@ -69,10 +69,11 @@ END_COM_MAP()
 private:
    void DrawMe(const CRect& rect,CDC* pDC);
    void GetPointInWorldSpace(iPointDisplayObject* pDO,Float64* wx,Float64* wy);
+   CRect GetPointBox(iPointDisplayObject* pDO);
 
    COLORREF m_Color;
    PointType m_Type;
-   Float64 m_Size;
+   int m_Size;
 
    CComPtr<IPoint2d> m_CachePoint;
 };
