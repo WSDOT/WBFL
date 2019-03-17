@@ -651,6 +651,13 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
 
       CComPtr<IPoint2d> pntIntersect;
       m_GeomUtil->LineLineIntersect(m_Line2,m_Line1,&pntSegment);
+
+      if (pntSegment == nullptr)
+      {
+         // if pntSegment is null, line1 and line2 are colinear 
+         // or zero length... use pnt1 as a dummy point so we can keep going
+         pntSegment = pnt1;
+      }
    }
 
    ATLASSERT(pntSegment != nullptr);
