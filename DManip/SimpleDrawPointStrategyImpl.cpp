@@ -46,6 +46,8 @@ CSimpleDrawPointStrategyImpl::CSimpleDrawPointStrategyImpl()
    m_Color = RGB(0,0,0); // black
    m_Type  = ptCircle;
    m_Size  = 0;
+   m_LogicalSize = 0;
+   m_bIsLogicalPoint = false;
    m_CachePoint.CoCreateInstance(CLSID_Point2d);
 }
 
@@ -74,14 +76,26 @@ STDMETHODIMP_(PointType) CSimpleDrawPointStrategyImpl::GetPointType()
    return m_Type;
 }
 
-STDMETHODIMP_(void) CSimpleDrawPointStrategyImpl::SetPointSize(int size)
+STDMETHODIMP_(void) CSimpleDrawPointStrategyImpl::SetPointSize(Float64 size)
 {
+   m_bIsLogicalPoint = false;
    m_Size = size;
 }
 
-STDMETHODIMP_(int) CSimpleDrawPointStrategyImpl::GetPointSize()
+STDMETHODIMP_(Float64) CSimpleDrawPointStrategyImpl::GetPointSize()
 {
    return m_Size;
+}
+
+STDMETHODIMP_(void) CSimpleDrawPointStrategyImpl::SetLogicalPointSize(int size)
+{
+   m_bIsLogicalPoint = true;
+   m_LogicalSize = size;
+}
+
+STDMETHODIMP_(int) CSimpleDrawPointStrategyImpl::GetLogicalPointSize()
+{
+   return m_LogicalSize;
 }
 
 STDMETHODIMP_(void) CSimpleDrawPointStrategyImpl::Draw(iPointDisplayObject* pDO,CDC* pDC)
@@ -254,24 +268,31 @@ void CSimpleDrawPointStrategyImpl::GetPointInWorldSpace(iPointDisplayObject* pDO
 
 CRect CSimpleDrawPointStrategyImpl::GetPointBox(iPointDisplayObject* pDO)
 {
-   Float64 px, py;
-   GetPointInWorldSpace(pDO, &px, &py);
-
-   CComPtr<iDisplayList> pDL;
-   pDO->GetDisplayList(&pDL);
-   CComPtr<iDisplayMgr> pDispMgr;
-   pDL->GetDisplayMgr(&pDispMgr);
-   CComPtr<iCoordinateMap> pMap;
-   pDispMgr->GetCoordinateMap(&pMap);
-
-   LONG x, y;
-   pMap->WPtoLP(px,py,&x,&y);
-
    CRect rect;
-   rect.left = x - m_Size / 2;
-   rect.right = rect.left + m_Size;
-   rect.top = y - m_Size / 2;
-   rect.bottom = rect.top + m_Size;
+   if (m_bIsLogicalPoint)
+   {
+      Float64 px, py;
+      GetPointInWorldSpace(pDO, &px, &py);
+
+      CComPtr<iDisplayList> pDL;
+      pDO->GetDisplayList(&pDL);
+      CComPtr<iDisplayMgr> pDispMgr;
+      pDL->GetDisplayMgr(&pDispMgr);
+      CComPtr<iCoordinateMap> pMap;
+      pDispMgr->GetCoordinateMap(&pMap);
+
+      LONG x, y;
+      pMap->WPtoLP(px, py, &x, &y);
+
+      rect.left = x - m_LogicalSize / 2;
+      rect.right = rect.left + m_LogicalSize;
+      rect.top = y - m_LogicalSize / 2;
+      rect.bottom = rect.top + m_LogicalSize;
+   }
+   else
+   {
+      rect = pDO->GetBoundingBox();
+   }
 
    return rect;
 }

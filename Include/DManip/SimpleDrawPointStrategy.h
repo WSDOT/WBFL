@@ -45,8 +45,10 @@ interface iSimpleDrawPointStrategy : public iDrawPointStrategy
    STDMETHOD_(COLORREF,GetColor)() PURE;
    STDMETHOD_(void,SetPointType)(PointType type) PURE;
    STDMETHOD_(PointType,GetPointType)() PURE;
-   STDMETHOD_(void,SetPointSize)(int size) PURE;
-   STDMETHOD_(int,GetPointSize)() PURE;
+   STDMETHOD_(void,SetPointSize)(Float64 size) PURE;
+   STDMETHOD_(Float64,GetPointSize)() PURE;
+   STDMETHOD_(void, SetLogicalPointSize)(int size) PURE;
+   STDMETHOD_(int, GetLogicalPointSize)() PURE;
 };
 
 #endif // INCLUDED_SIMPLEDRAWPOINTSTRATEGY_H_
