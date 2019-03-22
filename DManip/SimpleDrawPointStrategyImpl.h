@@ -57,8 +57,10 @@ END_COM_MAP()
    STDMETHOD_(COLORREF,GetColor)();
    STDMETHOD_(void,SetPointType)(PointType type);
    STDMETHOD_(PointType,GetPointType)();
-   STDMETHOD_(void,SetPointSize)(int size);
-   STDMETHOD_(int,GetPointSize)();
+   STDMETHOD_(void,SetPointSize)(Float64 size);
+   STDMETHOD_(Float64,GetPointSize)();
+   STDMETHOD_(void, SetLogicalPointSize)(int size);
+   STDMETHOD_(int, GetLogicalPointSize)();
 
    // iDrawPointStrategy Implementation
    STDMETHOD_(void,Draw)(iPointDisplayObject* pDO,CDC* pDC);
@@ -71,9 +73,11 @@ private:
    void GetPointInWorldSpace(iPointDisplayObject* pDO,Float64* wx,Float64* wy);
    CRect GetPointBox(iPointDisplayObject* pDO);
 
+   bool m_bIsLogicalPoint; // if true, SetLogicalPointSize was called so use m_LogicalSize for the point size
    COLORREF m_Color;
    PointType m_Type;
-   int m_Size;
+   Float64 m_Size;
+   int m_LogicalSize;
 
    CComPtr<IPoint2d> m_CachePoint;
 };
