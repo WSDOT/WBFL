@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -135,6 +135,11 @@ public:
 
    ////////////////////////////////////////////////////////////////////////
    // IGirderSection implementation
+   STDMETHODIMP get_WorkPoint(IPoint2d** ppWorkPoint) override
+   {
+      return get_LocatorPoint(lpTopCenter, ppWorkPoint);
+   }
+
    STDMETHODIMP get_WebCount(WebIndexType* nWebs) override
    {
       CHECK_RETVAL(nWebs);

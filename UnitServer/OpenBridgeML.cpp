@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This program is free software; you can redistribute it and/or modify
@@ -22,6 +22,7 @@
 
 #include "stdafx.h"
 #include "WbflUnitServer.h"
+
 #include <WBFLUnitServer\OpenBridgeML.h>
 
 #ifdef _DEBUG
@@ -30,18 +31,17 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-
-UnitSystemType GetWBFLUnitSystemType(OpenBridgeML::Units::UnitSystemEnum ust)
+UnitSystemType GetWBFLUnitSystemType(PACKAGE::Units::UnitSystemEnum ust)
 {
    switch(ust)
    {
-   case OpenBridgeML::Units::UnitSystemEnum::unitsUS:
+   case PACKAGE::Units::UnitSystemEnum::unitsUS:
       return unitsUS;
 
-   case OpenBridgeML::Units::UnitSystemEnum::unitsSI:
+   case PACKAGE::Units::UnitSystemEnum::unitsSI:
       return unitsSI;
 
-   case OpenBridgeML::Units::UnitSystemEnum::unitsAll:
+   case PACKAGE::Units::UnitSystemEnum::unitsAll:
       return unitsAll;
    }
 
@@ -49,11 +49,11 @@ UnitSystemType GetWBFLUnitSystemType(OpenBridgeML::Units::UnitSystemEnum ust)
    return unitsAll;
 }
 
-BOOL InitializeWBFLUnitServer(OpenBridgeML::Units::UnitsDeclarationType* pDeclaration,IUnitServer* pUnitServer)
+BOOL InitializeWBFLUnitServer(PACKAGE::Units::UnitsDeclarationType* pDeclaration,IUnitServer* pUnitServer)
 {
    USES_CONVERSION;
    HRESULT hr = S_OK;
-   OpenBridgeML::Units::UnitsDeclarationType::ExtendedUnits_optional& extendedUnits(pDeclaration->ExtendedUnits());
+   PACKAGE::Units::UnitsDeclarationType::ExtendedUnits_optional& extendedUnits(pDeclaration->ExtendedUnits());
    if ( extendedUnits.present() )
    {
       // The <ExtendedUnits> element is present... that means the instance document has unit types and/or
@@ -63,12 +63,12 @@ BOOL InitializeWBFLUnitServer(OpenBridgeML::Units::UnitsDeclarationType* pDeclar
       pUnitServer->get_UnitTypes(&objUnitTypes);
       
       // Add Units of Measure for all <ExtendedUnits><UnitOfMeasure> elements
-      OpenBridgeML::Units::ExtendedUnitsType::UnitOfMeasure_sequence& unitsOfMeasure(extendedUnits->UnitOfMeasure());
-      OpenBridgeML::Units::ExtendedUnitsType::UnitOfMeasure_sequence::iterator iter(unitsOfMeasure.begin());
-      OpenBridgeML::Units::ExtendedUnitsType::UnitOfMeasure_sequence::iterator end(unitsOfMeasure.end());
+      PACKAGE::Units::ExtendedUnitsType::UnitOfMeasure_sequence& unitsOfMeasure(extendedUnits->UnitOfMeasure());
+      PACKAGE::Units::ExtendedUnitsType::UnitOfMeasure_sequence::iterator iter(unitsOfMeasure.begin());
+      PACKAGE::Units::ExtendedUnitsType::UnitOfMeasure_sequence::iterator end(unitsOfMeasure.end());
       for ( ; iter != end; iter++ )
       {
-         OpenBridgeML::Units::UnitOfMeasureExType& unitOfMeasure(*iter);
+         PACKAGE::Units::UnitOfMeasureExType& unitOfMeasure(*iter);
          CComPtr<IUnitType> unitType;
          hr = objUnitTypes->get_Item(CComVariant(T2BSTR(unitOfMeasure.UnitType().c_str())),&unitType);
          ATLASSERT(SUCCEEDED(hr)); // if this fires, the unit type is invalid
@@ -95,15 +95,15 @@ BOOL InitializeWBFLUnitServer(OpenBridgeML::Units::UnitsDeclarationType* pDeclar
       }
 
       // Add Unit Types and Units of Measure for all <ExtendedUnits><UnitTypes> elements
-      OpenBridgeML::Units::ExtendedUnitsType::UnitTypes_optional& UnitTypes(extendedUnits->UnitTypes());
+      PACKAGE::Units::ExtendedUnitsType::UnitTypes_optional& UnitTypes(extendedUnits->UnitTypes());
       if ( UnitTypes.present() )
       {
          // there are custom unit types... loop over each <UnitType>
-         OpenBridgeML::Units::ExtendedUnitTypeType::UnitType_sequence::iterator iter(extendedUnits->UnitTypes()->UnitType().begin());
-         OpenBridgeML::Units::ExtendedUnitTypeType::UnitType_sequence::iterator end(extendedUnits->UnitTypes()->UnitType().end());
+         PACKAGE::Units::ExtendedUnitTypeType::UnitType_sequence::iterator iter(extendedUnits->UnitTypes()->UnitType().begin());
+         PACKAGE::Units::ExtendedUnitTypeType::UnitType_sequence::iterator end(extendedUnits->UnitTypes()->UnitType().end());
          for ( ; iter != end; iter++ )
          {
-            OpenBridgeML::Units::UnitTypeType& unitType(*iter);
+            PACKAGE::Units::UnitTypeType& unitType(*iter);
 
             // Create a new WBFL Unit Type
             CComPtr<IUnitType> objUnitType;
@@ -119,11 +119,11 @@ BOOL InitializeWBFLUnitServer(OpenBridgeML::Units::UnitsDeclarationType* pDeclar
             objUnitType->get_Units(&units);
 
             // Add units of measure
-            OpenBridgeML::Units::UnitTypeType::UnitOfMeasure_sequence::iterator umIter(unitType.UnitOfMeasure().begin());
-            OpenBridgeML::Units::UnitTypeType::UnitOfMeasure_sequence::iterator umEnd(unitType.UnitOfMeasure().end());
+            PACKAGE::Units::UnitTypeType::UnitOfMeasure_sequence::iterator umIter(unitType.UnitOfMeasure().begin());
+            PACKAGE::Units::UnitTypeType::UnitOfMeasure_sequence::iterator umEnd(unitType.UnitOfMeasure().end());
             for ( ; umIter != umEnd; umIter++ )
             {
-               OpenBridgeML::Units::UnitOfMeasureType& unitOfMeasure(*umIter);
+               PACKAGE::Units::UnitOfMeasureType& unitOfMeasure(*umIter);
 
                Float64 pre = 0.0;
                if ( unitOfMeasure.PreConvertTerm().present() )
@@ -145,7 +145,7 @@ BOOL InitializeWBFLUnitServer(OpenBridgeML::Units::UnitsDeclarationType* pDeclar
       }
    }
 
-   OpenBridgeML::Units::UnitsDeclarationType::ConsistentUnits_optional& consistentUnits(pDeclaration->ConsistentUnits());
+   PACKAGE::Units::UnitsDeclarationType::ConsistentUnits_optional& consistentUnits(pDeclaration->ConsistentUnits());
    if ( consistentUnits.present() )
    {
       // The <ConsistantUnits> element is present
@@ -199,9 +199,9 @@ void ConvertBetweenBaseUnitsT(U& unitValueType,LPCTSTR unitTypeName,IUnitServer*
 }
 
 #define IMPLEMENT_BASE_UNIT_CONVERTER(V,S) \
-void ConvertBetweenBaseUnits(OpenBridgeML::Units::##V& unitValueType,IUnitServer* pFromUnitServer,IUnitServer* pToUnitServer) \
+void ConvertBetweenBaseUnits(PACKAGE::Units::##V& unitValueType,IUnitServer* pFromUnitServer,IUnitServer* pToUnitServer) \
 { \
-   ConvertBetweenBaseUnitsT<OpenBridgeML::Units::##V>(unitValueType,_T(S),pFromUnitServer,pToUnitServer);\
+   ConvertBetweenBaseUnitsT<PACKAGE::Units::##V>(unitValueType,_T(S),pFromUnitServer,pToUnitServer);\
 }
 
 IMPLEMENT_BASE_UNIT_CONVERTER(MassValueType, "Mass");

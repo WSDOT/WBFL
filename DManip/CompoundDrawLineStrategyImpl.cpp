@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -134,6 +134,11 @@ STDMETHODIMP_(void) CCompoundDrawLineStrategyImpl::AddStrategy(iDrawLineStrategy
 STDMETHODIMP_(void) CCompoundDrawLineStrategyImpl::RemoveStrategy(CollectionIndexType index)
 {
    m_Strategies.erase(m_Strategies.begin() + index);
+}
+
+STDMETHODIMP_(void) CCompoundDrawLineStrategyImpl::GetStrategy(CollectionIndexType index, iDrawLineStrategy** ppStrategy)
+{
+   m_Strategies[index].CopyTo(ppStrategy);
 }
 
 STDMETHODIMP_(CollectionIndexType) CCompoundDrawLineStrategyImpl::Count()

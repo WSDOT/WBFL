@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -92,6 +92,64 @@ BOOL CRBChoiceDlg::OnInitDialog()
       CWnd* pWnd = GetDlgItem(nIDC);
       pWnd->ShowWindow(SW_HIDE);
    }
+
+
+   // resize dialog to fit the question text
+   CWnd* pwndQuestion = GetDlgItem(IDC_QUESTION);
+   CClientDC dc(this);
+   CFont* pOldFont = dc.SelectObject(pwndQuestion->GetFont());
+   CRect rect;
+   pwndQuestion->GetClientRect(&rect);
+   CRect rWnd = rect;
+   dc.DrawText(m_Question, &rect, DT_CALCRECT | DT_NOPREFIX | DT_EDITCONTROL | DT_WORDBREAK); // get the required size of the question static control
+   pwndQuestion->SetWindowPos(nullptr, 0, 0, rect.Width(), rect.Height(), SWP_NOMOVE); // resize the question static control
+   auto diff = rect.Height() - rWnd.Height();
+   if (0 < diff)
+   {
+      // the height of the static control grew, so resize the dialog and move the buttons down
+      CRect rDlg;
+      GetWindowRect(&rDlg);
+      rDlg.bottom += diff;
+      MoveWindow(rDlg);
+
+      for (int i = rbIdx; i < nRadioButtons; i++)
+      {
+         int nIDC = (i + IDC_RADIO1);
+         CWnd* pWnd = GetDlgItem(nIDC);
+         CRect rRB;
+         pWnd->GetWindowRect(&rRB);
+         rRB.top += diff;
+         rRB.bottom += diff;
+         ScreenToClient(&rRB);
+         pWnd->MoveWindow(rRB);
+      }
+
+      CWnd* pOK = GetDlgItem(IDOK);
+      CWnd* pCancel = GetDlgItem(IDCANCEL);
+      CWnd* pHelp = GetDlgItem(IDHELP);
+
+      CRect rOK;
+      pOK->GetWindowRect(&rOK);
+      rOK.top += diff;
+      rOK.bottom += diff;
+      ScreenToClient(&rOK);
+      pOK->MoveWindow(rOK);
+
+      CRect rCancel;
+      pCancel->GetWindowRect(&rCancel);
+      rCancel.top += diff;
+      rCancel.bottom += diff;
+      ScreenToClient(&rCancel);
+      pCancel->MoveWindow(rCancel);
+
+      CRect rHelp;
+      pHelp->GetWindowRect(&rHelp);
+      rHelp.top += diff;
+      rHelp.bottom += diff;
+      ScreenToClient(&rHelp);
+      pHelp->MoveWindow(rHelp);
+   }
+   dc.SelectObject(pOldFont);
 
    CDialog::OnInitDialog();
 

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -99,7 +99,7 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
    Float64 fpe = ::ConvertToSysUnits(1232.0,unitMeasure::Kip);
    stabilityProblem.AddFpe(0,0,0,0,fpe,Xleft,-Hg + ::ConvertToSysUnits(5.0,unitMeasure::Inch),0,0,0);
 
-   stabilityProblem.SetCamber(true,::ConvertToSysUnits(2.92,unitMeasure::Inch));
+   stabilityProblem.SetCamber(::ConvertToSysUnits(2.92,unitMeasure::Inch));
 
    stabilityProblem.SetSupportLocations(::ConvertToSysUnits(9,unitMeasure::Feet), ::ConvertToSysUnits(9,unitMeasure::Feet));
    stabilityProblem.SetSweepTolerance( 0.000520833333 );
@@ -108,7 +108,6 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
    stabilityProblem.SetYRollAxis(::ConvertToSysUnits(0.0,unitMeasure::Inch));
 
    stabilityProblem.SetImpact( 0.0, 0.0 );
-   stabilityProblem.EvaluateStressesAtEquilibriumAngle(true);
 
    stbStabilityEngineer engineer;
 
@@ -229,11 +228,12 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
    Float64 fpe = ::ConvertToSysUnits(1251.5,unitMeasure::Kip);
    stabilityProblem.AddFpe(0,0,0,0,fpe,Xleft,-Hg + ::ConvertToSysUnits(7.91,unitMeasure::Inch),0,0,0);
 
-   stabilityProblem.SetCamber(true,::ConvertToSysUnits(2.92,unitMeasure::Inch));
+   stabilityProblem.SetCamber(::ConvertToSysUnits(2.92,unitMeasure::Inch));
 
 
    stabilityProblem.SetSupportLocations(::ConvertToSysUnits(10,unitMeasure::Feet), ::ConvertToSysUnits(10,unitMeasure::Feet));
    stabilityProblem.SetSweepTolerance( 2*0.000520833333 );
+   stabilityProblem.SetSweepGrowth(::ConvertToSysUnits(1.0, unitMeasure::Inch));
    stabilityProblem.SetSupportPlacementTolerance(::ConvertToSysUnits(1.0,unitMeasure::Inch));
    stabilityProblem.SetYRollAxis(::ConvertToSysUnits(-48.0,unitMeasure::Inch) - Hg); // location of roll axes below top of girder);
 
@@ -258,14 +258,14 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
          stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
          for(const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[stbTypes::Superelevation][impact][wind][stbTypes::TopLeft],1.476/*1.429*/,0.001) );
+            TRY_TESTME( ::IsEqual(sectionResult.FScr[stbTypes::Superelevation][impact][wind][stbTypes::TopLeft],1.429,0.001) );
 
-            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::TopLeft    ],unitMeasure::KSI), 0.453/*0.466*/,0.001) );
-            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::BottomRight],unitMeasure::KSI),-3.478/*-3.486*/,0.001) );
+            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::TopLeft    ],unitMeasure::KSI), 0.466,0.001) );
+            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::BottomRight],unitMeasure::KSI),-3.486,0.001) );
          }
 
-         TRY_TESTME( ::IsEqual(result.FsFailure[stbTypes::Superelevation][impact][wind],2.854/*2.857*/,0.001) );
-         TRY_TESTME( ::IsEqual(result.FsRollover[stbTypes::Superelevation][impact][wind],2.042/*1.986*/,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsFailure[stbTypes::Superelevation][impact][wind],2.828/*2.857*/,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsRollover[stbTypes::Superelevation][impact][wind],1.995/*1.983*/,0.001) );
       }
    }
 
@@ -284,14 +284,14 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
          stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
          for(const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[stbTypes::Superelevation][impact][wind][stbTypes::TopLeft],1.002/*0.970*/,0.001) );
+            TRY_TESTME( ::IsEqual(sectionResult.FScr[stbTypes::Superelevation][impact][wind][stbTypes::TopLeft],0.970,0.001) );
 
-            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::TopLeft    ],unitMeasure::KSI), 0.634/*0.647*/,0.001) );
-            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::BottomRight],unitMeasure::KSI),-3.590/*-3.598*/,0.001) );
+            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::TopLeft    ],unitMeasure::KSI), 0.647,0.001) );
+            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::BottomRight],unitMeasure::KSI),-3.598,0.001) );
          }
 
-         TRY_TESTME( ::IsEqual(result.FsFailure[stbTypes::Superelevation][impact][wind],2.813/*2.824*/,0.001) );
-         TRY_TESTME( ::IsEqual(result.FsRollover[stbTypes::Superelevation][impact][wind],1.876/*1.868*/,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsFailure[stbTypes::Superelevation][impact][wind],2.790/*2.824*/,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsRollover[stbTypes::Superelevation][impact][wind],1.836/*1.868*/,0.001) );
       }
    }
    TESTME_EPILOG("PCIHaulingExamples");

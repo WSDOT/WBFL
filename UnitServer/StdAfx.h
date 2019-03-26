@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -48,9 +48,14 @@ extern CComModule _Module;
 #include <WbflAtlExt.h> // WBFL ATL Extensions
 #include <MathEx.h>
 
-#include <OpenBridgeML_Units.hxx> // must include this here so that the DLL linkage, and exported template methods, are included before we generate our own template methods
-// during the port to VS2015, this DLL would not link because std::string<>.c_str() was defined in DisplayUnitsFormatter.obj and OpenBridgeML.lib
+// must include this here so that the DLL linkage, and exported template methods, are included before we generate our own template methods
+// users of this DLL will not link because of std::basic_string<>
 // Moving this #include here resolved the issue
+#if defined USING_OPENBRIDGEML
+#include <OpenBridgeML_Units.hxx>
+#else
+#include <WBFLUnitServer.hxx>
+#endif // USING_OPENBRIDGEML
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.

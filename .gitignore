@@ -334,6 +334,7 @@ ASALocalRun/
 *.cxx
 *.hxx
 *.hh
+*.xml
 Include/WBFLCore.h
 Win32/
 !/Apache/**/lib #don't exclude Apache lib folders

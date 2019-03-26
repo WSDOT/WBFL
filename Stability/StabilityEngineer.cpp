@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -84,14 +84,14 @@ stbHaulingResults stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder
 stbLiftingCheckArtifact stbStabilityEngineer::CheckLifting(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem,const stbLiftingCriteria& criteria) const
 {
    stbLiftingResults results = AnalyzeLifting(pGirder,pStabilityProblem);
-   stbLiftingCheckArtifact artifact(results,criteria,pStabilityProblem->EvaluateStressesAtEquilibriumAngle());
+   stbLiftingCheckArtifact artifact(results,criteria);
    return artifact;
 }
 
 stbHaulingCheckArtifact stbStabilityEngineer::CheckHauling(const stbIGirder* pGirder,const stbIHaulingStabilityProblem* pStabilityProblem,const stbHaulingCriteria& criteria) const
 {
    stbHaulingResults results = AnalyzeHauling(pGirder,pStabilityProblem);
-   stbHaulingCheckArtifact artifact(results,criteria,pStabilityProblem->EvaluateStressesAtEquilibriumAngle(stbTypes::CrownSlope), pStabilityProblem->EvaluateStressesAtEquilibriumAngle(stbTypes::Superelevation));
+   stbHaulingCheckArtifact artifact(results,criteria);
    return artifact;
 }
 
@@ -113,7 +113,7 @@ void stbStabilityEngineer::PrepareResults(const stbIGirder* pGirder,const stbISt
    results.OffsetFactor = (span_ratio)*(span_ratio) - 1./3.;
    results.OffsetFactor = IsZero(results.OffsetFactor) ? 0 : results.OffsetFactor;
 
-   results.LateralSweep = pStabilityProblem->GetSweepTolerance()*Lg;
+   results.LateralSweep = pStabilityProblem->GetSweepTolerance()*Lg + pStabilityProblem->GetSweepGrowth();
 
    ComputeXcg(pGirder, pStabilityProblem, results);
 
@@ -145,20 +145,11 @@ void stbStabilityEngineer::Analyze(const stbIGirder* pGirder,const stbIStability
    Float64 Ywind = fabs(y); // for the stability calcs, we want positive to be down for this value
 
    // adjust for camber
-   bool bDirectCamber;
-   Float64 Camber;
-   pStabilityProblem->GetCamber(&bDirectCamber,&Camber);
+   Float64 Camber = pStabilityProblem->GetCamber();
    Float64 Precamber = pGirder->GetPrecamber();
-   if ( bDirectCamber )
-   {
-      Float64 m = pStabilityProblem->GetCamberMultiplier();
-      Ywind += ::BinarySign(y)*results.OffsetFactor*(m*Camber + Precamber); // binary sign is used to make the adjustment to Ywind correct if the camber makes it larger or smaller
-   }
-   else
-   {
-      Ywind *= (1. - ::BinarySign(y)*Camber);
-      Ywind += ::BinarySign(y)*results.OffsetFactor*Precamber;
-   }
+   Float64 m = pStabilityProblem->GetCamberMultiplier();
+   Ywind += ::BinarySign(y)*results.OffsetFactor*(m*Camber + Precamber); // binary sign is used to make the adjustment to Ywind correct if the camber makes it larger or smaller
+
    // additional effects due to impact adjusted force of inclined lifting cable will be added later
    results.Ywind[stbTypes::NoImpact]   = Ywind;
    results.Ywind[stbTypes::ImpactUp]   = Ywind;
@@ -181,23 +172,9 @@ void stbStabilityEngineer::Analyze(const stbIGirder* pGirder,const stbIStability
    results.Yr = Yra - Ytop; // location from the center of gravity from the roll axis (positive means roll center is above CG)
 
    Float64 Dra = fabs(results.Yr);  // adjusted distance between CG and roll axis (using fabs because distance is an absolute value)
-   if ( bDirectCamber )
-   {
-      Float64 m = pStabilityProblem->GetCamberMultiplier();
-      Dra -= ::BinarySign(results.Yr)*results.OffsetFactor*(m*Camber + pGirder->GetPrecamber());
-      results.CamberOffsetFactor = 1.0; // not applicable, but set it to a nice number
-   }
-   else
-   {
-      // this is Mast's "adjust by 2% to allow for camber" approach
-      // for lifting the Camber should be less than zero because the
-      // camber causes cg of the girder to get closer to the roll axis thereby reducing the distance
-      // for hauling Camber should be greater than zero because camber causes the cg to move
-      // further away from the roll axis
-      ATLASSERT(::InRange(0.0,fabs(Camber),1.0)); // must be a fraction, not an actual percentage
-      results.CamberOffsetFactor = 1.0 - (::BinarySign(results.Yr)*Camber + pGirder->GetPrecamber());
-      Dra *= results.CamberOffsetFactor;
-   }
+   Dra -= ::BinarySign(results.Yr)*results.OffsetFactor*(m*Camber + Precamber);
+   results.CamberOffsetFactor = 1.0; // not applicable, but set it to a nice number
+
    // additional effects due to impact adjusted force of inclined lifting cable will be added later
    results.Dra[stbTypes::NoImpact]   = Dra;
    results.Dra[stbTypes::ImpactUp]   = Dra;
@@ -352,10 +329,6 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
    // this puts the force furthest from the arc which is concervative
    Float64 a = Min(Ll,Lr);
 
-   bool bDirectCamber;
-   Float64 Camber;
-   pStabilityProblem->GetCamber(&bDirectCamber,&Camber);
-
    PoiIDType poiID = 0;
    IndexType analysisPointIdx = 0;
    std::vector<stbIAnalysisPoint*>& vAnalysisPoints = pStabilityProblem->GetAnalysisPoints();
@@ -387,6 +360,7 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
 
       // eccentricity of horizontal load due to inclined cable at X
       sectionResult.OffsetFactor = pow((Lg - 2*a)/Lg,2) - pow((Lg - 2*X)/Lg,2);
+      sectionResult.OffsetFactor = IsZero(sectionResult.OffsetFactor) ? 0.0 : sectionResult.OffsetFactor;
 
       // Get forces from external loads
       Float64 fx,fy,mz;
@@ -465,70 +439,92 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
       {
          stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
 
-         for (IndexType w = 0; w < 2; w++)
+         for (IndexType c = 0; c < 4; c++)
          {
-            stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
-            if (results.bIsStable[impact][wind])
+            stbTypes::Corner corner = (stbTypes::Corner)c;
+
+            stbTypes::Face face = GetFace(corner);
+
+            // stress due to direct loads
+            sectionResult.fDirect[impact][corner] = sectionResult.fps[corner] + IM[impact] * (sectionResult.fg[corner] + sectionResult.fcable[corner]);
+
+            if (::IsLT(sectionResult.fMaxDirect[face], sectionResult.fDirect[impact][corner]))
             {
-               Float64 windSign = (wind == stbTypes::Left ? 1 : -1);
+               sectionResult.fMaxDirect[face] = sectionResult.fDirect[impact][corner];
+               sectionResult.MaxDirectStressImpactDirection[face] = impact;
+               sectionResult.MaxDirectStressCorner[face] = corner;
+            }
 
-               if (IsZero(Plift))
+            if (::IsLT(sectionResult.fDirect[impact][corner], sectionResult.fMinDirect[face]))
+            {
+               sectionResult.fMinDirect[face] = sectionResult.fDirect[impact][corner];
+               sectionResult.MinDirectStressImpactDirection[face] = impact;
+               sectionResult.MinDirectStressCorner[face] = corner;
+            }
+
+            // Overall max direct stress
+            if (::IsLT(results.MaxDirectStress, sectionResult.fDirect[impact][corner]))
+            {
+               results.MaxDirectStress = sectionResult.fDirect[impact][corner];
+               results.MaxDirectStressAnalysisPointIndex = sectionResult.AnalysisPointIndex;
+               results.MaxDirectStressImpactDirection = impact;
+               results.MaxDirectStressCorner = corner;
+            }
+
+            // Overall min direct stress
+            if (::IsLT(sectionResult.fDirect[impact][corner], results.MinDirectStress))
+            {
+               results.MinDirectStress = sectionResult.fDirect[impact][corner];
+               results.MinDirectStressAnalysisPointIndex = sectionResult.AnalysisPointIndex;
+               results.MinDirectStressImpactDirection = impact;
+               results.MinDirectStressCorner = corner;
+            }
+
+#if defined REBAR_FOR_DIRECT_TENSION
+            if (segment)
+            {
+               gbtAlternativeTensileStressRequirements altTensionRequirements;
+
+               altTensionRequirements.shape = shape;
+               altTensionRequirements.rebarSection = rebarSection;
+               altTensionRequirements.fy = pStabilityProblem->GetRebarYieldStrength();
+               altTensionRequirements.fsMax = ::ConvertToSysUnits(30.0, unitMeasure::KSI);
+               altTensionRequirements.bLimitBarStress = true;
+               altTensionRequirements.concreteType = concrete.GetType();
+               altTensionRequirements.fc = concrete.GetFc();
+               altTensionRequirements.bHasFct = concrete.HasAggSplittingStrength();
+               altTensionRequirements.Fct = concrete.GetAggSplittingStrength();
+               altTensionRequirements.density = concrete.GetDensity();
+
+               altTensionRequirements.pntTopLeft.Move(pntStress[stbTypes::TopLeft].X(), pntStress[stbTypes::TopLeft].Y(), sectionResult.fDirect[impact][stbTypes::TopLeft]);
+               altTensionRequirements.pntTopRight.Move(pntStress[stbTypes::TopRight].X(), pntStress[stbTypes::TopRight].Y(), sectionResult.fDirect[impact][stbTypes::TopRight]);
+               altTensionRequirements.pntBottomLeft.Move(pntStress[stbTypes::BottomLeft].X(), pntStress[stbTypes::BottomLeft].Y(), sectionResult.fDirect[impact][stbTypes::BottomLeft]);
+               altTensionRequirements.pntBottomRight.Move(pntStress[stbTypes::BottomRight].X(), pntStress[stbTypes::BottomRight].Y(), sectionResult.fDirect[impact][stbTypes::BottomRight]);
+
+               gbtComputeAlternativeStressRequirements(&altTensionRequirements);
+               sectionResult.altTensionRequirements[impact] = altTensionRequirements;
+            } // if segment
+#endif REBAR_FOR_DIRECT_TENSION
+            
+            for (IndexType w = 0; w < 2; w++)
+            {
+               stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+               if (results.bIsStable[impact][wind])
                {
-                  // if there isn't a lifting force, the force cannot be eccentric
-                  sectionResult.eh[impact][wind] = 0;
-                  sectionResult.Mh[impact][wind] = 0;
-               }
-               else
-               {
-                  // Because there is lateral deflection of the girder, the force in the inclined lift cable creates a moment about the Y-axis
-                  // Compute the eccentricty of the force and the moment at this section
-                  sectionResult.eh[impact][wind] = SupportPlacementTolerance*results.emag[impact] * (1 - sectionResult.OffsetFactor) + (results.EccLateralSweep[impact] + windSign*results.ZoWind[impact])*sectionResult.OffsetFactor;
-                  sectionResult.Mh[impact][wind] = -Plift*sectionResult.eh[impact][wind];
-               }
+                  Float64 windSign = (wind == stbTypes::Left ? 1 : -1);
 
-               for (IndexType c = 0; c < 4; c++)
-               {
-                  stbTypes::Corner corner = (stbTypes::Corner)c;
-
-                  stbTypes::Face face = (corner == stbTypes::TopLeft || corner == stbTypes::TopRight ? stbTypes::Top : stbTypes::Bottom);
-
-                  // stress due to direct loads
-                  sectionResult.fDirect[impact][wind][corner] = sectionResult.fps[corner] + IM[impact] * (sectionResult.fcable[corner] + sectionResult.fg[corner]) + windSign*sectionResult.fw[corner];
-
-                  if (::IsLT(sectionResult.fMaxDirect[face], sectionResult.fDirect[impact][wind][corner]))
+                  if (IsZero(Plift))
                   {
-                     sectionResult.fMaxDirect[face] = sectionResult.fDirect[impact][wind][corner];
-                     sectionResult.MaxDirectStressImpactDirection[face] = impact;
-                     sectionResult.MaxDirectStressWindDirection[face] = wind;
-                     sectionResult.MaxDirectStressCorner[face] = corner;
+                     // if there isn't a lifting force, the force cannot be eccentric
+                     sectionResult.eh[impact][wind] = 0;
+                     sectionResult.Mh[impact][wind] = 0;
                   }
-
-                  if (::IsLT(sectionResult.fDirect[impact][wind][corner], sectionResult.fMinDirect[face]))
+                  else
                   {
-                     sectionResult.fMinDirect[face] = sectionResult.fDirect[impact][wind][corner];
-                     sectionResult.MinDirectStressImpactDirection[face] = impact;
-                     sectionResult.MinDirectStressWindDirection[face] = wind;
-                     sectionResult.MinDirectStressCorner[face] = corner;
-                  }
-
-                  // Overall max direct stress
-                  if (::IsLT(results.MaxDirectStress, sectionResult.fDirect[impact][wind][corner]))
-                  {
-                     results.MaxDirectStress = sectionResult.fDirect[impact][wind][corner];
-                     results.MaxDirectStressAnalysisPointIndex = sectionResult.AnalysisPointIndex;
-                     results.MaxDirectStressImpactDirection = impact;
-                     results.MaxDirectStressWindDirection = wind;
-                     results.MaxDirectStressCorner = corner;
-                  }
-
-                  // Overall min direct stress
-                  if (::IsLT(sectionResult.fDirect[impact][wind][corner], results.MinDirectStress))
-                  {
-                     results.MinDirectStress = sectionResult.fDirect[impact][wind][corner];
-                     results.MinDirectStressAnalysisPointIndex = sectionResult.AnalysisPointIndex;
-                     results.MinDirectStressImpactDirection = impact;
-                     results.MinDirectStressWindDirection = wind;
-                     results.MinDirectStressCorner = corner;
+                     // Because there is lateral deflection of the girder, the force in the inclined lift cable creates a moment about the Y-axis
+                     // Compute the eccentricty of the force and the moment at this section
+                     sectionResult.eh[impact][wind] = SupportPlacementTolerance*results.emag[impact] * (1 - sectionResult.OffsetFactor) + (results.EccLateralSweep[impact] + windSign*results.ZoWind[impact])*sectionResult.OffsetFactor;
+                     sectionResult.Mh[impact][wind] = -Plift*sectionResult.eh[impact][wind];
                   }
 
                   // stress due to lateral loads caused by the girder being tilted
@@ -538,7 +534,7 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
                   sectionResult.fTilt[impact][wind][corner] = f;
 
                   // total stress
-                  sectionResult.f[impact][wind][corner] = sectionResult.fDirect[impact][wind][corner] + sectionResult.fTilt[impact][wind][corner];
+                  sectionResult.f[impact][wind][corner] = sectionResult.fDirect[impact][corner] + windSign*sectionResult.fw[corner] + sectionResult.fTilt[impact][wind][corner];
 
                   if (::IsLT(sectionResult.fMax[face], sectionResult.f[impact][wind][corner]))
                   {
@@ -576,10 +572,11 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
 
                   // compute cracking moment and cracking factor of safety
                   Float64 mcr = 0; // if the direct stress exceedes the modulus of rupture, the beam is cracked before it is tilted
-                  if (sectionResult.fDirect[impact][wind][corner] < fr)
+                  Float64 f_direct = sectionResult.fDirect[impact][corner] + windSign*sectionResult.fw[corner];
+                  if (f_direct < fr)
                   {
                      // the direct stress is less than the modulus of rupture, therefore there needs to be additional moment applied to cause cracking
-                     mcr = fabs((fr - sectionResult.fDirect[impact][wind][corner])*D / (Ixx*pntStress[corner].X() - Ixy*pntStress[corner].Y())) - sectionResult.Mh[impact][wind];
+                     mcr = fabs((fr - f_direct)*D / (Ixx*pntStress[corner].X() - Ixy*pntStress[corner].Y())) - sectionResult.Mh[impact][wind];
                      mcr = Max(mcr, 0.0); // make sure Mh doesn't make mcr negative... if mcr is negative, Mh causes cracking so the girder is cracked before tilting
                   }
 
@@ -646,6 +643,8 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
                   results.FScrMinCorner = sectionResult.MinFScrCorner[impact][wind];
                }
 
+               // use this to compute rebar requirements including lateral loads
+#if !defined REBAR_FOR_DIRECT_TENSION
                if (segment)
                {
                   gbtAlternativeTensileStressRequirements altTensionRequirements;
@@ -661,23 +660,15 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
                   altTensionRequirements.Fct = concrete.GetAggSplittingStrength();
                   altTensionRequirements.density = concrete.GetDensity();
 
-                  if (pStabilityProblem->EvaluateStressesAtEquilibriumAngle())
-                  {
-                     altTensionRequirements.pntTopLeft.Move(pntStress[stbTypes::TopLeft].X(), pntStress[stbTypes::TopLeft].Y(), sectionResult.f[impact][wind][stbTypes::TopLeft]);
-                     altTensionRequirements.pntTopRight.Move(pntStress[stbTypes::TopRight].X(), pntStress[stbTypes::TopRight].Y(), sectionResult.f[impact][wind][stbTypes::TopRight]);
-                     altTensionRequirements.pntBottomLeft.Move(pntStress[stbTypes::BottomLeft].X(), pntStress[stbTypes::BottomLeft].Y(), sectionResult.f[impact][wind][stbTypes::BottomLeft]);
-                     altTensionRequirements.pntBottomRight.Move(pntStress[stbTypes::BottomRight].X(), pntStress[stbTypes::BottomRight].Y(), sectionResult.f[impact][wind][stbTypes::BottomRight]);
-                  }
-                  else
-                  {
-                     altTensionRequirements.pntTopLeft.Move(pntStress[stbTypes::TopLeft].X(), pntStress[stbTypes::TopLeft].Y(), sectionResult.fDirect[impact][wind][stbTypes::TopLeft]);
-                     altTensionRequirements.pntTopRight.Move(pntStress[stbTypes::TopRight].X(), pntStress[stbTypes::TopRight].Y(), sectionResult.fDirect[impact][wind][stbTypes::TopRight]);
-                     altTensionRequirements.pntBottomLeft.Move(pntStress[stbTypes::BottomLeft].X(), pntStress[stbTypes::BottomLeft].Y(), sectionResult.fDirect[impact][wind][stbTypes::BottomLeft]);
-                     altTensionRequirements.pntBottomRight.Move(pntStress[stbTypes::BottomRight].X(), pntStress[stbTypes::BottomRight].Y(), sectionResult.fDirect[impact][wind][stbTypes::BottomRight]);
-                  }
+                  altTensionRequirements.pntTopLeft.Move(pntStress[stbTypes::TopLeft].X(), pntStress[stbTypes::TopLeft].Y(), sectionResult.f[impact][wind][stbTypes::TopLeft]);
+                  altTensionRequirements.pntTopRight.Move(pntStress[stbTypes::TopRight].X(), pntStress[stbTypes::TopRight].Y(), sectionResult.f[impact][wind][stbTypes::TopRight]);
+                  altTensionRequirements.pntBottomLeft.Move(pntStress[stbTypes::BottomLeft].X(), pntStress[stbTypes::BottomLeft].Y(), sectionResult.f[impact][wind][stbTypes::BottomLeft]);
+                  altTensionRequirements.pntBottomRight.Move(pntStress[stbTypes::BottomRight].X(), pntStress[stbTypes::BottomRight].Y(), sectionResult.f[impact][wind][stbTypes::BottomRight]);
+
                   gbtComputeAlternativeStressRequirements(&altTensionRequirements);
                   sectionResult.altTensionRequirements[impact][wind] = altTensionRequirements;
                } // if segment
+#endif // REBAR_FOR_DIRECT_TENSION
             } // next wind direction
          } // if stable
       } // next impact
@@ -728,7 +719,7 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
             // if FSf < FScr then FSf = FScr (if the girder doesn't crack, it doesn't fail)
             results.AdjFsFailure[impact][wind] = Max(results.FsFailure[impact][wind],results.MinFScr[impact][wind]);
 
-            if ( ::IsLT(results.FsFailure[impact][wind],results.MinFsFailure) )
+            if ( ::IsLT(results.AdjFsFailure[impact][wind],results.MinAdjFsFailure) )
             {
                results.MinFsFailure = results.FsFailure[impact][wind];
                results.MinAdjFsFailure = results.AdjFsFailure[impact][wind];
@@ -954,77 +945,95 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                im = IM[impact];
             }
 
-            for ( int w = 0; w < 2; w++ )
+            for (int cn = 0; cn < 4; cn++)
             {
-               stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+               stbTypes::Corner corner = (stbTypes::Corner)cn;
 
-               if (results.bRotationalStability[slope][impact][wind])
+               stbTypes::Face face = GetFace(corner);
+               Float64 b = (face == stbTypes::Top ? Wtf : Wbf);
+
+               Float64 cornerSign = (corner == stbTypes::TopLeft || corner == stbTypes::BottomLeft ? 1 : -1);
+
+               // stress due to direct loads (plumb girder)
+               sectionResult.fDirect[slope][impact][corner] = sectionResult.fps[corner] + im*sectionResult.fg[corner];
+
+               // keep track of the max direct stress at this section including the corner where it occurs
+               if (::IsLT(sectionResult.fMaxDirect[slope][face], sectionResult.fDirect[slope][impact][corner]))
                {
-                  Float64 windSign = (wind == stbTypes::Left ? 1 : -1);
+                  sectionResult.fMaxDirect[slope][face] = sectionResult.fDirect[slope][impact][corner];
+                  sectionResult.MaxDirectStressImpactDirection[slope][face] = impact;
+                  sectionResult.MaxDirectStressCorner[slope][face] = corner;
+               }
 
-                  Float64 Zt = windSign*im*results.ZoWind[stbTypes::NoImpact]; // using NoImpact because we scale by IM here
-                  Float64 Mot = windSign*results.MotWind;
-                  if (slope == stbTypes::Superelevation)
+               // keep track of the min direct stress at this section including the corner where it occurs
+               if (::IsLT(sectionResult.fDirect[slope][impact][corner], sectionResult.fMinDirect[slope][face]))
+               {
+                  sectionResult.fMinDirect[slope][face] = sectionResult.fDirect[slope][impact][corner];
+                  sectionResult.MinDirectStressImpactDirection[slope][face] = impact;
+                  sectionResult.MinDirectStressCorner[slope][face] = corner;
+               }
+
+               // keep track of the max direct stress of ALL sections including the corner where it occurs
+               if (::IsLT(results.MaxDirectStress[slope], sectionResult.fDirect[slope][impact][corner]))
+               {
+                  results.MaxDirectStress[slope] = sectionResult.fDirect[slope][impact][corner];
+                  results.MaxDirectStressAnalysisPointIndex[slope] = sectionResult.AnalysisPointIndex;
+                  results.MaxDirectStressImpactDirection[slope] = impact;
+                  results.MaxDirectStressCorner[slope] = corner;
+               }
+
+               // keep track of the min direct stress of ALL sections including the corner where it occurs
+               if (::IsLT(sectionResult.fDirect[slope][impact][corner], results.MinDirectStress[slope]))
+               {
+                  results.MinDirectStress[slope] = sectionResult.fDirect[slope][impact][corner];
+                  results.MinDirectStressAnalysisPointIndex[slope] = sectionResult.AnalysisPointIndex;
+                  results.MinDirectStressImpactDirection[slope] = impact;
+                  results.MinDirectStressCorner[slope] = corner;
+               }
+
+#if defined REBAR_FOR_DIRECT_TENSION
+               if (segment)
+               {
+                  gbtAlternativeTensileStressRequirements altTensionRequirements;
+
+                  altTensionRequirements.shape = shape;
+                  altTensionRequirements.rebarSection = rebarSection;
+                  altTensionRequirements.fy = pStabilityProblem->GetRebarYieldStrength();
+                  altTensionRequirements.fsMax = ::ConvertToSysUnits(30.0, unitMeasure::KSI);
+                  altTensionRequirements.bLimitBarStress = true;
+                  altTensionRequirements.concreteType = concrete.GetType();
+                  altTensionRequirements.fc = concrete.GetFc();
+                  altTensionRequirements.bHasFct = concrete.HasAggSplittingStrength();
+                  altTensionRequirements.Fct = concrete.GetAggSplittingStrength();
+                  altTensionRequirements.density = concrete.GetDensity();
+
+                  altTensionRequirements.pntTopLeft.Move(pntStress[stbTypes::TopLeft].X(), pntStress[stbTypes::TopLeft].Y(), sectionResult.fDirect[slope][impact][stbTypes::TopLeft]);
+                  altTensionRequirements.pntTopRight.Move(pntStress[stbTypes::TopRight].X(), pntStress[stbTypes::TopRight].Y(), sectionResult.fDirect[slope][impact][stbTypes::TopRight]);
+                  altTensionRequirements.pntBottomLeft.Move(pntStress[stbTypes::BottomLeft].X(), pntStress[stbTypes::BottomLeft].Y(), sectionResult.fDirect[slope][impact][stbTypes::BottomLeft]);
+                  altTensionRequirements.pntBottomRight.Move(pntStress[stbTypes::BottomRight].X(), pntStress[stbTypes::BottomRight].Y(), sectionResult.fDirect[slope][impact][stbTypes::BottomRight]);
+
+                  gbtComputeAlternativeStressRequirements(&altTensionRequirements);
+                  sectionResult.altTensionRequirements[slope][impact] = altTensionRequirements;
+               }
+#endif // REBAR_FOR_DIRECT_TENSION
+
+               for ( int w = 0; w < 2; w++ )
+               {
+                  stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+
+                  if (results.bRotationalStability[slope][impact][wind])
                   {
-                     Mot += cfSign*results.MotCF;
-                     Zt += cfSign*results.ZoCF;
-                  }
+                     Float64 windSign = (wind == stbTypes::Left ? 1 : -1);
 
-                  Float64 ei = results.EccLateralSweep[impact];
-
-                  for (int cn = 0; cn < 4; cn++)
-                  {
-                     stbTypes::Corner corner = (stbTypes::Corner)cn;
-
-                     stbTypes::Face face = (corner == stbTypes::TopLeft || corner == stbTypes::TopRight ? stbTypes::Top : stbTypes::Bottom);
-                     Float64 b = (face == stbTypes::Top ? Wtf : Wbf);
-
-                     Float64 cornerSign = (corner == stbTypes::TopLeft || corner == stbTypes::BottomLeft ? 1 : -1);
-
-                     // stress due to direct loads (plumb girder)
-                     sectionResult.fDirect[slope][impact][wind][corner] = sectionResult.fps[corner] + im*sectionResult.fg[corner] + windSign*sectionResult.fw[corner];
+                     Float64 Zt = windSign*im*results.ZoWind[stbTypes::NoImpact]; // using NoImpact because we scale by IM here
+                     Float64 Mot = windSign*results.MotWind;
                      if (slope == stbTypes::Superelevation)
                      {
-                        sectionResult.fDirect[slope][impact][wind][corner] -= cfSign*sectionResult.fcf[corner];
+                        Mot += cfSign*results.MotCF;
+                        Zt += cfSign*results.ZoCF;
                      }
 
-                     // keep track of the max direct stress at this section including the corner where it occurs
-                     if (::IsLT(sectionResult.fMaxDirect[slope][face], sectionResult.fDirect[slope][impact][wind][corner]))
-                     {
-                        sectionResult.fMaxDirect[slope][face] = sectionResult.fDirect[slope][impact][wind][corner];
-                        sectionResult.MaxDirectStressImpactDirection[slope][face] = impact;
-                        sectionResult.MaxDirectStressWindDirection[slope][face] = wind;
-                        sectionResult.MaxDirectStressCorner[slope][face] = corner;
-                     }
-
-                     // keep track of the min direct stress at this section including the corner where it occurs
-                     if (::IsLT(sectionResult.fDirect[slope][impact][wind][corner], sectionResult.fMinDirect[slope][face]))
-                     {
-                        sectionResult.fMinDirect[slope][face] = sectionResult.fDirect[slope][impact][wind][corner];
-                        sectionResult.MinDirectStressImpactDirection[slope][face] = impact;
-                        sectionResult.MinDirectStressWindDirection[slope][face] = wind;
-                        sectionResult.MinDirectStressCorner[slope][face] = corner;
-                     }
-
-                     // keep track of the max direct stress of ALL sections including the corner where it occurs
-                     if (::IsLT(results.MaxDirectStress[slope], sectionResult.fDirect[slope][impact][wind][corner]))
-                     {
-                        results.MaxDirectStress[slope] = sectionResult.fDirect[slope][impact][wind][corner];
-                        results.MaxDirectStressAnalysisPointIndex[slope] = sectionResult.AnalysisPointIndex;
-                        results.MaxDirectStressImpactDirection[slope] = impact;
-                        results.MaxDirectStressWindDirection[slope] = wind;
-                        results.MaxDirectStressCorner[slope] = corner;
-                     }
-
-                     // keep track of the min direct stress of ALL sections including the corner where it occurs
-                     if (::IsLT(sectionResult.fDirect[slope][impact][wind][corner], results.MinDirectStress[slope]))
-                     {
-                        results.MinDirectStress[slope] = sectionResult.fDirect[slope][impact][wind][corner];
-                        results.MinDirectStressAnalysisPointIndex[slope] = sectionResult.AnalysisPointIndex;
-                        results.MinDirectStressImpactDirection[slope] = impact;
-                        results.MinDirectStressWindDirection[slope] = wind;
-                        results.MinDirectStressCorner[slope] = corner;
-                     }
+                     Float64 ei = results.EccLateralSweep[impact];
 
                      // stress due to lateral loads caused by the girder being tilted
                      //Float64 Mx = 0;
@@ -1033,7 +1042,11 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                      sectionResult.fTilt[slope][impact][wind][corner] = f;
 
                      // total stress
-                     sectionResult.f[slope][impact][wind][corner] = sectionResult.fDirect[slope][impact][wind][corner] + sectionResult.fTilt[slope][impact][wind][corner];
+                     sectionResult.f[slope][impact][wind][corner] = sectionResult.fDirect[slope][impact][corner] + sectionResult.fTilt[slope][impact][wind][corner] + windSign*sectionResult.fw[corner];
+                     if (slope == stbTypes::Superelevation)
+                     {
+                        sectionResult.f[slope][impact][wind][corner] -= cfSign*sectionResult.fcf[corner];
+                     }
 
                      // keep track of max stress at this section including the corner where it occurs
                      if (::IsLT(sectionResult.fMax[slope][face], sectionResult.f[slope][impact][wind][corner]))
@@ -1077,10 +1090,15 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                      Float64 mcr = 0; // if the direct stress exceedes the modulus of rupture, the beam is cracked before it is tilted...
                      Float64 fscr = 0; // ... and the FScr is 0.
                      Float64 theta_crack = 0;
-                     if (sectionResult.fDirect[slope][impact][wind][corner] < fr)
+                     Float64 f_direct = sectionResult.fDirect[slope][impact][corner] + windSign*sectionResult.fw[corner];
+                     if (slope == stbTypes::Superelevation)
+                     {
+                        f_direct -= cfSign*sectionResult.fcf[corner];
+                     }
+                     if (f_direct < fr)
                      {
                         // the direct stress is less than the modulus of rupture, therefore there needs to be additional moment applied to cause cracking
-                        mcr = fabs((fr - sectionResult.fDirect[slope][impact][wind][corner])*D / (Ixx*pntStress[corner].X() - Ixy*pntStress[corner].Y()));
+                        mcr = fabs((fr - f_direct)*D / (Ixx*pntStress[corner].X() - Ixy*pntStress[corner].Y()));
 
                         Float64 m = fabs(im*sectionResult.Mg);
 
@@ -1119,6 +1137,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                      results.FScrCorner[slope] = sectionResult.FScrCorner[slope];
                   }
 
+#if !defined REBAR_FOR_DIRECT_TENSION
                   if (segment)
                   {
                      gbtAlternativeTensileStressRequirements altTensionRequirements;
@@ -1142,6 +1161,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                      gbtComputeAlternativeStressRequirements(&altTensionRequirements);
                      sectionResult.altTensionRequirements[slope][impact][wind] = altTensionRequirements;
                   }
+#endif
                } // if stable
             } // next wind direction
          } // next impact
@@ -1220,7 +1240,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                // if FSf < FScr then FSf = FScr (if the girder doesn't crack, it doesn't fail)
                results.AdjFsFailure[slope][impact][wind] = Max(results.FsFailure[slope][impact][wind], results.MinFScr[slope]);
 
-               if (::IsLT(results.FsFailure[slope][impact][wind], results.MinFsFailure[slope]))
+               if (::IsLT(results.AdjFsFailure[slope][impact][wind], results.MinAdjFsFailure[slope]))
                {
                   results.MinFsFailure[slope] = results.FsFailure[slope][impact][wind];
                   results.MinAdjFsFailure[slope] = results.AdjFsFailure[slope][impact][wind];

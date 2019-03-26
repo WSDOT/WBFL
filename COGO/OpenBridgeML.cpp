@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This program is free software; you can redistribute it and/or modify
@@ -23,6 +23,9 @@
 #pragma once
 
 #include "stdafx.h"
+
+#if defined USING_OPENBRIDGEML
+
 #include <WBFLCogo\OpenBridgeML.h>
 #include <WBFLUnitServer\OpenBridgeML.h>
 
@@ -341,3 +344,5 @@ void ConvertToOurUnits(IUnitServer* obmlUnitServer,IUnitServer* pOurUnitServer,O
 {
 #pragma Reminder("IMPLEMENT")
 }
+
+#endif USING_OPENBRIDGEML

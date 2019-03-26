@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -48,12 +48,10 @@ stbLiftingSectionResult::stbLiftingSectionResult()
 
    memset((void*)fMinDirect, 0, sizeof(fMinDirect));
    memset((void*)MinDirectStressImpactDirection, 0, sizeof(MinDirectStressImpactDirection));
-   memset((void*)MinDirectStressWindDirection, 0, sizeof(MinDirectStressWindDirection));
    memset((void*)MinDirectStressCorner, 0, sizeof(MinDirectStressCorner));
 
    memset((void*)fMaxDirect, 0, sizeof(fMaxDirect));
    memset((void*)MaxDirectStressImpactDirection, 0, sizeof(MaxDirectStressImpactDirection));
-   memset((void*)MaxDirectStressWindDirection, 0, sizeof(MaxDirectStressWindDirection));
    memset((void*)MaxDirectStressCorner, 0, sizeof(MaxDirectStressCorner));
 
    memset((void*)fMin, 0, sizeof(fMin));
@@ -127,13 +125,11 @@ stbLiftingResults::stbLiftingResults()
    MaxDirectStress = -Float64_Max;
    MaxDirectStressAnalysisPointIndex = 0;
    MaxDirectStressImpactDirection    = stbTypes::NoImpact;
-   MaxDirectStressWindDirection      = stbTypes::Left;
    MaxDirectStressCorner             = stbTypes::TopLeft;
 
    MinDirectStress = Float64_Max;
    MinDirectStressAnalysisPointIndex = 0;
    MinDirectStressImpactDirection    = stbTypes::NoImpact;
-   MinDirectStressWindDirection      = stbTypes::Left;
    MinDirectStressCorner             = stbTypes::TopLeft;
 
    MaxStress = -Float64_Max;

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -98,6 +98,7 @@
 #include <DManip\ShapeDrawStrategy.h>
 #include <DManip\TargetDrawStrategy.h>
 #include <DManip\CompoundDrawLineStrategy.h>
+#include <DManip\CompoundDrawPointStrategy.h>
 
 
 #endif // INCLUDED_DMANIP_H_

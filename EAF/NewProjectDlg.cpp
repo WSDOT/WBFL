@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -442,7 +442,16 @@ void CNewProjectDlg::OnShowWindow(BOOL bShow, UINT nStatus)
       WINDOWPLACEMENT wp;
       if (EAFGetApp()->ReadWindowPlacement(CString((LPCTSTR)IDS_WINDOW_POSITIONS), _T("NewProject"), &wp))
       {
-         SetWindowPos(NULL, wp.rcNormalPosition.left, wp.rcNormalPosition.top, wp.rcNormalPosition.right - wp.rcNormalPosition.left, wp.rcNormalPosition.bottom - wp.rcNormalPosition.top, 0);
+         CWnd* pDesktop = GetDesktopWindow();
+         //CRect rDesktop;
+         //pDesktop->GetWindowRect(&rDesktop); // this is the size of one monitor.... use GetSystemMetrics to get the entire desktop
+         CRect rDesktop(0, 0, GetSystemMetrics(SM_CXVIRTUALSCREEN), GetSystemMetrics(SM_CYVIRTUALSCREEN));
+         CRect rDlg(wp.rcNormalPosition);
+         if(rDesktop.PtInRect(rDlg.TopLeft()) && rDesktop.PtInRect(rDlg.BottomRight()))
+         {
+            // if dialog is within the desktop area, set its position... otherwise the default position will be sued
+            SetWindowPos(NULL, wp.rcNormalPosition.left, wp.rcNormalPosition.top, wp.rcNormalPosition.right - wp.rcNormalPosition.left, wp.rcNormalPosition.bottom - wp.rcNormalPosition.top, 0);
+         }
       }
    }
 }

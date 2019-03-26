@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -59,6 +59,8 @@ END_COM_MAP()
    STDMETHOD_(PointType,GetPointType)();
    STDMETHOD_(void,SetPointSize)(Float64 size);
    STDMETHOD_(Float64,GetPointSize)();
+   STDMETHOD_(void, SetLogicalPointSize)(int size);
+   STDMETHOD_(int, GetLogicalPointSize)();
 
    // iDrawPointStrategy Implementation
    STDMETHOD_(void,Draw)(iPointDisplayObject* pDO,CDC* pDC);
@@ -69,10 +71,13 @@ END_COM_MAP()
 private:
    void DrawMe(const CRect& rect,CDC* pDC);
    void GetPointInWorldSpace(iPointDisplayObject* pDO,Float64* wx,Float64* wy);
+   CRect GetPointBox(iPointDisplayObject* pDO);
 
+   bool m_bIsLogicalPoint; // if true, SetLogicalPointSize was called so use m_LogicalSize for the point size
    COLORREF m_Color;
    PointType m_Type;
    Float64 m_Size;
+   int m_LogicalSize;
 
    CComPtr<IPoint2d> m_CachePoint;
 };

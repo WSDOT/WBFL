@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -58,6 +58,11 @@ LOG
 *****************************************************************************/
 struct LRFDCLASS lrfdShearData
 {
+   lrfdShearData()
+   {
+      memset((void*)this, 0, sizeof(lrfdShearData));
+   };
+
    // Input Parameters
    Float64 Mu;
    Float64 Nu;

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -63,6 +63,7 @@ public:
 public:
    STDMETHOD_(void,AddStrategy)(iDrawLineStrategy* pStrategy) override;
    STDMETHOD_(void,RemoveStrategy)(CollectionIndexType index) override;
+   STDMETHOD_(void, GetStrategy)(CollectionIndexType index, iDrawLineStrategy** ppStrategy) override;
    STDMETHOD_(CollectionIndexType,Count)() override;
 
 private:

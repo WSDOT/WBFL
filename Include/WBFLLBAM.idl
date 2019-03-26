@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -1571,7 +1571,12 @@ library WBFLLBAM
 		HRESULT Location([out, retval] Float64 *pVal);
 		[propput, helpstring("property Location"),helpcontext(IDH_TemporarySupport_Location)] 
 		HRESULT Location([in] Float64 newVal);
-		[propget, helpstring("property StageRemoved"),helpcontext(IDH_TemporarySupport_StageRemoved)] 
+      [propget, helpstring("property StageErected")/*, helpcontext(IDH_TemporarySupport_StageRemoved)*/]
+      HRESULT StageErected([out, retval] BSTR *pVal);
+      [propput, helpstring("property StageErected")/*, helpcontext(IDH_TemporarySupport_StageRemoved)*/]
+      HRESULT StageErected([in] BSTR newVal);
+
+      [propget, helpstring("property StageRemoved"),helpcontext(IDH_TemporarySupport_StageRemoved)] 
 		HRESULT StageRemoved([out, retval] BSTR *pVal);
 		[propput, helpstring("property StageRemoved"),helpcontext(IDH_TemporarySupport_StageRemoved)] 
 		HRESULT StageRemoved([in] BSTR newVal);

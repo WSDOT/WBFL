@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -47,6 +47,8 @@ interface iSimpleDrawPointStrategy : public iDrawPointStrategy
    STDMETHOD_(PointType,GetPointType)() PURE;
    STDMETHOD_(void,SetPointSize)(Float64 size) PURE;
    STDMETHOD_(Float64,GetPointSize)() PURE;
+   STDMETHOD_(void, SetLogicalPointSize)(int size) PURE;
+   STDMETHOD_(int, GetLogicalPointSize)() PURE;
 };
 
 #endif // INCLUDED_SIMPLEDRAWPOINTSTRATEGY_H_

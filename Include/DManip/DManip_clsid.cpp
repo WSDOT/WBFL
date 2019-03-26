@@ -225,6 +225,10 @@ DEFINE_GUID(IID_iTargetDrawStrategy,
 DEFINE_GUID(IID_iCompoundDrawLineStrategy, 
 0x76d6d4cc, 0xe0af, 0x4893, 0x9c, 0xa8, 0x53, 0xec, 0xe8, 0x42, 0x28, 0x2);
 
+// {F8834E1B-2359-42CA-9B91-2C67E8C4DF47}
+DEFINE_GUID(IID_iCompoundDrawPointStrategy,
+0xf8834e1b, 0x2359, 0x42ca, 0x9b, 0x91, 0x2c, 0x67, 0xe8, 0xc4, 0xdf, 0x47);
+
 // {E9C6C54F-77CF-4ee4-9465-4821BBD0CEF3}
 DEFINE_GUID(IID_iExtRectangleDrawLineStrategy, 
 0xe9c6c54f, 0x77cf, 0x4ee4, 0x94, 0x65, 0x48, 0x21, 0xbb, 0xd0, 0xce, 0xf3);
@@ -428,6 +432,7 @@ struct __declspec(uuid("{CBE1C9E6-D5C0-4bf5-BFC1-AAAA8EA975BE}")) iDisplayMgrEve
 struct __declspec(uuid("{A398765E-7831-4d5b-8361-ED63DBD6E93A}")) iShapeDrawStrategy;
 struct __declspec(uuid("{8B8DB485-E3F8-4f7b-9723-DE5092789E6C}")) iTargetDrawStrategy;
 struct __declspec(uuid("{76D6D4CC-E0AF-4893-9CA8-53ECE8422802}")) iCompoundDrawLineStrategy;
+struct __declspec(uuid("{F8834E1B-2359-42CA-9B91-2C67E8C4DF47}")) iCompoundDrawPointStrategy;
 struct __declspec(uuid("{E9C6C54F-77CF-4ee4-9465-4821BBD0CEF3}")) iExtRectangleDrawLineStrategy;
 struct __declspec(uuid("{66542767-5F40-4124-9CCF-7A5456E3328C}")) iViewTitle;
 struct __declspec(uuid("{1CDB522C-E3B4-4664-8E67-BB56605BB377}")) iShapeGravityWellStrategy;

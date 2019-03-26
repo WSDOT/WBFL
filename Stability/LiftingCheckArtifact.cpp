@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,16 +34,15 @@ stbLiftingCheckArtifact::stbLiftingCheckArtifact()
 {
 }
 
-stbLiftingCheckArtifact::stbLiftingCheckArtifact(const stbLiftingResults& results,const stbLiftingCriteria& criteria,bool bComputeStressesAtEquilibriumAngle)
+stbLiftingCheckArtifact::stbLiftingCheckArtifact(const stbLiftingResults& results,const stbLiftingCriteria& criteria)
 {
-   Init(results,criteria, bComputeStressesAtEquilibriumAngle);
+   Init(results,criteria);
 }
 
-void stbLiftingCheckArtifact::Init(const stbLiftingResults& results,const stbLiftingCriteria& criteria,bool bComputeStressesAtEquilibriumAngle)
+void stbLiftingCheckArtifact::Init(const stbLiftingResults& results,const stbLiftingCriteria& criteria)
 {
    m_Results = results;
    m_Criteria = criteria;
-   m_bComputeStressesAtEquilibriumAngle = bComputeStressesAtEquilibriumAngle;
 }
 
 const stbLiftingResults& stbLiftingCheckArtifact::GetLiftingResults() const
@@ -56,11 +55,6 @@ const stbLiftingCriteria& stbLiftingCheckArtifact::GetCriteria() const
    return m_Criteria;
 }
 
-bool stbLiftingCheckArtifact::EvaluateStressesAtEquilibriumAngle() const
-{
-   return m_bComputeStressesAtEquilibriumAngle;
-}
-
 void stbLiftingCheckArtifact::GetControllingTensionCase(const stbLiftingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const
 {
    Float64 Fallow;
@@ -68,29 +62,23 @@ void stbLiftingCheckArtifact::GetControllingTensionCase(const stbLiftingSectionR
    for ( int i = 0; i < 3; i++ )
    {
       stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+#if defined REBAR_FOR_DIRECT_TENSION
+      Float64 fAllow = GetAllowableTension(sectionResult, impact);
+#endif
       for ( int w = 0; w < 2; w++ )
       {
          stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+#if !defined REBAR_FOR_DIRECT_TENSION
          Float64 fAllow = GetAllowableTension(sectionResult,impact,wind);
+#endif
 
          Float64 cd;
          stbTypes::Corner corner;
-         if (m_bComputeStressesAtEquilibriumAngle)
-         {
-            corner = (stbTypes::Corner)mathCDRatio::MinCDRatio(mathCDRatio::cdPositive,
-               fAllow, sectionResult.f[impact][wind][stbTypes::TopLeft],
-               fAllow, sectionResult.f[impact][wind][stbTypes::TopRight],
-               fAllow, sectionResult.f[impact][wind][stbTypes::BottomLeft],
-               fAllow, sectionResult.f[impact][wind][stbTypes::BottomRight], &cd);
-         }
-         else
-         {
-            corner = (stbTypes::Corner)mathCDRatio::MinCDRatio(mathCDRatio::cdPositive,
-               fAllow, sectionResult.fDirect[impact][wind][stbTypes::TopLeft],
-               fAllow, sectionResult.fDirect[impact][wind][stbTypes::TopRight],
-               fAllow, sectionResult.fDirect[impact][wind][stbTypes::BottomLeft],
-               fAllow, sectionResult.fDirect[impact][wind][stbTypes::BottomRight], &cd);
-         }
+         corner = (stbTypes::Corner)mathCDRatio::MinCDRatio(mathCDRatio::cdPositive,
+            fAllow, sectionResult.f[impact][wind][stbTypes::TopLeft],
+            fAllow, sectionResult.f[impact][wind][stbTypes::TopRight],
+            fAllow, sectionResult.f[impact][wind][stbTypes::BottomLeft],
+            fAllow, sectionResult.f[impact][wind][stbTypes::BottomRight], &cd);
 
          if ( (i == 0 && w == 0) || // this is the first time so this cd wins
               (CD < 0 && 0 <= cd) || // there is a sign change and the current cd is a positive value
@@ -107,21 +95,46 @@ void stbLiftingCheckArtifact::GetControllingTensionCase(const stbLiftingSectionR
    }
 
    *pfAllow = Fallow;
-   if (m_bComputeStressesAtEquilibriumAngle)
-   {
-      *pbPassed = (::IsLE(sectionResult.f[*pImpact][*pWind][*pCorner], *pfAllow));
-   }
-   else
-   {
-      *pbPassed = (::IsLE(sectionResult.fDirect[*pImpact][*pWind][*pCorner], *pfAllow));
-   }
+   *pbPassed = (::IsLE(sectionResult.f[*pImpact][*pWind][*pCorner], *pfAllow));
 
    *pCD = CD;
 }
 
-void stbLiftingCheckArtifact::GetControllingCompressionCase(const stbLiftingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const
+void stbLiftingCheckArtifact::GetControllingGlobalCompressionCase(const stbLiftingSectionResult& sectionResult, stbTypes::ImpactDirection* pImpact, stbTypes::Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const
 {
-   Float64 fAllow = m_Criteria.AllowableCompression;
+   Float64 fAllow = m_Criteria.AllowableCompression_GlobalStress;
+   Float64 CD = DBL_MAX;
+   for (int i = 0; i < 3; i++)
+   {
+      stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+      Float64 cd;
+      stbTypes::Corner corner;
+      corner = (stbTypes::Corner)mathCDRatio::MinCDRatio(mathCDRatio::cdNegative,
+         fAllow, sectionResult.fDirect[impact][stbTypes::TopLeft],
+         fAllow, sectionResult.fDirect[impact][stbTypes::TopRight],
+         fAllow, sectionResult.fDirect[impact][stbTypes::BottomLeft],
+         fAllow, sectionResult.fDirect[impact][stbTypes::BottomRight], &cd);
+
+      if ((i == 0) || // this is the first time so this cd wins
+         (CD < 0 && 0 <= cd) || // there is a sign change and the current cd is a positive value
+         (0 <= cd && 0 <= CD ? cd < CD : fabs(CD) < fabs(cd))
+         )
+      {
+         CD = cd;
+         *pImpact = impact;
+         *pCorner = corner;
+      }
+   }
+
+   *pfAllow = fAllow;
+   *pbPassed = (::IsLT(*pfAllow, sectionResult.fDirect[*pImpact][*pCorner]));
+
+   *pCD = CD;
+}
+
+void stbLiftingCheckArtifact::GetControllingPeakCompressionCase(const stbLiftingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const
+{
+   Float64 fAllow = m_Criteria.AllowableCompression_PeakStress;
    Float64 CD = DBL_MAX;
    for ( int i = 0; i < 3; i++ )
    {
@@ -131,22 +144,11 @@ void stbLiftingCheckArtifact::GetControllingCompressionCase(const stbLiftingSect
          stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
          Float64 cd;
          stbTypes::Corner corner;
-         if (m_bComputeStressesAtEquilibriumAngle)
-         {
-            corner = (stbTypes::Corner)mathCDRatio::MinCDRatio(mathCDRatio::cdNegative,
-               fAllow, sectionResult.f[impact][wind][stbTypes::TopLeft],
-               fAllow, sectionResult.f[impact][wind][stbTypes::TopRight],
-               fAllow, sectionResult.f[impact][wind][stbTypes::BottomLeft],
-               fAllow, sectionResult.f[impact][wind][stbTypes::BottomRight], &cd);
-         }
-         else
-         {
-            corner = (stbTypes::Corner)mathCDRatio::MinCDRatio(mathCDRatio::cdNegative,
-               fAllow, sectionResult.fDirect[impact][wind][stbTypes::TopLeft],
-               fAllow, sectionResult.fDirect[impact][wind][stbTypes::TopRight],
-               fAllow, sectionResult.fDirect[impact][wind][stbTypes::BottomLeft],
-               fAllow, sectionResult.fDirect[impact][wind][stbTypes::BottomRight], &cd);
-         }
+         corner = (stbTypes::Corner)mathCDRatio::MinCDRatio(mathCDRatio::cdNegative,
+            fAllow, sectionResult.f[impact][wind][stbTypes::TopLeft],
+            fAllow, sectionResult.f[impact][wind][stbTypes::TopRight],
+            fAllow, sectionResult.f[impact][wind][stbTypes::BottomLeft],
+            fAllow, sectionResult.f[impact][wind][stbTypes::BottomRight], &cd);
 
          if ( (i == 0 && w == 0) || // this is the first time so this cd wins
               (CD < 0 && 0 <= cd) || // there is a sign change and the current cd is a positive value
@@ -162,14 +164,7 @@ void stbLiftingCheckArtifact::GetControllingCompressionCase(const stbLiftingSect
    }
 
    *pfAllow = fAllow;
-   if (m_bComputeStressesAtEquilibriumAngle)
-   {
-      *pbPassed = (::IsLT(*pfAllow, sectionResult.f[*pImpact][*pWind][*pCorner]));
-   }
-   else
-   {
-      *pbPassed = (::IsLT(*pfAllow, sectionResult.fDirect[*pImpact][*pWind][*pCorner]));
-   }
+   *pbPassed = (::IsLT(*pfAllow, sectionResult.f[*pImpact][*pWind][*pCorner]));
 
    *pCD = CD;
 }
@@ -190,7 +185,7 @@ bool stbLiftingCheckArtifact::Passed() const
    }
 
 
-   return (PassedCrackingCheck() && PassedFailureCheck() && PassedStressCheck());
+   return (PassedCrackingCheck() && PassedFailureCheck() && PassedStressCheck() && PassedDirectStressCheck());
 }
 
 bool stbLiftingCheckArtifact::PassedCrackingCheck() const
@@ -210,7 +205,7 @@ bool stbLiftingCheckArtifact::PassedDirectStressCheck() const
 
 bool stbLiftingCheckArtifact::PassedDirectCompressionCheck() const
 {
-   return (::IsLE(m_Criteria.AllowableCompression,m_Results.MinDirectStress) ? true : false);
+   return (::IsLE(m_Criteria.AllowableCompression_GlobalStress,m_Results.MinDirectStress) ? true : false);
 }
 
 bool stbLiftingCheckArtifact::PassedDirectTensionCheck() const
@@ -223,19 +218,27 @@ bool stbLiftingCheckArtifact::PassedDirectTensionCheck() const
       for (IndexType i = 0; i < 3; i++)
       {
          stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
-         for (IndexType w = 0; w < 2; w++)
+         for (IndexType c = 0; c < 4; c++)
          {
-            stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
-            for (IndexType c = 0; c < 4; c++)
+            stbTypes::Corner corner = (stbTypes::Corner)c;
+            Float64 f = sectionResult.fDirect[impact][corner];
+#if defined REBAR_FOR_DIRECT_TENSION
+            Float64 fAllow = GetAllowableTension(sectionResult, impact);
+            if (::IsLE(fAllow, f))
             {
-               stbTypes::Corner corner = (stbTypes::Corner)c;
+               return false;
+            }
+#else
+            for (IndexType w = 0; w < 2; w++)
+            {
+               stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
                Float64 fAllow = GetAllowableTension(sectionResult, impact, wind);
-               Float64 f = sectionResult.fDirect[impact][wind][corner];
                if (::IsLE(fAllow, f))
                {
                   return false;
                }
             }
+#endif // REBAR_FOR_DIRECT_TENSION
          }
       }
    }
@@ -245,19 +248,12 @@ bool stbLiftingCheckArtifact::PassedDirectTensionCheck() const
 
 bool stbLiftingCheckArtifact::PassedStressCheck() const
 {
-   if (m_bComputeStressesAtEquilibriumAngle)
-   {
-      return PassedCompressionCheck() && PassedTensionCheck();
-   }
-   else
-   {
-      return PassedDirectCompressionCheck() && PassedDirectTensionCheck();
-   }
+   return PassedCompressionCheck() && PassedTensionCheck();
 }
 
 bool stbLiftingCheckArtifact::PassedCompressionCheck() const
 {
-   return (::IsLE(m_Criteria.AllowableCompression,m_Results.MinStress) ? true : false);
+   return (::IsLE(m_Criteria.AllowableCompression_PeakStress,m_Results.MinStress) ? true : false);
 }
 
 bool stbLiftingCheckArtifact::PassedTensionCheck() const
@@ -270,13 +266,15 @@ bool stbLiftingCheckArtifact::PassedTensionCheck() const
       for (IndexType i = 0; i < 3; i++)
       {
          stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
-         for (IndexType w = 0; w < 2; w++)
+         for (IndexType c = 0; c < 4; c++)
          {
-            stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
-            for (IndexType c = 0; c < 4; c++)
+            stbTypes::Corner corner = (stbTypes::Corner)c;
+#if defined REBAR_FOR_DIRECT_TENSION
+            Float64 fAllow = GetAllowableTension(sectionResult, impact);
+#endif // REBAR_FOR_DIRECT_TENSION
+            for (IndexType w = 0; w < 2; w++)
             {
-               stbTypes::Corner corner = (stbTypes::Corner)c;
-               Float64 fAllow = GetAllowableTension(sectionResult, impact, wind);
+               stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
                Float64 f = sectionResult.f[impact][wind][corner];
                if (::IsLE(fAllow, f))
                {
@@ -290,9 +288,10 @@ bool stbLiftingCheckArtifact::PassedTensionCheck() const
    return true;
 }
 
-Float64 stbLiftingCheckArtifact::GetAllowableTension(const stbLiftingSectionResult& sectionResult,stbTypes::ImpactDirection impact,stbTypes::WindDirection wind) const
+#if defined REBAR_FOR_DIRECT_TENSION
+Float64 stbLiftingCheckArtifact::GetAllowableTension(const stbLiftingSectionResult& sectionResult, stbTypes::ImpactDirection impact) const
 {
-   if ( sectionResult.altTensionRequirements[impact][wind].bIsAdequateRebar && 0 <= sectionResult.altTensionRequirements[impact][wind].AsRequired)
+   if (sectionResult.altTensionRequirements[impact].bIsAdequateRebar && 0 <= sectionResult.altTensionRequirements[impact].AsRequired)
    {
       return m_Criteria.AllowableTensionWithRebar;
    }
@@ -301,18 +300,35 @@ Float64 stbLiftingCheckArtifact::GetAllowableTension(const stbLiftingSectionResu
       return m_Criteria.AllowableTension;
    }
 }
+#else
+Float64 stbLiftingCheckArtifact::GetAllowableTension(const stbLiftingSectionResult& sectionResult, stbTypes::ImpactDirection impact, stbTypes::WindDirection wind) const
+{
+   if (sectionResult.altTensionRequirements[impact][wind].bIsAdequateRebar && 0 <= sectionResult.altTensionRequirements[impact][wind].AsRequired)
+   {
+      return m_Criteria.AllowableTensionWithRebar;
+   }
+   else
+   {
+      return m_Criteria.AllowableTension;
+   }
+}
+#endif
 
 Float64 stbLiftingCheckArtifact::RequiredFcCompression() const
 {
-   Float64 minStress = (m_bComputeStressesAtEquilibriumAngle ? m_Results.MinStress : m_Results.MinDirectStress);
-   Float64 coeff = m_Criteria.CompressionCoefficient;
-   Float64 fcReqd = -minStress/coeff;
-   return fcReqd;
+   Float64 minDirectStress = m_Results.MinDirectStress;
+   Float64 global_coeff = m_Criteria.CompressionCoefficient_GlobalStress;
+   Float64 fcReqd_Global = -minDirectStress / global_coeff;
+
+   Float64 minStress = m_Results.MinStress;
+   Float64 peak_coeff = m_Criteria.CompressionCoefficient_PeakStress;
+   Float64 fcReqd_Peak = -minStress/peak_coeff;
+   return Max(fcReqd_Global, fcReqd_Peak);
 }
 
 Float64 stbLiftingCheckArtifact::RequiredFcTension() const
 {
-   Float64 maxStress = (m_bComputeStressesAtEquilibriumAngle ? m_Results.MaxStress : m_Results.MaxDirectStress);
+   Float64 maxStress = m_Results.MaxStress;
    Float64 coeff = m_Criteria.TensionCoefficient;
    Float64 lambda = m_Criteria.Lambda;
 
@@ -332,7 +348,7 @@ Float64 stbLiftingCheckArtifact::RequiredFcTension() const
 
 Float64 stbLiftingCheckArtifact::RequiredFcTensionWithRebar() const
 {
-   Float64 maxStress = (m_bComputeStressesAtEquilibriumAngle ? m_Results.MaxStress : m_Results.MaxDirectStress);
+   Float64 maxStress = m_Results.MaxStress;
    Float64 coeff = m_Criteria.TensionCoefficientWithRebar;
    Float64 lambda = m_Criteria.Lambda;
 

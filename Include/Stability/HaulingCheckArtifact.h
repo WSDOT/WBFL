@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -40,16 +40,15 @@ class STABILITYCLASS stbHaulingCheckArtifact
 {
 public:
    stbHaulingCheckArtifact();
-   stbHaulingCheckArtifact(const stbHaulingResults& results,const stbHaulingCriteria& criteria,bool bComputeCrownSlopeStressesAtEquilibriumAngle, bool bComputeSuperelevationStressesAtEquilibriumAngle);
-   void Init(const stbHaulingResults& results,const stbHaulingCriteria& criteria, bool bComputeCrownSlopeStressesAtEquilibriumAngle, bool bComputeSuperelevationStressesAtEquilibriumAngle);
+   stbHaulingCheckArtifact(const stbHaulingResults& results,const stbHaulingCriteria& criteria);
+   void Init(const stbHaulingResults& results,const stbHaulingCriteria& criteria);
 
    const stbHaulingResults& GetHaulingResults() const;
    const stbHaulingCriteria& GetCriteria() const;
 
-   bool EvaluateStressesAtEquilibriumAngle(stbTypes::HaulingSlope slope) const;
-
    void GetControllingTensionCase(stbTypes::HaulingSlope slope,const stbHaulingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const;
-   void GetControllingCompressionCase(stbTypes::HaulingSlope slope,const stbHaulingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const;
+   void GetControllingGlobalCompressionCase(stbTypes::HaulingSlope slope, const stbHaulingSectionResult& sectionResult, stbTypes::ImpactDirection* pImpact, stbTypes::Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
+   void GetControllingPeakCompressionCase(stbTypes::HaulingSlope slope, const stbHaulingSectionResult& sectionResult, stbTypes::ImpactDirection* pImpact, stbTypes::WindDirection* pWind, stbTypes::Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
 
    bool Passed(bool bIgnoreConfigurationLimits) const;
    bool Passed(stbTypes::HaulingSlope slope) const;
@@ -67,7 +66,11 @@ public:
    bool PassedLeadingOverhang() const;
    bool PassedMaxWeight() const;
 
+#if defined REBAR_FOR_DIRECT_TENSION
+   Float64 GetAllowableTension(stbTypes::HaulingSlope slope, const stbHaulingSectionResult& sectionResult, stbTypes::ImpactDirection impact) const;
+#else
    Float64 GetAllowableTension(stbTypes::HaulingSlope slope,const stbHaulingSectionResult& sectionResult,stbTypes::ImpactDirection impact,stbTypes::WindDirection wind) const;
+#endif
 
    Float64 RequiredFcCompression(stbTypes::HaulingSlope slope) const;
    Float64 RequiredFcTension(stbTypes::HaulingSlope slope) const;
@@ -76,5 +79,4 @@ public:
 protected:
    stbHaulingResults m_Results;
    stbHaulingCriteria m_Criteria;
-   bool m_bComputeStressesAtEquilibriumAngle[2]; // HaulingSlope is the array index
 };

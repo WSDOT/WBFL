@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -46,6 +46,8 @@ CSimpleDrawPointStrategyImpl::CSimpleDrawPointStrategyImpl()
    m_Color = RGB(0,0,0); // black
    m_Type  = ptCircle;
    m_Size  = 0;
+   m_LogicalSize = 0;
+   m_bIsLogicalPoint = false;
    m_CachePoint.CoCreateInstance(CLSID_Point2d);
 }
 
@@ -76,6 +78,7 @@ STDMETHODIMP_(PointType) CSimpleDrawPointStrategyImpl::GetPointType()
 
 STDMETHODIMP_(void) CSimpleDrawPointStrategyImpl::SetPointSize(Float64 size)
 {
+   m_bIsLogicalPoint = false;
    m_Size = size;
 }
 
@@ -84,9 +87,20 @@ STDMETHODIMP_(Float64) CSimpleDrawPointStrategyImpl::GetPointSize()
    return m_Size;
 }
 
+STDMETHODIMP_(void) CSimpleDrawPointStrategyImpl::SetLogicalPointSize(int size)
+{
+   m_bIsLogicalPoint = true;
+   m_LogicalSize = size;
+}
+
+STDMETHODIMP_(int) CSimpleDrawPointStrategyImpl::GetLogicalPointSize()
+{
+   return m_LogicalSize;
+}
+
 STDMETHODIMP_(void) CSimpleDrawPointStrategyImpl::Draw(iPointDisplayObject* pDO,CDC* pDC)
 {
-   CRect r = pDO->GetBoundingBox();
+   CRect r = GetPointBox(pDO);
 
    CComPtr<iDisplayList> pDL;
    pDO->GetDisplayList(&pDL);
@@ -119,7 +133,7 @@ STDMETHODIMP_(void) CSimpleDrawPointStrategyImpl::Draw(iPointDisplayObject* pDO,
 
 STDMETHODIMP_(void) CSimpleDrawPointStrategyImpl::DrawHighlite(iPointDisplayObject* pDO,CDC* pDC,BOOL bHighlite)
 {
-   CRect r = pDO->GetBoundingBox();
+   CRect r = GetPointBox(pDO);
 
    COLORREF color;
    color = RGB(0,255,0);
@@ -135,7 +149,7 @@ STDMETHODIMP_(void) CSimpleDrawPointStrategyImpl::DrawDragImage(iPointDisplayObj
 {
    map->LPtoWP(dragPoint.x, dragPoint.y, &m_CachePoint);
 
-   CRect r = pDO->GetBoundingBox();
+   CRect r = GetPointBox(pDO);
 
    COLORREF color;
    color = RGB(0,0,255);
@@ -250,4 +264,35 @@ void CSimpleDrawPointStrategyImpl::GetPointInWorldSpace(iPointDisplayObject* pDO
 
    // map the point to world space
    pMap->MPtoWP(point,wx,wy);
+}
+
+CRect CSimpleDrawPointStrategyImpl::GetPointBox(iPointDisplayObject* pDO)
+{
+   CRect rect;
+   if (m_bIsLogicalPoint)
+   {
+      Float64 px, py;
+      GetPointInWorldSpace(pDO, &px, &py);
+
+      CComPtr<iDisplayList> pDL;
+      pDO->GetDisplayList(&pDL);
+      CComPtr<iDisplayMgr> pDispMgr;
+      pDL->GetDisplayMgr(&pDispMgr);
+      CComPtr<iCoordinateMap> pMap;
+      pDispMgr->GetCoordinateMap(&pMap);
+
+      LONG x, y;
+      pMap->WPtoLP(px, py, &x, &y);
+
+      rect.left = x - m_LogicalSize / 2;
+      rect.right = rect.left + m_LogicalSize;
+      rect.top = y - m_LogicalSize / 2;
+      rect.bottom = rect.top + m_LogicalSize;
+   }
+   else
+   {
+      rect = pDO->GetBoundingBox();
+   }
+
+   return rect;
 }

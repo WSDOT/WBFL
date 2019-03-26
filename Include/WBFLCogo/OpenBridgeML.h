@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This program is free software; you can redistribute it and/or modify
@@ -22,13 +22,15 @@
 
 #pragma once
 
+#if defined USING_OPENBRIDGEML
+
 #include <WBFLCogo\CogoExp.h>
 #include <OpenBridgeML_Alignments.hxx>
 #include <WBFLCogo.h>
 #include <WBFLUnitServer.h>
 
- 
-
 BOOL COGOFUNC CreateAlignment(IUnitServer* obmlUnitServer,IUnitServer* pOurUnitServer,OpenBridgeML::Alignments::Alignment& obmlAlignment,IAlignment** ppAlignment);
 BOOL COGOFUNC CreateAlignmentsCollection(IUnitServer* obmlUnitServer,IUnitServer* pOurUnitServer,OpenBridgeML::Alignments::AlignmentsType& obmlAlignments,IAlignmentCollection** ppAlignments);
 BOOL COGOFUNC GetAlignments(IUnitServer* obmlUnitServer,IUnitServer* pOurUnitServer,OpenBridgeML::Alignments::AlignmentsType& obmlAlignments,IAlignmentCollection* pAlignments);
+
+#endif USING_OPENBRIDGEML

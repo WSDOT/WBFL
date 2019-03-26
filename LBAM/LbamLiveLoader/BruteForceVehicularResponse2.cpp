@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Live Loader - Longitindal Bridge Analysis Model
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -819,13 +819,19 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(IIDArray* poiIDs, BS
                      tempSupports->Find(tsID,&tempSupport);
                      ATLASSERT(tempSupport != nullptr);
 
+                     CComBSTR bstrErectionStage;
+                     tempSupport->get_StageErected(&bstrErectionStage);
+
+                     StageIndexType erectionStageIdx;
+                     stages->FindIndex(bstrErectionStage, &erectionStageIdx);
+
                      CComBSTR bstrRemovalStage;
                      tempSupport->get_StageRemoved(&bstrRemovalStage);
 
                      StageIndexType removalStageIdx;
                      stages->FindIndex(bstrRemovalStage,&removalStageIdx);
 
-                     if ( removalStageIdx == INVALID_INDEX || stageIdx < removalStageIdx )
+                     if ((erectionStageIdx == INVALID_INDEX || erectionStageIdx <= stageIdx) && (removalStageIdx == INVALID_INDEX || stageIdx < removalStageIdx) )
                      {
                         // only add results if the temp support has not yet been removed
                         vPoiIDs.push_back(tsID);

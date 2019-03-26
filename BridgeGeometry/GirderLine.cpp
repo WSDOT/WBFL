@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // BridgeGeometry
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -413,22 +413,16 @@ HRESULT CGirderLine::LocatePoints()
    CComPtr<IDirection> direction; // direction from end to pier point
    Float64 offset; // this is always a positive value because it is a distance
    measure->Inverse(m_PierPoint[etStart],m_BearingPoint[etStart],&offset,&direction);
-   if ( !IsZero(offset) )
+   if ( !IsZero(offset) && m_Direction->IsEqual(direction) == S_FALSE )
    {
-      if ( m_Direction->IsEqual(direction) == S_FALSE )
-      {
-         m_BearingOffset[etStart] *= -1;
-      }
+      m_BearingOffset[etStart] *= -1;
    }
 
    direction.Release();
    measure->Inverse(m_BearingPoint[etEnd],m_PierPoint[etEnd],&offset,&direction);
-   if ( !IsZero(offset) )
+   if ( !IsZero(offset) && m_Direction->IsEqual(direction) == S_FALSE)
    {
-      if (m_Direction->IsEqual(direction) == S_FALSE)
-      {
-         m_BearingOffset[etEnd] *= -1;
-      }
+      m_BearingOffset[etEnd] *= -1;
    }
 
    ATLASSERT(::BinarySign(m_BearingOffset[etStart]) == ::BinarySign(brgOffset[etStart]));

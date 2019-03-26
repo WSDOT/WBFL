@@ -946,6 +946,7 @@ date/T &gt; $(IntDir)mt2.dep
     <ClCompile Include="CenterOnPointTaskImpl.cpp" />
     <ClCompile Include="CompositeDisplayObjectImpl.cpp" />
     <ClCompile Include="CompoundDrawLineStrategyImpl.cpp" />
+    <ClCompile Include="CompoundDrawPointStrategyImpl.cpp" />
     <ClCompile Include="ConnectorImpl.cpp" />
     <ClCompile Include="DimensionLineImpl.cpp" />
     <ClCompile Include="DisplayListImpl.cpp" />
@@ -1012,6 +1013,7 @@ date/T &gt; $(IntDir)mt2.dep
     <None Include="CenterOnPointTask.rgs" />
     <None Include="CompositeDisplayObject.rgs" />
     <None Include="CompoundDrawLineStrategy.rgs" />
+    <None Include="CompoundDrawPointStrategy.rgs" />
     <None Include="DimensionLineDisplayObject.rgs" />
     <None Include="DisplayList.rgs" />
     <None Include="DisplayMgr.rgs" />
@@ -1072,6 +1074,7 @@ date/T &gt; $(IntDir)mt2.dep
     <ClInclude Include="..\Include\DManip\CenterOnPointTask.h" />
     <ClInclude Include="..\Include\DManip\CompositeDisplayObject.h" />
     <ClInclude Include="..\Include\DManip\CompoundDrawLineStrategy.h" />
+    <ClInclude Include="..\Include\DManip\CompoundDrawPointStrategy.h" />
     <ClInclude Include="..\Include\DManip\Connections.h" />
     <ClInclude Include="..\Include\DManip\CoordinateMap.h" />
     <ClInclude Include="..\Include\DManip\DimensionLine.h" />
@@ -1126,6 +1129,7 @@ date/T &gt; $(IntDir)mt2.dep
     <ClInclude Include="CenterOnPointTaskImpl.h" />
     <ClInclude Include="CompositeDisplayObjectImpl.h" />
     <ClInclude Include="CompoundDrawLineStrategyImpl.h" />
+    <ClInclude Include="CompoundDrawPointStrategyImpl.h" />
     <ClInclude Include="ConnectableImpl.h" />
     <ClInclude Include="ConnectorImpl.h" />
     <ClInclude Include="DimensionLineImpl.h" />

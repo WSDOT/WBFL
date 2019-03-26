@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -981,22 +981,26 @@ void CLoadGroupResponse::CAnalysisController::UpdateTemporarySupportLoadings(ILB
          SupportIDType tempSupportID;
          hr = temporarySupport->get_ID(&tempSupportID);
 
+         CComBSTR bstrErectionStage;
+         hr = temporarySupport->get_StageErected(&bstrErectionStage);
+
          CComBSTR bstrRemovalStage;
          hr = temporarySupport->get_StageRemoved(&bstrRemovalStage);
 
+         StageIndexType erectionStageIdx;
+         bool bErectionStage = GetStageIndex(bstrErectionStage, &erectionStageIdx);
+         erectionStageIdx = (erectionStageIdx == INVALID_INDEX ? 0 : erectionStageIdx);
+
          StageIndexType removalStageIdx;
-         if ( GetStageIndex(bstrRemovalStage,&removalStageIdx) )
+         bool bRemovalStage = GetStageIndex(bstrRemovalStage, &removalStageIdx);
+         removalStageIdx = (removalStageIdx == INVALID_INDEX ? 0 : removalStageIdx);
+
+         if (bRemovalStage)
          {
-            m_TemporarySupportInfo.emplace_back(tempSupportID, removalStageIdx);
+            // there must be a removal stage, otherwise the temporary support is never
+            // removed and therefore there isn't a reaction to put back into the system
+            m_TemporarySupportInfo.emplace_back(tempSupportID, erectionStageIdx, removalStageIdx);
          }
-
-         //if ( !GetStageIndex(bstrRemovalStage,&removalStageIdx) )
-         //{
-         //   CComBSTR msg(::CreateErrorMsg1S(IDS_E_NO_REM_STAGE_FOR_TS, bstrRemovalStage));
-         //   THROW_LBAMA_MSG(NO_REM_STAGE_FOR_TS,msg);
-         //}
-
-         //m_TemporarySupportInfo.push_back(TemporarySupportInfo(tempSupportID, removalStageIdx));
       }
    }
 }
@@ -1091,6 +1095,12 @@ SupportIDType CLoadGroupResponse::CAnalysisController::GetTemporarySupportID(Sup
 {
    ATLASSERT(tempSupportIdx < TemporarySupportCount());
    return m_TemporarySupportInfo[tempSupportIdx].m_ID;
+}
+
+StageIndexType CLoadGroupResponse::CAnalysisController::TemporarySupportErectionStageIdx(SupportIndexType tempSupportIdx)
+{
+   ATLASSERT(tempSupportIdx < TemporarySupportCount());
+   return m_TemporarySupportInfo[tempSupportIdx].m_ErectionStageIdx;
 }
 
 StageIndexType CLoadGroupResponse::CAnalysisController::TemporarySupportRemovalStageIndex( SupportIndexType tempSupportIdx)
@@ -1350,10 +1360,11 @@ void CLoadGroupResponse::ValidateTemporarySupportForces()
 
             if ( bOmitReaction == VARIANT_FALSE )
             {
-               // sum to removal stage
+               // sum from erection to removal stage
+               StageIndexType erectionStageIdx = m_AnalysisController.TemporarySupportErectionStageIdx(tempSupportIdx);
                StageIndexType removalStageIdx = m_AnalysisController.TemporarySupportRemovalStageIndex(tempSupportIdx);
                CAnalysisModel& rfemModel_AfterRemoval = *(m_Models[removalStageIdx]);
-               for (StageIndexType stageIdx = 0; stageIdx < removalStageIdx; stageIdx++)
+               for (StageIndexType stageIdx = erectionStageIdx; stageIdx < removalStageIdx; stageIdx++)
                {
                   // get fem model for this stage
                   CAnalysisModel& rfemModel = *(m_Models[stageIdx]);

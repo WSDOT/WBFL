@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -60,25 +60,12 @@ STDMETHODIMP CUnitModeController::put_UnitMode(UnitModeType newVal)
 
 STDMETHODIMP CUnitModeController::ShowSelectionDialog()
 {
-	// TODO: Add your implementation code here
    CUnitsDialog dlg;
    dlg.SetUnitMode(m_UnitMode);
-   if ( dlg.DoModal() == IDOK )
-      put_UnitMode( dlg.GetUnitMode() );
+   if (dlg.DoModal() == IDOK)
+   {
+      put_UnitMode(dlg.GetUnitMode());
+   }
 
 	return S_OK;
-}
-
-STDMETHODIMP CUnitModeController::ShowSelectionDialogEx(BSTR helpFile,long nID)
-{
-   USES_CONVERSION;
-
-   CUnitsDialog dlg;
-   dlg.SetUnitMode(m_UnitMode);
-   dlg.EnableHelp(OLE2T(helpFile),nID);
-
-   if ( dlg.DoModal() == IDOK )
-      put_UnitMode( dlg.GetUnitMode() );
-
-   return S_OK;
 }

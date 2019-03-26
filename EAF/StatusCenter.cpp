@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -32,10 +32,22 @@ static char THIS_FILE[] = __FILE__;
 
 bool StatusItemCompare::operator()(CEAFStatusItem* a,CEAFStatusItem* b)
 {
-   if ( a->IsEqual(b) || b->IsEqual(a) )
-      return false;
+   // Use a simple string compare with message. Older versions (pre Jan 2019) tried to get tricky
+   // and use IsEqual, but this caused unexpected issues with the strict weak ordering
+   // requirements of std::set. One issue was duplicate issues in the status center
+   int st = a->CompareDescriptions(b);
 
-   return a->GetID() < b->GetID();
+#ifdef _DEBUG
+   if (st == 0)
+   {
+      // Different classes should never create identical messages. This is probably an error.
+      CString stra = typeid(*a).name();
+      CString strb = typeid(*b).name();
+      ATLASSERT(stra == strb);
+   }
+#endif
+   
+   return st < 0;
 }
 
 CEAFStatusCenter::CEAFStatusCenter()

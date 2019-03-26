@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -44,3 +44,6 @@
 
 #include <WbflAll.h>
 #include <Stability\AutoLib.h>
+
+#define SHOW_FULL_CRACKING_TABLE
+#define REBAR_FOR_DIRECT_TENSION

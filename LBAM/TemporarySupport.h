@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -111,9 +111,11 @@ public:
 	STDMETHOD(get_BottomOffset)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(put_BottomOffset)(/*[in]*/ Float64 newVal) override;
 	STDMETHOD(get__EnumElements)(/*[out, retval]*/ IEnumSegmentItem* *pVal) override;
-	STDMETHOD(get_StageRemoved)(/*[out, retval]*/ BSTR *pVal) override;
-	STDMETHOD(put_StageRemoved)(/*[in]*/ BSTR newVal) override;
-	STDMETHOD(get_Location)(/*[out, retval]*/ Float64 *pVal) override;
+   STDMETHOD(get_StageErected)(/*[out, retval]*/ BSTR *pVal) override;
+   STDMETHOD(put_StageErected)(/*[in]*/ BSTR newVal) override;
+   STDMETHOD(get_StageRemoved)(/*[out, retval]*/ BSTR *pVal) override;
+   STDMETHOD(put_StageRemoved)(/*[in]*/ BSTR newVal) override;
+   STDMETHOD(get_Location)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(put_Location)(/*[in]*/ Float64 newVal) override;
 
    // CSegmentsOwner
@@ -149,6 +151,7 @@ public:
    SupportIDType m_ID;
    VARIANT_BOOL m_IsSymmetrical;
    BoundaryConditionType m_BoundaryCondition;
+   CComBSTR m_StageErected;
    CComBSTR m_StageRemoved;
    VARIANT_BOOL m_TopRelease;
    VARIANT_BOOL m_bOmitReaction;

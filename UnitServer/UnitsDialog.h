@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,7 +30,6 @@
 
 #include "resource.h"       // main symbols
 #include <atlwin.h>
-#include <HtmlHelp.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CUnitsDialog
@@ -42,7 +41,6 @@ public:
 	CUnitsDialog()
 	{
       m_UnitMode = umSI;
-      m_bHelp = false;
 	}
 
 	~CUnitsDialog()
@@ -59,27 +57,16 @@ public:
       return m_UnitMode;
    }
 
-   void EnableHelp(LPCTSTR pszFile,long nID)
-   {
-      m_bHelp = true;
-      m_nHelpID = nID;
-      m_bstrHelpFile = pszFile;
-   }
-
 	enum { IDD = IDD_UNITSDIALOG };
 
 private:
    UnitModeType m_UnitMode;
-   bool m_bHelp;
-   CComBSTR m_bstrHelpFile;
-   long m_nHelpID;
 
 BEGIN_MSG_MAP(CUnitsDialog)
 	MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
 	COMMAND_ID_HANDLER(IDOK, OnOK)
 	COMMAND_ID_HANDLER(IDCANCEL, OnCancel)
 	MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
-	COMMAND_HANDLER(IDHELP, BN_CLICKED, OnHelp)
 END_MSG_MAP()
 // Handler prototypes:
 //  LRESULT MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -89,12 +76,6 @@ END_MSG_MAP()
 	virtual LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 	{
       CheckRadioButton(IDC_SI,IDC_US,m_UnitMode == umSI ? IDC_SI :IDC_US);
-
-      if ( !m_bHelp )
-      {
-         CWindow wnd(GetDlgItem(IDHELP));
-         wnd.ShowWindow( SW_HIDE );
-      }
       
 		return 1;  // Let the system set the focus
 	}
@@ -113,12 +94,6 @@ END_MSG_MAP()
 	LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 	{
       m_UnitMode = IsDlgButtonChecked(IDC_SI) == BST_CHECKED ? umSI : umUS;
-		return 0;
-	}
-	LRESULT OnHelp(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
-	{
-      USES_CONVERSION;
-      HtmlHelp(m_hWnd,OLE2T(m_bstrHelpFile),HH_HELP_CONTEXT,m_nHelpID);
 		return 0;
 	}
 };

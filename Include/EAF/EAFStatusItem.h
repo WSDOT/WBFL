@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -67,6 +67,13 @@ public:
    StatusCallbackIDType GetCallbackID() const;
 
    virtual bool IsEqual(CEAFStatusItem* pOther) = 0;
+
+   // More efficient way to compare descriptions than casting results from GetDescription
+   // returns -1 (less than), 0 (equal), 1 (greater than)
+   int CompareDescriptions(CEAFStatusItem* pOther)
+   {
+      return m_strDescription.Compare(pOther->m_strDescription);
+   }
 
 private:
    StatusItemIDType m_ID;

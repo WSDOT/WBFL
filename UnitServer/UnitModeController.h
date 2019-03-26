@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -69,7 +69,6 @@ private:
 
 // IUnitModeController
 public:
-	STDMETHOD(ShowSelectionDialogEx)(/*[in]*/ BSTR helpFile,/*[in]*/ long nID) override;
 	STDMETHOD(ShowSelectionDialog)() override;
 	STDMETHOD(get_UnitMode)(/*[out, retval]*/ UnitModeType *pVal) override;
 	STDMETHOD(put_UnitMode)(/*[in]*/ UnitModeType newVal) override;

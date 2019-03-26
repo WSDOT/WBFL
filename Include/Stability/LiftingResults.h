@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -51,19 +51,19 @@ public:
    Float64 fg[4]; // stress due to girder weight without impact
    Float64 fw[4]; // stress due to wind towards the left (multiply by -1 to get stress due to wind towards the right)
 
+   // Array indicies are [ImpactDirection enum][Corner enum]
+   Float64 fDirect[3][4]; // stress due to direct loads (girder self weight and ps)
+                          
    // Array indicies are [ImpactDirection enum][Side enum (wind)][Corner enum]
-   Float64 fDirect[3][2][4]; // stress due to direct loads (girder self weight, wind, CF, and ps)
    Float64 fTilt[3][2][4];   // stress due to equilibrium rotation of girder caused by girder self weight
-   Float64 f[3][2][4];       // stress at a corner (fDirect + fTilt)
+   Float64 f[3][2][4];       // stress at a corner (fDirect + fTilt + fWind + fCable)
 
-   Float64 fMinDirect[2];    // min stress
+   Float64 fMinDirect[2];    // min direct stress
    stbTypes::ImpactDirection MinDirectStressImpactDirection[2];    // impact direction associated with the minimum girder stress
-   stbTypes::WindDirection MinDirectStressWindDirection[2];      // wind direction associated with the minimum girder stress
    stbTypes::Corner MinDirectStressCorner[2];      // corner where the minimum direct girder stress occurs
 
-   Float64 fMaxDirect[2];    // max stress
+   Float64 fMaxDirect[2];    // max direct stress
    stbTypes::ImpactDirection MaxDirectStressImpactDirection[2];    // impact direction associated with the maximum girder stress
-   stbTypes::WindDirection MaxDirectStressWindDirection[2];      // wind direction associated with the maximum girder stress
    stbTypes::Corner MaxDirectStressCorner[2];      // corner where the maximum direct girder stress occurs
 
    Float64 fMin[2];    // min stress
@@ -96,7 +96,11 @@ public:
    Float64 eh[3][2]; // eccentricity of axial force of inclined cables from roll axis at this location
    Float64 Mh[3][2]; // lateral moment due to axial force of inclined cables
 
+#if defined REBAR_FOR_DIRECT_TENSION
+   gbtAlternativeTensileStressRequirements altTensionRequirements[3];
+#else
    gbtAlternativeTensileStressRequirements altTensionRequirements[3][2];
+#endif
 };
 
 /*****************************************************************************
@@ -128,13 +132,11 @@ public:
    Float64 MaxDirectStress;                     // maximum stress (most tensile value)
    IndexType MaxDirectStressAnalysisPointIndex; // analysis poiint index associated with the maximum girder stress
    stbTypes::ImpactDirection MaxDirectStressImpactDirection;    // impact direction associated with the maximum girder stress
-   stbTypes::WindDirection MaxDirectStressWindDirection;      // wind direction associated with the maximum girder stress
    stbTypes::Corner MaxDirectStressCorner;             // corner where the maximum girder stress occurs
 
    Float64 MinDirectStress;                     // minimum stress (most compressive value)
    IndexType MinDirectStressAnalysisPointIndex; // analysis poiint index associated with the minimum girder stress
    stbTypes::ImpactDirection MinDirectStressImpactDirection;    // impact direction associated with the minimum girder stress
-   stbTypes::WindDirection MinDirectStressWindDirection;      // wind direction associated with the minimum girder stress
    stbTypes::Corner MinDirectStressCorner;             // corner where the minimum girder stress occurs
 
    Float64 MaxStress;                     // maximum stress (most tensile value)

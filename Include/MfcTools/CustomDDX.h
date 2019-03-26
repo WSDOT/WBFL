@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -674,5 +674,27 @@ void DDV_UnitValueRange(CDataExchange* pDX, int nIDC, T& value, T min, T max, co
 	   pDX->Fail();
    }
 }
+
+// template function to directly select a combo box item based on its item data
+template <class T>
+bool ComboBoxSelectByItemData(CWnd* pWnd, int nIDC, T itemdata)
+{
+   CComboBox* pCB = (CComboBox*)pWnd->GetDlgItem(nIDC);
+
+   bool succ = false;
+   int count = pCB->GetCount();
+   for (int i = 0; i < count; i++)
+   {
+      if (((T)pCB->GetItemData(i)) == itemdata)
+      {
+         pCB->SetCurSel(i);
+         succ = true;
+         break;
+      }
+   }
+
+   return succ;
+}
+
 
 #endif // INCLUDED_MFCTOOLS_CUSTOMDDX_H_

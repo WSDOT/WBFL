@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -33,6 +33,8 @@
 #include <WBFLGeometry.h>
 #include <MathEx.h>
 #include <float.h> // for DBL_MAX
+
+#include <WBFLCogo\CogoHelpers.h>
 
 #include <algorithm>
 
@@ -2565,15 +2567,27 @@ HRESULT CSectionCutTool::CreateBarrierShape(DirectionType side,IGenericBridge* b
    CComPtr<IShape> shape;
    barrier_shape->Clone(&shape);
 
-   CComQIPtr<IXYPosition> position(shape);
    // rotate shape to match deck slope
-   Float64 dx;
-   pntAlignment->DistanceEx(pntDeckEdge,&dx);
-   Float64 alignment_elev;
-   profile->Elevation(CComVariant(objStation),0.0,&alignment_elev);
-   Float64 dy = (side == qcbLeft ? alignment_elev - deck_edge_elev : deck_edge_elev - alignment_elev);
-   Float64 slope = dy/dx;
+   CComPtr<IStation> deckEdgeStation;
+   Float64 deckEdgeOffset;
+   alignment->Offset(pntDeckEdge, &deckEdgeStation, &deckEdgeOffset);
+   Float64 slope;
+   profile->Slope(CComVariant(deckEdgeStation), deckEdgeOffset, &slope);
+   //Float64 dx;
+   //CComPtr<IDirection> dir;
+   //cogoUtil::Inverse(pntAlignment, pntDeckEdge, &dx, &dir);
+   //if ((side == qcbLeft && dirCutLine->IsEqual(dir) == S_FALSE) || (side == qcbRight && dirCutLine->IsEqual(dir) == S_OK))
+   //{
+   //   dx *= -1;
+   //}
+
+   //Float64 alignment_elev;
+   //profile->Elevation(CComVariant(objStation),0.0,&alignment_elev);
+   //Float64 dy = (side == qcbLeft ? alignment_elev - deck_edge_elev : deck_edge_elev - alignment_elev);
+   //Float64 slope = dy/dx;
    Float64 angle = atan(slope);
+
+   CComQIPtr<IXYPosition> position(shape);
    CComPtr<IPoint2d> hook_point;
    position->get_LocatorPoint(lpHookPoint,&hook_point);
    position->RotateEx(hook_point,angle);

@@ -43,9 +43,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>WBFLTransactions</ProjectName>
-    <ProjectGuid>{9314D00F-73E2-4DBC-9F5D-85E8F8FBBE3B}</ProjectGuid>
-    <RootNamespace>Transactions</RootNamespace>
+    <ProjectName>WBFLLibrary</ProjectName>
+    <ProjectGuid>{DE5CF329-936B-4BDD-918D-60CAC7E0EA34}</ProjectGuid>
+    <RootNamespace>Library</RootNamespace>
     <Keyword>AtlProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -72,13 +72,6 @@
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
-    <UseOfMfc>Dynamic</UseOfMfc>
-    <UseOfAtl>Dynamic</UseOfAtl>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
@@ -86,6 +79,13 @@
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfAtl>Dynamic</UseOfAtl>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -110,13 +110,6 @@
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
-    <UseOfMfc>Dynamic</UseOfMfc>
-    <UseOfAtl>Dynamic</UseOfAtl>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
@@ -124,6 +117,13 @@
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfAtl>Dynamic</UseOfAtl>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -143,12 +143,12 @@
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
@@ -168,12 +168,12 @@
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
@@ -182,197 +182,58 @@
   <PropertyGroup>
     <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental>false</LinkIncremental>
-    <GenerateManifest>true</GenerateManifest>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental>false</LinkIncremental>
-    <GenerateManifest>true</GenerateManifest>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X64-VC90\include;F:\Apache\xalan-builds\XERCESCPKG-31-X64-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X64-VC90\include;F:\Apache\xalan-builds\XERCESCPKG-31-X64-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <GenerateManifest>true</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X64-VC90\include;F:\Apache\xalan-builds\XERCESCPKG-31-X64-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X64-VC90\include;F:\Apache\xalan-builds\XERCESCPKG-31-X64-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X86-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">
-    <OutDir>\ARP\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
-    <IncludePath>F:\boost_1_63_0;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\Regex\Include;c:\Program Files\Rogue Wave\Stingray Studio 10.4\RWUXTheme\Include;C:\Program Files\AASHTOWare\VirtisOpis63\include;F:\Apache\xalan-builds\XALANCPKG-11-31-X64-VC90\include;F:\Apache\xalan-builds\XERCESCPKG-31-X64-VC90\include;F:\CodeSynthesis XSD 3.3\include;F:\Coin3d\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <PreBuildEvent>
-      <Command />
-    </PreBuildEvent>
-    <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
-    </CustomBuildStep>
-    <Midl>
-      <AdditionalIncludeDirectories>$(SolutionDir)RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName)_i.c</InterfaceIdentifierFileName>
-    </Midl>
-    <ClCompile>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_AFXDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)</ObjectFileName>
-      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
-      <WarningLevel>Level3</WarningLevel>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-    </ClCompile>
-    <ResourceCompile>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture>0x0409</Culture>
-      <AdditionalIncludeDirectories>$(SolutionDir)RegFreeCOM\$(Platform)\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ResourceCompile>
-    <Link>
-      <RegisterOutput>false</RegisterOutput>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <EnableUAC>true</EnableUAC>
-      <ModuleDefinitionFile>.\Transactions.def</ModuleDefinitionFile>
-      <SubSystem>Windows</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention />
-      <TargetMachine>MachineX86</TargetMachine>
-      <AllowIsolation>true</AllowIsolation>
-    </Link>
-    <Bscmake>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Release/Transactions.bsc</OutputFile>
-    </Bscmake>
-    <PostBuildEvent>
-      <Command />
-    </PostBuildEvent>
-    <Manifest>
-      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
-    </Manifest>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <PreBuildEvent>
-      <Command />
-    </PreBuildEvent>
-    <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
-    </CustomBuildStep>
-    <Midl>
-      <AdditionalIncludeDirectories>$(SolutionDir)RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TargetEnvironment>X64</TargetEnvironment>
-      <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName)_i.c</InterfaceIdentifierFileName>
-    </Midl>
-    <ClCompile>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_AFXDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)</ObjectFileName>
-      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
-      <WarningLevel>Level3</WarningLevel>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-    </ClCompile>
-    <ResourceCompile>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture>0x0409</Culture>
-      <AdditionalIncludeDirectories>$(SolutionDir)RegFreeCOM\$(Platform)\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ResourceCompile>
-    <Link>
-      <RegisterOutput>false</RegisterOutput>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <EnableUAC>true</EnableUAC>
-      <ModuleDefinitionFile>.\Transactions.def</ModuleDefinitionFile>
-      <SubSystem>Windows</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention />
-      <TargetMachine>MachineX64</TargetMachine>
-      <AllowIsolation>true</AllowIsolation>
-    </Link>
-    <Bscmake>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Release/Transactions.bsc</OutputFile>
-    </Bscmake>
-    <PostBuildEvent>
-      <Command />
-    </PostBuildEvent>
-    <Manifest>
-      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
-    </Manifest>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
       <Command />
@@ -386,10 +247,10 @@ date/T &gt; $(IntDir)mt2.dep
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
-      <AdditionalIncludeDirectories>$(SolutionDir)RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName)_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -416,9 +277,10 @@ date/T &gt; $(IntDir)mt2.dep
     </ResourceCompile>
     <Link>
       <RegisterOutput>false</RegisterOutput>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ModuleDefinitionFile>.\Transactions.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>.\Library.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
@@ -428,7 +290,7 @@ date/T &gt; $(IntDir)mt2.dep
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Debug/Transactions.bsc</OutputFile>
+      <OutputFile>.\Debug/Library.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Command />
@@ -450,11 +312,11 @@ date/T &gt; $(IntDir)mt2.dep
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
-      <AdditionalIncludeDirectories>$(SolutionDir)RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName)_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -481,9 +343,10 @@ date/T &gt; $(IntDir)mt2.dep
     </ResourceCompile>
     <Link>
       <RegisterOutput>false</RegisterOutput>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ModuleDefinitionFile>.\Transactions.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>.\Library.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
@@ -493,7 +356,138 @@ date/T &gt; $(IntDir)mt2.dep
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Debug/Transactions.bsc</OutputFile>
+      <OutputFile>.\Debug/Library.bsc</OutputFile>
+    </Bscmake>
+    <PostBuildEvent>
+      <Command />
+    </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Command />
+    </PreBuildEvent>
+    <CustomBuildStep>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"
+date/T &gt; $(IntDir)mt2.dep
+</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
+      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+    </CustomBuildStep>
+    <Midl>
+      <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
+      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_AFXDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(SolutionDir)RegFreeCOM\$(Platform)\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <RegisterOutput>false</RegisterOutput>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EnableUAC>true</EnableUAC>
+      <ModuleDefinitionFile>.\Library.def</ModuleDefinitionFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+      <AllowIsolation>true</AllowIsolation>
+    </Link>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Release/Library.bsc</OutputFile>
+    </Bscmake>
+    <PostBuildEvent>
+      <Command />
+    </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PreBuildEvent>
+      <Command />
+    </PreBuildEvent>
+    <CustomBuildStep>
+      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
+      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"
+date/T &gt; $(IntDir)mt2.dep
+</Command>
+      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
+      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+    </CustomBuildStep>
+    <Midl>
+      <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TargetEnvironment>X64</TargetEnvironment>
+      <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
+      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_AFXDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(SolutionDir)RegFreeCOM\$(Platform)\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <RegisterOutput>false</RegisterOutput>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EnableUAC>true</EnableUAC>
+      <ModuleDefinitionFile>.\Library.def</ModuleDefinitionFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX64</TargetMachine>
+      <AllowIsolation>true</AllowIsolation>
+    </Link>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Release/Library.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Command />
@@ -515,10 +509,10 @@ date/T &gt; $(IntDir)mt2.dep
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
-      <AdditionalIncludeDirectories>$(SolutionDir)RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName)_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
@@ -548,10 +542,11 @@ date/T &gt; $(IntDir)mt2.dep
     </ResourceCompile>
     <Link>
       <RegisterOutput>false</RegisterOutput>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableUAC>true</EnableUAC>
-      <ModuleDefinitionFile>.\Transactions.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>.\Library.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -564,7 +559,7 @@ date/T &gt; $(IntDir)mt2.dep
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Release/Transactions.bsc</OutputFile>
+      <OutputFile>.\Release/Library.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Command />
@@ -586,11 +581,11 @@ date/T &gt; $(IntDir)mt2.dep
       <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
-      <AdditionalIncludeDirectories>$(SolutionDir)RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName)_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
@@ -620,10 +615,11 @@ date/T &gt; $(IntDir)mt2.dep
     </ResourceCompile>
     <Link>
       <RegisterOutput>false</RegisterOutput>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableUAC>true</EnableUAC>
-      <ModuleDefinitionFile>.\Transactions.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>.\Library.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -637,7 +633,7 @@ date/T &gt; $(IntDir)mt2.dep
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Release/Transactions.bsc</OutputFile>
+      <OutputFile>.\Release/Library.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Command />
@@ -660,10 +656,10 @@ date/T &gt; $(IntDir)mt2.dep
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName)_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -690,9 +686,10 @@ date/T &gt; $(IntDir)mt2.dep
     </ResourceCompile>
     <Link>
       <RegisterOutput>false</RegisterOutput>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ModuleDefinitionFile>.\Transactions.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>.\Library.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
@@ -702,7 +699,7 @@ date/T &gt; $(IntDir)mt2.dep
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Debug/Transactions.bsc</OutputFile>
+      <OutputFile>.\Debug/Library.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Command />
@@ -725,11 +722,11 @@ date/T &gt; $(IntDir)mt2.dep
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName)_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -756,9 +753,10 @@ date/T &gt; $(IntDir)mt2.dep
     </ResourceCompile>
     <Link>
       <RegisterOutput>false</RegisterOutput>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ModuleDefinitionFile>.\Transactions.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>.\Library.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
@@ -768,7 +766,7 @@ date/T &gt; $(IntDir)mt2.dep
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Debug/Transactions.bsc</OutputFile>
+      <OutputFile>.\Debug/Library.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Command />
@@ -791,10 +789,10 @@ date/T &gt; $(IntDir)mt2.dep
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName)_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
@@ -823,10 +821,11 @@ date/T &gt; $(IntDir)mt2.dep
     </ResourceCompile>
     <Link>
       <RegisterOutput>false</RegisterOutput>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableUAC>true</EnableUAC>
-      <ModuleDefinitionFile>.\Transactions.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>.\Library.def</ModuleDefinitionFile>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -838,7 +837,7 @@ date/T &gt; $(IntDir)mt2.dep
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Release/Transactions.bsc</OutputFile>
+      <OutputFile>.\Release/Library.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Command />
@@ -861,11 +860,11 @@ date/T &gt; $(IntDir)mt2.dep
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName)_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
@@ -894,10 +893,11 @@ date/T &gt; $(IntDir)mt2.dep
     </ResourceCompile>
     <Link>
       <RegisterOutput>false</RegisterOutput>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableUAC>true</EnableUAC>
-      <ModuleDefinitionFile>.\Transactions.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>.\Library.def</ModuleDefinitionFile>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -909,7 +909,7 @@ date/T &gt; $(IntDir)mt2.dep
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Release/Transactions.bsc</OutputFile>
+      <OutputFile>.\Release/Library.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Command />
@@ -919,38 +919,12 @@ date/T &gt; $(IntDir)mt2.dep
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\System\System.vcxproj">
-      <Project>{2d18c0c9-358d-455d-b56a-d4a247fce7b9}</Project>
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </ProjectReference>
+    <None Include="Library.def" />
+    <None Include="LibraryMgr.rgs" />
+    <None Include="LibraryViewer.rgs" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MacroAdapter.cpp" />
-    <ClCompile Include="MacroTransaction.cpp" />
-    <ClCompile Include="StdAfx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="TransactionMgr.cpp" />
-    <ClCompile Include="Transactions.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="MacroAdapter.rgs" />
-    <None Include="MacroTransaction.rgs" />
-    <None Include="TransactionMgr.rgs" />
-    <None Include="Transactions.def" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Transactions.rc">
+    <ResourceCompile Include="Library.rc">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">\ARP\Lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">\ARP\Lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">\ARP\Lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -964,25 +938,49 @@ date/T &gt; $(IntDir)mt2.dep
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Midl Include="..\Include\WBFLTransactions.idl">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|Win32'">..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|x64'">..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'">..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </Midl>
+    <ClCompile Include="LibraryMain.cpp" />
+    <ClCompile Include="LibraryMgr.cpp" />
+    <ClCompile Include="LibraryViewer.cpp" />
+    <ClCompile Include="StdAfx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MacroAdapter.h" />
-    <ClInclude Include="MacroTransaction.h" />
+    <Midl Include="..\Include\WBFLLibrary.idl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LibraryCP.h" />
+    <ClInclude Include="LibraryMgr.h" />
+    <ClInclude Include="LibraryViewer.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="StdAfx.h" />
-    <ClInclude Include="TransactionMgr.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="folderclosed.bmp" />
+    <Image Include="folderopen.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Transactions\Transactions.vcxproj">
+      <Project>{9314d00f-73e2-4dbc-9f5d-85e8f8fbbe3b}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\UnitServer\UnitServer.vcxproj">
+      <Project>{48a7a169-16d3-48d8-88ee-5609aa917712}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\WBFLTools\WBFLTools.vcxproj">
+      <Project>{3c66a5db-a451-4912-a984-ddbf2e890495}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

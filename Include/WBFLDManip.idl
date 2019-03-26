@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2018  Washington State Department of Transportation
+// Copyright © 1999-2019  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -329,7 +329,16 @@ library WBFLDManip
 	{
 		[default] interface IUnknown;
 	};
-    
+
+   [
+      uuid(54F9696A-CE87-456D-81D8-0FB088D97139),
+      helpstring("CompoundDrawPointStrategy Class")
+   ]
+   coclass CompoundDrawPointStrategy
+   {
+      [default] interface IUnknown;
+   };
+
    [
 		uuid(383B8C08-A236-44c7-BEE1-E41ADD831AC7),
 		helpstring("ExtRectangleDrawLineStrategy Class")
