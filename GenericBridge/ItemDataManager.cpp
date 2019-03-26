@@ -26,7 +26,6 @@
 #include "stdafx.h"
 #include "WBFLGenericBridge.h"
 #include "ItemDataManager.h"
-#include "TxnMgrImpl.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
