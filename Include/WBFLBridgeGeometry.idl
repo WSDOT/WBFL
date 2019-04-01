@@ -38,6 +38,13 @@ cpp_quote("#define BRIDGEGEOMETRY_E_INITIALIZATION     MAKE_HRESULT(SEVERITY_ERR
 cpp_quote("#define BRIDGEGEOMETRY_E_INVALIDSTATION     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,513)")
 cpp_quote("#define BRIDGEGEOMETRY_E_ID                 MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,514)")
 
+cpp_quote("#define GF_BRIDGELINE 0x0001")
+cpp_quote("#define GF_PIERS      0x0002")
+cpp_quote("#define GF_GIRDERS    0x0004")
+cpp_quote("#define GF_DIAPHRAGMS 0x0008")
+cpp_quote("#define GF_DECK       0x0010")
+cpp_quote("#define GF_ALL        0xFFFF")
+
 // custom types
 typedef IDType LineIDType;
 typedef IDType PathIDType;
@@ -556,7 +563,7 @@ interface IBridgeGeometry : IUnknown
    [helpstring("method CreateDeckBoundary")] HRESULT CreateDeckBoundary([in]IDeckBoundaryFactory* pFactory);
    [propget,helpstring("property DeckBoundary")] HRESULT DeckBoundary([out,retval]IDeckBoundary** ppDeckBoundary);
 
-   [helpstring("method UpdateGeometry")] HRESULT UpdateGeometry();
+   [helpstring("method UpdateGeometry")] HRESULT UpdateGeometry(long flag);
 };
 
 [

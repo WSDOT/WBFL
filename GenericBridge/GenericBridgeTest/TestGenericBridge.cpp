@@ -57,7 +57,7 @@ void CTestGenericBridge::Test()
    CreateBridgeModel(&bridge);
 
    // get the geometry up to date
-   TRY_TEST(bridge->UpdateBridgeModel(),S_OK);
+   TRY_TEST(bridge->UpdateBridgeModel(GF_ALL),S_OK);
 
    TestPiers(bridge);
    TestSegments(bridge);

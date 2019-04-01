@@ -82,6 +82,10 @@ cpp_quote("#define GB_E_ID_IN_USE                    MAKE_HRESULT(SEVERITY_ERROR
 cpp_quote("#define GB_E_OVERHANG                     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,537)")
 cpp_quote("#define GB_E_LESS_THAN_MIN_COLUMNS        MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,538)")
 
+// note... these flags get ORed with bridge geometry GF_flags
+// the values of these flags cannot duplicate the GF flags
+cpp_quote("#define BGF_PIERS 0x8000") // updates the pier geometry in the bridge model (assumes pier layout lines have alread been created and updated)
+
 
 [
 	uuid(44ECDFCD-A740-4B05-8139-7AB55E18AA92),
@@ -2204,7 +2208,7 @@ library WBFLGenericBridge
      [propget, helpstring("property SuperstrucuterMember")] HRESULT SuperstructureMember([in]GirderIDType id,[out,retval]ISuperstructureMember** ppMbr);
      [propget, restricted, helpstring("property _EnumSuperstructureMembers")] HRESULT _EnumSuperstructureMembers([out,retval]IEnumSuperstructureMembers* *enumSSMbrs);
 
-     [helpstring("method UpdateBridgeModel")] HRESULT UpdateBridgeModel();
+     [helpstring("method UpdateBridgeModel")] HRESULT UpdateBridgeModel(long flags);
 	};
 	 
 
