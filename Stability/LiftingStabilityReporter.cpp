@@ -854,7 +854,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
       *pPara << _T("Critical compression load, ") << Sub2(_T("P"), _T("crit")) << _T(" = ") << Super2(symbol(pi), _T("2")) << Sub2(_T("E"), _T("ci")) << _T("(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T(" - ") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")/(") << Sub2(_T("I"), _T("xx")) << Super2(_T("L"), _T("2")) << _T(") = ") << force.SetValue(pResults->Pcrit) << rptNewLine;
    }
 
-   *pPara << _T("Vertical deflection due to horizontal component of lifting force, without impact, ") << Sub2(symbol(DELTA), _T("lift")) << _T(" = ") << shortLength.SetValue(pResults->dLift) << rptNewLine;
+   //*pPara << _T("Vertical deflection due to horizontal component of lifting force, without impact, ") << Sub2(symbol(DELTA), _T("lift")) << _T(" = ") << shortLength.SetValue(pResults->dLift) << rptNewLine;
    *pPara << _T("Lateral deflection magnification factor, ") << Sub2(_T("m"), _T("e")) << _T(" = ") << _T("1/(1 - ((IM)") << Sub2(_T("P"), _T("lift")) << _T(")/") << Sub2(_T("P"), _T("crit")) << _T(")") << rptNewLine;
    for (IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++)
    {
@@ -881,7 +881,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    *pPara << _T("Camber Multipler, m = ") << pStabilityProblem->GetCamberMultiplier() << rptNewLine;
    *pPara << _T("Camber, ") << Sub2(symbol(DELTA), _T("camber")) << _T(" = ") << shortLength.SetValue(camber) << rptNewLine;
    *pPara << _T("Precamber, ") << Sub2(symbol(DELTA), _T("precamber")) << _T(" = ") << shortLength.SetValue(precamber) << rptNewLine;
-   *pPara << _T("Location of center of gravity below roll axis, ") << YR << _T(" = ") << Sub2(_T("Y"), _T("top")) << _T(" - ") << FO << _T("(") << _T("m") << Sub2(symbol(DELTA), _T("camber")) << _T(" + (IM)") << Sub2(symbol(DELTA), _T("lift")) << _T(" + ") << Sub2(symbol(DELTA), _T("precamber")) << _T(")") << _T(" + ") << Sub2(_T("y"), _T("rc")) << rptNewLine;
+   *pPara << _T("Location of center of gravity below roll axis, ") << YR << _T(" = ") << Sub2(_T("Y"), _T("top")) << _T(" - ") << FO << _T("(") << _T("m") << Sub2(symbol(DELTA), _T("camber")) << /*_T(" + ") << _T("(IM)") << Sub2(symbol(DELTA), _T("lift")) <<*/ _T(" + ") << Sub2(symbol(DELTA), _T("precamber")) << _T(")") << _T(" + ") << Sub2(_T("y"), _T("rc")) << rptNewLine;
    for (IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++)
    {
       if (0 < impactCase)
@@ -1006,7 +1006,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    }
    *pPara << _T("Total Wind Load, ") << W_WIND << _T(" = ") << force.SetValue(pResults->Wwind) << rptNewLine;
    *pPara << _T("Location of resultant wind force below roll axis, ") << Y_WIND << rptNewLine;
-   *pPara << Y_WIND << _T(" = ") << Sub2(_T("H"), _T("g")) << _T("/2 + ") << Sub2(_T("y"), _T("rc")) << _T(" - ") << FO << _T("(") << _T("(m)") << Sub2(symbol(DELTA), _T("camber")) << _T(" + ") << Sub2(symbol(DELTA),_T("precamber")) << _T(" + (IM)") << Sub2(symbol(DELTA), _T("lift")) << _T(")") << rptNewLine;
+   *pPara << Y_WIND << _T(" = ") << Sub2(_T("H"), _T("g")) << _T("/2 + ") << Sub2(_T("y"), _T("rc")) << _T(" - ") << FO << _T("(") << _T("(m)") << Sub2(symbol(DELTA), _T("camber")) << _T(" + ") << Sub2(symbol(DELTA),_T("precamber"))/* << _T(" + (IM)") << Sub2(symbol(DELTA), _T("lift"))*/ << _T(")") << rptNewLine;
 
    for (IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++)
    {
