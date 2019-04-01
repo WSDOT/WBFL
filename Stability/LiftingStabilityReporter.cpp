@@ -854,7 +854,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
       *pPara << _T("Critical compression load, ") << Sub2(_T("P"), _T("crit")) << _T(" = ") << Super2(symbol(pi), _T("2")) << Sub2(_T("E"), _T("ci")) << _T("(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T(" - ") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")/(") << Sub2(_T("I"), _T("xx")) << Super2(_T("L"), _T("2")) << _T(") = ") << force.SetValue(pResults->Pcrit) << rptNewLine;
    }
 
-   *pPara << _T("Vertical deflection due to horizontal component of lifting force, without impact, ") << Sub2(symbol(DELTA), _T("lift")) << _T(" = ") << shortLength.SetValue(pResults->dLift) << rptNewLine;
+   //*pPara << _T("Vertical deflection due to horizontal component of lifting force, without impact, ") << Sub2(symbol(DELTA), _T("lift")) << _T(" = ") << shortLength.SetValue(pResults->dLift) << rptNewLine;
    *pPara << _T("Lateral deflection magnification factor, ") << Sub2(_T("m"), _T("e")) << _T(" = ") << _T("1/(1 - ((IM)") << Sub2(_T("P"), _T("lift")) << _T(")/") << Sub2(_T("P"), _T("crit")) << _T(")") << rptNewLine;
    for (IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++)
    {
@@ -881,7 +881,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    *pPara << _T("Camber Multipler, m = ") << pStabilityProblem->GetCamberMultiplier() << rptNewLine;
    *pPara << _T("Camber, ") << Sub2(symbol(DELTA), _T("camber")) << _T(" = ") << shortLength.SetValue(camber) << rptNewLine;
    *pPara << _T("Precamber, ") << Sub2(symbol(DELTA), _T("precamber")) << _T(" = ") << shortLength.SetValue(precamber) << rptNewLine;
-   *pPara << _T("Location of center of gravity below roll axis, ") << YR << _T(" = ") << Sub2(_T("Y"), _T("top")) << _T(" - ") << FO << _T("(") << _T("m") << Sub2(symbol(DELTA), _T("camber")) << _T(" + (IM)") << Sub2(symbol(DELTA), _T("lift")) << _T(" + ") << Sub2(symbol(DELTA), _T("precamber")) << _T(")") << _T(" + ") << Sub2(_T("y"), _T("rc")) << rptNewLine;
+   *pPara << _T("Location of center of gravity below roll axis, ") << YR << _T(" = ") << Sub2(_T("Y"), _T("top")) << _T(" - ") << FO << _T("(") << _T("m") << Sub2(symbol(DELTA), _T("camber")) << /*_T(" + ") << _T("(IM)") << Sub2(symbol(DELTA), _T("lift")) <<*/ _T(" + ") << Sub2(symbol(DELTA), _T("precamber")) << _T(")") << _T(" + ") << Sub2(_T("y"), _T("rc")) << rptNewLine;
    for (IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++)
    {
       if (0 < impactCase)
@@ -1006,7 +1006,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    }
    *pPara << _T("Total Wind Load, ") << W_WIND << _T(" = ") << force.SetValue(pResults->Wwind) << rptNewLine;
    *pPara << _T("Location of resultant wind force below roll axis, ") << Y_WIND << rptNewLine;
-   *pPara << Y_WIND << _T(" = ") << Sub2(_T("H"), _T("g")) << _T("/2 + ") << Sub2(_T("y"), _T("rc")) << _T(" - ") << FO << _T("(") << _T("(m)") << Sub2(symbol(DELTA), _T("camber")) << _T(" + ") << Sub2(symbol(DELTA),_T("precamber")) << _T(" + (IM)") << Sub2(symbol(DELTA), _T("lift")) << _T(")") << rptNewLine;
+   *pPara << Y_WIND << _T(" = ") << Sub2(_T("H"), _T("g")) << _T("/2 + ") << Sub2(_T("y"), _T("rc")) << _T(" - ") << FO << _T("(") << _T("(m)") << Sub2(symbol(DELTA), _T("camber")) << _T(" + ") << Sub2(symbol(DELTA),_T("precamber"))/* << _T(" + (IM)") << Sub2(symbol(DELTA), _T("lift"))*/ << _T(")") << rptNewLine;
 
    for (IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++)
    {
@@ -1434,21 +1434,11 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             *pPara << _T("Equilibrium Tilt Angle, ") << THETA_EQ << _T(" = (") << EI;
          }
 
-         *pPara << _T(" ") << strWindSign.c_str() << _T(" ") << Z_WIND << _T(" ") << strOppWindSign.c_str() << _T(" ") << E_WIND;
-         *pPara << _T(")/(");
+         *pPara << _T(" ") << strWindSign.c_str() << _T(" ") << Z_WIND << _T(" ") << strOppWindSign.c_str() << _T(" ") << E_WIND << _T(")/(") << YR << _T(" - ") << ZO << _T(") = ");
+         *pPara << tiltAngle.SetValue(pResults->ThetaEq[impactDir[impactCase]][wind]) << rptNewLine;
          if (pResults->ThetaEq[impactDir[impactCase]][wind] < 0)
          {
-            *pPara << ZO << _T(" - ") << YR;
-         }
-         else
-         {
-            *pPara << YR << _T(" - ") << ZO;
-         }
-         *pPara << _T(") = ");
-         *pPara << tiltAngle.SetValue(fabs(pResults->ThetaEq[impactDir[impactCase]][wind])) << rptNewLine;
-         if (pResults->ThetaEq[impactDir[impactCase]][wind] < 0)
-         {
-            *pPara << _T("NOTE: ") << E_WIND << _T(" > ") << EI << _T(" + ") << Z_WIND << _T(", Wind loading is sufficient to reverse the direction of girder tilt (clockwise rotation about the roll axis).") << rptNewLine;
+            *pPara << _T("NOTE: ") << E_WIND << _T(" > ") << EI << _T(" + ") << Z_WIND << _T(", Wind loading is sufficient to reverse the direction of girder tilt.") << rptNewLine;
          }
          *pPara << rptNewLine;
 
@@ -1551,12 +1541,13 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
          }
          (*pPara) << _T("Cracked Flange, indicates the flange that is first to crack") << rptNewLine;
          (*pPara) << THETA_CRACK << _T(" = tilt angle at cracking") << rptNewLine;
-         (*pPara) << THETA_CRACK << _T(" = |") << M_CR << _T("/(") << Sub2(_T("M"), _T("girder")) << _T(" + ") << Sub2(_T("P"), _T("lift")) << ZO << _T(")|") << _T(" ") << symbol(LTE) << _T(" 0.4 radian") << rptNewLine;
+         (*pPara) << THETA_CRACK << _T(" = ") << M_CR << _T("/(") << Sub2(_T("M"), _T("girder")) << _T(" + ") << Sub2(_T("P"), _T("lift")) << ZO << _T(")") << rptNewLine;
+         (*pPara) << _T("-0.4 radian") << _T(" ") << symbol(LTE) << _T(" ") << THETA_CRACK << _T(" ") << symbol(LTE) << _T(" ") << _T("0.4 radian") << rptNewLine;
 
          (*pPara) << FS_CR << _T(" = Factor of Safety Against Cracking") << rptNewLine;
          if (pResults->ThetaEq[impactDir[impactCase]][wind] < 0)
          {
-            (*pPara) << FS_CR << _T(" = (") << EI << _T(" + ") << Z_WIND << _T(" + (") << YR << _T(" - ") << ZO << _T(")/") << THETA_CRACK <<_T(")/") << E_WIND << rptNewLine;
+            (*pPara) << FS_CR << _T(" = (") << EI << _T(" + ") << Z_WIND << _T(" + (") << ZO << _T(" - ") << YR << _T(")") << THETA_CRACK <<_T(")/") << E_WIND << rptNewLine;
          }
          else
          {
@@ -1768,7 +1759,14 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             (*pCrackingTable)(crow,col++) << moment.SetValue(sectionResult.Mcr[impactDir[impactCase]][wind][corner]);
             (*pCrackingTable)(crow,col++) << strFlange[corner].c_str();
             (*pCrackingTable)(crow,col++) << crackAngle.SetValue(sectionResult.ThetaCrack[impactDir[impactCase]][wind][corner]);
-            (*pCrackingTable)(crow,col++) << scalar.SetValue(sectionResult.FScr[impactDir[impactCase]][wind][corner]);
+            if (sectionResult.FScr[impactDir[impactCase]][wind][corner] == Float64_Max)
+            {
+               (*pCrackingTable)(crow, col++) << symbol(infinity);
+            }
+            else
+            {
+               (*pCrackingTable)(crow, col++) << scalar.SetValue(sectionResult.FScr[impactDir[impactCase]][wind][corner]);
+            }
 
             crow++;
 
@@ -1831,7 +1829,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
          *pPara << THETA_FAILURE << _T(" = maximum tilt angle") << rptNewLine;
          if (pResults->ThetaEq[impactDir[impactCase]][wind] < 0)
          {
-            *pPara << THETA_FAILURE << _T(" = ") << _T("(") << YR << _T(" + 2.5") << Z_WIND << _T(" - ") << ZO << _T(")") << _T("/(5") << ZO << _T(")") << symbol(LTE) << _T(" 0.4 radian") << rptNewLine;
+            *pPara << THETA_FAILURE << _T(" = ") << _T("(") << ZO << _T(" - ") << YR << _T(" - 2.5") << Z_WIND << _T(")") << _T("/(5") << ZO << _T(")") << symbol(LTE) << _T(" 0.4 radian") << rptNewLine;
          }
          else
          {
@@ -1841,7 +1839,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
          *pPara << FS_F << _T(" = Factor of Safety Against Failure") << rptNewLine;
          if (pResults->ThetaEq[impactDir[impactCase]][wind] < 0)
          {
-            *pPara << FS_F << _T(" = (") << EI << _T(" + ") << YR << THETA_FAILURE << _T(" + (") << Z_WIND << _T(" - ") << ZO << _T(")(1 + 2.5") << THETA_FAILURE << _T("))/") << E_WIND << _T("") << _T(" = ") << scalar.SetValue(pResults->FsFailure[impactDir[impactCase]][wind]) << rptNewLine;
+            *pPara << FS_F << _T(" = (") << EI << _T(" - ") << YR << THETA_FAILURE << _T(" + (") << Z_WIND << _T(" + ") << ZO << _T(")(1 - 2.5") << THETA_FAILURE << _T("))/") << E_WIND << _T("") << _T(" = ") << scalar.SetValue(pResults->FsFailure[impactDir[impactCase]][wind]) << rptNewLine;
          }
          else
          {
