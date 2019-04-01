@@ -262,7 +262,7 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
    Float64 dx,dy1,dy2,rz;
    femResults->ComputePOIDeflections(LCID_LIFT,m_StartPoi,lotMember,&dx,&dy1,&rz);
    femResults->ComputePOIDeflections(LCID_LIFT,m_MidSpanPoi,lotMember,&dx,&dy2,&rz);
-   results.dLift = results.Plift*(dy2 - dy1); // does not include impact... measured relative to the ends of the girder
+   //results.dLift = results.Plift*(dy2 - dy1); // does not include impact... measured relative to the ends of the girder
 
    for ( IndexType i = 0; i < 3; i++ )
    {
@@ -272,10 +272,10 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
       results.Zo[impact]     *= results.emag[impact]; // emag includes impact
       results.ZoWind[impact] *= results.emag[impact];
 
-      // add the deflection due to the horiztonal component of the lifting cable force
-      // to the location of the resultant gravity and wind forces
-      results.Dra[impact]   -= results.OffsetFactor*IM[impact]*results.dLift;
-      results.Ywind[impact] -= results.OffsetFactor*IM[impact]*results.dLift;
+      //// add the deflection due to the horiztonal component of the lifting cable force
+      //// to the location of the resultant gravity and wind forces
+      //results.Dra[impact]   -= results.OffsetFactor*IM[impact]*results.dLift;
+      //results.Ywind[impact] -= results.OffsetFactor*IM[impact]*results.dLift;
 
       // compute the lateral eccentricity of the girder self-weight due to the wind load
       results.EccWind[impact] = results.Wwind*results.Ywind[impact]/(IM[impact]*Wg);
@@ -443,7 +443,10 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
          {
             stbTypes::Corner corner = (stbTypes::Corner)c;
 
-            stbTypes::Face face = GetFace(corner);
+            stbTypes::GirderFace face = GetFace(corner);
+            stbTypes::GirderSide side = GetSide(corner);
+
+            Float64 sideSign = (side == stbTypes::Left ? -1 : 1);
 
             // stress due to direct loads
             sectionResult.fDirect[impact][corner] = sectionResult.fps[corner] + IM[impact] * (sectionResult.fg[corner] + sectionResult.fcable[corner]);
@@ -576,14 +579,25 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
                   if (f_direct < fr)
                   {
                      // the direct stress is less than the modulus of rupture, therefore there needs to be additional moment applied to cause cracking
-                     mcr = fabs((fr - f_direct)*D / (Ixx*pntStress[corner].X() - Ixy*pntStress[corner].Y())) - sectionResult.Mh[impact][wind];
-                     mcr = Max(mcr, 0.0); // make sure Mh doesn't make mcr negative... if mcr is negative, Mh causes cracking so the girder is cracked before tilting
+
+                     // basic_mcr could be positive or negative. Negative means that the girder self-weight moment must reverse direction in order
+                     // to crack the girder at [corner]
+                     Float64 basic_mcr = ((f_direct - fr)*D / (Ixx*pntStress[corner].X() - Ixy*pntStress[corner].Y()));
+
+                     mcr = basic_mcr - sectionResult.Mh[impact][wind];
+
+                     if (0 <= basic_mcr && mcr < 0)
+                     {
+                        // If basic_mcr is greater than zero and, Mh is larger, Mh causes the girder to crack without any tilting
+                        // take mcr to be zero
+                        mcr = 0;
+                     }
                   }
 
-                  Float64 m = fabs(IM[impact] * sectionResult.Mg - Plift*results.Zo[impact]);
+                  Float64 m = IM[impact] * sectionResult.Mg - Plift*results.Zo[impact];
 
-                  Float64 theta_crack = (IsZero(m) ? THETA_MAX : mcr / m);
-                  theta_crack = ::ForceIntoRange(0.0, theta_crack, THETA_MAX);
+                  Float64 theta_crack = (IsZero(m) ? ::BinarySign(results.ThetaEq[impact][wind])*THETA_MAX : mcr / m);
+                  theta_crack = ::ForceIntoRange(-THETA_MAX, theta_crack, THETA_MAX);
                   sectionResult.Mcr[impact][wind][corner] = mcr;
                   sectionResult.ThetaCrack[impact][wind][corner] = theta_crack;
 
@@ -591,15 +605,31 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
                   if (results.ThetaEq[impact][wind] < 0)
                   {
                      ATLASSERT(wind == stbTypes::Left);
-                     Float64 Mr = results.EccLateralSweep[impact] + results.ZoWind[impact] + (results.Dra[impact] - results.Zo[impact])*theta_crack;
-                     Float64 Ma = results.EccWind[impact];
-                     fscr = IsZero(Ma) ? Float64_Max : Mr / Ma;
+                     if (theta_crack < 0)
+                     {
+                        Float64 Mr = results.EccLateralSweep[impact] + results.ZoWind[impact] + (results.Zo[impact] - results.Dra[impact])*theta_crack;
+                        Float64 Ma = results.EccWind[impact];
+                        fscr = IsZero(Ma) ? Float64_Max : Mr / Ma;
+                     }
+                     else
+                     {
+                        fscr = Float64_Max;
+                     }
                   }
                   else
                   {
-                     Float64 Mr = results.Dra[impact] * theta_crack;
-                     Float64 Ma = results.Zo[impact] * theta_crack + results.EccLateralSweep[impact] + windSign*(results.ZoWind[impact] - results.EccWind[impact]);
-                     fscr = IsZero(Ma) ? Float64_Max : Mr / Ma;
+                     if (theta_crack < 0)
+                     {
+                        // the lateral moment due to girder self-weight must reverse direction in order to crack this flange tip
+                        // that's impossible
+                        fscr = Float64_Max;
+                     }
+                     else
+                     {
+                        Float64 Mr = results.Dra[impact] * theta_crack;
+                        Float64 Ma = results.Zo[impact] * theta_crack + results.EccLateralSweep[impact] + windSign*(results.ZoWind[impact] - results.EccWind[impact]);
+                        fscr = IsZero(Ma) ? Float64_Max : Mr / Ma;
+                     }
                   }
 
                   sectionResult.FScr[impact][wind][corner] = fscr;
@@ -692,26 +722,30 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
             if (results.ThetaEq[impact][wind] < 0)
             {
                ATLASSERT(wind == stbTypes::Left);
-               results.ThetaMax[impact][wind] = (results.Dra[impact] + windSign*2.5*results.ZoWind[impact] - results.Zo[impact]) / (5 * results.Zo[impact]);
+               results.ThetaMax[impact][wind] = (results.Zo[impact] - results.Dra[impact] - windSign*2.5*results.ZoWind[impact] ) / (5 * results.Zo[impact]);
+               ATLASSERT(results.ThetaMax[impact][wind] <= 0);
             }
             else
             {
-               results.ThetaMax[impact][wind] = sqrt((results.EccLateralSweep[impact] + windSign*(results.ZoWind[impact] - results.EccWind[impact])) / (2.5*results.Zo[impact]));
+               Float64 S = results.EccLateralSweep[impact] + windSign*(results.ZoWind[impact] - results.EccWind[impact]);
+               S /= 2.5*results.Zo[impact];
+               ATLASSERT(0 <= S);
+               results.ThetaMax[impact][wind] = sqrt(S);
             }
-            results.ThetaMax[impact][wind] = ::ForceIntoRange(0.0, results.ThetaMax[impact][wind], THETA_MAX);
+            results.ThetaMax[impact][wind] = ::ForceIntoRange(-THETA_MAX, results.ThetaMax[impact][wind], THETA_MAX);
 
             Float64 FSf = 0;
             if (results.ThetaEq[impact][wind] < 0)
             {
                ATLASSERT(wind == stbTypes::Left);
-               Float64 Mr = results.EccLateralSweep[impact] + results.Dra[impact] * results.ThetaMax[impact][wind] + (results.ZoWind[impact] - results.Zo[impact] * results.ThetaMax[impact][wind]) * (1 + 2.5*results.ThetaMax[impact][wind]);
+               Float64 Mr = results.EccLateralSweep[impact] - results.Dra[impact] * results.ThetaMax[impact][wind] + (results.ZoWind[impact] + results.Zo[impact] * results.ThetaMax[impact][wind]) * (1 - 2.5*results.ThetaMax[impact][wind]);
                Float64 Ma = results.EccWind[impact];
                FSf = IsZero(Ma) ? Float64_Max : Mr / Ma;
             }
             else
             {
                Float64 Mr = results.Dra[impact] * results.ThetaMax[impact][wind];
-               Float64 Ma = (1 + 2.5*results.ThetaMax[impact][wind])*(results.Zo[impact] * results.ThetaMax[impact][wind] + windSign*results.ZoWind[impact]) + results.EccWind[impact] + results.EccLateralSweep[impact];
+               Float64 Ma = (1 + 2.5*results.ThetaMax[impact][wind])*(results.Zo[impact] * results.ThetaMax[impact][wind] + windSign*results.ZoWind[impact]) - windSign*results.EccWind[impact] + results.EccLateralSweep[impact];
                FSf = IsZero(Ma) ? Float64_Max : Mr / Ma;
             }
             results.FsFailure[impact][wind] = FSf;
@@ -949,7 +983,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
             {
                stbTypes::Corner corner = (stbTypes::Corner)cn;
 
-               stbTypes::Face face = GetFace(corner);
+               stbTypes::GirderFace face = GetFace(corner);
                Float64 b = (face == stbTypes::Top ? Wtf : Wbf);
 
                Float64 cornerSign = (corner == stbTypes::TopLeft || corner == stbTypes::BottomLeft ? 1 : -1);
@@ -1095,22 +1129,31 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                      {
                         f_direct -= cfSign*sectionResult.fcf[corner];
                      }
+
                      if (f_direct < fr)
                      {
                         // the direct stress is less than the modulus of rupture, therefore there needs to be additional moment applied to cause cracking
-                        mcr = fabs((fr - f_direct)*D / (Ixx*pntStress[corner].X() - Ixy*pntStress[corner].Y()));
+                        mcr = (f_direct - fr)*D / (Ixx*pntStress[corner].X() - Ixy*pntStress[corner].Y());
 
-                        Float64 m = fabs(im*sectionResult.Mg);
+                        Float64 m = im*sectionResult.Mg;
 
-                        theta_crack = (IsZero(m) ? THETA_MAX : mcr / m);
-                        theta_crack = ::ForceIntoRange(0.0, theta_crack, THETA_MAX);
+                        theta_crack = (IsZero(m) ? ::BinarySign(results.ThetaEq[slope][impact][wind])*THETA_MAX : mcr / m);
+                        theta_crack = ::ForceIntoRange(-THETA_MAX, theta_crack, THETA_MAX);
 
-                        Float64 alpha = (slope == stbTypes::CrownSlope ? CrownSlope : Superelevation);
-                        Float64 sign = (results.ThetaEq[slope][impact][wind] < alpha ? -1 : 1);
-                        Float64 Mr = sign*Ktheta*(sign*theta_crack - alpha);
-                        Float64 Ma = im*Wg*((results.Dra[stbTypes::NoImpact]+ im*results.Zo[stbTypes::NoImpact])*theta_crack + sign*(ei + Zt)) + sign*Mot;
-                        fscr = IsZero(Ma) ? Float64_Max : Mr / Ma;
-                        fscr = Max(fscr, 0.0); // can't be less than zero... theta_crack-alpha < 0 means the slope of alpha alone will crack the girder
+                        if (theta_crack < 0)
+                        {
+                           // the lateral moment due to girder self-weight must reverse direction in order to crack this flange tip
+                           // that's impossible
+                           fscr = Float64_Max;
+                        }
+                        else
+                        {
+                           Float64 alpha = (slope == stbTypes::CrownSlope ? CrownSlope : Superelevation);
+                           Float64 Mr = Ktheta*(theta_crack - alpha);
+                           Float64 Ma = im*Wg*((results.Dra[stbTypes::NoImpact] + im*results.Zo[stbTypes::NoImpact])*theta_crack + ei + Zt) + Mot;
+                           fscr = IsZero(Ma) ? Float64_Max : Mr / Ma;
+                           fscr = Max(fscr, 0.0); // can't be less than zero... theta_crack-alpha < 0 means the slope of alpha alone will crack the girder
+                        }
                      }
 
                      sectionResult.Mcr[slope][impact][wind][corner] = mcr;
@@ -1217,25 +1260,43 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
 
                // compute theta max... PCI examples use a numerical solver in mathcad, however I derived the closed form solution.
                // (See SupportingDocuments folder for derivation)
-               Float64 theta_max;
-               Float64 sign = (results.ThetaEq[slope][impact][wind] < alpha ? -1 : 1); // let equilbrium angle determine direction of failure mode
-               if (IsZero(im*Wg))
+
+               if (0 < results.ThetaEq[slope][impact][wind] && ::IsLE(results.ThetaEq[slope][impact][wind], alpha))
                {
-                  theta_max = THETA_MAX;
+                  // girder is tilted to the left (CCW rotation, but it isn't tilted more than the superelevation
+                  // Mr = Ktheta(theta_roll - alpha) which is < 0
+                  // the girder is going to fail on the left side if it does not tilt at least equal to the superelevation
+                  // In the special case that theta_max = alpha, Mr is 0 and for equilibrium, Ma also must be zero
+                  // This is a perfectly balanced case and failure will not occur
+                  results.ThetaMax[slope][impact][wind] = 0;
+                  results.FsFailure[slope][impact][wind] = Float64_Max;
                }
                else
                {
-                  Float64 Z = Zt + ei + Mot / (im*Wg) + (im*results.Zo[stbTypes::NoImpact] + results.Dra[stbTypes::NoImpact] + sign*2.5*Zt)*alpha;
-                  Float64 S = alpha*alpha + sign*Z / (2.5 * im*results.Zo[stbTypes::NoImpact]);
-                  theta_max = sign*alpha + sqrt(S);
-               }
-               theta_max = ::ForceIntoRange(0.0, theta_max, THETA_MAX);
-               results.ThetaMax[slope][impact][wind] = theta_max;
+                  Float64 theta_max;
+                  if (IsZero(im*Wg))
+                  {
+                     theta_max = THETA_MAX;
+                  }
+                  else
+                  {
+                     Float64 sign = (results.ThetaEq[slope][impact][wind] < 0 ? -1 : 1); // let equilbrium angle determine direction of failure mode
 
-               Float64 Mr = sign*Ktheta*(sign*theta_max - alpha); // resisting moment: Mr = Ktheta(theta-alpha) for theta_eq > 0 and Mr = Ktheta(theta+alpha) for theta_eq < 0
-               Float64 Ma = im*Wg*((im*results.Zo[stbTypes::NoImpact] * theta_max + sign*Zt)*(1 + 2.5*theta_max) + results.Dra[stbTypes::NoImpact] * theta_max + sign*ei) + sign*Mot; // acting moment
-               Float64 FSf = IsLE(Ma, 0.0) ? DBL_MAX : Mr / Ma;
-               results.FsFailure[slope][impact][wind] = FSf;
+                     Float64 Z = Zt + ei + Mot / (im*Wg) + (im*results.Zo[stbTypes::NoImpact] + results.Dra[stbTypes::NoImpact] + sign*2.5*Zt)*alpha;
+                     Float64 S = alpha*alpha + sign*Z / (2.5 * im*results.Zo[stbTypes::NoImpact]);
+
+                     ATLASSERT(0 <= S);
+                     theta_max = alpha + sign*sqrt(S);
+                  }
+                  theta_max = ::ForceIntoRange(-THETA_MAX, theta_max, THETA_MAX);
+                  results.ThetaMax[slope][impact][wind] = theta_max;
+                  ATLASSERT(::BinarySign(results.ThetaEq[slope][impact][wind]) == ::BinarySign(theta_max));
+
+                  Float64 Mr = Ktheta*(theta_max - alpha); // resisting moment
+                  Float64 Ma = im*Wg*((im*results.Zo[stbTypes::NoImpact] * theta_max + Zt)*(1 + 2.5*fabs(theta_max)) + results.Dra[stbTypes::NoImpact] * theta_max + ei) + Mot; // acting moment
+                  Float64 FSf = IsLE(Ma, 0.0) ? Float64_Max : Mr / Ma;
+                  results.FsFailure[slope][impact][wind] = FSf;
+               }
 
                // if FSf < FScr then FSf = FScr (if the girder doesn't crack, it doesn't fail)
                results.AdjFsFailure[slope][impact][wind] = Max(results.FsFailure[slope][impact][wind], results.MinFScr[slope]);
@@ -1253,7 +1314,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                ////////////////////////////////////////
 
                // critical angle at rollover (this is the angle when the truck is just about to overturn)
-               sign = (results.ThetaEq[slope][impact][wind] < 0 ? -1 : 1); // let equilbrium angle determine direction of failure mode
+               Float64 sign = (results.ThetaEq[slope][impact][wind] < 0 ? -1 : 1); // let equilbrium angle determine direction of failure mode
                Float64 Zmax = Wcc / 2;
                Float64 Wro = windSign*results.Wwind;
                if (slope == stbTypes::Superelevation)
@@ -1262,29 +1323,24 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                }
 
                Float64 Mro = Wro*(Hrs + sign*Zmax*alpha);
-               Ma = sign*im*Wg*(Zmax - sign*Hrs*alpha) - Mro;
-               results.bRolloverStability[slope][impact][wind] = (sign*Ma < 0 ? false : true);
+               // if the rollover moment from the lateral loads exceeds the resisting moment from the vertical
+               // reaction at the tire then there is no capacity left to take the K(theta-alpha) moment from
+               // the girder above. consider this to be unstable for rollover
+               Float64 mr = im*Wg*(Zmax - sign*Hrs*alpha);
+               Float64 ma = sign*Mro;
+
+               results.bRolloverStability[slope][impact][wind] = (mr < ma ? false : true);
                if (results.bRolloverStability[slope][impact][wind])
                {
-                  Float64 theta_roll = Ma / Ktheta + sign*alpha;
+                  Float64 Ma = mr - ma;
+                  Float64 theta_roll = sign*Ma / Ktheta + alpha;
                   results.ThetaRollover[slope][impact][wind] = theta_roll;
+                  ATLASSERT(::BinarySign(results.ThetaEq[slope][impact][wind]) == ::BinarySign(theta_roll));
 
-                  if (0 < theta_roll && ::IsLE(theta_roll, alpha))
-                  {
-                     // girder is tilted to the left (CCW rotation, but it isn't tilted more than the superelevation
-                     // Mr = Ktheta(theta_roll - alpha) which is < 0
-                     // the girder cannot rollover to the left if it does not tilt at least equal to the superelevation
-                     // In the special case that theta_roll = alpha, Mr is 0 and for equilibrium, Ma also must be zero
-                     // This is a perfectly balanced case and roll over will not occur
-                     results.FsRollover[slope][impact][wind] = Float64_Max;
-                  }
-                  else
-                  {
-                     Float64 Mr = Ktheta*(theta_roll - sign*alpha);
-                     Float64 Ma = im*Wg*((Zt + sign*im*results.Zo[stbTypes::NoImpact] * theta_roll)*(1 + 2.5*theta_roll) + results.Dra[stbTypes::NoImpact] * theta_roll + ei) + sign*Mot;
-                     Float64 FSr = IsZero(Ma) ? Float64_Max : Mr / Ma;
-                     results.FsRollover[slope][impact][wind] = FSr;
-                  }
+                  Float64 Mr = Ktheta*(theta_roll - alpha);
+                  Ma = im*Wg*((Zt + im*results.Zo[stbTypes::NoImpact] * theta_roll)*(1 + 2.5*fabs(theta_roll)) + results.Dra[stbTypes::NoImpact] * theta_roll + ei) + Mot;
+                  Float64 FSr = IsZero(Ma) ? Float64_Max : Mr / Ma;
+                  results.FsRollover[slope][impact][wind] = FSr;
                }
                else
                {

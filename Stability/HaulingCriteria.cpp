@@ -39,8 +39,8 @@ stbHaulingCriteria::stbHaulingCriteria()
    AllowableCompression_GlobalStress = 0;
    AllowableCompression_PeakStress = 0;
 
-   MinFScr = DBL_MAX;
-   MinFSf  = DBL_MAX;
+   MinFScr = Float64_Max;
+   MinFSf  = Float64_Max;
 
    for ( int s = 0; s < 2; s++ )
    {
