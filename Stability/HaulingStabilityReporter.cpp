@@ -405,7 +405,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
             if (i == 0)
             {
                pArtifact->GetControllingPeakCompressionCase(slope, sectionResult, &impact, &wind, &corner, &fAllow, &bPassed, &cd);
-               sectionResult.f[slope][impact][wind][corner];
+               f = sectionResult.f[slope][impact][wind][corner];
                strLocation = strCorner[corner];
             }
             else
@@ -1146,7 +1146,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    }
    *pPara << _T("Total Wind Load, ") << W_WIND << _T(" = ") << force.SetValue(pResults->Wwind) << rptNewLine;
    *pPara << _T("Location of resultant wind force above roll axis, ") << W_WIND << rptNewLine;
-   *pPara << W_WIND << _T(" = ") << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("H"),_T("g")) << _T("/2 + ") << FO << _T("((m)") << Sub2(symbol(DELTA),_T("camber")) << _T(" + ") << Sub2(symbol(DELTA),_T("precamber")) << _T(") = ") << shortLength.SetValue(pResults->Ywind[stbTypes::NoImpact]) << rptNewLine;
+   *pPara << Y_WIND << _T(" = ") << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("H"),_T("g")) << _T("/2 + ") << FO << _T("((m)") << Sub2(symbol(DELTA),_T("camber")) << _T(" + ") << Sub2(symbol(DELTA),_T("precamber")) << _T(") = ") << shortLength.SetValue(pResults->Ywind[stbTypes::NoImpact]) << rptNewLine;
 
    *pPara << rptNewLine;
 
@@ -1164,7 +1164,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    *pPara << rptNewLine;
 
    *pPara << _T("Lateral eccentricity of Girder Self Weight due to Wind Load towards the left, ") << E_WIND << rptNewLine;
-   *pPara << E_WIND << _T(" = ") << W_WIND << W_WIND << _T("/[") << Sub2(_T("(IM)W"), _T("g")) << _T("]") << rptNewLine;
+   *pPara << E_WIND << _T(" = ") << W_WIND << Y_WIND << _T("/[") << Sub2(_T("(IM)W"), _T("g")) << _T("]") << rptNewLine;
    for (IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++ )
    {
       if (0 < impactCase)
@@ -1174,8 +1174,8 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
       *pPara << Sub2(_T("e"),_T("wind")) << _T(" = ") << shortLength.SetValue(pResults->EccWind[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
    }
    *pPara << rptNewLine;
-   *pPara << _T("Overturning moment due to wind applied toward the left, ") << Sub2(_T("M"),_T("otwind")) << _T(" = ") << ot_moment.SetValue(pResults->MotWind) << rptNewLine;
-
+   *pPara << _T("Overturning moment due to wind applied toward the left, ") << Sub2(_T("M"), _T("otwind")) << _T(" = ") << ot_moment.SetValue(pResults->MotWind) << rptNewLine;
+   
    // Centrifugal Force Parameters
    pPara = new rptParagraph(rptStyleManager::GetSubheadingStyle());
    *pChapter << pPara;
@@ -1188,7 +1188,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    *pPara << _T("Centrigural force is ") << strCF << rptNewLine;
    *pPara << _T("Location of resultant centrifugal force above roll axis, ") << Y_CF << _T(" = ") << YR << _T(" = ") << shortLength.SetValue(pResults->Dra[stbTypes::NoImpact]) << rptNewLine;
    *pPara << _T("Lateral Deflection due to centrifugal force, ") << Sub2(_T("z"),_T("cf")) << _T(" = ") << W_CF << ZO << _T("/") << Sub2(_T("W"),_T("g")) << _T(" = ") << shortLength.SetValue(pResults->ZoCF) << rptNewLine;
-   *pPara << _T("Overturning moment due to centrigural force, ") << Sub2(_T("M"),_T("otcf")) << _T(" = ") << W_CF << Y_CF << _T(" = ") << ot_moment.SetValue(pResults->MotCF) << rptNewLine;
+   *pPara << _T("Overturning moment due to centrigural force, ") << Sub2(_T("M"), _T("otcf")) << _T(" = ") << W_CF << Y_CF << _T(" = ") << ot_moment.SetValue(pResults->MotCF) << rptNewLine;
    *pPara << rptNewLine;
 
    rptRcTable* pPrestressTable = rptStyleManager::CreateDefaultTable(bSimpleFormat ? 9 : 14, _T("Stress due to Effective Prestress"));
@@ -2341,13 +2341,14 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                   *pPara << _T(" + ");
                }
                *pPara << EI << _T("]");
+
                if (pResults->ThetaRollover[slope][impactDir[impactCase]][wind] < 0)
                {
-                  *pPara << _T(" - ");
+                  *pPara << strCFSign;
                }
                else
                {
-                  *pPara << _T(" + ");
+                  *pPara << strOppCFSign;
                }
                *pPara << M_OT << _T("}") << rptNewLine;
 
