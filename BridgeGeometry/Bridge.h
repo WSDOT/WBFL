@@ -117,10 +117,6 @@ END_COM_MAP()
 
    CComPtr<IDeckBoundary> m_DeckBoundary;
 
-   void ClearGeometry();
-   void ClearPierGeometry();
-   void ClearGirderGeometry();
-
    HRESULT UpdateBridgeLine();
    HRESULT UpdatePierGeometry();
    HRESULT UpdateGirderGeometry();
@@ -157,7 +153,7 @@ public:
    STDMETHOD(get_DiaphragmLineCount)(CollectionIndexType* pVal) override;
    STDMETHOD(CreateDeckBoundary)(IDeckBoundaryFactory* pFactory) override;
    STDMETHOD(get_DeckBoundary)(IDeckBoundary** ppDeckBoundary) override;
-   STDMETHOD(UpdateGeometry)() override;
+   STDMETHOD(UpdateGeometry)(long flag) override;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(BridgeGeometry), CBridge)
