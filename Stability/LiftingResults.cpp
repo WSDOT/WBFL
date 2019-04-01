@@ -118,7 +118,7 @@ stbLiftingResults::stbLiftingResults()
    Pcrit = 0;
    Plift = 0;
    memset((void*)emag,0,sizeof(emag));
-   dLift = 0;
+   //dLift = 0;
 
    memset((void*)ThetaEq, 0, sizeof(ThetaEq));
 

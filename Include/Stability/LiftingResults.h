@@ -122,7 +122,7 @@ public:
 
    Float64 Pcrit; // critical compression load
    Float64 Plift; // axial force due to inclination of lift cables for the no-impact case
-   Float64 dLift; // deflection due to lifting cable force for the no-impact case
+   //Float64 dLift; // deflection due to lifting cable force for the no-impact case
    Float64 emag[3];  // lateral deflection magnification factor (array index in one of the stbTypes::Impact enum values)
 
    Float64 ThetaEq[3][2];    // tilt angle at equilibrium (array index is [impact][wind])
