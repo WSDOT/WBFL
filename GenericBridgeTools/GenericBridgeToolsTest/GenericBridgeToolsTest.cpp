@@ -388,7 +388,7 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
    bridge->putref_Deck(deck);
    bridge->put_SacrificialDepth(1./12);
 
-   bridge->UpdateBridgeModel(); // forces the geometry to be up to date
+   bridge->UpdateBridgeModel(GF_ALL); // forces the geometry to be up to date
 
    bridge.CopyTo(ppBridge);
 }
@@ -658,7 +658,7 @@ void CreateSplicedGirderBridge(IGenericBridge** ppBridge)
    bridge->putref_Deck(deck);
    bridge->put_SacrificialDepth(1./12);
 
-   bridge->UpdateBridgeModel(); // forces the geometry to be up to date
+   bridge->UpdateBridgeModel(GF_ALL); // forces the geometry to be up to date
    bridge.CopyTo(ppBridge);
 }
 

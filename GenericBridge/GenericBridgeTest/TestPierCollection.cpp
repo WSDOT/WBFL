@@ -67,7 +67,7 @@ void CTestPierCollection::Test()
    pierLine.Release();
    bridgeGeometry->CreatePierLine(1,alignmentID,CComVariant(100.00),CComBSTR("Normal"),10,-5,&pierLine);
 
-   bridge->UpdateBridgeModel();
+   bridge->UpdateBridgeModel(GF_ALL);
 
    CComPtr<IPierCollection> piers;
    bridge->get_Piers(&piers);

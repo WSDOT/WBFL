@@ -75,7 +75,7 @@ BEGIN_COM_MAP(CGenericBridge)
 END_COM_MAP()
 
 private:
-   void DoUpdateBridgeModel();
+   void DoUpdateBridgeModel(long flags);
 
    CComPtr<IPierCollection> m_Piers;
 
@@ -129,7 +129,7 @@ public:
    STDMETHOD(get_SuperstructureMember)(GirderIDType id,ISuperstructureMember** ppMbr) override;
    STDMETHOD(get__EnumSuperstructureMembers)(IEnumSuperstructureMembers* *enumSSMbrs) override;
 
-   STDMETHOD(UpdateBridgeModel)() override;
+   STDMETHOD(UpdateBridgeModel)(long flags) override;
 
 // IStructuredStorage2
 public:
