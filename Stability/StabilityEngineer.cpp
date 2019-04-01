@@ -262,7 +262,7 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
    Float64 dx,dy1,dy2,rz;
    femResults->ComputePOIDeflections(LCID_LIFT,m_StartPoi,lotMember,&dx,&dy1,&rz);
    femResults->ComputePOIDeflections(LCID_LIFT,m_MidSpanPoi,lotMember,&dx,&dy2,&rz);
-   results.dLift = results.Plift*(dy2 - dy1); // does not include impact... measured relative to the ends of the girder
+   //results.dLift = results.Plift*(dy2 - dy1); // does not include impact... measured relative to the ends of the girder
 
    for ( IndexType i = 0; i < 3; i++ )
    {
@@ -272,10 +272,10 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
       results.Zo[impact]     *= results.emag[impact]; // emag includes impact
       results.ZoWind[impact] *= results.emag[impact];
 
-      // add the deflection due to the horiztonal component of the lifting cable force
-      // to the location of the resultant gravity and wind forces
-      results.Dra[impact]   -= results.OffsetFactor*IM[impact]*results.dLift;
-      results.Ywind[impact] -= results.OffsetFactor*IM[impact]*results.dLift;
+      //// add the deflection due to the horiztonal component of the lifting cable force
+      //// to the location of the resultant gravity and wind forces
+      //results.Dra[impact]   -= results.OffsetFactor*IM[impact]*results.dLift;
+      //results.Ywind[impact] -= results.OffsetFactor*IM[impact]*results.dLift;
 
       // compute the lateral eccentricity of the girder self-weight due to the wind load
       results.EccWind[impact] = results.Wwind*results.Ywind[impact]/(IM[impact]*Wg);
@@ -711,7 +711,7 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
             else
             {
                Float64 Mr = results.Dra[impact] * results.ThetaMax[impact][wind];
-               Float64 Ma = (1 + 2.5*results.ThetaMax[impact][wind])*(results.Zo[impact] * results.ThetaMax[impact][wind] + windSign*results.ZoWind[impact]) + results.EccWind[impact] + results.EccLateralSweep[impact];
+               Float64 Ma = (1 + 2.5*results.ThetaMax[impact][wind])*(results.Zo[impact] * results.ThetaMax[impact][wind] + windSign*results.ZoWind[impact]) - windSign*results.EccWind[impact] + results.EccLateralSweep[impact];
                FSf = IsZero(Ma) ? Float64_Max : Mr / Ma;
             }
             results.FsFailure[impact][wind] = FSf;

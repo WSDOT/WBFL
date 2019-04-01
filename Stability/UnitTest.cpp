@@ -165,7 +165,7 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
             TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind][corner],wind == stbTypes::Left ? 2.556 : 1.197/*1.581*/,0.001) );
          }
 
-         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], wind == stbTypes::Left ? 1.100/*2.516*/ : 1.665/*1.546*/, 0.001));
+         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], wind == stbTypes::Left ? 2.253/*2.516*/ : 1.665/*1.546*/, 0.001));
          TRY_TESTME(::IsEqual(result.AdjFsFailure[impact][wind], wind == stbTypes::Left ? 2.556 : 1.665/*1.546*/, 0.001));
       }
    }
@@ -182,11 +182,11 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
          for(const auto& sectionResult : result.vSectionResults)
          {
             stbTypes::Corner corner = wind == stbTypes::Left ? stbTypes::TopLeft : stbTypes::TopRight;
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind][corner],wind == stbTypes::Left ? 2.425 : 1.349/*1.633*/,0.001) );
+            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind][corner],wind == stbTypes::Left ? 2.413 : 1.345/*1.633*/,0.001) );
          }
 
-         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], wind == stbTypes::Left ? 1.103/*2.270*/ : 1.579/*1.471*/, 0.001));
-         TRY_TESTME(::IsEqual(result.AdjFsFailure[impact][wind], wind == stbTypes::Left ? 2.425/*2.270*/ : 1.579/*1.471*/, 0.001));
+         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], wind == stbTypes::Left ? 2.046/*2.270*/ : 1.574/*1.471*/, 0.001));
+         TRY_TESTME(::IsEqual(result.AdjFsFailure[impact][wind], wind == stbTypes::Left ? 2.413/*2.270*/ : 1.574/*1.471*/, 0.001));
       }
    }
 
