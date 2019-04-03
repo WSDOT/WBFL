@@ -257,16 +257,12 @@ void CStrandModelBase::GetHarpPointLocations(Float64& hp1, Float64& hp2) const
 {
    hp1 = GetHarpPointLocation(m_HP1, m_HPReference, m_HPMeasure, false, false);
    hp2 = GetHarpPointLocation(m_HP2, m_HPReference, m_HPMeasure, true, false);
-
-   ATLASSERT(hp1 <= hp2);
 }
 
 void CStrandModelBase::GetEndHarpPointLocations(Float64& hp1, Float64& hp2) const
 {
    hp1 = GetHarpPointLocation(m_HPStart, m_EndHPReference, m_EndHPMeasure, false, true);
    hp2 = GetHarpPointLocation(m_HPEnd, m_EndHPReference, m_EndHPMeasure, true, true);
-
-   ATLASSERT(hp1 <= hp2);
 }
 
 Float64 CStrandModelBase::GetHarpPointLocation(Float64 hp, HarpPointReference hpRef, HarpPointMeasure hpMeasure, bool bRight, bool bLocatingEndHarpPoint) const

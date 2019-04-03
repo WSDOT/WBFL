@@ -1220,7 +1220,6 @@ HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDT
    CComPtr<IShape> sishape;
    si->get_Shape(&sishape);
    CComQIPtr<IGirderSection> girder_section(sishape);
-   ATLASSERT(girder_section);
 
    CComPtr<ISection> deckSection;
    hr = CreateDeckSection(bridge,ssMbrID,segIdx,Xs,stageIdx,sectionPropMethod,haunchMethod,bFollowMatingSurfaceProfile,girder_section,&deckSection);
