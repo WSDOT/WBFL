@@ -1556,7 +1556,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
          (*pPara) << FS_CR << _T(" = Factor of Safety Against Cracking") << rptNewLine;
          if (pResults->ThetaEq[impactDir[impactCase]][wind] < 0)
          {
-            (*pPara) << FS_CR << _T(" = (") << EI << _T(" + ") << Z_WIND << _T(" + (") << YR << _T(" - ") << ZO << _T(")/") << THETA_CRACK <<_T(")/") << E_WIND << rptNewLine;
+            (*pPara) << FS_CR << _T(" = (") << EI << _T(" + ") << Z_WIND << _T(" + (") << YR << _T(" - ") << ZO << _T(")") << THETA_CRACK <<_T(")/") << E_WIND << rptNewLine;
          }
          else
          {
