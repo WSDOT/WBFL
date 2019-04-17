@@ -44,6 +44,7 @@
 #include <Lrfd\LldfTypeHIJ.h>
 #include <Lrfd\LldfTypeG.h>
 #include <Lrfd\LldfTxdotMultiWeb.h>
+#include <Lrfd\LldfTxdotSpreadSlab.h>
 #include <Lrfd\LoadModifier.h>
 #include <Lrfd\RefinedLosses.h>
 #include <Lrfd\RefinedLosses2005.h>

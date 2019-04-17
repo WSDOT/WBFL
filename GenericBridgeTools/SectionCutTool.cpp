@@ -37,6 +37,7 @@
 #include <WBFLCogo\CogoHelpers.h>
 
 #include <algorithm>
+#include <array>
 
 #if defined _DEBUG
 #include <map>
@@ -383,22 +384,22 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    Float64 gross_depth;
    deck->get_GrossDepth(&gross_depth);
 
-   Float64 overhang_depth;
-   DeckOverhangTaper overhang_taper;
+   std::array<Float64,2> overhang_depth;
+   std::array<DeckOverhangTaper,2> overhang_taper;
    if ( cip )
    {
-      cip->get_OverhangDepth(&overhang_depth);
-      cip->get_OverhangTaper(&overhang_taper);
+      cip->GetOverhang(&overhang_depth[qcbLeft], &overhang_taper[qcbLeft], &overhang_depth[qcbRight], &overhang_taper[qcbRight]);
    }
    else if ( sip )
    {
-      sip->get_OverhangDepth(&overhang_depth);
-      sip->get_OverhangTaper(&overhang_taper);
+      sip->GetOverhang(&overhang_depth[qcbLeft], &overhang_taper[qcbLeft], &overhang_depth[qcbRight], &overhang_taper[qcbRight]);
    }
    else
    {
-      overhang_depth = gross_depth;
-      overhang_taper = dotNone;
+      overhang_depth[qcbLeft] = gross_depth;
+      overhang_depth[qcbRight] = gross_depth;
+      overhang_taper[qcbLeft] = dotNone;
+      overhang_taper[qcbRight] = dotNone;
    }
 
    // Top of Deck
@@ -408,7 +409,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    // This is the same point as top of deck, except for the overhang_depth
    Float64 elev;
    profile->Elevation(CComVariant(rightOffsetStation),right_deck_edge_normal_offset,&elev);
-   slab_shape->AddPoint(right_deck_offset,elev-overhang_depth);
+   slab_shape->AddPoint(right_deck_offset,elev-overhang_depth[qcbRight]);
 
    // Right Edge, Top
    slab_shape->AddPoint(right_deck_offset,elev);
@@ -463,7 +464,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    slab_shape->AddPoint(left_deck_offset,elev);
 
    // Left Edge - bottom of deck
-   slab_shape->AddPoint(left_deck_offset,elev - overhang_depth);
+   slab_shape->AddPoint(left_deck_offset,elev - overhang_depth[qcbLeft]);
 
    // work left to right across bottom of deck back to the bottom-right corner
    if ( bIncludeHaunch == VARIANT_TRUE )
@@ -593,7 +594,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
 
                   if (!bHasMSProfile)
                   {
-                     if (girderPoint.girderLocation != ltLeftExteriorGirder || msIdx != 0 || overhang_taper == dotNone || overhang_taper == dotBottomTopFlange)
+                     if (girderPoint.girderLocation != ltLeftExteriorGirder || msIdx != 0 || overhang_taper[qcbLeft] == dotNone || overhang_taper[qcbLeft] == dotBottomTopFlange)
                      {
                         // only use this point if this is an interior girder or an interior web
                         // on the first girder, or the deck overhang is not tapered
@@ -608,9 +609,9 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                         else
                         {
                            // this is the left exterior web on the left exterior girder
-                           if (overhang_taper == dotNone)
+                           if (overhang_taper[qcbLeft] == dotNone)
                            {
-                              dy = overhang_depth;
+                              dy = overhang_depth[qcbLeft];
                               dx = 0;
                            }
                            else
@@ -624,7 +625,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                            }
                         }
 
-                        if (overhang_taper == dotBottomTopFlange || xfillet == 0.0 || girderPoint.girderLocation == ltLeftExteriorGirder)
+                        if (overhang_taper[qcbLeft] == dotBottomTopFlange || xfillet == 0.0 || girderPoint.girderLocation == ltLeftExteriorGirder)
                         {
                            slab_shape->AddPoint(x23 - dx, el23 - dy); // 1,2
                         }
@@ -667,7 +668,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                   }
                }
 
-               if (girderPoint.girderLocation != ltRightExteriorGirder || msIdx != nMatingSurfaces - 1 || overhang_taper == dotNone || overhang_taper == dotBottomTopFlange)
+               if (girderPoint.girderLocation != ltRightExteriorGirder || msIdx != nMatingSurfaces - 1 || overhang_taper[qcbRight] == dotNone || overhang_taper[qcbRight] == dotBottomTopFlange)
                {
                   // only use this point if this is an interior girder or an interior web
                   // on the last girder, or the deck overhang is not tapered
@@ -683,9 +684,9 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                      }
                      else
                      {
-                        if (overhang_taper == dotNone)
+                        if (overhang_taper[qcbRight] == dotNone)
                         {
-                           dy = overhang_depth;
+                           dy = overhang_depth[qcbRight];
                            dx = 0;
                         }
                         else
@@ -698,7 +699,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                         }
                      }
 
-                     if (overhang_taper == dotBottomTopFlange || xfillet == 0.0 || girderPoint.girderLocation == ltRightExteriorGirder)
+                     if (overhang_taper[qcbRight] == dotBottomTopFlange || xfillet == 0.0 || girderPoint.girderLocation == ltRightExteriorGirder)
                      {
                         slab_shape->AddPoint(x45 + dx, el45 - dy); // 5, 6
                      }

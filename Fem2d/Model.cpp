@@ -2242,12 +2242,23 @@ const CModel::PoiResult* CModel::StorePoiResults(LoadCaseIDType lcase, PoiIDType
 
 void CModel::RemoveAllResults()
 {
-   map_delete(m_JntResults.begin(), m_JntResults.end());
-   m_JntResults.clear();
-   map_delete(m_MbrResults.begin(), m_MbrResults.end());
-   m_MbrResults.clear();
-   map_delete(m_PoiResults.begin(), m_PoiResults.end());
-   m_PoiResults.clear();
+   if (!m_JntResults.empty()) // map delete on empty collection is costly. check first
+   {
+      map_delete(m_JntResults.begin(), m_JntResults.end());
+      m_JntResults.clear();
+   }
+
+   if (!m_MbrResults.empty())
+   {
+      map_delete(m_MbrResults.begin(), m_MbrResults.end());
+      m_MbrResults.clear();
+   }
+
+   if (!m_PoiResults.empty())
+   {
+      map_delete(m_PoiResults.begin(), m_PoiResults.end());
+      m_PoiResults.clear();
+   }
 
    m_SimplePOIResultCache.ClearCache();
 }
@@ -2298,8 +2309,11 @@ void CModel::RemovePoiResults(PoiIDType poiid)
 
 void CModel::RemoveAllPoiResults()
 {
-   map_delete(m_PoiResults.begin(), m_PoiResults.end());
-   m_PoiResults.clear();
+   if (!m_PoiResults.empty())
+   {
+      map_delete(m_PoiResults.begin(), m_PoiResults.end());
+      m_PoiResults.clear();
+   }
 
    m_SimplePOIResultCache.ClearCache();
 }
