@@ -40,8 +40,8 @@ stbLiftingCriteria::stbLiftingCriteria()
    bMaxTension = false;
    MaxTension = 0;
 
-   MinFScr = DBL_MAX;
-   MinFSf  = DBL_MAX;
+   MinFScr = Float64_Max;
+   MinFSf  = Float64_Max;
 
    AllowableCompression_GlobalStress = 0;
    AllowableCompression_PeakStress = 0;
