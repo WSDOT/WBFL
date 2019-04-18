@@ -133,14 +133,14 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       {
          *pPara << _T("Stresses and Factor of Safety against Cracking for Hauling at Maximum Superelevation") << rptNewLine;
 
-         //if (pStabilityProblem->GetCentrifugalForceType() == stbTypes::Favorable && !IsZero(pStabilityProblem->GetVelocity()))
-         //{
-         //   // From PCI....
-         //   // Typically, centrifugal force is ignored in the analysis of transporting rigs on curves, simulating a stopped vehicle on a 
-         //   // superelevated surface or a transporting rig in a superelevation transition outside of the curve. However, where the transporting 
-         //   // rig is turning on a surface with superelevation sloping away from the turning direction, the centrifugal force can add to the overturning moment.
-         //   *pPara << color(Red) << _T("Favorable centrifugal force will appear to improve girder stability. Relying of the centrifugal force is not recommended.") << color(Black) << rptNewLine;
-         //}
+         if (pStabilityProblem->GetCentrifugalForceType() == stbTypes::Favorable && !IsZero(pStabilityProblem->GetVelocity()))
+         {
+            // From PCI....
+            // Typically, centrifugal force is ignored in the analysis of transporting rigs on curves, simulating a stopped vehicle on a 
+            // superelevated surface or a transporting rig in a superelevation transition outside of the curve. However, where the transporting 
+            // rig is turning on a surface with superelevation sloping away from the turning direction, the centrifugal force can add to the overturning moment.
+            *pPara << color(Red) << _T("Favorable centrifugal force will appear to improve girder stability. Relying of the centrifugal force is not recommended.") << color(Black) << rptNewLine;
+         }
       }
 
       pPara = new rptParagraph;
@@ -478,7 +478,14 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
 
       row = pTable->GetNumberOfHeaderRows();
       (*pTable)(row,0) << _T("Factor of Safety Against Failure (") << Sub2(_T("FS"),_T("f")) << _T(")");
-      (*pTable)(row,1) << scalar.SetValue(results.MinAdjFsFailure[slope]);
+      if (results.MinAdjFsFailure[slope] == Float64_Max)
+      {
+         (*pTable)(row, 1) << symbol(infinity);
+      }
+      else
+      {
+         (*pTable)(row, 1) << scalar.SetValue(results.MinAdjFsFailure[slope]);
+      }
       if (bLabelImpact)
       {
          (*pTable)(row, 1) << rptNewLine << strImpact[impactIndex[results.FSfImpactDirection[slope]]];
@@ -1580,8 +1587,8 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
             std::_tstring strWindSign(wind == stbTypes::Left ? _T("+") : _T("-"));
             std::_tstring strOppWindSign(wind == stbTypes::Left ? _T("-") : _T("+"));
-            std::_tstring strCFSign(pStabilityProblem->GetCentrifugalForceType() == stbTypes::Adverse ? _T("+") : _T("-"));
-            std::_tstring strOppCFSign(pStabilityProblem->GetCentrifugalForceType() == stbTypes::Adverse ? _T("-") : _T("+"));
+            std::_tstring strCFSign(pStabilityProblem->GetCentrifugalForceType() == stbTypes::Favorable ? _T("-") : _T("+"));
+            std::_tstring strOppCFSign(pStabilityProblem->GetCentrifugalForceType() == stbTypes::Favorable ? _T("+") : _T("-"));
 
             // Overturning Moment
             *pPara << _T("Overturning Moment") << rptNewLine;
@@ -1589,7 +1596,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             *pPara << M_OT << _T(" = ");
             if (slope == stbTypes::Superelevation)
             {
-               Mot += (pStabilityProblem->GetCentrifugalForceType() == stbTypes::Adverse ? 1 : -1)*pResults->MotCF;
+               Mot += (pStabilityProblem->GetCentrifugalForceType() == stbTypes::Favorable ? -1 : 1)*pResults->MotCF;
                if (wind == stbTypes::Right)
                {
                   *pPara << _T("-");
@@ -1617,20 +1624,8 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                *pPara << _T(" ") << strCFSign.c_str() << _T(" ") << Z_CF;
             }
             *pPara << _T(")") << _T(" + ") << M_OT << _T(" + ") << K_THETA << symbol(alpha) << _T(")");
-            *pPara << _T(" / [");
-            if (pResults->ThetaEq[slope][impactDir[impactCase]][wind] < 0)
-            {
-               // Overturning to the right
-               *pPara << Sub2(_T("(IM)W"), _T("g")) << _T("(") << YR << _T(" + ") << ZO << _T(") - ") << K_THETA;
-            }
-            else
-            {
-               // Overturning to the left
-               *pPara << K_THETA << _T(" - ") << Sub2(_T("(IM)W"), _T("g")) << _T("(") << YR << _T(" + ") << ZO << _T(")");
-            }
-            *pPara << _T("] = ");
-
-            *pPara << tiltAngle.SetValue(fabs(pResults->ThetaEq[slope][impactDir[impactCase]][wind])) << rptNewLine;
+            *pPara << _T(" / [") << K_THETA << _T(" - ") << Sub2(_T("(IM)W"), _T("g")) << _T("(") << YR << _T(" + ") << ZO << _T(")] = ");
+            *pPara << tiltAngle.SetValue(pResults->ThetaEq[slope][impactDir[impactCase]][wind]) << rptNewLine;
 
             if (!pResults->bRotationalStability[slope][impactDir[impactCase]][wind])
             {
@@ -1640,7 +1635,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
             if (pResults->ThetaEq[slope][impactDir[impactCase]][wind] < 0)
             {
-               *pPara << _T("NOTE: lateral loading is sufficient to cause the girder to reverse rotational direction (clockwise rotation about the roll axis).") << rptNewLine;
+               *pPara << _T("NOTE: lateral loading is sufficient to cause the girder to reverse rotational direction.") << rptNewLine;
             }
 
             *pPara << rptNewLine;
@@ -1749,38 +1744,13 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             }
             (*pPara) << _T("Cracked Flange, indicates the flange that is first to crack") << rptNewLine;
             (*pPara) << THETA_CRACK << _T(" = tilt angle at cracking") << rptNewLine;
-            (*pPara) << THETA_CRACK << _T(" = |") << M_CR << _T("/") << Sub2(_T("M"), _T("girder")) << _T("| ") << symbol(LTE) << _T(" 0.4 radian") << rptNewLine;
+            (*pPara) << THETA_CRACK << _T(" = ") << M_CR << _T("/") << Sub2(_T("M"), _T("girder")) << rptNewLine;
+            (*pPara) << _T("-0.4 radian") << _T(" ") << symbol(LTE) << _T(" ") << THETA_CRACK << _T(" ") << symbol(LTE) << _T(" ") << _T("0.4 radian") << rptNewLine;
             (*pPara) << FS_CR << _T(" = Factor of Safety against Cracking") << rptNewLine;
 
-            (*pPara) << FS_CR << _T(" = [") << K_THETA << _T("(") << THETA_CRACK;
-            if (pResults->ThetaEq[slope][impactDir[impactCase]][wind] < 0)
-            {
-               (*pPara) << _T(" + ");
-            }
-            else
-            {
-               (*pPara) << _T(" - ");
-            }
-            (*pPara) << symbol(alpha) << _T(")]");
+            (*pPara) << FS_CR << _T(" = [") << K_THETA << _T("(") << THETA_CRACK << _T(" - ") << symbol(alpha) << _T(")]");
             (*pPara) << _T(" / {");
-            (*pPara) << Sub2(_T("(IM)W"), _T("g")) << _T("[(") << YR << _T(" + ") << ZO << _T(")") << THETA_CRACK;
-            if (pResults->ThetaEq[slope][impactDir[impactCase]][wind] < 0)
-            {
-               (*pPara) << _T(" - ");
-            }
-            else
-            {
-               (*pPara) << _T(" + ");
-            }
-            (*pPara) << EI;
-            if (pResults->ThetaEq[slope][impactDir[impactCase]][wind] < 0)
-            {
-               (*pPara) << _T(" - ");
-            }
-            else
-            {
-               (*pPara) << _T(" + ");
-            }
+            (*pPara) << Sub2(_T("(IM)W"), _T("g")) << _T("[(") << YR << _T(" + ") << ZO << _T(")") << THETA_CRACK << _T(" + ") << EI << _T(" + ");
             if (slope == stbTypes::Superelevation)
             {
                (*pPara) << _T("(") << Z_WIND << _T(" ") << strCFSign.c_str() << _T(" ") << Z_CF << _T(")");
@@ -1789,16 +1759,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             {
                (*pPara) << Z_WIND;
             }
-            (*pPara) << _T("]");
-            if (pResults->ThetaEq[slope][impactDir[impactCase]][wind] < 0)
-            {
-               (*pPara) << _T(" - ");
-            }
-            else
-            {
-               (*pPara) << _T(" + ");
-            }
-            (*pPara) << M_OT << _T("}") << rptNewLine;
+            (*pPara) << _T("]") << _T(" + ") << M_OT << _T("}") << rptNewLine;
 
 #if defined SHOW_FULL_CRACKING_TABLE
             rptRcTable* pFullCrackingTable = rptStyleManager::CreateDefaultTable(13, _T("Factor of Safety against Cracking"));
@@ -2000,7 +1961,14 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                (*pCrackingTable)(crow, col++) << moment.SetValue(sectionResult.Mcr[slope][impactDir[impactCase]][wind][corner]);
                (*pCrackingTable)(crow, col++) << strFlange[corner];
                (*pCrackingTable)(crow, col++) << crackAngle.SetValue(sectionResult.ThetaCrack[slope][impactDir[impactCase]][wind][corner]);
-               (*pCrackingTable)(crow, col++) << scalar.SetValue(sectionResult.FScr[slope][impactDir[impactCase]][wind][corner]);
+               if (sectionResult.FScr[slope][impactDir[impactCase]][wind][corner] == Float64_Max)
+               {
+                  (*pCrackingTable)(crow, col++) << symbol(infinity);
+               }
+               else
+               {
+                  (*pCrackingTable)(crow, col++) << scalar.SetValue(sectionResult.FScr[slope][impactDir[impactCase]][wind][corner]);
+               }
 
                crow++;
 
@@ -2064,7 +2032,16 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             pPara = new rptParagraph;
             *pChapter << pPara;
 
-            *pPara << THETA_FAILURE << _T(" = ") << symbol(ROOT) << _T("{") << Super2(symbol(alpha), _T("2"));
+            *pPara << THETA_FAILURE << _T(" = ") << symbol(alpha);
+            if (pResults->ThetaRollover[slope][impactDir[impactCase]][wind] < alpha)
+            {
+               *pPara << _T(" - ");
+            }
+            else
+            {
+               *pPara << _T(" + ");
+            }
+            *pPara << symbol(ROOT) << _T("{") << Super2(symbol(alpha), _T("2"));
             if (pResults->ThetaRollover[slope][impactDir[impactCase]][wind] < alpha)
             {
                *pPara << _T(" - ");
@@ -2079,7 +2056,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                *pPara << _T("(");
                if (wind == stbTypes::Right)
                {
-                  *pPara << _T("-");
+                  *pPara << _T(" - ");
                }
                *pPara << Z_WIND << _T(" ") << strCFSign.c_str() << _T(" ") << Z_CF << _T(")");
             }
@@ -2087,7 +2064,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             {
                if (wind == stbTypes::Right)
                {
-                  *pPara << _T("-");
+                  *pPara << _T(" - ");
                }
                *pPara << Z_WIND;
             }
@@ -2106,7 +2083,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                *pPara << _T("(");
                if (wind == stbTypes::Right)
                {
-                  *pPara << _T("-");
+                  *pPara << _T(" - ");
                }
                *pPara << Z_WIND << _T(" ") << strCFSign.c_str() << _T(" ") << Z_CF << _T(")");
             }
@@ -2114,47 +2091,30 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             {
                if (wind == stbTypes::Right)
                {
-                  *pPara << _T("-");
+                  *pPara << _T(" - ");
                }
                *pPara << Z_WIND;
             }
-            *pPara << _T(")") << symbol(alpha) << _T("]/(2.5") << ZO << _T(")}");
+            *pPara << _T(")") << symbol(alpha) << _T("]/(2.5") << ZO << _T(")}") << rptNewLine;
+
             if (pResults->ThetaRollover[slope][impactDir[impactCase]][wind] < alpha)
             {
-               *pPara << _T(" - ");
+               *pPara << _T("-0.4 radians ") << symbol(LTE) << _T(" ") << THETA_FAILURE << rptNewLine;
             }
             else
             {
-               *pPara << _T(" + ");
+               *pPara << THETA_FAILURE << _T(" ") << symbol(LTE) << _T(" 0.4 radians") << rptNewLine;
             }
-            *pPara << symbol(alpha) << _T(" ") << symbol(LTE) << _T(" 0.4 radians") << rptNewLine;
 
             *pPara << THETA_FAILURE << _T(" = ") << tiltAngle.SetValue(pResults->ThetaMax[slope][impactDir[impactCase]][wind]) << rptNewLine;
 
-            *pPara << Sub2(_T("FS"), _T("f")) << _T(" = Factor of Safety Against Failure = [") << K_THETA << _T("(") << THETA_FAILURE;
-            if (pResults->ThetaRollover[slope][impactDir[impactCase]][wind] < alpha)
-            {
-               *pPara << _T(" + ");
-            }
-            else
-            {
-               *pPara << _T(" - ");
-            }
-            *pPara << symbol(alpha) << _T(")]");
+            *pPara << Sub2(_T("FS"), _T("f")) << _T(" = Factor of Safety Against Failure = [") << K_THETA << _T("(") << THETA_FAILURE << _T(" - ") << symbol(alpha) << _T(")]");
             *pPara << _T("/{");
             if (0 < nImpactCases)
             {
                *pPara << _T("(IM)");
             }
-            *pPara << Sub2(_T("W"), _T("g")) << _T("[(") << ZO << THETA_FAILURE;
-            if (pResults->ThetaRollover[slope][impactDir[impactCase]][wind] < alpha)
-            {
-               *pPara << _T(" - ");
-            }
-            else
-            {
-               *pPara << _T(" + ");
-            }
+            *pPara << Sub2(_T("W"), _T("g")) << _T("[(") << ZO << THETA_FAILURE << _T(" + ");
             if (slope == stbTypes::Superelevation)
             {
                *pPara << _T("(");
@@ -2172,30 +2132,46 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                }
                *pPara << Z_WIND;
             }
-            *pPara << _T(")") << _T("(1 + 2.5") << THETA_FAILURE << _T(") + ") << YR << THETA_FAILURE;
-            if (pResults->ThetaRollover[slope][impactDir[impactCase]][wind] < alpha)
+            *pPara << _T(")") << _T("(1 + 2.5|") << THETA_FAILURE << _T("|) + ") << YR << THETA_FAILURE << _T(" + ") << EI << _T("]") << _T(" + ") << M_OT << _T("}") << rptNewLine;
+
+
+            *pPara << Sub2(_T("FS"), _T("f")) << _T(" = ");
+            if (pResults->FsFailure[slope][impactDir[impactCase]][wind] == Float64_Max)
             {
-               *pPara << _T(" - ");
+               *pPara << symbol(infinity) << rptNewLine;
             }
             else
             {
-               *pPara << _T(" + ");
+               *pPara << scalar.SetValue(pResults->FsFailure[slope][impactDir[impactCase]][wind]) << rptNewLine;
             }
-            *pPara << EI << _T("]");
-            if (pResults->ThetaRollover[slope][impactDir[impactCase]][wind] < alpha)
-            {
-               *pPara << _T(" - ");
-            }
-            else
-            {
-               *pPara << _T(" + ");
-            }
-            *pPara << M_OT << _T("}") << rptNewLine;
-
-
-            *pPara << Sub2(_T("FS"), _T("f")) << _T(" = ") << scalar.SetValue(pResults->FsFailure[slope][impactDir[impactCase]][wind]) << rptNewLine;
             *pPara << _T("If ") << Sub2(_T("FS"), _T("f")) << _T(" is less than ") << Sub2(_T("FS"), _T("cr")) << _T(" then ") << Sub2(_T("FS"), _T("f")) << _T(" = ") << Sub2(_T("FS"), _T("cr")) << _T(". ");
-            *pPara << Sub2(_T("FS"), _T("f")) << _T(" = ") << scalar.SetValue(pResults->FsFailure[slope][impactDir[impactCase]][wind]) << _T(", ") << Sub2(_T("FS"), _T("cr")) << _T(" = ") << scalar.SetValue(pResults->MinFScr[slope]) << _T(", therefore ") << Sub2(_T("FS"), _T("f")) << _T(" = ") << scalar.SetValue(pResults->AdjFsFailure[slope][impactDir[impactCase]][wind]) << rptNewLine;
+            *pPara << Sub2(_T("FS"), _T("f")) << _T(" = ");
+            if (pResults->FsFailure[slope][impactDir[impactCase]][wind] == Float64_Max)
+            {
+               *pPara << symbol(infinity);
+            }
+            else
+            {
+               *pPara << scalar.SetValue(pResults->FsFailure[slope][impactDir[impactCase]][wind]);
+            }
+            *pPara << _T(", ") << Sub2(_T("FS"), _T("cr")) << _T(" = ");
+            if (pResults->MinFScr[slope] == Float64_Max)
+            {
+               *pPara << symbol(infinity);
+            }
+            else
+            {
+               *pPara << scalar.SetValue(pResults->MinFScr[slope]);
+            }
+            *pPara << _T(", therefore ") << Sub2(_T("FS"), _T("f")) << _T(" = ");
+            if (pResults->AdjFsFailure[slope][impactDir[impactCase]][wind] == Float64_Max)
+            {
+               *pPara << symbol(infinity) << rptNewLine;
+            }
+            else
+            {
+               *pPara << scalar.SetValue(pResults->AdjFsFailure[slope][impactDir[impactCase]][wind]) << rptNewLine;
+            }
             *pPara << rptNewLine;
 
             ///////////////////////////////////////////////////////////////////////
@@ -2219,6 +2195,10 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                if (pResults->bRolloverStability[slope][impactDir[impactCase]][wind])
                {
                   *pPara << THETA_ROLLOVER << _T(" = [");
+                  if (pResults->ThetaEq[slope][impactDir[impactCase]][wind] < 0)
+                  {
+                     *pPara << symbol(alpha) << _T("-");
+                  }
                   *pPara << Sub2(_T("(IM)W"), _T("g")) << _T("(") << Z_MAX;
                   if (pResults->ThetaEq[slope][impactDir[impactCase]][wind] < 0)
                   {
@@ -2251,16 +2231,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                      }
                      *pPara << Z_MAX << symbol(alpha) << _T(")");
                   }
-                  *pPara << _T("]") << _T("/") << K_THETA;
-                  if (pResults->ThetaEq[slope][impactDir[impactCase]][wind] < 0)
-                  {
-                     *pPara << _T(" - ");
-                  }
-                  else
-                  {
-                     *pPara << _T(" + ");
-                  }
-                  *pPara << symbol(alpha) << rptNewLine;
+                  *pPara << _T("]") << _T("/") << K_THETA << _T(" + ") << symbol(alpha) << rptNewLine;
                   *pPara << THETA_ROLLOVER << _T(" = ") << tiltAngle.SetValue(pResults->ThetaRollover[slope][impactDir[impactCase]][wind]) << rptNewLine;
                   *pPara << rptNewLine;
                }
@@ -2293,26 +2264,9 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             if (pResults->bRolloverStability[slope][impactDir[impactCase]][wind])
             {
                *pPara << FS_R << _T(" = [");
-               *pPara << K_THETA << _T("(") << THETA_ROLLOVER;
-               if (pResults->ThetaRollover[slope][impactDir[impactCase]][wind] < 0)
-               {
-                  *pPara << _T(" + ");
-               }
-               else
-               {
-                  *pPara << _T(" - ");
-               }
-               *pPara << symbol(alpha) << _T(")]");
+               *pPara << K_THETA << _T("(") << THETA_ROLLOVER << _T(" - ") << symbol(alpha) << _T(")]");
                *pPara << _T("/{");
-               *pPara << Sub2(_T("(IM)W"), _T("g")) << _T("[(") << ZO << THETA_ROLLOVER;
-               if (pResults->ThetaRollover[slope][impactDir[impactCase]][wind] < 0)
-               {
-                  *pPara << _T(" - ");
-               }
-               else
-               {
-                  *pPara << _T(" + ");
-               }
+               *pPara << Sub2(_T("(IM)W"), _T("g")) << _T("[(") << ZO << THETA_ROLLOVER << _T(" + ");
 
                if (slope == stbTypes::Superelevation)
                {
@@ -2331,28 +2285,17 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                   }
                   *pPara << Z_WIND;
                }
-               *pPara << _T(")") << _T("(1 + 2.5") << THETA_ROLLOVER << _T(") ") << _T(" + ") << YR << THETA_ROLLOVER;
-               if (pResults->ThetaRollover[slope][impactDir[impactCase]][wind] < 0)
+               *pPara << _T(")") << _T("(1 + 2.5|") << THETA_ROLLOVER << _T("|) ") << _T(" + ") << YR << THETA_ROLLOVER << _T(" + ") << EI << _T("]") << _T(" + ") << M_OT << _T("}") << rptNewLine;
+
+               *pPara << FS_R << _T(" = ");
+               if (pResults->FsRollover[slope][impactDir[impactCase]][wind] == Float64_Max)
                {
-                  *pPara << _T(" - ");
+                  *pPara << symbol(infinity) << rptNewLine;
                }
                else
                {
-                  *pPara << _T(" + ");
+                  *pPara << scalar.SetValue(pResults->FsRollover[slope][impactDir[impactCase]][wind]) << rptNewLine;
                }
-               *pPara << EI << _T("]");
-
-               if (pResults->ThetaRollover[slope][impactDir[impactCase]][wind] < 0)
-               {
-                  *pPara << strCFSign;
-               }
-               else
-               {
-                  *pPara << strOppCFSign;
-               }
-               *pPara << M_OT << _T("}") << rptNewLine;
-
-               *pPara << FS_R << _T(" = ") << scalar.SetValue(pResults->FsRollover[slope][impactDir[impactCase]][wind]) << rptNewLine;
                *pPara << rptNewLine;
             }
             else
@@ -2554,17 +2497,41 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
          {
             *pPara << _T(" with ") << strTitle << rptNewLine;
          }
-         *pPara << FS_CR << _T(" Min = ") << scalar.SetValue(pResults->MinFScr[slope]) << rptNewLine;
+         *pPara << FS_CR << _T(" Min = ");
+         if (pResults->MinFScr[slope] == Float64_Max)
+         {
+            *pPara << symbol(infinity) << rptNewLine;
+         }
+         else
+         {
+            *pPara << scalar.SetValue(pResults->MinFScr[slope]) << rptNewLine;
+         }
 
          *pPara << rptNewLine;
 
          *pPara << _T("The minimum factor of safety against failure, ") << strTitle << rptNewLine;
-         *pPara << FS_F << _T(" Min = ") << scalar.SetValue(pResults->MinAdjFsFailure[slope]) << rptNewLine;
+         *pPara << FS_F << _T(" Min = ");
+         if (pResults->MinAdjFsFailure[slope] == Float64_Max)
+         {
+            *pPara << symbol(infinity) << rptNewLine;
+         }
+         else
+         {
+            *pPara << scalar.SetValue(pResults->MinAdjFsFailure[slope]) << rptNewLine;
+         }
 
          *pPara << rptNewLine;
 
          *pPara << _T("The minimum Factor of Safety against Rollover, ") << strTitle << rptNewLine;
-         *pPara << FS_R << _T(" Min = ") << scalar.SetValue(pResults->MinFsRollover[slope]) << rptNewLine;
+         *pPara << FS_R << _T(" Min = ");
+         if (pResults->MinFsRollover[slope] == Float64_Max)
+         {
+            *pPara << symbol(infinity) << rptNewLine;
+         }
+         else
+         {
+            *pPara << scalar.SetValue(pResults->MinFsRollover[slope]) << rptNewLine;
+         }
       }
    } // next slope type
 }

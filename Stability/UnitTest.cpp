@@ -85,9 +85,10 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
    matConcreteEx concrete;
    Float64 fci = 5.5;
    concrete.SetFc(::ConvertToSysUnits(fci,unitMeasure::KSI));
-   concrete.SetDensity(::ConvertToSysUnits(0.155,unitMeasure::KipPerFeet3));
+   concrete.SetDensity(::ConvertToSysUnits(0.150,unitMeasure::KipPerFeet3));
    concrete.SetDensityForWeight(::ConvertToSysUnits(0.155,unitMeasure::KipPerFeet3));
-   concrete.SetE(::ConvertToSysUnits(4765.97,unitMeasure::KSI) );
+   Float64 Eci = lrfdConcreteUtil::ModE(concrete.GetFc(), concrete.GetDensity(), false);
+   concrete.SetE(Eci);
    concrete.SetFlexureFr(::ConvertToSysUnits(0.24*sqrt(fci),unitMeasure::KSI) );
 
    stbLiftingStabilityProblem stabilityProblem;
@@ -121,13 +122,13 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
 
          for(const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind][sectionResult.MinFScrCorner[impact][wind]],1.850,0.001) );
+            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind][sectionResult.MinFScrCorner[impact][wind]],1.844,0.001) );
 
             TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[impact][wind][stbTypes::TopLeft    ],unitMeasure::KSI), 0.113,0.001) );
             TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[impact][wind][stbTypes::BottomRight],unitMeasure::KSI),-3.290,0.001) );
          }
 
-         TRY_TESTME( ::IsEqual(result.FsFailure[impact][wind],1.847,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsFailure[impact][wind],1.839,0.001) );
       }
    }
 
@@ -142,10 +143,10 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
          stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
          for(const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind][sectionResult.MinFScrCorner[impact][wind]],impact == stbTypes::ImpactDown ? 1.714 : 1.850,0.001) );
+            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind][sectionResult.MinFScrCorner[impact][wind]],impact == stbTypes::ImpactDown ? 1.708 : 1.844,0.001) );
          }
 
-         TRY_TESTME( ::IsEqual(result.FsFailure[impact][wind],impact == stbTypes::ImpactDown ? 1.600 : 1.847,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsFailure[impact][wind],impact == stbTypes::ImpactDown ? 1.593 : 1.839,0.001) );
       }
    }
 
@@ -161,12 +162,12 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
          stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
          for( const auto& sectionResult : result.vSectionResults)
          {
-            stbTypes::Corner corner = wind == stbTypes::Left ? stbTypes::TopLeft : stbTypes::TopRight;
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind][corner],wind == stbTypes::Left ? 2.556 : 1.197/*1.581*/,0.001) );
+            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][stbTypes::TopLeft],  wind == stbTypes::Left ? 2.541 : 1.578, 0.001));
+            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][stbTypes::TopRight], Float64_Max, 0.001));
          }
 
-         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], wind == stbTypes::Left ? 2.253/*2.516*/ : 1.665/*1.546*/, 0.001));
-         TRY_TESTME(::IsEqual(result.AdjFsFailure[impact][wind], wind == stbTypes::Left ? 2.556 : 1.665/*1.546*/, 0.001));
+         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], wind == stbTypes::Left ? 2.241 : 1.658, 0.001));
+         TRY_TESTME(::IsEqual(result.AdjFsFailure[impact][wind], wind == stbTypes::Left ? 2.541 : 1.658, 0.001));
       }
    }
 
@@ -181,12 +182,12 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
          stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
          for(const auto& sectionResult : result.vSectionResults)
          {
-            stbTypes::Corner corner = wind == stbTypes::Left ? stbTypes::TopLeft : stbTypes::TopRight;
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind][corner],wind == stbTypes::Left ? 2.413 : 1.345/*1.633*/,0.001) );
+            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][stbTypes::TopLeft], wind == stbTypes::Left ? 2.398 : 1.628, 0.001));
+            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][stbTypes::TopRight], Float64_Max, 0.001));
          }
 
-         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], wind == stbTypes::Left ? 2.046/*2.270*/ : 1.574/*1.471*/, 0.001));
-         TRY_TESTME(::IsEqual(result.AdjFsFailure[impact][wind], wind == stbTypes::Left ? 2.413/*2.270*/ : 1.574/*1.471*/, 0.001));
+         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], wind == stbTypes::Left ? 2.033 : 1.568, 0.001));
+         TRY_TESTME(::IsEqual(result.AdjFsFailure[impact][wind], wind == stbTypes::Left ? 2.398 : 1.628, 0.001));
       }
    }
 
@@ -216,9 +217,10 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
    matConcreteEx concrete;
    Float64 fc = 7.0;
    concrete.SetFc(::ConvertToSysUnits(fc,unitMeasure::KSI));
-   concrete.SetDensity(::ConvertToSysUnits(0.155,unitMeasure::KipPerFeet3));
+   concrete.SetDensity(::ConvertToSysUnits(0.150,unitMeasure::KipPerFeet3));
    concrete.SetDensityForWeight(::ConvertToSysUnits(0.155,unitMeasure::KipPerFeet3));
-   concrete.SetE( ::ConvertToSysUnits(5164.914,unitMeasure::KSI) );
+   Float64 Ec = lrfdConcreteUtil::ModE(concrete.GetFc(), concrete.GetDensity(), false);
+   concrete.SetE(Ec);
    concrete.SetFlexureFr( ::ConvertToSysUnits(0.24*sqrt(fc),unitMeasure::KSI) );
    stabilityProblem.SetConcrete(concrete);
 
@@ -258,14 +260,14 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
          stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
          for(const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[stbTypes::Superelevation][impact][wind][stbTypes::TopLeft],1.429,0.001) );
+            TRY_TESTME( ::IsEqual(sectionResult.FScr[stbTypes::Superelevation][impact][wind][stbTypes::TopLeft],1.428,0.001) );
 
             TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::TopLeft    ],unitMeasure::KSI), 0.466,0.001) );
             TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::BottomRight],unitMeasure::KSI),-3.486,0.001) );
          }
 
-         TRY_TESTME( ::IsEqual(result.FsFailure[stbTypes::Superelevation][impact][wind],2.828/*2.857*/,0.001) );
-         TRY_TESTME( ::IsEqual(result.FsRollover[stbTypes::Superelevation][impact][wind],1.995/*1.983*/,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsFailure[stbTypes::Superelevation][impact][wind],2.825,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsRollover[stbTypes::Superelevation][impact][wind],1.994,0.001) );
       }
    }
 
@@ -290,8 +292,8 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
             TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::BottomRight],unitMeasure::KSI),-3.598,0.001) );
          }
 
-         TRY_TESTME( ::IsEqual(result.FsFailure[stbTypes::Superelevation][impact][wind],2.790/*2.824*/,0.001) );
-         TRY_TESTME( ::IsEqual(result.FsRollover[stbTypes::Superelevation][impact][wind],1.836/*1.868*/,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsFailure[stbTypes::Superelevation][impact][wind],2.787,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsRollover[stbTypes::Superelevation][impact][wind],1.835,0.001) );
       }
    }
    TESTME_EPILOG("PCIHaulingExamples");

@@ -2505,7 +2505,14 @@ HRESULT CStrandGridModel::GetTemporaryStrandProfile(StrandIndexType strandIdx,/*
    Float64 precamber;
    m_pSegment->get_Precamber(&precamber);
 
-   if (m_TemporaryStrandProfileType == FollowGirder && !IsZero(precamber))
+   Float64 tft = 0;
+   CComQIPtr<IThickenedFlangeSegment> thickenedSegment(m_pSegment);
+   if (thickenedSegment)
+   {
+      thickenedSegment->get_FlangeThickening(&tft);
+   }
+
+   if (m_TemporaryStrandProfileType == FollowGirder && (!IsZero(precamber) || !IsZero(tft)))
    {
       int nPoints = 11;
       for (int i = 0; i < nPoints; i++)
@@ -2533,6 +2540,12 @@ HRESULT CStrandGridModel::GetTemporaryStrandProfile(StrandIndexType strandIdx,/*
       {
          m_pSegment->ComputePrecamber(x, &precamber);
          y += precamber;
+
+         if (thickenedSegment)
+         {
+            thickenedSegment->get_TopFlangeThickening(x, &tft);
+            y += tft;
+         }
       }
 
       Float64 Yadj = GetGirderDepthAdjustment(x, 0, Ls);
