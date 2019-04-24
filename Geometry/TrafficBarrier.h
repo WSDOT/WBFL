@@ -103,8 +103,8 @@ private:
    void MakeDirty() {m_Dirty = true;}
 
    CComPtr<IPolyShape> m_pShape;
-   void GetLocatorPoint(LocatorPointType lp,Float64* x,Float64* y);
-   void UpdateShape();
+   HRESULT GetLocatorPoint(LocatorPointType lp,Float64* px,Float64* py);
+   HRESULT UpdateShape();
 
 // ISupportErrorInfo
 public:
