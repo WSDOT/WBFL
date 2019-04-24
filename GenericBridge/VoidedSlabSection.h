@@ -71,8 +71,9 @@ private:
    CComPtr<IVoidedSlab> m_Beam;
    CComPtr<IShape> m_Shape;
    CComPtr<IXYPosition> m_Position;
+   Float64 m_Rotation;
 
-   bool ValidateWebIndex(CollectionIndexType idx);
+   bool ValidateWebIndex(WebIndexType idx);
    void GetWebs(Float64* pIntWeb,Float64* pExtWeb);
 
 // ISupportsErrorInfo

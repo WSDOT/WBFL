@@ -70,6 +70,7 @@ private:
    CComPtr<IDeckedSlabBeam> m_Beam;
    CComPtr<IShape> m_Shape;
    CComPtr<IXYPosition> m_Position;
+   Float64 m_Rotation;
 
 
 // ISupportsErrorInfo

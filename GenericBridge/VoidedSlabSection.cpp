@@ -48,6 +48,8 @@ HRESULT CVoidedSlabSection::FinalConstruct()
    CComQIPtr<IShape> shape(m_Beam);
    m_CompositeShape->AddShape(shape,VARIANT_FALSE);
 
+   m_Rotation = 0;
+
    return S_OK;
 }
 
@@ -132,7 +134,37 @@ STDMETHODIMP CVoidedSlabSection::get_Beam(IVoidedSlab** beam)
 // IPrecastGirderSection implementation
 STDMETHODIMP CVoidedSlabSection::get_WorkPoint(IPoint2d** ppWorkPoint)
 {
-   return get_LocatorPoint(lpTopCenter, ppWorkPoint);
+   // work point is at top center
+   // if the section has been rotated, the top center locator point is
+   // the top center of the bounding box of the rotated shape. this is
+   // not the work point
+   if (IsZero(m_Rotation))
+   {
+      // don't do extra work if there isn't rotation
+      get_LocatorPoint(lpTopCenter, ppWorkPoint);
+   }
+   else
+   {
+      CComQIPtr<IXYPosition> position(m_Beam);
+      CComPtr<IPoint2d> pntHookPoint; // hook point is at bottom center of shape (not bottom center of bounding box)
+      position->get_LocatorPoint(lpHookPoint, &pntHookPoint);
+
+      // compute the location of the top center point without rotation
+      // this is just the hook point offset vertically by the height of the beam shape
+      Float64 H;
+      get_NominalHeight(&H);
+      CComPtr<IPoint2d> pntUnRotatedTopCenter;
+      pntHookPoint->Clone(&pntUnRotatedTopCenter);
+      pntUnRotatedTopCenter->Offset(0, H);
+
+      // the unrotated top center is also the unrotated work point
+      pntUnRotatedTopCenter->Clone(ppWorkPoint);
+
+      // apply the rotation to the work point
+      (*ppWorkPoint)->RotateEx(pntHookPoint, m_Rotation);
+   }
+
+   return S_OK;
 }
 
 STDMETHODIMP CVoidedSlabSection::get_WebCount(WebIndexType* nWebs)
@@ -567,6 +599,8 @@ STDMETHODIMP CVoidedSlabSection::Clone(IShape** pClone)
    CComObject<CVoidedSlabSection>* clone;
    CComObject<CVoidedSlabSection>::CreateInstance(&clone);
 
+   clone->m_Rotation = m_Rotation;
+
    CComPtr<IVoidedSlabSection> voided_slab_section = clone;
    voided_slab_section->put_Beam(m_Beam);
 
@@ -695,10 +729,12 @@ STDMETHODIMP CVoidedSlabSection::MoveEx(IPoint2d* pFrom,IPoint2d* pTo)
 
 STDMETHODIMP CVoidedSlabSection::RotateEx(IPoint2d* pPoint,Float64 angle)
 {
+   m_Rotation += angle;
    return m_Position->RotateEx(pPoint,angle);
 }
 
 STDMETHODIMP CVoidedSlabSection::Rotate(Float64 cx,Float64 cy,Float64 angle)
 {
+   m_Rotation += angle;
    return m_Position->Rotate(cx,cy,angle);
 }
