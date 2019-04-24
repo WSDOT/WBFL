@@ -124,17 +124,14 @@ STDMETHODIMP CCompositeShape::FurthestDistance(ILine2d* line,Float64 *pVal)
 
    Float64 distance = -DBL_MAX;
 
-   ContainerIteratorType iter;
-   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
+   for(auto& value : m_coll)
    {
-      Float64 this_distance;
-
-      StoredType& value = *iter;
       CComPtr<ICompositeShapeItem> item(value.second);
 
       CComPtr<IShape> shape;
       item->get_Shape(&shape);
 
+      Float64 this_distance;
       shape->FurthestDistance(line,&this_distance);
       distance = Max(distance,this_distance);
    }
@@ -183,10 +180,8 @@ STDMETHODIMP CCompositeShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResu
 {
    VARIANT_BOOL bIsInSolid = VARIANT_FALSE; // Point has to be in a solid shape to have a chance.
                                             // If it is in a void, it's all over.
-   ContainerIteratorType iter;
-   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
+   for (auto& value : m_coll)
    {
-      StoredType& value = *iter;
       CComPtr<ICompositeShapeItem> item(value.second);
 
       VARIANT_BOOL isVoid;
@@ -228,8 +223,9 @@ STDMETHODIMP CCompositeShape::get_BoundingBox(IRect2d* *pVal)
    CComPtr<IRect2d> totalBox;
    totalBox.CoCreateInstance(CLSID_Rect2d);
 
-   ContainerIteratorType iter;
-   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
+   ContainerIteratorType iter = m_coll.begin();
+   ContainerIteratorType end = m_coll.end();
+   for (; iter != end; iter++)
    {
       StoredType& value = *iter;
       CComPtr<ICompositeShapeItem> item(value.second);
@@ -264,10 +260,8 @@ STDMETHODIMP CCompositeShape::get_ShapeProperties(IShapeProperties* *pVal)
 
    CComPtr<IShapeProperties> shapeProps;
 
-   ContainerIteratorType iter;
-   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
+   for (auto& value : m_coll)
    {
-      StoredType& value = *iter;
       CComPtr<ICompositeShapeItem> item(value.second);
 
       VARIANT_BOOL bVoid;
@@ -342,10 +336,8 @@ STDMETHODIMP CCompositeShape::ClipIn(IRect2d* rect,IShape** Shape)
    CComObject<CCompositeShape>* clipShape;
    CComObject<CCompositeShape>::CreateInstance(&clipShape);
 
-   ContainerIteratorType iter;
-   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
+   for (auto& value : m_coll)
    {
-      StoredType& value = *iter;
       CComPtr<ICompositeShapeItem> item(value.second);
 
       CComPtr<IShape> shape;
@@ -377,10 +369,8 @@ STDMETHODIMP CCompositeShape::ClipWithLine(ILine2d* line,IShape** Shape)
    CComObject<CCompositeShape>* clipShape;
    CComObject<CCompositeShape>::CreateInstance(&clipShape);
 
-   ContainerIteratorType iter;
-   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
+   for (auto& value : m_coll)
    {
-      StoredType& value = *iter;
       CComPtr<ICompositeShapeItem> item(value.second);
 
       CComPtr<IShape> shape;
@@ -411,10 +401,8 @@ STDMETHODIMP CCompositeShape::Clone(IShape** clone)
    CComObject<CCompositeShape>* cloneShape;
    CComObject<CCompositeShape>::CreateInstance(&cloneShape);
 
-   ContainerIteratorType iter;
-   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
+   for (auto& value : m_coll)
    {
-      StoredType& value = *iter;
       CComPtr<ICompositeShapeItem> item(value.second);
 
       CComPtr<IShape> shape;
@@ -439,10 +427,8 @@ STDMETHODIMP CCompositeShape::Clone(IShape** clone)
 //
 STDMETHODIMP CCompositeShape::Offset(Float64 dx,Float64 dy)
 {
-   ContainerIteratorType iter;
-   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
+   for (auto& value : m_coll)
    {
-      StoredType& value = *iter;
       CComPtr<ICompositeShapeItem> item(value.second);
 
       CComPtr<IShape> shape;
@@ -459,10 +445,8 @@ STDMETHODIMP CCompositeShape::OffsetEx(ISize2d* pSize)
 {
    CHECK_IN(pSize);
 
-   ContainerIteratorType iter;
-   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
+   for (auto& value : m_coll)
    {
-      StoredType& value = *iter;
       CComPtr<ICompositeShapeItem> item(value.second);
 
       CComPtr<IShape> shape;
@@ -577,10 +561,8 @@ STDMETHODIMP CCompositeShape::MoveEx(IPoint2d* pFrom, IPoint2d* pTo)
    CHECK_IN(pFrom);
    CHECK_IN(pTo);
 
-   ContainerIteratorType iter;
-   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
+   for (auto& value : m_coll)
    {
-      StoredType& value = *iter;
       CComPtr<ICompositeShapeItem> item(value.second);
 
       CComPtr<IShape> shape;
@@ -598,10 +580,8 @@ STDMETHODIMP CCompositeShape::RotateEx(IPoint2d* pPoint, Float64 angle)
 {
    CHECK_IN(pPoint);
 
-   ContainerIteratorType iter;
-   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
+   for (auto& value : m_coll)
    {
-      StoredType& value = *iter;
       CComPtr<ICompositeShapeItem> item(value.second);
 
       CComPtr<IShape> shape;
@@ -617,10 +597,8 @@ STDMETHODIMP CCompositeShape::RotateEx(IPoint2d* pPoint, Float64 angle)
 
 STDMETHODIMP CCompositeShape::Rotate(Float64 cx, Float64 cy, Float64 angle)
 {
-   ContainerIteratorType iter;
-   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
+   for (auto& value : m_coll)
    {
-      StoredType& value = *iter;
       CComPtr<ICompositeShapeItem> item(value.second);
 
       CComPtr<IShape> shape;
