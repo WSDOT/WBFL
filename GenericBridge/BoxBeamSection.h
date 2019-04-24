@@ -71,8 +71,9 @@ private:
    CComPtr<IShape> m_Shape;
    CComPtr<IXYPosition> m_Position;
    CComPtr<ICompositeShape> m_CompositeShape;
+   Float64 m_Rotation;
 
-   bool ValidateWebIndex(CollectionIndexType idx);
+   bool ValidateWebIndex(WebIndexType idx);
    void GetSplittingZone(Float64* pH,SplittingDirection* pSD);
 
 // ISupportsErrorInfo
