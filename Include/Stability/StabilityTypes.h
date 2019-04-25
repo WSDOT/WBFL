@@ -27,11 +27,17 @@
 
 typedef struct stbTypes
 {
-   typedef enum Face
+   typedef enum GirderFace
    {
       Top,
       Bottom
-   } Face;
+   } GirderFace;
+
+   typedef enum GirderSide
+   {
+      Left,
+      Right
+   } GirderSide;
 
    typedef enum ImpactDirection
    {
@@ -47,11 +53,7 @@ typedef struct stbTypes
       Both         // impact applied to both conditions
    } HaulingImpact;
 
-   typedef enum WindDirection
-   {
-      Left,
-      Right
-   } WindDirection;
+   typedef GirderSide WindDirection;
 
    typedef enum WindType
    {
@@ -108,7 +110,12 @@ typedef struct stbTypes
 
 } stbTypes;
 
-inline stbTypes::Face GetFace(stbTypes::Corner corner)
+inline stbTypes::GirderFace GetFace(stbTypes::Corner corner)
 {
    return (corner == stbTypes::TopLeft || corner == stbTypes::TopRight ? stbTypes::Top : stbTypes::Bottom);
+}
+
+inline stbTypes::GirderSide GetSide(stbTypes::Corner corner)
+{
+   return (corner == stbTypes::TopLeft || corner == stbTypes::BottomLeft? stbTypes::Left : stbTypes::Right);
 }
