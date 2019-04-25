@@ -2567,29 +2567,59 @@ HRESULT CSectionCutTool::CreateBarrierShape(DirectionType side,IGenericBridge* b
    CComPtr<IShape> shape;
    barrier_shape->Clone(&shape);
 
-   // rotate shape to match deck slope
+   // Rotate shape to match average deck slope 
+   // remember that this is not necessarely the slope at the deck edge. we can have multiple crown points
    CComPtr<IStation> deckEdgeStation;
    Float64 deckEdgeOffset;
    alignment->Offset(pntDeckEdge, &deckEdgeStation, &deckEdgeOffset);
-   Float64 slope;
-   profile->Slope(CComVariant(deckEdgeStation), deckEdgeOffset, &slope);
-   //Float64 dx;
-   //CComPtr<IDirection> dir;
-   //cogoUtil::Inverse(pntAlignment, pntDeckEdge, &dx, &dir);
-   //if ((side == qcbLeft && dirCutLine->IsEqual(dir) == S_FALSE) || (side == qcbRight && dirCutLine->IsEqual(dir) == S_OK))
-   //{
-   //   dx *= -1;
-   //}
 
-   //Float64 alignment_elev;
-   //profile->Elevation(CComVariant(objStation),0.0,&alignment_elev);
-   //Float64 dy = (side == qcbLeft ? alignment_elev - deck_edge_elev : deck_edge_elev - alignment_elev);
-   //Float64 slope = dy/dx;
-   Float64 angle = atan(slope);
-
+   // want distance from deck edge to interior edge of barrier
    CComQIPtr<IXYPosition> position(shape);
    CComPtr<IPoint2d> hook_point;
    position->get_LocatorPoint(lpHookPoint,&hook_point);
+
+   Float64 xhook;
+   hook_point->get_X(&xhook);
+
+   Float64 deltaOffset;
+   if (side == qcbLeft)
+   {
+      CComPtr<IPoint2d> int_point;
+      position->get_LocatorPoint(lpBottomRight, &int_point);
+
+      Float64 xedge;
+      int_point->get_X(&xedge);
+
+      deltaOffset = xedge - xhook;
+   }
+   else
+   {
+      CComPtr<IPoint2d> int_point;
+      position->get_LocatorPoint(lpBottomLeft, &int_point);
+
+      Float64 xedge;
+      int_point->get_X(&xedge);
+
+      deltaOffset = xedge - xhook;
+   }
+
+   Float64 slope;
+   if (IsZero(deltaOffset))
+   {
+      // zero width barrier
+      profile->Slope(CComVariant(deckEdgeStation), deckEdgeOffset, &slope);
+   }
+   else
+   {
+      Float64 edgeElevation, interiorElevation;
+      profile->Elevation(CComVariant(objStation), deckEdgeOffset, &edgeElevation);
+      profile->Elevation(CComVariant(objStation), deckEdgeOffset + deltaOffset, &interiorElevation);
+
+      slope = (interiorElevation - edgeElevation) / deltaOffset;
+   }
+
+   Float64 angle = atan(slope);
+
    position->RotateEx(hook_point,angle);
 
    // move shape into bridge section coordinates

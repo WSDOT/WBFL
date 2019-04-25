@@ -192,6 +192,27 @@ STDMETHODIMP CSurface::get_SurfaceTemplates(ISurfaceTemplateCollection** ppTempl
    return S_OK;
 }
 
+STDMETHODIMP CSurface::get_SegmentCount(IndexType* pcnt)
+{
+   CHECK_RETVAL(pcnt);
+   // all templates in collection must have same number of points.
+   CollectionIndexType stcnt;
+   m_SurfaceTemplates->get_Count(&stcnt);
+   if (stcnt > 0)
+   {
+      CComPtr<ISurfaceTemplate> pst;
+      m_SurfaceTemplates->get_Item(0, &pst);
+      return pst->get_Count(pcnt);
+   }
+   else
+   {
+      *pcnt = 0;
+   }
+
+   return S_OK;
+}
+
+
 STDMETHODIMP CSurface::put_AlignmentPoint(IndexType pntIdx)
 {
    if ( pntIdx == INVALID_INDEX )
