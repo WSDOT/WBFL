@@ -110,51 +110,58 @@ HRESULT CBoxBeam::GetLocatorPoint(LocatorPointType lp,Float64* px,Float64* py)
 
    CComPtr<IPoint2d> pPoint;
 
-   CComQIPtr<IShape> pShape(m_pShape);
-   CComPtr<IRect2d> pBox;
-   pShape->get_BoundingBox(&pBox);
-
-   switch(lp)
+   if (lp == lpHookPoint)
    {
-   case lpTopLeft:
-      pBox->get_TopLeft(&pPoint);
-      break;
+      pPoint = m_pHookPoint;
+   }
+   else
+   {
+      CComQIPtr<IShape> pShape(m_pShape);
+      CComPtr<IRect2d> pBox;
+      pShape->get_BoundingBox(&pBox);
 
-   case lpTopCenter:
-      pBox->get_TopCenter(&pPoint);
-      break;
+      switch (lp)
+      {
+      case lpTopLeft:
+         pBox->get_TopLeft(&pPoint);
+         break;
 
-   case lpTopRight:
-      pBox->get_TopRight(&pPoint);
-      break;
+      case lpTopCenter:
+         pBox->get_TopCenter(&pPoint);
+         break;
 
-   case lpCenterLeft:
-      pBox->get_CenterLeft(&pPoint);
-      break;
+      case lpTopRight:
+         pBox->get_TopRight(&pPoint);
+         break;
 
-   case lpCenterCenter:
-      pBox->get_CenterCenter(&pPoint);
-      break;
+      case lpCenterLeft:
+         pBox->get_CenterLeft(&pPoint);
+         break;
 
-   case lpCenterRight:
-      pBox->get_CenterRight(&pPoint);
-      break;
+      case lpCenterCenter:
+         pBox->get_CenterCenter(&pPoint);
+         break;
 
-   case lpBottomLeft: 
-      pBox->get_BottomLeft(&pPoint);
-      break;
+      case lpCenterRight:
+         pBox->get_CenterRight(&pPoint);
+         break;
 
-   case lpBottomCenter: 
-   case lpHookPoint:
-      pBox->get_BottomCenter(&pPoint);
-      break;
+      case lpBottomLeft:
+         pBox->get_BottomLeft(&pPoint);
+         break;
 
-   case lpBottomRight:
-      pBox->get_BottomRight(&pPoint);
-      break;
+      case lpBottomCenter:
+         pBox->get_BottomCenter(&pPoint);
+         break;
 
-   default:
-      ATLASSERT(false); // Should never get here
+      case lpBottomRight:
+         pBox->get_BottomRight(&pPoint);
+         break;
+
+      case lpHookPoint:
+      default:
+         ATLASSERT(false); // Should never get here
+      }
    }
 
    GetCoordinates(pPoint,px,py);

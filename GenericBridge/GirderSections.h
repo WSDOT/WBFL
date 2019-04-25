@@ -119,15 +119,24 @@ public:
 // IGirderSection
    STDMETHODIMP get_WorkPoint(IPoint2d** ppWorkPoint)
    {
-      HRESULT hr = get_LocatorPoint(lpTopCenter, ppWorkPoint);
-      if (FAILED(hr))
-      {
-         return hr;
-      }
+      CComQIPtr<IXYPosition> position(m_Beam);
+      CComPtr<IPoint2d> pntHookPoint; // hook point is at bottom center of shape (not bottom center of bounding box)
+      position->get_LocatorPoint(lpHookPoint, &pntHookPoint);
 
-      Float64 wLeft, wRight;
-      GetTopWidth(&wLeft, &wRight);
-      (*ppWorkPoint)->Offset(0.5*(wLeft - wRight), 0);
+      // compute the location of the top center point without rotation
+      // this is just the hook point offset vertically by the height of the beam shape
+      Float64 Hmin, H, Hmax;
+      GetHeight(&Hmin, &H, &Hmax);
+
+      CComPtr<IPoint2d> pntUnRotatedTopCenter;
+      pntHookPoint->Clone(&pntUnRotatedTopCenter);
+      pntUnRotatedTopCenter->Offset(0, H);
+
+      // the unrotated top center is also the unrotated work point
+      pntUnRotatedTopCenter->Clone(ppWorkPoint);
+
+      // apply the rotation to the work point
+      (*ppWorkPoint)->RotateEx(pntHookPoint, m_Rotation);
 
       return S_OK;
    }

@@ -90,68 +90,77 @@ void CTrafficBarrier::FinalRelease()
    ATLASSERT(SUCCEEDED(hr));
 }
 
-void CTrafficBarrier::GetLocatorPoint(LocatorPointType lp,Float64* x,Float64* y)
+HRESULT CTrafficBarrier::GetLocatorPoint(LocatorPointType lp,Float64* px,Float64* py)
 {
-   ATLASSERT( x != 0 && y != 0 );
+   ATLASSERT(px != nullptr && py != nullptr);
 
-   UpdateShape();
+   HRESULT hr;
+   hr = UpdateShape();
+   if (FAILED(hr))
+      return hr;
 
-   CComPtr<IRect2d> pBox;
-   CComPtr<IPoint2d> pnt;
+   CComPtr<IPoint2d> pPoint;
 
-   get_BoundingBox(&pBox);
-
-   switch(lp)
+   if (lp == lpHookPoint)
    {
-   case lpTopLeft:
-        pBox->get_TopLeft(&pnt);
-        break;
+      pPoint = m_pHookPoint;
+   }
+   else
+   {
+      CComQIPtr<IShape> pShape(m_pShape);
+      CComPtr<IRect2d> pBox;
+      pShape->get_BoundingBox(&pBox);
 
-   case lpTopCenter:
-        pBox->get_TopCenter(&pnt);
-        break;
+      switch (lp)
+      {
+      case lpTopLeft:
+         pBox->get_TopLeft(&pPoint);
+         break;
 
-   case lpTopRight:
-        pBox->get_TopRight(&pnt);
-        break;
+      case lpTopCenter:
+         pBox->get_TopCenter(&pPoint);
+         break;
 
-   case lpCenterLeft:
-        pBox->get_CenterLeft(&pnt);
-        break;
+      case lpTopRight:
+         pBox->get_TopRight(&pPoint);
+         break;
 
-   case lpCenterCenter:
-        pBox->get_CenterCenter(&pnt);
-        break;
+      case lpCenterLeft:
+         pBox->get_CenterLeft(&pPoint);
+         break;
 
-   case lpCenterRight:
-        pBox->get_CenterRight(&pnt);
-        break;
+      case lpCenterCenter:
+         pBox->get_CenterCenter(&pPoint);
+         break;
 
-   case lpBottomLeft:
-        pBox->get_BottomLeft(&pnt);
-        break;
+      case lpCenterRight:
+         pBox->get_CenterRight(&pPoint);
+         break;
 
-   case lpBottomCenter:
-        pBox->get_BottomCenter(&pnt);
-        break;
+      case lpBottomLeft:
+         pBox->get_BottomLeft(&pPoint);
+         break;
 
-   case lpBottomRight:
-        pBox->get_BottomRight(&pnt);
-        break;
+      case lpBottomCenter:
+         pBox->get_BottomCenter(&pPoint);
+         break;
 
-   case lpHookPoint:
-        pnt = m_pHookPoint;
-        break;
+      case lpBottomRight:
+         pBox->get_BottomRight(&pPoint);
+         break;
 
-   default:
-      ATLASSERT( false ); // Should never get here!
-      break;
+      case lpHookPoint:
+      default:
+         ATLASSERT(false); // Should never get here
+      }
    }
 
-   GetCoordinates(pnt,x,y);
+   GetCoordinates(pPoint, px, py);
+
+   return S_OK;
 }
 
-void CTrafficBarrier::UpdateShape()
+HRESULT CTrafficBarrier::UpdateShape()
 {
    if (m_Dirty)
    {
@@ -207,6 +216,8 @@ void CTrafficBarrier::UpdateShape()
 
       m_Dirty = false;
    }
+
+   return S_OK;
 }
 
 STDMETHODIMP CTrafficBarrier::get_X1(Float64 *pVal)
