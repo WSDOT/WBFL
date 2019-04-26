@@ -61,6 +61,8 @@ public:
       m_CompositeShape.QueryInterface(&m_Shape);
       m_CompositeShape.QueryInterface(&m_Position);
 
+      m_Rotation = 0;
+
       return S_OK;
    }
 
@@ -84,6 +86,7 @@ protected:
    CComPtr<ICompositeShape> m_CompositeShape;
    CComPtr<IShape> m_Shape;
    CComPtr<IXYPosition> m_Position;
+   Float64 m_Rotation;
 
 public:
    STDMETHODIMP InterfaceSupportsErrorInfo(REFIID riid)
@@ -137,7 +140,38 @@ public:
    // IGirderSection implementation
    STDMETHODIMP get_WorkPoint(IPoint2d** ppWorkPoint) override
    {
-      return get_LocatorPoint(lpTopCenter, ppWorkPoint);
+      // work point is at top center
+      // if the section has been rotated, the top center locator point is
+      // the top center of the bounding box of the rotated shape. this is
+      // not the work point
+      if (IsZero(m_Rotation))
+      {
+         // don't do extra work if there isn't rotation
+         get_LocatorPoint(lpTopCenter, ppWorkPoint);
+      }
+      else
+      {
+         CComQIPtr<IXYPosition> position(m_Beam);
+         CComPtr<IPoint2d> pntHookPoint; // hook point is at bottom center of shape (not bottom center of bounding box)
+         position->get_LocatorPoint(lpHookPoint, &pntHookPoint);
+
+         // compute the location of the top center point without rotation
+         // this is just the hook point offset vertically by the height of the beam shape
+         Float64 H;
+         get_NominalHeight(&H);
+
+         CComPtr<IPoint2d> pntUnRotatedTopCenter;
+         pntHookPoint->Clone(&pntUnRotatedTopCenter);
+         pntUnRotatedTopCenter->Offset(0, H);
+
+         // the unrotated top center is also the unrotated work point
+         pntUnRotatedTopCenter->Clone(ppWorkPoint);
+
+         // apply the rotation to the work point
+         (*ppWorkPoint)->RotateEx(pntHookPoint, m_Rotation);
+      }
+
+      return S_OK;
    }
 
    STDMETHODIMP get_WebCount(WebIndexType* nWebs) override
@@ -397,6 +431,8 @@ public:
       CComQIPtr<_IBEAM_> beam(s);
       clone->m_Beam = beam;
 
+      clone->m_Rotation = m_Rotation;
+
 
       (*pClone) = clone;
       (*pClone)->AddRef();
@@ -502,11 +538,13 @@ public:
 
    STDMETHODIMP RotateEx(IPoint2d* pPoint,Float64 angle) override
    {
+      m_Rotation += angle;
       return m_Position->RotateEx(pPoint,angle);
    }
 
    STDMETHODIMP Rotate(Float64 cx,Float64 cy,Float64 angle) override
    {
+      m_Rotation += angle;
       return m_Position->Rotate(cx,cy,angle);
    }
 

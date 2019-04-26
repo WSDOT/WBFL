@@ -71,6 +71,7 @@ private:
    CComPtr<IShape> m_Shape;
    CComPtr<IXYPosition> m_Position;
    CComPtr<ICompositeShape> m_CompositeShape;
+   Float64 m_Rotation;
 
    void GetSplittingZone(Float64* pH,SplittingDirection* pSD);
 
