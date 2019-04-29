@@ -58,7 +58,7 @@ const stbHaulingCriteria& stbHaulingCheckArtifact::GetCriteria() const
 void stbHaulingCheckArtifact::GetControllingTensionCase(stbTypes::HaulingSlope slope,const stbHaulingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const
 {
    Float64 Fallow;
-   Float64 CD = DBL_MAX;
+   Float64 CD = Float64_Max;
    for ( int i = 0; i < 3; i++ )
    {
       stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
@@ -104,7 +104,7 @@ void stbHaulingCheckArtifact::GetControllingTensionCase(stbTypes::HaulingSlope s
 void stbHaulingCheckArtifact::GetControllingGlobalCompressionCase(stbTypes::HaulingSlope slope,const stbHaulingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const
 {
    Float64 fAllow = m_Criteria.AllowableCompression_GlobalStress;
-   Float64 CD = DBL_MAX;
+   Float64 CD = Float64_Max;
    for ( int i = 0; i < 3; i++ )
    {
       stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
@@ -137,7 +137,7 @@ void stbHaulingCheckArtifact::GetControllingGlobalCompressionCase(stbTypes::Haul
 void stbHaulingCheckArtifact::GetControllingPeakCompressionCase(stbTypes::HaulingSlope slope, const stbHaulingSectionResult& sectionResult, stbTypes::ImpactDirection* pImpact, stbTypes::WindDirection* pWind, stbTypes::Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const
 {
    Float64 fAllow = m_Criteria.AllowableCompression_PeakStress;
-   Float64 CD = DBL_MAX;
+   Float64 CD = Float64_Max;
    for (int i = 0; i < 3; i++)
    {
       stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;

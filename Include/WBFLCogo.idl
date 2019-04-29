@@ -1475,6 +1475,8 @@ library WBFLCogo
       [propget, helpstring("property ID")] HRESULT ID([out,retval]CogoObjectID* id);
       [propput, helpstring("property ID")] HRESULT ID([in]CogoObjectID id);
       [propget,helpstring("property SurfaceTemplates")] HRESULT SurfaceTemplates([out,retval]ISurfaceTemplateCollection** ppTemplates);
+      // all surface templates in a surface must have the same number segments
+      [propget,helpstring("property SegmentCount")] HRESULT SegmentCount([out,retval]IndexType* pcnt);
       [propput,helpstring("property AlignmentPoint")] HRESULT AlignmentPoint([in]IndexType pntIdx);
       [propget,helpstring("property AlignmentPoint")] HRESULT AlignmentPoint([out,retval]IndexType* pntIdx);
       [propput,helpstring("property ProfileGradePoint")] HRESULT ProfileGradePoint([in]IndexType pntIdx);

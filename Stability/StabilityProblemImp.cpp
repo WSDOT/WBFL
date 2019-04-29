@@ -1074,7 +1074,7 @@ stbHaulingStabilityProblem::stbHaulingStabilityProblem()
    m_CrownSlope = 0;
    
    m_Velocity = 0;
-   m_Radius = DBL_MAX;
+   m_Radius = Float64_Max;
    m_CFType = stbTypes::Favorable;
 }
 
