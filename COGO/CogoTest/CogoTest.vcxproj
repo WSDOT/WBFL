@@ -844,6 +844,7 @@
     <ClCompile Include="TestProject.cpp" />
     <ClCompile Include="TestStation.cpp" />
     <ClCompile Include="TestStationEquationCollection.cpp" />
+    <ClCompile Include="TestSuperelevation.cpp" />
     <ClCompile Include="TestTangent.cpp" />
     <ClCompile Include="TestVertCurve.cpp" />
     <ClCompile Include="TestVertCurveCollection.cpp" />
@@ -881,6 +882,7 @@
     <ClInclude Include="TestProject.h" />
     <ClInclude Include="TestStation.h" />
     <ClInclude Include="TestStationEquationCollection.h" />
+    <ClInclude Include="TestSuperelevation.h" />
     <ClInclude Include="TestTangent.h" />
     <ClInclude Include="TestVertCurve.h" />
     <ClInclude Include="TestVertCurveCollection.h" />
