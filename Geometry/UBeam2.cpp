@@ -307,6 +307,34 @@ HRESULT CUBeam2::UpdateShape()
          m_pShape->AddPoint(-p2_x, p2_y);
       }
 
+
+      m_P2->Move(p2_x, p2_y);
+      m_P3->Move(p3_x, p3_y);
+      m_P8->Move(p8_x, p8_y);
+      m_OuterWebLine->ThroughPoints(m_P2, m_P3);
+      m_GeomUtil->ShortestDistanceToPoint(m_OuterWebLine, m_P8, &m_T);
+
+
+#ifdef _DEBUG
+      //CComPtr<IPoint2dCollection> points;
+      //m_pShape->get_Points(&points);
+      //IndexType npts;
+      //points->get_Count(&npts);
+      //ATLTRACE("Trace of Points for UBeam2 - count = %d \n", npts);
+      //ATLTRACE("  pt         X         Y\n");
+      //ATLTRACE("---------------------------------\n");
+      //for (IndexType ip = 0; ip<npts; ip++)
+      //{
+      //   CComPtr<IPoint2d> pnt;
+      //   points->get_Item(ip, &pnt);
+      //   Float64 x, y;
+      //   pnt->get_X(&x);
+      //   pnt->get_Y(&y);
+      //   ATLTRACE(" %4d  %10f %10f \n", ip, x, y);
+      //}
+      //ATLTRACE("---------------------------\n");
+#endif
+
       CComQIPtr<IXYPosition> pPosition(m_pShape);
 
       if (!IsZero(m_Rotation))
@@ -317,32 +345,6 @@ HRESULT CUBeam2::UpdateShape()
       CComPtr<IPoint2d> origin;
       CreatePoint(0.00,0.00,nullptr,&origin);  // Hook Point at Bottom Center
       pPosition->MoveEx(origin,m_pHookPoint);
-
-//#ifdef _DEBUG
-//      CComPtr<IPoint2dCollection> points;
-//      m_pShape->get_Points(&points);
-//      long npts;
-//      points->get_Count(&npts);
-//      ATLTRACE("Trace of Points for UBeam2 - count = %d \n", npts);
-//      ATLTRACE("  pt         X         Y\n");
-//      ATLTRACE("---------------------------------\n");
-//      for (long ip = 0; ip<npts; ip++)
-//      {
-//         CComPtr<IPoint2d> pnt;
-//         points->get_Item(ip, &pnt);
-//         Float64 x, y;
-//         pnt->get_X(&x);
-//         pnt->get_Y(&y);
-//         ATLTRACE(" %4d  %10f %10f \n", ip, x, y);
-//      }
-//      ATLTRACE("---------------------------\n");
-//#endif
-
-      m_P2->Move(p2_x,p2_y);
-      m_P3->Move(p3_x,p3_y);
-      m_P8->Move(p8_x,p8_y);
-      m_OuterWebLine->ThroughPoints(m_P2,m_P3);
-      m_GeomUtil->ShortestDistanceToPoint(m_OuterWebLine,m_P8,&m_T);
 
       m_Dirty = false;
    }

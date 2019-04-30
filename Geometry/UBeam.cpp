@@ -183,6 +183,25 @@ HRESULT CUBeam::UpdateShape()
       if ( !IsZero(slope) )
          T = m_T*sqrt(slope*slope+1)/slope;
 
+      Float64 D4(m_D4), D5(m_D5), D6(m_D6), D7(m_D7);
+      if (IsZero(m_W4))
+      {
+         // D6 and D7 must be zero if W4 is zero
+         ATLASSERT(IsZero(m_D6));
+         ATLASSERT(IsZero(m_D7));
+         D6 = 0;
+         D7 = 0;
+      }
+
+      if (IsZero(m_W5))
+      {
+         // D4 and D5 must be zero if W5 is zero
+         ATLASSERT(IsZero(m_D4));
+         ATLASSERT(IsZero(m_D5));
+         D4 = 0;
+         D5 = 0;
+      }
+
       // start at the bottom center and go around clockwise
       // Hook point is at bottom center (0,0)
       // Compute left side points, mirror for right side
@@ -192,25 +211,25 @@ HRESULT CUBeam::UpdateShape()
       Float64 p2_x = -m_W1/2;
       Float64 p2_y =  0.;
 
-      Float64 p3_x =  p2_x - (IsZero(slope) ? 0: (m_D1 - m_D4 - m_D5)/slope);
-      Float64 p3_y =  m_D1 - m_D4 - m_D5;
+      Float64 p3_x =  p2_x - (IsZero(slope) ? 0: (m_D1 - D4 - D5)/slope);
+      Float64 p3_y =  m_D1 - D4 - D5;
 
       Float64 p4_x =  -m_W2/2;
-      Float64 p4_y =  m_D1 - m_D4;
+      Float64 p4_y =  m_D1 - D4;
 
       Float64 p5_x =  -m_W2/2;
       Float64 p5_y =  m_D1;
 
       Float64 p6_x;
-      if ( IsZero(m_D4) && IsZero(m_D5) && !IsZero(m_D6) & !IsZero(m_D7) )
+      if ( IsZero(D4) && IsZero(D5) && !IsZero(D6) & !IsZero(D7) )
       {
          // Flange only on the inside
-         p6_x = -m_W2/2 + m_W4 + T + (IsZero(slope) ? 0 : (m_D6+m_D7)/slope);
+         p6_x = -m_W2/2 + m_W4 + T + (IsZero(slope) ? 0 : (D6+D7)/slope);
       }
-      else if ( !IsZero(m_D4) && !IsZero(m_D5) && IsZero(m_D6) & IsZero(m_D7) )
+      else if ( !IsZero(D4) && !IsZero(D5) && IsZero(D6) & IsZero(D7) )
       {
          // Flange only on the outside
-         p6_x = -m_W2/2 + m_W5 + T - (IsZero(slope) ? 0 : (m_D4+m_D5)/slope);
+         p6_x = -m_W2/2 + m_W5 + T - (IsZero(slope) ? 0 : (D4+D5)/slope);
       }
       else
       {
@@ -220,12 +239,12 @@ HRESULT CUBeam::UpdateShape()
       Float64 p6_y =  m_D1;
 
       Float64 p7_x =  p6_x;
-      Float64 p7_y =  m_D1 - m_D6;
+      Float64 p7_y =  m_D1 - D6;
 
       Float64 p8_x =  p7_x - m_W4;
-      Float64 p8_y =  m_D1 - m_D6 - m_D7;
+      Float64 p8_y =  m_D1 - D6 - D7;
 
-      Float64 p9_x =  p8_x + (IsZero(slope) ? 0 : (m_D1 - m_D2 - m_D3 - m_D6 - m_D7)/slope);
+      Float64 p9_x =  p8_x + (IsZero(slope) ? 0 : (m_D1 - m_D2 - m_D3 - D6 - D7)/slope);
       Float64 p9_y =  m_D2 + m_D3;
 
       Float64 p10_x = p9_x + m_W3;
@@ -253,6 +272,47 @@ HRESULT CUBeam::UpdateShape()
       m_pShape->AddPoint(-p3_x, p3_y);
       m_pShape->AddPoint(-p2_x, p2_y);
 
+
+#ifdef _DEBUG
+      CComPtr<IPoint2d> p2, p3, p8, p9;
+      p2.CoCreateInstance(CLSID_Point2d);
+      p3.CoCreateInstance(CLSID_Point2d);
+      p8.CoCreateInstance(CLSID_Point2d);
+      p9.CoCreateInstance(CLSID_Point2d);
+      p2->Move(p2_x, p2_y);
+      p3->Move(p3_x, p3_y);
+      p8->Move(p8_x, p8_y);
+      p9->Move(p9_x, p9_y);
+      CComPtr<ILine2d> outerwebline;
+      outerwebline.CoCreateInstance(CLSID_Line2d);
+      outerwebline->ThroughPoints(p2, p3);
+      CComPtr<IGeomUtil2d> geomUtil;
+      geomUtil.CoCreateInstance(CLSID_GeomUtil);
+      Float64 tw;
+      geomUtil->ShortestDistanceToPoint(outerwebline, p8, &tw);
+      ATLASSERT(IsEqual(tw, m_T));
+      geomUtil->ShortestDistanceToPoint(outerwebline, p9, &tw);
+      ATLASSERT(IsEqual(tw, m_T));
+
+      //CComPtr<IPoint2dCollection> points;
+      //m_pShape->get_Points(&points);
+      //IndexType npts;
+      //points->get_Count(&npts);
+      //ATLTRACE("Trace of Points for UBeam - count = %d \n", npts);
+      //ATLTRACE("  pt         X         Y\n");
+      //ATLTRACE("---------------------------------\n");
+      //for (IndexType ip = 0; ip<npts; ip++)
+      //{
+      //   CComPtr<IPoint2d> pnt;
+      //   points->get_Item(ip, &pnt);
+      //   Float64 x, y;
+      //   pnt->get_X(&x);
+      //   pnt->get_Y(&y);
+      //   ATLTRACE(" %4d  %10f %10f \n", ip, x, y);
+      //}
+      //ATLTRACE("---------------------------\n");
+#endif
+
       CComQIPtr<IXYPosition> pPosition(m_pShape);
 
       if (!IsZero(m_Rotation))
@@ -263,26 +323,6 @@ HRESULT CUBeam::UpdateShape()
       CComPtr<IPoint2d> origin;
       CreatePoint(0.00,0.00,nullptr,&origin);  // Hook Point at Bottom Center
       pPosition->MoveEx(origin,m_pHookPoint);
-
-//#ifdef _DEBUG
-//      CComPtr<IPoint2dCollection> points;
-//      m_pShape->get_Points(&points);
-//      long npts;
-//      points->get_Count(&npts);
-//      ATLTRACE("Trace of Points for UBeam - count = %d \n", npts);
-//      ATLTRACE("  pt         X         Y\n");
-//      ATLTRACE("---------------------------------\n");
-//      for (long ip = 0; ip<npts; ip++)
-//      {
-//         CComPtr<IPoint2d> pnt;
-//         points->get_Item(ip, &pnt);
-//         Float64 x, y;
-//         pnt->get_X(&x);
-//         pnt->get_Y(&y);
-//         ATLTRACE(" %4d  %10f %10f \n", ip, x, y);
-//      }
-//      ATLTRACE("---------------------------\n");
-//#endif
 
       m_Dirty = false;
    }
@@ -576,7 +616,7 @@ STDMETHODIMP CUBeam::get_TopFlangeWidth(Float64* width)
    get_Slope(1,&slope);
    Float64 t = m_T*sqrt(slope*slope + 1)/slope;
 
-   (*width) = m_W4 + m_W5 + t;
+   (*width) = (m_W4 + (m_D6+m_D7)/slope) + (m_W5 - (m_D4+m_D5)/slope) + t;
    return S_OK;
 }
 
