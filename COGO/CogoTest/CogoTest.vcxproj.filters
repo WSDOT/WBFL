@@ -112,6 +112,9 @@
     <ClCompile Include="TestWidening.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestSuperelevation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CogoTest.h">
@@ -217,6 +220,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestWidening.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestSuperelevation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

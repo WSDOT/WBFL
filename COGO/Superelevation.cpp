@@ -276,7 +276,11 @@ STDMETHODIMP CSuperelevation::get_EndTransition(IStation** station)
 
 STDMETHODIMP CSuperelevation::put_Rate(Float64 value)
 {
-   m_Rate = value;
+   if (!IsEqual(m_Rate, value))
+   {
+      m_Rate = value;
+      Fire_OnSuperelevationChanged(this);
+   }
    return S_OK;
 }
 
@@ -293,7 +297,12 @@ STDMETHODIMP CSuperelevation::put_PivotPoint(IndexType pntIdx)
    if ( pntIdx == INVALID_INDEX )
       return E_INVALIDARG;
 
-   m_PivotPoint = pntIdx;
+   if (m_PivotPoint != pntIdx)
+   {
+      
+      m_PivotPoint = pntIdx;
+      Fire_OnSuperelevationChanged(this);
+   }
 
    return S_OK;
 }

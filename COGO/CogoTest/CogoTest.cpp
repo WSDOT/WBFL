@@ -66,6 +66,7 @@
 #include "TestStationEquationCollection.h"
 
 #include "TestWidening.h"
+#include "TestSuperelevation.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -80,6 +81,8 @@ int main(int argc, TCHAR* argv[])
    //_crtBreakAlloc = 782229; // causes program to break at a specific memory allocation
 
    ::CoInitialize(nullptr);
+
+   CTestSuperelevation::Test();
 
    CTestAngle::Test();
    CTestDirection::Test();
