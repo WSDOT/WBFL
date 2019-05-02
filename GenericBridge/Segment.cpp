@@ -74,7 +74,7 @@ STDMETHODIMP CSegment::get_Length(Float64 *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
+STDMETHODIMP CSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,ISection** ppSection)
 {
    CHECK_RETOBJ(ppSection);
 
@@ -130,7 +130,7 @@ STDMETHODIMP CSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBi
    return S_OK;
 }
 
-STDMETHODIMP CSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
+STDMETHODIMP CSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias,SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
    if ( m_Shapes.size() == 0 )

@@ -518,7 +518,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
             segment->get_Orientation(&orientation); // section view orientation
 
             CComPtr<IShape> girder_shape;
-            segment->get_PrimaryShape(girderPoint.Xs,sbLeft,&girder_shape);
+            segment->get_PrimaryShape(girderPoint.Xs,sbLeft,cstBridge,&girder_shape);
 
             CComQIPtr<IGirderSection> girder_section(girder_shape);
             ATLASSERT(girder_section);
@@ -886,7 +886,7 @@ STDMETHODIMP CSectionCutTool::get_EffectiveFlangeWidthTool(IEffectiveFlangeWidth
    return S_OK;
 }
 
-STDMETHODIMP CSectionCutTool::CreateGirderSectionBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg,SectionBias sectionBias,StageIndexType stageIdx,
+STDMETHODIMP CSectionCutTool::CreateGirderSectionBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,StageIndexType stageIdx,
                                           SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile, IndexType* pBeamIdx, IndexType* pSlabIdx,ISection** section)
 {
    CComPtr<ISuperstructureMember> ssMbr;
@@ -897,27 +897,27 @@ STDMETHODIMP CSectionCutTool::CreateGirderSectionBySSMbr(IGenericBridge* bridge,
    CComPtr<ISuperstructureMemberSegment> segment;
    ssMbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
 
-   return CreateGirderSectionBySegment(bridge,ssMbrID,segIdx,Xs,sectionBias,stageIdx,sectionPropMethod,haunchMethod,bFollowMatingSurfaceProfile,pBeamIdx,pSlabIdx,section);
+   return CreateGirderSectionBySegment(bridge,ssMbrID,segIdx,Xs,sectionBias,coordinateSystem,stageIdx,sectionPropMethod,haunchMethod,bFollowMatingSurfaceProfile,pBeamIdx,pSlabIdx,section);
 }
 
-STDMETHODIMP CSectionCutTool::CreateGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias,
+STDMETHODIMP CSectionCutTool::CreateGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,
    StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile, IndexType* pBeamIdx, IndexType* pSlabIdx,ISection** section)
 {
    // Validate input
    CHECK_RETOBJ(section);
    CHECK_IN(bridge);
 
-   return CreateCompositeSection(bridge,ssMbrID,segIdx,Xs,sectionBias,stageIdx,sectionPropMethod,haunchMethod,bFollowMatingSurfaceProfile,pBeamIdx,pSlabIdx,section);
+   return CreateCompositeSection(bridge,ssMbrID,segIdx,Xs,sectionBias,coordinateSystem,stageIdx,sectionPropMethod,haunchMethod,bFollowMatingSurfaceProfile,pBeamIdx,pSlabIdx,section);
 }
 
-STDMETHODIMP CSectionCutTool::CreateNetDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,StageIndexType stageIdx,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,ISection** section)
+STDMETHODIMP CSectionCutTool::CreateNetDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionCoordinateSystemType coordinateSystem,StageIndexType stageIdx,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,ISection** section)
 {
    CHECK_IN(bridge);
    CHECK_RETOBJ(section);
 
    // the girder section is required to create the deck shape
    CComPtr<ISection> ncsection;
-   HRESULT hr = CreateNoncompositeSection(bridge,ssMbrID,segIdx,Xs,sbLeft,stageIdx,spmGrossNoncomposite,&ncsection);
+   HRESULT hr = CreateNoncompositeSection(bridge,ssMbrID,segIdx,Xs,sbLeft,coordinateSystem,stageIdx,spmGrossNoncomposite,&ncsection);
    if ( FAILED(hr) )
    {
       return hr;
@@ -1050,7 +1050,7 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
 
             // Create a noncomposite section for the segment that is being cut
             CComPtr<ISection> girder_section;
-            CreateNoncompositeSection(bridge,ssMbrID,segIdx,dist_from_start_of_segment,sbRight,stageIdx,spmGross,&girder_section);
+            CreateNoncompositeSection(bridge,ssMbrID,segIdx,dist_from_start_of_segment,sbRight,cstBridge,stageIdx,spmGross,&girder_section);
 
             if ( girder_section == nullptr )
             {
@@ -1147,7 +1147,7 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
    return S_OK;
 }
 
-STDMETHODIMP CSectionCutTool::CreateLongitudinalJointShapeBySSMbr(IGenericBridge* bridge, GirderIDType ssMbrID, Float64 Xg, IShape** ppLeftJointShape, IShape** ppRightJointShape)
+STDMETHODIMP CSectionCutTool::CreateLongitudinalJointShapeBySSMbr(IGenericBridge* bridge, GirderIDType ssMbrID, Float64 Xg, SectionCoordinateSystemType coordinateSystem, IShape** ppLeftJointShape, IShape** ppRightJointShape)
 {
    CComPtr<ISuperstructureMember> ssMbr;
    bridge->get_SuperstructureMember(ssMbrID, &ssMbr);
@@ -1157,20 +1157,20 @@ STDMETHODIMP CSectionCutTool::CreateLongitudinalJointShapeBySSMbr(IGenericBridge
    CComPtr<ISuperstructureMemberSegment> segment;
    ssMbr->GetDistanceFromStartOfSegment(Xg, &Xs, &segIdx, &segment);
 
-   return CreateLongitudinalJointShapeBySegment(bridge, ssMbrID, segIdx, Xs, ppLeftJointShape,ppRightJointShape);
+   return CreateLongitudinalJointShapeBySegment(bridge, ssMbrID, segIdx, Xs, coordinateSystem, ppLeftJointShape,ppRightJointShape);
 }
 
-STDMETHODIMP CSectionCutTool::CreateLongitudinalJointShapeBySegment(IGenericBridge* bridge, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, IShape** ppLeftJointShape, IShape** ppRightJointShape)
+STDMETHODIMP CSectionCutTool::CreateLongitudinalJointShapeBySegment(IGenericBridge* bridge, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, SectionCoordinateSystemType coordinateSystem, IShape** ppLeftJointShape, IShape** ppRightJointShape)
 {
    // Validate input
    CHECK_RETOBJ(ppLeftJointShape);
    CHECK_RETOBJ(ppRightJointShape);
    CHECK_IN(bridge);
 
-   return CreateJointShapes(bridge, ssMbrID, segIdx, Xs, ppLeftJointShape,ppRightJointShape);
+   return CreateJointShapes(bridge, ssMbrID, segIdx, Xs,coordinateSystem, ppLeftJointShape,ppRightJointShape);
 }
 
-STDMETHODIMP CSectionCutTool::CreateGirderShapeBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg,SectionBias sectionBias,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,IShape** ppShape)
+STDMETHODIMP CSectionCutTool::CreateGirderShapeBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,IShape** ppShape)
 {
    CComPtr<ISuperstructureMember> ssMbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssMbr);
@@ -1180,22 +1180,22 @@ STDMETHODIMP CSectionCutTool::CreateGirderShapeBySSMbr(IGenericBridge* bridge,Gi
    CComPtr<ISuperstructureMemberSegment> segment;
    ssMbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
 
-   return CreateGirderShapeBySegment(bridge,ssMbrID,segIdx,Xs,sectionBias,bIncludeDeck,haunchMethod,bFollowMatingSurfaceProfile,ppShape);
+   return CreateGirderShapeBySegment(bridge,ssMbrID,segIdx,Xs,sectionBias,coordinateSystem,bIncludeDeck,haunchMethod,bFollowMatingSurfaceProfile,ppShape);
 }
 
-STDMETHODIMP CSectionCutTool::CreateGirderShapeBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionBias sectionBias,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,IShape** ppShape)
+STDMETHODIMP CSectionCutTool::CreateGirderShapeBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,IShape** ppShape)
 {
    // Validate input
    CHECK_RETOBJ(ppShape);
    CHECK_IN(bridge);
 
-   return CreateGirderShape(bridge,ssMbrID,segIdx,Xs,sectionBias,bIncludeDeck,haunchMethod,bFollowMatingSurfaceProfile,ppShape);
+   return CreateGirderShape(bridge,ssMbrID,segIdx,Xs,sectionBias,coordinateSystem,bIncludeDeck,haunchMethod,bFollowMatingSurfaceProfile,ppShape);
 }
 
-HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile, IndexType* pBeamIdx, IndexType* pSlabIdx,ISection** section)
+HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile, IndexType* pBeamIdx, IndexType* pSlabIdx,ISection** section)
 {
    CComPtr<ISection> ncsection;
-   HRESULT hr = CreateNoncompositeSection(bridge,ssMbrID,segIdx,Xs,sectionBias,stageIdx,sectionPropMethod,&ncsection);
+   HRESULT hr = CreateNoncompositeSection(bridge,ssMbrID,segIdx,Xs,sectionBias,coordinateSystem,stageIdx,sectionPropMethod,&ncsection);
    if ( FAILED(hr) )
    {
       return hr;
@@ -1650,7 +1650,7 @@ HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType s
    return S_OK;
 }
 
-HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** ppSection)
+HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** ppSection)
 {
    CComPtr<ISuperstructureMember> ssmbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
@@ -1666,7 +1666,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
 
    // this is the primary section (the girder)
    CComPtr<ISection> section;
-   HRESULT hr = segment->get_Section(stageIdx,Xs,sectionBias,&section);
+   HRESULT hr = segment->get_Section(stageIdx,Xs,sectionBias,coordinateSystem,&section);
    ATLASSERT(SUCCEEDED(hr));
    if ( FAILED(hr) )
    {
@@ -2261,7 +2261,7 @@ HRESULT CSectionCutTool::CreateBridgeDeckSection(IGenericBridge* bridge,Float64 
    return hr;
 }
 
-HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod,BOOL bFollowMatingSurfaceProfile,IShape** ppShape)
+HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod,BOOL bFollowMatingSurfaceProfile,IShape** ppShape)
 {
    // Xs is in segment coordinates
    CComPtr<ISuperstructureMember> ssmbr;
@@ -2271,7 +2271,7 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
    ssmbr->get_Segment(segIdx,&segment);
 
    CComPtr<IShape> primary_shape;
-   segment->get_PrimaryShape(Xs,sectionBias,&primary_shape);
+   segment->get_PrimaryShape(Xs,sectionBias,coordinateSystem,&primary_shape);
 
    CComQIPtr<ICompositeShape> compositeShape(primary_shape);
    ATLASSERT(compositeShape); // primary_shape must be a composite so we can put holes in it
@@ -2380,7 +2380,7 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
    return S_OK;
 }
 
-HRESULT CSectionCutTool::CreateJointShapes(IGenericBridge* bridge, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, IShape** ppLeftJointShape, IShape** ppRightJointShape)
+HRESULT CSectionCutTool::CreateJointShapes(IGenericBridge* bridge, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, SectionCoordinateSystemType coordinateSystem, IShape** ppLeftJointShape, IShape** ppRightJointShape)
 {
    // Xs is in segment coordinates
    CComPtr<ISuperstructureMember> ssmbr;
@@ -2393,7 +2393,7 @@ HRESULT CSectionCutTool::CreateJointShapes(IGenericBridge* bridge, GirderIDType 
    if (jointSegment)
    {
       CComPtr<IShape> leftJointShape, rightJointShape;
-      jointSegment->get_JointShapes(Xs, &leftJointShape, &rightJointShape);
+      jointSegment->get_JointShapes(Xs, coordinateSystem, &leftJointShape, &rightJointShape);
       leftJointShape.CopyTo(ppLeftJointShape);
       rightJointShape.CopyTo(ppRightJointShape);
    }
@@ -2567,59 +2567,29 @@ HRESULT CSectionCutTool::CreateBarrierShape(DirectionType side,IGenericBridge* b
    CComPtr<IShape> shape;
    barrier_shape->Clone(&shape);
 
-   // Rotate shape to match average deck slope 
-   // remember that this is not necessarely the slope at the deck edge. we can have multiple crown points
+   // rotate shape to match deck slope
    CComPtr<IStation> deckEdgeStation;
    Float64 deckEdgeOffset;
    alignment->Offset(pntDeckEdge, &deckEdgeStation, &deckEdgeOffset);
+   Float64 slope;
+   profile->Slope(CComVariant(deckEdgeStation), deckEdgeOffset, &slope);
+   //Float64 dx;
+   //CComPtr<IDirection> dir;
+   //cogoUtil::Inverse(pntAlignment, pntDeckEdge, &dx, &dir);
+   //if ((side == qcbLeft && dirCutLine->IsEqual(dir) == S_FALSE) || (side == qcbRight && dirCutLine->IsEqual(dir) == S_OK))
+   //{
+   //   dx *= -1;
+   //}
 
-   // want distance from deck edge to interior edge of barrier
+   //Float64 alignment_elev;
+   //profile->Elevation(CComVariant(objStation),0.0,&alignment_elev);
+   //Float64 dy = (side == qcbLeft ? alignment_elev - deck_edge_elev : deck_edge_elev - alignment_elev);
+   //Float64 slope = dy/dx;
+   Float64 angle = atan(slope);
+
    CComQIPtr<IXYPosition> position(shape);
    CComPtr<IPoint2d> hook_point;
    position->get_LocatorPoint(lpHookPoint,&hook_point);
-
-   Float64 xhook;
-   hook_point->get_X(&xhook);
-
-   Float64 deltaOffset;
-   if (side == qcbLeft)
-   {
-      CComPtr<IPoint2d> int_point;
-      position->get_LocatorPoint(lpBottomRight, &int_point);
-
-      Float64 xedge;
-      int_point->get_X(&xedge);
-
-      deltaOffset = xedge - xhook;
-   }
-   else
-   {
-      CComPtr<IPoint2d> int_point;
-      position->get_LocatorPoint(lpBottomLeft, &int_point);
-
-      Float64 xedge;
-      int_point->get_X(&xedge);
-
-      deltaOffset = xedge - xhook;
-   }
-
-   Float64 slope;
-   if (IsZero(deltaOffset))
-   {
-      // zero width barrier
-      profile->Slope(CComVariant(deckEdgeStation), deckEdgeOffset, &slope);
-   }
-   else
-   {
-      Float64 edgeElevation, interiorElevation;
-      profile->Elevation(CComVariant(objStation), deckEdgeOffset, &edgeElevation);
-      profile->Elevation(CComVariant(objStation), deckEdgeOffset + deltaOffset, &interiorElevation);
-
-      slope = (interiorElevation - edgeElevation) / deltaOffset;
-   }
-
-   Float64 angle = atan(slope);
-
    position->RotateEx(hook_point,angle);
 
    // move shape into bridge section coordinates

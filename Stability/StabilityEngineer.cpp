@@ -345,7 +345,7 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
       if ( segment )
       {
          rebarLayout->CreateRebarSection(X,INVALID_INDEX,&rebarSection);
-         segment->get_PrimaryShape(X,sbLeft,&shape); // this is in bridge section coordinates
+         segment->get_PrimaryShape(X,sbLeft,cstGirder, &shape); // this is in girder section coordinates
 
          // position the shape in centroidal/stress pointscoordinates
          CComPtr<IShapeProperties> props;
@@ -883,7 +883,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
       if (segment)
       {
          rebarLayout->CreateRebarSection(X, INVALID_INDEX, &rebarSection);
-         segment->get_PrimaryShape(X, sbLeft, &shape); // this is in bridge section coordinates
+         segment->get_PrimaryShape(X, sbLeft, cstGirder, &shape); // this is in girder section coordinates
 
          // position the shape in centroidal/stress pointscoordinates
          CComPtr<IShapeProperties> props;

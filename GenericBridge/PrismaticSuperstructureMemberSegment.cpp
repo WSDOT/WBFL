@@ -64,7 +64,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::InterfaceSupportsErrorInfo(R
 
 ////////////////////////////////////////////////////////////////////////
 // ISuperstructureMemberSegment implementation
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,ISection** ppSection)
 {
    CHECK_RETOBJ(ppSection);
 
@@ -112,11 +112,14 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType s
       shapeData.Shape->Clone(&shape);
 
       // position the shape
-      CComPtr<IPoint2d> pntTopCenter;
-      GB_GetSectionLocation(this,Xs,&pntTopCenter);
+      if (coordinateSystem == cstBridge)
+      {
+         CComPtr<IPoint2d> pntTopCenter;
+         GB_GetSectionLocation(this, Xs, &pntTopCenter);
 
-      CComQIPtr<IXYPosition> position(shape);
-      position->put_LocatorPoint(lpTopCenter,pntTopCenter);
+         CComQIPtr<IXYPosition> position(shape);
+         position->put_LocatorPoint(lpTopCenter, pntTopCenter);
+      }
 
       section->AddSection(shape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
    }
@@ -127,7 +130,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType s
    return S_OK;
 }
 
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
    if ( m_Shapes.size() == 0 )
@@ -140,11 +143,14 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_PrimaryShape(Float64 Xs,
    m_Shapes.front().Shape->Clone(ppShape);
 
    // position the shape
-   CComPtr<IPoint2d> pntTopCenter;
-   GB_GetSectionLocation(this,Xs,&pntTopCenter);
+   if (coordinateSystem == cstBridge)
+   {
+      CComPtr<IPoint2d> pntTopCenter;
+      GB_GetSectionLocation(this, Xs, &pntTopCenter);
 
-   CComQIPtr<IXYPosition> position(*ppShape);
-   position->put_LocatorPoint(lpTopCenter,pntTopCenter);
+      CComQIPtr<IXYPosition> position(*ppShape);
+      position->put_LocatorPoint(lpTopCenter, pntTopCenter);
+   }
 
    return S_OK;
 }

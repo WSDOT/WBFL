@@ -52,7 +52,7 @@ void CFlangedSplicedGirderSegment::FinalRelease()
 // ISplicedGirderSegment implementation
 //
 
-HRESULT CFlangedSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
+HRESULT CFlangedSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
@@ -89,11 +89,14 @@ HRESULT CFlangedSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias se
    AdjustForEndBlocks(newBeam, Wt, Wb);
 
    // position the shape
-   CComPtr<IPoint2d> pntTopCenter;
-   GB_GetSectionLocation(this,Xs,&pntTopCenter);
+   if (coordinateSystem == cstBridge)
+   {
+      CComPtr<IPoint2d> pntTopCenter;
+      GB_GetSectionLocation(this, Xs, &pntTopCenter);
 
-   CComQIPtr<IXYPosition> position(newFlangedBeam);
-   position->put_LocatorPoint(lpTopCenter,pntTopCenter);
+      CComQIPtr<IXYPosition> position(newFlangedBeam);
+      position->put_LocatorPoint(lpTopCenter, pntTopCenter);
+   }
 
    *ppShape = newShape;
    (*ppShape)->AddRef();

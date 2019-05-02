@@ -167,7 +167,7 @@ public:
       }
    }
 
-   STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
+   STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,ISection** ppSection)
    {
       CHECK_RETOBJ(ppSection);
 
@@ -203,11 +203,14 @@ public:
       }
 
       // position the shape
-      CComPtr<IPoint2d> pntTopCenter;
-      GB_GetSectionLocation(this,Xs,&pntTopCenter);
+      if (coordinateSystem == cstBridge)
+      {
+         CComPtr<IPoint2d> pntTopCenter;
+         GB_GetSectionLocation(this, Xs, &pntTopCenter);
 
-      CComQIPtr<IXYPosition> position(newSection);
-      position->put_LocatorPoint(lpTopCenter,pntTopCenter);
+         CComQIPtr<IXYPosition> position(newSection);
+         position->put_LocatorPoint(lpTopCenter, pntTopCenter);
+      }
 
       CComPtr<ICompositeSectionEx> section;
       section.CoCreateInstance(CLSID_CompositeSectionEx);
@@ -278,7 +281,7 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(get_PrimaryShape)(Float64 Xs,SectionBias sectionBias,IShape** ppShape)
+   STDMETHOD(get_PrimaryShape)(Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
    {
       CHECK_RETOBJ(ppShape);
 
@@ -314,11 +317,14 @@ public:
       }
 
       // position the shape
-      CComPtr<IPoint2d> pntTopCenter;
-      GB_GetSectionLocation(this,Xs,&pntTopCenter);
+      if (coordinateSystem == cstBridge)
+      {
+         CComPtr<IPoint2d> pntTopCenter;
+         GB_GetSectionLocation(this, Xs, &pntTopCenter);
 
-      CComQIPtr<IXYPosition> position(newSection);
-      position->put_LocatorPoint(lpTopCenter,pntTopCenter);
+         CComQIPtr<IXYPosition> position(newSection);
+         position->put_LocatorPoint(lpTopCenter, pntTopCenter);
+      }
 
       *ppShape = newShape;
       (*ppShape)->AddRef();

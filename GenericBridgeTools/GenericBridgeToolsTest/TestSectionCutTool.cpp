@@ -85,7 +85,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
 
    IndexType beamIdx, slabIdx;
    CComPtr<ISection> section;
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,3,spmGross,hdmHaunchIsZero,FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,cstBridge,3,spmGross,hdmHaunchIsZero,FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    CComPtr<IElasticProperties> eprops;
    section->get_ElasticProperties(&eprops);
@@ -99,7 +99,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
    CreatePrecastGirderBridge(0.0,spanLengths,10.0,nGirderLines,shape,3.0,CIP_DECK,false,&bridge);
 
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -113,7 +113,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
 
    // results before composite stage
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,1,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,1,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -123,7 +123,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
 
    // results at/after composite stage
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -136,7 +136,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
    CreatePrecastGirderBridge(0.0,spanLengths,10.0,nGirderLines,shape,3.0,SIP_DECK,false,&bridge);
 
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -150,7 +150,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
 
    // results before composite stage
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,1,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,1,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -160,7 +160,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
 
    // results at/after composite stage
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -181,7 +181,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
    CreatePrecastGirderBridge(0.0,spanLengths,10.0,nGirderLines,shape,3.0,NO_DECK,true,&bridge);
 
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -194,7 +194,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
    CreatePrecastGirderBridge(0.0,spanLengths,10.0,nGirderLines,shape,3.0,CIP_DECK,false,&bridge);
 
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -208,7 +208,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
 
    // results before composite stage
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,1,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,1,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -218,7 +218,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
 
    // results at/after composite stage
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -231,7 +231,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
    CreatePrecastGirderBridge(0.0,spanLengths,10.0,nGirderLines,shape,3.0,SIP_DECK,false,&bridge);
 
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -245,7 +245,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
 
    // results before composite stage
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,1,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,1,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -255,7 +255,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
 
    // results at/after composite stage
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -276,7 +276,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
    CreatePrecastGirderBridge(0.0,spanLengths,10.0,nGirderLines,shape,3.0,NO_DECK,true,&bridge);
 
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -289,7 +289,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
    CreatePrecastGirderBridge(0.0,spanLengths,10.0,nGirderLines,shape,3.0,CIP_DECK,false,&bridge);
 
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -303,7 +303,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
 
    // results before composite stage
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,1,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,1,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -313,7 +313,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
 
    // results at/after composite stage
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -326,7 +326,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
    CreatePrecastGirderBridge(0.0,spanLengths,10.0,nGirderLines,shape,3.0,SIP_DECK,false,&bridge);
 
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -340,7 +340,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
 
    // results before composite stage
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,1,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,1,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -350,7 +350,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
 
    // results at/after composite stage
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -374,7 +374,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
 
    // before composite
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,1,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,1,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -384,7 +384,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
 
    // after composite
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,25.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -426,7 +426,7 @@ void CTestSectionCutTool::TestSplicedGirderBridge()
    // cut section in first prismatic zone
    IndexType beamIdx, slabIdx;
    CComPtr<ISection> section;
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,0.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,0.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    CComPtr<IElasticProperties> eprops;
    section->get_ElasticProperties(&eprops);
@@ -439,7 +439,7 @@ void CTestSectionCutTool::TestSplicedGirderBridge()
 
    // at first segment transition
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,50.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,50.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -451,7 +451,7 @@ void CTestSectionCutTool::TestSplicedGirderBridge()
 
    // cut section at end of first segment first prismatic zone
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,100.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,100.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -463,7 +463,7 @@ void CTestSectionCutTool::TestSplicedGirderBridge()
 
    // cut section at end of left taper in center segment
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,125.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,125.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -475,7 +475,7 @@ void CTestSectionCutTool::TestSplicedGirderBridge()
 
    // cut section at start of right taper in center segment
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,175.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,175.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -487,7 +487,7 @@ void CTestSectionCutTool::TestSplicedGirderBridge()
 
    // cut section at end of second segment
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,200.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,200.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -499,7 +499,7 @@ void CTestSectionCutTool::TestSplicedGirderBridge()
 
    // cut section in prismatic zone of last segment
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,225.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,225.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -511,7 +511,7 @@ void CTestSectionCutTool::TestSplicedGirderBridge()
 
    //
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,250.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,250.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -523,7 +523,7 @@ void CTestSectionCutTool::TestSplicedGirderBridge()
 
    //
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,275.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,275.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -535,7 +535,7 @@ void CTestSectionCutTool::TestSplicedGirderBridge()
 
    // cut section at end
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,300.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,300.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -547,7 +547,7 @@ void CTestSectionCutTool::TestSplicedGirderBridge()
 
    // 
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,325.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,325.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -559,7 +559,7 @@ void CTestSectionCutTool::TestSplicedGirderBridge()
 
    // 
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,375.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,375.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -571,7 +571,7 @@ void CTestSectionCutTool::TestSplicedGirderBridge()
 
    // 
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,400.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,400.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -583,7 +583,7 @@ void CTestSectionCutTool::TestSplicedGirderBridge()
 
    // 
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,450.0,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,450.0,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
@@ -595,7 +595,7 @@ void CTestSectionCutTool::TestSplicedGirderBridge()
 
    // 
    section.Release();
-   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,500,sbLeft,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
+   TRY_TEST(tool->CreateGirderSectionBySSMbr(bridge,ssMbrID,500,sbLeft, cstBridge,3,spmGross,hdmHaunchIsZero, FALSE,&beamIdx,&slabIdx,&section),S_OK);
 
    eprops.Release();
    section->get_ElasticProperties(&eprops);
