@@ -146,14 +146,14 @@ public:
    STDMETHOD(putref_NextSegment)(ISegment* segment) override { return m_Impl.putref_NextSegment(segment); }
    STDMETHOD(get_NextSegment)(ISegment** segment) override { return m_Impl.get_NextSegment(segment); }
 
-	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs,SectionBias sectionBias,ISection** ppSection) override
+	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,ISection** ppSection) override
    {
-      return GetSection(stageIdx,Xs,sectionBias,ppSection);
+      return GetSection(stageIdx,Xs,sectionBias,coordinateSystem,ppSection);
    }
 
-	STDMETHOD(get_PrimaryShape)(Float64 Xs,SectionBias sectionBias,IShape** ppShape) override
+	STDMETHOD(get_PrimaryShape)(Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape) override
    {
-      return GetPrimaryShape(Xs,sectionBias,ppShape);
+      return GetPrimaryShape(Xs,sectionBias,coordinateSystem, ppShape);
    }
 
    STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure,IShape** ppShape) override
@@ -487,9 +487,9 @@ public:
    }
 
 protected:
-   virtual HRESULT GetPrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape) = 0;
+   virtual HRESULT GetPrimaryShape(Float64 Xs, SectionBias sectionBias,SectionCoordinateSystemType coordinateSystem,IShape** ppShape) = 0;
 
-   virtual HRESULT GetSection(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
+   virtual HRESULT GetSection(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,ISection** ppSection)
    {
       CHECK_RETOBJ(ppSection);
 
@@ -501,7 +501,7 @@ protected:
 
       HRESULT hr;
       CComPtr<IShape> primaryShape;
-      hr = GetPrimaryShape(Xs,sectionBias,&primaryShape);
+      hr = GetPrimaryShape(Xs,sectionBias,coordinateSystem,&primaryShape);
       ATLASSERT(SUCCEEDED(hr));
       if ( FAILED(hr) )
          return hr;

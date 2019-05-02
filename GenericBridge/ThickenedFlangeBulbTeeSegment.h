@@ -104,8 +104,8 @@ public:
    STDMETHOD(get_PrevSegment)(ISegment** segment) override { return m_Impl.get_PrevSegment(segment); }
    STDMETHOD(putref_NextSegment)(ISegment* segment) override { return m_Impl.putref_NextSegment(segment); }
    STDMETHOD(get_NextSegment)(ISegment** segment) override { return m_Impl.get_NextSegment(segment); }
-   STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection) override;
-   STDMETHOD(get_PrimaryShape)(Float64 Xs, SectionBias sectionBias,IShape** ppShape) override;
+   STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,ISection** ppSection) override;
+   STDMETHOD(get_PrimaryShape)(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape) override;
    STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure, IShape** ppShape) override;
    STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override { return m_Impl.get_Length(pVal); }
    STDMETHOD(get_LayoutLength)(/*[out, retval]*/ Float64 *pVal) override { return m_Impl.get_LayoutLength(pVal); }
@@ -134,7 +134,7 @@ public:
    STDMETHOD(get_ShapeCount)(IndexType* nShapes) override;
    STDMETHOD(get_ForegroundMaterial)(IndexType index, IMaterial* *material) override;
    STDMETHOD(get_BackgroundMaterial)(IndexType index, IMaterial* *material) override;
-   STDMETHOD(get_GirderShape)(Float64 Xs, IShape** ppShape) override;
+   STDMETHOD(get_GirderShape)(Float64 Xs, SectionCoordinateSystemType coordinateSystem, IShape** ppShape) override;
 
 // ILongitudinalJoints
 public:
@@ -145,7 +145,7 @@ public:
    STDMETHOD(get_HasJoints)(/*[out,retval]*/VARIANT_BOOL* pbHasJoints) override;
    STDMETHOD(putref_JointMaterial)(/*[in]*/IMaterial* material) override;
    STDMETHOD(get_JointMaterial)(/*[out, retval]*/IMaterial** material) override;
-   STDMETHOD(get_JointShapes)(/*[in]*/Float64 Xs,/*[out]*/IShape** ppLeftJoint,/*[out]*/IShape** ppRightJoint) override;
+   STDMETHOD(get_JointShapes)(/*[in]*/Float64 Xs,/*[in]*/SectionCoordinateSystemType coordinateSystem,/*[out]*/IShape** ppLeftJoint,/*[out]*/IShape** ppRightJoint) override;
 
 // IItemData
 public:
@@ -161,6 +161,6 @@ public:
 
 private:
    HRESULT AdjustPosition(Float64 Xs, IBulbTee2* pBeam);
-   HRESULT GetJointShapes(Float64 Xs, IBulbTeeSection* pSection, IShape** ppLeftJoint, IShape** ppRightJoint);
+   HRESULT GetJointShapes(Float64 Xs, IBulbTeeSection* pSection, SectionCoordinateSystemType coordinateSystem, IShape** ppLeftJoint, IShape** ppRightJoint);
 };
 

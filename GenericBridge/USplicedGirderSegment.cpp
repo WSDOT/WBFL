@@ -51,7 +51,7 @@ void CUSplicedGirderSegment::FinalRelease()
 ////////////////////////////////////////////////////////////////////
 // ISplicedGirderSegment implementation
 
-HRESULT CUSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
+HRESULT CUSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
@@ -155,11 +155,14 @@ HRESULT CUSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias sectionB
    newBeam->put_T(t);
 
    // position the shape
-   CComPtr<IPoint2d> pntTopCenter;
-   GB_GetSectionLocation(this,Xs,&pntTopCenter);
+   if (coordinateSystem == cstBridge)
+   {
+      CComPtr<IPoint2d> pntTopCenter;
+      GB_GetSectionLocation(this, Xs, &pntTopCenter);
 
-   CComQIPtr<IXYPosition> position(newUGirderSection);
-   position->put_LocatorPoint(lpTopCenter,pntTopCenter);
+      CComQIPtr<IXYPosition> position(newUGirderSection);
+      position->put_LocatorPoint(lpTopCenter, pntTopCenter);
+   }
 
    *ppShape = newShape;
    (*ppShape)->AddRef();

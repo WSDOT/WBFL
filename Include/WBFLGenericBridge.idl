@@ -393,6 +393,14 @@ library WBFLGenericBridge
       jstConstantDepth, // the shape is defined by a constant depth
       jstFromAdjacentBeams // the shape is defined by the connection with adjacent beams
    } JointSectionType;
+
+   // Coordinate system
+   typedef [public, helpstring("enum SectionCoordinateSystemType"), uuid(8A98F327-46D2-4046-8CD6-8DB0BE162597)]
+   enum
+   {
+      cstBridge,
+      cstGirder
+   } SectionCoordinateSystemType;
    
    // Interface definitions
 
@@ -1087,7 +1095,7 @@ library WBFLGenericBridge
       [propget,helpstring("property HasJoints")] HRESULT HasJoints([out,retval]VARIANT_BOOL* pbHasJoints);
       [propputref,helpstring("property JointMaterial")] HRESULT JointMaterial([in]IMaterial* material);
       [propget,helpstring("property JointMaterial")] HRESULT JointMaterial([out, retval]IMaterial** material);
-      [propget,helpstring("property JointShapes")] HRESULT JointShapes([in]Float64 Xs,[out]IShape** ppLeftJoint,[out]IShape** ppRightJoint);
+      [propget,helpstring("property JointShapes")] HRESULT JointShapes([in]Float64 Xs,[in]SectionCoordinateSystemType coordinateSystem,[out]IShape** ppLeftJoint,[out]IShape** ppRightJoint);
    };
 
 	[
@@ -1127,8 +1135,8 @@ library WBFLGenericBridge
    interface ISegment : IUnknown
    {
       [propget, helpstring("property Length")] HRESULT Length([out, retval] Float64 *pVal);
-      [propget, helpstring("property PrimaryShape")] HRESULT PrimaryShape([in]Float64 Xs,[in]SectionBias sectionBias,[out,retval]IShape** ppShape);
-		[propget, helpstring("property Section")] HRESULT Section([in]StageIndexType stageIdx,[in] Float64 Xs,[in]SectionBias sectionBias,[out,retval]ISection** ppSection);
+      [propget, helpstring("property PrimaryShape")] HRESULT PrimaryShape([in]Float64 Xs,[in]SectionBias sectionBias,[in]SectionCoordinateSystemType coordinateSystem,[out,retval]IShape** ppShape);
+		[propget, helpstring("property Section")] HRESULT Section([in]StageIndexType stageIdx,[in] Float64 Xs,[in]SectionBias sectionBias, [in]SectionCoordinateSystemType coordinateSystem, [out,retval]ISection** ppSection);
       [propget, helpstring("property PrevSegment")] HRESULT PrevSegment([out,retval]ISegment** segment);
       [propget, helpstring("property NextSegment")] HRESULT NextSegment([out,retval]ISegment** segment);
 
@@ -1523,7 +1531,7 @@ library WBFLGenericBridge
       [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
       [propget, helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
 		[propget, helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
-      [propget, helpstring("property GirderShape")] HRESULT GirderShape([in]Float64 Xs, [out, retval]IShape** ppShape);
+      [propget, helpstring("property GirderShape")] HRESULT GirderShape([in]Float64 Xs, [in]SectionCoordinateSystemType coordinateSystem,[out, retval]IShape** ppShape);
    };
 
 	[
