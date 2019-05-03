@@ -56,14 +56,14 @@ public:
   CString                       GetComments();
   CString                       GetCompanyName();
   CString                       GetFileDescription();
-  CString                       GetFileVersionAsString();
+  CString                       GetFileVersionAsString(bool bIncludeBuildNumber = true);
   CString                       GetInternalName();
   CString                       GetLegalCopyright();
   CString                       GetLegalTrademarks();
   CString                       GetOriginalFilename();
   CString                       GetPrivateBuild();
   CString                       GetProductName();
-  CString                       GetProductVersionAsString();
+  CString                       GetProductVersionAsString(bool bIncludeBuildNumber = true);
   CString                       GetSpecialBuild();
   int                           GetNumberOfTranslations();
   TRANSLATION*                  GetTranslation(int nIndex);
