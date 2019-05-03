@@ -525,7 +525,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_TopFlangeSlope(Float64* pSlope)
    CComQIPtr<IBulbTeeSection> beam(m_Shapes.front().Shape);
    ATLASSERT(beam); // if this is nullptr... how did it get in the system????
 
-                    // This object reprsents a prismatic shape... all sections are the same
+   // This object reprsents a prismatic shape... all sections are the same
    HRESULT hr = S_OK;
 
    // get dimensions of beam shape at start and end of segment
@@ -758,11 +758,19 @@ HRESULT CThickenedFlangeBulbTeeSegment::GetJointShapes(Float64 Xs, IBulbTeeSecti
    CHECK_RETOBJ(ppLeftJoint);
    CHECK_RETOBJ(ppRightJoint);
 
+   // pSection must be in bridge section coordinates, without orientation effects applied
+
    LocationType location;
    m_Impl.m_pSSMbr->get_LocationType(&location);
 
    CComPtr<IGenericBridge> bridge;
    m_Impl.m_pSSMbr->get_Bridge(&bridge);
+
+   CComPtr<ISuperstructureMemberSegment> segment;
+   m_Impl.m_pSSMbr->get_Segment(0, &segment); // assuming there is only one segment per superstructure member
+   
+   Float64 orientation;
+   segment->get_Orientation(&orientation);
 
    CComPtr<IBulbTee2> beam;
    pSection->get_Beam(&beam);
@@ -811,6 +819,9 @@ HRESULT CThickenedFlangeBulbTeeSegment::GetJointShapes(Float64 Xs, IBulbTeeSecti
 
       CComPtr<ISuperstructureMemberSegment> leftSegment;
       leftSSMbr->get_Segment(0, &leftSegment); // assuming there is only one segment per superstructure member
+
+      Float64 leftOrientation;
+      leftSegment->get_Orientation(&leftOrientation);
 
       CComPtr<IGirderLine> leftGirderLine;
       leftSegment->get_GirderLine(&leftGirderLine);
@@ -884,6 +895,18 @@ HRESULT CThickenedFlangeBulbTeeSegment::GetJointShapes(Float64 Xs, IBulbTeeSecti
             pntBottomRight = leftBottom;
          }
 
+         if (!IsZero(orientation) || !IsZero(leftOrientation))
+         {
+            // make adjust for girder orientation
+            Float64 Yr;
+            pntTopRight->get_Y(&Yr);
+            Float64 Yl;
+            pntTopLeft->get_Y(&Yl);
+            Float64 dy = Yr - Yl;
+            pntTopLeft->Offset(0, dy);
+            pntBottomLeft->Offset(0, dy);
+         }
+
          CComPtr<IPolyShape> joint;
          joint.CoCreateInstance(CLSID_PolyShape);
          joint->AddPointEx(pntTopLeft);
@@ -910,6 +933,9 @@ HRESULT CThickenedFlangeBulbTeeSegment::GetJointShapes(Float64 Xs, IBulbTeeSecti
 
       CComPtr<ISuperstructureMemberSegment> rightSegment;
       rightSSMbr->get_Segment(0, &rightSegment); // assuming there is only one segment per superstructure member
+
+      Float64 rightOrientation;
+      rightSegment->get_Orientation(&rightOrientation);
 
       CComPtr<IGirderLine> rightGirderLine;
       rightSegment->get_GirderLine(&rightGirderLine);
@@ -977,6 +1003,18 @@ HRESULT CThickenedFlangeBulbTeeSegment::GetJointShapes(Float64 Xs, IBulbTeeSecti
             pntBottomRight->Move(0.5*(xl + xr), 0.5*(yl + yr));
 
             pntBottomLeft = rightBottom;
+         }
+
+         if (!IsZero(orientation) || !IsZero(rightOrientation))
+         {
+            // make adjust for girder orientation
+            Float64 Yr;
+            pntTopRight->get_Y(&Yr);
+            Float64 Yl;
+            pntTopLeft->get_Y(&Yl);
+            Float64 dy = Yr - Yl;
+            pntTopRight->Offset(0, -dy);
+            pntBottomRight->Offset(0, -dy);
          }
 
          CComPtr<IPolyShape> joint;
