@@ -211,9 +211,15 @@ CString CVersionInfo::GetFileDescription()
   return GetValue(_T("FileDescription"));
 }
 
-CString CVersionInfo::GetFileVersionAsString()
+CString CVersionInfo::GetFileVersionAsString(bool bIncludeBuildNumber)
 {
-  return GetValue(_T("FileVersion"));
+  CString strVersion(GetValue(_T("FileVersion")));
+  if (!bIncludeBuildNumber)
+  {
+     int pos = strVersion.ReverseFind(_T('.'));
+     strVersion = strVersion.Left(pos);
+  }
+  return strVersion;
 }
 
 CString CVersionInfo::GetInternalName()
@@ -236,9 +242,15 @@ CString CVersionInfo::GetProductName()
   return GetValue(_T("Productname"));
 }
 
-CString CVersionInfo::GetProductVersionAsString()
+CString CVersionInfo::GetProductVersionAsString(bool bIncludeBuildNumber)
 {
-  return GetValue(_T("ProductVersion"));
+  CString strVersion( GetValue(_T("ProductVersion")) );
+  if (!bIncludeBuildNumber)
+  {
+     int pos = strVersion.ReverseFind(_T('.'));
+     strVersion = strVersion.Left(pos);
+  }
+  return strVersion;
 }
   
 int CVersionInfo::GetNumberOfTranslations()
