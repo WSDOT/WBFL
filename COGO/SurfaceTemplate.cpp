@@ -223,8 +223,6 @@ STDMETHODIMP CSurfaceTemplate::GetElevationChange(CollectionIndexType ridgePoint
       return SurfaceTemplateError(IDS_E_INVALIDRIDGEPOINT,COGO_E_INVALIDRIDGEPOINTINDEX);
    }
 
-   Float64 sign = ::BinarySign(offset);
-
    Float64 delta = 0;
    if ( 0 <= offset )
    {
@@ -247,11 +245,11 @@ STDMETHODIMP CSurfaceTemplate::GetElevationChange(CollectionIndexType ridgePoint
             // the end of this segment is beyond the point we are looking for
             // get distance to the point
             width = offset - running_offset;
-            delta += sign*width*slope;
+            delta += width*slope;
             break; // don't go any further
          }
 
-         delta += sign*width*slope;
+         delta += width*slope;
 
          running_offset += width;
       }
@@ -274,10 +272,10 @@ STDMETHODIMP CSurfaceTemplate::GetElevationChange(CollectionIndexType ridgePoint
          if ( running_offset-width < offset )
          {
             width = running_offset-offset;
-            delta += sign*width*slope;
+            delta += width*slope;
             break; // don't go any further
          }
-         delta += sign*width*slope;
+         delta += width*slope;
          running_offset -= width;
       }
    }
@@ -352,6 +350,10 @@ STDMETHODIMP CSurfaceTemplate::GetSlope(CollectionIndexType ridgePointIdx,Float6
             {
                *pSlope = slope;
             }
+
+            // Slopes are dependent on which side we are of the alignment point
+            *pSlope *= -1.0;
+
             return S_OK;
          }
 

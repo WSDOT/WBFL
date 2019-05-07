@@ -71,7 +71,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::InterfaceSupportsErrorInfo(REFIID ri
 
 ////////////////////////////////////////////////////////////////////////
 // ISuperstructureMemberSegment implementation
-STDMETHODIMP CFlangedGirderEndBlockSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
+STDMETHODIMP CFlangedGirderEndBlockSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,ISection** ppSection)
 {
    CHECK_RETOBJ(ppSection);
 
@@ -82,7 +82,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_Section(StageIndexType stageIdx,
    }
 
    CComPtr<IShape> primaryShape;
-   HRESULT hr = get_PrimaryShape(Xs,sectionBias,&primaryShape);
+   HRESULT hr = get_PrimaryShape(Xs,sectionBias,coordinateSystem,&primaryShape);
    ATLASSERT(SUCCEEDED(hr));
    if ( FAILED(hr) )
       return hr;
@@ -159,7 +159,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_Section(StageIndexType stageIdx,
 }
 
 
-STDMETHODIMP CFlangedGirderEndBlockSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
+STDMETHODIMP CFlangedGirderEndBlockSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
@@ -313,11 +313,14 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_PrimaryShape(Float64 Xs, Section
    newBeam->put_T2(t2);
 
    // position the shape
-   CComPtr<IPoint2d> pntTopCenter;
-   GB_GetSectionLocation(this,Xs,&pntTopCenter);
+   if (coordinateSystem == cstBridge)
+   {
+      CComPtr<IPoint2d> pntTopCenter;
+      GB_GetSectionLocation(this, Xs, &pntTopCenter);
 
-   CComQIPtr<IXYPosition> position(newFlangedBeam);
-   position->put_LocatorPoint(lpTopCenter,pntTopCenter);
+      CComQIPtr<IXYPosition> position(newFlangedBeam);
+      position->put_LocatorPoint(lpTopCenter, pntTopCenter);
+   }
 
    *ppShape = newShape;
    (*ppShape)->AddRef();

@@ -82,6 +82,10 @@ cpp_quote("#define GB_E_ID_IN_USE                    MAKE_HRESULT(SEVERITY_ERROR
 cpp_quote("#define GB_E_OVERHANG                     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,537)")
 cpp_quote("#define GB_E_LESS_THAN_MIN_COLUMNS        MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,538)")
 
+// note... these flags get ORed with bridge geometry GF_flags
+// the values of these flags cannot duplicate the GF flags
+cpp_quote("#define BGF_PIERS 0x8000") // updates the pier geometry in the bridge model (assumes pier layout lines have alread been created and updated)
+
 
 [
 	uuid(44ECDFCD-A740-4B05-8139-7AB55E18AA92),
@@ -389,6 +393,14 @@ library WBFLGenericBridge
       jstConstantDepth, // the shape is defined by a constant depth
       jstFromAdjacentBeams // the shape is defined by the connection with adjacent beams
    } JointSectionType;
+
+   // Coordinate system
+   typedef [public, helpstring("enum SectionCoordinateSystemType"), uuid(8A98F327-46D2-4046-8CD6-8DB0BE162597)]
+   enum
+   {
+      cstBridge,
+      cstGirder
+   } SectionCoordinateSystemType;
    
    // Interface definitions
 
@@ -944,11 +956,13 @@ library WBFLGenericBridge
 	{
 	   [propget, helpstring("property GrossDepth")] HRESULT GrossDepth([out,retval]Float64* depth);
 	   [propput, helpstring("property GrossDepth")] HRESULT GrossDepth([in]Float64 depth);
-	   [propget, helpstring("property OverhangDepth")] HRESULT OverhangDepth([out,retval]Float64* depth);
-	   [propput, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]Float64 depth);
-	   [propget, helpstring("property OverhangTaper")] HRESULT OverhangTaper([out,retval]DeckOverhangTaper* taper);
-	   [propput, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DeckOverhangTaper taper);
-	};
+	   [propget, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]DirectionType side,[out,retval]Float64* depth);
+	   [propput, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]DirectionType side, [in]Float64 depth);
+	   [propget, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DirectionType side, [out,retval]DeckOverhangTaper* taper);
+	   [propput, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DirectionType side, [in]DeckOverhangTaper taper);
+      [helpstring("method GetOverhang")] HRESULT GetOverhang([out]Float64* leftDepth, [out]DeckOverhangTaper* leftTaper, [out]Float64* rightDepth, [out]DeckOverhangTaper* rightTaper);
+      [helpstring("method SetOverhang")] HRESULT SetOverhang([in]Float64 leftDepth, [in]DeckOverhangTaper leftTaper, [in]Float64 rightDepth, [in]DeckOverhangTaper rightTaper);
+   };
 
 	[
 	   object,
@@ -963,11 +977,13 @@ library WBFLGenericBridge
 	   [propput, helpstring("property CastDepth")] HRESULT CastDepth([in]Float64 depth);
 	   [propget, helpstring("property PanelDepth")] HRESULT PanelDepth([out,retval]Float64* depth);
 	   [propput, helpstring("property PanelDepth")] HRESULT PanelDepth([in]Float64 depth);
-	   [propget, helpstring("property OverhangDepth")] HRESULT OverhangDepth([out,retval]Float64* depth);
-	   [propput, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]Float64 depth);
-	   [propget, helpstring("property OverhangTaper")] HRESULT OverhangTaper([out,retval]DeckOverhangTaper* taper);
-	   [propput, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DeckOverhangTaper taper);
-	};
+      [propget, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]DirectionType side, [out, retval]Float64* depth);
+      [propput, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]DirectionType side, [in]Float64 depth);
+      [propget, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DirectionType side, [out, retval]DeckOverhangTaper* taper);
+      [propput, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DirectionType side, [in]DeckOverhangTaper taper);
+      [helpstring("method GetOverhang")] HRESULT GetOverhang([out]Float64* leftDepth, [out]DeckOverhangTaper* leftTaper, [out]Float64* rightDepth, [out]DeckOverhangTaper* rightTaper);
+      [helpstring("method SetOverhang")] HRESULT SetOverhang([in]Float64 leftDepth, [in]DeckOverhangTaper leftTaper, [in]Float64 rightDepth, [in]DeckOverhangTaper rightTaper);
+   };
 
 	[
 	   object,
@@ -1079,7 +1095,7 @@ library WBFLGenericBridge
       [propget,helpstring("property HasJoints")] HRESULT HasJoints([out,retval]VARIANT_BOOL* pbHasJoints);
       [propputref,helpstring("property JointMaterial")] HRESULT JointMaterial([in]IMaterial* material);
       [propget,helpstring("property JointMaterial")] HRESULT JointMaterial([out, retval]IMaterial** material);
-      [propget,helpstring("property JointShapes")] HRESULT JointShapes([in]Float64 Xs,[out]IShape** ppLeftJoint,[out]IShape** ppRightJoint);
+      [propget,helpstring("property JointShapes")] HRESULT JointShapes([in]Float64 Xs,[in]SectionCoordinateSystemType coordinateSystem,[out]IShape** ppLeftJoint,[out]IShape** ppRightJoint);
    };
 
 	[
@@ -1119,8 +1135,8 @@ library WBFLGenericBridge
    interface ISegment : IUnknown
    {
       [propget, helpstring("property Length")] HRESULT Length([out, retval] Float64 *pVal);
-      [propget, helpstring("property PrimaryShape")] HRESULT PrimaryShape([in]Float64 Xs,[in]SectionBias sectionBias,[out,retval]IShape** ppShape);
-		[propget, helpstring("property Section")] HRESULT Section([in]StageIndexType stageIdx,[in] Float64 Xs,[in]SectionBias sectionBias,[out,retval]ISection** ppSection);
+      [propget, helpstring("property PrimaryShape")] HRESULT PrimaryShape([in]Float64 Xs,[in]SectionBias sectionBias,[in]SectionCoordinateSystemType coordinateSystem,[out,retval]IShape** ppShape);
+		[propget, helpstring("property Section")] HRESULT Section([in]StageIndexType stageIdx,[in] Float64 Xs,[in]SectionBias sectionBias, [in]SectionCoordinateSystemType coordinateSystem, [out,retval]ISection** ppSection);
       [propget, helpstring("property PrevSegment")] HRESULT PrevSegment([out,retval]ISegment** segment);
       [propget, helpstring("property NextSegment")] HRESULT NextSegment([out,retval]ISegment** segment);
 
@@ -1515,7 +1531,7 @@ library WBFLGenericBridge
       [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
       [propget, helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
 		[propget, helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
-      [propget, helpstring("property GirderShape")] HRESULT GirderShape([in]Float64 Xs, [out, retval]IShape** ppShape);
+      [propget, helpstring("property GirderShape")] HRESULT GirderShape([in]Float64 Xs, [in]SectionCoordinateSystemType coordinateSystem,[out, retval]IShape** ppShape);
    };
 
 	[
@@ -2204,7 +2220,7 @@ library WBFLGenericBridge
      [propget, helpstring("property SuperstrucuterMember")] HRESULT SuperstructureMember([in]GirderIDType id,[out,retval]ISuperstructureMember** ppMbr);
      [propget, restricted, helpstring("property _EnumSuperstructureMembers")] HRESULT _EnumSuperstructureMembers([out,retval]IEnumSuperstructureMembers* *enumSSMbrs);
 
-     [helpstring("method UpdateBridgeModel")] HRESULT UpdateBridgeModel();
+     [helpstring("method UpdateBridgeModel")] HRESULT UpdateBridgeModel(long flags);
 	};
 	 
 

@@ -92,6 +92,7 @@ public:
    STDMETHOD(get_ID)(/*[out,retval]*/CogoObjectID* id) override;
    STDMETHOD(put_ID)(/*[in]*/CogoObjectID id) override;
    STDMETHOD(get_SurfaceTemplates)(ISurfaceTemplateCollection** ppTemplates) override;
+   STDMETHOD(get_SegmentCount)(IndexType* pntIdx) override;
    STDMETHOD(put_AlignmentPoint)(IndexType pntIdx) override;
    STDMETHOD(get_AlignmentPoint)(IndexType* pntIdx) override;
    STDMETHOD(put_ProfileGradePoint)(IndexType pntIdx) override;

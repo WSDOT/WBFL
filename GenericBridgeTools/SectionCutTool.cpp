@@ -37,6 +37,7 @@
 #include <WBFLCogo\CogoHelpers.h>
 
 #include <algorithm>
+#include <array>
 
 #if defined _DEBUG
 #include <map>
@@ -383,22 +384,22 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    Float64 gross_depth;
    deck->get_GrossDepth(&gross_depth);
 
-   Float64 overhang_depth;
-   DeckOverhangTaper overhang_taper;
+   std::array<Float64,2> overhang_depth;
+   std::array<DeckOverhangTaper,2> overhang_taper;
    if ( cip )
    {
-      cip->get_OverhangDepth(&overhang_depth);
-      cip->get_OverhangTaper(&overhang_taper);
+      cip->GetOverhang(&overhang_depth[qcbLeft], &overhang_taper[qcbLeft], &overhang_depth[qcbRight], &overhang_taper[qcbRight]);
    }
    else if ( sip )
    {
-      sip->get_OverhangDepth(&overhang_depth);
-      sip->get_OverhangTaper(&overhang_taper);
+      sip->GetOverhang(&overhang_depth[qcbLeft], &overhang_taper[qcbLeft], &overhang_depth[qcbRight], &overhang_taper[qcbRight]);
    }
    else
    {
-      overhang_depth = gross_depth;
-      overhang_taper = dotNone;
+      overhang_depth[qcbLeft] = gross_depth;
+      overhang_depth[qcbRight] = gross_depth;
+      overhang_taper[qcbLeft] = dotNone;
+      overhang_taper[qcbRight] = dotNone;
    }
 
    // Top of Deck
@@ -408,7 +409,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    // This is the same point as top of deck, except for the overhang_depth
    Float64 elev;
    profile->Elevation(CComVariant(rightOffsetStation),right_deck_edge_normal_offset,&elev);
-   slab_shape->AddPoint(right_deck_offset,elev-overhang_depth);
+   slab_shape->AddPoint(right_deck_offset,elev-overhang_depth[qcbRight]);
 
    // Right Edge, Top
    slab_shape->AddPoint(right_deck_offset,elev);
@@ -463,7 +464,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    slab_shape->AddPoint(left_deck_offset,elev);
 
    // Left Edge - bottom of deck
-   slab_shape->AddPoint(left_deck_offset,elev - overhang_depth);
+   slab_shape->AddPoint(left_deck_offset,elev - overhang_depth[qcbLeft]);
 
    // work left to right across bottom of deck back to the bottom-right corner
    if ( bIncludeHaunch == VARIANT_TRUE )
@@ -517,7 +518,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
             segment->get_Orientation(&orientation); // section view orientation
 
             CComPtr<IShape> girder_shape;
-            segment->get_PrimaryShape(girderPoint.Xs,sbLeft,&girder_shape);
+            segment->get_PrimaryShape(girderPoint.Xs,sbLeft,cstBridge,&girder_shape);
 
             CComQIPtr<IGirderSection> girder_section(girder_shape);
             ATLASSERT(girder_section);
@@ -593,7 +594,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
 
                   if (!bHasMSProfile)
                   {
-                     if (girderPoint.girderLocation != ltLeftExteriorGirder || msIdx != 0 || overhang_taper == dotNone || overhang_taper == dotBottomTopFlange)
+                     if (girderPoint.girderLocation != ltLeftExteriorGirder || msIdx != 0 || overhang_taper[qcbLeft] == dotNone || overhang_taper[qcbLeft] == dotBottomTopFlange)
                      {
                         // only use this point if this is an interior girder or an interior web
                         // on the first girder, or the deck overhang is not tapered
@@ -608,9 +609,9 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                         else
                         {
                            // this is the left exterior web on the left exterior girder
-                           if (overhang_taper == dotNone)
+                           if (overhang_taper[qcbLeft] == dotNone)
                            {
-                              dy = overhang_depth;
+                              dy = overhang_depth[qcbLeft];
                               dx = 0;
                            }
                            else
@@ -624,7 +625,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                            }
                         }
 
-                        if (overhang_taper == dotBottomTopFlange || xfillet == 0.0 || girderPoint.girderLocation == ltLeftExteriorGirder)
+                        if (overhang_taper[qcbLeft] == dotBottomTopFlange || xfillet == 0.0 || girderPoint.girderLocation == ltLeftExteriorGirder)
                         {
                            slab_shape->AddPoint(x23 - dx, el23 - dy); // 1,2
                         }
@@ -667,7 +668,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                   }
                }
 
-               if (girderPoint.girderLocation != ltRightExteriorGirder || msIdx != nMatingSurfaces - 1 || overhang_taper == dotNone || overhang_taper == dotBottomTopFlange)
+               if (girderPoint.girderLocation != ltRightExteriorGirder || msIdx != nMatingSurfaces - 1 || overhang_taper[qcbRight] == dotNone || overhang_taper[qcbRight] == dotBottomTopFlange)
                {
                   // only use this point if this is an interior girder or an interior web
                   // on the last girder, or the deck overhang is not tapered
@@ -683,9 +684,9 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                      }
                      else
                      {
-                        if (overhang_taper == dotNone)
+                        if (overhang_taper[qcbRight] == dotNone)
                         {
-                           dy = overhang_depth;
+                           dy = overhang_depth[qcbRight];
                            dx = 0;
                         }
                         else
@@ -698,7 +699,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                         }
                      }
 
-                     if (overhang_taper == dotBottomTopFlange || xfillet == 0.0 || girderPoint.girderLocation == ltRightExteriorGirder)
+                     if (overhang_taper[qcbRight] == dotBottomTopFlange || xfillet == 0.0 || girderPoint.girderLocation == ltRightExteriorGirder)
                      {
                         slab_shape->AddPoint(x45 + dx, el45 - dy); // 5, 6
                      }
@@ -885,7 +886,7 @@ STDMETHODIMP CSectionCutTool::get_EffectiveFlangeWidthTool(IEffectiveFlangeWidth
    return S_OK;
 }
 
-STDMETHODIMP CSectionCutTool::CreateGirderSectionBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg,SectionBias sectionBias,StageIndexType stageIdx,
+STDMETHODIMP CSectionCutTool::CreateGirderSectionBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,StageIndexType stageIdx,
                                           SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile, IndexType* pBeamIdx, IndexType* pSlabIdx,ISection** section)
 {
    CComPtr<ISuperstructureMember> ssMbr;
@@ -896,27 +897,27 @@ STDMETHODIMP CSectionCutTool::CreateGirderSectionBySSMbr(IGenericBridge* bridge,
    CComPtr<ISuperstructureMemberSegment> segment;
    ssMbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
 
-   return CreateGirderSectionBySegment(bridge,ssMbrID,segIdx,Xs,sectionBias,stageIdx,sectionPropMethod,haunchMethod,bFollowMatingSurfaceProfile,pBeamIdx,pSlabIdx,section);
+   return CreateGirderSectionBySegment(bridge,ssMbrID,segIdx,Xs,sectionBias,coordinateSystem,stageIdx,sectionPropMethod,haunchMethod,bFollowMatingSurfaceProfile,pBeamIdx,pSlabIdx,section);
 }
 
-STDMETHODIMP CSectionCutTool::CreateGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias,
+STDMETHODIMP CSectionCutTool::CreateGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,
    StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile, IndexType* pBeamIdx, IndexType* pSlabIdx,ISection** section)
 {
    // Validate input
    CHECK_RETOBJ(section);
    CHECK_IN(bridge);
 
-   return CreateCompositeSection(bridge,ssMbrID,segIdx,Xs,sectionBias,stageIdx,sectionPropMethod,haunchMethod,bFollowMatingSurfaceProfile,pBeamIdx,pSlabIdx,section);
+   return CreateCompositeSection(bridge,ssMbrID,segIdx,Xs,sectionBias,coordinateSystem,stageIdx,sectionPropMethod,haunchMethod,bFollowMatingSurfaceProfile,pBeamIdx,pSlabIdx,section);
 }
 
-STDMETHODIMP CSectionCutTool::CreateNetDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,StageIndexType stageIdx,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,ISection** section)
+STDMETHODIMP CSectionCutTool::CreateNetDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionCoordinateSystemType coordinateSystem,StageIndexType stageIdx,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,ISection** section)
 {
    CHECK_IN(bridge);
    CHECK_RETOBJ(section);
 
    // the girder section is required to create the deck shape
    CComPtr<ISection> ncsection;
-   HRESULT hr = CreateNoncompositeSection(bridge,ssMbrID,segIdx,Xs,sbLeft,stageIdx,spmGrossNoncomposite,&ncsection);
+   HRESULT hr = CreateNoncompositeSection(bridge,ssMbrID,segIdx,Xs,sbLeft,coordinateSystem,stageIdx,spmGrossNoncomposite,&ncsection);
    if ( FAILED(hr) )
    {
       return hr;
@@ -1049,7 +1050,7 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
 
             // Create a noncomposite section for the segment that is being cut
             CComPtr<ISection> girder_section;
-            CreateNoncompositeSection(bridge,ssMbrID,segIdx,dist_from_start_of_segment,sbRight,stageIdx,spmGross,&girder_section);
+            CreateNoncompositeSection(bridge,ssMbrID,segIdx,dist_from_start_of_segment,sbRight,cstBridge,stageIdx,spmGross,&girder_section);
 
             if ( girder_section == nullptr )
             {
@@ -1146,7 +1147,7 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
    return S_OK;
 }
 
-STDMETHODIMP CSectionCutTool::CreateLongitudinalJointShapeBySSMbr(IGenericBridge* bridge, GirderIDType ssMbrID, Float64 Xg, IShape** ppLeftJointShape, IShape** ppRightJointShape)
+STDMETHODIMP CSectionCutTool::CreateLongitudinalJointShapeBySSMbr(IGenericBridge* bridge, GirderIDType ssMbrID, Float64 Xg, SectionCoordinateSystemType coordinateSystem, IShape** ppLeftJointShape, IShape** ppRightJointShape)
 {
    CComPtr<ISuperstructureMember> ssMbr;
    bridge->get_SuperstructureMember(ssMbrID, &ssMbr);
@@ -1156,20 +1157,20 @@ STDMETHODIMP CSectionCutTool::CreateLongitudinalJointShapeBySSMbr(IGenericBridge
    CComPtr<ISuperstructureMemberSegment> segment;
    ssMbr->GetDistanceFromStartOfSegment(Xg, &Xs, &segIdx, &segment);
 
-   return CreateLongitudinalJointShapeBySegment(bridge, ssMbrID, segIdx, Xs, ppLeftJointShape,ppRightJointShape);
+   return CreateLongitudinalJointShapeBySegment(bridge, ssMbrID, segIdx, Xs, coordinateSystem, ppLeftJointShape,ppRightJointShape);
 }
 
-STDMETHODIMP CSectionCutTool::CreateLongitudinalJointShapeBySegment(IGenericBridge* bridge, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, IShape** ppLeftJointShape, IShape** ppRightJointShape)
+STDMETHODIMP CSectionCutTool::CreateLongitudinalJointShapeBySegment(IGenericBridge* bridge, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, SectionCoordinateSystemType coordinateSystem, IShape** ppLeftJointShape, IShape** ppRightJointShape)
 {
    // Validate input
    CHECK_RETOBJ(ppLeftJointShape);
    CHECK_RETOBJ(ppRightJointShape);
    CHECK_IN(bridge);
 
-   return CreateJointShapes(bridge, ssMbrID, segIdx, Xs, ppLeftJointShape,ppRightJointShape);
+   return CreateJointShapes(bridge, ssMbrID, segIdx, Xs,coordinateSystem, ppLeftJointShape,ppRightJointShape);
 }
 
-STDMETHODIMP CSectionCutTool::CreateGirderShapeBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg,SectionBias sectionBias,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,IShape** ppShape)
+STDMETHODIMP CSectionCutTool::CreateGirderShapeBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,IShape** ppShape)
 {
    CComPtr<ISuperstructureMember> ssMbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssMbr);
@@ -1179,22 +1180,22 @@ STDMETHODIMP CSectionCutTool::CreateGirderShapeBySSMbr(IGenericBridge* bridge,Gi
    CComPtr<ISuperstructureMemberSegment> segment;
    ssMbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
 
-   return CreateGirderShapeBySegment(bridge,ssMbrID,segIdx,Xs,sectionBias,bIncludeDeck,haunchMethod,bFollowMatingSurfaceProfile,ppShape);
+   return CreateGirderShapeBySegment(bridge,ssMbrID,segIdx,Xs,sectionBias,coordinateSystem,bIncludeDeck,haunchMethod,bFollowMatingSurfaceProfile,ppShape);
 }
 
-STDMETHODIMP CSectionCutTool::CreateGirderShapeBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionBias sectionBias,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,IShape** ppShape)
+STDMETHODIMP CSectionCutTool::CreateGirderShapeBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,IShape** ppShape)
 {
    // Validate input
    CHECK_RETOBJ(ppShape);
    CHECK_IN(bridge);
 
-   return CreateGirderShape(bridge,ssMbrID,segIdx,Xs,sectionBias,bIncludeDeck,haunchMethod,bFollowMatingSurfaceProfile,ppShape);
+   return CreateGirderShape(bridge,ssMbrID,segIdx,Xs,sectionBias,coordinateSystem,bIncludeDeck,haunchMethod,bFollowMatingSurfaceProfile,ppShape);
 }
 
-HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile, IndexType* pBeamIdx, IndexType* pSlabIdx,ISection** section)
+HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile, IndexType* pBeamIdx, IndexType* pSlabIdx,ISection** section)
 {
    CComPtr<ISection> ncsection;
-   HRESULT hr = CreateNoncompositeSection(bridge,ssMbrID,segIdx,Xs,sectionBias,stageIdx,sectionPropMethod,&ncsection);
+   HRESULT hr = CreateNoncompositeSection(bridge,ssMbrID,segIdx,Xs,sectionBias,coordinateSystem,stageIdx,sectionPropMethod,&ncsection);
    if ( FAILED(hr) )
    {
       return hr;
@@ -1219,7 +1220,6 @@ HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDT
    CComPtr<IShape> sishape;
    si->get_Shape(&sishape);
    CComQIPtr<IGirderSection> girder_section(sishape);
-   ATLASSERT(girder_section);
 
    CComPtr<ISection> deckSection;
    hr = CreateDeckSection(bridge,ssMbrID,segIdx,Xs,stageIdx,sectionPropMethod,haunchMethod,bFollowMatingSurfaceProfile,girder_section,&deckSection);
@@ -1650,7 +1650,7 @@ HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType s
    return S_OK;
 }
 
-HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** ppSection)
+HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** ppSection)
 {
    CComPtr<ISuperstructureMember> ssmbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
@@ -1666,7 +1666,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
 
    // this is the primary section (the girder)
    CComPtr<ISection> section;
-   HRESULT hr = segment->get_Section(stageIdx,Xs,sectionBias,&section);
+   HRESULT hr = segment->get_Section(stageIdx,Xs,sectionBias,coordinateSystem,&section);
    ATLASSERT(SUCCEEDED(hr));
    if ( FAILED(hr) )
    {
@@ -2261,7 +2261,7 @@ HRESULT CSectionCutTool::CreateBridgeDeckSection(IGenericBridge* bridge,Float64 
    return hr;
 }
 
-HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod,BOOL bFollowMatingSurfaceProfile,IShape** ppShape)
+HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod,BOOL bFollowMatingSurfaceProfile,IShape** ppShape)
 {
    // Xs is in segment coordinates
    CComPtr<ISuperstructureMember> ssmbr;
@@ -2271,7 +2271,7 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
    ssmbr->get_Segment(segIdx,&segment);
 
    CComPtr<IShape> primary_shape;
-   segment->get_PrimaryShape(Xs,sectionBias,&primary_shape);
+   segment->get_PrimaryShape(Xs,sectionBias,coordinateSystem,&primary_shape);
 
    CComQIPtr<ICompositeShape> compositeShape(primary_shape);
    ATLASSERT(compositeShape); // primary_shape must be a composite so we can put holes in it
@@ -2380,7 +2380,7 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
    return S_OK;
 }
 
-HRESULT CSectionCutTool::CreateJointShapes(IGenericBridge* bridge, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, IShape** ppLeftJointShape, IShape** ppRightJointShape)
+HRESULT CSectionCutTool::CreateJointShapes(IGenericBridge* bridge, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, SectionCoordinateSystemType coordinateSystem, IShape** ppLeftJointShape, IShape** ppRightJointShape)
 {
    // Xs is in segment coordinates
    CComPtr<ISuperstructureMember> ssmbr;
@@ -2393,7 +2393,7 @@ HRESULT CSectionCutTool::CreateJointShapes(IGenericBridge* bridge, GirderIDType 
    if (jointSegment)
    {
       CComPtr<IShape> leftJointShape, rightJointShape;
-      jointSegment->get_JointShapes(Xs, &leftJointShape, &rightJointShape);
+      jointSegment->get_JointShapes(Xs, coordinateSystem, &leftJointShape, &rightJointShape);
       leftJointShape.CopyTo(ppLeftJointShape);
       rightJointShape.CopyTo(ppRightJointShape);
    }
