@@ -211,6 +211,14 @@ public:
          CComQIPtr<IXYPosition> position(newSection);
          position->put_LocatorPoint(lpTopCenter, pntTopCenter);
       }
+      else
+      {
+         CComPtr<IPoint2d> pnt;
+         pnt.CoCreateInstance(CLSID_Point2d);
+         pnt->Move(0, 0);
+         CComQIPtr<IXYPosition> position(newSection);
+         position->put_LocatorPoint(lpTopCenter, pnt);
+      }
 
       CComPtr<ICompositeSectionEx> section;
       section.CoCreateInstance(CLSID_CompositeSectionEx);
@@ -324,6 +332,14 @@ public:
 
          CComQIPtr<IXYPosition> position(newSection);
          position->put_LocatorPoint(lpTopCenter, pntTopCenter);
+      }
+      else
+      {
+         CComPtr<IPoint2d> pnt;
+         pnt.CoCreateInstance(CLSID_Point2d);
+         pnt->Move(0, 0);
+         CComQIPtr<IXYPosition> position(newSection);
+         position->put_LocatorPoint(lpTopCenter, pnt);
       }
 
       *ppShape = newShape;

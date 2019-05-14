@@ -120,6 +120,14 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType s
          CComQIPtr<IXYPosition> position(shape);
          position->put_LocatorPoint(lpTopCenter, pntTopCenter);
       }
+      else
+      {
+         CComPtr<IPoint2d> pnt;
+         pnt.CoCreateInstance(CLSID_Point2d);
+         pnt->Move(0, 0);
+         CComQIPtr<IXYPosition> position(shape);
+         position->put_LocatorPoint(lpTopCenter, pnt);
+      }
 
       section->AddSection(shape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
    }
@@ -150,6 +158,14 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_PrimaryShape(Float64 Xs,
 
       CComQIPtr<IXYPosition> position(*ppShape);
       position->put_LocatorPoint(lpTopCenter, pntTopCenter);
+   }
+   else
+   {
+      CComPtr<IPoint2d> pnt;
+      pnt.CoCreateInstance(CLSID_Point2d);
+      pnt->Move(0, 0);
+      CComQIPtr<IXYPosition> position(*ppShape);
+      position->put_LocatorPoint(lpTopCenter, pnt);
    }
 
    return S_OK;

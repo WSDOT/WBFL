@@ -163,6 +163,14 @@ HRESULT CUSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias sectionB
       CComQIPtr<IXYPosition> position(newUGirderSection);
       position->put_LocatorPoint(lpTopCenter, pntTopCenter);
    }
+   else
+   {
+      CComPtr<IPoint2d> pnt;
+      pnt.CoCreateInstance(CLSID_Point2d);
+      pnt->Move(0, 0);
+      CComQIPtr<IXYPosition> position(newUGirderSection);
+      position->put_LocatorPoint(lpTopCenter, pnt);
+   }
 
    *ppShape = newShape;
    (*ppShape)->AddRef();

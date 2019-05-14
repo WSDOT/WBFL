@@ -321,6 +321,14 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_PrimaryShape(Float64 Xs, Section
       CComQIPtr<IXYPosition> position(newFlangedBeam);
       position->put_LocatorPoint(lpTopCenter, pntTopCenter);
    }
+   else
+   {
+      CComPtr<IPoint2d> pnt;
+      pnt.CoCreateInstance(CLSID_Point2d);
+      pnt->Move(0, 0);
+      CComQIPtr<IXYPosition> position(newFlangedBeam);
+      position->put_LocatorPoint(lpTopCenter, pnt);
+   }
 
    *ppShape = newShape;
    (*ppShape)->AddRef();
