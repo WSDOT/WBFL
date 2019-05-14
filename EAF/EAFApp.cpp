@@ -340,6 +340,15 @@ CString CEAFApp::GetDocumentationURL()
    
    CString strVersion = verInfo.GetProductVersionAsString(false);
 
+   std::_tstring v(strVersion);
+   auto count = std::count(std::begin(v), std::end(v), _T('.'));
+
+   for (auto i = 0; i < count - 1; i++)
+   {
+      int pos = strVersion.ReverseFind(_T('.')); // find the last '.'
+      strVersion = strVersion.Left(pos);
+   }
+
    strURL.Format(_T("%s%s/%s/"),GetDocumentationRootLocation(),m_pszExeName,strVersion);
 
    return strURL;
