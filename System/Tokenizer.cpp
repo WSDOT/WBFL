@@ -35,6 +35,7 @@
 #include <System\tokenizer.h>
 #include <algorithm>
 #include <math.h>
+#include <errno.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -270,9 +271,12 @@ bool sysTokenizer::ParseDouble(LPCTSTR lpszText, Float64* d)
 
 	TCHAR chFirst = lpszText[0];
    LPTSTR stopstr;
+   errno = 0;
 	*d = _tcstod(lpszText, &stopstr);
-	if ( *d == 0.0 && (chFirst != _T('0') && chFirst != _T('-')) )
-		return false;   // could not convert
+   if (errno != 0 || *stopstr != '\0')
+   {
+      return false; // could not convert
+   }
 
    if (*d==HUGE_VAL || *d==-HUGE_VAL)
    {
