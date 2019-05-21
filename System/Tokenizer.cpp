@@ -271,7 +271,7 @@ bool sysTokenizer::ParseDouble(LPCTSTR lpszText, Float64* d)
 	TCHAR chFirst = lpszText[0];
    LPTSTR stopstr;
 	*d = _tcstod(lpszText, &stopstr);
-	if (*d == 0.0 && chFirst != _T('0'))
+	if ( *d == 0.0 && (chFirst != _T('0') && chFirst != _T('-')) )
 		return false;   // could not convert
 
    if (*d==HUGE_VAL || *d==-HUGE_VAL)
