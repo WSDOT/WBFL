@@ -32,5 +32,46 @@
 #include "EndBlockSegmentImpl.h"
 
 // Template takes care of all
+class CDeckedSlabBeamVoidSurfaceAreaCalculator;
+typedef TEndBlockSegmentImpl<IDeckedSlabBeamEndBlockSegment, IDeckedSlabBeamSection, IDeckedSlabBeam, &CLSID_DeckedSlabBeamEndBlockSegment, IDR_DECKEDSLABBEAMENDBLOCKSEGMENT, VoidedEndBlock<IDeckedSlabBeam>, CDeckedSlabBeamVoidSurfaceAreaCalculator> CDeckedSlabBeamEndBlockSegment;
 
-typedef TEndBlockSegmentImpl<IDeckedSlabBeamEndBlockSegment, IDeckedSlabBeamSection, IDeckedSlabBeam, &CLSID_DeckedSlabBeamEndBlockSegment, IDR_DECKEDSLABBEAMENDBLOCKSEGMENT, VoidedEndBlock<IDeckedSlabBeam>> CDeckedSlabBeamEndBlockSegment;
+class CDeckedSlabBeamVoidSurfaceAreaCalculator
+{
+public:
+   CDeckedSlabBeamVoidSurfaceAreaCalculator(CDeckedSlabBeamEndBlockSegment* pSegment) : m_pSegment(pSegment)
+   {
+   }
+
+   HRESULT CalculateVoidSurfaceArea(Float64* pSurfaceArea)
+   {
+      CHECK_RETVAL(pSurfaceArea);
+      if (m_pSegment->m_Shapes.size() == 0)
+      {
+         *pSurfaceArea = 0;
+      }
+      else
+      {
+         Float64 L;
+         m_pSegment->get_Length(&L);
+
+         CComQIPtr<IDeckedSlabBeamSection> section(m_pSegment->m_Shapes.front().Shape);
+         CComPtr<IDeckedSlabBeam> beam;
+         section->get_Beam(&beam);
+         Float64 A, B, C, W, Tb;
+         beam->get_A(&A);
+         beam->get_B(&B);
+         beam->get_C(&C);
+         beam->get_W(&W);
+         beam->get_Tb(&Tb);
+
+         Float64 void_perimeter = (A - 2 * (B + W)) * (C - Tb);
+
+         *pSurfaceArea = (L - m_pSegment->m_EndBlockLength[etStart] - m_pSegment->m_EndBlockLength[etEnd])*(void_perimeter);
+      }
+      return S_OK;
+   }
+
+protected:
+   CDeckedSlabBeamEndBlockSegment* m_pSegment;
+};
+

@@ -307,6 +307,49 @@ STDMETHODIMP CTaperedGirderSegment::get_PrimaryShape(Float64 Xs, SectionBias sec
    return S_OK;
 }
 
+STDMETHODIMP CTaperedGirderSegment::GetVolumeAndSurfaceArea(Float64* pVolume, Float64* pSurfaceArea)
+{
+   if (m_bUpdateVolumeAndSurfaceArea)
+   {
+      Float64 start_perimeter;
+      m_Shapes[etStart].front().Shape->get_Perimeter(&start_perimeter);
+
+      CComPtr<IShapeProperties> shapeProps;
+      m_Shapes[etStart].front().Shape->get_ShapeProperties(&shapeProps);
+
+      Float64 start_area;
+      shapeProps->get_Area(&start_area);
+
+      Float64 end_perimeter;
+      m_Shapes[etEnd].front().Shape->get_Perimeter(&end_perimeter);
+
+      shapeProps.Release();
+      m_Shapes[etEnd].front().Shape->get_ShapeProperties(&shapeProps);
+
+      Float64 end_area;
+      shapeProps->get_Area(&end_area);
+
+      Float64 L;
+      get_Length(&L);
+
+      m_Volume = (start_area + end_area)*L/2;
+      m_SurfaceArea = (start_perimeter + end_perimeter)*L/2 + start_area + end_area;
+
+      m_bUpdateVolumeAndSurfaceArea = false;
+   }
+
+   *pVolume = m_Volume;
+   *pSurfaceArea = m_SurfaceArea;
+   return S_OK;
+}
+
+STDMETHODIMP CTaperedGirderSegment::get_InternalSurfaceAreaOfVoids(Float64* pSurfaceArea)
+{
+   CHECK_RETVAL(pSurfaceArea);
+   *pSurfaceArea = 0;
+   return S_OK;
+}
+
 STDMETHODIMP CTaperedGirderSegment::get_Profile(VARIANT_BOOL bIncludeClosure,IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
@@ -452,6 +495,10 @@ STDMETHODIMP CTaperedGirderSegment::AddShape(IShape* pStartShape,IShape* pEndSha
    endShapeData.FGMaterial = pFGMaterial;
    endShapeData.BGMaterial = pBGMaterial;
    m_Shapes[etEnd].push_back(endShapeData);
+
+   m_bUpdateVolumeAndSurfaceArea = true;
+   m_Volume = -1;
+   m_SurfaceArea = -1;
 
    ATLASSERT(m_Shapes[etStart].size() == m_Shapes[etEnd].size());
 

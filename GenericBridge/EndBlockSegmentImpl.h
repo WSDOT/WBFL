@@ -58,21 +58,23 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 // TEndBlockSegmentImpl
 //                                                             IDeckedSlabBeam
-template<class T_IEndBlockSegment, class T_IBeamSection, class T_IBeam, const CLSID* T_CLSID, long T_IDR,class T_ENDBLOCK> 
+template<class T_IEndBlockSegment, class T_IBeamSection, class T_IBeam, const CLSID* T_CLSID, long T_IDR,class T_ENDBLOCK,class VSAC> 
 class TEndBlockSegmentImpl : 
 	public CComObjectRootEx<CComSingleThreadModel>,
 //   public CComRefCountTracer<CSegment,CComObjectRootEx<CComSingleThreadModel> >,
-	public CComCoClass< TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR, T_ENDBLOCK>, T_CLSID>,
+	public CComCoClass< TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR, T_ENDBLOCK, VSAC>, T_CLSID>,
 	public ISupportErrorInfo,
-   public IObjectSafetyImpl<TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR, T_ENDBLOCK>, INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
+   public IObjectSafetyImpl<TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR, T_ENDBLOCK, VSAC>, INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
    public T_IEndBlockSegment,
    public IItemData,
    public IStructuredStorage2
 {
    friend TEndBlockSegmentImpl; // for easy cloning
 
-private:
+protected:
    CSuperstructureMemberSegmentImpl m_Impl;
+   VSAC m_VoidSurfaceAreaCalculator;
+   friend VSAC;
 
    struct ShapeData
    {
@@ -82,15 +84,22 @@ private:
    };
    std::vector<ShapeData> m_Shapes;
 
+   bool m_bUpdateVolumeAndSurfaceArea;
+   Float64 m_Volume;
+   Float64 m_SurfaceArea;
+
    // index is EndType
    Float64 m_EndBlockLength[2]; // length of end block from end of girder to transitation
 
    CItemDataManager m_ItemDataMgr;
 
 public:
-   TEndBlockSegmentImpl()
+   TEndBlockSegmentImpl() : m_VoidSurfaceAreaCalculator(this)
 	{
-	}
+      m_bUpdateVolumeAndSurfaceArea = true;
+      m_Volume = -1;
+      m_SurfaceArea = -1;
+   }
 
 DECLARE_REGISTRY_RESOURCEID(T_IDR)
 
@@ -199,7 +208,7 @@ public:
       // Section is in the end block so use the outline of the shape only
       if ( IsInEndBlock(Xs,sectionBias) )
       {
-         T_ENDBLOCK::InEndBlock(newBeam);;
+         T_ENDBLOCK::InEndBlock(newBeam);
       }
 
       // position the shape
@@ -348,6 +357,116 @@ public:
       return S_OK;
    }
 
+   STDMETHOD(GetVolumeAndSurfaceArea)(Float64* pVolume, Float64* pSurfaceArea)
+   {
+      CHECK_RETVAL(pVolume);
+      CHECK_RETVAL(pSurfaceArea);
+
+      if (m_bUpdateVolumeAndSurfaceArea)
+      {
+         if (m_Shapes.size() == 0)
+         {
+            m_Volume = 0;
+            m_SurfaceArea = 0;
+         }
+         else
+         {
+            Float64 L;
+            get_Length(&L);
+            std::vector<std::pair<Float64, SectionBias>> vCuts;
+
+            vCuts.emplace_back(0.0, sbRight); // start of beam
+
+            // left end block
+            if (!IsZero(m_EndBlockLength[etStart]))
+            {
+               // end blocks have an abrupt change in section
+               vCuts.emplace_back(m_EndBlockLength[etStart], sbLeft);
+               vCuts.emplace_back(m_EndBlockLength[etStart], sbRight);
+            }
+
+            // right end block
+            if (!IsZero(m_EndBlockLength[etEnd]))
+            {
+               // end blocks have an abrupt change in section
+               vCuts.emplace_back(L - m_EndBlockLength[etEnd], sbLeft);
+               vCuts.emplace_back(L - m_EndBlockLength[etEnd], sbRight);
+            }
+
+            // end of beam
+            vCuts.emplace_back(L, sbLeft);
+
+            auto iter(vCuts.begin());
+            CComPtr<IShape> shape;
+            get_PrimaryShape(iter->first, iter->second, cstGirder, &shape);
+            Float64 prev_perimeter;
+            shape->get_Perimeter(&prev_perimeter);
+            CComPtr<IShapeProperties> shapeProps;
+            shape->get_ShapeProperties(&shapeProps);
+            Float64 start_area;
+            shapeProps->get_Area(&start_area);
+            Float64 prev_area = start_area;
+
+            Float64 prevX = iter->first;
+
+            Float64 V = 0;
+            Float64 S = 0;
+
+            iter++;
+            auto end(vCuts.end());
+            for (; iter != end; iter++)
+            {
+               Float64 X = iter->first;
+               SectionBias bias = iter->second;
+
+               shape.Release();
+               get_PrimaryShape(X, bias, cstGirder, &shape);
+               Float64 perimeter;
+               shape->get_Perimeter(&perimeter);
+
+               shapeProps.Release();
+               shape->get_ShapeProperties(&shapeProps);
+               Float64 area;
+               shapeProps->get_Area(&area);
+
+               Float64 dx = X - prevX;
+
+               Float64 avg_perimeter = (prev_perimeter + perimeter)/* / 2*/; // save the divide by 2 for outside the loop
+               Float64 avg_area = (prev_area + area) /* / 2*/; // save the divide by 2 for outside the loop
+
+               S += avg_perimeter*dx;
+               V += avg_area*dx;
+
+               prev_perimeter = perimeter;
+               prev_area = area;
+               prevX = X;
+            }
+
+            // divide by 2 now
+            S /= 2;
+            V /= 2;
+
+            Float64 end_area;
+            shapeProps->get_Area(&end_area);
+            S += start_area + end_area;
+
+            m_Volume = V;
+            m_SurfaceArea = S;
+         }
+
+         m_bUpdateVolumeAndSurfaceArea = false;
+      }
+
+      *pVolume = m_Volume;
+      *pSurfaceArea = m_SurfaceArea;
+      return S_OK;
+   }
+
+   STDMETHOD(get_InternalSurfaceAreaOfVoids)(Float64* pSurfaceArea) override
+   {
+      return m_VoidSurfaceAreaCalculator.CalculateVoidSurfaceArea(pSurfaceArea);
+   }
+   
    STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure,IShape** ppShape) override
    {
       CHECK_RETOBJ(ppShape);
@@ -487,6 +606,10 @@ public:
       shapeData.BGMaterial = pBGMaterial;
 
       m_Shapes.push_back(shapeData);
+
+      m_bUpdateVolumeAndSurfaceArea = true;
+      m_Volume = -1;
+      m_SurfaceArea = -1;
 
       return S_OK;
    }

@@ -178,6 +178,47 @@ HRESULT CUSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias sectionB
    return S_OK;
 }
 
+HRESULT CUSplicedGirderSegment::GetVolume_and_SurfaceArea(Float64* pVolume, Float64* pSurfaceArea)
+{
+   // U-beams are prismatic so don't call the base class version (it assumes a more general section)
+   CHECK_RETVAL(pVolume);
+   CHECK_RETVAL(pSurfaceArea);
+
+   if (m_bUpdateVolumeAndSurfaceArea)
+   {
+      if (m_Shapes.size() == 0)
+      {
+         m_Volume = 0;
+         m_SurfaceArea = 0;
+      }
+      else
+      {
+         CComPtr<IShape> shape;
+         GetPrimaryShape(0.0, sbRight, cstGirder, &shape);
+         Float64 perimeter;
+         shape->get_Perimeter(&perimeter);
+
+         CComPtr<IShapeProperties> shapeProps;
+         shape->get_ShapeProperties(&shapeProps);
+
+         Float64 area;
+         shapeProps->get_Area(&area);
+
+         Float64 L;
+         get_Length(&L);
+
+         m_Volume = area*L;
+         m_SurfaceArea = perimeter*L + 2 * area;
+      }
+
+      m_bUpdateVolumeAndSurfaceArea = false;
+   }
+
+   *pVolume = m_Volume;
+   *pSurfaceArea = m_SurfaceArea;
+   return S_OK;
+}
+
 void CUSplicedGirderSegment::GetEndBlockWidth(Float64 Xs, SectionBias sectionBias,Float64* pWtop,Float64* pWbot)
 {
    // not supporting end blocks

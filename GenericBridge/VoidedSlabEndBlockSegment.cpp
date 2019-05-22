@@ -35,4 +35,4 @@ static char THIS_FILE[] = __FILE__;
 
 
 // Instantiate template in our dll
-template class TEndBlockSegmentImpl<IVoidedSlabEndBlockSegment, IVoidedSlabSection2, IVoidedSlab2, &CLSID_VoidedSlabEndBlockSegment, IDR_VOIDEDSLABENDBLOCKSEGMENT, VoidedEndBlock<IVoidedSlab2>>;
+template class TEndBlockSegmentImpl<IVoidedSlabEndBlockSegment, IVoidedSlabSection2, IVoidedSlab2, &CLSID_VoidedSlabEndBlockSegment, IDR_VOIDEDSLABENDBLOCKSEGMENT, VoidedEndBlock<IVoidedSlab2>, CVoidedSlabVoidSurfaceAreaCalculator>;

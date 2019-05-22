@@ -35,4 +35,4 @@ static char THIS_FILE[] = __FILE__;
 
 
 // Instantiate template in our dll
-template class TEndBlockSegmentImpl<IUGirderSection2EndBlockSegment, IUGirderSection2, IUBeam2, &CLSID_UGirderSection2EndBlockSegment, IDR_UGIRDERSECTION2ENDBLOCKSEGMENT, OutlineEndBlock<IUBeam2>>;
+template class TEndBlockSegmentImpl<IUGirderSection2EndBlockSegment, IUGirderSection2, IUBeam2, &CLSID_UGirderSection2EndBlockSegment, IDR_UGIRDERSECTION2ENDBLOCKSEGMENT, OutlineEndBlock<IUBeam2> , CUGirderVoidSurfaceAreaCalculator>;

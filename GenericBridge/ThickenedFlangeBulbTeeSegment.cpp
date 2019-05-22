@@ -213,6 +213,113 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_PrimaryShape(Float64 Xs,Section
    return S_OK;
 }
 
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::GetVolumeAndSurfaceArea(Float64* pVolume, Float64* pSurfaceArea)
+{
+   CHECK_RETVAL(pVolume);
+   CHECK_RETVAL(pSurfaceArea);
+
+   if (m_bUpdateVolumeAndSurfaceArea)
+   {
+      if (m_Shapes.size() == 0)
+      {
+         m_Volume = 0;
+         m_SurfaceArea = 0;
+      }
+      else
+      {
+         Float64 L;
+         get_Length(&L);
+
+         if (IsZero(m_FlangeThickening))
+         {
+            Float64 perimeter;
+            m_Shapes.front().Shape->get_Perimeter(&perimeter);
+
+            CComPtr<IShapeProperties> shapeProps;
+            m_Shapes.front().Shape->get_ShapeProperties(&shapeProps);
+
+            Float64 area;
+            shapeProps->get_Area(&area);
+
+
+            m_Volume = area*L;
+            m_SurfaceArea = perimeter*L + 2 * area;
+         }
+         else
+         {
+            Float64 X = 0;
+            CComPtr<IShape> shape;
+            get_PrimaryShape(X, sbRight, cstGirder, &shape); // don't use the shape in m_Shapes. There is to flange thickening so we have to
+                                                              // get the primary shape so the effect of TFT is included
+            Float64 prev_perimeter;
+            shape->get_Perimeter(&prev_perimeter);
+
+            CComPtr<IShapeProperties> shapeProps;
+            shape->get_ShapeProperties(&shapeProps);
+
+            Float64 start_area;
+            shapeProps->get_Area(&start_area);
+
+            Float64 prev_area = start_area;
+
+            Float64 V = 0;
+            Float64 S = 0;
+            IndexType nSections = 10;
+            Float64 dx = L / nSections;
+            for (IndexType i = 1; i <= nSections; i++)
+            {
+               X += dx;
+
+               shape.Release();
+               get_PrimaryShape(X, sbLeft, cstGirder, &shape);
+
+               Float64 perimeter;
+               shape->get_Perimeter(&perimeter);
+
+               shapeProps.Release();
+               shape->get_ShapeProperties(&shapeProps);
+               Float64 area;
+               shapeProps->get_Area(&area);
+
+               Float64 avg_perimeter = (prev_perimeter + perimeter)/* / 2*/; // save the divide by 2 for outside the loop
+               Float64 avg_area = (prev_area + area) /* / 2*/; // save the divide by 2 for outside the loop
+
+               S += avg_perimeter*dx;
+               V += avg_area*dx;
+
+               prev_perimeter = perimeter;
+               prev_area = area;
+            }
+
+            // divide by 2 now
+            S /= 2;
+            V /= 2;
+
+            Float64 end_area;
+            shapeProps->get_Area(&end_area);
+
+            S += start_area + end_area;
+
+            m_Volume = V;
+            m_SurfaceArea = S;
+         }
+      }
+
+      m_bUpdateVolumeAndSurfaceArea = false;
+   }
+
+   *pVolume = m_Volume;
+   *pSurfaceArea = m_SurfaceArea;
+   return S_OK;
+}
+
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_InternalSurfaceAreaOfVoids(Float64* pSurfaceArea)
+{
+   CHECK_RETVAL(pSurfaceArea);
+   *pSurfaceArea = 0;
+   return S_OK;
+}
+
 STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Profile(VARIANT_BOOL bIncludeClosure,IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
@@ -378,6 +485,10 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::AddShape(IShape* pShape,IMaterial* 
    shapeData.BGMaterial = pBGMaterial;
 
    m_Shapes.push_back(shapeData);
+
+   m_bUpdateVolumeAndSurfaceArea = true;
+   m_Volume = -1;
+   m_SurfaceArea = -1;
 
    return S_OK;
 }
@@ -746,7 +857,7 @@ HRESULT CThickenedFlangeBulbTeeSegment::AdjustPosition(Float64 Xs, IBulbTee2* pB
 {
    // This method puts pBeam in Bridge Section Coordinates
 
-   // Get the point where the girder line is loaded in bridge section coordiantes
+   // Get the point where the girder line is located in bridge section coordiantes
    // This point corresponds to the point on the top of the girder above the CL web
    CComPtr<IPoint2d> pntGirderLine;
    GB_GetSectionLocation(this, Xs, &pntGirderLine);
@@ -823,8 +934,6 @@ HRESULT CThickenedFlangeBulbTeeSegment::GetJointShapes(Float64 Xs, IBulbTeeSecti
    line.CoCreateInstance(CLSID_Line2d);
    line->SetExplicit(pntOnThisSegment, v);
 
-   CComQIPtr<IXYPosition> position(pSection);
-   ATLASSERT(position);
    if (location != ltLeftExteriorGirder)
    {
       GirderIDType leftSSMbrID;

@@ -47,6 +47,9 @@ class ATL_NO_VTABLE CPrismaticSuperstructureMemberSegment :
 public:
    CPrismaticSuperstructureMemberSegment()
 	{
+      m_bUpdateVolumeAndSurfaceArea = true;
+      m_Volume = -1;
+      m_SurfaceArea = -1;
 	}
 
    HRESULT FinalConstruct();
@@ -69,6 +72,10 @@ END_COM_MAP()
 
 private:
    CSuperstructureMemberSegmentImpl m_Impl;
+
+   bool m_bUpdateVolumeAndSurfaceArea;
+   Float64 m_Volume;
+   Float64 m_SurfaceArea;
 
    struct ShapeData
    {
@@ -96,6 +103,8 @@ public:
    STDMETHOD(get_NextSegment)(ISegment** segment) override { return m_Impl.get_NextSegment(segment); }
    STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,ISection** ppSection) override;
    STDMETHOD(get_PrimaryShape)(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape) override;
+   STDMETHOD(GetVolumeAndSurfaceArea)(Float64* pVolume, Float64* pSurfaceArea) override;
+   STDMETHOD(get_InternalSurfaceAreaOfVoids)(Float64* pSurfaceArea) override;
    STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure, IShape** ppShape) override;
    STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override { return m_Impl.get_Length(pVal); }
    STDMETHOD(get_LayoutLength)(/*[out, retval]*/ Float64 *pVal) override { return m_Impl.get_LayoutLength(pVal); }

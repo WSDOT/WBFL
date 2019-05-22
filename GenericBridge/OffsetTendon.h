@@ -110,9 +110,10 @@ public:
 	STDMETHOD(ClearSegments)() override;
 	STDMETHOD(get_OutsideDiameter)(/*[out,retval]*/Float64* size) override;
 	STDMETHOD(put_OutsideDiameter)(/*[in]*/Float64 size) override;
-	STDMETHOD(get_InsideDiameter)(/*[out,retval]*/Float64* size) override;
+   STDMETHOD(get_OutsideDuctArea)(/*[out,retval]*/Float64* Aduct) override;
+   STDMETHOD(get_InsideDiameter)(/*[out,retval]*/Float64* size) override;
 	STDMETHOD(put_InsideDiameter)(/*[in]*/Float64 size) override;
-	STDMETHOD(get_InsideDuctArea)(/*[out,retval]*/Float64* Apt) override;
+	STDMETHOD(get_InsideDuctArea)(/*[out,retval]*/Float64* Aduct) override;
 	STDMETHOD(get_TendonArea)(/*[out,retval]*/Float64* Apt) override;
 	STDMETHOD(get_StrandCount)(/*[out,retval]*/StrandIndexType* count) override;
 	STDMETHOD(put_StrandCount)(/*[in]*/StrandIndexType count) override;

@@ -118,6 +118,15 @@ STDMETHODIMP CTendon::put_OutsideDiameter(Float64 size)
    return S_OK;
 }
 
+STDMETHODIMP CTendon::get_OutsideDuctArea(Float64* Aduct)
+{
+   CHECK_RETVAL(Aduct);
+
+   *Aduct = M_PI*m_OD*m_OD / 4;
+
+   return S_OK;
+}
+
 STDMETHODIMP CTendon::get_InsideDiameter(Float64* size)
 {
    CHECK_RETVAL(size);
