@@ -61,7 +61,7 @@ Define BOOSTDIR and XSDDIR environment variables for the location where the boos
 This project is jointly developed by the Washington State and Texas Departments of Transportation
 
 * **Richard Brice, PE** - [WSDOT](https://github.com/RickBrice)
-* **Richard Pickings, PE** - [BridgeSight Inc](http://www.bridgesight.com)
+* **Richard Pickings, PE** - [BridgeSight Inc](http://www.bridgesight.com) for TxDOT
 
 ## License
 
