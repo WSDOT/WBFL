@@ -2232,6 +2232,8 @@ library WBFLGenericBridge
 	  [propget, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([out,retval]Float64* depth);
 	  [propput, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([in]Float64 depth);
 
+     [helpstring("property HasFutureOverlay")] HRESULT HasFutureOverlay([out]VARIANT_BOOL* pvbHasFutureOverlay);
+
      [helpstring("method CreateSuperstructureMember")] HRESULT CreateSuperstructureMember([in]GirderIDType id,[in] GirderIDType leftSSMbrID, [in]GirderIDType rightSSMbrID,[out,retval]ISuperstructureMember** ppMbr);
      [propget, helpstring("property SuperstrucuterMember")] HRESULT SuperstructureMember([in]GirderIDType id,[out,retval]ISuperstructureMember** ppMbr);
      [propget, restricted, helpstring("property _EnumSuperstructureMembers")] HRESULT _EnumSuperstructureMembers([out,retval]IEnumSuperstructureMembers* *enumSSMbrs);

@@ -178,8 +178,18 @@ STDMETHODIMP CSectionCutTool::CreateLeftBarrierSection(IGenericBridge* bridge,Fl
       return S_FALSE;
    }
 
+   Float64 wearing_surface_adjustment = 0;
+   VARIANT_BOOL vbHasFutureOverlay;
+   bridge->HasFutureOverlay(&vbHasFutureOverlay);
+   StageIndexType wearingSurfaceStage;
+   bridge->get_WearingSurfaceStage(&wearingSurfaceStage);
+   if (wearingSurfaceStage != INVALID_INDEX && vbHasFutureOverlay == VARIANT_FALSE)
+   {
+      bridge->get_WearingSurfaceDepth(&wearing_surface_adjustment);
+   }
+
    CComQIPtr<IXYPosition> position(shape);
-   position->Offset(left_deck_offset,elev);
+   position->Offset(left_deck_offset,elev - wearing_surface_adjustment);
 
    // use material for exterior barrier as materior for entire section
    CComPtr<IBarrier> ext_barrier;
@@ -259,8 +269,18 @@ STDMETHODIMP CSectionCutTool::CreateRightBarrierSection(IGenericBridge* bridge,F
       return S_FALSE;
    }
 
+   Float64 wearing_surface_adjustment = 0;
+   VARIANT_BOOL vbHasFutureOverlay;
+   bridge->HasFutureOverlay(&vbHasFutureOverlay);
+   StageIndexType wearingSurfaceStage;
+   bridge->get_WearingSurfaceStage(&wearingSurfaceStage);
+   if (wearingSurfaceStage != INVALID_INDEX && vbHasFutureOverlay == VARIANT_FALSE)
+   {
+      bridge->get_WearingSurfaceDepth(&wearing_surface_adjustment);
+   }
+
    CComQIPtr<IXYPosition> position(shape);
-   position->Offset(right_deck_offset,elev);
+   position->Offset(right_deck_offset,elev - wearing_surface_adjustment);
 
    // use material for exterior barrier as materior for entire section
    CComPtr<IBarrier> ext_barrier;
@@ -749,6 +769,21 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
             }
          }
       }
+   }
+
+   // if there is a wearing surface that is not a future overlay,
+   // lower the deck because the finished grade is the top of the wearing surface
+   VARIANT_BOOL vbHasFutureOverlay;
+   bridge->HasFutureOverlay(&vbHasFutureOverlay);
+   StageIndexType wearingSurfaceStage;
+   bridge->get_WearingSurfaceStage(&wearingSurfaceStage);
+   if (wearingSurfaceStage != INVALID_INDEX && vbHasFutureOverlay == VARIANT_FALSE)
+   {
+      Float64 wearing_surface_depth;
+      bridge->get_WearingSurfaceDepth(&wearing_surface_depth);
+
+      CComQIPtr<IXYPosition> position(slab_shape);
+      position->Offset(0, -wearing_surface_depth);
    }
 
    slab_shape.QueryInterface(shape);
@@ -2592,8 +2627,18 @@ HRESULT CSectionCutTool::CreateBarrierShape(DirectionType side,IGenericBridge* b
    position->get_LocatorPoint(lpHookPoint,&hook_point);
    position->RotateEx(hook_point,angle);
 
+   Float64 wearing_surface_adjustment = 0;
+   VARIANT_BOOL vbHasFutureOverlay;
+   bridge->HasFutureOverlay(&vbHasFutureOverlay);
+   StageIndexType wearingSurfaceStage;
+   bridge->get_WearingSurfaceStage(&wearingSurfaceStage);
+   if (wearingSurfaceStage != INVALID_INDEX && vbHasFutureOverlay == VARIANT_FALSE)
+   {
+      bridge->get_WearingSurfaceDepth(&wearing_surface_adjustment);
+   }
+
    // move shape into bridge section coordinates
-   position->Offset(deck_offset,deck_edge_elev);
+   position->Offset(deck_offset,deck_edge_elev - wearing_surface_adjustment);
 
    // Project shape onto cut line
    CComPtr<IDirection> normal;

@@ -303,6 +303,18 @@ STDMETHODIMP CGenericBridge::put_SacrificialDepth(Float64 depth)
    return S_OK;
 }
 
+STDMETHODIMP CGenericBridge::HasFutureOverlay(VARIANT_BOOL* pvbHasFutureOverlay)
+{
+   CHECK_RETVAL(pvbHasFutureOverlay);
+   bool bHasFutureOverlay = false;
+   if ((m_SacrificialDepthStage != INVALID_INDEX && m_WearingSurfaceStage != INVALID_INDEX) && (m_SacrificialDepthStage != m_WearingSurfaceStage))
+   {
+      bHasFutureOverlay = true;
+   }
+   *pvbHasFutureOverlay = (bHasFutureOverlay ? VARIANT_TRUE : VARIANT_FALSE);
+   return S_OK;
+}
+
 STDMETHODIMP CGenericBridge::CreateSuperstructureMember(GirderIDType id, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,ISuperstructureMember** ppMbr)
 {
    CHECK_RETOBJ(ppMbr);
