@@ -241,9 +241,15 @@ eafTypes::HttpGetResult EAFGetFileFromHTTPServer(const CString& strFileURL, cons
    INTERNET_PORT nPort;
 
    BOOL bSuccess = AfxParseURL(strFileURL,dwServiceType,strServer,strObject,nPort);
-   if ( !bSuccess || dwServiceType != AFX_INET_SERVICE_HTTP )
+   if (!bSuccess || (dwServiceType != AFX_INET_SERVICE_HTTP && dwServiceType != AFX_INET_SERVICE_HTTPS))
    {
       return eafTypes::hgrInvalidUrl;
+   }
+
+   if (dwServiceType == AFX_INET_SERVICE_HTTPS)
+   {
+      dwFlags |= INTERNET_FLAG_SECURE;
+      dwHttpRequestFlags |= INTERNET_FLAG_SECURE;
    }
 
 	CInternetSession	session(pstrAgent, 1, dwAccessType, pstrProxyName, pstrProxyBypass, dwFlags);
