@@ -203,7 +203,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_PrimaryShape(Float64 Xs,Section
    CComQIPtr<IBulbTeeSection> btSection(shape);
    ATLASSERT(btSection);
    CComPtr<IShape> leftJoint, rightJoint;
-   GetJointShapes(Xs, btSection, coordinateSystem, &leftJoint, &rightJoint);
+   CreateJointShapes(Xs, btSection, coordinateSystem, &leftJoint, &rightJoint);
 
    CComQIPtr<IBulbTeeSection> girderSection(girderShape);
    girderSection->SetJointShapes(leftJoint, rightJoint);
@@ -884,7 +884,7 @@ HRESULT CThickenedFlangeBulbTeeSegment::AdjustPosition(Float64 Xs, IBulbTee2* pB
    return S_OK;
 }
 
-HRESULT CThickenedFlangeBulbTeeSegment::GetJointShapes(Float64 Xs, IBulbTeeSection* pSection, SectionCoordinateSystemType coordinateSystem, IShape** ppLeftJoint, IShape** ppRightJoint)
+HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IBulbTeeSection* pSection, SectionCoordinateSystemType coordinateSystem, IShape** ppLeftJoint, IShape** ppRightJoint)
 {
    CHECK_RETOBJ(ppLeftJoint);
    CHECK_RETOBJ(ppRightJoint);

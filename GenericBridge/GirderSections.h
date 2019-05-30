@@ -181,12 +181,12 @@ public:
 
       if (m_LeftJoint)
       {
-         m_LeftJoint.CopyTo(ppLeftJoint);
+         m_LeftJoint->Clone(ppLeftJoint);
       }
 
       if (m_RightJoint)
       {
-         m_RightJoint.CopyTo(ppRightJoint);
+         m_RightJoint->Clone(ppRightJoint);
       }
 
       return S_OK;

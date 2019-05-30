@@ -170,6 +170,6 @@ public:
 
 private:
    HRESULT AdjustPosition(Float64 Xs, IBulbTee2* pBeam);
-   HRESULT GetJointShapes(Float64 Xs, IBulbTeeSection* pSection, SectionCoordinateSystemType coordinateSystem, IShape** ppLeftJoint, IShape** ppRightJoint);
+   HRESULT CreateJointShapes(Float64 Xs, IBulbTeeSection* pSection, SectionCoordinateSystemType coordinateSystem, IShape** ppLeftJoint, IShape** ppRightJoint);
 };
 

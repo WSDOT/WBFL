@@ -775,9 +775,8 @@ protected:
          return S_OK;
       }
 
-      HRESULT hr;
       CComPtr<IShape> primaryShape;
-      hr = GetPrimaryShape(Xs,sectionBias,coordinateSystem,&primaryShape);
+      HRESULT hr = get_PrimaryShape(Xs, sectionBias, coordinateSystem,&primaryShape);
       ATLASSERT(SUCCEEDED(hr));
       if ( FAILED(hr) )
          return hr;
