@@ -122,7 +122,6 @@ public:
    // contraflexure
    void ClearContraflexureLoads();
    void GenerateContraflexureLoads();
-   void ComputeContraflexurePOIs();
    void GetContraflexureLocations(IDblArray* *locations);
    void GetContraflexureForce(ForceEffectType effect, CInfluenceLine* results);
    void IsPOIInContraflexureZone(PoiIDType poiID, InZoneType* isInZone);
