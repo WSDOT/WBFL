@@ -30,6 +30,7 @@
 #include "resource.h"       // main symbols
 #include "ItemDataManager.h"
 #include "SuperstructureMemberSegmentImpl.h"
+#include <array>
 
 /////////////////////////////////////////////////////////////////////////////
 // CTaperedGirderSegment
@@ -83,7 +84,13 @@ private:
       CComPtr<IMaterial> FGMaterial;
       CComPtr<IMaterial> BGMaterial;
    };
-   std::vector<ShapeData> m_Shapes[2]; // index is EndType
+   std::array<std::vector<ShapeData>,2> m_Shapes; // index is EndType
+
+   struct compare
+   {
+      bool operator()(const Float64& a, const Float64&b)const { return ::IsLT(a, b); }
+   };
+   std::map<Float64, CComPtr<IShape>, compare> m_ShapeCache;
 
    CItemDataManager m_ItemDataMgr;
 

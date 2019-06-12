@@ -97,7 +97,53 @@ protected:
       CComPtr<IMaterial> FGMaterial;
       CComPtr<IMaterial> BGMaterial;
    };
-   std::vector<ShapeData> m_Shapes;
+   std::vector<ShapeData> m_Shapes; // this are the basic shapes, they are modified by end blocks and segment variations to become the actual shapes
+
+
+   typedef struct Key
+   {
+      Float64 Xs;
+      SectionBias sectionBias;
+
+      Key(Float64 Xs, SectionBias sectionBias) :Xs(Xs), sectionBias(sectionBias) {}
+
+      bool operator<(const Key& other) const
+      {
+         if (IsEqual(Xs, other.Xs))
+         {
+            return sectionBias < other.sectionBias;
+         }
+         else if (Xs < other.Xs)
+         {
+            return true;
+         }
+         else
+         {
+            return false;
+         }
+      }
+   } Key;
+   std::map<Key, CComPtr<IShape>> m_PrimaryShapeCache; // cache of primary shapes in girder coordinates
+   HRESULT CachePrimaryShape(Float64 Xs, SectionBias sectionBias, IShape* pShape)
+   {
+      m_PrimaryShapeCache.emplace(Key(Xs, sectionBias), pShape);
+      return S_OK;
+   }
+
+   HRESULT GetCachedPrimaryShape(Float64 Xs, SectionBias sectionBias, IShape** ppShape)
+   {
+      auto found = m_PrimaryShapeCache.find(Key(Xs, sectionBias));
+      if (found == m_PrimaryShapeCache.end())
+      {
+         *ppShape = nullptr;
+         return E_FAIL;
+      }
+      else
+      {
+         found->second.CopyTo(ppShape);
+      }
+      return S_OK;
+   }
 
    bool m_bUpdateVolumeAndSurfaceArea;
    Float64 m_Volume;

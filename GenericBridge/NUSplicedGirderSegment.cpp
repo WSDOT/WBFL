@@ -62,33 +62,51 @@ HRESULT CNUSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias section
       return S_OK;
    }
 
-   CComQIPtr<INUGirderSection> beam(m_Shapes.front().Shape);
-   ATLASSERT(beam); // if this is nullptr... how did it get in the system????
-
-   // This object reprsents a prismatic shape... all sections are the same
-   HRESULT hr = S_OK;
-
-
-   // create a new shape that is a clone of the original
-   CComQIPtr<IShape> shape(beam);
+   CComPtr<IShape> cachedShape;
+   HRESULT hr = GetCachedPrimaryShape(Xs, sectionBias, &cachedShape);
    CComPtr<IShape> newShape;
-   hr = shape->Clone(&newShape);
+   CComQIPtr<INUGirderSection> newFlangedBeam;
+   if(SUCCEEDED(hr))
+   { 
+      cachedShape->Clone(&newShape);
+      newShape.QueryInterface(&newFlangedBeam);
+   }
+   else
+   {
+      CComQIPtr<INUGirderSection> beam(m_Shapes.front().Shape);
+      ATLASSERT(beam); // if this is nullptr... how did it get in the system????
 
-   CComQIPtr<INUGirderSection> newFlangedBeam(newShape);
-   CComPtr<INUBeam> newBeam;
-   newFlangedBeam->get_Beam(&newBeam);
+      // This object reprsents a prismatic shape... all sections are the same
+      HRESULT hr = S_OK;
 
-   Float64 Hg = GetSectionDepth(Xs);
-   Float64 Htf = GetBottomFlangeHeight(Xs);
-   AdjustForVariableDepth(newBeam, Hg, Htf);
 
-   // Get the end block dimensions
-   // and adjust dimensions based on end block size
-   Float64 Web;
-   GetEndBlockWidth(Xs, sectionBias, &Web);
-   AdjustForEndBlocks(newBeam, Web);
+      // create a new shape that is a clone of the original
+      CComQIPtr<IShape> shape(beam);
+      hr = shape->Clone(&newShape);
 
-   // position the shape
+      newShape.QueryInterface(&newFlangedBeam);
+      CComPtr<INUBeam> newBeam;
+      newFlangedBeam->get_Beam(&newBeam);
+
+      Float64 Hg = GetSectionDepth(Xs);
+      Float64 Htf = GetBottomFlangeHeight(Xs);
+      AdjustForVariableDepth(newBeam, Hg, Htf);
+
+      // Get the end block dimensions
+      // and adjust dimensions based on end block size
+      Float64 Web;
+      GetEndBlockWidth(Xs, sectionBias, &Web);
+      AdjustForEndBlocks(newBeam, Web);
+
+      CComPtr<IPoint2d> pnt;
+      pnt.CoCreateInstance(CLSID_Point2d);
+      pnt->Move(0, 0);
+      CComQIPtr<IXYPosition> position(newFlangedBeam);
+      position->put_LocatorPoint(lpTopCenter, pnt);
+
+      CachePrimaryShape(Xs, sectionBias, newShape);
+   }
+
    if (coordinateSystem == cstBridge)
    {
       CComPtr<IPoint2d> pntTopCenter;
@@ -96,14 +114,6 @@ HRESULT CNUSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias section
 
       CComQIPtr<IXYPosition> position(newFlangedBeam);
       position->put_LocatorPoint(lpTopCenter, pntTopCenter);
-   }
-   else
-   {
-      CComPtr<IPoint2d> pnt;
-      pnt.CoCreateInstance(CLSID_Point2d);
-      pnt->Move(0, 0);
-      CComQIPtr<IXYPosition> position(newFlangedBeam);
-      position->put_LocatorPoint(lpTopCenter, pnt);
    }
 
    *ppShape = newShape;

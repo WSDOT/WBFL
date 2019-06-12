@@ -61,100 +61,34 @@ HRESULT CUSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias sectionB
       return S_OK;
    }
 
-   CComQIPtr<IUGirderSection> beam(m_Shapes.front().Shape);
-   ATLASSERT(beam); // if this is nullptr... how did it get in the system????
+   CComQIPtr<IUGirderSection> UGirderSection(m_Shapes.front().Shape);
+   ATLASSERT(UGirderSection); // if this is nullptr... how did it get in the system????
 
-   // This object reprsents a prismatic shape... all sections are the same
-   HRESULT hr = S_OK;
+   // This object represents a prismatic shape... all sections are the same, no need to adjust dimensions based on Xs
+
+#if defined _DEBUG
    CComPtr<IUBeam> pcBeam;
-   beam->get_Beam(&pcBeam);
-
-   Float64 Wt, Wb;
-   GetEndBlockWidth(Xs,sectionBias,&Wt,&Wb);
-
-   Float64 W1, W2, W3, W4, W5;
-   Float64 D1, D2, D3, D4, D5, D6, D7;
-   Float64 T;
-
-   pcBeam->get_W1(&W1);
-   pcBeam->get_W2(&W2);
-   pcBeam->get_W3(&W3);
-   pcBeam->get_W4(&W4);
-   pcBeam->get_W5(&W5);
-
-   pcBeam->get_D1(&D1);
-   pcBeam->get_D2(&D2);
-   pcBeam->get_D3(&D3);
-   pcBeam->get_D4(&D4);
-   pcBeam->get_D5(&D5);
-   pcBeam->get_D6(&D6);
-   pcBeam->get_D7(&D7);
-
-   pcBeam->get_T(&T);
-
-   Float64 w1 = W1;
-   Float64 w2 = W2;
-   Float64 w3 = W3;
-   Float64 w4 = W4;
-   Float64 w5 = W5;
-   Float64 d1 = D1;
-   Float64 d2 = D2;
-   Float64 d3 = D3;
-   Float64 d4 = D4;
-   Float64 d5 = D5;
-   Float64 d6 = D6;
-   Float64 d7 = D7;
-   Float64 t  = T;
-
-   //
-   // Adjust D2 based on the bottom flange height
-   // If bottom flange height is zero then don't make any adjustments (take zero to be don't change bottom flange)
-   //
-   Float64 bottom_flange_height = GetBottomFlangeHeight(Xs);
-   if ( !IsZero(bottom_flange_height) )
-   {
-      d2 = bottom_flange_height;
-   }
-
-   if ( d2 < 0 )
-   {
-      // there really isn't a bottom flange if d2 < 0
-      ATLASSERT(false); // I don't think this should ever happen for a U-beam
-      d2 = 0;
-      d3 = 0;
-   }
-
-   //
-   // Adjust D1 based on the spliced girder profile
-   //
+   UGirderSection->get_Beam(&pcBeam);
+   Float64 d1,d2;
+   pcBeam->get_D1(&d1);
+   pcBeam->get_D2(&d2);
    Float64 section_height = GetSectionDepth(Xs);
-   d1 = section_height;
-   ATLASSERT( 0 <= d1 );
+   ATLASSERT(IsEqual(d1, section_height));
+   Float64 bottom_flange_height = GetBottomFlangeHeight(Xs);
+   ATLASSERT(IsEqual(d2, bottom_flange_height));
+   Float64 Wt, Wb;
+   GetEndBlockWidth(Xs, sectionBias, &Wt, &Wb);
+   ATLASSERT(IsZero(Wt) && IsZero(Wb));
+#endif 
 
    // create a new shape that is a clone of the original
-   CComQIPtr<IShape> shape(beam);
+   // so clients don't alter the original
+   CComQIPtr<IShape> shape(UGirderSection);
    CComPtr<IShape> newShape;
-   hr = shape->Clone(&newShape);
-
-   // set the dimensions
-   CComQIPtr<IUGirderSection> newUGirderSection(newShape);
-   CComPtr<IUBeam> newBeam;
-   newUGirderSection->get_Beam(&newBeam);
-   newBeam->put_D1(d1);
-   newBeam->put_D2(d2);
-   newBeam->put_D3(d3);
-   newBeam->put_D4(d4);
-   newBeam->put_D5(d5);
-   newBeam->put_D6(d6);
-   newBeam->put_D7(d7);
-   newBeam->put_W1(w1);
-   newBeam->put_W2(w2);
-   newBeam->put_W3(w3);
-   newBeam->put_W4(w4);
-   newBeam->put_W5(w5);
-   newBeam->put_T(t);
+   HRESULT hr = shape->Clone(&newShape);
 
    // position the shape
+   CComQIPtr<IUGirderSection> newUGirderSection(newShape);
    if (coordinateSystem == cstBridge)
    {
       CComPtr<IPoint2d> pntTopCenter;

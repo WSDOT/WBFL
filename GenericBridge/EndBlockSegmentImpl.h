@@ -30,6 +30,7 @@
 #include "stdafx.h"
 #include "resource.h"       // main symbols
 #include <MathEx.h>
+#include <array>
 #include "WBFLGenericBridge.h"
 #include "ItemDataManager.h"
 #include "SuperstructureMemberSegmentImpl.h"
@@ -39,7 +40,7 @@ template<class T_IBeam>
 class VoidedEndBlock
 {
 public:
-   static void InEndBlock(T_IBeam* pBeam)
+   static void ModelEndBlockShape(T_IBeam* pBeam)
    {
       pBeam->put_VoidCount(0);
    }
@@ -49,7 +50,7 @@ template<class T_IBeam>
 class OutlineEndBlock
 {
 public:
-   static void InEndBlock(T_IBeam* pBeam)
+   static void ModelEndBlockShape(T_IBeam* pBeam)
    {
       pBeam->put_UseOutlineOnly(VARIANT_TRUE);
    }
@@ -58,13 +59,13 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 // TEndBlockSegmentImpl
 //                                                             IDeckedSlabBeam
-template<class T_IEndBlockSegment, class T_IBeamSection, class T_IBeam, const CLSID* T_CLSID, long T_IDR,class T_ENDBLOCK,class VSAC> 
+template<class T_IEndBlockSegment, class T_IBeamSection, class T_IBeam, const CLSID* T_CLSID, long T_IDR,class T_ENDBLOCK,class T_VolumeSurfaceAreaCalculator> 
 class TEndBlockSegmentImpl : 
 	public CComObjectRootEx<CComSingleThreadModel>,
 //   public CComRefCountTracer<CSegment,CComObjectRootEx<CComSingleThreadModel> >,
-	public CComCoClass< TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR, T_ENDBLOCK, VSAC>, T_CLSID>,
+	public CComCoClass< TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR, T_ENDBLOCK, T_VolumeSurfaceAreaCalculator>, T_CLSID>,
 	public ISupportErrorInfo,
-   public IObjectSafetyImpl<TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR, T_ENDBLOCK, VSAC>, INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
+   public IObjectSafetyImpl<TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR, T_ENDBLOCK, T_VolumeSurfaceAreaCalculator>, INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
    public T_IEndBlockSegment,
    public IItemData,
    public IStructuredStorage2
@@ -73,8 +74,8 @@ class TEndBlockSegmentImpl :
 
 protected:
    CSuperstructureMemberSegmentImpl m_Impl;
-   VSAC m_VoidSurfaceAreaCalculator;
-   friend VSAC;
+   T_VolumeSurfaceAreaCalculator m_VoidSurfaceAreaCalculator;
+   friend T_VolumeSurfaceAreaCalculator;
 
    struct ShapeData
    {
@@ -88,8 +89,12 @@ protected:
    Float64 m_Volume;
    Float64 m_SurfaceArea;
 
+   // Cached shapes in the end block and primary regions
+   CComPtr<IShape> m_EndBlockShape;
+   CComPtr<IShape> m_PrimaryShape;
+
    // index is EndType
-   Float64 m_EndBlockLength[2]; // length of end block from end of girder to transitation
+   std::array<Float64,2> m_EndBlockLength; // length of end block from end of girder to transitation
 
    CItemDataManager m_ItemDataMgr;
 
@@ -118,8 +123,8 @@ END_COM_MAP()
 public:
    HRESULT FinalConstruct()
    {
-      m_EndBlockLength[etStart]           = 0;
-      m_EndBlockLength[etEnd]             = 0;
+      m_EndBlockLength[etStart] = 0;
+      m_EndBlockLength[etEnd]   = 0;
 
       return S_OK;
    }
@@ -176,6 +181,92 @@ public:
       }
    }
 
+   STDMETHOD(get_PrimaryShape)(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
+   {
+      CHECK_RETOBJ(ppShape);
+
+      if (m_Shapes.size() == 0)
+      {
+         *ppShape = 0;
+         return S_OK;
+      }
+
+      bool bIsInEndBlock = IsInEndBlock(Xs, sectionBias);
+
+      CComPtr<IShape> newShape;
+
+      // first check cached shapes
+      if (bIsInEndBlock)
+      {
+         if (m_EndBlockShape)
+         {
+            m_EndBlockShape->Clone(&newShape);
+         }
+      }
+      else
+      {
+         if (m_PrimaryShape)
+         {
+            m_PrimaryShape->Clone(&newShape);
+         }
+      }
+
+      if (newShape == nullptr)
+      {
+         // shape is not cached... build it
+
+         CComQIPtr<T_IBeamSection> beam(m_Shapes.front().Shape);
+         ATLASSERT(beam); // if this is nullptr... how did it get in the system????
+
+         HRESULT hr = S_OK;
+
+         // create a new shape that is a clone of the original
+         CComQIPtr<IShape> shape(beam);
+         hr = shape->Clone(&newShape);
+
+         // position the shape in girder coordiantes
+         CComQIPtr<T_IBeamSection> newSection(newShape);
+         CComPtr<IPoint2d> pnt;
+         pnt.CoCreateInstance(CLSID_Point2d);
+         pnt->Move(0, 0);
+         CComQIPtr<IXYPosition> position(newSection);
+         position->put_LocatorPoint(lpTopCenter, pnt);
+
+         if (bIsInEndBlock)
+         {
+            // Section is in the end block so modify the shape for the end block region
+            CComPtr<T_IBeam> newBeam;
+            newSection->get_Beam(&newBeam);
+            T_ENDBLOCK::ModelEndBlockShape(newBeam);
+
+            // cache the end block shape so we don't have to compute it again
+            newShape->Clone(&m_EndBlockShape);
+         }
+         else
+         {
+            // Section is in the main region... cache the shape so we don't have to compute it again
+            newShape->Clone(&m_PrimaryShape);
+         }
+
+      }
+
+      if (coordinateSystem == cstBridge)
+      {
+         // position the shape in bridge coordinates
+         CComPtr<IPoint2d> pntTopCenter;
+         GB_GetSectionLocation(this, Xs, &pntTopCenter);
+
+         CComQIPtr<T_IBeamSection> newSection(newShape);
+         CComQIPtr<IXYPosition> position(newSection);
+         position->put_LocatorPoint(lpTopCenter, pntTopCenter);
+      }
+
+      *ppShape = newShape;
+      (*ppShape)->AddRef();
+
+      return S_OK;
+   }
+
    STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,ISection** ppSection)
    {
       CHECK_RETOBJ(ppSection);
@@ -186,48 +277,8 @@ public:
          return S_OK;
       }
 
-      CComQIPtr<T_IBeamSection> beam(m_Shapes.front().Shape);
-      ATLASSERT(beam); // if this is nullptr... how did it get in the system????
-
-      // This object reprsents a prismatic shape... all sections are the same
-      HRESULT hr = S_OK;
-
-      // create a new shape that is a clone of the original
-      CComQIPtr<IShape> shape(beam);
-      CComPtr<IShape> newShape;
-      hr = shape->Clone(&newShape);
-
-      // set the dimensions
-      CComQIPtr<T_IBeamSection> newSection(newShape);
-      CComPtr<T_IBeam> newBeam;
-      newSection->get_Beam(&newBeam);
-
-      Float64 length;
-      get_Length(&length);
-
-      // Section is in the end block so use the outline of the shape only
-      if ( IsInEndBlock(Xs,sectionBias) )
-      {
-         T_ENDBLOCK::InEndBlock(newBeam);
-      }
-
-      // position the shape
-      if (coordinateSystem == cstBridge)
-      {
-         CComPtr<IPoint2d> pntTopCenter;
-         GB_GetSectionLocation(this, Xs, &pntTopCenter);
-
-         CComQIPtr<IXYPosition> position(newSection);
-         position->put_LocatorPoint(lpTopCenter, pntTopCenter);
-      }
-      else
-      {
-         CComPtr<IPoint2d> pnt;
-         pnt.CoCreateInstance(CLSID_Point2d);
-         pnt->Move(0, 0);
-         CComQIPtr<IXYPosition> position(newSection);
-         position->put_LocatorPoint(lpTopCenter, pnt);
-      }
+      CComPtr<IShape> shape;
+      get_PrimaryShape(Xs, sectionBias, coordinateSystem, &shape);
 
       CComPtr<ICompositeSectionEx> section;
       section.CoCreateInstance(CLSID_CompositeSectionEx);
@@ -254,7 +305,7 @@ public:
          m_Shapes.front().BGMaterial->get_Density(stageIdx,&Dbg);
       }
 
-      section->AddSection(newShape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
+      section->AddSection(shape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
 
       // add all the secondary shapes
       std::vector<ShapeData>::iterator iter(m_Shapes.begin());
@@ -294,65 +345,6 @@ public:
 
          section->AddSection(shape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
       }
-
-      return S_OK;
-   }
-
-   STDMETHOD(get_PrimaryShape)(Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
-   {
-      CHECK_RETOBJ(ppShape);
-
-      if (m_Shapes.size() == 0 )
-      {
-         *ppShape = 0;
-         return S_OK;
-      }
-
-      CComQIPtr<T_IBeamSection> beam(m_Shapes.front().Shape);
-      ATLASSERT(beam); // if this is nullptr... how did it get in the system????
-
-      // This object reprsents a prismatic shape... all sections are the same
-      HRESULT hr = S_OK;
-
-      // create a new shape that is a clone of the original
-      CComQIPtr<IShape> shape(beam);
-      CComPtr<IShape> newShape;
-      hr = shape->Clone(&newShape);
-
-      // set the dimensions
-      CComQIPtr<T_IBeamSection> newSection(newShape);
-      CComPtr<T_IBeam> newBeam;
-      newSection->get_Beam(&newBeam);
-
-      Float64 length;
-      get_Length(&length);
-
-      // Section is in the end block so use the outline of the shape only
-      if (IsInEndBlock(Xs, sectionBias))
-      {
-         T_ENDBLOCK::InEndBlock(newBeam);;
-      }
-
-      // position the shape
-      if (coordinateSystem == cstBridge)
-      {
-         CComPtr<IPoint2d> pntTopCenter;
-         GB_GetSectionLocation(this, Xs, &pntTopCenter);
-
-         CComQIPtr<IXYPosition> position(newSection);
-         position->put_LocatorPoint(lpTopCenter, pntTopCenter);
-      }
-      else
-      {
-         CComPtr<IPoint2d> pnt;
-         pnt.CoCreateInstance(CLSID_Point2d);
-         pnt->Move(0, 0);
-         CComQIPtr<IXYPosition> position(newSection);
-         position->put_LocatorPoint(lpTopCenter, pnt);
-      }
-
-      *ppShape = newShape;
-      (*ppShape)->AddRef();
 
       return S_OK;
    }
@@ -610,6 +602,9 @@ public:
       m_bUpdateVolumeAndSurfaceArea = true;
       m_Volume = -1;
       m_SurfaceArea = -1;
+
+      m_EndBlockShape.Release();
+      m_PrimaryShape.Release();
 
       return S_OK;
    }

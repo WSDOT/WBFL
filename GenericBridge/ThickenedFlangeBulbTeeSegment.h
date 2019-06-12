@@ -93,6 +93,12 @@ private:
    };
    std::vector<ShapeData> m_Shapes;
 
+   struct compare
+   {
+      bool operator()(const Float64& a, const Float64&b)const { return ::IsLT(a, b); }
+   };
+   std::map<Float64, CComPtr<IShape>, compare> m_ShapeCache;
+
    CComPtr<IMaterial> m_JointMaterial;
 
    CItemDataManager m_ItemDataMgr;

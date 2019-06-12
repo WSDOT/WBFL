@@ -196,109 +196,123 @@ STDMETHODIMP CTaperedGirderSegment::get_PrimaryShape(Float64 Xs, SectionBias sec
       return S_OK;
    }
 
-   CComQIPtr<IFlangedGirderSection> beam[2];
-   m_Shapes[etStart].front().Shape.QueryInterface(&beam[etStart]);
-   m_Shapes[etEnd].front().Shape.QueryInterface(&beam[etEnd]);
-
-   ATLASSERT(beam[etStart]); // if this is nullptr... how did it get in the system????
-   ATLASSERT(beam[etEnd]);   // if this is nullptr... how did it get in the system????
-
-   // This object reprsents a prismatic shape... all sections are the same
-   HRESULT hr = S_OK;
-
-   Float64 segLength;
-   get_Length(&segLength);
-
-   // get dimensions of beam shape at start and end of segment
-   CComPtr<IPrecastBeam> pcBeam[2];
-
-   Float64 W1[2], W2[2], W3[2], W4[2];
-   Float64 D1[2], D2[2], D3[2], D4[2], D5[2], D6[2], D7[2];
-   Float64 T1[2], T2[2];
-   Float64 C1[2];
-
-   for ( int i = 0; i < 2; i++ )
-   {
-      beam[i]->get_Beam(&pcBeam[i]);
-
-      pcBeam[i]->get_W1(&W1[i]);
-      pcBeam[i]->get_W2(&W2[i]);
-      pcBeam[i]->get_W3(&W3[i]);
-      pcBeam[i]->get_W4(&W4[i]);
-
-      pcBeam[i]->get_D1(&D1[i]);
-      pcBeam[i]->get_D2(&D2[i]);
-      pcBeam[i]->get_D3(&D3[i]);
-      pcBeam[i]->get_D4(&D4[i]);
-      pcBeam[i]->get_D5(&D5[i]);
-      pcBeam[i]->get_D6(&D6[i]);
-      pcBeam[i]->get_D7(&D7[i]);
-
-      pcBeam[i]->get_T1(&T1[i]);
-      pcBeam[i]->get_T2(&T2[i]);
-
-      pcBeam[i]->get_C1(&C1[i]);
-   }
-
-   // linear interpolate dimensions
-   Float64 w1 = ::LinInterp(Xs,W1[etStart],W1[etEnd],segLength);
-   Float64 w2 = ::LinInterp(Xs,W2[etStart],W2[etEnd],segLength);
-   Float64 w3 = ::LinInterp(Xs,W3[etStart],W3[etEnd],segLength);
-   Float64 w4 = ::LinInterp(Xs,W4[etStart],W4[etEnd],segLength);
-
-   Float64 d1 = ::LinInterp(Xs,D1[etStart],D1[etEnd],segLength);
-   Float64 d2 = ::LinInterp(Xs,D2[etStart],D2[etEnd],segLength);
-   Float64 d3 = ::LinInterp(Xs,D3[etStart],D3[etEnd],segLength);
-   Float64 d4 = ::LinInterp(Xs,D4[etStart],D4[etEnd],segLength);
-   Float64 d5 = ::LinInterp(Xs,D5[etStart],D5[etEnd],segLength);
-   Float64 d6 = ::LinInterp(Xs,D6[etStart],D6[etEnd],segLength);
-   Float64 d7 = ::LinInterp(Xs,D7[etStart],D7[etEnd],segLength);
-
-   Float64 t1 = ::LinInterp(Xs,T1[etStart],T1[etEnd],segLength);
-   Float64 t2 = ::LinInterp(Xs,T2[etStart],T2[etEnd],segLength);
-
-   Float64 c1 = ::LinInterp(Xs,C1[etStart],C1[etEnd],segLength);
-
-   // create a new shape that is a clone of the original
-   CComQIPtr<IShape> shape(beam[etStart]);
    CComPtr<IShape> newShape;
-   hr = shape->Clone(&newShape);
-
-   // set the dimensions
-   CComQIPtr<IFlangedGirderSection> newFlangedBeam(newShape);
-   CComPtr<IPrecastBeam> newBeam;
-   newFlangedBeam->get_Beam(&newBeam);
-   newBeam->put_C1(c1);
-   newBeam->put_D1(d1);
-   newBeam->put_D2(d2);
-   newBeam->put_D3(d3);
-   newBeam->put_D4(d4);
-   newBeam->put_D5(d5);
-   newBeam->put_D6(d6);
-   newBeam->put_D7(d7);
-   newBeam->put_W1(w1);
-   newBeam->put_W2(w2);
-   newBeam->put_W3(w3);
-   newBeam->put_W4(w4);
-   newBeam->put_T1(t1);
-   newBeam->put_T2(t2);
-
-   // position the shape
-   if (coordinateSystem == cstBridge)
+   auto found = m_ShapeCache.find(Xs);
+   if (found == m_ShapeCache.end())
    {
-      CComPtr<IPoint2d> pntTopCenter;
-      GB_GetSectionLocation(this, Xs, &pntTopCenter);
+      std::array<CComQIPtr<IFlangedGirderSection>,2> beam;
+      m_Shapes[etStart].front().Shape.QueryInterface(&beam[etStart]);
+      m_Shapes[etEnd].front().Shape.QueryInterface(&beam[etEnd]);
 
-      CComQIPtr<IXYPosition> position(newFlangedBeam);
-      position->put_LocatorPoint(lpTopCenter, pntTopCenter);
-   }
-   else
-   {
+      ATLASSERT(beam[etStart]); // if this is nullptr... how did it get in the system????
+      ATLASSERT(beam[etEnd]);   // if this is nullptr... how did it get in the system????
+
+      // This object reprsents a prismatic shape... all sections are the same
+      HRESULT hr = S_OK;
+
+      Float64 segLength;
+      get_Length(&segLength);
+
+      // get dimensions of beam shape at start and end of segment
+      std::array<CComPtr<IPrecastBeam>,2> pcBeam;
+
+      std::array<Float64, 2> W1, W2, W3, W4;
+      std::array<Float64, 2> D1, D2, D3, D4, D5, D6, D7;
+      std::array<Float64, 2> T1, T2;
+      std::array<Float64, 2> C1;
+
+      for (int i = 0; i < 2; i++)
+      {
+         beam[i]->get_Beam(&pcBeam[i]);
+
+         pcBeam[i]->get_W1(&W1[i]);
+         pcBeam[i]->get_W2(&W2[i]);
+         pcBeam[i]->get_W3(&W3[i]);
+         pcBeam[i]->get_W4(&W4[i]);
+
+         pcBeam[i]->get_D1(&D1[i]);
+         pcBeam[i]->get_D2(&D2[i]);
+         pcBeam[i]->get_D3(&D3[i]);
+         pcBeam[i]->get_D4(&D4[i]);
+         pcBeam[i]->get_D5(&D5[i]);
+         pcBeam[i]->get_D6(&D6[i]);
+         pcBeam[i]->get_D7(&D7[i]);
+
+         pcBeam[i]->get_T1(&T1[i]);
+         pcBeam[i]->get_T2(&T2[i]);
+
+         pcBeam[i]->get_C1(&C1[i]);
+      }
+
+      // linear interpolate dimensions
+      Float64 w1 = ::LinInterp(Xs, W1[etStart], W1[etEnd], segLength);
+      Float64 w2 = ::LinInterp(Xs, W2[etStart], W2[etEnd], segLength);
+      Float64 w3 = ::LinInterp(Xs, W3[etStart], W3[etEnd], segLength);
+      Float64 w4 = ::LinInterp(Xs, W4[etStart], W4[etEnd], segLength);
+
+      Float64 d1 = ::LinInterp(Xs, D1[etStart], D1[etEnd], segLength);
+      Float64 d2 = ::LinInterp(Xs, D2[etStart], D2[etEnd], segLength);
+      Float64 d3 = ::LinInterp(Xs, D3[etStart], D3[etEnd], segLength);
+      Float64 d4 = ::LinInterp(Xs, D4[etStart], D4[etEnd], segLength);
+      Float64 d5 = ::LinInterp(Xs, D5[etStart], D5[etEnd], segLength);
+      Float64 d6 = ::LinInterp(Xs, D6[etStart], D6[etEnd], segLength);
+      Float64 d7 = ::LinInterp(Xs, D7[etStart], D7[etEnd], segLength);
+
+      Float64 t1 = ::LinInterp(Xs, T1[etStart], T1[etEnd], segLength);
+      Float64 t2 = ::LinInterp(Xs, T2[etStart], T2[etEnd], segLength);
+
+      Float64 c1 = ::LinInterp(Xs, C1[etStart], C1[etEnd], segLength);
+
+      // create a new shape that is a clone of the original
+      CComQIPtr<IShape> shape(beam[etStart]);
+      hr = shape->Clone(&newShape);
+
+      // set the dimensions
+      CComQIPtr<IFlangedGirderSection> newFlangedBeam(newShape);
+      CComPtr<IPrecastBeam> newBeam;
+      newFlangedBeam->get_Beam(&newBeam);
+      newBeam->put_C1(c1);
+      newBeam->put_D1(d1);
+      newBeam->put_D2(d2);
+      newBeam->put_D3(d3);
+      newBeam->put_D4(d4);
+      newBeam->put_D5(d5);
+      newBeam->put_D6(d6);
+      newBeam->put_D7(d7);
+      newBeam->put_W1(w1);
+      newBeam->put_W2(w2);
+      newBeam->put_W3(w3);
+      newBeam->put_W4(w4);
+      newBeam->put_T1(t1);
+      newBeam->put_T2(t2);
+
+      // position the shape in girder coordinates
       CComPtr<IPoint2d> pnt;
       pnt.CoCreateInstance(CLSID_Point2d);
       pnt->Move(0, 0);
       CComQIPtr<IXYPosition> position(newFlangedBeam);
       position->put_LocatorPoint(lpTopCenter, pnt);
+
+      // copy the shape and put it in the cache
+      CComPtr<IShape> cacheShape;
+      newShape->Clone(&cacheShape);
+      m_ShapeCache.emplace_hint(m_ShapeCache.end(), Xs, cacheShape);
+   }
+   else
+   {
+      CComPtr<IShape> cacheShape = found->second;
+      cacheShape->Clone(&newShape);
+   }
+
+   if (coordinateSystem == cstBridge)
+   {
+      // position the shape in bridge coordinates
+      CComPtr<IPoint2d> pntTopCenter;
+      GB_GetSectionLocation(this, Xs, &pntTopCenter);
+
+      CComQIPtr<IFlangedGirderSection> newFlangedBeam(newShape);
+      CComQIPtr<IXYPosition> position(newFlangedBeam);
+      position->put_LocatorPoint(lpTopCenter, pntTopCenter);
    }
 
    *ppShape = newShape;
@@ -499,6 +513,7 @@ STDMETHODIMP CTaperedGirderSegment::AddShape(IShape* pStartShape,IShape* pEndSha
    m_bUpdateVolumeAndSurfaceArea = true;
    m_Volume = -1;
    m_SurfaceArea = -1;
+   m_ShapeCache.clear();
 
    ATLASSERT(m_Shapes[etStart].size() == m_Shapes[etEnd].size());
 

@@ -30,6 +30,13 @@
 #include "resource.h"       // main symbols
 #include "ItemDataManager.h"
 #include "SuperstructureMemberSegmentImpl.h"
+#include <array>
+
+#define START_ENDBLOCK_ZONE 0
+#define START_TRANSITION_ZONE 1
+#define PRIMARY_ZONE 2
+#define END_TRANSITION_ZONE 3
+#define END_ENDBLOCK_ZONE 4
 
 /////////////////////////////////////////////////////////////////////////////
 // CFlangedGirderEndBlockSegment
@@ -81,6 +88,14 @@ private:
    };
    std::vector<ShapeData> m_Shapes;
 
+   std::array<CComPtr<IShape>, 2> m_EndBlockShape;
+   CComPtr<IShape> m_PrimaryShape;
+   struct compare
+   {
+      bool operator()(const Float64& a, const Float64&b)const { return ::IsLT(a, b); }
+   };
+   std::array<std::map<Float64, CComPtr<IShape>, compare>, 2> m_TransitionShape;
+
 
    bool m_bUpdateVolumeAndSurfaceArea;
    Float64 m_Volume;
@@ -89,10 +104,9 @@ private:
    CItemDataManager m_ItemDataMgr;
 
    // index is EndType
-   Float64 m_EndBlockLength[2]; // length of end block from end of girder to transitation
-   Float64 m_EndBlockTransitionLength[2]; // length of transition
-   Float64 m_EndBlockWidth[2]; // width of end block at end of girder... constant until transition
-                               // then transitions to the section
+   std::array<Float64, 2> m_EndBlockLength; // length of end block from end of girder to transitation
+   std::array<Float64, 2> m_EndBlockTransitionLength; // length of transition
+   std::array<Float64, 2> m_EndBlockWidth; // width of end block at end of girder... constant until transition then transitions to the section
 
 // ISupportsErrorInfo
 public:
@@ -155,6 +169,7 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 
 private:
+   int GetSectionZone(Float64 Xs, SectionBias sectionBias);
    void GetEndBlockWidth(Float64 Xs, SectionBias sectionBias,Float64* pWtop,Float64* pWbot);
 };
 

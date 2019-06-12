@@ -489,6 +489,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::AddShape(IShape* pShape,IMaterial* 
    m_bUpdateVolumeAndSurfaceArea = true;
    m_Volume = -1;
    m_SurfaceArea = -1;
+   m_ShapeCache.clear();
 
    return S_OK;
 }
@@ -546,94 +547,108 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_GirderShape(Float64 Xs, Section
       return S_OK;
    }
 
-   CComQIPtr<IBulbTeeSection> beam(m_Shapes.front().Shape);
-   ATLASSERT(beam); // if this is nullptr... how did it get in the system????
-
-                    // This object reprsents a prismatic shape... all sections are the same
-   HRESULT hr = S_OK;
-
-   // get dimensions of beam shape at start and end of segment
-   CComPtr<IBulbTee2> pcBeam;
-
-   Float64 W1, W2, W3, W4, W5, W6;
-   Float64 D1, D2, D3, D4, D5, D6, D7;
-   Float64 T1, T2;
-   Float64 C1, C2;
-   Float64 n1, n2;
-
-   beam->get_Beam(&pcBeam);
-
-   pcBeam->get_W1(&W1);
-   pcBeam->get_W2(&W2);
-   pcBeam->get_W3(&W3);
-   pcBeam->get_W4(&W4);
-   pcBeam->get_W5(&W5);
-   pcBeam->get_W6(&W6);
-
-   pcBeam->get_D1(&D1);
-   pcBeam->get_D2(&D2);
-   pcBeam->get_D3(&D3);
-   pcBeam->get_D4(&D4);
-   pcBeam->get_D5(&D5);
-   pcBeam->get_D6(&D6);
-   pcBeam->get_D7(&D7);
-
-   pcBeam->get_T1(&T1);
-   pcBeam->get_T2(&T2);
-
-   pcBeam->get_C1(&C1);
-   pcBeam->get_C2(&C2);
-
-   pcBeam->get_n1(&n1);
-   pcBeam->get_n2(&n2);
-
-   // parabolic interpolation of the depth of the top flange thickening
-   Float64 Ls;
-   get_Length(&Ls);
-   Float64 top_flange_thickening = ComputeTopFlangeThickening(Xs, Ls, m_FlangeThickeningType, m_FlangeThickening);
-
-   // create a new shape that is a clone of the original
-   CComQIPtr<IShape> shape(beam);
    CComPtr<IShape> newShape;
-   hr = shape->Clone(&newShape);
 
-   // set the dimensions
-   CComQIPtr<IBulbTeeSection> btSection(newShape);
-   CComPtr<IBulbTee2> newBeam;
-   btSection->get_Beam(&newBeam);
-   newBeam->put_D1(D1 + top_flange_thickening); // basic top flange thickness plus thicken of the top flange
-   newBeam->put_D2(D2);
-   newBeam->put_D3(D3);
-   newBeam->put_D4(D4);
-   newBeam->put_D5(D5);
-   newBeam->put_D6(D6);
-   newBeam->put_D7(D7);
-   newBeam->put_W1(W1);
-   newBeam->put_W2(W2);
-   newBeam->put_W3(W3);
-   newBeam->put_W4(W4);
-   newBeam->put_W5(W5); // left top flange overhang
-   newBeam->put_W6(W6); // right top flange overhang
-   newBeam->put_T1(T1);
-   newBeam->put_T2(T2);
-   newBeam->put_C1(C1); // chamfer
-   newBeam->put_C2(C2); // location of crown point measured from left flange tip
-   newBeam->put_n1(n1); // left crown slope
-   newBeam->put_n2(n2); // right crown slope
-
-   CComQIPtr<IXYPosition> position(newBeam);
-   position->Offset(0, -top_flange_thickening);
-
-   if (coordinateSystem == cstBridge)
+   auto found = m_ShapeCache.find(Xs);
+   if (found != m_ShapeCache.end())
    {
-      AdjustPosition(Xs, newBeam);
+      found->second->Clone(&newShape);
    }
    else
    {
+      CComQIPtr<IBulbTeeSection> beam(m_Shapes.front().Shape);
+      ATLASSERT(beam); // if this is nullptr... how did it get in the system????
+
+                       // This object reprsents a prismatic shape... all sections are the same
+      HRESULT hr = S_OK;
+
+      // get dimensions of beam shape at start and end of segment
+      CComPtr<IBulbTee2> pcBeam;
+
+      Float64 W1, W2, W3, W4, W5, W6;
+      Float64 D1, D2, D3, D4, D5, D6, D7;
+      Float64 T1, T2;
+      Float64 C1, C2;
+      Float64 n1, n2;
+
+      beam->get_Beam(&pcBeam);
+
+      pcBeam->get_W1(&W1);
+      pcBeam->get_W2(&W2);
+      pcBeam->get_W3(&W3);
+      pcBeam->get_W4(&W4);
+      pcBeam->get_W5(&W5);
+      pcBeam->get_W6(&W6);
+
+      pcBeam->get_D1(&D1);
+      pcBeam->get_D2(&D2);
+      pcBeam->get_D3(&D3);
+      pcBeam->get_D4(&D4);
+      pcBeam->get_D5(&D5);
+      pcBeam->get_D6(&D6);
+      pcBeam->get_D7(&D7);
+
+      pcBeam->get_T1(&T1);
+      pcBeam->get_T2(&T2);
+
+      pcBeam->get_C1(&C1);
+      pcBeam->get_C2(&C2);
+
+      pcBeam->get_n1(&n1);
+      pcBeam->get_n2(&n2);
+
+      // parabolic interpolation of the depth of the top flange thickening
+      Float64 Ls;
+      get_Length(&Ls);
+      Float64 top_flange_thickening = ComputeTopFlangeThickening(Xs, Ls, m_FlangeThickeningType, m_FlangeThickening);
+
+      // create a new shape that is a clone of the original
+      CComQIPtr<IShape> shape(beam);
+      hr = shape->Clone(&newShape);
+
+      // set the dimensions
+      CComQIPtr<IBulbTeeSection> btSection(newShape);
+      CComPtr<IBulbTee2> newBeam;
+      btSection->get_Beam(&newBeam);
+      newBeam->put_D1(D1 + top_flange_thickening); // basic top flange thickness plus thicken of the top flange
+      newBeam->put_D2(D2);
+      newBeam->put_D3(D3);
+      newBeam->put_D4(D4);
+      newBeam->put_D5(D5);
+      newBeam->put_D6(D6);
+      newBeam->put_D7(D7);
+      newBeam->put_W1(W1);
+      newBeam->put_W2(W2);
+      newBeam->put_W3(W3);
+      newBeam->put_W4(W4);
+      newBeam->put_W5(W5); // left top flange overhang
+      newBeam->put_W6(W6); // right top flange overhang
+      newBeam->put_T1(T1);
+      newBeam->put_T2(T2);
+      newBeam->put_C1(C1); // chamfer
+      newBeam->put_C2(C2); // location of crown point measured from left flange tip
+      newBeam->put_n1(n1); // left crown slope
+      newBeam->put_n2(n2); // right crown slope
+
+      CComQIPtr<IXYPosition> position(newBeam);
+      position->Offset(0, -top_flange_thickening);
+
+      // put shape in girder section coordinates
       CComPtr<IPoint2d> pntOrigin;
       pntOrigin.CoCreateInstance(CLSID_Point2d);
       pntOrigin->Move(0, 0);
       position->put_LocatorPoint(lpTopCenter, pntOrigin);
+
+      m_ShapeCache.emplace_hint(m_ShapeCache.end(), Xs, newShape);
+   }
+
+   if (coordinateSystem == cstBridge)
+   {
+      // put shape in bridge coordinates
+      CComQIPtr<IBulbTeeSection> btSection(newShape);
+      CComPtr<IBulbTee2> newBeam;
+      btSection->get_Beam(&newBeam);
+      AdjustPosition(Xs, newBeam);
    }
 
    *ppShape = newShape;

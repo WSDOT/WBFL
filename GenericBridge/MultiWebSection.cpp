@@ -95,6 +95,15 @@ STDMETHODIMP CMultiWebSection::put_Beam(IMultiWeb* beam)
    CComQIPtr<IShape> shape(beam);
    CHECK_IN(shape);
 
+   // getting the bounding box and shape properties
+   // causes these to be computed and cached in beam
+   // when we clone, these will be cloned. that way
+   // they don't have to be computed later when needed.
+   CComPtr<IShapeProperties> shapeProps;
+   shape->get_ShapeProperties(&shapeProps);
+   CComPtr<IRect2d> box;
+   shape->get_BoundingBox(&box);
+
    CComPtr<IShape> clone;
    HRESULT hr = shape->Clone(&clone);
    ATLASSERT(SUCCEEDED(hr));
