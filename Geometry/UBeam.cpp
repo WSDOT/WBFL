@@ -742,24 +742,28 @@ STDMETHODIMP CUBeam::Clone(IShape** pClone)
 
    CComPtr<IUBeam> shape(pTheClone); // need at least one reference
 
-   pTheClone->put_D1( m_D1 );
-   pTheClone->put_D2( m_D2 );
-   pTheClone->put_D3( m_D3 );
-   pTheClone->put_D4( m_D4 );
-   pTheClone->put_D5( m_D5 );
-   pTheClone->put_D6( m_D6 );
-   pTheClone->put_D7( m_D7 );
-   pTheClone->put_T(  m_T  );
-   pTheClone->put_W1( m_W1 );
-   pTheClone->put_W2( m_W2 );
-   pTheClone->put_W3( m_W3 );
-   pTheClone->put_W4( m_W4 );
-   pTheClone->put_W5( m_W5 );
+   pTheClone->m_D1 = m_D1;
+   pTheClone->m_D2 = m_D2;
+   pTheClone->m_D3 = m_D3;
+   pTheClone->m_D4 = m_D4;
+   pTheClone->m_D5 = m_D5;
+   pTheClone->m_D6 = m_D6;
+   pTheClone->m_D7 = m_D7;
+   pTheClone->m_T  = m_T;
+   pTheClone->m_W1 = m_W1;
+   pTheClone->m_W2 = m_W2;
+   pTheClone->m_W3 = m_W3;
+   pTheClone->m_W4 = m_W4;
+   pTheClone->m_W5 = m_W5;
 
-   CComPtr<IPoint2d> hookPnt;
-   CreatePoint(m_pHookPoint,nullptr,&hookPnt);
-   pTheClone->putref_HookPoint(hookPnt);
-   pTheClone->Rotate( 0.00, 0.00, m_Rotation );
+   pTheClone->m_pHookPoint->MoveEx(m_pHookPoint);
+   pTheClone->m_Rotation = m_Rotation;
+   pTheClone->m_Dirty = m_Dirty;
+   CComQIPtr<IShape> poly_shape(m_pShape);
+   CComPtr<IShape> poly_shape_clone;
+   poly_shape->Clone(&poly_shape_clone);
+   pTheClone->m_pShape.Release();
+   poly_shape_clone.QueryInterface(&pTheClone->m_pShape);
 
    pTheClone->QueryInterface( pClone );
 
@@ -816,9 +820,23 @@ STDMETHODIMP CUBeam::get_StructuredStorage(IStructuredStorage2* *pStg)
 
 STDMETHODIMP CUBeam::Offset(Float64 dx,Float64 dy)
 {
-   // no need to call MakeDirty since our hookpoint will call us back
+   if (m_Dirty)
+   {
+      // this is going to fire an event that sets m_Dirty to true... since it is already true
+      // no need to worry about it
+      m_pHookPoint->Offset(dx, dy);
+   }
+   else
+   {
+      // We are just offsetting... detach from m_pHookPoint events so we don't invalidate
+      // everything about this shape...
+      CrUnadvise(m_pHookPoint, this, IID_IPoint2dEvents, m_HookPointCookie);
+      m_pHookPoint->Offset(dx, dy); // offset the hook point
+      CrAdvise(m_pHookPoint, this, IID_IPoint2dEvents, &m_HookPointCookie);
 
-   m_pHookPoint->Offset(dx,dy);
+      CComQIPtr<IXYPosition> pos(m_pShape);
+      pos->Offset(dx, dy); // offset the shape
+   }
    return S_OK;
 }
 
@@ -888,6 +906,10 @@ STDMETHODIMP CUBeam::RotateEx(IPoint2d* pPoint,Float64 angle)
 STDMETHODIMP CUBeam::Rotate(Float64 cx,Float64 cy,Float64 angle)
 {
    // no need to call MakeDirty since our hookpoint will call us back
+   if (IsZero(angle))
+   {
+      return S_OK;
+   }
 
    m_pHookPoint->Rotate(cx,cy,angle);
    

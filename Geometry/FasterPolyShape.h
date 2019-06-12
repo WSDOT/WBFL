@@ -174,6 +174,16 @@ private:
          Init();
       }
       void Init();
+
+      void Offset(Float64 dx, Float64 dy)
+      {
+         Xleft += dx;
+         Xright += dx;
+         Ytop += dy;
+         Ybottom += dy;
+         Cx += dx;
+         Cy += dy;
+      }
       HRESULT CreateIShapeProperties(IShapeProperties ** props);
 
    } m_ShapeProps;

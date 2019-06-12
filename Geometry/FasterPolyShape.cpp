@@ -1127,8 +1127,8 @@ STDMETHODIMP CFasterPolyShape::Offset(Float64 dx,Float64 dy)
       gpPoint2d& rPoint = *it;
       rPoint.Offset(dx,dy);
    }
-
-   MakeDirty();
+   m_ShapeProps.Offset(dx, dy);
+   m_BoundingRect.Offset(dx, dy);
 
    return S_OK;
 }
@@ -1138,8 +1138,7 @@ STDMETHODIMP CFasterPolyShape::OffsetEx(ISize2d* pSize)
    CHECK_IN(pSize);
 
    Float64 dx,dy;
-   GetSize(pSize,&dx,&dy);
-
+   pSize->Dimensions(&dx, &dy);
    return Offset(dx,dy);
 }
 

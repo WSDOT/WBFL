@@ -241,15 +241,14 @@ STDMETHODIMP CPolyShape::get_XYPosition(IXYPosition **pVal)
 STDMETHODIMP CPolyShape::get_ShapeProperties(IShapeProperties* *pVal)
 {
    CHECK_RETOBJ(pVal);
-   UpdateShapeProperties();
+   Update();
 
    return m_ShapeProps.CreateIShapeProperties(pVal);
 }
 
-void CPolyShape::UpdateShapeProperties()
+void CPolyShape::Update()
 {
-
-   if (m_DirtyProperties)
+   if (m_Dirty)
    {
       Float64 area, ixx, iyy, ixy;
       Float64 cgx, cgy;
@@ -267,6 +266,7 @@ void CPolyShape::UpdateShapeProperties()
          // If there are less than three points, it is a degenerate shape.
          // Just return default shape properties (All values are zero).
          m_ShapeProps.Init();
+         m_BoundingRect.Init();
          return;
       }
 
@@ -277,6 +277,12 @@ void CPolyShape::UpdateShapeProperties()
       Float64 g_ixx=0, g_iyy=0, g_ixy = 0; // moments of inertia about the global axes
       Float64 c_ixx=0, c_iyy=0, c_ixy = 0; // moments of inertia about the centroid
       Float64 area_local  = 0;
+
+      Float64 left = DBL_MAX;
+      Float64 right = -DBL_MAX;
+      Float64 top = -DBL_MAX;
+      Float64 bottom = DBL_MAX;
+
 
       // loop over all points - make sure of closure
       CollectionIndexType idx0, idx1;
@@ -296,6 +302,12 @@ void CPolyShape::UpdateShapeProperties()
 
          GetCoordinates(p0,&x0,&y0);
          GetCoordinates(p1,&x1,&y1);
+
+         left = Min(x0, x1, left);
+         right = Max(x0, x1, right);
+         bottom = Min(y0, y1, bottom);
+         top = Max(y0, y1, top);
+
 
          dx = x1 - x0;
          dy = y1 - y0;
@@ -387,8 +399,10 @@ void CPolyShape::UpdateShapeProperties()
          ixy  *= -1;
       }
 
-      // update bounding rect
-      this->UpdateBoundingBox();
+      m_BoundingRect.Left = left;
+      m_BoundingRect.Right = right;
+      m_BoundingRect.Top = top;
+      m_BoundingRect.Bottom = bottom;
 
       m_ShapeProps.Area = area;
       m_ShapeProps.Ixx = ixx;
@@ -401,7 +415,7 @@ void CPolyShape::UpdateShapeProperties()
       m_ShapeProps.Ytop = m_BoundingRect.Top - cgy;
       m_ShapeProps.Ybottom = cgy - m_BoundingRect.Bottom;
 
-      m_DirtyProperties = false;
+      m_Dirty = false;
    }
 }
 
@@ -410,50 +424,9 @@ STDMETHODIMP CPolyShape::get_BoundingBox(IRect2d* *pVal)
 {
    CHECK_RETOBJ(pVal);
 
-   UpdateBoundingBox();
+   Update();
 
    return m_BoundingRect.CreateIRect(pVal);
-}
-
-void CPolyShape::UpdateBoundingBox()
-{
-   if (m_DirtyBoundingBox)
-   {
-      CollectionIndexType cPoints;
-      m_pPoints->get_Count(&cPoints);
-
-      if ( cPoints == 0 )
-      {
-         m_BoundingRect.Init();
-      }
-      else
-      {
-         Float64 left   =  DBL_MAX;
-         Float64 right  = -DBL_MAX;
-         Float64 top    = -DBL_MAX;
-         Float64 bottom =  DBL_MAX;
-
-         for ( CollectionIndexType idx = 0; idx < cPoints; idx++)
-         {
-            CComPtr<IPoint2d> pPoint;
-            Float64 x,y;
-            m_pPoints->get_Item(idx,&pPoint);
-            GetCoordinates(pPoint,&x,&y);
-
-            left   = Min( x, left);
-            right  = Max( x, right);
-            bottom = Min( y, bottom);
-            top    = Max( y, top);
-         }
-
-         m_BoundingRect.Left = left;
-         m_BoundingRect.Right = right;
-         m_BoundingRect.Top = top;
-         m_BoundingRect.Bottom = bottom;
-      }
-
-      m_DirtyBoundingBox = false;
-   }
 }
 
 STDMETHODIMP CPolyShape::get_PolyPoints(IPoint2dCollection** ppPolyPoints)
@@ -689,6 +662,10 @@ STDMETHODIMP CPolyShape::Clone(IShape** pClone)
 
       pcClone->AddPointEx( pNewPoint );
    }
+
+   pTheClone->m_Dirty = m_Dirty;
+   pTheClone->m_BoundingRect = m_BoundingRect;
+   pTheClone->m_ShapeProps = m_ShapeProps;
 
    return pcClone.QueryInterface( pClone );
 }
@@ -1109,6 +1086,9 @@ STDMETHODIMP CPolyShape::Offset(Float64 dx,Float64 dy)
       m_pPoints->get_Item(i,&pPoint);
       pPoint->Offset(dx,dy);
    }
+
+   m_BoundingRect.Offset(dx, dy);
+   m_ShapeProps.Offset(dx, dy);
 
    return S_OK;
 }

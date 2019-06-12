@@ -714,8 +714,7 @@ STDMETHODIMP CCircle::OffsetEx(ISize2d* pSize)
    CHECK_IN(pSize);
 
    Float64 dx, dy;
-   pSize->get_Dx( &dx );
-   pSize->get_Dy( &dy );
+   pSize->Dimensions(&dx, &dy);
 
    return Offset( dx, dy );
 }

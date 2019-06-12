@@ -427,6 +427,11 @@ STDMETHODIMP CCompositeShape::Clone(IShape** clone)
 //
 STDMETHODIMP CCompositeShape::Offset(Float64 dx,Float64 dy)
 {
+   if (IsZero(dx) && IsZero(dy))
+   {
+      return S_OK;
+   }
+
    for (auto& value : m_coll)
    {
       CComPtr<ICompositeShapeItem> item(value.second);
@@ -444,20 +449,9 @@ STDMETHODIMP CCompositeShape::Offset(Float64 dx,Float64 dy)
 STDMETHODIMP CCompositeShape::OffsetEx(ISize2d* pSize)
 {
    CHECK_IN(pSize);
-
-   for (auto& value : m_coll)
-   {
-      CComPtr<ICompositeShapeItem> item(value.second);
-
-      CComPtr<IShape> shape;
-      item->get_Shape(&shape);
-
-      CComQIPtr<IXYPosition> position(shape);
-
-      position->OffsetEx(pSize);
-   }
-
-	return S_OK;
+   Float64 dx, dy;
+   pSize->Dimensions(&dx, &dy);
+   return Offset(dx, dy);
 }
 
 STDMETHODIMP CCompositeShape::get_LocatorPoint(LocatorPointType lp, IPoint2d** point)
@@ -579,6 +573,10 @@ STDMETHODIMP CCompositeShape::MoveEx(IPoint2d* pFrom, IPoint2d* pTo)
 STDMETHODIMP CCompositeShape::RotateEx(IPoint2d* pPoint, Float64 angle)
 {
    CHECK_IN(pPoint);
+   if (IsZero(angle))
+   {
+      return S_OK;
+   }
 
    for (auto& value : m_coll)
    {

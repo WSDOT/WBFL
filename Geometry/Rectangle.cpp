@@ -474,13 +474,36 @@ STDMETHODIMP CRectangle::FurthestDistance(ILine2d* line,Float64 *pVal)
 
 STDMETHODIMP CRectangle::Offset(Float64 dx,Float64 dy)
 {
-   return m_pHookPoint->Offset(dx,dy);
+   if (m_DirtyBoundingBox || m_DirtyProperties || m_DirtyPolyShape)
+   {
+      // this is going to fire an event that sets m_Dirty to true... since it is already true
+      // no need to worry about it
+      m_pHookPoint->Offset(dx, dy);
+   }
+   else
+   {
+      // We are just offsetting... detach from m_pHookPoint events so we don't invalidate
+      // everything about this shape...
+      CrUnadvise(m_pHookPoint, this, IID_IPoint2dEvents, m_HookPointCookie);
+      m_pHookPoint->Offset(dx, dy); // offset the hook point
+      CrAdvise(m_pHookPoint, this, IID_IPoint2dEvents, &m_HookPointCookie);
+
+      CComQIPtr<IXYPosition> pos(m_pPolyShape);
+      pos->Offset(dx, dy); // offset the shape
+
+      m_ShapeProps.Offset(dx, dy);
+      m_BoundingRect.Offset(dx, dy);
+   }
+   return S_OK;
 }
 
 STDMETHODIMP CRectangle::OffsetEx(ISize2d* pSize)
 {
    CHECK_IN(pSize);
-   return m_pHookPoint->OffsetEx(pSize);
+   Float64 dx, dy;
+   pSize->Dimensions(&dx, &dy);
+   return Offset(dx,dy);
+
 }
 
 STDMETHODIMP CRectangle::get_LocatorPoint(LocatorPointType lp, IPoint2d** point)
