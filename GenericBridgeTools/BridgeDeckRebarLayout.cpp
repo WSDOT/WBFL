@@ -268,7 +268,20 @@ STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIn
             }
             else
             {
-               nBars = IsZero(spacing) ? 1 : CollectionIndexType(rebarSectionWidth/spacing) + 1;
+               if (IsZero(spacing))
+               {
+                  nBars = 1;
+               }
+               else
+               {
+                  Float64 fnBars = rebarSectionWidth / spacing;
+                  Float64 cnBars = ceil(fnBars);
+                  // we want the number of bars computed based on spacing, rounded down... however, the
+                  // number of bars (fnBars) can be approximately equal to the ceiling of (fnBars). For example
+                  // rebarSectionWidth/rebarData.Spacing can be 3.99999. The rounded down value would be 3, but
+                  // what we really have is 4 bars.
+                  nBars = (IsEqual(cnBars, fnBars) ? IndexType(cnBars) : IndexType(fnBars)) + 1;
+               }
                X = -1.0*nBars*spacing/2.0;
             }
 
