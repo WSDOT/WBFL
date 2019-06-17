@@ -73,6 +73,10 @@ public:
    void SetStepTime(Float64 t);
    Float64 GetStepTime() const;
 
+   void Use90DayStrength(const matConcreteEx& concrete90);
+   bool Use90DayStrength() const;
+   const matConcreteEx& Get90DayConcreteModel() const;
+
    // aggregate correction and bounding factors.
    // see NCHRP Report 496
    void SetEcCorrectionFactors(Float64 K1,Float64 K2);
@@ -115,7 +119,6 @@ public:
 protected:
    // prevent copying and assignment (use CreateClone instead)
    lrfdLRFDConcrete(const lrfdLRFDConcrete& rOther);
-   lrfdLRFDConcrete& operator = (const lrfdLRFDConcrete& rOther);
 
    void InitializeShrinkageDetails(Float64 t,std::shared_ptr<lrfdLRFDConcreteShrinkageDetails>& pDetails) const;
    void InitializeCreepDetails(Float64 t,Float64 tla,std::shared_ptr<lrfdLRFDConcreteCreepDetails>& pDetails) const;
@@ -126,8 +129,11 @@ protected:
    std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficient2005(Float64 t,Float64 tla) const;
    std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficient2015(Float64 t,Float64 tla) const;
 
+   bool Use90DayConcrete(Float64 t) const;
+
 private:
-   matConcreteEx m_InitialConcrete, m_FinalConcrete;
+   matConcreteEx m_InitialConcrete, m_FinalConcrete, m_90DayConcrete;
+   bool m_bUse90DayConcrete;
    Float64 m_StartTime;
    Float64 m_StepTime;
    Float64 m_EcK1;
