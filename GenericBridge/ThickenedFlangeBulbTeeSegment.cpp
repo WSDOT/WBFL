@@ -639,7 +639,10 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_GirderShape(Float64 Xs, Section
       pntOrigin->Move(0, 0);
       position->put_LocatorPoint(lpTopCenter, pntOrigin);
 
-      m_ShapeCache.emplace_hint(m_ShapeCache.end(), Xs, newShape);
+      // copy the shape and put it in the cache
+      CComPtr<IShape> cacheShape;
+      newShape->Clone(&cacheShape);
+      m_ShapeCache.emplace_hint(m_ShapeCache.end(), Xs, cacheShape);
    }
 
    if (coordinateSystem == cstBridge)
