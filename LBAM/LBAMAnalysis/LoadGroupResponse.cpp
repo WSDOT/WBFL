@@ -1093,20 +1093,38 @@ SupportIndexType CLoadGroupResponse::CAnalysisController::GetTemporarySupportInd
 
 SupportIDType CLoadGroupResponse::CAnalysisController::GetTemporarySupportID(SupportIndexType tempSupportIdx)
 {
-   ATLASSERT(tempSupportIdx < TemporarySupportCount());
-   return m_TemporarySupportInfo[tempSupportIdx].m_ID;
+   if (m_TemporarySupportInfo.size() <= tempSupportIdx)
+   {
+      return INVALID_ID;
+   }
+   else
+   {
+      return m_TemporarySupportInfo[tempSupportIdx].m_ID;
+   }
 }
 
 StageIndexType CLoadGroupResponse::CAnalysisController::TemporarySupportErectionStageIdx(SupportIndexType tempSupportIdx)
 {
-   ATLASSERT(tempSupportIdx < TemporarySupportCount());
-   return m_TemporarySupportInfo[tempSupportIdx].m_ErectionStageIdx;
+   if (m_TemporarySupportInfo.size() <= tempSupportIdx)
+   {
+      return INVALID_INDEX;
+   }
+   else
+   {
+      return m_TemporarySupportInfo[tempSupportIdx].m_ErectionStageIdx;
+   }
 }
 
 StageIndexType CLoadGroupResponse::CAnalysisController::TemporarySupportRemovalStageIndex( SupportIndexType tempSupportIdx)
 {
-   ATLASSERT(tempSupportIdx < TemporarySupportCount());
-   return m_TemporarySupportInfo[tempSupportIdx].m_RemovalStageIdx;
+   if (m_TemporarySupportInfo.size() <= tempSupportIdx)
+   {
+      return INVALID_INDEX;
+   }
+   else
+   {
+      return m_TemporarySupportInfo[tempSupportIdx].m_RemovalStageIdx;
+   }
 }
 
 
