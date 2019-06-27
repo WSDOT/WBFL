@@ -127,7 +127,7 @@ void CTestMultiWeb2::TestIMultiWeb2()
 
    TRY_TEST( beam->get_WebCount(nullptr), E_POINTER );
    TRY_TEST( beam->get_WebCount(&lval), S_OK );
-   TRY_TEST( lval == 0, true );
+   TRY_TEST( lval == 2, true );
 
    TRY_TEST( beam->get_HookPoint(nullptr), E_POINTER );
    TRY_TEST( beam->get_HookPoint(&pntVal), S_OK );
