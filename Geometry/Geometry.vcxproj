@@ -929,6 +929,7 @@ date/T &gt; $(IntDir)mt2.dep
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BeamShapeFactory.cpp" />
     <ClCompile Include="BoxBeam.cpp" />
     <ClCompile Include="BulbTee.cpp" />
     <ClCompile Include="BulbTee2.cpp" />
@@ -987,6 +988,7 @@ date/T &gt; $(IntDir)mt2.dep
     <ClCompile Include="VoidedSlab2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="BeamShapeFactory.rgs" />
     <None Include="BoxBeam.rgs" />
     <None Include="BulbTee.rgs" />
     <None Include="BulbTee2.rgs" />
@@ -1039,6 +1041,7 @@ date/T &gt; $(IntDir)mt2.dep
   <ItemGroup>
     <ClInclude Include="..\Include\Geometry.hh" />
     <ClInclude Include="..\Include\Primitives.hh" />
+    <ClInclude Include="BeamShapeFactory.h" />
     <ClInclude Include="BoxBeam.h" />
     <ClInclude Include="BulbTee.h" />
     <ClInclude Include="BulbTee2.h" />

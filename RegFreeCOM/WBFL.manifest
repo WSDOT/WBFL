@@ -316,7 +316,16 @@
                 progid="WBFLGeometry.BoxBeam">
          <progid>WBFLGeometry.BoxBeam.1</progid>
       </comClass>
-      <comClass clsid="{1114EB22-FE2E-11D2-8CDF-8AFA61D12734}"
+
+      <comClass clsid="{4B272221-CF8C-40C6-9281-12C8277B668A}"
+                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+                description="BeamShapeFactory Class"
+                threadingModel="Apartment"
+                progid="WBFLGeometry.BeamShapeFactory">
+         <progid>WBFLGeometry.BeamShapeFactor.1</progid>
+      </comClass>
+
+               <comClass clsid="{1114EB22-FE2E-11D2-8CDF-8AFA61D12734}"
                 tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
                 description="GeomOp Class"
                 threadingModel="Apartment"

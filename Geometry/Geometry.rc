@@ -141,6 +141,7 @@ IDR_BOXBEAM             REGISTRY DISCARDABLE    "BoxBeam.rgs"
 IDR_MULTIWEB2           REGISTRY DISCARDABLE    "MultiWeb2.rgs"
 IDR_DECKEDSLABBEAM      REGISTRY DISCARDABLE    "DeckedSlabBeam.rgs"
 IDR_GENERICSHAPE        REGISTRY DISCARDABLE    "GenericShape.rgs"
+IDR_BEAMSHAPEFACTORY    REGISTRY DISCARDABLE    "BeamShapeFactory.rgs"
 
 /////////////////////////////////////////////////////////////////////////////
 //

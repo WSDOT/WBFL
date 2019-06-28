@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLGeometry.BeamShapeFactory.1 = s 'BeamShapeFactory Class'
+	{
+		CLSID = s '{4B272221-CF8C-40C6-9281-12C8277B668A}'
+	}
+	WBFLGeometry.BeamShapeFactory = s 'BeamShapeFactory Class'
+	{
+		CLSID = s '{4B272221-CF8C-40C6-9281-12C8277B668A}'
+		CurVer = s 'WBFLGeometry.BeamShapeFactory.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {4B272221-CF8C-40C6-9281-12C8277B668A} = s 'BeamShapeFactory Class'
+		{
+			ProgID = s 'WBFLGeometry.BeamShapeFactory.1'
+			VersionIndependentProgID = s 'WBFLGeometry.BeamShapeFactory'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}
