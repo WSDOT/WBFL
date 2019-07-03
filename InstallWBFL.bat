@@ -14,16 +14,19 @@ xcopy /y/d %WBFLDIR%\RegFreeCOM\%1\%2\WBFL*.lib %3
 xcopy /y/d %WBFLDIR%\RegFreeCOM\%1\%2\WBFL*.dll %3
 xcopy /y/d %WBFLDIR%\RegFreeCOM\%1\%2\MakeDocMap.exe %3
 
-if %1 == "Win32" AND %2 == "Release"
-xcopy /y/d %WBFLDIR%\Apache\XERCESCPKG-31-X86-VC100\bin\xerces-c_3_1.dll %3\Win32\Release\
+IF "%1" == "Win32" (
+    IF "%2" == "Release" (
+   	xcopy /y/d %WBFLDIR%\Apache\XERCESCPKG-31-X86-VC100\bin\xerces-c_3_1.dll %3 
+	) ELSE ( 
+	xcopy /y/d %WBFLDIR%\Apache\XERCESCPKG-31-X86-VC100\bin\xerces-c_3_1D.dll %3 
+	)
+)
 
-if %1 == "Win32" AND %2 == "Debug"
-xcopy /y/d %WBFLDIR%\Apache\XERCESCPKG-31-X86-VC100\bin\xerces-c_3_1D.dll %3\Win32\Debug\
-
-if %1 == "x64" AND %2 == "Release"
-xcopy /y/d %WBFLDIR%\Apache\XERCESCPKG-31-X64-VC100\bin\xerces-c_3_1.dll %3\x64\Release\
-
-if %1 == "x64" AND %2 == "Debug"
-xcopy /y/d %WBFLDIR%\Apache\XERCESCPKG-31-X64-VC100\bin\xerces-c_3_1D.dll %3\x64\Debug\
-
+IF "%1" == "x64" (
+   IF "%2" == "Release" (
+   xcopy /y/d %WBFLDIR%\Apache\XERCESCPKG-31-X64-VC100\bin\xerces-c_3_1.dll %3 
+   ) ELSE (
+   xcopy /y/d %WBFLDIR%\Apache\XERCESCPKG-31-X64-VC100\bin\xerces-c_3_1D.dll %3 
+   )
+)
 
