@@ -59,8 +59,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 5,0,0,0
- PRODUCTVERSION 5,0,0,0
+ FILEVERSION 5,0,0,1
+ PRODUCTVERSION 5,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -78,12 +78,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "WBFL Bridge Geoemtry Module"
-            VALUE "FileVersion", "5.0.0.0"
+            VALUE "FileVersion", "5.0.0.1"
             VALUE "InternalName", "WBFLBridgeGeometry"
             VALUE "LegalCopyright", "Copyright © 1999-2019, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "WBFLBridgeGeometry.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "5.0.0.0"
+            VALUE "ProductVersion", "5.0.0.1"
         END
     END
     BLOCK "VarFileInfo"
