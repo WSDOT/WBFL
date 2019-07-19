@@ -477,7 +477,7 @@ interface IDeckBoundary : IUnknown
 
    // Returns a collection of points that represents the perimeter of the deck between two piers. The perimeter will be approximated with
    // nMinPointsPerSide. Control points for the elements that make up the edge paths will be included in the perimeter
-   [propget,helpstring("property PerimeterEx")] HRESULT PerimeterEx([in] CollectionIndexType nMinPointsPerSide,[in] PierIDType startPierID, [in] PierIDType endPierID,[out,retval] IPoint2dCollection** points);
+   [propget,helpstring("property PerimeterEx")] HRESULT PerimeterEx([in] CollectionIndexType nMinPointsPerSide,[in] PierIDType startPierID, [in]Float64 Xstart,[in] PierIDType endPierID,[in]Float64 Xend,[out,retval] IPoint2dCollection** points);
 
    // Returns the transverse deck edge points
    [propget,helpstring("property TransverseEdgePoints")] HRESULT TransverseEdgePoints([in] EndType endType,[out]IPoint2d** ppLeft,[out]IPoint2d** ppLeftBreak,[out]IPoint2d** ppRightBreak,[out]IPoint2d** ppRight);
