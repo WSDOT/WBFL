@@ -533,6 +533,7 @@ library WBFLCogo
 		[propput, helpstring("property StationZoneIndex"), helpcontext(IDH_Station_StationZoneIndex)] HRESULT StationZoneIndex([in] ZoneIndexType newVal);
 		[propget, helpstring("property Value"), helpcontext(IDH_Station_Value)] HRESULT Value([out, retval] Float64 *pVal);
 		[propput, helpstring("property Value"), helpcontext(IDH_Station_Value)] HRESULT Value([in] Float64 newVal);
+      [helpstring("method Offset")] HRESULT Offset([in]Float64 offset);
       [helpstring("method GetStation")] HRESULT GetStation([out]ZoneIndexType* pZoneIdx,[out]Float64* pStation);
       [helpstring("method SetStation")] HRESULT SetStation([in]ZoneIndexType zoneIdx,[in]Float64 station);
       [propget,helpstring("property NormalizedValue")] HRESULT NormalizedValue([in]IAlignment* pAlignment,[out,retval]Float64* pValue);
