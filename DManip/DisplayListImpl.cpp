@@ -182,15 +182,6 @@ STDMETHODIMP_(void) CDisplayListImpl::FindDisplayObjects(CPoint point,DisplayObj
       if ( pDO->HitTest(point) )
       {
          dispObjs->push_back(pDO);
-
-         // If this is a composite display object, drill down and get the individual display objects also
-         CComQIPtr<iCompositeDisplayObject,&IID_iCompositeDisplayObject> pCDO(pDO);
-         if ( pCDO )
-         {
-            CComPtr<iDisplayList> dispList;
-            pCDO->GetDisplayObjects(&dispList);
-            dispList->FindDisplayObjects(point,dispObjs);
-         }
       }
    }
 }
