@@ -546,17 +546,32 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnLButtonDown(UINT nFlags,CPoint point)
       BOOL bSelectionEnabled = FALSE;
       if ( m_bLBtnSelectEnabled )
       {
-         FindNextSelectableDisplayObject(point,&pDO);
-         if ( pDO )
+         // find the display objects at this point... if one of them is already selected,
+         // then retain the selection
+         DisplayObjectContainer doS;
+         FindDisplayObjects(point, &doS);
+         for (const auto& dispObj : doS)
          {
-            dispObjs.push_back(pDO);
-            bSelectionEnabled = TRUE;
+            if (dispObj->IsSelected())
+            {
+               dispObjs.push_back(dispObj);
+            }
          }
-      }
-      else
-      {
-         FindDisplayObjects(point,&dispObjs);
-         bSelectionEnabled = FALSE;
+
+         if (dispObjs.size() == 0)
+         {
+            FindNextSelectableDisplayObject(point, &pDO);
+            if (pDO)
+            {
+               dispObjs.push_back(pDO);
+               bSelectionEnabled = TRUE;
+            }
+            else
+            {
+               FindDisplayObjects(point, &dispObjs);
+               bSelectionEnabled = FALSE;
+            }
+         }
       }
 
       if ( m_bLBtnSelectEnabled && pDO == nullptr )
@@ -738,17 +753,32 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnRButtonDown(UINT nFlags,CPoint point)
          if ( m_bRBtnSelectEnabled )
          {
             // r-button selection is enabled so we only want the selectable display objects
-            FindNextSelectableDisplayObject(point,&pDO);
-            if ( pDO )
+            // find the display objects at this point... if one of them is already selected,
+            // then retain the selection
+            DisplayObjectContainer doS;
+            FindDisplayObjects(point, &doS);
+            for (const auto& dispObj : doS)
             {
-               dispObjs.push_back(pDO);
-               bSelectionEnabled = TRUE;
+               if (dispObj->IsSelected())
+               {
+                  dispObjs.push_back(dispObj);
+               }
             }
-            else
+
+            if (dispObjs.size() == 0)
             {
-               // a selectable display object wasn't found... go to the full list of display objects
-               FindDisplayObjects(point,&dispObjs);
-               bSelectionEnabled = FALSE;
+               FindNextSelectableDisplayObject(point, &pDO);
+               if (pDO)
+               {
+                  dispObjs.push_back(pDO);
+                  bSelectionEnabled = TRUE;
+               }
+               else
+               {
+                  // a selectable display object wasn't found... go to the full list of display objects
+                  FindDisplayObjects(point, &dispObjs);
+                  bSelectionEnabled = FALSE;
+               }
             }
          }
          else
