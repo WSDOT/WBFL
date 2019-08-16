@@ -116,6 +116,7 @@ public:
 public:
    STDMETHOD(get_Index)(/*[out,retval]*/PierIndexType* pIndex) override;
    STDMETHOD(get_ID)(/*[out,retval]*/PierIDType* pID) override;
+   STDMETHOD(get_Location)(/*[out, retval]*/Float64* pXb) override;
    STDMETHOD(get_Station)(/*[out,retval]*/IStation* *station) override;
    STDMETHOD(get_Direction)(/*[out,retval]*/ IDirection* *direction) override;
 

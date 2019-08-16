@@ -170,6 +170,31 @@ STDMETHODIMP CBridgePier::get_ID(PierIDType* pID)
    return m_pPierLine->get_ID(pID);
 }
 
+STDMETHODIMP CBridgePier::get_Location(Float64* pXb)
+{
+   // gets the location of the pier in bridge coordinates
+   CHECK_RETVAL(pXb);
+   CComPtr<IStation> station;
+   get_Station(&station);
+
+   CComPtr<IPierCollection> piers;
+   m_pBridge->get_Piers(&piers);
+
+   CComPtr<IBridgePier> firstPier;
+   piers->get_Item(0, &firstPier);
+
+   CComPtr<IStation> firstStation;
+   firstPier->get_Station(&firstStation);
+
+   CComPtr<IAlignment> alignment;
+   m_pBridge->get_Alignment(&alignment);
+
+   alignment->DistanceBetweenStations(CComVariant(firstStation), CComVariant(station), pXb);
+   ATLASSERT(0 <= *pXb);
+
+   return S_OK;
+}
+
 STDMETHODIMP CBridgePier::get_Station(IStation* *station)
 {
    if ( m_pPierLine == nullptr )

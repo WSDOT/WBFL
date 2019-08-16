@@ -60,9 +60,6 @@ public:
    HRESULT FinalConstruct();
    void FinalRelease();
 
-   // Causes the internal span/pier linkages pointers to be re-initialized
-   void LinkSpansAndPiers();
-
 DECLARE_REGISTRY_RESOURCEID(IDR_GENERICBRIDGE)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()

@@ -49,6 +49,87 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+template <class T>
+HRESULT GetMaterial(T* pSlab, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, SectionBias sectionBias, IMaterial** ppMaterial)
+{
+   CComPtr<ICastingRegions> regions;
+   pSlab->get_CastingRegions(&regions);
+
+   IndexType regionIdx;
+   CComPtr<ICastingRegion> region;
+   HRESULT hr = regions->FindRegionEx(ssMbrID, segIdx, Xs, sectionBias, &regionIdx, &region);
+   if (FAILED(hr))
+   {
+      (*ppMaterial) = nullptr;
+      return hr;
+   }
+
+   return region->get_Material(ppMaterial);
+}
+
+HRESULT GetMaterial(IBridgeDeck* deck, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, SectionBias sectionBias, IMaterial** ppMaterial)
+{
+   HRESULT hr = S_OK;
+   CComQIPtr<ICastSlab> castSlab(deck);
+   CComQIPtr<IPrecastSlab> precastSlab(deck);
+   CComQIPtr<IOverlaySlab> overlaySlab(deck);
+   if (castSlab)
+   {
+      hr = GetMaterial<ICastSlab>(castSlab, ssMbrID, segIdx, Xs, sectionBias, ppMaterial);
+   }
+   else if (precastSlab)
+   {
+      hr = GetMaterial<IPrecastSlab>(precastSlab, ssMbrID, segIdx, Xs, sectionBias, ppMaterial);
+   }
+   else
+   {
+      ATLASSERT(overlaySlab);
+      hr = overlaySlab->get_Material(ppMaterial);
+   }
+   return hr;
+}
+
+template <class T>
+HRESULT GetMaterial(T* pSlab, Float64 Xb, SectionBias sectionBias, IMaterial** ppMaterial)
+{
+   CComPtr<ICastingRegions> regions;
+   pSlab->get_CastingRegions(&regions);
+
+   IndexType regionIdx;
+   CComPtr<ICastingRegion> region;
+   HRESULT hr = regions->FindRegion(Xb, sectionBias, &regionIdx, &region);
+   if (FAILED(hr))
+   {
+      (*ppMaterial) = nullptr;
+      return hr;
+   }
+
+   return region->get_Material(ppMaterial);
+}
+
+HRESULT GetMaterial(IBridgeDeck* deck, Float64 Xb, SectionBias sectionBias, IMaterial** ppMaterial)
+{
+   HRESULT hr = S_OK;
+   CComQIPtr<ICastSlab> castSlab(deck);
+   CComQIPtr<IPrecastSlab> precastSlab(deck);
+   CComQIPtr<IOverlaySlab> overlaySlab(deck);
+   if (castSlab)
+   {
+      hr = GetMaterial<ICastSlab>(castSlab, Xb, sectionBias, ppMaterial);
+   }
+   else if (precastSlab)
+   {
+      hr = GetMaterial<IPrecastSlab>(precastSlab, Xb, sectionBias, ppMaterial);
+   }
+   else
+   {
+      ATLASSERT(overlaySlab);
+      hr = overlaySlab->get_Material(ppMaterial);
+   }
+   return hr;
+}
+
+
 inline Float64 ComputeStructuralHaunchDepth(ISuperstructureMemberSegment* segment, Float64 Xs, HaunchDepthMethod haunchMethod)
 {
    if (haunchMethod == hdmHaunchIsZero)
@@ -945,14 +1026,14 @@ STDMETHODIMP CSectionCutTool::CreateGirderSectionBySegment(IGenericBridge* bridg
    return CreateCompositeSection(bridge,ssMbrID,segIdx,Xs,sectionBias,coordinateSystem,stageIdx,sectionPropMethod,haunchMethod,bFollowMatingSurfaceProfile,pBeamIdx,pSlabIdx,section);
 }
 
-STDMETHODIMP CSectionCutTool::CreateNetDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionCoordinateSystemType coordinateSystem,StageIndexType stageIdx,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,ISection** section)
+STDMETHODIMP CSectionCutTool::CreateNetDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,StageIndexType stageIdx,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,ISection** section)
 {
    CHECK_IN(bridge);
    CHECK_RETOBJ(section);
 
    // the girder section is required to create the deck shape
    CComPtr<ISection> ncsection;
-   HRESULT hr = CreateNoncompositeSection(bridge,ssMbrID,segIdx,Xs,sbLeft,coordinateSystem,stageIdx,spmGrossNoncomposite,&ncsection);
+   HRESULT hr = CreateNoncompositeSection(bridge,ssMbrID,segIdx,Xs, sectionBias,coordinateSystem,stageIdx,spmGrossNoncomposite,&ncsection);
    if ( FAILED(hr) )
    {
       return hr;
@@ -967,10 +1048,10 @@ STDMETHODIMP CSectionCutTool::CreateNetDeckSection(IGenericBridge* bridge,Girder
    CComQIPtr<IGirderSection> girder_section(sishape);
    ATLASSERT(girder_section);
 
-   return CreateDeckSection(bridge,ssMbrID,segIdx,Xs,stageIdx,spmNet,haunchMethod,bFollowMatingSurfaceProfile,girder_section,section);
+   return CreateDeckSection(bridge,ssMbrID,segIdx,Xs, sectionBias, stageIdx,spmNet,haunchMethod,bFollowMatingSurfaceProfile,girder_section,section);
 }
 
-STDMETHODIMP CSectionCutTool::CreateDeckAnalysisShape(IGenericBridge * bridge,IGirderSection* pSection, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, Float64 haunchDepth, BOOL bFollowMatingSurfaceProfile, StageIndexType stageIdx, IShape ** shape)
+STDMETHODIMP CSectionCutTool::CreateDeckAnalysisShape(IGenericBridge * bridge,IGirderSection* pSection, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, SectionBias sectionBias, Float64 haunchDepth, BOOL bFollowMatingSurfaceProfile, StageIndexType stageIdx, IShape ** shape)
 {
    CHECK_IN(bridge);
    CHECK_RETOBJ(shape);
@@ -992,9 +1073,15 @@ STDMETHODIMP CSectionCutTool::CreateDeckAnalysisShape(IGenericBridge * bridge,IG
       return S_FALSE;
    }
 
-   Float64 Econc;
    CComPtr<IMaterial> material;
-   deck->get_Material(&material);
+   HRESULT hr = GetMaterial(deck, ssMbrID, segIdx, Xs, sectionBias, &material);
+   if (FAILED(hr) || material == nullptr)
+   {
+      ATLASSERT(false); // if this asserts, then the casting region model may be wrong
+      return S_FALSE; // no casting region in this location... e.g. no deck at this location
+   }
+
+   Float64 Econc;
    material->get_E(stageIdx, &Econc);
 
    if (IsZero(Econc))
@@ -1003,10 +1090,10 @@ STDMETHODIMP CSectionCutTool::CreateDeckAnalysisShape(IGenericBridge * bridge,IG
       return S_FALSE;
    }
 
-   return CreateDeckShape(bridge, ssMbrID, segIdx, Xs, haunchDepth, bFollowMatingSurfaceProfile, pSection, shape);
+   return CreateDeckShape(bridge, ssMbrID, segIdx, Xs, sectionBias, haunchDepth, bFollowMatingSurfaceProfile, pSection, shape);
 }
 
-STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64 distFromStartOfBridge,StageIndexType stageIdx,BarrierSectionCut bsc,ISection** section)
+STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64 Xb,SectionBias sectionBias,StageIndexType stageIdx,BarrierSectionCut bsc,ISection** section)
 {
    // location is measured along the alignment, from the station of the first pier. The section cut is made
    // normal to the alignment.
@@ -1026,7 +1113,7 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
    Float64 first_pier_station;
    station->get_Value(&first_pier_station);
 
-   Float64 target_station = first_pier_station + distFromStartOfBridge;
+   Float64 target_station = first_pier_station + Xb;
 
    CComPtr<IAlignment> alignment;
    bridge->get_Alignment(&alignment);
@@ -1085,7 +1172,7 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
 
             // Create a noncomposite section for the segment that is being cut
             CComPtr<ISection> girder_section;
-            CreateNoncompositeSection(bridge,ssMbrID,segIdx,dist_from_start_of_segment,sbRight,cstBridge,stageIdx,spmGross,&girder_section);
+            CreateNoncompositeSection(bridge,ssMbrID,segIdx,dist_from_start_of_segment,sectionBias,cstBridge,stageIdx,spmGross,&girder_section);
 
             if ( girder_section == nullptr )
             {
@@ -1139,7 +1226,7 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
 
    // If appropriate for the bridge and stage, add the bridge deck
    CComPtr<ICompositeSectionItemEx> deckitem;
-   hr = CreateBridgeDeckSection(bridge,distFromStartOfBridge,stageIdx,bottom_deck_elevation,&deckitem);
+   hr = CreateBridgeDeckSection(bridge,Xb,sectionBias,stageIdx,bottom_deck_elevation,&deckitem);
    if ( FAILED(hr) )
    {
       return hr;
@@ -1155,7 +1242,7 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
    VARIANT_BOOL bStructuralOnly = (bsc == bscStructurallyContinuousOnly ? VARIANT_TRUE : VARIANT_FALSE);
    if ( bsc != bscNone )
    {
-      Float64 station = DistanceToStation(bridge,distFromStartOfBridge);
+      Float64 station = DistanceToStation(bridge,Xb);
 
       CComPtr<ISection> leftBarrier, rightBarrier;
       CreateLeftBarrierSection( bridge,station,bStructuralOnly,&leftBarrier);
@@ -1257,7 +1344,7 @@ HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDT
    CComQIPtr<IGirderSection> girder_section(sishape);
 
    CComPtr<ISection> deckSection;
-   hr = CreateDeckSection(bridge,ssMbrID,segIdx,Xs,stageIdx,sectionPropMethod,haunchMethod,bFollowMatingSurfaceProfile,girder_section,&deckSection);
+   hr = CreateDeckSection(bridge,ssMbrID,segIdx,Xs,sectionBias,stageIdx,sectionPropMethod,haunchMethod,bFollowMatingSurfaceProfile,girder_section,&deckSection);
    if ( FAILED(hr) )
    {
       return hr;
@@ -1299,7 +1386,7 @@ HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDT
    return S_OK;
 }
    
-HRESULT CSectionCutTool::CreateDeckShape(IGenericBridge* bridge, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, Float64 haunchDepth,BOOL bFollowMatingSurfaceProfile,IGirderSection* pGirderSection, IShape** pShape)
+HRESULT CSectionCutTool::CreateDeckShape(IGenericBridge* bridge, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, SectionBias sectionBias, Float64 haunchDepth,BOOL bFollowMatingSurfaceProfile,IGirderSection* pGirderSection, IShape** pShape)
 {
    CComPtr<IBridgeDeck> deck;
    bridge->get_Deck(&deck);
@@ -1511,7 +1598,7 @@ HRESULT CSectionCutTool::CreateDeckShape(IGenericBridge* bridge, GirderIDType ss
    return shape.CopyTo(pShape);
 }
 
-HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,
+HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionBias sectionBias,
              StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,HaunchDepthMethod haunchMethod,BOOL bFollowMatingSurfaceProfile,IGirderSection* pGirderSection,ISection** section)
 {
    CComPtr<ICompositeSectionEx> cmpSection;
@@ -1539,7 +1626,12 @@ HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType s
    Float64 Econc;
    Float64 Dconc;
    CComPtr<IMaterial> material;
-   deck->get_Material(&material);
+   if (FAILED(GetMaterial(deck, ssMbrID, segIdx, Xs, sectionBias, &material)))
+   {
+      ATLASSERT(false); // if this asserts, then the casting region model may be wrong
+      return S_FALSE; // no casting region in this location... e.g. no deck at this location
+   }
+
    material->get_E(stageIdx,&Econc);
    material->get_Density(stageIdx,&Dconc);
 
@@ -1560,7 +1652,7 @@ HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType s
    // Build a slab shape and add it to the section
    CComPtr<IShape> shape;
 
-   HRESULT hr = CreateDeckShape(bridge, ssMbrID, segIdx, Xs, haunch_depth, bFollowMatingSurfaceProfile, pGirderSection, &shape);
+   HRESULT hr = CreateDeckShape(bridge, ssMbrID, segIdx, Xs, sectionBias, haunch_depth, bFollowMatingSurfaceProfile, pGirderSection, &shape);
    if (FAILED(hr))
    {
       return hr;
@@ -2199,7 +2291,7 @@ HRESULT CSectionCutTool::LayoutRebar(ICompositeSectionEx* compositeSection,Float
    return S_OK;
 }
 
-HRESULT CSectionCutTool::CreateBridgeDeckSection(IGenericBridge* bridge,Float64 distFromStartOfBridge,StageIndexType stageIdx,Float64 elevBottomDeck,ICompositeSectionItemEx** deckitem)
+HRESULT CSectionCutTool::CreateBridgeDeckSection(IGenericBridge* bridge,Float64 Xb,SectionBias sectionBias,StageIndexType stageIdx,Float64 elevBottomDeck,ICompositeSectionItemEx** deckitem)
 {
    // This method creates a rectangular approximation of the bridge deck cross section.
    // The rectangle width is the edge-to-edge width of the deck, measured normal to the alignment
@@ -2226,7 +2318,7 @@ HRESULT CSectionCutTool::CreateBridgeDeckSection(IGenericBridge* bridge,Float64 
          deckBoundary->get_EdgePath(stLeft,VARIANT_TRUE,&leftPath);
          deckBoundary->get_EdgePath(stRight,VARIANT_TRUE,&rightPath);
 
-         Float64 station = DistanceToStation(bridge,distFromStartOfBridge);
+         Float64 station = DistanceToStation(bridge,Xb);
 
          CComPtr<IAlignment> alignment;
          bridge->get_Alignment(&alignment);
@@ -2276,7 +2368,8 @@ HRESULT CSectionCutTool::CreateBridgeDeckSection(IGenericBridge* bridge,Float64 
          csi->putref_Shape(shape);
 
          CComPtr<IMaterial> material;
-         deck->get_Material(&material);
+         HRESULT hr = GetMaterial(deck, Xb, sectionBias, &material);
+         ATLASSERT(SUCCEEDED(hr)); // if this asserts, then the casting region model may be wrong
 
          Float64 E, density;
          material->get_E(stageIdx,&E);
@@ -2399,7 +2492,7 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
       ATLASSERT(girder_section);
 
       CComPtr<IShape> slab_shape;
-      HRESULT hr = CreateDeckShape(bridge, ssMbrID, segIdx, Xs, haunch_depth, bFollowMatingSurfaceProfile, girder_section, &slab_shape);
+      HRESULT hr = CreateDeckShape(bridge, ssMbrID, segIdx, Xs, sectionBias, haunch_depth, bFollowMatingSurfaceProfile, girder_section, &slab_shape);
       if (FAILED(hr))
       {
          return hr;
@@ -2608,18 +2701,6 @@ HRESULT CSectionCutTool::CreateBarrierShape(DirectionType side,IGenericBridge* b
    alignment->Offset(pntDeckEdge, &deckEdgeStation, &deckEdgeOffset);
    Float64 slope;
    profile->Slope(CComVariant(deckEdgeStation), deckEdgeOffset, &slope);
-   //Float64 dx;
-   //CComPtr<IDirection> dir;
-   //cogoUtil::Inverse(pntAlignment, pntDeckEdge, &dx, &dir);
-   //if ((side == qcbLeft && dirCutLine->IsEqual(dir) == S_FALSE) || (side == qcbRight && dirCutLine->IsEqual(dir) == S_OK))
-   //{
-   //   dx *= -1;
-   //}
-
-   //Float64 alignment_elev;
-   //profile->Elevation(CComVariant(objStation),0.0,&alignment_elev);
-   //Float64 dy = (side == qcbLeft ? alignment_elev - deck_edge_elev : deck_edge_elev - alignment_elev);
-   //Float64 slope = dy/dx;
    Float64 angle = atan(slope);
 
    CComQIPtr<IXYPosition> position(shape);

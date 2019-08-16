@@ -38,6 +38,7 @@ static char THIS_FILE[] = __FILE__;
 // CPrecastSlab
 HRESULT CPrecastSlab::FinalConstruct()
 {
+   m_CastingRegions.CoCreateInstance(CLSID_CastingRegions);
    return IBridgeDeckImpl::Init();
 }
 
@@ -59,6 +60,12 @@ STDMETHODIMP CPrecastSlab::InterfaceSupportsErrorInfo(REFIID riid)
 			return S_OK;
 	}
 	return S_FALSE;
+}
+
+
+void CPrecastSlab::OnBridge()
+{
+   m_CastingRegions->putref_Bridge(m_pBridge);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -109,6 +116,19 @@ STDMETHODIMP CPrecastSlab::get_DeckBoundary(IDeckBoundary** deckBoundary)
 
 ////////////////////////////////////////////////////////////////////////
 // IPrecastSlab implementation
+STDMETHODIMP CPrecastSlab::get_CastingRegions(ICastingRegions** ppRegions)
+{
+   CHECK_RETOBJ(ppRegions);
+   return m_CastingRegions.CopyTo(ppRegions);
+}
+
+STDMETHODIMP CPrecastSlab::putref_CastingRegions(ICastingRegions* pRegions)
+{
+   CHECK_IN(pRegions);
+   m_CastingRegions = pRegions;
+   return S_OK;
+}
+
 STDMETHODIMP CPrecastSlab::get_PanelDepth(Float64* depth)
 {
    CHECK_RETVAL(depth);

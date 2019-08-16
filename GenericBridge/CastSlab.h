@@ -60,6 +60,8 @@ private:
    std::array<Float64,2> m_OverhangDepth;
    std::array<DeckOverhangTaper,2> m_Taper;
 
+   CComPtr<ICastingRegions> m_CastingRegions;
+
    IDeckBoundary* m_pDeckBoundary; // weak reference
 
 public:
@@ -75,6 +77,9 @@ BEGIN_COM_MAP(CCastSlab)
    COM_INTERFACE_ENTRY(IStructuredStorage2)
 END_COM_MAP()
 
+protected:
+   virtual void OnBridge() override;
+
 // ISupportsErrorInfo
 public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
@@ -88,7 +93,9 @@ public:
 
 // ICastSlab
 public:
-	STDMETHOD(put_GrossDepth)(/*[in]*/Float64 depth) override;
+   STDMETHOD(get_CastingRegions)(/*[out, retval]*/ICastingRegions** ppRegions) override;
+   STDMETHOD(putref_CastingRegions)(/*[in]*/ICastingRegions* pRegions) override;
+   STDMETHOD(put_GrossDepth)(/*[in]*/Float64 depth) override;
 	STDMETHOD(get_OverhangDepth)(/*[in]*/DirectionType side,/*[out,retval]*/Float64* depth) override;
 	STDMETHOD(put_OverhangDepth)(/*[in]*/DirectionType side,/*[in]*/Float64 depth) override;
 	STDMETHOD(get_OverhangTaper)(/*[in]*/DirectionType side,/*[out,retval]*/DeckOverhangTaper* taper) override;

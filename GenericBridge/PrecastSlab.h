@@ -65,7 +65,12 @@ private:
    std::array<Float64, 2> m_OverhangDepth;
    std::array<DeckOverhangTaper, 2> m_Taper;
 
+   CComPtr<ICastingRegions> m_CastingRegions;
+
    IDeckBoundary* m_pDeckBoundary; // weak reference
+
+protected:
+   virtual void OnBridge() override;
 
 public:
 DECLARE_REGISTRY_RESOURCEID(IDR_PRECASTSLAB)
@@ -93,6 +98,8 @@ public:
 
 // IPrecastSlab
 public:
+   STDMETHOD(get_CastingRegions)(/*[out, retval]*/ICastingRegions** ppRegions) override;
+   STDMETHOD(putref_CastingRegions)(/*[in]*/ICastingRegions* pRegions) override;
    STDMETHOD(get_PanelDepth)(/*[out,retval]*/Float64* depth) override;
 	STDMETHOD(put_PanelDepth)(/*[in]*/Float64 depth) override;
    STDMETHOD(get_CastDepth)(/*[out,retval]*/Float64* depth) override;

@@ -243,10 +243,10 @@ STDMETHODIMP CDeckBoundary::get_Perimeter(CollectionIndexType nMinPointsPerSide,
    PierIDType lastPierID;
    lastPier->get_ID(&lastPierID);
 
-   return get_PerimeterEx(nMinPointsPerSide,firstPierID,0.0,lastPierID,0.0,pPoints);
+   return get_PerimeterEx(nMinPointsPerSide,firstPierID,0.0,lastPierID,0.0,VARIANT_TRUE, pPoints);
 }
 
-STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSide,PierIDType startPierID,Float64 Xstart,PierIDType endPierID,Float64 Xend,IPoint2dCollection** pPoints)
+STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSide,PierIDType startPierID,Float64 Xstart,PierIDType endPierID,Float64 Xend, VARIANT_BOOL bParallelToPiers, IPoint2dCollection** pPoints)
 {
    CHECK_RETOBJ(pPoints);
 
@@ -310,6 +310,9 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
       CComPtr<ILine2d> centerline;
       startPier->get_Centerline(&centerline);
 
+      CComPtr<IStation> objStation;
+      startPier->get_Station(&objStation);
+
       CComPtr<IPoint2d> alignment_point;
 
       if (IsZero(Xstart))
@@ -323,14 +326,21 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
          // move centerline so it passes through that point. Make sure Xstart isn't before the start of the bridge
 
          // move the "centerline" so that it passes through the point defined by Xstart
-         CComPtr<IStation> objStation;
-         startPier->get_Station(&objStation);
          objStation->Offset(Xstart);
 
          CComPtr<IAlignment> alignment;
          m_pBridge->get_BridgeAlignment(&alignment);
-
          alignment->LocatePoint(CComVariant(objStation), OffsetMeasureType::omtNormal, 0.0, CComVariant(0), &alignment_point);
+      }
+
+      CComPtr<IPoint2d> pnt;
+      CComPtr<IVector2d> vDir;
+      centerline->GetExplicit(&pnt, &vDir);
+
+      if (bParallelToPiers == VARIANT_FALSE)
+      {
+         CComPtr<IAlignment> alignment;
+         m_pBridge->get_BridgeAlignment(&alignment);
 
          CComPtr<IDirection> normal;
          alignment->Normal(CComVariant(objStation), &normal);
@@ -338,14 +348,10 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
          Float64 value;
          normal->get_Value(&value);
 
-         CComPtr<IPoint2d> pnt;
-         CComPtr<IVector2d> vDir;
-         centerline->GetExplicit(&pnt, &vDir);
-
          vDir->put_Direction(value);
-
-         centerline->SetExplicit(alignment_point, vDir);
       }
+
+      centerline->SetExplicit(alignment_point, vDir);
 
       // intersect centerline of pier with left and right DeckBoundary edges
       // these two points define the start edge of the DeckBoundary
@@ -374,6 +380,9 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
       CComPtr<ILine2d> centerline;
       endPier->get_Centerline(&centerline);
 
+      CComPtr<IStation> objStation;
+      endPier->get_Station(&objStation);
+
       CComPtr<IPoint2d> alignment_point;
       if (IsZero(Xend))
       {
@@ -386,14 +395,22 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
          // move centerline so it passes through that point. Make sure Xend doesn't go too far off the bridge
 
          // move the "centerline" so that it passes through the point defined by Xend
-         CComPtr<IStation> objStation;
-         endPier->get_Station(&objStation);
          objStation->Offset(Xend);
 
          CComPtr<IAlignment> alignment;
          m_pBridge->get_BridgeAlignment(&alignment);
 
          alignment->LocatePoint(CComVariant(objStation), OffsetMeasureType::omtNormal, 0.0, CComVariant(0), &alignment_point);
+      }
+
+      CComPtr<IPoint2d> pnt;
+      CComPtr<IVector2d> vDir;
+      centerline->GetExplicit(&pnt, &vDir);
+
+      if (bParallelToPiers == VARIANT_FALSE)
+      {
+         CComPtr<IAlignment> alignment;
+         m_pBridge->get_BridgeAlignment(&alignment);
 
          CComPtr<IDirection> normal;
          alignment->Normal(CComVariant(objStation), &normal);
@@ -401,14 +418,10 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
          Float64 value;
          normal->get_Value(&value);
 
-         CComPtr<IPoint2d> pnt;
-         CComPtr<IVector2d> vDir;
-         centerline->GetExplicit(&pnt, &vDir);
-
          vDir->put_Direction(value);
-
-         centerline->SetExplicit(alignment_point, vDir);
       }
+
+      centerline->SetExplicit(alignment_point, vDir);
 
       // intersect centerline of pier with left and right DeckBoundary edges
       // these two points define the start edge of the DeckBoundary

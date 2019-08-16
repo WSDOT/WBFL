@@ -395,7 +395,7 @@ void CTestSectionCutTool::TestPrecastGirderBridge()
    /////////////////////////////////////////////////////////
    // Test bridge section cut
    section.Release();
-   tool->CreateBridgeSection(bridge,1.0,3,bscAll,&section);
+   tool->CreateBridgeSection(bridge,1.0,sbRight,3,bscAll,&section);
 #pragma Reminder("UPDATE: Finish this unit test")
 
    ///////////////////////////////////////

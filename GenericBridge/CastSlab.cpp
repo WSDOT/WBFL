@@ -38,6 +38,7 @@ static char THIS_FILE[] = __FILE__;
 // CCastSlab
 HRESULT CCastSlab::FinalConstruct()
 {
+   m_CastingRegions.CoCreateInstance(CLSID_CastingRegions);
    return IBridgeDeckImpl::Init();
 }
 
@@ -72,8 +73,26 @@ STDMETHODIMP CCastSlab::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
+void CCastSlab::OnBridge()
+{
+   m_CastingRegions->putref_Bridge(m_pBridge);
+}
+
 ////////////////////////////////////////////////////////////////////////
 // IBridgeDeck implementation
+STDMETHODIMP CCastSlab::get_CastingRegions(ICastingRegions** ppRegions)
+{
+   CHECK_RETOBJ(ppRegions);
+   return m_CastingRegions.CopyTo(ppRegions);
+}
+
+STDMETHODIMP CCastSlab::putref_CastingRegions(ICastingRegions* pRegions)
+{
+   CHECK_IN(pRegions);
+   m_CastingRegions = pRegions;
+   return S_OK;
+}
+
 STDMETHODIMP CCastSlab::get_StructuralDepth(Float64* depth)
 {
    CHECK_RETVAL(depth);

@@ -96,6 +96,8 @@
 #define IDR_FIXEDLENGTHREBARLAYOUTITEM  175
 #define IDR_BEARINGLAYOUT               176
 #define IDR_REBARROWFACEPATTERN         177
+#define IDR_CASTING_REGION              178
+#define IDR_CASTING_REGIONS             179
 
 #define IDS_STAGENAME                   201
 #define IDS_STAGEDESCRIPTION            203

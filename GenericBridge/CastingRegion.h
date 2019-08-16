@@ -23,79 +23,65 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// OverlaySlab.h : Declaration of the COverlaySlab
+// CastingRegion.h : Declaration of the CCastingRegion
 
-#ifndef __OVERLAYSLAB_H_
-#define __OVERLAYSLAB_H_
+#pragma once
 
 #include "resource.h"       // main symbols
-#include "BridgeDeckImpl.h"
 
 /////////////////////////////////////////////////////////////////////////////
-// COverlaySlab
-class ATL_NO_VTABLE COverlaySlab : 
+// CCastingRegion
+class ATL_NO_VTABLE CCastingRegion :
 	public CComObjectRootEx<CComSingleThreadModel>,
-//   public CComRefCountTracer<COverlaySlab,CComObjectRootEx<CComSingleThreadModel> >,
-	public CComCoClass<COverlaySlab, &CLSID_OverlaySlab>,
+	public CComCoClass<CCastingRegion, &CLSID_CastingRegion>,
 	public ISupportErrorInfo,
-	public IStructuredStorage2,
-   public IObjectSafetyImpl<COverlaySlab,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public IOverlaySlab,
-   public IBridgeDeckImpl<COverlaySlab>
+	public ICastingRegion,
+   public IStructuredStorage2,
+   public IObjectSafetyImpl<CCastingRegion,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>
 {
 public:
-   COverlaySlab()
+   CCastingRegion()
 	{
-      m_GrossDepth = 0;
-      m_pDeckBoundary = nullptr;
-
-      m_Material.CoCreateInstance(CLSID_Material);
-   }
+	}
 
    HRESULT FinalConstruct();
    void FinalRelease();
 
-private:
-   Float64 m_GrossDepth;
-   CComPtr<IMaterial> m_Material;
+   void Init(ICastingRegions* pParent, PierIDType startPierID, Float64 Xstart, PierIDType endPierID, Float64 Xend, IMaterial* pMaterial);
 
-   IDeckBoundary* m_pDeckBoundary; // weak reference
-
-public:
-DECLARE_REGISTRY_RESOURCEID(IDR_OVERLAYSLAB)
+DECLARE_REGISTRY_RESOURCEID(IDR_CASTING_REGION)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
-BEGIN_COM_MAP(COverlaySlab)
-	COM_INTERFACE_ENTRY(IOverlaySlab)
-	COM_INTERFACE_ENTRY(IBridgeDeck)
+BEGIN_COM_MAP(CCastingRegion)
+	COM_INTERFACE_ENTRY(ICastingRegion)
+	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IStructuredStorage2)
 END_COM_MAP()
+
+private:
+   ICastingRegions* m_pParent; // weak reference
+   PierIDType m_StartPierID; // ID of pier anchoring start of region
+   Float64 m_Xstart; // distance from start pier to starting region boundary
+   PierIDType m_EndPierID; // ID of pier anchoring end of region
+   Float64 m_Xend; // distance from end pier to ending region boundary
+   CComPtr<IMaterial> m_Material;
 
 // ISupportsErrorInfo
 public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
-// IBridgeDeck
+// ICastingRegion
 public:
-   STDMETHOD(get_StructuralDepth)(/*[out,retval]*/Float64* depth) override;
-   STDMETHOD(get_GrossDepth)(/*[out,retval]*/Float64* depth) override;
-   STDMETHOD(putref_DeckBoundary)(IDeckBoundary* deckBoundary) override;
-   STDMETHOD(get_DeckBoundary)(IDeckBoundary** deckBoundary) override;
-
-// IOverlaySlab
-public:
-	STDMETHOD(put_GrossDepth)(/*[in]*/Float64 depth) override;
-   STDMETHOD(get_Material)(/*[out,retval]*/IMaterial** material) override;
-   STDMETHOD(putref_Material)(/*[in]*/IMaterial* material) override;
-
+   STDMETHOD(GetRange)(/*[out]*/Float64* pXbStart, /*[out]*/Float64* pXbEnd) override;
+   STDMETHOD(ContainsPoint)(/*[in]*/ Float64 Xb, /*[out, retval]*/VARIANT_BOOL* pvbContainsPoint) override;
+   STDMETHOD(Perimeter)(/*[in]*/CollectionIndexType nMinPointsPerSide,/*[out]*/IPoint2dCollection** ppPoints) override;
+   STDMETHOD(putref_Material)(/*[in]*/IMaterial* pMaterial) override;
+   STDMETHOD(get_Material)(/*[out, retval]*/IMaterial** ppMaterial) override;
 
 // IStructuredStorage2
 public:
 	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
-
-#endif //__OVERLAYSLAB_H_

@@ -84,10 +84,10 @@ public:
    STDMETHOD(CreateGirderSectionBySegment)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile, IndexType* beamIdx, IndexType* slabIdx, ISection** section) override;
 
    // creates a net section of the deck
-   STDMETHOD(CreateNetDeckSection)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionCoordinateSystemType coordinateSystem,StageIndexType stageIdx,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,ISection** section) override;
+   STDMETHOD(CreateNetDeckSection)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,StageIndexType stageIdx,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,ISection** section) override;
 
    // creates a section for the entire bridge
-   STDMETHOD(CreateBridgeSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/Float64 distFromStartOfBridge,/*[in]*/ StageIndexType stageIdx, /*[in]*/ BarrierSectionCut bsc,/*[out,retval]*/ISection** section) override;
+   STDMETHOD(CreateBridgeSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/Float64 Xb,/*[in]*/SectionBias sectionBias,/*[in]*/ StageIndexType stageIdx, /*[in]*/ BarrierSectionCut bsc,/*[out,retval]*/ISection** section) override;
 
    // creates section objects for the traffic barriers
    STDMETHOD(CreateLeftBarrierSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ VARIANT_BOOL bStructuralOnly,/*[out,retval]*/ISection** section) override;
@@ -116,14 +116,14 @@ public:
 	STDMETHOD(GetStructuralHaunchDepth)(/*[in]*/IGenericBridge* bridge,/*[in]*/GirderIDType ssMbrID,/*[in]*/SegmentIndexType segIdx,/*[in]*/Float64 Xs,/*[in]*/HaunchDepthMethod haunchMethod, /*[out,retval]*/Float64* pHaunchDepth);
 
    // creates the deck shape used in composite analyses
-   STDMETHOD(CreateDeckAnalysisShape)(IGenericBridge* bridge,IGirderSection* pSection,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,Float64 haunchDepth, BOOL bFollowMatingSurfaceProfile,StageIndexType stageIdx,IShape** shape) override;
+   STDMETHOD(CreateDeckAnalysisShape)(IGenericBridge* bridge,IGirderSection* pSection,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionBias sectionBias, Float64 haunchDepth, BOOL bFollowMatingSurfaceProfile,StageIndexType stageIdx,IShape** shape) override;
 
 private:
    HRESULT CreateCompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile, IndexType* beamIdx, IndexType* slabIdx,ISection** section);
-   HRESULT CreateDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,IGirderSection* pGirderSection,ISection** section);
-   HRESULT CreateDeckShape(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, Float64 haunchDepth, BOOL bFollowMatingSurfaceProfile,IGirderSection* pGirderSection,IShape** pShape);
+   HRESULT CreateDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,IGirderSection* pGirderSection,ISection** section);
+   HRESULT CreateDeckShape(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionBias sectionBias, Float64 haunchDepth, BOOL bFollowMatingSurfaceProfile,IGirderSection* pGirderSection,IShape** pShape);
    HRESULT CreateNoncompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section);
-   HRESULT CreateBridgeDeckSection(IGenericBridge* bridge,Float64 distFromStartOfBridge,StageIndexType stageIdx,Float64 elevBottomDeck,ICompositeSectionItemEx** deckitem);
+   HRESULT CreateBridgeDeckSection(IGenericBridge* bridge,Float64 Xb, SectionBias sectionBias, StageIndexType stageIdx,Float64 elevBottomDeck,ICompositeSectionItemEx** deckitem);
    HRESULT CreateGirderShape(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,IShape** ppShape);
    HRESULT CreateJointShapes(IGenericBridge* bridge, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, SectionCoordinateSystemType coordinateSystem, IShape** ppLeftJointShape, IShape** ppRightJointShape);
    HRESULT LayoutRebar(ICompositeSectionEx* compositeSection,Float64 Econc,Float64 Dconc,IRebarSection* rebarSection,Float64 xTop,Float64 yTop,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod);

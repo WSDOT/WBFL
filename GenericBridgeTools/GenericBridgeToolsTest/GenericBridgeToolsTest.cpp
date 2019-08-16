@@ -382,7 +382,31 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
 
       deck_material->put_Density(3,160.0);
 
-      deck->putref_Material(deck_material);
+      if (deckType == OVL_DECK)
+      {
+         CComQIPtr<IOverlaySlab> slab(deck);
+         slab->putref_Material(deck_material);
+      }
+      else if( deckType == CIP_DECK)
+      {
+         CComQIPtr<ICastSlab> slab(deck);
+         CComPtr<ICastingRegions> castingRegions;
+         slab->get_CastingRegions(&castingRegions);
+         castingRegions->put_Boundary(crbParallelToPier);
+         CComPtr<ICastingRegion> region;
+         // region locations don't really matter since we have only one
+         castingRegions->CreateRegion(0, 0, 0, 0, deck_material, &region);
+      }
+      else if (deckType == SIP_DECK)
+      {
+         CComQIPtr<IPrecastSlab> slab(deck);
+         CComPtr<ICastingRegions> castingRegions;
+         slab->get_CastingRegions(&castingRegions);
+         castingRegions->put_Boundary(crbParallelToPier);
+         CComPtr<ICastingRegion> region;
+         // region locations don't really matter since we have only one
+         castingRegions->CreateRegion(0, 0, 0, 0, deck_material, &region);
+      }
    }
 
    bridge->putref_Deck(deck);
@@ -652,7 +676,13 @@ void CreateSplicedGirderBridge(IGenericBridge** ppBridge)
 
       deck_material->put_Density(6,160.0);
 
-      deck->putref_Material(deck_material);
+      CComQIPtr<ICastSlab> slab(deck);
+      CComPtr<ICastingRegions> castingRegions;
+      slab->get_CastingRegions(&castingRegions);
+      castingRegions->put_Boundary(crbParallelToPier);
+      CComPtr<ICastingRegion> region;
+      // region locations don't really matter since we have only one
+      castingRegions->CreateRegion(0, 0, 0, 0, deck_material, &region);
    }
 
    bridge->putref_Deck(deck);

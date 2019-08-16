@@ -955,6 +955,8 @@ date/T &gt; $(IntDir)mt2.dep
     <ClCompile Include="BridgeDeckRebarLayoutItem.cpp" />
     <ClCompile Include="BridgeDeckRebarPattern.cpp" />
     <ClCompile Include="BridgePier.cpp" />
+    <ClCompile Include="CastingRegion.cpp" />
+    <ClCompile Include="CastingRegions.cpp" />
     <ClCompile Include="CastSlab.cpp" />
     <ClCompile Include="Column.cpp" />
     <ClCompile Include="ColumnLayout.cpp" />
@@ -1070,6 +1072,8 @@ date/T &gt; $(IntDir)mt2.dep
     <None Include="BridgeDeckRebarPattern.rgs" />
     <None Include="BridgePier.rgs" />
     <None Include="BulbTeeSection.rgs" />
+    <None Include="CastingRegion.rgs" />
+    <None Include="CastingRegions.rgs" />
     <None Include="CastSlab.rgs" />
     <None Include="CogoInfo.rgs" />
     <None Include="Column.rgs" />
@@ -1164,6 +1168,8 @@ date/T &gt; $(IntDir)mt2.dep
     <ClInclude Include="BridgeDeckRebarLayoutItem.h" />
     <ClInclude Include="BridgeDeckRebarPattern.h" />
     <ClInclude Include="BridgePier.h" />
+    <ClInclude Include="CastingRegion.h" />
+    <ClInclude Include="CastingRegions.h" />
     <ClInclude Include="CastSlab.h" />
     <ClInclude Include="Column.h" />
     <ClInclude Include="ColumnLayout.h" />
