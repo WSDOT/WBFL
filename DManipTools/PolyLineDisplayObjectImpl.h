@@ -98,6 +98,8 @@ END_CONNECTION_POINT_MAP()
    STDMETHOD_(BOOL,IsSelected)() override {return m_pDisplayObject->IsSelected();}
    STDMETHOD_(void,SetSelectionType)(SelectionType st)  override { m_pDisplayObject->SetSelectionType(st); }
    STDMETHOD_(SelectionType,GetSelectionType)() override { return m_pDisplayObject->GetSelectionType(); }
+   STDMETHOD_(void, RetainSelection)(BOOL bRetain) { m_pDisplayObject->RetainSelection(bRetain); }
+   STDMETHOD_(BOOL, RetainSelection)() { return m_pDisplayObject->RetainSelection(); }
 
    // Interface Events
    STDMETHOD_(bool,OnLButtonDown)(UINT nFlags,CPoint point) override { return m_pDisplayObject->OnLButtonDown(nFlags,point); }

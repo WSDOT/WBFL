@@ -46,6 +46,7 @@ CDisplayObjectDefaultImpl::CDisplayObjectDefaultImpl()
    m_MaxToolTipWidth = -1; // use default width
    m_ToolTipDisplayTime = -1; // use default duration
    m_bSelected = FALSE;
+   m_bRetainSelection = TRUE; // retain selection if this DO is selected
    m_pDispList = 0;
 
    m_ID = -1;
@@ -457,6 +458,16 @@ void CDisplayObjectDefaultImpl::Do_SetSelectionType(SelectionType st)
 SelectionType CDisplayObjectDefaultImpl::Do_GetSelectionType()
 {
    return m_SelectionType;
+}
+
+void CDisplayObjectDefaultImpl::Do_RetainSelection(BOOL bRetain)
+{
+   m_bRetainSelection = bRetain;
+}
+
+BOOL CDisplayObjectDefaultImpl::Do_RetainSelection()
+{
+   return m_bRetainSelection;
 }
 
 bool CDisplayObjectDefaultImpl::Do_OnLButtonDblClk(UINT nFlags,CPoint point)

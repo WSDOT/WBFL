@@ -125,6 +125,8 @@ public:
    STDMETHOD_(BOOL, IsSelected)() override { return Do_IsSelected(); }
    STDMETHOD_(void, SetSelectionType)(SelectionType st) override;
    STDMETHOD_(SelectionType, GetSelectionType)() override { return Do_GetSelectionType(); }
+   STDMETHOD_(void, RetainSelection)(BOOL bRetain);
+   STDMETHOD_(BOOL, RetainSelection)() { return Do_RetainSelection(); }
 
    // Tool Tips
    STDMETHOD_(void, SetToolTipText)(LPCTSTR lpszToolTipText) override { Do_SetToolTipText(lpszToolTipText); }

@@ -73,6 +73,8 @@ interface iDisplayObject : public IUnknown
    STDMETHOD_(BOOL,IsSelected)() PURE;
    STDMETHOD_(void,SetSelectionType)(SelectionType st) PURE;
    STDMETHOD_(SelectionType,GetSelectionType)() PURE;
+   STDMETHOD_(void, RetainSelection)(BOOL bRetain) PURE;
+   STDMETHOD_(BOOL, RetainSelection)() PURE;
 
    // Tool Tips
 //   virtual BOOL ToolTipHitTest(CPoint point) = 0;
