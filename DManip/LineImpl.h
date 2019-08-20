@@ -115,6 +115,8 @@ END_COM_MAP()
    STDMETHOD_(BOOL,IsSelected)() {return Do_IsSelected();}
    STDMETHOD_(void,SetSelectionType)(SelectionType st) { Do_SetSelectionType(st); }
    STDMETHOD_(SelectionType,GetSelectionType)() { return Do_GetSelectionType(); }
+   STDMETHOD_(void, RetainSelection)(BOOL bRetain) { Do_RetainSelection(bRetain); }
+   STDMETHOD_(BOOL, RetainSelection)() { return Do_RetainSelection(); }
 
    // Interface Events
    STDMETHOD_(bool,OnLButtonDown)(UINT nFlags,CPoint point);

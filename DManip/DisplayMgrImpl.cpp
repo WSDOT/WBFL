@@ -546,13 +546,12 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnLButtonDown(UINT nFlags,CPoint point)
       BOOL bSelectionEnabled = FALSE;
       if ( m_bLBtnSelectEnabled )
       {
-         // find the display objects at this point... if one of them is already selected,
-         // then retain the selection
+         // find the display objects at this click point
          DisplayObjectContainer doS;
          FindDisplayObjects(point, &doS);
          for (const auto& dispObj : doS)
          {
-            if (dispObj->IsSelected())
+            if (dispObj->IsSelected() && dispObj->RetainSelection())
             {
                dispObjs.push_back(dispObj);
             }
