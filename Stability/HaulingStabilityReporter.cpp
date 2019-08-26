@@ -1170,17 +1170,6 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    }
    *pPara << rptNewLine;
 
-   *pPara << _T("Lateral eccentricity of Girder Self Weight due to Wind Load towards the left, ") << E_WIND << rptNewLine;
-   *pPara << E_WIND << _T(" = ") << W_WIND << Y_WIND << _T("/[") << Sub2(_T("(IM)W"), _T("g")) << _T("]") << rptNewLine;
-   for (IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++ )
-   {
-      if (0 < impactCase)
-      {
-         *pPara << _T(", ");
-      }
-      *pPara << Sub2(_T("e"),_T("wind")) << _T(" = ") << shortLength.SetValue(pResults->EccWind[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
-   }
-   *pPara << rptNewLine;
    *pPara << _T("Overturning moment due to wind applied toward the left, ") << Sub2(_T("M"), _T("otwind")) << _T(" = ") << ot_moment.SetValue(pResults->MotWind) << rptNewLine;
    
    // Centrifugal Force Parameters
