@@ -2127,10 +2127,26 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
          tendons->get_Count(&nTendons);
       }
 
+      Float64 Xg; // measured in girder coordinates
+      ssmbr->GetDistanceFromStart(segIdx, Xs, &Xg);
+
       for ( DuctIndexType tendonIdx = 0; tendonIdx < nTendons; tendonIdx++ )
       {
          CComPtr<ITendon> tendon;
          tendons->get_Item(tendonIdx,&tendon);
+
+         CComPtr<IPoint3d> pntStart, pntEnd;
+         tendon->get_Start(&pntStart);
+         tendon->get_End(&pntEnd);
+         Float64 Xgs, Xge;
+         pntStart->get_Z(&Xgs);
+         pntEnd->get_Z(&Xge);
+
+         if (!InRange(Xgs, Xg, Xge))
+         {
+            // location is not between the ends of the tendon
+            continue;
+         }
 
          CComPtr<IPrestressingStrand> strand;
          tendon->get_Material(&strand);
@@ -2145,10 +2161,6 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
          material->get_Density(stageIdx,&Dtendon);
 
          // create a circle for the tendon
-         Float64 Xg; // measured in girder coordinates
-         ssmbr->GetDistanceFromStart(segIdx,Xs,&Xg);
-
-
          CComPtr<IPoint3d> pntCG;
          tendon->get_CG(Xg,tmPath,&pntCG);
 

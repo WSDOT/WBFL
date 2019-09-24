@@ -399,9 +399,14 @@ STDMETHODIMP CTendon::Save(IStructuredSave2* save)
 
 bool CTendon::GetTendonSegment(Float64 z,ITendonSegment** segment)
 {
-   iterator iter;
-   Float64 start = 0;
-   for ( iter = begin(); iter != end(); iter++ )
+   iterator begin_iter = begin();
+   iterator end_iter = end();
+   CComPtr<IPoint3d> pntStart;
+   begin_iter->second->get_Start(&pntStart);
+   Float64 start;
+   pntStart->get_Z(&start);
+
+   for ( auto iter = begin_iter; iter != end_iter; iter++ )
    {
       CComPtr<ITendonSegment> seg = iter->second;
       Float64 dx,dy,dz;
