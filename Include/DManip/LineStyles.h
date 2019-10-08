@@ -27,6 +27,7 @@
 
 typedef enum LineStyleType
 {
+   lsNull = 0,
    lsSolid = 1,
    lsDot   = 2,
    lsDash  = 3,

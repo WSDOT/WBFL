@@ -123,10 +123,14 @@ STDMETHODIMP_(void) CExtRectangleDrawLineStrategyImpl::Draw(iLineDisplayObject* 
    int nPenStyle;
    switch(m_Style)
    {
+   case lsNull:
+      nPenStyle = PS_NULL;
+      break;
+      
    case lsSolid:
       nPenStyle = PS_SOLID;
       break;
-      
+
    case lsDot:
       nPenStyle = PS_DOT;
       break;
@@ -181,10 +185,14 @@ STDMETHODIMP_(void) CExtRectangleDrawLineStrategyImpl::DrawHighlite(iLineDisplay
       int nPenStyle;
       switch(m_Style)
       {
+      case lsNull:
+         nPenStyle = PS_NULL;
+         break;
+      
       case lsSolid:
          nPenStyle = PS_SOLID;
          break;
-      
+
       case lsDot:
          nPenStyle = PS_DOT;
          break;

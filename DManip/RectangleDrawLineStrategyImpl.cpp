@@ -116,10 +116,14 @@ STDMETHODIMP_(void) CRectangleDrawLineStrategyImpl::Draw(iLineDisplayObject* pDO
    int nPenStyle;
    switch(m_Style)
    {
+   case lsNull:
+      nPenStyle = PS_NULL;
+      break;
+
    case lsSolid:
       nPenStyle = PS_SOLID;
       break;
-      
+
    case lsDot:
       nPenStyle = PS_DOT;
       break;
@@ -166,10 +170,14 @@ STDMETHODIMP_(void) CRectangleDrawLineStrategyImpl::DrawHighlite(iLineDisplayObj
       int nPenStyle;
       switch(m_Style)
       {
+      case lsNull:
+         nPenStyle = PS_NULL;
+         break;
+
       case lsSolid:
          nPenStyle = PS_SOLID;
          break;
-      
+
       case lsDot:
          nPenStyle = PS_DOT;
          break;
