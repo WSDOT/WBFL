@@ -71,7 +71,8 @@ private:
 
    CComPtr<ITendon> m_RefTendon; // reference tendon
 
-   ISuperstructureMember* m_pSSMbr; // weak references
+   ISuperstructureMember* m_pSSMbr; // weak reference
+   ISuperstructureMemberSegment* m_pSSMbrSegment; // weak reference
 
    struct Point
    {
@@ -128,8 +129,10 @@ public:
    STDMETHOD(get_Centerline)(/*[in]*/ TendonMeasure measure,/*[out,retval]*/IPoint3dCollection** ppPoints) override;
    STDMETHOD(get_JackingEnd)(/*[out,retval]*/JackingEndType* type) override;
    STDMETHOD(put_JackingEnd)(/*[in]*/JackingEndType type) override;
-   STDMETHOD(putref_SuperstructureMember)(/*[in]*/ISuperstructureMember* pMbr) override;
-   STDMETHOD(get_SuperstructureMember)(/*[out,retval]*/ISuperstructureMember** ppMbr) override;
+   STDMETHOD(putref_SuperstructureMember)(/*[in]*/ISuperstructureMember* pSSMbr) override;
+   STDMETHOD(get_SuperstructureMember)(/*[out,retval]*/ISuperstructureMember** ppSSMbr) override;
+   STDMETHOD(putref_SuperstructureMemberSegment)(/*[in]*/ISuperstructureMemberSegment* pSSMbrSegment) override;
+   STDMETHOD(get_SuperstructureMemberSegment)(/*[out, retval]*/ISuperstructureMemberSegment** ppSSMbrSegment) override;
 
 // IStructuredStorage2
 public:

@@ -226,15 +226,20 @@ STDMETHODIMP CLinearTendonSegment::get_Slope(Float64 z,IVector3d** slope)
 
    if ( m_pTendon )
    {
+      // get horizontal angular change due to plan view angle points in the superstructure member
+      // NOTE: no angle points if this tendon segment is associated with a superstructure member segment
+      Float64 value = 0;
       CComPtr<ISuperstructureMember> ssmbr;
       m_pTendon->get_SuperstructureMember(&ssmbr);
-      CComPtr<IAngle> planAngle;
-      ssmbr->GetPlanAngle(z,&planAngle);
-      Float64 value;
-      planAngle->get_Value(&value);
+      if (ssmbr)
+      {
+         CComPtr<IAngle> planAngle;
+         ssmbr->GetPlanAngle(z, &planAngle);
+         planAngle->get_Value(&value);
+      }
 
       Float64 a = atan(sx);
-      sx = -tan(a+value);
+      sx = -tan(a + value);
    }
 
    vector->put_X(sx);

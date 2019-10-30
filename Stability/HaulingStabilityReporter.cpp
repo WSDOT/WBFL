@@ -150,32 +150,63 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       bool bRolloverInstability = false;
       for (IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++)
       {
-         for (int w = 0; w < 2; w++)
+         if (IsZero(results.Wwind))
          {
-            stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
-            if (!results.bRotationalStability[slope][impactDir[impactCase]][wind])
+            if (!results.bRotationalStability[slope][impactDir[impactCase]][stbTypes::Left])
             {
                bRotationalInstability = true;
                if (0 < nImpactCases)
                {
-                  *pPara << color(Red) << _T("WARNING: Rotational instability for the ") << strImpact[impactCase] << _T(" case with wind towards the ") << strWindDir[wind] << _T(".") << color(Black) << rptNewLine;
+                  *pPara << color(Red) << _T("WARNING: Rotational instability for the ") << strImpact[impactCase] << _T(" case.") << color(Black) << rptNewLine;
                }
                else
                {
-                  *pPara << color(Red) << _T("WARNING: Rotational instability with wind towards the ") << strWindDir[wind] << _T(".") << color(Black) << rptNewLine;
+                  *pPara << color(Red) << _T("WARNING: Rotational instability.") << color(Black) << rptNewLine;
                }
             }
 
-            if (!results.bRolloverStability[slope][impactDir[impactCase]][wind])
+            if (!results.bRolloverStability[slope][impactDir[impactCase]][stbTypes::Left])
             {
                bRolloverInstability = true;
                if (0 < nImpactCases)
                {
-                  *pPara << color(Red) << _T("WARNING: Rollover instability occurs for the ") << strImpact[impactCase] << _T(" case with wind towards the ") << strWindDir[wind] << _T(".") << color(Black) << rptNewLine;
+                  *pPara << color(Red) << _T("WARNING: Rollover instability occurs for the ") << strImpact[impactCase] << _T(" case.") << color(Black) << rptNewLine;
                }
                else
                {
-                  *pPara << color(Red) << _T("WARNING: Rollover instability occurs with wind towards the ") << strWindDir[wind] << _T(".") << color(Black) << rptNewLine;
+                  *pPara << color(Red) << _T("WARNING: Rollover instability.") << color(Black) << rptNewLine;
+               }
+            }
+         }
+         else
+         {
+            for (int w = 0; w < 2; w++)
+            {
+               stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+               if (!results.bRotationalStability[slope][impactDir[impactCase]][wind])
+               {
+                  bRotationalInstability = true;
+                  if (0 < nImpactCases)
+                  {
+                     *pPara << color(Red) << _T("WARNING: Rotational instability for the ") << strImpact[impactCase] << _T(" case with wind towards the ") << strWindDir[wind] << _T(".") << color(Black) << rptNewLine;
+                  }
+                  else
+                  {
+                     *pPara << color(Red) << _T("WARNING: Rotational instability with wind towards the ") << strWindDir[wind] << _T(".") << color(Black) << rptNewLine;
+                  }
+               }
+
+               if (!results.bRolloverStability[slope][impactDir[impactCase]][wind])
+               {
+                  bRolloverInstability = true;
+                  if (0 < nImpactCases)
+                  {
+                     *pPara << color(Red) << _T("WARNING: Rollover instability occurs for the ") << strImpact[impactCase] << _T(" case with wind towards the ") << strWindDir[wind] << _T(".") << color(Black) << rptNewLine;
+                  }
+                  else
+                  {
+                     *pPara << color(Red) << _T("WARNING: Rollover instability occurs with wind towards the ") << strWindDir[wind] << _T(".") << color(Black) << rptNewLine;
+                  }
                }
             }
          }
@@ -1187,7 +1218,14 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    *pPara << _T("Overturning moment due to centrigural force, ") << Sub2(_T("M"), _T("otcf")) << _T(" = ") << W_CF << Y_CF << _T(" = ") << ot_moment.SetValue(pResults->MotCF) << rptNewLine;
    *pPara << rptNewLine;
 
-   rptRcTable* pPrestressTable = rptStyleManager::CreateDefaultTable(bSimpleFormat ? 9 : 14, _T("Stress due to Effective Prestress"));
+   auto vNames = pStabilityProblem->GetPrestressNames();
+
+   // nColumns
+   // 1 for location
+   // 2/4 for stress (top & bottom for simple format otherwise all 4 corners)
+   // 2/3 * number of prestress types (2 for Fpe and Yps, 3 for Fpe, Xps, and Yps)
+   ColumnIndexType nColumns = 1 + (bSimpleFormat ? 2 : 4) + (bSimpleFormat ? 2 : 3)*vNames.size();
+   rptRcTable* pPrestressTable = rptStyleManager::CreateDefaultTable(nColumns, _T("Stress due to Effective Prestress"));
    *pPara << pPrestressTable << rptNewLine;
 
    ColumnIndexType col = 0;
@@ -1202,47 +1240,24 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
       (*pPrestressTable)(0, col++) << COLHDR(_T("Dist from") << rptNewLine << _T("left end"), rptLengthUnitTag, pDisplayUnits->SpanLength);
    }
 
-   ColumnIndexType nColSpan = (bSimpleFormat ? 2 : 3);
-   pPrestressTable->SetColumnSpan(0, col, nColSpan);
-   (*pPrestressTable)(0, col) << _T("Straight");
-   (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("F"), _T("pe")), rptForceUnitTag, pDisplayUnits->GeneralForce);
-   if (bSimpleFormat)
+   for (const auto strName : vNames)
    {
-      (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("ps")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-   }
-   else
-   {
-      (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("psx")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-      (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("psy")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-   }
-
-   pPrestressTable->SetColumnSpan(0, col, nColSpan);
-   (*pPrestressTable)(0, col) << _T("Harped");
-   (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("F"), _T("pe")), rptForceUnitTag, pDisplayUnits->GeneralForce);
-   if (bSimpleFormat)
-   {
-      (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("ps")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-   }
-   else
-   {
-      (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("psx")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-      (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("psy")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+      ColumnIndexType nColSpan = (bSimpleFormat ? 2 : 3);
+      pPrestressTable->SetColumnSpan(0, col, nColSpan);
+      (*pPrestressTable)(0, col) << strName;
+      (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("F"), _T("pe")), rptForceUnitTag, pDisplayUnits->GeneralForce);
+      if (bSimpleFormat)
+      {
+         (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("ps")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+      }
+      else
+      {
+         (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("psx")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+         (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("psy")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+      }
    }
 
-   pPrestressTable->SetColumnSpan(0, col, nColSpan);
-   (*pPrestressTable)(0, col) << _T("Temporary");
-   (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("F"), _T("pe")), rptForceUnitTag, pDisplayUnits->GeneralForce);
-   if (bSimpleFormat)
-   {
-      (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("ps")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-   }
-   else
-   {
-      (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("psx")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-      (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("psy")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-   }
-
-   nColSpan = (bSimpleFormat ? 2 : 4);
+   ColumnIndexType nColSpan = (bSimpleFormat ? 2 : 4);
    pPrestressTable->SetColumnSpan(0, col, nColSpan);
    (*pPrestressTable)(0, col) << RPT_STRESS(_T("ps"));
 
@@ -1277,30 +1292,17 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
       Float64 Ag, Ixx, Iyy, Ixy, Xleft, Ytop, Hg, Wtop, Wbot;
       pGirder->GetSectionProperties(pAnalysisPoint->GetLocation(), &Ag, &Ixx, &Iyy, &Ixy, &Xleft, &Ytop, &Hg, &Wtop, &Wbot);
 
-      Float64 Fpe, Xps, Yps;
-      pStabilityProblem->GetFpe(stbTypes::Straight, pAnalysisPoint->GetLocation(), &Fpe, &Xps, &Yps);
-      (*pPrestressTable)(row, col++) << force.SetValue(Fpe);
-      if (!bSimpleFormat)
+      for (const auto strName : vNames)
       {
-         (*pPrestressTable)(row, col++) << shortLength.SetValue(Xleft - Xps);
+         Float64 Fpe, Xps, Yps;
+         pStabilityProblem->GetFpe(strName, pAnalysisPoint->GetLocation(), &Fpe, &Xps, &Yps);
+         (*pPrestressTable)(row, col++) << force.SetValue(Fpe);
+         if (!bSimpleFormat)
+         {
+            (*pPrestressTable)(row, col++) << shortLength.SetValue(Xleft - Xps);
+         }
+         (*pPrestressTable)(row, col++) << shortLength.SetValue(Ytop - Yps);
       }
-      (*pPrestressTable)(row, col++) << shortLength.SetValue(Ytop - Yps);
-
-      pStabilityProblem->GetFpe(stbTypes::Harped, pAnalysisPoint->GetLocation(), &Fpe, &Xps, &Yps);
-      (*pPrestressTable)(row, col++) << force.SetValue(Fpe);
-      if (!bSimpleFormat)
-      {
-         (*pPrestressTable)(row, col++) << shortLength.SetValue(Xleft - Xps);
-      }
-      (*pPrestressTable)(row, col++) << shortLength.SetValue(Ytop - Yps);
-
-      pStabilityProblem->GetFpe(stbTypes::Temporary, pAnalysisPoint->GetLocation(), &Fpe, &Xps, &Yps);
-      (*pPrestressTable)(row, col++) << force.SetValue(Fpe);
-      if (!bSimpleFormat)
-      {
-         (*pPrestressTable)(row, col++) << shortLength.SetValue(Xleft - Xps);
-      }
-      (*pPrestressTable)(row, col++) << shortLength.SetValue(Ytop - Yps);
 
       if (bSimpleFormat)
       {

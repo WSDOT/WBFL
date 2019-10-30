@@ -81,7 +81,8 @@ private:
 
    bool GetTendonSegment(Float64 z,ITendonSegment** segment);
 
-   ISuperstructureMember* m_pSSMbr; // weak references
+   ISuperstructureMember* m_pSSMbr; // weak reference
+   ISuperstructureMemberSegment* m_pSSMbrSegment; // weak reference
 
 #if defined _DEBUG
    virtual HRESULT OnBeforeAdd( StoredType* pVal) override;
@@ -118,8 +119,10 @@ public:
    STDMETHOD(get_Centerline)(/*[in]*/ TendonMeasure measure,/*[out,retval]*/IPoint3dCollection** ppPoints) override;
    STDMETHOD(get_JackingEnd)(/*[out,retval]*/JackingEndType* type) override;
    STDMETHOD(put_JackingEnd)(/*[in]*/JackingEndType type) override;
-   STDMETHOD(putref_SuperstructureMember)(/*[in]*/ISuperstructureMember* pMbr) override;
-   STDMETHOD(get_SuperstructureMember)(/*[out,retval]*/ISuperstructureMember** ppMbr) override;
+   STDMETHOD(putref_SuperstructureMember)(/*[in]*/ISuperstructureMember* pSSMbr) override;
+   STDMETHOD(get_SuperstructureMember)(/*[out,retval]*/ISuperstructureMember** ppSSMbr) override;
+   STDMETHOD(putref_SuperstructureMemberSegment)(/*[in]*/ISuperstructureMemberSegment* pSSMbrSegment) override;
+   STDMETHOD(get_SuperstructureMemberSegment)(/*[out, retval]*/ISuperstructureMemberSegment** ppSSMbrSegment) override;
 
 
 // IStructuredStorage2

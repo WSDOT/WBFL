@@ -1891,13 +1891,43 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
    segment->get_Length(&segment_length);
    bool bIsPointOnSegment = ( InRange(0.0,Xs,segment_length) ? true : false );
 
-   // Add Strands and Rebar
+   // Add Plant Installed Tendons, Strands and Rebar
    if ( sectionPropMethod != spmGross && sectionPropMethod != spmGrossNoncomposite )
    {
       if ( bIsPointOnSegment )
       {
          // The point under consideration must be on the precast girder segment, otherwise there aren't any strands
          // or girder rebar
+
+         // Add Plant installed tendons
+         CComPtr<ITendonCollection> tendons;
+         girder->get_Tendons(&tendons);
+         if (tendons)
+         {
+            CComPtr<IEnumTendons> enumTendons;
+            tendons->get__EnumTendons(&enumTendons);
+            ULONG nFetched;
+            CComPtr<ITendon> tendon;
+            while (enumTendons->Next(1, &tendon, &nFetched) != S_FALSE)
+            {
+#if defined _DEBUG
+               // tendons run full length of segment, but double check to make sure
+               // the cut put is between segment start/end
+               CComPtr<IPoint3d> pntStart, pntEnd;
+               tendon->get_Start(&pntStart);
+               tendon->get_End(&pntEnd);
+               Float64 Xss, Xes;
+               pntStart->get_Z(&Xss);
+               pntEnd->get_Z(&Xes);
+               ATLASSERT(IsZero(Xss));
+               ATLASSERT(IsEqual(Xes, segment_length));
+               ATLASSERT(InRange(Xss, Xs, Xes));
+#endif
+               ModelTendon(Xs, stageIdx, xTop, yTop, tendon, sectionPropMethod, Econc, Dconc, compositeSection);
+               tendon.Release();
+            } // next tendon
+         }
+
 
          // Add Strands
          CComPtr<IStrandModel> strandModel;
@@ -2116,127 +2146,131 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
       // otherwise, omit the holes
       
       // get the tendon model. it is stored as item data on the superstructure member
+      Float64 Xg; // measured in girder coordinates
+      ssmbr->GetDistanceFromStart(segIdx, Xs, &Xg);
+
       CComQIPtr<IItemData> itemData(ssmbr);
       CComPtr<IUnknown> unk;
       itemData->GetItemData(CComBSTR("Tendons"),&unk);
       CComQIPtr<ITendonCollection> tendons(unk);
-
-      DuctIndexType nTendons = 0; // # tendons is the same as # ducts in this context
-      if ( tendons )
+      if (tendons)
       {
-         tendons->get_Count(&nTendons);
-      }
-
-      Float64 Xg; // measured in girder coordinates
-      ssmbr->GetDistanceFromStart(segIdx, Xs, &Xg);
-
-      for ( DuctIndexType tendonIdx = 0; tendonIdx < nTendons; tendonIdx++ )
-      {
+         CComPtr<IEnumTendons> enumTendons;
+         tendons->get__EnumTendons(&enumTendons);
+         ULONG nFetched;
          CComPtr<ITendon> tendon;
-         tendons->get_Item(tendonIdx,&tendon);
-
-         CComPtr<IPoint3d> pntStart, pntEnd;
-         tendon->get_Start(&pntStart);
-         tendon->get_End(&pntEnd);
-         Float64 Xgs, Xge;
-         pntStart->get_Z(&Xgs);
-         pntEnd->get_Z(&Xge);
-
-         if (!InRange(Xgs, Xg, Xge))
+         while (enumTendons->Next(1, &tendon, &nFetched) != S_FALSE)
          {
-            // location is not between the ends of the tendon
-            continue;
+            CComPtr<IPoint3d> pntStart, pntEnd;
+            tendon->get_Start(&pntStart);
+            tendon->get_End(&pntEnd);
+            Float64 Xgs, Xge;
+            pntStart->get_Z(&Xgs);
+            pntEnd->get_Z(&Xge);
+
+            if (!InRange(Xgs, Xg, Xge))
+            {
+               // location is not between the ends of the tendon
+               continue;
+            }
+
+            ModelTendon(Xg, stageIdx, xTop, yTop, tendon, sectionPropMethod, Econc, Dconc, compositeSection);
+
+            tendon.Release();
+         } // next tendon
+      }
+   } // if not gross properties
+
+   return S_OK;
+}
+
+HRESULT CSectionCutTool::ModelTendon(Float64 X,StageIndexType stageIdx,Float64 xTop,Float64 yTop,ITendon* pTendon, SectionPropertyMethod sectionPropMethod,Float64 Econc,Float64 Dconc,ICompositeSectionEx* pCompositeSection)
+{
+   CComPtr<IPrestressingStrand> strand;
+   pTendon->get_Material(&strand);
+   CComQIPtr<IMaterial> material(strand);
+   ATLASSERT(material);
+
+   Float64 Etendon;
+   material->get_E(stageIdx, &Etendon);
+
+   Float64 Dtendon;
+   material->get_Density(stageIdx, &Dtendon);
+
+   // create a circle for the tendon
+   CComPtr<IPoint3d> pntCG;
+   pTendon->get_CG(X, tmPath, &pntCG);
+
+   // location of duct in Girder Section Coordinates
+   if (pntCG)
+   {
+      Float64 x, y, z;
+      pntCG->Location(&x, &y, &z);
+      ATLASSERT(IsEqual(X, z));
+      ATLASSERT(y <= 0); // below top of girder
+
+      // if Etendon is zero, the tendon is not installed yet
+      // Model the hole for the duct. Model this hole for gross, transformed and net properties
+      if (IsZero(Etendon))
+      {
+         // Put holes for ducts into girder
+         Float64 ductDiameter;
+         pTendon->get_OutsideDiameter(&ductDiameter);
+
+         CComPtr<ICircle> duct;
+         duct.CoCreateInstance(CLSID_Circle);
+         duct->put_Radius(ductDiameter / 2);
+
+         CComPtr<IPoint2d> center;
+         duct->get_Center(&center);
+         center->Move(xTop + x, yTop + y);
+
+         CComQIPtr<IShape> duct_shape(duct);
+
+         // If E is 0, then this models a hole in the section (E-Eg = -Eg)
+         // and Summation of EA = EgAg - EgAhole = Eg(Ag - Ahole)
+         pCompositeSection->AddSection(duct_shape, 0.0, Econc, 0.0, Dconc, VARIANT_TRUE);
+      }
+      else
+      {
+         // Add Tendon
+         if (sectionPropMethod == spmNet)
+         {
+            // If we are computing net properties, we want to
+            // model the hole and not the tendon 
+            // (e.g. EA = EconcAg + Atendon(0 - Econc) = EconcAg - Atendon(Econc) = (Ag-Atendon)Econc
+            Etendon = 0;
+            Dtendon = 0;
          }
 
-         CComPtr<IPrestressingStrand> strand;
-         tendon->get_Material(&strand);
-
-         CComQIPtr<IMaterial> material(strand);
-         ATLASSERT(material);
-
-         Float64 Etendon;
-         material->get_E(stageIdx,&Etendon);
-
-         Float64 Dtendon;
-         material->get_Density(stageIdx,&Dtendon);
-
-         // create a circle for the tendon
-         CComPtr<IPoint3d> pntCG;
-         tendon->get_CG(Xg,tmPath,&pntCG);
-
-         // location of duct in Gross Section Coordinates
-         if ( pntCG )
-         {
-            Float64 x,y,z;
-            pntCG->Location(&x,&y,&z);
-            ATLASSERT(IsEqual(Xg,z));
-            ATLASSERT(y <= 0); // below top of girder
-
-            // if Etendon is zero, the tendon is not installed yet
-            // Model the hole for the duct. Model this hole for gross, transformed and net properties
-            if ( IsZero(Etendon) )
-            {
-               // Put holes for ducts into girder
-               Float64 ductDiameter;
-               tendon->get_OutsideDiameter(&ductDiameter);
-
-               CComPtr<ICircle> duct;
-               duct.CoCreateInstance(CLSID_Circle);
-               duct->put_Radius(ductDiameter/2);
-
-               CComPtr<IPoint2d> center;
-               duct->get_Center(&center);
-               center->Move(xTop+x,yTop+y);
-
-               CComQIPtr<IShape> duct_shape(duct);
-
-               // If E is 0, then this models a hole in the section (E-Eg = -Eg)
-               // and Summation of EA = EgAg - EgAhole = Eg(Ag - Ahole)
-               compositeSection->AddSection(duct_shape,0.0,Econc,0.0,Dconc,VARIANT_TRUE);
-            }
-            else
-            {
-               // Add Tendon
-               if ( sectionPropMethod == spmNet )
-               {
-                  // If we are computing net properties, we want to
-                  // model the hole and not the tendon 
-                  // (e.g. EA = EconcAg + Atendon(0 - Econc) = EconcAg - Atendon(Econc) = (Ag-Atendon)Econc
-                  Etendon = 0;
-                  Dtendon = 0;
-               }
-
 #pragma Reminder("UPDATE: need to model tendon offsets")
-               // distance from the CG of the duct to the CG of the strand within the duct
-               Float64 cg_offset_x = 0.0;
-               Float64 cg_offset_y = 0.0;
+         // distance from the CG of the duct to the CG of the strand within the duct
+         Float64 cg_offset_x = 0.0;
+         Float64 cg_offset_y = 0.0;
 
-               Float64 Apt;
-               tendon->get_TendonArea(&Apt);
+         Float64 Apt;
+         pTendon->get_TendonArea(&Apt);
 
-               // models tendon as an object with area. Moment of inertia is taken to be zero
-               CComPtr<IGenericShape> tendonShape;
-               tendonShape.CoCreateInstance(CLSID_GenericShape);
-               tendonShape->put_Area(Apt);
-               tendonShape->put_Ixx(0);
-               tendonShape->put_Iyy(0);
-               tendonShape->put_Ixy(0);
-               tendonShape->put_Perimeter(0);
+         // models tendon as an object with area. Moment of inertia is taken to be zero
+         CComPtr<IGenericShape> tendonShape;
+         tendonShape.CoCreateInstance(CLSID_GenericShape);
+         tendonShape->put_Area(Apt);
+         tendonShape->put_Ixx(0);
+         tendonShape->put_Iyy(0);
+         tendonShape->put_Ixy(0);
+         tendonShape->put_Perimeter(0);
 
-               CComPtr<IPoint2d> centroid;
-               tendonShape->get_Centroid(&centroid);
+         CComPtr<IPoint2d> centroid;
+         tendonShape->get_Centroid(&centroid);
 
-               centroid->Move(xTop + x + cg_offset_x,
-                              yTop + y + cg_offset_y);
+         centroid->Move(xTop + x + cg_offset_x, yTop + y + cg_offset_y);
 
-               CComQIPtr<IShape> tendon_shape(tendonShape);
+         CComQIPtr<IShape> tendon_shape(tendonShape);
 
-               // EA = EgAg + Apt(Ept-Eg) = Eg(Ag-Apt) + EptApt: Tendon is added and a hole is created in the concrete
-               compositeSection->AddSection(tendon_shape,Etendon,Econc,Dtendon,Dconc,VARIANT_TRUE);
-            }
-         } // if pntCG
-      } // next duct
-   } // if not gross properties
+         // EA = EgAg + Apt(Ept-Eg) = Eg(Ag-Apt) + EptApt: Tendon is added and a hole is created in the concrete
+         pCompositeSection->AddSection(tendon_shape, Etendon, Econc, Dtendon, Dconc, VARIANT_TRUE/*shape is structural element*/);
+      }
+   } // if pntCG
 
    return S_OK;
 }

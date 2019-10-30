@@ -594,6 +594,8 @@ library WBFLGenericBridgeTools
 
       [propputref, helpstring("property StrandModel")] HRESULT StrandModel([in]IStrandModel* pStrandModel);
       [propget, helpstring("property StrandModel")] HRESULT StrandModel([out, retval]IStrandModel** ppStrandModel);
+      [propputref, helpstring("property Tendons")] HRESULT Tendons([in]ITendonCollection* pTendons);
+      [propget, helpstring("property Tendons")] HRESULT Tendons([out, retval]ITendonCollection** ppTendons);
       [propget, helpstring("property SuperstructureMemberSegment")] HRESULT SuperstructureMemberSegment([out, retval]ISuperstructureMemberSegment** segment);
       [propget, helpstring("property RebarLayout")] HRESULT RebarLayout([out, retval]IRebarLayout** rebarLayout);
       [propget, helpstring("property ClosureJointRebarLayout")] HRESULT ClosureJointRebarLayout([out, retval]IRebarLayout** rebarLayout);

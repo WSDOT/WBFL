@@ -2164,9 +2164,12 @@ library WBFLGenericBridge
 	   [propget,helpstring("property End")] HRESULT End([out,retval] IPoint3d** end);
       [propget,helpstring("property Centerline")] HRESULT Centerline([in] TendonMeasure measure,[out,retval]IPoint3dCollection** ppPoints);
 
-      [propputref,helpstring("property SuperstructureMember")] HRESULT SuperstructureMember([in]ISuperstructureMember* pMbr);
-      [propget,helpstring("property SuperstructureMember")] HRESULT SuperstructureMember([out,retval]ISuperstructureMember** ppMbr);
-	};
+      // a tendon can be associated with a superstructure member or a superstructure member segment, but not both
+      [propputref,helpstring("property SuperstructureMember")] HRESULT SuperstructureMember([in]ISuperstructureMember* pSSMbr);
+      [propget,helpstring("property SuperstructureMember")] HRESULT SuperstructureMember([out,retval]ISuperstructureMember** ppSSMbr);
+      [propputref, helpstring("property SuperstructureMemberSegment")] HRESULT SuperstructureMemberSegment([in]ISuperstructureMemberSegment* pSSMbrSegment);
+      [propget, helpstring("property SuperstructureMemberSegment")] HRESULT SuperstructureMemberSegment([out, retval]ISuperstructureMemberSegment** ppSSMbrSegment);
+   };
 
    [
 	   object,

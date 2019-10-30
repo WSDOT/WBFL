@@ -68,6 +68,7 @@ private:
    CComPtr<IStrandModel> m_StrandModel;
    CComPtr<IRebarLayout> m_RebarLayout;
    CComPtr<IRebarLayout> m_ClosureJointRebarLayout;
+   CComPtr<ITendonCollection> m_Tendons;
 
    // caching of span and girder lengths
    bool m_UpdateLengths;
@@ -102,6 +103,8 @@ public:
    STDMETHOD(get_SuperstructureMemberSegment)(/*[out,retval]*/ISuperstructureMemberSegment** segment) override;
    STDMETHOD(putref_StrandModel)(IStrandModel* pStrandModel);
    STDMETHOD(get_StrandModel)(IStrandModel** ppStrandModel);
+   STDMETHOD(putref_Tendons)(ITendonCollection* pTendons) override;
+   STDMETHOD(get_Tendons)(ITendonCollection** ppTendons) override;
    STDMETHOD(get_RebarLayout)(/*[out,retval]*/IRebarLayout** rebarLayout) override;
    STDMETHOD(get_ClosureJointRebarLayout)(/*[out,retval]*/IRebarLayout** rebarLayout) override;
 };

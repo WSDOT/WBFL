@@ -90,8 +90,11 @@ DESCRIPTION
 class STABILITYCLASS stbIStabilityProblem
 {
 public:
-   // returns the effective prestress force and its vertical location from the top of the girder at a location along the girder
-   virtual void GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const = 0;
+   virtual std::vector<LPCTSTR> GetPrestressNames() const = 0;
+
+   // returns the effective prestress force, its horizontal location from the CL of the girder, and 
+   // its vertical location from the top of the girder at a location along the girder
+   virtual bool GetFpe(LPCTSTR strName,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const = 0;
 
    // returns the concrete model
    virtual const matConcreteEx& GetConcrete() const = 0;

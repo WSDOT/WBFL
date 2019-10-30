@@ -383,12 +383,11 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
       pGirder->GetStressPoints(X, &pntStress[stbTypes::TopLeft], &pntStress[stbTypes::TopRight], &pntStress[stbTypes::BottomLeft], &pntStress[stbTypes::BottomRight]);
 
       // stress due to prestressing
-      for (int s = 0; s < 3; s++)
+      std::vector<LPCTSTR> vNames = pStabilityProblem->GetPrestressNames();
+      for(const auto strName : vNames)
       {
-         stbTypes::StrandType strandType = (stbTypes::StrandType)s;
-
          Float64 Fpe, Xps, Yps;
-         pStabilityProblem->GetFpe(strandType, X, &Fpe, &Xps, &Yps);
+         pStabilityProblem->GetFpe(strName, X, &Fpe, &Xps, &Yps);
       
          if (!IsZero(Fpe))
          {
@@ -922,12 +921,11 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
       pGirder->GetStressPoints(X, &pntStress[stbTypes::TopLeft], &pntStress[stbTypes::TopRight], &pntStress[stbTypes::BottomLeft], &pntStress[stbTypes::BottomRight]);
 
       // stress due to prestressing
-      for ( int s = 0; s < 3; s++ )
+      std::vector<LPCTSTR> vNames = pStabilityProblem->GetPrestressNames();
+      for(const auto strName : vNames)
       {
-         stbTypes::StrandType strandType = (stbTypes::StrandType)s;
-
          Float64 Fpe, Xps, Yps;
-         pStabilityProblem->GetFpe(strandType,X,&Fpe,&Xps,&Yps);
+         pStabilityProblem->GetFpe(strName,X,&Fpe,&Xps,&Yps);
          Float64 eyps = Ytop - Yps; // eccentricity of strands (positive values means ps force is below CG)
          Float64 exps = Xleft - Xps; // lateral eccentricty of strands (positive values means ps force is left of the CG)
 

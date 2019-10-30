@@ -129,6 +129,7 @@ private:
    HRESULT LayoutRebar(ICompositeSectionEx* compositeSection,Float64 Econc,Float64 Dconc,IRebarSection* rebarSection,Float64 xTop,Float64 yTop,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod);
    HRESULT SkewShape(Float64 skewAngle,IShape* pShape,IShape** ppSkewedShape);
    HRESULT CreateBarrierShape(DirectionType side,IGenericBridge* bridge,Float64 station,IDirection* pDirection,IShape** ppShape);
+   HRESULT ModelTendon(Float64 X, StageIndexType stageIdx, Float64 xTop, Float64 yTop, ITendon* pTendon, SectionPropertyMethod sectionPropMethod, Float64 Econc, Float64 Dconc, ICompositeSectionEx* pCompositeSection);
 
    struct GirderPointRecord
    {
