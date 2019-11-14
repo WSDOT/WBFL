@@ -109,6 +109,9 @@
     <ClCompile Include="XUnwind.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CacheCheckBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\MfcTools\AutoLib.h">
@@ -232,6 +235,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\MfcTools\XUnwind.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\MfcTools\CacheCheckBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -46,6 +46,7 @@
 #include <MfcTools\HyperLink.h>
 #include <MfcTools\VersionInfo.h>
 #include <MfcTools\CacheEdit.h>
+#include <MfcTools\CacheCheckBox.h>
 #include <MfcTools\CacheComboBox.h>
 #include <MfcTools\CoolButton.h>
 #include <MfcTools\StaticSplitter.h>
