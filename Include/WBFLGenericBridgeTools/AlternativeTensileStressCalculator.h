@@ -48,6 +48,7 @@ struct WBFLGENERICBRIDGETOOLSCLASS gbtAlternativeTensileStressRequirements
    bool bHasFct;
    Float64 Fct;
    Float64 density;
+   bool bAdjustForDevelopmentLength;
 
    CComPtr<IShape> shape;
    CComPtr<IRebarSection> rebarSection;
@@ -55,6 +56,7 @@ struct WBFLGENERICBRIDGETOOLSCLASS gbtAlternativeTensileStressRequirements
    gpPoint3d pntTopRight;
    gpPoint3d pntBottomLeft;
    gpPoint3d pntBottomRight;
+   Float64 Ytg;
 
    // Output
    CComPtr<IShape> tensionArea;

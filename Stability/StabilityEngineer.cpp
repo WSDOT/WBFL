@@ -487,6 +487,10 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
             {
                gbtAlternativeTensileStressRequirements altTensionRequirements;
 
+               CComPtr<IShapeProperties> sp;
+               shape->get_ShapeProperties(&sp);
+               sp->get_Ytop(&altTensionRequirements.Ytg);
+
                altTensionRequirements.shape = shape;
                altTensionRequirements.rebarSection = rebarSection;
                altTensionRequirements.fy = pStabilityProblem->GetRebarYieldStrength();
@@ -677,6 +681,10 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
                if (segment)
                {
                   gbtAlternativeTensileStressRequirements altTensionRequirements;
+
+                  CComPtr<IShapeProperties> sp;
+                  shape->get_ShapeProperties(&sp);
+                  sp->get_Ytop(&altTensionRequirements.Ytg);
 
                   altTensionRequirements.shape = shape;
                   altTensionRequirements.rebarSection = rebarSection;
@@ -1028,6 +1036,10 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                {
                   gbtAlternativeTensileStressRequirements altTensionRequirements;
 
+                  CComPtr<IShapeProperties> sp;
+                  shape->get_ShapeProperties(&sp);
+                  sp->get_Ytop(&altTensionRequirements.Ytg);
+
                   altTensionRequirements.shape = shape;
                   altTensionRequirements.rebarSection = rebarSection;
                   altTensionRequirements.fy = pStabilityProblem->GetRebarYieldStrength();
@@ -1183,6 +1195,10 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                   {
                      gbtAlternativeTensileStressRequirements altTensionRequirements;
 
+                     CComPtr<IShapeProperties> sp;
+                     shape->get_ShapeProperties(&sp);
+                     sp->get_Ytop(&altTensionRequirements.Ytg);
+                     
                      altTensionRequirements.shape = shape;
                      altTensionRequirements.rebarSection = rebarSection;
                      altTensionRequirements.fy = pStabilityProblem->GetRebarYieldStrength();
