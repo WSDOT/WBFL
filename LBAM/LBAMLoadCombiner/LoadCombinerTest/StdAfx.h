@@ -62,6 +62,21 @@ extern CComModule _Module;
 
 #include "..\..\LBAMUtils.h"
 
+#if defined VBA_BUILD
+#if defined _DEBUG
+#if defined _WIN64
+#include "BogusCombinationContext/x64/VBA_Debug/BogusCombinationContext.h"
+#else
+#include "BogusCombinationContext/Win32/VBA_Debug/BogusCombinationContext.h"
+#endif
+#else
+#if defined _WIN64
+#include "BogusCombinationContext/x64/VBA_Release/BogusCombinationContext.h"
+#else
+#include "BogusCombinationContext/Win32/VBA_Release/BogusCombinationContext.h"
+#endif
+#endif
+#else // VBA_BUILD
 #if defined _DEBUG
 #if defined _WIN64
 #include "BogusCombinationContext/x64/Debug/BogusCombinationContext.h"
@@ -75,6 +90,7 @@ extern CComModule _Module;
 #include "BogusCombinationContext/Win32/Release/BogusCombinationContext.h"
 #endif
 #endif
+#endif // VBA_BUILD
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
