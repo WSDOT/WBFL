@@ -107,9 +107,7 @@ void stbStabilityEngineer::PrepareResults(const stbIGirder* pGirder,const stbISt
 
    results.Ls = Lg - Ll - Lr;
 
-   // for purposes of computing the CG offset factor, assume equal overhangs using the least overhang
-   // this will put the CG furthest from the roll axis which is conservative
-   Float64 span_ratio = (Lg - 2*Min(Ll,Lr))/Lg;
+   Float64 span_ratio = results.Ls/Lg;
    results.OffsetFactor = (span_ratio)*(span_ratio) - 1./3.;
    results.OffsetFactor = IsZero(results.OffsetFactor) ? 0 : results.OffsetFactor;
 
@@ -2077,10 +2075,9 @@ void stbStabilityEngineer::GetZoComputationMethod(const stbIGirder* pGirder,cons
       Float64 Ag2,Ixx2,Iyy2,Ixy2,Xcg2,Ycg2,Hg2,Wtop2,Wbot2;
       pGirder->GetSectionProperties(0,stbTypes::Start,&Ag1,&Ixx1,&Iyy1,&Ixy1,&Xcg1,&Ycg1,&Hg1,&Wtop1,&Wbot1);
       pGirder->GetSectionProperties(0,stbTypes::End,  &Ag2,&Ixx2,&Iyy2,&Ixy2,&Xcg2,&Ycg2,&Hg2,&Wtop2,&Wbot2);
-      Float64 Ll, Lr;
-      pStabilityProblem->GetSupportLocations(&Ll,&Lr);
+
       std::vector<std::pair<Float64,Float64>> vLoads = pGirder->GetAdditionalLoads();
-      if ( IsEqual(Ag1,Ag2) && IsEqual(Ixx1,Ixx2) && IsEqual(Iyy1,Iyy2) && IsEqual(Ixy1,Ixy2) && IsEqual(Xcg1,Xcg2) && IsEqual(Ycg1,Ycg2) && IsEqual(Hg1,Hg2) && IsEqual(Wtop1,Wtop2) && IsEqual(Wbot1,Wbot2) && IsEqual(Ll,Lr) && vLoads.size() == 0)
+      if ( IsEqual(Ag1,Ag2) && IsEqual(Ixx1,Ixx2) && IsEqual(Iyy1,Iyy2) && IsEqual(Ixy1,Ixy2) && IsEqual(Xcg1,Xcg2) && IsEqual(Ycg1,Ycg2) && IsEqual(Hg1,Hg2) && IsEqual(Wtop1,Wtop2) && IsEqual(Wbot1,Wbot2) && vLoads.size() == 0)
       {
          results.ZoMethod = stbTypes::Exact;
       }
@@ -2107,6 +2104,14 @@ Float64 stbStabilityEngineer::ComputeZo(const stbIGirder* pGirder,const stbIStab
       Float64 W = results.Wg;
       Float64 l = results.Ls;
       Float64 a = (Lg-l)/2; // assuming equal overhangs
+
+#if defined _DEBUG
+      Float64 L, R;
+      pStabilityProblem->GetSupportLocations(&L, &R);
+      Float64 A = 0.5*(L + R);
+      ATLASSERT(IsEqual(a, A));
+#endif 
+
       Float64 EI = Ec*(Ixx*Iyy - Ixy*Ixy)/Ixx;
       Zo = (W/(12*EI*Lg*Lg))*(l*l*l*l*l/10. - a*a*l*l*l + 3.*a*a*a*a*l + 6.*a*a*a*a*a/5.);
    }
