@@ -563,36 +563,36 @@ void CreateSplicedGirderBridge(IGenericBridge** ppBridge)
          {
             segment->put_VariationType(svtParabolic);
             segment->SetVariationParameters(sztLeftPrismatic,50.0,10.0,1.0);
-            segment->SetVariationParameters(sztRightPrismatic,0.0,-1,1.0);
+            segment->SetVariationParameters(sztRightPrismatic,0.0,11.77777,1.0);
          }
          else if ( segIdx == 1 )
          {
             segment->put_VariationType(svtDoubleParabolic);
-            segment->SetVariationParameters(sztLeftPrismatic,0.0,-1,1.0);
+            segment->SetVariationParameters(sztLeftPrismatic,0.0, 11.77777,1.0);
             segment->SetVariationParameters(sztLeftTapered,25.0,14.0,1.0);
             segment->SetVariationParameters(sztRightTapered,25.0,14.0,1.0);
-            segment->SetVariationParameters(sztRightPrismatic,0.0,-1,1.0);
+            segment->SetVariationParameters(sztRightPrismatic,0.0, 11,1.0);
          }
          else if ( segIdx == 2 )
          {
             segment->put_VariationType(svtDoubleParabolic);
-            segment->SetVariationParameters(sztLeftPrismatic,0.0,-1,1.0);
+            segment->SetVariationParameters(sztLeftPrismatic,0.0, 11,1.0);
             segment->SetVariationParameters(sztLeftTapered,25.0,10.0,1.0);
             segment->SetVariationParameters(sztRightTapered,25.0,10.0,1.0);
-            segment->SetVariationParameters(sztRightPrismatic,0.0,-1,1.0);
+            segment->SetVariationParameters(sztRightPrismatic,0.0, 11,1.0);
          }
          else if ( segIdx == 3 )
          {
             segment->put_VariationType(svtDoubleParabolic);
-            segment->SetVariationParameters(sztLeftPrismatic,0.0,-1,1.0);
+            segment->SetVariationParameters(sztLeftPrismatic,0.0, 11,1.0);
             segment->SetVariationParameters(sztLeftTapered,25.0,14.0,1.0);
             segment->SetVariationParameters(sztRightTapered,25.0,14.0,1.0);
-            segment->SetVariationParameters(sztRightPrismatic,0.0,-1,1.0);
+            segment->SetVariationParameters(sztRightPrismatic,0.0, 11.77777,1.0);
          }
          else if ( segIdx == 4 )
          {
             segment->put_VariationType(svtParabolic);
-            segment->SetVariationParameters(sztLeftPrismatic,0.0,-1,1.0);
+            segment->SetVariationParameters(sztLeftPrismatic,0.0, 11.77777,1.0);
             segment->SetVariationParameters(sztRightPrismatic,50.0,10.0,1.0);
          }
          else
