@@ -1161,6 +1161,7 @@ STDMETHODIMP_(INT_PTR) CDisplayMgrImpl::OnToolHitTest(CPoint point,TOOLINFO* pTI
       }
    }
 
+   m_ToolTipObject.Release();
    return -1;
 }
 
