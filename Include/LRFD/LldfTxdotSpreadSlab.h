@@ -137,6 +137,7 @@ private:
    // GROUP: OPERATIONS
    // GROUP: ACCESS
    // GROUP: INQUIRY
+   bool DoTestRangeOfApplicablity(bool doThrow) const;
 
 public:
    // GROUP: DEBUG

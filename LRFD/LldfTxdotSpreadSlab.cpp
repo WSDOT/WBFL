@@ -105,12 +105,16 @@ void lrfdTxdotLldfSpreadSlab::MakeAssignment(const lrfdTxdotLldfSpreadSlab& rOth
 
 bool lrfdTxdotLldfSpreadSlab::TestRangeOfApplicability(Location loc) const
 {
-   bool doThrow=true;
 
    // only return if we are throwing for range error
-   if ( !DoCheckApplicablity() && doThrow)
+   if (!DoCheckApplicablity())
       return true;
 
+   return DoTestRangeOfApplicablity(true);
+}
+
+bool lrfdTxdotLldfSpreadSlab::DoTestRangeOfApplicablity(bool doThrow) const
+{
    Float64 L = ::ConvertFromSysUnits(m_L,unitMeasure::Feet);
 
    Float64 m29ft_7in = 29.0 + 7.0/12.0;
@@ -148,30 +152,42 @@ bool lrfdTxdotLldfSpreadSlab::TestRangeOfApplicability(Location loc) const
 
 lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_Int_1_Strength() const
 {
-   Float64 L = ::ConvertFromSysUnits(m_L,unitMeasure::Feet);
-   Float64 S = ::ConvertFromSysUnits(m_Savg,unitMeasure::Feet);
-   Float64 d = ::ConvertFromSysUnits(m_d,unitMeasure::Inch);
-
    lrfdILiveLoadDistributionFactor::DFResult g;
 
-   if (GetNb() == 1)
+   bool isAppl = DoTestRangeOfApplicablity(false);
+   if (isAppl || m_RangeOfApplicabilityAction == roaIgnore)
    {
-      // Single beam method counts on spacing which will be garbage
-      g.ControllingMethod = LANES_DIV_BEAMS;
-      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
-      g.mg = g.LanesBeamsData.mg;
+      Float64 L = ::ConvertFromSysUnits(m_L, unitMeasure::Feet);
+      Float64 S = ::ConvertFromSysUnits(m_Savg, unitMeasure::Feet);
+      Float64 d = ::ConvertFromSysUnits(m_d, unitMeasure::Inch);
+
+      if (GetNb() == 1)
+      {
+         // Single beam method counts on spacing which will be garbage
+         g.ControllingMethod = LANES_DIV_BEAMS;
+         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+         g.mg = g.LanesBeamsData.mg;
+      }
+      else
+      {
+         Float64 mg = pow(S / 2.3, 0.35) * pow(S*d / (12.0*L*L), 0.25);
+         g.EqnData.mg = mg;
+         g.EqnData.bWasUsed = true;
+         g.ControllingMethod = SPEC_EQN;
+
+         g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
+         g.SkewCorrectionFactor = 1.0;
+
+         g.mg = mg;
+      }
    }
    else
    {
-      Float64 mg = pow(S / 2.3, 0.35) * pow(S*d / (12.0*L*L), 0.25);
-      g.EqnData.mg = mg;
-      g.EqnData.bWasUsed = true;
-      g.ControllingMethod = SPEC_EQN;
-
-      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
+      assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
+      g.ControllingMethod = LEVER_RULE;
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane);
       g.SkewCorrectionFactor = 1.0;
-
-      g.mg = mg;
+      g.mg = g.LeverRuleData.mg;
    }
 
    return g;
@@ -179,30 +195,42 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_I
 
 lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_Int_2_Strength() const
 {
-   Float64 L = ::ConvertFromSysUnits(m_L,unitMeasure::Feet);
-   Float64 S = ::ConvertFromSysUnits(m_Savg,unitMeasure::Feet);
-   Float64 d = ::ConvertFromSysUnits(m_d,unitMeasure::Inch);
-
    lrfdILiveLoadDistributionFactor::DFResult g;
 
-   if (GetNb() == 1)
+   bool isAppl = DoTestRangeOfApplicablity(false);
+   if (isAppl || m_RangeOfApplicabilityAction == roaIgnore)
    {
-      // Single beam method counts on spacing which will be garbage
-      g.ControllingMethod = LANES_DIV_BEAMS;
-      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
-      g.mg = g.LanesBeamsData.mg;
+      Float64 L = ::ConvertFromSysUnits(m_L, unitMeasure::Feet);
+      Float64 S = ::ConvertFromSysUnits(m_Savg, unitMeasure::Feet);
+      Float64 d = ::ConvertFromSysUnits(m_d, unitMeasure::Inch);
+
+      if (GetNb() == 1)
+      {
+         // Single beam method counts on spacing which will be garbage
+         g.ControllingMethod = LANES_DIV_BEAMS;
+         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+         g.mg = g.LanesBeamsData.mg;
+      }
+      else
+      {
+         Float64 mg = pow(S / 6.3, 0.6) * pow(S*d / (12.0*L*L), 0.125);
+         g.EqnData.mg = mg;
+         g.EqnData.bWasUsed = true;
+         g.ControllingMethod = SPEC_EQN;
+
+         g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(2);
+         g.SkewCorrectionFactor = 1.0;
+
+         g.mg = mg;
+      }
    }
    else
    {
-      Float64 mg = pow(S / 6.3, 0.6) * pow(S*d / (12.0*L*L), 0.125);
-      g.EqnData.mg = mg;
-      g.EqnData.bWasUsed = true;
-      g.ControllingMethod = SPEC_EQN;
-
-      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(2);
+      assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
+      g.ControllingMethod = LEVER_RULE;
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes);
       g.SkewCorrectionFactor = 1.0;
-
-      g.mg = mg;
+      g.mg = g.LeverRuleData.mg;
    }
 
    return g;
@@ -210,39 +238,51 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_I
 
 lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_Ext_1_Strength() const
 {
-   Float64 L = ::ConvertFromSysUnits(m_L,unitMeasure::Feet);
-   Float64 S = ::ConvertFromSysUnits(m_Savg,unitMeasure::Feet);
-   Float64 d = ::ConvertFromSysUnits(m_d,unitMeasure::Inch);
-
    lrfdILiveLoadDistributionFactor::DFResult g;
 
-   if (GetNb() == 1)
+   bool isAppl = DoTestRangeOfApplicablity(false);
+   if (isAppl || m_RangeOfApplicabilityAction == roaIgnore)
    {
-      // Single beam method counts on spacing which will be garbage
-      g.ControllingMethod = LANES_DIV_BEAMS;
-      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
-      g.mg = g.LanesBeamsData.mg;
+      Float64 L = ::ConvertFromSysUnits(m_L, unitMeasure::Feet);
+      Float64 S = ::ConvertFromSysUnits(m_Savg, unitMeasure::Feet);
+      Float64 d = ::ConvertFromSysUnits(m_d, unitMeasure::Inch);
+
+      if (GetNb() == 1)
+      {
+         // Single beam method counts on spacing which will be garbage
+         g.ControllingMethod = LANES_DIV_BEAMS;
+         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+         g.mg = g.LanesBeamsData.mg;
+      }
+      else
+      {
+         Float64 mg = pow(S / 1.7, 0.5) * pow(S*d / (12.0*L*L), 0.3);
+         g.EqnData.mg = mg;
+         g.EqnData.bWasUsed = true;
+         g.ControllingMethod = SPEC_EQN;
+
+         g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
+
+         g.SkewCorrectionFactor = 1.0;
+
+         g.mg = mg;
+      }
    }
    else
    {
-      Float64 mg = pow(S / 1.7, 0.5) * pow(S*d / (12.0*L*L), 0.3);
-      g.EqnData.mg = mg;
-      g.EqnData.bWasUsed = true;
-      g.ControllingMethod = SPEC_EQN;
-
-      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
-
+      assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
+      g.ControllingMethod = LEVER_RULE;
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
       g.SkewCorrectionFactor = 1.0;
+      g.mg = g.LeverRuleData.mg;
+   }
 
-      g.mg = mg;
-
-      // exterior cannot be less than interior
-      lrfdILiveLoadDistributionFactor::DFResult gint = GetMomentDF_Int_1_Strength();
-      if (g.mg < gint.mg)
-      {
-         g = gint;
-         g.ControllingMethod |= INTERIOR_OVERRIDE;
-      }
+   // exterior cannot be less than interior
+   lrfdILiveLoadDistributionFactor::DFResult gint = GetMomentDF_Int_1_Strength();
+   if (g.mg < gint.mg)
+   {
+      g = gint;
+      g.ControllingMethod |= INTERIOR_OVERRIDE;
    }
 
    return g;
@@ -250,39 +290,51 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_E
 
 lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_Ext_2_Strength() const
 {
-   Float64 L = ::ConvertFromSysUnits(m_L,unitMeasure::Feet);
-   Float64 S = ::ConvertFromSysUnits(m_Savg,unitMeasure::Feet);
-   Float64 d = ::ConvertFromSysUnits(m_d,unitMeasure::Inch);
-
    lrfdILiveLoadDistributionFactor::DFResult g;
 
-   if (GetNb() == 1)
+   bool isAppl = DoTestRangeOfApplicablity(false);
+   if (isAppl || m_RangeOfApplicabilityAction == roaIgnore)
    {
-      // Single beam method counts on spacing which will be garbage
-      g.ControllingMethod = LANES_DIV_BEAMS;
-      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
-      g.mg = g.LanesBeamsData.mg;
+      Float64 L = ::ConvertFromSysUnits(m_L, unitMeasure::Feet);
+      Float64 S = ::ConvertFromSysUnits(m_Savg, unitMeasure::Feet);
+      Float64 d = ::ConvertFromSysUnits(m_d, unitMeasure::Inch);
+
+      if (GetNb() == 1)
+      {
+         // Single beam method counts on spacing which will be garbage
+         g.ControllingMethod = LANES_DIV_BEAMS;
+         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+         g.mg = g.LanesBeamsData.mg;
+      }
+      else
+      {
+         Float64 mg = pow(S / 9.0, 0.5) * pow(S*d / (12.0*L*L), 0.1);
+         g.EqnData.mg = mg;
+         g.EqnData.bWasUsed = true;
+         g.ControllingMethod = SPEC_EQN;
+
+         g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(2);
+
+         g.SkewCorrectionFactor = 1.0;
+
+         g.mg = mg;
+      }
    }
    else
    {
-      Float64 mg = pow(S / 9.0, 0.5) * pow(S*d / (12.0*L*L), 0.1);
-      g.EqnData.mg = mg;
-      g.EqnData.bWasUsed = true;
-      g.ControllingMethod = SPEC_EQN;
-
-      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(2);
-
+      assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
+      g.ControllingMethod = LEVER_RULE;
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
       g.SkewCorrectionFactor = 1.0;
+      g.mg = g.LeverRuleData.mg;
+   }
 
-      g.mg = mg;
-
-      // exterior cannot be less than interior
-      lrfdILiveLoadDistributionFactor::DFResult gint = GetMomentDF_Int_2_Strength();
-      if (g.mg < gint.mg)
-      {
-         g = gint;
-         g.ControllingMethod |= INTERIOR_OVERRIDE;
-      }
+   // exterior cannot be less than interior
+   lrfdILiveLoadDistributionFactor::DFResult gint = GetMomentDF_Int_2_Strength();
+   if (g.mg < gint.mg)
+   {
+      g = gint;
+      g.ControllingMethod |= INTERIOR_OVERRIDE;
    }
 
    return g;
@@ -290,30 +342,43 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_E
 
 lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetShearDF_Int_1_Strength() const
 {
-   Float64 L = ::ConvertFromSysUnits(m_L,unitMeasure::Feet);
-   Float64 S = ::ConvertFromSysUnits(m_Savg,unitMeasure::Feet);
-   Float64 d = ::ConvertFromSysUnits(m_d,unitMeasure::Inch);
-
    lrfdILiveLoadDistributionFactor::DFResult g;
-   if (GetNb() == 1)
+
+   bool isAppl = DoTestRangeOfApplicablity(false);
+   if (isAppl || m_RangeOfApplicabilityAction == roaIgnore)
    {
-      // Single beam method counts on spacing which will be garbage
-      g.ControllingMethod = LANES_DIV_BEAMS;
-      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
-      g.mg = g.LanesBeamsData.mg;
+      Float64 L = ::ConvertFromSysUnits(m_L, unitMeasure::Feet);
+      Float64 S = ::ConvertFromSysUnits(m_Savg, unitMeasure::Feet);
+      Float64 d = ::ConvertFromSysUnits(m_d, unitMeasure::Inch);
+
+      if (GetNb() == 1)
+      {
+         // Single beam method counts on spacing which will be garbage
+         g.ControllingMethod = LANES_DIV_BEAMS;
+         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+         g.mg = g.LanesBeamsData.mg;
+      }
+      else
+      {
+         Float64 mg = pow(S / 3.7, 0.65) * pow(d / (12.0*L), 0.25);
+         g.EqnData.mg = mg;
+         g.EqnData.bWasUsed = true;
+         g.ControllingMethod = SPEC_EQN;
+
+         g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
+
+         g.SkewCorrectionFactor = 1.0;
+
+         g.mg = mg;
+      }
    }
    else
    {
-      Float64 mg = pow(S / 3.7, 0.65) * pow(S*d / (12.0*L), 0.25);
-      g.EqnData.mg = mg;
-      g.EqnData.bWasUsed = true;
-      g.ControllingMethod = SPEC_EQN;
-
-      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
-
+      assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
+      g.ControllingMethod = LEVER_RULE;
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane);
       g.SkewCorrectionFactor = 1.0;
-
-      g.mg = mg;
+      g.mg = g.LeverRuleData.mg;
    }
 
    return g;
@@ -321,30 +386,43 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetShearDF_In
 
 lrfdILiveLoadDistributionFactor::DFResult  lrfdTxdotLldfSpreadSlab::GetShearDF_Int_2_Strength() const
 {
-   Float64 L = ::ConvertFromSysUnits(m_L,unitMeasure::Feet);
-   Float64 S = ::ConvertFromSysUnits(m_Savg,unitMeasure::Feet);
-   Float64 d = ::ConvertFromSysUnits(m_d,unitMeasure::Inch);
-
    lrfdILiveLoadDistributionFactor::DFResult g;
-   if (GetNb() == 1)
+
+   bool isAppl = DoTestRangeOfApplicablity(false);
+   if (isAppl || m_RangeOfApplicabilityAction == roaIgnore)
    {
-      // Single beam method counts on spacing which will be garbage
-      g.ControllingMethod = LANES_DIV_BEAMS;
-      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
-      g.mg = g.LanesBeamsData.mg;
+      Float64 L = ::ConvertFromSysUnits(m_L, unitMeasure::Feet);
+      Float64 S = ::ConvertFromSysUnits(m_Savg, unitMeasure::Feet);
+      Float64 d = ::ConvertFromSysUnits(m_d, unitMeasure::Inch);
+
+      if (GetNb() == 1)
+      {
+         // Single beam method counts on spacing which will be garbage
+         g.ControllingMethod = LANES_DIV_BEAMS;
+         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+         g.mg = g.LanesBeamsData.mg;
+      }
+      else
+      {
+         Float64 mg = pow(S / 5.0, 0.9) * pow(d / (12.0*L), 0.2);
+         g.EqnData.mg = mg;
+         g.EqnData.bWasUsed = true;
+         g.ControllingMethod = SPEC_EQN;
+
+         g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(2);
+
+         g.SkewCorrectionFactor = 1.0;
+
+         g.mg = mg;
+      }
    }
    else
    {
-      Float64 mg = pow(S / 5.0, 0.9) * pow(S*d / (12.0*L), 0.2);
-      g.EqnData.mg = mg;
-      g.EqnData.bWasUsed = true;
-      g.ControllingMethod = SPEC_EQN;
-
-      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(2);
-
+      assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
+      g.ControllingMethod = LEVER_RULE;
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes);
       g.SkewCorrectionFactor = 1.0;
-
-      g.mg = mg;
+      g.mg = g.LeverRuleData.mg;
    }
 
    return g;
@@ -352,37 +430,49 @@ lrfdILiveLoadDistributionFactor::DFResult  lrfdTxdotLldfSpreadSlab::GetShearDF_I
 
 lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetShearDF_Ext_1_Strength() const
 {
-   Float64 S = ::ConvertFromSysUnits(m_Savg,unitMeasure::Feet);
-
    lrfdILiveLoadDistributionFactor::DFResult g;
 
-   if (GetNb() == 1)
+   bool isAppl = DoTestRangeOfApplicablity(false);
+   if (isAppl || m_RangeOfApplicabilityAction == roaIgnore)
    {
-      // Single beam method counts on spacing which will be garbage
-      g.ControllingMethod = LANES_DIV_BEAMS;
-      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
-      g.mg = g.LanesBeamsData.mg;
+      Float64 S = ::ConvertFromSysUnits(m_Savg, unitMeasure::Feet);
+
+      if (GetNb() == 1)
+      {
+         // Single beam method counts on spacing which will be garbage
+         g.ControllingMethod = LANES_DIV_BEAMS;
+         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+         g.mg = g.LanesBeamsData.mg;
+      }
+      else
+      {
+         Float64 mg = pow(S / 15.7, 0.7);
+         g.EqnData.mg = mg;
+         g.EqnData.bWasUsed = true;
+         g.ControllingMethod = SPEC_EQN;
+
+         g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
+
+         g.SkewCorrectionFactor = 1.0;
+
+         g.mg = mg;
+      }
    }
    else
    {
-      Float64 mg = pow(S / 15.7, 0.7);
-      g.EqnData.mg = mg;
-      g.EqnData.bWasUsed = true;
-      g.ControllingMethod = SPEC_EQN;
-
-      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
-
+      assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
+      g.ControllingMethod = LEVER_RULE;
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
       g.SkewCorrectionFactor = 1.0;
+      g.mg = g.LeverRuleData.mg;
+   }
 
-      g.mg = mg;
-
-      // exterior cannot be less than interior
-      lrfdILiveLoadDistributionFactor::DFResult gint = GetShearDF_Int_1_Strength();
-      if (g.mg < gint.mg)
-      {
-         g = gint;
-         g.ControllingMethod |= INTERIOR_OVERRIDE;
-      }
+   // exterior cannot be less than interior
+   lrfdILiveLoadDistributionFactor::DFResult gint = GetShearDF_Int_1_Strength();
+   if (g.mg < gint.mg)
+   {
+      g = gint;
+      g.ControllingMethod |= INTERIOR_OVERRIDE;
    }
 
    return g;
@@ -390,36 +480,49 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetShearDF_Ex
 
 lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetShearDF_Ext_2_Strength() const
 {
-   Float64 S = ::ConvertFromSysUnits(m_Savg,unitMeasure::Feet);
-
    lrfdILiveLoadDistributionFactor::DFResult g;
-   if (GetNb() == 1)
+
+   bool isAppl = DoTestRangeOfApplicablity(false);
+   if (isAppl || m_RangeOfApplicabilityAction == roaIgnore)
    {
-      // Single beam method counts on spacing which will be garbage
-      g.ControllingMethod = LANES_DIV_BEAMS;
-      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
-      g.mg = g.LanesBeamsData.mg;
+      Float64 S = ::ConvertFromSysUnits(m_Savg, unitMeasure::Feet);
+
+      if (GetNb() == 1)
+      {
+         // Single beam method counts on spacing which will be garbage
+         g.ControllingMethod = LANES_DIV_BEAMS;
+         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+         g.mg = g.LanesBeamsData.mg;
+      }
+      else
+      {
+         Float64 mg = pow(S / 19.0, 0.6);
+         g.EqnData.mg = mg;
+         g.EqnData.bWasUsed = true;
+         g.ControllingMethod = SPEC_EQN;
+
+         g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(2);
+
+         g.SkewCorrectionFactor = 1.0;
+
+         g.mg = mg;
+      }
    }
    else
    {
-      Float64 mg = pow(S / 19.0, 0.6);
-      g.EqnData.mg = mg;
-      g.EqnData.bWasUsed = true;
-      g.ControllingMethod = SPEC_EQN;
-
-      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(2);
-
+      assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
+      g.ControllingMethod = LEVER_RULE;
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
       g.SkewCorrectionFactor = 1.0;
+      g.mg = g.LeverRuleData.mg;
+   }
 
-      g.mg = mg;
-
-      // exterior cannot be less than interior
-      lrfdILiveLoadDistributionFactor::DFResult gint = GetShearDF_Int_2_Strength();
-      if (g.mg < gint.mg)
-      {
-         g = gint;
-         g.ControllingMethod |= INTERIOR_OVERRIDE;
-      }
+   // exterior cannot be less than interior
+   lrfdILiveLoadDistributionFactor::DFResult gint = GetShearDF_Int_2_Strength();
+   if (g.mg < gint.mg)
+   {
+      g = gint;
+      g.ControllingMethod |= INTERIOR_OVERRIDE;
    }
 
    return g;
@@ -483,20 +586,20 @@ bool lrfdTxdotLldfSpreadSlab::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.44609, 0.001) );
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.58219, 0.001) ); // <== interior beam controls
    
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 1.09796, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 1.07494, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 1.09796, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 1.07494, 0.001) );
+   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.66347, 0.001) );
+   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.71841, 0.001) );
+   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.66347, 0.001) );
+   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.71841, 0.001) );
 
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.34654, 0.001) );
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.37174, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.91497, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.91497, 0.001) );
+   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.55289, 0.001) );
+   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.55289, 0.001) );
 
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.34654, 0.001) );
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.37174, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.91497, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.91497, 0.001) );
+   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.55289, 0.001) );
+   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.55289, 0.001) );
 
    TESTME_EPILOG("lrfdTxdotLldfSpreadSlab");
 }
