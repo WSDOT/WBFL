@@ -243,6 +243,13 @@ void CSimpleDrawPointStrategyImpl::DrawMe(const CRect& rect,CDC* pDC)
       pDC->Rectangle(r);
       break;
 
+   case ptCrossHair:
+      pDC->MoveTo(rect.left, rect.CenterPoint().y);
+      pDC->LineTo(rect.right, rect.CenterPoint().y);
+      pDC->MoveTo(rect.CenterPoint().x, rect.bottom );
+      pDC->LineTo(rect.CenterPoint().x, rect.top );
+      break;
+
    default:
       ATLASSERT(false); // should never get here!!!
    }
