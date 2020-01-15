@@ -174,4 +174,6 @@ stbLiftingResults::stbLiftingResults()
    MinAdjFsFailure = Float64_Max;
    FSfImpactDirection = stbTypes::NoImpact;
    FSfWindDirection   = stbTypes::Left;
+
+   AssumedTiltDirection = stbTypes::Left;
 }

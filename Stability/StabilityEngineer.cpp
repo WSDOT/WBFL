@@ -60,6 +60,7 @@ static char THIS_FILE[] = __FILE__;
 
 #define THETA_MAX 0.4
 
+
 stbStabilityEngineer::stbStabilityEngineer()
 {
 }
@@ -221,6 +222,14 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
    results.Plift = -(Wg/2)*tan(PI_OVER_2 - pStabilityProblem->GetLiftAngle());
    results.Plift = ::IsZero(results.Plift) ? 0.0 : results.Plift;
 
+   if (::IsLT(Max(Wtop, Wbot) / 2, Xleft))
+   {
+      // we generally assume the girder tilts to the left. this is how the equations are developed in Mast and PCI.
+      // however, we have a case where the CG is to the right of the centerline of the girder. this makes the
+      // natural tendency of the girder to roll to the right.
+      results.AssumedTiltDirection = stbTypes::Right;
+   }
+
    ATLASSERT( !IsZero(pStabilityProblem->GetLiftAngle()) );
    for ( IndexType i = 0; i < 3; i++ )
    {
@@ -377,7 +386,7 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
 
       Float64 D = Ixx*Iyy - Ixy*Ixy;
 
-      gpPoint2d pntStress[4];
+      std::array<gpPoint2d,4> pntStress;
       pGirder->GetStressPoints(X, &pntStress[stbTypes::TopLeft], &pntStress[stbTypes::TopRight], &pntStress[stbTypes::BottomLeft], &pntStress[stbTypes::BottomRight]);
 
       // stress due to prestressing
@@ -535,6 +544,12 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
                   //Float64 Mx = 0;
                   Float64 My = -1.0*IM[impact] * ((sectionResult.Mg - Plift*results.Zo[impact])*results.ThetaEq[impact][wind] + sectionResult.Mh[impact][wind]);
                   Float64 f = ((My*Ixx/* + Mx*Ixy*/)*pntStress[corner].X() - (/*Mx*Iyy + */My*Ixy)*pntStress[corner].Y()) / D;
+                  if (results.AssumedTiltDirection == stbTypes::Right)
+                  {
+                     // girder is tilted to the right so flip the sign
+                     // f is computed assuming tilt to the left
+                     f *= -1;
+                  }
                   sectionResult.fTilt[impact][wind][corner] = f;
 
                   // total stress
@@ -598,9 +613,18 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
                   Float64 m = IM[impact] * sectionResult.Mg - Plift*results.Zo[impact];
 
                   Float64 theta_crack = (IsZero(m) ? ::BinarySign(results.ThetaEq[impact][wind])*THETA_MAX : mcr / m);
+
+                  if (results.AssumedTiltDirection == stbTypes::Right)
+                  {
+                     // girder is tilted to the right so flip the sign of the cracking angle
+                     theta_crack *= -1;
+                  }
+
                   theta_crack = ::ForceIntoRange(-THETA_MAX, theta_crack, THETA_MAX);
+
                   sectionResult.Mcr[impact][wind][corner] = mcr;
                   sectionResult.ThetaCrack[impact][wind][corner] = theta_crack;
+
 
                   Float64 fscr = 0;
                   if (results.ThetaEq[impact][wind] < 0)
@@ -801,6 +825,17 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
 
    Float64 Ll, Lr;
    pStabilityProblem->GetSupportLocations(&Ll,&Lr);
+
+   Float64 Ag, Ixx, Iyy, Ixy, Xleft, Ytop, Hg, Wtop, Wbot;
+   pGirder->GetSectionProperties(Lg / 2, &Ag, &Ixx, &Iyy, &Ixy, &Xleft, &Ytop, &Hg, &Wtop, &Wbot);
+   if (::IsLT(Max(Wtop, Wbot) / 2,Xleft))
+   {
+      // we generally assume the girder tilts to the left. this is how the equations are developed in Mast and PCI.
+      // however, we have a case where the CG is to the right of the centerline of the girder. this makes the
+      // natural tendency of the girder to roll to the right.
+      results.AssumedTiltDirection = stbTypes::Right;
+   }
+
 
    const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
    Float64 fr = concrete.GetFlexureFr();
@@ -1081,6 +1116,12 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                      //Float64 Mx = 0;
                      Float64 My = -1 * im * sectionResult.Mg*results.ThetaEq[slope][impact][wind]; // this sign of ThetaEq will take care of the girder rolling to the right
                      Float64 f = ((My*Ixx/* + Mx*Ixy*/)*pntStress[corner].X() - (/*Mx*Iyy + */My*Ixy)*pntStress[corner].Y()) / D;
+                     if (results.AssumedTiltDirection == stbTypes::Right)
+                     {
+                        // girder is tilted to the right so flip the sign
+                        // f is computed assuming tilt to the left
+                        f *= -1;
+                     }
                      sectionResult.fTilt[slope][impact][wind][corner] = f;
 
                      // total stress
@@ -1146,6 +1187,13 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                         Float64 m = im*sectionResult.Mg;
 
                         theta_crack = (IsZero(m) ? ::BinarySign(results.ThetaEq[slope][impact][wind])*THETA_MAX : mcr / m);
+
+                        if (results.AssumedTiltDirection == stbTypes::Right)
+                        {
+                           // girder is tilted to the right so flip the sign of the cracking angle
+                           theta_crack *= -1;
+                        }
+
                         theta_crack = ::ForceIntoRange(-THETA_MAX, theta_crack, THETA_MAX);
 
                         if (theta_crack < 0)

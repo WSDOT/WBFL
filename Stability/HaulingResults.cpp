@@ -158,6 +158,8 @@ stbHaulingResults::stbHaulingResults()
 
    memset((void*)ThetaRollover, 0, sizeof(ThetaRollover));
    memset((void*)FsRollover,0,sizeof(FsRollover));
+
+   AssumedTiltDirection = stbTypes::Left;
 }
 
 bool stbHaulingResults::HasRotationalStablity() const

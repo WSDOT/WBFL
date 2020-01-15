@@ -664,6 +664,8 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    pGirder->GetSegment(&segment);
 
    std::_tstring strFlange[] = {_T("Top Left"),_T("Top Right"),_T("Bottom Left"),_T("Bottom Right")};
+   std::_tstring strTiltRotation[] = { _T("counter clockwise"), _T("clockwise") };
+   std::_tstring strTiltDirection[] = { _T("left"), _T("right") };
 
    LPCTSTR strImpact[3];
    stbTypes::ImpactDirection impactDir[3];
@@ -1617,6 +1619,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             *pPara << _T(")") << _T(" + ") << M_OT << _T(" + ") << K_THETA << symbol(alpha) << _T(")");
             *pPara << _T(" / [") << K_THETA << _T(" - ") << Sub2(_T("(IM)W"), _T("g")) << _T("(") << YR << _T(" + ") << ZO << _T(")] = ");
             *pPara << tiltAngle.SetValue(pResults->ThetaEq[slope][impactDir[impactCase]][wind]) << rptNewLine;
+            *pPara << _T("Assumed direction of tilt is ") << strTiltRotation[pResults->AssumedTiltDirection] << _T(" (top of girder tilt towards the ") << strTiltDirection[pResults->AssumedTiltDirection] << _T(").") << rptNewLine;
 
             if (!pResults->bRotationalStability[slope][impactDir[impactCase]][wind])
             {
@@ -1737,8 +1740,9 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             (*pPara) << THETA_CRACK << _T(" = tilt angle at cracking") << rptNewLine;
             (*pPara) << THETA_CRACK << _T(" = ") << M_CR << _T("/") << Sub2(_T("M"), _T("girder")) << rptNewLine;
             (*pPara) << _T("-0.4 radian") << _T(" ") << symbol(LTE) << _T(" ") << THETA_CRACK << _T(" ") << symbol(LTE) << _T(" ") << _T("0.4 radian") << rptNewLine;
-            (*pPara) << FS_CR << _T(" = Factor of Safety against Cracking") << rptNewLine;
+            *pPara << _T("Assumed direction of tilt is ") << strTiltRotation[pResults->AssumedTiltDirection] << _T(" (top of girder tilt towards the ") << strTiltDirection[pResults->AssumedTiltDirection] << _T(").") << rptNewLine;
 
+            (*pPara) << FS_CR << _T(" = Factor of Safety against Cracking") << rptNewLine;
             (*pPara) << FS_CR << _T(" = [") << K_THETA << _T("(") << THETA_CRACK << _T(" - ") << symbol(alpha) << _T(")]");
             (*pPara) << _T(" / {");
             (*pPara) << Sub2(_T("(IM)W"), _T("g")) << _T("[(") << YR << _T(" + ") << ZO << _T(")") << THETA_CRACK << _T(" + ") << EI << _T(" + ");
@@ -2098,6 +2102,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             }
 
             *pPara << THETA_FAILURE << _T(" = ") << tiltAngle.SetValue(pResults->ThetaMax[slope][impactDir[impactCase]][wind]) << rptNewLine;
+            *pPara << _T("Assumed direction of tilt is ") << strTiltRotation[pResults->AssumedTiltDirection] << _T(" (top of girder tilt towards the ") << strTiltDirection[pResults->AssumedTiltDirection] << _T(").") << rptNewLine;
 
             *pPara << Sub2(_T("FS"), _T("f")) << _T(" = Factor of Safety Against Failure = [") << K_THETA << _T("(") << THETA_FAILURE << _T(" - ") << symbol(alpha) << _T(")]");
             *pPara << _T("/{");
@@ -2224,6 +2229,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                   }
                   *pPara << _T("]") << _T("/") << K_THETA << _T(" + ") << symbol(alpha) << rptNewLine;
                   *pPara << THETA_ROLLOVER << _T(" = ") << tiltAngle.SetValue(pResults->ThetaRollover[slope][impactDir[impactCase]][wind]) << rptNewLine;
+                  *pPara << _T("Assumed direction of tilt is ") << strTiltRotation[pResults->AssumedTiltDirection] << _T(" (top of girder tilt towards the ") << strTiltDirection[pResults->AssumedTiltDirection] << _T(").") << rptNewLine;;
                   *pPara << rptNewLine;
                }
                else
@@ -2244,6 +2250,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                   }
                   *pPara << _T("]") << _T("/") << K_THETA << _T(" + ") << symbol(alpha) << rptNewLine;
                   *pPara << THETA_ROLLOVER << _T(" = ") << tiltAngle.SetValue(pResults->ThetaRollover[slope][impactDir[impactCase]][wind]) << rptNewLine;
+                  *pPara << _T("Assumed direction of tilt is ") << strTiltRotation[pResults->AssumedTiltDirection] << _T(" (top of girder tilt towards the ") << strTiltDirection[pResults->AssumedTiltDirection] << _T(").") << rptNewLine;;
                }
                else
                {

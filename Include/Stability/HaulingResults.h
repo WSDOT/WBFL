@@ -109,6 +109,8 @@ class STABILITYCLASS stbHaulingResults : public stbResults
 public:
    stbHaulingResults();
 
+   stbTypes::GirderSide AssumedTiltDirection;
+
    bool bRotationalStability[2][3][2]; // if true, the girder is not stable for hauling... it will just roll over (Ktheta is too small so ThetaEq is too big). 
 
    bool HasRotationalStablity() const;

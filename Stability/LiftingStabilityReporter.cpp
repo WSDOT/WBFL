@@ -423,7 +423,15 @@ void stbLiftingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       {
          (*pStressTable)(row, col++) << strWindDir[sectionResult.FScrMinWindDirection];
       }
-      (*pStressTable)(row,col++) << scalar.SetValue(FScr);
+
+      if (FScr == Float64_Max)
+      {
+         (*pStressTable)(row, col++) << symbol(infinity);
+      }
+      else
+      {
+         (*pStressTable)(row, col++) << scalar.SetValue(FScr);
+      }
 
       if ( FScr <= criteria.MinFScr )
       {
@@ -480,6 +488,8 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    pGirder->GetSegment(&segment);
 
    std::_tstring strFlange[] = { _T("Top Left"),_T("Top Right"),_T("Bottom Left"),_T("Bottom Right") };
+   std::_tstring strTiltRotation[] = { _T("counter clockwise"), _T("clockwise") };
+   std::_tstring strTiltDirection[] = { _T("left"), _T("right") };
 
    LPCTSTR strImpact[3];
    stbTypes::ImpactDirection impactDir[3];
@@ -1427,6 +1437,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
          *pPara << _T(" ") << strWindSign.c_str() << _T(" ") << Z_WIND << _T(" ") << strOppWindSign.c_str() << _T(" ") << E_WIND << _T(")/(") << YR << _T(" - ") << ZO << _T(") = ");
          *pPara << tiltAngle.SetValue(pResults->ThetaEq[impactDir[impactCase]][wind]) << rptNewLine;
+         *pPara << _T("Assumed direction of tilt is ") << strTiltRotation[pResults->AssumedTiltDirection] << _T(" (bottom of girder tilts towards the ") << strTiltDirection[pResults->AssumedTiltDirection] << _T(").") << rptNewLine;
          if (pResults->ThetaEq[impactDir[impactCase]][wind] < 0)
          {
             *pPara << _T("NOTE: ") << E_WIND << _T(" > ") << EI << _T(" + ") << Z_WIND << _T(", Wind loading is sufficient to reverse the direction of girder tilt.") << rptNewLine;
@@ -1534,6 +1545,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
          (*pPara) << THETA_CRACK << _T(" = tilt angle at cracking") << rptNewLine;
          (*pPara) << THETA_CRACK << _T(" = ") << M_CR << _T("/(") << Sub2(_T("M"), _T("girder")) << _T(" + ") << Sub2(_T("P"), _T("lift")) << ZO << _T(")") << rptNewLine;
          (*pPara) << _T("-0.4 radian") << _T(" ") << symbol(LTE) << _T(" ") << THETA_CRACK << _T(" ") << symbol(LTE) << _T(" ") << _T("0.4 radian") << rptNewLine;
+         *pPara << _T("Assumed direction of tilt is ") << strTiltRotation[pResults->AssumedTiltDirection] << _T(" (bottom of girder tilts towards the ") << strTiltDirection[pResults->AssumedTiltDirection] << _T(").") << rptNewLine;
 
          (*pPara) << FS_CR << _T(" = Factor of Safety Against Cracking") << rptNewLine;
          if (pResults->ThetaEq[impactDir[impactCase]][wind] < 0)
@@ -1827,6 +1839,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             *pPara << THETA_FAILURE << _T(" = ") << symbol(ROOT) << _T("((") << EI << _T(" ") << strWindSign.c_str() << _T(" ") << Z_WIND << _T(" ") << strOppWindSign.c_str() << _T(" ") << E_WIND << _T(") / (2.5") << ZO << _T(")) ") << symbol(LTE) << _T(" 0.4 radian") << rptNewLine;
          }
          *pPara << THETA_FAILURE << _T(" = ") << tiltAngle.SetValue(pResults->ThetaMax[impactDir[impactCase]][wind]) << rptNewLine;
+         *pPara << _T("Assumed direction of tilt is ") << strTiltRotation[pResults->AssumedTiltDirection] << _T(" (bottom of girder tilts towards the ") << strTiltDirection[pResults->AssumedTiltDirection] << _T(").") << rptNewLine;
          *pPara << FS_F << _T(" = Factor of Safety Against Failure") << rptNewLine;
          if (pResults->ThetaEq[impactDir[impactCase]][wind] < 0)
          {
