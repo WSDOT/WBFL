@@ -49,7 +49,7 @@ BEGIN
             VALUE "FileDescription", "GeometricPrimitives\0"
             VALUE "FileVersion", "4.4.5.0\0"
             VALUE "InternalName", "GeometricPrimitives\0"
-            VALUE "LegalCopyright", "Copyright © 1999-2019, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2020, Washington State Department of Transportation, All Rights Reserved"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "GEOM30.DLL\0"
             VALUE "PrivateBuild", "\0"

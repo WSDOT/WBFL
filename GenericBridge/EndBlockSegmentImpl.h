@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019, Washington State Department of Transportation, All Rights Reserved
+// Copyright © 1999-2020, Washington State Department of Transportation, All Rights Reserved
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries

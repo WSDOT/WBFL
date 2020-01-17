@@ -74,7 +74,7 @@ BEGIN
             VALUE "FileDescription", "GraphManagerAgent Module"
             VALUE "FileVersion", "4.4.5.0"
             VALUE "InternalName", "GraphManagerAgent"
-            VALUE "LegalCopyright", "Copyright © 1999-2019, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2020, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "WBFLGraphManagerAgent.DLL"
             VALUE "ProductName", "WBFL"
             VALUE "ProductVersion", "4.4.5.0"

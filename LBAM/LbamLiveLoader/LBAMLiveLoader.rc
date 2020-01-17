@@ -75,7 +75,7 @@ BEGIN
             VALUE "FileDescription", "LBAMLiveLoader Module\0"
             VALUE "FileVersion", "4.4.5.0\0"
             VALUE "InternalName", "LBAMLiveLoader\0"
-            VALUE "LegalCopyright", "Copyright © 1999-2019, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2020, Washington State Department of Transportation, All Rights Reserved"
             VALUE "LegalTrademarks", "\0"
             VALUE "OLESelfRegister", "\0"
             VALUE "OriginalFilename", "LBAMLiveLoader.DLL\0"

@@ -74,7 +74,7 @@ BEGIN
             VALUE "FileDescription", "GraphManager Module"
             VALUE "FileVersion", "4.4.5.0"
             VALUE "InternalName", "GraphManager"
-            VALUE "LegalCopyright", "Copyright © 1999-2019, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2020, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "WBFLGraphManager.DLL"
             VALUE "ProductName", "WBFL"
             VALUE "ProductVersion", "4.4.5.0"
