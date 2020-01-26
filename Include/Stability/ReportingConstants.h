@@ -30,7 +30,7 @@
 #define ZO Sub2(_T("z"),_T("o"))
 #define FO Sub2(_T("F"), _T("o"))
 #define EI Sub2(_T("e"), _T("i"))
-#define E_SWEEP Sub2(_T("e"), _T("sweep"))
+#define D_SWEEP Sub2(symbol(DELTA),_T("sweep"))
 #define E_BUNK Sub2(_T("e"), _T("bunk"))
 #define E_WIND Sub2(_T("e"),_T("wind"))
 #define Z_MAX Sub2(_T("z"),_T("max"))

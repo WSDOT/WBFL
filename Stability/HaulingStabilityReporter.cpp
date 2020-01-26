@@ -1117,7 +1117,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
          *pPara << _T("Eccentricity of CG from roll axis, ") << Sub2(_T("e"), _T("cg")) << _T(" = ") << symbol(SUM) << _T("(0.5(") << Sub2(_T("A"), _T("g i")) << Super2(Sub2(_T("X"), _T("left")), _T("i")) << _T(" + ") << Sub2(_T("A"), _T("g i+1")) << Super2(Sub2(_T("X"), _T("left")), _T("i+1")) << _T("))") << Sub2(_T("w"), _T("c")) << _T(")(Section Length)") << _T(")/") << Sub2(_T("W"), _T("g")) << _T(" = ") << shortLength.SetValue(pResults->Xleft) << rptNewLine;
       }
    }
-   *pPara << _T("Lateral Sweep, ") << E_SWEEP << _T(" = ") << Sub2(_T("L"), _T("g")) << Sub2(_T("t"), _T("sweep"));
+   *pPara << _T("Lateral Sweep, ") << D_SWEEP << _T(" = ") << Sub2(_T("L"), _T("g")) << Sub2(_T("t"), _T("sweep"));
    if (!IsZero(sweepGrowth))
    {
       *pPara << _T(" + ") << shortLength.SetValue(sweepGrowth);
@@ -1127,11 +1127,11 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    *pPara << _T("Initial lateral eccentricity of center of gravity of girder due to lateral sweep and eccentricity of bunking devices from centerline of girder, ") << rptNewLine;
    if (pStabilityProblem->IncludeLateralRollAxisOffset())
    {
-      *pPara << EI << _T(" = ") << FO << _T("(") << E_SWEEP << _T(" + ") << Sub2(symbol(DELTA),_T("lc")) << _T(")") << _T(" + ") << E_BUNK << _T(" + ") << Sub2(_T("e"), _T("cg")) << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[stbTypes::NoImpact]) << rptNewLine;
+      *pPara << EI << _T(" = ") << FO << _T("(") << D_SWEEP << _T(" + ") << Sub2(symbol(DELTA),_T("lc")) << _T(")") << _T(" + ") << E_BUNK << _T(" + ") << Sub2(_T("e"), _T("cg")) << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[stbTypes::NoImpact]) << rptNewLine;
    }
    else
    {
-      *pPara << EI << _T(" = ") << FO << E_SWEEP << _T(" + ") << E_BUNK << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[stbTypes::NoImpact]) << rptNewLine;
+      *pPara << EI << _T(" = ") << FO << D_SWEEP << _T(" + ") << E_BUNK << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[stbTypes::NoImpact]) << rptNewLine;
    }
    *pPara << rptNewLine;
 
