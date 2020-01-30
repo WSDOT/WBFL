@@ -764,6 +764,11 @@ void compute_theta_and_beta2(lrfdShearData* pData)
    {
       THROW(lrfdXShear,MaxIterExceeded);
    }
+
+   if (pData->bLimitNetTensionStrainToPositiveValues && ex < 0)
+   {
+      ex = 0;
+   }
    
 
    // Compute beta
@@ -811,7 +816,7 @@ void compute_theta_and_beta3(lrfdShearData* pData, bool bWSDOT)
       minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Inch); // (in^2/in)
    }
 
-   if ( Avs < minSteel )
+   if ( Avs < minSteel && !pData->bIgnoreMiniumStirrupRequirementForBeta)
    {
       compute_theta_and_beta3_tbl2(pData, bWSDOT); // Use LRFD Eqn 5.8.3.4.2-2 and table 2
    }
@@ -949,16 +954,23 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
 
       if ( ex_calc < 0 )
       {
-         // Eqn 5.8.3.4.2-3
-         pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
-
-         if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+         if (pData->bLimitNetTensionStrainToPositiveValues)
          {
-            ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+            ex_calc = 0;
          }
          else
          {
-            ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+            // Eqn 5.8.3.4.2-3
+            pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
+
+            if (lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion())
+            {
+               ex_calc = (fabs(Mu) / dv + 0.5*Nu + 0.5*fabs(Vu - Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+            }
+            else
+            {
+               ex_calc = (Mu / dv + 0.5*Nu + 0.5*(Vu - Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+            }
          }
       }
 
@@ -1129,16 +1141,23 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
 
       if ( ex_calc < 0 )
       {
-         // Eqn 5.8.3.4.2-3
-         pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
-
-         if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+         if (pData->bLimitNetTensionStrainToPositiveValues)
          {
-            ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+            ex_calc = 0;
          }
          else
          {
-            ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+            // Eqn 5.8.3.4.2-3
+            pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
+
+            if (lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion())
+            {
+               ex_calc = (fabs(Mu) / dv + 0.5*Nu + 0.5*fabs(Vu - Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+            }
+            else
+            {
+               ex_calc = (Mu / dv + 0.5*Nu + 0.5*(Vu - Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+            }
          }
       }
 
@@ -1311,11 +1330,18 @@ void compute_theta_and_beta4(lrfdShearData* pData)
 
    if ( ex_calc < 0 )
    {
-      // Eqn 5.8.3.4.2-3
-      pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
+      if (pData->bLimitNetTensionStrainToPositiveValues)
+      {
+         ex_calc = 0;
+      }
+      else
+      {
+         // Eqn 5.8.3.4.2-3
+         pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
 
-      ATLASSERT( !IsZero(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder)); // should be able to get here if zero
-      ex_calc = (Mu/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+         ATLASSERT(!IsZero(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder)); // should be able to get here if zero
+         ex_calc = (Mu / dv + 0.5*Nu + fabs(Vu - Vp) - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+      }
    }
 
    if ( pData->Eqn == 1 || pData->Eqn == 31 )
@@ -1460,7 +1486,14 @@ void compute_theta_and_beta5(lrfdShearData* pData)
 
    if ( ex_calc < 0 )
    {
-      ex_calc = (fabs(Mu)/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder + Ec*Ac);
+      if (pData->bLimitNetTensionStrainToPositiveValues)
+      {
+         ex_calc = 0;
+      }
+      else
+      {
+         ex_calc = (fabs(Mu) / dv + 0.5*Nu + fabs(Vu - Vp) - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder + Ec*Ac);
+      }
    }
 
    ex_calc = ForceIntoRange(ex_min,ex_calc,ex_max);
@@ -1479,7 +1512,7 @@ void compute_theta_and_beta5(lrfdShearData* pData)
       minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Inch); // (in^2/in)
    }
 
-   if ( Avs < minSteel )
+   if ( Avs < minSteel && !pData->bIgnoreMiniumStirrupRequirementForBeta)
    {
       pData->BetaEqn = 2; // Use LRFD Eqn 5.8.3.4.2-2
 
@@ -1546,18 +1579,25 @@ Float64 compute_strain(lrfdShearData* pData,Float64 theta)
 
    if ( ex < 0.0 )
    {
-      Float64 Fe;
-      if ( IsZero(Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder) )
+      if (pData->bLimitNetTensionStrainToPositiveValues)
       {
-         Fe = 0;
+         ex = 0;
       }
       else
       {
-         Fe = Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder;
-         Fe /= Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder;
-      }
+         Float64 Fe;
+         if (IsZero(Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder))
+         {
+            Fe = 0;
+         }
+         else
+         {
+            Fe = Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder;
+            Fe /= Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder;
+         }
 
-      ex *= Fe; // See "Design of Highway Bridges", Barker and Puckett, pg 641
+         ex *= Fe; // See "Design of Highway Bridges", Barker and Puckett, pg 641
+      }
    }
 
    // :KLUDGE:  It is unclear what to do when the computed strain

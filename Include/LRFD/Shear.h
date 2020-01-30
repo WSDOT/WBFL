@@ -90,6 +90,8 @@ struct LRFDCLASS lrfdShearData
    Float64 fct;
    Float64 ag; // max aggregate size
    Float64 sx; // spacing between layers of longitudinal cracking steel
+   bool bLimitNetTensionStrainToPositiveValues; // sets strain at the tensile reinforcement to zero if computed to be negative
+   bool bIgnoreMiniumStirrupRequirementForBeta; // if true, LRFD Equation 5.7.3.4.2-1 is used to compute Beta regardless of the amount of stirrups
 
    // Vci/Vcw parameters
    Float64 Vd;
