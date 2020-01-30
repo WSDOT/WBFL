@@ -41,7 +41,7 @@ CLASS
 class MATCLASS matConcreteBase
 {
 public:
-   enum Type { Normal, AllLightweight, SandLightweight };
+   enum Type { Normal, AllLightweight, SandLightweight, UHPC };
    enum CureMethod { Moist, Steam };
 
    matConcreteBase(LPCTSTR name = _T("Unknown"));
@@ -56,7 +56,7 @@ public:
 
    // Returns a string name that represents the type of concrete.
    static std::_tstring GetTypeName(Type type,bool bFull);
-   static Type GetTypeFromName(LPCTSTR strName);
+   static Type GetTypeFromTypeName(LPCTSTR strName);
 
    // Indicates if the concrete defines an aggregate splitting strength
    bool HasAggSplittingStrength() const;

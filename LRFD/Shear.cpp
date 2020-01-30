@@ -401,7 +401,7 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
    }
    else
    {
-      if (pData->ConcreteType == matConcrete::Normal)
+      if (pData->ConcreteType == matConcrete::Normal || pData->ConcreteType == matConcrete::UHPC)
       {
          sqrt_fc = sqrt(fc);
       }

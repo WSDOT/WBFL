@@ -92,11 +92,11 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the coefficient k used to compute the prestress development length. 5.11.4.2
-   static Float64 GetDevLengthFactor(Float64 mbrDepth,bool bDebonded);
+   static Float64 GetDevLengthFactor(Float64 mbrDepth,bool bDebonded,bool bUHPC);
 
    //------------------------------------------------------------------------
    // Computes the prestress development length. 5.11.4.2
-   static Float64 GetDevLength(const matPsStrand& strand,Float64 fps,Float64 fpe,Float64 mbrDepth,bool bDebonded=false);
+   static Float64 GetDevLength(const matPsStrand& strand,Float64 fps,Float64 fpe,Float64 mbrDepth,bool bDebonded=false, bool bUHPC=false);
 
    //------------------------------------------------------------------------
    // Computes the maximum jacking stress for post-tensioning

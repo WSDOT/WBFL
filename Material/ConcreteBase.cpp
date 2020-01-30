@@ -102,13 +102,16 @@ std::_tstring matConcreteBase::GetTypeName(matConcreteBase::Type type,bool bFull
    case matConcreteBase::SandLightweight:
       return bFull ? _T("Sand Lightweight Concrete") : _T("SandLightweight");
 
+   case matConcreteBase::UHPC:
+      return bFull ? _T("Ultra High Performance Concrete (UHPC)") : _T("UHPC");
+
    default:
       ATLASSERT(false); // is there a new type?
       return bFull ? _T("Normal Weight Concrete") : _T("Normal");
    }
 }
 
-matConcreteBase::Type matConcreteBase::GetTypeFromName(LPCTSTR strName)
+matConcreteBase::Type matConcreteBase::GetTypeFromTypeName(LPCTSTR strName)
 {
    if ( std::_tstring(strName) == _T("Normal") )
       return matConcreteBase::Normal;
@@ -118,6 +121,9 @@ matConcreteBase::Type matConcreteBase::GetTypeFromName(LPCTSTR strName)
 
    if ( std::_tstring(strName) == _T("SandLightweight") )
       return matConcreteBase::SandLightweight;
+
+   if (std::_tstring(strName) == _T("UHPC"))
+      return matConcreteBase::UHPC;
 
    ATLASSERT(false); // invalid name
    return matConcreteBase::Normal;
