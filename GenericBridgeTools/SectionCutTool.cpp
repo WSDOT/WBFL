@@ -2171,6 +2171,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
             if (!InRange(Xgs, Xg, Xge))
             {
                // location is not between the ends of the tendon
+               tendon.Release();
                continue;
             }
 
