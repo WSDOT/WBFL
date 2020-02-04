@@ -64,7 +64,7 @@ public:
    // Default constructor
    lrfdTxdotLldfSpreadSlab(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
                          Uint32 Nl, Float64 wLane,
-                         Float64 d, Float64 L,
+                         Float64 d, Float64 L, Float64 ts,
                          Float64 skewAngle1, Float64 skewAngle2);
 
    //------------------------------------------------------------------------
@@ -95,6 +95,7 @@ protected:
    // GROUP: DATA MEMBERS
    Float64 m_L;
    Float64 m_d;
+   Float64 m_ts;
    Float64 m_SkewAngle1;
    Float64 m_SkewAngle2;
 
