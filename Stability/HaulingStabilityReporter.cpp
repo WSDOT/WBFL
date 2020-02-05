@@ -1617,7 +1617,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                *pPara << _T(" ") << strCFSign.c_str() << _T(" ") << Z_CF;
             }
             *pPara << _T(")") << _T(" + ") << M_OT << _T(" + ") << K_THETA << symbol(alpha) << _T(")");
-            *pPara << _T(" / [") << K_THETA << _T(" - ") << Sub2(_T("(IM)W"), _T("g")) << _T("(") << YR << _T(" + ") << ZO << _T(")] = ");
+            *pPara << _T(" / [") << K_THETA << _T(" - ") << Sub2(_T("(IM)W"), _T("g")) << _T("(") << YR << _T(" + (IM)") << ZO << _T(")] = ");
             *pPara << tiltAngle.SetValue(pResults->ThetaEq[slope][impactDir[impactCase]][wind]) << rptNewLine;
             *pPara << _T("Assumed direction of tilt is ") << strTiltRotation[pResults->AssumedTiltDirection] << _T(" (top of girder tilt towards the ") << strTiltDirection[pResults->AssumedTiltDirection] << _T(").") << rptNewLine;
 
@@ -1738,14 +1738,14 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             }
             (*pPara) << _T("Cracked Flange, indicates the flange that is first to crack") << rptNewLine;
             (*pPara) << THETA_CRACK << _T(" = tilt angle at cracking") << rptNewLine;
-            (*pPara) << THETA_CRACK << _T(" = ") << M_CR << _T("/") << Sub2(_T("M"), _T("girder")) << rptNewLine;
+            (*pPara) << THETA_CRACK << _T(" = ") << M_CR << _T("/[(IM)") << Sub2(_T("M"), _T("girder")) << _T("]") << rptNewLine;
             (*pPara) << _T("-0.4 radian") << _T(" ") << symbol(LTE) << _T(" ") << THETA_CRACK << _T(" ") << symbol(LTE) << _T(" ") << _T("0.4 radian") << rptNewLine;
             *pPara << _T("Assumed direction of tilt is ") << strTiltRotation[pResults->AssumedTiltDirection] << _T(" (top of girder tilt towards the ") << strTiltDirection[pResults->AssumedTiltDirection] << _T(").") << rptNewLine;
 
             (*pPara) << FS_CR << _T(" = Factor of Safety against Cracking") << rptNewLine;
             (*pPara) << FS_CR << _T(" = [") << K_THETA << _T("(") << THETA_CRACK << _T(" - ") << symbol(alpha) << _T(")]");
             (*pPara) << _T(" / {");
-            (*pPara) << Sub2(_T("(IM)W"), _T("g")) << _T("[(") << YR << _T(" + ") << ZO << _T(")") << THETA_CRACK << _T(" + ") << EI << _T(" + ");
+            (*pPara) << Sub2(_T("(IM)W"), _T("g")) << _T("[(") << YR << _T(" + (IM)") << ZO << _T(")") << THETA_CRACK << _T(" + ") << EI << _T(" + ");
             if (slope == stbTypes::Superelevation)
             {
                (*pPara) << _T("(") << Z_WIND << _T(" ") << strCFSign.c_str() << _T(" ") << Z_CF << _T(")");
@@ -2063,7 +2063,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                }
                *pPara << Z_WIND;
             }
-            *pPara << _T(" + ") << EI << _T(" + ") << M_OT << _T("/") << _T("((IM)") << Sub2(_T("W"), _T("g")) << _T(")") << _T(" + (") << ZO << _T(" + ") << YR;
+            *pPara << _T(" + ") << EI << _T(" + ") << M_OT << _T("/") << _T("((IM)") << Sub2(_T("W"), _T("g")) << _T(")") << _T(" + ((IM)") << ZO << _T(" + ") << YR;
             if (pResults->ThetaRollover[slope][impactDir[impactCase]][wind] < alpha)
             {
                *pPara << _T(" - ");
@@ -2090,7 +2090,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                }
                *pPara << Z_WIND;
             }
-            *pPara << _T(")") << symbol(alpha) << _T("]/(2.5") << ZO << _T(")}") << rptNewLine;
+            *pPara << _T(")") << symbol(alpha) << _T("]/(2.5(IM)") << ZO << _T(")}") << rptNewLine;
 
             if (pResults->ThetaRollover[slope][impactDir[impactCase]][wind] < alpha)
             {
@@ -2105,12 +2105,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             *pPara << _T("Assumed direction of tilt is ") << strTiltRotation[pResults->AssumedTiltDirection] << _T(" (top of girder tilt towards the ") << strTiltDirection[pResults->AssumedTiltDirection] << _T(").") << rptNewLine;
 
             *pPara << Sub2(_T("FS"), _T("f")) << _T(" = Factor of Safety Against Failure = [") << K_THETA << _T("(") << THETA_FAILURE << _T(" - ") << symbol(alpha) << _T(")]");
-            *pPara << _T("/{");
-            if (0 < nImpactCases)
-            {
-               *pPara << _T("(IM)");
-            }
-            *pPara << Sub2(_T("W"), _T("g")) << _T("[(") << ZO << THETA_FAILURE << _T(" + ");
+            *pPara << _T("/{(IM)") << Sub2(_T("W"), _T("g")) << _T("[((IM)") << ZO << THETA_FAILURE << _T(" + ");
             if (slope == stbTypes::Superelevation)
             {
                *pPara << _T("(");
@@ -2264,7 +2259,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                *pPara << FS_R << _T(" = [");
                *pPara << K_THETA << _T("(") << THETA_ROLLOVER << _T(" - ") << symbol(alpha) << _T(")]");
                *pPara << _T("/{");
-               *pPara << Sub2(_T("(IM)W"), _T("g")) << _T("[(") << ZO << THETA_ROLLOVER << _T(" + ");
+               *pPara << Sub2(_T("(IM)W"), _T("g")) << _T("[((IM)") << ZO << THETA_ROLLOVER << _T(" + ");
 
                if (slope == stbTypes::Superelevation)
                {
