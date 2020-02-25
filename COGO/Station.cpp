@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -96,6 +96,16 @@ STDMETHODIMP CStation::get_NormalizedValue(IAlignment* pAlignment,Float64* pValu
 {
    CHECK_RETVAL(pValue);
    *pValue = cogoUtil::GetNormalizedStationValue(pAlignment,this);
+   return S_OK;
+}
+
+STDMETHODIMP CStation::Offset(Float64 offset)
+{
+   if (!IsZero(offset))
+   {
+      m_Value += offset;
+      Fire_OnStationChanged(m_ZoneIdx, m_Value);
+   }
    return S_OK;
 }
 

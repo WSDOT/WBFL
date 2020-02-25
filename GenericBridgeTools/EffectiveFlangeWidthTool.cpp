@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -377,14 +377,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegmentEx(IGeneric
                CComPtr<IGirderSection> prev_section;
                CComPtr<ISegment> prev_segment;
 
-               // this protects against the adjacent girder being shorter because of skews
-               Float64 x = Xs;
-               //Float64 gdr_length;
-               //span->get_GirderLineLength(gdrIdx-1,&gdr_length);
-               //if ( gdr_length < location )
-               //   x = gdr_length;
-
-               hr = GetGirderSectionBySegment(bridge,leftSSMbrID,segIdx,x,sbLeft,&prev_section);
+               hr = GetGirderSectionBySegment(bridge,leftSSMbrID,segIdx,Xs,sbLeft,&prev_section);
                if ( FAILED(hr) )
                   return Error(IDS_E_GIRDERSECTION,IID_IEffectiveFlangeWidthTool,GBMT_E_GIRDERSECTION);
 
@@ -436,14 +429,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegmentEx(IGeneric
                CComPtr<IGirderSection> next_section;
                CComPtr<ISegment> next_segment;
 
-               // this protects against the adjacent girder being shorter because of skews
-               Float64 x = Xs;
-               //Float64 gdr_length;
-               //span->get_GirderLineLength(gdrIdx+1,&gdr_length);
-               //if ( gdr_length < location )
-               //   x = gdr_length;
-
-               hr = GetGirderSectionBySegment(bridge,rightSSMbrID,segIdx,x,sbLeft,&next_section);
+               hr = GetGirderSectionBySegment(bridge,rightSSMbrID,segIdx,Xs,sbLeft,&next_section);
                if ( FAILED(hr) )
                   return Error(IDS_E_GIRDERSECTION,IID_IEffectiveFlangeWidthTool,GBMT_E_GIRDERSECTION);
 

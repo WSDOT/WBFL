@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -194,6 +194,31 @@ STDMETHODIMP CPierCollection::FindPier(Float64 station,IBridgePier** ppPier)
 
    //prev_pier.CopyTo(ppPier);
    //return S_OK;
+}
+
+STDMETHODIMP CPierCollection::FindPierByID(PierIDType pierID, IBridgePier** ppPier)
+{
+   CHECK_RETOBJ(ppPier);
+
+   PierIndexType nPiers;
+   get_Count(&nPiers);
+
+   CComPtr<IBridgePier> pier;
+   for ( PierIndexType pierIdx = 0; pierIdx < nPiers; pierIdx++ )
+   {
+      pier.Release();
+      get_Item(pierIdx,&pier);
+
+      PierIDType id;
+      pier->get_ID(&id);
+      if (id == pierID)
+      {
+         pier.CopyTo(ppPier);
+         return S_OK;
+      }
+   }
+
+   return E_FAIL;
 }
 
 /////////////////////////////////////////////////////////////

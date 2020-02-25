@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -115,6 +115,8 @@ class STABILITYCLASS stbLiftingResults : public stbResults
 {
 public:
    stbLiftingResults();
+
+   stbTypes::GirderSide AssumedTiltDirection;
 
    bool bIsStable[3][2]; // if false, the girder is not stable for lifting... it will just roll over. 
                       // if the girder is not stable, the analysis results below are not valid

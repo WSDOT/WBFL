@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // BridgeGeometry
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -349,40 +349,55 @@ STDMETHODIMP CBridge::get_DeckBoundary(IDeckBoundary** ppDeckBoundary)
    return S_OK;
 }
 
-STDMETHODIMP CBridge::UpdateGeometry()
+STDMETHODIMP CBridge::UpdateGeometry(long flag)
 {
    ASSERTVALID;
 
-   ClearGeometry();
-
-   HRESULT hr = UpdateBridgeLine();
-   if ( FAILED(hr) )
+   HRESULT hr = S_OK;
+   
+   if (flag & GF_BRIDGELINE)
    {
-      return hr;
+      hr = UpdateBridgeLine();
+      if (FAILED(hr))
+      {
+         return hr;
+      }
    }
 
-   hr = UpdatePierGeometry();
-   if ( FAILED(hr) )
+   if (flag & GF_PIERS)
    {
-      return hr;
+      hr = UpdatePierGeometry();
+      if (FAILED(hr))
+      {
+         return hr;
+      }
    }
 
-   hr = UpdateGirderGeometry();
-   if ( FAILED(hr) )
+   if (flag & GF_GIRDERS)
    {
-      return hr;
+      hr = UpdateGirderGeometry();
+      if (FAILED(hr))
+      {
+         return hr;
+      }
    }
 
-   hr = UpdateDiaphragmGeometry();
-   if ( FAILED(hr) )
+   if (flag & GF_DIAPHRAGMS)
    {
-      return hr;
+      hr = UpdateDiaphragmGeometry();
+      if (FAILED(hr))
+      {
+         return hr;
+      }
    }
 
-   hr = UpdateDeckBoundaryGeometry();
-   if ( FAILED(hr) )
+   if (flag & GF_DECK)
    {
-      return hr;
+      hr = UpdateDeckBoundaryGeometry();
+      if (FAILED(hr))
+      {
+         return hr;
+      }
    }
 
    return S_OK;
@@ -390,19 +405,6 @@ STDMETHODIMP CBridge::UpdateGeometry()
 
 
 /////////////////////////////////////
-
-void CBridge::ClearGeometry()
-{
-   ClearPierGeometry();
-}
-
-void CBridge::ClearPierGeometry()
-{
-}
-
-void CBridge::ClearGirderGeometry()
-{
-}
 
 HRESULT CBridge::UpdateBridgeLine()
 {

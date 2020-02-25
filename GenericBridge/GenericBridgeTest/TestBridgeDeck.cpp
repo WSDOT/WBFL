@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -60,11 +60,6 @@ void CTestBridgeDeck::Test(IUnknown* pUnk)
    TRY_TEST(deck->get_Composite(nullptr),E_POINTER);
    TRY_TEST(deck->get_Composite(&bComposite),S_OK);
    TRY_TEST(bComposite,VARIANT_TRUE);
-
-   CComPtr<IMaterial> material;
-   TRY_TEST(deck->get_Material(nullptr),E_POINTER);
-   TRY_TEST(deck->get_Material(&material),S_OK);
-   TRY_TEST(material != nullptr,true);
 
    ///////////////////////////////////////
    // Test Error Info

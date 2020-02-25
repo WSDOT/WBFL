@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Load Combiner - Longitindal Bridge Analysis Model
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -196,13 +196,13 @@ class LoadCombinationEngine: protected LoadCombinationEngineBase
          ComboFactors& rcfactors = m_ComboFactors[i];
 
          // always use max loadmodifier since optimized live load never decreases optimized value
-         llFactor *= rcfactors.m_MaxLoadModifier;
+         Float64 factor = llFactor * rcfactors.m_MaxLoadModifier;
 
-         llresult  *= llFactor;
+         llresult  *= factor;
 
          if (m_CreateConfig)
          {
-            m_CResults->SumLLResult(i, llresult, llconfig, llFactor);
+            m_CResults->SumLLResult(i, llresult, llconfig, factor);
          }
          else
          {
@@ -341,14 +341,14 @@ class SectionLoadCombinationEngine: protected LoadCombinationEngineBase
          ComboFactors& rcfactors = m_ComboFactors[i];
 
          // always use max loadmodifier since optimized live load never decreases optimized value
-         llFactor *= rcfactors.m_MaxLoadModifier;
+         Float64 factor = llFactor * rcfactors.m_MaxLoadModifier;
 
-         left_llresult  *= llFactor;
-         right_llresult *= llFactor;
+         left_llresult  *= factor;
+         right_llresult *= factor;
 
          if (m_CreateConfig)
          {
-            m_CResults->SumLLResult(i, left_llresult, left_llconfig, right_llresult, right_llconfig, llFactor);
+            m_CResults->SumLLResult(i, left_llresult, left_llconfig, right_llresult, right_llconfig, factor);
          }
          else
          {

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -233,7 +233,7 @@ Float64 lrfdPsStrand::GetXferLength(const matPsStrand& strand,bool bEpoxyCoated)
    }
 }
 
-Float64 lrfdPsStrand::GetDevLengthFactor(Float64 mbrDepth,bool bDebonded)
+Float64 lrfdPsStrand::GetDevLengthFactor(Float64 mbrDepth,bool bDebonded, bool bUHPC)
 {
    Float64 k;
    Float64 d;
@@ -250,7 +250,12 @@ Float64 lrfdPsStrand::GetDevLengthFactor(Float64 mbrDepth,bool bDebonded)
    }
 
 
-   if ( bDebonded )
+   if (bUHPC)
+   {
+      // order is important here... if UHPC k = 0.3 regardless of debonding or otherwise
+      k = 0.3;
+   }
+   else if ( bDebonded )
    {
       k = 2.0;
    }
@@ -266,10 +271,10 @@ Float64 lrfdPsStrand::GetDevLengthFactor(Float64 mbrDepth,bool bDebonded)
    return k;
 }
 
-Float64 lrfdPsStrand::GetDevLength(const matPsStrand& strand,Float64 fps,Float64 fpe,Float64 mbrDepth,bool bDebonded)
+Float64 lrfdPsStrand::GetDevLength(const matPsStrand& strand,Float64 fps,Float64 fpe,Float64 mbrDepth,bool bDebonded, bool bUHPC)
 {
    Float64 ld;
-   Float64 k = GetDevLengthFactor(mbrDepth,bDebonded);
+   Float64 k = GetDevLengthFactor(mbrDepth,bDebonded,bUHPC);
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
       Float64 db  = ::ConvertFromSysUnits(strand.GetNominalDiameter(),unitMeasure::Millimeter);

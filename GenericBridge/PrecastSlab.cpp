@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -38,6 +38,7 @@ static char THIS_FILE[] = __FILE__;
 // CPrecastSlab
 HRESULT CPrecastSlab::FinalConstruct()
 {
+   m_CastingRegions.CoCreateInstance(CLSID_CastingRegions);
    return IBridgeDeckImpl::Init();
 }
 
@@ -59,6 +60,12 @@ STDMETHODIMP CPrecastSlab::InterfaceSupportsErrorInfo(REFIID riid)
 			return S_OK;
 	}
 	return S_FALSE;
+}
+
+
+void CPrecastSlab::OnBridge()
+{
+   m_CastingRegions->putref_Bridge(m_pBridge);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -109,6 +116,19 @@ STDMETHODIMP CPrecastSlab::get_DeckBoundary(IDeckBoundary** deckBoundary)
 
 ////////////////////////////////////////////////////////////////////////
 // IPrecastSlab implementation
+STDMETHODIMP CPrecastSlab::get_CastingRegions(ICastingRegions** ppRegions)
+{
+   CHECK_RETOBJ(ppRegions);
+   return m_CastingRegions.CopyTo(ppRegions);
+}
+
+STDMETHODIMP CPrecastSlab::putref_CastingRegions(ICastingRegions* pRegions)
+{
+   CHECK_IN(pRegions);
+   m_CastingRegions = pRegions;
+   return S_OK;
+}
+
 STDMETHODIMP CPrecastSlab::get_PanelDepth(Float64* depth)
 {
    CHECK_RETVAL(depth);
@@ -148,41 +168,82 @@ STDMETHODIMP CPrecastSlab::put_CastDepth(Float64 depth)
    return S_OK;
 }
 
-STDMETHODIMP CPrecastSlab::get_OverhangDepth(Float64* depth)
+
+STDMETHODIMP CPrecastSlab::get_OverhangDepth(DirectionType side, Float64* depth)
 {
    CHECK_RETVAL(depth);
-   *depth = m_OverhangDepth;
+   *depth = m_OverhangDepth[side];
    return S_OK;
 }
 
-STDMETHODIMP CPrecastSlab::put_OverhangDepth(Float64 depth)
+STDMETHODIMP CPrecastSlab::put_OverhangDepth(DirectionType side, Float64 depth)
 {
-   if ( depth < 0 )
+   if (depth < 0)
       return E_INVALIDARG;
 
-   if ( IsEqual(m_OverhangDepth,depth) )
-      return S_OK;
-
-   m_OverhangDepth = depth;
+   m_OverhangDepth[side] = depth;
    return S_OK;
 }
 
-STDMETHODIMP CPrecastSlab::get_OverhangTaper(DeckOverhangTaper* taper)
+STDMETHODIMP CPrecastSlab::get_OverhangTaper(DirectionType side, DeckOverhangTaper* taper)
 {
    CHECK_RETVAL(taper);
-   *taper = m_Taper;
+   *taper = m_Taper[side];
    return S_OK;
 }
 
-STDMETHODIMP CPrecastSlab::put_OverhangTaper(DeckOverhangTaper taper)
+STDMETHODIMP CPrecastSlab::put_OverhangTaper(DirectionType side, DeckOverhangTaper taper)
 {
-   if ( taper != dotNone && taper != dotTopTopFlange && taper != dotBottomTopFlange )
+   if (taper != dotNone && taper != dotTopTopFlange && taper != dotBottomTopFlange)
       return E_INVALIDARG;
 
-   if ( m_Taper == taper )
-      return S_OK;
+   m_Taper[side] = taper;
 
-   m_Taper = taper;
+   return S_OK;
+}
+
+STDMETHODIMP CPrecastSlab::GetOverhang(Float64* leftDepth, DeckOverhangTaper* leftTaper, Float64* rightDepth, DeckOverhangTaper* rightTaper)
+{
+   CHECK_RETVAL(leftDepth);
+   CHECK_RETVAL(leftTaper);
+   CHECK_RETVAL(rightDepth);
+   CHECK_RETVAL(rightTaper);
+
+   *leftDepth = m_OverhangDepth[qcbLeft];
+   *leftTaper = m_Taper[qcbLeft];
+   *rightDepth = m_OverhangDepth[qcbRight];
+   *rightTaper = m_Taper[qcbRight];
+
+   return S_OK;
+}
+
+STDMETHODIMP CPrecastSlab::SetOverhang(Float64 leftDepth, DeckOverhangTaper leftTaper, Float64 rightDepth, DeckOverhangTaper rightTaper)
+{
+   HRESULT hr;
+   hr = put_OverhangDepth(qcbLeft, leftDepth);
+   if (FAILED(hr))
+   {
+      return hr;
+   }
+
+   hr = put_OverhangTaper(qcbLeft, leftTaper);
+   if (FAILED(hr))
+   {
+      return hr;
+   }
+
+   hr = put_OverhangDepth(qcbRight, rightDepth);
+   if (FAILED(hr))
+   {
+      return hr;
+   }
+
+   hr = put_OverhangTaper(qcbRight, rightTaper);
+   if (FAILED(hr))
+   {
+      return hr;
+   }
+
    return S_OK;
 }
 
@@ -192,6 +253,9 @@ STDMETHODIMP CPrecastSlab::Load(IStructuredLoad2* load)
 {
    load->BeginUnit(CComBSTR("PrecastSlab"));
 
+   Float64 version;
+   load->get_Version(&version);
+
    CComVariant var;
 
    load->get_Property(CComBSTR("PanelDepth"),&var);
@@ -200,11 +264,32 @@ STDMETHODIMP CPrecastSlab::Load(IStructuredLoad2* load)
    load->get_Property(CComBSTR("CastDepth"),&var);
    m_CastDepth = var.dblVal;
 
-   load->get_Property(CComBSTR("OverhangDepth"),&var);
-   m_OverhangDepth = var.dblVal;
+   if (version < 2)
+   {
+      // removed in version 2
+      load->get_Property(CComBSTR("OverhangDepth"), &var);
+      m_OverhangDepth[qcbLeft] = var.dblVal;
+      m_OverhangDepth[qcbRight] = var.dblVal;
 
-   load->get_Property(CComBSTR("Taper"),&var);
-   m_Taper = (DeckOverhangTaper)var.lVal;
+      load->get_Property(CComBSTR("Taper"), &var);
+      m_Taper[qcbLeft] = (DeckOverhangTaper)var.lVal;
+      m_Taper[qcbRight] = (DeckOverhangTaper)var.lVal;
+   }
+   else
+   {
+      // added in version 2
+      load->get_Property(CComBSTR("LeftOverhangDepth"), &var);
+      m_OverhangDepth[qcbLeft] = var.dblVal;
+
+      load->get_Property(CComBSTR("LeftTaper"), &var);
+      m_Taper[qcbLeft] = (DeckOverhangTaper)var.lVal;
+
+      load->get_Property(CComBSTR("RightOverhangDepth"), &var);
+      m_OverhangDepth[qcbRight] = var.dblVal;
+
+      load->get_Property(CComBSTR("RightTaper"), &var);
+      m_Taper[qcbRight] = (DeckOverhangTaper)var.lVal;
+   }
 
    IBridgeDeckImpl<CPrecastSlab>::Load(load);
 
@@ -215,13 +300,19 @@ STDMETHODIMP CPrecastSlab::Load(IStructuredLoad2* load)
 
 STDMETHODIMP CPrecastSlab::Save(IStructuredSave2* save)
 {
-   save->BeginUnit(CComBSTR("PrecastSlab"),1.0);
+   save->BeginUnit(CComBSTR("PrecastSlab"),2.0);
 
    save->put_Property(CComBSTR("PanelDepth"),CComVariant(m_PanelDepth));
    save->put_Property(CComBSTR("CastDepth"),CComVariant(m_CastDepth));
-   save->put_Property(CComBSTR("OverhangDepth"),CComVariant(m_OverhangDepth));
-   save->put_Property(CComBSTR("Taper"),CComVariant(m_Taper));
-   
+   //save->put_Property(CComBSTR("OverhangDepth"),CComVariant(m_OverhangDepth)); // removed in version 2
+   //save->put_Property(CComBSTR("Taper"),CComVariant(m_Taper)); // removed in version 2
+
+   // Added in version 2
+   save->put_Property(CComBSTR("LeftOverhangDepth"), CComVariant(m_OverhangDepth[qcbLeft]));
+   save->put_Property(CComBSTR("LeftTaper"), CComVariant(m_Taper[qcbLeft]));
+   save->put_Property(CComBSTR("RightOverhangDepth"), CComVariant(m_OverhangDepth[qcbRight]));
+   save->put_Property(CComBSTR("RightTaper"), CComVariant(m_Taper[qcbRight]));
+
    IBridgeDeckImpl<CPrecastSlab>::Save(save);
 
    save->EndUnit();

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -115,6 +115,19 @@ STDMETHODIMP COverlaySlab::put_GrossDepth(Float64 depth)
       return S_OK;
 
    m_GrossDepth = depth;
+   return S_OK;
+}
+
+STDMETHODIMP COverlaySlab::get_Material(IMaterial** material)
+{
+   CHECK_RETOBJ(material);
+   return m_Material.CopyTo(material);
+}
+
+STDMETHODIMP COverlaySlab::putref_Material(IMaterial* material)
+{
+   CHECK_IN(material);
+   m_Material = material;
    return S_OK;
 }
 

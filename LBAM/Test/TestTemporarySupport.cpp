@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Test - Test driver for LBAM analysis library
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -126,7 +126,7 @@ void CTestTemporarySupport::Test()
    TRY_TEST( psm->get_StageRemoved(&stgn), S_OK );
    TRY_TEST( stgn, CComBSTR("stage 2") );
    stgn.Empty();
-   TRY_TEST( psm->put_StageRemoved(stgn), S_OK );
+   TRY_TEST( psm->put_StageRemoved(stgn), E_INVALIDARG);
 
    VARIANT_BOOL sym;
    TRY_TEST( psm->get_IsSymmetrical(&sym), S_OK );

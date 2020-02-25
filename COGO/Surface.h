@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -92,6 +92,7 @@ public:
    STDMETHOD(get_ID)(/*[out,retval]*/CogoObjectID* id) override;
    STDMETHOD(put_ID)(/*[in]*/CogoObjectID id) override;
    STDMETHOD(get_SurfaceTemplates)(ISurfaceTemplateCollection** ppTemplates) override;
+   STDMETHOD(get_SegmentCount)(IndexType* pntIdx) override;
    STDMETHOD(put_AlignmentPoint)(IndexType pntIdx) override;
    STDMETHOD(get_AlignmentPoint)(IndexType* pntIdx) override;
    STDMETHOD(put_ProfileGradePoint)(IndexType pntIdx) override;

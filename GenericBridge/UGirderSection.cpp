@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -113,6 +113,15 @@ STDMETHODIMP CUGirderSection::put_Beam(IUBeam* beam)
 
    CComQIPtr<IShape> shape(beam);
    CHECK_IN(shape);
+
+   // getting the bounding box and shape properties
+   // causes these to be computed and cached in beam
+   // when we clone, these will be cloned. that way
+   // they don't have to be computed later when needed.
+   CComPtr<IShapeProperties> shapeProps;
+   shape->get_ShapeProperties(&shapeProps);
+   CComPtr<IRect2d> box;
+   shape->get_BoundingBox(&box);
 
    CComPtr<IShape> clone;
    HRESULT hr = shape->Clone(&clone);
@@ -553,7 +562,7 @@ STDMETHODIMP CUGirderSection::Clone(IShape** pClone)
 
    clone->m_Rotation += m_Rotation;
 
-   section->put_Beam(m_Beam);
+   section->put_Beam(m_Beam); // beam is cloned when it is put in the section
 
    IndexType nShapes;
    m_CompositeShape->get_Count(&nShapes);

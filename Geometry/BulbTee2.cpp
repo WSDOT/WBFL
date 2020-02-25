@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -1032,9 +1032,23 @@ STDMETHODIMP CBulbTee2::FurthestDistance(ILine2d* line,Float64 *pVal)
 
 STDMETHODIMP CBulbTee2::Offset(Float64 dx,Float64 dy)
 {
-   // no need to call MakeDirty since our hookpoint will call us back
+   if (m_Dirty)
+   {
+      // this is going to fire an event that sets m_Dirty to true... since it is already true
+      // no need to worry about it
+      m_pHookPoint->Offset(dx, dy);
+   }
+   else
+   {
+      // We are just offsetting... detach from m_pHookPoint events so we don't invalidate
+      // everything about this shape...
+      CrUnadvise(m_pHookPoint, this, IID_IPoint2dEvents, m_HookPointCookie);
+      m_pHookPoint->Offset(dx, dy); // offset the hook point
+      CrAdvise(m_pHookPoint, this, IID_IPoint2dEvents, &m_HookPointCookie);
 
-   m_pHookPoint->Offset(dx,dy);
+      CComQIPtr<IXYPosition> pos(m_pShape);
+      pos->Offset(dx, dy); // offset the shape
+   }
    return S_OK;
 }
 
@@ -1043,8 +1057,7 @@ STDMETHODIMP CBulbTee2::OffsetEx(ISize2d* pSize)
    CHECK_IN(pSize);
 
    Float64 dx,dy;
-   pSize->get_Dx(&dx);
-   pSize->get_Dy(&dy);
+   pSize->Dimensions(&dx, &dy);
 
    return Offset(dx,dy);
 }

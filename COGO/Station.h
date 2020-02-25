@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -83,6 +83,7 @@ public:
 	STDMETHOD(get_Value)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(put_Value)(/*[in]*/ Float64 newVal) override;
    STDMETHOD(get_NormalizedValue)(/*[in]*/IAlignment* pAlignment,/*[out,retval]*/Float64* pValue) override;
+   STDMETHOD(Offset)(/*[in]*/Float64 offset) override;
    STDMETHOD(GetStation)(ZoneIndexType* pZoneIdx,Float64* pStation) override;
    STDMETHOD(SetStation)(ZoneIndexType zoneIdx,Float64 station) override;
    STDMETHOD(FromVariant)(/*[in]*/ VARIANT varStation) override;

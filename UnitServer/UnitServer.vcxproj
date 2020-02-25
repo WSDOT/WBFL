@@ -389,10 +389,8 @@
       <OutputFile>.\Debug/UnitServer.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Message>
-      </Message>
-      <Command>
-      </Command>
+      <Message>Copying Apache Files</Message>
+      <Command>xcopy /y/d $(WBFLDIR)\Apache\XERCESCPKG-31-X64-VC100\bin\xerces-c_3_1D.dll $(WBFLDIR)\RegFreeCOM\$(PlatformName)\$(ConfigurationName)</Command>
     </PostBuildEvent>
     <Manifest>
       <OutputManifestFile>$(TargetPath).manifest</OutputManifestFile>
@@ -548,10 +546,8 @@
       <OutputFile>.\Release/UnitServer.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Message>
-      </Message>
-      <Command>
-      </Command>
+      <Message>Copying Apache Files</Message>
+      <Command>xcopy /y/d $(WBFLDIR)\Apache\XERCESCPKG-31-X64-VC100\bin\xerces-c_3_1.dll $(WBFLDIR)\RegFreeCOM\$(PlatformName)\$(ConfigurationName)</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -42,7 +42,8 @@ m_CreepK1(1.0),
 m_CreepK2(1.0),
 m_ShrinkageK1(1.0),
 m_ShrinkageK2(1.0),
-m_Lambda(1.0)
+m_Lambda(1.0),
+m_bUse90DayConcrete(false)
 {
 }
 
@@ -58,7 +59,9 @@ m_ShrinkageK1(rOther.m_ShrinkageK1),
 m_ShrinkageK2(rOther.m_ShrinkageK2),
 m_InitialConcrete(rOther.m_InitialConcrete),
 m_FinalConcrete(rOther.m_FinalConcrete),
-m_Lambda(rOther.m_Lambda)
+m_Lambda(rOther.m_Lambda),
+m_bUse90DayConcrete(rOther.m_bUse90DayConcrete),
+m_90DayConcrete(rOther.m_90DayConcrete)
 {
 }
 
@@ -70,6 +73,7 @@ void lrfdLRFDConcrete::SetConcreteModels(const matConcreteEx& initial,const matC
 {
    m_InitialConcrete = initial;
    m_FinalConcrete   = final;
+   m_90DayConcrete = final;
 
    ATLASSERT(IsEqual(m_InitialConcrete.GetLambda(),m_FinalConcrete.GetLambda()));
 
@@ -161,6 +165,22 @@ Float64 lrfdLRFDConcrete::GetStepTime() const
    return m_StepTime;
 }
 
+void lrfdLRFDConcrete::Use90DayStrength(const matConcreteEx& concrete90)
+{
+   m_bUse90DayConcrete = true;
+   m_90DayConcrete = concrete90;
+}
+
+bool lrfdLRFDConcrete::Use90DayStrength() const
+{
+   return m_bUse90DayConcrete;
+}
+
+const matConcreteEx& lrfdLRFDConcrete::Get90DayConcreteModel() const
+{
+   return m_90DayConcrete;
+}
+
 Float64 lrfdLRFDConcrete::GetFc(Float64 t) const
 {
    if ( t < m_StartTime )
@@ -174,7 +194,14 @@ Float64 lrfdLRFDConcrete::GetFc(Float64 t) const
    }
    else
    {
-      return m_FinalConcrete.GetFc();
+      if (Use90DayConcrete(t))
+      {
+         return m_90DayConcrete.GetFc();
+      }
+      else
+      {
+         return m_FinalConcrete.GetFc();
+      }
    }
 }
 
@@ -192,7 +219,14 @@ Float64 lrfdLRFDConcrete::GetEc(Float64 t) const
    }
    else
    {
-      Ec = m_FinalConcrete.GetE();
+      if (Use90DayConcrete(t))
+      {
+         Ec = m_90DayConcrete.GetE();
+      }
+      else
+      {
+         Ec = m_FinalConcrete.GetE();
+      }
    }
 
    if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
@@ -216,7 +250,14 @@ Float64 lrfdLRFDConcrete::GetShearFr(Float64 t) const
    }
    else
    {
-      return m_FinalConcrete.GetShearFr();
+      if (Use90DayConcrete(t))
+      {
+         return m_90DayConcrete.GetShearFr();
+      }
+      else
+      {
+         return m_FinalConcrete.GetShearFr();
+      }
    }
 }
 
@@ -233,7 +274,14 @@ Float64 lrfdLRFDConcrete::GetFlexureFr(Float64 t) const
    }
    else
    {
-      return m_FinalConcrete.GetFlexureFr();
+      if (Use90DayConcrete(t))
+      {
+         return m_90DayConcrete.GetFlexureFr();
+      }
+      else
+      {
+         return m_FinalConcrete.GetFlexureFr();
+      }
    }
 }
 
@@ -581,4 +629,12 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficie
    pDetails->Ct = Y;
 
    return pDetails;
+}
+
+bool lrfdLRFDConcrete::Use90DayConcrete(Float64 t) const
+{
+   // if 90 concrete is enabled
+   // and we have normal strength concrete (LRFD only gives 115%f'c for normal weight and is silent on LWC), and age is more than 90 days
+   Float64 age = GetAge(t);
+   return (m_bUse90DayConcrete && m_Type == matConcreteBase::Normal && 90 < age) ? true : false;
 }

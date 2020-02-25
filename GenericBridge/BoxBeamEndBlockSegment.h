@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -32,5 +32,43 @@
 #include "EndBlockSegmentImpl.h"
 
 // Template takes care of all
+class CBoxBeamVoidSurfaceAreaCalculator;
+typedef TEndBlockSegmentImpl<IBoxBeamEndBlockSegment, IBoxBeamSection, IBoxBeam, &CLSID_BoxBeamEndBlockSegment, IDR_BOXBEAMENDBLOCKSEGMENT, VoidedEndBlock<IBoxBeam>, CBoxBeamVoidSurfaceAreaCalculator> CBoxBeamEndBlockSegment;
 
-typedef TEndBlockSegmentImpl<IBoxBeamEndBlockSegment, IBoxBeamSection, IBoxBeam, &CLSID_BoxBeamEndBlockSegment, IDR_BOXBEAMENDBLOCKSEGMENT, VoidedEndBlock<IBoxBeam>> CBoxBeamEndBlockSegment;
+class CBoxBeamVoidSurfaceAreaCalculator
+{
+public:
+   CBoxBeamVoidSurfaceAreaCalculator(CBoxBeamEndBlockSegment* pSegment) : m_pSegment(pSegment)
+   {
+   }
+
+   HRESULT CalculateVoidSurfaceArea(Float64* pSurfaceArea)
+   {
+      CHECK_RETVAL(pSurfaceArea);
+      if (m_pSegment->m_Shapes.size() == 0)
+      {
+         *pSurfaceArea = 0;
+      }
+      else
+      {
+         Float64 L;
+         m_pSegment->get_Length(&L);
+
+         CComQIPtr<IBoxBeamSection> section(m_pSegment->m_Shapes.front().Shape);
+         CComPtr<IBoxBeam> beam;
+         section->get_Beam(&beam);
+         Float64 W3, H2, F1, F2;
+         beam->get_W3(&W3);
+         beam->get_H2(&H2);
+         beam->get_F1(&F1);
+         beam->get_F2(&F2);
+
+         *pSurfaceArea = L*(2 * (H2 - F1 - F2) + 2 * (W3 - F1 - F2) + 2 * sqrt(2 * F1*F1) + 2 * sqrt(2 * F2*F2));
+      }
+      return S_OK;
+   }
+   
+protected:
+   CBoxBeamEndBlockSegment* m_pSegment;
+};
+

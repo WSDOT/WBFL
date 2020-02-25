@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -241,6 +241,13 @@ void CSimpleDrawPointStrategyImpl::DrawMe(const CRect& rect,CDC* pDC)
 
    case ptSquare:
       pDC->Rectangle(r);
+      break;
+
+   case ptCrossHair:
+      pDC->MoveTo(rect.left, rect.CenterPoint().y);
+      pDC->LineTo(rect.right, rect.CenterPoint().y);
+      pDC->MoveTo(rect.CenterPoint().x, rect.bottom );
+      pDC->LineTo(rect.CenterPoint().x, rect.top );
       break;
 
    default:

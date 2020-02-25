@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -43,7 +43,9 @@ gbtAlternativeTensileStressRequirements::gbtAlternativeTensileStressRequirements
    fc = 0;
    bHasFct = false;
    Fct = 0;
-   density = 0;;
+   density = 0;
+   bAdjustForDevelopmentLength = true;
+   Ytg = 0;
 
    Yna = 0;
    NAslope = 0;
@@ -64,6 +66,9 @@ gbtAlternativeTensileStressRequirements::gbtAlternativeTensileStressRequirements
    bHasFct = other.bHasFct;
    Fct = other.Fct;
    density = other.density;
+
+   bAdjustForDevelopmentLength = other.bAdjustForDevelopmentLength;
+   Ytg = other.Ytg;
 
    shape = other.shape;
    rebarSection = other.rebarSection;
@@ -92,6 +97,9 @@ void gbtAlternativeTensileStressRequirements::operator=(const gbtAlternativeTens
    bHasFct = other.bHasFct;
    Fct = other.Fct;
    density = other.density;
+
+   bAdjustForDevelopmentLength = other.bAdjustForDevelopmentLength;
+   Ytg = other.Ytg;
 
    shape = other.shape;
    rebarSection = other.rebarSection;
@@ -150,12 +158,6 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
       stressLoc = slOther;
    }
 
-   CComQIPtr<IXYPosition> position(pRequirements->shape);
-   CComPtr<IPoint2d> pntTC;
-   position->get_LocatorPoint(lpTopCenter, &pntTC);
-   Float64 Xtc, Ytc;
-   pntTC->Location(&Xtc, &Ytc);
-
    // use a 3d plane to determine the neutral axis
    CComPtr<IPlane3d> stressPlane;
    stressPlane.CoCreateInstance(CLSID_Plane3d);
@@ -188,8 +190,8 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
       // neutral asxis line in y=mx+b form
       // y1 = mx1 + b... b = y1 - mx1
       Float64 b = y1 - (pRequirements->NAslope)*x1;
-      pRequirements->Yna = (pRequirements->NAslope)*Xtc + b; // this is Y at vertical line passing through center of bounding box in CG coordinates
-      pRequirements->Yna -= Ytc; // convert to girder section coordinates (now measured from 0,0 at top center of bounding box)
+      pRequirements->Yna = b; // this is Y at vertical line passing through center of bounding box in CG coordinates
+      pRequirements->Yna -= pRequirements->Ytg; // convert to girder section coordinates (now measured from 0,0 at top center of bounding box)
    }
                               
                               // Compute area on concrete in tension and total tension
@@ -308,19 +310,22 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
          rebar->get_Name(&name);
          matRebar::Size size = lrfdRebarPool::GetBarSize(OLE2CT(name));
 
-         // Adjust bar area for development
-         REBARDEVLENGTHDETAILS devLengthDetails = lrfdRebar::GetRebarDevelopmentLengthDetails(size, Ab, db, pRequirements->fy, pRequirements->concreteType, pRequirements->fc, pRequirements->bHasFct, pRequirements->Fct, pRequirements->density);
+         Float64 dev_length_factor = 1.0;
+         if (pRequirements->bAdjustForDevelopmentLength)
+         {
+            // Adjust bar area for development
+            REBARDEVLENGTHDETAILS devLengthDetails = lrfdRebar::GetRebarDevelopmentLengthDetails(size, Ab, db, pRequirements->fy, pRequirements->concreteType, pRequirements->fc, pRequirements->bHasFct, pRequirements->Fct, pRequirements->density);
 
-         // Get distances from section cut to ends of bar
-         Float64 start, end;
-         rebarSectionItem->get_LeftExtension(&start);
-         rebarSectionItem->get_RightExtension(&end);
+            // Get distances from section cut to ends of bar
+            Float64 start, end;
+            rebarSectionItem->get_LeftExtension(&start);
+            rebarSectionItem->get_RightExtension(&end);
 
-         Float64 dev_length_factor;
-         Float64 cut_length = Min(start, end);
-         Float64 fra = cut_length / devLengthDetails.ldb;
-         fra = Min(fra, 1.0);
-         dev_length_factor = fra;
+            Float64 cut_length = Min(start, end);
+            Float64 fra = cut_length / devLengthDetails.ldb;
+            fra = Min(fra, 1.0);
+            dev_length_factor = fra;
+         }
 
          Ab *= dev_length_factor;
 
@@ -337,8 +342,7 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
             Float64 x, y;
             location->Location(&x, &y); // in girder section coordinates (0,0 at top center)
                                         // put the bar into centroid coordinates
-            x += Xtc;
-            y += Ytc;
+            y += pRequirements->Ytg;
 
             Float64 z;
             stressPlane->GetZ(x, y, &z);

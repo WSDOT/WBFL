@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -151,35 +151,12 @@ STDMETHODIMP CNegativeMomentBridgeDeckRebarLayoutItem::put_PierID(PierIDType pie
    CComPtr<IPierCollection> piers;
    m_pBridge->get_Piers(&piers);
 
-   CComPtr<IBridgePier> firstPier;
-   piers->get_Item(0,&firstPier);
-
    m_PierID = pierID;
-   IndexType nPiers;
-   piers->get_Count(&nPiers);
-   for ( PierIndexType pierIdx = 0; pierIdx < nPiers; pierIdx++ )
-   {
-      m_Pier.Release();
-      piers->get_Item(pierIdx,&m_Pier);
+   m_Pier.Release();
+   HRESULT hr = piers->FindPierByID(pierID, &m_Pier);
+   ATLASSERT(SUCCEEDED(hr));
 
-      PierIDType id;
-      m_Pier->get_ID(&id);
-      if ( id == pierID )
-      {
-         break;
-      }
-   }
-
-
-   CComPtr<IStation> firstStation, pierStation;
-   firstPier->get_Station(&firstStation);
-   m_Pier->get_Station(&pierStation);
-
-   CComPtr<IAlignment> alignment;
-   m_pBridge->get_Alignment(&alignment);
-
-   alignment->DistanceBetweenStations(CComVariant(firstStation),CComVariant(pierStation),&m_PierLocation);
-   ATLASSERT(0 <= m_PierLocation);
+   m_Pier->get_Location(&m_PierLocation);
 
    return S_OK;
 }

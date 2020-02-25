@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -32,5 +32,24 @@
 #include "EndBlockSegmentImpl.h"
 
 // Template takes care of all
+class CUGirderVoidSurfaceAreaCalculator;
+typedef TEndBlockSegmentImpl<IUGirderSection2EndBlockSegment, IUGirderSection2, IUBeam2, &CLSID_UGirderSection2EndBlockSegment, IDR_UGIRDERSECTION2ENDBLOCKSEGMENT, OutlineEndBlock<IUBeam2>, CUGirderVoidSurfaceAreaCalculator> CUGirderSection2EndBlockSegment;
 
-typedef TEndBlockSegmentImpl<IUGirderSection2EndBlockSegment, IUGirderSection2, IUBeam2, &CLSID_UGirderSection2EndBlockSegment, IDR_UGIRDERSECTION2ENDBLOCKSEGMENT, OutlineEndBlock<IUBeam2>> CUGirderSection2EndBlockSegment;
+class CUGirderVoidSurfaceAreaCalculator
+{
+public:
+   CUGirderVoidSurfaceAreaCalculator(CUGirderSection2EndBlockSegment* pSegment) : m_pSegment(pSegment)
+   {
+   }
+
+   HRESULT CalculateVoidSurfaceArea(Float64* pSurfaceArea)
+   {
+      CHECK_RETVAL(pSurfaceArea);
+      *pSurfaceArea = 0;
+      return S_OK;
+   }
+
+protected:
+   CUGirderSection2EndBlockSegment* m_pSegment;
+};
+

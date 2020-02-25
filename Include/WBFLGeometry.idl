@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -120,6 +120,66 @@ library WBFLGeometry
  	   tboLeft,
       tboRight
    } TrafficBarrierOrientation;
+
+   typedef
+   [
+      public,
+      uuid(FDC9A761-CA46-4364-87DE-E0A90A750A14),
+      helpstring("enum BeamShapeType")
+   ]
+   enum
+   {
+      AASHTO_TypeI,
+      AASHTO_TypeII,
+      AASHTO_TypeIII,
+      AASHTO_TypeIV,
+      AASHTO_TypeV,
+      AASHTO_TypeVI,
+      AASHTO_BT54,
+      AASHTO_BT63,
+      AASHTO_BT72,
+      WSDOT_W42G,
+      WSDOT_W50G,
+      WSDOT_W58G,
+      WSDOT_W74G,
+      WSDOT_WF36G,
+      WSDOT_WF42G,
+      WSDOT_WF50G,
+      WSDOT_WF58G,
+      WSDOT_WF66G,
+      WSDOT_WF74G,
+      WSDOT_WF83G,
+      WSDOT_WF95G,
+      WSDOT_WF100G,
+      TxDOT_Tx28,
+      TxDOT_Tx34,
+      TxDOT_Tx40,
+      TxDOT_Tx46,
+      TxDOT_Tx54,
+      TxDOT_Tx62,
+      TxDOT_Tx70,
+
+      WSDOT_U54G4,
+      WSDOT_U54G5,
+      WSDOT_U54G6,
+      WSDOT_U66G4,
+      WSDOT_U66G5,
+      WSDOT_U66G6,
+      WSDOT_U78G4,
+      WSDOT_U78G5,
+      WSDOT_U78G6,
+      WSDOT_UF60G4,
+      WSDOT_UF60G5,
+      WSDOT_UF60G6,
+      WSDOT_UF72G4,
+      WSDOT_UF72G5,
+      WSDOT_UF72G6,
+      WSDOT_UF84G4,
+      WSDOT_UF84G5,
+      WSDOT_UF84G6,
+      TxDOT_U40,
+      TxDOT_U54,
+   } BeamShapeType;
 
    // FORWARD DECLARATIONS
    interface ISize2d;
@@ -3576,6 +3636,19 @@ library WBFLGeometry
    };
 
 
+   [
+      object,
+      uuid(7C2DDC60-C428-4926-81CE-5DAAB52FBDD0),
+      oleautomation,
+      helpstring("IBeamShapeFactory Interface"),
+      pointer_default(unique)
+   ]
+   interface IBeamShapeFactory : IUnknown
+   {
+      [helpstring("method CreateShape")] HRESULT CreateShape([in]BeamShapeType type, [out]IShape** ppShape);
+   };
+
+
 	[
 		uuid(B0D56FA0-C8D6-11D2-8CDF-C55C1CA84A34),
       helpcontext(IDH_IPoint2d),
@@ -4093,5 +4166,14 @@ library WBFLGeometry
 		interface IStructuredStorage2;
 		// interface IPersist;
 	};
+
+   [
+      uuid(4B272221-CF8C-40C6-9281-12C8277B668A),
+      helpstring("BeamShapeFactory")
+   ]
+   coclass BeamShapeFactory
+   {
+      [default] interface IBeamShapeFactory;
+   };
 
 };

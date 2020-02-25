@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -187,7 +187,7 @@ public:
    static Float64 ComputeConcreteDensityModificationFactor(matConcrete::Type type,Float64 density,bool bHasFct,Float64 fct,Float64 fc);
 
    static std::_tstring GetTypeName(matConcrete::Type type,bool bFull);
-   static matConcrete::Type GetTypeFromName(LPCTSTR strName);
+   static matConcrete::Type GetTypeFromTypeName(LPCTSTR strName);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -430,7 +430,7 @@ bool stbStabilityProblemImp::operator==(const stbStabilityProblemImp& other) con
    if ( !IsEqual(m_Lg,other.m_Lg) )
       return false;
 
-   if ( m_vFpe != other.m_vFpe )
+   if (m_vFpe != other.m_vFpe)
       return false;
 
    if ( !IsEqual(m_Camber,other.m_Camber) )
@@ -483,10 +483,37 @@ bool stbStabilityProblemImp::operator!=(const stbStabilityProblemImp& other) con
    return !(*this == other);
 }
 
-IndexType stbStabilityProblemImp::GetFpeCount() const
+IndexType stbStabilityProblemImp::FindFpe(LPCTSTR lpszName) const
 {
-   // if effective prestress is not defined, pretend like we have a single value
-   return Max((int)m_vFpe.size(),(int)1);
+   std::_tstring strName(lpszName);
+   IndexType index = 0;
+   auto iter  = std::begin(m_vFpe);
+   const auto end = std::end(m_vFpe);
+   for (; iter != end; iter++, index++)
+   {
+      if (iter->first == strName)
+      {
+         return index;
+      }
+   }
+   return INVALID_INDEX;
+}
+
+std::vector<LPCTSTR> stbStabilityProblemImp::GetPrestressNames() const
+{
+   std::vector<LPCTSTR> vNames;
+   vNames.reserve(m_vFpe.size());
+   std::transform(std::begin(m_vFpe), std::end(m_vFpe), std::back_inserter(vNames), [](const auto& item) {return item.first.c_str(); });
+   return vNames;
+}
+
+IndexType stbStabilityProblemImp::GetFpeCount(LPCTSTR strName) const
+{
+   IndexType idx = FindFpe(strName);
+   if (idx == INVALID_INDEX)
+      return 0;
+
+   return m_vFpe[idx].second.size();
 }
 
 void stbStabilityProblemImp::ClearFpe()
@@ -494,87 +521,83 @@ void stbStabilityProblemImp::ClearFpe()
    m_vFpe.clear();
 }
 
-void stbStabilityProblemImp::AddFpe(Float64 X,Float64 FpeStraight,Float64 XpsStraight,Float64 YpsStraight,Float64 FpeHarped,Float64 XpsHarped,Float64 YpsHarped,Float64 FpeTemp,Float64 XpsTemp,Float64 YpsTemp)
+void stbStabilityProblemImp::AddFpe(LPCTSTR strName,Float64 X,Float64 Fpe,Float64 Xps,Float64 Yps)
 {
    stbFpe fpe;
    fpe.X = X;
-   fpe.fpeStraight = FpeStraight;
-   fpe.XpsStraight = XpsStraight;
-   fpe.YpsStraight = YpsStraight;
+   fpe.fpe = Fpe;
+   fpe.Xps = Xps;
+   fpe.Yps = Yps;
 
-   fpe.fpeHarped = FpeHarped;
-   fpe.XpsHarped = XpsHarped;
-   fpe.YpsHarped = YpsHarped;
+   IndexType idx = FindFpe(strName);
+   if (idx == INVALID_INDEX)
+   {
+      std::set<stbFpe> sFpe;
+      m_vFpe.push_back(std::make_pair(strName, sFpe));
+      idx = (IndexType)m_vFpe.size() - 1;
+   }
 
-   fpe.fpeTemporary = FpeTemp;
-   fpe.XpsTemporary = XpsTemp;
-   fpe.YpsTemporary = YpsTemp;
-
-   m_vFpe.insert(fpe);
+   m_vFpe[idx].second.insert(fpe);
 }
 
-void stbStabilityProblemImp::SetFpe(IndexType fpeIdx,Float64 X,Float64 FpeStraight,Float64 XpsStraight,Float64 YpsStraight,Float64 FpeHarped,Float64 XpsHarped,Float64 YpsHarped,Float64 FpeTemp,Float64 XpsTemp,Float64 YpsTemp)
+bool stbStabilityProblemImp::SetFpe(LPCTSTR strName,IndexType fpeIdx,Float64 X,Float64 Fpe,Float64 Xps,Float64 Yps)
 {
-   ATLASSERT(fpeIdx < m_vFpe.size());
+   IndexType idx = FindFpe(strName);
+   if (idx == INVALID_INDEX)
+   {
+      // strName is not in the container
+      ATLASSERT(false);
+      return false;
+   }
 
-   std::set<stbFpe>::iterator iter(m_vFpe.begin());
+   ATLASSERT(fpeIdx < m_vFpe[idx].second.size());
+
+   auto iter(m_vFpe[idx].second.begin());
    for ( IndexType i = 0; i < fpeIdx; i++)
    {
       iter++;
    }
+
+   // set values can't be modified because it could change the sort order... however
+   // we are only sorting on one element of stbFpe and it isn't being changed here
+   // cast away const so we can modify the relavent paramenters of fpe
    stbFpe& fpe(const_cast<stbFpe&>(*iter));
 
-   fpe.fpeStraight = FpeStraight;
-   fpe.XpsStraight = XpsStraight;
-   fpe.YpsStraight = YpsStraight;
+   fpe.fpe = Fpe;
+   fpe.Xps = Xps;
+   fpe.Yps = Yps;
 
-   fpe.fpeHarped = FpeHarped;
-   fpe.XpsHarped = XpsHarped;
-   fpe.YpsHarped = YpsHarped;
-
-   fpe.fpeTemporary = FpeTemp;
-   fpe.XpsTemporary = XpsTemp;
-   fpe.YpsTemporary = YpsTemp;
+   return true;
 }
 
-void stbStabilityProblemImp::GetFpe(IndexType fpeIdx,Float64* pX,Float64* pFpeStraight,Float64* pXpsStraight,Float64* pYpsStraight,Float64* pFpeHarped,Float64* pXpsHarped,Float64* pYpsHarped,Float64* pFpeTemp,Float64* pXpsTemp,Float64* pYpsTemp) const
+bool stbStabilityProblemImp::GetFpe(LPCTSTR strName,IndexType fpeIdx,Float64* pX,Float64* pFpe,Float64* pXps,Float64* pYps) const
 {
-   if ( m_vFpe.size() == 0 )
+   IndexType idx = FindFpe(strName);
+   if (idx == INVALID_INDEX)
    {
+      // strName is not in the container
+      ATLASSERT(false);
       *pX = 0;
-      *pFpeStraight = 0;
-      *pXpsStraight = 0;
-      *pYpsStraight = 0;
-
-      *pFpeHarped = 0;
-      *pXpsHarped = 0;
-      *pYpsHarped = 0;
-
-      *pFpeTemp = 0;
-      *pXpsTemp = 0;
-      *pYpsTemp = 0;
+      *pFpe = 0;
+      *pXps = 0;
+      *pYps = 0;
+      return false;
    }
-   else
+
+   ATLASSERT(fpeIdx < m_vFpe[idx].second.size());
+
+   auto iter(m_vFpe[idx].second.begin());
+   for (IndexType i = 0; i < fpeIdx; i++)
    {
-      std::set<stbFpe>::const_iterator iter(m_vFpe.begin());
-      for ( IndexType i = 0; i < fpeIdx; i++)
-      {
-         iter++;
-      }
-
-      *pX = iter->X;
-      *pFpeStraight = iter->fpeStraight;
-      *pXpsStraight = iter->XpsStraight;
-      *pYpsStraight = iter->YpsStraight;
-
-      *pFpeHarped = iter->fpeHarped;
-      *pXpsHarped = iter->XpsHarped;
-      *pYpsHarped = iter->YpsHarped;
-
-      *pFpeTemp = iter->fpeTemporary;
-      *pXpsTemp = iter->XpsTemporary;
-      *pYpsTemp = iter->YpsTemporary;
+      iter++;
    }
+
+   *pX = iter->X;
+   *pFpe = iter->fpe;
+   *pXps = iter->Xps;
+   *pYps = iter->Yps;
+
+   return true;
 }
 
 bool stbStabilityProblemImp::AdjustForXferLength() const
@@ -690,14 +713,17 @@ void stbStabilityProblemImp::SetImpact(Float64 up,Float64 down)
    m_ImpactDown = down;
 }
 
-void stbStabilityProblemImp::GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const
+bool stbStabilityProblemImp::GetFpe(LPCTSTR strName,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const
 {
-   if ( m_vFpe.size() == 0 )
+   IndexType idx = FindFpe(strName);
+   if (idx == INVALID_INDEX)
    {
+      // strName is not in the container
+      ATLASSERT(false);
       *pFpe = 0;
       *pXps = 0;
       *pYps = 0;
-      return;
+      return false;
    }
 
    Float64 Xfer = 1.0;
@@ -715,101 +741,52 @@ void stbStabilityProblemImp::GetFpe(stbTypes::StrandType strandType,Float64 X,Fl
    }
 
    // before the start
-   if ( ::IsLE(X,m_vFpe.begin()->X) )
+   auto first = m_vFpe[idx].second.begin();
+   if ( ::IsLE(X,first->X) )
    {
-      if ( strandType == stbTypes::Straight )
-      {
-         *pFpe = m_vFpe.begin()->fpeStraight;
-         *pXps = m_vFpe.begin()->XpsStraight;
-         *pYps = m_vFpe.begin()->YpsStraight;
-      }
-      else if ( strandType == stbTypes::Harped )
-      {
-         *pFpe = m_vFpe.begin()->fpeHarped;
-         *pXps = m_vFpe.begin()->XpsHarped;
-         *pYps = m_vFpe.begin()->YpsHarped;
-      }
-      else
-      {
-         *pFpe = m_vFpe.begin()->fpeTemporary;
-         *pXps = m_vFpe.begin()->XpsTemporary;
-         *pYps = m_vFpe.begin()->YpsTemporary;
-      }
+      *pFpe = first->fpe;
+      *pXps = first->Xps;
+      *pYps = first->Yps;
 
+      // adjust for prestress transfer
       *pFpe *= Xfer;
 
-      return;
+      return true;
    }
 
-   if ( ::IsLE(m_vFpe.rbegin()->X,X) )
+   auto last = m_vFpe[idx].second.rbegin();
+   if ( ::IsLE(last->X,X) )
    {
       // after end
-      if ( strandType == stbTypes::Straight )
-      {
-         *pFpe = m_vFpe.rbegin()->fpeStraight;
-         *pXps = m_vFpe.rbegin()->XpsStraight;
-         *pYps = m_vFpe.rbegin()->YpsStraight;
-      }
-      else if ( strandType == stbTypes::Harped )
-      {
-         *pFpe = m_vFpe.rbegin()->fpeHarped;
-         *pXps = m_vFpe.rbegin()->XpsHarped;
-         *pYps = m_vFpe.rbegin()->YpsHarped;
-      }
-      else
-      {
-         *pFpe = m_vFpe.rbegin()->fpeTemporary;
-         *pXps = m_vFpe.rbegin()->XpsTemporary;
-         *pYps = m_vFpe.rbegin()->YpsTemporary;
-      }
+      *pFpe = last->fpe;
+      *pXps = last->Xps;
+      *pYps = last->Yps;
 
+      // adjust for prestress transfer
       *pFpe *= Xfer;
 
-      return;
+      return true;
    }
 
    // somewhere in the middle
-   ATLASSERT(2 <= m_vFpe.size());
-   std::set<stbFpe>::const_iterator iter1(m_vFpe.begin());
+   ATLASSERT(2 <= m_vFpe[idx].second.size());
+   std::set<stbFpe>::const_iterator iter1(m_vFpe[idx].second.begin());
    std::set<stbFpe>::const_iterator iter2(iter1);
    iter2++;
-   std::set<stbFpe>::const_iterator end(m_vFpe.end());
+   std::set<stbFpe>::const_iterator end(m_vFpe[idx].second.end());
    for ( ; iter2 != end; iter1++, iter2++ )
    {
       Float64 Xstart = iter1->X;
       Float64 Xend   = iter2->X;
       if (::InRange(Xstart,X,Xend) )
       {
-         Float64 FpeStart,FpeEnd;
-         Float64 XpsStart, XpsEnd;
-         Float64 YpsStart,YpsEnd;
-         if ( strandType == stbTypes::Straight )
-         {
-            FpeStart = iter1->fpeStraight;
-            XpsStart = iter1->XpsStraight;
-            YpsStart = iter1->YpsStraight;
-            FpeEnd   = iter2->fpeStraight;
-            XpsEnd = iter2->XpsStraight;
-            YpsEnd   = iter2->YpsStraight;
-         }
-         else if ( strandType == stbTypes::Harped )
-         {
-            FpeStart = iter1->fpeHarped;
-            XpsStart = iter1->XpsHarped;
-            YpsStart = iter1->YpsHarped;
-            FpeEnd   = iter2->fpeHarped;
-            XpsEnd = iter2->XpsHarped;
-            YpsEnd   = iter2->YpsHarped;
-         }
-         else
-         {
-            FpeStart = iter1->fpeTemporary;
-            XpsStart = iter1->XpsTemporary;
-            YpsStart = iter1->YpsTemporary;
-            FpeEnd   = iter2->fpeTemporary;
-            XpsEnd = iter2->XpsTemporary;
-            YpsEnd   = iter2->YpsTemporary;
-         }
+         Float64 FpeStart = iter1->fpe;
+         Float64 XpsStart = iter1->Xps;
+         Float64 YpsStart = iter1->Yps;
+
+         Float64 FpeEnd   = iter2->fpe;
+         Float64 XpsEnd   = iter2->Xps;
+         Float64 YpsEnd   = iter2->Yps;
 
          Float64 fpe = ::LinInterp(X-Xstart,FpeStart,FpeEnd,Xend-Xstart);
          Float64 xps = ::LinInterp(X - Xstart, XpsStart, XpsEnd, Xend - Xstart);
@@ -818,13 +795,15 @@ void stbStabilityProblemImp::GetFpe(stbTypes::StrandType strandType,Float64 X,Fl
          *pXps = xps;
          *pYps = yps;
 
+         // adjust for prestress transfer
          *pFpe *= Xfer;
 
-         return;
+         return true;
       }
    }
 
    ATLASSERT(false); // should never get here
+   return false;
 }
 
 Float64 stbStabilityProblemImp::GetCamber() const

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -699,7 +699,7 @@ Float64 lrfdConcreteUtil::AvfRequiredForHoriz(const sysSectionValue& Vuh, Float6
 
 Float64 lrfdConcreteUtil::ComputeConcreteDensityModificationFactor(matConcrete::Type type,Float64 density,bool bHasFct,Float64 fct,Float64 fc)
 {
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2016Interims || type == matConcrete::Normal )
+   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2016Interims || type == matConcrete::Normal || type == matConcrete::UHPC)
    {
       return 1.0;
    }
@@ -763,13 +763,16 @@ std::_tstring lrfdConcreteUtil::GetTypeName(matConcrete::Type type,bool bFull)
          return _T("SandLightweight");
       }
 
+   case matConcrete::UHPC:
+      return bFull ? _T("Ultra High Performance Concrete (UHPC)") : _T("UHPC");
+
    default:
       ATLASSERT(false); // is there a new type?
       return bFull ? _T("Normal Weight Concrete") : _T("Normal");
    }
 }
 
-matConcrete::Type lrfdConcreteUtil::GetTypeFromName(LPCTSTR strName)
+matConcrete::Type lrfdConcreteUtil::GetTypeFromTypeName(LPCTSTR strName)
 {
    matConcrete::Type type;
    if ( std::_tstring(strName) == _T("Normal") )
@@ -783,6 +786,10 @@ matConcrete::Type lrfdConcreteUtil::GetTypeFromName(LPCTSTR strName)
    else if ( std::_tstring(strName) == _T("SandLightweight") )
    {
       type = matConcrete::SandLightweight;
+   }
+   else if (std::_tstring(strName) == _T("UHPC"))
+   {
+      type = matConcrete::UHPC;
    }
    else
    {

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -47,6 +47,7 @@ HRESULT CTendon::FinalConstruct()
    m_JackingEnd = jeLeft;
 
    m_pSSMbr = nullptr;
+   m_pSSMbrSegment = nullptr;
 
    return S_OK;
 }
@@ -115,6 +116,15 @@ STDMETHODIMP CTendon::put_OutsideDiameter(Float64 size)
    }
 
    m_OD = size;
+   return S_OK;
+}
+
+STDMETHODIMP CTendon::get_OutsideDuctArea(Float64* Aduct)
+{
+   CHECK_RETVAL(Aduct);
+
+   *Aduct = M_PI*m_OD*m_OD / 4;
+
    return S_OK;
 }
 
@@ -334,18 +344,44 @@ STDMETHODIMP CTendon::put_JackingEnd(JackingEndType type)
    return S_OK;
 }
 
-STDMETHODIMP CTendon::putref_SuperstructureMember(ISuperstructureMember* pMbr)
+STDMETHODIMP CTendon::putref_SuperstructureMember(ISuperstructureMember* pSSMbr)
 {
-   m_pSSMbr = pMbr;
+   CHECK_IN(pSSMbr);
+#if defined _DEBUG
+   ATLASSERT(m_pSSMbrSegment == nullptr); // can't be attached to both a SSMbr and a SSMbrSegment
+#endif
+   m_pSSMbr = pSSMbr;
    return S_OK;
 }
 
-STDMETHODIMP CTendon::get_SuperstructureMember(ISuperstructureMember** ppMbr)
+STDMETHODIMP CTendon::get_SuperstructureMember(ISuperstructureMember** ppSSMbr)
 {
-   (*ppMbr) = m_pSSMbr;
-   if ( *ppMbr )
+   (*ppSSMbr) = m_pSSMbr;
+   if ( *ppSSMbr )
    {
-      (*ppMbr)->AddRef();
+      (*ppSSMbr)->AddRef();
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP CTendon::putref_SuperstructureMemberSegment(ISuperstructureMemberSegment* pSSMbrSegment)
+{
+   CHECK_IN(pSSMbrSegment);
+#if defined _DEBUG
+   ATLASSERT(m_pSSMbr == nullptr); // can't be attached to both a SSMbr and a SSMbrSegment
+#endif
+   m_pSSMbrSegment = pSSMbrSegment;
+   return S_OK;
+}
+
+STDMETHODIMP CTendon::get_SuperstructureMemberSegment(ISuperstructureMemberSegment** ppSSMbrSegment)
+{
+   CHECK_RETOBJ(ppSSMbrSegment);
+   (*ppSSMbrSegment) = m_pSSMbrSegment;
+   if (*ppSSMbrSegment)
+   {
+      (*ppSSMbrSegment)->AddRef();
    }
 
    return S_OK;
@@ -390,9 +426,14 @@ STDMETHODIMP CTendon::Save(IStructuredSave2* save)
 
 bool CTendon::GetTendonSegment(Float64 z,ITendonSegment** segment)
 {
-   iterator iter;
-   Float64 start = 0;
-   for ( iter = begin(); iter != end(); iter++ )
+   iterator begin_iter = begin();
+   iterator end_iter = end();
+   CComPtr<IPoint3d> pntStart;
+   begin_iter->second->get_Start(&pntStart);
+   Float64 start;
+   pntStart->get_Z(&start);
+
+   for ( auto iter = begin_iter; iter != end_iter; iter++ )
    {
       CComPtr<ITendonSegment> seg = iter->second;
       Float64 dx,dy,dz;

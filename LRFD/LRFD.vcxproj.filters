@@ -127,6 +127,9 @@
     <ClCompile Include="XShear.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LldfTxdotSpreadSlab.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\LRFD\ApproximateLosses.h">
@@ -268,6 +271,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\LRFD\XShear.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\LRFD\LldfTxdotSpreadSlab.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

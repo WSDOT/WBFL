@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -167,7 +167,7 @@ STDMETHODIMP CSuperstructureMemberSegmentImpl::get_LayoutLength(Float64 *pVal)
 
 // Not implemented
 // STDMETHODIMP CSuperstructureMemberSegmentImpl::get_Section(StageIndexType stageIdx, Float64 distAlongSegment, ISection** ppSection)
-// STDMETHODIMP CSuperstructureMemberSegmentImpl::get_PrimaryShape(Float64 distAlongSegment, IShape** ppShape)
+// STDMETHODIMP CSuperstructureMemberSegmentImpl::get_PrimaryShape(Float64 distAlongSegment, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
 //STDMETHODIMP CSuperstructureMemberSegmentImpl::get_Profile(VARIANT_BOOL bIncludeClosure, IShape** ppShape)
 
 STDMETHODIMP CSuperstructureMemberSegmentImpl::put_Orientation(Float64 orientation)

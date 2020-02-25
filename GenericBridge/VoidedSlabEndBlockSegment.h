@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -32,5 +32,59 @@
 #include "EndBlockSegmentImpl.h"
 
 // Template takes care of all
+class CVoidedSlabVoidSurfaceAreaCalculator;
+typedef TEndBlockSegmentImpl<IVoidedSlabEndBlockSegment, IVoidedSlabSection2, IVoidedSlab2, &CLSID_VoidedSlabEndBlockSegment, IDR_VOIDEDSLABENDBLOCKSEGMENT, VoidedEndBlock<IVoidedSlab2>, CVoidedSlabVoidSurfaceAreaCalculator> CVoidedSlabEndBlockSegment;
 
-typedef TEndBlockSegmentImpl<IVoidedSlabEndBlockSegment, IVoidedSlabSection2, IVoidedSlab2, &CLSID_VoidedSlabEndBlockSegment, IDR_VOIDEDSLABENDBLOCKSEGMENT, VoidedEndBlock<IVoidedSlab2>> CVoidedSlabEndBlockSegment;
+class CVoidedSlabVoidSurfaceAreaCalculator
+{
+public:
+   CVoidedSlabVoidSurfaceAreaCalculator(CVoidedSlabEndBlockSegment* pSegment) : m_pSegment(pSegment)
+   {
+   }
+
+   HRESULT CalculateVoidSurfaceArea(Float64* pSurfaceArea)
+   {
+      CHECK_RETVAL(pSurfaceArea);
+      if (m_pSegment->m_Shapes.size() == 0)
+      {
+         *pSurfaceArea = 0;
+      }
+      else
+      {
+         Float64 L;
+         m_pSegment->get_Length(&L);
+
+         CComQIPtr<IVoidedSlabSection2> section(m_pSegment->m_Shapes.front().Shape);
+         CComPtr<IVoidedSlab2> beam;
+         section->get_Beam(&beam);
+         Float64 D1, D2;
+         beam->get_ExteriorVoidDiameter(&D1);
+         beam->get_InteriorVoidDiameter(&D2);
+         IndexType nVoids;
+         beam->get_VoidCount(&nVoids);
+         IndexType nIntVoids, nExtVoids;
+         if (nVoids == 0)
+         {
+            nIntVoids = 0;
+            nExtVoids = 0;
+         }
+         else if (nVoids == 1)
+         {
+            nExtVoids = 1;
+            nIntVoids = 0;
+         }
+         else
+         {
+            nExtVoids = 2;
+            nIntVoids = nVoids - nExtVoids;
+         }
+
+         *pSurfaceArea = (L - m_pSegment->m_EndBlockLength[etStart] - m_pSegment->m_EndBlockLength[etEnd])*(nExtVoids*M_PI*D1 + nIntVoids*M_PI*D2);
+      }
+      return S_OK;
+   }
+
+protected:
+   CVoidedSlabEndBlockSegment* m_pSegment;
+};
+

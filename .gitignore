@@ -342,3 +342,4 @@ Win32/
 /bin/App
 /bin/License.rtf
 /[Bb]in # exclude all other bin folders
+*.txt

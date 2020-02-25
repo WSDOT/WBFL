@@ -729,7 +729,7 @@ date/T &gt; $(IntDir)mt2.dep
       <AdditionalOptions>/Zm400  %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_AFXDLL;WBFL_DEBUG;VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_AFXDLL;WBFL_DEBUG;VBA_BUILD;BUILDWBFLGENERICBRIDGELIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -870,7 +870,7 @@ date/T &gt; $(IntDir)mt2.dep
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_AFXDLL;VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_AFXDLL;VBA_BUILD;BUILDWBFLGENERICBRIDGELIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -955,6 +955,8 @@ date/T &gt; $(IntDir)mt2.dep
     <ClCompile Include="BridgeDeckRebarLayoutItem.cpp" />
     <ClCompile Include="BridgeDeckRebarPattern.cpp" />
     <ClCompile Include="BridgePier.cpp" />
+    <ClCompile Include="CastingRegion.cpp" />
+    <ClCompile Include="CastingRegions.cpp" />
     <ClCompile Include="CastSlab.cpp" />
     <ClCompile Include="Column.cpp" />
     <ClCompile Include="ColumnLayout.cpp" />
@@ -1070,6 +1072,8 @@ date/T &gt; $(IntDir)mt2.dep
     <None Include="BridgeDeckRebarPattern.rgs" />
     <None Include="BridgePier.rgs" />
     <None Include="BulbTeeSection.rgs" />
+    <None Include="CastingRegion.rgs" />
+    <None Include="CastingRegions.rgs" />
     <None Include="CastSlab.rgs" />
     <None Include="CogoInfo.rgs" />
     <None Include="Column.rgs" />
@@ -1164,6 +1168,8 @@ date/T &gt; $(IntDir)mt2.dep
     <ClInclude Include="BridgeDeckRebarLayoutItem.h" />
     <ClInclude Include="BridgeDeckRebarPattern.h" />
     <ClInclude Include="BridgePier.h" />
+    <ClInclude Include="CastingRegion.h" />
+    <ClInclude Include="CastingRegions.h" />
     <ClInclude Include="CastSlab.h" />
     <ClInclude Include="Column.h" />
     <ClInclude Include="ColumnLayout.h" />

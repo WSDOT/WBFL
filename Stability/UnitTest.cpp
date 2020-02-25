@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -98,7 +98,7 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
 
    // Example 6.1.1
    Float64 fpe = ::ConvertToSysUnits(1232.0,unitMeasure::Kip);
-   stabilityProblem.AddFpe(0,0,0,0,fpe,Xleft,-Hg + ::ConvertToSysUnits(5.0,unitMeasure::Inch),0,0,0);
+   stabilityProblem.AddFpe(_T("Prestress"),0.0,fpe,Xleft,-Hg + ::ConvertToSysUnits(5.0,unitMeasure::Inch));
 
    stabilityProblem.SetCamber(::ConvertToSysUnits(2.92,unitMeasure::Inch));
 
@@ -228,7 +228,7 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
 
    // Example 6.2.1
    Float64 fpe = ::ConvertToSysUnits(1251.5,unitMeasure::Kip);
-   stabilityProblem.AddFpe(0,0,0,0,fpe,Xleft,-Hg + ::ConvertToSysUnits(7.91,unitMeasure::Inch),0,0,0);
+   stabilityProblem.AddFpe(_T("Prestress"),0.0,fpe,Xleft,-Hg + ::ConvertToSysUnits(7.91,unitMeasure::Inch));
 
    stabilityProblem.SetCamber(::ConvertToSysUnits(2.92,unitMeasure::Inch));
 

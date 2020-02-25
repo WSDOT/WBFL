@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -131,8 +131,7 @@ private:
    void GetLocatorPoint(LocatorPointType lp,Float64* x,Float64* y);
 
    // dirty flags to signal completion of different computations and cached properties
-   bool m_DirtyBoundingBox;
-   bool m_DirtyProperties;
+   bool m_Dirty;
 
    // cached shape properties
    struct ShapeProps
@@ -152,6 +151,17 @@ private:
       {
          Init();
       }
+      
+      void Offset(Float64 dx, Float64 dy)
+      {
+         Xleft += dx;
+         Xright += dx;
+         Ytop += dy;
+         Ybottom += dy;
+         Cx += dx;
+         Cy += dy;
+      }
+
       void Init();
       HRESULT CreateIShapeProperties(IShapeProperties ** props);
 
@@ -176,6 +186,14 @@ private:
          Left = Right = Top = Bottom = 0.0;
       }
 
+      void Offset(Float64 dx, Float64 dy)
+      {
+         Left += dx;
+         Right += dx;
+         Top += dy;
+         Bottom += dy;
+      }
+
       HRESULT CreateIRect(IRect2d** rect)
       {
          return ::CreateRect(Left, Top, Right, Bottom, rect);
@@ -183,10 +201,8 @@ private:
 
    } m_BoundingRect;
 
-   void MakeDirty() { m_DirtyBoundingBox = m_DirtyProperties = true;}
-   void UpdateBoundingBox();
-   void UpdateShapeProperties();
-
+   void MakeDirty() { m_Dirty = true;}
+   void Update();
 };
 
 #endif //__POLYSHAPE_H_

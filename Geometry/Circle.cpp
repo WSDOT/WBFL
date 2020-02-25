@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -714,8 +714,7 @@ STDMETHODIMP CCircle::OffsetEx(ISize2d* pSize)
    CHECK_IN(pSize);
 
    Float64 dx, dy;
-   pSize->get_Dx( &dx );
-   pSize->get_Dy( &dy );
+   pSize->Dimensions(&dx, &dy);
 
    return Offset( dx, dy );
 }

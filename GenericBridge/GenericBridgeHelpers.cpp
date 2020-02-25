@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -194,6 +194,20 @@ HRESULT GB_GetSectionLocation(ISuperstructureMemberSegment* pSegment,Float64 dis
    }
 
    elevation -= elevation_offset;
+   
+
+   // If there is an overlay constructed with the bridge (not a future overlay)
+   // then the top of the overlay is the finished grade elevation
+   VARIANT_BOOL vbHasFutureOverlay;
+   bridge->HasFutureOverlay(&vbHasFutureOverlay);
+   StageIndexType wearingSurfaceStage;
+   bridge->get_WearingSurfaceStage(&wearingSurfaceStage);
+   if (wearingSurfaceStage != INVALID_INDEX && vbHasFutureOverlay == VARIANT_FALSE)
+   {
+      Float64 wearing_surface_depth;
+      bridge->get_WearingSurfaceDepth(&wearing_surface_depth);
+      elevation -= wearing_surface_depth;
+   }
 
    CComPtr<IPoint2d> pntTopCenter;
    pntTopCenter.CoCreateInstance(CLSID_Point2d);

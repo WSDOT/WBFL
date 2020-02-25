@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -179,32 +179,86 @@ STDMETHODIMP CSurfaceTemplateCollection::GetBoundingTemplates(VARIANT varStation
       m_pSurface->get_Profile(&profile); 
    }
 
-   SurfaceTemplates::iterator iter1(m_coll.begin());
-   SurfaceTemplates::iterator iter2(iter1+1);
-   SurfaceTemplates::iterator end(m_coll.end());
-   for ( ; iter2 != end; iter1++, iter2++ )
+   // Templates at ends extend infinitely up/down station
+   // Deal with special cases first
+   if (m_coll.empty())
    {
-      SurfaceTemplateType& stType1 = *iter1;
-      SurfaceTemplateType& stType2 = *iter2;
-
+      ATLASSERT(0); // bad form
+      return E_FAIL;
+   }
+   else if (m_coll.size() == 1)
+   {
+      // only one template. It bounds all
+      SurfaceTemplateType& stType1 = m_coll.front();
       CComVariant var1(stType1.second);
-      CComVariant var2(stType2.second);
-
       CComQIPtr<ISurfaceTemplate> template1(var1.pdispVal);
-      CComQIPtr<ISurfaceTemplate> template2(var2.pdispVal);
+      template1.CopyTo(ppStart);
+      template1.CopyTo(ppEnd);
+      return S_OK;
+   }
+   else
+   {
+      // Check if station is before or after all templates
+      SurfaceTemplateType& stType_front = m_coll.front();
+      CComVariant var_front(stType_front.second);
+      CComQIPtr<ISurfaceTemplate> template_front(var_front.pdispVal);
+      CComPtr<IStation> station_front;
+      template_front->get_Station(&station_front);
 
-      CComPtr<IStation> station1,station2;
-      template1->get_Station(&station1);
-      template2->get_Station(&station2);
-
-      if ( 0 <= cogoUtil::Compare(profile,station1,objStation) && // station is at or after station1
-           0 <= cogoUtil::Compare(profile,objStation,station2) )  // station is at or before station2
+      if (0 >= cogoUtil::Compare(profile, station_front, objStation))
       {
-         // station is between station1 and station2... these are the templates that we want
-         template1.CopyTo(ppStart);
-         template2.CopyTo(ppEnd);
-
+         // station is before start of templates. use front template for bracket
+         template_front.CopyTo(ppStart);
+         template_front.CopyTo(ppEnd);
          return S_OK;
+      }
+      else
+      {
+         SurfaceTemplateType& stType_back = m_coll.back();
+         CComVariant var_back(stType_back.second);
+         CComQIPtr<ISurfaceTemplate> template_back(var_back.pdispVal);
+         CComPtr<IStation> station_back;
+         template_back->get_Station(&station_back);
+
+         if (0 <= cogoUtil::Compare(profile, station_back, objStation))
+         {
+            // station is after end of templates. use back template for bracket
+            template_back.CopyTo(ppStart);
+            template_back.CopyTo(ppEnd);
+            return S_OK;
+         }
+         else
+         {
+            // station is in between two templates - find bracketing templates
+            SurfaceTemplates::iterator iter1(m_coll.begin());
+            SurfaceTemplates::iterator iter2(iter1 + 1);
+            SurfaceTemplates::iterator end(m_coll.end());
+            for (; iter2 != end; iter1++, iter2++)
+            {
+               SurfaceTemplateType& stType1 = *iter1;
+               SurfaceTemplateType& stType2 = *iter2;
+
+               CComVariant var1(stType1.second);
+               CComVariant var2(stType2.second);
+
+               CComQIPtr<ISurfaceTemplate> template1(var1.pdispVal);
+               CComQIPtr<ISurfaceTemplate> template2(var2.pdispVal);
+
+               CComPtr<IStation> station1, station2;
+               template1->get_Station(&station1);
+               template2->get_Station(&station2);
+
+               if (0 <= cogoUtil::Compare(profile, station1, objStation) && // station is at or after station1
+                  0 <= cogoUtil::Compare(profile, objStation, station2))  // station is at or before station2
+               {
+                  // station is between station1 and station2... these are the templates that we want
+                  template1.CopyTo(ppStart);
+                  template2.CopyTo(ppEnd);
+
+                  return S_OK;
+               }
+            }
+         }
       }
    }
 

@@ -149,7 +149,7 @@ void GetPInfo(PropertyDataSetBuilder::PType type, UINT* symbol, CComBSTR& str)
    {
    case PropertyDataSetBuilder::ptEAForce:
       *symbol = 65;
-      str = "EA Defl";
+      str = "EA Force";
       break;
    case PropertyDataSetBuilder::ptEADefl:
       *symbol = 65;

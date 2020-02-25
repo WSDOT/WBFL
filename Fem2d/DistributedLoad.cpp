@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -602,7 +602,20 @@ void CDistributedLoad::GetOriginForces(Float64 Length,Float64 Angle,Float64* pFx
    }
    else
    {
-      *pMz=0.0;
+      if (fabs(Wya) == fabs(Wyb))
+      {
+         // this happens when the Wa and Wb have opposite signs but have equal magnitude
+         // the moment effect is not zero... treat the loading as two triangular loads with
+         // the zero load point being at La + (Lb-La)/2
+         ATLASSERT(::BinarySign(Wya) != ::BinarySign(Wyb));
+         Float64 ma = (La + (Lb - La)/6.)*Wya*(Lb - La) / 4.;
+         Float64 mb = (La + 5.*(Lb - La)/6.)*Wyb*(Lb - La) / 4.;
+         *pMz = ma + mb;
+      }
+      else
+      {
+         *pMz = 0.0;
+      }
    }
 }
 

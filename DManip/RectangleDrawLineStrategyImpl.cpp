@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -116,10 +116,14 @@ STDMETHODIMP_(void) CRectangleDrawLineStrategyImpl::Draw(iLineDisplayObject* pDO
    int nPenStyle;
    switch(m_Style)
    {
+   case lsNull:
+      nPenStyle = PS_NULL;
+      break;
+
    case lsSolid:
       nPenStyle = PS_SOLID;
       break;
-      
+
    case lsDot:
       nPenStyle = PS_DOT;
       break;
@@ -166,10 +170,14 @@ STDMETHODIMP_(void) CRectangleDrawLineStrategyImpl::DrawHighlite(iLineDisplayObj
       int nPenStyle;
       switch(m_Style)
       {
+      case lsNull:
+         nPenStyle = PS_NULL;
+         break;
+
       case lsSolid:
          nPenStyle = PS_SOLID;
          break;
-      
+
       case lsDot:
          nPenStyle = PS_DOT;
          break;

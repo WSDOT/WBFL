@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -433,7 +433,7 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size
       }
       else
       {
-         if (type==matConcrete::Normal)
+         if (type==matConcrete::Normal || type == matConcrete::UHPC)
          {
             details.lambdaLw = 1.0;
          }
@@ -523,7 +523,7 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size
       }
 
       // Compute and apply factor for LWC
-      if (type==matConcrete::Normal)
+      if (type==matConcrete::Normal || type == matConcrete::UHPC)
       {
          details.factor = 1.0;
       }

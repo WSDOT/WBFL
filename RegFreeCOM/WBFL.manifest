@@ -316,7 +316,16 @@
                 progid="WBFLGeometry.BoxBeam">
          <progid>WBFLGeometry.BoxBeam.1</progid>
       </comClass>
-      <comClass clsid="{1114EB22-FE2E-11D2-8CDF-8AFA61D12734}"
+
+      <comClass clsid="{4B272221-CF8C-40C6-9281-12C8277B668A}"
+                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+                description="BeamShapeFactory Class"
+                threadingModel="Apartment"
+                progid="WBFLGeometry.BeamShapeFactory">
+         <progid>WBFLGeometry.BeamShapeFactor.1</progid>
+      </comClass>
+
+               <comClass clsid="{1114EB22-FE2E-11D2-8CDF-8AFA61D12734}"
                 tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
                 description="GeomOp Class"
                 threadingModel="Apartment"
@@ -1314,6 +1323,12 @@
       <comClass clsid="{D3894F80-C95C-4A8B-A839-EAB39D92F196}"
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                 description="Material Class"></comClass>
+      <comClass clsid="{5596FACB-B4C8-40E3-AF75-B3EBF8BBD520}"
+                tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
+                description="CastingRegion Class"></comClass>
+      <comClass clsid="{B069803A-D07A-480F-AB55-54D7905E1EC2}"
+                tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
+                description="CastingRegions Class"></comClass>
       <comClass clsid="{994EBFE4-E2CE-4932-B58D-D0661ED9DE1A}"
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                 description="CastSlab Class"></comClass>

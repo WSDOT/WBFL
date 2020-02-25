@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -81,6 +81,10 @@ cpp_quote("#define GB_E_ABSOLUTE_EXPECTED            MAKE_HRESULT(SEVERITY_ERROR
 cpp_quote("#define GB_E_ID_IN_USE                    MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,536)")
 cpp_quote("#define GB_E_OVERHANG                     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,537)")
 cpp_quote("#define GB_E_LESS_THAN_MIN_COLUMNS        MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,538)")
+
+// note... these flags get ORed with bridge geometry GF_flags
+// the values of these flags cannot duplicate the GF flags
+cpp_quote("#define BGF_PIERS 0x8000") // updates the pier geometry in the bridge model (assumes pier layout lines have alread been created and updated)
 
 
 [
@@ -389,6 +393,21 @@ library WBFLGenericBridge
       jstConstantDepth, // the shape is defined by a constant depth
       jstFromAdjacentBeams // the shape is defined by the connection with adjacent beams
    } JointSectionType;
+
+   // Coordinate system
+   typedef [public, helpstring("enum SectionCoordinateSystemType"), uuid(8A98F327-46D2-4046-8CD6-8DB0BE162597)]
+   enum
+   {
+      cstBridge,
+      cstGirder
+   } SectionCoordinateSystemType;
+
+   typedef [public, helpstring("enum CastingRegionBoundary"), uuid(73E1287C-617F-4744-8725-D171246A5604)]
+   enum
+   {
+      crbNormalToAlignment,
+      crbParallelToPier
+   } CastingRegionBoundary;
    
    // Interface definitions
 
@@ -910,6 +929,61 @@ library WBFLGenericBridge
 	   [propputref, helpstring("property Path")] HRESULT Path([in]IPath* path);
 	};
 
+   [
+      object,
+      uuid(A95F077F-0121-4141-AD6A-68843C61F92E),
+      oleautomation,
+      helpstring("ICastingRegion Interface"),
+      pointer_default(unique)
+   ]
+   interface ICastingRegion : IUnknown
+   {
+      [helpstring("method GetRange")] HRESULT GetRange([out]Float64* pXbStart, [out]Float64* pXbEnd);
+      [helpstring("method ContainsPoint")] HRESULT ContainsPoint([in] Float64 Xb, [out, retval]VARIANT_BOOL* pvbContainsPoint);
+      [helpstring("method Perimeter")] HRESULT Perimeter([in]CollectionIndexType nPointsPerSide,[out]IPoint2dCollection** ppPoints);
+      [propget, helpstring("property Material")] HRESULT Material([out, retval]IMaterial** ppMaterial);
+      [propputref, helpstring("property Material")] HRESULT Material([in]IMaterial* pMaterial);
+   };
+
+
+   [
+      object,
+      uuid(EF52B103-F909-4B18-90AA-4F01445318AE),
+      helpstring("IEnumCastingRegions Interface"),
+      oleautomation, nonextensible,
+      hidden, restricted,
+      pointer_default(unique)
+   ]
+   interface IEnumCastingRegions : IUnknown
+   {
+      [helpstring("Clone")] HRESULT Clone([out] IEnumCastingRegions** ppenum);
+      [helpstring("Next")]  HRESULT Next([in] ULONG celt, [out] ICastingRegion** ppCastingRegion, [in, out] ULONG* pceltFetched);
+      [helpstring("Reset")] HRESULT Reset();
+      [helpstring("Skip")]  HRESULT Skip([in] ULONG celt);
+   };
+
+   [
+      object,
+      uuid(29BFA4B9-D5E0-447C-87CB-D6671AD30934),
+      oleautomation,
+      helpstring("ICastingRegions Interface"),
+      pointer_default(unique)
+   ]
+   interface ICastingRegions : IUnknown
+   {
+      [propputref, helpstring("property Bridge")] HRESULT Bridge([in]IGenericBridge* pBridge);
+      [propget, helpstring("property Bridge")] HRESULT Bridge([out, retval]IGenericBridge** ppBridge);
+      [propput, helpstring("property Boundary")] HRESULT Boundary([in]CastingRegionBoundary boundary);
+      [propget, helpstring("property Boundary")] HRESULT Boundary([out,retval]CastingRegionBoundary *pBoundary);
+      [helpstring("method CreateRegion")] HRESULT CreateRegion([in]PierIDType startPierID, [in]Float64 Xstart, [in]PierIDType endPierID,[in]Float64 Xend, [in]IMaterial* pMaterial, [out, retval]ICastingRegion** ppRegion);
+      [helpstring("method FindRegion")] HRESULT FindRegion([in]Float64 Xb, [in]SectionBias bias,[out]IndexType* pIndex,[out]ICastingRegion** ppRegion);
+      [helpstring("method FindRegionEx")] HRESULT FindRegionEx([in]GirderIDType ssmbrID, [in]SegmentIndexType segIdx,[in]Float64 Xs, [in]SectionBias bias, [out]IndexType* pIndex, [out]ICastingRegion** ppRegion);
+      [propget, helpstring("property Item")] HRESULT Item([in]CollectionIndexType idx, [out, retval]ICastingRegion** ppRegion);
+      [propget, helpstring("property Count")] HRESULT Count([out, retval] CollectionIndexType* count);
+      [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);
+      [propget, restricted, helpstring("property _EnumCastingRegions")] HRESULT _EnumCastingRegions([out, retval]IEnumCastingRegions** ppEnumCastingRegions);
+   };
+
 	[
 	   object,
 	   uuid(DD39558A-CEEF-446f-AB50-EC6085D087FC),
@@ -923,8 +997,6 @@ library WBFLGenericBridge
       [propget,helpstring("property DeckBoundary")] HRESULT DeckBoundary([out,retval]IDeckBoundary** deckBoundary);
 	   [propget,helpstring("property Composite")] HRESULT Composite([out,retval]VARIANT_BOOL* bComposite);
 	   [propput,helpstring("property Composite")] HRESULT Composite([in]VARIANT_BOOL bComposite);
-	   [propget,helpstring("property Material")] HRESULT Material([out,retval]IMaterial** material);
-	   [propputref,helpstring("property Material")] HRESULT Material([in]IMaterial* material);
 	   [propget,helpstring("property StructuralDepth")] HRESULT StructuralDepth([out,retval]Float64* depth);
 	   [propget,helpstring("property GrossDepth")] HRESULT GrossDepth([out,retval]Float64* depth);
       [propget,helpstring("property RebarLayout")] HRESULT RebarLayout([out,retval]IBridgeDeckRebarLayout** rebarLayout);
@@ -942,13 +1014,17 @@ library WBFLGenericBridge
 	]
 	interface ICastSlab : IUnknown
 	{
-	   [propget, helpstring("property GrossDepth")] HRESULT GrossDepth([out,retval]Float64* depth);
+      [propget, helpstring("property CastingRegions")] HRESULT CastingRegions([out, retval]ICastingRegions** ppRegions);
+      [propputref, helpstring("property CastingRegions")] HRESULT CastingRegions([in]ICastingRegions* pRegions);
+      [propget, helpstring("property GrossDepth")] HRESULT GrossDepth([out,retval]Float64* depth);
 	   [propput, helpstring("property GrossDepth")] HRESULT GrossDepth([in]Float64 depth);
-	   [propget, helpstring("property OverhangDepth")] HRESULT OverhangDepth([out,retval]Float64* depth);
-	   [propput, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]Float64 depth);
-	   [propget, helpstring("property OverhangTaper")] HRESULT OverhangTaper([out,retval]DeckOverhangTaper* taper);
-	   [propput, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DeckOverhangTaper taper);
-	};
+	   [propget, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]DirectionType side,[out,retval]Float64* depth);
+	   [propput, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]DirectionType side, [in]Float64 depth);
+	   [propget, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DirectionType side, [out,retval]DeckOverhangTaper* taper);
+	   [propput, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DirectionType side, [in]DeckOverhangTaper taper);
+      [helpstring("method GetOverhang")] HRESULT GetOverhang([out]Float64* leftDepth, [out]DeckOverhangTaper* leftTaper, [out]Float64* rightDepth, [out]DeckOverhangTaper* rightTaper);
+      [helpstring("method SetOverhang")] HRESULT SetOverhang([in]Float64 leftDepth, [in]DeckOverhangTaper leftTaper, [in]Float64 rightDepth, [in]DeckOverhangTaper rightTaper);
+   };
 
 	[
 	   object,
@@ -959,15 +1035,19 @@ library WBFLGenericBridge
 	]
 	interface IPrecastSlab : IUnknown
 	{
-	   [propget, helpstring("property CastDepth")] HRESULT CastDepth([out,retval]Float64* depth);
+      [propget, helpstring("property CastingRegions")] HRESULT CastingRegions([out, retval]ICastingRegions** ppRegions);
+      [propputref, helpstring("property CastingRegions")] HRESULT CastingRegions([in]ICastingRegions* pRegions);
+      [propget, helpstring("property CastDepth")] HRESULT CastDepth([out,retval]Float64* depth);
 	   [propput, helpstring("property CastDepth")] HRESULT CastDepth([in]Float64 depth);
 	   [propget, helpstring("property PanelDepth")] HRESULT PanelDepth([out,retval]Float64* depth);
 	   [propput, helpstring("property PanelDepth")] HRESULT PanelDepth([in]Float64 depth);
-	   [propget, helpstring("property OverhangDepth")] HRESULT OverhangDepth([out,retval]Float64* depth);
-	   [propput, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]Float64 depth);
-	   [propget, helpstring("property OverhangTaper")] HRESULT OverhangTaper([out,retval]DeckOverhangTaper* taper);
-	   [propput, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DeckOverhangTaper taper);
-	};
+      [propget, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]DirectionType side, [out, retval]Float64* depth);
+      [propput, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]DirectionType side, [in]Float64 depth);
+      [propget, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DirectionType side, [out, retval]DeckOverhangTaper* taper);
+      [propput, helpstring("property OverhangTaper")] HRESULT OverhangTaper([in]DirectionType side, [in]DeckOverhangTaper taper);
+      [helpstring("method GetOverhang")] HRESULT GetOverhang([out]Float64* leftDepth, [out]DeckOverhangTaper* leftTaper, [out]Float64* rightDepth, [out]DeckOverhangTaper* rightTaper);
+      [helpstring("method SetOverhang")] HRESULT SetOverhang([in]Float64 leftDepth, [in]DeckOverhangTaper leftTaper, [in]Float64 rightDepth, [in]DeckOverhangTaper rightTaper);
+   };
 
 	[
 	   object,
@@ -980,7 +1060,8 @@ library WBFLGenericBridge
 	{
 	   [propget, helpstring("property GrossDepth")] HRESULT GrossDepth([out,retval]Float64* depth);
 	   [propput, helpstring("property GrossDepth")] HRESULT GrossDepth([in]Float64 depth);
-
+      [propget, helpstring("property Material")] HRESULT Material([out, retval]IMaterial** material);
+      [propputref, helpstring("property Material")] HRESULT Material([in]IMaterial* material);
 	};
 
 	[
@@ -1079,7 +1160,7 @@ library WBFLGenericBridge
       [propget,helpstring("property HasJoints")] HRESULT HasJoints([out,retval]VARIANT_BOOL* pbHasJoints);
       [propputref,helpstring("property JointMaterial")] HRESULT JointMaterial([in]IMaterial* material);
       [propget,helpstring("property JointMaterial")] HRESULT JointMaterial([out, retval]IMaterial** material);
-      [propget,helpstring("property JointShapes")] HRESULT JointShapes([in]Float64 Xs,[out]IShape** ppLeftJoint,[out]IShape** ppRightJoint);
+      [propget,helpstring("property JointShapes")] HRESULT JointShapes([in]Float64 Xs,[in]SectionCoordinateSystemType coordinateSystem,[out]IShape** ppLeftJoint,[out]IShape** ppRightJoint);
    };
 
 	[
@@ -1119,8 +1200,10 @@ library WBFLGenericBridge
    interface ISegment : IUnknown
    {
       [propget, helpstring("property Length")] HRESULT Length([out, retval] Float64 *pVal);
-      [propget, helpstring("property PrimaryShape")] HRESULT PrimaryShape([in]Float64 Xs,[in]SectionBias sectionBias,[out,retval]IShape** ppShape);
-		[propget, helpstring("property Section")] HRESULT Section([in]StageIndexType stageIdx,[in] Float64 Xs,[in]SectionBias sectionBias,[out,retval]ISection** ppSection);
+      [propget, helpstring("property PrimaryShape")] HRESULT PrimaryShape([in]Float64 Xs,[in]SectionBias sectionBias,[in]SectionCoordinateSystemType coordinateSystem,[out,retval]IShape** ppShape);
+      [helpstring("method GetVolumeAndSurfaceArea")] HRESULT GetVolumeAndSurfaceArea([out]Float64* pVolume, [out]Float64* pSurfaceArea);
+      [propget, helpstring("property InternalSurfaceAreaOfVoids")] HRESULT InternalSurfaceAreaOfVoids([out, retval]Float64* pSurfaceArea);
+		[propget, helpstring("property Section")] HRESULT Section([in]StageIndexType stageIdx,[in] Float64 Xs,[in]SectionBias sectionBias, [in]SectionCoordinateSystemType coordinateSystem, [out,retval]ISection** ppSection);
       [propget, helpstring("property PrevSegment")] HRESULT PrevSegment([out,retval]ISegment** segment);
       [propget, helpstring("property NextSegment")] HRESULT NextSegment([out,retval]ISegment** segment);
 
@@ -1451,6 +1534,8 @@ library WBFLGenericBridge
       [propget, helpstring("property ClosureJointFgMaterial")] HRESULT ClosureJointForegroundMaterial([in]EndType endType,[out,retval]IMaterial** ppFGMaterial);
       [propput, helpstring("property ClosureJointBgMaterial")] HRESULT ClosureJointBackgroundMaterial([in]EndType endType,[in]IMaterial* pBGMaterial);
       [propget, helpstring("property ClosureJointBgMaterial")] HRESULT ClosureJointBackgroundMaterial([in]EndType endType,[out,retval]IMaterial** ppBGMaterial);
+
+      [helpstring("method GetClosureJointVolumeAndSurfaceArea")] HRESULT GetClosureJointVolumeAndSurfaceArea([in]EndType endType, [out]Float64* pVolume, [out]Float64* pSurfaceArea);
    };
 
    [
@@ -1479,6 +1564,19 @@ library WBFLGenericBridge
 		[propget, helpstring("property UGirderSection")] HRESULT UGirderSection([out,retval] IUGirderSection** ppPrecastBeam);
    };
 
+   [
+      object,
+      uuid(F7DB3FCA-E4FE-48E0-91A4-F3C4620A9C96),
+      oleautomation,
+      helpstring("IJointedSection Intervace"),
+      pointer_default(unique)
+   ]
+   interface IJointedSection : IUnknown
+   {
+      [helpstring("method SetJointShapes")] HRESULT SetJointShapes([in]IShape* pLeftJoint, [in]IShape* pRightJoint);
+      [helpstring("method GetJointShapes")] HRESULT GetJointShapes([out]IShape** ppLeftJoint, [out]IShape** ppRightJoint);
+   };
+
 	[
 	   object,
 	   uuid(4D6301FB-5724-43eb-BD34-A5F9351F7ECB),
@@ -1486,12 +1584,10 @@ library WBFLGenericBridge
 	   helpstring("IBulbTeeSection Interface"),
 	   pointer_default(unique)
 	]
-	interface IBulbTeeSection : IUnknown
+	interface IBulbTeeSection : IJointedSection
 	{
 	   [propput,helpstring("property Beam")] HRESULT Beam([in]IBulbTee2* beam);
 	   [propget,helpstring("property Beam")] HRESULT Beam([out,retval]IBulbTee2** beam);
-      [helpstring("method SetJointShapes")] HRESULT SetJointShapes([in]IShape* pLeftJoint, [in]IShape* pRightJoint);
-      [helpstring("method GetJointShapes")] HRESULT GetJointShapes([out]IShape** ppLeftJoint, [out]IShape** ppRightJoint);
    };
 
 
@@ -1515,7 +1611,7 @@ library WBFLGenericBridge
       [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
       [propget, helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
 		[propget, helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
-      [propget, helpstring("property GirderShape")] HRESULT GirderShape([in]Float64 Xs, [out, retval]IShape** ppShape);
+      [propget, helpstring("property GirderShape")] HRESULT GirderShape([in]Float64 Xs, [in]SectionCoordinateSystemType coordinateSystem,[out, retval]IShape** ppShape);
    };
 
 	[
@@ -1749,7 +1845,8 @@ library WBFLGenericBridge
       [propget,helpstring("property Bridge")] HRESULT Bridge([out,retval]IGenericBridge** ppBridge);
 		[propget,helpstring("property Index")] HRESULT Index([out,retval]PierIndexType* pIndex);
       [propget,helpstring("property ID")] HRESULT ID([out,retval]PierIDType* pID);
-		[propget,helpstring("property Station")] HRESULT Station([out,retval] IStation* *station);
+      [propget, helpstring("property Location")] HRESULT Location([out, retval]Float64* pXb);
+      [propget,helpstring("property Station")] HRESULT Station([out,retval] IStation* *station);
 		[propget,helpstring("property Direction")] HRESULT Direction([out,retval] IDirection* *direction);
    };
 
@@ -2054,8 +2151,9 @@ library WBFLGenericBridge
 	   [propget,helpstring("property Material")] HRESULT Material([out,retval]IPrestressingStrand** material);
 	   [propputref,helpstring("property Material")] HRESULT Material([in]IPrestressingStrand* material);
 
-	   [propget,helpstring("property InsideDuctArea")] HRESULT InsideDuctArea([out,retval]Float64* Apt);
-	   [propget,helpstring("property TendonArea")] HRESULT TendonArea([out,retval]Float64* Apt);
+      [propget, helpstring("property OutsideDuctArea")] HRESULT OutsideDuctArea([out, retval]Float64* Aduct);
+      [propget, helpstring("property InsideDuctArea")] HRESULT InsideDuctArea([out, retval]Float64* Aduct);
+      [propget,helpstring("property TendonArea")] HRESULT TendonArea([out,retval]Float64* Apt);
 
       [propget,helpstring("property MinimumRadiusOfCurvature")] HRESULT MinimumRadiusOfCurvature([out,retval]Float64* pMinRadiusOfCurvature);
 
@@ -2066,9 +2164,12 @@ library WBFLGenericBridge
 	   [propget,helpstring("property End")] HRESULT End([out,retval] IPoint3d** end);
       [propget,helpstring("property Centerline")] HRESULT Centerline([in] TendonMeasure measure,[out,retval]IPoint3dCollection** ppPoints);
 
-      [propputref,helpstring("property SuperstructureMember")] HRESULT SuperstructureMember([in]ISuperstructureMember* pMbr);
-      [propget,helpstring("property SuperstructureMember")] HRESULT SuperstructureMember([out,retval]ISuperstructureMember** ppMbr);
-	};
+      // a tendon can be associated with a superstructure member or a superstructure member segment, but not both
+      [propputref,helpstring("property SuperstructureMember")] HRESULT SuperstructureMember([in]ISuperstructureMember* pSSMbr);
+      [propget,helpstring("property SuperstructureMember")] HRESULT SuperstructureMember([out,retval]ISuperstructureMember** ppSSMbr);
+      [propputref, helpstring("property SuperstructureMemberSegment")] HRESULT SuperstructureMemberSegment([in]ISuperstructureMemberSegment* pSSMbrSegment);
+      [propget, helpstring("property SuperstructureMemberSegment")] HRESULT SuperstructureMemberSegment([out, retval]ISuperstructureMemberSegment** ppSSMbrSegment);
+   };
 
    [
 	   object,
@@ -2164,7 +2265,8 @@ library WBFLGenericBridge
       [propget, helpstring("property Count")] HRESULT Count([out,retval] PierIndexType* count);
       [propget, helpstring("property PierIndex")] HRESULT PierIndex([in]IBridgePier* pier,[out,retval]PierIndexType* index);
       [propget, restricted, helpstring("property _EnumPiers")] HRESULT _EnumPiers([out,retval]IEnumPiers* *enumPiers);
-      [helpstring("method FindPier")] HRESULT FindPier([in]Float64 station,[out,retval]IBridgePier** ppPier);
+      [helpstring("method FindPier")] HRESULT FindPier([in]Float64 station, [out, retval]IBridgePier** ppPier);
+      [helpstring("method FindPierByID")] HRESULT FindPierByID([in]PierIDType pierID, [out, retval]IBridgePier** ppPier);
    };
 
 	[
@@ -2200,11 +2302,13 @@ library WBFLGenericBridge
 	  [propget, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([out,retval]Float64* depth);
 	  [propput, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([in]Float64 depth);
 
+     [helpstring("property HasFutureOverlay")] HRESULT HasFutureOverlay([out]VARIANT_BOOL* pvbHasFutureOverlay);
+
      [helpstring("method CreateSuperstructureMember")] HRESULT CreateSuperstructureMember([in]GirderIDType id,[in] GirderIDType leftSSMbrID, [in]GirderIDType rightSSMbrID,[out,retval]ISuperstructureMember** ppMbr);
      [propget, helpstring("property SuperstrucuterMember")] HRESULT SuperstructureMember([in]GirderIDType id,[out,retval]ISuperstructureMember** ppMbr);
      [propget, restricted, helpstring("property _EnumSuperstructureMembers")] HRESULT _EnumSuperstructureMembers([out,retval]IEnumSuperstructureMembers* *enumSSMbrs);
 
-     [helpstring("method UpdateBridgeModel")] HRESULT UpdateBridgeModel();
+     [helpstring("method UpdateBridgeModel")] HRESULT UpdateBridgeModel(long flags);
 	};
 	 
 
@@ -2350,6 +2454,7 @@ library WBFLGenericBridge
 
    [
       uuid(B1875476-2706-4d53-A5CC-27AA77B11E2A),
+      helpstring("SuperstructureMember Class"),
       noncreatable
    ]
    coclass SuperstructureMember
@@ -2550,6 +2655,27 @@ library WBFLGenericBridge
 		[default] interface IMaterial;
 	};
 
+   [
+      uuid(5596FACB-B4C8-40E3-AF75-B3EBF8BBD520),
+      helpstring("CastingRegion Class"),
+      noncreatable
+   ]
+   coclass CastingRegion
+   {
+      [default] interface ICastingRegion;
+      interface IStructuredStorage2;
+   };
+
+   [
+      uuid(B069803A-D07A-480F-AB55-54D7905E1EC2),
+      helpstring("CastingRegions Class")
+   ]
+   coclass CastingRegions
+   {
+      [default] interface ICastingRegions;
+      interface IStructuredStorage2;
+   };
+
 	[
 		uuid(994EBFE4-E2CE-4932-B58D-D0661ED9DE1A),
 		helpstring("CastSlab Class")
@@ -2622,6 +2748,7 @@ library WBFLGenericBridge
 	   [default] interface IBulbTeeSection;
 	   interface IGirderSection;
 	   interface IPrestressedGirderSection;
+      interface IJointedSection;
 	   interface IShape;
 	};
 

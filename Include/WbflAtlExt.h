@@ -157,8 +157,13 @@ class CHRException
 {
 public:
    CHRException():
+      m_bAssertOnFailure(true),
    m_Result(S_OK)
    {};
+
+#if defined _DEBUG
+   void AssertOnFailure(bool bAssert) { m_bAssertOnFailure = bAssert; }
+#endif
 
    // Throw if assigned to a FAILED HRESULT.
    HRESULT operator=(HRESULT hr)
@@ -166,7 +171,12 @@ public:
       m_Result = hr;
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+#if defined _DEBUG
+         if (m_bAssertOnFailure)
+         {
+            ATLASSERT(false);
+         }
+#endif
          throw hr;
       }
       else if (hr == S_FALSE)
@@ -184,6 +194,7 @@ public:
    }
 
 private:
+   bool m_bAssertOnFailure;
    HRESULT m_Result; 
 };
 

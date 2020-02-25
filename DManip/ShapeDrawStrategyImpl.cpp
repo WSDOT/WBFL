@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -530,6 +530,10 @@ void CShapeDrawStrategyImpl::CreatePen(LineStyleType lineStyle,UINT width,COLORR
    lb.lbHatch = 0;
    switch(lineStyle)
    {
+   case lsNull:
+      pen.CreatePen(PS_NULL, width, color);
+      break;
+
    case lsSolid:
       pen.CreatePen(PS_GEOMETRIC | PS_ENDCAP_FLAT | PS_JOIN_BEVEL, width, &lb);
       break;

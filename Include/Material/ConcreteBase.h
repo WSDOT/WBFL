@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -41,7 +41,7 @@ CLASS
 class MATCLASS matConcreteBase
 {
 public:
-   enum Type { Normal, AllLightweight, SandLightweight };
+   enum Type { Normal, AllLightweight, SandLightweight, UHPC };
    enum CureMethod { Moist, Steam };
 
    matConcreteBase(LPCTSTR name = _T("Unknown"));
@@ -56,7 +56,7 @@ public:
 
    // Returns a string name that represents the type of concrete.
    static std::_tstring GetTypeName(Type type,bool bFull);
-   static Type GetTypeFromName(LPCTSTR strName);
+   static Type GetTypeFromTypeName(LPCTSTR strName);
 
    // Indicates if the concrete defines an aggregate splitting strength
    bool HasAggSplittingStrength() const;

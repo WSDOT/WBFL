@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -119,7 +119,7 @@ HRESULT CStrandGridModel::OnInitialize()
    // under top center (0,0) of girder. Apply an adjustment
    // to position the strand grid correctly
    CComPtr<IShape> shape;
-   m_pSegment->get_PrimaryShape(0.0, sbRight, &shape);
+   m_pSegment->get_PrimaryShape(0.0, sbRight, cstGirder, &shape);
 
    CComQIPtr<IAsymmetricSection> asymmetric(shape);
    if (asymmetric)
@@ -2018,7 +2018,7 @@ Float64 CStrandGridModel::GetSectionHeight(Float64 Xs)
 {
    Float64 Hg;
    CComPtr<IShape> shape;
-   m_pSegment->get_PrimaryShape(Xs,sbLeft,&shape);
+   m_pSegment->get_PrimaryShape(Xs,sbLeft,cstGirder,&shape);
    CComPtr<IRect2d> bbox;
    shape->get_BoundingBox(&bbox);
    bbox->get_Height(&Hg);

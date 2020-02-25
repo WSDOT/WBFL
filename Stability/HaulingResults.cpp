@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -146,6 +146,7 @@ stbHaulingResults::stbHaulingResults()
          {
             stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
             bRotationalStability[slope][impact][wind] = true;
+            bRolloverStability[slope][impact][wind] = true;
          }
       }
    }
@@ -155,9 +156,10 @@ stbHaulingResults::stbHaulingResults()
    memset((void*)FsFailure, 0, sizeof(FsFailure));
    memset((void*)AdjFsFailure, 0, sizeof(AdjFsFailure));
 
-   memset((void*)bRolloverStability, 0, sizeof(bRolloverStability));
    memset((void*)ThetaRollover, 0, sizeof(ThetaRollover));
    memset((void*)FsRollover,0,sizeof(FsRollover));
+
+   AssumedTiltDirection = stbTypes::Left;
 }
 
 bool stbHaulingResults::HasRotationalStablity() const

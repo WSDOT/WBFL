@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -52,7 +52,7 @@ void CNUSplicedGirderSegment::FinalRelease()
 // ISplicedGirderSegment implementation
 //
 
-HRESULT CNUSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
+HRESULT CNUSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
@@ -62,38 +62,59 @@ HRESULT CNUSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias section
       return S_OK;
    }
 
-   CComQIPtr<INUGirderSection> beam(m_Shapes.front().Shape);
-   ATLASSERT(beam); // if this is nullptr... how did it get in the system????
-
-   // This object reprsents a prismatic shape... all sections are the same
-   HRESULT hr = S_OK;
-
-
-   // create a new shape that is a clone of the original
-   CComQIPtr<IShape> shape(beam);
+   CComPtr<IShape> cachedShape;
+   HRESULT hr = GetCachedPrimaryShape(Xs, sectionBias, &cachedShape);
    CComPtr<IShape> newShape;
-   hr = shape->Clone(&newShape);
+   CComQIPtr<INUGirderSection> newFlangedBeam;
+   if(SUCCEEDED(hr))
+   { 
+      cachedShape->Clone(&newShape);
+      newShape.QueryInterface(&newFlangedBeam);
+   }
+   else
+   {
+      CComQIPtr<INUGirderSection> beam(m_Shapes.front().Shape);
+      ATLASSERT(beam); // if this is nullptr... how did it get in the system????
 
-   CComQIPtr<INUGirderSection> newFlangedBeam(newShape);
-   CComPtr<INUBeam> newBeam;
-   newFlangedBeam->get_Beam(&newBeam);
+      // This object reprsents a prismatic shape... all sections are the same
+      HRESULT hr = S_OK;
 
-   Float64 Hg = GetSectionDepth(Xs);
-   Float64 Htf = GetBottomFlangeHeight(Xs);
-   AdjustForVariableDepth(newBeam, Hg, Htf);
 
-   // Get the end block dimensions
-   // and adjust dimensions based on end block size
-   Float64 Web;
-   GetEndBlockWidth(Xs, sectionBias, &Web);
-   AdjustForEndBlocks(newBeam, Web);
+      // create a new shape that is a clone of the original
+      CComQIPtr<IShape> shape(beam);
+      hr = shape->Clone(&newShape);
 
-   // position the shape
-   CComPtr<IPoint2d> pntTopCenter;
-   GB_GetSectionLocation(this, Xs, &pntTopCenter);
+      newShape.QueryInterface(&newFlangedBeam);
+      CComPtr<INUBeam> newBeam;
+      newFlangedBeam->get_Beam(&newBeam);
 
-   CComQIPtr<IXYPosition> position(newFlangedBeam);
-   position->put_LocatorPoint(lpTopCenter, pntTopCenter);
+      Float64 Hg = GetSectionDepth(Xs);
+      Float64 Htf = GetBottomFlangeHeight(Xs);
+      AdjustForVariableDepth(newBeam, Hg, Htf);
+
+      // Get the end block dimensions
+      // and adjust dimensions based on end block size
+      Float64 Web;
+      GetEndBlockWidth(Xs, sectionBias, &Web);
+      AdjustForEndBlocks(newBeam, Web);
+
+      CComPtr<IPoint2d> pnt;
+      pnt.CoCreateInstance(CLSID_Point2d);
+      pnt->Move(0, 0);
+      CComQIPtr<IXYPosition> position(newFlangedBeam);
+      position->put_LocatorPoint(lpTopCenter, pnt);
+
+      CachePrimaryShape(Xs, sectionBias, newShape);
+   }
+
+   if (coordinateSystem == cstBridge)
+   {
+      CComPtr<IPoint2d> pntTopCenter;
+      GB_GetSectionLocation(this, Xs, &pntTopCenter);
+
+      CComQIPtr<IXYPosition> position(newFlangedBeam);
+      position->put_LocatorPoint(lpTopCenter, pntTopCenter);
+   }
 
    *ppShape = newShape;
    (*ppShape)->AddRef();

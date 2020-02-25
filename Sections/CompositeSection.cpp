@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Sections - Model bridge member cross sections
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -28,6 +28,7 @@
 #include "CompositeSectionItem.h"
 #include "ElasticProperties.h"
 #include "MassProperties.h"
+#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -419,6 +420,11 @@ STDMETHODIMP CCompositeSection::Clone(ISection** clone)
 //
 STDMETHODIMP CCompositeSection::Offset(Float64 dx,Float64 dy)
 {
+   if (IsZero(dx) && IsZero(dy))
+   {
+      return S_OK;
+   }
+
    for (auto& value : m_coll)
    {
       CComPtr<ICompositeSectionItem> item(value.second);
@@ -436,20 +442,9 @@ STDMETHODIMP CCompositeSection::Offset(Float64 dx,Float64 dy)
 STDMETHODIMP CCompositeSection::OffsetEx(ISize2d* pSize)
 {
    CHECK_IN(pSize);
-
-   for (auto& value : m_coll)
-   {
-      CComPtr<ICompositeSectionItem> item(value.second);
-
-      CComPtr<IShape> shape;
-      item->get_Shape(&shape);
-
-      CComQIPtr<IXYPosition> position(shape);
-
-      position->OffsetEx(pSize);
-   }
-
-	return S_OK;
+   Float64 dx, dy;
+   pSize->Dimensions(&dx, &dy);
+   return Offset(dx, dy);
 }
 
 STDMETHODIMP CCompositeSection::get_LocatorPoint(LocatorPointType lp, IPoint2d** point)

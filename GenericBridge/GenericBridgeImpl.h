@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -60,9 +60,6 @@ public:
    HRESULT FinalConstruct();
    void FinalRelease();
 
-   // Causes the internal span/pier linkages pointers to be re-initialized
-   void LinkSpansAndPiers();
-
 DECLARE_REGISTRY_RESOURCEID(IDR_GENERICBRIDGE)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
@@ -75,7 +72,7 @@ BEGIN_COM_MAP(CGenericBridge)
 END_COM_MAP()
 
 private:
-   void DoUpdateBridgeModel();
+   void DoUpdateBridgeModel(long flags);
 
    CComPtr<IPierCollection> m_Piers;
 
@@ -125,11 +122,12 @@ public:
 	STDMETHOD(put_SacrificialDepth)(/*[in]*/Float64 depth) override;
    STDMETHOD(get_SacrificialDepthStage)(/*[out,retval]*/StageIndexType* stage) override;
 	STDMETHOD(put_SacrificialDepthStage)(/*[in]*/StageIndexType stage) override;
+   STDMETHOD(HasFutureOverlay)(/*[out]*/VARIANT_BOOL* pvbHasFutureOverlay) override;
    STDMETHOD(CreateSuperstructureMember)(GirderIDType id,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,ISuperstructureMember** ppMbr) override;
    STDMETHOD(get_SuperstructureMember)(GirderIDType id,ISuperstructureMember** ppMbr) override;
    STDMETHOD(get__EnumSuperstructureMembers)(IEnumSuperstructureMembers* *enumSSMbrs) override;
 
-   STDMETHOD(UpdateBridgeModel)() override;
+   STDMETHOD(UpdateBridgeModel)(long flags) override;
 
 // IStructuredStorage2
 public:

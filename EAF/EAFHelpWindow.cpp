@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -45,6 +45,32 @@ static UINT indicators[] =
 
 #define ID_NAVIGATION_TIMER 1000
 static const UINT gs_NavigationTimeout = 10000; // timeout in milliseconds (10,000 = 10 sec)
+
+BEGIN_MESSAGE_MAP(CEAFHelpStatusBar, CStatusBar)
+   ON_WM_LBUTTONDBLCLK()
+END_MESSAGE_MAP()
+
+void CEAFHelpStatusBar::SetHelpWindow(CEAFHelpWindow* pHelpWnd)
+{
+   m_pHelpWnd = pHelpWnd;
+}
+
+void CEAFHelpStatusBar::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
+   CString strURL = m_pHelpWnd->GetURL();
+
+   if (OpenClipboard() && EmptyClipboard())
+   {
+      size_t size = (strURL.GetLength() + 1) * sizeof(TCHAR);
+      HGLOBAL hData = GlobalAlloc(GMEM_MOVEABLE, size);
+      memcpy_s(GlobalLock(hData), size, strURL.LockBuffer(), size);
+      GlobalUnlock(hData);
+      strURL.UnlockBuffer();
+      UINT uiFormat = (sizeof(TCHAR) == sizeof(WCHAR)) ? CF_UNICODETEXT : CF_TEXT;
+      SetClipboardData(uiFormat, hData);
+      CloseClipboard();
+   }
+}
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFHelpWindow
@@ -120,6 +146,7 @@ int CEAFHelpWindow::OnCreate(LPCREATESTRUCT lpCreateStruct)
    }
 
    m_StatusBar.SetIndicators(indicators,sizeof(indicators)/sizeof(UINT));
+   m_StatusBar.SetHelpWindow(this);
 	
    CRect rect(0,0,0,0);
    BOOL bCreated = m_WebBrowser.Create(TEXT("Browser Control"),
@@ -199,7 +226,9 @@ void CEAFHelpWindow::OnForward()
 void CEAFHelpWindow::OnBeforeNavigate(NMHDR* pNotifyStruct,LRESULT* result)
 {
    CWebBrowser::Notification* pNotification = (CWebBrowser::Notification*)(pNotifyStruct);
-   m_StatusBar.SetPaneText(0,pNotification->URL);
+   CString strMsg;
+   strMsg.Format(_T("%s (double click to copy URL)"),pNotification->URL);
+   m_StatusBar.SetPaneText(0,strMsg);
    SetTimer(ID_NAVIGATION_TIMER, gs_NavigationTimeout,nullptr);
 }
 
@@ -207,6 +236,11 @@ void CEAFHelpWindow::OnAfterNavigate(NMHDR* pNotifyStruct, LRESULT* result)
 {
    // navigation was successful so kill the timer
    KillTimer(ID_NAVIGATION_TIMER);
+}
+
+CString CEAFHelpWindow::GetURL()
+{
+   return m_WebBrowser.GetLocationURL();
 }
 
 void CEAFHelpWindow::OnTimer(UINT_PTR nIDEvent)

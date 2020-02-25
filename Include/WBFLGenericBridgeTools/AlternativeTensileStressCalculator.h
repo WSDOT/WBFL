@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -48,6 +48,7 @@ struct WBFLGENERICBRIDGETOOLSCLASS gbtAlternativeTensileStressRequirements
    bool bHasFct;
    Float64 Fct;
    Float64 density;
+   bool bAdjustForDevelopmentLength;
 
    CComPtr<IShape> shape;
    CComPtr<IRebarSection> rebarSection;
@@ -55,6 +56,7 @@ struct WBFLGENERICBRIDGETOOLSCLASS gbtAlternativeTensileStressRequirements
    gpPoint3d pntTopRight;
    gpPoint3d pntBottomLeft;
    gpPoint3d pntBottomRight;
+   Float64 Ytg;
 
    // Output
    CComPtr<IShape> tensionArea;

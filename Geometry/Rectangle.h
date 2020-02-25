@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -159,6 +159,17 @@ private:
          Init();
       }
       void Init();
+
+      void Offset(Float64 dx, Float64 dy)
+      {
+         Xleft += dx;
+         Xright += dx;
+         Ytop += dy;
+         Ybottom += dy;
+         Cx += dx;
+         Cy += dy;
+      }
+
       HRESULT CreateIShapeProperties(IShapeProperties ** props);
 
    } m_ShapeProps;
@@ -180,6 +191,14 @@ private:
       void Init()
       {
          Left = Right = Top = Bottom = 0.0;
+      }
+
+      void Offset(Float64 dx, Float64 dy)
+      {
+         Left += dx;
+         Right += dx;
+         Top += dy;
+         Bottom += dy;
       }
 
       HRESULT CreateIRect(IRect2d** rect);

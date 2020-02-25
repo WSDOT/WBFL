@@ -854,6 +854,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AutoRegistry.cpp" />
+    <ClCompile Include="CacheCheckBox.cpp" />
     <ClCompile Include="CacheComboBox.cpp" />
     <ClCompile Include="CacheEdit.cpp" />
     <ClCompile Include="ChoiceDlg.cpp" />
@@ -913,6 +914,7 @@
   <ItemGroup>
     <ClInclude Include="..\Include\MfcTools\AutoLib.h" />
     <ClInclude Include="..\Include\MfcTools\AutoRegistry.h" />
+    <ClInclude Include="..\Include\MfcTools\CacheCheckBox.h" />
     <ClInclude Include="..\Include\MfcTools\CacheComboBox.h" />
     <ClInclude Include="..\Include\MfcTools\CacheEdit.h" />
     <ClInclude Include="..\Include\MfcTools\choosedirdlg.h" />

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -82,9 +82,9 @@ CPierCollection* CGenericBridge::GetPierCollection()
 
 /////////////////////////////////////////////////////
 // IGenericBridge implementation
-STDMETHODIMP CGenericBridge::UpdateBridgeModel()
+STDMETHODIMP CGenericBridge::UpdateBridgeModel(long flags)
 {
-   DoUpdateBridgeModel();
+   DoUpdateBridgeModel(flags);
    return S_OK;
 }
 
@@ -303,6 +303,18 @@ STDMETHODIMP CGenericBridge::put_SacrificialDepth(Float64 depth)
    return S_OK;
 }
 
+STDMETHODIMP CGenericBridge::HasFutureOverlay(VARIANT_BOOL* pvbHasFutureOverlay)
+{
+   CHECK_RETVAL(pvbHasFutureOverlay);
+   bool bHasFutureOverlay = false;
+   if ((m_SacrificialDepthStage != INVALID_INDEX && m_WearingSurfaceStage != INVALID_INDEX) && (m_SacrificialDepthStage != m_WearingSurfaceStage))
+   {
+      bHasFutureOverlay = true;
+   }
+   *pvbHasFutureOverlay = (bHasFutureOverlay ? VARIANT_TRUE : VARIANT_FALSE);
+   return S_OK;
+}
+
 STDMETHODIMP CGenericBridge::CreateSuperstructureMember(GirderIDType id, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,ISuperstructureMember** ppMbr)
 {
    CHECK_RETOBJ(ppMbr);
@@ -497,30 +509,33 @@ STDMETHODIMP CGenericBridge::Save(IStructuredSave2* save)
 //}
 //#endif // _DEBUG
 
-void CGenericBridge::DoUpdateBridgeModel()
+void CGenericBridge::DoUpdateBridgeModel(long flags)
 {
-   m_BridgeGeometry->UpdateGeometry();
+   m_BridgeGeometry->UpdateGeometry(flags);
 
-   ////////////////////////////////
-   // Create Pier Objects
-   ////////////////////////////////
-   CPierCollection* pPiers = GetPierCollection();
-   pPiers->Clear();
-
-   PierIndexType nPiers;
-   m_BridgeGeometry->get_PierLineCount(&nPiers);
-   for ( PierIndexType pierIdx = 0; pierIdx < nPiers; pierIdx++ )
+   if (flags & BGF_PIERS)
    {
-      CComPtr<IPierLine> pierLine;
-      m_BridgeGeometry->GetPierLine(pierIdx,&pierLine);
+      ////////////////////////////////
+      // Create Pier Objects
+      ////////////////////////////////
+      CPierCollection* pPiers = GetPierCollection();
+      pPiers->Clear();
 
-      CComObject<CBridgePier>* pPier;
-      CComObject<CBridgePier>::CreateInstance(&pPier);
+      PierIndexType nPiers;
+      m_BridgeGeometry->get_PierLineCount(&nPiers);
+      for (PierIndexType pierIdx = 0; pierIdx < nPiers; pierIdx++)
+      {
+         CComPtr<IPierLine> pierLine;
+         m_BridgeGeometry->GetPierLine(pierIdx, &pierLine);
 
-      pPier->Init(this,pierLine);
+         CComObject<CBridgePier>* pPier;
+         CComObject<CBridgePier>::CreateInstance(&pPier);
 
-      CComPtr<IBridgePier> pier;
-      pier = pPier;
-      pPiers->Add(pier);
+         pPier->Init(this, pierLine);
+
+         CComPtr<IBridgePier> pier;
+         pier = pPier;
+         pPiers->Add(pier);
+      }
    }
 }

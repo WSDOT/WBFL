@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -26,51 +26,28 @@
 #include <Stability\StabilityExp.h>
 #include <Stability\StabilityProblem.h>
 #include <set>
+#include <array>
 #include <GeometricPrimitives\GeometricPrimitives.h>
 
 struct STABILITYCLASS stbFpe
 {
    Float64 X;
-   Float64 fpeStraight;
-   Float64 XpsStraight;
-   Float64 YpsStraight;
-   Float64 fpeHarped;
-   Float64 XpsHarped;
-   Float64 YpsHarped;
-   Float64 fpeTemporary;
-   Float64 XpsTemporary;
-   Float64 YpsTemporary;
+   Float64 fpe;
+   Float64 Xps;
+   Float64 Yps;
 
    bool operator==(const stbFpe& other) const
    {
       if ( !IsEqual(X,other.X) )
          return false;
 
-      if ( !IsEqual(fpeStraight,other.fpeStraight) )
+      if ( !IsEqual(fpe,other.fpe) )
          return false;
 
-      if (!IsEqual(XpsStraight, other.XpsStraight))
+      if (!IsEqual(Xps, other.Xps))
          return false;
 
-      if (!IsEqual(YpsStraight, other.YpsStraight))
-         return false;
-
-      if ( !IsEqual(fpeHarped,other.fpeHarped) )
-         return false;
-
-      if (!IsEqual(XpsHarped, other.XpsHarped))
-         return false;
-
-      if (!IsEqual(YpsHarped, other.YpsHarped))
-         return false;
-
-      if ( !IsEqual(fpeTemporary,other.fpeTemporary) )
-         return false;
-
-      if (!IsEqual(XpsTemporary, other.XpsTemporary))
-         return false;
-
-      if (!IsEqual(YpsTemporary, other.YpsTemporary))
+      if (!IsEqual(Yps, other.Yps))
          return false;
 
       return true;
@@ -81,10 +58,10 @@ bool STABILITYFUNC operator<(const stbFpe& a,const stbFpe& b);
 
 struct STABILITYCLASS stbStressPoints
 {
-   gpPoint2d pntTL[2];
-   gpPoint2d pntTR[2];
-   gpPoint2d pntBL[2];
-   gpPoint2d pntBR[2];
+   std::array<gpPoint2d, 2> pntTL;
+   std::array<gpPoint2d, 2> pntTR;
+   std::array<gpPoint2d, 2> pntBL;
+   std::array<gpPoint2d, 2> pntBR;
 
    bool operator==(const stbStressPoints& other) const
    {
@@ -121,15 +98,15 @@ struct STABILITYCLASS stbStressPoints
 
 struct STABILITYCLASS stbSectionProperties
 {
-   Float64 Ag[2]; // area of girder
-   Float64 Ixx[2]; // strong axis moment of inertia
-   Float64 Iyy[2]; // weak axis moment of inertia
-   Float64 Ixy[2]; 
-   Float64 Ytop[2]; // center of mass (centroid) from top of girder
-   Float64 Xleft[2]; // center of mass from roll center
-   Float64 Hg[2];
-   Float64 Wtf[2];
-   Float64 Wbf[2];
+   std::array<Float64, 2> Ag; // area of girder
+   std::array<Float64, 2> Ixx; // strong axis moment of inertia
+   std::array<Float64, 2> Iyy; // weak axis moment of inertia
+   std::array<Float64, 2> Ixy;
+   std::array<Float64, 2> Ytop; // center of mass (centroid) from top of girder
+   std::array<Float64, 2> Xleft; // center of mass from roll center
+   std::array<Float64, 2> Hg;
+   std::array<Float64, 2> Wtf;
+   std::array<Float64, 2> Wbf;
    Float64 L; // distance over which these properties apply
 
    std::shared_ptr<stbStressPoints> m_pStressPoints;
@@ -223,7 +200,6 @@ public:
    virtual void GetStressPoints(Float64 X, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const override;
 
    virtual Float64 GetGirderLength() const override;
-   Float64 GetStrandLocation(stbTypes::StrandType strandType,Float64 X) const;
 
    void SetAdditionalLoads(const std::vector<std::pair<Float64,Float64>>& vLoads);
    virtual std::vector<std::pair<Float64,Float64>> GetAdditionalLoads() const override;
@@ -264,15 +240,15 @@ public:
    bool operator!=(const stbStabilityProblemImp& other) const;
 
    // Effective prestress for can vary along the girder
-   // Define Fpe for straight, harped, and temporary strands at differnet locations
-   // along the girder. Fpe will be linerally interpolated between locations.
+   // Define Fpe at different locations along the girder. Fpe will be linerally interpolated between locations.
    // If Fpe is requested before the first or after the last defined point, the first/last values will be used
    // For constant Fpe, define a Fpe at a single location
-   IndexType GetFpeCount() const;
+   std::vector<LPCTSTR> GetPrestressNames() const;
+   IndexType GetFpeCount(LPCTSTR strName) const;
    void ClearFpe();
-   void AddFpe(Float64 X,Float64 FpeStraight,Float64 XpsStraight,Float64 YpsStraight,Float64 FpeHarped,Float64 XpsHarped,Float64 YpsHarped,Float64 FpeTemp,Float64 XpsTemp,Float64 YpsTemp);
-   void SetFpe(IndexType fpeIdx,Float64 X,Float64 FpeStraight,Float64 XpsStraight,Float64 YpsStraight,Float64 FpeHarped,Float64 XpsHarped,Float64 YpsHarped,Float64 FpeTemp,Float64 XpsTemp,Float64 YpsTemp);
-   void GetFpe(IndexType fpeIdx,Float64* pX,Float64* pFpeStraight,Float64* pXpsStraight,Float64* pYpsStraight,Float64* pFpeHarped,Float64* pXpsHarped,Float64* pYpsHarped,Float64* pFpeTemp,Float64* pXpsTemp,Float64* pYpsTemp) const;
+   void AddFpe(LPCTSTR strName,Float64 X,Float64 Fpe,Float64 Xps,Float64 Yps);
+   bool SetFpe(LPCTSTR strName,IndexType fpeIdx,Float64 X,Float64 Fpe,Float64 Xps,Float64 Yps); // returns false if strName is invalid
+   bool GetFpe(LPCTSTR strName,IndexType fpeIdx,Float64* pX,Float64* pFpe,Float64* pXps,Float64* pYps) const;// returns false if strName is invalid
 
    // Prestress transfer length... 
    // Linearly interpolates Fpe from zero at the ends of the girder to its full value
@@ -300,7 +276,7 @@ public:
    void SetSupportPlacementTolerance(Float64 spt);
    void SetImpact(Float64 up,Float64 down);
 
-   void GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const;
+   bool GetFpe(LPCTSTR strName,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const;
 
    Float64 GetCamber() const;
    void SetCamberMultiplier(Float64 m);
@@ -308,9 +284,6 @@ public:
 
    Float64 GetLateralCamber() const;
    bool IncludeLateralRollAxisOffset() const;
-
-   Float64 GetEc() const;
-   Float64 GetFr() const;
 
    void GetSupportLocations(Float64* pLeft,Float64* pRight) const;
    Float64 GetYRollAxis() const;
@@ -340,7 +313,12 @@ protected:
    Float64 m_XferLength;
    Float64 m_Lg; // length of girder
 
-   std::set<stbFpe> m_vFpe;
+   // this is not the most efficient data structure because we will be doing
+   // lookups by name. however, we don't want the names sorted.
+   // since this vector wont be more than 3 to 6 items in length, sequential
+   // searching is so bad
+   std::vector<std::pair<std::_tstring,std::set<stbFpe>>> m_vFpe;
+   IndexType FindFpe(LPCTSTR strName) const; // returns the index into m_vFpe
    
    Float64 m_Camber;
    Float64 m_CamberMultiplier;
@@ -379,11 +357,11 @@ public:
    bool operator==(const stbLiftingStabilityProblem& other) const;
    bool operator!=(const stbLiftingStabilityProblem& other) const;
 
-   IndexType GetFpeCount() { return m_Imp.GetFpeCount(); }
+   IndexType GetFpeCount(LPCTSTR strName) const { return m_Imp.GetFpeCount(strName); }
    void ClearFpe() { m_Imp.ClearFpe(); }
-   void AddFpe(Float64 X, Float64 FpeStraight, Float64 XpsStraight,Float64 YpsStraight, Float64 FpeHarped, Float64 XpsHarped, Float64 YpsHarped, Float64 FpeTemp, Float64 XpsTemp, Float64 YpsTemp) { m_Imp.AddFpe(X, FpeStraight, XpsStraight, YpsStraight, FpeHarped, XpsHarped, YpsHarped, FpeTemp, XpsTemp, YpsTemp); }
-   void GetFpe(IndexType fpeIdx, Float64* pX, Float64* pFpeStraight, Float64* pXpsStraight, Float64* pYpsStraight, Float64* pFpeHarped, Float64* pXpsHarped, Float64* pYpsHarped, Float64* pFpeTemp, Float64* pXpsTemp, Float64* pYpsTemp) const { return m_Imp.GetFpe(fpeIdx, pX, pFpeStraight, pXpsStraight, pYpsStraight, pFpeHarped, pXpsHarped, pYpsHarped, pFpeTemp, pXpsTemp, pYpsTemp); }
-   void SetFpe(IndexType fpeIdx, Float64 X, Float64 FpeStraight, Float64 XpsStraight, Float64 YpsStraight, Float64 FpeHarped, Float64 XpsHarped, Float64 YpsHarped, Float64 FpeTemp, Float64 XpsTemp, Float64 YpsTemp) { return m_Imp.SetFpe(fpeIdx, X, FpeStraight, XpsStraight, YpsStraight, FpeHarped, XpsHarped, YpsHarped, FpeTemp, XpsTemp, YpsTemp); }
+   void AddFpe(LPCTSTR strName,Float64 X, Float64 Fpe, Float64 Xps,Float64 Yps) { m_Imp.AddFpe(strName, X, Fpe, Xps, Yps); }
+   bool SetFpe(LPCTSTR strName, IndexType fpeIdx, Float64 X, Float64 Fpe, Float64 Xps, Float64 Yps) { return m_Imp.SetFpe(strName, fpeIdx, X, Fpe, Xps, Yps); }
+   bool GetFpe(LPCTSTR strName,IndexType fpeIdx, Float64* pX, Float64* pFpe, Float64* pXps, Float64* pYps) const { return m_Imp.GetFpe(strName, fpeIdx, pX, pFpe, pXps, pYps); }
 
    bool AdjustForXferLength() const { return m_Imp.AdjustForXferLength(); }
    void AdjustForXferLength(bool bAdjust) { m_Imp.AdjustForXferLength(bAdjust); }
@@ -409,8 +387,10 @@ public:
    void SetSweepTolerance(Float64 sweepTolerance) { m_Imp.SetSweepTolerance(sweepTolerance);  }
    void SetSupportPlacementTolerance(Float64 spt)  {  m_Imp.SetSupportPlacementTolerance(spt); }
    void SetImpact(Float64 up,Float64 down)  { m_Imp.SetImpact(up,down);   }
-   virtual void GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const  override { m_Imp.GetFpe(strandType,X,pFpe,pXps,pYps); }
-   virtual Float64 GetCamber() const  override {  return m_Imp.GetCamber();   }
+
+   virtual std::vector<LPCTSTR> GetPrestressNames() const override { return m_Imp.GetPrestressNames(); }
+   virtual bool GetFpe(LPCTSTR strName,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const override { return m_Imp.GetFpe(strName,X,pFpe,pXps,pYps); }
+   virtual Float64 GetCamber() const override {  return m_Imp.GetCamber();   }
    virtual Float64 GetLateralCamber() const override { return m_Imp.GetLateralCamber(); }
    virtual bool IncludeLateralRollAxisOffset() const override { return m_Imp.IncludeLateralRollAxisOffset(); }
    virtual void GetSupportLocations(Float64* pLeft,Float64* pRight) const  override { m_Imp.GetSupportLocations(pLeft,pRight); }
@@ -453,11 +433,11 @@ public:
    bool operator==(const stbHaulingStabilityProblem& other) const;
    bool operator!=(const stbHaulingStabilityProblem& other) const;
 
-   IndexType GetFpeCount() { return m_Imp.GetFpeCount(); }
+   IndexType GetFpeCount(LPCTSTR strName) const { return m_Imp.GetFpeCount(strName); }
    void ClearFpe() { m_Imp.ClearFpe(); }
-   void AddFpe(Float64 X, Float64 FpeStraight, Float64 XpsStraight, Float64 YpsStraight, Float64 FpeHarped, Float64 XpsHarped, Float64 YpsHarped, Float64 FpeTemp, Float64 XpsTemp, Float64 YpsTemp) { m_Imp.AddFpe(X, FpeStraight, XpsStraight, YpsStraight, FpeHarped, XpsHarped, YpsHarped, FpeTemp, XpsTemp, YpsTemp); }
-   void GetFpe(IndexType fpeIdx, Float64* pX, Float64* pFpeStraight, Float64* pXpsStraight, Float64* pYpsStraight, Float64* pFpeHarped, Float64* pXpsHarped, Float64* pYpsHarped, Float64* pFpeTemp, Float64* pXpsTemp, Float64* pYpsTemp) const { return m_Imp.GetFpe(fpeIdx, pX, pFpeStraight, pXpsStraight, pYpsStraight, pFpeHarped, pXpsHarped, pYpsHarped, pFpeTemp, pXpsTemp, pYpsTemp); }
-   void SetFpe(IndexType fpeIdx, Float64 X, Float64 FpeStraight, Float64 XpsStraight, Float64 YpsStraight, Float64 FpeHarped, Float64 XpsHarped, Float64 YpsHarped, Float64 FpeTemp, Float64 XpsTemp, Float64 YpsTemp) { return m_Imp.SetFpe(fpeIdx, X, FpeStraight, XpsStraight, YpsStraight, FpeHarped, XpsHarped, YpsHarped, FpeTemp, XpsTemp, YpsTemp); }
+   void AddFpe(LPCTSTR strName,Float64 X, Float64 Fpe, Float64 Xps, Float64 Yps) { m_Imp.AddFpe(strName, X, Fpe, Xps, Yps); }
+   bool SetFpe(LPCTSTR strName,IndexType fpeIdx, Float64 X, Float64 Fpe, Float64 Xps, Float64 Yps) { return m_Imp.SetFpe(strName, fpeIdx, X, Fpe, Xps, Yps); }
+   bool GetFpe(LPCTSTR strName,IndexType fpeIdx, Float64* pX, Float64* pFpe, Float64* pXps, Float64* pYps) const { return m_Imp.GetFpe(strName, fpeIdx, pX, pFpe, pXps, pYps); }
 
    bool AdjustForXferLength() const { return m_Imp.AdjustForXferLength(); }
    void AdjustForXferLength(bool bAdjust) { m_Imp.AdjustForXferLength(bAdjust); }
@@ -483,7 +463,9 @@ public:
    void SetSweepTolerance(Float64 sweepTolerance) { m_Imp.SetSweepTolerance(sweepTolerance);  }
    void SetSupportPlacementTolerance(Float64 spt)  {  m_Imp.SetSupportPlacementTolerance(spt); }
    void SetImpact(Float64 up,Float64 down)  { m_Imp.SetImpact(up,down);   }
-   virtual void GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const  override { m_Imp.GetFpe(strandType,X,pFpe,pXps,pYps); }
+
+   virtual std::vector<LPCTSTR> GetPrestressNames() const override { return m_Imp.GetPrestressNames(); }
+   virtual bool GetFpe(LPCTSTR strName,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const override { return m_Imp.GetFpe(strName,X,pFpe,pXps,pYps); }
    virtual Float64 GetCamber() const override { return m_Imp.GetCamber();   }
    virtual Float64 GetLateralCamber() const override { return m_Imp.GetLateralCamber(); }
    virtual bool IncludeLateralRollAxisOffset() const override { return m_Imp.IncludeLateralRollAxisOffset(); }

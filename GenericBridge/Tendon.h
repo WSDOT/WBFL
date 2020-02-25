@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -81,7 +81,8 @@ private:
 
    bool GetTendonSegment(Float64 z,ITendonSegment** segment);
 
-   ISuperstructureMember* m_pSSMbr; // weak references
+   ISuperstructureMember* m_pSSMbr; // weak reference
+   ISuperstructureMemberSegment* m_pSSMbrSegment; // weak reference
 
 #if defined _DEBUG
    virtual HRESULT OnBeforeAdd( StoredType* pVal) override;
@@ -100,9 +101,10 @@ public:
 	STDMETHOD(ClearSegments)() override;
 	STDMETHOD(get_OutsideDiameter)(/*[out,retval]*/Float64* size) override;
 	STDMETHOD(put_OutsideDiameter)(/*[in]*/Float64 size) override;
-	STDMETHOD(get_InsideDiameter)(/*[out,retval]*/Float64* size) override;
+   STDMETHOD(get_OutsideDuctArea)(/*[out,retval]*/Float64* Aduct) override;
+   STDMETHOD(get_InsideDiameter)(/*[out,retval]*/Float64* size) override;
 	STDMETHOD(put_InsideDiameter)(/*[in]*/Float64 size) override;
-	STDMETHOD(get_InsideDuctArea)(/*[out,retval]*/Float64* Apt) override;
+	STDMETHOD(get_InsideDuctArea)(/*[out,retval]*/Float64* Aduct) override;
 	STDMETHOD(get_TendonArea)(/*[out,retval]*/Float64* Apt) override;
 	STDMETHOD(get_StrandCount)(/*[out,retval]*/StrandIndexType* count) override;
 	STDMETHOD(put_StrandCount)(/*[in]*/StrandIndexType count) override;
@@ -117,8 +119,10 @@ public:
    STDMETHOD(get_Centerline)(/*[in]*/ TendonMeasure measure,/*[out,retval]*/IPoint3dCollection** ppPoints) override;
    STDMETHOD(get_JackingEnd)(/*[out,retval]*/JackingEndType* type) override;
    STDMETHOD(put_JackingEnd)(/*[in]*/JackingEndType type) override;
-   STDMETHOD(putref_SuperstructureMember)(/*[in]*/ISuperstructureMember* pMbr) override;
-   STDMETHOD(get_SuperstructureMember)(/*[out,retval]*/ISuperstructureMember** ppMbr) override;
+   STDMETHOD(putref_SuperstructureMember)(/*[in]*/ISuperstructureMember* pSSMbr) override;
+   STDMETHOD(get_SuperstructureMember)(/*[out,retval]*/ISuperstructureMember** ppSSMbr) override;
+   STDMETHOD(putref_SuperstructureMemberSegment)(/*[in]*/ISuperstructureMemberSegment* pSSMbrSegment) override;
+   STDMETHOD(get_SuperstructureMemberSegment)(/*[out, retval]*/ISuperstructureMemberSegment** ppSSMbrSegment) override;
 
 
 // IStructuredStorage2

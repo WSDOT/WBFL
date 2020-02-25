@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -116,6 +116,7 @@ public:
 public:
    STDMETHOD(get_Index)(/*[out,retval]*/PierIndexType* pIndex) override;
    STDMETHOD(get_ID)(/*[out,retval]*/PierIDType* pID) override;
+   STDMETHOD(get_Location)(/*[out, retval]*/Float64* pXb) override;
    STDMETHOD(get_Station)(/*[out,retval]*/IStation* *station) override;
    STDMETHOD(get_Direction)(/*[out,retval]*/ IDirection* *direction) override;
 

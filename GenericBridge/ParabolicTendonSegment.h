@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -78,8 +78,17 @@ private:
    DirectionType m_SlopeEnd; // specifies which end of the tendon segment has a slope of m_Slope
    CComPtr<IGeomUtil3d> m_GeomUtil;
 
-   mathPolynomial2d GetParabolaX(); // parabola looking in plan (think parabolic tendon in sloped U-beam web, top view)
-   mathPolynomial2d GetParabolaY(); // parabola looking in elevation
+   const mathPolynomial2d& GetParabolaX(); // parabola looking in plan (think parabolic tendon in sloped U-beam web, top view)
+   const mathPolynomial2d& GetParabolaDX(); // parabola looking in plan (think parabolic tendon in sloped U-beam web, top view)
+   const mathPolynomial2d& GetParabolaY(); // parabola looking in elevation
+   const mathPolynomial2d& GetParabolaDY(); // parabola looking in elevation
+
+   void UpdateParabolas();
+   bool m_bUpdateParabolas;
+   mathPolynomial2d m_ParabolaX; // parabola looking in plan
+   mathPolynomial2d m_ParabolaDX; // slope function parabola X
+   mathPolynomial2d m_ParabolaY; // parabola looking in elevation
+   mathPolynomial2d m_ParabolaDY; // slope function parabola Y
 
    ITendon* m_pTendon;
 

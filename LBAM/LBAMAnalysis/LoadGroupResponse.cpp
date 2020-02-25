@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -1093,20 +1093,38 @@ SupportIndexType CLoadGroupResponse::CAnalysisController::GetTemporarySupportInd
 
 SupportIDType CLoadGroupResponse::CAnalysisController::GetTemporarySupportID(SupportIndexType tempSupportIdx)
 {
-   ATLASSERT(tempSupportIdx < TemporarySupportCount());
-   return m_TemporarySupportInfo[tempSupportIdx].m_ID;
+   if (m_TemporarySupportInfo.size() <= tempSupportIdx)
+   {
+      return INVALID_ID;
+   }
+   else
+   {
+      return m_TemporarySupportInfo[tempSupportIdx].m_ID;
+   }
 }
 
 StageIndexType CLoadGroupResponse::CAnalysisController::TemporarySupportErectionStageIdx(SupportIndexType tempSupportIdx)
 {
-   ATLASSERT(tempSupportIdx < TemporarySupportCount());
-   return m_TemporarySupportInfo[tempSupportIdx].m_ErectionStageIdx;
+   if (m_TemporarySupportInfo.size() <= tempSupportIdx)
+   {
+      return INVALID_INDEX;
+   }
+   else
+   {
+      return m_TemporarySupportInfo[tempSupportIdx].m_ErectionStageIdx;
+   }
 }
 
 StageIndexType CLoadGroupResponse::CAnalysisController::TemporarySupportRemovalStageIndex( SupportIndexType tempSupportIdx)
 {
-   ATLASSERT(tempSupportIdx < TemporarySupportCount());
-   return m_TemporarySupportInfo[tempSupportIdx].m_RemovalStageIdx;
+   if (m_TemporarySupportInfo.size() <= tempSupportIdx)
+   {
+      return INVALID_INDEX;
+   }
+   else
+   {
+      return m_TemporarySupportInfo[tempSupportIdx].m_RemovalStageIdx;
+   }
 }
 
 
@@ -1627,8 +1645,8 @@ STDMETHODIMP CLoadGroupResponse::ComputeReactions(BSTR LoadGroup, IIDArray* supp
       hr = the_results->Reserve(nSupportIDs);
 
       // get staging and loading control info from analysis controller
-      CAnalysisController::TemporarySupportLoadInfoColl tempSupportLoadInfo;
-      m_AnalysisController.GetResponseControlInfo(LoadGroup, Stage, summType, tempSupportLoadInfo);
+      CAnalysisController::TemporarySupportLoadInfoColl tempSupportLoadInfos;
+      m_AnalysisController.GetResponseControlInfo(LoadGroup, Stage, summType, tempSupportLoadInfos);
 
       LGR_HANDLE_CANCEL_PROGRESS(); 
 
@@ -1641,6 +1659,29 @@ STDMETHODIMP CLoadGroupResponse::ComputeReactions(BSTR LoadGroup, IIDArray* supp
 
          SupportIndexType tempSupportIdx = m_AnalysisController.GetTemporarySupportIndex(supportID);
 
+         if (tempSupportIdx == INVALID_INDEX)
+         {
+            // temporary support is either a permanent support or a temporary support that is never removed
+            // check to see if it is a real temporary support
+            CComPtr<ITemporarySupports> tempSupports;
+            m_pLBAM->get_TemporarySupports(&tempSupports);
+            IndexType nTS;
+            tempSupports->get_Count(&nTS);
+            for (IndexType tsIdx = 0; tsIdx < nTS; tsIdx++)
+            {
+               CComPtr<ITemporarySupport> ts;
+               tempSupports->get_Item(tsIdx, &ts);
+               SupportIDType tsID;
+               ts->get_ID(&tsID);
+               if (tsID == supportID)
+               {
+                  // its a real TS.... get its index
+                  tempSupportIdx = tsIdx;
+                  break;
+               }
+            }
+         }
+
          // create results object and add it to the collection
          CComObject<CResult3D>* presult;
          hr = CComObject<CResult3D>::CreateInstance(&presult);
@@ -1649,15 +1690,87 @@ STDMETHODIMP CLoadGroupResponse::ComputeReactions(BSTR LoadGroup, IIDArray* supp
          hr = the_results->Add(the_result);
 
          // loop over stages and load cases associated with the request
-         CAnalysisController::TemporarySupportLoadInfoIterator iter( tempSupportLoadInfo.begin() );
-         CAnalysisController::TemporarySupportLoadInfoIterator iterend( tempSupportLoadInfo.end() );
+         CAnalysisController::TemporarySupportLoadInfoIterator iter( tempSupportLoadInfos.begin() );
+         CAnalysisController::TemporarySupportLoadInfoIterator iterend( tempSupportLoadInfos.end() );
          for (; iter != iterend; iter++)
          {
             const CAnalysisController::TemporarySupportLoadInfo& tempSupportLoadInfo = *iter;
 
-            if ( tempSupportIdx != INVALID_INDEX )
+            if (tempSupportIdx == INVALID_INDEX)
             {
-               StageIndexType tempSupportRemovalStageIdx = m_AnalysisController.TemporarySupportRemovalStageIndex(tempSupportIdx);
+               // this is a permanent support or a temporary support that is never removed
+               CComPtr<ISupports> supports;
+               m_pLBAM->get_Supports(&supports);
+               CComPtr<ISupport> support;
+               supports->get_Item((SupportIndexType)supportID, &support);
+
+               ATLASSERT(support);
+               IndexType nAssociatedSupports;
+               support->GetAssociatedSupportCount(&nAssociatedSupports);
+
+               CComPtr<ITemporarySupports> tempSupports;
+               m_pLBAM->get_TemporarySupports(&tempSupports);
+               bool bAllAssociatedSupportsRemoved = true;
+               if (0 < nAssociatedSupports)
+               {
+                  // there are associated temporary supports
+                  for (IndexType i = 0; i < nAssociatedSupports; i++)
+                  {
+                     SupportIDType assocSupportID;
+                     support->GetAssociatedSupportID(i, &assocSupportID);
+                     SupportIndexType assocSupportIdx = m_AnalysisController.GetTemporarySupportIndex(assocSupportID);
+                     if (assocSupportIdx == INVALID_INDEX)
+                     {
+                        // the temporary support is never removed so it's reactions are not put into the main model
+                        // get the reactions directly
+                        bAllAssociatedSupportsRemoved = false;
+
+                        std::shared_ptr<CAnalysisModel> pAnalysisModel = m_Models[tempSupportLoadInfo.m_StageIdx];
+
+                        // compute the load group results
+                        pAnalysisModel->GetReaction(tempSupportLoadInfo.m_FemLoadCaseID, assocSupportID, &fx, &fy, &mz);
+
+                        // sum results from temporary support removal forces
+                        hr = the_result->Sum(fx, fy, mz);
+                     }
+                     else
+                     {
+                        StageIndexType tempSupportRemovalStageIdx = m_AnalysisController.TemporarySupportRemovalStageIndex(assocSupportIdx);
+
+                        CComPtr<ITemporarySupport> tempSupport;
+                        tempSupports->get_Item(assocSupportIdx, &tempSupport);
+                        if (tempSupportLoadInfo.m_StageIdx < tempSupportRemovalStageIdx)
+                        {
+                           // the temporary support has not yet been removed, or it's reactions are not put into the main model
+                           // so get the TS reactions instead of the main support's reactions
+                           bAllAssociatedSupportsRemoved = false;
+
+                           std::shared_ptr<CAnalysisModel> pAnalysisModel = m_Models[tempSupportLoadInfo.m_StageIdx];
+
+                           // compute the load group results
+                           pAnalysisModel->GetReaction(tempSupportLoadInfo.m_FemLoadCaseID, assocSupportID, &fx, &fy, &mz);
+
+                           // sum results from temporary support removal forces
+                           hr = the_result->Sum(fx, fy, mz);
+                        }
+                     }
+                  }
+               }
+
+               if (bAllAssociatedSupportsRemoved) // all the associated supports have been removed (or there weren't any to begin with)... use the primary support
+               {
+                  std::shared_ptr<CAnalysisModel> pAnalysisModel = m_Models[tempSupportLoadInfo.m_StageIdx];
+
+                  // compute the load group results
+                  pAnalysisModel->GetReaction(tempSupportLoadInfo.m_FemLoadCaseID, supportID, &fx, &fy, &mz);
+
+                  // sum results from temporary support removal forces
+                  hr = the_result->Sum(fx, fy, mz);
+               }
+            }
+            else
+            {
+               StageIndexType tempSupportRemovalStageIdx = m_AnalysisController.TemporarySupportCount() == 0 ? INVALID_INDEX : m_AnalysisController.TemporarySupportRemovalStageIndex(tempSupportIdx);
 
                if ( tempSupportRemovalStageIdx <= tempSupportLoadInfo.m_StageIdx )
                {
@@ -1665,15 +1778,15 @@ STDMETHODIMP CLoadGroupResponse::ComputeReactions(BSTR LoadGroup, IIDArray* supp
                   // its cumulative and incremental reaction as zero
                   continue; // next support
                }
+
+               std::shared_ptr<CAnalysisModel> pAnalysisModel = m_Models[tempSupportLoadInfo.m_StageIdx];
+
+               // compute the load group results
+               pAnalysisModel->GetReaction(tempSupportLoadInfo.m_FemLoadCaseID, supportID,  &fx, &fy, &mz);
+
+               // sum results from temporary support removal forces
+               hr = the_result->Sum( fx, fy, mz);
             }
-
-            std::shared_ptr<CAnalysisModel> pFemModel = m_Models[tempSupportLoadInfo.m_StageIdx];
-
-            // compute the load group results
-            pFemModel->GetReaction(tempSupportLoadInfo.m_FemLoadCaseID, supportID,  &fx, &fy, &mz);
-
-            // sum results from temporary support removal forces
-            hr = the_result->Sum( fx, fy, mz);
          }
       }
 

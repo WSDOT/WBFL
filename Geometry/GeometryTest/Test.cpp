@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -81,6 +81,8 @@
 #include "TestBoxBeam.h"
 #include "TestDeckedSlabBeam.h"
 
+#include "TestBeamShapeFactory.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -136,6 +138,8 @@ int main(int argc, LPTSTR  argv[])
    CTestDeckedSlabBeam::Test();
 
    CTestGenericShape::Test();
+
+   CTestBeamShapeFactory::Test();
 
    ::CoUninitialize();
 

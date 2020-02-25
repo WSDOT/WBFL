@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -111,6 +111,9 @@
 #include "BridgeDeckRebarPattern.h"
 #include "NegativeMomentBridgeDeckRebarLayoutItem.h"
 
+#include "CastingRegion.h"
+#include "CastingRegions.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -182,6 +185,8 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_NegativeMomentBridgeDeckRebarLayoutItem,CNegativeMomentBridgeDeckRebarLayoutItem)
    OBJECT_ENTRY(CLSID_RebarSection,CRebarSection)
    OBJECT_ENTRY(CLSID_RebarSectionItem,CRebarSectionItem)
+   OBJECT_ENTRY_NON_CREATEABLE(CCastingRegion)
+   OBJECT_ENTRY(CLSID_CastingRegions,CCastingRegions)
 END_OBJECT_MAP()
 
 

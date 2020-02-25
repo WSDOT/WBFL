@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -117,5 +117,13 @@ protected:
    _b_->GetInterface( ##_ns_::IID_##_i_, (IUnknown**)&_ptr_ ); \
    ASSERT( _ptr_.p != nullptr )
 
+#define ASSIGN_IFACE(_i_,_ptr_) \
+   m_pBroker->GetInterface( IID_##_i_, (IUnknown**)&_ptr_ ); \
+   ASSERT( _ptr_.p != nullptr )
+
+
+#define ASSIGN_IFACE2(_b_,_i_,_ptr_) \
+   _b_->GetInterface( IID_##_i_, (IUnknown**)&_ptr_ ); \
+   ASSERT( _ptr_.p != nullptr )
 
 #endif // INCLUDED_AGENTTOOLS_H_

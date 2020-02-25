@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -533,6 +533,7 @@ library WBFLCogo
 		[propput, helpstring("property StationZoneIndex"), helpcontext(IDH_Station_StationZoneIndex)] HRESULT StationZoneIndex([in] ZoneIndexType newVal);
 		[propget, helpstring("property Value"), helpcontext(IDH_Station_Value)] HRESULT Value([out, retval] Float64 *pVal);
 		[propput, helpstring("property Value"), helpcontext(IDH_Station_Value)] HRESULT Value([in] Float64 newVal);
+      [helpstring("method Offset")] HRESULT Offset([in]Float64 offset);
       [helpstring("method GetStation")] HRESULT GetStation([out]ZoneIndexType* pZoneIdx,[out]Float64* pStation);
       [helpstring("method SetStation")] HRESULT SetStation([in]ZoneIndexType zoneIdx,[in]Float64 station);
       [propget,helpstring("property NormalizedValue")] HRESULT NormalizedValue([in]IAlignment* pAlignment,[out,retval]Float64* pValue);
@@ -1475,6 +1476,8 @@ library WBFLCogo
       [propget, helpstring("property ID")] HRESULT ID([out,retval]CogoObjectID* id);
       [propput, helpstring("property ID")] HRESULT ID([in]CogoObjectID id);
       [propget,helpstring("property SurfaceTemplates")] HRESULT SurfaceTemplates([out,retval]ISurfaceTemplateCollection** ppTemplates);
+      // all surface templates in a surface must have the same number segments
+      [propget,helpstring("property SegmentCount")] HRESULT SegmentCount([out,retval]IndexType* pcnt);
       [propput,helpstring("property AlignmentPoint")] HRESULT AlignmentPoint([in]IndexType pntIdx);
       [propget,helpstring("property AlignmentPoint")] HRESULT AlignmentPoint([out,retval]IndexType* pntIdx);
       [propput,helpstring("property ProfileGradePoint")] HRESULT ProfileGradePoint([in]IndexType pntIdx);

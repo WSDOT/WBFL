@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeToolsTest - Test driver for generic bridge tools library
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -382,13 +382,37 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
 
       deck_material->put_Density(3,160.0);
 
-      deck->putref_Material(deck_material);
+      if (deckType == OVL_DECK)
+      {
+         CComQIPtr<IOverlaySlab> slab(deck);
+         slab->putref_Material(deck_material);
+      }
+      else if( deckType == CIP_DECK)
+      {
+         CComQIPtr<ICastSlab> slab(deck);
+         CComPtr<ICastingRegions> castingRegions;
+         slab->get_CastingRegions(&castingRegions);
+         castingRegions->put_Boundary(crbParallelToPier);
+         CComPtr<ICastingRegion> region;
+         // region locations don't really matter since we have only one
+         castingRegions->CreateRegion(0, 0, 0, 0, deck_material, &region);
+      }
+      else if (deckType == SIP_DECK)
+      {
+         CComQIPtr<IPrecastSlab> slab(deck);
+         CComPtr<ICastingRegions> castingRegions;
+         slab->get_CastingRegions(&castingRegions);
+         castingRegions->put_Boundary(crbParallelToPier);
+         CComPtr<ICastingRegion> region;
+         // region locations don't really matter since we have only one
+         castingRegions->CreateRegion(0, 0, 0, 0, deck_material, &region);
+      }
    }
 
    bridge->putref_Deck(deck);
    bridge->put_SacrificialDepth(1./12);
 
-   bridge->UpdateBridgeModel(); // forces the geometry to be up to date
+   bridge->UpdateBridgeModel(GF_ALL); // forces the geometry to be up to date
 
    bridge.CopyTo(ppBridge);
 }
@@ -539,36 +563,36 @@ void CreateSplicedGirderBridge(IGenericBridge** ppBridge)
          {
             segment->put_VariationType(svtParabolic);
             segment->SetVariationParameters(sztLeftPrismatic,50.0,10.0,1.0);
-            segment->SetVariationParameters(sztRightPrismatic,0.0,-1,1.0);
+            segment->SetVariationParameters(sztRightPrismatic,0.0,11.77777,1.0);
          }
          else if ( segIdx == 1 )
          {
             segment->put_VariationType(svtDoubleParabolic);
-            segment->SetVariationParameters(sztLeftPrismatic,0.0,-1,1.0);
+            segment->SetVariationParameters(sztLeftPrismatic,0.0, 11.77777,1.0);
             segment->SetVariationParameters(sztLeftTapered,25.0,14.0,1.0);
             segment->SetVariationParameters(sztRightTapered,25.0,14.0,1.0);
-            segment->SetVariationParameters(sztRightPrismatic,0.0,-1,1.0);
+            segment->SetVariationParameters(sztRightPrismatic,0.0, 11,1.0);
          }
          else if ( segIdx == 2 )
          {
             segment->put_VariationType(svtDoubleParabolic);
-            segment->SetVariationParameters(sztLeftPrismatic,0.0,-1,1.0);
+            segment->SetVariationParameters(sztLeftPrismatic,0.0, 11,1.0);
             segment->SetVariationParameters(sztLeftTapered,25.0,10.0,1.0);
             segment->SetVariationParameters(sztRightTapered,25.0,10.0,1.0);
-            segment->SetVariationParameters(sztRightPrismatic,0.0,-1,1.0);
+            segment->SetVariationParameters(sztRightPrismatic,0.0, 11,1.0);
          }
          else if ( segIdx == 3 )
          {
             segment->put_VariationType(svtDoubleParabolic);
-            segment->SetVariationParameters(sztLeftPrismatic,0.0,-1,1.0);
+            segment->SetVariationParameters(sztLeftPrismatic,0.0, 11,1.0);
             segment->SetVariationParameters(sztLeftTapered,25.0,14.0,1.0);
             segment->SetVariationParameters(sztRightTapered,25.0,14.0,1.0);
-            segment->SetVariationParameters(sztRightPrismatic,0.0,-1,1.0);
+            segment->SetVariationParameters(sztRightPrismatic,0.0, 11.77777,1.0);
          }
          else if ( segIdx == 4 )
          {
             segment->put_VariationType(svtParabolic);
-            segment->SetVariationParameters(sztLeftPrismatic,0.0,-1,1.0);
+            segment->SetVariationParameters(sztLeftPrismatic,0.0, 11.77777,1.0);
             segment->SetVariationParameters(sztRightPrismatic,50.0,10.0,1.0);
          }
          else
@@ -652,13 +676,19 @@ void CreateSplicedGirderBridge(IGenericBridge** ppBridge)
 
       deck_material->put_Density(6,160.0);
 
-      deck->putref_Material(deck_material);
+      CComQIPtr<ICastSlab> slab(deck);
+      CComPtr<ICastingRegions> castingRegions;
+      slab->get_CastingRegions(&castingRegions);
+      castingRegions->put_Boundary(crbParallelToPier);
+      CComPtr<ICastingRegion> region;
+      // region locations don't really matter since we have only one
+      castingRegions->CreateRegion(0, 0, 0, 0, deck_material, &region);
    }
 
    bridge->putref_Deck(deck);
    bridge->put_SacrificialDepth(1./12);
 
-   bridge->UpdateBridgeModel(); // forces the geometry to be up to date
+   bridge->UpdateBridgeModel(GF_ALL); // forces the geometry to be up to date
    bridge.CopyTo(ppBridge);
 }
 

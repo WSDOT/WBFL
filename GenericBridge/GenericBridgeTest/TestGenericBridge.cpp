@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -57,7 +57,7 @@ void CTestGenericBridge::Test()
    CreateBridgeModel(&bridge);
 
    // get the geometry up to date
-   TRY_TEST(bridge->UpdateBridgeModel(),S_OK);
+   TRY_TEST(bridge->UpdateBridgeModel(GF_ALL),S_OK);
 
    TestPiers(bridge);
    TestSegments(bridge);
@@ -130,7 +130,7 @@ void CTestGenericBridge::TestSegments(IGenericBridge* bridge)
       TRY_TEST(IsEqual(length,100.0),true);
 
       CComPtr<ISection> section;
-      segment->get_Section(0,length/2,sbLeft,&section);
+      segment->get_Section(0,length/2,sbLeft,cstBridge,&section);
 
       CComPtr<IElasticProperties> elasticProps;
       section->get_ElasticProperties(&elasticProps);

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -71,13 +71,13 @@ void CTestPrecastSlab::Test()
    TRY_TEST(slab->get_CastDepth(&value),S_OK);
    TRY_TEST(IsZero(value),true);
 
-   TRY_TEST(slab->get_OverhangDepth(nullptr),E_POINTER);
-   TRY_TEST(slab->get_OverhangDepth(&value),S_OK);
+   TRY_TEST(slab->get_OverhangDepth(qcbLeft,nullptr),E_POINTER);
+   TRY_TEST(slab->get_OverhangDepth(qcbLeft, &value),S_OK);
    TRY_TEST(IsZero(value),true);
 
    DeckOverhangTaper taper;
-   TRY_TEST(slab->get_OverhangTaper(nullptr),E_POINTER);
-   TRY_TEST(slab->get_OverhangTaper(&taper),S_OK);
+   TRY_TEST(slab->get_OverhangTaper(qcbLeft, nullptr),E_POINTER);
+   TRY_TEST(slab->get_OverhangTaper(qcbLeft, &taper),S_OK);
    TRY_TEST(taper,dotNone);
 
 

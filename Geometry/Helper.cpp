@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -165,17 +165,7 @@ HRESULT PutCoordinates(Float64 x,Float64 y,Float64 z,IPoint3d* pPoint)
 HRESULT GetSize(ISize2d* pSize,Float64* pdx,Float64* pdy)
 {
    ATLASSERT( pSize != 0 && pdx != 0 && pdy != 0 );
-
-   HRESULT hr;
-   hr = pSize->get_Dx(pdx);
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = pSize->get_Dy(pdy);
-   if ( FAILED(hr) )
-      return hr;
-
-   return S_OK;
+   return pSize->Dimensions(pdx, pdy);
 }
 
 HRESULT GetRect(IRect2d* rect,Float64 *left,Float64 *top,Float64 *right,Float64 *bottom)

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -48,7 +48,7 @@ HRESULT GetGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,Se
    ATLASSERT(segment);
 
    CComPtr<IShape> shape;
-   hr = segment->get_PrimaryShape(Xs,sectionBias,&shape);
+   hr = segment->get_PrimaryShape(Xs,sectionBias,cstBridge,&shape);
    if ( FAILED(hr) )
       return hr;
 

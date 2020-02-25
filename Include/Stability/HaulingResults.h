@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -108,6 +108,8 @@ class STABILITYCLASS stbHaulingResults : public stbResults
 {
 public:
    stbHaulingResults();
+
+   stbTypes::GirderSide AssumedTiltDirection;
 
    bool bRotationalStability[2][3][2]; // if true, the girder is not stable for hauling... it will just roll over (Ktheta is too small so ThetaEq is too big). 
 

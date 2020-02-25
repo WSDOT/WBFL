@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -130,11 +130,11 @@ CString CEAFCommandLineInfo::GetErrorMessage()
    CString strMsg;
    if ( m_strErrorMsg.IsEmpty() )
    {
-      strMsg.Format(_T("An error occured while starting %s.\n\n%s\n\nRefer to the application documentation for details"),pApp->m_pszAppName,pApp->m_lpCmdLine);
+      strMsg.Format(_T("An error occured while starting %s.\n\n%s\n\nThis is likely due to an invalid command line parameter. Try using the /Help parameter to see valid options. Refer to the application documentation for details."),pApp->m_pszAppName,pApp->m_lpCmdLine);
    }
    else
    {
-      strMsg.Format(_T("An error occured while starting %s.\n\n%s\n\n%s\n\nRefer to the application documentation for details"),pApp->m_pszAppName,pApp->m_lpCmdLine,m_strErrorMsg);
+      strMsg.Format(_T("An error occured while starting %s.\n\n%s\n\n%s\n\nThis is likely due to an invalid command line parameter. Try using the /Help parameter to see valid options. Refer to the application documentation for details."),pApp->m_pszAppName,pApp->m_lpCmdLine,m_strErrorMsg);
    }
 
    return strMsg;

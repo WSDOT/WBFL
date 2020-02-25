@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // BridgeGeometry
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -55,7 +55,7 @@ STDMETHODIMP CUniformSpacingLayoutLineFactory::Create(IBridgeGeometry* pBridge,I
 
    // The pier geometry must be computed to create the layout lines
    // Update the bridge geometry now
-   if ( FAILED(pBridge->UpdateGeometry()) )
+   if ( FAILED(pBridge->UpdateGeometry(GF_BRIDGELINE | GF_PIERS)) )
       return E_FAIL;
 
 

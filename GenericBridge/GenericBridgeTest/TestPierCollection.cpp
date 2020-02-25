@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -67,7 +67,7 @@ void CTestPierCollection::Test()
    pierLine.Release();
    bridgeGeometry->CreatePierLine(1,alignmentID,CComVariant(100.00),CComBSTR("Normal"),10,-5,&pierLine);
 
-   bridge->UpdateBridgeModel();
+   bridge->UpdateBridgeModel(GF_ALL);
 
    CComPtr<IPierCollection> piers;
    bridge->get_Piers(&piers);

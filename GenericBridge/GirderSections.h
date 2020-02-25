@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2019  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -106,6 +106,7 @@ class CBulbTeeSection :
 {
 BEGIN_COM_MAP(CBulbTeeSection)
    COM_INTERFACE_ENTRY(IAsymmetricSection)
+   COM_INTERFACE_ENTRY(IJointedSection)
    COM_INTERFACE_ENTRY(IFlangePoints)
    COM_INTERFACE_ENTRY_CHAIN(CBulbTeeSectionBase)
 END_COM_MAP()
@@ -141,8 +142,6 @@ public:
       return S_OK;
    }
 
-
-
 // IAsymmetricSection
    STDMETHODIMP GetTopWidth(Float64* pLeft, Float64* pRight) override
    {
@@ -162,6 +161,33 @@ public:
       m_Beam->get_MinHeight(pHmin);
       m_Beam->get_CLHeight(pHcl);
       m_Beam->get_MaxHeight(pHmax);
+
+      return S_OK;
+   }
+
+// IJointedSection
+public:
+   STDMETHODIMP SetJointShapes(IShape* pLeftJoint, IShape* pRightJoint) override
+   {
+      m_LeftJoint = pLeftJoint;
+      m_RightJoint = pRightJoint;
+      return S_OK;
+   }
+
+   STDMETHODIMP GetJointShapes(IShape** ppLeftJoint, IShape** ppRightJoint) override
+   {
+      CHECK_RETOBJ(ppLeftJoint);
+      CHECK_RETOBJ(ppRightJoint);
+
+      if (m_LeftJoint)
+      {
+         m_LeftJoint->Clone(ppLeftJoint);
+      }
+
+      if (m_RightJoint)
+      {
+         m_RightJoint->Clone(ppRightJoint);
+      }
 
       return S_OK;
    }
@@ -237,32 +263,6 @@ public:
       return S_OK;
    }
 
-
-   // 
-   STDMETHODIMP SetJointShapes(IShape* pLeftJoint, IShape* pRightJoint) override
-   {
-      m_LeftJoint = pLeftJoint;
-      m_RightJoint = pRightJoint;
-      return S_OK;
-   }
-   
-   STDMETHODIMP GetJointShapes(IShape** ppLeftJoint, IShape** ppRightJoint) override
-   {
-      CHECK_RETOBJ(ppLeftJoint);
-      CHECK_RETOBJ(ppRightJoint);
-
-      if (m_LeftJoint)
-      {
-         m_LeftJoint.CopyTo(ppLeftJoint);
-      }
-
-      if (m_RightJoint)
-      {
-         m_RightJoint.CopyTo(ppRightJoint);
-      }
-
-      return S_OK;
-   }
 
    STDMETHODIMP get_OverallHeight(Float64* height) override
    {
