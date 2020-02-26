@@ -82,6 +82,10 @@ public:
 
       m_ClosureJointBgMaterial[etStart] = nullptr;
       m_ClosureJointBgMaterial[etEnd]   = nullptr;
+
+      m_bUpdateVolumeAndSurfaceArea = true;
+      m_Volume = -1;
+      m_SurfaceArea = -1;
    }
 
 protected:
@@ -93,7 +97,57 @@ protected:
       CComPtr<IMaterial> FGMaterial;
       CComPtr<IMaterial> BGMaterial;
    };
-   std::vector<ShapeData> m_Shapes;
+   std::vector<ShapeData> m_Shapes; // this are the basic shapes, they are modified by end blocks and segment variations to become the actual shapes
+
+
+   typedef struct Key
+   {
+      Float64 Xs;
+      SectionBias sectionBias;
+
+      Key(Float64 Xs, SectionBias sectionBias) :Xs(Xs), sectionBias(sectionBias) {}
+
+      bool operator<(const Key& other) const
+      {
+         if (IsEqual(Xs, other.Xs))
+         {
+            return sectionBias < other.sectionBias;
+         }
+         else if (Xs < other.Xs)
+         {
+            return true;
+         }
+         else
+         {
+            return false;
+         }
+      }
+   } Key;
+   std::map<Key, CComPtr<IShape>> m_PrimaryShapeCache; // cache of primary shapes in girder coordinates
+   HRESULT CachePrimaryShape(Float64 Xs, SectionBias sectionBias, IShape* pShape)
+   {
+      m_PrimaryShapeCache.emplace(Key(Xs, sectionBias), pShape);
+      return S_OK;
+   }
+
+   HRESULT GetCachedPrimaryShape(Float64 Xs, SectionBias sectionBias, IShape** ppShape)
+   {
+      auto found = m_PrimaryShapeCache.find(Key(Xs, sectionBias));
+      if (found == m_PrimaryShapeCache.end())
+      {
+         *ppShape = nullptr;
+         return E_FAIL;
+      }
+      else
+      {
+         found->second.CopyTo(ppShape);
+      }
+      return S_OK;
+   }
+
+   bool m_bUpdateVolumeAndSurfaceArea;
+   Float64 m_Volume;
+   Float64 m_SurfaceArea;
 
    CItemDataManager m_ItemDataMgr;
 
@@ -146,14 +200,26 @@ public:
    STDMETHOD(putref_NextSegment)(ISegment* segment) override { return m_Impl.putref_NextSegment(segment); }
    STDMETHOD(get_NextSegment)(ISegment** segment) override { return m_Impl.get_NextSegment(segment); }
 
-	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs,SectionBias sectionBias,ISection** ppSection) override
+	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,ISection** ppSection) override
    {
-      return GetSection(stageIdx,Xs,sectionBias,ppSection);
+      return GetSection(stageIdx,Xs,sectionBias,coordinateSystem,ppSection);
    }
 
-	STDMETHOD(get_PrimaryShape)(Float64 Xs,SectionBias sectionBias,IShape** ppShape) override
+	STDMETHOD(get_PrimaryShape)(Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape) override
    {
-      return GetPrimaryShape(Xs,sectionBias,ppShape);
+      return GetPrimaryShape(Xs,sectionBias,coordinateSystem, ppShape);
+   }
+
+   STDMETHOD(GetVolumeAndSurfaceArea)(Float64* pVolume, Float64* pSurfaceArea) override
+   {
+      return GetVolume_and_SurfaceArea(pVolume, pSurfaceArea);
+   }
+
+   STDMETHOD(get_InternalSurfaceAreaOfVoids)(Float64* pSurfaceArea) override
+   {
+      CHECK_RETVAL(pSurfaceArea);
+      *pSurfaceArea = 0;
+      return S_OK;
    }
 
    STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure,IShape** ppShape) override
@@ -216,6 +282,10 @@ public:
       shapeData.BGMaterial = pBGMaterial;
 
       m_Shapes.push_back(shapeData);
+
+      m_bUpdateVolumeAndSurfaceArea = true;
+      m_Volume = -1;
+      m_SurfaceArea = -1;
 
       return S_OK;
    }
@@ -426,6 +496,78 @@ public:
       return S_OK;
    }
 
+   STDMETHOD(GetClosureJointVolumeAndSurfaceArea)(EndType endType, Float64* pVolume, Float64* pSurfaceArea) override
+   {
+      CHECK_RETVAL(pVolume);
+      CHECK_RETVAL(pSurfaceArea);
+
+      if ((m_Impl.m_pPrevSegment == nullptr && endType == etStart) || (m_Impl.m_pNextSegment == nullptr && endType == etEnd))
+      {
+         // if this the start of the first segment or the end of the last segment there there isn't a closure
+         *pVolume = 0;
+         *pSurfaceArea = 0;
+      }
+      else
+      {
+         Float64 L1, L2;
+         Float64 A1, A2;
+         Float64 P1, P2;
+         if (endType == etStart)
+         {
+            Float64 prevL;
+            m_Impl.m_pPrevSegment->get_Length(&prevL);
+
+            // right end of previous segment
+            CComQIPtr<ISplicedGirderSegment> prevSegment(m_Impl.m_pPrevSegment);
+            prevSegment->get_ClosureJointLength(etEnd, &L1);
+            CComPtr<IShape> prevShape;
+            m_Impl.m_pPrevSegment->get_PrimaryShape(prevL, sbLeft, cstGirder, &prevShape);
+            prevShape->get_Perimeter(&P1);
+            CComPtr<IShapeProperties> prevShapeProps;
+            prevShape->get_ShapeProperties(&prevShapeProps);
+            prevShapeProps->get_Area(&A1);
+
+            // left end of this segment
+            get_ClosureJointLength(etStart, &L2);
+            CComPtr<IShape> shape;
+            get_PrimaryShape(L2, sbRight, cstGirder, &shape);
+            shape->get_Perimeter(&P2);
+            CComPtr<IShapeProperties> shapeProps;
+            shape->get_ShapeProperties(&shapeProps);
+            shapeProps->get_Area(&A2);
+         }
+         else
+         {
+            Float64 L;
+            get_Length(&L);
+
+            // right end of this segment
+            get_ClosureJointLength(etEnd, &L1);
+            CComPtr<IShape> shape;
+            get_PrimaryShape(L, sbLeft, cstGirder, &shape);
+            shape->get_Perimeter(&P1);
+            CComPtr<IShapeProperties> shapeProps;
+            shape->get_ShapeProperties(&shapeProps);
+            shapeProps->get_Area(&A1);
+
+            // left end of next segment
+            CComQIPtr<ISplicedGirderSegment> nextSegment(m_Impl.m_pNextSegment);
+            nextSegment->get_ClosureJointLength(etStart, &L2);
+            CComPtr<IShape> nextShape;
+            m_Impl.m_pNextSegment->get_PrimaryShape(L2, sbRight, cstGirder, &nextShape);
+            nextShape->get_Perimeter(&P2);
+            CComPtr<IShapeProperties> nextShapeProps;
+            nextShape->get_ShapeProperties(&nextShapeProps);
+            nextShapeProps->get_Area(&A2);
+         }
+
+         *pVolume = (A1 + A2)*(L1 + L2) / 2;
+         *pSurfaceArea = (P1 + P2)*(L1 + L2) / 2;
+      }
+
+      return S_OK;
+   }
+
 // IItemData
 public:
    STDMETHOD(AddItemData)(/*[in]*/BSTR name,/*[in]*/IUnknown* data) override
@@ -487,9 +629,189 @@ public:
    }
 
 protected:
-   virtual HRESULT GetPrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape) = 0;
+   virtual HRESULT GetPrimaryShape(Float64 Xs, SectionBias sectionBias,SectionCoordinateSystemType coordinateSystem,IShape** ppShape) = 0;
+   virtual HRESULT GetVolume_and_SurfaceArea(Float64* pVolume, Float64* pSurfaceArea)
+   {
+      CHECK_RETVAL(pVolume);
+      CHECK_RETVAL(pSurfaceArea);
 
-   virtual HRESULT GetSection(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
+      if (m_bUpdateVolumeAndSurfaceArea)
+      {
+         if (m_Shapes.size() == 0)
+         {
+            m_Volume = 0;
+            m_SurfaceArea = 0;
+         }
+         else
+         {
+            Float64 L;
+            get_Length(&L);
+
+            // get the tendon model. it is stored as item data on the superstructure member
+            CComPtr<ISuperstructureMember> ssmbr;
+            get_SuperstructureMember(&ssmbr);
+            CComQIPtr<IItemData> itemData(ssmbr);
+            CComPtr<IUnknown> unk;
+            itemData->GetItemData(CComBSTR("Tendons"), &unk);
+            CComQIPtr<ITendonCollection> tendons(unk);
+
+            DuctIndexType nTendons = 0; // # tendons is the same as # ducts in this context
+            if (tendons)
+            {
+               tendons->get_Count(&nTendons);
+            }
+
+            Float64 Aducts = 0;
+            for (DuctIndexType tendonIdx = 0; tendonIdx < nTendons; tendonIdx++)
+            {
+               CComPtr<ITendon> tendon;
+               tendons->get_Item(tendonIdx, &tendon);
+               Float64 area;
+               tendon->get_OutsideDuctArea(&area);
+               Aducts += area;
+            }
+
+            // get all the section change locations
+            std::vector<std::pair<Float64, SectionBias>> vCuts;
+
+            vCuts.emplace_back(0.0, sbRight); // start of beam
+
+                                              // left end block
+            if (!IsZero(m_EndBlockLength[etStart]))
+            {
+               vCuts.emplace_back(m_EndBlockLength[etStart], sbLeft);
+            }
+
+            // left end block transition
+            if (IsZero(m_EndBlockTransitionLength[etStart]) && !IsZero(m_EndBlockLength[etStart]))
+            {
+               // this is an end block, but no transition so there is an abrupt change in section
+               vCuts.emplace_back(m_EndBlockLength[etStart] + m_EndBlockTransitionLength[etStart], sbLeft);
+               vCuts.emplace_back(m_EndBlockLength[etStart] + m_EndBlockTransitionLength[etStart], sbRight);
+            }
+            else if (!IsZero(m_EndBlockTransitionLength[etStart]))
+            {
+               // there is a smooth transition
+               vCuts.emplace_back(m_EndBlockLength[etStart] + m_EndBlockTransitionLength[etStart], sbLeft);
+            }
+
+
+            // right end block transition
+            if (IsZero(m_EndBlockTransitionLength[etEnd]) && !IsZero(m_EndBlockLength[etEnd]))
+            {
+               // this is an end block, but no transition so there is an abrupt change in section
+               vCuts.emplace_back(L - (m_EndBlockLength[etEnd] + m_EndBlockTransitionLength[etEnd]), sbRight);
+               vCuts.emplace_back(L - (m_EndBlockLength[etEnd] + m_EndBlockTransitionLength[etEnd]), sbLeft);
+            }
+            else if (!IsZero(m_EndBlockTransitionLength[etEnd]))
+            {
+               // there is a smooth transition
+               vCuts.emplace_back(L - (m_EndBlockLength[etEnd] + m_EndBlockTransitionLength[etEnd]), sbLeft);
+            }
+
+            // right end block
+            if (!IsZero(m_EndBlockLength[etEnd]))
+            {
+               vCuts.emplace_back(L - m_EndBlockLength[etEnd], sbLeft);
+            }
+
+            // end of beam
+            vCuts.emplace_back(L, sbLeft);
+
+            // get the profile change locations (includes intermediate points on parabolic curves)
+            std::vector<Float64> vXvalues;
+            GetProfilePointLocations(VARIANT_FALSE/*exclude closure*/, VARIANT_TRUE/*segment coordinates*/, &vXvalues);
+
+            // merge profile locations into other cut locations
+            for (auto& x : vXvalues)
+            {
+               if (!IsZero(x) && !IsEqual(x, L)) // skip first and last because they are already in vCuts
+               {
+                  vCuts.emplace_back(x, sbLeft);
+               }
+            }
+
+            // sort and remove duplicates
+            std::sort(std::begin(vCuts), std::end(vCuts), [](const auto& a, const auto& b) {return IsEqual(a.first, b.first) ? a.second < b.second : a.first < b.first;});
+            vCuts.erase(std::unique(std::begin(vCuts), std::end(vCuts)), vCuts.end());
+
+            // compute V and S
+            auto iter(vCuts.begin());
+            CComPtr<IShape> shape;
+            get_PrimaryShape(iter->first, iter->second, cstGirder, &shape);
+            Float64 prev_perimeter;
+            shape->get_Perimeter(&prev_perimeter);
+            CComPtr<IShapeProperties> shapeProps;
+            shape->get_ShapeProperties(&shapeProps);
+            Float64 start_area;
+            shapeProps->get_Area(&start_area);
+            Float64 prev_area = start_area;
+
+            Float64 prevX = iter->first;
+
+            Float64 V = 0;
+            Float64 S = 0;
+
+            iter++;
+            auto end(vCuts.end());
+            for (; iter != end; iter++)
+            {
+               Float64 X = iter->first;
+               SectionBias bias = iter->second;
+
+               shape.Release();
+               get_PrimaryShape(X, bias, cstGirder, &shape);
+               Float64 perimeter;
+               shape->get_Perimeter(&perimeter);
+
+               shapeProps.Release();
+               shape->get_ShapeProperties(&shapeProps);
+               Float64 area;
+               shapeProps->get_Area(&area);
+
+               Float64 dx = X - prevX;
+
+               Float64 avg_perimeter = (prev_perimeter + perimeter)/* / 2*/; // save the divide by 2 for outside the loop
+               Float64 avg_area = (prev_area + area) /* / 2*/; // save the divide by 2 for outside the loop
+
+               S += avg_perimeter*dx;
+               V += avg_area*dx;
+
+               prev_perimeter = perimeter;
+               prev_area = area;
+               prevX = X;
+            }
+
+            // Adjust volume for ducts
+            // For each computation of avg_area above, we could have been doing
+            // avg_area = ((prev_area - Aducts) + (area - Aducts)) = (prev_area + area) - 2*Aducts
+            // the incremental volume is then avg_area*dx = (prev_area + area)*dx - 2*Aducts*dx
+            // we save the -2*Aducts operation in the loop above and do it once here
+            // the total volume reduced by the ducts is (Aducts*2)*(sum dx) = (2)(Aducts)(L)
+            Float64 Vducts = 2 * Aducts * L;
+            V -= Vducts;
+
+            // divide by 2 now
+            S /= 2;
+            V /= 2;
+
+            Float64 end_area;
+            shapeProps->get_Area(&end_area);
+            S += start_area + end_area - 2*Aducts;
+
+            m_Volume = V;
+            m_SurfaceArea = S;
+         }
+         m_bUpdateVolumeAndSurfaceArea = false;
+      }
+
+      *pVolume = m_Volume;
+      *pSurfaceArea = m_SurfaceArea;
+      return S_OK;
+   }
+
+
+   virtual HRESULT GetSection(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,ISection** ppSection)
    {
       CHECK_RETOBJ(ppSection);
 
@@ -499,9 +821,8 @@ protected:
          return S_OK;
       }
 
-      HRESULT hr;
       CComPtr<IShape> primaryShape;
-      hr = GetPrimaryShape(Xs,sectionBias,&primaryShape);
+      HRESULT hr = get_PrimaryShape(Xs, sectionBias, coordinateSystem,&primaryShape);
       ATLASSERT(SUCCEEDED(hr));
       if ( FAILED(hr) )
          return hr;

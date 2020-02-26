@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.CastingRegions.1 = s 'CastingRegions Class'
+	{
+		CLSID = s '{B069803A-D07A-480F-AB55-54D7905E1EC2}'
+	}
+	WBFLGenericBridge.CastingRegions = s 'CastingRegions Class'
+	{
+		CLSID = s '{B069803A-D07A-480F-AB55-54D7905E1EC2}'
+		CurVer = s 'WBFLGenericBridge.CastingRegions.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {B069803A-D07A-480F-AB55-54D7905E1EC2} = s 'CastingRegions Class'
+		{
+			ProgID = s 'WBFLGenericBridge.CastingRegions.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.CastingRegions'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

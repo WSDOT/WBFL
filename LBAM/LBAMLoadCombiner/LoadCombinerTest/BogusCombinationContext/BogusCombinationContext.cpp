@@ -34,6 +34,25 @@
 #include "resource.h"
 #include <initguid.h>
 
+#if defined VBA_BUILD
+#if defined _DEBUG
+#if defined _WIN64
+#include "x64\VBA_Debug\BogusCombinationContext.h"
+#include "x64\VBA_Debug\BogusCombinationContext_i.c"
+#else
+#include "Win32\VBA_Debug\BogusCombinationContext.h"
+#include "Win32\VBA_Debug\BogusCombinationContext_i.c"
+#endif
+#else
+#if defined _WIN64
+#include "x64\VBA_Release\BogusCombinationContext.h"
+#include "x64\VBA_Release\BogusCombinationContext_i.c"
+#else
+#include "Win32\VBA_Release\BogusCombinationContext.h"
+#include "Win32\VBA_Release\BogusCombinationContext_i.c"
+#endif
+#endif
+#else // VBA_BUILD
 #if defined _DEBUG
 #if defined _WIN64
 #include "x64\Debug\BogusCombinationContext.h"
@@ -51,6 +70,7 @@
 #include "Win32\Release\BogusCombinationContext_i.c"
 #endif
 #endif
+#endif // VBA_BUILD
 
 #include "BogusComboContext.h"
 

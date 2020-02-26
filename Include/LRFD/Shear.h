@@ -75,18 +75,23 @@ struct LRFDCLASS lrfdShearData
    Float64 As;
    Float64 Eps;
    Float64 Aps;
-   Float64 Ept;
-   Float64 Apt;
+   Float64 EptSegment;
+   Float64 AptSegment;
+   Float64 EptGirder;
+   Float64 AptGirder;
    Float64 Ec;
    Float64 Ac;
    Float64 fpops;
-   Float64 fpopt;
+   Float64 fpoptSegment;
+   Float64 fpoptGirder;
    Float64 fc;
    matConcrete::Type ConcreteType;
    bool bHasfct;
    Float64 fct;
    Float64 ag; // max aggregate size
    Float64 sx; // spacing between layers of longitudinal cracking steel
+   bool bLimitNetTensionStrainToPositiveValues; // sets strain at the tensile reinforcement to zero if computed to be negative
+   bool bIgnoreMiniumStirrupRequirementForBeta; // if true, LRFD Equation 5.7.3.4.2-1 is used to compute Beta regardless of the amount of stirrups
 
    // Vci/Vcw parameters
    Float64 Vd;

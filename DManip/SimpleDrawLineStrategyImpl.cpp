@@ -96,6 +96,10 @@ STDMETHODIMP_(void) CSimpleDrawLineStrategyImpl::Draw(iLineDisplayObject* pDO,CD
    CPen pen;
    switch(m_Style)
    {
+   case lsNull:
+      pen.CreatePen(PS_NULL, m_nWidth, color);
+      break;
+
    case lsSolid:
       pen.CreatePen(PS_GEOMETRIC | PS_ENDCAP_FLAT | PS_JOIN_BEVEL, m_nWidth, &lb);
       break;

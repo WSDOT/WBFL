@@ -48,13 +48,16 @@ public:
 	{
       m_GrossDepth = 0;
       m_pDeckBoundary = nullptr;
-	}
+
+      m_Material.CoCreateInstance(CLSID_Material);
+   }
 
    HRESULT FinalConstruct();
    void FinalRelease();
 
 private:
    Float64 m_GrossDepth;
+   CComPtr<IMaterial> m_Material;
 
    IDeckBoundary* m_pDeckBoundary; // weak reference
 
@@ -85,6 +88,8 @@ public:
 // IOverlaySlab
 public:
 	STDMETHOD(put_GrossDepth)(/*[in]*/Float64 depth) override;
+   STDMETHOD(get_Material)(/*[out,retval]*/IMaterial** material) override;
+   STDMETHOD(putref_Material)(/*[in]*/IMaterial* material) override;
 
 
 // IStructuredStorage2

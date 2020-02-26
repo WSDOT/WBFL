@@ -80,6 +80,9 @@ public:
    virtual BOOL Do_IsSelected();
    virtual void Do_SetSelectionType(SelectionType st);
    virtual SelectionType Do_GetSelectionType();
+   virtual void Do_RetainSelection(BOOL bRetain);
+   virtual BOOL Do_RetainSelection();
+
 
    // Tool Tips
    virtual void Do_SetToolTipText(LPCTSTR lpszToolTipText);
@@ -143,6 +146,7 @@ protected:
    iDisplayList* m_pDispList;
    CComPtr<iDropSite> m_pDropSite;
    BOOL m_bSelected;
+   BOOL m_bRetainSelection;
    CString m_strToolTipText;
    INT m_MaxToolTipWidth;
    INT m_ToolTipDisplayTime;

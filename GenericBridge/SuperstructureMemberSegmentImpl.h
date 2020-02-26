@@ -41,7 +41,7 @@ public:
    STDMETHOD(putref_NextSegment)(ISegment* segment);
    STDMETHOD(get_NextSegment)(ISegment** segment);
    //STDMETHOD(get_Section)(StageIndexType stageIdx, Float64 distAlongSegment, ISection** ppSection);
-   //STDMETHOD(get_PrimaryShape)(Float64 distAlongSegment, IShape** ppShape);
+   //STDMETHOD(get_PrimaryShape)(Float64 distAlongSegment, SectionCoordinateSystemType coordinateSystem, IShape** ppShape);
    //STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure, IShape** ppShape);
    STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
    STDMETHOD(get_LayoutLength)(/*[out, retval]*/ Float64 *pVal);

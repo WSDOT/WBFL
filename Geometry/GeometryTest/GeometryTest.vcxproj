@@ -830,6 +830,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Test.cpp" />
+    <ClCompile Include="TestBeamShapeFactory.cpp" />
     <ClCompile Include="TestBoxBeam.cpp" />
     <ClCompile Include="TestBulbTee.cpp" />
     <ClCompile Include="TestBulbTee2.cpp" />
@@ -879,6 +880,7 @@
     <ClInclude Include="..\LineSegment3d.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="Test.h" />
+    <ClInclude Include="TestBeamShapeFactory.h" />
     <ClInclude Include="TestBoxBeam.h" />
     <ClInclude Include="TestBulbTee.h" />
     <ClInclude Include="TestBulbTee2.h" />

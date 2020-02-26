@@ -200,7 +200,7 @@ void CMomentCapacitySolverTest::Test()
 
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, 6884.3201), true);
+   TRY_TEST(IsEqual(Mx, 6884.3201, 0.0001), true);
    TRY_TEST(IsZero(My), true);
 
    strainPlane->GetZ(0.00, -H / 2, &ec);

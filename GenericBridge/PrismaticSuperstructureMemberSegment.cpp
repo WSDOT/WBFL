@@ -64,7 +64,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::InterfaceSupportsErrorInfo(R
 
 ////////////////////////////////////////////////////////////////////////
 // ISuperstructureMemberSegment implementation
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,ISection** ppSection)
 {
    CHECK_RETOBJ(ppSection);
 
@@ -112,11 +112,22 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType s
       shapeData.Shape->Clone(&shape);
 
       // position the shape
-      CComPtr<IPoint2d> pntTopCenter;
-      GB_GetSectionLocation(this,Xs,&pntTopCenter);
+      if (coordinateSystem == cstBridge)
+      {
+         CComPtr<IPoint2d> pntTopCenter;
+         GB_GetSectionLocation(this, Xs, &pntTopCenter);
 
-      CComQIPtr<IXYPosition> position(shape);
-      position->put_LocatorPoint(lpTopCenter,pntTopCenter);
+         CComQIPtr<IXYPosition> position(shape);
+         position->put_LocatorPoint(lpTopCenter, pntTopCenter);
+      }
+      else
+      {
+         CComPtr<IPoint2d> pnt;
+         pnt.CoCreateInstance(CLSID_Point2d);
+         pnt->Move(0, 0);
+         CComQIPtr<IXYPosition> position(shape);
+         position->put_LocatorPoint(lpTopCenter, pnt);
+      }
 
       section->AddSection(shape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
    }
@@ -127,7 +138,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType s
    return S_OK;
 }
 
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
    if ( m_Shapes.size() == 0 )
@@ -136,18 +147,127 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_PrimaryShape(Float64 Xs,
       return S_OK;
    }
 
-   // this is a prismatic shape, so distAlongSegment doesn't matter
+   // this is a prismatic shape, so Xs doesn't matter
    m_Shapes.front().Shape->Clone(ppShape);
 
    // position the shape
-   CComPtr<IPoint2d> pntTopCenter;
-   GB_GetSectionLocation(this,Xs,&pntTopCenter);
+   if (coordinateSystem == cstBridge)
+   {
+      CComPtr<IPoint2d> pntTopCenter;
+      GB_GetSectionLocation(this, Xs, &pntTopCenter);
 
-   CComQIPtr<IXYPosition> position(*ppShape);
-   position->put_LocatorPoint(lpTopCenter,pntTopCenter);
+      CComQIPtr<IXYPosition> position(*ppShape);
+      position->put_LocatorPoint(lpTopCenter, pntTopCenter);
+   }
+   else
+   {
+      CComPtr<IPoint2d> pnt;
+      pnt.CoCreateInstance(CLSID_Point2d);
+      pnt->Move(0, 0);
+      CComQIPtr<IXYPosition> position(*ppShape);
+      position->put_LocatorPoint(lpTopCenter, pnt);
+   }
 
    return S_OK;
 }
+
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::GetVolumeAndSurfaceArea(Float64* pVolume, Float64* pSurfaceArea)
+{
+   CHECK_RETVAL(pVolume);
+   CHECK_RETVAL(pSurfaceArea);
+
+   if (m_bUpdateVolumeAndSurfaceArea)
+   {
+      if (m_Shapes.size() == 0)
+      {
+         m_Volume = 0;
+         m_SurfaceArea = 0;
+      }
+      else
+      {
+         Float64 perimeter;
+         m_Shapes.front().Shape->get_Perimeter(&perimeter);
+
+         CComPtr<IShapeProperties> shapeProps;
+         m_Shapes.front().Shape->get_ShapeProperties(&shapeProps);
+
+         Float64 area;
+         shapeProps->get_Area(&area);
+
+         Float64 L;
+         get_Length(&L);
+
+         m_Volume = area*L;
+         m_SurfaceArea = perimeter*L + 2 * area;
+      }
+
+      m_bUpdateVolumeAndSurfaceArea = false;
+   }
+
+   *pVolume = m_Volume;
+   *pSurfaceArea = m_SurfaceArea;
+   return S_OK;
+}
+
+Float64 GetInternalVoidPerimeter(ICompositeShape* pCompShape)
+{
+   Float64 P = 0;
+   IndexType nItems;
+   pCompShape->get_Count(&nItems);
+   for (IndexType idx = 0; idx < nItems; idx++)
+   {
+      CComPtr<ICompositeShapeItem> item;
+      pCompShape->get_Item(idx, &item);
+
+      CComPtr<IShape> shape;
+      item->get_Shape(&shape);
+
+      VARIANT_BOOL vbIsVoid;
+      item->get_Void(&vbIsVoid);
+      if (vbIsVoid == VARIANT_TRUE)
+      {
+         Float64 perimeter;
+         shape->get_Perimeter(&perimeter);
+         P += perimeter;
+      }
+      else
+      {
+         CComQIPtr<ICompositeShape> compShape(shape);
+         if (compShape)
+         {
+            P += GetInternalVoidPerimeter(compShape);
+         }
+      }
+   }
+   return P;
+}
+
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_InternalSurfaceAreaOfVoids(Float64* pSurfaceArea)
+{
+   CHECK_RETVAL(pSurfaceArea);
+   if (m_Shapes.size() == 0)
+   {
+      *pSurfaceArea = 0;
+   }
+   else
+   {
+      Float64 L;
+      get_Length(&L);
+
+      *pSurfaceArea = 0;
+      for (const auto& shp : m_Shapes)
+      {
+         CComQIPtr<ICompositeShape> composite(shp.Shape);
+         if (composite)
+         {
+            Float64 P = GetInternalVoidPerimeter(composite);
+            *pSurfaceArea += P*L;
+         }
+      }
+   }
+   return S_OK;
+}
+
 
 STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Profile(VARIANT_BOOL bIncludeClosure,IShape** ppShape)
 {
@@ -282,6 +402,10 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::AddShape(IShape* pShape,IMat
    shapeData.BGMaterial = pBGMaterial;
 
    m_Shapes.push_back(shapeData);
+
+   m_bUpdateVolumeAndSurfaceArea = true;
+   m_Volume = -1;
+   m_SurfaceArea = -1;
 
    return S_OK;
 }

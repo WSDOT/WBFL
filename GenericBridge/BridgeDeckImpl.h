@@ -40,8 +40,6 @@ public:
       m_pBridge = nullptr;
 
       m_bComposite = VARIANT_TRUE;
-
-      m_Material.CoCreateInstance(CLSID_Material);
    }
 
    HRESULT Init()
@@ -52,26 +50,26 @@ public:
 protected:
    IGenericBridge* m_pBridge; // weak reference
 
+   virtual void OnBridge() {};
 
 private:
    VARIANT_BOOL m_bComposite;
-   //StageIndexType m_ConstructionStage;
-   //StageIndexType m_CompositeStage;
-   CComPtr<IMaterial> m_Material;
 
    CItemDataManager m_ItemDataMgr;
    CComPtr<IBridgeDeckRebarLayout> m_RebarLayout;
 
+
 // IBridgeDeck
 public:
-   STDMETHOD(putref_Bridge)(/*[in]*/IGenericBridge* pBridge)
+   STDMETHOD(putref_Bridge)(/*[in]*/IGenericBridge* pBridge) override
    {
       CHECK_IN(pBridge);
       m_pBridge = pBridge; // weak reference
+      OnBridge();
       return S_OK;
    }
 
-   STDMETHOD(get_Bridge)(/*[out,retval]*/IGenericBridge** ppBridge)
+   STDMETHOD(get_Bridge)(/*[out,retval]*/IGenericBridge** ppBridge) override
    {
       CHECK_RETOBJ(ppBridge);
       (*ppBridge) = m_pBridge;
@@ -81,14 +79,14 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(get_Composite)(/*[out,retval]*/VARIANT_BOOL* bComposite)
+   STDMETHOD(get_Composite)(/*[out,retval]*/VARIANT_BOOL* bComposite) override
    {
       CHECK_RETVAL(bComposite);
       *bComposite = m_bComposite;
       return S_OK;
    }
 
-	STDMETHOD(put_Composite)(/*[in]*/VARIANT_BOOL bComposite)
+	STDMETHOD(put_Composite)(/*[in]*/VARIANT_BOOL bComposite) override
    {
       if ( m_bComposite == bComposite )
          return S_OK;
@@ -98,27 +96,14 @@ public:
       return S_OK;
    }
 
-	STDMETHOD(get_Material)(/*[out,retval]*/IMaterial** material)
-   {
-      CHECK_RETOBJ(material);
-      return m_Material.CopyTo(material);
-   }
-
-	STDMETHOD(putref_Material)(/*[in]*/IMaterial* material)
-   {
-      CHECK_IN(material);
-      m_Material = material;
-      return S_OK;
-   }
-
-   STDMETHOD(putref_RebarLayout)(IBridgeDeckRebarLayout* rebarLayout)
+   STDMETHOD(putref_RebarLayout)(IBridgeDeckRebarLayout* rebarLayout) override
    {
       CHECK_IN(rebarLayout);
       m_RebarLayout = rebarLayout;
       return S_OK;
    }
 
-   STDMETHOD(get_RebarLayout)(IBridgeDeckRebarLayout** rebarLayout)
+   STDMETHOD(get_RebarLayout)(IBridgeDeckRebarLayout** rebarLayout) override
    {
       CHECK_RETOBJ(rebarLayout);
       return m_RebarLayout.CopyTo(rebarLayout);
@@ -126,22 +111,22 @@ public:
 
    ///////////////////////////////////////////////////////////////////////
    // IItemData
-   STDMETHOD(AddItemData)(/*[in]*/BSTR name,/*[in]*/IUnknown* data)
+   STDMETHOD(AddItemData)(/*[in]*/BSTR name,/*[in]*/IUnknown* data) override
    {
       return m_ItemDataMgr.AddItemData(name,data);
    }
 
-   STDMETHOD(GetItemData)(/*[in]*/BSTR name,/*[out,retval]*/IUnknown** data)
+   STDMETHOD(GetItemData)(/*[in]*/BSTR name,/*[out,retval]*/IUnknown** data) override
    {
       return m_ItemDataMgr.GetItemData(name,data);
    }
 
-   STDMETHOD(RemoveItemData)(/*[in]*/BSTR name)
+   STDMETHOD(RemoveItemData)(/*[in]*/BSTR name) override
    {
       return m_ItemDataMgr.RemoveItemData(name);
    }
 
-   STDMETHOD(GetItemDataCount)(/*[out,retval]*/CollectionIndexType* count)
+   STDMETHOD(GetItemDataCount)(/*[out,retval]*/CollectionIndexType* count) override
    {
       return m_ItemDataMgr.GetItemDataCount(count);
    }
@@ -154,17 +139,12 @@ protected:
       load->get_Property(CComBSTR("Composite"),&var);
       m_bComposite = var.boolVal;
 
-      load->get_Property(CComBSTR("Material"),&var);
-      m_Material.Release();
-      var.punkVal->QueryInterface(&m_Material);
-
       return S_OK;
    }
 
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save)
    {
       save->put_Property(CComBSTR("Composite"),CComVariant(m_bComposite));
-      save->put_Property(CComBSTR("Material"),CComVariant(m_Material));
 
       return S_OK;
    }

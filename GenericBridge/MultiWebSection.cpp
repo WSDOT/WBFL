@@ -95,6 +95,15 @@ STDMETHODIMP CMultiWebSection::put_Beam(IMultiWeb* beam)
    CComQIPtr<IShape> shape(beam);
    CHECK_IN(shape);
 
+   // getting the bounding box and shape properties
+   // causes these to be computed and cached in beam
+   // when we clone, these will be cloned. that way
+   // they don't have to be computed later when needed.
+   CComPtr<IShapeProperties> shapeProps;
+   shape->get_ShapeProperties(&shapeProps);
+   CComPtr<IRect2d> box;
+   shape->get_BoundingBox(&box);
+
    CComPtr<IShape> clone;
    HRESULT hr = shape->Clone(&clone);
    ATLASSERT(SUCCEEDED(hr));
@@ -135,16 +144,8 @@ STDMETHODIMP CMultiWebSection::get_WorkPoint(IPoint2d** ppWorkPoint)
       CComPtr<IPoint2d> pntHookPoint; // hook point is at bottom center of shape (not bottom center of bounding box)
       position->get_LocatorPoint(lpHookPoint, &pntHookPoint);
 
-      // compute the location of the top center point without rotation
-      // this is just the hook point offset vertically by the height of the beam shape
-      Float64 H;
-      get_NominalHeight(&H);
-      CComPtr<IPoint2d> pntUnRotatedTopCenter;
-      pntHookPoint->Clone(&pntUnRotatedTopCenter);
-      pntUnRotatedTopCenter->Offset(0, H);
-
-      // the unrotated top center is also the unrotated work point
-      pntUnRotatedTopCenter->Clone(ppWorkPoint);
+      // the hook point is at the top center of the shape
+      pntHookPoint->Clone(ppWorkPoint);
 
       // apply the rotation to the work point
       (*ppWorkPoint)->RotateEx(pntHookPoint, m_Rotation);

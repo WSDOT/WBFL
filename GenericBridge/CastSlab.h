@@ -30,6 +30,7 @@
 
 #include "resource.h"       // main symbols
 #include "BridgeDeckImpl.h"
+#include <array>
 
 /////////////////////////////////////////////////////////////////////////////
 // CCastSlab
@@ -44,12 +45,10 @@ class ATL_NO_VTABLE CCastSlab :
    public IBridgeDeckImpl<CCastSlab>
 {
 public:
-   CCastSlab()
-	{
-      m_GrossDepth = 0;
-      m_OverhangDepth = 0;
-      m_Taper = dotNone;
-
+   CCastSlab() :
+      m_OverhangDepth {0.0, 0.0}, 
+      m_Taper{dotNone, dotNone}
+   {
       m_pDeckBoundary = nullptr;
 	}
 
@@ -58,8 +57,10 @@ public:
 
 private:
    Float64 m_GrossDepth;
-   Float64 m_OverhangDepth;
-   DeckOverhangTaper m_Taper;
+   std::array<Float64,2> m_OverhangDepth;
+   std::array<DeckOverhangTaper,2> m_Taper;
+
+   CComPtr<ICastingRegions> m_CastingRegions;
 
    IDeckBoundary* m_pDeckBoundary; // weak reference
 
@@ -76,6 +77,9 @@ BEGIN_COM_MAP(CCastSlab)
    COM_INTERFACE_ENTRY(IStructuredStorage2)
 END_COM_MAP()
 
+protected:
+   virtual void OnBridge() override;
+
 // ISupportsErrorInfo
 public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
@@ -89,11 +93,15 @@ public:
 
 // ICastSlab
 public:
-	STDMETHOD(put_GrossDepth)(/*[in]*/Float64 depth) override;
-	STDMETHOD(get_OverhangDepth)(/*[out,retval]*/Float64* depth) override;
-	STDMETHOD(put_OverhangDepth)(/*[in]*/Float64 depth) override;
-	STDMETHOD(get_OverhangTaper)(/*[out,retval]*/DeckOverhangTaper* taper) override;
-	STDMETHOD(put_OverhangTaper)(/*[in]*/DeckOverhangTaper taper) override;
+   STDMETHOD(get_CastingRegions)(/*[out, retval]*/ICastingRegions** ppRegions) override;
+   STDMETHOD(putref_CastingRegions)(/*[in]*/ICastingRegions* pRegions) override;
+   STDMETHOD(put_GrossDepth)(/*[in]*/Float64 depth) override;
+	STDMETHOD(get_OverhangDepth)(/*[in]*/DirectionType side,/*[out,retval]*/Float64* depth) override;
+	STDMETHOD(put_OverhangDepth)(/*[in]*/DirectionType side,/*[in]*/Float64 depth) override;
+	STDMETHOD(get_OverhangTaper)(/*[in]*/DirectionType side,/*[out,retval]*/DeckOverhangTaper* taper) override;
+	STDMETHOD(put_OverhangTaper)(/*[in]*/DirectionType side,/*[in]*/DeckOverhangTaper taper) override;
+   STDMETHOD(GetOverhang)(/*[out]*/Float64* leftDepth, /*[out]*/DeckOverhangTaper* leftTaper, /*[out]*/Float64* rightDepth, /*[out]*/DeckOverhangTaper* rightTaper) override;
+   STDMETHOD(SetOverhang)(/*[in]*/Float64 leftDepth, /*[in]*/DeckOverhangTaper leftTaper, /*[in]*/Float64 rightDepth, /*[in]*/DeckOverhangTaper rightTaper) override;
 
 // IStructuredStorage2
 public:

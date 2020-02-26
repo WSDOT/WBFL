@@ -343,6 +343,18 @@ STDMETHODIMP_(SelectionType) CEditableTextBlockImpl::GetSelectionType()
    return dispObj->GetSelectionType();
 }
 
+STDMETHODIMP_(void) CEditableTextBlockImpl::RetainSelection(BOOL bRetain)
+{
+   CComQIPtr<iDisplayObject, &IID_iDisplayObject> dispObj(m_TextBlock);
+   dispObj->RetainSelection(bRetain);
+}
+
+STDMETHODIMP_(BOOL) CEditableTextBlockImpl::RetainSelection()
+{
+   CComQIPtr<iDisplayObject, &IID_iDisplayObject> dispObj(m_TextBlock);
+   return dispObj->RetainSelection();
+}
+
 STDMETHODIMP_(void) CEditableTextBlockImpl::SetToolTipText(LPCTSTR lpszToolTipText)
 {
    CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_TextBlock);

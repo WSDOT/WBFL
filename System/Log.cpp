@@ -153,7 +153,10 @@ dbgLog& dbgLog::operator<<(dbgLog& (*pf)(dbgLog&))
 //======================== OPERATIONS =======================================
 void dbgLog::AddEntryToLog(std::_tstring& msg,  dbgLog::EntryType type)
 {
-   if (type==dbgLog::Failed) m_NumErrors++;
+   if (type == dbgLog::Failed)
+   {
+      m_NumErrors++; // can set a break here when test fails
+   }
 
    LogEntry ent;
    ent.Type = type;

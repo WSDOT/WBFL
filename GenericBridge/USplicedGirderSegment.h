@@ -63,7 +63,8 @@ BEGIN_COM_MAP(CUSplicedGirderSegment)
 END_COM_MAP()
 
 protected:
-   HRESULT GetPrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape);
+   virtual HRESULT GetPrimaryShape(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape) override;
+   virtual HRESULT GetVolume_and_SurfaceArea(Float64* pVolume, Float64* pSurfaceArea) override;
    void GetEndBlockWidth(Float64 Xs, SectionBias sectionBias,Float64* pWtop,Float64* pWbot);
 };
 

@@ -105,6 +105,8 @@ END_COM_MAP()
    STDMETHOD_(BOOL,IsSelected)() override;
    STDMETHOD_(void,SetSelectionType)(SelectionType st) override;
    STDMETHOD_(SelectionType,GetSelectionType)() override;
+   STDMETHOD_(void, RetainSelection)(BOOL bRetain) override;
+   STDMETHOD_(BOOL, RetainSelection)() override;
 
    // Tool Tips
 //   virtual BOOL ToolTipHitTest(CPoint point) = 0;

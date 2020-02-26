@@ -202,6 +202,12 @@
     <ClCompile Include="Helpers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CastingRegion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CastingRegions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlignmentOffsetStrategy.h">
@@ -426,6 +432,12 @@
     <ClInclude Include="..\Include\GenericBridge\Helpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CastingRegion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CastingRegions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\Include\WBFLGenericBridge.idl" />
@@ -646,6 +658,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="VoidedSlabSection2.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CastingRegion.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CastingRegions.rgs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

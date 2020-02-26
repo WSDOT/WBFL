@@ -32,7 +32,8 @@ typedef enum PointType
 {
    ptNone   = 0,
    ptCircle = 1,
-   ptSquare = 2
+   ptSquare = 2,
+   ptCrossHair = 3
    // ptTriangle
    // ptPentagon
    // ptHexagon

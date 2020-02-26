@@ -99,6 +99,7 @@ public:
    STDMETHOD(get_PierIndex)(/*[in]*/ IBridgePier* pier,/*[out,retval]*/PierIndexType* index) override;
    STDMETHOD(get__EnumPiers)(/*[out,retval]*/IEnumPiers* *enumPiers) override;
    STDMETHOD(FindPier)(/*[in]*/Float64 station,/*[out,retval]*/IBridgePier** ppPier) override;
+   STDMETHOD(FindPierByID)(/*[in]*/PierIDType pierID, /*[out, retval]*/IBridgePier** ppPier) override;
 
 // IStructuredStorage2
 public:

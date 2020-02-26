@@ -61,11 +61,6 @@ void CTestBridgeDeck::Test(IUnknown* pUnk)
    TRY_TEST(deck->get_Composite(&bComposite),S_OK);
    TRY_TEST(bComposite,VARIANT_TRUE);
 
-   CComPtr<IMaterial> material;
-   TRY_TEST(deck->get_Material(nullptr),E_POINTER);
-   TRY_TEST(deck->get_Material(&material),S_OK);
-   TRY_TEST(material != nullptr,true);
-
    ///////////////////////////////////////
    // Test Error Info
    CComQIPtr<ISupportErrorInfo> eInfo(deck);

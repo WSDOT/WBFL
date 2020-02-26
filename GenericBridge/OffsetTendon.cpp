@@ -46,6 +46,7 @@ HRESULT COffsetTendon::FinalConstruct()
    m_JackingEnd   = jeLeft;
 
    m_pSSMbr = nullptr;
+   m_pSSMbrSegment = nullptr;
 
    return S_OK;
 }
@@ -141,6 +142,13 @@ STDMETHODIMP COffsetTendon::put_OutsideDiameter(Float64 size)
    }
 
    m_OD = size;
+   return S_OK;
+}
+
+STDMETHODIMP COffsetTendon::get_OutsideDuctArea(Float64* Aduct)
+{
+   CHECK_RETVAL(Aduct);
+   *Aduct = M_PI*m_OD*m_OD / 4;
    return S_OK;
 }
 
@@ -362,18 +370,44 @@ STDMETHODIMP COffsetTendon::put_JackingEnd(JackingEndType type)
    return S_OK;
 }
 
-STDMETHODIMP COffsetTendon::putref_SuperstructureMember(ISuperstructureMember* pMbr)
+STDMETHODIMP COffsetTendon::putref_SuperstructureMember(ISuperstructureMember* pSSMbr)
 {
-   m_pSSMbr = pMbr;
+   CHECK_IN(pSSMbr);
+#if defined _DEBUG
+   ATLASSERT(m_pSSMbrSegment == nullptr); // can't be attached to both a SSMbr and a SSMbrSegment
+#endif
+   m_pSSMbr = pSSMbr;
    return S_OK;
 }
 
-STDMETHODIMP COffsetTendon::get_SuperstructureMember(ISuperstructureMember** ppMbr)
+STDMETHODIMP COffsetTendon::get_SuperstructureMember(ISuperstructureMember** ppSSMbr)
 {
-   (*ppMbr) = m_pSSMbr;
-   if ( *ppMbr )
+   (*ppSSMbr) = m_pSSMbr;
+   if ( *ppSSMbr )
    {
-      (*ppMbr)->AddRef();
+      (*ppSSMbr)->AddRef();
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP COffsetTendon::putref_SuperstructureMemberSegment(ISuperstructureMemberSegment* pSSMbrSegment)
+{
+   CHECK_IN(pSSMbrSegment);
+#if defined _DEBUG
+   ATLASSERT(m_pSSMbr == nullptr); // can't be attached to both a SSMbr and a SSMbrSegment
+#endif
+   m_pSSMbrSegment = pSSMbrSegment;
+   return S_OK;
+}
+
+STDMETHODIMP COffsetTendon::get_SuperstructureMemberSegment(ISuperstructureMemberSegment** ppSSMbrSegment)
+{
+   CHECK_RETOBJ(ppSSMbrSegment);
+   (*ppSSMbrSegment) = m_pSSMbrSegment;
+   if (*ppSSMbrSegment)
+   {
+      (*ppSSMbrSegment)->AddRef();
    }
 
    return S_OK;

@@ -146,7 +146,7 @@ STDMETHODIMP CRebarRowFacePattern::get_Location(Float64 distFromStartOfPattern,C
    else
    {
       CComPtr<IShape> shape;
-      m_pSegment->get_PrimaryShape(start + distFromStartOfPattern,sbRight,&shape);
+      m_pSegment->get_PrimaryShape(start + distFromStartOfPattern,sbRight,cstGirder,&shape);
       CComPtr<IRect2d> box;
       shape->get_BoundingBox(&box);
       Float64 h;

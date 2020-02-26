@@ -352,6 +352,7 @@ STDMETHODIMP CSurfaceTemplate::GetSlope(CollectionIndexType ridgePointIdx,Float6
             {
                *pSlope = slope;
             }
+
             return S_OK;
          }
 

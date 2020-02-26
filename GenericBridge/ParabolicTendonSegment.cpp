@@ -62,6 +62,8 @@ HRESULT CParabolicTendonSegment::FinalConstruct()
    m_SlopeEnd = qcbLeft;
 
    m_pTendon = nullptr;
+   
+   m_bUpdateParabolas = true;
 
    return S_OK;
 }
@@ -96,6 +98,7 @@ STDMETHODIMP CParabolicTendonSegment::put_Start(IPoint3d* start)
    Float64 x,y,z;
    start->Location(&x,&y,&z);
    m_Start->Move(x,y,z);
+   m_bUpdateParabolas = true;
    return S_OK;
 }
 
@@ -111,6 +114,7 @@ STDMETHODIMP CParabolicTendonSegment::put_End(IPoint3d* end)
    Float64 x,y,z;
    end->Location(&x,&y,&z);
    m_End->Move(x,y,z);
+   m_bUpdateParabolas = true;
    return S_OK;
 }
 
@@ -157,8 +161,8 @@ STDMETHODIMP CParabolicTendonSegment::get_Position(TendonMeasure measure,Float64
 #pragma Reminder("UPDATE: need to make adjustment for strand being offset in duct if measure is tmTendon")
    CHECK_RETOBJ(cg);
 
-   mathPolynomial2d parabolaX = GetParabolaX();
-   mathPolynomial2d parabolaY = GetParabolaY();
+   const mathPolynomial2d& parabolaX = GetParabolaX();
+   const mathPolynomial2d& parabolaY = GetParabolaY();
 
    Float64 x = parabolaX.Evaluate(z);
    Float64 y = parabolaY.Evaluate(z);
@@ -179,22 +183,27 @@ STDMETHODIMP CParabolicTendonSegment::get_Slope(Float64 z,IVector3d** slope)
 {
    CHECK_RETOBJ(slope);
 
-   mathPolynomial2d parabolaX = GetParabolaX();
-   mathPolynomial2d parabolaY = GetParabolaY();
-   mathPolynomial2d slope_fn_x = parabolaX.GetDerivative();
-   mathPolynomial2d slope_fn_y = parabolaY.GetDerivative();
+   const mathPolynomial2d& parabolaX = GetParabolaX();
+   const mathPolynomial2d& parabolaY = GetParabolaY();
+   const mathPolynomial2d& slope_fn_x = GetParabolaDX();
+   const mathPolynomial2d& slope_fn_y = GetParabolaDY();
 
    Float64 sx = slope_fn_x.Evaluate(z);
    Float64 sy = slope_fn_y.Evaluate(z);
 
-   if ( m_pTendon )
+   if (m_pTendon)
    {
+      // get horizontal angular change due to plan view angle points in the superstructure member
+      // NOTE: no angle points if this tendon segment is associated with a superstructure member segment
+      Float64 value = 0;
       CComPtr<ISuperstructureMember> ssmbr;
       m_pTendon->get_SuperstructureMember(&ssmbr);
-      CComPtr<IAngle> planAngle;
-      ssmbr->GetPlanAngle(z,&planAngle);
-      Float64 value;
-      planAngle->get_Value(&value);
+      if (ssmbr)
+      {
+         CComPtr<IAngle> planAngle;
+         ssmbr->GetPlanAngle(z, &planAngle);
+         planAngle->get_Value(&value);
+      }
 
       Float64 a = atan(sx);
       sx = -tan(a+value);
@@ -333,11 +342,10 @@ STDMETHODIMP CParabolicTendonSegment::get_MinimumRadiusOfCurvature(Float64* pMin
 {
    CHECK_RETVAL(pMinRadiusOfCurvature);
 
-   mathPolynomial2d fx = CParabolicTendonSegment::GetParabolaY();
+   const mathPolynomial2d& fx = GetParabolaY();
    std::vector<Float64> coefficients(fx.GetCoefficients());
    ATLASSERT(coefficients.size() == 3);
    Float64 A = coefficients[0];
-   Float64 B = coefficients[1];
 
    // Parabola in the form of y = Ax^2 + Bx + C
    // if the coefficient A is zero, then the tendon path is linear,
@@ -380,30 +388,37 @@ STDMETHODIMP CParabolicTendonSegment::Save(IStructuredSave2* save)
    return S_OK;
 }
 
-mathPolynomial2d CParabolicTendonSegment::GetParabolaX()
+void CParabolicTendonSegment::UpdateParabolas()
 {
-   Float64 x1,y1,z1;
-   m_Start->Location(&x1,&y1,&z1);
+   if (m_bUpdateParabolas == false)
+   {
+      // already up to date
+      return;
+   }
 
-   Float64 x2,y2,z2;
-   m_End->Location(&x2,&y2,&z2);
+   Float64 x1, y1, z1;
+   m_Start->Location(&x1, &y1, &z1);
 
-   Float64 dx = x2-x1;
-   Float64 dy = y2-y1;
-   Float64 dz = z2-z1;
+   Float64 x2, y2, z2;
+   m_End->Location(&x2, &y2, &z2);
 
+   Float64 dx = x2 - x1;
+   Float64 dy = y2 - y1;
+   Float64 dz = z2 - z1;
+
+   // X Parabola
    Float64 A, B, C;
-   if ( m_SlopeEnd == qcbLeft )
+   if (m_SlopeEnd == qcbLeft)
    {
       // Slope is known at the left end
-      A = (dx - dz*m_Slope)/(dz*dz);
-      B = m_Slope - 2*A*z1;
+      A = (dx - dz*m_Slope) / (dz*dz);
+      B = m_Slope - 2 * A*z1;
       C = x1 - A*z1*z1 - B*z1;
    }
    else
    {
-      A = -(dx - dz*m_Slope)/(dz*dz);
-      B = m_Slope - 2*A*z2;
+      A = -(dx - dz*m_Slope) / (dz*dz);
+      B = m_Slope - 2 * A*z2;
       C = x1 - A*z1*z1 - B*z1;
    }
 
@@ -412,41 +427,56 @@ mathPolynomial2d CParabolicTendonSegment::GetParabolaX()
    coefficients.push_back(B);
    coefficients.push_back(C);
 
-   return mathPolynomial2d(coefficients);
-}
+   m_ParabolaX.SetCoefficients(coefficients);
+   m_ParabolaDX = m_ParabolaX.GetDerivative();
 
-mathPolynomial2d CParabolicTendonSegment::GetParabolaY()
-{
-   Float64 x1,y1,z1;
-   m_Start->Location(&x1,&y1,&z1);
-
-   Float64 x2,y2,z2;
-   m_End->Location(&x2,&y2,&z2);
-
-   Float64 dx = x2-x1;
-   Float64 dy = y2-y1;
-   Float64 dz = z2-z1;
-
-   Float64 A, B, C;
-   if ( m_SlopeEnd == qcbLeft )
+   // Y Parabola
+   if (m_SlopeEnd == qcbLeft)
    {
       // Slope is known at the left end
-      A = (dy - dz*m_Slope)/(dz*dz);
-      B = m_Slope - 2*A*z1;
+      A = (dy - dz*m_Slope) / (dz*dz);
+      B = m_Slope - 2 * A*z1;
       C = y1 - A*z1*z1 - B*z1;
    }
    else
    {
-      A = -(dy - dz*m_Slope)/(dz*dz);
-      B = m_Slope - 2*A*z2;
+      A = -(dy - dz*m_Slope) / (dz*dz);
+      B = m_Slope - 2 * A*z2;
       C = y1 - A*z1*z1 - B*z1;
    }
 
 
-   std::vector<Float64> coefficients;
+   coefficients.clear();
    coefficients.push_back(A); // y = Az^2 + Bz + C
    coefficients.push_back(B);
    coefficients.push_back(C);
 
-   return mathPolynomial2d(coefficients);
+   m_ParabolaY.SetCoefficients(coefficients);
+   m_ParabolaDY = m_ParabolaY.GetDerivative();
+   
+   m_bUpdateParabolas = false;
+}
+
+const mathPolynomial2d& CParabolicTendonSegment::GetParabolaX()
+{
+   UpdateParabolas();
+   return m_ParabolaX;
+}
+
+const mathPolynomial2d& CParabolicTendonSegment::GetParabolaDX()
+{
+   UpdateParabolas();
+   return m_ParabolaDX;
+}
+
+const mathPolynomial2d& CParabolicTendonSegment::GetParabolaY()
+{
+   UpdateParabolas();
+   return m_ParabolaY;
+}
+
+const mathPolynomial2d& CParabolicTendonSegment::GetParabolaDY()
+{
+   UpdateParabolas();
+   return m_ParabolaDY;
 }

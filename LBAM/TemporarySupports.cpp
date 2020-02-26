@@ -101,5 +101,5 @@ STDMETHODIMP CTemporarySupports::Find(SupportIDType tsID,ITemporarySupport** ppT
       }
    }
 
-   return S_OK;
+   return E_FAIL;
 }

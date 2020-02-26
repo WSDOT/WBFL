@@ -74,7 +74,7 @@ STDMETHODIMP CSegment::get_Length(Float64 *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
+STDMETHODIMP CSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,ISection** ppSection)
 {
    CHECK_RETOBJ(ppSection);
 
@@ -130,7 +130,7 @@ STDMETHODIMP CSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBi
    return S_OK;
 }
 
-STDMETHODIMP CSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
+STDMETHODIMP CSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias,SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
    if ( m_Shapes.size() == 0 )
@@ -142,6 +142,42 @@ STDMETHODIMP CSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias,ISha
    // this is a prismatic shape, so Xs and sectionBias doesn't matter
    m_Shapes.front().Shape->Clone(ppShape);
 
+   return S_OK;
+}
+
+STDMETHODIMP CSegment::GetVolumeAndSurfaceArea(Float64* pVolume, Float64* pSurfaceArea)
+{
+   CHECK_RETVAL(pVolume);
+   CHECK_RETVAL(pSurfaceArea);
+   if (m_Shapes.size() == 0)
+   {
+      *pVolume = 0;
+      *pSurfaceArea = 0;
+   }
+   else
+   {
+      CComPtr<IShapeProperties> shapeProps;
+      m_Shapes.front().Shape->get_ShapeProperties(&shapeProps);
+      Float64 area;
+      shapeProps->get_Area(&area);
+
+      Float64 perimeter;
+      m_Shapes.front().Shape->get_Perimeter(&perimeter);
+
+      Float64 L;
+      get_Length(&L);
+      
+      *pVolume = area*L;
+      *pSurfaceArea = perimeter*L + 2*area;
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP CSegment::get_InternalSurfaceAreaOfVoids(Float64* pSurfaceArea)
+{
+   CHECK_RETVAL(pSurfaceArea);
+   *pSurfaceArea = 0;
    return S_OK;
 }
 

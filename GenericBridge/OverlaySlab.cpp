@@ -118,6 +118,19 @@ STDMETHODIMP COverlaySlab::put_GrossDepth(Float64 depth)
    return S_OK;
 }
 
+STDMETHODIMP COverlaySlab::get_Material(IMaterial** material)
+{
+   CHECK_RETOBJ(material);
+   return m_Material.CopyTo(material);
+}
+
+STDMETHODIMP COverlaySlab::putref_Material(IMaterial* material)
+{
+   CHECK_IN(material);
+   m_Material = material;
+   return S_OK;
+}
+
 
 /////////////////////////////////////
 // IStructuredStorage2

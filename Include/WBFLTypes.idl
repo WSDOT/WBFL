@@ -30,15 +30,49 @@
 cpp_quote("#define LUMP_STRANDS")
 
 
-cpp_quote("#if _WIN32_WINNT < 0x0600")
-cpp_quote("#define MAXUINT64   ((UINT64)~((UINT64)0))")
-cpp_quote("#define MAXUINT32   ((UINT32)~((UINT32)0))")
-cpp_quote("#define MAXINT16    ((INT16)(MAXUINT16 >> 1))")
-cpp_quote("#define MAXINT32    ((INT32)(MAXUINT32 >> 1))")
-cpp_quote("#define MAXINT64    ((INT64)(MAXUINT64 >> 1))")
-cpp_quote("#endif")
-
 import "basetsd.h";
+
+cpp_quote("#if _WIN32_WINNT < 0x0600")
+
+cpp_quote("#define MAXUINT8    ((UINT8)~((UINT8)0))")
+cpp_quote("#define MAXINT8     ((INT8)(MAXUINT8 >> 1))")
+cpp_quote("#define MININT8     ((INT8)~MAXINT8)")
+
+cpp_quote("#define MAXUINT16   ((UINT16)~((UINT16)0))")
+cpp_quote("#define MAXINT16    ((INT16)(MAXUINT16 >> 1))")
+cpp_quote("#define MININT16    ((INT16)~MAXINT16)")
+
+cpp_quote("#define MAXUINT32   ((UINT32)~((UINT32)0))")
+cpp_quote("#define MAXINT32    ((INT32)(MAXUINT32 >> 1))")
+cpp_quote("#define MININT32    ((INT32)~MAXINT32)")
+
+cpp_quote("#define MAXUINT64   ((UINT64)~((UINT64)0))")
+cpp_quote("#define MAXINT64    ((INT64)(MAXUINT64 >> 1))")
+cpp_quote("#define MININT64    ((INT64)~MAXINT64)")
+
+cpp_quote("#define MAXULONG32  ((ULONG32)~((ULONG32)0))")
+cpp_quote("#define MAXLONG32   ((LONG32)(MAXULONG32 >> 1))")
+cpp_quote("#define MINLONG32   ((LONG32)~MAXLONG32)")
+
+cpp_quote("#define MAXULONG64  ((ULONG64)~((ULONG64)0))")
+cpp_quote("#define MAXLONG64   ((LONG64)(MAXULONG64 >> 1))")
+cpp_quote("#define MINLONG64   ((LONG64)~MAXLONG64)")
+
+cpp_quote("#define MAXULONGLONG ((ULONGLONG)~((ULONGLONG)0))")
+cpp_quote("#define MINLONGLONG ((LONGLONG)~MAXLONGLONG)")
+
+cpp_quote("#define MAXSIZE_T   ((SIZE_T)~((SIZE_T)0))")
+cpp_quote("#define MAXSSIZE_T  ((SSIZE_T)(MAXSIZE_T >> 1))")
+cpp_quote("#define MINSSIZE_T  ((SSIZE_T)~MAXSSIZE_T)")
+
+cpp_quote("#define MAXUINT     ((UINT)~((UINT)0))")
+cpp_quote("#define MAXINT      ((INT)(MAXUINT >> 1))")
+cpp_quote("#define MININT      ((INT)~MAXINT)")
+
+cpp_quote("#define MAXDWORD32  ((DWORD32)~((DWORD32)0))")
+cpp_quote("#define MAXDWORD64  ((DWORD64)~((DWORD64)0))")
+
+cpp_quote("#endif")
 
 cpp_quote("#if defined UNICODE || defined _UNICODE")
 cpp_quote("#define _tstring wstring")

@@ -546,17 +546,31 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnLButtonDown(UINT nFlags,CPoint point)
       BOOL bSelectionEnabled = FALSE;
       if ( m_bLBtnSelectEnabled )
       {
-         FindNextSelectableDisplayObject(point,&pDO);
-         if ( pDO )
+         // find the display objects at this click point
+         DisplayObjectContainer doS;
+         FindDisplayObjects(point, &doS);
+         for (const auto& dispObj : doS)
          {
-            dispObjs.push_back(pDO);
-            bSelectionEnabled = TRUE;
+            if (dispObj->IsSelected() && dispObj->RetainSelection())
+            {
+               dispObjs.push_back(dispObj);
+            }
          }
-      }
-      else
-      {
-         FindDisplayObjects(point,&dispObjs);
-         bSelectionEnabled = FALSE;
+
+         if (dispObjs.size() == 0)
+         {
+            FindNextSelectableDisplayObject(point, &pDO);
+            if (pDO)
+            {
+               dispObjs.push_back(pDO);
+               bSelectionEnabled = TRUE;
+            }
+            else
+            {
+               FindDisplayObjects(point, &dispObjs);
+               bSelectionEnabled = FALSE;
+            }
+         }
       }
 
       if ( m_bLBtnSelectEnabled && pDO == nullptr )
@@ -738,17 +752,32 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnRButtonDown(UINT nFlags,CPoint point)
          if ( m_bRBtnSelectEnabled )
          {
             // r-button selection is enabled so we only want the selectable display objects
-            FindNextSelectableDisplayObject(point,&pDO);
-            if ( pDO )
+            // find the display objects at this point... if one of them is already selected,
+            // then retain the selection
+            DisplayObjectContainer doS;
+            FindDisplayObjects(point, &doS);
+            for (const auto& dispObj : doS)
             {
-               dispObjs.push_back(pDO);
-               bSelectionEnabled = TRUE;
+               if (dispObj->IsSelected())
+               {
+                  dispObjs.push_back(dispObj);
+               }
             }
-            else
+
+            if (dispObjs.size() == 0)
             {
-               // a selectable display object wasn't found... go to the full list of display objects
-               FindDisplayObjects(point,&dispObjs);
-               bSelectionEnabled = FALSE;
+               FindNextSelectableDisplayObject(point, &pDO);
+               if (pDO)
+               {
+                  dispObjs.push_back(pDO);
+                  bSelectionEnabled = TRUE;
+               }
+               else
+               {
+                  // a selectable display object wasn't found... go to the full list of display objects
+                  FindDisplayObjects(point, &dispObjs);
+                  bSelectionEnabled = FALSE;
+               }
             }
          }
          else
@@ -1060,42 +1089,79 @@ STDMETHODIMP_(BOOL) CDisplayMgrImpl::OnNeedToolTipText(UINT id,NMHDR* pNMHDR,LRE
    return bRetVal;
 }
 
+void FindToolTipDisplayObject(CPoint point,iDisplayObject* pDO,iDisplayObject** ppToolTipDO)
+{
+   (*ppToolTipDO) = nullptr;
+
+   if (pDO->GetToolTipText().IsEmpty() || pDO->GetToolTipText().GetLength() == 0)
+   {
+      // if pDO doesn't have tooltip text, drill down to see if a sub display object
+      // has it. The first display object to have tool tip text is the one
+      CComQIPtr<iCompositeDisplayObject> compDO(pDO);
+      if (compDO)
+      {
+         CollectionIndexType nDO = compDO->GetDisplayObjectCount();
+         for (CollectionIndexType doIdx = 0; doIdx < nDO; doIdx++)
+         {
+            CComPtr<iDisplayObject> pSubDO;
+            compDO->GetDisplayObject(doIdx, atByIndex, &pSubDO);
+
+            if (pSubDO->HitTest(point))
+            {
+               CComPtr<iDisplayObject> ttDO;
+               FindToolTipDisplayObject(point, pSubDO, &ttDO);
+               if (ttDO)
+               {
+                  ttDO.CopyTo(ppToolTipDO);
+                  return;
+               }
+            }
+         }
+      }
+   }
+   else
+   {
+      *ppToolTipDO = pDO;
+      (*ppToolTipDO)->AddRef();
+   }
+}
+
 STDMETHODIMP_(INT_PTR) CDisplayMgrImpl::OnToolHitTest(CPoint point,TOOLINFO* pTI)
 {
-   m_ToolTipObject.Release();
-
    DisplayObjectContainer dispObjs;
    FindDisplayObjects(point,&dispObjs);
 
-   if ( 0 < dispObjs.size() )
+   DisplayObjectContainer::iterator iter = dispObjs.begin();
+   DisplayObjectContainer::iterator end = dispObjs.end();
+   for (; iter != end; iter++)
    {
-      CComPtr<iDisplayObject> pDO = *(dispObjs.begin());  // use the first display object found
+      CComPtr<iDisplayObject> pDO(*iter);
+      m_ToolTipObject.Release();
+      FindToolTipDisplayObject(point, pDO, &m_ToolTipObject);
+      if (m_ToolTipObject)
+      {
+         ATLASSERT(m_ToolTipObject->HitTest(point));
 
-      if ( pDO->GetToolTipText().IsEmpty() || pDO->GetToolTipText().GetLength() == 0 )
-         return -1;
+         pTI->cbSize = sizeof(TOOLINFO);
+         pTI->hwnd = m_pView->GetSafeHwnd();
+         pTI->uId = MAKELONG(point.x, point.y);
+         pTI->lpszText = LPSTR_TEXTCALLBACK;
+         pTI->rect = m_ToolTipObject->GetBoundingBox();
+         pTI->uFlags |= TTF_NOTBUTTON | TTF_ALWAYSTIP;
 
-      m_ToolTipObject = pDO;
+         //#if defined _DEBUG
+         //      int id = m_ToolTipObject->GetID();
+         //      CComPtr<iDisplayList> disp_list;
+         //      m_ToolTipObject->GetDisplayList(&disp_list);
+         //      int list_id = disp_list->GetID();
+         //      WATCH(_T("New Tool Tip Object: DO ") << id << _T(" in DL ") << list_id);
+         //#endif // _DEBUG
 
-      ATLASSERT( m_ToolTipObject->HitTest(point) );
-
-      pTI->cbSize = sizeof(TOOLINFO);
-      pTI->hwnd = m_pView->GetSafeHwnd();
-      pTI->uId =  MAKELONG(point.x,point.y);
-      pTI->lpszText = LPSTR_TEXTCALLBACK;
-      pTI->rect = m_ToolTipObject->GetBoundingBox();
-      pTI->uFlags |= TTF_NOTBUTTON | TTF_ALWAYSTIP;
-
-//#if defined _DEBUG
-//      int id = m_ToolTipObject->GetID();
-//      CComPtr<iDisplayList> disp_list;
-//      m_ToolTipObject->GetDisplayList(&disp_list);
-//      int list_id = disp_list->GetID();
-//      WATCH(_T("New Tool Tip Object: DO ") << id << _T(" in DL ") << list_id);
-//#endif // _DEBUG
-
-      return pTI->uId;
+         return pTI->uId;
+      }
    }
 
+   m_ToolTipObject.Release();
    return -1;
 }
 

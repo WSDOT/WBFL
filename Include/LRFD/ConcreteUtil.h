@@ -187,7 +187,7 @@ public:
    static Float64 ComputeConcreteDensityModificationFactor(matConcrete::Type type,Float64 density,bool bHasFct,Float64 fct,Float64 fc);
 
    static std::_tstring GetTypeName(matConcrete::Type type,bool bFull);
-   static matConcrete::Type GetTypeFromName(LPCTSTR strName);
+   static matConcrete::Type GetTypeFromTypeName(LPCTSTR strName);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

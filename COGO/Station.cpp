@@ -99,6 +99,16 @@ STDMETHODIMP CStation::get_NormalizedValue(IAlignment* pAlignment,Float64* pValu
    return S_OK;
 }
 
+STDMETHODIMP CStation::Offset(Float64 offset)
+{
+   if (!IsZero(offset))
+   {
+      m_Value += offset;
+      Fire_OnStationChanged(m_ZoneIdx, m_Value);
+   }
+   return S_OK;
+}
+
 STDMETHODIMP CStation::GetStation(ZoneIndexType* pZoneIdx,Float64* pStation)
 {
    CHECK_RETVAL(pZoneIdx);

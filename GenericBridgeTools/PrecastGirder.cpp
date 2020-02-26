@@ -180,6 +180,28 @@ STDMETHODIMP CPrecastGirder::get_StrandModel(IStrandModel** ppStrandModel)
    return S_OK;
 }
 
+STDMETHODIMP CPrecastGirder::putref_Tendons(ITendonCollection* pTendons)
+{
+   CHECK_IN(pTendons);
+   m_Tendons = pTendons;
+   IndexType nTendons;
+   m_Tendons->get_Count(&nTendons);
+   for (IndexType idx = 0; idx < nTendons; idx++)
+   {
+      CComPtr<ITendon> tendon;
+      m_Tendons->get_Item(idx, &tendon);
+      tendon->putref_SuperstructureMemberSegment(m_pSegment);
+   }
+   return S_OK;
+}
+
+STDMETHODIMP CPrecastGirder::get_Tendons(ITendonCollection** ppTendons)
+{
+   CHECK_RETOBJ(ppTendons);
+   *ppTendons = nullptr;
+   return m_Tendons.CopyTo(ppTendons);
+}
+
 STDMETHODIMP CPrecastGirder::get_RebarLayout(IRebarLayout** rebarLayout)
 {
    CHECK_RETOBJ(rebarLayout);

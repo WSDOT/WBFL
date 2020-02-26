@@ -48,7 +48,7 @@ void grGraphColor::Init()
    m_bInitialized = false;
    m_nGraphs = 0;
 
-   m_MinHue = 60;
+   m_MinHue = 128;
    m_MaxHue = 360;
    m_Saturation = 1.0; // primary colors
    m_Lightness = 0.50; // half-way between black and white

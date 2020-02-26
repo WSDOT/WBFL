@@ -28,6 +28,7 @@
 #include "CompositeSectionItemEx.h"
 #include "ElasticProperties.h"
 #include "MassProperties.h"
+#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -420,6 +421,11 @@ STDMETHODIMP CCompositeSectionEx::Clone(ISection** clone)
 //
 STDMETHODIMP CCompositeSectionEx::Offset(Float64 dx,Float64 dy)
 {
+   if (IsZero(dx) && IsZero(dy))
+   {
+      return S_OK;
+   }
+
    for (auto& value : m_coll)
    {
       CComPtr<ICompositeSectionItemEx> item(value.second);
@@ -437,20 +443,9 @@ STDMETHODIMP CCompositeSectionEx::Offset(Float64 dx,Float64 dy)
 STDMETHODIMP CCompositeSectionEx::OffsetEx(ISize2d* pSize)
 {
    CHECK_IN(pSize);
-
-   for (auto& value : m_coll)
-   {
-      CComPtr<ICompositeSectionItemEx> item(value.second);
-
-      CComPtr<IShape> shape;
-      item->get_Shape(&shape);
-
-      CComQIPtr<IXYPosition> position(shape);
-
-      position->OffsetEx(pSize);
-   }
-
-	return S_OK;
+   Float64 dx, dy;
+   pSize->Dimensions(&dx, &dy);
+   return Offset(dx, dy);
 }
 
 STDMETHODIMP CCompositeSectionEx::get_LocatorPoint(LocatorPointType lp, IPoint2d** point)

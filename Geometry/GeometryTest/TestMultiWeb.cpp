@@ -1073,7 +1073,7 @@ void CTestMultiWeb::TestIXYPosition()
    hookPnt->get_X(&x);
    hookPnt->get_Y(&y);
    TRY_TEST(IsEqual(x,100.0), true );
-   TRY_TEST(IsEqual(y,127.0), true );
+   TRY_TEST(IsEqual(y,100.0), true );
 
    //
    // RotateEx (Provides coverage of Rotate)

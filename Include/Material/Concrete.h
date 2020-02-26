@@ -57,7 +57,7 @@ LOG
 class MATCLASS matConcrete
 {
 public:
-   enum Type { Normal, AllLightweight,SandLightweight };
+   enum Type { Normal, AllLightweight,SandLightweight, UHPC };
 
    // GROUP: LIFECYCLE
 
@@ -96,7 +96,7 @@ public:
    void HasAggSplittingStrength(bool bHasFct);
 
    static std::_tstring GetTypeName(Type type,bool bFull);
-   static Type GetTypeFromName(LPCTSTR strName);
+   static Type GetTypeFromTypeName(LPCTSTR strName);
 
    // GROUP: OPERATIONS
 

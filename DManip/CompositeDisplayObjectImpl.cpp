@@ -305,3 +305,17 @@ STDMETHODIMP_(void) CCompositeDisplayObjectImpl::SetSelectionType(SelectionType 
 
    Do_SetSelectionType(st);
 }
+
+STDMETHODIMP_(void) CCompositeDisplayObjectImpl::RetainSelection(BOOL bRetain)
+{
+   CollectionIndexType nDO = m_CompositeItems->GetDisplayObjectCount();
+   for (CollectionIndexType i = 0; i < nDO; i++)
+   {
+      CComPtr<iDisplayObject> dispObj;
+      m_CompositeItems->GetDisplayObject(i, &dispObj);
+
+      dispObj->RetainSelection(bRetain);
+   }
+
+   Do_RetainSelection(bRetain);
+}

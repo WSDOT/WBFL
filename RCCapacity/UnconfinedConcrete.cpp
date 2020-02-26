@@ -94,9 +94,6 @@ STDMETHODIMP CUnconfinedConcrete::put_fc(Float64 newVal)
 
    convert->ConvertFromBaseUnits(newVal,CComBSTR("ksi"),&newVal);
 
-   if ( newVal < 3.0 || 16.0 < newVal )
-      return E_INVALIDARG;
-
    m_Fc = newVal;
 
 	return S_OK;

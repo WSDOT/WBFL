@@ -1914,8 +1914,8 @@ void CBruteForceVehicularResponse2::EvaluateForInteriorSupportReaction(LiveLoadM
 
    AxleIndexType nAxles = m_Truck.GetNumAxles();
 
-   std::vector<AxleState> applied_axles; 
-   applied_axles.reserve(nAxles);
+   std::vector<AxleState> applied_axles;
+   applied_axles.resize(nAxles, AxleOff);
 
    CComPtr<IDblArray> supportLocations;
    m_SupportLocations->get_SupportLocations(&supportLocations);
@@ -1999,11 +1999,22 @@ void CBruteForceVehicularResponse2::EvaluateForInteriorSupportReaction(LiveLoadM
 
                Float64 left_result, right_result;
                VARIANT_BOOL bIsDual;
-               m_Truck.EvaluatePrimaryInfl(truck_location, truck_side, inflLine, 
-                                           &applied_axles, &bIsDual, &left_result, &right_result);
+               std::vector<AxleState> applied_axles_this_influence_line;
+               applied_axles_this_influence_line.reserve(nAxles);
+
+               m_Truck.EvaluatePrimaryInfl(truck_location, truck_side, inflLine,
+                                           &applied_axles_this_influence_line, &bIsDual, &left_result, &right_result);
 
                left_truck_result  += left_result;
                right_truck_result += right_result;
+
+               for (AxleIndexType axleIdx = 0; axleIdx < nAxles; axleIdx++)
+               {
+                  if (applied_axles_this_influence_line[axleIdx] == AxleOn)
+                  {
+                     applied_axles[axleIdx] = AxleOn;
+                  }
+               }
 
                //WATCH(_T("Vehicle Index ") << vehicleIndex << _T(" Axle Spacing ") << m_Truck.GetVariableAxleSpacing() << _T(" Dir ") << (direction == ltdForward ? _T("F") : _T("R")) << " Position " << truck_location << " Pivot Axle " << pivotAxleIndex);
             } // next influence line

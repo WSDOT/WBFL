@@ -33,6 +33,20 @@
 
 #define IDC_HELP_WEB_BROWSER            AFX_IDW_PANE_FIRST
 
+class CEAFHelpWindow;
+
+class CEAFHelpStatusBar : public CStatusBar
+{
+public:
+   void SetHelpWindow(CEAFHelpWindow* pHelpWnd);
+   afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
+
+protected:
+   DECLARE_MESSAGE_MAP()
+
+   CEAFHelpWindow* m_pHelpWnd;
+};
+
 /////////////////////////////////////////////////////////////////////////////
 // CEAFHelpWindow
 class CEAFHelpWindow : public CFrameWnd
@@ -45,6 +59,8 @@ public:
 public:
    void CanClose(BOOL bCanClose);
    void Navigate(LPCTSTR lpszURL);
+
+   CString GetURL();
 
 // Operations
 public:
@@ -90,7 +106,7 @@ protected:
    BOOL m_bCanClose;
    CWebBrowser m_WebBrowser;
    CToolBar m_Toolbar;
-   CStatusBar m_StatusBar;
+   CEAFHelpStatusBar m_StatusBar;
 
    void SaveWindowPosition();
    void RestoreWindowPosition();

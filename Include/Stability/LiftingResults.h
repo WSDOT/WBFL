@@ -116,6 +116,8 @@ class STABILITYCLASS stbLiftingResults : public stbResults
 public:
    stbLiftingResults();
 
+   stbTypes::GirderSide AssumedTiltDirection;
+
    bool bIsStable[3][2]; // if false, the girder is not stable for lifting... it will just roll over. 
                       // if the girder is not stable, the analysis results below are not valid
                       // (array index in one of the stbTypes::Impact enum values)

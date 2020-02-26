@@ -48,7 +48,7 @@ HRESULT GetGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,Se
    ATLASSERT(segment);
 
    CComPtr<IShape> shape;
-   hr = segment->get_PrimaryShape(Xs,sectionBias,&shape);
+   hr = segment->get_PrimaryShape(Xs,sectionBias,cstBridge,&shape);
    if ( FAILED(hr) )
       return hr;
 

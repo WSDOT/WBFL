@@ -67,6 +67,11 @@ void CTestOverlaySlab::Test()
    TRY_TEST(slab->get_GrossDepth(&value),S_OK);
    TRY_TEST(IsZero(value),true);
 
+   CComPtr<IMaterial> material;
+   TRY_TEST(slab->get_Material(nullptr), E_POINTER);
+   TRY_TEST(slab->get_Material(&material), S_OK);
+   TRY_TEST(material != nullptr, true);
+
    ///////////////////////////////////////
    // Test Error Info
    CComQIPtr<ISupportErrorInfo> eInfo(slab);

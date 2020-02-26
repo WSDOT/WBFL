@@ -69,13 +69,6 @@ typedef struct stbTypes
       BottomRight
    } Corner;
 
-   typedef enum StrandType
-   {
-      Straight,
-      Harped,
-      Temporary
-   } StrandType;
-
    typedef enum HarpPointLocation
    {
       StartHP,

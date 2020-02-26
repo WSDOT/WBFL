@@ -139,6 +139,9 @@
     <ClCompile Include="TestBulbTee2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestBeamShapeFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\LineSegment3d.h">
@@ -274,6 +277,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestBulbTee2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestBeamShapeFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
