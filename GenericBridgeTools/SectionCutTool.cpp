@@ -1932,192 +1932,194 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
          // Add Strands
          CComPtr<IStrandModel> strandModel;
          girder->get_StrandModel(&strandModel);
-
-         for ( int i = 0; i < 3; i++ )
+         if (strandModel)
          {
-            CComPtr<IMaterial> material;
-            CComPtr<IPrestressingStrand> strandMaterial;
-            CComPtr<IPoint2dCollection> strandLocations;
-            CComPtr<IIndexArray> debondPositions;
-
-            StrandType strandType = StrandType(i);
-            strandModel->get_StrandMaterial(strandType,&strandMaterial);
-            strandModel->GetStrandPositions(strandType, Xs, &strandLocations);
-
-            if ( i == 0 )
+            for (int i = 0; i < 3; i++)
             {
-               strandModel->GetStraightStrandsDebondedByPositionIndex(Xs,&debondPositions);
-            }
-            else if ( i == 1 )
-            {
-               debondPositions.CoCreateInstance(CLSID_IndexArray); // empty array
-            }
-            else
-            {
-               debondPositions.CoCreateInstance(CLSID_IndexArray); // empty array
-            }
+               CComPtr<IMaterial> material;
+               CComPtr<IPrestressingStrand> strandMaterial;
+               CComPtr<IPoint2dCollection> strandLocations;
+               CComPtr<IIndexArray> debondPositions;
 
-            strandMaterial.QueryInterface(&material);
-            Float64 Estrand, Dstrand;
-            material->get_E(stageIdx,&Estrand);
-            material->get_Density(stageIdx,&Dstrand);
+               StrandType strandType = StrandType(i);
+               strandModel->get_StrandMaterial(strandType, &strandMaterial);
+               strandModel->GetStrandPositions(strandType, Xs, &strandLocations);
 
-#if defined LUMP_STRANDS
-            // bonded strands
-            Float64 A  = 0;
-            Float64 AX = 0;
-            Float64 AY = 0;
-
-            // debonded strands
-            Float64 Adb  = 0;
-            Float64 AdbX = 0;
-            Float64 AdbY = 0;
-#endif // LUMP_STRANDS
-
-            CComPtr<IPoint2d> point;
-            CComPtr<IEnumPoint2d> enum_points;
-            strandLocations->get__Enum(&enum_points);
-            StrandIndexType strandIndex = 0;
-            while ( enum_points->Next(1,&point,nullptr) != S_FALSE )
-            {
-               // x measured from CL girder
-               // y measured from top of girder
-               Float64 x,y;
-               point->Location(&x,&y);
-
-               Float64 Aps;
-               strandMaterial->get_NominalArea(&Aps);
-
-               IndexType foundIndex;
-               HRESULT hr = debondPositions->Find(strandIndex,&foundIndex);
-               bool bIsDebonded = SUCCEEDED(hr) ? true : false;
-
-#if defined LUMP_STRANDS
-               if ( bIsDebonded )
+               if (i == 0)
                {
-                  Adb += Aps;
-                  AdbY += Aps*y;
-                  AdbX += Aps*x;
+                  strandModel->GetStraightStrandsDebondedByPositionIndex(Xs, &debondPositions);
+               }
+               else if (i == 1)
+               {
+                  debondPositions.CoCreateInstance(CLSID_IndexArray); // empty array
                }
                else
                {
-                  A += Aps;
-                  AY += Aps*y;
-                  AX += Aps*x;
+                  debondPositions.CoCreateInstance(CLSID_IndexArray); // empty array
                }
-#else
-               // models strand as an object with area. Moment of inertia is taken to be zero
-               CComPtr<IGenericShape> strandShape;
-               strandShape.CoCreateInstance(CLSID_GenericShape);
-               strandShape->put_Area(Aps);
-               strandShape->put_Ixx(0);
-               strandShape->put_Iyy(0);
-               strandShape->put_Ixy(0);
-               strandShape->put_Perimeter(0);
 
-               CComPtr<IPoint2d> centroid;
-               strandShape->get_Centroid(&centroid);
+               strandMaterial.QueryInterface(&material);
+               Float64 Estrand, Dstrand;
+               material->get_E(stageIdx, &Estrand);
+               material->get_Density(stageIdx, &Dstrand);
 
-               centroid->Move(xTop + x,yTop + y);
+#if defined LUMP_STRANDS
+               // bonded strands
+               Float64 A = 0;
+               Float64 AX = 0;
+               Float64 AY = 0;
 
-               if ( sectionPropMethod == spmTransformed || sectionPropMethod == spmTransformedNoncomposite )
+               // debonded strands
+               Float64 Adb = 0;
+               Float64 AdbX = 0;
+               Float64 AdbY = 0;
+#endif // LUMP_STRANDS
+
+               CComPtr<IPoint2d> point;
+               CComPtr<IEnumPoint2d> enum_points;
+               strandLocations->get__Enum(&enum_points);
+               StrandIndexType strandIndex = 0;
+               while (enum_points->Next(1, &point, nullptr) != S_FALSE)
                {
-                  if ( bDebonded )
+                  // x measured from CL girder
+                  // y measured from top of girder
+                  Float64 x, y;
+                  point->Location(&x, &y);
+
+                  Float64 Aps;
+                  strandMaterial->get_NominalArea(&Aps);
+
+                  IndexType foundIndex;
+                  HRESULT hr = debondPositions->Find(strandIndex, &foundIndex);
+                  bool bIsDebonded = SUCCEEDED(hr) ? true : false;
+
+#if defined LUMP_STRANDS
+                  if (bIsDebonded)
                   {
-                     // Strand is debonded so it just creates a hole in the cross section here
+                     Adb += Aps;
+                     AdbY += Aps*y;
+                     AdbX += Aps*x;
+                  }
+                  else
+                  {
+                     A += Aps;
+                     AY += Aps*y;
+                     AX += Aps*x;
+                  }
+#else
+                  // models strand as an object with area. Moment of inertia is taken to be zero
+                  CComPtr<IGenericShape> strandShape;
+                  strandShape.CoCreateInstance(CLSID_GenericShape);
+                  strandShape->put_Area(Aps);
+                  strandShape->put_Ixx(0);
+                  strandShape->put_Iyy(0);
+                  strandShape->put_Ixy(0);
+                  strandShape->put_Perimeter(0);
+
+                  CComPtr<IPoint2d> centroid;
+                  strandShape->get_Centroid(&centroid);
+
+                  centroid->Move(xTop + x, yTop + y);
+
+                  if (sectionPropMethod == spmTransformed || sectionPropMethod == spmTransformedNoncomposite)
+                  {
+                     if (bDebonded)
+                     {
+                        // Strand is debonded so it just creates a hole in the cross section here
+                        // model the hole and not the strand
+                        // (e.g. EA = EconcAg + Astrand(0 - Econc) = EconcAg - Astrand(Econc) = (Ag-Astrand)Econc
+                        Estrand = 0;
+                        Dstrand = 0;
+                     }
+                  }
+                  else if (sectionPropMethod == spmNet)
+                  {
+                     // If we are computing net properties, we want to
                      // model the hole and not the strand
                      // (e.g. EA = EconcAg + Astrand(0 - Econc) = EconcAg - Astrand(Econc) = (Ag-Astrand)Econc
                      Estrand = 0;
                      Dstrand = 0;
                   }
-               }
-               else if ( sectionPropMethod == spmNet )
-               {
-                  // If we are computing net properties, we want to
-                  // model the hole and not the strand
-                  // (e.g. EA = EconcAg + Astrand(0 - Econc) = EconcAg - Astrand(Econc) = (Ag-Astrand)Econc
-                  Estrand = 0;
-                  Dstrand = 0;
-               }
 
-               // EA = EgAg + Astrand(Estrand-Eg) = Eg(Ag-Astrand) + (Estrand)(Astrand)
-               // models the strand and makes a hole in the concrete for the strand
-               CComQIPtr<IShape> strand_shape(strandShape);
-               compositeSection->AddSection(strand_shape,Estrand,Econc,Dstrand,Dconc,VARIANT_TRUE);
+                  // EA = EgAg + Astrand(Estrand-Eg) = Eg(Ag-Astrand) + (Estrand)(Astrand)
+                  // models the strand and makes a hole in the concrete for the strand
+                  CComQIPtr<IShape> strand_shape(strandShape);
+                  compositeSection->AddSection(strand_shape, Estrand, Econc, Dstrand, Dconc, VARIANT_TRUE);
 #endif // LUMP_STRANDS
-               point.Release();
-               strandIndex++;
-            }
+                  point.Release();
+                  strandIndex++;
+               }
 
 #if defined LUMP_STRANDS
-            if ( !IsZero(A) )
-            {
-               Float64 Aps = A;
-               Float64 x = AX/A;
-               Float64 y = AY/A;
-
-               // models strand as an object with area. Moment of inertia is taken to be zero
-               CComPtr<IGenericShape> strandShape;
-               strandShape.CoCreateInstance(CLSID_GenericShape);
-               strandShape->put_Area(Aps);
-               strandShape->put_Ixx(0);
-               strandShape->put_Iyy(0);
-               strandShape->put_Ixy(0);
-               strandShape->put_Perimeter(0);
-
-               CComPtr<IPoint2d> centroid;
-               strandShape->get_Centroid(&centroid);
-
-               centroid->Move(xTop + x,yTop + y);
-
-               if ( sectionPropMethod == spmNet )
+               if (!IsZero(A))
                {
-                  // If we are computing net properties, we want to
+                  Float64 Aps = A;
+                  Float64 x = AX / A;
+                  Float64 y = AY / A;
+
+                  // models strand as an object with area. Moment of inertia is taken to be zero
+                  CComPtr<IGenericShape> strandShape;
+                  strandShape.CoCreateInstance(CLSID_GenericShape);
+                  strandShape->put_Area(Aps);
+                  strandShape->put_Ixx(0);
+                  strandShape->put_Iyy(0);
+                  strandShape->put_Ixy(0);
+                  strandShape->put_Perimeter(0);
+
+                  CComPtr<IPoint2d> centroid;
+                  strandShape->get_Centroid(&centroid);
+
+                  centroid->Move(xTop + x, yTop + y);
+
+                  if (sectionPropMethod == spmNet)
+                  {
+                     // If we are computing net properties, we want to
+                     // model the hole and not the strand
+                     // (e.g. EA = EconcAg + Astrand(0 - Econc) = EconcAg - Astrand(Econc) = (Ag-Astrand)Econc
+                     Estrand = 0;
+                     Dstrand = 0;
+                  }
+
+                  // EA = EgAg + Astrand(Estrand-Eg) = Eg(Ag-Astrand) + (Estrand)(Astrand)
+                  // models the strand and makes a hole in the concrete for the strand
+                  CComQIPtr<IShape> strand_shape(strandShape);
+                  compositeSection->AddSection(strand_shape, Estrand, Econc, Dstrand, Dconc, VARIANT_TRUE);
+               }
+
+               if (!IsZero(Adb))
+               {
+                  Float64 Aps = Adb;
+                  Float64 x = AdbX / Adb;
+                  Float64 y = AdbY / Adb;
+
+                  // models strand as an object with area. Moment of inertia is taken to be zero
+                  CComPtr<IGenericShape> strandShape;
+                  strandShape.CoCreateInstance(CLSID_GenericShape);
+                  strandShape->put_Area(Aps);
+                  strandShape->put_Ixx(0);
+                  strandShape->put_Iyy(0);
+                  strandShape->put_Ixy(0);
+                  strandShape->put_Perimeter(0);
+
+                  CComPtr<IPoint2d> centroid;
+                  strandShape->get_Centroid(&centroid);
+
+                  centroid->Move(xTop + x, yTop + y);
+
+                  // Debonded strands just create a hole in the cross section
                   // model the hole and not the strand
                   // (e.g. EA = EconcAg + Astrand(0 - Econc) = EconcAg - Astrand(Econc) = (Ag-Astrand)Econc
                   Estrand = 0;
                   Dstrand = 0;
+
+                  // EA = EgAg + Astrand(Estrand-Eg) = Eg(Ag-Astrand) + (Estrand)(Astrand)
+                  // models the strand and makes a hole in the concrete for the strand
+                  CComQIPtr<IShape> strand_shape(strandShape);
+                  compositeSection->AddSection(strand_shape, Estrand, Econc, Dstrand, Dconc, VARIANT_TRUE);
                }
-
-               // EA = EgAg + Astrand(Estrand-Eg) = Eg(Ag-Astrand) + (Estrand)(Astrand)
-               // models the strand and makes a hole in the concrete for the strand
-               CComQIPtr<IShape> strand_shape(strandShape);
-               compositeSection->AddSection(strand_shape,Estrand,Econc,Dstrand,Dconc,VARIANT_TRUE);
-            }
-
-            if ( !IsZero(Adb) )
-            {
-               Float64 Aps = Adb;
-               Float64 x = AdbX/Adb;
-               Float64 y = AdbY/Adb;
-
-               // models strand as an object with area. Moment of inertia is taken to be zero
-               CComPtr<IGenericShape> strandShape;
-               strandShape.CoCreateInstance(CLSID_GenericShape);
-               strandShape->put_Area(Aps);
-               strandShape->put_Ixx(0);
-               strandShape->put_Iyy(0);
-               strandShape->put_Ixy(0);
-               strandShape->put_Perimeter(0);
-
-               CComPtr<IPoint2d> centroid;
-               strandShape->get_Centroid(&centroid);
-
-               centroid->Move(xTop + x,yTop + y);
-
-               // Debonded strands just create a hole in the cross section
-               // model the hole and not the strand
-               // (e.g. EA = EconcAg + Astrand(0 - Econc) = EconcAg - Astrand(Econc) = (Ag-Astrand)Econc
-               Estrand = 0;
-               Dstrand = 0;
-
-               // EA = EgAg + Astrand(Estrand-Eg) = Eg(Ag-Astrand) + (Estrand)(Astrand)
-               // models the strand and makes a hole in the concrete for the strand
-               CComQIPtr<IShape> strand_shape(strandShape);
-               compositeSection->AddSection(strand_shape,Estrand,Econc,Dstrand,Dconc,VARIANT_TRUE);
-            }
 #endif // LUMP_STRANDS
-         } // End of Strand
+            } // End of Strand
+         }
 
          // Layout girder rebar
          CComPtr<IRebarLayout> rebarLayout;
