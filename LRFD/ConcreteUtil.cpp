@@ -105,136 +105,167 @@ Float64 lrfdConcreteUtil::GetLWCDensityLimit()
    return limit;
 }
 
-Float64 lrfdConcreteUtil::ModE(Float64 fc,Float64 density,bool bCheckRange)
+void lrfdConcreteUtil::GetUHPCStrengthRange(Float64* pFcMin, Float64* pFcMax)
 {
-   Float64 Fc;          // fc in spec units
-   Float64 Density;     // density in spec units
-   Float64 E;           // Modulus of elasticity in spec units
-   Float64 e;           // modulus of elasticity in System Units
-   Float64 k;           // coefficient in equation
-   Float64 min_density; // minimum density in System Units
-   Float64 max_density; // maximum density in System Units
+   // See "Compression Response of a Rapid-Strengthening Ultra-High Performance Concrete Formulation"
+   // FHWA Publication FHWA-HRT-12-964
+   // Graybeal
 
-   // Input units
-   const unitStress*  p_fc_unit;
-   const unitDensity* p_density_unit;
-   const unitStress*  p_E_unit;
+   *pFcMin = ::ConvertToSysUnits(14.0, unitMeasure::KSI);
+   *pFcMax = ::ConvertToSysUnits(26.0, unitMeasure::KSI);
+}
 
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+Float64 lrfdConcreteUtil::ModE(matConcrete::Type type,Float64 fc,Float64 density,bool bCheckRange)
+{
+   Float64 e;  // modulus of elasticity in System Units
+   if (type == matConcrete::UHPC)
    {
-      p_fc_unit      = &unitMeasure::MPa;
-      p_density_unit = &unitMeasure::KgPerMeter3;
-      p_E_unit       = &unitMeasure::MPa;
-
-      k = 0.043;
-
-      min_density = 1440.; // kg/m^3
-      max_density = 2500.; // kg/m^3
+      Float64 Fc = ::ConvertFromSysUnits(fc, unitMeasure::KSI);
+      // Ec (PSI) = 49000sqrt(Fc in PSI)
+      // Ec (KSI) = (49000/1000)*sqrt(FcKSI*1000) = (49000/1000)*sqrt(1000)*sqrt(Fc in KSI) = 1550sqrt(Fc ksi)
+      Float64 Ec = 1550 * sqrt(Fc);
+      e = ::ConvertToSysUnits(Ec, unitMeasure::KSI);
    }
    else
    {
-      // :NOTE: 1 lbm = 1 lbf
-      p_fc_unit      = &unitMeasure::KSI;
-      p_density_unit = &unitMeasure::KipPerFeet3;
-      p_E_unit       = &unitMeasure::KSI;
+      Float64 Fc;          // fc in spec units
+      Float64 Density;     // density in spec units
+      Float64 E;           // Modulus of elasticity in spec units
+      Float64 k;           // coefficient in equation
+      Float64 min_density; // minimum density in System Units
+      Float64 max_density; // maximum density in System Units
 
-      if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims )
+      // Input units
+      const unitStress*  p_fc_unit;
+      const unitDensity* p_density_unit;
+      const unitStress*  p_E_unit;
+
+      if (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI)
       {
-         k = 33000.;
+         p_fc_unit = &unitMeasure::MPa;
+         p_density_unit = &unitMeasure::KgPerMeter3;
+         p_E_unit = &unitMeasure::MPa;
+
+         k = 0.043;
+
+         min_density = 1440.; // kg/m^3
+         max_density = 2500.; // kg/m^3
       }
       else
       {
-         k = 120000.;
+         // :NOTE: 1 lbm = 1 lbf
+         p_fc_unit = &unitMeasure::KSI;
+         p_density_unit = &unitMeasure::KipPerFeet3;
+         p_E_unit = &unitMeasure::KSI;
+
+         if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims)
+         {
+            k = 33000.;
+         }
+         else
+         {
+            k = 120000.;
+         }
+
+         min_density = 0.090; // kcf
+         max_density = 0.155; // kcf
       }
 
-      min_density = 0.090; // kcf
-      max_density = 0.155; // kcf
-   }
-
-   // Convert input to required units
-   Fc      = ::ConvertFromSysUnits( fc,      *p_fc_unit      );
-   Density = ::ConvertFromSysUnits( density, *p_density_unit );
+      // Convert input to required units
+      Fc = ::ConvertFromSysUnits(fc, *p_fc_unit);
+      Density = ::ConvertFromSysUnits(density, *p_density_unit);
 
 
-   // Make sure the density range hasn't been violated.
-   if ( bCheckRange )
-   {
-      min_density = ::ConvertToSysUnits( min_density, *p_density_unit );
-      max_density = ::ConvertToSysUnits( max_density, *p_density_unit );
-      if ( !InRange( min_density, density, max_density ) )
+      // Make sure the density range hasn't been violated.
+      if (bCheckRange)
       {
-         THROW(sysXProgrammingError,ValueOutOfRange);
+         min_density = ::ConvertToSysUnits(min_density, *p_density_unit);
+         max_density = ::ConvertToSysUnits(max_density, *p_density_unit);
+         if (!InRange(min_density, density, max_density))
+         {
+            THROW(sysXProgrammingError, ValueOutOfRange);
+         }
       }
-   }
 
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims )
-   {
-      E = k * pow( Density, 1.5 ) * sqrt( Fc );
-   }
-   else
-   {
-      E = k*pow(Density,2.0)*pow(Fc,0.33);
-   }
+      if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims)
+      {
+         E = k * pow(Density, 1.5) * sqrt(Fc);
+      }
+      else
+      {
+         E = k*pow(Density, 2.0)*pow(Fc, 0.33);
+      }
 
-   // Convert output to system units.
-   e = ::ConvertToSysUnits( E, *p_E_unit );
+      // Convert output to system units.
+      e = ::ConvertToSysUnits(E, *p_E_unit);
+   }
 
    return e;
 }
 
-Float64 lrfdConcreteUtil::FcFromEc(Float64 ec,Float64 density)
+Float64 lrfdConcreteUtil::FcFromEc(matConcrete::Type type, Float64 ec,Float64 density)
 {
-   Float64 Fc;          // fc in spec units
    Float64 fc;          // fc in system units
-   Float64 Density;     // density in spec units
-   Float64 Ec;          // Modulus of elasticity in spec units
-   Float64 k;           // coefficient in equation
 
-   // Input units
-   const unitStress*  p_fc_unit;
-   const unitDensity* p_density_unit;
-   const unitStress*  p_E_unit;
-
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   if (type == matConcrete::UHPC)
    {
-      p_fc_unit      = &unitMeasure::MPa;
-      p_density_unit = &unitMeasure::KgPerMeter3;
-      p_E_unit       = &unitMeasure::MPa;
-
-      k = 0.043;
+      Float64 Ec = ::ConvertFromSysUnits(ec, unitMeasure::KSI);
+      Float64 Fc = pow(Ec / 1550., 2);
+      fc = ::ConvertToSysUnits(Fc, unitMeasure::KSI);
    }
    else
    {
-      // :NOTE: 1 lbm = 1 lbf
-      p_fc_unit      = &unitMeasure::KSI;
-      p_density_unit = &unitMeasure::KipPerFeet3;
-      p_E_unit       = &unitMeasure::KSI;
+      Float64 Fc;          // fc in spec units
+      Float64 Density;     // density in spec units
+      Float64 Ec;          // Modulus of elasticity in spec units
+      Float64 k;           // coefficient in equation
 
-      if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims )
+      // Input units
+      const unitStress*  p_fc_unit;
+      const unitDensity* p_density_unit;
+      const unitStress*  p_E_unit;
+
+      if (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI)
       {
-         k = 33000.;
+         p_fc_unit = &unitMeasure::MPa;
+         p_density_unit = &unitMeasure::KgPerMeter3;
+         p_E_unit = &unitMeasure::MPa;
+
+         k = 0.043;
       }
       else
       {
-         k = 120000.;
+         // :NOTE: 1 lbm = 1 lbf
+         p_fc_unit = &unitMeasure::KSI;
+         p_density_unit = &unitMeasure::KipPerFeet3;
+         p_E_unit = &unitMeasure::KSI;
+
+         if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims)
+         {
+            k = 33000.;
+         }
+         else
+         {
+            k = 120000.;
+         }
       }
-   }
 
-   // Convert input to required units
-   Ec      = ::ConvertFromSysUnits( ec,      *p_E_unit      );
-   Density = ::ConvertFromSysUnits( density, *p_density_unit );
+      // Convert input to required units
+      Ec = ::ConvertFromSysUnits(ec, *p_E_unit);
+      Density = ::ConvertFromSysUnits(density, *p_density_unit);
 
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims )
-   {
-      Fc = pow(Ec/(k*pow(Density,1.5)),2);
-   }
-   else
-   {
-      Fc = pow(Ec/(k*pow(Density,2)),1/0.33);
-   }
+      if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims)
+      {
+         Fc = pow(Ec / (k*pow(Density, 1.5)), 2);
+      }
+      else
+      {
+         Fc = pow(Ec / (k*pow(Density, 2)), 1 / 0.33);
+      }
 
-   // Convert output to system units.
-   fc = ::ConvertToSysUnits( Fc, *p_fc_unit );
+      // Convert output to system units.
+      fc = ::ConvertToSysUnits(Fc, *p_fc_unit);
+   }
 
    return fc;
 }
@@ -873,7 +904,7 @@ bool lrfdConcreteUtil::TestMe(dbgLog& rlog)
    Float64 density = 2450.; // kg/m^3
    try
    {
-      TRY_TESTME (  IsEqual( ModE(fc,density), 36872.5e6, 1. ) );
+      TRY_TESTME (  IsEqual( ModE(matConcrete::Normal, fc,density), 36872.5e6, 1. ) );
    }
    catch (...)
    {
@@ -884,7 +915,7 @@ bool lrfdConcreteUtil::TestMe(dbgLog& rlog)
    density = 2560.; // this will cause an exception to be thrown
    try 
    {
-      ModE(fc,density);
+      ModE(matConcrete::Normal, fc,density);
       ; // We shouldn't hit this code
    }
    catch(const sysXProgrammingError& e)

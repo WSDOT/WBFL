@@ -88,16 +88,19 @@ public:
    // per LRFD 5.2
    static Float64 GetLWCDensityLimit();
 
+   // Gets the valid range of UHPC concrete strength
+   static void GetUHPCStrengthRange(Float64* pFcMin, Float64* pFcMax);
+
    //------------------------------------------------------------------------
    // Returns the modulus of elasticity of concrete.  The modulus of elasticity
    // is computed in accordance with equation 5.4.2.4-1.
    // If density is out of range, a lrfdXModE exception is thrown.
-   static Float64 ModE(Float64 fc,Float64 density,bool bCheckRange = true);
+   static Float64 ModE(matConcrete::Type type,Float64 fc,Float64 density,bool bCheckRange = true);
 
    //------------------------------------------------------------------------
    // Computes the concrete strength from the modulus of elasticy based on
    // LRFD Equation 5.2.4.2-1
-   static Float64 FcFromEc(Float64 ec,Float64 density);
+   static Float64 FcFromEc(matConcrete::Type type, Float64 ec,Float64 density);
 
    //------------------------------------------------------------------------
    // Returns the modulus of rupture.  The modulus of rupture is computed in

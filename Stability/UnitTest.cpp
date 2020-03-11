@@ -87,7 +87,7 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
    concrete.SetFc(::ConvertToSysUnits(fci,unitMeasure::KSI));
    concrete.SetDensity(::ConvertToSysUnits(0.150,unitMeasure::KipPerFeet3));
    concrete.SetDensityForWeight(::ConvertToSysUnits(0.155,unitMeasure::KipPerFeet3));
-   Float64 Eci = lrfdConcreteUtil::ModE(concrete.GetFc(), concrete.GetDensity(), false);
+   Float64 Eci = lrfdConcreteUtil::ModE(concrete.GetType(),concrete.GetFc(), concrete.GetDensity(), false);
    concrete.SetE(Eci);
    concrete.SetFlexureFr(::ConvertToSysUnits(0.24*sqrt(fci),unitMeasure::KSI) );
 
@@ -219,7 +219,7 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
    concrete.SetFc(::ConvertToSysUnits(fc,unitMeasure::KSI));
    concrete.SetDensity(::ConvertToSysUnits(0.150,unitMeasure::KipPerFeet3));
    concrete.SetDensityForWeight(::ConvertToSysUnits(0.155,unitMeasure::KipPerFeet3));
-   Float64 Ec = lrfdConcreteUtil::ModE(concrete.GetFc(), concrete.GetDensity(), false);
+   Float64 Ec = lrfdConcreteUtil::ModE(concrete.GetType(),concrete.GetFc(), concrete.GetDensity(), false);
    concrete.SetE(Ec);
    concrete.SetFlexureFr( ::ConvertToSysUnits(0.24*sqrt(fc),unitMeasure::KSI) );
    stabilityProblem.SetConcrete(concrete);
