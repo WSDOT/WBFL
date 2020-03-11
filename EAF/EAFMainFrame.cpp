@@ -37,6 +37,8 @@
 
 #include "MFCToolBar.h"
 
+#include <ShellScalingApi.h> // needed for Per Monitor DPI information
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -66,6 +68,8 @@ BEGIN_MESSAGE_MAP(CEAFMainFrame, CMDIFrameWnd)
    ON_COMMAND(ID_VIEW_TOOLBAR, OnViewToolBar)
    ON_UPDATE_COMMAND_UI(ID_VIEW_TOOLBAR, OnUpdateViewToolBar)
    ON_COMMAND_RANGE(EAF_TOOLBAR_MENU_BASE, EAF_TOOLBAR_MENU_BASE+EAF_TOOLBAR_MENU_COUNT, OnToolbarMenuSelected)
+
+   ON_MESSAGE(WM_DPICHANGED,OnDpiChanged)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -225,6 +229,9 @@ int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // fail to create
 	}
 
+   // Set the initial scale for the main toolbar
+   ResizeToolBarButtons(m_pMainFrameToolBar);
+   
    DockControlBar( m_pMainFrameToolBar );
 
    // Load the state of the application toolbar
@@ -566,6 +573,29 @@ BOOL CEAFMainFrame::OnToolbarDropDown(UINT nToolbarID,NMHDR* pnmhdr,LRESULT* plr
    pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_VERTICAL, pntBottomLeft.x, pntBottomLeft.y, this, &rc);
 
    return TRUE;
+}
+
+LRESULT CEAFMainFrame::OnDpiChanged(WPARAM wParam, LPARAM lParam)
+{
+   // Windows expects the application to resize based on the provided rectangle
+   RECT* const pRect = (RECT*)lParam;
+   if (pRect)
+   {
+      SetWindowPos(nullptr, pRect->left, pRect->top, pRect->right - pRect->left, pRect->bottom - pRect->top, SWP_NOZORDER | SWP_NOACTIVATE);
+   }
+
+   auto Xdpi = LOWORD(wParam);
+   auto Ydpi = HIWORD(wParam);
+
+   // resize the toolbar buttons
+   ResizeToolBarButtons(m_pMainFrameToolBar, Xdpi, Ydpi);
+   for (auto& toolbarInfo : m_ToolBarInfo)
+   {
+      ResizeToolBarButtons(toolbarInfo.m_pEAFToolBar->m_pToolBar,Xdpi,Ydpi);
+   }
+   RecalcLayout();
+
+   return 0;
 }
 
 void CEAFMainFrame::UpdateFrameTitle(LPCTSTR lpszDocName)
@@ -1000,17 +1030,18 @@ UINT CEAFMainFrame::CreateToolBar(LPCTSTR lpszName,CEAFPluginCommandManager* pCm
    pEAFToolBar->m_pToolBar   = pToolBar;
    pEAFToolBar->bOwnsToolBar = true;
 
-   tbInfo.m_pMFCToolBar = pToolBar;
-
    if ( m_ToolBarInfo.size() == 0 )
    {
       DockControlBar(pToolBar);
    }
    else
    {
-      CToolBar* pPrevToolBar = m_ToolBarInfo.back().m_pMFCToolBar;
+      CToolBar* pPrevToolBar = m_ToolBarInfo.back().m_pEAFToolBar->m_pToolBar;
       DockControlBarLeftOf(pToolBar,pPrevToolBar);
    }
+
+   // Scale toolbars as they are created
+   ResizeToolBarButtons(tbInfo.m_pEAFToolBar->m_pToolBar);
 
    m_ToolBarInfo.push_back(tbInfo);
 
@@ -1048,9 +1079,8 @@ void CEAFMainFrame::DestroyToolBar(UINT tbID)
       return;
    }
 
-   CEAFToolBarInfo tbInfo = *found;
+   CEAFToolBarInfo& tbInfo = *found;
 
-   tbInfo.m_pMFCToolBar->DestroyWindow();
    delete tbInfo.m_pEAFToolBar;
 
    m_ToolBarInfo.erase(found);
@@ -1154,11 +1184,10 @@ std::vector<CString> CEAFMainFrame::GetToolBarNames()
    std::vector<CString> vNames;
 
    // Resource ID's of the toolbars.
-   for ( ToolBarInfo::iterator iter = m_ToolBarInfo.begin(); iter != m_ToolBarInfo.end(); iter++ )
+   for ( auto& info : m_ToolBarInfo )
    {
-      CEAFToolBarInfo& info = *iter;
       CString strName;
-      info.m_pMFCToolBar->GetWindowText(strName);
+      info.m_pEAFToolBar->GetWindowText(strName);
       vNames.push_back( strName );
    }
 
@@ -1184,7 +1213,7 @@ std::vector<BOOL> CEAFMainFrame::GetToolBarStates()
    for ( iter = m_ToolBarInfo.begin(); iter < m_ToolBarInfo.end(); iter++ )
    {
       CEAFToolBarInfo& tbInfo = *iter;
-      vStates.push_back( tbInfo.m_pMFCToolBar->IsWindowVisible() ? TRUE : FALSE );
+      vStates.push_back( tbInfo.m_pEAFToolBar->IsWindowVisible() ? TRUE : FALSE );
    }
 
 
@@ -1219,7 +1248,7 @@ void CEAFMainFrame::SetToolBarStates(const std::vector<BOOL>& vStates)
       {
          CEAFToolBarInfo& tbInfo = *tb_iter;
          BOOL bShow = *state_iter;
-         SetToolBarState(tbInfo.m_pMFCToolBar,bShow);
+         SetToolBarState(tbInfo.m_pEAFToolBar->m_pToolBar,bShow);
       }
    }
 }
@@ -1260,8 +1289,8 @@ void CEAFMainFrame::ToggleToolBarState(UINT idx)
    else
    {
       CEAFToolBarInfo& tbInfo = m_ToolBarInfo[idx];
-      BOOL bIsVisible = tbInfo.m_pMFCToolBar->IsWindowVisible();
-      ShowControlBar( tbInfo.m_pMFCToolBar, !bIsVisible, FALSE );
+      BOOL bIsVisible = tbInfo.m_pEAFToolBar->IsWindowVisible();
+      ShowControlBar( tbInfo.m_pEAFToolBar->m_pToolBar, !bIsVisible, FALSE );
    }
 }
 
@@ -1283,6 +1312,38 @@ void CEAFMainFrame::SaveBarState(LPCTSTR lpszProfileName) const
 	   GetDockState(state);
    }
 	state.SaveState(lpszProfileName);
+}
+
+void CEAFMainFrame::GetDpi(UINT* pXdpi, UINT* pYdpi)
+{
+   HMONITOR hMonitor = MonitorFromWindow(GetSafeHwnd(), MONITOR_DEFAULTTONEAREST);
+   HRESULT hr = GetDpiForMonitor(hMonitor, MDT_DEFAULT, pXdpi, pYdpi);
+   ATLASSERT(*pXdpi == *pYdpi);
+}
+
+void CEAFMainFrame::ResizeToolBarButtons()
+{
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
+   UINT Xdpi, Ydpi;
+   GetDpi(&Xdpi, &Ydpi);
+   WPARAM wParam = MAKEWPARAM(Xdpi, Ydpi);
+   OnDpiChanged(wParam, 0L);
+}
+
+void CEAFMainFrame::ResizeToolBarButtons(CToolBar* pToolBar)
+{
+   UINT Xdpi, Ydpi;
+   GetDpi(&Xdpi, &Ydpi);
+   ResizeToolBarButtons(pToolBar, Xdpi, Ydpi);
+}
+
+void CEAFMainFrame::ResizeToolBarButtons(CToolBar* pToolBar, UINT Xdpi, UINT Ydpi)
+{
+   CSize bmpSize(16, 15);
+   CSize btnSize(MulDiv(bmpSize.cx + 7, Xdpi, USER_DEFAULT_SCREEN_DPI), MulDiv(bmpSize.cy + 6, Ydpi, USER_DEFAULT_SCREEN_DPI));
+   pToolBar->SetSizes(btnSize, bmpSize);
+   pToolBar->Invalidate();
 }
 
 CEAFMenu* CEAFMainFrame::CreateMainMenu()

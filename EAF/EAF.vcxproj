@@ -326,7 +326,7 @@
     </ResourceCompile>
     <Link>
       <RegisterOutput>false</RegisterOutput>
-      <AdditionalDependencies>uxtheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>uxtheme.lib;Shcore.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableUAC>true</EnableUAC>
@@ -449,7 +449,7 @@
     </ResourceCompile>
     <Link>
       <RegisterOutput>false</RegisterOutput>
-      <AdditionalDependencies>uxtheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>uxtheme.lib;Shcore.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>.\EAF.def</ModuleDefinitionFile>

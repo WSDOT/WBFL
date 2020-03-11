@@ -256,8 +256,8 @@ CSize CMyToolBar::CalcLayout(DWORD dwMode, int nLength)
 		ASSERT(dwMode & LM_HORZ);
 
 	int nCount;
-	TBBUTTON* pData = nullptr;
-	CSize sizeResult(0,0);
+   std::unique_ptr<TBBUTTON[]> pData;
+   CSize sizeResult(0,0);
 
 	//BLOCK: Load Buttons
 	{
@@ -266,24 +266,30 @@ CSize CMyToolBar::CalcLayout(DWORD dwMode, int nLength)
 		if (nCount != 0)
 		{
 			int i;
-			pData = new TBBUTTON[nCount];
+			pData = std::make_unique<TBBUTTON[]>(nCount);
 			for (i = 0; i < nCount; i++)
 				_GetButton(i, &pData[i]);
 		}
 	}
 
-	if (nCount > 0)
+	if (0 < nCount)
 	{
 		if (!(m_dwStyle & CBRS_SIZE_FIXED))
 		{
 			BOOL bDynamic = m_dwStyle & CBRS_SIZE_DYNAMIC;
 
-			if (bDynamic && (dwMode & LM_MRUWIDTH))
-				SizeToolBar(pData, nCount, m_nMRUWidth);
-			else if (bDynamic && (dwMode & LM_HORZDOCK))
-				SizeToolBar(pData, nCount, 32767);
-			else if (bDynamic && (dwMode & LM_VERTDOCK))
-				SizeToolBar(pData, nCount, 0);
+         if (bDynamic && (dwMode & LM_MRUWIDTH))
+         {
+            SizeToolBar(pData.get(), nCount, m_nMRUWidth);
+         }
+         else if (bDynamic && (dwMode & LM_HORZDOCK))
+         {
+            SizeToolBar(pData.get(), nCount, 32767);
+         }
+         else if (bDynamic && (dwMode & LM_VERTDOCK))
+         {
+            SizeToolBar(pData.get(), nCount, 0);
+         }
 			else if (bDynamic && (nLength != -1))
 			{
 				CRect rect; rect.SetRectEmpty();
@@ -291,35 +297,42 @@ CSize CMyToolBar::CalcLayout(DWORD dwMode, int nLength)
 				BOOL bVert = (dwMode & LM_LENGTHY);
 				int nLen = nLength + (bVert ? rect.Height() : rect.Width());
 
-				SizeToolBar(pData, nCount, nLen, bVert);
+				SizeToolBar(pData.get(), nCount, nLen, bVert);
 			}
-			else if (bDynamic && (m_dwStyle & CBRS_FLOATING))
-				SizeToolBar(pData, nCount, m_nMRUWidth);
-			else
-				SizeToolBar(pData, nCount, (dwMode & LM_HORZ) ? 32767 : 0);
+         else if (bDynamic && (m_dwStyle & CBRS_FLOATING))
+         {
+            SizeToolBar(pData.get(), nCount, m_nMRUWidth);
+         }
+         else
+         {
+            SizeToolBar(pData.get(), nCount, (dwMode & LM_HORZ) ? 32767 : 0);
+         }
 		}
 
-		sizeResult = CalcSize(pData, nCount);
+		sizeResult = CalcSize(pData.get(), nCount);
 
 		if (dwMode & LM_COMMIT)
 		{
-			_AFX_CONTROLPOS* pControl = nullptr;
+			std::unique_ptr<_AFX_CONTROLPOS[]> pControl;
 			int nControlCount = 0;
 			BOOL bIsDelayed = m_bDelayedButtonLayout;
 			m_bDelayedButtonLayout = FALSE;
-			int i;
 
-			for (i = 0; i < nCount; i++)
-				if ((pData[i].fsStyle & TBSTYLE_SEP) && (pData[i].idCommand != 0))
-					nControlCount++;
+         for (int i = 0; i < nCount; i++)
+         {
+            if ((pData[i].fsStyle & TBSTYLE_SEP) && (pData[i].idCommand != 0))
+            {
+               nControlCount++;
+            }
+         }
 
-			if (nControlCount > 0)
+			if (0 < nControlCount)
 			{
-				pControl = new _AFX_CONTROLPOS[nControlCount];
-				int nControlAlloc=nControlCount;
+				pControl = std::make_unique<_AFX_CONTROLPOS[]>(nControlCount);
+				int nControlAlloc = nControlCount;
 				nControlCount = 0;
 
-				for(i = 0; i < nCount && nControlCount < nControlAlloc; i++)
+				for(int i = 0; i < nCount && nControlCount < nControlAlloc; i++)
 				{
 					if ((pData[i].fsStyle & TBSTYLE_SEP) && (pData[i].idCommand != 0))
 					{
@@ -336,14 +349,19 @@ CSize CMyToolBar::CalcLayout(DWORD dwMode, int nLength)
 				}
 			}
 
-			if ((m_dwStyle & CBRS_FLOATING) && (m_dwStyle & CBRS_SIZE_DYNAMIC))
-				m_nMRUWidth = sizeResult.cx;
-			for (i = 0; i < nCount; i++)
-				_SetButton(i, &pData[i]);
+         if ((m_dwStyle & CBRS_FLOATING) && (m_dwStyle & CBRS_SIZE_DYNAMIC))
+         {
+            m_nMRUWidth = sizeResult.cx;
+         }
 
-			if (nControlCount > 0)
+         for (int i = 0; i < nCount; i++)
+         {
+            _SetButton(i, &pData[i]);
+         }
+
+			if (0 < nControlCount)
 			{
-				for (i = 0; i < nControlCount; i++)
+				for (int i = 0; i < nControlCount; i++)
 				{
 					CWnd* pWnd = GetDlgItem(pControl[i].nID);
 					if (pWnd != nullptr)
@@ -356,11 +374,9 @@ CSize CMyToolBar::CalcLayout(DWORD dwMode, int nLength)
 						pWnd->SetWindowPos(nullptr, pt.x, pt.y, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOZORDER);
 					}
 				}
-				delete[] pControl;
 			}
 			m_bDelayedButtonLayout = bIsDelayed;
 		}
-		delete[] pData;
 	}
 
 	//BLOCK: Adjust Margins

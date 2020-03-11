@@ -367,6 +367,7 @@ void CEAFDocument::LoadToolbarState()
 {
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    pMainFrame->LoadBarState(CString("Toolbars\\")+GetToolbarSectionName());
+   pMainFrame->ResizeToolBarButtons();
 }
 
 void CEAFDocument::SaveToolbarState()

@@ -33,6 +33,7 @@
 #include <DManip\DManipTypes.h>
 #include <DManip\Mapping.h>
 #include <DManip\CoordinateMap.h>
+#include <DManip\DisplayView.h>
 #include "MappingImpl.h"
 
 #include <MathEx.h>
@@ -450,7 +451,7 @@ STDMETHODIMP_(CSize) CMappingImpl::GetTextWindowExtent()
    return CSize( abs(lex-lox), abs(ley-loy) );
 }
  
-STDMETHODIMP_(CSize) CMappingImpl::GetTextExtent(const LOGFONT& font, LPCTSTR lpszText)
+STDMETHODIMP_(CSize) CMappingImpl::GetTextExtent(CDisplayView* pView, const LOGFONT& font, LPCTSTR lpszText)
 {
    if (m_Stack.empty())
    {
@@ -463,8 +464,11 @@ STDMETHODIMP_(CSize) CMappingImpl::GetTextExtent(const LOGFONT& font, LPCTSTR lp
    ASSERT_VALID(pdc);
    ATLASSERT(pdc->m_hAttribDC);
 
+   LOGFONT lf = font;
+   pView->ScaleFont(lf);
+
    CFont cfont;
-   cfont.CreatePointFontIndirect(&font,pdc);
+   cfont.CreatePointFontIndirect(&lf,pdc);
 
    CFont* tfont = pdc->SelectObject(&cfont);
    CSize size = pdc->GetTextExtent(lpszText);

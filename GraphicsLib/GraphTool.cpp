@@ -24,6 +24,7 @@
 #include <GraphicsLib\GraphicsLibLib.h>
 #include <GraphicsLib\GraphTool.h>
 #include <MathEx.h>
+#include <ShellScalingApi.h> // needed for Per Monitor DPI information
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -118,6 +119,15 @@ HFONT grGraphTool::CreateRotatedFont(HDC hDC, LONG rotation, LONG nPointSize, LP
 	POINT ptOrg = { 0, 0 };
 	::DPtoLP(hDC, &ptOrg, 1);
 	logFont.lfHeight = -abs(pt.y - ptOrg.y);
+
+   // scale font based on monitor DPI scale setting
+   HWND hwnd = WindowFromDC(hDC);
+   HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+   UINT Xdpi, Ydpi;
+   HRESULT hr = GetDpiForMonitor(hMonitor, MDT_DEFAULT, &Xdpi, &Ydpi);
+   ATLASSERT(Xdpi == Ydpi);
+
+   logFont.lfHeight = MulDiv(logFont.lfHeight, Xdpi, USER_DEFAULT_SCREEN_DPI);
 
 	return CreateFontIndirect(&logFont);
 }

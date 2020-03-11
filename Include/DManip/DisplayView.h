@@ -106,6 +106,9 @@ public:
    void Zoom(Float64 factor, bool reDraw=true); // zoom in relative to the current mapping
    void DoZoom();
 
+   // Scales font size (point size) for high DPI devices
+   void ScaleFont(LOGFONT& lfFont);
+
 // Implementation
 protected:
 	virtual ~CDisplayView();

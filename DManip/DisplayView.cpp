@@ -36,6 +36,8 @@
 
 #include "DManipDebug.h"
 
+#include <ShellScalingApi.h> // needed for Per Monitor DPI information
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -562,6 +564,15 @@ void CDisplayView::Zoom(Float64 factor, bool reDraw)
       Invalidate();
 }
 
+void CDisplayView::ScaleFont(LOGFONT& lfFont)
+{
+   HMONITOR hMonitor = MonitorFromWindow(GetSafeHwnd(), MONITOR_DEFAULTTONEAREST);
+   UINT Xdpi, Ydpi;
+   HRESULT hr = GetDpiForMonitor(hMonitor, MDT_DEFAULT, &Xdpi, &Ydpi);
+   ATLASSERT(Xdpi == Ydpi);
+
+   lfFont.lfHeight = MulDiv(lfFont.lfHeight, Xdpi, USER_DEFAULT_SCREEN_DPI);
+}
 
 void CDisplayView::ScaleToFit(bool reDraw)
 {

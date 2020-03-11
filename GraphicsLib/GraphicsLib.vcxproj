@@ -271,6 +271,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
       <ImageHasSafeExceptionHandlers>true</ImageHasSafeExceptionHandlers>
+      <AdditionalDependencies>shcore.lib</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -329,6 +330,7 @@
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
+      <AdditionalDependencies>shcore.lib</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -387,6 +389,7 @@
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>true</ImageHasSafeExceptionHandlers>
+      <AdditionalDependencies>shcore.lib</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -446,6 +449,7 @@
       <TargetMachine>MachineX64</TargetMachine>
       <ImageHasSafeExceptionHandlers>
       </ImageHasSafeExceptionHandlers>
+      <AdditionalDependencies>shcore.lib</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -512,6 +516,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
       <ImageHasSafeExceptionHandlers />
+      <AdditionalDependencies>shcore.lib</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -578,6 +583,7 @@
       <TargetMachine>MachineX64</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
       <Profile>true</Profile>
+      <AdditionalDependencies>shcore.lib</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -636,6 +642,7 @@
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers />
+      <AdditionalDependencies>shcore.lib</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -693,6 +700,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
+      <AdditionalDependencies>shcore.lib</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -757,6 +765,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
       <ImageHasSafeExceptionHandlers />
+      <AdditionalDependencies>shcore.lib</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -820,6 +829,7 @@
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
+      <AdditionalDependencies>shcore.lib</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
