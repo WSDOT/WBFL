@@ -45,6 +45,8 @@ matConcreteEx::matConcreteEx() :
 matConcrete()
 {
    m_WeightDensity = 0;
+   m_FrShear = 0;
+   m_FrFlexure = 0;
 }
 
 matConcreteEx::matConcreteEx(const std::_tstring& name,Float64 fc,Float64 density,Float64 wDensity,Float64 modE,Float64 frShear,Float64 frFlexure) :
