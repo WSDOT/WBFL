@@ -1187,12 +1187,12 @@ BOOL CEAFDocument::GetToolTipMessageString(UINT nID, CString& rMessage) const
    return bHandled;
 }
 
-void CEAFDocument::UIHints(BOOL bEnable)
+void CEAFDocument::EnableUIHints(BOOL bEnable)
 {
    m_bUIHints = bEnable;
 }
 
-BOOL CEAFDocument::UIHints() const
+BOOL CEAFDocument::EnableUIHints() const
 {
    return m_bUIHints;
 }
@@ -1207,11 +1207,11 @@ void CEAFDocument::SetUIHintSettings(UINT settings)
    m_UIHintSettings = settings;
    if ( m_UIHintSettings == EAF_UIHINT_ENABLE_ALL )
    {
-      ResetUIHints();
+      OnUIHintsReset();
    }
 }
 
-void CEAFDocument::ResetUIHints()
+void CEAFDocument::OnUIHintsReset()
 {
    // Does nothing by default
 }
@@ -1466,17 +1466,27 @@ void CEAFDocument::OnUpdateRedo(CCmdUI* pCmdUI)
    }
 }
 
+void CEAFDocument::ResetUIHints(bool bPrompt)
+{
+   if (bPrompt)
+   {
+      CString strText;
+      strText = _T("Reset all user interface hints?");
+      int result = AfxMessageBox(strText, MB_YESNO);
+      if (result == IDNO)
+      {
+         return;
+      }
+   }
+
+   UINT hintSettings = GetUIHintSettings();
+   hintSettings = EAF_UIHINT_ENABLE_ALL;
+   SetUIHintSettings(hintSettings);
+}
+
 void CEAFDocument::OnOptionsHints()
 {
-   CString strText;
-   strText = _T("Reset all user interface hints?");
-   int result = AfxMessageBox(strText,MB_YESNO);
-   if ( result == IDYES )
-   {
-      UINT hintSettings = GetUIHintSettings();
-      hintSettings = EAF_UIHINT_ENABLE_ALL;
-      SetUIHintSettings(hintSettings);
-   }
+   ResetUIHints();
 }
 
 void CEAFDocument::OnStatusChanged()
