@@ -118,6 +118,8 @@ public:
                      RHO,
                      sigma,
                      SIGMA,
+                     tau,
+                     TAU,
                      theta,
                      THETA,
                      QED,                     // Little triangle made of dots
