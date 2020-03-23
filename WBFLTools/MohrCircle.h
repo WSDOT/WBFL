@@ -41,7 +41,10 @@ class ATL_NO_VTABLE CMohrCircle :
 public:
 	CMohrCircle()
 	{
-	}
+      m_Sii = 0;
+      m_Sjj = 0;
+      m_Sij = 0;
+   }
 
 DECLARE_REGISTRY_RESOURCEID(IDR_MOHRCIRCLE)
 
