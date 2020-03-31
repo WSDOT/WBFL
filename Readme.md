@@ -57,7 +57,9 @@ You will need to download and install the following projects before you can buil
 
 Define BOOSTDIR and XSDDIR environment variables for the location where the boost and code synthesis libraries are installed.
 
-Clone the repository into <drive letter>:\ARP\ and create an environment variable ARPDIR to this folder.
+Clone the repository into **drive letter**:\ARP\ and create an environment variable ARPDIR to this folder.
+
+Create an enviroment variable called WBFLDIR that equates to the $ARPDIR$\WBFL folder.
 
 ## Authors
 This project is jointly developed by the Washington State and Texas Departments of Transportation
