@@ -90,6 +90,11 @@ void DDX_Keyword(CDataExchange* pDX,int nIDC,LPCTSTR lpszKeyword,T& value)
    }
 }
 
+// Exchanges a unit value and tag or keyword. When putting data into the control, if value is < 0, the
+// control is filled with one of the keywords from the null-terminated string lpszKeywords. Keywords in lpszKeywords are separated by "|"
+// A value of -1 corresponds to the first keyword, -2 the second, and so on.
+// When getting data from the control, if the keyword is used in the UI control, value is set to keyword value (-1, -2, etc), otherwise, a normal DDX_UnitValueAndTag is done.
+// Only the first keywordLength letters of the keyword need to be input.
 template <class U>
 void DDX_KeywordUnitValueAndTag(CDataExchange* pDX,int nIDC,int nIDCTag,LPCTSTR lpszKeywords,Float64& value, const U& umIndirectMeasure,int keywordLength=3)
 {
@@ -140,6 +145,7 @@ void DDX_KeywordUnitValueAndTag(CDataExchange* pDX,int nIDC,int nIDCTag,LPCTSTR 
       if (value < 0)
       {
          int tokenIdx = (int)abs(value)-1;
+         ATLASSERT(tokenIdx < tokenizer.size());
          CString strToken(tokenizer[tokenIdx].c_str());
          DDX_Text(pDX, nIDC, CString(strToken));
          DDX_Tag(pDX, nIDCTag, umIndirectMeasure);
