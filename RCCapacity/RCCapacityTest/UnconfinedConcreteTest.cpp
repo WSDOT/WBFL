@@ -59,12 +59,14 @@ void CUnconfinedConcreteTest::Test()
    Float64 val;
    TRY_TEST( concrete->put_fc(0), E_INVALIDARG);
    TRY_TEST( concrete->put_fc(-10), E_INVALIDARG);
-   TRY_TEST( concrete->put_fc(13789514.59), E_INVALIDARG); // 2 KSI
+   TRY_TEST( concrete->put_fc(13789514.59), S_OK); // 2 KSI
    TRY_TEST( concrete->put_fc(20684271.88), S_OK);         // 3 KSI
    TRY_TEST( concrete->put_fc(89631844.81), S_OK);         // 13 KSI
-   TRY_TEST( concrete->put_fc(117210874),E_INVALIDARG);   // 17 KSI
+   TRY_TEST( concrete->put_fc(117210874), S_OK);   // 17 KSI
    TRY_TEST( concrete->get_fc(nullptr), E_POINTER );
-   TRY_TEST( concrete->get_fc(&val), S_OK );
+
+   TRY_TEST(concrete->put_fc(89631844.81), S_OK);
+   TRY_TEST(concrete->get_fc(&val), S_OK);
    TRY_TEST( IsEqual(val,89631844.810000), true);
 
    TestISupportUnitServer(concrete);
