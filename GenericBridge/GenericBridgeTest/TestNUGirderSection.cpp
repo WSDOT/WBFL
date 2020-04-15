@@ -23,11 +23,44 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GENERICBRIDGETEST_H_
-#define INCLUDED_GENERICBRIDGETEST_H_
+#include "stdafx.h"
+#include "TestNUGirderSection.h"
 
-bool TestIObjectSafety(IUnknown* punk,REFIID riid,DWORD dwSupportedOptions);
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
-void TestWebSections(IGirderSection* pSection, const std::vector<std::pair<Float64, Float64>>& vExpectedValues);
+void CTestNUGirderSection::Test()
+{
+   CComPtr<INUGirderSection> beam_section;
+   TRY_TEST(beam_section.CoCreateInstance(CLSID_NUGirderSection), S_OK);
 
-#endif // INCLUDED_GENERICBRIDGETEST_H_
+   CComPtr<INUBeam> beam;
+   beam_section->get_Beam(&beam);
+
+   //NU2400
+   beam->put_W1(1225);
+   beam->put_W2(975);
+   beam->put_D1(65);
+   beam->put_D2(45);
+   beam->put_D3(2015);
+   beam->put_D4(140);
+   beam->put_D5(135);
+   beam->put_T(150);
+   beam->put_R1(200);
+   beam->put_R2(200);
+   beam->put_R3(50);
+   beam->put_R4(50);
+
+   CComQIPtr<IGirderSection> section(beam_section);
+
+   std::vector<std::pair<Float64, Float64>> vExpectedValues
+   { 
+      std::pair<Float64, Float64>(-293.95550943497187, 150.0),
+      std::pair<Float64, Float64>(-1981.6738403896406, 150.0)
+   };
+
+   TestWebSections(section, vExpectedValues);
+}

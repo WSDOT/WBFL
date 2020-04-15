@@ -46,6 +46,7 @@ class ATL_NO_VTABLE CCastSlab :
 {
 public:
    CCastSlab() :
+      m_GrossDepth(0.0),
       m_OverhangDepth {0.0, 0.0}, 
       m_Taper{dotNone, dotNone}
    {

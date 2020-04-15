@@ -472,6 +472,37 @@ STDMETHODIMP CMultiWebSection::get_CL2ExteriorWebDistance(DirectionType side, Fl
    return S_OK;
 }
 
+STDMETHODIMP CMultiWebSection::GetWebSections(IDblArray** ppY, IDblArray** ppW, IBstrArray** ppDesc)
+{
+   Float64 D1, T1;
+   m_Beam->get_D1(&D1);
+   m_Beam->get_T1(&T1);
+
+   WebIndexType nWebs;
+   m_Beam->get_WebCount(&nWebs);
+
+   CComPtr<IDblArray> y;
+   y.CoCreateInstance(CLSID_DblArray);
+   y.CopyTo(ppY);
+
+   CComPtr<IDblArray> w;
+   w.CoCreateInstance(CLSID_DblArray);
+   w.CopyTo(ppW);
+
+   CComPtr<IBstrArray> desc;
+   desc.CoCreateInstance(CLSID_BstrArray);
+   desc.CopyTo(ppDesc);
+
+   if (0 < nWebs)
+   {
+      (*ppY)->Add(-D1);
+      (*ppW)->Add(nWebs * T1);
+      (*ppDesc)->Add(CComBSTR(_T("Top Flange - Web")));
+   }
+
+   return S_OK;
+}
+
 STDMETHODIMP CMultiWebSection::RemoveSacrificalDepth(Float64 sacDepth)
 {
    Float64 D1;

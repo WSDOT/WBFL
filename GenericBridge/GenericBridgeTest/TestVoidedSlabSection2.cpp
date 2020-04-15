@@ -23,11 +23,46 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GENERICBRIDGETEST_H_
-#define INCLUDED_GENERICBRIDGETEST_H_
+#include "stdafx.h"
+#include "TestVoidedSlabSection2.h"
 
-bool TestIObjectSafety(IUnknown* punk,REFIID riid,DWORD dwSupportedOptions);
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
-void TestWebSections(IGirderSection* pSection, const std::vector<std::pair<Float64, Float64>>& vExpectedValues);
+void CTestVoidedSlabSection2::Test()
+{
+   CComPtr<IVoidedSlabSection2> beam_section;
+   TRY_TEST(beam_section.CoCreateInstance(CLSID_VoidedSlabSection2), S_OK);
 
-#endif // INCLUDED_GENERICBRIDGETEST_H_
+   CComPtr<IVoidedSlab2> beam;
+   beam_section->get_Beam(&beam);
+   TRY_TEST(beam != nullptr, true);
+
+   beam->put_Height(36);
+   beam->put_Width(54);
+   beam->put_ExteriorVoidDiameter(18);
+   beam->put_ExteriorVoidSpacing(24);
+   beam->put_ExteriorVoidElevation(12);
+   beam->put_InteriorVoidDiameter(18);
+   beam->put_InteriorVoidSpacing(24);
+   beam->put_InteriorVoidElevation(12);
+   beam->put_VoidCount(3);
+
+   CComQIPtr<IGirderSection> section(beam_section);
+
+   std::vector<std::pair<Float64, Float64>> vExpectedValues
+   { 
+      std::pair<Float64, Float64>(-15.0, 54.0),
+      std::pair<Float64, Float64>(-33.0, 54.0)
+   };
+
+   TestWebSections(section, vExpectedValues);
+
+   // no voids, no web sections
+   beam->put_VoidCount(0);
+   vExpectedValues.clear();
+   TestWebSections(section, vExpectedValues);
+}

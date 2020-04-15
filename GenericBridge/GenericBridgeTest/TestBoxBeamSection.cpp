@@ -23,11 +23,51 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GENERICBRIDGETEST_H_
-#define INCLUDED_GENERICBRIDGETEST_H_
+#include "stdafx.h"
+#include "TestBoxBeamSection.h"
 
-bool TestIObjectSafety(IUnknown* punk,REFIID riid,DWORD dwSupportedOptions);
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
-void TestWebSections(IGirderSection* pSection, const std::vector<std::pair<Float64, Float64>>& vExpectedValues);
+void CTestBoxBeamSection::Test()
+{
+   CComPtr<IBoxBeamSection> beam_section;
+   TRY_TEST(beam_section.CoCreateInstance(CLSID_BoxBeamSection), S_OK);
 
-#endif // INCLUDED_GENERICBRIDGETEST_H_
+   CComPtr<IBoxBeam> beam;
+   beam_section->get_Beam(&beam);
+   TRY_TEST(beam != nullptr, true);
+
+   // TxDOT 5B40
+   beam->put_H1(5.5);
+   beam->put_H2(29.5);
+   beam->put_H3(5);
+   beam->put_H4(4);
+   beam->put_H5(3);
+   beam->put_H6(5);
+   beam->put_H7(17);
+   beam->put_W1(3);
+   beam->put_W2(5);
+   beam->put_W3(39.75);
+   beam->put_W4(5);
+   beam->put_F1(0);
+   beam->put_F2(5);
+   beam->put_C1(0.75);
+
+   CComQIPtr<IGirderSection> section(beam_section);
+
+   std::vector<std::pair<Float64, Float64>> vExpectedValues
+   { 
+      std::pair<Float64, Float64>( -5.5,13.0),
+      std::pair<Float64, Float64>( -7.0,10.0),
+      std::pair<Float64, Float64>(-18.0,10.0),
+      std::pair<Float64, Float64>(-23.0,20.0),
+      std::pair<Float64, Float64>(-30.0,20.0),
+      std::pair<Float64, Float64>(-35.0,30.0)
+   };
+
+   TestWebSections(section, vExpectedValues);
+}

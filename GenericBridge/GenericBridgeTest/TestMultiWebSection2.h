@@ -23,11 +23,16 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GENERICBRIDGETEST_H_
-#define INCLUDED_GENERICBRIDGETEST_H_
+// TestMultiWebSection.h: interface for the CTestMultiWebSection class.
+//
+//////////////////////////////////////////////////////////////////////
 
-bool TestIObjectSafety(IUnknown* punk,REFIID riid,DWORD dwSupportedOptions);
+#pragma once
 
-void TestWebSections(IGirderSection* pSection, const std::vector<std::pair<Float64, Float64>>& vExpectedValues);
-
-#endif // INCLUDED_GENERICBRIDGETEST_H_
+class CTestMultiWebSection2
+{
+public:
+	static void Test();
+   CTestMultiWebSection2() = default;
+	virtual ~CTestMultiWebSection2() = default;
+};

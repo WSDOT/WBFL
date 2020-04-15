@@ -630,6 +630,49 @@ STDMETHODIMP CVoidedSlabSection2::get_CL2ExteriorWebDistance( DirectionType side
    return S_OK;
 }
 
+STDMETHODIMP CVoidedSlabSection2::GetWebSections(IDblArray** ppY, IDblArray** ppW,IBstrArray** ppDesc)
+{
+   CComPtr<IDblArray> y;
+   y.CoCreateInstance(CLSID_DblArray);
+   y.CopyTo(ppY);
+
+   CComPtr<IDblArray> w;
+   w.CoCreateInstance(CLSID_DblArray);
+   w.CopyTo(ppW);
+
+   CComPtr<IBstrArray> desc;
+   desc.CoCreateInstance(CLSID_BstrArray);
+   desc.CopyTo(ppDesc);
+   
+   IndexType nVoids;
+   m_Beam->get_VoidCount(&nVoids);
+   if (0 < nVoids)
+   {
+      Float64 W, H, D1, H1, D2, H2;
+      m_Beam->get_Width(&W);
+      m_Beam->get_Height(&H);
+      m_Beam->get_ExteriorVoidDiameter(&D1);
+      m_Beam->get_ExteriorVoidElevation(&H1);
+      m_Beam->get_InteriorVoidDiameter(&D2);
+      m_Beam->get_InteriorVoidElevation(&H2);
+
+      Float64 y1 = -(H - H1 - D1 / 2);
+      Float64 y2 = -(H - H2 - D2 / 2);
+      Float64 y3 = -(H - H1 + D1 / 2);
+      Float64 y4 = -(H - H2 + D2 / 2);
+
+      (*ppY)->Add(Max(y1, y2));
+      (*ppW)->Add(W);
+      (*ppDesc)->Add(CComBSTR(_T("Top of Voids")));
+
+      (*ppY)->Add(Min(y3, y4));
+      (*ppW)->Add(W);
+      (*ppDesc)->Add(CComBSTR(_T("Bottom of Voids")));
+   }
+
+   return S_OK;
+}
+
 STDMETHODIMP CVoidedSlabSection2::RemoveSacrificalDepth(Float64 sacDepth)
 {
    Float64 H, C2;

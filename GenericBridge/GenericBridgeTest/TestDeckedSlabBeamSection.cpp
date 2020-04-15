@@ -23,11 +23,40 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GENERICBRIDGETEST_H_
-#define INCLUDED_GENERICBRIDGETEST_H_
+#include "stdafx.h"
+#include "TestDeckedSlabBeamSection.h"
 
-bool TestIObjectSafety(IUnknown* punk,REFIID riid,DWORD dwSupportedOptions);
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
-void TestWebSections(IGirderSection* pSection, const std::vector<std::pair<Float64, Float64>>& vExpectedValues);
+void CTestDeckedSlabBeamSection::Test()
+{
+   CComPtr<IDeckedSlabBeamSection> beam_section;
+   TRY_TEST(beam_section.CoCreateInstance(CLSID_DeckedSlabBeamSection), S_OK);
 
-#endif // INCLUDED_GENERICBRIDGETEST_H_
+   CComPtr<IDeckedSlabBeam> beam;
+   beam_section->get_Beam(&beam);
+   TRY_TEST(beam != nullptr, true);
+
+   // TxDOT 8DS23
+   beam->put_A(95.75);
+   beam->put_B(18);
+   beam->put_C(15);
+   beam->put_F(1.75);
+   beam->put_W(6);
+   beam->put_Tt(8);
+   beam->put_Tb(7);
+
+   CComQIPtr<IGirderSection> section(beam_section);
+
+   std::vector<std::pair<Float64, Float64>> vExpectedValues
+   { 
+      std::pair<Float64, Float64>( -8.0,12.0),
+      std::pair<Float64, Float64>(-16.0,12.0)
+   };
+
+   TestWebSections(section, vExpectedValues);
+}

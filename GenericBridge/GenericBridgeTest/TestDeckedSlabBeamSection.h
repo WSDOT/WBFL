@@ -23,11 +23,16 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GENERICBRIDGETEST_H_
-#define INCLUDED_GENERICBRIDGETEST_H_
+// TestDeckedSlabBeamSection.h: interface for the CTestDeckedSlabBeamSection class.
+//
+//////////////////////////////////////////////////////////////////////
 
-bool TestIObjectSafety(IUnknown* punk,REFIID riid,DWORD dwSupportedOptions);
+#pragma once
 
-void TestWebSections(IGirderSection* pSection, const std::vector<std::pair<Float64, Float64>>& vExpectedValues);
-
-#endif // INCLUDED_GENERICBRIDGETEST_H_
+class CTestDeckedSlabBeamSection
+{
+public:
+	static void Test();
+   CTestDeckedSlabBeamSection() = default;
+	virtual ~CTestDeckedSlabBeamSection() = default;
+};

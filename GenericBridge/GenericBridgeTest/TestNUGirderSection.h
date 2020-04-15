@@ -23,11 +23,16 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GENERICBRIDGETEST_H_
-#define INCLUDED_GENERICBRIDGETEST_H_
+// TestNUGirderSection.h: interface for the CTestNUGirderSection class.
+//
+//////////////////////////////////////////////////////////////////////
 
-bool TestIObjectSafety(IUnknown* punk,REFIID riid,DWORD dwSupportedOptions);
+#pragma once
 
-void TestWebSections(IGirderSection* pSection, const std::vector<std::pair<Float64, Float64>>& vExpectedValues);
-
-#endif // INCLUDED_GENERICBRIDGETEST_H_
+class CTestNUGirderSection
+{
+public:
+	static void Test();
+   CTestNUGirderSection() = default;
+	virtual ~CTestNUGirderSection() = default;
+};

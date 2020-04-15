@@ -23,11 +23,16 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GENERICBRIDGETEST_H_
-#define INCLUDED_GENERICBRIDGETEST_H_
+// TestBulbTeeGirderSection.h: interface for the CTestBulbTeeGirderSection class.
+//
+//////////////////////////////////////////////////////////////////////
 
-bool TestIObjectSafety(IUnknown* punk,REFIID riid,DWORD dwSupportedOptions);
+#pragma once
 
-void TestWebSections(IGirderSection* pSection, const std::vector<std::pair<Float64, Float64>>& vExpectedValues);
-
-#endif // INCLUDED_GENERICBRIDGETEST_H_
+class CTestBulbTeeGirderSection
+{
+public:
+	static void Test();
+   CTestBulbTeeGirderSection() = default;
+	virtual ~CTestBulbTeeGirderSection() = default;
+};

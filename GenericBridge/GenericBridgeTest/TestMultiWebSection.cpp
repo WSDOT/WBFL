@@ -23,11 +23,38 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GENERICBRIDGETEST_H_
-#define INCLUDED_GENERICBRIDGETEST_H_
+#include "stdafx.h"
+#include "TestMultiWebSection.h"
 
-bool TestIObjectSafety(IUnknown* punk,REFIID riid,DWORD dwSupportedOptions);
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
-void TestWebSections(IGirderSection* pSection, const std::vector<std::pair<Float64, Float64>>& vExpectedValues);
+void CTestMultiWebSection::Test()
+{
+   CComPtr<IMultiWebSection> beam_section;
+   TRY_TEST(beam_section.CoCreateInstance(CLSID_MultiWebSection), S_OK);
 
-#endif // INCLUDED_GENERICBRIDGETEST_H_
+   CComPtr<IMultiWeb> beam;
+   beam_section->get_Beam(&beam);
+   TRY_TEST(beam != nullptr, true);
+
+   beam->put_D1(8);
+   beam->put_D2(18);
+   beam->put_W1(6);
+   beam->put_W2(18);
+   beam->put_T1(8);
+   beam->put_T2(6);
+   beam->put_WebCount(3);
+
+   CComQIPtr<IGirderSection> section(beam_section);
+
+   std::vector<std::pair<Float64, Float64>> vExpectedValues
+   { 
+      std::pair<Float64, Float64>(-8.0,24.0)
+   };
+
+   TestWebSections(section, vExpectedValues);
+}

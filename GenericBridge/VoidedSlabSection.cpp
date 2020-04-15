@@ -541,6 +541,44 @@ STDMETHODIMP CVoidedSlabSection::get_CL2ExteriorWebDistance( DirectionType side,
    return S_OK;
 }
 
+STDMETHODIMP CVoidedSlabSection::GetWebSections(IDblArray** ppY, IDblArray** ppW,IBstrArray** ppDesc)
+{
+   CComPtr<IDblArray> y;
+   y.CoCreateInstance(CLSID_DblArray);
+   y.CopyTo(ppY);
+
+   CComPtr<IDblArray> w;
+   w.CoCreateInstance(CLSID_DblArray);
+   w.CopyTo(ppW);
+
+   CComPtr<IBstrArray> desc;
+   desc.CoCreateInstance(CLSID_BstrArray);
+   desc.CopyTo(ppDesc);
+
+   IndexType nVoids;
+   m_Beam->get_VoidCount(&nVoids);
+
+   if (0 < nVoids)
+   {
+      Float64 W, H, D;
+      m_Beam->get_Width(&W);
+      m_Beam->get_Height(&H);
+      m_Beam->get_VoidDiameter(&D);
+
+      Float64 gap = (H - D) / 2;
+
+      (*ppY)->Add(-gap);
+      (*ppW)->Add(W);
+      (*ppDesc)->Add(CComBSTR(_T("Top of Voids")));
+
+      (*ppY)->Add(-H + gap);
+      (*ppW)->Add(W);
+      (*ppDesc)->Add(CComBSTR(_T("Bottom of Voids")));
+   }
+
+   return S_OK;
+}
+
 STDMETHODIMP CVoidedSlabSection::RemoveSacrificalDepth(Float64 sacDepth)
 {
    // voids are always centered on beam height. if we reduce

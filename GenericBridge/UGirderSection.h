@@ -113,9 +113,10 @@ public:
    STDMETHOD(get_TopWidth)(/*[out,retval]*/Float64* width) override;
 	STDMETHOD(get_BottomWidth)(/*[out,retval]*/Float64* width) override;
 	STDMETHOD(get_ShearWidth)(/*[out,retval]*/Float64* shearwidth) override;
-	STDMETHOD(get_MinTopFlangeThickness)(/*[out,retval]*/Float64* tf) override;
+   STDMETHOD(get_MinTopFlangeThickness)(/*[out,retval]*/Float64* tf) override;
 	STDMETHOD(get_MinBottomFlangeThickness)(/*[out,retval]*/Float64* tf) override;
 	STDMETHOD(get_CL2ExteriorWebDistance)(/*[in]*/ DirectionType side, /*[out,retval]*/Float64* ww) override;
+   STDMETHOD(GetWebSections)(/*[out]*/IDblArray** ppY, /*[out]*/IDblArray** ppW,/*[out]*/IBstrArray** ppDesc) override;
 
 // IPrestressedGirderSection
 public:

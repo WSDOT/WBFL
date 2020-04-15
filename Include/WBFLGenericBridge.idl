@@ -1927,12 +1927,14 @@ library WBFLGenericBridge
 	   [propget,helpstring("property TopWidth")] HRESULT TopWidth([out,retval]Float64* width);
 	   [propget,helpstring("property BottomWidth")] HRESULT BottomWidth([out,retval]Float64* width);
 	   [propget,helpstring("property ShearWidth")] HRESULT ShearWidth([out,retval]Float64* shearwidth);
-	   [propget,helpstring("property MinTopFlangeThickness")] HRESULT MinTopFlangeThickness([out,retval]Float64* tf);
+      [propget,helpstring("property MinTopFlangeThickness")] HRESULT MinTopFlangeThickness([out,retval]Float64* tf);
 	   [propget,helpstring("property MinBottomFlangeThickness")] HRESULT MinBottomFlangeThickness([out,retval]Float64* tf);
 	   // Distance from centerline of section to centerline of exterior web.
 	   // Note that the distance value is positive regardless of side
 	   [propget,helpstring("property CL2ExteriorWebDistance")] HRESULT CL2ExteriorWebDistance([in] DirectionType side, [out,retval]Float64* tf);
-	};
+
+      [helpstring("method GetWebSections")] HRESULT GetWebSections([out]IDblArray** ppY,[out]IDblArray** ppW,[out]IBstrArray** ppDesc);
+   };
 
 	[
 		object,

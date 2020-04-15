@@ -33,10 +33,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // CFlangedBeam
 template <class C,const CLSID* pclsid,class _ISECTION_,const IID* piid,class _IBEAM_,const CLSID* pbeamclsid>
-class ATL_NO_VTABLE CGirderSectionImpl : 
-	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<C, pclsid>,
-	public ISupportErrorInfo,
+class ATL_NO_VTABLE CGirderSectionImpl :
+   public CComObjectRootEx<CComSingleThreadModel>,
+   public CComCoClass<C, pclsid>,
+   public ISupportErrorInfo,
    public _ISECTION_,
    public IPrestressedGirderSection,
    public IShape,
@@ -45,8 +45,8 @@ class ATL_NO_VTABLE CGirderSectionImpl :
 {
 public:
    CGirderSectionImpl()
-	{
-	}
+   {
+   }
 
    HRESULT FinalConstruct()
    {
@@ -56,7 +56,7 @@ public:
       CComQIPtr<IShape> beamShape(m_Beam);
       ATLASSERT(beamShape != nullptr); // must implement IShape interface
 
-      m_CompositeShape->AddShape(beamShape,VARIANT_FALSE); // solid
+      m_CompositeShape->AddShape(beamShape, VARIANT_FALSE); // solid
 
       m_CompositeShape.QueryInterface(&m_Shape);
       m_CompositeShape.QueryInterface(&m_Position);
@@ -67,19 +67,19 @@ public:
    }
 
 
-//DECLARE_REGISTRY_RESOURCEID(IDR_FLANGEDBEAM)
+   //DECLARE_REGISTRY_RESOURCEID(IDR_FLANGEDBEAM)
 
-DECLARE_PROTECT_FINAL_CONSTRUCT()
+   DECLARE_PROTECT_FINAL_CONSTRUCT()
 
-BEGIN_COM_MAP(C)
-	COM_INTERFACE_ENTRY(_ISECTION_)
-	COM_INTERFACE_ENTRY(IGirderSection)
-	COM_INTERFACE_ENTRY(IPrestressedGirderSection)
-	COM_INTERFACE_ENTRY(IShape)
-	COM_INTERFACE_ENTRY(ICompositeShape)
-	COM_INTERFACE_ENTRY(IXYPosition)
-	COM_INTERFACE_ENTRY(ISupportErrorInfo)
-END_COM_MAP()
+   BEGIN_COM_MAP(C)
+      COM_INTERFACE_ENTRY(_ISECTION_)
+      COM_INTERFACE_ENTRY(IGirderSection)
+      COM_INTERFACE_ENTRY(IPrestressedGirderSection)
+      COM_INTERFACE_ENTRY(IShape)
+      COM_INTERFACE_ENTRY(ICompositeShape)
+      COM_INTERFACE_ENTRY(IXYPosition)
+      COM_INTERFACE_ENTRY(ISupportErrorInfo)
+   END_COM_MAP()
 
 protected:
    CComPtr<_IBEAM_> m_Beam;
@@ -91,20 +91,20 @@ protected:
 public:
    STDMETHODIMP InterfaceSupportsErrorInfo(REFIID riid)
    {
-	   static const IID* arr[] = 
-	   {
-		   piid,
+      static const IID* arr[] =
+      {
+         piid,
          &IID_IGirderSection,
          &IID_IShape,
          &IID_ICompositeShape,
          &IID_IXYPosition,
-	   };
-	   for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
-	   {
-		   if (InlineIsEqualGUID(*arr[i],riid))
-			   return S_OK;
-	   }
-	   return S_FALSE;
+      };
+      for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
+      {
+         if (InlineIsEqualGUID(*arr[i], riid))
+            return S_OK;
+      }
+      return S_FALSE;
    }
 
    ////////////////////////////////////////////////////////////////////////
@@ -123,7 +123,7 @@ public:
       m_Beam.Release();
       clone.QueryInterface(&m_Beam);
 
-      m_CompositeShape->Replace(0,clone);
+      m_CompositeShape->Replace(0, clone);
 
       return S_OK;
    }
@@ -181,9 +181,9 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP get_WebLocation(WebIndexType idx,Float64* location) override
+   STDMETHODIMP get_WebLocation(WebIndexType idx, Float64* location) override
    {
-      if ( idx != 0 )
+      if (idx != 0)
          return E_INVALIDARG;
 
       CHECK_RETVAL(location);
@@ -192,9 +192,9 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP get_WebSpacing(WebIndexType idx,Float64* spacing) override
+   STDMETHODIMP get_WebSpacing(WebIndexType idx, Float64* spacing) override
    {
-      if ( idx != 0 )
+      if (idx != 0)
          return E_INVALIDARG;
 
       CHECK_RETVAL(spacing);
@@ -203,9 +203,9 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP get_WebThickness(WebIndexType idx,Float64* tWeb) override
+   STDMETHODIMP get_WebThickness(WebIndexType idx, Float64* tWeb) override
    {
-      if ( idx != 0 )
+      if (idx != 0)
          return E_INVALIDARG;
 
       CHECK_RETVAL(tWeb);
@@ -216,30 +216,30 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP get_WebPlane(WebIndexType idx,IPlane3d** ppPlane) override
+   STDMETHODIMP get_WebPlane(WebIndexType idx, IPlane3d** ppPlane) override
    {
       CHECK_RETOBJ(ppPlane);
 
       Float64 x;
-      HRESULT hr = get_WebLocation(idx,&x);
-      if ( FAILED(hr) )
+      HRESULT hr = get_WebLocation(idx, &x);
+      if (FAILED(hr))
          return hr;
 
       CComPtr<IPoint3d> p1;
       p1.CoCreateInstance(CLSID_Point3d);
-      p1->Move(x,0,0);
+      p1->Move(x, 0, 0);
 
       CComPtr<IPoint3d> p2;
       p2.CoCreateInstance(CLSID_Point3d);
-      p2->Move(x,100,0);
+      p2->Move(x, 100, 0);
 
       CComPtr<IPoint3d> p3;
       p3.CoCreateInstance(CLSID_Point3d);
-      p3->Move(x,0,100);
+      p3->Move(x, 0, 100);
 
       CComPtr<IPlane3d> plane;
       plane.CoCreateInstance(CLSID_Plane3d);
-      plane->ThroughPoints(p1,p2,p3);
+      plane->ThroughPoints(p1, p2, p3);
 
       return plane.CopyTo(ppPlane);
    }
@@ -249,14 +249,14 @@ public:
       return get_TopFlangeCount(nMatingSurfaces);
    }
 
-   STDMETHODIMP get_MatingSurfaceLocation(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly,Float64* location) override
+   STDMETHODIMP get_MatingSurfaceLocation(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly, Float64* location) override
    {
-      return get_TopFlangeLocation(idx,location);
+      return get_TopFlangeLocation(idx, location);
    }
 
-	STDMETHODIMP get_MatingSurfaceWidth(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly,Float64* wMatingSurface) override
+   STDMETHODIMP get_MatingSurfaceWidth(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly, Float64* wMatingSurface) override
    {
-      return get_TopFlangeWidth(idx,wMatingSurface);
+      return get_TopFlangeWidth(idx, wMatingSurface);
    }
 
    STDMETHODIMP get_MatingSurfaceProfile(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly, IPoint2dCollection** ppProfile) override
@@ -271,26 +271,26 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP get_TopFlangeLocation(FlangeIndexType idx,Float64* location) override
+   STDMETHODIMP get_TopFlangeLocation(FlangeIndexType idx, Float64* location) override
    {
-      if ( idx != 0 )
+      if (idx != 0)
          return E_INVALIDARG;
 
       *location = 0;
       return S_OK;
    }
 
-   STDMETHODIMP get_TopFlangeWidth(FlangeIndexType idx,Float64* wFlange) override
+   STDMETHODIMP get_TopFlangeWidth(FlangeIndexType idx, Float64* wFlange) override
    {
-      if ( idx != 0 )
+      if (idx != 0)
          return E_INVALIDARG;
 
       return m_Beam->get_TopFlangeWidth(wFlange);
    }
 
-   STDMETHODIMP get_TopFlangeSpacing(FlangeIndexType idx,Float64* spacing) override
+   STDMETHODIMP get_TopFlangeSpacing(FlangeIndexType idx, Float64* spacing) override
    {
-      if ( idx != 0 )
+      if (idx != 0)
          return E_INVALIDARG;
 
       CHECK_RETVAL(spacing);
@@ -306,26 +306,26 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP get_BottomFlangeLocation(FlangeIndexType idx,Float64* location) override
+   STDMETHODIMP get_BottomFlangeLocation(FlangeIndexType idx, Float64* location) override
    {
-      if ( idx != 0 )
+      if (idx != 0)
          return E_INVALIDARG;
 
       *location = 0;
       return S_OK;
    }
 
-   STDMETHODIMP get_BottomFlangeWidth(FlangeIndexType idx,Float64* wFlange) override
+   STDMETHODIMP get_BottomFlangeWidth(FlangeIndexType idx, Float64* wFlange) override
    {
-      if ( idx != 0 )
+      if (idx != 0)
          return E_INVALIDARG;
 
       return m_Beam->get_BottomFlangeWidth(wFlange);
    }
 
-   STDMETHODIMP get_BottomFlangeSpacing(FlangeIndexType idx,Float64* spacing) override
+   STDMETHODIMP get_BottomFlangeSpacing(FlangeIndexType idx, Float64* spacing) override
    {
-      if ( idx != 0 )
+      if (idx != 0)
          return E_INVALIDARG;
 
       CHECK_RETVAL(spacing);
@@ -344,12 +344,12 @@ public:
       return m_Beam->get_Height(height);
    }
 
-	STDMETHODIMP get_TopWidth(Float64* width) override
+   STDMETHODIMP get_TopWidth(Float64* width) override
    {
       return m_Beam->get_TopFlangeWidth(width);
    }
 
-	STDMETHODIMP get_BottomWidth(Float64* width) override
+   STDMETHODIMP get_BottomWidth(Float64* width) override
    {
       return m_Beam->get_BottomFlangeWidth(width);
    }

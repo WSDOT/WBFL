@@ -472,6 +472,39 @@ STDMETHODIMP CDeckedSlabBeamSection::get_CL2ExteriorWebDistance( DirectionType s
    return S_OK;
 }
 
+STDMETHODIMP CDeckedSlabBeamSection::GetWebSections(IDblArray** ppY, IDblArray** ppW,IBstrArray** ppDesc)
+{
+   Float64 C, Tt, Tb, W;
+   m_Beam->get_C(&C);
+   m_Beam->get_Tt(&Tt);
+   m_Beam->get_Tb(&Tb);
+   m_Beam->get_W(&W);
+
+   Float64 H = C + Tt;
+
+   CComPtr<IDblArray> y;
+   y.CoCreateInstance(CLSID_DblArray);
+   y.CopyTo(ppY);
+
+   CComPtr<IDblArray> w;
+   w.CoCreateInstance(CLSID_DblArray);
+   w.CopyTo(ppW);
+
+   CComPtr<IBstrArray> desc;
+   desc.CoCreateInstance(CLSID_BstrArray);
+   desc.CopyTo(ppDesc);
+
+   (*ppY)->Add(-Tt);
+   (*ppW)->Add(2 * W);
+   (*ppDesc)->Add(CComBSTR(_T("Top Flange - Web")));
+
+   (*ppY)->Add(-H + Tb);
+   (*ppW)->Add(2 * W);
+   (*ppDesc)->Add(CComBSTR(_T("Bottom Flange - Web")));
+
+   return S_OK;
+}
+
 STDMETHODIMP CDeckedSlabBeamSection::RemoveSacrificalDepth(Float64 sacDepth)
 {
    Float64 Tt;

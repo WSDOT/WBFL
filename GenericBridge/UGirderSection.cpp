@@ -493,6 +493,53 @@ STDMETHODIMP CUGirderSection::get_CL2ExteriorWebDistance(DirectionType side, Flo
    return hr;
 }
 
+STDMETHODIMP CUGirderSection::GetWebSections(IDblArray** ppY, IDblArray** ppW, IBstrArray** ppDesc)
+{
+   Float64 D1, D2, D3, D4, D5, D6, D7;
+   m_Beam->get_D1(&D1);
+   m_Beam->get_D2(&D2);
+   m_Beam->get_D3(&D3);
+   m_Beam->get_D4(&D4);
+   m_Beam->get_D5(&D5);
+   m_Beam->get_D6(&D6);
+   m_Beam->get_D7(&D7);
+
+   Float64 t_web;
+   get_WebThickness(0,&t_web);
+
+   CComPtr<IDblArray> y;
+   y.CoCreateInstance(CLSID_DblArray);
+   y.CopyTo(ppY);
+
+   CComPtr<IDblArray> w;
+   w.CoCreateInstance(CLSID_DblArray);
+   w.CopyTo(ppW);
+
+   CComPtr<IBstrArray> desc;
+   desc.CoCreateInstance(CLSID_BstrArray);
+   desc.CopyTo(ppDesc);
+
+   Float64 H1 = D4 + D5;
+   Float64 H2 = D6 + D7;
+   Float64 H = Max(H1, H2);
+   (*ppY)->Add(-H);
+   (*ppW)->Add(2 * t_web);
+   if (IsZero(H))
+   {
+      (*ppDesc)->Add(_T("Top Girder"));
+   }
+   else
+   {
+      (*ppDesc)->Add(_T("Top Flange - Web"));
+   }
+
+   (*ppY)->Add(-D1 + D2 + D3);
+   (*ppW)->Add(2 * t_web);
+   (*ppDesc)->Add(CComBSTR(_T("Bottom Flange - Web")));
+
+   return S_OK;
+}
+
 STDMETHODIMP CUGirderSection::RemoveSacrificalDepth(Float64 sacDepth)
 {
    Float64 D4;
