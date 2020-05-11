@@ -133,7 +133,7 @@ std::_tstring rptHtmlHelper::GetStyleString(const rptRiStyle& MyStyle)
    if (MyStyle.IsHeading())
    {
       Uint16 marg = fs/3;
-      ms << "margin-top: +" << marg <<"pt; ";
+      ms << "margin-top: +" << marg <<"pt; white-space: nowrap; "; // don't allow headings to wrap
    }
 
    // family is last in list because of a 'feature' in IE

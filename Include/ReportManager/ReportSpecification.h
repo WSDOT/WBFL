@@ -47,8 +47,11 @@ public:
    std::_tstring GetReportName() const;
 
    // report title = "Details Report for Span 1, Girder A"
-   // default returns the report name
+   // default returns the report name + " For " + ContextString
    virtual std::_tstring GetReportTitle() const;
+
+   // context of report (e.g., "Span 1, Girder A"). Blank by default
+   virtual std::_tstring GetReportContextString() const;
 
    void AddChapter(LPCTSTR strName,LPCTSTR strKey,Uint16 level);
    void SetChapterInfo(const std::vector<CChapterInfo>& chInfo);

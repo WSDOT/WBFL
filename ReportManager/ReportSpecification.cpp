@@ -73,7 +73,13 @@ std::_tstring CReportSpecification::GetReportName() const
 
 std::_tstring CReportSpecification::GetReportTitle() const
 {
-   return GetReportName();
+   return GetReportName() + _T(" for ") + GetReportContextString();
+}
+
+std::_tstring CReportSpecification::GetReportContextString() const
+{
+   // blank string by default
+   return std::_tstring();
 }
 
 void CReportSpecification::AddChapter(LPCTSTR strName,LPCTSTR strKey,Uint16 level)
