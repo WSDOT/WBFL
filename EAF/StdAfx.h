@@ -70,6 +70,11 @@ extern CComModule _Module;
 #include <afxdlgs.h>
 #include <afxwin.h>
 #include <afxmt.h>
+#include <afxcontrolbars.h>
+
+#if defined _DEBUG
+#include <EAF\EAFSizeTestingDialog.h>
+#endif
 
 
 // #import is not compatible with the /MP compiler option

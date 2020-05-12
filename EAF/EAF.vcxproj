@@ -243,6 +243,18 @@
     <ClCompile Include="EAFCommandLineInfo.cpp" />
     <ClCompile Include="EAFCustomReport.cpp" />
     <ClCompile Include="EAFCustomReportConflictDlg.cpp" />
+    <ClCompile Include="EAFSizeTestingDialog.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="EAFDocManager.cpp" />
     <ClCompile Include="EAFDocPluginManager.cpp" />
     <ClCompile Include="EAFDocProxyAgent.cpp" />
@@ -333,6 +345,7 @@
     <ClInclude Include="..\Include\EAF\EAFComponentInfo.h" />
     <ClInclude Include="..\Include\EAF\EAFCustomReport.h" />
     <ClInclude Include="..\Include\EAF\EAFCustSiteVars.h" />
+    <ClInclude Include="..\Include\EAF\EAFSizeTestingDialog.h" />
     <ClInclude Include="..\Include\EAF\EAFDataRecoveryHandler.h" />
     <ClInclude Include="..\Include\EAF\EAFDisplayUnits.h" />
     <ClInclude Include="..\Include\EAF\EAFDocManager.h" />
@@ -371,6 +384,7 @@
     <ClInclude Include="..\Include\EAF\EAFStatusCenter.h" />
     <ClInclude Include="..\Include\EAF\EAFStatusItem.h" />
     <ClInclude Include="..\Include\EAF\EAFTemplateGroup.h" />
+    <ClInclude Include="..\Include\EAF\EAFTestDialogSize.h" />
     <ClInclude Include="..\Include\EAF\EAFToolBar.h" />
     <ClInclude Include="..\Include\EAF\EAFTransaction.h" />
     <ClInclude Include="..\Include\EAF\EAFTransactions.h" />

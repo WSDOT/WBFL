@@ -87,6 +87,13 @@ m_strWindowPlacementFormat("%u,%u,%d,%d,%d,%d,%d,%d,%d,%d")
    m_bUseHelpWindow = TRUE;
    m_pHelpWindowThread = nullptr;
 
+#if defined _DEBUG
+   // enable dialog size checking in debug
+   // this will automatically alert developers of dialog boxes
+   // and property sheets exceed the maximum size per the UI design
+   CEAFSizeTestingDialog::CheckDialogSize();
+#endif
+
    m_bAutoSaveEnabled = TRUE;
    m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_ALL_ASPECTS;
    //m_nAutosaveInterval = 5/*minutes*/ * 60/*60seconds per minute*/ * 1000/*1000 milliseconds per second*/; // default is autosave every 5 minutes this is how you would change it
@@ -120,6 +127,11 @@ int CEAFApp::Run()
 
 BOOL CEAFApp::InitInstance()
 {
+   INITCOMMONCONTROLSEX common_controls;
+   common_controls.dwSize = sizeof(INITCOMMONCONTROLSEX);
+   common_controls.dwICC = ICC_STANDARD_CLASSES;
+   VERIFY(InitCommonControlsEx(&common_controls));
+
    if (!CWinApp::InitInstance())
    {
       return FALSE;
