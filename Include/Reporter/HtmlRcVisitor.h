@@ -118,6 +118,8 @@ public:
    void VisitRcSectionValue(rptRcSectionValue*);
    void VisitRcSectionScalar(rptRcSectionScalar*);
    void VisitRcStation(rptRcStation* pRC);
+   void VisitRcComposite(rptRcComposite*);
+
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

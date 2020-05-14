@@ -45,6 +45,7 @@
 #include <Reporter\RcSectionValue.h>
 #include <Reporter\RcSectionScalar.h>
 #include <Reporter\RcStation.h>
+#include <Reporter\RcComposite.h>
 
 // Private include files
 #include "HtmlUnitTagFormat.h"
@@ -759,6 +760,18 @@ void rptHtmlRcVisitor::VisitRcStation(rptRcStation* pRC)
 
    HyperEnd(pRC); // deal with hyperlinks
 }
+
+void rptHtmlRcVisitor::VisitRcComposite(rptRcComposite* pRC)
+{
+   rptRcComposite::ContentIterator it = pRC->Begin();
+   while (it != pRC->End())
+   {
+      (*it)->Accept(*this);
+
+      it++;
+   }
+}
+
 
 //======================== ACCESS     =======================================
 //======================== INQUIRY    =======================================

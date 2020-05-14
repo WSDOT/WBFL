@@ -854,6 +854,7 @@
     <ClCompile Include="Paragraph.cpp" />
     <ClCompile Include="ParagraphVisitor.cpp" />
     <ClCompile Include="RcColor.cpp" />
+    <ClCompile Include="RcComposite.cpp" />
     <ClCompile Include="RcDateTime.cpp" />
     <ClCompile Include="RcFlowModifier.cpp" />
     <ClCompile Include="RcFontModifier.cpp" />
@@ -908,6 +909,7 @@
     <ClInclude Include="..\Include\Reporter\Paragraph.h" />
     <ClInclude Include="..\Include\Reporter\ParagraphVisitor.h" />
     <ClInclude Include="..\Include\Reporter\RcColor.h" />
+    <ClInclude Include="..\Include\Reporter\RcComposite.h" />
     <ClInclude Include="..\Include\Reporter\RcDateTime.h" />
     <ClInclude Include="..\Include\Reporter\RcFlowModifier.h" />
     <ClInclude Include="..\Include\Reporter\RcFontModifier.h" />

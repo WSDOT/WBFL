@@ -56,6 +56,7 @@
 #include <Reporter\RcUnitValue.h>
 #include <Reporter\RcUnitValueT.h>
 #include <Reporter\RcUnsigned.h>
+#include <Reporter\RcComposite.h>
 #include <Reporter\RcImage.h>
 #include <Reporter\RcDateTime.h>
 #include <Reporter\PageLayout.h>

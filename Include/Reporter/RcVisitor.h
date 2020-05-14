@@ -58,6 +58,7 @@ class REPORTERCLASS rptRcUnitValue;
 class REPORTERCLASS rptRcSectionValue;
 class REPORTERCLASS rptRcSectionScalar;
 class REPORTERCLASS rptRcStation;
+class REPORTERCLASS rptRcComposite;
 
 // MISCELLANEOUS
 //
@@ -116,6 +117,7 @@ public:
    virtual void VisitRcSectionValue(rptRcSectionValue*) = 0;
    virtual void VisitRcSectionScalar(rptRcSectionScalar*) = 0;
    virtual void VisitRcStation(rptRcStation*) = 0;
+   virtual void VisitRcComposite(rptRcComposite*) = 0;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
