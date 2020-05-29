@@ -710,15 +710,20 @@ STDMETHODIMP CStrandPointModel::GetDebondingLocations(StrandType strandType, IDb
    CHECK_RETOBJ(arrLeft);
    CHECK_RETOBJ(arrRight);
 
-   std::array<CComPtr<IDblArray>,2> locations;
-   for (int i = 0; i < 2; i++)
+   std::array<CComPtr<IDblArray>, 2> locations;
+   locations[etStart].CoCreateInstance(CLSID_DblArray);
+   for (const auto& dbSection : m_DebondSections[etStart][strandType])
    {
-      EndType endType = (EndType)(i);
-      locations[endType].CoCreateInstance(CLSID_DblArray);
-      for (const auto& dbSection : m_DebondSections[endType][strandType])
-      {
-         locations[endType]->Add(dbSection.Z);
-      }
+      locations[etStart]->Add(dbSection.Z);
+   }
+
+   locations[etEnd].CoCreateInstance(CLSID_DblArray);
+   auto iter = m_DebondSections[etEnd][strandType].rbegin();
+   auto end = m_DebondSections[etEnd][strandType].rend();
+   for (; iter != end; iter++)
+   {
+      const auto& dbSection(*iter);
+      locations[etEnd]->Add(dbSection.Z);
    }
 
    locations[etStart].CopyTo(arrLeft);
@@ -769,7 +774,7 @@ STDMETHODIMP CStrandPointModel::get_StraightStrandDebondInRow(Float64 Xs, RowInd
       if (0 < strandRecord.Debond[etStart] || strandRecord.Debond[etEnd] < Lg)
       {
          // this strand has debonding
-         *nStrands++;
+         (*nStrands)++;
       }
    }
 
@@ -995,6 +1000,12 @@ HRESULT CStrandPointModel::AddStrand(StrandType strandType,Float64 X, Float64 Ys
       EndType endType = (EndType)(i);
       DebondSectionRecord dsRecord;
       dsRecord.Z = (endType == etStart ? debondLeft : debondRight);
+      if (IsZero(dsRecord.Z))
+      {
+         // the debonded length is zero meaning this strand is bonded at the current end
+         continue;
+      }
+
       auto found_dbSection = m_DebondSections[endType][strandType].find(dsRecord);
       if (found_dbSection == m_DebondSections[endType][strandType].end())
       {
