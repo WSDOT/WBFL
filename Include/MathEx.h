@@ -118,16 +118,16 @@ inline Float64 RoundOff(const Float64& a,Float64 accuracy)
       return IsZero(i) ? 0 : i;
    }
 }
-// Floor a to the specified accurarcy.
-inline Float64 FloorOff(const Float64& a,Float64 accuracy)
+// Floor a to the specified multiple.
+inline Float64 FloorOff(const Float64& a,Float64 multiple)
 {
-   ATLASSERT(0.0 < accuracy);
+   ATLASSERT(0.0 < multiple);
    if (a == Float64_Max || a == Float64_Inf)
    {
       return a;
    }
 
-   Float64 tst = (Float64)((long)(a/accuracy)*accuracy);
+   Float64 tst = (Float64)((long)(a/multiple)*multiple);
    if (tst == a)
    {
       return a;
@@ -138,27 +138,73 @@ inline Float64 FloorOff(const Float64& a,Float64 accuracy)
    }
    else
    {
-      return (Float64)((long)(a / accuracy - 1)*accuracy);
+      return (Float64)((long)(a / multiple - 1)*multiple);
    }
 }
 
-// Ceil a to the specified accurarcy.
-inline Float64 CeilOff(const Float64& a,Float64 accuracy)
+// Floor a to the specified multiple with a tolerance
+inline Float64 FloorOffTol(const Float64& a,Float64 multiple, Float64 tolerance = TOLERANCE)
 {
-   ATLASSERT(0.0 < accuracy);
+   ATLASSERT(0.0 < multiple);
    if (a == Float64_Max || a == Float64_Inf)
    {
       return a;
    }
 
-   Float64 tst = (Float64)((long)(a/accuracy)*accuracy);
+   Float64 tst = (Float64)((long)(a/multiple)*multiple);
+   if (IsEqual(tst, a, tolerance))
+   {
+      return a;
+   }
+   else if (0 <= a)
+   {
+      return tst;
+   }
+   else
+   {
+      return (Float64)((long)(a / multiple - 1)*multiple);
+   }
+}
+// Ceil a to the specified multiple.
+inline Float64 CeilOff(const Float64& a,Float64 multiple)
+{
+   ATLASSERT(0.0 < multiple);
+   if (a == Float64_Max || a == Float64_Inf)
+   {
+      return a;
+   }
+
+   Float64 tst = (Float64)((long)(a/multiple)*multiple);
    if (tst == a)
    {
       return a;
    }
    else if (0 < a)
    {
-      return (Float64)((long)(a / accuracy + 1)*accuracy);
+      return (Float64)((long)(a / multiple + 1)*multiple);
+   }
+   else
+   {
+      return tst;
+   }
+}
+// Ceil a to the specified multiple within a tolerance
+inline Float64 CeilOffTol(const Float64& a,Float64 multiple, Float64 tolerance = TOLERANCE)
+{
+   ATLASSERT(0.0 < multiple);
+   if (a == Float64_Max || a == Float64_Inf)
+   {
+      return a;
+   }
+
+   Float64 tst = (Float64)((long)(a/multiple)*multiple);
+   if (IsEqual(tst, a, tolerance))
+   {
+      return a;
+   }
+   else if (0 < a)
+   {
+      return (Float64)((long)(a / multiple + 1)*multiple);
    }
    else
    {
