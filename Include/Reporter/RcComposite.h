@@ -67,6 +67,11 @@ public:
    // Start with empty container
    rptRcComposite();
 
+   // constructor that takes count rptReportContent* arguements
+   // Example 
+   // *pPara << new rptRcComposite(3,color(Blue), new rptRcString(_T("Some Blue Text")), color(Black)) << rptNewLine;
+   rptRcComposite(int count, ...);
+
    //------------------------------------------------------------------------
    // Destructor
    virtual ~rptRcComposite();

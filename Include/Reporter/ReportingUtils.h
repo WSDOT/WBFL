@@ -122,4 +122,5 @@
 #define RPT_OFFSET(_value_,_um_) \
 _um_.SetValue(fabs(_value_)) << (::Sign(_value_) < 0 ? _T(" L") : (::Sign(_value_) > 0 ? _T(" R") : _T("")))
 
+
 #endif // INCLUDED_REPORTER_REPORTINGUTILS_H_

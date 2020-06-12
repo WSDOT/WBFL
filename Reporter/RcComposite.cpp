@@ -47,6 +47,18 @@ rptRcComposite::rptRcComposite()
 {
 }
 
+rptRcComposite::rptRcComposite(int count, ...)
+{
+   va_list args;
+   va_start(args, count);
+   for (int i = 0; i < count; i++)
+   {
+      rptReportContent* pRptContent = va_arg(args, rptReportContent*);
+      AddContent(pRptContent);
+   }
+   va_end(args);
+}
+
 rptRcComposite::ConstContentIterator rptRcComposite::ConstBegin() const
 {
    return m_ContentVec.cbegin();
