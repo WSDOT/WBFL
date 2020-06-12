@@ -213,7 +213,7 @@ LPCTSTR lrfdVersionMgr::GetVersionString(lrfdVersionMgr::Version version,bool bA
       return (bAbbreviated ? _T("AashtoLrfd2016") : _T("Seventh Edition 2014 with 2016 interim provisions"));
 
    case EighthEdition2017:
-      return (bAbbreviated ? _T("AashtoLrfd2017") : _T("Eighth Edition 2017"));
+      return (bAbbreviated ? _T("AashtoLrfd2017") : _T("8th Edition 2017"));
 
    default:
       ASSERT(false);
