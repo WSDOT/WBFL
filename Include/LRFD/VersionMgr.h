@@ -88,6 +88,8 @@ public:
                   SeventhEditionWith2015Interims = 20,
                   SeventhEditionWith2016Interims = 21,
                   EighthEdition2017              = 22,
+                  // AASHTO changed to a 3 year publication cycle, no interims
+                  NinthEdition2020               = 23,
                   LastVersion
    };
 
