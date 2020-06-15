@@ -116,13 +116,14 @@ public:
    STDMETHOD(get_MinTopFlangeThickness)(/*[out,retval]*/Float64* tf) override;
 	STDMETHOD(get_MinBottomFlangeThickness)(/*[out,retval]*/Float64* tf) override;
 	STDMETHOD(get_CL2ExteriorWebDistance)(/*[in]*/ DirectionType side, /*[out,retval]*/Float64* ww) override;
-   STDMETHOD(GetWebSections)(/*[out]*/IDblArray** ppY, /*[out]*/IDblArray** ppW,/*[out]*/IBstrArray** ppDesc) override;
 
 // IPrestressedGirderSection
 public:
    STDMETHOD(RemoveSacrificalDepth)(/*[in]*/Float64 sacDepth);
    STDMETHOD(get_SplittingZoneDimension)(/*[out,retval]*/Float64* pSZD) override;
    STDMETHOD(get_SplittingDirection)(/*[out,retval]*/SplittingDirection* pSD) override;
+   STDMETHOD(GetWebSections)(/*[out]*/IDblArray** ppY, /*[out]*/IDblArray** ppW,/*[out]*/IBstrArray** ppDesc) override;
+   STDMETHOD(GetWebWidthProjectionsForDebonding)(/*[out]*/IUnkArray** ppArray) override;
 
 // IShape
 public:

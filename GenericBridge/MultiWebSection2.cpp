@@ -505,6 +505,36 @@ STDMETHODIMP CMultiWebSection2::get_CL2ExteriorWebDistance(DirectionType side, F
    return S_OK;
 }
 
+
+STDMETHODIMP CMultiWebSection2::RemoveSacrificalDepth(Float64 sacDepth)
+{
+   Float64 H3;
+   m_Beam->get_H3(&H3);
+   ATLASSERT(sacDepth < H3);
+   H3 -= sacDepth;
+   m_Beam->put_H3(H3);
+   return S_OK;
+}
+
+STDMETHODIMP CMultiWebSection2::get_SplittingZoneDimension(Float64* pSZD)
+{
+   CHECK_RETVAL(pSZD);
+
+   Float64 h;
+   m_Beam->get_Height(&h);
+
+   *pSZD = h;
+
+   return S_OK;
+}
+
+STDMETHODIMP CMultiWebSection2::get_SplittingDirection(SplittingDirection* pSD)
+{
+   CHECK_RETVAL(pSD);
+   *pSD = sdVertical;
+   return S_OK;
+}
+
 STDMETHODIMP CMultiWebSection2::GetWebSections(IDblArray** ppY, IDblArray** ppW,IBstrArray** ppDesc)
 {
    Float64 H2, H3, F1, F2, T1, T2, T3, T4, T5;
@@ -563,35 +593,12 @@ STDMETHODIMP CMultiWebSection2::GetWebSections(IDblArray** ppY, IDblArray** ppW,
    return S_OK;
 }
 
-STDMETHODIMP CMultiWebSection2::RemoveSacrificalDepth(Float64 sacDepth)
+STDMETHODIMP CMultiWebSection2::GetWebWidthProjectionsForDebonding(IUnkArray** ppArray)
 {
-   Float64 H3;
-   m_Beam->get_H3(&H3);
-   ATLASSERT(sacDepth < H3);
-   H3 -= sacDepth;
-   m_Beam->put_H3(H3);
-   return S_OK;
+   // web width projections for debonding don't apply to this type of section
+   CHECK_RETOBJ(ppArray);
+   return S_FALSE;
 }
-
-STDMETHODIMP CMultiWebSection2::get_SplittingZoneDimension(Float64* pSZD)
-{
-   CHECK_RETVAL(pSZD);
-
-   Float64 h;
-   m_Beam->get_Height(&h);
-
-   *pSZD = h;
-
-   return S_OK;
-}
-
-STDMETHODIMP CMultiWebSection2::get_SplittingDirection(SplittingDirection* pSD)
-{
-   CHECK_RETVAL(pSD);
-   *pSD = sdVertical;
-   return S_OK;
-}
-
 
 ////////////////////////////////////////////////////////////////////////
 // IShape implementation

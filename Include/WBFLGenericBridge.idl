@@ -1932,8 +1932,6 @@ library WBFLGenericBridge
 	   // Distance from centerline of section to centerline of exterior web.
 	   // Note that the distance value is positive regardless of side
 	   [propget,helpstring("property CL2ExteriorWebDistance")] HRESULT CL2ExteriorWebDistance([in] DirectionType side, [out,retval]Float64* tf);
-
-      [helpstring("method GetWebSections")] HRESULT GetWebSections([out]IDblArray** ppY,[out]IDblArray** ppW,[out]IBstrArray** ppDesc);
    };
 
 	[
@@ -1943,12 +1941,14 @@ library WBFLGenericBridge
 		helpstring("IPrestressedGirderSection Interface"),
 		pointer_default(unique)
 	]
-	interface IPrestressedGirderSection : IGirderSection
-	{
+   interface IPrestressedGirderSection : IGirderSection
+   {
       [helpstring("method RemoveSacrificalDepth")] HRESULT RemoveSacrificalDepth([in]Float64 sacDepth);
-		[propget,helpstring("property SplittingZoneDimension")] HRESULT SplittingZoneDimension([out,retval]Float64* pSZD);
-      [propget,helpstring("property SplittingDirection")] HRESULT SplittingDirection([out,retval]SplittingDirection* pSD);
-	};
+      [propget, helpstring("property SplittingZoneDimension")] HRESULT SplittingZoneDimension([out, retval]Float64* pSZD);
+      [propget, helpstring("property SplittingDirection")] HRESULT SplittingDirection([out, retval]SplittingDirection* pSD);
+      [helpstring("method GetWebSections")] HRESULT GetWebSections([out]IDblArray** ppY, [out]IDblArray** ppW, [out]IBstrArray** ppDesc);
+      [helpstring("method GetWebWidthProjectionsForDebonding")] HRESULT GetWebWidthProjectionsForDebonding([out]IUnkArray** ppArray);
+   };
 
 	[
 	   object,

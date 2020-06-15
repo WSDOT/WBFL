@@ -472,6 +472,36 @@ STDMETHODIMP CDeckedSlabBeamSection::get_CL2ExteriorWebDistance( DirectionType s
    return S_OK;
 }
 
+STDMETHODIMP CDeckedSlabBeamSection::RemoveSacrificalDepth(Float64 sacDepth)
+{
+   Float64 Tt;
+   m_Beam->get_Tt(&Tt);
+   ATLASSERT(sacDepth < Tt);
+   Tt -= sacDepth;
+   m_Beam->put_Tt(Tt);
+   return S_OK;
+}
+
+STDMETHODIMP CDeckedSlabBeamSection::get_SplittingZoneDimension(Float64* pSZD)
+{
+   CHECK_RETVAL(pSZD);
+
+   Float64 A, B;
+   m_Beam->get_A(&A);
+   m_Beam->get_B(&B);
+
+   *pSZD = A - 2*B;
+
+   return S_OK;
+}
+
+STDMETHODIMP CDeckedSlabBeamSection::get_SplittingDirection(SplittingDirection* pSD)
+{
+   CHECK_RETVAL(pSD);
+   *pSD = sdHorizontal;
+   return S_OK;
+}
+
 STDMETHODIMP CDeckedSlabBeamSection::GetWebSections(IDblArray** ppY, IDblArray** ppW,IBstrArray** ppDesc)
 {
    Float64 C, Tt, Tb, W;
@@ -505,33 +535,37 @@ STDMETHODIMP CDeckedSlabBeamSection::GetWebSections(IDblArray** ppY, IDblArray**
    return S_OK;
 }
 
-STDMETHODIMP CDeckedSlabBeamSection::RemoveSacrificalDepth(Float64 sacDepth)
+STDMETHODIMP CDeckedSlabBeamSection::GetWebWidthProjectionsForDebonding(IUnkArray** ppArray)
 {
-   Float64 Tt;
-   m_Beam->get_Tt(&Tt);
-   ATLASSERT(sacDepth < Tt);
-   Tt -= sacDepth;
-   m_Beam->put_Tt(Tt);
-   return S_OK;
-}
+   CHECK_RETOBJ(ppArray);
 
-STDMETHODIMP CDeckedSlabBeamSection::get_SplittingZoneDimension(Float64* pSZD)
-{
-   CHECK_RETVAL(pSZD);
-
-   Float64 A, B;
+   Float64 A, B, C, Tt, Tb, W;
    m_Beam->get_A(&A);
    m_Beam->get_B(&B);
+   m_Beam->get_C(&C);
+   m_Beam->get_Tt(&Tt);
+   m_Beam->get_Tb(&Tb);
+   m_Beam->get_W(&W);
 
-   *pSZD = A - 2*B;
+   Float64 H = C + Tt;
 
-   return S_OK;
-}
+   Float64 edge = A / 2 - B;
 
-STDMETHODIMP CDeckedSlabBeamSection::get_SplittingDirection(SplittingDirection* pSD)
-{
-   CHECK_RETVAL(pSD);
-   *pSD = sdHorizontal;
+   CComPtr<IUnkArray> array;
+   array.CoCreateInstance(CLSID_UnkArray);
+
+   CComPtr<IRect2d> rect1;
+   rect1.CoCreateInstance(CLSID_Rect2d);
+   rect1->SetBounds(-edge, -edge + W, -H, -H + Tb);
+   array->Add(rect1);
+
+   CComPtr<IRect2d> rect2;
+   rect2.CoCreateInstance(CLSID_Rect2d);
+   rect2->SetBounds(edge - W, edge, -H, -H + Tb);
+   array->Add(rect2);
+
+   array.CopyTo(ppArray);
+
    return S_OK;
 }
 

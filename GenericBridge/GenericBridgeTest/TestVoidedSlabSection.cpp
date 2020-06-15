@@ -47,7 +47,7 @@ void CTestVoidedSlabSection::Test()
    beam->put_VoidCount(2);
    beam->put_VoidSpacing(36);
 
-   CComQIPtr<IGirderSection> section(beam_section);
+   CComQIPtr<IPrestressedGirderSection> section(beam_section);
 
    std::vector<std::pair<Float64, Float64>> vExpectedValues
    { 

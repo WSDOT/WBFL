@@ -51,7 +51,7 @@ void CTestVoidedSlabSection2::Test()
    beam->put_InteriorVoidElevation(12);
    beam->put_VoidCount(3);
 
-   CComQIPtr<IGirderSection> section(beam_section);
+   CComQIPtr<IPrestressedGirderSection> section(beam_section);
 
    std::vector<std::pair<Float64, Float64>> vExpectedValues
    { 

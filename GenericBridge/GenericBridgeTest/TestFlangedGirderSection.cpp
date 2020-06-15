@@ -47,7 +47,7 @@ void CTestFlangedGirderSection::Test()
    CComQIPtr<IPrecastBeam> beam(shape);
    beam_section->put_Beam(beam);
 
-   CComQIPtr<IGirderSection> section(beam_section);
+   CComQIPtr<IPrestressedGirderSection> section(beam_section);
 
    std::vector<std::pair<Float64, Float64>> vExpectedValues
    { 

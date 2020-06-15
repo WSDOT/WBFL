@@ -489,6 +489,36 @@ STDMETHODIMP CBoxBeamSection::get_CL2ExteriorWebDistance(DirectionType side, Flo
    return hr;
 }
 
+STDMETHODIMP CBoxBeamSection::RemoveSacrificalDepth(Float64 sacDepth)
+{
+   Float64 H1, H4;
+   m_Beam->get_H1(&H1);
+   m_Beam->get_H4(&H4);
+   ATLASSERT(sacDepth < H1);
+   ATLASSERT(sacDepth < H4);
+   H1 -= sacDepth;
+   H4 -= sacDepth;
+   m_Beam->put_H1(H1);
+   m_Beam->put_H4(H4);
+   return S_OK;
+}
+
+STDMETHODIMP CBoxBeamSection::get_SplittingZoneDimension(Float64* pSZD)
+{
+   CHECK_RETVAL(pSZD);
+   SplittingDirection sd;
+   GetSplittingZone(pSZD,&sd);
+   return S_OK;
+}
+
+STDMETHODIMP CBoxBeamSection::get_SplittingDirection(SplittingDirection* pSD)
+{
+   CHECK_RETVAL(pSD);
+   Float64 h;
+   GetSplittingZone(&h,pSD);
+   return S_OK;
+}
+
 STDMETHODIMP CBoxBeamSection::GetWebSections(IDblArray** ppY, IDblArray** ppW, IBstrArray** ppDesc)
 {
    Float64 W1, W2, W3, W4, H1, H2, H3, H4, H5, H6, H7, F1, F2;
@@ -698,33 +728,42 @@ STDMETHODIMP CBoxBeamSection::GetWebSections(IDblArray** ppY, IDblArray** ppW, I
    return S_OK;
 }
 
-STDMETHODIMP CBoxBeamSection::RemoveSacrificalDepth(Float64 sacDepth)
+STDMETHODIMP CBoxBeamSection::GetWebWidthProjectionsForDebonding(IUnkArray** ppArray)
 {
-   Float64 H1, H4;
+   CHECK_RETOBJ(ppArray);
+
+   Float64 W1, W2, W3, W4, H1, H2, H3, H4, H5, H6, H7, F1, F2;
+   m_Beam->get_W1(&W1);
+   m_Beam->get_W2(&W2);
+   m_Beam->get_W3(&W3);
+   m_Beam->get_W4(&W4);
    m_Beam->get_H1(&H1);
+   m_Beam->get_H2(&H2);
+   m_Beam->get_H3(&H3);
    m_Beam->get_H4(&H4);
-   ATLASSERT(sacDepth < H1);
-   ATLASSERT(sacDepth < H4);
-   H1 -= sacDepth;
-   H4 -= sacDepth;
-   m_Beam->put_H1(H1);
-   m_Beam->put_H4(H4);
-   return S_OK;
-}
+   m_Beam->get_H5(&H5);
+   m_Beam->get_H6(&H6);
+   m_Beam->get_H7(&H7);
+   m_Beam->get_F1(&F1);
+   m_Beam->get_F2(&F2);
 
-STDMETHODIMP CBoxBeamSection::get_SplittingZoneDimension(Float64* pSZD)
-{
-   CHECK_RETVAL(pSZD);
-   SplittingDirection sd;
-   GetSplittingZone(pSZD,&sd);
-   return S_OK;
-}
+   Float64 H = H1 + H2 + H3;
 
-STDMETHODIMP CBoxBeamSection::get_SplittingDirection(SplittingDirection* pSD)
-{
-   CHECK_RETVAL(pSD);
-   Float64 h;
-   GetSplittingZone(&h,pSD);
+   CComPtr<IUnkArray> array;
+   array.CoCreateInstance(CLSID_UnkArray);
+
+   CComPtr<IRect2d> rect1;
+   rect1.CoCreateInstance(CLSID_Rect2d);
+   rect1->SetBounds(-W3/2-W2, -W3/2, -H, -H+H3+F2/2);
+   array->Add(rect1);
+
+   CComPtr<IRect2d> rect2;
+   rect2.CoCreateInstance(CLSID_Rect2d);
+   rect2->SetBounds(W3 / 2, W3 / 2 + W2, -H, -H + H3 + F2 / 2);
+   array->Add(rect2);
+
+   array.CopyTo(ppArray);
+
    return S_OK;
 }
 

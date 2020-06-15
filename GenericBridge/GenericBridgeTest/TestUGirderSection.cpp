@@ -56,7 +56,7 @@ void CTestUGirderSection::Test()
    beam->put_W4(3);
    beam->put_W5(5);
 
-   CComQIPtr<IGirderSection> section(beam_section);
+   CComQIPtr<IPrestressedGirderSection> section(beam_section);
 
    std::vector<std::pair<Float64, Float64>> vExpectedValues
    { 

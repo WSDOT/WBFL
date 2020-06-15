@@ -78,6 +78,26 @@ public:
       return m_Beam->get_D4(tFlange);
    }
 
+   // IPrestressedGirderSection
+public:
+   STDMETHODIMP RemoveSacrificalDepth(Float64 sacDepth) override
+   {
+      ATLASSERT(false); // should never get here... the top flange is not a riding surface
+      return S_FALSE;
+   }
+
+   STDMETHODIMP get_SplittingZoneDimension(Float64* pSZD) override
+   {
+      return m_Beam->get_Height(pSZD);
+   }
+
+   STDMETHODIMP get_SplittingDirection(SplittingDirection* pSD) override
+   {
+      CHECK_RETVAL(pSD);
+      *pSD = sdVertical;
+      return S_OK;
+   }
+
    STDMETHODIMP GetWebSections(IDblArray** ppY, IDblArray** ppW,IBstrArray** ppDesc) override
    {
       Float64 D1, D2, D3, D4, D5, D6, D7, T1, T2, W1, W2, W3, W4;
@@ -150,23 +170,32 @@ public:
       return S_OK;
    }
 
-   // IPrestressedGirderSection
-public:
-   STDMETHODIMP RemoveSacrificalDepth(Float64 sacDepth) override
+   STDMETHODIMP GetWebWidthProjectionsForDebonding(IUnkArray** ppArray)
    {
-      ATLASSERT(false); // should never get here... the top flange is not a riding surface
-      return S_FALSE;
-   }
+      CHECK_RETOBJ(ppArray);
 
-   STDMETHODIMP get_SplittingZoneDimension(Float64* pSZD) override
-   {
-      return m_Beam->get_Height(pSZD);
-   }
+      Float64 D1, D2, D3, D4, D5, D6, D7, T2;
+      m_Beam->get_D1(&D1);
+      m_Beam->get_D2(&D2);
+      m_Beam->get_D3(&D3);
+      m_Beam->get_D4(&D4);
+      m_Beam->get_D5(&D5);
+      m_Beam->get_D6(&D6);
+      m_Beam->get_D7(&D7);
+      m_Beam->get_T2(&T2);
 
-   STDMETHODIMP get_SplittingDirection(SplittingDirection* pSD) override
-   {
-      CHECK_RETVAL(pSD);
-      *pSD = sdVertical;
+      Float64 H = D1 + D2 + D3 + D4 + D5 + D6 + D7;
+
+      CComPtr<IRect2d> rect;
+      rect.CoCreateInstance(CLSID_Rect2d);
+      rect->SetBounds(-T2 / 2, T2 / 2, -H, -H + D4 + D5 + D6);
+
+      CComPtr<IUnkArray> array;
+      array.CoCreateInstance(CLSID_UnkArray);
+
+      array->Add(rect);
+
+      array.CopyTo(ppArray);
       return S_OK;
    }
 };
@@ -212,78 +241,6 @@ public:
 
       // apply the rotation to the work point
       (*ppWorkPoint)->RotateEx(pntHookPoint, m_Rotation);
-
-      return S_OK;
-   }
-
-   STDMETHODIMP GetWebSections(IDblArray** ppY, IDblArray** ppW, IBstrArray** ppDesc) override
-   {
-      Float64 D1, D2, D3, D4, D5, D6, D7, T1, T2, W1, W2, W3, W4;
-      m_Beam->get_D1(&D1);
-      m_Beam->get_D2(&D2);
-      m_Beam->get_D3(&D3);
-      m_Beam->get_D4(&D4);
-      m_Beam->get_D5(&D5);
-      m_Beam->get_D6(&D6);
-      m_Beam->get_D7(&D7);
-      m_Beam->get_T1(&T1);
-      m_Beam->get_T2(&T2);
-      m_Beam->get_W1(&W1);
-      m_Beam->get_W2(&W2);
-      m_Beam->get_W3(&W3);
-      m_Beam->get_W4(&W4);
-
-      Float64 H = D1 + D2 + D3 + D4 + D5 + D6 + D7;
-
-      CComPtr<IDblArray> y;
-      y.CoCreateInstance(CLSID_DblArray);
-      y.CopyTo(ppY);
-
-      CComPtr<IDblArray> w;
-      w.CoCreateInstance(CLSID_DblArray);
-      w.CopyTo(ppW);
-
-      CComPtr<IBstrArray> desc;
-      desc.CoCreateInstance(CLSID_BstrArray);
-      desc.CopyTo(ppDesc);
-
-      // put values in a vector, then we can sort and eliminate duplicate values
-      std::vector<std::tuple<Float64, Float64, CComBSTR>> vWebSections;
-
-      if (IsZero(D3) && IsZero(W2))
-      {
-         vWebSections.emplace_back(-D1, T1 + 2 * (W1 + W2), _T("Top Flange"));
-      }
-
-      if (!IsZero(D3))
-      {
-         vWebSections.emplace_back(-(D1 + D2), T1 + 2 * W2, _T("Top Flange - Fillet"));
-      }
-
-      vWebSections.emplace_back(-(D1 + D2 + D3), T1, IsZero(D3) ? _T("Top Flange - Web") : _T("Top Fillet - Web"));
-      vWebSections.emplace_back(-H + D4 + D5 + D6, T2, IsZero(D6) ? _T("Bottom Flange - Web") : _T("Bottom Fillet - Web"));
-
-      if (!IsZero(D6))
-      {
-         vWebSections.emplace_back(-H + D4 + D5, T2 + 2 * W4, _T("Bottom Flange - Fillet"));
-      }
-
-      if (IsZero(D6) && IsZero(W4))
-      {
-         vWebSections.emplace_back(-H + D4, T2 + 2 * (W3 + W4), _T("Bottom Flange"));
-      }
-
-      // sort and remove duplicates at same elevation
-      std::sort(std::begin(vWebSections), std::end(vWebSections), std::greater<>());
-      auto new_end_iter = std::unique(std::begin(vWebSections), std::end(vWebSections), [](const auto& a, const auto& b) {return ::IsEqual(std::get<0>(a), std::get<0>(b)) && ::IsEqual(std::get<1>(a), std::get<1>(b)); });
-      vWebSections.erase(new_end_iter, std::end(vWebSections));
-
-      for (auto& webSection : vWebSections)
-      {
-         (*ppY)->Add(std::get<0>(webSection));
-         (*ppW)->Add(std::get<1>(webSection));
-         (*ppDesc)->Add(std::get<2>(webSection));
-      }
 
       return S_OK;
    }
@@ -616,6 +573,107 @@ public:
       *pSD = sdVertical;
       return S_OK;
    }
+
+   STDMETHODIMP GetWebSections(IDblArray** ppY, IDblArray** ppW, IBstrArray** ppDesc) override
+   {
+      Float64 D1, D2, D3, D4, D5, D6, D7, T1, T2, W1, W2, W3, W4;
+      m_Beam->get_D1(&D1);
+      m_Beam->get_D2(&D2);
+      m_Beam->get_D3(&D3);
+      m_Beam->get_D4(&D4);
+      m_Beam->get_D5(&D5);
+      m_Beam->get_D6(&D6);
+      m_Beam->get_D7(&D7);
+      m_Beam->get_T1(&T1);
+      m_Beam->get_T2(&T2);
+      m_Beam->get_W1(&W1);
+      m_Beam->get_W2(&W2);
+      m_Beam->get_W3(&W3);
+      m_Beam->get_W4(&W4);
+
+      Float64 H = D1 + D2 + D3 + D4 + D5 + D6 + D7;
+
+      CComPtr<IDblArray> y;
+      y.CoCreateInstance(CLSID_DblArray);
+      y.CopyTo(ppY);
+
+      CComPtr<IDblArray> w;
+      w.CoCreateInstance(CLSID_DblArray);
+      w.CopyTo(ppW);
+
+      CComPtr<IBstrArray> desc;
+      desc.CoCreateInstance(CLSID_BstrArray);
+      desc.CopyTo(ppDesc);
+
+      // put values in a vector, then we can sort and eliminate duplicate values
+      std::vector<std::tuple<Float64, Float64, CComBSTR>> vWebSections;
+
+      if (IsZero(D3) && IsZero(W2))
+      {
+         vWebSections.emplace_back(-D1, T1 + 2 * (W1 + W2), _T("Top Flange"));
+      }
+
+      if (!IsZero(D3))
+      {
+         vWebSections.emplace_back(-(D1 + D2), T1 + 2 * W2, _T("Top Flange - Fillet"));
+      }
+
+      vWebSections.emplace_back(-(D1 + D2 + D3), T1, IsZero(D3) ? _T("Top Flange - Web") : _T("Top Fillet - Web"));
+      vWebSections.emplace_back(-H + D4 + D5 + D6, T2, IsZero(D6) ? _T("Bottom Flange - Web") : _T("Bottom Fillet - Web"));
+
+      if (!IsZero(D6))
+      {
+         vWebSections.emplace_back(-H + D4 + D5, T2 + 2 * W4, _T("Bottom Flange - Fillet"));
+      }
+
+      if (IsZero(D6) && IsZero(W4))
+      {
+         vWebSections.emplace_back(-H + D4, T2 + 2 * (W3 + W4), _T("Bottom Flange"));
+      }
+
+      // sort and remove duplicates at same elevation
+      std::sort(std::begin(vWebSections), std::end(vWebSections), std::greater<>());
+      auto new_end_iter = std::unique(std::begin(vWebSections), std::end(vWebSections), [](const auto& a, const auto& b) {return ::IsEqual(std::get<0>(a), std::get<0>(b)) && ::IsEqual(std::get<1>(a), std::get<1>(b)); });
+      vWebSections.erase(new_end_iter, std::end(vWebSections));
+
+      for (auto& webSection : vWebSections)
+      {
+         (*ppY)->Add(std::get<0>(webSection));
+         (*ppW)->Add(std::get<1>(webSection));
+         (*ppDesc)->Add(std::get<2>(webSection));
+      }
+
+      return S_OK;
+   }
+
+   STDMETHODIMP GetWebWidthProjectionsForDebonding(IUnkArray** ppArray)
+   {
+      CHECK_RETOBJ(ppArray);
+
+      Float64 D1, D2, D3, D4, D5, D6, D7, T2;
+      m_Beam->get_D1(&D1);
+      m_Beam->get_D2(&D2);
+      m_Beam->get_D3(&D3);
+      m_Beam->get_D4(&D4);
+      m_Beam->get_D5(&D5);
+      m_Beam->get_D6(&D6);
+      m_Beam->get_D7(&D7);
+      m_Beam->get_T2(&T2);
+
+      Float64 H = D1 + D2 + D3 + D4 + D5 + D6 + D7;
+
+      CComPtr<IRect2d> rect;
+      rect.CoCreateInstance(CLSID_Rect2d);
+      rect->SetBounds(-T2 / 2, T2 / 2, -H, -H + D4 + D5 + D6);
+
+      CComPtr<IUnkArray> array;
+      array.CoCreateInstance(CLSID_UnkArray);
+
+      array->Add(rect);
+
+      array.CopyTo(ppArray);
+      return S_OK;
+   }
 };
 
 class CNUGirderSection : 
@@ -657,6 +715,26 @@ public:
       return m_Beam->get_D5(tFlange);
    }
 
+// IPrestressedGirderSection
+public:
+   STDMETHODIMP RemoveSacrificalDepth(Float64 sacDepth) override
+   {
+      ATLASSERT(false); // should never get here... the top flange is not a riding surface
+      return S_FALSE;
+   }
+
+   STDMETHODIMP get_SplittingZoneDimension(Float64* pSZD) override
+   {
+      return m_Beam->get_Height(pSZD);
+   }
+
+   STDMETHODIMP get_SplittingDirection(SplittingDirection* pSD) override
+   {
+      CHECK_RETVAL(pSD);
+      *pSD = sdVertical;
+      return S_OK;
+   }
+
    STDMETHODIMP GetWebSections(IDblArray** ppY, IDblArray** ppW, IBstrArray** ppDesc) override
    {
       Float64 D1, D2, D3, D4, D5, R1, R2, W1, W2, T;
@@ -685,36 +763,49 @@ public:
       desc.CoCreateInstance(CLSID_BstrArray);
       desc.CopyTo(ppDesc);
 
-      Float64 delta = atan2((W1 - T), 2*D2);
-      (*ppY)->Add(-(D1 + D2 + R1*tan(delta/2)));
+      Float64 delta = atan2((W1 - T), 2 * D2);
+      (*ppY)->Add(-(D1 + D2 + R1*tan(delta / 2)));
       (*ppW)->Add(T);
       (*ppDesc)->Add(CComBSTR(_T("Top Flange - Web")));
-   
+
       delta = atan2((W2 - T), 2 * D4);
-      (*ppY)->Add(-H + D4 + D5 + R2*tan(delta/2));
+      (*ppY)->Add(-H + D4 + D5 + R2*tan(delta / 2));
       (*ppW)->Add(T);
       (*ppDesc)->Add(CComBSTR(_T("Bottom Flange - Web")));
 
       return S_OK;
    }
 
-// IPrestressedGirderSection
-public:
-   STDMETHODIMP RemoveSacrificalDepth(Float64 sacDepth) override
+   STDMETHODIMP GetWebWidthProjectionsForDebonding(IUnkArray** ppArray)
    {
-      ATLASSERT(false); // should never get here... the top flange is not a riding surface
-      return S_FALSE;
-   }
+      CHECK_RETOBJ(ppArray);
 
-   STDMETHODIMP get_SplittingZoneDimension(Float64* pSZD) override
-   {
-      return m_Beam->get_Height(pSZD);
-   }
+      Float64 D1, D2, D3, D4, D5, R1, R2, W1, W2, T;
+      m_Beam->get_D1(&D1);
+      m_Beam->get_D2(&D2);
+      m_Beam->get_D3(&D3);
+      m_Beam->get_D4(&D4);
+      m_Beam->get_D5(&D5);
+      m_Beam->get_R1(&R1);
+      m_Beam->get_R2(&R2);
+      m_Beam->get_W1(&W1);
+      m_Beam->get_W2(&W2);
+      m_Beam->get_T(&T);
 
-   STDMETHODIMP get_SplittingDirection(SplittingDirection* pSD) override
-   {
-      CHECK_RETVAL(pSD);
-      *pSD = sdVertical;
+      Float64 H = D1 + D2 + D3 + D4 + D5;
+
+      Float64 delta = atan2((W2 - T), 2 * D4);
+
+      CComPtr<IRect2d> rect;
+      rect.CoCreateInstance(CLSID_Rect2d);
+      rect->SetBounds(-T / 2, T / 2, -H, -H + D4 + D5 + R2*tan(delta / 2));
+
+      CComPtr<IUnkArray> array;
+      array.CoCreateInstance(CLSID_UnkArray);
+
+      array->Add(rect);
+
+      array.CopyTo(ppArray);
       return S_OK;
    }
 };

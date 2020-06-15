@@ -61,7 +61,7 @@ void CTestBulbTeeGirderSection::Test()
    beam->put_n1(0.02);
    beam->put_n2(-0.02);
 
-   CComQIPtr<IGirderSection> section(beam_section);
+   CComQIPtr<IPrestressedGirderSection> section(beam_section);
 
    std::vector<std::pair<Float64, Float64>> vExpectedValues
    { 

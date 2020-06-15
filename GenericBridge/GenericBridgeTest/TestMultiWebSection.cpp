@@ -49,7 +49,7 @@ void CTestMultiWebSection::Test()
    beam->put_T2(6);
    beam->put_WebCount(3);
 
-   CComQIPtr<IGirderSection> section(beam_section);
+   CComQIPtr<IPrestressedGirderSection> section(beam_section);
 
    std::vector<std::pair<Float64, Float64>> vExpectedValues
    { 
