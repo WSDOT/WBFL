@@ -409,6 +409,9 @@ HRESULT CGirderLine::LocatePoints()
    m_PierPoint[etStart]->DistanceEx(m_BearingPoint[etStart],&m_BearingOffset[etStart]);
    m_PierPoint[etEnd]->DistanceEx(  m_BearingPoint[etEnd],  &m_BearingOffset[etEnd]);
 
+   // The end distance is longer than the girder... something is messed up with the bridge geometry
+   ATLASSERT(m_EndDistance[etStart] + m_EndDistance[etEnd] < m_GirderLength);
+
 
    CComPtr<IDirection> direction; // direction from end to pier point
    Float64 offset; // this is always a positive value because it is a distance
