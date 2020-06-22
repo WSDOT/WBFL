@@ -1514,5 +1514,10 @@ void CEAFDocument::OnCreateInitialize()
 void CEAFDocument::OnCreateFinalize()
 {
    IntegrateWithUI(TRUE);
+   // If the document is in an error state, present the status center to the user
+   if (m_pStatusCenter && m_pStatusCenter->GetSeverity() == eafTypes::statusError)
+   {
+      OnViewStatusCenter();
+   }
    OnStatusChanged();
 }

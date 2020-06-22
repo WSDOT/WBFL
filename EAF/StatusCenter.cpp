@@ -218,12 +218,20 @@ bool CEAFStatusCenter::RemoveByStatusGroupID(StatusGroupIDType id)
 
 CEAFStatusItem* CEAFStatusCenter::GetByID(StatusItemIDType id)
 {
-   Container::iterator itemIter(m_Items.begin());
-   Container::iterator itemIterEnd(m_Items.end());
-   for ( ; itemIter != itemIterEnd; itemIter++ )
+   for (auto* pItem : m_Items)
    {
-      CEAFStatusItem* pItem = *itemIter;
-      if ( pItem->GetID() == id )
+      if (pItem->GetID() == id)
+         return pItem;
+   }
+
+   return nullptr;
+}
+
+const CEAFStatusItem* CEAFStatusCenter::GetByID(StatusItemIDType id) const
+{
+   for(const auto* pItem : m_Items)
+   {
+      if (pItem->GetID() == id)
          return pItem;
    }
 
@@ -235,7 +243,7 @@ CEAFStatusItem* CEAFStatusCenter::GetByIndex(CollectionIndexType index)
    if ( m_Items.size() <= index )
       return nullptr;
 
-   Container::iterator iter = m_Items.begin();
+   auto iter = m_Items.begin();
    for ( CollectionIndexType i = 0; i < index; i++ )
    {
       iter ++;
@@ -244,21 +252,34 @@ CEAFStatusItem* CEAFStatusCenter::GetByIndex(CollectionIndexType index)
    return *iter;
 }
 
-CollectionIndexType CEAFStatusCenter::Count()
+const CEAFStatusItem* CEAFStatusCenter::GetByIndex(CollectionIndexType index) const
+{
+   if (m_Items.size() <= index)
+      return nullptr;
+
+   auto iter = m_Items.cbegin();
+   for (CollectionIndexType i = 0; i < index; i++)
+   {
+      iter++;
+   }
+
+   return *iter;
+}
+
+CollectionIndexType CEAFStatusCenter::Count() const
 {
    return m_Items.size();
 }
 
-eafTypes::StatusSeverityType CEAFStatusCenter::GetSeverity()
+eafTypes::StatusSeverityType CEAFStatusCenter::GetSeverity() const
 {
    eafTypes::StatusSeverityType severity = eafTypes::statusInformation;
 
-   Container::iterator itemIter(m_Items.begin());
-   Container::iterator itemIterEnd(m_Items.end());
-   for ( ; itemIter != itemIterEnd; itemIter++ )
+   for(const auto* pItem : m_Items)
    {
-      CEAFStatusItem* pItem = *itemIter;
       severity = Max(severity, GetSeverity(pItem->GetCallbackID()));
+      if (severity == eafTypes::statusError)
+         break; // serverity is at it's maximum level, no reason to continue the loop
    }
 
    return severity;
@@ -311,9 +332,9 @@ StatusCallbackIDType CEAFStatusCenter::RegisterCallbackItem(iStatusCallback* pCa
    return callbackID;
 }
 
-eafTypes::StatusSeverityType CEAFStatusCenter::GetSeverity(StatusCallbackIDType callbackID)
+eafTypes::StatusSeverityType CEAFStatusCenter::GetSeverity(StatusCallbackIDType callbackID) const
 {
-   iStatusCallback* pCallback = GetCallback(callbackID);
+   const iStatusCallback* pCallback = GetCallback(callbackID);
    if ( !pCallback )
       return eafTypes::statusInformation;
 
@@ -322,8 +343,17 @@ eafTypes::StatusSeverityType CEAFStatusCenter::GetSeverity(StatusCallbackIDType 
 
 iStatusCallback* CEAFStatusCenter::GetCallback(StatusCallbackIDType callbackID)
 {
-   Callbacks::iterator found = m_Callbacks.find(callbackID);
+   auto found = m_Callbacks.find(callbackID);
    if ( found == m_Callbacks.end() )
+      return nullptr;
+
+   return (*found).second;
+}
+
+const iStatusCallback* CEAFStatusCenter::GetCallback(StatusCallbackIDType callbackID) const
+{
+   auto found = m_Callbacks.find(callbackID);
+   if (found == m_Callbacks.end())
       return nullptr;
 
    return (*found).second;

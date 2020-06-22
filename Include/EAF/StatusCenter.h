@@ -57,13 +57,15 @@ public:
    bool RemoveByIndex(CollectionIndexType index);
    bool RemoveByStatusGroupID(StatusGroupIDType id);
    CEAFStatusItem* GetByID(StatusItemIDType id);
+   const CEAFStatusItem* GetByID(StatusItemIDType id) const;
    CEAFStatusItem* GetByIndex(CollectionIndexType index);
-   CollectionIndexType Count();
+   const CEAFStatusItem* GetByIndex(CollectionIndexType index) const;
+   CollectionIndexType Count() const;
 
-   eafTypes::StatusSeverityType GetSeverity();
+   eafTypes::StatusSeverityType GetSeverity() const;
 
    StatusCallbackIDType RegisterCallbackItem(iStatusCallback* pCallback);
-   eafTypes::StatusSeverityType GetSeverity(StatusCallbackIDType callbackID);
+   eafTypes::StatusSeverityType GetSeverity(StatusCallbackIDType callbackID) const;
 
    void EditItem(StatusItemIDType id);
 
@@ -87,6 +89,7 @@ private:
    Callbacks m_Callbacks;
 
    iStatusCallback* GetCallback(StatusCallbackIDType callbackID);
+   const iStatusCallback* GetCallback(StatusCallbackIDType callbackID) const;
 
    void NotifyAdded(CEAFStatusItem* pNewItem);
    void NotifyRemoved(StatusItemIDType id);

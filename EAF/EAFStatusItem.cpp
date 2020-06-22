@@ -84,7 +84,7 @@ m_Severity(severity), m_strDocSetName(lpszDocSetName),m_HelpID(helpID)
 {
 }
 
-eafTypes::StatusSeverityType CEAFStatusItemCallback::GetSeverity()
+eafTypes::StatusSeverityType CEAFStatusItemCallback::GetSeverity() const
 {
    return m_Severity;
 }

@@ -30,7 +30,7 @@ class CEAFStatusItem;
 
 interface iStatusCallback
 {
-   virtual eafTypes::StatusSeverityType GetSeverity() = 0;
+   virtual eafTypes::StatusSeverityType GetSeverity() const = 0;
    virtual void Execute(CEAFStatusItem* pItem) = 0;
 };
 
@@ -98,7 +98,7 @@ class EAFCLASS CEAFStatusItemCallback : public iStatusCallback
 {
 public:
    CEAFStatusItemCallback(eafTypes::StatusSeverityType severity,LPCTSTR lpszDocSetName=nullptr,UINT helpID=0);
-   virtual eafTypes::StatusSeverityType GetSeverity();
+   virtual eafTypes::StatusSeverityType GetSeverity() const;
    virtual void Execute(CEAFStatusItem* pItem);
 
 private:
