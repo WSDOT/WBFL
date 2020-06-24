@@ -225,6 +225,8 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
 
    RowIndexType num_head_rows = pTable->GetNumberOfHeaderRows();
 
+   rptFontStyleLibrary* plib = rptFontStyleLibrary::Instance();
+
    bool bHeading = false;
    for (RowIndexType rowno = 0; rowno<num_rows; rowno++)
    {
@@ -261,8 +263,7 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
             rptParagraph& rpar = (*pTable)(rowno,colno);
 
             std::_tstring styleName = rpar.GetStyleName();
-            rptFontStyleLibrary* plib = rptFontStyleLibrary::Instance();
-            rptRiStyle style = plib->GetNamedStyle(styleName);
+            rptRiStyle& style = plib->GetNamedStyle(styleName);
             rptRiStyle::AlignmentType align = style.GetAlignment();
             rptRiStyle::VerticalAlignmentType valign = style.GetVerticalAlignment();
             std::_tstring strAlign;
