@@ -39,7 +39,7 @@ public:
 class StatusItemCompare
 {
 public:
-   bool operator()(CEAFStatusItem* a,CEAFStatusItem* b);
+   bool operator()(const std::shared_ptr<CEAFStatusItem>& a, const std::shared_ptr<CEAFStatusItem>& b);
 };
 
 class EAFCLASS CEAFStatusCenter
@@ -79,17 +79,17 @@ private:
    StatusCallbackIDType m_NextCallbackID;
    CEAFStatusItem* m_pCurrentItem;
 
-   typedef std::set<CEAFStatusItem*,StatusItemCompare> Container;
+   typedef std::set<std::shared_ptr<CEAFStatusItem>,StatusItemCompare> Container;
    Container m_Items;
 
    typedef std::set<IEAFStatusCenterEventSink*> Sinks;
    Sinks m_Sinks;
 
-   typedef std::map<StatusCallbackIDType,iStatusCallback*> Callbacks;
+   typedef std::map<StatusCallbackIDType,std::shared_ptr<iStatusCallback>> Callbacks;
    Callbacks m_Callbacks;
 
-   iStatusCallback* GetCallback(StatusCallbackIDType callbackID);
-   const iStatusCallback* GetCallback(StatusCallbackIDType callbackID) const;
+   std::shared_ptr<iStatusCallback> GetCallback(StatusCallbackIDType callbackID);
+   const std::shared_ptr<iStatusCallback> GetCallback(StatusCallbackIDType callbackID) const;
 
    void NotifyAdded(CEAFStatusItem* pNewItem);
    void NotifyRemoved(StatusItemIDType id);

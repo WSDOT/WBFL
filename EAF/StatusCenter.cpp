@@ -30,12 +30,12 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-bool StatusItemCompare::operator()(CEAFStatusItem* a,CEAFStatusItem* b)
+bool StatusItemCompare::operator()(const std::shared_ptr<CEAFStatusItem>& a, const std::shared_ptr<CEAFStatusItem>& b)
 {
    // Use a simple string compare with message. Older versions (pre Jan 2019) tried to get tricky
    // and use IsEqual, but this caused unexpected issues with the strict weak ordering
    // requirements of std::set. One issue was duplicate issues in the status center
-   int st = a->CompareDescriptions(b);
+   int st = a->CompareDescriptions(b.get());
 
 #ifdef _DEBUG
    if (st == 0)
@@ -61,23 +61,6 @@ CEAFStatusCenter::CEAFStatusCenter()
 
 CEAFStatusCenter::~CEAFStatusCenter()
 {
-   Container::iterator itemIter(m_Items.begin());
-   Container::iterator itemIterEnd(m_Items.end());
-   for ( ; itemIter != itemIterEnd; itemIter++ )
-   {
-      CEAFStatusItem* pItem = *itemIter;
-      delete pItem;
-      pItem = nullptr;
-   }
-
-   Callbacks::iterator callbackIter(m_Callbacks.begin());
-   Callbacks::iterator callbackIterEnd(m_Callbacks.end());
-   for ( ; callbackIter != callbackIterEnd; callbackIter++ )
-   {
-      iStatusCallback* pCallback = (*callbackIter).second;
-      delete pCallback;
-      (*callbackIter).second = nullptr;
-   }
 }
 
 bool CEAFStatusCenter::IsEnabled() const
@@ -106,22 +89,15 @@ StatusItemIDType CEAFStatusCenter::Add(CEAFStatusItem* pItem)
    ASSERT( found != m_Callbacks.end() );
 #endif // _DEBUG
 
-   pItem->SetID(m_NextID++);
 
-   std::pair<Container::iterator,bool> result;
-   result = m_Items.insert(pItem);
+   auto result = m_Items.emplace(pItem);
 
    if ( result.second == true )
    {
+      pItem->SetID(m_NextID++);
       NotifyAdded(pItem);
       return pItem->GetID();
    }
-   else
-   {
-      delete pItem;
-      pItem = nullptr;
-   }
-
    return INVALID_ID; // failed
 }
 
@@ -131,11 +107,9 @@ bool CEAFStatusCenter::RemoveByID(StatusItemIDType id)
    Container::iterator itemIterEnd(m_Items.end());
    for ( ; itemIter != itemIterEnd; itemIter++ )
    {
-      CEAFStatusItem* pItem = *itemIter;
-      if ( pItem->GetID() == id && m_pCurrentItem != pItem )
+      auto pItem = *itemIter;
+      if ( pItem->GetID() == id && m_pCurrentItem != pItem.get() )
       {
-         delete pItem;
-         pItem = nullptr;
          m_Items.erase(itemIter);
          NotifyRemoved(id);
          return true;
@@ -160,12 +134,10 @@ bool CEAFStatusCenter::RemoveByIndex(CollectionIndexType index)
       iter++;
    }
 
-   CEAFStatusItem* pItem = *iter;
-   if ( m_pCurrentItem != pItem )
+   auto pItem = *iter;
+   if ( m_pCurrentItem != pItem.get() )
    {
       StatusItemIDType id = pItem->GetID();
-      delete pItem;
-      pItem = nullptr;
       m_Items.erase(iter);
       NotifyRemoved(id);
       return true;
@@ -190,14 +162,12 @@ bool CEAFStatusCenter::RemoveByStatusGroupID(StatusGroupIDType id)
    Container::iterator itemIterEnd(items.end());
    for ( ; itemIter != itemIterEnd; itemIter++ )
    {
-      CEAFStatusItem* pItem = *itemIter;
+      auto pItem = *itemIter;
       if ( pItem->GetStatusGroupID() == id )
       {
-         if ( m_pCurrentItem != pItem )
+         if ( m_pCurrentItem != pItem.get() )
          {
             StatusItemIDType itemID = pItem->GetID();
-            delete pItem;
-            pItem = nullptr;
             NotifyRemoved(itemID);
             bItemsRemoved = true;
          }
@@ -218,10 +188,10 @@ bool CEAFStatusCenter::RemoveByStatusGroupID(StatusGroupIDType id)
 
 CEAFStatusItem* CEAFStatusCenter::GetByID(StatusItemIDType id)
 {
-   for (auto* pItem : m_Items)
+   for (auto pItem : m_Items)
    {
       if (pItem->GetID() == id)
-         return pItem;
+         return pItem.get();
    }
 
    return nullptr;
@@ -229,10 +199,10 @@ CEAFStatusItem* CEAFStatusCenter::GetByID(StatusItemIDType id)
 
 const CEAFStatusItem* CEAFStatusCenter::GetByID(StatusItemIDType id) const
 {
-   for(const auto* pItem : m_Items)
+   for(const auto pItem : m_Items)
    {
       if (pItem->GetID() == id)
-         return pItem;
+         return pItem.get();
    }
 
    return nullptr;
@@ -246,10 +216,10 @@ CEAFStatusItem* CEAFStatusCenter::GetByIndex(CollectionIndexType index)
    auto iter = m_Items.begin();
    for ( CollectionIndexType i = 0; i < index; i++ )
    {
-      iter ++;
+      iter++;
    }
 
-   return *iter;
+   return iter->get();
 }
 
 const CEAFStatusItem* CEAFStatusCenter::GetByIndex(CollectionIndexType index) const
@@ -263,7 +233,7 @@ const CEAFStatusItem* CEAFStatusCenter::GetByIndex(CollectionIndexType index) co
       iter++;
    }
 
-   return *iter;
+   return iter->get();
 }
 
 CollectionIndexType CEAFStatusCenter::Count() const
@@ -275,7 +245,7 @@ eafTypes::StatusSeverityType CEAFStatusCenter::GetSeverity() const
 {
    eafTypes::StatusSeverityType severity = eafTypes::statusInformation;
 
-   for(const auto* pItem : m_Items)
+   for(const auto pItem : m_Items)
    {
       severity = Max(severity, GetSeverity(pItem->GetCallbackID()));
       if (severity == eafTypes::statusError)
@@ -328,29 +298,29 @@ void CEAFStatusCenter::NotifyRemoved(StatusItemIDType id)
 StatusCallbackIDType CEAFStatusCenter::RegisterCallbackItem(iStatusCallback* pCallback)
 {
    StatusCallbackIDType callbackID = m_NextCallbackID++;
-   m_Callbacks.insert(std::make_pair(callbackID,pCallback));
+   m_Callbacks.emplace(callbackID,pCallback);
    return callbackID;
 }
 
 eafTypes::StatusSeverityType CEAFStatusCenter::GetSeverity(StatusCallbackIDType callbackID) const
 {
-   const iStatusCallback* pCallback = GetCallback(callbackID);
+   const auto pCallback = GetCallback(callbackID);
    if ( !pCallback )
       return eafTypes::statusInformation;
 
    return pCallback->GetSeverity();
 }
 
-iStatusCallback* CEAFStatusCenter::GetCallback(StatusCallbackIDType callbackID)
+std::shared_ptr<iStatusCallback> CEAFStatusCenter::GetCallback(StatusCallbackIDType callbackID)
 {
    auto found = m_Callbacks.find(callbackID);
-   if ( found == m_Callbacks.end() )
+   if (found == m_Callbacks.end())
       return nullptr;
 
    return (*found).second;
 }
 
-const iStatusCallback* CEAFStatusCenter::GetCallback(StatusCallbackIDType callbackID) const
+const std::shared_ptr<iStatusCallback> CEAFStatusCenter::GetCallback(StatusCallbackIDType callbackID) const
 {
    auto found = m_Callbacks.find(callbackID);
    if (found == m_Callbacks.end())
@@ -368,7 +338,7 @@ void CEAFStatusCenter::EditItem(StatusItemIDType id)
    ASSERT(pItem != nullptr);
 
    StatusCallbackIDType callbackID = pItem->GetCallbackID();
-   iStatusCallback* pCallback = GetCallback(callbackID);
+   auto pCallback = GetCallback(callbackID);
    ASSERT(pCallback != nullptr);
 
    if ( pCallback )
