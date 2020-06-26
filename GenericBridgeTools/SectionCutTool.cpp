@@ -2352,63 +2352,63 @@ HRESULT CSectionCutTool::CreateBridgeDeckSection(IGenericBridge* bridge,Float64 
    (*deckitem) = nullptr;
    CComPtr<IBridgeDeck> deck;
    bridge->get_Deck(&deck);
-   if ( deck )
+   if (deck)
    {
       VARIANT_BOOL vbIsComposite;
       deck->get_Composite(&vbIsComposite);
 
-      if ( vbIsComposite == VARIANT_TRUE )
+      if (vbIsComposite == VARIANT_TRUE)
       {
          // deck is composite so it is part of the structural section
          CComPtr<IDeckBoundary> deckBoundary;
          deck->get_DeckBoundary(&deckBoundary);
 
          CComPtr<IPath> leftPath, rightPath;
-         deckBoundary->get_EdgePath(stLeft,VARIANT_TRUE,&leftPath);
-         deckBoundary->get_EdgePath(stRight,VARIANT_TRUE,&rightPath);
+         deckBoundary->get_EdgePath(stLeft, VARIANT_TRUE, &leftPath);
+         deckBoundary->get_EdgePath(stRight, VARIANT_TRUE, &rightPath);
 
-         Float64 station = DistanceToStation(bridge,Xb);
+         Float64 station = DistanceToStation(bridge, Xb);
 
          CComPtr<IAlignment> alignment;
          bridge->get_Alignment(&alignment);
 
          CComPtr<IDirection> normal;
-         alignment->Normal(CComVariant(station),&normal);
-
-         Float64 dir;
-         normal->get_Value(&dir);
-
-         CComPtr<ILine2d> line;
-         line.CoCreateInstance(CLSID_Line2d);
-
-         CComPtr<IVector2d> v;
-         CComPtr<IPoint2d> p;
-         line->GetExplicit(&p,&v);
-         v->put_Direction(dir);
-         line->SetExplicit(p,v);
+         alignment->Normal(CComVariant(station), &normal);
 
          CComPtr<IPoint2d> pntAlignment;
-         alignment->LocatePoint(CComVariant(station),omtNormal,0.0,CComVariant(normal),&pntAlignment);
+         alignment->LocatePoint(CComVariant(station), omtNormal, 0.0, CComVariant(normal), &pntAlignment);
 
+         // create a line normal to the alignment
+         CComPtr<ILine2d> line;
+         line.CoCreateInstance(CLSID_Line2d);
+         CComPtr<IVector2d> v;
+         CComPtr<IPoint2d> p;
+         line->GetExplicit(&p, &v);
+         Float64 dir;
+         normal->get_Value(&dir);
+         v->put_Direction(dir);
+         line->SetExplicit(pntAlignment, v);
+
+         // intersect the line with the left and right edge paths... we want the point closest to the alignment
          CComPtr<IPoint2d> pntLeft, pntRight;
-         leftPath->Intersect(line,pntAlignment,&pntLeft);
-         rightPath->Intersect(line,pntAlignment,&pntRight);
+         leftPath->Intersect(line, pntAlignment, &pntLeft);
+         rightPath->Intersect(line, pntAlignment, &pntRight);
 
          // get slab depth and width
          Float64 ttl_width;
-         pntLeft->DistanceEx(pntRight,&ttl_width);
+         pntLeft->DistanceEx(pntRight, &ttl_width);
 
          Float64 depth;
          deck->get_StructuralDepth(&depth);
 
          CComPtr<IRectangle> rect;
          rect.CoCreateInstance(CLSID_Rect);
-         rect->put_Width( ttl_width );
-         rect->put_Height( depth );
+         rect->put_Width(ttl_width);
+         rect->put_Height(depth);
 
          CComPtr<IPoint2d> hp;
          rect->get_HookPoint(&hp);
-         hp->put_Y(elevBottomDeck + depth/2);
+         hp->put_Y(elevBottomDeck + depth / 2);
 
          CComPtr<ICompositeSectionItemEx> csi;
          csi.CoCreateInstance(CLSID_CompositeSectionItemEx);
@@ -2421,8 +2421,8 @@ HRESULT CSectionCutTool::CreateBridgeDeckSection(IGenericBridge* bridge,Float64 
          ATLASSERT(SUCCEEDED(hr)); // if this asserts, then the casting region model may be wrong
 
          Float64 E, density;
-         material->get_E(stageIdx,&E);
-         material->get_Density(stageIdx,&density);
+         material->get_E(stageIdx, &E);
+         material->get_Density(stageIdx, &density);
 
          csi->put_Efg(E);
          csi->put_Ebg(0);
