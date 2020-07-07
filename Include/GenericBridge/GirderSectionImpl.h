@@ -51,7 +51,11 @@ public:
    HRESULT FinalConstruct()
    {
       m_CompositeShape.CoCreateInstance(CLSID_CompositeShape);
-      m_Beam.CoCreateInstance(*pbeamclsid);
+      HRESULT hr = m_Beam.CoCreateInstance(*pbeamclsid);
+      if (FAILED(hr))
+      {
+         CreateBeam(&m_Beam);
+      }
 
       CComQIPtr<IShape> beamShape(m_Beam);
       ATLASSERT(beamShape != nullptr); // must implement IShape interface
@@ -66,13 +70,18 @@ public:
       return S_OK;
    }
 
+   virtual HRESULT CreateBeam(_IBEAM_** ppBeam)
+   {
+      return E_FAIL;
+   }
+
 
    //DECLARE_REGISTRY_RESOURCEID(IDR_FLANGEDBEAM)
 
    DECLARE_PROTECT_FINAL_CONSTRUCT()
 
    BEGIN_COM_MAP(C)
-      COM_INTERFACE_ENTRY(_ISECTION_)
+      COM_INTERFACE_ENTRY_IID(*piid,_ISECTION_)
       COM_INTERFACE_ENTRY(IGirderSection)
       COM_INTERFACE_ENTRY(IPrestressedGirderSection)
       COM_INTERFACE_ENTRY(IShape)

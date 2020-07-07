@@ -29,7 +29,7 @@
 #define INCLUDED_GIRDERSECTIONS_H_
 
 #include "resource.h"       // main symbols
-#include "GirderSectionImpl.h"
+#include <GenericBridge\GirderSectionImpl.h>
 #include <xutility>
 #include <algorithm>
 #include <functional>
@@ -205,12 +205,14 @@ typedef CGirderSectionImpl<CBulbTeeSection, &CLSID_BulbTeeSection, IBulbTeeSecti
 class CBulbTeeSection : 
    public CBulbTeeSectionBase,
    public IAsymmetricSection,
-   public IFlangePoints
+   public IFlangePoints,
+   public IFlangedDeckedSection
 {
 BEGIN_COM_MAP(CBulbTeeSection)
    COM_INTERFACE_ENTRY(IAsymmetricSection)
    COM_INTERFACE_ENTRY(IJointedSection)
    COM_INTERFACE_ENTRY(IFlangePoints)
+   COM_INTERFACE_ENTRY(IFlangedDeckedSection)
    COM_INTERFACE_ENTRY_CHAIN(CBulbTeeSectionBase)
 END_COM_MAP()
 
@@ -646,7 +648,7 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP GetWebWidthProjectionsForDebonding(IUnkArray** ppArray)
+   STDMETHODIMP GetWebWidthProjectionsForDebonding(IUnkArray** ppArray) override
    {
       CHECK_RETOBJ(ppArray);
 
@@ -674,6 +676,46 @@ public:
       array.CopyTo(ppArray);
       return S_OK;
    }
+
+   // IFlangedDeckedSection
+   STDMETHODIMP GetOverhangs(Float64* pLeft, Float64* pRight)
+   {
+      m_Beam->get_W5(pLeft);
+      m_Beam->get_W6(pRight);
+      return S_OK;
+   }
+   STDMETHODIMP GetCrown(Float64* pC) override
+   {
+      return m_Beam->get_C2(pC);
+   }
+   STDMETHODIMP GetCrownSlopes(Float64* pLeft, Float64* pRight) override
+   {
+      m_Beam->get_n1(pLeft);
+      m_Beam->get_n2(pRight);
+      return S_OK;
+   }
+   STDMETHODIMP GetMaxHeight(Float64* pH) override
+   {
+      return m_Beam->get_MaxHeight(pH);
+   }
+   STDMETHODIMP GetCLHeight(Float64* pCL) override
+   {
+      return m_Beam->get_CLHeight(pCL);
+   }
+   STDMETHODIMP GetBottomCLPoint(IPoint2d** ppPoint) override
+   {
+      CHECK_RETOBJ(ppPoint);
+      return m_Beam->get_HookPoint(ppPoint);
+   }
+   STDMETHODIMP AddTopFlangeThickening(Float64 topFlangeThickening) override
+   {
+      Float64 D1;
+      m_Beam->get_D1(&D1);
+      D1 += topFlangeThickening;
+      m_Beam->put_D1(D1);
+      return S_OK;
+   }
+
 };
 
 class CNUGirderSection : 

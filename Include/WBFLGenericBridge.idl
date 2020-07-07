@@ -1590,6 +1590,23 @@ library WBFLGenericBridge
 	   [propget,helpstring("property Beam")] HRESULT Beam([out,retval]IBulbTee2** beam);
    };
 
+   [
+      object,
+      uuid(A9F6043C-AD27-423B-A342-6A16A3E32B5C),
+      oleautomation,
+      helpstring("IFlangedDeckedSection Interface"),
+      pointer_default(unique)
+   ]
+   interface IFlangedDeckedSection : IUnknown
+   {
+      [helpstring("method GetOverhangs")] HRESULT GetOverhangs([out]Float64* pLeft, [out]Float64* pRight);
+      [helpstring("method GetCrown")] HRESULT GetCrown([out]Float64* pC);
+      [helpstring("method GetCrownSlopes")] HRESULT GetCrownSlopes([out]Float64* pLeft, [out]Float64* pRight);
+      [helpstring("method GetMaxHeight")] HRESULT GetMaxHeight([out]Float64* pH);
+      [helpstring("method GetCLHeight")] HRESULT GetCLHeight([out]Float64* pCL);
+      [helpstring("method GetBottomCLPoint")] HRESULT GetBottomCLPoint([out]IPoint2d** ppPoint);
+      [helpstring("method AddTopFlangeThickening")] HRESULT AddTopFlangeThickening([in]Float64 topFlangeThickening);
+   };
 
    [
       object,

@@ -282,9 +282,6 @@
     <ClInclude Include="GenericBridgeImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GirderSectionImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GirderSections.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -436,6 +433,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CastingRegions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\GenericBridge\GirderSectionImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

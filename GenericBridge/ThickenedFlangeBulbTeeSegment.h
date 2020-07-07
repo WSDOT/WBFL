@@ -175,7 +175,7 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 
 private:
-   HRESULT AdjustPosition(Float64 Xs, IBulbTee2* pBeam);
-   HRESULT CreateJointShapes(Float64 Xs, IBulbTeeSection* pSection, SectionCoordinateSystemType coordinateSystem, IShape** ppLeftJoint, IShape** ppRightJoint);
+   HRESULT AdjustPosition(Float64 Xs, IFlangedDeckedSection* pSection);
+   HRESULT CreateJointShapes(Float64 Xs, IFlangedDeckedSection* pSection, SectionCoordinateSystemType coordinateSystem, IShape** ppLeftJoint, IShape** ppRightJoint);
 };
 
