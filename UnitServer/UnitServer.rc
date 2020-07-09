@@ -51,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 5,0,2,0
- PRODUCTVERSION 5,0,2,0
+ FILEVERSION 5,0,3,0
+ PRODUCTVERSION 5,0,3,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -70,12 +70,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "WBFL Unit Server"
-            VALUE "FileVersion", "5.0.2.0"
+            VALUE "FileVersion", "5.0.3.0"
             VALUE "InternalName", "WBFL UnitServer"
             VALUE "LegalCopyright", "Copyright © 1999-2020, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "UnitServer.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "5.0.2.0"
+            VALUE "ProductVersion", "5.0.3.0"
         END
     END
     BLOCK "VarFileInfo"
