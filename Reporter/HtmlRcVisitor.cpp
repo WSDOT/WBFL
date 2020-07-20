@@ -540,13 +540,20 @@ void rptHtmlRcVisitor::VisitRcSymbol(rptRcSymbol* pSymbol)
 
    // return if symbol is none
    if (sym == rptRcSymbol::NONE)
+   {
       return;
+   }
+   else if (sym == rptRcSymbol::NBSP)
+   {
+      *m_pOstream << _T("&nbsp;");
+   }
+   else
+   {
+      // get the roman equivalent for the symbol
+      TCHAR symlet = GetRomanForGreek(sym);
 
-   // get the roman equivalent for the symbol
-
-   TCHAR symlet = GetRomanForGreek(sym);
-
-   *m_pOstream << _T("<SPAN STYLE=\"font-family: Symbol\">") << (TCHAR)symlet << _T("</SPAN>");
+      *m_pOstream << _T("<SPAN STYLE=\"font-family: Symbol\">") << (TCHAR)symlet << _T("</SPAN>");
+   }
 }
 
 //------------------------------------------------------------------------
