@@ -353,12 +353,6 @@ BOOL CEAFMainFrame::PreTranslateMessage(MSG* pMsg)
    
 	if ( WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST )
    {
-      // this is a little hack to get the accelerator keys translated when the shift, alt (menu), or control key is pressed
-      if ( pMsg->message == WM_KEYUP && (::GetKeyState(VK_SHIFT) || ::GetKeyState(VK_MENU) || ::GetKeyState(VK_CONTROL)) )
-      {
-         pMsg->message = WM_KEYDOWN;
-      }
-
       if ( GetAcceleratorTable()->TranslateMessage(this,pMsg) )
       {
          return TRUE;
