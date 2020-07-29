@@ -51,8 +51,8 @@
    proto.SetWidth( im.Width ); \
    proto.SetPrecision( im.Precision )
 
-#define INIT_FRACTIONAL_LENGTH_PROTOTYPE( proto, english, denom, im, _bShowTag,_bFractionOnly) \
-   rptFormattedLengthUnitValue proto(&im.UnitOfMeasure, im.Tol ,_bShowTag,english,denom,_bFractionOnly); \
+#define INIT_FRACTIONAL_LENGTH_PROTOTYPE( proto, english, denom, rounding, im, _bShowTag,_bFractionOnly) \
+   rptFormattedLengthUnitValue proto(&im.UnitOfMeasure, im.Tol ,_bShowTag,english,denom,_bFractionOnly,rptFormattedLengthUnitValue::##rounding); \
    proto.SetFormat( im.Format );\
    proto.SetWidth( im.Width ); \
    proto.SetPrecision( im.Precision )

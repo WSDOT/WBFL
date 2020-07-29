@@ -62,8 +62,17 @@ std::_tstring rptFormattedLengthUnitValue::AsString() const
 
    value -= in; // value is now fractions of an inch
 
+   value = ::RoundOff(value, 1.0 / m_Denominator); // round off to the accuracy of the denominator
+
    Uint16 denominator = m_Denominator;
-   Uint16 numerator = Uint16(::RoundOff(value*m_Denominator,1));
+   Uint16 numerator;
+   switch (m_Rounding)
+   {
+   case RoundOff: numerator = Uint16(::RoundOff(value*m_Denominator, 1)); break;
+   case RoundUp: numerator = Uint16(::CeilOff(value*m_Denominator, 1)); break;
+   case RoundDown: numerator = Uint16(::FloorOff(value*m_Denominator, 1)); break;
+   default: ATLASSERT(false); numerator = Uint16(::RoundOff(value*m_Denominator, 1)); break;
+   }
 
    // reduce the fraction
    while ( numerator % 2 == 0 && denominator % 2 == 0 )
