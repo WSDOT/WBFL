@@ -270,45 +270,6 @@ public:
       return S_OK;
    }
 
-// IJointedSection
-public:
-   STDMETHODIMP SetJointShapes(IShape* pLeftJoint, IShape* pRightJoint) override
-   {
-      m_LeftJoint = pLeftJoint;
-      m_RightJoint = pRightJoint;
-      return S_OK;
-   }
-
-   STDMETHODIMP GetJointShapes(IShape** ppLeftJoint, IShape** ppRightJoint) override
-   {
-      CHECK_RETOBJ(ppLeftJoint);
-      CHECK_RETOBJ(ppRightJoint);
-
-      if (m_LeftJoint)
-      {
-         m_LeftJoint->Clone(ppLeftJoint);
-      }
-
-      if (m_RightJoint)
-      {
-         m_RightJoint->Clone(ppRightJoint);
-      }
-
-      return S_OK;
-   }
-
-// IFlangePoints
-public:
-   STDMETHODIMP GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppTopCentral, IPoint2d** ppRightTop, IPoint2d** ppRightBottom) override
-   {
-      return m_Beam->GetTopFlangePoints(ppLeftTop, ppLeftBottom, ppTopCentral, ppRightTop, ppRightBottom);
-   }
-
-   STDMETHODIMP GetBottomFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppRightTop, IPoint2d** ppRightBottom) override
-   {
-      return m_Beam->GetBottomFlangePoints(ppLeftTop, ppLeftBottom, ppRightTop, ppRightBottom);
-   }
-
    STDMETHODIMP GetStressPoints(StressPointType spType, IPoint2dCollection** ppPoints) override
    {
       CHECK_RETOBJ(ppPoints);
@@ -368,6 +329,44 @@ public:
       return S_OK;
    }
 
+// IJointedSection
+public:
+   STDMETHODIMP SetJointShapes(IShape* pLeftJoint, IShape* pRightJoint) override
+   {
+      m_LeftJoint = pLeftJoint;
+      m_RightJoint = pRightJoint;
+      return S_OK;
+   }
+
+   STDMETHODIMP GetJointShapes(IShape** ppLeftJoint, IShape** ppRightJoint) override
+   {
+      CHECK_RETOBJ(ppLeftJoint);
+      CHECK_RETOBJ(ppRightJoint);
+
+      if (m_LeftJoint)
+      {
+         m_LeftJoint->Clone(ppLeftJoint);
+      }
+
+      if (m_RightJoint)
+      {
+         m_RightJoint->Clone(ppRightJoint);
+      }
+
+      return S_OK;
+   }
+
+// IFlangePoints
+public:
+   STDMETHODIMP GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppTopCentral, IPoint2d** ppRightTop, IPoint2d** ppRightBottom) override
+   {
+      return m_Beam->GetTopFlangePoints(ppLeftTop, ppLeftBottom, ppTopCentral, ppRightTop, ppRightBottom);
+   }
+
+   STDMETHODIMP GetBottomFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppRightTop, IPoint2d** ppRightBottom) override
+   {
+      return m_Beam->GetBottomFlangePoints(ppLeftTop, ppLeftBottom, ppRightTop, ppRightBottom);
+   }
 
    STDMETHODIMP get_OverallHeight(Float64* height) override
    {
