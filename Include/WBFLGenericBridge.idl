@@ -1184,9 +1184,16 @@ library WBFLGenericBridge
    ]
    interface IAsymmetricSection : IUnknown
    {
+      // Left and Right overhangs can be different so get the two top widths
       [helpstring("method GetTopWidth")] HRESULT GetTopWidth([out]Float64* pLeft, [out]Float64* pRight);
+
+      // Heights can be different because of crown slope built into the girder top flange... get min, "Centerline" and max height
       [helpstring("method GetHeight")] HRESULT GetHeight([out]Float64* pHmin, [out]Float64* pHcl, [out]Float64* pHmax);
+
+      // Get points for computer stresses
       [helpstring("method GetStressPoints)")] HRESULT GetStressPoints([in]StressPointType spType, [out]IPoint2dCollection** ppPoints);
+
+      // Return true if you want to computer biaxial stresses
       [helpstring("method IgnoreBiaxialBending")] HRESULT IgnoreBiaxialBending([out]bool* pIgnoreBiaxial);
    };
 
