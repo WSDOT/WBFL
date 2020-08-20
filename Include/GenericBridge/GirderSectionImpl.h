@@ -453,71 +453,15 @@ public:
    {
       CHECK_IN(pLine);
       CHECK_RETOBJ(pShape);
-
-      CComObject<C>* clippedSection;
-      CComObject<C>::CreateInstance(&clippedSection);
-
-      CComPtr<_ISECTION_> section = clippedSection;
-      section->put_Beam(m_Beam);
-
-      CComQIPtr<ICompositeShape> compShape(section);
-      IndexType nShapes;
-      compShape->get_Count(&nShapes);
-      for (IndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++)
-      {
-         CComPtr<ICompositeShapeItem> compShapeItem;
-         compShape->get_Item(shapeIdx, &compShapeItem);
-
-         CComPtr<IShape> shapeItem;
-         compShapeItem->get_Shape(&shapeItem);
-
-         CComPtr<IShape> clippedShapeItem;
-         shapeItem->ClipWithLine(pLine, &clippedShapeItem);
-
-         compShape->Replace(shapeIdx,clippedShapeItem);
-      }
-
-      CComQIPtr<IShape> shape(section);
-
-      (*pShape) = shape;
-      (*pShape)->AddRef();
-
-      return S_OK;
+      return m_Shape->ClipWithLine(pLine, pShape);
    }
 
    STDMETHODIMP ClipIn(IRect2d* pRect,IShape** pShape) override
    {
       CHECK_IN(pRect);
       CHECK_RETOBJ(pShape);
-      CComObject<C>* clippedSection;
-      CComObject<C>::CreateInstance(&clippedSection);
 
-      CComPtr<_ISECTION_> section = clippedSection;
-      section->put_Beam(m_Beam);
-
-      CComQIPtr<ICompositeShape> compShape(section);
-      IndexType nShapes;
-      compShape->get_Count(&nShapes);
-      for (IndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++)
-      {
-         CComPtr<ICompositeShapeItem> compShapeItem;
-         compShape->get_Item(shapeIdx, &compShapeItem);
-
-         CComPtr<IShape> shapeItem;
-         compShapeItem->get_Shape(&shapeItem);
-
-         CComPtr<IShape> clippedShapeItem;
-         shapeItem->ClipIn(pRect, &clippedShapeItem);
-
-         compShape->Replace(shapeIdx,clippedShapeItem);
-      }
-
-      CComQIPtr<IShape> shape(section);
-
-      (*pShape) = shape;
-      (*pShape)->AddRef();
-
-      return S_OK;
+      return m_Shape->ClipIn(pRect, pShape);
    }
 
    STDMETHODIMP Offset(Float64 dx,Float64 dy) override
