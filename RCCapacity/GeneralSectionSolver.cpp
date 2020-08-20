@@ -580,22 +580,33 @@ void CGeneralSectionSolver::UpdateNeutralAxis(IPlane3d* strainPlane,ILine2d* lin
       y2 = -1000;
    }
 
+   // create the neutral axis line with compression on the left side on the line
    CComPtr<IPoint2d> p1,p2;
    p1.CoCreateInstance(CLSID_Point2d);
    p2.CoCreateInstance(CLSID_Point2d);
 
    p1->Move(x1,y1);
    p2->Move(x2,y2);
+   hr = line->ThroughPoints(p1, p2);
 
-   strainPlane->GetZ(y1,x2,&z);
+   // evaluate a point on the left side of the line
+   Float64 C;
+   CComPtr<IVector2d> vN; // normal vector points to the left hand side of the line
+   line->GetImplicit(&C, &vN);
+   Float64 dx, dy;
+   vN->get_X(&dx);
+   vN->get_Y(&dy);
 
-   if (z < 0)
+   Float64 Offset = 10; // some offset from the line
+   Float64 X = x1 + Offset*dx;
+   Float64 Y = y1 + Offset*dy;
+   Float64 Z;
+   strainPlane->GetZ(X,Y,&Z);
+   if (0 < Z)
    {
-      hr = line->ThroughPoints(p1, p2);
-   }
-   else
-   {
-      hr = line->ThroughPoints(p2, p1);
+      // tension is on the left side, so reverse the direction the line
+      // we want compression on the left side
+      hr = line->Reverse();
    }
 }
 
