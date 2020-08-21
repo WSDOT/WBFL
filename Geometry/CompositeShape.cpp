@@ -346,7 +346,7 @@ STDMETHODIMP CCompositeShape::ClipIn(IRect2d* rect,IShape** Shape)
       CComPtr<IShape> clippedShape;
       shape->ClipIn(rect,&clippedShape);
 
-      if ( clipShape )
+      if (clippedShape)
       {
          VARIANT_BOOL bVoid;
 
@@ -356,7 +356,13 @@ STDMETHODIMP CCompositeShape::ClipIn(IRect2d* rect,IShape** Shape)
       }
    }
 
-   clipShape->QueryInterface(Shape);
+   IndexType nShapes;
+   CComPtr<ICompositeShape> compShape(clipShape);
+   compShape->get_Count(&nShapes);
+   if (0 < nShapes)
+   {
+      clipShape->QueryInterface(Shape);
+   }
 
 	return S_OK;
 }
@@ -379,7 +385,7 @@ STDMETHODIMP CCompositeShape::ClipWithLine(ILine2d* line,IShape** Shape)
       CComPtr<IShape> clippedShape;
       shape->ClipWithLine(line,&clippedShape);
 
-      if ( clipShape )
+      if (clippedShape)
       {
          VARIANT_BOOL bVoid;
 
@@ -389,7 +395,14 @@ STDMETHODIMP CCompositeShape::ClipWithLine(ILine2d* line,IShape** Shape)
       }
    }
 
-   clipShape->QueryInterface(Shape);
+   IndexType nShapes;
+   CComPtr<ICompositeShape> compShape(clipShape);
+   compShape->get_Count(&nShapes);
+   if (0 < nShapes)
+   {
+      clipShape->QueryInterface(Shape);
+   }
+
 
 	return S_OK;
 }
