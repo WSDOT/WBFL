@@ -291,7 +291,12 @@ STDMETHODIMP CDeckedSlabBeamSection::get_MatingSurfaceWidth(MatingSurfaceIndexTy
       return E_INVALIDARG;
    }
 
-   return get_TopWidth(wMatingSurface);
+   Float64 left, right;
+   get_TopWidth(&left, &right);
+
+   *wMatingSurface = left + right;
+
+   return S_OK;
 }
 
 STDMETHODIMP CDeckedSlabBeamSection::get_MatingSurfaceProfile(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly, IPoint2dCollection** ppProfile)
@@ -324,7 +329,12 @@ STDMETHODIMP CDeckedSlabBeamSection::get_TopFlangeWidth(FlangeIndexType idx,Floa
       return E_INVALIDARG;
    }
 
-   return get_TopWidth(width);
+   Float64 left, right;
+   get_TopWidth(&left, &right);
+
+   *width = left + right;
+
+   return S_OK;
 }
 
 STDMETHODIMP CDeckedSlabBeamSection::get_TopFlangeThickness(FlangeIndexType idx,Float64* tFlange)
@@ -376,7 +386,12 @@ STDMETHODIMP CDeckedSlabBeamSection::get_BottomFlangeWidth(FlangeIndexType idx,F
       return E_INVALIDARG;
    }
 
-   return get_BottomWidth(width);
+   Float64 left, right;
+   get_BottomWidth(&left, &right);
+
+   *width = left + right;
+
+   return S_OK;
 }
 
 STDMETHODIMP CDeckedSlabBeamSection::get_BottomFlangeThickness(FlangeIndexType idx,Float64* tFlange)
@@ -418,18 +433,29 @@ STDMETHODIMP CDeckedSlabBeamSection::get_NominalHeight(Float64* height)
    return S_OK;
 }
 
-STDMETHODIMP CDeckedSlabBeamSection::get_TopWidth(Float64* width)
+STDMETHODIMP CDeckedSlabBeamSection::get_TopWidth(Float64* pLeft, Float64* pRight)
 {
    // Don't account for shear key
-   return m_Beam->get_A(width);
+   Float64 width;
+   m_Beam->get_A(&width);
+   width /= 2.0;
+
+   *pLeft = width;
+   *pRight = width;
+
+   return S_OK;
 }
 
-STDMETHODIMP CDeckedSlabBeamSection::get_BottomWidth(Float64* width)
+STDMETHODIMP CDeckedSlabBeamSection::get_BottomWidth(Float64* pLeft, Float64* pRight)
 {
    Float64 A, B;
    m_Beam->get_A(&A);
    m_Beam->get_B(&B);
-   *width = A - 2*B;
+   Float64 width = A - 2*B;
+   width /= 2.0;
+
+   *pLeft = width;
+   *pRight = width;
 
    return S_OK;
 }

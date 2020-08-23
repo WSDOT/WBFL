@@ -686,7 +686,7 @@ void CLBAMTruckDisplayImpl::CacheTruckParameters()
       ATLASSERT(SUCCEEDED(hr));
 
       // Some error checking
-      if (var_axle_idx>=0)
+      if (var_axle_idx!=INVALID_INDEX)
       {
          if (var_axle_idx>axle_cnt-2)
          {
@@ -808,7 +808,7 @@ void CLBAMTruckDisplayImpl::EditTruckPosition()
    m_Placement->get_VariableSpacing(&varspcg);
    AxleIndexType var_axle;
    m_VehicularLoad->get_VariableAxle(&var_axle);
-   bool is_var = var_axle>=0 ? true : false;
+   bool is_var = var_axle!=INVALID_INDEX ? true : false;
 
    double min_varspcg=0, max_varspcg=0;
 

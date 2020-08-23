@@ -1184,7 +1184,7 @@ library WBFLGenericBridge
    ]
    interface IAsymmetricSection : IUnknown
    {
-      // Left and Right overhangs can be different so get the two top widths
+      // Left and Right overhangs can be different so get the two top widths. This is typically taken directly from IGirderSection::TopWidth(), but here also for convenience.
       [helpstring("method GetTopWidth")] HRESULT GetTopWidth([out]Float64* pLeft, [out]Float64* pRight);
 
       // Heights can be different because of crown slope built into the girder top flange... get min, "Centerline" and max height
@@ -1948,8 +1948,9 @@ library WBFLGenericBridge
    
       [propget,helpstring("property OverallHeight")] HRESULT OverallHeight([out, retval]Float64* height);
 	   [propget,helpstring("property NominalHeight")] HRESULT NominalHeight([out,retval]Float64* height);
-	   [propget,helpstring("property TopWidth")] HRESULT TopWidth([out,retval]Float64* width);
-	   [propget,helpstring("property BottomWidth")] HRESULT BottomWidth([out,retval]Float64* width);
+      // top/bottom widths here and below returned are widths measured from the nominal girder centerline, and disregard simple chamfers or top joint chamfers
+	   [propget,helpstring("property TopWidth")] HRESULT TopWidth([out]Float64* wLeft,[out]Float64* wRight);
+	   [propget,helpstring("property BottomWidth")] HRESULT BottomWidth([out]Float64* wLeft,[out]Float64* wRight);
 	   [propget,helpstring("property ShearWidth")] HRESULT ShearWidth([out,retval]Float64* shearwidth);
       [propget,helpstring("property MinTopFlangeThickness")] HRESULT MinTopFlangeThickness([out,retval]Float64* tf);
 	   [propget,helpstring("property MinBottomFlangeThickness")] HRESULT MinBottomFlangeThickness([out,retval]Float64* tf);

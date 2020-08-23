@@ -285,7 +285,11 @@ STDMETHODIMP CMultiWebSection::get_TopFlangeWidth(FlangeIndexType idx,Float64* w
       return E_INVALIDARG;
    }
 
-   return get_TopWidth(width);
+   Float64 left, right;
+   get_TopWidth(&left,&right);
+
+   *width = left + right;
+   return S_OK;
 }
 
 STDMETHODIMP CMultiWebSection::get_TopFlangeThickness(FlangeIndexType idx,Float64* tFlange)
@@ -376,14 +380,23 @@ STDMETHODIMP CMultiWebSection::get_NominalHeight(Float64* height)
    return m_Beam->get_Height(height);
 }
 
-STDMETHODIMP CMultiWebSection::get_TopWidth(Float64* width)
+STDMETHODIMP CMultiWebSection::get_TopWidth(Float64* pLeft, Float64* pRight)
 {
-   return m_Beam->get_TopFlangeWidth(width);
+   Float64 width;
+   m_Beam->get_TopFlangeWidth(&width);
+
+   width /= 2.0;
+
+   *pLeft = width;
+   *pRight = width;
+
+   return S_OK;
 }
 
-STDMETHODIMP CMultiWebSection::get_BottomWidth(Float64* width)
+STDMETHODIMP CMultiWebSection::get_BottomWidth(Float64* pLeft, Float64* pRight)
 {
-   CHECK_RETVAL(width);
+   CHECK_RETVAL(pLeft);
+   CHECK_RETVAL(pRight);
 
    WebIndexType nWebs;
    get_WebCount(&nWebs);
@@ -393,7 +406,11 @@ STDMETHODIMP CMultiWebSection::get_BottomWidth(Float64* width)
    m_Beam->get_T2(&t2);
    m_Beam->get_W2(&w2);
 
-   *width = nWebs*t1 + (nWebs-1)*w2 - (t1-t2);
+   Float64 width = nWebs*t1 + (nWebs-1)*w2 - (t1-t2);
+   width /= 2.0;
+
+   *pLeft = width;
+   *pRight = width;
 
    return S_OK;
 }

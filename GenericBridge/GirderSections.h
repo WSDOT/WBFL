@@ -247,14 +247,19 @@ public:
       return S_OK;
    }
 
-// IAsymmetricSection
-   STDMETHODIMP GetTopWidth(Float64* pLeft, Float64* pRight) override
+   STDMETHODIMP get_TopWidth(Float64* pLeft, Float64* pRight) override
    {
       CHECK_RETVAL(pLeft);
       CHECK_RETVAL(pRight);
       m_Beam->get_W5(pLeft);
       m_Beam->get_W6(pRight);
       return S_OK;
+   }
+
+// IAsymmetricSection
+   STDMETHODIMP GetTopWidth(Float64* pLeft, Float64* pRight) override
+   {
+      return get_TopWidth(pLeft, pRight);
    }
 
    STDMETHODIMP GetHeight(Float64* pHmin, Float64* pHcl, Float64* pHmax) override

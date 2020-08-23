@@ -1359,6 +1359,36 @@ HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDT
       CComPtr<IPoint2d> beam_top_center;
       beam_position->get_LocatorPoint(lpTopCenter,&beam_top_center);
 
+      Float64 xTC, yTC;
+      beam_top_center->get_X(&xTC);
+      beam_top_center->get_Y(&yTC);
+
+      // Tricky: We need xTC to be at the CL of the top flange but,
+      //         get_LocatorPoint above is based on the top CL of the girder bounding box. This works 
+      //         for our needs if the top flange is wider than the bottom, or if the section is symmetric, but may
+      //         not be true for assym box sections. So we may need to adjust xTC so it's centered on the top flange
+      Float64 wTopLeft, wTopRight, wBotLeft, wBotRight;
+      girder_section->get_TopWidth(&wTopLeft, &wTopRight);
+      girder_section->get_BottomWidth(&wBotLeft, &wBotRight);
+
+      // We could do a bunch of if() statements here before making an adjustment, but it's just easier and faster to
+      // just compute how much we need to move xTC so that it's at the top CL flange(s).
+      // Compute bounding box (bb) left/right edges -> wrt the nominal girder CL (as defined in library)
+      Float64 bbleft = max(wTopLeft, wBotLeft);
+      Float64 bbright = max(wTopRight, wBotRight);
+      Float64 bbcl = (-bbleft + bbright) / 2.0;  // center of bb 
+
+      Float64 topcl = (-wTopLeft + wTopRight) / 2.0; // center of top flange
+
+      Float64 adjust = topcl - bbcl; // distance bounding box cl must be moved to get to top flange(s) cl
+
+      if (!IsZero(adjust))
+      {
+         // make adjustment
+         xTC += adjust;                   
+         beam_top_center->Move(xTC, yTC);
+      }
+
       // move the composite so all the rebar inside the deck moves too
       CComQIPtr<IXYPosition> deck_position(deckSection);
       deck_position->put_LocatorPoint(lpBottomCenter,beam_top_center);

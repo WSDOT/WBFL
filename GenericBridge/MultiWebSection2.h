@@ -112,8 +112,8 @@ public:
    STDMETHOD(get_BottomFlangeSpacing)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* spacing) override;
    STDMETHOD(get_OverallHeight)(/*[out,retval]*/Float64* height) override;
    STDMETHOD(get_NominalHeight)(/*[out,retval]*/Float64* height) override;
-   STDMETHOD(get_TopWidth)(/*[out,retval]*/Float64* width) override;
-	STDMETHOD(get_BottomWidth)(/*[out,retval]*/Float64* width) override;
+   STDMETHOD(get_TopWidth)(/*[out]*/Float64* pLeft, /*[out]*/Float64* pRight) override;
+	STDMETHOD(get_BottomWidth)(/*[out]*/Float64* pLeft, /*[out]*/Float64* pRight) override;
 	STDMETHOD(get_ShearWidth)(/*[out,retval]*/Float64* shearwidth) override;
    STDMETHOD(get_MinTopFlangeThickness)(/*[out,retval]*/Float64* tf) override;
 	STDMETHOD(get_MinBottomFlangeThickness)(/*[out,retval]*/Float64* tf) override;

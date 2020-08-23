@@ -263,8 +263,8 @@ STDMETHODIMP CUGirderSection2::get_WebPlane(WebIndexType idx,IPlane3d** ppPlane)
    Float64 x;
    this->get_WebLocation(idx,&x);
 
-   Float64 w;
-   this->get_BottomWidth(&w);
+   Float64 w; // bottom width
+   m_Beam->get_W1(&w);
 
    Float64 h;
    this->get_OverallHeight(&h);
@@ -431,14 +431,28 @@ STDMETHODIMP CUGirderSection2::get_NominalHeight(Float64* height)
    return m_Beam->get_Height(height);
 }
 
-STDMETHODIMP CUGirderSection2::get_TopWidth(Float64* width)
+STDMETHODIMP CUGirderSection2::get_TopWidth(Float64* pLeft, Float64* pRight)
 {
-   return m_Beam->get_TopWidth(width);
+   Float64 width;
+   m_Beam->get_TopWidth(&width);
+   width /= 2.0;
+
+   *pLeft = width;
+   *pRight = width;
+
+   return S_OK;
 }
 
-STDMETHODIMP CUGirderSection2::get_BottomWidth(Float64* width)
+STDMETHODIMP CUGirderSection2::get_BottomWidth(Float64* pLeft, Float64* pRight)
 {
-   return m_Beam->get_W1(width);
+   Float64 width;
+   m_Beam->get_W1(&width);
+   width /= 2.0;
+
+   *pLeft = width;
+   *pRight = width;
+
+   return S_OK;
 }
 
 STDMETHODIMP CUGirderSection2::get_ShearWidth(Float64* shearwidth)

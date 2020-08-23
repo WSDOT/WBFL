@@ -3460,10 +3460,10 @@ library WBFLGeometry
 	   HRESULT WebWidth([out, retval] Float64 *pVal);
 
 	   [propget,  helpstring("property BottomFlangeWidth")/*,helpcontext(IDH_IBoxBeam_BottomFlangeWidth)*/]
-	   HRESULT BottomFlangeWidth([out, retval] Float64 *pVal);
+	   HRESULT BottomFlangeWidth([out]Float64* pLeft, [out]Float64* pRight);
 
 	   [propget,  helpstring("property TopFlangeWidth")/*,helpcontext(IDH_IBoxBeam_TopFlangeWidth)*/]
-	   HRESULT TopFlangeWidth([out, retval] Float64 *pVal);
+	   HRESULT TopFlangeWidth([out]Float64* pLeft, [out]Float64* pRight);
 
 	   [propget,  helpstring("property XYPosition")/*,helpcontext(IDH_IBoxBeam_XYPosition)*/]
 	   HRESULT XYPosition([out, retval] IXYPosition* *pVal);
@@ -3492,11 +3492,9 @@ library WBFLGeometry
       [propget, helpstring("property Height")]
       HRESULT Height([out, retval]Float64* pVal);
 
-      [propput,helpstring("property UseOverallWidth")]
-      HRESULT UseOverallWidth([in]VARIANT_BOOL bUseOverallWidth);
-
-      [propget,helpstring("property UseOverallWidth")]
-      HRESULT UseOverallWidth([out,retval]VARIANT_BOOL* pbUseOverallWidth);
+      // Function to get top and bottom edge points, excluding effect of chamfers. Points used for stress points
+      [helpstring("property GetBoundaryPoints")]
+      HRESULT GetBoundaryPoints([out]IPoint2d** ppLeftTop, [out]IPoint2d** ppLeftBottom, [out]IPoint2d** ppRightTop, [out]IPoint2d** ppRightBottom);
    };
 
 

@@ -353,14 +353,34 @@ public:
       return m_Beam->get_Height(height);
    }
 
-   STDMETHODIMP get_TopWidth(Float64* width) override
+   STDMETHODIMP get_TopWidth(Float64* pLeft, Float64* pRight) override
    {
-      return m_Beam->get_TopFlangeWidth(width);
+      CHECK_RETVAL(pLeft);
+      CHECK_RETVAL(pRight);
+
+      Float64 width;
+      m_Beam->get_TopFlangeWidth(&width);
+      width /= 2.0;
+
+      *pLeft = width;
+      *pRight = width;
+
+      return S_OK;
    }
 
-   STDMETHODIMP get_BottomWidth(Float64* width) override
+   STDMETHODIMP get_BottomWidth(Float64* pLeft, Float64* pRight) override
    {
-      return m_Beam->get_BottomFlangeWidth(width);
+      CHECK_RETVAL(pLeft);
+      CHECK_RETVAL(pRight);
+
+      Float64 width;
+      m_Beam->get_BottomFlangeWidth(&width);
+      width /= 2.0;
+
+      *pLeft = width;
+      *pRight = width;
+
+      return S_OK;
    }
 
    STDMETHODIMP get_ShearWidth(Float64* shearwidth) override

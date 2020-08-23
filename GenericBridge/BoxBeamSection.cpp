@@ -344,18 +344,29 @@ STDMETHODIMP CBoxBeamSection::get_TopFlangeLocation(FlangeIndexType idx,Float64*
       return E_INVALIDARG;
    }
 
-   *location = 0;
+   // flange can be offset if unequal left and right
+   Float64 left, right;
+   m_Beam->get_TopFlangeWidth(&left, &right);
+
+   *location = (right - left) / 2.0;
    return S_OK;
 }
 
 STDMETHODIMP CBoxBeamSection::get_TopFlangeWidth(FlangeIndexType idx,Float64* width)
 {
+   CHECK_RETVAL(width);
+
    if ( idx != 0 )
    {
       return E_INVALIDARG;
    }
 
-   return get_TopWidth(width);
+   Float64 left, right;
+   m_Beam->get_TopFlangeWidth(&left, &right);
+
+   *width = left + right;
+
+   return S_OK;
 }
 
 STDMETHODIMP CBoxBeamSection::get_TopFlangeThickness(FlangeIndexType idx,Float64* tFlange)
@@ -407,7 +418,12 @@ STDMETHODIMP CBoxBeamSection::get_BottomFlangeWidth(FlangeIndexType idx,Float64*
       return E_INVALIDARG;
    }
 
-   return get_BottomWidth(width);
+   Float64 left, right;
+   m_Beam->get_BottomFlangeWidth(&left, &right);
+
+   *width = left + right;
+
+   return S_OK;
 }
 
 STDMETHODIMP CBoxBeamSection::get_BottomFlangeThickness(FlangeIndexType idx,Float64* tFlange)
@@ -450,14 +466,14 @@ STDMETHODIMP CBoxBeamSection::get_NominalHeight(Float64* height)
    return S_OK;
 }
 
-STDMETHODIMP CBoxBeamSection::get_TopWidth(Float64* width)
+STDMETHODIMP CBoxBeamSection::get_TopWidth(Float64* wLeft,Float64* wRight)
 {
-   return m_Beam->get_TopFlangeWidth(width);
+   return m_Beam->get_TopFlangeWidth(wLeft, wRight);
 }
 
-STDMETHODIMP CBoxBeamSection::get_BottomWidth(Float64* width)
+STDMETHODIMP CBoxBeamSection::get_BottomWidth(Float64* wLeft,Float64* wRight)
 {
-   return m_Beam->get_BottomFlangeWidth(width);
+   return m_Beam->get_BottomFlangeWidth(wLeft, wRight);
 }
 
 STDMETHODIMP CBoxBeamSection::get_ShearWidth(Float64* shearwidth)
@@ -969,4 +985,49 @@ void CBoxBeamSection::GetSplittingZone(Float64* pH,SplittingDirection* pSD)
       *pH = w;
       *pSD = sdHorizontal;
    }
+}
+
+STDMETHODIMP CBoxBeamSection::GetTopWidth(Float64* pLeft, Float64* pRight)
+{
+   CHECK_RETOBJ(pLeft);
+   CHECK_RETOBJ(pRight);
+
+   return m_Beam->get_TopFlangeWidth(pLeft, pRight);
+
+}
+
+STDMETHODIMP CBoxBeamSection::GetHeight(Float64* pHmin, Float64* pHcl, Float64* pHmax)
+{
+   Float64 H;
+   get_NominalHeight(&H);
+
+   *pHmin = H;
+   *pHcl  = H;
+   *pHmax = H;
+
+   return S_OK;
+}
+
+STDMETHODIMP CBoxBeamSection::GetStressPoints(StressPointType spType, IPoint2dCollection** ppPoints)
+{
+   CHECK_RETOBJ(ppPoints);
+   CComPtr<IPoint2dCollection> points;
+   points.CoCreateInstance(CLSID_Point2dCollection);
+
+   // get boundary points from shape
+   CComPtr<IPoint2d> leftTop, leftBottom, rightTop, rightBottom;
+   m_Beam->GetBoundaryPoints(&leftTop, &leftBottom, &rightTop, &rightBottom);
+
+   if (spType == spTop)
+   {
+      points->Add(leftTop);
+      points->Add(rightTop);
+   }
+   else
+   {
+      points->Add(leftBottom);
+      points->Add(rightBottom);
+   }
+
+   return points.CopyTo(ppPoints);
 }

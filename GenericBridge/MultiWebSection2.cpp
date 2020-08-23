@@ -330,7 +330,11 @@ STDMETHODIMP CMultiWebSection2::get_TopFlangeWidth(FlangeIndexType idx,Float64* 
       return E_INVALIDARG;
    }
 
-   return get_TopWidth(width);
+   Float64 left, right;
+   get_TopWidth(&left, &right);
+
+   *width = left + right;
+   return S_OK;
 }
 
 STDMETHODIMP CMultiWebSection2::get_TopFlangeThickness(FlangeIndexType idx,Float64* tFlange)
@@ -421,14 +425,21 @@ STDMETHODIMP CMultiWebSection2::get_NominalHeight(Float64* height)
    return m_Beam->get_Height(height);
 }
 
-STDMETHODIMP CMultiWebSection2::get_TopWidth(Float64* width)
+STDMETHODIMP CMultiWebSection2::get_TopWidth(Float64* pLeft, Float64* pRight)
 {
-   return m_Beam->get_TopFlangeWidth(width);
+   Float64 width;
+   m_Beam->get_TopFlangeWidth(&width);
+   width /= 2.0;
+
+   *pLeft = width;
+   *pRight = width;
+
+   return S_OK;
 }
 
-STDMETHODIMP CMultiWebSection2::get_BottomWidth(Float64* width)
+STDMETHODIMP CMultiWebSection2::get_BottomWidth(Float64* pLeft, Float64* pRight)
 {
-   return get_TopWidth(width);
+   return get_TopWidth(pLeft, pRight);
 }
 
 STDMETHODIMP CMultiWebSection2::get_ShearWidth(Float64* shearwidth)
