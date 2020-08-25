@@ -30,6 +30,8 @@
 #include <GeometricPrimitives\Primitives3d.h>
 #include <WBFLGenericBridge.h>
 
+#include <WBFLRCCapacity.h> // for IGeneralSectionSolution
+
 /*****************************************************************************
 CLASS 
    gbtAlternativeTensileStressCalculator
@@ -40,9 +42,13 @@ CLASS
 struct WBFLGENERICBRIDGETOOLSCLASS gbtAlternativeTensileStressRequirements
 {
    // Input
-   Float64 fy;
-   bool bLimitBarStress;
-   Float64 fsMax;
+
+   // reinforcement stress properties
+   Float64 fy; // yield stress of rebar
+   bool bLimitBarStress; // if true, allowable bar stress cannot exceed fsMax
+   Float64 fsMax; // maximum bar stress if bLimitBarStress is true
+
+   // concrete properties (only used if bAdjustForDevelopmentLength is true)
    matConcrete::Type concreteType;
    Float64 fc;
    bool bHasFct;
@@ -50,27 +56,34 @@ struct WBFLGENERICBRIDGETOOLSCLASS gbtAlternativeTensileStressRequirements
    Float64 density;
    bool bAdjustForDevelopmentLength;
 
-   CComPtr<IShape> shape;
-   CComPtr<IRebarSection> rebarSection;
+   CComPtr<IShape> shape; // shape of girder (must be in Centroidal/Stress Point coordinates)
+   CComPtr<IRebarSection> rebarSection; // longitudinal rebar in the girder (in Section coordinates)
+   Float64 Ytg; // Ytop of Girder... added to Y location of rebar to convert it into centroidal coordinates
+   
+   // coordindate and stress on top and bottom, left and right of girder section
+   // Z = stress
    gpPoint3d pntTopLeft;
    gpPoint3d pntTopRight;
    gpPoint3d pntBottomLeft;
    gpPoint3d pntBottomRight;
-   Float64 Ytg;
 
    // Output
-   CComPtr<IShape> tensionArea;
-   Float64 Yna;
-   Float64 NAslope;
-   Float64 AreaTension;
-   Float64 T;
-   Float64 AsProvided;
-   Float64 AsRequired;
-   bool bIsAdequateRebar;
+   CComPtr<IShape> tensionArea; // area in tension
+   Float64 AreaTension; // area in tension computed from tensionArea
+
+   CComPtr<IGeneralSectionSolution> tensionForceSolution;
+   Float64 T; // tension force
+
+   Float64 Yna; // vertical location of neutral axis line, measure in Section Coordinates (0,0 at top CL of girder)
+   Float64 NAslope; // slope of neutral axis
+
+   Float64 AsProvided; // area of steel provided in the tension zone
+   Float64 AsRequired; // area of steel required in the tension zone
+   bool bIsAdequateRebar; // if true, the area of steel provide is adequate to use the higher tension stress limit
 
    gbtAlternativeTensileStressRequirements();
-   gbtAlternativeTensileStressRequirements(const gbtAlternativeTensileStressRequirements& other);
-   void operator=(const gbtAlternativeTensileStressRequirements& other);
+   gbtAlternativeTensileStressRequirements(const gbtAlternativeTensileStressRequirements& other) = default;
+   gbtAlternativeTensileStressRequirements& operator=(const gbtAlternativeTensileStressRequirements& other) = default;
 };
 
 void WBFLGENERICBRIDGETOOLSFUNC gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirements* pRequirements);

@@ -930,6 +930,7 @@ date/T &gt; $(IntDir)mt2.dep
     <ClCompile Include="EffectiveFlangeWidthDetails.cpp" />
     <ClCompile Include="EffectiveFlangeWidthTool.cpp" />
     <ClCompile Include="FlexRebarLayoutItem.cpp" />
+    <ClCompile Include="GeneralSectionDetailsTable.cpp" />
     <ClCompile Include="GenericBridgeTools.cpp" />
     <ClCompile Include="Helpers.cpp" />
     <ClCompile Include="PrecastGirder.cpp" />
@@ -951,6 +952,7 @@ date/T &gt; $(IntDir)mt2.dep
     <ClCompile Include="StrandGridModel.cpp" />
     <ClCompile Include="StrandModelBase.cpp" />
     <ClCompile Include="StrandPointModel.cpp" />
+    <ClCompile Include="TensionStressPlaneModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BridgeDeckRebarLayout.rgs" />
@@ -987,6 +989,7 @@ date/T &gt; $(IntDir)mt2.dep
   <ItemGroup>
     <ClInclude Include="..\Include\WBFLGenericBridgeTools\AlternativeTensileStressCalculator.h" />
     <ClInclude Include="..\Include\WBFLGenericBridgeTools\AutoLib.h" />
+    <ClInclude Include="..\Include\WBFLGenericBridgeTools\GeneralSectionDetailsTable.h" />
     <ClInclude Include="..\Include\WBFLGenericBridgeTools\WBFLGenericBridgeToolsExp.h" />
     <ClInclude Include="BridgeDeckRebarLayout.h" />
     <ClInclude Include="BridgeGeometryTool.h" />
@@ -1003,6 +1006,7 @@ date/T &gt; $(IntDir)mt2.dep
     <ClInclude Include="StrandGridModel.h" />
     <ClInclude Include="StrandModelBase.h" />
     <ClInclude Include="StrandPointModel.h" />
+    <ClInclude Include="TensionStressPlaneModel.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

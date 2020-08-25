@@ -34,6 +34,8 @@
 
 #include <MathEx.h>
 
+#include "TensionStressPlaneModel.h"
+
 gbtAlternativeTensileStressRequirements::gbtAlternativeTensileStressRequirements()
 {
    fy = 0;
@@ -56,68 +58,6 @@ gbtAlternativeTensileStressRequirements::gbtAlternativeTensileStressRequirements
    bIsAdequateRebar = false;
 }
 
-gbtAlternativeTensileStressRequirements::gbtAlternativeTensileStressRequirements(const gbtAlternativeTensileStressRequirements& other)
-{
-   fy = other.fy;
-   bLimitBarStress = other.bLimitBarStress;
-   fsMax = other.fsMax;
-   concreteType = other.concreteType;
-   fc = other.fc;
-   bHasFct = other.bHasFct;
-   Fct = other.Fct;
-   density = other.density;
-
-   bAdjustForDevelopmentLength = other.bAdjustForDevelopmentLength;
-   Ytg = other.Ytg;
-
-   shape = other.shape;
-   rebarSection = other.rebarSection;
-   pntTopLeft = other.pntTopLeft;
-   pntTopRight = other.pntTopRight;
-   pntBottomLeft = other.pntBottomLeft;
-   pntBottomRight = other.pntBottomRight;
-
-   tensionArea = other.tensionArea;
-   Yna = other.Yna;
-   NAslope = other.NAslope;
-   AreaTension = other.AreaTension;
-   T = other.T;
-   AsProvided = other.AsProvided;
-   AsRequired = other.AsRequired;
-   bIsAdequateRebar = other.bIsAdequateRebar;
-}
-
-void gbtAlternativeTensileStressRequirements::operator=(const gbtAlternativeTensileStressRequirements& other)
-{
-   fy = other.fy;
-   bLimitBarStress = other.bLimitBarStress;
-   fsMax = other.fsMax;
-   concreteType = other.concreteType;
-   fc = other.fc;
-   bHasFct = other.bHasFct;
-   Fct = other.Fct;
-   density = other.density;
-
-   bAdjustForDevelopmentLength = other.bAdjustForDevelopmentLength;
-   Ytg = other.Ytg;
-
-   shape = other.shape;
-   rebarSection = other.rebarSection;
-   pntTopLeft = other.pntTopLeft;
-   pntTopRight = other.pntTopRight;
-   pntBottomLeft = other.pntBottomLeft;
-   pntBottomRight = other.pntBottomRight;
-
-   tensionArea = other.tensionArea;
-   Yna = other.Yna;
-   NAslope = other.NAslope;
-   AreaTension = other.AreaTension;
-   T = other.T;
-   AsProvided = other.AsProvided;
-   AsRequired = other.AsRequired;
-   bIsAdequateRebar = other.bIsAdequateRebar;
-}
-
 
 void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirements* pRequirements)
 {
@@ -130,12 +70,13 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
    pRequirements->Yna = -1;
    pRequirements->NAslope = 0;
 
+   // Get stress in the stress at the four control points
    Float64 fTopLeft = pRequirements->pntTopLeft.Z();
    Float64 fTopRight = pRequirements->pntTopRight.Z();
    Float64 fBotLeft = pRequirements->pntBottomLeft.Z();
    Float64 fBotRight = pRequirements->pntBottomRight.Z();
 
-   // Max bar stress for computing higher allowable temporary tensile (5.9.4.1.2)
+   // Determine maximum bar stress for computing higher allowable temporary tensile (5.9.4.1.2)
    Float64 allowable_bar_stress = 0.5*pRequirements->fy;
    if (pRequirements->bLimitBarStress && pRequirements->fsMax < allowable_bar_stress)
    {
@@ -143,6 +84,7 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
    }
    ATLASSERT(!IsZero(allowable_bar_stress));
 
+   // Evaluate the state of stress
    if (::IsLE(fTopLeft, 0.0) && ::IsLE(fTopRight, 0.0) && ::IsLE(fBotLeft, 0.0) && ::IsLE(fBotRight, 0.0))
    {
       // compression over entire cross section
@@ -174,27 +116,30 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
    Float64 x1(0), y1(0), x2(0), y2(0);
    if (IsZero(fTopLeft) && IsZero(fTopRight) && IsZero(fBotLeft) && IsZero(fBotRight))
    {
+      // no stress anywhere
       pRequirements->Yna = 0;
    }
    else
    {
+      // get two points on the neutral axis line by evaluating at x1 and x2 with a stress (z) of 0.0
       x1 = pRequirements->pntTopLeft.X();
-      stressPlane->GetY(x1, 0, &y1);
+      stressPlane->GetY(x1, 0.0, &y1);
       x2 = pRequirements->pntTopRight.X();
-      stressPlane->GetY(x2, 0, &y2);
+      stressPlane->GetY(x2, 0.0, &y2);
 
+      // compute slope of neutral axis
       Float64 slope = IsZero(x2 - x1) ? Float64_Max : (y2 - y1) / (x2 - x1);
       pRequirements->NAslope = IsZero(slope) ? 0 : slope;
 
-      // depth of neutral axis
-      // neutral asxis line in y=mx+b form
-      // y1 = mx1 + b... b = y1 - mx1
+      // depth of neutral axis from top of girder
+      // neutral axis line in y=m*x+b form
+      // y1 = m*x1 + b, rearranging b = y1 - m*x1
       Float64 b = y1 - (pRequirements->NAslope)*x1;
       pRequirements->Yna = b; // this is Y at vertical line passing through center of bounding box in CG coordinates
       pRequirements->Yna -= pRequirements->Ytg; // convert to girder section coordinates (now measured from 0,0 at top center of bounding box)
    }
                               
-                              // Compute area on concrete in tension and total tension
+   // Compute area of concrete in tension and total tension
    Float64 AreaTens; // area of concrete in tension
    Float64 T;        // tension force in concrete
    if (stressLoc == slAllComp)
@@ -203,79 +148,130 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
       AreaTens = 0.0;
       T = 0.0;
    }
-   else if (stressLoc == slAllTens)
-   {
-      // Tension over entire cross section
-      CComPtr<IShapeProperties> shapeProps;
-      pRequirements->shape->get_ShapeProperties(&shapeProps);
-      shapeProps->get_Area(&AreaTens);
-
-      Float64 fAvg = (Max(fTopLeft, fTopRight, fBotLeft, fBotRight) + Min(fTopLeft, fTopRight, fBotLeft, fBotRight)) / 2;
-      T = fAvg * AreaTens;
-
-      ATLASSERT(T != 0);
-   }
    else
    {
-      // Clip shape to determine concrete tension area
-
-      CComPtr<IPoint2d> pnt1, pnt2;
-      pnt1.CoCreateInstance(CLSID_Point2d);
-      pnt2.CoCreateInstance(CLSID_Point2d);
-      pnt1->Move(x1, y1);
-      pnt2->Move(x2, y2);
-
-      CComPtr<ILine2d> line;
-      line.CoCreateInstance(CLSID_Line2d);
-      line->ThroughPoints(pnt1, pnt2);
-      Float64 C;
-      CComPtr<IVector2d> vN; // normal vector points to the left hand side of the line
-      line->GetImplicit(&C, &vN);
-      Float64 dx, dy;
-      vN->get_X(&dx);
-      vN->get_Y(&dy);
-
-      // create a point to the left of the clipping line
-      Float64 Offset = 10;
-      Float64 X = x1 + Offset*dx;
-      Float64 Y = y1 + Offset*dy;
-      Float64 Z;
-      stressPlane->GetZ(X, Y, &Z);
-      if (0 < Z)
+      if (stressLoc == slAllTens)
       {
-         // compression is on the left, we need tension on the left... reverse the clipping line
-         line->Reverse();
-      }
-
-      // get angle of neutral axis
-      CComPtr<IPoint2d> pnt;
-      CComPtr<IVector2d> v;
-      line->GetExplicit(&pnt, &v);
-      Float64 vx, vy;
-      v->get_X(&vx);
-      v->get_Y(&vy);
-      ATLASSERT(IsEqual(pRequirements->NAslope,IsZero(vx)?Float64_Max:vy/vx));
-
-      Float64 fAvg = Max(fTopLeft, fTopRight, fBotLeft, fBotRight) / 2;
-
-      CComPtr<IShape> clipped_shape;
-      pRequirements->shape->ClipWithLine(line, &clipped_shape);
-      pRequirements->tensionArea = clipped_shape;
-
-      if (clipped_shape)
-      {
-         CComPtr<IShapeProperties> clippedShapeProps;
-         clipped_shape->get_ShapeProperties(&clippedShapeProps);
-
-         clippedShapeProps->get_Area(&AreaTens);
+         // Tension over entire cross section
+         CComPtr<IShapeProperties> shapeProps;
+         pRequirements->shape->get_ShapeProperties(&shapeProps);
+         shapeProps->get_Area(&AreaTens);
+         pRequirements->tensionArea = pRequirements->shape;
       }
       else
       {
-         ATLASSERT(false); // the clipping line should leave a shape
-         AreaTens = 0.0;
+         // Portion of section in tension
+         // Clip shape with neutral axis line to determine concrete tension area
+         CComPtr<IPoint2d> pnt1, pnt2;
+         pnt1.CoCreateInstance(CLSID_Point2d);
+         pnt2.CoCreateInstance(CLSID_Point2d);
+         pnt1->Move(x1, y1);
+         pnt2->Move(x2, y2);
+
+         CComPtr<ILine2d> line;
+         line.CoCreateInstance(CLSID_Line2d);
+         line->ThroughPoints(pnt1, pnt2);
+         Float64 C;
+         CComPtr<IVector2d> vN; // normal vector points to the left hand side of the line
+         line->GetImplicit(&C, &vN);
+         Float64 dx, dy;
+         vN->get_X(&dx);
+         vN->get_Y(&dy);
+
+         // create a point to the left of the clipping line
+         Float64 Offset = 10;
+         Float64 X = x1 + Offset*dx;
+         Float64 Y = y1 + Offset*dy;
+         Float64 Z; // stress at X,Y
+         stressPlane->GetZ(X, Y, &Z);
+         if (0 < Z)
+         {
+            // tension is on the left, we need tension on the right because we want to retain the tension area
+            // reverse the clipping line
+            line->Reverse();
+         }
+
+         // get angle of neutral axis
+         CComPtr<IPoint2d> pnt;
+         CComPtr<IVector2d> v;
+         line->GetExplicit(&pnt, &v);
+         Float64 vx, vy;
+         v->get_X(&vx);
+         v->get_Y(&vy);
+         ATLASSERT(IsEqual(pRequirements->NAslope, IsZero(vx) ? Float64_Max : vy / vx));
+
+         CComPtr<IShape> clipped_shape;
+         pRequirements->shape->ClipWithLine(line, &clipped_shape); // retains the shape on the right side of the clipping line
+         pRequirements->tensionArea = clipped_shape;
+
+         if (clipped_shape)
+         {
+            CComPtr<IShapeProperties> clippedShapeProps;
+            clipped_shape->get_ShapeProperties(&clippedShapeProps);
+            clippedShapeProps->get_Area(&AreaTens);
+         }
+         else
+         {
+            ATLASSERT(false); // the clipping line should leave a shape
+            AreaTens = 0.0;
+         }
       }
 
-      T = fAvg * AreaTens;
+      if (pRequirements->tensionArea)
+      {
+         // because the cross section is not a simple rectangle, as suggested in LRFD C5.9.2.3.1b, we have to numerically
+      // integrate the stress over the cross section. The WBFL::RCCapacity library, General Section service, has this capability
+      // however it uses a strain plane and a stress-strain model. We can fake it out be using the stress plane as the strain
+      // plane and creating a stress-strain model that simplye coverts the "strain" to a stress by returning the provided "strain"
+      // See CTensionStressPlaneModel for more details.
+         CComObject<CTensionStressPlaneModel>* pMaterialModel;
+         CComObject<CTensionStressPlaneModel>::CreateInstance(&pMaterialModel);
+
+         CComPtr<IStressStrain> ssModel;
+         pMaterialModel->QueryInterface(&ssModel);
+
+         CComPtr<IGeneralSection> generalSection;
+         generalSection.CoCreateInstance(CLSID_GeneralSection);
+
+         //generalSection->AddShape(pRequirements->shape, ssModel, nullptr, 0, 1.0); // no need to use full shape when we have the tension side shape
+         generalSection->AddShape(pRequirements->tensionArea, ssModel, nullptr, 0, 1.0); // use the tension side shape
+
+         CComPtr<IGeneralSectionSolver> solver;
+         solver.CoCreateInstance(CLSID_GeneralSectionSolver);
+
+         solver->put_Slices(5); // we are using the tension side shape, so we don't need too many slices
+         solver->put_SliceGrowthFactor(0.25); // start with small slices on the tension side and then grow as they move to the compression side (tension is going to zero so it has a smaller contribution per slice)
+         solver->putref_Section(generalSection);
+         CComPtr<IGeneralSectionSolution> solution;
+         solver->Solve(stressPlane, &solution);
+
+         solution->get_TensionResultant(&T);
+
+         pRequirements->tensionForceSolution = solution;
+
+#if defined _DEBUG
+         // validate the sum of the slice areas in tension are equal to the
+         // total area on the tension side of the neutral axis
+         Float64 At = 0;
+         IndexType nSlices;
+         solution->get_SliceCount(&nSlices);
+         for (IndexType sliceIdx = 0; sliceIdx < nSlices; sliceIdx++)
+         {
+            CComPtr<IGeneralSectionSlice> slice;
+            solution->get_Slice(sliceIdx, &slice);
+            Float64 slice_area;
+            slice->get_Area(&slice_area);
+
+            Float64 f;
+            slice->get_ForegroundStress(&f);
+            if (0 < f)
+            {
+               At += slice_area;
+            }
+         }
+         ATLASSERT(IsEqual(At, AreaTens));
+#endif // _DEBUG
+      }
    }
 
    // Area of steel required to meet higher tensile stress requirement
@@ -371,6 +367,26 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
    pRequirements->T = T;
    pRequirements->AsProvided = AsProvd;
    pRequirements->AsRequired = AsReqd;
+
+   if (pRequirements->tensionForceSolution)
+   {
+      // In the solution space, the slices are rotated so they are aligned with the
+      // neutral axis. Rotate them back to the centroidal coordinate system
+      Float64 neutral_axis_angle;
+      pRequirements->tensionForceSolution->get_NeutralAxisDirection(&neutral_axis_angle);
+      IndexType nSlices;
+      pRequirements->tensionForceSolution->get_SliceCount(&nSlices);
+      for (IndexType sliceIdx = 0; sliceIdx < nSlices; sliceIdx++)
+      {
+         CComPtr<IGeneralSectionSlice> slice;
+         pRequirements->tensionForceSolution->get_Slice(sliceIdx, &slice);
+         CComPtr<IShape> shape;
+         slice->get_Shape(&shape);
+         CComQIPtr<IXYPosition> position(shape);
+         position->Rotate(0.0, 0.0, neutral_axis_angle);
+      }
+   }
+
 
 #if defined _DEBUG
    if (stressLoc != slAllTens && stressLoc != slAllComp && IsEqual(fTopLeft, fTopRight) && IsEqual(fBotLeft, fBotRight))
