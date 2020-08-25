@@ -43,5 +43,5 @@ public:
    stbLiftingStabilityReporter();
 
    void BuildSpecCheckChapter(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem,const stbLiftingCheckArtifact* pArtifact,rptChapter* pChapter,LPCTSTR lpszLocColumnLabel = nullptr,Float64 offset = 0);
-   void BuildDetailsChapter(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem,const stbLiftingResults* pResults,rptChapter* pChapter,LPCTSTR lpszLocColumnLabel = nullptr,Float64 offset = 0);
+   void BuildDetailsChapter(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem,const stbLiftingResults* pResults,rptChapter* pChapter,LPCTSTR lpszLocColumnLabel = nullptr,Float64 offset = 0,bool bReportTensileForceDetails = true);
 };
