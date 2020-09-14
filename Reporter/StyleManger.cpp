@@ -403,33 +403,44 @@ void rptStyleManager::ConfigureTable(rptRcTable* pTable)
 
 LPCTSTR rptStyleManager::GetImagePath()
 {
-   if ( ms_pImagePath.get() == nullptr )
+   if (ms_pImagePath.get() == nullptr)
    {
+      // get the full path to the EXE file (this includes the EXE name and extensinon)
       TCHAR szBuff[_MAX_PATH];
       ::GetModuleFileName(::GetModuleHandle(nullptr), szBuff, _MAX_PATH);
       std::_tstring filename(szBuff);
-      make_upper( filename.begin(), filename.end() );
+      make_upper(filename.begin(), filename.end());
 
-      AFX_MANAGE_STATE(AfxGetAppModuleState());
-      CWinApp* pApp = AfxGetApp();
-      // find first Occurrence of the application name
-      std::_tstring strAppName(pApp->m_pszAppName);
-      make_upper( strAppName.begin(), strAppName.end() );
-      std::_tstring::size_type loc = filename.find(strAppName);
-      if ( loc != std::_tstring::npos )
+      // in the build enviroment, we have the EXE go into a RegFreeCOM\<configuration>\<platform> folder
+      // however the images are under the main application source folder as they would be in a real release
+      // remove the RegFreeCOM\<configuration>\<platform>. It's ok if this fails (and it will in a real release)
+      // because it doesn't do anything.
+#if defined _DEBUG
+#if defined _WIN64
+      std::_tstring strTarget(_T("REGFREECOM\\X64\\DEBUG\\"));
+#else
+      std::_tstring strTarget(_T("REGFREECOM\\WIN32\\DEBUG\\"));
+#endif
+#else
+      // in a real release, the path doesn't contain RegFreeCOM\\Release, but that's
+      // ok... the replace will fail and the string wont be altered.
+#if defined _WIN64
+      std::_tstring strTarget(_T("REGFREECOM\\X64\\RELEASE\\"));
+#else
+      std::_tstring strTarget(_T("REGFREECOM\\WIN32\\RELEASE\\"));
+#endif
+#endif
+      auto pos = filename.find(strTarget);
+      if (pos != std::_tstring::npos)
       {
-         loc += strAppName.length();
-      }
-      else
-      {
-         // something is wrong... that find should have succeeded
-         // hard code the default install location so that there is a remote chance of success
-         TCHAR szNativeProgramFilesFolder[MAX_PATH];
-         ExpandEnvironmentStrings(_T("%ProgramW6432%"),szNativeProgramFilesFolder,ARRAYSIZE(szNativeProgramFilesFolder));
-         filename = _T("\\") + std::_tstring(szNativeProgramFilesFolder) + _T("\\WSDOT\\") + strAppName;
-         loc = filename.length();
+         filename.replace(filename.begin() + pos, filename.begin() + pos + strTarget.size(), _T(""));
       }
 
+      /*
+      // The image file is at the same level as the EXE file. Work backwards to find last occurance of "\\"
+      // and then replace everything after it (which is the application name and .EXE) with \IMAGES\
+      */
+      auto loc = filename.find_last_of(_T("\\"));
       filename.replace(filename.begin()+loc,filename.end(),_T("\\IMAGES\\"));
       ms_pImagePath = std::make_unique<std::_tstring>(filename);
    }
