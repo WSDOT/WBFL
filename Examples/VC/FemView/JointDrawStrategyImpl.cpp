@@ -215,6 +215,13 @@ void CJointDrawStrategyImpl::Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF col
 
       pDC->MoveTo(cx,cy-hgt/5);
       pDC->LineTo(cx,cy+hgt/5);
+      
+      JointIDType id;
+      joint->get_ID(&id);
+      CString strnum;
+      strnum.Format(_T("%d"), id);
+      pDC->SetTextAlign(TA_BOTTOM | TA_CENTER);
+      pDC->TextOutW(cx, cy+hgt/5, strnum);
 
       pDC->SelectObject(pOldPen);
       return;
