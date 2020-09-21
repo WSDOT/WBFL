@@ -204,6 +204,18 @@ void CJointDrawStrategyImpl::Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF col
    CComPtr<IFem2dJoint> joint;
    joints->Find(jntID,&joint);
 
+
+   CFont font;
+   font.CreatePointFont(80, _T("Arial"), pDC);
+   CFont* old_font = pDC->SelectObject(&font);
+   JointIDType id;
+   joint->get_ID(&id);
+   CString strnum;
+   strnum.Format(_T("%d"), id);
+   pDC->SetTextAlign(TA_BOTTOM | TA_CENTER);
+   pDC->TextOut(cx, cy + hgt / 5, strnum);
+   pDC->SelectObject(old_font);
+
    VARIANT_BOOL bIsSupport;
    joint->IsSupport(&bIsSupport);
    if ( bIsSupport == VARIANT_FALSE )
@@ -216,13 +228,6 @@ void CJointDrawStrategyImpl::Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF col
       pDC->MoveTo(cx,cy-hgt/5);
       pDC->LineTo(cx,cy+hgt/5);
       
-      JointIDType id;
-      joint->get_ID(&id);
-      CString strnum;
-      strnum.Format(_T("%d"), id);
-      pDC->SetTextAlign(TA_BOTTOM | TA_CENTER);
-      pDC->TextOutW(cx, cy+hgt/5, strnum);
-
       pDC->SelectObject(pOldPen);
       return;
    }
