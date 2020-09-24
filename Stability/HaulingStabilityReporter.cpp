@@ -248,7 +248,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       }
       else
       {
-         *pPara << _T("Tensile stress limit with bonded reinforcement sufficient to resist tension force in concrete was not evaluated") << rptNewLine;
+         *pPara << _T("Tensile stress limit with bonded reinforcement sufficient to resist tension force in concrete was not evaluated because reinforcement is not modeled.") << rptNewLine;
       }
 
       *pPara << _T("Minimum factor of safety against cracking = ") << scalar.SetValue(criteria.MinFScr) << rptNewLine;
@@ -825,6 +825,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
    *pPara << RPT_FC << _T(" = ") << stress.SetValue(concrete.GetFc()) << rptNewLine;
    *pPara << Sub2(_T("E"),_T("c")) << _T(" = Modulus of Elasticity = ") << modE.SetValue(concrete.GetE()) << rptNewLine;
+   *pPara << symbol(lambda) << _T(" = ") << scalar.SetValue(concrete.GetLambda()) << rptNewLine;
    *pPara << RPT_STRESS(_T("r")) << _T(" = Modulus of Rupture = ") << stress.SetValue(concrete.GetFlexureFr()) << rptNewLine;
 
    IndexType nSections = pGirder->GetSectionCount();
