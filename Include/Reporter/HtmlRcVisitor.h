@@ -100,6 +100,9 @@ public:
    // Visit a color modifier
    void VisitRcColor(rptRcColor*);
    //------------------------------------------------------------------------
+   // Visit a background color modifier
+   void VisitRcBgColor(rptRcBgColor*);
+   //------------------------------------------------------------------------
    // Visit a Date and Time string
    void VisitRcDateTime(rptRcDateTime*);
    //------------------------------------------------------------------------

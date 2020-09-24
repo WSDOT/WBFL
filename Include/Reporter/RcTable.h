@@ -45,6 +45,33 @@
 
 #define SKIP_CELL INVALID_INDEX
 
+class rptRcTable;
+
+// local class to store table-related paragraph data
+class rptTableCellParagraph : public rptParagraph
+{
+   friend rptRcTable;
+public:
+   rptTableCellParagraph(): rptParagraph(), m_ColSpan(1), m_RowSpan(1), m_FillBackGroundColor(rptRiStyle::Default)
+   {
+   }
+
+   void SetFillBackGroundColor(rptRiStyle::FontColor color)
+   {
+      m_FillBackGroundColor = color;
+   }
+
+   rptRiStyle::FontColor GetFillBackGroundColor() const
+   {
+      return m_FillBackGroundColor;
+   }
+
+private:
+   rptRiStyle::FontColor m_FillBackGroundColor;
+   ColumnIndexType m_ColSpan;
+   RowIndexType m_RowSpan;
+};
+
 /*****************************************************************************
 CLASS 
    rptRcTable
@@ -88,11 +115,11 @@ public:
    //------------------------------------------------------------------------
    // Get an individual cell paragraph
    // Note that cells in column zero are column header cells.
-   rptParagraph& operator()(RowIndexType RowNo, ColumnIndexType ColNo);
+   rptTableCellParagraph& operator()(RowIndexType RowNo, ColumnIndexType ColNo);
 
    //------------------------------------------------------------------------
    // constant version of get cell paragraph
-   const rptParagraph& operator()(RowIndexType RowNo, ColumnIndexType ColNo) const;
+   const rptTableCellParagraph& operator()(RowIndexType RowNo, ColumnIndexType ColNo) const;
 
 
    // GROUP: OPERATIONS
@@ -290,20 +317,6 @@ private:
    //------------------------------------------------------------------------
    // table caption
    rptParagraph m_Caption;
-
-   // private class to store table-related paragraph data
-   class rptTableCellParagraph : public rptParagraph
-   {
-   public:
-      ColumnIndexType m_ColSpan;
-      RowIndexType m_RowSpan;
-
-      rptTableCellParagraph(): rptParagraph(), m_ColSpan(1), m_RowSpan(1)
-      {
-      }
-
-   private:
-   };
 
    //------------------------------------------------------------------------
    // 2D array of paragraphs - the table data

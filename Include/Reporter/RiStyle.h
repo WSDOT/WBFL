@@ -72,7 +72,10 @@ public:
 
    //------------------------------------------------------------------------
    // Font colors
-   enum FontColor { 
+   enum FontColor {
+      // Default - means do not change
+      Default,
+
       // Red colors
       IndianRed,
       LightCoral,

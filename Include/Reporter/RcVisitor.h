@@ -46,6 +46,7 @@ class REPORTERCLASS rptRcInt;
 class REPORTERCLASS rptRcUnsigned;
 class REPORTERCLASS rptRcFontModifier;
 class REPORTERCLASS rptRcColor;
+class REPORTERCLASS rptRcBgColor;
 class REPORTERCLASS rptParagraph;
 class REPORTERCLASS rptRcDateTime;
 class REPORTERCLASS rptRcHyperTarget;
@@ -106,6 +107,7 @@ public:
    virtual void VisitRcFlowModifier(rptRcFlowModifier*) = 0;
    virtual void VisitRcFontModifier(rptRcFontModifier*) = 0;
    virtual void VisitRcColor(rptRcColor*) = 0;
+   virtual void VisitRcBgColor(rptRcBgColor*) = 0;
    virtual void VisitRcDateTime(rptRcDateTime*) = 0;
    virtual void VisitRcHyperTarget(rptRcHyperTarget*) = 0;
    virtual void VisitRcImage(rptRcImage*) = 0;

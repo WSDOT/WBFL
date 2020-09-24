@@ -32,6 +32,7 @@
 #include <Reporter\RcFontModifier.h>
 #include <Reporter\RcFlowModifier.h>
 #include <Reporter\RcColor.h>
+#include <Reporter\RcBgColor.h>
 #include <Reporter\Paragraph.h>
 #include <Reporter\RcTable.h>
 #include <Reporter\RcDateTime.h>
@@ -260,7 +261,7 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
          //if ( 0 < row_span && 0 <= col_span )
          if ( row_span != SKIP_CELL && col_span != SKIP_CELL )
          {
-            rptParagraph& rpar = (*pTable)(rowno,colno);
+            rptTableCellParagraph& rpar = (*pTable)(rowno,colno);
 
             std::_tstring styleName = rpar.GetStyleName();
             rptRiStyle& style = plib->GetNamedStyle(styleName);
@@ -312,7 +313,13 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
                *m_pOstream<<startTag << _T("ALIGN=") << strAlign<< _T(" VALIGN=")<<strVAlign<<_T(" ROWSPAN=")<<row_span<<_T(" COLSPAN=")<<col_span;
             }
 
-            if ( bHeading || pTable->IsStripedRow(rowno) )
+            // explicitely set background colors overrule those set by headings or striping
+            rptRiStyle::FontColor color = rpar.GetFillBackGroundColor();
+            if (rptRiStyle::Default != color )
+            {
+               *m_pOstream << _T(" BGCOLOR=\"") << rptRiStyle::GetColorCode(color ) << ("\"");
+            }
+            else if ( bHeading || pTable->IsStripedRow(rowno) )
             {
                *m_pOstream << _T(" BGCOLOR=\"") << rptRiStyle::GetColorCode( style.GetBGColor() ) << ("\"");
             }
@@ -431,9 +438,24 @@ void rptHtmlRcVisitor::VisitRcFontModifier(rptRcFontModifier* my_m)
 void rptHtmlRcVisitor::VisitRcColor(rptRcColor* my_m)
 {
    rptRiStyle::FontColor my_color = my_m->GetFontColor();
-   *m_pOstream << _T("<SPAN STYLE=\"color:") << rptRiStyle::GetColorCode(my_color) << _T("\">");
+   if (rptRiStyle::Default != my_color)
+   {
+      *m_pOstream << _T("<SPAN STYLE=\"color:") << rptRiStyle::GetColorCode(my_color) << _T("\";>");
+   }
 }
 
+//------------------------------------------------------------------------
+//
+// change the background color of the stream
+//
+void rptHtmlRcVisitor::VisitRcBgColor(rptRcBgColor* my_m)
+{
+   rptRiStyle::FontColor my_color = my_m->GetColor();
+   if (rptRiStyle::Default != my_color)
+   {
+      *m_pOstream << _T("<SPAN STYLE=\"background-color: ") << rptRiStyle::GetColorCode(my_color) << _T("\";>");
+   }
+}
 
 //------------------------------------------------------------------------
 //

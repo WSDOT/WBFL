@@ -163,6 +163,9 @@
     <ClCompile Include="RcComposite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RcBgColor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\Reporter\AutoLib.h">
@@ -340,6 +343,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Reporter\RcComposite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Reporter\RcBgColor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

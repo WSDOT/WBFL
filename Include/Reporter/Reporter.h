@@ -39,6 +39,7 @@
 #include <Reporter\RcFlowModifier.h>
 #include <Reporter\RcFontModifier.h>
 #include <Reporter\RcColor.h>
+#include <Reporter\RcBgColor.h>
 #include <Reporter\RcHyperTarget.h>
 #include <Reporter\RcInt.h>
 #include <Reporter\RcScalar.h>
