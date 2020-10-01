@@ -61,6 +61,7 @@
 #include "TestVoidedSlabSection.h"
 #include "TestVoidedSlabSection2.h"
 #include "TestFlangedGirderSection.h"
+#include "TestFlangedGirderSection2.h"
 #include "TestNUGirderSection.h"
 #include "TestBulbTeeGirderSection.h"
 
@@ -89,6 +90,7 @@ int main(int argc, TCHAR* argv[])
       CTestVoidedSlabSection::Test();
       CTestVoidedSlabSection2::Test();
       CTestFlangedGirderSection::Test();
+      CTestFlangedGirderSection2::Test();
       CTestNUGirderSection::Test();
       CTestBulbTeeGirderSection::Test();
 

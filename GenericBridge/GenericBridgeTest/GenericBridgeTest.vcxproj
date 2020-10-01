@@ -817,6 +817,7 @@
     <ClCompile Include="TestCrossBeam.cpp" />
     <ClCompile Include="TestDeckedSlabBeamSection.cpp" />
     <ClCompile Include="TestFlangedGirderSection.cpp" />
+    <ClCompile Include="TestFlangedGirderSection2.cpp" />
     <ClCompile Include="TestGenericBridge.cpp" />
     <ClCompile Include="TestLongitudinalPierDescription.cpp" />
     <ClCompile Include="TestMaterial.cpp" />
@@ -850,6 +851,7 @@
     <ClInclude Include="TestCrossBeam.h" />
     <ClInclude Include="TestDeckedSlabBeamSection.h" />
     <ClInclude Include="TestFlangedGirderSection.h" />
+    <ClInclude Include="TestFlangedGirderSection2.h" />
     <ClInclude Include="TestGenericBridge.h" />
     <ClInclude Include="TestLongitudinalPierDescription.h" />
     <ClInclude Include="TestMaterial.h" />

@@ -62,6 +62,7 @@
 #include "TestBulbTee.h"
 #include "TestBulbTee2.h"
 #include "TestPrecastBeam.h"
+#include "TestPrecastBeam2.h"
 #include "TestNUBeam.h"
 #include "TestUBeam.h"
 #include "TestUBeam2.h"
@@ -121,6 +122,7 @@ int main(int argc, LPTSTR  argv[])
    CTestBulbTee::Test();
    CTestBulbTee2::Test();
    CTestPrecastBeam::Test();
+   CTestPrecastBeam2::Test();
    CTestNUBeam::Test();
    CTestUBeam::Test();
    CTestUBeam2::Test();

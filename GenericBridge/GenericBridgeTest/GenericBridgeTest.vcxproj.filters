@@ -94,6 +94,9 @@
     <ClCompile Include="TestBulbTeeGirderSection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestFlangedGirderSection2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GenericBridgeTest.h">
@@ -187,6 +190,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestBulbTeeGirderSection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestFlangedGirderSection2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -417,6 +417,205 @@ void AdjustForVariableDepth(IPrecastBeam* pBeam, Float64 Hg, Float64 Hbf)
    }
 }
 
+
+
+
+
+void AdjustForEndBlocks(IPrecastBeam2* pBeam, Float64 Wt, Float64 Wb)
+{
+   Float64 W1, W2, W3, W4, W5;
+   Float64 D1, D2, D3, D4, D5, D6, H;
+   Float64 T1, T2;
+
+   pBeam->get_W1(&W1);
+   pBeam->get_W2(&W2);
+   pBeam->get_W3(&W3);
+   pBeam->get_W4(&W4);
+   pBeam->get_W5(&W5);
+
+   pBeam->get_D1(&D1);
+   pBeam->get_D2(&D2);
+   pBeam->get_D3(&D3);
+   pBeam->get_D4(&D4);
+   pBeam->get_D5(&D5);
+   pBeam->get_D6(&D6);
+   pBeam->get_H(&H);
+
+   pBeam->get_T1(&T1);
+   pBeam->get_T2(&T2);
+
+   Float64 w1 = W1;
+   Float64 w2 = W2;
+   Float64 w3 = W3;
+   Float64 w4 = W4;
+   Float64 w5 = W5;
+   Float64 d1 = D1;
+   Float64 d2 = D2;
+   Float64 d3 = D3;
+   Float64 d4 = D4;
+   Float64 d5 = D5;
+   Float64 d6 = D6;
+   Float64 h = H;
+   Float64 t1 = T1;
+   Float64 t2 = T2;
+
+   // near top flange
+   if (2 * (W1 + W2 + W3) + T1 < Wt)
+   {
+      // end block is wider than the top flange
+      w1 = 0;
+      w2 = 0;
+      w3 = 0;
+      d1 = 0;
+      d2 = 0;
+      d3 = 0;
+      t1 = Wt;
+   }
+   else if (W3 + T1 / 2 < Wt / 2)
+   {
+      // end block extends beyond top fillet
+      w3 = 0;
+      w2 = W1 + W2 + W3 + T1 / 2 - Wt / 2;
+      w2 = (IsZero(w2) ? 0 : w2); // eliminate noise
+      d2 = (D2 / W1)*w1;
+      d3 = D3 + (D2 - d2);
+      t1 = Wt;
+   }
+   else if (T1 / 2 < Wt / 2)
+   {
+      // end block intersects top fillet
+      w3 = W3 + T1 / 2 - Wt / 2;
+      d3 = (D3 / W3)*w3;
+      t1 = Wt;
+   }
+
+   // near bottom flange
+   if (2 * (W4 + W5) + T2 < Wb)
+   {
+      // end block is wider than the bottom flange
+      w4 = 0;
+      w5 = 0;
+      d4 = 0;
+      d5 = 0;
+      d6 = 0;
+      t2 = Wb;
+   }
+   else if (W5 + T2 / 2 < Wb / 2)
+   {
+      // end block extends beyond bottom fillet
+      w5 = 0;
+      w4 = W4 + W5 + T2 / 2 - Wb / 2;
+      w4 = (IsZero(w4) ? 0 : w3); // eliminate noise
+      d5 = (D5 / W4)*w4;
+      d6 = D6 + (D5 - d5);
+      t2 = Wb;
+   }
+   else if (T2 / 2 < Wb / 2)
+   {
+      // end block intersects bottom fillet
+      w5 = W5 + T2 / 2 - Wb / 2;
+      d6 = (D6 / W5)*w5;
+      t2 = Wb;
+   }
+
+   // verify girder height is unchanged
+   ATLASSERT(IsEqual(2 * (w1 + w2 + w3) + t1, 2 * (W1 + W2 + W3) + T1) || IsEqual(2 * (w1 + w2 + w3) + t1, Wt));
+   ATLASSERT(IsEqual(2 * (w4 + w5) + t2, 2 * (W4 + W5) + T2) || IsEqual(2 * (w4 + w5) + t2, Wb));
+
+   pBeam->put_D1(d1);
+   pBeam->put_D2(d2);
+   pBeam->put_D3(d3);
+   pBeam->put_D4(d4);
+   pBeam->put_D5(d5);
+   pBeam->put_D6(d6);
+   pBeam->put_H(H);
+   pBeam->put_W1(w1);
+   pBeam->put_W2(w2);
+   pBeam->put_W3(w3);
+   pBeam->put_W4(w4);
+   pBeam->put_W5(w5);
+   pBeam->put_T1(t1);
+   pBeam->put_T2(t2);
+}
+
+void GetEndBlockWidth(Float64 Xs, Float64 Ls, SectionBias sectionBias, IPrecastBeam2* pBeam, const std::array<Float64, 2>& ebWidth, const std::array<Float64, 2>& ebLength, const std::array<Float64, 2>& ebTransLength, Float64* pWtop, Float64* pWbot)
+{
+   EndType endType;
+   if (Xs < Ls / 2)
+   {
+      // at the start end...
+      endType = etStart;
+   }
+   else
+   {
+      endType = etEnd;
+      Xs = Ls - Xs; // Xs is now measured from the right end
+   }
+
+   if (Xs < ebLength[endType] || (IsEqual(Xs, ebLength[endType]) && sectionBias == (endType == etStart ? sbLeft : sbRight)))
+   {
+      // in the end block
+      *pWtop = ebWidth[endType];
+      *pWbot = ebWidth[endType];
+   }
+   else if (!::IsZero(ebTransLength[endType]) && ::InRange(ebLength[endType], Xs, ebLength[endType] + ebTransLength[endType]))
+   {
+      // in the end block transition
+      Float64 t1, t2;
+      pBeam->get_T1(&t1);
+      pBeam->get_T2(&t2);
+      *pWtop = ::LinInterp(Xs - ebLength[endType], ebWidth[endType], t1, ebTransLength[endType]);
+      *pWbot = ::LinInterp(Xs - ebLength[endType], ebWidth[endType], t2, ebTransLength[endType]);
+   }
+   else
+   {
+      // after the end block
+      Float64 t1, t2;
+      pBeam->get_T1(&t1);
+      pBeam->get_T2(&t2);
+      *pWtop = t1;
+      *pWbot = t2;
+   }
+}
+
+void AdjustForVariableDepth(IPrecastBeam2* pBeam, Float64 Hg, Float64 Hbf)
+{
+   Float64 d6, h;
+
+   pBeam->get_D6(&d6);
+   pBeam->get_H(&h);
+
+   // Adjust d6 based on the bottom flange height
+   // If bottom flange height is zero then don't make any adjustments (take zero to be don't change bottom flange)
+   if (0 < Hbf)
+   {
+      d6 = Hbf;
+   }
+
+   if (d6 < 0)
+   {
+      // there really isn't a bottom flange
+      pBeam->put_D4(0);
+      pBeam->put_D5(0);
+      pBeam->put_D6(0);
+      pBeam->put_W4(0);
+      pBeam->put_W5(0);
+   }
+   else
+   {
+      pBeam->put_D6(d6);
+   }
+
+   // Adjust H based on the overall girder height
+   if (0 < Hg)
+   {
+      pBeam->put_H(Hg);
+   }
+}
+
+
+
+
 void GetEndBlockWidth(Float64 Xs, Float64 Ls, SectionBias sectionBias, INUBeam* pBeam, const std::array<Float64, 2>& ebWidth, const std::array<Float64, 2>& ebLength, const std::array<Float64, 2>& ebTransLength, Float64* pWeb)
 {
    EndType endType;

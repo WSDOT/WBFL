@@ -31,7 +31,7 @@
 #include "resource.h"       // main symbols
 
 /////////////////////////////////////////////////////////////////////////////
-// CFlangedBeam
+// CGirderSectionImpl
 template <class C,const CLSID* pclsid,class _ISECTION_,const IID* piid,class _IBEAM_,const CLSID* pbeamclsid>
 class ATL_NO_VTABLE CGirderSectionImpl :
    public CComObjectRootEx<CComSingleThreadModel>,
@@ -75,8 +75,6 @@ public:
       return E_FAIL;
    }
 
-
-   //DECLARE_REGISTRY_RESOURCEID(IDR_FLANGEDBEAM)
 
    DECLARE_PROTECT_FINAL_CONSTRUCT()
 

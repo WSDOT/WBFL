@@ -1746,6 +1746,133 @@ library WBFLGeometry
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
+   [
+      object,
+      uuid(1FDF594F-DEB1-472F-9069-3C6C30D0FB2D),
+      oleautomation,
+      helpstring("IPrecastBeam2 Interface"),
+      //helpcontext(IDH_IPrecastBeam2),
+      pointer_default(unique)
+   ]
+   interface IPrecastBeam2 : IUnknown
+   {
+      [propget, helpstring("property W1")/*, helpcontext(IDH_IPrecastBeam2_W1)*/]
+      HRESULT W1([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property W1")/*, helpcontext(IDH_IPrecastBeam2_W1)*/]
+      HRESULT W1([in] Float64 newVal);
+
+      [propget, helpstring("property W2")/*, helpcontext(IDH_IPrecastBeam2_W2)*/]
+      HRESULT W2([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property W2")/*, helpcontext(IDH_IPrecastBeam2_W2)*/]
+      HRESULT W2([in] Float64 newVal);
+
+      [propget, helpstring("property W3")/*, helpcontext(IDH_IPrecastBeam2_W3)*/]
+      HRESULT W3([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property W3")/*, helpcontext(IDH_IPrecastBeam2_W3)*/]
+      HRESULT W3([in] Float64 newVal);
+
+      [propget, helpstring("property W4")/*, helpcontext(IDH_IPrecastBeam2_W4)*/]
+      HRESULT W4([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property W4")/*, helpcontext(IDH_IPrecastBeam2_W4)*/]
+      HRESULT W4([in] Float64 newVal);
+
+      [propget, helpstring("property W5")/*, helpcontext(IDH_IPrecastBeam2_W5)*/]
+      HRESULT W5([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property W5")/*, helpcontext(IDH_IPrecastBeam2_W5)*/]
+      HRESULT W5([in] Float64 newVal);
+
+      [propget, helpstring("property D1")/*, helpcontext(IDH_IPrecastBeam2_D1)*/]
+      HRESULT D1([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property D1")/*, helpcontext(IDH_IPrecastBeam2_D1)*/]
+      HRESULT D1([in] Float64 newVal);
+
+      [propget, helpstring("property D2")/*, helpcontext(IDH_IPrecastBeam2_D2)*/]
+      HRESULT D2([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property D2")/*, helpcontext(IDH_IPrecastBeam2_D2)*/]
+      HRESULT D2([in] Float64 newVal);
+
+      [propget, helpstring("property D3")/*, helpcontext(IDH_IPrecastBeam2_D3)*/]
+      HRESULT D3([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property D3")/*, helpcontext(IDH_IPrecastBeam2_D3)*/]
+      HRESULT D3([in] Float64 newVal);
+
+      [propget, helpstring("property D4")/*, helpcontext(IDH_IPrecastBeam2_D4)*/]
+      HRESULT D4([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property D4")/*, helpcontext(IDH_IPrecastBeam2_D4)*/]
+      HRESULT D4([in] Float64 newVal);
+
+      [propget, helpstring("property D5")/*, helpcontext(IDH_IPrecastBeam2_D5)*/]
+      HRESULT D5([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property D5")/*, helpcontext(IDH_IPrecastBeam2_D5)*/]
+      HRESULT D5([in] Float64 newVal);
+
+      [propget, helpstring("property D6")/*, helpcontext(IDH_IPrecastBeam2_D6)*/]
+      HRESULT D6([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property D6")/*, helpcontext(IDH_IPrecastBeam2_D6)*/]
+      HRESULT D6([in] Float64 newVal);
+
+      [propget, helpstring("property H")/*, helpcontext(IDH_IPrecastBeam2_H)*/]
+      HRESULT H([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property H")/*, helpcontext(IDH_IPrecastBeam2_H)*/]
+      HRESULT H([in] Float64 newVal);
+
+      [propget, helpstring("property T1")/*, helpcontext(IDH_IPrecastBeam2_T1)*/]
+      HRESULT T1([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property T1")/*, helpcontext(IDH_IPrecastBeam2_T1)*/]
+      HRESULT T1([in] Float64 newVal);
+
+      [propget, helpstring("property T2")/*, helpcontext(IDH_IPrecastBeam2_T2)*/]
+      HRESULT T2([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property T2")/*, helpcontext(IDH_IPrecastBeam2_T2)*/]
+      HRESULT T2([in] Float64 newVal);
+
+      [propget, helpstring("property C1")/*, helpcontext(IDH_IPrecastBeam2_C1)*/]
+      HRESULT C1([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property C1")/*, helpcontext(IDH_IPrecastBeam2_C1)*/]
+      HRESULT C1([in] Float64 newVal);
+
+      [propget, helpstring("property HookPoint")/*, helpcontext(IDH_IPrecastBeam2_HookPoint)*/]
+      HRESULT HookPoint([out, retval] IPoint2d** hookPnt);
+
+      [propputref, helpstring("property HookPoint")/*, helpcontext(IDH_IPrecastBeam2_HookPoint)*/]
+      HRESULT HookPoint([in] IPoint2d* hookPnt);
+
+      [propget, helpstring("property Height")/*, helpcontext(IDH_IPrecastBeam2_Height)*/]
+      HRESULT Height([out, retval] Float64 *pVal);
+
+      [propget, helpstring("property AvgWebWidth")/*, helpcontext(IDH_IPrecastBeam2_AvgWebWidth)*/]
+      HRESULT AvgWebWidth([out, retval] Float64 *pVal);
+
+      [propget, helpstring("property BottomFlangeWidth")/*, helpcontext(IDH_IPrecastBeam2_BottomFlangeWidth)*/]
+      HRESULT BottomFlangeWidth([out, retval] Float64 *pVal);
+
+      [propget, helpstring("property TopFlangeWidth")/*, helpcontext(IDH_IPrecastBeam2_TopFlangeWidth)*/]
+      HRESULT TopFlangeWidth([out, retval] Float64 *pVal);
+
+      [propget, helpstring("property XYPosition")/*, helpcontext(IDH_IPrecastBeam2_XYPosition)*/]
+      HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+      [propget, helpstring("property Shape")/*, helpcontext(IDH_IPrecastBeam2_Shape)*/]
+      HRESULT Shape([out, retval] IShape* *pVal);
+
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
 
 	[
 		object,
@@ -3818,7 +3945,20 @@ library WBFLGeometry
       interface IStructuredStorage2;
         // interface IPersist;
 	};
-	[
+   [
+      uuid(6446F67F-A050-4A49-B6FD-7AC1333855B7),
+      helpstring("PrecastBeam2 Class")//,
+      //helpcontext(IDH_IPrecastBeam2)
+   ]
+   coclass PrecastBeam2
+   {
+      [default] interface IPrecastBeam2;
+      interface IShape;
+      interface IXYPosition;
+      interface IStructuredStorage2;
+      // interface IPersist;
+   };
+   [
 		uuid(411AA7A2-67F2-4bb6-86E2-09C2C0F5A096),
 		helpstring("NUBeam Class"),
 		helpcontext(IDH_INUBeam)

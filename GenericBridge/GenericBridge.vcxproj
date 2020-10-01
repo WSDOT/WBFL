@@ -1085,8 +1085,9 @@ date/T &gt; $(IntDir)mt2.dep
     <None Include="EdgePathStrategy.rgs" />
     <None Include="FilteredSegmentCollection.rgs" />
     <None Include="FixedLengthRebarLayoutItem.rgs" />
-    <None Include="FlangedBeam.rgs" />
+    <None Include="FlangedGirderSection.rgs" />
     <None Include="FlangedGirderEndBlockSegment.rgs" />
+    <None Include="FlangedGirderSection2.rgs" />
     <None Include="FlangedSplicedGirderSegment.rgs" />
     <None Include="FlexRebarLayoutItem.rgs" />
     <None Include="FShapeBarrier.rgs" />

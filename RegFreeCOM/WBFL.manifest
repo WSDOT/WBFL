@@ -135,7 +135,14 @@
                 progid="WBFLGeometry.PrecastBeam">
          <progid>WBFLGeometry.PrecastBeam.1</progid>
       </comClass>
-      <comClass clsid="{411AA7A2-67F2-4BB6-86E2-09C2C0F5A096}"
+     <comClass clsid="{6446F67F-A050-4A49-B6FD-7AC1333855B7}"
+          tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+          description="PrecastBeam2 Class"
+          threadingModel="Apartment"
+          progid="WBFLGeometry.PrecastBeam2">
+       <progid>WBFLGeometry.PrecastBeam2.1</progid>
+     </comClass>
+     <comClass clsid="{411AA7A2-67F2-4BB6-86E2-09C2C0F5A096}"
                 tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
                 description="NUBeam Class"
                 threadingModel="Apartment"
@@ -1347,7 +1354,10 @@
       <comClass clsid="{17B94525-BDF5-4036-8EA5-EE6D0C1DDBED}"
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                 description="FlangedGirderSection Class"></comClass>
-      <comClass clsid="{90F25ADA-74B8-4171-80CA-A445519885AC}"
+     <comClass clsid="{F10A7A59-BC20-4DCC-8348-639DF32D9F73}"
+          tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
+          description="FlangedGirderSection2 Class"></comClass>
+     <comClass clsid="{90F25ADA-74B8-4171-80CA-A445519885AC}"
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                 description="BulbTeeSection Class"></comClass>
       <comClass clsid="{D48BAC9D-876F-47ED-8B11-058009337492}"

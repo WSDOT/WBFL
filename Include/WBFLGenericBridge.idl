@@ -1176,6 +1176,20 @@ library WBFLGenericBridge
 	   [propget,helpstring("property Beam")] HRESULT Beam([out,retval]IPrecastBeam** beam);
 	};
 
+
+   [
+      object,
+      uuid(D34B51A2-2F63-4F05-BFF9-9B30ABD55CAF),
+      oleautomation,
+      helpstring("IFlangedGirderSection2 Interface"),
+      pointer_default(unique)
+   ]
+   interface IFlangedGirderSection2 : IUnknown
+   {
+      [propput, helpstring("property Beam")] HRESULT Beam([in]IPrecastBeam2* beam);
+      [propget, helpstring("property Beam")] HRESULT Beam([out, retval]IPrecastBeam2** beam);
+   };
+
    [
       object,
       uuid(C0893B25-A46A-4FE5-8706-F7BDDDB4F00B),
@@ -2766,7 +2780,21 @@ library WBFLGenericBridge
       interface ICompositeShape;
 	};
 
-	[
+
+   [
+      uuid(F10A7A59-BC20-4DCC-8348-639DF32D9F73),
+      helpstring("FlangedGirderSection2 Class")
+   ]
+   coclass FlangedGirderSection2
+   {
+      [default] interface IFlangedGirderSection2;
+      interface IGirderSection;
+      interface IPrestressedGirderSection;
+      interface IShape;
+      interface ICompositeShape;
+   };
+   
+   [
 		uuid(90F25ADA-74B8-4171-80CA-A445519885AC),
 		helpstring("BulbTeeSection Class")
 	]

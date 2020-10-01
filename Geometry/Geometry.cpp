@@ -52,6 +52,7 @@
 #include "Rectangle.h"
 #include "Triangle.h"
 #include "PrecastBeam.h"
+#include "PrecastBeam2.h"
 #include "TrafficBarrier.h"
 #include "Point3d.h"
 #include "LineSegment3d.h"
@@ -105,6 +106,7 @@ OBJECT_ENTRY(CLSID_Circle, CCircle)
 OBJECT_ENTRY(CLSID_Rect, CRectangle)
 OBJECT_ENTRY(CLSID_Triangle, CTriangle)
 OBJECT_ENTRY(CLSID_PrecastBeam, CPrecastBeam)
+OBJECT_ENTRY(CLSID_PrecastBeam2, CPrecastBeam2)
 OBJECT_ENTRY(CLSID_TrafficBarrier, CTrafficBarrier)
 OBJECT_ENTRY(CLSID_Point3d, CPoint3d)
 OBJECT_ENTRY(CLSID_LineSegment3d, CLineSegment3d)

@@ -139,6 +139,9 @@
     <ClCompile Include="BeamShapeFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PrecastBeam2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoxBeam.h">
@@ -288,6 +291,9 @@
     <ClInclude Include="BeamShapeFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PrecastBeam2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\Include\WBFLGeometry.idl" />
@@ -418,6 +424,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="BeamShapeFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PrecastBeam2.rgs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

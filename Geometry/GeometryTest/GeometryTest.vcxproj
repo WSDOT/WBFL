@@ -860,6 +860,7 @@
     <ClCompile Include="TestPoint3dCollection.cpp" />
     <ClCompile Include="TestPolyShape.cpp" />
     <ClCompile Include="TestPrecastBeam.cpp" />
+    <ClCompile Include="TestPrecastBeam2.cpp" />
     <ClCompile Include="TestPrimitiveFactory.cpp" />
     <ClCompile Include="TestRect2d.cpp" />
     <ClCompile Include="TestRectangle.cpp" />
@@ -908,6 +909,7 @@
     <ClInclude Include="TestPoint3dCollection.h" />
     <ClInclude Include="TestPolyShape.h" />
     <ClInclude Include="TestPrecastBeam.h" />
+    <ClInclude Include="TestPrecastBeam2.h" />
     <ClInclude Include="TestPrimitiveFactory.h" />
     <ClInclude Include="TestRect2d.h" />
     <ClInclude Include="TestRectangle.h" />

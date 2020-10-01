@@ -504,9 +504,6 @@
     <None Include="FixedLengthRebarLayoutItem.rgs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="FlangedBeam.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="FlangedGirderEndBlockSegment.rgs">
       <Filter>Resource Files</Filter>
     </None>
@@ -664,6 +661,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="CastingRegions.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="FlangedGirderSection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="FlangedGirderSection2.rgs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

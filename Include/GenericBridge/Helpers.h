@@ -59,6 +59,10 @@ void WBFLGENERICBRIDGEFUNC GetEndBlockWidth(Float64 Xs, Float64 Ls, SectionBias 
 void WBFLGENERICBRIDGEFUNC AdjustForEndBlocks(IPrecastBeam* pBeam, Float64 Wt, Float64 Wb);
 void WBFLGENERICBRIDGEFUNC AdjustForVariableDepth(IPrecastBeam* pBeam, Float64 Hg,Float64 Hbf);
 
+void WBFLGENERICBRIDGEFUNC GetEndBlockWidth(Float64 Xs, Float64 Ls, SectionBias sectionBias, IPrecastBeam2* pBeam, const std::array<Float64, 2>& ebWidth, const std::array<Float64, 2>& ebLength, const std::array<Float64, 2>& ebTransLength, Float64* pWtop, Float64* pWbot);
+void WBFLGENERICBRIDGEFUNC AdjustForEndBlocks(IPrecastBeam2* pBeam, Float64 Wt, Float64 Wb);
+void WBFLGENERICBRIDGEFUNC AdjustForVariableDepth(IPrecastBeam2* pBeam, Float64 Hg, Float64 Hbf);
+
 void WBFLGENERICBRIDGEFUNC GetEndBlockWidth(Float64 Xs, Float64 Ls, SectionBias sectionBias, INUBeam* pBeam, const std::array<Float64, 2>& ebWidth, const std::array<Float64, 2>& ebLength, const std::array<Float64, 2>& ebTransLength, Float64* pWeb);
 void WBFLGENERICBRIDGEFUNC AdjustForEndBlocks(INUBeam* pBeam, Float64 Web);
 void WBFLGENERICBRIDGEFUNC AdjustForVariableDepth(INUBeam* pBeam, Float64 Hg, Float64 Hbf);
