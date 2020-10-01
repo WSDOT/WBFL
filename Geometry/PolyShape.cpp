@@ -266,27 +266,33 @@ void CPolyShape::Update()
          // If there are less than three points, it is a degenerate shape.
          // Just return default shape properties (All values are zero).
          m_ShapeProps.Init();
-
-         Float64 xmin = Float64_Max;
-         Float64 xmax = -Float64_Max;
-         Float64 ymin = Float64_Max;
-         Float64 ymax = -Float64_Max;
-         for (IndexType i = 0; i < cPoints; i++)
+         if (cPoints == 0)
          {
-            CComPtr<IPoint2d> pnt;
-            m_pPoints->get_Item(i, &pnt);
-            Float64 x, y;
-            pnt->Location(&x, &y);
-            xmin = Min(x, xmin);
-            xmax = Max(x, xmax);
-            ymin = Min(y, ymin);
-            ymax = Max(y, ymax);
+            m_BoundingRect.Init();
          }
+         else
+         {
+            Float64 xmin = Float64_Max;
+            Float64 xmax = -Float64_Max;
+            Float64 ymin = Float64_Max;
+            Float64 ymax = -Float64_Max;
+            for (IndexType i = 0; i < cPoints; i++)
+            {
+               CComPtr<IPoint2d> pnt;
+               m_pPoints->get_Item(i, &pnt);
+               Float64 x, y;
+               pnt->Location(&x, &y);
+               xmin = Min(x, xmin);
+               xmax = Max(x, xmax);
+               ymin = Min(y, ymin);
+               ymax = Max(y, ymax);
+            }
 
-         m_BoundingRect.Left = xmin;
-         m_BoundingRect.Right = xmax;
-         m_BoundingRect.Top = ymax;
-         m_BoundingRect.Bottom = ymin;
+            m_BoundingRect.Left = xmin;
+            m_BoundingRect.Right = xmax;
+            m_BoundingRect.Top = ymax;
+            m_BoundingRect.Bottom = ymin;
+         }
          return;
       }
 
