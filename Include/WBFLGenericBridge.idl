@@ -1192,6 +1192,19 @@ library WBFLGenericBridge
 
    [
       object,
+      uuid(FCB29A04-D141-402C-99F6-A73C69DFBDEE),
+      oleautomation,
+      helpstring("IFlangedEndBlockSection Interface"),
+      pointer_default(unique)
+   ]
+   interface IFlangedEndBlockSection : IUnknown
+   {
+      [helpstring("method GetWebWidth")] HRESULT GetWebWidth([out]Float64* pT1, [out]Float64* pT2);
+      [helpstring("method CreateEndBlockSection")] HRESULT CreateEndBlockSection([in]Float64 Wt,[in]Float64 Wb, [out]IFlangedEndBlockSection** ppEndBlockSection);
+   };
+
+   [
+      object,
       uuid(C0893B25-A46A-4FE5-8706-F7BDDDB4F00B),
       helpstring("IAsymmetricSection Interface"),
       pointer_default(unique)
@@ -2776,7 +2789,8 @@ library WBFLGenericBridge
 	   [default] interface IFlangedGirderSection;
 	   interface IGirderSection;
 	   interface IPrestressedGirderSection;
-	   interface IShape;
+      interface IFlangedEndBlockSection;
+      interface IShape;
       interface ICompositeShape;
 	};
 
@@ -2790,6 +2804,7 @@ library WBFLGenericBridge
       [default] interface IFlangedGirderSection2;
       interface IGirderSection;
       interface IPrestressedGirderSection;
+      interface IFlangedEndBlockSection;
       interface IShape;
       interface ICompositeShape;
    };

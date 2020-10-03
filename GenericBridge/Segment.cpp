@@ -71,6 +71,7 @@ STDMETHODIMP CSegment::InterfaceSupportsErrorInfo(REFIID riid)
 STDMETHODIMP CSegment::get_Length(Float64 *pVal)
 {
 #pragma Reminder("IMPLEMENT")
+   ATLASSERT(false);
    return S_OK;
 }
 
