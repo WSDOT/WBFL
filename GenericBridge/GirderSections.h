@@ -200,6 +200,7 @@ public:
 
       // verify girder height is unchanged
       ATLASSERT(IsEqual(d1 + d2 + d3 + d4 + d5 + d6 + d7, D1 + D2 + D3 + D4 + D5 + D6 + D7));
+      // verify girder width is unchanged
       ATLASSERT(IsEqual(2 * (w1 + w2) + t1, 2 * (W1 + W2) + T1) || IsEqual(2 * (w1 + w2) + t1, Wt));
       ATLASSERT(IsEqual(2 * (w3 + w4) + t2, 2 * (W3 + W4) + T2) || IsEqual(2 * (w3 + w4) + t2, Wb));
 
@@ -527,8 +528,7 @@ public:
          t2 = Wb;
       }
 
-      // verify girder height is unchanged
-      ATLASSERT(IsEqual(h - (d1 + d2 + d3 + d4 + d5 + d6), H - (D1 + D2 + D3 + D4 + D5 + D6)));
+      // verify girder width is unchanged
       ATLASSERT(IsEqual(2 * (w1 + w2 + w3) + t1, 2 * (W1 + W2 + W3) + T1) || IsEqual(2 * (w1 + w2 + w3) + t1, Wt));
       ATLASSERT(IsEqual(2 * (w4 + w5) + t2, 2 * (W4 + W5) + T2) || IsEqual(2 * (w4 + w5) + t2, Wb));
 
