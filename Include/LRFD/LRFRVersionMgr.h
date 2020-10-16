@@ -56,6 +56,7 @@ public:
                   SecondEditionWith2014Interims = 6,
                   SecondEditionWith2015Interims = 7,
                   SecondEditionWith2016Interims = 8,
+                  ThirdEdition2018 = 9,
                   LastVersion
 };
 
