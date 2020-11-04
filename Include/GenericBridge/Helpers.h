@@ -26,32 +26,35 @@
 #include <GenericBridge\GenericBridgeExp.h>
 #include <WBFLGenericBridge.h>
 
+// defines the segment profile transition between control points. for parabolas, left and right are defined based
+// on a parabola symmetric about the Y-axis
 enum class TransitionType 
 {
-   Linear, // linear transition between two points
+   Linear,        // linear transition between two points
    RightParabola, // parabalic transition with zero slope at left end (parabola is to the right of the Y axis)
-   LeftParabola // parabolic transition with zero slope at right end (parabola is to the left of the Y axis)
+   LeftParabola   // parabolic transition with zero slope at right end (parabola is to the left of the Y axis)
 };
 
 typedef enum ZoneType
 {
-   LeftStraight,
-   LeftSlope,
-   MidStraight,
-   RightSlope,
-   RightStraight
+   LeftStraight, // point is on the left side of the segment in a linear zone
+   LeftSlope,    // point is on the left side of the segment in a parabolic zone where the parabolic control slope is known on the left end of the parabola
+   MidStraight,  // point is in the middle zone of the segment which is linear
+   RightSlope,   // point is on the right side of the segmetn in a parabolic zone where the parabolic control slope is know on the right end of the parabola
+   RightStraight // point is on the right side of the segment in a linear zone
 } ZoneType;
 
+// ZoneBreakType is used as a index into arrays of segment profile control points
 typedef enum ZoneBreakType
 {
-   Start,
-   LeftBreak,
-   RightBreak,
-   End
+   Start,      // break point is at the end of the linear section at the start of the member
+   LeftBreak,  // break point is between linear and parabolic transition on the left end of the member
+   RightBreak, // break point is between linear and parabolic transition on the right end of the member
+   End         // break point is at the start of the linear section at the end of the member
 } ZoneBreakType;
 
 std::array<Float64, 4> WBFLGENERICBRIDGEFUNC ResolveFractionalDistance(const std::array<Float64, 4>& X, Float64 L);
-TransitionType WBFLGENERICBRIDGEFUNC TransitionTypeFromZone(ZoneType zone,bool bParabolas);
+TransitionType WBFLGENERICBRIDGEFUNC TransitionTypeFromZone(ZoneType zone,Float64 Yl, Float64 Yr,bool bParabolas);
 Float64 WBFLGENERICBRIDGEFUNC GetSectionDepth(Float64 X,Float64 X1, Float64 H1, Float64 X2, Float64 H2, TransitionType transition);
 ZoneType WBFLGENERICBRIDGEFUNC GetZone(Float64 Xs, const std::array<Float64, 4>& X);
 ZoneType WBFLGENERICBRIDGEFUNC GetControlPoints(Float64 Xs, Float64 Ls, const std::array<Float64, 4>& X, const std::array<Float64, 4>& Y, Float64* pXl, Float64* pYl, Float64* pXr, Float64* pYr);

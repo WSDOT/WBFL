@@ -1020,7 +1020,7 @@ protected:
       std::array<Float64, 4> X = GetTransitionPoints();
       Float64 Xl, Yl, Xr, Yr;
       ZoneType zone = ::GetControlPoints(Xs, Lg, X, m_VariationHeight, &Xl, &Yl, &Xr, &Yr);
-      Float64 H = ::GetSectionDepth(Xs, Xl, Yl, Xr, Yr, TransitionTypeFromZone(zone, bParabolas));
+      Float64 H = ::GetSectionDepth(Xs, Xl, Yl, Xr, Yr, TransitionTypeFromZone(zone, Yl, Yr, bParabolas));
       return H;
    }
 
@@ -1034,7 +1034,7 @@ protected:
       std::array<Float64, 4> X = GetTransitionPoints();
       Float64 Xl, Yl, Xr, Yr;
       ZoneType zone = ::GetControlPoints(Xs, Lg, X, m_VariationBottomFlangeDepth, &Xl, &Yl, &Xr, &Yr);
-      Float64 H = ::GetSectionDepth(Xs, Xl, Yl, Xr, Yr, TransitionTypeFromZone(zone, bParabolas));
+      Float64 H = ::GetSectionDepth(Xs, Xl, Yl, Xr, Yr, TransitionTypeFromZone(zone, Yl, Yr, bParabolas));
       return H;
    }
    

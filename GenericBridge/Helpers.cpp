@@ -50,7 +50,7 @@ std::array<Float64, 4> ResolveFractionalDistance(const std::array<Float64, 4>& X
    return result;
 }
 
-TransitionType TransitionTypeFromZone(ZoneType zone,bool bParabolas)
+TransitionType TransitionTypeFromZone(ZoneType zone,Float64 Yl, Float64 Yr, bool bParabolas)
 {
    TransitionType transition = TransitionType::Linear;
    switch (zone)
@@ -60,7 +60,7 @@ TransitionType TransitionTypeFromZone(ZoneType zone,bool bParabolas)
       break;
 
    case ZoneType::LeftSlope:
-      transition = (bParabolas ? TransitionType::RightParabola : TransitionType::Linear);
+      transition = (bParabolas ? (Yl < Yr ? TransitionType::RightParabola : TransitionType::LeftParabola) : TransitionType::Linear);
       break;
 
    case ZoneType::MidStraight:
@@ -68,7 +68,7 @@ TransitionType TransitionTypeFromZone(ZoneType zone,bool bParabolas)
       break;
 
    case ZoneType::RightSlope:
-      transition = (bParabolas ? TransitionType::LeftParabola : TransitionType::Linear);
+      transition = (bParabolas ? (Yl < Yr ? TransitionType::RightParabola : TransitionType::LeftParabola) : TransitionType::Linear);
       break;
 
    case ZoneType::RightStraight:
@@ -156,10 +156,12 @@ ZoneType GetControlPoints(Float64 Xs, Float64 Ls, const std::array<Float64, 4>& 
       {
          if (Y[ZoneBreakType::RightBreak] == 0)
          {
+            *pXr = X[ZoneBreakType::End];
             *pYr = Y[ZoneBreakType::End];
          }
          else
          {
+            *pXr = X[ZoneBreakType::Start];
             *pYr = Y[ZoneBreakType::Start];
          }
       }
@@ -184,10 +186,12 @@ ZoneType GetControlPoints(Float64 Xs, Float64 Ls, const std::array<Float64, 4>& 
       {
          if (Y[ZoneBreakType::LeftBreak] == 0)
          {
+            *pXl = X[ZoneBreakType::Start];
             *pYl = Y[ZoneBreakType::Start];
          }
          else
          {
+            *pXl = X[ZoneBreakType::End];
             *pYl = Y[ZoneBreakType::End];
          }
       }
