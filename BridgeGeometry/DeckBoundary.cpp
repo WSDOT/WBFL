@@ -192,7 +192,8 @@ HRESULT CDeckBoundary::CreateDeckBoundaryEndPoints(EndType endType,LineIDType en
       right_edge_path->Intersect(end_line,alignment_point,&pntEnd4);
    }
 
-
+   ATLASSERT(pntEnd1 != nullptr);
+   ATLASSERT(pntEnd4 != nullptr);
    pntEnd1.CopyTo(end1);
    pntEnd4.CopyTo(end4);
 
