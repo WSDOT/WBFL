@@ -618,11 +618,8 @@ STDMETHODIMP CCubicSpline::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VAR
    line2.CoCreateInstance(CLSID_Line2d);
    line2->SetExplicit(pnt,v);
 
-   std::vector<CSplineSegment>::const_iterator iter;
-   for ( iter = m_SplineSegments.begin(); iter != m_SplineSegments.end(); iter++ )
+   for(const auto& splineSegment : m_SplineSegments)
    {
-      const CSplineSegment& splineSegment = *iter;
-
       CComPtr<IPoint2d> p1,p2,p3; // in local spline coordinates
       splineSegment.Intersect(line2,m_GeomUtil,&p1,&p2,&p3);
 
@@ -735,13 +732,7 @@ STDMETHODIMP CCubicSpline::get_Length(Float64* pLength)
    }
 
    Float64 L = 0;
-   std::vector<CSplineSegment>::iterator iter;
-   for ( iter = m_SplineSegments.begin(); iter != m_SplineSegments.end(); iter++ )
-   {
-      const CSplineSegment& splineSegment = *iter;
-      L += splineSegment.Length();
-   }
-
+   std::for_each(std::cbegin(m_SplineSegments), std::cend(m_SplineSegments), [&L](const auto& splineSegment) {L += splineSegment.Length(); });
    *pLength = L;
    return S_OK;
 }
@@ -954,12 +945,20 @@ HRESULT CCubicSpline::CreateSplineSegments()
       m_SplineSegments.push_back(splineSegment);
    }
 
+#if defined _DEBUG
+   IndexType nSegments = m_SplineSegments.size();
+   for (IndexType segIdx = 0; segIdx < nSegments - 1; segIdx++)
+   {
+      ATLASSERT(m_SplineSegments[segIdx].pntB->SameLocation(m_SplineSegments[segIdx + 1].pntA) == S_OK);
+   }
+#endif
+
    return S_OK;
 }
 
 HRESULT CCubicSpline::UpdateSpline()
 {
-   // See http://www.physics.arizona.edu/~restrepo/475A/Notes/sourcea-/node35.html
+   // See http://sites.science.oregonstate.edu/~restrepo/475A/Notes/sourcea.pdf (See page 143)
    // https://en.wikipedia.org/wiki/Spline_(mathematics)
 
    if ( !m_bUpdateSpline )
@@ -973,125 +972,117 @@ HRESULT CCubicSpline::UpdateSpline()
       return hr;
    }
 
-   CollectionIndexType nPoints = m_SplineSegments.size() + 1;
+   CollectionIndexType nSegments = m_SplineSegments.size();
+   CollectionIndexType nPoints = nSegments + 1;
 
    // spline coefficients y = a + bx + cx^2 + dx^3
-   Float64* an = new Float64[nPoints];
-   Float64* bn = new Float64[nPoints];
-   Float64* cn = new Float64[nPoints];
-   Float64* dn = new Float64[nPoints];
+   std::vector<Float64> an(nPoints);
+   std::vector<Float64> bn(nSegments);
+   std::vector<Float64> cn(nPoints);
+   std::vector<Float64> dn(nSegments);
+   std::vector<Float64> hi(nSegments);
 
    // set an[i] = f(xi)
-   std::vector<CSplineSegment>::iterator iter;
-   CollectionIndexType i = 0;
-   for ( iter = m_SplineSegments.begin(); iter != m_SplineSegments.end(); iter++, i++ )
-   {
-      CSplineSegment& splineSegment = *iter;
-      splineSegment.pntA->get_Y(&an[i]);
-   }
-   // get the last point
-   m_SplineSegments.back().pntB->get_Y(&an[nPoints-1]);
-
    // hi = x(i+1) - x(i)
-   Float64* hi = new Float64[nPoints];
-   i = 0;
-   for ( iter = m_SplineSegments.begin(); iter != m_SplineSegments.end(); iter++, i++ )
+   CollectionIndexType i = 0;
+   for (const auto& splineSegment : m_SplineSegments)
    {
-      CSplineSegment& splineSegment = *iter;
+      splineSegment.pntA->get_Y(&an[i]);
+
       Float64 xi, xi1;
       splineSegment.pntA->get_X(&xi);
       splineSegment.pntB->get_X(&xi1);
-      
+
       Float64 h = xi1 - xi;
       hi[i] = h;
+
+      i++;
    }
+   ATLASSERT(i == nPoints - 1);
+   // get the last point
+   m_SplineSegments.back().pntB->get_Y(&an[nPoints - 1]);
 
    // get start and end slope WRT rotated coordinate system
    Float64 start_angle = cogoUtil::NormalizeAngle(m_StartDirection - m_RotationAngle);
-   ATLASSERT( !IsEqual(start_angle,PI_OVER_2) && !IsEqual(start_angle,3*PI_OVER_2) );
+   ATLASSERT(!IsEqual(start_angle, PI_OVER_2) && !IsEqual(start_angle, 3 * PI_OVER_2));
    Float64 start_slope = tan(start_angle);
 
    Float64 end_angle = cogoUtil::NormalizeAngle(m_EndDirection - m_RotationAngle);
-   ATLASSERT( !IsEqual(end_angle,PI_OVER_2) && !IsEqual(end_angle,3*PI_OVER_2) );
+   ATLASSERT(!IsEqual(end_angle, PI_OVER_2) && !IsEqual(end_angle, 3 * PI_OVER_2));
    Float64 end_slope = tan(end_angle);
 
-   // set ai0 = 3(a1-a0)/hi0 - 3dfx0
-   // set ain = 3dfxn-3{an-an(n-1)}/hi(n-1)
-   Float64* ai = new Float64[nPoints];
-   ai[0]         = (((3*(an[1] - an[0]))/hi[0]) - (3*start_slope));
-   ai[nPoints-1] = ((3*end_slope)-((3*(an[(nPoints-1)]-an[(nPoints-2)]))/hi[(nPoints-2)]));
+   std::vector<Float64> alpha(nPoints);
+   // set alpha0 = 3(a1-a0)/hi0 - 3*f'(x0)
+   alpha[0] = 3 * (an[1] - an[0]) / hi[0] - 3*start_slope;
 
-   // set ai=(3/hi)*[a(i+1)-ai]-[3/h(i-1)]*[ai-a(i-1)]     for i=1,2,3,...,n-1
-   for(i = 1; i < nPoints-1; i++)
+   // set alphai=(3/hi)*[a(i+1)-ai]-[3/h(i-1)]*[ai-a(i-1)]     for i=1,2,3,...,n-1
+   for (i = 1; i < nPoints - 1; i++)
    {
-      ai[i] = (((3/hi[i])*(an[(i+1)]-an[i]))-((3/(hi[(i-1)])*(an[i]-an[(i-1)]))));
+      alpha[i] = (3 / hi[i])*(an[(i + 1)] - an[i]) - (3 / hi[(i - 1)])*(an[i] - an[(i - 1)]);
    }
 
-   Float64* li = new Float64[nPoints];
-   Float64* ui = new Float64[nPoints];
-   Float64* zi = new Float64[nPoints];
+   // set alphan = 3*f'(xn)-3{an-an(n-1)}/hi(n-1)
+   alpha[nPoints - 1] = (3 * end_slope) - 3 * (an[(nPoints - 1)] - an[(nPoints - 2)]) / hi[(nPoints - 2)];
+
+   std::vector<Float64> li(nPoints);
+   std::vector<Float64> ui(nPoints);
+   std::vector<Float64> zi(nPoints);
    // set li0=2hi0
    //     ui0=0.5
    //     zi0=ai0/li0
-   li[0] = (2*hi[0]);
+   li[0] = (2 * hi[0]);
    ui[0] = 0.5;
-   zi[0] = (ai[0]/li[0]);
+   zi[0] = (alpha[0] / li[0]);
 
    // for i=1,2,3,...,n-1 ,set
    //    li=[2*{x(i+1)-x(i-1)}]-[h(i-1)*u(i-1)]
    //    ui=hi/li
    //    zi=[ai-{h(i-1)*z(i-1)}]/li
-   for(i = 1; i < nPoints-1; i++)
+   for (i = 1; i < nSegments; i++)
    {
-      CSplineSegment& splineSegment1 = m_SplineSegments[i-1];  // x(i-1) = pntA, x(i) = pntB
+      CSplineSegment& splineSegment1 = m_SplineSegments[i - 1];  // x(i-1) = pntA, x(i) = pntB
       CSplineSegment& splineSegment2 = m_SplineSegments[i];    // x(i) = pntA, x(i+1) = pntB
 
       Float64 prevX, nextX; // x(i-1), x(i+1);
       splineSegment1.pntA->get_X(&prevX);
       splineSegment2.pntB->get_X(&nextX);
 
-      li[i] = ((2*(nextX-prevX))-(hi[(i-1)]*ui[(i-1)]));
-      ui[i] = (hi[i]/li[i]);
-      zi[i] = ((ai[i]-(hi[(i-1)]*zi[(i-1)]))/li[i]);
+      li[i] = ((2 * (nextX - prevX)) - (hi[i - 1] * ui[i - 1]));
+      ui[i] = (hi[i] / li[i]);
+      zi[i] = ((alpha[i] - (hi[i - 1] * zi[i - 1])) / li[i]);
    }
 
    // set lin=h(n-1){2-ui(n-1)}
    //     zin={ain-hi(n-1)zi(n-1)}/lin
    //     cn=zin
-   li[(nPoints-1)] = (hi[(nPoints-2)]*(2-ui[(nPoints-2)]));
-   zi[(nPoints-1)] = ((ai[(nPoints-1)]-(hi[(nPoints-2)]*zi[(nPoints-2)]))/li[(nPoints-1)]);
-   cn[(nPoints-1)] = zi[(nPoints-1)];
+   li[(nPoints - 1)] = (hi[(nSegments - 1)] * (2 - ui[(nSegments - 1)]));
+   zi[(nPoints - 1)] = ((alpha[(nPoints - 1)] - (hi[(nSegments-1)] * zi[(nPoints - 2)])) / li[(nPoints - 1)]);
+   cn[(nPoints - 1)] = zi[(nPoints - 1)];
 
    // for i=n-1,n-2,...,0   , set
    //     ci=zi-[ui*c(i+1)]
    //     bi=[a(i+1)-ai]/hi-{hi*{c(i+1)+[2*ci]}/3
    //     di=[c(i+1)-ci]/[3*hi]
-   for( i = nPoints-1; i >= 1; i--)
+   for (i = nPoints - 1; i >= 1; i--)
    {
-      cn[i-1]=(zi[i-1]-(ui[i-1]*cn[(i)]));
-	   bn[i-1]=(((an[i]-an[i-1])/hi[i-1])-((hi[i-1]*(cn[i]+(2*cn[i-1])))/3));
-      dn[i-1]=((cn[i]-cn[i-1])/(3*hi[i-1]));
+      cn[i - 1] = (zi[i - 1] - (ui[i - 1] * cn[(i)]));
+      bn[i - 1] = (((an[i] - an[i - 1]) / hi[i - 1]) - ((hi[i - 1] * (cn[i] + (2 * cn[i - 1]))) / 3));
+      dn[i - 1] = ((cn[i] - cn[i - 1]) / (3 * hi[i - 1]));
    }
 
-   for ( i = 0, iter = m_SplineSegments.begin(); iter != m_SplineSegments.end(); i++, iter++ )
+   i = 0;
+   for (auto& splineSegment : m_SplineSegments)
    {
-      CSplineSegment& splineSegment = *iter;
-      splineSegment.Init(IsZero(an[i]) ? 0 : an[i],IsZero(bn[i]) ? 0 : bn[i],IsZero(cn[i]) ? 0 : cn[i],IsZero(dn[i]) ? 0 : dn[i]);
+      splineSegment.Init(an[i], bn[i], cn[i], dn[i]);
+      i++;
    }
-
-   // clean up
-   delete[] an;
-   delete[] bn;
-   delete[] cn;
-   delete[] dn;
-
-   delete[] hi;
-   delete[] ai;
-   delete[] li;
-   delete[] ui;
-   delete[] zi;
-
+   ATLASSERT(i == nPoints - 1);
    m_bUpdateSpline = false;
+
+#if defined _DEBUG
+   ValidateSpline();
+#endif
+
    return S_OK;
 }
 
@@ -1104,10 +1095,8 @@ CSplineSegment* CCubicSpline::FindSplineSegment(Float64 distance,Float64* pDistF
    }
 
    Float64 start_distance = 0;
-   std::vector<CSplineSegment>::iterator iter;
-   for ( iter = m_SplineSegments.begin(); iter != m_SplineSegments.end(); iter++ )
+   for(auto& splineSegment : m_SplineSegments)
    {
-      CSplineSegment& splineSegment = *iter;
       Float64 S = splineSegment.Length();
 
       if ( start_distance <= distance && distance < start_distance+S )
@@ -1150,6 +1139,59 @@ HRESULT CCubicSpline::CheckValid()
    else
    {
       return S_OK;
+   }
+}
+
+void CCubicSpline::ValidateSpline()
+{
+   // using the points defined by the user, compute points on the spline
+   // the result should be the same point
+   CollectionIndexType nPoints;
+   m_Points->get_Count(&nPoints);
+   for (IndexType idx = 0; idx < nPoints; idx++)
+   {
+      CComPtr<IPoint2d> pnt;
+      m_Points->get_Item(idx, &pnt);
+
+      CComPtr<IPoint2d>pnt2;
+      m_CoordXform->XformEx(pnt, xfrmOldToNew, &pnt2);
+      Float64 X;
+      pnt2->get_X(&X);
+
+      for (const auto& splineSegment : m_SplineSegments)
+      {
+         Float64 Xa, Xb;
+         splineSegment.pntA->get_X(&Xa);
+         splineSegment.pntB->get_X(&Xb);
+         if (InRange(Xa, X, Xb))
+         {
+            Float64 Y = splineSegment.Evaluate(X);
+            pnt2->Move(X, Y);
+
+            CComPtr<IPoint2d> pnt3;
+            m_CoordXform->XformEx(pnt2, xfrmNewToOld, &pnt3);
+            ATLASSERT(pnt->SameLocation(pnt3) == S_OK);
+         }
+      }
+
+      // project a point on the spline onto the spline will result in the same point
+      pnt2.Release();
+      ProjectPoint(pnt, &pnt2);
+      ATLASSERT(pnt->SameLocation(pnt2) == S_OK);
+   }
+
+   // make sure location and slope at comment segment boundaries are the same
+   IndexType nSegments = m_SplineSegments.size();
+   for (IndexType idx = 0; idx < nSegments-1; idx++)
+   {
+      Float64 Xa, Xb;
+      m_SplineSegments[idx].pntB->get_X(&Xb);
+      m_SplineSegments[idx+1].pntA->get_X(&Xa);
+      ATLASSERT(IsEqual(Xa, Xb));
+      ATLASSERT(m_SplineSegments[idx].pntB->SameLocation(m_SplineSegments[idx + 1].pntA) == S_OK);
+      Float64 slope1 = m_SplineSegments[idx].Slope(Xb);
+      Float64 slope2 = m_SplineSegments[idx+1].Slope(Xa);
+      ATLASSERT(IsEqual(slope1, slope2));
    }
 }
 

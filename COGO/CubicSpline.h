@@ -133,6 +133,7 @@ private:
    HRESULT ProjectPoint(IPoint2d* point,Float64* pDistFromStart,IPoint2d* *pNewPoint);
 
    HRESULT CheckValid();
+   void ValidateSpline();
 
    CComPtr<ICoordinateXform2d> m_CoordXform;
    CComPtr<IGeomUtil2d> m_GeomUtil;
@@ -142,7 +143,7 @@ private:
    Float64 m_StartDirection; // angle (rad) measured CCW from due east
    Float64 m_EndDirection;   // angle (rad) measured CCW from due east
    Float64 m_RotationAngle;  // rotation angle between the global coordinate system and the spline coordinate system
-
+   
    bool m_bUpdateSpline;
 };
 
