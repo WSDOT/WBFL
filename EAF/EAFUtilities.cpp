@@ -408,8 +408,10 @@ BOOL EAFLoadDocumentationMap(LPCTSTR lpszDocMapFile,std::map<UINT,CString>& topi
       return FALSE;
    }
 
+   int i = 0;
+   int max = 100;
    char buffer[256];
-   while (!ifMapFile.eof())
+   while (!ifMapFile.eof() && i++ < max)
    {
       ifMapFile.getline(buffer,256);
       CString str(buffer);
