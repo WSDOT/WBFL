@@ -216,7 +216,7 @@ public:
    {
       CComPtr<ISuperstructureMember> ssMbr;
       get_SuperstructureMember(&ssMbr);
-      std::shared_ptr<mathCompositeFunction2d> pFunction = GetGirderProfile(ssMbr,true);
+      mathCompositeFunction2d* pFunction = GetGirderProfile(ssMbr,true);
 
       CComPtr<IPolyShape> polyShape;
       polyShape.CoCreateInstance(CLSID_PolyShape);
@@ -409,7 +409,7 @@ public:
 
       CComPtr<ISuperstructureMember> ssMbr;
       get_SuperstructureMember(&ssMbr);
-      std::shared_ptr<mathCompositeFunction2d> pFunction = GetGirderProfile(ssMbr, false);
+      mathCompositeFunction2d* pFunction = GetGirderProfile(ssMbr, false);
 
       for (const auto Xgp : xValues)
       {
@@ -977,7 +977,7 @@ protected:
    {
       CComPtr<ISuperstructureMember> ssMbr;
       get_SuperstructureMember(&ssMbr);
-      std::shared_ptr<mathCompositeFunction2d> pFunction = GetGirderProfile(ssMbr, true);
+      mathCompositeFunction2d* pFunction = GetGirderProfile(ssMbr, true);
 
       Float64 Xgp = ConvertToGirderPathCoordinate(Xs);
       Float64 H = pFunction->Evaluate(Xgp);
@@ -988,7 +988,7 @@ protected:
    {
       CComPtr<ISuperstructureMember> ssMbr;
       get_SuperstructureMember(&ssMbr);
-      std::shared_ptr<mathCompositeFunction2d> pFunction = GetGirderProfile(ssMbr, false);
+      mathCompositeFunction2d* pFunction = GetGirderProfile(ssMbr, false);
 
       Float64 Xgp = ConvertToGirderPathCoordinate(Xs);
       Float64 H = pFunction->Evaluate(Xgp);
@@ -997,10 +997,24 @@ protected:
    
    Float64 ConvertToGirderPathCoordinate(Float64 Xs)
    {
-      Float64 XgpStart, XgpEnd;
-      GetSegmentRange(&XgpStart, &XgpEnd);
-      Float64 Xsp = ConvertToSegmentPathCoordinate(Xs);
-      return XgpStart + Xsp;
+      CComPtr<ISegment> prev_segment;
+      get_PrevSegment(&prev_segment);
+      if (prev_segment)
+      {
+         Float64 XgpStart, XgpEnd;
+         GetSegmentRange(&XgpStart, &XgpEnd);
+         Float64 Xsp = ConvertToSegmentPathCoordinate(Xs);
+         return XgpStart + Xsp;
+      }
+      else
+      {
+         // this is the first segment
+         CComPtr<IGirderLine> girderLine;
+         get_GirderLine(&girderLine);
+         Float64 brgOffset;
+         girderLine->get_BearingOffset(etStart, &brgOffset);
+         return brgOffset + Xs;
+      }
    }
 
    Float64 ConvertToSegmentPathCoordinate(Float64 Xs)
@@ -1083,11 +1097,7 @@ protected:
          firstGirderLine->get_BearingOffset(etStart, &brgOffset);
          firstGirderLine->get_EndDistance(etStart, &endDist);
          Float64 offset = brgOffset - endDist;
-         if (offset < 0)
-         {
-            // first segment starts before the pier line... need to make an adjustment to the start point
-            *pXgpStart += offset;
-         }
+         *pXgpStart += offset;
       }
 
       segment.Release();
@@ -1102,11 +1112,7 @@ protected:
          lastGirderLine->get_BearingOffset(etEnd, &brgOffset);
          lastGirderLine->get_EndDistance(etEnd, &endDist);
          Float64 offset = brgOffset - endDist;
-         if (offset < 0)
-         {
-            // last segment ends after the pier line... need to make an adjustment to the end point
-            *pXgpEnd -= offset;
-         }
+         *pXgpEnd -= offset;
       }
 
 
@@ -1142,16 +1148,27 @@ protected:
       // move the start and end locations to the face of the segment
       Float64 leftClosureAdj(0); // the left/right prismatic variation length are measured from the CL Closure... when skipping the closure, an adjustment is required
       Float64 rightClosureAdj(0);
+
+      CComPtr<ISegment> prev_segment, next_segment;
+      get_PrevSegment(&prev_segment);
+      get_NextSegment(&next_segment);
       CComPtr<IGirderLine> girderLine;
       get_GirderLine(&girderLine);
       Float64 brgOffset, endDist;
-      girderLine->get_BearingOffset(etStart, &brgOffset);
-      girderLine->get_EndDistance(etStart, &endDist);
-      leftClosureAdj = Max(0.0,(brgOffset - endDist));
 
-      girderLine->get_BearingOffset(etEnd, &brgOffset);
-      girderLine->get_EndDistance(etEnd, &endDist);
-      rightClosureAdj = Max(0.0,(brgOffset - endDist));
+      if (prev_segment)
+      {
+         girderLine->get_BearingOffset(etStart, &brgOffset);
+         girderLine->get_EndDistance(etStart, &endDist);
+         leftClosureAdj = Max(0.0, (brgOffset - endDist));
+      }
+
+      if (next_segment)
+      {
+         girderLine->get_BearingOffset(etEnd, &brgOffset);
+         girderLine->get_EndDistance(etEnd, &endDist);
+         rightClosureAdj = Max(0.0, (brgOffset - endDist));
+      }
 
       if (bIncludeClosure == VARIANT_FALSE && bSegmentCoordinates == VARIANT_FALSE)
       {

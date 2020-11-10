@@ -729,9 +729,62 @@ Float64 ComputePrecamber(Float64 Xs, Float64 Ls, Float64 precamber)
    return (4 * precamber / Ls)*Xs*(1 - Xs / Ls);
 }
 
-std::shared_ptr<mathCompositeFunction2d> GetGirderProfile(ISuperstructureMember* pSSMbr, bool bGirderProfile)
+
+// GetGirderProfile, below, caches the profile function in the ItemData of a SuperstructureMember object. ItemData is stashed by an IUnknown
+// pointer of a COM object. The profile function is not a COM object. We create a FunctionHolder object that is a COM object that
+// holds the profile function object an can be stored in the ItemData of the SuperstructureMember object.
+// {F427244C-4A03-4037-AB2A-6769AAF5CA0A}
+#include <initguid.h>
+DEFINE_GUID(CLSID_FunctionHolder, 0xf427244c, 0x4a03, 0x4037, 0xab, 0x2a, 0x67, 0x69, 0xaa, 0xf5, 0xca, 0xa);
+// {D62A0D3A-8D99-4F82-8155-AF3E30BC175D}
+DEFINE_GUID(IID_IFunctionHolder, 0xd62a0d3a, 0x8d99, 0x4f82, 0x81, 0x55, 0xaf, 0x3e, 0x30, 0xbc, 0x17, 0x5d);
+
+MIDL_INTERFACE("D62A0D3A-8D99-4F82-8155-AF3E30BC175D")
+IFunctionHolder : public IUnknown
 {
-   std::shared_ptr<mathCompositeFunction2d> pCompositeFunction(std::make_shared<mathCompositeFunction2d>());
+   virtual void SetFunction(mathCompositeFunction2d* pFunction) = 0;
+   virtual mathCompositeFunction2d* GetFunction() = 0;
+};
+
+class ATL_NO_VTABLE CFunctionHolder :
+   public CComObjectRootEx<CComSingleThreadModel>,
+   public CComCoClass<CFunctionHolder, &CLSID_FunctionHolder>,
+   public IFunctionHolder
+{
+public:
+   BEGIN_COM_MAP(CFunctionHolder)
+      COM_INTERFACE_ENTRY_IID(IID_IFunctionHolder,IFunctionHolder)
+   END_COM_MAP()
+
+   virtual void SetFunction(mathCompositeFunction2d* pFunction) override
+   {
+      m_pFunction.reset(pFunction);
+   }
+
+   virtual mathCompositeFunction2d* GetFunction() override
+   {
+      return m_pFunction.get();
+   }
+protected:
+   std::unique_ptr<mathCompositeFunction2d> m_pFunction;
+};
+
+mathCompositeFunction2d* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bGirderProfile)
+{
+   // The profile function is cached as item data on the superstructure member object
+   // Check the cache before proceeding
+   CComBSTR bstrItemDataName(bGirderProfile ? _T("GirderProfileFunction") : _T("BottomFlangeFunction"));
+   CComQIPtr<IItemData> itemData(pSSMbr);
+   CComPtr<IUnknown> punk;
+   if (SUCCEEDED(itemData->GetItemData(bstrItemDataName, &punk)))
+   {
+      // the function was cached, return it
+      CComQIPtr<IFunctionHolder> pf(punk);
+      return pf->GetFunction();
+   }
+   
+   // The function isn't cached so create it and then add it to the cache
+   std::unique_ptr<mathCompositeFunction2d> pCompositeFunction(std::make_unique<mathCompositeFunction2d>());
 
    SegmentIndexType nSegments;
    pSSMbr->get_SegmentCount(&nSegments);
@@ -795,11 +848,28 @@ std::shared_ptr<mathCompositeFunction2d> GetGirderProfile(ISuperstructureMember*
          Float64 h1 = (bGirderProfile ? h : b);
          Float64 h2 = h1;
 
+         Float64 precamber;
+         segment->get_Precamber(&precamber);
+
          xEnd = xStart + segment_length;
-         Float64 slope = (h2 - h1) / segment_length;
-         mathLinFunc2d func(slope, h1);
-         pCompositeFunction->AddFunction(xStart, xEnd, func);
-         slopeParabola = slope;
+         if (!bGirderProfile || IsZero(precamber))
+         {
+            Float64 slope = (h2 - h1) / segment_length;
+            mathLinFunc2d func(slope, h1);
+            pCompositeFunction->AddFunction(xStart, xEnd, func);
+            slopeParabola = slope;
+         }
+         else
+         {
+            // NOTE: Tricky... using negative of precamber to make this parabola
+            // the callers of this method use the negative of the value return
+            // from the function to get the profile based on the top of the girder
+            // being at zero. That negative cancels out the negative used here and we
+            // get the profile we want
+            mathPolynomial2d func(GenerateParabola(xStart, xEnd, -precamber, h1));
+            pCompositeFunction->AddFunction(xStart, xEnd, func);
+            slopeParabola = 0;
+         }
          xStart = xEnd;
       }
       else
@@ -1089,5 +1159,15 @@ std::shared_ptr<mathCompositeFunction2d> GetGirderProfile(ISuperstructureMember*
       xSegmentStart += segment_length;
    } // next segment
 
-   return pCompositeFunction;
+   // Cache the function as item data on the superstructure member object.
+   CComObject<CFunctionHolder>* pFuncHolder;
+   CComObject<CFunctionHolder>::CreateInstance(&pFuncHolder);
+   CComPtr<IFunctionHolder> func_holder(pFuncHolder);
+   func_holder->SetFunction(pCompositeFunction.release());
+   CComPtr<IUnknown> punk_func_holder;
+   func_holder.QueryInterface(&punk_func_holder);
+   HRESULT hr = itemData->AddItemData(bstrItemDataName, punk_func_holder);
+   ATLASSERT(SUCCEEDED(hr));
+
+   return func_holder->GetFunction();
 }

@@ -47,6 +47,7 @@ HRESULT CItemDataManager::GetItemData(BSTR name,IUnknown** data)
 
    USES_CONVERSION;
 
+   HRESULT hr = S_OK;
    std::_tstring strName(OLE2T(name));
    ItemDataCollection::iterator found( m_Items.find(strName) );
 
@@ -60,11 +61,11 @@ HRESULT CItemDataManager::GetItemData(BSTR name,IUnknown** data)
    }
    else
    {
-#pragma Reminder("UPDATE: Need a custom err return value")
       (*data) = nullptr;
+      hr = E_INVALIDARG;
    }
 
-   return S_OK;
+   return hr;
 }
 
 HRESULT CItemDataManager::RemoveItemData(BSTR name)

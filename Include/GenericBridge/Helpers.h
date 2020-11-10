@@ -73,4 +73,4 @@ Float64 WBFLGENERICBRIDGEFUNC ComputePrecamber(Float64 Xs, Float64 Ls, Float64 p
 
 #include <memory>
 #include <Math\CompositeFunction2d.h>
-std::shared_ptr<mathCompositeFunction2d> GetGirderProfile(ISuperstructureMember* pSSMbr, bool bGirderProfile);
+mathCompositeFunction2d* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bGirderProfile);
