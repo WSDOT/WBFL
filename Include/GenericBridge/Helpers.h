@@ -53,7 +53,6 @@ typedef enum ZoneBreakType
    End         // break point is at the start of the linear section at the end of the member
 } ZoneBreakType;
 
-std::array<Float64, 4> WBFLGENERICBRIDGEFUNC ResolveFractionalDistance(const std::array<Float64, 4>& X, Float64 L);
 TransitionType WBFLGENERICBRIDGEFUNC TransitionTypeFromZone(ZoneType zone,Float64 Yl, Float64 Yr,bool bParabolas);
 Float64 WBFLGENERICBRIDGEFUNC GetSectionDepth(Float64 X,Float64 X1, Float64 H1, Float64 X2, Float64 H2, TransitionType transition);
 ZoneType WBFLGENERICBRIDGEFUNC GetZone(Float64 Xs, const std::array<Float64, 4>& X);
@@ -71,3 +70,7 @@ void WBFLGENERICBRIDGEFUNC AdjustForEndBlocks(INUBeam* pBeam, Float64 Web);
 void WBFLGENERICBRIDGEFUNC AdjustForVariableDepth(INUBeam* pBeam, Float64 Hg, Float64 Hbf);
 Float64 WBFLGENERICBRIDGEFUNC ComputeTopFlangeThickening(Float64 Xs, Float64 Ls, ThickeningType thickeningType, Float64 tft);
 Float64 WBFLGENERICBRIDGEFUNC ComputePrecamber(Float64 Xs, Float64 Ls, Float64 precamber);
+
+#include <memory>
+#include <Math\CompositeFunction2d.h>
+std::shared_ptr<mathCompositeFunction2d> GetGirderProfile(ISuperstructureMember* pSSMbr, bool bGirderProfile);

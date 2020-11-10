@@ -33,19 +33,8 @@
 
 #include <GenericBridge\Helpers.h>
 
-#include <Math\CompositeFunction2d.h>
-#include <Math\LinFunc2d.h>
-#include <Math\MathUtils.h>
-
 #include <algorithm>
 #include <array>
-
-
-inline bool IsParabolicVariation(SegmentVariationType variationType)
-{
-   return (variationType == svtParabolic || variationType == svtDoubleParabolic ? true : false);
-}
-
 
 /////////////////////////////////////////////////////////////////////////////
 // ISplicedGirderSegmentImpl
@@ -124,6 +113,7 @@ protected:
       }
    } Key;
    std::map<Key, CComPtr<IShape>> m_PrimaryShapeCache; // cache of primary shapes in girder coordinates
+
    HRESULT CachePrimaryShape(Float64 Xs, SectionBias sectionBias, IShape* pShape)
    {
       m_PrimaryShapeCache.emplace(Key(Xs, sectionBias), pShape);
@@ -224,6 +214,10 @@ public:
 
    STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure,IShape** ppShape) override
    {
+      CComPtr<ISuperstructureMember> ssMbr;
+      get_SuperstructureMember(&ssMbr);
+      std::shared_ptr<mathCompositeFunction2d> pFunction = GetGirderProfile(ssMbr,true);
+
       CComPtr<IPolyShape> polyShape;
       polyShape.CoCreateInstance(CLSID_PolyShape);
 
@@ -232,8 +226,7 @@ public:
 
       for ( const auto Xgp: xValues)
       {
-         Float64 Xs = ConvertToSegmentCoordinate(Xgp); // need location in Segment Coordinates to get section depth
-         Float64 H = GetSectionDepth(Xs);
+         Float64 H = pFunction->Evaluate(Xgp);
          polyShape->AddPoint(Xgp,-H); // create profile shape using Girder Path Coordinate and section depth
       }
 
@@ -414,12 +407,14 @@ public:
       std::vector<Float64> xValues;
       GetProfilePointLocations(VARIANT_FALSE, VARIANT_FALSE, &xValues); // exclude closure, want girder path coordinates
 
+      CComPtr<ISuperstructureMember> ssMbr;
+      get_SuperstructureMember(&ssMbr);
+      std::shared_ptr<mathCompositeFunction2d> pFunction = GetGirderProfile(ssMbr, false);
+
       for (const auto Xgp : xValues)
       {
          Float64 Xs = ConvertToSegmentCoordinate(Xgp);
-         Float64 section_depth = GetSectionDepth(Xs);
-         Float64 bottom_flange_height = GetBottomFlangeHeight(Xs);
-         Float64 y = section_depth - bottom_flange_height;
+         Float64 y = pFunction->Evaluate(Xgp);
 
          CComPtr<IPoint2d> point;
          point.CoCreateInstance(CLSID_Point2d);
@@ -978,66 +973,36 @@ protected:
       return 0; // Xs is not in a closure
    }
 
-   std::array<Float64, 4> GetTransitionPoints()
-   {
-      Float64 Lg;
-      get_Length(&Lg);
-
-      std::array<Float64, 4> X;
-
-      if (m_VariationType == svtNone)
-      {
-         X[ZoneBreakType::Start] = 0;
-         X[ZoneBreakType::LeftBreak] = Lg / 2;
-         X[ZoneBreakType::RightBreak] = Lg / 2;
-         X[ZoneBreakType::End] = Lg;
-      }
-      else if (m_VariationType == svtLinear)
-      {
-         X[ZoneBreakType::Start] = m_VariationLength[ZoneBreakType::Start];
-         X[ZoneBreakType::LeftBreak] = Lg / 2;
-         X[ZoneBreakType::RightBreak] = Lg / 2;
-         X[ZoneBreakType::End] = Lg - m_VariationLength[ZoneBreakType::End];
-      }
-      else
-      {
-         X[ZoneBreakType::Start] = m_VariationLength[ZoneBreakType::Start];
-         X[ZoneBreakType::LeftBreak] = m_VariationLength[ZoneBreakType::Start] + m_VariationLength[ZoneBreakType::LeftBreak];
-         X[ZoneBreakType::RightBreak] = Lg - m_VariationLength[ZoneBreakType::RightBreak] - m_VariationLength[ZoneBreakType::End];
-         X[ZoneBreakType::End] = Lg - m_VariationLength[ZoneBreakType::End];
-      }
-
-      return X;
-   }
-
    Float64 GetSectionDepth(Float64 Xs)
    {
-      Float64 Lg;
-      get_Length(&Lg);
+      CComPtr<ISuperstructureMember> ssMbr;
+      get_SuperstructureMember(&ssMbr);
+      std::shared_ptr<mathCompositeFunction2d> pFunction = GetGirderProfile(ssMbr, true);
 
-      bool bParabolas = IsParabolicVariation(m_VariationType);
-
-      std::array<Float64, 4> X = GetTransitionPoints();
-      Float64 Xl, Yl, Xr, Yr;
-      ZoneType zone = ::GetControlPoints(Xs, Lg, X, m_VariationHeight, &Xl, &Yl, &Xr, &Yr);
-      Float64 H = ::GetSectionDepth(Xs, Xl, Yl, Xr, Yr, TransitionTypeFromZone(zone, Yl, Yr, bParabolas));
+      Float64 Xgp = ConvertToGirderPathCoordinate(Xs);
+      Float64 H = pFunction->Evaluate(Xgp);
       return H;
    }
 
    Float64 GetBottomFlangeHeight(Float64 Xs)
    {
-      Float64 Lg;
-      get_Length(&Lg);
+      CComPtr<ISuperstructureMember> ssMbr;
+      get_SuperstructureMember(&ssMbr);
+      std::shared_ptr<mathCompositeFunction2d> pFunction = GetGirderProfile(ssMbr, false);
 
-      bool bParabolas = IsParabolicVariation(m_VariationType);
-
-      std::array<Float64, 4> X = GetTransitionPoints();
-      Float64 Xl, Yl, Xr, Yr;
-      ZoneType zone = ::GetControlPoints(Xs, Lg, X, m_VariationBottomFlangeDepth, &Xl, &Yl, &Xr, &Yr);
-      Float64 H = ::GetSectionDepth(Xs, Xl, Yl, Xr, Yr, TransitionTypeFromZone(zone, Yl, Yr, bParabolas));
+      Float64 Xgp = ConvertToGirderPathCoordinate(Xs);
+      Float64 H = pFunction->Evaluate(Xgp);
       return H;
    }
    
+   Float64 ConvertToGirderPathCoordinate(Float64 Xs)
+   {
+      Float64 XgpStart, XgpEnd;
+      GetSegmentRange(&XgpStart, &XgpEnd);
+      Float64 Xsp = ConvertToSegmentPathCoordinate(Xs);
+      return XgpStart + Xsp;
+   }
+
    Float64 ConvertToSegmentPathCoordinate(Float64 Xs)
    {
       CComPtr<IGirderLine> girderLine;
@@ -1238,7 +1203,7 @@ protected:
          }
       }
 
-      if (IsParabolicVariation(m_VariationType))
+      if (m_VariationType == svtParabolic || m_VariationType == svtDoubleParabolic)
       {
          if (m_VariationType == svtParabolic)
          {
@@ -1276,3 +1241,4 @@ protected:
       pvXvalues->erase(std::unique(pvXvalues->begin(), pvXvalues->end()), pvXvalues->end());
    }
 };
+

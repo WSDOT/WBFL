@@ -25,30 +25,17 @@
 #include <GenericBridge\Helpers.h>
 #include <MathEx.h>
 #include <array>
+#include <memory>
+#include <numeric>
+
+#include <Math\LinFunc2d.h>
+#include <Math\MathUtils.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
-std::array<Float64, 4> ResolveFractionalDistance(const std::array<Float64, 4>& X, Float64 L)
-{
-   std::array<Float64, 4> result;
-   for (int i = 0; i < 4; i++)
-   {
-      if (X[i] < 0)
-      {
-         result[i] = -X[i] * L;
-      }
-      else
-      {
-         result[i] = X[i];
-      }
-   }
-
-   return result;
-}
 
 TransitionType TransitionTypeFromZone(ZoneType zone,Float64 Yl, Float64 Yr, bool bParabolas)
 {
@@ -740,4 +727,367 @@ Float64 ComputePrecamber(Float64 Xs, Float64 Ls, Float64 precamber)
    }
 
    return (4 * precamber / Ls)*Xs*(1 - Xs / Ls);
+}
+
+std::shared_ptr<mathCompositeFunction2d> GetGirderProfile(ISuperstructureMember* pSSMbr, bool bGirderProfile)
+{
+   std::shared_ptr<mathCompositeFunction2d> pCompositeFunction(std::make_shared<mathCompositeFunction2d>());
+
+   SegmentIndexType nSegments;
+   pSSMbr->get_SegmentCount(&nSegments);
+
+   Float64 xSegmentStart = 0; // start of segment
+   Float64 xStart = 0; // start of curve section
+   Float64 xEnd = 0; // end of curve section
+
+   bool bParabola = false;
+   Float64 xParabolaStart, xParabolaEnd;
+   Float64 yParabolaStart, yParabolaEnd;
+   Float64 slopeParabola = 0;
+
+   for (SegmentIndexType segIdx = 0; segIdx < nSegments; segIdx++)
+   {
+      CComPtr<ISuperstructureMemberSegment> ssmbrSegment;
+      pSSMbr->get_Segment(segIdx, &ssmbrSegment);
+
+      CComQIPtr<ISplicedGirderSegment> segment(ssmbrSegment);
+      ATLASSERT(segment != nullptr);
+
+      SegmentVariationType variation_type;
+      segment->get_VariationType(&variation_type);
+
+      Float64 segment_length;
+      segment->get_LayoutLength(&segment_length);
+
+      CComPtr<IGirderLine> girderLine;
+      segment->get_GirderLine(&girderLine);
+
+      if (segIdx == 0)
+      {
+         Float64 brgOffset;
+         girderLine->get_BearingOffset(etStart, &brgOffset);
+         Float64 endDist;
+         girderLine->get_EndDistance(etStart, &endDist);
+         Float64 offset_dist = brgOffset - endDist;
+         offset_dist = IsZero(offset_dist) ? 0.0 : offset_dist;
+         xSegmentStart = offset_dist;
+         segment_length -= offset_dist;
+      }
+
+
+      if (segIdx == nSegments - 1)
+      {
+         Float64 brgOffset;
+         girderLine->get_BearingOffset(etEnd, &brgOffset);
+         Float64 endDist;
+         girderLine->get_EndDistance(etEnd, &endDist);
+         Float64 offset_dist = brgOffset - endDist;
+         offset_dist = IsZero(offset_dist) ? 0.0 : offset_dist;
+         segment_length -= offset_dist;
+      }
+
+      xStart = xSegmentStart;
+
+      if (variation_type == svtNone)
+      {
+         Float64 l, h, b;
+         segment->GetVariationParameters(sztLeftPrismatic, &l, &h, &b);
+         Float64 h1 = (bGirderProfile ? h : b);
+         Float64 h2 = h1;
+
+         xEnd = xStart + segment_length;
+         Float64 slope = (h2 - h1) / segment_length;
+         mathLinFunc2d func(slope, h1);
+         pCompositeFunction->AddFunction(xStart, xEnd, func);
+         slopeParabola = slope;
+         xStart = xEnd;
+      }
+      else
+      {
+         std::array<Float64, 4> variation_length, variation_height, variation_bottom_flange;
+         segment->GetVariationParameters(sztLeftPrismatic, &variation_length[sztLeftPrismatic], &variation_height[sztLeftPrismatic], &variation_bottom_flange[sztLeftPrismatic]);
+         segment->GetVariationParameters(sztLeftTapered, &variation_length[sztLeftTapered], &variation_height[sztLeftTapered], &variation_bottom_flange[sztLeftTapered]);
+         segment->GetVariationParameters(sztRightTapered, &variation_length[sztRightTapered], &variation_height[sztRightTapered], &variation_bottom_flange[sztRightTapered]);
+         segment->GetVariationParameters(sztRightPrismatic, &variation_length[sztRightPrismatic], &variation_height[sztRightPrismatic], &variation_bottom_flange[sztRightPrismatic]);
+
+         Float64 h1, h2, h3, h4;
+         if (bGirderProfile)
+         {
+            // we are creating a girder profile
+            h1 = variation_height[sztLeftPrismatic];
+            h2 = variation_height[sztRightPrismatic];
+            h3 = variation_height[sztLeftTapered];
+            h4 = variation_height[sztRightTapered];
+         }
+         else
+         {
+            // we are creating a bottom flange profile
+            h1 = variation_bottom_flange[sztLeftPrismatic];
+            h2 = variation_bottom_flange[sztRightPrismatic];
+            h3 = variation_bottom_flange[sztLeftTapered];
+            h4 = variation_bottom_flange[sztRightTapered];
+         }
+
+         if (0 < variation_length[sztLeftPrismatic])
+         {
+            // create a prismatic segment
+            mathLinFunc2d func(0.0, h1);
+            xEnd = xStart + (variation_type == svtNone ? segment_length / 2 : variation_length[sztLeftPrismatic]);
+            pCompositeFunction->AddFunction(xStart, xEnd, func);
+            slopeParabola = 0;
+            xStart = xEnd;
+         }
+
+         if (variation_type == svtLinear)
+         {
+            // create a linear taper segment
+            Float64 taper_length = segment_length - variation_length[sztLeftPrismatic] - variation_length[sztRightPrismatic];
+            Float64 slope = (h2 - h1) / taper_length;
+            Float64 b = h1 - slope*xStart;
+
+            mathLinFunc2d func(slope, b);
+            xEnd = xStart + taper_length;
+            pCompositeFunction->AddFunction(xStart, xEnd, func);
+            xStart = xEnd;
+            slopeParabola = slope;
+         }
+         else if (variation_type == svtDoubleLinear)
+         {
+            // create a linear taper for left side of segment
+            Float64 slope = (h3 - h1) / variation_length[sztLeftTapered];
+            Float64 b = h1 - slope*xStart;
+
+            mathLinFunc2d left_func(slope, b);
+            xEnd = xStart + variation_length[sztLeftTapered];
+            pCompositeFunction->AddFunction(xStart, xEnd, left_func);
+            xStart = xEnd;
+
+            // create a linear segment between left and right tapers
+            Float64 taper_length = segment_length - std::accumulate(std::begin(variation_length), std::end(variation_length), 0.0);
+            slope = (h4 - h3) / taper_length;
+            b = h3 - slope*xStart;
+
+            mathLinFunc2d middle_func(slope, b);
+            xEnd = xStart + taper_length;
+            pCompositeFunction->AddFunction(xStart, xEnd, middle_func);
+            xStart = xEnd;
+
+            // create a linear taper for right side of segment
+            slope = (h2 - h4) / variation_length[sztRightTapered];
+            b = h4 - slope*xStart;
+
+            mathLinFunc2d right_func(slope, b);
+            xEnd = xStart + variation_length[sztRightTapered];
+            pCompositeFunction->AddFunction(xStart, xEnd, right_func);
+            xStart = xEnd;
+            slopeParabola = slope;
+         }
+         else if (variation_type == svtParabolic)
+         {
+            if (!bParabola)
+            {
+               // this is the start of a parabolic segment
+               bParabola = true;
+               xParabolaStart = xStart;
+               yParabolaStart = h1;
+            }
+
+            // Parabola ends in this segment if
+            // 1) this segment has a prismatic segment on the right end -OR-
+            // 2) this is the last segment -OR-
+            // 3) the next segment starts with a prismatic segment -OR-
+            // 4) the next segment has a linear transition
+
+            CComPtr<ISuperstructureMemberSegment> next_ssmbrSegment;
+            if (segIdx < nSegments - 1)
+            {
+               pSSMbr->get_Segment(segIdx + 1, &next_ssmbrSegment);
+            }
+            CComQIPtr<ISplicedGirderSegment> next_segment(next_ssmbrSegment);
+
+
+            Float64 next_segment_left_prismatic_length = 0;
+            SegmentVariationType next_segment_variation_type = svtNone;
+
+            if (next_segment)
+            {
+               Float64 h, b;
+               next_segment->GetVariationParameters(sztLeftPrismatic, &next_segment_left_prismatic_length, &h, &b);
+
+               next_segment->get_VariationType(&next_segment_variation_type);
+            }
+
+            if (
+               0 < variation_length[sztRightPrismatic] || // parabola ends in this segment -OR-
+               segIdx == nSegments - 1 || // this is the last segment (parabola ends here) -OR-
+               0 < next_segment_left_prismatic_length || // next segment starts with prismatic section -OR-
+               (next_segment_variation_type == svtNone || next_segment_variation_type == svtLinear || next_segment_variation_type == svtDoubleLinear) // next segment is linear 
+               )
+            {
+               // parabola ends in this segment
+               Float64 xParabolaEnd = xStart + segment_length - variation_length[sztRightPrismatic];
+               Float64 yParabolaEnd = h2;
+
+               if (yParabolaEnd < yParabolaStart)
+               {
+                  // slope at end is zero
+                  mathPolynomial2d func = GenerateParabola2(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, 0.0);
+                  pCompositeFunction->AddFunction(xParabolaStart, xParabolaEnd, func);
+               }
+               else
+               {
+                  // slope at start is zero
+                  mathPolynomial2d func = GenerateParabola1(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, slopeParabola);
+                  pCompositeFunction->AddFunction(xParabolaStart, xParabolaEnd, func);
+               }
+
+               bParabola = false;
+               xStart = xParabolaEnd;
+            }
+            else
+            {
+               // parabola ends further down the girderline
+               // do nothing???
+            }
+         }
+         else if (variation_type == svtDoubleParabolic)
+         {
+            // left parabola ends in this segment
+            if (!bParabola)
+            {
+               // not currently in a parabola, based the start point on this segment
+               xParabolaStart = xSegmentStart + variation_length[sztLeftPrismatic];
+               yParabolaStart = h1;
+            }
+
+#pragma Reminder("BUG: Assuming slope at start is zero, but it may not be if tangent to a linear segment")
+            xParabolaEnd = xSegmentStart + variation_length[sztLeftPrismatic] + variation_length[sztLeftTapered];
+            yParabolaEnd = h3;
+            mathPolynomial2d func_left_parabola;
+            if (yParabolaEnd < yParabolaStart)
+            {
+               func_left_parabola = GenerateParabola2(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, 0.0);
+            }
+            else
+            {
+               func_left_parabola = GenerateParabola1(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, slopeParabola);
+            }
+
+            pCompositeFunction->AddFunction(xParabolaStart, xParabolaEnd, func_left_parabola);
+
+            // parabola on right side of this segment starts here
+            xParabolaStart = xSegmentStart + segment_length - variation_length[sztRightPrismatic] - variation_length[sztRightTapered];
+            yParabolaStart = h4;
+            bParabola = true;
+
+            if (!IsZero(xParabolaStart - xParabolaEnd))
+            {
+               // create a line segment between parabolas
+               Float64 taper_length = segment_length - std::accumulate(std::begin(variation_length), std::end(variation_length), 0.0);
+               Float64 slope = -(h4 - h3) / taper_length;
+               Float64 b = h3 - slope*xParabolaEnd;
+
+               mathLinFunc2d middle_func(slope, b);
+               pCompositeFunction->AddFunction(xParabolaEnd, xParabolaStart, middle_func);
+               slopeParabola = slope;
+            }
+
+            // parabola ends in this segment if
+            // 1) this is the last segment
+            // 2) right prismatic section length > 0
+            // 3) next segment is not parabolic
+
+            CComPtr<ISuperstructureMemberSegment> next_ssmbrSegment;
+            if (segIdx < nSegments - 1)
+            {
+               pSSMbr->get_Segment(segIdx + 1, &next_ssmbrSegment);
+            }
+            CComQIPtr<ISplicedGirderSegment> next_segment(next_ssmbrSegment);
+
+
+            SegmentVariationType next_segment_variation_type = svtNone;
+            if (next_segment)
+            {
+               next_segment->get_VariationType(&next_segment_variation_type);
+            }
+
+            if (0 < variation_length[sztRightPrismatic] ||
+               segIdx == nSegments - 1 ||
+               (next_segment_variation_type == svtNone || next_segment_variation_type == svtLinear || next_segment_variation_type == svtDoubleLinear) // next segment is linear 
+               )
+            {
+               bParabola = false;
+               xParabolaEnd = xSegmentStart + segment_length - variation_length[sztRightPrismatic];
+               yParabolaEnd = h2;
+
+
+               mathPolynomial2d func_right_parabola;
+               if (yParabolaEnd < yParabolaStart)
+               {
+                  // compute slope at end of parabola
+                  if (next_segment)
+                  {
+                     Float64 next_segment_length;
+                     next_segment->get_LayoutLength(&next_segment_length);
+
+                     std::array<Float64, 4> next_segment_variation_length, next_segment_variation_height, next_segment_variation_bottom_flange;
+                     next_segment->GetVariationParameters(sztLeftPrismatic, &next_segment_variation_length[sztLeftPrismatic], &next_segment_variation_height[sztLeftPrismatic], &next_segment_variation_bottom_flange[sztLeftPrismatic]);
+                     next_segment->GetVariationParameters(sztLeftTapered, &next_segment_variation_length[sztLeftTapered], &next_segment_variation_height[sztLeftTapered], &next_segment_variation_bottom_flange[sztLeftTapered]);
+                     next_segment->GetVariationParameters(sztRightTapered, &next_segment_variation_length[sztRightTapered], &next_segment_variation_height[sztRightTapered], &next_segment_variation_bottom_flange[sztRightTapered]);
+                     next_segment->GetVariationParameters(sztRightPrismatic, &next_segment_variation_length[sztRightPrismatic], &next_segment_variation_height[sztRightPrismatic], &next_segment_variation_bottom_flange[sztRightPrismatic]);
+
+                     if (next_segment_variation_type == svtLinear)
+                     {
+                        // next segment is linear
+                        if (IsZero(next_segment_variation_length[sztLeftPrismatic]))
+                        {
+                           Float64 dist = next_segment_length - next_segment_variation_length[sztLeftPrismatic] - next_segment_variation_length[sztRightPrismatic];
+                           slopeParabola = (next_segment_variation_height[sztRightPrismatic] - next_segment_variation_height[sztLeftPrismatic]) / dist;
+                        }
+                     }
+                     else if (next_segment_variation_type == svtDoubleLinear)
+                     {
+                        if (IsZero(next_segment_variation_length[sztLeftPrismatic]))
+                        {
+                           Float64 dist = next_segment_variation_length[sztLeftTapered];
+                           slopeParabola = (next_segment_variation_height[sztLeftTapered] - next_segment_variation_height[sztLeftPrismatic]) / dist;
+                        }
+                     }
+                  }
+                  else
+                  {
+                     slopeParabola = 0;
+                  }
+                  func_right_parabola = GenerateParabola2(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, slopeParabola);
+               }
+               else
+               {
+                  func_right_parabola = GenerateParabola1(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, slopeParabola);
+               }
+
+               pCompositeFunction->AddFunction(xParabolaStart, xParabolaEnd, func_right_parabola);
+            }
+            else
+            {
+               // parabola ends further down the girderline
+               bParabola = true;
+            }
+
+            xStart = xSegmentStart + segment_length - variation_length[sztRightPrismatic];
+         }
+
+         if (0 < variation_length[sztRightPrismatic])
+         {
+            // create a prismatic segment
+            mathLinFunc2d func(0.0, h2);
+            xEnd = xStart + (variation_type == svtNone ? segment_length / 2 : variation_length[sztRightPrismatic]);
+            pCompositeFunction->AddFunction(xStart, xEnd, func);
+            slopeParabola = 0;
+            xStart = xEnd;
+         }
+      }
+      xSegmentStart += segment_length;
+   } // next segment
+
+   return pCompositeFunction;
 }
