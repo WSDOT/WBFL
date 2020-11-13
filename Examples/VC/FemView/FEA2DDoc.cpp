@@ -9,6 +9,7 @@
 #include "ModelPropertiesDlg.h"
 
 #include <MathEx.h>
+#include <UnitMgt\UnitMgt.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -205,7 +206,8 @@ void CFEA2DDoc::OnGTStrudl()
    std::_tofstream ofile(strName);
 
    ofile << _T("STRUDL") << std::endl;
-   ofile << _T("UNITS METER NEWTON DEG FAH") << std::endl;
+   ofile << _T("TYPE PLANE FRAME XY") << std::endl;
+   ofile << _T("UNITS FEET KIP DEG FAH") << std::endl;
 
    // Joint Coordinates
    ofile << _T("JOINT COORDINATES GLOBAL") << std::endl;
@@ -224,6 +226,8 @@ void CFEA2DDoc::OnGTStrudl()
       JointIDType id;
       joint->get_ID(&id);
 
+      x = ::ConvertFromSysUnits(x, unitMeasure::Feet);
+      y = ::ConvertFromSysUnits(y, unitMeasure::Feet);
       ofile << ID(id) << _T(" ") << x << _T(" ") << y << std::endl;
    }
 
@@ -267,28 +271,30 @@ void CFEA2DDoc::OnGTStrudl()
          joint->IsDofReleased(jrtFy,&bFy);
          joint->IsDofReleased(jrtMz,&bMz);
 
-         ofile << ID(id);
-         if ( bFx == VARIANT_TRUE )
+         if (bFx == VARIANT_TRUE || bFy == VARIANT_TRUE || bMz == VARIANT_TRUE)
          {
-            ofile << _T(" FORCE X");
-         }
+            ofile << ID(id);
+            if (bFx == VARIANT_TRUE)
+            {
+               ofile << _T(" FORCE X");
+            }
 
-         if ( bFy == VARIANT_TRUE )
-         {
-            ofile << _T(" FORCE Y");
-         }
+            if (bFy == VARIANT_TRUE)
+            {
+               ofile << _T(" FORCE Y");
+            }
 
-         if ( bMz == VARIANT_TRUE )
-         {
-            ofile << _T(" MOMENT Z");
-         }
+            if (bMz == VARIANT_TRUE)
+            {
+               ofile << _T(" MOMENT Z");
+            }
 
-         ofile << std::endl;
+            ofile << std::endl;
+         }
       }
    }
 
    // Member Incidences
-   ofile << _T("TYPE PLANE FRAME XY") << std::endl;
    ofile << _T("MEMBER INCIDENCES") << std::endl;
    CComPtr<IFem2dMemberCollection> members;
    m_Model->get_Members(&members);
@@ -309,8 +315,64 @@ void CFEA2DDoc::OnGTStrudl()
       ofile << ID(mbrID) << _T(" ") << ID(startJnt) << _T(" ") << ID(endJnt) << std::endl;
    }
 
+   // Member Releases
+   ofile << _T("MEMBER RELEASES") << std::endl;
+   for (CollectionIndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++)
+   {
+      CComPtr<IFem2dMember> member;
+      members->get_Item(mbrIdx, &member);
+
+      MemberIDType mbrID;
+      member->get_ID(&mbrID);
+
+      VARIANT_BOOL bReleaseStartFx, bReleaseEndFx;
+      member->IsReleased(metStart, mbrReleaseFx, &bReleaseStartFx);
+      member->IsReleased(metEnd, mbrReleaseFx, &bReleaseEndFx);
+
+      VARIANT_BOOL bReleaseStartMz, bReleaseEndMz;
+      member->IsReleased(metStart, mbrReleaseMz, &bReleaseStartMz);
+      member->IsReleased(metEnd, mbrReleaseMz, &bReleaseEndMz);
+
+      if (bReleaseStartFx == VARIANT_TRUE || bReleaseEndFx == VARIANT_TRUE || bReleaseStartMz == VARIANT_TRUE || bReleaseEndMz == VARIANT_TRUE)
+      {
+         ofile << ID(mbrID);
+         if (bReleaseStartFx == VARIANT_TRUE || bReleaseStartMz == VARIANT_TRUE)
+         {
+            ofile << _T(" START");
+            if (bReleaseStartFx == VARIANT_TRUE)
+            {
+               ofile << _T(" FORCE X");
+            }
+
+            if (bReleaseStartMz == VARIANT_TRUE)
+            {
+               ofile << _T(" MOMENT Z");
+            }
+         }
+
+         if (bReleaseEndFx == VARIANT_TRUE || bReleaseEndMz == VARIANT_TRUE)
+         {
+            ofile << _T(" END");
+            if (bReleaseEndFx == VARIANT_TRUE)
+            {
+               ofile << _T(" FORCE X");
+            }
+
+            if (bReleaseEndMz == VARIANT_TRUE)
+            {
+               ofile << _T(" MOMENT Z");
+            }
+         }
+         ofile << std::endl;
+      }
+   }
+
    // Member Properties
+   ofile << _T("UNITS INCH KIP DEG FAH") << std::endl;
    ofile << _T("MEMBER PROPERTIES PRISMATIC") << std::endl;
+   ofile << _T("$ WSDOT Internal FEM model has EA and EI. Strudl wants E, A, and I.") << std::endl;
+   ofile << _T("$ The properies below for A are really EA (kip) and I are really EI (kip*in^2).") << std::endl;
+   ofile << _T("$ E will be set to 1.0 below.") << std::endl;
    for ( CollectionIndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
    {
       CComPtr<IFem2dMember> member;
@@ -323,67 +385,24 @@ void CFEA2DDoc::OnGTStrudl()
       member->get_EA(&EA);
       member->get_EI(&EI);
 
+      // (ksi)*(in2) = kip
+      EA = ::ConvertFromSysUnits(EA, unitMeasure::Kip);
+
+      // (ksi)*(in4) = kip*in2
+      EI = ::ConvertFromSysUnits(EI, unitMeasure::KipInch2);
       ofile << ID(mbrID) << _T(" AX ") << EA << _T(" IZ ") << EI << std::endl;
    }
-
-   // Member Releases
-   ofile << _T("MEMBER RELEASES") << std::endl;
-   for ( CollectionIndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
-   {
-      CComPtr<IFem2dMember> member;
-      members->get_Item(mbrIdx,&member);
-
-      MemberIDType mbrID;
-      member->get_ID(&mbrID);
-
-      VARIANT_BOOL bReleaseStartFx, bReleaseEndFx;
-      member->IsReleased(metStart,mbrReleaseFx,&bReleaseStartFx);
-      member->IsReleased(metEnd,  mbrReleaseFx,&bReleaseEndFx);
-
-      VARIANT_BOOL bReleaseStartMz, bReleaseEndMz;
-      member->IsReleased(metStart,mbrReleaseMz,&bReleaseStartMz);
-      member->IsReleased(metEnd,  mbrReleaseMz,&bReleaseEndMz);
-
-      if ( bReleaseStartFx == VARIANT_TRUE || bReleaseEndFx == VARIANT_TRUE || bReleaseStartMz == VARIANT_TRUE || bReleaseEndMz == VARIANT_TRUE )
-      {
-         ofile << ID(mbrID);
-         if ( bReleaseStartFx == VARIANT_TRUE || bReleaseStartMz == VARIANT_TRUE )
-         {
-            ofile << _T(" START");
-            if ( bReleaseStartFx == VARIANT_TRUE )
-            {
-               ofile << _T(" FORCE X");
-            }
-
-            if ( bReleaseStartMz == VARIANT_TRUE )
-            {
-               ofile << _T(" MOMENT Z");
-            }
-         }
-
-         if ( bReleaseEndFx == VARIANT_TRUE || bReleaseEndMz == VARIANT_TRUE )
-         {
-            ofile << _T(" END");
-            if ( bReleaseEndFx == VARIANT_TRUE )
-            {
-               ofile << _T(" FORCE X");
-            }
-
-            if ( bReleaseEndMz == VARIANT_TRUE )
-            {
-               ofile << _T(" MOMENT Z");
-            }
-         }
-         ofile << std::endl;
-      }
-   }
+   ofile << _T("UNITS FEET KIP DEG FAH") << std::endl;
 
    // Constants
+   ofile << _T("UNITS INCH KIP DEG FAH") << std::endl;
    ofile << _T("CONSTANTS") << std::endl;
+   ofile << _T("$ E is set to 1.0 KSI. See comments above for section properties") << std::endl;
    ofile << _T("E 1.0 ALL") << std::endl;
    ofile << _T("G 1.0 ALL") << std::endl;
    ofile << _T("POI 0.3 ALL") << std::endl;
    ofile << _T("DEN 1.0 ALL") << std::endl;
+   ofile << _T("UNITS FEET KIP DEG FAH") << std::endl;
 
    // Loads
    CComPtr<IFem2dLoadingCollection> loadings;
@@ -422,13 +441,21 @@ void CFEA2DDoc::OnGTStrudl()
          load->get_WStart(&wStart);
          load->get_WEnd(&wEnd);
 
-         if ( xStart < 0 || xEnd < 0 )
+         xStart = ::ConvertFromSysUnits(xStart, unitMeasure::Feet);
+         xEnd = ::ConvertFromSysUnits(xEnd, unitMeasure::Feet);
+         wStart = ::ConvertFromSysUnits(wStart, unitMeasure::KipPerFoot);
+         wEnd = ::ConvertFromSysUnits(wEnd, unitMeasure::KipPerFoot);
+
+         if (!IsZero(wStart) && !IsZero(wEnd))
          {
-            ofile << ID(mbrID) << _T(" FORCE Y LINEAR FRA WA ") << wStart << _T(" WB ") << wEnd << _T(" LA ") << fabs(xStart) << _T(" LB ") << fabs(xEnd) << std::endl;
-         }
-         else
-         {
-            ofile << ID(mbrID) << _T(" FORCE Y LINEAR WA ") << wStart << _T(" WB ") << wEnd << _T(" LA ") << fabs(xStart) << _T(" LB ") << fabs(xEnd) << std::endl;
+            if (xStart < 0 || xEnd < 0)
+            {
+               ofile << ID(mbrID) << _T(" FORCE Y LINEAR FRA WA ") << wStart << _T(" WB ") << wEnd << _T(" LA ") << fabs(xStart) << _T(" LB ") << fabs(xEnd) << std::endl;
+            }
+            else
+            {
+               ofile << ID(mbrID) << _T(" FORCE Y LINEAR WA ") << wStart << _T(" WB ") << wEnd << _T(" LA ") << fabs(xStart) << _T(" LB ") << fabs(xEnd) << std::endl;
+            }
          }
       }
 
@@ -449,6 +476,9 @@ void CFEA2DDoc::OnGTStrudl()
          Float64 Fx, Fy, Mz, X;
          load->GetForce(&Fx,&Fy,&Mz);
          load->get_Location(&X);
+
+         X = ::ConvertFromSysUnits(X, unitMeasure::Feet);
+         Fy = ::ConvertToSysUnits(Fy, unitMeasure::Kip);
 
          if ( !IsZero(Fy) )
          {
