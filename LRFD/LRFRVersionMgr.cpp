@@ -132,6 +132,9 @@ LPCTSTR lrfrVersionMgr::GetVersionString(lrfrVersionMgr::Version version,bool bA
    case ThirdEdition2018:
       return (bAbbreviated ? _T("LRFR2018") : _T("Third Edition 2018"));
 
+   case ThirdEditionWith2020Interims:
+      return (bAbbreviated ? _T("LRFR2020") : _T("Third Edition 2018, with 2020 interim provisions"));
+
    default:
       ASSERT(false);
       return _T("LRFR2008");
@@ -176,6 +179,10 @@ lrfrVersionMgr::Version lrfrVersionMgr::GetVersion(LPCTSTR strAbbrev)
    else if (strSpecVersion == _T("LRFR2018"))
    {
       return lrfrVersionMgr::ThirdEdition2018;
+   }
+   else if (strSpecVersion == _T("LRFR2020"))
+   {
+      return lrfrVersionMgr::ThirdEditionWith2020Interims;
    }
    else
    {
