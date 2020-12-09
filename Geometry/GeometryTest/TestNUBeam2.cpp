@@ -29,6 +29,7 @@
 
 #include "stdafx.h"
 #include "TestNUBeam.h"
+#include <array>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

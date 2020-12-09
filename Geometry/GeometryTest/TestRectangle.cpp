@@ -29,6 +29,7 @@
 
 #include "stdafx.h"
 #include "TestRectangle.h"
+#include <array>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -295,7 +296,7 @@ void CTestRectangle::TestIShape()
    
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   CComPtr<IPoint2d> points[5];
+   std::array<CComPtr<IPoint2d>, 5> points;
    ULONG fetched;
    Enum->Next(5,&points[0],&fetched);
    TRY_TEST( fetched, 5 );
@@ -738,7 +739,7 @@ void CTestRectangle::TestIXYPosition()
    
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   CComPtr<IPoint2d> points[5];
+   std::array<CComPtr<IPoint2d>, 5> points;
    ULONG fetched;
    Enum->Next(5,&points[0],&fetched);
    TRY_TEST( fetched, 5 );

@@ -29,6 +29,7 @@
 
 #include "stdafx.h"
 #include "TestPrecastBeam2.h"
+#include <array>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -410,7 +411,7 @@ void CTestPrecastBeam2::TestIShape()
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   CComPtr<IPoint2d> points[23];
+   std::array<CComPtr<IPoint2d>, 23> points;
    ULONG fetched;
    Enum->Next(23,&points[0],&fetched);
    TRY_TEST( fetched, 23 );
@@ -773,7 +774,7 @@ void CTestPrecastBeam2::TestIXYPosition()
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   CComPtr<IPoint2d> points[23];
+   std::array<CComPtr<IPoint2d>, 23> points;
    ULONG fetched;
    Enum->Next(23,&points[0],&fetched);
    TRY_TEST( fetched, 23 );

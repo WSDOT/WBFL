@@ -29,6 +29,7 @@
 
 #include "stdafx.h"
 #include "TestVoidedSlab2.h"
+#include <array>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -302,7 +303,7 @@ void CTestVoidedSlab2::TestIShape()
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   CComPtr<IPoint2d> points[10];
+   std::array<CComPtr<IPoint2d>, 10> points;
    ULONG fetched;
    Enum->Next(10,&points[0],&fetched);
    TRY_TEST( fetched, 10 );
@@ -645,7 +646,7 @@ void CTestVoidedSlab2::TestIXYPosition()
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   CComPtr<IPoint2d> points[5];
+   std::array<CComPtr<IPoint2d>, 5> points;
    ULONG fetched;
    Enum->Next(5,&points[0],&fetched);
    TRY_TEST( fetched, 5 );

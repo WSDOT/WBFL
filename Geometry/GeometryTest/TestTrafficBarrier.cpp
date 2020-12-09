@@ -29,6 +29,7 @@
 
 #include "stdafx.h"
 #include "TestTrafficBarrier.h"
+#include <array>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -312,7 +313,7 @@ void CTestTrafficBarrier::TestIShape()
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   CComPtr<IPoint2d> points[8];
+   std::array<CComPtr<IPoint2d>, 8> points;
    ULONG fetched;
    Enum->Next(8,&points[0],&fetched);
    TRY_TEST( fetched, 8 );
@@ -584,7 +585,7 @@ void CTestTrafficBarrier::TestIXYPosition()
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   CComPtr<IPoint2d> points[8];
+   std::array<CComPtr<IPoint2d>, 8> points;
    ULONG fetched;
    Enum->Next(8,&points[0],&fetched);
    TRY_TEST( fetched, 8 );

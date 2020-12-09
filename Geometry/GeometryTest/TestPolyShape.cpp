@@ -29,6 +29,7 @@
 
 #include "stdafx.h"
 #include "TestPolyShape.h"
+#include <array>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -872,7 +873,7 @@ void CTestPolyShape::TestIXYPosition()
 
    CComPtr<IPoint2dCollection> coll;
    polyShape->get_Points(&coll);
-   CComPtr<IPoint2d> points[4];
+   std::array<CComPtr<IPoint2d>, 4> points;
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
    ULONG fetched;
@@ -904,7 +905,7 @@ void CTestPolyShape::TestPoints(IPolyShape* polyShape)
 {
    CComPtr<IPoint2dCollection> coll;
    polyShape->get_Points(&coll);
-   CComPtr<IPoint2d> points[4];
+   std::array<CComPtr<IPoint2d>, 4> points;
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
    ULONG fetched;

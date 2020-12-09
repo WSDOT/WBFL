@@ -29,6 +29,7 @@
 
 #include "stdafx.h"
 #include "TestPlateGirder.h"
+#include <array>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -302,7 +303,7 @@ void CTestPlateGirder::TestIShape()
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   CComPtr<IPoint2d> points[12];
+   std::array<CComPtr<IPoint2d>, 12> points;
    ULONG fetched;
    Enum->Next(12,&points[0],&fetched);
    TRY_TEST( fetched, 12 );

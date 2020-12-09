@@ -29,6 +29,7 @@
 #include "BoxBeam.h"
 #include "Helper.h"
 #include <MathEx.h>
+#include <array>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -194,7 +195,7 @@ HRESULT CBoxBeam::UpdateShape()
       Float64 wbot = 2.0*(m_W4 + m_W2) + m_W3;
       Float64 hgt = m_H1 + m_H2 + m_H3;
 
-      Float64 x[17],y[17]; 
+      std::array<Float64,17> x, y; 
       int np = 0;
 
       // bottom center
