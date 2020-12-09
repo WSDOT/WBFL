@@ -470,11 +470,11 @@
 
 #define IDH_IPlateGirder                                 3400
 #define IDH_IPlateGirder_TopFlangeWidth                  3401
-#define IDH_IPlateGirder_TopFlangeThick                  3402
+#define IDH_IPlateGirder_TopFlangeThickness              3402
 #define IDH_IPlateGirder_BottomFlangeWidth               3403
-#define IDH_IPlateGirder_BottomFlangeThick               3404
+#define IDH_IPlateGirder_BottomFlangeThickness           3404
 #define IDH_IPlateGirder_WebHeight                       3405
-#define IDH_IPlateGirder_WebThick                        3406
+#define IDH_IPlateGirder_WebWidth                        3406
 #define IDH_IPlateGirder_Height                          3407
 #define IDH_IPlateGirder_QTopFlange                      3408
 #define IDH_IPlateGirder_QBottomFlange                   3409

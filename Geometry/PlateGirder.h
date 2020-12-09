@@ -88,16 +88,16 @@ public:
 	STDMETHOD(get_QBottomFlange)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(get_QTopFlange)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(get_Height)(/*[out, retval]*/ Float64 *pVal) override;
-	STDMETHOD(get_WebThick)(/*[out, retval]*/ Float64 *pVal) override;
-	STDMETHOD(put_WebThick)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_WebWidth)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_WebWidth)(/*[in]*/ Float64 newVal) override;
 	STDMETHOD(get_WebHeight)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(put_WebHeight)(/*[in]*/ Float64 newVal) override;
-	STDMETHOD(get_BottomFlangeThick)(/*[out, retval]*/ Float64 *pVal) override;
-	STDMETHOD(put_BottomFlangeThick)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_BottomFlangeThickness)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_BottomFlangeThickness)(/*[in]*/ Float64 newVal) override;
 	STDMETHOD(get_BottomFlangeWidth)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(put_BottomFlangeWidth)(/*[in]*/ Float64 newVal) override;
-	STDMETHOD(get_TopFlangeThick)(/*[out, retval]*/ Float64 *pVal) override;
-	STDMETHOD(put_TopFlangeThick)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_TopFlangeThickness)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_TopFlangeThickness)(/*[in]*/ Float64 newVal) override;
 	STDMETHOD(get_TopFlangeWidth)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(put_TopFlangeWidth)(/*[in]*/ Float64 newVal) override;
 
@@ -138,11 +138,11 @@ private:
    CComPtr<IPoint2d> m_pHookPoint; // BottomCenter
    CComPtr<IPolyShape> m_pShape; // Implementation Polygon
    Float64 m_Rotation;
-	Float64 m_webThick;
+	Float64 m_webWidth;
 	Float64 m_webHeight;
-	Float64 m_bfThick;
+	Float64 m_bfThickness;
 	Float64 m_bfWidth;
-	Float64 m_tfThick;
+	Float64 m_tfThickness;
 	Float64 m_tfWidth;
 
    bool   m_Dirty;

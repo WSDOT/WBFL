@@ -150,10 +150,10 @@ void CTestCompositeBeam::TestICompositeBeam()
    CComPtr<IPlateGirder> beam;
    beam.CoCreateInstance(CLSID_PlateGirder);
    beam->put_TopFlangeWidth(22);
-   beam->put_TopFlangeThick(1.25);
+   beam->put_TopFlangeThickness(1.25);
    beam->put_BottomFlangeWidth(22);
-   beam->put_BottomFlangeThick(2.25);
-   beam->put_WebThick(0.438);
+   beam->put_BottomFlangeThickness(2.25);
+   beam->put_WebWidth(0.438);
    beam->put_WebHeight(122);
    shape.Release();
    beam.QueryInterface(&shape);
@@ -216,10 +216,10 @@ void CTestCompositeBeam::TestISection()
    CComPtr<IPlateGirder> beam;
    beam.CoCreateInstance(CLSID_PlateGirder);
    beam->put_TopFlangeWidth(22);
-   beam->put_TopFlangeThick(1.25);
+   beam->put_TopFlangeThickness(1.25);
    beam->put_BottomFlangeWidth(22);
-   beam->put_BottomFlangeThick(2.25);
-   beam->put_WebThick(0.438);
+   beam->put_BottomFlangeThickness(2.25);
+   beam->put_WebWidth(0.438);
    beam->put_WebHeight(122);
    CComQIPtr<IShape> shape(beam);
    comp->putref_Beam(shape);
@@ -354,15 +354,15 @@ void CTestCompositeBeam::TestISection()
    TRY_TEST(cloneBeam != nullptr,true);
    cloneBeam->get_WebHeight(&val);
    TRY_TEST(IsEqual(val,122.),true);
-   cloneBeam->get_WebThick(&val);
+   cloneBeam->get_WebWidth(&val);
    TRY_TEST(IsEqual(val,0.438),true);
    cloneBeam->get_TopFlangeWidth(&val);
    TRY_TEST(IsEqual(val,22.),true);
-   cloneBeam->get_TopFlangeThick(&val);
+   cloneBeam->get_TopFlangeThickness(&val);
    TRY_TEST(IsEqual(val,1.25),true);
    cloneBeam->get_BottomFlangeWidth(&val);
    TRY_TEST(IsEqual(val,22.),true);
-   cloneBeam->get_BottomFlangeThick(&val);
+   cloneBeam->get_BottomFlangeThickness(&val);
    TRY_TEST(IsEqual(val,2.25),true);
 }
 
@@ -375,10 +375,10 @@ void CTestCompositeBeam::TestIXYPosition()
    CComPtr<IPlateGirder> beam;
    beam.CoCreateInstance(CLSID_PlateGirder);
    beam->put_TopFlangeWidth(22);
-   beam->put_TopFlangeThick(1.25);
+   beam->put_TopFlangeThickness(1.25);
    beam->put_BottomFlangeWidth(22);
-   beam->put_BottomFlangeThick(2.25);
-   beam->put_WebThick(0.438);
+   beam->put_BottomFlangeThickness(2.25);
+   beam->put_WebWidth(0.438);
    beam->put_WebHeight(122);
    CComQIPtr<IShape> shape(beam);
    comp->putref_Beam(shape);

@@ -2943,11 +2943,11 @@ library WBFLGeometry
 		[propput, helpstring("property TopFlangeWidth"),helpcontext(IDH_IPlateGirder_TopFlangeWidth)]
       HRESULT TopFlangeWidth([in] Float64 newVal);
 
-		[propget, helpstring("property TopFlangeThick"),helpcontext(IDH_IPlateGirder_TopFlangeThick)]
-      HRESULT TopFlangeThick([out, retval] Float64 *pVal);
+		[propget, helpstring("property TopFlangeThickness"),helpcontext(IDH_IPlateGirder_TopFlangeThickness)]
+      HRESULT TopFlangeThickness([out, retval] Float64 *pVal);
 
-		[propput, helpstring("property TopFlangeThick"),helpcontext(IDH_IPlateGirder_TopFlangeThick)]
-      HRESULT TopFlangeThick([in] Float64 newVal);
+		[propput, helpstring("property TopFlangeThickness"),helpcontext(IDH_IPlateGirder_TopFlangeThickness)]
+      HRESULT TopFlangeThickness([in] Float64 newVal);
 
 		[propget, helpstring("property BottomFlangeWidth"),helpcontext(IDH_IPlateGirder_BottomFlangeWidth)]
       HRESULT BottomFlangeWidth([out, retval] Float64 *pVal);
@@ -2955,11 +2955,11 @@ library WBFLGeometry
 		[propput, helpstring("property BottomFlangeWidth"),helpcontext(IDH_IPlateGirder_BottomFlangeWidth)]
       HRESULT BottomFlangeWidth([in] Float64 newVal);
 
-		[propget, helpstring("property BottomFlangeThick"),helpcontext(IDH_IPlateGirder_BottomFlangeThick)]
-      HRESULT BottomFlangeThick([out, retval] Float64 *pVal);
+		[propget, helpstring("property BottomFlangeThickness"),helpcontext(IDH_IPlateGirder_BottomFlangeThickness)]
+      HRESULT BottomFlangeThickness([out, retval] Float64 *pVal);
 
-		[propput, helpstring("property BottomFlangeThick"),helpcontext(IDH_IPlateGirder_BottomFlangeThick)]
-      HRESULT BottomFlangeThick([in] Float64 newVal);
+		[propput, helpstring("property BottomFlangeThickness"),helpcontext(IDH_IPlateGirder_BottomFlangeThickness)]
+      HRESULT BottomFlangeThickness([in] Float64 newVal);
 
 		[propget, helpstring("property WebHeight"),helpcontext(IDH_IPlateGirder_WebHeight)]
       HRESULT WebHeight([out, retval] Float64 *pVal);
@@ -2967,11 +2967,11 @@ library WBFLGeometry
 		[propput, helpstring("property WebHeight"),helpcontext(IDH_IPlateGirder_WebHeight)]
       HRESULT WebHeight([in] Float64 newVal);
 
-		[propget, helpstring("property WebThick"),helpcontext(IDH_IPlateGirder_WebThick)]
-      HRESULT WebThick([out, retval] Float64 *pVal);
+		[propget, helpstring("property WebWidth"),helpcontext(IDH_IPlateGirder_WebWidth)]
+      HRESULT WebWidth([out, retval] Float64 *pVal);
 
-		[propput, helpstring("property WebThick"),helpcontext(IDH_IPlateGirder_WebThick)]
-      HRESULT WebThick([in] Float64 newVal);
+		[propput, helpstring("property WebWidth"),helpcontext(IDH_IPlateGirder_WebWidth)]
+      HRESULT WebWidth([in] Float64 newVal);
 
 		[propget, helpstring("property Height"),helpcontext(IDH_IPlateGirder_Height)]
       HRESULT Height([out, retval] Float64 *pVal);
