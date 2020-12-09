@@ -841,7 +841,6 @@
     <ClCompile Include="TestCoordinateXform2d.cpp" />
     <ClCompile Include="TestCoordinateXform3d.cpp" />
     <ClCompile Include="TestDeckedSlabBeam.cpp" />
-    <ClCompile Include="TestFasterPolyShape.cpp" />
     <ClCompile Include="TestGenericShape.cpp" />
     <ClCompile Include="TestGeomUtil.cpp" />
     <ClCompile Include="TestLine2d.cpp" />
@@ -892,7 +891,6 @@
     <ClInclude Include="TestCoordinateXform2d.h" />
     <ClInclude Include="TestCoordinateXform3d.h" />
     <ClInclude Include="TestDeckedSlabBeam.h" />
-    <ClInclude Include="TestFasterPolyShape.h" />
     <ClInclude Include="TestGenericShape.h" />
     <ClInclude Include="TestGeomUtil.h" />
     <ClInclude Include="TestLine2d.h" />

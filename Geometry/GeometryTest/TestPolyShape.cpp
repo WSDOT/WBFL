@@ -68,12 +68,12 @@ void CTestPolyShape::TestIPolyShape()
    TRY_TEST( polyShape.CoCreateInstance( CLSID_PolyShape ), S_OK );
 
    CollectionIndexType nPoints;
-   TRY_TEST( polyShape->get_NumPoints(nullptr), E_POINTER );
-   TRY_TEST( polyShape->get_NumPoints(&nPoints), S_OK );
+   TRY_TEST( polyShape->get_Count(nullptr), E_POINTER );
+   TRY_TEST( polyShape->get_Count(&nPoints), S_OK );
    TRY_TEST( nPoints, 0 );
 
    TRY_TEST( polyShape->AddPoint(0,0), S_OK );
-   polyShape->get_NumPoints(&nPoints);
+   polyShape->get_Count(&nPoints);
    TRY_TEST( nPoints, 1 );
 
    CComPtr<IPoint2d> pnt;
@@ -82,12 +82,12 @@ void CTestPolyShape::TestIPolyShape()
    pnt->put_Y(0);
    TRY_TEST( polyShape->AddPointEx( nullptr), E_INVALIDARG );
    TRY_TEST( polyShape->AddPointEx( pnt ), S_OK );
-   polyShape->get_NumPoints(&nPoints);
+   polyShape->get_Count(&nPoints);
    TRY_TEST( nPoints, 2 );
 
    polyShape->AddPoint(10,10);
    polyShape->AddPoint( 0,10);
-   polyShape->get_NumPoints(&nPoints);
+   polyShape->get_Count(&nPoints);
    TRY_TEST( nPoints, 4 );
 
    CComPtr<IPoint2dCollection> coll;
@@ -96,7 +96,7 @@ void CTestPolyShape::TestIPolyShape()
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
 
-   CComPtr<IPoint2d> pnts[4];
+   std::array<CComPtr<IPoint2d>, 4> pnts;
    ULONG fetched;
    Enum->Next(4,&pnts[0],&fetched);
    TRY_TEST(fetched,4);
@@ -134,11 +134,11 @@ void CTestPolyShape::TestIPolyShape()
    coll->Add(pnts[3]);
    coll->get_Count(&nPoints);
    TRY_TEST( nPoints, 4 );
-   polyShape->get_NumPoints(&nPoints);
+   polyShape->get_Count(&nPoints);
    TRY_TEST( nPoints, 0 );
    TRY_TEST( polyShape->AddPoints(nullptr), E_INVALIDARG );
    TRY_TEST( polyShape->AddPoints(coll), S_OK );
-   polyShape->get_NumPoints(&nPoints);
+   polyShape->get_Count(&nPoints);
    TRY_TEST( nPoints, 4 );
 
    pnt.Release();

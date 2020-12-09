@@ -31,11 +31,30 @@
 #include <limits>
 #include <xutility> // For Min/Max
 
+#include <GeometricPrimitives\Line2d.h>
+#include <GeometricPrimitives\LineSegment2d.h>
+#include <GeometricPrimitives\GeomOp2d.h>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
+// Free utility functions
+gpLine2d ComLine2gpLine(ILine2d* pcLine)
+{
+   Float64 c;
+   CComPtr<IVector2d> pcVec;
+   pcLine->GetImplicit(&c, &pcVec);
+
+   Float64 vm, vd;
+   pcVec->get_Magnitude(&vm);
+   pcVec->get_Direction(&vd);
+
+   gpVector2d vec(vm, vd);
+   return gpLine2d(c, vec);
+}
 
 /////////////////////////////////////////////////////////////////////////////
 // CPolyShape
@@ -43,91 +62,79 @@ HRESULT CPolyShape::FinalConstruct()
 {
    // born dirty
    MakeDirty();
-
-   // our internal point storage
-   HRESULT hr = CreatePointCollection(&m_pPoints);
-   if (FAILED(hr))
-      return hr;
-
-   hr = m_GeomUtil.CoCreateInstance(CLSID_GeomUtil);
-   if (FAILED(hr))
-      return hr;
-
-   return CrAdvise(m_pPoints, this, IID_IPoint2dCollectionEvents, &m_PointsCookie);
+   return S_OK;
 }
 
 void CPolyShape::FinalRelease()
 {
-   HRESULT hr = CrUnadvise(m_pPoints, this, IID_IPoint2dCollectionEvents, m_PointsCookie);
-   ATLASSERT(SUCCEEDED(hr));
 }
 
 void CPolyShape::GetLocatorPoint(LocatorPointType lp,Float64* x,Float64* y)
 {
-   ATLASSERT( x != nullptr && y != nullptr );
+   ATLASSERT(x != nullptr && y != nullptr);
 
-   CComPtr<IRect2d> pBox;
-   CComPtr<IPoint2d> pnt;
+   UpdateBoundingBox();
 
-   get_BoundingBox(&pBox);
+   gpPoint2d point;
 
-   switch(lp)
+   switch (lp)
    {
    case lpTopLeft:
-        pBox->get_TopLeft(&pnt);
-        break;
+      point = m_BoundingRect.TopLeft();
+      break;
 
    case lpTopCenter:
-        pBox->get_TopCenter(&pnt);
-        break;
+      point = m_BoundingRect.TopCenter();
+      break;
 
    case lpTopRight:
-        pBox->get_TopRight(&pnt);
-        break;
+      point = m_BoundingRect.TopRight();
+      break;
 
    case lpCenterLeft:
-        pBox->get_CenterLeft(&pnt);
-        break;
+      point = m_BoundingRect.LeftCenter();
+      break;
 
    case lpCenterCenter:
-        pBox->get_CenterCenter(&pnt);
-        break;
+      point = m_BoundingRect.Center();
+      break;
 
    case lpCenterRight:
-        pBox->get_CenterRight(&pnt);
-        break;
+      point = m_BoundingRect.RightCenter();
+      break;
 
    case lpBottomLeft:
-        pBox->get_BottomLeft(&pnt);
-        break;
+      point = m_BoundingRect.BottomLeft();
+      break;
 
    case lpBottomCenter:
-        pBox->get_BottomCenter(&pnt);
-        break;
+      point = m_BoundingRect.BottomCenter();
+      break;
 
    case lpBottomRight:
-        pBox->get_BottomRight(&pnt);
-        break;
+      point = m_BoundingRect.BottomRight();
+      break;
 
    case lpHookPoint:
+   {
+      CollectionIndexType cPoints = m_Points.size();
+      if (cPoints == 0)
+         point.Move(0, 0);
+      else
       {
-         CollectionIndexType cPoints;
-         m_pPoints->get_Count(&cPoints);
-         if ( cPoints == 0 )
-            CreatePoint(0.00,0.00,nullptr,&pnt);
-         else
-         {
-            m_pPoints->get_Item(0,&pnt);
-         }
-        break;
+         // first point in list
+         point = m_Points.front();
       }
-
-   default:
-      ATLASSERT( false ); // Should never get here!
       break;
    }
 
-   GetCoordinates(pnt,x,y);
+   default:
+      ATLASSERT(false); // Should never get here!
+      break;
+   }
+
+   *x = point.X();
+   *y = point.Y();
 }
 
 STDMETHODIMP CPolyShape::InterfaceSupportsErrorInfo(REFIID riid)
@@ -149,14 +156,9 @@ STDMETHODIMP CPolyShape::InterfaceSupportsErrorInfo(REFIID riid)
 
 STDMETHODIMP CPolyShape::AddPoint(Float64 x,Float64 y)
 {
-   HRESULT hr = S_OK;
-   CComPtr<IPoint2d> pPoint;
-   
-   hr = CreatePoint(x,y,nullptr,&pPoint);
-   if ( FAILED(hr) )
-      return hr;
+   m_Points.emplace_back(x, y);
 
-   m_pPoints->Add(pPoint);
+   MakeDirty();
 
    return S_OK;
 }
@@ -164,7 +166,9 @@ STDMETHODIMP CPolyShape::AddPoint(Float64 x,Float64 y)
 STDMETHODIMP CPolyShape::AddPointEx(IPoint2d *pPoint)
 {
    CHECK_IN(pPoint);
-   return  m_pPoints->Add(pPoint);
+   Float64 x, y;
+   pPoint->Location(&x, &y);
+   return  AddPoint(x, y);
 }
 
 STDMETHODIMP CPolyShape::AddPoints(IPoint2dCollection *pPoints)
@@ -174,52 +178,123 @@ STDMETHODIMP CPolyShape::AddPoints(IPoint2dCollection *pPoints)
    CollectionIndexType cPoints;
    pPoints->get_Count(&cPoints);
 
-   for ( CollectionIndexType i = 0; i < cPoints; i++ )
+   for (CollectionIndexType i = 0; i < cPoints; i++)
    {
       CComPtr<IPoint2d> pPoint;
-      pPoints->get_Item(i,&pPoint);
+      pPoints->get_Item(i, &pPoint);
       AddPointEx(pPoint);
    }
 
    return S_OK;
 }
 
+STDMETHODIMP CPolyShape::ChangePoint(CollectionIndexType index, Float64 x, Float64 y)
+{
+   if (0 <= index && index < (CollectionIndexType)m_Points.size())
+   {
+      gpPoint2d& rpoint = m_Points.at(index);
+      if (x != rpoint.X() && y != rpoint.Y())
+      {
+         rpoint.X() = x;
+         rpoint.Y() = y;
+
+         MakeDirty();
+      }
+
+      return S_OK;
+   }
+   else
+   {
+      return E_INVALIDARG;
+   }
+}
+
+STDMETHODIMP CPolyShape::ChangePointEx(CollectionIndexType index, IPoint2d* pPoint)
+{
+   CHECK_IN(pPoint);
+   Float64 x, y;
+   pPoint->Location(&x, &y);
+   return ChangePoint(index, x, y);
+}
+
 STDMETHODIMP CPolyShape::RemovePoint(CollectionIndexType index)
 {
-   return m_pPoints->Remove(index);
+   if (0 <= index && index < (CollectionIndexType)m_Points.size())
+   {
+      auto it = m_Points.begin();
+      it += index;
+
+      auto rit = m_Points.erase(it);
+
+      MakeDirty();
+      return S_OK;
+   }
+   else
+   {
+      return E_INVALIDARG;
+   }
 }
 
-STDMETHODIMP CPolyShape::get_NumPoints(CollectionIndexType *pVal)
+STDMETHODIMP CPolyShape::get_Count(CollectionIndexType *pVal)
 {
    CHECK_RETVAL(pVal);
-   return m_pPoints->get_Count(pVal);
+   *pVal = m_Points.size();
+   return S_OK;
 }
 
-STDMETHODIMP CPolyShape::get_Point(CollectionIndexType index, IPoint2d **pVal)
+
+STDMETHODIMP CPolyShape::GetPoint(CollectionIndexType index, Float64* pX, Float64* pY)
 {
-   CHECK_RETOBJ(pVal);
+   CHECK_RETVAL(pX);
+   CHECK_RETVAL(pY);
 
-   CollectionIndexType nPoints;
-   m_pPoints->get_Count(&nPoints);
-   if ( index < 0 || nPoints <= index )
+   if (0 <= index && index < (CollectionIndexType)m_Points.size())
+   {
+      gpPoint2d& rpoint = m_Points.at(index);
+      *pX = rpoint.X();
+      *pY = rpoint.Y();
+
+      return S_OK;
+   }
+   else
+   {
       return E_INVALIDARG;
+   }
+}
 
-   CComPtr<IPoint2d> pPoint;
-   m_pPoints->get_Item(index,&pPoint);
-   return pPoint.CopyTo( pVal );
+STDMETHODIMP CPolyShape::get_Point(CollectionIndexType index, IPoint2d **ppPoint)
+{
+   CHECK_RETOBJ(ppPoint);
+
+   Float64 x, y;
+   HRESULT hr = GetPoint(index, &x, &y);
+   if (FAILED(hr))
+      return hr;
+
+   return CreatePoint(x, y, nullptr, ppPoint);
 }
 
 STDMETHODIMP CPolyShape::Clear()
 {
-   return m_pPoints->Clear();
+   m_Points.clear();
+   MakeDirty();
+   return S_OK;
 }
 
 STDMETHODIMP CPolyShape::get_Points(IPoint2dCollection** coll)
 {
    CHECK_RETOBJ(coll);
 
-   m_pPoints->QueryInterface(coll);
+   CComPtr<IPoint2dCollection> points;
+   points.CoCreateInstance(CLSID_Point2dCollection);
+   for (const auto& p : m_Points)
+   {
+      CComPtr<IPoint2d> point;
+      CreatePoint(p.X(), p.Y(), nullptr, &point);
+      points->Add(point);
+   }
 
+   points.CopyTo(coll);
    return S_OK;
 }
 
@@ -241,14 +316,14 @@ STDMETHODIMP CPolyShape::get_XYPosition(IXYPosition **pVal)
 STDMETHODIMP CPolyShape::get_ShapeProperties(IShapeProperties* *pVal)
 {
    CHECK_RETOBJ(pVal);
-   Update();
+   UpdateShapeProperties();
 
    return m_ShapeProps.CreateIShapeProperties(pVal);
 }
 
-void CPolyShape::Update()
+void CPolyShape::UpdateShapeProperties()
 {
-   if (m_Dirty)
+   if (m_DirtyProperties)
    {
       Float64 area, ixx, iyy, ixy;
       Float64 cgx, cgy;
@@ -258,57 +333,23 @@ void CPolyShape::Update()
       cgx = 0.00;
       cgy = 0.00;
 
-      CollectionIndexType cPoints;
-      m_pPoints->get_Count(&cPoints);
+      CollectionIndexType cPoints = m_Points.size();
 
-      if ( cPoints < 3) 
+      if (cPoints < 3)
       {
          // If there are less than three points, it is a degenerate shape.
          // Just return default shape properties (All values are zero).
          m_ShapeProps.Init();
-         if (cPoints == 0)
-         {
-            m_BoundingRect.Init();
-         }
-         else
-         {
-            Float64 xmin = Float64_Max;
-            Float64 xmax = -Float64_Max;
-            Float64 ymin = Float64_Max;
-            Float64 ymax = -Float64_Max;
-            for (IndexType i = 0; i < cPoints; i++)
-            {
-               CComPtr<IPoint2d> pnt;
-               m_pPoints->get_Item(i, &pnt);
-               Float64 x, y;
-               pnt->Location(&x, &y);
-               xmin = Min(x, xmin);
-               xmax = Max(x, xmax);
-               ymin = Min(y, ymin);
-               ymax = Max(y, ymax);
-            }
-
-            m_BoundingRect.Left = xmin;
-            m_BoundingRect.Right = xmax;
-            m_BoundingRect.Top = ymax;
-            m_BoundingRect.Bottom = ymin;
-         }
          return;
       }
 
-      Float64 x0,y0;
-      Float64 x1,y1;
+      Float64 x0, y0;
+      Float64 x1, y1;
       Float64 dy, dx;
       Float64 ar, at;
-      Float64 g_ixx=0, g_iyy=0, g_ixy = 0; // moments of inertia about the global axes
-      Float64 c_ixx=0, c_iyy=0, c_ixy = 0; // moments of inertia about the centroid
-      Float64 area_local  = 0;
-
-      Float64 left = DBL_MAX;
-      Float64 right = -DBL_MAX;
-      Float64 top = -DBL_MAX;
-      Float64 bottom = DBL_MAX;
-
+      Float64 g_ixx = 0, g_iyy = 0, g_ixy = 0; // moments of inertia about the global axes
+      Float64 c_ixx = 0, c_iyy = 0, c_ixy = 0; // moments of inertia about the centroid
+      Float64 area_local = 0;
 
       // loop over all points - make sure of closure
       CollectionIndexType idx0, idx1;
@@ -320,20 +361,13 @@ void CPolyShape::Update()
 
       while (loop)
       {
-         CComPtr<IPoint2d> p0;
-         CComPtr<IPoint2d> p1;
+         const gpPoint2d& p0 = m_Points[idx0];
+         const gpPoint2d& p1 = m_Points[idx1];
 
-         m_pPoints->get_Item(idx0,&p0);
-         m_pPoints->get_Item(idx1,&p1);
-
-         GetCoordinates(p0,&x0,&y0);
-         GetCoordinates(p1,&x1,&y1);
-
-         left = Min(x0, x1, left);
-         right = Max(x0, x1, right);
-         bottom = Min(y0, y1, bottom);
-         top = Max(y0, y1, top);
-
+         x0 = p0.X();
+         y0 = p0.Y();
+         x1 = p1.X();
+         y1 = p1.Y();
 
          dx = x1 - x0;
          dy = y1 - y0;
@@ -344,19 +378,19 @@ void CPolyShape::Update()
          area_local += (ar + at);
 
          // Centroid
-         cgx += ar*(x1 + x0)/2 + at*(2*dx/3 + x0);
-         cgy += ar*(y0/2) + at*(dy/3 + y0);
+         cgx += ar*(x1 + x0) / 2 + at*(2 * dx / 3 + x0);
+         cgy += ar*(y0 / 2) + at*(dy / 3 + y0);
 
          // Inertia about global axes
-         g_ixx += (y0)*(y0)*(y0)*dx/12 + ar*(y0/2)*(y0/2) +
-                  dy*dy*dy*dx/36       + at*(dy/3 + y0)*(dy/3 + y0);
+         g_ixx += (y0)*(y0)*(y0)*dx / 12 + ar*(y0 / 2)*(y0 / 2) +
+            dy*dy*dy*dx / 36 + at*(dy / 3 + y0)*(dy / 3 + y0);
 
-         g_iyy += (y0)*dx*dx*dx/12 + ar*(x0 + dx/2)*(x0 + dx/2) +
-                  dy*dx*dx*dx/36   + at*(2*dx/3 + x0)*(2*dx/3 + x0);
+         g_iyy += (y0)*dx*dx*dx / 12 + ar*(x0 + dx / 2)*(x0 + dx / 2) +
+            dy*dx*dx*dx / 36 + at*(2 * dx / 3 + x0)*(2 * dx / 3 + x0);
 
-         g_ixy += ar*(y0/2)*(x0 + dx/2) +
-                  at*(dy/3 + y0)*(2*dx/3 + x0) +
-                  dy*dy*dx*dx/72;
+         g_ixy += ar*(y0 / 2)*(x0 + dx / 2) +
+            at*(dy / 3 + y0)*(2 * dx / 3 + x0) +
+            dy*dy*dx*dx / 72;
 
          // loop termination test - need to go one more iteration if loop is not closed
          if (last_round)
@@ -370,18 +404,16 @@ void CPolyShape::Update()
             idx0++;
             idx1++;
 
-            if ( idx0 == cPoints-1 )
+            if (idx0 == cPoints - 1)
             {
-               idx0 = cPoints-1;
+               idx0 = cPoints - 1;
                idx1 = 0;
 
                // check if extra loop is required for closure
-               CComPtr<IPoint2d> pStart;
-               CComPtr<IPoint2d> pEnd;
-               m_pPoints->get_Item(idx1,&pStart);
-               m_pPoints->get_Item(idx0,&pEnd);
+               const gpPoint2d& pStart = m_Points[idx1];
+               const gpPoint2d& pEnd = m_Points[idx0];
 
-               if ( !IsEqualPoint(pStart,pEnd) )
+               if (pStart != pEnd)
                {
                   // one more loop to close poly
                   last_round = true;
@@ -395,8 +427,8 @@ void CPolyShape::Update()
          }
       }     // while
 
-      // If the Polygon has no area_local, then there is nothing left to compute.
-      if ( area_local != 0 )
+            // If the Polygon has no area_local, then there is nothing left to compute.
+      if (area_local != 0)
       {
          // Finish centriod
          cgx /= area_local;
@@ -410,38 +442,36 @@ void CPolyShape::Update()
 
          // assign properties to pProperties
          area = area_local;
-         ixx  = c_ixx;
-         iyy  = c_iyy;
-         ixy  = c_ixy;
+         ixx = c_ixx;
+         iyy = c_iyy;
+         ixy = c_ixy;
       }
 
       // if defined CCW, then area will be less than zero
       // if this is the case, multiply by -1
-      if( area < 0 )
+      if (area < 0)
       {
          area *= -1;
-         ixx  *= -1;
-         iyy  *= -1;
-         ixy  *= -1;
+         ixx *= -1;
+         iyy *= -1;
+         ixy *= -1;
       }
 
-      m_BoundingRect.Left = left;
-      m_BoundingRect.Right = right;
-      m_BoundingRect.Top = top;
-      m_BoundingRect.Bottom = bottom;
+      // update bounding rect
+      this->UpdateBoundingBox();
 
       m_ShapeProps.Area = area;
       m_ShapeProps.Ixx = ixx;
       m_ShapeProps.Iyy = iyy;
-      m_ShapeProps.Ixy = IsZero(ixy) ? 0 : ixy;
+      m_ShapeProps.Ixy = ixy;
       m_ShapeProps.Cx = cgx;
       m_ShapeProps.Cy = cgy;
-      m_ShapeProps.Xleft = cgx - m_BoundingRect.Left;
-      m_ShapeProps.Xright = m_BoundingRect.Right - cgx;
-      m_ShapeProps.Ytop = m_BoundingRect.Top - cgy;
-      m_ShapeProps.Ybottom = cgy - m_BoundingRect.Bottom;
+      m_ShapeProps.Xleft = cgx - m_BoundingRect.Left();
+      m_ShapeProps.Xright = m_BoundingRect.Right() - cgx;
+      m_ShapeProps.Ytop = m_BoundingRect.Top() - cgy;
+      m_ShapeProps.Ybottom = cgy - m_BoundingRect.Bottom();
 
-      m_Dirty = false;
+      m_DirtyProperties = false;
    }
 }
 
@@ -450,17 +480,75 @@ STDMETHODIMP CPolyShape::get_BoundingBox(IRect2d* *pVal)
 {
    CHECK_RETOBJ(pVal);
 
-   Update();
+   UpdateBoundingBox();
 
-   return m_BoundingRect.CreateIRect(pVal);
+   return ::CreateRect(m_BoundingRect.Left(), m_BoundingRect.Top(), m_BoundingRect.Right(), m_BoundingRect.Bottom(), pVal);
+}
+
+void CPolyShape::UpdateBoundingBox()
+{
+   if (m_DirtyBoundingBox)
+   {
+      if (m_Points.empty())
+      {
+         m_BoundingRect.SetNull();
+      }
+      else
+      {
+         Float64 left = DBL_MAX;
+         Float64 right = -DBL_MAX;
+         Float64 top = -DBL_MAX;
+         Float64 bottom = DBL_MAX;
+
+         for (const auto& point : m_Points)
+         {
+            Float64 x = point.X();
+            Float64 y = point.Y();
+
+            left = Min(x, left);
+            right = Max(x, right);
+            bottom = Min(y, bottom);
+            top = Max(y, top);
+         }
+
+         m_BoundingRect.Left() = left;
+         m_BoundingRect.Right() = right;
+         m_BoundingRect.Top() = top;
+         m_BoundingRect.Bottom() = bottom;
+      }
+
+      m_DirtyBoundingBox = false;
+   }
 }
 
 STDMETHODIMP CPolyShape::get_PolyPoints(IPoint2dCollection** ppPolyPoints)
 {
    CHECK_RETOBJ(ppPolyPoints);
 
-   CreatePointCollection( ppPolyPoints );
-   return CopyPoints( *ppPolyPoints, m_pPoints );
+   CComPtr<IPoint2dCollection> points;
+   HRESULT hr = CreatePointCollection(&points);
+   if (FAILED(hr))
+      return hr;
+
+   for (const auto& p : m_Points)
+   {
+      Float64 x = p.X();
+      Float64 y = p.Y();
+
+      CComPtr<IPoint2d> point;
+      hr = CreatePoint(x, y, nullptr, &point);
+      if (FAILED(hr))
+         return hr;
+
+      point->put_X(x);
+      point->put_Y(y);
+
+      hr = points->Add(point);
+      if (FAILED(hr))
+         return hr;
+   }
+
+   return points.CopyTo(ppPolyPoints);
 }
 
 STDMETHODIMP CPolyShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult)
@@ -474,9 +562,10 @@ STDMETHODIMP CPolyShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult)
    CHECK_IN(pPoint);
    CHECK_RETVAL(pbResult);
 
-   CollectionIndexType cPoints;
-   m_pPoints->get_Count(&cPoints);
-   if ( cPoints < 3 )
+   UpdateBoundingBox();
+
+   CollectionIndexType cPoints = m_Points.size();
+   if (cPoints < 3)
    {
       // Points and lines can't contain anything
       ATLTRACE("*** WARNING: PolyShapes must have at least 3 points\n");
@@ -486,57 +575,44 @@ STDMETHODIMP CPolyShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult)
 
    const Float64 angular_tolerance = TWO_PI*1e-2; // 2*pi*10^-2
 
-   CComPtr<IRect2d> pBox;
-   get_BoundingBox( &pBox );
-
-   Float64 height,width;
-   pBox->get_Height(&height);
-   pBox->get_Width(&width);
+   Float64 height = m_BoundingRect.Height();
+   Float64 width = m_BoundingRect.Width();
 
    // if height or width is zero, the point can't be in the shape.
-   if ( IsZero(height) || IsZero(width) )
+   if (IsZero(height) || IsZero(width))
    {
       *pbResult = VARIANT_FALSE;
       return S_OK;
    }
 
-   Float64 edgelen = min(width,height);
+   Float64 edgelen = min(width, height);
 
-   CComPtr<IPoint2d> pTopLeft;
-   CComPtr<IPoint2d> pBottomRight;
-   pBox->get_TopLeft(&pTopLeft);
-   pBox->get_BottomRight(&pBottomRight);
+   gpPoint2d pTopLeft = m_BoundingRect.TopLeft();
+   gpPoint2d pBottomRight = m_BoundingRect.BottomRight();
 
-   Float64 dist;
-   m_GeomUtil->Distance(pTopLeft,pBottomRight,&dist);
+   Float64 dist = pTopLeft.Distance(pBottomRight);
    dist *= 2;
 
-   ATLASSERT( !IsZero(dist) ); // Distance cannot be zero if height or width is non-zero
+   ATLASSERT(!IsZero(dist)); // Distance cannot be zero if height or width is non-zero
 
    Float64 boundary_tolerance = edgelen / dist;
-   boundary_tolerance = min( 1e-06, boundary_tolerance );
+   boundary_tolerance = min(1e-06, boundary_tolerance);
 
    Float64 sum = 0;
 
    CollectionIndexType idx0 = 0;
    CollectionIndexType idx1 = 1;
-   bool loop       = true;
+   bool loop = true;
    bool last_round = false;
    while (loop)
    {
-      CComPtr<IPoint2d> p0;
-      CComPtr<IPoint2d> p1;
+      const gpPoint2d& p0 = m_Points[idx0];
+      const gpPoint2d& p1 = m_Points[idx1];
 
-      m_pPoints->get_Item(idx0,&p0);
-      m_pPoints->get_Item(idx1,&p1);
-
-      Float64 x0;
-      Float64 y0;
-      Float64 x1;
-      Float64 y1;
-
-      GetCoordinates(p0,&x0,&y0);
-      GetCoordinates(p1,&x1,&y1);
+      Float64 x0 = p0.X();
+      Float64 y0 = p0.Y();
+      Float64 x1 = p1.X();
+      Float64 y1 = p1.Y();
 
       // no calculation if points are coincident
       if (x0 != x1 || y0 != y1)
@@ -545,13 +621,13 @@ STDMETHODIMP CPolyShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult)
          // Compute components of two vectors formed by
          // joining point in question with endpoints of 
          // boundary segment
-         Float64 x,y;
-         GetCoordinates(pPoint,&x,&y);
+         Float64 xp, yp;
+         GetCoordinates(pPoint, &xp, &yp);
 
-         Float64 ax = x0 - x;
-         Float64 ay = y0 - y;
-         Float64 bx = x1 - x;
-         Float64 by = y1 - y;
+         Float64 ax = x0 - xp;
+         Float64 ay = y0 - yp;
+         Float64 bx = x1 - xp;
+         Float64 by = y1 - yp;
 
          // Form cross product of the vectors to determine
          // the sign of the angular segment
@@ -560,24 +636,14 @@ STDMETHODIMP CPolyShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult)
 
          // Test for vanishing cross product in case the test point
          // is on the boundary.
-         if ( IsZero( fabs( cp ), boundary_tolerance ) )
+         if (IsZero(fabs(cp), boundary_tolerance))
          {
             // Make sure the point is actually on the boundary and not
             // on a projection of a line segment
-            CComPtr<ILineSegment2d> seg;
-            CreateLineSegment(nullptr,&seg);
+            gpLineSegment2d seg(x0, y0, x1, y1);
 
-            CComPtr<IPoint2d> p0,p1;
-            seg->get_StartPoint(&p0);
-            seg->get_EndPoint(&p1);
-
-            p0->Move(x0,y0);
-            p1->Move(x1,y1);
-
-            VARIANT_BOOL bContains;
-            m_GeomUtil->DoesLineSegmentContainPoint(seg,pPoint,1e-6,&bContains);
-
-            if ( bContains == VARIANT_TRUE )
+            bool bContains = seg.Contains(gpPoint2d(xp, yp));
+            if (bContains)
             {
                *pbResult = VARIANT_FALSE;
                return S_OK;
@@ -586,17 +652,17 @@ STDMETHODIMP CPolyShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult)
 
          // Compute dot product of two vectors for purpose of obtaining
          // the actual angle subtended by the boundary increment.
-         Float64  dot  = ax*bx + ay*by;
-         Float64  A2   = ax*ax + ay*ay;
-         Float64  B2   = bx*bx + by*by;
+         Float64  dot = ax*bx + ay*by;
+         Float64  A2 = ax*ax + ay*ay;
+         Float64  B2 = bx*bx + by*by;
          Float64  prod = A2 * B2;
 
          // Compute angle
          Float64  angle = 0;
-         if ( !IsZero( prod ), 1.0e-16 )
+         if (!IsZero(prod), 1.0e-16)
          {
-            Float64 x = dot/sqrt( prod );
-            if ( IsZero(x-1.0) )
+            Float64 x = dot / sqrt(prod);
+            if (IsZero(x - 1.0))
                x = 1.0;
 
             angle = acos(x);
@@ -618,22 +684,19 @@ STDMETHODIMP CPolyShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult)
          idx0++;
          idx1++;
 
-         if ( idx0 == cPoints-1 )
+         if (idx0 == cPoints - 1)
          {
-            idx0 = cPoints-1;
+            idx0 = cPoints - 1;
             idx1 = 0;
 
             // check if extra loop is required for closure
-            CComPtr<IPoint2d> pEnd;
-            CComPtr<IPoint2d> pStart;
+            const gpPoint2d& pStart = m_Points[idx1];
+            const gpPoint2d& pEnd = m_Points[idx0];
 
-            m_pPoints->get_Item(idx0,&pEnd);
-            m_pPoints->get_Item(idx1,&pStart);
-
-            if ( !IsEqualPoint(pStart,pEnd) )
+            if (pStart != pEnd)
             {
                // one more loop to close poly
-               last_round = true; 
+               last_round = true;
             }
             else
             {
@@ -646,17 +709,17 @@ STDMETHODIMP CPolyShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult)
 
    // Clean up round off errors in sum and determine if the point
    // is in or out.
-   sum *= 1.0/TWO_PI;
+   sum *= 1.0 / TWO_PI;
 
    bool bContained;
 
-   if ( IsEqual( sum, -1., angular_tolerance) || IsEqual( sum, 1., angular_tolerance ) )
+   if (IsEqual(sum, -1., angular_tolerance) || IsEqual(sum, 1., angular_tolerance))
       bContained = true;
-   else if ( IsZero( sum, angular_tolerance ) )
+   else if (IsZero(sum, angular_tolerance))
       bContained = false;
    else
    {
-      ATLASSERT( false ); // This should never happen!
+      ATLASSERT(false); // This should never happen!
    }
 
    *pbResult = MakeBool(bContained);
@@ -669,31 +732,14 @@ STDMETHODIMP CPolyShape::Clone(IShape** pClone)
    CHECK_RETOBJ(pClone);
 
    CComObject<CPolyShape>* pTheClone;
-   HRESULT hr = CComObject<CPolyShape>::CreateInstance( &pTheClone );
-   if ( FAILED(hr) )
+   HRESULT hr = CComObject<CPolyShape>::CreateInstance(&pTheClone);
+   if (FAILED(hr))
       return hr;
 
+   pTheClone->m_Points = m_Points;
+
    CComPtr<IPolyShape> pcClone(pTheClone);
-
-   CollectionIndexType cPoints;
-   m_pPoints->get_Count(&cPoints);
-
-   for ( CollectionIndexType i = 0; i < cPoints; i++ )
-   {
-      CComPtr<IPoint2d> pPoint;
-      m_pPoints->get_Item(i,&pPoint);
-
-      CComPtr<IPoint2d> pNewPoint;
-      CreatePoint( pPoint, nullptr, &pNewPoint );
-
-      pcClone->AddPointEx( pNewPoint );
-   }
-
-   pTheClone->m_Dirty = m_Dirty;
-   pTheClone->m_BoundingRect = m_BoundingRect;
-   pTheClone->m_ShapeProps = m_ShapeProps;
-
-   return pcClone.QueryInterface( pClone );
+   return pcClone.QueryInterface(pClone);
 }
 
 STDMETHODIMP CPolyShape::ClipWithLine(ILine2d* pLine,IShape** pShape)
@@ -702,193 +748,156 @@ STDMETHODIMP CPolyShape::ClipWithLine(ILine2d* pLine,IShape** pShape)
    CHECK_IN(pLine);
    CHECK_RETOBJ(pShape);
 
-   // before we do anything, make sure there is a chance for this shape to be clipped
-   CComPtr<IRect2d> bounding_box;
-   get_BoundingBox(&bounding_box);
-   CComPtr<IPoint2d> pntTL,pntTR,pntBL,pntBR;
-   bounding_box->get_TopLeft(&pntTL);
-   bounding_box->get_TopRight(&pntTR);
-   bounding_box->get_BottomLeft(&pntBL);
-   bounding_box->get_BottomRight(&pntBR);
+   // Convert from COM to gp objects
+   gpLine2d theLine(ComLine2gpLine(pLine));
 
-   Float64 d1,d2,d3,d4;
-   m_GeomUtil->ShortestDistanceToPoint(pLine,pntTL,&d1);
-   m_GeomUtil->ShortestDistanceToPoint(pLine,pntTR,&d2);
-   m_GeomUtil->ShortestDistanceToPoint(pLine,pntBL,&d3);
-   m_GeomUtil->ShortestDistanceToPoint(pLine,pntBR,&d4);
+   return ClipWithLine(theLine, pShape);
+}
 
-   if ( d1 < 0 && d2 < 0 && d3 < 0 && d4 < 0 )
+HRESULT CPolyShape::ClipWithLine(gpLine2d& theLine, IShape** pShape)
+{
+   UpdateBoundingBox();
+
+   // Sanity check
+   // If this polygon isn't at least a triangle, just get the heck outta here.
+   CollectionIndexType cPoints = m_Points.size();
+   if (cPoints < 3)
    {
-      // entire shape is left of the line so nothing will remain after clipping
+      ATLTRACE("*** WARNING: PolyShapes must have at least 3 points\n");
       *pShape = nullptr;
       return S_OK;
    }
 
-   if ( 0 < d1 && 0 < d2 && 0 < d3 && 0 < d4 )
-   {
-      // entire shape is right of the line so the entire shape will remain after clipping
-      Clone(pShape);
-      return S_OK;
-   }
+   // Point on the line and direction of vector
+   gpVector2d vdir;
+   gpPoint2d pnt_a;
+   theLine.GetExplicit(&pnt_a, &vdir);
 
-   // create an empty clipped Polygon - return empty if need be
+   // Create an empty clipped Polygon - return empty if need be
    CComObject<CPolyShape>* pClipShape;
-   HRESULT hr = CComObject<CPolyShape>::CreateInstance( &pClipShape );
-   if ( FAILED(hr) )
+   HRESULT hr = CComObject<CPolyShape>::CreateInstance(&pClipShape);
+   if (FAILED(hr))
       return hr;
 
-   pClipShape->QueryInterface( pShape ); // Does an AddRef();
+   pClipShape->QueryInterface(pShape); // Does an AddRef();
 
-   // Sanity check
-   // If this polygon isn't at least a triangle, just get the heck outta here.
-   CollectionIndexType cPoints;
-   m_pPoints->get_Count(&cPoints);
-   if ( cPoints < 3 )
-   {
-      ATLTRACE("*** WARNING: PolyShapes must have at least 3 points\n");
-      (*pShape)->Release();
-      *pShape = 0;
-      return S_OK;
-   }
+   Float64 dir_x = vdir.X();
+   Float64 dir_y = vdir.Y();
 
-   CComPtr<IVector2d> dir;
-   CComPtr<IPoint2d> pnt_a;
-   CComPtr<IPoint2d> pnt_b;
-
-   // point on the line and direction of vector
-   pLine->GetExplicit(&pnt_a,&dir);
-
-   Float64 dir_x, dir_y;
-   dir->get_X(&dir_x);
-   dir->get_Y(&dir_y);
-
-   CreatePoint(pnt_a,nullptr,&pnt_b);
-   pnt_b->Offset(-dir_x,-dir_y);
+   gpPoint2d pnt_b(pnt_a);
+   pnt_b.Offset(-dir_x, -dir_y);
 
    Float64 dx, dy; // components of the direction vector of the clipping line
    Float64 nx, ny; // components of a vector normal to the clipping line
    Float64 s;      // dot product of the normal vector and the position vector
                    // of this Polygon
 
-   Float64 ax,ay;
-   Float64 bx,by;
-   GetCoordinates(pnt_a,&ax,&ay);
-   GetCoordinates(pnt_b,&bx,&by);
+   Float64 ax, ay;
+   Float64 bx, by;
+   ax = pnt_a.X();
+   ay = pnt_a.Y();
+   bx = pnt_b.X();
+   by = pnt_b.Y();
 
    dx = bx - ax;
    dy = by - ay;
 
    nx = -dy;
-   ny =  dx;
+   ny = dx;
 
    // get the vector of points from the Polygon and make sure that it's closed
-   CComPtr<IPoint2d> current;
-   CComPtr<IPoint2d> last;
-   CComPtr<IPoint2d> last_added;
-   bool      was_last_added=false;
-
-   CComPtr<IPoint2dCollection> my_points;
-   CreatePointCollection(&my_points,m_pPoints);// creates and copies
-   my_points->get_Count(&cPoints);
-
-   CComPtr<IPoint2d> pStart;
-   CComPtr<IPoint2d> pEnd;
-   my_points->get_Item(0,&pStart);
-   my_points->get_Item(cPoints-1,&pEnd);
-
-   if ( !IsEqualPoint(pStart,pEnd) )
+   auto my_points = m_Points;
+   const gpPoint2d& pStart = my_points.front();
+   const gpPoint2d& pEnd = my_points.back();
+   if (pStart != pEnd)
    {
-      CComPtr<IPoint2d> closure;
-      CreatePoint(pStart,nullptr,&closure);
-      my_points->Add(closure); // close the polygon if not already
-      my_points->get_Count(&cPoints);
+      my_points.push_back(pStart);
    }
+
+   // Start loop through points
+   cPoints = my_points.size();
+
+   gpPoint2d current;
+   gpPoint2d last;
+   gpPoint2d last_added;
+   bool      was_last_added = false;
 
    CollectionIndexType idx = 0;
    bool current_out;
    bool last_out;
 
-   my_points->get_Item(idx++,&last);
+   last = my_points[idx++];
 
-   Float64 lx,ly;
-   GetCoordinates(last,&lx,&ly);
+   Float64 lx, ly;
+   lx = last.X();
+   ly = last.Y();
+
    s = nx*(lx - ax) + ny*(ly - ay);
 
-   last_out = ( s < 0 ) ? true : false;
+   last_out = (s < 0) ? true : false;
 
-   if ( !last_out )
+   if (!last_out)
    {
-      CreatePoint(lx,ly,nullptr,&last_added);
       was_last_added = true;
-      pClipShape->AddPointEx( last_added );
+
+      pClipShape->m_Points.emplace_back(lx, ly);
    }
 
-   CComPtr<ILine2d> line2; // Line to be clipped
-   line2.CoCreateInstance( CLSID_Line2d );
+   gpLine2d line2; // Line to be clipped
    do
    {
-      current.Release();
-      my_points->get_Item(idx++,&current);
+      current = my_points[idx++];
 
-      Float64 cx,cy;
-      GetCoordinates(current,&cx,&cy);
+      Float64 cx, cy;
+      cx = current.X();
+      cy = current.Y();
       s = nx*(cx - ax) + ny*(cy - ay);
-      current_out = ( s < 0 ) ? true : false;
+      current_out = (s < 0) ? true : false;
 
-      CComPtr<IPoint2d> intersect;
-      if ( last_out && !current_out ||
-          !last_out &&  current_out )
+      if (last_out && !current_out ||
+         !last_out &&  current_out)
       {
          // Find intersection
-         line2->ThroughPoints(last,current);
-         CComPtr<IGeomUtil2d> util;
-         util.CoCreateInstance( CLSID_GeomUtil );
-         intersect.Release();
-         util->LineLineIntersect(pLine,line2,&intersect);
-         ATLASSERT(intersect.p != nullptr);
+         line2.SetPoints(last, current);
+
+         gpPoint2d intersect;
+         Int16 st = gpGeomOp2d::Intersect(&intersect, theLine, line2);
+         ATLASSERT(st == 1);
 
          // don't add duplicate points
-         if (!(was_last_added && IsEqualPoint(intersect,last_added)))
+         if (!(was_last_added && intersect == last_added))
          {
-            last_added.Release();
-            CreatePoint(intersect,nullptr,&last_added);
+            last_added = intersect;
             was_last_added = true;
-            pClipShape->AddPointEx( last_added );
+
+            pClipShape->m_Points.push_back(last_added);
          }
       }
 
-      if ( !current_out && !(was_last_added && IsEqualPoint(current,last_added)))
+      if (!current_out && !(was_last_added && current == last_added))
       {
-         last_added.Release();
-         CreatePoint(current,nullptr,&last_added);
+         last_added = current;
          was_last_added = true;
-         pClipShape->AddPointEx(current);
+         pClipShape->m_Points.push_back(current);
       }
 
-      CopyPoint(last,current);
+      last = current;
       last_out = current_out;
 
-   } while ( idx < cPoints );
-
-   my_points.Release();
+   } while (idx < cPoints);
 
    // make sure clipped Polygon has enough points to be interesting
    // If there are less than 3 points, it isn't a shape.
    // If there are exactly 3 points, and the first and last points are the same
    // it isn't a shape either (area is zero)
-   CollectionIndexType nPoints;
-   pClipShape->get_NumPoints(&nPoints);
+   CollectionIndexType nPoints = pClipShape->m_Points.size();
    bool bIsLine = false;
-   if ( nPoints == 3 )
+   if (nPoints == 3)
    {
-      pStart.Release();
-      pEnd.Release();
-      pClipShape->get_Point(0,&pStart);
-      pClipShape->get_Point(nPoints-1,&pEnd);
-      bIsLine = IsEqualPoint(pStart,pEnd);
+      bIsLine = pClipShape->m_Points.front() == pClipShape->m_Points.back();
    }
 
-   if ( nPoints < 3 || bIsLine )
+   if (nPoints < 3 || bIsLine)
    {
       (*pShape)->Release();
       *pShape = 0;
@@ -903,158 +912,153 @@ STDMETHODIMP CPolyShape::ClipIn(IRect2d* pRect,IShape** pShape)
    CHECK_IN(pRect);
    CHECK_RETOBJ(pShape);
 
-   CComPtr<ILine2d> pLine;
-   CComPtr<IPoint2d> pStart;
-   CComPtr<IPoint2d> pEnd;
+   // Assume no clip
+   *pShape = nullptr;
 
-   // Clip using top edge
-   pRect->get_TopLeft( &pStart );
-   pRect->get_TopRight( &pEnd );
-   CreateLine( pStart, pEnd, nullptr, &pLine );
+   // Before we do anything, make sure there is a chance for this shape to be clipped
+   // Check if we are inside, outside, or intersect this rect
+   UpdateBoundingBox();
 
-   CComPtr<IShape> pClipTop;
-   ClipWithLine(pLine,&pClipTop);
-   pStart.Release();
-   pEnd.Release();
+   Float64 cLeft, cRight, cBottom, cTop; // clipping box coords
+   pRect->GetBounds(&cLeft, &cRight, &cBottom, &cTop);
 
-   if ( pClipTop == 0 ) // Resulting Shape is Nothing
+   gpRect2d clipBox(cLeft, cBottom, cRight, cTop);
+
+   gpRect2d::rctPosition rpos = clipBox.GetPosition(m_BoundingRect);
+   if (rpos == gpRect2d::rpOutside)
+   {
+      // entire shape is outside so nothing will remain after clipping
       return S_OK;
+   }
+   else if (rpos == gpRect2d::rpContains)
+   {
+      // entire shape is inside so the entire shape will remain after clipping
+      Clone(pShape);
+      return S_OK;
+   }
 
+   // Now we must clip
+   // Clip using top edge
+   CComPtr<IShape> pClipTop;
+   Float64 sTop = m_BoundingRect.Top();
+
+   gpVector2d vector;
+
+   if (sTop > cTop)
+   {
+      vector.SetSize(0.0, 1.0);
+      gpLine2d line(cTop, vector);
+      ClipWithLine(line, &pClipTop);
+   }
+   else
+   {
+      Clone(&pClipTop);
+   }
+
+   if (pClipTop == nullptr) // Resulting Shape is Nothing
+   {
+      ATLASSERT(false); // should not happen because we have checked clip box above
+      return S_OK;
+   }
 
    // Clip using Right edge
-   pRect->get_TopRight(&pStart);
-   pRect->get_BottomRight(&pEnd);
-   pLine->ThroughPoints(pStart,pEnd);
    CComPtr<IShape> pClipRight;
-   pClipTop->ClipWithLine(pLine,&pClipRight);
-   pClipTop.Release();
-   pStart.Release();
-   pEnd.Release();
+   Float64 sRight = m_BoundingRect.Right();
+   if (sRight > cRight)
+   {
+      CPolyShape* pPolyTop = dynamic_cast<CPolyShape*>(pClipTop.p); // we made it, we can cast it
 
-   if ( pClipRight == 0 ) // Resulting Shape is Nothing
+      vector.SetSize(1.0, 0.0);
+      gpLine2d line(cRight, vector);
+      pPolyTop->ClipWithLine(line, &pClipRight);
+   }
+   else
+   {
+      // no need to clone, just copy
+      pClipTop.CopyTo(&pClipRight);
+   }
+
+   if (pClipRight == 0) // Resulting Shape is Nothing
+   {
+      ATLASSERT(false); // should not happen because we have checked clip box above
       return S_OK;
-
+   }
 
    // Clip using Bottom edge
-   pRect->get_BottomRight(&pStart);
-   pRect->get_BottomLeft(&pEnd);
-   pLine->ThroughPoints(pStart,pEnd);
    CComPtr<IShape> pClipBottom;
-   pClipRight->ClipWithLine(pLine,&pClipBottom);
-   pClipRight.Release();
-   pStart.Release();
-   pEnd.Release();
+   Float64 sBottom = m_BoundingRect.Bottom();
+   if (sBottom < cBottom)
+   {
+      CPolyShape* pPolyRight = dynamic_cast<CPolyShape*>(pClipRight.p); // we made it, we can cast it
 
-   if ( pClipBottom == 0 ) // Resulting Shape is Nothing
+      vector.SetSize(0.0, -1.0);
+      gpLine2d line(-1.0*cBottom, vector);
+      pPolyRight->ClipWithLine(line, &pClipBottom);
+   }
+   else
+   {
+      pClipRight.CopyTo(&pClipBottom);
+   }
+
+   if (pClipBottom == 0) // Resulting Shape is Nothing
+   {
+      //      ATLASSERT(false); // should not happen because we have checked clip box above. actually does happen when shapes just touch
       return S_OK;
+   }
 
    // Clip using Left edge
-   pRect->get_BottomLeft(&pStart);
-   pRect->get_TopLeft(&pEnd);
-   pLine->ThroughPoints(pStart,pEnd);
    CComPtr<IShape> pClipLeft;
-   pClipBottom->ClipWithLine(pLine,&pClipLeft);
-   pClipBottom.Release();
-   pStart.Release();
-   pEnd.Release();
+   Float64 sLeft = m_BoundingRect.Left();
+   if (sLeft < cLeft)
+   {
+      CPolyShape* pPolyBottom = dynamic_cast<CPolyShape*>(pClipBottom.p); // we made it, we can cast it
 
-   if ( pClipLeft == 0 ) // Resulting Shape is Nothing
+      vector.SetSize(-1.0, 0.0);
+      gpLine2d line(-1.0*cLeft, vector);
+      pPolyBottom->ClipWithLine(line, &pClipLeft);
+   }
+   else
+   {
+      pClipBottom.CopyTo(&pClipLeft);
+   }
+
+   if (pClipLeft == 0) // Resulting Shape is Nothing
+   {
+      ATLASSERT(false); // should not happen because we have checked clip box above
       return S_OK;
+   }
 
    pClipLeft->QueryInterface(pShape);
 
    return S_OK;
 }
-//
-//STDMETHODIMP CPolyShape::ClipOut(IRect2d* pRect,IShape** pShape)
-//{
-//   if ( pRect == 0 )
-//      return E_INVALIDARG;
-//
-//   if ( pShape == 0 )
-//      return E_POINTER;
-//
-//   CComPtr<ILine2d> pLine;
-//   CComPtr<IPoint2d> pStart;
-//   CComPtr<IPoint2d> pEnd;
-//
-//   // Clip using Top edge
-//   pRect->get_TopRight( &pStart );
-//   pRect->get_TopLeft( &pEnd );
-//   CreateLine( pStart, pEnd, nullptr, &pLine );
-//
-//   CComPtr<IShape> pClipTop;
-//   ClipWithLine(pLine,&pClipTop);
-//
-//   pStart.Release();
-//   pEnd.Release();
-//
-//   // Clip using Left edge
-//   pRect->get_TopLeft(&pStart);
-//   pRect->get_BottomLeft(&pEnd);
-//   pLine->ThroughPoints(pStart,pEnd);
-//   CComPtr<IShape> pClipLeft;
-//   pClipTop->ClipWithLine(pLine,&pClipLeft);
-//   pClipTop.Release();
-//
-//   pStart.Release();
-//   pEnd.Release();
-//
-//   // Clip using Bottom edge
-//   pRect->get_BottomLeft(&pStart);
-//   pRect->get_BottomRight(&pEnd);
-//   pLine->ThroughPoints(pStart,pEnd);
-//   CComPtr<IShape> pClipBottom;
-//   pClipLeft->ClipWithLine(pLine,&pClipBottom);
-//   pClipLeft.Release();
-//
-//   pStart.Release();
-//   pEnd.Release();
-//
-//   // Clip using Right edge
-//   pRect->get_BottomRight(&pStart);
-//   pRect->get_TopRight(&pEnd);
-//   pLine->ThroughPoints(pStart,pEnd);
-//   CComPtr<IShape> pClipRight;
-//   pClipBottom->ClipWithLine(pLine,&pClipRight);
-//   pClipBottom.Release();
-//
-//   pClipRight->QueryInterface(pShape);
-//
-//   return S_OK;
-//}
 
 STDMETHODIMP CPolyShape::get_Perimeter(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   CollectionIndexType cPoints;
-   m_pPoints->get_Count(&cPoints);
-
-   CComPtr<IPoint2d> pStart;
-   CComPtr<IPoint2d> pEnd;
-
-   m_pPoints->get_Item(0,&pStart);
-   m_pPoints->get_Item(cPoints-1,&pEnd);
-
-   Float64 sum = 0.00;
+   CollectionIndexType cPoints = m_Points.size();
+   if (cPoints <= 1)
+   {
+      *pVal = 0.0;
+      return S_OK;
+   }
 
    // Get the distance between the first and last point.
    // If the polygon is closed, it will be zero.
-   Float64 last_dist;
-   m_GeomUtil->Distance(pStart,pEnd,&last_dist);
+   const gpPoint2d& pStart = m_Points.front();
+   const gpPoint2d& pEnd = m_Points.back();
 
-   for ( CollectionIndexType idx = 1; idx < cPoints; idx++ )
+   Float64 last_dist = pStart.Distance(pEnd);
+
+   // Loop to get rest
+   Float64 sum = 0.00;
+   for (CollectionIndexType idx = 1; idx < cPoints; idx++)
    {
-      CComPtr<IPoint2d> p1;
-      CComPtr<IPoint2d> p2;
-   
-      m_pPoints->get_Item(idx-1,&p1);
-      m_pPoints->get_Item(idx  ,&p2);
+      const gpPoint2d& p1 = m_Points[idx - 1];
+      const gpPoint2d& p2 = m_Points[idx];
 
-      Float64 dist;
-      HRESULT hr = m_GeomUtil->Distance(p1,p2,&dist);
-      ATLASSERT( SUCCEEDED(hr) );
+      Float64 dist = p1.Distance(p2);
 
       sum += dist;
    }
@@ -1071,25 +1075,21 @@ STDMETHODIMP CPolyShape::FurthestDistance(ILine2d* line, Float64 *pVal)
    CHECK_IN(line);
    CHECK_RETVAL(pVal);
 
-   CollectionIndexType cPoints;
-   m_pPoints->get_Count(&cPoints);
+   // Convert from COM to gp objects
+   gpLine2d theLine(ComLine2gpLine(line));
 
    Float64 maxDist = -DBL_MAX;
 
-   for ( CollectionIndexType i = 0; i < cPoints; i++ )
+   for (const auto& rPoint : m_Points)
    {
-      CComPtr<IPoint2d> pPoint;
-      m_pPoints->get_Item(i,&pPoint);
-
-      Float64 dist;
-      m_GeomUtil->ShortestDistanceToPoint(line,pPoint,&dist);
-      maxDist = Max( maxDist, dist );
+      // Multiply by -1.0 becase gp convention is opposite com convention
+      Float64 dist = -1.0 * theLine.DistanceToPoint(rPoint);
+      maxDist = Max(maxDist, dist);
    }
 
    *pVal = maxDist;
 
    return S_OK;
-
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1103,18 +1103,12 @@ STDMETHODIMP CPolyShape::Offset(Float64 dx,Float64 dy)
       return S_OK;
    }
 
-   CollectionIndexType cPoints;
-   m_pPoints->get_Count(&cPoints);
-
-   for ( CollectionIndexType i = 0; i < cPoints; i++ )
+   for (auto& rPoint : m_Points)
    {
-      CComPtr<IPoint2d> pPoint;
-      m_pPoints->get_Item(i,&pPoint);
-      pPoint->Offset(dx,dy);
+      rPoint.Offset(dx, dy);
    }
-
-   m_BoundingRect.Offset(dx, dy);
    m_ShapeProps.Offset(dx, dy);
+   m_BoundingRect.Offset(dx, dy);
 
    return S_OK;
 }
@@ -1123,32 +1117,31 @@ STDMETHODIMP CPolyShape::OffsetEx(ISize2d* pSize)
 {
    CHECK_IN(pSize);
 
-   Float64 dx,dy;
-   GetSize(pSize,&dx,&dy);
-
-   return Offset(dx,dy);
+   Float64 dx, dy;
+   pSize->Dimensions(&dx, &dy);
+   return Offset(dx, dy);
 }
 
 STDMETHODIMP CPolyShape::get_LocatorPoint(LocatorPointType lp, IPoint2d** point)
 {
    CHECK_RETOBJ(point);
 
-   Float64 lx,ly;
-   GetLocatorPoint(lp,&lx,&ly);
-   return CreatePoint(lx,ly,nullptr,point);
+   Float64 lx, ly;
+   GetLocatorPoint(lp, &lx, &ly);
+   return CreatePoint(lx, ly, nullptr, point);
 }
 
 STDMETHODIMP CPolyShape::put_LocatorPoint(LocatorPointType lp, IPoint2d* point)
 {
    CHECK_IN(point);
 
-   Float64 lx,ly;
-   GetLocatorPoint(lp,&lx,&ly);
+   Float64 lx, ly;
+   GetLocatorPoint(lp, &lx, &ly);
 
-   Float64 cx,cy;
-   GetCoordinates(point,&cx,&cy);
+   Float64 cx, cy;
+   GetCoordinates(point, &cx, &cy);
 
-   return Offset(cx-lx,cy-ly);
+   return Offset(cx - lx, cy - ly);
 }
 
 STDMETHODIMP CPolyShape::MoveEx(IPoint2d* pFrom,IPoint2d* pTo)
@@ -1156,26 +1149,26 @@ STDMETHODIMP CPolyShape::MoveEx(IPoint2d* pFrom,IPoint2d* pTo)
    CHECK_IN(pFrom);
    CHECK_IN(pTo);
 
-   Float64 x1,y1;
-   Float64 x2,y2;
+   Float64 x1, y1;
+   Float64 x2, y2;
 
-   GetCoordinates(pFrom,&x1,&y1);
-   GetCoordinates(pTo,&x2,&y2);
+   GetCoordinates(pFrom, &x1, &y1);
+   GetCoordinates(pTo, &x2, &y2);
 
-   Float64 dx,dy;
+   Float64 dx, dy;
    dx = x2 - x1;
    dy = y2 - y1;
 
-   return Offset(dx,dy);
+   return Offset(dx, dy);
 }
 
 STDMETHODIMP CPolyShape::RotateEx(IPoint2d* pPoint,Float64 angle)
 {
    CHECK_IN(pPoint);
 
-   Float64 x,y;
-   GetCoordinates(pPoint,&x,&y);
-   return Rotate(x,y,angle);
+   Float64 x, y;
+   GetCoordinates(pPoint, &x, &y);
+   return Rotate(x, y, angle);
 }
 
 
@@ -1186,17 +1179,23 @@ STDMETHODIMP CPolyShape::Rotate(Float64 cx,Float64 cy,Float64 angle)
       return S_OK;
    }
 
-   CollectionIndexType cPoints;
-   m_pPoints->get_Count(&cPoints);
-
-   for ( CollectionIndexType i = 0; i < cPoints; i++ )
+   if (IsZero(angle, 1.0e-06))
    {
-      CComPtr<IPoint2d> pPoint;
-      m_pPoints->get_Item(i,&pPoint);
-      pPoint->Rotate(cx,cy,angle);
+      return S_OK;
    }
+   else
+   {
+      gpPoint2d cpoint(cx, cy);
 
-   return S_OK;
+      for (auto& rPoint : m_Points)
+      {
+         rPoint.Rotate(cpoint, angle);
+      }
+
+      MakeDirty();
+
+      return S_OK;
+   }
 }
 
 STDMETHODIMP CPolyShape::get_StructuredStorage(IStructuredStorage2* *pStg)
@@ -1220,7 +1219,14 @@ STDMETHODIMP CPolyShape::Save(IStructuredSave2* pSave)
    CHECK_IN(pSave);
 
    pSave->BeginUnit(CComBSTR("PolyShape"),1.0);
-   pSave->put_Property(CComBSTR("Points"),CComVariant(m_pPoints));
+   pSave->put_Property(CComBSTR("NumPoints"), CComVariant(m_Points.size()));
+   for (const auto& rPoint : m_Points)
+   {
+      pSave->BeginUnit(CComBSTR("Point"), 1.0);
+      pSave->put_Property(CComBSTR("X"), CComVariant(rPoint.X()));
+      pSave->put_Property(CComBSTR("Y"), CComVariant(rPoint.Y()));
+      pSave->EndUnit();
+   }
    pSave->EndUnit();
 
    return S_OK;
@@ -1230,12 +1236,37 @@ STDMETHODIMP CPolyShape::Load(IStructuredLoad2* pLoad)
 {
    CHECK_IN(pLoad);
 
-   CComVariant var;
    pLoad->BeginUnit(CComBSTR("PolyShape"));
    
-   pLoad->get_Property(CComBSTR("Points"),&var);
-   if ( FAILED( _CopyVariantToInterface<IPoint2dCollection>::copy(&m_pPoints,&var)) )
+   CComVariant var;
+   HRESULT hr = pLoad->get_Property(CComBSTR("NumPoints"), &var);
+   if (FAILED(hr))
       return STRLOAD_E_INVALIDFORMAT;
+
+   CollectionIndexType num_pts = var.iVal;
+   for (CollectionIndexType i = 0; i<num_pts; i++)
+   {
+      hr = pLoad->BeginUnit(CComBSTR("Point"));
+      if (FAILED(hr))
+         return STRLOAD_E_INVALIDFORMAT;
+
+      hr = pLoad->get_Property(CComBSTR("X"), &var);
+      if (FAILED(hr))
+         return STRLOAD_E_INVALIDFORMAT;
+
+      Float64 x = var.dblVal;
+
+      pLoad->get_Property(CComBSTR("Y"), &var);
+      if (FAILED(hr))
+         return STRLOAD_E_INVALIDFORMAT;
+
+      Float64 y = var.dblVal;
+
+      VARIANT_BOOL bEnd;
+      pLoad->EndUnit(&bEnd);
+
+      m_Points.emplace_back(x, y);
+   }
 
 
    VARIANT_BOOL bEnd;
@@ -1243,30 +1274,6 @@ STDMETHODIMP CPolyShape::Load(IStructuredLoad2* pLoad)
 
    ATLASSERT(bEnd == VARIANT_TRUE);
 
-   return S_OK;
-}
-
-STDMETHODIMP CPolyShape::OnPointChanged(IPoint2d* point)
-{
-   MakeDirty();
-   return S_OK;
-}
-
-STDMETHODIMP CPolyShape::OnPointAdded(CollectionIndexType index,IPoint2d* point)
-{
-   MakeDirty();
-   return S_OK;
-}
-
-STDMETHODIMP CPolyShape::OnPointRemoved(CollectionIndexType index)
-{
-   MakeDirty();
-   return S_OK;
-}
-
-STDMETHODIMP CPolyShape::OnPointsCleared()
-{
-   MakeDirty();
    return S_OK;
 }
 

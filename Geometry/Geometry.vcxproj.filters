@@ -28,9 +28,6 @@
     <ClCompile Include="DeckedSlabBeam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FasterPolyShape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GenericShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -169,9 +166,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DeckedSlabBeam.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FasterPolyShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GenericShape.h">
@@ -322,9 +316,6 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="CoordinateXform3d.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="FasterPolyShape.rgs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="GenericShape.rgs">

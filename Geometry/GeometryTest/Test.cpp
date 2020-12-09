@@ -54,7 +54,6 @@
 #include "TestShapeProperties.h"
 #include "TestGenericShape.h"
 #include "TestPolyShape.h"
-#include "TestFasterPolyShape.h"
 #include "TestCircle.h"
 #include "TestCircularSegment.h"
 #include "TestRectangle.h"
@@ -114,7 +113,6 @@ int main(int argc, LPTSTR  argv[])
    CTestShapeProperties::Test();
    CTestShapeCollection::Test();
    CTestPolyShape::Test();
-   CTestFasterPolyShape::Test();
    CTestCircle::Test();
    CTestCircularSegment::Test();
    CTestRectangle::Test();

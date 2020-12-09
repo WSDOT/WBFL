@@ -30,6 +30,10 @@
 
 #include "resource.h"       // main symbols
 #include "Helper.h"
+#include <GeometricPrimitives\Primitives.h>
+
+
+class gpLine2d;
 
 /////////////////////////////////////////////////////////////////////////////
 // CPolyShape
@@ -42,8 +46,7 @@ class ATL_NO_VTABLE CPolyShape :
    public IShape,
    public IXYPosition,
    public IStructuredStorage2,
-   public IPersist,
-   public IPoint2dCollectionEvents
+   public IPersist
 {
 public:
 	CPolyShape()
@@ -65,7 +68,6 @@ BEGIN_COM_MAP(CPolyShape)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
    COM_INTERFACE_ENTRY(IPersist)
-   COM_INTERFACE_ENTRY(IPoint2dCollectionEvents)
 END_COM_MAP()
 
 // ISupportErrorInfo
@@ -78,11 +80,14 @@ public:
 	STDMETHOD(get_Points)(/*[out,retval]*/IPoint2dCollection** coll) override;
 	STDMETHOD(Clear)() override;
 	STDMETHOD(get_Point)(/*[in]*/ CollectionIndexType index, /*[out, retval]*/ IPoint2d* *pVal) override;
-	STDMETHOD(get_NumPoints)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+   STDMETHOD(GetPoint)(/*[in] */ CollectionIndexType index, /*[out]*/ Float64* pX, /*[out]*/ Float64* pY) override;
+   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
 	STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
 	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
 	STDMETHOD(RemovePoint)(/*[in]*/ CollectionIndexType index) override;
-	STDMETHOD(AddPoints)(/*[in]*/ IPoint2dCollection* pPoints) override;
+   STDMETHOD(ChangePoint)(/*[in]*/ CollectionIndexType index, /*[in]*/ Float64 x, /*[in]*/ Float64 y) override;
+   STDMETHOD(ChangePointEx)(/*[in]*/ CollectionIndexType index, /*[in]*/ IPoint2d* pPoint) override;
+   STDMETHOD(AddPoints)(/*[in]*/ IPoint2dCollection* pPoints) override;
 	STDMETHOD(AddPointEx)(/*[in]*/ IPoint2d* pPoint) override;
    STDMETHOD(AddPoint)(/*[in]*/ Float64 x,/*[in]*/ Float64 y) override;
 
@@ -115,23 +120,17 @@ public:
    STDMETHOD(Save)(IStructuredSave2* pSave) override;
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
-// IPoint2dCollectionEvents
-public:
-	STDMETHOD(OnPointChanged)(IPoint2d* point) override;
-	STDMETHOD(OnPointAdded)(CollectionIndexType index,IPoint2d* point) override;
-	STDMETHOD(OnPointRemoved)(CollectionIndexType index) override;
-	STDMETHOD(OnPointsCleared)() override;
-
 private:
-   CComPtr<IPoint2dCollection> m_pPoints;
-   ULONG                       m_PointsCookie;
+   HRESULT ClipWithLine(gpLine2d& theLine, IShape** pShape);
 
-   CComPtr<IGeomUtil2d> m_GeomUtil;
+   // Simple collection of points
+   std::vector<gpPoint2d> m_Points;
 
-   void GetLocatorPoint(LocatorPointType lp,Float64* x,Float64* y);
+   void GetLocatorPoint(LocatorPointType lp, Float64* x, Float64* y);
 
    // dirty flags to signal completion of different computations and cached properties
-   bool m_Dirty;
+   bool m_DirtyBoundingBox;
+   bool m_DirtyProperties;
 
    // cached shape properties
    struct ShapeProps
@@ -151,7 +150,8 @@ private:
       {
          Init();
       }
-      
+      void Init();
+
       void Offset(Float64 dx, Float64 dy)
       {
          Xleft += dx;
@@ -161,48 +161,17 @@ private:
          Cx += dx;
          Cy += dy;
       }
-
-      void Init();
       HRESULT CreateIShapeProperties(IShapeProperties ** props);
 
    } m_ShapeProps;
 
 
    // cached bounding rectangle
-   struct BoundRect
-   {
-      Float64 Left;
-      Float64 Right;
-      Float64 Top;
-      Float64 Bottom;
+   gpRect2d m_BoundingRect;
 
-      BoundRect()
-      {
-         Init();
-      }
-      
-      void Init()
-      {
-         Left = Right = Top = Bottom = 0.0;
-      }
-
-      void Offset(Float64 dx, Float64 dy)
-      {
-         Left += dx;
-         Right += dx;
-         Top += dy;
-         Bottom += dy;
-      }
-
-      HRESULT CreateIRect(IRect2d** rect)
-      {
-         return ::CreateRect(Left, Top, Right, Bottom, rect);
-      }
-
-   } m_BoundingRect;
-
-   void MakeDirty() { m_Dirty = true;}
-   void Update();
+   void MakeDirty() { m_DirtyBoundingBox = m_DirtyProperties = true; }
+   void UpdateBoundingBox();
+   void UpdateShapeProperties();
 };
 
 #endif //__POLYSHAPE_H_

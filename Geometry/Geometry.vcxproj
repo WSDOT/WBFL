@@ -940,7 +940,6 @@ date/T &gt; $(IntDir)mt2.dep
     <ClCompile Include="CoordinateXform2d.cpp" />
     <ClCompile Include="CoordinateXform3d.cpp" />
     <ClCompile Include="DeckedSlabBeam.cpp" />
-    <ClCompile Include="FasterPolyShape.cpp" />
     <ClCompile Include="GenericShape.cpp" />
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="GeomUtil.cpp" />
@@ -999,7 +998,6 @@ date/T &gt; $(IntDir)mt2.dep
     <None Include="CompositeShapeItem.rgs" />
     <None Include="CoordinateXform2d.rgs" />
     <None Include="CoordinateXform3d.rgs" />
-    <None Include="FasterPolyShape.rgs" />
     <None Include="GenericShape.rgs" />
     <None Include="Geometry.def" />
     <None Include="GeomUtil.rgs" />
@@ -1054,7 +1052,6 @@ date/T &gt; $(IntDir)mt2.dep
     <ClInclude Include="CoordinateXform2d.h" />
     <ClInclude Include="CoordinateXform3d.h" />
     <ClInclude Include="DeckedSlabBeam.h" />
-    <ClInclude Include="FasterPolyShape.h" />
     <ClInclude Include="GenericShape.h" />
     <ClInclude Include="GeometryCP.h" />
     <ClInclude Include="GeomUtil.h" />

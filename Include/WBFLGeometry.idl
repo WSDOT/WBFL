@@ -1478,17 +1478,26 @@ library WBFLGeometry
 		[helpstring("method RemovePoint"),helpcontext(IDH_IPolyShape_RemovePoint)]
 		HRESULT RemovePoint([in] CollectionIndexType index);
 
-		[propget, helpstring("property Shape"),helpcontext(IDH_IPolyShape_Shape)]
+      [helpstring("method ChangePoint"), helpcontext(IDH_IPolyShape_ChangePoint)]
+      HRESULT ChangePoint([in] CollectionIndexType index, [in] Float64 x, [in] Float64 y);
+
+      [helpstring("method ChangePointEx"), helpcontext(IDH_IPolyShape_ChangePointEx)]
+      HRESULT ChangePointEx([in] CollectionIndexType index, [in] IPoint2d* pPoint);
+      
+      [propget, helpstring("property Shape"),helpcontext(IDH_IPolyShape_Shape)]
 		HRESULT Shape([out, retval] IShape* *pVal);
 
 		[propget, helpstring("property XYPosition"),helpcontext(IDH_IPolyShape_XYPosition)]
 		HRESULT XYPosition([out, retval] IXYPosition* *pVal);
 
-		[propget, helpstring("property NumPoints"),helpcontext(IDH_IPolyShape_NumPoints)]
-		HRESULT NumPoints([out, retval] CollectionIndexType *pVal);
+		[propget, helpstring("property Count"),helpcontext(IDH_IPolyShape_Count)]
+		HRESULT Count([out, retval] CollectionIndexType *pVal);
 
 		[propget, helpstring("property Point"),helpcontext(IDH_IPolyShape_Point)]
 		HRESULT Point([in] CollectionIndexType index, [out, retval] IPoint2d* *pVal);
+
+      [helpstring("property GetPoint"), helpcontext(IDH_IPolyShape_Point)]
+      HRESULT GetPoint([in] CollectionIndexType index, [out] Float64* pX, [out] Float64* pY);
 
 		[helpstring("method Clear"),helpcontext(IDH_IPolyShape_Clear)]
 		HRESULT Clear();
@@ -3718,53 +3727,6 @@ library WBFLGeometry
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
-   // A faster alternative for the poly shape. The original version depended on IPoint2dCollection,
-   // which is very COM resource intensive
-   [
-		object,
-		uuid(8F4AC52C-4C4E-4015-934E-58E1C35DC39E),
-      oleautomation,
-		helpstring("IFasterPolyShape Interface"),
-		helpcontext(IDH_IFasterPolyShape),
-		pointer_default(unique)
-	]
-	interface IFasterPolyShape : IUnknown
-	{
-		[helpstring("method AddPoint"),helpcontext(IDH_IFasterPolyShape_AddPoint)]
-		HRESULT AddPoint([in] Float64 x,[in] Float64 y);
-
-		[helpstring("method AddPointEx"),helpcontext(IDH_IFasterPolyShape_AddPointEx)]
-		HRESULT AddPointEx([in] IPoint2d* pPoint);
-
-		[helpstring("method AddPoints"),helpcontext(IDH_IFasterPolyShape_AddPoints)]
-		HRESULT AddPoints([in] IPoint2dCollection* pPoints);
-
-		[helpstring("method ChangePoint"),helpcontext(IDH_IFasterPolyShape_ChangePoint)]
-		HRESULT ChangePoint([in] CollectionIndexType index, [in] Float64 x,[in] Float64 y);
-
-		[helpstring("method RemovePoint"),helpcontext(IDH_IFasterPolyShape_RemovePoint)]
-		HRESULT RemovePoint([in] CollectionIndexType index);
-
-		[propget, helpstring("property Shape"),helpcontext(IDH_IFasterPolyShape_Shape)]
-		HRESULT Shape([out, retval] IShape* *pVal);
-
-		[propget, helpstring("property XYPosition"),helpcontext(IDH_IFasterPolyShape_XYPosition)]
-		HRESULT XYPosition([out, retval] IXYPosition* *pVal);
-
-		[propget, helpstring("property NumPoints"),helpcontext(IDH_IFasterPolyShape_NumPoints)]
-		HRESULT NumPoints([out, retval] CollectionIndexType *pVal);
-
-		[helpstring("property GetPoint"),helpcontext(IDH_IFasterPolyShape_Point)]
-		HRESULT GetPoint([in] CollectionIndexType index, [out] Float64* pX, [out] Float64* pY);
-
-		[helpstring("method Clear"),helpcontext(IDH_IFasterPolyShape_Clear)]
-		HRESULT Clear();
-
-		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
-   };
-
-
    [
       object,
       uuid(7C2DDC60-C428-4926-81CE-5DAAB52FBDD0),
@@ -3877,20 +3839,6 @@ library WBFLGeometry
 	coclass PolyShape
 	{
 		[default] interface IPolyShape;
-      interface IShape;
-      interface IXYPosition;
-      interface IStructuredStorage2;
-        // interface IPersist;
-	};
-
-	[
-		uuid(AFB02F20-6824-491f-B804-1AD34DAA965E),
-		helpstring("FasterPolyShape Class"),
-		helpcontext(IDH_IFasterPolyShape)
-	]
-	coclass FasterPolyShape
-	{
-		[default] interface IFasterPolyShape;
       interface IShape;
       interface IXYPosition;
       interface IStructuredStorage2;
