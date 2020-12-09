@@ -896,6 +896,12 @@ STDMETHODIMP CVoidedSlabSection2::get_Shape(IShape* *pVal)
    return m_CompositeShape->get_Shape(pVal);
 }
 
+STDMETHODIMP CVoidedSlabSection2::get_XYPosition(IXYPosition **pVal)
+{
+   CHECK_RETOBJ(pVal);
+   return m_CompositeShape->get_XYPosition(pVal);
+}
+
 STDMETHODIMP CVoidedSlabSection2::get_Item(CollectionIndexType idx,ICompositeShapeItem* *pVal)
 {
    return m_CompositeShape->get_Item(idx,pVal);

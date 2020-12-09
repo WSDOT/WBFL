@@ -3306,7 +3306,11 @@ library WBFLGeometry
 		   [propget, helpstring("property Shape")/*,helpcontext(IDH_ICompositeShape_Shape)*/]
          HRESULT Shape([out, retval] IShape* *pVal);
 
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+         [propget, helpstring("property XYPosition")/*,helpcontext(IDH_ICompositeShape_XYPosition)*/]
+         HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+         
+         [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 

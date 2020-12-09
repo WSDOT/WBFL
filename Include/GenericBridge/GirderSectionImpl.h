@@ -570,6 +570,11 @@ public:
       return m_CompositeShape->get_Shape(pVal);
    }
 
+   STDMETHODIMP get_XYPosition(IXYPosition* *pVal) override
+   {
+      return m_CompositeShape->get_XYPosition(pVal);
+   }
+
    STDMETHODIMP get_StructuredStorage(IStructuredStorage2* *pStrStg) override
    {
       return m_CompositeShape->get_StructuredStorage(pStrStg);

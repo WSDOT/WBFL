@@ -783,6 +783,12 @@ STDMETHODIMP CMultiWebSection2::get_Shape(IShape* *pVal)
    return m_CompositeShape->get_Shape(pVal);
 }
 
+STDMETHODIMP CMultiWebSection2::get_XYPosition(IXYPosition **pVal)
+{
+   CHECK_RETOBJ(pVal);
+   return m_CompositeShape->get_XYPosition(pVal);
+}
+
 STDMETHODIMP CMultiWebSection2::get_StructuredStorage(IStructuredStorage2* *pStrStg)
 {
    return m_CompositeShape->get_StructuredStorage(pStrStg);

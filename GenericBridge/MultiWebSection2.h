@@ -152,7 +152,8 @@ public:
 // ICompositeShape
 public:
    STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pStg) override;
-	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
+   STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
+   STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
 	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ICompositeShapeItem* *pVal) override;
 	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown* *pVal) override;
 	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;

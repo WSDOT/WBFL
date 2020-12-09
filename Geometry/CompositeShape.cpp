@@ -64,6 +64,12 @@ STDMETHODIMP CCompositeShape::get_Shape(IShape **pVal)
    return QueryInterface( IID_IShape, (void**)pVal );
 }
 
+STDMETHODIMP CCompositeShape::get_XYPosition(IXYPosition **pVal)
+{
+   CHECK_RETOBJ(pVal);
+   return QueryInterface(IID_IXYPosition, (void**)pVal);
+}
+
 STDMETHODIMP CCompositeShape::get_StructuredStorage(IStructuredStorage2* *pStg)
 {
    CHECK_RETOBJ(pStg);
