@@ -82,6 +82,9 @@ public:
    IndexType CreateDataSeries();
    IndexType CreateDataSeries(LPCTSTR lpszLabel,int nPenStyle, int nWidth, COLORREF crColor);
 
+   // Find an existing data series and return its cookie. Returns INVALID_INDEX if not found
+   IndexType FindDataSeries(LPCTSTR lpszLabel);
+
    //------------------------------------------------------------------------
    // Adds an individual point to the graph.
    void AddPoint(IndexType cookie,const gpPoint2d& rPoint);
