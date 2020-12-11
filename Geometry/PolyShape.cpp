@@ -193,7 +193,7 @@ STDMETHODIMP CPolyShape::ChangePoint(CollectionIndexType index, Float64 x, Float
    if (0 <= index && index < (CollectionIndexType)m_Points.size())
    {
       gpPoint2d& rpoint = m_Points.at(index);
-      if (x != rpoint.X() && y != rpoint.Y())
+      if (x != rpoint.X() || y != rpoint.Y())
       {
          rpoint.X() = x;
          rpoint.Y() = y;
@@ -340,8 +340,33 @@ void CPolyShape::UpdateShapeProperties()
          // If there are less than three points, it is a degenerate shape.
          // Just return default shape properties (All values are zero).
          m_ShapeProps.Init();
+         if (cPoints == 0)
+         {
+            m_BoundingRect.SetNull();
+         }
+         else
+         {
+            Float64 left = Float64_Max;
+            Float64 right = -Float64_Max;
+            Float64 bottom = Float64_Max;
+            Float64 top = -Float64_Max;
+            for(const auto& point : m_Points)
+            {
+               Float64 x = point.X();
+               Float64 y = point.Y();
+               left = Min(x, left);
+               right = Max(x, right);
+               bottom = Min(y, bottom);
+               top = Max(y, top);
+            }
+
+            m_BoundingRect.Set(left, bottom, right, top);
+            m_DirtyBoundingBox = false;
+         }
          return;
       }
+
+      // we've got plenty of points... let's get to work
 
       Float64 x0, y0;
       Float64 x1, y1;
@@ -351,6 +376,12 @@ void CPolyShape::UpdateShapeProperties()
       Float64 c_ixx = 0, c_iyy = 0, c_ixy = 0; // moments of inertia about the centroid
       Float64 area_local = 0;
 
+      // Since we have to loop over all the points, update the bounding box at the same time
+      Float64 left = Float64_Max;
+      Float64 right = -Float64_Max;
+      Float64 top = -Float64_Max;
+      Float64 bottom = Float64_Max;
+      
       // loop over all points - make sure of closure
       CollectionIndexType idx0, idx1;
       idx0 = 0;
@@ -368,6 +399,11 @@ void CPolyShape::UpdateShapeProperties()
          y0 = p0.Y();
          x1 = p1.X();
          y1 = p1.Y();
+
+         left = Min(x0, x1, left);
+         right = Max(x0, x1, right);
+         bottom = Min(y0, y1, bottom);
+         top = Max(y0, y1, top);
 
          dx = x1 - x0;
          dy = y1 - y0;
@@ -457,13 +493,12 @@ void CPolyShape::UpdateShapeProperties()
          ixy *= -1;
       }
 
-      // update bounding rect
-      this->UpdateBoundingBox();
+      m_BoundingRect.Set(left, bottom, right, top);
 
       m_ShapeProps.Area = area;
       m_ShapeProps.Ixx = ixx;
       m_ShapeProps.Iyy = iyy;
-      m_ShapeProps.Ixy = ixy;
+      m_ShapeProps.Ixy = IsZero(ixy) ? 0 : ixy;
       m_ShapeProps.Cx = cgx;
       m_ShapeProps.Cy = cgy;
       m_ShapeProps.Xleft = cgx - m_BoundingRect.Left();
@@ -472,6 +507,7 @@ void CPolyShape::UpdateShapeProperties()
       m_ShapeProps.Ybottom = cgy - m_BoundingRect.Bottom();
 
       m_DirtyProperties = false;
+      m_DirtyBoundingBox = false; // bounding box was updated as the section properties where evaluated
    }
 }
 
@@ -495,10 +531,10 @@ void CPolyShape::UpdateBoundingBox()
       }
       else
       {
-         Float64 left = DBL_MAX;
-         Float64 right = -DBL_MAX;
-         Float64 top = -DBL_MAX;
-         Float64 bottom = DBL_MAX;
+         Float64 left = Float64_Max;
+         Float64 right = -Float64_Max;
+         Float64 top = -Float64_Max;
+         Float64 bottom = Float64_Max;
 
          for (const auto& point : m_Points)
          {
@@ -511,10 +547,7 @@ void CPolyShape::UpdateBoundingBox()
             top = Max(y, top);
          }
 
-         m_BoundingRect.Left() = left;
-         m_BoundingRect.Right() = right;
-         m_BoundingRect.Top() = top;
-         m_BoundingRect.Bottom() = bottom;
+         m_BoundingRect.Set(left,bottom,right,top);
       }
 
       m_DirtyBoundingBox = false;
@@ -1109,6 +1142,7 @@ STDMETHODIMP CPolyShape::Offset(Float64 dx,Float64 dy)
    }
    m_ShapeProps.Offset(dx, dy);
    m_BoundingRect.Offset(dx, dy);
+   MakeDirty();
 
    return S_OK;
 }
