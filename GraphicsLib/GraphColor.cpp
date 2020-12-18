@@ -25,6 +25,7 @@
 #include <GraphicsLib\GraphColor.h>
 #include <System\ColorConverter.h>
 #include <math.h>
+#include <tuple>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -32,98 +33,95 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+//------------------------------------------------------------------------------
+// Psuedo-Random (repeatable if using same seed) graph color code inspired by:
+// https://github.com/xuboying/randomcolor-cpp
+//
+typedef std::tuple<Float64, Float64> RangeType;
+
+int randomWithin(const RangeType & range, int seed) 
+{
+   //
+   //Seeded random algorithm from http://indiegamr.com/generate-repeatable-random-numbers-in-js/
+   //
+   Float64 max   = std::get<1>(range); //||1
+   Float64 min   = std::get<0>(range); //||0
+   min          = min < 0 ? 0 : min;
+   seed = size_t(seed * 9301 + 49297) % 233280;
+   Float64 rnd   = seed / 233280.0;
+   auto   r     = floor(min + rnd * (max - min));
+   ATLASSERT(r >= 0);
+   ATLASSERT(min <= r && max >= r);
+   return int(r);
+}
+
+int pickHue(const RangeType & hueRange, int seed) 
+{
+    int hue = randomWithin(hueRange, seed);
+
+    return hue;
+}
+
+
 grGraphColor::grGraphColor()
 {
    Init();
 }
 
-grGraphColor::grGraphColor(IndexType nGraphs)
-{
-   Init();
-   SetGraphCount(nGraphs);
-}
 
 void grGraphColor::Init()
 {
-   m_bInitialized = false;
-   m_nGraphs = 0;
-
-   m_MinHue = 128;
-   m_MaxHue = 360;
-   m_Saturation = 1.0; // primary colors
-   m_Lightness = 0.50; // half-way between black and white
-
-   m_ColorsPerBand = 10;
-}
-
-void grGraphColor::SetGraphCount(IndexType nGraphs)
-{
-   m_nGraphs = nGraphs;
-   ComputeColorParameters();
+   m_MinHue = 0.0;        // full color range by default
+   m_MaxHue = 360.0;
+   m_MinSaturation = 0.7; // highly saturated colors by default
+   m_MaxSaturation = 1.0;
+   m_MinLightness = 0.3; // mid-range between black and white by default
+   m_MaxLightness = 0.8;
 }
 
 void grGraphColor::SetHueRange(Float64 minHue,Float64 maxHue)
 {
+   ATLASSERT(minHue < maxHue);
+   ATLASSERT(0.0 <=minHue && minHue <= 1.0);
+   ATLASSERT(0.0 <=maxHue && maxHue <= 1.0);
+
    m_MinHue = minHue;
    m_MaxHue = maxHue;
-   ComputeColorParameters();
 }
 
-void grGraphColor::SetSaturation(Float64 saturation)
+void grGraphColor::SetSaturationRange(Float64 minSaturation, Float64 maxSaturation)
 {
-   m_Saturation = saturation;
-   ComputeColorParameters();
+   ATLASSERT(minSaturation < maxSaturation);
+   ATLASSERT(0.0 <=minSaturation && minSaturation <= 360.0);
+   ATLASSERT(0.0 <=maxSaturation && maxSaturation <= 360.0);
+
+   m_MinSaturation = minSaturation;
+   m_MaxSaturation = maxSaturation;
 }
 
-void grGraphColor::SetLightness(Float64 lightness)
+void grGraphColor::SetLightnessRange(Float64 minLightness, Float64 maxLightness)
 {
-   m_Lightness = lightness;
-   ComputeColorParameters();
-}
+   ATLASSERT(minLightness < maxLightness);
+   ATLASSERT(0.0 <=minLightness && minLightness <= 1.0);
+   ATLASSERT(0.0 <=maxLightness && maxLightness <= 1.0);
 
-void grGraphColor::SetColorPerBandCount(IndexType nColorsPerBand)
-{
-   m_ColorsPerBand = nColorsPerBand;
-   ComputeColorParameters();
+   m_MinLightness = minLightness;
+   m_MaxLightness = maxLightness;
 }
 
 COLORREF grGraphColor::GetColor(IndexType graphIndex)
 {
-   ATLASSERT(m_bInitialized);
+   // multiply values by 100 to get better randomized values
+   const Float64 fctr = 100.0;
+   Float64 lightness = randomWithin(RangeType(m_MinLightness*fctr, m_MaxLightness*fctr), (int)graphIndex);
+   lightness /= fctr;
 
-   IndexType bandIdx = graphIndex / m_ColorsPerBand; // color band from which we get the color for this graph
+   Float64 saturation = randomWithin(RangeType(m_MinSaturation*fctr, m_MaxSaturation*fctr), (int)graphIndex);
+   saturation /= fctr;
 
-   Float64 maxHue = m_MaxHue - bandIdx*m_ColorsPerBand; // maximum hue in this band
-
-   IndexType colorIdx = graphIndex - bandIdx*m_ColorsPerBand; // color index within this band
-
-   Float64 hue = maxHue - colorIdx*m_BandHueStep;
+   Float64 hue = pickHue(RangeType(m_MinHue, m_MaxHue), (int)graphIndex*5); // 5 gives a good color distribution (after testing)
 
    BYTE red, green, blue;
-   sysColorConverter::HLStoRGB(hue,m_Lightness,m_Saturation,&red,&green,&blue);
+   sysColorConverter::HLStoRGB(hue,lightness,saturation,&red,&green,&blue);
    return RGB(red,green,blue);
 }
-
-void grGraphColor::ComputeColorParameters()
-{
-   if ( m_nGraphs == 0 )
-   {
-      return;
-   }
-
-   // number of color bands
-   m_nColorBands = (IndexType)ceil( (Float64)m_nGraphs / (Float64)m_ColorsPerBand );
-
-   // total number of colors modeled
-   IndexType nColors = m_ColorsPerBand*m_nColorBands;
-   ATLASSERT(m_nGraphs <= nColors);
-
-   // step size for full range of colors
-   Float64 hueStep = (m_MaxHue - m_MinHue)/nColors;
-
-   // hue step per band
-   m_BandHueStep = (m_MaxHue - (m_MinHue + (m_nColorBands - 1)*hueStep))/m_ColorsPerBand;
-
-   m_bInitialized = true;
-}
-
