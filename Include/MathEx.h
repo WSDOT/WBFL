@@ -241,6 +241,35 @@ inline V LinInterp( const H& a, const V& l,const V& h, const H& delta)
    }
 }
 
+// Linear interpolation using line analogy. Return Y(x) along a line defined by the points (x1, y1), (x2, y2)
+template <class V>
+inline V LinInterpLine( V x1, V y1, V x2, V y2, V x)
+{
+   V dX = x - x1;
+   V deltaY = y2 - y1;
+   V deltaX = x2 - x1;
+   if (deltaX == 0)
+   {
+      if (dX == 0)
+      {
+         return y1;
+      }
+      else
+      {
+         ATLASSERT(0);
+         return std::numeric_limits<V>::infinity(); // No Solution. For lack of better option
+      }
+   }
+   else if (deltaY==0)
+   {
+      return y1;
+   }
+   else
+   {
+      return y1 + dX * deltaY / deltaX;
+   }
+}
+
 // Forces v into the range [l,h]
 template <class T>
 inline T ForceIntoRange(const T& l,const T& v,const T& h)
