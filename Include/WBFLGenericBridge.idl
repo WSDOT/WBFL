@@ -2199,6 +2199,9 @@ library WBFLGenericBridge
 	   [propget,helpstring("property InsideDiameter")] HRESULT InsideDiameter([out,retval]Float64* size);
 	   [propput,helpstring("property InsideDiameter")] HRESULT InsideDiameter([in]Float64 size);
 
+      [propget, helpstring("property NominalDiameter")] HRESULT NominalDiameter([out, retval]Float64* size);
+      [propput, helpstring("property NominalDiameter")] HRESULT NominalDiameter([in]Float64 size);
+
 	   [propget,helpstring("property StrandCount")] HRESULT StrandCount([out,retval]StrandIndexType* count);
 	   [propput,helpstring("property StrandCount")] HRESULT StrandCount([in]StrandIndexType count);
 
@@ -2207,6 +2210,7 @@ library WBFLGenericBridge
 
       [propget, helpstring("property OutsideDuctArea")] HRESULT OutsideDuctArea([out, retval]Float64* Aduct);
       [propget, helpstring("property InsideDuctArea")] HRESULT InsideDuctArea([out, retval]Float64* Aduct);
+      [propget, helpstring("property NominalDuctArea")] HRESULT NominalDuctArea([out, retval]Float64* Aduct);
       [propget,helpstring("property TendonArea")] HRESULT TendonArea([out,retval]Float64* Apt);
 
       [propget,helpstring("property MinimumRadiusOfCurvature")] HRESULT MinimumRadiusOfCurvature([out,retval]Float64* pMinRadiusOfCurvature);
