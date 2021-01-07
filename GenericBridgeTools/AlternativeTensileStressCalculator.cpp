@@ -272,6 +272,10 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
          ATLASSERT(IsEqual(At, AreaTens));
 #endif // _DEBUG
       }
+      else
+      {
+         T = 0;
+      }
    }
 
    // Area of steel required to meet higher tensile stress requirement
