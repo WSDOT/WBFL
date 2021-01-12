@@ -125,9 +125,16 @@ HRESULT CStrandGridModel::OnInitialize()
    if (asymmetric)
    {
       // lateral adjustment
-      Float64 wLeft, wRight;
-      asymmetric->GetTopWidth(&wLeft, &wRight);
-      Float64 Xadj = 0.5*(wLeft - wRight);
+      Float64 twLeft, twRight;
+      asymmetric->GetTopWidth(&twLeft, &twRight);
+      Float64 top_width = twLeft + twRight;
+
+      Float64 bwLeft, bwRight;
+      CComQIPtr<IGirderSection> section(shape);
+      section->get_BottomWidth(&bwLeft, &bwRight);
+      Float64 bottom_width = bwLeft + bwRight;
+
+      Float64 Xadj = (top_width < bottom_width) ? 0.5*(bwLeft - bwRight) : 0.5*(twLeft - twRight);
 
       Float64 Yadj = 0;
 
