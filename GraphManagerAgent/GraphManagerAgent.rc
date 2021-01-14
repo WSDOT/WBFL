@@ -53,8 +53,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 6,0,0,5
- PRODUCTVERSION 6,0,0,5
+ FILEVERSION 6,0,0,6
+ PRODUCTVERSION 6,0,0,6
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -72,12 +72,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "GraphManagerAgent Module"
-            VALUE "FileVersion", "6.0.0.5"
+            VALUE "FileVersion", "6.0.0.6"
             VALUE "InternalName", "GraphManagerAgent"
             VALUE "LegalCopyright", "Copyright © 1999-2020, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "WBFLGraphManagerAgent.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "6.0.0.5"
+            VALUE "ProductVersion", "6.0.0.6"
         END
     END
     BLOCK "VarFileInfo"
