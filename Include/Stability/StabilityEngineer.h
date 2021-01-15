@@ -36,29 +36,27 @@
 
 #include <WBFLGenericBridge.h>
 
-/*****************************************************************************
-CLASS 
-   stbStabilityEngineer
-
-DESCRIPTION
-   Performes the stability analysis
-*****************************************************************************/
-
+/// Performs stability analysis for precast-prestressed concrete bridge girders
 class STABILITYCLASS stbStabilityEngineer
 {
 public:
    stbStabilityEngineer();
 
-   // Performs a lifting stress and stability analysis
-   stbLiftingResults AnalyzeLifting(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem) const;
+   /// Performs a lifting stress and stability analysis
+   ///
+   /// \return returns the analysis results
+   stbLiftingResults AnalyzeLifting(
+      const stbIGirder* pGirder, ///< the girder to be analyzed
+      const stbILiftingStabilityProblem* pStabilityProblem ///< the stability problem parameters
+   ) const;
 
-   // Performs a hauling stress and stability analysis
+   /// Performs a hauling stress and stability analysis
    stbHaulingResults AnalyzeHauling(const stbIGirder* pGirder,const stbIHaulingStabilityProblem* pStabilityProblem) const;
 
-   // Performs a lifting stress and stability analysis and compares the results to a set of criteria
+   /// Performs a lifting stress and stability analysis and compares the results to a set of criteria
    stbLiftingCheckArtifact CheckLifting(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem,const stbLiftingCriteria& criteria) const;
 
-   // Performs a hauling stress and stability analysis and compares the results to a set of criteria
+   /// Performs a hauling stress and stability analysis and compares the results to a set of criteria
    stbHaulingCheckArtifact CheckHauling(const stbIGirder* pGirder,const stbIHaulingStabilityProblem* pStabilityProblem,const stbHaulingCriteria& criteria) const;
 
 private:

@@ -29,13 +29,15 @@
 #include <array>
 #include <GeometricPrimitives\GeometricPrimitives.h>
 
+/// Effective prestress parameters
 struct STABILITYCLASS stbFpe
 {
-   Float64 X;
-   Float64 fpe;
-   Float64 Xps;
-   Float64 Yps;
+   Float64 X; ///< Location where the effective prestress is defined
+   Float64 fpe; ///< The effective prestress force
+   Float64 Xps; ///< Horizontal location from the CL of the girder to the prestress force
+   Float64 Yps; ///< Vertical location from the top of the girder at a location along the girder to the prestress force
 
+   /// Returns true if the objects are equal
    bool operator==(const stbFpe& other) const
    {
       if ( !IsEqual(X,other.X) )
@@ -54,15 +56,18 @@ struct STABILITYCLASS stbFpe
    }
 };
 
+/// Compares effective prestress parameters based on location (stbFpe::X)
 bool STABILITYFUNC operator<(const stbFpe& a,const stbFpe& b);
 
+/// Defines points on the perimeter of the girder section where stresses are computed and evaluated for a girder section.
 struct STABILITYCLASS stbStressPoints
 {
-   std::array<gpPoint2d, 2> pntTL;
-   std::array<gpPoint2d, 2> pntTR;
-   std::array<gpPoint2d, 2> pntBL;
-   std::array<gpPoint2d, 2> pntBR;
+   std::array<gpPoint2d, 2> pntTL; ///< Top left point. Array indicies are [stbTypes::Section].
+   std::array<gpPoint2d, 2> pntTR; ///< Top right point. Array indicies are [stbTypes::Section].
+   std::array<gpPoint2d, 2> pntBL; ///< Bottom left point. Array indicies are [stbTypes::Section].
+   std::array<gpPoint2d, 2> pntBR; ///< Bottom right point. Array indicies are [stbTypes::Section].
 
+   /// Returns true if the objects are equal
    bool operator==(const stbStressPoints& other) const
    {
       for (int i = 0; i < 2; i++)
@@ -89,28 +94,33 @@ struct STABILITYCLASS stbStressPoints
       }
       return true;
    }
-
+    
+   /// Returns true if the objects are not equal
    bool operator!=(const stbStressPoints& other) const
    {
       return !operator==(other);
    }
 };
 
+/// Defines section properties of a girder section. 
+///
+/// Girders are defined by a sequence of sections with prismatic or linearly varying properties.
 struct STABILITYCLASS stbSectionProperties
 {
-   std::array<Float64, 2> Ag; // area of girder
-   std::array<Float64, 2> Ixx; // strong axis moment of inertia
-   std::array<Float64, 2> Iyy; // weak axis moment of inertia
-   std::array<Float64, 2> Ixy;
-   std::array<Float64, 2> Ytop; // center of mass (centroid) from top of girder
-   std::array<Float64, 2> Xleft; // center of mass from roll center
-   std::array<Float64, 2> Hg;
-   std::array<Float64, 2> Wtf;
-   std::array<Float64, 2> Wbf;
-   Float64 L; // distance over which these properties apply
+   std::array<Float64, 2> Ag; ///< Area of girder. Array indicies are [stbTypes::Section].
+   std::array<Float64, 2> Ixx; ///< X-axis moment of inertia. Array indicies are [stbTypes::Section].
+   std::array<Float64, 2> Iyy; ///< Y-axis moment of inertia. Array indicies are [stbTypes::Section].
+   std::array<Float64, 2> Ixy; ///< Product of inertia. Array indicies are [stbTypes::Section].
+   std::array<Float64, 2> Ytop; ///< center of mass (centroid) from top of girder. Array indicies are [stbTypes::Section].
+   std::array<Float64, 2> Xleft; ///< center of mass from roll center. Array indicies are [stbTypes::Section].
+   std::array<Float64, 2> Hg; ///< Height of the girder. Array indicies are [stbTypes::Section].
+   std::array<Float64, 2> Wtf; ///< Top flange width. Array indicies are [stbTypes::Section].
+   std::array<Float64, 2> Wbf; ///< Bottom flange width. Array indicies are [stbTypes::Section].
+   Float64 L; ///< Distance over which these properties apply
 
-   std::shared_ptr<stbStressPoints> m_pStressPoints;
+   std::shared_ptr<stbStressPoints> m_pStressPoints; ///< Stress points for this girder section
 
+   /// Returns true if the objects are equal
    bool operator==(const stbSectionProperties& other) const
    {
       if ( !IsEqual(L,other.L) )
@@ -163,34 +173,50 @@ struct STABILITYCLASS stbSectionProperties
    }
 };
 
+/// Defines a prestressed girder for analysis
 class STABILITYCLASS stbGirder : public stbIGirder
 {
 public:
    stbGirder();
    virtual ~stbGirder();
 
-   bool operator==(const stbGirder& other) const;
-   bool operator!=(const stbGirder& other) const;
+   bool operator==(const stbGirder& other) const; ///< Returns true if the objects are equal
+   bool operator!=(const stbGirder& other) const;  ///< Returns true if the objects are not equal
 
+   /// Associates this girder with a girder Segment model
    void SetSegment(ISegment* pSegment);
+
    virtual void GetSegment(ISegment** ppSegment) const override;
 
-   void ClearSections(); // clears sections and stress points
+   /// Clears all sections and stress points
+   void ClearSections();
 
-   // Adds a new section to the girder. Returns the section index. 
+   /// Adds a prismatic section to the girder. Returns the section index. 
    IndexType AddSection(Float64 Length, Float64 Ag, Float64 Ixx, Float64 Iyy, Float64 Ixy, Float64 Xleft, Float64 Ytop, Float64 Hg, Float64 Wtf, Float64 Wbf);
+
+   /// Adds a linear variation section to the girder. Returns the section index. 
    IndexType AddSection(Float64 Length, Float64 Ag, Float64 Ixx, Float64 Iyy, Float64 Ixy, Float64 Xleft, Float64 Ytop, Float64 Hg, Float64 Wtf, Float64 Wbf, Float64 Ag2, Float64 Ixx2, Float64 Iyy2, Float64 Ixy2, Float64 Xcg2, Float64 Ycg2, Float64 Hg2, Float64 Wtf2, Float64 Wbf2);
 
-   // Change the section properties for a section 
+   /// Changes the section properties for a section. Properties are applied to both ends of the section.
    void SetSectionProperties(IndexType sectIdx,Float64 Length,Float64 Ag,Float64 Ixx,Float64 Iyy,Float64 Ixy,Float64 Xleft,Float64 Ytop,Float64 Hg,Float64 Wtf,Float64 Wbf);
+
+   /// Changes the section properties for a section. Properties are specified for both ends of the section.
    void SetSectionProperties(IndexType sectIdx,Float64 Length,Float64 Ag,Float64 Ixx,Float64 Iyy,Float64 Ixy, Float64 Xleft,Float64 Yt,Float64 Hg,Float64 Wtf,Float64 Wbf,Float64 Ag2,Float64 Ixx2,Float64 Iyy2, Float64 Ixy2,Float64 Xcg2,Float64 Yt2,Float64 Hg2,Float64 Wtf2,Float64 Wbf2);
 
-   // Assigns stress point values to a section. 
+   /// Assigns stress point values to a section. Stress points are applied to both ends of the section.
    void SetStressPoints(IndexType sectIdx, const gpPoint2d& pntTL, const gpPoint2d& pntTR, const gpPoint2d& pntBL, const gpPoint2d& pntBR);
+
+   /// Assigns stress point values to a section. Stress points are specified for both ends of the section.
    void SetStressPoints(IndexType sectIdx, const gpPoint2d& pntTL, const gpPoint2d& pntTR, const gpPoint2d& pntBL, const gpPoint2d& pntBR, const gpPoint2d& pntTL2, const gpPoint2d& pntTR2, const gpPoint2d& pntBL2, const gpPoint2d& pntBR2);
 
+   /// Removes all point loads from the model.
    void ClearPointLoads();
-   void AddPointLoad(Float64 X,Float64 P);
+
+   /// Adds a point load to the model.
+   void AddPointLoad(
+      Float64 X, ///< Location from the left end of the girder.
+      Float64 P ///< Magnitude of the load.
+   );
 
    virtual IndexType GetSectionCount() const override;
    virtual Float64 GetSectionLength(IndexType sectIdx) const override;
@@ -201,16 +227,21 @@ public:
 
    virtual Float64 GetGirderLength() const override;
 
-   void SetAdditionalLoads(const std::vector<std::pair<Float64,Float64>>& vLoads);
+   /// Adds a collection of point loads to the model.
+   void SetAdditionalLoads(
+      const std::vector<std::pair<Float64,Float64>>& vLoads ///< The first parameter of the pair is the location of the load from the left end of the girder, the second parameter is the magnitude of the point load.
+   );
    virtual std::vector<std::pair<Float64,Float64>> GetAdditionalLoads() const override;
 
-   virtual Float64 GetDragCoefficient() const override;
+   /// Sets the drag coefficient.
    void SetDragCoefficient(Float64 Cd);
+   virtual Float64 GetDragCoefficient() const override;
 
-   virtual Float64 GetPrecamber() const override;
+   /// Sets the precamber.
    void SetPrecamber(Float64 precamber);
+   virtual Float64 GetPrecamber() const override;
 
-protected:
+private:
    ISegment* m_pSegment; // weak refernce
    std::vector<stbSectionProperties> m_vSectionProperties;
 
@@ -227,82 +258,189 @@ protected:
    mutable Float64 m_L;
 };
 
+/// Basic implementation for the stbIStabilityProblem interface
 class STABILITYCLASS stbStabilityProblemImp
 {
 public:
    stbStabilityProblemImp();
-   stbStabilityProblemImp(const stbStabilityProblemImp& other);
+   stbStabilityProblemImp(const stbStabilityProblemImp& other); ///< Copy constructor
    virtual ~stbStabilityProblemImp();
 
-   stbStabilityProblemImp& operator=(const stbStabilityProblemImp& other);
+   stbStabilityProblemImp& operator=(const stbStabilityProblemImp& other); ///< Object assignment
 
-   bool operator==(const stbStabilityProblemImp& other) const;
-   bool operator!=(const stbStabilityProblemImp& other) const;
+   bool operator==(const stbStabilityProblemImp& other) const; ///< Returns true if the objects are equal
+   bool operator!=(const stbStabilityProblemImp& other) const; ///< Returns true if the objects are not equal
 
    // Effective prestress for can vary along the girder
    // Define Fpe at different locations along the girder. Fpe will be linerally interpolated between locations.
    // If Fpe is requested before the first or after the last defined point, the first/last values will be used
    // For constant Fpe, define a Fpe at a single location
+
+   /// Names of the effective prestress elements
    std::vector<LPCTSTR> GetPrestressNames() const;
+
+   /// Number of effective prestress parameters for a prestress element
    IndexType GetFpeCount(LPCTSTR strName) const;
+
+   /// Clears all effective prestress parameters
    void ClearFpe();
-   void AddFpe(LPCTSTR strName,Float64 X,Float64 Fpe,Float64 Xps,Float64 Yps);
-   bool SetFpe(LPCTSTR strName,IndexType fpeIdx,Float64 X,Float64 Fpe,Float64 Xps,Float64 Yps); // returns false if strName is invalid
-   bool GetFpe(LPCTSTR strName,IndexType fpeIdx,Float64* pX,Float64* pFpe,Float64* pXps,Float64* pYps) const;// returns false if strName is invalid
+
+   /// Adds effective prestress parameters for a prestress element
+   void AddFpe(
+      LPCTSTR strName, ///< prestress element name
+      Float64 X, ///< Location from left end of girder
+      Float64 Fpe, ///< Effective prestress
+      Float64 Xps, ///< Horizontal location in section coordinates
+      Float64 Yps ///< Vertical location in section coordinates
+   );
+
+   /// Changes previously defined the effective prestress parameters
+   // \return false if strName is invalid
+   bool SetFpe(
+      LPCTSTR strName, ///< prestress element name
+      IndexType fpeIdx, ///< index of effective prestress parameters
+      Float64 X, ///< Location from left end of girder
+      Float64 Fpe, ///< Effective prestress
+      Float64 Xps, ///< Horizontal location in section coordinates
+      Float64 Yps ///< Vertical location in section coordinates
+   );
+
+   /// Gets effective prestress parameters
+   /// \return false if strName is invalid
+   bool GetFpe(
+      LPCTSTR strName, ///< [in] prestress element name
+      IndexType fpeIdx, ///< [in]  index of effective prestress parameters
+      Float64* pX, ///< [out] Location from left end of girder
+      Float64* pFpe, ///< [out] Effective prestress
+      Float64* pXps, ///< [out] Horizontal location in section coordinates
+      Float64* pYps ///< [out] Vertical location in section coordinates
+   ) const;
 
    // Prestress transfer length... 
    // Linearly interpolates Fpe from zero at the ends of the girder to its full value
    // over this length
-   bool AdjustForXferLength() const;
+
+   /// Indicates if effective prestress force is adjusted for the prestress transfer length.
    void AdjustForXferLength(bool bAdjust);
+
+   /// Indicates if effective prestress force is adjusted for the prestress transfer length.
+   bool AdjustForXferLength() const;
+
+   /// Prestress transfer length used to linearly interpolate Fpe from zero at the ends of the girder to its full value.
    void SetXferLength(Float64 xferLength,Float64 Lg);
+
+   /// Prestress transfer length used to linearly interpolate Fpe from zero at the ends of the girder to its full value.
    Float64 GetXferLength() const;
 
+   /// Sets the natural camber in the girder
    void SetCamber(Float64 camber);
+
+   /// Sets lateral camber. Lateral camber is prestress induced lateral deflection, not to be confused with sweep.
    void SetLateralCamber(Float64 camber);
+
+   /// Returns true if lateral offset of the CG from the roll axis and lateral camber are to be considered in the analysis.
+   /// The roll axis is assumed to be the vertical centerline of the girder.
+   /// Lateral offset of the CG generally occurs for asymmetric sections.
    void IncludeLateralRollAxisOffset(bool bInclude);
 
-   virtual const matConcreteEx& GetConcrete() const;
-   virtual matConcreteEx& GetConcrete();
+   /// Concrete definition
    void SetConcrete(const matConcreteEx& concrete);
 
-   virtual Float64 GetRebarYieldStrength() const;
+   /// Concrete definition
+   virtual const matConcreteEx& GetConcrete() const;
+
+   /// Concrete definition
+   virtual matConcreteEx& GetConcrete();
+
+   /// Reinforcing steel yield strength
    void SetRebarYieldStrength(Float64 fy);
 
-   void SetSupportLocations(Float64 Ll,Float64 Lr);
+   /// Reinforcing steel yield strength
+   virtual Float64 GetRebarYieldStrength() const;
+
+   /// Sets the support locations
+   void SetSupportLocations(
+      Float64 Ll, ///< Support location from left end of the girder
+      Float64 Lr ///< Support location from the right end of the girder
+   );
+
+   /// Elevation of the roll axis from the center of mass
    void SetYRollAxis(Float64 Yra);
+
+   /// Sweep tolerance (length per length)
    void SetSweepTolerance(Float64 sweepTolerance);
+
+   /// A constant that is added to the sweep.
    void SetSweepGrowth(Float64 sweepGrowth);
+
+   /// Lateral support placement tolerance
    void SetSupportPlacementTolerance(Float64 spt);
+
+   /// Impact factor, up and down (fraction 0.2 = 20%)
    void SetImpact(Float64 up,Float64 down);
 
+   /// Returns effective prestress force parameters
+   /// \param[in] strName name of the prestressing time
+   /// \param[in] X location along the girder
+   /// \param[out] pFpe effective prestress
+   /// \param[out] pXps horizontal location from the CL of the girder to the prestress force
+   /// \param[out] pYps vertical location from the top of the girder at a location along the girder to the prestress force
    bool GetFpe(LPCTSTR strName,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const;
 
+   /// Returns the camber. This is the natural camber. Do not include formed camber (precamber).
    Float64 GetCamber() const;
+
+   /// Sets the camber multiplier used to magnify camber
    void SetCamberMultiplier(Float64 m);
+
+   /// Returns the camber multiplier used to magnify camber
    Float64 GetCamberMultiplier() const;
 
+   /// Returns the lateral camber, often due to asymmetric prestressing or prestressing of an asymmetric section.
    Float64 GetLateralCamber() const;
+
+   /// Returns true if lateral offset of the CG from the roll axis and lateral camber are to be considered in the analysis.
+   /// The roll axis is assumed to be the vertical centerline of the girder.
+   /// Lateral offset of the CG generally occurs for asymmetric sections.   
    bool IncludeLateralRollAxisOffset() const;
 
+   /// Gets the support locations.
    void GetSupportLocations(Float64* pLeft,Float64* pRight) const;
+
+   /// Returns the location of the roll axis measured from the center of mass.
    Float64 GetYRollAxis() const;
    
+   /// Returns the sweep tolerance.
    Float64 GetSweepTolerance() const;
+
+   /// Returns the sweep growth value
    Float64 GetSweepGrowth() const;
+
+   /// Returns the lateral support placement tolerance.
    Float64 GetSupportPlacementTolerance() const;
 
+   /// Get the impact factors
    void GetImpact(Float64* pIMup,Float64* pIMdown) const;
 
+   /// Gets the wind loading parameters
    virtual void GetWindLoading(stbTypes::WindType* pType,Float64* pLoad) const;
+
+   /// Sets the wind loading parameters.
    void SetWindLoading(stbTypes::WindType type,Float64 load);
 
+   /// Clears all analysis points
    void ClearAnalysisPoints();
+
+   /// Adds an analysis point
    void AddAnalysisPoint(stbIAnalysisPoint* pAnalysisPoint);
+
+   /// Gets the analysis points
    const std::vector<stbIAnalysisPoint*>& GetAnalysisPoints() const;
+
+   /// Gets the analysis points
    virtual const stbIAnalysisPoint* GetAnalysisPoint(IndexType idx) const;
 
-protected:
+private:
    void MakeCopy(const stbStabilityProblemImp& other);
    void MakeAssignment(const stbStabilityProblemImp& other);
 
@@ -328,7 +466,7 @@ protected:
 
    matConcreteEx m_Concrete;
 
-   Float64 m_fy;
+   Float64 m_fy; // reinforcement yield strength
 
    Float64 m_Ll; // location of left support, measured from the left end of the girder
    Float64 m_Lr; // location of right support, measured from the right end of the girder
@@ -346,75 +484,177 @@ protected:
    Float64 m_WindLoad; // velocity or pressure, depending on m_WindLoadType
 };
 
+/// Defines the parameters of a lifting stability analysis problem
 class STABILITYCLASS stbLiftingStabilityProblem : public stbILiftingStabilityProblem
 {
 public:
    stbLiftingStabilityProblem();
-   stbLiftingStabilityProblem(const stbLiftingStabilityProblem& other);
+   stbLiftingStabilityProblem(const stbLiftingStabilityProblem& other); ///< Copy constructor
    virtual ~stbLiftingStabilityProblem();
 
-   stbLiftingStabilityProblem& operator=(const stbLiftingStabilityProblem& other);
-   bool operator==(const stbLiftingStabilityProblem& other) const;
-   bool operator!=(const stbLiftingStabilityProblem& other) const;
+   stbLiftingStabilityProblem& operator=(const stbLiftingStabilityProblem& other); ///< Object assignment
+   bool operator==(const stbLiftingStabilityProblem& other) const; ///< Returns true if the objects are equal
+   bool operator!=(const stbLiftingStabilityProblem& other) const; ///< Returns true if the objects are not equal
 
+   /// Number of effective prestress parameters for a prestress element
    IndexType GetFpeCount(LPCTSTR strName) const { return m_Imp.GetFpeCount(strName); }
+
+   /// Clears all effective prestress parameters
    void ClearFpe() { m_Imp.ClearFpe(); }
+   
+   /// Adds effective prestress parameters for a prestress element
+   /// \param strName prestress element name
+   /// \param X Location from left end of girder
+   /// \param Fpe Effective prestress
+   /// \param Xps Horizontal location in section coordinates
+   /// \param Yps Vertical location in section coordinates
    void AddFpe(LPCTSTR strName,Float64 X, Float64 Fpe, Float64 Xps,Float64 Yps) { m_Imp.AddFpe(strName, X, Fpe, Xps, Yps); }
+
+   /// Changes previously defined the effective prestress parameters
+   /// \param strName prestress element name
+   /// \param fpeIdx index of effective prestress parameters
+   /// \param X Location from left end of girder
+   /// \param Fpe Effective prestress
+   /// \param Xps Horizontal location in section coordinates
+   /// \param Yps Vertical location in section coordinates
+   /// \return false if strName is invalid
    bool SetFpe(LPCTSTR strName, IndexType fpeIdx, Float64 X, Float64 Fpe, Float64 Xps, Float64 Yps) { return m_Imp.SetFpe(strName, fpeIdx, X, Fpe, Xps, Yps); }
+
+   /// Gets effective prestress parameters
+   /// \return false if strName is invalid
+   /// \param[in] strName prestress element name
+   /// \param[in] fpeIdx index of effective prestress parameters
+   /// \param[out] pX Location from left end of girder
+   /// \param[out] pFpe Effective prestress
+   /// \param[out] pXps Horizontal location in section coordinates
+   /// \param[out] pYps Vertical location in section coordinates
    bool GetFpe(LPCTSTR strName,IndexType fpeIdx, Float64* pX, Float64* pFpe, Float64* pXps, Float64* pYps) const { return m_Imp.GetFpe(strName, fpeIdx, pX, pFpe, pXps, pYps); }
 
+   /// Indicates if effective prestress force is adjusted for the prestress transfer length.
    bool AdjustForXferLength() const { return m_Imp.AdjustForXferLength(); }
+   /// Indicates if effective prestress force is adjusted for the prestress transfer length.
    void AdjustForXferLength(bool bAdjust) { m_Imp.AdjustForXferLength(bAdjust); }
+
+   /// Prestress transfer length used to linearly interpolate Fpe from zero at the ends of the girder to its full value.
    void SetXferLength(Float64 xferLength, Float64 Lg) { m_Imp.SetXferLength(xferLength, Lg); }
+   /// Prestress transfer length used to linearly interpolate Fpe from zero at the ends of the girder to its full value.
    Float64 GetXferLength() const { return m_Imp.GetXferLength(); }
 
+   /// Sets the natural camber in the girder
    void SetCamber(Float64 camber) { m_Imp.SetCamber(camber); }
+   /// Sets the camber multiplier used to magnify camber
    void SetCamberMultiplier(Float64 m) { m_Imp.SetCamberMultiplier(m); }
+   /// Returns the camber multiplier used to magnify camber
    Float64 GetCamberMultiplier() const { return m_Imp.GetCamberMultiplier(); }
 
+   /// Sets lateral camber. Lateral camber is prestress induced lateral deflection, not to be confused with sweep.
    void SetLateralCamber(Float64 camber) { m_Imp.SetLateralCamber(camber); }
+
+   /// Returns true if lateral offset of the CG from the roll axis and lateral camber are to be considered in the analysis.
+   /// The roll axis is assumed to be the vertical centerline of the girder.
+   /// Lateral offset of the CG generally occurs for asymmetric sections.   
    void IncludeLateralRollAxisOffset(bool bInclude) { m_Imp.IncludeLateralRollAxisOffset(bInclude); }
 
+   /// Concrete definition
    void SetConcrete(const matConcreteEx& concrete) { m_Imp.SetConcrete(concrete); }
+   /// Concrete definition
    const matConcreteEx& GetConcrete() const { return m_Imp.GetConcrete(); }
+   /// Concrete definition
    matConcreteEx& GetConcrete() { return m_Imp.GetConcrete(); }
 
+   /// Reinforcing steel yield strength
    virtual Float64 GetRebarYieldStrength() const override { return m_Imp.GetRebarYieldStrength(); }
+   /// Reinforcing steel yield strength
    void SetRebarYieldStrength(Float64 fy) {m_Imp.SetRebarYieldStrength(fy); }
 
-   void SetSupportLocations(Float64 Ll,Float64 Lr) { m_Imp.SetSupportLocations(Ll,Lr); }
+   /// Sets the support locations
+   void SetSupportLocations(
+      Float64 Ll, ///< Support location from left end of the girder
+      Float64 Lr ///< Support location from the right end of the girder
+   ) { m_Imp.SetSupportLocations(Ll,Lr); }
+
+   /// Elevation of the roll axis from the center of mass
    void SetYRollAxis(Float64 Yra) { m_Imp.SetYRollAxis(Yra); }
+
+   /// Sweep tolerance (length per length)
    void SetSweepTolerance(Float64 sweepTolerance) { m_Imp.SetSweepTolerance(sweepTolerance);  }
+
+   /// Lateral support placement tolerance
    void SetSupportPlacementTolerance(Float64 spt)  {  m_Imp.SetSupportPlacementTolerance(spt); }
+
+   /// Impact factor, up and down (fraction 0.2 = 20%)
    void SetImpact(Float64 up,Float64 down)  { m_Imp.SetImpact(up,down);   }
 
+   /// Names of the effective prestress elements
    virtual std::vector<LPCTSTR> GetPrestressNames() const override { return m_Imp.GetPrestressNames(); }
+
+   /// Gets effective prestress parameters
+   /// \return false if strName is invalid
+   /// \param[in] strName prestress element name
+   /// \param[in] X Location from left end of girder
+   /// \param[out] pFpe Effective prestress
+   /// \param[out] pXps Horizontal location in section coordinates
+   /// \param[out] pYps Vertical location in section coordinates
    virtual bool GetFpe(LPCTSTR strName,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const override { return m_Imp.GetFpe(strName,X,pFpe,pXps,pYps); }
+
+   /// Returns the camber. This is the natural camber. Do not include formed camber (precamber).
    virtual Float64 GetCamber() const override {  return m_Imp.GetCamber();   }
+
+   /// Returns the lateral camber, often due to asymmetric prestressing or prestressing of an asymmetric section.
    virtual Float64 GetLateralCamber() const override { return m_Imp.GetLateralCamber(); }
+
+   /// Returns true if lateral offset of the CG from the roll axis and lateral camber are to be considered in the analysis.
+   /// The roll axis is assumed to be the vertical centerline of the girder.
+   /// Lateral offset of the CG generally occurs for asymmetric sections.   
    virtual bool IncludeLateralRollAxisOffset() const override { return m_Imp.IncludeLateralRollAxisOffset(); }
+
+   /// Gets the support locations.
    virtual void GetSupportLocations(Float64* pLeft,Float64* pRight) const  override { m_Imp.GetSupportLocations(pLeft,pRight); }
+
+   /// Returns the location of the roll axis measured from the center of mass.
    virtual Float64 GetYRollAxis() const override { return m_Imp.GetYRollAxis(); }
+
+   /// Returns the sweep tolerance.
    virtual Float64 GetSweepTolerance() const  override { return m_Imp.GetSweepTolerance(); }
+
+   /// Returns the lateral support placement tolerance.
    virtual Float64 GetSupportPlacementTolerance() const  override { return m_Imp.GetSupportPlacementTolerance(); }
+
+   /// Get the impact factors
    virtual void GetImpact(Float64* pIMup,Float64* pIMdown) const  override { m_Imp.GetImpact(pIMup,pIMdown); }
 
+   /// Gets the wind loading parameters
    virtual void GetWindLoading(stbTypes::WindType* pType,Float64* pLoad) const  override { m_Imp.GetWindLoading(pType,pLoad); }
+
+   /// Sets the wind loading parameters.
    void SetWindLoading(stbTypes::WindType type,Float64 load) { m_Imp.SetWindLoading(type,load); }
 
+   /// Sets the lifting cable angle
    void SetLiftAngle(Float64 liftAngle);
+
+   /// Returns the lifting cable angle.
    virtual Float64 GetLiftAngle() const override;
 
+   /// Sets the sweep growth value
    void SetSweepGrowth(Float64 sweepGrowth) { m_Imp.SetSweepGrowth(sweepGrowth); }
+
+   /// Returns the sweep growth value
    virtual Float64 GetSweepGrowth() const override { return m_Imp.GetSweepGrowth(); }
 
 
+   /// Clears all analysis points
    void ClearAnalysisPoints() { m_Imp.ClearAnalysisPoints(); }
+
+   /// Adds an analysis point
    void AddAnalysisPoint(stbIAnalysisPoint* pAnalysisPoint) { m_Imp.AddAnalysisPoint(pAnalysisPoint); }
+
+   /// Gets the analysis points
    virtual std::vector<stbIAnalysisPoint*> GetAnalysisPoints() const  override { return m_Imp.GetAnalysisPoints(); }
+
+   /// Gets an analysis point
    virtual const stbIAnalysisPoint* GetAnalysisPoint(IndexType idx) const  override { return m_Imp.GetAnalysisPoint(idx); }
 
-protected:
+private:
    void MakeCopy(const stbLiftingStabilityProblem& other);
    void MakeAssignment(const stbLiftingStabilityProblem& other);
 
@@ -422,100 +662,216 @@ protected:
    Float64 m_LiftAngle;
 };
 
+/// Defines the parameters of a hauling stability analysis problem
 class STABILITYCLASS stbHaulingStabilityProblem :  public stbIHaulingStabilityProblem
 {
 public:
    stbHaulingStabilityProblem();
-   stbHaulingStabilityProblem(const stbHaulingStabilityProblem& other);
+   stbHaulingStabilityProblem(const stbHaulingStabilityProblem& other); ///< Copy constructor
    virtual ~stbHaulingStabilityProblem();
 
-   stbHaulingStabilityProblem& operator=(const stbHaulingStabilityProblem& other);
-   bool operator==(const stbHaulingStabilityProblem& other) const;
-   bool operator!=(const stbHaulingStabilityProblem& other) const;
+   stbHaulingStabilityProblem& operator=(const stbHaulingStabilityProblem& other); ///< Object assignment
+   bool operator==(const stbHaulingStabilityProblem& other) const; ///< Returns true if the objects are equal
+   bool operator!=(const stbHaulingStabilityProblem& other) const; ///< Returns true if the objects are not equal
 
+   /// Number of effective prestress parameters for a prestress element
    IndexType GetFpeCount(LPCTSTR strName) const { return m_Imp.GetFpeCount(strName); }
+
+   /// Clears all effective prestress parameters
    void ClearFpe() { m_Imp.ClearFpe(); }
+
+   /// Adds effective prestress parameters for a prestress element
+   /// \param strName prestress element name
+   /// \param X Location from left end of girder
+   /// \param Fpe Effective prestress
+   /// \param Xps Horizontal location in section coordinates
+   /// \param Yps Vertical location in section coordinates
    void AddFpe(LPCTSTR strName,Float64 X, Float64 Fpe, Float64 Xps, Float64 Yps) { m_Imp.AddFpe(strName, X, Fpe, Xps, Yps); }
+
+   /// Changes previously defined the effective prestress parameters
+   /// \param strName prestress element name
+   /// \param fpeIdx index of effective prestress parameters
+   /// \param X Location from left end of girder
+   /// \param Fpe Effective prestress
+   /// \param Xps Horizontal location in section coordinates
+   /// \param Yps Vertical location in section coordinates
+   /// \return false if strName is invalid
    bool SetFpe(LPCTSTR strName,IndexType fpeIdx, Float64 X, Float64 Fpe, Float64 Xps, Float64 Yps) { return m_Imp.SetFpe(strName, fpeIdx, X, Fpe, Xps, Yps); }
+
+   /// Gets effective prestress parameters
+   /// \return false if strName is invalid
+   /// \param[in] strName prestress element name
+   /// \param[in] fpeIdx index of effective prestress parameters
+   /// \param[out] pX Location from left end of girder
+   /// \param[out] pFpe Effective prestress
+   /// \param[out] pXps Horizontal location in section coordinates
+   /// \param[out] pYps Vertical location in section coordinates
    bool GetFpe(LPCTSTR strName,IndexType fpeIdx, Float64* pX, Float64* pFpe, Float64* pXps, Float64* pYps) const { return m_Imp.GetFpe(strName, fpeIdx, pX, pFpe, pXps, pYps); }
 
+   /// Indicates if effective prestress force is adjusted for the prestress transfer length.
    bool AdjustForXferLength() const { return m_Imp.AdjustForXferLength(); }
+   /// Indicates if effective prestress force is adjusted for the prestress transfer length.
    void AdjustForXferLength(bool bAdjust) { m_Imp.AdjustForXferLength(bAdjust); }
+
+   /// Prestress transfer length used to linearly interpolate Fpe from zero at the ends of the girder to its full value.
    void SetXferLength(Float64 xferLength,Float64 Lg) { m_Imp.SetXferLength(xferLength,Lg); }
+   /// Prestress transfer length used to linearly interpolate Fpe from zero at the ends of the girder to its full value.
    Float64 GetXferLength() const { return m_Imp.GetXferLength(); }
 
+   /// Sets the natural camber in the girder
    void SetCamber(Float64 camber) { m_Imp.SetCamber(camber); }
+   /// Sets the camber multiplier used to magnify camber
    void SetCamberMultiplier(Float64 m) { m_Imp.SetCamberMultiplier(m); }
+   /// Returns the camber multiplier used to magnify camber
    Float64 GetCamberMultiplier() const { return m_Imp.GetCamberMultiplier(); }
 
+   /// Sets lateral camber. Lateral camber is prestress induced lateral deflection, not to be confused with sweep.
    void SetLateralCamber(Float64 camber) { m_Imp.SetLateralCamber(camber); }
+
+   /// Returns true if lateral offset of the CG from the roll axis and lateral camber are to be considered in the analysis.
+   /// The roll axis is assumed to be the vertical centerline of the girder.
+   /// Lateral offset of the CG generally occurs for asymmetric sections.   
    void IncludeLateralRollAxisOffset(bool bInclude) { m_Imp.IncludeLateralRollAxisOffset(bInclude); }
 
+   /// Concrete definition
    void SetConcrete(const matConcreteEx& concrete) { m_Imp.SetConcrete(concrete); }
+   /// Concrete definition
    const matConcreteEx& GetConcrete() const { return m_Imp.GetConcrete(); }
+   /// Concrete definition
    matConcreteEx& GetConcrete() { return m_Imp.GetConcrete(); }
 
+   /// Reinforcing steel yield strength
    virtual Float64 GetRebarYieldStrength() const  override { return m_Imp.GetRebarYieldStrength(); }
+   /// Reinforcing steel yield strength
    void SetRebarYieldStrength(Float64 fy) {m_Imp.SetRebarYieldStrength(fy); }
 
-   void SetSupportLocations(Float64 Ll,Float64 Lr) { m_Imp.SetSupportLocations(Ll,Lr); }
+   /// Sets the support locations
+   void SetSupportLocations(
+      Float64 Ll, ///< Support location from left end of the girder
+      Float64 Lr ///< Support location from the right end of the girder
+   ) { m_Imp.SetSupportLocations(Ll, Lr); }
+
+   /// Elevation of the roll axis from the center of mass
    void SetYRollAxis(Float64 Yra) { m_Imp.SetYRollAxis(Yra); }
+
+   /// Sweep tolerance (length per length)
    void SetSweepTolerance(Float64 sweepTolerance) { m_Imp.SetSweepTolerance(sweepTolerance);  }
+
+   /// Lateral support placement tolerance
    void SetSupportPlacementTolerance(Float64 spt)  {  m_Imp.SetSupportPlacementTolerance(spt); }
+
+   /// Impact factor, up and down (fraction 0.2 = 20%)
    void SetImpact(Float64 up,Float64 down)  { m_Imp.SetImpact(up,down);   }
 
+   /// Names of the effective prestress elements
    virtual std::vector<LPCTSTR> GetPrestressNames() const override { return m_Imp.GetPrestressNames(); }
-   virtual bool GetFpe(LPCTSTR strName,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const override { return m_Imp.GetFpe(strName,X,pFpe,pXps,pYps); }
-   virtual Float64 GetCamber() const override { return m_Imp.GetCamber();   }
-   virtual Float64 GetLateralCamber() const override { return m_Imp.GetLateralCamber(); }
-   virtual bool IncludeLateralRollAxisOffset() const override { return m_Imp.IncludeLateralRollAxisOffset(); }
-   virtual void GetSupportLocations(Float64* pLeft,Float64* pRight) const override { m_Imp.GetSupportLocations(pLeft,pRight); }
-   virtual Float64 GetYRollAxis() const override { return m_Imp.GetYRollAxis(); }
-   virtual Float64 GetSweepTolerance() const override { return m_Imp.GetSweepTolerance(); }
-   virtual Float64 GetSupportPlacementTolerance() const override { return m_Imp.GetSupportPlacementTolerance(); }
 
+   /// Gets effective prestress parameters
+   /// \return false if strName is invalid
+   /// \param[in] strName prestress element name
+   /// \param[in] X Location from left end of girder
+   /// \param[out] pFpe Effective prestress
+   /// \param[out] pXps Horizontal location in section coordinates
+   /// \param[out] pYps Vertical location in section coordinates
+   virtual bool GetFpe(LPCTSTR strName,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const override { return m_Imp.GetFpe(strName,X,pFpe,pXps,pYps); }
+
+   /// Returns the camber. This is the natural camber. Do not include formed camber (precamber).
+   virtual Float64 GetCamber() const override { return m_Imp.GetCamber(); }
+
+   /// Returns the lateral camber, often due to asymmetric prestressing or prestressing of an asymmetric section.
+   virtual Float64 GetLateralCamber() const override { return m_Imp.GetLateralCamber(); }
+
+   /// Returns true if lateral offset of the CG from the roll axis and lateral camber are to be considered in the analysis.
+   /// The roll axis is assumed to be the vertical centerline of the girder.
+   /// Lateral offset of the CG generally occurs for asymmetric sections.   
+   virtual bool IncludeLateralRollAxisOffset() const override { return m_Imp.IncludeLateralRollAxisOffset(); }
+
+   /// Gets the support locations.
+   virtual void GetSupportLocations(Float64* pLeft, Float64* pRight) const  override { m_Imp.GetSupportLocations(pLeft, pRight); }
+
+   /// Returns the location of the roll axis measured from the center of mass.
+   virtual Float64 GetYRollAxis() const override { return m_Imp.GetYRollAxis(); }
+
+   /// Returns the sweep tolerance.
+   virtual Float64 GetSweepTolerance() const  override { return m_Imp.GetSweepTolerance(); }
+
+   /// Returns the lateral support placement tolerance.
+   virtual Float64 GetSupportPlacementTolerance() const  override { return m_Imp.GetSupportPlacementTolerance(); }
+
+   /// Sets the sweep growth value
    void SetSweepGrowth(Float64 sweepGrowth) { m_Imp.SetSweepGrowth(sweepGrowth); }
+   /// Returns the sweep growth value
    virtual Float64 GetSweepGrowth() const override { return m_Imp.GetSweepGrowth(); }
 
+   /// Get the impact factors
    virtual void GetImpact(Float64* pIMup,Float64* pIMdown) const override { m_Imp.GetImpact(pIMup,pIMdown); }
 
+   /// Sets how impact is used in the analysis
    void SetImpactUsage(stbTypes::HaulingImpact impactUsage);
+   
+   /// Returns how impact is used in the analysis
    virtual stbTypes::HaulingImpact GetImpactUsage() const override;
 
+   /// Gets the wind loading parameters
    virtual void GetWindLoading(stbTypes::WindType* pType,Float64* pLoad) const override { m_Imp.GetWindLoading(pType,pLoad); }
+
+   /// Sets the wind loading parameters.
    void SetWindLoading(stbTypes::WindType type,Float64 load) { m_Imp.SetWindLoading(type,load); }
 
+   /// Sets the truck rotational stiffness (Ktheta)
    void SetTruckRotationalStiffness(Float64 Ktheta);
+   /// Returns the truck rotational stiffness (Ktheta)
    virtual Float64 GetTruckRotationalStiffness() const override;
 
+   /// Sets the center-to-center wheel spacing (Wcc)
    void SetWheelLineSpacing(Float64 Wcc);
+   /// Returns the center-to-center wheel spacing (Wcc)
    virtual Float64 GetWheelLineSpacing() const override;
 
+   /// Sets the height of the roll axis above the roadway
    void SetHeightOfRollAxisAboveRoadway(Float64 Drs);
+   /// Returns the height of the roll axis above the roadway
    virtual Float64 GetHeightOfRollAxisAboveRoadway() const override;
 
+   /// Sets the normal crown slope (always a positive value)
    void SetCrownSlope(Float64 crown);
+   /// Returns the normal crown slope (always a positive value)
    virtual Float64 GetCrownSlope() const override;
 
+   /// Sets the superelevation rate (always a postive value)
    void SetSuperelevation(Float64 superelevation);
+   /// Returns the superelevation rate (always a postive value)
    virtual Float64 GetSuperelevation() const override;
 
+   /// Sets the velocity of the truck. Used for computing centrifugal force.
    void SetVelocity(Float64 velocity);
+   /// Returns the velocity of the truck. Used for computing centrifugal force.
    virtual Float64 GetVelocity() const override;
 
+   /// Sets the turning radius. Used for computing centrifugal force
    void SetTurningRadius(Float64 r);
+   /// Returns the turning radius. Used for computing centrifugal force
    virtual Float64 GetTurningRadius() const override;
 
+   /// Sets the type of centrifugal force
    void SetCentrifugalForceType(stbTypes::CFType cfType);
+   /// Returns the type of centrifugal force
    virtual stbTypes::CFType GetCentrifugalForceType() const override;
 
 
+   /// Clears all analysis points
    void ClearAnalysisPoints() { m_Imp.ClearAnalysisPoints(); }
+
+   /// Adds an analysis point
    void AddAnalysisPoint(stbIAnalysisPoint* pAnalysisPoint) { m_Imp.AddAnalysisPoint(pAnalysisPoint); }
+
+   /// Gets the analysis points
    virtual std::vector<stbIAnalysisPoint*> GetAnalysisPoints() const  { return m_Imp.GetAnalysisPoints(); }
+
+   /// Gets an analysis point
    virtual const stbIAnalysisPoint* GetAnalysisPoint(IndexType idx) const override { return m_Imp.GetAnalysisPoint(idx); }
 
-protected:
+private:
    void MakeCopy(const stbHaulingStabilityProblem& other);
    void MakeAssignment(const stbHaulingStabilityProblem& other);
 

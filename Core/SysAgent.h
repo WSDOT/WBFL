@@ -104,8 +104,7 @@ private:
    std::vector<std::_tstring> m_MessageStack;
    std::_tstring m_LastMessage; // most recent message
 
-   BOOL m_bEndLines;
-   std::vector<std::shared_ptr<std::_tofstream> > m_LogFiles;
+   CComPtr<ILogFile> m_LogFile;
 };
 
 OBJECT_ENTRY_AUTO(CLSID_SysAgent,CSysAgent)

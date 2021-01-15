@@ -35,16 +35,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptRcTable
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-
 rptRcTable::rptRcTable(ColumnIndexType NumColumns, Float64 InitWidth)
 {
    CHECK(NumColumns>0);
@@ -119,7 +109,6 @@ rptRcTable::~rptRcTable()
    delete[] m_pStripeRowColumnStyles;
 }
 
-//======================== OPERATORS  =======================================
 rptRcTable& rptRcTable::operator= (const rptRcTable& rOther)
 {
    if( this != &rOther )
@@ -130,10 +119,6 @@ rptRcTable& rptRcTable::operator= (const rptRcTable& rOther)
    return *this;
 }
 
-//------------------------------------------------------------------------
-//
-// Get an individual cell paragraph
-// Note that cells in column zero are column header cells.
 rptTableCellParagraph& rptRcTable::operator()( RowIndexType RowNo, ColumnIndexType ColNo)
 {
    CHECK(ColNo<m_NumColumns);
@@ -178,10 +163,6 @@ rptTableCellParagraph& rptRcTable::operator()( RowIndexType RowNo, ColumnIndexTy
    return m_TableData[ColNo][RowNo];
 }
 
-//------------------------------------------------------------------------
-//
-// constant version of get cell paragraph
-//
 const rptTableCellParagraph& rptRcTable::operator()(RowIndexType RowNo, ColumnIndexType ColNo) const
 {
    CHECK(ColNo<m_NumColumns);
@@ -210,23 +191,15 @@ const rptTableCellParagraph& rptRcTable::operator()(RowIndexType RowNo, ColumnIn
    return m_TableData[ColNo][RowNo];
 }
 
-
-
-
-//======================== OPERATIONS =======================================
-
 rptReportContent* rptRcTable::CreateClone() const 
 { 
    return new rptRcTable(*this); 
 }
 
-//------------------------------------------------------------------------
-//
 void rptRcTable::Accept( rptRcVisitor& MyVisitor )
 {
    MyVisitor.VisitRcTable(this);
 }
-
 
 RowIndexType rptRcTable::GetNumberOfRows()
 {
@@ -243,9 +216,6 @@ RowIndexType rptRcTable::GetNumberOfRows()
    return NumRows;
 }
 
-//------------------------------------------------------------------------
-// 
-// Set the width (in inches) of a given column
 void rptRcTable::SetColumnWidth(ColumnIndexType ColNo, Float64 MyWidth)
 {
    CHECK(ColNo<m_NumColumns);
@@ -260,9 +230,6 @@ void rptRcTable::SetColumnWidth(ColumnIndexType ColNo, Float64 MyWidth)
    m_ColumnWidths[ColNo] = MyWidth;
 }
 
-//------------------------------------------------------------------------
-// 
-// Get the width (in inches) of the table
 Float64 rptRcTable::GetTableWidth() const
 {
    CHECK(m_NumColumns>0);
@@ -276,9 +243,6 @@ Float64 rptRcTable::GetTableWidth() const
    return  tmp;
 }
 
-//------------------------------------------------------------------------
-// 
-// Get the width (in inches) of a given column
 Float64 rptRcTable::GetColumnWidth(ColumnIndexType ColNo) const
 {
    CHECK(ColNo<m_NumColumns);
@@ -291,43 +255,27 @@ Float64 rptRcTable::GetColumnWidth(ColumnIndexType ColNo) const
    return  m_ColumnWidths[ColNo];
 }
 
-//------------------------------------------------------------------------
-// 
-// Set the cell padding (half-width between cells) in inches
-//
 void rptRcTable::SetCellPad(Float64 MyCellPad)
 {
    CHECK(MyCellPad>=0);
    m_CellPad = MyCellPad;
 }
 
-//------------------------------------------------------------------------
-// 
-// Get the cell padding (half-width between cells) in inches
-//
 Float64 rptRcTable::GetCellPad() const
 {
    return m_CellPad;
 }
 
-//------------------------------------------------------------------------
-// Set table alignment wrt margins
-//
 void rptRcTable::SetAlignment(rptRiStyle::AlignmentType Align)
 {
    m_Alignment = Align;
 }
 
-//------------------------------------------------------------------------
-// Get Distance between left edge of table and left margin
-//
 rptRiStyle::AlignmentType rptRcTable::GetAlignment()
 {
    return m_Alignment;
 }
 
-//------------------------------------------------------------------------
-// Set the style of a given column
 void rptRcTable::SetColumnStyle(ColumnIndexType ColNo, const rptStyleName& MyStyleName)
 {
    CHECK(ColNo<m_NumColumns);
@@ -359,9 +307,6 @@ void rptRcTable::SetStripeRowColumnStyle(ColumnIndexType ColNo, const rptStyleNa
    (m_pStripeRowColumnStyles+ColNo)->SetStyleName(MyStyleName);
 }
 
-//------------------------------------------------------------------------
-// Clear the style of a given column to allow column to inherit style back
-// from the table chain of responsibility.
 void rptRcTable::ClearColumnStyle(ColumnIndexType ColNo)
 {
    CHECK(ColNo<m_NumColumns);
@@ -376,12 +321,7 @@ void rptRcTable::ClearColumnStyle(ColumnIndexType ColNo)
    (m_pStripeRowColumnStyles+ColNo)->ClearStyle();
 }
 
-//------------------------------------------------------------------------
-// 
-// Put a Float64 column by using the given rptRcReal object as a prototype
-//
-void rptRcTable::PutFloat64Column(ColumnIndexType ColNo, rptRcUnitValue& ProtoReal,
-                                 const std::vector<Float64>& Float64Vec)
+void rptRcTable::FillColumn(ColumnIndexType ColNo, rptRcUnitValue& ProtoReal, const std::vector<Float64>& vValues)
 {
    CHECK(ColNo<m_NumColumns);
 
@@ -393,7 +333,7 @@ void rptRcTable::PutFloat64Column(ColumnIndexType ColNo, rptRcUnitValue& ProtoRe
    // check if header row entry has been allocated.
    CHECK(m_TableData[ColNo].size()>0);
 
-   RowIndexType nRows = Float64Vec.size();
+   RowIndexType nRows = vValues.size();
 
    // cycle through all of the Float64s and push them into the table as rptRcReals
 
@@ -412,15 +352,12 @@ void rptRcTable::PutFloat64Column(ColumnIndexType ColNo, rptRcUnitValue& ProtoRe
       }
 
       // make a new real from the proto type and stream it away
-      ProtoReal.SetValue( Float64Vec[i] );
+      ProtoReal.SetValue( vValues[i] );
       rploc << ProtoReal.CreateClone();
    }
 }
 
-
-void rptRcTable::PutSectionValueColumn(ColumnIndexType colNo,
-                                       rptRcSectionValue& rPrototype,
-                                       const std::vector<sysSectionValue>& vValues)
+void rptRcTable::FillColumn(ColumnIndexType colNo,rptRcSectionValue& rPrototype,const std::vector<sysSectionValue>& vValues)
 {
    CHECK( colNo < m_NumColumns );
 
@@ -456,12 +393,7 @@ void rptRcTable::PutSectionValueColumn(ColumnIndexType colNo,
    }
 }
 
-//------------------------------------------------------------------------
-// 
-// Put an integer column by using the given rptRcInt object as a prototype
-//
-void rptRcTable::PutLongColumn(ColumnIndexType ColNo, rptRcInt& ProtoInt, 
-                  const std::vector<Int32>& LongVec)
+void rptRcTable::FillColumn(ColumnIndexType ColNo, rptRcInt& ProtoInt, const std::vector<Int64>& vValues)
 {
    CHECK(ColNo<m_NumColumns);
 
@@ -473,7 +405,7 @@ void rptRcTable::PutLongColumn(ColumnIndexType ColNo, rptRcInt& ProtoInt,
    // check if header row entry has been allocated.
    CHECK(m_TableData[ColNo].size()>0);
 
-   RowIndexType nRows = LongVec.size();
+   RowIndexType nRows = vValues.size();
 
    // cycle through all of the Float64s and push them into the table as rptRcInt's
 
@@ -491,16 +423,11 @@ void rptRcTable::PutLongColumn(ColumnIndexType ColNo, rptRcInt& ProtoInt,
          rploc.SetParent(m_pColumnStyles+ColNo);
       }
 
-      rploc << ( ProtoInt.Sv( LongVec[i] ) );
+      rploc << ( ProtoInt.Sv(vValues[i] ) );
    }
 }
 
-//------------------------------------------------------------------------
-// 
-// Put a string column
-//
-void rptRcTable::PutStringColumn(ColumnIndexType ColNo, 
-                                 const std::vector<std::_tstring>& StringVec)
+void rptRcTable::FillColumn(ColumnIndexType ColNo, const std::vector<std::_tstring>& vValues)
 {
    CHECK(ColNo<m_NumColumns);
 
@@ -512,7 +439,7 @@ void rptRcTable::PutStringColumn(ColumnIndexType ColNo,
    // check if header row entry has been allocated. 
    CHECK(m_TableData[ColNo].size()>0);
 
-   RowIndexType nRows = StringVec.size();
+   RowIndexType nRows = vValues.size();
 
    // cycle through all of the strings and push them into the table as rptRcStrings
 
@@ -530,14 +457,10 @@ void rptRcTable::PutStringColumn(ColumnIndexType ColNo,
          rploc.SetParent(m_pColumnStyles+ColNo);
       }
 
-      rploc << new rptRcString( StringVec[i] );
+      rploc << new rptRcString(vValues[i] );
    }
 }
 
-//------------------------------------------------------------------------
-//
-// Set the border style of all inside vertical borders 
-// in the table
 void rptRcTable::SetInsideBorderStyle(rptRiStyle::BorderStyle MyStyle)
 {
    CHECK(MyStyle!=rptRiStyle::BRDRSIZE);
@@ -545,20 +468,11 @@ void rptRcTable::SetInsideBorderStyle(rptRiStyle::BorderStyle MyStyle)
    m_InsideBorderStyle = MyStyle;
 }
 
-//------------------------------------------------------------------------
-//
-// Get the border style of all inside vertical borders
-// in the table
 rptRiStyle::BorderStyle rptRcTable::GetInsideBorderStyle() const
 {
    return m_InsideBorderStyle;
 }
 
-
-//------------------------------------------------------------------------
-//
-// Set the border style of the table perimeter
-// 
 void rptRcTable::SetOutsideBorderStyle(rptRiStyle::BorderStyle MyStyle)
 {
    CHECK(MyStyle!=rptRiStyle::BRDRSIZE);
@@ -566,19 +480,11 @@ void rptRcTable::SetOutsideBorderStyle(rptRiStyle::BorderStyle MyStyle)
    m_OutsideBorderStyle = MyStyle;
 }
 
-//------------------------------------------------------------------------
-//
-// Get the border style of the table perimeter
-// 
 rptRiStyle::BorderStyle rptRcTable::GetOutsideBorderStyle() const
 {
    return m_OutsideBorderStyle;
 }
 
-//------------------------------------------------------------------------
-//
-// set the border style of the line below the header row
-//
 void rptRcTable::SetHeaderBottomBorderStyle(rptRiStyle::BorderStyle MyStyle)
 {
    CHECK(MyStyle!=rptRiStyle::BRDRSIZE);
@@ -586,21 +492,11 @@ void rptRcTable::SetHeaderBottomBorderStyle(rptRiStyle::BorderStyle MyStyle)
    m_HeaderBottomBorderStyle = MyStyle;
 }
 
-//------------------------------------------------------------------------
-//
-// get the border style of the line below the header row
-//
 rptRiStyle::BorderStyle rptRcTable::GetHeaderBottomBorderStyle() const
 {
    return m_HeaderBottomBorderStyle;
 }
 
-//
-//------------------------------------------------------------------------
-// set style of table header text - note that by default the table header style will have
-// that of overall table style if this is not used. Note that this call will 
-// override individual cell style settings.
-//
 void rptRcTable::SetTableHeaderStyle( const rptStyleName& MyStyleName)
 {
    // loop over columns and set style of header paragraphs
@@ -855,17 +751,8 @@ bool rptRcTable::IsStripedRow(RowIndexType row) const
    return m_bStripeRows && (stripeGroup % 2 != 0);
 }
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 void rptRcTable::MakeCopy(const rptRcTable& rOther)
 {
-
    m_NumColumns                 = rOther.m_NumColumns;
    m_Label                      = rOther.m_Label;
    m_Caption                    = rOther.m_Caption;
@@ -940,17 +827,6 @@ void rptRcTable::MakeAssignment(const rptRcTable& rOther)
    rptReportContent::MakeAssignment( rOther );
    MakeCopy( rOther );
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
 
 void rptRcTable::SetNumberOfColumns(ColumnIndexType nColumns)
 {

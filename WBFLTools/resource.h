@@ -71,6 +71,7 @@
 #define IDR_UNKARRAY                    123
 #define IDR_AROSL                       131
 #define IDR_ARLOSL                      132
+#define IDR_LOGFILE                     133
 #define IDD_LICENSEWIZ_1                133
 #define IDD_LICENSEWIZ_2                134
 #define IDR_DISCLAIMER                  135

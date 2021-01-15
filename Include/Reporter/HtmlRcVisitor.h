@@ -31,149 +31,106 @@
 #include <Reporter\OutputRcVisitor.h>
 #include <Reporter\PageLayout.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
 class REPORTERCLASS rptHtmlHelper;
 
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptHtmlRcVisitor
-
-   Generate Html from report content
-
-
-DESCRIPTION
-   This class generates HTML from all of the different types of report content 
-   and sends the HTML to the ostream defined in the constructor.
-
-LOG
-   rdp : 04.09.1997 : Created file
-*****************************************************************************/
-
+/// Generates HTML code from report content
+///
+/// This class generates HTML from all of the different types of report content and sends the HTML to the ostream defined in the constructor.
 class REPORTERCLASS rptHtmlRcVisitor : public rptOutputRcVisitor
 {
 public:
-   // GROUP: LIFECYCLE
+   /// Constructor
+   rptHtmlRcVisitor(std::_tostream* pMyOstream, ///< output stream to receive the HTML code
+                   const rptPageLayout* pPageLayout, ///< page layout information
+                   const rptHtmlHelper&   rmyHelper,///< helper object for generating HTML code
+                   Uint32 logPixelsX, ///< horizontal screen resolution in pixels per inch
+                   Uint32 logPixelsY ///< vertical screen resolution in pixels per inch
+   );
 
-   //------------------------------------------------------------------------
-   // constructor
-   //
-   rptHtmlRcVisitor(std::_tostream* pMyOstream, /*const rptUnitSnapShot* MypUnitSnapShot,*/
-                  const rptPageLayout* MypPageLayout, const rptHtmlHelper&   rmyHelper,
-                  Uint32 logPixelsX, Uint32 logPixelsY);
-
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptHtmlRcVisitor();
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   // Visit a Table
+   /// Visit a Table
    void VisitRcTable(rptRcTable*);
-   //------------------------------------------------------------------------
-   // Visit a String
+
+   /// Visit a String
    void VisitRcString(rptRcString*);
-   //------------------------------------------------------------------------
-   // Visit a String
+
+   /// Visit a Literal String
    void VisitRcStringLiteral(rptRcStringLiteral*);
-   //------------------------------------------------------------------------
-   // Visit an Int
+
+   /// Visit an Int
    void VisitRcInt(rptRcInt*);
-   //------------------------------------------------------------------------
-   // Visit an Unsigned
+   
+   /// Visit an Unsigned
    void VisitRcUnsigned(rptRcUnsigned*);
-   //------------------------------------------------------------------------
-   // Visit a flow modifier
+
+   /// Visit a flow modifier
    void VisitRcFlowModifier(rptRcFlowModifier*);
-   //------------------------------------------------------------------------
-   // Visit a Font Modifier
+   
+   /// Visit a Font Modifier
    void VisitRcFontModifier(rptRcFontModifier*);
-   //------------------------------------------------------------------------
-   // Visit a color modifier
+   
+   /// Visit a color modifier
    void VisitRcColor(rptRcColor*);
-   //------------------------------------------------------------------------
-   // Visit a background color modifier
+
+   /// Visit a background color modifier
    void VisitRcBgColor(rptRcBgColor*);
-   //------------------------------------------------------------------------
-   // Visit a Date and Time string
+   
+   /// Visit a Date and Time string
    void VisitRcDateTime(rptRcDateTime*);
-   //------------------------------------------------------------------------
-   // Visit a hypertarget
+
+   /// Visit a hypertarget
    void VisitRcHyperTarget(rptRcHyperTarget*);
-   // Visit an image
+   
+   /// Visit an image
    void VisitRcImage(rptRcImage*);
-   //------------------------------------------------------------------------
-   // Visit a symbol
+
+   /// Visit a symbol
    void VisitRcSymbol(rptRcSymbol*);
 
+   /// Visit a scalar
    void VisitRcScalar(rptRcScalar*);
+
+   /// Visit a percentage
    void VisitRcPercentage(rptRcPercentage*);
+
+   /// Visit a unit tag
    void VisitRcUnitTag(rptRcUnitTag*);
+
+   /// Visit a unit value
    void VisitRcUnitValue(rptRcUnitValue*);
+
+   /// Visit a section value
    void VisitRcSectionValue(rptRcSectionValue*);
+
+   /// Visit a section scalar
    void VisitRcSectionScalar(rptRcSectionScalar*);
+
+   /// Visit a station
    void VisitRcStation(rptRcStation* pRC);
+
+   /// Visit a composite report content object
    void VisitRcComposite(rptRcComposite*);
 
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
-   //------------------------------------------------------------------------
-   // The current page layout
    const rptPageLayout* m_pPageLayout;
    const rptHtmlHelper& m_Helper;
 
    Uint32 m_LogPixelsX;
    Uint32 m_LogPixelsY;
 
-   // GROUP: LIFECYCLE
+   rptHtmlRcVisitor() = delete;
+   rptHtmlRcVisitor(const rptHtmlRcVisitor&) = delete;
+   rptHtmlRcVisitor& operator=(const rptHtmlRcVisitor&) = delete;
 
-   //------------------------------------------------------------------------
-   // Default constructor is private
-   rptHtmlRcVisitor();
-   //------------------------------------------------------------------------
-   // Copying not allowed
-   rptHtmlRcVisitor(const rptHtmlRcVisitor&);
-   //------------------------------------------------------------------------
-   // Assignment not allowed
-   rptHtmlRcVisitor& operator=(const rptHtmlRcVisitor&);
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
    // Convert border type to pixel thickness
    Uint16 BorderToPixels( rptRiStyle::BorderStyle BStyle);
 
-   //------------------------------------------------------------------------
    // start hyperlink tag
    void HyperStart(const rptReportContent* pC);
 
-   //------------------------------------------------------------------------
    // end hyperlink tag
    void HyperEnd(const rptReportContent* pC);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
 
 // INLINE METHODS

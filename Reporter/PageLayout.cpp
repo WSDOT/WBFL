@@ -30,16 +30,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptPageLayout
-****************************************************************************/
-
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
 rptPageLayout::rptPageLayout()
 {
    // set up page to some reasonable defaults for margins and leave header
@@ -59,57 +49,6 @@ rptPageLayout::rptPageLayout()
     m_HeaderParagraph.SetStyleName(_T("Default"));
 }
 
-
-rptPageLayout::rptPageLayout(const rptPageLayout& rOther)
-{
-   MakeCopy(rOther);
-}
-
 rptPageLayout::~rptPageLayout()
 {
 }
-
-//======================== OPERATORS  =======================================
-rptPageLayout& rptPageLayout::operator=(const rptPageLayout& rOther)
-{
-   if( this != &rOther )
-      MakeCopy(rOther);
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void rptPageLayout::MakeCopy(const rptPageLayout& rOther)
-{
-   m_PageHeight    = rOther.m_PageHeight;
-   m_PageWidth     = rOther.m_PageWidth;
-   m_TopMargin     = rOther.m_TopMargin;
-   m_BottomMargin  = rOther.m_BottomMargin;
-   m_LeftMargin    = rOther.m_LeftMargin;
-   m_RightMargin   = rOther.m_RightMargin;
-
-   m_FooterParagraph = rOther.m_FooterParagraph;
-   m_HeaderParagraph = rOther.m_HeaderParagraph;
-
-   m_PageOrientation = rOther.m_PageOrientation;
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-

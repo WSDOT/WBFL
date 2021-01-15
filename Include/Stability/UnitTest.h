@@ -25,72 +25,18 @@
 
 #include <Stability\StabilityExp.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   stbUnitTest
-
-   Unit Testing class for the Stability package.
-
-
-DESCRIPTION
-   Unit Testing class for the Stability package.
-
-LOG
-   rab : 10.21.1998 : Created file
-*****************************************************************************/
-
+/// Unit tester
 class STABILITYCLASS stbUnitTest
 {
 public:
-   // GROUP: LIFECYCLE
-
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
+   /// Runs the unit tests and logs testing information
+   /// \return true if successful, otherwise false.
    static bool TestMe(dbgLog& rlog);
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 
 private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   // Prevent accidental copying and assignment
    stbUnitTest(const stbUnitTest&) = delete;
    stbUnitTest& operator=(const stbUnitTest&) = delete;
 
    static bool PCILiftingExamples(dbgLog& rlog);
    static bool PCIHaulingExamples(dbgLog& rlog);
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-

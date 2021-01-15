@@ -137,7 +137,7 @@ void CDisplayUnitGroup::FinalRelease()
    {
 	  CComQIPtr<IConnectionPointContainer> pCPC( m_pUnitType );
 	  CComPtr<IConnectionPoint> pCP;
-	  pCPC->FindConnectionPoint( IID_IUnitTypeEventSink, &pCP );
+	  pCPC->FindConnectionPoint( IID_IUnitTypeEvents, &pCP );
 	  pCP->Unadvise( m_Cookie );
    }
 

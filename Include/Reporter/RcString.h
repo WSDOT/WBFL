@@ -25,110 +25,79 @@
 #define INCLUDED_REPORTER_RCSTRING_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-#include <string>
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ReportContent.h>
 #include <Reporter\RcVisitor.h>
+#include <string>
 
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
 class REPORTERCLASS rptRcVisitor;
 
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptRcString
-
-   Summary text here
-   
-DESCRIPTION
-   Detailed description here or delete this block
-*****************************************************************************/
-
+/// Report content for a text string.
 class REPORTERCLASS rptRcString : public rptReportContent
 {
 public:
-   // GROUP: LIFECYCLE
+   /// Constructor
+   rptRcString(
+      LPCTSTR YourStr, ///< The text string
+      bool bNoWrap = false ///< If true, word wrapping is prevented
+   );
 
-   //------------------------------------------------------------------------
-   // constructors
-   // non-hyperlink versions
-   rptRcString(LPCTSTR  YourStr,bool bNoWrap = false);
-   rptRcString(const std::_tstring& YourString,bool bNoWrap = false);
-   //------------------------------------------------------------------------
-   // hyperlink versions - link to HyperTarget somewhere on page
-   rptRcString(LPCTSTR  YourStr, const std::_tstring& HyperTarget,bool bNoWrap = false);
-   rptRcString(const std::_tstring& YourString, const std::_tstring& HyperTarget,bool bNoWrap = false);
+   /// Constructor
+   rptRcString(
+      const std::_tstring& YourString, ///< The text string
+      bool bNoWrap = false ///< If true, word wrapping is prevented
+   );
 
-   void NoWrap(bool bNoWrap);
-   bool NoWrap() const;
+   /// Constructor
+   rptRcString(
+      LPCTSTR YourStr, ///< The text string
+      const std::_tstring& HyperTarget, ///< Name of hyperlink target
+      bool bNoWrap = false ///< If true, word wrapping is prevented
+   );
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~rptRcString();
-
-   // GROUP: OPERATORS
-
-
-   // GROUP: OPERATIONS
-
-   rptReportContent* CreateClone() const;
-
-   void Accept( rptRcVisitor& MyVisitor );
-
-   //------------------------------------------------------------------------
-   virtual rptReportContent&  SetValue(LPCTSTR str);
-
-   // GROUP: ACCESS
-   //
-   // get the string
-   //
-   std::_tstring GetString() const {return m_TheString; }
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   /// Constructor
+   rptRcString(
+      const std::_tstring& YourString, ///< The text string
+      const std::_tstring& HyperTarget, ///< Name of hyperlink target
+      bool bNoWrap = false ///< If true, word wrapping is prevented
+   );
 
    rptRcString(const rptRcString& rRcString);
-   rptRcString& operator = (const rptRcString& rRcString);
 
-private:
-   // GROUP: DATA MEMBERS
-   std::_tstring m_TheString;
-   bool m_bNoWrap;
+   virtual ~rptRcString();
 
-   // GROUP: LIFECYCLE
+   rptRcString& operator=(const rptRcString& rRcString);
 
-   // hide the constructor
-   rptRcString();
+   /// Sets word wrapping mode
+   void NoWrap(bool bNoWrap /**! If true, word wrapping is prevented*/);
 
-   // GROUP: OPERATORS
+   /// Returns the word wrapping mode
+   bool NoWrap() const;
 
-   // GROUP: OPERATIONS
-   void MakeCopy(const rptRcString& rRcString);
+   /// Creates a clone
+   rptReportContent* CreateClone() const;
+
+   /// Accepts a visitor and calls VisitRcString(this)
+   void Accept( rptRcVisitor& MyVisitor );
+
+   /// Sets the value of this content and returns a reference to this
+   virtual rptReportContent&  SetValue(LPCTSTR str);
+
+   /// Returns the text string
+   const std::_tstring& GetString() const {return m_TheString; }
+
+protected:
+   /// Copies the content from rOther to this object
+   void MakeCopy(const rptRcString& rOther);
+
+   /// Assigns the content from oOther to this object
    void MakeAssignment(const rptRcString& rOther);
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+private:
+   rptRcString() = delete;
+   std::_tstring m_TheString;
+   bool m_bNoWrap;
 };
 
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif
+#endif // INCLUDED_REPORTER_RCSTRING_H_

@@ -61,35 +61,39 @@ library WBFLRCCapacity
 	importlib("stdole32.tlb");
 	importlib("stdole2.tlb");
 
+   /// Constant indicating the type of longitudinal reinforcement modeled in a CircularManderSection Mander's model
    typedef [public,helpstring("enum TransvReinforcementType"),helpcontext(IDH_TransvReinforcementType),uuid(7EEAA5E8-7AAE-4e1b-8F6B-0740BFE02F2F)] 
    enum 
    {
-      trtSpiral = 1,
-      trtHoops = 2
+      trtSpiral = 1, ///< Transverse reinforcement is a continuous spiral
+      trtHoops = 2   ///< Transverse reinforcement is discrete hoops
    } TransvReinforcementType;
 
-
+   /// Constant indicating type solution method to be used by the MomentCapacitySolver
    typedef [public,helpstring("enum SolutionMethod"),helpcontext(IDH_SolutionMethod),uuid(464B228A-D182-4823-BE7E-B8A20A22D055)] 
    enum 
    {
-		smFixedCurvature = 1,
-		smFixedCompressiveStrain = 2
+		smFixedCurvature = 1, ///< A fixed curvature is specified and elevation of the neutral axis is varied to acheive equilibrium
+		smFixedCompressiveStrain = 2 ///< A fixed compressive strain is specified and curvature is varied to acheive equilibrium
    } SolutionMethod;
 
+   /// Constant indicating prestress reinforcement grade in the PowerForumula stress-strain model
    typedef [public,helpstring("enum StrandGradeType"),helpcontext(IDH_StrandGradeType),uuid(3BE4F7FC-A94D-4BA3-90A8-D81BA56709EF)] 
    enum 
    {
-		sgtGrade250 = 1,
-		sgtGrade270 = 2
+		sgtGrade250 = 1, ///< Prestressing is Grade 250 (250 ksi)
+		sgtGrade270 = 2 ///< Prestressing is Grade 270 (270 ksi)
    } StrandGradeType;
 
+   /// Constant indicating the production method for prestress reinforcement in the PowerFormula stress-strain model
    typedef [public,helpstring("enum ProductionMethodType"),helpcontext(IDH_ProductionMethodType),uuid(16237E1D-9EB8-4B93-B8F7-B33FAD9F0208)] 
    enum 
    {
-		pmtLowRelaxation = 1,
-		pmtStressRelieved = 2
+		pmtLowRelaxation = 1, ///< strands have low relaxation properties
+		pmtStressRelieved = 2 ///< strands have stress relieved properties
    } ProductionMethodType;
 
+   /// Interface defining a general stress-strain model
 	[
 		object,
 		uuid(0EE9658D-A9AB-45ba-8BBD-6486353E5885),
@@ -100,15 +104,27 @@ library WBFLRCCapacity
 	]
 	interface IStressStrain : IUnknown
 	{
+      /// Name of the stress-strain model
 	  [propput,helpcontext(IDH_IStressStrain_Name),helpstring("property Name")] HRESULT Name([in]BSTR name);
 	  [propget,helpcontext(IDH_IStressStrain_Name),helpstring("property Name")] HRESULT Name([out,retval]BSTR *name);
+
+     /// Yield strain
       [propget,helpcontext(IDH_IStressStrain_YieldStrain),helpstring("propety YieldStrain")] HRESULT YieldStrain([out,retval]Float64* pey);
+
+      /// Modulus of Elasticity
       [propget,helpcontext(IDH_IStressStrain_ModulusOfElasticity),helpstring("propety ModulusOfElasticity")] HRESULT ModulusOfElasticity([out,retval]Float64* pE);
+
+      /// Computes stress for the specified level of strain
       [helpcontext(IDH_IStressStrain_ComputeStress),helpstring("method ComputeStress")] HRESULT ComputeStress([in] Float64 strain,[out,retval]Float64* pVal);
+
+      /// Returns the range of strain values applicable to the model
 	  [helpcontext(IDH_IStressStrain_StrainLimits),helpstring("method StrainLimits")] HRESULT StrainLimits([out]Float64* minStrain,[out]Float64* maxStrain);
+
+     /// Returns the strain that cooresponds to the peak stress
 	  [propget,helpcontext(IDH_IStressStrain_StrainAtPeakStress),helpstring("property StrainAtPeakStress")] HRESULT StrainAtPeakStress([out,retval]Float64* strain);
 	};
 
+   /// Interface for modeling a basic reinforced concrete composite T-beam
 	[
 		object,
 		uuid(53B5167D-154B-44AB-9735-56A8953B0D4A),
@@ -119,40 +135,75 @@ library WBFLRCCapacity
 	]
 	interface IRCBeam : IUnknown
 	{
+      /// Flange width
 		[propget, helpcontext(IDH_IRCBeam_b),helpstring("property b")] HRESULT b([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_b),helpstring("property b")] HRESULT b([in] Float64 newVal);
+
+      /// Web width
 		[propget, helpcontext(IDH_IRCBeam_bw),helpstring("property bw")] HRESULT bw([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_bw),helpstring("property bw")] HRESULT bw([in] Float64 newVal);
+
+      /// Height of flange
 		[propget, helpcontext(IDH_IRCBeam_hf),helpstring("property hf")] HRESULT hf([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_hf),helpstring("property hf")] HRESULT hf([in] Float64 newVal);
+
+      /// Overall height of section
 		[propget, helpcontext(IDH_IRCBeam_h),helpstring("property h")] HRESULT h([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_h),helpstring("property h")] HRESULT h([in] Float64 newVal);
+
+      /// Area of mild steel reinforcement
 		[propget, helpcontext(IDH_IRCBeam_As),helpstring("property As")] HRESULT As([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_As),helpstring("property As")] HRESULT As([in] Float64 newVal);
+
+      /// Area of prestress reinforcement
 		[propget, helpcontext(IDH_IRCBeam_Aps),helpstring("property Aps")] HRESULT Aps([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_Aps),helpstring("property Aps")] HRESULT Aps([in] Float64 newVal);
+
+      /// Depth from top of beam to mild steel reinforcement
 		[propget, helpcontext(IDH_IRCBeam_ds),helpstring("property ds")] HRESULT ds([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_ds),helpstring("property ds")] HRESULT ds([in] Float64 newVal);
+
+      /// Depth from top of beam to prestress reinforcement
 		[propget, helpcontext(IDH_IRCBeam_dps),helpstring("property dps")] HRESULT dps([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_dps),helpstring("property dps")] HRESULT dps([in] Float64 newVal);
+
+      /// Yield strength of mild steel reinforcement
 		[propget, helpcontext(IDH_IRCBeam_fy),helpstring("property fy")] HRESULT fy([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_fy),helpstring("property fy")] HRESULT fy([in] Float64 newVal);
+
+      /// Ultimate strength of prestress reinforcement
 		[propget, helpcontext(IDH_IRCBeam_fpu),helpstring("property fpu")] HRESULT fpu([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_fpu),helpstring("property fpu")] HRESULT fpu([in] Float64 newVal);
+
+      /// Yield strengh of prestress reinforcement
 		[propget, helpcontext(IDH_IRCBeam_fpy),helpstring("property fpy")] HRESULT fpy([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_fpy),helpstring("property fpy")] HRESULT fpy([in] Float64 newVal);
+
+      /// Effective stress in prestress reinforcement, after all losses
 		[propget, helpcontext(IDH_IRCBeam_fpe),helpstring("property fpe")] HRESULT fpe([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_fpe),helpstring("property fpe")] HRESULT fpe([in] Float64 newVal);
+
+      /// Strength of slab concrete
 		[propget, helpcontext(IDH_IRCBeam_FcSlab),helpstring("property FcSlab")] HRESULT FcSlab([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_FcSlab),helpstring("property FcSlab")] HRESULT FcSlab([in] Float64 newVal);
+
+      /// Strength of beam concrete
 		[propget, helpcontext(IDH_IRCBeam_FcBeam),helpstring("property FcBeam")] HRESULT FcBeam([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_FcBeam),helpstring("property FcBeam")] HRESULT FcBeam([in] Float64 newVal);
+
+      /// Modulus of elasticity of mild steel reinforcement
 		[propget, helpcontext(IDH_IRCBeam_Es),helpstring("property Es")] HRESULT Es([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_Es),helpstring("property Es")] HRESULT Es([in] Float64 newVal);
+
+      /// Modulus of elasticity of prestress reinforcement
 		[propget, helpcontext(IDH_IRCBeam_Eps),helpstring("property Eps")] HRESULT Eps([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_Eps),helpstring("property Eps")] HRESULT Eps([in] Float64 newVal);
 	};
-	[
+
+   /// Interface for modeling a basic reinforced concrete composite T-beam
+   ///
+   /// This differs from IRCBeam in that reinforcement can be located in any number of arbitray layers
+   [
 		object,
 		uuid(1344FBEC-4225-477A-A99A-B7460191C650),
 		oleautomation,
@@ -162,48 +213,124 @@ library WBFLRCCapacity
 	]
 	interface IRCBeam2 : IUnknown
 	{
+      /// Flange width
 		[propget, helpcontext(IDH_IRCBeam2_b),helpstring("property b")] HRESULT b([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam2_b),helpstring("property b")] HRESULT b([in] Float64 newVal);
+
+      /// Web width
 		[propget, helpcontext(IDH_IRCBeam2_bw),helpstring("property bw")] HRESULT bw([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam2_bw),helpstring("property bw")] HRESULT bw([in] Float64 newVal);
-		[propget, helpcontext(IDH_IRCBeam2_hf),helpstring("property hf")] HRESULT hf([out, retval] Float64 *pVal);
+
+      /// Height of flange
+      [propget, helpcontext(IDH_IRCBeam2_hf),helpstring("property hf")] HRESULT hf([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam2_hf),helpstring("property hf")] HRESULT hf([in] Float64 newVal);
+
+      /// Overall height of section
 		[propget, helpcontext(IDH_IRCBeam2_h),helpstring("property h")] HRESULT h([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam2_h),helpstring("property h")] HRESULT h([in] Float64 newVal);
-		[helpcontext(IDH_IRCBeam2_AddRebarLayer), helpstring("method AddRebarLayer")] HRESULT AddRebarLayer([in] Float64 ds,[in] Float64 As,[in] Float64 devFactor);
+
+      /// Adds a layer of mild steel reinforcement
+		[helpcontext(IDH_IRCBeam2_AddRebarLayer), helpstring("method AddRebarLayer")] 
+      HRESULT AddRebarLayer(
+         [in] Float64 ds, ///< depth to the reinforcement from the top of the section
+         [in] Float64 As, ///< area of reinforcement 
+         [in] Float64 devFactor ///< reduction factor to account for the lack of full development
+      );
+
+      /// Number of mild steel reinforcement layers
 		[propget, helpcontext(IDH_IRCBeam2_RebarLayerCount), helpstring("property RebarLayerCount")] HRESULT RebarLayerCount([out,retval] CollectionIndexType * count);
+
+      /// Depth to a mild steel reinforcement layer
 		[propget, helpcontext(IDH_IRCBeam2_RebarLayerDepth), helpstring("property RebarLayerDepth")] HRESULT RebarLayerDepth([in] CollectionIndexType index,[out,retval] Float64 * ds);
+
+      /// Area of steel in a mild reinforcement layer
 		[propget, helpcontext(IDH_IRCBeam2_RebarLayerSteel), helpstring("property RebarLayerSteel")] HRESULT RebarLayerSteel([in] CollectionIndexType index,[out,retval] Float64 * As);
+
+      /// Development length factor for a mild reinforcement layer
 		[propget, helpcontext(IDH_IRCBeam2_RebarLayerDevFactor), helpstring("property RebarLayerDevFactor")] HRESULT RebarLayerDevFactor([in] CollectionIndexType index,[out,retval] Float64 * devFactor);
-		[helpcontext(IDH_IRCBeam2_GetRebarLayer), helpstring("method GetRebarLayer")] HRESULT GetRebarLayer([in] CollectionIndexType index,[out] Float64 * ds, [out] Float64 * As,[out] Float64* devFactor);
-	    [helpcontext(IDH_IRCBeam2_RemoveRebarLayer), helpstring("method RemoveRebarLayer")] HRESULT RemoveRebarLayer([in] CollectionIndexType index);
+
+      /// Retrieves information about a mild steel reinforcement layer
+		[helpcontext(IDH_IRCBeam2_GetRebarLayer), helpstring("method GetRebarLayer")] 
+      HRESULT GetRebarLayer(
+         [in] CollectionIndexType index, ///< index of the layer
+         [out] Float64 * ds,  ///< depth to the reinforcement
+         [out] Float64 * As, ///< area of reinforcement
+         [out] Float64* devFactor ///< developemnt length factor
+      );
+
+      /// Removes a layer of mild steel reinforcement from the model
+      [helpcontext(IDH_IRCBeam2_RemoveRebarLayer), helpstring("method RemoveRebarLayer")] HRESULT RemoveRebarLayer([in] CollectionIndexType index);
+
+      /// Removes all mild steel reinforcement from the model.
 		[helpcontext(IDH_IRCBeam2_ClearRebarLayers), helpstring("method ClearRebarLayers")] HRESULT ClearRebarLayers();
+
+      /// Adds a layer of prestress reinforcement
 		[helpcontext(IDH_IRCBeam2_AddStrandLayer), helpstring("method AddStrandLayer")] HRESULT AddStrandLayer([in] Float64 dps,[in] Float64 Aps,[in] Float64 devFactor);
+
+      /// Number of prestress reinforcement layers
 		[propget, helpcontext(IDH_IRCBeam2_StrandLayerCount), helpstring("property StrandLayerCount")] HRESULT StrandLayerCount([out,retval] CollectionIndexType * count);
+
+      /// Depth to a prestress reinforcement layer
 		[propget, helpcontext(IDH_IRCBeam2_StrandLayerDepth), helpstring("property StrandLayerDepth")] HRESULT StrandLayerDepth([in] CollectionIndexType index,[out,retval] Float64 * dps);
+
+      /// Area of steel in a prestress reinforcement layer
 		[propget, helpcontext(IDH_IRCBeam2_StrandLayerSteel), helpstring("property StrandLayerSteel")] HRESULT StrandLayerSteel([in] CollectionIndexType index,[out,retval] Float64 * Aps);
+
+      /// Development length factor for a prestress reinforcement layer
 		[propget, helpcontext(IDH_IRCBeam2_StrandLayerDevFactor), helpstring("property StrandLayerDevFactor")] HRESULT StrandLayerDevFactor([in] CollectionIndexType index,[out,retval] Float64 * devFactor);
-		[helpcontext(IDH_IRCBeam2_GetStrandLayer), helpstring("method GetStrandLayer")] HRESULT GetStrandLayer([in] CollectionIndexType index,[out] Float64 * dps, [out] Float64 * Aps,[out] Float64* devFactor);
+
+      /// Retrieves information about a prestress reinforcement layer
+		[helpcontext(IDH_IRCBeam2_GetStrandLayer), helpstring("method GetStrandLayer")] 
+      HRESULT GetStrandLayer(
+         [in] CollectionIndexType index, ///< index of the layer
+         [out] Float64 * dps,  ///< depth to the reinforcement
+         [out] Float64 * Aps, ///< area of reinforcement
+         [out] Float64* devFactor /// development length factor
+      );
+
+      /// Removes a layer of prestress reinforcement from the model.
 		[helpcontext(IDH_IRCBeam2_RemoveStrandLayer), helpstring("method RemoveStrandLayer")] HRESULT RemoveStrandLayer([in] CollectionIndexType index);
+
+      /// Removes all prestress reinforcement from the model.
 		[helpcontext(IDH_IRCBeam2_ClearStrandLayers), helpstring("method ClearStrandLayers")] HRESULT ClearStrandLayers();
+
+      /// Yield strength of mild steel reinforcement
 		[propget, helpcontext(IDH_IRCBeam2_fy),helpstring("property fy")] HRESULT fy([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam2_fy),helpstring("property fy")] HRESULT fy([in] Float64 newVal);
+
+      /// Ultimate stress of prestress reinforcement
 		[propget, helpcontext(IDH_IRCBeam2_fpu),helpstring("property fpu")] HRESULT fpu([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam2_fpu),helpstring("property fpu")] HRESULT fpu([in] Float64 newVal);
+
+      /// Yield strength of prestress reinforcement
 		[propget, helpcontext(IDH_IRCBeam2_fpy),helpstring("property fpy")] HRESULT fpy([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam2_fpy),helpstring("property fpy")] HRESULT fpy([in] Float64 newVal);
+
+      /// Effective stress in prestress reinforcement, after all losses
 		[propget, helpcontext(IDH_IRCBeam2_fpe),helpstring("property fpe")] HRESULT fpe([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam2_fpe),helpstring("property fpe")] HRESULT fpe([in] Float64 newVal);
+
+      /// Slab concrete strength
 		[propget, helpcontext(IDH_IRCBeam2_FcSlab),helpstring("property FcSlab")] HRESULT FcSlab([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam2_FcSlab),helpstring("property FcSlab")] HRESULT FcSlab([in] Float64 newVal);
+
+      // Beam concrete strength
 		[propget, helpcontext(IDH_IRCBeam2_FcBeam),helpstring("property FcBeam")] HRESULT FcBeam([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam2_FcBeam),helpstring("property FcBeam")] HRESULT FcBeam([in] Float64 newVal);
+
+      /// Modulus of elasticity of mild steel reinforcement
 		[propget, helpcontext(IDH_IRCBeam2_Es),helpstring("property Es")] HRESULT Es([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam2_Es),helpstring("property Es")] HRESULT Es([in] Float64 newVal);
+
+      /// Modulus of elasticity of prestress reinforcement
 		[propget, helpcontext(IDH_IRCBeam2_Eps),helpstring("property Eps")] HRESULT Eps([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam2_Eps),helpstring("property Eps")] HRESULT Eps([in] Float64 newVal);
 	};
-	[
+
+   /// Interface for modeling a reinforced concrete composite T-beam
+   ///
+   /// This differs from IRCBeam2 in that the beam (web) is modeled with an arbitrary shape.
+   [
 		object,
 		uuid(F34B969D-6139-4A12-B75D-85D08C56A236),
 		oleautomation,
@@ -213,45 +340,117 @@ library WBFLRCCapacity
 	]
 	interface IRCBeam2Ex : IUnknown
 	{
-		[propget, helpcontext(IDH_IRCBeam2Ex_b),helpstring("property b")] HRESULT b([out, retval] Float64 *pVal);
-		[propput, helpcontext(IDH_IRCBeam2Ex_b),helpstring("property b")] HRESULT b([in] Float64 newVal);
-		[propget, helpcontext(IDH_IRCBeam2Ex_hf),helpstring("property hf")] HRESULT hf([out, retval] Float64 *pVal);
-		[propput, helpcontext(IDH_IRCBeam2Ex_hf),helpstring("property hf")] HRESULT hf([in] Float64 newVal);
-		[propget, helpcontext(IDH_IRCBeam2Ex_Beam),helpstring("property Beam")] HRESULT Beam([out, retval] IShape* *pVal);
-		[propputref, helpcontext(IDH_IRCBeam2Ex_Beam),helpstring("property Beam")] HRESULT Beam([in] IShape* newVal);
-		[helpcontext(IDH_IRCBeam2Ex_AddRebarLayer), helpstring("method AddRebarLayer")] HRESULT AddRebarLayer([in] Float64 ds,[in] Float64 As,[in] Float64 devFactor);
-		[propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerCount), helpstring("property RebarLayerCount")] HRESULT RebarLayerCount([out,retval] CollectionIndexType * count);
-		[propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerDepth), helpstring("property RebarLayerDepth")] HRESULT RebarLayerDepth([in] CollectionIndexType index,[out,retval] Float64 * ds);
-		[propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerSteel), helpstring("property RebarLayerSteel")] HRESULT RebarLayerSteel([in] CollectionIndexType index,[out,retval] Float64 * As);
-		[propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerDevFactor), helpstring("property RebarLayerDevFactor")] HRESULT RebarLayerDevFactor([in] CollectionIndexType index,[out,retval] Float64 * devFactor);
-		[helpcontext(IDH_IRCBeam2Ex_GetRebarLayer), helpstring("method GetRebarLayer")] HRESULT GetRebarLayer([in] CollectionIndexType index,[out] Float64 * ds, [out] Float64 * As,[out] Float64* devFactor);
-	    [helpcontext(IDH_IRCBeam2Ex_RemoveRebarLayer), helpstring("method RemoveRebarLayer")] HRESULT RemoveRebarLayer([in] CollectionIndexType index);
-		[helpcontext(IDH_IRCBeam2Ex_ClearRebarLayers), helpstring("method ClearRebarLayers")] HRESULT ClearRebarLayers();
-		[helpcontext(IDH_IRCBeam2Ex_AddStrandLayer), helpstring("method AddStrandLayer")] HRESULT AddStrandLayer([in] Float64 dps,[in] Float64 Aps,[in] Float64 devFactor);
-		[propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerCount), helpstring("property StrandLayerCount")] HRESULT StrandLayerCount([out,retval] CollectionIndexType * count);
-		[propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerDepth), helpstring("property StrandLayerDepth")] HRESULT StrandLayerDepth([in] CollectionIndexType index,[out,retval] Float64 * dps);
-		[propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerSteel), helpstring("property StrandLayerSteel")] HRESULT StrandLayerSteel([in] CollectionIndexType index,[out,retval] Float64 * Aps);
-		[propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerDevFactor), helpstring("property StrandLayerDevFactor")] HRESULT StrandLayerDevFactor([in] CollectionIndexType index,[out,retval] Float64 * devFactor);
-		[helpcontext(IDH_IRCBeam2Ex_GetStrandLayer), helpstring("method GetStrandLayer")] HRESULT GetStrandLayer([in] CollectionIndexType index,[out] Float64 * dps, [out] Float64 * Aps,[out] Float64* devFactor);
-		[helpcontext(IDH_IRCBeam2Ex_RemoveStrandLayer), helpstring("method RemoveStrandLayer")] HRESULT RemoveStrandLayer([in] CollectionIndexType index);
-		[helpcontext(IDH_IRCBeam2Ex_ClearStrandLayers), helpstring("method ClearStrandLayers")] HRESULT ClearStrandLayers();
-		[propget, helpcontext(IDH_IRCBeam2Ex_fy),helpstring("property fy")] HRESULT fy([out, retval] Float64 *pVal);
-		[propput, helpcontext(IDH_IRCBeam2Ex_fy),helpstring("property fy")] HRESULT fy([in] Float64 newVal);
-		[propget, helpcontext(IDH_IRCBeam2Ex_fpu),helpstring("property fpu")] HRESULT fpu([out, retval] Float64 *pVal);
-		[propput, helpcontext(IDH_IRCBeam2Ex_fpu),helpstring("property fpu")] HRESULT fpu([in] Float64 newVal);
-		[propget, helpcontext(IDH_IRCBeam2Ex_fpy),helpstring("property fpy")] HRESULT fpy([out, retval] Float64 *pVal);
-		[propput, helpcontext(IDH_IRCBeam2Ex_fpy),helpstring("property fpy")] HRESULT fpy([in] Float64 newVal);
-		[propget, helpcontext(IDH_IRCBeam2Ex_fpe),helpstring("property fpe")] HRESULT fpe([out, retval] Float64 *pVal);
-		[propput, helpcontext(IDH_IRCBeam2Ex_fpe),helpstring("property fpe")] HRESULT fpe([in] Float64 newVal);
-		[propget, helpcontext(IDH_IRCBeam2Ex_FcSlab),helpstring("property FcSlab")] HRESULT FcSlab([out, retval] Float64 *pVal);
-		[propput, helpcontext(IDH_IRCBeam2Ex_FcSlab),helpstring("property FcSlab")] HRESULT FcSlab([in] Float64 newVal);
-		[propget, helpcontext(IDH_IRCBeam2Ex_FcBeam),helpstring("property FcBeam")] HRESULT FcBeam([out, retval] Float64 *pVal);
-		[propput, helpcontext(IDH_IRCBeam2Ex_FcBeam),helpstring("property FcBeam")] HRESULT FcBeam([in] Float64 newVal);
-		[propget, helpcontext(IDH_IRCBeam2Ex_Es),helpstring("property Es")] HRESULT Es([out, retval] Float64 *pVal);
-		[propput, helpcontext(IDH_IRCBeam2Ex_Es),helpstring("property Es")] HRESULT Es([in] Float64 newVal);
-		[propget, helpcontext(IDH_IRCBeam2Ex_Eps),helpstring("property Eps")] HRESULT Eps([out, retval] Float64 *pVal);
-		[propput, helpcontext(IDH_IRCBeam2Ex_Eps),helpstring("property Eps")] HRESULT Eps([in] Float64 newVal);
-	};
+      /// The beam (web) shape
+      [propget, helpcontext(IDH_IRCBeam2Ex_Beam), helpstring("property Beam")] HRESULT Beam([out, retval] IShape* *pVal);
+      [propputref, helpcontext(IDH_IRCBeam2Ex_Beam), helpstring("property Beam")] HRESULT Beam([in] IShape* newVal);
+
+      /// Flange width
+      [propget, helpcontext(IDH_IRCBeam2Ex_b), helpstring("property b")] HRESULT b([out, retval] Float64 *pVal);
+      [propput, helpcontext(IDH_IRCBeam2Ex_b), helpstring("property b")] HRESULT b([in] Float64 newVal);
+
+      /// Height of flange
+      [propget, helpcontext(IDH_IRCBeam2Ex_hf), helpstring("property hf")] HRESULT hf([out, retval] Float64 *pVal);
+      [propput, helpcontext(IDH_IRCBeam2Ex_hf), helpstring("property hf")] HRESULT hf([in] Float64 newVal);
+
+      /// Adds a layer of mild steel reinforcement
+      [helpcontext(IDH_IRCBeam2Ex_AddRebarLayer), helpstring("method AddRebarLayer")]
+      HRESULT AddRebarLayer(
+         [in] Float64 ds, ///< depth to the reinforcement from the top of the section
+         [in] Float64 As, ///< area of reinforcement 
+         [in] Float64 devFactor ///< reduction factor to account for the lack of full development
+      );
+
+      /// Number of mild steel reinforcement layers
+      [propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerCount), helpstring("property RebarLayerCount")] HRESULT RebarLayerCount([out, retval] CollectionIndexType * count);
+
+      /// Depth to a mild steel reinforcement layer
+      [propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerDepth), helpstring("property RebarLayerDepth")] HRESULT RebarLayerDepth([in] CollectionIndexType index, [out, retval] Float64 * ds);
+
+      /// Area of steel in a mild reinforcement layer
+      [propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerSteel), helpstring("property RebarLayerSteel")] HRESULT RebarLayerSteel([in] CollectionIndexType index, [out, retval] Float64 * As);
+
+      /// Development length factor for a mild reinforcement layer
+      [propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerDevFactor), helpstring("property RebarLayerDevFactor")] HRESULT RebarLayerDevFactor([in] CollectionIndexType index, [out, retval] Float64 * devFactor);
+
+      /// Retrieves information about a mild steel reinforcement layer
+      [helpcontext(IDH_IRCBeam2Ex_GetRebarLayer), helpstring("method GetRebarLayer")]
+      HRESULT GetRebarLayer(
+         [in] CollectionIndexType index, ///< index of the layer
+         [out] Float64 * ds,  ///< depth to the reinforcement
+         [out] Float64 * As, ///< area of reinforcement
+         [out] Float64* devFactor ///< developemnt length factor
+      );
+
+      /// Removes a layer of mild steel reinforcement from the model
+      [helpcontext(IDH_IRCBeam2Ex_RemoveRebarLayer), helpstring("method RemoveRebarLayer")] HRESULT RemoveRebarLayer([in] CollectionIndexType index);
+
+      /// Removes all mild steel reinforcement from the model.
+      [helpcontext(IDH_IRCBeam2Ex_ClearRebarLayers), helpstring("method ClearRebarLayers")] HRESULT ClearRebarLayers();
+
+      /// Adds a layer of prestress reinforcement
+      [helpcontext(IDH_IRCBeam2Ex_AddStrandLayer), helpstring("method AddStrandLayer")] HRESULT AddStrandLayer([in] Float64 dps, [in] Float64 Aps, [in] Float64 devFactor);
+
+      /// Number of prestress reinforcement layers
+      [propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerCount), helpstring("property StrandLayerCount")] HRESULT StrandLayerCount([out, retval] CollectionIndexType * count);
+
+      /// Depth to a prestress reinforcement layer
+      [propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerDepth), helpstring("property StrandLayerDepth")] HRESULT StrandLayerDepth([in] CollectionIndexType index, [out, retval] Float64 * dps);
+
+      /// Area of steel in a prestress reinforcement layer
+      [propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerSteel), helpstring("property StrandLayerSteel")] HRESULT StrandLayerSteel([in] CollectionIndexType index, [out, retval] Float64 * Aps);
+
+      /// Development length factor for a prestress reinforcement layer
+      [propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerDevFactor), helpstring("property StrandLayerDevFactor")] HRESULT StrandLayerDevFactor([in] CollectionIndexType index, [out, retval] Float64 * devFactor);
+
+      /// Retrieves information about a prestress reinforcement layer
+      [helpcontext(IDH_IRCBeam2Ex_GetStrandLayer), helpstring("method GetStrandLayer")]
+      HRESULT GetStrandLayer(
+         [in] CollectionIndexType index, ///< index of the layer
+         [out] Float64 * dps,  ///< depth to the reinforcement
+         [out] Float64 * Aps, ///< area of reinforcement
+         [out] Float64* devFactor /// development length factor
+      );
+
+      /// Removes a layer of prestress reinforcement from the model.
+      [helpcontext(IDH_IRCBeam2Ex_RemoveStrandLayer), helpstring("method RemoveStrandLayer")] HRESULT RemoveStrandLayer([in] CollectionIndexType index);
+
+      /// Removes all prestress reinforcement from the model.
+      [helpcontext(IDH_IRCBeam2Ex_ClearStrandLayers), helpstring("method ClearStrandLayers")] HRESULT ClearStrandLayers();
+
+      /// Yield strength of mild steel reinforcement
+      [propget, helpcontext(IDH_IRCBeam2Ex_fy), helpstring("property fy")] HRESULT fy([out, retval] Float64 *pVal);
+      [propput, helpcontext(IDH_IRCBeam2Ex_fy), helpstring("property fy")] HRESULT fy([in] Float64 newVal);
+
+      /// Ultimate stress of prestress reinforcement
+      [propget, helpcontext(IDH_IRCBeam2Ex_fpu), helpstring("property fpu")] HRESULT fpu([out, retval] Float64 *pVal);
+      [propput, helpcontext(IDH_IRCBeam2Ex_fpu), helpstring("property fpu")] HRESULT fpu([in] Float64 newVal);
+
+      /// Yield strength of prestress reinforcement
+      [propget, helpcontext(IDH_IRCBeam2Ex_fpy), helpstring("property fpy")] HRESULT fpy([out, retval] Float64 *pVal);
+      [propput, helpcontext(IDH_IRCBeam2Ex_fpy), helpstring("property fpy")] HRESULT fpy([in] Float64 newVal);
+
+      /// Effective stress in prestress reinforcement, after all losses
+      [propget, helpcontext(IDH_IRCBeam2Ex_fpe), helpstring("property fpe")] HRESULT fpe([out, retval] Float64 *pVal);
+      [propput, helpcontext(IDH_IRCBeam2Ex_fpe), helpstring("property fpe")] HRESULT fpe([in] Float64 newVal);
+
+      /// Slab concrete strength
+      [propget, helpcontext(IDH_IRCBeam2Ex_FcSlab), helpstring("property FcSlab")] HRESULT FcSlab([out, retval] Float64 *pVal);
+      [propput, helpcontext(IDH_IRCBeam2Ex_FcSlab), helpstring("property FcSlab")] HRESULT FcSlab([in] Float64 newVal);
+
+      // Beam concrete strength
+      [propget, helpcontext(IDH_IRCBeam2Ex_FcBeam), helpstring("property FcBeam")] HRESULT FcBeam([out, retval] Float64 *pVal);
+      [propput, helpcontext(IDH_IRCBeam2Ex_FcBeam), helpstring("property FcBeam")] HRESULT FcBeam([in] Float64 newVal);
+
+      /// Modulus of elasticity of mild steel reinforcement
+      [propget, helpcontext(IDH_IRCBeam2Ex_Es), helpstring("property Es")] HRESULT Es([out, retval] Float64 *pVal);
+      [propput, helpcontext(IDH_IRCBeam2Ex_Es), helpstring("property Es")] HRESULT Es([in] Float64 newVal);
+
+      /// Modulus of elasticity of prestress reinforcement
+      [propget, helpcontext(IDH_IRCBeam2Ex_Eps), helpstring("property Eps")] HRESULT Eps([out, retval] Float64 *pVal);
+      [propput, helpcontext(IDH_IRCBeam2Ex_Eps), helpstring("property Eps")] HRESULT Eps([in] Float64 newVal);
+   };
+
+   /// Interface modeling the solution of a moment capacity analysis.
 	[
 		object,
 		uuid(6AAEF03C-D41E-4206-9CA0-EDF467325F52),
@@ -262,17 +461,49 @@ library WBFLRCCapacity
 	]
 	interface IRCSolution : IUnknown
 	{
-		[helpcontext(IDH_IRCSolution_InitSolution),helpstring("method InitSolution")] HRESULT InitSolution([in] Float64 Mn,[in] Float64 c,[in] Float64 fps,[in] Float64 Cflange,[in] Float64 Cweb,[in] Float64 T,[in] Float64 Yflange,[in] Float64 Yweb,[in] VARIANT_BOOL bOverReinforced);
+      /// Initializes the solution objects with the results of a moment capacity analysis. This method is typically called by the solver object.
+		[helpcontext(IDH_IRCSolution_InitSolution),helpstring("method InitSolution")] 
+      HRESULT InitSolution(
+         [in] Float64 Mn, ///< Nominal moment capacity
+         [in] Float64 c, ///< Depth to the neutral axis
+         [in] Float64 fps, ///< Stress in the prestress reinforcement
+         [in] Float64 Cflange, ///< Resultant compression force in the flange
+         [in] Float64 Cweb, ///< Resultant compression force in the web
+         [in] Float64 T, ///< Resultant tensile force
+         [in] Float64 Yflange, ///< Depth to the resultant compression force in the flange
+         [in] Float64 Yweb, ///< Depth to the resultant compression force in the web
+         [in] VARIANT_BOOL bOverReinforced ///< Indicates if the section is over reinforced
+      );
+
+      /// Nominal moment capacity
 		[propget, helpcontext(IDH_IRCSolution_Mn),helpstring("property Mn")] HRESULT Mn([out, retval] Float64 *pVal);
+
+      /// Indicates if the section is over reinforced
 		[propget, helpcontext(IDH_IRCSolution_IsOverReinforced),helpstring("property IsOverReinforced")] HRESULT IsOverReinforced([out, retval] VARIANT_BOOL *pVal);
+
+      /// Depth to the neutral axis (c)
       [propget, helpcontext(IDH_IRCSolution_NeutralAxisDepth),helpstring("property NeutralAxisDepth")] HRESULT NeutralAxisDepth([out, retval] Float64* pVal);
+
+      /// Stress in the prestress reinforcement
       [propget, helpcontext(IDH_IRCSolution_fps),helpstring("property fps")] HRESULT fps([out,retval] Float64* fps);
+
+      /// Resultant compression force in the flange
 		[propget, helpcontext(IDH_IRCSolution_Cflange),helpstring("property Cflange")] HRESULT Cflange([out, retval] Float64 *pVal);
+
+      /// Resultant compression force in the web
 		[propget, helpcontext(IDH_IRCSolution_Cweb),helpstring("property Cweb")] HRESULT Cweb([out, retval] Float64 *pVal);
+
+      /// Resultant tensile force
       [propget, helpcontext(IDH_IRCSolution_T),helpstring("property T")] HRESULT T([out,retval] Float64 *pVal);
+
+      /// Depth to the resultant compression force in the flange
 		[propget, helpcontext(IDH_IRCSolution_Yflange),helpstring("property Yflange")] HRESULT Yflange([out, retval] Float64 *pVal);
-		[propget, helpcontext(IDH_IRCSolution_Yweb),helpstring("property Yweb")] HRESULT Yweb([out, retval] Float64 *pVal);
+
+      /// Depth to the resultant compression force in the web
+      [propget, helpcontext(IDH_IRCSolution_Yweb),helpstring("property Yweb")] HRESULT Yweb([out, retval] Float64 *pVal);
 	};
+
+   /// Interface modeling the solution of a moment capacity analysis.
    [
       object,
       uuid(12CD51C9-087E-4608-9821-AE321C1CFA0C),
@@ -282,11 +513,30 @@ library WBFLRCCapacity
    ] 
    interface ILRFDSolution : IRCSolution
    {
-      HRESULT InitLRFDSolution([in] Float64 alpha1,[in] Float64 beta1,[in] Float64 Mn,[in] Float64 c,[in] Float64 fps,[in] Float64 Cflange,[in] Float64 Cweb,[in] Float64 T,[in] Float64 Yflange,[in] Float64 Yweb,[in] VARIANT_BOOL bOverReinforced);
+      /// Initializes the solution objects with the results of a moment capacity analysis. This method is typically called by the solver object.
+      HRESULT InitLRFDSolution(
+         [in] Float64 alpha1, ///< Stress block intensity factor
+         [in] Float64 beta1, ///< Stress block depth factor
+         [in] Float64 Mn, ///< Nominal moment capacity
+         [in] Float64 c, ///< Depth to the neutral axis
+         [in] Float64 fps, ///< Stress in the prestress reinforcement
+         [in] Float64 Cflange, ///< Resultant compression force in the flange
+         [in] Float64 Cweb, ///< Resultant compression force in the web
+         [in] Float64 T, ///< Resultant tensile force
+         [in] Float64 Yflange, ///< Depth to the resultant compression force in the flange
+         [in] Float64 Yweb, ///< Depth to the resultant compression force in the web
+         [in] VARIANT_BOOL bOverReinforced ///< Indicates if the section is over reinforced
+      );
+
+      /// Stress block intensity factor
       [propget] HRESULT Alpha1([out,retval]Float64* pAlpha1);
+
+      /// Stress block depth factor
       [propget] HRESULT Beta1([out,retval]Float64* pBeta1);
    };
-	[
+
+   /// Interface modeling the solution of a moment capacity analysis.
+   [
 		object,
 		uuid(BDBC6326-24AA-433D-9703-1B6E0EC083EB),
 		oleautomation,
@@ -296,17 +546,49 @@ library WBFLRCCapacity
 	]
 	interface IRCSolutionEx : IUnknown
 	{
-		[helpcontext(IDH_IRCSolutionEx_InitSolution),helpstring("method InitSolution")] HRESULT InitSolution([in] Float64 Mn,[in] Float64 c,[in] IDblArray* fs,[in] IDblArray* fps,[in] Float64 Cflange,[in] Float64 Cweb,[in] Float64 T,[in] Float64 Yflange,[in] Float64 Yweb);
+      /// Initializes the solution objects with the results of a moment capacity analysis. This method is typically called by the solver object.
+      [helpcontext(IDH_IRCSolutionEx_InitSolution),helpstring("method InitSolution")] 
+      HRESULT InitSolution(
+         [in] Float64 Mn, ///< Nominal moment capacity
+         [in] Float64 c, ///< Depth to the neutral axis
+         [in] IDblArray* fs, ///< Stress in the mild steel reinforcement
+         [in] IDblArray* fps, ///< Stress in the prestress reinforcement
+         [in] Float64 Cflange, ///< Resultant compression force in the flange
+         [in] Float64 Cweb, ///< Resultant compression force in the web
+         [in] Float64 T, ///< Resultant tensile force
+         [in] Float64 Yflange, ///< Depth to the resultant compression force in the flange
+         [in] Float64 Yweb ///< Depth to the resultant compression force in the web
+      );
+
+      /// Nominal moment capcity
 		[propget, helpcontext(IDH_IRCSolutionEx_Mn),helpstring("property Mn")] HRESULT Mn([out, retval] Float64 *pVal);
+
+      /// Depth to the neutral axis
       [propget, helpcontext(IDH_IRCSolutionEx_NeutralAxisDepth),helpstring("property NeutralAxisDepth")] HRESULT NeutralAxisDepth([out, retval] Float64* pVal);
+
+      /// Stress in the mild steel reinforcement
       [propget, helpcontext(IDH_IRCSolutionEx_fs),helpstring("property fs")] HRESULT fs([out,retval] IDblArray** fs);
+
+      /// Stress in the prestress reinforcement
       [propget, helpcontext(IDH_IRCSolutionEx_fps),helpstring("property fps")] HRESULT fps([out,retval] IDblArray** fps);
+
+      /// Resultant compression force in the flange
 		[propget, helpcontext(IDH_IRCSolutionEx_Cflange),helpstring("property Cflange")] HRESULT Cflange([out, retval] Float64 *pVal);
+
+      /// Resultant compression force in the web
 		[propget, helpcontext(IDH_IRCSolutionEx_Cweb),helpstring("property Cweb")] HRESULT Cweb([out, retval] Float64 *pVal);
+
+      /// Resultant tensile force
       [propget, helpcontext(IDH_IRCSolutionEx_T),helpstring("property T")] HRESULT T([out,retval] Float64 *pVal);
+
+      /// Depth to the resultant compression force in the flange
 		[propget, helpcontext(IDH_IRCSolutionEx_Yflange),helpstring("property Yflange")] HRESULT Yflange([out, retval] Float64 *pVal);
+
+      /// Depth to the resultant compression force in the web
 		[propget, helpcontext(IDH_IRCSolutionEx_Yweb),helpstring("property Yweb")] HRESULT Yweb([out, retval] Float64 *pVal);
 	};
+
+   /// Interface modeling the solution of a moment capacity analysis.
    [
       object,
       uuid(53A8F18F-04C5-499d-8CFA-C73203344388),
@@ -316,10 +598,29 @@ library WBFLRCCapacity
    ] 
    interface ILRFDSolutionEx : IRCSolutionEx
    {
-		HRESULT InitLRFDSolution([in]Float64 alpha1,[in]Float64 beta1,[in] Float64 Mn,[in] Float64 c,[in] IDblArray* fs,[in] IDblArray* fps,[in] Float64 Cflange,[in] Float64 Cweb,[in] Float64 T,[in] Float64 Yflange,[in] Float64 Yweb);
+      /// Initializes the solution objects with the results of a moment capacity analysis. This method is typically called by the solver object.
+      HRESULT InitLRFDSolution(
+         [in] Float64 alpha1, ///< Stress block intensity factor
+         [in] Float64 beta1, ///< Stress block depth factor
+         [in] Float64 Mn, ///< Nominal moment capacity
+         [in] Float64 c, ///< Depth to the neutral axis
+         [in] IDblArray* fs, ///< Stress in the mild steel reinforcement
+         [in] IDblArray* fps, ///< Stress in the prestress reinforcement
+         [in] Float64 Cflange, ///< Resultant compression force in the flange
+         [in] Float64 Cweb, ///< Resultant compression force in the web
+         [in] Float64 T, ///< Resultant tensile force
+         [in] Float64 Yflange, ///< Depth to the resultant compression force in the flange
+         [in] Float64 Yweb ///< Depth to the resultant compression force in the web
+      );
+
+      /// Stress block intensity factor
       [propget] HRESULT Alpha1([out,retval]Float64* pAlpha1);
+
+      /// Stress block depth factor
       [propget] HRESULT Beta1([out,retval]Float64* pBeta1);
    };
+
+   /// Interface for objects that perform uniaxial bending moment capacity analysis of reinforced concrete beams modeled with the IRCBeam interface
 	[
 		object,
 		uuid(10426F94-AA0A-4E23-B61F-02C1F1BD99A1),
@@ -330,9 +631,16 @@ library WBFLRCCapacity
 	]
 	interface IRCSolver : IUnknown
 	{
-		[helpcontext(IDH_IRCSolver_Solve),helpstring("method Solve")] HRESULT Solve([in] IRCBeam* beam,[out,retval] IRCSolution* *solution);
+      /// Solves the moment capacity problem
+		[helpcontext(IDH_IRCSolver_Solve),helpstring("method Solve")] 
+      HRESULT Solve(
+         [in] IRCBeam* beam, ///< The reinforced concrete beam section to be analyzed
+         [out,retval] IRCSolution* *solution ///< The solution of the moment capacity analysis
+      );
 	};
-	[
+
+   /// Interface for objects that perform uniaxial bending moment capacity analysis of reinforced concrete beams modeled with the IRCBeam2 interface
+   [
 		object,
 		uuid(6D40161C-A224-491b-ABE8-8523A5E64A29),
 		oleautomation,
@@ -342,9 +650,16 @@ library WBFLRCCapacity
 	]
 	interface IRCSolver2 : IUnknown
 	{
-		[helpcontext(IDH_IRCSolver2_Solver),helpstring("method Solve")] HRESULT Solve([in] IRCBeam2* beam,[out,retval] IRCSolutionEx* *solution);
+      /// Solves the moment capacity problem
+      [helpcontext(IDH_IRCSolver2_Solver),helpstring("method Solve")]
+      HRESULT Solve(
+         [in] IRCBeam2* beam, ///< The reinforced concrete beam section to be analyzed
+         [out,retval] IRCSolutionEx* *solution ///< The solution of the moment capacity analysis
+      );
 	};
-	[
+
+   /// Interface for objects that perform uniaxial bending moment capacity analysis of reinforced concrete beams modeled with the IRCBeam2Ex interface
+   [
 		object,
 		uuid(5275D90C-BE12-4ca2-89C8-648E4EFDE53D),
 		oleautomation,
@@ -354,9 +669,18 @@ library WBFLRCCapacity
 	]
 	interface IRCSolver2Ex : IUnknown
 	{
-		[helpcontext(IDH_IRCSolver2Ex_Solver),helpstring("method Solve")] HRESULT Solve([in] IRCBeam2Ex* beam,[out,retval] IRCSolutionEx* *solution);
+      /// Solves the moment capacity problem
+      [helpcontext(IDH_IRCSolver2Ex_Solver),helpstring("method Solve")]
+      HRESULT Solve(
+         [in] IRCBeam2Ex* beam, ///< The reinforced concrete beam section to be analyzed
+         [out,retval] IRCSolutionEx* *solution ///< The solution of the moment capacity analysis
+      );
 	};
 
+   /// Interface for objects that perform uniaxial moment capacity analysis with the method described in the PCI Bridge Design Manual.
+   ///
+   /// This analysis method was developed to investigate the validity of the PCI BDM average \f$ \beta1_1 \f$ analysis method. 
+   /// Seguirant, Brice, Khaleghi (PCI 2005) report that this analysis method is unreliable for many cases including composite precast beams of high strength concrete. It is not recommended that this solver be used for bridge designs.
    [
       object,
       uuid(83AA28E9-D6BE-4663-8E3E-FBC8E8371367),
@@ -367,17 +691,32 @@ library WBFLRCCapacity
    ]
    interface IPCISolver : IRCSolver
    {
+      /// Convergence tolerance.
+      /// 
+      /// Iterative solution continues until (Compression - Tension) < Tolerance
       [propput, helpcontext(IDH_IPCISolver_Tolerance),helpstring("property Tolerance")] HRESULT Tolerance([in] Float64 tolerance);
       [propget, helpcontext(IDH_IPCISolver_Tolerance),helpstring("property Tolerance")] HRESULT Tolerance([out,retval] Float64* tolerance);
+
+      /// Prestressing strand constituative model.
       [propputref, helpcontext(IDH_IPCISolver_StrandModel),helpstring("property StrandModel")] HRESULT StrandModel([in] IStressStrain* model);
       [propget, helpcontext(IDH_IPCISolver_StrandModel),helpstring("property StrandModel")] HRESULT StrandModel([out,retval] IStressStrain* *model);
+
+      /// Mild steel reinforcement constituative model.
       [propputref, helpcontext(IDH_IPCISolver_RebarModel),helpstring("property RebarModel")] HRESULT RebarModel([in] IStressStrain* model);
       [propget, helpcontext(IDH_IPCISolver_RebarModel),helpstring("property RebarModel")] HRESULT RebarModel([out,retval] IStressStrain* *model);
+
+      /// Property that designates the US or SI edition of the AASHTO LRFD Bridge Design Specifications
       [propput, helpcontext(IDH_IPCISolver_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([in] SpecUnitType unitMode);
       [propget, helpcontext(IDH_IPCISolver_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([out,retval] SpecUnitType* unitMode);
-		[propget, helpcontext(IDH_IPCISolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([out, retval] VARIANT_BOOL *pVal);
+
+      /// Property that indicates if the compression force in the flange overhangs include the overlapping portion of the web. 
+      ///
+      /// When True, Cflange is the compression force in the flange overhangs only.
+      [propget, helpcontext(IDH_IPCISolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([out, retval] VARIANT_BOOL *pVal);
 		[propput, helpcontext(IDH_IPCISolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([in] VARIANT_BOOL newVal);
    };
+
+   /// Interface for objects that perform uniaxial moment capacity analysis with the non-linear strain compatibility method.
    [
       object,
       uuid(CC88A1EC-B5CF-4080-8BEF-6C93FFC2DDA5),
@@ -388,25 +727,58 @@ library WBFLRCCapacity
    ]
    interface INLSolver : IRCSolver
    {
+      /// Number of slices for discritization of the section
       [propput, helpcontext(IDH_INLSolver_Slices),helpstring("property Slices")] HRESULT Slices([in] long nSlices);
       [propget, helpcontext(IDH_INLSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval] long* nSlices);
+
+      /// Convergence tolerance.
+      /// 
+      /// Iterative solution continues until (Compression - Tension) < Tolerance
       [propput, helpcontext(IDH_INLSolver_Tolerance),helpstring("property Tolerance")] HRESULT Tolerance([in] Float64 tolerance);
       [propget, helpcontext(IDH_INLSolver_Tolerance),helpstring("property Tolerance")] HRESULT Tolerance([out,retval] Float64* tolerance);
+
+      /// Slab concrete constituative model.
       [propputref, helpcontext(IDH_INLSolver_SlabConcreteModel),helpstring("property SlabConcreteModel")] HRESULT SlabConcreteModel([in] IStressStrain* model);
       [propget, helpcontext(IDH_INLSolver_SlabConcreteModel),helpstring("property SlabConcreteModel")] HRESULT SlabConcreteModel([out,retval] IStressStrain* *model);
+
+      /// Beam concrete constituative model.
       [propputref, helpcontext(IDH_INLSolver_BeamConcreteModel),helpstring("property BeamConcreteModel")] HRESULT BeamConcreteModel([in] IStressStrain* model);
       [propget, helpcontext(IDH_INLSolver_BeamConcreteModel),helpstring("property BeamConcreteModel")] HRESULT BeamConcreteModel([out,retval] IStressStrain* *model);
+
+      /// Prestressing strand constituative model.
       [propputref, helpcontext(IDH_INLSolver_StrandModel),helpstring("property StrandModel")] HRESULT StrandModel([in] IStressStrain* model);
       [propget, helpcontext(IDH_INLSolver_StrandModel),helpstring("property StrandModel")] HRESULT StrandModel([out,retval] IStressStrain* *model);
+
+      /// Mild steel reinforcement constituative model.
       [propputref, helpcontext(IDH_INLSolver_RebarModel),helpstring("property RebarModel")] HRESULT RebarModel([in] IStressStrain* model);
       [propget, helpcontext(IDH_INLSolver_RebarModel),helpstring("property RebarModel")] HRESULT RebarModel([out,retval] IStressStrain* *model);
-	  [propget, helpcontext(IDH_INLSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([out, retval] VARIANT_BOOL *pVal);
+
+      /// Property that indicates if the compression force in the flange overhangs include the overlapping portion of the web. 
+      ///
+      /// When True, Cflange is the compression force in the flange overhangs only.
+      [propget, helpcontext(IDH_INLSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([out, retval] VARIANT_BOOL *pVal);
 	  [propput, helpcontext(IDH_INLSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([in] VARIANT_BOOL newVal);
-  	  [propput, helpcontext(IDH_INLSolver_ConcreteCrushingStrain), helpstring("property ConcreteCrushingStrain")] HRESULT ConcreteCrushingStrain([in] Float64 ec);
+
+     /// Concrete crushing strain (typically 0.003)
+     [propput, helpcontext(IDH_INLSolver_ConcreteCrushingStrain), helpstring("property ConcreteCrushingStrain")] HRESULT ConcreteCrushingStrain([in] Float64 ec);
   	  [propget, helpcontext(IDH_INLSolver_ConcreteCrushingStrain), helpstring("property ConcreteCrushingStrain")] HRESULT ConcreteCrushingStrain([out,retval] Float64* ec);
    };
 
 
+   /// Interface implemented by LRFDSolver objects.
+   ///
+   /// This interface extends the IRCSolver interface.
+   ///
+   /// The method of solution is based on the equations publised in Article 5.7.3 of the AASHTO LRFD Bridge Design Specifications, 2nd Edition, 1998 with interim revisions through 2002.
+   ///
+   /// An elastic-plastic constituative model is assumed for mild steel reinforcement.
+   ///
+   /// T-Section behavior
+   ///
+   /// \f[ c = \frac{A_{ps}f_{pu} + A_s f_y - 0.85f'_c(b - b_w) \beta_1 h_f}{0.85 f'_c b_w \beta_1 + k A_{ps} \frac{f_{pu}}{d_p}} \f]
+   /// \f[ M_n = A_{ps}f_{ps}\left(d_p - \frac{a}{2} \right) + A_s f_y\left(d_s - \frac{a}{2} \right) + 0.85f'_c (b - b_w)\beta_1 h_f \left( \frac{a}{2} - \frac{\beta_1 h_f}{2} \right) \f]
+   /// \f[ f_{ps} = f_{pu} \left( 1 - k \frac{c}{d_p} \right) \f]
+   /// \f[ k = 2 \left( 1.04 - \frac{f_{py}}{f_{pu}} \right) \f]
    [
       object,
       uuid(134FCA67-6350-44e1-A133-F3BC300CC9C7),
@@ -417,13 +789,30 @@ library WBFLRCCapacity
    ]
    interface ILRFDSolver : IRCSolver
    {
+      /// Property that designates the US or SI edition of the AASHTO LRFD Bridge Design Specifications
       [propput, helpcontext(IDH_ILRFDSolver_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([in] SpecUnitType unitMode);
       [propget, helpcontext(IDH_ILRFDSolver_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([out,retval] SpecUnitType* unitMode);
+
+      /// Property that indicates if the compression force in the flange overhangs include the overlapping portion of the web. 
+      ///
+      /// When True, Cflange is the compression force in the flange overhangs only.
 		[propget, helpcontext(IDH_ILRFDSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([out, retval] VARIANT_BOOL *pVal);
 		[propput, helpcontext(IDH_ILRFDSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([in] VARIANT_BOOL newVal);
    };
 
 
+   /// Interface implemented by LRFDSolver2 objects.
+   ///
+   /// This interface extends the IRCSolver interface.
+   ///
+   /// The method of solution is based on the equations publised in Article 5.7.3 of the AASHTO LRFD Bridge Design Specifications, 2nd Edition, 1998 with interim revisions through 2002.
+   /// Objects implementing this interface differ from LRFDSolver (ILRFDSolver interface) objects in that the constituative model (stress-strain model) for prestress reinforcement and mild steel
+   /// reinforcement is specified.
+   ///
+   /// T-Section behavior
+   ///
+   /// \f[ c = \frac{A_{ps}f_{pu} + A_s f_y - 0.85f'_c(b - b_w) \beta_1 h_f}{0.85 f'_c b_w \beta_1 + k A_{ps} \frac{f_{pu}}{d_p}} \f]
+   /// \f[ M_n = A_{ps}f_{ps}\left(d_p - \frac{a}{2} \right) + A_s f_y\left(d_s - \frac{a}{2} \right) + 0.85f'_c (b - b_w)\beta_1 h_f \left( \frac{a}{2} - \frac{\beta_1 h_f}{2} \right) \f]
    [
       object,
       uuid(F5972D37-5F5D-41d7-B1F7-960430DE2367),
@@ -434,18 +823,42 @@ library WBFLRCCapacity
    ]
    interface ILRFDSolver2 : IRCSolver
    {
+      /// Convergence tolerance.
+      /// 
+      /// Iterative solution continues until (Compression - Tension) < Tolerance
       [propput, helpcontext(IDH_ILRFDSolver2_Tolerance),helpstring("property Tolerance")] HRESULT Tolerance([in] Float64 tolerance);
       [propget, helpcontext(IDH_ILRFDSolver2_Tolerance),helpstring("property Tolerance")] HRESULT Tolerance([out,retval] Float64* tolerance);
+
+      /// The constituative model for prestress reinforcement
       [propputref, helpcontext(IDH_ILRFDSolver2_StrandModel),helpstring("property StrandModel")] HRESULT StrandModel([in] IStressStrain* model);
       [propget, helpcontext(IDH_ILRFDSolver2_StrandModel),helpstring("property StrandModel")] HRESULT StrandModel([out,retval] IStressStrain* *model);
+
+      /// The constituative model for mild steel reinforcement
       [propputref, helpcontext(IDH_ILRFDSolver2_RebarModel),helpstring("property RebarModel")] HRESULT RebarModel([in] IStressStrain* model);
       [propget, helpcontext(IDH_ILRFDSolver2_RebarModel),helpstring("property RebarModel")] HRESULT RebarModel([out,retval] IStressStrain* *model);
+
+      /// Property that designates the US or SI edition of the AASHTO LRFD Bridge Design Specifications
       [propput, helpcontext(IDH_ILRFDSolver2_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([in] SpecUnitType unitMode);
       [propget, helpcontext(IDH_ILRFDSolver2_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([out,retval] SpecUnitType* unitMode);
-		[propget, helpcontext(IDH_ILRFDSolver2_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([out, retval] VARIANT_BOOL *pVal);
+
+      /// Property that indicates if the compression force in the flange overhangs include the overlapping portion of the web. 
+      ///
+      /// When True, Cflange is the compression force in the flange overhangs only.
+      [propget, helpcontext(IDH_ILRFDSolver2_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([out, retval] VARIANT_BOOL *pVal);
 		[propput, helpcontext(IDH_ILRFDSolver2_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([in] VARIANT_BOOL newVal);
    };
 
+   /// Interface implemented by LFDSolver objects.
+   ///
+   /// This interface extends the IRCSolver interface.
+   ///
+   /// The method of solution is based on the equations published in Article 9.17 of the AASHTO Standard Specifications, 17th Edition, 2002.
+   ///
+   /// T-Section behavior
+   ///
+   /// \f[ a = \beta_1 c = \frac{A_{ps}f_{ps} + A_s f_y - 0.85f'_c(b - b_w)h_f}{0.85 f'_c b_w} \f]
+   /// \f[ M_n = A_{ps}f_{ps}\left(d_p - \frac{a}{2} \right) + A_s f_y\left(d_s - \frac{a}{2} \right) + 0.85f'_c (b - b_w)h_f\left( \frac{a}{2} - \frac{h_f}{2} \right) \f]
+   /// \f[ f_{ps} = f_{pu} \left\{ 1 - \frac{k}{\beta_1} \left[ \frac{A_{ps}f_{pu}}{b d_p f'_c} + \frac{d_s}{d_p} \left( \frac{A_s f_y}{b d_s f'_c} \right) \right] \right\} \f}
    [
       object,
       uuid(B73E6FE9-0498-48f5-9057-513403A0E776),
@@ -456,12 +869,31 @@ library WBFLRCCapacity
    ]
    interface ILFDSolver : IRCSolver
    {
+      /// Property that designates the US or SI edition of the AASHTO Standard Specifications
       [propput, helpcontext(IDH_ILFDSolver_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([in] SpecUnitType unitMode);
       [propget, helpcontext(IDH_ILFDSolver_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([out,retval] SpecUnitType* unitMode);
+
+      /// Property that indicates if the compression force in the flange overhangs include the overlapping portion of the web.
+      /// When True, Cflange is the compression force in the flange overhangs only.
 		[propget, helpcontext(IDH_ILFDSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([out, retval] VARIANT_BOOL *pVal);
 		[propput, helpcontext(IDH_ILFDSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([in] VARIANT_BOOL newVal);
    };
-	[
+
+   /// Interface implemented by MixedSolver objects.
+   ///
+   /// This interface extends the IRCSolver interface.
+   ///
+   /// The method of solution is a combination of the strength equations from the AASHTO Standard Specifications and 
+   /// the stress in the prestresssing steel at ultimate (f_ps) from the AASHTO LRFD specifications. 
+   /// This solver implements a proposed method for the AASHTO LRFD specifications.
+   ///
+   /// T-Section behavior
+   ///
+   /// \f[ a = \beta_1 c = \frac{A_{ps}f_{ps} + A_s f_y - 0.85f'_c(b - b_w)h_f}{0.85 f'_c b_w} \f]
+   /// \f[ M_n = A_{ps}f_{ps}\left(d_p - \frac{a}{2} \right) + A_s f_y\left(d_s - \frac{a}{2} \right) + 0.85f'_c (b - b_w)h_f\left( \frac{a}{2} - \frac{h_f}{2} \right) \f]
+   /// \f[ f_{ps} = f_{pu} \left( 1 - k \frac{c}{d_p} \right) \f]
+   /// \f[ k = 2 \left( 1.04 - \frac{f_{py}}{f_{pu}} \right) \f]
+   [
 		object,
 		uuid(F72175D0-CBAD-49B1-89EA-92F0948B89B7),
 		oleautomation,
@@ -471,12 +903,29 @@ library WBFLRCCapacity
 	]
 	interface IMixedSolver : IRCSolver
 	{
+      /// Property that designates the US or SI edition of the AASHTO Standard Specifications
       [propput, helpcontext(IDH_IMixedSolver_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([in] SpecUnitType unitMode);
       [propget, helpcontext(IDH_IMixedSolver_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([out,retval] SpecUnitType* unitMode);
-		[propget, helpcontext(IDH_IMixedSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([out, retval] VARIANT_BOOL *pVal);
+
+      /// Property that indicates if the compression force in the flange overhangs include the overlapping portion of the web.
+      /// When True, Cflange is the compression force in the flange overhangs only.
+      [propget, helpcontext(IDH_IMixedSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([out, retval] VARIANT_BOOL *pVal);
 		[propput, helpcontext(IDH_IMixedSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([in] VARIANT_BOOL newVal);
 	};
-	[
+
+   /// Interface defining the properties of an unconfined concrete stress-strain model
+   ///
+   /// See Collins, M.P., and Mitchell, D., Prestressed Concrete Structures, Prentice-Hall, Inc., A Division of Simon & Schuster, Englewood Cliffs, New Jersey, 07632, 1991, pp. 61-65.
+   ///
+   /// \f$ f_c(\epsilon_{cf}) = \left[ \frac{n\left(\frac{\epsilon_{cf}}{\epsilon'_c}\right)}{n-1+\left(\frac{\epsilon_{cf}}{\epsilon'_c} \right)^{nk}} \right] \f$
+   ///
+   /// where
+   ///
+   /// \f[ n = 0.8 + \frac{f'_c}{2500} \f]
+   /// \f[ k = 0.67 + \frac{f'_c}{9000}, if \left(\frac{\epsilon_{cf}}{\epsilon'_c} \right) < 1.0, k = 1.0 \f]
+   /// \f[ E_c = 40,000\sqrt{f'_c}+1,000,000 \f]
+   /// \f[ \epsilon'_c = \frac{f'_c}{E_c} \frac{n}{n-1} \f]
+   [
 		object,
 		uuid(CF4F8C9A-DA7B-4947-9671-FEBBB75A249A),
 		oleautomation,
@@ -486,10 +935,19 @@ library WBFLRCCapacity
 	]
 	interface IUnconfinedConcrete : IUnknown
 	{
+      /// Specified 28 day concrete strength.
 		[propget, helpcontext(IDH_IUnconfinedConcrete_fc),helpstring("property fc")] HRESULT fc([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IUnconfinedConcrete_fc),helpstring("property fc")] HRESULT fc([in] Float64 newVal);
 	};
-	[
+
+   /// Interface defining an elastic-plastic mild steel reinforcement model.
+   ///
+   /// \f[ f(\epsilon_s) = \begin{cases}
+   ///    E_s \epsilon_s & : \epsilon_s \le \epsilon_y \\
+   ///    f_y & : \epsilon_y \lt \epsilon_s \le \epsilon_{fr} 
+   /// \end{cases}
+   /// \f]
+   [
 		object,
 		uuid(7DE82909-026E-4C57-A9A3-8F1CB6AFAF1F),
 		oleautomation,
@@ -499,15 +957,36 @@ library WBFLRCCapacity
 	]
 	interface IRebarModel : IUnknown
 	{
-		[helpcontext(IDH_IRebarModel_Init),helpstring("method Init")] HRESULT Init([in] Float64 fy,[in] Float64 Es,[in] Float64 maxStrain);
+      /// Initialize the model
+		[helpcontext(IDH_IRebarModel_Init),helpstring("method Init")] 
+      HRESULT Init(
+         [in] Float64 fy, ///< yield strength
+         [in] Float64 Es, ///< modulus of elasticity
+         [in] Float64 maxStrain ///< maximum strain (rupture strain)
+      );
+
+      /// Yield strength
 		[propget, helpcontext(IDH_IRebarModel_fy),helpstring("property fy")] HRESULT fy([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRebarModel_fy),helpstring("property fy")] HRESULT fy([in] Float64 newVal);
+
+      /// Modulus of elasticity
 		[propget, helpcontext(IDH_IRebarModel_Es),helpstring("property Es")] HRESULT Es([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRebarModel_Es),helpstring("property Es")] HRESULT Es([in] Float64 newVal);
+
+      /// Maximum strain (rupture strain)
 		[propget, helpcontext(IDH_IRebarModel_MaxStrain),helpstring("property MaxStrain")] HRESULT MaxStrain([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRebarModel_MaxStrain),helpstring("property MaxStrain")] HRESULT MaxStrain([in] Float64 newVal);
 	};
-	[
+
+   /// Interface defining a strain-hardening mild steel reinforcement model.
+   ///
+   /// \f[ f(\epsilon_s) = \begin{cases}
+   ///    E_s \epsilon_s & : \epsilon_s \le \epsilon_y \\
+   ///    f_y & : \epsilon_y \lt \epsilon_s \le \epsilon_{sh} \\
+   ///    f_u - (f_u - f_y)\frac{(\epsilon_{fr} - \epsilon_s)^2}{(\epsilon_{sh} - \epsilon_{fr})^2} & : \epsilon_{sh} \lt \epsilon_s \le \epsilon_{fr}
+   /// \end{cases}
+   /// \f]
+   [
 		object,
 		uuid(1D62DA5C-9E49-4a8a-8BAF-3F4A3CEA6E2C),
 		oleautomation,
@@ -517,19 +996,40 @@ library WBFLRCCapacity
 	]
 	interface IStrainHardenedRebarModel : IUnknown
 	{
-		[helpcontext(IDH_IStrainHardenedRebarModel_Init),helpstring("method Init")] HRESULT Init([in] Float64 fy,[in] Float64 fu,[in] Float64 Es,[in] Float64 esh,[in] Float64 efr);
+      /// Initialize the model
+		[helpcontext(IDH_IStrainHardenedRebarModel_Init),helpstring("method Init")] 
+      HRESULT Init(
+         [in] Float64 fy, ///< yield strength
+         [in] Float64 fu, ///< ultimate strength
+         [in] Float64 Es, ///< modulus of elasticity
+         [in] Float64 esh, ///< strain hardening limit
+         [in] Float64 efr ///< rupture strain
+      );
+
+      /// yield stress
 		[propget, helpcontext(IDH_IStrainHardenedRebarModel_fy),helpstring("property fy")] HRESULT fy([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IStrainHardenedRebarModel_fy),helpstring("property fy")] HRESULT fy([in] Float64 newVal);
+
+      /// ultimate strength
 		[propget, helpcontext(IDH_IStrainHardenedRebarModel_fu),helpstring("property fu")] HRESULT fu([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IStrainHardenedRebarModel_fu),helpstring("property fu")] HRESULT fu([in] Float64 newVal);
+
+      /// modulus of elasticity
 		[propget, helpcontext(IDH_IStrainHardenedRebarModel_Es),helpstring("property Es")] HRESULT Es([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IStrainHardenedRebarModel_Es),helpstring("property Es")] HRESULT Es([in] Float64 newVal);
+
+      /// strain hardening limit
 		[propget, helpcontext(IDH_IStrainHardenedRebarModel_esh),helpstring("property esh")] HRESULT esh([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IStrainHardenedRebarModel_esh),helpstring("property esh")] HRESULT esh([in] Float64 newVal);
+
+      /// rupture strain
 		[propget, helpcontext(IDH_IStrainHardenedRebarModel_efr),helpstring("property efr")] HRESULT efr([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IStrainHardenedRebarModel_efr),helpstring("property efr")] HRESULT efr([in] Float64 newVal);
 	};
-	[
+
+
+   /// Interface modeling the solution of a moment capacity analysis.
+   [
 		object,
 		uuid(08C750A1-E0D4-493C-85AE-76234B1DDFA9),
 		oleautomation,
@@ -539,10 +1039,27 @@ library WBFLRCCapacity
 	]
 	interface IPCISolution : IUnknown
 	{
-		[helpcontext(IDH_IPCISolution_InitSolution),helpstring("method InitSolution")] HRESULT InitSolution([in] Float64 Mn,[in] Float64 c,[in] Float64 fps,[in] Float64 Cflange,[in] Float64 Cweb,[in] Float64 T,[in] Float64 Yflange,[in] Float64 Yweb,[in] VARIANT_BOOL bOverReinforced,[in] Float64 avgBeta1);
+      /// Initializes the solution objects with the results of a moment capacity analysis. This method is typically called by the solver object.
+      [helpcontext(IDH_IPCISolution_InitSolution),helpstring("method InitSolution")] 
+      HRESULT InitSolution(
+         [in] Float64 Mn, ///< Nominal moment capacity
+         [in] Float64 c, ///< Depth to the neutral axis
+         [in] Float64 fps, ///< Stress in the prestress reinforcement
+         [in] Float64 Cflange, ///< Resultant compression force in the flange
+         [in] Float64 Cweb, ///< Resultant compression force in the web
+         [in] Float64 T, ///< Resultant tensile force
+         [in] Float64 Yflange, ///< Depth to the resultant compression force in the flange
+         [in] Float64 Yweb, ///< Depth to the resultant compression force in the web
+         [in] VARIANT_BOOL bOverReinforced, ///< Indicates if the section is over reinforced
+         [in] Float64 avgBeta1 ///< Average compression block depth factor
+      );
+
+      /// Average compression block depth factor
 		[propget, helpcontext(IDH_IPCISolution_AvgBeta1), helpstring("property AvgBeta1")] HRESULT AvgBeta1([out, retval] Float64 *pVal);
 	};
-	[
+   
+   /// Interface modeling the solution of a moment capacity analysis.
+   [
 		object,
 		uuid(0D439ED6-A724-4B8C-8141-2B3BE6E87164),
 		oleautomation,
@@ -552,11 +1069,29 @@ library WBFLRCCapacity
 	]
 	interface IPCISolutionEx : IUnknown
 	{
-		[helpcontext(IDH_IPCISolutionEx_InitSolution),helpstring("method InitSolution")] HRESULT InitSolution([in] Float64 Mn,[in] Float64 c,[in] IDblArray* fs,[in] IDblArray* fps,[in] Float64 Cflange,[in] Float64 Cweb,[in] Float64 T,[in] Float64 Yflange,[in] Float64 Yweb,[in] Float64 avgBeta1);
+		[helpcontext(IDH_IPCISolutionEx_InitSolution),helpstring("method InitSolution")] 
+      HRESULT InitSolution(
+         [in] Float64 Mn, ///< Nominal moment capacity
+         [in] Float64 c, ///< Depth to the neutral axis
+         [in] IDblArray* fs, ///< Stress in the mild steel reinforcement
+         [in] IDblArray* fps, ///< Stress in the prestress reinforcement
+         [in] Float64 Cflange, ///< Resultant compression force in the flange
+         [in] Float64 Cweb, ///< Resultant compression force in the web
+         [in] Float64 T, ///< Resultant tensile force
+         [in] Float64 Yflange, ///< Depth to the resultant compression force in the flange
+         [in] Float64 Yweb, ///< Depth to the resultant compression force in the web
+         [in] Float64 avgBeta1 ///< Average compression block depth factor
+      );
+      
+      /// Average compression block depth factor
 		[propget, helpcontext(IDH_IPCISolutionEx_AvgBeta1),helpstring("property AvgBeta1")] HRESULT AvgBeta1([out, retval] Float64 *pVal);
 	};
 
-	[
+   /// Interface for objects representing a circular reinforced concrete column. 
+   ///
+   /// The reinforcing is assumed to be closely spaced and uniformly distributed around the cross section.
+   /// \image html RoundColumn/RoundColumn.jpg
+   [
 		object,
 		uuid(018F0AFC-E51D-47D1-8477-974EA1C8192A),
 		oleautomation,
@@ -566,23 +1101,52 @@ library WBFLRCCapacity
 	]
 	interface IRoundColumn : IUnknown
 	{
+      /// Diameter of the column
 		[propput,helpcontext(IDH_IRoundColumn_Diameter),helpstring("property Diameter")] HRESULT Diameter([in]Float64 dia);
 		[propget,helpcontext(IDH_IRoundColumn_Diameter),helpstring("property Diameter")] HRESULT Diameter([out,retval]Float64* dia);
+
+      /// Cover from the exterior face of the column to the center of the reinforcement
 		[propput,helpcontext(IDH_IRoundColumn_Cover),helpstring("property Cover")] HRESULT Cover([in]Float64 cover);
 		[propget,helpcontext(IDH_IRoundColumn_Cover),helpstring("property Cover")] HRESULT Cover([out,retval]Float64* cover);
+
+      /// Total area of reinforcement
 		[propput,helpcontext(IDH_IRoundColumn_As),helpstring("property As")] HRESULT As([in]Float64 as);
 		[propget,helpcontext(IDH_IRoundColumn_As),helpstring("property As")] HRESULT As([out,retval]Float64* as);
+
+      /// Concrete compressive strength
 		[propput,helpcontext(IDH_IRoundColumn_fc),helpstring("property fc")] HRESULT fc([in]Float64 fc);
 		[propget,helpcontext(IDH_IRoundColumn_fc),helpstring("property fc")] HRESULT fc([out,retval]Float64* fc);
+
+      /// Yield strength of reinforcement
 		[propput,helpcontext(IDH_IRoundColumn_fy),helpstring("property fy")] HRESULT fy([in]Float64 fy);
 		[propget,helpcontext(IDH_IRoundColumn_fy),helpstring("property fy")] HRESULT fy([out,retval]Float64* fy);
+
+      /// Modulus of elasticity of reinforcement
 		[propput,helpcontext(IDH_IRoundColumn_Es),helpstring("property Es")] HRESULT Es([in]Float64 es);
 		[propget,helpcontext(IDH_IRoundColumn_Es),helpstring("property Es")] HRESULT Es([out,retval]Float64* es);
-		[helpcontext(IDH_IRoundColumn_ComputerInteractionSurface),helpstring("method ComputeInteractionSurface")] HRESULT ComputeInteraction([in]long nSteps,[out,retval]IPoint2dCollection* *points);
-		[helpcontext(IDH_IRoundColumn_ComputerInteractionSurface),helpstring("method ComputeInteractionSurfaceEx")] HRESULT ComputeInteractionEx([in]long nSteps,[in]Float64 ecl,[in]Float64 etl,[out]IPoint2dCollection** ppUnfactored,[out]IPoint2dCollection** ppFactored);
+
+      /// Computes an axial force - moment interaction curve
+		[helpcontext(IDH_IRoundColumn_ComputerInteractionSurface),helpstring("method ComputeInteractionSurface")] 
+      HRESULT ComputeInteraction(
+         [in]long nSteps, ///< Number of axial load steps for the analysis
+         [out,retval]IPoint2dCollection* *points ///< the interaction curve points. X = Moment, Y = Axial Force
+      );
+
+      /// Computes an axial force - moment interaction curve and applies the LRFD Resistance Factor
+      ///
+      /// The resistance factor is computed as \f$ 0.75 \le \phi = 0.75 + \frac{0.15(\epsilon_t - \epsilon_{cl})}{(\epsilon_{tl} - \epsilon_{cl})} \le 0.90 \f$
+      [helpcontext(IDH_IRoundColumn_ComputerInteractionSurface),helpstring("method ComputeInteractionSurfaceEx")] 
+      HRESULT ComputeInteractionEx(
+         [in]long nSteps, ///< Number of axial load steps
+         [in]Float64 ecl, ///< Strain limit for compression controlled sections
+         [in]Float64 etl, ///< Strain limit for tension controlled sections
+         [out]IPoint2dCollection** ppUnfactored, ///< the unfactored interaction curve points. X = Moment, Y = Axial Force
+         [out]IPoint2dCollection** ppFactored ///< the factored interaction curve points. X = Moment, Y = Axial Force
+      );
 	};
 
-	[
+   /// Interface for objects representing a general cross section of a structural member subjected to axial load and biaxial bending. 
+   [
 		object,
 		uuid(FE1EB4AB-F67A-459f-9360-6194916FDE37),
 		oleautomation,
@@ -592,20 +1156,44 @@ library WBFLRCCapacity
 	]
 	interface IGeneralSection : IUnknown
 	{
-		[helpcontext(IDH_IGeneralSection_AddShape),helpstring("method AddShape")] HRESULT AddShape([in]IShape* pShape,[in]IStressStrain* pfgMaterial,[in]IStressStrain* pbgMaterial,[in]Float64 ei,[in]Float64 Le);
+      /// Adds a shape, it's constituative models, and initial strain state to the section model
+		[helpcontext(IDH_IGeneralSection_AddShape),helpstring("method AddShape")] HRESULT AddShape(
+         [in]IShape* pShape, ///< The shape of a component of the cross section
+         [in]IStressStrain* pfgMaterial, ///< The foreground material constituative model
+         [in]IStressStrain* pbgMaterial, ///< The background material constituative model
+         [in]Float64 ei, ///< Initial strain level (typically the initial strain in a pretensioned reinforcement member)
+         [in]Float64 Le ///< Strain elongation length (typically 0.0 for strain compatibility with other materials in the section, but a finite length for unbonded elements such as post-tensioning tendons)
+      );
+
+      /// Number of shapes in the cross setion
 		[propget,helpcontext(IDH_IGeneralSection_ShapeCount),helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]CollectionIndexType* nShapes);
+
+      /// The shape of an element of the cross section
 		[propget,helpcontext(IDH_IGeneralSection_Shape),helpstring("property Shape")] HRESULT Shape([in]CollectionIndexType shapeIdx,[out,retval]IShape** pShape);
 		[propputref,helpcontext(IDH_IGeneralSection_Shape),helpstring("property Shape")] HRESULT Shape([in]CollectionIndexType shapeIdx,[in]IShape* pShape);
+
+      /// The foreground material.
+      ///
+      /// This material provides the stress-strain model for solid elements of the cross section such as concrete or steel.
 		[propget,helpcontext(IDH_IGeneralSection_ForegroundMaterial),helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]CollectionIndexType shapeIdx,[out,retval]IStressStrain** pMaterial);
 		[propputref,helpcontext(IDH_IGeneralSection_ForegroundMaterial),helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]CollectionIndexType shapeIdx,[in]IStressStrain* pMaterial);
-		[propget,helpcontext(IDH_IGeneralSection_BackgroundMaterial),helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]CollectionIndexType shapeIdx,[out,retval]IStressStrain** pMaterial);
+
+      /// The background material.
+      ///
+      /// This material provides the stress-strain model for voids in elements of the cross section such as holes or "negative" areas in a soild area representing holes where reinforcement is located.
+      [propget,helpcontext(IDH_IGeneralSection_BackgroundMaterial),helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]CollectionIndexType shapeIdx,[out,retval]IStressStrain** pMaterial);
 		[propputref,helpcontext(IDH_IGeneralSection_BackgroundMaterial),helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]CollectionIndexType shapeIdx,[in]IStressStrain* pMaterial);
+
+      /// Initial strain level (typically the initial strain in a pretensioned reinforcement member)
       [propget, helpcontext(IDH_IGeneralSection_InitialStrain), helpstring("property InitialStrain")] HRESULT InitialStrain([in]CollectionIndexType shapeIdx, [out, retval]Float64* ei);
       [propput, helpcontext(IDH_IGeneralSection_InitialStrain), helpstring("property InitialStrain")] HRESULT InitialStrain([in]CollectionIndexType shapeIdx, [in]Float64 ei);
+
+      /// Strain elongation length (typically 0.0 for strain compatibility with other materials in the section, but a finite length for unbonded elements such as post-tensioning tendons)
       [propget, /*helpcontext(IDH_IGeneralSection_InitialStrain),*/ helpstring("property ElongationLength")] HRESULT ElongationLength([in]CollectionIndexType shapeIdx, [out, retval]Float64* Le);
       [propput, /*helpcontext(IDH_IGeneralSection_InitialStrain),*/ helpstring("property ElonationLength")] HRESULT ElongationLength([in]CollectionIndexType shapeIdx, [in]Float64 Le);
    };
 
+   /// Interface representing a "slice" in a fiber based discritization of a GeneralSection cross section object. 
 	[
 		object,
 		uuid(D079B9D4-BEB3-40e3-B603-016F1D29CBCD),
@@ -616,17 +1204,46 @@ library WBFLRCCapacity
 	]
 	interface IGeneralSectionSlice : IUnknown
 	{
-		[helpcontext(IDH_IGeneralSectionSlice_InitSlice),helpstring("method InitSlice")] HRESULT InitSlice([in]IShape* pShape,[in]Float64 A,[in]Float64 cgX,[in]Float64 cgY,[in]Float64 strain,[in]Float64 fgStress,[in]Float64 bgStress,[in]IStressStrain* pfgMaterial,[in]IStressStrain* pbgMaterial);
+      /// Initilizes the slice with its properties.
+		[helpcontext(IDH_IGeneralSectionSlice_InitSlice),helpstring("method InitSlice")] 
+      HRESULT InitSlice(
+         [in]IShape* pShape, ///< Shape of the slice
+         [in]Float64 A, ///< Slice area
+         [in]Float64 cgX, ///< Horizontal location of the slice centroid
+         [in]Float64 cgY, ///< Vertical location of the slice centroid
+         [in]Float64 strain, ///< Strain at the slice centroid
+         [in]Float64 fgStress, ///< Foreground stress at the slice centroid
+         [in]Float64 bgStress, ///< Background stress at the slice centroid
+         [in]IStressStrain* pfgMaterial, ///< Foreground material stress-strain model
+         [in]IStressStrain* pbgMaterial ///< Background material stress-strain model
+      );
+
+      /// Slice area
 		[propget,helpcontext(IDH_IGeneralSectionSlice_Area),helpstring("property Area")] HRESULT Area([out,retval]Float64* pArea);
+
+      /// Location of slice centroid
 		[propget,helpcontext(IDH_IGeneralSectionSlice_CG),helpstring("property CG")] HRESULT CG([out,retval]IPoint2d** pCG);
+
+      /// Strain at the slice centroid
 		[propget,helpcontext(IDH_IGeneralSectionSlice_Strain),helpstring("property Strain")] HRESULT Strain([out,retval]Float64* pStrain);
+
+      /// Foreground stress at the slice centroid
 		[propget,helpcontext(IDH_IGeneralSectionSlice_ForegroundStress),helpstring("property ForegroundStress")] HRESULT ForegroundStress([out,retval]Float64* pfgStress);
-		[propget,helpcontext(IDH_IGeneralSectionSlice_BackgroundStress),helpstring("property BackgroundStress")] HRESULT BackgroundStress([out,retval]Float64* pbgStress);
-		[propget,helpcontext(IDH_IGeneralSectionSlice_Shape),helpstring("property Shape")] HRESULT Shape([out,retval]IShape** pShape);
+
+      /// Background stress at the slice centroid
+      [propget,helpcontext(IDH_IGeneralSectionSlice_BackgroundStress),helpstring("property BackgroundStress")] HRESULT BackgroundStress([out,retval]Float64* pbgStress);
+
+      /// Shape of the slice
+      [propget,helpcontext(IDH_IGeneralSectionSlice_Shape),helpstring("property Shape")] HRESULT Shape([out,retval]IShape** pShape);
+
+      /// Foreground material stress-strain model
 		[propget,helpcontext(IDH_IGeneralSectionSlice_ForegroundMaterial),helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([out,retval]IStressStrain** pMaterial);
+
+      /// Background material stress-strain model
 		[propget,helpcontext(IDH_IGeneralSectionSlice_BackgroundMaterial),helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([out,retval]IStressStrain** pMaterial);
 	};
 
+   /// Interface representing the solution to a biaxial fiber based general section analysis
 	[
 		object,
 		uuid(52EF7B24-5383-4c47-AED7-DF25CC071B78),
@@ -637,21 +1254,55 @@ library WBFLRCCapacity
 	]
 	interface IGeneralSectionSolution : IUnknown
 	{
-		[helpcontext(IDH_IGeneralSectionSolution_InitSolution),helpstring("method InitSolution")] HRESULT InitSolution([in]Float64 fz,[in]Float64 mx,[in]Float64 my,[in]ILine2d* neutralAxis,[in]IPoint2d* cgC,[in]Float64 C,[in]IPoint2d* cgT,[in]Float64 T,[in]IUnkArray* slices);
+      /// Initialize with the solution results
+		[helpcontext(IDH_IGeneralSectionSolution_InitSolution),helpstring("method InitSolution")] 
+      HRESULT InitSolution(
+         [in]Float64 fz, ///< Resultant axial force
+         [in]Float64 mx, ///< Resultant moment about the horizontal centroidal axis
+         [in]Float64 my, ///< Resultant moment about the vertical centroidal axis
+         [in]ILine2d* neutralAxis, ///< Line2d object representing the neutral axis
+         [in]IPoint2d* cgC, ///< Location of the resultant compression force
+         [in]Float64 C, ///< Resultant compression force
+         [in]IPoint2d* cgT, ///< Location of the resultant tension force
+         [in]Float64 T, ///< Resultant tension force
+         [in]IUnkArray* slices /// Array of fibers ("slices") resulting from the discritization of the cross section. All objects implement the IGeneralSectionSlice interface.
+      );
+
+      /// Resultant axial force
 		[propget,helpcontext(IDH_IGeneralSectionSolution_Fz),helpstring("property Fz")] HRESULT Fz([out,retval]Float64* fz);
+
+      /// Resultant moment about the horizontal centroidal axis
 		[propget,helpcontext(IDH_IGeneralSectionSolution_Mx),helpstring("property Mx")] HRESULT Mx([out,retval]Float64* mx);
+
+      /// Resultant moment about the vertical centroidal axis
 		[propget,helpcontext(IDH_IGeneralSectionSolution_My),helpstring("property My")] HRESULT My([out,retval]Float64* my);
+
+      /// Line2d object representing the neutral axis
 		[propget,helpcontext(IDH_IGeneralSectionSolution_NeutralAxis),helpstring("property NeutralAxis")] HRESULT NeutralAxis([out,retval]ILine2d** neutralAxis);
+
+      /// Angle of the neutral axis measured in radians, counter-clockwise from the positive X-axis
 		[propget,helpcontext(IDH_IGeneralSectionSolution_NeutralAxisDirection),helpstring("property NeutralAxisDirection")] HRESULT NeutralAxisDirection([out,retval]Float64* neutralAxis);
+
+      /// Resultant compression force
 		[propget,helpcontext(IDH_IGeneralSectionSolution_CompressionResultant),helpstring("property CompressionResultant")] HRESULT CompressionResultant([out,retval]Float64* c);
+
+      /// Resultant tension force
 		[propget,helpcontext(IDH_IGeneralSectionSolution_TensionResultant),helpstring("property TensionResultant")] HRESULT TensionResultant([out,retval]Float64* t);
+
+      /// Location of the resultant compression force
 		[propget,helpcontext(IDH_IGeneralSectionSolution_CompressionResultantLocation),helpstring("property CompressionResultantLocation")] HRESULT CompressionResultantLocation([out,retval]IPoint2d** cgC);
-		[propget,helpcontext(IDH_IGeneralSectionSolution_TensionResultantLocation),helpstring("property TensionResultantLocation")] HRESULT TensionResultantLocation([out,retval]IPoint2d** cgT);
+
+      /// Location of the resultant tension force
+      [propget,helpcontext(IDH_IGeneralSectionSolution_TensionResultantLocation),helpstring("property TensionResultantLocation")] HRESULT TensionResultantLocation([out,retval]IPoint2d** cgT);
+
+      /// Number of slices
 		[propget,helpcontext(IDH_IGeneralSectionSolution_SliceCount),helpstring("property SliceCount")] HRESULT SliceCount([out,retval]CollectionIndexType* nSlices);
+
+      /// Returns a slice
 		[propget,helpcontext(IDH_IGeneralSectionSolution_Slice),helpstring("property Slice")] HRESULT Slice([in] CollectionIndexType sliceIdx,[out,retval]IGeneralSectionSlice** pSlice);
 	};
 
-
+   /// Interface for objects performing biaxial fiber based general section analysis
 	[
 		object,
 		uuid(4BE67D1E-A214-4bb3-8B10-5FA0380153C7),
@@ -662,16 +1313,33 @@ library WBFLRCCapacity
 	]
 	interface IGeneralSectionSolver : IUnknown
 	{
+      /// The GeneralSection to be analyzed
 		[propputref,helpcontext(IDH_IGeneralSectionSolver_Section),helpstring("property Section")] HRESULT Section([in]IGeneralSection* pSection);
 		[propget,helpcontext(IDH_IGeneralSectionSolver_Section),helpstring("property Section")] HRESULT Section([out,retval]IGeneralSection** pSection);
+
+      /// The number of slices to subdivide the section into for analysis
 		[propput,helpcontext(IDH_IGeneralSectionSolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
 		[propget,helpcontext(IDH_IGeneralSectionSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval]long* nSlices);
+
+      /// A factor that varies the height of the slices. 
+      ///
+      /// The height of the slice furthest from the compression face is this factor times the height of the first slice. If the slice growth factor is 2, the last slice
+      /// will be twice as tall as the first slice.
+      ///
+      /// Slice heights reduce when the factor is less than 1 and grow if greater than 1. All slices are the same height wht the factor is 1.
 		[propput,helpcontext(IDH_IGeneralSectionSolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([in]Float64 sliceGrowthFactor);
 		[propget,helpcontext(IDH_IGeneralSectionSolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([out,retval]Float64* sliceGrowthFactor);
-		[helpcontext(IDH_IGeneralSectionSolver_Solve),helpstring("method Solve")] HRESULT Solve([in] IPlane3d* strainPlane,[out,retval]IGeneralSectionSolution** solution);
+
+      /// Analyses the section for a given state of strain
+		[helpcontext(IDH_IGeneralSectionSolver_Solve),helpstring("method Solve")] 
+      HRESULT Solve(
+         [in] IPlane3d* strainPlane, ///< Plane3d object representing the state of strain
+         [out,retval]IGeneralSectionSolution** solution ///< The solution to the analysis
+      );
 	};
 
-	[
+   /// Interface defining moment curvature analysis solutions
+   [
 		uuid(7FA3E79D-9C64-4333-9BA7-5FF84F71D1C5),
 		oleautomation,
 		helpstring("IMomentCurvatureSolution Interface"),
@@ -680,16 +1348,36 @@ library WBFLRCCapacity
 	]
 	interface IMomentCurvatureSolution : IUnknown
 	{
+      /// Maximum moment
 		[propget,helpcontext(IDH_IMomentCurvatureSolution_MaxMoment),helpstring("property MaxMoment")] HRESULT MaxMoment([out,retval]Float64* Mmax);
+
+      /// Curvature associated with the maximum moment
 		[propget,helpcontext(IDH_IMomentCurvatureSolution_MaxMomentCurvature),helpstring("property MaxMomentCurvature")] HRESULT MaxMomentCurvature([out,retval]Float64* k);
-		[helpcontext(IDH_IMomentCurvatureSolution_PeakCapacity),helpstring("method PeakCapacity")] HRESULT PeakCapacity([out]Float64* Mmax,[out]Float64* k);
+
+      /// The peak point in the moment curvature solution space
+		[helpcontext(IDH_IMomentCurvatureSolution_PeakCapacity),helpstring("method PeakCapacity")] 
+      HRESULT PeakCapacity(
+         [out]Float64* Mmax, ///< Maximum moment
+         [out]Float64* k ///< Curvature associated with the maximum moment
+      );
+
+      /// Moment at a solution step
 		[propget,helpcontext(IDH_IMomentCurvatureSolution_Moment),helpstring("property Moment")] HRESULT Moment([in]CollectionIndexType idx,[out,retval]Float64* Mmax);
+
+      /// Curvature at a solution step
 		[propget,helpcontext(IDH_IMomentCurvatureSolution_Curvature),helpstring("property Curvature")] HRESULT Curvature([in]CollectionIndexType idx,[out,retval]Float64* k);
+
+      /// Strain plan at a solution step
       [propget, helpcontext(IDH_IMomentCurvatureSolution_StrainPlane), helpstring("property StrainPlane")] HRESULT StrainPlane([in]CollectionIndexType idx, [out, retval]IPlane3d** StrainPlane);
+
+      /// MomentCapacitySolution object at a solution step
       [propget, /*helpcontext(IDH_IMomentCurvatureSolution_StrainPlane),*/ helpstring("property CapacitySolution")] HRESULT CapacitySolution([in]CollectionIndexType idx, [out, retval]IMomentCapacitySolution** solution);
+
+      /// Number of solution steps
       [propget,helpcontext(IDH_IMomentCurvatureSolution_PointCount),helpstring("property PointCount")] HRESULT PointCount([out,retval]CollectionIndexType* nPoints);
 	};
 
+   /// Interface implemented by objects that perform a fiber based strain compatibility moment curvature analysis on GeneralSection objects.
 	[
 		uuid(4F3B5724-C503-44d1-A6E0-68D195CA2442),
 		oleautomation,
@@ -699,21 +1387,45 @@ library WBFLRCCapacity
 	]
 	interface IMomentCurvatureSolver : IUnknown
 	{
-		[propputref,helpcontext(IDH_IMomentCurvatureSolver_Section),helpstring("property Section")] HRESULT Section([in]IGeneralSection* pSection);
+      /// The GeneralSection to be analyzed
+      [propputref,helpcontext(IDH_IMomentCurvatureSolver_Section),helpstring("property Section")] HRESULT Section([in]IGeneralSection* pSection);
 		[propget,helpcontext(IDH_IMomentCurvatureSolver_Section),helpstring("property Section")] HRESULT Section([out,retval]IGeneralSection** pSection);
-		[propput,helpcontext(IDH_IMomentCurvatureSolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
+
+      /// The number of slices to subdivide the section into for analysis
+      [propput,helpcontext(IDH_IMomentCurvatureSolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
 		[propget,helpcontext(IDH_IMomentCurvatureSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval]long* nSlices);
+
+      /// A factor that varies the height of the slices. 
+      ///
+      /// The height of the slice furthest from the compression face is this factor times the height of the first slice. If the slice growth factor is 2, the last slice
+      /// will be twice as tall as the first slice.
+      ///
+      /// Slice heights reduce when the factor is less than 1 and grow if greater than 1. All slices are the same height wht the factor is 1.
       [propput, helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor), helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([in]Float64 sliceGrowthFactor);
       [propget, helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor), helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([out, retval]Float64* sliceGrowthFactor);
+
+      /// Convergance tolerance for axial force
       [propput,helpcontext(IDH_IMomentCurvatureSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
 		[propget,helpcontext(IDH_IMomentCurvatureSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([out,retval]Float64* tolerance);
-		[propput,helpcontext(IDH_IMomentCurvatureSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([in]long maxIter);
+
+      /// Maximum number of iterations before solution fails
+      [propput,helpcontext(IDH_IMomentCurvatureSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([in]long maxIter);
 		[propget,helpcontext(IDH_IMomentCurvatureSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([out,retval]long* maxIter);
+
+      /// The initial step size used for curvature increments. The step size is automatically reduced as the analysis nears the failure point.
 		[propput,helpcontext(IDH_IMomentCurvatureSolver_InitialCurvatureStep),helpstring("property InitialCurvatureStep")] HRESULT InitialCurvatureStep([in]Float64 k);
 		[propget,helpcontext(IDH_IMomentCurvatureSolver_InitialCurvatureStep),helpstring("property InitialCurvatureStep")] HRESULT InitialCurvatureStep([out,retval]Float64* k);
-		[helpcontext(IDH_IMomentCurvatureSolver_Solve),helpstring("method Solve")] HRESULT Solve([in] Float64 Fz,[in] Float64 angle,[out,retval]IMomentCurvatureSolution** solution);
+
+      /// Performs the moment curvature analysis
+		[helpcontext(IDH_IMomentCurvatureSolver_Solve),helpstring("method Solve")] 
+      HRESULT Solve(
+         [in] Float64 Fz, ///< Externally applied axial force.
+         [in] Float64 angle, ///< Direction of the neutral axis (radians), measured counter-clockwise from the X axis
+         [out,retval]IMomentCurvatureSolution** solution ///< The solution of the moment curvature analysis
+      );
 	};
 
+   /// Interface defining moment capacity analysis solutions
 	[
 		uuid(2BD13F88-3CF5-4c5d-8CF8-83DBA81AB361),
 		oleautomation,
@@ -723,21 +1435,60 @@ library WBFLRCCapacity
 	]
 	interface IMomentCapacitySolution : IUnknown
 	{
-		[helpcontext(IDH_IMomentCapacitySolution_InitSolution),helpstring("method InitSolution")] HRESULT InitSolution([in]Float64 fz,[in]Float64 mx,[in]Float64 my,[in]IPlane3d* strainPlane,[in]ILine2d* neutralAxis,[in]IPoint2d* cgC,[in]Float64 C,[in]IPoint2d* cgT,[in]Float64 T,[in]IGeneralSectionSolution* pSolution);
+      /// Initalizes the solution object
+		[helpcontext(IDH_IMomentCapacitySolution_InitSolution),helpstring("method InitSolution")] 
+      HRESULT InitSolution(
+         [in]Float64 fz, ///< Resultant axial force
+         [in]Float64 mx, ///< Resultant moment about the horizontal centroidal axis
+         [in]Float64 my, ///< Resultant moment about the vertical centroidal axis
+         [in]IPlane3d* strainPlane, ///< Plane3d object representing the strain plane
+         [in]ILine2d* neutralAxis, ///< Line2d object representing the neutral axis
+         [in]IPoint2d* cgC, ///< Location of resultant compression force
+         [in]Float64 C, ///< Resultant compression force
+         [in]IPoint2d* cgT, ///< Location of resultant tension force
+         [in]Float64 T, ///< Resultant tension force
+         [in]IGeneralSectionSolution* pSolution ///< GeneralSectionSolution object corresponding to the resulting strain plane
+      );
+
+      /// Resultant axial force
 		[propget,helpcontext(IDH_IMomentCapacitySolution_Fz),helpstring("property Fz")] HRESULT Fz([out,retval]Float64* fz);
+
+      /// Resultant moment about the horizontal centroidal axis
 		[propget,helpcontext(IDH_IMomentCapacitySolution_Mx),helpstring("property Mx")] HRESULT Mx([out,retval]Float64* mx);
+
+      /// Resultant moment about the vertical centroidal axis
 		[propget,helpcontext(IDH_IMomentCapacitySolution_My),helpstring("property My")] HRESULT My([out,retval]Float64* my);
+
+      /// Plane3d object representing the strain plane
 		[propget,helpcontext(IDH_IMomentCapacitySolution_StrainPlane),helpstring("property StrainPlane")] HRESULT StrainPlane([out,retval]IPlane3d** strainPlane);
+      
+      /// Line2d object representing the neutral axis
 		[propget,helpcontext(IDH_IMomentCapacitySolution_NeutralAxis),helpstring("property NeutralAxis")] HRESULT NeutralAxis([out,retval]ILine2d** neutralAxis);
+
+      /// Angle of the neutral axis measured in radians, counter-clockwise from the positive X-axis.
 		[propget,helpcontext(IDH_IMomentCapacitySolution_NeutralAxisDirection),helpstring("property NeutralAxisDirection")] HRESULT NeutralAxisDirection([out,retval]Float64* angle);
+
+      /// Resultant compression force
 		[propget,helpcontext(IDH_IMomentCapacitySolution_CompressionResultant),helpstring("property CompressionResultant")] HRESULT CompressionResultant([out,retval]Float64* c);
+
+      /// Resultant tension force
 		[propget,helpcontext(IDH_IMomentCapacitySolution_TensionResultant),helpstring("property TensionResultant")] HRESULT TensionResultant([out,retval]Float64* t);
+
+      /// Location of the resultant compression force
 		[propget,helpcontext(IDH_IMomentCapacitySolution_CompressionResultantLocation),helpstring("property CompressionResultantLocation")] HRESULT CompressionResultantLocation([out,retval]IPoint2d** cgC);
+
+      /// Location of the resultant tension force
 		[propget,helpcontext(IDH_IMomentCapacitySolution_TensionResultantLocation),helpstring("property TensionResultantLocation")] HRESULT TensionResultantLocation([out,retval]IPoint2d** cgT);
+
+      /// GeneralSectionSolution object corresponding to the resulting strain plane
 		[propget,helpcontext(IDH_IMomentCapacitySolution_GeneralSectionSolution),helpstring("property GeneralSectionSolution")] HRESULT GeneralSectionSolution([out,retval]IGeneralSectionSolution** solution);
 	};
 
-	[
+   /// Interface defining moment capacity solver.
+   ///
+   /// A moment capacity solver discritizes a GeneralSection object into GeneralSectionSlices and performs a moment capacity analysis by summing the force and moment contribution of each
+   // slice, varying the location of the neutral axis, while keep it's direction constant, until equilibrium if satisfied. This is a common fiber based strain compatibility analysis.
+   [
 		uuid(A4B19FD5-ADD9-43bf-B2C6-EF65D59CD3C9),
 		oleautomation,
 		helpstring("IMomentCapacitySolver Interface"),
@@ -746,22 +1497,68 @@ library WBFLRCCapacity
 	]
 	interface IMomentCapacitySolver : IUnknown
 	{
+      /// GeneralSection object to be analyzed
 		[propputref,helpcontext(IDH_IMomentCapacitySolver_Section),helpstring("property Section")] HRESULT Section([in]IGeneralSection* pSection);
 		[propget,helpcontext(IDH_IMomentCapacitySolver_Section),helpstring("property Section")] HRESULT Section([out,retval]IGeneralSection** pSection);
+      
+      /// Number of slices to subdivide the section into for analysis
 		[propput,helpcontext(IDH_IMomentCapacitySolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
 		[propget,helpcontext(IDH_IMomentCapacitySolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval]long* nSlices);
+
+      /// A factor that varies the height of the slices.
+      ///
+      /// The height of the slice furthest from the compression face is this factor times the height of the first slice.If the slice growth factor is 2, the last slice will be twice as tall as the first slice.
+      ///
+      ///  Slice heights reduce when the factor is less than 1 and grow if greater than 1. All slices are the same height wht the factor is 1.
 	   [propput,helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([in]Float64 sliceGrowthFactor);
 		[propget,helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([out,retval]Float64* sliceGrowthFactor);
+
+      /// Convergance tolerance for axial force equilibrium
       [propput,helpcontext(IDH_IMomentCapacitySolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
 		[propget,helpcontext(IDH_IMomentCapacitySolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([out,retval]Float64* tolerance);
+
+      /// Maximum number of iterations before solution fails
 		[propput,helpcontext(IDH_IMomentCapacitySolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([in]long maxIter);
 		[propget,helpcontext(IDH_IMomentCapacitySolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([out,retval]long* maxIter);
-		[helpcontext(IDH_IMomentCapacitySolver_Solve),helpstring("method Solve")] HRESULT Solve([in]Float64 Fz,[in] Float64 angle,[in] Float64 k_or_ec,[in]SolutionMethod solutionMethod,[out,retval] IMomentCapacitySolution** solution);
+
+      /// Performs the moment capacity analysis
+		[helpcontext(IDH_IMomentCapacitySolver_Solve),helpstring("method Solve")] 
+      HRESULT Solve(
+         [in]Float64 Fz, ///< Externally applied axial force.
+         [in] Float64 angle, ///< Direction of the neutral axis (radians), measured counter-clockwise from the X axis
+         [in] Float64 k_or_ec, ///< Curvature of the section if solutionMethod is smFixedCurvature, other strain at the extreme compression fiber when solutionMethod is smFixedCompressiveStrain
+         [in]SolutionMethod solutionMethod, ///< Indicates the method of solution.
+         [out,retval] IMomentCapacitySolution** solution ///< The solution of the moment capacity analysis
+      );
+
+      /// Location of the plastic centroid.
+      ///
+      /// The plastic centroid is computed by determining the location of the resultant force when the entire section is strained uniformly in compression.
 		[propget,helpcontext(IDH_IMomentCapacitySolver_PlasticCentroid),helpstring("property PlasticCentroid")] HRESULT PlasticCentroid([out,retval] IPoint2d** pcg);
-		[helpcontext(IDH_IMomentCapacitySolver_CompressionLimit)] HRESULT CompressionLimit([out]Float64* Fz,[out]Float64* Mx,[out]Float64* My,[out]Float64* eo);
-		[helpcontext(IDH_IMomentCapacitySolver_TensionLimit)] HRESULT TensionLimit([out]Float64* Fz,[out]Float64* Mx,[out]Float64* My,[out]Float64* eo);
+
+      /// Compression limit
+      ///
+      /// The compression limit is the force state for the maximum compression force that can be applied to the section
+		[helpcontext(IDH_IMomentCapacitySolver_CompressionLimit)] HRESULT CompressionLimit(
+         [out]Float64* Fz, ///< Maximum axial compression force
+         [out]Float64* Mx, ///< Corresponding moment about the X-axis
+         [out]Float64* My, ///< Corresponding moment about the Y-axis
+         [out]Float64* eo ///< Strain at (0,0)
+      );
+
+      /// Tension limit
+      ///
+      /// The tension limit is the force state for the maximum tensile force that can be applied to the section
+		[helpcontext(IDH_IMomentCapacitySolver_TensionLimit)] 
+      HRESULT TensionLimit(
+         [out]Float64* Fz, ///< Maximum axial tension force
+         [out]Float64* Mx, ///< Corresponding moment about the X-axis
+         [out]Float64* My, ///< Corresponding moment about the Y-axis
+         [out]Float64* eo ///< Strain at (0,0)
+      );
 	};
 
+   /// Interface defining the solution to a moment curvature interaction analysis.
 	[
 		uuid(169DAD38-B2EC-4d1a-AD6B-B04671662AFA),
 		oleautomation,
@@ -771,13 +1568,21 @@ library WBFLRCCapacity
 	]
 	interface IInteractionCurveSolution : IUnknown
 	{
+      /// Neutral axis direction for an analysis point
 		[propget,helpcontext(IDH_IInteractionCurveSolution_NeutralAxisDirection),helpstring("property NeutralAxisDirection")] HRESULT NeutralAxisDirection([in]CollectionIndexType index,[out,retval]Float64* angle);
+
+      /// MomentCurvatureSolution for an interaction point
 		[propget,helpcontext(IDH_IInteractionCurveSolution_MomentCurvatureSolution),helpstring("property MomentCurvatureSolution")] HRESULT MomentCurvatureSolution([in]CollectionIndexType index,[out,retval]IMomentCurvatureSolution** solution);
+
+      /// Adds a MomentCurvatureSolution interaction point
 		[helpcontext(IDH_IInteractionCurveSolution_AddSolutionPoint),helpstring("method AddSolutionPoint")] HRESULT AddSolutionPoint([in]Float64 angle,[in]IMomentCurvatureSolution* solution);
-		[propget,helpcontext(IDH_IInteractionCurveSolution_SolutionPointCount),helpstring("property SolutionPointCount")] HRESULT SolutionPointCount([out,retval]CollectionIndexType* nPoints);
+
+      /// Number of solution points
+      [propget,helpcontext(IDH_IInteractionCurveSolution_SolutionPointCount),helpstring("property SolutionPointCount")] HRESULT SolutionPointCount([out,retval]CollectionIndexType* nPoints);
 	};
 
-	[
+   /// Interface defining moment curvature solver.
+   [
 		uuid(750A8100-D7EB-4b17-AE36-9DDDFEF6888B),
 		oleautomation,
 		helpstring("IInteractionCurveSolver IUnknown"),
@@ -786,22 +1591,44 @@ library WBFLRCCapacity
 	]
 	interface IInteractionCurveSolver : IUnknown
 	{
+      /// GeneralSection object to be analyzed
 		[propputref,helpcontext(IDH_IInteractionCurveSolver_Section),helpstring("property Section")] HRESULT Section([in]IGeneralSection* pSection);
 		[propget,helpcontext(IDH_IInteractionCurveSolver_Section),helpstring("property Section")] HRESULT Section([out,retval]IGeneralSection** pSection);
+
+      /// The number of slices to subdivide the section into for analysis
 		[propput,helpcontext(IDH_IInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
 		[propget,helpcontext(IDH_IInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval]long* nSlices);
+
+      /// A factor that varies the height of the slices.
+      ///
+      /// The height of the slice furthest from the compression face is this factor times the height of the first slice.If the slice growth factor is 2, the last slice will be twice as tall as the first slice.
+      ///
+      ///  Slice heights reduce when the factor is less than 1 and grow if greater than 1. All slices are the same height wht the factor is 1.
       [propput, helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor), helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([in]Float64 sliceGrowthFactor);
       [propget, helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor), helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([out, retval]Float64* sliceGrowthFactor);
+
+      /// Convergance tolerance for axial force
       [propput,helpcontext(IDH_IInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
 		[propget,helpcontext(IDH_IInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([out,retval]Float64* tolerance);
+
+      /// Maximum number of iterations before solution fails
 		[propput,helpcontext(IDH_IInteractionCurveSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([in]long maxIter);
 		[propget,helpcontext(IDH_IInteractionCurveSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([out,retval]long* maxIter);
-		[propput,helpcontext(IDH_IInteractionCurveSolver_InitialCurvatureStep),helpstring("property InitialCurvatureStep")] HRESULT InitialCurvatureStep([in]Float64 k);
+
+      /// The initial step size used for curvature increments. The step size is automatically reduced as the analysis nears the failure point.
+      [propput,helpcontext(IDH_IInteractionCurveSolver_InitialCurvatureStep),helpstring("property InitialCurvatureStep")] HRESULT InitialCurvatureStep([in]Float64 k);
 		[propget,helpcontext(IDH_IInteractionCurveSolver_InitialCurvatureStep),helpstring("property InitialCurvatureStep")] HRESULT InitialCurvatureStep([out,retval]Float64* k);
-		[helpcontext(IDH_IInteractionCurveSolver_Solve),helpstring("method Solve")] HRESULT Solve([in]Float64 Fz,[in] long naIncrement,[out,retval]IInteractionCurveSolution** solution);
+
+      /// Performs the moment curvature interaction analysis
+      [helpcontext(IDH_IInteractionCurveSolver_Solve),helpstring("method Solve")] 
+      HRESULT Solve(
+         [in]Float64 Fz, ///< Axial force on the section
+         [in] long naIncrement, ///< Number of neutral axis positions to consider. The neutral axis starts and 0 and is rotated through \f$2\pi\f$ radians. This parameter defines how that angular range is subdivided.
+         [out,retval]IInteractionCurveSolution** solution ///< The solution of the interaction analysis
+      );
 	};
 
-
+   /// Interface defining the solution to a moment interaction analysis
 	[
 		uuid(EBFB4042-E5DC-4378-BFDB-8890C77A4E3D),
 		oleautomation,
@@ -811,12 +1638,19 @@ library WBFLRCCapacity
 	]
 	interface IInteractionCapacityCurveSolution : IUnknown
 	{
+      /// MomentCapacitySolution for a specified analysis point
 		[propget,helpcontext(IDH_IInteractionCapacityCurveSolution_MomentCapacitySolution),helpstring("property MomentCapacitySolution")] HRESULT MomentCapacitySolution([in]CollectionIndexType index,[out,retval]IMomentCapacitySolution** solution);
+
+      /// Adds MomentCapacitySolution to the overall interaction solution
 		[helpcontext(IDH_IInteractionCapacityCurveSolution_AddSolutionPoint),helpstring("method AddSolutionPoint")] HRESULT AddSolutionPoint([in]IMomentCapacitySolution* solution);
+
+      /// Number of solution points
 		[propget,helpcontext(IDH_IInteractionCapacityCurveSolution_SolutionPointCount),helpstring("property SolutionPointCount")] HRESULT SolutionPointCount([out,retval]CollectionIndexType* nPoints);
 	};
 
-	[
+   /// Interface implemented by objects that compute P-M interaction diagrams for GeneralSection objects. 
+   /// Moment interaction analysis is performed for a specifed direction of the neutral axis and axial load is varied between the tension and compression limits of the section.
+   [
 		uuid(AD04E104-0570-432b-9FF0-E5634F2CE942),
 		oleautomation,
 		helpstring("IAxialInteractionCurveSolver IUnknown"),
@@ -825,22 +1659,62 @@ library WBFLRCCapacity
 	]
 	interface IAxialInteractionCurveSolver : IUnknown
 	{
-		[propputref,helpcontext(IDH_IAxialInteractionCurveSolver_Section),helpstring("property Section")] HRESULT Section([in]IGeneralSection* pSection);
+      /// The GeneralSection object to be analyzed
+      [propputref,helpcontext(IDH_IAxialInteractionCurveSolver_Section),helpstring("property Section")] HRESULT Section([in]IGeneralSection* pSection);
 		[propget,helpcontext(IDH_IAxialInteractionCurveSolver_Section),helpstring("property Section")] HRESULT Section([out,retval]IGeneralSection** pSection);
-		[propput,helpcontext(IDH_IAxialInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
+
+      /// Number of slices
+      [propput,helpcontext(IDH_IAxialInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
 		[propget,helpcontext(IDH_IAxialInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval]long* nSlices);
+      
+      /// A factor that varies the height of the slices.
+      ///
+      /// The height of the slice furthest from the compression face is this factor times the height of the first slice.If the slice growth factor is 2, the last slice will be twice as tall as the first slice.
+      ///
+      ///  Slice heights reduce when the factor is less than 1 and grow if greater than 1. All slices are the same height wht the factor is 1.
       [propput, helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor), helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([in]Float64 sliceGrowthFactor);
       [propget, helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor), helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([out, retval]Float64* sliceGrowthFactor);
+
+      /// Convergance tolerance for axial force
       [propput,helpcontext(IDH_IAxialInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
 		[propget,helpcontext(IDH_IAxialInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([out,retval]Float64* tolerance);
+
+      /// Maximum number of iterations before solution fails
 		[propput,helpcontext(IDH_IAxialInteractionCurveSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([in]long maxIter);
 		[propget,helpcontext(IDH_IAxialInteractionCurveSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([out,retval]long* maxIter);
-		[helpcontext(IDH_IAxialInteractionCurveSolver_CompressionLimit)] HRESULT CompressionLimit([out]Float64* Fz,[out]Float64* Mx,[out]Float64* My,[out]Float64* eo);
-		[helpcontext(IDH_IAxialInteractionCurveSolver_TensionLimit)] HRESULT TensionLimit([out]Float64* Fz,[out]Float64* Mx,[out]Float64* My,[out]Float64* eo);
-		[helpcontext(IDH_IAxialInteractionCurveSolver_Solve),helpstring("method Solve")] HRESULT Solve([in]Float64 na,[in]long nFzSteps,[out,retval]IInteractionCapacityCurveSolution** solution);
+
+      /// Compression limit
+      ///
+      /// The compression limit is the force state for the maximum compression force that can be applied to the section
+      [helpcontext(IDH_IAxialInteractionCurveSolver_CompressionLimit)] HRESULT CompressionLimit(
+         [out]Float64* Fz, ///< Maximum axial compression force
+         [out]Float64* Mx, ///< Corresponding moment about the X-axis
+         [out]Float64* My, ///< Corresponding moment about the Y-axis
+         [out]Float64* eo ///< Strain at (0,0)
+      );
+
+      /// Tension limit
+      ///
+      /// The tension limit is the force state for the maximum tensile force that can be applied to the section
+      [helpcontext(IDH_IAxialInteractionCurveSolver_TensionLimit)]
+      HRESULT TensionLimit(
+         [out]Float64* Fz, ///< Maximum axial tension force
+         [out]Float64* Mx, ///< Corresponding moment about the X-axis
+         [out]Float64* My, ///< Corresponding moment about the Y-axis
+         [out]Float64* eo ///< Strain at (0,0)
+      );
+
+      /// Perform the moment interaction analysis
+      [helpcontext(IDH_IAxialInteractionCurveSolver_Solve),helpstring("method Solve")] 
+      HRESULT Solve(
+         [in]Float64 na, ///< direction of the neutral axis (radians) measured counter-clockwise from X-axis
+         [in]long nFzSteps, ///< Number of axial load steps between the compression and tension limits
+         [out,retval]IInteractionCapacityCurveSolution** solution ///< The solution to the interaction analysis
+      );
 	};
 
-
+   /// Interface implemented by objects that compute Mx-My biaxial bending interaction diagrams for GeneralSection objects. 
+   /// Moment interaction analysis is performed for a specifed maginitude of axial load that must be with the tension and compression limits of the section.
 	[
 		uuid(7573B050-8EEC-4385-AFBF-9BD4690DCB7C),
 		oleautomation,
@@ -850,20 +1724,56 @@ library WBFLRCCapacity
 	]
 	interface IMomentInteractionCurveSolver : IUnknown
 	{
+      /// The GeneralSection object to be analyzed
 		[propputref,helpcontext(IDH_IMomentInteractionCurveSolver_Section),helpstring("property Section")] HRESULT Section([in]IGeneralSection* pSection);
 		[propget,helpcontext(IDH_IMomentInteractionCurveSolver_Section),helpstring("property Section")] HRESULT Section([out,retval]IGeneralSection** pSection);
-		[propput,helpcontext(IDH_IMomentInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
+
+      /// Number of slices
+      [propput,helpcontext(IDH_IMomentInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
 		[propget,helpcontext(IDH_IMomentInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval]long* nSlices);
+
+      /// Convergance tolerance for axial force
 	    [propput,helpcontext(IDH_IMomentInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
 		[propget,helpcontext(IDH_IMomentInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([out,retval]Float64* tolerance);
-		[propput,helpcontext(IDH_IMomentInteractionCurveSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([in]long maxIter);
+
+      /// Maximum number of iterations before solution fails
+      [propput,helpcontext(IDH_IMomentInteractionCurveSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([in]long maxIter);
 		[propget,helpcontext(IDH_IMomentInteractionCurveSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([out,retval]long* maxIter);
-		[helpcontext(IDH_IMomentInteractionCurveSolver_CompressionLimit)] HRESULT CompressionLimit([out]Float64* Fz,[out]Float64* Mx,[out]Float64* My,[out]Float64* eo);
-		[helpcontext(IDH_IMomentInteractionCurveSolver_TensionLimit)] HRESULT TensionLimit([out]Float64* Fz,[out]Float64* Mx,[out]Float64* My,[out]Float64* eo);
-		[helpcontext(IDH_IMomentInteractionCurveSolver_Solve),helpstring("method Solve")] HRESULT Solve([in]Float64 Fz,[in]Float64 startNA,[in]Float64 endNA,[in]long nSteps,[out,retval]IInteractionCapacityCurveSolution** solution);
+
+      /// Compression limit
+      ///
+      /// The compression limit is the force state for the maximum compression force that can be applied to the section
+      [helpcontext(IDH_IMomentInteractionCurveSolver_CompressionLimit)] 
+      HRESULT CompressionLimit(
+         [out]Float64* Fz, ///< Maximum axial compression force
+         [out]Float64* Mx, ///< Corresponding moment about the X-axis
+         [out]Float64* My, ///< Corresponding moment about the Y-axis
+         [out]Float64* eo ///< Strain at (0,0)
+      );
+
+      /// Tension limit
+      ///
+      /// The tension limit is the force state for the maximum tensile force that can be applied to the section
+      [helpcontext(IDH_IMomentInteractionCurveSolver_TensionLimit)] 
+      HRESULT TensionLimit(
+         [out]Float64* Fz, ///< Maximum axial compression force
+         [out]Float64* Mx, ///< Corresponding moment about the X-axis
+         [out]Float64* My, ///< Corresponding moment about the Y-axis
+         [out]Float64* eo ///< Strain at (0,0)
+      );
+
+      /// Perform the moment interaction analysis
+		[helpcontext(IDH_IMomentInteractionCurveSolver_Solve),helpstring("method Solve")] 
+      HRESULT Solve(
+         [in]Float64 Fz, ///< Axial force on the section
+         [in]Float64 startNA, ///< Start angle of the neutral axis (radians) measured counter-clockwise from the X-axis
+         [in]Float64 endNA, ///< End angle of the neutral axis (radians) measured counter-clockwise from the X-axis
+         [in]long nSteps, ///< Number of angular steps
+         [out,retval]IInteractionCapacityCurveSolution** solution ///< The solution of the moment interaction analysis
+      );
 	};
 
-
+   /// Interface implemented by objects representing a fiber-based "slice" of a cracked section analysis
 	[
 		object,
 		uuid(3BFCCFE4-CFAA-496b-840D-1C9F8EC38015),
@@ -874,14 +1784,34 @@ library WBFLRCCapacity
 	]
 	interface ICrackedSectionSlice : IUnknown
 	{
-		[helpcontext(IDH_ICrackedSectionSlice_InitSlice),helpstring("method InitSlice")] HRESULT InitSlice([in]IShape* pShape,[in]Float64 A,[in]Float64 cgX,[in]Float64 cgY,[in]Float64 Efg,[in]Float64 Ebg);
+      /// Initializes the slice properties
+		[helpcontext(IDH_ICrackedSectionSlice_InitSlice),helpstring("method InitSlice")] 
+      HRESULT InitSlice(
+         [in]IShape* pShape, ///< Shape of the slice
+         [in]Float64 A, ///< Area of the slice
+         [in]Float64 cgX, ///< Horizontal location of the CG
+         [in]Float64 cgY, ///< Vertical location of the CG
+         [in]Float64 Efg, ///< Modulus of elasticity of the foreground material
+         [in]Float64 Ebg ///< Modulus of elasticity of the background material
+      );
+
+      /// Area of the slice
 		[propget,helpcontext(IDH_ICrackedSectionSlice_Area),helpstring("property Area")] HRESULT Area([out,retval]Float64* pArea);
+
+      /// Centroid of the slice
 		[propget,helpcontext(IDH_ICrackedSectionSlice_CG),helpstring("property CG")] HRESULT CG([out,retval]IPoint2d** pCG);
+      
+      /// Modulus of elasticity of the foreground material
 		[propget,helpcontext(IDH_ICrackedSectionSlice_Efg),helpstring("property Efg")] HRESULT Efg([out,retval]Float64* pEfg);
+
+      /// Modulus of elasticity of the background material
 		[propget,helpcontext(IDH_ICrackedSectionSlice_Ebg),helpstring("property Ebg")] HRESULT Ebg([out,retval]Float64* pEbg);
+
+      /// The slice shape
 		[propget,helpcontext(IDH_ICrackedSectionSlice_Shape),helpstring("property Shape")] HRESULT Shape([out,retval]IShape** pShape);
 	};
 
+   /// Interface representing the solution to a crack section analysis
    [
 		object,
 		uuid(3B5642DB-676F-458d-94F6-33B325081475),
@@ -892,14 +1822,27 @@ library WBFLRCCapacity
 	]
 	interface ICrackedSectionSolution : IUnknown
 	{
-		[helpcontext(IDH_ICrackedSectionSolution_InitSolution),helpstring("method InitSolution")] HRESULT InitSolution([in]IPoint2d* pntCG,[in]IUnkArray* slices);
+      /// Initializes the solution
+		[helpcontext(IDH_ICrackedSectionSolution_InitSolution),helpstring("method InitSolution")] 
+      HRESULT InitSolution(
+         [in]IPoint2d* pntCG, ///< Centroid of the cracked section
+         [in]IUnkArray* slices ///< Array of slices
+      );
+      
+      /// Centroid of the cracked section
 		[propget,helpcontext(IDH_ICrackedSectionSolution_CG),helpstring("property CG")] HRESULT CG([out,retval]IPoint2d** pntCG);
+
+      /// Number of slices
 		[propget,helpcontext(IDH_ICrackedSectionSolution_SliceCount),helpstring("property SliceCount")] HRESULT SliceCount([out,retval]CollectionIndexType* nSlices);
+
+      /// A slice in the solution space
 		[propget,helpcontext(IDH_ICrackedSectionSolution_Slice),helpstring("property Slice")] HRESULT Slice([in] CollectionIndexType sliceIdx,[out,retval]ICrackedSectionSlice** pSlice);
+
+      /// Elastic properties of the cracked section
       [propget,helpcontext(IDH_ICrackedSectionSolution_ElasticProperties),helpstring("property ElasticProperties")] HRESULT ElasticProperties([out,retval]IElasticProperties** ppProps);
 	};
 
-
+   /// Interface representing objects that perform cracked section analysis on a GeneralSection
 	[
 		object,
 		uuid(E4FD79AB-580B-4037-AFAC-56DE678B545A),
@@ -910,19 +1853,39 @@ library WBFLRCCapacity
 	]
 	interface ICrackedSectionSolver : IUnknown
 	{
+      /// GeneralSection to be analyzed
 		[propputref,helpcontext(IDH_ICrackedSectionSolver_Section),helpstring("property Section")] HRESULT Section([in]IGeneralSection* pSection);
 		[propget,helpcontext(IDH_ICrackedSectionSolver_Section),helpstring("property Section")] HRESULT Section([out,retval]IGeneralSection** pSection);
+
+      /// Convergance tolerance for centroid
       [propput,helpcontext(IDH_ICrackedSectionSolver_CGTolerance),helpstring("property CGTolerance")] HRESULT CGTolerance([in]Float64 tolerance);
 		[propget,helpcontext(IDH_ICrackedSectionSolver_CGTolerance),helpstring("property CGTolerance")] HRESULT CGTolerance([out,retval]Float64* tolerance);
+
+      /// Iteration limit before solution fails
 		[propput,helpcontext(IDH_ICrackedSectionSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([in]long maxIter);
 		[propget,helpcontext(IDH_ICrackedSectionSolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([out,retval]long* maxIter);
+
+      /// Number of slices to be used in the analysis
 		[propput,helpcontext(IDH_ICrackedSectionSolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
 		[propget,helpcontext(IDH_ICrackedSectionSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval]long* nSlices);
+
+      /// A factor that varies the height of the slices.
+      ///
+      /// The height of the slice furthest from the compression face is this factor times the height of the first slice.If the slice growth factor is 2, the last slice will be twice as tall as the first slice.
+      ///
+      ///  Slice heights reduce when the factor is less than 1 and grow if greater than 1. All slices are the same height wht the factor is 1.
 		[propput,helpcontext(IDH_ICrackedSectionSolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([in]Float64 sliceGrowthFactor);
 		[propget,helpcontext(IDH_ICrackedSectionSolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([out,retval]Float64* sliceGrowthFactor);
-		[helpcontext(IDH_ICrackedSectionSolver_Solve),helpstring("method Solve")] HRESULT Solve([in] Float64 naAngle,[out,retval]ICrackedSectionSolution** solution);
+
+      /// Performs the cracked section analysis
+		[helpcontext(IDH_ICrackedSectionSolver_Solve),helpstring("method Solve")] 
+      HRESULT Solve(
+         [in] Float64 naAngle, ///< Orientation of the neutral axis (radians), measured counter-clockwise from the X-axis
+         [out,retval]ICrackedSectionSolution** solution ///< The solution
+      );
 	};
 
+   /// Interface implemented by a confined reinforced concrete section. This interface provides information to objects implemented the IManderModel interface.
 	[
 		uuid(84A90446-34BC-445d-B7E1-EBC915159529),
 		oleautomation,
@@ -932,14 +1895,20 @@ library WBFLRCCapacity
 	]
 	interface IManderModelSection : IUnknown
 	{
-		[propput,helpcontext(IDH_IManderModelSection_TransvYieldStrength),helpstring("property TransvYieldStrength")] HRESULT TransvYieldStrength([in]Float64 fyh);
+      /// Yield strength of transverse reinforcement
+		[propput,helpcontext(IDH_IManderModelSection_TransvYieldStrength),helpstring("property TransvYieldStrength")]  HRESULT TransvYieldStrength([in]Float64 fyh);
 		[propget,helpcontext(IDH_IManderModelSection_TransvYieldStrength),helpstring("property TransvYieldStrength")] HRESULT TransvYieldStrength([out,retval]Float64* fyh);
+
+      /// Transverse reinforcement rupture strain
       [propput, helpstring("property TransvReinforcementRuptureStrain")] HRESULT TransvReinforcementRuptureStrain([in]Float64 esu);
       [propget, helpstring("property TransvReinforcementRuptureStrain")] HRESULT TransvReinforcementRuptureStrain([out,retval]Float64* esu);
+
+      /// Transverse reinforcement ratio
       [propget,helpcontext(IDH_IManderModelSection_TransvReinforcementRatio),helpstring("property TransvReinforcementRatio")] HRESULT TransvReinforcementRatio([out,retval]Float64* ps);
 		[propget,helpcontext(IDH_IManderModelSection_ConfinementEffectivenessCoefficient),helpstring("property ConfinementEffectivenessCoefficient")] HRESULT ConfinementEffectivenessCoefficient([out,retval]Float64* ke);
 	};
 
+   /// Interface implemented by a confined reinforced concrete circular section. This interface extends the IManderModelSection interface.
 	[
 		uuid(6BA241A3-73FC-48a4-AE85-E2B4B496E3C1),
 		oleautomation,
@@ -949,23 +1918,39 @@ library WBFLRCCapacity
 	]
 	interface ICircularManderSection : IManderModelSection
 	{
+      /// The type of transverse reinforcement used in the concrete member.
 		[propput,helpcontext(IDH_ICircularManderSection_TransvReinforcementType),helpstring("property TransvReinforcementType")] HRESULT TransvReinforcementType([in]TransvReinforcementType trt);
 		[propget,helpcontext(IDH_ICircularManderSection_TransvReinforcementType),helpstring("property TransvReinforcementType")] HRESULT TransvReinforcementType([out,retval]TransvReinforcementType* trt);
+
+      /// Area of transverse reinforcement.
 		[propput,helpcontext(IDH_ICircularManderSection_Asp),helpstring("property Asp")] HRESULT Asp([in]Float64 asp);
 		[propget,helpcontext(IDH_ICircularManderSection_Asp),helpstring("property Asp")] HRESULT Asp([out,retval]Float64* asp);
+
+      /// Area of longitudinal reinforcement.
 		[propput,helpcontext(IDH_ICircularManderSection_As),helpstring("property As")] HRESULT As([in]Float64 as);
 		[propget,helpcontext(IDH_ICircularManderSection_As),helpstring("property As")] HRESULT As([out,retval]Float64* as);
+
+      /// Diameter of transverse reinforcement.
 		[propput,helpcontext(IDH_ICircularManderSection_db),helpstring("property db")] HRESULT db([in]Float64 db);
 		[propget,helpcontext(IDH_ICircularManderSection_db),helpstring("property db")] HRESULT db([out,retval]Float64* db);
+
+      /// Spacing (pitch) of transverse reinforcement.
 		[propput,helpcontext(IDH_ICircularManderSection_S),helpstring("property S")] HRESULT S([in]Float64 s);
 		[propget,helpcontext(IDH_ICircularManderSection_S),helpstring("property S")] HRESULT S([out,retval]Float64* s);
+
+      /// Diameter of the circular section.
 		[propput,helpcontext(IDH_ICircularManderSection_Diameter),helpstring("property Diameter")] HRESULT Diameter([in]Float64 d);
 		[propget,helpcontext(IDH_ICircularManderSection_Diameter),helpstring("property Diameter")] HRESULT Diameter([out,retval]Float64* d);
+
+      /// Clearn cover to longitindal reinforcement.
 		[propput,helpcontext(IDH_ICircularManderSection_Cover),helpstring("property Cover")] HRESULT Cover([in]Float64 c);
 		[propget,helpcontext(IDH_ICircularManderSection_Cover),helpstring("property Cover")] HRESULT Cover([out,retval]Float64* c);
 	};
 
-	[
+   /// Interface representing a material model for confined reinforced concrete based on Mander.
+   ///   
+   /// This model is based on Mander, et.al. "Theoretical Stress-Strain Model for Confined Concrete", ASCE Journal of Structural Engineering, V. 114. No. 8, August 1988
+   [
 		uuid(5580011C-EE53-4323-8239-17C10E1F10CA),
 		oleautomation,
 		helpstring("IManderModel Interface"),
@@ -974,18 +1959,43 @@ library WBFLRCCapacity
 	]
 	interface IManderModel : IUnknown
 	{
+      /// A section that implements the IManderModelSection interface
 		[propputref,helpcontext(IDH_IManderModel_Section),helpstring("property Section")] HRESULT Section([in]IManderModelSection* section);
 		[propget,helpcontext(IDH_IManderModel_Section),helpstring("property Section")] HRESULT Section([out,retval]IManderModelSection** section);
+
+      /// Compressive strength of unconfined concrete
 		[propput,helpcontext(IDH_IManderModel_fco),helpstring("property fco")] HRESULT fco([in]Float64 fco);
 		[propget,helpcontext(IDH_IManderModel_fco),helpstring("property fco")] HRESULT fco([out,retval]Float64* fco);
+
+      /// Strain corresponding to the maximum stress in unconfined concrete
 		[propput,helpcontext(IDH_IManderModel_eco),helpstring("property eco")] HRESULT eco([in]Float64 eco);
 		[propget,helpcontext(IDH_IManderModel_eco),helpstring("property eco")] HRESULT eco([out,retval]Float64* eco);
+
+      /// Ratio of increase strain at peak stress to increase in strength at peak stress due to confinement
+      ///
+      /// This value varies from 3 to 6 with a typical value of 5.
 		[propput,helpcontext(IDH_IManderModel_R),helpstring("property R")] HRESULT R([in]Float64 r);
 		[propget,helpcontext(IDH_IManderModel_R),helpstring("property R")] HRESULT R([out,retval]Float64* r);
+
+      /// Computes the concrete properties
+      /// \f[ f_r = \frac{1}{2} k_e \rho_s f_{yh} \f]
+      /// \f[ f_{cc} = f_{co} \left( -1.254 + 2.254\sqrt{1+7.94\frac{f_r}{f_{cc}}} - 2\frac{f_r}{f_{co}}  \right) \f]
+      /// \f[ e_{co} \left( 1+R\left(\frac{f_{cc}}{f_{co}} -1 \right) \right) \f]
       [helpstring("GetConcreteParameters")] HRESULT GetConcreteParameters([out]Float64* pfr, [out]Float64* pfcc, [out]Float64* pecc);
 	};
 
-	[
+   /// Interface for objects implementing the Power Formula stress-strain model for prestress reinforcement
+   ///
+   /// Grade 270 Low Relaxation \f$ f_{ps} = \epsilon_{ps}\left[887 + \frac{27613}{(1+(112.4\epsilon_{ps})^{7.36})^{\frac{1}{7.36}}}\right] \le 270 ksi \f$
+   ///
+   /// Grade 270 Stress Relieved \f$ f_{ps} = \epsilon_{ps}\left[885 + \frac{27645}{(1+(118\epsilon_{ps})^{6})^{\frac{1}{6}}}\right] \le 270 ksi \f$
+   ///
+   /// Grade 250 Low Relaxation \f$ \begin{cases} f_{ps} = E_{ps}\epsilon_{ps} & \epsilon < 0.076
+   /// f_{ps} = 250 - \frac{0.04}{\epsilon - 0.0064} \le 250 ksi \end{cases} \f$
+   ///
+   /// Grade 250 Stress Relieved \f$ \begin{cases} f_{ps} = E_{ps}\epsilon_{ps} & \epsilon < 0.076
+   /// f_{ps} = 250 - \frac{0.04}{\epsilon - 0.0064} \le 250 ksi \end{cases} \f$
+   [
 		uuid(262F134D-3A3F-496A-8A10-ACBBA783DDEA),
 		oleautomation,
 		helpstring("IPowerFormula Interface"),
@@ -994,13 +2004,21 @@ library WBFLRCCapacity
 	]
 	interface IPowerFormula : IUnknown
 	{
+      /// Strand grade
 		[propget,helpcontext(IDH_IPowerFormula_Grade),helpstring("property Grade")]HRESULT Grade([out,retval]StrandGradeType* grade);
 		[propput,helpcontext(IDH_IPowerFormula_Grade),helpstring("property Grade")]HRESULT Grade([in]StrandGradeType grade);
+
+      /// Strand production method
 		[propget,helpcontext(IDH_IPowerFormula_ProductionMethod),helpstring("property ProductionMethod")]HRESULT ProductionMethod([out,retval]ProductionMethodType* type);
 		[propput,helpcontext(IDH_IPowerFormula_ProductionMethod),helpstring("property ProductionMethod")]HRESULT ProductionMethod([in]ProductionMethodType type);
 	};
 
-	[
+   /// Interface for objects implementing the stress-strain model for prestress reinforcement from AASHTO LRFD 5.6.3.1.1
+   ///
+   /// \f$ f_{ps} = f_{pu}\left(1-k\left(\frac{c}{d}\right)\right) \f$ where \f$k\f$ = 0.28 for low relaxation strand and 0.38 for stress relieved strand
+   ///
+   /// \f$ d = \frac{0.003}{0.003+\epsilon} \f$
+   [
 		uuid(D08B042B-0B5D-4a7a-A5E0-8EC204078438),
 		oleautomation,
 		helpstring("ILRFDPrestressFormula Interface"),
@@ -1009,14 +2027,21 @@ library WBFLRCCapacity
 	]
 	interface ILRFDPrestressFormula : IUnknown
 	{
+      /// Ultimate strength
       [propput] HRESULT Fpu([in]Float64 fpu);
       [propget] HRESULT Fpu([out,retval]Float64* pFpu);
+
+      /// Modulus of elasticity
       [propput] HRESULT Eps([in]Float64 Eps);
+
+      /// Strand production method
 		[propget,helpcontext(IDH_IPowerFormula_ProductionMethod),helpstring("property ProductionMethod")]HRESULT ProductionMethod([out,retval]ProductionMethodType* type);
 		[propput,helpcontext(IDH_IPowerFormula_ProductionMethod),helpstring("property ProductionMethod")]HRESULT ProductionMethod([in]ProductionMethodType type);
 	};
 
-
+   /// Interface for objects that create basic concrete sections for analysis.
+   ///
+   /// Objects implementing this interface create rectangular and circular reinforced concrete section models.
 	[
 		uuid(4239F42F-055D-418a-B42A-D2A3DB540D69),
 		oleautomation,
@@ -1026,11 +2051,42 @@ library WBFLRCCapacity
 	]
 	interface ISectionBuilder : IUnknown
 	{
-		[helpcontext(IDH_ISectionBuilder_RectangularColumn),helpstring("method RectangularColumn")]HRESULT RectangularColumn([in]Float64 H,[in]Float64 W,[in]Float64 cover,[in]long Nh,[in]long Nw,[in]Float64 As,[in]IStressStrain* concrete,[in]IStressStrain* rebar,[out,retval]IGeneralSection** section);
-		[helpcontext(IDH_ISectionBuilder_CircularColumn),helpstring("method CircularColumn")]HRESULT CircularColumn([in]Float64 D,[in]Float64 cover,[in]long Nb,[in]Float64 As,[in]IStressStrain* concrete,[in]IStressStrain* rebar,[out,retval]IGeneralSection** section);
+      /// Creates a GeneralSection object representing a rectangular reinforced concrete column.
+      /// \image html SectionBuilder/RectangularColumn.gif
+      /// It may look like the corner bars are counted twice (once with N1 and then again with N2), they are not. The section modeling takes the number of bars definition into account and compensates for the overlap.
+		[helpcontext(IDH_ISectionBuilder_RectangularColumn),helpstring("method RectangularColumn")]
+      HRESULT RectangularColumn(
+         [in]Float64 H, ///< Height of cross section
+         [in]Float64 W, ///< Width of cross section
+         [in]Float64 cover, ///< Cover to center of reinforcement
+         [in]long Nh, ///< Number of bars over the height of the section (N2)
+         [in]long Nw, ///< Number of bars over the width of the section (N1)
+         [in]Float64 As, ///< Area of one reinforcing bar
+         [in]IStressStrain* concrete, ///< Constituative model for concrete
+         [in]IStressStrain* rebar, ///< Constituative model for reinforcing bars
+         [out,retval]IGeneralSection** section ///< The resulting GeneralSection object
+      );
+
+      /// Creates a GeneralSection object representing a circular reinforced concrete column.
+      /// \image html SectionBuilder/CircularColumn.gif
+      [helpcontext(IDH_ISectionBuilder_CircularColumn),helpstring("method CircularColumn")]
+      HRESULT CircularColumn(
+         [in]Float64 D, ///< Diameter of the column
+         [in]Float64 cover,  ///< Cover to center of reinforcement
+         [in]long Nb, ///< Number of reinforcing bars
+         [in]Float64 As, ///< Area of one reinforcing bar
+         [in]IStressStrain* concrete, ///< Constituative model for concrete
+         [in]IStressStrain* rebar, ///< Constituative model for reinforcing bars
+         [out,retval]IGeneralSection** section ///< The resulting GeneralSection object
+      );
 	};
 
-
+   /// Interface for objects that compute capacity reduction factors for reinforced concrete sections.
+   ///
+   /// Capacity reduction factors are computed in accordance with AASHTO LRFD 5.5.4.2.1, 3rd Edition.
+   ///
+   /// \f[ \phi = 0.90 + 0.10(PPR) \f]
+   /// \f[ PPR = \frac{A_{ps}f_{py}}{A_{ps}f_{py} + A_s f_y} \f]
 	[
 		uuid(A328DF26-75F1-4433-B74D-C0929A481B8C),
 		oleautomation,
@@ -1040,11 +2096,32 @@ library WBFLRCCapacity
 	]
 	interface ICapacityReductionFactor : IUnknown
 	{
-		[helpcontext(IDH_ICapacityReductionFactor_Compute),helpstring("method Compute")] HRESULT Compute([in]IGeneralSection* section,[in]CollectionIndexType nConcShapes,[in]ILine2d* neutralAxis,[in]Float64 ppr,[out]Float64* c,[out]Float64* dt,[out]Float64* phi);
-		[helpcontext(IDH_ICapacityReductionFactor_ComputeEx),helpstring("method ComputeEx")] HRESULT ComputeEx([in]IUnkArray* pConcShapes,[in]IUnkArray* pReinfShapes,[in]ILine2d* neutralAxis,[in]Float64 ppr,[out]Float64* c,[out]Float64* dt,[out]Float64* phi);
+      /// Computes the capacity reduction factor in accordance with AASHTO LRFD 5.5.4.2.1, 3rd Edition
+		[helpcontext(IDH_ICapacityReductionFactor_Compute),helpstring("method Compute")] 
+      HRESULT Compute(
+         [in]IGeneralSection* section, ///< A GeneralSection assumed to be a reinforced concrete section
+         [in]CollectionIndexType nConcShapes, ///< Number of concrete elements in the GeneralSection. Concrete elements must be defined first.
+         [in]ILine2d* neutralAxis, ///< WBFLGeometry::Line2d object representing the neutral axis
+         [in]Float64 ppr, ///< The partial prestress ratio
+         [out]Float64* c, ///< Depth to neutral axis
+         [out]Float64* dt, ///< Depth to tension reinforcement furthest from compression face of member
+         [out]Float64* phi ///< The capacity reduction factor
+      );
+      
+      /// Computes the capacity reduction factor in accordance with AASHTO LRFD 5.5.4.2.1, 3rd Edition
+      [helpcontext(IDH_ICapacityReductionFactor_ComputeEx),helpstring("method ComputeEx")] 
+      HRESULT ComputeEx(
+         [in]IUnkArray* pConcShapes, ///< Array of concrete shapes
+         [in]IUnkArray* pReinfShapes, ///< Array of reinforcement shapes 
+         [in]ILine2d* neutralAxis, ///< WBFLGeometry::Line2d object representing the neutral axis
+         [in]Float64 ppr, ///< The partial prestress ratio
+         [out]Float64* c, ///< Depth to neutral axis
+         [out]Float64* dt, ///< Depth to tension reinforcement furthest from compression face of member
+         [out]Float64* phi ///< The capacity reduction factor
+      );
 	};
 
-
+   /// Interface implemented by objects that compute cracked section properties for RCBeam objects
 	[
 		object,
 		uuid(F351EDCA-2D3A-499a-B1E2-2A54673F087A),
@@ -1055,9 +2132,16 @@ library WBFLRCCapacity
 	]
 	interface IRCCrackedSectionSolver : IUnknown
 	{
-		[helpcontext(IDH_IRCSolver_Solve),helpstring("method SolveCrackedSection")] HRESULT Solve([in] IRCBeam* beam,[out,retval] ICrackedSectionSolution* *solution);
+      /// Computes cracked section properties for a RCBeam object
+		[helpcontext(IDH_IRCSolver_Solve),helpstring("method SolveCrackedSection")] 
+      HRESULT Solve(
+         [in] IRCBeam* beam, ///< A RCBeam object
+         [out,retval] ICrackedSectionSolution* *solution ///< The cracked section properties solution object
+      );
 	};
-	[
+
+   /// Interface implemented by objects that compute cracked section properties for RCBeam2 objects
+   [
 		object,
 		uuid(0D0E0A6B-DB53-443e-BC76-CDED1C7C7528),
 		oleautomation,
@@ -1067,9 +2151,16 @@ library WBFLRCCapacity
 	]
 	interface IRCCrackedSectionSolver2 : IUnknown
 	{
-		[helpcontext(IDH_IRCSolver2_Solver),helpstring("method SolveCrackedSection")] HRESULT Solve([in] IRCBeam2* beam,[out,retval] ICrackedSectionSolution* *solution);
+      /// Computes cracked section properties for a RCBeam2 object
+      [helpcontext(IDH_IRCSolver2_Solver),helpstring("method SolveCrackedSection")] 
+      HRESULT Solve(
+         [in] IRCBeam2* beam, ///< A RCBeam2 object
+         [out,retval] ICrackedSectionSolution* *solution ///< The cracked section properties solution object
+      );
 	};
-	[
+
+   /// Interface implemented by objects that compute cracked section properties for RCBeam2Ex objects
+   [
 		object,
 		uuid(3D186B71-8511-43ef-BBD3-DDBA3808CFB4),
 		oleautomation,
@@ -1079,10 +2170,18 @@ library WBFLRCCapacity
 	]
 	interface IRCCrackedSectionSolver2Ex : IUnknown
 	{
-		[helpcontext(IDH_IRCSolver2Ex_Solver),helpstring("method SolveCrackedSection")] HRESULT Solve([in] IRCBeam2Ex* beam,[out,retval] ICrackedSectionSolution* *solution);
+      /// Computes cracked section properties for a RCBeam2Ex object
+      [helpcontext(IDH_IRCSolver2Ex_Solver),helpstring("method SolveCrackedSection")]
+      HRESULT Solve(
+         [in] IRCBeam2Ex* beam, ///< A RCBeam2Ex object
+         [out,retval] ICrackedSectionSolution* *solution ///< The cracked section properties solution object
+      );
 	};
 
 
+   /// Material model for unconfined concrete.
+   ///
+   /// Implements the IUnconfinedConcrete, IStressStrain, and ISupportUnitServer interfaces
 	[
 		uuid(4FAFD823-B4C9-4F88-8D46-74F84682893C),
       helpcontext(IDH_IUnconfinedConcrete),
@@ -1095,7 +2194,11 @@ library WBFLRCCapacity
       interface ISupportUnitServer;
       interface IStructuredStorage2;
 	};
-	[
+
+   /// Material model for steel pretensioning strands based on the PowerFormula.
+   ///
+   /// Implements the IPowerFormula, IStressStrain, and ISupportUnitServer interfaces
+   [
 		uuid(75C05DC6-48F7-476B-B67A-ABD58180F9FB),
       helpcontext(IDH_IPSPowerFormula),
 		helpstring("PSPowerFormula Class")
@@ -1107,7 +2210,11 @@ library WBFLRCCapacity
       interface ISupportUnitServer;
       interface IStructuredStorage2;
 	};
-	[
+
+   /// Material model for steel pretensioning strands based LRFD Equation 5.6.3.1.1-1
+   ///
+   /// Implements the ILRFDPrestressFormula, IStressStrain, and ISupportUnitServer interfaces
+   [
 		uuid(F3C1A16E-C1F0-4d60-93F2-4017A0472B7C),
       helpcontext(IDH_IPSPowerFormula),
 		helpstring("LRFDPrestressFormula Class")
@@ -1119,7 +2226,12 @@ library WBFLRCCapacity
       interface ISupportUnitServer;
       interface IStructuredStorage2;
 	};
-	[
+
+
+   /// Material model for mild steel reinforcement. This is an elastic-plastic model.
+   ///
+   /// Implements the IRebarModel, IStressStrain, and ISupportUnitServer interfaces
+   [
 		uuid(9F2A88AB-C3AF-49AB-9685-47444F74C3DC),
       helpcontext(IDH_IRebarModel),
 		helpstring("RebarModel Class")
@@ -1131,7 +2243,10 @@ library WBFLRCCapacity
       interface IStructuredStorage2;
 	};
 
-	[
+   /// Material model for mild steel reinforcement. This is an elast-plastic model with strain-hardening.
+   ///
+   /// Implements the IStrainHardenedRebarModel, IStressStrain, and ISupportUnitServer interfaces
+   [
 		uuid(030BB55E-DCE1-4bc2-9036-2D9F74A8A814),
       helpcontext(IDH_IStrainHardenedRebarModel),
 		helpstring("StrainHardenedRebarModel Class")
@@ -1143,6 +2258,9 @@ library WBFLRCCapacity
       interface IStructuredStorage2;
 	};
 
+   /// A composite reinforced concrete T-Beam
+   ///
+   /// Implements the IRCBeam interface;
 	[
 		uuid(3DB23ADB-A45F-4093-A7B4-DE198847A825),
       helpcontext(IDH_IRCBeam),
@@ -1154,7 +2272,11 @@ library WBFLRCCapacity
       interface ISupportUnitServer;
       interface IStructuredStorage2;
 	};
-	[
+
+   /// A composite reinforced concrete T-Beam with arbitrary layers of reinforcement
+   ///
+   /// Implements the IRCBeam2 interface;
+   [
 		uuid(F9D85972-E047-4EA7-BC7A-24C67CDC5492),
       helpcontext(IDH_IRCBeam2),
 		helpstring("RCBeam2 Class")
@@ -1165,7 +2287,11 @@ library WBFLRCCapacity
       interface ISupportUnitServer;
       interface IStructuredStorage2;
 	};
-	[
+
+   /// A composite reinforced concrete T-Beam with arbitrary layers of reinforcement and a general beam shape
+   ///
+   /// Implements the IRCBeam2Ex interface;
+   [
 		uuid(BD03891B-48D5-4324-8C37-B88865B5F5DA),
 		helpstring("RCBeam2Ex Class")
 	]
@@ -1175,7 +2301,11 @@ library WBFLRCCapacity
       interface ISupportUnitServer;
       interface IStructuredStorage2;
 	};
-	[
+
+   /// Object that computes uniaxial bending moment capacity using methods of the AASHTO LRFD Bridge Design Specifications
+   ///
+   /// Implements the ILRFDSolver interface.
+   [
 		uuid(8B5C753D-82DC-46B8-9D89-6F28CFF9D3B8),
       helpcontext(IDH_ILRFDSolver),
 		helpstring("LRFDSolver Class")
@@ -1186,6 +2316,9 @@ library WBFLRCCapacity
 		interface IRCSolver;
 	};
 
+   /// Object that computes uniaxial bending moment capacity using methods of the AASHTO LRFD Bridge Design Specifications
+   ///
+   /// Implements the ILRFDSolver2 interface and supports RCBeam, RCBeam2, and RCBeam2Ex beam objects
    [
       uuid(8AE96CF8-F16B-4488-904B-1F7B27E0C125),
       helpcontext(IDH_ILRFDSolver2),
@@ -1199,6 +2332,9 @@ library WBFLRCCapacity
 		interface IRCSolver2Ex;
 	};
 
+   /// Object that computes uniaxial bending moment capacity using methods of the AASHTO Bridge Design Standard Specifications using the load factor design (LFD) methodology.
+   ///
+   /// Implements the ILFDSolver interface.
    [
 		uuid(267BF7DB-1E9F-43e7-95AF-157776848D60),
       helpcontext(IDH_ILFDSolver),
@@ -1209,7 +2345,11 @@ library WBFLRCCapacity
 		[default] interface ILFDSolver;
 		interface IRCSolver;
 	};
-	[
+
+   /// Object that computes uniaxial bending moment capacity using the pseudo strain compatibility method demonstrated in the PCI Bridge Design Manual
+   ///
+   /// Implements the IPCISolver interface and supports RCBeam, RCBeam2, and RCBeam2Ex beam objects.
+   [
 		uuid(F7F99D32-5E9E-4618-A858-ABE7089EE425),
       helpcontext(IDH_IPCISolver),
 		helpstring("PCISolver Class")
@@ -1221,7 +2361,12 @@ library WBFLRCCapacity
       interface IRCSolver2;
       interface IRCSolver2Ex;
 	};
-	[
+   
+   /// Object that computes uniaxial bending moment capacity using the non-linear strain compatibility method.
+   /// This object also computes cracked section properties.
+   ///
+   /// Implements the INLSolver, IRCSolver, IRCSolver2, IRCSolver2Ex, IRCCrackedSectionSolver, IRCCrackedSectionSolver2, IRCCrackedSectionSolver2Ex interfaces and supports RCBeam, RCBeam2, and RCBeam2Ex beam objects.
+   [
 		uuid(E5848EAC-5DE6-4147-8771-78225B66F8B7),
       helpcontext(IDH_INLSolver),
 		helpstring("NLSolver Class")
@@ -1236,6 +2381,11 @@ library WBFLRCCapacity
       interface IRCCrackedSectionSolver2;
       interface IRCCrackedSectionSolver2Ex;
 	};
+
+   /// Moment capacity analysis solution object.
+   ///
+   /// This object contains the results of a moment capacity analysis. It is created by any object implemented the IRCSolver interface.
+   /// Implements the IRCSolution interface.
 	[
 		uuid(DE9971B2-8ED4-4840-80EF-07B0F295410E),
       helpcontext(IDH_IRCSolution),
@@ -1245,7 +2395,12 @@ library WBFLRCCapacity
 	{
 		[default] interface IRCSolution;
 	};
-	[
+
+   /// Moment capacity analysis solution object.
+   ///
+   /// This object contains the results of a moment capacity analysis. It is created by any object implemented the IRCSolver2 or IRCSolver2Ex interface.
+   /// Implements the IRCSolutionEx interface.
+   [
 		uuid(FD1C3AFB-609A-4633-A0FE-2EE6A0154C33),
 		helpstring("RCSolutionEx Class")
 	]
@@ -1254,6 +2409,9 @@ library WBFLRCCapacity
 		[default] interface IRCSolutionEx;
 	};
 
+   /// Moment capacity analysis solution object created by a LRFDSolver object.
+   ///
+   /// Implements the ILRFDSolution interface.
    [
 		uuid(F3E82C7F-E2E1-4949-B724-B15D0329ECE0),
       helpcontext(IDH_IRCSolution),
@@ -1264,6 +2422,9 @@ library WBFLRCCapacity
 		[default] interface ILRFDSolution;
 	};
 
+   /// Moment capacity analysis solution object created by a LRFDSolver2 object.
+   ///
+   /// Implements the ILRFDSolutionEx interface.
    [
 		uuid(96CB9016-C37A-4c09-A710-850FAB1A27B0),
       helpcontext(IDH_IRCSolutionEx),
@@ -1274,6 +2435,9 @@ library WBFLRCCapacity
 		[default] interface ILRFDSolutionEx;
 	};
 
+   /// Moment capacity analysis solution object created by a PCISolver object.
+   ///
+   /// Implements the IRCSolution and IPCISolution interfaces.   
    [
 		uuid(D24CC053-6C5B-4392-B0F8-B34D07D815B3),
       helpcontext(IDH_IPCISolution),
@@ -1284,7 +2448,11 @@ library WBFLRCCapacity
       [default] interface IRCSolution;
 		interface IPCISolution;
 	};
-	[
+
+   /// Moment capacity analysis solution object created by a RCSolver2 and RCSolver2Ex objects.
+   ///
+   /// Implements the IRCSolutionEx and IPCISolutionEx interfaces   
+   [
 		uuid(C1CD05E5-C0A6-48A6-98A4-E00011EAEAD0),
 		helpstring("PCISolutionEx Class")
 	]
@@ -1293,6 +2461,10 @@ library WBFLRCCapacity
       [default] interface IRCSolutionEx;
 		interface IPCISolutionEx;
 	};
+
+   /// Object that computes uniaxial bending moment capacity using a mix of equations from the AASHTO LRFD and Standard Specifications.
+   ///
+   /// Implements the IMixedSolver interface.
 	[
 		uuid(29CA6786-FA0C-402C-9683-404C6275E378),
 		helpcontext(IDH_IMixedSolver),
@@ -1304,6 +2476,9 @@ library WBFLRCCapacity
       interface IRCSolver;
 	};
 
+   /// A circular reinforced concrete column. The reinforcing is assumed to be closely spaced and uniformly distributed around the cross section.
+   ///
+   /// Implements the IRoundColumn interface.
 	[
 		uuid(0778C329-BF14-42DD-BC00-596BFDF80F5C),
 		helpcontext(IDH_IRoundColumn),
@@ -1314,6 +2489,10 @@ library WBFLRCCapacity
 		[default] interface IRoundColumn;
 	};
 
+   /// An object that represents a general cross section of a structural member subjected to axial load and biaxial bending. 
+   /// This object typically represents a reinforced concrete section, but in general it can be any section consisting of any material with well defined material properties.
+   ///
+   /// Implements the IGeneralSection interface.
 	[
 		uuid(62ABC849-D56B-4918-87AD-B7DF219E5909),
 		helpcontext(IDH_IGeneralSection),
@@ -1324,6 +2503,12 @@ library WBFLRCCapacity
 		[default] interface IGeneralSection;
 	};
 
+   /// An object that represents a "slice" in a fiber based discritization of a GeneralSection structure element.
+   /// GeneralSectionSlice objects are created by general section solvers, such as GeneralSectionSolver and CrackedSectionSolver, as part of a section analysis and 
+   /// are obtained through the solution object suc as GeneralSectionSolution or CrackedSectionSolution. These objects have fiber level state of stress information 
+   /// for the related section analysis solution.
+   ///
+   /// Implements the IGeneralSectionSlice interface.
 	[
 		uuid(F57C14E7-B13A-4afd-8B48-CD68417457BB),
 		helpcontext(IDH_IGeneralSectionSlice),
@@ -1334,6 +2519,10 @@ library WBFLRCCapacity
 		[default] interface IGeneralSectionSlice;
 	};
 
+   /// An object that represents the solution of a general section analysis. 
+   /// GeneralSectionSolution objects are created by GeneralSectionSolver objects.
+   ///
+   /// Implements the IGeneralSectionSolution interface.
 	[
 		uuid(D9E5208E-8DE6-41b6-8700-4A0EFB749E1C),
 		helpcontext(IDH_IGeneralSectionSolution),
@@ -1344,6 +2533,9 @@ library WBFLRCCapacity
 		[default] interface IGeneralSectionSolution;
 	};
 
+   /// An object that performs a biaxial fiber based general section analysis on an GeneralSection model given a state of strains represented by a Plane3d object.
+   ///
+   /// Implements the IGeneralSectionSolver interface.
 	[
 		uuid(4B0F6910-9548-4629-B6DF-6CDA76F911CF),
 		helpcontext(IDH_IGeneralSectionSolver),
@@ -1354,7 +2546,10 @@ library WBFLRCCapacity
 		[default] interface IGeneralSectionSolver;
 	};
 
-	[
+   /// Object that represents the results of a moment curvature analysis.
+   ///
+   /// Implements the IMomentCurvatureSolution interface.
+   [
 		uuid(2048EC33-ACCC-4f35-A2AC-DEFB64126D45),
 		helpcontext(IDH_IMomentCurvatureSolution),
 		helpstring("MomentCurvatureSolution Class")
@@ -1364,7 +2559,10 @@ library WBFLRCCapacity
 		[default] interface IMomentCurvatureSolution;
 	};
 
-	[
+   /// Object that performs a moment curvature analysis.
+   ///
+   /// Implements the IMomentCurvatureSolver interface.
+   [
 		uuid(ABACF363-FDFF-4ae3-B305-4DD2B478174F),
 		helpcontext(IDH_IMomentCurvatureSolver),
 		helpstring("MomentCurvatureSolver Class")
@@ -1374,7 +2572,10 @@ library WBFLRCCapacity
 		[default] interface IMomentCurvatureSolver;
 	};
 
-	[
+   /// Object that represents the results of a moment capacity analysis.
+   ///
+   /// Implements the IMomentCapacitySolution interface.
+   [
 		uuid(B5DB837E-F239-4d17-8A13-D16219BE2F16),
 		helpcontext(IDH_IMomentCapacitySolution),
 		helpstring("MomentCapacitySolution Class")
@@ -1384,7 +2585,10 @@ library WBFLRCCapacity
 		[default] interface IMomentCapacitySolution;
 	};
 
-	[
+   /// Object that performs a moment capacity analysis.
+   ///
+   /// Implements the IMomentCapacitySolver interface.
+   [
 		uuid(C7173DB8-37C5-4800-A9DF-70379BD71530),
 		helpcontext(IDH_IMomentCapacitySolver),
 		helpstring("MomentCapacitySolver Class")
@@ -1394,7 +2598,10 @@ library WBFLRCCapacity
 		[default] interface IMomentCapacitySolver;
 	};
 
-	[
+   /// Material model for confined concrete in a circular cross section based on formulations by Mander.
+   ///
+   /// Implements the ICircularManderSection, and IManderModelSection interfaces
+   [
 		uuid(9374FC6E-D9F9-4d58-BE0E-D6D74DFB66CD),
 		helpcontext(IDH_ICircularManderSection),
 		helpstring("CircularManderSection Class")
@@ -1405,7 +2612,10 @@ library WBFLRCCapacity
 		interface IManderModelSection;
 	};
 
-	[
+   /// Material model for confined concrete based on formulations by Mander.
+   ///
+   /// Implements the IManderModel, IStressStrain, and ISupportUnitServer interfaces
+   [
 		uuid(89C63EF1-9DA6-4fef-8892-D6C9E6359459),
 		helpcontext(IDH_IManderModel),
 		helpstring("ManderModel Class")
@@ -1417,17 +2627,23 @@ library WBFLRCCapacity
 	    interface ISupportUnitServer;
 	};
 
-	[
+   /// Object that represents the solution to a moment curvature interaction analysis
+   ///
+   /// Implements the IInteractionCurveSolution
+   [
 		uuid(3D136232-2592-4751-8D6C-55C0481C2FC6),
 		helpcontext(IDH_IInteractionCurveSolution),
 		helpstring("InteractionCurveSolution Class")
 	]
-    coclass InteractionCurveSolution
+   coclass InteractionCurveSolution
 	{
 		[default] interface IInteractionCurveSolution;
 	};
 
-	[
+    /// Object that computes a moment interaction diagram for a GeneralSection object. Moment capacity is computed from a moment curvature analysis.
+    ///
+    /// Implements the IInteractionCurveSolver.
+    [
 		uuid(4D75A698-EF7C-4ca5-A0B2-C6F4C8FC3B6D),
 		helpcontext(IDH_IInteractionCurveSolver),
 		helpstring("InteractionCurveSolver Class")
@@ -1437,17 +2653,22 @@ library WBFLRCCapacity
 		[default] interface IInteractionCurveSolver;
 	};
 
-
+   /// Object that represents the solution to a moment interaction analysis
+   ///
+   /// Implements the IInteractionCapacityCurveSolution
 	[
 		uuid(90596D18-7307-49a8-8F7D-3FD9FB4AFF31),
 		helpcontext(IDH_IInteractionCapacityCurveSolution),
 		helpstring("InteractionCapacityCurveSolution Class")
 	]
-    coclass InteractionCapacityCurveSolution
+   coclass InteractionCapacityCurveSolution
 	{
 		[default] interface IInteractionCapacityCurveSolution;
 	};
 
+   /// Object that computes a P-M interaction diagram for a GeneralSection object.
+   ///
+   /// Implements the IAxialInteractionCurveSolver interface.
 	[
 		uuid(E2032086-9161-453b-ABF0-2150CAA924AF),
 		helpcontext(IDH_IAxialInteractionCurveSolver),
@@ -1458,7 +2679,9 @@ library WBFLRCCapacity
 		[default] interface IAxialInteractionCurveSolver;
 	};
 
-
+   /// Object that computes a Mx-My biaxial bending interaction diagram for a GeneralSection object. Moment capacity is computed using a strain compatibility analysis with a specified peak compression strain
+   ///
+   /// Implements the IMomentInteractionCurveSolver.
 	[
 		uuid(F4816F27-B4D5-44e4-843B-4B3E8B2FF9FE),
 		helpcontext(IDH_IMomentInteractionCurveSolver),
@@ -1468,7 +2691,10 @@ library WBFLRCCapacity
 	{
 		[default] interface IMomentInteractionCurveSolver;
 	};
-
+   
+   /// Object that creates simple reinforced concrete section models for analysis.
+   ///
+   /// Implements the ISectionBuilder interface.
 	[
 		uuid(4BD04EC7-9116-480c-9BED-607753E2E3F5),
 		helpcontext(IDH_ISectionBuilder),
@@ -1479,6 +2705,9 @@ library WBFLRCCapacity
 		[default] interface ISectionBuilder;
 	};
 
+   /// Object that considers a GeneralSectionSolution to be a reinforced concrete section and computes a capacity reduction factor in accordance with the AASHTO LRFD Bridge Design Specifications, 3rd Edition.
+   ///
+   /// Implements the ICapacityReductionFactor interface.
 	[
 		uuid(A6C78DC5-0FD1-48b0-B393-D7241232AE11),
 		helpcontext(IDH_ICapacityReductionFactor),
@@ -1489,7 +2718,9 @@ library WBFLRCCapacity
 		[default] interface ICapacityReductionFactor;
 	};
 
-
+   /// Object that represent the solution of a cracked section analysis.
+   ///
+   /// Implements the ICrackedSectionSolution interface.
 	[
 		uuid(88B40E54-6EB0-4701-AC9B-71AA90841C73),
 		helpcontext(IDH_ICrackedSectionSolution),
@@ -1500,7 +2731,10 @@ library WBFLRCCapacity
 		[default] interface ICrackedSectionSolution;
 	};
 
-	[
+   /// Object that performs a cracked section analysis on a GeneralSection object
+   ///
+   /// Implements the ICrackedSectionSolver interface.
+   [
 		uuid(A3B11833-C6C5-4fad-96C0-5E162B8C4228),
 		helpcontext(IDH_ICrackedSectionSolver),
 		helpstring("CrackedSectionSolver Class")
@@ -1510,7 +2744,10 @@ library WBFLRCCapacity
 		[default] interface ICrackedSectionSolver;
 	};
 
-	[
+   /// Object representing a fiber based "slice" in for the solution of a cracked section analysis on a GeneralSection object
+   ///
+   /// Implements the ICrackedSectionSlice interface.
+   [
 		uuid(EFF46265-14C7-41e3-AF39-45B820745A64),
 		helpcontext(IDH_ICrackedSectionSlice),
 		helpstring("CrackedSectionSlice Class")

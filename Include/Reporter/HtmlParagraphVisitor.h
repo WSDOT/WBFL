@@ -28,75 +28,36 @@
 #include <Reporter\ReporterExp.h>
 #include <Reporter\OutputParagraphVisitor.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
 class REPORTERCLASS rptPageLayout;
 class REPORTERCLASS rptHtmlHelper;
 
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptHtmlParagraphVisitor
-
-   Visitor to generate Html from a paragraph.
-
-
-DESCRIPTION
-   This class visits a paragraph, generates HTML and sends it to the ostream 
-   defined in the constructor.
-
-LOG
-   rdp : 04.09.1997 : Created file
-*****************************************************************************/
-
+/// Visitor to generate HTML from a paragraph.
+///
+/// This class visits a paragraph, generates HTML and sends it to the ostream defined in the constructor.
 class REPORTERCLASS rptHtmlParagraphVisitor : public rptOutputParagraphVisitor
 {
 public:
-   // GROUP: LIFECYCLE
+   /// Constructor
+   rptHtmlParagraphVisitor(std::_tostream* pMyOstream, ///< output stream to receive the html code
+                           const rptPageLayout*   pPageLayout, ///< page layout information
+                           const rptHtmlHelper&   myHelper, ///< helper object for generating HTML code
+                           Uint32 logPixelsX,///< horizontal screen resolution in pixels per inch
+                           Uint32 logPixelsY///< vertical screen resolution in pixels per inch
+   );
 
-   //------------------------------------------------------------------------
-   // Constructor
-   rptHtmlParagraphVisitor(std::_tostream* pMyOstream, 
-                           const rptPageLayout*   MypPageLayout,
-                           const rptHtmlHelper&   rmyHelper,
-                           Uint32 logPixelsX,
-                           Uint32 logPixelsY);
-
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptHtmlParagraphVisitor();
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   // visit a paragraph and generate Html
-   //
-   void VisitParagraph(rptParagraph*);
-   // GROUP: ACCESS
-   // anchor numbering
+   /// visit a paragraph and generate Html
+   virtual void VisitParagraph(rptParagraph* pParagraph) override;
+
+   /// Returns the last anchor number
    Uint32 GetLastAnchor()            {return m_CurrAnchor;}
+
+   /// Sets the last anchor number
    void SetLastAnchor(Uint32 anchor) {m_CurrAnchor=anchor;}
 
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 
 private:
-   // GROUP: DATA MEMBERS
-
-   //------------------------------------------------------------------------
    // Page layout for this paragraph. This is typically passed in from the 
    // chapter that owns the paragraph
    const rptPageLayout* m_pPageLayout;
@@ -106,27 +67,14 @@ private:
    Uint32 m_LogPixelsX;
    Uint32 m_LogPixelsY;
 
-   // GROUP: LIFECYCLE
-
-   // Prevent accidental copying and assignment and Default constructor
-   rptHtmlParagraphVisitor();
-   rptHtmlParagraphVisitor(const rptHtmlParagraphVisitor&);
+   rptHtmlParagraphVisitor() = delete;
+   rptHtmlParagraphVisitor(const rptHtmlParagraphVisitor&) = delete;
    rptHtmlParagraphVisitor& operator=(const rptHtmlParagraphVisitor&) = delete;
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
    Uint32 GetNextAnchor() 
    {
       return m_CurrAnchor++;
    }
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_HTMLPARAGRAPHVISITOR_H_

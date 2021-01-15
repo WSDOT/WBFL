@@ -25,34 +25,27 @@
 
 #include <Stability\StabilityExp.h>
 
-/*****************************************************************************
-CLASS 
-   stbLiftingCriteria
-
-DESCRIPTION
-   Encapsulates the criteria for analysis
-*****************************************************************************/
-
+/// Criteria for lifting analysis
 class STABILITYCLASS stbLiftingCriteria
 {
 public:
    stbLiftingCriteria();
 
-   Float64 Lambda;
+   Float64 Lambda; ///< concrete density modification factor (see LRFD 5.4.2.8)
 
-   Float64 CompressionCoefficient_GlobalStress;
-   Float64 CompressionCoefficient_PeakStress;
+   Float64 CompressionCoefficient_GlobalStress; ///< Global compression compression limit coefficient (x*f'c)
+   Float64 CompressionCoefficient_PeakStress; ///< Peak compression compression limit coefficient (x*f'c)
 
-   Float64 TensionCoefficient;
-   bool bMaxTension;
-   Float64 MaxTension;
-   Float64 TensionCoefficientWithRebar;
+   Float64 TensionCoefficient; ///< Tension limit coefficient (x*sqrt(f'c)) for sections without sufficient auxilary reinforcement
+   bool bMaxTension; ///< Boolean value indicating if there is a maximum value of the tension stress limit
+   Float64 MaxTension; ///< If applicable, the maximum value of the tension stress limit
+   Float64 TensionCoefficientWithRebar; ///< Tension limit coefficient (x*sqrt(f'c)) for sections with sufficient auxilary reinforcement
 
-   Float64 MinFScr; // minimum factor of safety against cracking
-   Float64 MinFSf;  // minimum factor of safety against failure
+   Float64 MinFScr; ///< minimum factor of safety against cracking
+   Float64 MinFSf;  ///< minimum factor of safety against failure
 
-   Float64 AllowableCompression_GlobalStress; // allowable compression stress
-   Float64 AllowableCompression_PeakStress;
-   Float64 AllowableTension; // allowable tension stress
-   Float64 AllowableTensionWithRebar; // allowable tension stress if there is adequate rebar
+   Float64 AllowableCompression_GlobalStress; ///< compression stress limit
+   Float64 AllowableCompression_PeakStress; ///< compression stress limit
+   Float64 AllowableTension; ///< tension stress limit for sections without sufficient auxilary reinforcement
+   Float64 AllowableTensionWithRebar; ///< tension stress limit for sections with sufficient auxilary reinforcement
 };

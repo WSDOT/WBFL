@@ -25,101 +25,24 @@
 #define INCLUDED_REPORTER_RCUNITTAG_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ReportContent.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptRcUnitTag
-
-   Abstract base class for unit tag report content.
-
-
-DESCRIPTION
-   Abstract base class for unit tag report content.
-
-LOG
-   rab : 11.12.1997 : Created file
-*****************************************************************************/
-
+/// Abstract base class for unit tag report content.
 class REPORTERCLASS rptRcUnitTag : public rptReportContent
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
    rptRcUnitTag();
-
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRcUnitTag();
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // Accept a visitor
+   // Accepts a visitor and calls VisitRcUnitTag(this)
    virtual void Accept( rptRcVisitor& rVisitor ) override;
 
-   //------------------------------------------------------------------------
-   // Make a virtual copy
+   /// Creates a clone
    virtual rptReportContent* CreateClone() const = 0;
 
-   // GROUP: ACCESS
-
-   //------------------------------------------------------------------------
-   // Returns the unit tag as a string.
-   virtual std::_tstring AsString() const = 0;
-
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
-#endif // _DEBUG
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   /// Returns the unit tag as a string.
+   virtual const std::_tstring& AsString() const = 0;
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_RCUNITTAG_H_

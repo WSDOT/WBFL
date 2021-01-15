@@ -26,32 +26,30 @@
 #include <Stability\StabilityExp.h>
 #include <Stability\AnalysisPoint.h>
 
-/*****************************************************************************
-CLASS 
-   stbIAnalysispoint
-
-DESCRIPTION
-   Abstract interface for an analysis point
-*****************************************************************************/
-
+/// An analysis point
 class STABILITYCLASS stbAnalysisPoint : public stbIAnalysisPoint
 {
 public:
    stbAnalysisPoint();
-   stbAnalysisPoint(Float64 X);
-   stbAnalysisPoint(const stbAnalysisPoint& other);
-
+   stbAnalysisPoint(Float64 X); ///< Creates an analysis point at the specified distance from the left end of girder.
+   stbAnalysisPoint(const stbAnalysisPoint& other); ///< Copy constructor
+ 
+   /// Sets the location relative to the left end of the girder
    void SetLocation(Float64 X);
 
-   // Returns the location of the analysis point relative to the left end of the girder
-   virtual Float64 GetLocation() const;
+   /// Returns the analysis point location
+   virtual Float64 GetLocation() const override;
 
-   // Returns a reporting string for the analysis point.
-   // if pLengthUnit is not nullptr, the string should contain the unit of measure
-   virtual std::_tstring AsString(const unitmgtLengthData& lengthUnit,Float64 offset,bool bShowUnit) const;
+   /// Returns a reporting string for the analysis point.
+   virtual std::_tstring  AsString(
+      const unitmgtLengthData& lengthUnit, ///< Indirect unit measure information
+      Float64 offset, ///< an offset to be applied to the point location so the analysis point can appear to be relative to a different datum then the left end of the girder.
+      bool bShowUnit ///< If true, the unit of measure is included in the resulting string
+   ) const override;
 
-   virtual stbIAnalysisPoint* Clone() const;
+   /// Creates a copy of the analysis point
+   virtual stbIAnalysisPoint* Clone() const override;
 
-protected:
+private:
    Float64 m_X;
 };

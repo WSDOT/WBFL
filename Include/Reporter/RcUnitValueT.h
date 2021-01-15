@@ -25,53 +25,22 @@
 #define INCLUDED_REPORTER_RCUNITVALUET_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
 
-// PROJECT INCLUDES
-//
 #include <Reporter\ReporterExp.h>
 #include <Reporter\RcUnitValue.h>
 #include <Units\PhysicalT.h>
 #include <Units\SysUnits.h>
 #include <MathEx.h>
 
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptRcUnitValueT
-
-   Template class the implements the rptUnitValue abstract interface.
-
-
-DESCRIPTION
-   Template class the implements the rptUnitValue abstract interface.
-
-LOG
-   rab : 11.12.1997 : Created file
-*****************************************************************************/
-
+/// Template class the implements the rptUnitValue abstract interface.
 template <class T>
 class rptRcUnitValueT : public rptRcUnitValue
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
-   rptRcUnitValueT(Float64 value,               // unit value in system units
-                   const T* pUnitOfMeasure,     // pointer to unit of measure
-                   Float64 zeroTolerance = 0.,  // tolerance for zeroness
-                   bool bShowUnitTag = true) :  // Show the unit tag?
+   rptRcUnitValueT(Float64 value,               ///< unit value in system units
+                   const T* pUnitOfMeasure,     ///< pointer to unit of measure
+                   Float64 zeroTolerance = 0.,  ///< tolerance for zeroness
+                   bool bShowUnitTag = true) :  ///< indicates if the unit tag is to be included in with the output string
    rptRcUnitValue( bShowUnitTag ),
    m_Value( value ),
    m_pUnitOfMeasure( pUnitOfMeasure ),
@@ -79,9 +48,9 @@ public:
    {
    }
 
-   rptRcUnitValueT(const T* pUnitOfMeasure = 0,     // pointer to unit of measure
-                   Float64 zeroTolerance = 0.,  // tolerance for zeroness
-                   bool bShowUnitTag = true) :  // Show the unit tag?
+   rptRcUnitValueT(const T* pUnitOfMeasure = nullptr, ///< pointer to unit of measure
+                   Float64 zeroTolerance = 0.,  ///< tolerance for zeroness
+                   bool bShowUnitTag = true) :  ///< indicates if the unit tag is to be included in with the output string
    rptRcUnitValue( bShowUnitTag ),
    m_Value( 0.00 ),
    m_pUnitOfMeasure( pUnitOfMeasure ),
@@ -89,24 +58,17 @@ public:
    {
    }
 
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptRcUnitValueT(const rptRcUnitValueT& rOther) :
    rptRcUnitValue( rOther )
    {
       MakeCopy( rOther );
    }
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRcUnitValueT()
    {
    }
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   rptRcUnitValueT& operator = (const rptRcUnitValueT& rOther)
+   rptRcUnitValueT& operator=(const rptRcUnitValueT& rOther)
    {
       if ( this != &rOther )
          MakeAssignment( rOther );
@@ -114,11 +76,8 @@ public:
       return *this;
    }
 
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // virtual way to make a copy.
-   virtual rptReportContent* CreateClone() const
+   /// Creates a clone
+   virtual rptReportContent* CreateClone() const override
    {
 #if defined _DEBUG
       // this is the same as DEBUG_NEW... we just can't use DEBUG_NEW in a header file
@@ -128,28 +87,20 @@ public:
 #endif
    }
 
-   // GROUP: ACCESS
-
-   //------------------------------------------------------------------------
-   // Sets the value for this piece of report content. <i>value</i> is in
-   // system units.
-   virtual rptReportContent& SetValue(Float64 value)
+   /// Assigns a new value and returns a reference to this
+   virtual rptReportContent& SetValue(Float64 value) override
    {
       m_Value = value;
       return *this;
    }
 
-   //------------------------------------------------------------------------
-   // Returns the value for this piece of report content.  If bConvert is
-   // <b>true</b>,  the value is converted to output units, otherwise it is in
-   // system units.
+   /// Returns the value.
+   ///
+   /// \param bConvert If true, the returned value is converted into the specifed unit of measure
+
    virtual Float64 GetValue(bool bConvert = false) const
    {
-      Float64 value;
-      if ( bConvert )
-         value = ::ConvertFromSysUnits( m_Value, *m_pUnitOfMeasure );
-      else
-         value = m_Value;
+      Float64 value = bConvert ? ::ConvertFromSysUnits( m_Value, *m_pUnitOfMeasure ) : m_Value;
 
       if ( IsZero( value, m_ZeroTolerance ) )
          value = 0.;
@@ -157,57 +108,34 @@ public:
       return value;
    }
 
-   //------------------------------------------------------------------------
+   /// Sets the unit of measure
    void SetUnitOfMeasure(const T* pUnitOfMeasure)
    {
       m_pUnitOfMeasure = pUnitOfMeasure;
-
-      ASSERTVALID;
    }
 
-   //------------------------------------------------------------------------
-   // Returns the unit tag for the output unit of measure.
-   virtual std::_tstring GetUnitTag() const
+   /// Returns the unit tag for the output unit of measure.
+   virtual const std::_tstring& GetUnitTag() const override
    {
       return m_pUnitOfMeasure->UnitTag();
    }
 
+   /// Sets the zero-tolerance value.
+   ///
+   /// Any value with absolute value of less than this tolerance will be returned through GetValue as zero and AsString will also return a zero value.
    void SetZeroTolerance(Float64 z)
    {
       m_ZeroTolerance = z;
    }
 
+   /// Returns the zero-tolerance.
    Float64 GetZeroTolerance() const
    {
       return m_ZeroTolerance;
    }
 
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const
-   {
-      return rptRcUnitValue::AssertValid() && (m_pUnitOfMeasure != 0);
-   }
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const
-   {
-      rptRcUnitValue::Dump( os );
-   }
-
-#endif // _DEBUG
-
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
+   /// Copies the content from rOther to this object
    void MakeCopy(const rptRcUnitValueT& rOther)
    {
       m_Value          = rOther.m_Value;
@@ -215,40 +143,23 @@ protected:
       m_ZeroTolerance  = rOther.m_ZeroTolerance;
    }
 
-   //------------------------------------------------------------------------
+   /// Assigns the content from oOther to this object
    virtual void MakeAssignment(const rptRcUnitValueT& rOther)
    {
       rptRcUnitValue::MakeAssignment( rOther );
       MakeCopy( rOther );
    }
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
    Float64 m_Value;
    const T* m_pUnitOfMeasure;
    Float64 m_ZeroTolerance;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #define DECLARE_RC_UNIT_VALUE(u,t) \
    REPORTERTPL rptRcUnitValueT<u>; \
    typedef rptRcUnitValueT<u> t;
 
-//#pragma warning( disable : 4231 ) 
 DECLARE_RC_UNIT_VALUE( unitMass,           rptMassUnitValue           );
 DECLARE_RC_UNIT_VALUE( unitMassPerLength,  rptMassPerLengthUnitValue  );
 DECLARE_RC_UNIT_VALUE( unitLength,         rptLengthUnitValue         );

@@ -30,16 +30,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptRcFontModifier
-****************************************************************************/
-
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
 rptRcFontModifier::rptRcFontModifier(rptRiStyle::FontModifier MyFm, StateType MyState):
 rptReportContent()
 {
@@ -59,7 +49,6 @@ rptRcFontModifier::~rptRcFontModifier()
 {
 }
 
-//======================== OPERATORS  =======================================
 rptRcFontModifier& rptRcFontModifier::operator= (const rptRcFontModifier& rOther)
 {
    if( this != &rOther )
@@ -69,16 +58,6 @@ rptRcFontModifier& rptRcFontModifier::operator= (const rptRcFontModifier& rOther
 
    return *this;
 }
-
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 
 void rptRcFontModifier::MakeCopy(const rptRcFontModifier& rOther)
 {
@@ -93,9 +72,6 @@ void rptRcFontModifier::MakeAssignment(const rptRcFontModifier& rOther)
    MakeCopy( rOther );
 }
 
-//
-// accept a visitor
-//
 rptReportContent* rptRcFontModifier::CreateClone() const 
 { 
    return new rptRcFontModifier(*this); 
@@ -106,12 +82,6 @@ void rptRcFontModifier::Accept( rptRcVisitor& MyVisitor )
    MyVisitor.VisitRcFontModifier(this);
 }
 
-
-//======================== ACCESS     =======================================
-
-//
-// get/set the font modifier type
-//
 rptRiStyle::FontModifier rptRcFontModifier::GetFontModifier()
 {
    return m_FontModifier;
@@ -122,9 +92,6 @@ void rptRcFontModifier::SetFontModifier(rptRiStyle::FontModifier MyFont)
    m_FontModifier = MyFont;
 }
 
-//
-// get/set the state flag
-//
 rptRcFontModifier::StateType rptRcFontModifier::GetState()
 {
    return m_State;
@@ -134,14 +101,3 @@ void rptRcFontModifier::SetState(rptRcFontModifier::StateType MyState)
 {
    m_State = MyState;
 }
-
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-

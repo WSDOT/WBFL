@@ -47,23 +47,25 @@ cpp_quote("#define UNITS_E_BADDISPLAYUNITGROUP    MAKE_HRESULT(SEVERITY_ERROR,FA
 cpp_quote("#define UNITS_E_DEFAULTNOTFOUND        MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,521)")
 cpp_quote("#define UNITS_E_APPUNITSYSNOTSET       MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,522)")
 
-
+   /// Constant designating a numerical formatting style
 	typedef [public,helpstring("Designates a style for formatting numbers in text strings"),helpcontext(IDH_NumericFormatType),uuid(24A18719-E49F-11d3-8A40-006097C68A9C)] 
 	enum 
 	{
-	   nftAutomatic = 1,
-	   nftFixed = 2,
-	   nftScientific = 3,
-	   nftEngineering = 4
+	   nftAutomatic = 1, ///< automatically determined
+	   nftFixed = 2, ///< fixed format
+	   nftScientific = 3, ///< scientific notation
+	   nftEngineering = 4 ///< engineering notation
 	} NumericFormatType;
 
+   /// Constant designating text justification
 	typedef [public,helpstring("Designates justification of a block of text"),helpcontext(IDH_TextJustificationType),uuid(1DAA99B8-E4B3-11d3-8A40-006097C68A9C)] 
 	enum 
 	{
-	   tjLeft = 1,
-	   tjRight = 2
+	   tjLeft = 1, ///< text will be left justified
+	   tjRight = 2 ///< text will be right justified
 	} TextJustificationType;
 
+   /// Interface defining an object that formats a value as string.
 	[
 		object,
 		uuid(D934CE44-CB38-11d3-8CE1-A85CC0A0E770),
@@ -74,32 +76,51 @@ cpp_quote("#define UNITS_E_APPUNITSYSNOTSET       MAKE_HRESULT(SEVERITY_ERROR,FA
 	]
 	interface IDisplayUnitFormatter : IUnknown
 	{
+      /// Sets the format specification
 	   [helpcontext(IDH_IDisplayUnitFormatter_FormatSpecifiers),helpstring("property FormatSpecifiers")]
-	   HRESULT FormatSpecifiers([in] Uint32 width,[in]Uint32 precision,[in] TextJustificationType justify,[in]NumericFormatType fmt,[in] Float64 zeroVal);
+	   HRESULT FormatSpecifiers(
+         [in] Uint32 width, ///< minimum width of the numeric field
+         [in]Uint32 precision, ///< precision of the numeric field
+         [in] TextJustificationType justify, ///< text justification
+         [in]NumericFormatType fmt, ///< numeric format
+         [in] Float64 zeroVal ///< largest value that will be taken as zero
+      );
 
+      /// The minimum width of the numeric field
 	   [propget, helpcontext(IDH_IDisplayUnitFormatter_Width),helpstring("property Width")]
       HRESULT Width([out,retval] Uint32* val);
 
+      /// The precision of the numeric field
 	   [propget, helpcontext(IDH_IDisplayUnitFormatter_Precision),helpstring("property Precision")]
 	   HRESULT Precision([out,retval] Uint32* val);
 
+      /// The numeric format type
 	   [propget, helpcontext(IDH_IDisplayUnitFormatter_Notation),helpstring("property Notation")]
 	   HRESULT Notation([out,retval] NumericFormatType* notation);
 
+      /// The text justification
 	   [propget, helpcontext(IDH_IDisplayUnitFormatter_Justification),helpstring("property Justification")]
 	   HRESULT Justification([out,retval] TextJustificationType* justify);
 
+      /// The largest value that will be taken as zero
 	   [propget, helpcontext(IDH_IDisplayUnitFormatter_ZeroTolerance),helpstring("property ZeroTolerance")]
 	   HRESULT ZeroTolerance([out,retval] Float64* zeroTol);
 
-       [helpcontext(IDH_IDisplayUnitFormatter_Format),helpstring("method Format")]
-       HRESULT Format([in] Float64 val, [in] BSTR tag,[out,retval] BSTR* fmtString);
-
+       /// Indicates if the formatted unit value is includes the unit tag
        [propget, helpcontext(IDH_IDisplayUnitFormatter_UsesTag),helpstring("property UsesTag")]
        HRESULT UsesTag([out,retval] VARIANT_BOOL *bUsesTag);
-	};
 
-	[
+       /// Formats a numerical value and a unit tag into a text string
+       [helpcontext(IDH_IDisplayUnitFormatter_Format), helpstring("method Format")]
+       HRESULT Format(
+          [in] Float64 val,  ///< the value
+          [in] BSTR tag,  ///< the unit tag (such as feet)
+          [out, retval] BSTR* fmtString ///< the resulting text string
+       );
+   };
+
+   /// Interface defining an object that formats a value as string using special annotations such as feet and inches or stationing.
+   [
 	   object,
 	   uuid(61E29B40-CD8D-11d3-8CE1-926A77670A4E),
       oleautomation,
@@ -109,18 +130,42 @@ cpp_quote("#define UNITS_E_APPUNITSYSNOTSET       MAKE_HRESULT(SEVERITY_ERROR,FA
 	]
 	interface IAnnotatedDisplayUnitFormatter : IDisplayUnitFormatter
 	{
+      /// Specifies the offset from the decimal point to the division between the left and right hand portions of the formatted unit value
+      ///
+      /// This property specifies the number of digits to the left of the decimal point to offset the first annotation. 
+      /// If you wanted to display a number if US stations, the "+" annotation is two digits to the left of the decimal point. 
+      /// For feet and inches, the offset is zero because the number to the left of the decimal represents the whole number of feet.
 	   [propput, helpcontext(IDH_IAnnotatedDisplayUnitFormatter_OffsetDigits),helpstring("property OffsetDigits")]
 	   HRESULT OffsetDigits([in] Uint32 nDigits);
 
 	   [propget, helpcontext(IDH_IAnnotatedDisplayUnitFormatter_OffsetDigits),helpstring("property OffsetDigits")]
 	   HRESULT OffsetDigits([out,retval] Uint32* nDigits);
 
+      /// Multiplier used to convert the right hand part of the formatted unit value
+      ///
+      /// This property is a scaling factor that is multiplied with all digits to the right of the offset digit.
+      /// For a unit value formatted in feet and inches, the Unit object will convert the value to feet. The decimal portion of the value needs to be converted to inches.
+      /// To accomplish this, the number to the right of the decimal point is multiplied by this multiplier which would have a value of 12.
 	   [propput, helpcontext(IDH_IAnnotatedDisplayUnitFormatter_Multiplier),helpstring("property Multiplier")]
 	   HRESULT Multiplier([in] Float64 multiplier);
 
 	   [propget, helpcontext(IDH_IAnnotatedDisplayUnitFormatter_Multiplier),helpstring("property Multiplier")]
 	   HRESULT Multiplier([out,retval] Float64 *multiplier);
 
+      /// String that specifies alternate annotations for the formatted unit value
+      ///
+      /// The Annotation property specifies alternative annotations for a formatted unit value other than the unit tag.
+      /// This property is an encoded string. The first part of the string is the "tag" that is appended to the first part of the formatted unit value.
+      /// The second part of the string is the "tag" that is appended to the second part of the formatted unit value.
+      /// The two parts of the string are seperated by a comma. Either part of the annotation string is optional. If only the second part is given, it must be preceded by a comma.
+      ///
+      /// Examples:
+      ///
+      /// "ft-,in" produces formatted unit values in the form 1ft-6in
+      ///
+      /// "'-,"" produces formatted unit values in the form 1'-6"
+      ///
+      /// "+" does not have a suffix and produces formatted unit values in the form 1+60.00
 	   [propput, helpcontext(IDH_IAnnotatedDisplayUnitFormatter_Annotation),helpstring("property Annotation")]
 	   HRESULT Annotation([in] BSTR bstrAnnotation);
 
@@ -128,6 +173,7 @@ cpp_quote("#define UNITS_E_APPUNITSYSNOTSET       MAKE_HRESULT(SEVERITY_ERROR,FA
 	   HRESULT Annotation([out,retval] BSTR* bstrAnnotation);
 	};
 
+/// Unit conversion, application unit managment, and display units library
 [
     uuid(C65F03B4-16AB-11D2-8D11-94FA07C10000),
     version(1.0),
@@ -140,28 +186,29 @@ library WBFLUnitServer
     importlib("stdole32.tlb");
     importlib("stdole2.tlb");
 
+    /// Constant designating the unit system an object is associated with
 	typedef [public,helpstring("Used to designate the unit system an object is associated with"),helpcontext(IDH_UnitSystemType),uuid(6F535332-84A0-11d2-887D-006097C68A9C)] 
 	enum 
 	{
-	   unitsSI = 1,
-	   unitsUS = 2,
-	   unitsAll = 3 // All unit systems 
+	   unitsSI = 1, ///< SI units system
+	   unitsUS = 2, ///< US units system
+	   unitsAll = 3 ///< Both SI and US unit systems 
 	} UnitSystemType;
 
-
+   /// Constant designation a unit mode for an application or object
 	typedef [public,helpstring("Used to designate a unit mode for an application or object"),helpcontext(IDH_UnitModeType),uuid(E1744920-CB90-11d3-8CE1-A85CC0A0E770)] 
 	enum 
 	{
-	   umSI = 1,
-	   umUS = 2
+	   umSI = 1, ///< SI units
+	   umUS = 2 ///< US units
 	} UnitModeType;
 
-
+   /// Constant designating a system of units related to a specifications document (such as the AASHTO LRFD Bridge Design Specifications)
 	typedef [public,helpstring("Used to designate a system of units related to a specification document (such as LRFD)"),uuid(81F8CB89-1C2B-4196-9936-7B471F57FFB5)] 
 	enum 
 	{
-	   suSI = 1,
-	   suUS = 2
+	   suSI = 1, ///< SI units
+	   suUS = 2 ///< US units
 	} SpecUnitType;
 
 
@@ -183,6 +230,7 @@ library WBFLUnitServer
    //interface ISupportUnitServer;
    //interface ISupportUnitSystem;
 
+   /// Interface for objects that represent a general physical unit of measure such as Length or Force defined by its dimensionality.
     [
         object,
         uuid(F6474060-7E6F-11d2-8D11-50830CC10000),
@@ -193,31 +241,40 @@ library WBFLUnitServer
     ]
     interface IUnitType : IUnknown
     {
+       /// Name of the unit type, such as Length or Force
        [propget,helpcontext(IDH_IUnitType_Label),helpstring("Returns the UnitType Label (the name of the UnitType)")]
        HRESULT Label([out,retval]BSTR* pLabel);
 
+       /// Dimensionality for mass
        [propget,helpcontext(IDH_IUnitType_Mass),helpstring("Returns the dimensionality for Mass")]
        HRESULT Mass([out,retval]Float64* pMass);
           
+       /// Dimensionality for length
        [propget,helpcontext(IDH_IUnitType_Length),helpstring("Returns the dimensionality for Length")]
        HRESULT Length([out,retval]Float64* pLength);
 
+       /// Dimensionality for time
        [propget,helpcontext(IDH_IUnitType_Time),helpstring("Returns the dimensionality for Time")]
        HRESULT Time([out,retval]Float64* pTime);
 
+       /// Dimensionality for temperature
        [propget,helpcontext(IDH_IUnitType_Temperature),helpstring("Returns the dimensionality for Temperature")]
        HRESULT Temperature([out,retval]Float64* pTemperature);
 
+       /// Dimensionality for angle
        [propget,helpcontext(IDH_IUnitType_Angle),helpstring("Returns the dimensionality for Angle")]
        HRESULT Angle([out,retval]Float64* pAngle);
 
+       /// Collection of Unit objects that are instances of this UnitType
        [propget,helpcontext(IDH_IUnitType_Units),helpstring("Returns a collection of Units that are of this UnitType")]
        HRESULT Units([out,retval]IUnits** ppUnits);
 
+       /// The overall UnitServer object
        [propget,helpcontext(IDH_IUnitType_UnitServer),helpstring("Returns the UnitServer")]
        HRESULT UnitServer([out,retval]IUnitServer** unitServer);
     };
 
+    /// Interface used to enumerate values in a container
     [
         object,
         uuid(5CEF7DC0-B6A3-11d3-8CDF-C9DF305B3C59),
@@ -227,14 +284,27 @@ library WBFLUnitServer
     ]
     interface IEnumUnitTypes : IUnknown
     {
+       /// Clone the enumerator
        HRESULT Clone([out] IEnumUnitTypes** enumUnitTypes );
 
-       HRESULT Next([in] ULONG celt,[out] IUnitType** rgelt, [in,out] ULONG* pceltFetched );
+       /// Retrieves the next celt items from the enumeration sequence. If there are fewer than the requested number of elements in the sequence, it retrieves the remaining elements. The number of elements actually retrieved is returned through pceltFetched (unless the caller passed in NULL for that parameter).
+       /// Returns S_OK if the number of elements supplied is celt, otherwise S_FALSE
+       HRESULT Next(
+          [in] ULONG celt, ///< Number of elements being requested
+          [out] IUnitType** rgelt,  ///< Array of size celt (or larger) of elements of interest
+          [in,out] ULONG* pceltFetched ///< Pointer to the number of elements actually supplied in rgelt. Can be nullptr if celt is 1.
+       );
 
+       /// Resets the enumeration sequence to the beginning.
        HRESULT Reset();
 
-       HRESULT Skip([in] ULONG celt);
+       /// Skips over the next specified number of elements in the enumeration sequence.
+       HRESULT Skip(
+          [in] ULONG celt ///< Number of elements to skip
+       );
     };
+
+    /// Interface for defining a collection of objects implementing the IUnitType interface.
     [
         object,
         uuid(A03A9440-7E76-11d2-8D11-50830CC10000),
@@ -245,29 +315,52 @@ library WBFLUnitServer
     ]
     interface IUnitTypes : IUnknown
     {
-        [propget, helpcontext(IDH_IUnitTypes_Item),helpstring("Returns a UnitType object associated with the specified index.")]
-        HRESULT Item([in] VARIANT Index, [out, retval] IUnitType** retval);
+       /// Gets an item from the collection.
+       [propget, helpcontext(IDH_IUnitTypes_Item),helpstring("Returns a UnitType object associated with the specified index.")]
+        HRESULT Item(
+           [in] VARIANT Key, ///< A key specifying the item. The key can be a zero-based index or the label of the UnitType
+           [out, retval] IUnitType** retval ///< The requested UnitType object
+        );
 
-        [propget, restricted, helpstring("returns an enumerator for the collection.")]
-        HRESULT _NewEnum([out, retval] IUnknown** retval);
-
-        [propget, helpcontext(IDH_IUnitTypes_Count),helpstring("Returns the number of items in collection.")] 
+        /// Returns the number of items in the collection.
+        [propget, helpcontext(IDH_IUnitTypes_Count),helpstring("Returns the number of items in collection.")]
         HRESULT Count([out, retval] CollectionIndexType* retval);
 
+        /// Creates a UnitType in the collection.
         [helpcontext(IDH_IUnitTypes_Add),helpstring("Creates a new UnitType and adds it to the collection.")]
-        HRESULT Add([in]BSTR label,[in]Float64 m,[in]Float64 l,[in]Float64 t,[in]Float64 k,[in]Float64 a,[out,retval]IUnitType** ppUnitType);
+        HRESULT Add(
+           [in]BSTR label, ///< UnitType name such as Length or Force
+           [in]Float64 m, ///< mass dimensionality
+           [in]Float64 l, ///< length dimensionality
+           [in]Float64 t, ///< time dimensionality
+           [in]Float64 k, ///< temperature dimensionality
+           [in]Float64 a, ///< angle dimensionality
+           [out,retval]IUnitType** ppUnitType ///< The resulting UnitType object
+        );
 
+        /// Removes all items from the collection
         [helpcontext(IDH_IUnitTypes_Clear),helpstring("Clears all the UnitType object from this collection")]
         HRESULT Clear();
 
+        /// Removes a UnitType from the collection.
         [helpcontext(IDH_IUnitTypes_Remove),helpstring("Removes a UnitType object associated with the specified index from the collection.")]
-        HRESULT Remove(VARIANT Index);
+        HRESULT Remove(
+           [in]VARIANT Key ///< A key specifying the item. The key can be a zero-based index or the label of the UnitType
+        );
 
+        /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
+        [propget, restricted, helpstring("returns an enumerator for the collection.")]
+        HRESULT _NewEnum([out, retval] IUnknown** retval);
+
+        /// Returns an IEnumUnitTypes interface. This is a restricted property and is not accessible from Visual Basic. Generally, in C++, it is easier to iterate through a collection using an enumerator than the collection interface.
         [propget, restricted, helpcontext(IDH_IUnitTypes__EnumUnitTypes),helpstring("returns an enumerator") ]
         HRESULT _EnumUnitTypes([out,retval] IEnumUnitTypes** enumUnitTypes);
     };
 
 
+    /// Interface defining a specific physical unit of measure such as "feet" or "kips"
+    ///
+    /// Unit conversions are defined in \ref WBFL_UnitServer_UnitConversions
     [
         object,
         uuid(E38A041A-7F25-11d2-885B-006097C68A9C),
@@ -278,28 +371,36 @@ library WBFLUnitServer
     ]
     interface IUnit : IUnknown
     {
+       /// The unit tag (such as ft or m)
         [propget, helpcontext(IDH_IUnit_Tag), helpstring("Returns the unit tag")]
         HRESULT Tag([out, retval] BSTR *pVal);
 
+        /// The unit conversion equation prefix term
         [propget, helpcontext(IDH_IUnit_PreTerm), helpstring("Returns the Prefix Term")]
         HRESULT PreTerm([out, retval] Float64 *pVal);
 
+        /// The unit conversion equation conversion factor
         [propget, helpcontext(IDH_IUnit_ConvFactor), helpstring("Returns the Conversion Factor")]
         HRESULT ConvFactor([out, retval] Float64 *pVal);
 
+        /// The unit conversion equation postfix term
         [propget, helpcontext(IDH_IUnit_PostTerm), helpstring("Returns the Postfix Term")]
         HRESULT PostTerm([out, retval] Float64 *pVal);
 
+        /// The unit system this unit belongs to (US, SI, both)
         [propget, helpcontext(IDH_IUnit_UnitSystem), helpstring("Returns the Unit System associated with this object")]
         HRESULT UnitSystem([out, retval] UnitSystemType *pVal);
 
+        /// The UnitType object defining the of physical unit (such as Length or Mass)
         [propget, helpcontext(IDH_IUnit_UnitType), helpstring("Returns the unit type object for this unit")]
         HRESULT UnitType([out,retval]IUnitType** ppUnitType);
 
+        /// The unit server that owns this phyiscal unit of measure
         [propget, helpcontext(IDH_IUnit_UnitServer), helpstring("Returns the Unit Server object")]
         HRESULT UnitServer([out,retval]IUnitServer** unitServer);
     };
 
+    /// Interface used to enumerate values in a container
     [
         object,
         uuid(7F7D82A0-B6A4-11d3-8CDF-C9DF305B3C59),
@@ -309,15 +410,29 @@ library WBFLUnitServer
     ]
     interface IEnumUnits : IUnknown
     {
+       /// Clone the enumerator
        HRESULT Clone([out] IEnumUnits** enumUnits );
 
-       HRESULT Next([in] ULONG celt,[out] IUnit** rgelt, [in,out] ULONG* pceltFetched );
+       /// Retrieves the next celt items from the enumeration sequence. If there are fewer than the requested number of elements in the sequence, it retrieves the remaining elements. The number of elements actually retrieved is returned through pceltFetched (unless the caller passed in NULL for that parameter).
+       /// Returns S_OK if the number of elements supplied is celt, otherwise S_FALSE
+       [helpstring("Next")]
+       HRESULT Next(
+          [in] ULONG celt, ///< Number of elements being requested
+          [out] IUnit** rgelt, ///< Array of size celt (or larger) of elements of interest
+          [in, out] ULONG* pceltFetched ///< Pointer to the number of elements actually supplied in rgelt. Can be nullptr if celt is 1.
+       );
 
+       /// Resets the enumeration sequence to the beginning.
        HRESULT Reset();
 
-       HRESULT Skip([in] ULONG celt);
+       /// Skips over the next specified number of elements in the enumeration sequence.
+       [helpstring("Skip")]
+       HRESULT Skip(
+          [in] ULONG celt ///< Number of elements to skip
+       );
     };
 
+    /// Interface for defining a collection of objects implementing the IUnit interface.
     [
         object,
         uuid(641DCEA1-19D1-11D2-8D11-94FA07C10000),
@@ -328,28 +443,52 @@ library WBFLUnitServer
     ]
     interface IUnits : IUnknown
     {
+       /// Gets an item from the collection.
        [propget, helpcontext(IDH_IUnits_Item),helpstring("Returns a Unit object associated with the specified index.")]
-       HRESULT Item([in] VARIANT Index, [out, retval] IUnit** retval);
+       HRESULT Item(
+          [in] VARIANT Key,  ///< A key specifying the item. The key can be a zero-based index or the unit tag
+          [out, retval] IUnit** retval ///< The requested Unit object
+       );
 
-       [propget, restricted, helpstring("Returns an enumerator for the collection.")]
-       HRESULT _NewEnum([out, retval] IUnknown** retval);  
-
-       [propget, helpcontext(IDH_IUnits_Count),helpstring("Returns the number of items in collection.")] 
+       /// Returns the number of items in the collection.
+       [propget, helpcontext(IDH_IUnits_Count), helpstring("Returns the number of items in collection.")]
        HRESULT Count([out, retval] CollectionIndexType* retval);
 
+       /// Creates a Unit in the collection.
        [helpcontext(IDH_IUnits_Add),helpstring("Creates a new unit of measure and adds it to the collection")]
-       HRESULT Add([in]BSTR tag,[in]Float64 preTerm,[in]Float64 cf,[in]Float64 postTerm,[in]UnitSystemType unitSystem,[out,retval]IUnit** ppUnit);
+       HRESULT Add(
+          [in]BSTR tag, ///< Unit tag
+          [in]Float64 preTerm, ///< Unit conversion equation prefix term
+          [in]Float64 cf,///< Unit conversion equation unit conversion term
+          [in]Float64 postTerm,///< Unit conversion equation postfix term
+          [in]UnitSystemType unitSystem, ///< Unit system type this Unit belogs to 
+          [out,retval]IUnit** ppUnit ///< The resulting Unit object
+       );
 
+       /// Removes all items from the collection
        [helpcontext(IDH_IUnits_Clear),helpstring("Removes all items from the collection")]
        HRESULT Clear();
 
+       /// Removes a Unit from the collection.
        [helpcontext(IDH_IUnits_Remove), helpstring("Removes a Unit object associated with the specified index from the collection.")]
-       HRESULT Remove([in] VARIANT Index);
+       HRESULT Remove(
+          [in] VARIANT Key ///< A key specifying the item. The key can be a zero-based index or a unit tag
+       );
 
+       /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
+       [propget, restricted, helpstring("Returns an enumerator for the collection.")]
+       HRESULT _NewEnum([out, retval] IUnknown** retval);
+
+       /// Returns an IEnumUnits interface. This is a restricted property and is not accessible from Visual Basic. Generally, in C++, it is easier to iterate through a collection using an enumerator than the collection interface.
        [propget, restricted, helpcontext(IDH_IUnits__EnumUnits),helpstring("returns an enumerator")]
        HRESULT _EnumUnits([out,retval] IEnumUnits** enumUnits);
 	};
 
+   /// Interface defining a UnitServer object.
+    ///
+    /// Base units are a consistent sent of units that an application or components uses for its internal computations.
+    /// The unit server object also provides unit converson services to make it easy to convert numbers between units of measure and unit systems. 
+    /// Units can also be converted to and from base units without the caller knowing what the base units are.
     [
         object,
         uuid(C65F03C3-16AB-11D2-8D11-94FA07C10000),
@@ -360,36 +499,54 @@ library WBFLUnitServer
     ]
     interface IUnitServer : IUnknown
     {
+       /// Sets the application of component base units
+       ///
+       /// This method can only be called once for each instance of the UnitServer object. It is recommended that you call it during the initialization routines of your application or component. Subsequent calls to this method will fail with IDS_E_BASEUNITSSET error.
         [helpcontext(IDH_IUnitServer_SetBaseUnits), helpstring("Sets the base units. This method can only be called once.")]
-        HRESULT SetBaseUnits([in] BSTR bstrMass, [in] BSTR bstrLength, [in] BSTR bstrTime, [in] BSTR bstrTemp, [in] BSTR bstrAngle);
+        HRESULT SetBaseUnits(
+           [in] BSTR bstrMass, ///< Base unit for mass
+           [in] BSTR bstrLength,  ///< Base unit for length
+           [in] BSTR bstrTime,  ///< Base unit for time
+           [in] BSTR bstrTemp,  ///< Base unit for temperature
+           [in] BSTR bstrAngle ///< Base unit for angle
+        );
 
+        /// Base unit for mass
         [propget, helpcontext(IDH_IUnitServer_Mass), helpstring("Returns the name of the base unit for Mass")]
         HRESULT Mass([out,retval]BSTR* pMass);
 
+        /// Base unit for length
         [propget, helpcontext(IDH_IUnitServer_Length), helpstring("Returns the name of the base unit for Length")]
         HRESULT Length([out,retval]BSTR* pLength);
         
+        /// Base unit for time
         [propget, helpcontext(IDH_IUnitServer_Time), helpstring("Returns the name of the base unit for Time")]
         HRESULT Time([out,retval]BSTR* pTime);
         
+        /// Base unit for temperature
         [propget, helpcontext(IDH_IUnitServer_Temperature), helpstring("Returns the name of the base unit for Temperature")]
         HRESULT Temperature([out,retval]BSTR* pTemperature);
         
+        /// Base unit for angle
         [propget, helpcontext(IDH_IUnitServer_Angle), helpstring("Returns the name of the base unit for  Angle")]
         HRESULT Angle([out,retval]BSTR* pAngle);
 
+        /// Collection of UnitType objects provided by this UnitServer
         [propget, helpcontext(IDH_IUnitServer_UnitTypes),helpstring("Returns the UnitTypes collection")]
         HRESULT UnitTypes([out,retval]IUnitTypes** ppUnitTypes);
 
-	[propget, helpcontext(IDH_IUnitServer_UnitConvert),helpstring("Returns the UnitConvert object")]
-	HRESULT UnitConvert([out,retval] IUnitConvert** convert);
+        /// Provides unit conversion services based on units defined by their unit tag
+	     [propget, helpcontext(IDH_IUnitServer_UnitConvert),helpstring("Returns the UnitConvert object")]
+	     HRESULT UnitConvert([out,retval] IUnitConvert** convert);
 
-	[propget, helpcontext(IDH_IUnitServer_UnitConvert2),helpstring("Returns the UnitConvert2 object")]
-	HRESULT UnitConvert2([out,retval] IUnitConvert2** convert);
+        /// Provides unit conversion services using Unit objects
+	     [propget, helpcontext(IDH_IUnitServer_UnitConvert2),helpstring("Returns the UnitConvert2 object")]
+	     HRESULT UnitConvert2([out,retval] IUnitConvert2** convert);
     };
 
 
-
+    /// Interface to perform unit conversions. 
+    /// Units are specified using their tag name. Method calls on this interface are usually more convienent, but slower than method calls on IUnitConvert2
     [
        object,
        uuid(45FEDF40-79AD-11d2-8D11-50830CC10000),
@@ -400,16 +557,35 @@ library WBFLUnitServer
     ]
     interface IUnitConvert : IUnknown
     {
+       /// Converts a value between two units of measure of the same type
         [helpcontext(IDH_IUnitConvert_Convert), helpstring("Converts a number to an equivalent measure")]
-        HRESULT Convert([in] Float64 From,[in] BSTR fromUnit, [in] BSTR toUnit,[out,retval]Float64* pTo);
+        HRESULT Convert(
+           [in] Float64 From, ///< Value to convert
+           [in] BSTR fromUnit,  ///< Unit of measure for the value to convert
+           [in] BSTR toUnit, ///< Unit of measure to convert to
+           [out,retval]Float64* pTo ///< The converted value
+        );
 
+        /// Converts a value from the specified unit of measure to the base units
         [helpcontext(IDH_IUnitConvert_ConvertToBaseUnits),helpstring("Converts a number in the specified units to base units")]
-        HRESULT ConvertToBaseUnits([in] Float64 val,[in] BSTR fromUnit,[out,retval]Float64* pConvVal);
+        HRESULT ConvertToBaseUnits(
+           [in] Float64 val, ///< Value to convert
+           [in] BSTR fromUnit, ///< Unit of measure for the value to convert
+           [out,retval]Float64* pConvVal ///< The value converted to base units
+        );
 
+        /// Converts a value from base units to a specifed unit of measure
         [helpcontext(IDH_IUnitConvert_ConvertFromBaseUnits),helpstring("Converts a number from base units to the specified units")]
-        HRESULT ConvertFromBaseUnits([in] Float64 val, [in] BSTR toUnit,[out,retval]Float64* pConvVal);
+        HRESULT ConvertFromBaseUnits(
+           [in] Float64 val, ///< A value in base units
+           [in] BSTR toUnit, ///< The unit of measure to convert to
+           [out,retval]Float64* pConvVal ///< The value converted to the specified unit of measure
+        );
     };
 
+    /// Interface to perform unit conversions. 
+    /// The IUnitConvert2 interface differs from IUnitConvert in that physical units are specified with instances of Unit objects whereas IUnitConvert specifies units with unit tag strings.
+    /// The methods on this interface are more cumbersome to use, but faster than the IUnitConvert interface.
     [
        object,
        uuid(45FEDF41-79AD-11d2-8D11-50830CC10000),
@@ -420,17 +596,33 @@ library WBFLUnitServer
     ]
     interface IUnitConvert2 : IUnknown
     {
-        [helpcontext(IDH_IUnitConvert2_Convert),helpstring("Converts a number to an equivalent measure")]
-        HRESULT Convert([in] Float64 From,[in] IUnit* pFromUnit, [in] IUnit* pToUnit,[out,retval]Float64* pTo);
+       /// Converts a value between two units of measure of the same type
+       [helpcontext(IDH_IUnitConvert2_Convert),helpstring("Converts a number to an equivalent measure")]
+        HRESULT Convert(
+           [in] Float64 From, ///< Value to convert
+           [in] IUnit* pFromUnit,  ///< Unit of measure for the value to convert
+           [in] IUnit* pToUnit, ///< Unit of measure to convert to
+           [out,retval]Float64* pTo ///< The converted value
+        );
 
+        /// Converts a value from the specified unit of measure to the base units
         [helpcontext(IDH_IUnitConvert2_ConvertToBaseUnits),helpstring("Converts a number in the specified units to base units")]
-        HRESULT ConvertToBaseUnits([in] Float64 val,[in] IUnit* pFromUnit,[out,retval]Float64* pConvVal);
+        HRESULT ConvertToBaseUnits(
+           [in] Float64 val, ///< Value to convert
+           [in] IUnit* pFromUnit, ///< Unit of measure for the value to convert
+           [out,retval]Float64* pConvVal ///< The value converted to base units
+        );
 
+        /// Converts a value from base units to a specifed unit of measure
         [helpcontext(IDH_IUnitConvert2_ConvertFromBaseUnits),helpstring("Converts a number from base units to the specified units")]
-        HRESULT ConvertFromBaseUnits([in] Float64 val, [in] IUnit* pToUnit,[out,retval]Float64* pConvVal);
+        HRESULT ConvertFromBaseUnits(
+           [in] Float64 val,  ///< A value in base units
+           [in] IUnit* pToUnit, ///< The unit of measure to convert to
+           [out,retval]Float64* pConvVal ///< The value converted to the specified unit of measure
+        );
     };
 
-
+   /// Interface that defines a DisplayUnit
 	[
 		object,
 		uuid(D934CE43-CB38-11d3-8CE1-A85CC0A0E770),
@@ -441,30 +633,41 @@ library WBFLUnitServer
 	]
 	interface IDisplayUnit : IUnknown
 	{
+      /// A DisplayUnitFormatter object used to create text string representations of values representing physical units of measure
 	   [propget, helpcontext(IDH_IDisplayUnit_Formatter),helpstring("property Formatter")]
 	   HRESULT Formatter([out,retval]IDisplayUnitFormatter** formatter);
 
 	   [propputref, helpcontext(IDH_IDisplayUnit_Formatter),helpstring("property Formatter")]
 	   HRESULT Formatter([in]IDisplayUnitFormatter* formatter);
 
+      /// Unit of measure for this DisplayUnit
 	   [propget, helpcontext(IDH_IDisplayUnit_Unit),helpstring("property Unit")]
 	   HRESULT Unit([out,retval] IUnit** unit);
 
+      /// Unit tag for the unit of measure
 	   [propget, helpcontext(IDH_IDisplayUnit_UnitTag),helpstring("property UnitTag")]
 	   HRESULT UnitTag([out,retval] BSTR* unitTag);
 
+      /// Unit system of this DisplayUnit
 	   [propget, helpcontext(IDH_IDisplayUnit_UnitSystem),helpstring("property UnitSystem")]
 	   HRESULT UnitSystem([out,retval] UnitSystemType* unitSystem);
 
+      /// Returns VARIANT_TRUE if this the default DisplayUnit
 	   [helpcontext(IDH_IDisplayUnit_IsDefault),helpstring("method IsDefault")]
 	   HRESULT IsDefault([out,retval] VARIANT_BOOL* bIsDefault);
 
+      /// Creates a text string for a value representing a physical unit of measure
        [helpcontext(IDH_IDisplayUnit_Format),helpstring("method Format")]
-       HRESULT Format([in] Float64 val,[in] VARIANT_BOOL bShowUnitTag,[out,retval] BSTR* fmtString);
+       HRESULT Format(
+          [in] Float64 val, ///< A value in base units 
+          [in] VARIANT_BOOL bShowUnitTag, ///< Indicates if the unit of measure is to be included in the text string
+          [out,retval] BSTR* fmtString ///< The resulting text string
+       );
 	};
 
 
-    [
+   /// Interface used to enumerate values in a container
+   [
         object,
         uuid(FD8E6EC0-D044-11d3-8CE1-F3DE57DF1F4D),
 		hidden,restricted,
@@ -473,57 +676,92 @@ library WBFLUnitServer
     ]
     interface IEnumDisplayUnits : IUnknown
     {
+       /// Clone the enumerator
        HRESULT Clone([out] IEnumDisplayUnits** enumUnits );
 
-       HRESULT Next([in] ULONG celt,[out] IDisplayUnit** rgelt, [in,out] ULONG* pceltFetched );
+       /// Retrieves the next celt items from the enumeration sequence. If there are fewer than the requested number of elements in the sequence, it retrieves the remaining elements. The number of elements actually retrieved is returned through pceltFetched (unless the caller passed in NULL for that parameter).
+       /// Returns S_OK if the number of elements supplied is celt, otherwise S_FALSE
+       HRESULT Next(
+          [in] ULONG celt, ///< Number of elements being requested
+          [out] IDisplayUnit** rgelt,  ///< Array of size celt (or larger) of elements of interest
+          [in,out] ULONG* pceltFetched  ///< Pointer to the number of elements actually supplied in rgelt. Can be nullptr if celt is 1.
+       );
 
+       /// Resets the enumeration sequence to the beginning.
        HRESULT Reset();
 
-       HRESULT Skip([in] ULONG celt);
+       /// Skips over the next specified number of elements in the enumeration sequence.
+       HRESULT Skip(
+          [in] ULONG celt ///< Number of elements to skip
+       );
     };
 
-	[
+    /// Interface implemented by DisplayUnitGroup objects.
+    ///
+    /// DisplayUnitGroup is a collection of DisplayUnit objects. 
+    /// DisplayUnit objects are grouped according to use.
+    /// For example a display unit group may be named "Long Length" to represent a collection of DisplayUnit objects that have "Length" Unit objects.
+    /// Furthermore, DisplayUnits objects in the group "Long Length" would have units of measure such as "Mile" and "Kilometer" rather than "inch" or "millimieter".
+    [
         object,
         uuid(D934CE41-CB38-11d3-8CE1-A85CC0A0E770),
         oleautomation,
         helpstring("IDisplayUnitGroup Interface"),
-	helpcontext(IDH_IDisplayUnitGroup),
+	     helpcontext(IDH_IDisplayUnitGroup),
         pointer_default(unique)
     ]
     interface IDisplayUnitGroup : IUnknown
     {
+       /// Name of this display unit group
        [propget,helpcontext(IDH_IDisplayUnitGroup_Name),helpstring("property Name")]
        HRESULT Name([out,retval]BSTR* name);
 
+       /// Name of the unit type for this group
        [propget,helpcontext(IDH_IDisplayUnitGroup_UnitType),helpstring("property UnitType")]
        HRESULT UnitType([out,retval]BSTR* unitType);
 
+       /// Searches the collection for DisplayUnit objects whose UnitTag property matches the specified unit tag string. 
+       /// An error will occur if a DisplayUnit object cannot be found (IDS_E_BADUNITTAG).
        [propget,helpcontext(IDH_IDisplayUnitGroup_Item),helpstring("Given an index, returns an item in the collection.")]
        HRESULT Item([in] BSTR unitTag, [out, retval] IDisplayUnit** retval);
 
-       [propget, restricted, helpstring("returns an enumerator for the collection.")]
-       HRESULT _NewEnum([out, retval] IUnknown** retval);
-
+       /// Returns the number of items in the collection
        [propget, helpcontext(IDH_IDisplayUnitGroup_Count),helpstring("Returns number of items in collection.")] 
        HRESULT Count([out, retval] CollectionIndexType* retval);
 
+       /// Creates a new DisplayUnit object in the collection
        [helpcontext(IDH_IDisplayUnitGroup_Add),helpstring("Add an item to the collection")]
-       HRESULT Add([in]BSTR unitTag,[in]UnitSystemType unitSystem,[in] IDisplayUnitFormatter* formatter,[in] VARIANT_BOOL bDefault,[out,retval] IDisplayUnit** dispUnit);
+       HRESULT Add(
+          [in]BSTR unitTag, ///< The unit tag identifying the Unit object that will be associated with the DisplayUnit object
+          [in]UnitSystemType unitSystem, ///< The unit system the DisplayUnit object is associated with
+          [in] IDisplayUnitFormatter* formatter, ///< The DisplayUnitFormatter that will be associated witht the DisplayUnit object
+          [in] VARIANT_BOOL bDefault, ///< Specifies whether the DisplayUnit object is the default
+          [out,retval] IDisplayUnit** dispUnit ///< The new DisplayUnit object
+       );
 
+       /// Clears the collection
        [helpcontext(IDH_IDisplayUnitGroup_Clear),helpstring("Clears all the UnitType object from this collection")]
        HRESULT Clear();
 
+       /// Removes a DisplayUnit object from the collection based on its unit tag
        [helpcontext(IDH_IDisplayUnitGroup_Remove),helpstring("Removes an item from the collection")]
        HRESULT Remove([in] BSTR unitTag);
 
+       /// Searches the collection for DisplayUnit objects whose Default property is True and whose UnitSystem property matches the unit mode specified with unitMode. An error will occur if a default DisplayUnit object is not found (IDS_E_DEFAULTNOTFOUND).
        [propget, helpcontext(IDH_IDisplayUnitGroup_Default),helpstring("property Default")]
        HRESULT Default(UnitModeType unitMode, [out, retval] IDisplayUnit* *pVal);
 
+       /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
+       [propget, restricted, helpstring("returns an enumerator for the collection.")]
+       HRESULT _NewEnum([out, retval] IUnknown** retval);
+
+       /// Returns an IEnumDisplayUnits interface. This is a restricted property and is not accessible from Visual Basic. Generally, in C++, it is easier to iterate through a collection using an enumerator than the collection interface.
        [propget, restricted, helpcontext(IDH_IDisplayUnitGroup__EnumDisplayUnits),helpstring("returns an enumerator object")]
        HRESULT _EnumDisplayUnits([out,retval] IEnumDisplayUnits** enumDisplayUnits);
     };
 
 
+    /// Interface used to enumerate values in a container
     [
         object,
         uuid(FD8E6EC1-D044-11d3-8CE1-F3DE57DF1F4D),
@@ -533,15 +771,30 @@ library WBFLUnitServer
     ]
     interface IEnumDisplayUnitGroups : IUnknown
     {
+       /// Clone the enumerator
        HRESULT Clone([out] IEnumDisplayUnitGroups** enumUnits );
 
-       HRESULT Next([in] ULONG celt,[out] IDisplayUnitGroup** rgelt, [in,out] ULONG* pceltFetched );
+       /// Retrieves the next celt items from the enumeration sequence. If there are fewer than the requested number of elements in the sequence, it retrieves the remaining elements. The number of elements actually retrieved is returned through pceltFetched (unless the caller passed in NULL for that parameter).
+       /// Returns S_OK if the number of elements supplied is celt, otherwise S_FALSE
+       HRESULT Next(
+          [in] ULONG celt, ///< Number of elements being requested
+          [out] IDisplayUnitGroup** rgelt,  ///< Array of size celt (or larger) of elements of interest
+          [in, out] ULONG* pceltFetched  ///< Pointer to the number of elements actually supplied in rgelt. Can be nullptr if celt is 1.
+       );
 
+       /// Resets the enumeration sequence to the beginning.
        HRESULT Reset();
 
-       HRESULT Skip([in] ULONG celt);
+       /// Skips over the next specified number of elements in the enumeration sequence.
+       HRESULT Skip(
+          [in] ULONG celt ///< Number of elements to skip
+       );
     };
 
+    /// Interface implemented by DisplayUnitMgr objects
+    ///
+    /// The display unit manager object is responsible for managing the display unit groups.
+    /// This DisplayUnitMgr object is typically used with Single Document Interface (SDI) applications and is associated with the UnitSystem object.
 	[
 		object,
 		uuid(51F0A2A9-CAC1-11D3-8CE1-A85CC0A0E770),
@@ -552,40 +805,73 @@ library WBFLUnitServer
 	]
 	interface IDisplayUnitMgr : IUnknown
 	{
+      /// Gets a DisplayUnitGroup object 
         [propget, helpcontext(IDH_IDisplayUnitMgr_Item),helpstring("Given an index, returns an item in the collection.")]
-        HRESULT Item([in] BSTR bstrGroup, [out, retval] IDisplayUnitGroup** group);
+        HRESULT Item(
+           [in] BSTR bstrGroup,  ///< Name of the DisplayUnitGroup object
+           [out, retval] IDisplayUnitGroup** group ///< The DisplayUnitGroup object
+        );
 
-        [propget, restricted, helpstring("returns an enumerator for the collection.")]
-        HRESULT _NewEnum([out, retval] IUnknown** retval);
-
+        /// Returns the number of DisplayUnitGroup objects
         [propget, helpcontext(IDH_IDisplayUnitMgr_Count),helpstring("Returns number of display groups")] 
         HRESULT Count([out, retval] CollectionIndexType* retval);
 
+        /// Creates a new DisplayUnitGroup object in the collection.
+        /// An error will occur if the name of the display unit group is already in use (IDS_E_GROUPALREADYDEFINED). An error will also occur if the specified unit type is not found in the unit server (IDS_E_BADUNITTYPE)
         [helpcontext(IDH_IDisplayUnitMgr_Add),helpstring("Creates a new display group")]
-        HRESULT Add([in]BSTR bstrGroup,[in] BSTR bstrUnitType,[out,retval] IDisplayUnitGroup** newGroup);
+        HRESULT Add(
+           [in] BSTR bstrGroup, ///< The name of the new display unit group
+           [in] BSTR bstrUnitType, ///< The name of the unit type associated with the new display unit group
+           [out,retval] IDisplayUnitGroup** newGroup ///< The newly created DisplayUnitGroup object
+        );
 
+        /// Clears the display unit manager
         [helpcontext(IDH_IDisplayUnitMgr_Clear),helpstring("Clears the display unit manager")]
         HRESULT Clear();
 
+        /// Removes a DisplayUnitGroup from the collection
         [helpcontext(IDH_IDisplayUnitMgr_Remove),helpstring("Removes display unit group")]
         HRESULT Remove(BSTR bstrGroup);
 
-		[helpcontext(IDH_IDisplayUnitMgr_Format),helpstring("method Format")]
-		HRESULT Format([in] Float64 val,[in] BSTR group,[in] VARIANT_BOOL bShowUnitTag,[out,retval]BSTR* fmtString);
+        /// Creates a formatted text string for a value representing a physical measurement
+        [helpcontext(IDH_IDisplayUnitMgr_Format),helpstring("method Format")]
+		HRESULT Format(
+         [in] Float64 val, ///< The value in base units to be converted and formatted into a text string
+         [in] BSTR group, ///< Name of the DisplayUnitGroup
+         [in] VARIANT_BOOL bShowUnitTag, ///< Indicates if the unit tag is appended to the text string
+         [out,retval]BSTR* fmtString ///< The resulting text string
+      );
 
-        [propget, restricted, helpcontext(IDH_IDisplayUnitMgr__EnumDisplayUnitGroup),helpstring("returns an enumerator") ]
-        HRESULT _EnumDisplayUnitGroups([out,retval] IEnumDisplayUnitGroups** enumDisplayUnitGroups);
-
+      /// Returns the unit tag for the default display unit of the specified display unit group.
 		[propget, helpcontext(IDH_IDisplayUnitMgr_Tag),helpstring("property Tag")]
 		HRESULT Tag([in] BSTR group,[out,retval]BSTR* tag);
 
+      /// Converts a number is base units to display units
 		[helpcontext(IDH_IDisplayUnitMgr_ConvertToDisplayUnits),helpstring("method ConvertToDisplayUnits")]
-		HRESULT ConvertToDisplayUnits([in] Float64 value,[in] BSTR group,[out,retval]Float64* result);
+		HRESULT ConvertToDisplayUnits(
+         [in] Float64 value, ///< Value to be converted into the default unit of measure of the specified display unit group
+         [in] BSTR group, ///< Name of display unit group
+         [out,retval]Float64* result ///< Value in display units
+      );
 
-		[helpcontext(IDH_IDisplayUnitMgr_ConvertFromDisplayUnits),helpstring("method ConvertFromDisplayUnits")]
-		HRESULT ConvertFromDisplayUnits([in] Float64 value,[in] BSTR group,[out,retval]Float64* result);
-	};
+      /// Converts a number from the default display unit to base units
+      [helpcontext(IDH_IDisplayUnitMgr_ConvertFromDisplayUnits),helpstring("method ConvertFromDisplayUnits")]
+		HRESULT ConvertFromDisplayUnits(
+         [in] Float64 value, ///< Value in display units
+         [in] BSTR group, ///< Display unit group
+         [out,retval]Float64* result ///< Value in base units
+      );
 
+      /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
+      [propget, restricted, helpstring("returns an enumerator for the collection.")]
+      HRESULT _NewEnum([out, retval] IUnknown** retval);
+
+      /// Returns an IEnumDisplayUnitGroups interface. This is a restricted property and is not accessible from Visual Basic. Generally, in C++, it is easier to iterate through a collection using an enumerator than the collection interface.
+      [propget, restricted, helpcontext(IDH_IDisplayUnitMgr__EnumDisplayUnitGroup), helpstring("returns an enumerator")]
+      HRESULT _EnumDisplayUnitGroups([out, retval] IEnumDisplayUnitGroups** enumDisplayUnitGroups);
+   };
+
+   /// Interface implemented by objects that control the unit mode of an application
 	[
 	    object,
 	    uuid(51F0A2A1-CAC1-11D3-8CE1-A85CC0A0E770),
@@ -596,16 +882,19 @@ library WBFLUnitServer
 	]
 	interface IUnitModeController : IUnknown
 	{
+      /// The unit mode of an application (such as US or SI) as defined by UnitModeType
 	   [propget, helpcontext(IDH_IUnitModeController_UnitMode),helpstring("property UnitMode")]
        HRESULT UnitMode([out, retval] UnitModeType *pVal);
 
        [propput, helpcontext(IDH_IUnitModeController_UnitMode),helpstring("property UnitMode")]
        HRESULT UnitMode([in] UnitModeType newVal);
 
+       /// Displays a dialog box window that a user can interact with to change the unit mode of an application
        [helpcontext(IDH_IUnitModeController_ShowSelectionDialog),helpstring("method ShowSelectionDialog")]
        HRESULT ShowSelectionDialog();
 	};
 
+   /// Interface defining the complete unit system for SDI applications
 	[
 		object,
 		uuid(51F0A2C4-CAC1-11D3-8CE1-A85CC0A0E770),
@@ -616,18 +905,23 @@ library WBFLUnitServer
 	]
 	interface IUnitSystem : IUnknown
 	{
+      /// Returns the UnitServer object
 		[propget, helpcontext(IDH_IUnitSystem_UnitServer),helpstring("property UnitServer")]
 		HRESULT UnitServer([out, retval] IUnitServer* *pVal);
 
+      /// Returns the DisplayUnitMgr object
 		[propget, helpcontext(IDH_IUnitSystem_DisplayUnitMgr),helpstring("property DisplayUnitMgr")]
 		HRESULT DisplayUnitMgr([out, retval] IDisplayUnitMgr* *pVal);
 
+      /// Returns the UnitModeController objects
 		[propget, helpcontext(IDH_IUnitSystem_UnitModeController),helpstring("property UnitModeController")]
 		HRESULT UnitModeController([out, retval] IUnitModeController* *pVal);
 	};
 
-
-
+   /// Interface implemented by DisplayUnitMgr2 objects
+   ///
+   /// The display unit manager object is responsible for managing the display unit groups. 
+   /// This DisplayUnitMgr2 object is typically used with Multiple Document Interface (SDI) applications and is associated with the AppUnitSystem object.
 	[
 		object,
 		uuid(CE8269CB-5568-11d4-8CE4-0080C7380027),
@@ -638,28 +932,44 @@ library WBFLUnitServer
 	]
 	interface IDisplayUnitMgr2 : IUnknown
 	{
-        [propget, helpcontext(IDH_IDisplayUnitMgr2_Item),helpstring("Given an index, returns an item in the collection.")]
-        HRESULT Item([in] BSTR bstrGroup, [out, retval] IDisplayUnitGroup** group);
+      /// Gets a DisplayUnitGroup object 
+      [propget, helpcontext(IDH_IDisplayUnitMgr2_Item),helpstring("Given an index, returns an item in the collection.")]
+      HRESULT Item(
+         [in] BSTR bstrGroup,  ///< Name of the DisplayUnitGroup object
+         [out, retval] IDisplayUnitGroup** group ///< The DisplayUnitGroup object
+      );
 
-        [propget, restricted, helpstring("returns an enumerator for the collection.")]
-        HRESULT _NewEnum([out, retval] IUnknown** retval);
-
-        [propget, helpcontext(IDH_IDisplayUnitMgr2_Count),helpstring("Returns number of display groups")] 
+      /// Returns the number of DisplayUnitGroup objects
+      [propget, helpcontext(IDH_IDisplayUnitMgr2_Count),helpstring("Returns number of display groups")]
         HRESULT Count([out, retval] CollectionIndexType* retval);
 
+        /// Creates a new DisplayUnitGroup object in the collection.
+        /// An error will occur if the name of the display unit group is already in use (IDS_E_GROUPALREADYDEFINED). An error will also occur if the specified unit type is not found in the unit server (IDS_E_BADUNITTYPE)
         [helpcontext(IDH_IDisplayUnitMgr2_Add),helpstring("Creates a new display group")]
-        HRESULT Add([in]BSTR bstrGroup,[in] BSTR bstrUnitType,[out,retval] IDisplayUnitGroup** newGroup);
+        HRESULT Add(
+           [in] BSTR bstrGroup, ///< The name of the new display unit group
+           [in] BSTR bstrUnitType, ///< The name of the unit type associated with the new display unit group
+           [out, retval] IDisplayUnitGroup** newGroup ///< The newly created DisplayUnitGroup object
+        );
 
+        /// Clears the display unit manager
         [helpcontext(IDH_IDisplayUnitMgr2_Clear),helpstring("Clears the display unit manager")]
         HRESULT Clear();
 
+        /// Removes a DisplayUnitGroup from the collection
         [helpcontext(IDH_IDisplayUnitMgr2_Remove),helpstring("Removes display unit group")]
         HRESULT Remove(BSTR bstrGroup);
 
+        /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
+        [propget, restricted, helpstring("returns an enumerator for the collection.")]
+        HRESULT _NewEnum([out, retval] IUnknown** retval);
+
+        /// Returns an IEnumDisplayUnitGroups interface. This is a restricted property and is not accessible from Visual Basic. Generally, in C++, it is easier to iterate through a collection using an enumerator than the collection interface.
         [propget, restricted, helpcontext(IDH_IDisplayUnitMgr2__EnumDisplayUnitGroup),helpstring("returns an enumerator") ]
         HRESULT _EnumDisplayUnitGroups([out,retval] IEnumDisplayUnitGroups** enumDisplayUnitGroups);
 	};
 
+   /// Interface that defines an application unit system
 	[
 		object,
 		uuid(16683EE1-558C-11D4-8CE4-0080C7380027),
@@ -670,19 +980,33 @@ library WBFLUnitServer
 	]
 	interface IAppUnitSystem : IUnknown
 	{
+      /// Converts a number from base units to a specified unit of measure
 	    [helpcontext(IDH_IAppUnitSystem_ConvertToBaseUnits),helpstring("method ConvertToBaseUnits")]
-		HRESULT ConvertToBaseUnits([in]Float64 value,[in]VARIANT fromUnit,[out,retval]Float64* retval);
+		HRESULT ConvertToBaseUnits(
+         [in]Float64 value, ///< Value to be converted
+         [in]VARIANT fromUnit, ///< Unit of measure to convert from. This can be a unit tag or a Unit object
+         [out,retval]Float64* retval ///< The converted value to base units
+      );
 
+      /// Converts a number from a specifed unit of measure to base units
 	    [helpcontext(IDH_IAppUnitSystem_ConvertFromBaseUnits),helpstring("method ConvertFromBaseUnits")]
-		HRESULT ConvertFromBaseUnits([in]Float64 value,[in]VARIANT toUnit,[out,retval]Float64* retval);
+		HRESULT ConvertFromBaseUnits(
+         [in]Float64 value, ///< Value to be converted in base units
+         [in]VARIANT toUnit, ///< Unit of measure to convert to. This can be a unit tag or a Unit object
+         [out,retval]Float64* retval ///< The valuye converted to the specified unit of measure
+      );
 
+      /// The UnitServer object for this unit system
 		[propget, helpcontext(IDH_IAppUnitSystem_UnitServer),helpstring("property UnitServer")]
 		HRESULT UnitServer([out, retval] IUnitServer* *pVal);
 
+      /// The DisplayUnitMgr for this unit system
 		[propget, helpcontext(IDH_IAppUnitSystem_DisplayUnitMgr),helpstring("property DisplayUnitMgr")]
 		HRESULT DisplayUnitMgr([out, retval] IDisplayUnitMgr2* *pVal);
 	};
-	[
+   
+   /// Interface that defines a document unit system
+   [
 		object,
 		uuid(16683EE5-558C-11D4-8CE4-0080C7380027),
 		oleautomation,
@@ -692,35 +1016,73 @@ library WBFLUnitServer
 	]
 	interface IDocUnitSystem : IUnknown
 	{
+      /// Unit mode as defined by the UnitModeType (US or SI units mode)
 		[propget, helpcontext(IDH_IDocUnitSystem_UnitMode),helpstring("property UnitMode")]
 		HRESULT UnitMode([out, retval] UnitModeType *pVal);
 
 		[propput, helpcontext(IDH_IDocUnitSystem_UnitMode),helpstring("property UnitMode")]
         HRESULT UnitMode([in] UnitModeType newVal);
 
+        /// Provides access to the UnitModeController which can be used to manipulate the unit mode
 		[propget, helpcontext(IDH_IDocUnitSystem_UnitModeController),helpstring("property UnitModeController")]
 		HRESULT UnitModeController([out, retval] IUnitModeController* *pVal);
 
+      /// The AppUnitSystem object that governs application wide unit services
 		[propget, helpcontext(IDH_IDocUnitSystem_AppUnitSystem),helpstring("property AppUnitSystem")]
 		HRESULT AppUnitSystem([out, retval] IAppUnitSystem* *pVal);
 
 		[propputref, helpcontext(IDH_IDocUnitSystem_AppUnitSystem),helpstring("property AppUnitSystem")]
 		HRESULT AppUnitSystem([in] IAppUnitSystem* newVal);
 
+      /// Converts a value in base units to display units
 		[helpcontext(IDH_IDocUnitSystem_ConvertToDisplayUnits),helpstring("method ConvertToDisplayUnits")]
-		HRESULT ConvertToDisplayUnits([in] Float64 value,[in] BSTR group,[out,retval]Float64* result);
+		HRESULT ConvertToDisplayUnits(
+         [in] Float64 value, ///< Value to be converted
+         [in] BSTR group, ///< Name of the display unit group that indirectly defines the unit of measure to convert the value to
+         [out,retval]Float64* result ///< The value converted to the display unit
+      );
 
-		[helpcontext(IDH_IDocUnitSystem_ConvertFromDisplayUnits),helpstring("method ConvertFromDisplayUnits")]
-		HRESULT ConvertFromDisplayUnits([in] Float64 value,[in] BSTR group,[out,retval]Float64* result);
+      /// Converts a value in display units to base units
+      [helpcontext(IDH_IDocUnitSystem_ConvertFromDisplayUnits),helpstring("method ConvertFromDisplayUnits")]
+		HRESULT ConvertFromDisplayUnits(
+         [in] Float64 value, ///< Value to be converted
+         [in] BSTR group, ///<  Name of the display unit group that indirectly defines the unit of measure to convert the value from
+         [out,retval]Float64* result /// The value converted to base units
+      );
 
+      /// Returns the current unit tag for a display unit group
 		[propget, helpcontext(IDH_IDocUnitSystem_Tag),helpstring("property Tag")]
-		HRESULT Tag([in] BSTR group,[out,retval]BSTR* tag);
+		HRESULT Tag(
+         [in] BSTR group, ///< Name of the display unit group
+         [out,retval]BSTR* tag ///< The unit tag of the current display unit
+      );
 
-		[helpcontext(IDH_IDocUnitSystem_Format),helpstring("method Format")]
-		HRESULT Format([in] Float64 val,[in] BSTR group,[in] VARIANT_BOOL bShowUnitTag,[out,retval]BSTR* fmtString);
+      /// Creates a formatted text string for a value representing a physical measurement
+      ///
+      /// ~~~~~~~~~~~~~~~~~~~~~~~~
+      /// Example:
+      /// Input value = 2.54 in base units for length
+      /// Display Unit Group = "Short Length"
+      /// Output string: "100.0 in"
+      /// docUnitSystem.Format(2.54,"Short Length",VARIANT_TRUE,strResult)
+      /// ~~~~~~~~~~~~~~~~~~~~~~~~
+      [helpcontext(IDH_IDocUnitSystem_Format),helpstring("method Format")]
+		HRESULT Format(
+         [in] Float64 val, ///< A value in base units
+         [in] BSTR group, ///< Name of the display unit group that indirectly defines the unit of measure
+         [in] VARIANT_BOOL bShowUnitTag, ///< Indicates if the unit tag is appended to the text string
+         [out,retval]BSTR* fmtString ///< The resulting text string
+      );
 	};
 
-
+   /// Interface implemented by objects that support the use of a UnitServer.
+   ///
+   /// Client components that need to use the same unit server as an application should implement this interface. The application developer should query for this interface and supply the control with a UnitServer object.
+   ///
+   /// Many objects can work in a consistent set of units. However, some engineering calculations rely on imperical or experimentally derived equations
+   /// that rely on specific units of measure. In this case, the object developer may implement this interface so that the object
+   /// can receive input and produce output in base units. Users of the object don't need to know unit of measure requirement, and by using the
+   /// unit conversion capabilities of the UnitServer object, the object implementer doesn't need to know the base units of the caller.
 	[
 	    object,
 		uuid(B6813130-1D7F-11d2-8EAC-006097DF3C68),
@@ -731,13 +1093,18 @@ library WBFLUnitServer
 	]
 	interface ISupportUnitServer : IUnknown
 	{
+      /// The UnitServer object that is used for converting input and output values from and to base units, respectively
 		[propget, helpcontext(IDH_ISupportUnitServer_UnitServer),helpstring("property UnitServer")]
 		HRESULT UnitServer([out,retval] IUnitServer** ppVal );
 
 		[propputref, helpcontext(IDH_ISupportUnitServer_UnitServer),helpstring("property UnitServer")]
 		HRESULT UnitServer([in] IUnitServer* pNewVal );
 	};
-	[
+
+   /// Interface implemented by objects that support a UnitSystem object.
+   ///
+   /// The UnitSystem object provides access to a DisplayUnitMgr object, a UnitModeController object, and a UnitServer object for SDI applications.
+   [
 	    object,
 		uuid(FDA8EDC3-E3FE-11d3-8A3F-006097C68A9C),
         oleautomation,
@@ -747,12 +1114,17 @@ library WBFLUnitServer
 	]
 	interface ISupportUnitSystem : IUnknown
 	{
-		[propget, helpcontext(IDH_ISupportUnitSystem_UnitSystem),helpstring("property UnitSystem")]
+      /// The UnitSystem object that is used for converting input and output values from and to base units, respectively
+      [propget, helpcontext(IDH_ISupportUnitSystem_UnitSystem),helpstring("property UnitSystem")]
 		HRESULT UnitSystem([out,retval] IUnitSystem** ppVal );
 
 		[propputref, helpcontext(IDH_ISupportUnitSystem_UnitSystem),helpstring("property UnitSystem")]
 		HRESULT UnitSystem([in] IUnitSystem* pNewVal );
 	};
+
+   /// Interface implemented by objects that support the use of a DisplayUnitMgr.
+   ///
+   /// Implement this interface when an object needs to convert values between base units and display units.
 	[
 	    object,
 		uuid(24A18718-E49F-11d3-8A40-006097C68A9C),
@@ -763,13 +1135,19 @@ library WBFLUnitServer
 	]
 	interface ISupportDisplayUnits : IUnknown
 	{
+      /// The display unit manager that an object will use to perform generic unit conversions and format values into text strings for display
 		[propget, helpcontext(IDH_ISupportDisplayUnits_DisplayUnitMgr),helpstring("property DisplayUnitMgr")]
 		HRESULT DisplayUnitMgr([out,retval] IDisplayUnitMgr** ppVal );
 
 		[propputref, helpcontext(IDH_ISupportDisplayUnits_DisplayUnitMgr),helpstring("property DisplayUnitMgr")]
 		HRESULT DisplayUnitMgr([in] IDisplayUnitMgr* pNewVal );
 	};
-	[
+
+   /// Interface implemented by objects that support a DocUnitSystem object.
+   ///
+   /// The DocUnitSystem object provides access to a DisplayUnitMgr object and a UnitModeController object for MDI applications.
+
+   [
 	    object,
 		uuid(E7E9EAC0-5764-11d4-8CE4-0080C7380027),
         oleautomation,
@@ -786,214 +1164,325 @@ library WBFLUnitServer
 		HRESULT UnitSystem([in] IDocUnitSystem* pNewVal );
 	};
 
+   /// Callback interface for UnitServer object events
    [
       object,
       oleautomation,
       uuid(2531DFCA-5873-4d25-8639-4414FBFD1997),
       pointer_default(unique)
    ]
-   interface IUnitServerEventSink : IUnknown
+   interface IUnitServerEvents : IUnknown
    {
-          [helpcontext(IDH_IUnitServerEventSink_OnUnitAdded),helpstring("Fires when a Unit is added")]
-          HRESULT OnUnitAdded([in]IUnitType* unitType,[in]IUnit* unit);
+      /// Called when a Unit is added
+      [helpcontext(IDH_IUnitServerEvents_OnUnitAdded),helpstring("Fires when a Unit is added")]
+      HRESULT OnUnitAdded(
+         [in]IUnitType* unitType, ///< The UnitType to which the Unit was added
+         [in]IUnit* unit ///< The new Unit object
+      );
 
-	      [helpcontext(IDH_IUnitServerEventSink_OnUnitRemoved),helpstring("Fires when a Unit is removed")]
-	      HRESULT OnUnitRemoved([in]IUnitType* unitType,[in]BSTR unit);
+      /// Called with a Unit is removed
+	   [helpcontext(IDH_IUnitServerEvents_OnUnitRemoved),helpstring("Fires when a Unit is removed")]
+      HRESULT OnUnitRemoved(
+         [in]IUnitType* unitType, ///< The UnitType from which the Unit was removed
+         [in]BSTR unit ///< The unit tag of the Unit object that was removed
+      );
 
-          [helpcontext(IDH_IUnitServerEventSink_OnUnitsCleared),helpstring("Fires when a Units collection is cleared")]
-	      HRESULT OnUnitsCleared([in]IUnitType* unitType);
+      /// Called when the UnitType is cleared
+      [helpcontext(IDH_IUnitServerEvents_OnUnitsCleared),helpstring("Fires when a Units collection is cleared")]
+      HRESULT OnUnitsCleared(
+         [in]IUnitType* unitType ///< The unit type that was cleared
+      );
 
-	      [helpcontext(IDH_IUnitServerEventSink_OnUnitTypeAdded),helpstring("Fires when a UnitType is added")]
-	      HRESULT OnUnitTypeAdded([in]IUnitType* unitType);
+      /// Called when a UnitType is added
+      [helpcontext(IDH_IUnitServerEvents_OnUnitTypeAdded),helpstring("Fires when a UnitType is added")]
+      HRESULT OnUnitTypeAdded(
+         [in]IUnitType* unitType ///< The new UnitType object
+      );
 
-	      [helpcontext(IDH_IUnitServerEventSink_OnUnitTypeRemoved),helpstring("Fires when a UnitType is removed")]
-	      HRESULT OnUnitTypeRemoved([in]BSTR unitType);
+      /// Called whan a UnitType is removed
+      [helpcontext(IDH_IUnitServerEvents_OnUnitTypeRemoved),helpstring("Fires when a UnitType is removed")]
+      HRESULT OnUnitTypeRemoved(
+         [in]BSTR unitType ///< The name of the UnitType that was removed
+      );
 
-	      [helpcontext(IDH_IUnitServerEventSink_OnUnitTypesCleared),helpstring ("Fires when a UnitTypes collection is cleared")]
-	      HRESULT OnUnitTypesCleared();
+      /// Called when a UnitTypes collection is cleared of all UnitType objects
+      [helpcontext(IDH_IUnitServerEvents_OnUnitTypesCleared),helpstring ("Fires when a UnitTypes collection is cleared")]
+	   HRESULT OnUnitTypesCleared();
    };
 
-[
-   object,
-   oleautomation,
-   uuid(51A2D507-7A88-4103-80CC-708BDC662510),
-   pointer_default(unique)
-]
-interface IUnitsEventSink : IUnknown
-{
-       [helpcontext(IDH_IUnitsEventSink_OnUnitAdded),helpstring("Fires when a Unit is added")]
-       HRESULT OnUnitAdded([in]IUnit* unit);
+   /// Callback interface for Unit object events
+   [
+      object,
+      oleautomation,
+      uuid(51A2D507-7A88-4103-80CC-708BDC662510),
+      pointer_default(unique)
+   ]
+   interface IUnitsEvents : IUnknown
+   {
+      /// Called when a unit is added to the collection
+       [helpcontext(IDH_IUnitsEvents_OnUnitAdded),helpstring("Fires when a Unit is added")]
+       HRESULT OnUnitAdded(
+          [in]IUnit* unit ///< The new Unit object
+       );
 
-	   [helpcontext(IDH_IUnitsEventSink_OnUnitRemoved),helpstring("Fires when a Unit is removed")]
-	   HRESULT OnUnitRemoved([in]BSTR unit);
+       /// Called when a unit is removed from the collection
+	   [helpcontext(IDH_IUnitsEvents_OnUnitRemoved),helpstring("Fires when a Unit is removed")]
+	   HRESULT OnUnitRemoved(
+         [in]BSTR unit ///< The unit tag of the Unit object that was removed
+      );
 
-       [helpcontext(IDH_IUnitsEventSink_OnUnitCleared),helpstring("Fires when the collection is cleared")]
+      /// Called when the collection is cleared
+       [helpcontext(IDH_IUnitsEvents_OnUnitCleared),helpstring("Fires when the collection is cleared")]
 	   HRESULT OnUnitsCleared();
-};
+   };
 
+   /// Callback interface for UnitType object events
    [
       object,
       uuid(45D053AD-7893-4eb1-895B-750406204F84),
       oleautomation,
       pointer_default(unique)
    ]
-   interface IUnitTypeEventSink : IUnknown
+   interface IUnitTypeEvents : IUnknown
    {
-       [helpcontext(IDH_IUnitTypeEventSink_OnUnitAdded),helpstring("Fires when a Unit is added")]
-       HRESULT OnUnitAdded([in]IUnitType* unitType,[in]IUnit* unit);
+      /// Called when a Unit is added
+       [helpcontext(IDH_IUnitTypeEvents_OnUnitAdded),helpstring("Fires when a Unit is added")]
+       HRESULT OnUnitAdded(
+          [in]IUnitType* unitType, ///< The UnitType to which the Unit was added
+          [in]IUnit* unit ///< The new Unit object
+       );
 
-	   [helpcontext(IDH_IUnitTypeEventSink_OnUnitRemoved),helpstring("Fires when a Unit is removed")]
-	   HRESULT OnUnitRemoved([in]IUnitType* unitType,[in]BSTR unit);
+       /// Called whan a Unit is removed
+	   [helpcontext(IDH_IUnitTypeEvents_OnUnitRemoved),helpstring("Fires when a Unit is removed")]
+	   HRESULT OnUnitRemoved(
+         [in]IUnitType* unitType, ///< The UnitType from which the Unit was removed
+         [in]BSTR unit ///< The unit tag of the Unit object that was removed
+      );
 
-       [helpcontext(IDH_IUnitTypeEventSink_OnUnitsCleared),helpstring("Fires when a Units collection is cleared")]
-	   HRESULT OnUnitsCleared([in]IUnitType* unitType);
+      /// Called when the UnitType is cleared
+       [helpcontext(IDH_IUnitTypeEvents_OnUnitsCleared),helpstring("Fires when a Units collection is cleared")]
+	   HRESULT OnUnitsCleared(
+         [in]IUnitType* unitType ///< The unit type that was cleared
+      );
    };
 
-    [
+   /// Callback interface for UnitTypes object events
+   [
        object,
        uuid(5A5CEF04-07AA-4285-B2A0-3A5452073762),
        oleautomation,
        pointer_default(unique)
     ]
-    interface IUnitTypesEventSink : IUnknown
+    interface IUnitTypesEvents : IUnknown
     {
-       [helpcontext(IDH_IUnitTypesEventSink_OnUnitAdded),helpstring("Fires when a Unit is added")]
-       HRESULT OnUnitAdded([in]IUnitType* unitType,[in]IUnit* unit);
+       /// Called when a Unit object is added to a UnitType
+       [helpcontext(IDH_IUnitTypesEvents_OnUnitAdded),helpstring("Fires when a Unit is added")]
+       HRESULT OnUnitAdded(
+          [in]IUnitType* unitType, ///< The UnitType to which the Unit was added
+          [in]IUnit* unit ///< The new Unit object
+       );
 
-	   [helpcontext(IDH_IUnitTypesEventSink_OnUnitRemoved),helpstring("Fires when a Unit is removed")]
-	   HRESULT OnUnitRemoved([in]IUnitType* unitType,[in]BSTR unit);
+       /// Called whan a Unit is removed
+       [helpcontext(IDH_IUnitTypesEvents_OnUnitRemoved),helpstring("Fires when a Unit is removed")]
+	   HRESULT OnUnitRemoved(
+         [in]IUnitType* unitType, ///< The UnitType from which the Unit was removed
+         [in]BSTR unit ///< The unit tag of the Unit object that was removed
+      );
 
-       [helpcontext(IDH_IUnitTypesEventSink_OnUnitsCleared),helpstring("Fires when a Units collection is cleared")]
-	   HRESULT OnUnitsCleared([in]IUnitType* unitType);
+      /// Called when the UnitType is cleared
+      [helpcontext(IDH_IUnitTypesEvents_OnUnitsCleared),helpstring("Fires when a Units collection is cleared")]
+	   HRESULT OnUnitsCleared(
+         [in]IUnitType* unitType ///< The unit type that was cleared
+      );
 
-	   [helpcontext(IDH_IUnitTypesEventSink_OnUnitTypeAdded),helpstring("Fires when a UnitType is added")]
-	   HRESULT OnUnitTypeAdded([in]IUnitType* unitType);
+      /// Called when a UnitType is added
+	   [helpcontext(IDH_IUnitTypesEvents_OnUnitTypeAdded),helpstring("Fires when a UnitType is added")]
+	   HRESULT OnUnitTypeAdded(
+         [in]IUnitType* unitType ///< The new UnitType object
+      );
 
-	   [helpcontext(IDH_IUnitTypesEventSink_OnUnitTypeRemoved),helpstring("Fires when a UnitType is removed")]
-	   HRESULT OnUnitTypeRemoved([in]BSTR unitType);
+      /// Called whan a UnitType is removed
+	   [helpcontext(IDH_IUnitTypesEvents_OnUnitTypeRemoved),helpstring("Fires when a UnitType is removed")]
+	   HRESULT OnUnitTypeRemoved(
+         [in]BSTR unitType ///< The name of the UnitType that was removed
+      );
 
-	   [helpcontext(IDH_IUnitTypesEventSink_OnUnitTypesCleared),helpstring ("Fires when a UnitType collection is cleared")]
+      /// Called when a UnitTypes collection is cleared of all UnitType objects
+	   [helpcontext(IDH_IUnitTypesEvents_OnUnitTypesCleared),helpstring ("Fires when a UnitType collection is cleared")]
 	   HRESULT OnUnitTypesCleared();
     };
 
-
-[
-   object,
-   oleautomation,
-   uuid(64A00B5C-FBDA-4bcd-9F22-472C48D0E73D),
-   pointer_default(unique)
-]
-interface IDisplayUnitEvents : IUnknown
-{
+   /// Callback interface for DisplayUnit events
+   [
+      object,
+      oleautomation,
+      uuid(64A00B5C-FBDA-4bcd-9F22-472C48D0E73D),
+      pointer_default(unique)
+   ]
+   interface IDisplayUnitEvents : IUnknown
+   {
+      /// Called when the format of a display unit changes
        [helpcontext(IDH_IDisplayUnitEvents_OnFormatChanged),helpstring("event OnFormatChanged")]
-       HRESULT OnFormatChanged([in] IDisplayUnit* displayUnit);
-};
+       HRESULT OnFormatChanged(
+          [in] IDisplayUnit* displayUnit ///< The display unit that changed
+       );
+   };
 
-[
-   object,
-   oleautomation,
-   uuid(DCAA5CAB-2DB4-41c5-B946-FC3E93FEE423),
-   pointer_default(unique)
-]
-interface IDisplayUnitGroupEvents : IUnknown
-{
+   /// Callback interface for DisplayUnitGroupEvents
+   [
+      object,
+      oleautomation,
+      uuid(DCAA5CAB-2DB4-41c5-B946-FC3E93FEE423),
+      pointer_default(unique)
+   ]
+   interface IDisplayUnitGroupEvents : IUnknown
+   {
+      /// Called when the format of a DisplayUnit changes
        [helpcontext(IDH_IDisplayUnitGroupEvents_OnFormatChanged),helpstring("event OnFormatChanged")]
-       HRESULT OnFormatChanged([in] IDisplayUnitGroup* group,[in]IDisplayUnit* displayUnit);
+       HRESULT OnFormatChanged(
+          [in] IDisplayUnitGroup* group, ///< The DisplayUnitGroup in which a DisplayUnit changed
+          [in]IDisplayUnit* displayUnit ///< The DisplayUnit that changed
+       );
 
+       /// Called when a DisplayUnit is created
        [helpcontext(IDH_IDisplayUnitGroupEvents_OnDisplayUnitCreated),helpstring("event OnDisplayUnitCreated")]
-       HRESULT OnDisplayUnitCreated([in] IDisplayUnitGroup* group,[in]IDisplayUnit* displayUnit);
+       HRESULT OnDisplayUnitCreated(
+          [in] IDisplayUnitGroup* group, ///< The DisplayUnitGroup in which the DisplayUnit is created
+          [in]IDisplayUnit* displayUnit ///< The new DisplayUnit
+       );
 
+       /// Called when a DisplayUnit is removed
        [helpcontext(IDH_IDisplayUnitGroupEvents_OnDisplayUnitRemoved),helpstring("event OnDisplayUnitRemoved")]
-       HRESULT OnDisplayUnitRemoved([in] IDisplayUnitGroup* group,[in]BSTR displayUnit);
+       HRESULT OnDisplayUnitRemoved(
+          [in] IDisplayUnitGroup* group, ///< The DisplayUnitGroup from which the DisplayUnit is removed
+          [in]BSTR displayUnit ///< The name of the DisplayUnit that was removed
+       );
 
+       /// Called when a DisplayUnitGroup is cleared
        [helpcontext(IDH_IDisplayUnitGroupEvents_OnDisplayUnitGroupCreated),helpstring("event OnDisplayUnitGroupCleared")]
-       HRESULT OnDisplayUnitGroupCleared([in] IDisplayUnitGroup* group);
-};
+       HRESULT OnDisplayUnitGroupCleared(
+          [in] IDisplayUnitGroup* group ///< The DisplayUnitGroup that was cleared
+       );
+   };
 
-[
-   object,
-   oleautomation,
-   uuid(43581ACD-6397-404a-A9FA-0D79922A22C4),
-   pointer_default(unique)
-]
-interface IDisplayUnitMgrEvents : IUnknown
-{
+   /// Callback interface for DisplayUnitMgr events
+   [
+      object,
+      oleautomation,
+      uuid(43581ACD-6397-404a-A9FA-0D79922A22C4),
+      pointer_default(unique)
+   ]
+   interface IDisplayUnitMgrEvents : IUnknown
+   {
+      /// Called when the format of a DisplayUnit is changed
        [helpcontext(IDH_IDisplayUnitMgrEvents_OnFormatChanged),helpstring("event OnFormatChanged")]
-       HRESULT OnFormatChanged([in] IDisplayUnitGroup* group,[in]IDisplayUnit* displayUnit);
+       HRESULT OnFormatChanged(
+          [in] IDisplayUnitGroup* group, ///< DisplayUnitGroup that owns the DisplayUnit
+          [in]IDisplayUnit* displayUnit ///< DisplayUnit object that changed
+       );
 
+       /// Called when a DisplayUnit object is created
        [helpcontext(IDH_IDisplayUnitMgrEvents_OnDisplayUnitCreated),helpstring("event OnDisplayUnitCreated")]
-       HRESULT OnDisplayUnitCreated([in] IDisplayUnitGroup* group,[in]IDisplayUnit* displayUnit);
+       HRESULT OnDisplayUnitCreated(
+          [in] IDisplayUnitGroup* group, ///< DisplayUnitGroup that owns the DisplayUnit
+          [in]IDisplayUnit* displayUnit ///< The new DisplayUnit object
+       );
 
+       /// Called when a DisplayUnit is removed from a DisplayUnitGroup
        [helpcontext(IDH_IDisplayUnitMgrEvents_OnDisplayUnitRemoved),helpstring("event OnDisplayUnitRemoved")]
-       HRESULT OnDisplayUnitRemoved([in] IDisplayUnitGroup* group,[in]BSTR displayUnit);
+       HRESULT OnDisplayUnitRemoved(
+          [in] IDisplayUnitGroup* group, ///< DisplayUnitGroup from which the DisplayUnit was removed
+          [in]BSTR displayUnit ///< Name of the DisplayUnit that was removed
+       );
 
+       /// Called when a DisplayUnitGroup is cleared
        [helpcontext(IDH_IDisplayUnitMgrEvents_OnDisplayUnitGroupCleared),helpstring("event OnDisplayUnitGroupCleared")]
-       HRESULT OnDisplayUnitGroupCleared([in] IDisplayUnitGroup* group);
+       HRESULT OnDisplayUnitGroupCleared(
+          [in] IDisplayUnitGroup* group ///< DisplayUnitGroup that was cleared
+       );
 
+       /// Called when a DisplayUnitGroup is created
        [helpcontext(IDH_IDisplayUnitMgrEvents_OnDisplayUnitGroupCreated),helpstring("event OnDisplayUnitGroupCreated")]
-       HRESULT OnDisplayUnitGroupCreated([in] IDisplayUnitGroup* group);
+       HRESULT OnDisplayUnitGroupCreated(
+          [in] IDisplayUnitGroup* group ///< The new DisplayUnitGroup object
+       );
 
+       /// Called when a DisplayUnitGroup is removed from the display unit manager
        [helpcontext(IDH_IDisplayUnitMgrEvents_OnDisplayUnitGroupRemoved),helpstring("event OnDisplayUnitGroupRemoved")]
-       HRESULT OnDisplayUnitGroupRemoved([in] BSTR group);
+       HRESULT OnDisplayUnitGroupRemoved(
+          [in] BSTR group ///< Name of the DisplayUnitGroup that was removed
+       );
 
+       /// Called when the display unit groups are cleared from the display unit manager
        [helpcontext(IDH_IDisplayUnitMgrEvents_OnDisplayUnitGroupsCleared),helpstring("event OnDisplayUnitGroupsCleared")]
        HRESULT OnDisplayUnitGroupsCleared();
-};
+   };
 
-
-[
-   object,
-   oleautomation,
-   uuid(8D8BE756-EA66-4963-8FAC-935DCC57F434),
-   pointer_default(unique)
-]
-interface IUnitSystemEvents : IUnknown
-{
+   /// Callback interface for unit system events
+   [
+      object,
+      oleautomation,
+      uuid(8D8BE756-EA66-4963-8FAC-935DCC57F434),
+      pointer_default(unique)
+   ]
+   interface IUnitSystemEvents : IUnknown
+   {
+      /// Fired when display units are changed
 	   [helpcontext(IDH_IUnitSystemEvents_OnUpdateDisplay),helpstring("event OnUpdateDisplay")]
 	   HRESULT OnUpdateDisplay();
 
+      /// Fired when the unit server is changed
 	   [helpcontext(IDH_IUnitSystemEvents_OnUnitServerChanged),helpstring("event OnUnitServerChanged")]
 	   HRESULT OnUnitServerChanged();
-};
+   };
 
-[
-   object,
-   oleautomation,
-   uuid(F71412A3-A63B-4f5b-8A02-9E263090F914),
-   pointer_default(unique)
-]
-interface IUnitModeControllerEvents : IUnknown
-{
+   /// Callback interface for UnitModeController events
+   [
+      object,
+      oleautomation,
+      uuid(F71412A3-A63B-4f5b-8A02-9E263090F914),
+      pointer_default(unique)
+   ]
+   interface IUnitModeControllerEvents : IUnknown
+   {
+      /// Called when the unit mode is changed
 		[helpcontext(IDH_IUnitModeControllerEvents_OnUnitModeChanged),helpstring("method OnUnitModeChanged")]
-		HRESULT OnUnitModeChanged([in]UnitModeType newMode);
-};
+		HRESULT OnUnitModeChanged(
+         [in]UnitModeType newMode ///< The new UnitModeType
+      );
+   };
 
-[
-   object,
-   oleautomation,
-   uuid(15AE8080-0171-4687-86DB-CD95393202FB),
-   pointer_default(unique)
-]
-interface IDisplayUnitFormatterEvents : IUnknown
-{
+   /// Callback interface for display unit events
+   [
+      object,
+      oleautomation,
+      uuid(15AE8080-0171-4687-86DB-CD95393202FB),
+      pointer_default(unique)
+   ]
+   interface IDisplayUnitFormatterEvents : IUnknown
+   {
        [helpcontext(IDH_IDisplayUnitFormatterEvents_OnFormatChanged),helpstring("event OnFormatChanged")]
-       HRESULT OnFormatChanged();
-};
+       HRESULT OnFormatChanged(); ///< Fired when the format specification is changed
+   };
 
-[
-   object,
-   oleautomation,
-   uuid(C7C8079B-87E8-4c37-9F31-073A388B5484),
-   pointer_default(unique)
-]
-interface IDocUnitSystemEvents : IUnknown
-{
+   /// Callback interface for DocUnitSystem events
+   [
+      object,
+      oleautomation,
+      uuid(C7C8079B-87E8-4c37-9F31-073A388B5484),
+      pointer_default(unique)
+   ]
+   interface IDocUnitSystemEvents : IUnknown
+   {
+      /// Fired when display units are changed
 		[helpcontext(IDH_IDocUnitSystemEvents_OnUpdateDisplay), helpstring("method OnUpdateDisplay")]
 		HRESULT OnUpdateDisplay();
-};
+   };
 
 
-
+   /// The document unit system is responsible for managing display units modes and unit conversions for MDI applications.The DocUnitSystem object works in conjunction with AppUnitSystem and DisplayUnitMgr2 objects.
+   ///
+   /// Implements the IDocUnitSystem interface and fires events through the IDocUnitSystemEvents interface
 	[
 		uuid(16683EE6-558C-11D4-8CE4-0080C7380027),
 		helpstring("DocUnitSystem Class"),
@@ -1004,6 +1493,11 @@ interface IDocUnitSystemEvents : IUnknown
 		[default] interface IDocUnitSystem;
 		[default, source] interface IDocUnitSystemEvents;
 	};
+
+   /// The display unit manager object is responsible for managing the display unit groups. 
+   /// This DisplayUnitMgr2 object is typically used with Multiple Document Interface (SDI) applications and is associated with the AppUnitSystem object.
+   ///
+   /// Implements the IDisplayUnitMgr2 interface and fires events through the IDisplayUnitMgrEvents interface
 	[
 		uuid(CE8269CC-5568-11d4-8CE4-0080C7380027),
 		helpstring("DisplayUnitMgr2 Class"),
@@ -1016,6 +1510,9 @@ interface IDocUnitSystemEvents : IUnknown
 		[default,source] interface IDisplayUnitMgrEvents;
 	};
 	
+   /// Application unit system designed to provide unit services to Multi-Document Interface (MDI) applications.
+   ///
+   /// Implements the IAppUnitSystem interface and fires events through the IUnitSystemEvents interface.
 	[
 		uuid(16683EE2-558C-11D4-8CE4-0080C7380027),
 		helpstring("AppUnitSystem Class"),
@@ -1026,6 +1523,10 @@ interface IDocUnitSystemEvents : IUnknown
 		[default] interface IAppUnitSystem;
 		[default, source] interface IUnitSystemEvents;
 	};
+
+   /// An object that maintains the base units for an application or component and provides unit conversion services.
+   ///
+   /// Implements the IUnitServer, IUnitConvert, and IUnitConvert2 interfaces and fires events through the IUnitServerEvents interface.
     [
         uuid(C65F03C4-16AB-11D2-8D11-94FA07C10000),
         helpcontext(IDH_UnitServer),
@@ -1034,11 +1535,16 @@ interface IDocUnitSystemEvents : IUnknown
     coclass UnitServer
     {
         [default] interface IUnitServer;
-        [default,source] interface IUnitServerEventSink;
+        [default,source] interface IUnitServerEvents;
         interface IUnitConvert;
         interface IUnitConvert2;
     };
 
+    /// An object that controls the unit mode for an application.
+    ///
+    /// The unit mode refers to US or SI units
+    ///
+    /// Implements the IUnitModelController interface and fires events through the IUnitModeControllerEvents interface
 	[
 		uuid(51F0A2A2-CAC1-11D3-8CE1-A85CC0A0E770),
 		helpstring("UnitModeController Class"),
@@ -1050,6 +1556,9 @@ interface IDocUnitSystemEvents : IUnknown
 		[default, source] interface IUnitModeControllerEvents;
 	};
 
+   /// An object that formats values into display units.
+   ///
+   /// Implements the IDisplayUnitFormatter interface and fires events through the IDisplayUnitFormatterEvents interface
 	[
 		uuid(51F0A2BD-CAC1-11D3-8CE1-A85CC0A0E770),
 		helpstring("DisplayUnitFormatter Class"),
@@ -1060,7 +1569,12 @@ interface IDocUnitSystemEvents : IUnknown
 		[default] interface IDisplayUnitFormatter;
 		[default,source] interface IDisplayUnitFormatterEvents;
 	};
-	[
+
+
+   /// An object that formats values into display units using an alternative annotation scheme.
+   ///
+   /// Implements the IAnnotatedDisplayUnitFormatter interface and fires events through the IDisplayUnitFormatterEvents interface
+   [
 		uuid(51F0A2BF-CAC1-11D3-8CE1-A85CC0A0E770),
 		helpstring("AnnotatedDisplayUnitFormatter Class"),
 		helpcontext(IDH_AnnotatedDisplayUnitFormatter)
@@ -1071,6 +1585,9 @@ interface IDocUnitSystemEvents : IUnknown
 		[default,source] interface IDisplayUnitFormatterEvents;
 	};
 
+   /// An object that manages display units, base units, unit conversions, and unit modes for Single Document Interface (SDI) applications.
+   ///
+   /// Implements the IUnitSystem interface and fires events through the IUnitSystemEvents interface
 	[
 		uuid(51F0A2C5-CAC1-11D3-8CE1-A85CC0A0E770),
 		helpstring("UnitSystem Class"),
@@ -1082,6 +1599,10 @@ interface IDocUnitSystemEvents : IUnknown
 		[default,source] interface IUnitSystemEvents;
 	};
 
+   /// The display unit manager object is responsible for managing the display unit groups. 
+   /// This DisplayUnitMgr object is typically used with Single Document Interface (SDI) applications and is associated with the UnitSystem object.
+   ///
+   /// Implements the IDisplayUnitMgr interface and fires events through the IDisplayUnitMgrEvents interface
 	[
 		uuid(DAC8CE20-D36F-11d3-8CE1-A4260772F04A),
 		helpstring("DisplayUnitMgr Class"),
@@ -1093,7 +1614,11 @@ interface IDocUnitSystemEvents : IUnknown
 		[default] interface IDisplayUnitMgr;
 		[default,source] interface IDisplayUnitMgrEvents;
 	};
-	[
+
+   /// An object that represents a physical unit of measure such as Feet or Kips
+   ///
+   /// Implements the IUnit interface
+   [
 		uuid(47D62466-C499-11d4-8B5B-006097C68A9C),
 		noncreatable,
 		helpstring("Unit Class"),
@@ -1104,6 +1629,10 @@ interface IDocUnitSystemEvents : IUnknown
 		[default] interface IUnit;
 	};
 
+
+   /// Object that represents a collection of Unit objects
+   ///
+   /// Implements the IUnits interface and fires events through the IUnitsEvents interface
 	[
 		uuid(47D62468-C499-11d4-8B5B-006097C68A9C),
 		noncreatable,
@@ -1113,9 +1642,12 @@ interface IDocUnitSystemEvents : IUnknown
 	coclass Units
 	{
 		[default] interface IUnits;
-		[default,source] interface IUnitsEventSink;
+		[default,source] interface IUnitsEvents;
 	};
 
+   /// Object that represents a type of physical unit such as length or force
+   ///
+   /// Implements the IUnitType interface and fires events through the IUnitTypeEvents interface
 	[
 		uuid(47D62469-C499-11d4-8B5B-006097C68A9C),
 		noncreatable,
@@ -1125,10 +1657,13 @@ interface IDocUnitSystemEvents : IUnknown
 	coclass UnitType
 	{
 		[default] interface IUnitType;
-		[default, source] interface IUnitTypeEventSink;
+		[default, source] interface IUnitTypeEvents;
 	};
 
-	[
+   /// Object that represents a collection of UnitType objects
+   ///
+   /// Implements the IUnitTypes interface and fires events through the IUnitTypesEvents interface
+   [
 		uuid(47D6246A-C499-11d4-8B5B-006097C68A9C),
 		noncreatable,
 		helpstring("UnitTypes Class"),
@@ -1137,9 +1672,12 @@ interface IDocUnitSystemEvents : IUnknown
 	coclass UnitTypes
 	{
 		[default] interface IUnitTypes;
-		[default, source] interface IUnitTypesEventSink;
+		[default, source] interface IUnitTypesEvents;
 	};
 
+   /// An object that brings together a unit of measure and formatting information to create a formatted display unit string. DisplayUnit objects are members of a DisplayUnits collection.
+   ///
+   /// Implements the IDisplayUnit interface and fires events through the IDisplayUnitEvents interface
 	[
 		uuid(47D6246B-C499-11d4-8B5B-006097C68A9C),
 		noncreatable,
@@ -1152,7 +1690,10 @@ interface IDocUnitSystemEvents : IUnknown
 		[default, source] interface IDisplayUnitEvents;
 	};
 
-	[
+   /// A collection of DisplayUnit objects.
+   ///
+   /// Implements the IDisplayUnitGroup interface and fires events through the IDisplayUnitGroupEvents interface
+   [
 		uuid(47D6246C-C499-11d4-8B5B-006097C68A9C),
 		noncreatable,
 		helpstring("DisplayUnitGroup Class"),

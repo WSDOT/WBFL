@@ -31,10 +31,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptFormattedLengthUnitValue
-****************************************************************************/
 rptReportContent* rptFormattedLengthUnitValue::CreateClone() const
 {
    return new rptFormattedLengthUnitValue( *this );

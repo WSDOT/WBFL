@@ -38,10 +38,10 @@ stbHaulingSectionResult::stbHaulingSectionResult()
    Mw = 0;
    Mcf = 0;
 
-   memset((void*)fps, 0, sizeof(fps));
-   memset((void*)fg, 0, sizeof(fg));
-   memset((void*)fw, 0, sizeof(fw));
-   memset((void*)fcf, 0, sizeof(fcf));
+   fps.fill(0);
+   fg.fill(0);
+   fw.fill(0);
+   fcf.fill(0);
 
    memset((void*)fDirect, 0, sizeof(fDirect));
    memset((void*)fTilt, 0, sizeof(fTilt));
@@ -70,10 +70,10 @@ stbHaulingSectionResult::stbHaulingSectionResult()
 
    memset((void*)FScr, 0, sizeof(FScr));
 
-   memset((void*)FScrMin, 0, sizeof(FScrMin));
-   memset((void*)FScrImpactDirection, 0, sizeof(FScrImpactDirection));
-   memset((void*)FScrWindDirection, 0, sizeof(FScrWindDirection));
-   memset((void*)FScrCorner, 0, sizeof(FScrCorner));
+   FScrMin.fill(0);
+   FScrImpactDirection.fill(stbTypes::NoImpact);
+   FScrWindDirection.fill(stbTypes::Left);
+   FScrCorner.fill(stbTypes::BottomLeft);
 
 
    for (int s = 0; s < 2; s++)

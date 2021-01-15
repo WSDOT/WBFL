@@ -30,75 +30,17 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptHyperLinkDefinition
-****************************************************************************/
-
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-rptHyperLinkDefinition::rptHyperLinkDefinition(const std::_tstring& HyperTarget)
-{
-   m_TargetName = HyperTarget;
-}
-
-rptHyperLinkDefinition::rptHyperLinkDefinition(const rptHyperLinkDefinition& rOther)
-{
-   MakeCopy(rOther);
-}
-
-rptHyperLinkDefinition::~rptHyperLinkDefinition()
+rptHyperLinkDefinition::rptHyperLinkDefinition(const std::_tstring& HyperTarget) :
+   m_TargetName(HyperTarget)
 {
 }
 
-//======================== OPERATORS  =======================================
-rptHyperLinkDefinition& rptHyperLinkDefinition::operator= (const rptHyperLinkDefinition& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-// Return the target location
-std::_tstring rptHyperLinkDefinition::GetTargetName() const
+const std::_tstring& rptHyperLinkDefinition::GetTargetName() const
 {
    return m_TargetName;
 }
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void rptHyperLinkDefinition::MakeCopy(const rptHyperLinkDefinition& rOther)
+void rptHyperLinkDefinition::SetTargetName(const std::_tstring& target)
 {
-   m_TargetName = rOther.m_TargetName;
+   m_TargetName = target;
 }
-
-void rptHyperLinkDefinition::MakeAssignment(const rptHyperLinkDefinition& rOther)
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

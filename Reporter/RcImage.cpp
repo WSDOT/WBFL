@@ -33,15 +33,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptRcImage
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
 rptRcImage::rptRcImage() :
 rptReportContent(),
 m_FileName( _T("Unspecified") ),
@@ -71,7 +62,6 @@ rptRcImage::~rptRcImage()
 {
 }
 
-//======================== OPERATORS  =======================================
 rptRcImage& rptRcImage::operator= (const rptRcImage& rOther)
 {
    if( this != &rOther )
@@ -85,7 +75,6 @@ rptRcImage& rptRcImage::operator= (const rptRcImage& rOther)
    return *this;
 }
 
-//======================== OPERATIONS =======================================
 void rptRcImage::Accept( rptRcVisitor& rVisitor )
 {
 #if defined _DEBUG
@@ -106,7 +95,7 @@ rptReportContent* rptRcImage::CreateClone() const
 
 //======================== ACCESS     =======================================
 
-std::_tstring rptRcImage::GetFileName() const
+const std::_tstring& rptRcImage::GetFileName() const
 {
    return m_FileName;
 }
@@ -116,7 +105,7 @@ void rptRcImage::SetFileName(const std::_tstring& fileName)
    m_FileName = fileName;
 }
 
-std::_tstring rptRcImage::GetPictureDescription() const
+const std::_tstring& rptRcImage::GetPictureDescription() const
 {
    return m_PictureDescription;
 }
@@ -145,39 +134,3 @@ rptRcImage::Float rptRcImage::GetImageFloat() const
 {
    return m_Float;
 }
-
-
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool rptRcImage::AssertValid() const
-{
-   //return rptReportContent::AssertValid();
-   return true;
-}
-
-void rptRcImage::Dump(dbgDumpContext& os) const
-{
-   //rptReportContent::Dump( os );
-   os << "rptRcImage : FileName           = " << m_FileName << endl;
-   os << "rptRcImage : PictureDescription = " << m_PictureDescription << endl;
-}
-#endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

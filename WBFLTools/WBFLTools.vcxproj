@@ -946,6 +946,7 @@ date/T &gt; $(IntDir)mt2.dep
     <ClCompile Include="LegalWizStep2.cpp" />
     <ClCompile Include="LngArray.cpp" />
     <ClCompile Include="LogDumpContext.cpp" />
+    <ClCompile Include="LogFile.cpp" />
     <ClCompile Include="MohrCircle.cpp" />
     <ClCompile Include="ProgressMonitorDlg.cpp" />
     <ClCompile Include="ProgressMonitorWindow.cpp" />
@@ -976,6 +977,7 @@ date/T &gt; $(IntDir)mt2.dep
     <None Include="IDArray.rgs" />
     <None Include="IndexArray.rgs" />
     <None Include="LngArray.rgs" />
+    <None Include="LogFile.rgs" />
     <None Include="MohrCircle.rgs" />
     <None Include="ProgressMonitor.rgs" />
     <None Include="ProgressMonitorWindow.rgs" />
@@ -1080,6 +1082,7 @@ copy %(FullPath) $(ProjectDir)htmlhelp\%(Filename).hh
     <ClInclude Include="LegalWizStep1.h" />
     <ClInclude Include="LegalWizStep2.h" />
     <ClInclude Include="LngArray.h" />
+    <ClInclude Include="LogFile.h" />
     <ClInclude Include="MohrCircle.h" />
     <ClInclude Include="ProgressMonitorDlg.h" />
     <ClInclude Include="ProgressMonitorWindow.h" />

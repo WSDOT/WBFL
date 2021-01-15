@@ -24,42 +24,36 @@
 #pragma once
 
 #include <Stability\StabilityExp.h>
+#include <array>
 
-/*****************************************************************************
-CLASS 
-   stbResults
-
-DESCRIPTION
-   Encapsulates the analysis results
-*****************************************************************************/
-
+/// Base class for analysis results
 class STABILITYCLASS stbResults
 {
 public:
    stbResults();
 
-   Float64 Ll; // left overhang (trailing overhang)
-   Float64 Lr; // right overhang (leading overhang)
-   Float64 Ls; // span length between supports
-   Float64 Wg; // total weight of girder
+   Float64 Ll; ///< left overhang (trailing overhang)
+   Float64 Lr; ///< right overhang (leading overhang)
+   Float64 Ls; ///< span length between supports
+   Float64 Wg; ///< total weight of girder
 
-   stbTypes::CalculationMethod XcgMethod;
-   Float64 Xleft; // horizontal location of the CG with respect to the roll axis
+   stbTypes::CalculationMethod XcgMethod; ///< Indicates the method that was used to compute the location of the center of mass
+   Float64 Xleft; ///< horizontal location of the CG with respect to the roll axis
 
-   Float64 Yr;  // location from the center of gravity from the roll axis in girder section coordinates (positive means roll center is above CG)
-   Float64 Dra[3]; // distance from the center of gravity to the roll axis, adjusted for camber
+   Float64 Yr;  ///< location from the center of gravity from the roll axis in girder section coordinates (positive means roll center is above CG)
+   std::array<Float64, 3> Dra; ///< distance from the center of gravity to the roll axis, adjusted for camber. Array index is stbTypes::ImpactDirection.
 
-   Float64 OffsetFactor; // cg offset factor
-   Float64 CamberOffsetFactor; // factor used to multiple with Yr to adjust for camber (this is the Bob Mast "increase by 2% to account for camber") method
-   Float64 LateralSweep; // lateral sweep due to imperfections (SweepTolerance*Lg + SupportOffset)
-   Float64 EccLateralSweep[3]; // eccentricty of CG due to lateral sweep (OffsetFactor*LateralSweep + SupportPlacementTolerance)*emag[impact]
+   Float64 OffsetFactor; ///< cg offset factor
+   Float64 CamberOffsetFactor; ///< factor used to multiple with Yr to adjust for camber (this is the Bob Mast "increase by 2% to account for camber") method
+   Float64 LateralSweep; ///< lateral sweep due to imperfections (SweepTolerance*Lg + SupportOffset)
+   std::array<Float64, 3> EccLateralSweep; ///< eccentricty of CG due to lateral sweep (OffsetFactor*LateralSweep + SupportPlacementTolerance)*emag[impact]. Array index is stbTypes::ImpactDirection.
 
-   Float64 WindPressure; // computed or input wind pressure
-   Float64 Ywind[3];   // distance between roll center and resultant wind force (mid-height of girder) (array index is IMPACT_xxx)
-   Float64 EccWind[3]; // Vertical eccentricty of the girder self-weight load with respect to the roll axis (array index is IMPACT_xxx)
-   Float64 Wwind;   // total wind force (applied at EccWind)
+   Float64 WindPressure; ///< computed or input wind pressure
+   std::array<Float64, 3> Ywind;   ///< distance between roll center and resultant wind force (mid-height of girder). Array index is stbTypes::ImpactDirection.
+   std::array<Float64, 3> EccWind; ///< vertical eccentricty of the girder self-weight load with respect to the roll axis. Array index is stbTypes::ImpactDirection.
+   Float64 Wwind;   ///< total wind force (applied at EccWind)
 
-   stbTypes::CalculationMethod ZoMethod;
-   Float64 Zo[3];  // lateral deflection of center of gravity for full dead load applied laterally (array index is IMPACT_xxx)
-   Float64 ZoWind[3]; // lateral deflection of center of gravity for full wind applied laterally
+   stbTypes::CalculationMethod ZoMethod; ///< Indicates the method for computing the location of the center of mass
+   std::array<Float64, 3> Zo;  ///< lateral deflection of center of gravity for full dead load applied laterally. Array index is stbTypes::ImpactDirection.
+   std::array<Float64, 3> ZoWind; ///< lateral deflection of center of gravity for full wind applied laterally. Array index is stbTypes::ImpactDirection.
 };

@@ -61,7 +61,7 @@ void CTestUnitServer::Test()
    TRY_TEST( unitServer.CoCreateInstance( CLSID_UnitServer ), S_OK );
 
    DWORD dwCookie;
-   TRY_TEST(AtlAdvise(unitServer,punk,IID_IUnitServerEventSink,&dwCookie),S_OK);
+   TRY_TEST(AtlAdvise(unitServer,punk,IID_IUnitServerEvents,&dwCookie),S_OK);
 
    TRY_TEST(unitServer->SetBaseUnits(nullptr,CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),E_INVALIDARG);
    TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),nullptr,CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),E_INVALIDARG);
@@ -266,7 +266,7 @@ void CTestUnitServer::Test()
 
    ///////////////////////////////////////////////////////////////
    // Disconnection from Connection point
-   TRY_TEST(AtlUnadvise(unitServer,IID_IUnitServerEventSink,dwCookie),S_OK);
+   TRY_TEST(AtlUnadvise(unitServer,IID_IUnitServerEvents,dwCookie),S_OK);
 
 
    // Non-default internal base units

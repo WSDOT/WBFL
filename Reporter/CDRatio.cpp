@@ -30,54 +30,17 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+rptRcSymbol rptCDRatio::m_RcSymbolInfinity(rptRcSymbol::infinity);
+sysNumericFormatTool rptCDRatio::m_FormatTool(sysNumericFormatTool::Fixed,0,2);
 
-/****************************************************************************
-CLASS
-   rptCDRatio
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
 rptCDRatio::rptCDRatio():
-rptRcString(_T("Undef")),
-m_RcSymbolInfinity(rptRcSymbol::infinity),
-m_Capacity(0.0), m_Demand(0.0), m_Passed(false)
+rptRcString(_T("Undef"))
 {
-   Init();
 }
-
-rptCDRatio::rptCDRatio(Float64 capacity, Float64 demand, bool passed):
-rptRcString(_T("Undef")),
-m_RcSymbolInfinity(rptRcSymbol::infinity),
-m_Capacity(capacity), m_Demand(demand), m_Passed(passed)
-{
-   Init();
-
-   rptRcString::SetValue(this->AsString().c_str());
-}
-
-void rptCDRatio::Init()
-{
-   m_FormatTool.SetFormat(sysNumericFormatTool::Fixed);
-   m_FormatTool.SetPrecision(2);
-}
-
 
 rptCDRatio::rptCDRatio(const rptCDRatio& rOther) :
-m_RcSymbolInfinity(rptRcSymbol::infinity),
 rptRcString(rOther)
 {
-   MakeCopy( rOther );
-}
-
-rptCDRatio& rptCDRatio::operator = (const rptCDRatio& rOther)
-{
-   if ( this != &rOther )
-   {
-      MakeAssignment( rOther );
-   }
-
-   return *this;
 }
 
 rptReportContent* rptCDRatio::CreateClone() const
@@ -87,8 +50,6 @@ rptReportContent* rptCDRatio::CreateClone() const
 
 rptReportContent& rptCDRatio::SetValue(Float64 cdr,bool passed)
 {
-   m_CDR = cdr;
-   m_Passed = passed;
    if ( cdr == CDR_INF )
    {
       return m_RcSymbolInfinity;
@@ -109,7 +70,7 @@ rptReportContent& rptCDRatio::SetValue(Float64 cdr,bool passed)
    {
       std::_tstring cds = m_FormatTool.AsString(cdr);
 
-      if (cds == std::_tstring(_T("1.00")) && !m_Passed)
+      if (cds == std::_tstring(_T("1.00")) && !passed)
       {
          // Force out of tolerance value to report 0.99
          cds = std::_tstring(_T("0.99"));
@@ -120,39 +81,35 @@ rptReportContent& rptCDRatio::SetValue(Float64 cdr,bool passed)
 
 rptReportContent& rptCDRatio::SetValue(Float64 capacity, Float64 demand, bool passed)
 {
-   m_Capacity = capacity;
-   m_Demand = demand;
-   m_Passed = passed;
-
-   if (!IsEqual(m_Capacity,0.0) && IsEqual(m_Demand,0.0))
+   if (!IsEqual(capacity,0.0) && IsEqual(demand,0.0))
    {
       return m_RcSymbolInfinity;
    }
    else
    {
-      return rptRcString::SetValue(AsString().c_str());
+      return rptRcString::SetValue(AsString(capacity,demand,passed).c_str());
    }
 }
 
-std::_tstring rptCDRatio::AsString() const
+std::_tstring rptCDRatio::AsString(Float64 capacity, Float64 demand, bool passed) const
 {
-   if (Sign(m_Capacity) != Sign(m_Demand))
+   if (Sign(capacity) != Sign(demand))
    {
       // Cannot have negative c/d
       return std::_tstring(_T("-"));
    }
-   else if(IsEqual(m_Capacity,0.0))
+   else if(IsEqual(capacity,0.0))
    {
 //      ATLASSERT(false); // c/d for c==0.0 makes no sense - return return 0.00, but this should be caught by caller
       return std::_tstring(_T("0.00")); 
    }
-   else if (IsEqual(m_Demand,0.0))
+   else if (IsEqual(demand,0.0))
    {
       return std::_tstring(_T("inf")); 
    }
    else
    {
-      Float64 cd = m_Capacity/m_Demand;
+      Float64 cd = capacity/demand;
 
       if (CDR_LARGE < cd)
       {
@@ -162,7 +119,7 @@ std::_tstring rptCDRatio::AsString() const
       {
          std::_tstring cds = m_FormatTool.AsString(cd);
 
-         if (cds==std::_tstring(_T("1.00")) && !m_Passed)
+         if (cds==std::_tstring(_T("1.00")) && !passed)
          {
             // Force out of tolerance value to report 0.99
             return std::_tstring(_T("0.99"));
@@ -172,16 +129,4 @@ std::_tstring rptCDRatio::AsString() const
          return cds;
       }
    }
-}
-
-void rptCDRatio::MakeCopy(const rptCDRatio& rOther)
-{
-   m_Capacity = rOther.m_Capacity;
-   m_Demand = rOther.m_Demand;
-   m_Passed = rOther.m_Passed;
-}
-
-void rptCDRatio::MakeAssignment(const rptCDRatio& rOther)
-{
-   MakeCopy( rOther );
 }

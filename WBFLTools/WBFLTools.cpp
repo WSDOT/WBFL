@@ -50,6 +50,7 @@
 #include "UnkArray.h"
 #include "IDArray.h"
 #include "IndexArray.h"
+#include "LogFile.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -75,6 +76,7 @@ OBJECT_ENTRY(CLSID_BstrArray, CBstrArray)
 OBJECT_ENTRY(CLSID_UnkArray, CUnkArray)
 OBJECT_ENTRY(CLSID_IDArray, CIDArray)
 OBJECT_ENTRY(CLSID_IndexArray, CIndexArray)
+OBJECT_ENTRY(CLSID_LogFile, CLogFile)
 END_OBJECT_MAP()
 
 class CWBFLToolsApp : public CWinApp

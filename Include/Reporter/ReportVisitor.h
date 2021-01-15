@@ -25,94 +25,25 @@
 #define INCLUDED_REPORTER_REPORTVISITOR_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
 #include <Reporter\ReporterExp.h>
 #include <Reporter\Report.h>
 
-//
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
 class REPORTERCLASS rptReport;
 
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptReportVisitor
-
-   Abstract class for top-level report visitor
-
-DESCRIPTION
-   Visits a report for a purpose
-
-   EXAMPLE
-      Place examples here.
-   END
-
-BUGS
-   There are currently no known problems with this class.
-
-KEYWORDS
-   Reporter
-*****************************************************************************/
-
+/// Abstract class for top-level report visitor
 class REPORTERCLASS rptReportVisitor
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
    rptReportVisitor();
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptReportVisitor();
 
-   // GROUP: OPERATORS
-
-   //------------------------------------------------------------------------
-   // Do my job - visit a report
-   virtual void VisitReport(rptReport*) = 0;
-
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   /// Visits a report by traversing all of the report content
+   virtual void VisitReport(rptReport* pReport) = 0;
 
 private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   // Prevent accentidal copying and assignment
-   rptReportVisitor(const rptReportVisitor&);
-   rptReportVisitor& operator=(const rptReportVisitor&);
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   rptReportVisitor(const rptReportVisitor&) = delete;
+   rptReportVisitor& operator=(const rptReportVisitor&) = delete;
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_REPORTVISITOR_H_

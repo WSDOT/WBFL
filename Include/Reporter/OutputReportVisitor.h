@@ -30,105 +30,26 @@
 #include <Reporter\ReportVisitor.h>
 #include <Reporter\Report.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptOutputReportVisitor
-
-   An abstract ReportVisitor specialized to send a report to an ostream
-
-
-DESCRIPTION
-   This abstract sets up data to send a report to a class derived from ostream.
-
-
-   EXAMPLE
-      Place examples here.
-   END
-
-BUGS
-   There are currently no known problems with this class.
-
-LOG
-   rdp : 03.25.1997 : Created file
-*****************************************************************************/
-
+/// An abstract report visitor specialized to render content to an output stream
 class REPORTERCLASS rptOutputReportVisitor : public rptReportVisitor
 {
 public:
-   // GROUP: LIFECYCLE
+   rptOutputReportVisitor(
+      std::_tostream* pMyOstream ///< output stream to receive the paragraph data
+   );
 
-   //------------------------------------------------------------------------
-   // Constructor 
-   rptOutputReportVisitor(std::_tostream* pMyOstream/*, const rptUnitLibrary& MyLib */);
-
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptOutputReportVisitor();
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // visit the report
-   virtual void VisitReport(rptReport*) = 0;
-
-   //------------------------------------------------------------------------
-   // Set new units for the visitor.
-   //void SetNewUnits(rptUnitSnapShot* pMySnapShot);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   /// Visit the report
+   virtual void VisitReport(rptReport* pReport) = 0;
 
 protected:
-   // GROUP: DATA MEMBERS
-   //------------------------------------------------------------------------
-   // Ostream that visitor will send output to
-   std::_tostream* m_pOstream;
-   //------------------------------------------------------------------------
-   // Snapshot of the units to be used in generating the report output
-   //rptUnitSnapShot* m_pUnitSnapShot;
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   std::_tostream* m_pOstream; ///< The output stream
 
 private:
-   // GROUP: DATA MEMBERS
-
-
-
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor is private
-   rptOutputReportVisitor();
-   //------------------------------------------------------------------------
-   // Copying not allowed
-   rptOutputReportVisitor(const rptOutputReportVisitor&);
-   //------------------------------------------------------------------------
-   // Assignment not allowed
-   rptOutputReportVisitor& operator=(const rptOutputReportVisitor&);
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   rptOutputReportVisitor() = delete;
+   rptOutputReportVisitor(const rptOutputReportVisitor&) = delete;
+   rptOutputReportVisitor& operator=(const rptOutputReportVisitor&) = delete;
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_OUTPUTREPORTVISITOR_H_

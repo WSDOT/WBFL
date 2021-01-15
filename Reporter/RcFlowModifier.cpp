@@ -30,21 +30,11 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptRcFlowModifier
-****************************************************************************/
-
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-rptRcFlowModifier::rptRcFlowModifier(FlowModifier ModifierType, Uint16 NumTimes) :
+rptRcFlowModifier::rptRcFlowModifier(FlowModifier ModifierType, Uint16 nRepeat) :
 rptReportContent()
 {
    m_ModifierType = ModifierType;
-   m_NumTimes     = NumTimes;
+   m_nRepeat      = nRepeat;
 }
 
 rptRcFlowModifier::rptRcFlowModifier(const rptRcFlowModifier& rOther) :
@@ -57,7 +47,6 @@ rptRcFlowModifier::~rptRcFlowModifier()
 {
 }
 
-//======================== OPERATORS  =======================================
 rptRcFlowModifier& rptRcFlowModifier::operator= (const rptRcFlowModifier& rOther)
 {
    if( this != &rOther )
@@ -68,22 +57,14 @@ rptRcFlowModifier& rptRcFlowModifier::operator= (const rptRcFlowModifier& rOther
    return *this;
 }
 
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
 rptReportContent* rptRcFlowModifier::CreateClone() const
 { 
    return new rptRcFlowModifier(*this); 
 }
 
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 void rptRcFlowModifier::MakeCopy(const rptRcFlowModifier& rOther)
 {
-   m_NumTimes     = rOther.m_NumTimes;
+   m_nRepeat = rOther.m_nRepeat;
    m_ModifierType = rOther.m_ModifierType;
 }
 
@@ -93,29 +74,18 @@ void rptRcFlowModifier::MakeAssignment(const rptRcFlowModifier& rOther)
    MakeCopy( rOther );
 }
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
 
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-
-rptLineBreak::operator rptReportContent*()
+rptLineBreakFactory::operator rptReportContent*()
 {
    return new rptRcFlowModifier(rptRcFlowModifier::NEW_LINE);
 }
 
-rptPageBreak::operator rptReportContent*()
+rptPageBreakFactory::operator rptReportContent*()
 {
    return new rptRcFlowModifier(rptRcFlowModifier::NEW_PAGE);
 }
 
-rptHardTab::operator rptReportContent*()
+rptHardTabFactory::operator rptReportContent*()
 {
    return new rptRcFlowModifier(rptRcFlowModifier::TAB);
 }

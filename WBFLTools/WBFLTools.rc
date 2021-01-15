@@ -115,6 +115,7 @@ IDR_BSTRARRAY           REGISTRY                "BstrArray.rgs"
 IDR_UNKARRAY            REGISTRY                "UnkArray.rgs"
 IDR_IDARRAY             REGISTRY                "IDArray.rgs"
 IDR_INDEXARRAY          REGISTRY                "IndexArray.rgs"
+IDR_LOGFILE             REGISTRY                "LogFile.rgs"
 
 /////////////////////////////////////////////////////////////////////////////
 //

@@ -233,19 +233,19 @@ STDMETHODIMP CSurfaceProfile::Clear()
    return S_OK;
 }
 
-STDMETHODIMP CSurfaceProfile::GetRidgePointElevationChange(CollectionIndexType ridgePoint1Idx,CollectionIndexType ridgePoint2Idx,Float64* deltaElevation)
+STDMETHODIMP CSurfaceProfile::GetSurfacePointElevationChange(CollectionIndexType surfacePoint1Idx,CollectionIndexType surfacePoint2Idx,Float64* deltaElevation)
 {
-   // computes the change in elevation between two ridge points
+   // computes the change in elevation between two surface points
    CHECK_RETVAL(deltaElevation);
-   if ( m_SurfacePoints.size() < ridgePoint1Idx || m_SurfacePoints.size() < ridgePoint2Idx )
+   if ( m_SurfacePoints.size() < surfacePoint1Idx || m_SurfacePoints.size() < surfacePoint2Idx )
    {
       return SurfaceProfileError(IDS_E_INVALIDRIDGEPOINT,COGO_E_INVALIDRIDGEPOINTINDEX);
    }
 
    CComPtr<ISurfacePoint> sp1;
    CComPtr<ISurfacePoint> sp2;
-   get_Item(ridgePoint1Idx,&sp1);
-   get_Item(ridgePoint2Idx,&sp2);
+   get_Item(surfacePoint1Idx,&sp1);
+   get_Item(surfacePoint2Idx,&sp2);
 
    Float64 elev1,elev2;
    sp1->get_Elevation(&elev1);
@@ -254,11 +254,11 @@ STDMETHODIMP CSurfaceProfile::GetRidgePointElevationChange(CollectionIndexType r
    return S_OK;
 }
 
-STDMETHODIMP CSurfaceProfile::GetElevationChange(CollectionIndexType ridgePointIdx,Float64 offset,Float64* deltaElevation)
+STDMETHODIMP CSurfaceProfile::GetElevationChange(CollectionIndexType surfacePointIdx,Float64 offset,Float64* deltaElevation)
 {
-   // Computes the change in elevation between a ridge point and an offset measured from the ridge point
+   // Computes the change in elevation between a surface point and an offset measured from the surface point
    CHECK_RETVAL(deltaElevation);
-   if ( m_SurfacePoints.size() < ridgePointIdx )
+   if ( m_SurfacePoints.size() < surfacePointIdx )
    {
       return SurfaceProfileError(IDS_E_INVALIDRIDGEPOINT,COGO_E_INVALIDRIDGEPOINTINDEX);
    }
@@ -268,10 +268,10 @@ STDMETHODIMP CSurfaceProfile::GetElevationChange(CollectionIndexType ridgePointI
    Float64 delta = 0;
    if ( 0 <= offset )
    {
-      // working left to right from the specified ridge point
-      IndexType nRidgePoints = m_SurfacePoints.size();
+      // working left to right from the specified surface point
+      IndexType nSurfacePoints = m_SurfacePoints.size();
       Float64 running_offset = 0;
-      for ( IndexType idx = ridgePointIdx; idx < nRidgePoints-1; idx++ )
+      for ( IndexType idx = surfacePointIdx; idx < nSurfacePoints-1; idx++ )
       {
          CComPtr<ISurfacePoint> sp1,sp2;
          get_Item(idx,&sp1);
@@ -302,9 +302,9 @@ STDMETHODIMP CSurfaceProfile::GetElevationChange(CollectionIndexType ridgePointI
    }
    else
    {
-      // working right to left from the specified ridge point
+      // working right to left from the specified surface point
       Float64 running_offset = 0;
-      for ( IndexType idx = ridgePointIdx; 0 < idx; idx-- )
+      for ( IndexType idx = surfacePointIdx; 0 < idx; idx-- )
       {
          CComPtr<ISurfacePoint> sp1,sp2;
          get_Item(idx-1,&sp1);
@@ -338,21 +338,21 @@ STDMETHODIMP CSurfaceProfile::GetElevationChange(CollectionIndexType ridgePointI
    return S_OK;
 }
 
-STDMETHODIMP CSurfaceProfile::GetSlope(CollectionIndexType ridgePointIdx,Float64 offset,Float64* pSlope)
+STDMETHODIMP CSurfaceProfile::GetSlope(CollectionIndexType surfacePointIdx,Float64 offset,Float64* pSlope)
 {
    CHECK_RETVAL(pSlope);
 
-   if ( m_SurfacePoints.size() < ridgePointIdx )
+   if ( m_SurfacePoints.size() < surfacePointIdx )
    {
       return SurfaceProfileError(IDS_E_INVALIDRIDGEPOINT,COGO_E_INVALIDRIDGEPOINTINDEX);
    }
 
    if ( 0 <= offset )
    {
-      // working left to right from the specified ridge point
+      // working left to right from the specified surface point
       Float64 leftEdge = 0;
-      IndexType nRidgePoints = m_SurfacePoints.size();
-      for ( IndexType idx = ridgePointIdx; idx < nRidgePoints-1; idx++ )
+      IndexType nSurfacePoints = m_SurfacePoints.size();
+      for ( IndexType idx = surfacePointIdx; idx < nSurfacePoints-1; idx++ )
       {
          CComPtr<ISurfacePoint> sp1,sp2;
          get_Item(idx,&sp1);
@@ -378,9 +378,9 @@ STDMETHODIMP CSurfaceProfile::GetSlope(CollectionIndexType ridgePointIdx,Float64
    }
    else
    {
-      // working right to left from the specified ridge point
+      // working right to left from the specified surface point
       Float64 rightEdge = 0;
-      for ( IndexType idx = ridgePointIdx-1; 0 < idx; idx-- )
+      for ( IndexType idx = surfacePointIdx-1; 0 < idx; idx-- )
       {
          CComPtr<ISurfacePoint> sp1,sp2;
          get_Item(idx-1,&sp1);
@@ -431,17 +431,17 @@ STDMETHODIMP CSurfaceProfile::GetSegmentSlope(CollectionIndexType segmentIdx,Flo
    return S_OK;
 }
    
-STDMETHODIMP CSurfaceProfile::GetRidgePointOffset(IndexType ridgePointIdx,Float64* pOffset)
+STDMETHODIMP CSurfaceProfile::GetSurfacePointOffset(IndexType surfacePointIdx,Float64* pOffset)
 {
    CComPtr<ISurfacePoint> sp;
-   get_Item(ridgePointIdx,&sp);
+   get_Item(surfacePointIdx,&sp);
    return sp->get_CutLineOffset(pOffset);
 }
 
-STDMETHODIMP CSurfaceProfile::GetRidgePointElevation(IndexType ridgePointIdx,Float64* pOffset,Float64* pElev)
+STDMETHODIMP CSurfaceProfile::GetSurfacePointElevation(IndexType surfacePointIdx,Float64* pOffset,Float64* pElev)
 {
    CComPtr<ISurfacePoint> sp;
-   get_Item(ridgePointIdx,&sp);
+   get_Item(surfacePointIdx,&sp);
    sp->get_CutLineOffset(pOffset);
    sp->get_Elevation(pElev);
    return S_OK;

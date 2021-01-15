@@ -60,7 +60,7 @@ void CUnitType::Init( IUnitServer* pUnitServer, BSTR bstrLabel, Float64 m,Float6
    pUnits->QueryInterface( IID_IUnits, (void**)&m_pUnits );
 
    // Hookup to the connection point
-   m_pUnits.Advise( GetUnknown(), IID_IUnitsEventSink, &m_Cookie );
+   m_pUnits.Advise( GetUnknown(), IID_IUnitsEvents, &m_Cookie );
    InternalRelease(); // Break circular reference
 }
 
@@ -76,7 +76,7 @@ void CUnitType::FinalRelease()
    // Find the connection point and disconnection
    CComQIPtr<IConnectionPointContainer> pCPC( m_pUnits );
    CComPtr<IConnectionPoint> pCP;
-   pCPC->FindConnectionPoint( IID_IUnitsEventSink, &pCP );
+   pCPC->FindConnectionPoint( IID_IUnitsEvents, &pCP );
    pCP->Unadvise( m_Cookie );
 
 }

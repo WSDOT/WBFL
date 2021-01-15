@@ -949,7 +949,6 @@
     <ClInclude Include="..\Include\Reporter\StyleLibrary.h" />
     <ClInclude Include="..\Include\Reporter\StyleManager.h" />
     <ClInclude Include="HtmlUnitTagFormat.h" />
-    <ClInclude Include="HtmlUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Reporter.rc" />

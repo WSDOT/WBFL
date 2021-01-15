@@ -25,152 +25,105 @@
 #define INCLUDED_REPORTER_RCFLOWMODIFIER_H_
 #pragma once
 
-#include <string>
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ReportContent.h>
 #include <Reporter\RcVisitor.h>
 #include <Reporter\ReportingUtils.h>
+#include <string>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-
-/*****************************************************************************
-CLASS 
-   rptRcFlowModifier
-
-   Report Content that changes the flow of a report such as newlines newpages and tabs.
-
-
-DESCRIPTION
-   The class inherits from report content and its insertion in the report stream signals 
-   a change in the report flow. Currently supported functions are line breaks, page breaks,
-   and tabs.
-
-
-   EXAMPLE
-      Place examples here.
-   END
-
-BUGS
-   There are currently no known problems with this class.
-
-LOG
-   rdp : 04.09.1997 : Created file
-*****************************************************************************/
-
+/// Report Content that changes the flow of a report such as newlines, newpages and tabs.
+///
+/// The class inherits from report content and its insertion in the report stream signals 
+/// a change in the report flow. Currently supported functions are line breaks, page breaks, and tabs.
 class REPORTERCLASS rptRcFlowModifier : public rptReportContent
 {
 public:
 
-   //------------------------------------------------------------------------
-   // types for changing document flow
-   enum FlowModifier  { NEW_LINE, NEW_PAGE, TAB};
+   /// types for changing document flow
+   enum FlowModifier  
+   { 
+      NEW_LINE,  ///< Insert a new line
+      NEW_PAGE,  ///< Insert a page break
+      TAB ///< Insert a tab
+   };
 
-   // GROUP: LIFECYCLE
+   rptRcFlowModifier(
+      FlowModifier ModifierType,  ///< The flow modifier type
+      Uint16 nRepeat=1 ///< Number of times to repeat the flow modifier
+   );
 
-   //------------------------------------------------------------------------
-   // Constructor: Set flow modifier type and number of times it is to be
-   // repeated
-   rptRcFlowModifier(FlowModifier ModifierType, Uint16 NumTimes=1);
-
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptRcFlowModifier(const rptRcFlowModifier& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRcFlowModifier();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   // Returns reference to itself
-   rptRcFlowModifier& operator = (const rptRcFlowModifier& rOther);
+   rptRcFlowModifier& operator=(const rptRcFlowModifier& rOther);
 
-   // GROUP: OPERATIONS
+   /// Returns the modifier type
+   FlowModifier GetModifierType() const {return m_ModifierType;}
 
-   //------------------------------------------------------------------------
-   // Get the modifier type
-   FlowModifier GetModifierType() {return m_ModifierType;}
+   /// Returns the repeat count
+   Uint16 GetRepeatCount() const {return m_nRepeat;}
 
-   //------------------------------------------------------------------------
-   // Get the number of times to apply the modifier
-   Uint16 GetNumberOfTimes() {return m_NumTimes;}
-
-   //------------------------------------------------------------------------
-   // create a type-correct clone
+   /// Creates a clone
    rptReportContent* CreateClone() const;
 
-   //------------------------------------------------------------------------
-   // Accept a report content visitor
+   /// Accept a visitor and calls VisitRcFlowModifier(this)
    void Accept( rptRcVisitor& MyVisitor )
    {
       MyVisitor.VisitRcFlowModifier(this);
    }
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   // Function to aid in copying
+   /// Copies the content from rOther to this object
    void MakeCopy(const rptRcFlowModifier& rOther);
-   //------------------------------------------------------------------------
-   // Function to aid in assignment
+
+   /// Assigns the content from oOther to this object
    void MakeAssignment(const rptRcFlowModifier& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
 
 private:
-   // GROUP: DATA MEMBERS
-   //------------------------------------------------------------------------
-   // Type of this flow modifier
    FlowModifier m_ModifierType;
-   //------------------------------------------------------------------------
-   // Number of times modifier is to be applied
-   Uint16     m_NumTimes;
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   Uint16     m_nRepeat;
 };
 
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-class REPORTERCLASS rptLineBreak
+/// Line break factory that creates rptRcFlowModifier initialized to create a line break
+class REPORTERCLASS rptLineBreakFactory
 {
 public:
+   /// Creates the rptRcFlowModifier
    operator rptReportContent*();
 };
-#define rptNewLine rptLineBreak()
 
-class REPORTERCLASS rptPageBreak
+/// Adds a line break to a report
+///
+///    *pPara << _T("Some Text") << rptNewLine;
+#define rptNewLine rptLineBreakFactory()
+
+/// Page break factory that creates rptRcFlowModifier initialized to create a page break
+class REPORTERCLASS rptPageBreakFactory
 {
 public:
+   /// Creates the rptRcFlowModifier
    operator rptReportContent*();
 };
-#define rptNewPage rptPageBreak()
 
-class REPORTERCLASS rptHardTab
+/// Adds a page break to a report
+///
+///    *pPara << rptNewPage;
+#define rptNewPage rptPageBreakFactory()
+
+/// Tab factory that creates rptRcFlowModifier initialized to create a tab
+class REPORTERCLASS rptHardTabFactory
 {
 public:
+   /// Creates the rptRcFlowModifier
    operator rptReportContent*();
 };
-#define rptTab rptHardTab()
+
+/// Adds a tab break to a report
+///
+///    *pPara << rptTab << rptTab << _T("Some Text") << rptNewLine;
+#define rptTab rptHardTabFactory()
 
 #endif

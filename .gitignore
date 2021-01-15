@@ -343,3 +343,9 @@ Win32/
 /bin/License.rtf
 /[Bb]in # exclude all other bin folders
 *.txt
+**/devdocs/_build/
+**/devdocs/API/
+
+#ignore tag files. they are doxygen output
+*.tag
+

@@ -39,40 +39,26 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptParagraph           
-****************************************************************************/
-
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-
 rptParagraph::rptParagraph()
 {
 
-} // rptParagraph
+}
 
 rptParagraph::rptParagraph(const rptStyleName& rStyleName):
 rptReportItem(rStyleName)
 {
-} // rptParagraph
+}
 
 rptParagraph::rptParagraph(const rptParagraph& rParagraph):
 rptReportItem(rParagraph)
 {
    MakeCopy(rParagraph);
-
-} // rptParagraph
+}
 
 
 rptParagraph::~rptParagraph()
 {
-} // ~rptParagraph
-
-//======================== OPERATORS  =======================================
+}
 
 rptParagraph& rptParagraph::operator = (const rptParagraph& rParagraph)
 {
@@ -80,23 +66,17 @@ rptParagraph& rptParagraph::operator = (const rptParagraph& rParagraph)
       MakeAssignment(rParagraph);
 
    return *this;
-} // operator =
+}
 
 rptParagraph& rptParagraph::operator << (const rptReportContent& rContent )
 {
-   //
    // create a clone and set its parent
-   //
    std::shared_ptr<rptReportContent> rcp( rContent.CreateClone() );
    rcp->SetParent(this);
    m_ContentVec.push_back(rcp);
    return *this;
 }
 
-//
-// stream a pointer to a rptReportContent object. NOTE that the paragraph
-// now becomes responsible for deleting this object
-//
 rptParagraph& rptParagraph::operator << (rptReportContent* pContent )
 {
    std::shared_ptr<rptReportContent> pc(pContent);
@@ -105,7 +85,6 @@ rptParagraph& rptParagraph::operator << (rptReportContent* pContent )
    return *this;
 }
 
-   
 rptParagraph& rptParagraph::operator << (const std::_tstring& str)
 {
    std::shared_ptr<rptReportContent> rcp( std::make_shared<rptRcString>(str) );
@@ -237,17 +216,12 @@ void rptParagraph::MakeCopy( const rptParagraph& rParagraph)
 
    m_ContentVec.clear();
 
-   // copy paragraph's ReportContent
-   ConstParagraphContentIterator icv;
-   for ( icv  = rParagraph.m_ContentVec.begin(); 
-         icv != rParagraph.m_ContentVec.end();
-         icv++ )
+   // Clone the paragraph's content.... both paragraphs can't own, and later try to delete, the same content
+   for (auto rc : rParagraph.m_ContentVec)
    {
-          std::shared_ptr<rptReportContent> rc( (*icv)->CreateClone() );
-          m_ContentVec.push_back(rc);
+      m_ContentVec.emplace_back(rc->CreateClone());
    }
 }
-
 
 void rptParagraph::MakeAssignment(const rptParagraph& rOther)
 {
@@ -291,22 +265,3 @@ rptParagraph::ParagraphContentIterator rptParagraph::End()
 {
    return m_ContentVec.end();
 }
-
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY ==========================================
-

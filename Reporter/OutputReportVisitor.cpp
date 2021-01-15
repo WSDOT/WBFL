@@ -30,58 +30,12 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptOutputReportVisitor
-****************************************************************************/
-
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-rptOutputReportVisitor::rptOutputReportVisitor(std::_tostream* pMyOstream/*, 
-                                             const rptUnitLibrary& MyUnitLibrary*/ )
+rptOutputReportVisitor::rptOutputReportVisitor(std::_tostream* pMyOstream)
 {
    m_pOstream = pMyOstream;
-   //m_pUnitSnapShot = MyUnitLibrary.CreateUnitSnapShot();
 }
 
 
 rptOutputReportVisitor::~rptOutputReportVisitor()
 {
-   //delete m_pUnitSnapShot;
 }
-
-//======================== OPERATORS  =======================================
-
-
-
-//======================== OPERATIONS =======================================
-/*
-void rptOutputReportVisitor::SetNewUnits(rptUnitSnapShot* pMySnapShot)
-{
-   // delete the old units and assign the new
-   delete m_pUnitSnapShot;
-   m_pUnitSnapShot = pMySnapShot;
-}
-*/
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-

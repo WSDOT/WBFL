@@ -25,7 +25,7 @@
 #define INCLUDED_REPORTER_REPORTINGUTILS_H_
 #pragma once
 
-// Some convinent macros for common engineering symbols
+/// Some convinent macros for common engineering symbols
 #define Super(a) superscript(ON) << a << superscript(OFF)
 #define Sub(a) subscript(ON) << a << subscript(OFF)
 #define Sub2(a,b) a << subscript(ON) << b << subscript(OFF)
@@ -36,7 +36,13 @@
 #define Overline(a) overline(ON) << a << overline(OFF)
 #define LineThrough(a) linethrough(ON) << a << linethrough(OFF)
 
+/// Declares a prototype report content object for values with physical units of measure
+///
+/// For class scope prototypes use the DECLARE_UV_PROTOTYPE in the class definition and 
+/// DEFINE_UV_PROTOTYPE in the constructors.
 #define DECLARE_UV_PROTOTYPE( type, proto ) type proto
+
+/// Defines a prototype report content object for values with physical units of measure
 #define DEFINE_UV_PROTOTYPE( proto, im, _bShowTag ) \
    proto.SetUnitOfMeasure(&im.UnitOfMeasure ); \
    proto.ShowUnitTag(_bShowTag); \
@@ -45,32 +51,44 @@
    proto.SetWidth( im.Width ); \
    proto.SetPrecision( im.Precision )
 
+/// Initializes a prototype report content object for unit values with physical units of measure
+///
+/// Use this macro for defining protypes in function scope
 #define INIT_UV_PROTOTYPE( type, proto, im, _bShowTag ) \
    type proto( &im.UnitOfMeasure, im.Tol, _bShowTag ); \
    proto.SetFormat( im.Format );\
    proto.SetWidth( im.Width ); \
    proto.SetPrecision( im.Precision )
 
+/// Initializes a prototype report content object for unit values with physical units of measure that is reported as a fraction (e.g. 1/4")
+///
+/// Use this macro for defining protypes in function scope
 #define INIT_FRACTIONAL_LENGTH_PROTOTYPE( proto, english, denom, rounding, im, _bShowTag,_bFractionOnly) \
    rptFormattedLengthUnitValue proto(&im.UnitOfMeasure, im.Tol ,_bShowTag,english,denom,_bFractionOnly,rptFormattedLengthUnitValue::##rounding); \
    proto.SetFormat( im.Format );\
    proto.SetWidth( im.Width ); \
    proto.SetPrecision( im.Precision )
 
+/// Declares a prototype report content object for scalar values
 #define DECLARE_SCALAR_PROTOTYPE( type, proto ) type proto
+
+/// Defines a prototype report content object for scalar values
 #define DEFINE_SCALAR_PROTOTYPE( proto, im )\
    proto.SetFormat( im.Format );\
    proto.SetWidth( im.Width );\
    proto.SetPrecision( im.Precision )
 
+/// Initializes a prototype report content object for scalar values
 #define INIT_SCALAR_PROTOTYPE( type, proto, im ) \
    type proto; \
    proto.SetFormat( im.Format );\
    proto.SetWidth( im.Width );\
    proto.SetPrecision( im.Precision )
 
+/// Column heading text with unit of measure
 #define COLHDR(hdr,ut,u) hdr << rptNewLine << _T("(") << ut(&u.UnitOfMeasure) << _T(")")
 
+/// Common engineer symbology
 #define RPT_EC  Sub2(_T("E"),_T("c"))
 #define RPT_ECI Sub2(_T("E"),_T("ci"))
 #define RPT_ES  Sub2(_T("E"),_T("s"))

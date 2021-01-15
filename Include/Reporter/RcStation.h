@@ -25,123 +25,53 @@
 #define INCLUDED_REPORTER_RCSTATION_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ReportContent.h>
 #include <Units\StationFormat.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptRcStation
-
-   Report content for stations.
-
-
-DESCRIPTION
-   Report content for stations.
-
-LOG
-   rab : 11.13.1997 : Created file
-*****************************************************************************/
-
+/// Report content for stations.
 class REPORTERCLASS rptRcStation : public rptReportContent
 {
 public:
-   // GROUP: LIFECYCLE
+   rptRcStation(
+      Float64 station, ///< Station value
+      const unitStationFormat* pFormat ///< Object used for unit conversion and formatting the value into a station string (e.g. 125+34.33)
+   );
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   rptRcStation(Float64 station,const unitStationFormat* pFormat);
-
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptRcStation(const rptRcStation& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRcStation();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   rptRcStation& operator = (const rptRcStation& rOther);
+   rptRcStation& operator=(const rptRcStation& rOther);
 
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-
-   //------------------------------------------------------------------------
-   // Accept a visitor
+    /// Accepts a visitor and calls VisitRcStation(this)
    virtual void Accept( rptRcVisitor& rVisitor ) override;
 
-   //------------------------------------------------------------------------
-   // virtual way to make a copy.
+   /// Creates a clone
    virtual rptReportContent* CreateClone() const override;
 
-   //------------------------------------------------------------------------
+   /// Sets the station value and returns a reference to this
    rptReportContent& SetStation(Float64 station);
 
-   //------------------------------------------------------------------------
-   Float64 GetStation(bool bConvert = false) const;
+   /// Returns the station value
+   Float64 GetStation(
+      bool bConvert = false ///< If true, the returned value is converted into the specified unit of measure
+   ) const;
 
-   //------------------------------------------------------------------------
+   /// Returns the station as a formatted text string
    std::_tstring AsString() const;
 
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
-#endif // _DEBUG
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
+   /// Copies the content from rOther to this object
    void MakeCopy(const rptRcStation& rOther);
 
-   //------------------------------------------------------------------------
+   /// Assigns the content from oOther to this object
    void MakeAssignment(const rptRcStation& rOther);
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
+   rptRcStation() = delete;
    Float64 m_Station;
    const unitStationFormat* m_pFormat;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_RCSTATION_H_

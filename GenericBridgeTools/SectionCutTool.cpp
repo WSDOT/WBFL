@@ -545,12 +545,12 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    else
    {
       surface->CreateSurfaceProfile(CComVariant(objStation),CComVariant(dirCutLine),VARIANT_TRUE,&surfaceProfile);
-      surfaceProfile->get_Count(&nRidgePoints); // this is the number of segments
+      surfaceProfile->get_Count(&nRidgePoints); // this is the number of surface points
       for ( IndexType ridgePointIdx = nRidgePoints-1; ridgePointIdx != INVALID_INDEX; ridgePointIdx-- )
       {
-         // get offset (measured from the alignment) and the elevation of the ridge point
+         // get offset (measured from the alignment) and the elevation of the surface point
          Float64 offset, elev;
-         surfaceProfile->GetRidgePointElevation(ridgePointIdx,&offset,&elev);
+         surfaceProfile->GetSurfacePointElevation(ridgePointIdx,&offset,&elev);
 
          // if the ridge point is between the edges of the deck, add it to the deck shape
          if ( ::InRange(left_deck_offset,offset,right_deck_offset) )
@@ -584,7 +584,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
             }
             else
             {
-               surfaceProfile->GetRidgePointElevation(ridgePointIdx,&offset,&elev);
+               surfaceProfile->GetSurfacePointElevation(ridgePointIdx,&offset,&elev);
             }
 
             // if the ridge point is between the edges of the deck, add it to the deck shape
@@ -841,7 +841,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
          {
             // get offset (measured from the alignment) and the elevation of the ridge point
             Float64 offset, elev;
-            surfaceProfile->GetRidgePointElevation(ridgePointIdx, &offset, &elev);
+            surfaceProfile->GetSurfacePointElevation(ridgePointIdx, &offset, &elev);
 
             // if the ridge point is between the edges of the deck, add it to the deck shape
             if (::InRange(left_deck_offset, offset, right_deck_offset))

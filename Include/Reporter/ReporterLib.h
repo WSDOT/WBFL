@@ -25,16 +25,6 @@
 #define INCLUDED_REPORTER_REPORTERLIB_H_
 #pragma once
 
-/*****************************************************************************
-LIBRARY
-   Reporter
-
-   Example library implemented with a dll.
-
-DESCRIPTION
-   Cocoon uses the LIBRARY block to provide high level documentation of a dll.
-*****************************************************************************/
-
 #include <Private\WBFLPackage.h>
 
 #endif // INCLUDED_REPORTER_REPORTERLIB_H_

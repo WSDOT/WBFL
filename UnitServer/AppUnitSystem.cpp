@@ -55,7 +55,7 @@ HRESULT CAppUnitSystem::FinalConstruct()
    pDUM->Init(m_pUnitServer);
    m_pDispUnitMgr = pDUM;
 
-   m_dwUnitServerCookie = AdviseSink(m_pUnitServer,IID_IUnitServerEventSink);
+   m_dwUnitServerCookie = AdviseSink(m_pUnitServer,IID_IUnitServerEvents);
    m_dwDispUnitMgrCookie = AdviseSink(m_pDispUnitMgr,IID_IDisplayUnitMgrEvents);
 
    return S_OK;
@@ -63,7 +63,7 @@ HRESULT CAppUnitSystem::FinalConstruct()
 
 void CAppUnitSystem::FinalRelease()
 {
-   UnadviseSink(m_pUnitServer,IID_IUnitServerEventSink,m_dwUnitServerCookie);
+   UnadviseSink(m_pUnitServer,IID_IUnitServerEvents,m_dwUnitServerCookie);
    UnadviseSink(m_pDispUnitMgr,IID_IDisplayUnitMgrEvents,m_dwDispUnitMgrCookie);
 }
 

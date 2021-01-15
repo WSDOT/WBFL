@@ -23,73 +23,31 @@
 
 #pragma once
 
-// SYSTEM INCLUDES
-//
-#include <string>
 #include <Reporter\ReporterExp.h>
 #include <Reporter\RcScalar.h>
 #include <System\NumericFormatTool.h>
+#include <string>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptRcPercentage
-
-   Report content for a percentage value.
-
-*****************************************************************************/
-
+/// Report content for a percentage value.
 class REPORTERCLASS rptRcPercentage : public rptRcScalar
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
    rptRcPercentage();
 
-   //------------------------------------------------------------------------
-   // Constructor
    rptRcPercentage(Float64 value);
 
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptRcPercentage(const rptRcPercentage& rOther);
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRcPercentage();
 
-   //------------------------------------------------------------------------
-   // Accept a visitor
+   /// Accepts a visitor and calls VisitRcPercentage(this)
    virtual void Accept( rptRcVisitor& rVisitor ) override;
 
-   //------------------------------------------------------------------------
-   // Make a virtual copy
+   /// Creates a clone
    virtual rptReportContent* CreateClone() const override;
 
-   //------------------------------------------------------------------------
-   std::_tstring AsString() const;
-
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const override;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const override;
-#endif // _DEBUG
-
+   /// Returns the value as a text string
+   ///
+   /// The value is multiplied by 100 and "%" is appended to the string
+   virtual std::_tstring AsString() const override;
 };

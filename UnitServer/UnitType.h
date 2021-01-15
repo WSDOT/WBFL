@@ -40,9 +40,9 @@ class ATL_NO_VTABLE CUnitType :
    public IConnectionPointContainerImpl<CUnitType>,
 	public ISupportErrorInfoImpl<&IID_IUnitType>,
    public IObjectSafetyImpl<CUnitType,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public IUnitsEventSink,
+   public IUnitsEvents,
 	public IUnitType,
-	public CProxyDUnitTypeEventSink< CUnitType >
+	public CProxyDUnitTypeEvents< CUnitType >
 {
 public:
 	CUnitType()
@@ -101,11 +101,11 @@ BEGIN_COM_MAP(CUnitType)
 	COM_INTERFACE_ENTRY(IUnitType)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-   COM_INTERFACE_ENTRY(IUnitsEventSink)
+   COM_INTERFACE_ENTRY(IUnitsEvents)
 END_COM_MAP()
 
 BEGIN_CONNECTION_POINT_MAP(CUnitType)
-   CONNECTION_POINT_ENTRY(IID_IUnitTypeEventSink)
+   CONNECTION_POINT_ENTRY(IID_IUnitTypeEvents)
 END_CONNECTION_POINT_MAP()
 
 // IUnitType
@@ -119,7 +119,7 @@ public:
    STDMETHOD(get_Label)(/*[out, retval]*/ BSTR *pLabel) override;
    STDMETHOD(get_Units)(/*[out,retval]*/ IUnits** ppUnits) override;
 
-// IUnitsEventSink
+// IUnitsEvents
 public:
    STDMETHOD(OnUnitAdded)(IUnit* unit)
    {

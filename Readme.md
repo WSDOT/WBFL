@@ -13,24 +13,25 @@ The application services layer (ASL) provides libraries for building application
 * GraphManager - A ready to use graph manager
 * GraphManagerAgent - A wrapper on the GraphManager for use with the Agent/Broker architecture
 * MFCTools - Extensions to the Microsoft Foundation Class (MFC) library
-* Reporter - Report content definition
+* \subpage WBFL_Reporter - Report content definition
 * ReportManager - Report management
 * ReportManagerAgent - A wrapper on the ReportManager for use with the Agent/Broker architecture
 * System - Provides common services such as object persistence, string manipulations, debugging and diagnostics.
 * Units - Definition of units of measure
-* UnitMgt and UnitServer - Management of a system of units (SI/US) and indirect display units
-* Tools - Miscellaneous tools such as object persistence, progress monitors, and generic containers
+* UnitMgt and \subpage WBFL_UnitServer - Management of a system of units (SI/US) and indirect display units
+* \subpage WBFL_Tools - Miscellaneous tools such as object persistence, progress monitors, and generic containers
 * Transactions - Support for transactional based actions (Undo, Redo support)
 * Types - System independent data type definitions
 
 ## Engineering Services Layer
 The engineering services layer (ESL) provides libraries for building engineering applications. The libraries include
-* COGO - Coordinate geometry modeling
+* \subpage WBFL_COGO - Coordinate geometry modeling
 * EngTools - Engineering tools such as Mohr's circle and biaxial strain plane modeling
 * Fem2d - 2D, plane frame, finite element analysis
-* GenericBridge - Genertic bridge modeling
+* GenericBridge - Generic bridge modeling
 * GenericBridgeTools - Tools for manipulating and extracting data from a generic bridge model
 * GeometricPrimitives - Geometric primitives such as points, lines, and shapes
+* \subpage WBFL_Geometry - Geometric primitives such as points, lines, and shapes
 * GeomModel - Modeling of geometric shapes such as girder cross sections
 * GraphicsLib - a library for graphing and plotting
 * LBAM - Longitudinal Bridge Analysis Model, high level modeling of plane frame bridges for dead and live load analysis.
@@ -39,10 +40,10 @@ The engineering services layer (ESL) provides libraries for building engineering
 * LRFD - Support procedures for the AASHTO LRFD Bridge Design Specification
 * Material - Modeling of engineering materials such as concrete and steel
 * Math - Math routines include equation modeling, root finding, and numerical integration
-* RCCapacity - Nominal flexural capacity calculations for reinforced concrete elements (uniaxial and biaxial analysis)
+* \subpage WBFL_RCCapacity - Nominal flexural capacity calculations for reinforced concrete elements (uniaxial and biaxial analysis)
 * Roark - Closed form beam equations for moment, shear, and deflection based on Roark's Formulas for Stress and Strain
 * Sections - Modeling of structural sections comprised of a variety of materials.
-* Stability - Stability analysis precast concrete girders
+* \subpage WBFL_Stability - Stability analysis precast concrete girders
 
 
 ## Getting Started
@@ -57,9 +58,9 @@ You will need to download and install the following projects before you can buil
 
 Define BOOSTDIR and XSDDIR environment variables for the location where the boost and code synthesis libraries are installed.
 
-Clone the repository into **drive letter**:\ARP\ and create an environment variable ARPDIR to this folder.
+Clone the repository into **drive letter**:/ARP/ and create an environment variable ARPDIR to this folder.
 
-Create an enviroment variable called WBFLDIR that equates to the $ARPDIR$\WBFL folder.
+Create an enviroment variable called WBFLDIR that equates to the $ARPDIR$/WBFL/ folder.
 
 ## Authors
 This project is jointly developed by the Washington State and Texas Departments of Transportation

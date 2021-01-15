@@ -21,110 +21,83 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
+#ifndef INCLUDED_REPORTER_RCSTRINGLITERAL_H_
+#define INCLUDED_REPORTER_RCSTRINGLITERAL_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-#include <string>
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ReportContent.h>
 #include <Reporter\RcVisitor.h>
+#include <string>
 
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
 class REPORTERCLASS rptRcVisitor;
 
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptRcStringLiteral
-
-   Summary text here
-   
-DESCRIPTION
-   Detailed description here or delete this block
-*****************************************************************************/
-
+/// Report content for a literal text string.
 class REPORTERCLASS rptRcStringLiteral : public rptReportContent
 {
 public:
-   // GROUP: LIFECYCLE
+   /// Constructor
+   rptRcStringLiteral(
+      LPCTSTR YourStr, ///< The text string
+      bool bNoWrap = false ///< If true, word wrapping is prevented
+   );
 
-   //------------------------------------------------------------------------
-   // constructors
-   // non-hyperlink versions
-   rptRcStringLiteral(LPCTSTR  YourStr,bool bNoWrap = false);
-   rptRcStringLiteral(const std::_tstring& YourString,bool bNoWrap = false);
-   //------------------------------------------------------------------------
-   // hyperlink versions - link to HyperTarget somewhere on page
-   rptRcStringLiteral(LPCTSTR  YourStr, const std::_tstring& HyperTarget,bool bNoWrap = false);
-   rptRcStringLiteral(const std::_tstring& YourString, const std::_tstring& HyperTarget,bool bNoWrap = false);
+   /// Constructor
+   rptRcStringLiteral(
+      const std::_tstring& YourString, ///< The text string
+      bool bNoWrap = false ///< If true, word wrapping is prevented
+   );
 
-   void NoWrap(bool bNoWrap);
-   bool NoWrap() const;
+   /// Constructor
+   rptRcStringLiteral(
+      LPCTSTR YourStr, ///< The text string
+      const std::_tstring& HyperTarget, ///< Name of hyperlink target
+      bool bNoWrap = false ///< If true, word wrapping is prevented
+   );
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~rptRcStringLiteral();
-
-   // GROUP: OPERATORS
-
-
-   // GROUP: OPERATIONS
-
-   rptReportContent* CreateClone() const;
-
-   void Accept( rptRcVisitor& MyVisitor );
-
-   //------------------------------------------------------------------------
-   virtual rptReportContent&  SetValue(LPCTSTR str);
-
-   // GROUP: ACCESS
-   //
-   // get the string
-   //
-   std::_tstring GetString() const {return m_TheString; }
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   /// Constructor
+   rptRcStringLiteral(
+      const std::_tstring& YourString, ///< The text string
+      const std::_tstring& HyperTarget, ///< Name of hyperlink target
+      bool bNoWrap = false ///< If true, word wrapping is prevented
+   );
 
    rptRcStringLiteral(const rptRcStringLiteral& rRcString);
-   rptRcStringLiteral& operator = (const rptRcStringLiteral& rRcString);
 
-private:
-   // GROUP: DATA MEMBERS
-   std::_tstring m_TheString;
-   bool m_bNoWrap;
+   virtual ~rptRcStringLiteral();
 
-   // GROUP: LIFECYCLE
+   rptRcStringLiteral& operator=(const rptRcStringLiteral& rRcString);
 
-   // hide the constructor
-   rptRcStringLiteral();
+   /// Sets word wrapping mode
+   void NoWrap(bool bNoWrap /**! If true, word wrapping is prevented*/);
 
-   // GROUP: OPERATORS
+   /// Returns the word wrapping mode
+   bool NoWrap() const;
 
-   // GROUP: OPERATIONS
-   void MakeCopy(const rptRcStringLiteral& rRcString);
+   /// Creates a clone
+   rptReportContent* CreateClone() const;
+
+   /// Accepts a visitor and calls VisitRcString(this)
+   void Accept(rptRcVisitor& MyVisitor);
+
+   /// Sets the value of this content and returns a reference to this
+   virtual rptReportContent&  SetValue(LPCTSTR str);
+
+   /// Returns the text string
+   const std::_tstring& GetString() const { return m_TheString; }
+
+protected:
+   /// Copies the content from rOther to this object
+   void MakeCopy(const rptRcStringLiteral& rOther);
+
+   /// Assigns the content from oOther to this object
    void MakeAssignment(const rptRcStringLiteral& rOther);
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+private:
+   rptRcStringLiteral() = delete;
+   std::_tstring m_TheString;
+   bool m_bNoWrap;
 };
 
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
+#endif // INCLUDED_REPORTER_RCSTRINGLITERAL_H_

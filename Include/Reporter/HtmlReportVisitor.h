@@ -31,62 +31,27 @@
 #include <Reporter\HtmlHelper.h>
 
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptHtmlReportVisitor
-
-   This Visitor builds an Html report
-
-
-DESCRIPTION
-   This Visitor builds an Html report
-
-LOG
-   rdp : 04.09.1997 : Created file
-*****************************************************************************/
-
+/// This Visitor builds an Html report
 class REPORTERCLASS rptHtmlReportVisitor : public rptOutputReportVisitor
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   rptHtmlReportVisitor(std::_tostream* pMyOstream,Uint32 logPixelsX,Uint32 logPixelsY) :
+   rptHtmlReportVisitor(
+      std::_tostream* pMyOstream,///< output stream to receive the html code
+      Uint32 logPixelsX,///< horizontal screen resolution in pixels per inch
+      Uint32 logPixelsY///< vertical screen resolution in pixels per inch
+   ) :
    rptOutputReportVisitor(pMyOstream)
    {
       m_LogPixelsX = logPixelsX;
       m_LogPixelsY = logPixelsY;
    }
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptHtmlReportVisitor();
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   virtual void VisitReport(rptReport*);
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   /// Visit a report and generate HTML code
+   virtual void VisitReport(rptReport* pReport) override;
 
 private:
-   // GROUP: DATA MEMBERS
    rptHtmlHelper m_Helper;
 
    // # of logical pixels in the x and y directions (# of pixels per inch)
@@ -95,24 +60,9 @@ private:
    Uint32 m_LogPixelsX;
    Uint32 m_LogPixelsY;
 
-   // GROUP: LIFECYCLE
-
-   // Default constructor
-   rptHtmlReportVisitor();
-   // Prevent accidental copying and assignment
-   rptHtmlReportVisitor(const rptHtmlReportVisitor&);
+   rptHtmlReportVisitor() = delete;
+   rptHtmlReportVisitor(const rptHtmlReportVisitor&) = delete;
    rptHtmlReportVisitor& operator=(const rptHtmlReportVisitor&) = delete;
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_HTMLREPORTVISITOR_H_

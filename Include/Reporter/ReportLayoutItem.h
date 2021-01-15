@@ -25,112 +25,49 @@
 #define INCLUDED_REPORTER_REPORTLAYOUTITEM_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ReportItem.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
 class REPORTERCLASS rptPageLayout;
 
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptReportLayoutItem
-
-   This class has both a report item's style and a page layout
-
-
-DESCRIPTION
-   This class adds page layout properties to the ReportItem class, which already 
-   owns the report item style and can chain responsibility for style.
-
-LOG
-   rdp : 03.28.1997 : Created file
-*****************************************************************************/
-
+/// This class has both a report item's style and a page layout
+///
+/// This class adds page layout properties to the ReportItem class, which already 
+/// owns the report item style and can chain responsibility for style.
 class REPORTERCLASS rptReportLayoutItem : public rptReportItem
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
    rptReportLayoutItem();
 
-   //------------------------------------------------------------------------
-   // construct with custom style and layout
-   rptReportLayoutItem( const rptStyleName& rStyleName, const rptPageLayout& rLayout);
+   rptReportLayoutItem( 
+      const rptStyleName& rStyleName, ///< style to initialize this item with
+      const rptPageLayout& rLayout ///< layout for this item
+   );
 
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptReportLayoutItem(const rptReportLayoutItem& rOther);
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptReportLayoutItem();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   // Returns reference to itself
    rptReportLayoutItem& operator = (const rptReportLayoutItem& rOther);
 
-   // GROUP: OPERATIONS
-   //
-   //------------------------------------------------------------------------
-   // access to my page layout. Be very careful in changing the page layout
-   // returned from this call because it's gotten from a chain of dependency 
-   // (i.e., you might not know who's page layout your changing!).
-   //
-   virtual rptPageLayout* GetpPageLayout();
+   /// Returns the page layout object. 
+   ///
+   /// Be very careful in changing the page layout returned from this call because it's gotten from a chain of dependency 
+   /// (i.e., you might not know who's page layout your changing!).
+   virtual rptPageLayout* GetPageLayout();
 
-   //------------------------------------------------------------------------
-   // set my page layout
+   /// Set the page layout
    void SetPageLayout( const rptPageLayout& rPageLayout);
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
+   /// Copies the content from rOther to this object
    void MakeCopy(const rptReportLayoutItem& rOther);
+
+   /// Assigns the content from oOther to this object
    void MakeAssignment(const rptReportLayoutItem& rOther);
 
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
-   //
-   //------------------------------------------------------------------------
-   // my page layout
    rptPageLayout* m_pPageLayout;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif

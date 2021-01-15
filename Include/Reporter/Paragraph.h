@@ -31,27 +31,11 @@
 #include <Reporter\ReportContent.h>
 
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptParagraph
-
-   A paragraph in a report
-
-DESCRIPTION
-   This class defines a chapter in a report. For the purposes of the Reporter, 
-   a paragraph is merely a collection of report content. A paragraph may also store some
-   style information for its report content. Paragraphs also always define a line break.
-*****************************************************************************/
-
+/// A paragraph in a report
+///
+/// This class defines a paragraph in a report. For the purposes of the Reporter, 
+/// a paragraph is merely a collection of report content. A paragraph may also store some
+/// style information for its report content. Paragraphs also always define a line break.
 class REPORTERCLASS rptParagraph : public rptReportItem
 {
 public:
@@ -60,154 +44,92 @@ public:
    typedef ContentVec::iterator ParagraphContentIterator;
    typedef ContentVec::const_iterator ConstParagraphContentIterator;
 
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor - uses style of parent chapter
-   // name is blank by default
+   /// Creates an unnamed paragraph that inherits the style of the parent chapter
    rptParagraph();
 
-   //------------------------------------------------------------------------
-   // construct using an existing style object
+   /// Creates an unnamed paragraph with a named style
    rptParagraph( const rptStyleName& rMyStyle);
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   rptParagraph(const rptParagraph& /*rParagraph*/);
+   rptParagraph(const rptParagraph& rParagraph);
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptParagraph();
 
-   // GROUP: OPERATORS
+   rptParagraph& operator=(const rptParagraph& rParagraph);
 
-   //------------------------------------------------------------------------
-   // Assignment operator
-   //
-   // Returns reference to itself
-   rptParagraph& operator = (const rptParagraph& /*rParagraph*/);
-
-   //------------------------------------------------------------------------
-   // < operator to keep the stl vector happy.
+   /// less than operator to keep the stl vector happy.
    bool operator< (const rptParagraph&) const {return true;}
 
-   //------------------------------------------------------------------------
-   // == operator to keep the stl vector happy.
+   /// == operator to keep the stl vector happy.
    bool operator==(const rptParagraph&) const {return true;}
 
-   //------------------------------------------------------------------------
-   // stream a rptReportContent object
+   /// Insertion operator for report content. The report content is cloned on insertion
    virtual rptParagraph& operator << (const rptReportContent& rContent );
 
-   //------------------------------------------------------------------------
-   // stream a pointer to a rptReportContent object. NOTE that the paragraph
-   // now becomes responsible for deleting this object
+   /// Insertion operator for report content. The paragraph takes ownership of the content and will delete it when it is no longer used.
    virtual rptParagraph& operator << (rptReportContent* pContent );
    
-   //------------------------------------------------------------------------
    rptParagraph& operator << (const std::_tstring& str);
-   //------------------------------------------------------------------------
    rptParagraph& operator << (LPCTSTR str);
-   //------------------------------------------------------------------------
    rptParagraph& operator << (Int8 value);
-   //------------------------------------------------------------------------
    rptParagraph& operator<< (Int16 value);
-   //------------------------------------------------------------------------
    rptParagraph& operator<< (Int32 value);
-   //------------------------------------------------------------------------
    rptParagraph& operator<< (Int64 value);
-   //------------------------------------------------------------------------
    rptParagraph& operator<< (Uint8 value);
-   //------------------------------------------------------------------------
    rptParagraph& operator<< (Uint16 value);
-   //------------------------------------------------------------------------
    rptParagraph& operator<< (Uint32 value);
-   //------------------------------------------------------------------------
    rptParagraph& operator<< (Uint64 value);
-   //------------------------------------------------------------------------
    rptParagraph& operator<< (Float32 value);
-   //------------------------------------------------------------------------
    rptParagraph& operator<< (Float64 value);
 
-   // inserts content at the specified location
-   rptParagraph& InsertContent(IndexType location,rptReportContent* pContent);
+   /// Inserts content at the specified location in the paragraph. The paragraph takes ownership of the content and will delete it when it is no longer used.
+   rptParagraph& InsertContent(
+      IndexType location, ///< Index of report content in the paragraph at which the new content will be inserted after
+      rptReportContent* pContent ///< Report content to be inserted into the paragraph
+   );
 
-   // GROUP: OPERATIONS
-   //
-   //------------------------------------------------------------------------
-   // check to see if the paragraph has any content
+   /// Returns true if the paragraph does not have any content
    bool IsEmpty() const {return m_ContentVec.empty();}
 
-   //------------------------------------------------------------------------
-   // Accept a visitor
+   /// Accepts a pargraph visitor and calls VisitParagraph(this)
    virtual void Accept( rptParagraphVisitor& MyVisitor );
 
-   //------------------------------------------------------------------------
-   // clone thyself
+   /// Creates a clone
    virtual rptParagraph* CreateClone() const;
 
-   // GROUP: ACCESS
-
-   // Name will be used for table of contents generation
-   //------------------------------------------------------------------------
+   /// Returns the paragraph name
    LPCTSTR GetName() const;
 
-   //------------------------------------------------------------------------
+   /// Sets the paragraph name
+   ///
+   /// The paragraph name is used when creating a table of contents
    void SetName(LPCTSTR name);
 
-
-   //------------------------------------------------------------------------
-   // Return iterators to ReportContent contained inside of Paragraph
-   // pointing to beginning and end.
+   /// Return STL iterator to const report content contained inside of paragraph pointing to beginning.
    ConstParagraphContentIterator ConstBegin();
+
+   /// Return STL iterator to const report content contained inside of paragraph pointing to ending.
    ConstParagraphContentIterator ConstEnd();
+
+   /// Return STL iterator to report content contained inside of paragraph pointing to beginning.
    ParagraphContentIterator Begin();
+
+   /// Return STL iterator to report content contained inside of paragraph pointing to ending.
    ParagraphContentIterator End();
 
-   // GROUP: INQUIRY
-
 protected:
-   // GROUP: DATA MEMBERS
-   //
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // utility function to be shared by assignment and copy constructor
+   /// Copies the content from rParagraph to this paragraph
    void MakeCopy(const rptParagraph& rParagraph);
    
-   //------------------------------------------------------------------------
-   // utility function to be used for assignment
+   /// Assigns the content from oOther to this paragraph
    void MakeAssignment(const rptParagraph& rOther);
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
-   //
-   //------------------------------------------------------------------------
    // Vector of report content.
    // This vector is responsible for deleting what the
    // rptReportContent pointers point to. 
    ContentVec     m_ContentVec;
 
    std::_tstring m_Name;
-
-   // GROUP: LIFECYCLE
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif

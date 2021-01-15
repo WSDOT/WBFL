@@ -25,19 +25,8 @@
 #define INCLUDED_REPORTER_RCVISITOR_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Reporter\ReporterExp.h>
 
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
 class REPORTERCLASS rptRcTable;
 class REPORTERCLASS rptRcString;
 class REPORTERCLASS rptRcStringLiteral;
@@ -61,44 +50,14 @@ class REPORTERCLASS rptRcSectionScalar;
 class REPORTERCLASS rptRcStation;
 class REPORTERCLASS rptRcComposite;
 
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptRcVisitor
-
-   Abstract class to visit all ReportContent objects in a report. 
-
-DESCRIPTION
-   Visits all nodes in a report for a purpose
-
-   EXAMPLE
-      Place examples here.
-   END
-
-BUGS
-   There are currently no known problems with this class.
-
-KEYWORDS
-   Reporter
-*****************************************************************************/
-
+/// Abstract class to visit all ReportContent objects in a report. 
 class REPORTERCLASS rptRcVisitor
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
    rptRcVisitor();
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRcVisitor();
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
    virtual void VisitRcTable(rptRcTable*) = 0;
    virtual void VisitRcString(rptRcString*) = 0;
    virtual void VisitRcStringLiteral(rptRcStringLiteral*) = 0;
@@ -121,36 +80,9 @@ public:
    virtual void VisitRcStation(rptRcStation*) = 0;
    virtual void VisitRcComposite(rptRcComposite*) = 0;
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Prevent accentidal copying and assignment
-   rptRcVisitor(const rptRcVisitor&);
-   rptRcVisitor& operator=(const rptRcVisitor&);
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   rptRcVisitor(const rptRcVisitor&) = delete;
+   rptRcVisitor& operator=(const rptRcVisitor&) = delete;
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_RCVISITOR_H_

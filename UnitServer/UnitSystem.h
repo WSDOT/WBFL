@@ -40,7 +40,7 @@ class ATL_NO_VTABLE CUnitSystem :
    public ISupportErrorInfo,
    public IConnectionPointContainerImpl<CUnitSystem>,
    public IObjectSafetyImpl<CUnitSystem,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public IUnitServerEventSink,
+   public IUnitServerEvents,
    public IUnitModeControllerEvents,
    public IDisplayUnitMgrEvents,
 	public IUnitSystem,
@@ -62,7 +62,7 @@ BEGIN_COM_MAP(CUnitSystem)
 	COM_INTERFACE_ENTRY(IUnitSystem)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-   COM_INTERFACE_ENTRY(IUnitServerEventSink)
+   COM_INTERFACE_ENTRY(IUnitServerEvents)
    COM_INTERFACE_ENTRY(IUnitModeControllerEvents)
    COM_INTERFACE_ENTRY(IDisplayUnitMgrEvents)
 END_COM_MAP()
@@ -93,7 +93,7 @@ public:
 	STDMETHOD(get_DisplayUnitMgr)(/*[out, retval]*/ IDisplayUnitMgr* *pVal) override;
 	STDMETHOD(get_UnitServer)(/*[out, retval]*/ IUnitServer* *pVal) override;
 
-// IUnitServerEventSink,
+// IUnitServerEvents,
 public:
    STDMETHOD(OnUnitAdded)(/*[in]*/IUnitType* unitType,/*[in]*/IUnit* unit) override
    {

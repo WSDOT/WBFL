@@ -771,9 +771,6 @@
                 progid="WBFLTools.ErrorLog">
          <progid>WBFLTools.ErrorLog.1</progid>
       </comClass>
-      <comClass clsid="{28706F21-DA7C-45C8-866C-3285BCAF3434}"
-                tlbid="{B9507D8C-7100-11D3-89BB-006097C68A9C}"
-                description="ProgressMonitor Class"></comClass>
       <comClass clsid="{8C63C999-10B8-43B5-A7CC-72B6AC48283F}"
                 tlbid="{B9507D8C-7100-11D3-89BB-006097C68A9C}"
                 description="ProgressMonitorWindow Class"
@@ -823,7 +820,14 @@
                 progid="WBFLTools.UnkArray">
          <progid>WBFLTools.UnkArray.1</progid>
       </comClass>
-      <typelib tlbid="{B9507D8C-7100-11D3-89BB-006097C68A9C}"
+     <comClass clsid="{E58AB440-3AC4-4BDC-AB7C-5D3BAA61F986}"
+               tlbid="{B9507D8C-7100-11D3-89BB-006097C68A9C}"
+               description="LogFile Class"
+               threadingModel="Apartment"
+               progid="WBFLTools.LogFile">
+       <progid>WBFLTools.LogFile.1</progid>
+     </comClass>
+     <typelib tlbid="{B9507D8C-7100-11D3-89BB-006097C68A9C}"
                version="1.0"
                helpdir=""
                flags="HASDISKIMAGE"></typelib>

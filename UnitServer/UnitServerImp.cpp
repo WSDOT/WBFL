@@ -137,7 +137,7 @@ HRESULT CUnitServerImp::FinalConstruct()
    }
 
    // Hookup to the connection point
-   hr = m_pUnitTypes.Advise( GetUnknown(), IID_IUnitTypesEventSink, &m_Cookie );
+   hr = m_pUnitTypes.Advise( GetUnknown(), IID_IUnitTypesEvents, &m_Cookie );
    ATLASSERT( SUCCEEDED(hr) );
    // This just created a circular reference. decrement ref count to break it
    InternalRelease(); 
@@ -189,7 +189,7 @@ void CUnitServerImp::FinalRelease()
    // Find the connection point and disconnection
    CComQIPtr<IConnectionPointContainer> pCPC( m_pUnitTypes );
    CComPtr<IConnectionPoint> pCP;
-   pCPC->FindConnectionPoint( IID_IUnitTypesEventSink, &pCP );
+   pCPC->FindConnectionPoint( IID_IUnitTypesEvents, &pCP );
    pCP->Unadvise( m_Cookie );
 
    m_pUnitTypes.Release();

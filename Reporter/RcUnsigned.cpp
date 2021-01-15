@@ -42,7 +42,7 @@ CLASS
 rptRcUnsigned::rptRcUnsigned(Uint64 MyUs) :
 rptReportContent()
 {
-   m_TheUnsigned = MyUs;
+   m_Value = MyUs;
    m_Width  = 0;
 }
 
@@ -50,7 +50,7 @@ rptReportContent()
 rptRcUnsigned::rptRcUnsigned(Uint64 MyUs, const std::_tstring& HyperTarget) :
 rptReportContent()
 {
-   m_TheUnsigned = MyUs;
+   m_Value = MyUs;
    m_Width  = 0;
 
    SetHyperLink(HyperTarget);
@@ -67,8 +67,7 @@ rptRcUnsigned::~rptRcUnsigned()
 {
 }
 
-//======================== OPERATORS  =======================================
-rptRcUnsigned& rptRcUnsigned::operator= (const rptRcUnsigned& rOther)
+rptRcUnsigned& rptRcUnsigned::operator=(const rptRcUnsigned& rOther)
 {
    if( this != &rOther )
    {
@@ -83,41 +82,28 @@ rptReportContent* rptRcUnsigned::CreateClone() const
    return new rptRcUnsigned(*this); 
 }
 
-   //
-   // accept a visitor
-   //
 void rptRcUnsigned::Accept( rptRcVisitor& MyVisitor )
 {
    MyVisitor.VisitRcUnsigned(this);
 }
 
-
-//
-// stream to the paragraph stream
-//
 rptRcUnsigned* rptRcUnsigned::Sv(Uint64 MyUs)
 {
    rptRcUnsigned* tmp = new rptRcUnsigned(MyUs);
    tmp->m_Width= m_Width;
    return tmp;
 }
-//
-// set and get the integer value
-//
-Uint64 rptRcUnsigned::GetVal()
+
+Uint64 rptRcUnsigned::GetValue() const
 {
-   return m_TheUnsigned;
+   return m_Value;
 }
 
-void rptRcUnsigned::SetVal(Uint64 MyUs)
+void rptRcUnsigned::SetValue(Uint64 MyUs)
 {
-   m_TheUnsigned = MyUs;
+   m_Value = MyUs;
 }
-//
-// set/get the number of characters that the Int32 is to fit in. The purpose
-// of the width option is to allow values to be printed like: 007 (i.e., the
-// Int32 value is left-padded with zeros to fit into the width.
-//
+
 Int32 rptRcUnsigned::GetWidth()
 {
    return m_Width;
@@ -128,22 +114,9 @@ void rptRcUnsigned::SetWidth(Int32 MyWidth)
    m_Width = MyWidth;
 }
 
-// GROUP: ACCESS
-// GROUP: INQUIRY
-
-
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 void rptRcUnsigned::MakeCopy(const rptRcUnsigned& rOther)
 {
-   m_TheUnsigned = rOther.m_TheUnsigned;
+   m_Value = rOther.m_Value;
    m_Width  = rOther.m_Width ;
 }
 
@@ -152,15 +125,3 @@ void rptRcUnsigned::MakeAssignment(const rptRcUnsigned& rOther)
    rptReportContent::MakeAssignment( rOther );
    MakeCopy( rOther );
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-

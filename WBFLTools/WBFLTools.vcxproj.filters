@@ -64,6 +64,9 @@
     <ClCompile Include="LogDumpContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LogFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ARPNotice.h">
@@ -138,6 +141,9 @@
     <ClInclude Include="..\Include\WBFLTools\WBFLToolsExp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LogFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\Include\WBFLTools.idl" />
@@ -187,6 +193,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="StrSave.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LogFile.rgs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

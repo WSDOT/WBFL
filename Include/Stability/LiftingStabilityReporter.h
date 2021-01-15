@@ -29,19 +29,30 @@
 #include <Stability\LiftingCheckArtifact.h>
 #include <Reporter\Chapter.h>
 
-/*****************************************************************************
-CLASS 
-   stbLiftingStabilityReporter
-
-DESCRIPTION
-   Generates reports for lifting stability analysis
-*****************************************************************************/
-
+///  Generates reports for lifting stability analysis
 class STABILITYCLASS stbLiftingStabilityReporter
 {
 public:
    stbLiftingStabilityReporter();
 
-   void BuildSpecCheckChapter(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem,const stbLiftingCheckArtifact* pArtifact,rptChapter* pChapter,LPCTSTR lpszLocColumnLabel = nullptr,Float64 offset = 0);
-   void BuildDetailsChapter(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem,const stbLiftingResults* pResults,rptChapter* pChapter,LPCTSTR lpszLocColumnLabel = nullptr,Float64 offset = 0,bool bReportTensileForceDetails = true);
+   /// Builds the specification check chapter
+   void BuildSpecCheckChapter(
+      const stbIGirder* pGirder, ///< The girder that was analyzed
+      const stbILiftingStabilityProblem* pStabilityProblem, ///< The stability problem parameters
+      const stbLiftingCheckArtifact* pArtifact, ///< The specification checking artifact
+      rptChapter* pChapter, ///< The report chapter to populate
+      LPCTSTR lpszLocColumnLabel = nullptr, ///< Label for the Location column for report tables
+      Float64 offset = 0 ///< Offset to be applied to analysis point locations
+   );
+
+   /// Builds the analysis details chapter
+   void BuildDetailsChapter(
+      const stbIGirder* pGirder, ///< The girder that was analyzed
+      const stbILiftingStabilityProblem* pStabilityProblem, ///< The stability problem parameters
+      const stbLiftingResults* pResults, ///< The results of the stability analysis
+      rptChapter* pChapter,  ///< The report chapter to populate
+      LPCTSTR lpszLocColumnLabel = nullptr, ///< Label for the Location column for report tables
+      Float64 offset = 0, ///< Offset to be applied to analysis point locations
+      bool bReportTensileForceDetails = true ///< If true, the details for computing the tension force required to be carried by auxilary reinforcement are reported
+   );
 };

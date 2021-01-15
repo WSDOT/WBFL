@@ -25,34 +25,15 @@
 #define INCLUDED_REPORTER_RcComposite_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-#include <string>
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ReportContent.h>
 #include <Reporter\RcVisitor.h>
+#include <string>
 
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
 class REPORTERCLASS rptRcVisitor;
 
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptRcComposite
-
-   Composite collection of report content
-   
-DESCRIPTION
-   
-*****************************************************************************/
-
+/// Composite collection of report content
 class REPORTERCLASS rptRcComposite : public rptReportContent
 {
 public:
@@ -60,90 +41,68 @@ public:
    typedef ContentVec::iterator ContentIterator;
    typedef ContentVec::const_iterator ConstContentIterator;
 
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // constructors
-   // Start with empty container
    rptRcComposite();
 
-   // constructor that takes count rptReportContent* arguements
-   // Example 
-   // *pPara << new rptRcComposite(3,color(Blue), new rptRcString(_T("Some Blue Text")), color(Black)) << rptNewLine;
+   /// constructor that takes count rptReportContent* arguements
+   ///
+   /// Example 
+   ///
+   ///     *pPara << new rptRcComposite(3,color(Blue), new rptRcString(_T("Some Blue Text")), color(Black)) << rptNewLine;
    rptRcComposite(int count, ...);
 
-   //------------------------------------------------------------------------
-   // Destructor
+   rptRcComposite(const rptRcComposite& rRcComposite);
+
    virtual ~rptRcComposite();
 
-   // GROUP: OPERATORS
+   rptRcComposite& operator=(const rptRcComposite& rRcComposite);
 
-
-   // GROUP: OPERATIONS
-
+   /// Creates a clone
    rptReportContent* CreateClone() const;
+
+   /// Accepts a visitor and calls VisitRcContent(this)
    virtual void Accept( rptRcVisitor& MyVisitor ) override;
 
-   //------------------------------------------------------------------------
-   // append content to collection
+   /// Appends report content. The content object is cloned on insertion.
    virtual void AddContent(const rptReportContent& rContent);
 
-   // Add pointer. We now own and become responsible for deleting this object
+   // Appends report content. Takes ownership of the content and will delete it when it is no longer used.
    virtual void AddContent(rptReportContent* PContent);
 
+   /// Returns true if the composite is empty
    bool Empty();
+
+   /// Returns the number of items in the composite
    size_t Count();
+
+   /// Clears the contents of the composite, deleting stored objects
    void ClearContents();
 
 
-   // GROUP: ACCESS
-   //
-   //------------------------------------------------------------------------
-   // Return iterators to ReportContent contained inside of us
-   // pointing to beginning and end.
+   /// Return STL iterator to const report content contained inside of this composite pointing to beginning.
    ConstContentIterator ConstBegin() const;
+   
+   /// Return STL iterator to const report content contained inside of this composite pointing to ending.
    ConstContentIterator ConstEnd() const;
+   
+   /// Return STL iterator to report content contained inside of this composite pointing to beginning.
    ContentIterator Begin();
+   
+   /// Return STL iterator to report content contained inside of this composite pointing to ending.
    ContentIterator End();
 
-   // GROUP: INQUIRY
-
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   /// Copies the content from rRcComposite to this paragraph
+   void MakeCopy(const rptRcComposite& rRcComposite);
 
-   rptRcComposite(const rptRcComposite& rRcComposite);
-   rptRcComposite& operator = (const rptRcComposite& rRcComposite);
+   /// Assigns the content from oOther to this paragraph
+   void MakeAssignment(const rptRcComposite& rOther);
 
 private:
-   // GROUP: DATA MEMBERS
    //------------------------------------------------------------------------
    // Vector of report content.
    // This vector is responsible for deleting what the
    // rptReportContent pointers pointed to. 
    ContentVec     m_ContentVec;
-
-   // GROUP: LIFECYCLE
-
-
-   // GROUP: OPERATORS
-
-   // GROUP: OPERATIONS
-   void MakeCopy(const rptRcComposite& rRcComposite);
-   void MakeAssignment(const rptRcComposite& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif

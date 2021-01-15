@@ -45,7 +45,7 @@ class ATL_NO_VTABLE CUnits :
 	public ISupportErrorInfoImpl<&IID_IUnits>,
    public IObjectSafetyImpl<CUnits,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
 	public IUnitCollection,
-	public CProxyDUnitsEventSink< CUnits >
+	public CProxyDUnitsEvents< CUnits >
 {
 public:
 	CUnits()
@@ -106,7 +106,7 @@ BEGIN_COM_MAP(CUnits)
 END_COM_MAP()
 
 BEGIN_CONNECTION_POINT_MAP(CUnits)
-CONNECTION_POINT_ENTRY(IID_IUnitsEventSink)
+CONNECTION_POINT_ENTRY(IID_IUnitsEvents)
 END_CONNECTION_POINT_MAP()
 
 // IUnits

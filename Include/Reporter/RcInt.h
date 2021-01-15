@@ -25,132 +25,56 @@
 #define INCLUDED_REPORTER_RCINT_H_
 #pragma once
 
-#include <sstream>
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ReportContent.h>
 #include <Reporter\RcVisitor.h>
+#include <sstream>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptRcInt
-
-   Integer Report Content Class
-
-
-DESCRIPTION
-   This class is used to stream integer data to the report paragraphs. It is 
-   derived from the generic ReportContent class.
-
-LOG
-   rdp : 04.11.1997 : Created file
-*****************************************************************************/
-
-
+/// Report content for integer values
 class REPORTERCLASS rptRcInt : public rptReportContent
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
-   rptRcInt(Int64 MyVal=0);
-
-   //------------------------------------------------------------------------
-   // Constructor with HyperLink
+   rptRcInt(Int64 MyVal=0,Int32 MyWidth=0);
    rptRcInt(Int64 MyVal, const std::_tstring& HyperTarget);
-
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptRcInt(const rptRcInt& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRcInt();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   // Returns reference to itself
-   rptRcInt& operator = (const rptRcInt& rOther);
+   rptRcInt& operator=(const rptRcInt& rOther);
 
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   // Create a type-safe clone
+   /// Creates a clone
    rptReportContent* CreateClone() const;
 
-   //------------------------------------------------------------------------
-   // accept a visitor
+   /// Accept a visitor and calls VisitRcInt(this)
    void Accept( rptRcVisitor& MyVisitor );
 
-   //------------------------------------------------------------------------
-   // stream the value only into to paragraph stream
+   /// Creates a new integer report content object with the specified based on this object
    rptRcInt* Sv(Int64 Myint);
 
-   //------------------------------------------------------------------------
-   // Get the integer value
-   Int64 GetVal();
+   /// Returns the integer value
+   Int64 GetValue() const;
 
-   //------------------------------------------------------------------------
-   // Set the integer value
-   void SetVal(Int64 MyInt);
-   //
-   //------------------------------------------------------------------------
-   // Get the number of characters that the int is to fit in. The purpose
-   // of the width option is to allow values to be printed like: 007 (i.e., the
-   // int value is left-padded with zeros to fit into the width.
+   /// Sets the integer value
+   void SetValue(Int64 MyInt);
+
+   /// Returns the number of characters that the integer value is to fit into
    Int32 GetWidth();
 
-   //------------------------------------------------------------------------
-   // Set the number of characters that the int is to fit in.
+   /// Sets the number of characters that the int is to fit into.
+   ///
+   /// The purpose of the width option is to allow values to be printed like: 007 (i.e., the
+   /// int value is left-padded with zeros to fit into the width.
    void SetWidth(Int32 MyWidth);
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   // Function to aid in copying
+   /// Copies the content from rOther to this object
    void MakeCopy(const rptRcInt& rOther);
-   //------------------------------------------------------------------------
-   // Function to aid in assignment
+
+   /// Assigns the content from oOther to this object
    void MakeAssignment(const rptRcInt& rOther);
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
-   //------------------------------------------------------------------------
-   // The integer value
-   Int64 m_TheInt;
-   //------------------------------------------------------------------------
-   // The width
+   Int64 m_Value;
    Int32 m_Width;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif

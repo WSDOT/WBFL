@@ -42,7 +42,7 @@ class ATL_NO_VTABLE CAppUnitSystem :
 	public ISupportErrorInfo,
 	public IConnectionPointContainerImpl<CAppUnitSystem>,
    public IObjectSafetyImpl<CAppUnitSystem,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IUnitServerEventSink,
+	public IUnitServerEvents,
 	public IDisplayUnitMgrEvents,
 	public IAppUnitSystem,
 	public CProxyDUnitSystemEvents< CAppUnitSystem >
@@ -65,7 +65,7 @@ BEGIN_COM_MAP(CAppUnitSystem)
 	COM_INTERFACE_ENTRY(IConnectionPointContainer)
 	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IUnitServerEventSink)
+   COM_INTERFACE_ENTRY(IUnitServerEvents)
    COM_INTERFACE_ENTRY(IDisplayUnitMgrEvents)
 END_COM_MAP()
 
@@ -94,7 +94,7 @@ public:
    STDMETHOD(ConvertToBaseUnits)(/*[in]*/Float64 value,/*[in]*/VARIANT fromUnit,/*[out,retval]*/Float64* retval) override;
    STDMETHOD(ConvertFromBaseUnits)(/*[in]*/Float64 value,/*[in]*/VARIANT toUnit,/*[out,retval]*/Float64* retval) override;
 
-// IUnitServerEventSink
+// IUnitServerEvents
 	STDMETHOD(OnUnitAdded)(IUnitType * UnitType, IUnit * unit)
 	{
       Fire_OnUnitServerChanged();

@@ -67,7 +67,7 @@ public:
       // Otherwise, you would have to connect with the unit server and filter
       // out all the events that aren't related to this unit type (which is all
       // we care about)
-      m_pUnitType.Advise( GetUnknown(), IID_IUnitTypeEventSink, &m_Cookie );
+      m_pUnitType.Advise( GetUnknown(), IID_IUnitTypeEvents, &m_Cookie );
 
 	  // NOTE: This Advise fails!!!
    }

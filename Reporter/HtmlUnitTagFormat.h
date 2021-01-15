@@ -25,89 +25,20 @@
 #define INCLUDED_BRIDGEMODELING_HTMLUNITTAGFORMAT_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptHtmlUnitTagFormat
-
-   Formats a unit tag so exponents are superscripted.
-
-
-DESCRIPTION
-   Formats a unit tag so exponents are superscripted.
-
-LOG
-   rab : 10.28.1998 : Created file
-*****************************************************************************/
-
+/// Formats a unit tag.
+///
+/// Text following ^ are superscripted and text following _ are subscripted.
+/// Example: "m^2" results in m<sup>2</sup>
 class rptHtmlUnitTagFormat
 {
 public:
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
+   /// returns the HTML code for the unit tag.
    static std::_tstring Format(const std::_tstring& tag);
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 
 private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   rptHtmlUnitTagFormat();
-   rptHtmlUnitTagFormat(const rptHtmlUnitTagFormat&);
+   rptHtmlUnitTagFormat() = delete;
+   rptHtmlUnitTagFormat(const rptHtmlUnitTagFormat&) = delete;
    rptHtmlUnitTagFormat& operator=(const rptHtmlUnitTagFormat&) = delete;
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
-   #if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
-   #endif // _DEBUG
-
-   #if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Runs a self-diagnostic test.  Returns true if the test passed,
-   // otherwise false.
-   static bool TestMe(dbgLog& rlog);
-   #endif // _UNITTEST
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_BRIDGEMODELING_HTMLUNITTAGFORMAT_H_

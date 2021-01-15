@@ -36,7 +36,7 @@
 
 class ATL_NO_VTABLE CTestUnitServer : 
    public CComObjectRootEx<CComSingleThreadModel>,
-   public IUnitServerEventSink
+   public IUnitServerEvents
 {
 public:
    void InitEventTest() { m_bTestState = false; }
@@ -48,10 +48,10 @@ public:
 
 
 BEGIN_COM_MAP(CTestUnitServer)
-   COM_INTERFACE_ENTRY(IUnitServerEventSink)
+   COM_INTERFACE_ENTRY(IUnitServerEvents)
 END_COM_MAP()
 
-// IUnitServerEventSink
+// IUnitServerEvents
 public:
    STDMETHOD(OnUnitAdded)(/*[in]*/IUnitType* unitType,/*[in]*/IUnit* unit);
 	STDMETHOD(OnUnitRemoved)(/*[in]*/IUnitType* unitType,/*[in]*/BSTR unit);

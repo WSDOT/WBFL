@@ -156,8 +156,6 @@ void rptHtmlRcVisitor::VisitRcStringLiteral(rptRcStringLiteral* pString)
    HyperEnd(pString);
 }
 
-// Visit a Table (Big Job)
-
 void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
 {
    // get number of rorpt and columns in the table
@@ -354,7 +352,7 @@ void rptHtmlRcVisitor::VisitRcFlowModifier(rptRcFlowModifier* pMyFlow)
    // loop over number of times and issue either a page break or
    // a new line
 
-   Uint16 nt = pMyFlow->GetNumberOfTimes();
+   Uint16 nt = pMyFlow->GetRepeatCount();
    for (Uint16 i = 0; i<nt; i++)
    {
       if(pMyFlow->GetModifierType()==rptRcFlowModifier::NEW_LINE)
@@ -623,7 +621,7 @@ void rptHtmlRcVisitor::VisitRcInt(rptRcInt* pInt)
       my_stm.fill( _T('0') );
    }
 
-   my_stm << _T("<span style=\"white-space: nowrap\">") << pInt->GetVal() << _T("</span>");
+   my_stm << _T("<span style=\"white-space: nowrap\">") << pInt->GetValue() << _T("</span>");
 
    // send the finished string up the pipe
 
@@ -651,7 +649,7 @@ void rptHtmlRcVisitor::VisitRcUnsigned(rptRcUnsigned* pUs)
       my_stm.fill(_T('0'));
    }
 
-   my_stm << pUs->GetVal();
+   my_stm << pUs->GetValue();
 
    // send the finished string up the pipe
 

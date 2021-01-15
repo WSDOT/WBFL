@@ -31,18 +31,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptRcStringLiteral           
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-
-// constructors
-// non-hyperlink versions
 rptRcStringLiteral::rptRcStringLiteral(LPCTSTR  YourStr,bool bNoWrap) :
 m_TheString( YourStr ),
 m_bNoWrap(bNoWrap)
@@ -55,7 +43,6 @@ m_bNoWrap(bNoWrap)
 {
 }
 
-// hyperlink versions
 rptRcStringLiteral::rptRcStringLiteral(LPCTSTR  YourStr, const std::_tstring& HyperTarget,bool bNoWrap) :
 m_TheString( YourStr ),
 m_bNoWrap(bNoWrap)
@@ -70,32 +57,24 @@ m_bNoWrap(bNoWrap)
    SetHyperLink(HyperTarget);
 }
 
-
-// copy constructor
 rptRcStringLiteral::rptRcStringLiteral(const rptRcStringLiteral& rRcString):
 rptReportContent(rRcString)
 {
    MakeCopy( rRcString );
 
-} // rptRcStringLiteral
+}
 
-
-// destructor
 rptRcStringLiteral::~rptRcStringLiteral()
 {
-} // ~rptRcStringLiteral
+}
 
-//======================== OPERATORS  =======================================
-
-rptRcStringLiteral& rptRcStringLiteral::operator = (const rptRcStringLiteral& rRcString)
+rptRcStringLiteral& rptRcStringLiteral::operator=(const rptRcStringLiteral& rRcString)
 {
    if (this != &rRcString)
       MakeAssignment(rRcString);
    return *this;
 } // operator =
 
-
-//======================== OPERATIONS =======================================
 rptReportContent* rptRcStringLiteral::CreateClone() const 
 { 
    return new rptRcStringLiteral(*this); 
@@ -122,37 +101,14 @@ rptReportContent&  rptRcStringLiteral::SetValue(LPCTSTR str)
    return *this;
 }
 
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
 void rptRcStringLiteral::MakeCopy(const rptRcStringLiteral& rRcString)
 {
    m_TheString = rRcString.m_TheString;
    m_bNoWrap   = rRcString.m_bNoWrap;
 }
 
-
 void rptRcStringLiteral::MakeAssignment(const rptRcStringLiteral& rOther)
 {
    rptReportContent::MakeAssignment( rOther );
    MakeCopy( rOther );
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY ==========================================
-

@@ -33,67 +33,25 @@
 
 class REPORTERCLASS rptHtmlHelper;
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptHtmlChapterVisitor
-
-   Visitor to output Html chapter information
-
-
-DESCRIPTION
-   This class is a ChapterVisitor that generates HTML for a given chapter and
-   sends it to the ostream defined in the constructor
-
-LOG
-   rdp : 04.09.1997 : Created file
-*****************************************************************************/
-
+/// Visitor to output Html chapter information
+///
+/// This class is a ChapterVisitor that generates HTML for a given chapter and sends it to the ostream defined in the constructor
 class REPORTERCLASS rptHtmlChapterVisitor : public rptOutputChapterVisitor
 {
 public:
-   // GROUP: LIFECYCLE
+   /// Constructor
+   rptHtmlChapterVisitor(std::_tostream* pMyOstream, ///< output stream to receive the HTML code
+                        const rptHtmlHelper& rmyHelper, ///< helper object for generating HTML code
+                        Uint32 logPixelsX, ///< horizontal screen resolution in pixels per inch
+                        Uint32 logPixelsY ///< vertical screen resolution in pixels per inch
+   );
 
-   //------------------------------------------------------------------------
-   //
-   // construct with an ostream and a pointer to a unitsnapshot. this class does
-   // not own, and will not delete, the unitsnapshot pointer
-   //
-   rptHtmlChapterVisitor(std::_tostream* pMyOstream, /*const rptUnitSnapShot* MypUnitSnapShot,*/
-                        const rptHtmlHelper& rmyHelper,
-                        Uint32 logPixelsX, Uint32 logPixelsY);
-
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptHtmlChapterVisitor();
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //
-   //------------------------------------------------------------------------
-   // Visit a chapter
-   void VisitChapter(rptChapter*);
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   /// Visit a chapter
+   virtual void VisitChapter(rptChapter* pChapter) override;
 
 private:
-   // GROUP: DATA MEMBERS
    const rptHtmlHelper& m_Helper;
    Uint32 m_CurrAnchor;
    Uint32 m_CurrParagraphAnchor; // override default paragraph anchor numbers
@@ -101,33 +59,15 @@ private:
    Uint32 m_LogPixelsX;
    Uint32 m_LogPixelsY;
 
-   // GROUP: LIFECYCLE
+   rptHtmlChapterVisitor() = delete;
+   rptHtmlChapterVisitor(const rptHtmlChapterVisitor&) = delete;
+   rptHtmlChapterVisitor& operator=(const rptHtmlChapterVisitor&) = delete;
 
-   //------------------------------------------------------------------------
-   // Default constructor is private
-   rptHtmlChapterVisitor();
-   //------------------------------------------------------------------------
-   // Copying not allowed
-   rptHtmlChapterVisitor(const rptHtmlChapterVisitor&);
-   //------------------------------------------------------------------------
-   // Assignment not allowed
-   rptHtmlChapterVisitor& operator=(const rptHtmlChapterVisitor&);
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
    Uint32 GetNextAnchor() 
    {
       CHECK(m_CurrAnchor<rptHtmlHelper::ParaStart);
       return m_CurrAnchor++;
    }
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_HTMLCHAPTERVISITOR_H_

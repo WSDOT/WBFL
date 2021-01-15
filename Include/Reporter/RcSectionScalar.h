@@ -25,166 +25,83 @@
 #define INCLUDED_REPORTER_RCSECTIONSCALAR_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ReportContent.h>
 #include <System\SectionValue.h>
 #include <System\NumericFormatTool.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
 class sysSectionValue;
 
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptRcSectionScalar
-
-   Report content for scalar section values.
-
-
-DESCRIPTION
-   Report content for scalar section values.
-
-LOG
-   rab : 11.12.1997 : Created file
-*****************************************************************************/
-
+/// Report content for scalar section values.
 class REPORTERCLASS rptRcSectionScalar : public rptReportContent
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
    rptRcSectionScalar();
    rptRcSectionScalar(const sysSectionValue& scalar);
-
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptRcSectionScalar(const rptRcSectionScalar& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRcSectionScalar();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   rptRcSectionScalar& operator = (const rptRcSectionScalar& rOther);
+   rptRcSectionScalar& operator=(const rptRcSectionScalar& rOther);
 
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
+   /// Creates a clone
    virtual rptReportContent* CreateClone() const override;
 
-   //------------------------------------------------------------------------
-   // Accept a visitor
+   /// Accept a visitor and calls VisitRcSectionScalar(this)
    virtual void Accept( rptRcVisitor& rVisitor ) override;
 
+   /// Returns if the section value has two different values
    bool IsDualValued() const;
 
-   //------------------------------------------------------------------------
-   // Returns the report content as a string.  The value is converted to the
-   // correct unit of measure and the unit tag is appedned to the string if 
-   // required.
-   virtual std::_tstring AsString(int idx) const;
+   /// Returns the report content as a string.
+   std::_tstring AsString
+   (
+      int idx ///< Section value index (use 0 for the left value and 1 for the right value)
+   ) const;
 
-   // GROUP: ACCESS
+   /// Assigns a section value and returns a reference to this
+   rptReportContent& SetValue(const sysSectionValue& value);
 
-   //------------------------------------------------------------------------
-   // Assings a new section value to this object
-   virtual rptReportContent&  SetValue(const sysSectionValue& value);
+   /// Returns the section value
+   const sysSectionValue& GetValue() const;
 
-   //------------------------------------------------------------------------
-   // Returns the section value for this piece of report content.
-   virtual sysSectionValue GetValue() const;
+   /// Returns the left section value
+   Float64 GetLeftValue() const;
 
-   //------------------------------------------------------------------------
-   // Returns the left section value for this piece of report content.  
-   virtual Float64 GetLeftValue() const;
+   /// Returns the right section value
+   Float64 GetRightValue() const;
 
-   //------------------------------------------------------------------------
-   // Returns the right section value for this piece of report content.  
-   virtual Float64 GetRightValue() const;
-
-   //------------------------------------------------------------------------
-   // Sets the output format
+   /// Sets the output format
    void SetFormat(sysNumericFormatTool::Format format);
 
-   //------------------------------------------------------------------------
-   // Returns the output format
+   /// Returns the output format
    sysNumericFormatTool::Format GetFormat() const;
 
-   //------------------------------------------------------------------------
+   /// Sets the output precision
    void SetPrecision(Uint16 precision);
 
-   //------------------------------------------------------------------------
+   /// Returns the output precision
    Uint16 GetPrecision() const;
 
-   //------------------------------------------------------------------------
+   /// Sets the width of the output
    void SetWidth(Uint16 width);
 
-   //------------------------------------------------------------------------
+   /// Returns the width of the output
    Uint16 GetWidth() const;
 
-   // GROUP: INQUIRY
-
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
-#endif // _DEBUG
-
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
+   /// Copies the content from rOther to this object
    void MakeCopy(const rptRcSectionScalar& rOther);
 
-   //------------------------------------------------------------------------
+   /// Assigns the content from oOther to this object
    void MakeAssignment(const rptRcSectionScalar& rOther);
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
    sysSectionValue m_Value;
    sysNumericFormatTool::Format m_Format;
    Uint16 m_Precision;
    Uint16 m_Width;
 
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void Init();
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   void Init(); ///< common initialization call by all constructors
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_RCSECTIONSCALAR_H_

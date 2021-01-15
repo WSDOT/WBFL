@@ -23,41 +23,19 @@
 
 #ifndef INCLUDED_REPORTER_REPORT_H_
 #define INCLUDED_REPORTER_REPORT_H_
-#pragma once
-// SYSTEM INCLUDES
-//
-#include <string>
 
-// PROJECT INCLUDES
-//
+#pragma once
+
 #include <Reporter\ReporterExp.h>
 #include <Reporter\Chapter.h>
 #include <Reporter\ReportLayoutItem.h>
 #include <Reporter\ReportVisitor.h>
-
+#include <string>
 #include <System\Checks.h>
 
-
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptReport
-
-   Defines a Report
-
-DESCRIPTION
-   This class acts as a container for chapters that make up a report
-*****************************************************************************/
-
+/// Defines a Report
+///
+/// A report acts as a container for chapters that make up a report
 class REPORTERCLASS rptReport : public rptReportLayoutItem
 {
 public:
@@ -66,118 +44,63 @@ public:
    typedef ChapterVec::const_iterator ConstChapterListIterator;
    typedef ChapterVec::size_type ChapterListSizeType;
 
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Report with default style and page layout
+   /// Report with default style and page layout
    rptReport(const std::_tstring& rReportName = _T(""));
 
-   //------------------------------------------------------------------------
-   // Report with fully defined style and page layout.
-   rptReport(const std::_tstring& rReportName,
-             const rptStyleName& rStyleName,
-             const rptPageLayout& rLayout);
+   /// Report with fully defined style and page layout.
+   rptReport(const std::_tstring& rReportName, ///< Report name
+             const rptStyleName& rStyleName, ///< Report style
+             const rptPageLayout& rLayout ///< Page layout information
+   );
    
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptReport();
 
    // GROUP: OPERATORS
 
-   //------------------------------------------------------------------------
-   // Stream a pointer to a rptChapter object. NOTE that the Report
-   // now becomes responsible for deleting this object
-   virtual rptReport& operator << (rptChapter* pChapter );
+   /// Inseration operator for chapters.
+   ///
+   /// The report takes ownership of the chapter
+   virtual rptReport& operator<<(rptChapter* pChapter );
 
-   //------------------------------------------------------------------------
-   // Insert a chapter into a specific location in the report
-   // now becomes responsible for deleting this object
-   virtual bool InsertChapterAt(ChapterListSizeType location, rptChapter* pChapter );
+   /// Insert a chapter into a specific location in the report and takes ownership of the chapter
+   virtual bool InsertChapterAt(
+      IndexType location, ///< Index of chapter in the report at which the new chapter will be inserted after
+      rptChapter* pChapter ///< The chapter to insert
+   );
 
-   //------------------------------------------------------------------------
-   // Insert a chapter into a specific location in the report
-   // now becomes responsible for deleting this object
-   virtual ChapterListSizeType GetChapterCount() const;
+   /// Returns the number of chapters
+   IndexType GetChapterCount() const;
 
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // Accept a visitor
+   // Accepts a visitor and calls VisitReport(this)
    virtual void Accept( rptReportVisitor& MyVisitor );
 
-   //------------------------------------------------------------------------
-   // Get the name of the report
-   virtual std::_tstring GetName() const {return m_ReportName;}
-
-   //------------------------------------------------------------------------
-   // Override the rptReportItem version because having a report with no style
-   // will certainly cause a crash. This is because the report is the top of
-   // the style chain of responsibility.
-   void ClearStyle() {CHECK("Cannnot delete style of a Report");
-   }
+   /// Returns the name of the report
+   virtual const std::_tstring& GetName() const {return m_ReportName;}
 
    // GROUP: ACCESS
 
-   //------------------------------------------------------------------------
-   // Return iterator to Beginning of ReportContent contained inside of Chapter
+   /// Return STL iterator to const Chapter contained inside of Report pointing to beginning.
    ConstChapterListIterator ConstBegin();
 
-   //------------------------------------------------------------------------
-   // Return iterator to End of ReportContent contained inside of Chapter
+   /// Return STL iterator to const Chapter contained inside of Report pointing to ending.
    ConstChapterListIterator ConstEnd();
 
-   //------------------------------------------------------------------------
-   // Return iterator to Beginning of ReportContent contained inside of Chapter
+   /// Return STL iterator to Chapter contained inside of Report pointing to beginning.
    ChapterListIterator Begin();
 
-   //------------------------------------------------------------------------
-   // Return iterator to End of ReportContent contained inside of Chapter
+   /// Return STL iterator to Chapter contained inside of Report pointing to ending.
    ChapterListIterator End();
 
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
+   rptReport(const rptReport& rOther) = delete;
+   rptReport& operator=(const rptReport& rOther) = delete;
 
-   //------------------------------------------------------------------------
-   // Title of the report
    std::_tstring m_ReportName;
 
-   //------------------------------------------------------------------------
    // A vector of chapters that make up the report.
    // This vector is responsible for deleting what the
    // rptChapter pointers point to.
    ChapterVec     m_ChapterVec;
-
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Copy constructor is private
-   rptReport(const rptReport& rOther);
-
-   // GROUP: OPERATORS
-
-   //------------------------------------------------------------------------
-   // Assignment operator is private
-   rptReport& operator = (const rptReport& rOther) = delete;
-
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_REPORT_H_

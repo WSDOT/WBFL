@@ -37,24 +37,24 @@ stbLiftingSectionResult::stbLiftingSectionResult()
    Mg = 0;
    Mw = 0;
 
-   memset((void*)fps, 0, sizeof(fps));
-   memset((void*)fcable, 0, sizeof(fcable));
-   memset((void*)fg, 0, sizeof(fg));
-   memset((void*)fw, 0, sizeof(fw));
+   fps.fill(0);
+   fcable.fill(0);
+   fg.fill(0);
+   fw.fill(0);
 
    memset((void*)fDirect, 0, sizeof(fDirect));
    memset((void*)fTilt, 0, sizeof(fTilt));
    memset((void*)f, 0, sizeof(f));
 
-   memset((void*)fMinDirect, 0, sizeof(fMinDirect));
-   memset((void*)MinDirectStressImpactDirection, 0, sizeof(MinDirectStressImpactDirection));
-   memset((void*)MinDirectStressCorner, 0, sizeof(MinDirectStressCorner));
+   fMinDirect.fill(0);
+   MinDirectStressImpactDirection.fill(stbTypes::NoImpact);
+   MinDirectStressCorner.fill(stbTypes::TopLeft);
 
-   memset((void*)fMaxDirect, 0, sizeof(fMaxDirect));
-   memset((void*)MaxDirectStressImpactDirection, 0, sizeof(MaxDirectStressImpactDirection));
-   memset((void*)MaxDirectStressCorner, 0, sizeof(MaxDirectStressCorner));
+   fMaxDirect.fill(0);
+   MaxDirectStressImpactDirection.fill(stbTypes::NoImpact);
+   MaxDirectStressCorner.fill(stbTypes::TopLeft);
 
-   memset((void*)fMin, 0, sizeof(fMin));
+   fMin.fill(0);
    MinStressImpactDirection[stbTypes::Top]    = stbTypes::NoImpact;
    MinStressWindDirection[stbTypes::Top]      = stbTypes::Left;
    MinStressCorner[stbTypes::Top]             = stbTypes::TopLeft;
@@ -62,7 +62,7 @@ stbLiftingSectionResult::stbLiftingSectionResult()
    MinStressWindDirection[stbTypes::Bottom]   = stbTypes::Left;
    MinStressCorner[stbTypes::Bottom]          = stbTypes::BottomRight;
 
-   memset((void*)fMax, 0, sizeof(fMax));
+   fMax.fill(0);
    MaxStressImpactDirection[stbTypes::Top]    = stbTypes::NoImpact;
    MaxStressWindDirection[stbTypes::Top]      = stbTypes::Left;
    MaxStressCorner[stbTypes::Top]             = stbTypes::TopLeft;
@@ -117,7 +117,7 @@ stbLiftingResults::stbLiftingResults()
 {
    Pcrit = 0;
    Plift = 0;
-   memset((void*)emag,0,sizeof(emag));
+   emag.fill(0);
    //dLift = 0;
 
    memset((void*)ThetaEq, 0, sizeof(ThetaEq));

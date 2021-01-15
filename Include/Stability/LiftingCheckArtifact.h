@@ -28,49 +28,112 @@
 #include <Stability\LiftingCriteria.h>
 
 
-/*****************************************************************************
-CLASS 
-   stbLiftingCheckArtifact
-
-DESCRIPTION
-   Encapsulates the spec check of a lifting analysis
-*****************************************************************************/
-
+/// Results of a lifting check analysis
 class STABILITYCLASS stbLiftingCheckArtifact
 {
 public:
+   /// Constructions a default artifact. 
+   /// Init must be called to initialize the artifact with analysis results.
    stbLiftingCheckArtifact();
-   stbLiftingCheckArtifact(const stbLiftingResults& results,const stbLiftingCriteria& criteria);
-   void Init(const stbLiftingResults& results,const stbLiftingCriteria& criteria);
 
+   /// Constructs a check artifact, initializing it with analysis results and check criteria.
+   /// There is no need to call Init if this constructor is used.
+   stbLiftingCheckArtifact(
+      const stbLiftingResults& results, ///< Lifting analysis results
+      const stbLiftingCriteria& criteria ///< Lifting check criteria
+   );
+   
+   /// Initializes this object
+   void Init(
+      const stbLiftingResults& results, ///< Lifting analysis results
+      const stbLiftingCriteria& criteria ///< Lifting check criteria
+   );
+
+   /// Returns the results of a lifting analysis
    const stbLiftingResults& GetLiftingResults() const;
+
+   /// Returns the lifting check criteria
    const stbLiftingCriteria& GetCriteria() const;
 
+   /// Analyzes the section results and retrieves the controlling tension stress case
+   /// \param[in] sectionResult Analysis results to be evalauted
+   /// \param[out] pImpact Impact direction associated with the controlling case
+   /// \param[out] pWind Wind direction associated with the controlling case
+   /// \param[out] pCorner Corner associated with the controlling case
+   /// \param[out] pfAllow Tension stress limit associated with the controlling case
+   /// \param[out] pbPassed Indicates if the controlling case passes the specification check
+   /// \param[out] pCD Capacity-Demand ratio for the controlling case
    void GetControllingTensionCase(const stbLiftingSectionResult& sectionResult,stbTypes::ImpactDirection* pImpact,stbTypes::WindDirection* pWind,stbTypes::Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const;
+
+   /// Analyzes the section results and retrieves the controlling global compression case.
+   /// \param[in] sectionResult Analysis results to be evalauted
+   /// \param[out] pImpact Impact direction associated with the controlling case
+   /// \param[out] pCorner Corner associated with the controlling case
+   /// \param[out] pfAllow Tension stress limit associated with the controlling case
+   /// \param[out] pbPassed Indicates if the controlling case passes the specification check
+   /// \param[out] pCD Capacity-Demand ratio for the controlling case
    void GetControllingGlobalCompressionCase(const stbLiftingSectionResult& sectionResult, stbTypes::ImpactDirection* pImpact, stbTypes::Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
+
+   /// Analyzes the section results and retrieves the controlling peak compression case.
+   /// \param[in] sectionResult Analysis results to be evalauted
+   /// \param[out] pImpact Impact direction associated with the controlling case
+   /// \param[out] pWind Wind direction associated with the controlling case
+   /// \param[out] pCorner Corner associated with the controlling case
+   /// \param[out] pfAllow Tension stress limit associated with the controlling case
+   /// \param[out] pbPassed Indicates if the controlling case passes the specification check
+   /// \param[out] pCD Capacity-Demand ratio for the controlling case
    void GetControllingPeakCompressionCase(const stbLiftingSectionResult& sectionResult, stbTypes::ImpactDirection* pImpact, stbTypes::WindDirection* pWind, stbTypes::Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
 
+   /// Returns true if the lifting check was successful
    bool Passed() const;
+
+   /// Returns true if the cracking check passed
    bool PassedCrackingCheck() const;
+
+   /// Returns true if the failure check passed
    bool PassedFailureCheck() const;
+
+   /// Returns true if the stress check without lateral load and tilt effects passed
    bool PassedDirectStressCheck() const;
+
+   /// Returns true if the compression stress check without lateral load and tilt effects passed
    bool PassedDirectCompressionCheck() const;
+
+   /// Returns true if the tension stress check without lateral load and tilt effects passed
    bool PassedDirectTensionCheck() const;
+
+   /// Returns true if the stress check with lateral load and tilt effects passed
    bool PassedStressCheck() const;
+
+   /// Returns true if the compression stress check with lateral load and tilt effects passed
    bool PassedCompressionCheck() const;
+
+   /// Returns true if the tension stress check with lateral load and tilt effects passed
    bool PassedTensionCheck() const;
 
 #if defined REBAR_FOR_DIRECT_TENSION
+   /// Returns the tension stress limit
+   /// \param[in] sectionResult Analysis results to be evalauted
+   /// \param[in] impact Impact direction
    Float64 GetAllowableTension(const stbLiftingSectionResult& sectionResult, stbTypes::ImpactDirection impact) const;
 #else
+   /// Returns the tension stress limit
+   /// \param[in] sectionResult Analysis results to be evalauted
+   /// \param[in] impact Impact direction
+   /// \param[in] wind Wind direction
    Float64 GetAllowableTension(const stbLiftingSectionResult& sectionResult, stbTypes::ImpactDirection impact, stbTypes::WindDirection wind) const;
 #endif
 
+   /// Returns the concrete strength required to satisfy the compression stress limit
    Float64 RequiredFcCompression() const;
+
+   /// Returns the concrete strenght required to satisfy the tension stress limit for sections without sufficient auxilary reinforcement
    Float64 RequiredFcTension() const;
+
+   /// Returns the concrete strenght required to satisfy the tension stress limit for sections with sufficient auxilary reinforcement
    Float64 RequiredFcTensionWithRebar() const;
 
-protected:
+private:
    stbLiftingResults m_Results;
    stbLiftingCriteria m_Criteria;
 };

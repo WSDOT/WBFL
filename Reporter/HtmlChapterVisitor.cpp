@@ -30,21 +30,10 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-
-/****************************************************************************
-CLASS
-   rptHtmlChapterVisitor
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-
-rptHtmlChapterVisitor::rptHtmlChapterVisitor(std::_tostream* pMyOstream, /*const rptUnitSnapShot* MypUnitSnapShot,*/
-                     const rptHtmlHelper& rmyHelper,
+rptHtmlChapterVisitor::rptHtmlChapterVisitor(std::_tostream* pMyOstream, 
+   const rptHtmlHelper& rmyHelper,
                      Uint32 logPixelsX,Uint32 logPixelsY):
-   rptOutputChapterVisitor(pMyOstream/*, MypUnitSnapShot*/),
+   rptOutputChapterVisitor(pMyOstream),
    m_Helper(rmyHelper),
    m_CurrAnchor(0),
    m_CurrParagraphAnchor(rptHtmlHelper::ParaStart),
@@ -57,9 +46,6 @@ rptHtmlChapterVisitor::~rptHtmlChapterVisitor()
 {
 }
 
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
 void rptHtmlChapterVisitor::VisitChapter(rptChapter* pChapter)
 {
    // Eject page if requested
@@ -71,7 +57,7 @@ void rptHtmlChapterVisitor::VisitChapter(rptChapter* pChapter)
    // treat chapters like an Html DIV
    // do page sizing and layout
 
-   const rptPageLayout* pr_layout = pChapter->GetpPageLayout();
+   const rptPageLayout* pr_layout = pChapter->GetPageLayout();
 
 /*  KLUDGE: Due to a feature in Internet Explorer. Page margins are additive.
             Don't deal with page layouts in chapters for now.
@@ -119,22 +105,3 @@ void rptHtmlChapterVisitor::VisitChapter(rptChapter* pChapter)
 //   *m_pOstream << "</DIV>";
 
 }
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-

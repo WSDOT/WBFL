@@ -25,153 +25,73 @@
 #define INCLUDED_REPORTER_RCSCALAR_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-#include <string>
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ReportContent.h>
 #include <System\NumericFormatTool.h>
+#include <string>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptRcScalar
-
-   Report content for a scalar.
-
-
-DESCRIPTION
-   Report content for a scalar.
-
-LOG
-   rab : 11.12.1997 : Created file
-*****************************************************************************/
-
+/// Report content for a scalar.
 class REPORTERCLASS rptRcScalar : public rptReportContent
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
    rptRcScalar();
-
-   //------------------------------------------------------------------------
-   // Constructor
    rptRcScalar(Float64 value);
-
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptRcScalar(const rptRcScalar& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRcScalar();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   rptRcScalar& operator = (const rptRcScalar& rOther);
+   rptRcScalar& operator=(const rptRcScalar& rOther);
 
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // Accept a visitor
+   /// Accepts a visitor and calls VisitRcScalar(this)
    virtual void Accept( rptRcVisitor& rVisitor ) override;
 
-   //------------------------------------------------------------------------
-   // Make a virtual copy
+   /// Creates a clone
    virtual rptReportContent* CreateClone() const override;
-
-   // GROUP: ACCESS
-
-   //------------------------------------------------------------------------
-   // Sets the output format
+ 
+   /// Sets the output format
    void SetFormat(sysNumericFormatTool::Format format);
 
-   //------------------------------------------------------------------------
-   // Returns the output format
+   /// Returns the output format
    sysNumericFormatTool::Format GetFormat() const;
 
-   //------------------------------------------------------------------------
+   /// Sets the output precision
    void SetPrecision(Uint16 precision);
 
-   //------------------------------------------------------------------------
+   /// Returns the output precision
    Uint16 GetPrecision() const;
 
-   //------------------------------------------------------------------------
+   /// Sets the width of the output
    void SetWidth(Uint16 width);
 
-   //------------------------------------------------------------------------
+   /// Returns the width of the output
    Uint16 GetWidth() const;
 
-   //------------------------------------------------------------------------
-   // Set the zero-tolerance value any values with absolute value of less than
-   // this value will be returned through GetValue as zero, and AsString will
-   // also return a zero value.
-   // tol must be >= 0.0
+   /// Sets the zero-tolerance value.
+   ///
+   /// Any value with absolute value of less than this tolerance will be returned through GetValue as zero and AsString will also return a zero value.
    void SetTolerance(Float64 tol);
+
+   /// Returns the zero-tolerance.
    Float64 GetTolerance() const;
 
-   //------------------------------------------------------------------------
+   /// Returns the value
    Float64 GetValue() const;
    
-   //------------------------------------------------------------------------
-   virtual rptReportContent&  SetValue(Float64 v);
+   /// Sets the value to be reported and returns a reference to this
+   virtual rptReportContent& SetValue(Float64 v);
 
-   //------------------------------------------------------------------------
-   std::_tstring AsString() const;
-
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
-#endif // _DEBUG
+   /// Returns the value formatted as a string
+   virtual std::_tstring AsString() const;
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 
 protected:
-   // GROUP: DATA MEMBERS
    Float64 m_Value;
-   sysNumericFormatTool::Format m_Format;
-   Uint16 m_Precision;
-   Uint16 m_Width;
-   Float64 m_Tolerance;
+   sysNumericFormatTool::Format m_Format; 
+   Uint16 m_Precision; ///< Output precision
+   Uint16 m_Width; ///< Width of the output field
+   Float64 m_Tolerance; ///< Absolute values less than this are taken as zero
 
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void Init();
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   void Init(); ///< common initialization call by all constructors
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_RCSCALAR_H_
