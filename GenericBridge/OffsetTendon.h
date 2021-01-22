@@ -64,7 +64,7 @@ BEGIN_CONNECTION_POINT_MAP(COffsetTendon)
 END_CONNECTION_POINT_MAP()
 
 private:
-   Float64 m_OD, m_ID;
+   Float64 m_OD, m_ID, m_ND;
    StrandIndexType m_StrandCount;
    CComPtr<IPrestressingStrand> m_Material;
    JackingEndType m_JackingEnd;
@@ -114,8 +114,11 @@ public:
    STDMETHOD(get_OutsideDuctArea)(/*[out,retval]*/Float64* Aduct) override;
    STDMETHOD(get_InsideDiameter)(/*[out,retval]*/Float64* size) override;
 	STDMETHOD(put_InsideDiameter)(/*[in]*/Float64 size) override;
-	STDMETHOD(get_InsideDuctArea)(/*[out,retval]*/Float64* Aduct) override;
-	STDMETHOD(get_TendonArea)(/*[out,retval]*/Float64* Apt) override;
+   STDMETHOD(get_InsideDuctArea)(/*[out,retval]*/Float64* Aduct) override;
+   STDMETHOD(get_NominalDiameter)(/*[out,retval]*/Float64* size) override;
+   STDMETHOD(put_NominalDiameter)(/*[in]*/Float64 size) override;
+   STDMETHOD(get_NominalDuctArea)(/*[out,retval]*/Float64* Aduct) override;
+   STDMETHOD(get_TendonArea)(/*[out,retval]*/Float64* Apt) override;
 	STDMETHOD(get_StrandCount)(/*[out,retval]*/StrandIndexType* count) override;
 	STDMETHOD(put_StrandCount)(/*[in]*/StrandIndexType count) override;
 	STDMETHOD(get_Material)(/*[out,retval]*/IPrestressingStrand** material) override;

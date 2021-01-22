@@ -438,7 +438,7 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
 
          // stress due to wind towards the left
          sectionResult.fw[corner] = ((MyWind*Ixx + MxWind*Ixy)*pntStress[corner].X() - (MxWind*Iyy + MyWind*Ixy)*pntStress[corner].Y()) / D;
-      }
+      } // next corner
 
       // analyze the girder for all the combinations of impact and wind
       for ( IndexType i = 0; i < 3; i++ )
@@ -488,36 +488,6 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
                results.MinDirectStressImpactDirection = impact;
                results.MinDirectStressCorner = corner;
             }
-
-#if defined REBAR_FOR_DIRECT_TENSION
-            if (segment)
-            {
-               gbtAlternativeTensileStressRequirements altTensionRequirements;
-
-               CComPtr<IShapeProperties> sp;
-               shape->get_ShapeProperties(&sp);
-               sp->get_Ytop(&altTensionRequirements.Ytg);
-
-               altTensionRequirements.shape = shape;
-               altTensionRequirements.rebarSection = rebarSection;
-               altTensionRequirements.fy = pStabilityProblem->GetRebarYieldStrength();
-               altTensionRequirements.fsMax = ::ConvertToSysUnits(30.0, unitMeasure::KSI);
-               altTensionRequirements.bLimitBarStress = true;
-               altTensionRequirements.concreteType = concrete.GetType();
-               altTensionRequirements.fc = concrete.GetFc();
-               altTensionRequirements.bHasFct = concrete.HasAggSplittingStrength();
-               altTensionRequirements.Fct = concrete.GetAggSplittingStrength();
-               altTensionRequirements.density = concrete.GetDensity();
-
-               altTensionRequirements.pntTopLeft.Move(pntStress[stbTypes::TopLeft].X(), pntStress[stbTypes::TopLeft].Y(), sectionResult.fDirect[impact][stbTypes::TopLeft]);
-               altTensionRequirements.pntTopRight.Move(pntStress[stbTypes::TopRight].X(), pntStress[stbTypes::TopRight].Y(), sectionResult.fDirect[impact][stbTypes::TopRight]);
-               altTensionRequirements.pntBottomLeft.Move(pntStress[stbTypes::BottomLeft].X(), pntStress[stbTypes::BottomLeft].Y(), sectionResult.fDirect[impact][stbTypes::BottomLeft]);
-               altTensionRequirements.pntBottomRight.Move(pntStress[stbTypes::BottomRight].X(), pntStress[stbTypes::BottomRight].Y(), sectionResult.fDirect[impact][stbTypes::BottomRight]);
-
-               gbtComputeAlternativeStressRequirements(&altTensionRequirements);
-               sectionResult.altTensionRequirements[impact] = altTensionRequirements;
-            } // if segment
-#endif REBAR_FOR_DIRECT_TENSION
             
             for (IndexType w = 0; w < 2; w++)
             {
@@ -676,8 +646,8 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
                      sectionResult.FScrMinWindDirection = wind;
                      sectionResult.FScrMinCorner = corner;
                   }
-               } // next corner
-
+               } // if stable
+                    
                // keep track of the minimum FScr for all analysis points for this load case
                if (::IsLT(sectionResult.MinFScr[impact][wind], results.MinFScr[impact][wind]))
                {
@@ -697,39 +667,52 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
                   results.FScrMinWindDirection = wind;
                   results.FScrMinCorner = sectionResult.MinFScrCorner[impact][wind];
                }
-
-               // use this to compute rebar requirements including lateral loads
-#if !defined REBAR_FOR_DIRECT_TENSION
-               if (segment)
-               {
-                  gbtAlternativeTensileStressRequirements altTensionRequirements;
-
-                  CComPtr<IShapeProperties> sp;
-                  shape->get_ShapeProperties(&sp);
-                  sp->get_Ytop(&altTensionRequirements.Ytg);
-
-                  altTensionRequirements.shape = shape;
-                  altTensionRequirements.rebarSection = rebarSection;
-                  altTensionRequirements.fy = pStabilityProblem->GetRebarYieldStrength();
-                  altTensionRequirements.fsMax = ::ConvertToSysUnits(30.0, unitMeasure::KSI);
-                  altTensionRequirements.bLimitBarStress = true;
-                  altTensionRequirements.concreteType = concrete.GetType();
-                  altTensionRequirements.fc = concrete.GetFc();
-                  altTensionRequirements.bHasFct = concrete.HasAggSplittingStrength();
-                  altTensionRequirements.Fct = concrete.GetAggSplittingStrength();
-                  altTensionRequirements.density = concrete.GetDensity();
-
-                  altTensionRequirements.pntTopLeft.Move(pntStress[stbTypes::TopLeft].X(), pntStress[stbTypes::TopLeft].Y(), sectionResult.f[impact][wind][stbTypes::TopLeft]);
-                  altTensionRequirements.pntTopRight.Move(pntStress[stbTypes::TopRight].X(), pntStress[stbTypes::TopRight].Y(), sectionResult.f[impact][wind][stbTypes::TopRight]);
-                  altTensionRequirements.pntBottomLeft.Move(pntStress[stbTypes::BottomLeft].X(), pntStress[stbTypes::BottomLeft].Y(), sectionResult.f[impact][wind][stbTypes::BottomLeft]);
-                  altTensionRequirements.pntBottomRight.Move(pntStress[stbTypes::BottomRight].X(), pntStress[stbTypes::BottomRight].Y(), sectionResult.f[impact][wind][stbTypes::BottomRight]);
-
-                  gbtComputeAlternativeStressRequirements(&altTensionRequirements);
-                  sectionResult.altTensionRequirements[impact][wind] = altTensionRequirements;
-               } // if segment
-#endif // REBAR_FOR_DIRECT_TENSION
             } // next wind direction
-         } // if stable
+         } // next corner
+
+         // compute rebar requirements for tension stresses
+         if (segment)
+         {
+            gbtAlternativeTensileStressRequirements altTensionRequirements;
+
+            CComPtr<IShapeProperties> sp;
+            shape->get_ShapeProperties(&sp);
+            sp->get_Ytop(&altTensionRequirements.Ytg);
+
+            altTensionRequirements.shape = shape;
+            altTensionRequirements.rebarSection = rebarSection;
+            altTensionRequirements.fy = pStabilityProblem->GetRebarYieldStrength();
+            altTensionRequirements.fsMax = ::ConvertToSysUnits(30.0, unitMeasure::KSI);
+            altTensionRequirements.bLimitBarStress = true;
+            altTensionRequirements.concreteType = concrete.GetType();
+            altTensionRequirements.fc = concrete.GetFc();
+            altTensionRequirements.bHasFct = concrete.HasAggSplittingStrength();
+            altTensionRequirements.Fct = concrete.GetAggSplittingStrength();
+            altTensionRequirements.density = concrete.GetDensity();
+
+#if defined REBAR_FOR_DIRECT_TENSION
+            altTensionRequirements.pntTopLeft.Move(pntStress[stbTypes::TopLeft].X(), pntStress[stbTypes::TopLeft].Y(), sectionResult.fDirect[impact][stbTypes::TopLeft]);
+            altTensionRequirements.pntTopRight.Move(pntStress[stbTypes::TopRight].X(), pntStress[stbTypes::TopRight].Y(), sectionResult.fDirect[impact][stbTypes::TopRight]);
+            altTensionRequirements.pntBottomLeft.Move(pntStress[stbTypes::BottomLeft].X(), pntStress[stbTypes::BottomLeft].Y(), sectionResult.fDirect[impact][stbTypes::BottomLeft]);
+            altTensionRequirements.pntBottomRight.Move(pntStress[stbTypes::BottomRight].X(), pntStress[stbTypes::BottomRight].Y(), sectionResult.fDirect[impact][stbTypes::BottomRight]);
+
+            gbtComputeAlternativeStressRequirements(&altTensionRequirements);
+            sectionResult.altTensionRequirements[impact] = altTensionRequirements;
+#else 
+            for (IndexType w = 0; w < 2; w++)
+            {
+               stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+
+               altTensionRequirements.pntTopLeft.Move(pntStress[stbTypes::TopLeft].X(), pntStress[stbTypes::TopLeft].Y(), sectionResult.f[impact][wind][stbTypes::TopLeft]);
+               altTensionRequirements.pntTopRight.Move(pntStress[stbTypes::TopRight].X(), pntStress[stbTypes::TopRight].Y(), sectionResult.f[impact][wind][stbTypes::TopRight]);
+               altTensionRequirements.pntBottomLeft.Move(pntStress[stbTypes::BottomLeft].X(), pntStress[stbTypes::BottomLeft].Y(), sectionResult.f[impact][wind][stbTypes::BottomLeft]);
+               altTensionRequirements.pntBottomRight.Move(pntStress[stbTypes::BottomRight].X(), pntStress[stbTypes::BottomRight].Y(), sectionResult.f[impact][wind][stbTypes::BottomRight]);
+
+               gbtComputeAlternativeStressRequirements(&altTensionRequirements);
+               sectionResult.altTensionRequirements[impact][wind] = altTensionRequirements;
+            }
+#endif // REBAR_FOR_DIRECT_TENSION
+         } // if segment
       } // next impact
 
       results.vSectionResults.push_back(sectionResult);
@@ -999,7 +982,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
 
          // stress due to centrifugal forces
          sectionResult.fcf[corner] = ((MyCF*Ixx + MxCF*Ixy)*pntStress[corner].X() - (MxCF*Iyy + MyCF*Ixy)*pntStress[corner].Y()) / D;
-      }
+      } // next corner
 
       for (int s = 0; s < 2; s++)
       {
@@ -1063,36 +1046,6 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                   results.MinDirectStressImpactDirection[slope] = impact;
                   results.MinDirectStressCorner[slope] = corner;
                }
-
-#if defined REBAR_FOR_DIRECT_TENSION
-               if (segment)
-               {
-                  gbtAlternativeTensileStressRequirements altTensionRequirements;
-
-                  CComPtr<IShapeProperties> sp;
-                  shape->get_ShapeProperties(&sp);
-                  sp->get_Ytop(&altTensionRequirements.Ytg);
-
-                  altTensionRequirements.shape = shape;
-                  altTensionRequirements.rebarSection = rebarSection;
-                  altTensionRequirements.fy = pStabilityProblem->GetRebarYieldStrength();
-                  altTensionRequirements.fsMax = ::ConvertToSysUnits(30.0, unitMeasure::KSI);
-                  altTensionRequirements.bLimitBarStress = true;
-                  altTensionRequirements.concreteType = concrete.GetType();
-                  altTensionRequirements.fc = concrete.GetFc();
-                  altTensionRequirements.bHasFct = concrete.HasAggSplittingStrength();
-                  altTensionRequirements.Fct = concrete.GetAggSplittingStrength();
-                  altTensionRequirements.density = concrete.GetDensity();
-
-                  altTensionRequirements.pntTopLeft.Move(pntStress[stbTypes::TopLeft].X(), pntStress[stbTypes::TopLeft].Y(), sectionResult.fDirect[slope][impact][stbTypes::TopLeft]);
-                  altTensionRequirements.pntTopRight.Move(pntStress[stbTypes::TopRight].X(), pntStress[stbTypes::TopRight].Y(), sectionResult.fDirect[slope][impact][stbTypes::TopRight]);
-                  altTensionRequirements.pntBottomLeft.Move(pntStress[stbTypes::BottomLeft].X(), pntStress[stbTypes::BottomLeft].Y(), sectionResult.fDirect[slope][impact][stbTypes::BottomLeft]);
-                  altTensionRequirements.pntBottomRight.Move(pntStress[stbTypes::BottomRight].X(), pntStress[stbTypes::BottomRight].Y(), sectionResult.fDirect[slope][impact][stbTypes::BottomRight]);
-
-                  gbtComputeAlternativeStressRequirements(&altTensionRequirements);
-                  sectionResult.altTensionRequirements[slope][impact] = altTensionRequirements;
-               }
-#endif // REBAR_FOR_DIRECT_TENSION
 
                for ( int w = 0; w < 2; w++ )
                {
@@ -1224,7 +1177,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                         sectionResult.FScrWindDirection[slope] = wind;
                         sectionResult.FScrCorner[slope] = corner;
                      }
-                  } // next corner
+                  } // if stable
 
                   // keep track of the minimum FScr for all analysis points
                   if (::IsLT(sectionResult.FScrMin[slope], results.MinFScr[slope]))
@@ -1235,38 +1188,50 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                      results.FScrWindDirection[slope] = sectionResult.FScrWindDirection[slope];
                      results.FScrCorner[slope] = sectionResult.FScrCorner[slope];
                   }
+               } // next wind direction
+            } // next corner
 
-#if !defined REBAR_FOR_DIRECT_TENSION
-                  if (segment)
-                  {
-                     gbtAlternativeTensileStressRequirements altTensionRequirements;
+            if (segment)
+            {
+               gbtAlternativeTensileStressRequirements altTensionRequirements;
 
-                     CComPtr<IShapeProperties> sp;
-                     shape->get_ShapeProperties(&sp);
-                     sp->get_Ytop(&altTensionRequirements.Ytg);
-                     
-                     altTensionRequirements.shape = shape;
-                     altTensionRequirements.rebarSection = rebarSection;
-                     altTensionRequirements.fy = pStabilityProblem->GetRebarYieldStrength();
-                     altTensionRequirements.fsMax = ::ConvertToSysUnits(30.0, unitMeasure::KSI);
-                     altTensionRequirements.bLimitBarStress = true;
-                     altTensionRequirements.concreteType = concrete.GetType();
-                     altTensionRequirements.fc = concrete.GetFc();
-                     altTensionRequirements.bHasFct = concrete.HasAggSplittingStrength();
-                     altTensionRequirements.Fct = concrete.GetAggSplittingStrength();
-                     altTensionRequirements.density = concrete.GetDensity();
+               CComPtr<IShapeProperties> sp;
+               shape->get_ShapeProperties(&sp);
+               sp->get_Ytop(&altTensionRequirements.Ytg);
 
-                     altTensionRequirements.pntTopLeft.Move(pntStress[stbTypes::TopLeft].X(), pntStress[stbTypes::TopLeft].Y(), sectionResult.f[slope][impact][wind][stbTypes::TopLeft]);
-                     altTensionRequirements.pntTopRight.Move(pntStress[stbTypes::TopRight].X(), pntStress[stbTypes::TopRight].Y(), sectionResult.f[slope][impact][wind][stbTypes::TopRight]);
-                     altTensionRequirements.pntBottomLeft.Move(pntStress[stbTypes::BottomLeft].X(), pntStress[stbTypes::BottomLeft].Y(), sectionResult.f[slope][impact][wind][stbTypes::BottomLeft]);
-                     altTensionRequirements.pntBottomRight.Move(pntStress[stbTypes::BottomRight].X(), pntStress[stbTypes::BottomRight].Y(), sectionResult.f[slope][impact][wind][stbTypes::BottomRight]);
+               altTensionRequirements.shape = shape;
+               altTensionRequirements.rebarSection = rebarSection;
+               altTensionRequirements.fy = pStabilityProblem->GetRebarYieldStrength();
+               altTensionRequirements.fsMax = ::ConvertToSysUnits(30.0, unitMeasure::KSI);
+               altTensionRequirements.bLimitBarStress = true;
+               altTensionRequirements.concreteType = concrete.GetType();
+               altTensionRequirements.fc = concrete.GetFc();
+               altTensionRequirements.bHasFct = concrete.HasAggSplittingStrength();
+               altTensionRequirements.Fct = concrete.GetAggSplittingStrength();
+               altTensionRequirements.density = concrete.GetDensity();
 
-                     gbtComputeAlternativeStressRequirements(&altTensionRequirements);
-                     sectionResult.altTensionRequirements[slope][impact][wind] = altTensionRequirements;
-                  }
-#endif
-               } // if stable
-            } // next wind direction
+#if defined REBAR_FOR_DIRECT_TENSION
+               altTensionRequirements.pntTopLeft.Move(pntStress[stbTypes::TopLeft].X(), pntStress[stbTypes::TopLeft].Y(), sectionResult.fDirect[slope][impact][stbTypes::TopLeft]);
+               altTensionRequirements.pntTopRight.Move(pntStress[stbTypes::TopRight].X(), pntStress[stbTypes::TopRight].Y(), sectionResult.fDirect[slope][impact][stbTypes::TopRight]);
+               altTensionRequirements.pntBottomLeft.Move(pntStress[stbTypes::BottomLeft].X(), pntStress[stbTypes::BottomLeft].Y(), sectionResult.fDirect[slope][impact][stbTypes::BottomLeft]);
+               altTensionRequirements.pntBottomRight.Move(pntStress[stbTypes::BottomRight].X(), pntStress[stbTypes::BottomRight].Y(), sectionResult.fDirect[slope][impact][stbTypes::BottomRight]);
+
+               gbtComputeAlternativeStressRequirements(&altTensionRequirements);
+               sectionResult.altTensionRequirements[slope][impact] = altTensionRequirements;
+#else
+               for (int w = 0; w < 2; w++)
+               {
+                  stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+                  altTensionRequirements.pntTopLeft.Move(pntStress[stbTypes::TopLeft].X(), pntStress[stbTypes::TopLeft].Y(), sectionResult.f[slope][impact][wind][stbTypes::TopLeft]);
+                  altTensionRequirements.pntTopRight.Move(pntStress[stbTypes::TopRight].X(), pntStress[stbTypes::TopRight].Y(), sectionResult.f[slope][impact][wind][stbTypes::TopRight]);
+                  altTensionRequirements.pntBottomLeft.Move(pntStress[stbTypes::BottomLeft].X(), pntStress[stbTypes::BottomLeft].Y(), sectionResult.f[slope][impact][wind][stbTypes::BottomLeft]);
+                  altTensionRequirements.pntBottomRight.Move(pntStress[stbTypes::BottomRight].X(), pntStress[stbTypes::BottomRight].Y(), sectionResult.f[slope][impact][wind][stbTypes::BottomRight]);
+
+                  gbtComputeAlternativeStressRequirements(&altTensionRequirements);
+                  sectionResult.altTensionRequirements[slope][impact][wind] = altTensionRequirements;
+               }
+#endif // REBAR_FOR_DIRECT_TENSION
+            } // if segment
          } // next impact
       } // next slope
 

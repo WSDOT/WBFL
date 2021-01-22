@@ -1375,6 +1375,10 @@ STDMETHODIMP_(void) CDisplayMgrImpl::FindDisplayObjects(CPoint point,DisplayObje
       CComPtr<iDisplayList> pDL = *iter;
       pDL->FindDisplayObjects(point,dispObjs);
    }
+
+   // remove duplicates
+   std::sort(dispObjs->begin(), dispObjs->end());
+   dispObjs->erase(std::unique(dispObjs->begin(), dispObjs->end()), dispObjs->end());
 }
 
 STDMETHODIMP_(void) CDisplayMgrImpl::FindDisplayObjects(IPoint2d* point,DisplayObjectContainer* dispObjs)
@@ -1385,6 +1389,10 @@ STDMETHODIMP_(void) CDisplayMgrImpl::FindDisplayObjects(IPoint2d* point,DisplayO
       CComPtr<iDisplayList> pDL = *iter;
       pDL->FindDisplayObjects(point,dispObjs);
    }
+
+   // remove duplicates
+   std::sort(dispObjs->begin(), dispObjs->end());
+   dispObjs->erase(std::unique(dispObjs->begin(), dispObjs->end()), dispObjs->end());
 }
 
 STDMETHODIMP_(void) CDisplayMgrImpl::FindDisplayObjects(CRect rect,DisplayObjectContainer* dispObjs)
@@ -1395,6 +1403,10 @@ STDMETHODIMP_(void) CDisplayMgrImpl::FindDisplayObjects(CRect rect,DisplayObject
       CComPtr<iDisplayList> pDL = *iter;
       pDL->FindDisplayObjects(rect,dispObjs);
    }
+
+   // remove duplicates
+   std::sort(dispObjs->begin(), dispObjs->end());
+   dispObjs->erase(std::unique(dispObjs->begin(), dispObjs->end()), dispObjs->end());
 }
 
 STDMETHODIMP_(CollectionIndexType) CDisplayMgrImpl::GetDisplayObjectCount()

@@ -52,6 +52,7 @@
 #include "Rectangle.h"
 #include "Triangle.h"
 #include "PrecastBeam.h"
+#include "PrecastBeam2.h"
 #include "TrafficBarrier.h"
 #include "Point3d.h"
 #include "LineSegment3d.h"
@@ -79,7 +80,6 @@
 #include "VoidedSlab2.h"
 #include "BoxBeam.h"
 #include "DeckedSlabBeam.h"
-#include "FasterPolyShape.h"
 #include "GenericShape.h"
 #include "BeamShapeFactory.h"
 
@@ -105,6 +105,7 @@ OBJECT_ENTRY(CLSID_Circle, CCircle)
 OBJECT_ENTRY(CLSID_Rect, CRectangle)
 OBJECT_ENTRY(CLSID_Triangle, CTriangle)
 OBJECT_ENTRY(CLSID_PrecastBeam, CPrecastBeam)
+OBJECT_ENTRY(CLSID_PrecastBeam2, CPrecastBeam2)
 OBJECT_ENTRY(CLSID_TrafficBarrier, CTrafficBarrier)
 OBJECT_ENTRY(CLSID_Point3d, CPoint3d)
 OBJECT_ENTRY(CLSID_LineSegment3d, CLineSegment3d)
@@ -132,7 +133,6 @@ OBJECT_ENTRY(CLSID_VoidedSlab,CVoidedSlab)
 OBJECT_ENTRY(CLSID_VoidedSlab2,CVoidedSlab2)
 OBJECT_ENTRY(CLSID_DeckedSlabBeam,CDeckedSlabBeam)
 OBJECT_ENTRY(CLSID_BoxBeam,CBoxBeam)
-OBJECT_ENTRY(CLSID_FasterPolyShape, CFasterPolyShape)
 OBJECT_ENTRY(CLSID_GenericShape, CGenericShape)
 OBJECT_ENTRY(CLSID_BeamShapeFactory, CBeamShapeFactory)
 END_OBJECT_MAP()

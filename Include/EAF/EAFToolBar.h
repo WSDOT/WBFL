@@ -78,6 +78,8 @@ public:
    void ClientToScreen(LPPOINT lpPoint) const;
    void ClientToScreen(LPRECT lpRect) const;
 
+   void GetWindowText(CString& rString) const;
+
 
 private:
    friend CEAFMainFrame;

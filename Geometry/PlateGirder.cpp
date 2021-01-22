@@ -42,11 +42,11 @@ static char THIS_FILE[] = __FILE__;
 HRESULT CPlateGirder::FinalConstruct()
 {
    m_Rotation  = 0.00;
-	m_webThick  = 0.00;
+	m_webWidth  = 0.00;
 	m_webHeight = 0.00;
-	m_bfThick   = 0.00;
+	m_bfThickness   = 0.00;
 	m_bfWidth   = 0.00;
-	m_tfThick   = 0.00;
+	m_tfThickness   = 0.00;
 	m_tfWidth   = 0.00;
 
    CreatePoint( 0.00, 0.00, nullptr, &m_pHookPoint );
@@ -98,15 +98,15 @@ HRESULT CPlateGirder::UpdateShape()
       Float64 p1_x = -m_bfWidth/2;
       Float64 p1_y =  0.;
       Float64 p2_x = -m_bfWidth/2;
-      Float64 p2_y =  m_bfThick;
-      Float64 p3_x = -m_webThick/2;
-      Float64 p3_y =  m_bfThick;
-      Float64 p4_x = -m_webThick/2;
-      Float64 p4_y =  m_bfThick + m_webHeight;
+      Float64 p2_y =  m_bfThickness;
+      Float64 p3_x = -m_webWidth/2;
+      Float64 p3_y =  m_bfThickness;
+      Float64 p4_x = -m_webWidth/2;
+      Float64 p4_y =  m_bfThickness + m_webHeight;
       Float64 p5_x = -m_tfWidth/2;
-      Float64 p5_y =  m_bfThick + m_webHeight;
+      Float64 p5_y =  m_bfThickness + m_webHeight;
       Float64 p6_x = -m_tfWidth/2;
-      Float64 p6_y =  m_bfThick + m_webHeight + m_tfThick;
+      Float64 p6_y =  m_bfThickness + m_webHeight + m_tfThickness;
 
       m_pShape->AddPoint( p1_x, p1_y); // 1
       m_pShape->AddPoint( p2_x, p2_y);
@@ -230,21 +230,21 @@ STDMETHODIMP CPlateGirder::put_TopFlangeWidth(Float64 newVal)
 	return S_OK;
 }
 
-STDMETHODIMP CPlateGirder::get_TopFlangeThick(Float64 *pVal)
+STDMETHODIMP CPlateGirder::get_TopFlangeThickness(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_tfThick;
+   *pVal = m_tfThickness;
 	return S_OK;
 }
 
-STDMETHODIMP CPlateGirder::put_TopFlangeThick(Float64 newVal)
+STDMETHODIMP CPlateGirder::put_TopFlangeThickness(Float64 newVal)
 {
    MakeDirty();
 
    if ( newVal < 0.0 )
       return Error(IDS_E_DIMENSION,IID_IPlateGirder,GEOMETRY_E_DIMENSION);
 
-   m_tfThick = newVal;
+   m_tfThickness = newVal;
 
 	return S_OK;
 }
@@ -268,21 +268,21 @@ STDMETHODIMP CPlateGirder::put_BottomFlangeWidth(Float64 newVal)
 	return S_OK;
 }
 
-STDMETHODIMP CPlateGirder::get_BottomFlangeThick(Float64 *pVal)
+STDMETHODIMP CPlateGirder::get_BottomFlangeThickness(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_bfThick;
+   *pVal = m_bfThickness;
 	return S_OK;
 }
 
-STDMETHODIMP CPlateGirder::put_BottomFlangeThick(Float64 newVal)
+STDMETHODIMP CPlateGirder::put_BottomFlangeThickness(Float64 newVal)
 {
    MakeDirty();
 
    if ( newVal < 0.0 )
       return Error(IDS_E_DIMENSION,IID_IPlateGirder,GEOMETRY_E_DIMENSION);
 
-   m_bfThick = newVal;
+   m_bfThickness = newVal;
 
 	return S_OK;
 }
@@ -306,21 +306,21 @@ STDMETHODIMP CPlateGirder::put_WebHeight(Float64 newVal)
 	return S_OK;
 }
 
-STDMETHODIMP CPlateGirder::get_WebThick(Float64 *pVal)
+STDMETHODIMP CPlateGirder::get_WebWidth(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_webThick;
+   *pVal = m_webWidth;
 	return S_OK;
 }
 
-STDMETHODIMP CPlateGirder::put_WebThick(Float64 newVal)
+STDMETHODIMP CPlateGirder::put_WebWidth(Float64 newVal)
 {
    MakeDirty();
 
    if ( newVal < 0.0 )
       return Error(IDS_E_DIMENSION,IID_IPlateGirder,GEOMETRY_E_DIMENSION);
 
-   m_webThick = newVal;
+   m_webWidth = newVal;
 
 	return S_OK;
 }
@@ -328,7 +328,7 @@ STDMETHODIMP CPlateGirder::put_WebThick(Float64 newVal)
 STDMETHODIMP CPlateGirder::get_Height(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_bfThick + m_webHeight + m_tfThick;
+   *pVal = m_bfThickness + m_webHeight + m_tfThickness;
 	return S_OK;
 }
 
@@ -336,8 +336,8 @@ STDMETHODIMP CPlateGirder::get_QTopFlange(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   Float64 Aflange = m_tfWidth * m_tfThick;
-   Float64 cgFlange = m_bfThick + m_webHeight + m_tfThick/2;
+   Float64 Aflange = m_tfWidth * m_tfThickness;
+   Float64 cgFlange = m_bfThickness + m_webHeight + m_tfThickness/2;
 
    CComPtr<IShapeProperties> props;
    get_ShapeProperties(&props);
@@ -355,8 +355,8 @@ STDMETHODIMP CPlateGirder::get_QBottomFlange(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   Float64 Aflange = m_bfWidth * m_bfThick;
-   Float64 cgFlange = m_bfThick/2;
+   Float64 Aflange = m_bfWidth * m_bfThickness;
+   Float64 cgFlange = m_bfThickness/2;
 
 
    CComPtr<IShapeProperties> props;
@@ -451,12 +451,12 @@ STDMETHODIMP CPlateGirder::Clone(IShape** pClone)
 
    CComPtr<IPlateGirder> shape(pTheClone); // need at least one reference
 
-   pTheClone->put_BottomFlangeThick(m_bfThick);
+   pTheClone->put_BottomFlangeThickness(m_bfThickness);
    pTheClone->put_BottomFlangeWidth(m_bfWidth);
-   pTheClone->put_TopFlangeThick(m_tfThick);
+   pTheClone->put_TopFlangeThickness(m_tfThickness);
    pTheClone->put_TopFlangeWidth(m_tfWidth);
    pTheClone->put_WebHeight(m_webHeight);
-   pTheClone->put_WebThick(m_webThick);
+   pTheClone->put_WebWidth(m_webWidth);
 
    CComPtr<IPoint2d> hookPnt;
    CreatePoint(m_pHookPoint,nullptr,&hookPnt);
@@ -626,12 +626,12 @@ STDMETHODIMP CPlateGirder::Save(IStructuredSave2* pSave)
    CHECK_IN(pSave);
 
    pSave->BeginUnit(CComBSTR("PlateGirder"),1.0);
-   pSave->put_Property(CComBSTR("bfThick"),CComVariant(m_bfThick));
+   pSave->put_Property(CComBSTR("bfThick"),CComVariant(m_bfThickness));
    pSave->put_Property(CComBSTR("bfWidth"),CComVariant(m_bfWidth));
-   pSave->put_Property(CComBSTR("tfThick"),CComVariant(m_tfThick));
+   pSave->put_Property(CComBSTR("tfThick"),CComVariant(m_tfThickness));
    pSave->put_Property(CComBSTR("tfWidth"),CComVariant(m_tfWidth));
    pSave->put_Property(CComBSTR("webHeight"),CComVariant(m_webHeight));
-   pSave->put_Property(CComBSTR("webThick"),CComVariant(m_webThick));
+   pSave->put_Property(CComBSTR("webThick"),CComVariant(m_webWidth));
    pSave->put_Property(CComBSTR("Rotation"),CComVariant(m_Rotation));
    pSave->put_Property(CComBSTR("HookPoint"),CComVariant(m_pHookPoint));
    pSave->EndUnit();
@@ -647,13 +647,13 @@ STDMETHODIMP CPlateGirder::Load(IStructuredLoad2* pLoad)
    pLoad->BeginUnit(CComBSTR("PlateGirder"));
 
    pLoad->get_Property(CComBSTR("bfThick"),&var);
-   m_bfThick = var.dblVal;
+   m_bfThickness = var.dblVal;
 
    pLoad->get_Property(CComBSTR("bfWidth"),&var);
    m_bfWidth = var.dblVal;
 
    pLoad->get_Property(CComBSTR("tfThick"),&var);
-   m_tfThick = var.dblVal;
+   m_tfThickness = var.dblVal;
 
    pLoad->get_Property(CComBSTR("tfWidth"),&var);
    m_tfWidth = var.dblVal;
@@ -662,7 +662,7 @@ STDMETHODIMP CPlateGirder::Load(IStructuredLoad2* pLoad)
    m_webHeight = var.dblVal;
 
    pLoad->get_Property(CComBSTR("webThick"),&var);
-   m_webThick = var.dblVal;
+   m_webWidth = var.dblVal;
 
    pLoad->get_Property(CComBSTR("Rotation"),&var);
    m_Rotation = var.dblVal;

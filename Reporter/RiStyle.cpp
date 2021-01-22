@@ -315,6 +315,8 @@ std::_tstring rptRiStyle::GetColorCode(FontColor color)
    std::_tstring strColor;
    switch(color)
    {
+      case rptRiStyle::Default:   strColor = _T("#ffffff"); ATLASSERT(0)/*probably should not call*/; break;
+
       // Red colors
       case rptRiStyle::IndianRed:   strColor = _T("#cd5c5c"); break;
       case rptRiStyle::LightCoral:  strColor = _T("#f08080"); break;

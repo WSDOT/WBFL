@@ -89,8 +89,11 @@ STDMETHODIMP_(void) CAnchoredTextBlockImpl::Draw(CDC* pDC)
    CRect rClient = pView->GetViewRect();
    CPoint topLeft = rClient.TopLeft();
 
+   LOGFONT lf = m_Font;
+   pView->ScaleFont(lf);
+
    CFont font;
-   font.CreatePointFontIndirect(&m_Font, pDC);
+   font.CreatePointFontIndirect(&lf, pDC);
    CFont* pOldFont = pDC->SelectObject(&font);
 
    UINT nFlag = pDC->SetTextAlign(TA_TOP | TA_LEFT);
@@ -129,6 +132,8 @@ STDMETHODIMP_(CRect) CAnchoredTextBlockImpl::GetBoundingBox()
    CComPtr<iCoordinateMap> pMapper;
    pDM->GetCoordinateMap(&pMapper);
 
+   CDisplayView* pView = pDM->GetView();
+
    CStringArray strArray;
    GetTextLines(strArray);
    
@@ -136,10 +141,10 @@ STDMETHODIMP_(CRect) CAnchoredTextBlockImpl::GetBoundingBox()
    for ( int i = 0; i < strArray.GetSize(); i++ )
    {
       CString str = strArray.GetAt(i);
-      CSize size = pMapper->GetTextExtent(m_Font,str);
+      CSize size = pMapper->GetTextExtent(pView,m_Font,str);
 
       if ( size.cx == 0 || size.cy == 0 )
-         size = pMapper->GetTextExtent(m_Font,_T("ABCDEFG\0"));
+         size = pMapper->GetTextExtent(pView,m_Font,_T("ABCDEFG\0"));
 
       // capture the width of the widest line of text
       if ( extents.cx < size.cx )
@@ -149,7 +154,6 @@ STDMETHODIMP_(CRect) CAnchoredTextBlockImpl::GetBoundingBox()
       extents.cy += size.cy;
    }
 
-   CDisplayView* pView = pDM->GetView();
    CRect rClient = pView->GetViewRect();
    CPoint topLeft = rClient.TopLeft();
 

@@ -29,6 +29,7 @@
 #include "BoxBeam.h"
 #include "Helper.h"
 #include <MathEx.h>
+#include <array>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -69,7 +70,12 @@ HRESULT CBoxBeam::FinalConstruct()
 
    m_bLeftBlockOut = VARIANT_TRUE;
    m_bRightBlockOut = VARIANT_TRUE;
-   m_bUseOverallWidth = VARIANT_FALSE;
+
+   // Shape point indexs for top and bottom stress points
+   m_LeftTopPointIdx = INVALID_INDEX;
+   m_LeftBottomPointIdx = INVALID_INDEX;
+   m_RightTopPointIdx = INVALID_INDEX;
+   m_RightBottomPointIdx = INVALID_INDEX;
 
    m_Dirty = true;
 
@@ -189,7 +195,7 @@ HRESULT CBoxBeam::UpdateShape()
       Float64 wbot = 2.0*(m_W4 + m_W2) + m_W3;
       Float64 hgt = m_H1 + m_H2 + m_H3;
 
-      Float64 x[17],y[17]; 
+      std::array<Float64,17> x, y; 
       int np = 0;
 
       // bottom center
@@ -200,7 +206,7 @@ HRESULT CBoxBeam::UpdateShape()
       {
          // bottom right
          x[np]   = wbot/2;
-         y[np++] = 0;
+         y[np] = 0;
       }
       else
       {
@@ -209,8 +215,10 @@ HRESULT CBoxBeam::UpdateShape()
          y[np++] = 0;
 
          x[np]   = wbot/2;
-         y[np++] = m_C1;
+         y[np] = m_C1;
       }
+
+      m_RightBottomPointIdx = np++;
 
       if ( m_bRightBlockOut == VARIANT_TRUE )
       {
@@ -238,22 +246,24 @@ HRESULT CBoxBeam::UpdateShape()
 
          // top right corner
          x[np]   = wtop/2;
-         y[np++] = hgt;
+         y[np] = hgt;
       }
       else
       {
          // top right corner
          x[np]   = wbot/2;
-         y[np++] = hgt;
+         y[np] = hgt;
       }
 
-
+      m_RightTopPointIdx = np++;
 
       if ( m_bLeftBlockOut == VARIANT_TRUE )
       {
          // top left corner
          x[np] = -wtop/2;
-         y[np++] = hgt;
+         y[np] = hgt;
+
+         m_LeftTopPointIdx = np++;
 
          // left edge near top, H4
          if(m_H4>0.0)
@@ -281,14 +291,16 @@ HRESULT CBoxBeam::UpdateShape()
       {
          // top left corner
          x[np] = -wbot/2;
-         y[np++] = hgt;
+         y[np] = hgt;
+
+         m_LeftTopPointIdx = np++;
       }
 
       if (m_C1 <= 0.0)
       {
          // bottom left
          x[np]   = -wbot/2;
-         y[np++] = 0;
+         y[np] = 0;
       }
       else
       {
@@ -297,8 +309,10 @@ HRESULT CBoxBeam::UpdateShape()
          y[np++] = m_C1;
 
          x[np]   = -wbot/2 + m_C1;
-         y[np++] = 0;
+         y[np] = 0;
       }
+
+      m_LeftBottomPointIdx = np++;
 
       // bottom center
       x[np]   = 0; 
@@ -692,30 +706,28 @@ STDMETHODIMP CBoxBeam::get_WebWidth(Float64 *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CBoxBeam::get_BottomFlangeWidth(Float64 *pVal)
+STDMETHODIMP CBoxBeam::get_BottomFlangeWidth(Float64* pLeft, Float64* pRight)
 {
-   if ( m_bUseOverallWidth == VARIANT_TRUE )
-      return get_Width(pVal);
+   CHECK_RETVAL(pLeft);
+   CHECK_RETVAL(pRight);
 
-   CHECK_RETVAL(pVal);
-   *pVal = 2*(m_W4+m_W2) + m_W3;
+   Float64 val = m_W4 + m_W2 + m_W3/2.0;
+   *pLeft = val;
+   *pRight = val;
    return S_OK;
 }
 
-STDMETHODIMP CBoxBeam::get_TopFlangeWidth(Float64 *pVal)
+STDMETHODIMP CBoxBeam::get_TopFlangeWidth(Float64* pLeft, Float64* pRight)
 {
-   if ( m_bUseOverallWidth == VARIANT_TRUE )
-      return get_Width(pVal);
+   CHECK_RETVAL(pLeft);
+   CHECK_RETVAL(pRight);
 
-   CHECK_RETVAL(pVal);
+   Float64 Bot2 = m_W4 + m_W2 + m_W3/2.0;
+   Float64 Top2 = m_W1 + m_W2 + m_W3/2.0;
 
-   if ( m_bLeftBlockOut == VARIANT_FALSE && m_bRightBlockOut == VARIANT_FALSE )
-      return get_BottomFlangeWidth(pVal); // no block out
-
-   if ( m_bLeftBlockOut != m_bRightBlockOut )
-      *pVal = m_W3 + 2*m_W2 + m_W1 + m_W4; // block out on one side
-   else
-      *pVal = 2*(m_W1+m_W2) + m_W3; // block out on both sides
+   // if blockout, use top dimension
+   *pLeft  = (m_bLeftBlockOut  != VARIANT_FALSE) ? Top2 : Bot2;
+   *pRight = (m_bRightBlockOut != VARIANT_FALSE) ? Top2 : Bot2;
 
    return S_OK;
 }
@@ -723,7 +735,11 @@ STDMETHODIMP CBoxBeam::get_TopFlangeWidth(Float64 *pVal)
 STDMETHODIMP CBoxBeam::get_Width(Float64* pVal)
 {
    CHECK_RETVAL(pVal);
-   Float64 top = 2 * (m_W1 + m_W2) + m_W3;
+
+   Float64 top = m_W3 + 2*m_W2; // middle part
+   top += m_bLeftBlockOut == VARIANT_FALSE  ? m_W4 : m_W1; // left part
+   top += m_bRightBlockOut == VARIANT_FALSE ? m_W4 : m_W1; // right part
+
    Float64 bot = 2 * (m_W4 + m_W2) + m_W3;
 
    *pVal = max(top, bot);
@@ -737,18 +753,74 @@ STDMETHODIMP CBoxBeam::get_Height(Float64* pVal)
    return S_OK;
 }
 
-STDMETHODIMP CBoxBeam::put_UseOverallWidth(VARIANT_BOOL bUseOverallWidth)
+STDMETHODIMP CBoxBeam::GetBoundaryPoints(IPoint2d ** ppLeftTop, IPoint2d ** ppLeftBottom, IPoint2d ** ppRightTop, IPoint2d ** ppRightBottom)
 {
-   m_bUseOverallWidth = bUseOverallWidth;
-   return S_OK;
+   CHECK_RETOBJ(ppLeftTop);
+   CHECK_RETOBJ(ppLeftBottom);
+   CHECK_RETOBJ(ppRightTop);
+   CHECK_RETOBJ(ppRightBottom);
+
+   UpdateShape();
+
+   // outer shape
+   CComPtr<ICompositeShapeItem> pOuterShapeItem;
+   m_pShape->get_Item(0, &pOuterShapeItem);
+   CComPtr<IShape> pOuterShape;
+   pOuterShapeItem->get_Shape(&pOuterShape);
+   CComQIPtr<IPolyShape> outer(pOuterShape);
+
+
+   CComPtr<IPoint2d> leftTop, leftBottom, rightTop, rightBottom;
+   outer->get_Point(m_LeftTopPointIdx, &leftTop);
+   outer->get_Point(m_RightTopPointIdx, &rightTop);
+   outer->get_Point(m_LeftBottomPointIdx, &leftBottom);
+   outer->get_Point(m_RightBottomPointIdx, &rightBottom);
+
+   // top points are actual points. simply clone them
+   rightTop->Clone(ppRightTop);
+   leftTop->Clone(ppLeftTop);
+
+   // bottom points aren't that simple it there is a chamfer. we need to create a point at the intersection.
+   if (m_C1 > 0.0)
+   {
+//
+//            |                               |
+//            |                               |
+//            |                               |
+//            |                               |
+//            \                               / rB
+//             \                             /
+//           lB -----------------------------
+//
+
+// get points just before indexed points
+      CComPtr<IPoint2d> leftBottomM1, rightBottomM1;
+      outer->get_Point(m_RightBottomPointIdx-1, &rightBottomM1);
+      outer->get_Point(m_LeftBottomPointIdx-1, &leftBottomM1);
+
+      Float64 x, y;  // locations of corner without chamfer
+      // left bottom
+      leftBottomM1->get_X(&x);
+      leftBottom->get_Y(&y);
+
+      CreatePoint(x, y, nullptr, ppLeftBottom);
+
+      // right bottom
+      rightBottom->get_X(&x);
+      rightBottomM1->get_Y(&y);
+
+      CreatePoint(x, y, nullptr, ppRightBottom);
+   }
+   else
+   {
+      leftBottom->Clone(ppLeftBottom);
+      rightBottom->Clone(ppRightBottom);
+   }
+
+
+   return E_NOTIMPL;
 }
 
-STDMETHODIMP CBoxBeam::get_UseOverallWidth(VARIANT_BOOL* pbUseOverallWidth)
-{
-   CHECK_RETVAL(pbUseOverallWidth);
-   *pbUseOverallWidth = m_bUseOverallWidth;
-   return S_OK;
-}
 
 STDMETHODIMP CBoxBeam::get_HookPoint(IPoint2d** hookPnt)
 {
@@ -863,7 +935,6 @@ STDMETHODIMP CBoxBeam::Clone(IShape** pClone)
    pTheClone->put_VoidCount( m_VoidCount );
    pTheClone->put_LeftBlockOut(m_bLeftBlockOut);
    pTheClone->put_RightBlockOut(m_bRightBlockOut);
-   pTheClone->put_UseOverallWidth(m_bUseOverallWidth);
 
    CComPtr<IPoint2d> hookPnt;
    CreatePoint(m_pHookPoint,nullptr,&hookPnt);

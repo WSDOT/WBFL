@@ -36,6 +36,8 @@
 #include <Math\CoordMapper1d.h>
 #include <vector>
 
+class CDisplayView;
+
 class ATL_NO_VTABLE CMappingImpl : 
 	public CComObjectRootEx<CComSingleThreadModel>,
 	public CComCoClass<CMappingImpl, &CLSID_Mapping>,
@@ -107,7 +109,7 @@ END_COM_MAP()
 
    STDMETHOD_(CSize,GetTextWindowExtent)();
 
-   STDMETHOD_(CSize,GetTextExtent)(const LOGFONT& font, LPCTSTR lpszText);
+   STDMETHOD_(CSize,GetTextExtent)(CDisplayView* pView,const LOGFONT& font, LPCTSTR lpszText);
 
 private:
    Float64 m_WorldExtentX;
@@ -154,8 +156,6 @@ private:
    std::vector<StackFrame> m_Stack;
 
    void UpdateLogicalExtents();
-   void CenterOnPoint(Float64 wx, Float64 wy);
-   void CenterWorldInLogical();
 };
 
 #endif // !defined(AFX_MAPPINGIMPL_H__BCB8A106_E659_11D4_8B81_006097C68A9C__INCLUDED_)

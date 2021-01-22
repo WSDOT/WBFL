@@ -126,10 +126,10 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx
       m_JointMaterial->get_Density(stageIdx, &Djoint);
    }
 
-   CComQIPtr<IBulbTeeSection> btSection(primaryShape);
-   ATLASSERT(btSection);
+   CComQIPtr<IJointedSection> jointedSection(primaryShape);
+   ATLASSERT(jointedSection);
    CComPtr<IShape> leftJoint, rightJoint;
-   btSection->GetJointShapes(&leftJoint, &rightJoint);
+   jointedSection->GetJointShapes(&leftJoint, &rightJoint);
 
    if (!IsZero(Ejoint))
    {
@@ -200,13 +200,14 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_PrimaryShape(Float64 Xs,Section
    {
       shape = girderShape;
    }
-   CComQIPtr<IBulbTeeSection> btSection(shape);
-   ATLASSERT(btSection);
-   CComPtr<IShape> leftJoint, rightJoint;
-   CreateJointShapes(Xs, btSection, coordinateSystem, &leftJoint, &rightJoint);
 
-   CComQIPtr<IBulbTeeSection> girderSection(girderShape);
-   girderSection->SetJointShapes(leftJoint, rightJoint);
+   CComQIPtr<IFlangedDeckedSection> section(shape);
+   ATLASSERT(section);
+   CComPtr<IShape> leftJoint, rightJoint;
+   CreateJointShapes(Xs, section, coordinateSystem, &leftJoint, &rightJoint);
+
+   CComQIPtr<IJointedSection> jointedSection(girderShape);
+   jointedSection->SetJointShapes(leftJoint, rightJoint);
 
    girderShape.CopyTo(ppShape);
 
@@ -348,14 +349,11 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Profile(VARIANT_BOOL bIncludeCl
       m_Impl.m_pGirderLine->get_EndDistance(etStart, &endDist);
    }
 
-   CComQIPtr<IBulbTeeSection> beam(m_Shapes.front().Shape);
-   ATLASSERT(beam);
-
-   CComPtr<IBulbTee2> pcBeam;
-   beam->get_Beam(&pcBeam);
+   CComQIPtr<IFlangedDeckedSection> section(m_Shapes.front().Shape);
+   ATLASSERT(section);
 
    Float64 H;
-   pcBeam->get_MaxHeight(&H);
+   section->GetMaxHeight(&H);
 
    shape->AddPoint(0.0,0.0); // bottom left
 
@@ -471,10 +469,10 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::AddShape(IShape* pShape,IMaterial* 
 
    if ( m_Shapes.size() == 0 )
    {
-      CComQIPtr<IBulbTeeSection> beam(pShape);
-      if ( beam == nullptr )
+      CComQIPtr<IFlangedDeckedSection> section(pShape);
+      if (section == nullptr)
       {
-         ATLASSERT(false); // first shape must be a flanged girder section
+         ATLASSERT(false); // first shape must be a flanged deck section
          return E_INVALIDARG;
       }
    }
@@ -556,102 +554,23 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_GirderShape(Float64 Xs, Section
    }
    else
    {
-      CComQIPtr<IBulbTeeSection> beam(m_Shapes.front().Shape);
-      ATLASSERT(beam); // if this is nullptr... how did it get in the system????
+      m_Shapes.front().Shape->Clone(&newShape);
 
-                       // This object reprsents a prismatic shape... all sections are the same
-      HRESULT hr = S_OK;
-
-      // get dimensions of beam shape at start and end of segment
-      CComPtr<IBulbTee2> pcBeam;
-
-      Float64 W1, W2, W3, W4, W5, W6;
-      Float64 D1, D2, D3, D4, D5, D6, D7;
-      Float64 T1, T2;
-      Float64 C1, C2;
-      Float64 n1, n2;
-
-      beam->get_Beam(&pcBeam);
-
-      pcBeam->get_W1(&W1);
-      pcBeam->get_W2(&W2);
-      pcBeam->get_W3(&W3);
-      pcBeam->get_W4(&W4);
-      pcBeam->get_W5(&W5);
-      pcBeam->get_W6(&W6);
-
-      pcBeam->get_D1(&D1);
-      pcBeam->get_D2(&D2);
-      pcBeam->get_D3(&D3);
-      pcBeam->get_D4(&D4);
-      pcBeam->get_D5(&D5);
-      pcBeam->get_D6(&D6);
-      pcBeam->get_D7(&D7);
-
-      pcBeam->get_T1(&T1);
-      pcBeam->get_T2(&T2);
-
-      pcBeam->get_C1(&C1);
-      pcBeam->get_C2(&C2);
-
-      pcBeam->get_n1(&n1);
-      pcBeam->get_n2(&n2);
-
-      // parabolic interpolation of the depth of the top flange thickening
       Float64 Ls;
       get_Length(&Ls);
       Float64 top_flange_thickening = ComputeTopFlangeThickening(Xs, Ls, m_FlangeThickeningType, m_FlangeThickening);
 
-      // create a new shape that is a clone of the original
-      CComQIPtr<IShape> shape(beam);
-      hr = shape->Clone(&newShape);
+      CComQIPtr<IFlangedDeckedSection> section(newShape);
+      section->AddTopFlangeThickening(top_flange_thickening);
 
-      // set the dimensions
-      CComQIPtr<IBulbTeeSection> btSection(newShape);
-      CComPtr<IBulbTee2> newBeam;
-      btSection->get_Beam(&newBeam);
-      newBeam->put_D1(D1 + top_flange_thickening); // basic top flange thickness plus thicken of the top flange
-      newBeam->put_D2(D2);
-      newBeam->put_D3(D3);
-      newBeam->put_D4(D4);
-      newBeam->put_D5(D5);
-      newBeam->put_D6(D6);
-      newBeam->put_D7(D7);
-      newBeam->put_W1(W1);
-      newBeam->put_W2(W2);
-      newBeam->put_W3(W3);
-      newBeam->put_W4(W4);
-      newBeam->put_W5(W5); // left top flange overhang
-      newBeam->put_W6(W6); // right top flange overhang
-      newBeam->put_T1(T1);
-      newBeam->put_T2(T2);
-      newBeam->put_C1(C1); // chamfer
-      newBeam->put_C2(C2); // location of crown point measured from left flange tip
-      newBeam->put_n1(n1); // left crown slope
-      newBeam->put_n2(n2); // right crown slope
-
-      CComQIPtr<IXYPosition> position(newBeam);
-      position->Offset(0, -top_flange_thickening);
-
-      // put shape in girder section coordinates
-      CComPtr<IPoint2d> pntOrigin;
-      pntOrigin.CoCreateInstance(CLSID_Point2d);
-      pntOrigin->Move(0, 0);
-      position->put_LocatorPoint(lpTopCenter, pntOrigin);
-
-      // copy the shape and put it in the cache
-      CComPtr<IShape> cacheShape;
-      newShape->Clone(&cacheShape);
-      m_ShapeCache.emplace_hint(m_ShapeCache.end(), Xs, cacheShape);
+      m_ShapeCache.emplace_hint(m_ShapeCache.end(), Xs, newShape);
    }
 
    if (coordinateSystem == cstBridge)
    {
       // put shape in bridge coordinates
-      CComQIPtr<IBulbTeeSection> btSection(newShape);
-      CComPtr<IBulbTee2> newBeam;
-      btSection->get_Beam(&newBeam);
-      AdjustPosition(Xs, newBeam);
+      CComQIPtr<IFlangedDeckedSection> section(newShape);
+      AdjustPosition(Xs, section);
    }
 
    *ppShape = newShape;
@@ -671,26 +590,20 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_TopFlangeSlope(Float64* pSlope)
       return S_OK;
    }
 
-   CComQIPtr<IBulbTeeSection> beam(m_Shapes.front().Shape);
-   ATLASSERT(beam); // if this is nullptr... how did it get in the system????
+   CComQIPtr<IFlangedDeckedSection> section(m_Shapes.front().Shape);
+   ATLASSERT(section); // if this is nullptr... how did it get in the system????
 
    // This object reprsents a prismatic shape... all sections are the same
    HRESULT hr = S_OK;
 
-   // get dimensions of beam shape at start and end of segment
-   CComPtr<IBulbTee2> pcBeam;
-
    Float64 n1, n2;
-   beam->get_Beam(&pcBeam);
-   pcBeam->get_n1(&n1); // left top flange slope
-   pcBeam->get_n2(&n2); // right top flange slope
+   section->GetCrownSlopes(&n1, &n2);
 
    Float64 C2;
-   pcBeam->get_C2(&C2); // location of crown point measured from left flange tip
+   section->GetCrown(&C2);
 
    Float64 W5, W6;
-   pcBeam->get_W5(&W5); // left top flange overhang
-   pcBeam->get_W6(&W6); // right top flange overhang
+   section->GetOverhangs(&W5, &W6);
 
    if (IsZero(C2))
    {
@@ -808,9 +721,9 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_JointShapes(Float64 Xs, Section
 {
    CComPtr<IShape> primaryShape;
    get_PrimaryShape(Xs,sbRight, coordinateSystem,&primaryShape);
-   CComQIPtr<IBulbTeeSection> btSection(primaryShape);
-   ATLASSERT(btSection);
-   return btSection->GetJointShapes(ppLeftJoint, ppRightJoint);
+   CComQIPtr<IJointedSection> section(primaryShape);
+   ATLASSERT(section);
+   return section->GetJointShapes(ppLeftJoint, ppRightJoint);
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -871,9 +784,9 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::Save(IStructuredSave2* save)
    //return S_OK;
 }
 
-HRESULT CThickenedFlangeBulbTeeSegment::AdjustPosition(Float64 Xs, IBulbTee2* pBeam)
+HRESULT CThickenedFlangeBulbTeeSegment::AdjustPosition(Float64 Xs, IFlangedDeckedSection* pSection)
 {
-   // This method puts pBeam in Bridge Section Coordinates
+   // This method puts pSection in Bridge Section Coordinates
 
    // Get the point where the girder line is located in bridge section coordiantes
    // This point corresponds to the point on the top of the girder above the CL web
@@ -888,21 +801,21 @@ HRESULT CThickenedFlangeBulbTeeSegment::AdjustPosition(Float64 Xs, IBulbTee2* pB
    // Adjust the position of the beam so that the hook point is horizonally aligned with pntGirderLine and
    // is the CL height below pntGirderLine
 
-   CComPtr<IPoint2d> pntHook;
-   pBeam->get_HookPoint(&pntHook);
+   CComPtr<IPoint2d> pntBottomCL;
+   pSection->GetBottomCLPoint(&pntBottomCL);
 
    Float64 x, y;
    pntGirderLine->Location(&x, &y);
 
    Float64 Hcl;
-   pBeam->get_CLHeight(&Hcl);
+   pSection->GetCLHeight(&Hcl);
 
-   pntHook->Move(x, y - Hcl);
+   pntBottomCL->Move(x, y - Hcl);
 
    return S_OK;
 }
 
-HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IBulbTeeSection* pSection, SectionCoordinateSystemType coordinateSystem, IShape** ppLeftJoint, IShape** ppRightJoint)
+HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IFlangedDeckedSection* pSection, SectionCoordinateSystemType coordinateSystem, IShape** ppLeftJoint, IShape** ppRightJoint)
 {
    CHECK_RETOBJ(ppLeftJoint);
    CHECK_RETOBJ(ppRightJoint);
@@ -921,15 +834,12 @@ HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IBulbTeeSe
    Float64 orientation;
    segment->get_Orientation(&orientation);
 
-   CComPtr<IBulbTee2> beam;
-   pSection->get_Beam(&beam);
-
    Float64 W5, W6;
-   beam->get_W5(&W5);
-   beam->get_W6(&W6);
+   pSection->GetOverhangs(&W5, &W6);
 
+   CComQIPtr<IFlangePoints> flangePoints(pSection);
    CComPtr<IPoint2d> leftTop, leftBottom, topCentral, rightTop, rightBottom;
-   beam->GetTopFlangePoints(&leftTop, &leftBottom, &topCentral, &rightTop, &rightBottom);
+   flangePoints->GetTopFlangePoints(&leftTop, &leftBottom, &topCentral, &rightTop, &rightBottom);
 
    // Get normal to our girderline
    CComPtr<IPath> path;
@@ -994,19 +904,17 @@ HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IBulbTeeSe
       CComPtr<IShape> leftGirderShape;
       segment->get_GirderShape(distAlongLeftGirderLine,cstBridge, &leftGirderShape);
 
-      CComQIPtr<IBulbTeeSection> leftSection(leftGirderShape);
-      CComPtr<IBulbTee2> leftBeam;
-      leftSection->get_Beam(&leftBeam);
+      CComQIPtr<IFlangedDeckedSection> leftSection(leftGirderShape);
 
       Float64 leftW5, leftW6;
-      leftBeam->get_W5(&leftW5);
-      leftBeam->get_W6(&leftW6);
+      leftSection->GetOverhangs(&leftW5, &leftW6);
 
       Float64 jointWidth = spacing - (W5 + leftW6);
       if (!IsZero(jointWidth))
       {
+         CComQIPtr<IFlangePoints> flangePoints(leftGirderShape);
          CComPtr<IPoint2d> leftBeam_leftTop, leftBeam_leftBottom, leftBeam_topCentral, leftBeam_rightTop, leftBeam_rightBottom;
-         leftBeam->GetTopFlangePoints(&leftBeam_leftTop, &leftBeam_leftBottom, &leftBeam_topCentral, &leftBeam_rightTop, &leftBeam_rightBottom);
+         flangePoints->GetTopFlangePoints(&leftBeam_leftTop, &leftBeam_leftBottom, &leftBeam_topCentral, &leftBeam_rightTop, &leftBeam_rightBottom);
 
          // Edge of joint associated with this girder is half-way between this girder and the girder on the left
          
@@ -1060,10 +968,10 @@ HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IBulbTeeSe
          joint->AddPointEx(pntBottomLeft);
          joint->AddPointEx(pntBottomRight);
          joint->AddPointEx(pntTopRight);
-
+        
          if (coordinateSystem == cstGirder)
          {
-            CComQIPtr<IXYPosition> position(beam);
+            CComQIPtr<IXYPosition> position(pSection);
             CComPtr<IPoint2d> pntTC;
             position->get_LocatorPoint(lpTopCenter, &pntTC);
             Float64 dx, dy;
@@ -1119,19 +1027,17 @@ HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IBulbTeeSe
       CComPtr<IShape> rightGirderShape;
       segment->get_GirderShape(distAlongRightGirderLine, cstBridge, &rightGirderShape);
 
-      CComQIPtr<IBulbTeeSection> rightSection(rightGirderShape);
-      CComPtr<IBulbTee2> rightBeam;
-      rightSection->get_Beam(&rightBeam);
+      CComQIPtr<IFlangedDeckedSection> rightSection(rightGirderShape);
 
       Float64 rightW5, rightW6;
-      rightBeam->get_W5(&rightW5);
-      rightBeam->get_W6(&rightW6);
+      rightSection->GetOverhangs(&rightW5,&rightW6);
 
       Float64 jointWidth = spacing - (W6 + rightW5);
       if (!IsZero(jointWidth))
       {
+         CComQIPtr<IFlangePoints> flangePoints(rightGirderShape);
          CComPtr<IPoint2d> rightBeam_leftTop, rightBeam_leftBottom, rightBeam_topCentral, rightBeam_rightTop, rightBeam_rightBottom;
-         rightBeam->GetTopFlangePoints(&rightBeam_leftTop, &rightBeam_leftBottom, &rightBeam_topCentral, &rightBeam_rightTop, &rightBeam_rightBottom);
+         flangePoints->GetTopFlangePoints(&rightBeam_leftTop, &rightBeam_leftBottom, &rightBeam_topCentral, &rightBeam_rightTop, &rightBeam_rightBottom);
 
          CComPtr<IPoint2d> pntTopLeft(rightTop);
 
@@ -1183,10 +1089,9 @@ HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IBulbTeeSe
          joint->AddPointEx(pntBottomRight);
          joint->AddPointEx(pntTopRight);
 
-
          if (coordinateSystem == cstGirder)
          {
-            CComQIPtr<IXYPosition> position(beam);
+            CComQIPtr<IXYPosition> position(pSection);
             CComPtr<IPoint2d> pntTC;
             position->get_LocatorPoint(lpTopCenter, &pntTC);
             Float64 dx, dy;

@@ -144,7 +144,6 @@ protected:
    struct CEAFToolBarInfo
    {
       CEAFToolBar* m_pEAFToolBar;
-      CToolBar* m_pMFCToolBar;
       UINT m_ToolBarID;
 
       bool operator<(const CEAFToolBarInfo& other) const
@@ -188,6 +187,7 @@ protected:
 	//}}AFX_MSG
    afx_msg BOOL OnToolTipText(UINT nID,NMHDR* pTTTStruct,LRESULT* pResult);
    afx_msg BOOL OnToolbarDropDown(UINT nID,NMHDR* pnmhdr,LRESULT* plr);
+   afx_msg LRESULT OnDpiChanged(WPARAM wParam, LPARAM lParam);
 
    virtual void OnUpdateFrameTitle(BOOL bAddToTitle);
    void UpdateFrameTitleForDocument(LPCTSTR lpszDocName);
@@ -204,6 +204,10 @@ private:
    void ToggleToolBarState(UINT idx);
 	void LoadBarState(LPCTSTR lpszProfileName);
 	void SaveBarState(LPCTSTR lpszProfileName) const;
+   void ResizeToolBarButtons();
+   void ResizeToolBarButtons(CToolBar* pToolBar);
+   void ResizeToolBarButtons(CToolBar* pToolBar, UINT Xdpi, UINT Ydpi);
+   void GetDpi(UINT* pXdpi, UINT* pYdpi);
 
    BOOL m_bShowToolTips;
 };

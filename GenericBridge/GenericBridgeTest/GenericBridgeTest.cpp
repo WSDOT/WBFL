@@ -52,6 +52,18 @@
 #include "TestPrecastSlab.h"
 #include "TestOverlaySlab.h"
 #include "TestAlignmentOffsetStrategy.h"
+#include "TestBoxBeamSection.h"
+#include "TestDeckedSlabBeamSection.h"
+#include "TestMultiWebSection.h"
+#include "TestMultiWebSection2.h"
+#include "TestUGirderSection.h"
+#include "TestUGirderSection2.h"
+#include "TestVoidedSlabSection.h"
+#include "TestVoidedSlabSection2.h"
+#include "TestFlangedGirderSection.h"
+#include "TestFlangedGirderSection2.h"
+#include "TestNUGirderSection.h"
+#include "TestBulbTeeGirderSection.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -67,23 +79,43 @@ int main(int argc, TCHAR* argv[])
 
    ::CoInitialize(nullptr);
 
-   CTestGenericBridge::Test();
-   CTestAlignmentOffsetStrategy::Test();
-   CTestCastSlab::Test();
-   CTestPrecastSlab::Test();
-   CTestOverlaySlab::Test();
-   CTestMaterial::Test();
-   CTestSegment::Test();
-   CTestSuperstructureMember::Test();
-   CTestSuperstructureMemberCollection::Test();
-   CTestLongitudinalPierDescription::Test();
-   CTestPier::Test();
-   CTestPierCollection::Test();
-   CTestColumn::Test();
-   CTestCrossBeam::Test();
-   CTestColumnSpacing::Test();
-   CTestTransversePierDescription::Test();
-   CTestPersistance::Test();
+   try
+   {
+      CTestBoxBeamSection::Test();
+      CTestDeckedSlabBeamSection::Test();
+      CTestMultiWebSection::Test();
+      CTestMultiWebSection2::Test();
+      CTestUGirderSection::Test();
+      CTestUGirderSection2::Test();
+      CTestVoidedSlabSection::Test();
+      CTestVoidedSlabSection2::Test();
+      CTestFlangedGirderSection::Test();
+      CTestFlangedGirderSection2::Test();
+      CTestNUGirderSection::Test();
+      CTestBulbTeeGirderSection::Test();
+
+      CTestGenericBridge::Test();
+      CTestAlignmentOffsetStrategy::Test();
+      CTestCastSlab::Test();
+      CTestPrecastSlab::Test();
+      CTestOverlaySlab::Test();
+      CTestMaterial::Test();
+      CTestSegment::Test();
+      CTestSuperstructureMember::Test();
+      CTestSuperstructureMemberCollection::Test();
+      CTestLongitudinalPierDescription::Test();
+      CTestPier::Test();
+      CTestPierCollection::Test();
+      CTestColumn::Test();
+      CTestCrossBeam::Test();
+      CTestColumnSpacing::Test();
+      CTestTransversePierDescription::Test();
+      CTestPersistance::Test();
+   }
+   catch (...)
+   {
+      TRY_TEST(true, false);
+   }
 
    ::CoUninitialize();
 
@@ -101,4 +133,29 @@ bool TestIObjectSafety(IUnknown* punk,REFIID riid,DWORD dwSupportedOptions)
    DWORD dwSupported, dwEnabled;
    safety->GetInterfaceSafetyOptions(riid,&dwSupported,&dwEnabled);
    return dwSupported == dwSupportedOptions;
+}
+
+void TestWebSections(IPrestressedGirderSection* pSection, const std::vector<std::pair<Float64, Float64>>& vExpectedValues)
+{
+   TRY_TEST(pSection != nullptr, true);
+
+   CComPtr<IDblArray> vY;
+   CComPtr<IDblArray> vW;
+   CComPtr<IBstrArray> vDesc;
+   TRY_TEST(pSection->GetWebSections(&vY, &vW, &vDesc), S_OK);
+
+   IndexType nItems;
+   TRY_TEST(vY->get_Count(&nItems), S_OK);
+   TRY_TEST(nItems, vExpectedValues.size());
+
+   IndexType i = 0;
+   for (const auto& expected_value : vExpectedValues)
+   {
+      Float64 Yg, bw;
+      vY->get_Item(i, &Yg);
+      vW->get_Item(i, &bw);
+      TRY_TEST(IsEqual(Yg, std::get<0>(expected_value)), true);
+      TRY_TEST(IsEqual(bw, std::get<1>(expected_value)), true);
+      i++;
+   }
 }

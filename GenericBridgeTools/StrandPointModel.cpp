@@ -995,18 +995,23 @@ HRESULT CStrandPointModel::AddStrand(StrandType strandType,Float64 X, Float64 Ys
       EndType endType = (EndType)(i);
       DebondSectionRecord dsRecord;
       dsRecord.Z = (endType == etStart ? debondLeft : debondRight);
-      auto found_dbSection = m_DebondSections[endType][strandType].find(dsRecord);
-      if (found_dbSection == m_DebondSections[endType][strandType].end())
+
+      // when bonding occurs at zero, the strand is not considered "debonded"
+      if (0 < dsRecord.Z)
       {
-         // this is a new section
-         dsRecord.Strands.push_back(strandIdx);
-         m_DebondSections[endType][strandType].insert(dsRecord);
-      }
-      else
-      {
-         // this is an existing section
-         const DebondSectionRecord& existing_record = *found_dbSection;
-         const_cast<DebondSectionRecord*>(&existing_record)->Strands.push_back(strandIdx);
+         auto found_dbSection = m_DebondSections[endType][strandType].find(dsRecord);
+         if (found_dbSection == m_DebondSections[endType][strandType].end())
+         {
+            // this is a new section
+            dsRecord.Strands.push_back(strandIdx);
+            m_DebondSections[endType][strandType].insert(dsRecord);
+         }
+         else
+         {
+            // this is an existing section
+            const DebondSectionRecord& existing_record = *found_dbSection;
+            const_cast<DebondSectionRecord*>(&existing_record)->Strands.push_back(strandIdx);
+         }
       }
    }
 

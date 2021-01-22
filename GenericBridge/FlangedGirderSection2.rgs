@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.FlangedGirderSection2.1 = s 'FlangedGirderSection2 Class'
+	{
+		CLSID = s '{F10A7A59-BC20-4DCC-8348-639DF32D9F73}'
+	}
+	WBFLGenericBridge.FlangedGirderSection2 = s 'FlangedGirderSectio2n Class'
+	{
+		CLSID = s '{F10A7A59-BC20-4DCC-8348-639DF32D9F73}'
+		CurVer = s 'WBFLGenericBridge.FlangedGirderSection2.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {F10A7A59-BC20-4DCC-8348-639DF32D9F73} = s 'FlangedGirderSection2 Class'
+		{
+			ProgID = s 'WBFLGenericBridge.FlangedGirderSection2.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.FlangedGirderSection2'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

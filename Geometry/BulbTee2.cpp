@@ -862,7 +862,7 @@ STDMETHODIMP CBulbTee2::GetBottomFlangePoints(IPoint2d** ppLeftTop, IPoint2d** p
 
    UpdateShape();
    IndexType nPoints;
-   m_pShape->get_NumPoints(&nPoints);
+   m_pShape->get_Count(&nPoints);
 
    // get the points from our polygon implementation
    CComPtr<IPoint2d> leftTop, leftBottom,  rightTop, rightBottom;

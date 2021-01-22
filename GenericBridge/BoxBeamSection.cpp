@@ -29,6 +29,8 @@
 #include "BoxBeamSection.h"
 #include <math.h>
 #include <xutility> // for Min
+#include <algorithm>
+#include <functional>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -342,18 +344,29 @@ STDMETHODIMP CBoxBeamSection::get_TopFlangeLocation(FlangeIndexType idx,Float64*
       return E_INVALIDARG;
    }
 
-   *location = 0;
+   // flange can be offset if unequal left and right
+   Float64 left, right;
+   m_Beam->get_TopFlangeWidth(&left, &right);
+
+   *location = (right - left) / 2.0;
    return S_OK;
 }
 
 STDMETHODIMP CBoxBeamSection::get_TopFlangeWidth(FlangeIndexType idx,Float64* width)
 {
+   CHECK_RETVAL(width);
+
    if ( idx != 0 )
    {
       return E_INVALIDARG;
    }
 
-   return get_TopWidth(width);
+   Float64 left, right;
+   m_Beam->get_TopFlangeWidth(&left, &right);
+
+   *width = left + right;
+
+   return S_OK;
 }
 
 STDMETHODIMP CBoxBeamSection::get_TopFlangeThickness(FlangeIndexType idx,Float64* tFlange)
@@ -405,7 +418,12 @@ STDMETHODIMP CBoxBeamSection::get_BottomFlangeWidth(FlangeIndexType idx,Float64*
       return E_INVALIDARG;
    }
 
-   return get_BottomWidth(width);
+   Float64 left, right;
+   m_Beam->get_BottomFlangeWidth(&left, &right);
+
+   *width = left + right;
+
+   return S_OK;
 }
 
 STDMETHODIMP CBoxBeamSection::get_BottomFlangeThickness(FlangeIndexType idx,Float64* tFlange)
@@ -448,14 +466,14 @@ STDMETHODIMP CBoxBeamSection::get_NominalHeight(Float64* height)
    return S_OK;
 }
 
-STDMETHODIMP CBoxBeamSection::get_TopWidth(Float64* width)
+STDMETHODIMP CBoxBeamSection::get_TopWidth(Float64* wLeft,Float64* wRight)
 {
-   return m_Beam->get_TopFlangeWidth(width);
+   return m_Beam->get_TopFlangeWidth(wLeft, wRight);
 }
 
-STDMETHODIMP CBoxBeamSection::get_BottomWidth(Float64* width)
+STDMETHODIMP CBoxBeamSection::get_BottomWidth(Float64* wLeft,Float64* wRight)
 {
-   return m_Beam->get_BottomFlangeWidth(width);
+   return m_Beam->get_BottomFlangeWidth(wLeft, wRight);
 }
 
 STDMETHODIMP CBoxBeamSection::get_ShearWidth(Float64* shearwidth)
@@ -514,6 +532,254 @@ STDMETHODIMP CBoxBeamSection::get_SplittingDirection(SplittingDirection* pSD)
    CHECK_RETVAL(pSD);
    Float64 h;
    GetSplittingZone(&h,pSD);
+   return S_OK;
+}
+
+STDMETHODIMP CBoxBeamSection::GetWebSections(IDblArray** ppY, IDblArray** ppW, IBstrArray** ppDesc)
+{
+   Float64 W1, W2, W3, W4, H1, H2, H3, H4, H5, H6, H7, F1, F2;
+   m_Beam->get_W1(&W1);
+   m_Beam->get_W2(&W2);
+   m_Beam->get_W3(&W3);
+   m_Beam->get_W4(&W4);
+   m_Beam->get_H1(&H1);
+   m_Beam->get_H2(&H2);
+   m_Beam->get_H3(&H3);
+   m_Beam->get_H4(&H4);
+   m_Beam->get_H5(&H5);
+   m_Beam->get_H6(&H6);
+   m_Beam->get_H7(&H7);
+   m_Beam->get_F1(&F1);
+   m_Beam->get_F2(&F2);
+
+   Float64 H = H1 + H2 + H3;
+
+   bool bSmallShearKey = (W1 < W2 / 2 || W4 < W2 / 2) ? true : false;
+
+   CComPtr<IDblArray> y;
+   y.CoCreateInstance(CLSID_DblArray);
+   y.CopyTo(ppY);
+
+   CComPtr<IDblArray> w;
+   w.CoCreateInstance(CLSID_DblArray);
+   w.CopyTo(ppW);
+
+   CComPtr<IBstrArray> desc;
+   desc.CoCreateInstance(CLSID_BstrArray);
+   desc.CopyTo(ppDesc);
+
+   // put values in a vector, then we can sort and eliminate duplicate values
+   std::vector<std::tuple<Float64, Float64, CComBSTR>> vWebSections;
+
+   Float64 bw;
+
+   // Working down from the top of the box on the inside void, add web sections at H1, H1+F1, H-H3-F2, and H-H3
+
+   // H1
+   if (H1 < H4)
+   {
+      bw = 2 * (W2 + F1 + W1);
+   }
+   else if (H1 < H4+H5)
+   {
+      bw = 2 * (W2 + F1 + (W1 / H5)*(H4 + H5 - H1));
+   }
+   else
+   {
+      bw = 2 * (W2 + F1);
+   }
+   vWebSections.emplace_back(-H1, bw, CComBSTR(_T("Top slab at top of interior fillet")));
+
+   // H1+F1
+   if (H1 + F1 < H4)
+   {
+      bw = 2 * (W2 + W1);
+   }
+   else if (H1 + F1 < H4 + H5)
+   {
+      bw = 2 * (W2 + (W1 / H5)*(H4 + H5 - H1 - F1));
+   }
+   else
+   {
+      bw = 2 * W2;
+   }
+   vWebSections.emplace_back(-(H1 + F1), bw, CComBSTR(_T("Top slab at bottom of interior fillet")));
+
+   // H3+F2
+   if (H3 + F2 < H7)
+   {
+      bw = 2*(W2 + W4);
+   }
+   else if (H3 + F2 < H6 + H7) 
+   {
+      bw = 2 * (W2 + (W4 / H6)*(H6 + H7 - H3 - F2));
+   }
+   else
+   {
+      bw = 2 * W2;
+   }
+   vWebSections.emplace_back(H3 + F2 - H, bw, CComBSTR(_T("Bottom slab at top of interior fillet")));
+
+   // H3
+   if (H3 < H7)
+   {
+      bw = 2 * (W2 + F2 + W4);
+   }
+   else if (H3 < H6 + H7)
+   {
+      bw = 2 * (W2 + F2 + (W4 / H6)*(H6 + H7 - H3 - F2));
+   }
+   else
+   {
+      bw = 2 * (W2 + F2);
+   }
+   vWebSections.emplace_back(H3 - H, bw, CComBSTR(_T("Bottom slab at bottom of interior fillet")));
+
+
+   // Working down from the top of the box on the exterior edge, add web sections at H4, H4+H5, H-H6-H7, and H-H7
+
+   if (!bSmallShearKey)
+   {
+      // H4
+      if (H1 < H4)
+      {
+         if (H4 < H1 + F1)
+         {
+            bw = 2 * (W2 + W1 + (H1 + F1 - H4));
+         }
+         else
+         {
+            // H1 + F1 <= H4
+            ATLASSERT(::IsLE(H1 + F1, H4));
+            bw = 2 * (W2 + W1);
+         }
+         vWebSections.emplace_back(-H4, bw, CComBSTR(_T("Top exterior flange")));
+      }
+#if defined _DEBUG
+      else
+      {
+         ATLASSERT(::IsLE(H4, H1)); // H4 <= H1... we don't want this case because bw is fill width of box
+      }
+#endif
+
+      // H4+H5
+      if (H1 < H4 + H5)
+      {
+         if (H4 + H5 < H1 + F1)
+         {
+            bw = 2 * (W2 + H1 + F1 - H4 - H5);
+         }
+         else
+         {
+            // H1 + F1 <= H4 + H5
+            ATLASSERT(::IsLE(H1 + F1, H4 + H5));
+            bw = 2 * W2;
+         }
+         vWebSections.emplace_back(-(H4 + H5), bw, CComBSTR(_T("Top flange at web")));
+      }
+#if defined _DEBUG
+      else
+      {
+         ATLASSERT(::IsLE(H4 + H5, H1)); // H4+H5 <= H1... we don't want this case because bw is fill width of box
+      }
+#endif
+
+      // H6+H7
+      if (H3 < H6 + H7)
+      {
+         if (H6 + H7 < H3 + F2)
+         {
+            bw = 2 * (W2 + (H6 + H7 - H3));
+         }
+         else
+         {
+            // H3 + F2 <= H6 + H7
+            ATLASSERT(::IsLE(H3 + F2, H6 + H7));
+            bw = 2 * W2;
+         }
+         vWebSections.emplace_back(H6 + H7 - H, bw, CComBSTR(_T("Bottom flange at web")));
+      }
+#if defined _DEBUG
+      else
+      {
+         ATLASSERT(::IsLE(H6 + H7, H3)); // H6+H7 <= H3... we don't want this case because bw is fill width of box
+      }
+#endif
+
+      // H7
+      if (H3 < H7)
+      {
+         if (H7 < H3 + F2)
+         {
+            bw = 2 * (W2 + W4 + (H3 + F2 - H7));
+         }
+         else
+         {
+            // H3+F2 <= H7
+            ATLASSERT(::IsLE(H3 + F2, H7));
+            bw = 2 * (W2 + W4);
+         }
+         vWebSections.emplace_back(H7 - H, bw, CComBSTR(_T("Bottom exterior flange")));
+      }
+#if defined _DEBUG
+      else
+      {
+         ATLASSERT(::IsLE(H7, H3)); // H7 <= H3... we don't want this case because bw is fill width of box
+      }
+#endif
+   }
+
+   // sort and remove duplicates at same elevation
+   std::sort(std::begin(vWebSections), std::end(vWebSections), std::greater<>());
+   auto new_end_iter = std::unique(std::begin(vWebSections), std::end(vWebSections), [](const auto& a, const auto& b) {return ::IsEqual(std::get<0>(a), std::get<0>(b)) && ::IsEqual(std::get<1>(a), std::get<1>(b)); });
+   vWebSections.erase(new_end_iter, std::end(vWebSections));
+
+   for (auto& webSection : vWebSections)
+   {
+      (*ppY)->Add(std::get<0>(webSection));
+      (*ppW)->Add(std::get<1>(webSection));
+      (*ppDesc)->Add(std::get<2>(webSection));
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP CBoxBeamSection::GetWebWidthProjectionsForDebonding(IUnkArray** ppArray)
+{
+   CHECK_RETOBJ(ppArray);
+
+   Float64 W1, W2, W3, W4, H1, H2, H3, H4, H5, H6, H7, F1, F2;
+   m_Beam->get_W1(&W1);
+   m_Beam->get_W2(&W2);
+   m_Beam->get_W3(&W3);
+   m_Beam->get_W4(&W4);
+   m_Beam->get_H1(&H1);
+   m_Beam->get_H2(&H2);
+   m_Beam->get_H3(&H3);
+   m_Beam->get_H4(&H4);
+   m_Beam->get_H5(&H5);
+   m_Beam->get_H6(&H6);
+   m_Beam->get_H7(&H7);
+   m_Beam->get_F1(&F1);
+   m_Beam->get_F2(&F2);
+
+   Float64 H = H1 + H2 + H3;
+
+   CComPtr<IUnkArray> array;
+   array.CoCreateInstance(CLSID_UnkArray);
+
+   CComPtr<IRect2d> rect1;
+   rect1.CoCreateInstance(CLSID_Rect2d);
+   rect1->SetBounds(-W3/2-W2, -W3/2, -H, -H+H3+F2/2);
+   array->Add(rect1);
+
+   CComPtr<IRect2d> rect2;
+   rect2.CoCreateInstance(CLSID_Rect2d);
+   rect2->SetBounds(W3 / 2, W3 / 2 + W2, -H, -H + H3 + F2 / 2);
+   array->Add(rect2);
+
+   array.CopyTo(ppArray);
+
    return S_OK;
 }
 
@@ -611,6 +877,12 @@ STDMETHODIMP CBoxBeamSection::get_StructuredStorage(IStructuredStorage2* *pStg)
 STDMETHODIMP CBoxBeamSection::get_Shape(IShape* *pVal)
 {
    return m_CompositeShape->get_Shape(pVal);
+}
+
+STDMETHODIMP CBoxBeamSection::get_XYPosition(IXYPosition **pVal)
+{
+   CHECK_RETOBJ(pVal);
+   return m_CompositeShape->get_XYPosition(pVal);
 }
 
 STDMETHODIMP CBoxBeamSection::get_Item(CollectionIndexType idx,ICompositeShapeItem* *pVal)
@@ -719,4 +991,49 @@ void CBoxBeamSection::GetSplittingZone(Float64* pH,SplittingDirection* pSD)
       *pH = w;
       *pSD = sdHorizontal;
    }
+}
+
+STDMETHODIMP CBoxBeamSection::GetTopWidth(Float64* pLeft, Float64* pRight)
+{
+   CHECK_RETOBJ(pLeft);
+   CHECK_RETOBJ(pRight);
+
+   return m_Beam->get_TopFlangeWidth(pLeft, pRight);
+
+}
+
+STDMETHODIMP CBoxBeamSection::GetHeight(Float64* pHmin, Float64* pHcl, Float64* pHmax)
+{
+   Float64 H;
+   get_NominalHeight(&H);
+
+   *pHmin = H;
+   *pHcl  = H;
+   *pHmax = H;
+
+   return S_OK;
+}
+
+STDMETHODIMP CBoxBeamSection::GetStressPoints(StressPointType spType, IPoint2dCollection** ppPoints)
+{
+   CHECK_RETOBJ(ppPoints);
+   CComPtr<IPoint2dCollection> points;
+   points.CoCreateInstance(CLSID_Point2dCollection);
+
+   // get boundary points from shape
+   CComPtr<IPoint2d> leftTop, leftBottom, rightTop, rightBottom;
+   m_Beam->GetBoundaryPoints(&leftTop, &leftBottom, &rightTop, &rightBottom);
+
+   if (spType == spTop)
+   {
+      points->Add(leftTop);
+      points->Add(rightTop);
+   }
+   else
+   {
+      points->Add(leftBottom);
+      points->Add(rightBottom);
+   }
+
+   return points.CopyTo(ppPoints);
 }

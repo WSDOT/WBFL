@@ -31,9 +31,6 @@
     <ClCompile Include="TestDeckedSlabBeam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestFasterPolyShape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TestGenericShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -142,6 +139,9 @@
     <ClCompile Include="TestBeamShapeFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestPrecastBeam2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\LineSegment3d.h">
@@ -175,9 +175,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestDeckedSlabBeam.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestFasterPolyShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestGenericShape.h">
@@ -280,6 +277,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestBeamShapeFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestPrecastBeam2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

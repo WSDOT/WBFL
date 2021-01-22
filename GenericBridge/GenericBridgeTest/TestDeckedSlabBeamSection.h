@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Geometry - Geometric Modeling Library
+// GenericBridgeTest - Test driver for generic bridge library
 // Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -23,33 +23,16 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// TestFasterPolyShape.h: interface for the CTestFasterPolyShape class.
+// TestDeckedSlabBeamSection.h: interface for the CTestDeckedSlabBeamSection class.
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTFASTERPOLYSHAPE_H__F36E1237_BC70_11D3_8A10_006097C68A9C__INCLUDED_)
-#define AFX_TESTFASTERPOLYSHAPE_H__F36E1237_BC70_11D3_8A10_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
-class CTestFasterPolyShape  
+class CTestDeckedSlabBeamSection
 {
 public:
 	static void Test();
-	CTestFasterPolyShape();
-	virtual ~CTestFasterPolyShape();
-
-private:
-	static void TestISupportErrorInfo();
-	static void TestIXYPosition();
-	static void TestIShape();
-	static void TestIShapeClosed();
-	static void TestIShapeOpen();
-	static void TestIFasterPolyShape();
-   static void TestPoints(IFasterPolyShape* polyShape);
-   static void TestContains();
+   CTestDeckedSlabBeamSection() = default;
+	virtual ~CTestDeckedSlabBeamSection() = default;
 };
-
-#endif // !defined(AFX_TESTFASTERPOLYSHAPE_H__F36E1237_BC70_11D3_8A10_006097C68A9C__INCLUDED_)

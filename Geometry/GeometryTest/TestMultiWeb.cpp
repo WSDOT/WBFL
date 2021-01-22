@@ -29,6 +29,7 @@
 
 #include "stdafx.h"
 #include "TestMultiWeb.h"
+#include <array>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -309,7 +310,7 @@ void CTestMultiWeb::TestIShape()
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   CComPtr<IPoint2d> points[16];
+   std::array<CComPtr<IPoint2d>, 16> points;
    ULONG fetched;
    Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
@@ -725,7 +726,7 @@ void CTestMultiWeb::TestIXYPosition()
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   CComPtr<IPoint2d> points[16];
+   std::array<CComPtr<IPoint2d>, 16> points;
    ULONG fetched;
    Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );

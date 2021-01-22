@@ -211,12 +211,14 @@
 #define IDH_IPolyShape_AddPointEx      1402
 #define IDH_IPolyShape_AddPoints       1403
 #define IDH_IPolyShape_Clear           1404
-#define IDH_IPolyShape_NumPoints       1405
+#define IDH_IPolyShape_Count           1405
 #define IDH_IPolyShape_Point           1406
 #define IDH_IPolyShape_Points          1407
 #define IDH_IPolyShape_RemovePoint     1408
-#define IDH_IPolyShape_Shape           1409
-#define IDH_IPolyShape_XYPosition      1410
+#define IDH_IPolyShape_ChangePoint     1409
+#define IDH_IPolyShape_ChangePointEx   1410
+#define IDH_IPolyShape_Shape           1411
+#define IDH_IPolyShape_XYPosition      1412
 
 #define IDH_IVector3d                  1500
 #define IDH_IVector3d_AngleBetween     1501
@@ -470,31 +472,17 @@
 
 #define IDH_IPlateGirder                                 3400
 #define IDH_IPlateGirder_TopFlangeWidth                  3401
-#define IDH_IPlateGirder_TopFlangeThick                  3402
+#define IDH_IPlateGirder_TopFlangeThickness              3402
 #define IDH_IPlateGirder_BottomFlangeWidth               3403
-#define IDH_IPlateGirder_BottomFlangeThick               3404
+#define IDH_IPlateGirder_BottomFlangeThickness           3404
 #define IDH_IPlateGirder_WebHeight                       3405
-#define IDH_IPlateGirder_WebThick                        3406
+#define IDH_IPlateGirder_WebWidth                        3406
 #define IDH_IPlateGirder_Height                          3407
 #define IDH_IPlateGirder_QTopFlange                      3408
 #define IDH_IPlateGirder_QBottomFlange                   3409
 #define IDH_IPlateGirder_Shape                           3410
 #define IDH_IPlateGirder_XYPosition                      3411
 #define IDH_IPlateGirder_HookPoint                       3412
-
-#define IDH_IFasterPolyShape                 3500
-#define IDH_IFasterPolyShape_AddPoint        3501
-#define IDH_IFasterPolyShape_AddPointEx      3502
-#define IDH_IFasterPolyShape_AddPoints       3503
-#define IDH_IFasterPolyShape_Clear           3504
-#define IDH_IFasterPolyShape_NumPoints       3505
-#define IDH_IFasterPolyShape_Point           3506
-#define IDH_IFasterPolyShape_CreatePoints    3507
-#define IDH_IFasterPolyShape_RemovePoint     3508
-#define IDH_IFasterPolyShape_Shape           3509
-#define IDH_IFasterPolyShape_XYPosition      3510
-#define IDH_IFasterPolyShape_ChangePoint     3501
-
 
 #define IDH_IUBeam                             1800
 #define IDH_IUBeam_W1                          1801

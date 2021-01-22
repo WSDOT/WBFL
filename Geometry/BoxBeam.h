@@ -97,12 +97,15 @@ private:
    Float64   m_C1;
 
    VARIANT_BOOL m_bLeftBlockOut, m_bRightBlockOut;
-   VARIANT_BOOL m_bUseOverallWidth;
 
    CollectionIndexType m_VoidCount;
 
    bool   m_Dirty;
    unsigned long   m_HookPointCookie;
+
+   // Shape point indices for top and bottom stress points
+   IndexType m_LeftTopPointIdx, m_LeftBottomPointIdx, m_RightTopPointIdx, m_RightBottomPointIdx;
+
 
    HRESULT GetLocatorPoint(LocatorPointType lp,Float64* px,Float64* py);
    HRESULT UpdateShape();
@@ -147,8 +150,8 @@ public:
    STDMETHOD(get_HookPoint)(/*[out,retval]*/ IPoint2d** hookPnt) override;
    STDMETHOD(putref_HookPoint)(/*[in]*/ IPoint2d* hookPnt) override;
    STDMETHOD(get_WebWidth)(/*[out, retval]*/ Float64 *pVal) override;
-   STDMETHOD(get_BottomFlangeWidth)(/*[out, retval]*/ Float64 *pVal) override;
-   STDMETHOD(get_TopFlangeWidth)(/*[out, retval]*/ Float64 *pVal) override;
+   STDMETHOD(get_BottomFlangeWidth)(/*[out]*/Float64* pLeft, /*[out]*/Float64* pRight) override;
+   STDMETHOD(get_TopFlangeWidth)(/*[out]*/Float64* pLeft, /*[out]*/Float64* pRight) override;
    STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
    STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
    STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pStg) override;
@@ -158,8 +161,7 @@ public:
    STDMETHOD(get_RightBlockOut)(/*[out,retval]*/VARIANT_BOOL* pbRightBlockOut) override;
    STDMETHOD(get_Width)(/*[out,retval]*/Float64* pVal) override;
    STDMETHOD(get_Height)(/*[out,retval]*/Float64* pVal) override;
-   STDMETHOD(put_UseOverallWidth)(/*[in]*/VARIANT_BOOL bUseOverallWidth) override;
-   STDMETHOD(get_UseOverallWidth)(/*[out,retval]*/VARIANT_BOOL* pbUseOverallWidth) override;
+   STDMETHOD(GetBoundaryPoints)(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppRightTop, IPoint2d** ppRightBottom) override;
 
 // IShape
 	STDMETHOD(FurthestDistance)(/*[in]*/ILine2d* line,/*[out, retval]*/ Float64 *pVal) override;

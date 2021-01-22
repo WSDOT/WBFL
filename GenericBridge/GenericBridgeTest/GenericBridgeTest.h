@@ -28,4 +28,6 @@
 
 bool TestIObjectSafety(IUnknown* punk,REFIID riid,DWORD dwSupportedOptions);
 
+void TestWebSections(IPrestressedGirderSection* pSection, const std::vector<std::pair<Float64, Float64>>& vExpectedValues);
+
 #endif // INCLUDED_GENERICBRIDGETEST_H_

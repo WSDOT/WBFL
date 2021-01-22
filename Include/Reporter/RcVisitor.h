@@ -46,6 +46,7 @@ class REPORTERCLASS rptRcInt;
 class REPORTERCLASS rptRcUnsigned;
 class REPORTERCLASS rptRcFontModifier;
 class REPORTERCLASS rptRcColor;
+class REPORTERCLASS rptRcBgColor;
 class REPORTERCLASS rptParagraph;
 class REPORTERCLASS rptRcDateTime;
 class REPORTERCLASS rptRcHyperTarget;
@@ -58,6 +59,7 @@ class REPORTERCLASS rptRcUnitValue;
 class REPORTERCLASS rptRcSectionValue;
 class REPORTERCLASS rptRcSectionScalar;
 class REPORTERCLASS rptRcStation;
+class REPORTERCLASS rptRcComposite;
 
 // MISCELLANEOUS
 //
@@ -105,6 +107,7 @@ public:
    virtual void VisitRcFlowModifier(rptRcFlowModifier*) = 0;
    virtual void VisitRcFontModifier(rptRcFontModifier*) = 0;
    virtual void VisitRcColor(rptRcColor*) = 0;
+   virtual void VisitRcBgColor(rptRcBgColor*) = 0;
    virtual void VisitRcDateTime(rptRcDateTime*) = 0;
    virtual void VisitRcHyperTarget(rptRcHyperTarget*) = 0;
    virtual void VisitRcImage(rptRcImage*) = 0;
@@ -116,6 +119,7 @@ public:
    virtual void VisitRcSectionValue(rptRcSectionValue*) = 0;
    virtual void VisitRcSectionScalar(rptRcSectionScalar*) = 0;
    virtual void VisitRcStation(rptRcStation*) = 0;
+   virtual void VisitRcComposite(rptRcComposite*) = 0;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

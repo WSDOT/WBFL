@@ -25,6 +25,8 @@
 #define INCLUDED_COORDINATEMAP_H_
 #pragma once
 
+class CDisplayView;
+
 interface iCoordinateMap : public IUnknown
 {
    // Model Space - the space in which the model is created
@@ -62,7 +64,8 @@ interface iCoordinateMap : public IUnknown
 
    // get text extent in logical coord's. Font dimensions are expected in
    // 1/10 points (i.e., in form needed by CreatePointFontIndirect).
-   STDMETHOD_(CSize,GetTextExtent)(const LOGFONT& font, LPCTSTR lpszText) PURE;
+   // Adjust for DPI scaling
+   STDMETHOD_(CSize,GetTextExtent)(CDisplayView* pView,const LOGFONT& font, LPCTSTR lpszText) PURE;
 };
 
 #endif // INCLUDED_COORDINATEMAP_H_

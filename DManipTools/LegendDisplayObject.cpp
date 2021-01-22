@@ -335,6 +335,8 @@ STDMETHODIMP_(void) CLegendDisplayObject::GetMinCellSize(CSize* size)
    CComPtr<iCoordinateMap> pMap;
    pDispMgr->GetCoordinateMap(&pMap);
 
+   CDisplayView* pView = pDispMgr->GetView();
+
    CSize text_size_twips(0,0);
    if (max_idx != -1)
    {
@@ -342,7 +344,7 @@ STDMETHODIMP_(void) CLegendDisplayObject::GetMinCellSize(CSize* size)
       m_Container[max_idx].m_T->get_Name(&str);
       CString text(str.m_str);
 
-      CSize size = pMap->GetTextExtent(m_Font, text);
+      CSize size = pMap->GetTextExtent(pView,m_Font, text);
 
       long cox, coy, cex, cey;
       pMap->LPtoTP(0, 0, &cox, &coy);
@@ -495,6 +497,8 @@ void CLegendDisplayObject::Draw(CDC* pDC, iCoordinateMap* pMap, const CPoint& lo
    // title
    UINT old_align = pDC->SetTextAlign(TA_LEFT|TA_BOTTOM);
 
+   CDisplayView* pView = pDispMgr->GetView();
+
    if (m_Title.Length() >0 && !beingDragged) // dont' draw text if we are being dragged
    {
       // make title font darker and bigger
@@ -504,13 +508,16 @@ void CLegendDisplayObject::Draw(CDC* pDC, iCoordinateMap* pMap, const CPoint& lo
       m_Font.lfHeight += 10; 
 
       CString str(m_Title);
-      CSize str_size = pMap->GetTextExtent(m_Font, str);
+      CSize str_size = pMap->GetTextExtent(pView, m_Font, str);
 
       LONG tx = location.x + lwidth/2 - str_size.cx/2;
       LONG ty = location.y  + lcheight/8;
 
+      LOGFONT lf = m_Font;
+      pView->ScaleFont(lf);
+
       CFont tfont;
-      tfont.CreatePointFontIndirect(&m_Font, pDC);
+      tfont.CreatePointFontIndirect(&lf, pDC);
       CFont* pold_font = pDC->SelectObject(&tfont);
 
       pDC->TextOut(tx,ty, str);

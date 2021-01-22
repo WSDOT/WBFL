@@ -49,6 +49,12 @@
     <ClCompile Include="StrandPointModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TensionStressPlaneModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralSectionDetailsTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BridgeDeckRebarLayout.h">
@@ -103,6 +109,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StrandPointModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TensionStressPlaneModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\WBFLGenericBridgeTools\GeneralSectionDetailsTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -41,7 +41,8 @@ class ATL_NO_VTABLE CBoxBeamSection :
    public IPrestressedGirderSection,
    public IShape,
    public ICompositeShape,
-   public IXYPosition
+   public IXYPosition,
+   public IAsymmetricSection
 {
 public:
    CBoxBeamSection()
@@ -64,6 +65,7 @@ BEGIN_COM_MAP(CBoxBeamSection)
 	COM_INTERFACE_ENTRY(ICompositeShape)
 	COM_INTERFACE_ENTRY(IXYPosition)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
+   COM_INTERFACE_ENTRY(IAsymmetricSection)
 END_COM_MAP()
 
 private:
@@ -111,10 +113,10 @@ public:
    STDMETHOD(get_BottomFlangeSpacing)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* spacing) override;
    STDMETHOD(get_OverallHeight)(/*[out,retval]*/Float64* height) override;
    STDMETHOD(get_NominalHeight)(/*[out,retval]*/Float64* height) override;
-   STDMETHOD(get_TopWidth)(/*[out,retval]*/Float64* width) override;
-	STDMETHOD(get_BottomWidth)(/*[out,retval]*/Float64* width) override;
+   STDMETHOD(get_TopWidth)(/*[out]*/Float64* wLeft,/*[out]*/Float64* wRight) override;
+	STDMETHOD(get_BottomWidth)(/*[out]*/Float64* wLeft,/*[out]*/Float64* wRight) override;
 	STDMETHOD(get_ShearWidth)(/*[out,retval]*/Float64* shearwidth) override;
-	STDMETHOD(get_MinTopFlangeThickness)(/*[out,retval]*/Float64* tf) override;
+   STDMETHOD(get_MinTopFlangeThickness)(/*[out,retval]*/Float64* tf) override;
 	STDMETHOD(get_MinBottomFlangeThickness)(/*[out,retval]*/Float64* tf) override;
 	STDMETHOD(get_CL2ExteriorWebDistance)(/*[in]*/ DirectionType side, /*[out,retval]*/Float64* ww) override;
 
@@ -123,6 +125,8 @@ public:
    STDMETHOD(RemoveSacrificalDepth)(/*[in]*/Float64 sacDepth);
    STDMETHOD(get_SplittingZoneDimension)(/*[out,retval]*/Float64* pSZD) override;
    STDMETHOD(get_SplittingDirection)(/*[out,retval]*/SplittingDirection* pSD) override;
+   STDMETHOD(GetWebSections)(/*[out]*/IDblArray** ppY, /*[out]*/IDblArray** ppW,/*[out]*/IBstrArray** ppDesc) override;
+   STDMETHOD(GetWebWidthProjectionsForDebonding)(/*[out]*/IUnkArray** ppArray) override;
 
 // IShape
 public:
@@ -140,6 +144,7 @@ public:
 public:
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
 	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
+   STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
    STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ICompositeShapeItem* *pVal) override;
 	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown* *pVal) override;
 	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
@@ -159,6 +164,13 @@ public:
 	STDMETHOD(MoveEx)(/*[in]*/ IPoint2d* pFrom,/*[in]*/ IPoint2d* pTo) override;
 	STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pPoint,/*[in]*/ Float64 angle) override;
 	STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 angle) override;
+
+// IAsymmetricSection
+public:
+   STDMETHOD(GetTopWidth)(Float64* pLeft, Float64* pRight) override;
+   STDMETHOD(GetHeight)(Float64* pHmin, Float64* pHcl, Float64* pHmax) override;
+   STDMETHOD(GetStressPoints)(StressPointType spType, IPoint2dCollection** ppPoints) override;
+   STDMETHOD(IgnoreBiaxialBending)(BOOL* pIgnore) override { *pIgnore = FALSE; return S_OK; }
 };
 
 #endif //__BoxBeamSection_H_

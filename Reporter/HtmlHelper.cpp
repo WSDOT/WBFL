@@ -123,17 +123,21 @@ std::_tstring rptHtmlHelper::GetStyleString(const rptRiStyle& MyStyle)
 
    // color
    rptRiStyle::FontColor mc = MyStyle.GetColor();
-   ms << "color: " << rptRiStyle::GetColorCode(mc) << "; ";
+   if (rptRiStyle::Default != mc)
+   {
+      ms << "color: " << rptRiStyle::GetColorCode(mc) << "; ";
+   }
 
    // background color
-   mc = MyStyle.GetBGColor();
-   ms << "background-color: " << rptRiStyle::GetColorCode(mc) << "; ";
+   // NOTE: This code causes grief when changing background color on the fly. Take out of class, and use an inline <span>
+//   mc = MyStyle.GetBGColor();
+//   ms << "background-color: " << rptRiStyle::GetColorCode(mc) << "; ";
 
    // Make margin space above if style is a heading
    if (MyStyle.IsHeading())
    {
       Uint16 marg = fs/3;
-      ms << "margin-top: +" << marg <<"pt; ";
+      ms << "margin-top: +" << marg <<"pt; white-space: nowrap; "; // don't allow headings to wrap
    }
 
    // family is last in list because of a 'feature' in IE
@@ -205,7 +209,7 @@ void rptHtmlHelper::VisitFontLibrary(std::_tostream& os)
       {
          os << _T("   ") << _T("BODY") << _T(" {  background: white; }") << std::endl;
 
-         os << _T("   ") << _T("P") << _T(" { background: white; margin: 0pt 0pt 0pt 0pt; ") << ss << 
+         os << _T("   ") << _T("P") << _T(" { margin: 0pt 0pt 0pt 0pt; ") << ss << 
             _T(" }") << std::endl;
       }
       else

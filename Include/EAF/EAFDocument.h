@@ -262,11 +262,24 @@ public:
 
    /////////////////////////////////////
    // UIHints
-   void UIHints(BOOL bEnable);
-   BOOL UIHints() const;
+
+   // Enable/Disable UI hints
+   void EnableUIHints(BOOL bEnable);
+
+   // Returns state of UI hints
+   BOOL EnableUIHints() const;
+
+   // Returns UI hints settings
    UINT GetUIHintSettings() const;
+
+   // Sets the UI hints settings
    void SetUIHintSettings(UINT settings);
-   virtual void ResetUIHints(); // called when all hints are reset/enabled
+
+   // Resets all UI hints. If bPrompt is TRUE, user is prompted before reset
+   virtual void ResetUIHints(bool bPrompt=TRUE);
+
+   // Called by the framework when UI hints are reset
+   virtual void OnUIHintsReset();
 
    /////////////////////////////////////
    // Help/Documentation

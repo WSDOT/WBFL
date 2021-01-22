@@ -137,8 +137,8 @@ STDMETHODIMP CGeneralSectionSolver::get_SliceGrowthFactor(Float64* sliceGrowthFa
 #define COMPRESSION(_f_)  (_f_ < 0 ? 1 : 0)*(_f_)
 #define TENSION(_f_)      (_f_ > 0 ? 1 : 0)*(_f_)
 
-#define COMPRESSION_CG(_p_,_f_,_slice_) (_p_->Offset( COMPRESSION(_f_)*_slice_.Xcg, COMPRESSION(_f_)*_slice_.Ycg ))
-#define TENSION_CG(_p_,_f_,_slice_)     (_p_->Offset( TENSION(_f_)*_slice_.Xcg,     TENSION(_f_)*_slice_.Ycg ))
+#define COMPRESSION_CG(_p_,_f_,_slice_) {Float64 _Xcg,_Ycg; _slice_.pntCG->Location(&_Xcg,&_Ycg); _p_->Offset( COMPRESSION(_f_)*_Xcg, COMPRESSION(_f_)*_Ycg ); }
+#define TENSION_CG(_p_,_f_,_slice_)     {Float64 _Xcg,_Ycg; _slice_.pntCG->Location(&_Xcg,&_Ycg); _p_->Offset( TENSION(_f_)*_Xcg,     TENSION(_f_)*_Ycg ); }
 
 STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionSolution** solution)
 {
@@ -211,6 +211,7 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
          SHAPEINFO shape_info(slice.SliceShape,slice.FgMaterial,slice.BgMaterial,slice.ei,slice.Le);
 
          SLICEINFO top_slice;
+         CComPtr<IUnknown> pUnkTopSlice;
          hr = SliceShape(shape_info,angle,slice.Top,Yna,top_slice);
          if ( SUCCEEDED(hr) && hr != S_FALSE )
          {
@@ -232,10 +233,10 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
 
             CComObject<CGeneralSectionSlice>* pSlice;
             CComObject<CGeneralSectionSlice>::CreateInstance(&pSlice);
-            pSlice->InitSlice(top_slice.SliceShape,top_slice.Area,top_slice.Xcg,top_slice.Ycg,strain,fg_stress,bg_stress,slice.FgMaterial,slice.BgMaterial);
-            CComPtr<IUnknown> punk;
-            pSlice->QueryInterface(&punk);
-            slices->Add(punk);
+            Float64 Xcg, Ycg;
+            top_slice.pntCG->Location(&Xcg, &Ycg);
+            pSlice->InitSlice(top_slice.SliceShape,top_slice.Area,Xcg,Ycg,strain,fg_stress,bg_stress,slice.FgMaterial,slice.BgMaterial);
+            pSlice->QueryInterface(&pUnkTopSlice);
 
 #if defined _DEBUG_LOGGING
             CComBSTR fgName("-");
@@ -251,6 +252,7 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
          }
 
          SLICEINFO bottom_slice;
+         CComPtr<IUnknown> pUnkBottomSlice;
          hr = SliceShape(shape_info,angle,Yna,slice.Bottom,bottom_slice);
          if ( SUCCEEDED(hr) && hr != S_FALSE )
          {
@@ -270,10 +272,10 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
 
             CComObject<CGeneralSectionSlice>* pSlice;
             CComObject<CGeneralSectionSlice>::CreateInstance(&pSlice);
-            pSlice->InitSlice(bottom_slice.SliceShape,bottom_slice.Area,bottom_slice.Xcg,bottom_slice.Ycg,strain,fg_stress,bg_stress,slice.FgMaterial,slice.BgMaterial);
-            CComPtr<IUnknown> punk;
-            pSlice->QueryInterface(&punk);
-            slices->Add(punk);
+            Float64 Xcg, Ycg;
+            bottom_slice.pntCG->Location(&Xcg, &Ycg);
+            pSlice->InitSlice(bottom_slice.SliceShape,bottom_slice.Area,Xcg,Ycg,strain,fg_stress,bg_stress,slice.FgMaterial,slice.BgMaterial);
+            pSlice->QueryInterface(&pUnkBottomSlice);
 
 #if defined _DEBUG_LOGGING
             CComBSTR fgName("-");
@@ -286,6 +288,17 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
 
             os << std::setw(10) << AREA(bottom_slice.Area) << ", " << std::setw(10) << "T, " <<std::setw(10) << LENGTH(bottom_slice.Top) << ", " << std::setw(10) << LENGTH(bottom_slice.Bottom) << ", " << std::setw(20) << LENGTH(bottom_slice.Xcg) << ", " << std::setw(20) << LENGTH(bottom_slice.Ycg) << ", " << std::setw(20) << bottom_slice.ei << ", " << std::setw(20) << strain << ", " << std::setw(20) << OLE2T(fgName) << ", " << std::setw(10) << STRESS(fg_stress) << ", "  << std::setw(20) << OLE2T(bgName) << ", " << std::setw(10) << STRESS(bg_stress) << ", " << std::setw(10) << STRESS(stress) << ", " << std::setw(10) << FORCE(P) << std::endl;
 #endif // _DEBUG_LOGGING
+         }
+
+         if (PI_OVER_2 <= angle && angle < 3*PI_OVER_2)
+         {
+            if (pUnkBottomSlice) slices->Add(pUnkBottomSlice);
+            if (pUnkTopSlice) slices->Add(pUnkTopSlice);
+         }
+         else
+         {
+            if (pUnkTopSlice) slices->Add(pUnkTopSlice);
+            if (pUnkBottomSlice) slices->Add(pUnkBottomSlice);
          }
       }
       else
@@ -306,7 +319,9 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
 
          CComObject<CGeneralSectionSlice>* pSlice;
          CComObject<CGeneralSectionSlice>::CreateInstance(&pSlice);
-         pSlice->InitSlice(slice.SliceShape,slice.Area,slice.Xcg,slice.Ycg,strain,fg_stress,bg_stress,slice.FgMaterial,slice.BgMaterial);
+         Float64 Xcg, Ycg;
+         slice.pntCG->Location(&Xcg, &Ycg);
+         pSlice->InitSlice(slice.SliceShape,slice.Area,Xcg,Ycg,strain,fg_stress,bg_stress,slice.FgMaterial,slice.BgMaterial);
          CComPtr<IUnknown> punk;
          pSlice->QueryInterface(&punk);
          slices->Add(punk);
@@ -418,6 +433,8 @@ void CGeneralSectionSolver::DecomposeSection(IPlane3d* strainPlane)
       CComPtr<IShape> shape;
       hr = original_shape->Clone(&shape);
 
+      // rotate the shape so that its primary axes are aligned with the neutral axis
+      // we need to clip parallel to the neutral axis
       CComQIPtr<IXYPosition> position(shape);
       position->Rotate(0,0,-angle);
 
@@ -529,7 +546,8 @@ void CGeneralSectionSolver::DecomposeSection(IPlane3d* strainPlane)
       }
    }
 
-   std::sort(m_Slices.begin(),m_Slices.end());
+   // sort based on CG elevation
+   std::sort(std::begin(m_Slices), std::end(m_Slices), [](auto& sliceA, auto& sliceB) {Float64 YcgA, YcgB; sliceA.pntCG->get_Y(&YcgA); sliceB.pntCG->get_Y(&YcgB); return YcgB < YcgA; });
    m_bDecomposed = true;
 }
 
@@ -580,28 +598,41 @@ void CGeneralSectionSolver::UpdateNeutralAxis(IPlane3d* strainPlane,ILine2d* lin
       y2 = -1000;
    }
 
+   // create the neutral axis line with compression on the left side on the line
    CComPtr<IPoint2d> p1,p2;
    p1.CoCreateInstance(CLSID_Point2d);
    p2.CoCreateInstance(CLSID_Point2d);
 
    p1->Move(x1,y1);
    p2->Move(x2,y2);
+   hr = line->ThroughPoints(p1, p2);
 
-   strainPlane->GetZ(y1,x2,&z);
+   // evaluate a point on the left side of the line
+   Float64 C;
+   CComPtr<IVector2d> vN; // normal vector points to the left hand side of the line
+   line->GetImplicit(&C, &vN);
+   Float64 dx, dy;
+   vN->get_X(&dx);
+   vN->get_Y(&dy);
 
-   if (z < 0)
+   Float64 Offset = 10; // some offset from the line
+   Float64 X = x1 + Offset*dx;
+   Float64 Y = y1 + Offset*dy;
+   Float64 Z;
+   strainPlane->GetZ(X,Y,&Z);
+   if (0 < Z)
    {
-      hr = line->ThroughPoints(p1, p2);
-   }
-   else
-   {
-      hr = line->ThroughPoints(p2, p1);
+      // tension is on the left side, so reverse the direction the line
+      // we want compression on the left side
+      hr = line->Reverse();
    }
 }
 
 HRESULT CGeneralSectionSolver::AnalyzeSlice(CGeneralSectionSolver::SLICEINFO& slice,IPlane3d* strainPlane,Float64& P,Float64& Mx,Float64& My,Float64& fg_stress,Float64& bg_stress,Float64& stress,Float64& strain,bool& bExceededStrainLimits)
 {
-   HRESULT hr = strainPlane->GetZ(slice.Xcg,slice.Ycg,&strain);
+   Float64 Xcg, Ycg;
+   slice.pntCG->Location(&Xcg, &Ycg);
+   HRESULT hr = strainPlane->GetZ(Xcg,Ycg,&strain);
    ATLASSERT(SUCCEEDED(hr));
 
    strain /= slice.Le;
@@ -644,8 +675,9 @@ HRESULT CGeneralSectionSolver::AnalyzeSlice(CGeneralSectionSolver::SLICEINFO& sl
    stress = fg_stress - bg_stress;
 
    P  = slice.Area * stress;
-   Mx = slice.Area * stress * slice.Ycg;
-   My = slice.Area * stress * slice.Xcg;
+   Mx = slice.Area * stress * Ycg;
+   My = slice.Area * stress * Xcg;
+
 
    return S_OK;
 }
@@ -674,11 +706,8 @@ HRESULT CGeneralSectionSolver::SliceShape(const SHAPEINFO& shapeInfo,Float64 ang
    props->get_Area(&sliceInfo.Area);
 
    // rotate the CG point back into the original coordinate system
-   CComPtr<IPoint2d> cg;
-   props->get_Centroid(&cg);
-   cg->Rotate(0.00,0.00,angle);
-   cg->get_X(&sliceInfo.Xcg);
-   cg->get_Y(&sliceInfo.Ycg);
+   props->get_Centroid(&sliceInfo.pntCG);
+   sliceInfo.pntCG->Rotate(0.00,0.00,angle);
 
    sliceInfo.FgMaterial = shapeInfo.FgMaterial;
    sliceInfo.BgMaterial = shapeInfo.BgMaterial;

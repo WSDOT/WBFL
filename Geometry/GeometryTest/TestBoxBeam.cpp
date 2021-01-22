@@ -29,6 +29,7 @@
 
 #include "stdafx.h"
 #include "TestBoxBeam.h"
+#include <array>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -355,7 +356,7 @@ void CTestBoxBeam::TestIShape()
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   CComPtr<IPoint2d> points[14];
+   std::array<CComPtr<IPoint2d>,14> points;
    ULONG fetched;
    Enum->Next(14,&points[0],&fetched);
    TRY_TEST( fetched, 14 );
@@ -782,7 +783,7 @@ void CTestBoxBeam::TestIXYPosition()
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   CComPtr<IPoint2d> points[15];
+   std::array<CComPtr<IPoint2d>,15> points;
    ULONG fetched;
    Enum->Next(14,&points[0],&fetched);
    TRY_TEST( fetched, 14 );

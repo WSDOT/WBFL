@@ -28,9 +28,6 @@
     <ClCompile Include="DeckedSlabBeam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FasterPolyShape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GenericShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -139,6 +136,9 @@
     <ClCompile Include="BeamShapeFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PrecastBeam2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoxBeam.h">
@@ -166,9 +166,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DeckedSlabBeam.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FasterPolyShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GenericShape.h">
@@ -288,6 +285,9 @@
     <ClInclude Include="BeamShapeFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PrecastBeam2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\Include\WBFLGeometry.idl" />
@@ -316,9 +316,6 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="CoordinateXform3d.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="FasterPolyShape.rgs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="GenericShape.rgs">
@@ -418,6 +415,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="BeamShapeFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PrecastBeam2.rgs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

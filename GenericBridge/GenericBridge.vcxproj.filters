@@ -282,9 +282,6 @@
     <ClInclude Include="GenericBridgeImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GirderSectionImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GirderSections.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -438,6 +435,9 @@
     <ClInclude Include="CastingRegions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\GenericBridge\GirderSectionImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\Include\WBFLGenericBridge.idl" />
@@ -502,9 +502,6 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="FixedLengthRebarLayoutItem.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="FlangedBeam.rgs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="FlangedGirderEndBlockSegment.rgs">
@@ -664,6 +661,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="CastingRegions.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="FlangedGirderSection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="FlangedGirderSection2.rgs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

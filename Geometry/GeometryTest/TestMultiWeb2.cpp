@@ -29,6 +29,7 @@
 
 #include "stdafx.h"
 #include "TestMultiWeb2.h"
+#include <array>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

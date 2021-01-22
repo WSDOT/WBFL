@@ -291,7 +291,12 @@ STDMETHODIMP CDeckedSlabBeamSection::get_MatingSurfaceWidth(MatingSurfaceIndexTy
       return E_INVALIDARG;
    }
 
-   return get_TopWidth(wMatingSurface);
+   Float64 left, right;
+   get_TopWidth(&left, &right);
+
+   *wMatingSurface = left + right;
+
+   return S_OK;
 }
 
 STDMETHODIMP CDeckedSlabBeamSection::get_MatingSurfaceProfile(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly, IPoint2dCollection** ppProfile)
@@ -324,7 +329,12 @@ STDMETHODIMP CDeckedSlabBeamSection::get_TopFlangeWidth(FlangeIndexType idx,Floa
       return E_INVALIDARG;
    }
 
-   return get_TopWidth(width);
+   Float64 left, right;
+   get_TopWidth(&left, &right);
+
+   *width = left + right;
+
+   return S_OK;
 }
 
 STDMETHODIMP CDeckedSlabBeamSection::get_TopFlangeThickness(FlangeIndexType idx,Float64* tFlange)
@@ -376,7 +386,12 @@ STDMETHODIMP CDeckedSlabBeamSection::get_BottomFlangeWidth(FlangeIndexType idx,F
       return E_INVALIDARG;
    }
 
-   return get_BottomWidth(width);
+   Float64 left, right;
+   get_BottomWidth(&left, &right);
+
+   *width = left + right;
+
+   return S_OK;
 }
 
 STDMETHODIMP CDeckedSlabBeamSection::get_BottomFlangeThickness(FlangeIndexType idx,Float64* tFlange)
@@ -418,18 +433,29 @@ STDMETHODIMP CDeckedSlabBeamSection::get_NominalHeight(Float64* height)
    return S_OK;
 }
 
-STDMETHODIMP CDeckedSlabBeamSection::get_TopWidth(Float64* width)
+STDMETHODIMP CDeckedSlabBeamSection::get_TopWidth(Float64* pLeft, Float64* pRight)
 {
    // Don't account for shear key
-   return m_Beam->get_A(width);
+   Float64 width;
+   m_Beam->get_A(&width);
+   width /= 2.0;
+
+   *pLeft = width;
+   *pRight = width;
+
+   return S_OK;
 }
 
-STDMETHODIMP CDeckedSlabBeamSection::get_BottomWidth(Float64* width)
+STDMETHODIMP CDeckedSlabBeamSection::get_BottomWidth(Float64* pLeft, Float64* pRight)
 {
    Float64 A, B;
    m_Beam->get_A(&A);
    m_Beam->get_B(&B);
-   *width = A - 2*B;
+   Float64 width = A - 2*B;
+   width /= 2.0;
+
+   *pLeft = width;
+   *pRight = width;
 
    return S_OK;
 }
@@ -499,6 +525,73 @@ STDMETHODIMP CDeckedSlabBeamSection::get_SplittingDirection(SplittingDirection* 
 {
    CHECK_RETVAL(pSD);
    *pSD = sdHorizontal;
+   return S_OK;
+}
+
+STDMETHODIMP CDeckedSlabBeamSection::GetWebSections(IDblArray** ppY, IDblArray** ppW,IBstrArray** ppDesc)
+{
+   Float64 C, Tt, Tb, W;
+   m_Beam->get_C(&C);
+   m_Beam->get_Tt(&Tt);
+   m_Beam->get_Tb(&Tb);
+   m_Beam->get_W(&W);
+
+   Float64 H = C + Tt;
+
+   CComPtr<IDblArray> y;
+   y.CoCreateInstance(CLSID_DblArray);
+   y.CopyTo(ppY);
+
+   CComPtr<IDblArray> w;
+   w.CoCreateInstance(CLSID_DblArray);
+   w.CopyTo(ppW);
+
+   CComPtr<IBstrArray> desc;
+   desc.CoCreateInstance(CLSID_BstrArray);
+   desc.CopyTo(ppDesc);
+
+   (*ppY)->Add(-Tt);
+   (*ppW)->Add(2 * W);
+   (*ppDesc)->Add(CComBSTR(_T("Top Flange - Web")));
+
+   (*ppY)->Add(-H + Tb);
+   (*ppW)->Add(2 * W);
+   (*ppDesc)->Add(CComBSTR(_T("Bottom Flange - Web")));
+
+   return S_OK;
+}
+
+STDMETHODIMP CDeckedSlabBeamSection::GetWebWidthProjectionsForDebonding(IUnkArray** ppArray)
+{
+   CHECK_RETOBJ(ppArray);
+
+   Float64 A, B, C, Tt, Tb, W;
+   m_Beam->get_A(&A);
+   m_Beam->get_B(&B);
+   m_Beam->get_C(&C);
+   m_Beam->get_Tt(&Tt);
+   m_Beam->get_Tb(&Tb);
+   m_Beam->get_W(&W);
+
+   Float64 H = C + Tt;
+
+   Float64 edge = A / 2 - B;
+
+   CComPtr<IUnkArray> array;
+   array.CoCreateInstance(CLSID_UnkArray);
+
+   CComPtr<IRect2d> rect1;
+   rect1.CoCreateInstance(CLSID_Rect2d);
+   rect1->SetBounds(-edge, -edge + W, -H, -H + Tb);
+   array->Add(rect1);
+
+   CComPtr<IRect2d> rect2;
+   rect2.CoCreateInstance(CLSID_Rect2d);
+   rect2->SetBounds(edge - W, edge, -H, -H + Tb);
+   array->Add(rect2);
+
+   array.CopyTo(ppArray);
+
    return S_OK;
 }
 
@@ -596,6 +689,12 @@ STDMETHODIMP CDeckedSlabBeamSection::get_StructuredStorage(IStructuredStorage2* 
 STDMETHODIMP CDeckedSlabBeamSection::get_Shape(IShape* *pVal)
 {
    return m_CompositeShape->get_Shape(pVal);
+}
+
+STDMETHODIMP CDeckedSlabBeamSection::get_XYPosition(IXYPosition **pVal)
+{
+   CHECK_RETOBJ(pVal);
+   return m_CompositeShape->get_XYPosition(pVal);
 }
 
 STDMETHODIMP CDeckedSlabBeamSection::get_Item(CollectionIndexType idx,ICompositeShapeItem* *pVal)

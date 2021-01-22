@@ -1085,8 +1085,9 @@ date/T &gt; $(IntDir)mt2.dep
     <None Include="EdgePathStrategy.rgs" />
     <None Include="FilteredSegmentCollection.rgs" />
     <None Include="FixedLengthRebarLayoutItem.rgs" />
-    <None Include="FlangedBeam.rgs" />
+    <None Include="FlangedGirderSection.rgs" />
     <None Include="FlangedGirderEndBlockSegment.rgs" />
+    <None Include="FlangedGirderSection2.rgs" />
     <None Include="FlangedSplicedGirderSegment.rgs" />
     <None Include="FlexRebarLayoutItem.rgs" />
     <None Include="FShapeBarrier.rgs" />
@@ -1159,6 +1160,7 @@ date/T &gt; $(IntDir)mt2.dep
   <ItemGroup>
     <ClInclude Include="..\Include\GenericBridge\AutoLib.h" />
     <ClInclude Include="..\Include\GenericBridge\GenericBridgeExp.h" />
+    <ClInclude Include="..\Include\GenericBridge\GirderSectionImpl.h" />
     <ClInclude Include="..\Include\GenericBridge\Helpers.h" />
     <ClInclude Include="AlignmentOffsetStrategy.h" />
     <ClInclude Include="BearingLayout.h" />
@@ -1186,7 +1188,6 @@ date/T &gt; $(IntDir)mt2.dep
     <ClInclude Include="GenericBarrier.h" />
     <ClInclude Include="GenericBridgeHelpers.h" />
     <ClInclude Include="GenericBridgeImpl.h" />
-    <ClInclude Include="GirderSectionImpl.h" />
     <ClInclude Include="GirderSections.h" />
     <ClInclude Include="ItemDataManager.h" />
     <ClInclude Include="LinearCrossBeam.h" />

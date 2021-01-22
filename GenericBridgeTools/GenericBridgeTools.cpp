@@ -34,6 +34,7 @@
 #include "resource.h"
 
 #include <WBFLGenericBridgeTools.h>
+#include "WBFLRCCapacity.h"
 
 #include <initguid.h>
 
@@ -41,6 +42,7 @@
 #include <WBFLGeometry_i.c>
 #include <WBFLSections_i.c>
 #include <WBFLTools_i.c>
+#include <WBFLRCCapacity_i.c>
 #include <WBFLGenericBridge_i.c>
 #include <WBFLGenericBridgeTools_i.c>
 

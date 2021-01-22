@@ -25,6 +25,9 @@
 #include <Stability\HaulingStabilityReporter.h>
 #include <Stability\ReportingConstants.h>
 #include <EAF\EAFApp.h>
+#include <array>
+
+#include <WBFLGenericBridgeTools\GeneralSectionDetailsTable.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -245,7 +248,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       }
       else
       {
-         *pPara << _T("Tensile stress limit with bonded reinforcement sufficient to resist tension force in concrete was not evaluated") << rptNewLine;
+         *pPara << _T("Tensile stress limit with bonded reinforcement sufficient to resist tension force in concrete was not evaluated because reinforcement is not modeled.") << rptNewLine;
       }
 
       *pPara << _T("Minimum factor of safety against cracking = ") << scalar.SetValue(criteria.MinFScr) << rptNewLine;
@@ -655,7 +658,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
    }
 }
 
-void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,const stbIHaulingStabilityProblem* pStabilityProblem,const stbHaulingResults* pResults,rptChapter* pChapter,LPCTSTR lpszLocColumnLabel,Float64 offset)
+void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,const stbIHaulingStabilityProblem* pStabilityProblem,const stbHaulingResults* pResults,rptChapter* pChapter, LPCTSTR lpszLocColumnLabel,Float64 offset, bool bReportTensileForceDetails)
 {
    CEAFApp* pApp = EAFGetApp();
    const unitmgtIndirectMeasure* pDisplayUnits = pApp->GetDisplayUnits();
@@ -663,14 +666,14 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    CComPtr<ISegment> segment;
    pGirder->GetSegment(&segment);
 
-   std::_tstring strFlange[] = {_T("Top Left"),_T("Top Right"),_T("Bottom Left"),_T("Bottom Right")};
-   std::_tstring strTiltRotation[] = { _T("counter clockwise"), _T("clockwise") };
-   std::_tstring strTiltDirection[] = { _T("left"), _T("right") };
+   std::array<std::_tstring, 4> strFlange = { _T("Top Left"),_T("Top Right"),_T("Bottom Left"),_T("Bottom Right") };
+   std::array<std::_tstring, 2> strTiltRotation = { _T("counter clockwise"), _T("clockwise") };
+   std::array<std::_tstring, 2> strTiltDirection = { _T("left"), _T("right") };
 
-   LPCTSTR strImpact[3];
-   stbTypes::ImpactDirection impactDir[3];
-   Float64 impactFactor[3] = { -1,-1,-1 };
-   IndexType impactIndex[3] = { INVALID_INDEX,INVALID_INDEX,INVALID_INDEX };
+   std::array<LPCTSTR, 3> strImpact;
+   std::array<stbTypes::ImpactDirection, 3> impactDir;
+   std::array<Float64, 3> impactFactor = { -1,-1,-1 };
+   std::array<IndexType, 3> impactIndex = { INVALID_INDEX,INVALID_INDEX,INVALID_INDEX };
 
    Float64 ImpactUp, ImpactDown;
    pStabilityProblem->GetImpact(&ImpactUp,&ImpactDown);
@@ -703,8 +706,8 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    pStabilityProblem->GetWindLoading(&windLoadType,&windLoad);
    IndexType nWindCases = IsZero(windLoad) ? 0 : 1;
    IndexType nCFCases   = IsZero(pStabilityProblem->GetVelocity()) ? 0 : 1;
-   LPCTSTR strWindDir[] = {_T("Left"), _T("Right")};
-   LPCTSTR strWindDirEx[] = { _T("Increases Rotation"), _T("Decreases Rotation") }; // note that this is opposite lifting
+   std::array<LPCTSTR, 2> strWindDir = {_T("Left"), _T("Right")};
+   std::array<LPCTSTR, 2> strWindDirEx = { _T("Increases Rotation"), _T("Decreases Rotation") }; // note that this is opposite lifting
    LPCTSTR strCF = (pStabilityProblem->GetCentrifugalForceType() == stbTypes::Adverse ? _T("Adverse (towards left)") : _T("Favorable (towards right)"));
 
    bool bLabelImpact = (0 < nImpactCases ? true : false);
@@ -777,8 +780,8 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
    CString slope_unit(pApp->GetUnitsMode() == eafTypes::umSI ? _T("m/m") : _T("ft/ft"));
 
-   *pPara << _T("Normal Crown Slope ") << symbol(alpha) << _T(" = ") << pStabilityProblem->GetCrownSlope() << _T(" ") << slope_unit << rptNewLine;
-   *pPara << _T("Maximum Superelevation ") << symbol(alpha) << _T(" = ") << pStabilityProblem->GetSuperelevation() << _T(" ") << slope_unit << rptNewLine;
+   *pPara << _T("Normal Crown Slope, ") << symbol(alpha) << _T(" = ") << pStabilityProblem->GetCrownSlope() << _T(" ") << slope_unit << rptNewLine;
+   *pPara << _T("Maximum Superelevation, ") << symbol(alpha) << _T(" = ") << pStabilityProblem->GetSuperelevation() << _T(" ") << slope_unit << rptNewLine;
 
    Float64 impactUp, impactDown;
    pStabilityProblem->GetImpact(&impactUp,&impactDown);
@@ -822,6 +825,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
    *pPara << RPT_FC << _T(" = ") << stress.SetValue(concrete.GetFc()) << rptNewLine;
    *pPara << Sub2(_T("E"),_T("c")) << _T(" = Modulus of Elasticity = ") << modE.SetValue(concrete.GetE()) << rptNewLine;
+   *pPara << symbol(lambda) << _T(" = ") << scalar.SetValue(concrete.GetLambda()) << rptNewLine;
    *pPara << RPT_STRESS(_T("r")) << _T(" = Modulus of Rupture = ") << stress.SetValue(concrete.GetFlexureFr()) << rptNewLine;
 
    IndexType nSections = pGirder->GetSectionCount();
@@ -1495,7 +1499,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
          << Sub2(_T("M"), _T("cf")) << Sub2(_T("I"), _T("yy")) << _T("(y)/(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T(" - ") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")") << rptNewLine;
    }
 
-   LPCTSTR strSlope[2] = { _T("Normal Crown Slope"),_T("Maximum Superelevation") };
+   std::array<LPCTSTR, 2> strSlope = { _T("Normal Crown Slope"),_T("Maximum Superelevation") };
    for (int s = 0; s < 2; s++)
    {
       stbTypes::HaulingSlope slope = (stbTypes::HaulingSlope)s;
@@ -1503,10 +1507,10 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
       // redo impact labeling because now it is based on the analysis slope type
       bool bImpactForThisSlope = (impactUsage == stbTypes::Both || (impactUsage == stbTypes::NormalCrown && slope == stbTypes::CrownSlope) || (impactUsage == stbTypes::MaxSuper && slope == stbTypes::Superelevation) ? true : false);
 
-      LPCTSTR strImpact[3];
-      stbTypes::ImpactDirection impactDir[3];
-      Float64 impactFactor[3] = { -1,-1,-1 };
-      IndexType impactIndex[3] = { INVALID_INDEX,INVALID_INDEX < INVALID_INDEX };
+      std::array<LPCTSTR, 3> strImpact;
+      std::array<stbTypes::ImpactDirection, 3> impactDir;
+      std::array<Float64, 3> impactFactor = { -1,-1,-1 };
+      std::array<IndexType, 3> impactIndex = { INVALID_INDEX,INVALID_INDEX < INVALID_INDEX };
 
       Float64 ImpactUp, ImpactDown;
       pStabilityProblem->GetImpact(&ImpactUp, &ImpactDown);
@@ -1822,6 +1826,10 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             {
                std::_tstring strTitle(_T("Bonded reinforcement requirements [") + std::_tstring(LrfdCw8th(_T("C5.9.4.1.2"), _T("C5.9.2.3.1b"))) + std::_tstring(_T("]")));
                ColumnIndexType nColumns = (bSimpleFormat ? 8 : 19);
+               if (bReportTensileForceDetails)
+               {
+                  nColumns++;
+               }
                pRebarTable = rptStyleManager::CreateDefaultTable(nColumns, strTitle);
 
                col = 0;
@@ -1878,10 +1886,20 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                   (*pRebarTable)(1, col++) << COLHDR(Sub2(_T("y"), _T("br")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
                   (*pRebarTable)(1, col++) << COLHDR(RPT_STRESS(_T("br")), rptStressUnitTag, pDisplayUnits->Stress);
 
-                  pRebarTable->SetRowSpan(0, col, 2); // At
-                  pRebarTable->SetRowSpan(0, col + 1, 2); // T
-                  pRebarTable->SetRowSpan(0, col + 2, 2); // As Provided
-                  pRebarTable->SetRowSpan(0, col + 3, 2); // As Required
+                  ColumnIndexType colOffset = 0;
+                  if (bReportTensileForceDetails)
+                  {
+                     pRebarTable->SetRowSpan(0, col + colOffset, 2); colOffset++; // Tension Force Details
+                  }
+                  pRebarTable->SetRowSpan(0, col + colOffset, 2); colOffset++; // At
+                  pRebarTable->SetRowSpan(0, col + colOffset, 2); colOffset++; // T
+                  pRebarTable->SetRowSpan(0, col + colOffset, 2); colOffset++; // As Provided
+                  pRebarTable->SetRowSpan(0, col + colOffset, 2); colOffset++; // As Required
+               }
+
+               if (bReportTensileForceDetails)
+               {
+                  (*pRebarTable)(0, col++) << _T("Tension Force Details");
                }
 
                (*pRebarTable)(0, col++) << COLHDR(Sub2(_T("A"), _T("t")), rptAreaUnitTag, pDisplayUnits->Area);
@@ -1998,6 +2016,20 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                      (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[slope][impactDir[impactCase]][wind].pntBottomRight.Y());
                      (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[slope][impactDir[impactCase]][wind].pntBottomRight.Z());
                   }
+
+                  if (bReportTensileForceDetails)
+                  {
+                     if (sectionResult.altTensionRequirements[slope][impactDir[impactCase]][wind].tensionForceSolution)
+                     {
+                        rptRcTable* pDetailsTable = CreateGeneralSectionDetailsTable(sectionResult.altTensionRequirements[slope][impactDir[impactCase]][wind].tensionForceSolution, sectionResult.altTensionRequirements[slope][impactDir[impactCase]][wind].Ytg, pDisplayUnits);
+                        (*pRebarTable)(rrow, col++) << pDetailsTable;
+                     }
+                     else
+                     {
+                        (*pRebarTable)(rrow, col++) << _T("-");
+                     }
+                  }
+
                   (*pRebarTable)(rrow, col++) << area.SetValue(sectionResult.altTensionRequirements[slope][impactDir[impactCase]][wind].AreaTension);
                   (*pRebarTable)(rrow, col++) << force.SetValue(sectionResult.altTensionRequirements[slope][impactDir[impactCase]][wind].T);
                   (*pRebarTable)(rrow, col++) << area.SetValue(sectionResult.altTensionRequirements[slope][impactDir[impactCase]][wind].AsProvided);
@@ -2323,6 +2355,10 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             rptRcTable* pRebarTable = nullptr;
             std::_tstring strTitle(_T("Bonded reinforcement requirements [") + std::_tstring(LrfdCw8th(_T("C5.9.4.1.2"), _T("C5.9.2.3.1b"))) + std::_tstring(_T("]")));
             ColumnIndexType nColumns = (bSimpleFormat ? 8 : 19);
+            if (bReportTensileForceDetails)
+            {
+               nColumns++;
+            }
             pRebarTable = rptStyleManager::CreateDefaultTable(nColumns, strTitle);
             (*pPara) << pRebarTable << rptNewLine;
             (*pPara) << _T("The neutral axis is defined by its location with respect to the top center of the girder (") << Sub2(_T("Y"), _T("na")) << _T(")");
@@ -2330,8 +2366,17 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             {
                (*pPara) << _T(" and its slope(Slope NA)");
             }
+            (*pPara) << rptNewLine;
             (*pPara) << Super(_T("*")) << _T(" to be considered sufficient, reinforcement must be fully developed and lie within the tension area of the section") << rptNewLine;
             (*pPara) << _T("** minimum area of sufficiently bonded reinforcement needed to use the alternative tensile stress limit") << rptNewLine;
+
+            if (bReportTensileForceDetails)
+            {
+               *pPara << rptNewLine;
+               (*pPara) << _T("Tension Force, T = ") << symbol(SUM) << Sub2(_T("T"), _T("i")) << _T(" = ") << symbol(SUM) << _T("(") << Sub2(_T("A"), _T("i")) << _T(")(") << Sub2(_T("f"), _T("i")) << _T(")") << rptNewLine;
+            }
+
+            *pPara << rptNewLine;
 
             col = 0;
             if (lpszLocColumnLabel)
@@ -2387,10 +2432,21 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                (*pRebarTable)(1, col++) << COLHDR(Sub2(_T("y"), _T("br")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
                (*pRebarTable)(1, col++) << COLHDR(RPT_STRESS(_T("br")), rptStressUnitTag, pDisplayUnits->Stress);
 
-               pRebarTable->SetRowSpan(0, col, 2); // At
-               pRebarTable->SetRowSpan(0, col + 1, 2); // T
-               pRebarTable->SetRowSpan(0, col + 2, 2); // As Provided
-               pRebarTable->SetRowSpan(0, col + 3, 2); // As Required
+               ColumnIndexType colOffset = 0;
+               if (bReportTensileForceDetails)
+               {
+                  pRebarTable->SetRowSpan(0, col + colOffset, 2); colOffset++; // Tension Force Details
+               }
+
+               pRebarTable->SetRowSpan(0, col + colOffset, 2); colOffset++; // At
+               pRebarTable->SetRowSpan(0, col + colOffset, 2); colOffset++; // T
+               pRebarTable->SetRowSpan(0, col + colOffset, 2); colOffset++; // As Provided
+               pRebarTable->SetRowSpan(0, col + colOffset, 2); colOffset++; // As Required
+            }
+
+            if (bReportTensileForceDetails)
+            {
+               (*pRebarTable)(0, col++) << _T("Tension Force Details");
             }
 
             (*pRebarTable)(0, col++) << COLHDR(Sub2(_T("A"), _T("t")), rptAreaUnitTag, pDisplayUnits->Area);
@@ -2430,6 +2486,20 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                   (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[slope][impactDir[impactCase]].pntBottomRight.Y());
                   (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[slope][impactDir[impactCase]].pntBottomRight.Z());
                }
+
+               if (bReportTensileForceDetails)
+               {
+                  if (sectionResult.altTensionRequirements[slope][impactDir[impactCase]].tensionForceSolution)
+                  {
+                     rptRcTable* pDetailsTable = CreateGeneralSectionDetailsTable(sectionResult.altTensionRequirements[slope][impactDir[impactCase]].tensionForceSolution, sectionResult.altTensionRequirements[slope][impactDir[impactCase]].Ytg, bSimpleFormat, pDisplayUnits);
+                     (*pRebarTable)(rrow, col++) << pDetailsTable;
+                  }
+                  else
+                  {
+                     (*pRebarTable)(rrow, col++) << _T("-");
+                  }
+               }
+
                (*pRebarTable)(rrow, col++) << area.SetValue(sectionResult.altTensionRequirements[slope][impactDir[impactCase]].AreaTension);
                (*pRebarTable)(rrow, col++) << force.SetValue(sectionResult.altTensionRequirements[slope][impactDir[impactCase]].T);
                (*pRebarTable)(rrow, col++) << area.SetValue(sectionResult.altTensionRequirements[slope][impactDir[impactCase]].AsProvided);

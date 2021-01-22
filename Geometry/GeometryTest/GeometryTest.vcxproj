@@ -841,7 +841,6 @@
     <ClCompile Include="TestCoordinateXform2d.cpp" />
     <ClCompile Include="TestCoordinateXform3d.cpp" />
     <ClCompile Include="TestDeckedSlabBeam.cpp" />
-    <ClCompile Include="TestFasterPolyShape.cpp" />
     <ClCompile Include="TestGenericShape.cpp" />
     <ClCompile Include="TestGeomUtil.cpp" />
     <ClCompile Include="TestLine2d.cpp" />
@@ -860,6 +859,7 @@
     <ClCompile Include="TestPoint3dCollection.cpp" />
     <ClCompile Include="TestPolyShape.cpp" />
     <ClCompile Include="TestPrecastBeam.cpp" />
+    <ClCompile Include="TestPrecastBeam2.cpp" />
     <ClCompile Include="TestPrimitiveFactory.cpp" />
     <ClCompile Include="TestRect2d.cpp" />
     <ClCompile Include="TestRectangle.cpp" />
@@ -891,7 +891,6 @@
     <ClInclude Include="TestCoordinateXform2d.h" />
     <ClInclude Include="TestCoordinateXform3d.h" />
     <ClInclude Include="TestDeckedSlabBeam.h" />
-    <ClInclude Include="TestFasterPolyShape.h" />
     <ClInclude Include="TestGenericShape.h" />
     <ClInclude Include="TestGeomUtil.h" />
     <ClInclude Include="TestLine2d.h" />
@@ -908,6 +907,7 @@
     <ClInclude Include="TestPoint3dCollection.h" />
     <ClInclude Include="TestPolyShape.h" />
     <ClInclude Include="TestPrecastBeam.h" />
+    <ClInclude Include="TestPrecastBeam2.h" />
     <ClInclude Include="TestPrimitiveFactory.h" />
     <ClInclude Include="TestRect2d.h" />
     <ClInclude Include="TestRectangle.h" />

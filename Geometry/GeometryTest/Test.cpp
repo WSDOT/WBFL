@@ -54,7 +54,6 @@
 #include "TestShapeProperties.h"
 #include "TestGenericShape.h"
 #include "TestPolyShape.h"
-#include "TestFasterPolyShape.h"
 #include "TestCircle.h"
 #include "TestCircularSegment.h"
 #include "TestRectangle.h"
@@ -62,6 +61,7 @@
 #include "TestBulbTee.h"
 #include "TestBulbTee2.h"
 #include "TestPrecastBeam.h"
+#include "TestPrecastBeam2.h"
 #include "TestNUBeam.h"
 #include "TestUBeam.h"
 #include "TestUBeam2.h"
@@ -113,7 +113,6 @@ int main(int argc, LPTSTR  argv[])
    CTestShapeProperties::Test();
    CTestShapeCollection::Test();
    CTestPolyShape::Test();
-   CTestFasterPolyShape::Test();
    CTestCircle::Test();
    CTestCircularSegment::Test();
    CTestRectangle::Test();
@@ -121,6 +120,7 @@ int main(int argc, LPTSTR  argv[])
    CTestBulbTee::Test();
    CTestBulbTee2::Test();
    CTestPrecastBeam::Test();
+   CTestPrecastBeam2::Test();
    CTestNUBeam::Test();
    CTestUBeam::Test();
    CTestUBeam2::Test();

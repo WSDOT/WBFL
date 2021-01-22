@@ -110,6 +110,14 @@ void rptHtmlParagraphVisitor::VisitParagraph(rptParagraph* pPara)
       break;
    }
 
+   // background color
+   rptRiStyle::FontColor bg_color = rstyle.GetBGColor();
+   if (rptRiStyle::Default != bg_color)
+   {
+      *m_pOstream << _T("<SPAN STYLE=\"background-color: ") << rptRiStyle::GetColorCode(bg_color) << _T("\">");
+   }
+
+
    // borders dont work for html
    // TODO:could try table later if paragraph borders are really needed
 
@@ -122,6 +130,12 @@ void rptHtmlParagraphVisitor::VisitParagraph(rptParagraph* pPara)
    {
       (*pci)->Accept( my_visitor );
    }
+
+   if (rptRiStyle::Default != bg_color)
+   {
+      *m_pOstream << _T("</SPAN>");
+   }
+
 
    // close out bullet if needed
    if (my_btype != rptRiStyle::NOBULLET)

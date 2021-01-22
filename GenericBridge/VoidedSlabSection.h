@@ -111,10 +111,10 @@ public:
    STDMETHOD(get_BottomFlangeSpacing)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* spacing) override;
    STDMETHOD(get_OverallHeight)(/*[out,retval]*/Float64* height) override;
    STDMETHOD(get_NominalHeight)(/*[out,retval]*/Float64* height) override;
-   STDMETHOD(get_TopWidth)(/*[out,retval]*/Float64* width) override;
-	STDMETHOD(get_BottomWidth)(/*[out,retval]*/Float64* width) override;
+   STDMETHOD(get_TopWidth)(/*[out]*/Float64* pLeft, /*[out]*/Float64* pRight) override;
+	STDMETHOD(get_BottomWidth)(/*[out]*/Float64* pLeft, /*[out]*/Float64* pRight) override;
 	STDMETHOD(get_ShearWidth)(/*[out,retval]*/Float64* shearwidth) override;
-	STDMETHOD(get_MinTopFlangeThickness)(/*[out,retval]*/Float64* tf) override;
+   STDMETHOD(get_MinTopFlangeThickness)(/*[out,retval]*/Float64* tf) override;
 	STDMETHOD(get_MinBottomFlangeThickness)(/*[out,retval]*/Float64* tf) override;
 	STDMETHOD(get_CL2ExteriorWebDistance)(/*[in]*/ DirectionType side, /*[out,retval]*/Float64* ww) override;
 
@@ -123,6 +123,8 @@ public:
    STDMETHOD(RemoveSacrificalDepth)(/*[in]*/Float64 sacDepth);
    STDMETHOD(get_SplittingZoneDimension)(/*[out,retval]*/Float64* pSZD) override;
    STDMETHOD(get_SplittingDirection)(/*[out,retval]*/SplittingDirection* pSD) override;
+   STDMETHOD(GetWebSections)(/*[out]*/IDblArray** ppY, /*[out]*/IDblArray** ppW,/*[out]*/IBstrArray** ppDesc) override;
+   STDMETHOD(GetWebWidthProjectionsForDebonding)(/*[out]*/IUnkArray** ppArray) override;
 
 // IShape
 public:
@@ -140,7 +142,8 @@ public:
 public:
    STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pStg) override;
 	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
-	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ICompositeShapeItem* *pVal) override;
+   STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
+   STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ICompositeShapeItem* *pVal) override;
 	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown* *pVal) override;
 	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
 	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx) override;

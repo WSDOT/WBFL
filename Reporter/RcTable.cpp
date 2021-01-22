@@ -134,7 +134,7 @@ rptRcTable& rptRcTable::operator= (const rptRcTable& rOther)
 //
 // Get an individual cell paragraph
 // Note that cells in column zero are column header cells.
-rptParagraph& rptRcTable::operator()( RowIndexType RowNo, ColumnIndexType ColNo)
+rptTableCellParagraph& rptRcTable::operator()( RowIndexType RowNo, ColumnIndexType ColNo)
 {
    CHECK(ColNo<m_NumColumns);
    USES_CONVERSION;
@@ -182,7 +182,7 @@ rptParagraph& rptRcTable::operator()( RowIndexType RowNo, ColumnIndexType ColNo)
 //
 // constant version of get cell paragraph
 //
-const rptParagraph& rptRcTable::operator()(RowIndexType RowNo, ColumnIndexType ColNo) const
+const rptTableCellParagraph& rptRcTable::operator()(RowIndexType RowNo, ColumnIndexType ColNo) const
 {
    CHECK(ColNo<m_NumColumns);
    USES_CONVERSION;

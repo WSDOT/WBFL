@@ -41,19 +41,22 @@ LOG
 class REPORTERCLASS rptFormattedLengthUnitValue : public rptLengthUnitValue
 {
 public:
+   enum Rounding{RoundOff,RoundUp,RoundDown};
    rptFormattedLengthUnitValue(Float64 value,               // unit value in system units
                                  const unitLength* pUnitOfMeasure,
                                  Float64 zeroTolerance,  // tolerance for zeroness
                                  bool bShowUnitTag,// Show the unit tag?
                                  bool bEnglish,               // true if this is an english unit (if not, just use base class formatting)
                                  Uint16 fraPrecision,         // precision of fraction (denominator for fraction of an inch)
-                                 bool bFractionOnly
+                                 bool bFractionOnly,
+                                 Rounding rounding
                                  ) :  
    rptLengthUnitValue( value, pUnitOfMeasure, zeroTolerance, bShowUnitTag )
    {
       m_bEnglish = bEnglish;
       m_Denominator = fraPrecision;
       m_bFractionOnly = bFractionOnly;
+      m_Rounding = rounding;
    }
 
    rptFormattedLengthUnitValue(  const unitLength* pUnitOfMeasure,
@@ -61,13 +64,15 @@ public:
                                  bool bShowUnitTag, // Show the unit tag?
                                  bool bEnglish,
                                  Uint16 fraPrecision,
-                                 bool bFractionOnly
+                                 bool bFractionOnly,
+                                 Rounding rounding
                                ) :  
    rptLengthUnitValue( pUnitOfMeasure, zeroTolerance, bShowUnitTag )
    {
       m_bEnglish = bEnglish;
       m_Denominator = fraPrecision;
       m_bFractionOnly = bFractionOnly;
+      m_Rounding = rounding;
    }
 
    //------------------------------------------------------------------------
@@ -105,6 +110,7 @@ public:
       m_bEnglish    = rOther.m_bEnglish;
       m_Denominator = rOther.m_Denominator;
       m_bFractionOnly = rOther.m_bFractionOnly;
+      m_Rounding = rOther.m_Rounding;
    }
 
    //------------------------------------------------------------------------
@@ -122,4 +128,5 @@ private:
    bool m_bEnglish;
    Uint16 m_Denominator;
    bool m_bFractionOnly; // if true and if m_bEnglish is true, show only the fraction equivalent
+   Rounding m_Rounding;
 };

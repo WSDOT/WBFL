@@ -165,15 +165,17 @@ STDMETHODIMP_(CRect) CTextBlockImpl::GetBoundingBox()
 
    CStringArray strArray;
    GetTextLines(strArray);
+
+   CDisplayView* pView = pDM->GetView();
    
    CSize extents(0,0);
    for ( INT_PTR i = 0; i < strArray.GetSize(); i++ )
    {
       CString str = strArray.GetAt(i);
-      CSize size = pMapper->GetTextExtent(m_Font,str);
+      CSize size = pMapper->GetTextExtent(pView, m_Font,str);
 
       if ( size.cx == 0 || size.cy == 0 )
-         size = pMapper->GetTextExtent(m_Font,_T("ABCDEFG\0"));
+         size = pMapper->GetTextExtent(pView, m_Font,_T("ABCDEFG\0"));
 
       // capture the width of the widest line of text
       if ( extents.cx < size.cx )
@@ -466,6 +468,8 @@ void CTextBlockImpl::CreateFont(CFont& font,CDC* pDC)
    lfFont.lfEscapement  = text_angle;
    lfFont.lfOrientation = text_angle;
 
+   CDisplayView* pView = pDM->GetView();
+   pView->ScaleFont(lfFont);
 
    font.CreatePointFontIndirect(&lfFont, pDC);
 }

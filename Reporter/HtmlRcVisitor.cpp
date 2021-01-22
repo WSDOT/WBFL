@@ -32,6 +32,7 @@
 #include <Reporter\RcFontModifier.h>
 #include <Reporter\RcFlowModifier.h>
 #include <Reporter\RcColor.h>
+#include <Reporter\RcBgColor.h>
 #include <Reporter\Paragraph.h>
 #include <Reporter\RcTable.h>
 #include <Reporter\RcDateTime.h>
@@ -45,6 +46,7 @@
 #include <Reporter\RcSectionValue.h>
 #include <Reporter\RcSectionScalar.h>
 #include <Reporter\RcStation.h>
+#include <Reporter\RcComposite.h>
 
 // Private include files
 #include "HtmlUnitTagFormat.h"
@@ -224,6 +226,8 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
 
    RowIndexType num_head_rows = pTable->GetNumberOfHeaderRows();
 
+   rptFontStyleLibrary* plib = rptFontStyleLibrary::Instance();
+
    bool bHeading = false;
    for (RowIndexType rowno = 0; rowno<num_rows; rowno++)
    {
@@ -257,11 +261,10 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
          //if ( 0 < row_span && 0 <= col_span )
          if ( row_span != SKIP_CELL && col_span != SKIP_CELL )
          {
-            rptParagraph& rpar = (*pTable)(rowno,colno);
+            rptTableCellParagraph& rpar = (*pTable)(rowno,colno);
 
             std::_tstring styleName = rpar.GetStyleName();
-            rptFontStyleLibrary* plib = rptFontStyleLibrary::Instance();
-            rptRiStyle style = plib->GetNamedStyle(styleName);
+            rptRiStyle& style = plib->GetNamedStyle(styleName);
             rptRiStyle::AlignmentType align = style.GetAlignment();
             rptRiStyle::VerticalAlignmentType valign = style.GetVerticalAlignment();
             std::_tstring strAlign;
@@ -310,7 +313,13 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
                *m_pOstream<<startTag << _T("ALIGN=") << strAlign<< _T(" VALIGN=")<<strVAlign<<_T(" ROWSPAN=")<<row_span<<_T(" COLSPAN=")<<col_span;
             }
 
-            if ( bHeading || pTable->IsStripedRow(rowno) )
+            // explicitely set background colors overrule those set by headings or striping
+            rptRiStyle::FontColor color = rpar.GetFillBackGroundColor();
+            if (rptRiStyle::Default != color )
+            {
+               *m_pOstream << _T(" BGCOLOR=\"") << rptRiStyle::GetColorCode(color ) << ("\"");
+            }
+            else if ( bHeading || pTable->IsStripedRow(rowno) )
             {
                *m_pOstream << _T(" BGCOLOR=\"") << rptRiStyle::GetColorCode( style.GetBGColor() ) << ("\"");
             }
@@ -429,9 +438,24 @@ void rptHtmlRcVisitor::VisitRcFontModifier(rptRcFontModifier* my_m)
 void rptHtmlRcVisitor::VisitRcColor(rptRcColor* my_m)
 {
    rptRiStyle::FontColor my_color = my_m->GetFontColor();
-   *m_pOstream << _T("<SPAN STYLE=\"color:") << rptRiStyle::GetColorCode(my_color) << _T("\">");
+   if (rptRiStyle::Default != my_color)
+   {
+      *m_pOstream << _T("<SPAN STYLE=\"color:") << rptRiStyle::GetColorCode(my_color) << _T("\";>");
+   }
 }
 
+//------------------------------------------------------------------------
+//
+// change the background color of the stream
+//
+void rptHtmlRcVisitor::VisitRcBgColor(rptRcBgColor* my_m)
+{
+   rptRiStyle::FontColor my_color = my_m->GetColor();
+   if (rptRiStyle::Default != my_color)
+   {
+      *m_pOstream << _T("<SPAN STYLE=\"background-color: ") << rptRiStyle::GetColorCode(my_color) << _T("\";>");
+   }
+}
 
 //------------------------------------------------------------------------
 //
@@ -538,13 +562,20 @@ void rptHtmlRcVisitor::VisitRcSymbol(rptRcSymbol* pSymbol)
 
    // return if symbol is none
    if (sym == rptRcSymbol::NONE)
+   {
       return;
+   }
+   else if (sym == rptRcSymbol::NBSP)
+   {
+      *m_pOstream << _T("&nbsp;");
+   }
+   else
+   {
+      // get the roman equivalent for the symbol
+      TCHAR symlet = GetRomanForGreek(sym);
 
-   // get the roman equivalent for the symbol
-
-   TCHAR symlet = GetRomanForGreek(sym);
-
-   *m_pOstream << _T("<SPAN STYLE=\"font-family: Symbol\">") << (TCHAR)symlet << _T("</SPAN>");
+      *m_pOstream << _T("<SPAN STYLE=\"font-family: Symbol\">") << (TCHAR)symlet << _T("</SPAN>");
+   }
 }
 
 //------------------------------------------------------------------------
@@ -759,6 +790,18 @@ void rptHtmlRcVisitor::VisitRcStation(rptRcStation* pRC)
 
    HyperEnd(pRC); // deal with hyperlinks
 }
+
+void rptHtmlRcVisitor::VisitRcComposite(rptRcComposite* pRC)
+{
+   rptRcComposite::ContentIterator it = pRC->Begin();
+   while (it != pRC->End())
+   {
+      (*it)->Accept(*this);
+
+      it++;
+   }
+}
+
 
 //======================== ACCESS     =======================================
 //======================== INQUIRY    =======================================

@@ -285,7 +285,11 @@ STDMETHODIMP CMultiWebSection::get_TopFlangeWidth(FlangeIndexType idx,Float64* w
       return E_INVALIDARG;
    }
 
-   return get_TopWidth(width);
+   Float64 left, right;
+   get_TopWidth(&left,&right);
+
+   *width = left + right;
+   return S_OK;
 }
 
 STDMETHODIMP CMultiWebSection::get_TopFlangeThickness(FlangeIndexType idx,Float64* tFlange)
@@ -376,14 +380,23 @@ STDMETHODIMP CMultiWebSection::get_NominalHeight(Float64* height)
    return m_Beam->get_Height(height);
 }
 
-STDMETHODIMP CMultiWebSection::get_TopWidth(Float64* width)
+STDMETHODIMP CMultiWebSection::get_TopWidth(Float64* pLeft, Float64* pRight)
 {
-   return m_Beam->get_TopFlangeWidth(width);
+   Float64 width;
+   m_Beam->get_TopFlangeWidth(&width);
+
+   width /= 2.0;
+
+   *pLeft = width;
+   *pRight = width;
+
+   return S_OK;
 }
 
-STDMETHODIMP CMultiWebSection::get_BottomWidth(Float64* width)
+STDMETHODIMP CMultiWebSection::get_BottomWidth(Float64* pLeft, Float64* pRight)
 {
-   CHECK_RETVAL(width);
+   CHECK_RETVAL(pLeft);
+   CHECK_RETVAL(pRight);
 
    WebIndexType nWebs;
    get_WebCount(&nWebs);
@@ -393,7 +406,11 @@ STDMETHODIMP CMultiWebSection::get_BottomWidth(Float64* width)
    m_Beam->get_T2(&t2);
    m_Beam->get_W2(&w2);
 
-   *width = nWebs*t1 + (nWebs-1)*w2 - (t1-t2);
+   Float64 width = nWebs*t1 + (nWebs-1)*w2 - (t1-t2);
+   width /= 2.0;
+
+   *pLeft = width;
+   *pRight = width;
 
    return S_OK;
 }
@@ -472,6 +489,7 @@ STDMETHODIMP CMultiWebSection::get_CL2ExteriorWebDistance(DirectionType side, Fl
    return S_OK;
 }
 
+
 STDMETHODIMP CMultiWebSection::RemoveSacrificalDepth(Float64 sacDepth)
 {
    Float64 D1;
@@ -499,6 +517,44 @@ STDMETHODIMP CMultiWebSection::get_SplittingDirection(SplittingDirection* pSD)
    CHECK_RETVAL(pSD);
    *pSD = sdVertical;
    return S_OK;
+}
+
+STDMETHODIMP CMultiWebSection::GetWebSections(IDblArray** ppY, IDblArray** ppW, IBstrArray** ppDesc)
+{
+   Float64 D1, T1;
+   m_Beam->get_D1(&D1);
+   m_Beam->get_T1(&T1);
+
+   WebIndexType nWebs;
+   m_Beam->get_WebCount(&nWebs);
+
+   CComPtr<IDblArray> y;
+   y.CoCreateInstance(CLSID_DblArray);
+   y.CopyTo(ppY);
+
+   CComPtr<IDblArray> w;
+   w.CoCreateInstance(CLSID_DblArray);
+   w.CopyTo(ppW);
+
+   CComPtr<IBstrArray> desc;
+   desc.CoCreateInstance(CLSID_BstrArray);
+   desc.CopyTo(ppDesc);
+
+   if (0 < nWebs)
+   {
+      (*ppY)->Add(-D1);
+      (*ppW)->Add(nWebs * T1);
+      (*ppDesc)->Add(CComBSTR(_T("Top Flange - Web")));
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP CMultiWebSection::GetWebWidthProjectionsForDebonding(IUnkArray** ppArray)
+{
+   // web width projections for debonding don't apply to this type of section
+   CHECK_RETOBJ(ppArray);
+   return S_FALSE;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -671,6 +727,12 @@ STDMETHODIMP CMultiWebSection::get_Count(CollectionIndexType *pVal)
 STDMETHODIMP CMultiWebSection::get_Shape(IShape* *pVal)
 {
    return m_CompositeShape->get_Shape(pVal);
+}
+
+STDMETHODIMP CMultiWebSection::get_XYPosition(IXYPosition **pVal)
+{
+   CHECK_RETOBJ(pVal);
+   return m_CompositeShape->get_XYPosition(pVal);
 }
 
 STDMETHODIMP CMultiWebSection::get_StructuredStorage(IStructuredStorage2* *pStrStg)

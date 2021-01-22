@@ -29,6 +29,7 @@
 
 #include "stdafx.h"
 #include "TestPlateGirder.h"
+#include <array>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -68,16 +69,16 @@ void CTestPlateGirder::TestIPlateGirder()
    Float64 val;
    CComPtr<IPoint2d> pntVal;
 
-   TRY_TEST( beam->get_BottomFlangeThick(nullptr), E_POINTER );
-   TRY_TEST( beam->get_BottomFlangeThick(&val), S_OK );
+   TRY_TEST( beam->get_BottomFlangeThickness(nullptr), E_POINTER );
+   TRY_TEST( beam->get_BottomFlangeThickness(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
    TRY_TEST( beam->get_BottomFlangeWidth(nullptr), E_POINTER );
    TRY_TEST( beam->get_BottomFlangeWidth(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_TopFlangeThick(nullptr), E_POINTER );
-   TRY_TEST( beam->get_TopFlangeThick(&val), S_OK );
+   TRY_TEST( beam->get_TopFlangeThickness(nullptr), E_POINTER );
+   TRY_TEST( beam->get_TopFlangeThickness(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
    TRY_TEST( beam->get_TopFlangeWidth(nullptr), E_POINTER );
@@ -88,8 +89,8 @@ void CTestPlateGirder::TestIPlateGirder()
    TRY_TEST( beam->get_WebHeight(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_WebThick(nullptr), E_POINTER );
-   TRY_TEST( beam->get_WebThick(&val), S_OK );
+   TRY_TEST( beam->get_WebWidth(nullptr), E_POINTER );
+   TRY_TEST( beam->get_WebWidth(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
    TRY_TEST( beam->get_HookPoint(nullptr), E_POINTER );
@@ -100,9 +101,9 @@ void CTestPlateGirder::TestIPlateGirder()
    TRY_TEST( IsZero(val), true );
 
    // Test properties
-   TRY_TEST( beam->put_BottomFlangeThick(-1), GEOMETRY_E_DIMENSION );
-   TRY_TEST( beam->put_BottomFlangeThick(14), S_OK );
-   beam->get_BottomFlangeThick(&val);
+   TRY_TEST( beam->put_BottomFlangeThickness(-1), GEOMETRY_E_DIMENSION );
+   TRY_TEST( beam->put_BottomFlangeThickness(14), S_OK );
+   beam->get_BottomFlangeThickness(&val);
    TRY_TEST( IsEqual(val,14.0), true );
 
    TRY_TEST( beam->put_BottomFlangeWidth(-1), GEOMETRY_E_DIMENSION );
@@ -110,9 +111,9 @@ void CTestPlateGirder::TestIPlateGirder()
    beam->get_BottomFlangeWidth(&val);
    TRY_TEST( IsEqual(val,14.0), true );
 
-   TRY_TEST( beam->put_TopFlangeThick(-1), GEOMETRY_E_DIMENSION );
-   TRY_TEST( beam->put_TopFlangeThick(14), S_OK );
-   beam->get_TopFlangeThick(&val);
+   TRY_TEST( beam->put_TopFlangeThickness(-1), GEOMETRY_E_DIMENSION );
+   TRY_TEST( beam->put_TopFlangeThickness(14), S_OK );
+   beam->get_TopFlangeThickness(&val);
    TRY_TEST( IsEqual(val,14.0), true );
 
    TRY_TEST( beam->put_TopFlangeWidth(-1), GEOMETRY_E_DIMENSION );
@@ -120,14 +121,14 @@ void CTestPlateGirder::TestIPlateGirder()
    beam->get_TopFlangeWidth(&val);
    TRY_TEST( IsEqual(val,14.0), true );
 
-   TRY_TEST( beam->put_WebThick(-1), GEOMETRY_E_DIMENSION );
-   TRY_TEST( beam->put_WebThick(14), S_OK );
-   beam->get_WebThick(&val);
+   TRY_TEST( beam->put_WebWidth(-1), GEOMETRY_E_DIMENSION );
+   TRY_TEST( beam->put_WebWidth(14), S_OK );
+   beam->get_WebWidth(&val);
    TRY_TEST( IsEqual(val,14.0), true );
 
-   TRY_TEST( beam->put_WebThick(-1), GEOMETRY_E_DIMENSION );
-   TRY_TEST( beam->put_WebThick(14), S_OK );
-   beam->get_WebThick(&val);
+   TRY_TEST( beam->put_WebWidth(-1), GEOMETRY_E_DIMENSION );
+   TRY_TEST( beam->put_WebWidth(14), S_OK );
+   beam->get_WebWidth(&val);
    TRY_TEST( IsEqual(val,14.0), true );
 
    pntVal->Move(14,14);
@@ -142,10 +143,10 @@ void CTestPlateGirder::TestIPlateGirder()
 
    // Use some real dimensions
    beam->put_TopFlangeWidth(22);
-   beam->put_TopFlangeThick(1.25);
+   beam->put_TopFlangeThickness(1.25);
    beam->put_BottomFlangeWidth(22);
-   beam->put_BottomFlangeThick(2.25);
-   beam->put_WebThick(0.438);
+   beam->put_BottomFlangeThickness(2.25);
+   beam->put_WebWidth(0.438);
    beam->put_WebHeight(122);
 
    TRY_TEST(beam->get_Height(nullptr), E_POINTER );
@@ -190,10 +191,10 @@ void CTestPlateGirder::TestIShape()
    
    // Use some real dimensions
    beam->put_TopFlangeWidth(22);
-   beam->put_TopFlangeThick(1.25);
+   beam->put_TopFlangeThickness(1.25);
    beam->put_BottomFlangeWidth(22);
-   beam->put_BottomFlangeThick(2.25);
-   beam->put_WebThick(0.438);
+   beam->put_BottomFlangeThickness(2.25);
+   beam->put_WebWidth(0.438);
    beam->put_WebHeight(122);
 
    //
@@ -302,7 +303,7 @@ void CTestPlateGirder::TestIShape()
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   CComPtr<IPoint2d> points[12];
+   std::array<CComPtr<IPoint2d>, 12> points;
    ULONG fetched;
    Enum->Next(12,&points[0],&fetched);
    TRY_TEST( fetched, 12 );
@@ -379,13 +380,13 @@ void CTestPlateGirder::TestIShape()
    CComQIPtr<IPlateGirder> beamClone(clone);
    TRY_TEST( beamClone != 0, true );
 
-   beamClone->get_BottomFlangeThick(&val);
+   beamClone->get_BottomFlangeThickness(&val);
    TRY_TEST( IsEqual(val,2.25), true);
 
    beamClone->get_BottomFlangeWidth(&val);
    TRY_TEST( IsEqual(val,22.0), true);
 
-   beamClone->get_TopFlangeThick(&val);
+   beamClone->get_TopFlangeThickness(&val);
    TRY_TEST( IsEqual(val,1.25), true);
 
    beamClone->get_TopFlangeWidth(&val);
@@ -394,7 +395,7 @@ void CTestPlateGirder::TestIShape()
    beamClone->get_WebHeight(&val);
    TRY_TEST( IsEqual(val,122.0), true);
 
-   beamClone->get_WebThick(&val);
+   beamClone->get_WebWidth(&val);
    TRY_TEST( IsEqual(val,0.438), true);
 
    //
@@ -556,10 +557,10 @@ void CTestPlateGirder::TestIXYPosition()
    // Use some real dimensions
    beam->putref_HookPoint(hookPnt);
    beam->put_TopFlangeWidth(22);
-   beam->put_TopFlangeThick(1.25);
+   beam->put_TopFlangeThickness(1.25);
    beam->put_BottomFlangeWidth(22);
-   beam->put_BottomFlangeThick(2.25);
-   beam->put_WebThick(0.438);
+   beam->put_BottomFlangeThickness(2.25);
+   beam->put_WebWidth(0.438);
    beam->put_WebHeight(122);
 
    //

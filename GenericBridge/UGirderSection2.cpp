@@ -263,8 +263,8 @@ STDMETHODIMP CUGirderSection2::get_WebPlane(WebIndexType idx,IPlane3d** ppPlane)
    Float64 x;
    this->get_WebLocation(idx,&x);
 
-   Float64 w;
-   this->get_BottomWidth(&w);
+   Float64 w; // bottom width
+   m_Beam->get_W1(&w);
 
    Float64 h;
    this->get_OverallHeight(&h);
@@ -431,14 +431,28 @@ STDMETHODIMP CUGirderSection2::get_NominalHeight(Float64* height)
    return m_Beam->get_Height(height);
 }
 
-STDMETHODIMP CUGirderSection2::get_TopWidth(Float64* width)
+STDMETHODIMP CUGirderSection2::get_TopWidth(Float64* pLeft, Float64* pRight)
 {
-   return m_Beam->get_TopWidth(width);
+   Float64 width;
+   m_Beam->get_TopWidth(&width);
+   width /= 2.0;
+
+   *pLeft = width;
+   *pRight = width;
+
+   return S_OK;
 }
 
-STDMETHODIMP CUGirderSection2::get_BottomWidth(Float64* width)
+STDMETHODIMP CUGirderSection2::get_BottomWidth(Float64* pLeft, Float64* pRight)
 {
-   return m_Beam->get_W1(width);
+   Float64 width;
+   m_Beam->get_W1(&width);
+   width /= 2.0;
+
+   *pLeft = width;
+   *pRight = width;
+
+   return S_OK;
 }
 
 STDMETHODIMP CUGirderSection2::get_ShearWidth(Float64* shearwidth)
@@ -484,6 +498,7 @@ STDMETHODIMP CUGirderSection2::get_CL2ExteriorWebDistance(DirectionType side, Fl
    return hr;
 }
 
+
 STDMETHODIMP CUGirderSection2::RemoveSacrificalDepth(Float64 sacDepth)
 {
    Float64 D1,D5;
@@ -511,6 +526,88 @@ STDMETHODIMP CUGirderSection2::get_SplittingDirection(SplittingDirection* pSD)
    CHECK_RETVAL(pSD);
    Float64 h;
    GetSplittingZone(&h,pSD);
+   return S_OK;
+}
+
+STDMETHODIMP CUGirderSection2::GetWebSections(IDblArray** ppY, IDblArray** ppW, IBstrArray** ppDesc)
+{
+   Float64 D1, D2, D3, D4, D5, D6, W7;
+   m_Beam->get_D1(&D1);
+   m_Beam->get_D2(&D2);
+   m_Beam->get_D3(&D3);
+   m_Beam->get_D4(&D4);
+   m_Beam->get_D5(&D5);
+   m_Beam->get_D6(&D6);
+   m_Beam->get_W7(&W7);
+
+   Float64 t_web;
+   get_WebThickness(0, &t_web);
+
+   CComPtr<IDblArray> y;
+   y.CoCreateInstance(CLSID_DblArray);
+   y.CopyTo(ppY);
+
+   CComPtr<IDblArray> w;
+   w.CoCreateInstance(CLSID_DblArray);
+   w.CopyTo(ppW);
+
+   CComPtr<IBstrArray> desc;
+   desc.CoCreateInstance(CLSID_BstrArray);
+   desc.CopyTo(ppDesc);
+
+   if (IsLE(D6, D4 + D5))
+   {
+      (*ppY)->Add(-(D4 + D5));
+      (*ppW)->Add(2 * t_web);
+      (*ppDesc)->Add(_T("Top Flange - Web"));
+   }
+   else
+   {
+      (*ppY)->Add(-(D4 + D5));
+      (*ppW)->Add(2 * (W7*(D6-D4-D5)/D6 + t_web));
+      (*ppDesc)->Add(_T("Top Flange - Web"));
+
+      (*ppY)->Add(-D6);
+      (*ppW)->Add(2 * t_web);
+      (*ppDesc)->Add(_T("Interior Web Transition"));
+   }
+
+
+   (*ppY)->Add(-D1 + D2 + D3);
+   (*ppW)->Add(2 * t_web);
+   (*ppDesc)->Add(CComBSTR(_T("Bottom Flange - Web")));
+
+   return S_OK;
+}
+
+STDMETHODIMP CUGirderSection2::GetWebWidthProjectionsForDebonding(IUnkArray** ppArray)
+{
+   CHECK_RETOBJ(ppArray);
+
+   Float64 D1, D2, D3, W1;
+   m_Beam->get_D1(&D1);
+   m_Beam->get_D2(&D2);
+   m_Beam->get_D3(&D3);
+   m_Beam->get_W1(&W1);
+
+   Float64 t_web;
+   get_WebThickness(0, &t_web);
+
+
+   CComPtr<IUnkArray> array;
+   array.CoCreateInstance(CLSID_UnkArray);
+
+   CComPtr<IRect2d> rect1;
+   rect1.CoCreateInstance(CLSID_Rect2d);
+   rect1->SetBounds(-W1 / 2, -W1 / 2 + t_web, -D1, -D1 + D2 + 0.5*D3);
+   array->Add(rect1);
+
+   CComPtr<IRect2d> rect2;
+   rect2.CoCreateInstance(CLSID_Rect2d);
+   rect2->SetBounds(W1 / 2 - t_web, W1 / 2, -D1, -D1 + D2 + 0.5*D3);
+   array->Add(rect2);
+
+   array.CopyTo(ppArray);
    return S_OK;
 }
 
@@ -684,6 +781,12 @@ STDMETHODIMP CUGirderSection2::get_Count(CollectionIndexType *pVal)
 STDMETHODIMP CUGirderSection2::get_Shape(IShape* *pVal)
 {
    return m_CompositeShape->get_Shape(pVal);
+}
+
+STDMETHODIMP CUGirderSection2::get_XYPosition(IXYPosition **pVal)
+{
+   CHECK_RETOBJ(pVal);
+   return m_CompositeShape->get_XYPosition(pVal);
 }
 
 STDMETHODIMP CUGirderSection2::get_StructuredStorage(IStructuredStorage2* *pStrStg)

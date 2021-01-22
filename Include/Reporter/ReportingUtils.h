@@ -51,8 +51,8 @@
    proto.SetWidth( im.Width ); \
    proto.SetPrecision( im.Precision )
 
-#define INIT_FRACTIONAL_LENGTH_PROTOTYPE( proto, english, denom, im, _bShowTag,_bFractionOnly) \
-   rptFormattedLengthUnitValue proto(&im.UnitOfMeasure, im.Tol ,_bShowTag,english,denom,_bFractionOnly); \
+#define INIT_FRACTIONAL_LENGTH_PROTOTYPE( proto, english, denom, rounding, im, _bShowTag,_bFractionOnly) \
+   rptFormattedLengthUnitValue proto(&im.UnitOfMeasure, im.Tol ,_bShowTag,english,denom,_bFractionOnly,rptFormattedLengthUnitValue::##rounding); \
    proto.SetFormat( im.Format );\
    proto.SetWidth( im.Width ); \
    proto.SetPrecision( im.Precision )
@@ -115,11 +115,11 @@
 #define RPT_vu italic(ON) << Sub2(_T("v"),_T("u")) << italic(OFF)
 #define RPT_Vu italic(ON) << Sub2(_T("V"),_T("u")) << italic(OFF)
 
-#define RPT_PASS color(Green) << _T("Pass") << color(Black)
-#define RPT_FAIL color(Red) << bold(ON) << _T("Fail") << bold(OFF) << color(Black)
-#define RPT_NA color(Blue) << _T("N/A") << color(Black)
+#define RPT_PASS new rptRcComposite(3,color(Green), new rptRcString(_T("Pass")),color(Black))
+#define RPT_FAIL new rptRcComposite(5,color(Red),bold(ON),new rptRcString(_T("Fail")),bold(OFF),color(Black))
+#define RPT_NA new rptRcComposite(3,color(Blue),new rptRcString(_T("N/A")),color(Black))
 
-#define RPT_OFFSET(_value_,_um_) \
-_um_.SetValue(fabs(_value_)) << (::Sign(_value_) < 0 ? _T(" L") : (::Sign(_value_) > 0 ? _T(" R") : _T("")))
+#define RPT_OFFSET(_value_,_um_) _um_.SetValue(fabs(_value_)) << (::Sign(_value_) < 0 ? _T(" L") : (::Sign(_value_) > 0 ? _T(" R") : _T("")))
+
 
 #endif // INCLUDED_REPORTER_REPORTINGUTILS_H_

@@ -80,10 +80,14 @@ void CTestCubicSpline::Test()
    spline->put_StartDirection(CComVariant( atan2(-0.2,1) ));
    spline->put_EndDirection(CComVariant( atan2(-2.5,1) ));
 
-   //TRY_TEST(spline->Evaluate(-1,VARIANT_TRUE,VARIANT_TRUE,nullptr), E_POINTER );
+   CComPtr<IPoint2d> p;
+   TRY_TEST(spline->PointOnSpline(-1,nullptr), E_POINTER );
 
-   //spline->Evaluate(-1,VARIANT_TRUE,VARIANT_TRUE,&y); TRY_TEST( IsEqual(y,1.2), true);
-   //spline->Evaluate(0,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,1.0), true);
+   // before the start of the spline... the input is the distance along the spline. before the spline we assume
+   // a straight line tangent to the spline. the distance is measured along the line which is the hypotenuse
+   // of a triangle, not the x-direction. this is why the correct answer is a little short of 1.2
+   spline->PointOnSpline(-1, &p); p->get_Y(&y); p.Release(); TRY_TEST(IsEqual(y, 1.1961161351381839), true);
+   spline->PointOnSpline( 0, &p); p->get_Y(&y); p.Release(); TRY_TEST(IsEqual(y, 1.0), true);
    //spline->Evaluate(1,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,0.0), true);
    //spline->Evaluate(2,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,0.0), true);
    //spline->Evaluate(3,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,1.0), true);
@@ -93,11 +97,12 @@ void CTestCubicSpline::Test()
    //spline->Evaluate(7,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,-1.5), true);
 
    // test spline slope (derivative = bearing)
-   //Float64 dy;
-   //TRY_TEST(spline->Slope(-1,VARIANT_TRUE,VARIANT_TRUE,nullptr), E_POINTER );
+   Float64 dy;
+   CComPtr<IDirection> d;
+   TRY_TEST(spline->Bearing(-1,nullptr), E_POINTER );
 
-   //spline->Slope(-1,VARIANT_TRUE,VARIANT_TRUE,&dy); TRY_TEST( IsEqual(dy,-0.2), true);
-   //spline->Slope(0,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-0.2), true);
+   spline->Bearing(-1, &d); d->get_Value(&dy); d.Release(); TRY_TEST(IsEqual(tan(dy), -0.2), true);
+   spline->Bearing( 0, &d); d->get_Value(&dy); d.Release(); TRY_TEST(IsEqual(tan(dy), -0.2), true);
    //spline->Slope(1,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-0.86628205128205149), true);
    //spline->Slope(2,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy, 0.66512820512820525), true);
    //spline->Slope(3,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy, 1.2057692307692305), true);
@@ -105,6 +110,7 @@ void CTestCubicSpline::Test()
    //spline->Slope(5,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-0.25294871794871754), true);
    //spline->Slope(6,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-2.5), true);
    //spline->Slope(7,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-2.5), true);
+   spline->Bearing(50, &d); d->get_Value(&dy); d.Release(); TRY_TEST(IsEqual(tan(dy), -2.5), true);
 
    // spline length
    Float64 L;
@@ -160,7 +166,7 @@ void CTestCubicSpline::Test()
    TRY_TEST( IsEqual(1/2.5,tan(value),0.001), true );
 
    // project a point onto the spline
-   CComPtr<IPoint2d> p;
+   p.Release();
    p.CoCreateInstance(CLSID_Point2d);
    p->Move(4,0);
 
@@ -373,11 +379,39 @@ void CTestCubicSpline::Test()
    spline->put_EndDirection(CComVariant(M_PI/4));
 
    p.Release();
-   spline->PointOnSpline(2.,&p);
-   p->get_X(&x);   TRY_TEST( IsEqual(x,1.9813,0.001), true );
-   p->get_Y(&y);   TRY_TEST( IsEqual(y,0.2312,0.001), true );
+   spline->PointOnSpline(0., &p);
+   p->get_X(&x);   TRY_TEST(IsEqual(x, 0.0), true);
+   p->get_Y(&y);   TRY_TEST(IsEqual(y, 0.0), true);
 
+   p.Release();
+   spline->PointOnSpline(2., &p);
+   p->get_X(&x);   TRY_TEST(IsEqual(x, 1.98136), true);
+   p->get_Y(&y);   TRY_TEST(IsEqual(y, 0.23124), true);
 
+   spline->get_Length(&L);
+   p.Release();
+   spline->PointOnSpline(L, &p);
+   p->get_X(&x);   TRY_TEST(IsEqual(x, 10.0), true);
+   p->get_Y(&y);   TRY_TEST(IsEqual(y, 10.0), true);
+
+   // another curve line - this data comes from a real model that didn't work correctly
+   // until we fixed the spline object
+   spline->Clear();
+   spline->AddPoint(25.950838, 47.9880235);
+   spline->AddPoint(148.83656, 196.75139);
+   spline->put_StartDirection(CComVariant(0.97387));
+   spline->put_EndDirection(CComVariant(0.750248));
+
+   p.Release();
+   spline->PointOnSpline(0, &p);
+   p->get_X(&x);   TRY_TEST(IsEqual(x, 25.950838), true);
+   p->get_Y(&y);   TRY_TEST(IsEqual(y, 47.9880235), true);
+
+   spline->get_Length(&L);
+   p.Release();
+   spline->PointOnSpline(L, &p);
+   p->get_X(&x);   TRY_TEST(IsEqual(x, 148.83656), true);
+   p->get_Y(&y);   TRY_TEST(IsEqual(y, 196.75139), true);
 
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(spline);

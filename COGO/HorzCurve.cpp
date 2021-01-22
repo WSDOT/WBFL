@@ -1498,6 +1498,14 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
    else
       m_GeomUtil->Angle(CS,CCC,SC,&delta);
 
+#if defined _DEBUG
+   CComPtr<IAngle> angle;
+   get_CircularCurveAngle(&angle);
+   Float64 value;
+   angle->get_Value(&value);
+   ATLASSERT(IsEqual(delta, value));
+#endif
+
    CComPtr<IPoint2d> pntCurve1, pntCurve2;
    if ( pnt1 )
    {

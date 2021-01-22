@@ -1176,6 +1176,33 @@ library WBFLGenericBridge
 	   [propget,helpstring("property Beam")] HRESULT Beam([out,retval]IPrecastBeam** beam);
 	};
 
+
+   [
+      object,
+      uuid(D34B51A2-2F63-4F05-BFF9-9B30ABD55CAF),
+      oleautomation,
+      helpstring("IFlangedGirderSection2 Interface"),
+      pointer_default(unique)
+   ]
+   interface IFlangedGirderSection2 : IUnknown
+   {
+      [propput, helpstring("property Beam")] HRESULT Beam([in]IPrecastBeam2* beam);
+      [propget, helpstring("property Beam")] HRESULT Beam([out, retval]IPrecastBeam2** beam);
+   };
+
+   [
+      object,
+      uuid(FCB29A04-D141-402C-99F6-A73C69DFBDEE),
+      oleautomation,
+      helpstring("IFlangedEndBlockSection Interface"),
+      pointer_default(unique)
+   ]
+   interface IFlangedEndBlockSection : IUnknown
+   {
+      [helpstring("method GetWebWidth")] HRESULT GetWebWidth([out]Float64* pT1, [out]Float64* pT2);
+      [helpstring("method CreateEndBlockSection")] HRESULT CreateEndBlockSection([in]Float64 Wt,[in]Float64 Wb, [out]IFlangedEndBlockSection** ppEndBlockSection);
+   };
+
    [
       object,
       uuid(C0893B25-A46A-4FE5-8706-F7BDDDB4F00B),
@@ -1184,9 +1211,16 @@ library WBFLGenericBridge
    ]
    interface IAsymmetricSection : IUnknown
    {
+      // Left and Right overhangs can be different so get the two top widths. This is typically taken directly from IGirderSection::TopWidth(), but here also for convenience.
       [helpstring("method GetTopWidth")] HRESULT GetTopWidth([out]Float64* pLeft, [out]Float64* pRight);
+
+      // Heights can be different because of crown slope built into the girder top flange... get min, "Centerline" and max height
       [helpstring("method GetHeight")] HRESULT GetHeight([out]Float64* pHmin, [out]Float64* pHcl, [out]Float64* pHmax);
+
+      // Get points for computer stresses
       [helpstring("method GetStressPoints)")] HRESULT GetStressPoints([in]StressPointType spType, [out]IPoint2dCollection** ppPoints);
+
+      // Return true if you want to computer biaxial stresses
       [helpstring("method IgnoreBiaxialBending")] HRESULT IgnoreBiaxialBending([out]bool* pIgnoreBiaxial);
    };
 
@@ -1590,6 +1624,23 @@ library WBFLGenericBridge
 	   [propget,helpstring("property Beam")] HRESULT Beam([out,retval]IBulbTee2** beam);
    };
 
+   [
+      object,
+      uuid(A9F6043C-AD27-423B-A342-6A16A3E32B5C),
+      oleautomation,
+      helpstring("IFlangedDeckedSection Interface"),
+      pointer_default(unique)
+   ]
+   interface IFlangedDeckedSection : IUnknown
+   {
+      [helpstring("method GetOverhangs")] HRESULT GetOverhangs([out]Float64* pLeft, [out]Float64* pRight);
+      [helpstring("method GetCrown")] HRESULT GetCrown([out]Float64* pC);
+      [helpstring("method GetCrownSlopes")] HRESULT GetCrownSlopes([out]Float64* pLeft, [out]Float64* pRight);
+      [helpstring("method GetMaxHeight")] HRESULT GetMaxHeight([out]Float64* pH);
+      [helpstring("method GetCLHeight")] HRESULT GetCLHeight([out]Float64* pCL);
+      [helpstring("method GetBottomCLPoint")] HRESULT GetBottomCLPoint([out]IPoint2d** ppPoint);
+      [helpstring("method AddTopFlangeThickening")] HRESULT AddTopFlangeThickening([in]Float64 topFlangeThickening);
+   };
 
    [
       object,
@@ -1924,15 +1975,16 @@ library WBFLGenericBridge
    
       [propget,helpstring("property OverallHeight")] HRESULT OverallHeight([out, retval]Float64* height);
 	   [propget,helpstring("property NominalHeight")] HRESULT NominalHeight([out,retval]Float64* height);
-	   [propget,helpstring("property TopWidth")] HRESULT TopWidth([out,retval]Float64* width);
-	   [propget,helpstring("property BottomWidth")] HRESULT BottomWidth([out,retval]Float64* width);
+      // top/bottom widths here and below returned are widths measured from the nominal girder centerline, and disregard simple chamfers or top joint chamfers
+	   [propget,helpstring("property TopWidth")] HRESULT TopWidth([out]Float64* wLeft,[out]Float64* wRight);
+	   [propget,helpstring("property BottomWidth")] HRESULT BottomWidth([out]Float64* wLeft,[out]Float64* wRight);
 	   [propget,helpstring("property ShearWidth")] HRESULT ShearWidth([out,retval]Float64* shearwidth);
-	   [propget,helpstring("property MinTopFlangeThickness")] HRESULT MinTopFlangeThickness([out,retval]Float64* tf);
+      [propget,helpstring("property MinTopFlangeThickness")] HRESULT MinTopFlangeThickness([out,retval]Float64* tf);
 	   [propget,helpstring("property MinBottomFlangeThickness")] HRESULT MinBottomFlangeThickness([out,retval]Float64* tf);
 	   // Distance from centerline of section to centerline of exterior web.
 	   // Note that the distance value is positive regardless of side
 	   [propget,helpstring("property CL2ExteriorWebDistance")] HRESULT CL2ExteriorWebDistance([in] DirectionType side, [out,retval]Float64* tf);
-	};
+   };
 
 	[
 		object,
@@ -1941,12 +1993,14 @@ library WBFLGenericBridge
 		helpstring("IPrestressedGirderSection Interface"),
 		pointer_default(unique)
 	]
-	interface IPrestressedGirderSection : IGirderSection
-	{
+   interface IPrestressedGirderSection : IGirderSection
+   {
       [helpstring("method RemoveSacrificalDepth")] HRESULT RemoveSacrificalDepth([in]Float64 sacDepth);
-		[propget,helpstring("property SplittingZoneDimension")] HRESULT SplittingZoneDimension([out,retval]Float64* pSZD);
-      [propget,helpstring("property SplittingDirection")] HRESULT SplittingDirection([out,retval]SplittingDirection* pSD);
-	};
+      [propget, helpstring("property SplittingZoneDimension")] HRESULT SplittingZoneDimension([out, retval]Float64* pSZD);
+      [propget, helpstring("property SplittingDirection")] HRESULT SplittingDirection([out, retval]SplittingDirection* pSD);
+      [helpstring("method GetWebSections")] HRESULT GetWebSections([out]IDblArray** ppY, [out]IDblArray** ppW, [out]IBstrArray** ppDesc);
+      [helpstring("method GetWebWidthProjectionsForDebonding")] HRESULT GetWebWidthProjectionsForDebonding([out]IUnkArray** ppArray);
+   };
 
 	[
 	   object,
@@ -2145,6 +2199,9 @@ library WBFLGenericBridge
 	   [propget,helpstring("property InsideDiameter")] HRESULT InsideDiameter([out,retval]Float64* size);
 	   [propput,helpstring("property InsideDiameter")] HRESULT InsideDiameter([in]Float64 size);
 
+      [propget, helpstring("property NominalDiameter")] HRESULT NominalDiameter([out, retval]Float64* size);
+      [propput, helpstring("property NominalDiameter")] HRESULT NominalDiameter([in]Float64 size);
+
 	   [propget,helpstring("property StrandCount")] HRESULT StrandCount([out,retval]StrandIndexType* count);
 	   [propput,helpstring("property StrandCount")] HRESULT StrandCount([in]StrandIndexType count);
 
@@ -2153,6 +2210,7 @@ library WBFLGenericBridge
 
       [propget, helpstring("property OutsideDuctArea")] HRESULT OutsideDuctArea([out, retval]Float64* Aduct);
       [propget, helpstring("property InsideDuctArea")] HRESULT InsideDuctArea([out, retval]Float64* Aduct);
+      [propget, helpstring("property NominalDuctArea")] HRESULT NominalDuctArea([out, retval]Float64* Aduct);
       [propget,helpstring("property TendonArea")] HRESULT TendonArea([out,retval]Float64* Apt);
 
       [propget,helpstring("property MinimumRadiusOfCurvature")] HRESULT MinimumRadiusOfCurvature([out,retval]Float64* pMinRadiusOfCurvature);
@@ -2735,11 +2793,27 @@ library WBFLGenericBridge
 	   [default] interface IFlangedGirderSection;
 	   interface IGirderSection;
 	   interface IPrestressedGirderSection;
-	   interface IShape;
+      interface IFlangedEndBlockSection;
+      interface IShape;
       interface ICompositeShape;
 	};
 
-	[
+
+   [
+      uuid(F10A7A59-BC20-4DCC-8348-639DF32D9F73),
+      helpstring("FlangedGirderSection2 Class")
+   ]
+   coclass FlangedGirderSection2
+   {
+      [default] interface IFlangedGirderSection2;
+      interface IGirderSection;
+      interface IPrestressedGirderSection;
+      interface IFlangedEndBlockSection;
+      interface IShape;
+      interface ICompositeShape;
+   };
+   
+   [
 		uuid(90F25ADA-74B8-4171-80CA-A445519885AC),
 		helpstring("BulbTeeSection Class")
 	]

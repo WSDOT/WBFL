@@ -130,6 +130,19 @@ IndexType grGraphXY::CreateDataSeries(LPCTSTR lpszLabel,int nPenStyle, int nWidt
    return cookie;
 }
 
+IndexType grGraphXY::FindDataSeries(LPCTSTR lpszLabel)
+{
+   for (const auto& series : m_GraphDataMap)
+   {
+      if (series.second.Label == lpszLabel)
+      {
+         return series.first;
+      }
+   }
+
+   return INVALID_INDEX;
+}
+
 void grGraphXY::AddPoint(IndexType cookie,const gpPoint2d& rPoint)
 {
    GraphDataMap::iterator found = m_GraphDataMap.find(cookie);

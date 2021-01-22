@@ -1478,17 +1478,26 @@ library WBFLGeometry
 		[helpstring("method RemovePoint"),helpcontext(IDH_IPolyShape_RemovePoint)]
 		HRESULT RemovePoint([in] CollectionIndexType index);
 
-		[propget, helpstring("property Shape"),helpcontext(IDH_IPolyShape_Shape)]
+      [helpstring("method ChangePoint"), helpcontext(IDH_IPolyShape_ChangePoint)]
+      HRESULT ChangePoint([in] CollectionIndexType index, [in] Float64 x, [in] Float64 y);
+
+      [helpstring("method ChangePointEx"), helpcontext(IDH_IPolyShape_ChangePointEx)]
+      HRESULT ChangePointEx([in] CollectionIndexType index, [in] IPoint2d* pPoint);
+      
+      [propget, helpstring("property Shape"),helpcontext(IDH_IPolyShape_Shape)]
 		HRESULT Shape([out, retval] IShape* *pVal);
 
 		[propget, helpstring("property XYPosition"),helpcontext(IDH_IPolyShape_XYPosition)]
 		HRESULT XYPosition([out, retval] IXYPosition* *pVal);
 
-		[propget, helpstring("property NumPoints"),helpcontext(IDH_IPolyShape_NumPoints)]
-		HRESULT NumPoints([out, retval] CollectionIndexType *pVal);
+		[propget, helpstring("property Count"),helpcontext(IDH_IPolyShape_Count)]
+		HRESULT Count([out, retval] CollectionIndexType *pVal);
 
 		[propget, helpstring("property Point"),helpcontext(IDH_IPolyShape_Point)]
 		HRESULT Point([in] CollectionIndexType index, [out, retval] IPoint2d* *pVal);
+
+      [helpstring("property GetPoint"), helpcontext(IDH_IPolyShape_Point)]
+      HRESULT GetPoint([in] CollectionIndexType index, [out] Float64* pX, [out] Float64* pY);
 
 		[helpstring("method Clear"),helpcontext(IDH_IPolyShape_Clear)]
 		HRESULT Clear();
@@ -1746,6 +1755,133 @@ library WBFLGeometry
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
+   [
+      object,
+      uuid(1FDF594F-DEB1-472F-9069-3C6C30D0FB2D),
+      oleautomation,
+      helpstring("IPrecastBeam2 Interface"),
+      //helpcontext(IDH_IPrecastBeam2),
+      pointer_default(unique)
+   ]
+   interface IPrecastBeam2 : IUnknown
+   {
+      [propget, helpstring("property W1")/*, helpcontext(IDH_IPrecastBeam2_W1)*/]
+      HRESULT W1([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property W1")/*, helpcontext(IDH_IPrecastBeam2_W1)*/]
+      HRESULT W1([in] Float64 newVal);
+
+      [propget, helpstring("property W2")/*, helpcontext(IDH_IPrecastBeam2_W2)*/]
+      HRESULT W2([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property W2")/*, helpcontext(IDH_IPrecastBeam2_W2)*/]
+      HRESULT W2([in] Float64 newVal);
+
+      [propget, helpstring("property W3")/*, helpcontext(IDH_IPrecastBeam2_W3)*/]
+      HRESULT W3([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property W3")/*, helpcontext(IDH_IPrecastBeam2_W3)*/]
+      HRESULT W3([in] Float64 newVal);
+
+      [propget, helpstring("property W4")/*, helpcontext(IDH_IPrecastBeam2_W4)*/]
+      HRESULT W4([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property W4")/*, helpcontext(IDH_IPrecastBeam2_W4)*/]
+      HRESULT W4([in] Float64 newVal);
+
+      [propget, helpstring("property W5")/*, helpcontext(IDH_IPrecastBeam2_W5)*/]
+      HRESULT W5([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property W5")/*, helpcontext(IDH_IPrecastBeam2_W5)*/]
+      HRESULT W5([in] Float64 newVal);
+
+      [propget, helpstring("property D1")/*, helpcontext(IDH_IPrecastBeam2_D1)*/]
+      HRESULT D1([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property D1")/*, helpcontext(IDH_IPrecastBeam2_D1)*/]
+      HRESULT D1([in] Float64 newVal);
+
+      [propget, helpstring("property D2")/*, helpcontext(IDH_IPrecastBeam2_D2)*/]
+      HRESULT D2([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property D2")/*, helpcontext(IDH_IPrecastBeam2_D2)*/]
+      HRESULT D2([in] Float64 newVal);
+
+      [propget, helpstring("property D3")/*, helpcontext(IDH_IPrecastBeam2_D3)*/]
+      HRESULT D3([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property D3")/*, helpcontext(IDH_IPrecastBeam2_D3)*/]
+      HRESULT D3([in] Float64 newVal);
+
+      [propget, helpstring("property D4")/*, helpcontext(IDH_IPrecastBeam2_D4)*/]
+      HRESULT D4([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property D4")/*, helpcontext(IDH_IPrecastBeam2_D4)*/]
+      HRESULT D4([in] Float64 newVal);
+
+      [propget, helpstring("property D5")/*, helpcontext(IDH_IPrecastBeam2_D5)*/]
+      HRESULT D5([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property D5")/*, helpcontext(IDH_IPrecastBeam2_D5)*/]
+      HRESULT D5([in] Float64 newVal);
+
+      [propget, helpstring("property D6")/*, helpcontext(IDH_IPrecastBeam2_D6)*/]
+      HRESULT D6([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property D6")/*, helpcontext(IDH_IPrecastBeam2_D6)*/]
+      HRESULT D6([in] Float64 newVal);
+
+      [propget, helpstring("property H")/*, helpcontext(IDH_IPrecastBeam2_H)*/]
+      HRESULT H([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property H")/*, helpcontext(IDH_IPrecastBeam2_H)*/]
+      HRESULT H([in] Float64 newVal);
+
+      [propget, helpstring("property T1")/*, helpcontext(IDH_IPrecastBeam2_T1)*/]
+      HRESULT T1([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property T1")/*, helpcontext(IDH_IPrecastBeam2_T1)*/]
+      HRESULT T1([in] Float64 newVal);
+
+      [propget, helpstring("property T2")/*, helpcontext(IDH_IPrecastBeam2_T2)*/]
+      HRESULT T2([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property T2")/*, helpcontext(IDH_IPrecastBeam2_T2)*/]
+      HRESULT T2([in] Float64 newVal);
+
+      [propget, helpstring("property C1")/*, helpcontext(IDH_IPrecastBeam2_C1)*/]
+      HRESULT C1([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property C1")/*, helpcontext(IDH_IPrecastBeam2_C1)*/]
+      HRESULT C1([in] Float64 newVal);
+
+      [propget, helpstring("property HookPoint")/*, helpcontext(IDH_IPrecastBeam2_HookPoint)*/]
+      HRESULT HookPoint([out, retval] IPoint2d** hookPnt);
+
+      [propputref, helpstring("property HookPoint")/*, helpcontext(IDH_IPrecastBeam2_HookPoint)*/]
+      HRESULT HookPoint([in] IPoint2d* hookPnt);
+
+      [propget, helpstring("property Height")/*, helpcontext(IDH_IPrecastBeam2_Height)*/]
+      HRESULT Height([out, retval] Float64 *pVal);
+
+      [propget, helpstring("property AvgWebWidth")/*, helpcontext(IDH_IPrecastBeam2_AvgWebWidth)*/]
+      HRESULT AvgWebWidth([out, retval] Float64 *pVal);
+
+      [propget, helpstring("property BottomFlangeWidth")/*, helpcontext(IDH_IPrecastBeam2_BottomFlangeWidth)*/]
+      HRESULT BottomFlangeWidth([out, retval] Float64 *pVal);
+
+      [propget, helpstring("property TopFlangeWidth")/*, helpcontext(IDH_IPrecastBeam2_TopFlangeWidth)*/]
+      HRESULT TopFlangeWidth([out, retval] Float64 *pVal);
+
+      [propget, helpstring("property XYPosition")/*, helpcontext(IDH_IPrecastBeam2_XYPosition)*/]
+      HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+      [propget, helpstring("property Shape")/*, helpcontext(IDH_IPrecastBeam2_Shape)*/]
+      HRESULT Shape([out, retval] IShape* *pVal);
+
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
 
 	[
 		object,
@@ -2816,11 +2952,11 @@ library WBFLGeometry
 		[propput, helpstring("property TopFlangeWidth"),helpcontext(IDH_IPlateGirder_TopFlangeWidth)]
       HRESULT TopFlangeWidth([in] Float64 newVal);
 
-		[propget, helpstring("property TopFlangeThick"),helpcontext(IDH_IPlateGirder_TopFlangeThick)]
-      HRESULT TopFlangeThick([out, retval] Float64 *pVal);
+		[propget, helpstring("property TopFlangeThickness"),helpcontext(IDH_IPlateGirder_TopFlangeThickness)]
+      HRESULT TopFlangeThickness([out, retval] Float64 *pVal);
 
-		[propput, helpstring("property TopFlangeThick"),helpcontext(IDH_IPlateGirder_TopFlangeThick)]
-      HRESULT TopFlangeThick([in] Float64 newVal);
+		[propput, helpstring("property TopFlangeThickness"),helpcontext(IDH_IPlateGirder_TopFlangeThickness)]
+      HRESULT TopFlangeThickness([in] Float64 newVal);
 
 		[propget, helpstring("property BottomFlangeWidth"),helpcontext(IDH_IPlateGirder_BottomFlangeWidth)]
       HRESULT BottomFlangeWidth([out, retval] Float64 *pVal);
@@ -2828,11 +2964,11 @@ library WBFLGeometry
 		[propput, helpstring("property BottomFlangeWidth"),helpcontext(IDH_IPlateGirder_BottomFlangeWidth)]
       HRESULT BottomFlangeWidth([in] Float64 newVal);
 
-		[propget, helpstring("property BottomFlangeThick"),helpcontext(IDH_IPlateGirder_BottomFlangeThick)]
-      HRESULT BottomFlangeThick([out, retval] Float64 *pVal);
+		[propget, helpstring("property BottomFlangeThickness"),helpcontext(IDH_IPlateGirder_BottomFlangeThickness)]
+      HRESULT BottomFlangeThickness([out, retval] Float64 *pVal);
 
-		[propput, helpstring("property BottomFlangeThick"),helpcontext(IDH_IPlateGirder_BottomFlangeThick)]
-      HRESULT BottomFlangeThick([in] Float64 newVal);
+		[propput, helpstring("property BottomFlangeThickness"),helpcontext(IDH_IPlateGirder_BottomFlangeThickness)]
+      HRESULT BottomFlangeThickness([in] Float64 newVal);
 
 		[propget, helpstring("property WebHeight"),helpcontext(IDH_IPlateGirder_WebHeight)]
       HRESULT WebHeight([out, retval] Float64 *pVal);
@@ -2840,11 +2976,11 @@ library WBFLGeometry
 		[propput, helpstring("property WebHeight"),helpcontext(IDH_IPlateGirder_WebHeight)]
       HRESULT WebHeight([in] Float64 newVal);
 
-		[propget, helpstring("property WebThick"),helpcontext(IDH_IPlateGirder_WebThick)]
-      HRESULT WebThick([out, retval] Float64 *pVal);
+		[propget, helpstring("property WebWidth"),helpcontext(IDH_IPlateGirder_WebWidth)]
+      HRESULT WebWidth([out, retval] Float64 *pVal);
 
-		[propput, helpstring("property WebThick"),helpcontext(IDH_IPlateGirder_WebThick)]
-      HRESULT WebThick([in] Float64 newVal);
+		[propput, helpstring("property WebWidth"),helpcontext(IDH_IPlateGirder_WebWidth)]
+      HRESULT WebWidth([in] Float64 newVal);
 
 		[propget, helpstring("property Height"),helpcontext(IDH_IPlateGirder_Height)]
       HRESULT Height([out, retval] Float64 *pVal);
@@ -3179,7 +3315,11 @@ library WBFLGeometry
 		   [propget, helpstring("property Shape")/*,helpcontext(IDH_ICompositeShape_Shape)*/]
          HRESULT Shape([out, retval] IShape* *pVal);
 
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+         [propget, helpstring("property XYPosition")/*,helpcontext(IDH_ICompositeShape_XYPosition)*/]
+         HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+         
+         [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
@@ -3460,10 +3600,10 @@ library WBFLGeometry
 	   HRESULT WebWidth([out, retval] Float64 *pVal);
 
 	   [propget,  helpstring("property BottomFlangeWidth")/*,helpcontext(IDH_IBoxBeam_BottomFlangeWidth)*/]
-	   HRESULT BottomFlangeWidth([out, retval] Float64 *pVal);
+	   HRESULT BottomFlangeWidth([out]Float64* pLeft, [out]Float64* pRight);
 
 	   [propget,  helpstring("property TopFlangeWidth")/*,helpcontext(IDH_IBoxBeam_TopFlangeWidth)*/]
-	   HRESULT TopFlangeWidth([out, retval] Float64 *pVal);
+	   HRESULT TopFlangeWidth([out]Float64* pLeft, [out]Float64* pRight);
 
 	   [propget,  helpstring("property XYPosition")/*,helpcontext(IDH_IBoxBeam_XYPosition)*/]
 	   HRESULT XYPosition([out, retval] IXYPosition* *pVal);
@@ -3492,11 +3632,9 @@ library WBFLGeometry
       [propget, helpstring("property Height")]
       HRESULT Height([out, retval]Float64* pVal);
 
-      [propput,helpstring("property UseOverallWidth")]
-      HRESULT UseOverallWidth([in]VARIANT_BOOL bUseOverallWidth);
-
-      [propget,helpstring("property UseOverallWidth")]
-      HRESULT UseOverallWidth([out,retval]VARIANT_BOOL* pbUseOverallWidth);
+      // Function to get top and bottom edge points, excluding effect of chamfers. Points used for stress points
+      [helpstring("property GetBoundaryPoints")]
+      HRESULT GetBoundaryPoints([out]IPoint2d** ppLeftTop, [out]IPoint2d** ppLeftBottom, [out]IPoint2d** ppRightTop, [out]IPoint2d** ppRightBottom);
    };
 
 
@@ -3588,53 +3726,6 @@ library WBFLGeometry
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
-
-   // A faster alternative for the poly shape. The original version depended on IPoint2dCollection,
-   // which is very COM resource intensive
-   [
-		object,
-		uuid(8F4AC52C-4C4E-4015-934E-58E1C35DC39E),
-      oleautomation,
-		helpstring("IFasterPolyShape Interface"),
-		helpcontext(IDH_IFasterPolyShape),
-		pointer_default(unique)
-	]
-	interface IFasterPolyShape : IUnknown
-	{
-		[helpstring("method AddPoint"),helpcontext(IDH_IFasterPolyShape_AddPoint)]
-		HRESULT AddPoint([in] Float64 x,[in] Float64 y);
-
-		[helpstring("method AddPointEx"),helpcontext(IDH_IFasterPolyShape_AddPointEx)]
-		HRESULT AddPointEx([in] IPoint2d* pPoint);
-
-		[helpstring("method AddPoints"),helpcontext(IDH_IFasterPolyShape_AddPoints)]
-		HRESULT AddPoints([in] IPoint2dCollection* pPoints);
-
-		[helpstring("method ChangePoint"),helpcontext(IDH_IFasterPolyShape_ChangePoint)]
-		HRESULT ChangePoint([in] CollectionIndexType index, [in] Float64 x,[in] Float64 y);
-
-		[helpstring("method RemovePoint"),helpcontext(IDH_IFasterPolyShape_RemovePoint)]
-		HRESULT RemovePoint([in] CollectionIndexType index);
-
-		[propget, helpstring("property Shape"),helpcontext(IDH_IFasterPolyShape_Shape)]
-		HRESULT Shape([out, retval] IShape* *pVal);
-
-		[propget, helpstring("property XYPosition"),helpcontext(IDH_IFasterPolyShape_XYPosition)]
-		HRESULT XYPosition([out, retval] IXYPosition* *pVal);
-
-		[propget, helpstring("property NumPoints"),helpcontext(IDH_IFasterPolyShape_NumPoints)]
-		HRESULT NumPoints([out, retval] CollectionIndexType *pVal);
-
-		[helpstring("property GetPoint"),helpcontext(IDH_IFasterPolyShape_Point)]
-		HRESULT GetPoint([in] CollectionIndexType index, [out] Float64* pX, [out] Float64* pY);
-
-		[helpstring("method Clear"),helpcontext(IDH_IFasterPolyShape_Clear)]
-		HRESULT Clear();
-
-		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
-   };
-
 
    [
       object,
@@ -3755,20 +3846,6 @@ library WBFLGeometry
 	};
 
 	[
-		uuid(AFB02F20-6824-491f-B804-1AD34DAA965E),
-		helpstring("FasterPolyShape Class"),
-		helpcontext(IDH_IFasterPolyShape)
-	]
-	coclass FasterPolyShape
-	{
-		[default] interface IFasterPolyShape;
-      interface IShape;
-      interface IXYPosition;
-      interface IStructuredStorage2;
-        // interface IPersist;
-	};
-
-	[
 		uuid(219B8FC2-0154-11D3-8CDF-CCA4ADEF4534),
 		helpstring("Circle Class"),
 		helpcontext(IDH_ICircle)
@@ -3820,7 +3897,20 @@ library WBFLGeometry
       interface IStructuredStorage2;
         // interface IPersist;
 	};
-	[
+   [
+      uuid(6446F67F-A050-4A49-B6FD-7AC1333855B7),
+      helpstring("PrecastBeam2 Class")//,
+      //helpcontext(IDH_IPrecastBeam2)
+   ]
+   coclass PrecastBeam2
+   {
+      [default] interface IPrecastBeam2;
+      interface IShape;
+      interface IXYPosition;
+      interface IStructuredStorage2;
+      // interface IPersist;
+   };
+   [
 		uuid(411AA7A2-67F2-4bb6-86E2-09C2C0F5A096),
 		helpstring("NUBeam Class"),
 		helpcontext(IDH_INUBeam)

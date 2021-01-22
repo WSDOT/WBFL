@@ -29,6 +29,7 @@
 
 #include "stdafx.h"
 #include "TestTriangle.h"
+#include <array>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -304,7 +305,7 @@ void CTestTriangle::TestIShape()
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   CComPtr<IPoint2d> points[5];
+   std::array<CComPtr<IPoint2d>, 5> points;
    ULONG fetched;
    Enum->Next(3,&points[0],&fetched);
    TRY_TEST( fetched, 3 );
@@ -478,7 +479,7 @@ void CTestTriangle::TestIXYPosition()
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   CComPtr<IPoint2d> points[5];
+   std::array<CComPtr<IPoint2d>, 5> points;
    ULONG fetched;
    Enum->Next(3,&points[0],&fetched);
    TRY_TEST( fetched, 3 );

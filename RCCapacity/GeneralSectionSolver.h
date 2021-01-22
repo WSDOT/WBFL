@@ -88,15 +88,12 @@ private:
       Float64 Area;
       Float64 Top;
       Float64 Bottom;
-      Float64 Xcg;
-      Float64 Ycg;
+      CComPtr<IPoint2d> pntCG;
       Float64 ei; // initial strain
       Float64 Le; // elongation length (typically 1 unit, but can be different for unbonded reinforcement elements)
       CComPtr<IStressStrain> FgMaterial;
       CComPtr<IStressStrain> BgMaterial;
       CComPtr<IShape> SliceShape;
-
-      bool operator<(const SLICEINFO& other) { return other.Ycg < Ycg; }
    } SLICEINFO;
 
    std::vector<SLICEINFO> m_Slices;

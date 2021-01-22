@@ -62,7 +62,7 @@ CEAFToolBar::~CEAFToolBar()
 
 BOOL CEAFToolBar::LoadToolBar(LPCTSTR lpszResourceName,IEAFCommandCallback* pCallback)
 {
-   if ( !m_pToolBar->LoadToolBar(lpszResourceName) )
+   if ( m_pToolBar == nullptr || !m_pToolBar->LoadToolBar(lpszResourceName) )
    {
       return FALSE;
    }
@@ -88,7 +88,7 @@ BOOL CEAFToolBar::LoadToolBar(LPCTSTR lpszResourceName,IEAFCommandCallback* pCal
 
 BOOL CEAFToolBar::LoadToolBar(UINT nIDResource,IEAFCommandCallback* pCallback)
 {
-   if ( !m_pToolBar->LoadToolBar(nIDResource) )
+   if (m_pToolBar == nullptr || !m_pToolBar->LoadToolBar(nIDResource) )
    {
       ATLASSERT(false); // did you forget to call AFX_MANAGE_STATE(AfxGetStaticModuleState()); ????
       return FALSE;
@@ -120,7 +120,7 @@ BOOL CEAFToolBar::AddButtons(int nButtons,UINT* nIDs,UINT nBitmapID,LPCTSTR lpsz
    int nFirstNewImage  = tb.AddBitmap(nButtons,nBitmapID);
    int nFirstNewString = tb.AddStrings(lpszStrings);
 
-   TBBUTTON* pTBButtons = new TBBUTTON[nButtons];
+   auto pTBButtons = std::make_unique<TBBUTTON[]>(nButtons);
    for ( int i = 0; i < nButtons; i++ )
    {
       UINT nCmdID;
@@ -141,15 +141,13 @@ BOOL CEAFToolBar::AddButtons(int nButtons,UINT* nIDs,UINT nBitmapID,LPCTSTR lpsz
       pTBButtons[i] = tbButton;
    }
 
-   if ( !tb.AddButtons(nButtons,pTBButtons) )
+   if ( !tb.AddButtons(nButtons,pTBButtons.get()) )
    {
-      delete[] pTBButtons;
       return FALSE;
    }
 
    tb.AutoSize();
 
-   delete[] pTBButtons;
    return TRUE;
 }
 
@@ -189,12 +187,9 @@ void CEAFToolBar::RemoveButtons(IEAFCommandCallback* pCallback)
 {
    CToolBarCtrl& tb = m_pToolBar->GetToolBarCtrl();
 
-   std::vector<UINT> nCmdIDs = m_pCmdMgr->GetMappedCommandIDs(pCallback);
-   std::vector<UINT>::iterator iter;
-   for ( iter = nCmdIDs.begin(); iter != nCmdIDs.end(); iter++ )
+   auto nCmdIDs = m_pCmdMgr->GetMappedCommandIDs(pCallback);
+   for(auto& nCmdID : nCmdIDs)
    {
-      UINT nCmdID = *iter;
-
       UINT btnIdx = tb.CommandToIndex(nCmdID);
       tb.DeleteButton(btnIdx);
    }
@@ -273,6 +268,14 @@ void CEAFToolBar::ClientToScreen(LPRECT lpRect) const
    if ( m_pToolBar )
    {
       m_pToolBar->GetToolBarCtrl().ClientToScreen(lpRect);
+   }
+}
+
+void CEAFToolBar::GetWindowText(CString& rString) const
+{
+   if (m_pToolBar)
+   {
+      m_pToolBar->GetWindowText(rString);
    }
 }
 

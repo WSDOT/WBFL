@@ -209,22 +209,22 @@ STDMETHODIMP CVoidedSlabSection::get_WebLocation(WebIndexType idx,Float64* locat
    m_Beam->get_Width(&W);
    m_Beam->get_VoidCount(&N);
 
-   Float64 end_webs, int_webs;
-   end_webs = W - D - N*(S-1);
-   int_webs = S - D;
+   Float64 end_web_width, int_web_width;
+   end_web_width = 0.5*(W - D - (N-1)*S);
+   int_web_width = S - D;
 
    // location measured from left edge
    if ( idx == 0 )
    {
-      *location = end_webs/2;
+      *location = end_web_width /2;
    }
    else if ( 0 < idx && idx < N )
    {
-      *location = end_webs + (idx-1)*(D+int_webs) + D + int_webs/2;
+      *location = end_web_width + (idx-1)*int_web_width + idx*D + int_web_width /2;
    }
    else
    {
-      *location = N*S + 1.5*end_webs;
+      *location = W - end_web_width/2;
    }
 
    // location measured from CL of section
@@ -359,7 +359,7 @@ STDMETHODIMP CVoidedSlabSection::get_MatingSurfaceWidth(MatingSurfaceIndexType i
       return E_INVALIDARG;
    }
 
-   return get_TopWidth(wMatingSurface);
+   return m_Beam->get_Width(wMatingSurface);
 }
 
 STDMETHODIMP CVoidedSlabSection::get_MatingSurfaceProfile(MatingSurfaceIndexType idx, VARIANT_BOOL bGirderOnly, IPoint2dCollection** ppProfile)
@@ -439,14 +439,21 @@ STDMETHODIMP CVoidedSlabSection::get_NominalHeight(Float64* height)
    return m_Beam->get_Height(height);
 }
 
-STDMETHODIMP CVoidedSlabSection::get_TopWidth(Float64* width)
+STDMETHODIMP CVoidedSlabSection::get_TopWidth(Float64* pLeft, Float64* pRight)
 {
-   return m_Beam->get_Width(width);
+   Float64 width;
+   m_Beam->get_Width(&width);
+   width /= 2.0;
+
+   *pLeft = width;
+   *pRight = width;
+
+   return S_OK;
 }
 
-STDMETHODIMP CVoidedSlabSection::get_BottomWidth(Float64* width)
+STDMETHODIMP CVoidedSlabSection::get_BottomWidth(Float64* pLeft, Float64* pRight)
 {
-   return m_Beam->get_Width(width);
+   return get_TopWidth(pLeft, pRight);
 }
 
 STDMETHODIMP CVoidedSlabSection::get_ShearWidth(Float64* shearwidth)
@@ -541,6 +548,7 @@ STDMETHODIMP CVoidedSlabSection::get_CL2ExteriorWebDistance( DirectionType side,
    return S_OK;
 }
 
+
 STDMETHODIMP CVoidedSlabSection::RemoveSacrificalDepth(Float64 sacDepth)
 {
    // voids are always centered on beam height. if we reduce
@@ -566,6 +574,100 @@ STDMETHODIMP CVoidedSlabSection::get_SplittingDirection(SplittingDirection* pSD)
 {
    CHECK_RETVAL(pSD);
    *pSD = sdHorizontal;
+   return S_OK;
+}
+
+STDMETHODIMP CVoidedSlabSection::GetWebSections(IDblArray** ppY, IDblArray** ppW,IBstrArray** ppDesc)
+{
+   CComPtr<IDblArray> y;
+   y.CoCreateInstance(CLSID_DblArray);
+   y.CopyTo(ppY);
+
+   CComPtr<IDblArray> w;
+   w.CoCreateInstance(CLSID_DblArray);
+   w.CopyTo(ppW);
+
+   CComPtr<IBstrArray> desc;
+   desc.CoCreateInstance(CLSID_BstrArray);
+   desc.CopyTo(ppDesc);
+
+   IndexType nVoids;
+   m_Beam->get_VoidCount(&nVoids);
+
+   if (0 < nVoids)
+   {
+      Float64 W, H, D;
+      m_Beam->get_Width(&W);
+      m_Beam->get_Height(&H);
+      m_Beam->get_VoidDiameter(&D);
+
+      Float64 gap = (H - D) / 2;
+
+      (*ppY)->Add(-gap);
+      (*ppW)->Add(W);
+      (*ppDesc)->Add(CComBSTR(_T("Top of Voids")));
+
+      (*ppY)->Add(-H + gap);
+      (*ppW)->Add(W);
+      (*ppDesc)->Add(CComBSTR(_T("Bottom of Voids")));
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP CVoidedSlabSection::GetWebWidthProjectionsForDebonding(IUnkArray** ppArray)
+{
+   CHECK_RETOBJ(ppArray);
+
+   IndexType nVoids;
+   m_Beam->get_VoidCount(&nVoids);
+
+   if (0 < nVoids)
+   {
+      Float64 W, H, D, S;
+      m_Beam->get_Width(&W);
+      m_Beam->get_Height(&H);
+      m_Beam->get_VoidDiameter(&D);
+      m_Beam->get_VoidSpacing(&S);
+
+      Float64 ext_web_width, int_web_width;
+      ext_web_width = (W - D - (nVoids-1)*S)/2;
+      int_web_width = S - D;
+
+      Float64 bottom = (H - D) / 2;
+
+
+      CComPtr<IUnkArray> array;
+      array.CoCreateInstance(CLSID_UnkArray);
+
+      // Left edge of slab
+      CComPtr<IRect2d> rect;
+      rect.CoCreateInstance(CLSID_Rect2d);
+      rect->SetBounds(-W / 2, -W / 2 + ext_web_width, -H, -H + bottom);
+      array->Add(rect);
+
+      // Between interior voids
+      WebIndexType nWebs = nVoids + 1;
+      for (auto webIdx = 1; webIdx < nWebs - 1; webIdx++)
+      {
+         Float64 x;
+         get_WebLocation(webIdx, &x);
+
+         rect.Release();
+         rect.CoCreateInstance(CLSID_Rect2d);
+         rect->SetBounds(x - int_web_width / 2, x + int_web_width / 2, -H, -H + bottom);
+         array->Add(rect);
+      }
+
+      // Right edge of slab
+      rect.Release();
+      rect.CoCreateInstance(CLSID_Rect2d);
+      rect->SetBounds(W / 2 - ext_web_width, W / 2, -H, -H + bottom);
+      array->Add(rect);
+
+      array.CopyTo(ppArray);
+   }
+
    return S_OK;
 }
 
@@ -663,6 +765,12 @@ STDMETHODIMP CVoidedSlabSection::get_StructuredStorage(IStructuredStorage2* *pSt
 STDMETHODIMP CVoidedSlabSection::get_Shape(IShape* *pVal)
 {
    return m_CompositeShape->get_Shape(pVal);
+}
+
+STDMETHODIMP CVoidedSlabSection::get_XYPosition(IXYPosition **pVal)
+{
+   CHECK_RETOBJ(pVal);
+   return m_CompositeShape->get_XYPosition(pVal);
 }
 
 STDMETHODIMP CVoidedSlabSection::get_Item(CollectionIndexType idx,ICompositeShapeItem* *pVal)

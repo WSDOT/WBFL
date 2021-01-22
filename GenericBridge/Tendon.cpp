@@ -41,6 +41,7 @@ HRESULT CTendon::FinalConstruct()
 {
    m_ID = 0.0;
    m_OD = 0.0;
+   m_ND = 0.0;
 
    m_StrandCount    = 0;
 
@@ -146,6 +147,24 @@ STDMETHODIMP CTendon::put_InsideDiameter(Float64 size)
    return S_OK;
 }
 
+STDMETHODIMP CTendon::get_NominalDiameter(Float64* size)
+{
+   CHECK_RETVAL(size);
+   *size = m_ND;
+   return S_OK;
+}
+
+STDMETHODIMP CTendon::put_NominalDiameter(Float64 size)
+{
+   if (size < 0)
+   {
+      return E_INVALIDARG;
+   }
+
+   m_ND = size;
+   return S_OK;
+}
+
 STDMETHODIMP CTendon::get_StrandCount(StrandIndexType* count)
 {
    CHECK_RETVAL(count);
@@ -195,6 +214,15 @@ STDMETHODIMP CTendon::get_InsideDuctArea(Float64* Aduct)
    CHECK_RETVAL(Aduct);
 
    *Aduct = M_PI*m_ID*m_ID/4;
+
+   return S_OK;
+}
+
+STDMETHODIMP CTendon::get_NominalDuctArea(Float64* Aduct)
+{
+   CHECK_RETVAL(Aduct);
+
+   *Aduct = M_PI*m_ND*m_ND / 4;
 
    return S_OK;
 }

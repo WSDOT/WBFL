@@ -39,7 +39,7 @@ public:
 class StatusItemCompare
 {
 public:
-   bool operator()(CEAFStatusItem* a,CEAFStatusItem* b);
+   bool operator()(const std::shared_ptr<CEAFStatusItem>& a, const std::shared_ptr<CEAFStatusItem>& b);
 };
 
 class EAFCLASS CEAFStatusCenter
@@ -57,13 +57,15 @@ public:
    bool RemoveByIndex(CollectionIndexType index);
    bool RemoveByStatusGroupID(StatusGroupIDType id);
    CEAFStatusItem* GetByID(StatusItemIDType id);
+   const CEAFStatusItem* GetByID(StatusItemIDType id) const;
    CEAFStatusItem* GetByIndex(CollectionIndexType index);
-   CollectionIndexType Count();
+   const CEAFStatusItem* GetByIndex(CollectionIndexType index) const;
+   CollectionIndexType Count() const;
 
-   eafTypes::StatusSeverityType GetSeverity();
+   eafTypes::StatusSeverityType GetSeverity() const;
 
    StatusCallbackIDType RegisterCallbackItem(iStatusCallback* pCallback);
-   eafTypes::StatusSeverityType GetSeverity(StatusCallbackIDType callbackID);
+   eafTypes::StatusSeverityType GetSeverity(StatusCallbackIDType callbackID) const;
 
    void EditItem(StatusItemIDType id);
 
@@ -77,16 +79,17 @@ private:
    StatusCallbackIDType m_NextCallbackID;
    CEAFStatusItem* m_pCurrentItem;
 
-   typedef std::set<CEAFStatusItem*,StatusItemCompare> Container;
+   typedef std::set<std::shared_ptr<CEAFStatusItem>,StatusItemCompare> Container;
    Container m_Items;
 
    typedef std::set<IEAFStatusCenterEventSink*> Sinks;
    Sinks m_Sinks;
 
-   typedef std::map<StatusCallbackIDType,iStatusCallback*> Callbacks;
+   typedef std::map<StatusCallbackIDType,std::shared_ptr<iStatusCallback>> Callbacks;
    Callbacks m_Callbacks;
 
-   iStatusCallback* GetCallback(StatusCallbackIDType callbackID);
+   std::shared_ptr<iStatusCallback> GetCallback(StatusCallbackIDType callbackID);
+   const std::shared_ptr<iStatusCallback> GetCallback(StatusCallbackIDType callbackID) const;
 
    void NotifyAdded(CEAFStatusItem* pNewItem);
    void NotifyRemoved(StatusItemIDType id);

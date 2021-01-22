@@ -118,6 +118,8 @@ public:
                      RHO,
                      sigma,
                      SIGMA,
+                     tau,
+                     TAU,
                      theta,
                      THETA,
                      QED,                     // Little triangle made of dots
@@ -159,7 +161,8 @@ public:
                      UP_DOUBLE_ARROW,         // Double line arrow pointing up
                      RIGHT_DOUBLE_ARROW,      // Double line arrow pointing right
                      DOWN_DOUBLE_ARROW,       // Double line arrow pointing down
-                     NORMAL                   // upside down T
+                     NORMAL,                  // upside down T
+                     NBSP                     // non-breaking space. works like in html to force blank in a table, or can uses as a sequence of multiple spaces when needed
                      };
 
    // GROUP: LIFECYCLE

@@ -39,6 +39,7 @@
 #include <Reporter\RcFlowModifier.h>
 #include <Reporter\RcFontModifier.h>
 #include <Reporter\RcColor.h>
+#include <Reporter\RcBgColor.h>
 #include <Reporter\RcHyperTarget.h>
 #include <Reporter\RcInt.h>
 #include <Reporter\RcScalar.h>
@@ -56,6 +57,7 @@
 #include <Reporter\RcUnitValue.h>
 #include <Reporter\RcUnitValueT.h>
 #include <Reporter\RcUnsigned.h>
+#include <Reporter\RcComposite.h>
 #include <Reporter\RcImage.h>
 #include <Reporter\RcDateTime.h>
 #include <Reporter\PageLayout.h>

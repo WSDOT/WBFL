@@ -808,14 +808,22 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TestAlignmentOffsetStrategy.cpp" />
+    <ClCompile Include="TestBoxBeamSection.cpp" />
     <ClCompile Include="TestBridgeDeck.cpp" />
+    <ClCompile Include="TestBulbTeeGirderSection.cpp" />
     <ClCompile Include="TestCastSlab.cpp" />
     <ClCompile Include="TestColumn.cpp" />
     <ClCompile Include="TestColumnSpacing.cpp" />
     <ClCompile Include="TestCrossBeam.cpp" />
+    <ClCompile Include="TestDeckedSlabBeamSection.cpp" />
+    <ClCompile Include="TestFlangedGirderSection.cpp" />
+    <ClCompile Include="TestFlangedGirderSection2.cpp" />
     <ClCompile Include="TestGenericBridge.cpp" />
     <ClCompile Include="TestLongitudinalPierDescription.cpp" />
     <ClCompile Include="TestMaterial.cpp" />
+    <ClCompile Include="TestMultiWebSection.cpp" />
+    <ClCompile Include="TestMultiWebSection2.cpp" />
+    <ClCompile Include="TestNUGirderSection.cpp" />
     <ClCompile Include="TestOverlaySlab.cpp" />
     <ClCompile Include="TestPersistance.cpp" />
     <ClCompile Include="TestPier.cpp" />
@@ -825,19 +833,31 @@
     <ClCompile Include="TestSuperstructureMember.cpp" />
     <ClCompile Include="TestSuperstructureMemberCollection.cpp" />
     <ClCompile Include="TestTransversePierDescription.cpp" />
+    <ClCompile Include="TestUGirderSection.cpp" />
+    <ClCompile Include="TestUGirderSection2.cpp" />
+    <ClCompile Include="TestVoidedSlabSection.cpp" />
+    <ClCompile Include="TestVoidedSlabSection2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GenericBridgeTest.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="TestAlignmentOffsetStrategy.h" />
+    <ClInclude Include="TestBoxBeamSection.h" />
     <ClInclude Include="TestBridgeDeck.h" />
+    <ClInclude Include="TestBulbTeeGirderSection.h" />
     <ClInclude Include="TestCastSlab.h" />
     <ClInclude Include="TestColumn.h" />
     <ClInclude Include="TestColumnSpacing.h" />
     <ClInclude Include="TestCrossBeam.h" />
+    <ClInclude Include="TestDeckedSlabBeamSection.h" />
+    <ClInclude Include="TestFlangedGirderSection.h" />
+    <ClInclude Include="TestFlangedGirderSection2.h" />
     <ClInclude Include="TestGenericBridge.h" />
     <ClInclude Include="TestLongitudinalPierDescription.h" />
     <ClInclude Include="TestMaterial.h" />
+    <ClInclude Include="TestMultiWebSection.h" />
+    <ClInclude Include="TestMultiWebSection2.h" />
+    <ClInclude Include="TestNUGirderSection.h" />
     <ClInclude Include="TestOverlaySlab.h" />
     <ClInclude Include="TestPersistance.h" />
     <ClInclude Include="TestPier.h" />
@@ -847,6 +867,10 @@
     <ClInclude Include="TestSuperstructureMember.h" />
     <ClInclude Include="TestSuperstructureMemberCollection.h" />
     <ClInclude Include="TestTransversePierDescription.h" />
+    <ClInclude Include="TestUGirderSection.h" />
+    <ClInclude Include="TestUGirderSection2.h" />
+    <ClInclude Include="TestVoidedSlabSection.h" />
+    <ClInclude Include="TestVoidedSlabSection2.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
