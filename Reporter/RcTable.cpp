@@ -633,6 +633,7 @@ void rptRcTable::SetColumnSpan(RowIndexType RowNo, ColumnIndexType ColNo, Column
       // check if row entry has been allocated. if not, push default paragraphs
       // on as a placeholder
       ColumnIndexType cEnd = ColNo + (span == SKIP_CELL ? 1 : span);
+      cEnd = min(cEnd, m_NumColumns - 1); // don't allow overflow
       for ( ColumnIndexType c = ColNo; c < cEnd; c++)
       {
          RowIndexType nRows = m_TableData[c].size();
