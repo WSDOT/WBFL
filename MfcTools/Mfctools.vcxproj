@@ -898,6 +898,7 @@
     <ClCompile Include="VersionInfo.cpp" />
     <ClCompile Include="Watermark.cpp" />
     <ClCompile Include="WatermarkMainFrm.cpp" />
+    <ClCompile Include="WideDropDownComboBox.cpp" />
     <ClCompile Include="WsdotCalculationSheet.cpp" />
     <ClCompile Include="XShutDown.cpp" />
     <ClCompile Include="XUnwind.cpp" />
@@ -945,6 +946,7 @@
     <ClInclude Include="..\Include\MfcTools\VersionInfo.h" />
     <ClInclude Include="..\Include\MfcTools\Watermark.h" />
     <ClInclude Include="..\Include\MfcTools\WatermarkMainFrm.h" />
+    <ClInclude Include="..\Include\MfcTools\WideDropDownComboBox.h" />
     <ClInclude Include="..\Include\MfcTools\WsdotCalculationSheet.h" />
     <ClInclude Include="..\Include\MfcTools\XShutDown.h" />
     <ClInclude Include="..\Include\MfcTools\XUnwind.h" />
