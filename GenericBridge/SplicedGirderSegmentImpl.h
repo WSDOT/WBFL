@@ -1009,11 +1009,7 @@ protected:
       else
       {
          // this is the first segment
-         CComPtr<IGirderLine> girderLine;
-         get_GirderLine(&girderLine);
-         Float64 brgOffset;
-         girderLine->get_BearingOffset(etStart, &brgOffset);
-         return brgOffset + Xs;
+         return ConvertToSegmentPathCoordinate(Xs);
       }
    }
 
