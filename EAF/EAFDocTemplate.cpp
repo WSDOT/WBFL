@@ -184,7 +184,12 @@ BOOL CEAFDocTemplate::DoOpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisible,
 		if (!bMakeVisible)
 			pDocument->m_bEmbedded = TRUE;
 
-      CString strTemplateFile = m_pTemplateItem->GetTemplateFilePath();
+      CString strTemplateFile;
+      if (m_pTemplateItem)
+      {
+         strTemplateFile = m_pTemplateItem->GetTemplateFilePath();
+      }
+
       if ( strTemplateFile.IsEmpty() )
       {
 		   if (!pDocument->OnNewDocument())

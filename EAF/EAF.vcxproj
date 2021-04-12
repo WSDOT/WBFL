@@ -1003,6 +1003,7 @@
     <ClInclude Include="..\Include\EAF\EAFComponentInfo.h" />
     <ClInclude Include="..\Include\EAF\EAFCustomReport.h" />
     <ClInclude Include="..\Include\EAF\EAFCustSiteVars.h" />
+    <ClInclude Include="..\Include\EAF\EAFDataRecoveryHandler.h" />
     <ClInclude Include="..\Include\EAF\EAFDisplayUnits.h" />
     <ClInclude Include="..\Include\EAF\EAFDocManager.h" />
     <ClInclude Include="..\Include\EAF\EAFDocPluginManager.h" />

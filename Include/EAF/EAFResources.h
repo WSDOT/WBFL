@@ -50,9 +50,10 @@
 #define EAFID_HELP_SOURCE                  (EAF_RESERVED_COMMAND_BASE+14)
 #define EAFID_HELPWND_BACK                 (EAF_RESERVED_COMMAND_BASE+15)
 #define EAFID_HELPWND_FORWARD              (EAF_RESERVED_COMMAND_BASE+16)
+#define EAFID_OPTIONS_AUTOSAVE             (EAF_RESERVED_COMMAND_BASE+17)
 
 // reserve commands IDs for the report popup menus (first ID must be one more than the EAFID_xxx above)
-#define EAF_REPORT_MENU_BASE (EAF_RESERVED_COMMAND_BASE+17)
+#define EAF_REPORT_MENU_BASE (EAF_RESERVED_COMMAND_BASE+18)
 #define EAF_REPORT_MENU_COUNT 50 // maximum 50 reports
 #define EAF_REPORT_MENU_LAST (EAF_REPORT_MENU_BASE + 2*EAF_REPORT_MENU_COUNT)
 
@@ -72,5 +73,7 @@
 #define EAFID_INDICATOR_STATUS             2  // Status center indicator
 #define EAFID_INDICATOR_AUTOCALC_ON        3  // AutoCalc mode is on
 #define EAFID_INDICATOR_AUTOCALC_OFF       4  // AutoCalc mode is off
-#define EAFID_INDICATOR_MAX                4
+#define EAFID_INDICATOR_AUTOSAVE_ON        5  // Autosave mode is on
+#define EAFID_INDICATOR_AUTOSAVE_OFF       6  // Autosave mode is off
+#define EAFID_INDICATOR_MAX                6
 

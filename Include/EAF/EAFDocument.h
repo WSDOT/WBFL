@@ -112,12 +112,14 @@ protected:
 	//{{AFX_VIRTUAL(CEAFDocument)
 
 public:
-	virtual BOOL OnNewDocument();
+   virtual BOOL SaveModified() override;
+   virtual BOOL OnNewDocument() override;
    virtual BOOL OnNewDocumentFromTemplate(LPCTSTR lpszPathName);
-   virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
-   virtual BOOL OnSaveDocument(LPCTSTR lpszPathName);
-   virtual void OnCloseDocument();
-   virtual BOOL OnCmdMsg(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO* pHandlerInfo);
+   virtual BOOL OnOpenDocument(LPCTSTR lpszPathName) override;
+   virtual BOOL OnSaveDocument(LPCTSTR lpszPathName) override;
+   virtual void OnCloseDocument() override;
+   virtual BOOL OnCmdMsg(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO* pHandlerInfo) override;
+
 
 	//}}AFX_VIRTUAL
 

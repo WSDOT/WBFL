@@ -88,6 +88,8 @@ public:
    virtual void ReplaceDocumentFile(LPCTSTR lpszFileName);
 	//}}AFX_VIRTUAL
 
+   virtual CDataRecoveryHandler *GetDataRecoveryHandler();
+
    CRecentFileList* GetRecentFileList();
    CEAFDocTemplateRegistrar* GetDocTemplateRegistrar();
    CEAFAppPluginManager* GetAppPluginManager();
@@ -191,6 +193,7 @@ protected:
    afx_msg void OnUpdateSIUnits(CCmdUI* pCmdUI);
    afx_msg void OnUSUnits();
    afx_msg void OnUpdateUSUnits(CCmdUI* pCmdUI);
+   afx_msg void OnAutoSave();
 	//}}AFX_MSG
    afx_msg void OnReplaceFile();
    CString m_ReplacementFileName;
@@ -208,6 +211,14 @@ public:
    sysDate GetInstallDate();
    sysDate GetLastRunDate();
    BOOL IsFirstRun();
+
+   BOOL IsCommandLineMode() { return m_bCommandLineMode; }
+
+   virtual void EnableAutoSave(BOOL bEnable, int interval);
+   BOOL IsAutoSaveEnabled();
+   int GetAutoSaveInterval();
+   virtual void GetAutoSaveInfo(BOOL* pbAutosave, int* pAutosaveInterval);
+   virtual void SaveAutoSaveInfo(BOOL bAutosave, int AutosaveInterval);
 
    CEAFMDISnapper& GetMDIWndSnapper();
 
@@ -249,6 +260,10 @@ private:
 
    std::vector<CString> m_TipFiles;
    bool m_bTipsEnabled;
+
+   BOOL m_bAutoSaveEnabled; // TRUE If AutoSave mode is enabled
+
+   BOOL m_bCommandLineMode; // set to TRUE if the application is running in command line mode
 
    sysDate m_LastRunDate;
 

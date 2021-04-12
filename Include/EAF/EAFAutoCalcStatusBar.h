@@ -38,7 +38,7 @@ public:
 
    virtual void Reset() override;
 
-   void AutoCalcEnabled( bool bEnable );
+   void AutoCalcEnabled( BOOL bEnable );
 
 // Overrides
 	// ClassWizard generated virtual function overrides

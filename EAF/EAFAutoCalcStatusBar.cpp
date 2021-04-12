@@ -39,6 +39,7 @@ static UINT indicators[] =
 {
    ID_SEPARATOR,           // status line indicator
    EAFID_INDICATOR_STATUS,
+   EAFID_INDICATOR_AUTOSAVE_ON,
    EAFID_INDICATOR_MODIFIED,
    EAFID_INDICATOR_AUTOCALC_ON,
    ID_INDICATOR_CAPS,
@@ -51,7 +52,7 @@ static UINT indicators[] =
 
 CEAFAutoCalcStatusBar::CEAFAutoCalcStatusBar()
 {
-   m_AutoCalcPaneIdx     = -1;
+   m_AutoCalcPaneIdx = -1;
 }
 
 CEAFAutoCalcStatusBar::~CEAFAutoCalcStatusBar()
@@ -91,19 +92,7 @@ int CEAFAutoCalcStatusBar::GetAutoCalcPaneIndex()
 {
    if ( m_AutoCalcPaneIdx < 0 )
    {
-      for ( int i = 0; i < GetPaneCount(); i++ )
-      {
-         UINT nID;
-         UINT nStyle;
-         int cxWidth;
-         GetPaneInfo(i,nID,nStyle,cxWidth);
-
-         if ( nID == EAFID_INDICATOR_AUTOCALC_ON )
-         {
-            m_AutoCalcPaneIdx = i;
-            break;
-         }
-      }
+      m_AutoCalcPaneIdx = GetPaneIndex(EAFID_INDICATOR_AUTOCALC_ON);
    }
 
    return m_AutoCalcPaneIdx;
@@ -120,7 +109,7 @@ void CEAFAutoCalcStatusBar::Reset()
    }
 }
 
-void CEAFAutoCalcStatusBar::AutoCalcEnabled( bool bEnable )
+void CEAFAutoCalcStatusBar::AutoCalcEnabled(BOOL bEnable )
 {
    CString status_text;
    VERIFY(status_text.LoadString(bEnable ? EAFID_INDICATOR_AUTOCALC_ON : EAFID_INDICATOR_AUTOCALC_OFF));

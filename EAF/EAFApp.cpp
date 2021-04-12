@@ -34,6 +34,7 @@
 #include <EAF\EAFBrokerDocument.h>
 #include <EAF\EAFProjectLog.h>
 #include <EAF\EAFUtilities.h>
+#include <EAF\EAFDataRecoveryHandler.h>
 #include <AgentTools.h>
 #include <System\ComCatMgr.h>
 
@@ -79,8 +80,13 @@ m_strWindowPlacementFormat("%u,%u,%d,%d,%d,%d,%d,%d,%d,%d")
    m_bShowLegalNotice = VARIANT_TRUE;
    m_bTipsEnabled = false;
    m_bUseOnlineDocumentation = TRUE;
+   m_bCommandLineMode = FALSE;
 
    m_pHelpWindowThread = nullptr;
+
+   m_bAutoSaveEnabled = TRUE;
+   m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_ALL_ASPECTS;
+   //m_nAutosaveInterval = 5/*minutes*/ * 60/*60seconds per minute*/ * 1000/*1000 milliseconds per second*/; // default is autosave every 5 minutes this is how you would change it
 
    // if this assert fires, we've used more than commands then are
    // reserved for EAF standard processing
@@ -154,11 +160,13 @@ BOOL CEAFApp::InitInstance()
       cmdInfo.m_nShellCommand = CCommandLineInfo::FileNothing;
    }
 
-   // The only default MFC command line options that are supported are Nothing and Open
+   // The only default MFC command line options that are supported are Nothing, Open, and RestartByRestartManager
    // Any other options (such as /dde, /p, /pt, etc) should result in the command line usage
    // message being displayed
    if ( cmdInfo.m_nShellCommand != CCommandLineInfo::FileNothing && 
-        cmdInfo.m_nShellCommand != CCommandLineInfo::FileOpen )
+        cmdInfo.m_nShellCommand != CCommandLineInfo::FileOpen &&
+        cmdInfo.m_nShellCommand != CCommandLineInfo::RestartByRestartManager
+      )
    {
       cmdInfo.m_bError = TRUE;
    }
@@ -211,30 +219,32 @@ BOOL CEAFApp::InitInstance()
       ShowUsageMessage();
       return FALSE;
    }
-
-	// The main window has been initialized, so show and update it.
-	m_pMainWnd->ShowWindow(m_nCmdShow);
-   m_pMainWnd->SetWindowPos(&CWnd::wndTop,0,0,0,0,SWP_NOSIZE | SWP_NOMOVE | SWP_NOREDRAW);
-	m_pMainWnd->UpdateWindow();
-
-   if ( !IsFirstRun() && (IsTipOfTheDayEnabled() && !cmdInfo.m_bCommandLineMode) )
-   {
-      ShowTipOfTheDay();
-   }
    
-   if ( cmdInfo.m_nParams != 0 )
+   if ( 0 < cmdInfo.m_nParams )
    {
       ProcessCommandLineOptions(cmdInfo);
    }
-
-   LoadDocumentationMap();
-
-   // Start the help window thread
-   m_pHelpWindowThread = (CEAFHelpWindowThread*)AfxBeginThread(RUNTIME_CLASS(CEAFHelpWindowThread));
-
-   if ( IsFirstRun() && !cmdInfo.m_bCommandLineMode )
+   else
    {
-      OnFirstRun();
+      LoadDocumentationMap();
+
+      // The main window has been initialized, so show and update it.
+      m_pMainWnd->ShowWindow(m_nCmdShow);
+      m_pMainWnd->SetWindowPos(&CWnd::wndTop, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOREDRAW);
+      m_pMainWnd->UpdateWindow();
+
+      if (!IsFirstRun() && (IsTipOfTheDayEnabled() && !cmdInfo.m_bCommandLineMode))
+      {
+         ShowTipOfTheDay();
+      }
+
+      // Start the help window thread
+      m_pHelpWindowThread = (CEAFHelpWindowThread*)AfxBeginThread(RUNTIME_CLASS(CEAFHelpWindowThread));
+
+      if (IsFirstRun() && !cmdInfo.m_bCommandLineMode)
+      {
+         OnFirstRun();
+      }
    }
 
 	return TRUE;
@@ -572,6 +582,8 @@ BEGIN_MESSAGE_MAP(CEAFApp, CWinApp)
    ON_COMMAND(EAFID_UNITS_US,OnUSUnits)
    ON_UPDATE_COMMAND_UI(EAFID_UNITS_US, OnUpdateUSUnits)
 
+   ON_COMMAND(EAFID_OPTIONS_AUTOSAVE, OnAutoSave)
+
 	// Standard print setup command
 	ON_COMMAND(ID_FILE_PRINT_SETUP, CWinApp::OnFilePrintSetup)
    ON_COMMAND(ID_APP_ABOUT, &CEAFApp::OnAppAbout)
@@ -690,6 +702,16 @@ void CEAFApp::OnUSUnits()
 void CEAFApp::OnUpdateUSUnits(CCmdUI* pCmdUI)
 {
    pCmdUI->SetRadio( m_Units == eafTypes::umUS );
+}
+
+void CEAFApp::OnAutoSave()
+{
+   CString strMsg;
+   strMsg.Format(_T("%s AutoSave mode?"), m_bAutoSaveEnabled ? _T("Disable") : _T("Enable"));
+   if (AfxMessageBox(strMsg, MB_YESNO) == IDYES)
+   {
+      m_bAutoSaveEnabled = !m_bAutoSaveEnabled;
+   }
 }
 
 CDocument* CEAFApp::OpenDocumentFile(LPCTSTR lpszFileName) 
@@ -877,6 +899,33 @@ BOOL CEAFApp::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pH
    return FALSE; // message was NOT handled, continue routing
 }
 
+CDataRecoveryHandler *CEAFApp::GetDataRecoveryHandler()
+{
+   // NOTE: This is a copy/paste from CWinApp::GetDataRecovery handler.
+   // we want the exact same implementation, except we want to create our own data recovery handler object
+   static BOOL bTriedOnce = FALSE;
+
+   // Since the application restart and application recovery are supported only on Windows
+   // Vista and above, we don't need a recovery handler on Windows versions less than Vista.
+   if (SupportsRestartManager() || SupportsApplicationRecovery())
+   {
+      if (!bTriedOnce && m_pDataRecoveryHandler == NULL)
+      {
+         // WE CHANGED THE RECOVERY HANDLER TYPE HERE!!!
+         //m_pDataRecoveryHandler = new CDataRecoveryHandler(m_dwRestartManagerSupportFlags, m_nAutosaveInterval);
+         m_pDataRecoveryHandler = new CEAFDataRecoveryHandler(m_dwRestartManagerSupportFlags, m_nAutosaveInterval);
+         if (!m_pDataRecoveryHandler->Initialize())
+         {
+            delete m_pDataRecoveryHandler;
+            m_pDataRecoveryHandler = NULL;
+         }
+      }
+   }
+
+   bTriedOnce = TRUE;
+   return m_pDataRecoveryHandler;
+}
+
 CRecentFileList* CEAFApp::GetRecentFileList()
 {
    return m_pRecentFileList;
@@ -977,6 +1026,77 @@ BOOL CEAFApp::IsFirstRun()
    return ( GetLastRunDate() < GetInstallDate() ) ? TRUE : FALSE;
 }
 
+void CEAFApp::GetAutoSaveInfo(BOOL* pbAutoSave, int* pAutoSaveInterval)
+{
+   CString strAutoSaveDefault = GetLocalMachineString(_T("Options"), _T("AutoSave"), _T("true"));
+   int default_interval = GetLocalMachineInt(_T("Options"), _T("AutoSaveInterval"), 5*60*1000);
+   CString strAutoSave = GetProfileString(_T("Options"), _T("AutoSave"), strAutoSaveDefault);
+   *pbAutoSave = (strAutoSave == _T("true") ? true : false);
+   *pAutoSaveInterval = GetProfileInt(_T("Options"), _T("AutoSaveInterval"), default_interval);
+}
+
+void CEAFApp::SaveAutoSaveInfo(BOOL bAutoSave, int AutoSaveInterval)
+{
+   VERIFY(WriteProfileString(_T("Options"), _T("AutoSave"), bAutoSave ? _T("true") : _T("false")));
+   VERIFY(WriteProfileInt(_T("Options"), _T("AutoSaveInterval"), AutoSaveInterval));
+}
+
+int CEAFApp::GetAutoSaveInterval()
+{
+   CDataRecoveryHandler* pHandler = GetDataRecoveryHandler();
+   if (pHandler)
+   {
+      return pHandler->GetAutosaveInterval();
+   }
+   else
+   {
+      return 5 * 60 * 1000; // 5 minute as default
+   }
+}
+
+void CEAFApp::EnableAutoSave(BOOL bEnable, int interval)
+{
+   m_bAutoSaveEnabled = bEnable;
+   if (m_bAutoSaveEnabled)
+   {
+      m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_ALL_ASPECTS;
+      RegisterWithRestartManager(SupportsApplicationRecovery(), _T(""));
+   }
+   else
+   {
+      m_dwRestartManagerSupportFlags = 0;
+      UnregisterApplicationRestart();
+      UnregisterApplicationRecoveryCallback();
+   }
+
+   CDataRecoveryHandler* pHandler = GetDataRecoveryHandler();
+   if (pHandler)
+   {
+      pHandler->SetAutosaveInterval(interval);// converts minutes to milliseconds
+      pHandler->SetSaveDocumentInfoOnIdle(m_bAutoSaveEnabled);
+   }
+
+   CEAFDocument* pDocument = EAFGetDocument();
+   if (m_bAutoSaveEnabled && pDocument)
+   {
+      // if we are turning on AutoSave, save the document now
+      pDocument->DoFileSave();
+   }
+
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
+   if (pMainFrame)
+   {
+      pMainFrame->GetStatusBar()->AutoSaveEnabled(m_bAutoSaveEnabled);
+   }
+
+   SaveAutoSaveInfo(m_bAutoSaveEnabled, interval);
+}
+
+BOOL CEAFApp::IsAutoSaveEnabled()
+{
+   return m_bAutoSaveEnabled;
+}
+
 CEAFMDISnapper& CEAFApp::GetMDIWndSnapper()
 {
    return m_MDISnapper;
@@ -1026,11 +1146,19 @@ BOOL CEAFApp::PreTranslateMessage(MSG* pMsg)
 
 void CEAFApp::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
 {
+   m_bCommandLineMode = TRUE;
+
    // Give MFC first crack at the command line
 	if ( !ProcessShellCommand(cmdInfo) )
    {
       cmdInfo.m_bError = TRUE;
       cmdInfo.m_bCommandLineMode = TRUE; // will cause an application shutdown
+   }
+
+   if (cmdInfo.m_nShellCommand == CCommandLineInfo::RestartByRestartManager)
+   {
+      // don't continue processing the commandline if there was a restart
+      return;
    }
 
    if ( !cmdInfo.m_bError && 1 <= cmdInfo.m_nParams)
@@ -1125,6 +1253,8 @@ void CEAFApp::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
    {
       DisplayCommandLineErrorMessage();
    }
+
+   m_bCommandLineMode = false;
 
    // We are doing command line processing, and it should have already happened...
    // At this point, the application is done running.

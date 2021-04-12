@@ -66,6 +66,7 @@ inline AFX_STATUSPANE* CStatusBar::_GetPanePtr(int nIndex) const
 static UINT indicators[] =
 {
 	ID_SEPARATOR,           // status line indicator
+   //EAFID_INDICATOR_AUTOSAVE_ON,
    EAFID_INDICATOR_MODIFIED,
    EAFID_INDICATOR_STATUS,
    ID_INDICATOR_CAPS,
@@ -80,6 +81,7 @@ CEAFStatusBar::CEAFStatusBar()
    m_nIndicators     = -1;
    m_ModifiedPaneIdx = -1;
    m_StatusPaneIdx   = -1;
+   m_AutoSavePaneIdx = -1;
 }
 
 CEAFStatusBar::~CEAFStatusBar()
@@ -250,23 +252,31 @@ int CEAFStatusBar::GetPaneCount()
    return m_nIndicators;
 }
 
+int CEAFStatusBar::GetPaneIndex(UINT nIDPane)
+{
+   int index = -1;
+   for (int i = 0; i < GetPaneCount(); i++)
+   {
+      UINT nID;
+      UINT nStyle;
+      int cxWidth;
+      GetPaneInfo(i, nID, nStyle, cxWidth);
+
+      if (nID == nIDPane)
+      {
+         index = i;
+         break;
+      }
+   }
+
+   return index;
+}
+
 int CEAFStatusBar::GetModifiedPaneIndex()
 {
    if ( m_ModifiedPaneIdx < 0 )
    {
-      for ( int i = 0; i < m_nIndicators; i++ )
-      {
-         UINT nID;
-         UINT nStyle;
-         int cxWidth;
-         GetPaneInfo(i,nID,nStyle,cxWidth);
-
-         if ( nID == EAFID_INDICATOR_MODIFIED )
-         {
-            m_ModifiedPaneIdx = i;
-            break;
-         }
-      }
+      m_ModifiedPaneIdx = GetPaneIndex(EAFID_INDICATOR_MODIFIED);
    }
    return m_ModifiedPaneIdx;
 }
@@ -275,21 +285,19 @@ int CEAFStatusBar::GetStatusPaneIndex()
 {
    if ( m_StatusPaneIdx < 0 )
    {
-      for ( int i = 0; i < m_nIndicators; i++ )
-      {
-         UINT nID;
-         UINT nStyle;
-         int cxWidth;
-         GetPaneInfo(i,nID,nStyle,cxWidth);
-
-         if ( nID == EAFID_INDICATOR_STATUS )
-         {
-            m_StatusPaneIdx = i;
-            break;
-         }
-      }
+      m_StatusPaneIdx = GetPaneIndex(EAFID_INDICATOR_STATUS);
    }
    return m_StatusPaneIdx;
+}
+
+int CEAFStatusBar::GetAutoSavePaneIndex()
+{
+   if (m_AutoSavePaneIdx < 0)
+   {
+      m_AutoSavePaneIdx = GetPaneIndex(EAFID_INDICATOR_AUTOSAVE_ON);
+   }
+
+   return m_AutoSavePaneIdx;
 }
 
 CEAFDocument* CEAFStatusBar::GetDocument()
@@ -388,6 +396,16 @@ void CEAFStatusBar::OnLButtonDblClk(UINT nFlags, CPoint point)
       }
    }
 
+   GetStatusBarCtrl().GetRect(GetAutoSavePaneIndex(), &rect);
+   if (rect.PtInRect(point))
+   {
+      CEAFApp* pApp = EAFGetApp();
+      if (pApp)
+      {
+         pApp->EnableAutoSave(!pApp->IsAutoSaveEnabled(), pApp->GetAutoSaveInterval());
+      }
+   }
+
    CStatusBar::OnLButtonDblClk(nFlags,point);
 }
 
@@ -412,3 +430,15 @@ void CEAFStatusBar::AssertValid() const
 	CStatusBar::AssertValid();
 }
 #endif
+
+void CEAFStatusBar::AutoSaveEnabled(BOOL bEnable)
+{
+   CString status_text;
+   VERIFY(status_text.LoadString(bEnable ? EAFID_INDICATOR_AUTOSAVE_ON : EAFID_INDICATOR_AUTOSAVE_OFF));
+
+   int idx = GetAutoSavePaneIndex();
+   if (0 <= idx)
+   {
+      SetPaneText(idx, status_text, TRUE);
+   }
+}
