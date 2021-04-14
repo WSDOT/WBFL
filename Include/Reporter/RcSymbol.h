@@ -50,6 +50,8 @@ public:
                      DELTA,
                      epsilon,
                      EPSILON,
+                     zeta,
+                     ZETA,
                      eta,
                      ETA,
                      gamma, 

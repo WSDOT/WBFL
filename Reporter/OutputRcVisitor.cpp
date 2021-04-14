@@ -87,6 +87,12 @@ Uint8 rptOutputRcVisitor::GetRomanForGreek(rptRcSymbol::SymbolType sym)
    case rptRcSymbol::GAMMA:
       symlet='G';
       break;
+   case rptRcSymbol::zeta:
+      symlet = 'z';
+      break;
+   case rptRcSymbol::ZETA:
+      symlet = 'Z';
+      break;
    case rptRcSymbol::kappa:
       symlet=107;
       break;
