@@ -220,6 +220,11 @@ BOOL CEAFApp::InitInstance()
       return FALSE;
    }
    
+   // The main window has been initialized, so show and update it.
+   m_pMainWnd->ShowWindow(m_nCmdShow);
+   m_pMainWnd->SetWindowPos(&CWnd::wndTop, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOREDRAW);
+   m_pMainWnd->UpdateWindow();
+
    if ( 0 < cmdInfo.m_nParams )
    {
       ProcessCommandLineOptions(cmdInfo);
@@ -227,11 +232,6 @@ BOOL CEAFApp::InitInstance()
    else
    {
       LoadDocumentationMap();
-
-      // The main window has been initialized, so show and update it.
-      m_pMainWnd->ShowWindow(m_nCmdShow);
-      m_pMainWnd->SetWindowPos(&CWnd::wndTop, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOREDRAW);
-      m_pMainWnd->UpdateWindow();
 
       if (!IsFirstRun() && (IsTipOfTheDayEnabled() && !cmdInfo.m_bCommandLineMode))
       {
