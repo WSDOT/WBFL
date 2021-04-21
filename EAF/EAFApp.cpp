@@ -1033,12 +1033,16 @@ void CEAFApp::GetAutoSaveInfo(BOOL* pbAutoSave, int* pAutoSaveInterval)
    CString strAutoSave = GetProfileString(_T("Options"), _T("AutoSave"), strAutoSaveDefault);
    *pbAutoSave = (strAutoSave == _T("true") ? true : false);
    *pAutoSaveInterval = GetProfileInt(_T("Options"), _T("AutoSaveInterval"), default_interval);
+   if (*pAutoSaveInterval < 1 * 60 * 1000)
+   {
+      *pAutoSaveInterval = 1 * 60 * 1000; // never let autosave interval be less than 1 minute
+   }
 }
 
 void CEAFApp::SaveAutoSaveInfo(BOOL bAutoSave, int AutoSaveInterval)
 {
    VERIFY(WriteProfileString(_T("Options"), _T("AutoSave"), bAutoSave ? _T("true") : _T("false")));
-   VERIFY(WriteProfileInt(_T("Options"), _T("AutoSaveInterval"), AutoSaveInterval));
+   VERIFY(WriteProfileInt(_T("Options"), _T("AutoSaveInterval"), AutoSaveInterval < 1*60*1000 ? 1*60*1000 : AutoSaveInterval)); // don't save a value less than 1 minute
 }
 
 int CEAFApp::GetAutoSaveInterval()
