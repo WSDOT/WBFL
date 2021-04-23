@@ -93,6 +93,8 @@ public:
    // the strand pool, returns -1
    Int32 GetStrandKey(const matPsStrand* pStrand);
 
+   bool CompareStrands(const matPsStrand* pStrandA, const matPsStrand* pStrandB, bool bCompareGrade = true, bool bCompareType = true, bool bCompareCoating = false, bool bCompareSize = false);
+
    // GROUP: INQUIRY
    // GROUP: DEBUG
 #if defined _DEBUG

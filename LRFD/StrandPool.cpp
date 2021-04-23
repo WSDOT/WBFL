@@ -110,6 +110,15 @@ Int32 lrfdStrandPool::GetStrandKey(const matPsStrand* pStrand)
    return hash( pStrand->GetGrade(), pStrand->GetType(), pStrand->GetCoating(), pStrand->GetSize() );
 }
 
+bool lrfdStrandPool::CompareStrands(const matPsStrand* pStrandA, const matPsStrand* pStrandB, bool bCompareGrade, bool bCompareType, bool bCompareCoating, bool bCompareSize)
+{
+   bool bSameGrade = bCompareGrade ? (pStrandA->GetGrade() == pStrandB->GetGrade() ? true : false) : true;
+   bool bSameType = bCompareType ? (pStrandA->GetType() == pStrandB->GetType() ? true : false) : true;
+   bool bSameCoating = bCompareCoating ? (pStrandA->GetCoating() == pStrandB->GetCoating() ? true : false) : true;
+   bool bSameSize = bCompareSize ? (pStrandA->GetSize() == pStrandB->GetSize() ? true : false) : true;
+   return bSameGrade && bSameType && bSameCoating && bSameSize;
+}
+
 //======================== INQUIRY    =======================================
 //======================== DEBUG      =======================================
 #if defined _DEBUG
