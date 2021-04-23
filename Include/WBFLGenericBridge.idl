@@ -883,6 +883,8 @@ library WBFLGenericBridge
 	   [propput,helpstring("property Size")] HRESULT Size([in] StrandSize size);
       [propget,helpstring("property InstallationStage")] HRESULT InstallationStage([out,retval]StageIndexType* pStageIdx);
       [propput,helpstring("property InstallationStage")] HRESULT InstallationStage([in]StageIndexType stageIdx);
+      [propget, helpstring("property RemovalStage")] HRESULT RemovalStage([out, retval]StageIndexType* pStageIdx);
+      [propput, helpstring("property RemovalStage")] HRESULT RemovalStage([in]StageIndexType stageIdx);
 
 	   [propget,helpstring("property NominalDiameter")] HRESULT NominalDiameter([out,retval]Float64* dps);
 	   [propget,helpstring("property NominalArea")] HRESULT NominalArea([out,retval]Float64* aps);

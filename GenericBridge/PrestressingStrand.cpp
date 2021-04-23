@@ -156,6 +156,19 @@ STDMETHODIMP CPrestressingStrand::get_InstallationStage(StageIndexType* pStageId
    return S_OK;
 }
 
+STDMETHODIMP CPrestressingStrand::put_RemovalStage(StageIndexType stageIdx)
+{
+   m_RemovalStageIdx = stageIdx;
+   return S_OK;
+}
+
+STDMETHODIMP CPrestressingStrand::get_RemovalStage(StageIndexType* pStageIdx)
+{
+   CHECK_RETVAL(pStageIdx);
+   *pStageIdx = m_RemovalStageIdx;
+   return S_OK;
+}
+
 STDMETHODIMP CPrestressingStrand::get_NominalDiameter(Float64* dps)
 {
    CHECK_RETVAL(dps);
@@ -210,10 +223,19 @@ STDMETHODIMP CPrestressingStrand::get_ModulusE(Float64* e)
 STDMETHODIMP CPrestressingStrand::get_E(StageIndexType stageIdx,Float64* E)
 {
    CHECK_RETVAL(E);
-   if ( stageIdx < m_InstallationStageIdx || m_InstallationStageIdx == INVALID_INDEX )
+   ATLASSERT(m_InstallationStageIdx <= m_RemovalStageIdx); // installation must be before removal (equal case is when they are bot INVALID_INDEX)
+   if (
+         (stageIdx < m_InstallationStageIdx || m_InstallationStageIdx == INVALID_INDEX) // stage is before installation or there isn't an installation stage
+      || // -OR-
+         (m_RemovalStageIdx < stageIdx && m_RemovalStageIdx != INVALID_INDEX) // stage is after removal and there is a removal stage
+      )
+   {
       *E = 0;
+   }
    else
+   {
       get_ModulusE(E);
+   }
 
    return S_OK;
 }
@@ -227,10 +249,19 @@ STDMETHODIMP CPrestressingStrand::put_E(StageIndexType stageIdx,Float64 E)
 STDMETHODIMP CPrestressingStrand::get_Density(StageIndexType stageIdx,Float64* w)
 {
    CHECK_RETVAL(w);
-   if ( stageIdx < m_InstallationStageIdx || m_InstallationStageIdx == INVALID_INDEX )
+   ATLASSERT(m_InstallationStageIdx <= m_RemovalStageIdx); // installation must be before removal (equal case is when they are bot INVALID_INDEX)
+   if (
+      (stageIdx < m_InstallationStageIdx || m_InstallationStageIdx == INVALID_INDEX) // stage is before installation or there isn't an installation stage
+      || // -OR-
+      (m_RemovalStageIdx < stageIdx && m_RemovalStageIdx != INVALID_INDEX) // stage is after removal and there is a removal stage
+      )
+   {
       *w = 0;
+   }
    else
-      *w = ::ConvertToSysUnits(490.0,unitMeasure::LbfPerFeet3);
+   {
+      *w = ::ConvertToSysUnits(490.0, unitMeasure::LbfPerFeet3);
+   }
 
    return S_OK;
 }

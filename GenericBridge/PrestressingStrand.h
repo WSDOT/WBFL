@@ -57,6 +57,7 @@ public:
       m_Size = D5000;
 	
       m_InstallationStageIdx = 0;
+      m_RemovalStageIdx = INVALID_INDEX; // never removed
    }
 
    HRESULT FinalConstruct();
@@ -88,6 +89,7 @@ private:
    StrandCoating m_Coating;
    StrandSize m_Size;
    StageIndexType m_InstallationStageIdx;
+   StageIndexType m_RemovalStageIdx;
 
    // ISupportsErrorInfo
 public:
@@ -107,6 +109,8 @@ public:
 	STDMETHOD(put_Size)(/*[in]*/ StrandSize size) override;
    STDMETHOD(put_InstallationStage)(StageIndexType stageIdx) override;
    STDMETHOD(get_InstallationStage)(StageIndexType* pStageIdx) override;
+   STDMETHOD(put_RemovalStage)(StageIndexType stageIdx) override;
+   STDMETHOD(get_RemovalStage)(StageIndexType* pStageIdx) override;
 	STDMETHOD(get_NominalDiameter)(/*[out,retval]*/Float64* dps) override;
 	STDMETHOD(get_NominalArea)(/*[out,retval]*/Float64* aps) override;
 	STDMETHOD(get_UltimateStrength)(/*[out,retval]*/Float64* fpu) override;
