@@ -697,7 +697,7 @@ library WBFLCogo
        /// Returns the chord length of the spiral
    	   [propget, helpstring("property SpiralChord"), helpcontext(IDH_HorzCurve_SpiralChord)] HRESULT SpiralChord([in]SpiralType spType,[out,retval] Float64* cs);
 
-         /// Returns the direction if the cirved. The direction is as viewed looking ahead on station.
+         /// Returns the direction if the curve. The direction is as viewed looking ahead on station.
    	   [propget, helpstring("property Direction"), helpcontext(IDH_HorzCurve_Direction)] HRESULT Direction([out,retval] CurveDirectionType* dir);
 
          /// Returns the length of the circular curve
