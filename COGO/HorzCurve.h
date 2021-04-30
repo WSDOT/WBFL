@@ -168,6 +168,7 @@ private:
 
    CComPtr<IGeomUtil2d> m_GeomUtil;
    CComPtr<IPoint2dFactory> m_PointFactory;
+   CComPtr<ICoordinateXform2d> m_Xform;
 
    void Advise(IPoint2d* pnt,DWORD* pdwCookie);
    void Unadvise(IPoint2d* pnt,DWORD* pdwCookie);

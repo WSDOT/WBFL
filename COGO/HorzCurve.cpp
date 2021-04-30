@@ -62,6 +62,7 @@ HRESULT CHorzCurve::FinalConstruct()
    Advise(m_PFT,&m_dwPFT);
 
    m_GeomUtil.CoCreateInstance(CLSID_GeomUtil);
+   m_Xform.CoCreateInstance(CLSID_CoordinateXform2d);
 
    m_bHoldEvents = false;
    m_bPendingEvents = false;
@@ -838,22 +839,20 @@ STDMETHODIMP CHorzCurve::get_SPI(SpiralType spType,IPoint2d** pSPI)
       CComPtr<IPoint2d> TS;
       get_TS(&TS);
 
-      CComPtr<ICoordinateXform2d> xform;
-      xform.CoCreateInstance(CLSID_CoordinateXform2d);
-      xform->putref_NewOrigin(TS);
+      m_Xform->putref_NewOrigin(TS);
 
       CComPtr<IDirection> dir;
       Float64 dist;
       cogoUtil::Inverse(TS,m_PI,&dist,&dir);
       Float64 rotAngle;
       dir->get_Value(&rotAngle);
-      xform->put_RotationAngle(rotAngle);
+      m_Xform->put_RotationAngle(rotAngle);
 
       m_PointFactory->CreatePoint(pSPI);
       (*pSPI)->put_X(X);
       (*pSPI)->put_Y(-Y);
       CComQIPtr<IPoint2d> spi(*pSPI);
-      xform->Xform(&spi.p,xfrmNewToOld);
+      m_Xform->Xform(&spi.p,xfrmNewToOld);
    }
    else
    {
@@ -863,22 +862,20 @@ STDMETHODIMP CHorzCurve::get_SPI(SpiralType spType,IPoint2d** pSPI)
       CComPtr<IPoint2d> ST;
       get_ST(&ST);
 
-      CComPtr<ICoordinateXform2d> xform;
-      xform.CoCreateInstance(CLSID_CoordinateXform2d);
-      xform->putref_NewOrigin(ST);
+      m_Xform->putref_NewOrigin(ST);
 
       CComPtr<IDirection> dir;
       Float64 dist;
       cogoUtil::Inverse(ST,m_PI,&dist,&dir);
       Float64 rotAngle;
       dir->get_Value(&rotAngle);
-      xform->put_RotationAngle(rotAngle);
+      m_Xform->put_RotationAngle(rotAngle);
 
       m_PointFactory->CreatePoint(pSPI);
       (*pSPI)->put_X(X);
       (*pSPI)->put_Y(Y);
       CComQIPtr<IPoint2d> spi(*pSPI);
-      xform->Xform(&spi.p,xfrmNewToOld);
+      m_Xform->Xform(&spi.p,xfrmNewToOld);
    }
 
    return S_OK;
@@ -2087,16 +2084,14 @@ void CHorzCurve::PointOnEntrySpiral(Float64 x,Float64 y,IPoint2d** pVal)
    CComPtr<IPoint2d> TS;
    get_TS(&TS);
 
-   CComPtr<ICoordinateXform2d> xform;
-   xform.CoCreateInstance(CLSID_CoordinateXform2d);
-   xform->putref_NewOrigin(TS);
+   m_Xform->putref_NewOrigin(TS);
 
    CComPtr<IDirection> dir;
    Float64 dist;
    cogoUtil::Inverse(TS,m_PI,&dist,&dir);
    Float64 rotAngle;
    dir->get_Value(&rotAngle);
-   xform->put_RotationAngle(rotAngle);
+   m_Xform->put_RotationAngle(rotAngle);
 
    CurveDirectionType cd;
    get_Direction(&cd);
@@ -2106,7 +2101,7 @@ void CHorzCurve::PointOnEntrySpiral(Float64 x,Float64 y,IPoint2d** pVal)
    (*pVal)->put_X(x);
    (*pVal)->put_Y(k*y);
    CComQIPtr<IPoint2d> pnt(*pVal);
-   xform->Xform(&pnt.p,xfrmNewToOld);
+   m_Xform->Xform(&pnt.p,xfrmNewToOld);
 }
 
 void CHorzCurve::PointOnExitSpiral(Float64 x,Float64 y,IPoint2d** pVal)
@@ -2118,16 +2113,14 @@ void CHorzCurve::PointOnExitSpiral(Float64 x,Float64 y,IPoint2d** pVal)
    CComPtr<IPoint2d> ST;
    get_ST(&ST);
 
-   CComPtr<ICoordinateXform2d> xform;
-   xform.CoCreateInstance(CLSID_CoordinateXform2d);
-   xform->putref_NewOrigin(ST);
+   m_Xform->putref_NewOrigin(ST);
 
    CComPtr<IDirection> dir;
    Float64 dist;
    cogoUtil::Inverse(ST,m_PI,&dist,&dir);
    Float64 rotAngle;
    dir->get_Value(&rotAngle);
-   xform->put_RotationAngle(rotAngle);
+   m_Xform->put_RotationAngle(rotAngle);
 
    CurveDirectionType cd;
    get_Direction(&cd);
@@ -2137,7 +2130,7 @@ void CHorzCurve::PointOnExitSpiral(Float64 x,Float64 y,IPoint2d** pVal)
    (*pVal)->put_X(x);
    (*pVal)->put_Y(k*y);
    CComQIPtr<IPoint2d> pnt(*pVal);
-   xform->Xform(&pnt.p,xfrmNewToOld);
+   m_Xform->Xform(&pnt.p,xfrmNewToOld);
 }
 
 void CHorzCurve::ProjectPointOnEntrySpiral(IPoint2d* point,Float64* pDistFromStart,IPoint2d** newPoint)
@@ -2181,9 +2174,6 @@ void CHorzCurve::ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d*
    // We will do this by setting up a coordinate system at each end of the curve and transform
    // the point into those systems.
 
-   CComPtr<ICoordinateXform2d> xfrm;
-   xfrm.CoCreateInstance(CLSID_CoordinateXform2d);
-
    // Setup the first coordinate system, with origin at TS and X towards PI
    CComPtr<IPoint2d> origin;
    get_TS(&origin);
@@ -2193,11 +2183,11 @@ void CHorzCurve::ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d*
    Float64 dir;
    brg->get_Value(&dir);
 
-   xfrm->putref_NewOrigin(origin);
-   xfrm->put_RotationAngle(dir);
+   m_Xform->putref_NewOrigin(origin);
+   m_Xform->put_RotationAngle(dir);
 
    CComPtr<IPoint2d> xfrmPoint;
-   xfrm->XformEx(point,xfrmOldToNew,&xfrmPoint);
+   m_Xform->XformEx(point,xfrmOldToNew,&xfrmPoint);
    Float64 x1; // X ordinate in coordinate system 1
    xfrmPoint->get_X(&x1);
 //   x1 = IsZero(x1) ? 0.00 : x1;
@@ -2207,7 +2197,7 @@ void CHorzCurve::ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d*
    CComPtr<IPoint2d> cc;
    get_CC(&cc);
    CComQIPtr<IPoint2d> cc2(cc);
-   xfrm->Xform(&cc2.p,xfrmOldToNew);
+   m_Xform->Xform(&cc2.p,xfrmOldToNew);
    Float64 ccx, ccy;
    cc->get_X(&ccx);
    ATLASSERT( IsZero(ccx) );
@@ -2230,9 +2220,9 @@ void CHorzCurve::ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d*
    get_FwdTangentBrg(&brg);
    brg->get_Value(&dir);
 
-   xfrm->putref_NewOrigin(origin);
-   xfrm->put_RotationAngle(dir + M_PI);
-   xfrm->XformEx(point,xfrmOldToNew,&xfrmPoint);
+   m_Xform->putref_NewOrigin(origin);
+   m_Xform->put_RotationAngle(dir + M_PI);
+   m_Xform->XformEx(point,xfrmOldToNew,&xfrmPoint);
    Float64 x2;
    xfrmPoint->get_X(&x2);
 //   x2 = IsZero(x2) ? 0.00 : x2;
@@ -2243,7 +2233,7 @@ void CHorzCurve::ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d*
    get_CC(&cc);
    cc2.Release();
    cc.QueryInterface(&cc2);
-   xfrm->Xform(&cc2.p,xfrmOldToNew);
+   m_Xform->Xform(&cc2.p,xfrmOldToNew);
    cc->get_X(&ccx);
    ATLASSERT( IsZero(ccx) );
 
@@ -2356,11 +2346,11 @@ void CHorzCurve::ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d*
       brg.Release();
       get_CurveBkTangentBrg(&brg);
       brg->get_Value(&dir);
-      xfrm->putref_NewOrigin(sc);
-      xfrm->put_RotationAngle(dir);
+      m_Xform->putref_NewOrigin(sc);
+      m_Xform->put_RotationAngle(dir);
       
       CComPtr<IPoint2d> point1;
-      xfrm->XformEx(point,xfrmOldToNew,&point1);
+      m_Xform->XformEx(point,xfrmOldToNew,&point1);
       point1->get_X(&x1);
 //      x1 = IsZero(x1) ? 0.00 : x1;
 
@@ -2370,11 +2360,11 @@ void CHorzCurve::ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d*
       brg.Release();
       get_CurveFwdTangentBrg(&brg);
       brg->get_Value(&dir);
-      xfrm->putref_NewOrigin(cs);
-      xfrm->put_RotationAngle(dir + M_PI);
+      m_Xform->putref_NewOrigin(cs);
+      m_Xform->put_RotationAngle(dir + M_PI);
       
       CComPtr<IPoint2d> point2;
-      xfrm->XformEx(point,xfrmOldToNew,&point2);
+      m_Xform->XformEx(point,xfrmOldToNew,&point2);
       point2->get_X(&x2);
 //      x2 = IsZero(x2) ? 0.00 : x2;
 
