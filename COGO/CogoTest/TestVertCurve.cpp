@@ -273,9 +273,10 @@ void CTestVertCurve::Test1()
    TRY_TEST( IsEqual(g2-g1,A),true);
 
    Float64 K;
-   TRY_TEST( vc->get_K(nullptr), E_POINTER );
-   TRY_TEST( vc->get_K(&K), S_OK );
-   TRY_TEST( IsEqual( A/(2*L), K), true);
+   TRY_TEST(vc->get_K1(nullptr), E_POINTER);
+   TRY_TEST(vc->get_K2(nullptr), E_POINTER);
+   TRY_TEST( vc->get_K1(&K), S_OK );
+   TRY_TEST( IsEqual( A/L, K), true);
 
    Float64 H;
    TRY_TEST( vc->get_H(nullptr), E_POINTER );

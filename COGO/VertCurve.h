@@ -91,8 +91,9 @@ public:
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
    STDMETHOD(Clone)(/*[out,retval]*/ IVertCurve* *clone) override;
 	STDMETHOD(get_A)(/*[out,retval]*/Float64* a) override;
-	STDMETHOD(get_K)(/*[out,retval]*/Float64* k) override;
-	STDMETHOD(get_H)(/*[out,retval]*/Float64* h) override;
+   STDMETHOD(get_K1)(/*[out,retval]*/Float64* k) override;
+   STDMETHOD(get_K2)(/*[out,retval]*/Float64* k) override;
+   STDMETHOD(get_H)(/*[out,retval]*/Float64* h) override;
    STDMETHOD(get_E)(/*[[in]*/Float64 t,/*[out,retval]*/Float64* e) override;
 	STDMETHOD(Grade)(/*[in]*/ VARIANT varStation,/*[out,retval]*/Float64* grade) override;
 	STDMETHOD(Elevation)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ Float64* elev) override;
