@@ -110,32 +110,32 @@ library WBFLCogo
     typedef [public,helpstring("Indicates general north/south direction of a bearing"),helpcontext(IDH_NSDirectionType),uuid(AA76DB72-59E7-11d5-8C2D-006097C68A9C)] 
     enum NSDirectionType
     {
-       nsNorth = 1, ///< Bearing is in a northerly direction
-       nsSouth = 2  ///< Bearing is in a southerly direction
+       nsNorth = 0, ///< Bearing is in a northerly direction
+       nsSouth = 1  ///< Bearing is in a southerly direction
     } NSDirectionType;
 
     /// Constant describing the general East-West direction of a bearing
     typedef [public,helpstring("Indicates general east/west direction of a bearing"),helpcontext(IDH_EWDirectionType),uuid(AA76DB73-59E7-11d5-8C2D-006097C68A9C)] 
     enum EWDirectionType
     {
-       ewEast = 1, ///< Bearing is in an easterly direction
-       ewWest = 2  ///< Bearing is in a westerly direction
+       ewEast = 0, ///< Bearing is in an easterly direction
+       ewWest = 1  ///< Bearing is in a westerly direction
     } EWDirectionType;
 
     /// Constant identifying an entry or exit spiral
     typedef [public,helpstring("Indicates the entry or exit spiral of a horizontal curve"),helpcontext(IDH_SpiralType),uuid(66EB558D-4360-47d3-B3C0-0BC65E302333)] 
     enum SpiralType
     {
-       spEntry = 1, ///< A spiral transitioning between the back tangent and the beginning of a horizontal curve
-       spExit  = 2  ///< A spiral transitioning between the end of a horizontal curve and the forward tangent
+       spEntry = 0, ///< A spiral transitioning between the back tangent and the beginning of a horizontal curve
+       spExit  = 1  ///< A spiral transitioning between the end of a horizontal curve and the forward tangent
     } SpiralType;
 
     /// Constant describing the direction of a horizontal curve, as viewed ahead on station
     typedef [public,helpstring("Indicates the direction of a horizontal curve"),helpcontext(IDH_CurveDirectionType),uuid(1620A21B-1D7E-437e-B7C8-FF71E6F44BED)] 
     enum CurveDirectionType
     {
-       cdLeft  = 1, ///< Curve turns to the left (counter-clockwise)
-       cdRight = 2  ///< Curve turns to the right (clockwise)
+       cdLeft  = 0, ///< Curve turns to the left (counter-clockwise)
+       cdRight = 1  ///< Curve turns to the right (clockwise)
     } CurveDirectionType;
 
     /// Constant identifying the typ eof object associated with a ProfileElement objecct
@@ -178,8 +178,8 @@ library WBFLCogo
     typedef [public,helpstring("Indicates how an offset is measured")/*,helpcontext(IDH_TangentSignType)*/,uuid(50A94F9E-EACB-4b60-936F-23E5F4F24C86)] 
     enum OffsetMeasureType
     {
-       omtAlongDirection =  1, ///< Offset is measured along a line projecting from an object
-       omtNormal         =  2, ///< Offset is measured normal to object
+       omtAlongDirection =  0, ///< Offset is measured along a line projecting from an object
+       omtNormal         =  1, ///< Offset is measured normal to object
     } OffsetMeasureType;
 
     /// Constant defining the type of superelevation transition
