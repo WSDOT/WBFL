@@ -674,7 +674,7 @@ Int8 cogoUtil::Compare(IStationEquationCollection* pEquations,IStation* pSta1,IS
       Float64 sta1,sta2;
       pEquations->ConvertToNormalizedStation(CComVariant(pSta1),&sta1);
       pEquations->ConvertToNormalizedStation(CComVariant(pSta2),&sta2);
-      return ::Sign(sta2-sta1);
+      return IsZero(sta2-sta1) ? 0 : ::Sign(sta2-sta1);
    }
    else
    {
@@ -685,7 +685,7 @@ Int8 cogoUtil::Compare(IStationEquationCollection* pEquations,IStation* pSta1,IS
 
       ATLASSERT(zoneIdx1 == zoneIdx2);
 
-      return ::Sign(sta2-sta1);
+      return IsZero(sta2 - sta1) ? 0 : ::Sign(sta2-sta1);
    }
 
    ATLASSERT(false); // should never get here
