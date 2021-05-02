@@ -160,8 +160,8 @@ library WBFLCogo
     typedef [public,helpstring("Indicates the direction of the angle formed by a circular tangent line and the line connecting the centers of the circles"),helpcontext(IDH_TangentSignType),uuid(ED58941C-11B9-484e-A9D6-D07ADB1FA0A3)] 
     enum TangentSignType
     {
-       tsCW       =  1, ///< Clockwise angle
-       tsCCW      = -1, ///< Counter-clockwise angle
+       tsCCW = 1, ///< Counter-clockwise angle
+       tsCW  = -1, ///< Clockwise angle
     } TangentSignType;
 
     /// Constant describing the method by which the degree of curve is computed

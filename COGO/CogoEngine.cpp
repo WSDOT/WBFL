@@ -1077,7 +1077,7 @@ STDMETHODIMP CCogoEngine::External(/*[in]*/ IPoint2d* center1, /*[in]*/ Float64 
    Float64 theta = acos(JG_JH);
 
    if ( sign == tsCCW )
-      theta *= -1;
+      theta *= 1;
 
    Float64 Gx, Gy;
    Float64 Hx, Hy;
@@ -1144,13 +1144,13 @@ STDMETHODIMP CCogoEngine::Cross(/*[in]*/ IPoint2d* center1, /*[in]*/ Float64 rad
    Float64 sG,sH;
    if ( sign == tsCCW )
    {
-      sG = -1;
-      sH =  1;
+      sG =  1;
+      sH = -1;
    }
    else
    {
-      sG =  1;
-      sH = -1;
+      sG = -1;
+      sH =  1;
    }
 
    Float64 Gx, Gy;
@@ -1211,16 +1211,17 @@ STDMETHODIMP CCogoEngine::Point(/*[in]*/ IPoint2d* center, /*[in]*/ Float64 radi
    Float64 x = radius/d;
    if ( IsZero(x-1.0) )
       x = 1.0;
+
    Float64 theta = acos(x);
 
    Float64 sG;
    if ( sign == tsCCW )
    {
-      sG = -1;
+      sG =  1;
    }
    else
    {
-      sG =  1;
+      sG = -1;
    }
 
    Float64 Gx, Gy;
