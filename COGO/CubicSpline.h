@@ -40,7 +40,7 @@ class CSplineSegment;
 // CCubicSpline
 class ATL_NO_VTABLE CCubicSpline : 
 	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CCubicSpline, &CLSID_Direction>,
+	public CComCoClass<CCubicSpline, &CLSID_CubicSpline>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CCubicSpline,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
 	public IConnectionPointContainerImpl<CCubicSpline>,
