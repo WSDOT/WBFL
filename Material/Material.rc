@@ -28,8 +28,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 6,0,0,7
- PRODUCTVERSION 6,0,0,7
+ FILEVERSION 6,1,0,0
+ PRODUCTVERSION 6,1,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -47,14 +47,14 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project\0"
             VALUE "CompanyName", "Washington State Department of Transportation\0"
             VALUE "FileDescription", "Material Modeling Services\0"
-            VALUE "FileVersion", "6.0.0.7\0"
+            VALUE "FileVersion", "6.1.0.0\0"
             VALUE "InternalName", "Material\0"
             VALUE "LegalCopyright", "Copyright © 1999-2020, Washington State Department of Transportation, All Rights Reserved"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "Mat30.dll\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "WBFL\0"
-            VALUE "ProductVersion", "6.0.0.7\0"
+            VALUE "ProductVersion", "6.1.0.0\0"
             VALUE "SpecialBuild", "\0"
         END
     END
