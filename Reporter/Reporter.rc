@@ -48,7 +48,7 @@ BEGIN
             VALUE "FileDescription", "Reporter"
             VALUE "FileVersion", "6.1.0.0"
             VALUE "InternalName", "Reporter"
-            VALUE "LegalCopyright", "Copyright © 1999-2020, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2021, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "WBFLReporter.dll"
             VALUE "ProductName", "WBFL"
             VALUE "ProductVersion", "6.1.0.0"
