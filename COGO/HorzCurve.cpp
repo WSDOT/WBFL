@@ -2198,17 +2198,9 @@ void CHorzCurve::ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d*
    get_CC(&cc);
    CComQIPtr<IPoint2d> cc2(cc);
    m_Xform->Xform(&cc2.p,xfrmOldToNew);
-   Float64 ccx, ccy;
+   Float64 ccx;
    cc->get_X(&ccx);
    ATLASSERT( IsZero(ccx) );
-
-   cc->get_Y(&ccy);
-   CurveDirectionType dirType;
-   get_Direction(&dirType);
-   if ( dirType == cdRight )
-      ATLASSERT( ccy < 0 );
-   else
-      ATLASSERT( ccy > 0 );
 #endif // _DEBUG
 
    // Setup the second coordinate system, with origin at ST and X towards PI
@@ -2236,13 +2228,6 @@ void CHorzCurve::ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d*
    m_Xform->Xform(&cc2.p,xfrmOldToNew);
    cc->get_X(&ccx);
    ATLASSERT( IsZero(ccx) );
-
-   cc->get_Y(&ccy);
-   get_Direction(&dirType);
-   if ( dirType == cdRight )
-      ATLASSERT( ccy > 0 );
-   else
-      ATLASSERT( ccy < 0 );
 #endif // _DEBUG
    
    if ( x1 < 0 && x2 < 0 )
