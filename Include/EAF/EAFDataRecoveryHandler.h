@@ -48,7 +48,7 @@ public:
       m_bIsAutosaving = FALSE;
 
       DWORD dwAttrib = GetFileAttributes(pDocument->GetPathName());
-      if (bResult && !(dwAttrib & FILE_ATTRIBUTE_READONLY) && EAFGetApp()->IsAutoSaveEnabled())
+      if (bResult && !(dwAttrib & FILE_ATTRIBUTE_READONLY) && EAFGetApp()->IsAutoSaveEnabled() && pDocument->IsModified())
       {
          // if the recovery autosave was successful do a regular save if the file has been previously saved and is not readonly
          pDocument->DoFileSave();

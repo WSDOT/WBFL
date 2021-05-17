@@ -690,7 +690,7 @@ BOOL CEAFDocument::SaveModified()
 {
    // called when a document is closing. if autosave is enabled, we want to
    // always save a modified document unless the document is new and has not yet saved (pathname is empty).
-   if (!m_strPathName.IsEmpty() && AfxGetApp() && AfxGetApp()->SupportsAutosaveAtInterval())
+   if (!m_strPathName.IsEmpty() && IsModified() && AfxGetApp() && AfxGetApp()->SupportsAutosaveAtInterval())
    {
       DoFileSave();
    }
