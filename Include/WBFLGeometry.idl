@@ -3834,13 +3834,13 @@ library WBFLGeometry
          [out,retval] Float64* angle ///< angle, measured in radians
       );
 
-      /// Computes the shortest distance between a line and a point
-      /// \image html GeomUtil2d/ShortestDistanceToPoint.jpg
-		[helpstring("method ShortestDistanceToPoint"),helpcontext(IDH_IGeomUtil2d_ShortestDistanceToPoint)]
-		HRESULT ShortestDistanceToPoint(
+      /// Computes the shortest offset between a line and a point
+      /// \image html GeomUtil2d/ShortestOffsetToPoint.jpg
+		[helpstring("method ShortestOffsetToPoint"),helpcontext(IDH_IGeomUtil2d_ShortestOffsetToPoint)]
+		HRESULT ShortestOffsetToPoint(
          [in] ILine2d* pLine, ///< a line
          [in] IPoint2d* pPoint, ///< a point
-         [out,retval] Float64* pDist ///< shortest distance between the line and the point
+         [out,retval] Float64* pOffset ///< shortest offset between the line and the point. Negative values indicate the point is to the left of the line.
       );
 
       /// Locates the point on a line nearest a specified point

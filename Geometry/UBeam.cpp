@@ -289,9 +289,9 @@ HRESULT CUBeam::UpdateShape()
       CComPtr<IGeomUtil2d> geomUtil;
       geomUtil.CoCreateInstance(CLSID_GeomUtil);
       Float64 tw;
-      geomUtil->ShortestDistanceToPoint(outerwebline, p8, &tw);
+      geomUtil->ShortestOffsetToPoint(outerwebline, p8, &tw);
       ATLASSERT(IsEqual(tw, m_T));
-      geomUtil->ShortestDistanceToPoint(outerwebline, p9, &tw);
+      geomUtil->ShortestOffsetToPoint(outerwebline, p9, &tw);
       ATLASSERT(IsEqual(tw, m_T));
 
       //CComPtr<IPoint2dCollection> points;

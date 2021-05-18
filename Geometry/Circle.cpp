@@ -521,10 +521,10 @@ STDMETHODIMP CCircle::ClipWithLine(ILine2d* pLine,IShape** pShape)
    if ( FAILED(hr) )
       return hr;
 
-   Float64 distance;
-   pGeomUtil->ShortestDistanceToPoint( pLine, m_pCenter, &distance );
+   Float64 offset;
+   pGeomUtil->ShortestOffsetToPoint( pLine, m_pCenter, &offset);
 
-   if ( fabs(distance) < m_Radius)
+   if ( fabs(offset) < m_Radius)
    {
       // circle touches line, must clip
      
@@ -587,7 +587,7 @@ STDMETHODIMP CCircle::ClipWithLine(ILine2d* pLine,IShape** pShape)
       ATLASSERT( !IsZero(dot) ); // dot is only zero if v1 and v2 are at right
                                  // angles from one another. This should never
                                  // happen in this case.
-      if ( dot > 0 )
+      if ( 0 < dot )
       {
          // Circle in on the right
          // circle is entirely within clipping region
@@ -688,10 +688,10 @@ STDMETHODIMP CCircle::FurthestDistance(ILine2d* line,Float64 *pVal)
    CComPtr<IGeomUtil2d> util;
    CreateGeomUtil(&util);
 
-   Float64 dist;
-   util->ShortestDistanceToPoint(line,m_pCenter,&dist);
+   Float64 offset;
+   util->ShortestOffsetToPoint(line,m_pCenter,&offset);
 
-   *pVal = dist + m_Radius;
+   *pVal = offset + m_Radius;
 
    return S_OK;
 }

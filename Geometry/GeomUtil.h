@@ -104,7 +104,7 @@ public:
    STDMETHOD(CreateParallelLine)(/*[in]*/ ILine2d* pLine,/*[in]*/ Float64 dist,/*[out,retval]*/ILine2d** ppLine) override;
 	STDMETHOD(CreateParallelLineThroughPoint)(/*[in]*/ ILine2d* pLine,/*[in]*/ IPoint2d* pPoint,/*[out,retval]*/ ILine2d** ppLine) override;
    STDMETHOD(PointOnLineNearest)(/*[in]*/ ILine2d* pLine,/*[in]*/ IPoint2d* pPoint, /*[out,retval]*/ IPoint2d** ppPOLN) override;
-	STDMETHOD(ShortestDistanceToPoint)(/*[in]*/ ILine2d* pLine,/*[in]*/ IPoint2d* pPoint,/*[out,retval]*/ Float64* pDist) override;
+	STDMETHOD(ShortestOffsetToPoint)(/*[in]*/ ILine2d* pLine,/*[in]*/ IPoint2d* pPoint,/*[out,retval]*/ Float64* pOffset) override;
    STDMETHOD(Magnitude)(/*[in]*/ IPoint2d* pPoint,/*[out,retval]*/ Float64* pMag) override;
 	STDMETHOD(Distance)(/*[in]*/ IPoint2d* p1,/*[in]*/ IPoint2d* p2,/*[out,retval]*/ Float64* dist) override;
 	STDMETHOD(Angle)(/*[in]*/ IPoint2d* pStart,/*[in]*/ IPoint2d* pCenter,/*[in]*/ IPoint2d* pEnd,/*[out,retval]*/ Float64* angle) override;

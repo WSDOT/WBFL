@@ -226,9 +226,9 @@ public:
   
       m_Line->SetExplicit(pnt,m_Vector);
 
-      Float64 dist;
-      m_GeomUtil->ShortestDistanceToPoint(m_Line,m_TargetPoint,&dist);
-      return dist;
+      Float64 offset;
+      m_GeomUtil->ShortestOffsetToPoint(m_Line,m_TargetPoint,&offset);
+      return offset;
    }
 
    virtual mathFunction2d* Clone() const override
@@ -271,9 +271,9 @@ public:
   
       m_Line->SetExplicit(pnt,m_Vector);
 
-      Float64 dist;
-      m_GeomUtil->ShortestDistanceToPoint(m_Line,m_TargetPoint,&dist);
-      return dist;
+      Float64 offset;
+      m_GeomUtil->ShortestOffsetToPoint(m_Line,m_TargetPoint,&offset);
+      return offset;
    }
 
    virtual mathFunction2d* Clone() const override
@@ -305,10 +305,10 @@ public:
          CComPtr<IPoint2d> point_on_curve;
          m_pCurve->PointOnCurve(distFromStartOfCurve,&point_on_curve);
 
-         Float64 dist;
-         m_GeomUtil->ShortestDistanceToPoint(m_Line,point_on_curve,&dist);
+         Float64 offset;
+         m_GeomUtil->ShortestOffsetToPoint(m_Line,point_on_curve,&offset);
 
-         return dist;
+         return offset;
       }
 
       virtual mathFunction2d* Clone() const override

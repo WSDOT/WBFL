@@ -312,7 +312,7 @@ HRESULT CUBeam2::UpdateShape()
       m_P3->Move(p3_x, p3_y);
       m_P8->Move(p8_x, p8_y);
       m_OuterWebLine->ThroughPoints(m_P2, m_P3);
-      m_GeomUtil->ShortestDistanceToPoint(m_OuterWebLine, m_P8, &m_T);
+      m_GeomUtil->ShortestOffsetToPoint(m_OuterWebLine, m_P8, &m_T);
 
 
 #ifdef _DEBUG

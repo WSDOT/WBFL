@@ -1696,7 +1696,7 @@ HRESULT CPath::DistanceAndOffset(IPoint2d* point,Float64* pDistance,Float64* pOf
          line.CoCreateInstance(CLSID_Line2d);
          if ( SUCCEEDED(line->ThroughPoints(startPoint,endPoint)) )
          {
-            m_GeomUtil->ShortestDistanceToPoint(line,point,&offset);
+            m_GeomUtil->ShortestOffsetToPoint(line,point,&offset);
          }
          else
          {
@@ -1729,7 +1729,7 @@ HRESULT CPath::DistanceAndOffset(IPoint2d* point,Float64* pDistance,Float64* pOf
          line.CoCreateInstance(CLSID_Line2d);
          line->SetExplicit(prjPoint,vector); // Line through the projected point, forward direction
 
-         m_GeomUtil->ShortestDistanceToPoint(line,point,&offset);
+         m_GeomUtil->ShortestOffsetToPoint(line,point,&offset);
       }
       else if ( type == petCubicSpline )
       {
@@ -1754,7 +1754,7 @@ HRESULT CPath::DistanceAndOffset(IPoint2d* point,Float64* pDistance,Float64* pOf
          line.CoCreateInstance(CLSID_Line2d);
          line->SetExplicit(prjPoint,vector); // Line through the projected point, forward direction
 
-         m_GeomUtil->ShortestDistanceToPoint(line,point,&offset);
+         m_GeomUtil->ShortestOffsetToPoint(line,point,&offset);
       }
       else
       {

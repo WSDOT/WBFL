@@ -188,7 +188,7 @@ HRESULT CCapacityReductionFactor::ComputeDt(IUnkArray* pReinfShapes,ILine2d* neu
       props->get_Centroid(&cg);
 
       Float64 d;
-      geom_util->ShortestDistanceToPoint(neutralAxis,cg,&d);
+      geom_util->ShortestOffsetToPoint(neutralAxis,cg,&d);
 
       // d > 0 ==> reinforcement is on tension side of the neutral axis
       // d < 0 ==> reinforcement is on compression side of the neutral axis

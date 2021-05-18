@@ -1711,10 +1711,10 @@ Float64 CSplineSegmentProjectPointFunction::Evaluate(Float64 s) const
 
    m_Line->SetExplicit(m_Point,m_Vector); // line that is normal to the curve at "s" from the start
 
-   Float64 dist; // shortest distance between the target point and the normal line
+   Float64 offset; // shortest offset between the target point and the normal line
    // > 0 if target point is on the right hand side of the normal line
-   m_GeomUtil->ShortestDistanceToPoint(m_Line,m_TargetPoint,&dist);
-   return dist;
+   m_GeomUtil->ShortestOffsetToPoint(m_Line,m_TargetPoint,&offset);
+   return offset;
 }
 
 mathFunction2d* CSplineSegmentProjectPointFunction::Clone() const

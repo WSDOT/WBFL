@@ -240,7 +240,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderPathOffset(IGenericBridge* bridge,Girder
    // of the girder path, offset will be > 0. This means the girder path is
    // offset to the left of the alignment so the offset that we want has the opposite
    // sign.
-   geom_util->ShortestDistanceToPoint(line,point_on_alignment,offset);
+   geom_util->ShortestOffsetToPoint(line,point_on_alignment,offset);
    (*offset) *= -1;
 
    return S_OK;

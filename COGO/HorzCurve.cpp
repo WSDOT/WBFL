@@ -2587,9 +2587,9 @@ bool CHorzCurve::IsPointOnCurve(IPoint2d* pPoint)
 
 bool CHorzCurve::IsPointOnLine(ILine2d* pLine,IPoint2d* pPoint)
 {
-   Float64 dist;
-   m_GeomUtil->ShortestDistanceToPoint(pLine,pPoint,&dist);
-   return IsZero(dist,tolerance);
+   Float64 offset;
+   m_GeomUtil->ShortestOffsetToPoint(pLine,pPoint,&offset);
+   return IsZero(offset,tolerance);
 }
 
 bool CHorzCurve::TestIntersection(ILine2d* pLine,IPoint2d* pPoint)

@@ -408,7 +408,7 @@ STDMETHODIMP CGenericShape::ClipWithLine(ILine2d* pLine,IShape** pShape)
    // consider the shape to be clipped away
 
    Float64 d;
-   m_GeomUtil->ShortestDistanceToPoint(pLine,m_pCG,&d);
+   m_GeomUtil->ShortestOffsetToPoint(pLine,m_pCG,&d);
    if ( d < 0 )
    {
       // CG is on the left side of the line
@@ -456,7 +456,7 @@ STDMETHODIMP CGenericShape::FurthestDistance(ILine2d* line,Float64 *pVal)
    CHECK_IN(line);
    CHECK_RETVAL(pVal);
 
-   m_GeomUtil->ShortestDistanceToPoint(line,m_pCG,pVal);
+   m_GeomUtil->ShortestOffsetToPoint(line,m_pCG,pVal);
    
    return S_OK;
 }

@@ -661,11 +661,11 @@ STDMETHODIMP CGeomUtil::IntersectLineWithLineSegment(ILine2d* pLine,ILineSegment
    return S_OK;
 }
 
-STDMETHODIMP CGeomUtil::ShortestDistanceToPoint( ILine2d* pLine, IPoint2d* pPoint, Float64* pDist)
+STDMETHODIMP CGeomUtil::ShortestOffsetToPoint( ILine2d* pLine, IPoint2d* pPoint, Float64* pOffset)
 {
    CHECK_IN(pLine);
    CHECK_IN(pPoint);
-   CHECK_RETVAL(pDist);
+   CHECK_RETVAL(pOffset);
 
    // this implementation may not be optimal, but it's the best
    // I can come up with for now.
@@ -691,7 +691,7 @@ STDMETHODIMP CGeomUtil::ShortestDistanceToPoint( ILine2d* pLine, IPoint2d* pPoin
    if ( dot < 0 )
       distance *= -1.;
 
-   *pDist = distance;
+   *pOffset = distance;
 
    return S_OK;
 }

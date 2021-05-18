@@ -415,7 +415,7 @@
 #define IDH_IGeomUtil2d_Distance                         2702
 #define IDH_IGeomUtil2d_Magnitude                        2703
 #define IDH_IGeomUtil2d_Angle                            2704
-#define IDH_IGeomUtil2d_ShortestDistanceToPoint          2705
+#define IDH_IGeomUtil2d_ShortestOffsetToPoint          2705
 #define IDH_IGeomUtil2d_PointOnLineNearest               2706
 #define IDH_IGeomUtil2d_CreateParallelLineThroughPoint   2707
 #define IDH_IGeomUtil2d_CreateParallelLine               2708
