@@ -124,7 +124,7 @@ void CTestPolyShape::TestIPolyShape()
 
    TRY_TEST( polyShape->Clear(), S_OK );
    coll->get_Count(&nPoints);
-   TRY_TEST( nPoints, 0 );
+   TRY_TEST( nPoints, 4 );
 
    coll.Release();
    coll.CoCreateInstance( CLSID_Point2dCollection );
