@@ -44,9 +44,11 @@ CLASS
 static const Float64 g_197000_MPA = ::ConvertToSysUnits( 197000., unitMeasure::MPa );
 static const Float64 g_1725_MPA   = ::ConvertToSysUnits( 1725, unitMeasure::MPa );
 static const Float64 g_1860_MPA   = ::ConvertToSysUnits( 1860, unitMeasure::MPa );
+static const Float64 g_2070_MPA   = ::ConvertToSysUnits( 2070, unitMeasure::MPa);
 static const Float64 g_28500_KSI  = ::ConvertToSysUnits( 28500., unitMeasure::KSI );
 static const Float64 g_250_KSI    = ::ConvertToSysUnits(  250, unitMeasure::KSI );
-static const Float64 g_270_KSI    = ::ConvertToSysUnits(  270, unitMeasure::KSI );
+static const Float64 g_270_KSI = ::ConvertToSysUnits(270, unitMeasure::KSI);
+static const Float64 g_300_KSI = ::ConvertToSysUnits(300, unitMeasure::KSI);
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
@@ -65,9 +67,17 @@ Float64 lrfdPsStrand::GetUltimateStrength(matPsStrand::Grade gr)
    {
       fpu = is_si ? g_1725_MPA : g_250_KSI;
    }
-   else
+   else if (gr == matPsStrand::Gr1860)
    {
       fpu = is_si ? g_1860_MPA : g_270_KSI;
+   }
+   else if (gr == matPsStrand::Gr2070)
+   {
+      fpu = is_si ? g_2070_MPA : g_300_KSI;
+   }
+   else
+   {
+      ATLASSERT(false); // is there a new grade?
    }
 
    return fpu;

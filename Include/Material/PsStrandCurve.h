@@ -136,7 +136,7 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   bool m_bIsGr1725;
+   matPsStrand::Grade m_StrandGrade;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS

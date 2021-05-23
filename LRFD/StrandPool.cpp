@@ -41,13 +41,13 @@ CLASS
 ****************************************************************************/
 
 lrfdStrandPool* lrfdStrandPool::ms_pInstance = 0;
-std::map<Int32, std::shared_ptr<matPsStrand> > lrfdStrandPool::ms_USStrand;
-std::map<Int32, std::shared_ptr<matPsStrand> > lrfdStrandPool::ms_SIStrand;
+std::map<Int64, std::shared_ptr<matPsStrand> > lrfdStrandPool::ms_USStrand;
+std::map<Int64, std::shared_ptr<matPsStrand> > lrfdStrandPool::ms_SIStrand;
 lrfdStrandPool::Killer lrfdStrandPool::ms_Killer;
 
-Int32 hash( matPsStrand::Grade grade, matPsStrand::Type type, matPsStrand::Coating coating, matPsStrand::Size size )
+Int64 hash( matPsStrand::Grade grade, matPsStrand::Type type, matPsStrand::Coating coating, matPsStrand::Size size )
 {
-   Int32 hv = ((Int32)grade) | ((Int32)type) | ((Int32)coating) | ((Int32)size);
+   Int64 hv = ((Int64)grade) | ((Int64)type) | ((Int64)coating) | ((Int64)size);
    return hv;
 }
 
@@ -72,9 +72,9 @@ lrfdStrandPool* lrfdStrandPool::GetInstance()
    return ms_pInstance;
 }
 
-const matPsStrand* lrfdStrandPool::GetStrand(Int32 key,lrfdVersionMgr::Units units)
+const matPsStrand* lrfdStrandPool::GetStrand(Int64 key,lrfdVersionMgr::Units units)
 {
-   std::map<Int32, std::shared_ptr<matPsStrand> >::iterator found;
+   std::map<Int64, std::shared_ptr<matPsStrand> >::iterator found;
 
    if ( units == lrfdVersionMgr::US )
    {
@@ -92,7 +92,7 @@ const matPsStrand* lrfdStrandPool::GetStrand(Int32 key,lrfdVersionMgr::Units uni
    return (*found).second.get();
 } 
 
-const matPsStrand* lrfdStrandPool::GetStrand(Int32 key)
+const matPsStrand* lrfdStrandPool::GetStrand(Int64 key)
 {
    return GetStrand(key,lrfdVersionMgr::GetUnits());
 } 
@@ -105,7 +105,7 @@ const matPsStrand* lrfdStrandPool::GetStrand(matPsStrand::Grade grade,
    return GetStrand( hash(grade,type,coating, size) );
 }
 
-Int32 lrfdStrandPool::GetStrandKey(const matPsStrand* pStrand)
+Int64 lrfdStrandPool::GetStrandKey(const matPsStrand* pStrand)
 {
    return hash( pStrand->GetGrade(), pStrand->GetType(), pStrand->GetCoating(), pStrand->GetSize() );
 }
@@ -192,6 +192,13 @@ lrfdStrandPool::lrfdStrandPool()
       NEW_US_STRAND( "Grade 270 Low Relaxation 0.62\"",    matPsStrand::Gr1860, matPsStrand::LowRelaxation, coating, matPsStrand::D1575, 270., 0.90*270., 28500.,  0.62,   0.240 );
       NEW_US_STRAND( "Grade 270 Low Relaxation 0.7\"",    matPsStrand::Gr1860, matPsStrand::LowRelaxation, coating, matPsStrand::D1778, 270., 0.90*270., 28500.,  0.70,   0.294 );
 
+      //NEW_US_STRAND("Grade 300 Low Relaxation 3/8\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D953, 300., 0.90*300., 28500., 0.375, 0.085);
+      //NEW_US_STRAND("Grade 300 Low Relaxation 7/16\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1111, 300., 0.90*300., 28500., 0.4375, 0.115);
+      NEW_US_STRAND("Grade 300 Low Relaxation 1/2\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1270, 300., 0.90*300., 28500., 0.50, 0.153);
+      NEW_US_STRAND("Grade 300 Low Relaxation 1/2\" Special (0.52in)", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1320, 300., 0.90*300., 28500., 0.52, 0.167);
+      NEW_US_STRAND("Grade 300 Low Relaxation 0.6\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1524, 300., 0.90*300., 28500., 0.60, 0.217);
+      NEW_US_STRAND("Grade 300 Low Relaxation 0.62\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1575, 300., 0.90*300., 28500., 0.62, 0.240);
+      //NEW_US_STRAND("Grade 300 Low Relaxation 0.7\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1778, 300., 0.90*300., 28500., 0.70, 0.294);
 
       NEW_SI_STRAND( "Grade 1725 Stress Relieved 6.35mm",  matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D635,  1725., 0.85*1725., 197000., 6.35,   23.22 );
       NEW_SI_STRAND( "Grade 1725 Stress Relieved 7.94mm",  matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D794,  1725., 0.85*1725., 197000., 7.94,   37.42 );
@@ -228,6 +235,14 @@ lrfdStrandPool::lrfdStrandPool()
       NEW_SI_STRAND( "Grade 1860 Low Relaxation 15.24mm", matPsStrand::Gr1860, matPsStrand::LowRelaxation, coating, matPsStrand::D1524, 1860., 0.90*1860., 197000.,  15.24, 140.00 );
       NEW_SI_STRAND( "Grade 1860 Low Relaxation 15.75mm", matPsStrand::Gr1860, matPsStrand::LowRelaxation, coating, matPsStrand::D1575, 1860., 0.85*1860., 197000.,  15.75, 154.84 );
       NEW_SI_STRAND( "Grade 1860 Low Relaxation 17.78mm", matPsStrand::Gr1860, matPsStrand::LowRelaxation, coating, matPsStrand::D1778, 1860., 0.90*1860., 197000.,  17.78,  189.68 );
+
+      //NEW_SI_STRAND("Grade 2070 Low Relaxation 9.53mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D953, 2070., 0.90*2070., 197000., 9.53, 54.84);
+      //NEW_SI_STRAND("Grade 2070 Low Relaxation 11.11mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1111, 2070., 0.90*2070., 197000., 11.11, 74.19);
+      NEW_SI_STRAND("Grade 2070 Low Relaxation 12.70mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1270, 2070., 0.90*2070., 197000., 12.70, 98.71);
+      NEW_SI_STRAND("Grade 2070 Low Relaxation 1/2\" Special (13.20mm)", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1320, 2070., 0.90*2070., 197000., 13.20, 107.70);
+      NEW_SI_STRAND("Grade 2070 Low Relaxation 15.24mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1524, 2070., 0.90*2070., 197000., 15.24, 140.00);
+      NEW_SI_STRAND("Grade 2070 Low Relaxation 15.75mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1575, 2070., 0.85*2070., 197000., 15.75, 154.84);
+      //NEW_SI_STRAND("Grade 2070 Low Relaxation 17.78mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1778, 2070., 0.90*2070., 197000., 17.78, 189.68);
    }
 }
 
@@ -302,14 +317,14 @@ void lrfdStrandIter::Begin()
    m_Strands.clear();
    CHECK(m_Strands.size() == 0);
    CHECK(m_Strands.empty() == true);
-   std::map< Int32, std::shared_ptr<matPsStrand> >* pStrands = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI) ? &lrfdStrandPool::ms_SIStrand : &lrfdStrandPool::ms_USStrand;
-   std::map< Int32, std::shared_ptr<matPsStrand> >::const_iterator iter;
+   std::map< Int64, std::shared_ptr<matPsStrand> >* pStrands = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI) ? &lrfdStrandPool::ms_SIStrand : &lrfdStrandPool::ms_USStrand;
+   std::map< Int64, std::shared_ptr<matPsStrand> >::const_iterator iter;
    for ( iter = pStrands->begin(); iter != pStrands->end(); iter++ )
    {
       // The following two lines are from the original implementation.  When we upgraded to
       // VC++ 6.0, the lrfdStrandPool::ms_Strand container started loosing ownership of the
       // of the matPsStrand objects.  This implementation seems to fix the problem.
-      //const std::pair< Int32, std::unique_ptr<matPsStrand> >& pair = *iter;
+      //const std::pair< Int64, std::unique_ptr<matPsStrand> >& pair = *iter;
       //const std::unique_ptr<matPsStrand>& AutoPtr = pair.second;
       const std::shared_ptr<matPsStrand>& AutoPtr = iter->second;
       const matPsStrand* pStrand = AutoPtr.get();
@@ -336,7 +351,7 @@ void lrfdStrandIter::Next()
       m_Current++;
 }
 
-void lrfdStrandIter::Move(Int32 pos)
+void lrfdStrandIter::Move(Int64 pos)
 {
    m_Current = m_Begin;
    if ( m_Begin + pos > m_End )
@@ -345,7 +360,7 @@ void lrfdStrandIter::Move(Int32 pos)
       m_Current = m_Begin + pos;
 }
 
-void lrfdStrandIter::MoveBy(Int32 dPos)
+void lrfdStrandIter::MoveBy(Int64 dPos)
 {
    m_Current += dPos;
    if ( m_Current > m_End )
@@ -473,7 +488,7 @@ bool lrfdStrandPool::TestMe(dbgLog& rlog)
                                 matPsStrand::D1575// 0.62"
    }; 
 
-   Int32 hashval;
+   Int64 hashval;
    Int16 cGrade, cType, cCoating, cSize;
    Int16 nSize;
    Int16 cStrands = 0;

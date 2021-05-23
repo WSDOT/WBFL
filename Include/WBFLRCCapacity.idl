@@ -65,32 +65,33 @@ library WBFLRCCapacity
    typedef [public,helpstring("enum TransvReinforcementType"),helpcontext(IDH_TransvReinforcementType),uuid(7EEAA5E8-7AAE-4e1b-8F6B-0740BFE02F2F)] 
    enum 
    {
-      trtSpiral = 1, ///< Transverse reinforcement is a continuous spiral
-      trtHoops = 2   ///< Transverse reinforcement is discrete hoops
+      trtSpiral = 0, ///< Transverse reinforcement is a continuous spiral
+      trtHoops = 1   ///< Transverse reinforcement is discrete hoops
    } TransvReinforcementType;
 
    /// Constant indicating type solution method to be used by the MomentCapacitySolver
    typedef [public,helpstring("enum SolutionMethod"),helpcontext(IDH_SolutionMethod),uuid(464B228A-D182-4823-BE7E-B8A20A22D055)] 
    enum 
    {
-		smFixedCurvature = 1, ///< A fixed curvature is specified and elevation of the neutral axis is varied to acheive equilibrium
-		smFixedCompressiveStrain = 2 ///< A fixed compressive strain is specified and curvature is varied to acheive equilibrium
+		smFixedCurvature = 0, ///< A fixed curvature is specified and elevation of the neutral axis is varied to acheive equilibrium
+		smFixedCompressiveStrain = 1 ///< A fixed compressive strain is specified and curvature is varied to acheive equilibrium
    } SolutionMethod;
 
    /// Constant indicating prestress reinforcement grade in the PowerForumula stress-strain model
    typedef [public,helpstring("enum StrandGradeType"),helpcontext(IDH_StrandGradeType),uuid(3BE4F7FC-A94D-4BA3-90A8-D81BA56709EF)] 
    enum 
    {
-		sgtGrade250 = 1, ///< Prestressing is Grade 250 (250 ksi)
-		sgtGrade270 = 2 ///< Prestressing is Grade 270 (270 ksi)
+		sgtGrade250 = 0, ///< Prestressing is Grade 250 (250 ksi)
+		sgtGrade270 = 1, ///< Prestressing is Grade 270 (270 ksi)
+      sgtGrade300 = 2 ///< Prestressing is Grade 300 (300 ksi)
    } StrandGradeType;
 
    /// Constant indicating the production method for prestress reinforcement in the PowerFormula stress-strain model
    typedef [public,helpstring("enum ProductionMethodType"),helpcontext(IDH_ProductionMethodType),uuid(16237E1D-9EB8-4B93-B8F7-B33FAD9F0208)] 
    enum 
    {
-		pmtLowRelaxation = 1, ///< strands have low relaxation properties
-		pmtStressRelieved = 2 ///< strands have stress relieved properties
+		pmtLowRelaxation = 0, ///< strands have low relaxation properties
+		pmtStressRelieved = 1 ///< strands have stress relieved properties
    } ProductionMethodType;
 
    /// Interface defining a general stress-strain model

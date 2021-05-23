@@ -145,37 +145,18 @@ STDMETHODIMP CPSPowerFormula::ComputeStress(Float64 strain,Float64* pVal)
 
    Float64 fps;
 
-   if ( m_StrandGrade == sgtGrade270 )
-   {
-      if ( m_ProductionMethod == pmtLowRelaxation )
-      {
-         // from PCI Bridge Design Manual
-         fps = strain*(887. + 27613./pow((1+pow(112.4*strain,7.36)),1./7.36));
-
-         if ( 270.0 < fps )
-            fps = 270.0;
-      }
-      else
-      {
-         // from Collins and Mitchell text book
-         fps = strain*(885. + 27645./pow((1+pow(118*strain,6)),1./6));
-
-         if ( 270.0 < fps )
-            fps = 270.0;
-      }
-   }
-   else
+   if ( m_StrandGrade == sgtGrade250 )
    {
       // Grade 250
-      if (m_ProductionMethod == pmtLowRelaxation )
+      if (m_ProductionMethod == pmtLowRelaxation)
       {
          // from PCI Bridge Design Manual
          if (strain < 0.0076)
             fps = strain*m_Eps;
          else
-            fps = 250 - 0.04/(strain - 0.00640239520958);
+            fps = 250 - 0.04 / (strain - 0.00640239520958);
 
-         if ( 250.0 < fps )
+         if (250.0 < fps)
             fps = 250.0;
       }
       else
@@ -189,11 +170,56 @@ STDMETHODIMP CPSPowerFormula::ComputeStress(Float64 strain,Float64* pVal)
          if (strain < 0.0076)
             fps = strain*m_Eps;
          else
-            fps = 250 - 0.04/(strain - 0.00640239520958);
+            fps = 250 - 0.04 / (strain - 0.00640239520958);
 
-         if ( 250.0 < fps )
+         if (250.0 < fps)
             fps = 250.0;
       }
+   }
+   else if (m_StrandGrade == sgtGrade270)
+   {
+      if (m_ProductionMethod == pmtLowRelaxation)
+      {
+         // from PCI Bridge Design Manual
+         fps = strain*(887. + 27613. / pow((1 + pow(112.4*strain, 7.36)), 1. / 7.36));
+
+         if (270.0 < fps)
+            fps = 270.0;
+      }
+      else
+      {
+         // from Collins and Mitchell text book
+         fps = strain*(885. + 27645. / pow((1 + pow(118 * strain, 6)), 1. / 6));
+
+         if (270.0 < fps)
+            fps = 270.0;
+      }
+   }
+   else if (m_StrandGrade == sgtGrade300)
+   {
+      if (m_ProductionMethod == pmtLowRelaxation)
+      {
+         // An "official" published set of power formula coefficients haven't been found as of yet.
+         // The coefficients used here are taken from "Bond and Material Properties of Grade 270 and Grade 300 Prestressing Strands", Bryan J. Loflin, Masters Thesis, Virginia Polytecnic Institute and State University, June 2008
+         // The values for A, B, C, and D are averaged from the reported Grade 300 values from Table 4.19 on page 79 of the report
+         fps = strain*(263. + 33811. / pow((1 + pow(120.4*strain, 5.347)), 1. / 5.347));
+
+         if (300.0 < fps)
+            fps = 300.0;
+      }
+      else
+      {
+         // There isn't an "Official" stress relieved power formula for grade 300 (probably never will be)
+         // Use the low relaxation version of the formula here - see above
+         fps = strain*(263. + 33811. / pow((1 + pow(120.4*strain, 5.347)), 1. / 5.347));
+
+         if (300.0 < fps)
+            fps = 300.0;
+      }
+   }
+   else
+   {
+      ATLASSERT(false); // is there a new type
    }
 
    // The stress is in KSI, convert it to base units because that is what the caller expects
