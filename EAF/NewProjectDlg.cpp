@@ -442,7 +442,7 @@ void CNewProjectDlg::OnShowWindow(BOOL bShow, UINT nStatus)
       WINDOWPLACEMENT wp;
       if (EAFGetApp()->ReadWindowPlacement(CString((LPCTSTR)IDS_WINDOW_POSITIONS), _T("NewProject"), &wp))
       {
-         CWnd* pDesktop = GetDesktopWindow();
+         //CWnd* pDesktop = GetDesktopWindow();
          //CRect rDesktop;
          //pDesktop->GetWindowRect(&rDesktop); // this is the size of one monitor.... use GetSystemMetrics to get the entire desktop
          CRect rDesktop(0, 0, GetSystemMetrics(SM_CXVIRTUALSCREEN), GetSystemMetrics(SM_CYVIRTUALSCREEN));
