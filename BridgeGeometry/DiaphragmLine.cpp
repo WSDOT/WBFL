@@ -160,7 +160,9 @@ HRESULT CDiaphragmLine::LocatePoints()
 
          // Find the point on the left girder line where the normal passes through (cx,cy)
          endPoints.pntLeft.Release();
-         leftPath->ProjectPoint(pntC,&endPoints.pntLeft); 
+         Float64 distFromStart;
+         VARIANT_BOOL vbOnProjection;
+         leftPath->ProjectPoint(pntC,&endPoints.pntLeft, &distFromStart, &vbOnProjection);
 
          // Create a line from this point through point (cx,cy)
          CComPtr<ILine2d> staggeredLine;

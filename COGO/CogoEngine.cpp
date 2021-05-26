@@ -879,7 +879,9 @@ STDMETHODIMP CCogoEngine::PointOnCurve(/*[in]*/ IPoint2d* pnt, /*[in]*/ IHorzCur
    CHECK_IN(curve);
    CHECK_RETOBJ(point);
 
-   return curve->ProjectPoint(pnt,point);
+   Float64 dist_from_start;
+   VARIANT_BOOL vbOnProjection;
+   return curve->ProjectPoint(pnt,point,&dist_from_start,&vbOnProjection);
 }
 
 STDMETHODIMP CCogoEngine::Arc(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* vertex, /*[in]*/ IPoint2d* to,/*[in]*/ CollectionIndexType nParts,/*[out,retval]*/ IPoint2dCollection** points)

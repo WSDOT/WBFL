@@ -125,9 +125,9 @@ void CTestAlignment1::Test1()
    TRY_TEST(alignment->Offset(end,&station,nullptr),E_POINTER);
    TRY_TEST(alignment->Offset(end,nullptr,&offset),E_POINTER);
    TRY_TEST(alignment->Offset(nullptr,&station,&offset),E_INVALIDARG);
-   TRY_TEST(alignment->ProjectPoint(end,nullptr),E_POINTER);
+   TRY_TEST(alignment->ProjectPoint(end,nullptr,nullptr,nullptr),E_POINTER);
    start.Release();
-   TRY_TEST(alignment->ProjectPoint(nullptr,&start),E_INVALIDARG);
+   TRY_TEST(alignment->ProjectPoint(nullptr,&start,nullptr,nullptr),E_INVALIDARG);
 
    // Sta 0+00
    TRY_TEST(alignment->Bearing(CComVariant(0.00),&dir),S_OK);
@@ -153,7 +153,9 @@ void CTestAlignment1::Test1()
    TRY_TEST(IsEqual(offset,10.0),true);
 
    CComPtr<IPoint2d> newPnt;
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   Float64 distFromStart;
+   VARIANT_BOOL vbOnProjection;
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt,&distFromStart,&vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -187,7 +189,7 @@ void CTestAlignment1::Test1()
    TRY_TEST(IsEqual(stationVal,100.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -220,7 +222,7 @@ void CTestAlignment1::Test1()
    TRY_TEST(IsEqual(stationVal,125.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -253,7 +255,7 @@ void CTestAlignment1::Test1()
    TRY_TEST(IsEqual(stationVal,200.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -286,7 +288,7 @@ void CTestAlignment1::Test1()
    TRY_TEST(IsEqual(stationVal,250.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -319,7 +321,7 @@ void CTestAlignment1::Test1()
    TRY_TEST(IsEqual(stationVal,300.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -352,7 +354,7 @@ void CTestAlignment1::Test1()
    TRY_TEST(IsEqual(stationVal,490.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -385,7 +387,7 @@ void CTestAlignment1::Test1()
    TRY_TEST(IsEqual(stationVal,530.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -418,7 +420,7 @@ void CTestAlignment1::Test1()
    TRY_TEST(IsEqual(stationVal,565.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -451,7 +453,7 @@ void CTestAlignment1::Test1()
    TRY_TEST(IsEqual(stationVal,600.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -484,7 +486,7 @@ void CTestAlignment1::Test1()
    TRY_TEST(IsEqual(stationVal,700.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -533,7 +535,7 @@ void CTestAlignment1::Test1()
    TRY_TEST(IsEqual(stationVal,850.0),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -637,7 +639,9 @@ void CTestAlignment1::Test2()
    TRY_TEST(IsEqual(stationVal,0.00),true);
 
    CComPtr<IPoint2d> newPnt;
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   Float64 distFromStart;
+   VARIANT_BOOL vbOnProjection;
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -670,7 +674,7 @@ void CTestAlignment1::Test2()
    TRY_TEST(IsEqual(stationVal,125.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -703,7 +707,7 @@ void CTestAlignment1::Test2()
    TRY_TEST(IsEqual(stationVal,250.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -736,7 +740,7 @@ void CTestAlignment1::Test2()
    TRY_TEST(IsEqual(stationVal,300.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -769,7 +773,7 @@ void CTestAlignment1::Test2()
    TRY_TEST(IsEqual(stationVal,490.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -802,7 +806,7 @@ void CTestAlignment1::Test2()
    TRY_TEST(IsEqual(stationVal,530.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -835,7 +839,7 @@ void CTestAlignment1::Test2()
    TRY_TEST(IsEqual(stationVal,565.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -868,7 +872,7 @@ void CTestAlignment1::Test2()
    TRY_TEST(IsEqual(stationVal,600.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -971,7 +975,9 @@ void CTestAlignment1::Test3()
    TRY_TEST(IsEqual(stationVal,0.00),true);
 
    CComPtr<IPoint2d> newPnt;
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   Float64 distFromStart;
+   VARIANT_BOOL vbOnProjection;
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -1004,7 +1010,7 @@ void CTestAlignment1::Test3()
    TRY_TEST(IsEqual(stationVal,125.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -1037,7 +1043,7 @@ void CTestAlignment1::Test3()
    TRY_TEST(IsEqual(stationVal,250.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -1070,7 +1076,7 @@ void CTestAlignment1::Test3()
    TRY_TEST(IsEqual(stationVal,300.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -1103,7 +1109,7 @@ void CTestAlignment1::Test3()
    TRY_TEST(IsEqual(stationVal,490.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -1136,7 +1142,7 @@ void CTestAlignment1::Test3()
    TRY_TEST(IsEqual(stationVal,530.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -1169,7 +1175,7 @@ void CTestAlignment1::Test3()
    TRY_TEST(IsEqual(stationVal,565.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -1202,7 +1208,7 @@ void CTestAlignment1::Test3()
    TRY_TEST(IsEqual(stationVal,600.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -1305,7 +1311,9 @@ void CTestAlignment1::Test4()
    TRY_TEST(IsEqual(stationVal,0.00),true);
 
    CComPtr<IPoint2d> newPnt;
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   Float64 distFromStart;
+   VARIANT_BOOL vbOnProjection;
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -1338,7 +1346,7 @@ void CTestAlignment1::Test4()
    TRY_TEST(IsEqual(stationVal,125.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -1371,7 +1379,7 @@ void CTestAlignment1::Test4()
    TRY_TEST(IsEqual(stationVal,250.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -1404,7 +1412,7 @@ void CTestAlignment1::Test4()
    TRY_TEST(IsEqual(stationVal,300.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -1437,7 +1445,7 @@ void CTestAlignment1::Test4()
    TRY_TEST(IsEqual(stationVal,490.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -1470,7 +1478,7 @@ void CTestAlignment1::Test4()
    TRY_TEST(IsEqual(stationVal,530.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -1503,7 +1511,7 @@ void CTestAlignment1::Test4()
    TRY_TEST(IsEqual(stationVal,565.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
@@ -1536,7 +1544,7 @@ void CTestAlignment1::Test4()
    TRY_TEST(IsEqual(stationVal,600.00),true);
 
    newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt),S_OK);
+   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
 
    station.Release();
    TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);

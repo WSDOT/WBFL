@@ -78,7 +78,7 @@ STDMETHODIMP CAlignmentOffsetStrategy::get_Path(IPath** path)
    // create alignment offset path and cache it
    if ( m_Alignment )
    {
-      m_Alignment->CreateParallelPath(m_Offset,&m_Path);
+      m_Alignment->CreateOffsetPath(m_Offset,&m_Path);
       return get_Path(path);
    }
 

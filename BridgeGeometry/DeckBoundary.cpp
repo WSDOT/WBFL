@@ -147,7 +147,9 @@ HRESULT CDeckBoundary::CreateDeckBoundaryEndPoints(EndType endType,LineIDType en
       m_pBridge->get_BridgeAlignment(&alignment);
 
       CComPtr<IPoint2d> pntOnAlignment;
-      alignment->ProjectPoint(pntEnd2,&pntOnAlignment);
+      Float64 distFromStart;
+      VARIANT_BOOL vbOnProjection;
+      alignment->ProjectPoint(pntEnd2,&pntOnAlignment, &distFromStart, &vbOnProjection);
 
       CComPtr<ILine2d> break_line;
       break_line.CoCreateInstance(CLSID_Line2d);
@@ -175,7 +177,9 @@ HRESULT CDeckBoundary::CreateDeckBoundaryEndPoints(EndType endType,LineIDType en
       m_pBridge->get_BridgeAlignment(&alignment);
 
       CComPtr<IPoint2d> pntOnAlignment;
-      alignment->ProjectPoint(pntEnd3,&pntOnAlignment);
+      Float64 distFromStart;
+      VARIANT_BOOL vbOnProjection;
+      alignment->ProjectPoint(pntEnd3,&pntOnAlignment, &distFromStart, &vbOnProjection);
 
       CComPtr<ILine2d> break_line;
       break_line.CoCreateInstance(CLSID_Line2d);

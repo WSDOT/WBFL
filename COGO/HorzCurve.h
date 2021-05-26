@@ -37,6 +37,13 @@
 class CEntrySpiralFunction;
 class CExitSpiralFunction;
 
+#define BACK_TANGENT    0x0001
+#define ENTRY_SPIRAL    0x0002
+#define CIRCULAR_CURVE  0x0004
+#define EXIT_SPIRAL     0x0008
+#define FORWARD_TANGENT 0x0010
+
+
 /////////////////////////////////////////////////////////////////////////////
 // CHorzCurve
 class ATL_NO_VTABLE CHorzCurve : 
@@ -62,6 +69,9 @@ public:
 
    HRESULT FinalConstruct();
    void FinalRelease();
+
+   int ProjectionRegion(IPoint2d* pPoint);
+   bool IsPointOnCurve(IPoint2d* pPoint);
 
 DECLARE_REGISTRY_RESOURCEID(IDR_HORZCURVE)
 
@@ -93,9 +103,8 @@ public:
 	STDMETHOD(get_PointFactory)(/*[out,retval]*/ IPoint2dFactory* *factory) override;
 	STDMETHOD(putref_PointFactory)(/*[in]*/ IPoint2dFactory *factory) override;
 	STDMETHOD(Intersect)(/*[in]*/ILine2d* line,/*[in]*/VARIANT_BOOL bProjectBack,/*[in]*/VARIANT_BOOL bProjectAhead,/*[out]*/ IPoint2d** p1,/*[out]*/ IPoint2d** p2) override;
-   STDMETHOD(DistanceFromStart)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ Float64* dist) override;
-	STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ IPoint2d* *pNewPoint) override;
-	STDMETHOD(PointOnCurve)(/*[in]*/ Float64 distance,/*[out,retval]*/IPoint2d* *pVal) override;
+   STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point, /*[out]*/ IPoint2d* *newPoint, /*[out]*/ Float64* distFromStart, /*[out]*/ VARIANT_BOOL* pvbOnProjection) override;
+   STDMETHOD(PointOnCurve)(/*[in]*/ Float64 distance,/*[out,retval]*/IPoint2d* *pVal) override;
 	STDMETHOD(Normal)(/*[in]*/ Float64 distance,/*[out,retval]*/IDirection* *pVal) override;
 	STDMETHOD(Bearing)(/*[in]*/ Float64 distance,/*[out,retval]*/IDirection* *pVal) override;
    STDMETHOD(get_DegreeCurvature)(/*[in]*/ Float64 D,/*[in]*/ DegreeCurvatureType dcMethod,/*[out,retval]*/ IAngle** pDC) override;
@@ -181,7 +190,6 @@ private:
    void PointOnExitSpiral(Float64 distFromST,IPoint2d** pVal);
    void ProjectPointOnEntrySpiral(IPoint2d* point,Float64* pDistFromStart,IPoint2d** newPoint);
    void ProjectPointOnExitSpiral(IPoint2d* point,Float64* pDistFromStart,IPoint2d** newPoint);
-	void ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d* *pNewPoint);
 
    // creates line objects for the curve tangents
    void GetBkTangentLine(ILine2d** line);
@@ -191,7 +199,6 @@ private:
    bool LineParallelToTangent(ILine2d* pTangentLine,ILine2d* pLine,IPoint2d* pTangentPoint);
    void GetCurveCenterNormalIntersectPoints(IPoint2d** pPOBT,IPoint2d** pPOFT);
 
-   bool IsPointOnCurve(IPoint2d* pPoint);
    bool IsPointOnLine(ILine2d* pLine,IPoint2d* pPoint);
    bool TestIntersection(ILine2d* pLine,IPoint2d* pPoint);
 
@@ -329,27 +336,25 @@ public:
       m_pCurve(hc), m_Line(line), m_GeomUtil(util)
       {
          CComPtr<IPoint2d> p;
-         CComPtr<IVector2d> v;
-         m_Line->GetExplicit(&p,&v);
+         m_Line->GetExplicit(&p,&m_Nline);
 
-         v->get_Direction(&m_Angle);
+         m_N.CoCreateInstance(CLSID_Vector2d);
       }
 
       Float64 Evaluate(Float64 distFromStartOfCurve) const
       {
          // trying to find location on curve where line and angle are parallel
-         CComPtr<IDirection> dir;
-         m_pCurve->Bearing(distFromStartOfCurve,&dir);
+         CComPtr<IDirection> normal;
+         m_pCurve->Normal(distFromStartOfCurve,&normal);
 
-         Float64 angle;
-         dir->get_Value(&angle);
+         Float64 dir;
+         normal->get_Value(&dir);
+         m_N->put_Direction(dir);
 
-         if ( IsZero(angle) && 3*PI_OVER_2 < m_Angle )
-         {
-            angle = 2*M_PI;
-         }
+         Float64 dot;
+         m_Nline->Dot(m_N, &dot);
 
-         return m_Angle - angle;
+         return dot;
       }
 
       virtual mathFunction2d* Clone() const override
@@ -359,7 +364,9 @@ public:
 
 private:
    CHorzCurve* m_pCurve;
+   CComPtr<IVector2d> m_Nline, m_N;
    Float64 m_Angle;
+   Float64 m_ReverseAngle;
    CComPtr<ILine2d> m_Line;
    CComPtr<IGeomUtil2d> m_GeomUtil;
 };

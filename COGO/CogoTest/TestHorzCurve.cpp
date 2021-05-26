@@ -606,9 +606,11 @@ void CTestHorzCurve::Test1()
    pnt.CoCreateInstance(CLSID_Point2d);
    pnt->Move(300,1100);
    CComPtr<IPoint2d> prjPoint;
-   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint),E_INVALIDARG);
-   TRY_TEST(hc->ProjectPoint(pnt,nullptr),E_POINTER);
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   Float64 distFromStart;
+   VARIANT_BOOL vbOnProjection;
+   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint, &distFromStart, &vbOnProjection),E_INVALIDARG);
+   TRY_TEST(hc->ProjectPoint(pnt,nullptr, &distFromStart, &vbOnProjection),E_POINTER);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 300.0),true);
@@ -616,7 +618,7 @@ void CTestHorzCurve::Test1()
 
    pnt->Move(300,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 300.0),true);
@@ -624,7 +626,7 @@ void CTestHorzCurve::Test1()
 
    pnt->Move(500,1100);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 496.65666),true);
@@ -632,7 +634,7 @@ void CTestHorzCurve::Test1()
 
    pnt->Move(500,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 504.21291),true);
@@ -640,7 +642,7 @@ void CTestHorzCurve::Test1()
 
    pnt->Move(1000,1300);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 757.96599),true);
@@ -648,7 +650,7 @@ void CTestHorzCurve::Test1()
 
    pnt->Move(550,700);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 634.29003),true);
@@ -656,7 +658,7 @@ void CTestHorzCurve::Test1()
 
    pnt->Move(900,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 851.1983,0.001),true);
@@ -664,7 +666,7 @@ void CTestHorzCurve::Test1()
 
    pnt->Move(800,800);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 846.7079,0.001),true);
@@ -672,7 +674,7 @@ void CTestHorzCurve::Test1()
 
    pnt->Move(1100,500);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1150.0),true);
@@ -680,7 +682,7 @@ void CTestHorzCurve::Test1()
 
    pnt->Move(1200,600);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1150.0),true);
@@ -690,7 +692,7 @@ void CTestHorzCurve::Test1()
    // It is nearest the back tangent.
    pnt->Move(200,0);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 200.0),true);
@@ -700,7 +702,7 @@ void CTestHorzCurve::Test1()
    // It is nearest the foward tangent.
    pnt->Move(400,0);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1050.0),true);
@@ -710,7 +712,7 @@ void CTestHorzCurve::Test1()
    // It is nearest the entry spiral.
    pnt->Move(450,430);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,450.78715),true);
@@ -720,7 +722,7 @@ void CTestHorzCurve::Test1()
    // It is nearest the exit spiral.
    pnt->Move(470,400);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,879.50334),true);
@@ -1110,9 +1112,11 @@ void CTestHorzCurve::Test2()
    pnt.CoCreateInstance(CLSID_Point2d);
    pnt->Move(300,1100);
    CComPtr<IPoint2d> prjPoint;
-   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint),E_INVALIDARG);
-   TRY_TEST(hc->ProjectPoint(pnt,nullptr),E_POINTER);
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   Float64 distFromStart;
+   VARIANT_BOOL vbOnProjection;
+   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint, &distFromStart, &vbOnProjection),E_INVALIDARG);
+   TRY_TEST(hc->ProjectPoint(pnt,nullptr, &distFromStart, &vbOnProjection),E_POINTER);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 300.0),true);
@@ -1120,7 +1124,7 @@ void CTestHorzCurve::Test2()
 
    pnt->Move(300,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 300.0),true);
@@ -1128,7 +1132,7 @@ void CTestHorzCurve::Test2()
 
    pnt->Move(500,1100);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 497.1337,0.001),true);
@@ -1136,7 +1140,7 @@ void CTestHorzCurve::Test2()
 
    pnt->Move(500,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 503.5543,0.001),true);
@@ -1144,7 +1148,7 @@ void CTestHorzCurve::Test2()
 
    pnt->Move(1000,1300);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 760.9055,0.001),true);
@@ -1152,7 +1156,7 @@ void CTestHorzCurve::Test2()
 
    pnt->Move(550,700);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 628.6312,0.001),true);
@@ -1160,7 +1164,7 @@ void CTestHorzCurve::Test2()
 
    pnt->Move(900,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 850.0000,0.001),true);
@@ -1168,7 +1172,7 @@ void CTestHorzCurve::Test2()
 
    pnt->Move(800,800);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 850.0000,0.001),true);
@@ -1176,7 +1180,7 @@ void CTestHorzCurve::Test2()
 
    pnt->Move(1100,500);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1150.0),true);
@@ -1184,7 +1188,7 @@ void CTestHorzCurve::Test2()
 
    pnt->Move(1200,600);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1150.0),true);
@@ -1552,9 +1556,11 @@ void CTestHorzCurve::Test3()
    pnt.CoCreateInstance(CLSID_Point2d);
    pnt->Move(300,1100);
    CComPtr<IPoint2d> prjPoint;
-   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint),E_INVALIDARG);
-   TRY_TEST(hc->ProjectPoint(pnt,nullptr),E_POINTER);
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   Float64 distFromStart;
+   VARIANT_BOOL vbOnProjection;
+   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint, &distFromStart, &vbOnProjection),E_INVALIDARG);
+   TRY_TEST(hc->ProjectPoint(pnt,nullptr, &distFromStart, &vbOnProjection),E_POINTER);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 300.0),true);
@@ -1562,7 +1568,7 @@ void CTestHorzCurve::Test3()
 
    pnt->Move(300,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 300.0),true);
@@ -1570,7 +1576,7 @@ void CTestHorzCurve::Test3()
 
    pnt->Move(500,1100);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 498.0291,0.001),true);
@@ -1578,7 +1584,7 @@ void CTestHorzCurve::Test3()
 
    pnt->Move(500,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 502.9471,0.001),true);
@@ -1586,7 +1592,7 @@ void CTestHorzCurve::Test3()
 
    pnt->Move(1000,1300);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 757.6433,0.001),true);
@@ -1594,7 +1600,7 @@ void CTestHorzCurve::Test3()
 
    pnt->Move(550,700);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 635.8301,0.001),true);
@@ -1602,7 +1608,7 @@ void CTestHorzCurve::Test3()
 
    pnt->Move(900,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 851.1779,0.001),true);
@@ -1610,7 +1616,7 @@ void CTestHorzCurve::Test3()
 
    pnt->Move(800,800);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 846.8054,0.001),true);
@@ -1618,7 +1624,7 @@ void CTestHorzCurve::Test3()
 
    pnt->Move(1100,500);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1150.0),true);
@@ -1626,7 +1632,7 @@ void CTestHorzCurve::Test3()
 
    pnt->Move(1200,600);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1150.0),true);
@@ -1976,6 +1982,7 @@ void CTestHorzCurve::Test4()
    st->get_Y(&y);
    TRY_TEST(IsEqual(x+100*cos(M_PI/4),px),true);
    TRY_TEST(IsEqual(y-100*cos(M_PI/4),py),true);
+   
    //
    // Test ProjectPoint
    //
@@ -1983,9 +1990,11 @@ void CTestHorzCurve::Test4()
    pnt.CoCreateInstance(CLSID_Point2d);
    pnt->Move(300,1100);
    CComPtr<IPoint2d> prjPoint;
-   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint),E_INVALIDARG);
-   TRY_TEST(hc->ProjectPoint(pnt,nullptr),E_POINTER);
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   Float64 distFromStart;
+   VARIANT_BOOL vbOnProjection;
+   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint, &distFromStart, &vbOnProjection),E_INVALIDARG);
+   TRY_TEST(hc->ProjectPoint(pnt,nullptr, &distFromStart, &vbOnProjection),E_POINTER);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 300.0),true);
@@ -1993,7 +2002,7 @@ void CTestHorzCurve::Test4()
 
    pnt->Move(300,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 300.0),true);
@@ -2001,7 +2010,7 @@ void CTestHorzCurve::Test4()
 
    pnt->Move(500,1100);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 498.8151,0.001),true);
@@ -2009,7 +2018,7 @@ void CTestHorzCurve::Test4()
 
    pnt->Move(500,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 501.7753,0.001),true);
@@ -2017,7 +2026,7 @@ void CTestHorzCurve::Test4()
 
    pnt->Move(1000,1300);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 760.5851,0.001),true);
@@ -2025,7 +2034,7 @@ void CTestHorzCurve::Test4()
 
    pnt->Move(550,700);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 630.1736,0.001),true);
@@ -2033,7 +2042,7 @@ void CTestHorzCurve::Test4()
 
    pnt->Move(900,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 850.0000,0.001),true);
@@ -2041,7 +2050,7 @@ void CTestHorzCurve::Test4()
 
    pnt->Move(800,800);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 850.0000,0.001),true);
@@ -2049,7 +2058,7 @@ void CTestHorzCurve::Test4()
 
    pnt->Move(1100,500);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1150.0),true);
@@ -2057,7 +2066,7 @@ void CTestHorzCurve::Test4()
 
    pnt->Move(1200,600);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1150.0),true);
@@ -2514,9 +2523,11 @@ void CTestHorzCurve::Test5()
    pnt.CoCreateInstance(CLSID_Point2d);
    pnt->Move(400,1100);
    CComPtr<IPoint2d> prjPoint;
-   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint),E_INVALIDARG);
-   TRY_TEST(hc->ProjectPoint(pnt,nullptr),E_POINTER);
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   Float64 distFromStart;
+   VARIANT_BOOL vbOnProjection;
+   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint, &distFromStart, &vbOnProjection),E_INVALIDARG);
+   TRY_TEST(hc->ProjectPoint(pnt,nullptr, &distFromStart, &vbOnProjection),E_POINTER);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 400.0),true);
@@ -2524,7 +2535,7 @@ void CTestHorzCurve::Test5()
 
    pnt->Move(400,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 400.0),true);
@@ -2532,7 +2543,7 @@ void CTestHorzCurve::Test5()
 
    pnt->Move(490,1100);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 492.8860,0.001),true);
@@ -2540,7 +2551,7 @@ void CTestHorzCurve::Test5()
 
    pnt->Move(490,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 487.6289,0.001),true);
@@ -2548,7 +2559,7 @@ void CTestHorzCurve::Test5()
 
    pnt->Move(650,1100);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 675.3606,0.001),true);
@@ -2556,7 +2567,7 @@ void CTestHorzCurve::Test5()
 
    pnt->Move(650,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 618.4197,0.001),true);
@@ -2564,7 +2575,7 @@ void CTestHorzCurve::Test5()
 
    pnt->Move(850,1200);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 874.3554,0.001),true);
@@ -2572,7 +2583,7 @@ void CTestHorzCurve::Test5()
 
    pnt->Move(1050,1000);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 877.3483,0.001),true);
@@ -2580,7 +2591,7 @@ void CTestHorzCurve::Test5()
 
    pnt->Move(1200,1300);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
+   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1100.0),true);

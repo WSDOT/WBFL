@@ -383,10 +383,10 @@
 #define IDH_Alignment_PointFactory                             2517
 #define IDH_Alignment__EnumAlignmentElements                        2518
 #define IDH_Alignment_Clone                                    2519
-#define IDH_Alignment_CreateParallelAlignment                       2520
+#define IDH_Alignment_CreateOffsetAlignment                       2520
 #define IDH_Alignment_CreateSubAlignment                       2521
 #define IDH_Alignment_CreateConnectedAlignment					   2522
-#define IDH_Alignment_CreateParallelPath                       2523
+#define IDH_Alignment_CreateOffsetPath                       2523
 #define IDH_Alignment_CreateSubPath                            2524
 #define IDH_Alignment_CreateConnectedPath                      2526
 #define IDH_Alignment_Move                                     2527
@@ -473,7 +473,7 @@
 #define IDH_Path_PointFactory                             2617
 #define IDH_Path__EnumPathElements                        2618
 #define IDH_Path_Clone                                    2619
-#define IDH_Path_CreateParallelPath                       2620
+#define IDH_Path_CreateOffsetPath                       2620
 #define IDH_Path_CreateSubPath                       2621
 #define IDH_Path_CreateConnectedPath					   2622
 #define IDH_Path_Move                                     2623

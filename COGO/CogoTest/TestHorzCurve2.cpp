@@ -619,6 +619,10 @@ void CTestHorzCurve::Test7()
    CComPtr<IAngle> angle;
    TRY_TEST( hc->get_CircularCurveAngle(nullptr), E_POINTER );
    TRY_TEST( hc->get_CircularCurveAngle(&angle), COGO_E_SPIRALSOVERLAP );
+
+   CurveDirectionType type;
+   hc->get_Direction(&type);
+   TRY_TEST(type, cdLeft);
 }
 
 void CTestHorzCurve::Test8a()
@@ -657,6 +661,10 @@ void CTestHorzCurve::Test8a()
    hc->get_CC(&cc);
    hc->get_SPI(spEntry,&spi1);
    hc->get_SPI(spExit, &spi2);
+
+   CurveDirectionType type;
+   hc->get_Direction(&type);
+   TRY_TEST(type, cdLeft);
 
    // create the line
    CComPtr<ILine2d> line;
@@ -792,6 +800,21 @@ void CTestHorzCurve::Test8a()
    TRY_TEST(IsEqual(px, 489.03247,0.001),true);
    TRY_TEST(IsEqual(py, 1000.41664,0.001),true);
 
+   // reverse the direction of the tangent line
+   dir->IncrementBy(CComVariant(M_PI));
+   line.Release();
+   MakeLine(POC, dir, &line);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
+   TRY_TEST(p1 != nullptr, true);
+   TRY_TEST(p2 == nullptr, true);
+
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 489.03247, 0.001), true);
+   TRY_TEST(IsEqual(py, 1000.41664, 0.001), true);
+
    // intersect entry spiral in 2 locations
    p1.Release();
    p2.Release();
@@ -835,6 +858,22 @@ void CTestHorzCurve::Test8a()
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 880.04038989655419),true);
    TRY_TEST(IsEqual(py, 1180.3350144338078),true);
+
+   // reverse the direction of the tangent line
+   dir->IncrementBy(CComVariant(M_PI));
+   line.Release();
+   MakeLine(POC, dir, &line);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
+   TRY_TEST(p1 != nullptr, true);
+   TRY_TEST(p2 == nullptr, true);
+
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 880.04038989655419), true);
+   TRY_TEST(IsEqual(py, 1180.3350144338078), true);
+
 
    // intersect exit spiral in 2 locations
    p1.Release();
@@ -1116,7 +1155,7 @@ void CTestHorzCurve::Test8b()
    TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
 
    /////////////////////////////////////////////////////
-   // Test a non-symmetrical spiral-curve-spiral to the left
+   // Test a non-symmetrical spiral-curve-spiral to the right
    // Spiral lengths overlap
    // PBT = (1000,1300)
    // PI  = (700,1000)
@@ -1140,6 +1179,10 @@ void CTestHorzCurve::Test8b()
    hc->put_Radius(500);
    hc->put_SpiralLength(spEntry,200);
    hc->put_SpiralLength(spExit,100);
+
+   CurveDirectionType type;
+   hc->get_Direction(&type);
+   TRY_TEST(type, cdRight);
 
    // get some useful curve points
    CComPtr<IPoint2d> cc, spi1, spi2;
@@ -1283,6 +1326,21 @@ void CTestHorzCurve::Test8b()
    TRY_TEST(IsEqual(px, 489.03247,0.001),true);
    TRY_TEST(IsEqual(py, 1000.41664,0.001),true);
 
+   // reverse the direction of the tangent line
+   dir->IncrementBy(CComVariant(M_PI));
+   line.Release();
+   MakeLine(POC, dir, &line);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
+   TRY_TEST(p1 != nullptr, true);
+   TRY_TEST(p2 == nullptr, true);
+
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 489.03247, 0.001), true);
+   TRY_TEST(IsEqual(py, 1000.41664, 0.001), true);
+
    // intersect entry spiral in 2 locations
    p1.Release();
    p2.Release();
@@ -1324,6 +1382,21 @@ void CTestHorzCurve::Test8b()
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 880.04038989655419),true);
    TRY_TEST(IsEqual(py, 1180.3350144338078),true);
+
+   // reverse the direction of the tangent line
+   dir->IncrementBy(CComVariant(M_PI));
+   line.Release();
+   MakeLine(POC, dir, &line);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
+   TRY_TEST(p1 != nullptr, true);
+   TRY_TEST(p2 == nullptr, true);
+
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 880.04038989655419), true);
+   TRY_TEST(IsEqual(py, 1180.3350144338078), true);
 
    // intersect exit spiral in 2 locations
    p1.Release();
@@ -1606,7 +1679,7 @@ void CTestHorzCurve::Test9a()
    TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
 
    /////////////////////////////////////////////////////
-   // Test a non-symmetrical spiral-curve-spiral to the left
+   // Test a non-symmetrical spiral-curve-spiral to the right
    // Spiral lengths overlap
    // PBT = (0,1000)
    // PI  = (-700,1000)
@@ -1630,6 +1703,10 @@ void CTestHorzCurve::Test9a()
    hc->put_Radius(500);
    hc->put_SpiralLength(spEntry,100);
    hc->put_SpiralLength(spExit,200);
+
+   CurveDirectionType type;
+   hc->get_Direction(&type);
+   TRY_TEST(type, cdRight);
 
    // get some useful curve points
    CComPtr<IPoint2d> cc, spi1, spi2;
@@ -1771,6 +1848,22 @@ void CTestHorzCurve::Test9a()
    TRY_TEST(IsEqual(px,-489.03247,0.001),true);
    TRY_TEST(IsEqual(py, 1000.41664,0.001),true);
 
+   // reverse the direction of the tangent line
+   dir->IncrementBy(CComVariant(M_PI));
+   line.Release();
+   MakeLine(POC, dir, &line);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
+   TRY_TEST(p1 != nullptr, true);
+   TRY_TEST(p2 == nullptr, true);
+
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, -489.03247, 0.001), true);
+   TRY_TEST(IsEqual(py, 1000.41664, 0.001), true);
+
+
    // intersect entry spiral in 2 locations
    p1.Release();
    p2.Release();
@@ -1814,6 +1907,21 @@ void CTestHorzCurve::Test9a()
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-880.04038989655419),true);
    TRY_TEST(IsEqual(py, 1180.3350144338078),true);
+
+   // reverse the direction of the tangent line
+   dir->IncrementBy(CComVariant(M_PI));
+   line.Release();
+   MakeLine(POC, dir, &line);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
+   TRY_TEST(p1 != nullptr, true);
+   TRY_TEST(p2 == nullptr, true);
+
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, -880.04038989655419), true);
+   TRY_TEST(IsEqual(py, 1180.3350144338078), true);
 
    // intersect exit spiral in 2 locations
    p1.Release();
@@ -2120,6 +2228,10 @@ void CTestHorzCurve::Test9b()
    hc->put_SpiralLength(spEntry,200);
    hc->put_SpiralLength(spExit,100);
 
+   CurveDirectionType type;
+   hc->get_Direction(&type);
+   TRY_TEST(type, cdLeft);
+
    // get some useful curve points
    CComPtr<IPoint2d> cc, spi1, spi2;
    hc->get_CC(&cc);
@@ -2262,6 +2374,21 @@ void CTestHorzCurve::Test9b()
    TRY_TEST(IsEqual(px,-489.03247,0.001),true);
    TRY_TEST(IsEqual(py, 1000.41664,0.001),true);
 
+   // reverse the direction of the tangent line
+   dir->IncrementBy(CComVariant(M_PI));
+   line.Release();
+   MakeLine(POC, dir, &line);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
+   TRY_TEST(p1 != nullptr, true);
+   TRY_TEST(p2 == nullptr, true);
+
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, -489.03247, 0.001), true);
+   TRY_TEST(IsEqual(py, 1000.41664, 0.001), true);
+
    // intersect entry spiral in 2 locations
    p1.Release();
    p2.Release();
@@ -2303,6 +2430,21 @@ void CTestHorzCurve::Test9b()
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-880.04038989655419),true);
    TRY_TEST(IsEqual(py, 1180.3350144338078),true);
+
+   // reverse the direction of the tangent line
+   dir->IncrementBy(CComVariant(M_PI));
+   line.Release();
+   MakeLine(POC, dir, &line);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
+   TRY_TEST(p1 != nullptr, true);
+   TRY_TEST(p2 == nullptr, true);
+
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, -880.04038989655419), true);
+   TRY_TEST(IsEqual(py, 1180.3350144338078), true);
 
    // intersect exit spiral in 2 locations
    p1.Release();
@@ -2585,7 +2727,7 @@ void CTestHorzCurve::Test10a()
    TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
 
    /////////////////////////////////////////////////////
-   // Test a non-symmetrical spiral-curve-spiral to the left
+   // Test a non-symmetrical spiral-curve-spiral to the right
    // Spiral lengths overlap
    // PBT = (0,-1000)
    // PI  = (700,-1000)
@@ -2615,6 +2757,10 @@ void CTestHorzCurve::Test10a()
    hc->get_CC(&cc);
    hc->get_SPI(spEntry,&spi1);
    hc->get_SPI(spExit, &spi2);
+
+   CurveDirectionType type;
+   hc->get_Direction(&type);
+   TRY_TEST(type, cdRight);
 
    // create the line
    CComPtr<ILine2d> line;
@@ -2750,6 +2896,21 @@ void CTestHorzCurve::Test10a()
    TRY_TEST(IsEqual(px, 489.03247,0.001),true);
    TRY_TEST(IsEqual(py,-1000.41664,0.001),true);
 
+   // reverse the direction of the tangent line
+   dir->IncrementBy(CComVariant(M_PI));
+   line.Release();
+   MakeLine(POC, dir, &line);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
+   TRY_TEST(p1 != nullptr, true);
+   TRY_TEST(p2 == nullptr, true);
+
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 489.03247, 0.001), true);
+   TRY_TEST(IsEqual(py, -1000.41664, 0.001), true);
+
    // intersect entry spiral in 2 locations
    p1.Release();
    p2.Release();
@@ -2793,6 +2954,21 @@ void CTestHorzCurve::Test10a()
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 880.04038989655419),true);
    TRY_TEST(IsEqual(py,-1180.3350144338078),true);
+
+   // reverse the direction of the tangent line
+   dir->IncrementBy(CComVariant(M_PI));
+   line.Release();
+   MakeLine(POC, dir, &line);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
+   TRY_TEST(p1 != nullptr, true);
+   TRY_TEST(p2 == nullptr, true);
+
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 880.04038989655419), true);
+   TRY_TEST(IsEqual(py, -1180.3350144338078), true);
 
    // intersect exit spiral in 2 locations
    p1.Release();
@@ -3106,6 +3282,10 @@ void CTestHorzCurve::Test10b()
    hc->get_SPI(spEntry,&spi1);
    hc->get_SPI(spExit, &spi2);
 
+   CurveDirectionType type;
+   hc->get_Direction(&type);
+   TRY_TEST(type, cdLeft);
+
    // create the line
    CComPtr<ILine2d> line;
    line.CoCreateInstance(CLSID_Line2d);
@@ -3242,6 +3422,36 @@ void CTestHorzCurve::Test10b()
    TRY_TEST(IsEqual(px, 489.03247,0.001),true);
    TRY_TEST(IsEqual(py,-1000.41664,0.001),true);
 
+   // reverse the direction of the tangent line
+   dir->IncrementBy(CComVariant(M_PI));
+   line.Release();
+   MakeLine(POC, dir, &line);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
+   TRY_TEST(p1 != nullptr, true);
+   TRY_TEST(p2 == nullptr, true);
+
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 489.03247, 0.001), true);
+   TRY_TEST(IsEqual(py, -1000.41664, 0.001), true);
+
+   // reverse the direction of the tangent line
+   dir->IncrementBy(CComVariant(M_PI));
+   line.Release();
+   MakeLine(POC, dir, &line);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
+   TRY_TEST(p1 != nullptr, true);
+   TRY_TEST(p2 == nullptr, true);
+
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 489.03247, 0.001), true);
+   TRY_TEST(IsEqual(py, -1000.41664, 0.001), true);
+
    // intersect entry spiral in 2 locations
    p1.Release();
    p2.Release();
@@ -3283,6 +3493,21 @@ void CTestHorzCurve::Test10b()
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 880.04038989655419),true);
    TRY_TEST(IsEqual(py,-1180.3350144338078),true);
+
+   // reverse the direction of the tangent line
+   dir->IncrementBy(CComVariant(M_PI));
+   line.Release();
+   MakeLine(POC, dir, &line);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
+   TRY_TEST(p1 != nullptr, true);
+   TRY_TEST(p2 == nullptr, true);
+
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, 880.04038989655419), true);
+   TRY_TEST(IsEqual(py, -1180.3350144338078), true);
 
    // intersect exit spiral in 2 locations
    p1.Release();
@@ -3595,6 +3820,10 @@ void CTestHorzCurve::Test11a()
    hc->get_SPI(spEntry,&spi1);
    hc->get_SPI(spExit, &spi2);
 
+   CurveDirectionType type;
+   hc->get_Direction(&type);
+   TRY_TEST(type, cdLeft);
+
    // create the line
    CComPtr<ILine2d> line;
    line.CoCreateInstance(CLSID_Line2d);
@@ -3729,6 +3958,21 @@ void CTestHorzCurve::Test11a()
    TRY_TEST(IsEqual(px,-489.03247,0.001),true);
    TRY_TEST(IsEqual(py,-1000.41664,0.001),true);
 
+   // reverse the direction of the tangent line
+   dir->IncrementBy(CComVariant(M_PI));
+   line.Release();
+   MakeLine(POC, dir, &line);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
+   TRY_TEST(p1 != nullptr, true);
+   TRY_TEST(p2 == nullptr, true);
+
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, -489.03247, 0.001), true);
+   TRY_TEST(IsEqual(py, -1000.41664, 0.001), true);
+
    // intersect entry spiral in 2 locations
    p1.Release();
    p2.Release();
@@ -3772,6 +4016,21 @@ void CTestHorzCurve::Test11a()
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-880.04038989655419),true);
    TRY_TEST(IsEqual(py,-1180.3350144338078),true);
+
+   // reverse the direction of the tangent line
+   dir->IncrementBy(CComVariant(M_PI));
+   line.Release();
+   MakeLine(POC, dir, &line);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
+   TRY_TEST(p1 != nullptr, true);
+   TRY_TEST(p2 == nullptr, true);
+
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, -880.04038989655419), true);
+   TRY_TEST(IsEqual(py, -1180.3350144338078), true);
 
    // intersect exit spiral in 2 locations
    p1.Release();
@@ -4053,7 +4312,7 @@ void CTestHorzCurve::Test11b()
    TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
 
    /////////////////////////////////////////////////////
-   // Test a non-symmetrical spiral-curve-spiral to the left
+   // Test a non-symmetrical spiral-curve-spiral to the right
    // Spiral lengths overlap
    // PBT = (-1000,-1300)
    // PI  = (-700,-1000)
@@ -4077,6 +4336,10 @@ void CTestHorzCurve::Test11b()
    hc->put_Radius(500);
    hc->put_SpiralLength(spEntry,200);
    hc->put_SpiralLength(spExit,100);
+
+   CurveDirectionType type;
+   hc->get_Direction(&type);
+   TRY_TEST(type, cdRight);
 
    // get some useful curve points
    CComPtr<IPoint2d> cc, spi1, spi2;
@@ -4220,6 +4483,36 @@ void CTestHorzCurve::Test11b()
    TRY_TEST(IsEqual(px,-489.03247,0.001),true);
    TRY_TEST(IsEqual(py,-1000.41664,0.001),true);
 
+   // reverse the direction of the tangent line
+   dir->IncrementBy(CComVariant(M_PI));
+   line.Release();
+   MakeLine(POC, dir, &line);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
+   TRY_TEST(p1 != nullptr, true);
+   TRY_TEST(p2 == nullptr, true);
+
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, -489.03247, 0.001), true);
+   TRY_TEST(IsEqual(py, -1000.41664, 0.001), true);
+
+   // reverse the direction of the tangent line
+   dir->IncrementBy(CComVariant(M_PI));
+   line.Release();
+   MakeLine(POC, dir, &line);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
+   TRY_TEST(p1 != nullptr, true);
+   TRY_TEST(p2 == nullptr, true);
+
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, -489.03247, 0.001), true);
+   TRY_TEST(IsEqual(py, -1000.41664, 0.001), true);
+
    // intersect entry spiral in 2 locations
    p1.Release();
    p2.Release();
@@ -4261,6 +4554,21 @@ void CTestHorzCurve::Test11b()
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-880.04038989655419),true);
    TRY_TEST(IsEqual(py,-1180.3350144338078),true);
+
+   // reverse the direction of the tangent line
+   dir->IncrementBy(CComVariant(M_PI));
+   line.Release();
+   MakeLine(POC, dir, &line);
+   p1.Release();
+   p2.Release();
+   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
+   TRY_TEST(p1 != nullptr, true);
+   TRY_TEST(p2 == nullptr, true);
+
+   p1->get_X(&px);
+   p1->get_Y(&py);
+   TRY_TEST(IsEqual(px, -880.04038989655419), true);
+   TRY_TEST(IsEqual(py, -1180.3350144338078), true);
 
    // intersect exit spiral in 2 locations
    p1.Release();

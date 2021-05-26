@@ -111,6 +111,15 @@ STDMETHODIMP CCubicSpline::AddPoints(IPoint2dCollection* points)
 
    m_bUpdateSpline = true;
 
+#if defined _DEBUG
+   m_Points->get_Count(&nPoints);
+   if (2 <= nPoints)
+   {
+      UpdateSpline();
+   }
+#endif // _DEBUG
+
+
    Fire_OnSplineChanged(this);
 
    return S_OK;
@@ -125,6 +134,15 @@ STDMETHODIMP CCubicSpline::AddPoint(Float64 x,Float64 y)
    m_Points->Add(newPoint);
 
    m_bUpdateSpline = true;
+
+#if defined _DEBUG
+   CollectionIndexType nPoints;
+   m_Points->get_Count(&nPoints);
+   if (2 <= nPoints)
+   {
+      UpdateSpline();
+   }
+#endif // _DEBUG
 
    Fire_OnSplineChanged(this);
 
@@ -146,6 +164,15 @@ STDMETHODIMP CCubicSpline::AddPointEx(IPoint2d* point)
    m_Points->Add(newPoint);
 
    m_bUpdateSpline = true;
+
+#if defined _DEBUG
+   CollectionIndexType nPoints;
+   m_Points->get_Count(&nPoints);
+   if (2 <= nPoints)
+   {
+      UpdateSpline();
+   }
+#endif // _DEBUG
 
    Fire_OnSplineChanged(this);
 
@@ -236,6 +263,16 @@ STDMETHODIMP CCubicSpline::put_StartDirection(VARIANT varDirection)
    cogoUtil::DirectionFromVariant(varDirection,&direction);
    m_bUpdateSpline = true;
    direction->get_Value(&m_StartDirection);
+
+#if defined _DEBUG
+   CollectionIndexType nPoints;
+   m_Points->get_Count(&nPoints);
+   if (2 <= nPoints)
+   {
+      UpdateSpline();
+   }
+#endif // _DEBUG
+
    Fire_OnSplineChanged(this);
    return S_OK;
 }
@@ -251,6 +288,16 @@ STDMETHODIMP CCubicSpline::put_EndDirection( VARIANT varDirection)
    cogoUtil::DirectionFromVariant(varDirection,&direction);
    m_bUpdateSpline = true;
    direction->get_Value(&m_EndDirection);
+
+#if defined _DEBUG
+   CollectionIndexType nPoints;
+   m_Points->get_Count(&nPoints);
+   if (2 <= nPoints)
+   {
+      UpdateSpline();
+   }
+#endif // _DEBUG
+
    Fire_OnSplineChanged(this);
    return S_OK;
 }
@@ -346,8 +393,22 @@ STDMETHODIMP CCubicSpline::BearingAtPoint(CollectionIndexType idx,IDirection** p
    CollectionIndexType splineIdx = (idx == m_SplineSegments.size() ? idx-1 : idx);
    const CSplineSegment& splineSegment = m_SplineSegments[splineIdx];
 
-   // if first point, get slope at start of segment, otherwise at end
-   Float64 angle = splineSegment.Slope( (idx == 0 ? 0 : splineSegment.Length()) );
+   // get the slope at the start of the spline segment unless idx is the last point on the last segment
+   Float64 x;
+   if (idx == m_SplineSegments.size())
+   {
+      splineSegment.pntB->get_X(&x);
+   }
+   else
+   {
+      splineSegment.pntA->get_X(&x);
+   }
+
+   Float64 slope = splineSegment.Slope( x );
+
+   Float64 angle = atan(slope);
+
+   angle += m_RotationAngle;
 
    cogoUtil::DirectionFromVariant(CComVariant(angle),pDir);
 
@@ -487,16 +548,267 @@ STDMETHODIMP CCubicSpline::PointOnSpline(Float64 distance,IPoint2d* *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CCubicSpline::ProjectPoint(IPoint2d* point,IPoint2d* *pNewPoint)
+STDMETHODIMP CCubicSpline::ProjectPoint(IPoint2d* point,IPoint2d* *pNewPoint,Float64* pDistFromStart,VARIANT_BOOL* pvbOnProjection)
 {
-   Float64 dist;
-   return ProjectPoint(point,&dist,pNewPoint);
-}
+   CHECK_IN(point);
+   CHECK_RETVAL(pDistFromStart);
+   CHECK_RETVAL(pvbOnProjection);
+   CHECK_RETOBJ(pNewPoint);
 
-STDMETHODIMP CCubicSpline::DistanceFromStart(IPoint2d* point,Float64* dist)
-{
-   CComPtr<IPoint2d> projectedPoint;
-   return ProjectPoint(point,dist,&projectedPoint);
+   HRESULT hr = CheckValid();
+   if (FAILED(hr))
+   {
+      return hr;
+   }
+
+   hr = UpdateSpline();
+   if (FAILED(hr))
+   {
+      return hr;
+   }
+
+   // First we have to determine if the point is before or after the spline
+   // This is accomplished by setting up coordinate systems at the start and end
+   // of the spline. The X axes are the line connecting the start and end points.
+
+   CComPtr<ICoordinateXform2d> xfrm; // local coordinate transform
+   xfrm.CoCreateInstance(CLSID_CoordinateXform2d);
+
+   // Setup the first coordinate system, with origin at p0
+   CComPtr<IPoint2d> p0;
+   get_StartPoint(&p0);
+
+   CComPtr<IPoint2d> pn;
+   get_EndPoint(&pn);
+
+   CComPtr<IDirection> dir;
+   Float64 dist;
+   cogoUtil::Inverse(p0, pn, &dist, &dir);
+
+   Float64 dirValue;
+   dir->get_Value(&dirValue);
+
+
+   xfrm->putref_NewOrigin(p0);
+   xfrm->put_RotationAngle(dirValue);
+
+   CComPtr<IPoint2d> xfrmPoint;
+   xfrm->XformEx(point, xfrmOldToNew, &xfrmPoint);
+   Float64 x1; // X ordinate in coordinate system 1
+   xfrmPoint->get_X(&x1);
+   x1 = IsZero(x1) ? 0.00 : x1;
+
+   // Setup the second coordinate system, with origin at pn
+   xfrmPoint.Release();
+
+
+   xfrm->putref_NewOrigin(pn);
+   xfrm->put_RotationAngle(dirValue + M_PI);
+   xfrm->XformEx(point, xfrmOldToNew, &xfrmPoint);
+   Float64 x2;
+   xfrmPoint->get_X(&x2);
+   x2 = IsZero(x2) ? 0.00 : x2;
+
+
+   if (x1 < 0 && x2 < 0)
+   {
+      // Point projects onto both the foward and back tangents
+      // Find the point nearest the spline. If equal distance, take the
+      // point on the foward tangent
+
+      // Create a line object along the back tangent bearing. Locate the point on
+      // that line that is nearest the input point
+      CComPtr<IVector2d> v;
+      v.CoCreateInstance(CLSID_Vector2d);
+      v->put_Direction(m_StartDirection);
+      CComPtr<ILine2d> line;
+      line.CoCreateInstance(CLSID_Line2d);
+      line->SetExplicit(p0, v);
+
+      CComPtr<IPoint2d> p1;
+      m_GeomUtil->PointOnLineNearest(line, point, &p1);
+
+      // Create a line object along the foward tangent bearing. Locate the point on
+      // that line that is nearest the input point
+
+      v->put_Direction(m_EndDirection);
+      line->SetExplicit(pn, v);
+
+      CComPtr<IPoint2d> p2;
+      m_GeomUtil->PointOnLineNearest(line, point, &p2);
+
+      Float64 d1, d2;
+      m_GeomUtil->Distance(point, p1, &d1);
+      m_GeomUtil->Distance(point, p2, &d2);
+
+      if (d1 < d2)
+      {
+         // Point projects onto the back tangent bearing (it is before the curve)
+         p1.QueryInterface(pNewPoint);
+         ATLASSERT(*pNewPoint != nullptr);
+
+         m_GeomUtil->Distance(p0, p1, pDistFromStart);
+         (*pDistFromStart) *= -1;
+
+         ATLASSERT((*pDistFromStart) <= 0); // must be negative because it is before the curve
+      }
+      else
+      {
+         // Point projects onto the forward tangent bearing (it is after the curve)
+         p2.QueryInterface(pNewPoint);
+         ATLASSERT(*pNewPoint != nullptr);
+
+         Float64 Lt; // Total length of curve
+         get_Length(&Lt);
+
+         m_GeomUtil->Distance(pn, p2, pDistFromStart);
+         (*pDistFromStart) += Lt;
+
+         ATLASSERT((*pDistFromStart) >= 0 && (*pDistFromStart) >= Lt);
+      }
+
+      *pvbOnProjection = VARIANT_TRUE;
+
+      return S_OK;
+   }
+   else if (x1 <= 0)
+   {
+      // Point is before the curve
+      // Create a line object along the back tangent bearing. Locate the point on
+      // that line that is nearest the input point
+      CComPtr<IVector2d> v;
+      v.CoCreateInstance(CLSID_Vector2d);
+      v->put_Direction(m_StartDirection);
+      CComPtr<ILine2d> line;
+      line.CoCreateInstance(CLSID_Line2d);
+      line->SetExplicit(p0, v);
+
+      CComPtr<IPoint2d> p;
+      m_GeomUtil->PointOnLineNearest(line, point, &p);
+      p.QueryInterface(pNewPoint);
+      ATLASSERT(*pNewPoint != nullptr);
+
+      m_GeomUtil->Distance(p0, *pNewPoint, pDistFromStart);
+      (*pDistFromStart) *= -1;
+
+      ATLASSERT((*pDistFromStart) <= 0); // must be negative because it is before the curve
+
+      *pvbOnProjection = VARIANT_TRUE;
+
+      return S_OK;
+   }
+   else if (0 < x1 && 0 < x2)
+   {
+      // point is between limits of spline
+
+      // we have to work in the rotated coordinate system
+      CComPtr<IPoint2d> pntRotated;
+      m_CoordXform->XformEx(point, xfrmOldToNew, &pntRotated);
+      Float64 px, py;
+      pntRotated->get_X(&px);
+      pntRotated->get_Y(&py);
+
+      // NOTE: when comparing distance from the point to be projected onto the spline and the point on 
+      // the spline where a normal vector passes through the point to be projected, the square of the 
+      // distance will be evaluated. The actual distance between these points doesn't matter so we
+      // can save some CPU cycles by not computing the square root.
+
+      Float64 dist_from_start = 0;
+      Float64 shortest_distance = DBL_MAX;
+      Float64 sx, sy; // coordinates of point on segment that produced the current "shortest distance"
+
+      bool bFound = false;
+
+      // for each spline, find a point on the spline that a normal vector passes through
+      // and also passes through the target point.
+      //
+      // compute the distace between these two points
+      //
+      // the point associated with the shortest distance is the one we are after
+      std::vector<CSplineSegment>::const_iterator iter;
+      for (iter = m_SplineSegments.begin(); iter != m_SplineSegments.end(); iter++)
+      {
+         const CSplineSegment& splineSegment = *iter;
+         CSplineSegmentProjectPointFunction fn(splineSegment, pntRotated, m_GeomUtil);
+         mathBisectionRootFinder2d rootfinder;
+
+         // find the length along the spline segment where a normal line passes through
+         // point
+         Float64 s; // distance along segment
+         try
+         {
+            s = rootfinder.FindRootInRange(fn, 0, splineSegment.Length(), 0.00001);
+         }
+         catch (...)
+         {
+            // a solution wasn't found... go to the next segment
+            dist_from_start += splineSegment.Length();
+            continue;
+         }
+
+         bFound = true;
+
+         Float64 x, y;
+         splineSegment.GetPoint(s, &x, &y);
+
+         Float64 dist2 = (px - x)*(px - x) + (py - y)*(py - y); // square of the distance
+
+         if (dist2 < shortest_distance)
+         {
+            shortest_distance = dist2;
+            *pDistFromStart = dist_from_start + s;
+            sx = x;
+            sy = y;
+         }
+      }
+
+      if (bFound)
+      {
+         CreatePoint(pNewPoint);
+         (*pNewPoint)->Move(sx, sy);
+
+         // convert back to original coordiante system
+         m_CoordXform->Xform(pNewPoint, xfrmNewToOld);
+
+         *pvbOnProjection = VARIANT_FALSE;
+
+         return S_OK;
+      }
+      else
+      {
+         return E_FAIL;
+      }
+   }
+   else if (x2 <= 0)
+   {
+      // Point is after the curve
+      // Create a line object along the foward tangent bearing. Locate the point on
+      // that line that is nearest the input point
+      CComPtr<IVector2d> v;
+      v.CoCreateInstance(CLSID_Vector2d);
+      v->put_Direction(m_EndDirection);
+      CComPtr<ILine2d> line;
+      line.CoCreateInstance(CLSID_Line2d);
+      line->SetExplicit(pn, v);
+
+      CComPtr<IPoint2d> p;
+      m_GeomUtil->PointOnLineNearest(line, point, &p);
+      p.QueryInterface(pNewPoint);
+      ATLASSERT(*pNewPoint != nullptr);
+
+      Float64 Lt;
+      get_Length(&Lt);
+      m_GeomUtil->Distance(pn, *pNewPoint, pDistFromStart);
+      (*pDistFromStart) += Lt;
+
+      *pvbOnProjection = VARIANT_TRUE;
+
+      ATLASSERT(0 <= (*pDistFromStart) && Lt <= (*pDistFromStart));
+      return S_OK;
+   }
+
+   ATLASSERT(false); // should never get here
+   return E_FAIL;
 }
 
 STDMETHODIMP CCubicSpline::DistanceFromStartAtPoint(CollectionIndexType idx,Float64* dist)
@@ -539,12 +851,14 @@ STDMETHODIMP CCubicSpline::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VAR
    HRESULT hr = CheckValid();
    if ( FAILED(hr) )
    {
+      ATLASSERT(false); // we expect the spline to be valid
       return hr;
    }
 
    hr = UpdateSpline();
    if ( FAILED(hr) )
    {
+      ATLASSERT(false); // we expect the spline to be updated property
       return hr;
    }
 
@@ -939,6 +1253,7 @@ HRESULT CCubicSpline::CreateSplineSegments()
       // xb has to come after xa
       if ( xb <= xa )
       {
+         ATLASSERT(false); // did you mean for this to happen?
          return Error(IDS_E_CUBICSPLINEPOINTS,IID_ICubicSpline,COGO_E_CUBICSPLINEPOINTS);
       }
 
@@ -1176,7 +1491,9 @@ void CCubicSpline::ValidateSpline()
 
       // project a point on the spline onto the spline will result in the same point
       pnt2.Release();
-      ProjectPoint(pnt, &pnt2);
+      Float64 dist_from_start;
+      VARIANT_BOOL vbOnProjection;
+      ProjectPoint(pnt, &pnt2, &dist_from_start, &vbOnProjection);
       ATLASSERT(pnt->SameLocation(pnt2) == S_OK);
    }
 
@@ -1193,259 +1510,6 @@ void CCubicSpline::ValidateSpline()
       Float64 slope2 = m_SplineSegments[idx+1].Slope(Xa);
       ATLASSERT(IsEqual(slope1, slope2));
    }
-}
-
-HRESULT CCubicSpline::ProjectPoint(IPoint2d* point,Float64* pDistFromStart,IPoint2d* *pNewPoint)
-{
-   CHECK_IN(point);
-   CHECK_RETVAL(pDistFromStart);
-   CHECK_RETOBJ(pNewPoint);
-
-   HRESULT hr = CheckValid();
-   if ( FAILED(hr) )
-   {
-      return hr;
-   }
-
-   hr = UpdateSpline();
-   if ( FAILED(hr) )
-   {
-      return hr;
-   }
-
-   // First we have to determine if the point is before or after the spline
-   // This is accomplished by setting up coordinate systems at the start and end
-   // of the spline. The X axes are the line connecting the start and end points.
-
-   CComPtr<ICoordinateXform2d> xfrm; // local coordinate transform
-   xfrm.CoCreateInstance(CLSID_CoordinateXform2d);
-
-   // Setup the first coordinate system, with origin at p0
-   CComPtr<IPoint2d> p0;
-   get_StartPoint(&p0);
-
-   CComPtr<IPoint2d> pn;
-   get_EndPoint(&pn);
-
-   CComPtr<IDirection> dir;
-   Float64 dist;
-   cogoUtil::Inverse(p0,pn,&dist,&dir);
-
-   Float64 dirValue;
-   dir->get_Value(&dirValue);
-
-
-   xfrm->putref_NewOrigin(p0);
-   xfrm->put_RotationAngle(dirValue);
-
-   CComPtr<IPoint2d> xfrmPoint;
-   xfrm->XformEx(point,xfrmOldToNew,&xfrmPoint);
-   Float64 x1; // X ordinate in coordinate system 1
-   xfrmPoint->get_X(&x1);
-   x1 = IsZero(x1) ? 0.00 : x1;
-
-   // Setup the second coordinate system, with origin at pn
-   xfrmPoint.Release();
-
-
-   xfrm->putref_NewOrigin(pn);
-   xfrm->put_RotationAngle(dirValue + M_PI);
-   xfrm->XformEx(point,xfrmOldToNew,&xfrmPoint);
-   Float64 x2;
-   xfrmPoint->get_X(&x2);
-   x2 = IsZero(x2) ? 0.00 : x2;
-
-
-   if ( x1 < 0 && x2 < 0 )
-   {
-      // Point projects onto both the foward and back tangents
-      // Find the point nearest the spline. If equal distance, take the
-      // point on the foward tangent
-
-      // Create a line object along the back tangent bearing. Locate the point on
-      // that line that is nearest the input point
-      CComPtr<IVector2d> v;
-      v.CoCreateInstance(CLSID_Vector2d);
-      v->put_Direction(m_StartDirection);
-      CComPtr<ILine2d> line;
-      line.CoCreateInstance(CLSID_Line2d);
-      line->SetExplicit(p0,v);
-
-      CComPtr<IPoint2d> p1;
-      m_GeomUtil->PointOnLineNearest(line,point,&p1);
-
-      // Create a line object along the foward tangent bearing. Locate the point on
-      // that line that is nearest the input point
-      
-      v->put_Direction(m_EndDirection);
-      line->SetExplicit(pn,v);
-
-      CComPtr<IPoint2d> p2;
-      m_GeomUtil->PointOnLineNearest(line,point,&p2);
-
-      Float64 d1, d2;
-      m_GeomUtil->Distance(point,p1,&d1);
-      m_GeomUtil->Distance(point,p2,&d2);
-
-      if ( d1 < d2 )
-      {
-         // Point projects onto the back tangent bearing (it is before the curve)
-         p1.QueryInterface(pNewPoint);
-         ATLASSERT( *pNewPoint != nullptr );
-
-         m_GeomUtil->Distance(p0,p1,pDistFromStart);
-         (*pDistFromStart) *= -1;
-
-         ATLASSERT( (*pDistFromStart) <= 0 ); // must be negative because it is before the curve
-      }
-      else
-      {
-         // Point projects onto the forward tangent bearing (it is after the curve)
-         p2.QueryInterface(pNewPoint);
-         ATLASSERT( *pNewPoint != nullptr );
-
-         Float64 Lt; // Total length of curve
-         get_Length(&Lt);
-
-         m_GeomUtil->Distance(pn,p2,pDistFromStart);
-         (*pDistFromStart) += Lt;
-
-         ATLASSERT( (*pDistFromStart) >= 0 && (*pDistFromStart) >= Lt );
-      }
-
-      return S_OK;
-   }
-   else if ( x1 <= 0 )
-   {
-      // Point is before the curve
-      // Create a line object along the back tangent bearing. Locate the point on
-      // that line that is nearest the input point
-      CComPtr<IVector2d> v;
-      v.CoCreateInstance(CLSID_Vector2d);
-      v->put_Direction(m_StartDirection);
-      CComPtr<ILine2d> line;
-      line.CoCreateInstance(CLSID_Line2d);
-      line->SetExplicit(p0,v);
-
-      CComPtr<IPoint2d> p;
-      m_GeomUtil->PointOnLineNearest(line,point,&p);
-      p.QueryInterface(pNewPoint);
-      ATLASSERT( *pNewPoint != nullptr );
-
-      m_GeomUtil->Distance(p0,*pNewPoint,pDistFromStart);
-      (*pDistFromStart) *= -1;
-
-      ATLASSERT( (*pDistFromStart) <= 0 ); // must be negative because it is before the curve
-      return S_OK;
-   }
-   else if ( 0 < x1 && 0 < x2 )
-   {
-      // point is between limits of spline
-
-      // we have to work in the rotated coordinate system
-      CComPtr<IPoint2d> pntRotated;
-      m_CoordXform->XformEx(point, xfrmOldToNew,&pntRotated);
-      Float64 px,py;
-      pntRotated->get_X(&px);
-      pntRotated->get_Y(&py);
-
-      // NOTE: when comparing distance from the point to be projected onto the spline and the point on 
-      // the spline where a normal vector passes through the point to be projected, the square of the 
-      // distance will be evaluated. The actual distance between these points doesn't matter so we
-      // can save some CPU cycles by not computing the square root.
-
-      Float64 dist_from_start = 0;
-      Float64 shortest_distance = DBL_MAX;
-      Float64 sx, sy; // coordinates of point on segment that produced the current "shortest distance"
-
-      bool bFound = false;
-
-      // for each spline, find a point on the spline that a normal vector passes through
-      // and also passes through the target point.
-      //
-      // compute the distace between these two points
-      //
-      // the point associated with the shortest distance is the one we are after
-      std::vector<CSplineSegment>::const_iterator iter;
-      for ( iter = m_SplineSegments.begin(); iter != m_SplineSegments.end(); iter++ )
-      {
-         const CSplineSegment& splineSegment = *iter;
-         CSplineSegmentProjectPointFunction fn(splineSegment,pntRotated,m_GeomUtil);
-         mathBisectionRootFinder2d rootfinder;
-
-         // find the length along the spline segment where a normal line passes through
-         // point
-         Float64 s; // distance along segment
-         try
-         {
-            s = rootfinder.FindRootInRange(fn,0,splineSegment.Length(),0.00001);
-         }
-         catch(...)
-         {
-            // a solution wasn't found... go to the next segment
-            dist_from_start += splineSegment.Length();
-            continue;
-         }
-
-         bFound = true;
-
-         Float64 x,y;
-         splineSegment.GetPoint(s,&x,&y);
-
-         Float64 dist2 = (px-x)*(px-x) + (py-y)*(py-y); // square of the distance
-
-         if ( dist2 < shortest_distance )
-         {
-            shortest_distance = dist2;
-            *pDistFromStart = dist_from_start + s;
-            sx = x;
-            sy = y;
-         }
-      }
-
-      if ( bFound )
-      {
-         CreatePoint(pNewPoint);
-         (*pNewPoint)->Move(sx,sy);
-
-         // convert back to original coordiante system
-         m_CoordXform->Xform(pNewPoint, xfrmNewToOld);
-
-         return S_OK;
-      }
-      else
-      {
-         return E_FAIL;
-      }
-   }
-   else if ( x2 <= 0 )
-   {
-      // Point is after the curve
-      // Create a line object along the foward tangent bearing. Locate the point on
-      // that line that is nearest the input point
-      CComPtr<IVector2d> v;
-      v.CoCreateInstance(CLSID_Vector2d);
-      v->put_Direction(m_EndDirection);
-      CComPtr<ILine2d> line;
-      line.CoCreateInstance(CLSID_Line2d);
-      line->SetExplicit(pn,v);
-
-      CComPtr<IPoint2d> p;
-      m_GeomUtil->PointOnLineNearest(line,point,&p);
-      p.QueryInterface(pNewPoint);
-      ATLASSERT( *pNewPoint != nullptr );
-
-      Float64 Lt;
-      get_Length(&Lt);
-      m_GeomUtil->Distance(pn,*pNewPoint,pDistFromStart);
-      (*pDistFromStart) += Lt;
-
-      ATLASSERT( (*pDistFromStart) >= 0 && (*pDistFromStart) >= Lt );
-      return S_OK;
-   }
-   
-   ATLASSERT(false); // should never get here
-   return E_FAIL;
 }
 
 /////////////////////////////////////////////////////

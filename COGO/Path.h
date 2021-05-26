@@ -102,8 +102,8 @@ public:
    STDMETHOD(IntersectEx)(ILine2d* line,IPoint2d* pNearest,VARIANT_BOOL vbProjectBack,VARIANT_BOOL vbProjectAhead,IPoint2d** point) override;
    STDMETHOD(Intersect)(/*[in]*/ ILine2d* line,/*[in]*/IPoint2d* pNearest,/*[out,retval]*/IPoint2d** point) override;
 	STDMETHOD(Offset)(/*[in]*/ IPoint2d* point,/*[out]*/ Float64* distance,/*[out]*/ Float64* offset) override; 
-	STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ IPoint2d* *newPoint) override;
-	STDMETHOD(Normal)(/*[in]*/ Float64 distance,/*[out,retval]*/ IDirection* *dir) override; 
+   STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point, /*[out]*/ IPoint2d* *newPoint, /*[out]*/ Float64* distFromStart, /*[out]*/ VARIANT_BOOL* pvbOnProjection) override;
+   STDMETHOD(Normal)(/*[in]*/ Float64 distance,/*[out,retval]*/ IDirection* *dir) override;
 	STDMETHOD(Bearing)(/*[in]*/ Float64 distance,/*[out,retval]*/ IDirection* *dir) override; 
 	STDMETHOD(LocatePoint)(/*[in]*/ Float64 distance, /*[in]*/ OffsetMeasureType offsetMeasure, /*[in]*/ Float64 offset, /*[in]*/ VARIANT varDir,/*[out,retval]*/ IPoint2d* *newPoint) override; 
    //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;  
@@ -119,7 +119,7 @@ public:
 	STDMETHOD(get_PointFactory)(/*[out,retval]*/IPoint2dFactory* *factory) override; 
 	STDMETHOD(putref_PointFactory)(/*[in]*/IPoint2dFactory* factory) override; 
    STDMETHOD(Move)(/*[in]*/ Float64 dist,/*[in]*/ IDirection* direction) override;
-   STDMETHOD(CreateParallelPath)(/*[in]*/ Float64 offset,/*[out,retval]*/IPath** path) override;
+   STDMETHOD(CreateOffsetPath)(/*[in]*/ Float64 offset,/*[out,retval]*/IPath** path) override;
 	STDMETHOD(CreateConnectedPath)(/*[out,retval]*/IPath** path) override;
    STDMETHOD(CreateSubPath)(/*[in]*/Float64 start,/*[in]*/Float64 end,/*[out,retval]*/IPath** path) override;
 
@@ -164,9 +164,6 @@ private:
    // Also determines the distance to teh begining of that Path element
    void FindElement(Float64 distance,Float64* pBeginDist,IPathElement* *pElement);
 
-   // Returns a vector of Element that the given point will project onto
-   std::vector<Element> FindElements(IPoint2d* point);
-
    // Returns the starting point of the given Path element
    void GetStartPoint(IPathElement* pElement,IPoint2d** ppStartPoint);
 
@@ -181,18 +178,14 @@ private:
    void CreateDummyPathElement(IPoint2d* pStart,IPathElement* nextElement,IPathElement* *pElement);
 
    // Projects a point onto an Path element
-   void ProjectPointOnElement(IPoint2d* point,IPathElement* pElement,IPoint2d** pNewPoint);
+   void ProjectPointOnElement(IPoint2d* point,IPathElement* pElement,IPoint2d** pNewPoint,Float64* pDistFromStart,VARIANT_BOOL* pvbOnProjection);
 
    // Intersects a line with a path element, puts the result point(s) in the point collection
    void IntersectElement(ILine2d* line,IPathElement* element,bool bProjectBack,bool bProjectAhead,IPoint2dCollection* points);
 
-   // Returns true if the given point projects onto the Path element
-   // If bExtendBack or bExtendAhead are true, the Path element is extended
-   bool DoesPointProjectOntoElement(IPoint2d* point,IPathElement* element,bool bExtendBack, bool bExtendAhead);
-
-   void CreateParallelHorzCurve(Float64 offset,IHorzCurve* hc,IUnknown** result);
-   void CreateParallelCubicSpline(Float64 offset,ICubicSpline* spline,IUnknown** result);
-   void CreateParallelPoint(CollectionIndexType elementIdx,Float64 offset,IPoint2d** pPoint);
+   void CreateOffsetHorzCurve(Float64 offset,IHorzCurve* hc,IUnknown** result);
+   void CreateOffsetCubicSpline(Float64 offset,ICubicSpline* spline,IUnknown** result);
+   void CreateOffsetPoint(CollectionIndexType elementIdx,Float64 offset,IPoint2d** pPoint);
 
 
    HRESULT CreateSubPathElement(Float64 start,Float64 end,ILineSegment2d* pLS,ILineSegment2d** ppLineSegment);
@@ -200,8 +193,6 @@ private:
    HRESULT CreateSubPathElement(Float64 start,Float64 end,ICubicSpline* pSpine,IUnknown** ppResult);
    HRESULT CreateSubCurveSpline(Float64 start,Float64 end,CollectionIndexType nPoints,IHorzCurve* pHC,ICubicSpline** ppSpline);
    HRESULT SavePathElement(IPath* pPath,IUnknown* pUnk);
-
-   HRESULT DistanceAndOffset(IPoint2d* point,Float64* pDistance,Float64* pOffset);
 
    Float64 GetElementLength(IPathElement* pElement);
 

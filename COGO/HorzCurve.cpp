@@ -1433,24 +1433,193 @@ STDMETHODIMP CHorzCurve::PointOnCurve(Float64 distance,IPoint2d* *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::ProjectPoint( IPoint2d* point, IPoint2d* *pNewPoint)
+STDMETHODIMP CHorzCurve::ProjectPoint( IPoint2d* point, IPoint2d* *pNewPoint, Float64* pDistFromStart, VARIANT_BOOL* pvbOnProjection)
 {
    CHECK_IN(point);
-   CHECK_RETVAL(pNewPoint);
+   CHECK_RETVAL(pDistFromStart);
+   CHECK_RETVAL(pvbOnProjection);
+   CHECK_RETOBJ(pNewPoint);
 
-   Float64 dist;
-   ProjectPoint(point,&dist,pNewPoint);
+   // determine if the point projects onto the entry spiral, circular curve, or exit spiral
+   int projection_region = ProjectionRegion(point);
 
-   return S_OK;
-}
+   *pNewPoint = nullptr;
 
-STDMETHODIMP CHorzCurve::DistanceFromStart(IPoint2d* point, Float64* dist)
-{
-   CHECK_IN(point);
-   CHECK_RETVAL(dist);
+   CComPtr<IPoint2d> bkTangentPoint;
+   Float64 bkTangentOffset;
+   Float64 bkTangentDistance;
+   if (projection_region & BACK_TANGENT)
+   {
+      // point projects onto the back tangent
 
-   CComPtr<IPoint2d> prjPoint;
-   ProjectPoint(point,dist,&prjPoint);
+      // Create a line object along the back tangent bearing. Locate the point on
+      // that line that is nearest the input point
+      CComPtr<IPoint2d> pbt, pi;
+      get_PBT(&pbt);
+      get_PI(&pi);
+
+      CComPtr<ILine2d> line;
+      line.CoCreateInstance(CLSID_Line2d);
+      line->ThroughPoints(pbt, pi);
+
+      // compute offset from "point" to the back tangent (used to determine if it is closer to the back tangent than other points on the curve)
+      m_GeomUtil->PointOnLineNearest(line, point, &bkTangentPoint);
+      point->DistanceEx(bkTangentPoint, &bkTangentOffset); // distance from the point to where it projects onto the back tangent
+
+                                                           // compute distance along the back tangent to the projection point
+      CComPtr<IPoint2d> ts;
+      get_TS(&ts);
+      m_GeomUtil->Distance(ts, bkTangentPoint, &bkTangentDistance);
+      bkTangentDistance *= -1;
+   }
+
+   CComPtr<IPoint2d> entrySpiralPoint;
+   Float64 entrySpiralOffset;
+   Float64 entrySpiralDistance;
+   if (projection_region & ENTRY_SPIRAL)
+   {
+      ProjectPointOnEntrySpiral(point, &entrySpiralDistance, &entrySpiralPoint);
+      point->DistanceEx(entrySpiralPoint, &entrySpiralOffset); // distance from the point to where it projects onto the entry spiral
+   }
+
+   CComPtr<IPoint2d> curvePoint;
+   Float64 curveOffset;
+   Float64 curveDistance;
+   if (projection_region & CIRCULAR_CURVE)
+   {
+      // Create a line from CCC through the projected point
+      // Intersect this line with the circular arc, finding the
+      // point that is nearest SC.
+      CComPtr<IPoint2d> ccc;
+      get_CCC(&ccc);
+
+      CComPtr<ILine2d> line;
+      line.CoCreateInstance(CLSID_Line2d);
+      line->ThroughPoints(ccc, point);
+
+      CComPtr<ICircle> circle;
+      circle.CoCreateInstance(CLSID_Circle);
+      circle->putref_Center(ccc);
+      circle->put_Radius(m_Radius);
+
+      CComPtr<IPoint2d> sc;
+      get_SC(&sc);
+
+      cogoUtil::LineCircleIntersect(line, circle, point, m_PointFactory, &curvePoint);
+      ATLASSERT(curvePoint != nullptr);
+
+      CurveDirectionType dir;
+      get_Direction(&dir);
+      Float64 angle;
+      if (dir == cdRight)
+         m_GeomUtil->Angle(curvePoint, ccc, sc, &angle);
+      else
+         m_GeomUtil->Angle(sc, ccc, curvePoint, &angle);
+
+#if defined _DEBUG
+      // The subtended angle must be less than or equal to the
+      // circular curve angle (or the point isn't on the circular part of the curve)
+      CComPtr<IAngle> cca;
+      Float64 delta;
+      get_CircularCurveAngle(&cca);
+      cca->get_Value(&delta);
+      ATLASSERT(IsLE(angle, delta));
+#endif // _DEBUG
+
+      ATLASSERT(0 <= angle);
+      Float64 dist = m_Radius * angle; // distance along circular curve to projected point
+      Float64 Ls;
+      get_SpiralLength(spEntry, &Ls);
+      curveDistance = Ls + dist;
+
+      point->DistanceEx(curvePoint, &curveOffset); // distance from the point to where it projects onto the circular curve
+   }
+
+   CComPtr<IPoint2d> exitSpiralPoint;
+   Float64 exitSpiralOffset;
+   Float64 exitSpiralDistance;
+   if (projection_region & EXIT_SPIRAL)
+   {
+      ProjectPointOnExitSpiral(point, &exitSpiralDistance, &exitSpiralPoint);
+      point->DistanceEx(exitSpiralPoint, &exitSpiralOffset); // distance from the point to where it projects onto the exit spiral
+   }
+
+   CComPtr<IPoint2d> fwdTangentPoint;
+   Float64 fwdTangentOffset;
+   Float64 fwdTangentDistance;
+   if (projection_region & FORWARD_TANGENT)
+   {
+      // point projects onto the forward tangent
+
+      // Create a line object along the foward tangent bearing. Locate the point on
+      // that line that is nearest the input point
+      CComPtr<IPoint2d> pi, pft;
+      get_PI(&pi);
+      get_PFT(&pft);
+
+      CComPtr<ILine2d> line;
+      line.CoCreateInstance(CLSID_Line2d);
+      line->ThroughPoints(pi, pft);
+
+      m_GeomUtil->PointOnLineNearest(line, point, &fwdTangentPoint);
+      point->DistanceEx(fwdTangentPoint, &fwdTangentOffset); // distance from the point to where it projects onto the foward tangent
+
+                                                             // compute distance along the forard tangent to the projection point
+      CComPtr<IPoint2d> st;
+      get_ST(&st);
+      m_GeomUtil->Distance(st, fwdTangentPoint, &fwdTangentDistance);
+
+      Float64 Lt; // Total length of curve
+      get_TotalLength(&Lt);
+      fwdTangentDistance += Lt;
+   }
+
+   // find the projected point that is closest to the curve
+   Float64 min_offset = Float64_Max;
+   if (bkTangentPoint && bkTangentOffset < min_offset)
+   {
+      min_offset = bkTangentOffset;
+      if (*pNewPoint) (*pNewPoint)->Release();
+      bkTangentPoint.CopyTo(pNewPoint);
+      *pDistFromStart = bkTangentDistance;
+      *pvbOnProjection = VARIANT_TRUE;
+   }
+
+   if (entrySpiralPoint && entrySpiralOffset < min_offset)
+   {
+      min_offset = entrySpiralOffset;
+      if (*pNewPoint) (*pNewPoint)->Release();
+      entrySpiralPoint.CopyTo(pNewPoint);
+      *pDistFromStart = entrySpiralDistance;
+      *pvbOnProjection = VARIANT_FALSE;
+   }
+
+   if (curvePoint && curveOffset < min_offset)
+   {
+      min_offset = curveOffset;
+      if (*pNewPoint) (*pNewPoint)->Release();
+      curvePoint.CopyTo(pNewPoint);
+      *pDistFromStart = curveDistance;
+      *pvbOnProjection = VARIANT_FALSE;
+   }
+
+   if (exitSpiralPoint && exitSpiralOffset < min_offset)
+   {
+      min_offset = exitSpiralOffset;
+      if (*pNewPoint) (*pNewPoint)->Release();
+      exitSpiralPoint.CopyTo(pNewPoint);
+      *pDistFromStart = exitSpiralDistance;
+      *pvbOnProjection = VARIANT_FALSE;
+   }
+
+   if (fwdTangentPoint && fwdTangentOffset < min_offset)
+   {
+      min_offset = fwdTangentOffset;
+      if (*pNewPoint) (*pNewPoint)->Release();
+      fwdTangentPoint.CopyTo(pNewPoint);
+      *pDistFromStart = fwdTangentDistance;
+      *pvbOnProjection = VARIANT_TRUE;
+   }
 
    return S_OK;
 }
@@ -1592,9 +1761,8 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
 
          if ( pnt1 && pnt2 )
          {
-            // there are at least 1 intersection point... 
-            // need to find a disntace along the curve that is between the two intersection points
-            // so we have a brack that works... to do this, search for a point on the spiral where
+            // need to find a distance along the curve that is between the two intersection points
+            // so we have a bracket that works... to do this, search for a point on the spiral where
             // the tangent to the spiral is parallel to the line
             CParallelLineFunction parallel_function(this,line,m_GeomUtil);
             Float64 limit;
@@ -1621,24 +1789,57 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
             }
             else
             {
-               // Line is not tangent
-               try
-               {
-                  // get first insersection in first segment
-                  Float64 dist1 = rootFinder.FindRootInRange(function,0,limit,0.0001);
-                  PointOnCurve(dist1,p1);
-                  ATLASSERT(TestIntersection(line,*p1));
+               // Line is not tangent to the curve
 
-                  // get second interection in second segment
-                  Float64 dist2 = rootFinder.FindRootInRange(function,limit,m_Ls1,0.0001);
-                  PointOnCurve(dist2,p2);
-                  ATLASSERT(TestIntersection(line,*p2));
+               // Figure out if the line is on the inside or outside of the curve. If on the outside, it doesn't insersect
 
-                  return S_OK; // we got both intersection points... leave now
-               }
-               catch (mathXRootFinder2dFailed& /*mx*/)
+               // Compute Offset
+               CComPtr<IDirection> brg;
+               Bearing(limit, &brg);
+               Float64 dir;
+               brg->get_Value(&dir); // bearing at the projected point
+
+               CComPtr<IVector2d> vector;
+               vector.CoCreateInstance(CLSID_Vector2d);
+               vector->put_Direction(dir);
+
+               CComPtr<ILine2d> tangent_line;
+               tangent_line.CoCreateInstance(CLSID_Line2d);
+               tangent_line->SetExplicit(POC, vector); // Line through the projected point, forward direction
+
+               CComPtr<ILine2d> normal_line;
+               m_GeomUtil->CreateNormalLineThroughPoint(tangent_line, POC, &normal_line);
+
+               CComPtr<IPoint2d> point_on_line;
+               m_GeomUtil->LineLineIntersect(line, normal_line, &point_on_line);
+
+               Float64 offset;
+               m_GeomUtil->ShortestOffsetToPoint(tangent_line, point_on_line, &offset);
+               ATLASSERT(!IsZero(offset)); // if offset is zero, the line is tangent and we should have dealt with that above
+
+               // negative offset means point_on_line is to the left of tangent_line
+
+               if ((offset < 0 && direction == cdLeft) || (0 < offset && direction == cdRight))
                {
-                  ATLASSERT(false); // should never fire
+                  // line is on the inside of the curve so there are intersections
+                  try
+                  {
+                     // get first insersection in first segment
+                     Float64 dist1 = rootFinder.FindRootInRange(function, 0, limit, 0.0001);
+                     PointOnCurve(dist1, p1);
+                     ATLASSERT(TestIntersection(line, *p1));
+
+                     // get second interection in second segment
+                     Float64 dist2 = rootFinder.FindRootInRange(function, limit, m_Ls1, 0.0001);
+                     PointOnCurve(dist2, p2);
+                     ATLASSERT(TestIntersection(line, *p2));
+
+                     return S_OK; // we got both intersection points... leave now
+                  }
+                  catch (mathXRootFinder2dFailed& /*mx*/)
+                  {
+                     ATLASSERT(false); // should never fire
+                  }
                }
             }
          }
@@ -1696,9 +1897,8 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
 
          if ( pnt1 && pnt2 )
          {
-            // there are at least 1 intersection point... 
-            // need to find a disntace along the curve that is between the two intersection points
-            // so we have a brack that works... to do this, search for a point on the spiral where
+            // need to find a distance along the curve that is between the two intersection points
+            // so we have a bracket that works... to do this, search for a point on the spiral where
             // the tangent to the spiral is parallel to the line
             CParallelLineFunction parallel_function(this,line,m_GeomUtil);
             Float64 limit;
@@ -1725,24 +1925,57 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
             }
             else
             {
-               // Line is not tangent
-               try
-               {
-                  // get first insersection in first segment
-                  Float64 dist1 = rootFinder.FindRootInRange(function,length-m_Ls2,limit,0.0001);
-                  PointOnCurve(dist1,p1);
-                  ATLASSERT(TestIntersection(line,*p1));
+               // Line is not tangent to the curve
+               
+               // Figure out if the line is on the inside or outside of the curve. If on the outside, it doesn't insersect
 
-                  // get second interection in second segment
-                  Float64 dist2 = rootFinder.FindRootInRange(function,limit,length,0.0001);
-                  PointOnCurve(dist2,p2);
-                  ATLASSERT(TestIntersection(line,*p2));
+               // Compute Offset
+               CComPtr<IDirection> brg;
+               Bearing(limit, &brg);
+               Float64 dir;
+               brg->get_Value(&dir); // bearing at the projected point
 
-                  return S_OK; // we got both intersection points... leave now
-               }
-               catch (mathXRootFinder2dFailed& /*mx*/)
+               CComPtr<IVector2d> vector;
+               vector.CoCreateInstance(CLSID_Vector2d);
+               vector->put_Direction(dir);
+
+               CComPtr<ILine2d> tangent_line;
+               tangent_line.CoCreateInstance(CLSID_Line2d);
+               tangent_line->SetExplicit(POC, vector); // Line through the projected point, forward direction
+
+               CComPtr<ILine2d> normal_line;
+               m_GeomUtil->CreateNormalLineThroughPoint(tangent_line, POC, &normal_line);
+
+               CComPtr<IPoint2d> point_on_line;
+               m_GeomUtil->LineLineIntersect(line, normal_line, &point_on_line);
+
+               Float64 offset;
+               m_GeomUtil->ShortestOffsetToPoint(tangent_line, point_on_line, &offset);
+               ATLASSERT(!IsZero(offset)); // if offset is zero, the line is tangent and we should have dealt with that above
+
+               // negative offset means point_on_line is to the left of tangent_line
+
+               if ((offset < 0 && direction == cdLeft) || (0 < offset && direction == cdRight))
                {
-                  ATLASSERT(false); // should never fire
+                  // line is on the inside of the curve so there are intersections
+                  try
+                  {
+                     // get first insersection in first segment
+                     Float64 dist1 = rootFinder.FindRootInRange(function, length - m_Ls2, limit, 0.0001);
+                     PointOnCurve(dist1, p1);
+                     ATLASSERT(TestIntersection(line, *p1));
+
+                     // get second interection in second segment
+                     Float64 dist2 = rootFinder.FindRootInRange(function, limit, length, 0.0001);
+                     PointOnCurve(dist2, p2);
+                     ATLASSERT(TestIntersection(line, *p2));
+
+                     return S_OK; // we got both intersection points... leave now
+                  }
+                  catch (mathXRootFinder2dFailed& /*mx*/)
+                  {
+                     ATLASSERT(false); // should never fire
+                  }
                }
             }
          }
@@ -2166,20 +2399,109 @@ void CHorzCurve::ProjectPointOnExitSpiral(IPoint2d* point,Float64* pDistFromStar
    *pDistFromStart = Lt - dist;
 }
 
-void CHorzCurve::ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d* *pNewPoint)
+int CHorzCurve::ProjectionRegion(IPoint2d* pPoint)
 {
-   // The first thing we have to do is determine if the point is before the curve,
-   // within the bounds of the curve, or after the curve.
+   int result = 0;
 
-   // We will do this by setting up a coordinate system at each end of the curve and transform
-   // the point into those systems.
+   if (0 < m_Ls1)
+   {
+      // check entry spiral
 
-   // Setup the first coordinate system, with origin at TS and X towards PI
+      // put coordinate system at TS with Y towards the center of the curve
+      CComPtr<IPoint2d> origin;
+      CComPtr<IDirection> brg;
+
+      get_TS(&origin);
+      get_BkTangentBrg(&brg);
+      Float64 dir;
+      brg->get_Value(&dir);
+
+      m_Xform->putref_NewOrigin(origin);
+      m_Xform->put_RotationAngle(dir);
+
+      CComPtr<IPoint2d> xfrmPoint;
+      m_Xform->XformEx(pPoint, xfrmOldToNew, &xfrmPoint);
+      Float64 x1; // X ordinate in coordinate system 1
+      xfrmPoint->get_X(&x1);
+
+      // put coordinate system at SC with Y towards the center of the curve
+      origin.Release();
+      get_SC(&origin);
+
+      brg.Release();
+      Bearing(m_Ls1, &brg);
+      brg->get_Value(&dir);
+
+      m_Xform->putref_NewOrigin(origin);
+      m_Xform->put_RotationAngle(dir);
+
+      xfrmPoint.Release();
+      m_Xform->XformEx(pPoint, xfrmOldToNew, &xfrmPoint);
+      Float64 x2; // X ordinate in coordinate system 2
+      xfrmPoint->get_X(&x2);
+
+      if (x1 < 0)
+         result |= BACK_TANGENT;
+
+      if (0 <= x1 && x2 <= 0)
+         result |= ENTRY_SPIRAL;
+   }
+
+   if (0 < m_Ls2)
+   {
+      // check exit spiral
+
+      // put coordinate system at CS with Y towards the center of the curve
+      CComPtr<IPoint2d> origin;
+      CComPtr<IDirection> brg;
+
+      get_CS(&origin);
+      Float64 Lt;
+      get_TotalLength(&Lt);
+
+      Bearing(Lt - m_Ls2, &brg);
+      Float64 dir;
+      brg->get_Value(&dir);
+
+      m_Xform->putref_NewOrigin(origin);
+      m_Xform->put_RotationAngle(dir);
+
+      CComPtr<IPoint2d> xfrmPoint;
+      m_Xform->XformEx(pPoint, xfrmOldToNew, &xfrmPoint);
+      Float64 x1; // X ordinate in coordinate system 1
+      xfrmPoint->get_X(&x1);
+
+      // put coordinate system at ST with Y towards the center of the curve
+      origin.Release();
+      get_ST(&origin);
+
+      brg.Release();
+      get_FwdTangentBrg(&brg);
+      brg->get_Value(&dir);
+
+      m_Xform->putref_NewOrigin(origin);
+      m_Xform->put_RotationAngle(dir);
+
+      xfrmPoint.Release();
+      m_Xform->XformEx(pPoint, xfrmOldToNew, &xfrmPoint);
+      Float64 x2; // X ordinate in coordinate system 2
+      xfrmPoint->get_X(&x2);
+
+      if (0 < x2)
+         result |= FORWARD_TANGENT;
+
+      if (0 <= x1 && x2 <= 0)
+         result |= EXIT_SPIRAL;
+   }
+
+   // check circular curve
+
+   // put coordinate system at SC with Y towards the center of the curve
    CComPtr<IPoint2d> origin;
-   get_TS(&origin);
-   
    CComPtr<IDirection> brg;
-   get_BkTangentBrg(&brg);
+
+   get_SC(&origin);
+   Bearing(m_Ls1, &brg);
    Float64 dir;
    brg->get_Value(&dir);
 
@@ -2187,298 +2509,39 @@ void CHorzCurve::ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d*
    m_Xform->put_RotationAngle(dir);
 
    CComPtr<IPoint2d> xfrmPoint;
-   m_Xform->XformEx(point,xfrmOldToNew,&xfrmPoint);
+   m_Xform->XformEx(pPoint, xfrmOldToNew, &xfrmPoint);
    Float64 x1; // X ordinate in coordinate system 1
    xfrmPoint->get_X(&x1);
-//   x1 = IsZero(x1) ? 0.00 : x1;
 
-#if defined _DEBUG
-   // X coordinate of CC should be zero
-   CComPtr<IPoint2d> cc;
-   get_CC(&cc);
-   CComQIPtr<IPoint2d> cc2(cc);
-   m_Xform->Xform(&cc2.p,xfrmOldToNew);
-   Float64 ccx;
-   cc->get_X(&ccx);
-   ATLASSERT( IsZero(ccx) );
-#endif // _DEBUG
-
-   // Setup the second coordinate system, with origin at ST and X towards PI
+   // put coordinate system at CS with Y towards the center of the curve
    origin.Release();
-   brg.Release();
-   xfrmPoint.Release();
+   get_CS(&origin);
 
-   get_ST(&origin);
-   get_FwdTangentBrg(&brg);
+   Float64 L;
+   get_CurveLength(&L);
+
+   brg.Release();
+   Bearing(m_Ls1 + L, &brg);
    brg->get_Value(&dir);
 
    m_Xform->putref_NewOrigin(origin);
-   m_Xform->put_RotationAngle(dir + M_PI);
-   m_Xform->XformEx(point,xfrmOldToNew,&xfrmPoint);
-   Float64 x2;
+   m_Xform->put_RotationAngle(dir);
+
+   xfrmPoint.Release();
+   m_Xform->XformEx(pPoint, xfrmOldToNew, &xfrmPoint);
+   Float64 x2; // X ordinate in coordinate system 2
    xfrmPoint->get_X(&x2);
-//   x2 = IsZero(x2) ? 0.00 : x2;
 
-#if defined _DEBUG
-   // X coordinate of CC should be zero
-   cc.Release();
-   get_CC(&cc);
-   cc2.Release();
-   cc.QueryInterface(&cc2);
-   m_Xform->Xform(&cc2.p,xfrmOldToNew);
-   cc->get_X(&ccx);
-   ATLASSERT( IsZero(ccx) );
-#endif // _DEBUG
-   
-   if ( x1 < 0 && x2 < 0 )
-   {
-      // Point projects onto both the foward and back tangents
-      // Find the point nearest the curve. If equal distance, take the
-      // point on the foward tangent
+   if (IsZero(m_Ls1) && x1 < 0)
+      result |= BACK_TANGENT;
 
-      // Create a line object along the back tangent bearing. Locate the point on
-      // that line that is nearest the input point
-      CComPtr<IPoint2d> pbt, pi;
-      get_PBT(&pbt);
-      get_PI(&pi);
+   if(IsZero(m_Ls2) && 0 < x2)
+      result |= FORWARD_TANGENT;
 
-      CComPtr<ILine2d> line;
-      line.CoCreateInstance(CLSID_Line2d);
-      line->ThroughPoints(pbt,pi);
+   if (0 <= x1 && x2 <= 0)
+      result |= CIRCULAR_CURVE;
 
-      CComPtr<IPoint2d> p1;
-      m_GeomUtil->PointOnLineNearest(line,point,&p1);
-
-      // Create a line object along the foward tangent bearing. Locate the point on
-      // that line that is nearest the input point
-      CComPtr<IPoint2d> pft;
-      get_PFT(&pft);
-
-      line->ThroughPoints(pi,pft);
-
-      CComPtr<IPoint2d> p2;
-      m_GeomUtil->PointOnLineNearest(line,point,&p2);
-
-      Float64 d1, d2;
-      m_GeomUtil->Distance(point,p1,&d1);
-      m_GeomUtil->Distance(point,p2,&d2);
-
-      if ( d1 < d2 )
-      {
-         // Point projects onto the back tangent bearing (it is before the curve)
-         p1.QueryInterface(pNewPoint);
-         ATLASSERT( *pNewPoint != nullptr );
-
-         CComPtr<IPoint2d> ts;
-         get_TS(&ts);
-         m_GeomUtil->Distance(ts,p1,pDistFromStart);
-         (*pDistFromStart) *= -1;
-
-         ATLASSERT( (*pDistFromStart) <= 0 ); // must be negative because it is before the curve
-      }
-      else
-      {
-         // Point projects onto the forward tangent bearing (it is after the curve)
-         p2.QueryInterface(pNewPoint);
-         ATLASSERT( *pNewPoint != nullptr );
-
-         Float64 Lt; // Total length of curve
-         get_TotalLength(&Lt);
-
-         CComPtr<IPoint2d> st;
-         get_ST(&st);
-         m_GeomUtil->Distance(st,p2,pDistFromStart);
-         (*pDistFromStart) += Lt;
-
-         ATLASSERT( (*pDistFromStart) >= 0 && (*pDistFromStart) >= Lt );
-      }
-   }
-   else if ( x1 < 0 )
-   {
-      // Point is before the curve
-      // Create a line object along the back tangent bearing. Locate the point on
-      // that line that is nearest the input point
-      CComPtr<IPoint2d> pbt, pi;
-      get_PBT(&pbt);
-      get_PI(&pi);
-
-      CComPtr<ILine2d> line;
-      line.CoCreateInstance(CLSID_Line2d);
-      line->ThroughPoints(pbt,pi);
-
-      CComPtr<IPoint2d> p;
-      m_GeomUtil->PointOnLineNearest(line,point,&p);
-      p.QueryInterface(pNewPoint);
-      ATLASSERT( *pNewPoint != nullptr );
-
-      CComPtr<IPoint2d> ts;
-      get_TS(&ts);
-      m_GeomUtil->Distance(ts,*pNewPoint,pDistFromStart);
-      (*pDistFromStart) *= -1;
-
-      ATLASSERT( (*pDistFromStart) <= 0 ); // must be negative because it is before the curve
-   }
-   else if ( 0 <= x1 && 0 <= x2 )
-   {
-      // Point is within bounds of curve
-      // Need to determine if it is within the bounds of the entry spiral,
-      // the circular curve, or the exit spiral
-
-      // Create coordinate system at SC towards PCI
-      CComPtr<IPoint2d> sc;
-      get_SC(&sc);
-
-      brg.Release();
-      get_CurveBkTangentBrg(&brg);
-      brg->get_Value(&dir);
-      m_Xform->putref_NewOrigin(sc);
-      m_Xform->put_RotationAngle(dir);
-      
-      CComPtr<IPoint2d> point1;
-      m_Xform->XformEx(point,xfrmOldToNew,&point1);
-      point1->get_X(&x1);
-//      x1 = IsZero(x1) ? 0.00 : x1;
-
-      // Create coordinate system at CS toward PCI
-      CComPtr<IPoint2d> cs;
-      get_CS(&cs);
-      brg.Release();
-      get_CurveFwdTangentBrg(&brg);
-      brg->get_Value(&dir);
-      m_Xform->putref_NewOrigin(cs);
-      m_Xform->put_RotationAngle(dir + M_PI);
-      
-      CComPtr<IPoint2d> point2;
-      m_Xform->XformEx(point,xfrmOldToNew,&point2);
-      point2->get_X(&x2);
-//      x2 = IsZero(x2) ? 0.00 : x2;
-
-      if ( x1 < 0 && x2 < 0 )
-      {
-         // Point projects onto both the entry and exit spirals. Find the point
-         // that is nearest.
-         CComPtr<IPoint2d> prjPoint1, prjPoint2;
-         Float64 dist1, dist2;
-         ProjectPointOnEntrySpiral(point,&dist1,&prjPoint1);
-         ProjectPointOnExitSpiral(point,&dist2,&prjPoint2);
-
-         Float64 d1, d2;
-         m_GeomUtil->Distance(point,prjPoint1,&d1);
-         m_GeomUtil->Distance(point,prjPoint2,&d2);
-
-
-         if ( d1 < d2 )
-         {
-            // Point is projected onto the entry spiral
-            (*pNewPoint) = prjPoint1;
-            (*pNewPoint)->AddRef();
-
-            (*pDistFromStart) = dist1;
-         }
-         else
-         {
-            // Point is projected onto the exit spiral
-            (*pNewPoint) = prjPoint2;
-            (*pNewPoint)->AddRef();
-
-            (*pDistFromStart) = dist2;
-         }
-      }
-      else if ( x1 < 0 )
-      {
-         // Entry spiral
-         ProjectPointOnEntrySpiral(point,pDistFromStart,pNewPoint);
-         ATLASSERT(pNewPoint != nullptr);
-      }
-      else if ( 0 <= x1 && 0 <= x2 )
-      {
-         // Circular curve
-
-         // Create a line from CCC through the projected point
-         // Intersect this line with the circular arc, finding the
-         // point that is nearest SC.
-         CComPtr<IPoint2d> ccc;
-         get_CCC(&ccc);
-
-         CComPtr<ILine2d> line;
-         line.CoCreateInstance(CLSID_Line2d);
-         line->ThroughPoints(ccc,point);
-
-         CComPtr<ICircle> circle;
-         circle.CoCreateInstance(CLSID_Circle);
-         circle->putref_Center(ccc);
-         circle->put_Radius(m_Radius);
-
-         CComPtr<IPoint2d> sc;
-         get_SC(&sc);
-
-         cogoUtil::LineCircleIntersect(line,circle,point,m_PointFactory,pNewPoint);
-         ATLASSERT(pNewPoint != nullptr);
-
-         CurveDirectionType dir;
-         get_Direction(&dir);
-         Float64 angle;
-         if ( dir == cdRight )
-            m_GeomUtil->Angle(*pNewPoint,ccc,sc,&angle);
-         else
-            m_GeomUtil->Angle(sc,ccc,*pNewPoint,&angle);
-
-#if defined _DEBUG
-         // The subtended angle must be less than or equal to the
-         // circular curve angle (or the point isn't on the circular
-         // part of the curve)
-         CComPtr<IAngle> cca;
-         Float64 delta;
-         get_CircularCurveAngle(&cca);
-         cca->get_Value(&delta);
-         ATLASSERT( IsLE(angle,delta) );
-#endif // _DEBUG
-
-         ATLASSERT(angle >= 0);
-         Float64 dist = m_Radius * angle;
-         Float64 Ls;
-         get_SpiralLength(spEntry,&Ls);
-         *pDistFromStart = Ls + dist;
-      }
-      else if ( x2 < 0 )
-      {
-         // Exit spiral
-         ProjectPointOnExitSpiral(point,pDistFromStart,pNewPoint);
-         ATLASSERT(pNewPoint != nullptr);
-      }
-      else
-      {
-         ATLASSERT(false); // Shouldn't get here
-      }
-
-   }
-   else if ( x2 < 0 )
-   {
-      // Point is after the curve
-      // Create a line object along the foward tangent bearing. Locate the point on
-      // that line that is nearest the input point
-      CComPtr<IPoint2d> pft, pi;
-      get_PFT(&pft);
-      get_PI(&pi);
-
-      CComPtr<ILine2d> line;
-      line.CoCreateInstance(CLSID_Line2d);
-      line->ThroughPoints(pi,pft);
-
-      CComPtr<IPoint2d> p;
-      m_GeomUtil->PointOnLineNearest(line,point,&p);
-      p.QueryInterface(pNewPoint);
-      ATLASSERT( *pNewPoint != nullptr );
-
-      Float64 Lt;
-      get_TotalLength(&Lt);
-      CComPtr<IPoint2d> st;
-      get_ST(&st);
-      m_GeomUtil->Distance(st,*pNewPoint,pDistFromStart);
-      (*pDistFromStart) += Lt;
-
-      ATLASSERT( (*pDistFromStart) >= 0 && (*pDistFromStart) >= Lt );
-   }
+   return result;
 }
 
 void CHorzCurve::GetBkTangentLine(ILine2d** line)
@@ -2572,8 +2635,10 @@ void CHorzCurve::GetCurveCenterNormalIntersectPoints(IPoint2d** pPOBT,IPoint2d**
 
 bool CHorzCurve::IsPointOnCurve(IPoint2d* pPoint)
 {
+   CComPtr<IPoint2d> prjPoint;
    Float64 dist;
-   HRESULT hr = DistanceFromStart(pPoint,&dist);
+   VARIANT_BOOL vbOnProjection;
+   HRESULT hr = ProjectPoint(pPoint, &prjPoint, &dist, &vbOnProjection);
    ATLASSERT( SUCCEEDED(hr) );
 
    CComPtr<IPoint2d> pntOnCurve;

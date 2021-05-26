@@ -59,7 +59,7 @@ STDMETHODIMP CAlignmentOffsetLayoutLineFactory::Create(IBridgeGeometry* pBridge,
       Float64 offset = m_Offset + idx*m_OffsetInc;
 
       CComPtr<IPath> path;
-      HRESULT hr = alignment->CreateParallelPath(-offset,&path); // neg because offsets are positive to the right for the COGO engine
+      HRESULT hr = alignment->CreateOffsetPath(-offset,&path); // neg because offsets are positive to the right for the COGO engine
       if ( FAILED(hr) )
          return hr;
 

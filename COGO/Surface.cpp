@@ -688,7 +688,7 @@ void CSurface::ValidateRidgeLines()
          ATLASSERT(::IsEqual(offset1,offset2)); // we can't handle a surface that is getting wider yet
 
          CComPtr<IPath> path;
-         alignment->CreateParallelPath(offset1,&path);
+         alignment->CreateOffsetPath(offset1,&path);
          vRidgeLines.push_back(path);
       }
 

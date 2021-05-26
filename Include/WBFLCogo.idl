@@ -723,11 +723,14 @@ library WBFLCogo
       /// Locates a point on the curve at a specified distance from TS. If the specified distance is less than zero or if it is greater than the curve length, the point will be located on the back or forward tangent, respectively.
 	   [helpstring("method PointOnCurve"), helpcontext(IDH_HorzCurve_PointOnCurve)] HRESULT PointOnCurve([in] Float64 distance,[out,retval]IPoint2d* *pVal);
 
-      /// Projects a point onto the curve such that a line perpendicular to the curve passes through the point. If the projected point falls before the TS point, or after the ST point, then it will be a point on the back or forward tangent, respectively.
-      [helpstring("method ProjectPoint"), helpcontext(IDH_HorzCurve_ProjectPoint)] HRESULT ProjectPoint([in] IPoint2d* point,[out,retval] IPoint2d* *pNewPoint);
-
-      /// Computes the distance along the curve from TS to the intersection of a point projected onto the curve and the curve.
-      [helpstring("method DistanceFromStart"), helpcontext(IDH_HorzCurve_DistanceFromStart)] HRESULT DistanceFromStart([in] IPoint2d* point,[out,retval] Float64* dist);
+      /// Projects a point onto the curve such that a line perpendicular to the curve passes through the point. 
+      /// If the projected point falls before the TS point, or after the ST point, then it will be a point on the back or forward tangent, respectively.
+      [helpstring("method ProjectPoint"), helpcontext(IDH_HorzCurve_ProjectPoint)] HRESULT ProjectPoint(
+         [in] IPoint2d* point,  ///< Point to be projected
+         [out] IPoint2d* *pNewPoint,  ///< Projection point
+         [out] Float64* distFromStart, ///< Distance from start of curve to projection point
+         [out] VARIANT_BOOL* pvbOnProjection ///< Set to VARIANT_TRUE if the point projects onto the back or forward tangent
+      );
 
       /// Determines the points where a line intersects the curve. The point objects are Nothing if there aren't intersection points.
 	  [helpstring("method Intersect"), helpcontext(IDH_HorzCurve_Intersect)] HRESULT Intersect(
@@ -1885,16 +1888,13 @@ library WBFLCogo
      /// Determines the coordinate of a point on the spline at a specified distance from the start point.
 	  [helpstring("method PointOnSpline")] HRESULT PointOnSpline([in] Float64 distance,[out,retval]IPoint2d* *pVal);
 
-     /// Projects a point onto the spline such that a line perpendicular to the spline passes through the point
-      [helpstring("method ProjectPoint")] HRESULT ProjectPoint(
+     /// Projects a point onto the spline such that a line perpendicular to the spline passes through the point.
+     /// If the projected point falls before the start or end point, then it will be a point on the back or forward tangent, respectively.
+     [helpstring("method ProjectPoint")] HRESULT ProjectPoint(
          [in] IPoint2d* point, ///< The point to be projected onto the spline
-         [out,retval] IPoint2d* *pNewPoint ///< The point on the spline
-      );
-
-      /// Computes the distance along the spline from the start point to the intersection of a point projected onto the spline and the spline
-      [helpstring("method DistanceFromStart")] HRESULT DistanceFromStart(
-         [in] IPoint2d* point, ///< The point to be projected onto the spline
-         [out,retval] Float64* dist ///< The distance from the start of the spline
+         [out] IPoint2d* *pNewPoint, ///< The point on the spline
+         [out] Float64* pDistFromStart, ///< Distance from the start of the spline to the projection point.
+         [out] VARIANT_BOOL* pvbOnProject ///< Set to VARIANT_TRUE if the point projects onto the back or forward tangent
       );
 
       /// Computes the distance along the spline from the start point to a specified point
@@ -3341,11 +3341,14 @@ library WBFLCogo
       );
 
       /// Projects a point onto the path
+      /// If the projected point falls before the start, or after the end of the path, it will be a point on the back or forward tangent, respectively.
       /// \image html /Path/ProjectPoint.jpg
       [helpstring("method ProjectPoint"), helpcontext(IDH_Path_ProjectPoint)] 
       HRESULT ProjectPoint(
          [in] IPoint2d* point, ///< The point to project onto the path
-         [out,retval] IPoint2d* *newPoint ///< The point on the path
+         [out] IPoint2d* *newPoint, ///< The point on the path
+         [out] Float64* pDistFromStart, ///< Distance from start of path to projection point
+         [out] VARIANT_BOOL* pvbOnProjection ///< Set to VARIANT_TRUE if the point projects onto the back or forward tangent
       );
 
       /// Computes the distance along the path and the offset from the path for a given point
@@ -3376,12 +3379,12 @@ library WBFLCogo
       /// Returns the length of the path
       [propget,helpstring("property Length")] HRESULT Length([out,retval]Float64* pLength);
 
-      /// Creates a new Path that is parallel to the this Path.
+      /// Creates a new Path that is offset from this Path.
       ///
       /// HorizCurve objects are degraded to points if the offset is on the same side of the Path as the center point and the offset exceeds the radius.
       /// CubicSpline objects are degraded to a point if lines normal to the spline at the control points intersect on the same side of the Path as the offset and the offset distance exceeds the distance from the spline to the intersection point.
-		[helpstring("method CreateParallelPath"),helpcontext(IDH_Path_CreateParallelPath)] 
-      HRESULT CreateParallelPath(
+		[helpstring("method CreateOffsetPath"),helpcontext(IDH_Path_CreateOffsetPath)] 
+      HRESULT CreateOffsetPath(
          [in] Float64 offset, ///< Offset to the new path. The new path is to the right of the original path for positive values.
          [out,retval]IPath** path /// The new path.
       );
@@ -3674,11 +3677,14 @@ library WBFLCogo
       );
 
       /// Projects a point onto the aligment
+      /// If the projected point falls before the start or after the end of the alignment, then it will be a point on the back or forward tangent, respectively.
       /// \image html /Alignment/ProjectPoint.jpg
       [helpstring("method ProjectPoint"), helpcontext(IDH_Alignment_ProjectPoint)]
       HRESULT ProjectPoint(
          [in] IPoint2d* point, ///< The point to project onto the alignment
-         [out, retval] IPoint2d* *newPoint ///< The point on the alignment
+         [out] IPoint2d* *newPoint, ///< The point on the alignment
+         [out] Float64* distFromStart, ///< Distance from start of alignment to projection point
+         [out] VARIANT_BOOL* pvbOnProjection ///< Set to VARIANT_TRUE if the point projects onto the back or forward tangent
       );
 
       /// Computes the station and offset from the alignment for a given point
@@ -3709,12 +3715,12 @@ library WBFLCogo
       /// Returns the length of the alignment
       [propget,helpstring("property Length")] HRESULT Length([out,retval]Float64* pLength);
       
-      /// Creates a new Alignment that is parallel to the this Alignment.
+      /// Creates a new Alignment that is offset from this Alignment.
       ///
       /// HorizCurve objects are degraded to points if the offset is on the same side of the Alignment as the center point and the offset exceeds the radius.
       /// CubicSpline objects are degraded to a point if lines normal to the spline at the control points intersect on the same side of the Alignment as the offset and the offset distance exceeds the distance from the spline to the intersection point.
-      [helpstring("method CreateParallelAlignment"),helpcontext(IDH_Alignment_CreateParallelAlignment)] 
-      HRESULT CreateParallelAlignment(
+      [helpstring("method CreateOffsetAlignment"),helpcontext(IDH_Alignment_CreateOffsetAlignment)] 
+      HRESULT CreateOffsetAlignment(
          [in] Float64 offset, ///< Offset to the new alignment. The new alignment is to the right of the original alignmen tfor positive values.
          [out,retval]IAlignment** alignment ///< The new Alignment object
       );
@@ -3737,8 +3743,8 @@ library WBFLCogo
       ///
       /// HorizCurve objects are degraded to points if the offset is on the same side of the Path as the center point and the offset exceeds the radius.
       /// CubicSpline objects are degraded to a point if lines normal to the spline at the control points intersect on the same side of the Path as the offset and the offset distance exceeds the distance from the spline to the intersection point.
-      [helpstring("method CreateParallelPath"),helpcontext(IDH_Alignment_CreateParallelPath)] 
-      HRESULT CreateParallelPath(
+      [helpstring("method CreateOffsetPath"),helpcontext(IDH_Alignment_CreateOffsetPath)] 
+      HRESULT CreateOffsetPath(
          [in] Float64 offset,///< Offset to the new path. The new path is to the right of the original path for positive values.
          [out,retval]IPath** path /// The new path.
       );
