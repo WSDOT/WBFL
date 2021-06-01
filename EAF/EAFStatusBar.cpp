@@ -402,7 +402,7 @@ void CEAFStatusBar::OnLButtonDblClk(UINT nFlags, CPoint point)
       CEAFApp* pApp = EAFGetApp();
       if (pApp)
       {
-         pApp->EnableAutoSave(!pApp->IsAutoSaveEnabled(), pApp->GetAutoSaveInterval());
+         ::SendMessage(pApp->GetMainWnd()->GetSafeHwnd(), WM_COMMAND, EAFID_OPTIONS_AUTOSAVE, 0);
       }
    }
 

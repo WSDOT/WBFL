@@ -885,6 +885,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AutoSaveDlg.cpp" />
     <ClCompile Include="ChangeUnits.cpp" />
     <ClCompile Include="ConfigureReportsDlg.cpp" />
     <ClCompile Include="CustomReportsPage.cpp" />
@@ -1049,6 +1050,7 @@
     <ClInclude Include="..\Include\EAF\EAFViewController.h" />
     <ClInclude Include="..\Include\EAF\EAFViewControllerFactory.h" />
     <ClInclude Include="..\Include\EAF\StatusCenter.h" />
+    <ClInclude Include="AutoSaveDlg.h" />
     <ClInclude Include="BackDoor.h" />
     <ClInclude Include="ChangeUnits.h" />
     <ClInclude Include="ConfigureReportsDlg.h" />

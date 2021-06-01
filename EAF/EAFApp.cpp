@@ -44,6 +44,7 @@
 #include <EAF\EAFAboutDlg.h>
 #include "UnitsDlg.h"
 #include "TipDlg.h"
+#include "AutoSaveDlg.h"
 
 #include "custsite.h"
 
@@ -706,11 +707,12 @@ void CEAFApp::OnUpdateUSUnits(CCmdUI* pCmdUI)
 
 void CEAFApp::OnAutoSave()
 {
-   CString strMsg;
-   strMsg.Format(_T("%s AutoSave mode?"), m_bAutoSaveEnabled ? _T("Disable") : _T("Enable"));
-   if (AfxMessageBox(strMsg, MB_YESNO) == IDYES)
+   CAutoSaveDlg dlg;
+   dlg.bEnabled = m_bAutoSaveEnabled;
+   dlg.interval = GetAutoSaveInterval() / 60000; // value is in milliseconds - we want it in minutes
+   if(dlg.DoModal() == IDOK)
    {
-      m_bAutoSaveEnabled = !m_bAutoSaveEnabled;
+      EnableAutoSave(dlg.bEnabled,dlg.interval*60000); // need to set the value in milliseconds
    }
 }
 

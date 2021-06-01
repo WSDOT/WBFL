@@ -28,6 +28,8 @@
 #define IDI_LARGEICON                   150
 #define IDI_SMALLICON                   151
 #define IDI_HELP                        152
+#define IDD_DIALOG1                     152
+#define IDD_AUTOSAVE                    152
 #define IDB_LPFRAME                     154
 #define IDD_TOOLBARS                    159
 #define IDC_EDIT                        200
@@ -74,10 +76,13 @@
 #define IDC_NAME_STATIC                 1031
 #define IDC_EDIT1                       1032
 #define IDC_REPORT_NAME_EDIT            1032
+#define IDC_INTERVAL                    1032
 #define IDC_INFORMATION                 1034
 #define IDC_WARNING                     1035
 #define IDC_ERROR                       1036
 #define IDREMOVE                        1037
+#define IDC_ENABLE                      1038
+#define IDC_INTERVAL_LABEL              1039
 #define IDC_PLUGIN_LIST                 1108
 #define IDD_UIHINTS                     1135
 #define IDC_TOOLTIPS                    1156
@@ -95,6 +100,7 @@
 #define IDS_WORKING                     1746
 #define IDC_APPLIST                     3333
 #define IDC_REPORT_WEB_BROWSER          5001
+#define IDC_INTERVAL_UNITS              5001
 #define IDD_SELECTREPORT                12925
 #define IDD_FAVORITE_REPORT_DLG         12926
 #define IDC_FRAME                       13012
@@ -112,9 +118,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        152
+#define _APS_NEXT_RESOURCE_VALUE        154
 #define _APS_NEXT_COMMAND_VALUE         32778
-#define _APS_NEXT_CONTROL_VALUE         1038
+#define _APS_NEXT_CONTROL_VALUE         1040
 #define _APS_NEXT_SYMED_VALUE           1015
 #endif
 #endif
