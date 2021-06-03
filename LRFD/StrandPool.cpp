@@ -194,10 +194,10 @@ lrfdStrandPool::lrfdStrandPool()
 
       //NEW_US_STRAND("Grade 300 Low Relaxation 3/8\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D953, 300., 0.90*300., 28500., 0.375, 0.085);
       //NEW_US_STRAND("Grade 300 Low Relaxation 7/16\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1111, 300., 0.90*300., 28500., 0.4375, 0.115);
-      NEW_US_STRAND("Grade 300 Low Relaxation 1/2\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1270, 300., 0.90*300., 28500., 0.50, 0.153);
-      NEW_US_STRAND("Grade 300 Low Relaxation 1/2\" Special (0.52in)", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1320, 300., 0.90*300., 28500., 0.52, 0.167);
+      //NEW_US_STRAND("Grade 300 Low Relaxation 1/2\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1270, 300., 0.90*300., 28500., 0.50, 0.153);
+      //NEW_US_STRAND("Grade 300 Low Relaxation 1/2\" Special (0.52in)", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1320, 300., 0.90*300., 28500., 0.52, 0.167);
       NEW_US_STRAND("Grade 300 Low Relaxation 0.6\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1524, 300., 0.90*300., 28500., 0.60, 0.217);
-      NEW_US_STRAND("Grade 300 Low Relaxation 0.62\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1575, 300., 0.90*300., 28500., 0.62, 0.240);
+      //NEW_US_STRAND("Grade 300 Low Relaxation 0.62\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1575, 300., 0.90*300., 28500., 0.62, 0.240);
       //NEW_US_STRAND("Grade 300 Low Relaxation 0.7\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1778, 300., 0.90*300., 28500., 0.70, 0.294);
 
       NEW_SI_STRAND( "Grade 1725 Stress Relieved 6.35mm",  matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D635,  1725., 0.85*1725., 197000., 6.35,   23.22 );
@@ -238,10 +238,10 @@ lrfdStrandPool::lrfdStrandPool()
 
       //NEW_SI_STRAND("Grade 2070 Low Relaxation 9.53mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D953, 2070., 0.90*2070., 197000., 9.53, 54.84);
       //NEW_SI_STRAND("Grade 2070 Low Relaxation 11.11mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1111, 2070., 0.90*2070., 197000., 11.11, 74.19);
-      NEW_SI_STRAND("Grade 2070 Low Relaxation 12.70mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1270, 2070., 0.90*2070., 197000., 12.70, 98.71);
-      NEW_SI_STRAND("Grade 2070 Low Relaxation 1/2\" Special (13.20mm)", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1320, 2070., 0.90*2070., 197000., 13.20, 107.70);
+      //NEW_SI_STRAND("Grade 2070 Low Relaxation 12.70mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1270, 2070., 0.90*2070., 197000., 12.70, 98.71);
+      //NEW_SI_STRAND("Grade 2070 Low Relaxation 1/2\" Special (13.20mm)", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1320, 2070., 0.90*2070., 197000., 13.20, 107.70);
       NEW_SI_STRAND("Grade 2070 Low Relaxation 15.24mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1524, 2070., 0.90*2070., 197000., 15.24, 140.00);
-      NEW_SI_STRAND("Grade 2070 Low Relaxation 15.75mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1575, 2070., 0.85*2070., 197000., 15.75, 154.84);
+      //NEW_SI_STRAND("Grade 2070 Low Relaxation 15.75mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1575, 2070., 0.85*2070., 197000., 15.75, 154.84);
       //NEW_SI_STRAND("Grade 2070 Low Relaxation 17.78mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1778, 2070., 0.90*2070., 197000., 17.78, 189.68);
    }
 }
