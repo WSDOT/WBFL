@@ -73,7 +73,11 @@ std::_tstring CReportSpecification::GetReportName() const
 
 std::_tstring CReportSpecification::GetReportTitle() const
 {
-   return GetReportName() + _T(" for ") + GetReportContextString();
+   auto context = GetReportContextString();
+   if(context.empty())
+      return GetReportName();
+   else
+      return GetReportName() + _T(" for ") + context;
 }
 
 std::_tstring CReportSpecification::GetReportContextString() const
