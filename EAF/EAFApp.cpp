@@ -83,6 +83,7 @@ m_strWindowPlacementFormat("%u,%u,%d,%d,%d,%d,%d,%d,%d,%d")
    m_bUseOnlineDocumentation = TRUE;
    m_bCommandLineMode = FALSE;
 
+   m_bUseHelpWindow = TRUE;
    m_pHelpWindowThread = nullptr;
 
    m_bAutoSaveEnabled = TRUE;
@@ -240,7 +241,10 @@ BOOL CEAFApp::InitInstance()
       }
 
       // Start the help window thread
-      m_pHelpWindowThread = (CEAFHelpWindowThread*)AfxBeginThread(RUNTIME_CLASS(CEAFHelpWindowThread));
+      if (m_bUseHelpWindow)
+      {
+         m_pHelpWindowThread = (CEAFHelpWindowThread*)AfxBeginThread(RUNTIME_CLASS(CEAFHelpWindowThread));
+      }
 
       if (IsFirstRun() && !cmdInfo.m_bCommandLineMode)
       {
@@ -428,8 +432,14 @@ BOOL CEAFApp::UseOnlineDocumentation() const
 
 void CEAFApp::HelpWindowNavigate(LPCTSTR lpszURL)
 {
-   ATLASSERT(m_pHelpWindowThread != nullptr);
-   m_pHelpWindowThread->Navigate(lpszURL);
+   if (m_pHelpWindowThread)
+   {
+      m_pHelpWindowThread->Navigate(lpszURL);
+   }
+   else
+   {
+      ::ShellExecute(m_pMainWnd->GetSafeHwnd(), _T("open"),lpszURL, 0, 0, SW_SHOWDEFAULT);
+   }
 }
 
 void CEAFApp::ShowUsageMessage()

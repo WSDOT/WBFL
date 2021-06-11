@@ -245,6 +245,8 @@ protected:
    virtual CString GetDocumentationMapFile();
    virtual void LoadDocumentationMap();
 
+   BOOL m_bUseHelpWindow; // went TRUE, the default EAF Help Browser Window is used to display help content, otherwise the help documents are opened with the default shell action.
+
 private:
    CEAFDocTemplateRegistrar* m_pDocTemplateRegistrar;
 
