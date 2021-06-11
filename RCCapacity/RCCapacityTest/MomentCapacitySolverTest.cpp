@@ -151,7 +151,7 @@ void CMomentCapacitySolverTest::Test()
    CComPtr<IMomentCapacitySolution> solution;
    Float64 Fz,Mx,My;
    CComPtr<IPlane3d> strainPlane;
-   TRY_TEST( SUCCEEDED(solver->Solve(0.00,0.00,-0.003,smFixedCompressiveStrain,&solution)), true);
+   TRY_TEST( SUCCEEDED(solver->Solve(0.00,0.00,-0.003,0.0,smFixedCompressionStrain,&solution)), true); // compression top, use angle = 0
 
    solution->get_Fz(&Fz);
    solution->get_Mx(&Mx);
@@ -167,7 +167,7 @@ void CMomentCapacitySolverTest::Test()
    TRY_TEST(IsEqual(ec,-0.003),true);
 
    solution.Release();
-   TRY_TEST( SUCCEEDED(solver->Solve(0.00,M_PI,-0.003,smFixedCompressiveStrain,&solution)), true);
+   TRY_TEST( SUCCEEDED(solver->Solve(0.00,M_PI,-0.003, 0.0,smFixedCompressionStrain,&solution)), true); //compression bottom, use angle = M_PI
 
    solution->get_Fz(&Fz);
    solution->get_Mx(&Mx);
@@ -190,7 +190,7 @@ void CMomentCapacitySolverTest::Test()
    section->put_ElongationLength(3, Le);
    section->put_ElongationLength(4, Le);
    solution.Release();
-   TRY_TEST(SUCCEEDED(solver->Solve(0.00, M_PI, -0.003, smFixedCompressiveStrain, &solution)), true);
+   TRY_TEST(SUCCEEDED(solver->Solve(0.00, M_PI, -0.003, 0.0, smFixedCompressionStrain, &solution)), true); // compression bottom, use angle = M_PI
 
    solution->get_Fz(&Fz);
    solution->get_Mx(&Mx);

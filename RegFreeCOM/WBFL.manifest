@@ -1575,7 +1575,10 @@
       <comClass clsid="{4FAFD823-B4C9-4F88-8D46-74F84682893C}"
                 tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
                 description="UnconfinedConcrete Class"></comClass>
-      <comClass clsid="{75C05DC6-48F7-476B-B67A-ABD58180F9FB}"
+     <comClass clsid="{FCB202FA-D5B0-4ADB-9B1B-4A4B9A7128AA}"
+          tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
+          description="UHPConcrete Class"></comClass>
+     <comClass clsid="{75C05DC6-48F7-476B-B67A-ABD58180F9FB}"
                 tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
                 description="PSPowerFormula Class"></comClass>
      <comClass clsid="{F3C1A16E-C1F0-4d60-93F2-4017A0472B7C}"

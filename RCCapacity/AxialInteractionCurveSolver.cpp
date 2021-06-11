@@ -147,7 +147,7 @@ STDMETHODIMP CAxialInteractionCurveSolver::Solve(Float64 na,long nFzSteps,IInter
 
       CComPtr<IMomentCapacitySolution> mc;
 
-      m_Solver->Solve(fz,na,eo,smFixedCompressiveStrain,&mc);
+      m_Solver->Solve(fz,na,eo,0.0,smFixedCompressionStrain,&mc);
 
       (*solution)->AddSolutionPoint(mc);
    }

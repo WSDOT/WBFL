@@ -62,7 +62,7 @@ HRESULT CPSPowerFormula::FinalConstruct()
 
    SetupUnits();
 
-   m_MinStrain = -0.035;
+   m_MinStrain = -10; // doesn't facture in compression
    m_MaxStrain =  0.035;
 
    return S_OK;

@@ -833,6 +833,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="UHPCMomentCapacityTest.cpp" />
+    <ClCompile Include="UHPConcreteTest.cpp" />
     <ClCompile Include="UnconfinedConcreteTest.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -850,6 +852,8 @@
     <ClInclude Include="RoundColumnTest.h" />
     <ClInclude Include="SolverTest.h" />
     <ClInclude Include="StdAfx.h" />
+    <ClInclude Include="UHPCMomentCapacityTest.h" />
+    <ClInclude Include="UHPConcreteTest.h" />
     <ClInclude Include="UnconfinedConcreteTest.h" />
   </ItemGroup>
   <ItemGroup>

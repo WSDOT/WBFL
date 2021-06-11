@@ -73,8 +73,10 @@ library WBFLRCCapacity
    typedef [public,helpstring("enum SolutionMethod"),helpcontext(IDH_SolutionMethod),uuid(464B228A-D182-4823-BE7E-B8A20A22D055)] 
    enum 
    {
-		smFixedCurvature = 0, ///< A fixed curvature is specified and elevation of the neutral axis is varied to acheive equilibrium
-		smFixedCompressiveStrain = 1 ///< A fixed compressive strain is specified and curvature is varied to acheive equilibrium
+		smFixedCurvature = 0, ///< A fixed curvature is specified.
+		smFixedCompressionStrain = 1, ///< A fixed strain at the extreme compression fiber is specified.
+      smFixedTensionStrain = 2, ///< A fixed strain at the extreme tension fiber is specified.
+      smFixedStrain = 3 ///< A fixed strain and location where the strain occurs is specified.
    } SolutionMethod;
 
    /// Constant indicating prestress reinforcement grade in the PowerForumula stress-strain model
@@ -941,6 +943,54 @@ library WBFLRCCapacity
 		[propput, helpcontext(IDH_IUnconfinedConcrete_fc),helpstring("property fc")] HRESULT fc([in] Float64 newVal);
 	};
 
+   /// Interface defining properties of Ultra High Performance Concrete (UHPC)
+   ///
+   /// Mechanical Behavior and Design Properties of Ultra-High Perfornace Concrete
+   /// El-Helou, Rafic, Haber, Z., Graybeal, B.
+   /// (Unpublished as of 2020)
+   /// /todo - Update refrence after publication
+   [
+      object,
+      uuid(850587AD-4547-40F8-8870-CF8D47F4068E),
+      oleautomation,
+      helpstring("IUHPConcrete Interface"),
+      pointer_default(unique)
+   ]
+   interface IUHPConcrete : IUnknown
+   {
+      /// Specified 28 day concrete strength.
+      [propget, helpstring("property fc")] HRESULT fc([out, retval] Float64 *pVal);
+      [propput, helpstring("property fc")] HRESULT fc([in] Float64 newVal);
+
+      /// Compressive strain limit
+      [propget, helpstring("property ecu")] HRESULT ecu([out, retval] Float64 *pVal);
+      [propput, helpstring("property ecu")] HRESULT ecu([in] Float64 newVal);
+
+      /// Modulus of elasticity correction factor
+      [propget, helpstring("property K1")] HRESULT K1([out, retval] Float64 *pVal);
+      [propput, helpstring("property K1")] HRESULT K1([in] Float64 newVal);
+
+      /// Reduction factor to account for the non-linearity of the compressive stress-strain response
+      [propget, helpstring("property alpha")] HRESULT alpha([out, retval] Float64 *pVal);
+      [propput, helpstring("property alpha")] HRESULT alpha([in] Float64 newVal);
+
+      /// Cracking stress
+      [propget, helpstring("property ftcr")] HRESULT ftcr([out, retval] Float64 *pVal);
+      [propput, helpstring("property ftcr")] HRESULT ftcr([in] Float64 newVal);
+
+      /// Crack localization stress
+      [propget, helpstring("property ftloc")] HRESULT ftloc([out, retval] Float64 *pVal);
+      [propput, helpstring("property ftloc")] HRESULT ftloc([in] Float64 newVal);
+
+      /// Crack localization strain
+      [propget, helpstring("property etloc")] HRESULT etloc([out, retval] Float64 *pVal);
+      [propput, helpstring("property etloc")] HRESULT etloc([in] Float64 newVal);
+
+      /// Reduction factor to account for the variability in tensile stress parameters.
+      [propget, helpstring("property gamma")] HRESULT gamma([out, retval] Float64 *pVal);
+      [propput, helpstring("property gamma")] HRESULT gamma([in] Float64 newVal);
+   };
+
    /// Interface defining an elastic-plastic mild steel reinforcement model.
    ///
    /// \f[ f(\epsilon_s) = \begin{cases}
@@ -1417,11 +1467,11 @@ library WBFLRCCapacity
 		[propput,helpcontext(IDH_IMomentCurvatureSolver_InitialCurvatureStep),helpstring("property InitialCurvatureStep")] HRESULT InitialCurvatureStep([in]Float64 k);
 		[propget,helpcontext(IDH_IMomentCurvatureSolver_InitialCurvatureStep),helpstring("property InitialCurvatureStep")] HRESULT InitialCurvatureStep([out,retval]Float64* k);
 
-      /// Performs the moment curvature analysis
+      /// Performs the moment curvature analysis.
 		[helpcontext(IDH_IMomentCurvatureSolver_Solve),helpstring("method Solve")] 
       HRESULT Solve(
          [in] Float64 Fz, ///< Externally applied axial force.
-         [in] Float64 angle, ///< Direction of the neutral axis (radians), measured counter-clockwise from the X axis
+         [in] Float64 angle, ///< Direction of the neutral axis (radians), measured counter-clockwise from the X axis.
          [out,retval]IMomentCurvatureSolution** solution ///< The solution of the moment curvature analysis
       );
 	};
@@ -1523,12 +1573,22 @@ library WBFLRCCapacity
 		[propget,helpcontext(IDH_IMomentCapacitySolver_MaxIterations),helpstring("property MaxIterations")] HRESULT MaxIterations([out,retval]long* maxIter);
 
       /// Performs the moment capacity analysis
-		[helpcontext(IDH_IMomentCapacitySolver_Solve),helpstring("method Solve")] 
+      ///
+      /// The location of the neutral axis is varied until the resultant internal force is equal to the external force Fz.
+      /// Compression is assumed to be on the left side of the neutral axis. For a typical bending about the X-axis, use a neutral axis angle of 0.0 for positive moment (compression top - tension bottom)
+      /// and PI (180deg) for negative moment (tension top - compression bottom).
+      ///
+      /// "Positive moments" (compression top - tension bottom) have negative values. The resultant compression force (C) is negative and the resultant tension force (T) is positive. 
+      /// At equilibrium T + C = 0 so C = -T. Assume the point (0,0) is at the bottom of the girder. The location of the resultant tension and compression forces are at Yc and Yt, respectively. 
+      /// Yc > 0 and Yt > 0 and Yc > Yt. Therefore, Mn = C*Yc + T*Yt = -T*Yc + T*Yt = T*(Yt - Yc). 
+      /// With Yc > Yt, Yt - Yc < 0 and T > 0. The product of a positive number and a negative number is negative. "Negative moments" have positive values.
+      [helpcontext(IDH_IMomentCapacitySolver_Solve),helpstring("method Solve")]
       HRESULT Solve(
          [in]Float64 Fz, ///< Externally applied axial force.
          [in] Float64 angle, ///< Direction of the neutral axis (radians), measured counter-clockwise from the X axis
-         [in] Float64 k_or_ec, ///< Curvature of the section if solutionMethod is smFixedCurvature, other strain at the extreme compression fiber when solutionMethod is smFixedCompressiveStrain
-         [in]SolutionMethod solutionMethod, ///< Indicates the method of solution.
+         [in] Float64 k_or_ec, ///< Curvature of the section if solutionMethod is smFixedCurvature, other strain at the extreme compression fiber when solutionMethod is smFixedCompressionStrain
+         [in] Float64 strainLocation, ///< Distance from a line parallel to the neutral axis passing through (0,0) to the location where strain is specified by k_or_ec. Distance is greater than zero whoen the strain specified by k_or_ec is on the left side of this line. This parameter is only used if solutionMethod is smFixedStrain.
+         [in] SolutionMethod solutionMethod, ///< Indicates the method of solution.
          [out,retval] IMomentCapacitySolution** solution ///< The solution of the moment capacity analysis
       );
 
@@ -2195,6 +2255,22 @@ library WBFLRCCapacity
       interface ISupportUnitServer;
       interface IStructuredStorage2;
 	};
+
+   /// Material model for UHP concrete.
+   ///
+   /// Implements the IUHPConcrete, IStressStrain, and ISupportUnitServer interfaces
+   [
+      uuid(FCB202FA-D5B0-4ADB-9B1B-4A4B9A7128AA),
+      helpcontext(IDH_IUnconfinedConcrete),
+      helpstring("UHPConcrete Class")
+   ]
+   coclass UHPConcrete
+   {
+      [default] interface IUHPConcrete;
+      interface IStressStrain;
+      interface ISupportUnitServer;
+      interface IStructuredStorage2;
+   };
 
    /// Material model for steel pretensioning strands based on the PowerFormula.
    ///

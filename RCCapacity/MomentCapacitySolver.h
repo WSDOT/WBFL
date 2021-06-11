@@ -80,10 +80,10 @@ private:
    Float64 m_FzCompressionLimit, m_MxCompressionLimit, m_MyCompressionLimit, m_eoCompressionLimit;
    HRESULT UpdateLimits();
 
-   void UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Float64 eo,SolutionMethod solutionMethod);
-   void UpdateFurthestPoint(Float64 angle);
-   HRESULT GetNeutralAxisParameterRange(Float64 k_or_ec,SolutionMethod solutionMethod,Float64 angle,Float64 Fz,Float64* peo_lower,Float64* peo_upper,Float64* pFz_lower,Float64* pFz_upper);
-   HRESULT AnalyzeSection(Float64 Fz,Float64 angle,Float64 k_or_ec,SolutionMethod solutionMethod,IMomentCapacitySolution** solution);
+   void UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Float64 strainLocation,SolutionMethod solutionMethod,Float64 eo);
+   void UpdateFurthestPoint(Float64 angle, SolutionMethod solutionMethod);
+   HRESULT GetNeutralAxisParameterRange(Float64 k_or_ec,Float64 strainLocation,SolutionMethod solutionMethod,Float64 angle,Float64 Fz,Float64* peo_lower,Float64* peo_upper,Float64* pFz_lower,Float64* pFz_upper);
+   HRESULT AnalyzeSection(Float64 Fz,Float64 angle,Float64 k_or_ec,SolutionMethod solutionMethod, Float64 strainLocation,IMomentCapacitySolution** solution);
    HRESULT ZeroCapacitySolution(IMomentCapacitySolution** solution);
 
 // ISupportsErrorInfo
@@ -102,7 +102,7 @@ public:
 	STDMETHOD(get_SliceGrowthFactor)(/*[out,retval]*/Float64* sliceGrowthFactor) override;
    STDMETHOD(putref_Section)(/*[in]*/IGeneralSection* pSection) override;
 	STDMETHOD(get_Section)(/*[out,retval]*/IGeneralSection** pSection) override;
-   STDMETHOD(Solve)(/*[in]*/Float64 Fz,/*[in]*/ Float64 angle,/*[in]*/ Float64 k_or_ec,/*[in]*/SolutionMethod solutionMethod,/*[out,retval]*/IMomentCapacitySolution** solution) override;
+   STDMETHOD(Solve)(/*[in]*/Float64 Fz,/*[in]*/ Float64 angle,/*[in]*/ Float64 k_or_ec,/*[in]*/Float64 strainLocation,/*[in]*/SolutionMethod solutionMethod,/*[out,retval]*/IMomentCapacitySolution** solution) override;
    STDMETHOD(CompressionLimit)(/*[out]*/Float64* Fz,/*[out]*/Float64* Mx,/*[out]*/Float64* My,/*[out]*/Float64* eo) override;
    STDMETHOD(TensionLimit)(/*[out]*/Float64* Fz,/*[out]*/Float64* Mx,/*[out]*/Float64* My,/*[out]*/Float64* eo) override;
    STDMETHOD(get_PlasticCentroid)(/*[out,retval]*/ IPoint2d** pcg) override;

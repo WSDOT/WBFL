@@ -983,6 +983,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="StrainHardenedRebarModel.cpp" />
+    <ClCompile Include="UHPConcrete.cpp" />
     <ClCompile Include="UnconfinedConcrete.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -1027,6 +1028,7 @@
     <None Include="RoundColumn.rgs" />
     <None Include="SectionBuilder.rgs" />
     <None Include="StrainHardenedRebarModel.rgs" />
+    <None Include="UHPConcrete.rgs" />
     <None Include="UnconfinedConcrete.rgs" />
   </ItemGroup>
   <ItemGroup>
@@ -1090,6 +1092,7 @@
     <ClInclude Include="SectionBuilder.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="StrainHardenedRebarModel.h" />
+    <ClInclude Include="UHPConcrete.h" />
     <ClInclude Include="UnconfinedConcrete.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -70,6 +70,7 @@
 #define IDR_LRFDPRESTRESSFORMULA       140
 #define IDR_LRFDSOLUTION               141
 #define IDR_LRFDSOLUTIONEX             142
+#define IDR_UHPCONCRETE                143
 
 #define IDS_E_INITCONCRETE              512
 #define IDS_E_SOLUTIONNOTFOUND          513

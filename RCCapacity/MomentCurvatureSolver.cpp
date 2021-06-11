@@ -182,7 +182,7 @@ HRESULT CMomentCurvatureSolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 
    HRESULT hr;
 
    CComPtr<IMomentCapacitySolution> capacity_solution;
-   hr = m_CapacitySolver->Solve(Fz,angle,k,smFixedCurvature,&capacity_solution);
+   hr = m_CapacitySolver->Solve(Fz,angle,k,0.0,smFixedCurvature,&capacity_solution);
    if ( FAILED(hr) )
       return hr;
 

@@ -650,6 +650,7 @@ HRESULT CGeneralSectionSolver::AnalyzeSlice(CGeneralSectionSolver::SLICEINFO& sl
 
       Float64 minStrain, maxStrain;
       slice.FgMaterial->StrainLimits(&minStrain,&maxStrain);
+      ATLASSERT(minStrain < maxStrain);
       if (!InRange(minStrain, strain, maxStrain))
       {
          bExceededStrainLimits = true;

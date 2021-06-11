@@ -134,7 +134,7 @@ STDMETHODIMP CMomentInteractionCurveSolver::Solve(Float64 Fz,Float64 startNA,Flo
    {
       CComPtr<IMomentCapacitySolution> mc;
 
-      m_Solver->Solve(Fz,angle,eo,smFixedCompressiveStrain,&mc);
+      m_Solver->Solve(Fz,angle,eo,0.0,smFixedCompressionStrain,&mc);
 
       (*solution)->AddSolutionPoint(mc);
 
