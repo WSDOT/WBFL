@@ -264,10 +264,12 @@ void apply_stream_manipulators( std::_tostream* pOS, sysNumericFormatTool::Forma
    }
 
    // Width
-   pOS->width( width );
+   if(0 < width)
+      pOS->width( width );
 
    // Precision
-   pOS->precision( precision );
+   if(0 < precision)
+      pOS->precision( precision );
 }
 //======================== ACCESS     =======================================
 //======================== INQUERY    =======================================
