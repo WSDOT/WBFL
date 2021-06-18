@@ -115,6 +115,9 @@
     <ClCompile Include="WideDropDownComboBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CheckListBoxEx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\MfcTools\AutoLib.h">

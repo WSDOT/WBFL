@@ -857,6 +857,7 @@
     <ClCompile Include="CacheCheckBox.cpp" />
     <ClCompile Include="CacheComboBox.cpp" />
     <ClCompile Include="CacheEdit.cpp" />
+    <ClCompile Include="CheckListBoxEx.cpp" />
     <ClCompile Include="ChoiceDlg.cpp" />
     <ClCompile Include="ChoiceListDlg.cpp" />
     <ClCompile Include="choosedirdlg.cpp" />

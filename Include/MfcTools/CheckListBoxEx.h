@@ -25,24 +25,47 @@
 
 #include <MfcTools\MfcToolsExp.h>
 
-// List box to avoid overlap of checkbox items
-class CCheckListBoxEx : public CCheckListBox
+////////////////////////////////////////////
+//  Specialized CheckListBox control that:
+//     1) Avoids overlap of checkbox items
+//     2) Provides tooltips for list items
+////////////////////////////////////////////
+class MFCTOOLSCLASS CCheckListBoxEx : public CCheckListBox
 {
+// Construction
 public:
-    virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
-    {
-        // set item height once:    
-        if ((GetStyle() & (LBS_OWNERDRAWFIXED | LBS_HASSTRINGS)) ==
-                          (LBS_OWNERDRAWFIXED | LBS_HASSTRINGS)  && m_cyText == 0)
-        {
-            SetItemHeight(0, CalcMinimumItemHeight() + 2);
-        }
+	CCheckListBoxEx();
 
-        // add some space between box and string: 
-        lpDrawItemStruct->rcItem.left += 2;
+// Attributes
+public:
+	virtual INT_PTR OnToolHitTest(CPoint point, TOOLINFO* pTI) const override;
+	UINT ItemFromPoint2(CPoint pt, BOOL& bOutside) const;
+//	void PreSubclassWindow() ;
+	
+	BOOL OnToolTipText( UINT id, NMHDR * pNMHDR, LRESULT * pResult );
+	// Operations
+public:
 
-        CCheckListBox::DrawItem(lpDrawItemStruct);
-    }
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CCheckListBoxEx)
+	protected:
+	virtual void PreSubclassWindow();
+   virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
+	//}}AFX_VIRTUAL
+
+// Implementation
+public:
+	virtual ~CCheckListBoxEx();
+
+	// Generated message map functions
+protected:
+	//{{AFX_MSG(CCheckListBoxEx)
+		// NOTE - the ClassWizard will add and remove member functions here.
+	//}}AFX_MSG
+
+	DECLARE_MESSAGE_MAP()
+
 };
 
 
