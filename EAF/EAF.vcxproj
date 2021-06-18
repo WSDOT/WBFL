@@ -1011,6 +1011,7 @@
     <ClInclude Include="..\Include\EAF\EAFDocTemplate.h" />
     <ClInclude Include="..\Include\EAF\EAFDocTemplateRegistrar.h" />
     <ClInclude Include="..\Include\EAF\EAFDocument.h" />
+    <ClInclude Include="..\Include\EAF\EAFPluginDocumentationIntegration.h" />
     <ClInclude Include="..\Include\EAF\EAFDocumentPlugin.h" />
     <ClInclude Include="..\Include\EAF\EAFExp.h" />
     <ClInclude Include="..\Include\EAF\EAFGraphBuilderBase.h" />
