@@ -363,7 +363,7 @@ lrfdWsdotLldfTypeAEK& lrfdWsdotLldfTypeAEK::operator= (const lrfdWsdotLldfTypeAE
 bool lrfdWsdotLldfTypeAEK::SlabCantileverTest() const
 {
    Float64 slab_cantilever = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
-   return IsGT(0.4*m_Savg,slab_cantilever,0.001);
+   return IsGT(m_SlabCantileverThreshold*m_Savg,slab_cantilever,0.001);
 }
 
 lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetMomentDF_Ext_1_Strength() const
@@ -595,7 +595,7 @@ bool lrfdWsdotLldfTypeAEK::TestMe(dbgLog& rlog)
    lrfdWsdotLldfTypeAEK df(1,S,spacings,de,de,
                            Nl,wLane,L,ts,n,I,A,eg,
                            overhang,overhang,
-                           false,0.0,0.0,false,false,0.5);
+                           false,0.0,0.0,false,false,0.4);
 
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.480, 0.001) );
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.649, 0.001) );
