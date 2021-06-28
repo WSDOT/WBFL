@@ -493,9 +493,9 @@ bool lrfdStrandPool::TestMe(dbgLog& rlog)
    Int16 nSize;
    Int16 cStrands = 0;
 
-   for ( cGrade = 0; cGrade < 2; cGrade++ )
+   for ( cGrade = 0; cGrade < 3; cGrade++ )
    {
-      grade = (cGrade == 0 ? matPsStrand::Gr1725 : matPsStrand::Gr1860 );
+      grade = (cGrade == 0 ? matPsStrand::Gr1725 : cGrade == 1 ? matPsStrand::Gr1860 : matPsStrand::Gr2070);
       nSize = (cGrade == 0 ? 0 : 2);
 
       for ( cType = 0; cType < 2; cType++ )
@@ -510,13 +510,18 @@ bool lrfdStrandPool::TestMe(dbgLog& rlog)
                rlog << _T("Grade = ") << grade << _T(" Type = ") << type << _T(" Coating = ") << coating << _T(" Size = ") << size[cSize] << endl;
                hashval = hash( grade, type, coating, size[cSize] );
                pStrand = pPool->GetStrand( hashval );
-               TRY_TESTME( pStrand != 0 );
-               TRY_TESTME( pStrand->GetGrade() == grade );
-               TRY_TESTME( pStrand->GetType()  == type );
-               TRY_TESTME( pStrand->GetCoating()  == coating);
-               TRY_TESTME( pStrand->GetSize()  == size[cSize] );
-
-               cStrands++;
+               if (pStrand)
+               {
+                  TRY_TESTME(pStrand->GetGrade() == grade);
+                  TRY_TESTME(pStrand->GetType() == type);
+                  TRY_TESTME(pStrand->GetCoating() == coating);
+                  TRY_TESTME(pStrand->GetSize() == size[cSize]);
+                  cStrands++;
+               }
+               else
+               {
+                  rlog << _T("Strand not defined in strand pool") << endl;
+               }
             }
          }
       }
