@@ -1471,6 +1471,9 @@ STDMETHODIMP CHorzCurve::ProjectPoint( IPoint2d* point, IPoint2d* *pNewPoint, Fl
       get_TS(&ts);
       m_GeomUtil->Distance(ts, bkTangentPoint, &bkTangentDistance);
       bkTangentDistance *= -1;
+
+      // deal with the case when the point is exactly at the start of the curve
+      bkTangentDistance = IsZero(bkTangentDistance, 1e-9) ? 0.0 : bkTangentDistance;
    }
 
    CComPtr<IPoint2d> entrySpiralPoint;
@@ -1571,7 +1574,12 @@ STDMETHODIMP CHorzCurve::ProjectPoint( IPoint2d* point, IPoint2d* *pNewPoint, Fl
 
       Float64 Lt; // Total length of curve
       get_TotalLength(&Lt);
-      fwdTangentDistance += Lt;
+
+      // deal with case when point is exactly at the end of the curve
+      if (IsZero(fwdTangentDistance))
+         fwdTangentDistance = Lt;
+      else
+         fwdTangentDistance += Lt;
    }
 
    // find the projected point that is closest to the curve
