@@ -153,8 +153,8 @@ void CTestModel::Test()
    TRY_TEST(ptmpsp1->put_ID(21), S_OK );
 
 
-   CComPtr<ISegment> pseg1, pseg2;
-   CComPtr<ISegment> ;
+   CComPtr<ISegment> pseg1;
+   CComPtr<ISegment> pseg2;
    TRY_TEST( pseg1.CoCreateInstance( CLSID_Segment ) , S_OK );
    TRY_TEST( pseg2.CoCreateInstance( CLSID_Segment ) , S_OK );
 

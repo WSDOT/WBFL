@@ -168,13 +168,13 @@ public:
    virtual void Dump(dbgDumpContext& os) const
    {
       os << m_UnitTag.c_str() << endl;
-      os << '\t' << "Dimensionality : (" 
-         << MassDim()        << ","
-         << LengthDim()      << ","
-         << TimeDim()        << ","
-         << TemperatureDim() << ","
-         << AngleDim()
-         << ")" << endl;
+      os << '\t' << "Dimensionality : (";
+      os << MassDim() << ",";
+      os << LengthDim() << ",";
+      os << TimeDim() << ",";
+      os << TemperatureDim() << ",";
+      os << AngleDim();
+      os << ")" << endl;
       os << '\t' << "Pre Term    : " << m_PreTerm << endl;
       os << '\t' << "Conv Factor : " << m_ConvFactor << endl;
       os << '\t' << "Post Term   : " << m_PostTerm << endl;

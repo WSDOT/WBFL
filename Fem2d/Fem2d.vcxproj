@@ -47,11 +47,12 @@
     <ProjectGuid>{9D5FEEEE-54D4-4719-A60D-D68E0943E2C0}</ProjectGuid>
     <RootNamespace>Fem2d</RootNamespace>
     <Keyword>AtlProj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
@@ -59,7 +60,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
@@ -74,14 +75,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
@@ -89,7 +90,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
@@ -97,7 +98,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
@@ -112,14 +113,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
@@ -239,12 +240,14 @@
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -254,7 +257,7 @@ date/T &gt; $(IntDir)mt2.dep
       <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);$(VCToolInstallDir)atlmfc\src\mfc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_AFXDLL;xENABLE_LOGGING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -304,12 +307,14 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -320,7 +325,7 @@ date/T &gt; $(IntDir)mt2.dep
       <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);$(VCToolInstallDir)atlmfc\src\mfc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_AFXDLL;xENABLE_LOGGING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -369,12 +374,14 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -385,7 +392,7 @@ date/T &gt; $(IntDir)mt2.dep
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);$(VCToolInstallDir)atlmfc\src\mfc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;xENABLE_LOGGING;_AFXDLL;WBFL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -434,12 +441,14 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -451,7 +460,7 @@ date/T &gt; $(IntDir)mt2.dep
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);$(VCToolInstallDir)atlmfc\src\mfc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;xENABLE_LOGGING;_AFXDLL;WBFL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -501,12 +510,14 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -521,7 +532,7 @@ date/T &gt; $(IntDir)mt2.dep
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);$(VCToolInstallDir)atlmfc\src\mfc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_AFXDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -573,12 +584,14 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -594,7 +607,7 @@ date/T &gt; $(IntDir)mt2.dep
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);$(VCToolInstallDir)atlmfc\src\mfc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_AFXDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -646,12 +659,14 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -663,7 +678,7 @@ date/T &gt; $(IntDir)mt2.dep
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);$(VCToolInstallDir)atlmfc\src\mfc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;DUMP_KMATRIX;_AFXDLL;WBFL_DEBUG;VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -712,12 +727,14 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -730,7 +747,7 @@ date/T &gt; $(IntDir)mt2.dep
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);$(VCToolInstallDir)atlmfc\src\mfc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;DUMP_KMATRIX;_AFXDLL;WBFL_DEBUG;VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -778,12 +795,14 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -799,7 +818,7 @@ date/T &gt; $(IntDir)mt2.dep
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);$(VCToolInstallDir)atlmfc\src\mfc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_AFXDLL;VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -849,12 +868,14 @@ date/T &gt; $(IntDir)mt2.dep
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"
-date/T &gt; $(IntDir)mt2.dep
-</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -871,7 +892,7 @@ date/T &gt; $(IntDir)mt2.dep
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);$(VCToolInstallDir)atlmfc\src\mfc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_AFXDLL;VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>

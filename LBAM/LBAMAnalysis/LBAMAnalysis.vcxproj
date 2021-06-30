@@ -47,11 +47,12 @@
     <ProjectGuid>{5D1A78FF-7C85-4E8F-9FF8-DF84D328930F}</ProjectGuid>
     <RootNamespace>LBAMAnalysis</RootNamespace>
     <Keyword>AtlProj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
@@ -59,7 +60,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
@@ -74,14 +75,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
@@ -89,7 +90,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
@@ -97,7 +98,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VBA_Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
@@ -112,14 +113,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
@@ -239,10 +240,14 @@
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -302,10 +307,14 @@
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -365,10 +374,14 @@
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -428,10 +441,14 @@
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -493,10 +510,14 @@
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -563,10 +584,14 @@
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -634,10 +659,14 @@
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -698,10 +727,14 @@
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -762,10 +795,14 @@
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -831,10 +868,14 @@
       <Command />
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Embedding WBFL.manifest into $(TargetPath)</Message>
-      <Command>"$(FrameworkSDKDir)bin\$(PlatformShortName)\mt.exe" -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.manifest -outputresource:"$(TargetPath)%3b#2"</Command>
-      <Inputs>$(OutDir)WBFL.manifest;%(Inputs)</Inputs>
-      <Outputs>$(IntDir)mt2.dep;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>VBA_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>

@@ -70,7 +70,7 @@ public:
 
    // More efficient way to compare descriptions than casting results from GetDescription
    // returns -1 (less than), 0 (equal), 1 (greater than)
-   int CompareDescriptions(CEAFStatusItem* pOther)
+   int CompareDescriptions(CEAFStatusItem* pOther) const
    {
       return m_strDescription.Compare(pOther->m_strDescription);
    }
