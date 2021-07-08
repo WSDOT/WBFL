@@ -29,26 +29,12 @@
 #include "GenericShape.h"
 #include "Helper.h"
 #include <MathEx.h>
-#include <WBFLTools.h> // IMohrCircle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
-class CComMHPtr : public CComPtr<IMohrCircle>
-{
-public:
-   CComMHPtr()
-   {
-      CComPtr<IMohrCircle> ms;
-      ms.CoCreateInstance(CLSID_MohrCircle);
-      Attach(ms.Detach());
-   }
-};
-
-static CComMHPtr gs_MohrCircle;
 
 /////////////////////////////////////////////////////////////////////////////
 // CGenericShape
@@ -99,8 +85,6 @@ HRESULT CGenericShape::FinalConstruct()
    {
       return hr;
    }
-
-   ATLASSERT(gs_MohrCircle != nullptr);
 
    return S_OK;
 }
@@ -278,12 +262,23 @@ STDMETHODIMP CGenericShape::get_ShapeProperties(IShapeProperties* *props)
    CHECK_RETOBJ(props);
 
    // rotate properties into correct orientation.
-   gs_MohrCircle->put_Sii( m_Ixx );
-   gs_MohrCircle->put_Sjj( m_Iyy );
-   gs_MohrCircle->put_Sij( m_Ixy );
+   Float64 ixx(m_Ixx), ixy(m_Ixy), iyy(m_Iyy);
+   if (!IsZero(m_Rotation))
+   {
+       if (m_MohrCircle == nullptr)
+       {
+           HRESULT hr = m_MohrCircle.CoCreateInstance(CLSID_MohrCircle);
+           if (FAILED(hr))
+           {
+               return hr;
+           }
+       }
 
-   Float64 ixx, ixy, iyy;
-   gs_MohrCircle->ComputeState( m_Rotation, &ixx, &iyy, &ixy );
+       m_MohrCircle->put_Sii(m_Ixx);
+       m_MohrCircle->put_Sjj(m_Iyy);
+       m_MohrCircle->put_Sij(m_Ixy);
+       m_MohrCircle->ComputeState(m_Rotation, &ixx, &iyy, &ixy);
+   }
 
    HRESULT hr = CreateShapeProperties(props);
    if (FAILED(hr))
