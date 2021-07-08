@@ -471,14 +471,14 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
          }
          break;
 
-      case petHorzCurve:
+      case petCompoundCurve:
          {
-            CComQIPtr<IHorzCurve> horzCurve(pUnk);
+            CComQIPtr<ICompoundCurve> CompoundCurve(pUnk);
             CComPtr<IPoint2d> pntTS, pntSC, pntCS, pntST;
-            horzCurve->get_TS(&pntTS);
-            horzCurve->get_SC(&pntSC);
-            horzCurve->get_CS(&pntCS);
-            horzCurve->get_ST(&pntST);
+            CompoundCurve->get_TS(&pntTS);
+            CompoundCurve->get_SC(&pntSC);
+            CompoundCurve->get_CS(&pntCS);
+            CompoundCurve->get_ST(&pntST);
             points.push_back(pntTS);
             points.push_back(pntSC);
             points.push_back(pntCS);
@@ -599,14 +599,14 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
          }
          break;
 
-      case petHorzCurve:
+      case petCompoundCurve:
          {
-            CComQIPtr<IHorzCurve> horzCurve(pUnk);
+            CComQIPtr<ICompoundCurve> CompoundCurve(pUnk);
             CComPtr<IPoint2d> pntTS, pntSC, pntCS, pntST;
-            horzCurve->get_TS(&pntTS);
-            horzCurve->get_SC(&pntSC);
-            horzCurve->get_CS(&pntCS);
-            horzCurve->get_ST(&pntST);
+            CompoundCurve->get_TS(&pntTS);
+            CompoundCurve->get_SC(&pntSC);
+            CompoundCurve->get_CS(&pntCS);
+            CompoundCurve->get_ST(&pntST);
             points.push_back(pntTS);
             points.push_back(pntSC);
             points.push_back(pntCS);

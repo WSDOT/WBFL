@@ -23,37 +23,37 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// HorzCurveFactory.h : Declaration of the CHorzCurveFactory
+// CompoundCurveFactory.h : Declaration of the CCompoundCurveFactory
 
-#ifndef __HORZCURVEFACTORY_H_
-#define __HORZCURVEFACTORY_H_
+#ifndef __CompoundCurveFACTORY_H_
+#define __CompoundCurveFACTORY_H_
 #pragma once
 
 #include "resource.h"       // main symbols
 
 /////////////////////////////////////////////////////////////////////////////
-// CHorzCurveFactory
-class ATL_NO_VTABLE CHorzCurveFactory : 
+// CCompoundCurveFactory
+class ATL_NO_VTABLE CCompoundCurveFactory : 
 	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CHorzCurveFactory, &CLSID_HorzCurveFactory>,
+	public CComCoClass<CCompoundCurveFactory, &CLSID_CompoundCurveFactory>,
 	public ISupportErrorInfo,
-   public IObjectSafetyImpl<CHorzCurveFactory,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public IHorzCurveFactory,
+   public IObjectSafetyImpl<CCompoundCurveFactory,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
+   public ICompoundCurveFactory,
    public IStructuredStorage2,
-   public IPersistImpl<CHorzCurveFactory>
+   public IPersistImpl<CCompoundCurveFactory>
 {
 public:
-	CHorzCurveFactory()
+	CCompoundCurveFactory()
 	{
 	}
 
 
-DECLARE_REGISTRY_RESOURCEID(IDR_HORZCURVEFACTORY)
+DECLARE_REGISTRY_RESOURCEID(IDR_COMPOUNDCURVEFACTORY)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
-BEGIN_COM_MAP(CHorzCurveFactory)
-	COM_INTERFACE_ENTRY(IHorzCurveFactory)
+BEGIN_COM_MAP(CCompoundCurveFactory)
+	COM_INTERFACE_ENTRY(ICompoundCurveFactory)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
@@ -63,9 +63,9 @@ END_COM_MAP()
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
-// IHorzCurveFactory
+// ICompoundCurveFactory
 public:
-	STDMETHOD(CreateHorzCurve)(/*[out,retval]*/ IHorzCurve* *pVal) override;
+	STDMETHOD(CreateCompoundCurve)(/*[out,retval]*/ ICompoundCurve* *pVal) override;
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
 
 // IStructuredStorage2
@@ -74,4 +74,4 @@ public:
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
-#endif //__HORZCURVEFACTORY_H_
+#endif //__CompoundCurveFACTORY_H_

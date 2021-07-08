@@ -1,20 +1,20 @@
 HKCR
 {
-	WBFLCogo.HorzCurve.1 = s 'HorzCurve Class'
+	WBFLCogo.CompoundCurve.1 = s 'CompoundCurve Class'
 	{
 		CLSID = s '{61454EB9-8040-4B74-9429-B09D1FF1E0BB}'
 	}
-	WBFLCogo.HorzCurve = s 'HorzCurve Class'
+	WBFLCogo.CompoundCurve = s 'CompoundCurve Class'
 	{
 		CLSID = s '{61454EB9-8040-4B74-9429-B09D1FF1E0BB}'
-		CurVer = s 'WBFLCogo.HorzCurve.1'
+		CurVer = s 'WBFLCogo.CompoundCurve.1'
 	}
 	NoRemove CLSID
 	{
-		ForceRemove {61454EB9-8040-4B74-9429-B09D1FF1E0BB} = s 'HorzCurve Class'
+		ForceRemove {61454EB9-8040-4B74-9429-B09D1FF1E0BB} = s 'CompoundCurve Class'
 		{
-			ProgID = s 'WBFLCogo.HorzCurve.1'
-			VersionIndependentProgID = s 'WBFLCogo.HorzCurve'
+			ProgID = s 'WBFLCogo.CompoundCurve.1'
+			VersionIndependentProgID = s 'WBFLCogo.CompoundCurve'
 			ForceRemove 'Programmable'
 			InprocServer32 = s '%MODULE%'
 			{

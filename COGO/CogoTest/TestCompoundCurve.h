@@ -23,43 +23,57 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// TestHorzCurveCollection.h: interface for the CTestHorzCurveCollection class.
+// TestCompoundCurve.h: interface for the CTestCompoundCurve class.
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTHorzCurveCOLLECTION_H__B9E4933B_5E73_11D5_8C32_006097C68A9C__INCLUDED_)
-#define AFX_TESTHorzCurveCOLLECTION_H__B9E4933B_5E73_11D5_8C32_006097C68A9C__INCLUDED_
+#if !defined(AFX_TESTCompoundCurve_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)
+#define AFX_TESTCompoundCurve_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_
 
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 
-class ATL_NO_VTABLE CTestHorzCurveCollection :
+class ATL_NO_VTABLE CTestCompoundCurve :
    public CComObjectRootEx<CComSingleThreadModel>,
-   public IHorzCurveCollectionEvents
+   public ICompoundCurveEvents
 {
 public:
-	static void Test();
-	CTestHorzCurveCollection();
+   CTestCompoundCurve();
 
-   void InitEventTest(CogoObjectID expectedID) { m_expectedID = expectedID; m_bTestState = false; }
+   static void Test();
+
+   void InitEventTest() { m_bTestState = false; }
    bool PassedEventTest() { return m_bTestState; }
 
-BEGIN_COM_MAP(CTestHorzCurveCollection)
-   COM_INTERFACE_ENTRY(IHorzCurveCollectionEvents)
+BEGIN_COM_MAP(CTestCompoundCurve)
+   COM_INTERFACE_ENTRY(ICompoundCurveEvents)
 END_COM_MAP()
 
-// IHorzCurveCollectionEvents
+// ICompoundCurveEvents
 public:
-	STDMETHOD(OnHorzCurveChanged)(CogoObjectID key,IHorzCurve* vc);
-	STDMETHOD(OnHorzCurveAdded)(CogoObjectID key,IHorzCurve* vc);
-	STDMETHOD(OnHorzCurveRemoved)(CogoObjectID key);
-	STDMETHOD(OnHorzCurvesCleared)();
+	STDMETHOD(OnCompoundCurveChanged)(ICompoundCurve* pp);
 
 private:
    bool m_bTestState;
-   CogoObjectID m_expectedID;
    void Pass() { m_bTestState = true; }
+
+   static void Test1(); // Unsymmertical Spiral-Curve-Spiral
+   static void Test2(); // Spiral-Curve
+   static void Test3(); // Curve-Spiral
+   static void Test4(); // Circular curve
+   static void Test5(); // Left curve
+   static void Test6(); 
+   static void Test7(); // Error conditions
+   static void Test8a(); // Line Curve intersection
+   static void Test8b(); // Line Curve intersection
+   static void Test9a(); // Line Curve intersection
+   static void Test9b(); // Line Curve intersection
+   static void Test10a(); // Line Curve intersection
+   static void Test10b(); // Line Curve intersection
+   static void Test11a(); // Line Curve intersection
+   static void Test11b(); // Line Curve intersection
+   static void TestEvents();
 };
 
-#endif // !defined(AFX_TESTHorzCurveCOLLECTION_H__B9E4933B_5E73_11D5_8C32_006097C68A9C__INCLUDED_)
+#endif // !defined(AFX_TESTCompoundCurve_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)

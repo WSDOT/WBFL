@@ -21,65 +21,65 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// HorzCurveDisplayObjectImpl.h : Declaration of the CHorzCurveDisplayObjectImpl
+// CompoundCurveDisplayObjectImpl.h : Declaration of the CCompoundCurveDisplayObjectImpl
 
-#ifndef __HORZCURVEDISPLAYOBJECT_H_
-#define __HORZCURVEDISPLAYOBJECT_H_
+#ifndef __CompoundCurveDISPLAYOBJECT_H_
+#define __CompoundCurveDISPLAYOBJECT_H_
 #pragma once
 
 #include "resource.h"       // main symbols
-#include <DManipTools\HorzCurveDisplayObject.h>
+#include <DManipTools\CompoundCurveDisplayObject.h>
 #include <DManip\DisplayObjectDefaultImpl.h>
 #include <WBFLCogo.h>
 
 /////////////////////////////////////////////////////////////////////////////
-// CHorzCurveDisplayObjectImpl
-class ATL_NO_VTABLE CHorzCurveDisplayObjectImpl : 
+// CCompoundCurveDisplayObjectImpl
+class ATL_NO_VTABLE CCompoundCurveDisplayObjectImpl : 
 	public CComObjectRootEx<CComSingleThreadModel>,
-//   public CComRefCountTracer<CHorzCurveDisplayObjectImpl,CComObjectRootEx<CComSingleThreadModel> >,
-	public CComCoClass<CHorzCurveDisplayObjectImpl, &CLSID_HorzCurveDisplayObject>,
+//   public CComRefCountTracer<CCompoundCurveDisplayObjectImpl,CComObjectRootEx<CComSingleThreadModel> >,
+	public CComCoClass<CCompoundCurveDisplayObjectImpl, &CLSID_CompoundCurveDisplayObject>,
     public CDisplayObjectDefaultImpl,
 	public ISupportErrorInfo,
-	public IConnectionPointContainerImpl<CHorzCurveDisplayObjectImpl>,
-	public iHorzCurveDisplayObject
+	public IConnectionPointContainerImpl<CCompoundCurveDisplayObjectImpl>,
+	public iCompoundCurveDisplayObject
 {
 public:
-   CHorzCurveDisplayObjectImpl();
+   CCompoundCurveDisplayObjectImpl();
 
    HRESULT FinalConstruct();
    void FinalRelease();
 
-DECLARE_REGISTRY_RESOURCEID(IDR_HORZCURVEDISPLAYOBJECT)
+DECLARE_REGISTRY_RESOURCEID(IDR_CompoundCurveDISPLAYOBJECT)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 DECLARE_GET_CONTROLLING_UNKNOWN()
 
-BEGIN_COM_MAP(CHorzCurveDisplayObjectImpl)
-	COM_INTERFACE_ENTRY(iHorzCurveDisplayObject)
+BEGIN_COM_MAP(CCompoundCurveDisplayObjectImpl)
+	COM_INTERFACE_ENTRY(iCompoundCurveDisplayObject)
 	COM_INTERFACE_ENTRY(iDisplayObject)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 	COM_INTERFACE_ENTRY(IConnectionPointContainer)
 END_COM_MAP() 
 
-BEGIN_CONNECTION_POINT_MAP(CHorzCurveDisplayObjectImpl)
+BEGIN_CONNECTION_POINT_MAP(CCompoundCurveDisplayObjectImpl)
 END_CONNECTION_POINT_MAP()
 
    // clipboard format
    static UINT ms_cfFormat;
    LOGFONT  m_Font;
-   HorzCurveDrawMode m_DrawMode;
-   CComPtr<IHorzCurve> m_HorzCurve;
+   CompoundCurveDrawMode m_DrawMode;
+   CComPtr<ICompoundCurve> m_CompoundCurve;
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
-// iHorzCurveDisplayObject
+// iCompoundCurveDisplayObject
 public:
-   STDMETHOD_(void,putref_HorzCurve)(IHorzCurve* hc,BOOL bRedraw,BOOL bFireEvent) override;
-   STDMETHOD_(void,get_HorzCurve)(IHorzCurve* *hc) override;
+   STDMETHOD_(void,putref_CompoundCurve)(ICompoundCurve* hc,BOOL bRedraw,BOOL bFireEvent) override;
+   STDMETHOD_(void,get_CompoundCurve)(ICompoundCurve* *hc) override;
 
-   STDMETHOD_(void,put_DrawMode)(HorzCurveDrawMode mode) override;
-   STDMETHOD_(void,get_DrawMode)(HorzCurveDrawMode* mode) override;
+   STDMETHOD_(void,put_DrawMode)(CompoundCurveDrawMode mode) override;
+   STDMETHOD_(void,get_DrawMode)(CompoundCurveDrawMode* mode) override;
 
    // Font for labels. Note that font height is in 10th of points.
    // Note that Title is drawn in bold version of same font
@@ -161,4 +161,4 @@ public:
    STDMETHOD_(void, GetParent)(iDisplayObject** ppParent) override { Do_GetParent(ppParent); }
 };
 
-#endif //__HORZCURVEDISPLAYOBJECT_H_
+#endif //__CompoundCurveDISPLAYOBJECT_H_

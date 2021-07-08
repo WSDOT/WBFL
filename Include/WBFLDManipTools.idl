@@ -53,9 +53,9 @@ library WBFLDManipTools
 
    [
 		uuid(7DBA44AA-1542-4470-8719-21580A6822B5),
-		helpstring("HorzCurveDisplayObject Class")
+		helpstring("CompoundCurveDisplayObject Class")
 	]
-	coclass HorzCurveDisplayObject
+	coclass CompoundCurveDisplayObject
 	{
 		[default] interface IUnknown;
 	};

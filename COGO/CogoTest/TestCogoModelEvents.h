@@ -73,10 +73,10 @@ public:
 	STDMETHOD(OnVertCurveRemoved)(ICogoModel* cm,CogoObjectID key);
 	STDMETHOD(OnVertCurvesCleared)(ICogoModel* cm);
 
-	STDMETHOD(OnHorzCurveChanged)(ICogoModel* cm,CogoObjectID key,IHorzCurve* hc);
-	STDMETHOD(OnHorzCurveAdded)(ICogoModel* cm,CogoObjectID key,IHorzCurve* hc);
-	STDMETHOD(OnHorzCurveRemoved)(ICogoModel* cm,CogoObjectID key);
-	STDMETHOD(OnHorzCurvesCleared)(ICogoModel* cm);
+	STDMETHOD(OnCompoundCurveChanged)(ICogoModel* cm,CogoObjectID key,ICompoundCurve* hc);
+	STDMETHOD(OnCompoundCurveAdded)(ICogoModel* cm,CogoObjectID key,ICompoundCurve* hc);
+	STDMETHOD(OnCompoundCurveRemoved)(ICogoModel* cm,CogoObjectID key);
+	STDMETHOD(OnCompoundCurvesCleared)(ICogoModel* cm);
 
 	STDMETHOD(OnAlignmentChanged)(ICogoModel* cm,CogoObjectID key, IAlignment* alignment);
    STDMETHOD(OnAlignmentAdded)(ICogoModel* cm,CogoObjectID key,IAlignment* alignment);

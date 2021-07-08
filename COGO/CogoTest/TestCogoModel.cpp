@@ -71,9 +71,9 @@ void CTestCogoModel::Test()
    TRY_TEST(model->get_VertCurves(nullptr),E_POINTER);
    TRY_TEST(model->get_VertCurves(&vertCurves),S_OK);
 
-   CComPtr<IHorzCurveCollection> horzCurves;
-   TRY_TEST(model->get_HorzCurves(nullptr),E_POINTER);
-   TRY_TEST(model->get_HorzCurves(&horzCurves),S_OK);
+   CComPtr<ICompoundCurveCollection> CompoundCurves;
+   TRY_TEST(model->get_CompoundCurves(nullptr),E_POINTER);
+   TRY_TEST(model->get_CompoundCurves(&CompoundCurves),S_OK);
 
    CComPtr<IAlignmentCollection> alignments;
    TRY_TEST(model->get_Alignments(nullptr),E_POINTER);
@@ -96,7 +96,7 @@ void CTestCogoModel::Test()
    profilePoints->get_Item(2,&pvi);
    profilePoints->get_Item(3,&evc);
    vertCurves->Add(1,bvc,pvi,evc,400,400,nullptr);
-   horzCurves->Add(1,p1,p2,p3,50,1,1,nullptr);
+   CompoundCurves->Add(1,p1,p2,p3,50,1,1,nullptr);
    alignments->Add(1,nullptr);
 
    TRY_TEST(model->Clear(),S_OK);
@@ -109,7 +109,7 @@ void CTestCogoModel::Test()
    TRY_TEST(count,0);
    vertCurves->get_Count(&count);
    TRY_TEST(count,0);
-   horzCurves->get_Count(&count);
+   CompoundCurves->get_Count(&count);
    TRY_TEST(count,0);
    alignments->get_Count(&count);
    TRY_TEST(count,0);
@@ -144,12 +144,12 @@ void CTestCogoModel::Test()
    TRY_TEST(model->putref_VertCurveFactory(nullptr),E_INVALIDARG);
    TRY_TEST(model->putref_VertCurveFactory(vcFactory),S_OK);
 
-   CComPtr<IHorzCurveFactory> hcFactory;
-   TRY_TEST(model->get_HorzCurveFactory(nullptr),E_POINTER);
-   TRY_TEST(model->get_HorzCurveFactory(&hcFactory),S_OK);
+   CComPtr<ICompoundCurveFactory> hcFactory;
+   TRY_TEST(model->get_CompoundCurveFactory(nullptr),E_POINTER);
+   TRY_TEST(model->get_CompoundCurveFactory(&hcFactory),S_OK);
    TRY_TEST(hcFactory != nullptr, true);
-   TRY_TEST(model->putref_HorzCurveFactory(nullptr),E_INVALIDARG);
-   TRY_TEST(model->putref_HorzCurveFactory(hcFactory),S_OK);
+   TRY_TEST(model->putref_CompoundCurveFactory(nullptr),E_INVALIDARG);
+   TRY_TEST(model->putref_CompoundCurveFactory(hcFactory),S_OK);
 
    CComPtr<IAlignmentFactory> alignmentFactory;
    TRY_TEST(model->get_AlignmentFactory(nullptr),E_POINTER);

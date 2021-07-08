@@ -23,10 +23,10 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// HorzCurve.cpp : Implementation of CHorzCurve
+// CompoundCurve.cpp : Implementation of CCompoundCurve
 #include "stdafx.h"
 #include "WBFLCOGO.h"
-#include "HorzCurve.h"
+#include "CompoundCurve.h"
 #include "Angle.h"
 #include "Direction.h"
 #include <WBFLCogo\CogoHelpers.h>
@@ -40,9 +40,15 @@ static char THIS_FILE[] = __FILE__;
 
 static Float64 tolerance = 0.1;
 
+#define BACK_TANGENT    0x0001
+#define ENTRY_SPIRAL    0x0002
+#define CIRCULAR_CURVE  0x0004
+#define EXIT_SPIRAL     0x0008
+#define FORWARD_TANGENT 0x0010
+
 /////////////////////////////////////////////////////////////////////////////
-// CHorzCurve
-HRESULT CHorzCurve::FinalConstruct()
+// CCompoundCurve
+HRESULT CCompoundCurve::FinalConstruct()
 {
    CComObject<CPointFactory>* pPF;
    CComObject<CPointFactory>::CreateInstance(&pPF);
@@ -61,23 +67,20 @@ HRESULT CHorzCurve::FinalConstruct()
    Advise(m_PI,&m_dwPI);
    Advise(m_PFT,&m_dwPFT);
 
-   m_GeomUtil.CoCreateInstance(CLSID_GeomUtil);
-   m_Xform.CoCreateInstance(CLSID_CoordinateXform2d);
-
    m_bHoldEvents = false;
    m_bPendingEvents = false;
 
    return S_OK;
 }
 
-void CHorzCurve::FinalRelease()
+void CCompoundCurve::FinalRelease()
 {
    Unadvise(m_PBT, &m_dwPBT);
    Unadvise(m_PI, &m_dwPI);
    Unadvise(m_PFT, &m_dwPFT);
 }
 
-void CHorzCurve::Advise(IPoint2d* pnt,DWORD* pdwCookie)
+void CCompoundCurve::Advise(IPoint2d* pnt,DWORD* pdwCookie)
 {
    CComPtr<IConnectionPointContainer> pCPC;
    CComPtr<IConnectionPoint> pCP;
@@ -101,7 +104,7 @@ void CHorzCurve::Advise(IPoint2d* pnt,DWORD* pdwCookie)
    InternalRelease();
 }
 
-void CHorzCurve::Unadvise(IPoint2d* pnt,DWORD* pdwCookie)
+void CCompoundCurve::Unadvise(IPoint2d* pnt,DWORD* pdwCookie)
 {
    InternalAddRef();
 
@@ -125,11 +128,11 @@ void CHorzCurve::Unadvise(IPoint2d* pnt,DWORD* pdwCookie)
    pCP->Unadvise(*pdwCookie);
 }
 
-STDMETHODIMP CHorzCurve::InterfaceSupportsErrorInfo(REFIID riid)
+STDMETHODIMP CCompoundCurve::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_IHorzCurve,
+		&IID_ICompoundCurve,
 		&IID_IStructuredStorage2,
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
@@ -140,7 +143,7 @@ STDMETHODIMP CHorzCurve::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CHorzCurve::get_PBT(IPoint2d **pVal)
+STDMETHODIMP CCompoundCurve::get_PBT(IPoint2d **pVal)
 {
    CHECK_RETOBJ(pVal);
    (*pVal) = m_PBT;
@@ -148,7 +151,7 @@ STDMETHODIMP CHorzCurve::get_PBT(IPoint2d **pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::putref_PBT(IPoint2d *newVal)
+STDMETHODIMP CCompoundCurve::putref_PBT(IPoint2d *newVal)
 {
    CHECK_IN(newVal);
 
@@ -157,12 +160,12 @@ STDMETHODIMP CHorzCurve::putref_PBT(IPoint2d *newVal)
    OnPointChanged(m_PBT);
    Advise(m_PBT,&m_dwPBT);
 
-   Fire_OnHorzCurveChanged(this);
+   Fire_OnCompoundCurveChanged(this);
 
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_PI(IPoint2d **pVal)
+STDMETHODIMP CCompoundCurve::get_PI(IPoint2d **pVal)
 {
    CHECK_RETOBJ(pVal);
    (*pVal) = m_PI;
@@ -170,7 +173,7 @@ STDMETHODIMP CHorzCurve::get_PI(IPoint2d **pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::putref_PI(IPoint2d *newVal)
+STDMETHODIMP CCompoundCurve::putref_PI(IPoint2d *newVal)
 {
    CHECK_IN(newVal);
 
@@ -179,12 +182,12 @@ STDMETHODIMP CHorzCurve::putref_PI(IPoint2d *newVal)
    OnPointChanged(m_PI);
    Advise(m_PI,&m_dwPI);
 
-   Fire_OnHorzCurveChanged(this);
+   Fire_OnCompoundCurveChanged(this);
 
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_PFT(IPoint2d **pVal)
+STDMETHODIMP CCompoundCurve::get_PFT(IPoint2d **pVal)
 {
    CHECK_RETOBJ(pVal);
    (*pVal) = m_PFT;
@@ -192,7 +195,7 @@ STDMETHODIMP CHorzCurve::get_PFT(IPoint2d **pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::putref_PFT(IPoint2d *newVal)
+STDMETHODIMP CCompoundCurve::putref_PFT(IPoint2d *newVal)
 {
    CHECK_IN(newVal);
 
@@ -201,30 +204,30 @@ STDMETHODIMP CHorzCurve::putref_PFT(IPoint2d *newVal)
    OnPointChanged(m_PFT);
    Advise(m_PFT,&m_dwPFT);
 
-   Fire_OnHorzCurveChanged(this);
+   Fire_OnCompoundCurveChanged(this);
 
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_Radius(Float64 *pVal)
+STDMETHODIMP CCompoundCurve::get_Radius(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
    *pVal = m_Radius;
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::put_Radius(Float64 newVal)
+STDMETHODIMP CCompoundCurve::put_Radius(Float64 newVal)
 {
    if ( newVal <= 0 )
       return E_INVALIDARG;
 
    m_Radius = newVal;
-   Fire_OnHorzCurveChanged(this);
+   Fire_OnCompoundCurveChanged(this);
 
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_SpiralLength(SpiralType spType,Float64 *pVal)
+STDMETHODIMP CCompoundCurve::get_SpiralLength(SpiralType spType,Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -236,7 +239,7 @@ STDMETHODIMP CHorzCurve::get_SpiralLength(SpiralType spType,Float64 *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::put_SpiralLength(SpiralType spType,Float64 newVal)
+STDMETHODIMP CCompoundCurve::put_SpiralLength(SpiralType spType,Float64 newVal)
 {
    if ( newVal < 0 )
       return E_INVALIDARG;
@@ -246,12 +249,12 @@ STDMETHODIMP CHorzCurve::put_SpiralLength(SpiralType spType,Float64 newVal)
    else
       m_Ls2 = newVal;
 
-   Fire_OnHorzCurveChanged(this);
+   Fire_OnCompoundCurveChanged(this);
 
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_SpiralAngle(SpiralType spType,IAngle **pVal)
+STDMETHODIMP CCompoundCurve::get_SpiralAngle(SpiralType spType,IAngle **pVal)
 {
    CHECK_RETOBJ(pVal);
    CComObject<CAngle>* pAngle;
@@ -270,7 +273,7 @@ STDMETHODIMP CHorzCurve::get_SpiralAngle(SpiralType spType,IAngle **pVal)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_X(SpiralType spType,Float64* x)
+STDMETHODIMP CCompoundCurve::get_X(SpiralType spType,Float64* x)
 {
    CHECK_RETVAL(x);
 
@@ -287,7 +290,7 @@ STDMETHODIMP CHorzCurve::get_X(SpiralType spType,Float64* x)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_Y(SpiralType spType,Float64* y)
+STDMETHODIMP CCompoundCurve::get_Y(SpiralType spType,Float64* y)
 {
    CHECK_RETVAL(y);
 
@@ -304,7 +307,7 @@ STDMETHODIMP CHorzCurve::get_Y(SpiralType spType,Float64* y)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_Q(SpiralType spType,Float64* q)
+STDMETHODIMP CCompoundCurve::get_Q(SpiralType spType,Float64* q)
 {
    CHECK_RETVAL(q);
    
@@ -321,7 +324,7 @@ STDMETHODIMP CHorzCurve::get_Q(SpiralType spType,Float64* q)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_T(SpiralType spType,Float64* t)
+STDMETHODIMP CCompoundCurve::get_T(SpiralType spType,Float64* t)
 {
    CHECK_RETVAL(t);
 
@@ -338,7 +341,7 @@ STDMETHODIMP CHorzCurve::get_T(SpiralType spType,Float64* t)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_FwdTangentBrg(IDirection **pVal)
+STDMETHODIMP CCompoundCurve::get_FwdTangentBrg(IDirection **pVal)
 {
    CHECK_RETOBJ(pVal);
    Float64 dist;
@@ -346,7 +349,7 @@ STDMETHODIMP CHorzCurve::get_FwdTangentBrg(IDirection **pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_BkTangentBrg(IDirection **pVal)
+STDMETHODIMP CCompoundCurve::get_BkTangentBrg(IDirection **pVal)
 {
    CHECK_RETOBJ(pVal);
    Float64 dist;
@@ -354,7 +357,7 @@ STDMETHODIMP CHorzCurve::get_BkTangentBrg(IDirection **pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_CurveAngle(IAngle* *pVal)
+STDMETHODIMP CCompoundCurve::get_CurveAngle(IAngle* *pVal)
 {
    // Total curve angle
    CHECK_RETOBJ(pVal);
@@ -389,7 +392,7 @@ STDMETHODIMP CHorzCurve::get_CurveAngle(IAngle* *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_BkTangentLength(Float64* t)
+STDMETHODIMP CCompoundCurve::get_BkTangentLength(Float64* t)
 {
    CHECK_RETVAL(t);
 
@@ -455,7 +458,7 @@ STDMETHODIMP CHorzCurve::get_BkTangentLength(Float64* t)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_FwdTangentLength(Float64* t)
+STDMETHODIMP CCompoundCurve::get_FwdTangentLength(Float64* t)
 {
    CHECK_RETVAL(t);
 
@@ -521,7 +524,7 @@ STDMETHODIMP CHorzCurve::get_FwdTangentLength(Float64* t)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_TS(IPoint2d* *pVal)
+STDMETHODIMP CCompoundCurve::get_TS(IPoint2d* *pVal)
 {
    CHECK_RETOBJ(pVal);
 
@@ -549,7 +552,7 @@ STDMETHODIMP CHorzCurve::get_TS(IPoint2d* *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_ST(IPoint2d* *pVal)
+STDMETHODIMP CCompoundCurve::get_ST(IPoint2d* *pVal)
 {
    CHECK_RETOBJ(pVal);
 
@@ -576,7 +579,7 @@ STDMETHODIMP CHorzCurve::get_ST(IPoint2d* *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_SC(IPoint2d* *pVal)
+STDMETHODIMP CCompoundCurve::get_SC(IPoint2d* *pVal)
 {
    CHECK_RETOBJ(pVal);
 
@@ -589,7 +592,7 @@ STDMETHODIMP CHorzCurve::get_SC(IPoint2d* *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_CS(IPoint2d* *pVal)
+STDMETHODIMP CCompoundCurve::get_CS(IPoint2d* *pVal)
 {
    CHECK_RETOBJ(pVal);
 
@@ -602,7 +605,7 @@ STDMETHODIMP CHorzCurve::get_CS(IPoint2d* *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_Chord(Float64* chord)
+STDMETHODIMP CCompoundCurve::get_Chord(Float64* chord)
 {
    CHECK_RETVAL(chord);
    CComPtr<IPoint2d> sc, cs;
@@ -613,7 +616,7 @@ STDMETHODIMP CHorzCurve::get_Chord(Float64* chord)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_CircularCurveAngle(IAngle* *pVal)
+STDMETHODIMP CCompoundCurve::get_CircularCurveAngle(IAngle* *pVal)
 {
    CHECK_RETOBJ(pVal);
 
@@ -632,7 +635,7 @@ STDMETHODIMP CHorzCurve::get_CircularCurveAngle(IAngle* *pVal)
 
    Float64 angle = total - entry - exit;
    if ( angle < 0 )
-      return Error(IDS_E_SPIRALSOVERLAP,IID_IHorzCurve,COGO_E_SPIRALSOVERLAP);
+      return Error(IDS_E_SPIRALSOVERLAP,IID_ICompoundCurve,COGO_E_SPIRALSOVERLAP);
 
    CComObject<CAngle>* pAngle;
    CComObject<CAngle>::CreateInstance(&pAngle);
@@ -652,7 +655,7 @@ STDMETHODIMP CHorzCurve::get_CircularCurveAngle(IAngle* *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_Tangent(Float64* tangent)
+STDMETHODIMP CCompoundCurve::get_Tangent(Float64* tangent)
 {
    CHECK_RETVAL(tangent);
    CComPtr<IAngle> angle;
@@ -666,7 +669,7 @@ STDMETHODIMP CHorzCurve::get_Tangent(Float64* tangent)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_MidOrdinate(Float64* mo)
+STDMETHODIMP CCompoundCurve::get_MidOrdinate(Float64* mo)
 {
    CHECK_RETVAL(mo);
    CComPtr<IAngle> angle;
@@ -681,7 +684,7 @@ STDMETHODIMP CHorzCurve::get_MidOrdinate(Float64* mo)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_External(Float64* external)
+STDMETHODIMP CCompoundCurve::get_External(Float64* external)
 {
    CHECK_RETVAL(external);
    CComPtr<IAngle> angle;
@@ -696,7 +699,7 @@ STDMETHODIMP CHorzCurve::get_External(Float64* external)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_DE(SpiralType spType,IAngle** pDE)
+STDMETHODIMP CCompoundCurve::get_DE(SpiralType spType,IAngle** pDE)
 {
    // Deviation angle of spiral measured from back tangent (or forward tangent)
    // to tangent through the spiral at its maximum degree
@@ -705,7 +708,7 @@ STDMETHODIMP CHorzCurve::get_DE(SpiralType spType,IAngle** pDE)
    return get_SpiralAngle(spType,pDE);
 }
 
-STDMETHODIMP CHorzCurve::get_LongTangent(SpiralType spType,Float64* u)
+STDMETHODIMP CCompoundCurve::get_LongTangent(SpiralType spType,Float64* u)
 {
    CHECK_RETVAL(u);
 
@@ -732,7 +735,7 @@ STDMETHODIMP CHorzCurve::get_LongTangent(SpiralType spType,Float64* u)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_ShortTangent(SpiralType spType,Float64* v)
+STDMETHODIMP CCompoundCurve::get_ShortTangent(SpiralType spType,Float64* v)
 {
    CHECK_RETVAL(v);
 
@@ -759,7 +762,7 @@ STDMETHODIMP CHorzCurve::get_ShortTangent(SpiralType spType,Float64* v)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_CC(IPoint2d** pVal)
+STDMETHODIMP CCompoundCurve::get_CC(IPoint2d** pVal)
 {
    CHECK_RETOBJ(pVal);
 
@@ -779,19 +782,19 @@ STDMETHODIMP CHorzCurve::get_CC(IPoint2d** pVal)
    ATLASSERT(SUCCEEDED(hr));
 
    CComPtr<ILine2d> n1, n2;
-   hr = m_GeomUtil->CreateNormalLineThroughPoint(t1,TS,&n1);
+   hr = geomUtil::CreateNormalLineThroughPoint(t1,TS,nullptr,&n1);
    ATLASSERT(SUCCEEDED(hr));
-   hr = m_GeomUtil->CreateNormalLineThroughPoint(t2,ST,&n2);
+   hr = geomUtil::CreateNormalLineThroughPoint(t2,ST,nullptr,&n2);
    ATLASSERT(SUCCEEDED(hr));
 
    CComPtr<IPoint2d> p;
-   hr = m_GeomUtil->LineLineIntersect(n1,n2,&p);
+   hr = geomUtil::LineLineIntersect(n1,n2,m_PointFactory,&p);
    ATLASSERT(SUCCEEDED(hr));
 
 #if defined _DEBUG
    // intersect tangents... should intersect at PI
    CComPtr<IPoint2d> testPoint;
-   m_GeomUtil->LineLineIntersect(t1,t2,&testPoint);
+   geomUtil::LineLineIntersect(t1,t2,m_PointFactory,&testPoint);
    Float64 x1,y1, x2,y2;
    m_PI->Location(&x1,&y1);
    testPoint->Location(&x2,&y2);
@@ -800,7 +803,7 @@ STDMETHODIMP CHorzCurve::get_CC(IPoint2d** pVal)
    // intersect forward tangent and its normal
    // should intersect at TS
    testPoint.Release();
-   m_GeomUtil->LineLineIntersect(t1,n1,&testPoint);
+   geomUtil::LineLineIntersect(t1,n1,m_PointFactory,&testPoint);
    TS->Location(&x1,&y1);
    testPoint->Location(&x2,&y2);
    ATLASSERT( IsEqual(x1,x2) && IsEqual(y1,y2) );
@@ -808,7 +811,7 @@ STDMETHODIMP CHorzCurve::get_CC(IPoint2d** pVal)
    // intersect back tangent and its normal
    // should intersect at ST
    testPoint.Release();
-   m_GeomUtil->LineLineIntersect(t2,n2,&testPoint);
+   geomUtil::LineLineIntersect(t2,n2,m_PointFactory,&testPoint);
    ST->Location(&x1,&y1);
    testPoint->Location(&x2,&y2);
    ATLASSERT( IsEqual(x1,x2) && IsEqual(y1,y2) );
@@ -820,7 +823,7 @@ STDMETHODIMP CHorzCurve::get_CC(IPoint2d** pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_SPI(SpiralType spType,IPoint2d** pSPI)
+STDMETHODIMP CCompoundCurve::get_SPI(SpiralType spType,IPoint2d** pSPI)
 {
    CHECK_RETOBJ(pSPI);
 
@@ -839,20 +842,17 @@ STDMETHODIMP CHorzCurve::get_SPI(SpiralType spType,IPoint2d** pSPI)
       CComPtr<IPoint2d> TS;
       get_TS(&TS);
 
-      m_Xform->putref_NewOrigin(TS);
-
       CComPtr<IDirection> dir;
       Float64 dist;
       cogoUtil::Inverse(TS,m_PI,&dist,&dir);
       Float64 rotAngle;
       dir->get_Value(&rotAngle);
-      m_Xform->put_RotationAngle(rotAngle);
 
       m_PointFactory->CreatePoint(pSPI);
       (*pSPI)->put_X(X);
       (*pSPI)->put_Y(-Y);
       CComQIPtr<IPoint2d> spi(*pSPI);
-      m_Xform->Xform(&spi.p,xfrmNewToOld);
+      geomUtil::XformToOriginal(TS, rotAngle, spi);
    }
    else
    {
@@ -862,26 +862,23 @@ STDMETHODIMP CHorzCurve::get_SPI(SpiralType spType,IPoint2d** pSPI)
       CComPtr<IPoint2d> ST;
       get_ST(&ST);
 
-      m_Xform->putref_NewOrigin(ST);
-
       CComPtr<IDirection> dir;
       Float64 dist;
       cogoUtil::Inverse(ST,m_PI,&dist,&dir);
       Float64 rotAngle;
       dir->get_Value(&rotAngle);
-      m_Xform->put_RotationAngle(rotAngle);
 
       m_PointFactory->CreatePoint(pSPI);
       (*pSPI)->put_X(X);
       (*pSPI)->put_Y(Y);
       CComQIPtr<IPoint2d> spi(*pSPI);
-      m_Xform->Xform(&spi.p,xfrmNewToOld);
+      geomUtil::XformToOriginal(ST, rotAngle, spi);
    }
 
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_CurveBkTangentBrg(IDirection* *brg)
+STDMETHODIMP CCompoundCurve::get_CurveBkTangentBrg(IDirection* *brg)
 {
    CHECK_RETOBJ(brg);
    if ( IsZero(m_Ls1) )
@@ -905,7 +902,7 @@ STDMETHODIMP CHorzCurve::get_CurveBkTangentBrg(IDirection* *brg)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_CurveFwdTangentBrg(IDirection* *brg)
+STDMETHODIMP CCompoundCurve::get_CurveFwdTangentBrg(IDirection* *brg)
 {
    CHECK_RETOBJ(brg);
 
@@ -930,7 +927,7 @@ STDMETHODIMP CHorzCurve::get_CurveFwdTangentBrg(IDirection* *brg)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_PCI(IPoint2d **pVal)
+STDMETHODIMP CCompoundCurve::get_PCI(IPoint2d **pVal)
 {
    CHECK_RETOBJ(pVal);
 
@@ -978,7 +975,7 @@ STDMETHODIMP CHorzCurve::get_PCI(IPoint2d **pVal)
 
    // Intersect the 2 lines
    CComPtr<IPoint2d> p;
-   m_GeomUtil->LineLineIntersect(l1,l2,&p);
+   geomUtil::LineLineIntersect(l1,l2,m_PointFactory,&p);
 
    p.QueryInterface(pVal);
    ATLASSERT( *pVal != nullptr );
@@ -986,7 +983,7 @@ STDMETHODIMP CHorzCurve::get_PCI(IPoint2d **pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_CCC(IPoint2d **pVal)
+STDMETHODIMP CCompoundCurve::get_CCC(IPoint2d **pVal)
 {
    CHECK_RETOBJ(pVal);
 
@@ -1036,7 +1033,7 @@ STDMETHODIMP CHorzCurve::get_CCC(IPoint2d **pVal)
 
    // Intersect the 2 lines
    CComPtr<IPoint2d> p;
-   m_GeomUtil->LineLineIntersect(l1,l2,&p);
+   geomUtil::LineLineIntersect(l1,l2,m_PointFactory,&p);
 
    p.QueryInterface(pVal);
    ATLASSERT( *pVal != nullptr );
@@ -1044,7 +1041,7 @@ STDMETHODIMP CHorzCurve::get_CCC(IPoint2d **pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_SpiralChord(SpiralType spType,Float64* cs)
+STDMETHODIMP CCompoundCurve::get_SpiralChord(SpiralType spType,Float64* cs)
 {
    CHECK_RETVAL(cs);
 
@@ -1068,7 +1065,7 @@ STDMETHODIMP CHorzCurve::get_SpiralChord(SpiralType spType,Float64* cs)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_DF(SpiralType spType,IAngle** pDF)
+STDMETHODIMP CCompoundCurve::get_DF(SpiralType spType,IAngle** pDF)
 {
    CHECK_RETOBJ(pDF);
 
@@ -1111,7 +1108,7 @@ STDMETHODIMP CHorzCurve::get_DF(SpiralType spType,IAngle** pDF)
       }
    }
 
-   HRESULT hr = m_GeomUtil->Angle(from,vertex,to,&angle);
+   HRESULT hr = geomUtil::Angle(from,vertex,to,&angle);
    if ( hr == GEOMETRY_E_SAMEPOINTS )
    {
       // 3 points are the same. This occurs when the spiral lengths are zero
@@ -1127,7 +1124,7 @@ STDMETHODIMP CHorzCurve::get_DF(SpiralType spType,IAngle** pDF)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_DH(SpiralType spType,IAngle** pDH)
+STDMETHODIMP CCompoundCurve::get_DH(SpiralType spType,IAngle** pDH)
 {
    CHECK_RETOBJ(pDH);
 
@@ -1170,7 +1167,7 @@ STDMETHODIMP CHorzCurve::get_DH(SpiralType spType,IAngle** pDH)
       }
    }
 
-   HRESULT hr = m_GeomUtil->Angle(from,vertex,to,&angle);
+   HRESULT hr = geomUtil::Angle(from,vertex,to,&angle);
    if ( hr == GEOMETRY_E_SAMEPOINTS )
    {
       // 3 points are the same. This occurs when the spiral lengths are zero
@@ -1186,7 +1183,7 @@ STDMETHODIMP CHorzCurve::get_DH(SpiralType spType,IAngle** pDH)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_Direction(CurveDirectionType* dir)
+STDMETHODIMP CCompoundCurve::get_Direction(CurveDirectionType* dir)
 {
    CHECK_RETVAL(dir);
 
@@ -1206,7 +1203,7 @@ STDMETHODIMP CHorzCurve::get_Direction(CurveDirectionType* dir)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_CurveLength(Float64* pVal)
+STDMETHODIMP CCompoundCurve::get_CurveLength(Float64* pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -1223,7 +1220,7 @@ STDMETHODIMP CHorzCurve::get_CurveLength(Float64* pVal)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_TotalLength(Float64* pVal)
+STDMETHODIMP CCompoundCurve::get_TotalLength(Float64* pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -1237,7 +1234,7 @@ STDMETHODIMP CHorzCurve::get_TotalLength(Float64* pVal)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_DegreeCurvature(Float64 D,DegreeCurvatureType dcMethod,IAngle** pDC)
+STDMETHODIMP CCompoundCurve::get_DegreeCurvature(Float64 D,DegreeCurvatureType dcMethod,IAngle** pDC)
 {
    CHECK_RETVAL(pDC);
    Float64 dc = 0;
@@ -1263,7 +1260,7 @@ STDMETHODIMP CHorzCurve::get_DegreeCurvature(Float64 D,DegreeCurvatureType dcMet
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::Bearing(Float64 distance,IDirection* *pVal)
+STDMETHODIMP CCompoundCurve::Bearing(Float64 distance,IDirection* *pVal)
 {
    CHECK_RETOBJ(pVal);
 
@@ -1345,7 +1342,7 @@ STDMETHODIMP CHorzCurve::Bearing(Float64 distance,IDirection* *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::Normal(Float64 distance,IDirection* *pVal)
+STDMETHODIMP CCompoundCurve::Normal(Float64 distance,IDirection* *pVal)
 {
    // CHECK_RETOBJ(pVal); // check in Bearing
 
@@ -1357,7 +1354,7 @@ STDMETHODIMP CHorzCurve::Normal(Float64 distance,IDirection* *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::PointOnCurve(Float64 distance,IPoint2d* *pVal)
+STDMETHODIMP CCompoundCurve::PointOnCurve(Float64 distance,IPoint2d* *pVal)
 {
    CHECK_RETOBJ(pVal);
 
@@ -1433,7 +1430,7 @@ STDMETHODIMP CHorzCurve::PointOnCurve(Float64 distance,IPoint2d* *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::ProjectPoint( IPoint2d* point, IPoint2d* *pNewPoint, Float64* pDistFromStart, VARIANT_BOOL* pvbOnProjection)
+STDMETHODIMP CCompoundCurve::ProjectPoint( IPoint2d* point, IPoint2d* *pNewPoint, Float64* pDistFromStart, VARIANT_BOOL* pvbOnProjection)
 {
    CHECK_IN(point);
    CHECK_RETVAL(pDistFromStart);
@@ -1463,13 +1460,13 @@ STDMETHODIMP CHorzCurve::ProjectPoint( IPoint2d* point, IPoint2d* *pNewPoint, Fl
       line->ThroughPoints(pbt, pi);
 
       // compute offset from "point" to the back tangent (used to determine if it is closer to the back tangent than other points on the curve)
-      m_GeomUtil->PointOnLineNearest(line, point, &bkTangentPoint);
+      geomUtil::PointOnLineNearest(line, point, m_PointFactory, &bkTangentPoint);
       point->DistanceEx(bkTangentPoint, &bkTangentOffset); // distance from the point to where it projects onto the back tangent
 
                                                            // compute distance along the back tangent to the projection point
       CComPtr<IPoint2d> ts;
       get_TS(&ts);
-      m_GeomUtil->Distance(ts, bkTangentPoint, &bkTangentDistance);
+      geomUtil::Distance(ts, bkTangentPoint, &bkTangentDistance);
       bkTangentDistance *= -1;
 
       // deal with the case when the point is exactly at the start of the curve
@@ -1515,9 +1512,9 @@ STDMETHODIMP CHorzCurve::ProjectPoint( IPoint2d* point, IPoint2d* *pNewPoint, Fl
       get_Direction(&dir);
       Float64 angle;
       if (dir == cdRight)
-         m_GeomUtil->Angle(curvePoint, ccc, sc, &angle);
+         geomUtil::Angle(curvePoint, ccc, sc, &angle);
       else
-         m_GeomUtil->Angle(sc, ccc, curvePoint, &angle);
+         geomUtil::Angle(sc, ccc, curvePoint, &angle);
 
 #if defined _DEBUG
       // The subtended angle must be less than or equal to the
@@ -1564,13 +1561,13 @@ STDMETHODIMP CHorzCurve::ProjectPoint( IPoint2d* point, IPoint2d* *pNewPoint, Fl
       line.CoCreateInstance(CLSID_Line2d);
       line->ThroughPoints(pi, pft);
 
-      m_GeomUtil->PointOnLineNearest(line, point, &fwdTangentPoint);
+      geomUtil::PointOnLineNearest(line, point, m_PointFactory, &fwdTangentPoint);
       point->DistanceEx(fwdTangentPoint, &fwdTangentOffset); // distance from the point to where it projects onto the foward tangent
 
                                                              // compute distance along the forard tangent to the projection point
       CComPtr<IPoint2d> st;
       get_ST(&st);
-      m_GeomUtil->Distance(st, fwdTangentPoint, &fwdTangentDistance);
+      geomUtil::Distance(st, fwdTangentPoint, &fwdTangentDistance);
 
       Float64 Lt; // Total length of curve
       get_TotalLength(&Lt);
@@ -1632,7 +1629,7 @@ STDMETHODIMP CHorzCurve::ProjectPoint( IPoint2d* point, IPoint2d* *pNewPoint, Fl
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIANT_BOOL bProjectAhead,IPoint2d** p1,IPoint2d** p2)
+STDMETHODIMP CCompoundCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIANT_BOOL bProjectAhead,IPoint2d** p1,IPoint2d** p2)
 {
    CHECK_IN(line);
    CHECK_RETOBJ(p1);
@@ -1662,15 +1659,15 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
 
    CComPtr<IPoint2d> pnt1, pnt2;
    short nIntersect;
-   m_GeomUtil->LineCircleIntersect(line,circle,&pnt1,&pnt2,&nIntersect);
+   geomUtil::LineCircleIntersect(line,circle,m_PointFactory,&pnt1,&pnt2,&nIntersect);
 
    Float64 delta;
    CurveDirectionType direction;
    get_Direction(&direction);
    if ( direction == cdLeft )
-      m_GeomUtil->Angle(SC,CCC,CS,&delta);
+      geomUtil::Angle(SC,CCC,CS,&delta);
    else
-      m_GeomUtil->Angle(CS,CCC,SC,&delta);
+      geomUtil::Angle(CS,CCC,SC,&delta);
 
 #if defined _DEBUG
    CComPtr<IAngle> angle;
@@ -1685,9 +1682,9 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
    {
       Float64 angle;
       if ( direction == cdLeft )
-         m_GeomUtil->Angle(SC,CCC,pnt1,&angle);
+         geomUtil::Angle(SC,CCC,pnt1,&angle);
       else
-         m_GeomUtil->Angle(pnt1,CCC,SC,&angle);
+         geomUtil::Angle(pnt1,CCC,SC,&angle);
 
       if ( 0 <= angle && angle <= delta )
          pnt1.CopyTo(&pntCurve1);
@@ -1697,9 +1694,9 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
    {
       Float64 angle;
       if ( direction == cdLeft )
-         m_GeomUtil->Angle(SC,CCC,pnt2,&angle);
+         geomUtil::Angle(SC,CCC,pnt2,&angle);
       else
-         m_GeomUtil->Angle(pnt2,CCC,SC,&angle);
+         geomUtil::Angle(pnt2,CCC,SC,&angle);
 
       if ( 0 <= angle && angle <= delta )
          pnt2.CopyTo(&pntCurve2);
@@ -1741,7 +1738,7 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
    {
       // when evaluated, this function returns the distance from the line to the curve
       // if the curve is to the left of the line the distance is negative
-      CLineIntersectFunction function(this,line,m_GeomUtil);
+      CLineIntersectFunction function(this,line);
       mathBrentsRootFinder2d rootFinder;
       Float64 ya = function.Evaluate(0);
       Float64 yb = function.Evaluate(m_Ls1);
@@ -1759,20 +1756,20 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
          seg1.CoCreateInstance(CLSID_LineSegment2d);
          seg1->ThroughPoints(TS,SPI);
          CComPtr<IPoint2d> pnt1;
-         m_GeomUtil->IntersectLineWithLineSegment(line,seg1,&pnt1);
+         geomUtil::IntersectLineWithLineSegment(line,seg1,m_PointFactory,&pnt1);
 
          CComPtr<ILineSegment2d> seg2;
          seg2.CoCreateInstance(CLSID_LineSegment2d);
          seg2->ThroughPoints(SPI,SC);
          CComPtr<IPoint2d> pnt2;
-         m_GeomUtil->IntersectLineWithLineSegment(line,seg2,&pnt2);
+         geomUtil::IntersectLineWithLineSegment(line,seg2,m_PointFactory,&pnt2);
 
          if ( pnt1 && pnt2 )
          {
             // need to find a distance along the curve that is between the two intersection points
             // so we have a bracket that works... to do this, search for a point on the spiral where
             // the tangent to the spiral is parallel to the line
-            CParallelLineFunction parallel_function(this,line,m_GeomUtil);
+            CParallelLineFunction parallel_function(this,line);
             Float64 limit;
             try
             {
@@ -1788,7 +1785,7 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
             CComPtr<IPoint2d> POC;
             PointOnCurve(limit,&POC);
             VARIANT_BOOL bContainsPoint;
-            m_GeomUtil->DoesLineContainPoint(line,POC,0.001,&bContainsPoint);
+            geomUtil::DoesLineContainPoint(line,POC,0.001,&bContainsPoint);
             if ( bContainsPoint == VARIANT_TRUE )
             {
                // Line is tangent
@@ -1816,13 +1813,13 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
                tangent_line->SetExplicit(POC, vector); // Line through the projected point, forward direction
 
                CComPtr<ILine2d> normal_line;
-               m_GeomUtil->CreateNormalLineThroughPoint(tangent_line, POC, &normal_line);
+               geomUtil::CreateNormalLineThroughPoint(tangent_line, POC, nullptr, &normal_line);
 
                CComPtr<IPoint2d> point_on_line;
-               m_GeomUtil->LineLineIntersect(line, normal_line, &point_on_line);
+               geomUtil::LineLineIntersect(line, normal_line, m_PointFactory, &point_on_line);
 
                Float64 offset;
-               m_GeomUtil->ShortestOffsetToPoint(tangent_line, point_on_line, &offset);
+               geomUtil::ShortestDistanceToPoint(tangent_line, point_on_line, &offset);
                ATLASSERT(!IsZero(offset)); // if offset is zero, the line is tangent and we should have dealt with that above
 
                // negative offset means point_on_line is to the left of tangent_line
@@ -1875,7 +1872,7 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
    {
       // when evaluated, this function returns the distance from the line to the curve
       // if the curve is to the left of the line the distance is negative
-      CLineIntersectFunction function(this,line,m_GeomUtil);
+      CLineIntersectFunction function(this,line);
       mathBrentsRootFinder2d rootFinder;
       Float64 length;
       get_TotalLength(&length);
@@ -1895,20 +1892,20 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
          seg1.CoCreateInstance(CLSID_LineSegment2d);
          seg1->ThroughPoints(ST,SPI);
          CComPtr<IPoint2d> pnt1;
-         m_GeomUtil->IntersectLineWithLineSegment(line,seg1,&pnt1);
+         geomUtil::IntersectLineWithLineSegment(line,seg1,m_PointFactory,&pnt1);
 
          CComPtr<ILineSegment2d> seg2;
          seg2.CoCreateInstance(CLSID_LineSegment2d);
          seg2->ThroughPoints(SPI,CS);
          CComPtr<IPoint2d> pnt2;
-         m_GeomUtil->IntersectLineWithLineSegment(line,seg2,&pnt2);
+         geomUtil::IntersectLineWithLineSegment(line,seg2,m_PointFactory,&pnt2);
 
          if ( pnt1 && pnt2 )
          {
             // need to find a distance along the curve that is between the two intersection points
             // so we have a bracket that works... to do this, search for a point on the spiral where
             // the tangent to the spiral is parallel to the line
-            CParallelLineFunction parallel_function(this,line,m_GeomUtil);
+            CParallelLineFunction parallel_function(this,line);
             Float64 limit;
             try
             {
@@ -1924,7 +1921,7 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
             CComPtr<IPoint2d> POC;
             PointOnCurve(limit,&POC);
             VARIANT_BOOL bContainsPoint;
-            m_GeomUtil->DoesLineContainPoint(line,POC,0.001,&bContainsPoint);
+            geomUtil::DoesLineContainPoint(line,POC,0.001,&bContainsPoint);
             if ( bContainsPoint == VARIANT_TRUE )
             {
                // Line is tangent
@@ -1952,13 +1949,13 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
                tangent_line->SetExplicit(POC, vector); // Line through the projected point, forward direction
 
                CComPtr<ILine2d> normal_line;
-               m_GeomUtil->CreateNormalLineThroughPoint(tangent_line, POC, &normal_line);
+               geomUtil::CreateNormalLineThroughPoint(tangent_line, POC, nullptr, &normal_line);
 
                CComPtr<IPoint2d> point_on_line;
-               m_GeomUtil->LineLineIntersect(line, normal_line, &point_on_line);
+               geomUtil::LineLineIntersect(line, normal_line,m_PointFactory, &point_on_line);
 
                Float64 offset;
-               m_GeomUtil->ShortestOffsetToPoint(tangent_line, point_on_line, &offset);
+               geomUtil::ShortestDistanceToPoint(tangent_line, point_on_line, &offset);
                ATLASSERT(!IsZero(offset)); // if offset is zero, the line is tangent and we should have dealt with that above
 
                // negative offset means point_on_line is to the left of tangent_line
@@ -2010,7 +2007,7 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
    {
       CComPtr<ILine2d> bkTangentLine;
       GetBkTangentLine(&bkTangentLine);
-      m_GeomUtil->LineLineIntersect(line,bkTangentLine, &bkTangentPoint);
+      geomUtil::LineLineIntersect(line,bkTangentLine,m_PointFactory, &bkTangentPoint);
 
       // if there was an intersection point and the point is not before the start of the TS-PI line
       // then this isn't an intersection on the back tangent projection 
@@ -2024,7 +2021,7 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
    {
       CComPtr<ILine2d> fwdTangentLine;
       GetFwdTangentLine(&fwdTangentLine);
-      m_GeomUtil->LineLineIntersect(line,fwdTangentLine, &fwdTangentPoint);
+      geomUtil::LineLineIntersect(line,fwdTangentLine,m_PointFactory, &fwdTangentPoint);
 
       // if there was an intersection point and the point is not after the end of the PI-ST line
       // then this isn't an intersection on the forward tangent projection 
@@ -2111,7 +2108,7 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_PointFactory(IPoint2dFactory* *factory)
+STDMETHODIMP CCompoundCurve::get_PointFactory(IPoint2dFactory* *factory)
 {
    CHECK_RETOBJ(factory);
    (*factory) = m_PointFactory;
@@ -2120,14 +2117,14 @@ STDMETHODIMP CHorzCurve::get_PointFactory(IPoint2dFactory* *factory)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::putref_PointFactory(IPoint2dFactory *factory)
+STDMETHODIMP CCompoundCurve::putref_PointFactory(IPoint2dFactory *factory)
 {
    CHECK_IN(factory);
    m_PointFactory = factory;
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::Offset(Float64 dx,Float64 dy)
+STDMETHODIMP CCompoundCurve::Offset(Float64 dx,Float64 dy)
 {
    m_bHoldEvents = true;
    m_bPendingEvents = false;
@@ -2139,7 +2136,7 @@ STDMETHODIMP CHorzCurve::Offset(Float64 dx,Float64 dy)
    m_bHoldEvents = false;
    if ( m_bPendingEvents )
    {
-      Fire_OnHorzCurveChanged(this);
+      Fire_OnCompoundCurveChanged(this);
    }
 
    return S_OK;
@@ -2147,7 +2144,7 @@ STDMETHODIMP CHorzCurve::Offset(Float64 dx,Float64 dy)
 
 ///////////////////////////////////////////
 // IPointEvents
-STDMETHODIMP CHorzCurve::OnPointChanged(IPoint2d* point)
+STDMETHODIMP CCompoundCurve::OnPointChanged(IPoint2d* point)
 {
    if ( m_TS.IsEqualObject(point) || m_ST.IsEqualObject(point) )
    {
@@ -2170,17 +2167,17 @@ STDMETHODIMP CHorzCurve::OnPointChanged(IPoint2d* point)
    if ( m_bHoldEvents )
       m_bPendingEvents = true;
    else
-      Fire_OnHorzCurveChanged(this);
+      Fire_OnCompoundCurveChanged(this);
 
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::Clone(IHorzCurve* *clone)
+STDMETHODIMP CCompoundCurve::Clone(ICompoundCurve* *clone)
 {
    CHECK_RETOBJ(clone);
 
-   CComObject<CHorzCurve>* pClone;
-   CComObject<CHorzCurve>::CreateInstance(&pClone);
+   CComObject<CCompoundCurve>* pClone;
+   CComObject<CCompoundCurve>::CreateInstance(&pClone);
 
    (*clone) = pClone;
    (*clone)->AddRef();
@@ -2209,16 +2206,16 @@ STDMETHODIMP CHorzCurve::Clone(IHorzCurve* *clone)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::get_StructuredStorage(IStructuredStorage2* *pStg)
+STDMETHODIMP CCompoundCurve::get_StructuredStorage(IStructuredStorage2* *pStg)
 {
    CHECK_RETOBJ(pStg);
    return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
 }
 
 // IStructuredStorage2
-STDMETHODIMP CHorzCurve::Save(IStructuredSave2* pSave)
+STDMETHODIMP CCompoundCurve::Save(IStructuredSave2* pSave)
 {
-   pSave->BeginUnit(CComBSTR("HorzCurve"),1.0);
+   pSave->BeginUnit(CComBSTR("CompoundCurve"),1.0);
    pSave->put_Property(CComBSTR("PBT"),CComVariant(m_PBT));
    pSave->put_Property(CComBSTR("PI"),CComVariant(m_PI));
    pSave->put_Property(CComBSTR("PFT"),CComVariant(m_PFT));
@@ -2231,10 +2228,10 @@ STDMETHODIMP CHorzCurve::Save(IStructuredSave2* pSave)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurve::Load(IStructuredLoad2* pLoad)
+STDMETHODIMP CCompoundCurve::Load(IStructuredLoad2* pLoad)
 {
    CComVariant var;
-   pLoad->BeginUnit(CComBSTR("HorzCurve"));
+   pLoad->BeginUnit(CComBSTR("CompoundCurve"));
 
    pLoad->get_Property(CComBSTR("PBT"),&var);
    CComPtr<IPoint2d> pbt;
@@ -2274,17 +2271,17 @@ STDMETHODIMP CHorzCurve::Load(IStructuredLoad2* pLoad)
 
 //////////////////////////////////////////////
 // Helpers
-Float64 CHorzCurve::SpiralX(Float64 ls,Float64 angle)
+Float64 CCompoundCurve::SpiralX(Float64 ls,Float64 angle)
 {
    return ls*(1 -  pow(angle,2)/10 + pow(angle,4)/216 - pow(angle,6)/9360);
 }
 
-Float64 CHorzCurve::SpiralY(Float64 ls,Float64 angle)
+Float64 CCompoundCurve::SpiralY(Float64 ls,Float64 angle)
 {
    return ls*(angle/3 - pow(angle,3)/42 + pow(angle,5)/1320 - pow(angle,7)/75600);
 }
 
-void CHorzCurve::PointOnEntrySpiral(Float64 distFromTS,IPoint2d** pVal)
+void CCompoundCurve::PointOnEntrySpiral(Float64 distFromTS,IPoint2d** pVal)
 {
    CComPtr<IAngle> objAngle;
    get_SpiralAngle(spEntry,&objAngle);
@@ -2300,7 +2297,7 @@ void CHorzCurve::PointOnEntrySpiral(Float64 distFromTS,IPoint2d** pVal)
    PointOnEntrySpiral(x,y,pVal);
 }
 
-void CHorzCurve::PointOnExitSpiral(Float64 distFromST,IPoint2d** pVal)
+void CCompoundCurve::PointOnExitSpiral(Float64 distFromST,IPoint2d** pVal)
 {
    CComPtr<IAngle> objAngle;
    get_SpiralAngle(spExit,&objAngle);
@@ -2316,7 +2313,7 @@ void CHorzCurve::PointOnExitSpiral(Float64 distFromST,IPoint2d** pVal)
    PointOnExitSpiral(x,y,pVal);
 }
 
-void CHorzCurve::PointOnEntrySpiral(Float64 x,Float64 y,IPoint2d** pVal)
+void CCompoundCurve::PointOnEntrySpiral(Float64 x,Float64 y,IPoint2d** pVal)
 {
    // Setup a coordinate system at TS, with positive X going from TS to PI.
    // SC will be at point (X,kY) in this coordinate system.
@@ -2325,14 +2322,11 @@ void CHorzCurve::PointOnEntrySpiral(Float64 x,Float64 y,IPoint2d** pVal)
    CComPtr<IPoint2d> TS;
    get_TS(&TS);
 
-   m_Xform->putref_NewOrigin(TS);
-
    CComPtr<IDirection> dir;
    Float64 dist;
    cogoUtil::Inverse(TS,m_PI,&dist,&dir);
    Float64 rotAngle;
    dir->get_Value(&rotAngle);
-   m_Xform->put_RotationAngle(rotAngle);
 
    CurveDirectionType cd;
    get_Direction(&cd);
@@ -2342,10 +2336,11 @@ void CHorzCurve::PointOnEntrySpiral(Float64 x,Float64 y,IPoint2d** pVal)
    (*pVal)->put_X(x);
    (*pVal)->put_Y(k*y);
    CComQIPtr<IPoint2d> pnt(*pVal);
-   m_Xform->Xform(&pnt.p,xfrmNewToOld);
+
+   geomUtil::XformToOriginal(TS, rotAngle, pnt);
 }
 
-void CHorzCurve::PointOnExitSpiral(Float64 x,Float64 y,IPoint2d** pVal)
+void CCompoundCurve::PointOnExitSpiral(Float64 x,Float64 y,IPoint2d** pVal)
 {
    // Setup a coordinate system at ST, with positive X going from ST to PI
    // CS will be at point (X,kY) in this coordinate system
@@ -2354,14 +2349,11 @@ void CHorzCurve::PointOnExitSpiral(Float64 x,Float64 y,IPoint2d** pVal)
    CComPtr<IPoint2d> ST;
    get_ST(&ST);
 
-   m_Xform->putref_NewOrigin(ST);
-
    CComPtr<IDirection> dir;
    Float64 dist;
    cogoUtil::Inverse(ST,m_PI,&dist,&dir);
    Float64 rotAngle;
    dir->get_Value(&rotAngle);
-   m_Xform->put_RotationAngle(rotAngle);
 
    CurveDirectionType cd;
    get_Direction(&cd);
@@ -2371,12 +2363,13 @@ void CHorzCurve::PointOnExitSpiral(Float64 x,Float64 y,IPoint2d** pVal)
    (*pVal)->put_X(x);
    (*pVal)->put_Y(k*y);
    CComQIPtr<IPoint2d> pnt(*pVal);
-   m_Xform->Xform(&pnt.p,xfrmNewToOld);
+
+   geomUtil::XformToOriginal(ST, rotAngle, pnt);
 }
 
-void CHorzCurve::ProjectPointOnEntrySpiral(IPoint2d* point,Float64* pDistFromStart,IPoint2d** newPoint)
+void CCompoundCurve::ProjectPointOnEntrySpiral(IPoint2d* point,Float64* pDistFromStart,IPoint2d** newPoint)
 {
-   CEntrySpiralFunction function(this,point,m_GeomUtil);
+   CEntrySpiralFunction function(this,point);
 
    Float64 Ls;
    get_SpiralLength(spEntry,&Ls);
@@ -2389,9 +2382,9 @@ void CHorzCurve::ProjectPointOnEntrySpiral(IPoint2d* point,Float64* pDistFromSta
    *pDistFromStart = dist;
 }
 
-void CHorzCurve::ProjectPointOnExitSpiral(IPoint2d* point,Float64* pDistFromStart,IPoint2d** newPoint)
+void CCompoundCurve::ProjectPointOnExitSpiral(IPoint2d* point,Float64* pDistFromStart,IPoint2d** newPoint)
 {
-   CExitSpiralFunction function(this,point,m_GeomUtil);
+   CExitSpiralFunction function(this,point);
 
    Float64 Ls;
    get_SpiralLength(spExit,&Ls);
@@ -2407,7 +2400,7 @@ void CHorzCurve::ProjectPointOnExitSpiral(IPoint2d* point,Float64* pDistFromStar
    *pDistFromStart = Lt - dist;
 }
 
-int CHorzCurve::ProjectionRegion(IPoint2d* pPoint)
+int CCompoundCurve::ProjectionRegion(IPoint2d* pPoint)
 {
    int result = 0;
 
@@ -2424,11 +2417,8 @@ int CHorzCurve::ProjectionRegion(IPoint2d* pPoint)
       Float64 dir;
       brg->get_Value(&dir);
 
-      m_Xform->putref_NewOrigin(origin);
-      m_Xform->put_RotationAngle(dir);
-
       CComPtr<IPoint2d> xfrmPoint;
-      m_Xform->XformEx(pPoint, xfrmOldToNew, &xfrmPoint);
+      geomUtil::XformToNew(origin, dir, pPoint, &xfrmPoint);
       Float64 x1; // X ordinate in coordinate system 1
       xfrmPoint->get_X(&x1);
 
@@ -2440,11 +2430,8 @@ int CHorzCurve::ProjectionRegion(IPoint2d* pPoint)
       Bearing(m_Ls1, &brg);
       brg->get_Value(&dir);
 
-      m_Xform->putref_NewOrigin(origin);
-      m_Xform->put_RotationAngle(dir);
-
       xfrmPoint.Release();
-      m_Xform->XformEx(pPoint, xfrmOldToNew, &xfrmPoint);
+      geomUtil::XformToNew(origin, dir, pPoint, &xfrmPoint);
       Float64 x2; // X ordinate in coordinate system 2
       xfrmPoint->get_X(&x2);
 
@@ -2471,11 +2458,8 @@ int CHorzCurve::ProjectionRegion(IPoint2d* pPoint)
       Float64 dir;
       brg->get_Value(&dir);
 
-      m_Xform->putref_NewOrigin(origin);
-      m_Xform->put_RotationAngle(dir);
-
       CComPtr<IPoint2d> xfrmPoint;
-      m_Xform->XformEx(pPoint, xfrmOldToNew, &xfrmPoint);
+      geomUtil::XformToNew(origin, dir, pPoint, &xfrmPoint);
       Float64 x1; // X ordinate in coordinate system 1
       xfrmPoint->get_X(&x1);
 
@@ -2487,11 +2471,8 @@ int CHorzCurve::ProjectionRegion(IPoint2d* pPoint)
       get_FwdTangentBrg(&brg);
       brg->get_Value(&dir);
 
-      m_Xform->putref_NewOrigin(origin);
-      m_Xform->put_RotationAngle(dir);
-
       xfrmPoint.Release();
-      m_Xform->XformEx(pPoint, xfrmOldToNew, &xfrmPoint);
+      geomUtil::XformToNew(origin, dir, pPoint, &xfrmPoint);
       Float64 x2; // X ordinate in coordinate system 2
       xfrmPoint->get_X(&x2);
 
@@ -2513,11 +2494,8 @@ int CHorzCurve::ProjectionRegion(IPoint2d* pPoint)
    Float64 dir;
    brg->get_Value(&dir);
 
-   m_Xform->putref_NewOrigin(origin);
-   m_Xform->put_RotationAngle(dir);
-
    CComPtr<IPoint2d> xfrmPoint;
-   m_Xform->XformEx(pPoint, xfrmOldToNew, &xfrmPoint);
+   geomUtil::XformToNew(origin, dir, pPoint, &xfrmPoint);
    Float64 x1; // X ordinate in coordinate system 1
    xfrmPoint->get_X(&x1);
 
@@ -2532,11 +2510,8 @@ int CHorzCurve::ProjectionRegion(IPoint2d* pPoint)
    Bearing(m_Ls1 + L, &brg);
    brg->get_Value(&dir);
 
-   m_Xform->putref_NewOrigin(origin);
-   m_Xform->put_RotationAngle(dir);
-
    xfrmPoint.Release();
-   m_Xform->XformEx(pPoint, xfrmOldToNew, &xfrmPoint);
+   geomUtil::XformToNew(origin, dir, pPoint, &xfrmPoint);
    Float64 x2; // X ordinate in coordinate system 2
    xfrmPoint->get_X(&x2);
 
@@ -2552,7 +2527,7 @@ int CHorzCurve::ProjectionRegion(IPoint2d* pPoint)
    return result;
 }
 
-void CHorzCurve::GetBkTangentLine(ILine2d** line)
+void CCompoundCurve::GetBkTangentLine(ILine2d** line)
 {
    CComPtr<ILine2d> pLine;
    pLine.CoCreateInstance(CLSID_Line2d);
@@ -2562,7 +2537,7 @@ void CHorzCurve::GetBkTangentLine(ILine2d** line)
    (*line)->AddRef();
 }
 
-void CHorzCurve::GetFwdTangentLine(ILine2d** line)
+void CCompoundCurve::GetFwdTangentLine(ILine2d** line)
 {
    CComPtr<ILine2d> pLine;
    pLine.CoCreateInstance(CLSID_Line2d);
@@ -2572,24 +2547,24 @@ void CHorzCurve::GetFwdTangentLine(ILine2d** line)
    (*line)->AddRef();
 }
 
-bool CHorzCurve::LineParallelToTangent(ILine2d* pTangentLine,ILine2d* pLine,IPoint2d* pTangentPoint)
+bool CCompoundCurve::LineParallelToTangent(ILine2d* pTangentLine,ILine2d* pLine,IPoint2d* pTangentPoint)
 {
    CComPtr<IPoint2d> CC;
    get_CC(&CC);
 
    VARIANT_BOOL bParallel;
-   m_GeomUtil->AreLinesParallel(pTangentLine,pLine,&bParallel);
+   geomUtil::AreLinesParallel(pTangentLine,pLine,&bParallel);
    if ( bParallel == VARIANT_FALSE ) // not parallel means there can be an intersection
       return false;
 
    Float64 dist1;
-   m_GeomUtil->Distance(pTangentPoint,CC,&dist1);
+   geomUtil::Distance(pTangentPoint,CC,&dist1);
 
    CComPtr<IPoint2d> poln;
-   m_GeomUtil->PointOnLineNearest(pLine,CC,&poln);
+   geomUtil::PointOnLineNearest(pLine,CC,m_PointFactory,&poln);
 
    Float64 dist2;
-   m_GeomUtil->Distance(CC,poln,&dist2);
+   geomUtil::Distance(CC,poln,&dist2);
 
    if ( dist1 < dist2 && cogoUtil::IsPointBeforeStart(pTangentPoint,CC,poln) )
       return true; // line is parallel to tangent and on the outside of the curve... no intersections
@@ -2598,7 +2573,7 @@ bool CHorzCurve::LineParallelToTangent(ILine2d* pTangentLine,ILine2d* pLine,IPoi
    return false;
 }
 
-void CHorzCurve::GetCurveCenterNormalIntersectPoints(IPoint2d** pPOBT,IPoint2d** pPOFT)
+void CCompoundCurve::GetCurveCenterNormalIntersectPoints(IPoint2d** pPOBT,IPoint2d** pPOFT)
 {
    // get length of curve
    Float64 length;
@@ -2630,18 +2605,18 @@ void CHorzCurve::GetCurveCenterNormalIntersectPoints(IPoint2d** pPOBT,IPoint2d**
    CComPtr<ILine2d> bkTangentLine;
    GetBkTangentLine(&bkTangentLine);
 
-   m_GeomUtil->LineLineIntersect(line,bkTangentLine,pPOBT);
+   geomUtil::LineLineIntersect(line,bkTangentLine,m_PointFactory,pPOBT);
    ATLASSERT(pPOBT != nullptr);
 
    // intersect line with forward tangent
    CComPtr<ILine2d> fwdTangentLine;
    GetFwdTangentLine(&fwdTangentLine);
 
-   m_GeomUtil->LineLineIntersect(line,fwdTangentLine,pPOFT);
+   geomUtil::LineLineIntersect(line,fwdTangentLine,m_PointFactory,pPOFT);
    ATLASSERT(pPOFT != nullptr);
 }
 
-bool CHorzCurve::IsPointOnCurve(IPoint2d* pPoint)
+bool CCompoundCurve::IsPointOnCurve(IPoint2d* pPoint)
 {
    CComPtr<IPoint2d> prjPoint;
    Float64 dist;
@@ -2654,18 +2629,18 @@ bool CHorzCurve::IsPointOnCurve(IPoint2d* pPoint)
 
    ATLASSERT( SUCCEEDED(hr) );
 
-   m_GeomUtil->Distance(pPoint,pntOnCurve,&dist);
+   geomUtil::Distance(pPoint,pntOnCurve,&dist);
    return IsZero(dist,tolerance);
 }
 
-bool CHorzCurve::IsPointOnLine(ILine2d* pLine,IPoint2d* pPoint)
+bool CCompoundCurve::IsPointOnLine(ILine2d* pLine,IPoint2d* pPoint)
 {
    Float64 offset;
-   m_GeomUtil->ShortestOffsetToPoint(pLine,pPoint,&offset);
+   geomUtil::ShortestDistanceToPoint(pLine,pPoint,&offset);
    return IsZero(offset,tolerance);
 }
 
-bool CHorzCurve::TestIntersection(ILine2d* pLine,IPoint2d* pPoint)
+bool CCompoundCurve::TestIntersection(ILine2d* pLine,IPoint2d* pPoint)
 {
    return IsPointOnCurve(pPoint) && IsPointOnLine(pLine,pPoint);
 }

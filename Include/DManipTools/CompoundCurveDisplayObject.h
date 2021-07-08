@@ -21,13 +21,13 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_HORZCURVEDISPLAYOBJECT_H_
-#define INCLUDED_HORZCURVEDISPLAYOBJECT_H_
+#ifndef INCLUDED_CompoundCurveDISPLAYOBJECT_H_
+#define INCLUDED_CompoundCurveDISPLAYOBJECT_H_
 #pragma once
 
-interface IHorzCurve;
+interface ICompoundCurve;
 
-enum HorzCurveDrawMode
+enum CompoundCurveDrawMode
 {
 	hcCurveOnly,
 	hcCurveWithTangents,
@@ -35,16 +35,16 @@ enum HorzCurveDrawMode
 };
 
 // {02F9ADCE-5FCF-4519-9783-6C78A1483E35}
-DEFINE_GUID(IID_iHorzCurveDisplayObject, 
+DEFINE_GUID(IID_iCompoundCurveDisplayObject, 
 0x2f9adce, 0x5fcf, 0x4519, 0x97, 0x83, 0x6c, 0x78, 0xa1, 0x48, 0x3e, 0x35);
-struct __declspec(uuid("{02F9ADCE-5FCF-4519-9783-6C78A1483E35}")) iHorzCurveDisplayObject;
-interface iHorzCurveDisplayObject : public iDisplayObject
+struct __declspec(uuid("{02F9ADCE-5FCF-4519-9783-6C78A1483E35}")) iCompoundCurveDisplayObject;
+interface iCompoundCurveDisplayObject : public iDisplayObject
 {
-   STDMETHOD_(void,putref_HorzCurve)(IHorzCurve* hc,BOOL bRedraw,BOOL bFireEvent) PURE;
-   STDMETHOD_(void,get_HorzCurve)(IHorzCurve* *hc) PURE;
+   STDMETHOD_(void,putref_CompoundCurve)(ICompoundCurve* hc,BOOL bRedraw,BOOL bFireEvent) PURE;
+   STDMETHOD_(void,get_CompoundCurve)(ICompoundCurve* *hc) PURE;
 
-   STDMETHOD_(void,put_DrawMode)(HorzCurveDrawMode mode) PURE;
-   STDMETHOD_(void,get_DrawMode)(HorzCurveDrawMode* mode) PURE;
+   STDMETHOD_(void,put_DrawMode)(CompoundCurveDrawMode mode) PURE;
+   STDMETHOD_(void,get_DrawMode)(CompoundCurveDrawMode* mode) PURE;
 
    // Font for labels. Note that font height is in 10th of points.
    // Note that Title is drawn in bold version of same font
@@ -52,4 +52,4 @@ interface iHorzCurveDisplayObject : public iDisplayObject
    STDMETHOD_(void,get_Font)(LOGFONT* pFont) PURE;
 };
 
-#endif // INCLUDED_HORZCURVEDISPLAYOBJECT_H_
+#endif // INCLUDED_CompoundCurveDISPLAYOBJECT_H_

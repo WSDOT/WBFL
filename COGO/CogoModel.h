@@ -53,7 +53,7 @@ class ATL_NO_VTABLE CCogoModel :
    public ILineSegmentCollectionEvents,
    public IProfilePointCollectionEvents,
    public IVertCurveCollectionEvents,
-   public IHorzCurveCollectionEvents,
+   public ICompoundCurveCollectionEvents,
    public IPathCollectionEvents,
    public IAlignmentCollectionEvents,
    public CProxyDCogoModelEvents< CCogoModel >,
@@ -69,7 +69,7 @@ public:
 
    HRESULT PutRef_Alignments(IAlignmentCollection* alignments);
    HRESULT PutRef_Paths(IPathCollection* paths);
-   HRESULT PutRef_HorzCurves(IHorzCurveCollection* horzCurves);
+   HRESULT PutRef_CompoundCurves(ICompoundCurveCollection* CompoundCurves);
    HRESULT PutRef_Lines(ILineSegmentCollection* lines);
    HRESULT PutRef_Points(IPointCollection* points);
    HRESULT PutRef_ProfilePoints(IProfilePointCollection* profilePoints);
@@ -93,7 +93,7 @@ BEGIN_COM_MAP(CCogoModel)
    COM_INTERFACE_ENTRY(ILineSegmentCollectionEvents)
    COM_INTERFACE_ENTRY(IProfilePointCollectionEvents)
    COM_INTERFACE_ENTRY(IVertCurveCollectionEvents)
-   COM_INTERFACE_ENTRY(IHorzCurveCollectionEvents)
+   COM_INTERFACE_ENTRY(ICompoundCurveCollectionEvents)
    COM_INTERFACE_ENTRY(IPathCollectionEvents)
    COM_INTERFACE_ENTRY(IAlignmentCollectionEvents)
 
@@ -122,8 +122,8 @@ public:
 	STDMETHOD(get_ProfilePointFactory)(/*[out,retval]*/IProfilePointFactory** factory) override;
 	STDMETHOD(putref_VertCurveFactory)(/*[in]*/IVertCurveFactory* factory) override;
 	STDMETHOD(get_VertCurveFactory)(/*[out,retval]*/IVertCurveFactory** factory) override;
-	STDMETHOD(putref_HorzCurveFactory)(/*[in]*/IHorzCurveFactory* factory) override;
-	STDMETHOD(get_HorzCurveFactory)(/*[out,retval]*/IHorzCurveFactory** factory) override;
+	STDMETHOD(putref_CompoundCurveFactory)(/*[in]*/ICompoundCurveFactory* factory) override;
+	STDMETHOD(get_CompoundCurveFactory)(/*[out,retval]*/ICompoundCurveFactory** factory) override;
 	STDMETHOD(putref_AlignmentFactory)(/*[in]*/IAlignmentFactory* factory) override;
 	STDMETHOD(get_AlignmentFactory)(/*[out,retval]*/IAlignmentFactory** factory) override;
 	STDMETHOD(putref_PathFactory)(/*[in]*/IPathFactory* factory) override;
@@ -142,7 +142,7 @@ public:
 	STDMETHOD(get_Alignments)(/*[out,retval]*/ IAlignmentCollection* *pVal) override;
    STDMETHOD(get_Paths)(/*[out,retval]*/ IPathCollection* *pVal) override;
    STDMETHOD(get_VertCurves)(/*[out, retval]*/ IVertCurveCollection* *pVal) override;
-   STDMETHOD(get_HorzCurves)(/*[out, retval]*/ IHorzCurveCollection* *pVal) override;
+   STDMETHOD(get_CompoundCurves)(/*[out, retval]*/ ICompoundCurveCollection* *pVal) override;
    STDMETHOD(get_ProfilePoints)(/*[out, retval]*/ IProfilePointCollection* *pVal) override;
    STDMETHOD(get_LineSegments)(/*[out, retval]*/ ILineSegmentCollection* *pVal) override;
 	STDMETHOD(get_Points)(/*[out, retval]*/ IPointCollection* *pVal) override;
@@ -185,7 +185,7 @@ public:
    STDMETHOD(Arc)(/*[in]*/CogoObjectID firstID,/*[in]*/ CogoObjectID idInc, /*[in]*/ CogoObjectID fromID, /*[in]*/ CogoObjectID HorzexID, /*[in]*/ CogoObjectID toID,/*[in]*/ CollectionIndexType nParts) override;
    STDMETHOD(BetweenPoints)(/*[in]*/CogoObjectID firstID,/*[in]*/ CogoObjectID idInc, /*[in]*/ CogoObjectID fromID, /*[in]*/ CogoObjectID toID,/*[in]*/ CollectionIndexType nParts) override;
    STDMETHOD(LineSegment)(/*[in]*/CogoObjectID firstID,/*[in]*/ CogoObjectID idInc, /*[in]*/ CogoObjectID lineID,/*[in]*/ CollectionIndexType nParts) override;
-	STDMETHOD(HorzCurve)(/*[in]*/ CogoObjectID firstID, /*[in]*/ CogoObjectID idInc, /*[in]*/ CogoObjectID curveID, /*[in]*/ CollectionIndexType nParts) override;
+	STDMETHOD(CompoundCurve)(/*[in]*/ CogoObjectID firstID, /*[in]*/ CogoObjectID idInc, /*[in]*/ CogoObjectID curveID, /*[in]*/ CollectionIndexType nParts) override;
    STDMETHOD(Path)(/*[in]*/CogoObjectID firstID,/*[in]*/CogoObjectID idInc,/*[in]*/CogoObjectID pathID,/*[in]*/ CollectionIndexType nParts,/*[in]*/ Float64 start,/*[in]*/ Float64 end) override;
 
 // ITangent
@@ -227,12 +227,12 @@ public:
    STDMETHOD(OnVertCurveRemoved)(/*[in]*/ CogoObjectID id) override;
    STDMETHOD(OnVertCurvesCleared)() override;
 
-// IHorzCurveCollectionEvents
+// ICompoundCurveCollectionEvents
 public:
-   STDMETHOD(OnHorzCurveChanged)(/*[in]*/ CogoObjectID id,/*[in]*/ IHorzCurve* hc) override;
-   STDMETHOD(OnHorzCurveAdded)(/*[in]*/ CogoObjectID id,/*[in]*/ IHorzCurve* hc) override;
-   STDMETHOD(OnHorzCurveRemoved)(/*[in]*/ CogoObjectID id) override;
-   STDMETHOD(OnHorzCurvesCleared)() override;
+   STDMETHOD(OnCompoundCurveChanged)(/*[in]*/ CogoObjectID id,/*[in]*/ ICompoundCurve* hc) override;
+   STDMETHOD(OnCompoundCurveAdded)(/*[in]*/ CogoObjectID id,/*[in]*/ ICompoundCurve* hc) override;
+   STDMETHOD(OnCompoundCurveRemoved)(/*[in]*/ CogoObjectID id) override;
+   STDMETHOD(OnCompoundCurvesCleared)() override;
 
 // IPathCollectionEvents
 public:
@@ -265,8 +265,8 @@ private:
    CComPtr<IVertCurveCollection> m_VertCurves;
    DWORD m_dwVertCurvesCookie;
 
-   CComPtr<IHorzCurveCollection> m_HorzCurves;
-   DWORD m_dwHorzCurvesCookie;
+   CComPtr<ICompoundCurveCollection> m_CompoundCurves;
+   DWORD m_dwCompoundCurvesCookie;
 
    CComPtr<IAlignmentCollection> m_Alignments;
    DWORD m_dwAlignmentCookie;

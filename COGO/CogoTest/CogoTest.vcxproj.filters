@@ -46,13 +46,13 @@
     <ClCompile Include="TestDivide.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestHorzCurve.cpp">
+    <ClCompile Include="TestCompoundCurve.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestHorzCurve2.cpp">
+    <ClCompile Include="TestCompoundCurve2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestHorzCurveCollection.cpp">
+    <ClCompile Include="TestCompoundCurveCollection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestIntersect.cpp">
@@ -115,6 +115,12 @@
     <ClCompile Include="TestSuperelevation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestTransitionCurve.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCircularCurve.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CogoTest.h">
@@ -159,10 +165,10 @@
     <ClInclude Include="TestDivide.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TestHorzCurve.h">
+    <ClInclude Include="TestCompoundCurve.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TestHorzCurveCollection.h">
+    <ClInclude Include="TestCompoundCurveCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestIntersect.h">
@@ -223,6 +229,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestSuperelevation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestTransitionCurve.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestCircularCurve.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

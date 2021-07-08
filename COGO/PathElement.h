@@ -42,7 +42,9 @@ class ATL_NO_VTABLE CPathElement :
    public IObjectSafetyImpl<CPathElement,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
 	public IConnectionPointContainerImpl<CPathElement>,
 	public IPathElement,
-	public IHorzCurveEvents,
+	public ICircularCurveEvents,
+	public ITransitionCurveEvents,
+	public ICompoundCurveEvents,
 	public ILineSegment2dEvents,
 	public IPoint2dEvents,
    public ICubicSplineEvents,
@@ -68,7 +70,9 @@ BEGIN_COM_MAP(CPathElement)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
 	COM_INTERFACE_ENTRY(IConnectionPointContainer)
 	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY(IHorzCurveEvents)
+	COM_INTERFACE_ENTRY(ICircularCurveEvents)
+	COM_INTERFACE_ENTRY(ITransitionCurveEvents)
+	COM_INTERFACE_ENTRY(ICompoundCurveEvents)
 	COM_INTERFACE_ENTRY(ILineSegment2dEvents)
 	COM_INTERFACE_ENTRY(IPoint2dEvents)
 	COM_INTERFACE_ENTRY(ICubicSplineEvents)
@@ -99,8 +103,23 @@ public:
    STDMETHOD(Save)(IStructuredSave2* pSave) override;
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
-// IHorzCurveEvents
-	STDMETHOD(OnHorzCurveChanged)(IHorzCurve * hc)
+
+	// ICircularCurveEvents
+	STDMETHOD(OnCircularCurveChanged)(ICircularCurve* hc)
+	{
+		ATLASSERT(m_Value.IsEqualObject(hc));
+		Fire_OnPathElementChanged(this);
+		return S_OK;
+	}
+	// ITransitionCurveEvents
+	STDMETHOD(OnTransitionCurveChanged)(ITransitionCurve* hc)
+	{
+		ATLASSERT(m_Value.IsEqualObject(hc));
+		Fire_OnPathElementChanged(this);
+		return S_OK;
+	}
+	// ICompoundCurveEvents
+	STDMETHOD(OnCompoundCurveChanged)(ICompoundCurve * hc)
 	{
       ATLASSERT(m_Value.IsEqualObject(hc));
       Fire_OnPathElementChanged(this);

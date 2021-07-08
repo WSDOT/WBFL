@@ -45,7 +45,7 @@ private:
    static void Test2();
    static void Test3();
    static void Test4();
-//   static void Test5();
+   static void Test5();
 
    static void CompareAlignments(IAlignment* pAlignment1,IAlignment* pAlignment2,Float64 start,Float64 end,long nPoints);
 };

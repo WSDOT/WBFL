@@ -588,7 +588,7 @@ public:
             events->OnVertCurvesCleared(cm);
 		}
 	}
-	VOID Fire_OnHorzCurveChanged(ICogoModel * cm, CogoObjectID id, IHorzCurve * vc)
+	VOID Fire_OnCompoundCurveChanged(ICogoModel * cm, CogoObjectID id, ICompoundCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -601,10 +601,10 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnHorzCurveChanged(cm,id,vc);
+            events->OnCompoundCurveChanged(cm,id,vc);
 		}
 	}
-	VOID Fire_OnHorzCurveAdded(ICogoModel * cm, CogoObjectID id, IHorzCurve * vc)
+	VOID Fire_OnCompoundCurveAdded(ICogoModel * cm, CogoObjectID id, ICompoundCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -617,10 +617,10 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnHorzCurveAdded(cm,id,vc);
+            events->OnCompoundCurveAdded(cm,id,vc);
 		}
 	}
-	VOID Fire_OnHorzCurveRemoved(ICogoModel * cm, CogoObjectID id)
+	VOID Fire_OnCompoundCurveRemoved(ICogoModel * cm, CogoObjectID id)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -633,10 +633,10 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnHorzCurveRemoved(cm,id);
+            events->OnCompoundCurveRemoved(cm,id);
 		}
 	}
-	VOID Fire_OnHorzCurvesCleared(ICogoModel * cm)
+	VOID Fire_OnCompoundCurvesCleared(ICogoModel * cm)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -649,7 +649,7 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnHorzCurvesCleared(cm);
+            events->OnCompoundCurvesCleared(cm);
 		}
 	}
 	VOID Fire_OnProfileChanged(ICogoModel * cm, IProfile * Profile)
@@ -816,11 +816,11 @@ public:
 };
 
 template <class T>
-class CProxyDHorzCurveCollectionEvents : public IConnectionPointImpl<T, &IID_IHorzCurveCollectionEvents, CComDynamicUnkArray>
+class CProxyDCompoundCurveCollectionEvents : public IConnectionPointImpl<T, &IID_ICompoundCurveCollectionEvents, CComDynamicUnkArray>
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnHorzCurveChanged(CogoObjectID id, IHorzCurve * vc)
+	VOID Fire_OnCompoundCurveChanged(CogoObjectID id, ICompoundCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -831,12 +831,12 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IHorzCurveCollectionEvents> events(sp);
+         CComQIPtr<ICompoundCurveCollectionEvents> events(sp);
          if ( events ) 
-            events->OnHorzCurveChanged(id,vc);
+            events->OnCompoundCurveChanged(id,vc);
 		}
 	}
-	VOID Fire_OnHorzCurveAdded(CogoObjectID id, IHorzCurve * vc)
+	VOID Fire_OnCompoundCurveAdded(CogoObjectID id, ICompoundCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -847,12 +847,12 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IHorzCurveCollectionEvents> events(sp);
+         CComQIPtr<ICompoundCurveCollectionEvents> events(sp);
          if ( events ) 
-            events->OnHorzCurveAdded(id,vc);
+            events->OnCompoundCurveAdded(id,vc);
 		}
 	}
-	VOID Fire_OnHorzCurveRemoved(CogoObjectID id)
+	VOID Fire_OnCompoundCurveRemoved(CogoObjectID id)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -863,12 +863,12 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IHorzCurveCollectionEvents> events(sp);
+         CComQIPtr<ICompoundCurveCollectionEvents> events(sp);
          if ( events ) 
-            events->OnHorzCurveRemoved(id);
+            events->OnCompoundCurveRemoved(id);
 		}
 	}
-	VOID Fire_OnHorzCurvesCleared()
+	VOID Fire_OnCompoundCurvesCleared()
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -879,19 +879,65 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IHorzCurveCollectionEvents> events(sp);
+         CComQIPtr<ICompoundCurveCollectionEvents> events(sp);
          if ( events ) 
-            events->OnHorzCurvesCleared();
+            events->OnCompoundCurvesCleared();
 		}
 	}
 };
 
 template <class T>
-class CProxyDHorzCurveEvents : public IConnectionPointImpl<T, &IID_IHorzCurveEvents, CComDynamicUnkArray>
+class CProxyDTransitionCurveEvents : public IConnectionPointImpl<T, &IID_ITransitionCurveEvents, CComDynamicUnkArray>
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnHorzCurveChanged(IHorzCurve * hc)
+	VOID Fire_OnTransitionCurveChanged(ITransitionCurve* curve)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+			CComQIPtr<ITransitionCurveEvents> events(sp);
+			if (events)
+				events->OnTransitionCurveChanged(curve);
+		}
+	}
+};
+
+template <class T>
+class CProxyDCircularCurveEvents : public IConnectionPointImpl<T, &IID_ICircularCurveEvents, CComDynamicUnkArray>
+{
+	//Warning this class may be recreated by the wizard.
+public:
+	VOID Fire_OnCircularCurveChanged(ICircularCurve* hc)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+			CComQIPtr<ICircularCurveEvents> events(sp);
+			if (events)
+				events->OnCircularCurveChanged(hc);
+		}
+	}
+};
+
+template <class T>
+class CProxyDCompoundCurveEvents : public IConnectionPointImpl<T, &IID_ICompoundCurveEvents, CComDynamicUnkArray>
+{
+	//Warning this class may be recreated by the wizard.
+public:
+	VOID Fire_OnCompoundCurveChanged(ICompoundCurve * hc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -902,9 +948,9 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IHorzCurveEvents> events(sp);
+         CComQIPtr<ICompoundCurveEvents> events(sp);
          if ( events )
-            events->OnHorzCurveChanged(hc);
+            events->OnCompoundCurveChanged(hc);
 		}
 	}
 };

@@ -23,57 +23,53 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// TestHorzCurve.h: interface for the CTestHorzCurve class.
+// TestCircularCurve.h: interface for the CTestCircularCurve class.
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTHorzCurve_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)
-#define AFX_TESTHorzCurve_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_
+#if !defined(AFX_TESTCircularCurve_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)
+#define AFX_TESTCircularCurve_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_
 
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 
-class ATL_NO_VTABLE CTestHorzCurve :
+class ATL_NO_VTABLE CTestCircularCurve :
    public CComObjectRootEx<CComSingleThreadModel>,
-   public IHorzCurveEvents
+   public ICircularCurveEvents
 {
 public:
-   CTestHorzCurve();
+   CTestCircularCurve();
 
    static void Test();
 
    void InitEventTest() { m_bTestState = false; }
    bool PassedEventTest() { return m_bTestState; }
 
-BEGIN_COM_MAP(CTestHorzCurve)
-   COM_INTERFACE_ENTRY(IHorzCurveEvents)
+BEGIN_COM_MAP(CTestCircularCurve)
+   COM_INTERFACE_ENTRY(ICircularCurveEvents)
 END_COM_MAP()
 
-// IHorzCurveEvents
+// ICircularCurveEvents
 public:
-	STDMETHOD(OnHorzCurveChanged)(IHorzCurve* pp);
+	STDMETHOD(OnCircularCurveChanged)(ICircularCurve* pp);
 
 private:
    bool m_bTestState;
    void Pass() { m_bTestState = true; }
 
-   static void Test1(); // Unsymmertical Spiral-Curve-Spiral
-   static void Test2(); // Spiral-Curve
-   static void Test3(); // Curve-Spiral
    static void Test4(); // Circular curve
-   static void Test5(); // Left curve
    static void Test6(); 
-   static void Test7(); // Error conditions
-   static void Test8a(); // Line Curve intersection
-   static void Test8b(); // Line Curve intersection
-   static void Test9a(); // Line Curve intersection
-   static void Test9b(); // Line Curve intersection
-   static void Test10a(); // Line Curve intersection
-   static void Test10b(); // Line Curve intersection
-   static void Test11a(); // Line Curve intersection
-   static void Test11b(); // Line Curve intersection
+   //static void Test7(); // Error conditions
+   //static void Test8a(); // Line Curve intersection
+   //static void Test8b(); // Line Curve intersection
+   //static void Test9a(); // Line Curve intersection
+   //static void Test9b(); // Line Curve intersection
+   //static void Test10a(); // Line Curve intersection
+   //static void Test10b(); // Line Curve intersection
+   //static void Test11a(); // Line Curve intersection
+   //static void Test11b(); // Line Curve intersection
    static void TestEvents();
 };
 
-#endif // !defined(AFX_TESTHorzCurve_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)
+#endif // !defined(AFX_TESTCircularCurve_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)

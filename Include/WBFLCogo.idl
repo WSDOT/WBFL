@@ -64,8 +64,8 @@ cpp_quote("#define COGO_E_PROFILEPOINTALREADYDEFINED   MAKE_HRESULT(SEVERITY_ERR
 cpp_quote("#define COGO_E_VERTCURVEPOINTS              MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,527)")
 cpp_quote("#define COGO_E_VERTCURVENOTFOUND            MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,528)")
 cpp_quote("#define COGO_E_VERTCURVEALREADYDEFINED      MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,529)")
-cpp_quote("#define COGO_E_HORZCURVENOTFOUND            MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,530)")
-cpp_quote("#define COGO_E_HORZCURVEALREADYDEFINED      MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,531)")
+cpp_quote("#define COGO_E_COMPOUNDCURVENOTFOUND            MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,530)")
+cpp_quote("#define COGO_E_COMPOUNDCURVEALREADYDEFINED      MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,531)")
 cpp_quote("#define COGO_E_PROFILEELEMENTTYPE           MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,532)")
 cpp_quote("#define COGO_E_PATHELEMENTTYPE              MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,533)")
 cpp_quote("#define COGO_E_PATHNOTFOUND                 MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,534)")
@@ -147,13 +147,15 @@ library WBFLCogo
     } ProfileElementType;
 
     /// Constant identifying the type of object associated with a PathElement object
-    typedef [public,helpstring("Indicates an alignment element type"),helpcontext(IDH_PathElementType),uuid(A5FC1519-B488-4943-94FC-ACBA59BCB733)] 
-    enum PathElementType
+    typedef [public, helpstring("Indicates an alignment element type"), helpcontext(IDH_PathElementType), uuid(A5FC1519-B488-4943-94FC-ACBA59BCB733)]
+       enum PathElementType
     {
-       petPoint       = 1, ///< Associated object is a WBFLGeometry::Point2d
-       petLineSegment = 2, ///< Associated object is a WBFLGeometry::LineSegment2d
-	   petHorzCurve   = 3, ///< Associated object is a HorzCurve
-	   petCubicSpline = 4 ///< Associated object is a CubicSpline
+       petPoint           = 1, ///< Associated object is a WBFLGeometry::Point2d
+       petLineSegment     = 2, ///< Associated object is a WBFLGeometry::LineSegment2d
+       petCircularCurve   = 3, ///< Associated object is a CircularCurve
+       petTransitionCurve = 4, ///< Associated object is a TransitionCurve
+	    petCompoundCurve   = 5, ///< Associated object is a CompoundCurve
+	    petCubicSpline     = 6  ///< Associated object is a CubicSpline
     } PathElementType;
 
     /// Constant identifying the direction of the angle formed by a circular curve tangent line and the line connecting the centers of circles. See documentation for ITangent interface for usage.
@@ -173,6 +175,14 @@ library WBFLCogo
        dcRailroad =  1, ///< Same as dcChord
        dcHighway  =  2, ///< Same as dcArc
     } DegreeCurvatureType;
+
+    /// Constant defining the type of transition curve
+    typedef [public, helpstring("Indicates the type of transition curve"), uuid(29D2E57D-1010-432F-86C5-39EE00405248)]
+    enum TransitionCurveType
+    {
+       Clothoid, ///< A clothoid curve
+       //Bloss, ... and others in the future
+    } TransitionCurveType;
 
     /// Constant describing how an offset is measured
     typedef [public,helpstring("Indicates how an offset is measured")/*,helpcontext(IDH_TangentSignType)*/,uuid(50A94F9E-EACB-4b60-936F-23E5F4F24C86)] 
@@ -555,156 +565,300 @@ library WBFLCogo
         [helpstring("event OnPointsCleared"),helpcontext(IDH_PointCollection_OnPointsCleared)] HRESULT OnPointsCleared();
     };
 
-    /// Interface for horizontal curve objects.
+    /// Interface for transition curves
     ///
-    /// A horizontal curve is defined by a point on the back tangent, the intersection point of the back and forward tangents, 
+    /// The curve radii must have the same sign (reverse curves are not supported). Positive values indicate curves to the left.
+    /// Use a radius of 0.0 to indicate infinite radius (such as tangency to a straight line)
+    [
+       object,
+       uuid(FF1D5D07-D3A3-402E-86F6-E3D56E3EB44C),
+       oleautomation,
+       helpstring("ITransitionCurve Interface"),
+       pointer_default(unique)
+    ]
+    interface ITransitionCurve : IUnknown 
+    {
+        /// Initializes the curve. Use a radius of zero to indicate infinite radius.
+       [helpstring("method Init")] HRESULT Init(
+          [in]IPoint2d* pStart,  ///< Start point of the transition curve
+          [in]IDirection* pStartDirection,  ///< Direction of curve tangent at the start of the transition curve
+          [in]Float64 R1,  ///< Radius at the start of the curve (Positive values for curves to the left)
+          [in]Float64 R2,  ///< Radius at the end of the curve (Positive values for curves to the left)
+          [in]Float64 L, ///< Length of the curve
+          [in]TransitionCurveType type ///< Transityp curve type
+       );
+
+       /// Returns the start point
+       [propget, helpstring("property Start")] HRESULT Start([out, retval]IPoint2d** pStart);
+
+       /// Returns the tangent direction at the start of the curve
+       [propget, helpstring("property StartDirection")] HRESULT StartDirection([out, retval]IDirection * *pStartDirection);
+
+       /// Returns the length of the curve
+       [propget, helpstring("property Length")] HRESULT Length([out, retval]Float64* pLength);
+
+       /// Returns the end point
+       [propget, helpstring("property End")] HRESULT End([out, retval]IPoint2d** pEnd);
+
+       /// Returns the tangent direction at the end of the curve
+       [propget, helpstring("property EndDirection")] HRESULT EndDirection([out, retval]IDirection** pEndDirection);
+
+       /// Returns the radius at the start of the curve
+       [propget, helpstring("property R1")] HRESULT R1([out, retval]Float64* pR1);
+
+       /// Returns the radius at the end of the curve
+       [propget, helpstring("property R2")] HRESULT R2([out, retval]Float64* pR2);
+
+       /// Returns the type of transition curve
+       [propget, helpstring("property Type")] HRESULT Type([out, retval]TransitionCurveType* pType);
+
+       /// Returns the radius at the specified distance from the start of the transition curve
+       /// Radius of zero indicatates infinite radius
+       [helpstring("method GetRadius")] HRESULT GetRadius([in]Float64 distance, [out, retval]Float64* pRadius);
+
+       /// Returns the distance along the tangent from the start of the curve to a perpendicular offset to the end of the spiral.
+       /// \image html /TransitionCurve/Spiral.png
+       [propget, helpstring("property X")] HRESULT X([out, retval]Float64* x);
+
+       /// Returns the offset from the tangent to the spiral at its maximum degree of curvature measured along a perpendicular from the tangent to the end of the transition curve.
+       /// \image html /TransitionCurve/Spiral.png
+       [propget, helpstring("property Y")] HRESULT Y([out, retval]Float64* y);
+
+       /// Returns the long tangent of the spiral
+       /// \image html /TransitionCurve/Spiral.png
+       [propget, helpstring("property LongTangent")] HRESULT LongTangent([out, retval]Float64* u);
+
+       /// Returns the short tangent of the spiral
+       /// \image html /TransitionCurve/Spiral.png
+       [propget, helpstring("property ShortTangent")] HRESULT ShortTangent([out, retval]Float64* v);
+
+       /// Returns the intersection point of the curve tangents
+       [propget, helpstring("property PI")] HRESULT PI([out, retval]IPoint2d** pPI);
+
+       /// Returns the subtended angle of the curve
+       [propget, helpstring("property Angle")] HRESULT Angle([out, retval]IAngle** ppAngle);
+
+       /// Returns the direction if the curve. The direction is as viewed looking ahead on station.
+       [propget, helpstring("property Direction")] HRESULT Direction([out, retval] CurveDirectionType* dir);
+
+       /// Locates a point on the curve at a specified distance from Start. If the specified distance is less than zero or if it is greater than the curve length, the point will be located on the back or forward tangent, respectively.
+       [helpstring("method PointOnCurve")] HRESULT PointOnCurve([in]Float64 distanceFromStart, [out, retval]IPoint2d** point);
+
+       /// Computes the bearing of a line at a specified distance from Start. If the specified distance is less than zero or if it is greater than the curve length, the direction will be the bearing of the back or forward tangent, respectively.
+       [helpstring("method Bearing")] HRESULT Bearing([in] Float64 distanceFromStart, [out, retval]IDirection** pDirection);
+
+       /// Computes the normal of a line at a specified distance from Start. If the specified distance is less than zero or if it is greater than the curve length, the direction will be normal to the back or forward tangent, respectively.
+       [helpstring("method Normal")] HRESULT Normal([in] Float64 distanceFromStart, [out, retval]IDirection** pDirection);
+
+       /// Projects a point onto the curve such that a line perpendicular to the curve passes through the point. 
+       /// If the projected point falls before the Start point, or after the End point, then it will be a point on the back or forward tangent, respectively.
+       [helpstring("method ProjectPoint")] HRESULT ProjectPoint(
+          [in] IPoint2d* point,  ///< Point to be projected
+          [out] IPoint2d** pNewPoint,  ///< Projection point
+          [out] Float64* distFromStart, ///< Distance from start of curve to projection point
+          [out] VARIANT_BOOL* pvbOnProjection ///< Set to VARIANT_TRUE if the point projects onto the back or forward tangent
+       );
+       
+       /// Computes the distance along the curve from the start point to a specified point
+       [helpstring("method DistanceFromStart")] HRESULT DistanceFromStart([in] IPoint2d* point, [out, retval] Float64* dist);
+
+       /// Determines the points where a line intersects the curve
+       [helpstring("method Intersect")] HRESULT Intersect(
+          [in]ILine2d* line, ///< The line to intersect with the spline
+          [in]VARIANT_BOOL bProjectBack, ///< If VARIANT_TRUE, the back tangent is projected and intersected with line
+          [in]VARIANT_BOOL bProjectAhead, ///< If VARIANT_TRUE, the ahead tangent is projected and intersected with line
+          [out, retval]IPoint2dCollection** points ///< A collection of intersection points
+       );
+
+       /// Moves the curve
+       [helpstring("method Move")] HRESULT Move(
+          [in] Float64 dist,  ///< Distance to move
+          [in] IDirection* direction ///< Direction to move
+       );
+
+       /// Offsets the curve from its present location
+       [helpstring("method Offset")] HRESULT Offset
+       (
+          [in]Float64 dx, ///< Distance to offset the curve in the X (East-West) direction.
+          [in]Float64 dy ///< Distnace to offset the curve in the Y (North-South) direction.
+       );
+
+       /// A factory for creating point objects
+       [propget, helpstring("property PointFactory")] HRESULT PointFactory([out, retval] IPoint2dFactory** factory);
+       [propputref, helpstring("property PointFactory")] HRESULT PointFactory([in] IPoint2dFactory* factory);
+
+       /// Creates a clone of this object
+       [helpstring("method Clone")] HRESULT Clone([out, retval] ITransitionCurve** clone);
+
+       /// Returns a reference to an IStructuredStorage2 interface
+       [propget, helpstring("property StructuredStorage")] HRESULT StructuredStorage([out, retval] IStructuredStorage2** pVal);
+    };
+
+    /// Callback interface for transition curve events.
+    [
+        object,
+        uuid(AF12E291-4EAF-464D-978A-65B018B4B794),
+        oleautomation,
+        //helpcontext(IDH_TransitionCurve),
+        helpstring("ITransitionCurveEvents Interface"),
+        pointer_default(unique)
+    ]
+    interface ITransitionCurveEvents : IUnknown
+    {
+        /// Called after a transition curve is changed.
+        [helpstring("event OnTransitionCurveChanged")/*, helpcontext(IDH_CompoundCurve_OnCompoundCurveChanged)*/] HRESULT OnTransitionCurveChanged([in] ITransitionCurve* curve);
+    };
+
+    /// Interface for compound horizontal curve objects.
+    ///
+    /// A compound curve is defined by a point on the back tangent, the intersection point of the back and forward tangents, 
     /// a point on the forward tangent, and the radius. Entry and/or exit clothoid spirals can be added to the curve by 
     /// defining their length. Input values are denoted in red in the figure below. 
-    /// \image html /HorzCurve/HorzCurve.jpg
+    /// \image html /CompoundCurve/CompoundCurve.jpg
    [
        object,
        uuid(7E56BBC9-AC81-4B6D-8366-319DEE51A0D8),
        oleautomation,
-	   helpcontext(IDH_HorzCurve),
-       helpstring("IHorzCurve Interface"),
+	   helpcontext(IDH_CompoundCurve),
+       helpstring("ICompoundCurve Interface"),
        pointer_default(unique)
    ]
-   interface IHorzCurve : IUnknown
+   interface ICompoundCurve : IUnknown
    {
       /// Point on back tangent
-       [propget, helpstring("property PBT"), helpcontext(IDH_HorzCurve_PBT)] HRESULT PBT([out, retval] IPoint2d* *pVal);
-       [propputref, helpstring("property PBT"), helpcontext(IDH_HorzCurve_PBT)] HRESULT PBT([in] IPoint2d* newVal);
+       [propget, helpstring("property PBT"), helpcontext(IDH_CompoundCurve_PBT)] HRESULT PBT([out, retval] IPoint2d* *pVal);
+       [propputref, helpstring("property PBT"), helpcontext(IDH_CompoundCurve_PBT)] HRESULT PBT([in] IPoint2d* newVal);
 
        /// Point of intersection
-       [propget, helpstring("property PI"), helpcontext(IDH_HorzCurve_PI)] HRESULT PI([out, retval] IPoint2d* *pVal);
-       [propputref, helpstring("property PI"), helpcontext(IDH_HorzCurve_PI)] HRESULT PI([in] IPoint2d* newVal);
+       [propget, helpstring("property PI"), helpcontext(IDH_CompoundCurve_PI)] HRESULT PI([out, retval] IPoint2d* *pVal);
+       [propputref, helpstring("property PI"), helpcontext(IDH_CompoundCurve_PI)] HRESULT PI([in] IPoint2d* newVal);
 
        /// Point on forward tangent
-       [propget, helpstring("property PFT"), helpcontext(IDH_HorzCurve_PFT)] HRESULT PFT([out, retval] IPoint2d* *pVal);
-       [propputref, helpstring("property PFT"), helpcontext(IDH_HorzCurve_PFT)] HRESULT PFT([in] IPoint2d* newVal);
+       [propget, helpstring("property PFT"), helpcontext(IDH_CompoundCurve_PFT)] HRESULT PFT([out, retval] IPoint2d* *pVal);
+       [propputref, helpstring("property PFT"), helpcontext(IDH_CompoundCurve_PFT)] HRESULT PFT([in] IPoint2d* newVal);
 
        /// Circular curve radius
-       [propget, helpstring("property Radius"), helpcontext(IDH_HorzCurve_Radius)] HRESULT Radius([out, retval] Float64 *pVal);
-       [propput, helpstring("property Radius"), helpcontext(IDH_HorzCurve_Radius)] HRESULT Radius([in] Float64 newVal);
+       [propget, helpstring("property Radius"), helpcontext(IDH_CompoundCurve_Radius)] HRESULT Radius([out, retval] Float64 *pVal);
+       [propput, helpstring("property Radius"), helpcontext(IDH_CompoundCurve_Radius)] HRESULT Radius([in] Float64 newVal);
 
        /// Length of transition spiral
-       [propget, helpstring("property SpiralLength"), helpcontext(IDH_HorzCurve_SpiralLength)] HRESULT SpiralLength([in] SpiralType spType,[out, retval] Float64 *pVal);
-       [propput, helpstring("property SpiralLength"), helpcontext(IDH_HorzCurve_SpiralLength)] HRESULT SpiralLength([in] SpiralType spType,[in] Float64 newVal);
+       [propget, helpstring("property SpiralLength"), helpcontext(IDH_CompoundCurve_SpiralLength)] HRESULT SpiralLength([in] SpiralType spType,[out, retval] Float64 *pVal);
+       [propput, helpstring("property SpiralLength"), helpcontext(IDH_CompoundCurve_SpiralLength)] HRESULT SpiralLength([in] SpiralType spType,[in] Float64 newVal);
 
        /// Returns the spiral curve angle
-       [propget, helpstring("property SpiralAngle"), helpcontext(IDH_HorzCurve_SpiralAngle)] HRESULT SpiralAngle([in] SpiralType spType,[out, retval] IAngle* *pVal);
+       [propget, helpstring("property SpiralAngle"), helpcontext(IDH_CompoundCurve_SpiralAngle)] HRESULT SpiralAngle([in] SpiralType spType,[out, retval] IAngle* *pVal);
 
        /// Returns the distance along the tangent from TS (or ST) to a perpendicular offset to the end of the spiral.
-       /// \image html /HorzCurve/Spiral.jpg
-	   [propget, helpstring("property X"), helpcontext(IDH_HorzCurve_X)] HRESULT X([in]SpiralType spType,[out,retval]Float64* x);
+       /// \image html /CompoundCurve/Spiral.jpg
+	   [propget, helpstring("property X"), helpcontext(IDH_CompoundCurve_X)] HRESULT X([in]SpiralType spType,[out,retval]Float64* x);
 
       /// Returns the offset from the tangent to the spiral at its maximum degree of curvature measured along a perpendicular from the tangent to SC (or CS).
-      /// \image html /HorzCurve/Spiral.jpg
-      [propget, helpstring("property Y"), helpcontext(IDH_HorzCurve_Y)] HRESULT Y([in]SpiralType spType,[out,retval]Float64* y);
+      /// \image html /CompoundCurve/Spiral.jpg
+      [propget, helpstring("property Y"), helpcontext(IDH_CompoundCurve_Y)] HRESULT Y([in]SpiralType spType,[out,retval]Float64* y);
 
       /// Returns the offset distance that the entire circular curve is radially set in from the tangents to allow for spiral connections.
-      /// \image html /HorzCurve/Spiral.jpg
-      [propget, helpstring("property Q"), helpcontext(IDH_HorzCurve_Q)] HRESULT Q([in]SpiralType spType,[out,retval]Float64* q);
+      /// \image html /CompoundCurve/Spiral.jpg
+      [propget, helpstring("property Q"), helpcontext(IDH_CompoundCurve_Q)] HRESULT Q([in]SpiralType spType,[out,retval]Float64* q);
 
       /// Returns the distance T
-      /// \image html /HorzCurve/Spiral.jpg
-      [propget, helpstring("property T"), helpcontext(IDH_HorzCurve_T)] HRESULT T([in]SpiralType spType,[out,retval]Float64* t);
+      /// \image html /CompoundCurve/Spiral.jpg
+      [propget, helpstring("property T"), helpcontext(IDH_CompoundCurve_T)] HRESULT T([in]SpiralType spType,[out,retval]Float64* t);
 
       /// Returns the back tangent bearing
-	   [propget, helpstring("property BkTangentBrg"), helpcontext(IDH_HorzCurve_BkTangentBrg)] HRESULT BkTangentBrg([out,retval]IDirection* *brg);
+	   [propget, helpstring("property BkTangentBrg"), helpcontext(IDH_CompoundCurve_BkTangentBrg)] HRESULT BkTangentBrg([out,retval]IDirection* *brg);
 
       /// Returns the forward tangent bearing
-	   [propget, helpstring("property FwdTangentBrg"), helpcontext(IDH_HorzCurve_FwdTangentBrg)] HRESULT FwdTangentBrg([out,retval]IDirection* *brg);
+	   [propget, helpstring("property FwdTangentBrg"), helpcontext(IDH_CompoundCurve_FwdTangentBrg)] HRESULT FwdTangentBrg([out,retval]IDirection* *brg);
 
       /// Returns the back tangent length
-	   [propget, helpstring("property BkTangentLength"), helpcontext(IDH_HorzCurve_BkTangentLength)] HRESULT BkTangentLength([out,retval]Float64* t);
+	   [propget, helpstring("property BkTangentLength"), helpcontext(IDH_CompoundCurve_BkTangentLength)] HRESULT BkTangentLength([out,retval]Float64* t);
 
       /// Returns the forward tangent length.
-      [propget, helpstring("property FwdTangentLength"), helpcontext(IDH_HorzCurve_FwdTangentLength)] HRESULT FwdTangentLength([out,retval]Float64* t);
+      [propget, helpstring("property FwdTangentLength"), helpcontext(IDH_CompoundCurve_FwdTangentLength)] HRESULT FwdTangentLength([out,retval]Float64* t);
       
       /// Returns the total angle of the curve.
-      [propget, helpstring("property CurveAngle"), helpcontext(IDH_HorzCurve_CurveAngle)] HRESULT CurveAngle([out, retval] IAngle* *pVal);
+      [propget, helpstring("property CurveAngle"), helpcontext(IDH_CompoundCurve_CurveAngle)] HRESULT CurveAngle([out, retval] IAngle* *pVal);
 
       /// Returns the tangent to spiral point
-      [propget, helpstring("property TS"), helpcontext(IDH_HorzCurve_TS)] HRESULT TS([out, retval] IPoint2d* *pVal);
+      [propget, helpstring("property TS"), helpcontext(IDH_CompoundCurve_TS)] HRESULT TS([out, retval] IPoint2d* *pVal);
 
       /// Returns the spiral to tangent point
-       [propget, helpstring("property ST"), helpcontext(IDH_HorzCurve_ST)] HRESULT ST([out, retval] IPoint2d* *pVal);
+       [propget, helpstring("property ST"), helpcontext(IDH_CompoundCurve_ST)] HRESULT ST([out, retval] IPoint2d* *pVal);
 
        /// Returns the spiral to circular curve point
-       [propget, helpstring("property SC"), helpcontext(IDH_HorzCurve_SC)] HRESULT SC([out, retval] IPoint2d* *pVal);
+       [propget, helpstring("property SC"), helpcontext(IDH_CompoundCurve_SC)] HRESULT SC([out, retval] IPoint2d* *pVal);
 
        /// returns the circular curve to spiral point
-       [propget, helpstring("property CS"), helpcontext(IDH_HorzCurve_CS)] HRESULT CS([out, retval] IPoint2d* *pVal);
+       [propget, helpstring("property CS"), helpcontext(IDH_CompoundCurve_CS)] HRESULT CS([out, retval] IPoint2d* *pVal);
 
        /// Returns the chord length of the circular curve
-       /// \image html /HorzCurve/CircularCurve.jpg
-	   [propget, helpstring("property Chord"), helpcontext(IDH_HorzCurve_Chord)] HRESULT Chord([out,retval]Float64* chord);
+       /// \image html /CompoundCurve/CircularCurve.jpg
+	   [propget, helpstring("property Chord"), helpcontext(IDH_CompoundCurve_Chord)] HRESULT Chord([out,retval]Float64* chord);
 
       /// Returns the internal angle of the circular curve
-       [propget, helpstring("property CircularCurveAngle"), helpcontext(IDH_HorzCurve_CircularCurveAngle)] HRESULT CircularCurveAngle([out, retval] IAngle* *pVal);
+       [propget, helpstring("property CircularCurveAngle"), helpcontext(IDH_CompoundCurve_CircularCurveAngle)] HRESULT CircularCurveAngle([out, retval] IAngle* *pVal);
 
        /// Returns the length of the circular curve tangent
-       /// \image html /HorzCurve/CircularCurve.jpg
-       [propget, helpstring("property Tangent"), helpcontext(IDH_HorzCurve_Tangent)] HRESULT Tangent([out,retval]Float64* tangent);
+       /// \image html /CompoundCurve/CircularCurve.jpg
+       [propget, helpstring("property Tangent"), helpcontext(IDH_CompoundCurve_Tangent)] HRESULT Tangent([out,retval]Float64* tangent);
 
        /// Returns the length of the circular curve mid-ordinate
-       /// \image html /HorzCurve/CircularCurve.jpg
-       [propget, helpstring("property MidOrdinate"), helpcontext(IDH_HorzCurve_MidOrdinate)] HRESULT MidOrdinate([out,retval]Float64* mo);
+       /// \image html /CompoundCurve/CircularCurve.jpg
+       [propget, helpstring("property MidOrdinate"), helpcontext(IDH_CompoundCurve_MidOrdinate)] HRESULT MidOrdinate([out,retval]Float64* mo);
 
        /// Returns the length of the circular curve external
-       /// \image html /HorzCurve/CircularCurve.jpg
-       [propget, helpstring("property External"), helpcontext(IDH_HorzCurve_External)] HRESULT External([out,retval]Float64* external);
+       /// \image html /CompoundCurve/CircularCurve.jpg
+       [propget, helpstring("property External"), helpcontext(IDH_CompoundCurve_External)] HRESULT External([out,retval]Float64* external);
 	   
        /// Returns the deviation angle of the spiral
-       /// \image html /HorzCurve/Spiral.jpg
-       [propget, helpstring("property DE"), helpcontext(IDH_HorzCurve_DE)] HRESULT DE([in]SpiralType spType,[out,retval]IAngle* *pDE);
+       /// \image html /CompoundCurve/Spiral.jpg
+       [propget, helpstring("property DE"), helpcontext(IDH_CompoundCurve_DE)] HRESULT DE([in]SpiralType spType,[out,retval]IAngle* *pDE);
        
        /// Returns the long tangent of the spiral
-       /// \image html /HorzCurve/Spiral.jpg
-       [propget, helpstring("property LongTangent"), helpcontext(IDH_HorzCurve_LongTangent)] HRESULT LongTangent([in]SpiralType spType,[out,retval]Float64* u);
+       /// \image html /CompoundCurve/Spiral.jpg
+       [propget, helpstring("property LongTangent"), helpcontext(IDH_CompoundCurve_LongTangent)] HRESULT LongTangent([in]SpiralType spType,[out,retval]Float64* u);
 
        /// Returns the short tangent of the spiral
-       /// \image html /HorzCurve/Spiral.jpg
-       [propget, helpstring("property ShortTangent"), helpcontext(IDH_HorzCurve_ShortTangent)] HRESULT ShortTangent([in]SpiralType spType,[out,retval]Float64* v);
+       /// \image html /CompoundCurve/Spiral.jpg
+       [propget, helpstring("property ShortTangent"), helpcontext(IDH_CompoundCurve_ShortTangent)] HRESULT ShortTangent([in]SpiralType spType,[out,retval]Float64* v);
 
        /// Returns the center point of the curve. The center point of the curve is taken to be the intersection of lines perpendicular to the back and forward tangents at TS and ST.
-       [propget, helpstring("property CC"), helpcontext(IDH_HorzCurve_CC)] HRESULT CC([out, retval] IPoint2d* *pVal);
+       [propget, helpstring("property CC"), helpcontext(IDH_CompoundCurve_CC)] HRESULT CC([out, retval] IPoint2d* *pVal);
 
        /// Returns the intersection point of the circular curve tangents
-       [propget, helpstring("property PCI"), helpcontext(IDH_HorzCurve_PCI)] HRESULT PCI([out, retval] IPoint2d* *pVal);
+       [propget, helpstring("property PCI"), helpcontext(IDH_CompoundCurve_PCI)] HRESULT PCI([out, retval] IPoint2d* *pVal);
 
        /// Returns the intersection point of the spiral tangents
-	   [propget, helpstring("property SPI"), helpcontext(IDH_HorzCurve_SPI)] HRESULT SPI([in]SpiralType spType,[out,retval]IPoint2d** pSPI);
+	   [propget, helpstring("property SPI"), helpcontext(IDH_CompoundCurve_SPI)] HRESULT SPI([in]SpiralType spType,[out,retval]IPoint2d** pSPI);
 
       /// Returns the back tangent of the circular curve
-	   [propget, helpstring("property CurveBkTangentBrg"), helpcontext(IDH_HorzCurve_CurveBkTangentBrg)] HRESULT CurveBkTangentBrg([out,retval]IDirection* *brg);
+	   [propget, helpstring("property CurveBkTangentBrg"), helpcontext(IDH_CompoundCurve_CurveBkTangentBrg)] HRESULT CurveBkTangentBrg([out,retval]IDirection* *brg);
 
       /// Returns the foward tangent of the circular curve
-      [propget, helpstring("property CurveFwdTangentBrg"), helpcontext(IDH_HorzCurve_CurveFwdTangentBrg)] HRESULT CurveFwdTangentBrg([out,retval]IDirection* *brg);
+      [propget, helpstring("property CurveFwdTangentBrg"), helpcontext(IDH_CompoundCurve_CurveFwdTangentBrg)] HRESULT CurveFwdTangentBrg([out,retval]IDirection* *brg);
 
       /// Returns the center point of the circular curve. The center point of the curve is taken to be the intersection of lines perpendicular to the back and forward tangents of the circular curve at SC and CS.
-       [propget, helpstring("property CCC"), helpcontext(IDH_HorzCurve_CCC)] HRESULT CCC([out, retval] IPoint2d* *pVal);
+       [propget, helpstring("property CCC"), helpcontext(IDH_CompoundCurve_CCC)] HRESULT CCC([out, retval] IPoint2d* *pVal);
        
        /// Returns the deflection angle of the spiral
-       /// \image html /HorzCurve/Spiral.jpg
-       [propget, helpstring("property DF"), helpcontext(IDH_HorzCurve_DF)] HRESULT DF([in]SpiralType spType,[out,retval] IAngle** pDF);
+       /// \image html /CompoundCurve/Spiral.jpg
+       [propget, helpstring("property DF"), helpcontext(IDH_CompoundCurve_DF)] HRESULT DF([in]SpiralType spType,[out,retval] IAngle** pDF);
 
        /// Returns the difference between DE and DF
-       /// \image html /HorzCurve/Spiral.jpg
-       [propget, helpstring("property DH"), helpcontext(IDH_HorzCurve_DH)] HRESULT DH([in]SpiralType spType,[out,retval] IAngle** pDH);
+       /// \image html /CompoundCurve/Spiral.jpg
+       [propget, helpstring("property DH"), helpcontext(IDH_CompoundCurve_DH)] HRESULT DH([in]SpiralType spType,[out,retval] IAngle** pDH);
 
        /// Returns the chord length of the spiral
-   	   [propget, helpstring("property SpiralChord"), helpcontext(IDH_HorzCurve_SpiralChord)] HRESULT SpiralChord([in]SpiralType spType,[out,retval] Float64* cs);
+   	   [propget, helpstring("property SpiralChord"), helpcontext(IDH_CompoundCurve_SpiralChord)] HRESULT SpiralChord([in]SpiralType spType,[out,retval] Float64* cs);
 
          /// Returns the direction if the curve. The direction is as viewed looking ahead on station.
-   	   [propget, helpstring("property Direction"), helpcontext(IDH_HorzCurve_Direction)] HRESULT Direction([out,retval] CurveDirectionType* dir);
+   	   [propget, helpstring("property Direction"), helpcontext(IDH_CompoundCurve_Direction)] HRESULT Direction([out,retval] CurveDirectionType* dir);
 
          /// Returns the length of the circular curve
-	   [propget, helpstring("property CurveLength"), helpcontext(IDH_HorzCurve_CurveLength)] HRESULT CurveLength([out,retval] Float64* pVal);
+	   [propget, helpstring("property CurveLength"), helpcontext(IDH_CompoundCurve_CurveLength)] HRESULT CurveLength([out,retval] Float64* pVal);
 
       /// Returns the total length of the horizontal curve
-	   [propget, helpstring("property TotalLength"), helpcontext(IDH_HorzCurve_TotalLength)] HRESULT TotalLength([out,retval] Float64* pVal);
+	   [propget, helpstring("property TotalLength"), helpcontext(IDH_CompoundCurve_TotalLength)] HRESULT TotalLength([out,retval] Float64* pVal);
 
       /// Returns the degree of curvature of the circular curve.
       ///
@@ -712,20 +866,20 @@ library WBFLCogo
       ///
       /// Arc Method: \f[ dc = \frac{\Delta}{R} \f]
       /// Chord Method: \f[ dc = 2\sin^{-1}\frac{\Delta}{2R} \f]
-	   [propget, helpstring("property DegreeCurvature"), helpcontext(IDH_HorzCurve_DegreeCurvature)] HRESULT DegreeCurvature([in] Float64 D,[in] DegreeCurvatureType dcMethod,[out,retval] IAngle** pDC);
+	   [propget, helpstring("property DegreeCurvature"), helpcontext(IDH_CompoundCurve_DegreeCurvature)] HRESULT DegreeCurvature([in] Float64 D,[in] DegreeCurvatureType dcMethod,[out,retval] IAngle** pDC);
 
       /// Computes the bearing of a line at a specified distance from TS. If the specified distance is less than zero or if it is greater than the curve length, the direction will be the bearing of the back or forward tangent, respectively.
-	   [helpstring("method Bearing"), helpcontext(IDH_HorzCurve_Bearing)] HRESULT Bearing([in] Float64 distance,[out,retval]IDirection* *pVal);
+	   [helpstring("method Bearing"), helpcontext(IDH_CompoundCurve_Bearing)] HRESULT Bearing([in] Float64 distance,[out,retval]IDirection* *pVal);
 
       /// Computes the normal of a line at a specified distance from TS. If the specified distance is less than zero or if it is greater than the curve length, the direction will be normal to the back or forward tangent, respectively.
-	   [helpstring("method Normal"), helpcontext(IDH_HorzCurve_Normal)] HRESULT Normal([in] Float64 distance,[out,retval]IDirection* *pVal);
+	   [helpstring("method Normal"), helpcontext(IDH_CompoundCurve_Normal)] HRESULT Normal([in] Float64 distance,[out,retval]IDirection* *pVal);
 
       /// Locates a point on the curve at a specified distance from TS. If the specified distance is less than zero or if it is greater than the curve length, the point will be located on the back or forward tangent, respectively.
-	   [helpstring("method PointOnCurve"), helpcontext(IDH_HorzCurve_PointOnCurve)] HRESULT PointOnCurve([in] Float64 distance,[out,retval]IPoint2d* *pVal);
+	   [helpstring("method PointOnCurve"), helpcontext(IDH_CompoundCurve_PointOnCurve)] HRESULT PointOnCurve([in] Float64 distance,[out,retval]IPoint2d* *pVal);
 
       /// Projects a point onto the curve such that a line perpendicular to the curve passes through the point. 
       /// If the projected point falls before the TS point, or after the ST point, then it will be a point on the back or forward tangent, respectively.
-      [helpstring("method ProjectPoint"), helpcontext(IDH_HorzCurve_ProjectPoint)] HRESULT ProjectPoint(
+      [helpstring("method ProjectPoint"), helpcontext(IDH_CompoundCurve_ProjectPoint)] HRESULT ProjectPoint(
          [in] IPoint2d* point,  ///< Point to be projected
          [out] IPoint2d* *pNewPoint,  ///< Projection point
          [out] Float64* distFromStart, ///< Distance from start of curve to projection point
@@ -733,7 +887,7 @@ library WBFLCogo
       );
 
       /// Determines the points where a line intersects the curve. The point objects are Nothing if there aren't intersection points.
-	  [helpstring("method Intersect"), helpcontext(IDH_HorzCurve_Intersect)] HRESULT Intersect(
+	  [helpstring("method Intersect"), helpcontext(IDH_CompoundCurve_Intersect)] HRESULT Intersect(
         [in]ILine2d* line, ///< A line that intersects the curve
         [in]VARIANT_BOOL bProjectBack, ///< VARIANT_TRUE to project the back tangent
         [in]VARIANT_BOOL bProjectAhead, ///< VARIANT_TRUE to project the ahead tangent
@@ -742,18 +896,18 @@ library WBFLCogo
      );
 
      /// Offsets the curve from its present location
-     [helpstring("method Offset"), helpcontext(IDH_HorzCurve_Offset)] HRESULT Offset
+     [helpstring("method Offset"), helpcontext(IDH_CompoundCurve_Offset)] HRESULT Offset
      (
         [in]Float64 dx, ///< Distance to offset the curve in the X (East-West) direction.
         [in]Float64 dy ///< Distnace to offset the curve in the Y (North-South) direction.
      );
 
      /// A factory for creating point objects
-	   [propget, helpstring("property PointFactory"), helpcontext(IDH_HorzCurve_PointFactory)] HRESULT PointFactory([out,retval] IPoint2dFactory* *factory);
-	   [propputref, helpstring("property PointFactory"), helpcontext(IDH_HorzCurve_PointFactory)] HRESULT PointFactory([in] IPoint2dFactory *factory);
+	   [propget, helpstring("property PointFactory"), helpcontext(IDH_CompoundCurve_PointFactory)] HRESULT PointFactory([out,retval] IPoint2dFactory* *factory);
+	   [propputref, helpstring("property PointFactory"), helpcontext(IDH_CompoundCurve_PointFactory)] HRESULT PointFactory([in] IPoint2dFactory *factory);
 
       /// Creates a clone of this object
-      [helpstring("method Clone"), helpcontext(IDH_HorzCurve_Clone)] HRESULT Clone([out,retval] IHorzCurve* *clone);
+      [helpstring("method Clone"), helpcontext(IDH_CompoundCurve_Clone)] HRESULT Clone([out,retval] ICompoundCurve* *clone);
 
       /// Returns a reference to an IStructuredStorage2 interface
         [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
@@ -764,14 +918,158 @@ library WBFLCogo
        object,
        uuid(4726E8C7-5B74-4cda-844B-4F7B1B5AB1ED),
        oleautomation,
-	   helpcontext(IDH_HorzCurve),
-       helpstring("IHorzCurveEvents Interface"),
+	   helpcontext(IDH_CompoundCurve),
+       helpstring("ICompoundCurveEvents Interface"),
        pointer_default(unique)
    ]
-   interface IHorzCurveEvents : IUnknown
+   interface ICompoundCurveEvents : IUnknown
    {
       /// Called after a horizontal curve is changed.
-       [helpstring("event OnHorzCurveChanged"), helpcontext(IDH_HorzCurve_OnHorzCurveChanged)] HRESULT OnHorzCurveChanged([in] IHorzCurve* hc);
+       [helpstring("event OnCompoundCurveChanged"), helpcontext(IDH_CompoundCurve_OnCompoundCurveChanged)] HRESULT OnCompoundCurveChanged([in] ICompoundCurve* hc);
+   };
+
+
+
+   /// Interface for circular horizontal curve objects.
+   ///
+   /// A circular curve is defined by a point on the back tangent, the intersection point of the back and forward tangents, 
+   /// a point on the forward tangent, and the radius. Entry and/or exit clothoid spirals can be added to the curve by 
+   /// defining their length. Input values are denoted in red in the figure below. 
+   /// \image html /CircularCurve/CircularCurve.png
+   [
+       object,
+       uuid(D02C31CC-24E5-439F-9E2C-1E61C7203C69),
+       oleautomation,
+       helpstring("ICircularCurve Interface"),
+       pointer_default(unique)
+   ]
+   interface ICircularCurve : IUnknown
+   {
+       /// Point on back tangent
+       [propget, helpstring("property PBT")] HRESULT PBT([out, retval] IPoint2d** pVal);
+       [propputref, helpstring("property PBT")] HRESULT PBT([in] IPoint2d* newVal);
+
+       /// Point of intersection
+       [propget, helpstring("property PI")] HRESULT PI([out, retval] IPoint2d** pVal);
+       [propputref, helpstring("property PI")] HRESULT PI([in] IPoint2d* newVal);
+
+       /// Point on forward tangent
+       [propget, helpstring("property PFT")] HRESULT PFT([out, retval] IPoint2d** pVal);
+       [propputref, helpstring("property PFT")] HRESULT PFT([in] IPoint2d* newVal);
+
+       /// Circular curve radius
+       [propget, helpstring("property Radius")] HRESULT Radius([out, retval] Float64* pVal);
+       [propput, helpstring("property Radius")] HRESULT Radius([in] Float64 newVal);
+
+       /// Returns the point of curvature at the start of the curve
+       [propget, helpstring("property PC")] HRESULT PC([out, retval] IPoint2d** pVal);
+
+       /// Returns the point of tangency at the end of the curve
+       [propget, helpstring("property PT")] HRESULT PT([out, retval] IPoint2d** pVal);
+       
+       /// Returns the back tangent bearing
+       [propget, helpstring("property BkTangentBrg")] HRESULT BkTangentBrg([out, retval]IDirection** brg);
+
+       /// Returns the forward tangent bearing
+       [propget, helpstring("property FwdTangentBrg")] HRESULT FwdTangentBrg([out, retval]IDirection** brg);
+
+       /// Returns the tangent length
+       [propget, helpstring("property TangentLength")] HRESULT TangentLength([out, retval]Float64* t);
+
+       /// Returns the total angle of the curve.
+       [propget, helpstring("property Angle")] HRESULT Angle([out, retval] IAngle** pVal);
+
+       /// Returns the chord length of the circular curve
+       /// \image html /CircularCurve/CircularCurve.png
+       [propget, helpstring("property Chord")] HRESULT Chord([out, retval]Float64* chord);
+
+       /// Returns the length of the circular curve tangent
+       /// \image html /CircularCurve/CircularCurve.png
+       [propget, helpstring("property Tangent")] HRESULT Tangent([out, retval]Float64* tangent);
+
+       /// Returns the length of the circular curve mid-ordinate
+       /// \image html /CircularCurve/CircularCurve.png
+       [propget, helpstring("property MidOrdinate")] HRESULT MidOrdinate([out, retval]Float64* mo);
+
+       /// Returns the length of the circular curve external
+       /// \image html /CircularCurve/CircularCurve.png
+       [propget, helpstring("property External")] HRESULT External([out, retval]Float64* external);
+
+       /// Returns the center point of the curve. The center point of the curve is taken to be the intersection of lines perpendicular to the back and forward tangents at TS and ST.
+       [propget, helpstring("property Center")] HRESULT Center([out, retval] IPoint2d** pVal);
+
+       /// Returns the direction if the curve. The direction is as viewed looking ahead on station.
+       [propget, helpstring("property Direction")] HRESULT Direction([out, retval] CurveDirectionType* dir);
+
+       /// Returns the length of the circular curve
+       [propget, helpstring("property Length")] HRESULT Length([out, retval] Float64* pVal);
+
+       /// Returns the degree of curvature of the circular curve.
+       ///
+       /// The degree of curvature can be computed by either the arc or chord method.
+       ///
+       /// Arc Method: \f[ dc = \frac{\Delta}{R} \f]
+       /// Chord Method: \f[ dc = 2\sin^{-1}\frac{\Delta}{2R} \f]
+       [propget, helpstring("property DegreeCurvature")] HRESULT DegreeCurvature([in] Float64 D, [in] DegreeCurvatureType dcMethod, [out, retval] IAngle** pDC);
+
+       /// Computes the bearing of a line at a specified distance from TS. If the specified distance is less than zero or if it is greater than the curve length, the direction will be the bearing of the back or forward tangent, respectively.
+       [helpstring("method Bearing")] HRESULT Bearing([in] Float64 distance, [out, retval]IDirection** pVal);
+
+       /// Computes the normal of a line at a specified distance from TS. If the specified distance is less than zero or if it is greater than the curve length, the direction will be normal to the back or forward tangent, respectively.
+       [helpstring("method Normal")] HRESULT Normal([in] Float64 distance, [out, retval]IDirection** pVal);
+
+       /// Locates a point on the curve at a specified distance from TS. If the specified distance is less than zero or if it is greater than the curve length, the point will be located on the back or forward tangent, respectively.
+       [helpstring("method PointOnCurve")] HRESULT PointOnCurve([in] Float64 distance, [out, retval]IPoint2d** pVal);
+
+       /// Projects a point onto the curve such that a line perpendicular to the curve passes through the point. 
+       /// If the projected point falls before the TS point, or after the ST point, then it will be a point on the back or forward tangent, respectively.
+       [helpstring("method ProjectPoint")] HRESULT ProjectPoint(
+           [in] IPoint2d* point,  ///< Point to be projected
+           [out] IPoint2d** pNewPoint,  ///< Projection point
+           [out] Float64* distFromStart, ///< Distance from start of curve to projection point
+           [out] VARIANT_BOOL* pvbOnProjection ///< Set to VARIANT_TRUE if the point projects onto the back or forward tangent
+       );
+
+       /// Determines the points where a line intersects the curve. The point objects are Nothing if there aren't intersection points.
+       [helpstring("method Intersect")] HRESULT Intersect(
+           [in]ILine2d* line, ///< A line that intersects the curve
+           [in]VARIANT_BOOL bProjectBack, ///< VARIANT_TRUE to project the back tangent
+           [in]VARIANT_BOOL bProjectAhead, ///< VARIANT_TRUE to project the ahead tangent
+           [out] IPoint2d** p1, ///< Intersection point nearest the start of the curve. *p1 is nullptr if intersection points where not found.
+           [out] IPoint2d** p2 ///< Interection point nearest the end of the curve. *p2 is nullptr if intersection points where not found.
+       );
+
+       /// Offsets the curve from its present location
+       [helpstring("method Offset")] HRESULT Offset
+       (
+           [in]Float64 dx, ///< Distance to offset the curve in the X (East-West) direction.
+           [in]Float64 dy ///< Distnace to offset the curve in the Y (North-South) direction.
+       );
+
+       /// A factory for creating point objects
+       [propget, helpstring("property PointFactory")] HRESULT PointFactory([out, retval] IPoint2dFactory** factory);
+       [propputref, helpstring("property PointFactory")] HRESULT PointFactory([in] IPoint2dFactory* factory);
+
+       /// Creates a clone of this object
+       [helpstring("method Clone")] HRESULT Clone([out, retval] ICircularCurve** clone);
+
+       /// Returns a reference to an IStructuredStorage2 interface
+       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2** pVal);
+   };
+
+   /// Callback interface for circular curve events.
+   [
+       object,
+       uuid(E0450841-8F31-470E-83AA-B4BE779533B8),
+       oleautomation,
+       //helpcontext(IDH_CompoundCurve),
+       helpstring("ICircularCurveEvents Interface"),
+       pointer_default(unique)
+   ]
+   interface ICircularCurveEvents : IUnknown
+   {
+       /// Called after a circular curve is changed.
+       [helpstring("event OnCircularCurveChanged")] HRESULT OnCircularCurveChanged([in] ICircularCurve* hc);
    };
 
 	/// Interface for objects that enumerate a collection of ILineSegment2d objects
@@ -1667,27 +1965,27 @@ library WBFLCogo
       [helpstring("event OnVertCurvesCleared"), helpcontext(IDH_VertCurveCollection_OnVertCurvesCleared)] HRESULT OnVertCurvesCleared();
    };
 	
-   /// Interface for objects that enumerate a collection of IHorzCurve objects
+   /// Interface for objects that enumerate a collection of ICompoundCurve objects
    [
 	   object,
 	   uuid(2317EF09-E0F5-49fe-B6BC-14A21A59EBAC),
-	   helpstring("IEnumHorzCurves Interface"),
-	   //helpcontext(IDH_IEnumHorzCurves),
+	   helpstring("IEnumCompoundCurves Interface"),
+	   //helpcontext(IDH_IEnumCompoundCurves),
 	   oleautomation,
 	   hidden,restricted,
 	   pointer_default(unique)
 	]
-	interface IEnumHorzCurves : IUnknown
+	interface IEnumCompoundCurves : IUnknown
 	{
       /// Clone the enumerator
-      [helpstring("Clone")] HRESULT Clone([out] IEnumHorzCurves** ppenum);
+      [helpstring("Clone")] HRESULT Clone([out] IEnumCompoundCurves** ppenum);
 
       /// Retrieves the next celt items from the enumeration sequence. If there are fewer than the requested number of elements in the sequence, it retrieves the remaining elements. The number of elements actually retrieved is returned through pceltFetched (unless the caller passed in NULL for that parameter).
       /// Returns S_OK if the number of elements supplied is celt, otherwise S_FALSE
       [helpstring("Next")]
 	   HRESULT Next(
          [in] ULONG celt,   ///< Number of elements being requested
-         [out] IHorzCurve** rgelt, ///< Array of size celt (or larger) of elements of interest
+         [out] ICompoundCurve** rgelt, ///< Array of size celt (or larger) of elements of interest
          [in,out] ULONG* pceltFetched ///< Pointer to the number of elements actually supplied in rgelt. Can be nullptr if celt is 1.
       );
 
@@ -1701,46 +1999,46 @@ library WBFLCogo
       );
 	};
 
-   /// Interface for objects that create HorzCurve objects
+   /// Interface for objects that create CompoundCurve objects
    [
 		object,
 		uuid(6C9AFFCA-DC58-4EA5-8FE6-A249CFED06BA),
 		oleautomation,
-		helpcontext(IDH_HorzCurveFactory),
-		helpstring("IHorzCurveFactory Interface"),
+		helpcontext(IDH_CompoundCurveFactory),
+		helpstring("ICompoundCurveFactory Interface"),
 		pointer_default(unique)
 	]
-	interface IHorzCurveFactory : IUnknown
+	interface ICompoundCurveFactory : IUnknown
 	{
-      /// Returns a new HorzCurve object. The caller must define the curve parameters.
-      [helpstring("method CreateHorzCurve"), helpcontext(IDH_HorzCurveFactory_CreateHorzCurve)] HRESULT CreateHorzCurve([out,retval] IHorzCurve* *pVal);
+      /// Returns a new CompoundCurve object. The caller must define the curve parameters.
+      [helpstring("method CreateCompoundCurve"), helpcontext(IDH_CompoundCurveFactory_CreateCompoundCurve)] HRESULT CreateCompoundCurve([out,retval] ICompoundCurve* *pVal);
 
       /// The StructuredStorage property
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
 	};
 
-   /// Interface for defining a collection of objects implementing the IHorzCurve interface.
+   /// Interface for defining a collection of objects implementing the ICompoundCurve interface.
    [
 		object,
 		uuid(2436697B-4DE1-40A1-B087-89AA074F1C2C),
 		oleautomation,
-		helpcontext(IDH_HorzCurveCollection),
-		helpstring("IHorzCurveCollection Interface"),
+		helpcontext(IDH_CompoundCurveCollection),
+		helpstring("ICompoundCurveCollection Interface"),
 		pointer_default(unique)
 	]
-	interface IHorzCurveCollection : IUnknown
+	interface ICompoundCurveCollection : IUnknown
 	{
       /// Gets an item from the collection using its identifier.
-      [propget, helpstring("property Item"), helpcontext(IDH_HorzCurveCollection_Item)] HRESULT Item([in] CogoObjectID id, [out, retval] IHorzCurve* *pVal);
+      [propget, helpstring("property Item"), helpcontext(IDH_CompoundCurveCollection_Item)] HRESULT Item([in] CogoObjectID id, [out, retval] ICompoundCurve* *pVal);
 
       /// Replaces an item in the collection
-      [propputref, helpstring("property Item"), helpcontext(IDH_HorzCurveCollection_Item)] HRESULT Item([in] CogoObjectID id, [in] IHorzCurve* newVal);
+      [propputref, helpstring("property Item"), helpcontext(IDH_CompoundCurveCollection_Item)] HRESULT Item([in] CogoObjectID id, [in] ICompoundCurve* newVal);
 
       /// Returns the number of items in the collection.
-      [propget, helpstring("property Count"), helpcontext(IDH_HorzCurveCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
+      [propget, helpstring("property Count"), helpcontext(IDH_CompoundCurveCollection_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
 
-      /// Adds a horizontal curve to the collection. The new horizontal curve object is created with the IHorzCurveFactory object associated with this collection.
-      [helpstring("method Add"), helpcontext(IDH_HorzCurveCollection_Add)] HRESULT Add(
+      /// Adds a horizontal curve to the collection. The new horizontal curve object is created with the ICompoundCurveFactory object associated with this collection.
+      [helpstring("method Add"), helpcontext(IDH_CompoundCurveCollection_Add)] HRESULT Add(
          [in] CogoObjectID id, ///< Unique identifier for the horizontal curve
          [in] IPoint2d* pbt,///< A point on the back tangent
          [in] IPoint2d* pi, ///< The point of intersection
@@ -1748,80 +2046,80 @@ library WBFLCogo
          [in] Float64 radius, ///< The radius of the circular curve
          [in] Float64 Ls1, ///< The entry spiral length
          [in] Float64 Ls2, ///< The exit spiral length
-         [out,retval]IHorzCurve** hc ///< The new horizontal curve
+         [out,retval]ICompoundCurve** hc ///< The new horizontal curve
       );
 
       /// Adds a horizontal curve to the collection.
-      [helpstring("method AddEx"), helpcontext(IDH_HorzCurveCollection_AddEx)] HRESULT AddEx(
+      [helpstring("method AddEx"), helpcontext(IDH_CompoundCurveCollection_AddEx)] HRESULT AddEx(
          [in] CogoObjectID id, ///< Unique identifier for the horizontal curve
-         [in] IHorzCurve* newVal ///< A horizontal curve object
+         [in] ICompoundCurve* newVal ///< A horizontal curve object
       );
 
       /// Removes a vertical curve from the collection
-      [helpstring("method Remove"), helpcontext(IDH_HorzCurveCollection_Remove)] HRESULT Remove([in] CogoObjectID id);
+      [helpstring("method Remove"), helpcontext(IDH_CompoundCurveCollection_Remove)] HRESULT Remove([in] CogoObjectID id);
 
       /// Removes all items from the collection
-      [helpstring("method Clear"), helpcontext(IDH_HorzCurveCollection_Clear)] HRESULT Clear();
+      [helpstring("method Clear"), helpcontext(IDH_CompoundCurveCollection_Clear)] HRESULT Clear();
 
       /// Searches the collection for a horizontal curve and returns its identifier
-      [helpstring("method FindID"), helpcontext(IDH_HorzCurveCollection_FindID)] HRESULT FindID([in] IHorzCurve* hc,[out,retval]CogoObjectID* ID);
+      [helpstring("method FindID"), helpcontext(IDH_CompoundCurveCollection_FindID)] HRESULT FindID([in] ICompoundCurve* hc,[out,retval]CogoObjectID* ID);
 
       /// Returns the ID at a specific location in the collection
-      [helpstring("method ID"), helpcontext(IDH_HorzCurveCollection_ID)] HRESULT ID([in] CollectionIndexType index, [out, retval] CogoObjectID* ID);
+      [helpstring("method ID"), helpcontext(IDH_CompoundCurveCollection_ID)] HRESULT ID([in] CollectionIndexType index, [out, retval] CogoObjectID* ID);
 
-      /// A factory object used to create new HorzCurve objects
-      [propget, helpstring("method Factory"), helpcontext(IDH_HorzCurveCollection_Factory)] HRESULT Factory([out,retval]IHorzCurveFactory** factory);
-		[propputref, helpstring("method Factory"), helpcontext(IDH_HorzCurveCollection_Factory)] HRESULT Factory([in]IHorzCurveFactory* factory);
+      /// A factory object used to create new CompoundCurve objects
+      [propget, helpstring("method Factory"), helpcontext(IDH_CompoundCurveCollection_Factory)] HRESULT Factory([out,retval]ICompoundCurveFactory** factory);
+		[propputref, helpstring("method Factory"), helpcontext(IDH_CompoundCurveCollection_Factory)] HRESULT Factory([in]ICompoundCurveFactory* factory);
 
       /// Clones the collection making a copy of all the contained objects
-      [helpstring("method Clone"), helpcontext(IDH_HorzCurveCollection_Clone)] HRESULT Clone([out,retval] IHorzCurveCollection* *clone);
+      [helpstring("method Clone"), helpcontext(IDH_CompoundCurveCollection_Clone)] HRESULT Clone([out,retval] ICompoundCurveCollection* *clone);
 
         /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
         [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);
 
         /// Returns an IEnumIDs interface. This is a restricted property and is not accessible from Visual Basic. Generally, in C++, it is easier to iterate through a collection using an enumerator than the collection interface.
-        [propget, restricted, helpstring("property _EnumIDs"), helpcontext(IDH_HorzCurveCollection__EnumIDs)] HRESULT _EnumIDs([out, retval] IEnumIDs** ppenum);
+        [propget, restricted, helpstring("property _EnumIDs"), helpcontext(IDH_CompoundCurveCollection__EnumIDs)] HRESULT _EnumIDs([out, retval] IEnumIDs** ppenum);
 
-        /// Returns an IEnumHorzCurves interface. This is a restricted property and is not accessible from Visual Basic. Generally, in C++, it is easier to iterate through a collection using an enumerator than the collection interface.
-        [propget, restricted, helpstring("property _EnumHorzCurves"), helpcontext(IDH_HorzCurveCollection__EnumHorzCurves)] HRESULT _EnumHorzCurves([out, retval] IEnumHorzCurves** ppenum);
+        /// Returns an IEnumCompoundCurves interface. This is a restricted property and is not accessible from Visual Basic. Generally, in C++, it is easier to iterate through a collection using an enumerator than the collection interface.
+        [propget, restricted, helpstring("property _EnumCompoundCurves"), helpcontext(IDH_CompoundCurveCollection__EnumCompoundCurves)] HRESULT _EnumCompoundCurves([out, retval] IEnumCompoundCurves** ppenum);
 
         /// The StructuredStorage property.
         [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
 	};
 
-   /// Callback interface for IHorzCurveCollection events
+   /// Callback interface for ICompoundCurveCollection events
    [
 		object,
 		uuid(7322B2AD-A63B-4348-854C-ED1130B7EB49),
 		oleautomation,
-		helpcontext(IDH_HorzCurveCollection),
-		helpstring("IHorzCurveCollectionEvents Interface"),
+		helpcontext(IDH_CompoundCurveCollection),
+		helpstring("ICompoundCurveCollectionEvents Interface"),
 		pointer_default(unique)
 	]
-	interface IHorzCurveCollectionEvents : IUnknown
+	interface ICompoundCurveCollectionEvents : IUnknown
    {
       /// Called after a horizontal curve is changed
-      [helpstring("event OnHorzCurveChanged"), helpcontext(IDH_HorzCurveCollection_OnHorzCurveChanged)] 
-      HRESULT OnHorzCurveChanged(
+      [helpstring("event OnCompoundCurveChanged"), helpcontext(IDH_CompoundCurveCollection_OnCompoundCurveChanged)] 
+      HRESULT OnCompoundCurveChanged(
          [in] CogoObjectID id, ///< Horizontal curve ID
-         [in] IHorzCurve* hc ///< The horizontal curve
+         [in] ICompoundCurve* hc ///< The horizontal curve
       );
 
       /// Called after a horizontal curve is added
-      [helpstring("event OnHorzCurveAdded"), helpcontext(IDH_HorzCurveCollection_OnHorzCurveAdded)] 
-      HRESULT OnHorzCurveAdded(
+      [helpstring("event OnCompoundCurveAdded"), helpcontext(IDH_CompoundCurveCollection_OnCompoundCurveAdded)] 
+      HRESULT OnCompoundCurveAdded(
          [in] CogoObjectID id, ///< Horizontal curve ID
-         [in] IHorzCurve* hc ///< The horizontal curve
+         [in] ICompoundCurve* hc ///< The horizontal curve
       );
 
       /// Called after a horizontal curve is removed
-      [helpstring("event OnHorzCurveRemoved"), helpcontext(IDH_HorzCurveCollection_OnHorzCurveRemoved)] 
-      HRESULT OnHorzCurveRemoved(
+      [helpstring("event OnCompoundCurveRemoved"), helpcontext(IDH_CompoundCurveCollection_OnCompoundCurveRemoved)] 
+      HRESULT OnCompoundCurveRemoved(
          [in] CogoObjectID id ///< Horizontal curve ID
       );
 
       /// Called when the collection is cleared
-      [helpstring("event OnHorzCurvesCleared"), helpcontext(IDH_HorzCurveCollection_OnHorzCurvesCleared)] HRESULT OnHorzCurvesCleared();
+      [helpstring("event OnCompoundCurvesCleared"), helpcontext(IDH_CompoundCurveCollection_OnCompoundCurvesCleared)] HRESULT OnCompoundCurvesCleared();
    };
 
    /// Interface for objects that represent a cubic spline.
@@ -3296,18 +3594,18 @@ library WBFLCogo
       /// Adds a PathElement to the collection
 		[helpstring("method Add"), helpcontext(IDH_Path_Add)] HRESULT Add([in] IPathElement* element);
 
-      /// Adds a Point2d, LineSegment2d, CubicSpline, or HorzCurve object to the path and creates a new PathElement object
+      /// Adds a Point2d, LineSegment2d, CircularCurve, TransitionCurve, CompoundCurve, or CubicSpline object to the path and creates a new PathElement object
 		[helpstring("method AddEx"), helpcontext(IDH_Path_AddEx)] HRESULT AddEx([in] IUnknown* dispElement);
 
       /// Inserts a PathElement object into the Path at the specified index.
       [helpstring("method Insert"), helpcontext(IDH_Path_Insert)] HRESULT Insert([in] CollectionIndexType idx,[in] IPathElement* element);
 
-      /// Inserts a Point2d, LineSegment2d, CubicSpline, or HorzCurve object into the Path at the specified index.
+      /// Inserts a Point2d, LineSegment2d, CircularCurve, TransitionCurve, CompoundCurve, or CubicSpline object into the Path at the specified index.
       [helpstring("method InsertEx"), helpcontext(IDH_Path_InsertEx)] HRESULT InsertEx([in] CollectionIndexType idx,[in] IUnknown* dispElement);
 
       /// Removes a PathElement from the path.
 		[helpstring("method Remove"), helpcontext(IDH_Path_Remove)] HRESULT Remove(
-         [in] VARIANT varIdxOrElement ///< VARIANT containing either the index of the PathElement to remove or an IDispatch or IUnknown interface for a PathElement, Point2d, LineSegment2d, CubicSpline, or HorzCurve object to be removed
+         [in] VARIANT varIdxOrElement ///< VARIANT containing either the index of the PathElement to remove or an IDispatch or IUnknown interface for a PathElement, Point2d, LineSegment2d, CircularCurve, TransitionCurve, CompoundCurve, or CubicSpline object to be removed
       );
 
       /// Removes all PathElement objects from the path
@@ -3619,7 +3917,7 @@ library WBFLCogo
       /// The alignemnt reference station.
       ///
       /// The reference station defines the stationing of the entire alignment. The reference station is the station at the beginning of the first PathElement. 
-      /// If the first PathElement represents an HorzCurve object, the reference station is at the TS point of the curve.
+      /// If the first PathElement represents an CompoundCurve object, the reference station is at the TS point of the curve.
 		[propget, helpstring("property RefStation"), helpcontext(IDH_Alignment_RefStation)] HRESULT RefStation([out, retval] IStation* *station);
 		[propput, helpstring("property RefStation"), helpcontext(IDH_Alignment_RefStation)] HRESULT RefStation([in] VARIANT varStation);
 
@@ -3632,18 +3930,18 @@ library WBFLCogo
       /// Adds a PathElement to the alignment
  		[helpstring("method Add"), helpcontext(IDH_Alignment_Add)] HRESULT Add([in] IPathElement* element);
 
-      /// Adds a Point2d, LineSegment2d, CubicSpline, or HorzCurve object to the alignment and creates a new PathElement object
+      /// Adds a Point2d, LineSegment2d, CubicSpline, or CompoundCurve object to the alignment and creates a new PathElement object
       [helpstring("method AddEx"), helpcontext(IDH_Alignment_AddEx)] HRESULT AddEx([in] IUnknown* dispElement);
 
       /// Inserts a PathElement object into the alignment at the specified index.
       [helpstring("method Insert"), helpcontext(IDH_Alignment_Insert)] HRESULT Insert([in] CollectionIndexType idx,[in] IPathElement* element);
       
-      /// Inserts a Point2d, LineSegment2d, CubicSpline, or HorzCurve object into the alignment at the specified index.
+      /// Inserts a Point2d, LineSegment2d, CubicSpline, or CompoundCurve object into the alignment at the specified index.
       [helpstring("method InsertEx"), helpcontext(IDH_Alignment_InsertEx)] HRESULT InsertEx([in] CollectionIndexType idx,[in] IUnknown* dispElement);
 
       /// Removes a PathElement from the alignment.
 		[helpstring("method Remove"), helpcontext(IDH_Alignment_Remove)] HRESULT Remove(
-         [in] VARIANT varIdxOrElement ///< VARIANT containing either the index of the PathElement to remove or an IDispatch or IUnknown interface for a PathElement, Point2d, LineSegment2d, CubicSpline, or HorzCurve object to be removed
+         [in] VARIANT varIdxOrElement ///< VARIANT containing either the index of the PathElement to remove or an IDispatch or IUnknown interface for a PathElement, Point2d, LineSegment2d, CubicSpline, or CompoundCurve object to be removed
       );
 
       /// Removes all PathElement objects from the alignment
@@ -4472,7 +4770,7 @@ library WBFLCogo
     ]
     interface IProject : IUnknown
     {
-       /// Projects a point onto a HorzCurve. If the point projects before or after the TS or ST point on the curve, the projected point will be on the Back or Forward Tangent, respectively.
+       /// Projects a point onto a CompoundCurve. If the point projects before or after the TS or ST point on the curve, the projected point will be on the Back or Forward Tangent, respectively.
        /// \image html /Project/PointOnCurve.jpg
        [helpstring("method PointOnCurve"), helpcontext(IDH_IProject_PointOnCurve)] HRESULT PointOnCurve(
           [in]CogoObjectID newID,  ///< ID for storing the new point
@@ -4511,11 +4809,11 @@ library WBFLCogo
     ]
     interface IProject2 : IUnknown
     {
-       /// Projects a point onto a HorzCurve. If the point projects before or after the TS or ST point on the curve, the projected point will be on the Back or Forward Tangent, respectively.
+       /// Projects a point onto a CompoundCurve. If the point projects before or after the TS or ST point on the curve, the projected point will be on the Back or Forward Tangent, respectively.
        /// \image html /Project2/PointOnCurve.jpg
        [helpstring("method PointOnCurve"), helpcontext(IDH_IProject_PointOnCurve)] HRESULT PointOnCurve(
           [in] IPoint2d* pnt, ///< The point to project
-          [in] IHorzCurve* curve,  ///< The HorzCurve
+          [in] ICompoundCurve* curve,  ///< The CompoundCurve
           [out, retval] IPoint2d** point ///< The new point
        );
 
@@ -4583,14 +4881,14 @@ library WBFLCogo
          [in] CollectionIndexType nParts ///< Number of parts to divide the line segment into.
       );
 
-      /// Divides a HorzCurve.
+      /// Divides a CompoundCurve.
       /// This method will divide a horizontal curve into nParts equally spaced points. nParts-2 points will be created. The end points of the horizontal curve (TS and ST) are not duplicated. Points will not be generated if points with the same ID already exist in the CogoModel.
-      /// \image html /Divide/DivideHorzCurve.jpg
-      [helpstring("method HorzCurve"),helpcontext(IDH_IDivide_HorzCurve)] HRESULT HorzCurve(
+      /// \image html /Divide/DivideCompoundCurve.jpg
+      [helpstring("method CompoundCurve"),helpcontext(IDH_IDivide_CompoundCurve)] HRESULT CompoundCurve(
          [in]CogoObjectID firstID,  ///< ID of the first new point
          [in] CogoObjectID idInc,  ///< Point ID increment
-         [in] CogoObjectID curveID, ///< ID of the HorzCurve
-         [in] CollectionIndexType nParts ///< Number of parts to divide the HorzCurve into.
+         [in] CogoObjectID curveID, ///< ID of the CompoundCurve
+         [in] CollectionIndexType nParts ///< Number of parts to divide the CompoundCurve into.
       );
 
       /// Divides a Path.
@@ -4647,12 +4945,12 @@ library WBFLCogo
          [out,retval]IPoint2dCollection** points ///< A collection of the resulting points.
       );
 
-      /// Divides a HorzCurve.
+      /// Divides a CompoundCurve.
       /// This method will divide a horizontal curve into nParts equally spaced points. nParts-2 points will be created. The end points of the horizontal curve (TS and ST) are not duplicated.
-      /// \image html /Divide2/DivideHorzCurve.jpg
-      [helpstring("method HorzCurve"),helpcontext(IDH_IDivide_HorzCurve)] HRESULT HorzCurve(
-         [in] IHorzCurve* curve, ///< HorzCurve to divide
-         [in] CollectionIndexType nParts,  ///< Number of parts to divide the HorzCurve into.
+      /// \image html /Divide2/DivideCompoundCurve.jpg
+      [helpstring("method CompoundCurve"),helpcontext(IDH_IDivide_CompoundCurve)] HRESULT CompoundCurve(
+         [in] ICompoundCurve* curve, ///< CompoundCurve to divide
+         [in] CollectionIndexType nParts,  ///< Number of parts to divide the CompoundCurve into.
          [out,retval] IPoint2dCollection** points ///< A collection of the resulting points.
       );
 
@@ -4828,8 +5126,8 @@ library WBFLCogo
       /// The VertCurve collection
       [propget, helpstring("property VertCurves"),helpcontext(IDH_CogoModel_VertCurves)] HRESULT VertCurves([out, retval] IVertCurveCollection* *pVal);
 
-      /// The HorzCurve collection
-      [propget, helpstring("property HorzCurves"),helpcontext(IDH_CogoModel_HorzCurves)] HRESULT HorzCurves([out, retval] IHorzCurveCollection* *pVal);
+      /// The CompoundCurve collection
+      [propget, helpstring("property CompoundCurves"),helpcontext(IDH_CogoModel_CompoundCurves)] HRESULT CompoundCurves([out, retval] ICompoundCurveCollection* *pVal);
 
       /// The Alignment collection
       [propget, helpstring("property Alignments"),helpcontext(IDH_CogoModel_Alignments)] HRESULT Alignments([out,retval] IAlignmentCollection* *pVal);
@@ -4874,9 +5172,9 @@ library WBFLCogo
       [propputref, helpstring("property VertCurveFactory"),helpcontext(IDH_CogoModel_VertCurveFactory)] HRESULT VertCurveFactory([in]IVertCurveFactory* factory);
       [propget, helpstring("property VertCurveFactory"),helpcontext(IDH_CogoModel_VertCurveFactory)] HRESULT VertCurveFactory([out,retval]IVertCurveFactory** factory);
 
-      /// Factory for creating HorzCurve objects
-      [propputref, helpstring("property HorzCurveFactory"),helpcontext(IDH_CogoModel_HorzCurveFactory)] HRESULT HorzCurveFactory([in]IHorzCurveFactory* factory);
-      [propget, helpstring("property HorzCurveFactory"),helpcontext(IDH_CogoModel_HorzCurveFactory)] HRESULT HorzCurveFactory([out,retval]IHorzCurveFactory** factory);
+      /// Factory for creating CompoundCurve objects
+      [propputref, helpstring("property CompoundCurveFactory"),helpcontext(IDH_CogoModel_CompoundCurveFactory)] HRESULT CompoundCurveFactory([in]ICompoundCurveFactory* factory);
+      [propget, helpstring("property CompoundCurveFactory"),helpcontext(IDH_CogoModel_CompoundCurveFactory)] HRESULT CompoundCurveFactory([out,retval]ICompoundCurveFactory** factory);
 
       /// Factory for creating Alignment objects
       [propputref, helpstring("property AlignmentFactory"),helpcontext(IDH_CogoModel_AlignmentFactory)] HRESULT AlignmentFactory([in]IAlignmentFactory* factory);
@@ -4956,16 +5254,16 @@ library WBFLCogo
        [helpstring("event OnVertCurvesCleared"),helpcontext(IDH_CogoModel_OnVertCurvesCleared)] HRESULT OnVertCurvesCleared([in] ICogoModel* cm);
 
        /// Called when a horizontal curve in a model changes
-       [helpstring("event OnHorzCurveChanged"),helpcontext(IDH_CogoModel_OnHorzCurveChanged)] HRESULT OnHorzCurveChanged([in] ICogoModel* cm,[in] CogoObjectID id,[in] IHorzCurve* vc);
+       [helpstring("event OnCompoundCurveChanged"),helpcontext(IDH_CogoModel_OnCompoundCurveChanged)] HRESULT OnCompoundCurveChanged([in] ICogoModel* cm,[in] CogoObjectID id,[in] ICompoundCurve* vc);
 
        /// Called when a horizontal curve is added to a model
-       [helpstring("event OnHorzCurveAdded"),helpcontext(IDH_CogoModel_OnHorzCurveAdded)] HRESULT OnHorzCurveAdded([in] ICogoModel* cm,[in] CogoObjectID id,[in] IHorzCurve* vc);
+       [helpstring("event OnCompoundCurveAdded"),helpcontext(IDH_CogoModel_OnCompoundCurveAdded)] HRESULT OnCompoundCurveAdded([in] ICogoModel* cm,[in] CogoObjectID id,[in] ICompoundCurve* vc);
 
        /// Called when a horizontal curve is removed from a model
-       [helpstring("event OnHorzCurveRemoved"),helpcontext(IDH_CogoModel_OnHorzCurveRemoved)] HRESULT OnHorzCurveRemoved([in] ICogoModel* cm,[in] CogoObjectID id);
+       [helpstring("event OnCompoundCurveRemoved"),helpcontext(IDH_CogoModel_OnCompoundCurveRemoved)] HRESULT OnCompoundCurveRemoved([in] ICogoModel* cm,[in] CogoObjectID id);
        
        /// Called when the horizontal curves in a model are cleared
-       [helpstring("event OnHorzCurvesCleared"),helpcontext(IDH_CogoModel_OnHorzCurvesCleared)] HRESULT OnHorzCurvesCleared([in] ICogoModel* cm);
+       [helpstring("event OnCompoundCurvesCleared"),helpcontext(IDH_CogoModel_OnCompoundCurvesCleared)] HRESULT OnCompoundCurvesCleared([in] ICogoModel* cm);
 
        /// Called when a profile in a model changes
        [helpstring("event OnProfileChanged"),helpcontext(IDH_CogoModel_OnProfileChanged)] HRESULT OnProfileChanged([in] ICogoModel* cm,[in] IProfile* profile);
@@ -5166,34 +5464,50 @@ library WBFLCogo
         // interface IPersist;
    };
 
-   /// A horizontal curve object.
+   /// A circular curve object.
    ///
-   /// Implements the IHorzCurve interface and fires events through the IHorzCurveEvents interface.
+   /// Implements the ICircularCurve interface and fires events through the ICircularCurveEvents interface.
+   [
+       uuid(5A7E89C4-C238-4FE2-9300-0848F4F5AC42),
+       //helpcontext(IDH_CompoundCurve),
+       helpstring("CircularCurve Class")
+   ]
+   coclass CircularCurve
+   {
+       [default] interface ICircularCurve;
+       [default, source] interface ICircularCurveEvents;
+       interface IStructuredStorage2;
+       // interface IPersist;
+   };
+
+   /// A compound curve object.
+   ///
+   /// Implements the ICompoundCurve interface and fires events through the ICompoundCurveEvents interface.
    [
        uuid(61454EB9-8040-4B74-9429-B09D1FF1E0BB),
-	   helpcontext(IDH_HorzCurve),
-       helpstring("HorzCurve Class")
+	   helpcontext(IDH_CompoundCurve),
+       helpstring("CompoundCurve Class")
    ]
-   coclass HorzCurve
+   coclass CompoundCurve
    {
-       [default] interface IHorzCurve;
-       [default, source] interface IHorzCurveEvents;
+       [default] interface ICompoundCurve;
+       [default, source] interface ICompoundCurveEvents;
        interface IStructuredStorage2;
         // interface IPersist;
    };
 
-   /// Object defining a collection of HorzCurve objects
+   /// Object defining a collection of CompoundCurve objects
    ///
-   /// Implements the IHorzCurveCollection interface and fires events through the IHorzCurveCollectionEvents interface
+   /// Implements the ICompoundCurveCollection interface and fires events through the ICompoundCurveCollectionEvents interface
    [
 		uuid(2C4945D1-9B56-430C-B395-B07209328C59),
-		helpcontext(IDH_HorzCurveCollection),
-		helpstring("HorzCurveCollection Class")
+		helpcontext(IDH_CompoundCurveCollection),
+		helpstring("CompoundCurveCollection Class")
 	]
-	coclass HorzCurveCollection
+	coclass CompoundCurveCollection
 	{
-		[default] interface IHorzCurveCollection;
-		[default, source] interface IHorzCurveCollectionEvents;
+		[default] interface ICompoundCurveCollection;
+		[default, source] interface ICompoundCurveCollectionEvents;
       interface IStructuredStorage2;
         // interface IPersist;
 	};
@@ -5214,6 +5528,22 @@ library WBFLCogo
 		[default, source] interface ICubicSplineEvents;
        interface IStructuredStorage2;
         // interface IPersist;
+   };
+
+   /// A Transition Curve object.
+   ///
+   /// Implements the ITransitionCurve interface and fires events through the ITransitionCurveEvents interface.
+   [
+      uuid(7B960DF1-3208-4DAF-94D8-066E4F991353),
+      helpstring("TransitionCurve Class")
+   ]
+   coclass TransitionCurve
+   {
+      [default] interface ITransitionCurve;
+      [default, source] interface ITransitionCurveEvents;
+      interface IPathElement;
+      interface IStructuredStorage2;
+       interface IPersist;
    };
 
    /// An object that represents an element of a profile
@@ -5401,7 +5731,7 @@ library WBFLCogo
 
    /// An object that represents a roadway, highway or other construction alignment.
    ///
-   /// An alignment consists of PathElement objects, which are: Point2d objects, LineSegment2d objects, CubicSpline objects, and HorzCurve objects. 
+   /// An alignment consists of PathElement objects, which are: Point2d objects, LineSegment2d objects, CubicSpline objects, and CompoundCurve objects. 
    /// PathElement objects are positioned end to end in the order they are defined. Straight lines are used to connect the PathElement objects together. 
    /// The tangents at the beginning and end of the path are projected as straight lines.
    /// If an Alignment does not contain any PathElement objects, it is assumed that it begins at Station 0+00, point N 0.00, E 0.00, and is a straight line bearing N 90 E.
@@ -5439,7 +5769,7 @@ library WBFLCogo
 
    /// An object that represents a geometric element of a path.
    ///
-   /// PathElement objects are: Point2d, LineSegment2d, CubicSpline, and HorzCurve objects. 
+   /// PathElement objects are: Point2d, LineSegment2d, CubicSpline, and CompoundCurve objects. 
    ///
    /// Implements the IPathElement interface and fires events through the IPathElementEvents interface.
    [
@@ -5457,7 +5787,7 @@ library WBFLCogo
 
    /// An object that represents a geometric path in plan view. 
    ///
-   /// A path consists of PathElement objects, which are: Point2d objects, LineSegment2d objects, CubicSpline objects, and HorzCurve objects. 
+   /// A path consists of PathElement objects, which are: Point2d objects, LineSegment2d objects, CubicSpline objects, and CompoundCurve objects. 
    /// PathElement objects are positioned end to end in the order they are defined. Straight lines are used to connect the PathElement objects together. 
    /// The tangents at the beginning and end of the path are projected as straight lines.
    /// If a Path does not contain any PathElement objects, it is assumed that the path begins at N 0.00, E 0.00, and is a straight line bearing N 90 E.
@@ -5524,15 +5854,15 @@ library WBFLCogo
 
    /// A horizontal curve factory object.
    ///
-   /// Implements the IHorzCurveFactory interface.
+   /// Implements the ICompoundCurveFactory interface.
    [
 		uuid(FC1BF8D1-D732-4C86-B98C-4B08E3C9E61E),
-		helpcontext(IDH_HorzCurveFactory),
-		helpstring("HorzCurveFactory Class")
+		helpcontext(IDH_CompoundCurveFactory),
+		helpstring("CompoundCurveFactory Class")
 	]
-	coclass HorzCurveFactory
+	coclass CompoundCurveFactory
 	{
-		[default] interface IHorzCurveFactory;
+		[default] interface ICompoundCurveFactory;
       interface IStructuredStorage2;
         // interface IPersist;
 	};

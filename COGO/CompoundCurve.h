@@ -23,10 +23,10 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// HorzCurve.h : Declaration of the CHorzCurve
+// CompoundCurve.h : Declaration of the CCompoundCurve
 
-#ifndef __HORZCURVE_H_
-#define __HORZCURVE_H_
+#ifndef __CompoundCurve_H_
+#define __CompoundCurve_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -37,30 +37,23 @@
 class CEntrySpiralFunction;
 class CExitSpiralFunction;
 
-#define BACK_TANGENT    0x0001
-#define ENTRY_SPIRAL    0x0002
-#define CIRCULAR_CURVE  0x0004
-#define EXIT_SPIRAL     0x0008
-#define FORWARD_TANGENT 0x0010
-
-
 /////////////////////////////////////////////////////////////////////////////
-// CHorzCurve
-class ATL_NO_VTABLE CHorzCurve : 
+// CCompoundCurve
+class ATL_NO_VTABLE CCompoundCurve : 
 	public CComObjectRootEx<CComSingleThreadModel>,
-//   public CComRefCountTracer<CHorzCurve,CComObjectRootEx<CComSingleThreadModel> >,
-	public CComCoClass<CHorzCurve, &CLSID_HorzCurve>,
+//   public CComRefCountTracer<CCompoundCurve,CComObjectRootEx<CComSingleThreadModel> >,
+	public CComCoClass<CCompoundCurve, &CLSID_CompoundCurve>,
 	public ISupportErrorInfo,
-   public IObjectSafetyImpl<CHorzCurve,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CHorzCurve>,
-   public CProxyDHorzCurveEvents< CHorzCurve >,
+   public IObjectSafetyImpl<CCompoundCurve,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
+	public IConnectionPointContainerImpl<CCompoundCurve>,
+   public CProxyDCompoundCurveEvents< CCompoundCurve >,
    public IPoint2dEvents,
-   public IHorzCurve,
+   public ICompoundCurve,
    public IStructuredStorage2,
-   public IPersistImpl<CHorzCurve>
+   public IPersistImpl<CCompoundCurve>
 {
 public:
-	CHorzCurve()
+	CCompoundCurve()
 	{
       m_Ls1 = 0;
       m_Ls2 = 0;
@@ -73,12 +66,12 @@ public:
    int ProjectionRegion(IPoint2d* pPoint);
    bool IsPointOnCurve(IPoint2d* pPoint);
 
-DECLARE_REGISTRY_RESOURCEID(IDR_HORZCURVE)
+DECLARE_REGISTRY_RESOURCEID(IDR_COMPOUNDCURVE)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
-BEGIN_COM_MAP(CHorzCurve)
-	COM_INTERFACE_ENTRY(IHorzCurve)
+BEGIN_COM_MAP(CCompoundCurve)
+	COM_INTERFACE_ENTRY(ICompoundCurve)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(IPoint2dEvents)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
@@ -88,18 +81,18 @@ BEGIN_COM_MAP(CHorzCurve)
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
-BEGIN_CONNECTION_POINT_MAP(CHorzCurve)
-CONNECTION_POINT_ENTRY(IID_IHorzCurveEvents)
+BEGIN_CONNECTION_POINT_MAP(CCompoundCurve)
+CONNECTION_POINT_ENTRY(IID_ICompoundCurveEvents)
 END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
-// IHorzCurve
+// ICompoundCurve
 public:
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
-   STDMETHOD(Clone)(/*[out,retval]*/ IHorzCurve* *clone) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ ICompoundCurve* *clone) override;
 	STDMETHOD(get_PointFactory)(/*[out,retval]*/ IPoint2dFactory* *factory) override;
 	STDMETHOD(putref_PointFactory)(/*[in]*/ IPoint2dFactory *factory) override;
 	STDMETHOD(Intersect)(/*[in]*/ILine2d* line,/*[in]*/VARIANT_BOOL bProjectBack,/*[in]*/VARIANT_BOOL bProjectAhead,/*[out]*/ IPoint2d** p1,/*[out]*/ IPoint2d** p2) override;
@@ -204,16 +197,14 @@ private:
 
    friend CEntrySpiralFunction;
    friend CExitSpiralFunction;
-
-
 };
 
 
 class CEntrySpiralFunction : public mathFunction2d
 {
 public:
-   CEntrySpiralFunction(CHorzCurve* hc,IPoint2d* tp,IGeomUtil2d* gu) :
-      m_pCurve(hc), m_TargetPoint(tp), m_GeomUtil(gu)
+   CEntrySpiralFunction(CCompoundCurve* hc,IPoint2d* tp) :
+      m_pCurve(hc), m_TargetPoint(tp)
    {
       m_Vector.CoCreateInstance(CLSID_Vector2d);
       m_Line.CoCreateInstance(CLSID_Line2d);
@@ -234,18 +225,17 @@ public:
       m_Line->SetExplicit(pnt,m_Vector);
 
       Float64 offset;
-      m_GeomUtil->ShortestOffsetToPoint(m_Line,m_TargetPoint,&offset);
+      geomUtil::ShortestDistanceToPoint(m_Line,m_TargetPoint,&offset);
       return offset;
    }
 
    virtual mathFunction2d* Clone() const override
    {
-      return new CEntrySpiralFunction(m_pCurve,m_TargetPoint,m_GeomUtil);
+      return new CEntrySpiralFunction(m_pCurve,m_TargetPoint);
    }
 
 private:
-   CHorzCurve* m_pCurve;
-   CComPtr<IGeomUtil2d> m_GeomUtil;
+   CCompoundCurve* m_pCurve;
    CComPtr<IPoint2d> m_TargetPoint;
    CComPtr<IVector2d> m_Vector;
    CComPtr<ILine2d> m_Line;
@@ -255,8 +245,8 @@ private:
 class CExitSpiralFunction : public mathFunction2d
 {
 public:
-   CExitSpiralFunction(CHorzCurve* hc,IPoint2d* tp,IGeomUtil2d* gu) :
-      m_pCurve(hc), m_TargetPoint(tp), m_GeomUtil(gu)
+   CExitSpiralFunction(CCompoundCurve* hc,IPoint2d* tp) :
+      m_pCurve(hc), m_TargetPoint(tp)
    {
       m_Vector.CoCreateInstance(CLSID_Vector2d);
       m_Line.CoCreateInstance(CLSID_Line2d);
@@ -279,18 +269,17 @@ public:
       m_Line->SetExplicit(pnt,m_Vector);
 
       Float64 offset;
-      m_GeomUtil->ShortestOffsetToPoint(m_Line,m_TargetPoint,&offset);
+      geomUtil::ShortestDistanceToPoint(m_Line,m_TargetPoint,&offset);
       return offset;
    }
 
    virtual mathFunction2d* Clone() const override
    {
-      return new CExitSpiralFunction(m_pCurve,m_TargetPoint,m_GeomUtil);
+      return new CExitSpiralFunction(m_pCurve,m_TargetPoint);
    }
 
 private:
-   CHorzCurve* m_pCurve;
-   CComPtr<IGeomUtil2d> m_GeomUtil;
+   CCompoundCurve* m_pCurve;
    CComPtr<IPoint2d> m_TargetPoint;
    CComPtr<IVector2d> m_Vector;
    CComPtr<ILine2d> m_Line;
@@ -299,8 +288,8 @@ private:
 class CLineIntersectFunction : public mathFunction2d
 {
 public:
-   CLineIntersectFunction(CHorzCurve* hc,ILine2d* line,IGeomUtil2d* util) :
-      m_pCurve(hc), m_Line(line), m_GeomUtil(util)
+   CLineIntersectFunction(CCompoundCurve* hc,ILine2d* line) :
+      m_pCurve(hc), m_Line(line)
       {
       }
 
@@ -313,27 +302,26 @@ public:
          m_pCurve->PointOnCurve(distFromStartOfCurve,&point_on_curve);
 
          Float64 offset;
-         m_GeomUtil->ShortestOffsetToPoint(m_Line,point_on_curve,&offset);
+         geomUtil::ShortestDistanceToPoint(m_Line,point_on_curve,&offset);
 
          return offset;
       }
 
       virtual mathFunction2d* Clone() const override
       {
-         return new CLineIntersectFunction(m_pCurve,m_Line,m_GeomUtil);
+         return new CLineIntersectFunction(m_pCurve,m_Line);
       }
 
 private:
-   CHorzCurve* m_pCurve;
+   CCompoundCurve* m_pCurve;
    CComPtr<ILine2d> m_Line;
-   CComPtr<IGeomUtil2d> m_GeomUtil;
 };
 
 class CParallelLineFunction : public mathFunction2d
 {
 public:
-   CParallelLineFunction(CHorzCurve* hc,ILine2d* line,IGeomUtil2d* util) :
-      m_pCurve(hc), m_Line(line), m_GeomUtil(util)
+   CParallelLineFunction(CCompoundCurve* hc,ILine2d* line) :
+      m_pCurve(hc), m_Line(line)
       {
          CComPtr<IPoint2d> p;
          m_Line->GetExplicit(&p,&m_Nline);
@@ -359,16 +347,15 @@ public:
 
       virtual mathFunction2d* Clone() const override
       {
-         return new CParallelLineFunction(m_pCurve,m_Line,m_GeomUtil);
+         return new CParallelLineFunction(m_pCurve,m_Line);
       }
 
 private:
-   CHorzCurve* m_pCurve;
+   CCompoundCurve* m_pCurve;
    CComPtr<IVector2d> m_Nline, m_N;
    Float64 m_Angle;
    Float64 m_ReverseAngle;
    CComPtr<ILine2d> m_Line;
-   CComPtr<IGeomUtil2d> m_GeomUtil;
 };
 
-#endif //__HORZCURVE_H_
+#endif //__CompoundCurve_H_

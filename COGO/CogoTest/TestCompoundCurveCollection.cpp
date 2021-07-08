@@ -23,12 +23,12 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// TestHorzCurveCollection.cpp: implementation of the CTestHorzCurveCollection class.
+// TestCompoundCurveCollection.cpp: implementation of the CTestCompoundCurveCollection class.
 //
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "TestHorzCurveCollection.h"
+#include "TestCompoundCurveCollection.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -40,15 +40,15 @@ static char THIS_FILE[] = __FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CTestHorzCurveCollection::CTestHorzCurveCollection()
+CTestCompoundCurveCollection::CTestCompoundCurveCollection()
 {
 
 }
 
-void CTestHorzCurveCollection::Test()
+void CTestCompoundCurveCollection::Test()
 {
-   CComPtr<IHorzCurveCollection> pColl;
-   TRY_TEST(pColl.CoCreateInstance( CLSID_HorzCurveCollection ), S_OK);
+   CComPtr<ICompoundCurveCollection> pColl;
+   TRY_TEST(pColl.CoCreateInstance( CLSID_CompoundCurveCollection ), S_OK);
 
    CollectionIndexType count;
    TRY_TEST(pColl->get_Count(nullptr),E_POINTER);
@@ -64,7 +64,7 @@ void CTestHorzCurveCollection::Test()
    pi->Move(700,1000);
    pft->Move(1000,700);
 
-   CComPtr<IHorzCurveFactory> factory;
+   CComPtr<ICompoundCurveFactory> factory;
    TRY_TEST(pColl->get_Factory(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Factory(&factory),S_OK);
    TRY_TEST( factory != nullptr, true );
@@ -83,8 +83,8 @@ void CTestHorzCurveCollection::Test()
    TRY_TEST(pColl->Add(1,pbt,pi,pft,500,100,-200,nullptr),  E_INVALIDARG);
 
    TRY_TEST(pColl->Add(1,pbt,pi,pft,500,100,200,nullptr),S_OK);
-   TRY_TEST(pColl->Add(1,pbt,pi,pft,500,100,200,nullptr),COGO_E_HORZCURVEALREADYDEFINED);
-   CComPtr<IHorzCurve> hc;
+   TRY_TEST(pColl->Add(1,pbt,pi,pft,500,100,200,nullptr),COGO_E_COMPOUNDCURVEALREADYDEFINED);
+   CComPtr<ICompoundCurve> hc;
    TRY_TEST(pColl->get_Item(1,&hc),S_OK);
    TRY_TEST(pColl->get_Count(&count),S_OK);
    TRY_TEST(count,1);
@@ -97,14 +97,14 @@ void CTestHorzCurveCollection::Test()
 
    // Test Item property
    hc.Release();
-   TRY_TEST(pColl->get_Item(-1,&hc),COGO_E_HORZCURVENOTFOUND);
+   TRY_TEST(pColl->get_Item(-1,&hc),COGO_E_COMPOUNDCURVENOTFOUND);
    TRY_TEST(pColl->get_Item(1,nullptr),E_POINTER);
    TRY_TEST(pColl->get_Item(1,&hc),S_OK);
 
    //
    // Test Remove
    //
-   TRY_TEST(pColl->Remove(-1),COGO_E_HORZCURVENOTFOUND);
+   TRY_TEST(pColl->Remove(-1),COGO_E_COMPOUNDCURVENOTFOUND);
    TRY_TEST(pColl->Remove(1),S_OK);
 
    //
@@ -123,7 +123,7 @@ void CTestHorzCurveCollection::Test()
    TRY_TEST(pColl->AddEx(1,hc),S_OK);
 
    TRY_TEST(pColl->putref_Item(1,nullptr),E_INVALIDARG);
-   TRY_TEST(pColl->putref_Item(-1,hc),COGO_E_HORZCURVENOTFOUND);
+   TRY_TEST(pColl->putref_Item(-1,hc),COGO_E_COMPOUNDCURVENOTFOUND);
    TRY_TEST(pColl->putref_Item(1,hc),S_OK);
 
    //
@@ -154,7 +154,7 @@ void CTestHorzCurveCollection::Test()
    //
    // Test _Enum
    //
-   CComPtr<IHorzCurve> hcurve[4];
+   CComPtr<ICompoundCurve> hcurve[4];
    pColl->Clear();
    pColl->Add(1,pbt,pi,pft,500,100,200,nullptr);
    pColl->Add(2,pbt,pi,pft,500,100,200,nullptr);
@@ -176,7 +176,7 @@ void CTestHorzCurveCollection::Test()
    }
    
    //
-   // Test _EnumHorzCurves
+   // Test _EnumCompoundCurves
    //
    hcurve[0].Release();
    hcurve[1].Release();
@@ -191,15 +191,15 @@ void CTestHorzCurveCollection::Test()
    pColl->get_Item(2,&hcurve[1]);
    pColl->get_Item(3,&hcurve[2]);
    pColl->get_Item(4,&hcurve[3]);
-   CComPtr<IEnumHorzCurves> pEnumHorzCurves;
-   TRY_TEST(pColl->get__EnumHorzCurves(nullptr), E_POINTER );
-   TRY_TEST( pColl->get__EnumHorzCurves(&pEnumHorzCurves), S_OK );
+   CComPtr<IEnumCompoundCurves> pEnumCompoundCurves;
+   TRY_TEST(pColl->get__EnumCompoundCurves(nullptr), E_POINTER );
+   TRY_TEST( pColl->get__EnumCompoundCurves(&pEnumCompoundCurves), S_OK );
 
    for ( long i = 0; i < 4; i++ )
    {
-      CComPtr<IHorzCurve> horzCurve;
-      pEnumHorzCurves->Next(1,&horzCurve,&fetched);
-      TRY_TEST(horzCurve.IsEqualObject(hcurve[i]),true);
+      CComPtr<ICompoundCurve> CompoundCurve;
+      pEnumCompoundCurves->Next(1,&CompoundCurve,&fetched);
+      TRY_TEST(CompoundCurve.IsEqualObject(hcurve[i]),true);
    }
 
    //
@@ -207,30 +207,30 @@ void CTestHorzCurveCollection::Test()
    //
    pColl->Clear(); // start with an empty container
 
-   CComObject<CTestHorzCurveCollection>* pTestEvents;
-   CComObject<CTestHorzCurveCollection>::CreateInstance(&pTestEvents);
+   CComObject<CTestCompoundCurveCollection>* pTestEvents;
+   CComObject<CTestCompoundCurveCollection>::CreateInstance(&pTestEvents);
    pTestEvents->AddRef();
 
    DWORD dwCookie;
    CComPtr<IUnknown> punk(pTestEvents);
-   TRY_TEST(AtlAdvise(pColl,punk,IID_IHorzCurveCollectionEvents,&dwCookie),S_OK);
+   TRY_TEST(AtlAdvise(pColl,punk,IID_ICompoundCurveCollectionEvents,&dwCookie),S_OK);
 
-   // Add a HorzCurve to the collection
+   // Add a CompoundCurve to the collection
    pTestEvents->InitEventTest(1);
    pColl->AddEx(1,hc);
    TRY_TEST(pTestEvents->PassedEventTest(),true);
 
-   // Move a HorzCurve... Event should fire
+   // Move a CompoundCurve... Event should fire
    pTestEvents->InitEventTest(1);
    hc->put_Radius(150);
    TRY_TEST(pTestEvents->PassedEventTest(),true);
 
-   // Remove a HorzCurve
+   // Remove a CompoundCurve
    pTestEvents->InitEventTest(1);
    pColl->Remove(1);
    TRY_TEST(pTestEvents->PassedEventTest(),true);
 
-//   // Change HorzCurve references
+//   // Change CompoundCurve references
 //   pTestEvents->InitEventTest(2);
 //   pColl->putref_Item(2,p4);
 //   TRY_TEST(pTestEvents->PassedEventTest(),true);
@@ -240,52 +240,52 @@ void CTestHorzCurveCollection::Test()
    pColl->Clear();
    TRY_TEST(pTestEvents->PassedEventTest(),true);
 
-   TRY_TEST(AtlUnadvise(pColl,IID_IHorzCurveCollectionEvents,dwCookie),S_OK);
+   TRY_TEST(AtlUnadvise(pColl,IID_ICompoundCurveCollectionEvents,dwCookie),S_OK);
    pTestEvents->Release();
 
    //
    // Test ISupportErrorInfo
    //
    CComQIPtr<ISupportErrorInfo> eInfo(pColl);
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IHorzCurveCollection ), S_OK );
+   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ICompoundCurveCollection ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
    // Test IObjectSafety
-   TRY_TEST( TestIObjectSafety(CLSID_HorzCurveCollection,IID_IHorzCurveCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-   TRY_TEST( TestIObjectSafety(CLSID_HorzCurveCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
+   TRY_TEST( TestIObjectSafety(CLSID_CompoundCurveCollection,IID_ICompoundCurveCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
+   TRY_TEST( TestIObjectSafety(CLSID_CompoundCurveCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
-STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveChanged(CogoObjectID id,IHorzCurve* hc)
+STDMETHODIMP CTestCompoundCurveCollection::OnCompoundCurveChanged(CogoObjectID id,ICompoundCurve* hc)
 {
-//   MessageBox(nullptr,"HorzCurveChanged","Event",MB_OK);
+//   MessageBox(nullptr,"CompoundCurveChanged","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
    return S_OK;
 }
 
-STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveAdded(CogoObjectID id,IHorzCurve* hc)
+STDMETHODIMP CTestCompoundCurveCollection::OnCompoundCurveAdded(CogoObjectID id,ICompoundCurve* hc)
 {
-//   MessageBox(nullptr,"HorzCurveAdded","Event",MB_OK);
+//   MessageBox(nullptr,"CompoundCurveAdded","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
    return S_OK;
 }
 
-STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveRemoved(CogoObjectID id)
+STDMETHODIMP CTestCompoundCurveCollection::OnCompoundCurveRemoved(CogoObjectID id)
 {
-//   MessageBox(nullptr,"HorzCurveRemoved","Event",MB_OK);
+//   MessageBox(nullptr,"CompoundCurveRemoved","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
    return S_OK;
 }
 
-STDMETHODIMP CTestHorzCurveCollection::OnHorzCurvesCleared()
+STDMETHODIMP CTestCompoundCurveCollection::OnCompoundCurvesCleared()
 {
-//   MessageBox(nullptr,"HorzCurveCleared","Event",MB_OK);
+//   MessageBox(nullptr,"CompoundCurveCleared","Event",MB_OK);
    Pass();
    return S_OK;
 }

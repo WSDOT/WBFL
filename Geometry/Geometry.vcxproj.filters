@@ -139,6 +139,9 @@
     <ClCompile Include="PrecastBeam2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeomHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoxBeam.h">
@@ -286,6 +289,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PrecastBeam2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\WBFLGeometry\AutoLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\WBFLGeometry\GeometryExp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\WBFLGeometry\GeomHelpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

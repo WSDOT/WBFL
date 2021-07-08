@@ -31,7 +31,9 @@
 #include <WBFLCogo\CogoHelpers.h>
 #include "PointFactory.h"
 #include "CubicSpline.h"
-#include "HorzCurve.h"
+#include "CompoundCurve.h"
+#include "CircularCurve.h"
+#include "TransitionCurve.h"
 #include "CogoEngine.h"
 #include <Float.h>
 
@@ -179,12 +181,14 @@ STDMETHODIMP CPath::InsertEx(CollectionIndexType idx, IUnknown* dispElement)
 {
    CHECK_IN(dispElement);
    CComQIPtr<IPoint2d> point(dispElement);
-   CComQIPtr<IHorzCurve> curve(dispElement);
+   CComQIPtr<ICircularCurve> arc(dispElement);
+   CComQIPtr<ITransitionCurve> transition(dispElement);
+   CComQIPtr<ICompoundCurve> curve(dispElement);
    CComQIPtr<ILineSegment2d> ls(dispElement);
    CComQIPtr<ICubicSpline> spline(dispElement);
    CComQIPtr<IPath> path(dispElement);
 
-   if ( point == nullptr && curve == nullptr && ls == nullptr && spline == nullptr && path == nullptr )
+   if ( point == nullptr && arc == nullptr && transition == nullptr && curve == nullptr && ls == nullptr && spline == nullptr && path == nullptr )
    {
       return Error(IDS_E_PATHELEMENTTYPE,IID_IPath,COGO_E_PATHELEMENTTYPE);
    }
@@ -245,16 +249,20 @@ STDMETHODIMP CPath::Remove(VARIANT varID)
       // Element identified by an Path element object or by proint, line segment, or horz curve
       CComQIPtr<IPathElement> element(varID.punkVal);
       CComQIPtr<IPoint2d> point(varID.punkVal);
-      CComQIPtr<IHorzCurve> hc(varID.punkVal);
+      CComQIPtr<ICircularCurve> arc(varID.punkVal);
+      CComQIPtr<ITransitionCurve> transition(varID.punkVal);
+      CComQIPtr<ICompoundCurve> hc(varID.punkVal);
       CComQIPtr<ILineSegment2d> ls(varID.punkVal);
       CComQIPtr<ICubicSpline> spline(varID.punkVal);
 
       // The input object is not of the correct type
-      if ( element == nullptr && 
-           point   == nullptr &&
-           ls      == nullptr &&
-           hc      == nullptr &&
-           spline  == nullptr)
+      if ( element    == nullptr && 
+           point      == nullptr &&
+           ls         == nullptr &&
+           arc        == nullptr &&
+           transition == nullptr &&
+           hc         == nullptr &&
+           spline     == nullptr)
       {
          return E_INVALIDARG;
       }
@@ -271,6 +279,8 @@ STDMETHODIMP CPath::Remove(VARIANT varID)
          if ( element != nullptr && element.IsEqualObject(varElement.punkVal) ||
               point   != nullptr && point.IsEqualObject(dispVal)              ||
               ls      != nullptr && ls.IsEqualObject(dispVal)                 ||
+              arc     != nullptr && arc.IsEqualObject(dispVal)                ||
+              transition != nullptr && transition.IsEqualObject(dispVal)      ||
               spline  != nullptr && ls.IsEqualObject(dispVal)                 ||
               hc      != nullptr && hc.IsEqualObject(dispVal) )
          {
@@ -340,7 +350,7 @@ STDMETHODIMP CPath::LocatePoint( Float64 distance, OffsetMeasureType offsetMeasu
    // Find the path element that encompasses the input distance.
    // The return values are the distance to the beginning of this element
    // and the path element. The path element will be either
-   // a petLineSegment or petHorzCurve. If needed, a temporary path
+   // a petLineSegment or petCompoundCurve. If needed, a temporary path
    // element object will be created.
    CComPtr<IPathElement> element;
    Float64 beginDist;
@@ -387,7 +397,37 @@ STDMETHODIMP CPath::LocatePoint( Float64 distance, OffsetMeasureType offsetMeasu
 
       return S_OK;
    }
-   else if ( type == petHorzCurve )
+   else if (type == petCircularCurve)
+   {
+      // The begin distance is at the PC point on the curve
+      // The Path follows the curve
+      // Use the curve object to locate the baseline point
+      // and the locate the offset point
+      Float64 dist_along_curve = distance - beginDist;
+
+      CComQIPtr<ICircularCurve> hc(dispVal);
+      ATLASSERT(hc);
+
+      CComPtr<IPoint2d> basePoint;
+      hr = hc->PointOnCurve(dist_along_curve, &basePoint);
+      if (FAILED(hr))
+      {
+         return hr;
+      }
+
+      if (!IsZero(offset))
+      {
+         cogoUtil::LocateByDistDir(basePoint, offset, dir, 0.0, m_PointFactory, newPoint);
+      }
+      else
+      {
+         (*newPoint) = basePoint;
+         (*newPoint)->AddRef();
+      }
+
+      return S_OK;
+   }
+   else if (type == petTransitionCurve)
    {
       // The begin distance is at the TS point on the curve
       // The Path follows the curve
@@ -395,7 +435,37 @@ STDMETHODIMP CPath::LocatePoint( Float64 distance, OffsetMeasureType offsetMeasu
       // and the locate the offset point
       Float64 dist_along_curve = distance - beginDist;
 
-      CComQIPtr<IHorzCurve> hc(dispVal);
+      CComQIPtr<ITransitionCurve> hc(dispVal);
+      ATLASSERT(hc);
+
+      CComPtr<IPoint2d> basePoint;
+      hr = hc->PointOnCurve(dist_along_curve, &basePoint);
+      if (FAILED(hr))
+      {
+         return hr;
+      }
+
+      if (!IsZero(offset))
+      {
+         cogoUtil::LocateByDistDir(basePoint, offset, dir, 0.0, m_PointFactory, newPoint);
+      }
+      else
+      {
+         (*newPoint) = basePoint;
+         (*newPoint)->AddRef();
+      }
+
+      return S_OK;
+   }
+   else if ( type == petCompoundCurve )
+   {
+      // The begin distance is at the TS point on the curve
+      // The Path follows the curve
+      // Use the curve object to locate the baseline point
+      // and the locate the offset point
+      Float64 dist_along_curve = distance - beginDist;
+
+      CComQIPtr<ICompoundCurve> hc(dispVal);
       ATLASSERT(hc);
 
       CComPtr<IPoint2d> basePoint;
@@ -463,7 +533,7 @@ STDMETHODIMP CPath::Bearing(Float64 distance,IDirection* *dir)
    // Find a path element that encompasses the input distance.
    // The return values are the distance to the beginning of this element
    // and the Path element. The Path element will be either
-   // an petLineSegment or petHorzCurve. If needed, a temporary Path
+   // an petLineSegment or petCompoundCurve. If needed, a temporary Path
    // element object will be created.
    CComPtr<IPathElement> element;
    Float64 beginDist;
@@ -491,7 +561,21 @@ STDMETHODIMP CPath::Bearing(Float64 distance,IDirection* *dir)
 
       return S_OK;
    }
-   else if ( type == petHorzCurve )
+   else if (type == petCircularCurve)
+   {
+      // The begin distance is to the PC point on the curve
+      // The Path follows the curve
+      // Use the curve object to locate the baseline point
+      // and the locate the offset point
+      Float64 dist_along_curve = distance - beginDist;
+
+      CComQIPtr<ICircularCurve> hc(dispVal);
+      ATLASSERT(hc);
+
+      hc->Bearing(dist_along_curve, dir);
+      return S_OK;
+   }
+   else if (type == petTransitionCurve)
    {
       // The begin distance is to the TS point on the curve
       // The Path follows the curve
@@ -499,7 +583,21 @@ STDMETHODIMP CPath::Bearing(Float64 distance,IDirection* *dir)
       // and the locate the offset point
       Float64 dist_along_curve = distance - beginDist;
 
-      CComQIPtr<IHorzCurve> hc(dispVal);
+      CComQIPtr<ITransitionCurve> hc(dispVal);
+      ATLASSERT(hc);
+
+      hc->Bearing(dist_along_curve, dir);
+      return S_OK;
+   }
+   else if ( type == petCompoundCurve )
+   {
+      // The begin distance is to the TS point on the curve
+      // The Path follows the curve
+      // Use the curve object to locate the baseline point
+      // and the locate the offset point
+      Float64 dist_along_curve = distance - beginDist;
+
+      CComQIPtr<ICompoundCurve> hc(dispVal);
       ATLASSERT(hc);
 
       hc->Bearing(dist_along_curve,dir);
@@ -893,7 +991,7 @@ std::vector<Element>& CPath::GetPathElements()
 
             m_PathLength += length;
          }
-         else if ( type == petLineSegment || type == petHorzCurve || type == petCubicSpline )
+         else if ( type == petLineSegment || type == petCircularCurve || type == petTransitionCurve || type == petCompoundCurve || type == petCubicSpline )
          {
             // The one and only element is a line segment or horz curve...
             // Just return it
@@ -1019,10 +1117,102 @@ std::vector<Element>& CPath::GetPathElements()
                   m_PathLength += length;
                }
             }
-            else if ( currType == petHorzCurve )
+            else if (currType == petCircularCurve)
+            {
+               // Current segment is a circular curve.
+               CComQIPtr<ICircularCurve> currHC(currVal);
+               Float64 length;
+               currHC->get_Length(&length);
+
+               if (!IsZero(length))
+               {
+                  nextDist += length;
+                  Element myElement;
+                  myElement.start = currDist;
+                  myElement.end = nextDist;
+                  myElement.pathElement = currElement;
+                  m_PathElements.push_back(myElement);
+
+                  m_PathLength += length;
+               }
+
+               // Now add a line segment that goes from the end of this one to the
+               // start of the next element
+               CComPtr<IPoint2d> currEndPoint;
+               currHC->get_PT(&currEndPoint);
+
+               currDist = nextDist;
+
+               CComPtr<IPathElement> element;
+               CreateDummyPathElement(currEndPoint, nextElement, &element);
+
+               CComPtr<IUnknown> dispDummy;
+               element->get_Value(&dispDummy);
+               CComQIPtr<ILineSegment2d> dummyLS(dispDummy);
+               dummyLS->get_Length(&length);
+
+               if (!IsZero(length))
+               {
+                  nextDist += length;
+                  Element myElement;
+                  myElement.start = currDist;
+                  myElement.end = nextDist;
+                  myElement.pathElement = element;
+                  m_PathElements.push_back(myElement);
+
+                  m_PathLength += length;
+               }
+            }
+            else if (currType == petTransitionCurve)
+            {
+               // Current segment is a transition curve.
+               CComQIPtr<ITransitionCurve> currHC(currVal);
+               Float64 length;
+               currHC->get_Length(&length);
+
+               if (!IsZero(length))
+               {
+                  nextDist += length;
+                  Element myElement;
+                  myElement.start = currDist;
+                  myElement.end = nextDist;
+                  myElement.pathElement = currElement;
+                  m_PathElements.push_back(myElement);
+
+                  m_PathLength += length;
+               }
+
+               // Now add a line segment that goes from the end of this one to the
+               // start of the next element
+               CComPtr<IPoint2d> currEndPoint;
+               currHC->get_End(&currEndPoint);
+
+               currDist = nextDist;
+
+               CComPtr<IPathElement> element;
+               CreateDummyPathElement(currEndPoint, nextElement, &element);
+
+               CComPtr<IUnknown> dispDummy;
+               element->get_Value(&dispDummy);
+               CComQIPtr<ILineSegment2d> dummyLS(dispDummy);
+               dummyLS->get_Length(&length);
+
+               if (!IsZero(length))
+               {
+                  nextDist += length;
+                  Element myElement;
+                  myElement.start = currDist;
+                  myElement.end = nextDist;
+                  myElement.pathElement = element;
+                  m_PathElements.push_back(myElement);
+
+                  m_PathLength += length;
+               }
+            }
+            else if ( currType == petCompoundCurve )
             {
                // Current segment is a horz curve.
-               CComQIPtr<IHorzCurve> currHC(currVal);
+               CComQIPtr<ICompoundCurve> currHC(currVal);
                Float64 length;
                currHC->get_TotalLength(&length);
       
@@ -1158,7 +1348,7 @@ std::vector<Element>& CPath::GetPathElements()
                CComQIPtr<ILineSegment2d> prevLS(prevVal);
                prevLS->get_EndPoint(&prevPoint);
             }
-            else if ( prevType == petHorzCurve )
+            else if ( prevType == petCircularCurve || prevType == petTransitionCurve || prevType == petCompoundCurve )
             {
                // if previous type is a horizontal curve, then it projected a line
                // to this point... nothing left to do
@@ -1202,7 +1392,7 @@ std::vector<Element>& CPath::GetPathElements()
                }
             }
          }
-         else if ( lastType == petLineSegment || lastType == petHorzCurve || lastType == petCubicSpline )
+         else if ( lastType == petLineSegment || lastType == petCircularCurve || lastType == petTransitionCurve || lastType == petCompoundCurve || lastType == petCubicSpline )
          {
             // The last element is a line segment, horiz curve, or spline... Simply add the last element
             Float64 length = GetElementLength(lastElement);
@@ -1261,9 +1451,21 @@ void CPath::GetStartPoint(IPathElement* pElement,IPoint2d** ppStartPoint)
          start.QueryInterface(ppStartPoint);
          break;
       }
-   case petHorzCurve:
+   case petCircularCurve:
       {
-         CComQIPtr<IHorzCurve> hc(val);
+         CComQIPtr<ICircularCurve> hc(val);
+         hc->get_PC(ppStartPoint);
+         break;
+      }
+   case petTransitionCurve:
+      {
+         CComQIPtr<ITransitionCurve> hc(val);
+         hc->get_Start(ppStartPoint);
+         break;
+      }
+   case petCompoundCurve:
+      {
+         CComQIPtr<ICompoundCurve> hc(val);
          hc->get_TS(ppStartPoint);
          break;
       }
@@ -1305,9 +1507,21 @@ void CPath::GetEndPoint(IPathElement* pElement,IPoint2d** ppEndPoint)
          end.QueryInterface(ppEndPoint);
          break;
       }
-   case petHorzCurve:
+   case petCircularCurve:
       {
-         CComQIPtr<IHorzCurve> hc(val);
+         CComQIPtr<ICircularCurve> hc(val);
+         hc->get_PT(ppEndPoint);
+         break;
+      }
+   case petTransitionCurve:
+      {
+         CComQIPtr<ITransitionCurve> hc(val);
+         hc->get_End(ppEndPoint);
+         break;
+      }
+   case petCompoundCurve:
+      {
+         CComQIPtr<ICompoundCurve> hc(val);
          hc->get_ST(ppEndPoint);
          break;
       }
@@ -1353,7 +1567,7 @@ void CPath::IntersectElement(ILine2d* line,IPathElement* element,bool bProjectBa
 
    PathElementType type;
    element->get_Type(&type);
-   ATLASSERT(type == petLineSegment || type == petHorzCurve || type == petCubicSpline);
+   ATLASSERT(type == petLineSegment || type == petCircularCurve || type == petTransitionCurve || type == petCompoundCurve || type == petCubicSpline);
 
    if ( type == petLineSegment )
    {
@@ -1400,10 +1614,51 @@ void CPath::IntersectElement(ILine2d* line,IPathElement* element,bool bProjectBa
          }
       }
    }
-   else if ( type == petHorzCurve )
+   else if (type == petCircularCurve)
    {
       // Projects onto a horizontal curve
-      CComQIPtr<IHorzCurve> hc(dispVal);
+      CComQIPtr<ICircularCurve> hc(dispVal);
+
+      CComPtr<IPoint2d> p1, p2;
+      hc->Intersect(line,
+         bProjectBack ? VARIANT_TRUE : VARIANT_FALSE,
+         bProjectAhead ? VARIANT_TRUE : VARIANT_FALSE,
+         &p1, &p2);
+
+      if (p1)
+      {
+         points->Add(p1);
+      }
+
+      if (p2)
+      {
+         points->Add(p2);
+      }
+   }
+   else if (type == petTransitionCurve)
+   {
+      // Projects onto a horizontal curve
+      CComQIPtr<ITransitionCurve> hc(dispVal);
+
+      CComPtr<IPoint2dCollection> intersection_points;
+      hc->Intersect(line,
+         bProjectBack ? VARIANT_TRUE : VARIANT_FALSE,
+         bProjectAhead ? VARIANT_TRUE : VARIANT_FALSE,
+         &intersection_points);
+
+      IndexType nPoints;
+      intersection_points->get_Count(&nPoints);
+      for (IndexType i = 0; i < nPoints; i++)
+      {
+         CComPtr<IPoint2d> point;
+         intersection_points->get_Item(i, &point);
+         points->Add(point);
+      }
+   }
+   else if ( type == petCompoundCurve )
+   {
+      // Projects onto a horizontal curve
+      CComQIPtr<ICompoundCurve> hc(dispVal);
 
       CComPtr<IPoint2d> p1,p2;
       hc->Intersect(line, 
@@ -1450,7 +1705,7 @@ void CPath::ProjectPointOnElement(IPoint2d* point,IPathElement* pElement,IPoint2
 
    PathElementType type;
    pElement->get_Type(&type);
-   ATLASSERT(type == petLineSegment || type == petHorzCurve || type == petCubicSpline);
+   ATLASSERT(type == petLineSegment || type == petCircularCurve || type == petTransitionCurve || type == petCompoundCurve || type == petCubicSpline);
 
    if (type == petLineSegment)
    {
@@ -1505,10 +1760,22 @@ void CPath::ProjectPointOnElement(IPoint2d* point,IPathElement* pElement,IPoint2
          *pvbOnProjection = VARIANT_FALSE;
       }
    }
-   else if (type == petHorzCurve)
+   else if (type == petCircularCurve)
    {
       // Projects onto a horizontal curve
-      CComQIPtr<IHorzCurve> hc(dispVal);
+      CComQIPtr<ICircularCurve> hc(dispVal);
+      hc->ProjectPoint(point, pNewPoint, pDistFromStart, pvbOnProjection);
+   }
+   else if (type == petTransitionCurve)
+   {
+      // Projects onto a horizontal curve
+      CComQIPtr<ITransitionCurve> hc(dispVal);
+      hc->ProjectPoint(point, pNewPoint, pDistFromStart, pvbOnProjection);
+   }
+   else if (type == petCompoundCurve)
+   {
+      // Projects onto a horizontal curve
+      CComQIPtr<ICompoundCurve> hc(dispVal);
       hc->ProjectPoint(point, pNewPoint, pDistFromStart, pvbOnProjection);
    }
    else if (type == petCubicSpline)
@@ -1703,11 +1970,61 @@ STDMETHODIMP CPath::CreateOffsetPath(Float64 offset,IPath** path)
          }
          break;
 
-      case petHorzCurve:
+      case petCircularCurve:
          {
-            CComQIPtr<IHorzCurve> hc(punk);
+            CComQIPtr<ICircularCurve> hc(punk);
             CComPtr<IUnknown> result;
-            CreateOffsetHorzCurve(offset,hc,&result);
+            CreateOffsetCircularCurve(offset, hc, &result);
+            CComQIPtr<IUnkArray> unkArray(result);
+            if (unkArray)
+            {
+               clonePE.Release();
+               IndexType nItems;
+               unkArray->get_Count(&nItems);
+               for (IndexType i = 0; i < nItems; i++)
+               {
+                  CComPtr<IUnknown> unk;
+                  unkArray->get_Item(i, &unk);
+                  (*path)->AddEx(unk);
+               }
+            }
+            else
+            {
+               clonePE->putref_Value(result);
+            }
+         }
+         break;
+
+      case petTransitionCurve:
+         {
+            CComQIPtr<ITransitionCurve> hc(punk);
+            CComPtr<IUnknown> result;
+            CreateOffsetTransitionCurve(offset, hc, &result);
+            CComQIPtr<IUnkArray> unkArray(result);
+            if (unkArray)
+            {
+               clonePE.Release();
+               IndexType nItems;
+               unkArray->get_Count(&nItems);
+               for (IndexType i = 0; i < nItems; i++)
+               {
+                  CComPtr<IUnknown> unk;
+                  unkArray->get_Item(i, &unk);
+                  (*path)->AddEx(unk);
+               }
+            }
+            else
+            {
+               clonePE->putref_Value(result);
+            }
+         }
+         break;
+
+      case petCompoundCurve:
+         {
+            CComQIPtr<ICompoundCurve> hc(punk);
+            CComPtr<IUnknown> result;
+            CreateOffsetCompoundCurve(offset,hc,&result);
             CComQIPtr<IUnkArray> unkArray(result);
             if (unkArray)
             {
@@ -1823,9 +2140,33 @@ STDMETHODIMP CPath::CreateSubPath(Float64 start,Float64 end,IPath** path)
          }
          break;
 
-      case petHorzCurve:
+      case petCircularCurve:
+      {
+         CComQIPtr<ICircularCurve> hc(punk);
+         CComPtr<IUnknown> result;
+         hr = CreateSubPathElement(start, end, hc, &result);
+         if (SUCCEEDED(hr))
          {
-            CComQIPtr<IHorzCurve> hc(punk);
+            SavePathElement(*path, result);
+         }
+      }
+      break;
+
+      case petTransitionCurve:
+      {
+         CComQIPtr<ITransitionCurve> hc(punk);
+         CComPtr<IUnknown> result;
+         hr = CreateSubPathElement(start, end, hc, &result);
+         if (SUCCEEDED(hr))
+         {
+            SavePathElement(*path, result);
+         }
+      }
+      break;
+
+      case petCompoundCurve:
+         {
+            CComQIPtr<ICompoundCurve> hc(punk);
             CComPtr<IUnknown> result1,result2,result3;
             hr = CreateSubPathElement(start,end,hc,&result1,&result2,&result3);
             if ( SUCCEEDED(hr) )
@@ -1969,7 +2310,224 @@ STDMETHODIMP CPath::Load(IStructuredLoad2* pLoad)
    return S_OK;
 }
 
-void CPath::CreateOffsetHorzCurve(Float64 offset,IHorzCurve* hc,IUnknown** result)
+void CPath::CreateOffsetCircularCurve(Float64 offset, ICircularCurve* hc, IUnknown** result)
+{
+   CurveDirectionType curve_direction;
+   hc->get_Direction(&curve_direction);
+
+   CComPtr<IPoint2d> PC, CC, PT;
+   hc->get_PC(&PC);
+   hc->get_Center(&CC);
+   hc->get_PT(&PT);
+
+   Float64 d1, d2;
+   m_GeomUtil->Distance(PC, CC, &d1);
+   m_GeomUtil->Distance(PT, CC, &d2);
+
+   // It is useful to have line objects that represent the tangents of the curve.
+   // Create them now because they will be used later.
+   CComPtr<IPoint2d> PBT, PI, PFT;
+   hc->get_PBT(&PBT);
+   hc->get_PI(&PI);
+   hc->get_PFT(&PFT);
+
+   CComPtr<ILine2d> l1, l2;
+   l1.CoCreateInstance(CLSID_Line2d);
+   l2.CoCreateInstance(CLSID_Line2d);
+
+   l1->ThroughPoints(PBT, PI);
+   l2->ThroughPoints(PI, PFT);
+
+   // Deal with the case of the curve degrading to a single point
+   if ((curve_direction == cdRight && (d1 <= offset || d2 <= offset)) ||
+      (curve_direction == cdLeft && (d1 <= -offset || d2 <= -offset)))
+   {
+      // The parallel curve is past the CC point... this degrades the curve to a point
+
+      // offset the curve tangents and intersect them
+      l1->Offset(-offset);
+      l2->Offset(-offset);
+
+      CComPtr<IPoint2d> point;
+      m_GeomUtil->LineLineIntersect(l1, l2, &point);
+
+      (*result) = point;
+      (*result)->AddRef();
+      return;
+   }
+
+
+   //
+   // Curve remains a curve
+   //
+   CComPtr<IUnkArray> unkArray;
+   unkArray.CoCreateInstance(CLSID_UnkArray);
+
+   // Use the curve tangents to create new tangents at an offset. The intersection point of these lines is the new PI.
+   CComPtr<ILine2d> bkTangent, fwdTangent;
+   m_GeomUtil->CreateParallelLine(l1, offset, &bkTangent);
+   m_GeomUtil->CreateParallelLine(l2, offset, &fwdTangent);
+
+   CComPtr<IPoint2d> newPI;
+   m_GeomUtil->LineLineIntersect(bkTangent, fwdTangent, &newPI);
+
+   CComPtr<IPoint2d> newPBT, newPFT;
+   m_GeomUtil->PointOnLineNearest(bkTangent, PC, &newPBT);
+   m_GeomUtil->PointOnLineNearest(fwdTangent, PT, &newPFT);
+
+   // compute new circular curve radius
+   Float64 radius;
+   hc->get_Radius(&radius);
+
+   CComPtr<ICircularCurve> offset_curve;
+   offset_curve.CoCreateInstance(CLSID_CircularCurve);
+   Float64 newRadius = (curve_direction == cdRight ? radius - offset : radius + offset);
+   offset_curve->putref_PBT(newPBT);
+   offset_curve->putref_PI(newPI);
+   offset_curve->putref_PFT(newPFT);
+
+   offset_curve->put_Radius(newRadius);
+
+#if defined _DEBUG
+   CComPtr<IPoint2d> _cc;
+   offset_curve->get_Center(&_cc);
+   ATLASSERT(CC->SameLocation(_cc) == S_OK);
+
+   CComPtr<IAngle> delta_angle;
+   hc->get_Angle(&delta_angle);
+   Float64 delta;
+   delta_angle->get_Value(&delta);
+
+   CComPtr<IAngle> _delta_angle;
+   offset_curve->get_Angle(&_delta_angle);
+   Float64 _delta;
+   _delta_angle->get_Value(&_delta);
+
+   ATLASSERT(IsEqual(delta, _delta));
+#endif
+
+   unkArray->Add(offset_curve);
+
+
+   (*result) = unkArray;
+   (*result)->AddRef();
+}
+
+void CPath::CreateOffsetTransitionCurve(Float64 offset, ITransitionCurve* hc, IUnknown** result)
+{
+   // determine if the curve degrades to a point
+
+   CurveDirectionType curve_direction;
+   hc->get_Direction(&curve_direction);
+
+   // create lines that are normal to the start and end of curve and find their intersection point
+   CComPtr<IPoint2d> pntStart, pntEnd;
+   hc->get_Start(&pntStart);
+   hc->get_End(&pntEnd);
+
+   CComPtr<IDirection> dirStart, dirEnd;
+   hc->get_StartDirection(&dirStart);
+   hc->get_EndDirection(&dirEnd);
+   Float64 start_dir, end_dir;
+   dirStart->get_Value(&start_dir);
+   dirEnd->get_Value(&end_dir);
+
+   CComPtr<IVector2d> vStart;
+   vStart.CoCreateInstance(CLSID_Vector2d);
+   vStart->put_Direction(start_dir + PI_OVER_2);
+
+   CComPtr<IVector2d> vEnd;
+   vEnd.CoCreateInstance(CLSID_Vector2d);
+   vEnd->put_Direction(end_dir + PI_OVER_2);
+
+   CComPtr<ILine2d> start_normal_line;
+   start_normal_line.CoCreateInstance(CLSID_Line2d);
+   start_normal_line->SetExplicit(pntStart, vStart);
+
+   CComPtr<ILine2d> end_normal_line;
+   end_normal_line.CoCreateInstance(CLSID_Line2d);
+   end_normal_line->SetExplicit(pntEnd, vEnd);
+
+   CComPtr<IPoint2d> cc;
+   geomUtil::LineLineIntersect(start_normal_line, end_normal_line, nullptr, &cc);
+
+   // find distance from start and end to the intersection point
+   Float64 d1, d2;
+   m_GeomUtil->Distance(pntStart, cc, &d1);
+   m_GeomUtil->Distance(pntEnd, cc, &d2);
+
+   // Deal with the case of the curve degrading to a single point
+   if ((curve_direction == cdRight && (d1 <= offset || d2 <= offset)) ||
+      (curve_direction == cdLeft && (d1 <= -offset || d2 <= -offset)))
+   {
+      // The parallel curve is past the CC point... this degrades the curve to a point
+
+      CComPtr<IPoint2d> PI;
+      hc->get_PI(&PI);
+
+      CComPtr<ILine2d> l1, l2;
+      l1.CoCreateInstance(CLSID_Line2d);
+      l2.CoCreateInstance(CLSID_Line2d);
+
+      l1->ThroughPoints(pntStart, PI);
+      l2->ThroughPoints(PI, pntEnd);
+
+      // offset the curve tangents and intersect them
+      l1->Offset(-offset);
+      l2->Offset(-offset);
+
+      CComPtr<IPoint2d> point;
+      m_GeomUtil->LineLineIntersect(l1, l2, &point);
+
+      (*result) = point;
+      (*result)->AddRef();
+      return;
+   }
+
+
+   //
+   // Curve remains a curve
+   //
+   CComPtr<IUnkArray> unkArray;
+   unkArray.CoCreateInstance(CLSID_UnkArray);
+
+   IndexType nPoints = 10;
+
+   Float64 Ls;
+   hc->get_Length(&Ls);
+
+   CComPtr<IAngle> spAngle;
+   hc->get_Angle(&spAngle);
+   Float64 angle;
+   spAngle->get_Value(&angle);
+   if (PI_OVER_2 < angle)
+   {
+      CComPtr<ICubicSpline> spline1;
+      CreateSubCurveSpline(0.0, Ls / 2, nPoints, hc, &spline1);
+      CComPtr<IUnknown> offset_spline1;
+      CreateOffsetCubicSpline(offset, spline1, &offset_spline1);
+      unkArray->Add(offset_spline1);
+
+      CComPtr<ICubicSpline> spline2;
+      CreateSubCurveSpline(Ls / 2, Ls, nPoints, hc, &spline2);
+      CComPtr<IUnknown> offset_spline2;
+      CreateOffsetCubicSpline(offset, spline2, &offset_spline2);
+      unkArray->Add(offset_spline2);
+   }
+   else
+   {
+      CComPtr<ICubicSpline> spline;
+      CreateSubCurveSpline(0.0, Ls, nPoints, hc, &spline);
+      CComPtr<IUnknown> offset_spline;
+      CreateOffsetCubicSpline(offset, spline, &offset_spline);
+      unkArray->Add(offset_spline);
+   }
+
+   (*result) = unkArray;
+   (*result)->AddRef();
+}
+
+void CPath::CreateOffsetCompoundCurve(Float64 offset,ICompoundCurve* hc,IUnknown** result)
 {
    CurveDirectionType curve_direction;
    hc->get_Direction(&curve_direction);
@@ -2087,8 +2645,8 @@ void CPath::CreateOffsetHorzCurve(Float64 offset,IHorzCurve* hc,IUnknown** resul
    Float64 radius;
    hc->get_Radius(&radius);
 
-   CComPtr<IHorzCurve> offset_curve;
-   offset_curve.CoCreateInstance(CLSID_HorzCurve);
+   CComPtr<ICompoundCurve> offset_curve;
+   offset_curve.CoCreateInstance(CLSID_CompoundCurve);
    Float64 newRadius = (curve_direction == cdRight ? radius - offset : radius + offset);
    offset_curve->putref_PBT(newPBT);
    offset_curve->putref_PI(newPI);
@@ -2367,6 +2925,130 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ILineSegment2d* pL
    return S_OK;
 }
 
+HRESULT CPath::CreateSubPathElement(Float64 start, Float64 end, ICircularCurve* pHC, IUnknown** ppResult)
+{
+   (*ppResult) = nullptr;
+
+   // get distance from the start of the path to the start and end of the curve
+   Element element;
+
+   CComPtr<IUnknown> pUnk;
+   pHC->QueryInterface(&pUnk);
+   VERIFY(FindElement(pUnk, &element));
+
+   Float64 hcStart = element.start;
+   Float64 hcEnd = element.end;
+
+
+   if ((hcEnd < start) || // curve ends before start of sub-path range
+       (end < hcStart)    // curve starts after end of sub-path range
+      )
+   {
+      // this curve is not part of the sub-path
+      return S_OK;
+   }
+   else if (start <= hcStart && hcEnd <= end)
+   {
+      // entire curve is between the start and end... create a clone because the entire curve is part of the sub-path
+      CComPtr<ICircularCurve> clone;
+      pHC->Clone(&clone);
+      (*ppResult) = clone;
+      (*ppResult)->AddRef();
+      return S_OK;
+   }
+   else
+   {
+      // only a fraction of the curve is part of the sub-path
+
+      Float64 R;
+      pHC->get_Radius(&R); // curve radius remains constant
+
+      CComPtr<IDirection> dirBack;
+      CComPtr<IDirection> dirAhead;
+      CComPtr<IPoint2d> pbt;
+      CComPtr<IPoint2d> pi;
+      CComPtr<IPoint2d> pft;
+
+      // start in circular curve
+      pHC->PointOnCurve(start - hcStart, &pbt);
+      pHC->Bearing(start - hcStart, &dirBack);
+
+      // ends in circular curve
+      pHC->PointOnCurve(end - hcStart, &pft);
+      pHC->Bearing(end - hcStart, &dirAhead);
+
+
+      // PI is at the intesection of the tangents
+      CComQIPtr<IIntersect2> intersect(m_CogoEngine);
+      intersect->Bearings(pbt, CComVariant(dirBack), 0.00, pft, CComVariant(dirAhead), 0.00, &pi);
+
+         CComObject<CCircularCurve>* pCircularCurve;
+         CComObject<CCircularCurve>::CreateInstance(&pCircularCurve);
+         CComPtr<ICircularCurve> hc = pCircularCurve;
+         hc->putref_PBT(pbt);
+         hc->putref_PFT(pft);
+         hc->putref_PI(pi);
+         hc->put_Radius(R);
+
+         (*ppResult) = hc;
+         (*ppResult)->AddRef();
+   }
+
+   return S_OK;
+}
+
+HRESULT CPath::CreateSubPathElement(Float64 start, Float64 end, ITransitionCurve* pHC, IUnknown** ppResult)
+{
+   (*ppResult) = nullptr;
+
+   // get distance from the start of the path to the start and end of the horz curve
+   Element element;
+
+   CComPtr<IUnknown> pUnk;
+   pHC->QueryInterface(&pUnk);
+   VERIFY(FindElement(pUnk, &element));
+
+   Float64 hcStart = element.start;
+   Float64 hcEnd = element.end;
+
+
+   if ((hcEnd < start) || // curve ends before start of sub-path range
+      (end < hcStart)    // curve starts after end of sub-path range
+      )
+   {
+      // this curve is not part of the sub-path
+      return S_OK;
+   }
+   else if (start <= hcStart && hcEnd <= end)
+   {
+      // entire curve is between the start and end... create a clone because the entire curve is part of the sub-path
+      CComPtr<ITransitionCurve> clone;
+      pHC->Clone(&clone);
+      (*ppResult) = clone;
+      (*ppResult)->AddRef();
+      return S_OK;
+  }
+   else
+   {
+      // only a fraction of the curve is part of the sub-path
+
+      // build the sub-path curve
+      CollectionIndexType nSplinePoints = 7;
+      CComPtr<ICubicSpline> spline;
+      Float64 Ls;
+      pHC->get_Length(&Ls);
+      Float64 start_distance = Max(0., start - hcStart);
+      Float64 end_distance = Min(end - hcStart, Ls);
+      CreateSubCurveSpline(start_distance, end_distance, nSplinePoints, pHC, &spline);
+
+      (*ppResult) = spline;
+      (*ppResult)->AddRef();
+   }
+
+   return S_OK;
+
+}
+
 typedef enum RelativePointLocation
 {
    StartBeforeTS        = 1,
@@ -2379,7 +3061,7 @@ typedef enum RelativePointLocation
    EndInExitSpiral      = 8
 } RelativePointLocation;
 
-HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,IUnknown** ppResult1,IUnknown** ppResult2,IUnknown** ppResult3)
+HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ICompoundCurve* pHC,IUnknown** ppResult1,IUnknown** ppResult2,IUnknown** ppResult3)
 {
    (*ppResult1) = nullptr;
    (*ppResult2) = nullptr;
@@ -2406,7 +3088,7 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,IU
    else if ( start <= hcStart && hcEnd <= end )
    {
       // entire curve is between the start and end... create a clone because the entire curve is part of the sub-path
-      CComPtr<IHorzCurve> clone;
+      CComPtr<ICompoundCurve> clone;
       pHC->Clone(&clone);
       (*ppResult1) = clone;
       (*ppResult1)->AddRef();
@@ -2577,9 +3259,9 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,IU
          CComQIPtr<IIntersect2> intersect(m_CogoEngine);
          intersect->Bearings(pbt,CComVariant(dirBack),0.00,pft,CComVariant(dirAhead),0.00,&pi);
 
-         CComObject<CHorzCurve>* pHorzCurve;
-         CComObject<CHorzCurve>::CreateInstance(&pHorzCurve);
-         CComPtr<IHorzCurve> hc = pHorzCurve;
+         CComObject<CCompoundCurve>* pCompoundCurve;
+         CComObject<CCompoundCurve>::CreateInstance(&pCompoundCurve);
+         CComPtr<ICompoundCurve> hc = pCompoundCurve;
          hc->putref_PBT(pbt);
          hc->putref_PFT(pft);
          hc->putref_PI(pi);
@@ -2743,7 +3425,7 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ICubicSpline* pSpl
 }
 
  
-HRESULT CPath::CreateSubCurveSpline(Float64 start,Float64 end,CollectionIndexType nPoints,IHorzCurve* pHC,ICubicSpline** ppSpline)
+HRESULT CPath::CreateSubCurveSpline(Float64 start,Float64 end,CollectionIndexType nPoints,ICompoundCurve* pHC,ICubicSpline** ppSpline)
 {
    // create a cubic spline to represent the sub-portion of the entry spiral
    CComObject<CCubicSpline>* pSpline;
@@ -2775,6 +3457,47 @@ HRESULT CPath::CreateSubCurveSpline(Float64 start,Float64 end,CollectionIndexTyp
    CComPtr<IDirection> dirEnd;
    pHC->PointOnCurve(end,&pntEnd);
    pHC->Bearing(end,&dirEnd);
+   spline->AddPointEx(pntEnd);
+   spline->put_EndDirection(CComVariant(dirEnd));
+
+   (*ppSpline) = spline;
+   (*ppSpline)->AddRef();
+
+   return S_OK;
+}
+
+HRESULT CPath::CreateSubCurveSpline(Float64 start, Float64 end, CollectionIndexType nPoints, ITransitionCurve* pHC, ICubicSpline** ppSpline)
+{
+   // create a cubic spline to represent the sub-portion of the entry spiral
+   CComObject<CCubicSpline>* pSpline;
+   CComObject<CCubicSpline>::CreateInstance(&pSpline);
+   CComPtr<ICubicSpline> spline = pSpline;
+
+   CComPtr<IPoint2d>   pntStart; // start point of spline
+   CComPtr<IDirection> dirStart; // start direction of spline
+   pHC->PointOnCurve(start, &pntStart);
+   pHC->Bearing(start, &dirStart);
+
+   spline->AddPointEx(pntStart);
+   spline->put_StartDirection(CComVariant(dirStart));
+
+   // lay out some points between the start point and the end point
+   // so the cubic spline gives a good approximation of the spiral
+   CollectionIndexType nIntermediatePoints = nPoints - 2;
+   for (CollectionIndexType i = 0; i < nIntermediatePoints; i++)
+   {
+      Float64 d = start + (i + 1) * (end - start) / (nIntermediatePoints + 1);
+
+      CComPtr<IPoint2d> p;
+      pHC->PointOnCurve(d, &p);
+      spline->AddPointEx(p);
+   }
+
+   // finish with the end point
+   CComPtr<IPoint2d> pntEnd;
+   CComPtr<IDirection> dirEnd;
+   pHC->PointOnCurve(end, &pntEnd);
+   pHC->Bearing(end, &dirEnd);
    spline->AddPointEx(pntEnd);
    spline->put_EndDirection(CComVariant(dirEnd));
 
@@ -2825,12 +3548,26 @@ Float64 CPath::GetElementLength(IPathElement* pElement)
          }
          break;
 
-      case petHorzCurve:
-         {
-            CComQIPtr<IHorzCurve> hc(punk);
-            hc->get_TotalLength(&length);
-         }
-         break;
+      case petCircularCurve:
+      {
+         CComQIPtr<ICircularCurve> hc(punk);
+         hc->get_Length(&length);
+      }
+      break;
+
+      case petTransitionCurve:
+      {
+         CComQIPtr<ITransitionCurve> hc(punk);
+         hc->get_Length(&length);
+      }
+      break;
+
+      case petCompoundCurve:
+      {
+         CComQIPtr<ICompoundCurve> hc(punk);
+         hc->get_TotalLength(&length);
+      }
+      break;
 
       case petCubicSpline:
          {
@@ -2876,12 +3613,26 @@ void CPath::DumpPathElements()
          }
          break;
 
-      case petHorzCurve:
-         {
-            CComQIPtr<IHorzCurve> hc(punk);
-            DumpPathElement(hc);
-         }
-         break;
+      case petCircularCurve:
+      {
+         CComQIPtr<ICircularCurve> hc(punk);
+         DumpPathElement(hc);
+      }
+      break;
+
+      case petTransitionCurve:
+      {
+         CComQIPtr<ITransitionCurve> hc(punk);
+         DumpPathElement(hc);
+      }
+      break;
+
+      case petCompoundCurve:
+      {
+         CComQIPtr<ICompoundCurve> hc(punk);
+         DumpPathElement(hc);
+      }
+      break;
 
       case petCubicSpline:
          {
@@ -2921,9 +3672,19 @@ void CPath::DumpPathElement(ILineSegment2d* pLS)
    ATLTRACE2("Line Segment (%f,%f) (%f,%f)\n",sx,sy,ex,ey);
 }
 
-void CPath::DumpPathElement(IHorzCurve* pHC)
+void CPath::DumpPathElement(ICircularCurve* pHC)
 {
-   ATLTRACE2("HorzCurve\n");
+   ATLTRACE2("CircularCurve\n");
+}
+
+void CPath::DumpPathElement(ITransitionCurve* pHC)
+{
+   ATLTRACE2("TransitionCurve\n");
+}
+
+void CPath::DumpPathElement(ICompoundCurve* pHC)
+{
+   ATLTRACE2("CompoundCurve\n");
 }
 
 void CPath::DumpPathElement(ICubicSpline* pSpine)

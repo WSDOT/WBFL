@@ -40,7 +40,7 @@
 #include <DManipTools\GraphXYDisplayObject.h>
 #include <DManipTools\Legend.h>
 #include <DManipTools\PolyLineDisplayObject.h>
-#include <DManipTools\HorzCurveDisplayObject.h>
+#include <DManipTools\CompoundCurveDisplayObject.h>
 
 
 #endif

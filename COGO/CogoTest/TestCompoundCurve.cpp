@@ -23,12 +23,12 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// TestHorzCurve.cpp: implementation of the CTestHorzCurve class.
+// TestCompoundCurve.cpp: implementation of the CTestCompoundCurve class.
 //
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "TestHorzCurve.h"
+#include "TestCompoundCurve.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -40,11 +40,11 @@ static char THIS_FILE[] = __FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CTestHorzCurve::CTestHorzCurve()
+CTestCompoundCurve::CTestCompoundCurve()
 {
 }
 
-void CTestHorzCurve::Test()
+void CTestCompoundCurve::Test()
 {
    Test1();
    Test2();
@@ -64,8 +64,8 @@ void CTestHorzCurve::Test()
    TestEvents();
 
    // Test curve direction
-   CComPtr<IHorzCurve> hc;
-   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+   CComPtr<ICompoundCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
    CComPtr<IPoint2d> pbt, pi, pft;
    pbt.CoCreateInstance(CLSID_Point2d);
@@ -94,7 +94,7 @@ void CTestHorzCurve::Test()
 
    // Back Tangent Bearing = N 45 W
    pbt->Move(0,1000);
-   pi->Move(1-000,1000);
+   pi->Move(1000,1000);
 
    // Left Curve
    pft->Move(-1000,1500);
@@ -143,13 +143,13 @@ void CTestHorzCurve::Test()
    TRY_TEST(hc->putref_PointFactory(factory),S_OK);
 
    // Test IObjectSafety
-   TRY_TEST( TestIObjectSafety(CLSID_HorzCurve,IID_IHorzCurve,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
+   TRY_TEST( TestIObjectSafety(CLSID_CompoundCurve,IID_ICompoundCurve,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
-void CTestHorzCurve::Test1()
+void CTestCompoundCurve::Test1()
 {
-   CComPtr<IHorzCurve> hc;
-   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+   CComPtr<ICompoundCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the right
@@ -732,19 +732,19 @@ void CTestHorzCurve::Test1()
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(hc);
    TRY_TEST( eInfo != nullptr, true );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IHorzCurve ), S_OK );
+   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ICompoundCurve ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
    // Test IObjectSafety
-   TRY_TEST( TestIObjectSafety(CLSID_HorzCurve,IID_IHorzCurve,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-   TRY_TEST( TestIObjectSafety(CLSID_HorzCurve,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
+   TRY_TEST( TestIObjectSafety(CLSID_CompoundCurve,IID_ICompoundCurve,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
+   TRY_TEST( TestIObjectSafety(CLSID_CompoundCurve,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
-void CTestHorzCurve::Test2()
+void CTestCompoundCurve::Test2()
 {
-   CComPtr<IHorzCurve> hc;
-   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+   CComPtr<ICompoundCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
    /////////////////////////////////////////////////////
    // Test a symmetrical curve to the right
@@ -1195,10 +1195,10 @@ void CTestHorzCurve::Test2()
    TRY_TEST(IsEqual(py,550.0),true);
 }
 
-void CTestHorzCurve::Test3()
+void CTestCompoundCurve::Test3()
 {
-   CComPtr<IHorzCurve> hc;
-   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+   CComPtr<ICompoundCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
    /////////////////////////////////////////////////////
    // Test a symmetrical curve to the right
@@ -1639,10 +1639,10 @@ void CTestHorzCurve::Test3()
    TRY_TEST(IsEqual(py,550.0),true);
 }
 
-void CTestHorzCurve::Test4()
+void CTestCompoundCurve::Test4()
 {
-   CComPtr<IHorzCurve> hc;
-   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+   CComPtr<ICompoundCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
    /////////////////////////////////////////////////////
    // Test a symmetrical curve to the right
@@ -2073,10 +2073,10 @@ void CTestHorzCurve::Test4()
    TRY_TEST(IsEqual(py,550.0),true);
 }
 
-void CTestHorzCurve::Test5()
+void CTestCompoundCurve::Test5()
 {
-   CComPtr<IHorzCurve> hc;
-   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+   CComPtr<ICompoundCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the left

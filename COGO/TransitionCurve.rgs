@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.TransitionCurve.1 = s 'TransitionCurve Class'
+	{
+		CLSID = s '{7B960DF1-3208-4DAF-94D8-066E4F991353}'
+	}
+	WBFLCogo.TransitionCurve = s 'TransitionCurve Class'
+	{
+		CLSID = s '{7B960DF1-3208-4DAF-94D8-066E4F991353}'
+		CurVer = s 'WBFLCogo.TransitionCurve.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {7B960DF1-3208-4DAF-94D8-066E4F991353} = s 'TransitionCurve Class'
+		{
+			ProgID = s 'WBFLCogo.TransitionCurve.1'
+			VersionIndependentProgID = s 'WBFLCogo.TransitionCurve'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

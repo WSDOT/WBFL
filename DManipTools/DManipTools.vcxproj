@@ -945,7 +945,7 @@
     <ClCompile Include="DManipToolsDisplayObjectFactory.cpp" />
     <ClCompile Include="GraphXyDataProvider.cpp" />
     <ClCompile Include="GraphXyDisplayObjectImpl.cpp" />
-    <ClCompile Include="HorzCurveDisplayObjectImpl.cpp" />
+    <ClCompile Include="CompoundCurveDisplayObjectImpl.cpp" />
     <ClCompile Include="LegendDisplayObject.cpp" />
     <ClCompile Include="LegendEntryImpl.cpp" />
     <ClCompile Include="LegendMessageCatcher.cpp" />
@@ -970,7 +970,7 @@
     <None Include="DManipToolsDisplayObjectFactory.rgs" />
     <None Include="GraphXyDataProvider.rgs" />
     <None Include="GraphXyDisplayObject.rgs" />
-    <None Include="HorzCurveDisplayObject.rgs" />
+    <None Include="CompoundCurveDisplayObject.rgs" />
     <None Include="LegendDisplayObject.rgs" />
     <None Include="LegendEntry.rgs" />
     <None Include="PolylineDisplayObject.rgs" />
@@ -997,7 +997,7 @@
     <ClInclude Include="..\Include\DManipTools\DManipTools.h" />
     <ClInclude Include="..\Include\DManipTools\DManipToolsTypes.h" />
     <ClInclude Include="..\Include\DManipTools\GraphXYDisplayObject.h" />
-    <ClInclude Include="..\Include\DManipTools\HorzCurveDisplayObject.h" />
+    <ClInclude Include="..\Include\DManipTools\CompoundCurveDisplayObject.h" />
     <ClInclude Include="..\Include\DManipTools\Legend.h" />
     <ClInclude Include="..\Include\DManipTools\PolyLineDisplayObject.h" />
     <ClInclude Include="..\Include\DManip\DManipTypes.h" />
@@ -1009,7 +1009,7 @@
     <ClInclude Include="DManipToolsDisplayObjectFactory.h" />
     <ClInclude Include="GraphXyDataProvider.h" />
     <ClInclude Include="GraphXyDisplayObjectImpl.h" />
-    <ClInclude Include="HorzCurveDisplayObjectImpl.h" />
+    <ClInclude Include="CompoundCurveDisplayObjectImpl.h" />
     <ClInclude Include="LegendDisplayObject.h" />
     <ClInclude Include="LegendEntryImpl.h" />
     <ClInclude Include="LegendMessageCatcher.h" />

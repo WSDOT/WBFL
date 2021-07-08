@@ -21,11 +21,11 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// HorzCurveDisplayObjectImpl.cpp : Implementation of CHorzCurveDisplayObjectImpl
+// CompoundCurveDisplayObjectImpl.cpp : Implementation of CCompoundCurveDisplayObjectImpl
 #include "stdafx.h"
 #include <WBFLDManipTools.h>
 #include "DManipTools\DManipTools.h"
-#include "HorzCurveDisplayObjectImpl.h"
+#include "CompoundCurveDisplayObjectImpl.h"
 #include <MathEx.h>
 
 #ifdef _DEBUG
@@ -36,20 +36,20 @@ static char THIS_FILE[] = __FILE__;
 
 
 /////////////////////////////////////////////////////////////////////////////
-// CHorzCurveDisplayObjectImpl
-UINT CHorzCurveDisplayObjectImpl::ms_cfFormat = ::RegisterClipboardFormat(_T("ManipTools.HorzCurveDisplayObject"));
+// CCompoundCurveDisplayObjectImpl
+UINT CCompoundCurveDisplayObjectImpl::ms_cfFormat = ::RegisterClipboardFormat(_T("ManipTools.CompoundCurveDisplayObject"));
 
 
-CHorzCurveDisplayObjectImpl::CHorzCurveDisplayObjectImpl()
+CCompoundCurveDisplayObjectImpl::CCompoundCurveDisplayObjectImpl()
 {
    m_DrawMode = hcCurveWithTangents;
 }
 
-STDMETHODIMP CHorzCurveDisplayObjectImpl::InterfaceSupportsErrorInfo(REFIID riid)
+STDMETHODIMP CCompoundCurveDisplayObjectImpl::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_iHorzCurveDisplayObject
+		&IID_iCompoundCurveDisplayObject
 	};
 
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
@@ -60,7 +60,7 @@ STDMETHODIMP CHorzCurveDisplayObjectImpl::InterfaceSupportsErrorInfo(REFIID riid
 	return S_FALSE;
 }
 
-HRESULT CHorzCurveDisplayObjectImpl::FinalConstruct()
+HRESULT CCompoundCurveDisplayObjectImpl::FinalConstruct()
 {
    SetDisplayObject(this); // Must be called from FinalConstruct and not c'tor
 
@@ -74,19 +74,19 @@ HRESULT CHorzCurveDisplayObjectImpl::FinalConstruct()
    return S_OK;
 }
 
-void::CHorzCurveDisplayObjectImpl::FinalRelease()
+void::CCompoundCurveDisplayObjectImpl::FinalRelease()
 {
    CDisplayObjectDefaultImpl::Do_FinalRelease();
 }
 
-STDMETHODIMP_(CString) CHorzCurveDisplayObjectImpl::GetToolTipText()
+STDMETHODIMP_(CString) CCompoundCurveDisplayObjectImpl::GetToolTipText()
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
    return CString("Horz Curve");
 }
 
-STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::putref_HorzCurve(IHorzCurve* hc,BOOL bRedraw,BOOL bFireEvent)
+STDMETHODIMP_(void) CCompoundCurveDisplayObjectImpl::putref_CompoundCurve(ICompoundCurve* hc,BOOL bRedraw,BOOL bFireEvent)
 {
    if ( bRedraw )
    {
@@ -101,7 +101,7 @@ STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::putref_HorzCurve(IHorzCurve* hc
       pDispMgr->InvalidateRect(box);
    }
    
-   m_HorzCurve = hc;
+   m_CompoundCurve = hc;
 
    if ( bRedraw )
    {
@@ -121,24 +121,24 @@ STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::putref_HorzCurve(IHorzCurve* hc
    }
 }
 
-STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::get_HorzCurve(IHorzCurve* *hc)
+STDMETHODIMP_(void) CCompoundCurveDisplayObjectImpl::get_CompoundCurve(ICompoundCurve* *hc)
 {
-   (*hc) = m_HorzCurve;
-   if ( m_HorzCurve )
+   (*hc) = m_CompoundCurve;
+   if ( m_CompoundCurve )
       (*hc)->AddRef();
 }
 
-STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::put_DrawMode(HorzCurveDrawMode mode)
+STDMETHODIMP_(void) CCompoundCurveDisplayObjectImpl::put_DrawMode(CompoundCurveDrawMode mode)
 {
    m_DrawMode = mode;
 }
 
-STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::get_DrawMode(HorzCurveDrawMode* mode)
+STDMETHODIMP_(void) CCompoundCurveDisplayObjectImpl::get_DrawMode(CompoundCurveDrawMode* mode)
 {
    *mode = m_DrawMode;
 }
 
-STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::put_Font(const LOGFONT& Font)
+STDMETHODIMP_(void) CCompoundCurveDisplayObjectImpl::put_Font(const LOGFONT& Font)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -151,7 +151,7 @@ STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::put_Font(const LOGFONT& Font)
       ATLASSERT(false);
 }
 
-STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::get_Font(LOGFONT* pFont)
+STDMETHODIMP_(void) CCompoundCurveDisplayObjectImpl::get_Font(LOGFONT* pFont)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -159,14 +159,14 @@ STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::get_Font(LOGFONT* pFont)
 }
 
 // iDrawPointStrategy
-STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::Draw(CDC* pDC)
+STDMETHODIMP_(void) CCompoundCurveDisplayObjectImpl::Draw(CDC* pDC)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
    Highlite(pDC, IsSelected());
 }
 
-//STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::DrawDragImage(CDC* pDC, iCoordinateMap* pMap, const CPoint& dragStart, const CPoint& dragPoint)
+//STDMETHODIMP_(void) CCompoundCurveDisplayObjectImpl::DrawDragImage(CDC* pDC, iCoordinateMap* pMap, const CPoint& dragStart, const CPoint& dragPoint)
 //{
 //	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 //
@@ -176,11 +176,11 @@ STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::Draw(CDC* pDC)
 //   Draw(pDC, pMap, drag_point, FALSE, TRUE);
 //}
 //
-STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::Highlite(CDC* pDC,BOOL bHighlite)
+STDMETHODIMP_(void) CCompoundCurveDisplayObjectImpl::Highlite(CDC* pDC,BOOL bHighlite)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
-   if ( !m_HorzCurve )
+   if ( !m_CompoundCurve )
       return;
 
    CComPtr<iDisplayList> pDL;
@@ -195,16 +195,16 @@ STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::Highlite(CDC* pDC,BOOL bHighlit
 
    // Draw circular curve
    CurveDirectionType direction;
-   m_HorzCurve->get_Direction(&direction);
+   m_CompoundCurve->get_Direction(&direction);
 
    CComPtr<IPoint2d> ts, sc, cs, st, pi, cc, ccc;
-   m_HorzCurve->get_TS(&ts);
-   m_HorzCurve->get_SC(&sc);
-   m_HorzCurve->get_CS(&cs);
-   m_HorzCurve->get_ST(&st);
-   m_HorzCurve->get_PI(&pi);
-   m_HorzCurve->get_CC(&cc);
-   m_HorzCurve->get_CCC(&ccc);
+   m_CompoundCurve->get_TS(&ts);
+   m_CompoundCurve->get_SC(&sc);
+   m_CompoundCurve->get_CS(&cs);
+   m_CompoundCurve->get_ST(&st);
+   m_CompoundCurve->get_PI(&pi);
+   m_CompoundCurve->get_CC(&cc);
+   m_CompoundCurve->get_CCC(&ccc);
 
    // convert to world space
    Float64 ts_x, ts_y, sc_x, sc_y, cs_x, cs_y, st_x, st_y, pi_x, pi_y, cc_x, cc_y, ccc_x, ccc_y;
@@ -228,7 +228,7 @@ STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::Highlite(CDC* pDC,BOOL bHighlit
 
    // get curve radius in logical space
    Float64 radius;
-   m_HorzCurve->get_Radius(&radius);
+   m_CompoundCurve->get_Radius(&radius);
 
    long rx,ry;
    pMap->WPtoLP(radius+ccc_x,radius+ccc_y,&rx,&ry);
@@ -279,7 +279,7 @@ STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::Highlite(CDC* pDC,BOOL bHighlit
 //
 }
 //
-//void CHorzCurveDisplayObjectImpl::Draw(CDC* pDC, iCoordinateMap* pMap, const CPoint& location, BOOL bHighlite, BOOL beingDragged)
+//void CCompoundCurveDisplayObjectImpl::Draw(CDC* pDC, iCoordinateMap* pMap, const CPoint& location, BOOL bHighlite, BOOL beingDragged)
 //{
 //	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 //
@@ -447,18 +447,18 @@ STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::Highlite(CDC* pDC,BOOL bHighlit
 //   pDC->SelectObject(porig_pen);
 //}
 //
-STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::GetBoundingBox(IRect2d** rect)
+STDMETHODIMP_(void) CCompoundCurveDisplayObjectImpl::GetBoundingBox(IRect2d** rect)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
-   if ( !m_HorzCurve )
+   if ( !m_CompoundCurve )
       return;
 
    CComPtr<IPoint2d> ts, pi, st, cc;
-   m_HorzCurve->get_TS(&ts);
-   m_HorzCurve->get_PI(&pi);
-   m_HorzCurve->get_ST(&st);
-   m_HorzCurve->get_CC(&cc);
+   m_CompoundCurve->get_TS(&ts);
+   m_CompoundCurve->get_PI(&pi);
+   m_CompoundCurve->get_ST(&st);
+   m_CompoundCurve->get_CC(&cc);
 
    Float64 ts_x, ts_y;
    Float64 pi_x, pi_y;
@@ -517,7 +517,7 @@ STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::GetBoundingBox(IRect2d** rect)
    (*rect)->AddRef();
 }
 //
-//void CHorzCurveDisplayObjectImpl::GetBoundingBoxEx(IRect2d& rect, bool includeTitle)
+//void CCompoundCurveDisplayObjectImpl::GetBoundingBoxEx(IRect2d& rect, bool includeTitle)
 //{
 //	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 //

@@ -23,12 +23,12 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// TestHorzCurve.cpp: implementation of the CTestHorzCurve class.
+// TestCompoundCurve.cpp: implementation of the CTestCompoundCurve class.
 //
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "TestHorzCurve.h"
+#include "TestCompoundCurve.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -54,10 +54,10 @@ void MakeLine(IPoint2d* pPoint,IDirection* pDirection,ILine2d** ppLine)
    (*ppLine)->AddRef();
 }
 
-void CTestHorzCurve::Test6()
+void CTestCompoundCurve::Test6()
 {
-   CComPtr<IHorzCurve> hc;
-   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+   CComPtr<ICompoundCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the right
@@ -560,10 +560,10 @@ void CTestHorzCurve::Test6()
 //   TRY_TEST(IsEqual(py,820.18857),true);
 }
 
-void CTestHorzCurve::Test7()
+void CTestCompoundCurve::Test7()
 {
-   CComPtr<IHorzCurve> hc;
-   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+   CComPtr<ICompoundCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the left
@@ -625,10 +625,10 @@ void CTestHorzCurve::Test7()
    TRY_TEST(type, cdLeft);
 }
 
-void CTestHorzCurve::Test8a()
+void CTestCompoundCurve::Test8a()
 {
-   CComPtr<IHorzCurve> hc;
-   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+   CComPtr<ICompoundCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the left
@@ -1148,11 +1148,11 @@ void CTestHorzCurve::Test8a()
    TRY_TEST(p2 == nullptr,true);
 }
 
-void CTestHorzCurve::Test8b()
+void CTestCompoundCurve::Test8b()
 {
    // same as Test8a except the direction of the curve is reverse
-   CComPtr<IHorzCurve> hc;
-   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+   CComPtr<ICompoundCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the right
@@ -1672,11 +1672,11 @@ void CTestHorzCurve::Test8b()
 }
 
 
-void CTestHorzCurve::Test9a()
+void CTestCompoundCurve::Test9a()
 {
    // This is the same as Test8a except the curve has been mirrored about the Y axis
-   CComPtr<IHorzCurve> hc;
-   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+   CComPtr<ICompoundCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the right
@@ -2196,11 +2196,11 @@ void CTestHorzCurve::Test9a()
    TRY_TEST(p2 == nullptr,true);
 }
 
-void CTestHorzCurve::Test9b()
+void CTestCompoundCurve::Test9b()
 {
    // same as Test9a except the direction of the curve is reverse
-   CComPtr<IHorzCurve> hc;
-   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+   CComPtr<ICompoundCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the left
@@ -2720,11 +2720,11 @@ void CTestHorzCurve::Test9b()
 }
 
 
-void CTestHorzCurve::Test10a()
+void CTestCompoundCurve::Test10a()
 {
    // same as Test8a except curve has been mirrored about the X axis
-   CComPtr<IHorzCurve> hc;
-   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+   CComPtr<ICompoundCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the right
@@ -3244,11 +3244,11 @@ void CTestHorzCurve::Test10a()
 }
 
 
-void CTestHorzCurve::Test10b()
+void CTestCompoundCurve::Test10b()
 {
    // same as Test10a except the direction of the curve is reverse
-   CComPtr<IHorzCurve> hc;
-   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+   CComPtr<ICompoundCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the left
@@ -3782,11 +3782,11 @@ void CTestHorzCurve::Test10b()
    TRY_TEST(p2 == nullptr,true);
 }
 
-void CTestHorzCurve::Test11a()
+void CTestCompoundCurve::Test11a()
 {
    // same as Test8 except curve has been mirrored about the X axis and the Y axis
-   CComPtr<IHorzCurve> hc;
-   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+   CComPtr<ICompoundCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the left
@@ -4305,11 +4305,11 @@ void CTestHorzCurve::Test11a()
    TRY_TEST(p2 == nullptr,true);
 }
 
-void CTestHorzCurve::Test11b()
+void CTestCompoundCurve::Test11b()
 {
    // same as Test10b except the direction of the curve is reverse
-   CComPtr<IHorzCurve> hc;
-   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+   CComPtr<ICompoundCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the right
@@ -4843,10 +4843,10 @@ void CTestHorzCurve::Test11b()
    TRY_TEST(p2 == nullptr,true);
 }
 
-void CTestHorzCurve::TestEvents()
+void CTestCompoundCurve::TestEvents()
 {
-   CComPtr<IHorzCurve> hc;
-   TRY_TEST(hc.CoCreateInstance(CLSID_HorzCurve),S_OK);
+   CComPtr<ICompoundCurve> hc;
+   TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
    CComPtr<IPoint2d> pbt, pi, pft;
    pbt.CoCreateInstance(CLSID_Point2d);
@@ -4857,13 +4857,13 @@ void CTestHorzCurve::TestEvents()
    pi->Move(700,1000);
    pft->Move(1000,700);
    
-   CComObject<CTestHorzCurve>* pTestCurve;
-   CComObject<CTestHorzCurve>::CreateInstance(&pTestCurve);
+   CComObject<CTestCompoundCurve>* pTestCurve;
+   CComObject<CTestCompoundCurve>::CreateInstance(&pTestCurve);
    pTestCurve->AddRef();
    
    DWORD dwCookie;
    CComPtr<IUnknown> punk(pTestCurve);
-   TRY_TEST(AtlAdvise(hc,punk,IID_IHorzCurveEvents,&dwCookie),S_OK);
+   TRY_TEST(AtlAdvise(hc,punk,IID_ICompoundCurveEvents,&dwCookie),S_OK);
 
    pTestCurve->InitEventTest();
    hc->putref_PBT(pbt);
@@ -4921,13 +4921,13 @@ void CTestHorzCurve::TestEvents()
    hc->putref_PFT(newPFT);
    TRY_TEST(pTestCurve->PassedEventTest(), true );
 
-   TRY_TEST(AtlUnadvise(hc,IID_IHorzCurveEvents,dwCookie),S_OK);
+   TRY_TEST(AtlUnadvise(hc,IID_ICompoundCurveEvents,dwCookie),S_OK);
    pTestCurve->Release();
 }
 
-STDMETHODIMP CTestHorzCurve::OnHorzCurveChanged(IHorzCurve* pp)
+STDMETHODIMP CTestCompoundCurve::OnCompoundCurveChanged(ICompoundCurve* pp)
 {
-//   ::MessageBox(nullptr,"OnHorzCurveChanged","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnCompoundCurveChanged","Event",MB_OK);
    Pass();
    return S_OK;
 }

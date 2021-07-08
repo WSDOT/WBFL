@@ -49,6 +49,8 @@ extern CComModule _Module;
 #include <WBFLGeometry.h>
 #include <MathEx.h>
 
+#include <WBFLGeometry\GeomHelpers.h>
+
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 

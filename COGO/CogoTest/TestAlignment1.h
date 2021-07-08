@@ -43,9 +43,13 @@ public:
 
 private:
    static void Test1();
+   static void Test1a();
    static void Test2();
+   static void Test2a();
    static void Test3();
+   static void Test3a();
    static void Test4();
+   static void Test4a();
 };
 
 #endif // !defined(AFX_TESTAlignment1_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)

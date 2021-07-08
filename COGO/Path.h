@@ -183,15 +183,20 @@ private:
    // Intersects a line with a path element, puts the result point(s) in the point collection
    void IntersectElement(ILine2d* line,IPathElement* element,bool bProjectBack,bool bProjectAhead,IPoint2dCollection* points);
 
-   void CreateOffsetHorzCurve(Float64 offset,IHorzCurve* hc,IUnknown** result);
+   void CreateOffsetCircularCurve(Float64 offset, ICircularCurve* hc, IUnknown** result);
+   void CreateOffsetTransitionCurve(Float64 offset, ITransitionCurve* hc, IUnknown** result);
+   void CreateOffsetCompoundCurve(Float64 offset,ICompoundCurve* hc,IUnknown** result);
    void CreateOffsetCubicSpline(Float64 offset,ICubicSpline* spline,IUnknown** result);
    void CreateOffsetPoint(CollectionIndexType elementIdx,Float64 offset,IPoint2d** pPoint);
 
 
-   HRESULT CreateSubPathElement(Float64 start,Float64 end,ILineSegment2d* pLS,ILineSegment2d** ppLineSegment);
-   HRESULT CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,IUnknown** ppResult1,IUnknown** ppResult2,IUnknown** ppResult3);
-   HRESULT CreateSubPathElement(Float64 start,Float64 end,ICubicSpline* pSpine,IUnknown** ppResult);
-   HRESULT CreateSubCurveSpline(Float64 start,Float64 end,CollectionIndexType nPoints,IHorzCurve* pHC,ICubicSpline** ppSpline);
+   HRESULT CreateSubPathElement(Float64 start, Float64 end, ILineSegment2d* pLS, ILineSegment2d** ppLineSegment);
+   HRESULT CreateSubPathElement(Float64 start, Float64 end, ICircularCurve* pHC, IUnknown** ppResult);
+   HRESULT CreateSubPathElement(Float64 start, Float64 end, ITransitionCurve* pHC, IUnknown** ppResult);
+   HRESULT CreateSubPathElement(Float64 start, Float64 end, ICompoundCurve* pHC, IUnknown** ppResult1, IUnknown** ppResult2, IUnknown** ppResult3);
+   HRESULT CreateSubPathElement(Float64 start, Float64 end, ICubicSpline* pSpine, IUnknown** ppResult);
+   HRESULT CreateSubCurveSpline(Float64 start, Float64 end, CollectionIndexType nPoints, ICompoundCurve* pHC, ICubicSpline** ppSpline);
+   HRESULT CreateSubCurveSpline(Float64 start, Float64 end, CollectionIndexType nPoints, ITransitionCurve* pHC, ICubicSpline** ppSpline);
    HRESULT SavePathElement(IPath* pPath,IUnknown* pUnk);
 
    Float64 GetElementLength(IPathElement* pElement);
@@ -200,7 +205,9 @@ private:
    void DumpPathElements();
    void DumpPathElement(IPoint2d* pPoint);
    void DumpPathElement(ILineSegment2d* pLS);
-   void DumpPathElement(IHorzCurve* pHC);
+   void DumpPathElement(ICircularCurve* pHC);
+   void DumpPathElement(ITransitionCurve* pHC);
+   void DumpPathElement(ICompoundCurve* pHC);
    void DumpPathElement(ICubicSpline* pSpine);
 #endif
 };

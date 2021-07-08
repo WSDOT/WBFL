@@ -52,7 +52,7 @@
 #include "DManipToolsDisplayObjectFactory.h"
 #include "GraphXyDataProvider.h"
 #include "PolyLineDisplayObjectImpl.h"
-#include "HorzCurveDisplayObjectImpl.h"
+#include "CompoundCurveDisplayObjectImpl.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -70,7 +70,7 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_DManipToolsDisplayObjectFactory, CDManipToolsDisplayObjectFactory)
    OBJECT_ENTRY(CLSID_GraphXyDataProvider, CGraphXyDataProvider)
    OBJECT_ENTRY(CLSID_PolyLineDisplayObject, CPolyLineDisplayObjectImpl)
-   OBJECT_ENTRY(CLSID_HorzCurveDisplayObject, CHorzCurveDisplayObjectImpl)
+   OBJECT_ENTRY(CLSID_CompoundCurveDisplayObject, CCompoundCurveDisplayObjectImpl)
 END_OBJECT_MAP()
 
 class CDManipToolsApp : public CWinApp

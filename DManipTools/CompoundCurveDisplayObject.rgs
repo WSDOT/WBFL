@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManipTools.CompoundCurveDisplayObject.1 = s 'CompoundCurveDisplayObject Class'
+	{
+		CLSID = s '{7DBA44AA-1542-4470-8719-21580A6822B5}'
+	}
+	WBFLDManipTools.CompoundCurveDisplayObject = s 'CompoundCurveDisplayObject Class'
+	{
+		CLSID = s '{7DBA44AA-1542-4470-8719-21580A6822B5}'
+		CurVer = s 'WBFLDManipTools.CompoundCurveDisplayObject.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {7DBA44AA-1542-4470-8719-21580A6822B5} = s 'CompoundCurveDisplayObject Class'
+		{
+			ProgID = s 'WBFLDManipTools.CompoundCurveDisplayObject.1'
+			VersionIndependentProgID = s 'WBFLDManipTools.CompoundCurveDisplayObject'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B7B9C36E-FEAF-43BB-8907-C98A0EF3224E}'
+		}
+	}
+}

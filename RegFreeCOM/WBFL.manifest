@@ -433,12 +433,15 @@
       <comClass clsid="{D6732CA5-6E4F-45FE-A4FC-B0E8A94667FA}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                 description="VertCurveCollection Class"></comClass>
-      <comClass clsid="{61454EB9-8040-4B74-9429-B09D1FF1E0BB}"
+	   <comClass clsid="{5A7E89C4-C238-4FE2-9300-0848F4F5AC42}"
+				 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
+				 description="CircularCurve Class"></comClass>
+	   <comClass clsid="{61454EB9-8040-4B74-9429-B09D1FF1E0BB}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="HorzCurve Class"></comClass>
+                description="CompoundCurve Class"></comClass>
       <comClass clsid="{2C4945D1-9B56-430C-B395-B07209328C59}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="HorzCurveCollection Class"></comClass>
+                description="CompoundCurveCollection Class"></comClass>
       <comClass clsid="{69706DA8-D10D-4932-A566-69DE35CAF30F}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                 description="CubicSpline Class"></comClass>
@@ -477,7 +480,7 @@
                 description="ProfilePointFactory Class"></comClass>
       <comClass clsid="{FC1BF8D1-D732-4C86-B98C-4B08E3C9E61E}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="HorzCurveFactory Class"></comClass>
+                description="CompoundCurveFactory Class"></comClass>
       <comClass clsid="{0AFA71AC-3F98-4DD0-9BC2-E33D00725C67}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                 description="CrossSectionFactory Class"></comClass>
@@ -538,6 +541,9 @@
      <comClass clsid="{1B216215-3EEC-407e-BBEC-52BB0C0FBCBD}"
           tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
           description="SurfaceProfile Class"></comClass>
+     <comClass clsid="{7B960DF1-3208-4DAF-94D8-066E4F991353}"
+          tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
+          description="TransitionCurve Class"></comClass>
      <typelib tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                version="1.0"
                helpdir=""
@@ -550,7 +556,7 @@
                 description="PolyLineDisplayObject Class"></comClass>
       <comClass clsid="{7DBA44AA-1542-4470-8719-21580A6822B5}"
                 tlbid="{B7B9C36E-FEAF-43BB-8907-C98A0EF3224E}"
-                description="HorzCurveDisplayObject Class"></comClass>
+                description="CompoundCurveDisplayObject Class"></comClass>
       <comClass clsid="{06C90828-5269-4B98-97E6-AECDDF4B0764}"
                 tlbid="{B7B9C36E-FEAF-43BB-8907-C98A0EF3224E}"
                 description="GraphXyDisplayObject Class"></comClass>

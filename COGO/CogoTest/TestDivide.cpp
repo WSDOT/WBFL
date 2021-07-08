@@ -161,12 +161,12 @@ void CTestDivide::Test()
       TRY_TEST(IsEqual(y,(i-1)*10.),true);
    }
 
-   // Test HorzCurve
+   // Test CompoundCurve
    points->Add(101,0,1000,nullptr);
    points->Add(102,700,1000,nullptr);
    points->Add(103,1000,700,nullptr);
-   CComPtr<IHorzCurveCollection> hcurves;
-   model->get_HorzCurves(&hcurves);
+   CComPtr<ICompoundCurveCollection> hcurves;
+   model->get_CompoundCurves(&hcurves);
 
    CComPtr<IPoint2d> pbt, pi, pft;
    points->get_Item(101,&pbt);
@@ -175,12 +175,12 @@ void CTestDivide::Test()
 
    hcurves->Add(1,pbt,pi,pft,500,100,200,nullptr);
 
-   TRY_TEST(divide->HorzCurve(150,1,1,-1),E_INVALIDARG);
-   TRY_TEST(divide->HorzCurve(150,0,1,5),E_INVALIDARG);
-   TRY_TEST(divide->HorzCurve(150,1,-1,5),COGO_E_HORZCURVENOTFOUND);
-   TRY_TEST(divide->HorzCurve(99,1,1,5),COGO_E_POINTALREADYDEFINED);
+   TRY_TEST(divide->CompoundCurve(150,1,1,-1),E_INVALIDARG);
+   TRY_TEST(divide->CompoundCurve(150,0,1,5),E_INVALIDARG);
+   TRY_TEST(divide->CompoundCurve(150,1,-1,5),COGO_E_COMPOUNDCURVENOTFOUND);
+   TRY_TEST(divide->CompoundCurve(99,1,1,5),COGO_E_POINTALREADYDEFINED);
 
-   TRY_TEST(divide->HorzCurve(150,1,1,10),S_OK);
+   TRY_TEST(divide->CompoundCurve(150,1,1,10),S_OK);
    
    pnt.Release();
    TRY_TEST(points->get_Item(150,&pnt),S_OK);

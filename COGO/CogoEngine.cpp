@@ -873,7 +873,7 @@ STDMETHODIMP CCogoEngine::PointOnLineSegment(/*[in]*/ IPoint2d* from,/*[in]*/ IL
    return S_OK;
 }
 
-STDMETHODIMP CCogoEngine::PointOnCurve(/*[in]*/ IPoint2d* pnt, /*[in]*/ IHorzCurve* curve,/*[out,retval]*/ IPoint2d** point)
+STDMETHODIMP CCogoEngine::PointOnCurve(/*[in]*/ IPoint2d* pnt, /*[in]*/ ICompoundCurve* curve,/*[out,retval]*/ IPoint2d** point)
 {
    CHECK_IN(pnt);
    CHECK_IN(curve);
@@ -960,7 +960,7 @@ STDMETHODIMP CCogoEngine::LineSegment(/*[in]*/ ILineSegment2d* seg,/*[in]*/ Coll
    return S_OK;
 }
 
-STDMETHODIMP CCogoEngine::HorzCurve(/*[in]*/ IHorzCurve* curve, /*[in]*/ CollectionIndexType nParts, /*[out,retval]*/ IPoint2dCollection** points)
+STDMETHODIMP CCogoEngine::CompoundCurve(/*[in]*/ ICompoundCurve* curve, /*[in]*/ CollectionIndexType nParts, /*[out,retval]*/ IPoint2dCollection** points)
 {
    CHECK_IN(curve);
    CHECK_RETOBJ(points);

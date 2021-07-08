@@ -23,11 +23,11 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// HorzCurveFactory.cpp : Implementation of CHorzCurveFactory
+// CompoundCurveFactory.cpp : Implementation of CCompoundCurveFactory
 #include "stdafx.h"
 #include "WBFLCOGO.h"
-#include "HorzCurveFactory.h"
-#include "HorzCurve.h"
+#include "CompoundCurveFactory.h"
+#include "CompoundCurve.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -36,12 +36,12 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
-// CHorzCurveFactory
-STDMETHODIMP CHorzCurveFactory::InterfaceSupportsErrorInfo(REFIID riid)
+// CCompoundCurveFactory
+STDMETHODIMP CCompoundCurveFactory::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_IHorzCurveFactory,
+		&IID_ICompoundCurveFactory,
 		&IID_IStructuredStorage2,
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
@@ -53,36 +53,36 @@ STDMETHODIMP CHorzCurveFactory::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 
-STDMETHODIMP CHorzCurveFactory::CreateHorzCurve(IHorzCurve **pVal)
+STDMETHODIMP CCompoundCurveFactory::CreateCompoundCurve(ICompoundCurve **pVal)
 {
    CHECK_RETOBJ(pVal);
 
-   CComObject<CHorzCurve>* pHC;
-   CComObject<CHorzCurve>::CreateInstance(&pHC);
+   CComObject<CCompoundCurve>* pHC;
+   CComObject<CCompoundCurve>::CreateInstance(&pHC);
    (*pVal) = pHC;
    (*pVal)->AddRef();
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurveFactory::get_StructuredStorage(IStructuredStorage2* *pStg)
+STDMETHODIMP CCompoundCurveFactory::get_StructuredStorage(IStructuredStorage2* *pStg)
 {
    CHECK_RETOBJ(pStg);
    return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
 }
 
 // IStructuredStorage2
-STDMETHODIMP CHorzCurveFactory::Save(IStructuredSave2* pSave)
+STDMETHODIMP CCompoundCurveFactory::Save(IStructuredSave2* pSave)
 {
-   pSave->BeginUnit(CComBSTR("HorzCurveFactory"),1.0);
+   pSave->BeginUnit(CComBSTR("CompoundCurveFactory"),1.0);
    pSave->EndUnit();
 
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurveFactory::Load(IStructuredLoad2* pLoad)
+STDMETHODIMP CCompoundCurveFactory::Load(IStructuredLoad2* pLoad)
 {
    CComVariant var;
-   pLoad->BeginUnit(CComBSTR("HorzCurveFactory"));
+   pLoad->BeginUnit(CComBSTR("CompoundCurveFactory"));
 
    VARIANT_BOOL bEnd;
    pLoad->EndUnit(&bEnd);

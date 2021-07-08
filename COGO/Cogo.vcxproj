@@ -998,6 +998,7 @@
     <ClCompile Include="AlignmentFactory.cpp" />
     <ClCompile Include="Angle.cpp" />
     <ClCompile Include="AngleDisplayUnitFormatter.cpp" />
+    <ClCompile Include="CircularCurve.cpp" />
     <ClCompile Include="COGO.cpp" />
     <ClCompile Include="CogoEngine.cpp" />
     <ClCompile Include="CogoHelpers.cpp" />
@@ -1005,9 +1006,9 @@
     <ClCompile Include="CubicSpline.cpp" />
     <ClCompile Include="Direction.cpp" />
     <ClCompile Include="DirectionDisplayUnitFormatter.cpp" />
-    <ClCompile Include="HorzCurve.cpp" />
-    <ClCompile Include="HorzCurveCollection.cpp" />
-    <ClCompile Include="HorzCurveFactory.cpp" />
+    <ClCompile Include="CompoundCurve.cpp" />
+    <ClCompile Include="CompoundCurveCollection.cpp" />
+    <ClCompile Include="CompoundCurveFactory.cpp" />
     <ClCompile Include="LineSegmentCollection.cpp" />
     <ClCompile Include="LineSegmentFactory.cpp" />
     <ClCompile Include="OpenBridgeML.cpp" />
@@ -1046,6 +1047,7 @@
     <ClCompile Include="SurfaceTemplate.cpp" />
     <ClCompile Include="SurfaceTemplateCollection.cpp" />
     <ClCompile Include="TemplateSegment.cpp" />
+    <ClCompile Include="TransitionCurve.cpp" />
     <ClCompile Include="VertCurve.cpp" />
     <ClCompile Include="VertCurveCollection.cpp" />
     <ClCompile Include="VertCurveFactory.cpp" />
@@ -1058,6 +1060,7 @@
     <None Include="AlignmentFactory.rgs" />
     <None Include="Angle.rgs" />
     <None Include="AngleDisplayUnitFormatter.rgs" />
+    <None Include="CircularCurve.rgs" />
     <None Include="COGO.def" />
     <None Include="CogoEngine.rgs" />
     <None Include="CogoModel.rgs" />
@@ -1065,9 +1068,9 @@
     <None Include="CubicSpline.rgs" />
     <None Include="Direction.rgs" />
     <None Include="DirectionDisplayUnitFormatter.rgs" />
-    <None Include="HorzCurve.rgs" />
-    <None Include="HorzCurveCollection.rgs" />
-    <None Include="HorzCurveFactory.rgs" />
+    <None Include="CompoundCurve.rgs" />
+    <None Include="CompoundCurveCollection.rgs" />
+    <None Include="CompoundCurveFactory.rgs" />
     <None Include="LineSegmentCollection.rgs" />
     <None Include="LineSegmentFactory.rgs" />
     <None Include="Path.rgs" />
@@ -1093,6 +1096,7 @@
     <None Include="SurfaceTemplate.rgs" />
     <None Include="SurfaceTemplateCollection.rgs" />
     <None Include="TemplateSegment.rgs" />
+    <None Include="TransitionCurve.rgs" />
     <None Include="VertCurve.rgs" />
     <None Include="VertCurveCollection.rgs" />
     <None Include="VertCurveFactory.rgs" />
@@ -1148,6 +1152,7 @@
     <ClInclude Include="AlignmentFactory.h" />
     <ClInclude Include="Angle.h" />
     <ClInclude Include="AngleDisplayUnitFormatter.h" />
+    <ClInclude Include="CircularCurve.h" />
     <ClInclude Include="COGOCP.h" />
     <ClInclude Include="CogoEngine.h" />
     <ClInclude Include="CogoModel.h" />
@@ -1155,9 +1160,9 @@
     <ClInclude Include="CubicSpline.h" />
     <ClInclude Include="Direction.h" />
     <ClInclude Include="DirectionDisplayUnitFormatter.h" />
-    <ClInclude Include="HorzCurve.h" />
-    <ClInclude Include="HorzCurveCollection.h" />
-    <ClInclude Include="HorzCurveFactory.h" />
+    <ClInclude Include="CompoundCurve.h" />
+    <ClInclude Include="CompoundCurveCollection.h" />
+    <ClInclude Include="CompoundCurveFactory.h" />
     <ClInclude Include="LineSegmentCollection.h" />
     <ClInclude Include="LineSegmentFactory.h" />
     <ClInclude Include="Path.h" />
@@ -1185,6 +1190,7 @@
     <ClInclude Include="SurfaceTemplate.h" />
     <ClInclude Include="SurfaceTemplateCollection.h" />
     <ClInclude Include="TemplateSegment.h" />
+    <ClInclude Include="TransitionCurve.h" />
     <ClInclude Include="VertCurve.h" />
     <ClInclude Include="VertCurveCollection.h" />
     <ClInclude Include="VertCurveFactory.h" />
