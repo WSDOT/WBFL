@@ -444,12 +444,12 @@ void CNewProjectDlg::OnShowWindow(BOOL bShow, UINT nStatus)
       {
          //CWnd* pDesktop = GetDesktopWindow();
          //CRect rDesktop;
-         //pDesktop->GetWindowRect(&rDesktop); // this is the size of one monitor.... use GetSystemMetrics to get the entire desktop
-         CRect rDesktop(0, 0, GetSystemMetrics(SM_CXVIRTUALSCREEN), GetSystemMetrics(SM_CYVIRTUALSCREEN));
-         CRect rDlg(wp.rcNormalPosition);
-         if(rDesktop.PtInRect(rDlg.TopLeft()) && rDesktop.PtInRect(rDlg.BottomRight()))
+         //pDesktop->GetWindowRect(&rDesktop); // this is the size of the monitor containing the mouse pointer.... use GetSystemMetrics to get the entire desktop
+         //CRect rDesktop(0, 0, GetSystemMetrics(SM_CXVIRTUALSCREEN), GetSystemMetrics(SM_CYVIRTUALSCREEN)); // this is the size of the virtual screen which may be larger than the monitors (https://docs.microsoft.com/en-us/windows/win32/gdi/the-virtual-screen)
+         HMONITOR hMonitor = MonitorFromRect(&wp.rcNormalPosition, MONITOR_DEFAULTTONULL); // get the monitor that has maximum overlap with the dialog rectangle (returns null if none)
+         if (hMonitor != NULL)
          {
-            // if dialog is within the desktop area, set its position... otherwise the default position will be sued
+            // if dialog is within a monitor, set its position... otherwise the default position will be sued
             SetWindowPos(NULL, wp.rcNormalPosition.left, wp.rcNormalPosition.top, wp.rcNormalPosition.right - wp.rcNormalPosition.left, wp.rcNormalPosition.bottom - wp.rcNormalPosition.top, 0);
          }
       }

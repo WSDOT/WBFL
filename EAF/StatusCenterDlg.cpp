@@ -378,14 +378,10 @@ void CStatusCenterDlg::RestoreWindowPosition()
    WINDOWPLACEMENT wp;
    if (EAFGetApp()->ReadWindowPlacement(CString((LPCTSTR)IDS_WINDOW_POSITIONS), _T("StatusCenter"), &wp))
    {
-      CWnd* pDesktop = GetDesktopWindow();
-      //CRect rDesktop;
-      //pDesktop->GetWindowRect(&rDesktop); // this is the size of one monitor.... use GetSystemMetrics to get the entire desktop
-      CRect rDesktop(0, 0, GetSystemMetrics(SM_CXVIRTUALSCREEN), GetSystemMetrics(SM_CYVIRTUALSCREEN));
-      CRect rThisWnd(wp.rcNormalPosition);
-      if (rDesktop.PtInRect(rThisWnd.TopLeft()) && rDesktop.PtInRect(rThisWnd.BottomRight()))
+      HMONITOR hMonitor = MonitorFromRect(&wp.rcNormalPosition, MONITOR_DEFAULTTONULL); // get the monitor that has maximum overlap with the dialog rectangle (returns null if none)
+      if (hMonitor != NULL)
       {
-         // if window is within the desktop area, set its position... otherwise the default position will be sued
+         // if dialog is within a monitor, set its position... otherwise the default position will be sued
          SetWindowPos(NULL, wp.rcNormalPosition.left, wp.rcNormalPosition.top, wp.rcNormalPosition.right - wp.rcNormalPosition.left, wp.rcNormalPosition.bottom - wp.rcNormalPosition.top, 0);
       }
    }
