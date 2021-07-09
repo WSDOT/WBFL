@@ -173,7 +173,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_I
       {
          // Single beam method counts on spacing which will be garbage
          g.ControllingMethod = LANES_DIV_BEAMS;
-         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb,true);
          g.mg = g.LanesBeamsData.mg;
       }
       else
@@ -193,7 +193,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_I
    {
       assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane,true);
       g.SkewCorrectionFactor = 1.0;
       g.mg = g.LeverRuleData.mg;
    }
@@ -216,7 +216,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_I
       {
          // Single beam method counts on spacing which will be garbage
          g.ControllingMethod = LANES_DIV_BEAMS;
-         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb,true);
          g.mg = g.LanesBeamsData.mg;
       }
       else
@@ -236,7 +236,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_I
    {
       assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes,true);
       g.SkewCorrectionFactor = 1.0;
       g.mg = g.LeverRuleData.mg;
    }
@@ -259,7 +259,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_E
       {
          // Single beam method counts on spacing which will be garbage
          g.ControllingMethod = LANES_DIV_BEAMS;
-         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb, true);
          g.mg = g.LanesBeamsData.mg;
       }
       else
@@ -280,7 +280,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_E
    {
       assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane, true);
       g.SkewCorrectionFactor = 1.0;
       g.mg = g.LeverRuleData.mg;
    }
@@ -311,7 +311,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_E
       {
          // Single beam method counts on spacing which will be garbage
          g.ControllingMethod = LANES_DIV_BEAMS;
-         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb,true);
          g.mg = g.LanesBeamsData.mg;
       }
       else
@@ -332,7 +332,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_E
    {
       assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes, true);
       g.SkewCorrectionFactor = 1.0;
       g.mg = g.LeverRuleData.mg;
    }
@@ -363,7 +363,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetShearDF_In
       {
          // Single beam method counts on spacing which will be garbage
          g.ControllingMethod = LANES_DIV_BEAMS;
-         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb, true);
          g.mg = g.LanesBeamsData.mg;
       }
       else
@@ -384,7 +384,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetShearDF_In
    {
       assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane, true);
       g.SkewCorrectionFactor = 1.0;
       g.mg = g.LeverRuleData.mg;
    }
@@ -407,7 +407,7 @@ lrfdILiveLoadDistributionFactor::DFResult  lrfdTxdotLldfSpreadSlab::GetShearDF_I
       {
          // Single beam method counts on spacing which will be garbage
          g.ControllingMethod = LANES_DIV_BEAMS;
-         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb, true);
          g.mg = g.LanesBeamsData.mg;
       }
       else
@@ -428,7 +428,7 @@ lrfdILiveLoadDistributionFactor::DFResult  lrfdTxdotLldfSpreadSlab::GetShearDF_I
    {
       assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes, true);
       g.SkewCorrectionFactor = 1.0;
       g.mg = g.LeverRuleData.mg;
    }
@@ -449,7 +449,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetShearDF_Ex
       {
          // Single beam method counts on spacing which will be garbage
          g.ControllingMethod = LANES_DIV_BEAMS;
-         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb, true);
          g.mg = g.LanesBeamsData.mg;
       }
       else
@@ -470,7 +470,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetShearDF_Ex
    {
       assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane, true);
       g.SkewCorrectionFactor = 1.0;
       g.mg = g.LeverRuleData.mg;
    }
@@ -499,7 +499,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetShearDF_Ex
       {
          // Single beam method counts on spacing which will be garbage
          g.ControllingMethod = LANES_DIV_BEAMS;
-         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+         g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb, true);
          g.mg = g.LanesBeamsData.mg;
       }
       else
@@ -520,7 +520,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetShearDF_Ex
    {
       assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes, true);
       g.SkewCorrectionFactor = 1.0;
       g.mg = g.LeverRuleData.mg;
    }

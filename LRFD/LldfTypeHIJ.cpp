@@ -219,7 +219,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeHIJ::GetMomentDF_Int_1_Str
    else
    {
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane, true);
       g.mg = g.LeverRuleData.mg;
    }
 
@@ -241,7 +241,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeHIJ::GetMomentDF_Int_2_Str
    if (g.ControllingMethod & LEVER_RULE)
    {
       // needs to be multiple lane
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes, true);
       g.mg = g.LeverRuleData.mg * g.SkewCorrectionFactor;
    }
 
@@ -253,7 +253,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeHIJ::GetMomentDF_Ext_1_Str
    lrfdILiveLoadDistributionFactor::DFResult g;
 
    g.ControllingMethod = LEVER_RULE;
-   g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+   g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane, true);
    Float64 skew = MomentSkewCorrectionFactor();
    if ( m_bSkewMoment )
    {
@@ -270,7 +270,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeHIJ::GetMomentDF_Ext_2_Str
    lrfdILiveLoadDistributionFactor::DFResult g;
 
    g.ControllingMethod = LEVER_RULE;
-   g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
+   g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes, true);
 
    Float64 skew = MomentSkewCorrectionFactor();
    if ( m_bSkewMoment )
@@ -288,7 +288,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeHIJ::GetShearDF_Int_1_Stre
 
 
    g.ControllingMethod = LEVER_RULE;
-   g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane);
+   g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane, true);
 
    Float64 skew = ShearSkewCorrectionFactor();
    if ( m_bSkewShear )
@@ -306,7 +306,7 @@ lrfdILiveLoadDistributionFactor::DFResult  lrfdLldfTypeHIJ::GetShearDF_Int_2_Str
    lrfdILiveLoadDistributionFactor::DFResult g;
 
    g.ControllingMethod = LEVER_RULE;
-   g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes);
+   g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes, true);
 
    Float64 skew = ShearSkewCorrectionFactor();
    if ( m_bSkewShear )
@@ -323,7 +323,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeHIJ::GetShearDF_Ext_1_Stre
    lrfdILiveLoadDistributionFactor::DFResult g;
 
    g.ControllingMethod = LEVER_RULE;
-   g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+   g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane, true);
 
    Float64 skew = ShearSkewCorrectionFactor();
    if ( m_bSkewShear )
@@ -341,7 +341,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeHIJ::GetShearDF_Ext_2_Stre
    lrfdILiveLoadDistributionFactor::DFResult g;
 
    g.ControllingMethod = LEVER_RULE;
-   g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
+   g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes, true);
 
    Float64 skew = ShearSkewCorrectionFactor();
    if ( m_bSkewShear )

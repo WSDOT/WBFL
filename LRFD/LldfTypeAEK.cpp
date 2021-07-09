@@ -114,7 +114,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEK::GetMomentDF_Ext_1_Str
    {
       // but not less than that which would be obtained by assuming that the
       // cross-section deflects and rotates as a rigid cross-section. 4.6.2.2.2d
-      g.RigidData = DistributeByStaticalMethod(m_Side, m_Spacings, m_LeftCurbOverhang, m_RightCurbOverhang, m_wLane, 1, 1);
+      g.RigidData = DistributeByStaticalMethod(m_Side, m_Spacings, m_LeftCurbOverhang, m_RightCurbOverhang, m_wLane, 1, 1,true);
 
       skew = MomentSkewCorrectionFactor();
       if ( g.mg < g.RigidData.mg*skew )
@@ -143,7 +143,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEK::GetMomentDF_Ext_2_Str
    {
       // but not less than that which would be obtained by assuming that the
       // cross-section deflects and rotates as a rigid cross-section. 4.6.2.2.2d
-      g.RigidData = DistributeByStaticalMethod(m_Side, m_Spacings, m_LeftCurbOverhang, m_RightCurbOverhang, m_wLane,2,m_Nl);
+      g.RigidData = DistributeByStaticalMethod(m_Side, m_Spacings, m_LeftCurbOverhang, m_RightCurbOverhang, m_wLane,2,m_Nl, true);
       skew = MomentSkewCorrectionFactor();
       if ( g.mg < g.RigidData.mg*skew )
       {
@@ -171,7 +171,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEK::GetShearDF_Ext_1_Stre
    {
       // but not less than that which would be obtained by assuming that the
       // cross-section deflects and rotates as a rigid cross-section. 4.6.2.2.2d
-      g.RigidData = DistributeByStaticalMethod(m_Side, m_Spacings, m_LeftCurbOverhang, m_RightCurbOverhang, m_wLane, 1, 1);
+      g.RigidData = DistributeByStaticalMethod(m_Side, m_Spacings, m_LeftCurbOverhang, m_RightCurbOverhang, m_wLane, 1, 1, true);
 
       skew = ShearSkewCorrectionFactor();
       if ( g.mg < g.RigidData.mg*skew )
@@ -200,7 +200,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEK::GetShearDF_Ext_2_Stre
       {
          // but not less than that which would be obtained by assuming that the
          // cross-section deflects and rotates as a rigid cross-section. 4.6.2.2.2d
-         g.RigidData = DistributeByStaticalMethod(m_Side, m_Spacings, m_LeftCurbOverhang, m_RightCurbOverhang, m_wLane,2,m_Nl);
+         g.RigidData = DistributeByStaticalMethod(m_Side, m_Spacings, m_LeftCurbOverhang, m_RightCurbOverhang, m_wLane,2,m_Nl, true);
          skew = ShearSkewCorrectionFactor();
          if ( g.mg < g.RigidData.mg*skew )
          {
@@ -376,7 +376,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetMomentDF_Ext_
       // compare with lever rule with mpf=1.0
       lrfdILiveLoadDistributionFactor::DFResult gext;
       gext.ControllingMethod = LEVER_RULE;
-      gext.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+      gext.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane, true);
 
       Float64 skew = MomentSkewCorrectionFactor();
 
@@ -459,7 +459,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetShearDF_Ext_1
       // compare with lever rule with mpf=1.0
       lrfdILiveLoadDistributionFactor::DFResult gext;
       gext.ControllingMethod = LEVER_RULE;
-      gext.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+      gext.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane, true);
 
       Float64 skew = ShearSkewCorrectionFactor();
 
