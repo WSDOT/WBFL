@@ -46,15 +46,6 @@
     <ClCompile Include="TestDivide.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestCompoundCurve.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCompoundCurve2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCompoundCurveCollection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TestIntersect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -115,10 +106,19 @@
     <ClCompile Include="TestSuperelevation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestTransitionCurve.cpp">
+    <ClCompile Include="TestCompoundCurve.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCompoundCurve2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCompoundCurveCollection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestCircularCurve.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestTransitionCurve.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -163,12 +163,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestDivide.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestCompoundCurve.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestCompoundCurveCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestIntersect.h">
@@ -231,10 +225,16 @@
     <ClInclude Include="TestSuperelevation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TestTransitionCurve.h">
+    <ClInclude Include="TestCompoundCurve.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestCompoundCurveCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestCircularCurve.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestTransitionCurve.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
