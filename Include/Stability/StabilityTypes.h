@@ -25,105 +25,107 @@
 
 #include <Stability\StabilityExp.h>
 
-/// Defines types used by stability analysis library.
-typedef struct stbTypes
+namespace WBFL
 {
-   /// Constant indicating the face of a girder
-   typedef enum GirderFace
+   namespace Stability
    {
-      Top, ///< Top face
-      Bottom ///< Bottom face
-   } GirderFace;
 
-   /// Constant indicating the side of a girder
-   typedef enum GirderSide
-   {
-      Left, ///< Left side
-      Right ///< Right side
-   } GirderSide;
+      /// Constant indicating the face of a girder
+      typedef enum GirderFace
+      {
+         Top, ///< Top face
+         Bottom ///< Bottom face
+      } GirderFace;
 
-   /// Constant indicate the direction of impact
-   typedef enum ImpactDirection
-   {
-      NoImpact, ///< No impact
-      ImpactUp, ///< Impact up
-      ImpactDown ///< Impact down
-   } ImpactDirection;
+      /// Constant indicating the side of a girder
+      typedef enum GirderSide
+      {
+         Left, ///< Left side
+         Right ///< Right side
+      } GirderSide;
 
-   /// Constant indicating when impact is considered in hauling stability analysis
-   typedef enum HaulingImpact
-   {
-      NormalCrown, ///< impact applied only to the normal crown condition
-      MaxSuper,    ///< impact applied only to the max superelevation condition   
-      Both         ///< impact applied to both conditions
-   } HaulingImpact;
+      /// Constant indicate the direction of impact
+      typedef enum ImpactDirection
+      {
+         NoImpact, ///< No impact
+         ImpactUp, ///< Impact up
+         ImpactDown ///< Impact down
+      } ImpactDirection;
 
-   /// Constant indicating the direction of wind
-   typedef GirderSide WindDirection;
+      /// Constant indicating when impact is considered in hauling stability analysis
+      typedef enum HaulingImpact
+      {
+         NormalCrown, ///< impact applied only to the normal crown condition
+         MaxSuper,    ///< impact applied only to the max superelevation condition   
+         Both         ///< impact applied to both conditions
+      } HaulingImpact;
 
-   /// Constant indicating how wind load is defined
-   typedef enum WindType
-   {
-      Speed, ///< defined by a wind speed and wind pressure is to be computed
-      Pressure ///< wind pressure is input
-   } WindType;
+      /// Constant indicating the direction of wind
+      typedef GirderSide WindDirection;
 
-   /// Constant indicating a nominal corner of the girder
-   typedef enum Corner
-   {
-      TopLeft,
-      TopRight,
-      BottomLeft,
-      BottomRight
-   } Corner;
+      /// Constant indicating how wind load is defined
+      typedef enum WindType
+      {
+         Speed, ///< defined by a wind speed and wind pressure is to be computed
+         Pressure ///< wind pressure is input
+      } WindType;
 
-   /// Constant indicate the location of a harp point
-   typedef enum HarpPointLocation
-   {
-      StartHP, ///< Point near start of the girder where strands are deflected (typcially the left end of the girder)
-      LeftHP, ///< Point where strands are deflected, left of mid-span
-      RightHP, ///< Point where strands are deflected, right of mid-span
-      EndHP ///< Point near end of the girder where strands are deflected (typcially the right end of the girder)
-   } HarpPointLocation;
+      /// Constant indicating a nominal corner of the girder
+      typedef enum Corner
+      {
+         TopLeft,
+         TopRight,
+         BottomLeft,
+         BottomRight
+      } Corner;
 
-   /// Constant indicating the face of prismatic section of the girder
-   typedef enum Section
-   {
-      Start, ///< Start of the section
-      End ///< End of the section
-   } Section;
+      /// Constant indicate the location of a harp point
+      typedef enum HarpPointLocation
+      {
+         StartHP, ///< Point near start of the girder where strands are deflected (typcially the left end of the girder)
+         LeftHP, ///< Point where strands are deflected, left of mid-span
+         RightHP, ///< Point where strands are deflected, right of mid-span
+         EndHP ///< Point near end of the girder where strands are deflected (typcially the right end of the girder)
+      } HarpPointLocation;
 
-   /// Constant indicating the type of centrifugal force occuring in the analysis
-   typedef enum CFType
-   {
-      Adverse, ///< CF is towards the left (increases lateral deflection and roll over)
-      Favorable ///< CF is towards the right
-   } CFType;
+      /// Constant indicating the face of prismatic section of the girder
+      typedef enum Section
+      {
+         Start, ///< Start of the section
+         End ///< End of the section
+      } Section;
 
-   /// Constant indicating the method for compute the lateral offset of the center of mass /f$ z_o /f$
-   typedef enum CalculationMethod
-   {
-      Exact, ///< A closed form, exact method 
-      Approximate ///< An approximate numerical method
-   } CalculationMethod;
+      /// Constant indicating the type of centrifugal force occuring in the analysis
+      typedef enum CFType
+      {
+         Adverse, ///< CF is towards the left (increases lateral deflection and roll over)
+         Favorable ///< CF is towards the right
+      } CFType;
 
-   /// Constant indicating one of the hauling analysis crown slope types
-   typedef enum HaulingSlope
-   {
-      CrownSlope, ///< The normal roadway crown slope
-      Superelevation ///< Slope at maximum superelevation
-   } HaulingSlope;
+      /// Constant indicating the method for compute the lateral offset of the center of mass /f$ z_o /f$
+      typedef enum CalculationMethod
+      {
+         Exact, ///< A closed form, exact method 
+         Approximate ///< An approximate numerical method
+      } CalculationMethod;
 
-} stbTypes;
+      /// Constant indicating one of the hauling analysis crown slope types
+      typedef enum HaulingSlope
+      {
+         CrownSlope, ///< The normal roadway crown slope
+         Superelevation ///< Slope at maximum superelevation
+      } HaulingSlope;
 
-/// Returns the GirderFace corresponding to a Corner
-inline stbTypes::GirderFace GetFace(stbTypes::Corner corner)
-{
-   return (corner == stbTypes::TopLeft || corner == stbTypes::TopRight ? stbTypes::Top : stbTypes::Bottom);
-}
+      /// Returns the GirderFace corresponding to a Corner
+      inline GirderFace GetFace(Corner corner)
+      {
+         return (corner == TopLeft || corner == TopRight ? Top : Bottom);
+      }
 
-/// Returns the GirderSide corresponding to a Corner
-inline stbTypes::GirderSide GetSide(stbTypes::Corner corner)
-{
-   return (corner == stbTypes::TopLeft || corner == stbTypes::BottomLeft? stbTypes::Left : stbTypes::Right);
+      /// Returns the GirderSide corresponding to a Corner
+      inline GirderSide GetSide(Corner corner)
+      {
+         return (corner == TopLeft || corner == BottomLeft ? Left : Right);
+      }
+   }
 }

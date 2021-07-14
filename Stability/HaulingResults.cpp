@@ -30,7 +30,9 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-stbHaulingSectionResult::stbHaulingSectionResult()
+using namespace WBFL::Stability;
+
+HaulingSectionResult::HaulingSectionResult()
 {
    AnalysisPointIndex = INVALID_INDEX;
 
@@ -71,23 +73,23 @@ stbHaulingSectionResult::stbHaulingSectionResult()
    memset((void*)FScr, 0, sizeof(FScr));
 
    FScrMin.fill(0);
-   FScrImpactDirection.fill(stbTypes::NoImpact);
-   FScrWindDirection.fill(stbTypes::Left);
-   FScrCorner.fill(stbTypes::BottomLeft);
+   FScrImpactDirection.fill(NoImpact);
+   FScrWindDirection.fill(Left);
+   FScrCorner.fill(BottomLeft);
 
 
    for (int s = 0; s < 2; s++)
    {
-      stbTypes::HaulingSlope slope = (stbTypes::HaulingSlope)s;
-      fMinDirect[slope][stbTypes::Top] = Float64_Max;
-      fMinDirect[slope][stbTypes::Bottom] = Float64_Max;
-      fMaxDirect[slope][stbTypes::Top] = -Float64_Max;
-      fMaxDirect[slope][stbTypes::Bottom] = -Float64_Max;
+      HaulingSlope slope = (HaulingSlope)s;
+      fMinDirect[slope][Top] = Float64_Max;
+      fMinDirect[slope][Bottom] = Float64_Max;
+      fMaxDirect[slope][Top] = -Float64_Max;
+      fMaxDirect[slope][Bottom] = -Float64_Max;
 
-      fMin[slope][stbTypes::Top] = Float64_Max;
-      fMin[slope][stbTypes::Bottom] = Float64_Max;
-      fMax[slope][stbTypes::Top] = -Float64_Max;
-      fMax[slope][stbTypes::Bottom] = -Float64_Max;
+      fMin[slope][Top] = Float64_Max;
+      fMin[slope][Bottom] = Float64_Max;
+      fMax[slope][Top] = -Float64_Max;
+      fMax[slope][Bottom] = -Float64_Max;
 
       FScrMin[slope] = Float64_Max;
    }
@@ -96,55 +98,55 @@ stbHaulingSectionResult::stbHaulingSectionResult()
 
 //////////////////////////////////////////
 
-stbHaulingResults::stbHaulingResults()
+HaulingResults::HaulingResults()
 {
    for ( int s = 0; s < 2; s++ )
    {
-      stbTypes::HaulingSlope slope = (stbTypes::HaulingSlope)s;
+      HaulingSlope slope = (HaulingSlope)s;
 
       MaxDirectStress[slope] = -Float64_Max;
       MaxDirectStressAnalysisPointIndex[slope] = 0;
-      MaxDirectStressImpactDirection[slope] = stbTypes::NoImpact;
-      MaxDirectStressCorner[slope] = stbTypes::TopLeft;
+      MaxDirectStressImpactDirection[slope] = NoImpact;
+      MaxDirectStressCorner[slope] = TopLeft;
 
       MinDirectStress[slope] = Float64_Max;
       MinDirectStressAnalysisPointIndex[slope] = 0;
-      MinDirectStressImpactDirection[slope] = stbTypes::NoImpact;
-      MinDirectStressCorner[slope] = stbTypes::TopLeft;
+      MinDirectStressImpactDirection[slope] = NoImpact;
+      MinDirectStressCorner[slope] = TopLeft;
 
       MaxStress[slope] = -Float64_Max;
       MaxStressAnalysisPointIndex[slope] = 0;
-      MaxStressImpactDirection[slope] = stbTypes::NoImpact;
-      MaxStressWindDirection[slope] = stbTypes::Left;
-      MaxStressCorner[slope] = stbTypes::TopLeft;
+      MaxStressImpactDirection[slope] = NoImpact;
+      MaxStressWindDirection[slope] = Left;
+      MaxStressCorner[slope] = TopLeft;
 
       MinStress[slope] = Float64_Max;
       MinStressAnalysisPointIndex[slope] = 0;
-      MinStressImpactDirection[slope] = stbTypes::NoImpact;
-      MinStressWindDirection[slope] = stbTypes::Left;
-      MinStressCorner[slope] = stbTypes::TopLeft;
+      MinStressImpactDirection[slope] = NoImpact;
+      MinStressWindDirection[slope] = Left;
+      MinStressCorner[slope] = TopLeft;
 
       MinFScr[slope] = Float64_Max;
       FScrAnalysisPointIndex[slope] = 0;
-      FScrImpactDirection[slope] = stbTypes::NoImpact;
-      FScrWindDirection[slope] = stbTypes::Left;
-      FScrCorner[slope] = stbTypes::TopLeft;
+      FScrImpactDirection[slope] = NoImpact;
+      FScrWindDirection[slope] = Left;
+      FScrCorner[slope] = TopLeft;
 
-      FSfImpactDirection[slope] = stbTypes::NoImpact;
-      FSfWindDirection[slope] = stbTypes::Left;
+      FSfImpactDirection[slope] = NoImpact;
+      FSfWindDirection[slope] = Left;
       MinFsFailure[slope] = Float64_Max;
       MinAdjFsFailure[slope] = Float64_Max;
 
-      FSroImpactDirection[slope] = stbTypes::NoImpact;
-      FSroWindDirection[slope] = stbTypes::Left;
+      FSroImpactDirection[slope] = NoImpact;
+      FSroWindDirection[slope] = Left;
       MinFsRollover[slope] = Float64_Max;
 
       for (int i = 0; i < 3; i++)
       {
-         stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+         ImpactDirection impact = (ImpactDirection)i;
          for (int w = 0; w < 2; w++)
          {
-            stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+            WindDirection wind = (WindDirection)w;
             bRotationalStability[slope][impact][wind] = true;
             bRolloverStability[slope][impact][wind] = true;
          }
@@ -159,20 +161,20 @@ stbHaulingResults::stbHaulingResults()
    memset((void*)ThetaRollover, 0, sizeof(ThetaRollover));
    memset((void*)FsRollover,0,sizeof(FsRollover));
 
-   AssumedTiltDirection = stbTypes::Left;
+   AssumedTiltDirection = Left;
 }
 
-bool stbHaulingResults::HasRotationalStablity() const
+bool HaulingResults::HasRotationalStablity() const
 {
    for (int s = 0; s < 2; s++)
    {
-      stbTypes::HaulingSlope slope = (stbTypes::HaulingSlope)s;
+      HaulingSlope slope = (HaulingSlope)s;
       for (int i = 0; i < 3; i++)
       {
-         stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+         ImpactDirection impact = (ImpactDirection)i;
          for (int w = 0; w < 2; w++)
          {
-            stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+            WindDirection wind = (WindDirection)w;
             if (!bRotationalStability[slope][impact][wind])
             {
                // only one has to be false
@@ -184,17 +186,17 @@ bool stbHaulingResults::HasRotationalStablity() const
    return true;
 }
 
-bool stbHaulingResults::HasRolloverStability() const
+bool HaulingResults::HasRolloverStability() const
 {
    for (int s = 0; s < 2; s++)
    {
-      stbTypes::HaulingSlope slope = (stbTypes::HaulingSlope)s;
+      HaulingSlope slope = (HaulingSlope)s;
       for (int i = 0; i < 3; i++)
       {
-         stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+         ImpactDirection impact = (ImpactDirection)i;
          for (int w = 0; w < 2; w++)
          {
-            stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+            WindDirection wind = (WindDirection)w;
             if (!bRolloverStability[slope][impact][wind])
             {
                // only one has to be false
@@ -207,7 +209,7 @@ bool stbHaulingResults::HasRolloverStability() const
    return true;
 }
 
-bool stbHaulingResults::IsStable() const
+bool HaulingResults::IsStable() const
 {
    return HasRotationalStablity() && HasRolloverStability();
 }

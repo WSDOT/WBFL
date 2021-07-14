@@ -32,6 +32,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+using namespace WBFL::Stability;
 
 // Every DLL has an entry point DllEntryPoint
 BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
@@ -44,5 +45,5 @@ BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
 // call unit test routines for all packages belonging to this dll.
 bool WINAPI UnitTest(dbgLog& rlog)
 {
-   return stbUnitTest::TestMe(rlog);
+   return UnitTest::TestMe(rlog);
 }

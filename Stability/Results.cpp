@@ -30,7 +30,9 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-stbResults::stbResults()
+using namespace WBFL::Stability;
+
+Results::Results()
 {
-   memset((void*)this,0,sizeof(stbResults));
+   memset((void*)this,0,sizeof(Results));
 }

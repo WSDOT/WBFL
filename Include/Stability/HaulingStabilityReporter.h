@@ -28,30 +28,37 @@
 #include <Stability\HaulingResults.h>
 #include <Stability\HaulingCheckArtifact.h>
 
-/// Generates reports for Hauling stability analysis
-class STABILITYCLASS stbHaulingStabilityReporter
+namespace WBFL
 {
-public:
-   stbHaulingStabilityReporter();
+   namespace Stability
+   {
 
-   /// Builds the specification check chapter
-   void BuildSpecCheckChapter(
-      const stbIGirder* pGirder, ///< The girder that was analyzed
-      const stbIHaulingStabilityProblem* pStabilityProblem, ///< The stability problem parameters
-      const stbHaulingCheckArtifact* pArtifact, ///< The specification checking artifact
-      rptChapter* pChapter, ///< The report chapter to populate
-      LPCTSTR lpszLocColumnLabel = nullptr, ///< Label for the Location column for report tables
-      Float64 offset = 0 ///< Offset to be applied to analysis point locations
-   );
+      /// Generates reports for Hauling stability analysis
+      class STABILITYCLASS HaulingStabilityReporter
+      {
+      public:
+         HaulingStabilityReporter();
 
-   /// Builds the analysis details chapter
-   void BuildDetailsChapter(
-      const stbIGirder* pGirder, ///< The girder that was analyzed
-      const stbIHaulingStabilityProblem* pStabilityProblem, ///< The stability problem parameters
-      const stbHaulingResults* pResults, ///< The results of the stability analysis
-      rptChapter* pChapter,  ///< The report chapter to populate
-      LPCTSTR lpszLocColumnLabel = nullptr, ///< Label for the Location column for report tables
-      Float64 offset = 0,  ///< Offset to be applied to analysis point locations
-      bool bReportTensileForceDetails = true ///< If true, the details for computing the tension force required to be carried by auxilary reinforcement are reported
-   );
-};
+         /// Builds the specification check chapter
+         void BuildSpecCheckChapter(
+            const IGirder* pGirder, ///< The girder that was analyzed
+            const IHaulingStabilityProblem* pStabilityProblem, ///< The stability problem parameters
+            const HaulingCheckArtifact* pArtifact, ///< The specification checking artifact
+            rptChapter* pChapter, ///< The report chapter to populate
+            LPCTSTR lpszLocColumnLabel = nullptr, ///< Label for the Location column for report tables
+            Float64 offset = 0 ///< Offset to be applied to analysis point locations
+         );
+
+         /// Builds the analysis details chapter
+         void BuildDetailsChapter(
+            const IGirder* pGirder, ///< The girder that was analyzed
+            const IHaulingStabilityProblem* pStabilityProblem, ///< The stability problem parameters
+            const HaulingResults* pResults, ///< The results of the stability analysis
+            rptChapter* pChapter,  ///< The report chapter to populate
+            LPCTSTR lpszLocColumnLabel = nullptr, ///< Label for the Location column for report tables
+            Float64 offset = 0,  ///< Offset to be applied to analysis point locations
+            bool bReportTensileForceDetails = true ///< If true, the details for computing the tension force required to be carried by auxilary reinforcement are reported
+         );
+      };
+   }
+}

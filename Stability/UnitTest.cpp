@@ -34,9 +34,11 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+using namespace WBFL::Stability;
+
 /****************************************************************************
 CLASS
-   stbUnitTest
+   UnitTest
 ****************************************************************************/
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
@@ -44,7 +46,7 @@ CLASS
 //======================== LIFECYCLE  =======================================
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
-bool stbUnitTest::TestMe(dbgLog& rlog)
+bool UnitTest::TestMe(dbgLog& rlog)
 {
    bool bResult = true;
 #if defined _UNITTEST
@@ -52,8 +54,8 @@ bool stbUnitTest::TestMe(dbgLog& rlog)
 
    TESTME_PROLOGUE("Stability");
 
-   bResult &= stbUnitTest::PCILiftingExamples(rlog);
-   bResult &= stbUnitTest::PCIHaulingExamples(rlog);
+   bResult &= UnitTest::PCILiftingExamples(rlog);
+   bResult &= UnitTest::PCIHaulingExamples(rlog);
 
    TESTME_EPILOG("Stability");
 
@@ -63,12 +65,12 @@ bool stbUnitTest::TestMe(dbgLog& rlog)
    return bResult;
 }
 
-bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
+bool UnitTest::PCILiftingExamples(dbgLog& rlog)
 {
    TESTME_PROLOGUE("PCILiftingExamples");
 
    // Build the basic girder model for the PCI Examples (6.1.x)
-   stbGirder girder;
+   Girder girder;
    Float64 Hg  = ::ConvertToSysUnits(72,unitMeasure::Inch);
    Float64 Wtf = ::ConvertToSysUnits(42,unitMeasure::Inch);
    Float64 Wbf = ::ConvertToSysUnits(26,unitMeasure::Inch);
@@ -91,10 +93,10 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
    concrete.SetE(Eci);
    concrete.SetFlexureFr(::ConvertToSysUnits(0.24*sqrt(fci),unitMeasure::KSI) );
 
-   stbLiftingStabilityProblem stabilityProblem;
+   LiftingStabilityProblem stabilityProblem;
    stabilityProblem.SetConcrete(concrete);
 
-   stabilityProblem.AddAnalysisPoint(new stbAnalysisPoint(L*0.4)); // harp point
+   stabilityProblem.AddAnalysisPoint(new AnalysisPoint(L*0.4)); // harp point
 
    // Example 6.1.1
    Float64 fpe = ::ConvertToSysUnits(1232.0,unitMeasure::Kip);
@@ -110,22 +112,22 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
 
    stabilityProblem.SetImpact( 0.0, 0.0 );
 
-   stbStabilityEngineer engineer;
+   StabilityEngineer engineer;
 
-   stbLiftingResults result = engineer.AnalyzeLifting(&girder,&stabilityProblem);
+   LiftingResults result = engineer.AnalyzeLifting(&girder,&stabilityProblem);
    for ( int i = 0; i < 3; i++ )
    {
-      stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+      ImpactDirection impact = (ImpactDirection)i;
       for ( int j = 0; j < 2; j++ )
       {
-         stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
+         WindDirection wind = (WindDirection)j;
 
          for(const auto& sectionResult : result.vSectionResults)
          {
             TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind][sectionResult.MinFScrCorner[impact][wind]],1.844,0.001) );
 
-            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[impact][wind][stbTypes::TopLeft    ],unitMeasure::KSI), 0.113,0.001) );
-            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[impact][wind][stbTypes::BottomRight],unitMeasure::KSI),-3.290,0.001) );
+            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[impact][wind][TopLeft    ],unitMeasure::KSI), 0.113,0.001) );
+            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[impact][wind][BottomRight],unitMeasure::KSI),-3.290,0.001) );
          }
 
          TRY_TESTME( ::IsEqual(result.FsFailure[impact][wind],1.839,0.001) );
@@ -137,37 +139,37 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
    result = engineer.AnalyzeLifting(&girder,&stabilityProblem);
    for ( int i = 0; i < 3; i++ )
    {
-      stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+      ImpactDirection impact = (ImpactDirection)i;
       for ( int j = 0; j < 2; j++ )
       {
-         stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
+         WindDirection wind = (WindDirection)j;
          for(const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind][sectionResult.MinFScrCorner[impact][wind]],impact == stbTypes::ImpactDown ? 1.708 : 1.844,0.001) );
+            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind][sectionResult.MinFScrCorner[impact][wind]],impact == ImpactDown ? 1.708 : 1.844,0.001) );
          }
 
-         TRY_TESTME( ::IsEqual(result.FsFailure[impact][wind],impact == stbTypes::ImpactDown ? 1.593 : 1.839,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsFailure[impact][wind],impact == ImpactDown ? 1.593 : 1.839,0.001) );
       }
    }
 
    // Example 6.1.3
    stabilityProblem.SetImpact(0,0);
-   stabilityProblem.SetWindLoading(stbTypes::Pressure,::ConvertToSysUnits(2.5,unitMeasure::PSF));
+   stabilityProblem.SetWindLoading(Pressure,::ConvertToSysUnits(2.5,unitMeasure::PSF));
    result = engineer.AnalyzeLifting(&girder,&stabilityProblem);
    for ( int i = 0; i < 3; i++ )
    {
-      stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+      ImpactDirection impact = (ImpactDirection)i;
       for ( int j = 0; j < 2; j++ )
       {
-         stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
+         WindDirection wind = (WindDirection)j;
          for( const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][stbTypes::TopLeft],  wind == stbTypes::Left ? 2.541 : 1.578, 0.001));
-            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][stbTypes::TopRight], Float64_Max, 0.001));
+            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][TopLeft],  wind == Left ? 2.541 : 1.578, 0.001));
+            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][TopRight], Float64_Max, 0.001));
          }
 
-         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], wind == stbTypes::Left ? 2.241 : 1.658, 0.001));
-         TRY_TESTME(::IsEqual(result.AdjFsFailure[impact][wind], wind == stbTypes::Left ? 2.541 : 1.658, 0.001));
+         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], wind == Left ? 2.241 : 1.658, 0.001));
+         TRY_TESTME(::IsEqual(result.AdjFsFailure[impact][wind], wind == Left ? 2.541 : 1.658, 0.001));
       }
    }
 
@@ -176,31 +178,31 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
    result = engineer.AnalyzeLifting(&girder,&stabilityProblem);
    for ( int i = 0; i < 3; i++ )
    {
-      stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+      ImpactDirection impact = (ImpactDirection)i;
       for ( int j = 0; j < 2; j++ )
       {
-         stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
+         WindDirection wind = (WindDirection)j;
          for(const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][stbTypes::TopLeft], wind == stbTypes::Left ? 2.398 : 1.628, 0.001));
-            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][stbTypes::TopRight], Float64_Max, 0.001));
+            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][TopLeft], wind == Left ? 2.398 : 1.628, 0.001));
+            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][TopRight], Float64_Max, 0.001));
          }
 
-         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], wind == stbTypes::Left ? 2.033 : 1.568, 0.001));
-         TRY_TESTME(::IsEqual(result.AdjFsFailure[impact][wind], wind == stbTypes::Left ? 2.398 : 1.628, 0.001));
+         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], wind == Left ? 2.033 : 1.568, 0.001));
+         TRY_TESTME(::IsEqual(result.AdjFsFailure[impact][wind], wind == Left ? 2.398 : 1.628, 0.001));
       }
    }
 
    TESTME_EPILOG("PCILiftingExamples");
 }
 
-bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
+bool UnitTest::PCIHaulingExamples(dbgLog& rlog)
 {
    TESTME_PROLOGUE("PCIHaulingExamples");
 
    // Build the basic girder model for the PCI Examples (6.2.x)
-   stbGirder girder;
-   stbHaulingStabilityProblem stabilityProblem;
+   Girder girder;
+   HaulingStabilityProblem stabilityProblem;
    Float64 Hg  = ::ConvertToSysUnits(72,unitMeasure::Inch);
    Float64 Wtf = ::ConvertToSysUnits(42,unitMeasure::Inch);
    Float64 Wbf = ::ConvertToSysUnits(26,unitMeasure::Inch);
@@ -224,7 +226,7 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
    concrete.SetFlexureFr( ::ConvertToSysUnits(0.24*sqrt(fc),unitMeasure::KSI) );
    stabilityProblem.SetConcrete(concrete);
 
-   stabilityProblem.AddAnalysisPoint(new stbAnalysisPoint(L*0.4)); // harp point
+   stabilityProblem.AddAnalysisPoint(new AnalysisPoint(L*0.4)); // harp point
 
    // Example 6.2.1
    Float64 fpe = ::ConvertToSysUnits(1251.5,unitMeasure::Kip);
@@ -240,7 +242,7 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
    stabilityProblem.SetYRollAxis(::ConvertToSysUnits(-48.0,unitMeasure::Inch) - Hg); // location of roll axes below top of girder);
 
    stabilityProblem.SetImpact( 0.0, 0.0 );
-   stabilityProblem.SetImpactUsage(stbTypes::Both);
+   stabilityProblem.SetImpactUsage(Both);
 
    stabilityProblem.SetTruckRotationalStiffness(::ConvertToSysUnits(40500.,unitMeasure::KipInchPerRadian));
    stabilityProblem.SetCrownSlope(0.06);
@@ -249,51 +251,51 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
    stabilityProblem.SetHeightOfRollAxisAboveRoadway(::ConvertToSysUnits(24.,unitMeasure::Inch));
 
 
-   stbStabilityEngineer engineer;
+   StabilityEngineer engineer;
 
-   stbHaulingResults result = engineer.AnalyzeHauling(&girder,&stabilityProblem);
+   HaulingResults result = engineer.AnalyzeHauling(&girder,&stabilityProblem);
    for ( int i = 0; i < 3; i++ )
    {
-      stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+      ImpactDirection impact = (ImpactDirection)i;
       for ( int j = 0; j < 2; j++ )
       {
-         stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
+         WindDirection wind = (WindDirection)j;
          for(const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[stbTypes::Superelevation][impact][wind][stbTypes::TopLeft],1.428,0.001) );
+            TRY_TESTME( ::IsEqual(sectionResult.FScr[Superelevation][impact][wind][TopLeft],1.428,0.001) );
 
-            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::TopLeft    ],unitMeasure::KSI), 0.466,0.001) );
-            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::BottomRight],unitMeasure::KSI),-3.486,0.001) );
+            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[Superelevation][impact][wind][TopLeft    ],unitMeasure::KSI), 0.466,0.001) );
+            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[Superelevation][impact][wind][BottomRight],unitMeasure::KSI),-3.486,0.001) );
          }
 
-         TRY_TESTME( ::IsEqual(result.FsFailure[stbTypes::Superelevation][impact][wind],2.825,0.001) );
-         TRY_TESTME( ::IsEqual(result.FsRollover[stbTypes::Superelevation][impact][wind],1.994,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsFailure[Superelevation][impact][wind],2.825,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsRollover[Superelevation][impact][wind],1.994,0.001) );
       }
    }
 
    // Example 6.2.2
    stabilityProblem.SetTurningRadius(::ConvertToSysUnits(120,unitMeasure::Feet));
    stabilityProblem.SetVelocity(::ConvertToSysUnits(10.,unitMeasure::Mile)/::ConvertToSysUnits(1.0,unitMeasure::Hour));
-   stabilityProblem.SetCentrifugalForceType(stbTypes::Adverse);
+   stabilityProblem.SetCentrifugalForceType(Adverse);
    stabilityProblem.SetCrownSlope( 0.02 );
    stabilityProblem.SetSuperelevation( 0.02 );
    result = engineer.AnalyzeHauling(&girder,&stabilityProblem);
    for ( int i = 0; i < 3; i++ )
    {
-      stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+      ImpactDirection impact = (ImpactDirection)i;
       for ( int j = 0; j < 2; j++ )
       {
-         stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
+         WindDirection wind = (WindDirection)j;
          for(const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[stbTypes::Superelevation][impact][wind][stbTypes::TopLeft],0.970,0.001) );
+            TRY_TESTME( ::IsEqual(sectionResult.FScr[Superelevation][impact][wind][TopLeft],0.970,0.001) );
 
-            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::TopLeft    ],unitMeasure::KSI), 0.647,0.001) );
-            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::BottomRight],unitMeasure::KSI),-3.598,0.001) );
+            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[Superelevation][impact][wind][TopLeft    ],unitMeasure::KSI), 0.647,0.001) );
+            TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[Superelevation][impact][wind][BottomRight],unitMeasure::KSI),-3.598,0.001) );
          }
 
-         TRY_TESTME( ::IsEqual(result.FsFailure[stbTypes::Superelevation][impact][wind],2.787,0.001) );
-         TRY_TESTME( ::IsEqual(result.FsRollover[stbTypes::Superelevation][impact][wind],1.835,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsFailure[Superelevation][impact][wind],2.787,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsRollover[Superelevation][impact][wind],1.835,0.001) );
       }
    }
    TESTME_EPILOG("PCIHaulingExamples");

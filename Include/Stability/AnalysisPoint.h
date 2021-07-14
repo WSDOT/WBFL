@@ -25,22 +25,30 @@
 
 #include <Stability\StabilityExp.h>
 
-/// Abstract interface for an analysis point.
-///
-/// An analysis point represents a position along a girder where section-based calculations are performed.
-class STABILITYCLASS stbIAnalysisPoint
+namespace WBFL
 {
-public:
-   /// Returns the location of the analysis point relative to the left end of the girder
-   virtual Float64 GetLocation() const = 0;
+   namespace Stability
+   {
 
-   /// Returns a reporting string for the analysis point.
-   virtual std::_tstring  AsString(
-      const unitmgtLengthData& lengthUnit, ///< Indirect unit measure information
-      Float64 offset, ///< an offset to be applied to the point location so the analysis point can appear to be relative to a different datum then the left end of the girder.
-      bool bShowUnit ///< If true, the unit of measure is included in the resulting string
-   ) const = 0;
+      /// Abstract interface for an analysis point.
+      ///
+      /// An analysis point represents a position along a girder where section-based calculations are performed.
+      class STABILITYCLASS IAnalysisPoint
+      {
+      public:
+         /// Returns the location of the analysis point relative to the left end of the girder
+         virtual Float64 GetLocation() const = 0;
 
-   /// Creates a copy of the analysis point
-   virtual stbIAnalysisPoint* Clone() const = 0;
-};
+         /// Returns a reporting string for the analysis point.
+         virtual std::_tstring  AsString(
+            const unitmgtLengthData& lengthUnit, ///< Indirect unit measure information
+            Float64 offset, ///< an offset to be applied to the point location so the analysis point can appear to be relative to a different datum then the left end of the girder.
+            bool bShowUnit ///< If true, the unit of measure is included in the resulting string
+         ) const = 0;
+
+         /// Creates a copy of the analysis point
+         virtual IAnalysisPoint* Clone() const = 0;
+      };
+
+   }
+}

@@ -26,30 +26,37 @@
 #include <Stability\StabilityExp.h>
 #include <Stability\AnalysisPoint.h>
 
-/// An analysis point
-class STABILITYCLASS stbAnalysisPoint : public stbIAnalysisPoint
+namespace WBFL
 {
-public:
-   stbAnalysisPoint();
-   stbAnalysisPoint(Float64 X); ///< Creates an analysis point at the specified distance from the left end of girder.
-   stbAnalysisPoint(const stbAnalysisPoint& other); ///< Copy constructor
- 
-   /// Sets the location relative to the left end of the girder
-   void SetLocation(Float64 X);
+   namespace Stability
+   {
 
-   /// Returns the analysis point location
-   virtual Float64 GetLocation() const override;
+      /// An analysis point
+      class STABILITYCLASS AnalysisPoint : public IAnalysisPoint
+      {
+      public:
+         AnalysisPoint();
+         AnalysisPoint(Float64 X); ///< Creates an analysis point at the specified distance from the left end of girder.
+         AnalysisPoint(const AnalysisPoint& other); ///< Copy constructor
 
-   /// Returns a reporting string for the analysis point.
-   virtual std::_tstring  AsString(
-      const unitmgtLengthData& lengthUnit, ///< Indirect unit measure information
-      Float64 offset, ///< an offset to be applied to the point location so the analysis point can appear to be relative to a different datum then the left end of the girder.
-      bool bShowUnit ///< If true, the unit of measure is included in the resulting string
-   ) const override;
+         /// Sets the location relative to the left end of the girder
+         void SetLocation(Float64 X);
 
-   /// Creates a copy of the analysis point
-   virtual stbIAnalysisPoint* Clone() const override;
+         /// Returns the analysis point location
+         virtual Float64 GetLocation() const override;
 
-private:
-   Float64 m_X;
-};
+         /// Returns a reporting string for the analysis point.
+         virtual std::_tstring  AsString(
+            const unitmgtLengthData& lengthUnit, ///< Indirect unit measure information
+            Float64 offset, ///< an offset to be applied to the point location so the analysis point can appear to be relative to a different datum then the left end of the girder.
+            bool bShowUnit ///< If true, the unit of measure is included in the resulting string
+         ) const override;
+
+         /// Creates a copy of the analysis point
+         virtual IAnalysisPoint* Clone() const override;
+
+      private:
+         Float64 m_X;
+      };
+   }
+}

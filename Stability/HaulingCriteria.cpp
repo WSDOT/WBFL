@@ -30,7 +30,9 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-stbHaulingCriteria::stbHaulingCriteria()
+using namespace WBFL::Stability;
+
+HaulingCriteria::HaulingCriteria()
 {
    Lambda = 0.0;
 
@@ -44,7 +46,7 @@ stbHaulingCriteria::stbHaulingCriteria()
 
    for ( int s = 0; s < 2; s++ )
    {
-      stbTypes::HaulingSlope slope = (stbTypes::HaulingSlope)s;
+      HaulingSlope slope = (HaulingSlope)s;
       TensionCoefficient[slope] = 0;
       bMaxTension[slope] = false;
       MaxTension[slope] = 0;

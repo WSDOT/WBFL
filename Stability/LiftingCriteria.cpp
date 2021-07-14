@@ -30,7 +30,9 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-stbLiftingCriteria::stbLiftingCriteria()
+using namespace WBFL::Stability;
+
+LiftingCriteria::LiftingCriteria()
 {
    Lambda = 0.0;
 

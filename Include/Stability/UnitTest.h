@@ -25,18 +25,25 @@
 
 #include <Stability\StabilityExp.h>
 
-/// Unit tester
-class STABILITYCLASS stbUnitTest
+namespace WBFL
 {
-public:
-   /// Runs the unit tests and logs testing information
-   /// \return true if successful, otherwise false.
-   static bool TestMe(dbgLog& rlog);
+   namespace Stability
+   {
 
-private:
-   stbUnitTest(const stbUnitTest&) = delete;
-   stbUnitTest& operator=(const stbUnitTest&) = delete;
+      /// Unit tester
+      class STABILITYCLASS UnitTest
+      {
+      public:
+         /// Runs the unit tests and logs testing information
+         /// \return true if successful, otherwise false.
+         static bool TestMe(dbgLog& rlog);
 
-   static bool PCILiftingExamples(dbgLog& rlog);
-   static bool PCIHaulingExamples(dbgLog& rlog);
-};
+      private:
+         UnitTest(const UnitTest&) = delete;
+         UnitTest& operator=(const UnitTest&) = delete;
+
+         static bool PCILiftingExamples(dbgLog& rlog);
+         static bool PCIHaulingExamples(dbgLog& rlog);
+      };
+   }
+}
