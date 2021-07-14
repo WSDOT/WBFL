@@ -99,7 +99,7 @@ namespace WBFL
          virtual void GetStressPoints(Float64 X, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const = 0;
 
          /// Returns additional loads applied to the girder. The first parameters is the location of the load measured from
-         /// the left end of the girder and the section is the magintude of the load. Positive values are in the direction of gravity.
+         /// the left end of the girder and the second is the magintude of the load. Positive values are in the direction of gravity (downwards).
          /// These loads can be used to model cast-in-place elements such as end diaphraphms in U-Beam girders
          virtual std::vector<std::pair<Float64, Float64>> GetAdditionalLoads() const = 0;
 
@@ -137,7 +137,7 @@ namespace WBFL
 
          /// Returns the location of the roll axis in girder section coordinates.
          /// (0,0) is at the top center of the girder.
-         ///P ositive values mean the roll axis is above the top of the girder.
+         /// Positive values mean the roll axis is above the top of the girder.
          virtual Float64 GetYRollAxis() const = 0;
 
          /// Returns the manufacturing sweep tolerance
@@ -172,6 +172,11 @@ namespace WBFL
             WindType* pType, ///< Method for defining wind load
             Float64* pLoad ///< The wind load parameter (wind speed or wind pressure). 
          ) const = 0;
+
+         ///  Gets the parameters for appurtenance loading such as overhang brackets attached to the girder
+         /// \param[out] pex lateral eccentricty of the loading. Positive values are in the same direction as lateral sweep
+         /// \param[out] pW uniform weight of loading uniformly distributed along the entire length of the girder. Positive values are in the direction of gravity (downwards).
+         virtual void GetAppurtenanceLoading(Float64* pex, Float64* pW) const = 0;
 
          /// Returns a vector of points where stress and cracking analysis is performed
          virtual std::vector<IAnalysisPoint*> GetAnalysisPoints() const = 0;

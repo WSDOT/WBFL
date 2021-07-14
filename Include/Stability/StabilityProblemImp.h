@@ -256,6 +256,9 @@ namespace WBFL
          std::vector<std::pair<Float64, Float64>> m_vPointLoads; // additional point loads (used for items precast with the girder such as internal diaphragms)
                                                               // first parameter is location from left end of girder, second parameter is the load magnitude. Positive loads are up
 
+         Float64 m_exb; // eccentricty of overhang bracket appurtenance loading
+         Float64 m_Wb; // magnitude of overhang bracket appurtenance loading
+
          Float64 m_DragCoefficient;
 
          Float64 m_Precamber;
@@ -436,6 +439,16 @@ namespace WBFL
          /// Sets the wind loading parameters.
          void SetWindLoading(WindType type, Float64 load);
 
+
+         ///  Sets the appurtenance loading and eccentricty
+         void SetAppurtenanceLoading(
+            Float64 ex, ///< Eccentricty of the loading. Positive values are in the same direction as girder sweep
+            Float64 W ///< Magnitude of loading uniformly distributed along the length of the girder.
+         );
+
+         ///  Gets the loading and eccentricity of appurtenances
+         void GetAppurtenanceLoading(Float64* pex, Float64* pW) const;
+
          /// Clears all analysis points
          void ClearAnalysisPoints();
 
@@ -490,6 +503,10 @@ namespace WBFL
 
          WindType m_WindLoadType;
          Float64 m_WindLoad; // velocity or pressure, depending on m_WindLoadType
+
+         // eccentricity and weight per unit length of appurtenances
+         Float64 m_eb;
+         Float64 m_Wb;
       };
 
       /// Defines the parameters of a lifting stability analysis problem
@@ -638,6 +655,12 @@ namespace WBFL
 
          /// Sets the wind loading parameters.
          void SetWindLoading(WindType type, Float64 load) { m_Imp.SetWindLoading(type, load); }
+
+         ///  Gets the parameters for appurtenance loading such as overhang brackets attached to the girder
+         virtual void GetAppurtenanceLoading(Float64* pex, Float64* pW) const override { m_Imp.GetAppurtenanceLoading(pex, pW); }
+
+         ///  Sets the appurtenance loading and eccentricty
+         void SetAppurtenanceLoading(Float64 ex, Float64 W) { m_Imp.SetAppurtenanceLoading(ex, W);}
 
          /// Sets the lifting cable angle
          void SetLiftAngle(Float64 liftAngle);
@@ -829,6 +852,12 @@ namespace WBFL
 
          /// Sets the wind loading parameters.
          void SetWindLoading(WindType type, Float64 load) { m_Imp.SetWindLoading(type, load); }
+
+         /// Gets the parameters for appurtenance loading such as overhang brackets attached to the girder
+         virtual void GetAppurtenanceLoading(Float64* pex, Float64* pW) const override { m_Imp.GetAppurtenanceLoading(pex, pW); }
+
+         /// Sets the appurtenance loading and eccentricty
+         void SetAppurtenanceLoading(Float64 ex, Float64 W) { m_Imp.SetAppurtenanceLoading(ex, W); }
 
          /// Sets the truck rotational stiffness (Ktheta)
          void SetTruckRotationalStiffness(Float64 Ktheta);

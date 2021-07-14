@@ -40,7 +40,8 @@ namespace WBFL
          Float64 Ll; ///< left overhang (trailing overhang)
          Float64 Lr; ///< right overhang (leading overhang)
          Float64 Ls; ///< span length between supports
-         Float64 Wg; ///< total weight of girder
+         Float64 Wg; ///< weight of girder including appurtenances
+         Float64 ea; ///< lateral eccentricity of girder weight, including appurtenances
 
          CalculationMethod XcgMethod; ///< Indicates the method that was used to compute the location of the center of mass
          Float64 Xleft; ///< horizontal location of the CG with respect to the roll axis

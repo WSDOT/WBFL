@@ -40,6 +40,9 @@ Girder::Girder()
 
    m_Precamber = 0.0;
 
+   m_exb = 0.0;
+   m_Wb = 0.0;
+
    m_DragCoefficient = 2.2; // default for I-Beams
 
    m_bLengthNeedsUpdate = true;
@@ -64,6 +67,12 @@ bool Girder::operator==(const Girder& other) const
       return false;
 
    if (!IsEqual(m_Precamber, other.m_Precamber))
+      return false;
+
+   if (!IsEqual(m_exb, other.m_exb))
+      return false;
+
+   if (!IsEqual(m_Wb, other.m_Wb))
       return false;
 
    return true;
@@ -391,6 +400,9 @@ StabilityProblemImp::StabilityProblemImp()
 
    m_WindLoadType = Speed;
    m_WindLoad = 0.;
+
+   m_eb = 0;
+   m_Wb = 0;
 }
 
 StabilityProblemImp::StabilityProblemImp(const StabilityProblemImp& other)
@@ -472,7 +484,13 @@ bool StabilityProblemImp::operator==(const StabilityProblemImp& other) const
    if ( m_WindLoadType != other.m_WindLoadType )
       return false;
 
-   if ( !IsEqual(m_WindLoad,other.m_WindLoad) )
+   if (!IsEqual(m_WindLoad, other.m_WindLoad))
+      return false;
+
+   if (!IsEqual(m_eb, other.m_eb))
+      return false;
+
+   if (!IsEqual(m_Wb, other.m_Wb))
       return false;
 
    return true;
@@ -855,6 +873,18 @@ void StabilityProblemImp::SetWindLoading(WindType type,Float64 load)
    m_WindLoad = load;
 }
 
+void StabilityProblemImp::SetAppurtenanceLoading(Float64 ex, Float64 W)
+{
+   m_eb = ex;
+   m_Wb = W;
+}
+
+void StabilityProblemImp::GetAppurtenanceLoading(Float64* pex, Float64* pW) const
+{
+   *pex = m_eb;
+   *pW = m_Wb;
+}
+
 void StabilityProblemImp::ClearAnalysisPoints()
 {
    for( const auto& pAnalysisPoint : m_vAnalysisPoints)
@@ -945,6 +975,9 @@ void StabilityProblemImp::MakeCopy(const StabilityProblemImp& other)
 
    m_WindLoadType = other.m_WindLoadType;
    m_WindLoad = other.m_WindLoad;
+
+   m_eb = other.m_eb;
+   m_Wb = other.m_Wb;
 }
 
 void StabilityProblemImp::MakeAssignment(const StabilityProblemImp& other)

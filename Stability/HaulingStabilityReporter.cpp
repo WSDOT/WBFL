@@ -739,6 +739,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
 
    INIT_SCALAR_PROTOTYPE(rptRcScalar, scalar, pDisplayUnits->Scalar);
    INIT_UV_PROTOTYPE( rptForceUnitValue,   force,       pDisplayUnits->GeneralForce, true);
+   INIT_UV_PROTOTYPE(rptForcePerLengthUnitValue, force_per_length, pDisplayUnits->ForcePerLength, true);
    INIT_UV_PROTOTYPE( rptLengthUnitValue,  longLength,  pDisplayUnits->SpanLength,   true);
    INIT_UV_PROTOTYPE( rptLengthUnitValue,  shortLength, pDisplayUnits->ComponentDim, true);
    INIT_UV_PROTOTYPE(rptMomentUnitValue, moment, pDisplayUnits->Moment, false);
@@ -766,8 +767,22 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
    pPara = new rptParagraph;
    *pChapter << pPara;
 
-   *pPara << _T("Girder Length, ") << Sub2(_T("L"),_T("g")) << _T(" = ") << longLength.SetValue(pGirder->GetGirderLength()) << rptNewLine;
-   *pPara << _T("Girder Weight, ") << Sub2(_T("W"),_T("g")) << _T(" = ") << force.SetValue(pResults->Wg) << rptNewLine;
+   Float64 eb, Wb;
+   pStabilityProblem->GetAppurtenanceLoading(&eb, &Wb);
+   *pPara << _T("Girder Length, ") << Sub2(_T("L"), _T("g")) << _T(" = ") << longLength.SetValue(pGirder->GetGirderLength()) << rptNewLine;
+
+   if (!IsZero(eb) || !IsZero(Wb))
+   {
+      *pPara << _T("Girder Weight, ") << Sub2(_T("W"), _T("girder")) << _T(" = ") << force.SetValue(pResults->Wg - Wb* pGirder->GetGirderLength()) << rptNewLine;
+      *pPara << _T("Overhang Bracket Weight, ") << Sub2(_T("W"), _T("b")) << _T(" = ") << force_per_length.SetValue(Wb) << rptNewLine;
+      *pPara << _T("Girder Weight with Overhang Brackets, ") << Sub2(_T("W"), _T("g")) << _T(" = ") << force.SetValue(pResults->Wg) << rptNewLine;
+      *pPara << _T("Overhang Bracket Eccentricity, ") << Sub2(_T("e"), _T("b")) << _T(" = ") << shortLength.SetValue(eb) << rptNewLine;
+      *pPara << _T("Lateral eccentricty of girder weight with overhang brackets, ") << Sub2(_T("e"), _T("a")) << _T(" = ") Sub2(_T("W"), _T("b")) << _T("*") << Sub2(_T("e"), _T("b")) << _T("/(") << Sub2(_T("W"), _T("girder")) << _T("+") << Sub2(_T("W"), _T("b")) << _T(") = ") << shortLength.SetValue(pResults->ea) << rptNewLine;
+   }
+   else
+   {
+      *pPara << _T("Girder Weight, ") << Sub2(_T("W"), _T("g")) << _T(" = ") << force.SetValue(pResults->Wg) << rptNewLine;
+   }
 
    Float64 Ll,Lr;
    pStabilityProblem->GetSupportLocations(&Ll,&Lr);
@@ -1132,11 +1147,25 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
    *pPara << _T("Initial lateral eccentricity of center of gravity of girder due to lateral sweep and eccentricity of bunking devices from centerline of girder, ") << rptNewLine;
    if (pStabilityProblem->IncludeLateralRollAxisOffset())
    {
-      *pPara << EI << _T(" = ") << FO << _T("(") << D_SWEEP << _T(" + ") << Sub2(symbol(DELTA),_T("lc")) << _T(")") << _T(" + ") << E_BUNK << _T(" + ") << Sub2(_T("e"), _T("cg")) << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[NoImpact]) << rptNewLine;
+      if (!IsZero(eb) || !IsZero(Wb))
+      {
+         *pPara << EI << _T(" = ") << FO << _T("(") << D_SWEEP << _T(" + ") << Sub2(symbol(DELTA), _T("lc")) << _T(")") << _T(" + ") << E_BUNK << _T(" + ") << Sub2(_T("e"), _T("cg")) << _T(" + ") << Sub2(_T("e"), _T("a")) << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[NoImpact]) << rptNewLine;
+      }
+      else
+      {
+         *pPara << EI << _T(" = ") << FO << _T("(") << D_SWEEP << _T(" + ") << Sub2(symbol(DELTA), _T("lc")) << _T(")") << _T(" + ") << E_BUNK << _T(" + ") << Sub2(_T("e"), _T("cg")) << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[NoImpact]) << rptNewLine;
+      }
    }
    else
    {
-      *pPara << EI << _T(" = ") << FO << D_SWEEP << _T(" + ") << E_BUNK << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[NoImpact]) << rptNewLine;
+      if (!IsZero(eb) || !IsZero(Wb))
+      {
+         *pPara << EI << _T(" = ") << FO << D_SWEEP << _T(" + ") << E_BUNK << _T(" + ") << Sub2(_T("e"),_T("a")) << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[NoImpact]) << rptNewLine;
+      }
+      else
+      {
+         *pPara << EI << _T(" = ") << FO << D_SWEEP << _T(" + ") << E_BUNK << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[NoImpact]) << rptNewLine;
+      }
    }
    *pPara << rptNewLine;
 

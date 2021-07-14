@@ -134,6 +134,29 @@ bool UnitTest::PCILiftingExamples(dbgLog& rlog)
       }
    }
 
+   // Example 6.1.1 with eccentric loading due to overhang brackets installed prior to lift
+   stabilityProblem.SetAppurtenanceLoading(::ConvertToSysUnits(1.0,unitMeasure::Feet), ::ConvertToSysUnits(0.05,unitMeasure::KipPerFoot));
+   result = engineer.AnalyzeLifting(&girder, &stabilityProblem);
+   for (int i = 0; i < 3; i++)
+   {
+      ImpactDirection impact = (ImpactDirection)i;
+      for (int j = 0; j < 2; j++)
+      {
+         WindDirection wind = (WindDirection)j;
+
+         for (const auto& sectionResult : result.vSectionResults)
+         {
+            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][sectionResult.MinFScrCorner[impact][wind]], 1.235, 0.001));
+
+            TRY_TESTME(::IsEqual(::ConvertFromSysUnits(sectionResult.f[impact][wind][TopLeft], unitMeasure::KSI), 0.353, 0.001));
+            TRY_TESTME(::IsEqual(::ConvertFromSysUnits(sectionResult.f[impact][wind][BottomRight], unitMeasure::KSI), -3.412, 0.001));
+         }
+
+         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], 1.470, 0.001));
+      }
+   }
+   stabilityProblem.SetAppurtenanceLoading(0.0, 0.0); // remove eccentric load
+
    // Example 6.1.2
    stabilityProblem.SetImpact(0,0.20);
    result = engineer.AnalyzeLifting(&girder,&stabilityProblem);
@@ -272,6 +295,30 @@ bool UnitTest::PCIHaulingExamples(dbgLog& rlog)
          TRY_TESTME( ::IsEqual(result.FsRollover[Superelevation][impact][wind],1.994,0.001) );
       }
    }
+
+
+   // Example 6.2.1 with eccentric load due to overhang brackets
+   stabilityProblem.SetAppurtenanceLoading(::ConvertToSysUnits(1.0, unitMeasure::Feet), ::ConvertToSysUnits(0.05, unitMeasure::KipPerFoot));
+   result = engineer.AnalyzeHauling(&girder, &stabilityProblem);
+   for (int i = 0; i < 3; i++)
+   {
+      ImpactDirection impact = (ImpactDirection)i;
+      for (int j = 0; j < 2; j++)
+      {
+         WindDirection wind = (WindDirection)j;
+         for (const auto& sectionResult : result.vSectionResults)
+         {
+            TRY_TESTME(::IsEqual(sectionResult.FScr[Superelevation][impact][wind][TopLeft], 1.276, 0.001));
+
+            TRY_TESTME(::IsEqual(::ConvertFromSysUnits(sectionResult.f[Superelevation][impact][wind][TopLeft], unitMeasure::KSI), 0.501, 0.001));
+            TRY_TESTME(::IsEqual(::ConvertFromSysUnits(sectionResult.f[Superelevation][impact][wind][BottomRight], unitMeasure::KSI), -3.482, 0.001));
+         }
+
+         TRY_TESTME(::IsEqual(result.FsFailure[Superelevation][impact][wind], 2.595, 0.001));
+         TRY_TESTME(::IsEqual(result.FsRollover[Superelevation][impact][wind], 1.845, 0.001));
+      }
+   }
+   stabilityProblem.SetAppurtenanceLoading(0.0, 0.0); // remove eccentric load
 
    // Example 6.2.2
    stabilityProblem.SetTurningRadius(::ConvertToSysUnits(120,unitMeasure::Feet));

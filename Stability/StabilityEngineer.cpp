@@ -138,6 +138,17 @@ void StabilityEngineer::Analyze(const IGirder* pGirder,const IStabilityProblem* 
    Float64 Lg = pGirder->GetGirderLength();
    Float64 Wg = results.Wg;
 
+   // adjust lateral eccentricity for total dead load
+   Float64 eb, Wb;
+   pStabilityProblem->GetAppurtenanceLoading(&eb, &Wb);
+   Float64 ea = Wb*Lg * eb / results.Wg; // Wb is in force per unit length, so multiply by girder length
+   results.ea = ea;
+   for (IndexType i = 0; i < 3; i++)
+   {
+      ImpactDirection impact = (ImpactDirection)i;
+      results.EccLateralSweep[impact] += ea;
+   }
+
    // BuildModel sets results.Ywind[NoImpact] equal to the location of the resultant wind force measured from the top of the girder in girder section coordinates
    // we need to get it from the roll axis
    Float64 Yra = pStabilityProblem->GetYRollAxis(); // positive means roll axis is above top of girder, negative means roll axis is below top of girder
@@ -1601,6 +1612,9 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
       CFfactor = (V*V)/(g*R);
    }
 
+   Float64 eb, Wb;
+   pStabilityProblem->GetAppurtenanceLoading(&eb, &Wb);
+
    Float64 Wg = 0;
    Float64 Wcf = 0;
    Float64 Wwind = 0;
@@ -1632,8 +1646,8 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
       }
 
       // Self-weight load
-      Float64 wStart = Ag[Start] * unitWeight;
-      Float64 wEnd = Ag[End] * unitWeight;
+      Float64 wStart = Ag[Start] * unitWeight + Wb;
+      Float64 wEnd = Ag[End] * unitWeight + Wb;
 
       // weight = average force * distance = [(wStart+wEnd)/2]*(Ls)
       // to save on doing the divide by 2 operation, we'll skip it here
