@@ -837,8 +837,8 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
 
    Float64 SupportPlacementTolerance = pStabilityProblem->GetSupportPlacementTolerance();
    Float64 Ktheta = pStabilityProblem->GetTruckRotationalStiffness();
-   Float64 CrownSlope = pStabilityProblem->GetCrownSlope();
-   Float64 Superelevation = pStabilityProblem->GetSuperelevation();
+   Float64 crownSlope = pStabilityProblem->GetCrownSlope();
+   Float64 superelevation = pStabilityProblem->GetSuperelevation();
    Float64 Hrs = pStabilityProblem->GetHeightOfRollAxisAboveRoadway();
    Float64 Wcc = pStabilityProblem->GetWheelLineSpacing();
 
@@ -858,7 +858,7 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
       {
          HaulingSlope slope = (HaulingSlope)s;
 
-         Float64 alpha = (slope == CrownSlope ? CrownSlope : Superelevation);
+         Float64 alpha = (slope == CrownSlope ? crownSlope : superelevation);
          
          Float64 im = 1.0;
          if ( impactUsage == Both ||
@@ -953,7 +953,7 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
 
       Float64 D = Ixx*Iyy - Ixy*Ixy;
 
-      gpPoint2d pntStress[4];
+      std::array<gpPoint2d, 4> pntStress;
       pGirder->GetStressPoints(X, &pntStress[TopLeft], &pntStress[TopRight], &pntStress[BottomLeft], &pntStress[BottomRight]);
 
       // stress due to prestressing
@@ -1169,7 +1169,7 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
                         }
                         else
                         {
-                           Float64 alpha = (slope == CrownSlope ? CrownSlope : Superelevation);
+                           Float64 alpha = (slope == CrownSlope ? crownSlope : superelevation);
                            Float64 Mr = Ktheta*(theta_crack - alpha);
                            Float64 Ma = im*Wg*((results.Dra[NoImpact] + im*results.Zo[NoImpact])*theta_crack + ei + Zt) + Mot;
                            fscr = IsZero(Ma) ? Float64_Max : Mr / Ma;
@@ -1267,7 +1267,7 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
             HaulingSlope slope = (HaulingSlope)s;
 
             Float64 ei = results.EccLateralSweep[impact];
-            Float64 alpha = (slope == CrownSlope ? CrownSlope : Superelevation);
+            Float64 alpha = (slope == CrownSlope ? crownSlope : superelevation);
 
             Float64 im = 1.0;
             if (impactUsage == Both ||

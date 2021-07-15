@@ -314,7 +314,7 @@ bool UnitTest::PCIHaulingExamples(dbgLog& rlog)
             TRY_TESTME(::IsEqual(::ConvertFromSysUnits(sectionResult.f[Superelevation][impact][wind][BottomRight], unitMeasure::KSI), -3.482, 0.001));
          }
 
-         TRY_TESTME(::IsEqual(result.FsFailure[Superelevation][impact][wind], 2.595, 0.001));
+         TRY_TESTME(::IsEqual(result.FsFailure[Superelevation][impact][wind], 2.596, 0.001));
          TRY_TESTME(::IsEqual(result.FsRollover[Superelevation][impact][wind], 1.845, 0.001));
       }
    }
