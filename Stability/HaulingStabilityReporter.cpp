@@ -1099,7 +1099,15 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
    pPara = new rptParagraph;
    *pChapter << pPara;
 
-   *pPara << _T("Offset Factor, ") << FO << _T(" = [(") << Sub2(_T("L"),_T("g")) << _T(" - ") << Sub2(_T("L"),_T("t")) << _T(" - ") << Sub2(_T("L"),_T("l")) << _T(")") << _T("/") << Sub2(_T("L"),_T("g")) << _T("]") << Super(_T("2")) << _T(" - 1/3 = ") << scalar.SetValue(pResults->OffsetFactor) << rptNewLine;
+   if (IsEqual(Ll, Lr))
+   {
+      *pPara << _T("Offset Factor, ") << FO << _T(" = [(") << Sub2(_T("L"), _T("g")) << _T(" - ") << Sub2(_T("L"), _T("t")) << _T(" - ") << Sub2(_T("L"), _T("l")) << _T(")") << _T("/") << Sub2(_T("L"), _T("g")) << _T("]") << Super(_T("2")) << _T(" - 1/3 = ") << scalar.SetValue(pResults->OffsetFactor) << rptNewLine;
+   }
+   else
+   {
+      *pPara << _T("Offset Factor, ") << FO << _T(" = (") << Sub2(_T("L"), _T("a")) << _T("/") << Sub2(_T("L"), _T("g")) << _T(")") << Super(_T("2")) << _T("[1 - 2(b - a)/") << Sub2(_T("L"), _T("a")) << _T("]") << _T(" - 1/3 = ") << scalar.SetValue(pResults->OffsetFactor) << rptNewLine;
+      *pPara << _T("where a = Min(Lt,Ll), b = Max(Lt,Ll), and ") << Sub2(_T("L"), _T("a")) << _T(" = ") << Sub2(_T("L"), _T("g")) << _T(" - 2a") << rptNewLine;
+   }
 
    Float64 camber = pStabilityProblem->GetCamber();
    Float64 precamber = pGirder->GetPrecamber();
@@ -1170,23 +1178,47 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
    *pPara << rptNewLine;
 
    *pPara << _T("Lateral Deflection of center of gravity due to total girder weight applied to weak axis, ") << ZO << rptNewLine;
-   if ( pResults->ZoMethod == Exact )
+   if (pResults->ZoMethod == Exact)
    {
       if (bSimpleFormat)
       {
-         *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << _T("/12E") << Sub2(_T("I"), _T("yy")) << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
-            << Sub2(_T("L"), _T("s")) << Super(_T("5")) << _T("/10") << _T(" - ")
-            << Super2(_T("a"), _T("2")) << Sub2(_T("L"), _T("s")) << Super(_T("3")) << _T(" + ")
-            << _T("3") << Super2(_T("a"), _T("4")) << Sub2(_T("L"), _T("s")) << _T(" + ")
-            << _T("6") << Super2(_T("a"), _T("5")) << _T("/5") << _T(")") << rptNewLine;
+         if (IsEqual(Ll, Lr))
+         {
+            *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << _T("/12E") << Sub2(_T("I"), _T("yy")) << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
+               << Sub2(_T("L"), _T("s")) << Super(_T("5")) << _T("/10") << _T(" - ")
+               << Super2(_T("a"), _T("2")) << Sub2(_T("L"), _T("s")) << Super(_T("3")) << _T(" + ")
+               << _T("3") << Super2(_T("a"), _T("4")) << Sub2(_T("L"), _T("s")) << _T(" + ")
+               << _T("6") << Super2(_T("a"), _T("5")) << _T("/5") << _T(")") << rptNewLine;
+         }
+         else
+         {
+            *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << _T("/24E") << Sub2(_T("I"), _T("yy")) << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
+               << _T("l") << Super(_T("5")) << _T("/5") << _T(" - (")
+               << Super2(_T("a"), _T("2")) << _T(" + ") << Super2(_T("b"), _T("2")) << _T(")") << Super2(_T("l"), _T("3")) << _T(" + 2(")
+               << Super2(_T("a"), _T("4")) << _T(" + ") << Super2(_T("a"), _T("2")) << Super2(_T("b"), _T("2")) << _T(" + ") << Super2(_T("b"), _T("4")) << _T(")") << _T("l") << _T(" + ")
+               << _T("6(") << Super2(_T("a"), _T("5")) << _T(" + ") << Super2(_T("b"), _T("5")) << _T(")/5") << _T(")") << rptNewLine;
+            *pPara << _T("where a = Min(Ll,Lt), b = Max(Ll,Lt), l = ") << Sub2(_T("L"), _T("g")) << _T(" - a - b") << rptNewLine;
+         }
       }
       else
       {
-         *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << Sub2(_T("I"), _T("xx")) << _T("/(12E(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T("-") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")") << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
-            << Sub2(_T("L"), _T("s")) << Super(_T("5")) << _T("/10") << _T(" - ")
-            << Super2(_T("a"), _T("2")) << Sub2(_T("L"), _T("s")) << Super(_T("3")) << _T(" + ")
-            << _T("3") << Super2(_T("a"), _T("4")) << Sub2(_T("L"), _T("s")) << _T(" + ")
-            << _T("6") << Super2(_T("a"), _T("5")) << _T("/5") << _T(")") << rptNewLine;
+         if (IsEqual(Ll, Lr))
+         {
+            *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << Sub2(_T("I"), _T("xx")) << _T("/(12E(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T("-") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")") << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
+               << Sub2(_T("L"), _T("s")) << Super(_T("5")) << _T("/10") << _T(" - ")
+               << Super2(_T("a"), _T("2")) << Sub2(_T("L"), _T("s")) << Super(_T("3")) << _T(" + ")
+               << _T("3") << Super2(_T("a"), _T("4")) << Sub2(_T("L"), _T("s")) << _T(" + ")
+               << _T("6") << Super2(_T("a"), _T("5")) << _T("/5") << _T(")") << rptNewLine;
+         }
+         else
+         {
+            *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << Sub2(_T("I"), _T("xx")) << _T("/24E(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T("-") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")") << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
+               << _T("l") << Super(_T("5")) << _T("/5") << _T(" - (")
+               << Super2(_T("a"), _T("2")) << _T(" + ") << Super2(_T("b"), _T("2")) << _T(")") << Super2(_T("l"), _T("3")) << _T(" + 2(")
+               << Super2(_T("a"), _T("4")) << _T(" + ") << Super2(_T("a"), _T("2")) << Super2(_T("b"), _T("2")) << _T(" + ") << Super2(_T("b"), _T("4")) << _T(")") << _T("l") << _T(" + ")
+               << _T("6(") << Super2(_T("a"), _T("5")) << _T(" + ") << Super2(_T("b"), _T("5")) << _T(")/5") << _T(")") << rptNewLine;
+            *pPara << _T("where a = Min(Ll,Lt), b = Max(Ll,Lt), l = ") << Sub2(_T("L"), _T("g")) << _T(" - a - b") << rptNewLine;
+         }
       }
    }
 

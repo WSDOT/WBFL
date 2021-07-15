@@ -106,12 +106,23 @@ void StabilityEngineer::PrepareResults(const IGirder* pGirder,const IStabilityPr
 
    results.Ll = Ll;
    results.Lr = Lr;
-
    results.Ls = Lg - Ll - Lr;
 
-   Float64 span_ratio = results.Ls/Lg;
-   results.OffsetFactor = (span_ratio)*(span_ratio) - 1./3.;
+   // offset factor for unequal spans
+   Float64 a = Min(Ll, Lr);
+   Float64 b = Max(Ll, Lr);
+   Float64 La = Lg - 2 * a;
+   results.OffsetFactor = pow(La / Lg, 2) * (1 - 2 * (b - a) / La) - 1. / 3.;
    results.OffsetFactor = IsZero(results.OffsetFactor) ? 0 : results.OffsetFactor;
+
+#if defined _DEBUG
+   if (IsEqual(a, b))
+   {
+      Float64 span_ratio = results.Ls / Lg;
+      Float64 Fo = (span_ratio) * (span_ratio)-1. / 3.;
+      ATLASSERT(IsEqual(results.OffsetFactor, Fo));
+   }
+#endif
 
    results.LateralSweep = pStabilityProblem->GetSweepTolerance()*Lg + pStabilityProblem->GetSweepGrowth();
 
@@ -1422,6 +1433,7 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
    Ll = IsZero(Ll, tolerance) ? 0.0 : Ll;
    Lr = IsZero(Lr, tolerance) ? 0.0 : Lr;
 
+   // this builds a model with unequal overhangs (if Ll != Lr)
    Float64 leftSupportLoc  = Ll;
    Float64 rightSupportLoc = Lg - Lr;
 
@@ -2131,17 +2143,21 @@ Float64 StabilityEngineer::ComputeZo(const IGirder* pGirder,const IStabilityProb
       pGirder->GetSectionProperties(Lg/2,&Ag,&Ixx,&Iyy,&Ixy,&Xleft,&Ytop,&Hg,&Wt,&Wb);
       Float64 W = results.Wg;
       Float64 l = results.Ls;
-      Float64 a = (Lg-l)/2; // assuming equal overhangs
-
-#if defined _DEBUG
-      Float64 L, R;
-      pStabilityProblem->GetSupportLocations(&L, &R);
-      Float64 A = 0.5*(L + R);
-      ATLASSERT(IsEqual(a, A));
-#endif 
+      Float64 Ll, Lr;
+      pStabilityProblem->GetSupportLocations(&Ll, &Lr);
+      Float64 a = Min(Ll, Lr);
+      Float64 b = Max(Ll, Lr);
 
       Float64 EI = Ec*(Ixx*Iyy - Ixy*Ixy)/Ixx;
-      Zo = (W/(12*EI*Lg*Lg))*(l*l*l*l*l/10. - a*a*l*l*l + 3.*a*a*a*a*l + 6.*a*a*a*a*a/5.);
+      // unequal overhangs (a < b)
+      Zo = (W / (24 * EI * Lg * Lg)) * ((l * l * l * l * l) / 5. - (a * a + b * b) * (l * l * l) + 2 * ((a * a * a * a) + (a * a * b * b) + (b * b * b * b)) * l + 6. * ((a * a * a * a * a) + (b * b * b * b * b)) / 5.);
+#if defined _DEBUG
+      if (IsEqual(a, b))
+      {
+         Float64 _zo = (W/(12*EI*Lg*Lg))*(l*l*l*l*l/10. - a*a*l*l*l + 3.*a*a*a*a*l + 6.*a*a*a*a*a/5.); // equal overhangs
+         ATLASSERT(IsEqual(Zo, _zo));
+      }
+#endif
    }
    else
    {

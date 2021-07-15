@@ -602,8 +602,8 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
 
    Float64 Ll, Lr;
    pStabilityProblem->GetSupportLocations(&Ll, &Lr);
-   *pPara << _T("Left support overhang = ") << longLength.SetValue(Ll) << rptNewLine;
-   *pPara << _T("Right support overhang = ") << longLength.SetValue(Lr) << rptNewLine;
+   *pPara << _T("Left support overhang, ") << Sub2(_T("L"),_T("l")) << _T(" = ") << longLength.SetValue(Ll) << rptNewLine;
+   *pPara << _T("Right support overhang ") << Sub2(_T("L"), _T("r")) << _T(" = ") << longLength.SetValue(Lr) << rptNewLine;
    *pPara << _T("Clear span between lift points, ") << Sub2(_T("L"), _T("s")) << _T(" = ") << longLength.SetValue(pResults->Ls) << rptNewLine;
 
    *pPara << _T("Location of Roll Axis above top of girder, ") << Sub2(_T("y"), _T("rc")) << _T(" = ") << shortLength.SetValue(pStabilityProblem->GetYRollAxis()) << rptNewLine;
@@ -922,7 +922,15 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
    pPara = new rptParagraph;
    *pChapter << pPara;
 
-   *pPara << _T("Offset Factor, ") << FO << _T(" = (") << Sub2(_T("L"), _T("s")) << _T("/") << Sub2(_T("L"), _T("g")) << _T(")") << Super(_T("2")) << _T(" - 1/3 = ") << scalar.SetValue(pResults->OffsetFactor) << rptNewLine;
+   if (IsEqual(Ll, Lr))
+   {
+      *pPara << _T("Offset Factor, ") << FO << _T(" = (") << Sub2(_T("L"), _T("s")) << _T("/") << Sub2(_T("L"), _T("g")) << _T(")") << Super(_T("2")) << _T(" - 1/3 = ") << scalar.SetValue(pResults->OffsetFactor) << rptNewLine;
+   }
+   else
+   {
+      *pPara << _T("Offset Factor, ") << FO << _T(" = (") << Sub2(_T("L"), _T("a")) << _T("/") << Sub2(_T("L"), _T("g")) << _T(")") << Super(_T("2")) << _T("[1 - 2(b - a)/") << Sub2(_T("L"), _T("a")) << _T("]") << _T(" - 1/3 = ") << scalar.SetValue(pResults->OffsetFactor) << rptNewLine;
+      *pPara << _T("where a = Min(Ll,Lr), b = Max(Ll,Lr), and ") << Sub2(_T("L"), _T("a")) << _T(" = ") << Sub2(_T("L"), _T("g")) << _T(" - 2a") << rptNewLine;
+   }
 
    Float64 camber = pStabilityProblem->GetCamber();
    Float64 precamber = pGirder->GetPrecamber();
@@ -1022,19 +1030,43 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
    {
       if (bSimpleFormat)
       {
-         *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << _T("/12E") << Sub2(_T("I"), _T("yy")) << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
-            << Sub2(_T("L"), _T("s")) << Super(_T("5")) << _T("/10") << _T(" - ")
-            << Super2(_T("a"), _T("2")) << Sub2(_T("L"), _T("s")) << Super(_T("3")) << _T(" + ")
-            << _T("3") << Super2(_T("a"), _T("4")) << Sub2(_T("L"), _T("s")) << _T(" + ")
-            << _T("6") << Super2(_T("a"), _T("5")) << _T("/5") << _T(")") << rptNewLine;
+         if (IsEqual(Ll, Lr))
+         {
+            *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << _T("/12E") << Sub2(_T("I"), _T("yy")) << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
+               << Sub2(_T("L"), _T("s")) << Super(_T("5")) << _T("/10") << _T(" - ")
+               << Super2(_T("a"), _T("2")) << Sub2(_T("L"), _T("s")) << Super(_T("3")) << _T(" + ")
+               << _T("3") << Super2(_T("a"), _T("4")) << Sub2(_T("L"), _T("s")) << _T(" + ")
+               << _T("6") << Super2(_T("a"), _T("5")) << _T("/5") << _T(")") << rptNewLine;
+         }
+         else
+         {
+            *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << _T("/24E") << Sub2(_T("I"), _T("yy")) << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
+               << _T("l") << Super(_T("5")) << _T("/5") << _T(" - (")
+               << Super2(_T("a"), _T("2")) << _T(" + ") << Super2(_T("b"),_T("2")) << _T(")") << Super2(_T("l"),_T("3")) << _T(" + 2(")
+               << Super2(_T("a"), _T("4")) << _T(" + ") << Super2(_T("a"),_T("2")) << Super2(_T("b"),_T("2")) << _T(" + ") << Super2(_T("b"),_T("4")) << _T(")") << _T("l") << _T(" + ")
+               << _T("6(") << Super2(_T("a"), _T("5")) << _T(" + ") << Super2(_T("b"),_T("5")) << _T(")/5") << _T(")") << rptNewLine;
+            *pPara << _T("where a = Min(Ll,Lr), b = Max(Ll,Lr), l = ") << Sub2(_T("L"), _T("g")) << _T(" - a - b") << rptNewLine;
+         }
       }
       else
       {
-         *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << Sub2(_T("I"), _T("xx")) << _T("/(12E(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T("-") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")") << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
-            << Sub2(_T("L"), _T("s")) << Super(_T("5")) << _T("/10") << _T(" - ")
-            << Super2(_T("a"), _T("2")) << Sub2(_T("L"), _T("s")) << Super(_T("3")) << _T(" + ")
-            << _T("3") << Super2(_T("a"), _T("4")) << Sub2(_T("L"), _T("s")) << _T(" + ")
-            << _T("6") << Super2(_T("a"), _T("5")) << _T("/5") << _T(")") << rptNewLine;
+         if (IsEqual(Ll, Lr))
+         {
+            *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << Sub2(_T("I"), _T("xx")) << _T("/(12E(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T("-") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")") << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
+               << Sub2(_T("L"), _T("s")) << Super(_T("5")) << _T("/10") << _T(" - ")
+               << Super2(_T("a"), _T("2")) << Sub2(_T("L"), _T("s")) << Super(_T("3")) << _T(" + ")
+               << _T("3") << Super2(_T("a"), _T("4")) << Sub2(_T("L"), _T("s")) << _T(" + ")
+               << _T("6") << Super2(_T("a"), _T("5")) << _T("/5") << _T(")") << rptNewLine;
+         }
+         else
+         {
+            *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << Sub2(_T("I"),_T("xx")) << _T("/24E(") << Sub2(_T("I"),_T("xx")) << Sub2(_T("I"), _T("yy")) << _T("-") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")") << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
+               << _T("l") << Super(_T("5")) << _T("/5") << _T(" - (")
+               << Super2(_T("a"), _T("2")) << _T(" + ") << Super2(_T("b"), _T("2")) << _T(")") << Super2(_T("l"), _T("3")) << _T(" + 2(")
+               << Super2(_T("a"), _T("4")) << _T(" + ") << Super2(_T("a"), _T("2")) << Super2(_T("b"), _T("2")) << _T(" + ") << Super2(_T("b"), _T("4")) << _T(")") << _T("l") << _T(" + ")
+               << _T("6(") << Super2(_T("a"), _T("5")) << _T(" + ") << Super2(_T("b"), _T("5")) << _T(")/5") << _T(")") << rptNewLine;
+            *pPara << _T("where a = Min(Ll,Lr), b = Max(Ll,Lr), l = ") << Sub2(_T("L"), _T("g")) << _T(" - a - b") << rptNewLine;
+         }
       }
    }
 
