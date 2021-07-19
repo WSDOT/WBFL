@@ -862,12 +862,12 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
    results.MotWind = results.Wwind*results.Ywind[NoImpact];
    results.MotCF   = results.Wcf*results.Dra[NoImpact];
 
-   for ( int i = 0; i < 3; i++ )
+   for (int s = 0; s < 2; s++)
    {
-      ImpactDirection impact = (ImpactDirection)i;
-      for ( int s = 0; s < 2; s++ )
+      HaulingSlope slope = (HaulingSlope)s;
+      for ( int i = 0; i < 3; i++ )
       {
-         HaulingSlope slope = (HaulingSlope)s;
+         ImpactDirection impact = (ImpactDirection)i;
 
          Float64 alpha = (slope == CrownSlope ? crownSlope : superelevation);
          
@@ -908,9 +908,9 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
                results.MinFsRollover[slope] = 0;
                results.MinFScr[slope] = 0;
             }
-         }
-      }
-   }
+         } // next wind
+      } // next impact
+   } // next slope
 
    PoiIDType poiID = 0;
    CComQIPtr<IFem2dModelResults> femResults(model);
@@ -1263,19 +1263,19 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
    } // next analysis point
 
    // calculate the factor of safety against failure and roll over for all combinations of impact and wind
-   for ( int i = 0; i < 3; i++ )
+   for (int s = 0; s < 2; s++)
    {
-      ImpactDirection impact = (ImpactDirection)i;
+      HaulingSlope slope = (HaulingSlope)s;
 
-      for ( int w = 0; w < 2; w++ )
+      for ( int i = 0; i < 3; i++ )
       {
-         WindDirection wind = (WindDirection)w;
+         ImpactDirection impact = (ImpactDirection)i;
 
-         Float64 windSign = (wind == Left ? 1 : -1);
-
-         for (int s = 0; s < 2; s++)
+         for ( int w = 0; w < 2; w++ )
          {
-            HaulingSlope slope = (HaulingSlope)s;
+            WindDirection wind = (WindDirection)w;
+
+            Float64 windSign = (wind == Left ? 1 : -1);
 
             Float64 ei = results.EccLateralSweep[impact];
             Float64 alpha = (slope == CrownSlope ? crownSlope : superelevation);
@@ -1404,9 +1404,9 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
                   results.FSroWindDirection[slope] = wind;
                }
             } // if  stable
-         } // next slope type
-      } // next wind direction
-   } // next impact
+         } // next wind direction
+      } // next impact
+   } // next slope type
 }
 
 void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProblem* pStabilityProblem,Results& results,IFem2dModel** ppModel) const
