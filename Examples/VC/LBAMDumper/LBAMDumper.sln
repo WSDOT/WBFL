@@ -1,12 +1,11 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LBAMDump", "LBAMDump\LBAMDump.vcproj", "{CFF4A732-3D7B-440E-A5E5-F0A6E2EE5736}"
-	ProjectSection(ProjectDependencies) = postProject
-		{41C1B8F2-F9B1-4875-83DA-BF704DBC4246} = {41C1B8F2-F9B1-4875-83DA-BF704DBC4246}
-	EndProjectSection
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31424.327
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LBAMDump", "LBAMDump\LBAMDump.vcxproj", "{CFF4A732-3D7B-440E-A5E5-F0A6E2EE5736}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LBAMDumper", "LBAMDumper.vcproj", "{41C1B8F2-F9B1-4875-83DA-BF704DBC4246}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LBAMDumper", "LBAMDumper.vcxproj", "{41C1B8F2-F9B1-4875-83DA-BF704DBC4246}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,5 +34,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {71E91B86-2827-4A65-9896-A81B847179BB}
 	EndGlobalSection
 EndGlobal
