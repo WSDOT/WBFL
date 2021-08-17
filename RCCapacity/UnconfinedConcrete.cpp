@@ -45,8 +45,8 @@ HRESULT CUnconfinedConcrete::FinalConstruct()
       return hr;
 
    m_Fc = 4.00; // ksi
-   m_MinStrain = -0.0035;
-   m_MaxStrain = 10.0;
+   m_MinStrain = -0.003;
+   m_MaxStrain = 1.0;
 
    return S_OK;
 }
@@ -144,7 +144,7 @@ STDMETHODIMP CUnconfinedConcrete::ComputeStress(Float64 strain,Float64 *pVal)
 
    *pVal = -f;
 
-   return S_OK;
+   return (-strain < m_MinStrain) ? S_FALSE : S_OK;
 }
 
 STDMETHODIMP CUnconfinedConcrete::StrainLimits(Float64* minStrain,Float64* maxStrain)
