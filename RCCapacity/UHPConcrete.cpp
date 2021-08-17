@@ -275,7 +275,7 @@ STDMETHODIMP CUHPConcrete::ComputeStress(Float64 strain,Float64 *pVal)
          // strain is less than cracking
          *pVal = strain*Ec;
       }
-      else if (strain <= m_etloc)
+      else if (::IsLE(strain,m_etloc))
       {
          *pVal = (m_ftloc < 1.2*m_ftcr) ? m_gamma*m_ftcr : ::LinInterp(strain - e_tcr,m_gamma*m_ftcr,m_gamma*m_ftloc,m_etloc - e_tcr);
       }
@@ -291,7 +291,7 @@ STDMETHODIMP CUHPConcrete::ComputeStress(Float64 strain,Float64 *pVal)
       Float64 e_cp = -1.0*m_alpha*m_fc / Ec;
       if (e_cp < strain) // this looks backwards, but it's not... compression strain is negative so the larger value is closer to zero
          *pVal = strain*Ec;
-      else if (m_ecu < strain)
+      else if (::IsLE(m_ecu,strain))
          *pVal = -1.0*m_alpha*m_fc; // negative for compression
       else
          *pVal = 0.0; // beyond maximum strain
@@ -310,7 +310,7 @@ STDMETHODIMP CUHPConcrete::StrainLimits(Float64* minStrain,Float64* maxStrain)
    CHECK_RETVAL(minStrain);
    CHECK_RETVAL(maxStrain);
 
-   *maxStrain = 10.0; // m_etloc; stress drops to 0.0 at m_etloc, so we can run the analysis out past this strain so use a large value for max strain
+   *maxStrain = m_etloc;
 
    Float64 Ec = GetEc();
    Float64 e_cp = -1.0*m_alpha*m_fc / Ec;

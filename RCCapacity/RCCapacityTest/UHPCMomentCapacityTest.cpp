@@ -251,7 +251,7 @@ void CUHPCMomentCapacityTest::Test1()
    solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -7176.3594, 0.0001), true); 
+   TRY_TEST(IsEqual(Mx, -7176.3798, 0.0001), true); 
    TRY_TEST(IsZero(My), true);
 
    strainPlane->GetZ(0.00, H / 2, &ec);
@@ -265,7 +265,7 @@ void CUHPCMomentCapacityTest::Test1()
    // this example will have tension strains the the rebar that exceed the fracture limit)
    solution.Release();
    strainPlane.Release();
-   TRY_TEST(solver->Solve(0.00, 0.00, -0.0035, H/2, smFixedStrain, &solution), RC_E_MATERIALFAILURE); // compression top, use angle = 0
+   TRY_TEST(solver->Solve(0.00, 0.00, -0.0035, H / 2, smFixedStrain, &solution), RC_E_MATERIALFAILURE); // compression top, use angle = 0
 
    solution->get_Fz(&Fz);
    solution->get_Mx(&Mx);
@@ -273,7 +273,7 @@ void CUHPCMomentCapacityTest::Test1()
    solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -7176.3594, 0.0001), true);
+   TRY_TEST(IsEqual(Mx, -7176.3798, 0.0001), true);
    TRY_TEST(IsZero(My), true);
 
    strainPlane->GetZ(0.00, H / 2, &ec);
@@ -311,6 +311,9 @@ void CUHPCMomentCapacityTest::Test2()
    beam->put_W1(21/*34*/);
    beam->put_W2(27/*30*/);
    //beam->put_C1(0.75);
+
+   Float64 h;
+   beam->get_Height(&h);
 
    CComPtr<IPoint2d> origin;
    origin.CoCreateInstance(CLSID_Point2d);
@@ -551,7 +554,7 @@ void CUHPCMomentCapacityTest::Test2()
    TRY_TEST(IsZero(My), true);
    Float64 Ml = -Mx;
 
-   strainPlane->GetZ(0.00, -54, &ec);
+   strainPlane->GetZ(0.00, -h, &ec);
    TRY_TEST(IsEqual(ec, 0.0045), true);
 
    strainPlane->GetY(0.0, 0.0, &Yna); // location of neutral axis below top of girder
@@ -572,16 +575,22 @@ void CUHPCMomentCapacityTest::Test2()
    solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -199890.1591, 0.0001), true);
+   TRY_TEST(IsEqual(Mx, -199994.7691, 0.0001), true);
    TRY_TEST(IsZero(My), true);
    Float64 Mc = -Mx;
+
+   strainPlane->GetZ(0.00, 10.00, &ec); // strain at top of deck
+   TRY_TEST(IsEqual(ec, -0.00585), true);
+
+   strainPlane->GetZ(0.00, -h, &ec); // strain at bottom of beam
+   TRY_TEST(IsEqual(ec, 0.00915), true);
 
    strainPlane->GetZ(0.00, 0.00, &ec);
    TRY_TEST(IsEqual(ec, -0.0035), true);
 
    strainPlane->GetY(0.0, 0.0, &Yna); // location of neutral axis
    Float64 Yc = ec / Yna;
-   TRY_TEST(IsEqual(Yc, 0.000234692, 0.000000001), true);
+   TRY_TEST(IsEqual(Yc, 0.000234168, 0.000000001), true);
 
    // Nominal moment capacity at compression strain limit in deck, Md, Yd
    solution.Release();
