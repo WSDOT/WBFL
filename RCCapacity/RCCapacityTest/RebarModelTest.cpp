@@ -78,7 +78,7 @@ void CRebarModelTest::Test()
    TRY_TEST( IsEqual(val,29.0), true );
    TRY_TEST( ss->ComputeStress(-0.001,&val), S_OK );
    TRY_TEST( IsEqual(val,-29.0), true );
-   TRY_TEST( ss->ComputeStress(0.1,&val), S_OK );
+   TRY_TEST( ss->ComputeStress(0.1,&val), S_FALSE ); // strain exceeds tensile fracture strain
    TRY_TEST( IsEqual(val,60.0), true );
    TRY_TEST( ss->ComputeStress(-0.1,&val), S_OK );
    TRY_TEST( IsEqual(val,-60.0), true );

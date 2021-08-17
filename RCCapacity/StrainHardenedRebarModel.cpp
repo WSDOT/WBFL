@@ -126,7 +126,7 @@ STDMETHODIMP CStrainHardenedRebarModel::ComputeStress(Float64 strain,Float64* pV
 
    (*pVal) *= sign;
 
-   return S_OK;
+   return (m_efr < sign* strain) ? S_FALSE : S_OK;
 }
 
 STDMETHODIMP CStrainHardenedRebarModel::StrainLimits(Float64* minStrain,Float64* maxStrain)

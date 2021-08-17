@@ -102,7 +102,7 @@ STDMETHODIMP CRebarModel::ComputeStress(Float64 strain,Float64* pVal)
    else
       *pVal = (BinarySign(strain)*m_Fy);
 
-   return S_OK;
+   return (m_MaxStrain < strain) ? S_FALSE : S_OK;
 }
 
 STDMETHODIMP CRebarModel::StrainLimits(Float64* minStrain,Float64* maxStrain)
