@@ -90,6 +90,7 @@ public:
                 Grade75  = 0x00040000,
                 Grade80  = 0x00080000,
                 Grade100 = 0x00100000,
+                Grade120 = 0x00200000,
    };
 
    // GROUP: LIFECYCLE
@@ -153,10 +154,12 @@ public:
    Float64 GetUltimateStrength() const;
    Float64 GetYieldStrength() const;
    Float64 GetE() const;
+   Float64 GetElongation() const;
 
    static Float64 GetUltimateStrength(Type type,Grade grade);
    static Float64 GetYieldStrength(Type type,Grade grade);
    static Float64 GetE(Type type,Grade grade);
+   static Float64 GetElongation(Type type, Grade grade, Size size);
 
    // GROUP: INQUIRY
    // GROUP: DEBUG
@@ -277,6 +280,11 @@ inline Float64 matRebar::GetYieldStrength() const
 inline Float64 matRebar::GetE() const
 {
    return matRebar::GetE(m_Type,m_Grade);
+}
+
+inline Float64 matRebar::GetElongation() const
+{
+   return matRebar::GetElongation(m_Type, m_Grade, m_Size);
 }
 
 // EXTERNAL REFERENCES
