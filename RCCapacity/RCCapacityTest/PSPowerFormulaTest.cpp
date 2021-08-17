@@ -67,7 +67,7 @@ void CPSPowerFormulaTest::Test()
    TRY_TEST( IsEqual(val,1446556950.5987,0.0001), true );
    TRY_TEST( ss->ComputeStress(-0.00764,&val), S_OK );
    TRY_TEST( IsEqual(val,-1446556950.5987,0.0001), true );
-   TRY_TEST( ss->ComputeStress(0.1,&val), S_OK );
+   TRY_TEST( ss->ComputeStress(0.1,&val), S_FALSE ); // strain exceeds tension fracture strain
    TRY_TEST( IsEqual(val,1861584469.1559,0.0001), true );
    TRY_TEST( ss->ComputeStress(-0.1,&val), S_OK );
    TRY_TEST( IsEqual(val,-1861584469.1559,0.0001), true );
